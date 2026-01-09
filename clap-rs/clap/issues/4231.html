@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[clap_mangen] Subcommand references in man pages miss prefix - clap-rs/clap #4231</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[clap_mangen] Subcommand references in man pages miss prefix</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4231">#4231</a>
+        opened by <a href="https://github.com/dnaka91">@dnaka91</a>
+        on 2022-09-19 06:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dnaka91">@dnaka91</a> on 2022-09-19 06:58</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.63.0 (4b91a6ea7 2022-08-08)</p>
+<h3>Clap Version</h3>
+<p>v3.2.22 (clap_mangen v0.1.11)</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">#[derive(Parser)]
+#[clap(about, author, version)]
+struct Opt {
+    #[clap(subcommand)]
+    cmd: Option&lt;Command&gt;,
+}
+
+#[derive(Subcommand)]
+enum Command {
+    Check {
+        file: PathBuf,
+    },
+    Manpages {
+        dir: PathBuf,
+    },
+    #[clap(subcommand)]
+    Temp(TempCommand),
+}
+
+#[derive(Subcommand)]
+enum TempCommand {
+    TestA,
+    TestB,
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Create a dir <code>temp</code> in the current pwd and run a basic app with the above setup with <code>cargo run -- manpages temp</code>. As implementation for creating the manpages I use the below code:</p>
+<pre><code class="language-rust">fn print_manpages(dir: &amp;Path) -&gt; Result&lt;()&gt; {
+    fn print(dir: &amp;Path, app: &amp;App) -&gt; Result&lt;()&gt; {
+        // `get_display_name()` is `Some` for all instances, except the root.
+        let name = app.get_display_name().unwrap_or_else(|| app.get_name());
+        let mut out = File::create(dir.join(format!(&quot;{name}.1&quot;)))?;
+
+        clap_mangen::Man::new(app.clone()).render(&amp;mut out)?;
+        out.flush()?;
+
+        for sub in app.get_subcommands() {
+            print(dir, sub)?;
+        }
+
+        Ok(())
+    }
+
+    let mut app = Opt::command();
+    app.build();
+
+    print(dir, &amp;app)
+}
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>In the end of the man pages, the direct subcommands are listed as additional man page files. The sum of all these references are as follows:</p>
+<ul>
+<li><code>sample-check(1)</code></li>
+<li><code>sample-manpages(1)</code></li>
+<li><code>sample-temp(1)</code></li>
+<li><code>temp-test-a(1)</code> &lt;-- missing sample- prefix</li>
+<li><code>temp-test-b(1)</code> &lt;-- missing sample- prefix</li>
+</ul>
+<h3>Expected Behaviour</h3>
+<p>As seen above, the last two references miss the expected prefix. The actual existing file name is right, but the names inside the man pages are wrong. The expected names would be:</p>
+<ul>
+<li><code>sample(1)</code></li>
+<li><code>sample-check(1)</code></li>
+<li><code>sample-manpages(1)</code></li>
+<li><code>sample-temp(1)</code></li>
+<li><code>sample-temp-test-a(1)</code></li>
+<li><code>sample-temp-test-b(1)</code></li>
+</ul>
+<h3>Additional Context</h3>
+<p>Originally mentioned in discussion https://github.com/clap-rs/clap/discussions/3603, now extracted here as issue.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @dnaka91 on 2022-09-19 06:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2022-09-19 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-man</span> added by @epage on 2022-09-19 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-help-wanted</span> added by @epage on 2022-09-20 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4255.html">clap-rs/clap#4255</a> on 2022-09-24 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-09-29 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BoostCookie">@BoostCookie</a> on 2023-10-23 11:49</div>
+            <div class="timeline-body"><p>The man pages have correct file names now, but the content of a page only shows the subcommand name under NAME and SYNOPSIS.
+I would expect it to look like <code>man git-commit</code></p>
+<pre><code>NAME
+       git-commit - Record changes to the repository
+
+SYNOPSIS
+       git commit [-a | --interactive | --patch] [-s] [-v] [-u&lt;mode&gt;] [--amend]
+       ...
+</code></pre>
+<p>But <code>clap_mangen</code> would generate the following</p>
+<pre><code>NAME
+       commit - Record changes to the repository
+
+SYNOPSIS
+       commit [-a | --interactive | --patch] [-s] [-v] [-u&lt;mode&gt;] [--amend]
+       ...
+</code></pre>
+<p>So the parent command is missing in the page.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Will-Shanks">@Will-Shanks</a> on 2024-01-12 21:34</div>
+            <div class="timeline-body"><p>I'm running into the same problem as @BoostCookie, would it make sense to reopen this or should I submit a new issue @epage? I'd be happy to work on a PR if this change is agreeable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-01-12 22:40</div>
+            <div class="timeline-body"><p>Feel free</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5301.html">clap-rs/clap#5301</a> on 2024-01-13 02:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5331.html">clap-rs/clap#5331</a> on 2024-01-28 02:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

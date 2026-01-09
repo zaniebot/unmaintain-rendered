@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypedValueParser cannot return single Vec&lt;String&gt; - clap-rs/clap #4808</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>TypedValueParser cannot return single Vec&lt;String&gt;</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4808">#4808</a>
+        opened by <a href="https://github.com/LegionMammal978">@LegionMammal978</a>
+        on 2023-03-29 13:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LegionMammal978">@LegionMammal978</a> on 2023-03-29 13:06</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.68.2 (9eb3afe9e 2023-03-27)</p>
+<h3>Clap Version</h3>
+<p>4.2.0</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{builder::ValueParser, ArgAction, Parser};
+use std::convert::Infallible;
+
+fn my_parser(arg: &amp;str) -&gt; Result&lt;Vec&lt;String&gt;, Infallible&gt; {
+    Ok(arg.split(',').map(str::to_string).collect())
+}
+
+#[derive(Parser)]
+struct Args {
+    #[arg(
+        long = &quot;values&quot;,
+        value_parser = ValueParser::new(my_parser),
+        action = ArgAction::Set,
+        required = true,
+    )]
+    values: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let args = Args::parse_from([&quot;example&quot;, &quot;--values=a,b,c&quot;]);
+    println!(&quot;{:?}&quot;, args.values);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<h3>Actual Behaviour</h3>
+<pre><code>thread 'main' panicked at 'Mismatch between definition and access of `values`. Could not downcast to alloc::string::String, need to downcast to alloc::vec::Vec&lt;alloc::string::String&gt;
+', src/main.rs:16:13
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
+</code></pre>
+<h3>Additional Context</h3>
+<p>According to the <a href="https://docs.rs/clap/4.2.0/clap/_derive/index.html#arg-types">Derive Reference</a>:</p>
+<blockquote>
+<p><code>clap</code> assumes some intent based on the type used:</p>
+<p>|Type|Effect|Implies|
+|--|--|--|
+|<code>Vec&lt;T&gt;</code>|<code>0..</code> occurrences of argument|<code>.action(ArgAction::Append).required(false)</code>|</p>
+<p>In addition, <code>.value_parser(value_parser!(T))</code> is called for each field.</p>
+<p>Notes:</p>
+<ul>
+<li>For custom type behavior, you can override the implied attributes/settings and/or set additional ones</li>
+</ul>
+</blockquote>
+<p>This suggests that if I override <code>action</code> and <code>required</code>, then my <code>TypedValueParser</code> can return a <code>Vec&lt;T&gt;</code> just like any other <code>T</code>. However, this always produces an error, since <code>clap_derive</code> <a href="https://github.com/clap-rs/clap/blob/v4.2.0/clap_derive/src/derives/args.rs#L691-L697">unconditionally uses <code>get_many</code></a> for <code>Vec&lt;T&gt;</code> fields, regardless of what attributes I set. So far, I've been able to work around it by having my <code>TypedValueParser</code> return a <code>Box&lt;[T]&gt;</code>, but this is less than ideal.</p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command] 	Command::_do_parse
+[clap_builder::builder::command] 	Command::_build: name=&quot;example&quot;
+[clap_builder::builder::command] 	Command::_propagate:example
+[clap_builder::builder::command] 	Command::_check_help_and_version:example expand_help_tree=false
+[clap_builder::builder::command] 	Command::long_help_exists
+[clap_builder::builder::command] 	Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command] 	Command::_propagate_global_args:example
+[clap_builder::builder::debug_asserts] 	Command::_debug_asserts
+[clap_builder::builder::debug_asserts] 	Arg::_debug_asserts:values
+[clap_builder::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts] 	Command::_verify_positionals
+[clap_builder::parser::parser] 	Parser::get_matches_with
+[clap_builder::parser::parser] 	Parser::get_matches_with: Begin parsing '&quot;--values=a,b,c&quot;'
+[clap_builder::parser::parser] 	Parser::possible_subcommand: arg=Ok(&quot;--values=a,b,c&quot;)
+[clap_builder::parser::parser] 	Parser::get_matches_with: sc=None
+[clap_builder::parser::parser] 	Parser::parse_long_arg
+[clap_builder::parser::parser] 	Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser] 	Parser::parse_long_arg: Found valid arg or flag '--values &lt;VALUES&gt;'
+[clap_builder::parser::parser] 	Parser::parse_long_arg(&quot;values&quot;): Found an arg with value 'Some(&quot;a,b,c&quot;)'
+[clap_builder::parser::parser] 	Parser::parse_opt_value; arg=values, val=Some(&quot;a,b,c&quot;), has_eq=true
+[clap_builder::parser::parser] 	Parser::parse_opt_value; arg.settings=ArgFlags(REQUIRED)
+[clap_builder::parser::parser] 	Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser] 	Parser::react action=Set, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser] 	Parser::react: cur_idx:=1
+[clap_builder::parser::parser] 	Parser::remove_overrides: id=&quot;values&quot;
+[clap_builder::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;values&quot;, source=CommandLine
+[clap_builder::builder::command] 	Command::groups_for_arg: id=&quot;values&quot;
+[clap_builder::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;Args&quot;, source=CommandLine
+[clap_builder::parser::parser] 	Parser::push_arg_values: [&quot;a,b,c&quot;]
+[clap_builder::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=values, pending=0
+[clap_builder::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser] 	Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser] 	Parser::get_matches_with: After parse_long_arg ValuesDone
+[clap_builder::parser::parser] 	Parser::add_defaults
+[clap_builder::parser::parser] 	Parser::add_defaults:iter:values:
+[clap_builder::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser] 	Parser::add_default_value:iter:values: doesn't have default vals
+[clap_builder::parser::parser] 	Parser::add_defaults:iter:help:
+[clap_builder::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator] 	Validator::validate
+[clap_builder::builder::command] 	Command::groups_for_arg: id=&quot;values&quot;
+[clap_builder::parser::validator] 	Conflicts::gather_direct_conflicts id=&quot;values&quot;, conflicts=[]
+[clap_builder::parser::validator] 	Conflicts::gather_direct_conflicts id=&quot;Args&quot;, conflicts=[]
+[clap_builder::parser::validator] 	Validator::validate_conflicts
+[clap_builder::parser::validator] 	Validator::validate_exclusive
+[clap_builder::parser::validator] 	Validator::validate_conflicts::iter: id=&quot;values&quot;
+[clap_builder::parser::validator] 	Conflicts::gather_conflicts: arg=&quot;values&quot;
+[clap_builder::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator] 	Validator::validate_required: required=ChildGraph([Child { id: &quot;values&quot;, children: [] }])
+[clap_builder::parser::validator] 	Validator::gather_requires
+[clap_builder::parser::validator] 	Validator::gather_requires:iter:&quot;values&quot;
+[clap_builder::parser::validator] 	Validator::gather_requires:iter:&quot;Args&quot;
+[clap_builder::parser::validator] 	Validator::gather_requires:iter:&quot;Args&quot;:group
+[clap_builder::parser::validator] 	Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[]
+thread 'main' panicked at 'Mismatch between definition and access of `values`. Could not downcast to alloc::string::String, need to downcast to alloc::vec::Vec&lt;alloc::string::String&gt;
+', src/main.rs:16:13
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @LegionMammal978 on 2023-03-29 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-29 13:16</div>
+            <div class="timeline-body"><blockquote>
+<p>This suggests that if I override action and required, then my TypedValueParser can return a Vec<T> just like any other T. However, this always produces an error, since clap_derive <a href="https://github.com/clap-rs/clap/blob/v4.2.0/clap_derive/src/derives/args.rs#L691-L697">unconditionally uses get_many</a> for Vec<T> fields, regardless of what attributes I set. So far, I've been able to work around it by having my TypedValueParser return a Box&lt;[T]&gt;, but this is less than ideal.</p>
+</blockquote>
+<p>The problem is we do not know what accessor to use, so we do a hard coded lookup based on the type's name.  You can work around this by referring to the type by something other than <code>Vec</code>, like <code>std::vec::Vec</code>.  We have #4626 for exploring how to improve this.</p>
+<p>Closing in favor of #4626</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-03-29 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LegionMammal978">@LegionMammal978</a> on 2023-03-29 13:20</div>
+            <div class="timeline-body"><p>I wonder if it might be helpful to document this behavior in the meantime, since it took me a fair while to track down the underlying cause of the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-29 13:36</div>
+            <div class="timeline-body"><p>Huh, I thought we had that somewhere but not seeing it, so added it now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LegionMammal978">@LegionMammal978</a> on 2023-03-29 13:48</div>
+            <div class="timeline-body"><p>There seems to be a typo (&quot;completel&quot;).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

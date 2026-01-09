@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug: Calling print_help after parsing causes a panic if global() is used. - clap-rs/clap #1356</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug: Calling print_help after parsing causes a panic if global() is used.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1356">#1356</a>
+        opened by <a href="https://github.com/mikeswoods">@mikeswoods</a>
+        on 2018-10-09 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mikeswoods">@mikeswoods</a> on 2018-10-09 16:03</div>
+            <div class="timeline-body"><p>If <code>App::print_help()</code> ius called after parsing with <code>Arg::get_matches_from_safe_borrow</code> a panic occurs. This only happens if one of the arguments has  <code>global(true)</code> set.</p>
+<h3>Rust Version</h3>
+<p><code>rustc 1.29.0 (aa3ca1994 2018-09-11)</code></p>
+<h3>Affected Version of clap</h3>
+<p>2.32.0</p>
+<h3>Bug or Feature Request Summary</h3>
+<p>Bug: If <code>App::print_help()</code> ius called after parsing with <code>Arg::get_matches_from_safe_borrow</code> a panic occurs. This only happens if one of the arguments has  <code>global(true)</code> set.</p>
+<h3>Expected Behavior Summary</h3>
+<p>No panic</p>
+<h3>Actual Behavior Summary</h3>
+<p>The program panics with</p>
+<pre><code>% RUST_BACKTRACE=1 cargo run -- foo                                                                                                                                                                                                         (git)-[master]
+    Finished dev [unoptimized + debuginfo] target(s) in 0.22s
+     Running `target/debug/clap-test foo`
+ArgMatches { args: {}, subcommand: Some(SubCommand { name: &quot;foo&quot;, matches: ArgMatches { args: {}, subcommand: None, usage: Some(&quot;USAGE:\n    clap-test foo [OPTIONS]&quot;) } }), usage: Some(&quot;USAGE:\n    clap-test [OPTIONS] [SUBCOMMAND]&quot;) }
+thread 'main' panicked at 'Non-unique argument name: output is already in use', /Users/mike/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/parser.rs:174:9
+stack backtrace:
+   0: std::sys::unix::backtrace::tracing::imp::unwind_backtrace
+             at libstd/sys/unix/backtrace/tracing/gcc_s.rs:49
+   1: std::sys_common::backtrace::print
+             at libstd/sys_common/backtrace.rs:71
+             at libstd/sys_common/backtrace.rs:59
+   2: std::panicking::default_hook::{{closure}}
+             at libstd/panicking.rs:211
+   3: std::panicking::default_hook
+             at libstd/panicking.rs:227
+   4: &lt;std::panicking::begin_panic::PanicPayload&lt;A&gt; as core::panic::BoxMeUp&gt;::get
+             at libstd/panicking.rs:475
+   5: std::collections::hash::table::TaggedHashUintPtr::set_tag
+             at /Users/travis/build/rust-lang/rust/src/libstd/panicking.rs:409
+   6: clap::app::parser::Parser::debug_asserts
+             at /Users/mike/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/parser.rs:174
+   7: clap::app::parser::Parser::implied_settings
+             at /Users/mike/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/parser.rs:319
+   8: clap::app::parser::Parser::verify_positionals::{{closure}}
+             at /Users/mike/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/parser.rs:651
+   9: &lt;std::ffi::os_str::OsStr as core::cmp::PartialEq&lt;std::ffi::os_str::OsString&gt;&gt;::eq
+             at /Users/mike/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/mod.rs:1161
+  10: clap_test::main
+             at src/main.rs:45
+  11: std::rt::lang_start::{{closure}}
+             at /Users/travis/build/rust-lang/rust/src/libstd/rt.rs:74
+  12: std::panicking::try::do_call
+             at libstd/rt.rs:59
+             at libstd/panicking.rs:310
+  13: panic_unwind::dwarf::eh::read_encoded_pointer
+             at libpanic_unwind/lib.rs:105
+  14: std::sys_common::cleanup
+             at libstd/panicking.rs:289
+             at libstd/panic.rs:392
+             at libstd/rt.rs:58
+  15: std::rt::lang_start
+             at /Users/travis/build/rust-lang/rust/src/libstd/rt.rs:74
+  16: clap_test::main
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<p>The following code will reproduce the issue:</p>
+<pre><code class="language-rust">extern crate clap;
+
+fn main() {
+    let mut app = clap::App::new(env!(&quot;CARGO_PKG_NAME&quot;))
+                .version(env!(&quot;CARGO_PKG_VERSION&quot;))
+                .author(env!(&quot;CARGO_PKG_AUTHORS&quot;))
+                .about(&quot;Just a test&quot;)
+	       .arg(clap::Arg::with_name(&quot;output&quot;)
+                         .value_name(&quot;output&quot;)
+                         .short(&quot;o&quot;)
+                         .long(&quot;output&quot;)
+                         .takes_value(true)
+                         .global(true) // false works 
+                         .possible_value(&quot;simple&quot;)
+                         .possible_value(&quot;rich&quot;)
+                         .help(&quot;Sets the output format&quot;))
+        .subcommand(clap::SubCommand::with_name(&quot;foo&quot;)
+                    .about(&quot;foo&quot;))
+        .subcommand(clap::SubCommand::with_name(&quot;bar&quot;)
+                    .about(&quot;bar&quot;)
+                    .arg(clap::Arg::with_name(&quot;oof&quot;)
+                         .short(&quot;z&quot;)
+                         .long(&quot;oof&quot;)
+                         .help(&quot;oof&quot;)))
+        .subcommand(clap::SubCommand::with_name(&quot;baz&quot;)
+                    .about(&quot;baz&quot;)
+                    .arg(clap::Arg::with_name(&quot;zap&quot;)
+                         .value_name(&quot;zap&quot;)
+                         .takes_value(true)
+                         .required(true)
+                         .index(1)
+                         .help(&quot;zap&quot;)));
+
+    let parse = app.get_matches_from_safe_borrow(::std::env::args_os());
+    let args = match parse {
+    	Ok(args) =&gt; args,
+    	Err(e) =&gt; {
+    		println!(&quot;{}&quot;, e.message);
+    		::std::process::exit(1);
+    	}
+    };
+
+    println!(&quot;{:?}&quot;, args);
+
+    app.print_help();
+}
+</code></pre>
+<p>Afterward, run <code>cargo run -- foo</code> to reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/remram44">@remram44</a> on 2018-11-10 01:59</div>
+            <div class="timeline-body"><p>Or even just calling <code>print_help()</code> twice.</p>
+<p>Seems related to #1076 and #1348: basically, this <code>global()</code> thing wasn't really tested with the rest of the code, and seems to break with every non-trivial setup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-01 16:03</div>
+            <div class="timeline-body"><p>Closing as duplicate of #1601</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-02-01 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: duplicate</span> added by @CreepySkeleton on 2020-02-01 16:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

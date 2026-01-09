@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF013: False positives with type aliases  - astral-sh/ruff #5295</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF013: False positives with type aliases </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5295">#5295</a>
+        opened by <a href="https://github.com/araffin">@araffin</a>
+        on 2023-06-22 10:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/araffin">@araffin</a> on 2023-06-22 10:36</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<pre><code class="language-python">from typing import Optional
+
+MaybeInt = Optional[int]
+
+
+def test(a: MaybeInt = None) -&gt; None:
+    print(a)
+</code></pre>
+<p><code>ruff test.py --select RUF</code></p>
+<pre><code>test.py:6:13: RUF013 [*] PEP 484 prohibits implicit `Optional`
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+</code></pre>
+<p>ruff version: 0.0.274</p>
+<p>found originally in https://github.com/DLR-RM/stable-baselines3.</p>
+<p>Is that intended or is that a false positive?</p>
+<p>EDIT: I think the problem comes more from the fact that RUF013 is a rule for a type checker, it will be hard to enforce for a linter</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-22 11:31</div>
+            <div class="timeline-body"><p>Thanks for opening this. This is a known issue.</p>
+<p>\cc @charliermarsh Any thoughts on how to go about solving this?</p>
+<p>A simple solution would be to keep track of these aliases and resolve them while checking. This might not work for forward references if the alias is defined after the function definition but I think that should be rare.</p>
+<p>Another option would be to check if the top level type is a builtin type or coming from the <code>typing</code> module, if not then we can ignore flagging such instances. This would lead to false negatives but they're better than false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2023-06-22 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-22 13:05</div>
+            <div class="timeline-body"><p>@dhruvmanila - Maybe we refine RUF013 so that it ignores any types we can't resolve? Like it only operates on primitives and things in the typing module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-22 13:09</div>
+            <div class="timeline-body"><p>Sorry, I'm realizing that was your second suggestion. I think we should just do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-22 13:11</div>
+            <div class="timeline-body"><p>So, for nested types we would just consider it as <code>Any</code>, thus not flagging it.</p>
+<p>A false negative example which I think we should document it in the rule:</p>
+<pre><code class="language-python">Text = str | byte
+
+
+def f(arg: Text = None):
+	pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2023-06-22 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-22 13:13</div>
+            <div class="timeline-body"><p>Yeah, we should continue to flag:</p>
+<pre><code class="language-python">def f(arg: Union[str, byte] = None): ...
+</code></pre>
+<p>But not:</p>
+<pre><code class="language-python">Text = str | byte
+
+
+def f(arg: Text = None):
+	pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-22 13:13</div>
+            <div class="timeline-body"><p>(Aliases within the same file, I think we can fix, if we want... Aliases across files we can't <em>yet</em> fix.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-22 14:33</div>
+            <div class="timeline-body"><p>@dhruvmanila - Do you want to work on this now and include it in today's release? Or wait till the next release? Up to you, just want to decide if I should wait for it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-22 14:35</div>
+            <div class="timeline-body"><p>Please go ahead with today's release. I'll work on it tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5344.html">astral-sh/ruff#5344</a> on 2023-06-23 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-23 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-10-18 16:59</div>
+            <div class="timeline-body"><p>Since there's no meta-issue about multi-file analysis, should this be re-open with the <code>label:multifile-analysis</code> ?</p>
+<p>Today I found 3 false-positives in typeshed using <code>logging._ExcInfoType</code> and <code>sys._ExitCode</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

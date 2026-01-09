@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[tool.uv.build-backend.data] directory silently not included - astral-sh/uv #15655</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[tool.uv.build-backend.data] directory silently not included</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15655">#15655</a>
+        opened by <a href="https://github.com/BartSchuurmans">@BartSchuurmans</a>
+        on 2025-09-03 12:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BartSchuurmans">@BartSchuurmans</a> on 2025-09-03 12:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm trying to include a <code>.streamlit</code> directory in my source distribution and wheel. It lives next to my <code>pyproject.toml</code>.</p>
+<p>Partial <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.uv]
+package = true
+
+[tool.uv.build-backend.data]
+data = &quot;.streamlit&quot;
+</code></pre>
+<p>However, when running <code>uv build</code>, this directory does not appear in the output, and is not included in the source distribution or wheel.</p>
+<p>Am I misunderstanding the documentation or is this a bug?</p>
+<p>Documentation references:</p>
+<ul>
+<li>https://docs.astral.sh/uv/concepts/build-backend/#file-inclusion-and-exclusion</li>
+<li>https://docs.astral.sh/uv/reference/settings/#build-backend_data</li>
+</ul>
+<h3>Platform</h3>
+<p>Darwin 24.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.14 (Homebrew 2025-08-28)</p>
+<h3>Python version</h3>
+<p>Python 3.12.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BartSchuurmans on 2025-09-03 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2025-09-03 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">build-backend</span> added by @konstin on 2025-09-03 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-09-08 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-09-08 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-08 13:56</div>
+            <div class="timeline-body"><p>I can't reproduce, the example below includes the directory for me, can you share a minimal reproducible example?</p>
+<pre><code class="language-toml">[project]
+name = &quot;debug&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12.0&quot;
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.15,&lt;0.9.0&quot;]
+build-backend = &quot;uv_build&quot;
+
+[tool.uv.build-backend.data]
+data = &quot;.streamlit&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2025-09-08 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BartSchuurmans">@BartSchuurmans</a> on 2025-09-08 14:11</div>
+            <div class="timeline-body"><p>@konstin Your example works correctly here; the difference is the inclusion of the <code>[build-system]</code> table. My <code>pyproject.toml</code> does not specify a build system, and I thought uv would then default to &quot;uv's build backend&quot;, but the build output is clearly different between my and your example.</p>
+<p>Which build backend is used when you don't specify one? Should I always specify one? Does <code>[tool.uv.build-backend.data]</code> only apply to a specifiy backend?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-08 14:13</div>
+            <div class="timeline-body"><p>By default, setuptools is used. That's fallback encoded in PEP 517 for the time before <code>pyproject.toml</code> <code>[build-system]</code> tables, so projects with a <code>setup.py</code> continue to work. To use the uv build backend, you need add a <code>[build-system]</code> (https://docs.astral.sh/uv/concepts/build-backend/#using-the-uv-build-backend).</p>
+<p>We recommend always specifying a build backend.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2025-09-08 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-09-08 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BartSchuurmans">@BartSchuurmans</a> on 2025-09-08 14:17</div>
+            <div class="timeline-body"><p>Thanks for your help @konstin!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BartSchuurmans on 2025-09-08 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15740.html">astral-sh/uv#15740</a> on 2025-09-08 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15750.html">astral-sh/uv#15750</a> on 2025-09-09 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15765.html">astral-sh/uv#15765</a> on 2025-09-10 08:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

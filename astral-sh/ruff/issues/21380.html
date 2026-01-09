@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow one empty newline after class header - astral-sh/ruff #21380</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow one empty newline after class header</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21380">#21380</a>
+        opened by <a href="https://github.com/laymonage">@laymonage</a>
+        on 2025-11-11 14:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/laymonage">@laymonage</a> on 2025-11-11 14:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ref: #8566, https://github.com/astral-sh/ruff/issues/9745#issuecomment-2023056948, https://github.com/astral-sh/ruff/issues/9745#issuecomment-2662810468, https://github.com/astral-sh/ruff/issues/9745#issuecomment-2695173158, https://github.com/astral-sh/ruff/issues/9745#issuecomment-2876498730.</p>
+<h2>Description</h2>
+<p>Black's 2022 style removes empty newlines after code block open. However, as of the <a href="https://black.readthedocs.io/en/stable/change_log.html#id52">2024 style</a>, it now allows one empty first line at the beginning of most blocks (https://github.com/psf/black/pull/3967).</p>
+<p>For class headers, Ruff still follows the 2022 style, producing the following result:</p>
+<h3>Input file</h3>
+<pre><code class="language-py">class Migration(migrations.Migration):
+
+    dependencies = []
+</code></pre>
+<h3>black</h3>
+<pre><code class="language-py">class Migration(migrations.Migration):
+
+    dependencies = []
+</code></pre>
+<h3>ruff</h3>
+<pre><code class="language-py">class Migration(migrations.Migration):
+    dependencies = []
+</code></pre>
+<h2>Use case</h2>
+<p>For us, this is a blocker when migrating from black to ruff for formatting Django migrations, as it would produce noisy diffs that are otherwise avoidable.</p>
+<p>As of #21110 (v0.14.4), one empty newline is now allowed after function headers. I'd like to make a case for class headers as well.</p>
+<p>Thanks for all the great work!</p>
+<h3>Version</h3>
+<p>0.14.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Allow newline after class header" to "Allow one empty newline after class header" by @laymonage on 2025-11-11 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20482.html">astral-sh/ruff#20482</a> on 2025-11-11 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-11-11 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @MichaReiser on 2025-11-11 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-11 15:33</div>
+            <div class="timeline-body"><p>It seems the main issue is that Django migration insists on the empty line. Do you know why Django migration adds the empty line? Is this something inherent to the Django code style? Has it previously been discussed to remove the empty line?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laymonage">@laymonage</a> on 2025-11-11 15:55</div>
+            <div class="timeline-body"><p>I'm guessing it's due to <a href="https://github.com/django/django/blob/2b0f24e6223bf7e294fba63741f58eb7b0bf49ff/django/db/migrations/writer.py#L315">the way the file template is written</a>. There are 0-4 attributes added to the class depending on the migration detector, and the template is written in a way such that there's always an empty line in between the attributes (and the class header).</p>
+<p>Even if that were to change, that would only affect new migrations. My main concern is when switching from black to ruff, we'll end up producing noisy diffs for the existing migrations. For new migrations, if we already adopted ruff, we could just reformat them before committing the code.</p>
+<p>I think what I'd really appreciate is a clear signal from the ruff team whether this is something that will be supported or not. If it is, we'll gladly wait until a new version is released before enabling ruff formatting for the migration files. If it isn't, that's fine, we just have to bite the bullet – reformat the existing migrations and move on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-11 16:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I think what I'd really appreciate is a clear signal from the ruff team whether this is something that will be supported or not. If it is, we'll gladly wait until a new version is released before enabling ruff formatting for the migration files. If it isn't, that's fine, we just have to bite the bullet – reformat the existing migrations and move on.</p>
+</blockquote>
+<p>For me, special casing the formatter because of a single tool and only to reduce the files that were introduced by the formatter seems not a strong enough motivation, especially as it leads to less consistent formatting overall. It's also very likely that we'll run into a similar issue with any future style guide change.</p>
+<p>However, I'm open to allowing the empty line if motivated, e.g. by improved readability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laymonage">@laymonage</a> on 2025-11-11 16:38</div>
+            <div class="timeline-body"><p>That's fair, thanks! I was under the impression that ruff aims to remove <a href="https://docs.astral.sh/ruff/formatter/black/#blank-lines-at-the-start-of-a-block">the entirety of this particular deviation from Black</a>, but if that's not the case, I can see how you'd like to see readability improvements made possible by the change.</p>
+<p>Other than the black -&gt; ruff migration pain point for Django migrations (pun intended), I don't have any strong feelings for this, so I can't give an example.</p>
+<p>I guess there was a strong case to be made for functions and methods, since not having the empty line can hurt readability when there are type annotations. There isn't any for classes, and newline is already preserved if there is a docstring or comment.</p>
+<p>I'll leave this open in case other people would chime in since the previous issue was closed, but feel free to close it if there's no activity or if you'd rather have it closed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pekkaklarck">@pekkaklarck</a> on 2025-12-17 10:30</div>
+            <div class="timeline-body"><p>For our project the removal of the empty line between the class definition and the first method is the only reason to keep using Black. There are various reasons why we prefer</p>
+<pre><code class="language-python">class Example:
+
+    def method(self);
+        ...
+
+    def m2(self):
+        ...
+</code></pre>
+<p>over</p>
+<pre><code class="language-python">class Example:
+    def method(self);
+        ...
+
+    def m2(self):
+        ...
+</code></pre>
+<p>and I list the most important ones here:</p>
+<ol>
+<li><p>Such change creates unnecessary churn that is annoying especially in bigger projects.</p>
+</li>
+<li><p>It's inconsistent not to have an empty line before the first method in the above case, but to have one if the class has a docstring or attributes.</p>
+</li>
+<li><p>PEP 8 <a href="https://peps.python.org/pep-0008/#blank-lines">explicitly states</a> this:</p>
+<blockquote>
+<p>Method definitions inside a class are <em>surrounded</em> by a single blank line.</p>
+</blockquote>
+<p>Removing the empty line is a clear violation of this rule.</p>
+</li>
+</ol>
+<p>In my opinion auto-formatters should actually <em>add</em> an empty line before all method definitions if there isn't one. I understand such a change would cause code churn, though, and preserving empty lines, but not adding them, like Black does is probably a better idea. Ultimately I'd prefer things like this to be configurable, but that's a totally different discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-12-17 18:43</div>
+            <div class="timeline-body"><p>FWIW Ruff will preserve an empty line if the class definition contains a docstring like this:</p>
+<pre><code class="language-py">class Foo:
+	&quot;&quot;&quot;something&quot;&quot;&quot;
+
+	def foo(self):
+		pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/22237.html">astral-sh/ruff#22237</a> on 2025-12-29 02:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

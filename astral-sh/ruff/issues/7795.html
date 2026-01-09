@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug: RUF015 leading to autofix error (`IndexError` gets changed to `StopIteration`) - astral-sh/ruff #7795</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug: RUF015 leading to autofix error (`IndexError` gets changed to `StopIteration`)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7795">#7795</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2023-10-04 00:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-10-04 00:43</div>
+            <div class="timeline-body"><p>I am using <code>ruff==0.0.292</code>:</p>
+<pre><code class="language-python"># a.py
+
+empty_tuple = tuple()
+try:
+    hi = list(empty_tuple)[0]
+except IndexError:  # Works
+    pass
+</code></pre>
+<p>Running <code>ruff --isolated --select=RUF015 a.py</code> it throws a <code>RUF015</code> on line 3.  Autofixing it with <code>ruff --fix --select=RUF015 a.py</code></p>
+<pre><code>empty_tuple = tuple()
+try:
+    hi = next(iter(empty_tuple))
+except IndexError:  # I fail now, because the Exception thrown was a StopIteration
+    pass
+</code></pre>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-04 00:46</div>
+            <div class="timeline-body"><p>I believe this is documented in the rule documentation for <code>RUF015</code>: https://docs.astral.sh/ruff/rules/unnecessary-iterable-allocation-for-first-element/</p>
+<blockquote>
+<p>Note that migrating from list(...)[0] to next(iter(...)) can change the behavior of your program in two ways:</p>
+</blockquote>
+<blockquote>
+<p>First, list(...) will eagerly evaluate the entire collection, while next(iter(...)) will only evaluate the first element. As such, any side effects that occur during iteration will be delayed.</p>
+</blockquote>
+<blockquote>
+<p>Second, list(...)[0] will raise IndexError if the collection is empty, while next(iter(...)) will raise StopIteration.</p>
+</blockquote>
+<p>It's also a suggested rather than an automatic fix, so it will require opt-in soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-10-04 00:49</div>
+            <div class="timeline-body"><p>Shoot, I jumped the gun on this report, I should have read the docs on this.  Is there any way we can preserve autofix, just not when inside a <code>try-except</code> block?</p>
+<p>Also, feel free to close this out, as it seems you've already thought this through</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-04 04:27</div>
+            <div class="timeline-body"><p>No worries at all. It'll still be possible to fix -- you'll just need to pass a different flag (like <code>--fix-suggested</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-04 04:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-10-18 16:13</div>
+            <div class="timeline-body"><p>https://astral.sh/blog/ruff-v0.1.0#respecting-fix-safety</p>
+<p>Looks like this example got used here, love it! 🚀 👍</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

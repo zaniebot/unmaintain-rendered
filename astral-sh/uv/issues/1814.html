@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do not add `--upgrade` flag to generated output file - astral-sh/uv #1814</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Do not add `--upgrade` flag to generated output file</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1814">#1814</a>
+        opened by <a href="https://github.com/hofrob">@hofrob</a>
+        on 2024-02-21 14:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hofrob">@hofrob</a> on 2024-02-21 14:46</div>
+            <div class="timeline-body"><p><code>uv</code> and <code>pip-tools</code> both add the full command to the generated output file. When running an upgrade command, <code>uv</code> will add <code>--upgrade</code> too while <code>pip-tools</code> will not.</p>
+<p>This flag in particular should be ignored when generating the output file I think. My reasoning is, I'm running <code>pre-commit</code> checks that will only check if the generated file from <code>pyproject.toml</code> is consistent with the <code>requirements.txt</code> in the repo. Since the command does not use <code>--upgrade</code> it will detect a change in the generated output after an upgrade.</p>
+<p>Or if I do not execute my hooks, the CI will complain because the files were changed by doing <code>uv pip compile</code>.</p>
+<h1><code>pip-tools</code></h1>
+<pre><code>pip-compile --upgrade
+pip-compile
+</code></pre>
+<p>Both commands will generate the same output file.</p>
+<h1><code>uv</code></h1>
+<pre><code>uv pip compile pyproject.toml --upgrade --output-file requirements.txt
+uv pip compile pyproject.toml --output-file requirements.txt
+</code></pre>
+<p>The generated outputs will be different: the first one will contain the <code>--upgrade</code> flag, the second one won't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-21 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-02-21 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2024-02-21 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hofrob">@hofrob</a> on 2024-02-22 10:56</div>
+            <div class="timeline-body"><p>Another one that's ignored by <code>pip-tools</code>: <code>--quiet</code></p>
+<p>Additionally, this is nothing too serious, but I thought I'd mention it: From what I've seen <code>pip-tools</code> also re-orders the CLI args before creating the output file. So when changing order of the CLI params in our scripts, the generated file is still the same.</p>
+<p>I tested this by running <code>pip-compile --strip-extras --quiet --extra-index-url=https://pypi.example.net/...</code>. The command in the <code>requirements.txt</code> will look like this: <code>pip-compile --extra-index-url=https://pypi.example.net/... --strip-extras</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1873.html">astral-sh/uv#1873</a> on 2024-02-22 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 16:28</div>
+            <div class="timeline-body"><p>Agreed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-23 19:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

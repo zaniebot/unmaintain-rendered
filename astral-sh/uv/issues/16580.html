@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centralize common python deps to save storage - astral-sh/uv #16580</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Centralize common python deps to save storage</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16580">#16580</a>
+        opened by <a href="https://github.com/user1823">@user1823</a>
+        on 2025-11-03 14:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/user1823">@user1823</a> on 2025-11-03 14:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Currently, uv saves all the dependencies of the project into the venv folder. However, many dependencies (e.g. pyqt, numpy, scipy) are so common that they are used by many projects. As a result, I end up having multiple copies of the same dependency in multiple venvs, causing large storage consumption.</p>
+<p>So, just like uv uses the same Python interpreter to run all these projects, it can also store some of these deps in a central location and create symlinks in the venv folder.</p>
+<p>For example, apt and brew can install some of these deps system-wide so that all projects can share them.
+apt:</p>
+<pre><code>python3-numpy
+python3-scipy
+</code></pre>
+<p>Homebrew:</p>
+<pre><code>numpy
+scipy
+</code></pre>
+<p>Just to note, when I read &quot;Disk-space efficient, with a global cache for dependency deduplication.&quot; in the highlights section of uv's README, I really expected uv to do what I requested above.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @user1823 on 2025-11-03 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-03 16:33</div>
+            <div class="timeline-body"><blockquote>
+<p>So, just like uv uses the same Python interpreter to run all these projects, it can also store some of these deps in a central location and create symlinks in the venv folder.</p>
+</blockquote>
+<p>We actually do this already. We download your dependencies once, then use hardlinks or copy-on-write (reflinks) to install them into your various virtual environments. It might &quot;look like&quot; we're installing multiple copies if you use <code>du</code> or similar, but they're backed by the same contents on-disk.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @charliermarsh on 2025-11-03 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-11-03 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/user1823">@user1823</a> on 2025-11-03 16:55</div>
+            <div class="timeline-body"><blockquote>
+<p>It might &quot;look like&quot; we're installing multiple copies if you use du or similar, but they're backed by the same contents on-disk.</p>
+</blockquote>
+<p>That was interesting to know. Can you suggest something other than du so that I can verify this on my own?</p>
+<p>Edit:
+I think that this verifies your statement.</p>
+<p>The size reported by <code>du -sh ~/.cache/uv</code> is only slightly larger than that reported by <code>du -sh ~/.cache/uv/archive-v0</code> and much lesser than the sum of <code>du -sh ~/.cache/uv/archive-v0</code> and <code>du -sh ~/.cache/uv/environments-v2</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @user1823 on 2025-11-03 16:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

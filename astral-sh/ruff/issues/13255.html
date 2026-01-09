@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821 false positive when using ExceptionGroup - astral-sh/ruff #13255</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821 false positive when using ExceptionGroup</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13255">#13255</a>
+        opened by <a href="https://github.com/iurii-skorniakov">@iurii-skorniakov</a>
+        on 2024-09-05 16:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/iurii-skorniakov">@iurii-skorniakov</a> on 2024-09-05 16:57</div>
+            <div class="timeline-body"><p>version:  ruff 0.6.4, Python 3.11.6
+command: <code>ruff check --isolated example.py</code></p>
+<p>when using built-in <code>ExceptionGroup</code></p>
+<pre><code class="language-python">class MyGroup(ExceptionGroup):
+    def derive(self, excs):
+        return MyGroup(self.message, excs)
+</code></pre>
+<p>ruff raises F821</p>
+<pre><code>example.py:1:15: F821 Undefined name `ExceptionGroup`
+  |
+1 | class MyGroup(ExceptionGroup):
+  |               ^^^^^^^^^^^^^^ F821
+2 |     def derive(self, excs):
+3 |         return MyGroup(self.message, excs)
+  |
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g3rv4">@g3rv4</a> on 2024-09-05 18:58</div>
+            <div class="timeline-body"><p>seems like a regression from https://github.com/astral-sh/ruff/pull/3167</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 19:02</div>
+            <div class="timeline-body"><p>Do you have a minimum Python version set, in your <code>pyproject.toml</code> or via <code>--target-version</code>? Otherwise, Ruff defaults to Python 3.8, and <code>ExceptionGroup</code> doesn't exist in that version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @dhruvmanila on 2024-09-06 05:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bonastreyair">@bonastreyair</a> on 2024-09-06 06:38</div>
+            <div class="timeline-body"><p>maybe it is another issue but for me it fails finding <code>anext</code> when using python3.11
+it was working fine with previous version but now it fails because of that</p>
+<p>I think the problem comes from here: https://github.com/astral-sh/ruff/pull/13172/files/de081b67c3072829c21cf8176a96baef64793ba7#diff-a5297ef4a78229f14881c57e472a6a79dc17e6a5a9244a676dfa6276d10f0dab</p>
+<p><code>anext</code> was before and now it is not present in that same list: https://github.com/astral-sh/ruff/pull/13172/files/de081b67c3072829c21cf8176a96baef64793ba7#r1746582057</p>
+<p>related PR: #13172</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-06 06:47</div>
+            <div class="timeline-body"><p>@bonastreyair could you share your configuration? <code>anext</code> is still in the builtins list but only when targeting Py310 or newer.</p>
+<ul>
+<li><a href="https://play.ruff.rs/c16cf647-56f5-49b2-93a8-dc9ff83c4e5d">Py38</a> -&gt; builtin doesn't exist</li>
+<li><a href="https://play.ruff.rs/1252d490-e72e-48f4-a29d-8560b5fc1f34">Py311</a> -&gt; no error</li>
+</ul>
+<p>You may need to make a whitespace change for the errors to show up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bartfeenstra">@bartfeenstra</a> on 2024-09-06 07:24</div>
+            <div class="timeline-body"><p>I started having similar problems, also with anext() and aiter().</p>
+<p>Project.toml: https://github.com/bartfeenstra/betty/blob/0.4.x/pyproject.toml
+Ruff failures: https://github.com/bartfeenstra/betty/actions/runs/10734022531/job/29768422099</p>
+<p>Let me know if you need more details :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iurii-skorniakov">@iurii-skorniakov</a> on 2024-09-06 07:26</div>
+            <div class="timeline-body"><p>Found my problem.
+I had incorrect configuration in subdirectory, which didn't extend root config.
+With correct configuration it works well
+Thank you for your help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @iurii-skorniakov on 2024-09-06 07:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @dhruvmanila on 2024-09-06 08:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bartfeenstra/betty/pulls/1934.html">bartfeenstra/betty#1934</a> on 2024-09-06 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bartfeenstra">@bartfeenstra</a> on 2024-09-06 08:50</div>
+            <div class="timeline-body"><p>Can we reopen this? I still have this problem, with a single root configuration file:</p>
+<pre><code>[lint]
+extend-select = [
+    'A',
+    'B',
+    'C4',
+    'D',
+    'F',
+    'INT',
+    'PT',
+    'PTH',
+    'SIM',
+    'SLOT',
+    'T20',
+    'TCH',
+]
+ignore = [
+    'D105',
+    'D107',
+    'D200',
+    'D203',
+    'D212',
+    'D401',
+    'F501',
+    'PTH123',
+    'SIM103',
+]
+
+[lint.per-file-ignores]
+&quot;betty/tests/*&quot; = [
+    'D100',
+    'D101',
+    'D102',
+    'D103',
+    'D104',
+    'D106',
+]
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-06 09:14</div>
+            <div class="timeline-body"><p>The fix is to specify the <code>requires-python</code> setting to a version that supports <code>ExceptionGroup</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bartfeenstra">@bartfeenstra</a> on 2024-09-06 09:29</div>
+            <div class="timeline-body"><p><code>requires-python = '~= 3.11'</code> in https://github.com/bartfeenstra/betty/blob/0.4.x/pyproject.toml, yet Ruff fails on ExceptionGroup, aiter, anext... I tried a simpler constraint of <code>requires-python = '&gt;= 3.11'</code> but that did not seem to change Ruff's output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-06 09:41</div>
+            <div class="timeline-body"><p>@bartfeenstra I don't think ruff picks up the <code>requires-python</code> constraint if you also have a <code>.ruff.toml</code> because the <code>.ruff.toml</code> takes precedence. You have to explicitly set the <a href="https://docs.astral.sh/ruff/settings/#target-version"><code>target-version</code></a> in the ruff.toml. The alternative is to move the ruff configuration into the <code>pyroject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bartfeenstra">@bartfeenstra</a> on 2024-09-06 10:55</div>
+            <div class="timeline-body"><p>That makes sense! I'll give that a try shortly. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bartfeenstra/betty/issues/1935.html">bartfeenstra/betty#1935</a> on 2024-09-06 10:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FR: Dynamic dependencies and optional dependencies - astral-sh/uv #6422</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FR: Dynamic dependencies and optional dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/6422">#6422</a>
+        opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a>
+        on 2024-08-22 11:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-22 11:12</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Greetings <code>uv</code> team and congratulations on the release of <code>0.3</code>!</p>
+<p>I would like to present a rather vexing issue when it comes to project management.</p>
+<p>As you may know, Anaconda has a significant presence in the realm of data science and scientific python usage. Currently, <code>conda</code> lags behind current PEP standards and does not support reading dependencies from <code>pyproject.toml</code>. It is typically used by orgs that deploy to airgapped environments since it comes bundled with Anaconda alongside a number of other popular packages such as <code>pytorch</code>.</p>
+<p>These orgs vastly prefer to use modern packaging tools like <code>uv</code> in non-airgapped development environments, but this requires carefully maintaining project dependencies for compatibility with Anaconda/<code>conda</code> and avoidance of adding new runtime dependencies to the airgapped deployment environments.</p>
+<p>One such solution to avoid duplication of dependencies between conda <code>environment.yml</code> files and those defined <code>pyproject.toml</code> is by utilizing <code>requirements.txt</code> in conjunction with dynamic <code>project.dependencies</code> (as seen in <a href="https://stackoverflow.com/questions/76722680/what-is-the-best-way-to-combine-conda-with-standard-python-packaging-tools-e-g">Drphoton’s answer here</a>).</p>
+<p>This allows users to have a project layout like so:</p>
+<pre><code>Project/
+|-- src/
+|   |-- __init__.py
+|   |-- main.py
+|
+|-- pyproject.toml
+|-- requirements.txt
+|-- requirements-dev.txt
+</code></pre>
+<p>and a <code>pyproject.toml</code> with dynamic dependency fields:</p>
+<pre><code class="language-toml">[project]
+name = &quot;myproject&quot;
+# ...
+dynamic = [&quot;dependencies&quot;, &quot;optional-dependencies&quot;]
+
+[tool.setuptools.dynamic]
+dependencies = { file = [&quot;requirements.txt&quot;] }
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = { file = [&quot;requirements-dev.txt&quot;] }
+</code></pre>
+<p>This setup allows users to run <code>conda</code> in airgapped environments like so:</p>
+<pre><code>conda create -n ENVNAME &quot;python&gt;=3.12&quot; --file requirements.txt
+</code></pre>
+<p>while also letting them use <code>uv pip</code> in non-airgapped environments:</p>
+<p><code>uv pip install -e .</code></p>
+<p>This approach places a dependency on <code>setuptools</code> to read the dynamic dependencies, and is admittedly just a stop-gap solution to make up for conda’s lack of <code>pyproject.toml</code> support.</p>
+<p>It would be nice if <code>uv</code> supported reading dynamic dependencies such that commands like <code>uv sync</code> would work if dependencies were defined in other files (such as split being across numerous <code>requirements.txt</code>).</p>
+<p>(Eagerly waiting to see if Astral ever offers a product similar to Anaconda that provides a number of high quality MIT-licensed python packages/python interpreter/uv/ruff/etc).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6007.html">astral-sh/uv#6007</a> on 2024-08-22 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Feat: Dynamic dependencies and optional dependencies" to "FR: Dynamic dependencies and optional dependencies" by @chrisrodrigue on 2024-08-22 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2024-10-11 11:14</div>
+            <div class="timeline-body"><p>At least better for me than the current situation is having a warning / error when trying to use dynamic dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8949.html">astral-sh/uv#8949</a> on 2024-12-07 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../edgarrmondragon/hatch-pinned-extra/issues/31.html">edgarrmondragon/hatch-pinned-extra#31</a> on 2025-10-15 07:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

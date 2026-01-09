@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>python3.13.0 issue -- `ModuleNotFoundError: No module named 'json'` - astral-sh/uv #13902</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>python3.13.0 issue -- `ModuleNotFoundError: No module named 'json'`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13902">#13902</a>
+        opened by <a href="https://github.com/mcint">@mcint</a>
+        on 2025-06-08 20:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mcint">@mcint</a> on 2025-06-08 20:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Affecting only <code>python3.13</code>-based projects, (not 3.12, 3.11)</p>
+<p>even the <code>uv run python --version</code> command fails with the same error</p>
+<pre><code>0$ uv run python --version                                                                                                                 error: Querying Python at `/home/user/dev/proj/.venv/bin/python3` failed with exit status exit sta tus: 1                                                                                                                                                                                                                                                                                  [stderr]                                                                                                                                    Traceback (most recent call last):                                                                                                            File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;                                                                                                          import sys; sys.path = [&quot;/home/user/.cache/uv/.tmpr6ivOR&quot;] + sys.path; from python.get_interpreter_info import main; main()                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                     File &quot;/home/user/.cache/uv/.tmpr6ivOR/python/get_interpreter_info.py&quot;, line 9, in &lt;module&gt;                                                  import json                                                                                                                             ModuleNotFoundError: No module named 'json'
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 6.5.0-45-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.12</p>
+<h3>Python version</h3>
+<p>Python 3.13.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @mcint on 2025-06-08 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mcint">@mcint</a> on 2025-06-08 21:23</div>
+            <div class="timeline-body"><p>It appears I've fixed this issue with an update to 3.13 patch version installed, <code>3.13.0</code> to <code>3.13.4</code>. <code>uv python install 3.13</code>.</p>
+<hr />
+<p>Initially, this presented as an issue with the second invocation of <code>uv add</code> in a new virtual environment, failing to load the interpreter for the python environment just materialized. And other uses of <code>uv run</code> in a project with venv.</p>
+<p>I still don't understand what differs, between 3.13.0 and 3.13.4 in this context. I notice that  uv managed python 3.13 used <code>/tmp/user/1000/.tmpXXXXX/</code> path when invoked with <code>--no-cache</code>, but failed with the same error as the base interpreter in opening <code>/home/[user]/.cache/uv/.tmpXXXXX/python/get_interpreter_info.py</code>. Perhaps 3.13 didn't support or included an unexpected change in sys.path use or module import handling.</p>
+<hr />
+<p>In the future, how can I better debug this?  Web search summarizing llms are offering apparently made up <code>UV_DEBUG=</code> and <code>UV_LOG_LEVEL=</code>, which looks especially like hallucinations from common python idioms.</p>
+<p>Real uv options include <code>RUST_LOG=uv=debug</code> and <code>RUST_LOG=trace</code>, or <code>--verbose</code> cli flag, and intensifier <code>UV_LOG_CONTEXT=...</code>, from https://docs.astral.sh/uv/reference/environment/.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mcint on 2025-06-08 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mcint">@mcint</a> on 2025-06-08 21:45</div>
+            <div class="timeline-body"><p>Reproduction still works, specifying patch version, succeeds on first run, fails on second.</p>
+<ul>
+<li><code>$ uv run --python 3.13.0 python -c 'import sys; print(sys.path)'</code></li>
+</ul>
+<p>After running with <code>--python 3.13.0</code> successfully all subsequent attempts to use any <code>3.13.x</code> versions will fail until you remove the venv and allow another version to be used.</p>
+<p>With logging, equivalent:</p>
+<ul>
+<li><code>$ RUST_LOG=uv=debug uv run --python 3.13.0 python -c 'import sys; print(sys.path)'</code></li>
+<li><code>$ uv --verbose run --python 3.13.0 python -c 'import sys; print(sys.path)'</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-10 10:50</div>
+            <div class="timeline-body"><p>Is there a specific reason for using 3.13.0? We only build and support the latest patch version of a Python minor version, so we recommend install the latest patch version for this kind of problem, which is interpreter-specific, not uv-specific.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

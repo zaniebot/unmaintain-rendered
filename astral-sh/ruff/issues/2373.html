@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A way to list per-file-ignore rules for debugging - astral-sh/ruff #2373</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>A way to list per-file-ignore rules for debugging</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2373">#2373</a>
+        opened by <a href="https://github.com/Alphasite">@Alphasite</a>
+        on 2023-01-31 02:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Alphasite">@Alphasite</a> on 2023-01-31 02:18</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+<p>Hi!</p>
+<p>Thank you for building this fantastic tool, I had a small request, or guidance on how to contribute a feature my self, is there a way to get debug output for the <code>per-file-ignores</code> rules, so i can understand exactly what the created globs were.</p>
+<p>(for background: i couldn't figure out why no variant of <code>**/test/**/*</code> wasn't working and it turns out that per-file-ignores are calculated relative to the extended <code>ruff.toml</code> file, which was an issue in my case as my config file was in a sibling folder, rather than the parent, so the pattern would never be able to match files in the current directory).</p>
+<p>I ended up adding a hack to debug this and finally figured out the issue, but it would be helpful if there was a verbosity level which printed this information:</p>
+<pre><code>        settings.per_file_ignores
+            .iter()
+            .for_each(|(absolute, basename, _)| {
+                println!(&quot;ignoring: abs: {} basename: {}&quot;, absolute.glob(), basename.glob())
+            });
+</code></pre>
+<p>example output:</p>
+<pre><code>ignoring: abs: /Users/me/Workspace/gitlab.eng.comp.com/something/server/**/test/**/* basename: **/test/**/*
+...
+</code></pre>
+<p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 02:31</div>
+            <div class="timeline-body"><p>Let me see what we include under the various CLI flags...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 02:32</div>
+            <div class="timeline-body"><p>I'll add this to the <code>-v</code> logging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 02:34</div>
+            <div class="timeline-body"><p>In the meantime, though, if you just want to see the resolved regexes, you can do <code>ruff foo --show-settings</code>. Look at the <code>per_file_ignores</code> section, and take a look at the <code>re</code>. (All filenames are converted to absolute, so those are what get matched against the regexes.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-31 02:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alphasite">@Alphasite</a> on 2023-01-31 02:45</div>
+            <div class="timeline-body"><p>Oh, i hadn't realized those were in there, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 02:53</div>
+            <div class="timeline-body"><p>No worries! It could be nice if we <em>also</em> told you when a pattern matched a file. We already do that for <code>exclude</code> (if you set <code>--verbose</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2376.html">astral-sh/ruff#2376</a> on 2023-01-31 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-31 04:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

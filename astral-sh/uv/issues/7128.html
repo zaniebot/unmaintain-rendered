@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caching issue using a self-hosted runner in a GitHub action - astral-sh/uv #7128</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Caching issue using a self-hosted runner in a GitHub action</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7128">#7128</a>
+        opened by <a href="https://github.com/mobidyc">@mobidyc</a>
+        on 2024-09-06 16:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mobidyc">@mobidyc</a> on 2024-09-06 16:04</div>
+            <div class="timeline-body"><p>Very strange behavior,
+resolved using the <code>--no-cache</code> flag for both <code>uv pip compile</code> and <code>sync</code>.</p>
+<p>The problem is that I do not understand why I do need the <code>--no-cache</code> flag
+It happens only in my GitHub self-hosted runner using a homemade docker image <em>mobidyc/github-runner-custom:latest</em></p>
+<p>Note: Manually running the docker image does not trigger the issue.
+Note 2: The requirements.txt file triggers no issue using the standard <code>pip install -r</code> command</p>
+<p>uv version: <code>0.4.4</code>
+platform: <code>linux x86</code></p>
+<p>env:
+<code>UV_SYSTEM_PYTHON=1</code></p>
+<p>both the following commands trigger the same error:</p>
+<pre><code class="language-shell">uv pip compile --python 3.10 /requirements.txt &gt; /tmp/pip_reqs.txt
+uv pip sync --python 3.10 /tmp/pip_reqs.txt
+</code></pre>
+<p>error:</p>
+<pre><code class="language-shell">error: Failed to download and build `sentence-transformers==2.2.2`
+  Caused by: /github/home/.cache/uv/built-wheels-v3/pypi/sentence-transformers/2.2.2/p4CnbxHIutHC6oUx_C88w/sentence-transformers-2.2.2.tar.gz does not appear to be a Python project, as neither `pyproject.toml` nor `setup.py` is present in the directory
+Error: Process completed with exit code 2.
+</code></pre>
+<p>Please find attached a debug log
+<a href="https://github.com/user-attachments/files/16910388/uv-debug.log">uv-debug.log</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mobidyc">@mobidyc</a> on 2024-09-06 17:57</div>
+            <div class="timeline-body"><p>I found that /github/home/ was a mount binding with certainly a corrupted  /github/home/.cache/uv/built-wheels-v3/pypi/sentence-transformers/2.2.2/p4CnbxHIutHC6oUx_C88w/sentence-transformers-2.2.2.tar.gz file.</p>
+<p>I was sure that the Github container was a brand new instance at each run ....
+Sorry for the noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mobidyc on 2024-09-06 17:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

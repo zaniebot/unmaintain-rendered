@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implicit post release version/name splitting not splitting correctly - astral-sh/uv #7155</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implicit post release version/name splitting not splitting correctly</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7155">#7155</a>
+        opened by <a href="https://github.com/notenti">@notenti</a>
+        on 2024-09-07 03:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/notenti">@notenti</a> on 2024-09-07 03:22</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<h2>Summary</h2>
+<p><code>uv</code> doesn't appear to support <a href="https://peps.python.org/pep-0440/#implicit-post-releases">implicit post releases</a> (e.g <code>1.2.3-1</code> does not work, whereas <code>1.2.3.post1</code> does). I poked around the source a little and found that when the <code>version</code> preceding <code>.dist_info</code> has an implicit post release specifier, the <code>rstrip_once</code> call in <a href="https://github.com/astral-sh/uv/blob/22c0be6664ea7b1a4bb0c24f274b81e8f4cce98e/crates/install-wheel-rs/src/metadata.rs#L161-L165">this block</a> improperly splits the string, leading to the following error message:</p>
+<pre><code class="language-shell">❯ uv pip install aardvark-py==5.40
+  × No solution found when resolving dependencies:
+  ╰─▶ Because aardvark-py==5.40 has an invalid package format and you require aardvark-py==5.40, we can conclude that your requirements are unsatisfiable.
+
+      hint: The structure of aardvark-py==5.40 was invalid:
+        The .dist-info directory aardvark_py-5.40-1 does not start with the normalized package name: aardvark-py
+</code></pre>
+<h2>Recreate</h2>
+<pre><code class="language-shell">❯ uv venv --python-preference system --seed
+Using Python 3.8.13 interpreter at: /Users/notenti/.pyenv/versions/3.8.13/Library/Frameworks/Python.framework/Versions/3.8/bin/python3
+Creating virtualenv with seed packages at: .venv
+ + pip==24.2
+ + setuptools==74.1.2
+ + wheel==0.44.0
+Activate with: source .venv/bin/activate
+❯ source .venv/bin/activate
+❯ uv pip install aardvark-py==5.40
+  × No solution found when resolving dependencies:
+  ╰─▶ Because aardvark-py==5.40 has an invalid package format and you require aardvark-py==5.40, we can conclude that your requirements are unsatisfiable.
+
+      hint: The structure of aardvark-py==5.40 was invalid:
+        The .dist-info directory aardvark_py-5.40-1 does not start with the normalized package name: aardvark-py
+❯ pip install aardvark-py==5.40
+Looking in indexes: https://artifactory/simple
+Collecting aardvark-py==5.40
+  Using cached https://artifactory/aardvark_py-5.40-1-py2.py3-none-macosx_10_9_x86_64.whl (54 kB)
+Installing collected packages: aardvark-py
+Successfully installed aardvark-py-5.40
+</code></pre>
+<h2>Environment</h2>
+<pre><code class="language-shell">❯ uv version
+uv 0.4.5 (42b6bfbad 2024-09-04)
+❯ arch
+i386
+❯ uname
+Darwin
+</code></pre>
+<p>I was hoping I could tackle this one myself, but after I saw that <a href="https://github.com/astral-sh/uv/blob/main/crates/pep440-rs/src/version.rs">version.rs</a> may need changes, I figure'd I'd leave it to the experts 😆</p>
+<p>EDIT: Turns out that there <em>aren't</em> changes needed to <code>version.rs</code> --only <code>metadata.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-09-07 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-07 12:16</div>
+            <div class="timeline-body"><p>I believe we do support implicit post-releases, e.g.:</p>
+<p>https://github.com/astral-sh/uv/blob/aa3297a8d7b48d69d555bbee4ce0ddf74ecb8ca0/crates/pep440-rs/src/version.rs#L3408</p>
+<p>So the issue in just in how we do the splitting there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-07 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-07 12:19</div>
+            <div class="timeline-body"><p>It should be not-too-hard to fix. We should instead try to strip the canonical name, and error if it doesn't match; then warn if the remaining segment doesn't match the version. (As opposed to splitting on <code>-</code>, then validating the two segments.) A bit closer to what pip does here:</p>
+<p>https://github.com/pypa/pip/blob/111eed14b6e9fba7c78a5ec2b7594812d17b5d2b/src/pip/_internal/utils/wheel.py#L59</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2024-09-07 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-07 12:25</div>
+            <div class="timeline-body"><p>PR welcome if you're up for it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notenti">@notenti</a> on 2024-09-07 13:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe we do support implicit post-releases, e.g.:</p>
+<p>https://github.com/astral-sh/uv/blob/aa3297a8d7b48d69d555bbee4ce0ddf74ecb8ca0/crates/pep440-rs/src/version.rs#L3408</p>
+<p>So the issue in just in how we do the splitting there.</p>
+</blockquote>
+<p>You're right, my bad! I'll update the title to better reflect the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notenti">@notenti</a> on 2024-09-07 13:29</div>
+            <div class="timeline-body"><blockquote>
+<p>PR welcome if you're up for it :)</p>
+</blockquote>
+<p>I'll give it the ole college try. Never written a lick of Rust before, so we'll see how this goes 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implicit post releases not supported" to "Implicit post release version/name splitting not splitting correctly" by @notenti on 2024-09-07 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 18:31</div>
+            <div class="timeline-body"><p>Great! Just let me know if you're not able or don't plan to get to it, so we can prioritize accordingly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notenti">@notenti</a> on 2024-09-08 21:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Great! Just let me know if you're not able or don't plan to get to it, so we can prioritize accordingly.</p>
+</blockquote>
+<p>Sorry, should have followed up earlier.</p>
+<p>I've hit a few snags with the implementation --I'll try to sum them up. The problem (as least as I've come to understand it) lies in uv's inability (right now) to determine what the &quot;package name&quot; is vs. what the &quot;version&quot; is, mostly due to how unconstrained the <code>.dist-info</code> name schema is. Because uv has elected to warn the user when the version doesn't match some form, we can't make too many assumptions about how it's structured. Additionally, because package names can take on a few different forms, it's challenging to know which <code>-</code> is the delimiter between &quot;package&quot; and &quot;version&quot;, and which one is just part of the package name, or the could-be-malformed version name.</p>
+<p>I attempted to mirror what the <a href="https://github.com/pypa/pip/blob/111eed14b6e9fba7c78a5ec2b7594812d17b5d2b/src/pip/_internal/utils/wheel.py#L38-L66">pip implementation</a> does, but that impl relies on a generic <a href="https://github.com/pypa/pip/blob/111eed14b6e9fba7c78a5ec2b7594812d17b5d2b/src/pip/_vendor/packaging/utils.py#L45">canonicalize_name</a> function that subs whichever chars it can and ignores the others. uv, on the other hand, has structs when more elegantly handle normalizing/canonicalizing names on a per-object-type basis, so there's not a great parallel to what pip's doing (that I could find --there certainly could be one somewhere 😃).</p>
+<p>I got to:</p>
+<pre><code class="language-rs">    // Like `pip`, validate that the `.dist-info` directory is prefixed with the canonical
+    // package name, but only warn if the version is not the normalized version.
+    let canonical_dist_info_prefix = PackageName::from_str(&amp;dist_info_prefix)?;
+    let Some(version) = canonical_dist_info_prefix.as_str().strip_prefix(&amp;filename.name.as_dist_info_name().to_string()) else {
+        return Err(Error::MissingDistInfoPackageName(
+            dist_info_prefix.to_string(),
+            filename.name.to_string(),
+        ));
+    };
+
+
+    // ...
+    // ... use `version` and warn user if necessary
+</code></pre>
+<p>but I had issues with edge-case <code>.dist-info</code> names --like &quot;version&quot; with a <code>+</code> in it.</p>
+<p>It seems that this could be solved with either:</p>
+<ol>
+<li>uv having a generic, best attempt normalize/canonicalize function that's public, so that the entire <code>.dist-info</code> directory name can be normalized, or</li>
+<li>Some smart way to <em>know</em> which <code>-</code> char is the delimiter between &quot;package name&quot; and &quot;version&quot;, so that the <code>dist_info_prefix</code> value can be normalized with <code>PackageName::from_str</code> and compared to <code>filename.name</code>, or</li>
+<li>Some other smart way that the Astral team will think of 😆</li>
+</ol>
+<p>Thanks for all that you do! Great products 🫡</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notenti">@notenti</a> on 2024-09-08 21:36</div>
+            <div class="timeline-body"><p>FWIW, I didn't want to slap in a private <code>normalize</code> function within <code>metadata.rs</code> to accomplish my short-term goal as I figured that would be quite the blemish on the uv architecture 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 22:00</div>
+            <div class="timeline-body"><p>No worries at all, thanks for following up! Lemme take a look...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 22:03</div>
+            <div class="timeline-body"><p>Does this work?</p>
+<pre><code class="language-rust">diff --git a/crates/install-wheel-rs/src/metadata.rs b/crates/install-wheel-rs/src/metadata.rs
+index 5129ad097..4308163e8 100644
+--- a/crates/install-wheel-rs/src/metadata.rs
++++ b/crates/install-wheel-rs/src/metadata.rs
+@@ -50,7 +50,8 @@ pub fn find_archive_dist_info&lt;'a, T: Copy&gt;(
+
+     // Like `pip`, validate that the `.dist-info` directory is prefixed with the canonical
+     // package name, but only warn if the version is not the normalized version.
+-    let Some((name, version)) = dist_info_prefix.rsplit_once('-') else {
++    let normalized_prefix = PackageName::from_str(&amp;dist_info_prefix)?.as_dist_info_name();
++    let Some((name, version)) = normalized_prefix.rsplit_once('-') else {
+         return Err(Error::MissingDistInfoSegments(dist_info_prefix.to_string()));
+     };
+     if PackageName::from_str(name)? != filename.name {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notenti">@notenti</a> on 2024-09-08 22:05</div>
+            <div class="timeline-body"><p>I think the issues lies in the <code>PackageName::from_str</code> conversion. It seems like the package name schema is more restrictive than the <code>.dist_info</code> name schema, so converting <em>all</em> <code>dist_info_prefix</code> values to a <code>PackageName</code> may not be possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notenti">@notenti</a> on 2024-09-08 22:07</div>
+            <div class="timeline-body"><p>I mean, could totally toss in a</p>
+<pre><code class="language-rs">/// Canonicalize name according to PEP 503
+fn canonicalize_name(name: &amp;str) -&gt; String {
+    let re = Regex::new(r&quot;[-_.]+&quot;).unwrap();
+    re.replace_all(name, &quot;-&quot;).to_lowercase()
+}
+</code></pre>
+<p>and compare <code>canonicalize_name(dist_info_prefix)</code> and <code>canonicalize_name(filename.name)</code>...but that felt...not great haha</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 22:07</div>
+            <div class="timeline-body"><p>It's possible that we should just skip these checks when there are multiple <code>-</code>, since that in itself is a spec violation. Or we could try to split at each <code>-</code>, and as long as one package name matches, we're ok.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 22:10</div>
+            <div class="timeline-body"><p>I think it's probably safe to pass the dist info name to <code>PackageName</code> though... In both cases they can't start or end with punctuation. So it might be fine to do the <code>PackageName</code> thing, then strip the normalized package name, then skip the next char (presumedly <code>_</code>), then validate the version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notenti">@notenti</a> on 2024-09-08 22:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it's probably safe to pass the dist info name to PackageName though... In both cases they can't start or end with punctuation.</p>
+</blockquote>
+<p>If that's the case, great! I was running into issues with the <a href="https://github.com/astral-sh/uv/blob/bf33a7cf1387481f270d77d55528b0b92d62c27d/crates/uv-normalize/src/lib.rs#L29-L45">normalization process</a> because some versions can contain a <code>+</code>, e.g, <a href="https://github.com/astral-sh/uv/blob/bf33a7cf1387481f270d77d55528b0b92d62c27d/crates/uv/tests/edit.rs#L3592">this req</a></p>
+<p>(I don't believe what I linked above is the actual test that was failing --can't find the exact one. Just meant as an example)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 22:21</div>
+            <div class="timeline-body"><p>Ahh that's true, you're right. <code>+</code> is not allowed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 22:22</div>
+            <div class="timeline-body"><p>We may want to create a <code>DistInfoName</code> that's like <code>PackageName</code>, but with slightly different rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notenti">@notenti</a> on 2024-09-08 22:23</div>
+            <div class="timeline-body"><blockquote>
+<p>We may want to create a <code>DistInfoName</code> that's like <code>PackageName</code>, but with slightly different rules.</p>
+</blockquote>
+<p>That's kinda where I arrived, but then I reminded myself that I'm not a rust dev and that biting that off would be a lot 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 22:27</div>
+            <div class="timeline-body"><p>Haha no worries. I'll give it a try and can mark you as a co-author on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-08 22:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7208.html">astral-sh/uv#7208</a> on 2024-09-09 00:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 00:36</div>
+            <div class="timeline-body"><p>@notenti -- Are you able to test his branch against your package? https://github.com/astral-sh/uv/pull/7208</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notenti">@notenti</a> on 2024-09-09 12:36</div>
+            <div class="timeline-body"><p>As one would expect, right as I try to test it out I'm running into toolchain issues 😬. <a href="https://pypi.org/project/aardvark-py/"><code>aardvark-py</code></a> is what gave me issues, so executing:</p>
+<pre><code class="language-shell">uv pip install aardvark-py==5.40
+</code></pre>
+<p>should flex the behavior. I'll keep trying to fix up my build env</p>
+<p>Thanks for such a quick turnaround!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notenti">@notenti</a> on 2024-09-09 12:58</div>
+            <div class="timeline-body"><p>Looks like it works!</p>
+<pre><code class="language-shell">❯ target/debug/uv venv test_venv
+Using Python 3.12.1
+Creating virtualenv at: test_venv
+Activate with: source test_venv/bin/activate
+❯ source test_venv/bin/activate
+❯ target/debug/uv pip install aardvark-py==5.40
+Resolved 1 package in 1.45s
+Prepared 1 package in 48ms
+Installed 1 package in 4ms
+ + aardvark-py==5.40
+</code></pre>
+<p>:shipit:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-09 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-09 13:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

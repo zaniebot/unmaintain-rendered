@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`pip compile --upgrade` behavior with yanked packages - astral-sh/uv #3644</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`pip compile --upgrade` behavior with yanked packages</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/3644">#3644</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-05-17 18:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-17 18:39</div>
+            <div class="timeline-body"><p>Prompted at https://github.com/astral-sh/uv/issues/3602#issuecomment-2115761269</p>
+<p>When a yanked package is pinned in a lockfile and <code>pip compile --upgrade</code> is used and there is no new version of the package in the input range, should we</p>
+<ol>
+<li>Downgrade to the unyanked version</li>
+<li>Error that a yanked version is being used</li>
+<li>Warn that a yanked version is being used</li>
+<li>Silently continue to use the yanked version</li>
+</ol>
+<p>Note the yanked package is <em>not</em> pinned in the input requirements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-05-17 20:26</div>
+            <div class="timeline-body"><p>Thinking out loud, it seems like the most likely scenario this would happen in is if the compile originally ran and the package was not yanked, and then it was run at a later time and the package was yanked.</p>
+<p>Given this is in the case where the yanked package is not pinned in the requirements, I would personally expect &quot;1.&quot; to happen,  with maybe a warning. As it was presumably yanked for a reason and I'm not pinning it, so I would would trust the package authors reason for yanking.</p>
+<p>If the user wants to pin their package to a yanked version, I think it makes sense to require them to do it in the input requirements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-17 21:11</div>
+            <div class="timeline-body"><p>Yeah that's my feeling as well. I would find it weird that <code>--upgrade</code> downgrades a package but 🤷‍♀️ yanks are rare.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3602.html">astral-sh/uv#3602</a> on 2024-05-17 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-05-20 14:39</div>
+            <div class="timeline-body"><p>Does <code>--upgrade</code> normally guarantee the versions pinned in the old output file will be lower bounds of the new output file?</p>
+<p>For example if I had a direct dependency on <code>a</code>, and when I ran pip compile for the first time it created a pinning <code>b==2.0</code>, but then when I ran upgrade the next day the newer version of <code>a</code> now requires <code>b==1.0</code>, would <code>a</code> be upgraded and <code>b</code> downgraded or would <code>a</code> now never be able to upgrade?</p>
+<p>I'm not that familiar with the behavior of <code>pip compile --upgrade</code> but I know <code>conda upgrade --all</code> will downgrade packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-20 15:43</div>
+            <div class="timeline-body"><p>Honestly I'm not sure! I would be surprised if it provided that guarantee though, I presume we just no longer prefer the pinned versions and perform a resolution based on the initial bounds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-21 09:20</div>
+            <div class="timeline-body"><p>I'd definitely want a warning, i've been using a broken release. Option 1 seems to be the most helpful behavior to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-21 14:38</div>
+            <div class="timeline-body"><p>The next step is to verify our existing behavior, if anyone is interested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-05-21 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-08-16 14:48</div>
+            <div class="timeline-body"><p>FYI, the existing behavior is currently &quot;1.&quot; (with no warning), I came across this last month with a real world example, matplotlib yanked 3.9.1: https://pypi.org/project/matplotlib/3.9.1/</p>
+<p>My output file had <code>matplotlib==3.9.1</code> in it, and when I reran <code>uv pip compile --upgrade</code> I got  <code>matplotlib==3.9.0</code> .</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

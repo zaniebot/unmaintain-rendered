@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-pep440 `VersionSpecifiers::contains` incorrect with prereleases - astral-sh/uv #12834</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-pep440 `VersionSpecifiers::contains` incorrect with prereleases</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12834">#12834</a>
+        opened by <a href="https://github.com/baszalmstra">@baszalmstra</a>
+        on 2025-04-11 12:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/baszalmstra">@baszalmstra</a> on 2025-04-11 12:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The <code>uv_pep440</code> crate yields an incorrect result when matching <code>0.1a1</code> against the version specifier <code>&lt;0.1a2</code>.</p>
+<p>However, solving the following <code>pyproject.toml</code> does correctly yield the correct prerelease version (<code>0.1a1</code>):</p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-prerelease&quot;
+version = &quot;0.1.0&quot;
+dependencies = [
+    &quot;rpi-kms &lt;0.1a2&quot;
+]
+</code></pre>
+<h3>Simple reproducer test case</h3>
+<p>The following test program asserts:</p>
+<pre><code class="language-rust">use uv_pep440::{Version, VersionSpecifiers};
+
+fn main() {
+    let version: Version = &quot;0.1a1&quot;.parse().unwrap();
+    let version_specifier: VersionSpecifiers = &quot;&lt;0.1a2&quot;.parse().unwrap();
+    assert!(version_specifier.contains(&amp;version));
+}
+</code></pre>
+<h3>Platform</h3>
+<p>Windows 11 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.6.14</p>
+<h3>Python version</h3>
+<p>Python 3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @baszalmstra on 2025-04-11 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/baszalmstra">@baszalmstra</a> on 2025-04-11 12:13</div>
+            <div class="timeline-body"><p>I suspect the issue is this part in the <code>LessThan</code> comparison:</p>
+<p>https://github.com/astral-sh/uv/blob/50de4644252a101d0f11f7ca8ff1767642b8d38f/crates/uv-pep440/src/version_specifier.rs#L562-L564</p>
+<p>The less_than function also already guards against comparing pre-releases against non-prereleases so it seems redundant. But Im uncertain what that part of the code should do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2025-04-11 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12836.html">astral-sh/uv#12836</a> on 2025-04-11 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-04-12 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-04-12 20:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

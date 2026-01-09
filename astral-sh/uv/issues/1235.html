@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve display of conclusions after enumerating available versions - astral-sh/uv #1235</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve display of conclusions after enumerating available versions</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/1235">#1235</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-02-02 18:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-02 18:02</div>
+            <div class="timeline-body"><p>e.g. in</p>
+<pre><code>recommenders&gt;0.7
+</code></pre>
+<pre><code>❯ cargo run -q -- pip compile --python-version 3.12 requirements.in
+  × No solution found when resolving dependencies:
+  ╰─▶ Because the requested Python version (3.12) does not satisfy Python&gt;=3.6,&lt;3.10 and recommenders==1.0.0 depends on Python&gt;=3.6,&lt;3.9, we can conclude that recommenders==1.0.0 cannot be used.
+      And because only the following versions of recommenders are available:
+          recommenders&lt;=0.7
+          recommenders==1.0.0
+          recommenders==1.1.0
+          recommenders==1.1.1
+      we can conclude that recommenders&gt;0.7,&lt;1.1.0 cannot be used. (1)
+
+      Because the requested Python version (3.12) does not satisfy Python&gt;=3.6,&lt;3.10 and recommenders&gt;=1.1.0 depends on Python&gt;=3.6,&lt;3.10, we can conclude that recommenders&gt;=1.1.0 cannot be used.
+      And because we know from (1) that recommenders&gt;0.7,&lt;1.1.0 cannot be used, we can conclude that recommenders&gt;0.7 cannot be used.
+      And because you require recommenders&gt;0.7, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>We list the available versions then conclude that a range cannot be used</p>
+<pre><code>      And because only the following versions of recommenders are available:
+          recommenders&lt;=0.7
+          recommenders==1.0.0
+          recommenders==1.1.0
+          recommenders==1.1.1
+      we can conclude that recommenders&gt;0.7,&lt;1.1.0 cannot be used. (1)
+</code></pre>
+<p>However, this would be clearer to read as</p>
+<pre><code>      And because only the following versions of recommenders are available:
+          recommenders&lt;=0.7
+          recommenders==1.0.0
+          recommenders==1.1.0
+          recommenders==1.1.1
+      we can conclude that recommenders cannot be used. (1)
+</code></pre>
+<p>This requires formatting of terms to know about the <em>previous</em> term; I cannot determine a heuristic to use to determine when a compliment should be displayed here otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-02-02 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-27 11:31</div>
+            <div class="timeline-body"><p>I can't reproduce this anymore, i'm getting:</p>
+<pre><code>cargo run -q -- pip compile --python-version 3.12 a.in --no-build-isolation
+⠙ lightfm==1.17                                                                                      error: Failed to download and build `scikit-surprise==1.1.4`
+  Caused by: Failed to build: `scikit-surprise==1.1.4`
+  Caused by: Build backend failed to determine metadata through `prepare_metadata_for_build_wheel` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+  File &quot;/home/konsti/projects/uv/.venv/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 368, in prepare_metadata_for_build_wheel
+    self.run_setup()
+  File &quot;/home/konsti/projects/uv/.venv/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 313, in run_setup
+    exec(code, locals())
+  File &quot;&lt;string&gt;&quot;, line 3, in &lt;module&gt;
+ModuleNotFoundError: No module named 'numpy'
+---
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-27 11:36</div>
+            <div class="timeline-body"><p>I reproduced with a tweak</p>
+<pre><code>❯ echo 'recommenders&gt;0.7\nlightfm&lt;1.17' | uv pip compile --python-version 3.12 -
+  × No solution found when resolving dependencies:
+  ╰─▶ Because the requested Python version (3.12) does not satisfy Python&gt;=3.6,&lt;3.10 and recommenders==1.0.0 depends on
+      Python&gt;=3.6,&lt;3.9, we can conclude that recommenders==1.0.0 cannot be used.
+      And because only the following versions of recommenders are available:
+          recommenders&lt;=0.7
+          recommenders==1.0.0
+          recommenders==1.1.0
+          recommenders==1.1.1
+          recommenders==1.2.0
+      we can conclude that recommenders&gt;0.7,&lt;1.1.0 cannot be used. (1)
+
+      Because the requested Python version (3.12) does not satisfy Python&gt;=3.6,&lt;3.10 and recommenders&gt;=1.1.0,&lt;=1.1.1
+      depends on Python&gt;=3.6,&lt;3.10, we can conclude that recommenders&gt;=1.1.0,&lt;=1.1.1 cannot be used.
+      And because we know from (1) that recommenders&gt;0.7,&lt;1.1.0 cannot be used, we can conclude that
+      recommenders&gt;0.7,&lt;1.2.0 cannot be used.
+      And because recommenders==1.2.0 depends on lightfm&gt;=1.17,&lt;2, we can conclude that recommenders&gt;0.7 depends on
+      lightfm&gt;=1.17,&lt;2.
+      And because you require recommenders&gt;0.7 and lightfm&lt;1.17, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-27 11:41</div>
+            <div class="timeline-body"><p>and similarly</p>
+<pre><code>❯ echo 'recommenders&gt;0.7' | uv pip compile --python-version 3.12 --only-binary :all: -
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of recommenders are available:
+          recommenders&lt;=0.7
+          recommenders==1.0.0
+          recommenders==1.1.0
+          recommenders==1.1.1
+          recommenders==1.2.0
+      and recommenders==1.0.0 has no usable wheels and building from source is disabled, we can conclude that recommenders&gt;0.7,&lt;1.1.0 cannot be used.
+      And because recommenders==1.1.0 has no usable wheels and building from source is disabled and recommenders==1.1.1 has no usable wheels and building from source is disabled, we can conclude that recommenders&gt;0.7,&lt;1.2.0 cannot be used. (1)
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

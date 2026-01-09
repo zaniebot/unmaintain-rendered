@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run` ignores `.python-version` - astral-sh/uv #6285</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run` ignores `.python-version`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6285">#6285</a>
+        opened by <a href="https://github.com/ketozhang">@ketozhang</a>
+        on 2024-08-20 23:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ketozhang">@ketozhang</a> on 2024-08-20 23:49</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>When there exists <code>.python-version</code> file (e.g., created by <code>uv python pin</code>), creating a virtual environment with UV does not create the correct version? I'm not sure if this behavior is intended.</p>
+<pre><code>/private/var/folders/dh/q65wqsbs3tn0993nc2j5dzy00000gn/T/tmp.Fv2SE2ebMR
+.venv ❯ uv python pin 3.11.9
+Pinned `.python-version` to `3.11.9`
+
+/private/var/folders/dh/q65wqsbs3tn0993nc2j5dzy00000gn/T/tmp.Fv2SE2ebMR
+.venv ❯ uv run python --version
+Python 3.12.4
+
+/private/var/folders/dh/q65wqsbs3tn0993nc2j5dzy00000gn/T/tmp.Fv2SE2ebMR
+.venv ❯ uv run python -m site
+sys.path = [
+    '/private/var/folders/dh/q65wqsbs3tn0993nc2j5dzy00000gn/T/tmp.Fv2SE2ebMR',
+    '/Users/keto/Library/Application Support/uv/python/cpython-3.12.4-macos-x86_64-none/lib/python312.zip',
+    '/Users/keto/Library/Application Support/uv/python/cpython-3.12.4-macos-x86_64-none/lib/python3.12',
+    '/Users/keto/Library/Application Support/uv/python/cpython-3.12.4-macos-x86_64-none/lib/python3.12/lib-dynload',
+    '/private/var/folders/dh/q65wqsbs3tn0993nc2j5dzy00000gn/T/tmp.cVJnZhhRMn/.venv/lib/python3.12/site-packages',
+]
+USER_BASE: '/Users/keto/.local' (exists)
+USER_SITE: '/Users/keto/.local/lib/python3.12/site-packages' (exists)
+ENABLE_USER_SITE: False
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-20 23:50</div>
+            <div class="timeline-body"><p>Interesting, this worked as expected for me:</p>
+<pre><code>❯ uv python pin 3.11.9
+warning: No interpreter found for Python 3.11.9 in managed installations or system path
+Updated `.python-version` from `3.12.1` -&gt; `3.11.9`
+
+❯ cat .python-version
+3.11.9
+
+❯ uv venv
+Using Python 3.11.9
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+
+❯ uv run python --version
+Python 3.11.9
+</code></pre>
+<p>Was there maybe an existing <code>.venv</code> in the directory already?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-20 23:56</div>
+            <div class="timeline-body"><p>If there was an existing <code>.venv</code>, we should probably warn if it doesn't match the pinned version (I don't think we should delete it though).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ketozhang">@ketozhang</a> on 2024-08-20 23:58</div>
+            <div class="timeline-body"><p>That's right, I pasted the wrong output. Making sure no venv was activate, I'm still getting the same issue.</p>
+<pre><code class="language-console">❯ uv python pin 3.11.9
+Pinned `.python-version` to `3.11.9`
+
+❯ uv run python --version
+Python 3.12.4
+
+❯ python
+zsh: command not found: python
+
+❯ echo $VIRTUAL_ENV
+</code></pre>
+<pre><code>❯ uv --version
+uv 0.3.0 (Homebrew 2024-08-20)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 00:00</div>
+            <div class="timeline-body"><p>If there's a <code>.venv</code> in a parent directory we might be finding that. Can you include the output of <code>RUST_LOG=uv=trace uv run -v python --version</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ketozhang">@ketozhang</a> on 2024-08-21 00:05</div>
+            <div class="timeline-body"><p>I was missing explicitly calling <code>uv venv</code> 🤦 . I assumed <code>uv run python</code> would have created the venv automatically for me. This works.</p>
+<hr />
+<p>Rust logs when skipping <code>uv venv</code></p>
+<pre><code class="language-console">/private/var/folders/dh/q65wqsbs3tn0993nc2j5dzy00000gn/T/tmp.H7u3XUwsC0
+❯ uv python pin 3.11.9
+Pinned `.python-version` to `3.11.9`
+
+/private/var/folders/dh/q65wqsbs3tn0993nc2j5dzy00000gn/T/tmp.H7u3XUwsC0
+❯ RUST_LOG=uv=trace uv run -v python --version
+DEBUG uv 0.3.0 (Homebrew 2024-08-20)
+DEBUG No project found; searching for Python interpreter
+DEBUG Searching for Python interpreter in managed installations or system path
+DEBUG Searching for managed installations at `/Users/keto/Library/Application Support/uv/python`
+DEBUG Found managed installation `cpython-3.12.4-macos-x86_64-none`
+TRACE Cached interpreter info for Python 3.12.4, skipping probing: /Users/keto/Library/Application Support/uv/python/cpython-3.12.4-macos-x86_64-none/bin/python3
+DEBUG Found `cpython-3.12.4-macos-x86_64-none` at `/Users/keto/Library/Application Support/uv/python/cpython-3.12.4-macos-x86_64-none/bin/python3` (managed installations)
+DEBUG Using Python 3.12.4 interpreter at: /Users/keto/Library/Application Support/uv/python/cpython-3.12.4-macos-x86_64-none/bin/python3
+DEBUG Running `python --version`
+Python 3.12.4
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 00:09</div>
+            <div class="timeline-body"><p>I feel like <code>uv run</code> should be respecting <code>.python-version</code> there 🤔 But I'll let Zanie chime in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 00:09</div>
+            <div class="timeline-body"><p><code>uv run</code> <em>will</em> create a virtual environment for you if it's executed within a project directory!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6289.html">astral-sh/uv#6289</a> on 2024-08-21 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/denkasyanov">@denkasyanov</a> on 2024-08-21 01:37</div>
+            <div class="timeline-body"><p>I just noticed similar behaviour on <code>uv 0.2.35 (e097f948c 2024-08-09)</code> WITH running <code>uv venv</code></p>
+<p>Fixed by upgrading to 0.3.0. So maybe this can help someone still on the old version.</p>
+<p>Speaking about upgrading, pnpm bugs me about its new versions. Didn't like it in the beginning, but probably it will help to prevent creating duplicate/solved GH issues, because I was <em>almost</em> ready to create a new issue, if I didn't find this one right at the top. I would definitely enable this notification for <code>uv</code>.</p>
+<p>For reference pnpm does it like that
+<img src="https://user-images.githubusercontent.com/60206592/202073002-fcc4351b-2a66-49ab-a894-c16400ac116a.png" alt="pnpm available update notification" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-08-21 03:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-08-21 03:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-08-21 03:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 03:11</div>
+            <div class="timeline-body"><p>I'll look into some improvements in this area.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv venv` ignores `.python-version`" to "`uv run` ignores `.python-version`" by @ketozhang on 2024-08-21 05:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ketozhang">@ketozhang</a> on 2024-08-21 05:22</div>
+            <div class="timeline-body"><p>@denkasyanov That is probably what I saw today. I did upgrade to 0.3.0.</p>
+<p>I've already changed the title :/ . I'll let folks here decide if another issue is warranted for <code>&lt;0.3</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TylerHillery">@TylerHillery</a> on 2024-08-21 12:36</div>
+            <div class="timeline-body"><p>I ran into similar issues, do I have to create a venv for <code>uv run</code> to respect the <code>.python-version</code>? This is not in a project directory. I understand that I can add <code>uv run --python 3.9</code> as well but would be neat if it picked up the python version file</p>
+<pre><code>sandbox/uv-test
+➜ ls -la
+total 16
+drwxr-xr-x@  4 tyler  staff  128 Aug 21 07:28 .
+drwxr-xr-x  27 tyler  staff  864 Aug 21 07:27 ..
+-rw-r--r--@  1 tyler  staff    4 Aug 21 07:27 .python-version
+-rw-r--r--@  1 tyler  staff   31 Aug 21 07:28 main.py
+sandbox/uv-test
+➜ cat .python-version
+3.9
+sandbox/uv-test
+➜ RUST_LOG=uv=trace uv run -v python --version
+DEBUG uv 0.3.0
+DEBUG No project found; searching for Python interpreter
+DEBUG Searching for Python interpreter in managed installations or system path
+DEBUG Searching for managed installations at `/Users/tyler/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.12.5-macos-aarch64-none`
+TRACE Cached interpreter info for Python 3.12.5, skipping probing: /Users/tyler/.local/share/uv/python/cpython-3.12.5-macos-aarch64-none/bin/python3
+DEBUG Found `cpython-3.12.5-macos-aarch64-none` at `/Users/tyler/.local/share/uv/python/cpython-3.12.5-macos-aarch64-none/bin/python3` (managed installations)
+DEBUG Using Python 3.12.5 interpreter at: /Users/tyler/.local/share/uv/python/cpython-3.12.5-macos-aarch64-none/bin/python3
+DEBUG Running `python --version`
+Python 3.12.5
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 17:32</div>
+            <div class="timeline-body"><p>Related https://github.com/astral-sh/uv/issues/5839</p>
+<p>I think we just don't think we need to create a virtual environment so we don't ever check if the interpreter is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6361.html">astral-sh/uv#6361</a> on 2024-08-21 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-21 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-21 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-22 00:02</div>
+            <div class="timeline-body"><p>Is a <code>.python-version</code> file necessary when the pinned python version for a project can be obtained from <code>project.requires-python</code> in <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 00:17</div>
+            <div class="timeline-body"><p>We don't recommend using <code>project.requires-python</code> for pins, it's &quot;supposed&quot; to be for listing the supported versions. You can use it instead of <code>.python-version</code> if you want — we'll use the first interpreter that satisfies the constraints in <code>project.requires-python</code> whether a pin or a range.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

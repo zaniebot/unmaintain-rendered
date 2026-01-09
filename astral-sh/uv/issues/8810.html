@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure authentication method needed - astral-sh/uv #8810</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Secure authentication method needed</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/8810">#8810</a>
+        opened by <a href="https://github.com/stoney95">@stoney95</a>
+        on 2024-11-04 15:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stoney95">@stoney95</a> on 2024-11-04 15:31</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I would like to use <code>uv</code> to install dependencies from a private artifactory repository. Authentication for the private repository works with username and password. I would also like to store the index-url in the pyproject.toml. This simplifies the usage of uv for every team-member. The current minimal config looks like the following:</p>
+<pre><code class="language-toml">version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = []
+
+[tool.uv]
+index-url = &quot;https://artifactory.company.com/pypi/simple&quot;
+native-tls = true
+keyring-provider = &quot;subprocess&quot;
+</code></pre>
+<p><a href="https://docs.astral.sh/uv/configuration/authentication/#http-authentication">The documentation for authentication</a> lists these options:</p>
+<ul>
+<li>The URL, e.g., <code>https://&lt;user&gt;:&lt;password&gt;@&lt;hostname&gt;/...</code></li>
+<li>A <a href="https://everything.curl.dev/usingcurl/netrc">.netrc</a> configuration file</li>
+<li>A <a href="https://github.com/jaraco/keyring">keyring</a> provider (requires opt-in)</li>
+</ul>
+<p>The first option is not possible, as the credentials would be shared via git. Using <code>.netrc</code> is only partially possible as it poses a security risk by storing credentials in plain text. I tried this option nonetheless and it worked. But I would like to avoid it due to the plain-text password.
+The thrid option does not work. I will describe in detail, what I tried and where it failed.</p>
+<ol>
+<li><code>pip install keyring</code></li>
+<li><code>keyring set artifactory.company.com my_username</code> and entering the credentials as prompted</li>
+<li>running <code>uv add &lt;any-package&gt;</code> with the configuration from above failed with</li>
+</ol>
+<pre><code>hint: An index URL (https://artifactory.company.com/pypi/simple) could not be queried due to a lack
+      of valid authentication credentials (401 Unauthorized).
+</code></pre>
+<p>I changed the configuration value for <code>index-url</code> to <code>https://my_username@artifactory.company.com/pypi/simple</code>. By this <code>uv</code> reads the credentials from <code>keyring</code>. As this stores the username in the pyproject.toml the approach does not work. Every team-member uses their own credentials to authenticate with the private artifactory.</p>
+<ul>
+<li>uv version: <code>uv 0.4.25 (97eb6ab4a 2024-10-21)</code></li>
+<li>uv platform: <code>Windows 11</code></li>
+</ul>
+<p>If <code>uv</code> should work with the plain index-url (no username) and keyring, I would like to report this as a bug. In case it doesn't, I would like to request a secure methode for storing credentials while preserving a transferable <code>uv</code> configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-04 15:40</div>
+            <div class="timeline-body"><p>Keyring alway require a username. If you name your index, you can provide credentials for your index via environment variables and store them however you want:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;company&quot;
+url = &quot;https://artifactory.company.com/pypi/simple&quot;
+default = true
+</code></pre>
+<p>Then you can specify a username with <code>UV_INDEX_COMPANY_USERNAME</code> and a password with <code>UV_INDEX_COMPANY_PASSWORD</code>. See: https://docs.astral.sh/uv/configuration/indexes/#providing-credentials.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-04 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stoney95">@stoney95</a> on 2024-11-04 16:57</div>
+            <div class="timeline-body"><p>@charliermarsh, thanks for pointing out the solution using environment variables.</p>
+<p>Do you currently plan to provide a solution similar to <a href="https://python-poetry.org/docs/repositories/#installing-from-private-package-sources"><code>poetry config http-basic</code></a>? This uses <code>keyring</code> under the hood, but stores which username to use for each index on the user-level.</p>
+<p>Using your example, I would propose the following workflow:</p>
+<ol>
+<li>Define the index (making this possible via cli, e.g. <code>uv index add ...</code> would be nice to have)</li>
+</ol>
+<pre><code>[[tool.uv.index]]
+name = &quot;company&quot;
+url = &quot;https://artifactory.company.com/pypi/simple&quot;
+default = true
+</code></pre>
+<ol start="2">
+<li>Define credentials with <code>uv index config company &quot;my_username&quot;</code>. This will prompt for the password. The username is stored in <code>$XDG_CONFIG/uv/uv.toml</code>, e.g.</li>
+</ol>
+<pre><code class="language-toml">[index.company]
+username = &quot;my_username&quot;
+</code></pre>
+<p>The password is stored with keyring.</p>
+<p>Setting this config up once, makes it possible to run <code>uv add &lt;package&gt;</code>. Which is then pointing to the right index and using credentials automatically</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ljtruong">@ljtruong</a> on 2024-11-14 01:16</div>
+            <div class="timeline-body"><p>Thought this might help. I've made a hacky way to work as a &quot;config&quot; to set the environment variables to authenticate for private pypi repo. My company uses aws so the tokens are short lived, so it's safe to do.</p>
+<p>For more info, you would replace <code>PASSWORD</code> with the CodeArtifact auth command to retrieve the password token automatically and set the new credentials when it expires.</p>
+<pre><code>#set_credentials.sh
+if [ ! -f ~/.uv ]; then
+  touch ~/.uv
+fi
+
+update_credentials() {
+    local PASSWORD=&quot;updated_password&quot;
+    # Set UV_INDEX_INTERNAL_COMPANY_PASSWORD in the ~/.uv file
+    if grep -q &quot;^export UV_INDEX_INTERNAL_COMPANY_PASSWORD=&quot; ~/.uv; then
+      # Use sed to replace the value with the local $PASSWORD variable
+      sed -i '' &quot;s/^export UV_INDEX_INTERNAL_COMPANY_PASSWORD=.*/export UV_INDEX_INTERNAL_COMPANY_PASSWORD=${PASSWORD}/&quot; ~/.uv
+    else
+      # Append the line with $PASSWORD if it doesn't already exist
+      echo &quot;export UV_INDEX_INTERNAL_COMPANY_USERNAME=aws&quot; &gt;&gt; ~/.uv
+      echo &quot;export UV_INDEX_INTERNAL_COMPANY_PASSWORD=${PASSWORD}&quot; &gt;&gt; ~/.uv
+    fi
+}
+update_credentials
+source ~/.uv
+</code></pre>
+<p>Run this using</p>
+<pre><code>source set_credentials.sh
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-14 15:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you currently plan to provide a solution similar to <a href="https://python-poetry.org/docs/repositories/#installing-from-private-package-sources">poetry config http-basic</a>? This uses keyring under the hood, but stores which username to use for each index on the user-level.</p>
+</blockquote>
+<p>Yeah I'm interested in this, but we'll need to switch from the Python keyring library to something more robust and Rust native which will take time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-11-25 12:14</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I run into the same kind of question: What is the best way of authenticate on private indexes with <code>uv</code>?<br />
+If I understand well, the recommended solution today is to use the <a href="https://github.com/astral-sh/uv/issues/8810#issuecomment-2455047015"><code>UV_INDEX_XXX</code> env variables</a>.<br />
+However, this is not a very practical solution as <a href="https://github.com/astral-sh/uv/issues/1384"><code>.env</code> file is not supported by <code>uv sync</code></a>, which means we have to set numerous specific variables for <code>uv</code>.</p>
+<p>I ended up using the same &quot;hacky&quot; (or at least non-standard) solution as described <a href="https://github.com/astral-sh/uv/issues/8810#issuecomment-2475149308">here</a>, with a <code>set_env.sh</code> script in my repo setting the <code>UV_INDEX_XXX</code> env variables to the appropriate values on both devs and CI machines.</p>
+<p>In my case, I see two solutions which would be less &quot;hacky&quot; and much more practical:</p>
+<ul>
+<li>accepting <code>.env</code> file in the <code>uv sync</code> command,</li>
+<li>or interpreting env variables in pyproject.toml.</li>
+</ul>
+<p>Do you have any of these two planned or do you have something else to recommend?</p>
+<p>Thank you 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-25 23:13</div>
+            <div class="timeline-body"><blockquote>
+<p>accepting .env file in the uv sync command,</p>
+</blockquote>
+<p>Why not activate your <code>.env</code> file with another tool like <code>direnv</code>? Why is it uv's job to read configuration from that file?</p>
+<blockquote>
+<p>interpreting env variables in pyproject.toml</p>
+</blockquote>
+<p>Wouldn't you still need to set the variables? Isn't that part of the complaint?</p>
+<p>I believe you can also configure your credentials in the <code>uv.toml</code>, if you prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-11-26 15:04</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>interpreting env variables in pyproject.toml</p>
+</blockquote>
+<p>Wouldn't you still need to set the variables? Isn't that part of the complaint?</p>
+<p>I believe you can also configure your credentials in the <code>uv.toml</code>, if you prefer.</p>
+</blockquote>
+<p>The thing that makes it a bit more complicated with <code>uv</code> for me (and my team) is that <code>uv</code> has a strict convention about the env variable names for authentification. With other tools allowing using env variables directly in config files, we can easily have a universal configuration across tools that work on both devs and CI machines with simple setup, which is quiet convenient.</p>
+<blockquote>
+<blockquote>
+<p>accepting .env file in the uv sync command,</p>
+</blockquote>
+<p>Why not activate your <code>.env</code> file with another tool like <code>direnv</code>? Why is it uv's job to read configuration from that file?</p>
+</blockquote>
+<p>I must admit I am not familiar with <code>direnv</code> as I never needed it. It may be a very good solution indeed, I'll have a deeper look at it.</p>
+<p>Thank you for the answer 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-26 15:33</div>
+            <div class="timeline-body"><blockquote>
+<p>With other tools allowing using env variables directly in config files, we can easily have a universal configuration across tools that work on both devs and CI machines with simple setup, which is quiet convenient.</p>
+</blockquote>
+<p>Can you share some example tools? I'd like to look at their approaches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-11-28 22:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you share some example tools? I'd like to look at their approaches.</p>
+</blockquote>
+<p>First, I need to say that I don't come from the Python world, I only started using Python at production scale quite recently. My programming background is mostly C++ and iOS/Android development, some UNIX system administration, Docker and k8s deployment, and Matlab quite some time ago.</p>
+<p>I used quite a lot of different tools for configuration, environment management, compilation, testing, packaging or deployment, and most of them support reading environment variables within their &quot;configuration files&quot; (or equivalent).
+A few examples:</p>
+<ul>
+<li><a href="https://bundler.io"><code>bundler</code></a> in gemfiles,</li>
+<li><a href="https://fastlane.tools"><code>fastlane</code></a> and other Ruby-based tools,</li>
+<li><a href="https://cmake.org"><code>cmake</code></a> and <a href="https://gradle.org"><code>gradle</code></a>,</li>
+<li>I'm pretty sure Conan and Bazel support env variables one way or another but I'm not very familiar with these,</li>
+<li>Docker in Dockerfiles and at runtime,</li>
+<li>make in makefiles,</li>
+<li>in Python, I have used <code>setuptools</code> with <code>setup.py</code>, which is native python giving you the ability to use <code>os.environ</code>,</li>
+<li>gitlab CI yaml</li>
+<li><a href="https://helm.sh/">helm charts</a> for k8s</li>
+</ul>
+<p>Many of these tools support env variables the same way you use it in shell: <code>$MY_ENV_VAR</code>.
+The <code>ENV['MY_ENV_VAR']</code> syntax is also present in several of these tools and I'm pretty sure I've seen it in other contexts. cmake has it a bit different with <code>$ENV{MY_ENV_VAR}</code>.</p>
+<p>Hope this helps :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/farndt">@farndt</a> on 2024-12-03 23:14</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Do you currently plan to provide a solution similar to <a href="https://python-poetry.org/docs/repositories/#installing-from-private-package-sources">poetry config http-basic</a>? This uses keyring under the hood, but stores which username to use for each index on the user-level.</p>
+</blockquote>
+<p>Yeah I'm interested in this, but we'll need to switch from the Python keyring library to something more robust and Rust native which will take time.</p>
+</blockquote>
+<p>Would keyring-rs be an option: https://docs.rs/keyring/latest/keyring/ to speed up transition?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-04 00:14</div>
+            <div class="timeline-body"><p>Yeah we'd probably use that, though I haven't audited it.</p>
+<p>Thanks @ThomasHezard !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/farndt">@farndt</a> on 2024-12-05 23:18</div>
+            <div class="timeline-body"><p>I would suggest the following implementation for Keyring:</p>
+<ol>
+<li>define index in pyproject.toml</li>
+</ol>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = “service-name”
+url = “https://artifactory.company.com/*/simple”
+</code></pre>
+<ol start="2">
+<li><p>keyring set artifactory.company.com my_username -&gt; enter password</p>
+</li>
+<li><p><strong>uv</strong> reads <em>username</em> and <em>password</em> using Keyring get_credentials <em>service-name</em></p>
+</li>
+</ol>
+<p>This would allow teams to use keyring without making changes to pyproject.toml. Due to lack of encryption and simple logging it should be avoided to use environment variables as storage for credentials.</p>
+<p>This approach could be quickly implemented temporarily with keyring as a Python package. When switching to Keyring-RS at a later date, the process would not need to change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stoney95">@stoney95</a> on 2024-12-07 10:20</div>
+            <div class="timeline-body"><p>@zanieb, what are your concerns about keyring-rs? I would be interested to contribute the keyring credentials feature and would like to understand the constraints</p>
+<p>@farndt, can you share some documentation about get_credentials without a username? afaik, you need a service and a username to reference keyring entries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-07 16:20</div>
+            <div class="timeline-body"><p>No concerns; we just audit new dependencies for trustworthiness, correctness, etc.</p>
+<p>Feel free to contribute support if you're interested. I think the first step is to have <code>--keyring-provider &lt;something&gt;</code> use the crate as a backend?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stoney95">@stoney95</a> on 2024-12-08 00:03</div>
+            <div class="timeline-body"><p>I would suggest the following:</p>
+<ul>
+<li><code>uv add</code> <a href="https://github.com/astral-sh/uv/blob/main/crates/uv/src/commands/project/add.rs#L286-L290">loads the credentials for all indexes</a> into the cache</li>
+<li>This uses <code>[Index.credentials](https://github.com/astral-sh/uv/blob/main/crates/uv-distribution-types/src/index.rs#L141-L152)</code><ul>
+<li>This currently only supports env variables <code>UV_INDEX_XXX</code> and <code>[Credentials.from_url](https://github.com/astral-sh/uv/blob/main/crates/uv-auth/src/credentials.rs#L119-L122)</code></li>
+<li>I would suggest to add logic for loading username from <code>auth.toml</code> in uv cache dir and checking keyring in <code>Index.credentials</code></li>
+</ul>
+</li>
+<li>To configure the credentials I would add a new command <code>index</code>.<ul>
+<li>This provides <code>uv index auth &lt;index-name&gt;</code>.</li>
+<li>It uses the already existing <code>[keyring provider](https://github.com/astral-sh/uv/blob/main/crates/uv-auth/src/keyring.rs)</code></li>
+</ul>
+</li>
+</ul>
+<p>As there is already an implementation for keyring within <code>uv</code>, I would rely on it for this topic. Using <code>keyring-rs</code> can then be dealt with independently, if desired.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9165.html">astral-sh/uv#9165</a> on 2024-12-08 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/farndt">@farndt</a> on 2024-12-10 14:25</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/zanieb">@zanieb</a>, what are your concerns about keyring-rs? I would be interested to contribute the keyring credentials feature and would like to understand the constraints</p>
+<p><a href="https://github.com/farndt">@farndt</a>, can you share some documentation about get_credentials without a username? afaik, you need a service and a username to reference keyring entries.</p>
+</blockquote>
+<p>@stoney95 Coming from python keyring: https://github.com/jaraco/keyring?tab=readme-ov-file#api it has <code>get_credential(service, username)</code> but username can be anything and you will recieve username related to service.</p>
+<p>I am not sure but you could recieve <code>username</code> as attribute of the service. For the request may the username os variable can be used? https://github.com/hwchen/keyring-rs/blob/master/src/windows.rs comments at begin of file (line 24)</p>
+<pre><code>The [get_attributes](crate::Entry::get_attributes) call will return the values in the
+`username`, `comment`, and `target_alias` fields (using those strings as the attribute names),```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9920.html">astral-sh/uv#9920</a> on 2024-12-15 20:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zyaoj">@zyaoj</a> on 2025-02-05 09:28</div>
+            <div class="timeline-body"><p>Hello! I encountered a similar issue when trying to install from a wheel that is publicly available. I've tried <code>[[tool.uv.index]]</code> as well but had no luck. To reproduce:</p>
+<pre><code class="language-sh">uv pip install pytorch3d --extra-index-url https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py310_cu121_pyt241/pytorch3d-0.7.8-cp310-cp310-linux_x86_64.whl
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of pytorch3d are available:
+          pytorch3d==0.1.1
+          pytorch3d==0.2.0
+          pytorch3d==0.2.5
+          pytorch3d==0.3.0
+          pytorch3d==0.4.0
+          pytorch3d==0.5.0
+          pytorch3d==0.6.1
+          pytorch3d==0.6.2
+          pytorch3d==0.7.0
+          pytorch3d==0.7.1
+          pytorch3d==0.7.2
+          pytorch3d==0.7.3
+          pytorch3d==0.7.4
+      and pytorch3d&lt;=0.6.2 has no wheels with a matching Python ABI tag, we can conclude
+      that pytorch3d&lt;=0.6.2 cannot be used.
+      And because pytorch3d==0.7.0 has no wheels with a matching platform tag and
+      pytorch3d==0.7.1 has no wheels with a matching Python ABI tag, we can conclude that
+      pytorch3d&lt;0.7.2 cannot be used.
+      And because pytorch3d&gt;=0.7.2 has no wheels with a matching platform tag and you
+      require pytorch3d, we can conclude that your requirements are unsatisfiable.
+
+      hint: An index URL
+      (https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py310_cu121_pyt241/pytorch3d-0.7.8-cp310-cp310-linux_x86_64.whl)
+      could not be queried due to a lack of valid authentication credentials (403
+      Forbidden).
+</code></pre>
+<p>However on the same machine, we can download the wheel with <code>wget</code>:</p>
+<pre><code class="language-sh">wget https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py310_cu121_pyt241/pytorch3d-0.7.8-cp310-cp310-linux_x86_64.whl
+--2025-02-05 09:15:31--  https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py310_cu121_pyt241/pytorch3d-0.7.8-cp310-cp310-linux_x86_64.whl
+Resolving dl.fbaipublicfiles.com (dl.fbaipublicfiles.com)... 108.156.184.100, 108.156.184.129, 108.156.184.78, ...
+Connecting to dl.fbaipublicfiles.com (dl.fbaipublicfiles.com)|108.156.184.100|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 20521514 (20M) [binary/octet-stream]
+Saving to: ‘pytorch3d-0.7.8-cp310-cp310-linux_x86_64.whl’
+
+pytorch3d-0.7.8-cp310-c 100%[=============================&gt;]  19.57M  16.9MB/s    in 1.2s
+
+2025-02-05 09:15:33 (16.9 MB/s) - ‘pytorch3d-0.7.8-cp310-cp310-linux_x86_64.whl’ saved [20521514/20521514]
+</code></pre>
+<p>Could we get some help? Thanks in advance!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-05 15:55</div>
+            <div class="timeline-body"><p>I can confirm that I can download the file. I can't really speculate as to why they'd throw a 403 there. This looks unrelated to the topic in this issue though, please see #9452</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TechnologyBrewery/habushu/issues/312.html">TechnologyBrewery/habushu#312</a> on 2025-04-01 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lendle">@lendle</a> on 2025-06-27 15:58</div>
+            <div class="timeline-body"><p>I'm facing a similar issue as @stoney95 where we're using artifactory with every team member &amp; CI pipeline having unique username &amp; password credentials. An additional wrinkle is that each team has a separate artifactory repo, so managing dependencies from different teams is already a bit of a pain (independent of uv).</p>
+<p>I'm trying to encourage folks to move to uv from poetry and this seems to be the first major hiccup I've run into where things are decidedly worse than poetry. At least without something like <code>config.http-basic</code>. All options I can think of require an additional step or tool on top of learning uv which is a pain.</p>
+<p>Our options:</p>
+<ul>
+<li>Use keychain<ul>
+<li>Requires specifying username in index url. Works okay for users who want to set up indexes in a global uv.toml config and use <code>uv pip</code> in place of <code>pip</code>, but is a non-starter for indexes in pyproject.toml</li>
+<li>Our repos are on the same host (or VIP or whatever) &amp; keychain auth is at the host level so multilple repos aren't too bad</li>
+<li>requires keychain</li>
+</ul>
+</li>
+<li>Use <code>UV_INDEX_{name}_USERNAME</code> and <code>_PASSWORD</code><ul>
+<li><p>Works for projects, but needs additional config. We can do something like:</p>
+<pre><code>export UV_INDEX_A_USERNAME=${ARTIFACTORY_USER}
+export UV_INDEX_A_PASSWORD=${ARTIFACToRY_PASS}
+export UV_INDEX_B_USERNAME=${ARTIFACTORY_USER}
+export UV_INDEX_B_PASSWORD=${ARTIFACTORY_PASS}
+</code></pre>
+<p>but we need to manually source that file each time we work with the project, or adopt a tool like <code>direnv</code> (which I'd never heard of before this thread</p>
+</li>
+<li><p>Requires making changes in two places whenever adding an index (<code>pyproject.toml</code> and wherever env vars are configured)</p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alanwilter">@alanwilter</a> on 2025-09-04 17:09</div>
+            <div class="timeline-body"><p>I'm trying to use <code>keychain</code> on my Mac.</p>
+<p>I did:</p>
+<pre><code class="language-sh">UV_PREVIEW_FEATURES=native-auth uv auth login https://www.reportlab.com/pypi/
+</code></pre>
+<p>entered login and password and I can see in keychain an entry:<code>uv:https://www.reportlab.com/pypi/</code></p>
+<p>Then I tried:</p>
+<pre><code class="language-sh">UV_PREVIEW_FEATURES=native-auth uv sync
+</code></pre>
+<p>but it failed with:</p>
+<pre><code>$ UV_PREVIEW_FEATURES=native-auth uv sync                                                                                                                        on git:main|✚1-1…9
+Resolved 86 packages in 2ms
+  × Failed to download `preppy==5.0.1`
+  ├─▶ Failed to fetch: `https://www.reportlab.com/pypi/packages/preppy-5.0.1-py3-none-any.whl`
+  ╰─▶ HTTP status client error (401 Unauthorized) for url (https://www.reportlab.com/pypi/packages/preppy-5.0.1-py3-none-any.whl/)
+  help: `preppy` (v5.0.1) was included because `pdfgen-showdown` (v0.1.0) depends on `rlextra` (v4.4.3.1) which depends on `preppy`
+</code></pre>
+<p>If I register in plain (<code>~/.local/share/uv/credentials/credentials.toml</code>), it works.
+If I use:</p>
+<pre><code>export UV_INDEX_REPORTLAB_USERNAME=&quot;...&quot;
+export UV_INDEX_REPORTLAB_PASSWORD=&quot;...&quot;
+</code></pre>
+<p>it works as well.</p>
+<p>I'm simply failing to get it to work with <code>UV_PREVIEW_FEATURES=native-auth</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-04 17:12</div>
+            <div class="timeline-body"><p>The native store doesn't support &quot;prefix&quot; matches yet. I think we need to fix that before you example will work. Can you login to <code>www.reportlab.com</code> instead? (We do support domain-level matches)</p>
+<p>p.s. Thank you for trying the feature and taking the time to provide feedback!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alanwilter">@alanwilter</a> on 2025-09-05 07:28</div>
+            <div class="timeline-body"><p>Yes, I can login to <code>www.reportlab.com</code> using the same credentials I use above.
+I'm not sure if I understand:</p>
+<blockquote>
+<p>The native store doesn't support &quot;prefix&quot; matches yet
+or
+We do support domain-level matches</p>
+</blockquote>
+<p>But let me know when you guys think Mac <code>keychain</code> should be working.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RStreitfeld">@RStreitfeld</a> on 2025-09-12 16:30</div>
+            <div class="timeline-body"><blockquote>
+<p>The native store doesn't support &quot;prefix&quot; matches yet. I think we need to fix that before you example will work. Can you login to <code>www.reportlab.com</code> instead? (We do support domain-level matches)</p>
+<p>p.s. Thank you for trying the feature and taking the time to provide feedback!</p>
+</blockquote>
+<p>I can confirm the issue and tried the domain login you suggested, means using
+<code>UV_PREVIEW_FEATURES=native-auth uv auth login www.my_company.com</code></p>
+<p>Then I try:
+<code>UV_PREVIEW_FEATURES=native-auth uv -v sync</code>
+and see in the debug output, that uv is looking for plain text credentials:
+<code>DEBUG Loaded credential file /home/...</code>
+...
+<code>DEBUG Checking text store for credentials for https://www.my_company.com/...</code>
+...
+<code>  ╰─▶ Missing credentials for https://www.my_company.com/...</code></p>
+<p>If I login with plain text storage, <code>UV_PREVIEW_FEATURES=native-auth uv -v sync</code> also works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-12 16:58</div>
+            <div class="timeline-body"><p>Thanks @RStreitfeld I'll look into that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15818.html">astral-sh/uv#15818</a> on 2025-09-12 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/threddast">@threddast</a> on 2025-11-13 14:02</div>
+            <div class="timeline-body"><p>I am having a similar issue, <code>uv auth</code> can read/write from/to keyring, but <code>uv sync</code> fails to load the credentials.</p>
+<p>UV version: tested both 0.8.23 and 0.9.7
+Platform: NixOS</p>
+<ul>
+<li>Set <code>UV_PREVIEW_FEATURES</code> to <code>native-auth</code>, <code>UV_KEYRING_PROVIDER</code> is unset</li>
+<li>Run <code>uv auth login gitlab.mycompany.com -t glpat-xxxx</code></li>
+<li>Check keyring, a new entry was created:<ul>
+<li>application: <code>uv</code></li>
+<li>service: <code>uv:gitlab.mycompany.com</code></li>
+<li>target: <code>default</code></li>
+<li>username: <code>__token__</code></li>
+</ul>
+</li>
+<li><code>uv auth token gitlab.mycompany.com</code> prints the correct token</li>
+<li>go to a project, <code>uv sync -vv</code></li>
+</ul>
+<pre><code>...
+DEBUG No cache entry for: https://gitlab.mycompany.com/api/v4/projects/17/packages/pypi/files/c3e6649ac4fe7d379735914a307f61b084d140fb9639cde3e81602397fd461cc/mypackage-0.2.2-py3-none-any.whl
+TRACE Sending fresh GET request for https://gitlab.mycompany.com/api/v4/projects/17/packages/pypi/files/c3e6649ac4fe7d379735914a307f61b084d140fb9639cde3e81602397fd461cc/mypackage-0.2.2-py3-none-any.whl
+TRACE Handling request for https://gitlab.mycompany.com/api/v4/projects/17/packages/pypi/files/c3e6649ac4fe7d379735914a307f61b084d140fb9639cde3e81602397fd461cc/mypackage-0.2.2-py3-none-any.whl with authentication policy always
+TRACE Request for https://gitlab.mycompany.com/api/v4/projects/17/packages/pypi/files/c3e6649ac4fe7d379735914a307f61b084d140fb9639cde3e81602397fd461cc/mypackage-0.2.2-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://gitlab.mycompany.com/api/v4/projects/17/packages/pypi/files/c3e6649ac4fe7d379735914a307f61b084d140fb9639cde3e81602397fd461cc/mypackage-0.2.2-py3-none-any.whl
+TRACE Checking for credentials for https://gitlab.mycompany.com/api/v4/projects/17/packages/pypi/files/c3e6649ac4fe7d379735914a307f61b084d140fb9639cde3e81602397fd461cc/mypackage-0.2.2-py3-none-any.whl
+TRACE No credentials in cache for URL https://gitlab.mycompany.com/api/v4/projects/17/packages/pypi/simple
+TRACE No credentials in cache for realm https://gitlab.mycompany.com
+DEBUG No netrc file found
+TRACE Checking lock for `credentials store` at `/home/user/.local/share/uv/credentials/credentials.toml.lock`
+DEBUG Acquired lock for `credentials store`
+DEBUG Released lock at `/home/user/.local/share/uv/credentials/credentials.toml.lock`
+DEBUG No credentials file found at /home/user/.local/share/uv/credentials/credentials.toml
+DEBUG Checking native store for credentials for index URL https://gitlab.mycompany.com/api/v4/projects/17/packages/pypi
+TRACE Checking keyring for URL https://gitlab.mycompany.com/api/v4/projects/17/packages/pypi
+TRACE Checking keyring for host gitlab.mycompany.com
+TRACE Considering retry of error: Middleware(Missing credentials for https://gitlab.mycompany.com/api/v4/projects/17/packages/pypi/files/c3e6649ac4fe7d379735914a307f61b084d140fb9639cde3e81602397fd461cc/mypackage-0.2.2-py3-none-any.whl)
+TRACE Cannot retry error: Neither an IO error nor a reqwest error
+TRACE Considering retry of error: Error { kind: WrappedReqwestError(DisplaySafeUrl { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;gitlab.mycompany.com&quot;)), port: None, path: &quot;/api/v4/projects/17/packages/pypi/files/c3e6649ac4fe7d379735914a307f61b084d140fb9639cde3e81602397fd461cc/mypackage-0.2.2-py3-none-any.whl&quot;, query: None, fragment: None }, WrappedReqwestError { error: Middleware(Missing credentials for https://gitlab.mycompany.com/api/v4/projects/17/packages/pypi/files/c3e6649ac4fe7d379735914a307f61b084d140fb9639cde3e81602397fd461cc/mypackage-0.2.2-py3-none-any.whl), problem_details: None }), retries: 0 }
+TRACE Cannot retry nested reqwest middleware error
+</code></pre>
+<ul>
+<li>unset <code>UV_PREVIEW_FEATURES</code></li>
+<li><code>uv auth login gitlab.mycompany.com -t glpat-xxx</code> -&gt; token now written in <code>credentials.toml</code></li>
+<li><code>uv sync</code> works (just to confirm that the glpat token is valid)</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

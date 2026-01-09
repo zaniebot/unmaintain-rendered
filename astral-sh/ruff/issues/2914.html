@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLR0401 Cyclic import implementation - astral-sh/ruff #2914</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLR0401 Cyclic import implementation</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2914">#2914</a>
+        opened by <a href="https://github.com/chanman3388">@chanman3388</a>
+        on 2023-02-15 09:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-02-15 09:40</div>
+            <div class="timeline-body"><p>Hello fellow ruffians(?)</p>
+<p>I was thinking of having a stab at implement pylint's R0401 cyclic import rule, but before I set off I thought it might be wise to ask your opinions and to clarify my current understanding of how ruff works.</p>
+<p>Would I be correct to say that, all the python files to be linted are collected, then each one is linted individually in parallel?
+It seems the expected output from <code>lint_path</code> is a <code>Result&lt;Diagnostics&gt;</code>. If I wanted to track imports, I noticed there was an <code>imports.rs</code> module, but to the best of my knowledge this is called via <code>linter::check_path</code> which is also only run per file?</p>
+<p>My initial thoughts were perhaps to change the APIs somewhat to return a <code>Vec</code> of the imports, create a graph and then detect cycles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-16 17:59</div>
+            <div class="timeline-body"><p>👍 Related to the question that was just asked here: https://github.com/charliermarsh/ruff/issues/970#issuecomment-1432608303.</p>
+<p>Everything you've said above is correct. Right now, we use a single-file model, so every file is analyzed independently. We do some work upfront to determine the package hierarchy (e.g., to determine the package root for every file), which is the only part of the analysis pipeline that depends on &quot;multiple files&quot;, so-to-speak.</p>
+<p>(And yeah -- <code>imports.rs</code> is for enforcing rules like &quot;Are the imports in this file sorted?&quot;. That logic <em>does</em> depend on being able to determine which imports are first-party, but <em>that</em> is done by looking at the contents of the package root as described above, so it doesn't depend on any deeper analysis than &quot;If we <code>import foo</code>, does a <code>foo</code> directory or <code>foo.py</code> file exist in <code>src</code>?)</p>
+<p>I think you're right that we want the linter pass to return some kind of &quot;dependency graph&quot; for each module, which should include the members that the module &quot;exports&quot; (implicitly, or explicitly via <code>__all__</code>), and the members that the module depends on. If we had that information, it would unlock tons of rules -- cyclic imports (although this relies on detecting whether the import is at the top-level, I assume, which requires tracking that metadata too), but also, &quot;member not defined in module&quot;, etc. (although for third-party modules, that would get trickier).</p>
+<p>We could start with a subset of that behavior, though, e.g., <em>just</em> the modules that a given module depends on, as you've described above. I'd be open to reviewing a PR or proposal to that effect!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-02-16 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">core</span> added by @charliermarsh on 2023-02-16 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/970.html">astral-sh/ruff#970</a> on 2023-02-16 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-02-17 09:06</div>
+            <div class="timeline-body"><p>Thanks for the feedback, sounds good! I've not been as free as I'd like but I'll come up with something on the weekend.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-02-26 00:24</div>
+            <div class="timeline-body"><p>Sorry I took so long to getting round to having a stab at this. Do you think it would make sense for me just to return the <code>Located&lt;U, T&gt;</code> Import and ImportFrom objects or should I be making some kind of custom type to house the full node path and its location?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-26 00:49</div>
+            <div class="timeline-body"><p>How does the cyclic import rule work? Does it just detect cyclic imports at the top-level? I.e., are delayed or deferred imports (in function bodies) ignored?</p>
+<p>I think either approach (returning AST nodes, or making a custom type) could work. We'll probably convert to some kind of internal representation when we do the cycle detection either way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-02-26 04:16</div>
+            <div class="timeline-body"><p>I can confirm that pylint doesn't detect cyclic imports in delayed/deferred imports and only in top-level imports.</p>
+<p>It also doesn't attribute the cyclic import to the correct module neither.
+I made something which looked like this:</p>
+<pre><code>src
+- __init__.py
+- e
+  - __init__.py
+  - a.py (import src.f.a)
+ - f
+  - __init__.py
+  - a.py (from src.g import a as b)
+ - g
+  - __init__.py
+  - a.py (import src.e.a)
+</code></pre>
+<p>There are also the modules <code>a</code>-<code>d</code> too that I made with cyclic imports but what pylint throws out is:</p>
+<pre><code>************* Module src.c.__init__
+src/c/__init__.py:1:0: R0401: Cyclic import (src.a -&gt; src.b) (cyclic-import)
+src/c/__init__.py:1:0: R0401: Cyclic import (src.e.a -&gt; src.f.a -&gt; src.g.a) (cyclic-import)
+src/c/__init__.py:1:0: R0401: Cyclic import (src.c.a -&gt; src.d.a) (cyclic-import)
+</code></pre>
+<p>Which I feel like is something we'd be able to avoid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3243.html">astral-sh/ruff#3243</a> on 2023-02-27 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-02-27 02:53</div>
+            <div class="timeline-body"><p>Given a go at at least propagating the information on all the imports every module has in #3243</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-03-25 23:23</div>
+            <div class="timeline-body"><p>Given Ruff's sheer speed, it has a good shot at implementing cyclic import detection even better than pylint and pyright !
+pylint's cyclic-import and duplicated-code reports are inconsistant: https://github.com/PyCQA/pylint/issues/374
+pyright still reports cyclic imports when said import is behind a <code>TYPE_CHECKING</code> check (aka a type-only import). https://github.com/microsoft/pyright/issues/3489#issuecomment-1133496121</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-25 23:26</div>
+            <div class="timeline-body"><p>Oh interesting! Yeah we do track that info, we should be able to differentiate between typing-only imports when detecting cycles :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mat100payette">@mat100payette</a> on 2023-06-16 17:59</div>
+            <div class="timeline-body"><p>Any update on this? It's one of the main things I'd love to have given that my tests sometimes fail on circular imports and having the fast linter spot these before running the tests would be optimal. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-06-16 22:47</div>
+            <div class="timeline-body"><p>There's an attempt here #3880
+Main issue I think is that it's quite different to the other rules as it needs information from other modules that are linted, which doesn't really vibe with how Ruff generally works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mat100payette">@mat100payette</a> on 2023-06-16 23:36</div>
+            <div class="timeline-body"><p>Lovely! Good luck with that then. I wish I could help but unfortunately my Rust knowledge is non-existent :c</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sanmai-NL">@sanmai-NL</a> on 2023-10-04 12:00</div>
+            <div class="timeline-body"><p>@charliermarsh CPython 3.12 now has low-overhead dynamic tracing, which could be used to trace imports and e.g., find cycles. https://docs.python.org/3.12/whatsnew/3.12.html#pep-669-low-impact-monitoring-for-cpython</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> added by @MichaReiser on 2024-03-30 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-10-24 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-24 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../DataDog/dd-trace-py/pulls/12820.html">DataDog/dd-trace-py#12820</a> on 2025-03-21 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../useblocks/sphinx-needs/pulls/1443.html">useblocks/sphinx-needs#1443</a> on 2025-04-22 20:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

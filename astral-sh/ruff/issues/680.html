@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E999 syntax error for match statement - astral-sh/ruff #680</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>E999 syntax error for match statement</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/680">#680</a>
+        opened by <a href="https://github.com/thosil">@thosil</a>
+        on 2022-11-11 10:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thosil">@thosil</a> on 2022-11-11 10:32</div>
+            <div class="timeline-body"><p>ruff throw a syntax error for code like this:</p>
+<pre><code class="language-python3">import sys
+
+value: str = sys.argv[1]
+
+match value:
+    case &quot;ruff&quot;:
+        print(&quot;Rough?&quot;)
+    case &quot;awesome&quot;:
+        print(&quot;Of course is it!&quot;)
+    case _:
+        print(&quot;what?&quot;)
+
+</code></pre>
+<pre><code>$ ruff ruff_and_match.py
+Found 1 error(s).
+ruff_and_match.py:5:8: E999 SyntaxError: invalid syntax. Got unexpected token 'value'
+</code></pre>
+<h3>versions</h3>
+<ul>
+<li>Python 3.10.6</li>
+<li>ruff 0.0.108</li>
+</ul>
+<h3>config:</h3>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 100
+select=[&quot;E&quot;, &quot;F&quot;, &quot;W&quot;, &quot;U&quot;, &quot;N&quot;, &quot;C&quot;, &quot;B&quot;, &quot;A&quot;, &quot;T&quot;, &quot;Q&quot;, &quot;RUF&quot;, &quot;M&quot;, &quot;ANN&quot;]
+ignore=[&quot;F403&quot;, &quot;F405&quot;, &quot;B008&quot;, &quot;A003&quot;]
+
+</code></pre>
+<p>(and yes ruff is awesome ;-))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-11-11 10:59</div>
+            <div class="timeline-body"><p>Yeah, ruff is using RustPython which doesn't support match yet.</p>
+<p>Also see https://github.com/charliermarsh/ruff/issues/282 and https://github.com/charliermarsh/ruff/issues/54</p>
+<p>There is a note in the README, but it's a bit hidden.</p>
+<blockquote>
+<p>Ruff does not yet support a few Python 3.9 and 3.10 language features, including structural pattern matching and parenthesized context managers.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thosil">@thosil</a> on 2022-11-11 11:57</div>
+            <div class="timeline-body"><p>ok, sorry for the noise :grimacing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @thosil on 2022-11-11 11:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-11-11 12:08</div>
+            <div class="timeline-body"><p>No worries, just pointing it out. :) I think Charlie is working on alternatives to RustPython that could fix that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-11 15:12</div>
+            <div class="timeline-body"><p>Yeah, sadly those aren't supported yet. Another possibility is rewriting the RustPython parser to support that syntax! (It has to be rewritten anyway, CPython itself moved to a new parser to support those expressions which were &quot;impossible&quot; in the old parser.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1140.html">astral-sh/ruff#1140</a> on 2022-12-08 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1228.html">astral-sh/ruff#1228</a> on 2022-12-13 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-15 13:18</div>
+            <div class="timeline-body"><p>(For clarity: this is still open, but a dupe of #282.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-22 00:05</div>
+            <div class="timeline-body"><p>Fixed as of v0.0.250 which included <code>match</code> statement support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eddyg">@eddyg</a> on 2023-02-23 00:08</div>
+            <div class="timeline-body"><p>Holy cow! 🎉 That's fantastic news, Charlie! Can't wait to replace all my <code>elif</code> chains with <code>match</code> statements now. 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-23 00:10</div>
+            <div class="timeline-body"><p>🎸 🎸 🎸</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

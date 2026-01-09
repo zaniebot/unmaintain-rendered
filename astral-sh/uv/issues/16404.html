@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-0.9.5: `pip_install::install_with_system_interpreter` fails (over `EXTERNALLY-MANAGED`?) - astral-sh/uv #16404</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-0.9.5: `pip_install::install_with_system_interpreter` fails (over `EXTERNALLY-MANAGED`?)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16404">#16404</a>
+        opened by <a href="https://github.com/mgorny">@mgorny</a>
+        on 2025-10-22 02:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mgorny">@mgorny</a> on 2025-10-22 02:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code>failures:
+
+---- pip_install::install_with_system_interpreter stdout ----
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Unfiltered output ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+----- stdout -----
+
+----- stderr -----
+Using Python 3.12.12 environment at: /usr
+error: The interpreter at /usr is externally managed, and indicates the following:
+
+
+  The system-wide Python installation in Gentoo should be maintained
+  using the system package manager (e.g. emerge).
+
+  If the package in question is not packaged for Gentoo, please
+  consider installing it inside a virtual environment, e.g.:
+
+  python -m venv /path/to/venv
+  . /path/to/venv/bin/activate
+  pip install mypackage
+
+  To exit the virtual environment, run:
+
+  deactivate
+
+  The virtual environment is not deleted, and can be re-entered by
+  re-sourcing the activate file.
+
+Consider creating a virtual environment with `uv venv`.
+hint: This happens because the `--system` flag was used, which selected the system Python interpreter.
+
+────────────────────────────────────────────────────────────────────────────────
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: install_with_system_interpreter
+Source: crates/uv/tests/it/pip_install.rs:13013
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    2     2 │ exit_code: 2
+    3     3 │ ----- stdout -----
+    4     4 │ 
+    5     5 │ ----- stderr -----
+    6       │-Using Python 3.12.[X] environment at: [PYTHON-PATH]
+    7       │-error: The interpreter at [PYTHON-PATH] is externally managed, and indicates the following:
+          6 │+Using Python 3.12.[X] environment at: /usr
+          7 │+error: The interpreter at /usr is externally managed, and indicates the following:
+          8 │+
+          9 │+
+         10 │+  The system-wide Python installation in Gentoo should be maintained
+         11 │+  using the system package manager (e.g. emerge).
+         12 │+
+         13 │+  If the package in question is not packaged for Gentoo, please
+         14 │+  consider installing it inside a virtual environment, e.g.:
+         15 │+
+         16 │+  python -m venv /path/to/venv
+         17 │+  . /path/to/venv/bin/activate
+         18 │+  pip install mypackage
+    8    19 │ 
+    9       │-  This Python installation is managed by uv and should not be modified.
+         20 │+  To exit the virtual environment, run:
+         21 │+
+         22 │+  deactivate
+         23 │+
+         24 │+  The virtual environment is not deleted, and can be re-entered by
+         25 │+  re-sourcing the activate file.
+   10    26 │ 
+   11    27 │ Consider creating a virtual environment with `uv venv`.
+   12    28 │ hint: This happens because the `--system` flag was used, which selected the system Python interpreter.
+────────────┴───────────────────────────────────────────────────────────────────
+To update snapshots run `cargo insta review`
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+
+thread 'pip_install::install_with_system_interpreter' panicked at /var/tmp/portage/dev-python/uv-0.9.5/work/cargo_home/gentoo/insta-1.4
+3.2/src/runtime.rs:694:13:
+snapshot assertion for 'install_with_system_interpreter' failed in line 13013
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    pip_install::install_with_system_interpreter
+
+test result: FAILED^O. 2236 passed; 1 failed; 2 ignored; 0 measured; 0 filtered out; finished in 1423.22s
+
+error: test failed, to rerun pass `--test it`
+</code></pre>
+<h3>Platform</h3>
+<p>Gentoo Linux amd64</p>
+<h3>Version</h3>
+<p>0.9.5</p>
+<h3>Python version</h3>
+<p>3.12.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @mgorny on 2025-10-22 02:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-22 04:10</div>
+            <div class="timeline-body"><p>Yep, I noticed this would fail after merge and immediately fixed it https://github.com/astral-sh/uv/pull/16392</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgorny">@mgorny</a> on 2025-10-22 06:10</div>
+            <div class="timeline-body"><p>Ah, sorry, was in a hurry and didn't check main.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-22 18:24</div>
+            <div class="timeline-body"><p>No problem</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-10-22 18:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

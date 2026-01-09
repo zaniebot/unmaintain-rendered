@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv venv` sometimes overwrites symlink with a new directory - astral-sh/uv #14670</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv venv` sometimes overwrites symlink with a new directory</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14670">#14670</a>
+        opened by <a href="https://github.com/YodaEmbedding">@YodaEmbedding</a>
+        on 2025-07-16 19:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/YodaEmbedding">@YodaEmbedding</a> on 2025-07-16 19:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv venv</code> behaves differently depending on <code>.venv</code> directory state:</p>
+<ul>
+<li>If symlinked directory does not exist, <code>uv venv</code> fails.</li>
+<li>If symlinked directory exists, <code>uv venv</code> succeeds and preserves the symlink.</li>
+<li>If symlinked directory exists and <code>uv venv</code> is run twice, the symlink is replaced with a new directory.</li>
+</ul>
+<p>Desired behavior: consistency, e.g. the <code>uv venv</code> should not delete an existing symlink.</p>
+<p>Related: https://github.com/astral-sh/uv/issues/1472</p>
+<hr />
+<h3>Details</h3>
+<p>If symlinked directory does not exist:</p>
+<pre><code class="language-bash">λ rm -rf .venv
+λ ln -rs ~/.local/state/uv/virtualenvs/&quot;${PWD##*/}&quot; .venv
+
+λ uv venv
+Using CPython 3.8.20
+Creating virtual environment at: .venv
+uv::venv::creation
+
+  × Failed to create virtualenv
+  ╰─▶ failed to create directory `$PWD/.venv`: File exists (os error 17)
+</code></pre>
+<hr />
+<p>If symlinked directory exists:</p>
+<pre><code class="language-bash">λ rm -rf .venv
+λ ln -rs ~/.local/state/uv/virtualenvs/&quot;${PWD##*/}&quot; .venv
+λ mkdir ~/.local/state/uv/virtualenvs/&quot;${PWD##*/}&quot;
+
+λ uv venv
+Using CPython 3.8.20
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+
+λ ls -la .venv
+lrwxr-xr-x 1 user group 54 2025-07-14 00:00:00 .venv -&gt; ../../../.local/state/uv/virtualenvs/&quot;${PWD##*/}&quot;
+
+# Yay!
+</code></pre>
+<hr />
+<p>If symlinked directory exists, but <code>uv venv</code> is run <em>twice</em>:</p>
+<pre><code class="language-bash">λ rm -rf .venv
+λ ln -rs ~/.local/state/uv/virtualenvs/&quot;${PWD##*/}&quot; .venv
+λ mkdir ~/.local/state/uv/virtualenvs/&quot;${PWD##*/}&quot;
+
+λ uv venv
+Using CPython 3.8.20
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+
+λ ls -la .venv
+lrwxr-xr-x 1 user group 54 2025-07-14 00:00:00 .venv -&gt; ../../../.local/state/uv/virtualenvs/&quot;${PWD##*/}&quot;
+
+λ uv venv
+Using CPython 3.8.20
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+
+λ ls -la .venv
+total 12K
+drwxr-xr-x  7 user group  224 2025-07-14 20:56:17 .
+drwxr-xr-x 35 user group 1.1K 2025-07-14 20:56:17 ..
+drwxr-xr-x 14 user group  448 2025-07-14 20:56:17 bin
+drwxr-xr-x  3 user group   96 2025-07-14 20:56:17 lib
+-rw-r--r--  1 user group    1 2025-07-14 20:56:17 .gitignore
+-rw-r--r--  1 user group   43 2025-07-14 20:56:17 CACHEDIR.TAG
+-rw-r--r--  1 user group  211 2025-07-14 20:56:17 pyvenv.cfg
+
+# Destroyed the symlink?!
+</code></pre>
+<hr />
+<h3>Platform</h3>
+<p>Darwin 23.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.13 (62ed17b23 2025-06-12)</p>
+<h3>Python version</h3>
+<p>Python 3.8.20</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @YodaEmbedding on 2025-07-16 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-16 19:25</div>
+            <div class="timeline-body"><p>I see a slightly different behavior, but.. yeah we seem to be breaking the symlink</p>
+<pre><code>❯ ln -s foo .venv
+❯ ls -lah
+total 0
+drwxr-xr-x   3 zb    wheel    96B Jul 16 14:24 .
+drwxrwxrwt  15 root  wheel   480B Jul 16 14:23 ..
+lrwxr-xr-x   1 zb    wheel     3B Jul 16 14:24 .venv -&gt; foo
+❯ uv venv
+Using CPython 3.13.3
+Creating virtual environment at: .venv
+uv::venv::creation
+
+  × Failed to create virtualenv
+  ╰─▶ failed to create directory `.venv`: File exists (os error 17)
+❯ ls -lah
+total 0
+drwxr-xr-x   3 zb    wheel    96B Jul 16 14:24 .
+drwxrwxrwt  15 root  wheel   480B Jul 16 14:23 ..
+lrwxr-xr-x   1 zb    wheel     3B Jul 16 14:24 .venv -&gt; foo
+❯ mkdir foo
+❯ uv venv
+Using CPython 3.13.3
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+❯ ls -lah
+total 0
+drwxr-xr-x   4 zb    wheel   128B Jul 16 14:24 .
+drwxrwxrwt  15 root  wheel   480B Jul 16 14:23 ..
+lrwxr-xr-x   1 zb    wheel     3B Jul 16 14:24 .venv -&gt; foo
+drwxr-xr-x   7 zb    wheel   224B Jul 16 14:24 foo
+❯ uv venv
+Using CPython 3.13.3
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+❯ ls -lah
+total 0
+drwxr-xr-x   4 zb    wheel   128B Jul 16 14:24 .
+drwxrwxrwt  15 root  wheel   480B Jul 16 14:23 ..
+drwxr-xr-x   7 zb    wheel   224B Jul 16 14:24 .venv
+drwxr-xr-x   7 zb    wheel   224B Jul 16 14:24 foo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14933.html">astral-sh/uv#14933</a> on 2025-07-28 06:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-07-28 07:01</div>
+            <div class="timeline-body"><p>@YodaEmbedding I also encountered a similar problem, I submitted a fix to mr https://github.com/astral-sh/uv/pull/14933, below is the terminal log output after my fix</p>
+<pre><code class="language-bash">➜  test-env ls -lah
+total 0
+drwxr-xr-x   2 wingmunfung  staff    64B Jul 28 14:47 .
+drwxr-xr-x  47 wingmunfung  staff   1.5K Jul 28 14:37 ..
+➜  test-env alias uv-dev='/Users/wingmunfung/workspace/uv/target/debug/uv'
+➜  test-env ln -s foo .venv
+➜  test-env ls -lah        
+total 0
+drwxr-xr-x   3 wingmunfung  staff    96B Jul 28 14:47 .
+drwxr-xr-x  47 wingmunfung  staff   1.5K Jul 28 14:37 ..
+lrwxr-xr-x   1 wingmunfung  staff     3B Jul 28 14:47 .venv -&gt; foo
+➜  test-env uv-dev venv
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+Activate with: source foo/bin/activate
+
+### virtual venv create successful
+
+➜  test-env ls -lah
+total 0
+drwxr-xr-x   4 wingmunfung  staff   128B Jul 28 14:47 .
+drwxr-xr-x  47 wingmunfung  staff   1.5K Jul 28 14:37 ..
+lrwxr-xr-x   1 wingmunfung  staff     3B Jul 28 14:47 .venv -&gt; foo
+drwxr-xr-x@  7 wingmunfung  staff   224B Jul 28 14:47 foo
+➜  test-env uv-dev venv
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+? A virtual environment already exists at `.venv`. Do you want to replace it? 
+✔ A virtual environment already exists at `.venv`. Do you want to replace it? · yes
+Activate with: source foo/bin/activate
+➜  test-env ls -lah
+total 0
+drwxr-xr-x   4 wingmunfung  staff   128B Jul 28 14:48 .
+drwxr-xr-x  47 wingmunfung  staff   1.5K Jul 28 14:37 ..
+lrwxr-xr-x   1 wingmunfung  staff     3B Jul 28 14:47 .venv -&gt; foo
+drwxr-xr-x@  7 wingmunfung  staff   224B Jul 28 14:48 foo
+
+### the symlink still exists
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-09 03:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> F841 is triggered by unused variables in tuple unpacking from with statements (#890 regression) - astral-sh/ruff #11797</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1> F841 is triggered by unused variables in tuple unpacking from with statements (#890 regression)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11797">#11797</a>
+        opened by <a href="https://github.com/andykais">@andykais</a>
+        on 2024-06-07 15:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/andykais">@andykais</a> on 2024-06-07 15:30</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>An older issue (https://github.com/astral-sh/ruff/issues/890#) called out this behavior as fixed, but it appears to be reintroduced in <code>ruff 0.4.7</code>. The following code snippet gives an error on <code>F841</code>:</p>
+<pre><code class="language-py">def paginate():
+  pass
+
+def foo():
+  total, results = paginate()
+  return results
+</code></pre>
+<p><code>ruff check ruff_test.py</code></p>
+<pre><code>ruff_test.py:5:3: F841 Local variable `total` is assigned to but never used
+  |
+4 | def foo():
+5 |   total, results = paginate()
+  |   ^^^^^ F841
+6 |   return results
+  |
+  = help: Remove assignment to unused variable `total`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>The error goes away by prefixing <code>total</code> with <code>_</code>. Is this now the required recommendation for unused tuple unpacking args? I noticed that for loops do not exhibit this error. E.g.</p>
+<pre><code class="language-py">  for i in range(100):
+    print('foo')
+</code></pre>
+<p>this does not report an error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-10 03:14</div>
+            <div class="timeline-body"><p>With apologies for the delay, let me try to give an update on the current state of things!</p>
+<blockquote>
+<p>The following code snippet gives an error on F841</p>
+</blockquote>
+<p>At the moment (Ruff version at the time of this writing is 0.7.3), <a href="https://docs.astral.sh/ruff/rules/unused-variable/"><code>F841</code></a> is only triggered for unpacked assignments when <a href="https://docs.astral.sh/ruff/preview/"><code>preview</code></a> mode is enabled. <a href="https://play.ruff.rs/1c343a63-cc5d-44c7-81f6-36ef449fbdf9">Playground link</a> - you can change the preview mode setting by clicking the settings icon on the left hand side.</p>
+<blockquote>
+<p>The error goes away by prefixing total with _. Is this now the required recommendation for unused tuple unpacking args?</p>
+</blockquote>
+<p>That is indeed the default recommendation, and there is sometimes an available (unsafe) fix for this, which will prefix the unused variable with an underscore. You can customize the regex used to determine what is a valid name for a &quot;dummy&quot; variable <a href="https://docs.astral.sh/ruff/settings/#lint_dummy-variable-rgx">in the linter settings</a>.</p>
+<blockquote>
+<p>I noticed that for loops do not exhibit this error</p>
+</blockquote>
+<p>Loop control variables are a treated differently than variables that you are assigning a value to, so there is a separate lint for this - it's <a href="https://docs.astral.sh/ruff/rules/unused-loop-control-variable/"><code>B007</code></a>.</p>
+<p>Hope this helps, however belated!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2024-11-10 03:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

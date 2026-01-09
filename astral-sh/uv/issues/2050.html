@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv` cannot reproduce `pip install &quot;.[others]&quot;` (unless `-e` is specified) - astral-sh/uv #2050</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv` cannot reproduce `pip install &quot;.[others]&quot;` (unless `-e` is specified)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2050">#2050</a>
+        opened by <a href="https://github.com/kelvindecosta">@kelvindecosta</a>
+        on 2024-02-28 18:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kelvindecosta">@kelvindecosta</a> on 2024-02-28 18:32</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<h2>Overview</h2>
+<p><code>uv</code> currently doesn't account for <code>pip install &quot;.[dev]&quot;</code>, a command used to install a local package/project with additional, in this case <code>dev</code>, dependencies defined in <code>pyproject.toml</code>.</p>
+<p>Unless this type of installation is a bad practice, I think <code>uv</code> should be able to emulate this <code>pip</code> command.</p>
+<h2>Actual Behavior</h2>
+<p>When running:</p>
+<pre><code>uv pip install &quot;.[dev]&quot;
+</code></pre>
+<p>the following output is shown:</p>
+<pre><code>error: Failed to parse `.[dev]`
+  Caused by: Expected package name starting with an alphanumeric character, found '.'
+.[dev]
+^
+</code></pre>
+<p>With <code>--verbose</code>:</p>
+<pre><code> uv::requirements::from_source source=.[dev]
+error: Failed to parse `.[dev]`
+  Caused by: Expected package name starting with an alphanumeric character, found '.'
+.[dev]
+^
+</code></pre>
+<p>It works flawlessly when using the <code>-e</code> flag:</p>
+<pre><code> uv::requirements::from_source source=-e .[dev]
+    0.005651s DEBUG uv_interpreter::virtual_env Found a virtualenv through CONDA_PREFIX at: /home/kelvin/.miniconda/envs/dotlas
+    0.005755s DEBUG uv_interpreter::interpreter Cached interpreter info for Python 3.9.16, skipping probing: /home/kelvin/.miniconda/envs/dotlas/bin/python
+    0.005773s DEBUG uv::commands::pip_install Using Python 3.9.16 environment at /home/kelvin/.miniconda/envs/dotlas/bin/python
+Audited 1 package in 16ms
+</code></pre>
+<h2>Expected Behavior</h2>
+<p>Running <code>pip install &quot;.[dev]&quot;</code> on its own works, so I'm assuming that <code>uv</code> should handle this too.</p>
+<h2>System Info</h2>
+<pre><code># uname -a
+Linux vision 5.10.179-1-MANJARO #1 SMP PREEMPT Wed Apr 26 19:18:39 UTC 2023 x86_64 GNU/Linux
+</code></pre>
+<pre><code># uv --version
+uv 0.1.11
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-28 18:35</div>
+            <div class="timeline-body"><p>Thanks for the great writeup! This is a duplicate of #313</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-28 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2024-02-28 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-02-28 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kelvindecosta">@kelvindecosta</a> on 2024-02-28 20:06</div>
+            <div class="timeline-body"><p>Ah sorry about that, I couldn't find it via the search. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eirnym">@eirnym</a> on 2024-03-10 13:16</div>
+            <div class="timeline-body"><p>@zanieb it's not the duplicate of #313 as it's installing package <code>.</code> (which is supported) but specific section of dependencies. Please, reopen the issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eirnym">@eirnym</a> on 2024-03-10 13:18</div>
+            <div class="timeline-body"><p>Also <code>-e</code> is not a mandatory key and it's not very useful if a person doesn't actively develop a package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 13:28</div>
+            <div class="timeline-body"><p>@eirnym -- I'm not sure what you're referring to exactly but yes, extras are supported just file with local paths:</p>
+<pre><code>pip install &quot;black[d] @ scripts/editable-installs/black_editable&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eirnym">@eirnym</a> on 2024-03-10 13:55</div>
+            <div class="timeline-body"><p>if extras are supported and installing from local repository is supported, why <code>.[others]</code> is not supported?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 14:04</div>
+            <div class="timeline-body"><p>Take a look at #313. We do not support <code>uv pip install .</code> right now -- if it's a non-editable install, it needs to include the package name syntax, like <code>uv pip install &quot;my-project @ .</code>&quot;.</p>
+<p>So, similarly if we don't support <code>uv pip install .</code>, then <code>uv pip install .[others]</code> wouldn't work either.</p>
+<p><code>uv pip install &quot;my-project @ .&quot;</code> and <code>uv pip install &quot;my-project[others] @ .&quot;</code> work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eirnym">@eirnym</a> on 2024-03-10 20:18</div>
+            <div class="timeline-body"><p>Package name can be taken from pyproject/seruptools</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eirnym">@eirnym</a> on 2024-03-10 20:24</div>
+            <div class="timeline-body"><p>By the way, package name is required as well as for <code>-e .</code> installation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-11 14:52</div>
+            <div class="timeline-body"><p>We do not require the package name for <code>-e .</code> installs (we infer it there). We'll infer package names everywhere in #313.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

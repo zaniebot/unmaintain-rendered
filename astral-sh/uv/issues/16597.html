@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv tool run failing for gitlab private pypi packages - astral-sh/uv #16597</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv tool run failing for gitlab private pypi packages</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16597">#16597</a>
+        opened by <a href="https://github.com/lmco-shuynh">@lmco-shuynh</a>
+        on 2025-11-05 00:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lmco-shuynh">@lmco-shuynh</a> on 2025-11-05 00:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>As part of my Dockerfile, I do a uv install of a pypi package that I have in a private gitlab instance.</p>
+<pre><code class="language-docker">RUN uv tool install extendr --no-cache-dir --index https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.mydomain.com/api/v4/projects/165200/packages/pypi/simple
+</code></pre>
+<p>When I use the new docker image, I can see the uv tool installed correctly.</p>
+<pre><code class="language-shell">[root@9e8409168a69 /]# uv tool list
+extendr v0.3.0
+- extendr
+</code></pre>
+<p>When I try to run the tool, I get the following error:</p>
+<pre><code class="language-shell">[root@9e8409168a69 /]# uv tool run extendr --version
+  × No solution found when resolving tool dependencies:
+  ╰─▶ Because extendr was not found in the package registry and you require extendr, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+<p>It appears it tries to install the package from the default pypi repository instead of using the installed one.</p>
+<p>Running with DEBUG, I can see it is able to locate the installation:</p>
+<pre><code class="language-shell">DEBUG Checking for Python environment at: `/root/.local/share/uv/tools/extendr`
+DEBUG Found existing environment for tool `extendr`: /root/.local/share/uv/tools/extendr
+DEBUG Released lock at `/root/.local/share/uv/tools/.lock`
+</code></pre>
+<p>With some trial and error, I noticed that if I modify the <code>uv-receipt.toml</code> to remove the <code>tool.options</code> that was inserted during the install, I can run my application.</p>
+<pre><code class="language-shell">cat /root/.local/share/uv/tools/extendr/uv-receipt.toml
+[tool]
+requirements = [{ name = &quot;extendr&quot; }]
+entrypoints = [
+    { name = &quot;extendr&quot;, install-path = &quot;/root/.local/bin/extendr&quot;, from = &quot;extendr&quot; },
+]
+
+[tool.options]
+index = [{ url = &quot;https://gitlab.mydomain.com/api/v4/projects/165200/packages/pypi/simple&quot;, explicit = false, default = false, format = &quot;simple&quot;, authenticate = &quot;auto&quot; }]
+</code></pre>
+<p>I remove the <code>[tool.options]</code> so the file now looks like this:</p>
+<pre><code class="language-shell">cat /root/.local/share/uv/tools/extendr/uv-receipt.toml
+[tool]
+requirements = [{ name = &quot;extendr&quot; }]
+entrypoints = [
+    { name = &quot;extendr&quot;, install-path = &quot;/root/.local/bin/extendr&quot;, from = &quot;extendr&quot; },
+]
+</code></pre>
+<p>I can now successfully run my application</p>
+<pre><code class="language-shell">uv tool run extendr --version
+Extendr v0.3.0
+</code></pre>
+<p>Is this expected behavior?</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04</p>
+<h3>Version</h3>
+<p>uv 0.9.7</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @lmco-shuynh on 2025-11-05 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-18 17:03</div>
+            <div class="timeline-body"><p>Ideally the install directory should be in PATH (it uses the XDG bin dir by default), so running <code>extendr</code> should also work. But I agree that that's very unintuitive behavior to revalidate the index.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

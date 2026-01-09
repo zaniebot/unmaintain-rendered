@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't build `scikit-build-core` project with Fortran component - astral-sh/uv #11924</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't build `scikit-build-core` project with Fortran component</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11924">#11924</a>
+        opened by <a href="https://github.com/ZedThree">@ZedThree</a>
+        on 2025-03-03 14:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ZedThree">@ZedThree</a> on 2025-03-03 14:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Steps to reproduce:</p>
+<ol>
+<li>Create a new project using <code>scikit-build-core</code>: <code>uv init --build-backend scikit-build-core</code></li>
+<li>Add <code>Fortran</code> to the list of languages in the <code>project</code> call: <code>sed -i 's/CXX/CXX Fortran/'</code></li>
+<li>Build: <code>uv pip install .</code></li>
+</ol>
+<p>This fails with:</p>
+<pre><code>Resolved 1 package in 1ms
+  × Failed to build `testproject @ file:///tmp/testproject`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `scikit_build_core.build.build_wheel` failed (exit status: 1)
+
+      [stdout]
+      *** scikit-build-core 0.11.0 using CMake 3.31.5 (wheel)
+      *** Configuring CMake...
+      loading initial cache file build/cp313-cp313-linux_x86_64/CMakeInit.txt
+      -- The CXX compiler identification is Clang 19.1.7
+      -- The Fortran compiler identification is unknown
+      -- Detecting CXX compiler ABI info
+      -- Detecting CXX compiler ABI info - done
+      -- Check for working CXX compiler: /usr/bin/clang++ - skipped
+      -- Detecting CXX compile features
+      -- Detecting CXX compile features - done
+      -- Detecting Fortran compiler ABI info
+      -- Configuring incomplete, errors occurred!
+
+      [stderr]
+      CMake Error: Error required internal CMake variable not set, cmake may not be built correctly.
+      Missing variable is:
+      CMAKE_Fortran_PREPROCESS_SOURCE
+      CMake Error at /usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile):
+        Failed to generate test project build system.
+      Call Stack (most recent call first):
+        /usr/share/cmake/Modules/CMakeTestFortranCompiler.cmake:20 (CMAKE_DETERMINE_COMPILER_ABI)
+        CMakeLists.txt:2 (project)
+</code></pre>
+<p>The relevant bit is: <code>The Fortran compiler identification is unknown</code>. I notice that the C++ compiler is picked up as Clang, so I guess this is either because:</p>
+<p>a) <code>uv</code> is setting the <code>CXX</code> environment variable (or <code>CMAKE_C_COMPILER</code>?) to <code>clang++</code>, and not setting <code>FC</code>
+b) <code>uv</code> is setting <code>FC</code> to <code>flang</code> but I don't have that installed</p>
+<p>Importantly, the project builds correctly without <code>uv</code>, and picks up the GNU compilers.</p>
+<p>How do I override whatever <code>uv</code> is doing here? I can set <code>--config-settings=cmake.args=-DCMAKE_Fortran_COMPILER=gfortran</code>, but is there a nicer way for end users?</p>
+<h3>Platform</h3>
+<p>Linux 6.13.3-1-default x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.5.23</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ZedThree on 2025-03-03 14:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

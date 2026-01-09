@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminate dependency resolution for frequent `uvx` calls - astral-sh/uv #17332</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Eliminate dependency resolution for frequent `uvx` calls</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/17332">#17332</a>
+        opened by <a href="https://github.com/zmeir">@zmeir</a>
+        on 2026-01-06 09:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zmeir">@zmeir</a> on 2026-01-06 09:48</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have a use-case in which I am required to run <code>uvx</code> frequently with the same exact arguments.</p>
+<p>For example:</p>
+<pre><code class="language-bash">uvx --index https://corporate.index.com/simple --index-strategy unsafe-best-match my-tool
+</code></pre>
+<p>I know the first run will take longer because it needs to build up the cache,
+but I expected the next immediate run to take milliseconds because the cache is already there and nothing in the indices changed.</p>
+<p>What actually happens is that the next call (even seconds after the first) still takes about 5 because it needs to complete the dependency resolution, while still eventually using the tool from the cache.</p>
+<p>I assume this problem is less prevalent when using just the default pypi index.</p>
+<p>I was wondering if there is some option to tell <code>uvx</code> to skip dependency resolution if the cache already provides the requested tool and it is not too stale?</p>
+<p>I know I can roughly achieve the behavior I want by adding the <code>--offline</code> flag, but then I will need to run multiple commands:</p>
+<ol>
+<li>Check if cache exists / last tool invocation</li>
+<li>If too stale - run <code>uvx</code> without the <code>--offline</code> flag</li>
+<li>If fresh enough - run <code>uvx --offline</code></li>
+</ol>
+<p>However, in my scenario I am constrained to use only a single command.</p>
+<p>Additionally, I can't run <code>uv tool install</code> as a preliminary step.</p>
+<h3>Platform</h3>
+<p>Darwin 23.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.9.21 (0dc9556ad 2025-12-30)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zmeir on 2026-01-06 09:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-06 18:32</div>
+            <div class="timeline-body"><blockquote>
+<p>Additionally, I can't run <code>uv tool install</code> as a preliminary step.</p>
+</blockquote>
+<p>What's the problem with <code>uv tool install</code>? <code>uvx</code> is intentionally built as an on-the-fly command, while the full <code>uv tool</code> offers the control to install once and then use installed tools.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-06 18:48</div>
+            <div class="timeline-body"><p>It sounds like you want https://github.com/astral-sh/uv/issues/10380</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-06 19:03</div>
+            <div class="timeline-body"><p>Is your index not returning cache control headers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zmeir">@zmeir</a> on 2026-01-06 20:27</div>
+            <div class="timeline-body"><p>@konstin</p>
+<blockquote>
+<p>What's the problem with <code>uv tool install</code>?</p>
+</blockquote>
+<p>No problem at all :)</p>
+<p>The problem is with the constraints of my system.<br />
+I am working with a framework that only allows me to set up a single command for tool definitions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zmeir">@zmeir</a> on 2026-01-06 21:00</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<blockquote>
+<p>It sounds like you want https://github.com/astral-sh/uv/issues/10380</p>
+</blockquote>
+<p>I think I actually need it the other way around 😅</p>
+<p>If I understand correctly, this PR is about &quot;online first, and offline as fallback&quot;.<br />
+I want &quot;offline first, and online as fallback&quot;.</p>
+<blockquote>
+<p>Is your index not returning cache control headers?</p>
+</blockquote>
+<p>Huh, that's a good catch. I wasn't aware of that at all. Thanks!</p>
+<p>I see UV allows me to <a href="https://docs.astral.sh/uv/concepts/indexes/#customizing-cache-control-headers">customize cache-control headers</a>.<br />
+Sounds promising :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-06 21:02</div>
+            <div class="timeline-body"><p>Yeah we typically recommend the headers in the docs, which match PyPI:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;example&quot;
+url = &quot;https://example.com/simple&quot;
+cache-control = { api = &quot;max-age=600&quot;, files = &quot;max-age=365000000, immutable&quot; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-06 21:33</div>
+            <div class="timeline-body"><p>That issue also includes the inversion, e.g., https://github.com/astral-sh/uv/issues/10380#issuecomment-3219843390</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zmeir">@zmeir</a> on 2026-01-06 22:16</div>
+            <div class="timeline-body"><p>Thank you all for the quick responses.<br />
+I think I have all I need to take it from here.</p>
+<p>Keep up the good work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zmeir on 2026-01-06 22:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

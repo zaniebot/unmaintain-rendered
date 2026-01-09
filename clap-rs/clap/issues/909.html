@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USAGE change when not using &quot;=&quot; before argument - clap-rs/clap #909</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>USAGE change when not using &quot;=&quot; before argument</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/909">#909</a>
+        opened by <a href="https://github.com/logaritmisk">@logaritmisk</a>
+        on 2017-03-21 09:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/logaritmisk">@logaritmisk</a> on 2017-03-21 09:37</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p>rustc 1.16.0 (30cf806ef 2017-03-10)</p>
+<h3>Affected Version of clap</h3>
+<p>0d2a3f6</p>
+<h3>Expected Behavior Summary</h3>
+<p>Using<code>-l swe</code> to be the same as <code>-l=swe</code></p>
+<h3>Actual Behavior Summary</h3>
+<p>Usage change when using <code>-l swe</code>.</p>
+<h3>Steps to Reproduce the issue</h3>
+<pre><code class="language-shell">$ cargo run -- --help
+
+Test
+
+USAGE:
+    tester [OPTIONS] &lt;PATH&gt;...
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -l &lt;LANGUAGE&gt;...
+
+ARGS:
+    &lt;PATH&gt;...
+</code></pre>
+<p><strong>This do not work</strong></p>
+<pre><code class="language-shell">$ cargo run -- -l swe target
+
+error: The following required arguments were not provided:
+    &lt;PATH&gt;...
+
+USAGE:
+    tester &lt;PATH&gt;... -l &lt;LANGUAGE&gt;...
+
+For more information try --help
+</code></pre>
+<p><strong>But this works</strong></p>
+<pre><code class="language-shell">$ cargo run -- -l=swe target
+
+ArgMatches {
+    args: {
+        &quot;PATH&quot;: MatchedArg {
+            occurs: 1,
+            vals: [
+                &quot;target&quot;
+            ]
+        },
+        &quot;language&quot;: MatchedArg {
+            occurs: 1,
+            vals: [
+                &quot;swe&quot;
+            ]
+        }
+    },
+    subcommand: None,
+    usage: Some(
+        &quot;USAGE:\n    tester [OPTIONS] &lt;PATH&gt;...&quot;
+    )
+}
+</code></pre>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">extern crate clap;
+
+use clap::{App, Arg};
+
+fn main() {
+    let matches = App::new(&quot;Test&quot;)
+        .arg(Arg::with_name(&quot;language&quot;)
+             .short(&quot;l&quot;)
+             .value_name(&quot;LANGUAGE&quot;)
+             .multiple(true))
+        .arg(Arg::with_name(&quot;PATH&quot;)
+             .multiple(true)
+             .required(true))
+        .get_matches();
+
+    println!(&quot;{:#?}&quot;, matches);
+}
+</code></pre>
+<h3>Debug output</h3>
+<pre><code>DEBUG:clap:Parser::propogate_settings: self=Test, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;-l&quot;' ([45, 108])
+DEBUG:clap:Parser::is_new_arg: arg=&quot;-l&quot;, Needs Val of=None
+DEBUG:clap:Parser::is_new_arg: Arg::allow_leading_hyphen(false)
+DEBUG:clap:Parser::is_new_arg: - found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;-l&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:Parser::parse_short_arg: full_arg=&quot;-l&quot;
+DEBUG:clap:Parser::parse_short_arg:iter:l
+DEBUG:clap:Parser::parse_short_arg:iter:l: Found valid opt
+DEBUG:clap:Parser::parse_short_arg:iter:l: p[0]=[], p[1]=[]
+DEBUG:clap:Parser::parse_opt; opt=language, val=None
+DEBUG:clap:Parser::parse_opt; opt.settings=ArgFlags(MULTIPLE | EMPTY_VALS | TAKES_VAL | DELIM_NOT_SET)
+DEBUG:clap:Parser::parse_opt; Checking for val...None
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=language
+DEBUG:clap:ArgMatcher::inc_occurrence_of: first instance
+DEBUG:clap:Parser::groups_for_arg: name=language
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Parser::parse_opt: More arg vals required...
+DEBUG:clap:arg_post_processing!;
+DEBUG:clap:OptBuilder::fmt
+DEBUG:clap:arg_post_processing!: Is '-l &lt;LANGUAGE&gt;...' in overrides...No
+DEBUG:clap:OptBuilder::fmt
+DEBUG:clap:arg_post_processing!: Does '-l &lt;LANGUAGE&gt;...' have overrides...No
+DEBUG:clap:OptBuilder::fmt
+DEBUG:clap:arg_post_processing!: Does '-l &lt;LANGUAGE&gt;...' have conflicts...No
+DEBUG:clap:OptBuilder::fmt
+DEBUG:clap:arg_post_processing!: Does '-l &lt;LANGUAGE&gt;...' have requirements...No
+DEBUG:clap:_handle_group_reqs!;
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;swe&quot;' ([115, 119, 101])
+DEBUG:clap:Parser::is_new_arg: arg=&quot;swe&quot;, Needs Val of=Some(&quot;language&quot;)
+DEBUG:clap:Parser::is_new_arg: Arg::allow_leading_hyphen(false)
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;swe&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:Parser::add_val_to_arg; arg=language, val=&quot;swe&quot;
+DEBUG:clap:Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+DEBUG:clap:Parser::add_single_val_to_arg;
+DEBUG:clap:Parser::add_single_val_to_arg: adding val...&quot;swe&quot;
+DEBUG:clap:Parser::groups_for_arg: name=language
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::needs_more_vals: o=language
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;target&quot;' ([116, 97, 114, 103, 101, 116])
+DEBUG:clap:Parser::is_new_arg: arg=&quot;target&quot;, Needs Val of=Some(&quot;language&quot;)
+DEBUG:clap:Parser::is_new_arg: Arg::allow_leading_hyphen(false)
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;target&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:Parser::add_val_to_arg; arg=language, val=&quot;target&quot;
+DEBUG:clap:Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+DEBUG:clap:Parser::add_single_val_to_arg;
+DEBUG:clap:Parser::add_single_val_to_arg: adding val...&quot;target&quot;
+DEBUG:clap:Parser::groups_for_arg: name=language
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::needs_more_vals: o=language
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Validator::validate: needs_val_of=&quot;language&quot;
+DEBUG:clap:Validator::validate_required: required=[&quot;PATH&quot;];
+DEBUG:clap:Validator::validate_required:iter:PATH:
+DEBUG:clap:Validator::is_missing_required_ok: a=PATH
+DEBUG:clap:Validator::validate_conflicts: a=&quot;PATH&quot;;
+DEBUG:clap:Validator::validate_required_unless: a=&quot;PATH&quot;;
+DEBUG:clap:Validator::missing_required_error: extra=None
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:Validator::missing_required_error: reqs=[
+    &quot;PATH&quot;
+]
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;PATH&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;PATH&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Validator::missing_required_error: req_args=&quot;\n    \u{1b}[1;31m&lt;PATH&gt;...\u{1b}[0m&quot;
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::smart_usage;
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;PATH&quot;, &quot;language&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;PATH&quot;, &quot;language&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::get_required_usage_from:iter:language:
+DEBUG:clap:OptBuilder::fmt
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::good;
+DEBUG:clap:is_a_tty: stderr=true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/logaritmisk">@logaritmisk</a> on 2017-03-21 10:33</div>
+            <div class="timeline-body"><p>Got it working by using <code>.number_of_values(1)</code>. But still, think it is strange that it works with <code>-l=swe</code> and not <code>-l swe</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-03-22 00:36</div>
+            <div class="timeline-body"><p>This is because there's no way for clap to know when to stop parsing <code>--language</code> because it's been told it accepts multiple values, without providing some additional information (such as <code>number_of_values</code>). clap looks for a leading hyphen, in the absence of additonal information, to know when to start parsing a new arg.</p>
+<p>This would work <code>$ cargo run -- target --language swe</code></p>
+<p>The other thing you could do (if <code>number_of_values(1)</code> isn't to your liking) is specify <code>require_equals(true)</code> which will give an error if <code>--language swe</code> is used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2017-03-22 00:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-04-05 00:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

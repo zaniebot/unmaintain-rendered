@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM300 tries to add a Yoda condition... - astral-sh/ruff #8759</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM300 tries to add a Yoda condition...</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8759">#8759</a>
+        opened by <a href="https://github.com/ThiefMaster">@ThiefMaster</a>
+        on 2023-11-18 22:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2023-11-18 22:39</div>
+            <div class="timeline-body"><pre><code class="language-python">class DummyHandler(RequestHandler):
+    CONFIG = {'foo': 'bar'}
+
+
+assert DummyHandler.CONFIG == {}
+</code></pre>
+<pre><code class="language-diff">$ ruff --isolated --select SIM300 --preview rufftest/ruff_sample.py --diff
+--- rufftest/ruff_sample.py
++++ rufftest/ruff_sample.py
+@@ -2,4 +2,4 @@
+     CONFIG = {'foo': 'bar'}
+
+
+-assert DummyHandler.CONFIG == {}
++assert {} == DummyHandler.CONFIG
+
+Would fix 1 error.
+</code></pre>
+<p>I guess it considers anything in <em>ALL UPPERCASE</em> a constant. But this is clearly too broad, and it also seems questionable whether <code>FOO == bar</code> would even be a Yoda condition to begin with.</p>
+<p>At least from the rule description and example it's meant to detect obviously-weird stuff like <code>'literal' == variable</code>, ie having a literal value on the left side of a binary comparison operator.</p>
+<p>My suggestion would be to remove the uppercase checks from <code>is_constant_like</code> altogether and just keep the check for literal expressions. Alternatively, any literal could be considered &quot;more of constant&quot; than an uppercase string and thus never be expected on the left side of a binary op.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-18 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-18 22:56</div>
+            <div class="timeline-body"><p>I think part of the problem here is that we don't consider <code>{}</code> to be a literal for the purpose of the rule, which seems wrong to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-18 23:04</div>
+            <div class="timeline-body"><p>I would suggest two improvements here...</p>
+<ol>
+<li>We could consider dicts, lists, etc. to be literals for the purpose of the rule.</li>
+<li>We should probably flag <code>assert 1 == DummyHandler.CONFIG</code>, which we don't today -- we consider both of those expressions to be equally &quot;constant&quot;.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-18 23:05</div>
+            <div class="timeline-body"><p>I think this is the same as https://github.com/astral-sh/ruff/issues/6956.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-18 23:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6956.html">astral-sh/ruff#6956</a> on 2023-11-18 23:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support discovery of multiple python versions that are not on path - astral-sh/uv #11308</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support discovery of multiple python versions that are not on path</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11308">#11308</a>
+        opened by <a href="https://github.com/mneumei">@mneumei</a>
+        on 2025-02-07 07:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mneumei">@mneumei</a> on 2025-02-07 07:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We have multiple python versions that we do not want to put on path. For a single venv, we run uv with --python and there is no issue, but when we want to run tox, we can not tell uv where to find those different python versions anymore (original flag: discover, with as many python versions as you want).</p>
+<p>Ideally, you could e.g. give multiple --python options, and uv will select the most suitable (matching the python requirements, newest, first)</p>
+<p>Linked Issue:
+https://github.com/tox-dev/tox-uv/issues/170#issuecomment-2642026663</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @mneumei on 2025-02-07 07:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tox-dev/tox-uv/issues/170.html">tox-dev/tox-uv#170</a> on 2025-02-07 07:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-07 15:56</div>
+            <div class="timeline-body"><p>I don't think we'll allow <code>--python</code> to be repeated like this, it sounds too complicated. Can't tox invoke uv with the proper <code>--python</code> invocation for each requested version? Or why can't the <code>PATH</code> be changed just for the uv invocation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-02-07 18:30</div>
+            <div class="timeline-body"><p>While <code>tox</code> could do this, I don't think is unreasonable for uv to handle it. <code>uv</code> already does some kind of Python interpreter discovery, it's not unreasonable to expect to be able to extend the list of Pythons to consider with a list of static paths 🤔 that <code>uv</code> can then also inspect part of the discovery.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-07 18:36</div>
+            <div class="timeline-body"><p>I don't quite understand the use-case though. Like, why support things in addition to <code>PATH</code>? Interpreter discovery is already very complicated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-02-07 18:49</div>
+            <div class="timeline-body"><p>Is an escape hatch to force a given Python interpreter to be used, basically pushes that interpreter as the highest priority onto the discovery chain. Has a few advantages:</p>
+<ul>
+<li>does not require changing an environment variable and can be explicit use this first without needing to change scripts.</li>
+<li>if that PATH contains multiple Python scripts you don't' have to add the ones you don't want to use.</li>
+</ul>
+<p>It follows the idea of explicit is better than implicit. It's primary use case is that imagine you have a script that requires Python <code>3.13</code>. You have two builds of that Python on your system, one with debug symbols and one without. In general you want to use the non-debug symbol one as is faster. But you ran into a bug and you need more information so you want to temporarily switch to the debug variant.</p>
+<p>In your script you specify <code>uv venv -p 3.13</code>. Now how can you temporarily switch between the two variants? You could add to the beggining of the PATH the one you want to use (but perhaps there are other Python versions too, and you're now sure which will be picked), however now you're changing an environment variable that could have other side effects to. Or you can change your script, but this now means you modified a file that you don't want to commit.</p>
+<p>A not complicated workaround for these use cases that <code>virtualenv</code> has is the https://virtualenv.pypa.io/en/latest/cli_interface.html#try-first-with flag. This allows the user to short circuit the discovery, and from <code>virtualenv</code> POV is just first trying those passed in if compatible and use that, if they are not can fallback to the more complicated discovery mechanism. This issue is asking for something similar in <code>uv</code>; via a flag and/or environment variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-07 18:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Is an escape hatch to force a given Python interpreter to be used, basically pushes that interpreter as the highest priority onto the discovery chain.</p>
+</blockquote>
+<p>We do support this already, via <code>-p &lt;path&gt;</code>.</p>
+<p>I'm pushing against accepting <em>multiple</em> Python paths and choosing between them.</p>
+<p><code>--try-with-first</code> is... interesting. I've never heard of that. It seems peculiar.</p>
+<p>Anyway, happy to consider — but I probably won't prioritize adding this without more feedback about why it's needed / use-cases / user requests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-02-07 18:57</div>
+            <div class="timeline-body"><blockquote>
+<p>We do support this already, via <code>-p &lt;path&gt;</code>.</p>
+</blockquote>
+<p>This doesn't work if you're script specifies the generic <code>-p 3.13</code> and you don't want to change your script to hardcode a path.</p>
+<p>Another use case was of forcing thread free Python versions before we explicitely added support for them. Because before adding support the virtualenv discovery didn't know the difference between a threaded and non thread versions, so by settting that environment variable the user could force start/use this interpreter even if they are other compatible versions on the machine.</p>
+<p>@mneumei can add their own use case, but I present one above 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-02-07 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AdrianCert">@AdrianCert</a> on 2025-02-09 17:35</div>
+            <div class="timeline-body"><p>Our use case is that we don’t have an internet connection during our CI process, so we cannot rely on Python being managed by UV. Instead, we have a predefined set of Python versions available that we can use.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-02-09 18:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Our use case is that we don’t have an internet connection during our CI process, so we cannot rely on Python being managed by UV. Instead, we have a predefined set of Python versions available that we can use.</p>
+</blockquote>
+<p>Can you explain why you can't just set the PATH environment variable for your use case? Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mneumei">@mneumei</a> on 2025-02-10 06:25</div>
+            <div class="timeline-body"><p>Usually, the PATH is a very messy thing to deal with. Multiple applications put their &quot;things&quot; on path. We had the case where the proxy app px was shipped with a python.exe, which messed up everything that relied on a proper setup of path for python. In addition, you might have venvs and other processes put their paths on top, making it very hard to know what you actually end up with.</p>
+<p>As @gaborbernat pointed out, its about beeing explicit. We want to test with tox 4 different python versions, and we want them to be explicitely those we preconfigured, nothing else.</p>
+<p>My proposal is to have some option where you basically say: don´t download, don´t take from path, but take a look at specifically those versions, then do your selection from the executables as you would do when you e.g. discovered them from path.</p>
+<p>The idea of --python of course is to add less complexity, but it might also be: --python-interpreters, --python-discovery-locations or similar</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-11 22:42</div>
+            <div class="timeline-body"><p>It looks like this is vaguely a duplicate of https://github.com/astral-sh/uv/issues/9506</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-06 19:26</div>
+            <div class="timeline-body"><p>Going to close this in favor of the other issue, which covers the same use-case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-03-06 19:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

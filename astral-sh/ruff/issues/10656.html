@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N804 disagrees with pylint on __new__ first argument's name for metaclass - astral-sh/ruff #10656</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>N804 disagrees with pylint on __new__ first argument's name for metaclass</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10656">#10656</a>
+        opened by <a href="https://github.com/Amvoled">@Amvoled</a>
+        on 2024-03-29 10:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Amvoled">@Amvoled</a> on 2024-03-29 10:42</div>
+            <div class="timeline-body"><p>Here's an example:</p>
+<pre><code class="language-py">class Alpha(type):
+    def __new__(mcs, *args, **kwargs):
+        return super().__new__(mcs, *args, **kwargs)
+
+class Beta(type):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls, *args, **kwargs)
+</code></pre>
+<pre><code class="language-bash">$ pylint meta.py
+meta.py:7:4: C0204: Metaclass class method __new__ should have 'mcs' as first argument (bad-mcs-classmethod-argument)
+
+$ ruff --select N meta.py
+meta.py:2:17: N804 First argument of a class method should be named `cls`
+</code></pre>
+<p>To be fair I'm not sure if it's an issue with ruff or pylint, but they seem to both disagree on what to name the first argument of __new__ in a metaclass. Who's right ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-30 00:39</div>
+            <div class="timeline-body"><p><code>cls</code> seems significantly more popular based on GitHub Code Search (37.2k files vs. 273 files), so I'd prefer to stick with what we have (though I know it's slightly inconvenient to have a difference across linters).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-03-30 00:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-30 00:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-30 00:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a> on 2024-03-30 14:39</div>
+            <div class="timeline-body"><blockquote>
+<p>cls seems significantly more popular based on GitHub Code Search</p>
+</blockquote>
+<p>How did you differentiate code concerning metaclasses and classes ? pylint has https://pylint.readthedocs.io/en/stable/user_guide/messages/convention/bad-mcs-classmethod-argument.html (for metaclasses) but also https://pylint.readthedocs.io/en/stable/user_guide/messages/convention/bad-classmethod-argument.html (for classes). I think metaclasses methods are used way less frequently than class methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jnrbsn">@jnrbsn</a> on 2024-08-23 16:51</div>
+            <div class="timeline-body"><p>@charliermarsh This is not accurate. In metaclasses, <code>cls</code> should only be used for the metaclass-equivalent of &quot;instance methods&quot; (i.e. methods that get passed, as their first argument, the class <em>using</em> the metaclass). For the metaclass-equivalent of &quot;class methods&quot; (like <code>__new__</code> and <code>__prepare__</code>), the first argument passed to the method is the <em><strong>metaclass itself</strong></em>. In this case, pylint recommends <code>mcs</code>, and flake8-bugbear recommends <code>metacls</code> but also accepts <code>mcs</code>. flake8-bugbear implements this check via <code>B902</code>, which, in #3758, someone said is &quot;Implemented as <code>N804</code> and <code>N805</code>&quot; in ruff, but that's not accurate because <code>N804</code> incorrectly says you should use <code>cls</code> for <code>__new__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eliegoudout">@eliegoudout</a> on 2024-12-21 18:47</div>
+            <div class="timeline-body"><p>I Completely agree with @jnrbsn. I always interpreted a <code>class</code> as an instance of a <code>metaclass</code> (are there even <strong>actual</strong> mechanical differences between classes and metaclasses except  the ones due to subclassing <code>type</code> instead of <code>object</code>?). So logically, the (<code>self</code>, <code>cls</code>) from <em>class</em> context should be translated to (<code>cls</code>, <code>mcs</code>) in <em>metaclass</em> context, right?</p>
+<p>However, I should point out something I find very strange from <a href="https://peps.python.org/pep-3115/#example">PEP 3115</a>:</p>
+<pre><code class="language-python"># The metaclass
+class OrderedClass(type):
+
+    # The prepare function
+    @classmethod
+    def __prepare__(metacls, name, bases): # No keywords in this case
+        return member_table()
+
+    # The metaclass invocation
+    def __new__(cls, name, bases, classdict):
+        # Note that we replace the classdict with a regular
+        # dict before passing it to the superclass, so that we
+        # don't continue to record member names after the class
+        # has been created.
+        result = type.__new__(cls, name, bases, dict(classdict))
+        result.member_names = classdict.member_names
+        return result
+</code></pre>
+<p>You can see that the author used different <code>metacls</code> and <code>cls</code> for <code>__prepare__</code> and <code>__new__</code> respectively, even though &quot;<em><a href="https://docs.python.org/3/reference/datamodel.html#object.__new__"><code>cls.__new__()</code></a> is a static method (special-cased so you need not declare it as such) that takes the class of which an instance was requested as its first argument</em>&quot;... I've not yet understood why.</p>
+<p>So in the end, I do think Python doc suggests the use of <code>mcs</code> (or equivalent) for <code>__new__</code> and <code>classmethod</code>in general, even though PEP3115 shows (a probably mistaken) inconsistency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13698.html">astral-sh/ruff#13698</a> on 2024-12-21 18:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odd behavior of `ERA001` on code-like comments - astral-sh/ruff #6100</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Odd behavior of `ERA001` on code-like comments</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6100">#6100</a>
+        opened by <a href="https://github.com/tylerlaprade">@tylerlaprade</a>
+        on 2023-07-26 17:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-07-26 17:54</div>
+            <div class="timeline-body"><img width="276" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/513b1292-880b-40d6-b2b9-e24529fdf7f5">
+
+<p>I understand how this could <em>look</em> like code, although it's a bit noisy to have this flagged. Even if <code>django</code> were a variable, this would do nothing as a standalone expression.</p>
+<p>That being said, why does it get flagged when the <code>=</code> is included, but not without it? I tested all 4 permutations of <code>&lt;</code>/<code>&gt;</code> and <code>=</code> or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-26 17:58</div>
+            <div class="timeline-body"><p>It's just a quirk of the implementation, which comes from Eradicate. We detect snippets that contain <code>=</code>, but not <code>&gt;</code> or <code>&lt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-28 04:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2023-07-28 04:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-07-28 04:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-28 04:29</div>
+            <div class="timeline-body"><p>We can probably special-case these version marker comments (though low priority).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-07-28 04:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dbohdan">@dbohdan</a> on 2023-10-21 15:53</div>
+            <div class="timeline-body"><p>I have encountered this false positive with ERA001:</p>
+<pre><code class="language-none">&gt; head -n 5 search.py
+#! /usr/bin/env python3
+# External program requirements:
+# - gum(1) (https://github.com/charmbracelet/gum)
+# - less(1) (common)
+# - rg(1) with PCRE2 support (`sudo apt install ripgrep`)
+&gt; ruff search.py
+search.py:4:1: ERA001 Found commented-out code
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2023-11-18 23:42</div>
+            <div class="timeline-body"><p>More false-positives on what doesn't even look like valid code:</p>
+<pre><code class="language-py">indico/modules/events/abstracts/blueprint.py:98:1: ERA001 Found commented-out code
+    |
+ 96 |                  methods=('GET', 'POST'))
+ 97 |
+ 98 | # Emailing (management)
+    | ^^^^^^^^^^^^^^^^^^^^^^^ ERA001
+ 99 | _bp.add_url_rule('/manage/abstracts/api/email-roles/metadata', 'api_email_abstract_roles_metadata',
+100 |                  abstract_list.RHAbstractsAPIEmailAbstractRolesMetadata, methods=('POST',))
+</code></pre>
+<pre><code class="language-py">indico/modules/attachments/models/folders.py:110:5: ERA001 Found commented-out code
+    |
+108 |     # relationship backrefs:
+109 |     # - all_attachments (Attachment.folder)
+110 |     # - legacy_mapping (LegacyAttachmentFolderMapping.folder)
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ERA001
+111 |
+112 |     @property
+    |
+    = help: Remove commented-out code
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2023-11-18 23:44</div>
+            <div class="timeline-body"><p>And an interesting case that's not an FP, but maybe commented-out code that has a TODO, FIXME, etc. comment in the same line should be allowed?</p>
+<pre><code class="language-py">indico/modules/events/registration/util.py:61:5: ERA001 Found commented-out code
+   |
+59 |     text: str
+60 |     icon_name: str
+61 |     # _: dataclasses.KW_ONLY  # TODO uncomment once we require python3.10+; until then consider everything below kw-only
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ERA001
+62 |     weight: int = 0
+63 |     dialog_title: str = None  # defaults to `text`
+   |
+   = help: Remove commented-out code
+</code></pre>
+<p>Clearly removing something like this would not be in the spirit of the rule which asks you to use source control in case you need to bring removed code back, instead of keeping a commented-out version. But when you <em>know</em> that you'll have to bring it back (hence the TODO comment), then it makes no sens to rely on your VCS for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-20 19:19</div>
+            <div class="timeline-body"><p>Those does look like code where line 98 could be a function / class call and so on. Although, I do think we should probably allow if it has a TODO comment on the commented line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2023-11-20 19:26</div>
+            <div class="timeline-body"><p>I think the logic to determine what's code and what isn't should be pretty strict - you really don't want to have to put noqa on your comments just so they are considered comments. Even more so when it's a single-line comment. With multi-line it's probably less likely to get a block of valid Python code that's not actually code.</p>
+<p>For things that look like valid function/class call statements, one possibility could be checking if the function name exists in the scope. If not, don't consider it a statement.</p>
+<p>IMHO this kind of rule is the one where you should rather get false negative than false positives: There's no harm/annoyance in missing some commented-out code. But it's very annoying if your valid comments trigger this rule</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../streamlit/streamlit/pulls/11210.html">streamlit/streamlit#11210</a> on 2025-04-28 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17713.html">astral-sh/ruff#17713</a> on 2025-04-29 15:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

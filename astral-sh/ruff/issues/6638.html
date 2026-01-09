@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PERF102` is not detected in generators or comprehensions - astral-sh/ruff #6638</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`PERF102` is not detected in generators or comprehensions</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6638">#6638</a>
+        opened by <a href="https://github.com/dosisod">@dosisod</a>
+        on 2023-08-17 03:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dosisod">@dosisod</a> on 2023-08-17 03:42</div>
+            <div class="timeline-body"><p><code>PERF102</code> is not detected in generators or comprehensions, only in <code>for</code> loops:</p>
+<pre><code class="language-python">d = {}
+
+for k, _ in d.items():
+    print(k)
+
+_ = (k for k, _ in d.items())
+_ = [k for k, _ in d.items()]
+_ = {k for k, _ in d.items()}
+_ = {k: &quot;v&quot; for k, _ in d.items()}
+</code></pre>
+<p>Running:</p>
+<pre><code>$ ruff --version
+ruff 0.0.284
+
+$ ruff x.py
+x.py:3:13: PERF102 [*] When using only the keys of a dict use the `keys()` method
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+</code></pre>
+<p>Expected: A line for the <code>d.items()</code> call in the generator and each of the <code>list</code>/<code>set</code>/<code>dict</code> comprehension.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-17 14:04</div>
+            <div class="timeline-body"><p>Good call, we should catch this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-08-17 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-08-17 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-08-20 06:51</div>
+            <div class="timeline-body"><p>Can I work on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @harupy by @dhruvmanila on 2023-08-20 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-08-20 07:51</div>
+            <div class="timeline-body"><p>One question: To detect whether the iterator variables are used in the comprehension, can we use the same approach as the <code>function_uses_loop_variable</code> rule?</p>
+<p>https://github.com/astral-sh/ruff/blob/7e9023b6f85c28bcfdc7fe82a507d7752e84edcf/crates/ruff/src/rules/flake8_bugbear/rules/function_uses_loop_variable.rs#L283-L284</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7022.html">astral-sh/ruff#7022</a> on 2023-08-31 14:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

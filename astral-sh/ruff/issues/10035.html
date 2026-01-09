@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Config override key flag does not work for `extend` option - astral-sh/ruff #10035</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Config override key flag does not work for `extend` option</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10035">#10035</a>
+        opened by <a href="https://github.com/ofek">@ofek</a>
+        on 2024-02-19 03:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ofek">@ofek</a> on 2024-02-19 03:37</div>
+            <div class="timeline-body"><p>Example command:</p>
+<pre><code>ruff format --check --diff --config &quot;extend='ruff_defaults.toml'&quot; .
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8737.html">astral-sh/ruff#8737</a> on 2024-02-19 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9599.html">astral-sh/ruff#9599</a> on 2024-02-19 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2024-02-19 07:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2024-02-19 07:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-19 07:27</div>
+            <div class="timeline-body"><p>This is an interesting usage of the new override system and should be supported. However, It may not have the desired result depending on your use case:</p>
+<pre><code>pyproject.toml
+
+tests\
+	tests.config.toml // extends pyproject.toml
+</code></pre>
+<p>Overriding the <code>extend</code> would override the <code>extend</code> value for all configurations, meaning that <code>tests.config.toml</code> would suddenly no longer extend the <code>pyproject.toml</code>. Now, that might be exactly what you want but may be unintentional if the intention was to make all configurations inherit from a base configuration.</p>
+<p>CC: @AlexWaygood</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-02-19 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-19 17:18</div>
+            <div class="timeline-body"><p>Ah I see -- so, I think this doesn't work because we currently apply the configuration overrides given in the <code>--config</code> flag <em>after</em> any configuration options found in any <code>pyproject.toml</code>/<code>ruff.toml</code> files have been parsed and validated. But this particular override affects which config files ruff should be looking at in the first place, so we'd need to look for it at an earlier stage in the process (I think).</p>
+<p>I'm unlikely to have time to look at this in any more depth this week, unfortunately, but I'll work on this as soon as I'm able. Thanks for the report @ofek!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-19 17:24</div>
+            <div class="timeline-body"><p>I'm okay with a fix or literally any other way to define an <code>extend</code> via command line! If it means a separate flag then that's cool.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-19 17:28</div>
+            <div class="timeline-body"><p>Yeah, I'll have a think...</p>
+<p>If we decide that this kind of thing <em>should</em> be done via a separate flag, then we should probably explicitly <em>reject</em> trying to override <code>extend</code> via <code>--config</code>, on the grounds that it's probably not going to do what you expect, as @MichaReiser mentioned above. So whether we go with &quot;fix behaviour of <code>--config</code> w.r.t. <code>extend</code>&quot; or &quot;introduce another flag&quot;, it's likely the behaviour of <code>--config</code> should be changed in some way here :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10135.html">astral-sh/ruff#10135</a> on 2024-02-26 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/QuentinSoubeyranAqemia">@QuentinSoubeyranAqemia</a> on 2024-03-15 14:02</div>
+            <div class="timeline-body"><p>+1 on this feature
+This would be helpful to extend a base configuration with more specific overrides, when the path to the base config is not static and thus cannot be hard-coded into the more-specific configuration.</p>
+<p>If that is any indication, when searching the doc I was also expecting a dedicated <code>--extend</code> flag, and tried out the <code>--config</code> override after failing to find one.
+Given that <code>--config &quot;KEY = VALUE&quot;</code> has highest priority and thus needs to be applied last, it makes sense to me that <code>--config</code> cannot support <code>--extend</code> behavior as is currently the case.</p>
+<p>I suppose a tricky part could be extend chains: with <code>extend</code> in the files, you can only have a linear chain of files extending one another, so the behavior is well-defined. No diamond inheritance.
+With both the file passed to <code>--config</code>, and <code>--extend</code>, possibly extending another file, there can be multiple inheritance. This could reasonably result in an error unless a use-case pops up, though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-15 17:42</div>
+            <div class="timeline-body"><p>Just for some more context, can someone explain to me how <code>--config &lt;path&gt; --config &lt;some-other-override&gt;</code> differs from <code>--config extend=&lt;path&gt; --config &lt;some-other-override&gt;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-03-15 18:34</div>
+            <div class="timeline-body"><p>Are you implying that specifying multiple configuration files is implicitly an extend operation? If so, then I suppose there is no feature request here but rather a documentation update.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-15 19:33</div>
+            <div class="timeline-body"><p>I'm not sure! The configuration hierarchy is confusing and inheritance via extend is even more complicated. I'm asking for someone to try it, I guess, so we can understand what we're missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-03-16 21:16</div>
+            <div class="timeline-body"><p><img src="https://github.com/astral-sh/ruff/assets/9677399/03d70b8b-09c9-4b75-93e6-b697a255ebb5" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-17 03:52</div>
+            <div class="timeline-body"><p>Oh okay, I think we <em>can</em> support multiple configuration files on the command line. I originally intended for it to be that way, but I think it might have been cut from scope on the initial implementation. I'd be curious to hear if it would address your use-case to support merging multiple <code>--config</code> file options. Also @AlexWaygood if you have any more context on why we dropped that from scope that'd be helpful, I can't remember if there were reasons it was infeasible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/QuentinSoubeyranAqemia">@QuentinSoubeyranAqemia</a> on 2024-03-18 09:14</div>
+            <div class="timeline-body"><p>If you can have more than one config file, what happens when the <code>extend</code>-chain is no longer linear?</p>
+<pre><code class="language-bash">ruff --config config1.toml --config config2.toml
+</code></pre>
+<pre><code class="language-toml"># config1.toml
+extend = &quot;config1_base.toml&quot;
+</code></pre>
+<pre><code class="language-toml"># config2.toml
+extend = &quot;config2_base.toml&quot;
+</code></pre>
+<p>I guess this needs to be properly documented.</p>
+<hr />
+<p>Also, as a workaround for my own use-case, I template the ruff config and dynamically write a temporary file where I replace a placehold with the actual filepath to <code>extend</code>-from, since the CLI itself can't handle it. It's a bit ugly but it works.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

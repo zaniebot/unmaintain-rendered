@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show full dependency chain when `uv pip compile` encounters an error running setup.py - astral-sh/uv #8962</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Show full dependency chain when `uv pip compile` encounters an error running setup.py</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8962">#8962</a>
+        opened by <a href="https://github.com/alex">@alex</a>
+        on 2024-11-09 01:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alex">@alex</a> on 2024-11-09 01:09</div>
+            <div class="timeline-body"><p>When using <code>--resolution=lowest</code> (or <code>lowest-direct</code>), it's sadly not uncommon to hit errors running <code>setup.py</code> from <em>very</em> old versions of things.</p>
+<p>Unfortunately, <code>uv pip compile</code> does not include the full chain of how a dependency was depended on, which can make it difficult to debug. For example:</p>
+<pre><code>~/p/cryptography ❯❯❯ uv pip compile --resolution=lowest-direct --universal -p 3.7 --extra=docs --extra=docstest --extra=pep8test --extra=test --extra=test-randomorder --extra=nox --extra=sdist --unsafe-package=cffi --unsafe-package=pycparser --unsafe-package=setuptools --unsafe-package=cryptography-vectors pyproject.toml &gt; ci-constraints-requirements.txt &amp;&amp; git diff
+warning: The requested Python version 3.7 is not available; 3.13.0 will be used to build dependencies instead.
+⠙ Resolving dependencies...                                                                                                  warning: The direct dependency `build` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `certifi` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `check-sdist{python_full_version &gt;= '3.8'}` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `click` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `cryptography-vectors` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `mypy` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `nox` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `pretend` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `pytest-benchmark` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `pytest-cov` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `pytest-randomly` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `pytest-xdist` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `readme-renderer` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `ruff` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+⠋ atomicwrites==1.4.1                                                                                                          × Failed to download and build `wsgiref==0.1.2`
+  ╰─▶ Build backend failed to determine requirements with `build_wheel()` (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+          requires = get_requires_for_build({})
+        File &quot;/Users/alex_gaynor/Library/Caches/uv/builds-v0/.tmpefXcVs/lib/python3.13/site-packages/setuptools/build_meta.py&quot;,
+      line 333, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/alex_gaynor/Library/Caches/uv/builds-v0/.tmpefXcVs/lib/python3.13/site-packages/setuptools/build_meta.py&quot;,
+      line 303, in _get_build_requires
+          self.run_setup()
+          ~~~~~~~~~~~~~~^^
+        File &quot;/Users/alex_gaynor/Library/Caches/uv/builds-v0/.tmpefXcVs/lib/python3.13/site-packages/setuptools/build_meta.py&quot;,
+      line 521, in run_setup
+          super().run_setup(setup_script=setup_script)
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/alex_gaynor/Library/Caches/uv/builds-v0/.tmpefXcVs/lib/python3.13/site-packages/setuptools/build_meta.py&quot;,
+      line 319, in run_setup
+          exec(code, locals())
+          ~~~~^^^^^^^^^^^^^^^^
+        File &quot;&lt;string&gt;&quot;, line 5, in &lt;module&gt;
+        File
+      &quot;/Users/alex_gaynor/Library/Caches/uv/sdists-v6/pypi/wsgiref/0.1.2/TC3J4nFCD9kJFnrhcTIuq/wsgiref-0.1.2.zip/ez_setup/__init__.py&quot;,
+      line 170
+          print &quot;Setuptools version&quot;,version,&quot;or greater has been installed.&quot;
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      SyntaxError: Missing parentheses in call to 'print'. Did you mean print(...)?
+
+~/p/cryptography ❯❯❯ 
+</code></pre>
+<p>Here, neither <code>wsgiref</code> nor <code>atomicwrites</code> is depended on directly, so I'm not sure which package I need to attach a minimal bound to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pyca/cryptography/pulls/11924.html">pyca/cryptography#11924</a> on 2024-11-09 01:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-11-09 02:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @charliermarsh on 2024-11-09 02:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 02:09</div>
+            <div class="timeline-body"><p>Yeah I think something like this makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-10 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-10 22:29</div>
+            <div class="timeline-body"><p>One problem here is that if this happens during installation (rather than resolution), we may have already discarded the resolution itself (which would explain why it's included).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-10 22:30</div>
+            <div class="timeline-body"><p>Actually, at the point we need it do we do still have it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-11-11 00:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @charliermarsh on 2024-11-11 00:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-11 01:25</div>
+            <div class="timeline-body"><p>I'm working on this, I think it will be a great feature, but it's non-trivial.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9043.html">astral-sh/uv#9043</a> on 2024-11-12 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9098.html">astral-sh/uv#9098</a> on 2024-11-13 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9102.html">astral-sh/uv#9102</a> on 2024-11-13 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9106.html">astral-sh/uv#9106</a> on 2024-11-14 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9108.html">astral-sh/uv#9108</a> on 2024-11-14 00:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimaqq">@dimaqq</a> on 2024-11-14 04:50</div>
+            <div class="timeline-body"><p>Feature idea: multi-dimensional <code>uv bisect</code> to determine the actual lower bounds for dependencies 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-14 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-14 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2024-11-14 20:58</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<p>On Thu, Nov 14, 2024 at 3:48 PM Charlie Marsh <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p>Closed #8962 <a href="https://github.com/astral-sh/uv/issues/8962">https://github.com/astral-sh/uv/issues/8962</a> as completed
+via fe477c3
+<a href="https://github.com/astral-sh/uv/commit/fe477c3417a427e61123ef9b1e4ec19209b21948">https://github.com/astral-sh/uv/commit/fe477c3417a427e61123ef9b1e4ec19209b21948</a>
+.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/8962#event-15304244761">https://github.com/astral-sh/uv/issues/8962#event-15304244761</a>, or
+unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AAAAGBDABG2BQ6H4J47YIBD2AUEDDAVCNFSM6AAAAABROR6YZGVHI2DSMVQWIX3LMV45UABCJFZXG5LFIV3GK3TUJZXXI2LGNFRWC5DJN5XDWMJVGMYDIMRUGQ3TMMI">https://github.com/notifications/unsubscribe-auth/AAAAGBDABG2BQ6H4J47YIBD2AUEDDAVCNFSM6AAAAABROR6YZGVHI2DSMVQWIX3LMV45UABCJFZXG5LFIV3GK3TUJZXXI2LGNFRWC5DJN5XDWMJVGMYDIMRUGQ3TMMI</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+<p>--
+All that is necessary for evil to succeed is for good people to do nothing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-14 21:54</div>
+            <div class="timeline-body"><p>@alex -- Do you know how to reproduce this failure? I'd be interested to test the behavior on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2024-11-14 22:01</div>
+            <div class="timeline-body"><p><code>uv pip compile --resolution=lowest-direct --universal -p 3.7 --extra=docs --extra=docstest --extra=pep8test --extra=test --extra=test-randomorder --extra=nox --extra=sdist --unsafe-package=cffi --unsafe-package=pycparser --unsafe-package=setuptools --unsafe-package=cryptography-vectors pyproject.toml</code> in a checkout of github.com/pyca/cryptography</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-14 22:25</div>
+            <div class="timeline-body"><p>Ok I think there's some bug that's preventing it from showing up there in that more complex scenario, so won't be in this release -- sorry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-15 00:09</div>
+            <div class="timeline-body"><p>Fixed!</p>
+<pre><code>`wsgiref` was included because `mypy==0.1` depends on `yaro==0.6.4` which depends on `wsgiref`
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

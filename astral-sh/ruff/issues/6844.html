@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule for missing PEP 698 `@override` decorators? - astral-sh/ruff #6844</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule for missing PEP 698 `@override` decorators?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6844">#6844</a>
+        opened by <a href="https://github.com/guillp">@guillp</a>
+        on 2023-08-24 08:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/guillp">@guillp</a> on 2023-08-24 08:07</div>
+            <div class="timeline-body"><p>An idea for a new rule: checking that methods in subclasses that override methods from the parent are decorated with <code>@override</code>.
+This decorator is defined in <a href="https://peps.python.org/pep-0698/">PEP 698</a> and is meant to help both linters and developpers to recognize methods that are overriding methods from a parent class.</p>
+<p>Example:</p>
+<pre><code class="language-python">
+class A:
+    def foo(self) -&gt; None:
+        print(&quot;foo from class A!&quot;)
+
+class B(A):
+    def foo(self) -&gt; None:
+        print(&quot;foo from class B!&quot;)
+</code></pre>
+<p>A rule would detect that the <code>@override</code> decorator is missing on <code>B.foo()</code> since it overrides <code>A.foo()</code>.</p>
+<p>Note that until python 3.12, <code>override</code> is only available from <code>typing-extensions</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-24 20:01</div>
+            <div class="timeline-body"><p>TIL!</p>
+<p>This sounds good to me as a great Python 3.12 milestone although I do not think it should be enabled by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2023-08-24 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python312</span> added by @zanieb on 2023-08-24 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-24 20:31</div>
+            <div class="timeline-body"><p>The challenge here is that we won’t be able to enforce this except for cases in which the parent class and subclass are defined in the same file (until we have multi-file analysis).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-24 20:41</div>
+            <div class="timeline-body"><p>Great point, it may not be worth prioritizing until then since there will be many false negatives</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> added by @charliermarsh on 2023-09-21 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-09-22 11:19</div>
+            <div class="timeline-body"><p>There is also the inverse problem of having <code>@override</code> on a class without bases, or <code>@overload</code> on a function without the function without <code>@overload</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aaronsteers">@aaronsteers</a> on 2023-12-21 19:00</div>
+            <div class="timeline-body"><p>I found this thread while looking for the same. Are there any other linters that currently support this?</p>
+<p>Asked also here:</p>
+<ul>
+<li>https://github.com/mkorpela/overrides/issues/120</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mkorpela/overrides/issues/120.html">mkorpela/overrides#120</a> on 2023-12-21 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-10-24 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-24 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/illusional">@illusional</a> on 2025-01-31 17:45</div>
+            <div class="timeline-body"><p>Is this something that might be more appropriate for red-knot?</p>
+<p>Edit: I see that it was tagged as type-inference by Micha, who is working on red-knot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/folkvir">@folkvir</a> on 2025-10-29 10:53</div>
+            <div class="timeline-body"><p>up! 🫡  Is there is any work on this since then? We're also debating on how to properly define subclassed methods and having a rule about enforcing the usage of <code>@override</code> would be very appreciated!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../equinor/ert/pulls/12231.html">equinor/ert#12231</a> on 2025-11-05 07:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

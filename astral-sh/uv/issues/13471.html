@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv python find` can't get the path to a supported arch Python installed with `uv python install` - astral-sh/uv #13471</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv python find` can't get the path to a supported arch Python installed with `uv python install`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13471">#13471</a>
+        opened by <a href="https://github.com/bparzella">@bparzella</a>
+        on 2025-05-15 14:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bparzella">@bparzella</a> on 2025-05-15 14:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>After installing an x86 (32-bit) version of Python using <code>uv python install</code> there is no obvious way to find the path to this Python version.<code>uv python find</code> reports an error, both with the shortened (same as installation) and the full Python version number. Using this with the x86_64 Python does work as expected.</p>
+<p>Other ways, e.g. trying to use <code>uv python pin</code> or <code>uv python list</code>, don't work either.</p>
+<p>Windows x86_64 can run an x86 executable natively, so getting the path to this Python version should not be limited due to arch incompatibilities.</p>
+<p>This seems to be loosely related to https://github.com/astral-sh/uv/issues/11940, but as far as I can see that issue handles NixOS/macOS/Rosetta topics.</p>
+<p>Currently, the only way I see to find this Python version is wildcard guesstimating the path of the interpreter, as I want to install using the short version (e.g. 3.13) to get the latest Python release of that mainline.
+Unfortunately this way is not very accurate and doesn't support native uv commands such as <code>uv sync</code>.</p>
+<pre><code class="language-shell"># python 3.13 64-bit is already installed
+D:\test&gt;uv python install cpython-3.13-windows-x86_64-none
+
+# install python 3.13 32-bit
+D:\test&gt;uv python install cpython-3.13-windows-x86-none
+Installed Python 3.13.3 in 17.88s
+ + cpython-3.13.3-windows-x86-none
+
+# find the 32-bit version, that was just installed, fails
+D:\test&gt;uv python find cpython-3.13-windows-x86 --verbose
+DEBUG uv 0.7.3 (3c413f74b 2025-05-07)
+DEBUG Using Python request `cpython-3.13-windows-x86-any` from explicit request
+DEBUG Searching for cpython-3.13-windows-x86-any in virtual environments, managed installations, search path, or registry
+DEBUG Searching for managed installations at `C:\Users\User\AppData\Roaming\uv\python`
+DEBUG Found managed installation `cpython-3.13.3-windows-x86_64-none`
+DEBUG Found `cpython-3.13.3-windows-x86_64-none` at `C:\Users\User\AppData\Roaming\uv\python\cpython-3.13.3-windows-x86_64-none\python.exe` (managed installations)
+DEBUG Skipping incompatible managed installation `cpython-3.11.12-windows-x86_64-none`
+DEBUG Found `cpython-3.8.10-windows-x86-none` at `C:\Python3-32\python.exe` (first executable in the search path)
+DEBUG Skipping interpreter at `C:\Python3-32\python.exe` from first executable in the search path: does not satisfy request `3.13`
+error: No interpreter found for cpython-3.13-windows-x86-any in virtual environments, managed installations, search path, or registry
+
+# find the 64-bit version runs successful
+D:\test&gt;uv python find cpython-3.13-windows-x86_64
+C:\Users\User\AppData\Roaming\uv\python\cpython-3.13.3-windows-x86_64-none\python.exe
+
+# find the 32-bit version with the full version number fails too
+D:\test&gt;uv python find cpython-3.13.3-windows-x86
+error: No interpreter found for cpython-3.13.3-windows-x86-any in virtual environments, managed installations, search path, or registry
+
+# same is true for pinning the version
+D:\test&gt;uv python pin cpython-3.13-windows-x86
+warning: No interpreter found for cpython-3.13-windows-x86-any in managed installations, search path, or registry
+Pinned `.python-version` to `cpython-3.13-windows-x86-any`
+
+D:\test&gt;uv python find
+error: No interpreter found for cpython-3.13-windows-x86-any in virtual environments, managed installations, search path, or registry
+
+# list the python versions for all arches, the installed 32-bit version is not detected
+D:\test&gt;uv python list --all-arches
+cpython-3.14.0a6-windows-x86_64-none                 &lt;download available&gt;
+cpython-3.14.0a6+freethreaded-windows-x86_64-none    &lt;download available&gt;
+cpython-3.14.0a6-windows-x86-none                    &lt;download available&gt;
+cpython-3.14.0a6+freethreaded-windows-x86-none       &lt;download available&gt;
+cpython-3.13.3-windows-x86_64-none                   C:\Users\User\AppData\Roaming\uv\python\cpython-3.13.3-windows-x86_64-none\python.exe
+cpython-3.13.3+freethreaded-windows-x86_64-none      &lt;download available&gt;
+cpython-3.13.3-windows-x86-none                      &lt;download available&gt;
+cpython-3.13.3+freethreaded-windows-x86-none         &lt;download available&gt;
+cpython-3.12.10-windows-x86_64-none                  &lt;download available&gt;
+cpython-3.12.10-windows-x86-none                     &lt;download available&gt;
+cpython-3.11.12-windows-x86_64-none                  C:\Users\User\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\python.exe
+cpython-3.11.12-windows-x86-none                     &lt;download available&gt;
+cpython-3.10.17-windows-x86_64-none                  &lt;download available&gt;
+cpython-3.10.17-windows-x86-none                     &lt;download available&gt;
+cpython-3.9.22-windows-x86_64-none                   &lt;download available&gt;
+cpython-3.9.22-windows-x86-none                      &lt;download available&gt;
+cpython-3.8.20-windows-x86_64-none                   &lt;download available&gt;
+cpython-3.8.20-windows-x86-none                      &lt;download available&gt;
+cpython-3.8.10-windows-x86-none                      C:\Python3-32\python.exe
+pypy-3.11.11-windows-x86_64-none                     &lt;download available&gt;
+pypy-3.10.16-windows-x86_64-none                     &lt;download available&gt;
+pypy-3.9.19-windows-x86_64-none                      &lt;download available&gt;
+pypy-3.8.16-windows-x86_64-none                      &lt;download available&gt;
+graalpy-3.11.0-windows-x86_64-none                   &lt;download available&gt;
+graalpy-3.10.0-windows-x86_64-none                   &lt;download available&gt;
+
+# but the executable is present and can be run on windows without any issue
+D:\test&gt;C:\Users\User\AppData\Roaming\uv\python\cpython-3.13.3-windows-x86-none\python.exe
+Python 3.13.3 (main, Apr  9 2025, 04:05:45) [MSC v.1943 32 bit (Intel)] on win32
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;
+</code></pre>
+<h3>Platform</h3>
+<p>Windows 10 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.7.3 (3c413f74b 2025-05-07)</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @bparzella on 2025-05-15 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-05-15 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13472.html">astral-sh/uv#13472</a> on 2025-05-15 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-15 14:50</div>
+            <div class="timeline-body"><p>Thanks for the report! It definitely looks like a bug.</p>
+<p>I added some more logs in https://github.com/astral-sh/uv/pull/13472 — let's see if that helps narrow it down.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-15 17:30</div>
+            <div class="timeline-body"><p>I added those logs to the latest release, if you could provide the output for the <code>uv python find</code> attempt that'd be helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bparzella">@bparzella</a> on 2025-05-15 21:07</div>
+            <div class="timeline-body"><p>Thanks for your quick reply.</p>
+<p>This is the output from the latest version:</p>
+<pre><code class="language-cmd">D:\test&gt;uv self update
+info: Checking for updates...
+success: Upgraded uv from v0.7.3 to v0.7.4! https://github.com/astral-sh/uv/releases/tag/0.7.4
+
+D:\test&gt;uv self version
+uv 0.7.4 (6fbcd09b5 2025-05-15)
+
+D:\test&gt;uv python find cpython-3.13-windows-x86 -v
+DEBUG uv 0.7.4 (6fbcd09b5 2025-05-15)
+DEBUG Using Python request `cpython-3.13-windows-x86-any` from explicit request
+DEBUG Searching for cpython-3.13-windows-x86-any in virtual environments, managed installations, search path, or registry
+DEBUG Searching for managed installations at `C:\Users\User\AppData\Roaming\uv\python`
+DEBUG Found managed installation `cpython-3.13.3-windows-x86_64-none`
+DEBUG Found `cpython-3.13.3-windows-x86_64-none` at `C:\Users\User\AppData\Roaming\uv\python\cpython-3.13.3-windows-x86_64-none\python.exe` (managed installations)
+DEBUG Skipping interpreter at `C:\Users\User\AppData\Roaming\uv\python\cpython-3.13.3-windows-x86_64-none\python.exe`: architecture `x86_64` does not match request `x86`
+DEBUG Skipping incompatible managed installation `cpython-3.11.12-windows-x86_64-none`
+DEBUG Found `cpython-3.8.10-windows-x86-none` at `C:\Python3-32\python.exe` (first executable in the search path)
+DEBUG Skipping interpreter at `C:\Python3-32\python.exe` from first executable in the search path: does not satisfy request `3.13`
+error: No interpreter found for cpython-3.13-windows-x86-any in virtual environments, managed installations, search path, or registry
+
+D:\test&gt;dir c:\Users\User\AppData\Roaming\uv\python
+ Datenträger in Laufwerk C: ist Volume
+ Volumeseriennummer: DEAD-BEEF
+
+ Verzeichnis von c:\Users\User\AppData\Roaming\uv\python
+
+15.05.2025  15:19    &lt;DIR&gt;          .
+15.05.2025  15:19    &lt;DIR&gt;          ..
+08.05.2025  08:36                 1 .gitignore
+08.05.2025  08:36                 0 .lock
+15.05.2025  15:19    &lt;DIR&gt;          .temp
+09.05.2025  10:54    &lt;DIR&gt;          cpython-3.11.12-windows-x86-none
+13.05.2025  11:58    &lt;DIR&gt;          cpython-3.11.12-windows-x86_64-none
+15.05.2025  15:19    &lt;DIR&gt;          cpython-3.13.3-windows-x86-none
+08.05.2025  08:37    &lt;DIR&gt;          cpython-3.13.3-windows-x86_64-none
+(...)
+</code></pre>
+<p>The path doesn't seem to be checked in this case. Even the 3.11 versions are filtered before the log output.</p>
+<p><code>uv python pin</code> creates pretty much the same output.</p>
+<p><code>uv python list</code> output:</p>
+<pre><code class="language-shell">D:\test&gt;uv python list --all-arches -v
+DEBUG uv 0.7.4 (6fbcd09b5 2025-05-15)
+DEBUG Searching for any Python interpreter in managed installations, search path, or registry
+DEBUG Searching for managed installations at `C:\Users\User\AppData\Roaming\uv\python`
+DEBUG Found managed installation `cpython-3.13.3-windows-x86_64-none`
+DEBUG Found `cpython-3.13.3-windows-x86_64-none` at `C:\Users\User\AppData\Roaming\uv\python\cpython-3.13.3-windows-x86_64-none\python.exe` (managed installations)
+DEBUG Found managed installation `cpython-3.11.12-windows-x86_64-none`
+DEBUG Found `cpython-3.11.12-windows-x86_64-none` at `C:\Users\User\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\python.exe` (managed installations)
+DEBUG Found `cpython-3.8.10-windows-x86-none` at `C:\Python3-32\python.exe` (first executable in the search path)
+DEBUG Found `cpython-3.8.10-windows-x86-none` at `C:\Python3-32\python.exe` (registry)
+cpython-3.14.0a6-windows-x86_64-none                 &lt;download available&gt;
+cpython-3.14.0a6+freethreaded-windows-x86_64-none    &lt;download available&gt;
+cpython-3.14.0a6-windows-x86-none                    &lt;download available&gt;
+cpython-3.14.0a6+freethreaded-windows-x86-none       &lt;download available&gt;
+cpython-3.13.3-windows-x86_64-none                   C:\Users\User\AppData\Roaming\uv\python\cpython-3.13.3-windows-x86_64-none\python.exe
+cpython-3.13.3+freethreaded-windows-x86_64-none      &lt;download available&gt;
+cpython-3.13.3-windows-x86-none                      &lt;download available&gt;
+cpython-3.13.3+freethreaded-windows-x86-none         &lt;download available&gt;
+cpython-3.12.10-windows-x86_64-none                  &lt;download available&gt;
+cpython-3.12.10-windows-x86-none                     &lt;download available&gt;
+cpython-3.11.12-windows-x86_64-none                  C:\Users\User\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\python.exe
+cpython-3.11.12-windows-x86-none                     &lt;download available&gt;
+cpython-3.10.17-windows-x86_64-none                  &lt;download available&gt;
+cpython-3.10.17-windows-x86-none                     &lt;download available&gt;
+cpython-3.9.22-windows-x86_64-none                   &lt;download available&gt;
+cpython-3.9.22-windows-x86-none                      &lt;download available&gt;
+cpython-3.8.20-windows-x86_64-none                   &lt;download available&gt;
+cpython-3.8.20-windows-x86-none                      &lt;download available&gt;
+cpython-3.8.10-windows-x86-none                      C:\Python3-32\python.exe
+pypy-3.11.11-windows-x86_64-none                     &lt;download available&gt;
+pypy-3.10.16-windows-x86_64-none                     &lt;download available&gt;
+pypy-3.9.19-windows-x86_64-none                      &lt;download available&gt;
+pypy-3.8.16-windows-x86_64-none                      &lt;download available&gt;
+graalpy-3.11.0-windows-x86_64-none                   &lt;download available&gt;
+graalpy-3.10.0-windows-x86_64-none                   &lt;download available&gt;
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-15 21:13</div>
+            <div class="timeline-body"><p>Oh, it looks like we're filtering it earlier. I can fix that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13475.html">astral-sh/uv#13475</a> on 2025-05-15 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bparzella">@bparzella</a> on 2025-10-24 07:31</div>
+            <div class="timeline-body"><p>Hey is there any update on this? uv 0.9.5 seems to still have this problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-10-30 14:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

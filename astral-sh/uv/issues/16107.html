@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error parsing env variable containing dashes with --env-file flag - astral-sh/uv #16107</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error parsing env variable containing dashes with --env-file flag</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16107">#16107</a>
+        opened by <a href="https://github.com/gbassinello">@gbassinello</a>
+        on 2025-10-02 20:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gbassinello">@gbassinello</a> on 2025-10-02 20:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello,</p>
+<p>I'm having a bug when using <code>uv run</code> to start a flask application using the <code>--env-file</code> flag when a environment variable inside my <code>.env</code> file starts with dashes.</p>
+<p>When I started having this weird behaviour, I passed the <code>--print-config</code> flag to <code>gunicorn</code>. The .env file looks like this:</p>
+<pre><code>GUNICORN_CMD_ARGS=&quot;--bind=0.0.0.0:8080 --workers=1 --forwarded-allow-ips='*' --print-config&quot;
+</code></pre>
+<p>Which makes <code>gunicorn</code> prints the configured values and it showed me this:</p>
+<pre><code class="language-bash">&gt; uv run --env-file .env gunicorn example_api.main:app
+access_log_format                  = %(h)s %(l)s %(u)s %(t)s &quot;%(r)s&quot; %(s)s %(b)s &quot;%(f)s&quot; &quot;%(a)s&quot;
+accesslog                          = None
+backlog                            = 2048
+bind                               = ['ind=0.0.0.0:8080'] &lt;------
+ca_certs                           = None
+capture_output                     = False
+...
+</code></pre>
+<p>If I run it passing the env variable inline, it works as expected:</p>
+<pre><code class="language-bash">&gt; GUNICORN_CMD_ARGS=&quot;--bind=0.0.0.0:8080 --workers=1 --forwarded-allow-ips='*' --print-config&quot; uv run --env-file .env gunicorn example_api.main:app
+access_log_format                  = %(h)s %(l)s %(u)s %(t)s &quot;%(r)s&quot; %(s)s %(b)s &quot;%(f)s&quot; &quot;%(a)s&quot;
+accesslog                          = None
+backlog                            = 2048
+bind                               = ['0.0.0.0:8080'] &lt;-----
+ca_certs                           = None
+capture_output                     = False
+...
+</code></pre>
+<p>Reproducible example:</p>
+<ul>
+<li><code>example_app.py</code></li>
+</ul>
+<pre><code class="language-python">from flask import Flask
+app = Flask(__name__)
+
+@app.get(&quot;/&quot;)
+def main():
+    return &quot;ok&quot;
+</code></pre>
+<ul>
+<li><code>.env</code></li>
+</ul>
+<pre><code class="language-txt">GUNICORN_CMD_ARGS=&quot;--bind=0.0.0.0:8080 --workers=1 --forwarded-allow-ips='*' --print-config&quot;
+</code></pre>
+<ul>
+<li><code>pyproject.toml</code></li>
+</ul>
+<pre><code class="language-toml">[project]
+name = &quot;example_app&quot;
+version = &quot;0.0.1&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;flask&quot;, &quot;gunicorn&quot;]
+</code></pre>
+<p>Run:</p>
+<pre><code class="language-bash">&gt; uv install
+&gt; uv run --env-file .env gunicorn example_app:app
+</code></pre>
+<p>Information:</p>
+<ul>
+<li><code>uv --version</code>: 0.8.22</li>
+<li><code>gunicorn --version</code>: 23.0.0</li>
+<li><code>python3 --version</code>: 3.12.8</li>
+<li><code>echo $SHELL</code>: zsh 5.8.1</li>
+<li>ubuntu 22.04</li>
+</ul>
+<h3>Platform</h3>
+<p>Ubuntu 22.04.05</p>
+<h3>Version</h3>
+<p>0.8.22</p>
+<h3>Python version</h3>
+<p>3.12.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @gbassinello on 2025-10-02 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gbassinello">@gbassinello</a> on 2025-10-02 20:47</div>
+            <div class="timeline-body"><p>My bad guys, shouldve tried in another terminal before creating the issue.
+The bug is caused by <a href="https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-python-envs">vscode's python environment extension</a>. It is incorrectly parsing the .env files.</p>
+<p>Tried in another terminal and worked as expected. Will open an issue for them instead, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @gbassinello on 2025-10-02 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../microsoft/vscode-python-environments/issues/887.html">microsoft/vscode-python-environments#887</a> on 2025-10-02 21:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failing to compile numpy from source against a uv-managed interpreter (`Cannot compile `Python.h`.`) - astral-sh/uv #10558</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failing to compile numpy from source against a uv-managed interpreter (`Cannot compile `Python.h`.`)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10558">#10558</a>
+        opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a>
+        on 2025-01-13 08:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-01-13 08:36</div>
+            <div class="timeline-body"><p>I'm not able to build numpy from source against a uv-managed Python:</p>
+<pre><code>../meson.build:44:2: ERROR: Problem encountered: Cannot compile `Python.h`. Perhaps you need to install python-dev|python-devel
+</code></pre>
+<p>this seems similar to #10185, which was transferred from https://github.com/astral-sh/python-build-standalone, so I'm opening this ticket directly in uv's repo. This issue was already present with uv 0.5.13 and appears to reproduce with 0.5.18</p>
+<p>setup:</p>
+<pre><code>$ git clone https://github.com/numpy/numpy
+$ cd numpy
+$ git submodule update --init
+</code></pre>
+<p>then</p>
+<pre><code>$ uv build
+Building source distribution...
++ /Users/clm/.cache/uv/builds-v0/.tmpcUq9Nd/bin/python /private/tmp/numpy/vendored-meson/meson/meson.py setup /private/tmp/numpy /private/tmp/numpy/.mesonpy-xqqxtm9n -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md --native-file=/private/tmp/numpy/.mesonpy-xqqxtm9n/meson-python-native-file.ini
+The Meson build system
+Version: 1.5.2
+Source dir: /private/tmp/numpy
+Build dir: /private/tmp/numpy/.mesonpy-xqqxtm9n
+Build type: native build
+Project name: NumPy
+Project version: 2.3.0.dev0+git20241226.a07c6c5
+C compiler for the host machine: cc (clang 16.0.0 &quot;Apple clang version 16.0.0 (clang-1600.0.26.6)&quot;)
+C linker for the host machine: cc ld64 1115.7.3
+C++ compiler for the host machine: c++ (clang 16.0.0 &quot;Apple clang version 16.0.0 (clang-1600.0.26.6)&quot;)
+C++ linker for the host machine: c++ ld64 1115.7.3
+Cython compiler for the host machine: cython (cython 3.0.11)
+Host machine cpu family: aarch64
+Host machine cpu: aarch64
+Program python found: YES (/Users/clm/.cache/uv/builds-v0/.tmpcUq9Nd/bin/python)
+Found pkg-config: YES (/opt/homebrew/bin/pkg-config) 2.3.0
+Run-time dependency python found: YES 3.13
+Has header &quot;Python.h&quot; with dependency python-3.13: NO
+
+../meson.build:44:2: ERROR: Problem encountered: Cannot compile `Python.h`. Perhaps you need to install python-dev|python-devel
+
+A full log can be found at /private/tmp/numpy/.mesonpy-xqqxtm9n/meson-logs/meson-log.txt
+  × Failed to build `/private/tmp/numpy`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `mesonpy.build_sdist` failed (exit status: 1)
+      hint: This usually indicates a problem with the package or the build environment.
+</code></pre>
+<p>A shorter path to the same error</p>
+<pre><code>$ uv venv
+$ uv pip install git+https://github.com/numpy/numpy
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10185.html">astral-sh/uv#10185</a> on 2025-01-13 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-13 18:46</div>
+            <div class="timeline-body"><p>The header file is available, e.g., on my machine at <code>~/.local/share/uv/python/cpython-3.13.1-macos-aarch64-none/include/python3.13/Python.h</code></p>
+<p>I wonder how their configure script seaches for it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-13 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-01-13 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oscarbenjamin">@oscarbenjamin</a> on 2025-01-14 00:06</div>
+            <div class="timeline-body"><p>I've just run into what I assume is the same issue trying to build python-flint with a uv-installed Python. I have made a simple demonstration repo for a project that has meson as build system and builds a Cython extension module:</p>
+<p>https://github.com/oscarbenjamin/meson_simple</p>
+<p>It builds fine with a system Python or pyenv Python but not with a uv python.</p>
+<p>Steps:</p>
+<pre><code>git clone https://github.com/oscarbenjamin/meson_simple
+cd meson_simple
+uv venv
+uv pip install -r requirements-dev.txt
+source .venv/bin/activate
+meson setup build --wipe
+meson compile -C build
+spin test
+</code></pre>
+<p>I don't know if this is a new issue because I have not previously tried to build anything like this with a uv-installed Python.</p>
+<p>This is the meson configure output:</p>
+<pre><code class="language-console">$ meson setup build --wipe
+The Meson build system
+Version: 1.6.1
+Source dir: /stuff/current/active/mesontest
+Build dir: /stuff/current/active/mesontest/build
+Build type: native build
+Project name: meson-test
+Project version: undefined
+C compiler for the host machine: cc (gcc 11.4.0 &quot;cc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0&quot;)
+C linker for the host machine: cc ld.bfd 2.38
+Cython compiler for the host machine: cython (cython 3.0.11)
+Host machine cpu family: x86_64
+Host machine cpu: x86_64
+Program python3 found: YES (/stuff/current/active/mesontest/.venv/bin/python3)
+Found pkg-config: YES (/usr/bin/pkg-config) 0.29.2
+Run-time dependency python found: YES 3.13
+Build targets in project: 1
+
+Found ninja-1.10.1 at /usr/bin/ninja
+INFO: autodetecting backend as ninja
+INFO: calculating backend command to run: /usr/bin/ninja -C /stuff/current/active/mesontest/build
+</code></pre>
+<p>The compile step fails with:</p>
+<pre><code class="language-console">$ meson compile -C build
+ninja: Entering directory `/stuff/current/active/mesontest/build'
+[2/3] Compiling C object meson_test/_meson_test.c....p/meson-generated_meson_test__meson_test.pyx.c.o
+FAILED: meson_test/_meson_test.cpython-313-x86_64-linux-gnu.so.p/meson-generated_meson_test__meson_test.pyx.c.o 
+cc -Imeson_test/_meson_test.cpython-313-x86_64-linux-gnu.so.p -Imeson_test -I../meson_test -I/install/include/python3.13 -fvisibility=hidden -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=c99 -O2 -g -fPIC -MD -MQ meson_test/_meson_test.cpython-313-x86_64-linux-gnu.so.p/meson-generated_meson_test__meson_test.pyx.c.o -MF meson_test/_meson_test.cpython-313-x86_64-linux-gnu.so.p/meson-generated_meson_test__meson_test.pyx.c.o.d -o meson_test/_meson_test.cpython-313-x86_64-linux-gnu.so.p/meson-generated_meson_test__meson_test.pyx.c.o -c meson_test/_meson_test.cpython-313-x86_64-linux-gnu.so.p/meson_test/_meson_test.pyx.c
+meson_test/_meson_test.cpython-313-x86_64-linux-gnu.so.p/meson_test/_meson_test.pyx.c:16:10: fatal error: Python.h: No such file or directory
+   16 | #include &quot;Python.h&quot;
+      |          ^~~~~~~~~~
+compilation terminated.
+ninja: build stopped: subcommand failed.
+</code></pre>
+<p>The specific compiler command wrapped is:</p>
+<pre><code>cc -Imeson_test/_meson_test.cpython-313-x86_64-linux-gnu.so.p -Imeson_test
+-I../meson_test -I/install/include/python3.13 -fvisibility=hidden
+-fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=c99
+-O2 -g -fPIC -MD -MQ
+meson_test/_meson_test.cpython-313-x86_64-linux-gnu.so.p/meson-generated_meson_test__meson_test.pyx.c.o
+-MF
+meson_test/_meson_test.cpython-313-x86_64-linux-gnu.so.p/meson-generated_meson_test__meson_test.pyx.c.o.d
+-o
+meson_test/_meson_test.cpython-313-x86_64-linux-gnu.so.p/meson-generated_meson_test__meson_test.pyx.c.o
+-c
+meson_test/_meson_test.cpython-313-x86_64-linux-gnu.so.p/meson_test/_meson_test.pyx.c
+</code></pre>
+<p>Running with a venv off of a system Python I get this command instead:</p>
+<pre><code>cc -Imeson_test/_meson_test.cpython-310-x86_64-linux-gnu.so.p -Imeson_test
+-I../meson_test -I/usr/include/python3.10
+-I/usr/include/x86_64-linux-gnu/python3.10 -fvisibility=hidden
+-fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=c99
+-O2 -g -fPIC -MD -MQ
+meson_test/_meson_test.cpython-310-x86_64-linux-gnu.so.p/meson-generated_meson_test__meson_test.pyx.c.o
+-MF
+meson_test/_meson_test.cpython-310-x86_64-linux-gnu.so.p/meson-generated_meson_test__meson_test.pyx.c.o.d
+-o
+meson_test/_meson_test.cpython-310-x86_64-linux-gnu.so.p/meson-generated_meson_test__meson_test.pyx.c.o
+-c
+meson_test/_meson_test.cpython-310-x86_64-linux-gnu.so.p/meson_test/_meson_test.pyx.c
+</code></pre>
+<p>Separating only the include paths it is:</p>
+<pre><code class="language-bash"># uv python
+-Imeson_test/_meson_test.cpython-313-x86_64-linux-gnu.so.p
+-Imeson_test
+-I../meson_test
+-I/install/include/python3.13
+
+# system python
+-Imeson_test/_meson_test.cpython-310-x86_64-linux-gnu.so.p
+-Imeson_test
+-I../meson_test
+-I/usr/include/python3.10
+-I/usr/include/x86_64-linux-gnu/python3.10
+</code></pre>
+<p>Somehow it seems that meson has been unable to locate the include directories I guess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oscarbenjamin">@oscarbenjamin</a> on 2025-01-14 00:19</div>
+            <div class="timeline-body"><p>Possibly @eli-schwartz could help with understanding how meson identifies the include directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 00:21</div>
+            <div class="timeline-body"><p>Thanks for the additional details.</p>
+<p>Looks like this comes from https://github.com/mesonbuild/meson/blob/dfb449d099d6f3066ca646af197bc7af85059a86/mesonbuild/dependencies/python.py#L369-L370</p>
+<p>I don't really see a difference between the variables referenced</p>
+<pre><code>❯ $(uv python find --python-preference only-system) -m sysconfig | rg &quot;(INCLUDEPY|include|platinclude) =&quot;
+	include = &quot;/opt/homebrew/opt/python@3.12/Frameworks/Python.framework/Versions/3.12/include/python3.12&quot;
+	platinclude = &quot;/opt/homebrew/opt/python@3.12/Frameworks/Python.framework/Versions/3.12/include/python3.12&quot;
+	CONFINCLUDEPY = &quot;/opt/homebrew/opt/python@3.12/Frameworks/Python.framework/Versions/3.12/include/python3.12&quot;
+	INCLUDEPY = &quot;/opt/homebrew/opt/python@3.12/Frameworks/Python.framework/Versions/3.12/include/python3.12&quot;
+❯ $(uv python find --python-preference only-managed) -m sysconfig | rg &quot;(INCLUDEPY|include|platinclude) =&quot;
+	include = &quot;/Users/zb/.local/share/uv/python/cpython-3.12.6-macos-aarch64-none/include/python3.12&quot;
+	platinclude = &quot;/Users/zb/.local/share/uv/python/cpython-3.12.6-macos-aarch64-none/include/python3.12&quot;
+	CONFINCLUDEPY = &quot;/Users/zb/.local/share/uv/python/cpython-3.12.6-macos-aarch64-none/include/python3.12&quot;
+	INCLUDEPY = &quot;/Users/zb/.local/share/uv/python/cpython-3.12.6-macos-aarch64-none/include/python3.12&quot;
+</code></pre>
+<p>Can you see the <code>pkg-config</code> it uses?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 00:22</div>
+            <div class="timeline-body"><p>@oscarbenjamin your logs show <code>-I/install/include/python3.13</code> which is old uv behavior, can you try reinstalling your interpreter? We change those paths at install time now (see #9857)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oscarbenjamin">@oscarbenjamin</a> on 2025-01-14 00:27</div>
+            <div class="timeline-body"><p>Oh, actually after updating uv and reinstalling Python it works for the demo:</p>
+<pre><code>uv self update
+uv python install -r 3.12
+rm -r .venv
+# then it works
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 00:32</div>
+            <div class="timeline-body"><p>Great to hear!</p>
+<p>Yeah the pkg-config file for these look similar too</p>
+<pre><code>❯ cat /Users/zb/.local/share/uv/python/cpython-3.12.6-macos-aarch64-none/lib/pkgconfig/python-3.12.pc
+# See: man pkg-config
+prefix=/Users/zb/.local/share/uv/python/cpython-3.12.6-macos-aarch64-none
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Python
+Description: Build a C extension for Python
+Requires:
+Version: 3.12
+Libs.private: -ldl  -framework CoreFoundation
+Libs: -L${libdir} 
+Cflags: -I${includedir}/python3.12%                                                                                                                                                                                                                           
+
+❯ cat /opt/homebrew/opt/python@3.12/lib/pkgconfig/python-3.12.pc
+# See: man pkg-config
+prefix=/opt/homebrew/opt/python@3.12/Frameworks/Python.framework/Versions/3.12
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Python
+Description: Build a C extension for Python
+Requires:
+Version: 3.12
+Libs.private: -ldl  -framework CoreFoundation
+Libs: -L${libdir} 
+Cflags: -I${includedir}/python3.12
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 00:33</div>
+            <div class="timeline-body"><p>@neutrinoceros can you use <code>uv python install --reinstall &lt;version&gt;</code> and try again?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oscarbenjamin">@oscarbenjamin</a> on 2025-01-14 00:36</div>
+            <div class="timeline-body"><p>I've confirmed I can build python-flint and run the whole test suite. The problems I was seeing were fixed by updating uv, using the updated uv to reinstall Python and then rebuilding the venv.</p>
+<p>Thanks @zanieb !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2025-01-14 00:52</div>
+            <div class="timeline-body"><p>Looks like you were able to figure out the critical references we use, and it turns out everything works with current <code>uv</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oscarbenjamin">@oscarbenjamin</a> on 2025-01-14 01:08</div>
+            <div class="timeline-body"><p>Thanks @eli-schwartz.</p>
+<blockquote>
+<p>everything works with current <code>uv</code>?</p>
+</blockquote>
+<p>Yes in my testing but it would be good for @neutrinoceros to confirm.</p>
+<p>I just tried installing numpy from git as described in the OP and it seems to work okay:</p>
+<pre><code class="language-console">$ uv pip install git+https://github.com/numpy/numpy
+ Updated https://github.com/numpy/numpy (bbf4836a8)
+Resolved 1 package in 34.85s
+   Built numpy @ git+https://github.com/numpy/numpy@bbf4836a82d255c2a2161d277abb4b6f5455ca6d
+Prepared 1 package in 5m 54s
+Installed 1 package in 19ms
+ + numpy==2.3.0.dev0 (from git+https://github.com/numpy/numpy@bbf4836a82d255c2a2161d277abb4b6f5455ca6d)
+$ python -c 'import numpy; print(numpy.__version__)'
+2.3.0.dev0+git20250110.bbf4836
+</code></pre>
+<p>If anyone wants to try that one at home then they would first need to install openblas e.g. something like <code>apt-get libopenblas-dev</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-01-14 07:31</div>
+            <div class="timeline-body"><blockquote>
+<p>@neutrinoceros can you use uv python install --reinstall <version> and try again?</p>
+</blockquote>
+<p>Sorry I should have mentioned: I tried this with uv 0.5.14, which if I'm following correctly has the most recent updates in this area, so I didn't think it was necessary to try again with 0.5.18. I just tried now:</p>
+<pre><code>uv python install 3.13 --reinstall
+uv pip install git+https://github.com/numpy/numpy --no-cache --no-config
+</code></pre>
+<p>(throwing <code>--no-cache</code> and <code>--no-config</code> for good measure)
+The error persists :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2025-01-14 07:34</div>
+            <div class="timeline-body"><p>What are the values for you that @zanieb described in https://github.com/astral-sh/uv/issues/10558#issuecomment-2588488334 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-01-14 08:07</div>
+            <div class="timeline-body"><pre><code>❯ $(uv python find --python-preference only-system) -m sysconfig | rg &quot;(INCLUDEPY|include|platinclude)&quot;
+	include = &quot;/Users/clm/.pyenv/versions/3.11.11/include/python3.11&quot;
+	platinclude = &quot;/Users/clm/.pyenv/versions/3.11.11/include/python3.11&quot;
+	CONFIGURE_CPPFLAGS = &quot;-I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include&quot;
+	CONFIG_ARGS = &quot;'--prefix=/Users/clm/.pyenv/versions/3.11.11' '--enable-shared' '--libdir=/Users/clm/.pyenv/versions/3.11.11/lib' '--with-openssl=/opt/homebrew/opt/openssl@3' 'PKG_CONFIG_PATH=/opt/homebrew/opt/openssl@3/lib/pkgconfig/:' 'CC=clang' 'LDFLAGS=-L/opt/homebrew/opt/ncurses/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/readline/lib -L/Users/clm/.pyenv/versions/3.11.11/lib -Wl,-rpath,/Users/clm/.pyenv/versions/3.11.11/lib -L/opt/homebrew/lib -Wl,-rpath,/opt/homebrew/lib -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib' 'LIBS=-L/Users/clm/.pyenv/versions/3.11.11/lib -Wl,-rpath,/Users/clm/.pyenv/versions/3.11.11/lib -L/opt/homebrew/lib -Wl,-rpath,/opt/homebrew/lib' 'CPPFLAGS=-I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include'&quot;
+	CONFINCLUDEDIR = &quot;/Users/clm/.pyenv/versions/3.11.11/include&quot;
+	CONFINCLUDEPY = &quot;/Users/clm/.pyenv/versions/3.11.11/include/python3.11&quot;
+	CPPFLAGS = &quot;-I. -I./Include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include&quot;
+	INCLDIRSTOMAKE = &quot;/Users/clm/.pyenv/versions/3.11.11/include /Users/clm/.pyenv/versions/3.11.11/include /Users/clm/.pyenv/versions/3.11.11/include/python3.11 /Users/clm/.pyenv/versions/3.11.11/include/python3.11&quot;
+	INCLUDEDIR = &quot;/Users/clm/.pyenv/versions/3.11.11/include&quot;
+	INCLUDEPY = &quot;/Users/clm/.pyenv/versions/3.11.11/include/python3.11&quot;
+	LIBEXPAT_CFLAGS = &quot;-I./Modules/expat -Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Werror=implicit-function-declaration -fvisibility=hidden  -I./Include/internal -I. -I./Include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include&quot;
+	LIBMPDEC_CFLAGS = &quot;-I./Modules/_decimal/libmpdec -DUNIVERSAL=1 -Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Werror=implicit-function-declaration -fvisibility=hidden  -I./Include/internal -I. -I./Include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include&quot;
+	MODULE__BLAKE2_CFLAGS = &quot;-I/opt/homebrew/Cellar/libb2/0.98.1/include&quot;
+	MODULE__HASHLIB_CFLAGS = &quot;-I/opt/homebrew/opt/openssl@3/include&quot;
+	MODULE__LZMA_CFLAGS = &quot;-I/opt/homebrew/Cellar/xz/5.6.3/include&quot;
+	MODULE__SSL_CFLAGS = &quot;-I/opt/homebrew/opt/openssl@3/include&quot;
+	OPENSSL_INCLUDES = &quot;-I/opt/homebrew/opt/openssl@3/include&quot;
+	PY_BUILTIN_MODULE_CFLAGS = &quot;-Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Werror=implicit-function-declaration -fvisibility=hidden  -I./Include/internal -I. -I./Include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -DPy_BUILD_CORE_BUILTIN&quot;
+	PY_CORE_CFLAGS = &quot;-Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Werror=implicit-function-declaration -fvisibility=hidden  -I./Include/internal -I. -I./Include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -DPy_BUILD_CORE&quot;
+	PY_CPPFLAGS = &quot;-I. -I./Include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include&quot;
+	PY_STDMODULE_CFLAGS = &quot;-Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Werror=implicit-function-declaration -fvisibility=hidden  -I./Include/internal -I. -I./Include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include&quot;
+</code></pre>
+<pre><code>❯ $(uv python find --python-preference only-managed) -m sysconfig | rg &quot;(INCLUDEPY|include|platinclude)&quot;
+	include = &quot;/Users/clm/.pyenv/versions/3.11.11/include/python3.11&quot;
+	platinclude = &quot;/Users/clm/.pyenv/versions/3.11.11/include/python3.11&quot;
+	CONFIGURE_CPPFLAGS = &quot;-I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include&quot;
+	CONFIG_ARGS = &quot;'--prefix=/Users/clm/.pyenv/versions/3.11.11' '--enable-shared' '--libdir=/Users/clm/.pyenv/versions/3.11.11/lib' '--with-openssl=/opt/homebrew/opt/openssl@3' 'PKG_CONFIG_PATH=/opt/homebrew/opt/openssl@3/lib/pkgconfig/:' 'CC=clang' 'LDFLAGS=-L/opt/homebrew/opt/ncurses/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/readline/lib -L/Users/clm/.pyenv/versions/3.11.11/lib -Wl,-rpath,/Users/clm/.pyenv/versions/3.11.11/lib -L/opt/homebrew/lib -Wl,-rpath,/opt/homebrew/lib -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib' 'LIBS=-L/Users/clm/.pyenv/versions/3.11.11/lib -Wl,-rpath,/Users/clm/.pyenv/versions/3.11.11/lib -L/opt/homebrew/lib -Wl,-rpath,/opt/homebrew/lib' 'CPPFLAGS=-I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include'&quot;
+	CONFINCLUDEDIR = &quot;/Users/clm/.pyenv/versions/3.11.11/include&quot;
+	CONFINCLUDEPY = &quot;/Users/clm/.pyenv/versions/3.11.11/include/python3.11&quot;
+	CPPFLAGS = &quot;-I. -I./Include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include&quot;
+	INCLDIRSTOMAKE = &quot;/Users/clm/.pyenv/versions/3.11.11/include /Users/clm/.pyenv/versions/3.11.11/include /Users/clm/.pyenv/versions/3.11.11/include/python3.11 /Users/clm/.pyenv/versions/3.11.11/include/python3.11&quot;
+	INCLUDEDIR = &quot;/Users/clm/.pyenv/versions/3.11.11/include&quot;
+	INCLUDEPY = &quot;/Users/clm/.pyenv/versions/3.11.11/include/python3.11&quot;
+	LIBEXPAT_CFLAGS = &quot;-I./Modules/expat -Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Werror=implicit-function-declaration -fvisibility=hidden  -I./Include/internal -I. -I./Include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include&quot;
+	LIBMPDEC_CFLAGS = &quot;-I./Modules/_decimal/libmpdec -DUNIVERSAL=1 -Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Werror=implicit-function-declaration -fvisibility=hidden  -I./Include/internal -I. -I./Include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include&quot;
+	MODULE__BLAKE2_CFLAGS = &quot;-I/opt/homebrew/Cellar/libb2/0.98.1/include&quot;
+	MODULE__HASHLIB_CFLAGS = &quot;-I/opt/homebrew/opt/openssl@3/include&quot;
+	MODULE__LZMA_CFLAGS = &quot;-I/opt/homebrew/Cellar/xz/5.6.3/include&quot;
+	MODULE__SSL_CFLAGS = &quot;-I/opt/homebrew/opt/openssl@3/include&quot;
+	OPENSSL_INCLUDES = &quot;-I/opt/homebrew/opt/openssl@3/include&quot;
+	PY_BUILTIN_MODULE_CFLAGS = &quot;-Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Werror=implicit-function-declaration -fvisibility=hidden  -I./Include/internal -I. -I./Include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -DPy_BUILD_CORE_BUILTIN&quot;
+	PY_CORE_CFLAGS = &quot;-Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Werror=implicit-function-declaration -fvisibility=hidden  -I./Include/internal -I. -I./Include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -DPy_BUILD_CORE&quot;
+	PY_CPPFLAGS = &quot;-I. -I./Include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include&quot;
+	PY_STDMODULE_CFLAGS = &quot;-Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Werror=implicit-function-declaration -fvisibility=hidden  -I./Include/internal -I. -I./Include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/opt/homebrew/opt/ncurses/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/readline/include -I/Users/clm/.pyenv/versions/3.11.11/include -I/opt/homebrew/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include&quot;
+</code></pre>
+<p><code>diff</code>ing shows there's no difference. It seems very peculiar that many paths appear to be linked to pyenv-managed interpreter, even with <code>--python-preference only-managed</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-01-14 12:52</div>
+            <div class="timeline-body"><p>I just realized that <code>uv python find</code> behaves differently if run from a dir that contains a <code>.venv</code> (which is what I did earlier). Apparently <code>--python-preference</code> is completely (and silently) ignored in this scenario, which I guess explains why there wasn't any difference between the two outputs.</p>
+<p>Running them again from a directory <em>without</em> a <code>.venv</code>, on the same machine, I get the same output with <code>--python-preference only-system</code>, but with <code>--python-preference only-managed</code> I now get</p>
+<pre><code>	include = &quot;/Users/clm/Library/Application Support/uv/python/cpython-3.13.1-macos-aarch64-none/include/python3.13&quot;
+	platinclude = &quot;/Users/clm/Library/Application Support/uv/python/cpython-3.13.1-macos-aarch64-none/include/python3.13&quot;
+	CONFINCLUDEDIR = &quot;/Users/clm/Library/Application Support/uv/python/cpython-3.13.1-macos-aarch64-none/include&quot;
+	CONFINCLUDEPY = &quot;/Users/clm/Library/Application Support/uv/python/cpython-3.13.1-macos-aarch64-none/include/python3.13&quot;
+	INCLDIRSTOMAKE = &quot;/Users/clm/Library/Application Support/uv/python/cpython-3.13.1-macos-aarch64-none/include /Users/clm/Library/Application Support/uv/python/cpython-3.13.1-macos-aarch64-none/include /Users/clm/Library/Application Support/uv/python/cpython-3.13.1-macos-aarch64-none/include/python3.13 /Users/clm/Library/Application Support/uv/python/cpython-3.13.1-macos-aarch64-none/include/python3.13&quot;
+	INCLUDEDIR = &quot;/Users/clm/Library/Application Support/uv/python/cpython-3.13.1-macos-aarch64-none/include&quot;
+	INCLUDEPY = &quot;/Users/clm/Library/Application Support/uv/python/cpython-3.13.1-macos-aarch64-none/include/python3.13&quot;
+	LIBHACL_CFLAGS = &quot;-I./Modules/_hacl/include -D_BSD_SOURCE -D_DEFAULT_SOURCE -fno-strict-overflow -Wsign-compare -Wunreachable-code -DNDEBUG -g -O3 -Wall -arch arm64 -mmacosx-version-min=11.0 -Wno-nullability-completeness -Wno-expansion-to-defined -Wno-undef-prefix -fPIC -Werror=unguarded-availability-new -flto=thin -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wstrict-prototypes -Werror=implicit-function-declaration -fvisibility=hidden -fprofile-instr-use=/private/var/folders/y4/8dcllrc96x32z0w3fgrlx6_m0000gn/T/tmpbyqxzu9h/Python-3.13.1/code.profclangd -I./Include/internal -I./Include/internal/mimalloc -I. -I./Include -arch arm64 -mmacosx-version-min=11.0 -Wno-nullability-completeness -Wno-expansion-to-defined -Wno-undef-prefix -fPIC -Werror=unguarded-availability-new&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 18:36</div>
+            <div class="timeline-body"><p>A bit random, but is the problem that there's a space in that include directory path? I've seen that elsewhere. If you delete <code>/Users/clm/Library/Application Support/uv/</code> (or move to <code>~/.local/share/uv</code>) then we won't use that legacy path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2025-01-14 18:41</div>
+            <div class="timeline-body"><p>Seeing the log file at /private/tmp/numpy/.mesonpy-xqqxtm9n/meson-logs/meson-log.txt would help to determine whether this is the issue. (I know that pip deletes the log file along with the entire build tree on build failures which is frustrating, but I have no idea what uv might do here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oscarbenjamin">@oscarbenjamin</a> on 2025-01-14 19:35</div>
+            <div class="timeline-body"><blockquote>
+<p>pip deletes the log file along with the entire build tree on build failures</p>
+</blockquote>
+<p>I assume that this works with <code>uv pip</code> just like normal <code>pip</code>:</p>
+<pre><code>uv pip install --no-build-isolation
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2025-01-14 19:45</div>
+            <div class="timeline-body"><p>The logfile is created inside a subdirectory of the extracted sdist, and in at least some cases / versions, for building <code>.</code> I seem to recall it produces an sdist or otherwise copies the source tree to a temporary copy. I'm not sure of the exact details in all cases since my preferred frontend is <code>gpep517 build-wheel</code> with a config-settings dict passing various meson options including a persistent incremental build directory.</p>
+<p>The compilation artifacts need to be available, at any rate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-01-15 07:55</div>
+            <div class="timeline-body"><p>meson's logfile seems to indeed be removed before I get a chance to read it.
+Trying <code>uv build --no-build-isolation</code> (or <code>uv pip --no-isolation</code>), I run into a different issue (which I'm sure is not uv's)</p>
+<pre><code>❯ uv pip install -e . --no-build-isolation
+Resolved 1 package in 3ms
+  × Failed to build `numpy @ file:///private/tmp/test-numpy/numpy`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `mesonpy.build_editable` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+          import mesonpy as backend
+      ModuleNotFoundError: No module named 'mesonpy'
+
+      hint: This usually indicates a problem with the package or the build environment.
+</code></pre>
+<p>I know that <code>mesonpy</code> is shipped as a git submodule within <code>numpy</code> (and I do have it checked in), but I don't know how to get <code>mesonpy</code> on the path (<code>uv pip install ./vendored-meson/meson</code> runs successfully but seems insufficient).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-01-15 08:07</div>
+            <div class="timeline-body"><blockquote>
+<p>A bit random, but is the problem that there's a space in that include directory path? I've seen that elsewhere. If you delete <code>/Users/clm/Library/Application Support/uv/</code> (or move to <code>~/.local/share/uv</code>) then we won't use that legacy path.</p>
+</blockquote>
+<p>That's it !
+Note that moving the directory wasn't sufficient by itself: I've tried moving the dir but then uv can't find the interpreters it managed, and if I reinstalled them, they landed back at the same location. I also needed to uninstall uv (previously installed via <code>homebrew</code>) and reinstall it using the recommended <code>curl ... | sh</code> command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oscarbenjamin">@oscarbenjamin</a> on 2025-01-15 11:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Trying <code>uv build --no-build-isolation</code> (or <code>uv pip --no-isolation</code>), I run into a different issue</p>
+</blockquote>
+<p>When you disable build isolation you need to install the dependencies before building e.g. <code>uv pip install meson-python cython</code>. I'm not entirely sure how a build without build isolation works with <code>uv pip</code> but with <code>pip</code> it means that the build steps run in same environment from which <code>pip</code> itself is running.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-01-15 11:43</div>
+            <div class="timeline-body"><p>I'm aware. But &quot;mesonpy&quot; isn't the name of a PyPI package so I don't know where I'm supposed to get it from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oscarbenjamin">@oscarbenjamin</a> on 2025-01-15 11:52</div>
+            <div class="timeline-body"><p>The package is called meson-python. You can see it in the simpler demo repo I linked above https://github.com/oscarbenjamin/meson_simple/blob/53edd241263528b8551393bbb8a8237b5365880d/pyproject.toml#L1-L3 or in numpy's pyproject.toml: https://github.com/numpy/numpy/blob/bbf4836a82d255c2a2161d277abb4b6f5455ca6d/pyproject.toml#L1-L6</p>
+<p>I'm not sure in the case of numpy specifically though because I think numpy at least used to vendor its own fork of meson-python.</p>
+<p>For local development with numpy I think it is probably now recommended to use <code>spin</code> so the command to make an editable install would be something like <code>spin install</code> (first <code>pip install spin</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-01-16 08:22</div>
+            <div class="timeline-body"><p>Thanks for these pointers !
+Since I was able to fix my system by reinstalling uv I don't fancy messing with it again so at the moment I cannot reproduce my own failure. I'm not sure there's a clear actionable left here, so feel free to close @zanieb, and thank you all for your help !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-17 05:18</div>
+            <div class="timeline-body"><p>Great thanks everyone!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-17 05:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11061.html">astral-sh/uv#11061</a> on 2025-01-29 14:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

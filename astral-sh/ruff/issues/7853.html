@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diff is reversed - astral-sh/ruff #7853</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Diff is reversed</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7853">#7853</a>
+        opened by <a href="https://github.com/bluthej">@bluthej</a>
+        on 2023-10-08 21:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bluthej">@bluthej</a> on 2023-10-08 21:07</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h1>Issue</h1>
+<p>The diff output is reversed since #7813.</p>
+<p>For example, if I give ruff the following input file:</p>
+<pre><code class="language-python">from .logging import config_logging
+from .settings import ENV
+from .settings import *
+</code></pre>
+<p>then I get the following correct output with <code>v0.0.292</code>:</p>
+<pre><code class="language-shell">--- test.py
++++ test.py
+@@ -1,3 +1,3 @@
+ from .logging import config_logging
++from .settings import *
+ from .settings import ENV
+-from .settings import *
+
+Would fix 1 error.
+</code></pre>
+<p>But with the main branch, I get:</p>
+<pre><code class="language-shell">--- test.py
++++ test.py
+@@ -1,3 +1,3 @@
+ from .logging import config_logging
++from .settings import ENV
+ from .settings import *
+-from .settings import ENV
+
+Would fix 1 error.
+</code></pre>
+<h1>Fix</h1>
+<p>I traced it back to <a href="https://github.com/astral-sh/ruff/blob/2d6557a51bfeb43ed1e922383ad066ce6626fec8/crates/ruff_linter/src/source_kind.rs#L94">this line</a>, where the old and new source files are reversed. It should read:</p>
+<pre><code class="language-rust">let text_diff = TextDiff::from_lines(src, dst);
+</code></pre>
+<p>If that's ok, I can submit a quick PR to fix it. There are 2 tests whose snapshot needs to be updated as a consequence, but apart from that the only change needed is the one I mentioned above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-08 21:58</div>
+            <div class="timeline-body"><p>Thanks! I wonder how that pull request didn't change any snapshots</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-08 23:21</div>
+            <div class="timeline-body"><p>Oops, PR welcome, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluthej">@bluthej</a> on 2023-10-09 05:33</div>
+            <div class="timeline-body"><p>@zanieb it seems like there are only two integration tests that test the output of the CLI diff option (<code>diff_shows_safe_fixes_by_default</code> and <code>diff_shows_unsafe_fixes_with_opt_in</code>), and they were added in #7769, which was merged 2 days after #7813 ^^</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7855.html">astral-sh/ruff#7855</a> on 2023-10-09 05:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-10-09 07:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

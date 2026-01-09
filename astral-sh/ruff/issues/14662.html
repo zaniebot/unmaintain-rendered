@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import aliases configured for ICN001 can cause syntax errors - astral-sh/ruff #14662</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Import aliases configured for ICN001 can cause syntax errors</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14662">#14662</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2024-11-28 19:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-11-28 19:26</div>
+            <div class="timeline-body"><p>Ruff 0.8.0 does not validate the aliases in <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-import-conventions_extend-aliases"><code>lint.flake8-import-conventions.extend-aliases</code></a> for <a href="https://docs.astral.sh/ruff/rules/unconventional-import-alias/"><code>unconventional-import-alias</code> (ICN001)</a>.</p>
+<pre><code class="language-console">$ cat icn001.py
+import sys
+
+$ ruff check --select ICN001 --config 'lint.flake8-import-conventions.extend-aliases = {&quot;sys&quot; = &quot;def&quot;}' --isolated --unsafe-fixes --fix icn001.py
+
+error: Fix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BFix%20error%5D
+
+...quoting the contents of `icn001.py`, the rule codes ICN001, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+icn001.py:1:8: ICN001 `sys` should be imported as `def`
+  |
+1 | import sys
+  |        ^^^ ICN001
+  |
+  = help: Alias `sys` to `def`
+
+Found 1 error.
+[*] 1 fixable with the --fix option.
+</code></pre>
+<p>The extra aliases should be validated like the ones in <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-import-conventions_aliases"><code>lint.flake8-import-conventions.aliases</code></a> (#14477).</p>
+<pre><code class="language-console">$ ruff check --select ICN001 --config 'lint.flake8-import-conventions.aliases = {&quot;sys&quot; = &quot;def&quot;}' --isolated --unsafe-fixes --fix icn001.py
+error: invalid value 'lint.flake8-import-conventions.aliases = {&quot;sys&quot; = &quot;def&quot;}' for '--config &lt;CONFIG_OPTION&gt;'
+
+  tip: A `--config` flag must either be a path to a `.toml` configuration file
+       or a TOML `&lt;KEY&gt; = &lt;VALUE&gt;` pair overriding a specific configuration
+       option
+
+Could not parse the supplied argument as a `ruff.toml` configuration option:
+
+invalid value: string &quot;def&quot;, expected a Python identifier
+in `lint`
+
+For more information, try '--help'.
+</code></pre>
+<p>There is still one problem with <code>lint.flake8-import-conventions.aliases</code>, and therefore also <code>extend-aliases</code>: they allow <code>__debug__</code> as an alias, but that is a syntax error.</p>
+<pre><code class="language-console">$ ruff check --select ICN001 --config 'lint.flake8-import-conventions.aliases = {&quot;sys&quot; = &quot;__debug__&quot;}' --isolated --unsafe-fixes --fix icn001.py
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat icn001.py
+import sys as __debug__
+
+$ python icn001.py
+  File &quot;icn001.py&quot;, line 1
+    import sys as __debug__
+    ^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: cannot assign to __debug__
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-28 20:35</div>
+            <div class="timeline-body"><p>Cc. @dylwil3, if you're interested in this one!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-11-28 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @AlexWaygood on 2024-11-28 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2024-11-28 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14745.html">astral-sh/ruff#14745</a> on 2024-12-03 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2024-12-03 04:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2024-12-03 04:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

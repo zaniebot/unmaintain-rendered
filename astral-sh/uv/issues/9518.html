@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync` removes editable install if `[build-system]` is not specified - astral-sh/uv #9518</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync` removes editable install if `[build-system]` is not specified</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9518">#9518</a>
+        opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a>
+        on 2024-11-29 09:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2024-11-29 09:54</div>
+            <div class="timeline-body"><pre><code class="language-bash">uv pip install -e .  # ✅
+uv lock --upgrade  # ✅
+uv sync --upgrade  # ↯ removes main package
+</code></pre>
+<p>It seems this is because if <code>[build-system]</code> is missing, then <code>uv.lock</code> says <code>source = { virtual = &quot;.&quot; }</code>, and with it <code>source = { editable = &quot;.&quot; }</code>. (see comment by @atomiechen in https://github.com/astral-sh/uv/issues/1626#issuecomment-2394365983):</p>
+<p>The lack of <code>[build-system]</code> should not prevent treating the package as editable. This is consistent with <a href="https://peps.python.org/pep-0518/">PEP 518</a> and <a href="https://packaging.python.org/en/latest/specifications/pyproject-toml/">PyPA specification</a></p>
+<blockquote>
+<p>Build tools are expected to use the example configuration file above as their default semantics when a pyproject.toml file is not present.</p>
+<p>Tools should not require the existence of the [build-system] table. A pyproject.toml file may be used to store configuration details other than build-related data and thus lack a [build-system] table legitimately. If the file exists but is lacking the [build-system] table then the default values as specified above should be used. If the table is specified but is missing required fields then the tool should consider it an error.</p>
+</blockquote>
+<p>Alternatively, if this is not possible, it would make more sense if <code>uv</code> issued a warning/error when attempting to <code>uv pip install -e .</code> a package without <code>[build-system]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 16:57</div>
+            <div class="timeline-body"><p>This is intentional. Outside of the <code>uv pip</code> interface, we treat projects without a <code>[build-system]</code> as non-packages: https://docs.astral.sh/uv/concepts/projects/config/#build-systems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-29 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2024-12-02 10:18</div>
+            <div class="timeline-body"><blockquote>
+<p>uv uses the presence of a build system to determine if a project contains a package that should be installed in the project virtual environment. <em><strong>If a build system is not defined, uv will not attempt to build or install the project itself, just its dependencies.</strong></em> If a build system is defined, uv will build and install the project into the project environment.</p>
+</blockquote>
+<p>But if that is the case, why does the following work?</p>
+<pre><code class="language-bash">mkdir myproject &amp;&amp; cd myproject
+uv init
+mkdir -p src/foo
+touch src/foo/__init__.py
+uv venv --seed
+source .venv/bin/activate
+uv pip install -e .
+python -c &quot;import foo&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-02 13:32</div>
+            <div class="timeline-body"><p>That's a difference between the project APIs (where we use this behavior) and the <code>uv pip</code> CLI (where it would be &quot;breaking&quot; to do so, since it would be a significant divergence from pip).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-02 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-02 22:23</div>
+            <div class="timeline-body"><p>Notably, <code>uv pip install -e .</code> doesn't really mean anything if you don't want to install the project itself — you'd use <code>uv pip install -r ./pyproject.toml</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9586.html">astral-sh/uv#9586</a> on 2024-12-02 22:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

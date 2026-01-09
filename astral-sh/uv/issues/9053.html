@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retaining Default Registry in `uv.lock` While Using PyPI Mirror - astral-sh/uv #9053</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Retaining Default Registry in `uv.lock` While Using PyPI Mirror</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9053">#9053</a>
+        opened by <a href="https://github.com/liblaf">@liblaf</a>
+        on 2024-11-12 09:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/liblaf">@liblaf</a> on 2024-11-12 09:46</div>
+            <div class="timeline-body"><p>I understand that the current behavior is <strong>NOT</strong> a bug but <strong>BY DESIGN</strong>.</p>
+<h4>Description</h4>
+<p>I am using <code>uv</code> to manage my Python project and have configured it to use a PyPI mirror for faster downloads. However, I have encountered an issue where the <code>uv.lock</code> file records the index configuration of the mirror, which is not ideal for CI/CD environments or for collaborators who do not use the same mirror.</p>
+<h4>Configuration</h4>
+<p>I have set up my <code>~/.config/uv/uv.toml</code> to use the PyPI mirror as follows:</p>
+<pre><code class="language-toml">index-url = &quot;https://mirrors.cernet.edu.cn/pypi/web/simple&quot;
+
+[pip]
+index-url = &quot;https://mirrors.cernet.edu.cn/pypi/web/simple&quot;
+</code></pre>
+<h4>Problem</h4>
+<p>When <code>uv</code> generates the <code>uv.lock</code> file, it includes the mirror's URL in the <code>source</code> field for each package, as shown below:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;attrs&quot;
+version = &quot;24.2.0&quot;
+source = { registry = &quot;https://mirrors.cernet.edu.cn/pypi/web/simple&quot; }
+sdist = { url = &quot;https://mirrors4.tuna.tsinghua.edu.cn/pypi/web/packages/fc/0f/aafca9af9315aee06a89ffde799a10a582fe8de76c563ee80bbcdc08b3fb/attrs-24.2.0.tar.gz&quot;, hash = &quot;sha256:5cfb1b9148b5b086569baec03f20d7b6bf3bcacc9a42bebf87ffaaca362f6346&quot;, size = 792678 }
+wheels = [
+    { url = &quot;https://mirrors4.tuna.tsinghua.edu.cn/pypi/web/packages/6a/21/5b6702a7f963e95456c0de2d495f67bf5fd62840ac655dc451586d23d39a/attrs-24.2.0-py3-none-any.whl&quot;, hash = &quot;sha256:81921eb96de3191c8258c199618104dd27ac608d9366f5e35d011eae1867ede2&quot;, size = 63001 },
+]
+</code></pre>
+<h4>Expected Behavior</h4>
+<p>I would like the <code>uv.lock</code> file to retain the default PyPI registry URL (<code>https://pypi.org/simple</code>) instead of the mirror URL, while still allowing me to use the mirror for faster downloads. The expected <code>uv.lock</code> content should look like this:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;attrs&quot;
+version = &quot;24.2.0&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/fc/0f/aafca9af9315aee06a89ffde799a10a582fe8de76c563ee80bbcdc08b3fb/attrs-24.2.0.tar.gz&quot;, hash = &quot;sha256:5cfb1b9148b5b086569baec03f20d7b6bf3bcacc9a42bebf87ffaaca362f6346&quot;, size = 792678 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/6a/21/5b6702a7f963e95456c0de2d495f67bf5fd62840ac655dc451586d23d39a/attrs-24.2.0-py3-none-any.whl&quot;, hash = &quot;sha256:81921eb96de3191c8258c199618104dd27ac608d9366f5e35d011eae1867ede2&quot;, size = 63001 },
+]
+</code></pre>
+<h4>Additional Information</h4>
+<ul>
+<li><code>uv --version</code>: <code>uv 0.5.1 (f399a5271 2024-11-08)</code></li>
+<li>The content on the PyPI mirror is the same as the original PyPI.</li>
+</ul>
+<h4>Request</h4>
+<p>Is there a way to configure <code>uv</code> to use the PyPI mirror for faster downloads while retaining the default registry URL in the <code>uv.lock</code> file? This would be beneficial for maintaining consistency across different environments and for collaborators who may not use the same mirror.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liblaf">@liblaf</a> on 2024-11-12 09:55</div>
+            <div class="timeline-body"><p>Currently, my temporary solution is to use the following script to replace the URLs in <code>uv.lock</code> after each update (e.g., <code>uv sync</code> or <code>uv lock</code>):</p>
+<pre><code class="language-bash">sd --fixed-strings 'mirrors.cernet.edu.cn/pypi/web' 'pypi.org' uv.lock
+sd 'mirrors(4|6)?.tuna.tsinghua.edu.cn/pypi/web' 'files.pythonhosted.org' uv.lock
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-12 11:10</div>
+            <div class="timeline-body"><p>Based on your needs, you should expect uv to search for PyPI packages from a mirrored PyPI, right?
+If I've understood your requirements correctly, this should be a better solution. There seems to be a related issue regarding this approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liblaf">@liblaf</a> on 2024-11-12 12:31</div>
+            <div class="timeline-body"><p>@FishAlchemist</p>
+<blockquote>
+<p>Based on your needs, you should expect uv to search for PyPI packages from a mirrored PyPI, right?</p>
+</blockquote>
+<p>Yes, and uv does indeed search for packages from the mirror. However, I would like the <code>uv.lock</code> file to record the default PyPI URL (<a href="https://pypi.org">https://pypi.org</a>) instead of the mirror I am using.</p>
+<blockquote>
+<p>If I've understood your requirements correctly, this should be a better solution.</p>
+</blockquote>
+<p>By &quot;this,&quot; do you mean the solution I mentioned using <code>sd</code> to replace the URLs in <code>uv.lock</code> after each update? I don't think my solution is an elegant one.</p>
+<blockquote>
+<p>There seems to be a related issue regarding this approach.</p>
+</blockquote>
+<p>I have searched for related issues and found <a href="https://github.com/astral-sh/uv/issues/8828">#8828</a>. However, this issue does not mention that <code>uv.lock</code> still records the mirror.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liblaf">@liblaf</a> on 2024-11-12 12:46</div>
+            <div class="timeline-body"><p>Let me clarify a bit:</p>
+<ol>
+<li>I want to search for packages from a PyPI mirror for faster download speeds.</li>
+<li>I wish to retain the default PyPI URL (<a href="https://pypi.org">https://pypi.org</a>) in the <code>uv.lock</code> file for consistency across different environments.</li>
+</ol>
+<p>Based on my understanding of uv's configurable options, I currently cannot achieve both of these points at the same time without introducing additional steps.</p>
+<p>I would like to ask:</p>
+<ol>
+<li>Is there a way to configure uv's settings to meet both of my requirements within the existing uv framework?</li>
+<li>If not, could we implement an additional feature, such as adding a <code>mirror</code> option in <code>uv.toml</code>, to support this?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-12 12:49</div>
+            <div class="timeline-body"><p>@liblaf
+Actually, what I mean is, based on your expectation, UV should support fetching packages from the mirrored PyPI. In other words, when the expected source is PyPI, it should look for the package in the mirrored PyPI instead.</p>
+<p>If I'm not mistaken, UV doesn't seem to have this feature yet.
+Perhaps you can open an issue requesting that project APIs support mirror PyPI?
+Or we could wait for the UV team to respond to the issue, as they will be the ones to decide whether to support this feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liblaf">@liblaf</a> on 2024-11-12 12:57</div>
+            <div class="timeline-body"><p>@FishAlchemist Thanks! I am opening a feature request to support configuration of mirrors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9056.html">astral-sh/uv#9056</a> on 2024-11-12 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liblaf">@liblaf</a> on 2024-11-12 13:09</div>
+            <div class="timeline-body"><p>Closing in favor of <a href="https://github.com/astral-sh/uv/issues/9056">#9056</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @liblaf on 2024-11-12 13:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401: false positive causes NameError - astral-sh/ruff #20839</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401: false positive causes NameError</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20839">#20839</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2025-10-13 09:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2025-10-13 09:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>ruff 0.14.0 introduced a false-positive for F401 unused-import:</p>
+<pre><code class="language-python">  try:
+      import asdfasfd.asdf.sadf
+  except ImportError:
+      import argparse
+      import asdfasfd  # W: `asdfasfd` imported but unused
+      asdfasfd.asdf = argparse.Namespace()
+</code></pre>
+<p>autofix causes:</p>
+<pre><code class="language-python">Traceback (most recent call last):                                                                                                                                                                                                             
+  File &quot;foo.py&quot;, line 6, in &lt;module&gt;                                                
+    asdfasfd.asdf = argparse.Namespace()       
+    ^^^^^^^^                                               
+NameError: name 'asdfasfd' is not defined   
+</code></pre>
+<h3>Version</h3>
+<p>0.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-13 12:47</div>
+            <div class="timeline-body"><p>cc @dylwil3</p>
+<p>This is interesting, I would have assumed that the first import would still import <code>asdfasfd</code> even if a submodule import fails. Maybe that's not the case, or maybe something else is going wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-10-13 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-13 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-13 17:54</div>
+            <div class="timeline-body"><p>Interesting! If you look at the bytecode, Python only stores the symbol for the module if the full import succeeds:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def func():
+...       try:
+...          import asdfasfd.asdf.sadf
+...       except ImportError:
+...          import argparse
+...          import asdfasfd  # W: `asdfasfd` imported but unused
+...          asdfasfd.asdf = argparse.Namespace()
+...
+&gt;&gt;&gt; dis.dis(func)
+   1           RESUME                   0
+
+   2           NOP
+
+   3   L1:     LOAD_SMALL_INT           0
+               LOAD_CONST               1 (None)
+               IMPORT_NAME              0 (asdfasfd.asdf.sadf)
+               STORE_FAST               0 (asdfasfd)
+       L2:     LOAD_CONST               1 (None)
+               RETURN_VALUE
+
+&lt; rest omitted &gt;
+</code></pre>
+<p>I'd have to think about how to detect situations like this... I guess more generally the presence of control flow would likely confuse the preview behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dylwil3 by @MichaReiser on 2025-10-14 06:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20878.html">astral-sh/ruff#20878</a> on 2025-10-15 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-10-27 15:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

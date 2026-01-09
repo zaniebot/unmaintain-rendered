@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP007 - Bug for Unions and Optional with Quotes Inside Brackets - astral-sh/ruff #5756</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP007 - Bug for Unions and Optional with Quotes Inside Brackets</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5756">#5756</a>
+        opened by <a href="https://github.com/max-muoto">@max-muoto</a>
+        on 2023-07-14 03:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/max-muoto">@max-muoto</a> on 2023-07-14 03:38</div>
+            <div class="timeline-body"><h2>Bug Description</h2>
+<p>Ruff doesn't detect instances of <code>Union</code> where there is at-least one quoted type among the unioned types for [UP007(https://beta.ruff.rs/docs/rules/non-pep604-annotation/).</p>
+<p>The same goes for quoted types inside of <code>Optional</code>.</p>
+<p>Take several examples:</p>
+<ul>
+<li><code>&quot;Optional[str]&quot;</code> autofixed -&gt; <code>&quot;str | None&quot;</code></li>
+<li><code>&quot;Union[str, int]&quot;</code> autofixed -&gt; <code>&quot;str | int&quot;</code></li>
+<li><code>Union[&quot;str&quot;, int]</code> not detected by <code>ruff check</code></li>
+<li><code>Union[&quot;str&quot;, &quot;int&quot;]</code> not detected by <code>ruff check</code></li>
+<li><code>Optional[&quot;str&quot;]</code> not detected by <code>ruff check</code></li>
+</ul>
+<p>Obviously once difference here is that <code>Union[&quot;str&quot;, int]</code> is valid, but <code>&quot;str&quot; | int</code> will cause a runtime error, so if there was an autofix I'd assume it would just get transformed to <code>&quot;str | int&quot;</code>.</p>
+<h2>Other Details:</h2>
+<ul>
+<li>Command: <code>ruff check</code></li>
+<li>Ruff Settings: <code>UP007</code> enabled individually (not the entire <code>UP</code> suite).</li>
+<li>Version: <code>ruff 0.0.278</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "UP007 Bug when for Unions with Quotes" to "UP007 Bug for Unions with Quotes" by @max-muoto on 2023-07-14 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "UP007 Bug for Unions with Quotes" to "UP007 - Bug for Unions with Quotes" by @max-muoto on 2023-07-14 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "UP007 - Bug for Unions with Quotes" to "UP007 - Bug for Unions and Optional with Quotes" by @max-muoto on 2023-07-14 03:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "UP007 - Bug for Unions and Optional with Quotes" to "UP007 - Bug for Unions and Optional with Quotes Inside Brackets" by @max-muoto on 2023-07-14 03:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 04:50</div>
+            <div class="timeline-body"><p>We now support this in limited cases #5725, when <code>&quot;str&quot; | int</code> won't error at runtime (e.g., it's an assignment annotation within a function body). We still don't fix <code>Union[&quot;str&quot;, int]</code> to <code>&quot;str | int&quot;</code>, but I'm not totally sure that we should.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-14 04:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 04:51</div>
+            <div class="timeline-body"><p>We could arguably flag-but-not-fix these -- the original behavior was motivated by pyupgrade's decisions (pyupgrade doesn't fix any cases that include a string in the subscript).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/max-muoto">@max-muoto</a> on 2023-07-15 19:00</div>
+            <div class="timeline-body"><blockquote>
+</blockquote>
+<p>I see, that makes sense then, thanks for the context! I do think a flag would at least be helpful, but understand if the goal is just simple parity with pyupgrade.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nvaccess/nvda/pulls/18437.html">nvaccess/nvda#18437</a> on 2025-07-11 05:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

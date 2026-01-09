@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test failures in 32bit architectures - astral-sh/ruff #19640</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Test failures in 32bit architectures</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19640">#19640</a>
+        opened by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a>
+        on 2025-07-30 16:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2025-07-30 16:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Upon upgrading to 0.12.7, ruff test fail on 32bit architectures:</p>
+<pre><code>failures:
+---- goto_references::tests::test_multi_file_function_references stdout ----
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: multi_file_function_references
+Source: crates/ty_ide/src/goto_references.rs:721
+────────────────────────────────────────────────────────────────────────────────
+Expression: test.references()
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    5     5 │ 3 |     return x * 2
+    6     6 │   |
+    7     7 │ 
+    8     8 │ info[references]: Reference 2
+    9       │- --&gt; module.py:5:12
+   10       │-  |
+   11       │-4 | def process_data(data):
+   12       │-5 |     return helper_function(data)
+   13       │-  |            ^^^^^^^^^^^^^^^
+   14       │-6 |
+   15       │-7 | def double_process(data):
+   16       │-  |
+   17       │-
+   18       │-info[references]: Reference 3
+   19       │- --&gt; module.py:8:14
+   20       │-  |
+   21       │-7 | def double_process(data):
+   22       │-8 |     result = helper_function(data)
+   23       │-  |              ^^^^^^^^^^^^^^^
+   24       │-9 |     return helper_function(result)
+   25       │-  |
+   26       │-
+   27       │-info[references]: Reference 4
+   28       │- --&gt; module.py:9:12
+   29       │-  |
+   30       │-7 | def double_process(data):
+   31       │-8 |     result = helper_function(data)
+   32       │-9 |     return helper_function(result)
+   33       │-  |            ^^^^^^^^^^^^^^^
+   34       │-  |
+   35       │-
+   36       │-info[references]: Reference 5
+   37     9 │  --&gt; app.py:6:27
+   38    10 │   |
+   39    11 │ 4 | class DataProcessor:
+   40    12 │ 5 |     def __init__(self):
+┈┈┈┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+   43    15 │ 7 |     
+   44    16 │ 8 |     def process(self, value):
+   45    17 │   |
+   46    18 │ 
+   47       │-info[references]: Reference 6
+         19 │+info[references]: Reference 3
+   48    20 │  --&gt; app.py:9:16
+   49    21 │   |
+   50    22 │ 8 |     def process(self, value):
+   51    23 │ 9 |         return helper_function(value)
+   52    24 │   |                ^^^^^^^^^^^^^^^
+         25 │+  |
+         26 │+
+         27 │+info[references]: Reference 4
+         28 │+ --&gt; module.py:5:12
+         29 │+  |
+         30 │+4 | def process_data(data):
+         31 │+5 |     return helper_function(data)
+         32 │+  |            ^^^^^^^^^^^^^^^
+         33 │+6 |
+         34 │+7 | def double_process(data):
+         35 │+  |
+         36 │+
+         37 │+info[references]: Reference 5
+         38 │+ --&gt; module.py:8:14
+         39 │+  |
+         40 │+7 | def double_process(data):
+         41 │+8 |     result = helper_function(data)
+         42 │+  |              ^^^^^^^^^^^^^^^
+         43 │+9 |     return helper_function(result)
+         44 │+  |
+         45 │+
+         46 │+info[references]: Reference 6
+         47 │+ --&gt; module.py:9:12
+         48 │+  |
+         49 │+7 | def double_process(data):
+         50 │+8 |     result = helper_function(data)
+         51 │+9 |     return helper_function(result)
+         52 │+  |            ^^^^^^^^^^^^^^^
+   53    53 │   |
+────────────┴───────────────────────────────────────────────────────────────────
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+thread 'goto_references::tests::test_multi_file_function_references' panicked at /home/buildozer/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/insta-1.43.1/src/runtime.rs:679:13:
+snapshot assertion for 'multi_file_function_references' failed in line 721
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+failures:
+    goto_references::tests::test_multi_file_function_references
+test result: FAILED. 291 passed; 1 failed; 2 ignored; 0 measured; 0 filtered out; finished in 15.17s
+error: test failed, to rerun pass `-p ty_ide --lib
+</code></pre>
+<p>Full build log: https://gitlab.alpinelinux.org/hannes/aports/-/jobs/1954976/raw</p>
+<p>Reproduces on armhf, armv7 and x86.</p>
+<h3>Version</h3>
+<p>0.12.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19641.html">astral-sh/ruff#19641</a> on 2025-07-30 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-30 19:05</div>
+            <div class="timeline-body"><p>Thanks for the report! It looks like some kind of non-determinism in the test output, unless I'm missing another difference. I can also reproduce this in a <code>debian:i686</code> Docker container, and there are a few other test failures:</p>
+<pre><code>     Summary [  46.895s] 4761 tests run: 4756 passed, 5 failed, 49 skipped
+        FAIL [   0.075s] ruff commands::check::test::unreadable_files
+        FAIL [   0.095s] ruff::integration_test unreadable_dir
+        FAIL [   0.056s] ruff::integration_test unreadable_pyproject_toml
+        FAIL [   0.210s] ty_ide goto_references::tests::test_multi_file_function_references
+        FAIL [   2.338s] ty_python_semantic::mdtest mdtest__subscript_tuple
+</code></pre>
+<p>The three Ruff checks are failing as far back as 0.12.0 at least, so I assume those are related to my Docker setup. I'm guessing the tuple failure is something in these very long assertions changing order too:</p>
+<pre><code>    tuple.md - Tuple subscripts - Indexing (76e9467e4ef54e6f)
+
+      crates/ty_python_semantic/resources/mdtest/subscript/tuple.md:63 unmatched assertion: revealed: Overload[(self, index: Literal[-4, -2, 0, 2], /) -&gt; I0, (self, index: Literal[-3, 1], /) -&gt; I1, (self, index: Literal[-1, 3], /) -&gt; I3, (self, index: SupportsIndex, /) -&gt; I0 | I1 | I3, (self, index: slice[Any, Any, Any], /) -&gt; tuple[I0 | I1 | I3, ...]]
+      crates/ty_python_semantic/resources/mdtest/subscript/tuple.md:63 unexpected error: 13 [revealed-type] &quot;Revealed type: `Overload[(self, index: Literal[-1, 3], /) -&gt; I3, (self, index: Literal[-3, 1], /) -&gt; I1, (self, index: Literal[-4, -2, 0, 2], /) -&gt; I0, (self, index: SupportsIndex, /) -&gt; I0 | I1 | I3, (self, index: slice[Any, Any, Any], /) -&gt; tuple[I0 | I1 | I3, ...]]`&quot;
+      crates/ty_python_semantic/resources/mdtest/subscript/tuple.md:79 unmatched assertion: revealed: Overload[(self, index: Literal[0], /) -&gt; I0, (self, index: Literal[2, 3], /) -&gt; I1 | I2 | I3, (self, index: Literal[-1], /) -&gt; I5, (self, index: Literal[1], /) -&gt; I1 | I2, (self, index: Literal[-3], /) -&gt; I3, (self,
+index: Literal[-5], /) -&gt; I1 | I0, (self, index: Literal[-4, -2], /) -&gt; I2, (self, index: Literal[4], /) -&gt; I1 | I2 | I3 | I5, (self, index: SupportsIndex, /) -&gt; I0 | I1 | I2 | I3 | I5, (self, index: slice[Any, Any, Any], /) -&gt; tuple[I0 | I1 | I2 | I3 | I5, ...]]
+      crates/ty_python_semantic/resources/mdtest/subscript/tuple.md:79 unexpected error: 13 [revealed-type] &quot;Revealed type: `Overload[(self, index: Literal[2, 3], /) -&gt; I1 | I2 | I3, (self, index: Literal[1], /) -&gt; I1 | I2, (self, index: Literal[-5], /) -&gt; I1 | I0, (self, index: Literal[-1], /) -&gt; I5, (self, index: Literal[-3], /) -&gt; I3, (self, index: Literal[-4, -2], /) -&gt; I2, (self, index: Literal[0], /) -&gt; I0, (self, index: Literal[4], /) -&gt; I1 | I2 | I3 | I5, (self, index: SupportsIndex, /) -&gt; I0 | I1 | I2 | I3 | I5, (self, index: slice[Any, Any, Any], /) -&gt; tuple[I0 | I1 | I2 | I3 | I5, ...]]`&quot;
+      crates/ty_python_semantic/resources/mdtest/subscript/tuple.md:109 unmatched assertion: revealed: Overload[(self, index: Literal[-1], /) -&gt; I3, (self, index: Literal[0], /) -&gt; I0, (self, index: Literal[-2], /) -&gt; I2 | I1, (self, index: Literal[2], /) -&gt; I2 | I3, (self, index: Literal[1], /) -&gt; I1, (self, index:
+Literal[-3], /) -&gt; I2 | I1 | I0, (self, index: SupportsIndex, /) -&gt; I0 | I1 | I2 | I3, (self, index: slice[Any, Any, Any], /) -&gt; tuple[I0 | I1 | I2 | I3, ...]]
+      crates/ty_python_semantic/resources/mdtest/subscript/tuple.md:109 unexpected error: 13 [revealed-type] &quot;Revealed type: `Overload[(self, index: Literal[-1], /) -&gt; I3, (self, index: Literal[1], /) -&gt; I1, (self, index: Literal[0], /) -&gt; I0, (self, index: Literal[-2], /) -&gt; I2 | I1, (self, index: Literal[-3], /) -&gt; I2 | I1 | I0, (self, index: Literal[2], /) -&gt; I2 | I3, (self, index: SupportsIndex, /) -&gt; I0 | I1 | I2 | I3, (self, index: slice[Any, Any, Any], /) -&gt; tuple[I0 | I1 | I2 | I3, ...]]`&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @ntBre on 2025-07-30 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @ntBre on 2025-07-30 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-30 19:08</div>
+            <div class="timeline-body"><p>The most common cause for those kind of errors is if the output is produced by iterating over a hash map.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2025-07-30 21:52</div>
+            <div class="timeline-body"><p>All tests passed on Alpine for 0.12.4. We're only excluding benchmarks: https://gitlab.alpinelinux.org/alpine/aports/-/blob/0873e193/community/ruff/APKBUILD#L51-57</p>
+<p>The ones failing on 0.12.0 on Debian might have a different root cause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19652.html">astral-sh/ruff#19652</a> on 2025-07-30 22:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-30 22:57</div>
+            <div class="timeline-body"><p>I'm guessing this is the problem:</p>
+<p>https://github.com/astral-sh/ruff/blob/38049aae12896a0ca79ce3045b54ee1efd8103b7/crates/ty_ide/src/references.rs#L65-L69</p>
+<p><code>files()</code> returns an <code>Indexed</code>, which is internally an <code>FxHashSet</code>.</p>
+<p>For tuples, I think the problem is here since only the new <code>__getitem__</code> tests are failing:</p>
+<p>https://github.com/astral-sh/ruff/blob/38049aae12896a0ca79ce3045b54ee1efd8103b7/crates/ty_python_semantic/src/types/class.rs#L626-L632</p>
+<p>I put up a PR with a patch that seems to work, happy to close if it's off-base though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-31 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13009.html">astral-sh/ruff#13009</a> on 2025-08-04 15:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

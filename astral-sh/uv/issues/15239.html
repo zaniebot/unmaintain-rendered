@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warning that PySide6 is provided by more than one package since uv 0.8.7 - astral-sh/uv #15239</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Warning that PySide6 is provided by more than one package since uv 0.8.7</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15239">#15239</a>
+        opened by <a href="https://github.com/my1e5">@my1e5</a>
+        on 2025-08-12 14:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/my1e5">@my1e5</a> on 2025-08-12 14:12</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Since uv version <code>0.8.7</code>, I'm getting a warning when using the PySide6 package:</p>
+<blockquote>
+<p>warning: The module <code>PySide6</code> is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either <code>pyside6-addons</code> (v6.9.0) or <code>pyside6</code> (v6.9.0).</p>
+</blockquote>
+<p>Just wanted to understand how best to deal with it. When you install <code>pyside6</code>, it also installs <code>pyside6-addons</code> and <code>pyside6-essentials</code> for you.</p>
+<pre><code>Installed 4 packages in 3.52s
+ + pyside6==6.9.0
+ + pyside6-addons==6.9.0
+ + pyside6-essentials==6.9.0
+ + shiboken6==6.9.0
+</code></pre>
+<p>So what can be done? Is this something that PySide6 needs to address?</p>
+<h3><code>0.8.6</code></h3>
+<pre><code class="language-bash">$ uvx --with uv==0.8.6 uv run -p 3.13 --reinstall --with pyside6==6.9.0 python -c &quot;import PySide6; print(PySide6.__versi
+on__)&quot;
+Installed 1 package in 42ms
+Installed 4 packages in 3.52s
+6.9.0
+</code></pre>
+<h3><code>0.8.7</code></h3>
+<pre><code class="language-bash">$ uvx --with uv==0.8.7 uv run -p 3.13 --reinstall --with pyside6==6.9.0 python -c &quot;import PySide6; print(PySide6.__version__)&quot;
+[2/4] pyside6==6.9.0   warning: The module `PySide6` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `pyside6-addons` (v6.9.0) or `pyside6` (v6.9.0).
+[3/4] pyside6-addons==6.9.0   warning: The module `PySide6` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `pyside6-essentials` (v6.9.0) or `pyside6-addons` (v6.9.0).
+Installed 4 packages in 3.46s
+6.9.0
+</code></pre>
+<h3>Platform</h3>
+<p>Windows 10</p>
+<h3>Version</h3>
+<p>uv 0.8.9 (68c0bf8a2 2025-08-11)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @my1e5 on 2025-08-12 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-12 15:00</div>
+            <div class="timeline-body"><p>It might be a bug in the check; we'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/StefanDensow-keen">@StefanDensow-keen</a> on 2025-08-13 08:44</div>
+            <div class="timeline-body"><p>In uv 0.8.9, I see the same issue with pyside6, but also with nvidia packages, which are dependencies of <code>torch v2.6.0+cu118</code>:</p>
+<pre><code>├── torch v2.6.0+cu118
+...
+│   ├── nvidia-cublas-cu11 v11.11.3.6
+│   ├── nvidia-cuda-cupti-cu11 v11.8.87
+│   ├── nvidia-cuda-nvrtc-cu11 v11.8.89
+│   ├── nvidia-cuda-runtime-cu11 v11.8.89
+│   ├── nvidia-cudnn-cu11 v9.1.0.70
+│   │   └── nvidia-cublas-cu11 v11.11.3.6
+│   ├── nvidia-cufft-cu11 v10.9.0.58
+│   ├── nvidia-curand-cu11 v10.3.0.86
+│   ├── nvidia-cusolver-cu11 v11.4.1.48
+│   │   └── nvidia-cublas-cu11 v11.11.3.6
+│   ├── nvidia-cusparse-cu11 v11.7.5.86
+│   ├── nvidia-nccl-cu11 v2.21.5
+│   ├── nvidia-nvtx-cu11 v11.8.86
+</code></pre>
+<p>Warnings:</p>
+<pre><code>warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvjpeg2k-cu11` (v0.9.0.43) or `nvidia-nccl-cu11` (v2.21.5).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvjpeg2k-cu11` (v0.9.0.43) or `nvidia-cudnn-cu11` (v9.1.0.70).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cudnn-cu11` (v9.1.0.70) or `nvidia-cublas-cu11` (v11.11.3.6).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvtx-cu11` (v11.8.86) or `nvidia-cublas-cu11` (v11.11.3.6).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvtx-cu11` (v11.8.86) or `nvidia-nvimgcodec-cu11` (v0.5.0.13).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvimgcodec-cu11` (v0.5.0.13) or `nvidia-cuda-cupti-cu11` (v11.8.87).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-dali-cuda110` (v1.50.0) or `nvidia-cuda-cupti-cu11` (v11.8.87).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvtiff-cu11` (v0.5.1.75) or `nvidia-dali-cuda110` (v1.50.0).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvtiff-cu11` (v0.5.1.75) or `nvidia-curand-cu11` (v10.3.0.86).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cusolver-cu11` (v11.4.1.48) or `nvidia-curand-cu11` (v10.3.0.86).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cusolver-cu11` (v11.4.1.48) or `nvidia-cuda-runtime-cu11` (v11.8.89).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cufft-cu11` (v10.9.0.58) or `nvidia-cuda-runtime-cu11` (v11.8.89).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvcomp-cu11` (v5.0.0.6) or `nvidia-cufft-cu11` (v10.9.0.58).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvcomp-cu11` (v5.0.0.6) or `nvidia-cusparse-cu11` (v11.7.5.86).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cusparse-cu11` (v11.7.5.86) or `nvidia-cuda-nvrtc-cu11` (v11.8.89).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-08-13 09:50</div>
+            <div class="timeline-body"><p>This also happens with <a href="https://pypi.org/project/mlflow/"><code>mlflow</code></a></p>
+<pre><code>$ uvx --with uv==0.8.7 uv run -p 3.13 --reinstall --with mlflow python -c &quot;import mlflow; print(mlflow.__version__)&quot;
+warning: The module `mlflow` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `mlflow-tracing` (v3.2.0) or `mlflow` (v3.2.0).
+warning: The module `mlflow` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `mlflow-skinny` (v3.2.0) or `mlflow` (v3.2.0).
+Installed 74 packages in 7.85s
+3.2.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-13 09:57</div>
+            <div class="timeline-body"><p>I think we'll roll this back while we figure out a way to improve the detection.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-08-13 14:15</div>
+            <div class="timeline-body"><p>Looks like PySide6 and PySide6-addons produce the exact same <code>PySide6/__init__.py</code> file, so maybe uv could suppress the check if the two files are identical? If they're identical, the issue also seems significantly less harmful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-13 14:19</div>
+            <div class="timeline-body"><p>(I think it <em>is</em> still a problem because if the user uninstalls <code>pyside6-addons</code>, it would leave you with a partial <code>pyside6</code> installation (missing files, but a complete <code>.dist-info</code>, confusing installers). I agree it's less harmful, though.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-08-13 14:26</div>
+            <div class="timeline-body"><p>You could also handle that case in <code>uv pip uninstall</code> I suppose, at a significant cost in complexity. You'd have to scan all other installed packages to see if someone else also provides a file in the package you're uninstalling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-13 14:27</div>
+            <div class="timeline-body"><p>Yeah, I've been tracking that here: #15238. We have to refcount the files or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-13 20:01</div>
+            <div class="timeline-body"><p>In #15253 I've moved this behind a feature gate while we iterate on detection.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15253.html">astral-sh/uv#15253</a> on 2025-08-13 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-18 14:42</div>
+            <div class="timeline-body"><p>I've created an upstream bug: https://bugreports.qt.io/browse/PYSIDE-3161</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mlflow/mlflow/issues/17267.html">mlflow/mlflow#17267</a> on 2025-08-18 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-18 16:35</div>
+            <div class="timeline-body"><p>I've looked in the <code>uv pip install torch</code> case, the nvidia packages are fixed in a newer version, but torch still uses the older version, so we need to wait until torch updates.</p>
+<p>I've also create an upstream bug for mlflow: https://github.com/mlflow/mlflow/issues/17267</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15357.html">astral-sh/uv#15357</a> on 2025-08-18 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15813.html">astral-sh/uv#15813</a> on 2025-09-12 14:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

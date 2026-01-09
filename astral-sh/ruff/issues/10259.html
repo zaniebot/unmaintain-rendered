@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP032 became less useful in v0.3.1 - astral-sh/ruff #10259</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP032 became less useful in v0.3.1</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10259">#10259</a>
+        opened by <a href="https://github.com/ThiefMaster">@ThiefMaster</a>
+        on 2024-03-06 23:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2024-03-06 23:48</div>
+            <div class="timeline-body"><p>The whole change in that rule to trigger even when it causes a longer line feels kind of annoying and the fact that there's no autofix doesn't make it better: Fixing it requires manual work anyway, but I'd rather start from a too-long line which I just need to wrap somehow, than having to do the whole fix myself. --&gt; Couldn't it simply be an unsafe autofix in such cases?</p>
+<p>Some example where just using f-string isn't great / very readable:</p>
+<pre><code class="language-py">return '{} - {}'.format(
+    format_skeleton(start_dt, day_month, timezone=tzinfo),
+    format_skeleton(end_dt, day_month, timezone=tzinfo)
+)
+</code></pre>
+<p>(of course this one can easily be refactored to separate statements and then a nicely compact f-string)</p>
+<pre><code class="language-py">        db.CheckConstraint('(input_type IS NULL) = (type NOT IN ({t.field}, {t.field_pd}))'
+                           .format(t=RegistrationFormItemType),
+</code></pre>
+<p>In this case an f-string do not provide the same level of functionality. And this happens to be part of an sqlalchemy <code>__table_args__</code> class attribute, so moving the assignment to a separate statement would clutter the class scope (or require an explicit <code>del t</code> afterwards).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10260.html">astral-sh/ruff#10260</a> on 2024-03-06 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmerickel">@mmerickel</a> on 2024-03-07 05:36</div>
+            <div class="timeline-body"><p>Ran into this too with a bunch of tedious fixes. An unsafe autofix would be great to just have to deal with the line length afterward. Running the <code>pyupgrade</code> tool directly doesn't trigger on these lines either so ruff is being more strict here which is fine but an autofix would just be really helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 05:45</div>
+            <div class="timeline-body"><p>I've enabled the autofix for these new violations here: https://github.com/astral-sh/ruff/pull/10263.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 05:48</div>
+            <div class="timeline-body"><p>Part of the problem is we don't really have a mechanism for gating by line length -- it's not really the intent of fix safety, which is intended to capture changes in the semantics and meaning of the code. So in that PR, I've made it a safe fix regardless. There's some discussion on the broader issue here, if anyone has opinions: https://github.com/astral-sh/ruff/issues/8106.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 13:59</div>
+            <div class="timeline-body"><p>Merged!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-07 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-07 13:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

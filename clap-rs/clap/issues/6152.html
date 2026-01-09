@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nested Subcommands with arguments do not work - clap-rs/clap #6152</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Nested Subcommands with arguments do not work</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/6152">#6152</a>
+        opened by <a href="https://github.com/matthiasbeyer">@matthiasbeyer</a>
+        on 2025-10-15 16:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matthiasbeyer">@matthiasbeyer</a> on 2025-10-15 16:23</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.90</p>
+<h3>Clap Version</h3>
+<p>4.5.48</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+use clap::Subcommand;
+
+#[derive(Parser)]
+struct App {
+    #[clap(subcommand)]
+    command: Command,
+}
+
+#[derive(Clone, Debug, Subcommand)]
+enum Command {
+    Inner {
+        #[clap(long, short)]
+        foo: i32,
+        
+        #[clap(subcommand)]
+        inner: Config,
+    }
+}
+
+#[derive(Clone, Debug, Subcommand)]
+enum Config {
+    #[clap(subcommand)]
+    Show,
+    #[clap(subcommand)]
+    Edit,
+}
+
+fn main() {
+    App::parse_from(&amp;[&quot;app&quot;, &quot;inner&quot;, &quot;--foo&quot;, &quot;12&quot;, &quot;show&quot;]);
+}
+</code></pre>
+<p><a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=9e7c1208107eb14e5d7cfe5e7401e5f2">playground</a></p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Run playground</p>
+<h3>Actual Behaviour</h3>
+<p>Prints help text, which indicates the exact same that was passed</p>
+<h3>Expected Behaviour</h3>
+<p>Parses CLI correctly</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @matthiasbeyer on 2025-10-15 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @matthiasbeyer on 2025-10-15 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-10-15 16:48</div>
+            <div class="timeline-body"><p>Note that the presence of <code>--foo 12</code> doesn't have anything to do with this.</p>
+<p>Is there a reason you are setting <code>#[clap(subcommand)]</code> on <code>Show</code> and <code>Edit</code>.  To make them subcommands, its not needed, as shown by your <code>Command::Inner</code> variant.</p>
+<p><code>#[clap(subcommand)]</code> on an enum variant is meant for</p>
+<pre><code class="language-rust">enum Command {
+    #[clap(subcommand)]
+    Inner(Config)
+}
+</code></pre>
+<p>Unsure why we allow <code>#[clap(subcommand)]</code> on unit variants.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthiasbeyer">@matthiasbeyer</a> on 2025-10-15 17:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Unsure why we allow #[clap(subcommand)] on unit variants.</p>
+</blockquote>
+<p>Probably this is the underlying issue then... removing that in my code also solved that problem for me. 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2025-10-15 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> removed by @epage on 2025-10-15 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2025-10-15 18:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

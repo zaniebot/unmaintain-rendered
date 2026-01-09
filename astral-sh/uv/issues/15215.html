@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In Docker, installing app code with CLI entrypoint and `--only-group` fails with `uv sync`, works with `uv pip install` - astral-sh/uv #15215</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>In Docker, installing app code with CLI entrypoint and `--only-group` fails with `uv sync`, works with `uv pip install`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15215">#15215</a>
+        opened by <a href="https://github.com/yehoshuadimarsky">@yehoshuadimarsky</a>
+        on 2025-08-11 02:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yehoshuadimarsky">@yehoshuadimarsky</a> on 2025-08-11 02:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h2>Overview</h2>
+<p>If you try installing your own code using <code>uv sync</code>, it fails. Only when installing it with <code>uv pip install</code> does it work. Why? Per the docs https://docs.astral.sh/uv/guides/integration/docker/#non-editable-installs it should just work.</p>
+<p>If the CLI entrypoint isn't there, that's how I know it failed.</p>
+<p>To reproduce, copy these 3 files, then try building the Docker image with/without the Docker build argument <code>USE_WORKAROUND</code>:</p>
+<ol>
+<li><p>Build without workaround (this will fail):</p>
+<pre><code class="language-bash">docker build -t uv-bug-repro-broken .
+</code></pre>
+</li>
+<li><p>Build with workaround (this will succeed):</p>
+<pre><code class="language-bash">docker build --build-arg USE_WORKAROUND=true -t uv-bug-repro-working .
+</code></pre>
+</li>
+</ol>
+<h2>Files</h2>
+<p>pyproject.toml:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test-app&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Minimal reproducible example for uv sync entry point issue&quot;
+requires-python = &quot;&gt;=3.10&quot;
+
+[project.scripts]
+test-cli = 'test_app.cli:main'
+
+[dependency-groups]
+dev = [
+    &quot;requests&quot;,
+]
+
+[build-system]
+requires = [&quot;setuptools&gt;=64&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p>Dockerfile:</p>
+<pre><code class="language-Dockerfile">FROM python:3.10-slim
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Set up environment
+ENV UV_PROJECT_ENVIRONMENT=/app/.venv
+WORKDIR /app
+
+# Copy project files
+COPY pyproject.toml .
+COPY src/ src/
+
+# Create lock file and install dependencies without project
+RUN uv lock
+RUN uv sync --no-install-project --only-group dev
+
+# Install project (this should create entry points)
+RUN uv sync --only-group dev
+
+# Build argument to control whether to use workaround
+ARG USE_WORKAROUND=false
+
+# Apply workaround if requested
+RUN if [ &quot;$USE_WORKAROUND&quot; = &quot;true&quot; ]; then \
+        echo &quot;Applying workaround: explicitly installing project&quot;; \
+        uv pip install --no-deps .; \
+    else \
+        echo &quot;Not using workaround&quot;; \
+    fi
+
+# Check if entry point exists
+RUN ls -la $UV_PROJECT_ENVIRONMENT/bin/ | grep test-cli
+
+# Test the entry point
+RUN $UV_PROJECT_ENVIRONMENT/bin/test-cli
+
+CMD [&quot;bash&quot;]
+</code></pre>
+<p>source code at <code>/src/test_app/cli.py</code>:</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+&quot;&quot;&quot;Simple CLI for testing entry points.&quot;&quot;&quot;
+
+def main():
+    print(&quot;Hello from test-cli!&quot;)
+    print(&quot;This entry point should be available after uv sync&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<h3>Platform</h3>
+<p>MacOS</p>
+<h3>Version</h3>
+<p>0.8.8</p>
+<h3>Python version</h3>
+<p>python 3.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @yehoshuadimarsky on 2025-08-11 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-12 03:37</div>
+            <div class="timeline-body"><p>@yehoshuadimarsky</p>
+<p>I think <code>uv sync --only-group</code> behavior in any environment, not just <code>Docker</code>. And I reproduce on my macbook.</p>
+<pre><code class="language-bash">➜  issue-15215-docker-sync-entry-points ls -lah
+total 8
+drwxr-xr-x@   4 wingmunfung  staff   128B Aug 12 11:35 .
+drwxr-x---+ 120 wingmunfung  staff   3.8K Aug 12 11:35 ..
+-rw-r--r--@   1 wingmunfung  staff   367B Aug 12 11:07 pyproject.toml
+drwxr-xr-x@   4 wingmunfung  staff   128B Aug 12 11:05 src
+➜  issue-15215-docker-sync-entry-points cat pyproject.toml     
+[project]
+name = &quot;test-app&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Minimal reproducible example for uv sync entry point issue&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [&quot;typing-extensions&quot;]
+
+[project.scripts]
+test-cli = 'test_app.cli:main'
+
+[dependency-groups]
+dev = [
+    &quot;requests&quot;,
+]
+
+[build-system]
+requires = [&quot;setuptools&gt;=64&quot;]
+build-backend = &quot;setuptools.build_meta&quot;%                                                                            
+➜  issue-15215-docker-sync-entry-points cat src/test_app/cli.py
+#!/usr/bin/env python3
+&quot;&quot;&quot;Simple CLI for testing entry points.&quot;&quot;&quot;
+
+def main():
+    print(&quot;Hello from test-cli!&quot;)
+    print(&quot;This entry point should be available after uv sync&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main()%                                                                                                         
+➜  issue-15215-docker-sync-entry-points uv venv
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+➜  issue-15215-docker-sync-entry-points source .venv/bin/activate
+(issue-15215-docker-sync-entry-points) ➜  issue-15215-docker-sync-entry-points   uv sync --only-group dev
+Resolved 7 packages in 25ms
+Installed 5 packages in 7ms
+ + certifi==2025.8.3
+ + charset-normalizer==3.4.3
+ + idna==3.10
+ + requests==2.32.4
+ + urllib3==2.5.0
+(issue-15215-docker-sync-entry-points) ➜  issue-15215-docker-sync-entry-points   ls -la .venv/bin/ | grep test-cli
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15231.html">astral-sh/uv#15231</a> on 2025-08-12 03:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-12 05:57</div>
+            <div class="timeline-body"><p>@yehoshuadimarsky</p>
+<p>https://docs.astral.sh/uv/concepts/projects/sync/#syncing-development-dependencies</p>
+<p>The <code>--only-dev</code> flag can be used to install the dev group without the project and its dependencies.  The semantics of <code>--only-group</code> are the same as <code>--only-dev</code>, the project will not be included.</p>
+<p>So the CLI not being installed should be in accordance with the documentation.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

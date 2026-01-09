@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`jupyter` doesn't work if directory is renamed - astral-sh/uv #13196</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`jupyter` doesn't work if directory is renamed</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13196">#13196</a>
+        opened by <a href="https://github.com/juhaszp95">@juhaszp95</a>
+        on 2025-04-29 13:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/juhaszp95">@juhaszp95</a> on 2025-04-29 13:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi There,</p>
+<p>I've bumped into a bug: I was trying to follow <a href="https://docs.astral.sh/uv/guides/integration/jupyter/">the docs</a> to run a Jupyter server (via <code>uv run --with jupyter jupyter lab</code>), and it failed with the message</p>
+<p><code>error: Failed to spawn: `jupyter`   Caused by: No such file or directory (os error 2)</code></p>
+<p>I've realised this is because I moved the project directory after I ran <code>uv init</code>. When I moved it back to the original path, it all started to work again.</p>
+<p>I've checked the same thing happens if I rename the directory.</p>
+<p>I've managed to solve this by removing the <code>.venv</code> library altogether from the project, and then trying to run Jupyter again.</p>
+<p>I guess this is a bug, unless I missed the part that we aren't supposed to move/rename the project directory.</p>
+<h3>Platform</h3>
+<p>Linux 4.18.0-425.3.1.el8.x86_64 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>0.6.17</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @juhaszp95 on 2025-04-29 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`jupyter server` doesn't work if directory is renamed" to "`jupyter` doesn't work if directory is renamed" by @juhaszp95 on 2025-04-29 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-29 15:14</div>
+            <div class="timeline-body"><p>This is a general limitation of venvs: The <code>.venv/bin/jupyter</code> launcher has an absolute path to <code>.venv/bin/python</code> and by renaming the directory, that moves, too. You can create a moveable venv with <code>uv venv --relocatable</code>. However, <code>uv run</code> should recreate the venv if the directory was renamed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-04-29 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juhaszp95">@juhaszp95</a> on 2025-04-29 15:27</div>
+            <div class="timeline-body"><p>Makes sense - although <code>uv run</code> just failed with the output above in my case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-29 15:33</div>
+            <div class="timeline-body"><p>Yeah, not catching that is a bug in uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-04 12:50</div>
+            <div class="timeline-body"><p>(How can we catch this?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-04 15:28</div>
+            <div class="timeline-body"><p>We can read the beginning of all entrypoints we created (through <code>entry_points.txt</code>) and if any of them points to a python interpreter that doesn't exist, we invalidate the environment. There are some details to be figured out around perf and where the scripts come from, e.g. we don't cover non-entrypoint scripts (I don't think we keep a record of <code>#!python</code> script we rewrote vs. script where the shebang was user-provided).</p>
+<p>Another approach is recording the venv location (either <code>pyvenv.cfg</code> or a different file we create, iirc it's not recorded yet anywhere) and invalidating it if the original location and the current location aren't the same directory (usually, because the original location doesn't exist anymore, but we want to allow symlinks above the <code>.venv</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juhaszp95">@juhaszp95</a> on 2025-06-12 11:07</div>
+            <div class="timeline-body"><p>Hey - I'm hitting this again now, so any progress on this would be appreciated!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13989.html">astral-sh/uv#13989</a> on 2025-06-12 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-06-12 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-06-12 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13992.html">astral-sh/uv#13992</a> on 2025-06-12 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-12 15:13</div>
+            <div class="timeline-body"><p>Let's track some concrete suggestions to improve this in https://github.com/astral-sh/uv/issues/13989 and #13992</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-06-12 15:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

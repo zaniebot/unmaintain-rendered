@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM300: CONSTANT_CASE variables are improperly flagged for yoda violation - astral-sh/ruff #6956</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM300: CONSTANT_CASE variables are improperly flagged for yoda violation</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6956">#6956</a>
+        opened by <a href="https://github.com/rseeley">@rseeley</a>
+        on 2023-08-28 20:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rseeley">@rseeley</a> on 2023-08-28 20:52</div>
+            <div class="timeline-body"><p>Ruff version: 0.0.286.</p>
+<p>Values with CONSTANT_CASE seem to be flagged improperly by the <a href="https://beta.ruff.rs/docs/rules/yoda-conditions/">yoda rule (SIM300)</a>.</p>
+<pre><code class="language-python">UPPER_VAL = 1
+
+assert UPPER_VAL == 1
+
+UPPER_LIST = ['upper']
+
+assert UPPER_LIST == ['upper']
+
+lower_val = 1
+
+assert lower_val == 1
+</code></pre>
+<p>Running <code>ruff . --select SIM300 --isolated</code> gives the following result:</p>
+<pre><code>path/to/some/test_file.py:45:12: SIM300 [*] Yoda conditions are discouraged, use `['upper'] == UPPER_LIST` instead
+Found 1 error.
+</code></pre>
+<p>I may be incorrect, but it seems like <code>assert UPPER_LIST == ['upper']</code> should be correct.</p>
+<p>Though not shown in my example above, I first noticed this when using a constant-cased class attribute, in case that helps with testing a fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-28 21:06</div>
+            <div class="timeline-body"><p>Hmm, I think we're not recognizing <code>['upper']</code> as a &quot;constant&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-28 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rseeley">@rseeley</a> on 2023-08-28 21:10</div>
+            <div class="timeline-body"><p>Ah right, I meant to mention it only seems to happen with mutable data types.</p>
+<p>Another sample, and maybe an added bug:</p>
+<pre><code class="language-python">lower = [1, 2]
+
+assert lower == [1, 2]  # it's fine with this
+assert [1, 2] == lower  # it's fine with this, added bug?
+
+UPPER = [1, 2]
+assert UPPER == [1, 2]  # it doesn't like this
+assert [1, 2] == UPPER  # it requires this
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2023-08-29 09:42</div>
+            <div class="timeline-body"><p>Doing simple calculations with constant literal values also triggers this:</p>
+<pre><code class="language-py">primes_diff = [
+    ... # Large list
+]
+PRIMES_PTAB_ENTRIES = len(primes_diff)
+
+assert PRIMES_PTAB_ENTRIES == 6542 - 1
+</code></pre>
+<p>Ruff output:</p>
+<pre><code>$ ruff --select SIM300 --isolated factor.py
+factor.py:260:8: SIM300 [*] Yoda conditions are discouraged, use `6542 - 1 == PRIMES_PTAB_ENTRIES` instead
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+</code></pre>
+<p>There is a <a href="https://gist.github.com/tdulcet/0c4567c0c295025723807026a4d27d33/#file-factor-py-L95">full example here</a>.</p>
+<hr />
+<p><strong>Edit</strong>: Here is a simpler example:</p>
+<pre><code class="language-py">SECONDS_IN_DAY = 86400
+
+assert SECONDS_IN_DAY == 60 * 60 * 24
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8759.html">astral-sh/ruff#8759</a> on 2023-11-18 23:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-18 23:05</div>
+            <div class="timeline-body"><p>This came up again in https://github.com/astral-sh/ruff/issues/8759.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2023-11-18 23:09</div>
+            <div class="timeline-body"><blockquote>
+<p>We should probably flag <code>assert 1 == DummyHandler.CONFIG</code>, which we don't today -- we consider both of those expressions to be equally &quot;constant&quot;.</p>
+</blockquote>
+<p>Maybe <code>is_constant_like</code> could return a numeric value (False -&gt; 0, uppercase -&gt; 1, literal -&gt; 2) so an actual literal can get higher priority than a constant in that check?</p>
+<p>Looking at the example from @tdulcet, I guess it'd also need to consider arithmetic operations on literals to still be a literal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2023-11-20 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9164.html">astral-sh/ruff#9164</a> on 2023-12-16 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-20 20:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>50ms overhead between resolution time and wall time in `uv lock` - astral-sh/uv #4860</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>50ms overhead between resolution time and wall time in `uv lock`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4860">#4860</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-07-07 18:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-07-07 18:37</div>
+            <div class="timeline-body"><p>When running <code>uv lock</code> on https://github.com/konstin/transformers/blob/9638c4defb18f5358c70f40dd00d65595657dd57/pyproject.toml, i get:</p>
+<pre><code>Resolved 291 packages in 65ms
+</code></pre>
+<p>with values in the 60ms-70ms range. But when measuring wall time, i get:</p>
+<pre><code>$ hyperfine &quot;uv lock&quot;
+Benchmark 1: uv lock
+  Time (mean ± σ):     111.1 ms ±   1.9 ms    [User: 112.7 ms, System: 110.1 ms]
+  Range (min … max):   108.4 ms … 115.5 ms    26 runs
+</code></pre>
+<p>That's an ~50ms overhead!</p>
+<p>With https://github.com/astral-sh/uv/pull/4495 applies, the resolution is down to 12ms, but wall time is 60ms, still roughly a 50ms overhead. We should investigate and fix what's slowing us down here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2024-07-07 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-07 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-07 19:24</div>
+            <div class="timeline-body"><p>The gap I see here is also present in tracing. Like the last tracing message clocks in at <code>0.163996s</code> (and the last user-facing message is <code>Resolved 291 packages in 143ms</code>), but <code>time</code> reports <code>0.205</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-07 19:27</div>
+            <div class="timeline-body"><p>Is it possible the branch you're testing on doesn't have: https://github.com/astral-sh/uv/pull/4793</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-07 19:31</div>
+            <div class="timeline-body"><p>I'm seeing this with a release build from d787e69f7c2297d92eb32acb9c3729169bad5fe5. With your numbers i get 0.163996s - 143ms = 21ms unaccounted between start and start of resolution and 0.205s - 143ms = 62ms in total, so this seems to be happening on mac too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-07 19:33</div>
+            <div class="timeline-body"><p>@ibraheemdev - do you have any idea where that time could be going?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-07-08 03:30</div>
+            <div class="timeline-body"><p>kinda got curious so dug around a bit - seems like https://github.com/astral-sh/uv/blob/ffcc05240eb8e226394625a9714f6d8c6dfc9c50/crates/uv-requirements/src/upgrade.rs#L76 is the culprit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-08 19:03</div>
+            <div class="timeline-body"><p>That’s interesting… we should profile it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-09 11:22</div>
+            <div class="timeline-body"><p>I think it's the same problem, but <code>uv lock -p 3.9</code> is slower than <code>uv pip compile -p 3.9 --universal</code> for transformers:</p>
+<pre><code>$ hyperfine &quot;uv pip compile pyproject.toml --all-extras -p 3.9 -o a.txt&quot; &quot;uv pip compile pyproject.toml --all-extras -p 3.9 --universal -o b.txt&quot; &quot;uv lock -p 3.9&quot;
+Benchmark 1: uv pip compile pyproject.toml --all-extras -p 3.9 -o a.txt
+  Time (mean ± σ):      63.8 ms ±   3.0 ms    [User: 58.8 ms, System: 92.1 ms]
+  Range (min … max):    59.4 ms …  74.6 ms    44 runs
+ 
+Benchmark 2: uv pip compile pyproject.toml --all-extras -p 3.9 --universal -o b.txt
+  Time (mean ± σ):      72.7 ms ±   2.5 ms    [User: 64.5 ms, System: 96.8 ms]
+  Range (min … max):    67.9 ms …  79.7 ms    37 runs
+ 
+Benchmark 3: uv lock -p 3.9
+  Time (mean ± σ):      89.4 ms ±   2.5 ms    [User: 86.5 ms, System: 89.7 ms]
+  Range (min … max):    85.6 ms …  95.4 ms    32 runs
+ 
+Summary
+  uv pip compile pyproject.toml --all-extras -p 3.9 -o a.txt ran
+    1.14 ± 0.07 times faster than uv pip compile pyproject.toml --all-extras -p 3.9 --universal -o b.txt
+    1.40 ± 0.08 times faster than uv lock -p 3.9
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-07-09 17:32</div>
+            <div class="timeline-body"><p>It looks like there's ~20-30ms of overhead before starting resolution in <code>read_lockfile</code>, and ~20-30ms after in <code>Lock::from_resolution_graph</code> and <code>Lock::to_toml</code> + dropping. I expect there's some low hanging fruit there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4945.html">astral-sh/uv#4945</a> on 2024-07-09 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4947.html">astral-sh/uv#4947</a> on 2024-07-09 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5064.html">astral-sh/uv#5064</a> on 2024-07-15 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-21 22:24</div>
+            <div class="timeline-body"><p>#5235 cut the time by another ~13%:</p>
+<pre><code>❯ hyperfine &quot;../target/release/main lock&quot; &quot;../target/release/uv lock&quot; --warmup 50 --runs 100
+Benchmark 1: ../target/release/main lock
+  Time (mean ± σ):      29.0 ms ±   0.3 ms    [User: 23.6 ms, System: 4.8 ms]
+  Range (min … max):    28.4 ms …  30.6 ms    100 runs
+
+Benchmark 2: ../target/release/uv lock
+  Time (mean ± σ):      25.7 ms ±   0.6 ms    [User: 20.3 ms, System: 4.7 ms]
+  Range (min … max):    24.7 ms …  30.3 ms    100 runs
+
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet PC without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+
+Summary
+  '../target/release/uv lock' ran
+    1.13 ± 0.03 times faster than '../target/release/main lock'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-29 01:15</div>
+            <div class="timeline-body"><p>Might be worth profiling this again at some point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-30 15:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

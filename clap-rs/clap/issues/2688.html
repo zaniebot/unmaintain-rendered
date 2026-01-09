@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplify the `takes_value` API (range-based `takes_values`) - clap-rs/clap #2688</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Simplify the `takes_value` API (range-based `takes_values`)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2688">#2688</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-08-13 19:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-08-13 19:28</div>
+            <div class="timeline-body"><h3>Discussed in https://github.com/clap-rs/clap/discussions/2676</h3>
+<p><sup>Originally posted by <strong>epage</strong> August 10, 2021</sup>
+Currently, we have</p>
+<ul>
+<li><code>takes_value</code> (accept a value per occurrence)</li>
+<li><code>multiple_values</code> (accept multiple values per occurrence)</li>
+<li><code>min_values</code> (minimum number of values across all occurrences)</li>
+<li><code>max_values</code> (maximum number of values across all occurrences)</li>
+<li><code>number_of_values</code> (average number of values per occurrence)</li>
+</ul>
+<p>We then have to clarify how these are related to each other, for example:</p>
+<blockquote>
+<p>NOTE: This does not implicitly set Arg::multiple(true). This is because -o val -o val is multiple occurrences but a single value and -o val1 val2 is a single occurrence with multiple values. For positional arguments this does set Arg::multiple(true) because there is no way to determine the difference between multiple occurrences and multiple values.</p>
+</blockquote>
+<p>(taken from docs.rs, since updated to say <code>multiple_occurrences</code>).</p>
+<p>I had already been brainstorming on this idea when kbknapp mentioned</p>
+<blockquote>
+<p>I think the crux of the problem is that we previously didn’t do a good job of articulating the difference between multiple_values, multiple_occurrences, and max_values_per_occurrence.</p>
+</blockquote>
+<p>I think we can simplify this problem down to</p>
+<ul>
+<li><code>takes_values(num: impl clap::IntoRange)</code> with<ul>
+<li><code>impl IntoRange for usize</code></li>
+<li><code>impl IntoRange for</code> ...each range type</li>
+<li>The range is for values per occurrence</li>
+</ul>
+</li>
+<li>Remove all other previously mentioned functions as either<ul>
+<li>Redundant</li>
+<li>Easily confused with <code>takes_values(range)</code> but works differently and the value of native support is relatively low</li>
+</ul>
+</li>
+</ul>
+<p>So you can do <code>take_values(0)</code>, <code>take_values(2)</code>, <code>take_values(1..)</code>, <code>take_values(0..=1)</code></p>
+<ul>
+<li>Really, the motivation is to support all the various range types.  Taking in a number is just a convenience while we are at it.  I considered taking in a <code>bool</code>, but I think that is making it too magical and isn't as needed.</li>
+<li>This was named based on https://github.com/clap-rs/clap/discussions/2674 going through and <code>takes_values(1)</code> being the default.</li>
+</ul>
+<p>While I was already talking with kbknapp, I brought this up and is thoughts were:</p>
+<blockquote>
+<p>That is an interesting idea! It feels like it might incur some cognitive load to understand, although once you see it it makes total sense. I'd love to find a way to play with this idea without throwing it front and center and in the API all of a sudden.</p>
+</blockquote>
+<h3>Notes</h3>
+<p>For the question from kbknapp</p>
+<blockquote>
+<p>For example, which makes more sense for a positional argument; multiple_values or multiple_occurrences? I think you and I would say multiple_values, but I can totally see how someone may try multiple_occurrences. This was papered over by having just multiple previously and things just working. However, we’ve seen that strategy didn’t work in the long run as it created more ambiguity than it solved.</p>
+</blockquote>
+<p>I would say occurrences, actually.  This would leave room for the two features to compose, like <code>multiple_occurrences(true).takes_values(2)</code>.  Not a common pattern but I think it speaks to an API when the features compose together in a natural way which this allows.</p>
+<p>RE Delimiters</p>
+<p>I would posit that common cases for multiple values are</p>
+<ul>
+<li><code>0..=1</code></li>
+<li><code>2</code></li>
+<li><code>0..</code> or <code>1..</code> with a delimiter</li>
+</ul>
+<p>We should raise awareness of <code>require_delimiter</code> in the docs for <code>take_values</code>.</p>
+<h3>Benefits</h3>
+<ul>
+<li>Clarifies our messaging on these settings plus occurrences since the focus is on fixed number of values or delimiters</li>
+<li>Reduces ambiguity around how the flags interact with occurrences and values</li>
+<li>Clear, concise way of specifying all related parameters rather twiddling with each one individual and there being confusion on how they interact</li>
+<li>Uses higher level Rust types rather than a bool and numbers just hanging around (which ties into the Rust API guidelines)</li>
+<li>I suspect this will also help us towards a more maintainable value/occurrence/inferring behavior.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @pksunkara on 2021-08-13 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @pksunkara on 2021-08-13 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2687.html">clap-rs/clap#2687</a> on 2021-08-13 20:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.0" by @pksunkara on 2021-08-14 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @epage by @epage on 2021-10-19 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: breaking change</span> added by @epage on 2021-10-19 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/198.html">epage/clapng#198</a> on 2021-12-06 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> removed by @epage on 2021-12-08 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2021-12-08 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2021-12-08 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> removed by @epage on 2021-12-13 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-hard</span> added by @epage on 2021-12-13 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3678.html">clap-rs/clap#3678</a> on 2022-05-02 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ldm0 by @ldm0 on 2022-05-02 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2022-05-04 20:53</div>
+            <div class="timeline-body"><p>I think this could be a non-breaking change by not changing existing api and behaviour.</p>
+<p>Wanna add two methods: <code>takes_values</code>, <code>takes_values_total</code></p>
+<ul>
+<li>Without multiple occurrences:</li>
+</ul>
+<p>takes_values(X) == takes_values_total(X)
+takes_values(1..) == .min_values(1)
+takes_values(..4) == .max_values(3)
+takes_values(1..4) == .min_values(1).max_values(3)
+takes_values(1..=3) == .min_values(1).max_values(3)
+takes_values(2) == number of values strictly equals to 2</p>
+<ul>
+<li>with multiple occurrences:</li>
+</ul>
+<p>takes_values_total(2..) == total number of values doesn't smaller than 2
+takes_values_total(..4) == total number of values doesn't exceed 3
+takes_values_total(..=3) == total number of values doesn't exceed 3
+takes_values_total(4) == total number of values equals to 4
+takes_values(X) == takes_values_total(X) but for each occurrence</p>
+<p><code>min_values</code> <code>max_values</code>'s internal representation can be easily migrated(to share the same internal representation with <code>takes_values_total</code>).</p>
+<p>But <code>number_of_values</code> cannot be migrated due to it's strange internal representation.</p>
+<p>Currently <code>number_of_values</code>'s behaviour with multiple occurrences on is pretty strange: when <code>number_of_values(2)</code>, clap accepts <code>--flag 1 --flag 2 3 4</code>, since <code>4 % 2 == 0</code>.</p>
+<p>The reason is that before the refactor for implementing <code>grouped_values_of</code>, there is no way to check number of values in each value group. After <code>takes_values</code> is introduced, we can use <code>takes_values(2)</code> to accept <code>--flag 1 2 --flag 3 4</code> and reject <code>--flag 1 --flag 2 3 4</code>, which looks much better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2022-05-04 21:12</div>
+            <div class="timeline-body"><p>After these apis are introduced, deriving <code>Vec&lt;[T; N]&gt;</code> and <code>[[T; N1]; N2]</code> could be implemented.</p>
+<p>In clap 4, I think <code>number_of_values</code> should be removed due to it's strange behaviour.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-05 02:01</div>
+            <div class="timeline-body"><p>There are some points that I think need some clarification</p>
+<ul>
+<li>Your listing says &quot;Without multiple occurrences&quot;, do you mean &quot;Independent of multiple occurrences&quot;?</li>
+<li>I appreciate showing what the new API maps to in the old API but I think it'd also help if you were explicit on what the intent is</li>
+<li>Could you explain what is wrong with <code>number_of_values</code> that you feel the new API is needed and why <code>number_of_values</code> should be deprecated?</li>
+<li>You mention deprecating <code>number_of_values</code>, would you also recommend deprecating <code>min_values</code> and <code>max_values</code>?</li>
+<li>How much of a use case is there for <code>takes_values_total</code>?  I'm used to limiting the number of entries for tuple-like arguments where its tied to the occurrence.  Should we instead shift the emphasis to user-side validation or <a href="https://github.com/clap-rs/clap/discussions/3476">more generic validation mechanisms</a>?<ul>
+<li>As part of our effort to reduce complexity, binary size, and build times, we are wanting to emphasize creating building blocks for users and make things easy in the common cases rather than in every case.</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2022-05-05 03:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Your listing says &quot;Without multiple occurrences&quot;, do you mean &quot;Independent of multiple occurrences&quot;?</p>
+</blockquote>
+<p><code>without multiple occurrences == arg.multiple_occurrence(false)</code></p>
+<blockquote>
+<p>Could you explain what is wrong with number_of_values that you feel the new API is needed and why number_of_values should be deprecated?</p>
+</blockquote>
+<p>check sentences after &quot;But <code>number_of_values</code> cannot be migrated due to it's strange internal representation.&quot;</p>
+<blockquote>
+<p>You mention deprecating number_of_values, would you also recommend deprecating min_values and max_values?</p>
+</blockquote>
+<p>Yes, they can be deprecated, but it's not a must. Since they becomes shortcuts of <code>takes_values_total</code> after #3678</p>
+<blockquote>
+<p>How much of a use case is there for takes_values_total?</p>
+</blockquote>
+<p>Definitly needed. This has little binary size &amp; build times influence and it's makes the logic completes. <code>min_values</code> and <code>max_values</code> are just shortcuts of them.</p>
+<p>@epage</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-05 17:39</div>
+            <div class="timeline-body"><p>There is a lot of being elided from the descriptions being given.  Instead of copying your past notes, could you re-write this addressing the following:</p>
+<ul>
+<li>What is the current behavior of <code>min_values</code> and <code>max_values</code> and what problems does it have?</li>
+<li>What is the current behavior of <code>number_of_values</code> and what problems does it have?</li>
+<li>What is the proposed behavior of the new functions?</li>
+<li>How are the new functions related to the old functions?</li>
+<li>How do the new functions solve problems with existing functions?</li>
+<li>How do the new functions solve any other use cases, like the derive case?</li>
+<li>Why should we not solve the problem with other existing or planned features?<ul>
+<li>We are not just targeting binary size and compile times but providing an API surface where people can find the features they need.</li>
+</ul>
+</li>
+</ul>
+<p>I just want to re-emphasize that communicating our thoughts and recording them down is important in a collaborative open source project.  We need to get each other on the same page and help people in the future understand the motivation for why things were done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2022-05-06 03:46</div>
+            <div class="timeline-body"><ol>
+<li><code>min_values(N)</code> == <code>takes_value_total(N..)</code> <code>max_values(N)</code> == <code>takes_value_total(1..=N)</code>, and the only problem is that their functionaliry are duplicated. They can be removed, but I have no bias.</li>
+<li>Currently number_of_values's behaviour with multiple occurrences on is pretty strange: when number_of_values(2), clap accepts --flag 1 --flag 2 3 4, since 4 % 2 == 0. I dislike it.</li>
+<li>I think this is clear:</li>
+</ol>
+<ul>
+<li>without multiple occurrences:
+takes_values(X) == takes_values_total(X)
+takes_values(1..) == .min_values(1)
+takes_values(..4) == .max_values(3)
+takes_values(1..4) == .min_values(1).max_values(3)
+takes_values(1..=3) == .min_values(1).max_values(3)
+takes_values(2) == number of values strictly equals to 2</li>
+<li>with multiple occurrences:
+takes_values_total(2..) == total number of values doesn't smaller than 2
+takes_values_total(..4) == total number of values doesn't exceed 3
+takes_values_total(..=3) == total number of values doesn't exceed 3
+takes_values_total(4) == total number of values equals to 4
+takes_values(X) == takes_values_total(X) but for each occurrence</li>
+</ul>
+<ol start="4">
+<li>Stated above。</li>
+<li>Currently there is no way to accept <code>--flag 1 2 --flag 3 4</code> and reject <code>--flag 1 --flag 2 3 4</code>, the new api makes it possible. And also, the new api is not for problem solving, it's for simplicity.</li>
+<li>It makes deriving <code>Vec&lt;[T; N]&gt;</code> and <code>[[T; N1]; N2]</code> possible.</li>
+<li>The api is simple enough and expressive enough to be added. And people can easily understand them(compared to <code>number_of_values</code>)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-06 15:10</div>
+            <div class="timeline-body"><p>Please take the time to write up a clear description rather than repeating what has previously been said.  If it feels like it'll take a long time to do so, consider how long having unclear explanations has already taken.</p>
+<p>Think in terms of a random clap user wanting to look at this proposal to understand what is happening.  How well can they understand it?</p>
+<blockquote>
+<p>Currently number_of_values's behaviour with multiple occurrences on is pretty strange: when number_of_values(2), clap accepts --flag 1 --flag 2 3 4, since 4 % 2 == 0. I dislike it.</p>
+</blockquote>
+<p>This is repeating what was said before. This is an example which help to clarify descriptions but aren't sufficient to describe behavior on their own as it leaves the user to infer what is happening which leaves room for misunderstanding</p>
+<blockquote>
+<p>I think this is clear:</p>
+</blockquote>
+<p>The fact that this is now the third time I'm asking for a re-explanation I think demonstrates that this is not an effective way of communicating things</p>
+<ul>
+<li>Its describing behavior conditioned on what <code>multiple_occurrences</code>  is being set to but doesn't describe how the functions behavior with the opposite setting</li>
+<li>Its describing the API in terms of other parts of the API when I'm looking for a description of intent where it stands alone so there is no ambiguity.</li>
+<li>If <code>takes_values(1..) == .min_values(1)</code> and <code>min_values(N) == takes_value_total(N..)</code>, then doesn't that mean that <code>takes_values(1..) == takes_value_total(1..)</code>?</li>
+</ul>
+<blockquote>
+<p>It makes deriving Vec&lt;[T; N]&gt; and [[T; N1]; N2] possible.</p>
+</blockquote>
+<p>I can't see how the proposed helps with this because as described, it doesn't seem to handle this.</p>
+<ul>
+<li>See my earlier comment &quot;If <code>takes_values(1..) == .min_values(1)</code> and <code>min_values(N) == takes_value_total(N..)</code>, then doesn't that mean that <code>takes_values(1..) == takes_value_total(1..)</code>?&quot;</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-06 18:21</div>
+            <div class="timeline-body"><p>How do these new functions interact with <code>multiple_values</code> and <code>takes_value</code>?</p>
+<p>Working on some other Issues reminded me that its not just these flags but how some of them compose together</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3702.html">clap-rs/clap#3702</a> on 2022-05-06 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3259.html">clap-rs/clap#3259</a> on 2022-05-14 02:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2022-06-15 07:32</div>
+            <div class="timeline-body"><p>Are the issues with the current options resolved by using an action of <code>ArgAction::Append</code>?</p>
+<p>For example, if I had:</p>
+<pre><code>Arg::new(&quot;test&quot;)
+    .short('t')
+    .action(ArgAction::Append)
+    .min_values(2)
+    .max_values(3)
+</code></pre>
+<p>would that mean that <code>--t 1 2 -t 3 4 -t 3 5 6' is valid, and result in a value of </code>vec![vec![&quot;1&quot;, &quot;2&quot;], vec![&quot;3&quot;, &quot;4&quot;], vec![&quot;3&quot;, &quot;5&quot;, &quot;5&quot;]]<code>and </code>-t 1 -t 2 3` is invalid?</p>
+<p>The documentation isn't very clear on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2022-06-15 08:21</div>
+            <div class="timeline-body"><p>Looking through the source code, it looks like it probably doesn't. So I'll try and answer the questions @epage listed in a way that doesn't depend on the new API proposed.</p>
+<blockquote>
+<ul>
+<li>What is the current behavior of <code>min_values</code> and <code>max_values</code> and what problems does it have?</li>
+</ul>
+</blockquote>
+<p><code>min_values</code> and <code>max_values</code> set limits on the total number of values, rather than on the number of values in a single occurrence of the option. So if an option is supplied multiple times, these limits apply to the sum of the number of values in all such occurences. Clap doesn't currently have a way to express limits on the number of values supplied to a single occurrence when <code>multiple_occurences</code> is true, or the <code>Append</code> action is used.  This is problematic in a number of scenarios such as:</p>
+<ul>
+<li>If an option can be supplied than once, and each occurence must have at least one (and possibly more) value supplied. Should generally be used with a delimiter, terminator, etc.</li>
+<li>If an option can be optionally supplied with a value for each occurence</li>
+<li>If an option can have at most N values (for some value of n) per occurence</li>
+</ul>
+<p>See also https://github.com/clap-rs/clap/issues/3542</p>
+<blockquote>
+<ul>
+<li>What is the current behavior of <code>number_of_values</code> and what problems does it have?</li>
+</ul>
+</blockquote>
+<p>Currently, if <code>number_of_values</code> is supplied, and <code>multiple_occurences</code> is true, or the <code>Append</code> action is used, then rather than requiring each occurrence to have that number of values, it requires that the total number of values is a multiple of that number.</p>
+<p>For example, if you supply a <code>number_of_values</code> of <code>2</code> for an option that can occur multiple times, then <code>-t 1 -t 3 4</code>, <code>-t 1 2 3 4</code>, <code>-t -t 1 -t 2 3 4</code>, and <code>-t 1 -t 2 -t 3 -t 4</code> are all considered valid, which is almost certainly not what you want.</p>
+<p>I suspect this behavior wasn't intentional, and could probably be considered a bug. However, even if it is fixed, it is somewhat confusing that <code>number_of_values</code> is per-occurrence, while <code>min_values</code> and <code>max_values</code> are total.</p>
+<blockquote>
+<ul>
+<li>What is the proposed behavior of the new functions?</li>
+</ul>
+</blockquote>
+<p>From what I understand:</p>
+<p><code>takes_values_total</code> takes a possibly open range that specifies the minium and maximum number of values combined across all occurrences. If the number of values in total is outside of the specified range, the arguments are invalid. This is equivalent to a combination of the current<code>min_values</code> and <code>max_values</code>.</p>
+<p><code>takes_values</code> specifies a (possibly open) range of the number of values <em>per occurrence</em>. that is each occurrence of the option must have a number of values that lies within the range. If the number of values given to any one occurrence of the option falls outside the given range, it should be considered invalid.</p>
+<blockquote>
+<ul>
+<li>How are the new functions related to the old functions?</li>
+</ul>
+</blockquote>
+<p>I'm not sure there is much to add here. The old functions could be deprecated and implemented in terms of the new ones. And removed in a backwards incompatible release. Or possibly they are considered valuable enough to keep. It's also possible the in a backwards incompatible release, the behavior of these functions is changed to be per-occurrence instead of total. Alternatively, new <code>min_per_occurence</code>, <code>max_per_occurence</code>, and <code>number_of_values_per_occurence</code> (bikeshed the names) could be added.</p>
+<blockquote>
+<ul>
+<li>How do the new functions solve problems with existing functions?</li>
+</ul>
+</blockquote>
+<p><code>takes_values_total</code> does not solve the problems mentioned above, but might be a slightly nicer API.</p>
+<p><code>takes_values</code> provides an api to constrain the number of arguments on a per-occurrence basis when multiple occurrences of the same option are allowed.</p>
+<blockquote>
+<ul>
+<li>How do the new functions solve any other use cases, like the derive case?</li>
+</ul>
+</blockquote>
+<p>I'm not sure.</p>
+<blockquote>
+<ul>
+<li>Why should we not solve the problem with other existing or planned features?</li>
+</ul>
+</blockquote>
+<p>I don't really care how the problem is solved, as long as there is a way to have constraints on the number of values supplied per-occurrence. I mentioned some other possibilities above. Perhaps another way to do it would be to have a different <code>Action</code> variant, which would switch into a mode where <code>min_values</code>, <code>max_values</code>, and <code>number_of_values</code> applies to each occurrence rather than the total (or maybe change it so the existing <code>Append</code> action behaves that way in v4?)</p>
+<p>I would like to mention that the current behavior of <code>min_values</code> bit me, and it took me quite a while to figure out what was going on.  At the very least the documentation for <code>min_values</code> and <code>max_values</code> should be updated to explain that it is the <em>total</em> number of values, not the values for a single occurrence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-15 17:03</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't really care how the problem is solved, as long as there is a way to have constraints on the number of values supplied per-occurrence</p>
+</blockquote>
+<p>I've updated my original proposal to clarify that <code>takes_values(range)</code> is intended to be per occurrence.</p>
+<p>And while I appreciate the thorough investigation into ldm0's work, I think the more important aspect is to understand their intent and working through that to come to agreement before they move forward with their implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mzagrabe">@mzagrabe</a> on 2022-07-07 18:32</div>
+            <div class="timeline-body"><p>@epage What do you think of having a min_occurrences() function in similar fashion to min_values()? This could be used for ArgAction::Append options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-11 20:41</div>
+            <div class="timeline-body"><p>@mzagrabe what is the motivation / use-case for having a baked in <code>min_occurrences</code>?  How does that compare to just using either <code>required</code> or https://github.com/clap-rs/clap/issues/3008?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3988.html">clap-rs/clap#3988</a> on 2022-07-25 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3999.html">clap-rs/clap#3999</a> on 2022-07-28 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4001.html">clap-rs/clap#4001</a> on 2022-07-29 02:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-03 13:33</div>
+            <div class="timeline-body"><p>In master (v4) I've started work on the original proposal in this issue.</p>
+<p>Current status:</p>
+<ul>
+<li>[x] Shift focus from <code>takes_value</code> / <code>multiple_values</code> to <code>action</code> in docs</li>
+<li>[x] Modify <code>number_of_values</code> to take a range</li>
+<li>[x] Change <code>number_of_values</code> to be per occurrence</li>
+<li>[x] Change <code>number_of_values</code> to be <code>num_args</code> (ie how many <code>argv</code> items are consumed)</li>
+<li>[x] Update <code>arg!</code> and derive to use <code>number_of_values</code> for <code>Option&lt;Option&lt;T&gt;&gt;</code></li>
+<li>[x] Remove <code>min_values</code> and <code>max_values</code> from the API</li>
+<li>[x] Remove <code>takes_value</code> and <code>multiple_values</code> from API</li>
+<li>[x] Resolve how we use <code>takes_value</code> and <code>multiple_values</code> internally</li>
+<li>[x] Re-evaluate <code>use_value_delimiter</code> and <code>require_value_delimiter</code> with the new <code>num_args</code> behavior</li>
+<li>[x] Re-evaluate where <code>num_args</code> shows up in rustdoc output</li>
+<li>[x] Update tutorial to not primarily use <code>arg!</code> to better teach actions, drawing attention away from <code>num_args</code></li>
+</ul>
+<p>Somewhat related</p>
+<ul>
+<li>[x] Cleaned up rendering of arg values</li>
+<li>[x] Show <code>...</code> for <code>ArgAction::Count</code> for args in usage</li>
+<li>[x] Correctly show optional values in usage for positionals and args</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4020.html">clap-rs/clap#4020</a> on 2022-08-03 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4022.html">clap-rs/clap#4022</a> on 2022-08-03 19:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4023.html">clap-rs/clap#4023</a> on 2022-08-03 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4024.html">clap-rs/clap#4024</a> on 2022-08-04 04:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4025.html">clap-rs/clap#4025</a> on 2022-08-04 05:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4026.html">clap-rs/clap#4026</a> on 2022-08-04 05:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4028.html">clap-rs/clap#4028</a> on 2022-08-04 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-04 14:46</div>
+            <div class="timeline-body"><p>While not quite done, we've dropped about 2k from <code>.text</code> through this work</p>
+<p>This was done by running <code>cargo bloat --release --example cargo-example --features cargo</code> against 11883b6 and #4028</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4031.html">clap-rs/clap#4031</a> on 2022-08-04 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-09 22:04</div>
+            <div class="timeline-body"><p>Forgot to call out that #4050 took care of the tutorial</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-08-09 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3542.html">clap-rs/clap#3542</a> on 2022-08-09 22:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../quickwit-oss/quickwit/issues/2236.html">quickwit-oss/quickwit#2236</a> on 2022-11-03 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../FamilySearch/pewpew/pulls/110.html">FamilySearch/pewpew#110</a> on 2023-01-27 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../24seconds/rust-cli-pomodoro/pulls/154.html">24seconds/rust-cli-pomodoro#154</a> on 2023-03-27 02:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../roc-lang/roc/pulls/5405.html">roc-lang/roc#5405</a> on 2023-05-13 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../kcl-lang/kcl/pulls/560.html">kcl-lang/kcl#560</a> on 2023-05-31 12:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

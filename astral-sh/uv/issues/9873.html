@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certain tests &amp; scenarios are sensitive to exported environment variables - astral-sh/uv #9873</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Certain tests &amp; scenarios are sensitive to exported environment variables</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/9873">#9873</a>
+        opened by <a href="https://github.com/pradyunsg">@pradyunsg</a>
+        on 2024-12-13 16:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-12-13 16:19</div>
+            <div class="timeline-body"><p>[context: I'm working on #9849, and a few tests are failing for me due to issues related to the network-related environment variables]</p>
+<p>When certain environment variables are set, uv's tests end up failing for various reasons. I've listed a few of the relevant scenarios below... It would be good to have uv's tests be less fragile to configuration settings that might need to be modified due to the network configuration.</p>
+<details><summary>A few of the test failures, hidden in a details tag</summary>
+
+<p>The <code>usage</code> line of various commands includes the option representation equivalent to the configuration variable (eg: with <code>UV_NATIVE_TLS=true</code>).</p>
+<pre><code>running 1 test
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: compile_does_not_allow_both_extra_and_all_extras
+Source: crates/uv/tests/it/pip_compile.rs:2688
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    3     3 │ 
+    4     4 │ ----- stderr -----
+    5     5 │ error: the argument '--all-extras' cannot be used with '--extra &lt;EXTRA&gt;'
+    6     6 │ 
+    7       │-Usage: uv pip compile --cache-dir [CACHE_DIR] --all-extras --exclude-newer &lt;EXCLUDE_NEWER&gt; &lt;SRC_FILE&gt;...
+          7 │+Usage: uv pip compile --cache-dir [CACHE_DIR] --all-extras --exclude-newer &lt;EXCLUDE_NEWER&gt; --native-tls &lt;SRC_FILE&gt;...
+    8     8 │ 
+    9     9 │ For more information, try '--help'.
+────────────┴───────────────────────────────────────────────────────────────────
+To update snapshots run `cargo insta review`
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+test pip_compile::compile_does_not_allow_both_extra_and_all_extras ... FAILED
+
+failures:
+
+failures:
+    pip_compile::compile_does_not_allow_both_extra_and_all_extras
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1551 filtered out; finished in 0.50s
+</code></pre>
+<hr />
+<p>The warning about indexes being specified not persisting in <code>pyproject.toml</code> causes many tests to fail, even when the configured index URL is done as <code>UV_INDEX_URL=https://pypi.org/simple</code> (which should functionally be a no-op).</p>
+<pre><code>running 1 test
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: add_no_sync
+Source: crates/uv/tests/it/edit.rs:3752
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    1     1 │ exit_code: 0
+    2     2 │ ----- stdout -----
+    3     3 │ 
+    4     4 │ ----- stderr -----
+          5 │+warning: Indexes specified via `--index-url` will not be persisted to the `pyproject.toml` file; use `--default-index` instead.
+    5     6 │ Using CPython 3.12.[X] interpreter at: [PYTHON-3.12]
+    6     7 │ Resolved 4 packages in [TIME]
+────────────┴───────────────────────────────────────────────────────────────────
+To update snapshots run `cargo insta review`
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+test edit::add_no_sync ... FAILED
+
+failures:
+
+failures:
+    edit::add_no_sync
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1551 filtered out; finished in 0.72s
+</code></pre>
+<hr />
+<p>Certain scenarios fail when <code>UV_INDEX_URL=https://pypi.org/simple/</code> is set, since there's a mismatch between trailing slash vs no trailing slash.</p>
+<pre><code>running 1 test
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: lock_repeat_named_index_cli-4
+Source: crates/uv/tests/it/lock.rs:14387
+────────────────────────────────────────────────────────────────────────────────
+Expression: lock
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    5     5 │ 
+    6     6 │ [[package]]
+    7     7 │ name = &quot;jinja2&quot;
+    8     8 │ version = &quot;3.1.2&quot;
+    9       │-source = { registry = &quot;https://pypi.org/simple&quot; }
+          9 │+source = { registry = &quot;https://pypi.org/simple/&quot; }
+   10    10 │ dependencies = [
+   11    11 │     { name = &quot;markupsafe&quot; },
+   12    12 │ ]
+   13    13 │ sdist = { url = &quot;https://files.pythonhosted.org/packages/7a/ff/75c28576a1d900e87eb6335b063fab47a8ef3c8b4d88524c4bf78f670cce/Jinja2-3.1.2.tar.gz&quot;, hash = &quot;sha256:31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852&quot;, size = 268239 }
+┈┈┈┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+   17    17 │ 
+   18    18 │ [[package]]
+   19    19 │ name = &quot;markupsafe&quot;
+   20    20 │ version = &quot;2.1.5&quot;
+   21       │-source = { registry = &quot;https://pypi.org/simple&quot; }
+         21 │+source = { registry = &quot;https://pypi.org/simple/&quot; }
+   22    22 │ sdist = { url = &quot;https://files.pythonhosted.org/packages/87/5b/aae44c6655f3801e81aa3eef09dbbf012431987ba564d7231722f68df02d/MarkupSafe-2.1.5.tar.gz&quot;, hash = &quot;sha256:d283d37a890ba4c1ae73ffadf8046435c76e7bc2247bbb63c00bd1a709c6544b&quot;, size = 19384 }
+   23    23 │ wheels = [
+   24    24 │     { url = &quot;https://files.pythonhosted.org/packages/53/bd/583bf3e4c8d6a321938c13f49d44024dbe5ed63e0a7ba127e454a66da974/MarkupSafe-2.1.5-cp312-cp312-macosx_10_9_universal2.whl&quot;, hash = &quot;sha256:8dec4936e9c3100156f8a2dc89c4b88d5c435175ff03413b443469c7c8c5f4d1&quot;, size = 18215 },
+   25    25 │     { url = &quot;https://files.pythonhosted.org/packages/48/d6/e7cd795fc710292c3af3a06d80868ce4b02bfbbf370b7cee11d282815a2a/MarkupSafe-2.1.5-cp312-cp312-macosx_10_9_x86_64.whl&quot;, hash = &quot;sha256:3c6b973f22eb18a789b1460b4b91bf04ae3f0c4234a0a6aa6b0a92f6f7b951d4&quot;, size = 14069 },
+────────────┴───────────────────────────────────────────────────────────────────
+To update snapshots run `cargo insta review`
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+test lock::lock_repeat_named_index_cli ... FAILED
+
+failures:
+
+failures:
+    lock::lock_repeat_named_index_cli
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1551 filtered out; finished in 2.36s
+</code></pre>
+<hr />
+<p>The settings-related tests expect a clean environment:</p>
+<pre><code>
+running 1 test
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: resolve_skip_empty
+Source: crates/uv/tests/it/show_settings.rs:3559
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    3     3 │ GlobalSettings {
+    4     4 │     quiet: false,
+    5     5 │     verbose: 0,
+    6     6 │     color: Auto,
+    7       │-    native_tls: false,
+          7 │+    native_tls: true,
+    8     8 │     concurrency: Concurrency {
+    9     9 │         downloads: 50,
+   10    10 │         builds: 16,
+   11    11 │         installs: 8,
+────────────┴───────────────────────────────────────────────────────────────────
+To update snapshots run `cargo insta review`
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+test show_settings::resolve_skip_empty ... FAILED
+
+failures:
+
+failures:
+    show_settings::resolve_skip_empty
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1551 filtered out; finished in 0.39s
+
+──── STDERR:             uv::it show_settings::resolve_skip_empty
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Unfiltered output ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+----- stdout -----
+GlobalSettings {
+    quiet: false,
+    verbose: 0,
+    color: Auto,
+    native_tls: true,
+    concurrency: Concurrency {
+        downloads: 50,
+        builds: 16,
+        installs: 8,
+    },
+    connectivity: Online,
+    allow_insecure_host: [],
+    show_settings: true,
+    preview: Disabled,
+    python_preference: Managed,
+    python_downloads: Automatic,
+    no_progress: false,
+    installer_metadata: true,
+}
+CacheSettings {
+    no_cache: false,
+    cache_dir: Some(
+        &quot;/root/.local/share/uv/tests/.tmpMdXeXJ/cache&quot;,
+    ),
+}
+PipCompileSettings {
+    src_file: [
+        &quot;requirements.in&quot;,
+    ],
+    constraints: [],
+    overrides: [],
+    build_constraints: [],
+    constraints_from_workspace: [],
+    overrides_from_workspace: [],
+    environments: SupportedEnvironments(
+        [],
+    ),
+    refresh: None(
+        Timestamp(
+            SystemTime {
+                tv_sec: 1734106467,
+                tv_nsec: 709925191,
+            },
+        ),
+    ),
+    settings: PipSettings {
+        index_locations: IndexLocations {
+            indexes: [],
+            flat_index: [],
+            no_index: false,
+        },
+        python: None,
+        install_mirrors: PythonInstallMirrors {
+            python_install_mirror: None,
+            pypy_install_mirror: None,
+        },
+        system: false,
+        extras: None,
+        break_system_packages: false,
+        target: None,
+        prefix: None,
+        index_strategy: FirstIndex,
+        keyring_provider: Disabled,
+        no_build_isolation: false,
+        no_build_isolation_package: [],
+        build_options: BuildOptions {
+            no_binary: None,
+            no_build: None,
+        },
+        allow_empty_requirements: false,
+        strict: false,
+        dependency_mode: Transitive,
+        resolution: LowestDirect,
+        prerelease: IfNecessaryOrExplicit,
+        dependency_metadata: DependencyMetadata(
+            {},
+        ),
+        output_file: None,
+        no_strip_extras: false,
+        no_strip_markers: false,
+        no_annotate: false,
+        no_header: false,
+        custom_compile_command: None,
+        generate_hashes: false,
+        config_setting: ConfigSettings(
+            {},
+        ),
+        python_version: None,
+        python_platform: None,
+        universal: false,
+        exclude_newer: Some(
+            ExcludeNewer(
+                2024-03-25T00:00:00Z,
+            ),
+        ),
+        no_emit_package: [],
+        emit_index_url: false,
+        emit_find_links: false,
+        emit_build_options: false,
+        emit_marker_expression: false,
+        emit_index_annotation: false,
+        annotation_style: Split,
+        link_mode: Clone,
+        compile_bytecode: false,
+        sources: Enabled,
+        hash_checking: Some(
+            Verify,
+        ),
+        upgrade: None,
+        reinstall: None,
+    },
+}
+
+----- stderr -----
+
+────────────────────────────────────────────────────────────────────────────────
+
+thread 'show_settings::resolve_skip_empty' panicked at /root/.cargo/registry/src/index.crates.io-6f17d22bba15001f/insta-1.41.1/src/runtime.rs:680:13:
+snapshot assertion for 'resolve_skip_empty' failed in line 3559
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-13 18:34</div>
+            <div class="timeline-body"><p>Thank you for filing this!</p>
+<p>I'm very supportive of ensuring these are cleared in the test suite. The exception is <code>RUST_LOG</code> which I use for debugging the test suite pretty frequently, but see https://github.com/astral-sh/uv/issues/8351 for more on that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-12-13 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @zanieb on 2024-12-13 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-12-13 19:03</div>
+            <div class="timeline-body"><p>For my particular case, clearing these variables across the board would mean that the tests will fail to reach out over the network (there's a MITM proxy that rewrites certificates, so the HTTPS stuff will fail with a TLS errors).</p>
+<p>There might be multiple smaller fixes needed here:</p>
+<ul>
+<li>The settings tests should definitely clear all these variables.</li>
+<li>The usage lines should probably not be changing based on what environment variables are exported.</li>
+<li><code>UV_INDEX_URL=https://pypi.org/simple</code> should probably be treated as a no-op?</li>
+<li><code>UV_INDEX_URL=https://pypi.org/simple/</code> failures can probably be ignored since I can imagine some custom index servers caring about the presence of a <code>/</code>. I don't know of any but... it's also custom index servers that I have very little visibility into. 🤷🏽</li>
+</ul>
+<p>OTOH, I should check whether using a user-level configuration file in this environment keeps things functional though. I'll dig a bit more next week -- I don't wanna be touching $work devices over the weekend. 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-13 19:52</div>
+            <div class="timeline-body"><blockquote>
+<p>The usage lines should probably not be changing based on what environment variables are exported.</p>
+</blockquote>
+<p>This is a very annoying Clap behavior, afaik. I've been meaning to file an issue for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-14 17:56</div>
+            <div class="timeline-body"><p>(We should probably omit <code>--native-tls</code> from the <code>pip compile</code> header since it's really a machine-specific setting. Same for a few of the others. In fact, we might want to use an allowlist instead of filtering out specific settings?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9913.html">astral-sh/uv#9913</a> on 2024-12-15 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9914.html">astral-sh/uv#9914</a> on 2024-12-15 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-17 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2025-01-13 14:30</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>The usage lines should probably not be changing based on what environment variables are exported.</p>
+</blockquote>
+<p>This is a very annoying Clap behavior, afaik. I've been meaning to file an issue for that.</p>
+</blockquote>
+<p>Was this issue filed at any point? If not, should this be reopened to track the failures related to the Clap output causing test failures?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-13 18:12</div>
+            <div class="timeline-body"><p>I have not filed that issue, I'd need to write a MRE.</p>
+<p>We can track the Clap output problems here.. we should just unset most variables before running the tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2025-01-13 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13790.html">astral-sh/uv#13790</a> on 2025-06-02 21:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14080.html">astral-sh/uv#14080</a> on 2025-10-19 12:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

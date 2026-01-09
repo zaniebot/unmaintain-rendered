@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't create virtual environment on ARMv7 Linux Musl - astral-sh/uv #7529</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't create virtual environment on ARMv7 Linux Musl</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7529">#7529</a>
+        opened by <a href="https://github.com/patrick-5546">@patrick-5546</a>
+        on 2024-09-19 01:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/patrick-5546">@patrick-5546</a> on 2024-09-19 01:47</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>This is what I get trying to create a virtual environment:</p>
+<pre><code class="language-console">$ uv venv
+  × Could not detect either glibc version nor musl libc version, at least one of which is required
+</code></pre>
+<p>Someone else also observed this issue here: https://github.com/astral-sh/uv/issues/1438, but it was not fixed by #1427</p>
+<p>I used the installation script to install version 0.4.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-19 01:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-19 02:10</div>
+            <div class="timeline-body"><p>I wonder if we didn't port the fix when we added the code again?</p>
+<p>cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrick-5546">@patrick-5546</a> on 2024-09-19 04:54</div>
+            <div class="timeline-body"><p>My situation may be a bit of a unique case, as I am running Linux on an ARM processor on the DE1-SoC FPGA. Here is some more information about my system</p>
+<pre><code class="language-console">$ cat /proc/version
+Linux version 3.18.0 (altera@altera-Inspiron-5558) (gcc version 4.8.4 (Ubuntu/Linaro 4.8.4-2ubuntu1~14.04.1) ) #9 SMP Mon Aug 8 17:11:41 EDT 2016
+
+$ lscpu
+Architecture:          armv7l
+Byte Order:            Little Endian
+CPU(s):                2
+On-line CPU(s) list:   0,1
+Thread(s) per core:    1
+Core(s) per socket:    2
+Socket(s):             1
+
+$ ldd --version
+ldd (Ubuntu EGLIBC 2.15-0ubuntu10.23) 2.15
+Copyright (C) 2012 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Written by Roland McGrath and Ulrich Drepper.
+
+$ file .local/bin/uv
+.local/bin/uv: ELF 32-bit LSB executable, ARM, version 1 (SYSV), statically linked, stripped
+
+$ musl
+zsh: command not found: musl
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrick-5546">@patrick-5546</a> on 2024-09-19 05:31</div>
+            <div class="timeline-body"><p>Looks like there isn't a pre-built python binary that can run on my system, as the gnu versions require glibc &gt;= 2.17, and there is no musl version</p>
+<pre><code class="language-console">$ wget https://github.com/indygreg/python-build-standalone/releases/download/20240909/cpython-3.11.10+20240909-armv7-unknown-linux-gnueabihf-install_only_stripped.tar.gz
+...
+
+$ tar -xzf cpython-3.11.10+20240909-armv7-unknown-linux-gnueabihf-install_only_stripped.tar.gz
+
+$ ./python --version
+./python: /lib/arm-linux-gnueabihf/libc.so.6: version `GLIBC_2.17' not found (required by /home/root/Downloads/python/bin/../lib/libpython3.11.so.1.0)
+./python: /lib/arm-linux-gnueabihf/libc.so.6: version `GLIBC_2.16' not found (required by /home/root/Downloads/python/bin/../lib/libpython3.11.so.1.0)
+</code></pre>
+<p>Resources</p>
+<ul>
+<li>https://gregoryszorc.com/docs/python-build-standalone/main/running.html</li>
+<li>https://github.com/indygreg/python-build-standalone/releases</li>
+<li>https://github.com/astral-sh/uv/blob/main/crates/uv-python/download-metadata.json</li>
+</ul>
+<p>Update</p>
+<p>As a workaround, I was able to compile Python 3.8.20 from source (albeit with some failing and skipped tests) and use that to create a virtual environment</p>
+<pre><code>uv venv --python /usr/local/bin/python3.8
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-06 20:07</div>
+            <div class="timeline-body"><p>I think we can merge this with the musl issue then? ref #6890</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-06 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrick-5546">@patrick-5546</a> on 2025-01-06 20:51</div>
+            <div class="timeline-body"><p>The issue you linked is for apple silicon which is armv8, this issue is for armv7. Is support not planned for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-06 22:53</div>
+            <div class="timeline-body"><p>The issue I linked discusses static musl builds in general, but yeah it's for aarch64 (though not apple silicon specifically? I don't know where you got that from). You can track armv7 musl support in https://github.com/astral-sh/python-build-standalone/issues/229</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

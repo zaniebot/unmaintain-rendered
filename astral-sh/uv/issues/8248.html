@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV_EXTRA_INDEX_URL not taking precedence over persistent configuration (pyproject.toml) - astral-sh/uv #8248</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV_EXTRA_INDEX_URL not taking precedence over persistent configuration (pyproject.toml)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8248">#8248</a>
+        opened by <a href="https://github.com/AndreuCodina">@AndreuCodina</a>
+        on 2024-10-16 10:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2024-10-16 10:36</div>
+            <div class="timeline-body"><p>The documentation (https://docs.astral.sh/uv/configuration/files/) says: &quot;Settings provided via environment variables take precedence over persistent configuration, and settings provided via the command line take precedence over both&quot;.</p>
+<p>I use a private registry (Azure DevOps), and to develop locally, pyproject.toml uses keyring authentication:</p>
+<pre><code class="language-toml">[tool.uv]
+keyring-provider = &quot;subprocess&quot;
+extra-index-url = [
+    &quot;https://VssSessionToken@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/&quot;,
+]
+</code></pre>
+<p>But when I create a Dockerfile and disable that configuration with environment variables to use the token, then it can't get the package from the private registry:</p>
+<pre><code>FROM python:3.12-slim-bookworm
+
+ARG UV_COMPILE_BYTECODE=1
+ARG UV_KEYRING_PROVIDER=disabled
+ARG UV_EXTRA_INDEX_URL
+
+ENV UV_NO_CACHE=1
+
+COPY --from=ghcr.io/astral-sh/uv:0.4.22 /uv /bin/uv
+
+COPY pyproject.toml uv.lock ./
+
+RUN uv sync --frozen --no-dev
+
+CMD [&quot;uv&quot;, &quot;run&quot;, &quot;--frozen&quot;, &quot;--no-dev&quot;, &quot;poe&quot;, &quot;start&quot;]
+</code></pre>
+<pre><code class="language-bash">docker build \
+    --tag my-image:1.0.0 \
+    --build-arg UV_EXTRA_INDEX_URL=https://token@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/ \
+    .
+</code></pre>
+<p>Error: <code>Caused by: Failed to fetch wheel: my-private-package</code></p>
+<p><strong>But</strong> if I remove <code>extra-index-url</code> from pyproject.toml and build the Dockerfile, then it can get the package. In fact, it works even if I don't remove <code>keyring-provider</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 12:26</div>
+            <div class="timeline-body"><p>I don't think that <code>UV_EXTRA_INDEX_URL=https://token@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/ </code> is having an effect in your example. Don't you need to declare it as an environment variable, not just a build argument? Like:</p>
+<pre><code>ARG UV_EXTRA_INDEX_URL
+ENV UV_EXTRA_INDEX_URL=${UV_EXTRA_INDEX_URL}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-16 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-16 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2024-10-16 12:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think that <code>UV_EXTRA_INDEX_URL=https://token@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/ </code> is having an effect in your example. Don't you need to declare it as an environment variable, not just a build argument? Like:</p>
+<pre><code>ARG UV_EXTRA_INDEX_URL
+ENV UV_EXTRA_INDEX_URL=${UV_EXTRA_INDEX_URL}
+</code></pre>
+</blockquote>
+<p>ARG is like an environment variable, but for the build stage.</p>
+<p>Anyway, I've tried 2 approaches with the same result I describe:</p>
+<ul>
+<li>Your comment.</li>
+<li>uv sync --frozen --no-dev --extra-index-url $UV_EXTRA_INDEX_URL</li>
+</ul>
+<p>Unless I remove the pyproject.toml configuration, I can't download the package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 12:59</div>
+            <div class="timeline-body"><blockquote>
+<p>ARG is like an environment variable, but for the build stage.</p>
+</blockquote>
+<p>Sort of... But it won't be picked up by <code>uv sync</code> unless you do something like <code>uv sync --frozen --no-dev --extra-index-url $UV_EXTRA_INDEX_URL</code>. So the initial example wasn't quite right.</p>
+<p>If you add <code>--show-settings</code> to the end of the <code>uv sync</code> command, what does the output show?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2024-10-16 13:43</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>ARG is like an environment variable, but for the build stage.</p>
+</blockquote>
+<p>Sort of... But it won't be picked up by <code>uv sync</code> unless you do something like <code>uv sync --frozen --no-dev --extra-index-url $UV_EXTRA_INDEX_URL</code>. So the initial example wasn't quite right.</p>
+<p>If you add <code>--show-settings</code> to the end of the <code>uv sync</code> command, what does the output show?</p>
+</blockquote>
+<p>With the <code>ENV</code> added:</p>
+<pre><code>GlobalSettings {
+quiet: false,
+verbose: 0,
+color: Auto,
+native_tls: false,
+concurrency: Concurrency {
+downloads: 50,
+builds: 10,
+installs: 10,
+},
+connectivity: Online,
+show_settings: true,
+preview: Disabled,
+python_preference: Managed,
+python_downloads: Automatic,
+no_progress: false,
+}
+CacheSettings {
+no_cache: false,
+cache_dir: None,
+}
+SyncSettings {
+locked: false,
+frozen: true,
+extras: None,
+dev: Exclude,
+editable: Editable,
+install_options: InstallOptions {
+no_install_project: false,
+no_install_workspace: false,
+no_install_package: [],
+},
+modifications: Exact,
+package: None,
+python: None,
+refresh: None(
+Timestamp(
+SystemTime {
+tv_sec: 1729085918,
+tv_nsec: 684169261,
+},
+),
+),
+settings: ResolverInstallerSettings {
+index_locations: IndexLocations {
+index: None,
+extra_index: [
+Url(
+VerbatimUrl {
+url: Url {
+scheme: &quot;https&quot;,
+cannot_be_a_base: false,
+username: &quot;token&quot;,
+password: None,
+host: Some(
+Domain(
+&quot;pkgs.dev.azure.com&quot;,
+),
+),
+port: None,
+path: &quot;/mycompany/_packaging/MyFeed/pypi/simple/&quot;,
+query: None,
+fragment: None,
+},
+given: Some(
+&quot;https://token@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/&quot;,
+),
+},
+),
+Url(
+VerbatimUrl {
+url: Url {
+scheme: &quot;https&quot;,
+cannot_be_a_base: false,
+username: &quot;VssSessionToken&quot;,
+password: None,
+host: Some(
+Domain(
+&quot;pkgs.dev.azure.com&quot;,
+),
+),
+port: None,
+path: &quot;/mycompany/_packaging/MyFeed/pypi/simple/&quot;,
+query: None,
+fragment: None,
+},
+given: Some(
+&quot;https://VssSessionToken@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/&quot;,
+),
+},
+),
+],
+flat_index: [],
+no_index: false,
+},
+index_strategy: FirstIndex,
+keyring_provider: Disabled,
+allow_insecure_host: [],
+resolution: Highest,
+prerelease: IfNecessaryOrExplicit,
+dependency_metadata: DependencyMetadata(
+{},
+),
+config_setting: ConfigSettings(
+{},
+),
+no_build_isolation: false,
+no_build_isolation_package: [],
+exclude_newer: None,
+link_mode: Hardlink,
+compile_bytecode: false,
+sources: Enabled,
+upgrade: None,
+reinstall: None,
+build_options: BuildOptions {
+no_binary: None,
+no_build: None,
+},
+},
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 13:44</div>
+            <div class="timeline-body"><p>That part looks right at least, in that <code>token@</code> is given higher priority.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 13:47</div>
+            <div class="timeline-body"><p>Can you include the <code>--verbose</code> logs then so we can see what's happening with the index?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2024-10-16 13:54</div>
+            <div class="timeline-body"><pre><code># RUN uv sync --frozen --no-dev --verbose
+DEBUG uv 0.4.22
+DEBUG Found project root: `/app`
+DEBUG No workspace root found, using project root
+DEBUG Searching for Python &gt;=3.12 in managed installations or system path
+DEBUG Searching for managed installations at `/root/.local/share/uv/python`
+DEBUG Found `cpython-3.12.7-linux-aarch64-gnu` at `/usr/local/bin/python` (search path)
+Using CPython3.12.7 interpreter at: /usr/local/bin/python
+Creating virtual environment at: .venv
+DEBUG Using request timeout of 30s
+DEBUG Identified uncached distribution: annotated-types==0.7.0
+DEBUG Identified uncached distribution: anyio==4.6.2.post1
+DEBUG Identified uncached distribution: my-private-package==1.0.0
+DEBUG Identified uncached distribution: asgiref==3.8.1
+DEBUG Identified uncached distribution: azure-appconfiguration==1.7.1
+DEBUG Identified uncached distribution: azure-core==1.31.0
+DEBUG Identified uncached distribution: azure-core-tracing-opentelemetry==1.0.0b11
+DEBUG Identified uncached distribution: azure-identity==1.19.0
+DEBUG Identified uncached distribution: azure-keyvault-secrets==4.8.0
+DEBUG Identified uncached distribution: azure-monitor-opentelemetry==1.6.2
+DEBUG Identified uncached distribution: azure-monitor-opentelemetry-exporter==1.0.0b31
+DEBUG Identified uncached distribution: certifi==2024.8.30
+DEBUG Identified uncached distribution: cffi==1.17.1
+DEBUG Identified uncached distribution: charset-normalizer==3.4.0
+DEBUG Identified uncached distribution: click==8.1.7
+DEBUG Identified uncached distribution: cryptography==43.0.1
+DEBUG Identified uncached distribution: deprecated==1.2.14
+DEBUG Identified uncached distribution: dnspython==2.7.0
+DEBUG Identified uncached distribution: email-validator==2.2.0
+DEBUG Identified uncached distribution: fastapi==0.115.2
+DEBUG Identified uncached distribution: fastapi-cli==0.0.5
+DEBUG Identified uncached distribution: fixedint==0.1.6
+DEBUG Identified uncached distribution: greenlet==3.1.1
+DEBUG Identified uncached distribution: h11==0.14.0
+DEBUG Identified uncached distribution: httpcore==1.0.6
+DEBUG Identified uncached distribution: httptools==0.6.2
+DEBUG Identified uncached distribution: httpx==0.27.0
+DEBUG Identified uncached distribution: idna==3.10
+DEBUG Identified uncached distribution: importlib-metadata==8.4.0
+DEBUG Identified uncached distribution: isodate==0.7.2
+DEBUG Identified uncached distribution: jinja2==3.1.4
+DEBUG Identified uncached distribution: markdown-it-py==3.0.0
+DEBUG Identified uncached distribution: markupsafe==3.0.1
+DEBUG Identified uncached distribution: mdurl==0.1.2
+DEBUG Identified uncached distribution: motor==3.6.0
+DEBUG Identified uncached distribution: msal==1.31.0
+DEBUG Identified uncached distribution: msal-extensions==1.2.0
+DEBUG Identified uncached distribution: msrest==0.7.1
+DEBUG Identified uncached distribution: oauthlib==3.2.2
+DEBUG Identified uncached distribution: opentelemetry-api==1.27.0
+DEBUG Identified uncached distribution: opentelemetry-instrumentation==0.48b0
+DEBUG Identified uncached distribution: opentelemetry-instrumentation-asgi==0.48b0
+DEBUG Identified uncached distribution: opentelemetry-instrumentation-dbapi==0.48b0
+DEBUG Identified uncached distribution: opentelemetry-instrumentation-django==0.48b0
+DEBUG Identified uncached distribution: opentelemetry-instrumentation-fastapi==0.48b0
+DEBUG Identified uncached distribution: opentelemetry-instrumentation-flask==0.48b0
+DEBUG Identified uncached distribution: opentelemetry-instrumentation-psycopg2==0.48b0
+DEBUG Identified uncached distribution: opentelemetry-instrumentation-requests==0.48b0
+DEBUG Identified uncached distribution: opentelemetry-instrumentation-urllib==0.48b0
+DEBUG Identified uncached distribution: opentelemetry-instrumentation-urllib3==0.48b0
+DEBUG Identified uncached distribution: opentelemetry-instrumentation-wsgi==0.48b0
+DEBUG Identified uncached distribution: opentelemetry-resource-detector-azure==0.1.5
+DEBUG Identified uncached distribution: opentelemetry-sdk==1.27.0
+DEBUG Identified uncached distribution: opentelemetry-semantic-conventions==0.48b0
+DEBUG Identified uncached distribution: opentelemetry-util-http==0.48b0
+DEBUG Identified uncached distribution: packaging==24.1
+DEBUG Identified uncached distribution: pastel==0.2.1
+DEBUG Identified uncached distribution: poethepoet==0.29.0
+DEBUG Identified uncached distribution: portalocker==2.10.1
+DEBUG Identified uncached distribution: psutil==5.9.8
+DEBUG Identified uncached distribution: pycparser==2.22
+DEBUG Identified uncached distribution: pydantic==2.9.2
+DEBUG Identified uncached distribution: pydantic-core==2.23.4
+DEBUG Identified uncached distribution: pydantic-settings==2.5.2
+DEBUG Identified uncached distribution: pydantic-settings-azure-app-configuration==1.0.1
+DEBUG Identified uncached distribution: pygments==2.18.0
+DEBUG Identified uncached distribution: pyjwt==2.9.0
+DEBUG Identified uncached distribution: pymongo==4.9.2
+DEBUG Identified uncached distribution: pyodbc==5.1.0
+DEBUG Identified uncached distribution: python-dotenv==1.0.1
+DEBUG Identified uncached distribution: python-multipart==0.0.12
+DEBUG Identified uncached distribution: pyyaml==6.0.2
+DEBUG Identified uncached distribution: requests==2.32.3
+DEBUG Identified uncached distribution: requests-oauthlib==2.0.0
+DEBUG Identified uncached distribution: rich==13.9.2
+DEBUG Identified uncached distribution: setuptools==75.1.0
+DEBUG Identified uncached distribution: shellingham==1.5.4
+DEBUG Identified uncached distribution: six==1.16.0
+DEBUG Identified uncached distribution: sniffio==1.3.1
+DEBUG Identified uncached distribution: sqlalchemy==2.0.36
+DEBUG Identified uncached distribution: sqlmodel==0.0.22
+DEBUG Identified uncached distribution: starlette==0.40.0
+DEBUG Identified uncached distribution: typer==0.12.5
+DEBUG Identified uncached distribution: typing-extensions==4.12.2
+DEBUG Identified uncached distribution: urllib3==2.2.3
+DEBUG Identified uncached distribution: uvicorn==0.32.0
+DEBUG Identified uncached distribution: uvloop==0.21.0
+DEBUG Identified uncached distribution: watchfiles==0.24.0
+DEBUG Identified uncached distribution: websockets==13.1
+DEBUG Identified uncached distribution: wrapt==1.16.0
+DEBUG Identified uncached distribution: zipp==3.20.2
+DEBUG Acquired lock for `/root/.cache/uv/sdists-v4/pypi/psutil/5.9.8`
+DEBUG No cache entry for: https://pkgs.dev.azure.com/mycompany/_packaging/d1ba2728-1239-4be4-88aa-17a0e38a23cb/pypi/download/my-private-package/1.0.0/my_private_package-1.0.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/64/f3/b7946c3887cf7436f002f4cbb1e6aec77b8d299b86be48eeadfefb937c4b/cryptography-43.0.1-cp39-abi3-manylinux_2_28_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/df/b2/7f1a0d75f538c0dcaa004ea69e28706fa3ca72d848e0a5a7dafd30939fff/pymongo-4.9.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/a6/ef/a02ec5da49909dbbfb1fd205a9a1ac4e88ea92dcae885e7c961847cd51e2/uvloop-0.21.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/60/f6/d9aa8c49c44f9b8c9b9dada1f12fa78df3d4c42aa2de437164b83ee1123c/SQLAlchemy-2.0.36-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/dc/69/8edd5c3cd48bb833a3f7ef9b81d7666ccddd3c9a635225214e044b6e8281/pydantic_core-2.23.4-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/ff/ae/f19306b5a221f6a436d8f2238d5b80925004093fa3edea59835b514d9057/setuptools-75.1.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/c3/93/9916574aa8c00aa06bbac729972eb1071d002b8e158bd0e83a3b9a20a1f7/PyYAML-6.0.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/f7/3f/01c8b82017c199075f8f788d0d906b9ffbbc5a47dc9918a945e13d5a2bda/pygments-2.18.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/66/d4/c8c04958870f482459ab5956c2942c4ec35cac7fe245527f1039837c17a9/greenlet-3.1.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/48/64/3b885cc0bb8d3c259134c84a9b4afdc3198be02c8314debaa26ee9729d57/httptools-0.6.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/0d/d8/90eb950ab4998effea2df4cf3a705dc594f6bc501c5a353073aa990be965/watchfiles-0.24.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/1a/df/f8d151540d8c200eb1c6fba8cd0dfd40904f1b0682ea705c36e6c2e97ab3/cffi-1.17.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/81/65/555af79473f9b5ce70d826303487bc62842f1607b254fc46f12d204a1718/pyodbc-5.1.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/68/1b/e0a87d256e40e8c888847551b20a017a6b98139178505dc7ffb96f04e954/dnspython-2.7.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/67/91/5474b84e505a6ccc295b2d322d90ff6aa0746745717839ee0c5fb4fdcceb/rich-13.9.2-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/01/8e/fcb6a77d3029d2a7356f38dbc77cf7daa113b81ddab76b5593d23321e44c/azure_core-1.31.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/f0/d5/3995ed12f941f4a41a273d9b1709282e825ef87ed8eab3833038fee54d59/azure_identity-1.19.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/12/90/3c9ff0512038035f59d279fddeb79f5f1eccd8859f06d6163c58798b9487/certifi-2024.8.30-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/9f/d0/8612029ea04c5c22bf7af2fd3d63876c4eaeef9b97e86c11972a43aa0e6c/websockets-13.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/7e/80/cab10959dc1faead58dc8384a781dfbf93cb4d33d50988f7a69f1b7c9bbe/oauthlib-3.2.2-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/b7/7a/4f0063dbb0b6c971568291a8bc19a4ca70d3c185db2d956230dd67429dfc/opentelemetry_semantic_conventions-0.48b0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/8b/b1/3d2c5a5f63c3f652559ab0667f298af89c9d219de6e3164988d8a19e29b8/azure_monitor_opentelemetry_exporter-1.0.0b31-py2.py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/9d/e4/9263b8240ed9472a2ae7ddc3e516e71ef46617fe40eaa51221ccd4ad9a27/charset_normalizer-3.4.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/cd/40/0a5d743484e1ad00493bdffa8d10d7dbc6a51fec95290ad396e47e79fa43/msal-1.31.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/c1/bd/a6602e71e315055d63b2ff07172bd2d012b4cba2d4e00735d74ba42fc4d6/opentelemetry_sdk-1.27.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/c9/14/bbe7776356ef01f830f8085ca3ac2aea59c73727b6ffaa757abeb7d2900b/fastapi-0.115.2-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/00/2e/d53fa4befbf2cfa713304affc7ca780ce4fc1fd8710527771b58311a3229/click-8.1.7-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/fa/6f/e4d2645a70a2e19c23e47350737e7f6d44bc883666c9099c79fb775a4e10/azure_appconfiguration-1.7.1-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/e4/f5/f2b75d2fc6f1a260f340f0e7c6a060f4dd2961cc16884ed851b0d18da06a/anyio-4.6.2.post1-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/42/d7/1ec15b46af6af88f19b8e5ffea08fa375d433c998b8a7639e76935c14f1f/markdown_it_py-3.0.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/7e/79/5ff0a5c54bda5aec75b36453d06be4f83d5cd4932cc84b7cb2b52cee23e2/wrapt-1.16.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/15/cf/f2966a2638144491f8696c27320d5219f48a072715075d168b31d3237720/msrest-0.7.1-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/b5/7d/871be58cc970ab4c9a541d64b77b7454d150a409c3e48b53fc9eac7a8967/poethepoet-0.29.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/a4/7e/4f3cd27b284e478b32835717aa19888405e42e72ffc9b774618c3a776fb1/azure_keyvault_secrets-4.8.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/06/89/b161908e2f51be56568184aeb4a880fd287178d176fd1c860d2217f41106/httpcore-1.0.6-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/41/7b/ddacf6dcebb42466abd03f368782142baa82e08fc0c1f8eaa05b4bae87d5/httpx-0.27.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/b4/c2/bba4dce0dc56e49d95c270c79c9330ed19e6b71a2a633aecf53e7e1f04c9/motor-3.6.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/0a/0f/64baf7a06492e8c12f5c4b49db286787a7255195df496fc21f5fd9eecffa/starlette-0.40.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/76/c6/c88e154df9c4e1a2a66ccf0005a88dfb2650c1dffb6f5ce603dfbd452ce3/idna-3.10-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/eb/14/78bd0e95dd2444b6caacbca2b730671d4295ccb628ef58b81bee903629df/uvicorn-0.32.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/fb/1f/737dcdbc9fea2fa96c1b392ae47275165a7c641663fbb08a8d252968eed2/opentelemetry_api-1.27.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/95/04/ff642e65ad6b90db43e668d70ffb6736436c7ce41fcc549f4e9472234127/h11-0.14.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/a8/2b/886d13e742e514f704c33c4caa7df0f3b89e5a25ef8db02aa9ca3d9535d5/typer-0.12.5-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/d7/ee/bf0adb559ad3c786f12bcbc9296b3f5675f529199bef03e2df281fa1fadb/email_validator-2.2.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/0a/7f/405c41d4f359121376c9d5117dcf68149b8122d3f6c718996d037bd4d800/opentelemetry_instrumentation-0.48b0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/dd/b1/3af5104b716c420e40a6ea1b09886cae3a1b9f4538343875f637755cae5b/sqlmodel-0.0.22-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/29/8d/29e82e333f32d9e2051c10764b906c2a6cd140992910b5f49762790911ba/pydantic_settings-2.5.2-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/c0/14/362d31bf1076b21e1bcdcb0dc61944822ff263937b804a79231df2774d28/importlib_metadata-8.4.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/3b/5d/63d4ae3b9daea098d5d6f5da83984853c1bbacd5dc826764b249fe119d24/requests_oauthlib-2.0.0-py2.py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/27/94/79751928bca5841416d8ca02e22198672e021d5c7120338e2a6e3771f8fc/MarkupSafe-3.0.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/39/e3/893e8757be2612e6c266d9bb58ad2e3651524b5b40cf56761e985a28b13e/asgiref-3.8.1-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/f5/0b/c316262244abea7481f95f1e91d7575f3dfcf6455d56d1ffe9839c582eb1/python_multipart-0.0.12-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/61/ce/6a51dee45f5dcca912287391650b21995599f020012bf857805c2a13395b/azure_monitor_opentelemetry-1.6.2-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/79/84/0fdf9b18ba31d69877bd39c9cd6052b47f3761e9910c15de788e519f079f/PyJWT-2.9.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/15/aa/0aca39a37d3c7eb941ba736ede56d689e7be91cab5d9ca846bde3999eba6/isodate-0.7.2-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/6a/3e/b68c118422ec867fa7ab88444e1274aa40681c606d59ac27de5a5588f082/python_dotenv-1.0.1-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/2c/69/314d887a01599669fb330da14e5c6ff5f138609e322812a942a74ef9b765/msal_extensions-1.2.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/70/46/671d2618b12bee9071064bc6f63d7df9d6870560c8aa67948378fee47e62/opentelemetry_instrumentation_django-0.48b0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/9b/fb/a70a4214956182e0d7a9099ab17d50bfcba1056188e9b14f35b9e2b62a0d/portalocker-2.10.1-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/db/74/a0e0d38622856597dd8e630f2bd793760485eb165708e11b8be1696bbb5a/opentelemetry_instrumentation_asgi-0.48b0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/78/3d/fcde4f8f0bf9fa1ee73a12304fa538076fb83fe0a2ae966ab0f0b7da5109/opentelemetry_instrumentation_flask-0.48b0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/c3/ae/c26d8da88ba2e438e9653a408b0c2ad6f17267801250a8f3cc6405a93a72/opentelemetry_resource_detector_azure-0.1.5-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/fb/87/fa420007e0ba7e8cd43799ab204717ab515f000236fa2726a6be3299efdd/opentelemetry_instrumentation_wsgi-0.48b0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/2e/36/ca3c9f077a3e682de59f9178a87c4580d051b01172cb5b4c3052de8f590e/opentelemetry_instrumentation_urllib3-0.48b0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/c8/6d/8f5307d26ce700a89e5a67d1e1ad15eff977211f9ed3ae90d7b0d67f4e66/fixedint-0.1.6-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/43/df/0df9226d1b14f29d23c07e6194b9fd5ad50e7d987b7fd13df7dcf718aeb1/opentelemetry_instrumentation_requests-0.48b0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/da/6b/94774f730522cff6a18e7fe7b3fc48e3152c2b21f5bd94999231625340a1/opentelemetry_instrumentation_urllib-0.48b0-py3-none-any.whl
+DEBUG Released lock at `/root/.cache/uv/sdists-v4/pypi/psutil/5.9.8/.lock`
+error: Failed to prepare distributions
+Caused by: Failed to fetch wheel: my-private-package==1.0.0
+Caused by: HTTP status client error (401 Unauthorized) for url (https://pkgs.dev.azure.com/mycompany/_packaging/d1ba2728-1239-4be4-88aa-17a0e38a23cb/pypi/download/my-private-package/1.0.0/my_private_package-1.0.0-py3-none-any.whl)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 13:56</div>
+            <div class="timeline-body"><p>We might be &quot;preferring&quot; the auth in the <code>pyproject.toml</code>. That at least would be a bug. I'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8256.html">astral-sh/uv#8256</a> on 2024-10-16 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 14:02</div>
+            <div class="timeline-body"><p>I think this could plausibly be fixed by https://github.com/astral-sh/uv/pull/8256.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-16 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-16 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9285.html">astral-sh/uv#9285</a> on 2024-11-20 17:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

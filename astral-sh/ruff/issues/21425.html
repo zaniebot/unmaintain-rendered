@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`per-file-ignores` single-level glob patterns match files in subdirectories - astral-sh/ruff #21425</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`per-file-ignores` single-level glob patterns match files in subdirectories</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21425">#21425</a>
+        opened by <a href="https://github.com/ponko2">@ponko2</a>
+        on 2025-11-13 12:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ponko2">@ponko2</a> on 2025-11-13 12:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It seems that the <code>per-file-ignores</code> glob pattern matching does not fully respect directory boundaries when using single-level glob patterns such as <code>src/*.py</code>.<br />
+A pattern like <code>src/*.py</code> is expected to match only files directly under the <code>src/</code> directory, but it currently also appears to match files in subdirectories like <code>src/subdir/</code>.</p>
+<h3>Expected behavior</h3>
+<p>Only files directly under <code>src/</code> should be ignored.<br />
+Files in <code>src/subdir/</code> should still be linted.</p>
+<h3>Actual behavior</h3>
+<p>Both <code>src/ignored.py</code> and <code>src/subdir/selected.py</code> are ignored.<br />
+This might not be the intended behavior.</p>
+<h3>Minimal Reproducible Example</h3>
+<h4>ruff.toml</h4>
+<pre><code class="language-toml">[lint.per-file-ignores]
+&quot;src/*.py&quot; = [&quot;UP&quot;]
+</code></pre>
+<h4>File structure</h4>
+<pre><code>selected.py
+src/ignored.py
+src/subdir/selected.py
+</code></pre>
+<h4>Command</h4>
+<pre><code class="language-bash">ruff check --config=ruff.toml --select=UP
+</code></pre>
+<h4>Expected output</h4>
+<pre><code>UP009 [*] UTF-8 encoding declaration is unnecessary
+ --&gt; selected.py:1:1
+  |
+1 | # -*- coding: utf-8 -*-
+  | ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+help: Remove unnecessary coding comment
+
+UP009 [*] UTF-8 encoding declaration is unnecessary
+ --&gt; src/subdir/selected.py:1:1
+  |
+1 | # -*- coding: utf-8 -*-
+  | ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+help: Remove unnecessary coding comment
+
+Found 2 errors.
+</code></pre>
+<h4>Actual output</h4>
+<pre><code>UP009 [*] UTF-8 encoding declaration is unnecessary
+ --&gt; selected.py:1:1
+  |
+1 | # -*- coding: utf-8 -*-
+  | ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+help: Remove unnecessary coding comment
+
+Found 1 error.
+</code></pre>
+<h3>Possible fix</h3>
+<p>Using <code>GlobBuilder</code> with <code>literal_separator(true)</code> seems to correctly respect directory boundaries.</p>
+<p>This approach is inspired by how <code>GlobBuilder</code> is used in Ruff's <code>ty_project</code> crate for exclude patterns:
+https://github.com/astral-sh/ruff/blob/cd183c5e1f82e595ad717f844190948c7f109454/crates/ty_project/src/glob/exclude.rs?plain=1#L279-L283</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/settings/types.rs b/crates/ruff_linter/src/settings/types.rs
+index 05cd13909..6722a60ec 100644
+--- a/crates/ruff_linter/src/settings/types.rs
++++ b/crates/ruff_linter/src/settings/types.rs
+@@ -6,7 +6,7 @@ use std::str::FromStr;
+ use std::string::ToString;
+
+ use anyhow::{Context, Result, bail};
+-use globset::{Glob, GlobMatcher, GlobSet, GlobSetBuilder};
++use globset::{Glob, GlobBuilder, GlobMatcher, GlobSet, GlobSetBuilder};
+ use log::debug;
+ use pep440_rs::{VersionSpecifier, VersionSpecifiers};
+ use ruff_db::diagnostic::DiagnosticFormat;
+@@ -731,12 +731,21 @@ impl&lt;T&gt; CompiledPerFileList&lt;T&gt; {
+             .into_iter()
+             .map(|per_file_ignore| {
+                 // Construct absolute path matcher.
+-                let absolute_matcher = Glob::new(&amp;per_file_ignore.absolute.to_string_lossy())
+-                    .with_context(|| format!(&quot;invalid glob {:?}&quot;, per_file_ignore.absolute))?
+-                    .compile_matcher();
++                let absolute_matcher =
++                    GlobBuilder::new(&amp;per_file_ignore.absolute.to_string_lossy())
++                        .literal_separator(true)
++                        // No need to support Windows-style paths, so the backslash can be used an escape.
++                        .backslash_escape(true)
++                        .build()
++                        .with_context(|| format!(&quot;invalid glob {:?}&quot;, per_file_ignore.absolute))?
++                        .compile_matcher();
+
+                 // Construct basename matcher.
+-                let basename_matcher = Glob::new(&amp;per_file_ignore.basename)
++                let basename_matcher = GlobBuilder::new(&amp;per_file_ignore.basename)
++                    .literal_separator(true)
++                    // No need to support Windows-style paths, so the backslash can be used an escape.
++                    .backslash_escape(true)
++                    .build()
+                     .with_context(|| format!(&quot;invalid glob {:?}&quot;, per_file_ignore.basename))?
+                     .compile_matcher();
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.14.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-13 23:23</div>
+            <div class="timeline-body"><p>Thanks for the nice write up! I think this is very closely related to #6262 because we use most of the same globbing code for the <code>exclude</code> option too.</p>
+<p>I think I'll close this one as a duplicate since there's already discussion there about revisiting our globbing behavior more generally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-13 23:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

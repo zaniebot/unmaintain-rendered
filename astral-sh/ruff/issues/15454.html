@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DJ008 (`__str__` method) fails when inheriting from multiple models, and str only defined in other module - astral-sh/ruff #15454</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>DJ008 (`__str__` method) fails when inheriting from multiple models, and str only defined in other module</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15454">#15454</a>
+        opened by <a href="https://github.com/zyzzyxdonta">@zyzzyxdonta</a>
+        on 2025-01-13 12:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zyzzyxdonta">@zyzzyxdonta</a> on 2025-01-13 12:12</div>
+            <div class="timeline-body"><p>This is related to #9242.</p>
+<p>When a Django model inherits from an abstract model in the same module and a model in a different module, the <code>__str__</code> from the other module is not recognized and trips DJ008.</p>
+<p>This is a minimal example that reproduces this behaviour:</p>
+<p><a href="https://github.com/user-attachments/files/18396513/ruff-bug-repro.zip">ruff-bug-repro.zip</a></p>
+<pre><code>.
+├── mypackage
+│   ├── core
+│   │   ├── __init__.py
+│   │   └── models.py
+│   ├── __init__.py
+│   └── resources
+│       ├── __init__.py
+│       └── models.py
+└── pyproject.toml
+</code></pre>
+<p>Core models:</p>
+<pre><code class="language-python">from django.db import models
+
+class Thing(models.Model):
+    label = models.TextField()
+
+    def __str__(self):
+        return self.label or str(self.pk)
+</code></pre>
+<p>Resources models:</p>
+<pre><code class="language-python">from django.db import models
+
+from mypackage.core.models import Thing
+
+
+class Resource(models.Model):
+    resource_id = models.AutoField(primary_key=True)
+
+    class Meta:
+        abstract = True
+
+
+class Job(Resource, Thing):
+    job_id = models.TextField()
+</code></pre>
+<p>Output from ruff 0.9.1:</p>
+<pre><code>mypackage/resources/models.py:13:7: DJ008 Model does not define `__str__` method
+   |
+13 | class Job(Resource, Thing):
+   |       ^^^ DJ008
+14 |     job_id = models.TextField()
+   |
+
+Found 1 error.
+</code></pre>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @dylwil3 on 2025-01-13 12:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-15 06:21</div>
+            <div class="timeline-body"><p>I wonder if we should ignore this rule when the subclass is coming from a different file to reduce the false positive but that does come with the possibility of increasing the false negative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-01-15 07:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

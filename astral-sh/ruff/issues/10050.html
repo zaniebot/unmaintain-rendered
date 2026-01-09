@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix for `D413` introduces whitespace - astral-sh/ruff #10050</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix for `D413` introduces whitespace</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10050">#10050</a>
+        opened by <a href="https://github.com/jhossbach">@jhossbach</a>
+        on 2024-02-19 13:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jhossbach">@jhossbach</a> on 2024-02-19 13:22</div>
+            <div class="timeline-body"><p>Minimal <code>test.py</code>:</p>
+<pre><code class="language-python">def test_func():
+    &quot;&quot;&quot;Some test function.
+
+    Returns
+    -------
+    None
+    &quot;&quot;&quot;
+    pass
+</code></pre>
+<p>Fixing with <code>ruff --isolated --select=&quot;D413&quot; --fix test.py</code> adds unnecessary whitespace (<code>W293</code>)</p>
+<pre><code class="language-diff">--- a/test.py
++++ b/test.py
+@@ -4,5 +4,6 @@ def test_func():
+     Returns
+     -------
+     None
++    
+     &quot;&quot;&quot;
+     pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-02-19 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @AlexWaygood on 2024-02-19 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-02-19 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jusexton">@jusexton</a> on 2024-02-21 09:18</div>
+            <div class="timeline-body"><p>I took a quick look at this and the culprit seems to be here:
+https://github.com/astral-sh/ruff/blob/175c266de30c159b69308346cb84e51134ac529e/crates/ruff_linter/src/rules/pydocstyle/rules/sections.rs#L1667-L1683</p>
+<p>Instead of the fix &quot;introducing&quot; whitespace it is more so leaving behind the original indentation space which obviously violates (<a href="https://www.flake8rules.com/rules/W293.html">W293</a>). In this scenario I would imagine the original indentation will need to be deleted before inserting the new line and new indentation. Below is an initial attempt at addressing this problem. Let me know if this is a good solution and I would be glad to submit a pull request.</p>
+<pre><code class="language-rust">let fix = match num_blank_lines {
+    0 =&gt; Fix::safe_edit(Edit::insertion(
+        format!(&quot;{}{}&quot;, line_end.repeat(2), docstring.indentation),
+        context.end(),
+    )),
+    1 =&gt; {
+        let del_start = context.end() - TextSize::from(docstring.indentation.len() as u32);
+        let rest = [Edit::insertion(
+            format!(&quot;{}{}&quot;, line_end, docstring.indentation),
+            context.end(),
+        )];
+        Fix::safe_edits(Edit::deletion(del_start, context.end()), rest)
+    }
+    _ =&gt; unreachable!(),
+};
+diagnostic.set_fix(fix);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-22 15:24</div>
+            <div class="timeline-body"><p>@jusexton this looks about right, although it would be nice if we don't have to branch on the existing empty lines. I also think that this won't work if the line has more whitespace than just the indent?</p>
+<pre><code class="language-python">def test_func():
+    &quot;&quot;&quot;Some test function.
+
+    Returns
+    -------
+    None
+           &quot;&quot;&quot;
+    pass
+</code></pre>
+<p>Could we maybe use the range information in <code>context.following_lines()</code> to determine the offset?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10162.html">astral-sh/ruff#10162</a> on 2024-02-29 07:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jusexton">@jusexton</a> on 2024-02-29 07:20</div>
+            <div class="timeline-body"><p>@MichaReiser Thanks for the help. A PR has been created making use of <code>context.following_lines()</code> to determine the deletion length instead of <code>docstring.indentation</code>. I also attempted removing all branching but a check still seems to be required around whether the last line is whitespace or not. Let me know if there is a better way!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-29 13:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

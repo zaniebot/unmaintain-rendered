@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add platform support for ARMv5TE - astral-sh/uv #10157</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add platform support for ARMv5TE</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10157">#10157</a>
+        opened by <a href="https://github.com/lscorcia">@lscorcia</a>
+        on 2024-12-25 18:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lscorcia">@lscorcia</a> on 2024-12-25 18:30</div>
+            <div class="timeline-body"><p>Hi, since Home Assistant switched to <code>uv</code> the installation on my NAS box can't be upgraded anymore. It is an <code>armel</code> platform with an <code>armv5tel</code> cpu (32bit, tier 2.5 in rust speak). I use Debian bookworm (stable) on it which supports it just fine, providing python 3.11 via system packages but I am using python 3.12 via manual build. For rust wheels, I cross compile them on a x64 VM and install them using pip into my venv since bookworm only provides rust v1.63 and there is no rustup support being a tier 2.5 platform.</p>
+<pre><code>$ curl -LsSf https://astral.sh/uv/install.sh | sh
+ERROR: unknown CPU type: armv5tel
+</code></pre>
+<p>I noticed there is no support for this architecture in uv <code>platform.rs</code>:</p>
+<p>https://github.com/astral-sh/uv/blob/3cb723220e516edae57930206cf3faffaa1b8e5b/crates/uv-python/src/platform.rs#L243</p>
+<p>Would it be possible to add it to the platform matrix?</p>
+<p>Some additional info that might be useful:</p>
+<pre><code>python -m sysconfig
+</code></pre>
+<p><a href="https://github.com/user-attachments/files/18246903/sysconfig.txt">sysconfig.txt</a></p>
+<pre><code>$ uname -m
+armv5tel
+</code></pre>
+<pre><code>$ pip debug --verbose
+pip version: pip 24.0 from /srv/homeassistant/lib/python3.12/site-packages/pip (python 3.12)
+sys.version: 3.12.3 (main, Dec 11 2024, 09:13:12) [GCC 12.2.0]
+sys.executable: /srv/homeassistant/bin/python3.12
+sys.getdefaultencoding: utf-8
+sys.getfilesystemencoding: utf-8
+locale.getpreferredencoding: utf-8
+sys.platform: linux
+sys.implementation:
+name: cpython
+'cert' config value: Not specified
+REQUESTS_CA_BUNDLE: None
+CURL_CA_BUNDLE: None
+pip._vendor.certifi.where(): /srv/homeassistant/lib/python3.12/site-packages/pip/_vendor/certifi/cacert.pem
+pip._vendor.DEBUNDLED: False
+vendored library versions:
+CacheControl==0.13.1
+colorama==0.4.6
+distlib==0.3.8
+distro==1.8.0
+msgpack==1.0.5
+packaging==21.3
+platformdirs==3.8.1
+pyparsing==3.1.0
+pyproject-hooks==1.0.0
+requests==2.31.0
+certifi==2023.07.22
+chardet==5.1.0
+idna==3.4
+urllib3==1.26.17
+rich==13.4.2 (Unable to locate actual module version, using vendor.txt specified version)
+pygments==2.15.1
+typing_extensions==4.7.1 (Unable to locate actual module version, using vendor.txt specified version)
+resolvelib==1.0.1
+setuptools==68.0.0 (Unable to locate actual module version, using vendor.txt specified version)
+six==1.16.0
+tenacity==8.2.2 (Unable to locate actual module version, using vendor.txt specified version)
+tomli==2.0.1
+truststore==0.8.0
+webencodings==0.5.1 (Unable to locate actual module version, using vendor.txt specified version)
+Compatible tags: 42
+cp312-cp312-linux_armv5tel
+cp312-abi3-linux_armv5tel
+cp312-none-linux_armv5tel
+cp311-abi3-linux_armv5tel
+cp310-abi3-linux_armv5tel
+cp39-abi3-linux_armv5tel
+cp38-abi3-linux_armv5tel
+cp37-abi3-linux_armv5tel
+cp36-abi3-linux_armv5tel
+cp35-abi3-linux_armv5tel
+cp34-abi3-linux_armv5tel
+cp33-abi3-linux_armv5tel
+cp32-abi3-linux_armv5tel
+py312-none-linux_armv5tel
+py3-none-linux_armv5tel
+py311-none-linux_armv5tel
+py310-none-linux_armv5tel
+py39-none-linux_armv5tel
+py38-none-linux_armv5tel
+py37-none-linux_armv5tel
+py36-none-linux_armv5tel
+py35-none-linux_armv5tel
+py34-none-linux_armv5tel
+py33-none-linux_armv5tel
+py32-none-linux_armv5tel
+py31-none-linux_armv5tel
+py30-none-linux_armv5tel
+cp312-none-any
+py312-none-any
+py3-none-any
+py311-none-any
+py310-none-any
+py39-none-any
+py38-none-any
+py37-none-any
+py36-none-any
+py35-none-any
+py34-none-any
+py33-none-any
+py32-none-any
+py31-none-any
+py30-none-any
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-12-26 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-26 14:41</div>
+            <div class="timeline-body"><p>We might need to first see if <a href="https://github.com/axodotdev/cargo-dist"><code>cargo-dist</code></a> can support it, since that generates our installers (and so is the error you're hitting in CURL).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MovGP0">@MovGP0</a> on 2024-12-26 15:21</div>
+            <div class="timeline-body"><p><code>uv</code> is not building on my machine, which prevents me from installing packages that depend on it.</p>
+<pre><code class="language-shell">cargo rustc --message-format json-render-diagnostics --manifest-path .\crates\uv\Cargo.toml --release --bin uv -- -C strip=symbols
+</code></pre>
+<pre><code>Failed to build a native library through cargo
+</code></pre>
+<p>Relevant system information:</p>
+<pre><code>OS Name:                       Microsoft Windows 11 Home
+OS Version:                    10.0.26100 N/A Build 26100
+System Type:                   ARM64-based PC
+Processor(s):                  1 Processor(s) Installed.
+                               [01]: ARMv8 (64-bit) Family 8 Model 1 Revision 201 Qualcomm Technologies Inc ~2188 Mhz
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lscorcia">@lscorcia</a> on 2024-12-27 17:51</div>
+            <div class="timeline-body"><p>For my use case I don't think the installer would be essential - I actually need to build uv from sources anyway due to the cross compilation requirement (Debian stable only offers rust 1.70, can't really work around that). I build the uv wheel on a Ubuntu VM, then install it via pip. I just need the resulting binary to work on the end machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lscorcia">@lscorcia</a> on 2024-12-29 20:57</div>
+            <div class="timeline-body"><p>Why oh why does it ignore a valid python setup? Can I force to use it somehow?</p>
+<pre><code>$ uv python list --verbose
+DEBUG uv 0.5.4 (c62c83c37 2024-11-20)
+DEBUG Searching for any Python interpreter in managed installations or search path
+DEBUG Searching for managed installations at `/home/homeassistant/.local/share/uv/python`
+DEBUG Failed to inspect Python interpreter from search path at `bin/python`
+DEBUG Skipping bad interpreter at /srv/homeassistant/bin/python from search path: Querying Python at `/srv/homeassistant/bin/python` did not return the expected data
+unknown variant `armv5tel`, expected one of `aarch64`, `arm64`, `armv6l`, `armv7l`, `armv8l`, `powerpc64le`, `ppc64le`, `powerpc64`, `ppc64`, `i386`, `i686`, `x86`, `amd64`, `x86_64`, `s390x`, `riscv64`
+--- stdout:
+{
+    &quot;gil_disabled&quot;: false,
+    &quot;manylinux_compatible&quot;: true,
+    &quot;markers&quot;: {
+        &quot;implementation_name&quot;: &quot;cpython&quot;,
+        &quot;implementation_version&quot;: &quot;3.13.1&quot;,
+        &quot;os_name&quot;: &quot;posix&quot;,
+        &quot;platform_machine&quot;: &quot;armv5tel&quot;,
+        &quot;platform_python_implementation&quot;: &quot;CPython&quot;,
+        &quot;platform_release&quot;: &quot;5.15.5-kirkwood-tld-1&quot;,
+        &quot;platform_system&quot;: &quot;Linux&quot;,
+        &quot;platform_version&quot;: &quot;#1.0 PREEMPT Sun Nov 28 23:08:13 PST 2021&quot;,
+        &quot;python_full_version&quot;: &quot;3.13.1&quot;,
+        &quot;python_version&quot;: &quot;3.13&quot;,
+        &quot;sys_platform&quot;: &quot;linux&quot;
+    },
+    &quot;platform&quot;: {
+        &quot;arch&quot;: &quot;armv5tel&quot;,
+        &quot;os&quot;: {
+            &quot;major&quot;: 2,
+            &quot;minor&quot;: 36,
+            &quot;name&quot;: &quot;manylinux&quot;
+        }
+    },
+    &quot;pointer_size&quot;: &quot;32&quot;,
+    &quot;result&quot;: &quot;success&quot;,
+    &quot;scheme&quot;: {
+        &quot;data&quot;: &quot;/srv/homeassistant&quot;,
+        &quot;include&quot;: &quot;/srv/homeassistant/include/site/python3.13&quot;,
+        &quot;platlib&quot;: &quot;/srv/homeassistant/lib/python3.13/site-packages&quot;,
+        &quot;purelib&quot;: &quot;/srv/homeassistant/lib/python3.13/site-packages&quot;,
+        &quot;scripts&quot;: &quot;/srv/homeassistant/bin&quot;
+    },
+    &quot;stdlib&quot;: &quot;/home/homeassistant/.pyenv/versions/3.13.1/lib/python3.13&quot;,
+    &quot;sys_base_exec_prefix&quot;: &quot;/home/homeassistant/.pyenv/versions/3.13.1&quot;,
+    &quot;sys_base_executable&quot;: &quot;/home/homeassistant/.pyenv/versions/3.13.1/bin/python3.13&quot;,
+    &quot;sys_base_prefix&quot;: &quot;/home/homeassistant/.pyenv/versions/3.13.1&quot;,
+    &quot;sys_executable&quot;: &quot;/srv/homeassistant/bin/python&quot;,
+    &quot;sys_path&quot;: [
+        &quot;/home/homeassistant/.cache/uv/.tmpMXmdd3&quot;,
+        &quot;/home/homeassistant/.pyenv/versions/3.13.1/lib/python313.zip&quot;,
+        &quot;/home/homeassistant/.pyenv/versions/3.13.1/lib/python3.13&quot;,
+        &quot;/home/homeassistant/.pyenv/versions/3.13.1/lib/python3.13/lib-dynload&quot;,
+        &quot;/srv/homeassistant/lib/python3.13/site-packages&quot;
+    ],
+    &quot;sys_prefix&quot;: &quot;/srv/homeassistant&quot;,
+    &quot;sysconfig_prefix&quot;: &quot;/home/homeassistant/.pyenv/versions/3.13.1&quot;,
+    &quot;virtualenv&quot;: {
+        &quot;data&quot;: &quot;&quot;,
+        &quot;include&quot;: &quot;include/site/python3.13&quot;,
+        &quot;platlib&quot;: &quot;lib/python3.13/site-packages&quot;,
+        &quot;purelib&quot;: &quot;lib/python3.13/site-packages&quot;,
+        &quot;scripts&quot;: &quot;bin&quot;
+    }
+}
+--- stderr:
+
+---
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-29 21:36</div>
+            <div class="timeline-body"><p>@lscorcia that error is from</p>
+<p>https://github.com/astral-sh/uv/blob/d70160a57b74ed0f5a8b011ef146fdc841f2b463/crates/uv-python/src/interpreter.rs#L682-L687</p>
+<p>when deserializing</p>
+<p>https://github.com/astral-sh/uv/blob/d70160a57b74ed0f5a8b011ef146fdc841f2b463/crates/uv-python/src/interpreter.rs#L609-L626</p>
+<p>specifically</p>
+<p>https://github.com/astral-sh/uv/blob/91c3ebc6f7bf07c4a5b9c9bd22f9d65e31c38c75/crates/uv-platform-tags/src/platform.rs#L75-L93</p>
+<p>it seems fine to add a new variant there (as in https://github.com/astral-sh/uv/pull/8660), if that works for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10234.html">astral-sh/uv#10234</a> on 2024-12-30 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lscorcia">@lscorcia</a> on 2024-12-30 07:53</div>
+            <div class="timeline-body"><p>Thanks for your suggestion! I was able to create a patched version of uv and now it recognizes my Python environment. I sent a PR with the changes, but since I'm no expert it will probably require some additional work. Any review will be welcome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-30 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-30 16:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

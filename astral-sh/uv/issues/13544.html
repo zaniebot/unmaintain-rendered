@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calling venv python via exec with process name substitution fails - astral-sh/uv #13544</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Calling venv python via exec with process name substitution fails</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13544">#13544</a>
+        opened by <a href="https://github.com/mxwell-dev">@mxwell-dev</a>
+        on 2025-05-19 20:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mxwell-dev">@mxwell-dev</a> on 2025-05-19 20:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm transitioning from anaconda to UV / virtualenvs and am encountering a weird issue when calling a module directly with python from the virtual environment created by UV. I'm launching with a wrapper script that eventually calls:</p>
+<p><code>PYTHONPATH=/local/lib exec -a myname /home/johndoe/.virtualenvs/myenv-3.12/bin/python -m mymodule</code></p>
+<p>which produces an error similar to those mentioned in issues referenced in #8429, but I am unsure if the root-cause is related. The issue does <em>not</em> appear when the program is not renamed (i.e. when <code>-a myname</code> is omitted, and weirdly also when using <code>-a test</code> it also works, but for no other name).</p>
+<pre><code>Could not find platform independent libraries &lt;prefix&gt;
+Could not find platform dependent libraries &lt;exec_prefix&gt;
+Python path configuration:
+  PYTHONHOME = (not set)
+  PYTHONPATH = '/local/libs'
+  program name = 'myname'
+  isolated = 0
+  environment = 1
+  user site = 1
+  safe_path = 0
+  import site = 1
+  is in build tree = 0
+  stdlib dir = '/install/lib/python3.12'
+  sys._base_executable = ''
+  sys.base_prefix = '/install'
+  sys.base_exec_prefix = '/install'
+  sys.platlibdir = 'lib'
+  sys.executable = ''
+  sys.prefix = '/install'
+  sys.exec_prefix = '/install'
+  sys.path = [
+    '/local/libs',
+    '/install/lib/python312.zip',
+    '/install/lib/python3.12',
+    '/install/lib/python3.12/lib-dynload',
+  ]
+Fatal Python error: init_fs_encoding: failed to get the Python codec of the filesystem encoding
+Python runtime state: core initialized
+ModuleNotFoundError: No module named 'encodings'
+
+Current thread 0x000078a3391f6740 (most recent call first):
+  &lt;no Python frame&gt;
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 6.11.0-25-generic x86_64 GNU/Linux (Ubuntu 24.10)</p>
+<h3>Version</h3>
+<p>0.7.5</p>
+<h3>Python version</h3>
+<p>3.12, 3.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @mxwell-dev on 2025-05-19 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-20 10:53</div>
+            <div class="timeline-body"><p>It seems that our Pythons lose their <code>PYTHONHOME</code> when run through <code>exec</code></p>
+<p>CC @geofft</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @geofft by @geofft on 2025-05-20 14:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

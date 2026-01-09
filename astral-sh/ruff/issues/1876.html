@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isort and Ruff Isort implementation incompatibilities - astral-sh/ruff #1876</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Isort and Ruff Isort implementation incompatibilities</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1876">#1876</a>
+        opened by <a href="https://github.com/dbritto-dev">@dbritto-dev</a>
+        on 2023-01-14 22:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dbritto-dev">@dbritto-dev</a> on 2023-01-14 22:19</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+<p><strong>test_linting.py</strong></p>
+<pre><code class="language-python">import json
+import datetime as dt
+
+_ = json.dumps({})
+__ = dt.datetime.now()
+</code></pre>
+<p><strong>pyproject.toml</strong></p>
+<pre><code class="language-toml">[project]
+version = &quot;1.0.0&quot;
+description = &quot;&lt;some-description&gt;&quot;
+name = &quot;&lt;some-name&gt;&quot;
+requires-python = &quot;&gt;=3.8&quot;
+dependencies = [
+  &quot;fastapi&quot;, &quot;python-dotenv&quot;, &quot;beanie&quot;, &quot;auth0-python&quot;, &quot;auth0-jwt-validator&quot;,
+  &quot;hypercorn&quot;, &quot;slack-sdk&quot;
+]
+
+[project.optional-dependencies]
+dev = [
+  &quot;nox&quot;, &quot;ruff&quot;, &quot;black&quot;, &quot;pytest&quot;, &quot;pytest-cov&quot;, &quot;safety&quot;, &quot;bandit&quot;, &quot;debugpy&quot;
+]
+lint = [&quot;ruff&quot;, &quot;black&quot;]
+test = [&quot;nox&quot;, &quot;pytest&quot;, &quot;pytest-cov&quot;]
+security-test = [&quot;safety&quot;, &quot;bandit&quot;]
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.ruff]
+line-length = 99
+target-version = &quot;py310&quot;
+select = [&quot;B&quot;, &quot;C&quot;, &quot;E&quot;, &quot;F&quot;, &quot;W&quot;]
+ignore = [&quot;E501&quot;, &quot;B904&quot;, &quot;B008&quot;]
+exclude = [
+  &quot;build&quot;, &quot;configs&quot;, &quot;*.egg-info&quot;, &quot;.github&quot;, &quot;.githooks&quot;, &quot;.vscode&quot;, &quot;.nox&quot;
+]
+
+[tool.ruff.pydocstyle]
+convention = &quot;google&quot;
+
+[tool.black]
+line-length = 99
+target-version = ['py310']
+preview = true
+
+[tool.pytest.ini_options]
+minversion = &quot;6.0&quot;
+addopts = &quot;-ra -q&quot;
+testpaths = [&quot;tests&quot;]
+
+[tool.coverage.run]
+branch = true
+source = [&quot;app&quot;]
+</code></pre>
+<p><strong>Result</strong></p>
+<p><img src="https://user-images.githubusercontent.com/1697714/212499482-2903dcfd-d6cb-4aba-b4df-be601eb3b636.png" alt="image" /></p>
+<p><strong>Info</strong></p>
+<p><img src="https://user-images.githubusercontent.com/1697714/212499536-97aee9f3-0c44-4df8-bf85-aa487320b33d.png" alt="image" /></p>
+<p><strong>Note:</strong></p>
+<p>Since ruff wasn't able to find any issue with the imports, it wasn't able to fix the sort imports</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-14 22:27</div>
+            <div class="timeline-body"><p>You need to add <code>&quot;I&quot;</code> to your <code>select</code>, to enable import sorting -- like:</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 99
+target-version = &quot;py310&quot;
+select = [&quot;B&quot;, &quot;C&quot;, &quot;E&quot;, &quot;F&quot;, &quot;W&quot;, &quot;I&quot;]
+ignore = [&quot;E501&quot;, &quot;B904&quot;, &quot;B008&quot;]
+exclude = [
+  &quot;build&quot;, &quot;configs&quot;, &quot;*.egg-info&quot;, &quot;.github&quot;, &quot;.githooks&quot;, &quot;.vscode&quot;, &quot;.nox&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-14 22:28</div>
+            <div class="timeline-body"><p>I think that should resolve the issue -- but let me know if you see otherwise!</p>
+<pre><code>❯ ruff --select I foo.py --diff
+--- foo.py
++++ foo.py
+@@ -1,5 +1,5 @@
++import datetime as dt
+ import json
+-import datetime as dt
+
+ _ = json.dumps({})
+ __ = dt.datetime.now()
+
+Would fix 1 error(s).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-14 22:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dbritto-dev">@dbritto-dev</a> on 2023-01-14 22:47</div>
+            <div class="timeline-body"><p>Thanks, I would try it</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

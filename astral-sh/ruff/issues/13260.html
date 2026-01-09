@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected changes occur when fixing D208 and D209 on the same line - astral-sh/ruff #13260</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected changes occur when fixing D208 and D209 on the same line</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13260">#13260</a>
+        opened by <a href="https://github.com/kubotty">@kubotty</a>
+        on 2024-09-06 07:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kubotty">@kubotty</a> on 2024-09-06 07:43</div>
+            <div class="timeline-body"><p>When ruff fixes both D208 (over-indentation) and D209 (new-line-after-last-paragraph) on the same line, it results in unexpected changes.
+I share the minimum test case.</p>
+<p>Target code:</p>
+<pre><code class="language-python">def test_func(a: int) -&gt; None:
+    &quot;&quot;&quot;Minimum test case.
+
+    Parameters
+    ----------
+    a : int
+        A parameter.&quot;&quot;&quot;
+    pass
+</code></pre>
+<p>Settings in pyproject.toml:</p>
+<pre><code class="language-toml">[tool.ruff]
+show-fixes = true
+
+[tool.ruff.lint]
+select = [&quot;D&quot;]
+
+[tool.ruff.lint.pydocstyle]
+convention = &quot;numpy&quot;
+</code></pre>
+<p>Run above command:</p>
+<pre><code class="language-sh">ruff check target.py --fix
+</code></pre>
+<p>Expected results:</p>
+<pre><code class="language-python">def test_func(a: int) -&gt; None:
+    &quot;&quot;&quot;Minimum test case.
+
+    Parameters
+    ----------
+    a : int
+        A parameter.
+    &quot;&quot;&quot;
+    pass
+</code></pre>
+<p>but, actual:</p>
+<pre><code class="language-python">def test_func(a: int) -&gt; None:
+    &quot;&quot;&quot;Minimum test case.
+
+    Parameters
+    ----------
+    a : int
+    A parameter.
+    &quot;&quot;&quot;
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-06 08:30</div>
+            <div class="timeline-body"><p>Thanks. I think the issue here is that <code>D208</code> should not be raised because it also doesn't raise for:</p>
+<pre><code class="language-python">def test_func(a: int) -&gt; None:
+    &quot;&quot;&quot;Minimum test case.
+
+    Parameters
+    ----------
+    a : int
+        A parameter.
+    &quot;&quot;&quot;
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-09-06 08:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-09-06 08:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-09-06 08:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @AlexWaygood on 2024-09-06 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kubotty">@kubotty</a> on 2024-09-11 05:21</div>
+            <div class="timeline-body"><p>I added this sentence to pyproject.toml as a temporary solution in my project.</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+unfixable = [
+    &quot;D208&quot;,
+]
+</code></pre>
+<p>I suggest treating D208 as &quot;--unsafe-fixes&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ukyen8">@ukyen8</a> on 2024-09-14 19:09</div>
+            <div class="timeline-body"><p>Hi, I would like to work on this if no one has taken it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ukyen8 by @MichaReiser on 2024-09-15 06:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13372.html">astral-sh/ruff#13372</a> on 2024-09-16 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-03 14:47</div>
+            <div class="timeline-body"><p>@MichaReiser I'm closing this issue considering #13372 is merged but if that only solves a part of this issue, feel free to re-open.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-10-03 14:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

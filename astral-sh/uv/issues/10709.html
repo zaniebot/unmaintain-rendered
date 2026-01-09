@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The uv installer does not respect HTTPS_PROXY on Windows - astral-sh/uv #10709</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>The uv installer does not respect HTTPS_PROXY on Windows</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10709">#10709</a>
+        opened by <a href="https://github.com/deffi">@deffi</a>
+        on 2025-01-17 13:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/deffi">@deffi</a> on 2025-01-17 13:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I'm on Windows 11 behind a corporate proxy that requires authentication. The proxy is configured via environment variable: <code>https_proxy=http://user:pass@proxy.company:8080</code> (confidential information redacted) and all required SSL certificates are installed.</p>
+<p><code>uv self update</code> fails:</p>
+<pre><code>C:\&gt;uv self update 0.5.19
+info: Checking for updates...
+error: The installation failed. Output from the installer: Downloading uv 0.5.19 (x86_64-pc-windows-msvc)
+Exception calling &quot;DownloadFile&quot; with &quot;2&quot; argument(s): &quot;The remote server returned an error: (407) Proxy Authentication Required.&quot;
+</code></pre>
+<h2>Setup</h2>
+<p>I'm running the latest version of <code>uv</code> (0.5.20) and it can download stuff just fine; for example:</p>
+<pre><code>C:\&gt;echo %https_proxy%
+http://user:pass@proxy.company:8080
+
+C:\&gt;uv tool install cowsay
+Resolved 1 package in 799ms
+Prepared 1 package in 743ms
+Installed 1 package in 10ms
+ + cowsay==6.1
+Installed 1 executable: cowsay.exe
+</code></pre>
+<p>My <code>uv.toml</code>:</p>
+<pre><code>native-tls=true
+</code></pre>
+<h2>Issue</h2>
+<p>When I try to update <code>uv</code> to a different version from what is currently installed, I get an error message:</p>
+<pre><code>C:\&gt;echo %https_proxy%
+http://user:pass@proxy.company:8080
+
+C:\&gt;uv --verbose self update 0.5.19
+DEBUG uv 0.5.20 (1c17662b3 2025-01-15)
+info: Checking for updates...
+error: The installation failed. Output from the installer: Downloading uv 0.5.19 (x86_64-pc-windows-msvc)
+Exception calling &quot;DownloadFile&quot; with &quot;2&quot; argument(s): &quot;The remote server returned an error: (407) Proxy Authentication Required.&quot;
+</code></pre>
+<h2>Additional observations</h2>
+<p>What <em>does</em> work is the check which versions are available (or which version is the latest):</p>
+<pre><code>C:\&gt;echo %https_proxy%
+http://user:pass@proxy.company:8080
+
+C:\&gt;uv --verbose self update
+DEBUG uv 0.5.20 (1c17662b3 2025-01-15)
+info: Checking for updates...
+success: You're on the latest version of uv (v0.5.20)
+
+C:\&gt;uv --verbose self update 0.0.0
+DEBUG uv 0.5.20 (1c17662b3 2025-01-15)
+info: Checking for updates...
+error: The version 0.0.0 was not found for the app uv in workspace uv
+</code></pre>
+<p>I can confirm that proxy authentication is indeed read from <code>%https_proxy%</code> by removing the credentials and observing that it fails (but note that the error message is different):</p>
+<pre><code>C:\&gt;set https_proxy=http://proxy.company:8080
+
+C:\&gt;uv self update
+info: Checking for updates...
+error: error sending request for url (https://api.github.com/repos/astral-sh/uv/releases)
+  Caused by: client error (Connect)
+  Caused by: proxy authentication required
+</code></pre>
+<p>On Linux (WSL <em>on the same machine</em>), <code>uv self update</code> works as expected with the same configuration:</p>
+<pre><code>$ echo $https_proxy
+http://user:pass@proxy.company:8080/
+
+$ uv self update 0.5.19
+info: Checking for updates...
+success: Upgraded uv from v0.5.20 to v0.5.19! https://github.com/astral-sh/uv/releases/tag/0.5.19
+</code></pre>
+<p>For good measure, I also have the environment variables <code>http_proxy</code>, <code>HTTP_PROXY</code>, and <code>HTTPS_PROXY</code> set to the same value as <code>https_proxy</code>.</p>
+<h2>Versions</h2>
+<p>Windows 11, Version 23H2 (OS Build 22631.4602)
+uv 0.5.20 (1c17662b3 2025-01-15)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-17 18:41</div>
+            <div class="timeline-body"><p>Thanks for the report. The updater is maintained over in axodotdev — we'll need to see what they're doing for client configuration and proxying as I believe it is outside our control.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2025-01-17 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">releases</span> added by @zanieb on 2025-01-17 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-01-17 21:49</div>
+            <div class="timeline-body"><p>Looks like there's an experimental opt-in for reading system certificate store: https://github.com/axodotdev/axoupdater/pull/136</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10724.html">astral-sh/uv#10724</a> on 2025-01-17 22:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/deffi">@deffi</a> on 2025-01-18 18:31</div>
+            <div class="timeline-body"><p>Using the system certificate store is crucial if you're behind a corporate proxy, but I'm not sure whether this, by itself, would fix the issue at hand.</p>
+<p>The error message is specifically about proxy authentication (to my understanding, this means passing a username and a password to the proxy). Could such a message be caused by a missing certificate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/deffi">@deffi</a> on 2025-01-20 16:20</div>
+            <div class="timeline-body"><p>After some investigation, I conclude that this is the fault of neither uv proper nor axoupdater.</p>
+<p>Here's what happens:</p>
+<ul>
+<li><code>uv self update</code> downloads and runs the installer script (<code>uv-installer.ps1</code>) for the requested version</li>
+<li>The (Windows version of the) installer script invokes <code>Net.Webclient.downloadFile</code> to download uv proper</li>
+<li><code>Net.Webclient.downloadFile</code> is unaware of the proxy configuration in <code>$HTTPS_PROXY</code> and therefore does not use proxy authentication</li>
+</ul>
+<p>This explains why...</p>
+<ul>
+<li>...the issue is not observed on Linux (where the installer script uses curl or wget, both of which are aware of <code>$HTTPS_PROXY</code>)</li>
+<li>...the message is different from the one that is shown when the credentials are removed from <code>$HTTPS_PROXY</code> (as described above)</li>
+<li>...the message is localized with the configured language of Windows (as omitted above)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/deffi">@deffi</a> on 2025-01-20 16:23</div>
+            <div class="timeline-body"><p>The question therefore becomes:</p>
+<ul>
+<li>Can/should <code>uv-installer.ps1</code> be made aware of <code>$HTTPS_PROXY</code>?</li>
+<li>Alternatively, can Net.Webclient be configured globally to use proxy authentication, analogous to how curl can be configured using <code>$HTTPS_PROXY</code>?</li>
+</ul>
+<p>Since all other uv commands use <code>$HTTPS_PROXY</code> (or <code>$https_proxy</code> if the former does not exist), it seems plausible that this should also work for <code>uv self update</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fakerms">@fakerms</a> on 2025-09-05 08:27</div>
+            <div class="timeline-body"><p>Any workaround for this issue?
+Just cannot install uv on my PC.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-05 09:36</div>
+            <div class="timeline-body"><p>CC @Gankra</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-05 13:29</div>
+            <div class="timeline-body"><p>I think the diagnosis that <code>Net.Webclient.downloadFile</code> is at fault is key. Here's a brief LLM of possible fixes https://claude.ai/share/e85165fd-1bb7-45cc-ab51-28749dd430ca</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15696.html">astral-sh/uv#15696</a> on 2025-09-05 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Proxy authentication doesn't work for `uv self update` on Windows" to "The uv installer does not respect HTTPS_PROXY on Windows" by @zanieb on 2025-09-05 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../axodotdev/cargo-dist/pulls/2075.html">axodotdev/cargo-dist#2075</a> on 2025-09-05 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-06 11:57</div>
+            <div class="timeline-body"><p>We're now trying to figure out what the solution is over in https://github.com/axodotdev/cargo-dist/pull/2075, if someone has any Windows proxy API expertise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../axodotdev/cargo-dist/pulls/2078.html">axodotdev/cargo-dist#2078</a> on 2025-09-06 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mistydemeo">@mistydemeo</a> on 2025-09-07 18:36</div>
+            <div class="timeline-body"><p>I'll have the fix for this out in the next cargo-dist shortly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mistydemeo">@mistydemeo</a> on 2025-09-07 21:03</div>
+            <div class="timeline-body"><p>Released in cargo-dist 0.30.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-08 12:48</div>
+            <div class="timeline-body"><p>Thanks @mistydemeo and @zsol !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-09-08 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-08 12:49</div>
+            <div class="timeline-body"><p>(we'll need to upgrade before this is fixed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15807.html">astral-sh/uv#15807</a> on 2025-09-12 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fakerms">@fakerms</a> on 2025-09-17 05:48</div>
+            <div class="timeline-body"><p>Waiting #15798</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fakerms">@fakerms</a> on 2025-09-17 06:02</div>
+            <div class="timeline-body"><p>My current workaround is</p>
+<ol>
+<li>Download <a href="https://astral.sh/uv/install.ps1">https://astral.sh/uv/install.ps1</a> as <code>uv-installer.ps1</code></li>
+<li>Manually apply this PR: https://github.com/axodotdev/cargo-dist/pull/2078</li>
+<li>Set HTTPS_PROXY in terminal</li>
+<li>Run <code>powershell -ExecutionPolicy ByPass -c &quot;iex ./uv-installer.ps1&quot;</code></li>
+</ol>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

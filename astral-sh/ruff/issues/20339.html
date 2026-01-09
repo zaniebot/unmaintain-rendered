@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF059 does not recognize variable string references like in pandas Dataframe.query - astral-sh/ruff #20339</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF059 does not recognize variable string references like in pandas Dataframe.query</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20339">#20339</a>
+        opened by <a href="https://github.com/JanSellner">@JanSellner</a>
+        on 2025-09-10 21:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JanSellner">@JanSellner</a> on 2025-09-10 21:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Unfortunately, RUF059 inherits the <a href="https://github.com/astral-sh/ruff/issues/12565">same problem as F841</a> by not detecting string usages, especially in <code>df.query()</code>.</p>
+<pre><code class="language-python">import pandas as pd
+
+def get_name():
+    return &quot;Alice&quot;, &quot;Bob&quot;
+
+def main():
+    df = pd.DataFrame({
+        &quot;name&quot;: [&quot;Alice&quot;, &quot;Bob&quot;, &quot;Charlie&quot;],
+        &quot;age&quot;: [25, 30, 35],
+        &quot;city&quot;: [&quot;New York&quot;, &quot;Los Angeles&quot;, &quot;Chicago&quot;]
+    })
+
+    name1, name2 = get_name()
+    print(df.query(&quot;name == @name1&quot;))
+    print(df.query(&quot;name == @name2&quot;))
+
+main()
+</code></pre>
+<p>Applying the unsafe fix breaks the code obviously.</p>
+<p>A full solution to this problem is probably hard to impossible because variables could be used in strings in every conceivable way. However, I still think that <code>df.query()</code> is a very common use case and catching that would already help a lot of users (and would also fix F841). Maybe this could even be generalized so that the user specifies function names (like <code>query</code> or <code>execute</code>) and then those strings will be searched for the variable name as well (of course, not a perfect solution but maybe good enough for most use cases?).</p>
+<p>If you don't want to open this potential box of Pandora (understandable), then maybe at least a warning to the documentation on why this rule's fix is and will be unsafe?</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-11 13:40</div>
+            <div class="timeline-body"><p>Thanks for the report! I think it could definitely be worth mentioning this in the docs for both rules, even if we don't end up changing the rules themselves.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-09-11 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-09-11 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15584.html">astral-sh/ruff#15584</a> on 2025-09-11 13:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

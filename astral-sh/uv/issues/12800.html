@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommended way to install additional packages in existing unmanaged environment - astral-sh/uv #12800</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Recommended way to install additional packages in existing unmanaged environment</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/12800">#12800</a>
+        opened by <a href="https://github.com/KukumavMozolo">@KukumavMozolo</a>
+        on 2025-04-10 08:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KukumavMozolo">@KukumavMozolo</a> on 2025-04-10 08:08</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi there,
+i have a base python environment in a docker image created by uv.
+What i want to do is to dynamically install packages to that environment defined in a separate pyproject.toml, but only those that are not already present in the base python environment.
+The goal is to do as little work as possible when installing additional packages.
+I also have the constraints that i am using a specific torch index as well as github repositorys that require auth tokens environment variable substitution.</p>
+<p>I am looking for a method that ideally would compare hashes and only installs those packages that have no matching hash.
+If that is not possible than locking to versions would also be ok.
+I tried <code>uv pip install  -r pyproject.toml</code>, however this re-installs torch.
+<code>uv pip compile pyproject.toml --emit-index-url --extra test -o requirements.txt</code> and then installing from that fails because this for some reason doesn't include the pythorch index.
+I also tried <code>uv export --extra test --format requirements-txt &gt; requirements.txt</code> but this removes the environment variables from the github repositorys leading to an error during install.
+So are there any other suggestions?</p>
+<p>This is how the pytorch index is defined in the pyproject.toml:</p>
+<pre><code>[tool.uv.sources]
+torch = { index = &quot;pytorch&quot; }
+
+[[tool.uv.index]]
+name = &quot;pytorch&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu</p>
+<h3>Version</h3>
+<p>uv 0.6.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @KukumavMozolo on 2025-04-10 08:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KukumavMozolo">@KukumavMozolo</a> on 2025-04-10 11:05</div>
+            <div class="timeline-body"><p>I figured part of the problem was that before running the install command i created a virtual env with <code>python -m venv .venv --system-site-packages</code> but the system-site-packages seem to be ignored by <code>uv pip install  -r pyproject.toml</code>.
+Is that intentional and is there a workaround?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-10 11:07</div>
+            <div class="timeline-body"><p>This is known (hard) problem, it's tracked in #2500</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KukumavMozolo">@KukumavMozolo</a> on 2025-04-10 12:56</div>
+            <div class="timeline-body"><p>as a workaround i tried: creating symlinks:
+<code>ln -s /path/to/sys/python/lib/python3.11/site-packages/* .venv/lib/python3.11/site-packages/</code>
+however this shows uv still only sees the default packages:</p>
+<pre><code class="language-bash">(.venv) root@12d4c2d07f26:/project# uv pip list  
+Package    Version
+---------- -------
+pip        24.0
+setuptools 65.5.0
+setuptools 75.8.0
+zstandard  0.23.0
+
+</code></pre>
+<p>Any hints how to make this work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KukumavMozolo">@KukumavMozolo</a> on 2025-04-11 06:54</div>
+            <div class="timeline-body"><p>What does work is getting ride of the .venv and extending the docker image with another stage and then
+using:
+<code>COPY --from=installer --chmod=a+w /path/to/pyhon/ /path/to/pyhon/ </code>
+This will keep the container image small and make it so that every user can edit the python environment,
+E.g. <code>uv pip install --system  -r pyproject.toml</code> will work</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin package to pypi index? - astral-sh/uv #8723</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pin package to pypi index?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8723">#8723</a>
+        opened by <a href="https://github.com/TheWizier">@TheWizier</a>
+        on 2024-10-31 13:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TheWizier">@TheWizier</a> on 2024-10-31 13:26</div>
+            <div class="timeline-body"><p>Hey, I have encountered an issue where we have a package on our private package index that was published to pypi and further developed. So naturally UV refuses to install the newer version from pypi as it sees that we have an older version on our index. How can I pin the package to the pypi index?</p>
+<p>Here is an example to perhaps make it more clear:
+[project]
+...
+dependencies = [
+&quot;some-pkg &gt;= 1.2&quot;,
+]</p>
+<p>[tool.uv.sources]
+some-pkg = { index = &quot;our_index&quot; }
+problematic-pkg= { index = &quot;pyPI&quot; } # I want to pin this to pypi as it exists in both our_index and on pypi</p>
+<p>[[tool.uv.index]]
+name = &quot;our_index&quot;
+url = &quot;https://git...&quot;</p>
+<p>[tool.uv]
+dev-dependencies = [
+&quot;problematic-pkg &gt;= 1.4&quot;
+]</p>
+<p>(uv 0.4.25 linux)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-31 13:30</div>
+            <div class="timeline-body"><p>I would suggest creating a named PyPI index, like:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;pypi&quot;
+url = &quot;https://pypi.org/simple&quot;
+explicit = true
+
+[tool.uv.sources]
+some-pkg = { index = &quot;our_index&quot; }
+problematic-pkg= { index = &quot;pypi&quot; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-31 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheWizier">@TheWizier</a> on 2024-10-31 15:11</div>
+            <div class="timeline-body"><p>Thanks that worked like a charm! Any gotchas I should be aware of with this or is this completely safe?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-31 15:18</div>
+            <div class="timeline-body"><p>Should be totally safe, it'll only be used for that one dependency since it's marked as <code>explicit = true</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheWizier">@TheWizier</a> on 2024-10-31 15:25</div>
+            <div class="timeline-body"><p>OK, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @TheWizier on 2024-10-31 15:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

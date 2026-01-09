@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>question for feature request: is there a way to &quot;pin&quot; a specific dependency to the latest? - astral-sh/uv #6404</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>question for feature request: is there a way to &quot;pin&quot; a specific dependency to the latest?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/6404">#6404</a>
+        opened by <a href="https://github.com/qci-amos">@qci-amos</a>
+        on 2024-08-22 03:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qci-amos">@qci-amos</a> on 2024-08-22 03:28</div>
+            <div class="timeline-body"><p>I'm looking for a way to do the equivalent of: specify a pin of a dependency to whatever the latest currently is.</p>
+<p>For example, say I have a <code>requirements.txt</code> that has something like:</p>
+<pre><code class="language-txt">a
+b
+botocore
+</code></pre>
+<p>but at the time of installation, would be the equivalent of:</p>
+<pre><code class="language-txt">a
+b
+botocore==1.35.3
+</code></pre>
+<p>(since that's the latest for botocore as of this writing). I can't just save that as a <code>requirements.txt</code> because <code>botocore</code> makes a new release like every day. A specific use case is that botocore has like 2000 releases so I don't want it to try to backtrack on it if it needs to search for compatible versions.</p>
+<p>My main use case is to give my non-python-expert users a command they can use to to ensure they're on the very latest versions of my own code but I don't want to force them to upgrade any other dependencies unnecessarily.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @zanieb on 2024-08-22 03:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 04:00</div>
+            <div class="timeline-body"><p>This doesn't exist, but it might be feasible. I'd like to hear some more use-cases from other users first though, it seems hard to get right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2024-08-22 16:52</div>
+            <div class="timeline-body"><p>Maybe a similar issue, we've seen issues specifically with botocore and related libs where the uv resolver will always fail to resolve due to the sheer number of versions. The backtracking does not seem to be able to reach a solution, so we end up with arbitrary pinning in all of our requirements files:</p>
+<pre><code># Note: These are only pinned because the dep resolver could not figure out valid versions otherwise
+# There is nothing special about these versions.
+boto3==1.34.131
+botocore==1.34.131
+s3fs&gt;=2024.6.1
+</code></pre>
+<p>Even doing something like pinning lower bound to the ranges e.g. <code>boto3&gt;=1.34.131</code> does not seem to work, and the resolver ends up going down the rabbit hole for some adjacent transitive like <code>aiobotocore</code>. This is a partial requirements spec for the main package that requires this pinning (can't post full due to several internal libraries):</p>
+<pre><code>boto3
+mercantile
+numpy
+packaging
+pandas
+psycopg[binary]
+pyarrow
+pydantic&gt;=2.0.0
+pyproj
+pyspark&gt;=3.4.0
+python-geohash
+requests
+s3fs
+shapely
+statsmodels
+tldextract
+urllib3
+</code></pre>
+<p>It is surprising because it seems like if the dep resolver took a different search strategy (e.g. searching most recent versions for all first) it should be a fairly fast resolve, but because it wants to walk down versions one lib at a time, it ends up looking at hundreds of boto-related versions before failing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 17:04</div>
+            <div class="timeline-body"><p>@BrendanJM lots of prior discussion about that, e.g., in https://github.com/astral-sh/uv/issues/1398 or https://github.com/astral-sh/uv/issues/4333 — sorry you're having trouble with it though. It's something we want to explore but it's <em>very</em> hard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qci-amos">@qci-amos</a> on 2024-08-22 17:16</div>
+            <div class="timeline-body"><p>For what it's worth, this is an issue I've written up elsewhere, too: https://github.com/pypa/pip/issues/12028</p>
+<p>A suggestion made there was perhaps a new version specifier, bit it seems to me it could be some kind of resolver feature, too.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

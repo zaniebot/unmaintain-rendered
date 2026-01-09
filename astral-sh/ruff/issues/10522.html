@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule to detect duplicate function definitions. - astral-sh/ruff #10522</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule to detect duplicate function definitions.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10522">#10522</a>
+        opened by <a href="https://github.com/ollz272">@ollz272</a>
+        on 2024-03-22 09:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ollz272">@ollz272</a> on 2024-03-22 09:26</div>
+            <div class="timeline-body"><p>We have the rule PIE794 which detects duplicate class field definitions. I think it would be nice to have a rule which detects duplicate function definitions:</p>
+<pre><code class="language-python"># Error
+class Foo:
+    
+    def bar():
+        print(&quot;hello world&quot;)
+
+    def bar():
+        print(&quot;hello ruff&quot;)
+</code></pre>
+<p>This is clearly a mistake and would be great if it was caught by ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-22 16:34</div>
+            <div class="timeline-body"><p>Have you tried <code>F811</code>? It flags the second declaration of <code>bar</code> https://play.ruff.rs/f029b8b6-26bd-49f9-9da2-ac2b22685b0b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-03-22 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-03-23 09:35</div>
+            <div class="timeline-body"><p>For function in file scope the duplicated function is found by both pylint <code>E0102</code> and mypy <code>no-redef</code>, example:</p>
+<pre><code class="language-py"> def banana():
+    &quot;&quot;&quot;banana&quot;&quot;&quot;
+
+
+def banana():
+    &quot;&quot;&quot;banana&quot;&quot;&quot;
+</code></pre>
+<p>And in the class method duplication case:</p>
+<pre><code class="language-py">class BananaTree:
+   &quot;&quot;&quot;BananTree&quot;&quot;&quot;
+
+   def banana(self):
+       &quot;&quot;&quot;banana&quot;&quot;&quot;
+
+   def banana(self):
+       &quot;&quot;&quot;banana&quot;&quot;&quot;
+</code></pre>
+<p>Shows these errors:</p>
+<pre><code>pylint: [function-redefined] method already defined line 4 [E0102]
+pyflakes: redefinition of unused 'banana' from line 4
+</code></pre>
+<p>According to https://github.com/astral-sh/ruff/issues/970 Pylint rule <code>E0102</code> is covered by <code>F811</code> that @MichaReiser mentioned.</p>
+<p>That info is missing but should be added to documentation at https://docs.astral.sh/ruff/rules/#pylint-pl</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-03-23 09:40</div>
+            <div class="timeline-body"><p><code>F811</code> is however called <a href="https://docs.astral.sh/ruff/rules/redefined-while-unused/">redefined-while-unused</a> and only triggers when the first definition has not been called. This means that F811 is easily missed for exampled in this example:</p>
+<pre><code class="language-py">def banana():
+    &quot;&quot;&quot;banana&quot;&quot;&quot;
+
+banan()
+
+def banana():
+    &quot;&quot;&quot;banana&quot;&quot;&quot;
+</code></pre>
+<p>Give no error in pyflakes and <em>no error in ruff</em> as well. Since the first definition is used, it doesn't report the redefinition as an error.</p>
+<p>This mean ruff <em>does not</em> implement <code>E0102</code> as it is implemented in <code>ruff 0.3.2</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/970.html">astral-sh/ruff#970</a> on 2024-03-23 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ollz272">@ollz272</a> on 2024-03-23 13:18</div>
+            <div class="timeline-body"><p>I see why this isn't being picked up for us, we have private variables, which it doesn't work for
+https://play.ruff.rs/ee3c213f-21d7-4540-a052-9acbc6ac4d6f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-23 13:31</div>
+            <div class="timeline-body"><p>Why should the second definition be flagged here?</p>
+<pre><code class="language-python">def banana():
+    &quot;&quot;&quot;banana&quot;&quot;&quot;
+
+banana()
+
+def banana():
+    &quot;&quot;&quot;banana&quot;&quot;&quot;
+</code></pre>
+<p>This seems valid to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-23 13:32</div>
+            <div class="timeline-body"><p>Yeah, that's due to <a href="https://docs.astral.sh/ruff/settings/#lint_dummy-variable-rgx"><code>dummy-variable-rgx</code></a>. I wonder if that shouldn't be applied to functions. I'm not really sure. It's possible that users would find that really surprising.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-03-23 19:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Why should the second definition be flagged here?</p>
+<pre><code class="language-python">def banana():
+    &quot;&quot;&quot;banana&quot;&quot;&quot;
+
+banana()
+
+def banana():
+    &quot;&quot;&quot;banana&quot;&quot;&quot;
+</code></pre>
+<p>This seems valid to me.</p>
+</blockquote>
+<p>I didn't state any opinion about the rule, but E0102 <em>does</em> trigger on this code.</p>
+<p>Opinion: Sure this could be a valid case, but it's probably quite rare to redefine functions like this. I can see programmers prefer to have a warning for this. If one doesn't want the warning it can be turned off.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @AlexWaygood on 2024-09-23 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-09-23 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @AlexWaygood on 2024-09-23 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17724.html">astral-sh/ruff#17724</a> on 2025-04-30 06:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18432.html">astral-sh/ruff#18432</a> on 2025-06-02 15:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

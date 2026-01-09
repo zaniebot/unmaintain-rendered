@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PERF401 false positive when a target variable is global or nonlocal - astral-sh/ruff #19531</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PERF401 false positive when a target variable is global or nonlocal</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19531">#19531</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-07-24 14:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-07-24 14:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/manual-list-comprehension/"><code>manual-list-comprehension</code> (PERF401)</a> is incorrect when the <code>for</code> loop’s target list includes a global or nonlocal variable. Rewriting the loop with a comprehension means the variable isn’t updated. This is similar to #16445. <a href="https://play.ruff.rs/33af9aba-7285-4899-9777-bc6b14f6c911">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;perf401.py &lt;&lt;'# EOF'
+INDEX = None
+def f():
+    global INDEX
+    result = []
+    for INDEX in range(3):
+        result.append(+INDEX)
+f()
+print(INDEX)
+# EOF
+
+$ python perf401.py
+2
+
+$ ruff --isolated check perf401.py --select PERF401 --preview --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat perf401.py
+INDEX = None
+def f():
+    global INDEX
+    result = [+INDEX for INDEX in range(3)]
+f()
+print(INDEX)
+
+$ python perf401.py
+None
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.5 (d13228ab8 2025-07-24)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-24 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-07-24 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-07-24 16:19</div>
+            <div class="timeline-body"><p>@ntBre I am going to work on this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @IDrokin117 by @ntBre on 2025-07-24 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19539.html">astral-sh/ruff#19539</a> on 2025-07-24 19:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-28 21:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

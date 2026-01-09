@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unintended install of public pypi.org packages when trying to install private packages from gitlabs pypi registry - astral-sh/uv #7359</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unintended install of public pypi.org packages when trying to install private packages from gitlabs pypi registry</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7359">#7359</a>
+        opened by <a href="https://github.com/alexatothermo">@alexatothermo</a>
+        on 2024-09-13 12:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alexatothermo">@alexatothermo</a> on 2024-09-13 12:28</div>
+            <div class="timeline-body"><ul>
+<li>Command: <code>uv pip install --extra-index-url|--index-url pypi.private.com/... private_package==1.0.0</code></li>
+<li>Platform: <code>Linux scrappy 6.6.50 #1-NixOS SMP PREEMPT_DYNAMIC Sun Sep  8 05:54:49 UTC 2024 x86_64 GNU/Linux</code></li>
+<li><code>uv --version</code>: 0.4.7</li>
+</ul>
+<p>When installing packages from a private registry in gitlab (specifically gitlab) that have name-conflicts with pypi.org (another package with the same name exists on pypi.org) uv tries to install <strong>the pypi.org</strong> package instead of the intended one.</p>
+<p>I debugged this and found out that gitlab, when requested unauthenticated, returns a 404 and redirects the client to pypi.org. This is intended by gitlab and can only be deactivated in the premium plan :/</p>
+<p>Gitlab docs on pypi forwarding: https://docs.gitlab.com/ee/administration/settings/continuous_integration.html#pypi-forwarding</p>
+<p>The credentials for installing packages from the private registry are kept in <code>~/.netrc</code>. The debug logs show that uv first tries the private registry unauthenticated which causes gitlab to redirect and if the package is found on pypi.org uv happily installs it.</p>
+<p>While one can argue that gitlab is at fault here for redirecting and no option in the free-plan to change this behavior, this situation would be avoided if uv would do an authenticated request if credentials are provided for the registry. Not sure if we can assume, that if a user places credentials for a registry that this always means the registry uses authentication, but I guess in most if not all cases this is fair. Plus arguing with gitlab to make this option part of the free plan could take ages I guess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 13:01</div>
+            <div class="timeline-body"><p>That's interesting. Does pip handle this correctly? I thought pip also started with an unauthenticated request. \cc @zanieb when you're back</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @charliermarsh on 2024-09-13 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexatothermo">@alexatothermo</a> on 2024-09-13 13:16</div>
+            <div class="timeline-body"><p>Yes, <code>pip install --index-url ... ...</code> works. So it seems it does an authenticated request right away</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 13:26</div>
+            <div class="timeline-body"><p>I think they do an authenticated request if you provide credentials directly, but only authenticate with keyring after trying a failed, unauthenticated request: https://github.com/pypa/pip/blob/111eed14b6e9fba7c78a5ec2b7594812d17b5d2b/src/pip/_internal/network/auth.py#L452</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexatothermo">@alexatothermo</a> on 2024-09-13 13:36</div>
+            <div class="timeline-body"><blockquote>
+<p>if you provide credentials directly</p>
+</blockquote>
+<p>Do you also count ~~.envrc~~ <code>~/.netrc</code> into this? Because that's the auth mechanism I use with both pip and uv. I don't provide credentials in the index-url</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 13:38</div>
+            <div class="timeline-body"><p>Can you say more? We don't read <code>.envrc</code> automatically. AFAIK I don't think pip does either... Does your shell populate the env vars for any commands run in that directory or something? What env vars are you setting there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexatothermo">@alexatothermo</a> on 2024-09-13 13:41</div>
+            <div class="timeline-body"><p>Ah, sorry! I meant <code>.netrc</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 13:46</div>
+            <div class="timeline-body"><p>Ohhh hah. I'm guessing pip will automatically apply <code>.netrc</code> if that's what you're seeing. We might be able to do that too, but I have to defer to @zanieb since the auth stuff requires a lot of care / nuance given that all the registries behave so differently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexatothermo">@alexatothermo</a> on 2024-09-13 13:48</div>
+            <div class="timeline-body"><p>Here is the debug log</p>
+<pre><code>❯ RUST_LOG=trace uv pip install --verbose --extra-index-url https://gitlab.private.com/api/v4/groups/private/-/packages/pypi/simple private_package==1.5.0 --no-cache
+DEBUG uv 0.4.7
+DEBUG Searching for Python interpreter in system path
+TRACE Querying interpreter executable at .venv/bin/python3
+DEBUG Found `cpython-3.11.9-linux-x86_64-gnu` at `.venv/bin/python3` (active virtual environment)
+DEBUG Using Python 3.11.9 environment at .venv/bin/python3
+TRACE Checking lock for `.venv` at `.venv/.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: private_package==1.5.0
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.11.9
+DEBUG Solving with target Python version: &gt;=3.11.9
+DEBUG Adding direct dependency: private_package==1.5.0
+INFO add_decision: root @ 0a0.dev0    
+TRACE Fetching metadata for private_package from https://gitlab.private.com/api/v4/groups/private/-/packages/pypi/simple/private_package/
+TRACE No cache entry exists for /tmp/.tmp54OCvk/simple-v12/index/5d92d1f3e0c26f1d/private_package.rkyv
+DEBUG No cache entry for: https://gitlab.private.com/api/v4/groups/private/-/packages/pypi/simple/private_package/
+TRACE Sending fresh GET request for https://gitlab.private.com/api/v4/groups/private/-/packages/pypi/simple/private_package/
+TRACE Handling request for https://gitlab.private.com/api/v4/groups/private/-/packages/pypi/simple/private_package/
+TRACE Request for https://gitlab.private.com/api/v4/groups/private/-/packages/pypi/simple/private_package/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://gitlab.private.com/api/v4/groups/private/-/packages/pypi/simple/private_package/
+TRACE Attempting unauthenticated request for https://gitlab.private.com/api/v4/groups/private/-/packages/pypi/simple/private_package/
+TRACE checkout waiting for idle connection: (&quot;https&quot;, gitlab.private.com)
+DEBUG starting new connection: https://gitlab.private.com/    
+TRACE Http::connect; scheme=Some(&quot;https&quot;), host=Some(&quot;gitlab.private.com&quot;), port=None
+DEBUG resolving host=&quot;gitlab.private.com&quot;
+DEBUG connecting to 127.0.0.1:443
+DEBUG connected to 127.0.0.1:443
+TRACE http1 handshake complete, spawning background dispatcher task
+TRACE checkout dropped for (&quot;https&quot;, gitlab.private.com)
+TRACE put; add idle connection for (&quot;https&quot;, gitlab.private.com)
+DEBUG pooling idle connection for (&quot;https&quot;, gitlab.private.com)
+DEBUG redirecting 'https://gitlab.private.com/api/v4/groups/private/-/packages/pypi/simple/private_package/' to 'https://pypi.org/simple/private_package/'
+TRACE checkout waiting for idle connection: (&quot;https&quot;, pypi.org)
+DEBUG starting new connection: https://pypi.org/    
+TRACE Http::connect; scheme=Some(&quot;https&quot;), host=Some(&quot;pypi.org&quot;), port=None
+DEBUG resolving host=&quot;pypi.org&quot;
+DEBUG connecting to [::]:443
+DEBUG connected to [::]:443
+TRACE http1 handshake complete, spawning background dispatcher task
+TRACE checkout dropped for (&quot;https&quot;, pypi.org)
+TRACE put; add idle connection for (&quot;https&quot;, pypi.org)
+DEBUG pooling idle connection for (&quot;https&quot;, pypi.org)
+TRACE cached request https://gitlab.private.com/api/v4/groups/private/-/packages/pypi/simple/private_package/ is storable because its response has a 'public' cache-control directive
+TRACE Received package metadata for: private_package
+TRACE Selecting candidate for private_package with range ==1.5.0 with 3 remote versions
+TRACE Exhausted all candidates for package private_package with range ==1.5.0 after 3 steps
+DEBUG Searching for a compatible version of private_package (==1.5.0)
+TRACE Selecting candidate for private_package with range ==1.5.0 with 3 remote versions
+TRACE Exhausted all candidates for package private_package with range ==1.5.0 after 3 steps
+DEBUG No compatible version found for: private_package
+INFO Start conflict resolution because incompat satisfied:
+   private_package ==1.5.0 is forbidden    
+INFO prior cause: root ==0a0.dev0 is forbidden    
+TRACE Resolver derivation tree before reduction
+  root==0a0.dev0 depends on private_package==1.5.0
+  no versions of private_package==1.5.0
+TRACE Resolver derivation tree after reduction
+  root==0a0.dev0 depends on private_package==1.5.0
+  no versions of private_package==1.5.0
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of private_package==1.5.0 and you require private_package==1.5.0, we can conclude that your requirements are unsatisfiable.
+DEBUG Released lock at `.venv/.lock`
+
+</code></pre>
+<p>Note: this output is from when trying to install a version of the private package with one of the same name that is not on pypi.</p>
+<p>When doing this with a version that the other package also has it is installed from pypi.org.</p>
+<p>The interesting line here is the DEBUG redirect by gitlab</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-09-13 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-13 14:03</div>
+            <div class="timeline-body"><p>Can you provide a username with your index URL? I believe then we'll look for a password before sending the request.</p>
+<p>We'll need to consider if we want to change the behavior for netrc. I'm pretty hesitant to have a different pattern for netrc vs keyring (not to mention the other authentication methods).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexatothermo">@alexatothermo</a> on 2024-09-13 15:23</div>
+            <div class="timeline-body"><p>Interesting. The username indeed works when provided with <code>--extra-index-url</code> but not with <code>--index-url</code>. In the former case RUST_LOG=TRACE reveals <code>Request ... is missing a password, looking for credentials</code>. The latter does not check for credentials</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-20 22:00</div>
+            <div class="timeline-body"><p>You can solve this now by setting <code>authenticate = &quot;always&quot;</code> on your index URL (see #11896)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-03-20 22:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

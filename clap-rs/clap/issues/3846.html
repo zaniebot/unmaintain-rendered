@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>derive: Store indices, value source next to field values - clap-rs/clap #3846</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>derive: Store indices, value source next to field values</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/3846">#3846</a>
+        opened by <a href="https://github.com/stepancheg">@stepancheg</a>
+        on 2022-06-16 23:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stepancheg">@stepancheg</a> on 2022-06-16 23:25</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.1.8</p>
+<h3>Describe your use case</h3>
+<p>Be able to write something like this:</p>
+<pre><code class="language-rust">#[clap(
+  indices,
+)]
+pub rrrr: Vec&lt;(usize, String)&gt;,
+</code></pre>
+<p>Currently to obtain indices, we need to work with <code>ArgMatches::indices_of</code> which is hard to work with when a command has subcommands which have other subcommands: it's too easy to miss some subcommand call, and <code>indices</code> won't return what's expected (especially when subcommands share flags, but at different nesting level).</p>
+<h3>Describe the solution you'd like</h3>
+<p>.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @stepancheg on 2022-06-16 23:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-06-17 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2022-06-17 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-17 12:00</div>
+            <div class="timeline-body"><p>Was just mentioning this to someone else that we need an issue for this.</p>
+<p>The other piece of metadata we do not expose in the derive API is the <code>ValueSource</code>.</p>
+<p>I have some reticence for putting it in the same field due to the complications of parsing and processing more complex types like that.</p>
+<p>Another option is to take inspiration from <code>#[clap(from_global)]</code> and generalize it to a <code>#[clap(from(...))]</code> attribute with</p>
+<ul>
+<li><code>global</code>, like <code>#[clap((from(global))]</code></li>
+<li><code>index</code>, like <code>#[clap(from(index), id = &quot;foo&quot;)]</code><ul>
+<li>require an explicit <code>id</code></li>
+</ul>
+</li>
+<li><code>source</code>, like <code>#[clap(from(source), id = &quot;foo&quot;)]</code><ul>
+<li>require an explicit <code>id</code></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "derive: Store indices next to field values" to "derive: Store indices, value source next to field values" by @epage on 2022-06-17 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stepancheg">@stepancheg</a> on 2022-06-17 21:54</div>
+            <div class="timeline-body"><blockquote>
+<p>require an explicit id</p>
+</blockquote>
+<p>That would be great if correctness of id is checked at compile time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-17 21:59</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>require an explicit id</p>
+</blockquote>
+<p>That would be great if correctness of id is checked at compile time.</p>
+</blockquote>
+<p>Something that could make it easier is #3171.  My main hesitancy about it is I feel like derive-macros generating something besides a trait impl is a bit magical from the users perspective (hard to know what exists and how to interact with it).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chipsenkbeil">@chipsenkbeil</a> on 2022-07-13 23:24</div>
+            <div class="timeline-body"><p>Going to copy over my discussion into this issue. 😄</p>
+<p>@epage for deriving value source, I'd personally be happy with having some wrapper type that gets populated in the derive macro. Having some way to have this baked into the struct would enable me to handle #748 manually as I could still provide a default value for all of my cli arguments, but also manually replace them with a config file I've loaded separately just by knowing if the value is a default value. E.g.</p>
+<pre><code class="language-rust">use clap::{Args, Value, parser::ValueSource};
+
+#[derive(Args)]
+struct MyArgs {
+    /// This has no value source encoded
+    #[clap(short, long)]
+    pub name: String,
+
+    /// This does have value source encoded
+    #[clap(short, long, value_source)]
+    pub age: Value&lt;u8&gt;,
+}
+
+// when accessing ...
+let args: MyArgs = /* ... */;
+assert_eq!(args.name, &quot;some name&quot;);
+assert_eq!(args.age, 37);
+assert_eq!(args.age.source, ValueSource::CommandLine);
+
+// if I had a config value I wanted to use only if the arg value came from the default
+let age = args.age.replace_if_default(config.age);
+assert_eq!(args.age, 28);
+</code></pre>
+<pre><code class="language-rust">use std::ops::{Deref, DerefMut};
+use clap::parser::ValueSource;
+
+// Value itself is a wrapper that looks like
+#[derive(Copy, Clone)]
+struct Value&lt;T&gt; {
+    inner: T,
+    pub source: ValueSource,
+}
+
+impl&lt;T&gt; Value&lt;T&gt; {
+    /// Returns the updated value if replaced, otherwise returns the original value
+    pub fn replace_if_default(self, inner: T) -&gt; Self {
+        if self.source == ValueSource:: DefaultValue {
+            Value { inner, source: self.source }
+        } else {
+            self
+        }
+    }
+}
+
+impl&lt;T&gt; Deref for Value&lt;T&gt; {
+    type Target = T;
+
+    fn deref(&amp;self) -&gt; &amp;Self::Target {
+        &amp;self.inner
+    }
+}
+
+impl&lt;T&gt; DerefMut for Value&lt;T&gt; {
+    fn deref_mut(&amp;mut self) -&gt; &amp;mut Self::Target {
+        &amp;mut self.inner
+    }
+}
+
+impl&lt;T&gt; From&lt;Value&lt;T&gt;&gt; for T {
+    // To enable passing this value around as the actual type
+    fn from(value: Value&lt;T&gt;) -&gt; Self {
+        value.inner
+    }
+}
+
+impl&lt;T&gt; PartialEq&lt;T&gt; for Value&lt;T&gt; where T: PartialEq {
+    // To enable equality checks
+    fn eq(&amp;self, other: &amp;T) -&gt; bool {
+        self.inner == other
+    }
+}
+
+// do this for the other traits ...
+</code></pre>
+<p><em>Originally posted by @chipsenkbeil in https://github.com/clap-rs/clap/discussions/3578#discussioncomment-3113058</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-14 02:00</div>
+            <div class="timeline-body"><p>@chipsenkbeil Thanks for copying that over!</p>
+<p>Having a <code>value_source</code> attribute helps avoid the challenges with inferring what is happening based on types along (unless we use deref specialization).</p>
+<p>It does have a scaling issue.  Some users might want the source while others might want the index or both.  Also the source common to all values while the index is per value.</p>
+<p>In exploring the various options, what are your thoughts on the parallel-field idea I had proposed earlier in the thread?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chipsenkbeil">@chipsenkbeil</a> on 2022-07-24 17:42</div>
+            <div class="timeline-body"><blockquote>
+<p>In exploring the various options, what are your thoughts on the parallel-field idea I had proposed earlier in the thread?</p>
+</blockquote>
+<p>@epage are you referring to the idea of <code>#[clap(from(index))]</code> and <code>#[clap(from(value))]</code>? It seems fine to me, but I don't have an understanding of index or the <code>from_global</code> that you were referencing earlier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-25 13:00</div>
+            <div class="timeline-body"><p>Yes.</p>
+<p><code>from_global</code>: clap has the concept of <a href="https://docs.rs/clap/latest/clap/builder/struct.Arg.html#method.global">global arguments</a> which allows an argument to be defined on the parent command and it will automatically be defined on all subcommands and the value will be propagated back up to the parent command.  Think of flags like those to control logging levels.  <code>from_global</code> allows accessing the argument within the subcommand even though it isn't defined in that subcommand.</p>
+<p><code>index</code>: clap tracks the relative order that arguments appeared on the command line.  See <a href="https://docs.rs/clap/latest/clap/struct.ArgMatches.html#method.indices_of">ArgMatches::indices_of</a> for more details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-30 00:19</div>
+            <div class="timeline-body"><p>This issue is unrelated. In the future, feel free to start a Discussion.</p>
+<p>In this case, value source is stable / should work. We'll need more details, like a reproduction case. Please create a Discussion with that to not detract from this Issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2419.html">clap-rs/clap#2419</a> on 2023-06-14 13:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

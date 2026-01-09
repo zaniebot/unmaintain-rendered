@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified command for linting and formatting - astral-sh/ruff #8232</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unified command for linting and formatting</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8232">#8232</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-10-25 22:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-25 22:07</div>
+            <div class="timeline-body"><p>It should be possible to <em>check</em> if files would be formatted <em>and</em> if there are any lint violations in a single Ruff invocation.</p>
+<p>It should be possible to <em>apply</em> linter fixes and formatting changes in a single Ruff invocation.</p>
+<p>The design of this interface is still being discussed internally. This issue will be updated as development continues.</p>
+<p>Previous discussion at https://github.com/astral-sh/ruff/discussions/7310#discussioncomment-7376397, https://github.com/astral-sh/ruff/discussions/7310#discussioncomment-7102010, and https://github.com/astral-sh/ruff/issues/7232</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @zanieb on 2023-10-25 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8229.html">astral-sh/ruff#8229</a> on 2023-10-25 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-25 22:21</div>
+            <div class="timeline-body"><p>Roughly, one proposed interface would be the generalization of <code>ruff check</code> and the addition of flags such as <code>--lint</code> / <code>--no-lint</code> and <code>--format</code> / <code>--no-format</code> to enable specific tools. These flags would also be configurable in the settings as <code>ruff.check.lint</code> and <code>ruff.check.format</code> (or <code>ruff.lint.enabled</code> and <code>ruff.format.enabled</code>).</p>
+<p>On <code>ruff check --format</code>, unformatted files would be flagged as a violations (similar to lint rule violations).
+On <code>ruff check --format --fix</code>, unformatted files would be formatted.</p>
+<p>Further configuration of each tool would be done from the respective <code>ruff.lint</code> and <code>lint.format</code> sections.</p>
+<p>I believe, eventually, it would be ideal for <code>--format</code> (and any other future tools) to be enabled by default when running <code>ruff check</code>.</p>
+<p>This approach would require significant consideration of our existing check diagnostic and violation design, as it is very lint focused at the moment. Consideration should be made for the possibility of future tools that would raise diagnostics, such as a type checker.</p>
+<p>It's an open question whether a dedicated <code>ruff lint</code> command would be added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../GenericMappingTools/pygmt/pulls/2770.html">GenericMappingTools/pygmt#2770</a> on 2023-10-26 00:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8087.html">astral-sh/ruff#8087</a> on 2023-10-26 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-10-26 07:09</div>
+            <div class="timeline-body"><p>If you ask me about how to join into one command, my answer (and I think most of users) would be put formatter as a lint rule.
+Like https://github.com/astral-sh/ruff/discussions/7310#discussioncomment-7102104, in my opinion formatter actually is linter rule(s) with safe-autofix: <code>ruff check . --select E,FMT --fix</code></p>
+<p>@zanieb I'm pretty sure you also considered this, but I didn't find why you ignored this approach. Can you show what are blockers for this design? solving those blockers maybe less expensive for team (and users)?</p>
+<p>For now, I think <code>--add-noqa</code> (and <code>--watch</code>?) won't work as desired on this approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-26 07:36</div>
+            <div class="timeline-body"><p>We discussed this internally. Building the formatter as a linter raised a couple of design questions:</p>
+<ul>
+<li>The formatter would need to support <code>noqa</code> suppression comments</li>
+<li>The <code>CLI</code> would be fundamentally different from how editors work where editors use different commands for formatting and linting.</li>
+<li>How would we support enabling preview style formatting for the formatter without enabling preview behavior of other lint rules.</li>
+</ul>
+<p>Overall, formatting just felt different enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmvp">@hmvp</a> on 2023-10-26 08:07</div>
+            <div class="timeline-body"><blockquote>
+<p>We discussed this internally. Building the formatter as a linter raised a couple of design questions:</p>
+<pre><code>* The formatter would need to support `noqa` suppression comments</code></pre>
+</blockquote>
+<p>Isn't that the job of the linting mechanism that works based on whether the formatting check would find anything.. How does this work for I001 (isort)?</p>
+<blockquote>
+<pre><code>* The `CLI` would be fundamentally different from how editors work where editors use different commands for formatting and linting.</code></pre>
+</blockquote>
+<p>I feel it makes sense to keep formatting also as a separate command for these use cases</p>
+<blockquote>
+<pre><code>* How would we support enabling preview style formatting for the formatter without enabling preview behavior of other lint rules.</code></pre>
+</blockquote>
+<p>Make it two different rules? You can even (if not configured explicit) enable the preview rule in preview and disable the normal formatting rule...</p>
+<blockquote>
+<p>Overall, formatting just felt different enough.</p>
+</blockquote>
+<p>I kind of disagree. But if it is, import sorting also falls in this category...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-10-26 08:08</div>
+            <div class="timeline-body"><p>Thanks, I didn't realize these issues, here are my proposed solutions for them:</p>
+<blockquote>
+<ul>
+<li>The formatter would need to support <code>noqa</code> suppression comments</li>
+</ul>
+</blockquote>
+<p>A. Use <code>#fmt:</code> comments for formatting violations.
+B. We can warn <code>noqa</code> suppression is not available for this rule.</p>
+<blockquote>
+<ul>
+<li>The <code>CLI</code> would be fundamentally different from how editors work where editors use different commands for formatting and linting.</li>
+</ul>
+</blockquote>
+<p>For formatting, editors can keep current behavior, also for linting and autofixes I don't think <code>FMT</code> requires any change to output structure.</p>
+<blockquote>
+<ul>
+<li>How would we support enabling preview style formatting for the formatter without enabling preview behavior of other lint rules.</li>
+</ul>
+</blockquote>
+<p>Add <code>format-preview</code> and <code>lint-preview</code>. (<code>--(no-)preview</code> will apply for both linter and formatter)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-26 19:18</div>
+            <div class="timeline-body"><blockquote>
+<p>How does this work for I001 (isort)?</p>
+</blockquote>
+<blockquote>
+<p>I kind of disagree. But if it is, import sorting also falls in this category...</p>
+</blockquote>
+<p>We are also of the opinion that import sorting is not well suited to be a lint rule. We are still trying to figure out the best way to resolve that.</p>
+<blockquote>
+<p>Add format-preview and lint-preview...</p>
+</blockquote>
+<p>We already have this as <code>ruff.lint.preview</code> and <code>ruff.format.preview</code>. If the formatter is implemented as a lint rule then it would be confusing that it's unaffected by <code>lint.preview</code> though.</p>
+<p>I was originally a strong proponent of using a lint code for the formatter. Here are some notes:</p>
+<blockquote>
+<p>A new formatting lint category i.e. <code>FMT</code>. Formatter violations could be implemented as rules e.g.</p>
+<ul>
+<li><code>FMT001</code> file would be formatted</li>
+<li><code>FMT002</code> invalid placement of fmt pragma</li>
+</ul>
+<p>Some thoughts:</p>
+<ul>
+<li>Avoids collision with <code>--format &lt;style&gt;</code></li>
+<li>Simple integration with existing CLI</li>
+<li>Does it make sense to have more than one format code?</li>
+<li>How does this interact with existing linter <code>noqa</code> pragmas?</li>
+<li>Can users ignore individual format violation codes?</li>
+<li>Can we feasibly split formatting into discrete pieces?</li>
+<li>Avoids adding new options to the CLI</li>
+<li>Formatter violations are not special-cased</li>
+<li>A file requiring formatting would not work well with our current diagnostic system</li>
+<li>Harder to discover, i.e. <code>--extend-select FMT</code> is not intuitive<ul>
+<li>However, users are likely to be using <code>ruff format</code> separately when getting started</li>
+<li>However, if formatting is on by default in the future then opt-out with <code>--ignore FMT</code> is simple</li>
+</ul>
+</li>
+<li>Easy for us to add this to the default rule set in the future</li>
+</ul>
+</blockquote>
+<p>The problem with this approach is that there are <em>many</em> special cases where the formatter does not behave like a lint rule. While it's feasible to just push the formatter into the linter, we want to do better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaap3">@jaap3</a> on 2023-10-27 09:39</div>
+            <div class="timeline-body"><p>I have no strong opinion, just fyi. I always used https://pypi.org/project/flake8-isort/ and https://pypi.org/project/flake8-black/. Basically the lining check for those plugins is &quot;would isort or black make any changes?&quot;. To me that was good enough, never considered adding suppression comment (failure means, just run the formatter).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sarcasm">@Sarcasm</a> on 2023-10-27 12:08</div>
+            <div class="timeline-body"><p>FWIW, the way I use ruff is wrapped in 2 commands:</p>
+<p>The <code>lint</code> command which runs:</p>
+<pre><code>ruff check --show-source --show-fixes ...
+black --check --diff --quiet ...
+# and other commands for other languages than python
+</code></pre>
+<p>I use this in CI for example.
+I guess I could have used <code>check</code> too but it predates my use of ruff (and I kinda like <code>lint</code> as an intent to verify the code, not act on it, it's a read-only/safe command always).</p>
+<p>The <code>fix</code> command which runs:</p>
+<pre><code>ruff check --fix-only --select F401,I001 ...
+black ...
+# and other commands for other languages than python
+</code></pre>
+<p>I use this when I want to cleanup my code, e.g. before commit.</p>
+<p>I like that <code>fix</code> is a top level command instead of a <code>check</code> option, because checking and fixing are different intentions IMHO.
+But I also combines the 2 commands often, where I <code>fix</code> then <code>lint</code> all at once.</p>
+<p>I say this because a top-level <code>fix</code> command that do formatting + autofixing of lint issues is maybe less weird than <code>check --fix --format</code>, it's easy to type/remember.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-27 13:50</div>
+            <div class="timeline-body"><p>I also have a long proposal adding a <code>ruff fix</code> command to resolve some of the awkwardness of putting everything in <code>check</code> — it's hard to be certain it will be worth the investment though. I'm glad to hear you think it'd be helpful!</p>
+<p>I think regardless there needs to be a way for <code>ruff check</code> to indicate when files are not formatted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-lsp/python-lsp-ruff/issues/53.html">python-lsp/python-lsp-ruff#53</a> on 2023-10-30 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8367.html">astral-sh/ruff#8367</a> on 2023-10-30 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-10-30 23:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-10-30 23:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8535.html">astral-sh/ruff#8535</a> on 2023-11-07 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thernstig">@thernstig</a> on 2023-11-08 17:34</div>
+            <div class="timeline-body"><p>@zanieb I believe <code>ruff check</code> should be deprecated altogether, and you should use <code>ruff fix</code> to do both <code>ruff format</code> and <code>ruff lint ---fix</code> (https://github.com/astral-sh/ruff/issues/8535). With the caveat that it is clearly documented that since <code>ruff fix</code> would do <code>ruff lint --fix</code>, it <em>could be</em> a potentially dangerous operation if the lint changes are not reviewed.</p>
+<p>(Maybe there is a better term then both <code>ruff check</code> and <code>ruff fix</code> we have not thought of?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-lsp/python-lsp-ruff/pulls/57.html">python-lsp/python-lsp-ruff#57</a> on 2023-11-11 10:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhossbach">@jhossbach</a> on 2023-11-15 12:57</div>
+            <div class="timeline-body"><p>@zanieb Did you discuss whether this unified command will be implemented in the near future? I am asking because I am considering merging https://github.com/python-lsp/python-lsp-ruff/pull/57 as an intermediary solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-15 17:42</div>
+            <div class="timeline-body"><p>@jhossbach I'd recommend moving forward with an intermediary solution as there's still quite a bit of work to be done on this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9064.html">astral-sh/ruff#9064</a> on 2023-12-09 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../johnthagen/python-blueprint/issues/199.html">johnthagen/python-blueprint#199</a> on 2023-12-11 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-lsp/issues/335.html">astral-sh/ruff-lsp#335</a> on 2023-12-11 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9117.html">astral-sh/ruff#9117</a> on 2023-12-13 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-12-14 08:55</div>
+            <div class="timeline-body"><p>FWIW Hatch did it: https://hatch.pypa.io/latest/cli/reference/#hatch-fmt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-vscode/issues/363.html">astral-sh/ruff-vscode#363</a> on 2023-12-14 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3694.html">astral-sh/ruff#3694</a> on 2023-12-21 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shayn-orca">@shayn-orca</a> on 2024-01-28 09:03</div>
+            <div class="timeline-body"><p>This would be a good QoL fix for us. Is there an open PR we could jump on this fix this, or is there stuff to be hashed out in the discussion still?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-28 15:50</div>
+            <div class="timeline-body"><p>We need to do some design work around this still and reach consensus internally. We're focusing on stabilizing the formatter first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9763.html">astral-sh/ruff#9763</a> on 2024-02-01 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/opendal/pulls/4135.html">apache/opendal#4135</a> on 2024-02-03 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Formatter: Stable" by @MichaReiser on 2024-02-06 01:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../numtide/treefmt/issues/11.html">numtide/treefmt#11</a> on 2024-02-16 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10013.html">astral-sh/ruff#10013</a> on 2024-02-19 07:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nomad-coe/workflow-parsers/pulls/34.html">nomad-coe/workflow-parsers#34</a> on 2024-02-22 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-02-23 23:50</div>
+            <div class="timeline-body"><p>(copying my comment over since the other issue was closed in favor of this one) https://github.com/astral-sh/ruff/issues/8535#issuecomment-1858925442</p>
+<blockquote>
+<p>My thoughts:
+<code>ruff lint</code>: only lints by default
+<code>ruff format</code>: formats by default
+<code>ruff check</code>: shorthand for <code>ruff lint &amp;&amp; ruff format --check</code>
+<code>ruff fix</code>: shorthand for <code>ruff lint --fix &amp;&amp; ruff format</code></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shayn-orca">@shayn-orca</a> on 2024-02-25 08:35</div>
+            <div class="timeline-body"><p>@Avasam My only question here is why would I ever want to run <code>ruff lint</code> without <code>ruff format --check</code>? As far as I'm concerned, there are only two states - code it wrong or code is right. Why does the classification between <code>lint</code> and <code>format</code> matters?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-25 09:10</div>
+            <div class="timeline-body"><p>@shayn-orca I think that's generally right and <code>check</code> would probably become the most used command. However, I think there are a couple of workflows that are worth considering:</p>
+<ul>
+<li>Let's imagine that <code>ruff</code> does type checking too and you're in the middle of a larger refactor but you're done refactoring it locally and want to verify if it works as expected. Running the type checker isn't that useful because you know that there are plenty of type checking errors. But let's run the formatter and see if there any lints.</li>
+<li>Adding more involved analysis like multifile analysis or type checking will inevitably make <code>ruff check</code> slower and you don't want to wait for all the analysis to complete if you only want to format your files</li>
+<li>The opposite is also true. I almost never run <code>cargo fmt</code> because my IDE keeps the file formatted.</li>
+<li>One challenge with unifying the commands under <code>ruff check</code> is that <code>format</code> writes by default, whereas <code>lint</code> only checks. I don't know what the best default for incorrectly formatted code should be: Should we show the full diff or only mention that it isn't correctly formatted? The full diff is useful in CI but is probably very noisy when running in the CLI where I'm preliminary interested in lint errors because I trust the formatter. That's where a dedicated <code>lint</code> command could be useful</li>
+</ul>
+<p>I don't know the right answers to this. Maybe we end up with a single command or we keep separate commands. I think a lot of this depends on how fast ruff is when we add more involved analysis (and plugins?). It might also be easier to start with separate commands as an intermediate step (which also feels more familiar to users) before making the big step to a single command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shayn-orca">@shayn-orca</a> on 2024-02-25 09:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Let's imagine that ruff does type checking too and you're in the middle of a larger refactor but you're done refactoring it locally and want to verify if it works as expected. Running the type checker isn't that useful because you know that there are plenty of type checking errors. But let's run the formatter and see if there any lints.</p>
+</blockquote>
+<p>That's true for any subset of linters, not just format VS lint. When you're doing such a large refactor, picking the linters you want to run with a separate config file/CLI args is a common way out as an escape hatch.</p>
+<blockquote>
+<p>Adding more involved analysis like multifile analysis or type checking will inevitably make ruff check slower and you don't want to wait for all the analysis to complete if you only want to format your files</p>
+</blockquote>
+<ol>
+<li>Ruff is so fast, I don't care</li>
+<li>Just fail fast by putting the faster lints first in the pipeline?</li>
+</ol>
+<blockquote>
+<p>One challenge with unifying the commands under ruff check is that format writes by default</p>
+</blockquote>
+<p>I mean <code>ruff format --check</code>, which doesn't write anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-02-25 17:32</div>
+            <div class="timeline-body"><blockquote>
+<p>@Avasam My only question here is why would I ever want to run <code>ruff lint</code> without <code>ruff format --check</code>? [...] ]Why does the classification between <code>lint</code> and <code>format</code> matters?</p>
+</blockquote>
+<p>Because Ruff isn't the only formatter/style checker, and forcing the formatter with the linter only hurts adoption. Even for someone using both, tooling integration may demand to keep those somewhat separate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmerickel">@mmerickel</a> on 2024-02-25 18:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Because Ruff isn't the only formatter/style checker, and forcing the formatter with the linter only hurts adoption. Even for someone use both, tooling integration may demand to keep those somewhat separate.</p>
+</blockquote>
+<p>That just indicates that the formatter should be opt-in exactly like every other rule in ruff right now. Not that it needs to be a completely separate subcommand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/rye/issues/804.html">astral-sh/rye#804</a> on 2024-02-27 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jaraco/skeleton/issues/112.html">jaraco/skeleton#112</a> on 2024-03-21 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../christophermadsen/emacs-lazy-ruff/pulls/2.html">christophermadsen/emacs-lazy-ruff#2</a> on 2024-04-02 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/typeshed/pulls/11734.html">python/typeshed#11734</a> on 2024-04-08 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../oxsecurity/megalinter/pulls/3486.html">oxsecurity/megalinter#3486</a> on 2024-04-13 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11749.html">astral-sh/ruff#11749</a> on 2024-06-05 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../MTES-MCT/ecobalyse/pulls/617.html">MTES-MCT/ecobalyse#617</a> on 2024-06-05 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11756.html">astral-sh/ruff#11756</a> on 2024-06-07 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Couchers-org/couchers/pulls/4428.html">Couchers-org/couchers#4428</a> on 2024-06-10 08:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11803.html">astral-sh/ruff#11803</a> on 2024-06-11 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12003.html">astral-sh/ruff#12003</a> on 2024-06-24 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mozilla-services/merino-py/pulls/541.html">mozilla-services/merino-py#541</a> on 2024-06-24 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmvp">@hmvp</a> on 2024-07-04 07:21</div>
+            <div class="timeline-body"><p>Another datapoint here:</p>
+<p>I want to configure ruff to run in the gitlab CI. <code>ruff check</code> supports <code>--output-format=gitlab</code>, <code>ruff format</code> does not..<br />
+Also I need to run two commands in one step, so even if <code>format</code> would support gitlab output I still need to merge both (or run two job with the extra overhead)</p>
+<p>Regardless of the discussion related to the structure of commands, it would help me in this if <code>rust check</code> would have a lint rule that is basically &quot;Run ruff format --check&quot; and report if a file is not formatted... Similar to the isort rule...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-pre-commit/issues/74.html">astral-sh/ruff-pre-commit#74</a> on 2024-07-05 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12901.html">astral-sh/ruff#12901</a> on 2024-08-15 05:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../opensafely-core/job-server/pulls/4559.html">opensafely-core/job-server#4559</a> on 2024-09-03 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../freqtrade/freqtrade/pulls/10619.html">freqtrade/freqtrade#10619</a> on 2024-09-09 04:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13364.html">astral-sh/ruff#13364</a> on 2024-09-16 07:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2024-10-14 19:24</div>
+            <div class="timeline-body"><p>In .NET we have a single command for the linter, type checker and formatter with <code>dotnet build</code> (https://learn.microsoft.com/en-us/community/content/how-to-enforce-dotnet-format-using-editorconfig-github-actions#enforcing-code-style-on-build). Meanwhile you can run them separately, it's a cognitive overhead for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13822.html">astral-sh/ruff#13822</a> on 2024-10-22 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../multi-build/multibuild/pulls/533.html">multi-build/multibuild#533</a> on 2024-10-23 09:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mckinsey/vizro/issues/719.html">mckinsey/vizro#719</a> on 2024-11-11 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../JoshHayes/emacs-ruff-format/issues/1.html">JoshHayes/emacs-ruff-format#1</a> on 2024-11-19 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pygame-community/pygame-ce/pulls/3237.html">pygame-community/pygame-ce#3237</a> on 2024-11-24 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3946.html">astral-sh/ruff#3946</a> on 2024-12-02 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sanmai-NL">@sanmai-NL</a> on 2024-12-02 14:46</div>
+            <div class="timeline-body"><p>Please design in such a way to accommodate a future feature <code>ssort</code> (https://github.com/astral-sh/ruff/issues/3946).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-action/issues/23.html">astral-sh/ruff-action#23</a> on 2024-12-07 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zyv">@zyv</a> on 2025-02-01 11:37</div>
+            <div class="timeline-body"><blockquote>
+<p>We need to do some design work around this still and reach consensus internally. We're focusing on stabilizing the formatter first.</p>
+</blockquote>
+<p>The documentation still says this is &quot;planned&quot; for now. Any update on the status of this?</p>
+<p>It seems that a lot of questions and opinions revolve around <code>check</code> and <code>format</code>, like what to do with options, what order to use, whether to write by default or not, etc. Isn't it better to introduce a new command that unifies both specifically for fixing like</p>
+<pre><code>ruff fix --format --lint
+</code></pre>
+<p>The options can be designed to accommodate all opinions / cases, and not disrupt users of <code>check</code> and <code>format</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bombsimon">@bombsimon</a> on 2025-02-01 14:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Isn't it better to introduce a new command</p>
+</blockquote>
+<p>I think the design should account for other use cases than just the CLI tool. I'm subscribing to this issue because I use <code>ruff</code> LSP in my text editor and I want to have an easy way to apply both fixes from the linter rules and from the formatter on save. Currently I need to both ask the LSP to format my code and then ask it to run a code action for things like e.g. sorting imports. Some suggestions here like the one of running the formatter as a linter would potentially solve that which a new CLI command would not necessarily do.</p>
+<p>Edit: I realize the title for this issue says &quot;command&quot; so maybe I'm in the wrong issue. It sounds like they could be related though 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/monk-time">@monk-time</a> on 2025-02-01 14:58</div>
+            <div class="timeline-body"><blockquote>
+<p>The documentation still says this is &quot;planned&quot; for now. Any update on the status of this?</p>
+</blockquote>
+<p>Seems like the team is a bit stretched atm with most of the high-level design work last year going into <code>uv</code> and now switching to <code>red-knot</code>. There are three big remaining issues left after <code>ruff</code> stabilized: unified command, rule categorization and rule aliasing. All three AFAIK have been in a &quot;planned&quot; status for 1-2 years, there have been multiple indications that the team agrees they need to be resolved, and all three would require careful approach and coordinated effort as they would likely necessitate changing the user-facing interface and overhauling the docs. But my perception (and I might be wrong of course) is that the work has been mostly going into other projects (no less fantastic and well-appreciated), and these core ruff issues have been postponed - hopefully not abandoned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zyv">@zyv</a> on 2025-02-01 17:48</div>
+            <div class="timeline-body"><blockquote>
+<p>these core ruff issues have been postponed - hopefully not abandoned.</p>
+</blockquote>
+<p>Thanks for the update, this is really helpful for those trying to understand the status of the issue. It's unfortunate that Astral doesn't have the resources for everything, but the awesome work they are doing is still greatly appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-01 18:39</div>
+            <div class="timeline-body"><p>We're still making progress towards this goal, e.g., a limitation blocking an implementation of this (that we'd be happy with) is that Ruff's diagnostic system is entangled deeply with the linter and cannot represent files that need to be formatted. In red-knot, we're building a new diagnostic system so we can power features like this. We trying to avoid solving these problems multiple times, because, as pointed out above, we have limited resources and ambitious goals.</p>
+<p>The other Ruff projects mentioned above (rule re-categorization and aliasing) are definitely not abandoned. We just need to execute them very carefully to avoid causing churn for our users and our attention is elsewhere at the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../powa-team/powa-web/pulls/258.html">powa-team/powa-web#258</a> on 2025-02-08 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16093.html">astral-sh/ruff#16093</a> on 2025-02-11 08:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carlosgmartin">@carlosgmartin</a> on 2025-02-20 00:07</div>
+            <div class="timeline-body"><p>IMO, it would be ideal for the simple, short command <code>ruff</code> to do &quot;everything that most people would want it [Ruff] to do&quot;. (Subject to more specific configuration, if any, in <code>pyproject.toml</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/makukha">@makukha</a> on 2025-02-27 15:09</div>
+            <div class="timeline-body"><blockquote>
+<p>IMO, it would be ideal for the simple, short command <code>ruff</code> to do &quot;everything that most people would want it [Ruff] to do&quot;. (Subject to more specific configuration, if any, in <code>pyproject.toml</code>.)</p>
+</blockquote>
+<p>Not sure if this is a good idea. <code>format</code> is destructive, <code>check</code> is not.</p>
+<p>I prefer fixing lint errors before formatting issues. And I don't rely on ruff's auto formatting, but prefer to fix lint/format errors manually (sometimes it's better to rename variable than to break lines).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-27 15:13</div>
+            <div class="timeline-body"><blockquote>
+<p>IMO, it would be ideal for the simple, short command ruff to do &quot;everything that most people would want it [Ruff] to do&quot;. (Subject to more specific configuration, if any, in pyproject.toml.)</p>
+</blockquote>
+<p>I do see how it is appealing to have a short command but using <code>ruff</code> could lead to ambiguity. E.g. does <code>ruff format</code> check and format the folder called <code>format</code> or does it run the <code>format</code> command? It would mean that each new command is a breaking change because it risks breaking an existing workflow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesmyatt">@jamesmyatt</a> on 2025-02-27 15:36</div>
+            <div class="timeline-body"><p>The recommendation when doing autofixes is to fix before format since fixes aren't guaranteed to be formatted correctly.</p>
+<p>What about extending the &quot;format&quot; command with options like <code>--fix-first</code> or <code>--fix-select=...</code>? For example: <code>ruff check --fix --select=I . &amp; ruff format .</code> could become <code>ruff format --fix-select=I .</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carlosgmartin">@carlosgmartin</a> on 2025-02-27 18:01</div>
+            <div class="timeline-body"><p>@makukha But most people <em>do</em> want to format.</p>
+<p>Therefore, make <em>that</em> the default and the alternative opt-in (via an extra flag or configuration).</p>
+<p>Defaults should follow majority use.</p>
+<p>@MichaReiser As an example, consider <code>ruff --format --files format path2 path3</code>, where the last 3 words (including <code>format</code>) refer to actual paths. This approach is unambiguous and compatible with my proposal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/makukha">@makukha</a> on 2025-02-27 21:32</div>
+            <div class="timeline-body"><blockquote>
+<p>@makukha But most people <em>do</em> want to format.</p>
+<p>Therefore, make <em>that</em> the default and the alternative opt-in (via an extra flag or configuration).</p>
+<p>Defaults should follow majority use.</p>
+</blockquote>
+<p>I do want to format too, but I like flexibility. Checking and formatting are different operations, and it's fine to have different commands for different operations to avoid options clash etc. Extra flag would be just an implicit command.</p>
+<p>IMO, the answer to the question whether to combine <code>check</code> and <code>format</code> should be positive only if the dominating use case is <code>ruff check; ruff format</code> (in one invocation). For me, this is not the case, and I can't say for the majority.</p>
+<p>To be more specific, my workflow is:</p>
+<ol>
+<li><code>ruff check &amp;&amp; ruff format --check</code> — yes, they <em>seem</em> to be combined. This combination is also a part of the pre-commit hook</li>
+<li>Fix <code>ruff check</code> warnings</li>
+<li>Commit (bypassing pre-commit hook) to distinguish ruff updates on the next step</li>
+<li><code>ruff format</code></li>
+<li>Manually inspect all changes made by ruff, rewrite or ignore some cases</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carlosgmartin">@carlosgmartin</a> on 2025-02-27 21:38</div>
+            <div class="timeline-body"><p>@makukha What I mean is, you can let <code>ruff --lint-only</code> (for example) do only linting, and let plain <code>ruff</code> do what most people want Ruff to do (both linting and formatting, and possibly anything else).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-27 21:46</div>
+            <div class="timeline-body"><p>Hi! I'd like to limit debate here as there are lots of people watching this issue for updates on this feature. Feel free to open a GitHub Discussion to discuss the merits of various details and alternative approaches, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../VOICEVOX/voicevox_engine/pulls/1563.html">VOICEVOX/voicevox_engine#1563</a> on 2025-03-22 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../johnthagen/python-blueprint/issues/95.html">johnthagen/python-blueprint#95</a> on 2025-07-13 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-pre-commit/issues/120.html">astral-sh/ruff-pre-commit#120</a> on 2025-07-26 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-pre-commit/pulls/127.html">astral-sh/ruff-pre-commit#127</a> on 2025-07-26 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../os-autoinst/os-autoinst-scripts/pulls/445.html">os-autoinst/os-autoinst-scripts#445</a> on 2025-08-13 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/waynew">@waynew</a> on 2025-10-09 02:24</div>
+            <div class="timeline-body"><p>FWIW I got tired of remembering this invocation, so I just wrote https://pypi.org/project/ruffup/ --</p>
+<pre><code>uv tool install ruffup
+cd /path/to/your/fine/python
+ruffup
+</code></pre>
+<p>Silly? Maybe. Effective? Yes!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20964.html">astral-sh/ruff#20964</a> on 2025-10-20 07:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../c0rychu/uvlink/pulls/25.html">c0rychu/uvlink#25</a> on 2025-11-30 12:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

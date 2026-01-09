@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `conda` environment support for `--active` flag - astral-sh/uv #11315</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `conda` environment support for `--active` flag</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11315">#11315</a>
+        opened by <a href="https://github.com/MilkClouds">@MilkClouds</a>
+        on 2025-02-07 12:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MilkClouds">@MilkClouds</a> on 2025-02-07 12:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The new <code>--active</code> flag (https://github.com/astral-sh/uv/pull/11189) is a great addition and I think it goes some way to allow uv and conda to work better together. But it does not respect <code>conda</code> environment and only use <code>VIRTUAL_ENV</code> variable.</p>
+<p>Would it be possible to add a support for <code>conda</code> environment for <code>--active</code> flag? Simply using <code>CONDA_PREFIX</code> instead of <code>VIRTUAL_ENV</code> when <code>CONDA_DEFAULT_ENV</code> is not <code>base</code> and not empty would be enough, I guess.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @MilkClouds on 2025-02-07 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-07 15:38</div>
+            <div class="timeline-body"><p>This seems reasonable, but will require some refactoring to consolidate that logic.</p>
+<p>In theory, this also means we'd warn when <code>CONDA_PREFIX</code> is set and does not match the project environment. Though we could omit that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6612.html">astral-sh/uv#6612</a> on 2025-05-18 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RafalSkolasinski">@RafalSkolasinski</a> on 2025-05-18 18:25</div>
+            <div class="timeline-body"><p>That'd be a great feature and fill a hole in feature parity with <code>poetry</code>, and docs gave me hope it'd already be working:</p>
+<blockquote>
+<p>🚀 A single tool to replace pip, pip-tools, pipx, poetry, pyenv, twine, virtualenv, and more.</p>
+</blockquote>
+<p>from: https://docs.astral.sh/uv/#highlights</p>
+<blockquote>
+<p>Since uv has no dependency on Python, it can install into virtual environments other than its own.</p>
+</blockquote>
+<p>from: https://docs.astral.sh/uv/pip/environments/#using-arbitrary-python-environments</p>
+<blockquote>
+<p>When running a command that mutates an environment
+...
+An activated Conda environment based on the CONDA_PREFIX environment variable.</p>
+</blockquote>
+<p>from: https://docs.astral.sh/uv/pip/environments/#discovery-of-python-environments</p>
+<p>If I am not mistaken it was enough for me to</p>
+<pre><code class="language-bash">VIRTUAL_ENV=$CONDA_PREFIX uv sync --active
+</code></pre>
+<p>but it'd be great if it worked out of the box.</p>
+<p>It may be my solution for https://github.com/astral-sh/uv/issues/1495 but I love to install set of locked packages into a conda environment and then be able to activate it from anywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11273.html">astral-sh/uv#11273</a> on 2025-06-06 10:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RafalSkolasinski">@RafalSkolasinski</a> on 2025-08-11 22:19</div>
+            <div class="timeline-body"><p>Inspired by #11273 I created a fish function (alias)</p>
+<pre><code>function uv
+    if set -q CONDA_PREFIX
+        env UV_PROJECT_ENVIRONMENT=$CONDA_PREFIX command uv $argv
+    else if set -q VIRTUAL_ENV
+        env UV_PROJECT_ENVIRONMENT=$VIRTUAL_ENV command uv $argv
+    else
+        command uv $argv
+    end
+end
+</code></pre>
+<p>that gets me the desired behaviour.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dan-blanchard">@dan-blanchard</a> on 2025-09-08 18:06</div>
+            <div class="timeline-body"><p>This would be amazing. It's so annoying having to specify <code>UV_PROJECT_ENVIRONMENT=$CONDA_PREFIX</code> whenever I use <code>uv</code> with a conda environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-08 18:11</div>
+            <div class="timeline-body"><p>I'm fine with supporting this if someone wants to work on it. It might not be easy though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-09-08 18:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

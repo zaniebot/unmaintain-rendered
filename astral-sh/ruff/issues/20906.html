@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DJ001 not raised when field has type annotation - astral-sh/ruff #20906</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>DJ001 not raised when field has type annotation</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20906">#20906</a>
+        opened by <a href="https://github.com/majutsushi">@majutsushi</a>
+        on 2025-10-15 22:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/majutsushi">@majutsushi</a> on 2025-10-15 22:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-python">from django.db import models
+
+
+class TestModel(models.Model):
+    charfield1 = models.CharField(null=True) # Raises DJ001
+    charfield2: models.CharField[str, str] = models.CharField(null=True) # No error
+</code></pre>
+<pre><code>$ ruff check --select=DJ001 test.py
+DJ001 Avoid using `null=True` on string-based fields such as `CharField`
+ --&gt; test.py:5:18
+  |
+4 | class TestModel(models.Model):
+5 |     charfield1 = models.CharField(null=True)
+  |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+6 |     charfield2: models.CharField[str, str] = models.CharField(null=True)
+  |
+
+Found 1 error.
+</code></pre>
+<p>I discovered this when using https://github.com/typeddjango/django-stubs with pyright, which doesn't detect the types correctly without explicit annotations.</p>
+<h3>Version</h3>
+<p>ruff 0.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-15 22:38</div>
+            <div class="timeline-body"><p>Ah yep, looks like we skip over annotated assignments:</p>
+<p>https://github.com/astral-sh/ruff/blob/73520e4acd9cb259f41a60b0b6396c66ea32950a/crates/ruff_linter/src/rules/flake8_django/rules/nullable_model_string_field.rs#L63-L65</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-15 22:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @ntBre on 2025-10-15 22:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20907.html">astral-sh/ruff#20907</a> on 2025-10-16 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-27 08:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

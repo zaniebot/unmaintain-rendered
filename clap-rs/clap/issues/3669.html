@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clap 3.1.13 fails to build by unwrapping a None value - clap-rs/clap #3669</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clap 3.1.13 fails to build by unwrapping a None value</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3669">#3669</a>
+        opened by <a href="https://github.com/sondr3">@sondr3</a>
+        on 2022-04-30 14:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sondr3">@sondr3</a> on 2022-04-30 14:38</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.60.0 (7737e0b5c 2022-04-04)</p>
+<h3>Clap Version</h3>
+<p>3.1.13</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">fn main() {
+    todo!()
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Sorry for not being able to reproduce this, this only happens in this one project I have where I upgraded <code>clap</code> and not in a few others I have, see this PR: https://github.com/sondr3/git-ignore/pull/9. It seems to come from the <code>build.rs</code> file when generating shell completions when running with <code>RUST_BACKTRACES=1</code>:</p>
+<pre><code>❯ RUST_BACKTRACE=1 cargo c
+   Compiling git-ignore-generator v1.2.0 (/home/sondre/Code/rust/git-ignore)
+error: failed to run custom build command for `git-ignore-generator v1.2.0 (/home/sondre/Code/rust/git-ignore)`
+
+Caused by:
+  process didn't exit successfully: `/home/sondre/Code/rust/git-ignore/target/debug/build/git-ignore-generator-322665dc073b363c/build-script-build` (exit status: 101)
+  --- stdout
+  cargo:rerun-if-changed=src/cli.rs
+  cargo:rerun-if-changed=man
+
+  --- stderr
+  thread 'main' panicked at 'called `Option::unwrap()` on a `None` value', /home/sondre/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.1.13/src/output/usage.rs:436:35
+  stack backtrace:
+     0: rust_begin_unwind
+               at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/std/src/panicking.rs:584:5
+     1: core::panicking::panic_fmt
+               at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/core/src/panicking.rs:143:14
+     2: core::panicking::panic
+               at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/core/src/panicking.rs:48:5
+     3: core::option::Option&lt;T&gt;::unwrap
+               at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/core/src/option.rs:752:21
+     4: clap::output::usage::Usage::get_required_usage_from::{{closure}}
+               at /home/sondre/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.1.13/src/output/usage.rs:436:25
+     5: core::ops::function::impls::&lt;impl core::ops::function::FnOnce&lt;A&gt; for &amp;mut F&gt;::call_once
+               at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/core/src/ops/function.rs:280:13
+     6: core::option::Option&lt;T&gt;::map
+               at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/core/src/option.rs:906:29
+     7: &lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::next
+               at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/core/src/iter/adapters/map.rs:103:9
+     8: &lt;alloc::vec::Vec&lt;T&gt; as alloc::vec::spec_from_iter_nested::SpecFromIterNested&lt;T,I&gt;&gt;::from_iter
+               at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/alloc/src/vec/spec_from_iter_nested.rs:26:32
+     9: &lt;alloc::vec::Vec&lt;T&gt; as alloc::vec::spec_from_iter::SpecFromIter&lt;T,I&gt;&gt;::from_iter
+               at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/alloc/src/vec/spec_from_iter.rs:33:9
+    10: &lt;alloc::vec::Vec&lt;T&gt; as core::iter::traits::collect::FromIterator&lt;T&gt;&gt;::from_iter
+               at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/alloc/src/vec/mod.rs:2552:9
+    11: core::iter::traits::iterator::Iterator::collect
+               at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/core/src/iter/traits/iterator.rs:1778:9
+    12: clap::output::usage::Usage::get_required_usage_from
+               at /home/sondre/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.1.13/src/output/usage.rs:428:24
+    13: clap::build::command::App::_build_bin_names_internal
+               at /home/sondre/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.1.13/src/build/command.rs:4133:28
+    14: clap::build::command::App::_build_bin_names_internal
+               at /home/sondre/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.1.13/src/build/command.rs:4197:17
+    15: clap::build::command::App::_build_bin_names_internal
+               at /home/sondre/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.1.13/src/build/command.rs:4197:17
+    16: clap::build::command::App::build
+               at /home/sondre/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.1.13/src/build/command.rs:4015:9
+    17: clap_complete::generator::_generate
+               at /home/sondre/.cargo/registry/src/github.com-1ecc6299db9ec823/clap_complete-3.1.2/src/generator/mod.rs:239:5
+    18: clap_complete::generator::generate_to
+               at /home/sondre/.cargo/registry/src/github.com-1ecc6299db9ec823/clap_complete-3.1.2/src/generator/mod.rs:186:5
+    19: build_script_build::build_shell_completion
+               at ./build.rs:18:9
+    20: build_script_build::main
+               at ./build.rs:49:5
+    21: core::ops::function::FnOnce::call_once
+               at /rustc/7737e0b5c4103216d6fd8cf941b7ab9bdbaace7c/library/core/src/ops/function.rs:227:5
+  note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>I have verified that this only happens on <code>3.1.13</code>, using <code>3.1.10</code>, <code>3.1.11</code> and<code>3.1.12</code> does not crash. I did a quick look at the commits but can't pinpoint any culprits from a quick glance.</p>
+<h3>Expected Behaviour</h3>
+<p>This worked in the previous patch release.</p>
+<h3>Additional Context</h3>
+<p>If need be, I can try to bisect <code>clap</code> itself if you need more information. I haven't been able to create a minimal, crashing example.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @sondr3 on 2022-04-30 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-01 00:02</div>
+            <div class="timeline-body"><p>A minimal reproduction:</p>
+<pre><code class="language-rust">use clap::{arg, Command};
+
+fn main() {
+    let mut cmd = Command::new(&quot;ctest&quot;).subcommand(
+        Command::new(&quot;subcmd&quot;).subcommand(
+            Command::new(&quot;multi&quot;)
+                .about(&quot;tests subcommands&quot;)
+                .author(&quot;Kevin K. &lt;kbknapp@gmail.com&gt;&quot;)
+                .version(&quot;0.1&quot;)
+                .arg(arg!(
+                    &lt;FLAG&gt;                    &quot;tests flags&quot;
+                )),
+        ),
+    );
+    cmd.build();
+}
+</code></pre>
+<p>If I remove one level of subcommand, it does not reproeduce</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-01 00:09</div>
+            <div class="timeline-body"><p>Looks like #3667 exposed that we aren't recursing where we need to</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3670.html">clap-rs/clap#3670</a> on 2022-05-01 00:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-05-01 01:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-01 01:21</div>
+            <div class="timeline-body"><p>Released in v3.1.14</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

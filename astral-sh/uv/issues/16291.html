@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow the option to make index explicit when using `uv add` - astral-sh/uv #16291</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow the option to make index explicit when using `uv add`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16291">#16291</a>
+        opened by <a href="https://github.com/BaoNguyen6742">@BaoNguyen6742</a>
+        on 2025-10-14 04:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BaoNguyen6742">@BaoNguyen6742</a> on 2025-10-14 04:17</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When I add a package using specific index, packages that are installed later give &quot;No solution found when resolving dependencies&quot; error.</p>
+<p>Step to reproduce</p>
+<ol>
+<li>Running <code>uv add paddlepaddle==3.0.0 --index https://www.paddlepaddle.org.cn/packages/stable/cpu/</code>
+This will create the pyproject.toml file like this</li>
+</ol>
+<pre><code>[project]
+name = &quot;uv-index&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;paddlepaddle==3.0.0&quot;,
+]
+
+
+[tool.uv]
+required-environments = [
+    &quot;sys_platform == 'win32'&quot; # I add this since numpy 2.3.2 doesn't have a source distribution or wheel when I test on windows.
+]
+
+[[tool.uv.index]]
+url = &quot;https://www.paddlepaddle.org.cn/packages/stable/cpu/&quot;
+</code></pre>
+<ol start="2">
+<li>Run <code>uv add matplotlib</code>
+This will return the error</li>
+</ol>
+<pre><code>× No solution found when resolving dependencies for split (markers: python_full_version &gt;= '3.12' and sys_platform
+│ == 'win32'):
+╰─▶ Because there are no versions of matplotlib and your project depends on matplotlib, we can conclude that your project's requirements are unsatisfiable.
+help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<p>There are currently 2 ways to fix this</p>
+<ol>
+<li>Run <code>uv add matplotlib</code> with <code>--index-strategy unsafe-first-match</code> or <code>--index-strategy unsafe-best-match</code></li>
+<li>Edit the pyproject.toml in the <code>tool.uv.index</code> section to make the index explicit<pre><code>[[tool.uv.index]]
+url = &quot;https://www.paddlepaddle.org.cn/packages/stable/cpu/&quot;
+explicit = true
+</code></pre>
+</li>
+</ol>
+<p>I hope there could be a way to make the index explicit right when you add it so it doesn't affect other package when installing</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BaoNguyen6742 on 2025-10-14 04:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doddi">@doddi</a> on 2025-10-20 20:50</div>
+            <div class="timeline-body"><p>Im just curious if the expected behaviour here is that all <code>uv add</code> commands with a URL should be explicit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BaoNguyen6742">@BaoNguyen6742</a> on 2025-10-21 01:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Im just curious if the expected behaviour here is that all <code>uv add</code> commands with a URL should be explicit?</p>
+</blockquote>
+<p>I think this should be the way since index are most of the time only used for limited amount of packages. If you want to use all package from 1 index then you would set <code>default = true</code> in the tool.uv.index section, so I think it would be better if index are explicit by default</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doddi">@doddi</a> on 2025-10-21 09:05</div>
+            <div class="timeline-body"><p>@konstin / @zanieb what are your thoughts? this seems a reasonable request and almost feels like a bug rather than an enhancement? I would like to take a look at this issue if the team thinks it is the correct approach</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../my1e5/uv/pulls/3.html">my1e5/uv#3</a> on 2025-10-31 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xixixao">@xixixao</a> on 2025-11-14 15:49</div>
+            <div class="timeline-body"><p>I also feel that support for indexes is broken.</p>
+<p>We have the exact issue as this one.</p>
+<p>We also have the issue that you cannot do:</p>
+<pre><code class="language-sh">uv add --index index-name=url some-lib
+uv add --index index-name some-other-lib
+</code></pre>
+<p>because you'll get:</p>
+<blockquote>
+<p>warning: Relative paths passed to <code>--index</code> or <code>--default-index</code> should be disambiguated from index names (use <code>./index-name</code>). Support for ambiguous values will be removed in the future</p>
+</blockquote>
+<p>But I think the issues are all related.</p>
+<p>What we'd like to have is:</p>
+<ol>
+<li>Add extra indexes (&quot;team&quot;, &quot;company&quot;)</li>
+<li>When adding a new dependency with <code>uv add</code>, search the team index, if not found, search the company index (and don't seach PyPi)</li>
+</ol>
+<p>I don't think it's possible now without different index strategy, but that's not a nice API for our teammembers (and feels like it should be the default?).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

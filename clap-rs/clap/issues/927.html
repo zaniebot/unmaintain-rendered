@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suggest to use flag before subcommand if not used correctly - clap-rs/clap #927</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Suggest to use flag before subcommand if not used correctly</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/927">#927</a>
+        opened by <a href="https://github.com/torkleyy">@torkleyy</a>
+        on 2017-04-10 11:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/torkleyy">@torkleyy</a> on 2017-04-10 11:34</div>
+            <div class="timeline-body"><p>Suggesting to use the flag <em>before</em> the subcommand would make the application a bit more user-friendly.</p>
+<h3>Sample Code</h3>
+<pre><code class="language-rust">App::new(&quot;myapp&quot;)
+    .arg(Arg::with_name(&quot;foo&quot;)
+        .long(&quot;foo&quot;))
+    .subcommand(SubCommand::with_name(&quot;bar&quot;));
+</code></pre>
+<pre><code class="language-bash">myapp bar --foo
+</code></pre>
+<h3>Actual Behavior</h3>
+<pre><code>error: Found argument '--foo' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    myapp bar
+
+For more information try --help
+</code></pre>
+<h3>Expected Behavior</h3>
+<pre><code>error: Found argument '--foo' which wasn't expected, or isn't valid in this context
+      Did you mean to put '--foo' before the subcommand?
+
+        myapp --foo bar
+              ^^^^^
+
+USAGE:
+    myapp bar
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-04-18 00:34</div>
+            <div class="timeline-body"><p>Apologies for the late reply, I was travelling the past week.</p>
+<p>This would be a cool feature! I'd be willing to mentor anyone who wants to take a swing at this, although I'd change the wording slightly:</p>
+<pre><code>error: Found argument '--foo' which wasn't expected, or isn't valid in this context
+      Did you mean to put '--foo' after the subcommand?
+
+        myapp bar --foo
+                  ^^^^^
+USAGE:
+    myapp bar
+
+For more information try --help
+</code></pre>
+<p>The key code to add would be:</p>
+<ul>
+<li>Adding a variant <a href="https://github.com/kbknapp/clap-rs/blob/3f44dd4b91d15ec9287eb236e2d3a2fd068afad1/src/suggestions.rs#L70-L77">here, to <code>DidYouMeanMessageStyle</code></a></li>
+<li>Handling the new variant <a href="https://github.com/kbknapp/clap-rs/blob/3f44dd4b91d15ec9287eb236e2d3a2fd068afad1/src/suggestions.rs#L53-L58">here</a></li>
+<li>One would <em>probably</em> be best off simply adding a new <code>did_you_mean_child_args</code> type function, which could use <a href="https://github.com/kbknapp/clap-rs/blob/3f44dd4b91d15ec9287eb236e2d3a2fd068afad1/src/suggestions.rs#L14-L31"><code>did_you_mean</code></a> as a template of sorts.</li>
+<li>And finally calling this new function <a href="https://github.com/kbknapp/clap-rs/blob/3f44dd4b91d15ec9287eb236e2d3a2fd068afad1/src/app/parser.rs#L1585-L1610">inside here</a>, but using some logic like<ul>
+<li>if no subcommands, don't check for child args [obviously]</li>
+<li>re-scan <code>env::args_os</code> for possible subcommands using <code>find_subcmd!(self, arg_os)</code> which correctly checks aliases.</li>
+<li>You can get all the long version of flags and options with by <a href="https://doc.rust-lang.org/core/iter/trait.Iterator.html#method.chain"><code>Chain</code></a>ing the longs in <code>Parser::flags</code> and <code>Parser::opts</code> as in <code>self.flags.iter().filter_map(|f| f.s.long).chain(self.opts.iter().filter_map(|o| o.s.long))</code> which could probably be passed to your <code>did_you_mean_child_args</code></li>
+</ul>
+</li>
+<li>Consider invocation <code>$ prog foo --bar baz</code> where <code>--bar</code> is actually a child of <code>baz</code>. We'd need to ensure that when re-scanning <code>env::args_os</code> if an arg returns that it <em>is</em> a valid subcommand, but <strong>does not</strong> contain <code>--bar</code>, we continue searching. This will prevent from accidentally checking <code>foo</code> for <code>--bar</code> which we already know doesn't exist or we wouldn't be here. We then only return the error if after exhausting the entire list we still haven't found anything. I'd also like to see how this interacts with large argvs...such as shell glob expansions that could be in the thousands or tens of thousands (although I think this would be rare case).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: errors</span> added by @kbknapp on 2017-04-18 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2017-04-18 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2017-04-18 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> added by @kbknapp on 2017-04-18 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2017-04-18 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2017-04-18 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-04-18 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/980.html">clap-rs/clap#980</a> on 2017-06-08 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-06-16 14:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

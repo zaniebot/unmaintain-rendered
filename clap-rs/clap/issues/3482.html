@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subcommand headings do not work  - clap-rs/clap #3482</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Subcommand headings do not work </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3482">#3482</a>
+        opened by <a href="https://github.com/milesj">@milesj</a>
+        on 2022-02-17 03:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/milesj">@milesj</a> on 2022-02-17 03:57</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.58.0 (02072b482 2022-01-11)</p>
+<h3>Clap Version</h3>
+<p>3.1.0</p>
+<h3>Minimal reproducible code</h3>
+<p>Example PR where I'm testing: https://github.com/milesj/moon/pull/51</p>
+<p>That being said, I've tried all of these patterns to add headings to subcommands with no luck.</p>
+<pre><code class="language-rs">#[derive(Subcommand)]
+pub enum SubCommands {
+    #[clap(name = &quot;cmd1&quot;, help_heading = &quot;Group&quot;)]
+    Cmd1,
+
+    #[clap(name = &quot;cmd2&quot;, next_help_heading = &quot;Group&quot;)]
+    Cmd2,
+
+    #[clap(name = &quot;cmd3&quot;, subcommand_help_heading = &quot;Group&quot;)]
+    Cmd3,
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Just apply the subcommands to an app/parser.</p>
+<pre><code class="language-rs">#[derive(Parser)]
+pub struct App {
+    #[clap(subcommand)]
+    pub command: SubCommands,
+}
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>Instead of altering the help menu on the &quot;main&quot; entry point where the subcommands are listed (<code>moon --help</code>), these 3 patterns above seemed to alter the help menu <em>of the args in the command itself</em> (<code>moon bin --help</code>, which seemed wrong, since those args have their own heading settings.</p>
+<p>For example, this is the output I get for my command (notice the &quot;Group&quot;).</p>
+<pre><code>moon-bin 0.1.0
+Return an absolute path to a tool's binary within the toolchain. If a tool has not been configured or installed, this will return a non-zero exit code with no value.
+
+USAGE:
+    moon bin &lt;TOOL&gt;
+
+OPTIONS:
+    -h, --help
+            Print help information
+
+    -V, --version
+            Print version information
+
+Group:
+    &lt;TOOL&gt;
+            The tool to query
+
+            [possible values: node, npm, pnpm, yarn]
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>All 3 of those patterns above <em>did not</em> alter the help menu for the &quot;main&quot; entry point (<code>moon --help</code>). For example, this is my current CLI output.</p>
+<pre><code>MOON 0.1.0
+Take your monorepo to the moon!
+
+USAGE:
+    moon [OPTIONS] &lt;SUBCOMMAND&gt;
+
+OPTIONS:
+    -h, --help                     Print help information
+    -L, --log-level &lt;LOG_LEVEL&gt;    Lowest log level to output [possible values: off, error, warn, info, debug, trace]
+    -V, --version                  Print version information
+
+SUBCOMMANDS:
+    bin              Return an absolute path to a tool's binary within the toolchain.
+    project          Display information about a single project.
+    project-graph    Display a graph of projects in DOT format.
+    run              Run a project task and all its dependent tasks.
+    setup            Setup the environment by installing all tools.
+    teardown         Teardown the environment by uninstalling all tools and deleting temp files.
+</code></pre>
+<p>What i'm looking for is something like this:</p>
+<pre><code>MOON 0.1.0
+Take your monorepo to the moon!
+
+USAGE:
+    moon [OPTIONS] &lt;SUBCOMMAND&gt;
+
+OPTIONS:
+    -h, --help                     Print help information
+    -L, --log-level &lt;LOG_LEVEL&gt;    Lowest log level to output [possible values: off, error, warn, info, debug, trace]
+    -V, --version                  Print version information
+
+ENVIRONMENT COMMANDS:
+    bin              Return an absolute path to a tool's binary within the toolchain.
+    setup            Setup the environment by installing all tools.
+    teardown         Teardown the environment by uninstalling all tools and deleting temp files.
+
+PROJECT COMMANDS:
+    project          Display information about a single project.
+    project-graph    Display a graph of projects in DOT format.
+    run              Run a project task and all its dependent tasks.
+</code></pre>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @milesj on 2022-02-17 03:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-17 15:06</div>
+            <div class="timeline-body"><p><code>subcommand_help_heading</code> is the only one that applies to subcommands and it applies to all subcommands.  See our <a href="https://github.com/clap-rs/clap/blob/master/examples/multicall-busybox.md">multicall-busybox example</a> for what the output looks like and how to use it.  That example is only done with the builder API but the principles are the same.</p>
+<p>https://github.com/clap-rs/clap/issues/1553 is our issue for supporting multiple subcommand help headings.</p>
+<p>Closing this out in favor of #1553</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-02-17 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2022-02-17 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-duplicate</span> added by @epage on 2022-02-17 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/milesj">@milesj</a> on 2022-02-17 17:49</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-17 17:53</div>
+            <div class="timeline-body"><p>Also, #1553 is marked for the 4.0 milestone and our renaming of <code>help_heading</code> to <code>next_help_heading</code> was part of the prep work for it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

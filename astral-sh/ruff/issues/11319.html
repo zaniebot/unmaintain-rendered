@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Rule request] Missing return statement - astral-sh/ruff #11319</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Rule request] Missing return statement</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11319">#11319</a>
+        opened by <a href="https://github.com/mrcljx">@mrcljx</a>
+        on 2024-05-07 09:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mrcljx">@mrcljx</a> on 2024-05-07 09:11</div>
+            <div class="timeline-body"><p>I just stumbled over a bug in our codebase:</p>
+<pre><code>def f() -&gt; int:
+  return 42
+
+def g() -&gt; int | None:
+  f()
+</code></pre>
+<p>The last line should have been <code>return f()</code>.</p>
+<p>While <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=5b3ede9342f1ab85c577a6373fda57ea">Mypy</a> reports a <code>Missing return statement</code>, <a href="https://pyright-play.net/?strict=true&amp;code=CYUwZgBA5gFAlBAtAPggSwHYBcBcAoCQiAJxCwFdiMIAWAJjz1EjHiVUywgB8IA5APYYQ%2BItHh4gA">Pyright</a> does not. This is a <a href="https://github.com/microsoft/pyright/issues/4027#issuecomment-1272636513">deliberate decision by the Pyright maintainer (point 2)</a> as there is no type issue here. In this case Mypy actually does some static analysis outside of its main responsibility.</p>
+<p>I'm wondering whether there could be a Ruff rule for this. Often, Ruff lacks the type information. But in this case type information isn't needed. If a function:</p>
+<ol>
+<li>has a return annotation,</li>
+<li>and it's different than <code>-&gt; None</code> or <code>-&gt; NoReturn</code>,</li>
+<li>and the body<ol>
+<li>isn't a stub (<code>...</code> or <code>pass</code>)</li>
+<li>doesn't have a <code>return</code> <em>anywhere</em> (in that case RET503 takes over)</li>
+<li>and control flow can reach the end of the body</li>
+</ol>
+</li>
+<li>report an error</li>
+</ol>
+<pre><code class="language-python">def ok_1() -&gt; int | None:
+  return 2
+
+def ok_2() -&gt; int | None:
+  return # &lt; maybe a second rule later could reject `return` without a value in this scenario
+
+def ok_3() -&gt; int | None:
+  raise NotImplementedError
+
+def ok_4() -&gt; int | None: ...
+
+def ok_5() -&gt; int | None:
+  pass
+
+def ok_6() -&gt; int | None:
+  if ...:
+    return 42 # RET503 will cause an error here
+
+def ok_7():
+  f()
+</code></pre>
+<pre><code class="language-python">def bad_1() -&gt; int | None:
+  f()
+
+def bad_2() -&gt; int | None:
+  if ...:
+    raise ValueError()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/autinerd">@autinerd</a> on 2024-05-08 04:28</div>
+            <div class="timeline-body"><p>I think it would be a good idea to extend RET503 to take this into account.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-05-08 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2024-05-15 12:35</div>
+            <div class="timeline-body"><p>I think this could be a good first issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

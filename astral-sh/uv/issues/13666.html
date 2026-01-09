@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv unable to uninstall ruamel.yaml - astral-sh/uv #13666</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv unable to uninstall ruamel.yaml</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13666">#13666</a>
+        opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a>
+        on 2025-05-26 20:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-05-26 20:27</div>
+            <div class="timeline-body"><p>The old ruamel.yaml sticks around after the following:</p>
+<pre><code>rm -rf env
+uv venv env
+uv pip install ruamel.yaml==0.18.11
+uv pip install ruamel.yaml==0.18.10
+uv pip freeze
+</code></pre>
+<p>In contrast, pip handles this correctly:</p>
+<pre><code>uv venv env --seed
+source env/bin/activate
+python -m pip install ruamel.yaml==0.18.11
+python -m pip install ruamel.yaml==0.18.10
+python -m pip freeze
+</code></pre>
+<p>I suspect something funky is going on with normalisation of dist-info and RECORD files (in particular, underscore vs period). The installed RECORD files differ too depending on whether installed with pip or with uv</p>
+<p>uv 0.7.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv unable to install ruamel.yaml" to "uv unable to uninstall ruamel.yaml" by @hauntsaninja on 2025-05-26 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-26 20:38</div>
+            <div class="timeline-body"><p>ruamel.yaml 0.18.11 has an invalid RECORD, comparing <a href="https://inspector.pypi.io/project/ruamel-yaml/0.18.11/packages/2e/62/615a16ebbca43fd4434843e9d346d795a134d0a1ff46101c858d93c9778d/ruamel.yaml-0.18.11-py3-none-any.whl/">actual contents</a> and <a href="https://inspector.pypi.io/project/ruamel-yaml/0.18.11/packages/2e/62/615a16ebbca43fd4434843e9d346d795a134d0a1ff46101c858d93c9778d/ruamel.yaml-0.18.11-py3-none-any.whl/ruamel.yaml-0.18.11.dist-info/RECORD">RECORD</a>, and pip seems to ignore the RECORD?</p>
+<p>Files:</p>
+<pre><code>./ruamel.yaml-0.18.11.dist-info/METADATA
+./ruamel.yaml-0.18.11.dist-info/RECORD
+./ruamel.yaml-0.18.11.dist-info/WHEEL
+./ruamel.yaml-0.18.11.dist-info/licenses/LICENSE
+./ruamel.yaml-0.18.11.dist-info/top_level.txt
+</code></pre>
+<p>RECORD:</p>
+<pre><code>ruamel_yaml-0.18.11.dist-info/licenses/LICENSE,sha256=DOmtap1PCCkpanLHfQd5XdZ_QnUeKSK-VsBR05rhwBE,1121
+ruamel_yaml-0.18.11.dist-info/METADATA,sha256=gEtWY9XJKxSPQTdzG_ETiVFWoyENhDKTRmWatOnRGDM,23962
+ruamel_yaml-0.18.11.dist-info/WHEEL,sha256=zaaOINJESkSfm_4HQVc5ssNzHCPXhJm0kEUakpsEHaU,91
+ruamel_yaml-0.18.11.dist-info/top_level.txt,sha256=lu5ar9ilvyS03jNvS5x9I0_3NwCKkvIlY2k0QH9AArk,7
+ruamel_yaml-0.18.11.dist-info/RECORD,,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-05-26 20:42</div>
+            <div class="timeline-body"><p>How would pip uninstall if it ignores RECORD? But there is something interesting where the pip installed version inserts extra entries into the RECORD...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-05-26 20:42</div>
+            <div class="timeline-body"><p>With uv:</p>
+<pre><code>ruamel.yaml-0.18.11.dist-info/INSTALLER,sha256=5hhM4Q4mYTT9z6QB6PGpUAW81PGNFrYrdXMj4oM_6ak,2
+ruamel.yaml-0.18.11.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+...
+ruamel_yaml-0.18.11.dist-info/METADATA,sha256=gEtWY9XJKxSPQTdzG_ETiVFWoyENhDKTRmWatOnRGDM,23962
+ruamel_yaml-0.18.11.dist-info/RECORD,,
+ruamel_yaml-0.18.11.dist-info/WHEEL,sha256=zaaOINJESkSfm_4HQVc5ssNzHCPXhJm0kEUakpsEHaU,91
+ruamel_yaml-0.18.11.dist-info/licenses/LICENSE,sha256=DOmtap1PCCkpanLHfQd5XdZ_QnUeKSK-VsBR05rhwBE,1121
+ruamel_yaml-0.18.11.dist-info/top_level.txt,sha256=lu5ar9ilvyS03jNvS5x9I0_3NwCKkvIlY2k0QH9AArk,7
+</code></pre>
+<p>With pip:</p>
+<pre><code>ruamel.yaml-0.18.11.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+ruamel.yaml-0.18.11.dist-info/METADATA,,
+ruamel.yaml-0.18.11.dist-info/RECORD,,
+ruamel.yaml-0.18.11.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+ruamel.yaml-0.18.11.dist-info/WHEEL,,
+ruamel.yaml-0.18.11.dist-info/licenses/LICENSE,,
+ruamel.yaml-0.18.11.dist-info/top_level.txt,,
+...
+pip also lists a bunch of pycache entries in here
+...
+ruamel_yaml-0.18.11.dist-info/METADATA,sha256=gEtWY9XJKxSPQTdzG_ETiVFWoyENhDKTRmWatOnRGDM,23962
+ruamel_yaml-0.18.11.dist-info/RECORD,,
+ruamel_yaml-0.18.11.dist-info/WHEEL,sha256=zaaOINJESkSfm_4HQVc5ssNzHCPXhJm0kEUakpsEHaU,91
+ruamel_yaml-0.18.11.dist-info/licenses/LICENSE,sha256=DOmtap1PCCkpanLHfQd5XdZ_QnUeKSK-VsBR05rhwBE,1121
+ruamel_yaml-0.18.11.dist-info/top_level.txt,sha256=lu5ar9ilvyS03jNvS5x9I0_3NwCKkvIlY2k0QH9AArk,7
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-26 21:28</div>
+            <div class="timeline-body"><p>Filed upstream: https://sourceforge.net/p/ruamel-yaml/tickets/544/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @konstin on 2025-05-26 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-26 21:30</div>
+            <div class="timeline-body"><p>My preferred outcome would be a fix on the ruamel.yaml side, but we can add a workaround if they don't fix it and it causes enduring breakage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-05-26 21:58</div>
+            <div class="timeline-body"><p>Thanks! Was worried I would have to figure out how to make a SourceForge account :-)</p>
+<p>If you do want to match <code>pip</code>, it looks like they just modify RECORD at installation time to include all the files they know they've installed:
+https://github.com/pypa/pip/blob/502d08cc404625c9687e0c1aa08f502994e0fc18/src/pip/_internal/operations/install/wheel.py#L452-L704</p>
+<p>Maybe they got tired of their users sounding like a broken record about broken RECORDs...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimbleby">@dimbleby</a> on 2025-05-27 15:15</div>
+            <div class="timeline-body"><p>I would guess that ruamel.yaml broke by trying to do something manual - where they only needed to use a newer version of setuptools to build their wheels.</p>
+<p>Perhaps uv should consider validating during installation, compare:</p>
+<pre><code>$ poetry add ruamel.yaml
+Using version ^0.18.11 for ruamel-yaml
+
+Updating dependencies
+Resolving dependencies... (0.3s)
+
+Package operations: 2 installs, 0 updates, 0 removals
+
+  - Installing ruamel-yaml-clib (0.2.12)
+  - Installing ruamel-yaml (0.18.11)
+Warning: Validation of the RECORD file of ruamel.yaml-0.18.11-py3-none-any.whl failed. Please report to the maintainers of that package so they can fix their build process. Details:
+In /home/dch/.cache/pypoetry/artifacts/03/7f/48/26d941431e21e84e85c3dd17696c9db678f19b3170bab766b85af7fdb1/ruamel.yaml-0.18.11-py3-none-any.whl, ruamel.yaml-0.18.11.dist-info/METADATA is not mentioned in RECORD
+In /home/dch/.cache/pypoetry/artifacts/03/7f/48/26d941431e21e84e85c3dd17696c9db678f19b3170bab766b85af7fdb1/ruamel.yaml-0.18.11-py3-none-any.whl, ruamel.yaml-0.18.11.dist-info/RECORD is not mentioned in RECORD
+In /home/dch/.cache/pypoetry/artifacts/03/7f/48/26d941431e21e84e85c3dd17696c9db678f19b3170bab766b85af7fdb1/ruamel.yaml-0.18.11-py3-none-any.whl, ruamel.yaml-0.18.11.dist-info/WHEEL is not mentioned in RECORD
+In /home/dch/.cache/pypoetry/artifacts/03/7f/48/26d941431e21e84e85c3dd17696c9db678f19b3170bab766b85af7fdb1/ruamel.yaml-0.18.11-py3-none-any.whl, ruamel.yaml-0.18.11.dist-info/licenses/LICENSE is not mentioned in RECORD
+In /home/dch/.cache/pypoetry/artifacts/03/7f/48/26d941431e21e84e85c3dd17696c9db678f19b3170bab766b85af7fdb1/ruamel.yaml-0.18.11-py3-none-any.whl, ruamel.yaml-0.18.11.dist-info/top_level.txt is not mentioned in RECORD
+
+
+Writing lock file
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AvdN">@AvdN</a> on 2025-05-29 06:03</div>
+            <div class="timeline-body"><p>This should be fixed in 0.18.12, should be out soon</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AvdN">@AvdN</a> on 2025-05-30 06:14</div>
+            <div class="timeline-body"><p>0.18.12 is out with the fix for this. I tested the .whl with</p>
+<pre><code>uv venv /opt/util/testuninstall
+uv pip install --python /opt/util/testuninstall ruamel.yaml-0.18.12-py3-none-any.whl
+uv pip uninstall --python /opt/util/testuninstall ruamel.yaml ruamel.yaml.clib
+find /opt/util/testuninstall/lib/python3.13/site-packages | fgrep ruamel
+</code></pre>
+<p>and the last command had no (longer) any output</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-30 06:51</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-05-30 06:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

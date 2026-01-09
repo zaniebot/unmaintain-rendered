@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff autocompletion for --select rules - astral-sh/ruff #2808</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff autocompletion for --select rules</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2808">#2808</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-02-12 11:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-12 11:55</div>
+            <div class="timeline-body"><p><code>ruff check --select E</code><tab> currently suggests filenames starting with <code>E</code> instead of the rules starting with <code>E</code>.</p>
+<p>It would be nice if that was supported for <code>--select</code>, <code>--ignore</code>, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-12 12:32</div>
+            <div class="timeline-body"><p>Same for <code>ruff rule E</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-02-12 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-12 15:44</div>
+            <div class="timeline-body"><p>Probably has to do with the fact that we use a custom <code>from_str</code> for these, so they aren't picked up in auto-completion. But maybe there's a way around it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-12 17:05</div>
+            <div class="timeline-body"><p>Yes there's indeed a way around this. I have already implemented this locally but would wait till #2517 is merged since that logic has to change when the <code>RuleCodePrefix</code> enum is split up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2906.html">astral-sh/ruff#2906</a> on 2023-02-14 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-15 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-15 16:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Same for <code>ruff rule E</code>
+@not-my-profile can you do this as well?</p>
+</blockquote>
+<p>I tried too long for myself but failed with:</p>
+<pre><code class="language-diff">diff --git crates/ruff_cli/src/args.rs crates/ruff_cli/src/args.rs
+index 445534c7..e69bb043 100644                                                                                                                                             
+--- crates/ruff_cli/src/args.rs  
++++ crates/ruff_cli/src/args.rs          
+@@ -38,7 +38,7 @@ pub enum Command {                                                                                                                                        
+     #[clap(alias = &quot;--explain&quot;)]                                                                                                            
+     Rule {                                                                                                                                                                 
+         #[arg(value_parser=Rule::from_code)]                                                                                                                               
+-        rule: Rule,                                                     
++        rule: RuleSelector,                                  
+                                                    
+         /// Output format                                    
+         #[arg(long, value_enum, default_value = &quot;pretty&quot;)]          
+diff --git crates/ruff_cli/src/main.rs crates/ruff_cli/src/main.rs                                                                                                           
+index cf806cde..ea3af2b4 100644          
+--- crates/ruff_cli/src/main.rs     
++++ crates/ruff_cli/src/main.rs                                                                                                                                             
+@@ -8,6 +8,7 @@ use clap::{CommandFactory, Parser, Subcommand};           
+ use colored::Colorize;                       
+ use notify::{recommended_watcher, RecursiveMode, Watcher};       
+                               
++use ruff::registry::Rule;                          
+ use ::ruff::logging::{set_up_logging, LogLevel};             
+ use ::ruff::resolver::PyprojectDiscovery;
+ use ::ruff::settings::types::SerializationFormat;                                                                                                                           
+@@ -107,7 +108,7 @@ quoting the executed command, along with the relevant file contents and `pyproje
+     set_up_logging(&amp;log_level)?;            
+                                                                             
+     match command {        
+-        Command::Rule { rule, format } =&gt; commands::rule::rule(&amp;rule, format)?,
++        Command::Rule { rule, format } =&gt; commands::rule::rule(&amp;Rule::from_code(rule.prefix_and_code().1).unwrap(), format)?,
+         Command::Config { option } =&gt; return Ok(commands::config::config(option.as_deref())),                                                                              
+         Command::Linter { format } =&gt; commands::linter::linter(format)?,
+         Command::Clean =&gt; commands::clean::clean(log_level)?,
+</code></pre>
+<p>Also how can I enable that it displays the short-code like in the PR?:</p>
+<pre><code>$ ruff check --select=EM&lt;Tab&gt;
+EM          -- flake8-errmsg
+EM10   EM1  --
+EM101       -- raw-string-in-exception
+EM102       -- f-string-in-exception
+EM103       -- dot-format-in-exception
+</code></pre>
+<p>for me it displays only the raw codes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-15 17:02</div>
+            <div class="timeline-body"><blockquote>
+<p>can you do this as well?</p>
+</blockquote>
+<p>I am currently busy with other stuff.</p>
+<blockquote>
+<p>how can I enable that it displays the short-code like in the PR?</p>
+</blockquote>
+<p>I don't know I am using Zsh and this just worked ... are you using a different shell?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-15 17:38</div>
+            <div class="timeline-body"><p>I am using <code>bash</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-15 17:50</div>
+            <div class="timeline-body"><p>Ah ok yeah ... sorry it appears that <code>clap_complete</code> doesn't include the value help text for bash ... perhaps because bash doesn't support it?</p>
+<pre><code>$ ruff generate-shell-completion zsh | grep banned-api
+TID251\:&quot;banned-api&quot;
+TID251\:&quot;banned-api&quot;
+TID251\:&quot;banned-api&quot;
+TID251\:&quot;banned-api&quot;
+TID251\:&quot;banned-api&quot;
+TID251\:&quot;banned-api&quot;
+$ ruff generate-shell-completion bash | grep banned-api
+# nothing
+</code></pre>
+<p>I can recommend zsh ... it does in general have much better autocompletion than bash.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-15 17:50</div>
+            <div class="timeline-body"><p>ok, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4551.html">astral-sh/ruff#4551</a> on 2023-05-20 19:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add custom source roots or namespace packages to `analyze graph`? - astral-sh/ruff #20701</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>add custom source roots or namespace packages to `analyze graph`?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20701">#20701</a>
+        opened by <a href="https://github.com/gwdekker">@gwdekker</a>
+        on 2025-10-05 10:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gwdekker">@gwdekker</a> on 2025-10-05 10:56</div>
+            <div class="timeline-body"><p><code>ruff analyze graph</code> is a great potential way to quickly get a projects' dependency tree which could be very useful in many different ways.</p>
+<p>I found that in my monorepo, using the <code>polylith</code> setup, it is not able to find the dependencies correctly.</p>
+<p>This is due to the fact that the structure is non-standard - it uses custom source roots <code>bases</code> and <code>components</code>, which are not detected correctly by <code>ruff</code>for this use case.</p>
+<p>More precisely, the <code>polylith</code> setup builds the package in a special way, and the imports I have across my code are of the type <code>from monorepo_name.component_name import X</code>. This is not recognized by <code>ruff analyze</code> to be an internal dependency it seems, so it does not list this as a dependency.</p>
+<p>Curious to hear if this is something that is easily fixable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-05 20:06</div>
+            <div class="timeline-body"><p>I'm not sure I follow the project structure. Could you list your project structure with a few example files (and what imports they contain)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwdekker">@gwdekker</a> on 2025-10-06 06:24</div>
+            <div class="timeline-body"><p>Thanks for you quick answer! Apologies for the unclarity - in hindsight i could have seen that that was not the clearest explanation.</p>
+<p>I made a little example for you attached. More information is also in its readme. Hope this helps!</p>
+<p><a href="https://github.com/user-attachments/files/22715955/ruff_example.zip">ruff_example.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @MichaReiser on 2025-10-06 06:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-10-06 06:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-06 06:53</div>
+            <div class="timeline-body"><p>Thank you. This was super helpful.</p>
+<p>Setting <code>namespace-packages = [&quot;components/flint&quot;, &quot;bases/flint&quot;]</code> makes Ruff recognize some imports (I'm not sure if it's all, you'll have a better sense for that)</p>
+<pre><code>{
+  &quot;bases/flint/base_one/__init__.py&quot;: [],
+  &quot;bases/flint/base_one/core.py&quot;: [
+    &quot;components/flint/api_client/__init__.py&quot;,
+    &quot;components/flint/constants/__init__.py&quot;
+  ],
+  &quot;components/flint/api_client/__init__.py&quot;: [],
+  &quot;components/flint/api_client/core.py&quot;: [
+    &quot;components/flint/constants/__init__.py&quot;,
+    &quot;components/flint/time_series_standards/__init__.py&quot;
+  ],
+  &quot;components/flint/constants/__init__.py&quot;: [
+    &quot;components/flint/constants/api_constants.py&quot;
+  ],
+  &quot;components/flint/constants/api_constants.py&quot;: [],
+  &quot;components/flint/time_series_standards/__init__.py&quot;: [
+    &quot;components/flint/time_series_standards/core.py&quot;
+  ],
+  &quot;components/flint/time_series_standards/core.py&quot;: []
+}
+</code></pre>
+<p>Ruff adds the root of all the packages that it detects as search path to <code>analyze graph</code>. Without setting <code>namespace-pacakges</code>, the package roots are:</p>
+<pre><code>[crates/ruff/src/commands/analyze_graph.rs:70:5] &amp;src_roots = [
+    &quot;/Users/micha/Downloads/ruff_example/components/flint&quot;,
+    &quot;/Users/micha/Downloads/ruff_example/components/flint&quot;,
+    &quot;/Users/micha/Downloads/ruff_example/bases/flint&quot;,
+    &quot;/Users/micha/Downloads/ruff_example/components/flint&quot;,
+]
+</code></pre>
+<p>Note how Ruff adds <code>components/flint</code>. The issue with <code>components/flint</code> is that the import path becomes <code>api_client</code> (and not <code>flint.api_client</code>), breaking all import statements.</p>
+<p>Setting <code>namespace-packages</code> ensures that Ruff detects that <code>components/flint</code> is a package and it should add the entire directory to its search paths, so that <code>flint.api_client</code> can be resolved</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwdekker">@gwdekker</a> on 2025-10-06 07:16</div>
+            <div class="timeline-body"><p>Amazing, thanks! I will try this on the full repo and report back if this indeed solves the full problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwdekker">@gwdekker</a> on 2025-10-06 07:21</div>
+            <div class="timeline-body"><p>btw - how stable would you say this command is for now? Is there a real possibility it might disappear or change fundamentally?  (not afraid of minor changes, but it would be sad to learn it would become totally unsupported/would disappear).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-06 07:44</div>
+            <div class="timeline-body"><blockquote>
+<p>btw - how stable would you say this command is for now? Is there a real possibility it might disappear or change fundamentally? (not afraid of minor changes, but it would be sad to learn it would become totally unsupported/would disappear).</p>
+</blockquote>
+<p>The command is used by many users. We don't expect it to go away. The only reason it's under preview is because there are a few cases where Ruff might miss dependencies (I think star imports are one such case)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwdekker">@gwdekker</a> on 2025-10-07 06:00</div>
+            <div class="timeline-body"><p>This works like a charm! I now can also on my full monorepo basically recreate the dependency graph that <code>tach</code> gives me in <code>tach.toml</code> against what I get from <code>ruff analyze</code>.</p>
+<p>Two minor issues I found in the process:</p>
+<ol>
+<li><code>tach</code> gives me also the line number(s) if it finds an import in the code that's not in <code>tach.toml</code>. Would you consider adding line numbers to the output of <code>ruff analyze graph</code>?</li>
+<li><code>tach</code> by default ignores dependencies if the import statement is wrapped by <code>if TYPE_CHECKING:</code>. Is that something that is possible with <code>ruff analyze graph</code> as well, and would you consider adding it if not yet possible? (from another thread on the issue tracker I found <a href="https://grimp.readthedocs.io/en/stable/usage.html">Grimp</a>, which supports this with <code>graph = grimp.build_graph('mypackage', exclude_type_checking_imports=True)</code>.</li>
+</ol>
+<p>Thanks again for your help! I wanted to mention that @charliermarsh 's recent mentions in the recent podcast about wanting to be super responsive in the issue tracker and to build a supportive community that way still holds - which is impressive given the sheer size of the projects!</p>
+<p>I will for findability/traceability add the two issues as feature requests to the issue tracker.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20736.html">astral-sh/ruff#20736</a> on 2025-10-07 06:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20737.html">astral-sh/ruff#20737</a> on 2025-10-07 06:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @gwdekker on 2025-10-07 06:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

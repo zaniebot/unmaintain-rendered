@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate package in requirements - astral-sh/uv #2639</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Duplicate package in requirements</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2639">#2639</a>
+        opened by <a href="https://github.com/dmwyatt">@dmwyatt</a>
+        on 2024-03-24 20:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dmwyatt">@dmwyatt</a> on 2024-03-24 20:09</div>
+            <div class="timeline-body"><pre><code># requirements.in
+Django
+django-environ
+django-vite
+httpx
+whitenoise[brotli]
+</code></pre>
+<pre><code># dev-requirements.in
+-c requirements.txt
+mdformat-gfm
+pytest
+pytest-asyncio
+pytest-django
+pytest-httpx
+</code></pre>
+<pre><code class="language-shell">$ uv pip compile requirements.in -o requirements.txt &amp;&amp; uv pip compile dev-requirements.in -o dev-requirements.txt
+Resolved 15 packages in 251ms
+Resolved 23 packages in 6ms
+</code></pre>
+<pre><code class="language-shell">$ uv pip sync .\requirements.txt .\dev-requirements.txt                                                                                                                             
+error: Failed to determine installation plan
+  Caused by: Detected duplicate package in requirements: anyio
+</code></pre>
+<p>Of note, <code>pip-tools</code> doesn't care about the duplicate package.  The duplicate package exists because <code>pytest-httpx</code> depends on <code>httpx</code> which depends on <code>anyio</code>.  I require <code>httpx</code> in my main requirements, and <code>pytest-httpx</code> in my dev requirements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-24 20:17</div>
+            <div class="timeline-body"><p>I think you probably want to include both your standard requirements and your development requirements in your development lockfile e.g.</p>
+<pre><code>pip compile requirements.in dev-requirements.in -o dev-requirements.txt
+</code></pre>
+<p>or in <code>dev-requirements.in</code> you should include a reference to your <code>requirements.in</code> file.</p>
+<p>Otherwise you're creating a resolution which does not include all of your standard requirements and is not valid for performing a sync.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-03-24 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-24 20:21</div>
+            <div class="timeline-body"><p>Yeah, this seems correct to me (unless we have a bug here), since that error message is only intended to pop up when you have the same requirement with two different versions. If the versions are different between your two lock files, we should error like this. If the versions are the same in <code>requirements.txt</code> and <code>dev-requirements.txt</code>, then I'd consider it a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmwyatt">@dmwyatt</a> on 2024-03-24 20:46</div>
+            <div class="timeline-body"><p>So, in my original post I forgot to add <code>-c requirements.txt</code> to my example <code>requirements.in</code>. I've now updated that.</p>
+<p>The <code>pip-tools</code> <a href="https://github.com/jazzband/pip-tools#workflow-for-layered-requirements">recommended way of doing</a> this is as I described in my original post.</p>
+<ol>
+<li>compile requirements.in</li>
+<li>compile dev-requirements.in</li>
+<li>sync both resulting .txt files</li>
+</ol>
+<p>I certainly understand if <code>uv</code> isn't meant to be 100% compatible with <code>pip-tools</code>. Not sure if this is a case of unsupported use case or a bug.</p>
+<p>However, this sounds like a bug:</p>
+<blockquote>
+<p>If the versions are the same in requirements.txt and dev-requirements.txt,</p>
+</blockquote>
+<p>The versions are the same:</p>
+<pre><code># requirements.txt
+anyio==4.3.0
+    # via httpx
+</code></pre>
+<pre><code># dev-requirements.txt
+anyio==4.3.0
+    # via httpx
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-24 21:07</div>
+            <div class="timeline-body"><p>I’ll take a look! If they’re the same version, it should work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-24 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-24 21:54</div>
+            <div class="timeline-body"><p>Thanks for clarifying! This indeed sounds like a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2024-03-24 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-03-24 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-24 22:31</div>
+            <div class="timeline-body"><p>Unfortunately I'm not able to reproduce:</p>
+<pre><code>❯ cargo run pip sync requirements.txt dev-requirements.txt
+    Finished dev [unoptimized + debuginfo] target(s) in 0.13s
+     Running `target/debug/uv pip sync requirements.txt dev-requirements.txt`
+Installed 29 packages in 62ms
+ + anyio==4.3.0
+ + asgiref==3.8.1
+ + brotli==1.1.0
+ + certifi==2024.2.2
+ + django==5.0.3
+ + django-environ==0.11.2
+ + django-vite==3.0.3
+ + h11==0.14.0
+ + httpcore==1.0.4
+ + httpx==0.27.0
+ + idna==3.6
+ + iniconfig==2.0.0
+ + linkify-it-py==2.0.3
+ + markdown-it-py==3.0.0
+ + mdformat==0.7.17
+ + mdformat-gfm==0.3.6
+ + mdformat-tables==0.4.1
+ + mdit-py-plugins==0.4.0
+ + mdurl==0.1.2
+ + packaging==24.0
+ + pluggy==1.4.0
+ + pytest==8.1.1
+ + pytest-asyncio==0.23.6
+ + pytest-django==4.8.0
+ + pytest-httpx==0.30.0
+ + sniffio==1.3.1
+ + sqlparse==0.4.4
+ + uc-micro-py==1.0.3
+ + whitenoise==6.6.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-03-24 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-03-24 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-24 22:33</div>
+            <div class="timeline-body"><p>Can you share the exact command you ran to trigger the error, along with the input <code>requirements.txt</code> and <code>dev-requirements.txt</code> files, and your uv version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 21:03</div>
+            <div class="timeline-body"><p>Closing but happy to revisit if more info comes in!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-26 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nilleb">@nilleb</a> on 2024-04-16 07:36</div>
+            <div class="timeline-body"><p>@charliermarsh could you have a look at <a href="https://gist.github.com/nilleb/352ec9e83942f06382d33d382becd5f6">this gist</a> please?</p>
+<p>the problem is visible when uncommenting that aider-chat - the anyio requirement moves to 4.2.0 and uv sync does not work anymore</p>
+<p>I hope this helps!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

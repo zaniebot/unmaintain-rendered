@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>args_from_usage() has issues with non-ASCII identifiers - clap-rs/clap #664</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>args_from_usage() has issues with non-ASCII identifiers</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/664">#664</a>
+        opened by <a href="https://github.com/tormol">@tormol</a>
+        on 2016-09-15 21:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tormol">@tormol</a> on 2016-09-15 21:33</div>
+            <div class="timeline-body"><p>Non-ASCII help on its own is OK:
+<code>clap::App::new(&quot;&quot;).args_from_usage(&quot;&lt;h&gt;  'with ŭnicode'&quot;);</code> works</p>
+<p>If the last character is non-ascii there are slice errors:
+<code>clap::App::new(&quot;&quot;).args_from_usage(&quot;&lt;hæ&gt; 'comment doesn't matter'&quot;);</code></p>
+<p>If both name and help has non-ascii the program hangs:
+<code>clap::App::new(&quot;&quot;).args_from_usage(&quot;&lt;øh&gt;  'with ŭnicode'&quot;);</code></p>
+<p>If only the name is non-ascii the argument is not detected:
+<code>clap::App::new(&quot;&quot;).args_from_usage(&quot;&lt;øh&gt; 'ASCII or empty'&quot;).get_matches().value_of(&quot;øh&quot;).unwrap()</code></p>
+<p>The first three act the same with options, but this is different:
+<code>clap::App::new(&quot;&quot;).args_from_usage(&quot;--øh  'ASCII'&quot;).get_matches();</code> gives this error:</p>
+<pre><code>error: Found argument '--øh' which wasn't expected, or isn't valid in this context
+    Did you mean --ø?
+
+USAGE:
+    clapbug --ø &lt;ASCII'&gt;
+
+For more information try --help
+</code></pre>
+<p>Arg::with_name() has none of these issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-09-16 21:18</div>
+            <div class="timeline-body"><p>Originally the <code>from_usage</code> parser was designed around ASCII only support (where as full <code>Arg</code> methods support any valid UTF-8). I agree this is something I need to add, and a feature I'd like to have. I'll add it to the issue tracker, but there a few other things I need to implement before this.</p>
+<p>Thanks for taking the time to request and file this! :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2016-09-16 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2016-09-16 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2016-09-16 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2016-09-16 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-09-16 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tormol">@tormol</a> on 2016-09-17 05:35</div>
+            <div class="timeline-body"><p>This is a niche issue, and easy to work around.
+Asserting that the identifiers are ascii to fail in a consistent way should be enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nabijaczleweli">@nabijaczleweli</a> on 2016-09-17 05:40</div>
+            <div class="timeline-body"><p>Why'd you ever fail when it can actually work though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/670.html">clap-rs/clap#670</a> on 2016-09-27 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tormol">@tormol</a> on 2016-09-30 15:34</div>
+            <div class="timeline-body"><p>If it was difficult to make it work. I did it anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-10-04 16:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

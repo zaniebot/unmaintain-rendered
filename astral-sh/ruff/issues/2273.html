@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>flake8-logging-format catches more things than ruff - astral-sh/ruff #2273</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>flake8-logging-format catches more things than ruff</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2273">#2273</a>
+        opened by <a href="https://github.com/alexprengere">@alexprengere</a>
+        on 2023-01-27 18:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alexprengere">@alexprengere</a> on 2023-01-27 18:38</div>
+            <div class="timeline-body"><p>Tested with ruff <code>0.0.236</code> and the latest flake8-logging-format. This is an error (G004) with flake8 but passes with ruff:</p>
+<pre><code class="language-python">import logging
+log = logging.getLogger(__name__)
+msg = &quot;message&quot;
+log.warning(f&quot;A {msg}&quot;)
+</code></pre>
+<p>When using directly <code>logging.warning</code>, both fail.
+Using <code>logging.getLogger</code> is a common idiom when logging messages on large projects, so it would be super useful to catch it as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-01-27 19:06</div>
+            <div class="timeline-body"><p>@alexprengere can you try calling it <code>logger</code> instead of <code>log</code>?</p>
+<pre><code class="language-python">import logging
+logger = logging.getLogger(__name__)
+msg = &quot;message&quot;
+logger.warning(f&quot;A {msg}&quot;)
+</code></pre>
+<p><code>flake8-logging-format</code> only excludes the <code>warnings.</code> and <code>parser.</code> call paths, so <code>log.warning</code> is identified as a logger call. However, <code>ruff</code> only <em>includes</em> <code>logging</code> and <code>*logger</code> call paths, so <code>log.warning</code> is not identified as a logger.</p>
+<p>This is probably easy to fix by changing <code>is_logger_candidate</code> to check for <code>*log</code>: https://github.com/charliermarsh/ruff/blob/3ec46f093604c4fe79f724a5f927b241387a239c/src/ast/helpers.rs#L1009-L1019</p>
+<p>Doing the same as <code>flake8-logging-format</code> is probably prone to a lot of false positives if an arbitrary API implements an <code>error</code> method, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 20:34</div>
+            <div class="timeline-body"><p>Yeah we could extend to anything that includes log, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 20:38</div>
+            <div class="timeline-body"><p>(It’s also possible that I was wrong to restrict the checks in this way.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Flowake">@Flowake</a> on 2023-01-27 22:42</div>
+            <div class="timeline-body"><p>The issue of correctly identifying how loggers are named arises for multiple rules.
+Maybe we could define in one place the accepted names for some object to be considered a logger ? (I'm thinking about TRY400 which is only triggered by the logger being called &quot;logging&quot; or &quot;logger&quot;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 23:00</div>
+            <div class="timeline-body"><p>We do have that centralized helper (<code>is_logger_candidate</code>), which TRY400 uses too. So if we just tweak that, it'll fix this for both rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-27 23:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2279.html">astral-sh/ruff#2279</a> on 2023-01-27 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-27 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexprengere">@alexprengere</a> on 2023-02-03 13:12</div>
+            <div class="timeline-body"><p>Thanks a lot for the quick fix!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

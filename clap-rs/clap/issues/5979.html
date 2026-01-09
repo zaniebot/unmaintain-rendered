@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic completion at intermediate position erroneously completes the following argument on bash and zsh - clap-rs/clap #5979</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Dynamic completion at intermediate position erroneously completes the following argument on bash and zsh</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5979">#5979</a>
+        opened by <a href="https://github.com/jgreitemann">@jgreitemann</a>
+        on 2025-04-27 13:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jgreitemann">@jgreitemann</a> on 2025-04-27 13:14</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.86.0 (05f9846f8 2025-03-31)</p>
+<h3>Clap Version</h3>
+<p>clap 4.5.37 / clap_complete 4.5.47</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Command, arg};
+use clap_complete::CompleteEnv;
+
+fn main() {
+    if std::env::var(&quot;COMPLETE&quot;).is_ok() {
+        CompleteEnv::with_factory(|| {
+            Command::new(&quot;clap-complete-minimal&quot;)
+                .arg(arg!(--foo))
+                .arg(arg!(--bar))
+                .arg(arg!(--baz))
+        })
+        .complete();
+        return;
+    }
+
+    println!(&quot;Hello, world!&quot;);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ol>
+<li>Build with <code>cargo build</code>.</li>
+<li>Depending on the shell you're testing on, source the completion glue script using one of</li>
+</ol>
+<pre><code class="language-sh">$ source &lt;(COMPLETE=bash ~/.cargo/target/debug/clap-complete-minimal)
+$ source &lt;(COMPLETE=zsh ~/.cargo/target/debug/clap-complete-minimal)
+$ COMPLETE=fish ~/.cargo/target/debug/clap-complete-minimal | source
+</code></pre>
+<p>Replace <code>~/.cargo/target/debug/clap-complete-minimal</code> with the path to the executable.
+3. Type the following line in your shell, then move the caret to the designated position and hit tab to trigger completion:</p>
+<pre><code class="language-sh">$ ~/.cargo/target/debug/clap-complete-minimal   --b
+#                                             ^
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>On fish, only the <code>--</code> common to all flags is completed and the user is presented with a choice between all four flags (including <code>--help</code>):</p>
+<pre><code class="language-sh">$ clap-complete-minimal -- --b
+--foo  --bar  --baz  --help  (Print help)
+</code></pre>
+<p>On bash and zsh, <code>--ba</code> is inserted. This is the same result that one would get when completing <code>--b</code>, i.e. only <code>--bar</code> and <code>--baz</code> are eligible and <code>--ba</code> is completed as their common prefix. However, here the completion does not replace the existing <code>--b</code> token; it is inserted as a new token at the caret position:</p>
+<pre><code class="language-sh">$ ~/.cargo/target/debug/clap-complete-minimal --ba --b
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The fish behavior seems pretty reasonable and I would expect bash/zsh to behave the same way. In any case, it seems desirable for all shells to be as close as possible in completion behavior.</p>
+<h3>Additional Context</h3>
+<p>The bash glue script only forwards <code>COMP_WORDS</code> and <code>COMP_CWORD</code> to the completer. <code>COMP_WORDS</code> does not include an empty &quot;word&quot; when completions are triggered and intermediate positions, so from this information alone, it is not possible to distinguish a completion at an intermediate position from one of the subsequent argument. The same apparently holds for zsh. Relevant design discussion: https://github.com/clap-rs/clap/discussions/5512</p>
+<p>This problem should affect pretty much any CLI using dynamic completions. I encountered it when working on tests for <a href="https://jj-vcs.github.io/jj/latest/">Jujutsu</a>'s completions. See also the discussion on https://github.com/jj-vcs/jj/pull/6407#discussion_r2060200416.</p>
+<h3>Debug Output</h3>
+<p>Bash:</p>
+<pre><code>[clap_builder::builder::command]Command::_build: name=&quot;clap-complete-minimal&quot;
+[clap_builder::builder::command]Command::_propagate:clap-complete-minimal
+[clap_builder::builder::command]Command::_check_help_and_version:clap-complete-minimal expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap-complete-minimal
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:foo
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:bar
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:baz
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build_bin_names
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+[clap_complete::engine::complete]       complete: args=[&quot;~/.cargo/target/debug/clap-complete-minimal&quot;, &quot;--b&quot;], arg_index=1, current_dir=Some(&quot;/Users/jgreitemann/git/clap-complete-minimal&quot;)
+[clap_builder::builder::command]Command::_build: name=&quot;clap-complete-minimal&quot;
+[clap_builder::builder::command]Command::_build: already built
+[clap_builder::builder::command]Command::_build_bin_names
+[clap_builder::builder::command]Command::_build_bin_names: already built
+[clap_complete::engine::complete]       complete: target_cursor=ArgCursor { cursor: 2 }
+[clap_complete::engine::complete]       complete::next: arg=&quot;--b&quot;, current_state=ValueDone, cursor=ArgCursor { cursor: 2 }
+[clap_complete::engine::complete]       complete_arg: arg=ParsedArg { inner: &quot;--b&quot; }, cmd=&quot;clap-complete-minimal&quot;, current_dir=Some(&quot;/Users/jgreitemann/git/clap-complete-minimal&quot;), pos_index=1, state=ValueDone
+[clap_complete::engine::complete]       complete_subcommand: cmd=&quot;clap-complete-minimal&quot;, value=&quot;--b&quot;
+[clap_complete::engine::complete]       subcommands: name=clap-complete-minimal
+[clap_complete::engine::complete]       subcommands: Has subcommands...false
+[clap_complete::engine::complete]       longs: name=clap-complete-minimal
+[clap_complete::engine::complete]       longs: name=clap-complete-minimal
+</code></pre>
+<p>Fish:</p>
+<pre><code>[clap_builder::builder::command]Command::_build: name=&quot;clap-complete-minimal&quot;
+[clap_builder::builder::command]Command::_propagate:clap-complete-minimal
+[clap_builder::builder::command]Command::_check_help_and_version:clap-complete-minimal expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap-complete-minimal
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:foo
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:bar
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:baz
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build_bin_names
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+[clap_complete::engine::complete]       complete: args=[&quot;clap-complete-minimal&quot;, &quot;&quot;], arg_index=1, current_dir=Some(&quot;/Users/jgreitemann/git/clap-complete-minimal&quot;)
+[clap_builder::builder::command]Command::_build: name=&quot;clap-complete-minimal&quot;
+[clap_builder::builder::command]Command::_build: already built
+[clap_builder::builder::command]Command::_build_bin_names
+[clap_builder::builder::command]Command::_build_bin_names: already built
+[clap_complete::engine::complete]       complete: target_cursor=ArgCursor { cursor: 2 }
+[clap_complete::engine::complete]       complete::next: arg=&quot;&quot;, current_state=ValueDone, cursor=ArgCursor { cursor: 2 }
+[clap_complete::engine::complete]       complete_arg: arg=ParsedArg { inner: &quot;&quot; }, cmd=&quot;clap-complete-minimal&quot;, current_dir=Some(&quot;/Users/jgreitemann/git/clap-complete-minimal&quot;), pos_index=1, state=ValueDone
+[clap_complete::engine::complete]       complete_subcommand: cmd=&quot;clap-complete-minimal&quot;, value=&quot;&quot;
+[clap_complete::engine::complete]       subcommands: name=clap-complete-minimal
+[clap_complete::engine::complete]       subcommands: Has subcommands...false
+[clap_complete::engine::complete]       longs: name=clap-complete-minimal
+[clap_complete::engine::complete]       longs: name=clap-complete-minimal
+[clap_complete::engine::complete]       shorts: name=clap-complete-minimal
+</code></pre>
+<p>(Zsh swallows stderr when triggering completions.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @jgreitemann on 2025-04-27 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jj-vcs/jj/pulls/6407.html">jj-vcs/jj#6407</a> on 2025-04-27 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2025-04-28 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2025-04-28 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5985.html">clap-rs/clap#5985</a> on 2025-05-05 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-05-05 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-05-05 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jgreitemann">@jgreitemann</a> on 2025-05-07 16:59</div>
+            <div class="timeline-body"><p>Thanks to #5985, bash completions now behave (mostly) the same as fish's. However, the behavior is still broken for zsh in precisely the same way and would need an analogous fix. @epage, do you reckon we should reopen this issue? (GitHub won't let me do that.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @epage on 2025-05-07 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6000.html">clap-rs/clap#6000</a> on 2025-05-11 22:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-05-30 15:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

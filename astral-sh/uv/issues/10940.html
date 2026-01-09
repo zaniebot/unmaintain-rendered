@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editable install incorrectly passes config settings to compiled dependencies - astral-sh/uv #10940</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Editable install incorrectly passes config settings to compiled dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10940">#10940</a>
+        opened by <a href="https://github.com/cpburnz">@cpburnz</a>
+        on 2025-01-24 16:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cpburnz">@cpburnz</a> on 2025-01-24 16:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When installing a local package as an editable install, config settings are incorrectly passed along to any compiled dependencies. That is, using <code>uv pip install -e . -C CONFIG_SETTING</code> can fail because <code>CONFIG_SETTING</code> is passed along to all dependencies that have to be compiled.</p>
+<hr />
+<p>To reproduce this, create a simple <em>pyproject.toml</em> with a dependency on <em>numpy</em> which we'll force to compile:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;setuptools&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[project]
+name = &quot;test&quot;
+version = &quot;0.1&quot;
+description = &quot;test&quot;
+dependencies = [&quot;numpy &gt;=1.25, &lt;2&quot;]
+requires-python = &quot;&gt;=3.10&quot;
+</code></pre>
+<p>Then create a venv and attempt an editable install.</p>
+<pre><code>python3.10 -m venv ./venv
+. venv/bin/activate
+pip install --upgrade pip uv
+uv pip install -e . -C editable_mode=compat --no-binary=numpy
+</code></pre>
+<p>The editable install fails with the confusing message:</p>
+<pre><code>Using Python 3.10.15 environment at: venv
+Resolved 2 packages in 42ms
+  × Failed to build `numpy==1.26.4`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `mesonpy.build_wheel` failed (exit status: 1)
+
+      [stdout]
+
+      ('\x1b[31m',)meson-python: error: Unknown option &quot;editable_mode&quot;. Did you mean &quot;editable-verbose&quot;?
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `numpy` (v1.26.4) was included because `test` (v0.1) depends on `numpy`
+</code></pre>
+<p>This is failing because the &quot;editable_mode=compat&quot; config setting appears to be wrongly propagated to numpy's build backend which doesn't support the option. I don't want numpy to be an editable install. I do not get this failure when installing directly through pip:</p>
+<pre><code>pip install -e . -C editable_mode=compat --no-binary=numpy
+</code></pre>
+<p>Results in the output:</p>
+<pre><code>Obtaining file:///home/caleb/Downloads/test  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... done
+  Preparing editable metadata (pyproject.toml) ... done
+Collecting numpy&lt;2,&gt;=1.25 (from test==0.1)
+  Using cached numpy-1.26.4.tar.gz (15.8 MB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Installing backend dependencies ... done
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: test, numpy
+  Building editable for test (pyproject.toml) ... done
+  Created wheel for test: filename=test-0.1-0.editable-py3-none-any.whl size=1133 sha256=eb6b338452a8d9522af448dcf6b4dabaf899dbdf84f486f6b66187ddce19acbc
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ob0cl04m/wheels/01/f9/32/da240fac8a3729d073c705f8e82ffb39bbe52bcc1ce84babb2
+  Building wheel for numpy (pyproject.toml) ... done
+  Created wheel for numpy: filename=numpy-1.26.4-cp310-cp310-linux_x86_64.whl size=7138403 sha256=dc3aed8dfcfd7ce4f9db38820c9c4a9472911bdfff98204097df792d4a78d5e9
+  Stored in directory: /home/caleb/.cache/pip/wheels/34/95/4f/687abd92b993af994c95aebed5739363f0e735f23ccbc691a7
+Successfully built test numpy
+Installing collected packages: numpy, test
+Successfully installed numpy-1.26.4 test-0.1
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 20.04 (Linux 5.15.0-130-generic x86_64 GNU/Linux)</p>
+<h3>Version</h3>
+<p>uv 0.5.24</p>
+<h3>Python version</h3>
+<p>Python 3.10.15</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @cpburnz on 2025-01-24 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-01-24 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2025-01-24 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-24 17:19</div>
+            <div class="timeline-body"><p>Looks like pip only passes these to arguments provided directly on the CLI: https://pip.pypa.io/en/stable/reference/build-system/pyproject-toml/#backend-configuration. Unsure if we should change our behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-24 17:21</div>
+            <div class="timeline-body"><p>I find it a not-great behavior that meson-python <a href="https://github.com/mesonbuild/meson-python/blob/077e3bcfb1649157c9f9220309dc494be956c43a/mesonpy/__init__.py#L608">errors out on unknown options</a>, given that (in general) there isn't strict control for configuring which packages receive which options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-24 18:14</div>
+            <div class="timeline-body"><p>I would rather add a package-specific <code>config-settings</code> option than change our broader behavior, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-24 18:16</div>
+            <div class="timeline-body"><p>Same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-24 19:42</div>
+            <div class="timeline-body"><p>It could be reasonable to change this in the <code>uv pip</code> interface though, for compatibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-24 19:44</div>
+            <div class="timeline-body"><p>It's hard to say that their behavior is strictly correct though. It's not possible to pass config settings to transitive builds?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-24 19:47</div>
+            <div class="timeline-body"><p>You would need to pass the package name on the command-line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-25 21:20</div>
+            <div class="timeline-body"><p>@zanieb -- What do you think of allowing, e.g., <code>-C numpy:editable_mode=compat</code>, to apply only to NumPy? It is not fully compatible with the existing argument, but I'd be fairly surprised if it had any conflicts in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2025-01-26 06:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I find it a not-great behavior that meson-python <a href="https://github.com/mesonbuild/meson-python/blob/077e3bcfb1649157c9f9220309dc494be956c43a/mesonpy/__init__.py#L608">errors out on unknown options</a>, given that (in general) there isn't strict control for configuring which packages receive which options.</p>
+</blockquote>
+<p>meson-python has a very much <em>known</em> <code>setup-args=XXXX</code> option which will be forwarded to meson. Meson errors out on unknown options for reasons which should be well understandable, since cargo errors on unknown features too. :)</p>
+<p>Really, the only sane approach here is to actually specify where you want your options to apply. The current config-settings interface is completely ad hoc and unspecified, as the only standards-based definition of config settings is the <code>config_settings</code> parameter to PEP 517 build hooks. By definition, when you invoke a build hook you know what package it is for. The actual UX that pip exposes here was never rigorously defined before implementing it, so it feels a bit inevitable that existing practice would stabilize around ill-defined expectations of ill-defined semantics.</p>
+<p>I think that <code>wheelname:*</code> namespacing is a reasonable approach to take. Although meson does internally use : and therefore by extension meson-python does too, that will be in the form: <code>-C setup-args=XXX:optname=true</code> so shouldn't clash.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 17:52</div>
+            <div class="timeline-body"><p>@charliermarsh I'm fine with that. Do we want to use a different flag name to avoid ambiguity / compatibility issues? Like <code>--config-settings-package &lt;name&gt;:&lt;...&gt;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3898.html">astral-sh/uv#3898</a> on 2025-02-20 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kyamagu">@kyamagu</a> on 2025-03-06 00:42</div>
+            <div class="timeline-body"><p>I met a similar situation with <code>uv build</code> when trying to build a local sub-package specified as a path dependency. My code layout was the following:</p>
+<pre><code>├── packages
+│   └── subpackage
+│       ├── src
+│       ├── pyproject.toml
+│       ├── setup.py
+├── pyproject.toml
+├── src
+</code></pre>
+<p>I have a custom config in <code>packages/subpackage/pyproject.toml</code> like the following, but this config is ignored when running <code>uv build --wheel package/subpackage</code> in the root. However, this config takes effect when <code>cd package/subpackage &amp;&amp; uv build --wheel</code>.</p>
+<pre><code>[tool.uv]
+config-settings = { &quot;--build-option&quot; = [&quot;--cpp_ext&quot;] }
+</code></pre>
+<p>If I move this config to the root <code>pyproject.toml</code>, this option is passed to the <code>uv build packages/subpackage</code>, but this also applies the same config to every package in the project, which is not what I want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yilinjuang">@yilinjuang</a> on 2025-06-30 11:09</div>
+            <div class="timeline-body"><p>Would love to see this. This will be helpful when several dependencies have to be built from source with different extra build configs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-07-11 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14573.html">astral-sh/uv#14573</a> on 2025-07-11 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-18 01:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker and snap-7 - astral-sh/uv #9909</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Docker and snap-7</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/9909">#9909</a>
+        opened by <a href="https://github.com/MMartin09">@MMartin09</a>
+        on 2024-12-15 12:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MMartin09">@MMartin09</a> on 2024-12-15 12:19</div>
+            <div class="timeline-body"><p>Hi, I am trying to Dockerize my project. However, I am always receiving an error from the Python snap7 library.</p>
+<p>I am using this Docker file</p>
+<pre><code>FROM python:3.12.7-slim-bullseye
+
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app/
+
+RUN apt-get update &amp;&amp; apt-get install -y \
+    build-essential \
+    gcc \
+    libc6-dev \
+    &amp;&amp; apt-get clean \
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+# Install uv
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#installing-uv
+COPY --from=ghcr.io/astral-sh/uv:0.5.9 /uv /uvx /bin/
+
+# Place executables in the environment at the front of the path
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#using-the-environment
+ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
+
+# Compile bytecode
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#compiling-bytecode
+ENV UV_COMPILE_BYTECODE=1
+
+# uv Cache
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#caching
+ENV UV_LINK_MODE=copy
+
+# Install dependencies
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project
+
+ENV PYTHONPATH=/app
+
+COPY ./pyproject.toml ./uv.lock /app/
+
+COPY ./app /app/app
+
+# Sync the project
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync
+
+CMD [&quot;fastapi&quot;, &quot;run&quot;, &quot;--workers&quot;, &quot;2&quot;, &quot;app/main.py&quot;, &quot;--port&quot;, &quot;8000&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;]
+</code></pre>
+<p>And these are my dependencies:</p>
+<pre><code>requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;pydantic&gt;=2.9.2&quot;,
+    &quot;pydantic-settings&gt;=2.6.1&quot;,
+    &quot;sqlmodel&gt;=0.0.22&quot;,
+    &quot;fastapi[standard]&gt;=0.115.5&quot;,
+    &quot;redis&gt;=5.2.0&quot;,
+    &quot;psycopg[binary]&gt;=3.2.3&quot;,
+    &quot;httpx&gt;=0.27.2&quot;,
+    &quot;python-snap7&gt;=2.0.2&quot;,
+]
+</code></pre>
+<p>Executing the Docker I am receiving the error:</p>
+<pre><code>2024-12-15 13:14:43 This probably means you are installing python-snap7 from source. When no binary wheel is found for you architecture, pip
+2024-12-15 13:14:43 install falls back on a source install. For this to work, you need to manually install the snap7 library, which
+2024-12-15 13:14:43 python-snap7 uses under the hood.
+2024-12-15 13:14:43 
+2024-12-15 13:14:43 The shortest path to success is to try to get a binary wheel working. Probably you are running on an unsupported
+2024-12-15 13:14:43 platform or python version. You are running:
+2024-12-15 13:14:43 
+2024-12-15 13:14:43 machine: x86_64
+2024-12-15 13:14:43 system: Linux
+2024-12-15 13:14:43 python version: 3.12.7
+2024-12-15 13:14:43 
+2024-12-15 13:15:09 Exception ignored in: &lt;function Client.__del__ at 0x7fd21840bce0&gt;
+2024-12-15 13:15:09 Traceback (most recent call last):
+2024-12-15 13:15:09   File &quot;/app/.venv/lib/python3.12/site-packages/snap7/client.py&quot;, line 74, in __del__
+2024-12-15 13:15:09     self.destroy()
+2024-12-15 13:15:09   File &quot;/app/.venv/lib/python3.12/site-packages/snap7/client.py&quot;, line 93, in destroy
+2024-12-15 13:15:09     if self._lib and self._s7_client is not None:
+2024-12-15 13:15:09        ^^^^^^^^^
+2024-12-15 13:15:09 AttributeError: 'Logo' object has no attribute '_lib'
+</code></pre>
+<p>However, if I install the packages without <code>uv</code> everything works fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-12-15 19:49</div>
+            <div class="timeline-body"><p>I didn't encounter issues when trying with a smaller example with the dependencies you provided. I also tried a similar one with <code>python:3.12.7-slim-bullseye</code>. Could you provide a reproducible <code>pyproject.toml</code> and <code>uv.lock</code> for your example?</p>
+<pre><code class="language-shell">docker run \
+--platform linux/x86_64 \
+-it \
+--rm \
+ghcr.io/astral-sh/uv:bookworm /bin/bash -c \
+&quot;uv venv; uv pip install pydantic&gt;=2.9.2 pydantic-settings&gt;=2.6.1 sqlmodel&gt;=0.0.22 fastapi[standard]&gt;=0.115.5 redis&gt;=5.2.0 psycopg[binary]&gt;=3.2.3 httpx&gt;=0.27.2 python-snap7&gt;=2.0.2&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @samypr100 on 2024-12-15 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MMartin09">@MMartin09</a> on 2024-12-21 16:20</div>
+            <div class="timeline-body"><p>@samypr100 I have tested it multiple times and it always has the same problems.
+Here are the files: https://gist.github.com/MMartin09/04f2b4901f1522885f7c01709f934ff6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-12-21 20:56</div>
+            <div class="timeline-body"><p>@MMartin09</p>
+<p>I copied both your files and ran <code>uv sync</code> without issues. If the issue is only present when running your app, I would unfortunately still not have a way to reproduce it without an app.py MRE.</p>
+<pre><code>$ uv sync
+Using CPython 3.12.8
+Creating virtual environment at: .venv
+Resolved 53 packages in 9ms
+Prepared 47 packages in 1.23s
+Installed 50 packages in 36ms
+ + annotated-types==0.7.0
+ + anyio==4.6.2.post1
+ + certifi==2024.8.30
+ + cfgv==3.4.0
+ + click==8.1.7
+ + distlib==0.3.9
+ + dnspython==2.7.0
+ + email-validator==2.2.0
+ + fastapi==0.115.5
+ + fastapi-cli==0.0.5
+ + filelock==3.16.1
+ + greenlet==3.1.1
+ + h11==0.14.0
+ + httpcore==1.0.7
+ + httptools==0.6.4
+ + httpx==0.27.2
+ + identify==2.6.2
+ + idna==3.10
+ + jinja2==3.1.4
+ + markdown-it-py==3.0.0
+ + markupsafe==3.0.2
+ + mdurl==0.1.2
+ + nodeenv==1.9.1
+ + platformdirs==4.3.6
+ + pre-commit==4.0.1
+ + psycopg==3.2.3
+ + psycopg-binary==3.2.3
+ + pydantic==2.9.2
+ + pydantic-core==2.23.4
+ + pydantic-settings==2.6.1
+ + pygments==2.18.0
+ + python-dotenv==1.0.1
+ + python-multipart==0.0.17
+ + python-snap7==2.0.2
+ + pyyaml==6.0.2
+ + redis==5.2.0
+ + rich==13.9.4
+ + ruff==0.7.4
+ + shellingham==1.5.4
+ + sniffio==1.3.1
+ + sqlalchemy==2.0.36
+ + sqlmodel==0.0.22
+ + starlette==0.41.2
+ + typer==0.13.0
+ + typing-extensions==4.12.2
+ + uvicorn==0.32.0
+ + uvloop==0.21.0
+ + virtualenv==20.27.1
+ + watchfiles==0.24.0
+ + websockets==14.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MMartin09">@MMartin09</a> on 2025-01-13 19:03</div>
+            <div class="timeline-body"><p>Yes, building is no problem.</p>
+<p>Only when I run the code.
+For example:</p>
+<pre><code class="language-python">import snap7
+
+
+def main() -&gt; None:
+    plc = snap7.logo.Logo()
+    plc.connect('192.168.0.241', 0x3000, 0x2000)
+    
+    plc.write('V1064.0', False)
+
+    print('DO1: ' + str(plc.read('V1064.0')))
+    print('DO2: ' + str(plc.read('V1064.1')))
+    print('DO3: ' + str(plc.read('V1064.2')))
+
+
+if __name__ == '__main__':
+    main()
+
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

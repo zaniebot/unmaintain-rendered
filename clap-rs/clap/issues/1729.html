@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Any tools that can &quot;convert&quot; python-argparse code to rust-clap code? - clap-rs/clap #1729</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Any tools that can &quot;convert&quot; python-argparse code to rust-clap code?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1729">#1729</a>
+        opened by <a href="https://github.com/kaiakz">@kaiakz</a>
+        on 2020-03-07 15:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kaiakz">@kaiakz</a> on 2020-03-07 15:03</div>
+            <div class="timeline-body"><p>I am rewriting a python project in rust now. Its cmd parser uses <code>argparse</code>.
+I would like to ask if there are any tools that can generate the related <code>clap</code> code?
+I found many similarities between the two libraries. I think I can write a script to do this. :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kaiakz on 2020-03-07 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-07 20:21</div>
+            <div class="timeline-body"><p>They are similar indeed, but the devil in the detail.</p>
+<p>Python and Rust are very different in the sense that Python is dynamically typed while Rust is statically typed (thanks, Cap!). As a consequence, the values you get from argparse have the type you specified via <code>type=fn</code>, but clap is &quot;stringly typed&quot;, you take a <em>string</em> from it, further conversion is up to you. Well, this is not hard limitation, you can generate the &quot;converting post-step&quot; as well as the app.</p>
+<p>This is pretty much doable otherwise.</p>
+<p>I'm not aware of such existing implementations and I don't think I'll ever get to writing a script like that on my own (I haven't been a heavy user of python lately); but, if somebody feels like taking this on, I might be able to provide some help. Consider it mentored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @CreepySkeleton on 2020-03-07 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @CreepySkeleton on 2020-03-07 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Z: mentored</span> added by @CreepySkeleton on 2020-03-07 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pickfire">@pickfire</a> on 2020-03-14 00:27</div>
+            <div class="timeline-body"><p>Do we have any existing codegen tools to generate and convert between clap inputs (macro, struct, yaml, procedural)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-14 00:29</div>
+            <div class="timeline-body"><blockquote>
+<p>macro, struct, yaml, procedural</p>
+</blockquote>
+<p>Mind explaining what you mean?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pickfire">@pickfire</a> on 2020-03-14 01:26</div>
+            <div class="timeline-body"><p>Say we want to generate clap code for this, but which output should we generate as? If we generate procedural code such as <code>App::new()</code>, people may want <code>#[derive(Clap)]</code>, maybe we only generate to one type from python argparse then have a converter to convert to the other types?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-14 18:17</div>
+            <div class="timeline-body"><p>In my understanding, such a conversion script (very likely written in Python) will have the following structure:</p>
+<ul>
+<li>Take the <code>ArgumentParser</code> object</li>
+<li>Make some sort of intermediate clap-like representation from it</li>
+<li>Generate the rust code based on the IR</li>
+</ul>
+<p>The last step can be modified to emit rust code in different formats (derive, yaml, raw-app, etc..), no problem with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pickfire">@pickfire</a> on 2020-03-16 01:29</div>
+            <div class="timeline-body"><p>@CreepySkeleton Okay, can I help out with this? But for the first step, <code>ArgumentParser</code> just take from Python right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-03-16 03:39</div>
+            <div class="timeline-body"><p>I would vote to close this issue since it is out of scope for clap project. If anyone wants to create such tool, please feel free to do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaiakz">@kaiakz</a> on 2020-03-16 05:48</div>
+            <div class="timeline-body"><p>I am trying to parse the python code by <code>ast</code>, and then convert them to the related clap-rs(Builder Pattern).
+Just like:</p>
+<pre><code>ArgumentParser(description=&quot;Does awesome things&quot;) --&gt; App::new().about(&quot;Does awesome things&quot;)
+argparser.add_argument(&quot;-q&quot;, &quot;--quiet&quot;, dest=&quot;quiet&quot;, action=&quot;count&quot;, default=0,
+                        help=&quot;Silences one level of message, least-important first.&quot;) --&gt;            .arg(Arg::with_name(&quot;quiet&quot;).short(&quot;q&quot;).long(&quot;quiet&quot;).multiple(true).help(&quot;Silences one level of message, least-important first.&quot;))
+add_subparsers().add_parser() ---&gt;  .subcommand()
+</code></pre>
+<p>I'm curious what argparse can do but clap can't.
+I will create a new project to do so :) Thanks for your reply!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pickfire">@pickfire</a> on 2020-03-16 13:45</div>
+            <div class="timeline-body"><p>@kaiakz Why not just run python to get the <code>ArgumentParser</code> and then only use rust to interface with the python <code>ArgumentParser</code> object?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-17 21:24</div>
+            <div class="timeline-body"><p>@pickfire  @kaiakz You people seem to be thinking about writing the converter in Rust, possibly employing a Python interpreter. I think it would be easier to write it in Python: a function that takes the <code>ArgumentParser</code> instance and returns the Rust source code as plain text (or writes it into a file).</p>
+<blockquote>
+<p>I would vote to close this issue since it is out of scope for clap project. If anyone wants to create such tool, please feel free to do it.</p>
+</blockquote>
+<p>It is out of scope indeed, but such a project is closely related to clap nonetheless. In fact, we already have <a href="https://github.com/clap-rs/clap/issues/1337">the issue</a> which is not directly related to clap itself, it can be implemented by a third party just fine; yet, kept open because some of the members are interested in watching it over.</p>
+<p>We may or may not want to maintain this project by ourselves, but it would be useful to mention it existence in the readme - if or when this project is ready to use. I can also provide some sort of indirect help to anyone who's willing to get it done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pickfire">@pickfire</a> on 2020-03-18 07:56</div>
+            <div class="timeline-body"><p>@CreepySkeleton I am thinking of both, using python to parse and evaluate python code. Then use rust to take that python object into rust code (since existing rust formatter and code generation is available), that combines the best of both world.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-18 08:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Then use rust to take that python object into rust code</p>
+</blockquote>
+<p>I don't see the point, but, of course, you are free to do as you see fit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-30 10:12</div>
+            <div class="timeline-body"><p>Closing as inactive. Nobody showed any interest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-06-30 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Z: mentored</span> removed by @pksunkara on 2020-06-30 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @pksunkara on 2020-06-30 23:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

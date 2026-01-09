@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv ignores packages installed in lib64/ - astral-sh/uv #2527</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv ignores packages installed in lib64/</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2527">#2527</a>
+        opened by <a href="https://github.com/danielhollas">@danielhollas</a>
+        on 2024-03-18 22:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-03-18 22:08</div>
+            <div class="timeline-body"><p>On Fedora 39 (and presumably some other distros), Python packages can be installed in two directories, lib/ and lib64. E.g. system packages can be both in:</p>
+<ul>
+<li>/usr/lib/python3.12/site-packages</li>
+<li>/usr/lib64/python3.12/site-packages</li>
+</ul>
+<p>The same applies for venvs, including venvs managed by uv.</p>
+<p>It seems that the location is determined by the presence of C-extensions: pure python packages go to <code>lib</code>, while those containing native code go to platform-specific directory in <code>lib64</code>. See https://docs.fedoraproject.org/en-US/packaging-guidelines/Python/#_mandatory_macros</p>
+<p>uv pip install handles the installation correctly, e.g.</p>
+<pre><code class="language-console">$ uv venv --seed
+$ uv pip install numpy  
+Resolved 4 packages in 25ms
+Installed 4 packages in 13ms
+ + annotated-types==0.6.0
+ + pydantic==2.6.4
+ + pydantic-core==2.16.3
+ + typing-extensions==4.10.0
+</code></pre>
+<p>This will install <code>pydantic_core</code> into <code>.venv/lib64/python3.12/site-packages/</code> and the rest into <code>.venv/lib/python3.12/site-packages/</code></p>
+<p>However, running <code>uv pip list</code> omits <code>pydantic-core</code></p>
+<pre><code class="language-console">$ uv pip list
+Package           Version
+----------------- -------
+annotated-types   0.6.0
+pip               24.0
+pydantic          2.6.4
+typing-extensions 4.10.0
+</code></pre>
+<p>Similarly, <code>uv pip show pydantic-core</code> does not find the package, and</p>
+<pre><code>$ uv pip check
+Checked 4 packages in 0.57ms
+Found 1 incompatibility
+The package `pydantic` requires `pydantic-core ==2.16.3`, but it's not installed.
+</code></pre>
+<p>The equivalent pip commands all work as expected.</p>
+<p>uv version: 0.1.22</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-18 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 22:18</div>
+            <div class="timeline-body"><p>Thanks, I’ve been meaning to fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 22:20</div>
+            <div class="timeline-body"><p>Do you have a minimal Dockerfile that could replicate it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 22:20</div>
+            <div class="timeline-body"><p>(On my distros, and in general, purelib and platlib tend to be set to the same directory, but as you can see here it’s not <em>required</em> to be.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-18 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-03-18 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-03-18 22:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you have a minimal Dockerfile that could replicate it?</p>
+</blockquote>
+<p>I don't sorry, running on my local machine. I guess any fedora image should work like this?</p>
+<p>I did a little bisection and interestingly, prior to version 0.1.12, <code>uv</code> installed everything to <code>lib/</code> so this was not a problem.</p>
+<p>There were a lot of big changes in that releases so it's not immediately apparent which PR introduced the <code>lib/</code> <code>lib64/</code> split.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 22:26</div>
+            <div class="timeline-body"><p>Yeah installing everything into <code>lib/</code> was also wrong, but I guess it was &quot;consistently wrong&quot; so this problem didn't show up :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2537.html">astral-sh/uv#2537</a> on 2024-03-19 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-19 03:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

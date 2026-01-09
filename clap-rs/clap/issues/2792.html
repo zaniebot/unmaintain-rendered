@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support unicode for ignore_case on possible_values - clap-rs/clap #2792</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support unicode for ignore_case on possible_values</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2792">#2792</a>
+        opened by <a href="https://github.com/ModProg">@ModProg</a>
+        on 2021-09-26 17:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ModProg">@ModProg</a> on 2021-09-26 17:38</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Describe your use case</h3>
+<p>Possible value containing non ascii character should match with ignore_case</p>
+<p>Currently this will fail:</p>
+<pre><code class="language-rs">#[test]
+fn case_insensitive() {
+    let m = App::new(&quot;pv&quot;)
+        .arg(
+            Arg::new(&quot;option&quot;)
+                .short('o')
+                .long(&quot;--option&quot;)
+                .takes_value(true)
+                .possible_value(&quot;ä&quot;)
+                .case_insensitive(true),
+        )
+        .try_get_matches_from(vec![&quot;pv&quot;, &quot;--option&quot;, &quot;Ä&quot;]);
+
+    assert!(m.is_ok());
+    assert!(m
+        .unwrap()
+        .value_of(&quot;option&quot;)
+        .is_some());
+}
+
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>ignore_case (or a new flag called maybe ignore_unicode_case) should match on non ascii characters with the wrong case.</p>
+<h3>Possible implementation</h3>
+<p>Replace <code>eq_ignore_ascii_case</code> in validator with <code>a.to_lowercase() == b.to_lowercase()</code>.
+There is no perfect solution for case_ignore in unicode, but this is the closest we can get IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @ModProg on 2021-09-26 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @pksunkara on 2021-09-26 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $10</span> added by @pksunkara on 2021-09-26 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $10</span> removed by @pksunkara on 2021-09-26 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $5</span> added by @pksunkara on 2021-09-26 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @pksunkara on 2021-09-26 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @pksunkara on 2021-09-26 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @pksunkara on 2021-09-26 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-09-27 13:14</div>
+            <div class="timeline-body"><p>I generally rely on <a href="https://docs.rs/unicase/2.6.0/unicase/fn.eq.html">unicase</a> for this which seems to do case folding.  Since most programs probably do not use unicode for possible values, I assume we'd want to have this behind a feature flag, both for build-time and for runtime performance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-04 17:18</div>
+            <div class="timeline-body"><p>@pksunkara v3 adds a build feature <code>unicode_help</code>.  What if we renamed <code>unicode_help</code> to <code>unicode</code> and have this put behind it as well (since it also pulls in a new dep)?</p>
+<p>If we go this route, I'd recommend we bring this into v3.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-09 00:00</div>
+            <div class="timeline-body"><p>I would recommend adding a new feature <code>unicode_values</code>. And another new feature <code>unicode</code> can enable both <code>unicode_values</code> and <code>unicode_help</code>.</p>
+<p>And we can always do this after v3 since there's nothing breaking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-09 10:31</div>
+            <div class="timeline-body"><blockquote>
+<p>And we can always do this after v3 since there's nothing breaking.</p>
+</blockquote>
+<p>Only non-breaking because of adding new features :)</p>
+<blockquote>
+<p>I would recommend adding a new feature unicode_values. And another new feature unicode can enable both unicode_values and unicode_help.</p>
+</blockquote>
+<p>I disagree with this:</p>
+<ul>
+<li>The likelihood of using only one of them seems low.  <code>unicode_values</code> implies <code>unicode_help</code> as-is because unicode content will be in the help.  All we are saving people is those who only want <code>unicode_help</code>.  If they are already having non-ASCII help, there is probably a good likelihood that they'll use non-ASCII possible-values.</li>
+<li>The user-benefit of getting one without the other is relatively low.  It adds dependencies but not much.  It impacts performance, but not by much.</li>
+<li>Proliferation of features adds cognitive load and negatively impacts all features.  We need to consider the cost for each feature we add, not just look at the benefits.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-09 10:34</div>
+            <div class="timeline-body"><p>In that case we need to rename unicode_help feature to unicode right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @epage on 2021-10-09 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2834.html">clap-rs/clap#2834</a> on 2021-10-09 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2021-10-09 13:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

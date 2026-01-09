@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync error: error: Distribution `xxx` can't be installed because it doesn't have a source distribution or wheel for the current platform - astral-sh/uv #12721</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync error: error: Distribution `xxx` can't be installed because it doesn't have a source distribution or wheel for the current platform</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/12721">#12721</a>
+        opened by <a href="https://github.com/SimFG">@SimFG</a>
+        on 2025-04-07 17:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SimFG">@SimFG</a> on 2025-04-07 17:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>full log:</p>
+<pre><code>error: Distribution `pyside6==6.9.0 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on macOS (`macosx_10_16_x86_64`), but `pyside6` (v6.9.0) only has wheels for the following platforms: `manylinux_2_28_x86_64`, `manylinux_2_39_aarch64`, `macosx_12_0_universal2`, `win_amd64`, `win_arm64`
+</code></pre>
+<p>If I use pip directly, it can be successfully installed, although this is not a strict match. Is there any way for me to bypass this verification, such as forcing the current system version to be successfully installed?</p>
+<h3>Platform</h3>
+<p>mac os</p>
+<h3>Version</h3>
+<p>uv 0.6.12</p>
+<h3>Python version</h3>
+<p>Python 3.12.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @SimFG on 2025-04-07 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-07 17:23</div>
+            <div class="timeline-body"><p>See: https://docs.astral.sh/uv/concepts/resolution/#required-environments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-04-07 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-04-07 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SimFG">@SimFG</a> on 2025-04-08 02:07</div>
+            <div class="timeline-body"><p>I found this document, but because I am not very familiar with the use of UV, I still don't know how to solve my problem.
+@charliermarsh I would be grateful if you could help me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SimFG">@SimFG</a> on 2025-04-08 15:03</div>
+            <div class="timeline-body"><p>@charliermarsh Can you give me some advice? I have tried many methods but to no avail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-08 15:14</div>
+            <div class="timeline-body"><p>Can you try using <code>uv add PySide6==6.5.2</code> instead? That includes a wheel that's compatible with your platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SimFG">@SimFG</a> on 2025-04-08 15:16</div>
+            <div class="timeline-body"><p>@charliermarsh thanks a lot, it's work.
+But how can I achieve the same effect as pip? Even if I use venv's pip installation, sync still reports an error</p>
+<p><img src="https://github.com/user-attachments/assets/4898e240-7855-4d8a-a163-fc9bbbf149c6" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SimFG">@SimFG</a> on 2025-04-08 15:18</div>
+            <div class="timeline-body"><p>One of my dependent packages requires &quot;PySide6&gt;=6.8.2.1&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SimFG">@SimFG</a> on 2025-04-08 15:33</div>
+            <div class="timeline-body"><p>I installed the package manually in the venv environment using pip, but uv still reports the same error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/greg-ivrtg">@greg-ivrtg</a> on 2025-12-09 16:50</div>
+            <div class="timeline-body"><p>So this problem is more generic than the given package. Here is how it's triggering for me:</p>
+<ol>
+<li>I built binary packages for some wheels and uploaded them to an internal pypi server. These match my laptop arch as darwin/aarch64</li>
+<li>I try to run a <code>uv sync</code> in CI which runs on linux/x86_64, I get the above error</li>
+</ol>
+<p>A few things to note:</p>
+<ol>
+<li>A source package exists on <code>pypi.org</code> for the package</li>
+<li>I have an internal package added with the environment variable <code>UV_INDEX=https://internal.pypi.wherever.com</code> which has binary wheels, but only for darwin/aarch64</li>
+<li>Sync can still happen if I set <code>tool.uv.required-environments = &quot;...&quot;</code>, as there is a source file it can find and will download and build</li>
+</ol>
+<p>So setting <code>required-environments</code> permits resolution of the sdist from the default index, while without it only the extra index URL is being discovered. This behavior persists even when <code>UV_INDEX_STRATEGY=unsafe-best-match</code> is set.</p>
+<p>There seems to be a bug in <code>UV_INDEX_STRATEGY=unsafe-best-match</code> when a binary wheel matching the version moniker but mismatching the platform is present on an extra index, causing uv to fall back to its default behavior of <code>first-index</code> unless <code>required-environments</code> is explicitly specified in the <code>pypackage.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-09 17:06</div>
+            <div class="timeline-body"><p>I don't think this is a bug. We aren't considering your current platform during universal resolution, so even with <code>unsafe-best-match</code>, the wheel on the first index satisfies the resolution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/greg-ivrtg">@greg-ivrtg</a> on 2025-12-09 17:25</div>
+            <div class="timeline-body"><p>Why wouldn't this be a bug?</p>
+<h1>Scenario 1</h1>
+<ul>
+<li>Default index with packages for <code>foo==1.0.0</code></li>
+<li>Extra index with no packages for <code>foo</code></li>
+</ul>
+<p>Result:</p>
+<p>Package is found in default and installed</p>
+<p>✅</p>
+<h1>Scenario 2</h1>
+<ul>
+<li>Default index with packages for <code>foo==1.0.0</code></li>
+<li>Extra index with packages for <code>foo!=1.0.0</code></li>
+</ul>
+<p>Result:</p>
+<p>Package is found, but error because no version match</p>
+<p>Resolution:</p>
+<p>Add unsafe-best-match, and now package on default index is found</p>
+<p>✅</p>
+<h1>Scenario 3</h1>
+<ul>
+<li>Default index with <em>sources</em> for <code>foo==1.0.0</code></li>
+<li>Extra index with <em>binary-only</em> packages for <code>foo==1.0.0</code> but not for current platform</li>
+</ul>
+<p>Result:</p>
+<p>Package is not found, no matter what arguments are passed</p>
+<p>Resolution:</p>
+<ol>
+<li>Edit <code>pyproject.toml</code> field <code>uv.tool.required-environments</code> just to be able to install the packge AND set unsafe-best-match to allow searching other indexes.</li>
+<li>OR Download the sdist into my extra index server</li>
+</ol>
+<p>❌</p>
+<p>That's a bug from any reasonable user perspective. I should be able to <code>uv sync</code> a repo with only CLI/environment variable settings when the sources are available on my configured indexes. And the semantics surrounding index-strategy in the docs is given as</p>
+<pre><code>By default, uv will stop at the first index on which a given package is available, and limit resolutions to those present on that first index (first-index). This prevents &quot;dependency confusion&quot; attacks, whereby an attacker can upload a malicious package under the same name to an alternate index.
+
+May also be set with the UV_INDEX_STRATEGY environment variable.
+
+Possible values:
+
+    first-index: Only use results from the first index that returns a match for a given package name
+    unsafe-first-match: Search for every package name across all indexes, exhausting the versions from the first index before moving on to the next
+    unsafe-best-match: Search for every package name across all indexes, preferring the &quot;best&quot; version found. If a package version is in multiple indexes, only look at the entry for the first index
+</code></pre>
+<p>Based on that documentation, I should only need to configure the index-strategy setting in order to have uv resolve the source from a different index, download it, and build a wheel. But, in this edge case of wheels but no source being present on a supplemental index, I can't. I have to edit <code>pyproject.toml</code> or alter the available packages on my extra index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/greg-ivrtg">@greg-ivrtg</a> on 2025-12-09 17:28</div>
+            <div class="timeline-body"><p>Addendeum: <code>unsafe-first-match</code> also doesn't work in this scenario.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-09 18:10</div>
+            <div class="timeline-body"><p>It's not a bug in the sense that I think it's working as intended. I understand you prefer different behavior, but that's not the same thing.</p>
+<p>We don't mix files across indexes and we don't consider an index with a source distribution as &quot;better&quot; than an index with wheels. Maybe you want <code>--no-binary-package foo</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/greg-ivrtg">@greg-ivrtg</a> on 2025-12-09 20:51</div>
+            <div class="timeline-body"><p>OK, so I've narrowed this down even further. It's not just the presence of a wheel. It's specifically the presence of a wheel //built for a different python version// regardless of the host system.</p>
+<p>Here is the setups I've tried.</p>
+<p>These applied to all of the following scenarios:</p>
+<ul>
+<li>Python 3.13</li>
+<li>uv 0.9.13</li>
+<li>command: <code>uv add --no-cache --no-config &quot;charset-normalizer==3.4.4&quot;</code></li>
+</ul>
+<p>Here are my results.</p>
+<table>
+<tr>
+ <td>Index Strategy ➡️  <br />Extra Index contains ⬇️ </td>
+ <td>first-index</td>
+ <td>unsafe-best-match</td>
+</tr>
+<tr>
+ <td>Source of 3.4.2</td>
+ <td> ❌ </td>
+ <td> ✅ </td>
+</tr>
+<tr>
+ <td>Wheel of 3.4.4 for Python 3.14 and Windows on Arm</td>
+ <td> ❌ </td>
+ <td> ✅  </td>
+</tr>
+<tr>
+  <td>Wheel of 3.4.4 for Python 3.13 and Windows on Arm</td>
+  <td> ❌ </td>
+  <td> ❌ </td>
+</table>
+
+<p>It is expected that all of the left column should be ❌ , because in each case the extra index contains a mismatch in some regard. A mismatched source version, a mismatched Python tag AND platform, and a mismatched platform.</p>
+<p>All of the right hand columns should be green, because in all 3 cases uv is being told to keep searching other indexes if it doesn't find a match in the first one. This is true for the case of an sdist only or a wheel with a different Python tag. Only when the Python tag matches and the platform mismatches does this bug arise.</p>
+<p>Either</p>
+<ol>
+<li>This is a bug in the tool, because the index strategy description is clear that it will keep looking in later indexes if it can't find a match when set to <code>unsafe-best-match</code> which it fails to do when finding a matching Python-tag wheel with mismatched platform.</li>
+<li>This is a bug in the tool, because it should NOT be continuing to search when a wheel with a Python tag mismatch is found.</li>
+<li>It's a bug in the documentation of <code>unsafe-best-match</code> and the description for that feature needs to be greatly enhanced to make it clear that it will only keep looking in later indexes when it can't find a match for the version or the Python tag, but that a matching Python tag with mismatched architecture will NOT trigger the &quot;keep searching&quot; behavior.</li>
+</ol>
+<p>Yes, adding <code>--no-binary-package charset-normalizer</code> does present as a workaround. However, it doesn't change that the search behavior is inconsistent and <em>something</em> is buggy. It is also undesirable because perhaps I <em>do</em> want to use a binary package, but just not one that is available on my first index. Or perhaps I don't know which package will be the one to trigger this behavior because the contents of my cache are ever evolving. While a workaround for this very specific case it does not negate the inconsistent and incorrect behavior of the index strategy resolution.</p>
+<p>I've <a href="https://github.com/greg-ivrtg/uv-sync-bug-reprodcuer">created a minimum reproducer</a> that shows the mismatched expectations above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-10 11:18</div>
+            <div class="timeline-body"><p>I've simplified the example some more:</p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-reproducer&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;==3.13.*&quot;
+dependencies = [
+    &quot;charset-normalizer==3.4.4&quot;,
+]
+
+[[tool.uv.index]]
+# Contains the sdist
+url = &quot;./default&quot;
+format = &quot;flat&quot;
+
+[[tool.uv.index]]
+# Contains the windows arm64 package
+url = &quot;./platform-mismatch&quot;
+format = &quot;flat&quot;
+
+[tool.uv]
+index-strategy = &quot;unsafe-best-match&quot;
+</code></pre>
+<p>The contents of the lockfile will depend on the order of the index, switching their order will switch the lockfile over.</p>
+<p>The problem you're observing is that from the perspective of <code>uv.lock</code>, both packages are fitting for universal locking, and it just considers the first one as best.</p>
+<p>Usually, this should be handled by <code>tool.uv.[required-]environments</code>, but they don't seem to mix with index preferences: https://github.com/astral-sh/uv/issues/17067, https://github.com/astral-sh/uv/issues/17068</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

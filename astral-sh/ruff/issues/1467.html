@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>More thorough documentation for rules - astral-sh/ruff #1467</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>More thorough documentation for rules</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1467">#1467</a>
+        opened by <a href="https://github.com/not-my-profile">@not-my-profile</a>
+        on 2022-12-30 08:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2022-12-30 08:02</div>
+            <div class="timeline-body"><p>The idea is that for each rule we want to document:</p>
+<ul>
+<li>what exactly the rule is (in case it isn't obvious)</li>
+<li>what the reasoning behind the rule is (in case it's not obvious)</li>
+<li>if the autofix always works or only sometimes works (and in that case explain when it doesn't work)</li>
+<li>an example of a true positive</li>
+<li>an example of a false positive (if applicable)</li>
+<li>an example of a false negative (if applicable)</li>
+</ul>
+<p>How existing linters document their lints:</p>
+<ul>
+<li>clippy: https://rust-lang.github.io/rust-clippy/</li>
+<li>ESLint: https://eslint.org/docs/latest/rules/</li>
+</ul>
+<details><summary>Original description</summary>
+Currently checks are only documented via their error messages, which can be quite uninformative. For example:
+
+<pre><code class="language-python">def foo(text):
+    return [l for l in text.splitlines() if not l.startswith('#')]  # E741 Ambiguous variable name: `l`
+</code></pre>
+<p>This error message does not tell us what the check actually is, e.g. is any single letter variable name considered ambiguous? Looking up the <a href="https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes">pycodestyle documentation</a> requires three clicks starting from the README of ruff, followed by a <code>Ctrl+F</code> only to find out:</p>
+<blockquote>
+<p>E741: do not use variables named ‘l’, ‘O’, or ‘I’</p>
+</blockquote>
+<p>But even the pycodestyle documentation does not document the reasoning behind this check, ... you have to look up <a href="https://peps.python.org/pep-0008/#names-to-avoid">PEP 8</a> to find:</p>
+<blockquote>
+<p>In some fonts, these characters are indistinguishable from the numerals one and zero. When tempted to use ‘l’, use ‘L’ instead.</p>
+</blockquote>
+<p>Which would be enough information for me to just disable that check because any self-respecting programmer uses a font that clearly distinguishes these characters.</p>
+<p>Two more examples:</p>
+<ul>
+<li>TID252: Relative imports are banned ... why would you want to ban relative imports? (I honestly don't know but I would like to know ...)</li>
+<li>The reasoning for <code>D200: One-line docstring should fit on one line</code> would be https://peps.python.org/pep-0257/#one-line-docstrings</li>
+</ul>
+<p>In particular in editor popups shown by <code>ruff-lsp</code> I think every error message should explain:</p>
+<ol>
+<li>what exactly the check is (in case it's not obvious)</li>
+<li>what the reasoning behind the check is (in case it's not obvious)</li>
+</ol>
+<p>The first is necessary if you want to fix the check and the second is necessary if you want to make an educated decision about disabling the check, in case you don't actually need it.</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2022-12-30 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-30 12:19</div>
+            <div class="timeline-body"><p>We should figure out a structured format for this, and include it as a macro or via rustdoc so that it can be picked up by tooling, similar to what we did with <code>#[option(...)]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 18:23</div>
+            <div class="timeline-body"><p>Related: #654. (And, to an extent: #1398.)</p>
+<p>I want to get an mdBook going, then figure out how to incorporate the check documentation into that artifact.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1672.html">astral-sh/ruff#1672</a> on 2023-01-06 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-06 23:44</div>
+            <div class="timeline-body"><p>I want to note that Clippy has <a href="https://rust-lang.github.io/rust-clippy/">its own web app</a> to explore lints that is simply implemented in JavaScript and loads the lints from <a href="https://rust-lang.github.io/rust-clippy/stable/lints.json">a .json file</a>.</p>
+<p>I think this is a nice approach since it can be much more easily customized with advanced interactivity / features than mdbook, so I think something like that would also make sense for the rules of ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1685.html">astral-sh/ruff#1685</a> on 2023-01-06 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-07 18:26</div>
+            <div class="timeline-body"><p>See also <a href="https://github.com/rust-lang/rust-clippy/blob/master/clippy_lints/src/attrs.rs#L44-L72">an example of how clippy documents lints</a>. It's just Markdown in doc comments with standardized sections. I think that should also work well on the structs introduced in #1685.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-07 18:31</div>
+            <div class="timeline-body"><p>This makes sense. Following Clippy is a good call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "More thorough documentation for checks" to "More thorough documentation for rules" by @not-my-profile on 2023-01-10 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-14 16:23</div>
+            <div class="timeline-body"><p>I know this is a big ask, and we would need a frontend person to volunteer. But having a slick page like <a href="https://rocket.rs/">rocket</a> would be super helpful. It could explain the benefits of using ruff in pre-commit, in IDE's and CI. With savings, in time, money and energy. Then just have some good docs on all the lints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-14 16:32</div>
+            <div class="timeline-body"><p>I'd focus on good docs first ... once we have those it should be very easy to embed them anywhere. But yeah I agree an overall website would make sense especially since we already have an online playground.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-14 16:35</div>
+            <div class="timeline-body"><p>100%. I just want a page where people could input some information and get an estimate of how much time, money, and the environmental impact of a conversion. Of course very low priority, but well into the future would be dope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2083.html">astral-sh/ruff#2083</a> on 2023-01-22 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1992.html">astral-sh/ruff#1992</a> on 2023-01-26 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-01-29 12:35</div>
+            <div class="timeline-body"><p>Suggested addition to the list: which configurations affect it. I think it is a useful metadata to have on a rule. (Bonus points if this metadata is enforced as being correct, i.e. a rule implementation can't access a configuration that it hasn't declared it's using).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2428.html">astral-sh/ruff#2428</a> on 2023-02-01 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2469.html">astral-sh/ruff#2469</a> on 2023-02-02 05:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MartinThoma">@MartinThoma</a> on 2023-02-02 06:45</div>
+            <div class="timeline-body"><p>Maybe the documentation of my flake8-plugin could also suit ruff well: https://github.com/MartinThoma/flake8-simplify#sim102</p>
+<p>Each rule has:</p>
+<ul>
+<li>A code block: bad vs good (an example what triggers the rule vs how it should be)</li>
+<li>An anchor - this way people can directly link to single rules</li>
+<li>The title of the rule links to the issue in which the rule was introduced (see https://github.com/MartinThoma/flake8-simplify#rules ). That contains:<ul>
+<li>An explanation why this rule makes sense, e.g. https://github.com/MartinThoma/flake8-simplify/issues/35</li>
+<li>A discussion about potential issues</li>
+</ul>
+</li>
+</ul>
+<p>I like the code block + links a lot as this makes it searchable and easy to understand without reading too much. I like having an anchor to single rules as people can lead others to the documentation. I like having all rules on one page (in a compact format + preferably only the rules) as it allows me to just Ctrl+F for a specific rule (e.g. after <code>--select=ALL --fix</code> and seeing a change I don't like).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2532.html">astral-sh/ruff#2532</a> on 2023-02-03 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nunokaeru">@nunokaeru</a> on 2023-02-06 09:10</div>
+            <div class="timeline-body"><p>I've found the lack of documentation on rule violations as quite a sore point about using Ruff.</p>
+<p>While trying to look for explanations for some of my rule violations I came across the supported repo <a href="https://github.com/guilatrova/tryceratops/tree/main/docs/violations">Tryceratops</a>  which had very easy to read documentation of their exceptions rules. I know the organization format will not work in Ruff due to the sheer lack of rules Ruff supports in comparison.</p>
+<p>However the style structure of their docs is something I would appreciate in Ruff as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-07 23:18</div>
+            <div class="timeline-body"><p>This now exists in a basic form. We can define the docs as part of the <code>define_violation!</code> macro, identically to Clippy:</p>
+<pre><code class="language-rust">define_violation!(
+    /// ### What it does
+    /// Checks for `self.assertRaises(Exception)`.
+    ///
+    /// ## Why is this bad?
+    /// `assertRaises(Exception)` can lead to your test passing even if the
+    /// code being tested is never executed due to a typo.
+    ///
+    /// Either assert for a more specific exception (builtin or custom), use
+    /// `assertRaisesRegex` or the context manager form of `assertRaises`.
+    pub struct NoAssertRaisesException;
+);
+</code></pre>
+<p>This explanation shows up with <code>ruff rule B017</code>:</p>
+<pre><code class="language-console">❯ cargo run rule B017
+    Finished dev [unoptimized + debuginfo] target(s) in 0.13s
+     Running `target/debug/ruff rule B017`
+[flake8-bugbear] assert-raises-exception (B017)
+
+### What it does
+Checks for `self.assertRaises(Exception)`.
+
+### Why is this bad?
+`assertRaises(Exception)` can lead to your test passing even if the
+code being tested is never executed due to a typo.
+
+Either assert for a more specific exception (builtin or custom), use
+`assertRaisesRegex` or the context manager form of `assertRaises`.
+</code></pre>
+<p>We also generate these as standalone Markdown files, which are linked from the README and from the beta docs, to the following pages respectively:</p>
+<ul>
+<li>https://github.com/charliermarsh/ruff/blob/main/docs/rules/assert-raises-exception.md</li>
+<li>https://beta.ruff.rs/docs/rules/assert-raises-exception/</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-07 23:19</div>
+            <div class="timeline-body"><p>Let's open new issues to track (1) any modifications or improvements we want to make to the doc structures themselves (this just follow Clippy), and (2) actually adding these docs, since right now, <code>B017</code> is the <em>only</em> rule that has it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-07 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2546.html">astral-sh/ruff#2546</a> on 2023-02-08 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2655.html">astral-sh/ruff#2655</a> on 2023-02-08 10:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

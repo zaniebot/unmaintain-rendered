@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLE1310 fails on `bytes.strip` - astral-sh/ruff #15968</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLE1310 fails on `bytes.strip`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15968">#15968</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-02-05 13:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-02-05 13:35</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/bad-str-strip-call/"><code>bad-str-strip-call</code> (PLE1310)</a> in Ruff 0.9.4 flags a <code>bytes.strip</code> call when its argument is a <code>str</code>, but that is a false positive because <code>bytes.strip</code> does not accept a <code>str</code> argument.</p>
+<pre><code class="language-console">$ cat &gt;ple1310.py &lt;&lt;'# EOF'
+b&quot;&quot;.strip(&quot;//&quot;)
+# EOF
+
+$ python ple1310.py 2&gt;&amp;1 | tail -n 1
+TypeError: a bytes-like object is required, not 'str'
+
+$ ruff --isolated check --select PLE1310 ple1310.py --output-format concise
+ple1310.py:1:11: PLE1310 String `strip` call contains duplicate characters
+Found 1 error.
+</code></pre>
+<p>PLE1310 does not flag a <code>bytes.strip</code> call when its argument is a <code>bytes</code>, which a false negative.</p>
+<pre><code class="language-console">$ echo 'b&quot;&quot;.strip(b&quot;//&quot;)' | ruff --isolated check --select PLE1310 -
+All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-02-05 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-02-05 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-05 19:05</div>
+            <div class="timeline-body"><p>There seems to be another, escaping-related bug:</p>
+<pre><code class="language-python">''.strip('\\b\\x08')  # No error, even though `\` is repeated twice
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15984.html">astral-sh/ruff#15984</a> on 2025-02-06 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-02-07 20:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

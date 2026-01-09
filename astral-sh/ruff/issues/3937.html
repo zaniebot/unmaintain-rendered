@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add warning for PEP 604 when not in annotation - astral-sh/ruff #3937</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add warning for PEP 604 when not in annotation</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3937">#3937</a>
+        opened by <a href="https://github.com/wookie184">@wookie184</a>
+        on 2023-04-11 17:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wookie184">@wookie184</a> on 2023-04-11 17:28</div>
+            <div class="timeline-body"><p>Ruff doesn't warn on this:</p>
+<pre><code class="language-python">import typing
+
+y = typing.Union[int, str]
+z = typing.Optional[str]
+</code></pre>
+<p>This seems to be as a result of https://github.com/charliermarsh/ruff/issues/3215, although I don't really understand the reasoning there, the same change is made if a type is used in an annotation, and as it can still be accessed at runtime it could still cause errors.</p>
+<p>For example,</p>
+<pre><code class="language-python">from typing import Union
+
+new_types = (int, float)
+def thing(arg: Union[new_types]):
+    ...
+</code></pre>
+<p>becomes</p>
+<pre><code class="language-python">new_types = (int, float)
+def thing(arg: new_types):
+    ...
+</code></pre>
+<p>(really the issue there seems to be invalid use of <code>Union</code> in the first place, afaik the only variables you can use there are type aliases, which that tuple is not)</p>
+<p>This is also the case in the other issue linked, https://github.com/charliermarsh/ruff/issues/3215, where as far as I can tell the issue happens whether the union is defined in a variable or directly in the annotation.</p>
+<p>Anyway, I don't really mind too much about autofixes, but I think it would be nice to be able to have a warning for it regardless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-discord/bot/pulls/2523.html">python-discord/bot#2523</a> on 2023-04-11 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-04-12 04:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-12 04:09</div>
+            <div class="timeline-body"><p>I think it makes sense to warn on them at least. I'm hesitant to fix since it can introduce subtle bugs, such as that identified in #3215, whereby replacing <code>Union[new_types]</code> with <code>new_types</code> leads to a runtime error (since we can't know that <code>new_types</code> is a tuple there, and not a single type).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4170.html">astral-sh/ruff#4170</a> on 2023-05-01 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-02 06:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

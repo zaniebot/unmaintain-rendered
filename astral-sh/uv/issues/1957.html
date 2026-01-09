@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv does not correctly sync `project.scripts` when changed - astral-sh/uv #1957</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv does not correctly sync `project.scripts` when changed</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1957">#1957</a>
+        opened by <a href="https://github.com/dsp">@dsp</a>
+        on 2024-02-24 22:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dsp">@dsp</a> on 2024-02-24 22:37</div>
+            <div class="timeline-body"><p><code>uv</code> does not correctly pick up new scripts in <code>project.scripts</code> when they changed. <code>project.scripts</code> are correctly synced when the venv is initially created and the initial sync is done. A change to <code>pyproject.toml</code> afterwards followed by a <code>uv pip sync</code> does not correctly pick up new scripts. This currently affects <code>rye</code> with uv enabled (changing project.scripts, running <code>rye sync</code> and then <code>rye run</code> will not show the new script)</p>
+<p>Steps to reproduce:</p>
+<pre><code class="language-sh">$ mkdir uv-test
+$ cd uv-test
+$ uv venv --verbose
+ uv_interpreter::python_query::find_python selector=Default
+      0.000850s   0ms DEBUG uv_interpreter::interpreter Detecting markers for: /Users/dsp/.rye/shims/python3
+Using Python 3.12.2 interpreter at /opt/homebrew/opt/python@3.12/bin/python3.12
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+$ #... create pyproject.toml
+$ cat pyproject.toml
+[project]
+name = &quot;uv-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+authors = [
+]
+dependencies = []
+requires-python = &quot;&gt;= 3.8&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/uv-test&quot;]
+$ cat requirements.txt
+-e file:.
+
+$ uv pip sync pyproject.toml requirements.txt
+ uv::requirements::from_source source=pyproject.toml
+ uv::requirements::from_source source=requirements.txt
+    0.000405s DEBUG uv_interpreter::virtual_env Found a virtualenv named .venv at: /Users/dsp/src/uv-test/.venv
+    0.000503s DEBUG uv_interpreter::interpreter Using cached markers for: /Users/dsp/src/uv-test/.venv/bin/python
+    0.000508s DEBUG uv::commands::pip_sync Using Python 3.12.2 environment at /Users/dsp/src/uv-test/.venv/bin/python
+    0.000733s DEBUG uv_client::registry_client Using registry request timeout of 300s
+ uv_client::flat_index::from_entries
+ uv_installer::downloader::build_editables
+      0.127057s   0ms DEBUG uv_distribution::source Building (editable) file:///Users/dsp/src/uv-test
+   uv_dispatch::setup_build package_id=&quot;file:///Users/dsp/src/uv-test&quot;, subdirectory=None
+     uv_resolver::resolver::solve
+          0.128589s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.12.2
+       uv_resolver::resolver::choose_version package=root
+       uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+            0.128636s   0ms DEBUG uv_resolver::resolver Adding direct dependency: hatchling*
+       uv_resolver::resolver::choose_version package=hatchling
+         uv_resolver::resolver::package_wait package_name=hatchling
+     uv_resolver::resolver::process_request request=Versions hatchling
+       uv_client::registry_client::simple_api package=hatchling
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/Users/dsp/Library/Caches/uv/simple-v2/pypi/hatchling.rkyv
+     uv_resolver::resolver::process_request request=Prefetch hatchling *
+              0.129081s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/hatchling/
+ uv_resolver::version_map::from_metadata
+       uv_distribution::distribution_database::get_or_build_wheel_metadata dist=hatchling==1.21.1
+         uv_client::registry_client::wheel_metadata built_dist=hatchling==1.21.1
+           uv_client::cached_client::get_serde
+             uv_client::cached_client::get_cacheable
+               uv_client::cached_client::read_and_parse_cache file=/Users/dsp/Library/Caches/uv/wheels-v0/pypi/hatchling/hatchling-1.21.1-py3-none-any.msgpack
+            0.129462s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of hatchling (*)
+            0.129472s   0ms DEBUG uv_resolver::resolver Selecting: hatchling==1.21.1 (hatchling-1.21.1-py3-none-any.whl)
+       uv_resolver::resolver::get_dependencies package=hatchling, version=1.21.1
+         uv_resolver::resolver::distributions_wait package_id=hatchling-1.21.1
+                  0.129503s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/3a/bb/40528a09a33845bd7fd75c33b3be7faec3b5c8f15f68a58931da67420fb9/hatchling-1.21.1-py3-none-any.whl
+            0.129655s   0ms DEBUG uv_resolver::resolver Adding transitive dependency: editables&gt;=0.3
+            0.129659s   0ms DEBUG uv_resolver::resolver Adding transitive dependency: packaging&gt;=21.3
+            0.129663s   0ms DEBUG uv_resolver::resolver Adding transitive dependency: pathspec&gt;=0.10.1
+            0.129666s   0ms DEBUG uv_resolver::resolver Adding transitive dependency: pluggy&gt;=1.0.0
+            0.129670s   0ms DEBUG uv_resolver::resolver Adding transitive dependency: trove-classifiers*
+       uv_resolver::resolver::choose_version package=editables
+         uv_resolver::resolver::package_wait package_name=editables
+     uv_resolver::resolver::process_request request=Versions editables
+       uv_client::registry_client::simple_api package=editables
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/Users/dsp/Library/Caches/uv/simple-v2/pypi/editables.rkyv
+     uv_resolver::resolver::process_request request=Versions packaging
+       uv_client::registry_client::simple_api package=packaging
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/Users/dsp/Library/Caches/uv/simple-v2/pypi/packaging.rkyv
+     uv_resolver::resolver::process_request request=Versions pathspec
+       uv_client::registry_client::simple_api package=pathspec
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/Users/dsp/Library/Caches/uv/simple-v2/pypi/pathspec.rkyv
+     uv_resolver::resolver::process_request request=Versions pluggy
+       uv_client::registry_client::simple_api package=pluggy
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/Users/dsp/Library/Caches/uv/simple-v2/pypi/pluggy.rkyv
+     uv_resolver::resolver::process_request request=Versions trove-classifiers
+       uv_client::registry_client::simple_api package=trove-classifiers
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/Users/dsp/Library/Caches/uv/simple-v2/pypi/trove-classifiers.rkyv
+     uv_resolver::resolver::process_request request=Prefetch trove-classifiers *
+     uv_resolver::resolver::process_request request=Prefetch pluggy &gt;=1.0.0
+     uv_resolver::resolver::process_request request=Prefetch pathspec &gt;=0.10.1
+     uv_resolver::resolver::process_request request=Prefetch packaging &gt;=21.3
+     uv_resolver::resolver::process_request request=Prefetch editables &gt;=0.3
+              0.129843s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/editables/
+              0.129873s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/packaging/
+ uv_resolver::version_map::from_metadata
+              0.129904s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/pathspec/
+ uv_resolver::version_map::from_metadata
+ uv_resolver::version_map::from_metadata
+              0.130023s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/pluggy/
+              0.130064s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/trove-classifiers/
+ uv_resolver::version_map::from_metadata
+ uv_resolver::version_map::from_metadata
+       uv_distribution::distribution_database::get_or_build_wheel_metadata dist=editables==0.5
+         uv_client::registry_client::wheel_metadata built_dist=editables==0.5
+           uv_client::cached_client::get_serde
+             uv_client::cached_client::get_cacheable
+               uv_client::cached_client::read_and_parse_cache file=/Users/dsp/Library/Caches/uv/wheels-v0/pypi/editables/editables-0.5-py3-none-any.msgpack
+       uv_distribution::distribution_database::get_or_build_wheel_metadata dist=packaging==23.2
+         uv_client::registry_client::wheel_metadata built_dist=packaging==23.2
+           uv_client::cached_client::get_serde
+             uv_client::cached_client::get_cacheable
+               uv_client::cached_client::read_and_parse_cache file=/Users/dsp/Library/Caches/uv/wheels-v0/pypi/packaging/packaging-23.2-py3-none-any.msgpack
+       uv_distribution::distribution_database::get_or_build_wheel_metadata dist=pathspec==0.12.1
+         uv_client::registry_client::wheel_metadata built_dist=pathspec==0.12.1
+           uv_client::cached_client::get_serde
+             uv_client::cached_client::get_cacheable
+               uv_client::cached_client::read_and_parse_cache file=/Users/dsp/Library/Caches/uv/wheels-v0/pypi/pathspec/pathspec-0.12.1-py3-none-any.msgpack
+                  0.130198s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/6b/be/0f2f4a5e8adc114a02b63d92bf8edbfa24db6fc602fca83c885af2479e0e/editables-0.5-py3-none-any.whl
+                  0.130211s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/ec/1a/610693ac4ee14fcdf2d9bf3c493370e4f2ef7ae2e19217d7a237ff42367d/packaging-23.2-py3-none-any.whl
+       uv_distribution::distribution_database::get_or_build_wheel_metadata dist=pluggy==1.4.0
+         uv_client::registry_client::wheel_metadata built_dist=pluggy==1.4.0
+           uv_client::cached_client::get_serde
+             uv_client::cached_client::get_cacheable
+               uv_client::cached_client::read_and_parse_cache file=/Users/dsp/Library/Caches/uv/wheels-v0/pypi/pluggy/pluggy-1.4.0-py3-none-any.msgpack
+       uv_distribution::distribution_database::get_or_build_wheel_metadata dist=trove-classifiers==2024.2.23
+         uv_client::registry_client::wheel_metadata built_dist=trove-classifiers==2024.2.23
+           uv_client::cached_client::get_serde
+             uv_client::cached_client::get_cacheable
+               uv_client::cached_client::read_and_parse_cache file=/Users/dsp/Library/Caches/uv/wheels-v0/pypi/trove-classifiers/trove_classifiers-2024.2.23-py3-none-any.msgpack
+                  0.130265s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl
+                  0.130273s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/a5/5b/0cc789b59e8cc1bf288b38111d002d8c5917123194d45b29dcdac64723cc/pluggy-1.4.0-py3-none-any.whl
+            0.130283s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of editables (&gt;=0.3)
+            0.130287s   0ms DEBUG uv_resolver::resolver Selecting: editables==0.5 (editables-0.5-py3-none-any.whl)
+       uv_resolver::resolver::get_dependencies package=editables, version=0.5
+         uv_resolver::resolver::distributions_wait package_id=editables-0.5
+       uv_resolver::resolver::choose_version package=packaging
+         uv_resolver::resolver::package_wait package_name=packaging
+            0.130306s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of packaging (&gt;=21.3)
+            0.130310s   0ms DEBUG uv_resolver::resolver Selecting: packaging==23.2 (packaging-23.2-py3-none-any.whl)
+       uv_resolver::resolver::get_dependencies package=packaging, version=23.2
+         uv_resolver::resolver::distributions_wait package_id=packaging-23.2
+       uv_resolver::resolver::choose_version package=pathspec
+         uv_resolver::resolver::package_wait package_name=pathspec
+            0.130322s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of pathspec (&gt;=0.10.1)
+            0.130324s   0ms DEBUG uv_resolver::resolver Selecting: pathspec==0.12.1 (pathspec-0.12.1-py3-none-any.whl)
+       uv_resolver::resolver::get_dependencies package=pathspec, version=0.12.1
+         uv_resolver::resolver::distributions_wait package_id=pathspec-0.12.1
+       uv_resolver::resolver::choose_version package=pluggy
+         uv_resolver::resolver::package_wait package_name=pluggy
+            0.130338s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of pluggy (&gt;=1.0.0)
+            0.130341s   0ms DEBUG uv_resolver::resolver Selecting: pluggy==1.4.0 (pluggy-1.4.0-py3-none-any.whl)
+       uv_resolver::resolver::get_dependencies package=pluggy, version=1.4.0
+         uv_resolver::resolver::distributions_wait package_id=pluggy-1.4.0
+       uv_resolver::resolver::choose_version package=trove-classifiers
+         uv_resolver::resolver::package_wait package_name=trove-classifiers
+            0.130354s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of trove-classifiers (*)
+            0.130356s   0ms DEBUG uv_resolver::resolver Selecting: trove-classifiers==2024.2.23 (trove_classifiers-2024.2.23-py3-none-any.whl)
+       uv_resolver::resolver::get_dependencies package=trove-classifiers, version=2024.2.23
+         uv_resolver::resolver::distributions_wait package_id=trove-classifiers-2024.2.23
+                  0.130367s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/56/45/6887993f3d1fd941fe129c8dc3aa648d5bd20e0e02c08f99df961fd1e908/trove_classifiers-2024.2.23-py3-none-any.whl
+     uv_dispatch::install resolution=&quot;editables==0.5, trove-classifiers==2024.2.23, pathspec==0.12.1, pluggy==1.4.0, packaging==23.2, hatchling==1.21.1&quot;, venv=&quot;/Users/dsp/Library/Caches/uv/.tmpbcvP0e/.venv&quot;
+          0.130415s   0ms DEBUG uv_dispatch Installing in editables==0.5, trove-classifiers==2024.2.23, pathspec==0.12.1, pluggy==1.4.0, packaging==23.2, hatchling==1.21.1 in /Users/dsp/Library/Caches/uv/.tmpbcvP0e/.venv
+          0.130525s   0ms DEBUG uv_installer::plan Requirement already cached: editables==0.5
+          0.130583s   0ms DEBUG uv_installer::plan Requirement already cached: hatchling==1.21.1
+          0.130663s   0ms DEBUG uv_installer::plan Requirement already cached: packaging==23.2
+          0.130714s   0ms DEBUG uv_installer::plan Requirement already cached: pathspec==0.12.1
+          0.130766s   0ms DEBUG uv_installer::plan Requirement already cached: pluggy==1.4.0
+          0.130820s   0ms DEBUG uv_installer::plan Requirement already cached: trove-classifiers==2024.2.23
+          0.130830s   0ms DEBUG uv_dispatch Installing build requirements: editables==0.5, hatchling==1.21.1, packaging==23.2, pathspec==0.12.1, pluggy==1.4.0, trove-classifiers==2024.2.23
+       uv_installer::installer::install num_wheels=6
+        0.134233s   7ms DEBUG uv_build Calling `hatchling.build.get_requires_for_build_editable()`
+     uv_build::run_python_script script=&quot;get_requires_for_build_editable&quot;, python_version=3.12.2
+   uv_build::build package_id=&quot;file:///Users/dsp/src/uv-test&quot;
+        0.208199s   0ms DEBUG uv_build Calling `hatchling.build.build_editable(metadata_directory=None)`
+     uv_build::run_python_script script=&quot;build_editable&quot;, python_version=3.12.2
+      0.295955s 169ms DEBUG uv_distribution::source Finished building (editable): uv-test @ file:///Users/dsp/src/uv-test
+Built 1 editable in 170ms
+    0.296847s DEBUG uv_installer::plan Treating editable requirement as mutable: uv-test==0.1.0 (from file:///Users/dsp/src/uv-test)
+ uv_installer::installer::install num_wheels=1
+Installed 1 package in 0ms
+ + uv-test==0.1.0 (from file:///Users/dsp/src/uv-test)
+
+$ .... change pyproject.toml add project.scripts entry
+$ cat pyproject.toml
+[project]
+name = &quot;uv-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+authors = [
+]
+dependencies = []
+requires-python = &quot;&gt;= 3.8&quot;
+
+[project.scripts]
+hello = &quot;uv_test:hello&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/uv-test&quot;]
+$ uv pip sync --verbose pyproject.toml requirements.txt                                                                                                                                                      
+ uv::requirements::from_source source=pyproject.toml
+ uv::requirements::from_source source=requirements.txt
+    0.000427s DEBUG uv_interpreter::virtual_env Found a virtualenv named .venv at: /Users/dsp/src/uv-test/.venv
+    0.000520s DEBUG uv_interpreter::interpreter Using cached markers for: /Users/dsp/src/uv-test/.venv/bin/python
+    0.000526s DEBUG uv::commands::pip_sync Using Python 3.12.2 environment at /Users/dsp/src/uv-test/.venv/bin/python
+    0.000739s DEBUG uv_client::registry_client Using registry request timeout of 300s
+ uv_client::flat_index::from_entries
+    0.125662s DEBUG uv_installer::plan Treating editable requirement as immutable: uv-test==0.1.0 (from file:///Users/dsp/src/uv-test)
+Audited 1 package in 125ms
+$ ls -al .venv/bin/hello
+ls: .venv/bin/hello: No such file or directory
+</code></pre>
+<p>Notable, if I create an empty .venv, have a pyproject.toml that already includes the script and then run <code>uv pip sync</code> the <code>.venv/bin/</code> entry is there. The problem just appears if the pyproject.toml changed after the initial change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-24 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-24 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-24 22:40</div>
+            <div class="timeline-body"><p>Thanks! I'll make this caching a little smarter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1959.html">astral-sh/uv#1959</a> on 2024-02-25 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-25 01:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

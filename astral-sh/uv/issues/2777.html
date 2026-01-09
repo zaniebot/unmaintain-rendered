@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No wheels found with matching Python ABI error message does not show ABI - astral-sh/uv #2777</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>No wheels found with matching Python ABI error message does not show ABI</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2777">#2777</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-04-02 14:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-02 14:19</div>
+            <div class="timeline-body"><p>e.g.  in</p>
+<pre><code>  ╰─▶ Because torch==2.1.0+cpu is unusable because no wheels are available with a matching Python ABI and you require torch==2.1.0+cpu, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>We don't say what the current ABI is that could not be satisfied — can we show this effectively?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-04-02 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3437.html">astral-sh/uv#3437</a> on 2024-05-07 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fzyzcjy">@fzyzcjy</a> on 2024-10-19 11:56</div>
+            <div class="timeline-body"><p>Hi, is there any updates? Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8363.html">astral-sh/uv#8363</a> on 2024-10-19 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-17 03:53</div>
+            <div class="timeline-body"><p>I <em>think</em> the actual representation here is a long list of tags... But maybe we can show some summary value?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-17 04:13</div>
+            <div class="timeline-body"><p>I started doing some work to thread information through here... I think there are two parts:</p>
+<ul>
+<li>Which tags are compatible?</li>
+<li>Which tags are available?</li>
+</ul>
+<p>I investigated attaching the tags available on the wheels to our incompatibility tracking system, but I don't remember how far I made it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-17 15:35</div>
+            <div class="timeline-body"><p>I found the change I started with</p>
+<pre><code class="language-diff">commit 55d61b8fab03bc520dd6ac0420f2d47d50269323
+Author: Zanie Blue &lt;contact@zanie.dev&gt;
+Date:   Sat Oct 19 08:38:13 2024 -0500
+
+    Track the best incompatible ABI tag
+
+diff --git a/crates/uv-distribution-types/src/prioritized_distribution.rs b/crates/uv-distribution-types/src/prioritized_distribution.rs
+index 5a6aa2cd8..bc27516a6 100644
+--- a/crates/uv-distribution-types/src/prioritized_distribution.rs
++++ b/crates/uv-distribution-types/src/prioritized_distribution.rs
+@@ -138,7 +138,9 @@ impl Display for IncompatibleDist {
+                     IncompatibleTag::Python =&gt; {
+                         f.write_str(&quot;no wheels with a matching Python implementation tag&quot;)
+                     }
+-                    IncompatibleTag::Abi =&gt; f.write_str(&quot;no wheels with a matching Python ABI tag&quot;),
++                    IncompatibleTag::Abi(abi) =&gt; {
++                        f.write_str(&amp;format!(&quot;no wheels with a matching Python ABI tag ({abi})&quot;))
++                    }
+                     IncompatibleTag::Platform =&gt; {
+                         f.write_str(&quot;no wheels with a matching platform tag&quot;)
+                     }
+diff --git a/crates/uv-platform-tags/src/tags.rs b/crates/uv-platform-tags/src/tags.rs
+index ae4f702d5..e93884c19 100644
+--- a/crates/uv-platform-tags/src/tags.rs
++++ b/crates/uv-platform-tags/src/tags.rs
+@@ -25,7 +25,7 @@ pub enum TagsError {
+ pub enum IncompatibleTag {
+     Invalid,
+     Python,
+-    Abi,
++    Abi(String),
+     Platform,
+ }
+ 
+@@ -246,8 +246,9 @@ impl Tags {
+             };
+             for wheel_abi in wheel_abi_tags {
+                 let Some(platforms) = abis.get(wheel_abi) else {
+-                    max_compatibility =
+-                        max_compatibility.max(TagCompatibility::Incompatible(IncompatibleTag::Abi));
++                    max_compatibility = max_compatibility.max(TagCompatibility::Incompatible(
++                        IncompatibleTag::Abi(wheel_abi.clone()),
++                    ));
+                     continue;
+                 };
+                 for wheel_platform in wheel_platform_tags {
+diff --git a/crates/uv-resolver/src/version_map.rs b/crates/uv-resolver/src/version_map.rs
+index c54b472df..2711c3de8 100644
+--- a/crates/uv-resolver/src/version_map.rs
++++ b/crates/uv-resolver/src/version_map.rs
+@@ -1,3 +1,4 @@
++use itertools::Itertools;
+ use pubgrub::Range;
+ use std::collections::btree_map::{BTreeMap, Entry};
+ use std::sync::OnceLock;
+@@ -563,7 +564,9 @@ impl VersionMapLazy {
+         // Check if the wheel is compatible with the `requires-python` (i.e., the Python ABI tag
+         // is not less than the `requires-python` minimum version).
+         if !self.requires_python.matches_wheel_tag(filename) {
+-            return WheelCompatibility::Incompatible(IncompatibleWheel::Tag(IncompatibleTag::Abi));
++            return WheelCompatibility::Incompatible(IncompatibleWheel::Tag(IncompatibleTag::Abi(
++                filename.abi_tag.iter().join(&quot;.&quot;),
++            )));
+         }
+ 
+         // Break ties with the build tag.
+diff --git a/crates/uv/tests/it/lock.rs b/crates/uv/tests/it/lock.rs
+index cc1b0c35d..14f5e734f 100644
+--- a/crates/uv/tests/it/lock.rs
++++ b/crates/uv/tests/it/lock.rs
+@@ -5521,7 +5521,7 @@ fn lock_requires_python_no_wheels() -&gt; Result&lt;()&gt; {
+ 
+     ----- stderr -----
+       × No solution found when resolving dependencies:
+-      ╰─▶ Because dearpygui==1.9.1 has no wheels with a matching Python ABI tag and your project depends on dearpygui==1.9.1, we can conclude that your project's requirements are unsatisfiable.
++      ╰─▶ Because dearpygui==1.9.1 has no wheels with a matching Python ABI tag (cp310) and your project depends on dearpygui==1.9.1, we can conclude that your project's requirements are unsatisfiable.
+     &quot;###);
+ 
+     Ok(())
+diff --git a/crates/uv/tests/it/pip_install_scenarios.rs b/crates/uv/tests/it/pip_install_scenarios.rs
+index 7116d2b4f..f028d9dd6 100644
+--- a/crates/uv/tests/it/pip_install_scenarios.rs
++++ b/crates/uv/tests/it/pip_install_scenarios.rs
+@@ -4267,16 +4267,16 @@ fn no_sdist_no_wheels_with_matching_abi() {
+ 
+     uv_snapshot!(filters, command(&amp;context)
+         .arg(&quot;no-sdist-no-wheels-with-matching-abi-a&quot;)
+-        , @r#&quot;
++        , @r###&quot;
+     success: false
+     exit_code: 1
+     ----- stdout -----
+ 
+     ----- stderr -----
+       × No solution found when resolving dependencies:
+-      ╰─▶ Because only package-a==1.0.0 is available and package-a==1.0.0 has no wheels with a matching Python ABI tag, we can conclude that all versions of package-a cannot be used.
++      ╰─▶ Because only package-a==1.0.0 is available and package-a==1.0.0 has no wheels with a matching Python ABI tag (MMMMMM), we can conclude that all versions of package-a cannot be used.
+           And because you require package-a, we can conclude that your requirements are unsatisfiable.
+-    &quot;#);
++    &quot;###);
+ 
+     assert_not_installed(
+         &amp;context.venv,
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-09 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-09 18:24</div>
+            <div class="timeline-body"><p>Gonna look at this today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10527.html">astral-sh/uv#10527</a> on 2025-01-11 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-13 21:33</div>
+            <div class="timeline-body"><p>My high-level comment is that it would be nice if we could show the user the msimatch in categories of python version, platform and architecture, if only one of them mismatches:</p>
+<blockquote>
+<p>A wheel exists for a different python version (current: <code>cp313</code>, supported: <code>cp311</code>, <code>cp310</code>, <code>cp309</code>)</p>
+</blockquote>
+<p>Or</p>
+<blockquote>
+<p>A wheel exists for a different platform (current: MacOS, supported: Linux, Windows)</p>
+</blockquote>
+<p>Or</p>
+<blockquote>
+<p>A wheel exists for a different architecture (current: arm64, supported: x86_86)</p>
+</blockquote>
+<p>In my experience, it is usually one of those that mismatches. I've had version mismatches when e.g. i was using 3.13 while up until 3.12 was supported. Torch is a good example for platform support problems, and the arm64/x86_64 is probably something that happens with the mac architecture transition or when you are on a less popular architecture (e.g. a raspberry pi or specific servers or devboards). This comes with the other motive of being clearer about build failures, the &quot;a wheel exists for a different python version&quot; can tell the user to downgrade without them having to figure out the files page and pypi and how to read wheel tags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 21:34</div>
+            <div class="timeline-body"><p>@konstin -- Did you look at #10534?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 21:34</div>
+            <div class="timeline-body"><p>That's what you're asking for, but doesn't put it in plaintext as nicely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-13 21:36</div>
+            <div class="timeline-body"><p>Yes, i just didn't want to make it a PR review comment (this could be done in a follow-up/later?) so i put it here to get to a shared target output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10534.html">astral-sh/uv#10534</a> on 2025-01-13 22:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 22:47</div>
+            <div class="timeline-body"><p>(@konstin -- Just clarifying that https://github.com/astral-sh/uv/pull/10534 is different than https://github.com/astral-sh/uv/pull/10527 which you reviewed.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-14 01:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-14 01:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zhangrongyu0101">@zhangrongyu0101</a> on 2025-01-14 08:58</div>
+            <div class="timeline-body"><p>maybe it's the problem with the Python version? I solved this problem by changing the Python version from 3.13 to 3.10.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10612.html">astral-sh/uv#10612</a> on 2025-01-14 19:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

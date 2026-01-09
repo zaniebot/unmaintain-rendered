@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refactor proposal for isort implementation - astral-sh/ruff #7738</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Refactor proposal for isort implementation</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7738">#7738</a>
+        opened by <a href="https://github.com/bluthej">@bluthej</a>
+        on 2023-10-01 11:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bluthej">@bluthej</a> on 2023-10-01 11:53</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>I've been working on #1567 and I got a working implementation but after taking the time to make a small refactor in #7665 and coming back to the original issue I'm thinking another refactor might be welcome regarding extensibility of the isort functionality.</p>
+<h2>Current state</h2>
+<p>Currently, the formatting is performed by <code>format_import_block</code> which relies on <code>order_imports</code> from <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/isort/order.rs">isort/order.rs</a>, and there are different methods that are called along the way depending on the kinds of imports we are comparing (they are kind of intertwined).</p>
+<p>The ordering rules themselves are implemented in <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/isort/sorting.rs">isort/sorting.rs</a>, and here each different combination of import types has its own method.</p>
+<p>The main drawback I see from this architecture is that when trying to add a new functionality one needs to sprinkle some changes in the different methods instead of making changes in a single place.</p>
+<h2>Proposal</h2>
+<p>I thus propose to reverse the logic, i.e. have a single entry point for comparisons (like the current <code>cmp_either_import</code>) that would chain the different sorting rules (<code>cmp_force_to_top</code>, etc...), and each of them would match on the import types.</p>
+<p>I think this would make the isort functionality more easily extensible. With that change, to implement #1567 we just need to add a <code>cmp_string_length</code> method and insert it in the chain of sorting rules. This will simplify the process for similar settings like <a href="https://pycqa.github.io/isort/docs/configuration/options.html#length-sort-straight">length sort straight</a> and <a href="https://pycqa.github.io/isort/docs/configuration/options.html#length-sort-sections">length sort sections</a>.</p>
+<p>What do you think? Any feedback is welcome :smiley:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-02 21:46</div>
+            <div class="timeline-body"><p>So we'd merge into a vector of <code>EitherImport</code> earlier, and then do a generalized comparison between imports on that vector, rather than ordering twice? Seems reasonable to me, but it's hard to say for certain without looking at the proposed changes. Happy to review a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-10-02 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-10-02 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluthej">@bluthej</a> on 2023-10-03 07:06</div>
+            <div class="timeline-body"><p>I guess we don't necessarily need to always merge the two <code>Vec</code>s of <code>EitherImport</code>, we can keep them separate if we don't sort within sections, like in the original Python <code>isort</code> implementation.</p>
+<p>I understand it's tough to judge without seeing a PR, I wanted to see if in principle that sounded ok before spending some time on it :)</p>
+<p>BTW, I noticed that initially the implementation looked a lot more like the original <code>isort</code> (using a <code>module_key</code> method to sort by key), and then it was changed to the current form with some <code>cmp_*</code> methods to compare pairs of imports. It's tough for me to pinpoint exactly when this happened (the history on Github is not helpful because the folders were renamed I think) so I'm wondering what was the reason for that? I'm asking because the Python implementation looks simpler to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aspizu">@aspizu</a> on 2023-10-03 09:12</div>
+            <div class="timeline-body"><p>what do you guys think about my implementation in <a href="https://github.com/aspizu/imp">https://github.com/aspizu/imp</a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluthej">@bluthej</a> on 2023-10-03 11:04</div>
+            <div class="timeline-body"><p>@aspizu thanks for sharing!</p>
+<p>I see you are relying on the <code>Ord</code> trait to sort the imports. I did give it some thought, but the main issue I see with this is that the imports are not just sorted based on their internal state, they are sorted based on the settings passed in the configuration as well. You could make the argument that the settings could be stored within some import struct and used in the trait implementation but then the issue is that <code>self</code> and <code>other</code> would need to have consistent settings.</p>
+<p>So I personally prefer the implementations based on functions that take one or two imports and the settings separately (either in the <code>sort_by_key</code> style like the original isort, or in the <code>cmp_*</code> style, like it's currently the case in ruff).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluthej">@bluthej</a> on 2023-10-06 14:45</div>
+            <div class="timeline-body"><p>Hey,</p>
+<p>So I did some digging and eventually found that the <code>cmp_*</code> based implementation of the sorting logic was introduced in #1374 in order to respect natural ordering.</p>
+<p>I looked at the <a href="https://github.com/PyCQA/isort/blob/53b1f64573b184692c3c699d474197ec9804836c/isort/sorting.py#L111">original Python implementation</a> and saw that they're splitting the keys based on the numbers found in the string. This is a neat little trick, but this is not directly applicable in Rust since we can't have a <code>Vec</code> with a mix of strings and integers. I guess that's what guided the current implementation towards using the <code>natord</code> crate, which provides the <code>compare</code> and <code>compare_ignore_case</code> functions.</p>
+<p>What we could do though is to introduce a <code>NatOrdString</code> wrapper for a <code>String</code> that implements the <code>Ord</code> trait based on the <code>compare</code> function from <code>natord</code>. This type would be used for the return type of the <code>*_key</code> functions, and we could thus use <code>sort_by_cached_key</code> again. This is pretty easy, and I do think this would lead to a more straightforward implementation.</p>
+<p>Any thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7963.html">astral-sh/ruff#7963</a> on 2023-10-15 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-30 04:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

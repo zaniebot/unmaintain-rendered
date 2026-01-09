@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot install all packages like pip, e.g., PandasGUI - astral-sh/uv #16329</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot install all packages like pip, e.g., PandasGUI</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16329">#16329</a>
+        opened by <a href="https://github.com/hoegge">@hoegge</a>
+        on 2025-10-16 09:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hoegge">@hoegge</a> on 2025-10-16 09:44</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>It seems impossible to install some packages with uv. E.g., <code>pandasgui</code> does not seem possible to install with uv but works fine using <code>pip</code>. I get this error on Windows (10) -see below. Have I misunderstood something? And if now, how do you handle packages in a project that uv cannot handle?</p>
+<pre><code>uv add pandasgui
+Resolved 100 packages in 5.31s
+error: Distribution `pyqt5-qt5==5.15.17 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on Windows (`win_amd64`), but `pyqt5-qt5` (v5.15.17) only has wheels for the following platforms: `manylinux2014_x86_64`, `macosx_10_13_x86_64`, `macosx_11_0_arm64`; consider adding your platform to `tool.uv.required-environments` to ensure uv resolves to a version with compatible wheels 
+</code></pre>
+<h3>Platform</h3>
+<p>Windows 10</p>
+<h3>Version</h3>
+<p>uv 0.9.3 (83635a6c4 2025-10-15)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @hoegge on 2025-10-16 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlmirNeeto99">@AlmirNeeto99</a> on 2025-10-16 18:24</div>
+            <div class="timeline-body"><p>Having the same problem trying to install torchvision on Linux!</p>
+<p>Resolved 31 packages in 1.24s
+error: Distribution <code>torchvision==0.24.0 @ registry+https://download.pytorch.org/whl/cpu</code> can't be installed because it doesn't have a source distribution or wheel for the current platform</p>
+<p>hint: You're on Linux (<code>manylinux_2_35_x86_64</code>), but <code>torchvision</code> (v0.24.0) only has wheels for the following platforms: <code>manylinux_2_28_aarch64</code>, <code>macosx_12_0_arm64</code>; consider adding your platform to <code>tool.uv.required-environments</code> to ensure uv resolves to a version with compatible wheels</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlmirNeeto99">@AlmirNeeto99</a> on 2025-10-16 18:29</div>
+            <div class="timeline-body"><p>I was able to solve it by adding the following lines to my pyproject file:</p>
+<p>[tool.uv]
+required-environments = [
+&quot;sys_platform == 'linux' and platform_machine == 'x86_64'&quot;,
+]</p>
+<p>Maybe you should try adding:</p>
+<p>[tool.uv]
+required-environments = [
+&quot;sys_platform == 'win32' and platform_machine == 'amd64'&quot;,
+]</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-03 03:51</div>
+            <div class="timeline-body"><p>The reason this fails is fairly nuanced but there's an extensive write-up here (and the hint points you to this setting): https://docs.astral.sh/uv/concepts/resolution/#required-environments. I suggest adding:</p>
+<pre><code class="language-toml">[tool.uv]
+required-environments = [
+    &quot;sys_platform == 'win32'&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-03 03:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

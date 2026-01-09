@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cant use hyphens within arguments - clap-rs/clap #788</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cant use hyphens within arguments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/788">#788</a>
+        opened by <a href="https://github.com/patrickisgreene">@patrickisgreene</a>
+        on 2016-12-28 07:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/patrickisgreene">@patrickisgreene</a> on 2016-12-28 07:23</div>
+            <div class="timeline-body"><p>First, Thank you so much for saving me many hours of writing boilerplate :)</p>
+<h3>Rust Version</h3>
+<p>rustc 1.15.0-nightly (71c06a56a 2016-12-18)</p>
+<h3>Affected Version of clap</h3>
+<ul>
+<li>2.19.2</li>
+</ul>
+<h3>Problem</h3>
+<p>When parsing an argument that takes a Quoted string,
+clap parse's the &quot;arguments&quot; in the string as flags meant for clap, exiting due to unknown flags.</p>
+<h3>Usecase</h3>
+<p>My program needs to take an argument like this,
+<code>-other_prog_args &quot;--list --of --args --to --pass -on&quot;</code>
+and pass the args to another progam.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Feature" to "Bug: cant use hyphens within arguments" by @patrickisgreene on 2016-12-28 07:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-28 14:32</div>
+            <div class="timeline-body"><p>I think this may have to do with how your shell treats quotes. Which shell are you using?</p>
+<p>Also, for your use case there is <a href="https://docs.rs/clap/2.19.2/clap/struct.Arg.html#method.allow_hyphen_values"><code>Arg::allow_hyphen_values</code></a></p>
+<p>So you may be able to get away with doing something like:</p>
+<pre><code class="language-rust">let m = App::new(&quot;prog&quot;)
+    .arg(Arg::from_usage(&quot;--other_prog_args [ARGS]... 'Args to pass on to other program'&quot;)
+        .allow_hyphen_values(true))
+    .get_matches()
+</code></pre>
+<p>Then calling this should work:</p>
+<pre><code>$ prog --other_prog_args --list --of --args --to --pass -on
+</code></pre>
+<p>Where <code>--other_prog_args</code> would then just contain the values <code>[&quot;--list&quot;, &quot;--of&quot;, &quot;--args&quot;, &quot;--to&quot;, &quot;--pass&quot;, &quot;-on&quot;]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-12-28 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrickisgreene">@patrickisgreene</a> on 2016-12-28 19:52</div>
+            <div class="timeline-body"><p>I'm just using bash btw.</p>
+<p>Well now i just feel silly for not thinking to searching the docs for hyphen thanks
+However i would like to be able to call it so the order of the arguments doesn't matter.
+so this:
+<code>prog --arg --second-prog-args &quot;--sec --program --args&quot; --more --first --prog --args</code>
+and this:
+<code>prog --first --prog --args --second-prog-args &quot;--sec --program --args&quot;</code></p>
+<p>I believe your solution would eat the remaining args correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-28 20:10</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe your solution would eat the remaining args correct?</p>
+</blockquote>
+<p>Not if <code>--more</code> is a valid <code>prog</code> flag. It stops parsing once it reaches a valid <code>prog</code> arg. The only time it <em>can't</em> make that determination is if it's a positional argument. In which case it's up to your CLI design, i.e. either not have any positionals arguments, or inform users to provide them after a <code>--</code> such as</p>
+<pre><code>$ prog --first --prog --args --second-prog-args --sec --program --args -- progpos1 progpos2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrickisgreene">@patrickisgreene</a> on 2016-12-28 20:32</div>
+            <div class="timeline-body"><p>Ok that makes since the only problem i see now is the second program <a href="https://linux.die.net/man/1/feh">feh</a> takes like a million possible arguments (some positional) and I need to be able to pass any possible arg.</p>
+<p>There's already a lot of overlap between args my program needs and feh's args.
+Looking at the manpage almost all 'short' (one letter) arg names are taken.</p>
+<p>I would have to change my args to have less descriptive names, or no 'short' name for args, in order to not overlap with feh's arguments. I'm not to keen on that idea, but i very well could be missing an obvious solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Bug: cant use hyphens within arguments" to "Cant use hyphens within arguments" by @patrickisgreene on 2016-12-28 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-28 22:51</div>
+            <div class="timeline-body"><p>At that point I would recommend <a href="https://docs.rs/clap/2.19.3/clap/enum.AppSettings.html#variant.TrailingVarArg"><code>AppSettings::TrailingVarArg</code></a> which would require those commands to be stored in the final positional argument of your program</p>
+<pre><code>$ prog [OPTIONS] &lt;cmd&gt;...
+</code></pre>
+<p>Where it would be used like,</p>
+<pre><code>$ prog --your-arg -s -a cmd --starts here -a -n -d --passes --through-to other --program
+</code></pre>
+<p>This would also allow you have positional arguments and such for your own program. Any overlap between your program and <code>feh</code> is fine.</p>
+<p>If your program is open source, and you already know what arguments you want to support, I'd happy to take a look and see if there are any concerns or tips you could use :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrickisgreene">@patrickisgreene</a> on 2016-12-29 02:51</div>
+            <div class="timeline-body"><p>Thanks that would definitely work well, I'll go for it.</p>
+<p>The project is opensource though unlicensed atm, it is still very early stages. https://github.com/bytebuddha/mookaite</p>
+<p>I would really appreaciate you taking a look, I'm relitivily new to programming (2years) so any concerns, tips, or advice would be usefull.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-29 03:38</div>
+            <div class="timeline-body"><p>It looks good! You have a few options for your <a href="https://github.com/bytebuddha/mookaite/blob/470a2edc58cfc6942ddddbe13d648560e30cc2ef/src/main.rs#L66-L72"><code>feh_args</code></a>, but what I would do is simply use the <code>TrailingVarArg</code> and potentially even change the <a href="https://docs.rs/clap/2.19.3/clap/struct.App.html#method.usage">usage string</a> to tell users to pass all <code>feh</code> args after <code>--</code>.</p>
+<p>It would look like:</p>
+<pre><code class="language-rust">let matches = // build app like normal
+    .usage(&quot;mookaite [OPTIONS] -- &lt;FEH_ARGS&gt;&quot;)
+   .setting(AppSettings::TrailingVarArg)
+   .arg(Arg::with_name(&quot;feh_args&quot;)
+        .allow_hyphen_values(true)
+        .help(&quot;Any optional arguments to pass through to feh&quot;)
+        .multiple(true))
+    .get_matches();
+</code></pre>
+<p>Changing the usage string isn't mandatory, but it helps tell your users, &quot;separate the feh args from mookaite args&quot;. There are downsides to setting the usage string manually though, so do it with caution. The downside is if your user makes an error, clap no longer builds a context sensitive usage string to tell them how to correct the error, it just uses the manual one regardless. So it's up to you which you'd like to use. Personally, I'd stick with the default usage string and perhaps mention &quot;--&quot; in the <code>feh_args</code> help string.</p>
+<p>Also, the <code>TrailingVarArgs</code> isn't mandatory either, but what it does is give your users flexibilty</p>
+<pre><code>$ prog --your-arg --other-arg -- --feh arg -h -e -r -e
+
+# is the same as:
+
+$ prog  --your-arg --other-arg --feh arg -h -e -r -e
+</code></pre>
+<p>So long as the user doesn't start the <code>feh</code> args with one that you and <code>feh</code> share.</p>
+<p>Finally, the <code>allow_hyphen_values</code> lets you accept <code>--feh-args</code> style values without having to use the <code>--</code> to separate your args, and feh's. Again, it's optional, but I'd throw it in there.</p>
+<p>I'm going to close this issue, but please feel free to ask any futher questions or hit me up either here on in the gitter room if you need anything! :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2016-12-29 03:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symlink uv itself into venv - astral-sh/uv #9157</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Symlink uv itself into venv</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9157">#9157</a>
+        opened by <a href="https://github.com/rdaysky">@rdaysky</a>
+        on 2024-11-15 23:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rdaysky">@rdaysky</a> on 2024-11-15 23:28</div>
+            <div class="timeline-body"><p>The following workflow seems to have no uv counterpart:</p>
+<pre><code>python3 -m venv /path/to/venv
+/path/to/venv/bin/pip install somepkg
+/path/to/venv/bin/python -m somepkg
+</code></pre>
+<p>It would be nice to be able to run</p>
+<pre><code>uv venv /path/to/venv
+/path/to/venv/bin/uv pip install somepkg
+/path/to/venv/bin/python -m somepkg
+</code></pre>
+<p>where none of the advanced features of uv are required, only its speed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-15 23:29</div>
+            <div class="timeline-body"><p>Why not</p>
+<pre><code>uv venv /path/to/venv
+uv pip install -p /path/to/venv somepkg
+/path/to/venv/bin/python -m somepkg
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-15 23:36</div>
+            <div class="timeline-body"><p>You don’t need uv to be in the environment in order to manipulate the environment, which simplifies things quite a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-11-15 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rdaysky">@rdaysky</a> on 2024-11-16 22:25</div>
+            <div class="timeline-body"><p>The main rationale for this request is simply the principle of least surprise. If pip can do something, then uv pip should be able to do the exact same thing.</p>
+<p>To be specific, I suggest the following:</p>
+<ul>
+<li>that an executable called <code>uv</code> be put into all newly created virtualenvs</li>
+<li>that if called, it should discover the virtualenv in which it’s located and only affect that virtualenv</li>
+<li>that <code>uv</code> executables created by any method other than <code>uv venv</code>, such as <code>pipx install uv</code>, do <em>not</em> do this, because otherwise, for example, uv from pipx would try to affect the virtualenv into which pipx installed it</li>
+</ul>
+<p>How this compares to current behavior:</p>
+<ul>
+<li>it will be possible to execute /path/to/venv/bin/uv, currently that’s not possible</li>
+<li>given PATH=/path/to/venv/bin:$PATH, <code>uv</code> invocations will affect that venv, but the current behavior is also exactly the same as uv discovers virtualenvs from $PATH</li>
+</ul>
+<p>How this can bite the user in the behind:</p>
+<ul>
+<li>if a symlink to uv is put into a virtualenv and later the uv binary moves to a different place which is still on $PATH, in which case the old way would work but the new one won’t. The same would happen with the python interpreter itself though, so virtualenv users are already aware of such a possibility.</li>
+</ul>
+<p>Alternatives:</p>
+<ul>
+<li>put an executable called <code>pip</code> (or <code>uvpip</code> or something) that works exactly like normal pip would, including virtualenv discovery from the directory containing it, but that would call <code>uv pip</code> behind the scenes. This would enable the use case I mentioned in the issue (specifically, what I wanted was to install spacy and ipython to run some ad hoc stats on a piece of text, I had no interest in creating a pyproject.toml for a throwaway script).</li>
+</ul>
+<p>Related concerns:</p>
+<ul>
+<li>on Windows there may be other reasons to have uv within the venv (see #3876)</li>
+<li>if uv reaches widespread adoption and distributions such as Debian, known for conservativeness with new versions of stuff, start packaging it, there may be need for system uv to download and install a more recent version of uv into a newly created venv</li>
+</ul>
+<p>@charliermarsh One binary you definitely don’t need in the environment to make use of it is <code>python</code>, yet it’s there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-16 22:27</div>
+            <div class="timeline-body"><p>I'm sorry, but I'm not really convinced this is worth the additional complexity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-26 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @charliermarsh on 2024-12-26 16:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

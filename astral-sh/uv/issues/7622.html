@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModuleNotFoundError immediately after initializing a project - astral-sh/uv #7622</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ModuleNotFoundError immediately after initializing a project</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7622">#7622</a>
+        opened by <a href="https://github.com/5183nischal">@5183nischal</a>
+        on 2024-09-22 16:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/5183nischal">@5183nischal</a> on 2024-09-22 16:39</div>
+            <div class="timeline-body"><p>The following error occurs when I initialize a project under <code>~/Documents</code> but not say under <code>~/Downloads</code> (in macos).</p>
+<ol>
+<li><p><strong>Initialize a new project using <code>uv</code></strong>:
+I initialized a new project named <code>trials</code> using the <code>uv</code> command.</p>
+<pre><code class="language-bash">uv init --lib trials
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-bash">Initialized project `trials` at `/Users/nisch/Documents/trials`
+</code></pre>
+</li>
+<li><p><strong>Navigate to the project directory</strong>:
+I changed the directory to the newly created <code>trials</code> project.</p>
+<pre><code class="language-bash">cd trials
+</code></pre>
+</li>
+<li><p><strong>Run Python command to import the <code>trials</code> module</strong>:
+I attempted to run a Python command to import the <code>trials</code> module using <code>uv</code>.</p>
+<pre><code class="language-bash">uv run python -c &quot;import trials&quot;
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-bash">Using Python 3.10.15
+Creating virtual environment at: .venv
+    Built trials @ file:///Users/nisch/Documents/trials
+Installed 1 package in 1ms
+</code></pre>
+</li>
+<li><p><strong>Run the same command again</strong>:
+I ran the same command again to import the <code>trials</code> module.</p>
+<pre><code class="language-bash">uv run python -c &quot;import trials&quot;
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-bash">Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'trials'
+</code></pre>
+</li>
+</ol>
+<h3>Issue</h3>
+<p>After initializing the project and running the command to import the <code>trials</code> module, I encountered a <code>ModuleNotFoundError</code>. It seems that the <code>trials</code> module is not being recognized, even though the project was initialized successfully.</p>
+<h3>Expected Behavior</h3>
+<p>The <code>trials</code> module should be importable after initializing the project and running the command.</p>
+<h3>Actual Behavior</h3>
+<p>The <code>trials</code> module is not found, resulting in a <code>ModuleNotFoundError</code>.</p>
+<h3>Verbose Output</h3>
+<p>I ran the command with the <code>-v</code> (verbose) flag to get more detailed output:</p>
+<pre><code class="language-bash">uv run -v python -c &quot;import trials&quot;
+</code></pre>
+<p>Verbose Output:</p>
+<pre><code>DEBUG uv 0.4.15
+DEBUG Found project root: `/Users/nisch/Documents/trials`
+DEBUG No workspace root found, using project root
+DEBUG Discovered project `trials` at: `/Users/nisch/Documents/trials`
+DEBUG Reading requests from `/Users/nisch/Documents/trials/.python-version`
+DEBUG The virtual environment's Python version satisfies `Python 3.10`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: trials @ file:///Users/nisch/Documents/trials
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 1 package in 4ms
+DEBUG Using request timeout of 30s
+WARN  Failed to read metadata for file: No such file or directory (os error 2)
+WARN  Failed to read metadata for file: No such file or directory (os error 2)
+DEBUG Requirement already installed: trials==0.1.0 (from file:///Users/nisch/Documents/trials)
+Audited 1 package in 0.39ms
+DEBUG Using Python 3.10.15 interpreter at: /Users/nisch/Documents/trials/.venv/bin/python3
+DEBUG Running `python -c import trials`
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'trials'
+DEBUG Command exited with code: 1
+</code></pre>
+<p>Thanks in advance!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/choucavalier">@choucavalier</a> on 2024-09-22 17:53</div>
+            <div class="timeline-body"><p>:+1: I got this problem often as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-22 17:54</div>
+            <div class="timeline-body"><p>If you want the template project to be created with an importable directory like that you, consider using <code>uv init trials --lib</code>. By default, we create an <code>--app</code>, which just contains runnable scripts as opposed to a buildable project. \cc @zaneib</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-22 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/5183nischal">@5183nischal</a> on 2024-09-22 18:59</div>
+            <div class="timeline-body"><blockquote>
+<p>If you want the template project to be created with an importable directory like that you, consider using <code>uv init trials --lib</code>. By default, we create an <code>--app</code>, which just contains runnable scripts as opposed to a buildable project. \cc @zaneib</p>
+</blockquote>
+<p>But I do initialize it with the <code>--lib</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-22 19:02</div>
+            <div class="timeline-body"><p>Oh sorry -- I missed that. I can't reproduce this though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-09-22 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-09-22 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/5183nischal">@5183nischal</a> on 2024-09-23 10:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh sorry -- I missed that. I can't reproduce this though.</p>
+</blockquote>
+<p>Yes, I can't reproduce this everywhere in my own computer either. Only when I'm under <code>~/Documents</code> in my computer I get this error. Want to understand if you guys would have an idea why that might be happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cyberNKYX">@cyberNKYX</a> on 2024-11-20 09:40</div>
+            <div class="timeline-body"><p>I'm experiencing the same issue on windows, a different folder with an existing project migrated from pdm. It looks like the local package was not installed under some condition before running the command.</p>
+<p>I also tried do it manually by running <code>uv add --dev --editable .</code> at first, then manually enter the virtual environment <code>./.venv/Scripts/activate</code>, still the local module was not found.</p>
+<p>But when I deleted <code>pyproject.toml</code> and reinitialized the project <code>uv init --lib</code> and ran <code>uv sync</code> before copying the existing dependencies list to <code>pyproject.toml</code>, it started working. And afterwards, I copied the existing dependencies and it worked as usual.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Anselmoo">@Anselmoo</a> on 2025-01-11 14:30</div>
+            <div class="timeline-body"><p>I tried to change from poetry to uv. Formally, with <a href="https://github.com/Anselmoo/TanabeSugano/blob/c769fcc47f5b3df43b6b31829b703cc057a60996/pyproject.toml#L69-L70"><code>tool.poetry.scripts</code></a> it is working fine; via <a href="https://github.com/Anselmoo/TanabeSugano/blob/46d06e4398edbfe56df58600a82b7501469b28b4/pyproject.toml#L52-L53"><code>project.scripts</code></a>, I got also <em>ModuleNotFoundError: No module named 'tanabesugano'</em></p>
+<p>However, I used <code>uvx migrate-to-uv</code> for the migration.</p>
+<p>https://github.com/Anselmoo/TanabeSugano/pull/131</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

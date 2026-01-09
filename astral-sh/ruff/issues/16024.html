@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP049 fix introduces syntax errors when renaming type parameters and behaves inconsistently in `typing.cast` - astral-sh/ruff #16024</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP049 fix introduces syntax errors when renaming type parameters and behaves inconsistently in `typing.cast`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16024">#16024</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-02-07 15:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-02-07 15:57</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/private-type-parameter/"><code>private-type-parameter</code> (UP049)</a> has some problems in 0.9.5.</p>
+<p>Renaming a type parameter produces a syntax error when the character after the leading underscores is a digit.</p>
+<pre><code class="language-console">$ cat &lt;&lt;'# EOF' | ruff --isolated check --preview --select UP049 - --diff 2&gt;&amp;1 | grep error:
+class C[_0]: ...
+# EOF
+error: Fix introduced a syntax error. Reverting all changes.
+</code></pre>
+<p>Renaming multiple type parameters in the same scope produces a syntax error when they have the same name, ignoring the leading underscores.</p>
+<pre><code class="language-console">$ cat &gt;up049.py &lt;&lt;'# EOF'
+class C[_T, __T]: ...
+# EOF
+
+$ ruff --isolated check --preview --select UP049 up049.py --fix
+Found 2 errors (2 fixed, 0 remaining).
+
+$ python up049.py
+  File &quot;up049.py&quot;, line 1
+    class C[T, T]: ...
+               ^
+SyntaxError: duplicate type parameter 'T'
+</code></pre>
+<p>When a type parameter appears in <code>typing.cast</code> as a string with an escape sequence, the fixed version does not use a string. This doesn’t make any difference at runtime, but it is inconsistent with what happens when the string does not contain an escape sequence.</p>
+<pre><code class="language-console">$ cat &lt;&lt;'# EOF' | ruff --isolated check --preview --select UP049 - --fix
+from typing import cast
+def f[_T](): cast(&quot;_T&quot;, 1)
+def f[_T](): cast(&quot;\u005fT&quot;, 1)
+# EOF
+from typing import cast
+def f[T](): cast(&quot;T&quot;, 1)
+def f[T](): cast(T, 1)
+Found 2 errors (2 fixed, 0 remaining).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-02-07 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-02-07 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-07 16:50</div>
+            <div class="timeline-body"><p>cc. @ntBre -- looks like we missed a few things here.</p>
+<p>RUF052 also has to check whether the proposed new name is a valid identifier before passing it to the <code>Renamer</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/46fe17767d3d5cf7b1f7729b024fca7821d19264/crates/ruff_linter/src/rules/ruff/rules/used_dummy_variable.rs#L233-L234</p>
+<p>We could <em>possibly</em> consider moving the logic to the <code>Renamer</code> itself since it seems like a <em>bit</em> of a footgun, but it's unnecessary for some other uses of the <code>Renamer</code> such as the autofix for PYI025</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-07 18:21</div>
+            <div class="timeline-body"><p>@ntBre @AlexWaygood I can take this one if you two don't mind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-07 18:22</div>
+            <div class="timeline-body"><p>Fine by me, as long as @ntBre hasn't already started on it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-07 18:22</div>
+            <div class="timeline-body"><p>Sounds good! Thanks for checking!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @InSyncWithFoo by @ntBre on 2025-02-07 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16032.html">astral-sh/ruff#16032</a> on 2025-02-08 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-08 11:28</div>
+            <div class="timeline-body"><p>Following #16032, all problems have been fixed except this one:</p>
+<blockquote>
+<p>$ cat &gt;up049.py &lt;&lt;'# EOF'
+class C[_T, __T]: ...</p>
+<h1>EOF</h1>
+<p>$ ruff --isolated check --preview --select UP049 up049.py --fix
+Found 2 errors (2 fixed, 0 remaining).</p>
+<p>$ python up049.py
+File &quot;up049.py&quot;, line 1
+class C[T, T]: ...
+^
+SyntaxError: duplicate type parameter 'T'</p>
+</blockquote>
+<p>This is because we're applying both fixes as part of the same &quot;apply fixes&quot; loop in Ruff. I think I know how to fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16038.html">astral-sh/ruff#16038</a> on 2025-02-08 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-08 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-08 15:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

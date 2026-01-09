@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsupported syntax error false positive for escapes in f-string format specifier - astral-sh/ruff #20844</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unsupported syntax error false positive for escapes in f-string format specifier</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20844">#20844</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-10-13 13:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-13 13:59</div>
+            <div class="timeline-body"><p>This string from our formatter test suite:</p>
+<p>https://github.com/astral-sh/ruff/blob/e26dce5543687e84e40f0d57c8ba4949275b18a2/crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/fstring.py#L709-L711</p>
+<p>gets <a href="https://play.ruff.rs/5520ae38-9395-48ed-87cd-67e7002255d9">formatted</a> to</p>
+<pre><code class="language-py">f&quot;{x:a{z:hy \&quot;user\&quot;}} '''&quot;
+</code></pre>
+<p>which is reported as <a href="https://play.ruff.rs/154cf36b-de49-45a1-9d27-c3bf5032c591">invalid</a> by Ruff. However, this is allowed even before Python 3.12:</p>
+<pre><code class="language-pycon">Python 3.7.9 (default, Aug 23 2020, 00:57:53)
+[Clang 10.0.1 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; f&quot;{x:a{z:hy \&quot;user\&quot;}} '''&quot;
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+NameError: name 'x' is not defined
+</code></pre>
+<p>even if GitHub's syntax highlighting doesn't like it. The <code>NameError</code> means this parsed successfully, unlike escapes in the expression part:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; f&quot;{'\x123'}&quot;
+  File &quot;&lt;stdin&gt;&quot;, line 1
+SyntaxError: f-string expression part cannot include a backslash
+</code></pre>
+<p>It seems that my logic for detecting these was too naive after all:</p>
+<p>https://github.com/astral-sh/ruff/blob/e26dce5543687e84e40f0d57c8ba4949275b18a2/crates/ruff_python_parser/src/parser/expression.rs#L1595-L1612</p>
+<p>This example from the formatter emits both the backslash and reused quote character diagnostics. We should double-check the comment semantics too, but I think that part may still be correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-13 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @ntBre on 2025-10-13 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @ntBre on 2025-10-13 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20867.html">astral-sh/ruff#20867</a> on 2025-10-14 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-15 13:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

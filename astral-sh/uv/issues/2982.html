@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv not recognizing existing installed package - astral-sh/uv #2982</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv not recognizing existing installed package</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2982">#2982</a>
+        opened by <a href="https://github.com/shiyangcao">@shiyangcao</a>
+        on 2024-04-10 22:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/shiyangcao">@shiyangcao</a> on 2024-04-10 22:27</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I apologize if this has been reported elsewhere but I didn't see it. UV with --find-links and no-index currently doesn't look at existing installed packages correctly.</p>
+<p>For example:</p>
+<ol>
+<li>Create an empty virtualenv, install urllib3</li>
+</ol>
+<pre><code>$ uv pip freeze
+
+
+pip==23.3.1
+setuptools==69.0.2
+urllib3==2.2.1
+wheel==0.42.0
+</code></pre>
+<p>Then download the latest requests wheel file and put it somewhere</p>
+<p>Then try to install it:</p>
+<pre><code>$uv pip install requests --find-links . --no-index --offline
+
+  × No solution found when resolving dependencies:
+  ╰─▶ Because urllib3&gt;=1.21.1, &lt;3 was not found in the provided package locations and requests==2.31.0 depends on urllib3&gt;=1.21.1,&lt;3, we can conclude that requests==2.31.0 cannot be used.
+      And because only requests==2.31.0 is available and you require requests, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>It complains that it cannot find urllib3 from the find-links, which is correct, but shouldn't it detect that urllib3 is already installed and does not need reinstalling?</p>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-10 22:32</div>
+            <div class="timeline-body"><p>Can you share your uv version? This works as expected for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-10 22:34</div>
+            <div class="timeline-body"><p>For example (with <code>urllib3</code> and <code>idna</code> installed, and <code>certifi</code>, <code>charset-normalizer</code>, and <code>requests</code> in <code>~/Downloads</code>):</p>
+<pre><code>❯ uv pip install requests --find-links ~/Downloads --no-index --offline
+Resolved 5 packages in 3ms
+Downloaded 3 packages in 8ms
+Installed 3 packages in 2ms
+ + certifi==2022.12.7
+ + charset-normalizer==2.1.1
+ + requests==2.31.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-04-10 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shiyangcao">@shiyangcao</a> on 2024-04-10 23:57</div>
+            <div class="timeline-body"><pre><code>(uv_test) $ uv --version
+uv 0.1.31
+(uv_test) $ uv pip freeze
+certifi==2024.2.2
+charset-normalizer==3.3.2
+idna==3.6
+pip==23.3.1
+setuptools==69.0.2
+urllib3==2.2.1
+uv==0.1.31
+wheel==0.42.0
+(uv_test) $ python3.11 -m uv pip install requests --find-links . --no-index --upgrade
+  × No solution found when resolving dependencies:
+  ╰─▶ Because urllib3&gt;=1.21.1, &lt;3 was not found in the provided package locations and requests==2.31.0 depends on urllib3&gt;=1.21.1,&lt;3, we can conclude that requests==2.31.0 cannot be used.
+      And because only requests==2.31.0 is available and you require requests, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>my bad, my version was originally not the latest, but on the latest, the <code>--upgrade</code> flag triggers the same behavior.</p>
+<p>thanks for responding so quickly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-10 23:59</div>
+            <div class="timeline-body"><p>@zanieb - what's the intended behavior here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-11 00:22</div>
+            <div class="timeline-body"><p>Ah perhaps you're looking for <code>--upgrade-package requests</code> instead of <code>--upgrade</code>? Otherwise I think we will not consider your local <code>urllib3</code> version since you've requested an upgrade of the full dependency tree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shiyangcao">@shiyangcao</a> on 2024-04-11 00:23</div>
+            <div class="timeline-body"><p>I see, this behavior differs from <code>pip</code> but i'll take a look</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shiyangcao">@shiyangcao</a> on 2024-04-11 01:34</div>
+            <div class="timeline-body"><p>ok this works for me! thanks</p>
+<p>On Wed, Apr 10, 2024 at 20:23 Zanie Blue <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p>Ah perhaps you're looking for --upgrade-package requests instead of
+--upgrade? Otherwise I think we will not consider your local urllib3
+version since you've requested an upgrade of the full dependency tree.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/2982#issuecomment-2048640358">https://github.com/astral-sh/uv/issues/2982#issuecomment-2048640358</a>, or
+unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AARQI2KKHA3Z3DEYW6VU5F3Y4XJW7AVCNFSM6AAAAABGBHUM3OVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDANBYGY2DAMZVHA">https://github.com/notifications/unsubscribe-auth/AARQI2KKHA3Z3DEYW6VU5F3Y4XJW7AVCNFSM6AAAAABGBHUM3OVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDANBYGY2DAMZVHA</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-11 02:53</div>
+            <div class="timeline-body"><p>I wonder if we should limit exclusions to the directly requested dependencies during upgrades.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-20 00:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

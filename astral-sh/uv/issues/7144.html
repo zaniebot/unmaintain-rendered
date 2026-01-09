@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;no wheels with a matching Python implementation tag&quot; with inequality constraint, but no issues with equality constraint - astral-sh/uv #7144</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;no wheels with a matching Python implementation tag&quot; with inequality constraint, but no issues with equality constraint</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7144">#7144</a>
+        opened by <a href="https://github.com/colobas">@colobas</a>
+        on 2024-09-06 22:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/colobas">@colobas</a> on 2024-09-06 22:20</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<h2>Intro</h2>
+<p>Trying to support a package which should install different implementations of PyTorch and related packages based on the value of <code>UV_EXTRA_INDEX_URL</code>, but am having issues with their cpu index (<code>https://download.pytorch.org/whl/cpu</code>). Namely it seems that <code>torchX.X.X+cpu</code> as a dependency of <code>torchvision</code> doesn't get recognized unless I specify a strict version</p>
+<p>Platform (<code>uname -sri</code>): <code>Linux 5.14.0-362.13.1.el9_3.x86_64 x86_64</code>
+uv version: <code>uv 0.3.1</code></p>
+<h2>Steps to reproduce</h2>
+<h3>Prep</h3>
+<ul>
+<li>Create venv using <code>uv venv</code>: <code>$ uv venv -p python3.10</code></li>
+<li>Activate it <code>souce .venv/bin/activate</code></li>
+</ul>
+<h3>Failure mode 1</h3>
+<ul>
+<li><p>Try installing <code>torchvision&gt;=0.18.0</code> with the aforementioned index url:</p>
+<ul>
+<li><code>$ uv pip install --index-url https://download.pytorch.org/whl/cpu &quot;torchvision&gt;=0.18.0&quot;</code></li>
+</ul>
+</li>
+<li><details><summary>Get the following error (click to unfold)</summary>
+
+<pre><code>× No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of torchvision are available:
+          torchvision&lt;=0.18.0
+          torchvision==0.18.0+cpu
+          torchvision==0.18.1
+          torchvision==0.18.1+cpu
+          torchvision==0.19.0
+          torchvision==0.19.0+cpu
+          torchvision==0.19.1
+          torchvision==0.19.1+cpu
+      and torchvision==0.18.0 has no wheels with a matching Python implementation tag, we can conclude that torchvision&gt;=0.18.0,&lt;0.18.0+cpu cannot be used. (1)
+
+      Because torch==2.3.0 has no wheels with a matching Python implementation tag and torchvision==0.18.0+cpu depends on torch==2.3.0, we can conclude that torchvision==0.18.0+cpu cannot
+      be used.
+      And because we know from (1) that torchvision&gt;=0.18.0,&lt;0.18.0+cpu cannot be used, we can conclude that torchvision&gt;=0.18.0,&lt;0.18.1 cannot be used.
+      And because torchvision==0.18.1 has no wheels with a matching Python implementation tag, we can conclude that torchvision&gt;=0.18.0,&lt;0.18.1+cpu cannot be used. (2)
+
+      Because torch==2.3.1 has no wheels with a matching Python implementation tag and torchvision==0.18.1+cpu depends on torch==2.3.1, we can conclude that torchvision==0.18.1+cpu cannot
+      be used.
+      And because we know from (2) that torchvision&gt;=0.18.0,&lt;0.18.1+cpu cannot be used, we can conclude that torchvision&gt;=0.18.0,&lt;0.19.0 cannot be used.
+      And because torchvision==0.19.0 has no wheels with a matching Python implementation tag, we can conclude that torchvision&gt;=0.18.0,&lt;0.19.0+cpu cannot be used. (3)
+
+      Because torch==2.4.0 has no wheels with a matching Python implementation tag and torchvision==0.19.0+cpu depends on torch==2.4.0, we can conclude that torchvision==0.19.0+cpu cannot
+      be used.
+      And because we know from (3) that torchvision&gt;=0.18.0,&lt;0.19.0+cpu cannot be used, we can conclude that torchvision&gt;=0.18.0,&lt;0.19.1 cannot be used.
+      And because torchvision==0.19.1 has no wheels with a matching Python implementation tag, we can conclude that torchvision&gt;=0.18.0,&lt;0.19.1+cpu cannot be used. (4)
+
+      Because torch==2.4.1 has no wheels with a matching Python implementation tag and torchvision==0.19.1+cpu depends on torch==2.4.1, we can conclude that torchvision==0.19.1+cpu cannot
+      be used.
+      And because we know from (4) that torchvision&gt;=0.18.0,&lt;0.19.1+cpu cannot be used, we can conclude that torchvision&gt;=0.18.0 cannot be used.
+      And because you require torchvision&gt;=0.18.0, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+  </details>
+
+</li>
+</ul>
+<h3>Failure mode 2</h3>
+<ul>
+<li><p>Try installing <code>torchvision==0.18.0+cpu</code> with the aforementioned index url:</p>
+<ul>
+<li><code>$ uv pip install --index-url https://download.pytorch.org/whl/cpu &quot;torchvision==0.18.0+cpu&quot;</code></li>
+</ul>
+</li>
+<li><details><summary>Get the following error (click to unfold)</summary>
+
+<pre><code>× No solution found when resolving dependencies:
+╰─▶ Because torch==2.3.0 has no wheels with a matching Python implementation tag and torchvision==0.18.0+cpu depends on torch==2.3.0, we can conclude that torchvision==0.18.0+cpu cannot
+    be used.
+    And because you require torchvision==0.18.0+cpu, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+</li>
+</ul>
+<h3>Failure mode 3</h3>
+<ul>
+<li><p>Try installing <code>torchvision==0.18.0</code> with the aforementioned index url:</p>
+<ul>
+<li><code>$ uv pip install --index-url https://download.pytorch.org/whl/cpu &quot;torchvision==0.18.0&quot;</code></li>
+</ul>
+</li>
+<li><details><summary>Get the following error (click to unfold)</summary>
+
+<pre><code>× No solution found when resolving dependencies:
+╰─▶ Because torchvision==0.18.0 has no wheels with a matching Python implementation tag and you require torchvision==0.18.0, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+</li>
+</ul>
+<h3>Pseudo-success case</h3>
+<ul>
+<li>Install <code>torchvision==0.18.0+cpu</code> and <code>torch==2.3.0+cpu</code> explicitly:<ul>
+<li><code>$ uv pip install --index-url https://download.pytorch.org/whl/cpu &quot;torchvision==0.18.0+cpu&quot; &quot;torch==2.3.0+cpu&quot;</code></li>
+</ul>
+</li>
+<li>Installation succeeds.</li>
+</ul>
+<h2>Conclusion</h2>
+<p>Not quite sure how to interpret what's happening other than:</p>
+<ul>
+<li>It seems that <code>torchvision==0.18.0+cpu</code> wants <code>torch==2.3.0</code> as a dependency (failure mode 1 &amp; 2)</li>
+<li>...But it doesn't recognize <code>torch==2.3.0+cpu</code> as supplying <code>torch==2.3.0</code>?... (failure mode 2)</li>
+<li>...Unless I install it explicitly? (pseudo-success case)</li>
+</ul>
+<p>Not sure what to make of failure mode 3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colobas">@colobas</a> on 2024-09-06 22:46</div>
+            <div class="timeline-body"><p>Seems related to #1497</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-06 23:09</div>
+            <div class="timeline-body"><p>Have you read https://docs.astral.sh/uv/pip/compatibility/#local-version-identifiers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-06 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colobas">@colobas</a> on 2024-09-07 00:46</div>
+            <div class="timeline-body"><p>Thanks for the quick reply!</p>
+<p>I have now read the link you sent.
+Apologies if this issue is adding to the noise. I'm working around this with the <code>--override</code> flag for now.
+Feel free to close this if there's no plan for things to change in the near future.</p>
+<p>Cheers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-07 00:56</div>
+            <div class="timeline-body"><p>No worries at all! I'd like to improve it long-term but probably not in the immediate future :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-07 00:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

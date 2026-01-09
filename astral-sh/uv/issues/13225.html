@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>More gentle modifications of shell files - astral-sh/uv #13225</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>More gentle modifications of shell files</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13225">#13225</a>
+        opened by <a href="https://github.com/nedbat">@nedbat</a>
+        on 2025-04-30 11:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nedbat">@nedbat</a> on 2025-04-30 11:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>By default during installation, my shell startup files are modified.  I know the docs say this will happen, but I think there are ways to do this more gracefully.  Here are some possibilities:</p>
+<ol>
+<li>Examine $PATH and see that .local/bin is already on the PATH so there's no need to modify the files at all (best).</li>
+<li>When adding a line to a shell file, include a comment indicating that it was uv that added the line.</li>
+<li>During installation, mention that you changed the file.</li>
+<li>During uninstallation, either undo the change (risky and difficult) or at least mention that the user might want to undo those changes with specific mentions of the files to look at.</li>
+</ol>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @nedbat on 2025-04-30 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-30 11:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Examine $PATH and see that .local/bin is already on the PATH so there's no need to modify the files at all (best).</p>
+</blockquote>
+<p>This should already be the behavior (https://github.com/axodotdev/cargo-dist/pull/1264), is it adding an entry for you even though <code>~/.local/bin</code> is on <code>PATH</code>?</p>
+<p>CC @Gankra for the other items</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nedbat">@nedbat</a> on 2025-04-30 11:38</div>
+            <div class="timeline-body"><blockquote>
+<p>This should already be the behavior</p>
+</blockquote>
+<p>My PATH has <code>/Users/ned/.local/bin</code> in it.  The env file uv installs checks to see if <code>$HOME/.local/share/../bin</code> is in the PATH. It's the same place, but the wildcard matching of <code>*:&quot;$HOME/.local/share/../bin&quot;:*</code> fails, so it adds it again.</p>
+<p>I don't know if the shell files would be untouched if the path matching worked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nedbat">@nedbat</a> on 2025-04-30 11:53</div>
+            <div class="timeline-body"><p>I have <code>XDG_DATA_HOME=/Users/ned/.local/share</code>, and the installation directory is calculated as <code>$XDG_DATA_HOME/../bin</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-30 20:22</div>
+            <div class="timeline-body"><p>Yeah this is always a struggle to make the no-op detection precise (suggestion 1).</p>
+<p>I think adding the comment (suggestion 2) would be reasonable/nice.</p>
+<p>I think suggestion 3 would probably be a lot of needless noise and spook people (we edit <em>a lot</em> of rcfiles &quot;just in case&quot; because we can't reliably assume you'll keep using the exact shell you're using now, and don't want your PATH to break when you swap shells).</p>
+<p>Suggestion 4 we could also potentially do, as long as the detection is really strict and not too clever (so it's willing to fail to remove stuff from PATH). But more generally we just don't really <em>have</em> uninstallation support at all yet. If we did, this would be one of the features for sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nedbat">@nedbat</a> on 2025-04-30 21:45</div>
+            <div class="timeline-body"><blockquote>
+<p>But more generally we just don't really have uninstallation support at all yet</p>
+</blockquote>
+<p>True, but there's a uninstallation section in the docs.  Perhaps at least a mention there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-02 10:06</div>
+            <div class="timeline-body"><p>For the installation, we use the XDG bin dir as it is usually already in the user's PATH (and users without it in PATH will often use other installation methods than our script). The default <code>bash</code> package on Ubuntu for example includes:</p>
+<pre><code># set PATH so it includes user's private bin if it exists
+if [ -d &quot;$HOME/.local/bin&quot; ] ; then
+    PATH=&quot;$HOME/.local/bin:$PATH&quot;
+fi
+</code></pre>
+<p>This means that ideally, we should barely ever have to modify dotfiles at all. For this case specifically, I think we need fix our path detection more robust to also capture cases such as <code>$HOME/.local/share/../bin</code>. This hopefully reduces the emphasis on how we modify dotfiles, though I agree that the messaging could be improved.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

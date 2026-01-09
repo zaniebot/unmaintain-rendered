@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Man page synopsis doesn't use the bin_name - clap-rs/clap #4757</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Man page synopsis doesn't use the bin_name</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/4757">#4757</a>
+        opened by <a href="https://github.com/arusahni">@arusahni</a>
+        on 2023-03-11 21:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/arusahni">@arusahni</a> on 2023-03-11 21:37</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.67.1</p>
+<h3>Clap Version</h3>
+<p>4.1.8</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{arg, CommandFactory, Parser};
+use clap::CommandFactory;
+use clap_mangen::Man;
+
+#[derive(Debug, Parser)]
+#[command(
+    bin_name = &quot;myapp&quot;,
+)]
+struct Cli {
+   #[arg(long)]
+    list: bool
+}
+
+fn main() {
+    let cmd = Cli::comand();
+    let man = Man::new(cmd);
+    let mut buffer: Vec&lt;u8&gt; = Default::default();
+    man.render(&amp;mut buffer)?;
+    Ok(())
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<h3>Actual Behaviour</h3>
+<p>The generated manpage has a synopsis section that uses the Crate name for the sample invocation:</p>
+<pre><code class="language-text">SYNOPSIS
+       appname [--list]
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The generated manpage should have synopsis section that uses the provided <code>bin_name</code> for the sample invocation:</p>
+<pre><code class="language-text">SYNOPSIS
+       myapp [--list]
+</code></pre>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @arusahni on 2023-03-11 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4758.html">clap-rs/clap#4758</a> on 2023-03-11 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Man page synopsis" to "Man page synopsis doesn't use the bin_name" by @arusahni on 2023-03-11 23:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-man</span> added by @epage on 2023-03-13 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-13 17:21</div>
+            <div class="timeline-body"><p>Is there a reason you are setting <code>bin_name</code> and not <code>name</code> or <code>display_name</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arusahni">@arusahni</a> on 2023-03-19 01:47</div>
+            <div class="timeline-body"><p>Yes: I'm writing a git extension. By convention, git extensions are discovered by naming the binary <code>git-&lt;extension name&gt;</code>, but invoked as a git subcommand (<code>git &lt;extension name&gt;</code>). Ultimately, I'd like to reflect this nuance on the manpage, with the displayed name being <code>git-&lt;extension name&gt;</code>, but the synopsis showing <code>git &lt;extension name&gt;</code>.</p>
+<p><code>name</code> doesn't suit my need here because I don't want the subcommand variant displayed throughout the manpage, just places where an invocation example is provided. <code>display_name</code> does not currently impact the synopsis (my PR updates it to be considered, but with lower precedence than the <code>bin_name</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-20 14:27</div>
+            <div class="timeline-body"><p>Thanks for the explanation!</p>
+<p>I think its reasonable then for this to go forward if we can find a way to make this work out</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

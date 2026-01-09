@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Different length sort behavior against isort - astral-sh/ruff #9870</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Different length sort behavior against isort</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9870">#9870</a>
+        opened by <a href="https://github.com/yanyongyu">@yanyongyu</a>
+        on 2024-02-07 02:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yanyongyu">@yanyongyu</a> on 2024-02-07 02:43</div>
+            <div class="timeline-body"><p>I'm trying to migrate isort and black to ruff but encountered some problems when using ruff's isort configs.</p>
+<p>Ruff version 0.2.1.</p>
+<p>Suppose I have a first-party package named <code>package</code> and the test code is:</p>
+<pre><code class="language-python">from package.utils import a
+from package.func import function
+</code></pre>
+<p>with the ruff config:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+select = [&quot;I&quot;]
+
+[tool.ruff.lint.isort]
+length-sort = true
+force-sort-within-sections = true
+</code></pre>
+<p>ruff will report import order error and fix it into:</p>
+<pre><code class="language-python">from package.func import function
+from package.utils import a
+</code></pre>
+<p>but isort sorts it as the origin test code given above.</p>
+<p>I make one more test, renaming the <code>package.func</code> to <code>package.function</code>:</p>
+<pre><code class="language-python">from package.utils import a
+from package.function import function
+</code></pre>
+<p>this time ruff does not report any error. It seems ruff sort the import order by module name length instead of import expression length?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-07 03:12</div>
+            <div class="timeline-body"><p>Can you clarify for me -- if I run <code>isort</code> over:</p>
+<pre><code class="language-python">from package.utils import a
+from package.func import function
+</code></pre>
+<p>With <code>length_sort = true</code>, it rewrites to:</p>
+<pre><code class="language-python">from package.func import function
+from package.utils import a
+</code></pre>
+<p>In my testing, Ruff has the same behavior. But it seems like you're seeing different behavior with isort?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-02-07 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yanyongyu">@yanyongyu</a> on 2024-02-07 03:14</div>
+            <div class="timeline-body"><p>i sort the code with: (isort 5.13.2)</p>
+<pre><code class="language-bash">isort --profile black --length-sort --force-sort-within-sections package/__init__.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yanyongyu">@yanyongyu</a> on 2024-02-07 03:19</div>
+            <div class="timeline-body"><p>Or use the pyproject.toml to config isort:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+select = [&quot;I&quot;]
+
+[tool.ruff.lint.isort]
+length-sort = true
+force-sort-within-sections = true
+
+[tool.isort]
+profile = &quot;black&quot;
+length_sort = true
+force_sort_within_sections = true
+</code></pre>
+<p>then sort the imports with <code>isort .</code></p>
+<p>the output code is:</p>
+<pre><code class="language-python">from package.utils import a
+from package.func import function
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-07 03:19</div>
+            <div class="timeline-body"><p>It this an isort bug? Removing <code>--force-sort-within-sections</code> shows the same behavior as Ruff, but I don't see why <code>--force-sort-within-sections </code> should have an effect on the sort in this case (both imports are in the same section).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yanyongyu">@yanyongyu</a> on 2024-02-07 03:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Isort docs:
+Length Sort: Sort imports by their string length.
+Force Sort Within Sections: Instead, sort the imports by module, independent of import style.</p>
+</blockquote>
+<p>I'm not sure which behavior is correct 😂 , but isort keeps this behavior for years.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-07 03:27</div>
+            <div class="timeline-body"><p>Haha :)</p>
+<p>I looked through the isort source. It looks like if <code>--force-sort-within-sections</code> is set, it sorts all lines by their exact length. If it's not set, it sorts by the length of the module, then sorts each member by length. So the behavior is totally different when that flag is set. I find it confusing... But if we don't support it, we may want to document it at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-02-07 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2024-02-07 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-02-07 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomprimozic">@tomprimozic</a> on 2024-02-26 23:20</div>
+            <div class="timeline-body"><p>I'd also want a &quot;sort imports by line length exactly&quot; with no extra exceptions. <code>isort</code> does (almost) support that (except some edge cases / bugs) using <code>length_sort</code> and <code>force_sort_within_sections</code> options, it would be great if <code>ruff</code> did as well.</p>
+<p>For the time being, I have to use 2 tools :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yanyongyu">@yanyongyu</a> on 2024-04-15 08:16</div>
+            <div class="timeline-body"><p>@charliermarsh Is there any decision about this issue? Currently, i also have to use 2 tools (isort + ruff) to lint and format the code. i hope this feature can be part of this excellent project. :pray:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rainzee">@rainzee</a> on 2024-04-19 16:55</div>
+            <div class="timeline-body"><p>This is really the last hurdle for me to fully use ruff, now I have to use both tools, hopefully some progress will be made, please!🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11674.html">astral-sh/ruff#11674</a> on 2024-06-01 05:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/forchannot">@forchannot</a> on 2024-06-14 12:58</div>
+            <div class="timeline-body"><p>any progress on this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KimigaiiWuyi">@KimigaiiWuyi</a> on 2025-12-05 19:14</div>
+            <div class="timeline-body"><p>any progress?</p>
+<p>Due to differences in sorting behavior between <code>ruff</code> and <code>isort</code>, the project code becomes messy when using them together. I would like to make this a feature request to keep <code>ruff</code>'s sorting consistent with <code>isort</code></p>
+<p>#14136</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-05 21:41</div>
+            <div class="timeline-body"><p>We don't recommend using isort with ruff. Use one or the other</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A uv Environment Is Not Compatible With pyo3 Out Of The Box - astral-sh/uv #11006</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>A uv Environment Is Not Compatible With pyo3 Out Of The Box</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11006">#11006</a>
+        opened by <a href="https://github.com/mcmah309">@mcmah309</a>
+        on 2025-01-27 21:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mcmah309">@mcmah309</a> on 2025-01-27 21:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It seems a uv environment is not compatible with pyo3 as <code>libpython</code> is not found for the active environment, nor is the python codec.</p>
+<p>https://github.com/PyO3/pyo3/issues/4813#issuecomment-2616922117</p>
+<p>Additionally the <code>.cargo/config.toml</code> needs to include</p>
+<pre><code class="language-toml">[env]
+PYO3_PYTHON = { value = &quot;.venv/bin/python&quot;, relative = true, force = true }
+</code></pre>
+<h3>Example</h3>
+<p>Setup:</p>
+<pre><code class="language-bash">uv venv .venv --python 3.12
+. .venv/bin/activate
+</code></pre>
+<p>src/lib.rs</p>
+<pre><code class="language-rust">
+use std::path::PathBuf;
+
+use pyo3::prelude::*;
+
+use serde::{Deserialize, Serialize};
+
+#[pyclass]
+#[derive(Debug, Serialize, Deserialize)]
+struct Group {
+    name: String,
+}
+
+#[pyclass]
+#[derive(Debug, Serialize, Deserialize)]
+struct User {
+    username: String,
+    group: Option&lt;Py&lt;Group&gt;&gt;,
+    friends: Vec&lt;Py&lt;User&gt;&gt;,
+}
+
+#[test]
+fn test_serialize() {
+    let friend1 = User {
+        username: &quot;friend 1&quot;.into(),
+        group: None,
+        friends: vec![],
+    };
+    let friend2 = User {
+        username: &quot;friend 2&quot;.into(),
+        group: None,
+        friends: vec![],
+    };
+
+    let user = Python::with_gil(|py| {
+        let py_friend1 = Py::new(py, friend1).expect(&quot;failed to create friend 1&quot;);
+        let py_friend2 = Py::new(py, friend2).expect(&quot;failed to create friend 2&quot;);
+
+        let friends = vec![py_friend1, py_friend2];
+        let py_group = Py::new(py, Group {
+            name: &quot;group name&quot;.into(),
+        })
+        .unwrap();
+
+        User {
+            username: &quot;danya&quot;.into(),
+            group: Some(py_group),
+            friends,
+        }
+    });
+
+    let serialized = serde_json::to_string(&amp;user).expect(&quot;failed to serialize&quot;);
+    assert_eq!(
+        serialized,
+        r#&quot;{&quot;username&quot;:&quot;danya&quot;,&quot;group&quot;:{&quot;name&quot;:&quot;group name&quot;},&quot;friends&quot;:[{&quot;username&quot;:&quot;friend 1&quot;,&quot;group&quot;:null,&quot;friends&quot;:[]},{&quot;username&quot;:&quot;friend 2&quot;,&quot;group&quot;:null,&quot;friends&quot;:[]}]}&quot;#
+    );
+}
+
+#[test]
+fn test_deserialize() {
+    let serialized = r#&quot;{&quot;username&quot;: &quot;danya&quot;, &quot;friends&quot;:
+        [{&quot;username&quot;: &quot;friend&quot;, &quot;group&quot;: {&quot;name&quot;: &quot;danya's friends&quot;}, &quot;friends&quot;: []}]}&quot;#;
+    let user: User = serde_json::from_str(serialized).expect(&quot;failed to deserialize&quot;);
+
+    assert_eq!(user.username, &quot;danya&quot;);
+    assert!(user.group.is_none());
+    assert_eq!(user.friends.len(), 1usize);
+    let friend = user.friends.first().unwrap();
+
+    Python::with_gil(|py| {
+        assert_eq!(friend.borrow(py).username, &quot;friend&quot;);
+        assert_eq!(
+            friend.borrow(py).group.as_ref().unwrap().borrow(py).name,
+            &quot;danya's friends&quot;
+        )
+    });
+}
+</code></pre>
+<p>Cargo.toml</p>
+<pre><code class="language-toml">[package]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2024&quot;
+
+[dependencies]
+pyo3 = { version = &quot;0.23&quot;, features = [&quot;auto-initialize&quot;, &quot;serde&quot;] }
+serde = { version = &quot;1&quot;, features = [&quot;serde_derive&quot;] }
+serde_json = &quot;1&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @mcmah309 on 2025-01-27 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-01-27 22:02</div>
+            <div class="timeline-body"><p>I assume this is a duplicate of https://github.com/astral-sh/uv/issues/6812</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngoldbaum">@ngoldbaum</a> on 2025-01-27 22:36</div>
+            <div class="timeline-body"><p>It's likely that PyO3 can fix this by updating <code>pyo3_build_config</code> to emit some extra information. Right now it's making an assumption that the python-build-standalone python is breaking. There is still a libpython that can be used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @zanieb on 2025-01-28 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-01-28 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @zanieb on 2025-01-28 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 01:29</div>
+            <div class="timeline-body"><p>The context @geofft added to #6812 should be relevant (and I presume he will be interested in how pyo3's build configuration is handling this).</p>
+<p>In general, I <em>think</em> our behavior is correct here and that we can't easily address this in uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-01-28 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-01-28 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-01-28 17:25</div>
+            <div class="timeline-body"><p>Hi @mcmah309 - can you give me some more details on how to reproduce this? I'm not following this issue or the linked pyo3 one well enough to figure out what the actual steps are.</p>
+<p>I tried both maturin and standalone pyo3 and they seem to work fine. First, creating a venv in <code>~/u/.venv</code>, activating it, and using <code>maturin init</code> + <code>maturin develop --uv</code> gets me an importable module:</p>
+<pre><code>$ mkdir u
+$ cd u
+$ uv venv -p 3.12
+Using CPython 3.12.8
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+$ . .venv/bin/activate
+(u) $ maturin init
+✔ 🤷 Which kind of bindings to use?
+  📖 Documentation: https://maturin.rs/bindings.html · pyo3
+  ✨ Done! Initialized project /home/nixos/u
+(u) $ maturin develop --uv
+(u) $ python -c 'import u'
+</code></pre>
+<p>Then if I deactivate that venv and make an empty crate in <code>~/v</code> and add the pyo3 dependency, the build fails because it can't find a Python interpreter, but setting <code>PYO3_PYTHON</code> or activating the venv works fine:</p>
+<pre><code>(u) $ deactivate
+$ cd
+$ cargo init --lib v
+     Created library package
+$ cd v
+$ echo 'pyo3 = { version = &quot;0.23&quot;, features = [&quot;auto-initialize&quot;, &quot;serde&quot;] }' &gt;&gt; Cargo.toml
+$ cargo build
+[...]
+   Compiling pyo3-build-config v0.23.4
+error: failed to run custom build command for `pyo3-build-config v0.23.4`
+
+Caused by:
+  process didn't exit successfully: `/home/nixos/v/target/debug/build/pyo3-build-config-298ef98562d07ed0/build-script-build` (exit status: 1)
+[...]
+  --- stderr
+  error: no Python 3.x interpreter found
+$ PYO3_PYTHON=~/u/.venv/bin/python cargo build
+   Compiling v v0.1.0 (/home/nixos/v)
+    Finished dev [unoptimized + debuginfo] target(s) in 12.53s
+$ . ~/u/.venv/bin/activate
+(u) $ cargo build
+   Compiling pyo3-build-config v0.23.4
+   Compiling pyo3-ffi v0.23.4
+   Compiling pyo3-macros-backend v0.23.4
+   Compiling pyo3 v0.23.4
+   Compiling pyo3-macros v0.23.4
+   Compiling v v0.1.0 (/home/nixos/v)
+    Finished dev [unoptimized + debuginfo] target(s) in 6.03s
+</code></pre>
+<p>(For completeness, my local system is the NixOS 24.05 arm64 live CD inside <code>nix-shell -p cargo -p rustc</code>, which is mostly notable in that there's no default <code>python</code> on my PATH and no <code>/usr/lib</code> so the only place it can possibly get a Python is from the venv.)</p>
+<p>So I'd like to know exactly what you're running to build and what the error message you're getting is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> removed by @konstin on 2025-01-28 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PyO3/pyo3/issues/4813.html">PyO3/pyo3#4813</a> on 2025-01-28 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mcmah309">@mcmah309</a> on 2025-01-28 17:58</div>
+            <div class="timeline-body"><p><code>PYO3_PYTHON</code> Should be all you need to build, but the error's happen when you <code>cargo run</code>. I don't see you running that command. If you still are not seeing errors, my guess would be it's an environment difference, I don't see you installing <code>uv</code> or <code>maturin</code> so maybe your shell is not pure and there is a python instance on the PATH, or <code>LD_LIBRARY_PATH</code>/<code>PYTHONHOME</code> is set? Here's the core of the container I use</p>
+<pre><code class="language-dockerfile">####  base: bases/ubuntu/cuda.md  ####
+
+FROM nvidia/cuda:12.6.3-cudnn-devel-ubuntu24.04
+
+RUN apt-get update -y \
+    &amp;&amp; apt-get upgrade -y \
+    &amp;&amp; apt-get install -y --no-install-recommends --no-install-suggests ca-certificates \
+    &amp;&amp; update-ca-certificates
+
+####  rust: dependent/apt/rust/nightly.md  ####
+
+# Based off: https://github.com/rust-lang/docker-rust/blob/9f287282d513a84cb7c7f38f197838f15d37b6a9/nightly/bookworm/slim/Dockerfile
+
+ENV RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    PATH=/usr/local/cargo/bin:$PATH \
+    RUST_VERSION=nightly
+
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        gcc \
+        libc6-dev \
+        wget \
+        ; \
+    dpkgArch=&quot;$(dpkg --print-architecture)&quot;; \
+    case &quot;${dpkgArch##*-}&quot; in \
+        amd64) rustArch='x86_64-unknown-linux-gnu'; rustupSha256='6aeece6993e902708983b209d04c0d1dbb14ebb405ddb87def578d41f920f56d' ;; \
+        armhf) rustArch='armv7-unknown-linux-gnueabihf'; rustupSha256='3c4114923305f1cd3b96ce3454e9e549ad4aa7c07c03aec73d1a785e98388bed' ;; \
+        arm64) rustArch='aarch64-unknown-linux-gnu'; rustupSha256='1cffbf51e63e634c746f741de50649bbbcbd9dbe1de363c9ecef64e278dba2b2' ;; \
+        i386) rustArch='i686-unknown-linux-gnu'; rustupSha256='0a6bed6e9f21192a51f83977716466895706059afb880500ff1d0e751ada5237' ;; \
+        ppc64el) rustArch='powerpc64le-unknown-linux-gnu'; rustupSha256='079430f58ad4da1d1f4f5f2f0bd321422373213246a93b3ddb53dad627f5aa38' ;; \
+        s390x) rustArch='s390x-unknown-linux-gnu'; rustupSha256='e7f89da453c8ce5771c28279d1a01d5e83541d420695c74ec81a7ec5d287c51c' ;; \
+        *) echo &gt;&amp;2 &quot;unsupported architecture: ${dpkgArch}&quot;; exit 1 ;; \
+    esac; \
+    url=&quot;https://static.rust-lang.org/rustup/archive/1.27.1/${rustArch}/rustup-init&quot;; \
+    wget &quot;$url&quot;; \
+    echo &quot;${rustupSha256} *rustup-init&quot; | sha256sum -c -; \
+    chmod +x rustup-init; \
+    ./rustup-init -y --no-modify-path --profile minimal --default-toolchain $RUST_VERSION --default-host ${rustArch}; \
+    rm rustup-init; \
+    chmod -R a+w $RUSTUP_HOME $CARGO_HOME; \
+    rustup --version; \
+    cargo --version; \
+    rustc --version; \
+    apt-get remove -y --auto-remove \
+        wget \
+        ;
+    # Make sure to remove trailing `\` when you copy over a new version.
+    # rm -rf /var/lib/apt/lists/*;
+
+####  rust_essentials: dependent/apt/rust/essentials.md  ####
+
+# libssl-dev: Needed for openssl certificates (may need to add the pkg files to PKG_CONFIG_PATH)
+# libasound2-dev: Needed for alsa (may need to add the pkg files to PKG_CONFIG_PATH)
+# pkg-config: Quering local libraries for compilation. Needed by rustc.
+RUN apt-get update &amp;&amp; apt install -y libssl-dev libasound2-dev pkg-config
+
+####  rust_components: dependent/rust/components.md  ####
+
+RUN rustup component add rustfmt
+
+####  uv: dependent/apt/python/uv.md  ####
+
+RUN apt install -y build-essential libssl-dev pkg-config curl \
+    
+    &amp;&amp; curl -LsSf https://astral.sh/uv/install.sh | sh \
+    
+    &amp;&amp; . $HOME/.local/bin/env \
+    &amp;&amp; uv tool install mypy
+
+####  ~INLINE~  ####
+
+ENTRYPOINT [&quot;/bin/bash&quot;]
+</code></pre>
+<p>(may want to change the base image to <code>ubuntu:24.04</code>)</p>
+<p>Basically just follow exactly what included below. The comment I linked to is a way to resolve the issues that happen with <code>cargo run</code></p>
+<blockquote>
+<p>Additionally the <code>.cargo/config.toml</code> needs to include</p>
+<p>[env]
+PYO3_PYTHON = { value = &quot;.venv/bin/python&quot;, relative = true, force = true }</p>
+<h3>Example</h3>
+<p>Setup:</p>
+<p>uv venv .venv --python 3.12
+. .venv/bin/activate
+src/lib.rs</p>
+<p>use std::path::PathBuf;</p>
+<p>use pyo3::prelude::*;</p>
+<p>use serde::{Deserialize, Serialize};</p>
+<p>#[pyclass]
+#[derive(Debug, Serialize, Deserialize)]
+struct Group {
+name: String,
+}</p>
+<p>#[pyclass]
+#[derive(Debug, Serialize, Deserialize)]
+struct User {
+username: String,
+group: Option&lt;Py<Group>&gt;,
+friends: Vec&lt;Py<User>&gt;,
+}</p>
+<p>#[test]
+fn test_serialize() {
+let friend1 = User {
+username: &quot;friend 1&quot;.into(),
+group: None,
+friends: vec![],
+};
+let friend2 = User {
+username: &quot;friend 2&quot;.into(),
+group: None,
+friends: vec![],
+};</p>
+<pre><code>let user = Python::with_gil(|py| {
+    let py_friend1 = Py::new(py, friend1).expect(&quot;failed to create friend 1&quot;);
+    let py_friend2 = Py::new(py, friend2).expect(&quot;failed to create friend 2&quot;);
+
+    let friends = vec![py_friend1, py_friend2];
+    let py_group = Py::new(py, Group {
+        name: &quot;group name&quot;.into(),
+    })
+    .unwrap();
+
+    User {
+        username: &quot;danya&quot;.into(),
+        group: Some(py_group),
+        friends,
+    }
+});
+
+let serialized = serde_json::to_string(&amp;user).expect(&quot;failed to serialize&quot;);
+assert_eq!(
+    serialized,
+    r#&quot;{&quot;username&quot;:&quot;danya&quot;,&quot;group&quot;:{&quot;name&quot;:&quot;group name&quot;},&quot;friends&quot;:[{&quot;username&quot;:&quot;friend 1&quot;,&quot;group&quot;:null,&quot;friends&quot;:[]},{&quot;username&quot;:&quot;friend 2&quot;,&quot;group&quot;:null,&quot;friends&quot;:[]}]}&quot;#
+);</code></pre>
+<p>}</p>
+<p>#[test]
+fn test_deserialize() {
+let serialized = r#&quot;{&quot;username&quot;: &quot;danya&quot;, &quot;friends&quot;:
+[{&quot;username&quot;: &quot;friend&quot;, &quot;group&quot;: {&quot;name&quot;: &quot;danya's friends&quot;}, &quot;friends&quot;: []}]}&quot;#;
+let user: User = serde_json::from_str(serialized).expect(&quot;failed to deserialize&quot;);</p>
+<pre><code>assert_eq!(user.username, &quot;danya&quot;);
+assert!(user.group.is_none());
+assert_eq!(user.friends.len(), 1usize);
+let friend = user.friends.first().unwrap();
+
+Python::with_gil(|py| {
+    assert_eq!(friend.borrow(py).username, &quot;friend&quot;);
+    assert_eq!(
+        friend.borrow(py).group.as_ref().unwrap().borrow(py).name,
+        &quot;danya's friends&quot;
+    )
+});</code></pre>
+<p>}
+Cargo.toml</p>
+<p>[package]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2024&quot;</p>
+<p>[dependencies]
+pyo3 = { version = &quot;0.23&quot;, features = [&quot;auto-initialize&quot;, &quot;serde&quot;] }
+serde = { version = &quot;1&quot;, features = [&quot;serde_derive&quot;] }
+serde_json = &quot;1&quot;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-01-28 19:02</div>
+            <div class="timeline-body"><blockquote>
+<p>the error's happen when you <code>cargo run</code>. I don't see you running that command.</p>
+</blockquote>
+<p>Oh, I see now - I can reproduce the problem by building a binary that uses Python as a library:</p>
+<pre><code class="language-sh">cargo init b
+cd b
+echo 'pyo3 = { version = &quot;0.23&quot; }' &gt;&gt; Cargo.toml
+uv venv -p 3.12
+. .venv/bin/activate
+cat &gt; src/main.rs &lt;&lt; EOF
+use pyo3::prelude::*;
+
+fn main() {
+    Python::with_gil(|_py| ());   
+}
+EOF
+cargo run
+</code></pre>
+<p>which gets me</p>
+<pre><code>target/debug/b: error while loading shared libraries: libpython3.12.so.1.0: cannot open shared object file: No such file or directory
+</code></pre>
+<p>And I see now why you had test cases, <code>cargo test</code> fails too in the same manner if you invoke <code>Python::with_gil</code> from <code>#[test]</code>.</p>
+<p>I think the right way to solve this is by adding an rpath to the link arguments. I'm not yet sure whether that belongs on our side or on pyo3's side, let me read a bit. Thanks for the details!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mcmah309">@mcmah309</a> on 2025-02-03 16:22</div>
+            <div class="timeline-body"><p>Any update on this? I believe the <code>needs-mre</code> tag can be removed. As @geofft mentioned, a step in the right direction could be adding the correct rpath's to the python executable, or modifying <code>LD_LIBRARY_PATH</code> and <code>PYTHONHOME</code> in the <code>activate</code> script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @zanieb on 2025-02-03 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-02-03 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @zanieb on 2025-02-03 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @geofft by @geofft on 2025-02-03 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-02-03 20:05</div>
+            <div class="timeline-body"><p>I'm working on a PR in pyo3 to handle this (patterned on the recent PR to handle an analogous problem in Apple's builds of Python in Xcode/Developer Tools). In the meantime, creating a <code>build.rs</code> file containing</p>
+<pre><code class="language-rust">fn main() {
+    if cfg!(unix) {
+        if let Some(lib_dir) = &amp;pyo3_build_config::get().lib_dir {
+            println!(&quot;cargo:rustc-link-arg=-Wl,-rpath,{}&quot;, lib_dir);
+        }
+    }
+}
+</code></pre>
+<p>should hopefully help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PyO3/pyo3/pulls/4890.html">PyO3/pyo3#4890</a> on 2025-02-03 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikedh">@mikedh</a> on 2025-02-20 19:32</div>
+            <div class="timeline-body"><p>Thanks for all the great work on UV! I also ran in to this and have been mitigating with:</p>
+<pre><code>source ~/venv/bin/activate
+                                         
+export LD_LIBRARY_PATH=`python -c &quot;from distutils.sysconfig import get_config_var as s; print(s(\&quot;LIBDIR\&quot;))&quot;`
+</code></pre>
+<p>Since the <code>activate</code> script provided by <code>uv venv</code> is already editing environment variables (<code>PATH</code>), it doesn't seem like it would be that evil to also edit the <code>LD_LIBRARY_PATH</code> variable.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

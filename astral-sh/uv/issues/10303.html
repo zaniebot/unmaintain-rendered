@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setting FORCE_COLOR=true does not seem to work (in GH actions at least) - astral-sh/uv #10303</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Setting FORCE_COLOR=true does not seem to work (in GH actions at least)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10303">#10303</a>
+        opened by <a href="https://github.com/scop">@scop</a>
+        on 2025-01-05 16:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/scop">@scop</a> on 2025-01-05 16:54</div>
+            <div class="timeline-body"><p>Setting <code>FORCE_COLOR=true</code>  does not seem to give colorized output in GitHub actions.</p>
+<p>Reproducer pipeline job at https://github.com/scop/pytekukko/actions/runs/12620953794/job/35167229162 (the &quot;Install Python dev dependencies&quot; step)</p>
+<ul>
+<li>Shows that <code>FORCE_COLOR</code> is set to <code>true</code> in the env, and there's no <code>NO_COLOR</code> or <code>CLICOLOR_FORCE</code> env vars present</li>
+<li>Shows that there's no <code>--color</code> arg passed to uv</li>
+</ul>
+<p>...but the uv output has no color. I tried explicit <code>export</code> of <code>FORCE_COLOR</code> too, to no avail.</p>
+<p>Another job at https://github.com/scop/pytekukko/actions/runs/12620965743/job/35167258389 that passes <code>--color always</code> does result in color output (again, see the &quot;Install Python dev dependencies&quot; step).</p>
+<p>This workflow uses the current astral-sh/setup-uv action, so uv is current, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-01-05 18:35</div>
+            <div class="timeline-body"><p>Can you give <code>CLICOLOR_FORCE=&quot;true&quot;</code> instead a quick try?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @samypr100 on 2025-01-05 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-01-05 19:46</div>
+            <div class="timeline-body"><p>Here's an isolated MRE</p>
+<p>Works</p>
+<pre><code class="language-shell">docker run --platform linux/x86_64 -e CLICOLOR_FORCE=1 --rm ghcr.io/astral-sh/uv:python3.12-alpine /bin/sh -c &quot;uv init test&quot;
+</code></pre>
+<p>Does not work</p>
+<pre><code class="language-shell">docker run --platform linux/x86_64 -e FORCE_COLOR=1 --rm ghcr.io/astral-sh/uv:python3.12-alpine /bin/sh -c &quot;uv init test&quot;
+</code></pre>
+<p>Seems like this stopped working after 0.5.0, possibly related to https://github.com/astral-sh/uv/pull/8215</p>
+<p>Works</p>
+<pre><code class="language-shell">docker run --platform linux/x86_64 -e FORCE_COLOR=1 --rm ghcr.io/astral-sh/uv:0.4.30-python3.12-alpine /bin/sh -c &quot;uv init test&quot;
+docker run --platform linux/x86_64 -e CLICOLOR_FORCE=1 --rm ghcr.io/astral-sh/uv:0.4.30-python3.12-alpine /bin/sh -c &quot;uv init test&quot;
+docker run --platform linux/x86_64 -e CLICOLOR_FORCE=1 --rm ghcr.io/astral-sh/uv:0.5.0-python3.12-alpine /bin/sh -c &quot;uv init test&quot;
+</code></pre>
+<p>Does not work</p>
+<pre><code class="language-shell">docker run --platform linux/x86_64 -e FORCE_COLOR=1 --rm ghcr.io/astral-sh/uv:0.5.0-python3.12-alpine /bin/sh -c &quot;uv init test&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @samypr100 on 2025-01-05 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-05 20:12</div>
+            <div class="timeline-body"><p>Thanks @samypr100!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2025-01-05 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2025-01-05 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-06 00:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10315.html">astral-sh/uv#10315</a> on 2025-01-06 01:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 01:01</div>
+            <div class="timeline-body"><p>Fixed in https://github.com/astral-sh/uv/pull/10315.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-06 02:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-06 02:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

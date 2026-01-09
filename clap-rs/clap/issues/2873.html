@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_derive users can't set both a default `help_heading` and an arg-specific `help_heading` - clap-rs/clap #2873</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_derive users can't set both a default `help_heading` and an arg-specific `help_heading`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2873">#2873</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-10-14 17:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-10-14 17:35</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.55.0 (c8dfcfe04 2021-09-06)</p>
+<h3>Clap Version</h3>
+<p>v3.0.0-beta.4</p>
+<h3>Minimal reproducible code</h3>
+<p>Note: this assumes #2785 is fixed</p>
+<pre><code class="language-rust">use clap::{IntoApp, Parser};
+
+#[test]
+fn arg_help_heading_applied() {
+    #[derive(Debug, Clone, Parser)]
+    #[clap(help_heading = &quot;DEFAULT&quot;)]
+    struct CliOptions {
+        #[clap(long)]
+        #[clap(help_heading = Some(&quot;HEADING A&quot;))]
+        should_be_in_section_a: Option&lt;u32&gt;,
+
+        #[clap(long)]
+        should_be_in_default_section: Option&lt;u32&gt;,
+    }
+
+    let app = CliOptions::into_app();
+
+    let should_be_in_section_a = app
+        .get_arguments()
+        .find(|a| a.get_name() == &quot;should-be-in-section-a&quot;)
+        .unwrap();
+    assert_eq!(should_be_in_section_a.get_help_heading(), Some(&quot;HEADING A&quot;));
+
+    let should_be_in_default_section = app
+        .get_arguments()
+        .find(|a| a.get_name() == &quot;DEFAULT&quot;)
+        .unwrap();
+    assert_eq!(should_be_in_default_section.get_help_heading(), Some(&quot;DEFAULT&quot;));
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Run the test</p>
+<h3>Actual Behaviour</h3>
+<p><code>should_be_in_section_a</code> is in section <code>DEFAULT</code></p>
+<h3>Expected Behaviour</h3>
+<p><code>should_be_in_section_a</code> is in section <code>HEADING A</code></p>
+<h3>Additional Context</h3>
+<p>PR #1211 originally added <code>help_heading</code> with the current priority
+(<code>App::help_heading</code> wins).</p>
+<p>In #1958, the PR author had proposed to change this</p>
+<blockquote>
+<p>Note that I made the existing arg's heading a priority over the one in App::help_heading</p>
+</blockquote>
+<p>This was reverted on reviewer request because</p>
+<blockquote>
+<p>Thanks for the priority explanation. Yes, please make the app's help
+heading a priority. I can see how it would be useful when people might
+want to reuse args.</p>
+</blockquote>
+<p>Re-using args is an important use case but this makes life difficult
+for anyone using <code>help_heading</code> with <code>clap_derive</code> because the user
+can only call <code>App::help_heading</code> once per struct.  Derive users can't get
+per-field granularity with <code>App::help_heading</code> like the builder API.</p>
+<p>As a bonus, I think this will be the least surprising to users.  Users
+generally expect the more generic specification (App) to be overridden by the
+more specific specification (Arg).  Honestly, I had thought this Issue's Expected Behavior is
+how <code>help_heading</code> worked  until I dug into the code with #2872.</p>
+<p>In the argument re-use cases, a workaround is for the reusable arguments
+to <strong>not</strong> set their help_heading and require the caller to set it as
+needed</p>
+<p>Note: I have a fix ready, just blocked on #2872.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @epage on 2021-10-14 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @epage on 2021-10-14 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @epage on 2021-10-14 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @epage by @epage on 2021-10-14 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2878.html">clap-rs/clap#2878</a> on 2021-10-14 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2021-10-15 08:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

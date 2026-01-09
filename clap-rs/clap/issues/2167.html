@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panic on subcommand without -h - clap-rs/clap #2167</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Panic on subcommand without -h</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2167">#2167</a>
+        opened by <a href="https://github.com/Absolucy">@Absolucy</a>
+        on 2020-10-11 03:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Absolucy">@Absolucy</a> on 2020-10-11 03:05</div>
+            <div class="timeline-body"><h3>Make sure you completed the following tasks</h3>
+<ul>
+<li>[x] Searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] Searched the closed issues</li>
+</ul>
+<h3>Code</h3>
+<pre><code class="language-rust">#[derive(Debug, Clap, Clone)]
+#[clap(author, about, version)]
+pub struct FurnacaOpts {
+	#[clap(short, long)]
+	pub endpoint: Option&lt;String&gt;,
+	#[clap(subcommand)]
+	pub subcmd: Subcommand,
+}
+
+#[derive(Debug, Clap, Clone)]
+pub enum Subcommand {
+	/// Upload a resource to the Cinderferno Anthracite Controller.
+	#[clap(author, version)]
+	Upload(UploadSubcommand),
+	/// Manage and view processes in the Cinderferno Anthracite Controller.
+	#[clap(author, version)]
+	Task(TaskSubcommand),
+	/// Manage authentication for the Cinderferno Anthracite Controller.
+	#[clap(author, version)]
+	Auth(AuthSubcommand),
+}
+
+#[derive(Debug, Clap, Clone)]
+pub enum AuthSubcommand {
+	/// Log in to the given endpoint.
+	#[clap(author, version)]
+	Login,
+	/// Register an account on the given endpoint.
+	#[clap(author, version)]
+	Register,
+}
+
+</code></pre>
+<h3>Steps to reproduce the issue</h3>
+<ol>
+<li>Run <code>cargo run -- auth</code></li>
+<li>Panic</li>
+</ol>
+<h3>Version</h3>
+<ul>
+<li><strong>Rust</strong>: <code>rustc 1.47.0 (18bf6b4f0 2020-10-07)</code></li>
+<li><strong>Clap</strong>: <code>3.0.0-beta.2</code></li>
+</ul>
+<h3>Actual Behavior Summary</h3>
+<p>Running <code>cargo run -- auth</code> causes a panic.<br />
+<code>cargo run -- auth -h</code> works.</p>
+<h3>Expected Behavior Summary</h3>
+<p><code>cargo run -- auth</code> and <code>cargo run -- auth -h</code> should have identical behavior.</p>
+<h3>Debug output</h3>
+<p>Compile clap with <code>debug</code> feature:</p>
+<pre><code class="language-toml">[dependencies]
+clap = { version = &quot;*&quot;, features = [&quot;debug&quot;] }
+</code></pre>
+<p>The output may be very long, so feel free to link to a gist or attach a text file</p>
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+    Finished dev [unoptimized + debuginfo] target(s) in 0.07s
+     Running `target/debug/furnaca auth`
+[            clap::build::app] 	App::_do_parse
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_propagate:furnaca
+[            clap::build::app] 	App::_propagate:upload
+[            clap::build::app] 	App::_propagate:arxd
+[            clap::build::app] 	App::_propagate:arep
+[            clap::build::app] 	App::_propagate:task
+[            clap::build::app] 	App::_propagate:create
+[            clap::build::app] 	App::_propagate:status
+[            clap::build::app] 	App::_propagate:list
+[            clap::build::app] 	App::_propagate:download
+[            clap::build::app] 	App::_propagate:auth
+[            clap::build::app] 	App::_propagate:login
+[            clap::build::app] 	App::_propagate:register
+[            clap::build::app] 	App::_derive_display_order:furnaca
+[            clap::build::app] 	App::_derive_display_order:upload
+[            clap::build::app] 	App::_derive_display_order:arxd
+[            clap::build::app] 	App::_derive_display_order:arep
+[            clap::build::app] 	App::_derive_display_order:task
+[            clap::build::app] 	App::_derive_display_order:create
+[            clap::build::app] 	App::_derive_display_order:status
+[            clap::build::app] 	App::_derive_display_order:list
+[            clap::build::app] 	App::_derive_display_order:download
+[            clap::build::app] 	App::_derive_display_order:auth
+[            clap::build::app] 	App::_derive_display_order:login
+[            clap::build::app] 	App::_derive_display_order:register
+[            clap::build::app] 	App::_create_help_and_version
+[            clap::build::app] 	App::_create_help_and_version: Building --help
+[            clap::build::app] 	App::_create_help_and_version: Building --version
+[            clap::build::app] 	App::_create_help_and_version: Building help
+[clap::build::app::debug_asserts] 	App::_debug_asserts
+[            clap::build::arg] 	Arg::_debug_asserts:endpoint
+[            clap::build::arg] 	Arg::_debug_asserts:help
+[            clap::build::arg] 	Arg::_debug_asserts:version
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[         clap::parse::parser] 	Parser::_verify_positionals
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing '"auth"' ([97, 117, 116, 104])
+[         clap::parse::parser] 	Parser::is_new_arg: "auth":NotFound
+[         clap::parse::parser] 	Parser::is_new_arg: arg_allows_tac=false
+[         clap::parse::parser] 	Parser::is_new_arg: probably value
+[         clap::parse::parser] 	Parser::is_new_arg: starts_new_arg=false
+[         clap::parse::parser] 	Parser::possible_subcommand: arg="auth"
+[         clap::parse::parser] 	Parser::get_matches_with: possible_sc=true, sc=Some("auth")
+[         clap::parse::parser] 	Parser::parse_subcommand
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs=[]
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[]
+[            clap::build::app] 	App::_propagate:furnaca
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_propagate:auth
+[            clap::build::app] 	App::_propagate:login
+[            clap::build::app] 	App::_propagate:register
+[            clap::build::app] 	App::_derive_display_order:auth
+[            clap::build::app] 	App::_derive_display_order:login
+[            clap::build::app] 	App::_derive_display_order:register
+[            clap::build::app] 	App::_create_help_and_version
+[            clap::build::app] 	App::_create_help_and_version: Building --help
+[            clap::build::app] 	App::_create_help_and_version: Building --version
+[            clap::build::app] 	App::_create_help_and_version: Building help
+[clap::build::app::debug_asserts] 	App::_debug_asserts
+[            clap::build::arg] 	Arg::_debug_asserts:help
+[            clap::build::arg] 	Arg::_debug_asserts:version
+[         clap::parse::parser] 	Parser::parse_subcommand: About to parse sc=auth
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[         clap::parse::parser] 	Parser::_verify_positionals
+[         clap::parse::parser] 	Parser::remove_overrides
+[      clap::parse::validator] 	Validator::validate
+[         clap::parse::parser] 	Parser::add_defaults
+[      clap::parse::validator] 	Validator::validate_conflicts
+[      clap::parse::validator] 	Validator::validate_exclusive
+[      clap::parse::validator] 	Validator::gather_conflicts
+[      clap::parse::validator] 	Validator::validate_required: required=ChildGraph([])
+[      clap::parse::validator] 	Validator::gather_requirements
+[      clap::parse::validator] 	Validator::validate_required_unless
+[      clap::parse::validator] 	Validator::validate_matched_args
+[         clap::parse::parser] 	Parser::remove_overrides
+[      clap::parse::validator] 	Validator::validate
+[         clap::parse::parser] 	Parser::add_defaults
+[         clap::parse::parser] 	Parser::add_defaults:iter:endpoint:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:endpoint: doesn't have default vals
+[      clap::parse::validator] 	Validator::validate_conflicts
+[      clap::parse::validator] 	Validator::validate_exclusive
+[      clap::parse::validator] 	Validator::gather_conflicts
+[      clap::parse::validator] 	Validator::validate_required: required=ChildGraph([])
+[      clap::parse::validator] 	Validator::gather_requirements
+[      clap::parse::validator] 	Validator::validate_required_unless
+[      clap::parse::validator] 	Validator::validate_matched_args
+[    clap::parse::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[]
+[31mThe application panicked (crashed).[0m
+Message:  [36mcalled `Option::unwrap()` on a `None` value[0m
+Location: [35mfurnaca/src/opts.rs[0m:[35m29[0m
+
+<p>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[96m                              ⋮ 15 frames hidden ⋮                              [0m
+16: [32mcore::panicking::panic[0m[90m::h4b079e3c35cc1b09[0m
+at [35m/rustc/18bf6b4f01a6feaf7259ba7cdae58031af1b7b39/library/core/src/panicking.rs[0m:[35m50[0m
+17: [32mcore::option::Option<T>::unwrap[0m[90m::hba745fdff1314f31[0m
+at [35m/home/aspen/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs[0m:[35m370[0m
+18: [91m&lt;furnaca::opts::AuthSubcommand as clap::derive::FromArgMatches&gt;::from_arg_matches[0m[90m::hc4d8be0609adf79b[0m
+at [35m/home/aspen/Documents/Code/Rust/Furnaca/furnaca/src/opts.rs[0m:[35m29[0m
+19: [91m&lt;furnaca::opts::Subcommand as clap::derive::Subcommand&gt;::from_subcommand[0m[90m::hea40e220140043fa[0m
+at [35m/home/aspen/Documents/Code/Rust/Furnaca/furnaca/src/opts.rs[0m:[35m16[0m
+20: [91m&lt;furnaca::opts::FurnacaOpts as clap::derive::FromArgMatches&gt;::from_arg_matches[0m[90m::hdf26c24c4630fd22[0m
+at [35m/home/aspen/Documents/Code/Rust/Furnaca/furnaca/src/opts.rs[0m:[35m12[0m
+21: [32mclap::derive::Clap::parse[0m[90m::h72870aa7e2a0b74a[0m
+at [35m/home/aspen/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.0.0-beta.2/src/derive.rs[0m:[35m77[0m
+22: [91mfurnaca::main::{{closure}}[0m[90m::h799f475c739efc92[0m
+at [35m/home/aspen/Documents/Code/Rust/Furnaca/furnaca/src/main.rs[0m:[35m50[0m
+23: [91m&lt;core::future::from_generator::GenFuture<T> as core::future::future::Future&gt;::poll[0m[90m::h146979152c284007[0m
+at [35m/home/aspen/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/future/mod.rs[0m:[35m79[0m
+24: [32mtokio::runtime::enter::Enter::block_on::{{closure}}[0m[90m::h7edae76a9c0936c6[0m
+at [35m/home/aspen/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-0.2.22/src/runtime/enter.rs[0m:[35m160[0m
+25: [32mtokio::coop::with_budget::{{closure}}[0m[90m::hb2a863926bd31cc0[0m
+at [35m/home/aspen/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-0.2.22/src/coop.rs[0m:[35m127[0m
+26: [32mstd::thread::local::LocalKey<T>::try_with[0m[90m::h5553f8ad764e25de[0m
+at [35m/home/aspen/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/thread/local.rs[0m:[35m265[0m
+27: [32mstd::thread::local::LocalKey<T>::with[0m[90m::hc63d5795c829ea80[0m
+at [35m/home/aspen/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/thread/local.rs[0m:[35m241[0m
+28: [32mtokio::coop::with_budget[0m[90m::ha40946cffe9071a1[0m
+at [35m/home/aspen/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-0.2.22/src/coop.rs[0m:[35m120[0m
+29: [32mtokio::coop::budget[0m[90m::h2ccdf72bd3270b20[0m
+at [35m/home/aspen/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-0.2.22/src/coop.rs[0m:[35m96[0m
+30: [32mtokio::runtime::enter::Enter::block_on[0m[90m::h84012771fa9bb6da[0m
+at [35m/home/aspen/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-0.2.22/src/runtime/enter.rs[0m:[35m160[0m
+31: [32mtokio::runtime::thread_pool::ThreadPool::block_on[0m[90m::hdab0eb972284a7ad[0m
+at [35m/home/aspen/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-0.2.22/src/runtime/thread_pool/mod.rs[0m:[35m82[0m
+32: [32mtokio::runtime::Runtime::block_on::{{closure}}[0m[90m::hc28ccf4b366dc4b2[0m
+at [35m/home/aspen/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-0.2.22/src/runtime/mod.rs[0m:[35m446[0m
+33: [32mtokio::runtime::context::enter[0m[90m::hf82380a188067b17[0m
+at [35m/home/aspen/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-0.2.22/src/runtime/context.rs[0m:[35m72[0m
+34: [32mtokio::runtime::handle::Handle::enter[0m[90m::ha4d18a0b82f0811d[0m
+at [35m/home/aspen/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-0.2.22/src/runtime/handle.rs[0m:[35m76[0m
+35: [32mtokio::runtime::Runtime::block_on[0m[90m::hf3a0cad5ac71806c[0m
+at [35m/home/aspen/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-0.2.22/src/runtime/mod.rs[0m:[35m441[0m
+36: [91mfurnaca::main[0m[90m::h076a92067d2fd5ca[0m
+at [35m/home/aspen/Documents/Code/Rust/Furnaca/furnaca/src/main.rs[0m:[35m24[0m
+37: [32mcore::ops::function::FnOnce::call_once[0m[90m::h2bd46879e54b4988[0m
+at [35m/home/aspen/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/function.rs[0m:[35m227[0m
+[96m                              ⋮ 11 frames hidden ⋮                              [0m</p>
+<p>Run with COLORBT_SHOW_HIDDEN=1 environment variable to disable frame filtering.
+Run with RUST_BACKTRACE=full to include source snippets.</p>
+</code>
+</pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @Absolucy on 2020-10-11 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Panic on subcommand without `-h`" to "Panic on subcommand without -h" by @Absolucy on 2020-10-11 03:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-11 06:43</div>
+            <div class="timeline-body"><p>Minimal reproducible example:</p>
+<pre><code class="language-rust">use clap::Clap;
+
+#[derive(Debug, Clap, Clone)]
+pub enum Opt {
+    Auth(AuthSubcommand),
+}
+
+#[derive(Debug, Clap, Clone)]
+pub enum AuthSubcommand {
+    Login,
+}
+
+fn main() {
+    Opt::parse_from(&amp;[&quot;prog&quot;, &quot;auth&quot;]);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @pksunkara on 2020-10-11 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-10-11 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $5</span> added by @pksunkara on 2020-10-11 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $5</span> removed by @pksunkara on 2020-10-11 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $5</span> added by @pksunkara on 2020-10-26 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jder">@jder</a> on 2021-01-03 22:44</div>
+            <div class="timeline-body"><p>I believe this is the same as https://github.com/clap-rs/clap/issues/2005. @CreepySkeleton, is there still an open question about the right behavior with sub-sub commands as enums?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-02-28 12:37</div>
+            <div class="timeline-body"><p>Closing this as duplicate of #2005</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-02-28 12:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

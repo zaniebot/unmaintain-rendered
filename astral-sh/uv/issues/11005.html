@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistent `uv pip install` behavior with workspace member that shadows pypi package - astral-sh/uv #11005</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistent `uv pip install` behavior with workspace member that shadows pypi package</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11005">#11005</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-01-27 21:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2025-01-27 21:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>For this scenario there's a root package and a workspace member that shadows the root package, here <code>anyio 0.1.0</code> locally shadowing <code>anyio 4.8.0</code> on pypi. In real-world cases, such divergence can happen when a workspace member is published to pypi and has e.g. a higher version locally that is not yet published to pypi.</p>
+<p>Currently, <code>uv pip install</code> will accept <code>anyio&gt;=4</code> depending on whether it exists in the venv, ignoring a conflict with the anyio 0.1.0 of the workspace member that the workspace root depends on. Or put the other way round, <code>uv pip install</code> won't find an <code>anyio&gt;=4</code> if it's shadowed by a local workspace member, even though it exists on pypi.</p>
+<p>It's not fully clear to me what the right behavior in this scenario is, but the behavior is unexpected.</p>
+<pre><code>uv init --app foo
+cd foo
+uv init --app anyio
+uv add ./anyio
+uv-debug pip install --no-sources --upgrade .
+uv-debug pip install . &quot;anyio&gt;=4&quot; &amp;&amp; echo &quot;success&quot; || echo &quot;failure&quot;
+uv-debug pip install --upgrade .
+uv-debug pip install . &quot;anyio&gt;=4&quot; &amp;&amp; echo &quot;success&quot; || echo &quot;failure&quot;
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 24.04 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.5.24</p>
+<h3>Python version</h3>
+<p>3.13.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-01-27 21:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

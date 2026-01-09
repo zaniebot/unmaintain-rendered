@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv exports incomplete requirements if using external packages - astral-sh/uv #7496</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv exports incomplete requirements if using external packages</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7496">#7496</a>
+        opened by <a href="https://github.com/Mateuscvieira">@Mateuscvieira</a>
+        on 2024-09-18 13:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Mateuscvieira">@Mateuscvieira</a> on 2024-09-18 13:06</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>This issue is linked to #7494 but doesn't have the same solution, or any solution I have found.</p>
+<h3>The problem</h3>
+<p>I can start my uv project with commands:</p>
+<pre><code class="language-bash">uv init
+uv add &quot;ceic-api-client&lt;=2.7&quot; --extra-index-url https://downloads.ceicdata.com/python
+</code></pre>
+<p>Then appending the extra index to the pyproject file like so:</p>
+<pre><code>[tool.uv]
+extra-index-url = [&quot;https://downloads.ceicdata.com/python&quot;]
+</code></pre>
+<p>This creates an environment where I can freely add, remove, run, sync and lock. So, running <code>uv export</code>, I would expect a valid requirements file, but I get the following (using the no-hashes flag for legibility):</p>
+<pre><code>ceic-api-client==2.6.1.148
+certifi==2024.8.30
+python-dateutil==2.9.0.post0
+six==1.16.0
+urllib3==2.2.3
+</code></pre>
+<p>This, for obvious reasons, will not build.</p>
+<h3>Suggestions</h3>
+<p>Maybe this is unwarranted advice, but from what I understand from src/commands/project/export.rs, the export command reads from the lockfile, not pyproject. Well, as mentioned in #7494, the lockfile is in fact correct when it comes to extra indexes, so it wouldn't require adding full support for adding indexes in <code>add</code> to fix this issue with <code>export</code> (I think).</p>
+<h3>Versions</h3>
+<p>Running uv 0.4.11 in Windows 10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 13:12</div>
+            <div class="timeline-body"><p>Can you clarify what the expected behavior is? We should write the index URL into the exported file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mateuscvieira">@Mateuscvieira</a> on 2024-09-18 13:18</div>
+            <div class="timeline-body"><p>Yes. The requirements file should have the --extra-index-url flag if one wishes to use pip install</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 13:24</div>
+            <div class="timeline-body"><p>I don't think we should do this by default, but maybe we could include <code>--emit-index-urls</code>. I'm pretty hesitant, generally, because our index behavior doesn't match pip and I'm not sure we will be able to generate something that always works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mateuscvieira">@Mateuscvieira</a> on 2024-09-18 13:43</div>
+            <div class="timeline-body"><p>Shouldn't <code>export</code> always export environments that work, though? As it stands, even using <code>uv pip install</code>, it's broken:</p>
+<pre><code class="language-bash">uv export &gt; ../another_directory/requirements.txt
+cd ../another_directory
+uv venv .venv
+.venv\Scripts\activate
+uv pip install -r requirements.txt
+</code></pre>
+<p>Output:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because ceic-api-client was not found in the package registry and you require ceic-api-client==2.6.1.148, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+<p>The export help file currently specifies it as &quot;Export the project's lockfile to an alternate format&quot;. IMO it's to be expected that the output should be as close a match of the lockfile as possible. The output I showed isn't, as it won't even generate a working environment using any form of index behavior, be it uv or pip, while the lockfile does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 13:49</div>
+            <div class="timeline-body"><p>I don't think passing settings inside the <code>requirements.txt</code> file (which is not a standardized format, it's just a thing that pip does) is best practice and we will generally avoid it where we can. Additionally, the <code>requirements.txt</code> format doesn't allow specifying an index for specific packages, so even if we were to start emitting index URLs now, once we support #171 via #7481 we won't be able to generate a file that &quot;works&quot;.</p>
+<p>I understand this isn't ideal and we may be able to make it better somehow, but it's not a simple problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mateuscvieira">@Mateuscvieira</a> on 2024-09-18 13:59</div>
+            <div class="timeline-body"><p>I understand the concern. Well, keeping the behavior as is, this maybe warrants a warning of some kind, either when the engine detects a package only available in a non-default index or simply when there are extra indexes in the lockfile, so this behavior is more explicit.
+Also, maybe we could make <code>uv export --extra-index-url</code> prepend the extra index into the requirements file, maybe with a warning about unsafe behavior. This makes the user explicitly opt in, and also uses a flag that is (apparently) currently not used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 14:21</div>
+            <div class="timeline-body"><p><code>uv pip compile</code> also does not export these by default; the behavior is intentional. Whether we want to support <code>--emit-index-url</code> is an open question though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mateuscvieira">@Mateuscvieira</a> on 2024-09-18 14:36</div>
+            <div class="timeline-body"><blockquote>
+<p><code>uv pip compile</code> also does not export these by default; the behavior is intentional</p>
+</blockquote>
+<p>I understand, but both <code>uv export</code> and <code>uv pip compile</code> have --extra-index-url flags which don't actually add the extra index to the output, and neither of them provide feedback about using the extra indexes in resolution but not in output. As is, the functionality is pretty confusing for us using private packages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-09-18 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/generatedone">@generatedone</a> on 2024-11-08 01:18</div>
+            <div class="timeline-body"><p>Hello @Mateuscvieira,</p>
+<p>The following commands do the job for me.</p>
+<pre><code class="language-powershell">uv venv
+uv pip install --index https://downloads.ceicdata.com/python ceic_api_client
+</code></pre>
+<pre><code>    </code></pre>
+<p>Please let me know if that is what you need.</p>
+<p>In addition to that, I have couple of more questions to raise here:</p>
+<ol>
+<li>Can you/sb compare it (kind of benchmark testing) with the regular installation way - using the <code>pip install</code> command?</li>
+<li>Which are the overall benefits of using the <code>uv</code> package manager instead the <code>pip</code>?</li>
+<li>Are there any new/enhanced features and functionalities that it provides (from the set of custom commands/options) that outperform their <code>pip</code> equivalent or are of greater convenience?</li>
+<li>Does the <code>uv</code> manager allows any particular benefit when utilizing the <code>ceic_api_client</code> compared to <code>pip</code>?</li>
+<li>Why have you even considered <code>uv</code> as an option as it is not described in any documentations of the package?</li>
+<li>Are there any other tools (data manipulation/visualization, etc.) that you are using with that specific package? If yes - please list and explain each of them.</li>
+</ol>
+<p>Apologies for the long list of questions but the discussed topic is very interesting.
+I would appreciate if you manage to reply to some (if not all) of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neggert">@neggert</a> on 2024-11-08 19:14</div>
+            <div class="timeline-body"><p>I'll chime in supporting this. <code>pip-compile</code> deals with this by making it optional via the <code>--emit-index-url</code> flag. I'd love it if <code>uv export</code> supported something similar.</p>
+<p>For my use case, I'm trying to export a requirements.txt file that I can pass to a remote Apache Ray cluster. Running <code>uv</code> on the other end to do this the &quot;right&quot; way isn't currently an option, but just adding in the <code>--extra-index-url</code> flags would solve the problem for 99% of cases.</p>
+<p>My current workaround is to just manually edit the <code>uv export</code> output to add the index URLs, but that's not really a great solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../galaxyproject/galaxy/pulls/19284.html">galaxyproject/galaxy#19284</a> on 2024-12-08 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ray-project/ray/issues/47819.html">ray-project/ray#47819</a> on 2024-12-23 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ties">@ties</a> on 2025-01-02 12:47</div>
+            <div class="timeline-body"><blockquote>
+<p><code>uv pip compile</code> also does not export these by default; the behavior is intentional. Whether we want to support <code>--emit-index-url</code> is an open question though.</p>
+</blockquote>
+<p>I would also really appreciate support for this feature. I want to generate <code>requirements.txt</code> from uv to replace the current requirements file and this blocks it. I am using a <a href="https://gist.github.com/ties/9b8c96da9eaf774fdb5c577afdbb0e2c">workaround in a pre-commit hook (gist)</a>.</p>
+<p>Either just <code>--emit-index-url</code> or <code>--emit-index-url --index-strategy unsafe-best-match</code> (because of pip's effective resolution behaviour) would be perfect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tony-garcia">@tony-garcia</a> on 2025-01-09 15:25</div>
+            <div class="timeline-body"><p>+1 to adding <code>--emit-index-url</code> to <code>uv export</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthewpick">@matthewpick</a> on 2025-02-14 15:09</div>
+            <div class="timeline-body"><p>My workaround is the same as @neggert. I am modifying the output of <code>uv export</code> to include an index-url.</p>
+<p>For example</p>
+<pre><code class="language-bash">uv export --no-dev --frozen --quiet -o requirements.txt
+echo '--index-url https://&lt;my-domain&gt;/artifactory/api/pypi/pypi/simple' | cat - requirements.txt &gt; temp &amp;&amp; mv temp requirements.txt
+cat requirements.txt
+</code></pre>
+<p>Note: this requirements.txt is being fed into a serverless lambda deployment. Adding the index-url to the top of the file is the preferred way of specifying alternative repos.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ozancaglayan">@ozancaglayan</a> on 2025-02-21 17:39</div>
+            <div class="timeline-body"><p>Was trying to migrate from poetry to uv and hit this issue. I do not want to use poetry or uv to install the deps in CI/CD and Dockerfiles so that's why being able to generate requirements.txt files to just use with pip is convenient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12580.html">astral-sh/uv#12580</a> on 2025-03-31 09:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joejoinerr">@joejoinerr</a> on 2025-06-09 16:24</div>
+            <div class="timeline-body"><p>Another +1 for this. Google Cloud Functions only allow requirements.txt, so I am using uv for local development and then running <code>uv export</code> to get the requirements.txt file for deployment. Not being able to easily include the indexes is a pain.</p>
+<p>My automated solution is using a script in <a href="https://just.systems/man/en/">just</a> to parse the pyproject.toml and dump the indexes, then add to that with uv.</p>
+<pre><code class="language-justfile">export-indexes-pip:
+    #!/usr/bin/env -S uv run --script
+    import tomllib
+    with open(&quot;pyproject.toml&quot;, &quot;rb&quot;) as f:
+        pyproject = tomllib.load(f)
+    indexes = pyproject.get(&quot;tool&quot;, {}).get(&quot;uv&quot;, {}).get(&quot;index&quot;, [])
+    for index in indexes:
+        print(f&quot;--index-url {index['url']}&quot;)
+
+build:
+    just export-indexes-pip &gt; src/requirements.txt &amp;&amp; uv export --no-dev --frozen &gt;&gt; src/requirements.txt
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fanick1">@fanick1</a> on 2025-07-08 08:13</div>
+            <div class="timeline-body"><p>+1 to export the extra-index-url. <code>sam build</code> also uses requirements.txt and we are forced to have ugly workarounds just to have that thing work.
+edit: we've found a workaround in the form of env variable <code>PIP_EXTRA_INDEX_URL</code> which we set before executing the <code>sam build</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-20 20:57</div>
+            <div class="timeline-body"><p>I know it's not the original question, but there is now the standardized <code>pylock.toml</code> format, which solves the index problem for exports, among other improvements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rob-steele-active">@rob-steele-active</a> on 2025-08-27 15:56</div>
+            <div class="timeline-body"><blockquote>
+<p>I know it's not the original question, but there is now the standardized <code>pylock.toml</code> format, which solves the index problem for exports, among other improvements.</p>
+</blockquote>
+<p>+1 for this. Supporting it for pylock.toml seems like a fair middleground.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16016.html">astral-sh/uv#16016</a> on 2025-09-24 14:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

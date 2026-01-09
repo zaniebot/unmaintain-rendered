@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run pytest` does not work - astral-sh/uv #7260</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run pytest` does not work</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7260">#7260</a>
+        opened by <a href="https://github.com/shinybrar">@shinybrar</a>
+        on 2024-09-10 17:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/shinybrar">@shinybrar</a> on 2024-09-10 17:00</div>
+            <div class="timeline-body"><h2>Ten words or less</h2>
+<p><code>uv run pytest</code> does not work in my project.</p>
+<h2>Description</h2>
+<p>I have a very small project trying our <code>uv</code> and the next-gen tooling provided by <code>astral</code>. (I ❤️ the work you guys are doing). I am coming from a <code>poetry</code> background and trying to convince my workplace to transition from <code>poetry|conda|nothing</code> to <code>uv</code>.</p>
+<p>You can find the entire, source code of the project <a href="https://github.com/shinybrar/releaseer">here</a> which looks something like this,</p>
+<h3>Structure</h3>
+<pre><code>.
+├── LICENSE
+├── README.md
+├── pyproject.toml
+├── releaseer
+│   ├── __init__.py
+│   ├── app.py
+│   └── names.yaml
+├── tests
+│   ├── conftest.py
+│   └── test_base.py
+└── uv.lock
+</code></pre>
+<pre><code class="language-python"># Contents of releaseer/app.py
+from typing import Dict, List
+from litestar import Litestar, get
+from yaml import load, Loader
+
+@get(&quot;/&quot;)
+async def hello() -&gt; Dict[str, str]:
+    return {&quot;message&quot;: &quot;Hello from releaseer!&quot;}
+
+@get(&quot;/names&quot;)
+async def names() -&gt; Dict[str, List[str]]:
+    with open(&quot;names.yaml&quot;) as f:
+        names = load(f, Loader=Loader)
+    return names
+
+@get(&quot;/healthy&quot;)
+async def healthy() -&gt; bool:
+    return True
+
+app = Litestar(route_handlers=[hello, names, healthy])
+</code></pre>
+<pre><code class="language-python"># Contents of tests/conftest.py
+
+from typing import TYPE_CHECKING
+from collections.abc import AsyncIterator
+
+import pytest
+
+from litestar.testing import AsyncTestClient
+
+from releaseer.app import app
+
+if TYPE_CHECKING:
+    from litestar import Litestar
+
+@pytest.fixture(scope=&quot;function&quot;)
+async def client() -&gt; AsyncIterator[AsyncTestClient[Litestar]]:
+    async with AsyncTestClient(app) as client:
+        yield client
+</code></pre>
+<h2>The Error</h2>
+<pre><code>uv sync --verbose
+shinybrar@saturn releaseer % uv sync --verbose
+DEBUG uv 0.4.6 (Homebrew 2024-09-05)
+DEBUG Found project root: `/Users/shinybrar/Workspace/releaseer`
+DEBUG No workspace root found, using project root
+DEBUG Reading requests from `/Users/shinybrar/Workspace/releaseer/.python-version`
+DEBUG The virtual environment's Python version satisfies `Python 3.12`
+DEBUG Using request timeout of 30s
+DEBUG Acquired lock for `/Users/shinybrar/.cache/uv/built-wheels-v3/path/fbac97741b8da1f8`
+DEBUG Found static `pyproject.toml` for: releaseer @ file:///Users/shinybrar/Workspace/releaseer
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `/Users/shinybrar/.cache/uv/built-wheels-v3/path/fbac97741b8da1f8/.lock`
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 58 packages in 1ms
+DEBUG Using request timeout of 30s
+DEBUG Requirement already installed: annotated-types==0.7.0
+DEBUG Requirement already installed: anyio==4.4.0
+DEBUG Requirement already installed: argcomplete==3.5.0
+DEBUG Requirement already installed: certifi==2024.8.30
+DEBUG Requirement already installed: charset-normalizer==3.3.2
+DEBUG Requirement already installed: click==8.1.7
+DEBUG Requirement already installed: colorama==0.4.6
+DEBUG Requirement already installed: commitizen==3.29.0
+DEBUG Requirement already installed: decli==0.6.2
+DEBUG Requirement already installed: editorconfig==0.12.4
+DEBUG Requirement already installed: faker==28.4.1
+DEBUG Requirement already installed: fast-query-parsers==1.0.3
+DEBUG Requirement already installed: h11==0.14.0
+DEBUG Requirement already installed: httpcore==1.0.5
+DEBUG Requirement already installed: httptools==0.6.1
+DEBUG Requirement already installed: httpx==0.27.2
+DEBUG Requirement already installed: idna==3.8
+DEBUG Requirement already installed: iniconfig==2.0.0
+DEBUG Requirement already installed: jinja2==3.1.4
+DEBUG Requirement already installed: jsbeautifier==1.15.1
+DEBUG Requirement already installed: litestar==2.11.0
+DEBUG Requirement already installed: markdown-it-py==3.0.0
+DEBUG Requirement already installed: markupsafe==2.1.5
+DEBUG Requirement already installed: mdurl==0.1.2
+DEBUG Requirement already installed: msgspec==0.18.6
+DEBUG Requirement already installed: multidict==6.0.5
+DEBUG Requirement already installed: packaging==24.1
+DEBUG Requirement already installed: pluggy==1.5.0
+DEBUG Requirement already installed: polyfactory==2.16.2
+DEBUG Requirement already installed: prompt-toolkit==3.0.36
+DEBUG Requirement already installed: pydantic==2.9.0
+DEBUG Requirement already installed: pydantic-core==2.23.2
+DEBUG Requirement already installed: pygments==2.18.0
+DEBUG Requirement already installed: pytest==8.3.2
+DEBUG Requirement already installed: python-dateutil==2.9.0.post0
+DEBUG Requirement already installed: python-dotenv==1.0.1
+DEBUG Requirement already installed: pyyaml==6.0.2
+DEBUG Requirement already installed: questionary==2.0.1
+DEBUG Requirement already installed: rich==13.8.0
+DEBUG Requirement already installed: rich-click==1.8.3
+DEBUG Requirement already installed: ruff==0.6.4
+DEBUG Requirement already installed: six==1.16.0
+DEBUG Requirement already installed: sniffio==1.3.1
+DEBUG Requirement already installed: termcolor==2.4.0
+DEBUG Requirement already installed: tomlkit==0.13.2
+DEBUG Requirement already installed: typing-extensions==4.12.2
+DEBUG Requirement already installed: tzdata==2024.1
+DEBUG Requirement already installed: uvicorn==0.30.6
+DEBUG Requirement already installed: uvloop==0.20.0
+DEBUG Requirement already installed: watchfiles==0.24.0
+DEBUG Requirement already installed: wcwidth==0.2.13
+DEBUG Requirement already installed: websockets==13.0.1
+Audited 52 packages in 0.37ms
+</code></pre>
+<pre><code class="language-bash">shinybrar@saturn releaseer % uv run pytest --verbose
+ImportError while loading conftest '/Users/shinybrar/Workspace/releaseer/tests/conftest.py'.
+tests/conftest.py:8: in &lt;module&gt;
+    from releaseer.app import app
+E   ModuleNotFoundError: No module named 'releaseer'
+</code></pre>
+<p>I am hoping, I am missing something obvious and this is something really trivial.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-10 17:42</div>
+            <div class="timeline-body"><p>Interesting. I seem to get the same error when I run directly after activating the virtualenv, though:</p>
+<pre><code class="language-console">❯ pytest
+ImportError while loading conftest '/Users/crmarsh/workspace/puffin/releaseer/tests/conftest.py'.
+tests/conftest.py:8: in &lt;module&gt;
+    from releaseer.app import app
+E   ModuleNotFoundError: No module named 'releaseer'
+</code></pre>
+<p>I'll have to take a look at how this typically works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-10 17:45</div>
+            <div class="timeline-body"><p>Adding this to <code>pyproject.toml</code> resolves it for me:</p>
+<pre><code class="language-toml">[tool.pytest.ini_options]
+pythonpath = [&quot;.&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-10 17:46</div>
+            <div class="timeline-body"><p>Creating <code>tests/__init__.py</code> also resolves it, which I think is the right fix based on https://docs.pytest.org/en/stable/explanation/pythonpath.html.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-10 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-10 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shinybrar">@shinybrar</a> on 2024-09-10 18:15</div>
+            <div class="timeline-body"><p>Thank you so much @charliermarsh -- that was a simple enough fix. i.e. The correct way would be to use <code>tests/__init__.py</code>. Thank you so much for the help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @shinybrar on 2024-09-10 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-10 18:15</div>
+            <div class="timeline-body"><p>No problem, I learned something too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rafalkrupinski">@rafalkrupinski</a> on 2024-10-24 15:16</div>
+            <div class="timeline-body"><p>I had the same problem, the project was missing <code>[build-system]</code> section</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acorello">@acorello</a> on 2024-11-09 19:53</div>
+            <div class="timeline-body"><p>Same problem here: I ran <code>uv run pytest</code> as suggested by the docs but it failed to import a package installed in the virtual environment.</p>
+<p>I've added the following to an <code>__init__.py</code> placed in the folder of the file with the failing import:</p>
+<pre><code class="language-python">import sys
+print(sys.path)
+</code></pre>
+<p>And I got <code>['~/Projects/MyProject', '~/.local/share/uv/tools/pytest/bin', '~/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/lib/python313.zip', '~/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/lib/python3.13', '~/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/lib/python3.13/lib-dynload', '~/.local/share/uv/tools/pytest/lib/python3.13/site-packages']</code></p>
+<p>(NOTE: I've replaced my home folder with <code>~</code> in this comment, the result were absolute paths).</p>
+<p>I can see <code>'~/Projects/MyProject'</code> which I configured by adding</p>
+<pre><code class="language-toml">[tool.pytest.ini_options]
+pythonpath = [&quot;.&quot;]
+addopts = [&quot;--import-mode=importlib&quot;, ]
+</code></pre>
+<p>but no virtual env.</p>
+<p>However, if I run <code>uv run python</code> the <code>sys.path</code> in the console does include the virtual-environment folder <code>'~/Projects/MyProject/.venv/lib/python3.13/site-packages'</code> as last item.</p>
+<p>I fixed the issue adding the virtual-env folder under <code>[tool.pytest.ini_options]</code> as well.</p>
+<p>VERSIONS:</p>
+<p><code>uv 0.5.1 (dac8c41af 2024-11-09)</code> (built locally with cargo)</p>
+<pre><code>uv run python --version
+Python 3.13.0
+</code></pre>
+<p>I shouldn't need to add the virtual env folder under the tools settings, isn't it?</p>
+<p>P.S.</p>
+<p>If I install pytest in the virtualenv (i.e. <code>uv add --dev pytest</code>) then it works without having to add the virtualenv folder to python path explicitly. I still need to specify <code>--import-mode</code> though:</p>
+<pre><code class="language-toml">[tool.pytest.ini_options]
+addopts = [&quot;--import-mode=importlib&quot;, ]
+</code></pre>
+<p>I ended up choosing this route because IntelliJ expects <code>pytest</code> to be in the virtualenv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/seangies">@seangies</a> on 2024-11-25 00:54</div>
+            <div class="timeline-body"><p>I'm hitting a similar issue and none of the above suggestions work. I tried adding <code>__init__.py</code> to my tests module, and adding <code>pythonpath == &quot;.&quot;</code> to <code>pyproject.toml</code>. Either way, the tests pick up the project's default venv, ignoring the one-time venv <code>uv run</code> creates to satisfy <code>--with</code> options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hon-gyu">@hon-gyu</a> on 2024-12-24 10:26</div>
+            <div class="timeline-body"><p><code>uv add pytest --dev</code> fixed my problem.</p>
+<p>I found that when running <code>uv run pytest</code> without <code>pytest</code> in dependencies, it somehow does not use the venv <code>uv</code> has set up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10895.html">astral-sh/uv#10895</a> on 2025-01-23 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/terrycojones">@terrycojones</a> on 2025-03-26 19:46</div>
+            <div class="timeline-body"><p>I get the same as @hon-gyu. Putting <code>__init__.py</code> into the test dir didn't help. <code>uv add pytest --dev</code> did.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mawildoer">@mawildoer</a> on 2025-07-21 20:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm hitting a similar issue and none of the above suggestions work. I tried adding <code>__init__.py</code> to my tests module, and adding <code>pythonpath == &quot;.&quot;</code> to <code>pyproject.toml</code>. Either way, the tests pick up the project's default venv, ignoring the one-time venv <code>uv run</code> creates to satisfy <code>--with</code> options.</p>
+</blockquote>
+<p>I noticed the same thing. This line (no longer? I've used it successfully <a href="https://github.com/atopile/fastapi-github-oidc/blob/main/.github/workflows/test.yml#L21">elsewhere</a>) works in my test actions workflow:</p>
+<p><code>uv run --with pytest-github-actions-annotate-failures pytest</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/post-human-world">@post-human-world</a> on 2025-08-18 13:52</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I'm hitting a similar issue and none of the above suggestions work. I tried adding <code>__init__.py</code> to my tests module, and adding <code>pythonpath == &quot;.&quot;</code> to <code>pyproject.toml</code>. Either way, the tests pick up the project's default venv, ignoring the one-time venv <code>uv run</code> creates to satisfy <code>--with</code> options.</p>
+</blockquote>
+<p>I noticed the same thing. This line (no longer? I've used it successfully <a href="https://github.com/atopile/fastapi-github-oidc/blob/main/.github/workflows/test.yml#L21">elsewhere</a>) works in my test actions workflow:</p>
+<p><code>uv run --with pytest-github-actions-annotate-failures pytest</code></p>
+</blockquote>
+<p><em>mawildoer</em> solution helps me resolved the error. And i found removing <code>.venv</code> then sync again also work for me.</p>
+<p>My environment is</p>
+<pre><code>uv 0.7.15 (4ed9c5791 2025-06-25)
+pytest&gt;=8.4.1
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLE1307: false positive - astral-sh/ruff #8406</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLE1307: false positive</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8406">#8406</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-11-01 15:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-11-01 15:46</div>
+            <div class="timeline-body"><p>PLE1307: false positive:</p>
+<pre><code class="language-python">$ cat x.py
+print('[%c]' % ('x',))
+print('[%c]' % 'x')
+$ ruff x.py
+x.py:1:7: PLE1307 Format type does not match argument type
+x.py:2:7: PLE1307 Format type does not match argument type
+Found 2 errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-01 15:59</div>
+            <div class="timeline-body"><p>Thanks for the report. I dug into this a bit and the issue is that <code>%c</code> is an integer format type. Characters can be coerced to integers so they work at runtime, but Ruff's type analysis e.g. <code>analyze::type_inference::PythonType</code> does not support characters. I'm not sure how best to represent objects that can be both characters and strings in our type system so there's not a quick fix for this although it does seem easy enough to detect strings with a single item and special case them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-11-01 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8407.html">astral-sh/ruff#8407</a> on 2023-11-01 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-11-02 04:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

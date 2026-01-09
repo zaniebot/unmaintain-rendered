@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>credential issue with `uv publish` since 0.8.14 - astral-sh/uv #16236</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>credential issue with `uv publish` since 0.8.14</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16236">#16236</a>
+        opened by <a href="https://github.com/gwennole-cournez">@gwennole-cournez</a>
+        on 2025-10-10 17:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gwennole-cournez">@gwennole-cournez</a> on 2025-10-10 17:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h3>Context:</h3>
+<p>In order to publish from a gitlab-ci to a private gitlab package registry, I am using username: gitlab-ci-token and password $CI_JOB_TOKEN as defined <a href="https://github.com/astral-sh/uv/issues/8352">here</a>.</p>
+<h3>Issue</h3>
+<p>Since uv 0.8.14, I have a <code>Missing credential error</code> when publishing. Nothing else changed.</p>
+<h3>Logs uv 0.8.13</h3>
+<pre><code>$ uv publish --index gitlab --username gitlab-[MASKED] --password ${CI_JOB_TOKEN} -v
+DEBUG uv 0.8.13
+DEBUG Publishing with index gitlab
+DEBUG Not a distribution filename: `.gitignore`
+Publishing 2 files {package_registry_url}
+DEBUG Using request timeout of 900s
+DEBUG Checking for {my_project}-4.1.0-py3-none-any.whl in the registry
+DEBUG No cache entry for: {package_registry_url}/simple/{project_name}/
+DEBUG No netrc file found
+DEBUG Indexes search failed because of status code failure: 401 Unauthorized
+WARN Package not found in the registry; skipping upload check for {my_project}-4.1.0-py3-none-any.whl
+Uploading {my_project}-4.1.0-py3-none-any.whl (31.7KiB)
+DEBUG Hashing dist/{my_project}-4.1.0.py3-none-any.whl
+DEBUG Using HTTP Basic authentication
+DEBUG Response code for https://{package_registry_url}: 201 Created
+INFO Upload succeeded
+DEBUG Checking for {my_project}-4.1.0.tar.gz in the registry
+DEBUG No cache entry for: {package_registry_url}/simple/{project_name}/
+Uploading {my_project}-4.1.0.tar.gz (93.0KiB)
+DEBUG Hashing dist/{my_project}-4.1.0.tar.gz
+DEBUG Using HTTP Basic authentication
+DEBUG Response code for https://{package_registry_url}/pypi: 201 Created
+INFO Upload succeeded
+</code></pre>
+<h3>Logs uv 0.8.14</h3>
+<pre><code>$ uv publish --index gitlab --username gitlab-[MASKED] --password ${CI_JOB_TOKEN} -v
+DEBUG uv 0.8.14
+DEBUG Publishing with index gitlab
+DEBUG Not a distribution filename: `.gitignore`
+Publishing 2 files {package_registry_url}
+DEBUG Using request timeout of 900s
+DEBUG Checking for {my_project}-4.1.0-py3-none-any.whl in the registry
+DEBUG No cache entry for: {package_registry_url}/simple/{project_name}/
+DEBUG No netrc file found
+error: Failed to query check URL
+  Caused by: Failed to fetch: `https://{package_registry_url}/pypi/simple/{project_name}/`
+  Caused by: Missing credentials for https://{package_registry_url}/pypi/simple/{project_name}
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 22.04</p>
+<h3>Version</h3>
+<p>0.8.14 and latests</p>
+<h3>Python version</h3>
+<p>3.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @gwennole-cournez on 2025-10-10 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "credential issue when `uv publish` since 0.8.14" to "credential issue with `uv publish` since 0.8.14" by @gwennole-cournez on 2025-10-10 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-11 01:21</div>
+            <div class="timeline-body"><p>It looks like your credentials don't work for <em>reading</em> from the index (is that expected?), and we made the <code>check-url</code> behavior more strict such that it errors if we fail that request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwennole-cournez">@gwennole-cournez</a> on 2025-10-14 20:42</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like your credentials don't work for <em>reading</em> from the index (is that expected?), and we made the <code>check-url</code> behavior more strict such that it errors if we fail that request.</p>
+</blockquote>
+<p>No it's not expected, the token should be able to read from the package-registry.
+Are those two lines liked or not ?</p>
+<pre><code>DEBUG No netrc file found
+DEBUG Indexes search failed because of status code failure: 401 Unauthorized
+</code></pre>
+<p>The request should take credentials from the token, not from the netrc file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-14 22:20</div>
+            <div class="timeline-body"><p>The password you're providing is only used for writing to the registry. I think you'd also need to provide the password for reading? e.g., via <code>UV_INDEX_GITLAB_PASSWORD</code> and <code>UV_INDEX_GITLAB_USERNAME</code>? in 0.8.13, the check failed, but we ignored that failure.</p>
+<p>I presume we should use the publish credentials for read if we can't find any other credentials, but that might be sort of hard to implement.</p>
+<p>cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwennole-cournez">@gwennole-cournez</a> on 2025-10-15 06:53</div>
+            <div class="timeline-body"><p>My project didn't have any dependency from my gitlab package-registry, so indeed <code>UV_INDEX_GITLAB_USERNAME</code>  <code>UV_INDEX_GITLAB_PASSWORD</code> were not defined.</p>
+<p>It works fine now !</p>
+<p>My only recommendation would be to make it clear in the <code>uv publish</code> documentation that both reading and writing tokens are required. <code>UV_INDEX_GITLAB_PASSWORD</code> only provides reading and <code>UV_PUBLISH_PASSWORD</code> only provides writing</p>
+<p>Thank you @charliermarsh  and @zanieb.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-11-18 14:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

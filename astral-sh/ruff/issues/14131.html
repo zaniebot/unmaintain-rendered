@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B018 does not detect unused tuple expressions - astral-sh/ruff #14131</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>B018 does not detect unused tuple expressions</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14131">#14131</a>
+        opened by <a href="https://github.com/LordAro">@LordAro</a>
+        on 2024-11-06 11:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LordAro">@LordAro</a> on 2024-11-06 11:38</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>B018 (useless-expression) does not detect function calls with bare tuples:</p>
+<pre><code class="language-python">def foo(): ...
+
+foo(),
+</code></pre>
+<p>COM818 (trailing-comma-on-bare-tuple) detects this as it should, but I feel like B018 should flag this as well?</p>
+<p>Ruff 0.7.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-06 12:14</div>
+            <div class="timeline-body"><p>Flagging this as <code>B018</code> is only correct if <code>foo</code> has no side effects. For example, you could have</p>
+<pre><code class="language-py">print(&quot;test&quot;),
+</code></pre>
+<p>Removing the <code>print</code> would change the program behavior, which is why it's not useless.</p>
+<p>Reasoning whether a function is only be possible in the most trivial cases because standard library functions in typeshed don't annotate if they have side effects.</p>
+<p>That's why Ruff's current behavior is correct because it would be unsafe to assume the function has no side effects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-11-06 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LordAro">@LordAro</a> on 2024-11-06 12:17</div>
+            <div class="timeline-body"><p>Indeed, and a <code>print(),</code> is originally how I found this behaviour.</p>
+<p>Maybe the answer is just to enable flake8-commas linting...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LordAro">@LordAro</a> on 2024-11-06 12:19</div>
+            <div class="timeline-body"><p>Actually, hmm. It's definitely still a useless expression (unassigned tuple), just a weirdly formatted one where the &quot;fix&quot; is to remove the <code>,</code> rather than the entire expression</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-06 12:30</div>
+            <div class="timeline-body"><p>Yeah. I think detecting unnecessary tuples could be in the spirit of the rule, but it could also be its own rule, similar to <code>useless-comparison.</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-06 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-11-06 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2024-11-06 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "B018 does not detect unused tuple expressions when they contain function calls" to "B018 does not detect unused tuple expressions" by @MichaReiser on 2024-11-06 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-06 12:48</div>
+            <div class="timeline-body"><p>To me this seems to be working as I'd expect (but I'm happy to be overruled by the community).</p>
+<p>On the one hand we have a lint rule detecting whether an expression is <em>useless</em>. I would think that if removing something useless affected the behavior of the program, then it must not have been useless to begin with. In other words, &quot;useless&quot; seems, to me, to be synonymous with &quot;can be removed with no effect&quot;. The expression in question is a tuple expression, and removing it would necessarily remove all of its members.</p>
+<p>There is no expression in the AST that's pointing to the &quot;nonexistent second member&quot;:</p>
+<pre><code class="language-bash">~ echo &quot;f(),&quot; | python -m ast
+Module(
+   body=[
+      Expr(
+         value=Tuple(
+            elts=[
+               Call(
+                  func=Name(id='f', ctx=Load()),
+                  args=[],
+                  keywords=[])],
+            ctx=Load()))],
+   type_ignores=[])
+</code></pre>
+<p>So there's not really an expression you could point to and call &quot;useless&quot;, right?</p>
+<p>On the other hand, as you point out, we have a lint rule detecting trailing commas on bare tuples. So I'd think it would be the job of that lint rule to fix this expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-06 13:14</div>
+            <div class="timeline-body"><p>I think the idea here is that <code>print(&quot;hello&quot;),</code> would be fixed to just <code>print(&quot;hello&quot;)</code>, because the tuple expression is useless, not its content. But that might be difficult to convey in a diagnostic.</p>
+<blockquote>
+<p>On the other hand, as you point out, we have a lint rule detecting trailing commas on bare tuples. So I'd think it would be the job of that lint rule to fix this expression.</p>
+</blockquote>
+<p>I should have taken a closer look at that rule. I agree, we already have a rule that covers what you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-06 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2024-11-06 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @MichaReiser on 2024-11-06 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-11-06 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LordAro">@LordAro</a> on 2024-11-06 13:51</div>
+            <div class="timeline-body"><p>Ah, ok, I've properly understood what I want: <a href="https://pylint.readthedocs.io/en/stable/user_guide/messages/warning/expression-not-assigned.html">pylint W0106</a> which <em>does</em> warn about such things</p>
+<pre><code class="language-python">def foo(): ...
+[1, 2, foo()]
+print(&quot;foo&quot;),
+</code></pre>
+<pre><code>test.py:1:0: W0106: Expression &quot;[1, 2, foo()]&quot; is assigned to nothing (expression-not-assigned)
+test.py:2:0: W0106: Expression &quot;(print('foo'), )&quot; is assigned to nothing (expression-not-assigned)
+</code></pre>
+<p>obviously the fix is not to remove it entirely (as functions may have side effects) - it's one of</p>
+<pre><code>_ = [1, 2, foo()]  # a
+foo()  # b
+</code></pre>
+<p>I don't think you'll need a type checker to do that (though pyright does detect the unused expression)</p>
+<pre><code>  /foo/test.py:1:1 - error: Expression value is unused (reportUnusedExpression)
+  /foo/test.py:2:1 - error: Expression value is unused (reportUnusedExpression)
+</code></pre>
+<p>in #970 this lint is listed as implemented via B018, so...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-06 14:04</div>
+            <div class="timeline-body"><p>Ok thanks this helps me understand better!</p>
+<p>My takeaway is that <code>W0106</code> is a slightly different rule that should just be implemented on its own, and would maybe suggest the fix &quot;a&quot;.</p>
+<p>I still feel like &quot;useless&quot; indicates &quot;can be removed&quot; not &quot;should be modified&quot;, so I would vote to keep B018 from emitting a diagnostic for this case, but then you have <code>COM818</code> and a newly implemented <code>W0106</code> to fall back on. Does that seem ok? I'm still open to being convinced out of my pedantic interpretation of the word &quot;useless&quot;!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LordAro">@LordAro</a> on 2024-11-06 14:07</div>
+            <div class="timeline-body"><p>Actual flake8-bugbear flags up this specific example:</p>
+<blockquote>
+<p>B018: Found useless expression. Either assign it to a variable or remove it. Note that dangling commas will cause things to be interpreted as useless tuples. For example, in the statement <code>print(&quot;..&quot;),</code> is the same as <code>(print(&quot;..&quot;),)</code> which is an unassigned tuple. Simply remove the comma to clear the error.</p>
+</blockquote>
+<pre><code>$ flake8 --select B test.py
+test.py:1:1: B018 Found useless List expression. Consider either assigning it to a variable or removing it.
+test.py:2:1: B018 Found useless Tuple expression. Consider either assigning it to a variable or removing it.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-06 14:49</div>
+            <div class="timeline-body"><p>Alright, I stand corrected! We should certainly have parity with bugbear for this. Thanks for your persistence in the face of my pedantry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @dylwil3 on 2024-11-06 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2024-11-06 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2024-11-07 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2024-11-28 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-11 07:22</div>
+            <div class="timeline-body"><p>@dylwil3 Do you intend to work on this? I can take it on if you don't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-11 10:44</div>
+            <div class="timeline-body"><p>Actually, despite the apparent resolution above, I have had some conversations and am again thinking that this should not be implemented. I'll have a few more conversations and get back to you if we end up still going forward with this- thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERA001 skipping some lines - astral-sh/ruff #1542</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ERA001 skipping some lines</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1542">#1542</a>
+        opened by <a href="https://github.com/sbdchd">@sbdchd</a>
+        on 2023-01-02 00:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sbdchd">@sbdchd</a> on 2023-01-02 00:39</div>
+            <div class="timeline-body"><p>I have the following code:</p>
+<pre><code class="language-python">
+def backfill(apps: Any, schema_editor: Any) -&gt; None:
+    &quot;&quot;&quot;
+    Create TimelineEvents for everything
+    &quot;&quot;&quot;
+    db_alias = schema_editor.connection.alias
+
+    Recipe = apps.get_model(&quot;recipeyak&quot;, &quot;Recipe&quot;)
+    TimelineEvent = apps.get_model(&quot;recipeyak&quot;, &quot;TimelineEvent&quot;)
+
+    # user_content_type, _ = TimelineEvent.objects.using(db_alias).get_or_create(
+    #     app_label=&quot;core&quot;, model=&quot;user&quot;
+    # )
+    timeline_events = []
+    for recipe in Recipe.objects.using(db_alias).all():
+        timeline_events.append(
+            TimelineEvent(
+                action=&quot;created&quot;, created_by=None, recipe=recipe, created=recipe.created
+            )
+        )
+        if recipe.archived_at:
+            timeline_events.append(
+                TimelineEvent(
+                    action=&quot;archived&quot;,
+                    created_by=None,
+                    recipe=recipe,
+                    created=recipe.archived_at,
+                )
+            )
+    TimelineEvent.objects.using(db_alias).bulk_create(timeline_events)
+</code></pre>
+<p>and the auto fix generates the following diff (which is missing a line):</p>
+<pre><code class="language-diff">diff --git a/backend/recipeyak/migrations/0089_backfill_timeline.py b/backend/recipeyak/migrations/0089_backfill_timeline.py
+index 7c7bf670..4d99ae38 100644
+--- a/backend/recipeyak/migrations/0089_backfill_timeline.py
++++ b/backend/recipeyak/migrations/0089_backfill_timeline.py
+@@ -15,8 +15,6 @@ def backfill(apps: Any, schema_editor: Any) -&gt; None:
+     TimelineEvent = apps.get_model(&quot;recipeyak&quot;, &quot;TimelineEvent&quot;)
+ 
+     # user_content_type, _ = TimelineEvent.objects.using(db_alias).get_or_create(
+-    #     app_label=&quot;core&quot;, model=&quot;user&quot;
+-    # )
+     timeline_events = []
+     for recipe in Recipe.objects.using(db_alias).all():
+         timeline_events.append(
+</code></pre>
+<p>Edit: it's not the auto fix, I think the issue is it's not detecting the first line s commented out code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ERA001 auto fix skipping some lines" to "ERA001 skipping some lines" by @sbdchd on 2023-01-02 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-02 02:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-02 02:25</div>
+            <div class="timeline-body"><p>Does look like a bug. I have to look at the rules for detection to understand what’s going on. It might also be worth checking if the originating eradicate library catches those lines, but I can do that when I debug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-02 18:55</div>
+            <div class="timeline-body"><p><code>eradicate</code> doesn't catch this either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-02 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1559.html">astral-sh/ruff#1559</a> on 2023-01-02 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-02 19:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

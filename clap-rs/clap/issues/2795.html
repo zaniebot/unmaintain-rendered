@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arguments that allow multiple_occurrences(true) do not align properly with other arguments - clap-rs/clap #2795</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Arguments that allow multiple_occurrences(true) do not align properly with other arguments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2795">#2795</a>
+        opened by <a href="https://github.com/0x7FFFFFFFFFFFFFFF">@0x7FFFFFFFFFFFFFFF</a>
+        on 2021-09-27 08:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/0x7FFFFFFFFFFFFFFF">@0x7FFFFFFFFFFFFFFF</a> on 2021-09-27 08:40</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.54.0 (a178d0322 2021-07-26)</p>
+<h3>Clap Version</h3>
+<p>clap = &quot;3.0.0-beta.4&quot;</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    let matches = App::new(&quot;test clap&quot;)
+        .arg(Arg::new(&quot;seconds&quot;)
+            .short('s')
+            .long(&quot;seconds&quot;)
+            .value_name(&quot;A NUMBER&quot;)
+            .about(&quot;Produce a n-second video for testing purposes.&quot;)
+            .takes_value(true)
+        )
+        .arg(Arg::new(&quot;minutes&quot;)
+            .short('m')
+            .long(&quot;minutes&quot;)
+            .value_name(&quot;A NUMBER&quot;)
+            .about(&quot;Produce a n-minute video for testing purposes.&quot;)
+            .takes_value(true)
+        )
+        .arg(Arg::new(&quot;input&quot;)
+            .short('i')
+            .long(&quot;input&quot;)
+            .value_name(&quot;INPUT&quot;)
+            .about(&quot;This parameter is similar to ffmpeg's -i option&quot;)
+            .takes_value(true)
+            .multiple_occurrences(true)
+        )
+        .get_matches();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- -h</code></p>
+<h3>Actual Behaviour</h3>
+<pre><code>PS C:\my_projects\test\test_clap&gt; cargo run -- -h
+   Compiling test_clap v0.1.0 (C:\my_projects\test\test_clap)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.31s
+     Running `target\debug\test_clap.exe -h`
+test clap
+
+USAGE:
+    test_clap.exe [OPTIONS]
+
+FLAGS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+
+OPTIONS:
+    -i, --input &lt;INPUT&gt;...         This parameter is similar to ffmpeg's -i option
+    -m, --minutes &lt;A NUMBER&gt;    Produce a n-minute video for testing purposes.
+    -s, --seconds &lt;A NUMBER&gt;    Produce a n-second video for testing purposes.
+PS C:\my_projects\test\test_clap&gt;
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>PS C:\my_projects\test\test_clap&gt; cargo run -- -h
+   Compiling test_clap v0.1.0 (C:\my_projects\test\test_clap)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.31s
+     Running `target\debug\test_clap.exe -h`
+test clap
+
+USAGE:
+    test_clap.exe [OPTIONS]
+
+FLAGS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+
+OPTIONS:
+    -i, --input &lt;INPUT&gt;...      This parameter is similar to ffmpeg's -i option
+    -m, --minutes &lt;A NUMBER&gt;    Produce a n-minute video for testing purposes.
+    -s, --seconds &lt;A NUMBER&gt;    Produce a n-second video for testing purposes.
+PS C:\my_projects\test\test_clap&gt;
+</code></pre>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code>PS C:\my_projects\test\test_clap&gt; cargo run -- -h
+   Compiling clap_derive v3.0.0-beta.4
+   Compiling clap v3.0.0-beta.4
+   Compiling test_clap v0.1.0 (C:\my_projects\test\test_clap)
+    Finished dev [unoptimized + debuginfo] target(s) in 6.04s
+     Running `target\debug\test_clap.exe -h`
+[            clap::build::app]  App::_do_parse
+[            clap::build::app]  App::_build
+[            clap::build::app]  App::_propagate:test clap
+[            clap::build::app]  App::_check_help_and_version
+[            clap::build::app]  App::_propagate_global_args:test clap
+[            clap::build::app]  App::_derive_display_order:test clap
+[clap::build::app::debug_asserts]       App::_debug_asserts
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:help
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:version
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:seconds
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:minutes
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:input
+[         clap::parse::parser]  Parser::get_matches_with
+[         clap::parse::parser]  Parser::_build
+[         clap::parse::parser]  Parser::_verify_positionals
+[         clap::parse::parser]  Parser::get_matches_with: Begin parsing '&quot;-h&quot;' ([45, 104])
+[         clap::parse::parser]  Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser]  Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser]  Parser::possible_subcommand: arg=&quot;-h&quot;
+[         clap::parse::parser]  Parser::get_matches_with: sc=None
+[         clap::parse::parser]  Parser::parse_short_arg: full_arg=&quot;-h&quot;
+[         clap::parse::parser]  Parser::parse_short_arg:iter:h
+[         clap::parse::parser]  Parser::parse_short_arg:iter:h: cur_idx:=1
+[         clap::parse::parser]  Parser::parse_short_arg:iter:h: Found valid opt or flag
+[         clap::parse::parser]  Parser::check_for_help_and_version_char
+[         clap::parse::parser]  Parser::check_for_help_and_version_char: Checking if -h is help or version...
+[         clap::parse::parser]  Help
+[         clap::parse::parser]  Parser::get_matches_with: After parse_short_arg HelpFlag
+[         clap::parse::parser]  Parser::help_err: use_long=false
+[         clap::parse::parser]  Parser::color_help
+[          clap::output::help]  Help::new
+[          clap::output::help]  Help::write_help
+[          clap::output::help]  should_show_arg: use_long=false, arg=help
+[          clap::output::help]  should_show_arg: use_long=false, arg=seconds
+[          clap::output::help]  Help::write_templated_help
+[          clap::output::help]  Help::write_before_help
+[          clap::output::help]  Help::write_bin_name
+[         clap::output::usage]  Usage::create_usage_no_title
+[         clap::output::usage]  Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage]  Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage]  Usage::get_required_usage_from: unrolled_reqs=[]
+[         clap::output::usage]  Usage::get_required_usage_from: ret_val=[]
+[         clap::output::usage]  Usage::needs_flags_tag
+[         clap::output::usage]  Usage::needs_flags_tag:iter: f=help
+[         clap::output::usage]  Usage::needs_flags_tag:iter: f=version
+[         clap::output::usage]  Usage::needs_flags_tag: [FLAGS] not required
+[         clap::output::usage]  Usage::create_help_usage: usage=test_clap.exe [OPTIONS]
+[          clap::output::help]  Help::write_all_args
+[          clap::output::help]  should_show_arg: use_long=false, arg=help
+[          clap::output::help]  should_show_arg: use_long=false, arg=version
+[          clap::output::help]  should_show_arg: use_long=false, arg=seconds
+[          clap::output::help]  should_show_arg: use_long=false, arg=minutes
+[          clap::output::help]  should_show_arg: use_long=false, arg=input
+[          clap::output::help]  Help::write_args
+[          clap::output::help]  should_show_arg: use_long=false, arg=help
+[          clap::output::help]  Help::write_args: Current Longest...2
+[          clap::output::help]  Help::write_args: New Longest...6
+[          clap::output::help]  should_show_arg: use_long=false, arg=version
+[          clap::output::help]  Help::write_args: Current Longest...6
+[          clap::output::help]  Help::write_args: New Longest...9
+[          clap::output::help]  should_show_arg: use_long=false, arg=help
+[          clap::output::help]  Help::spec_vals: a=--help
+[          clap::output::help]  should_show_arg: use_long=false, arg=version
+[          clap::output::help]  Help::spec_vals: a=--version
+[          clap::output::help]  Help::spec_vals: a=--help
+[          clap::output::help]  Help::short
+[          clap::output::help]  Help::long
+[          clap::output::help]  Help::val: arg=help
+[          clap::output::help]  Help::val: Has switch...
+[          clap::output::help]  Yes
+[          clap::output::help]  Help::val: nlh...false
+[          clap::output::help]  Help::help
+[          clap::output::help]  Help::help: Next Line...false
+[          clap::output::help]  Help::help: Too long...
+[          clap::output::help]  No
+[          clap::output::help]  Help::spec_vals: a=--version
+[          clap::output::help]  Help::short
+[          clap::output::help]  Help::long
+[          clap::output::help]  Help::val: arg=version
+[          clap::output::help]  Help::val: Has switch...
+[          clap::output::help]  Yes
+[          clap::output::help]  Help::val: nlh...false
+[          clap::output::help]  Help::help
+[          clap::output::help]  Help::help: Next Line...false
+[          clap::output::help]  Help::help: Too long...
+[          clap::output::help]  No
+[          clap::output::help]  Help::write_args
+[          clap::output::help]  should_show_arg: use_long=false, arg=seconds
+[          clap::output::help]  Help::write_args: Current Longest...2
+[          clap::output::help]  Help::write_args: New Longest...20
+[          clap::output::help]  should_show_arg: use_long=false, arg=minutes
+[          clap::output::help]  Help::write_args: Current Longest...20
+[          clap::output::help]  Help::write_args: New Longest...20
+[          clap::output::help]  should_show_arg: use_long=false, arg=input
+[          clap::output::help]  Help::write_args: Current Longest...20
+[          clap::output::help]  Help::write_args: New Longest...20
+[          clap::output::help]  should_show_arg: use_long=false, arg=seconds
+[          clap::output::help]  Help::spec_vals: a=--seconds &lt;A NUMBER&gt;
+[          clap::output::help]  should_show_arg: use_long=false, arg=minutes
+[          clap::output::help]  Help::spec_vals: a=--minutes &lt;A NUMBER&gt;
+[          clap::output::help]  should_show_arg: use_long=false, arg=input
+[          clap::output::help]  Help::spec_vals: a=--input &lt;INPUT&gt;
+[          clap::output::help]  Help::spec_vals: a=--input &lt;INPUT&gt;
+[          clap::output::help]  Help::short
+[          clap::output::help]  Help::long
+[          clap::output::help]  Help::val: arg=input
+[          clap::output::help]  Help::val: Has switch...
+[          clap::output::help]  Yes
+[          clap::output::help]  Help::val: nlh...false
+[          clap::output::help]  Help::help
+[          clap::output::help]  Help::help: Next Line...false
+[          clap::output::help]  Help::help: Too long...
+[          clap::output::help]  No
+[          clap::output::help]  Help::spec_vals: a=--minutes &lt;A NUMBER&gt;
+[          clap::output::help]  Help::short
+[          clap::output::help]  Help::long
+[          clap::output::help]  Help::val: arg=minutes
+[          clap::output::help]  Help::val: Has switch...
+[          clap::output::help]  Yes
+[          clap::output::help]  Help::val: nlh...false
+[          clap::output::help]  Help::help
+[          clap::output::help]  Help::help: Next Line...false
+[          clap::output::help]  Help::help: Too long...
+[          clap::output::help]  No
+[          clap::output::help]  Help::spec_vals: a=--seconds &lt;A NUMBER&gt;
+[          clap::output::help]  Help::short
+[          clap::output::help]  Help::long
+[          clap::output::help]  Help::val: arg=seconds
+[          clap::output::help]  Help::val: Has switch...
+[          clap::output::help]  Yes
+[          clap::output::help]  Help::val: nlh...false
+[          clap::output::help]  Help::help
+[          clap::output::help]  Help::help: Next Line...false
+[          clap::output::help]  Help::help: Too long...
+[          clap::output::help]  No
+[          clap::output::help]  Help::write_after_help
+[           clap::output::fmt]  is_a_tty: stderr=false
+test clap
+
+USAGE:
+    test_clap.exe [OPTIONS]
+
+FLAGS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+
+OPTIONS:
+    -i, --input &lt;INPUT&gt;...         This parameter is similar to ffmpeg's -i option
+    -m, --minutes &lt;A NUMBER&gt;    Produce a n-minute video for testing purposes.
+    -s, --seconds &lt;A NUMBER&gt;    Produce a n-second video for testing purposes.
+PS C:\my_projects\test\test_clap&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @0x7FFFFFFFFFFFFFFF on 2021-09-27 08:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @ldm0 on 2021-09-27 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-01 00:19</div>
+            <div class="timeline-body"><p>@ldm0 Why is this 3.0? It's just help message bug which is non-breaking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $5</span> added by @pksunkara on 2021-10-01 00:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @pksunkara on 2021-10-01 00:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @pksunkara on 2021-10-01 00:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-01 13:57</div>
+            <div class="timeline-body"><p>Did this work before https://github.com/clap-rs/clap/pull/2701?  I could see keeping this in 3.0 if its a regression</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-01 14:09</div>
+            <div class="timeline-body"><p>We can always do a follow-up as a patch/minor release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-01 14:18</div>
+            <div class="timeline-body"><p>Yes, we can.  If this is a regression, we just need to decide what level of rough edges is acceptable or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-04 17:21</div>
+            <div class="timeline-body"><p>Yes, this is a regression</p>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    let matches = App::new(&quot;test clap&quot;)
+        .arg(
+            Arg::with_name(&quot;seconds&quot;)
+                .short(&quot;s&quot;)
+                .long(&quot;seconds&quot;)
+                .value_name(&quot;A NUMBER&quot;)
+                .help(&quot;Produce a n-second video for testing purposes.&quot;)
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name(&quot;minutes&quot;)
+                .short(&quot;m&quot;)
+                .long(&quot;minutes&quot;)
+                .value_name(&quot;A NUMBER&quot;)
+                .help(&quot;Produce a n-minute video for testing purposes.&quot;)
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name(&quot;input&quot;)
+                .short(&quot;i&quot;)
+                .long(&quot;input&quot;)
+                .value_name(&quot;INPUT&quot;)
+                .help(&quot;This parameter is similar to ffmpeg's -i option&quot;)
+                .takes_value(true)
+                .multiple(true),
+        )
+        .get_matches();
+}
+</code></pre>
+<pre><code>test clap 
+
+USAGE:
+    bar [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -i, --input &lt;INPUT&gt;...      This parameter is similar to ffmpeg's -i option
+    -m, --minutes &lt;A NUMBER&gt;    Produce a n-minute video for testing purposes.
+    -s, --seconds &lt;A NUMBER&gt;    Produce a n-second video for testing purposes.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-04 17:43</div>
+            <div class="timeline-body"><p>Oh, I forgot #2701  wasn't in beta.4.  That fixed this problem.  We had two different locations where the logic existed and one said <code>...</code> shouldn't be used for <code>multiple_occurrences</code> but the other one said it should be used which led to the discrepancy.  #2701 consolidated these code paths so our logic consistently knows multiple_occurrences should not have <code>...</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-10-04 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $5</span> removed by @pksunkara on 2021-10-09 00:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV Index authenticate = &quot;always&quot; not respected - astral-sh/uv #14291</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV Index authenticate = &quot;always&quot; not respected</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14291">#14291</a>
+        opened by <a href="https://github.com/asnoeyink">@asnoeyink</a>
+        on 2025-06-26 18:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/asnoeyink">@asnoeyink</a> on 2025-06-26 18:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello,
+I have a project where I'm defining an explicit index for a particular package. The package repo is hosted on GitLab, and I'm using the keyring to store credentials.</p>
+<p>uv appears to ignore <code>authenticate = &quot;always&quot;</code> when doing a <code>uv sync</code> and skips the keyring lookup, even though <code>authenticate = &quot;always&quot;</code> is supposed to add <code>--mode creds</code>.</p>
+<p><img src="https://github.com/user-attachments/assets/6b739aad-8ed7-4d7c-9d00-38b54e01c858" alt="Image" /></p>
+<p>The kicker is that this appears to be somewhat non-deterministic. Sometimes uv will authenticate right after adding or removing another index from <code>pyproject.toml</code>, but this is not reliable.</p>
+<p>I am able to reliably authenticate if I provide the <code>UV_INDEX_&lt;index&gt;_USERNAME</code> environment variable, but looking through past issues it seems that <code>authenticate = &quot;always&quot;</code> is supposed to bypass the username lookup.</p>
+<p>Relevant <code>pyproject.toml</code>:</p>
+<pre><code>[tool.uv]
+keyring-provider = &quot;subprocess&quot;
+
+[tool.uv.sources]
+my_package = { index = &quot;my_index&quot; }
+
+[[tool.uv.index]]
+name = &quot;my_index&quot;
+url = &quot;https://gitlab.com/api/v4/groups/my_index/-/packages/pypi/simple/&quot;
+authenticate = &quot;always&quot;
+explicit = true
+
+# Sometimes adding or removing this index and then doing a uv sync makes it authenticate:
+#[[tool.uv.index]]
+#name = &quot;pypi-public&quot;
+#url = &quot;https://pypi.org/simple/&quot;
+#default = true
+</code></pre>
+<h3>Platform</h3>
+<p>Fedora 42</p>
+<h3>Version</h3>
+<p>0.7.15</p>
+<h3>Python version</h3>
+<p>Python 3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @asnoeyink on 2025-06-26 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-26 18:33</div>
+            <div class="timeline-body"><p>Can you share the full logs please?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @zanieb on 2025-06-26 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/asnoeyink">@asnoeyink</a> on 2025-06-26 18:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you share the full logs please?</p>
+</blockquote>
+<p>Here you go (with some redactions 😄 )</p>
+<p><a href="https://github.com/user-attachments/files/20931609/logs.txt">logs.txt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-26 18:50</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<p>For others, the full log for the skip is</p>
+<blockquote>
+<p>DEBUG Skipping keyring fetch for https://gitlab.com/api/v4/groups/1234567/-/packages/pypi/files/98974a83e3ba76abb2a2c4dd905343c55b97e1a6613bc0a0212c6ccbcb95ceae/my_project-0.3.22-py3-none-any.whl without username; use <code>authenticate = always</code> to force</p>
+</blockquote>
+<p>Can you share trace-level logs? <code>-vv</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/asnoeyink">@asnoeyink</a> on 2025-06-26 19:00</div>
+            <div class="timeline-body"><p><a href="https://github.com/user-attachments/files/20931767/logs.txt">logs_with_trace.txt</a></p>
+<p>I think this is the relevant part:</p>
+<pre><code>TRACE Request for https://gitlab.com/api/v4/groups/1234567/-/packages/pypi/files/98974a83e3ba76abb2a2c4dd905343c55b97e1a6613bc0a0212c6ccbcb95ceae/my_package-0.3.22-py3-none-any.whl failed with 401 Unauthorized, checking for credentials
+TRACE No credentials in cache for realm https://gitlab.com
+DEBUG No netrc file found
+DEBUG Skipping keyring fetch for https://gitlab.com/api/v4/groups/1234567/-/packages/pypi/files/98974a83e3ba76abb2a2c4dd905343c55b97e1a6613bc0a0212c6ccbcb95ceae/my_package-0.3.22-py3-none-any.whl without username; use `authenticate = always` to force
+TRACE Considering retry of response HTTP 401 Unauthorized for https://gitlab.com/api/v4/groups/1234567/-/packages/pypi/files/98974a83e3ba76abb2a2c4dd905343c55b97e1a6613bc0a0212c6ccbcb95ceae/my_package-0.3.22-py3-none-any.whl
+TRACE Cannot retry error: not an IO error
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-26 19:43</div>
+            <div class="timeline-body"><p>I wonder if this is because the index URL is <code>https://gitlab.com/api/v4/groups/my_index/-/packages/pypi/simple/</code> and <code>https://gitlab.com/api/v4/groups/1234567/-/packages/pypi/files/98974a8...</code> is not a child of that URL. Is the <code>my_index</code>/ <code>1234567</code> value the same?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-26 19:46</div>
+            <div class="timeline-body"><p>(We should be normalizing the <code>/simple/</code> away, so they'd only fail to match if we're loading the URL in a different way or a segment differs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-26 19:52</div>
+            <div class="timeline-body"><p>Does it work if you delete the <code>uv.lock</code> and do <code>uv lock</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/asnoeyink">@asnoeyink</a> on 2025-06-26 20:00</div>
+            <div class="timeline-body"><p><code>my_index</code> is the GitLab group name. It was in the URL when we were using Poetry, and so I assumed it'd be the same for <code>uv</code>. However, after going back to the <a href="https://docs.gitlab.com/user/packages/pypi_repository/#install-from-a-group">GitLab docs</a> it looks like they use the group id number instead (1234567). I swapped out the name for the number and it started working consistently.</p>
+<blockquote>
+<p>Does it work if you delete the uv.lock and do uv lock?</p>
+</blockquote>
+<p>It worked once, then I deleted the <code>.venv</code> directory and tried a <code>uv sync --no-cache</code> and it failed to authenticate again (using the group name).</p>
+<p>Using the group ID appears to solve the problem entirely. I'm not sure if there's still a uv issue or if this is just a GitLab quirk? At any rate, thank you for pointing me in the right direction!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-26 20:13</div>
+            <div class="timeline-body"><blockquote>
+<p>However, after going back to the <a href="https://docs.gitlab.com/user/packages/pypi_repository/#install-from-a-group">GitLab docs</a> it looks like they use the group id number instead (1234567). I swapped out the name for the number and it started working consistently.</p>
+</blockquote>
+<p>Nice! Yeah the problem is that we can't recognize the <code>files/...</code> URL as a child of the parent index URL and therefore don't propagate settings (such as the authentication policy) to it. I'm... not sure what we can do here. I think the long-term fix is to just replace use of keyring so we don't have limitations around the <code>--creds-mode</code>. We could consider being more lenient on index URL prefix matching, but that can cause other problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/asnoeyink">@asnoeyink</a> on 2025-06-26 20:22</div>
+            <div class="timeline-body"><p>Yeah, that makes sense. I think using the group ID is more correct anyway, so I'm satisfied with that as the solution until <code>keyring</code> gets replaced.</p>
+<p>Thanks for your help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @asnoeyink on 2025-06-26 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RazerM">@RazerM</a> on 2025-06-30 10:49</div>
+            <div class="timeline-body"><p>@asnoeyink FWIW I made https://pypi.org/project/keyring-gitlab-pypi/ to make uv, keyring, and GitLab work better together</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

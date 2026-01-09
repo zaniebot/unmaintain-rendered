@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[complete] clap panics if generation is attemptet without having `bin_name` set for app and subcommands (non-descriptive errors) - clap-rs/clap #3319</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[complete] clap panics if generation is attemptet without having `bin_name` set for app and subcommands (non-descriptive errors)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3319">#3319</a>
+        opened by <a href="https://github.com/hasezoey">@hasezoey</a>
+        on 2022-01-19 10:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hasezoey">@hasezoey</a> on 2022-01-19 10:41</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.58.0 (02072b482 2022-01-11)</p>
+<h3>Clap Version</h3>
+<p>3.0.9</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Parser, Subcommand};
+#[derive(Parser)]
+struct Main {
+  #[clap(subcommand)]
+  subcommands: SubCommands,
+}
+
+#[derive(Subcommand)]
+enum SubCommands {
+  Test(Sub),
+}
+
+#[derive(Parser)]
+struct Sub {
+  #[clap(short, long)]
+  something: bool,
+}
+
+fn main() {
+  clap_complete::Shell::Bash.generate(&amp;Main::into_app()), &amp;mut io::stdout());
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ul>
+<li><code>cargo run</code></li>
+</ul>
+<h3>Actual Behaviour</h3>
+<p>Panics (non descriptive) because <code>bin_name</code> is missing in <code>Main</code>, error something like:</p>
+<pre><code>thread 'main' panicked at 'called `Option::unwrap()` on a `None` value', /home/hasezoey/.local/cargo/registry/src/github.com-1ecc6299db9ec823/clap_complete-3.0.4/src/shells/bash.rs:17:43
+</code></pre>
+<p>^ the above could be improved with a <code>.expect</code> to show what is missing</p>
+<p>when adding <code>#[clap(bin_name(&quot;something&quot;))]</code> to <code>Main</code>, the next panic happens, because <code>bin_name</code> is also unset for the subcommand:</p>
+<pre><code>thread 'main' panicked at 'called `Option::unwrap()` on a `None` value', /home/hasezoey/.local/cargo/registry/src/github.com-1ecc6299db9ec823/clap_complete-3.0.4/src/generator/utils.rs:50:45
+</code></pre>
+<p>^ the above could be improved with a <code>.expect</code> to show what is missing</p>
+<h3>Expected Behaviour</h3>
+<p>to show more descriptive errors (or not panic at all)</p>
+<h3>Additional Context</h3>
+<p>why does the subcommand need to have <code>bin_name</code> set?</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @hasezoey on 2022-01-19 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-19 15:10</div>
+            <div class="timeline-body"><p>This is failing because invariants need to be setup before this call.  While its calling out this invariant, there are many others that we are not detecting that are missing.  This is why we document using <code>clap_complete::generate</code> and <code>clap_complete::generate_to</code>.  See https://docs.rs/clap_complete/latest/clap_complete/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-01-19 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hasezoey">@hasezoey</a> on 2022-01-20 01:12</div>
+            <div class="timeline-body"><blockquote>
+<p>This is failing because invariants need to be setup before this call. While its calling out this invariant, there are many others that we are not detecting that are missing. This is why we document using <code>clap_complete::generate</code> and <code>clap_complete::generate_to</code>. See https://docs.rs/clap_complete/latest/clap_complete/</p>
+</blockquote>
+<p>sorry, i dont completely understand what you are saying</p>
+<p>my issue was actually 2 fold:</p>
+<ul>
+<li>a issue about improving errors (saying what is actually missing, like in this case <code>bin_name</code>)</li>
+<li>and a issue about why <code>bin_name</code> is required for subcommands</li>
+</ul>
+<blockquote>
+<p>This is failing because invariants need to be setup before this call</p>
+</blockquote>
+<p>what <code>invariants</code> need to be setup before what call exactly?
+(are you basically saying to use <a href="https://docs.rs/clap_complete/latest/clap_complete/generator/fn.generate.html"><code>generate</code> (top-level)</a> instead of <a href="https://docs.rs/clap_complete/latest/clap_complete/enum.Shell.html#method.generate"><code>generate</code> (on <code>Shell</code>)</a>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-20 02:44</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>a issue about improving errors (saying what is actually missing, like in this case bin_name)</li>
+<li>and a issue about why bin_name is required for subcommands</li>
+</ul>
+</blockquote>
+<p>The reason the error message isn't better is that it isn't intended for this case.  Same for why the bin_name is required</p>
+<blockquote>
+<p>(are you basically saying to use generate (top-level) instead of generate (on Shell)?)</p>
+</blockquote>
+<p>Yes, like the example given in the documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hasezoey">@hasezoey</a> on 2022-01-20 03:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, like the example given in the documentation.</p>
+</blockquote>
+<p>then maybe it would be great to add a note to not use this function directly, i assumed i can use that function directly instead of the top-level to make it &quot;more clean looking&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3322.html">clap-rs/clap#3322</a> on 2022-01-20 07:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hasezoey">@hasezoey</a> on 2022-01-20 07:28</div>
+            <div class="timeline-body"><p>For now i made a PR to change the undescriptive <code>unwrap</code>'s to <code>expect</code>'s, see https://github.com/clap-rs/clap/pull/3322</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

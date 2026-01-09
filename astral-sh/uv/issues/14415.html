@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How does `uv tool install azure-cli` expected to work? - astral-sh/uv #14415</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How does `uv tool install azure-cli` expected to work?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14415">#14415</a>
+        opened by <a href="https://github.com/stdedos">@stdedos</a>
+        on 2025-07-02 10:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stdedos">@stdedos</a> on 2025-07-02 10:20</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>While using <code>pipx</code>, <code>pipx install azure-cli</code> &quot;just works&quot; and gives a workable <code>az</code> executable on <code>PATH</code>.</p>
+<p>However, with <code>uv</code>:</p>
+<pre><code class="language-console">$ uv tool install azure-cli
+Resolved 187 packages in 1.73s
+Installed 187 packages in 220ms
+ + adal==1.2.7
+...
+warning: The package `urllib3==2.5.0` does not have an extra named `secure`
+Installed 3 executables: az, az.bat, az.completion.sh
+$ az
+/home/u/.local/bin/az: line 13: python: command not found
+</code></pre>
+<p>I am on Ubuntu 24.04, and no <code>python-is-python3</code> (<em>or whatever its name is</em>) is installed.</p>
+<p>Am I doing something wrong?</p>
+<p>I have checked:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues?q=sort%3Aupdated-desc%20is%3Aissue%20uv%20tool%20install%20azure-cli</li>
+<li>https://github.com/astral-sh/uv/issues/9510</li>
+<li>https://github.com/astral-sh/uv/issues/4685</li>
+</ul>
+<p>and did a partial/cursory read of https://docs.astral.sh/uv/guides/tools/#installing-tools.</p>
+<p>Apologies in advance if I have missed something totally obvious.</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04.2 Linux 6.8.0-62-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.15</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @stdedos on 2025-07-02 10:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-02 14:24</div>
+            <div class="timeline-body"><p>Interesting, this sort of looks like a bug with the <code>az</code> CLI? I'll investigate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-02 15:07</div>
+            <div class="timeline-body"><p>This is indeed a bug with their implementation. Their entry point is hand-written and invokes <code>python</code> directly:</p>
+<pre><code>#!/usr/bin/env bash
+
+SOURCE=&quot;${BASH_SOURCE[0]}&quot;
+while [ -h &quot;$SOURCE&quot; ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR=&quot;$( cd -P &quot;$( dirname &quot;$SOURCE&quot; )&quot; &amp;&amp; pwd )&quot;
+  SOURCE=&quot;$(readlink &quot;$SOURCE&quot;)&quot;
+  [[ $SOURCE != /* ]] &amp;&amp; SOURCE=&quot;$DIR/$SOURCE&quot; # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR=&quot;$( cd -P &quot;$( dirname &quot;$SOURCE&quot; )&quot; &amp;&amp; pwd )&quot;
+
+export PYTHONPATH=&quot;${DIR}/src:${PYTHONPATH}&quot;
+
+python -m azure.cli &quot;$@&quot;
+</code></pre>
+<p>You can see this with <code>cat $(which az)</code>.</p>
+<p>In contrast, a typical entry point looks like this:</p>
+<pre><code>❯ cat $(which black)
+#!/Users/zb/.local/share/uv/tools/black/bin/python
+# -*- coding: utf-8 -*-
+import sys
+from black import patched_main
+if __name__ == &quot;__main__&quot;:
+    if sys.argv[0].endswith(&quot;-script.pyw&quot;):
+        sys.argv[0] = sys.argv[0][:-11]
+    elif sys.argv[0].endswith(&quot;.exe&quot;):
+        sys.argv[0] = sys.argv[0][:-4]
+    sys.exit(patched_main())
+</code></pre>
+<p>Note the shebang invokes the proper <code>python</code> executable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stdedos">@stdedos</a> on 2025-07-02 15:10</div>
+            <div class="timeline-body"><blockquote>
+<p>You can see this with <code>cat $(which az)</code>.</p>
+</blockquote>
+<p>I <em>did</em>, but I thought &quot;that's a uv-generated file&quot; (in midst of chaos, I decided to start using uv too 😅)</p>
+<p>... so ... I guess &quot;nothing uv can do here&quot;, and &quot;use the <code>uv tool ... --from=azure-cli ... az</code> format&quot;? 🥲</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-02 15:16</div>
+            <div class="timeline-body"><p>You could <code>uv python install --default</code> and it <em>might</em> work, because it'll find the <code>python</code> command on your <code>PATH</code>. It's pretty dubious though, we should report this upstream and suggest they move it.</p>
+<p>For reference, the <code>scripts</code> usage is at https://github.com/Azure/azure-cli/blob/595a64468f82663e837debc6931e9b5a4a98554e/src/azure-cli/setup.py#L176-L181</p>
+<p>It looks like this has been a longstanding problem on their end though</p>
+<ul>
+<li>https://github.com/Azure/azure-cli/pull/1042</li>
+<li>https://github.com/Azure/azure-cli/issues/1043</li>
+<li>https://github.com/Azure/azure-cli/issues/7367</li>
+<li>https://github.com/Azure/azure-cli/issues/3989</li>
+<li>https://github.com/Azure/azure-cli/pull/8208</li>
+<li>https://github.com/Azure/azure-cli/pull/10516</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-02 15:20</div>
+            <div class="timeline-body"><p>It actually looks like they've fixed this, but uv won't install the latest version because they have weird dependencies on pre-releases?</p>
+<pre><code>uv tool install --prerelease=allow azure-cli@latest
+</code></pre>
+<p>will unblock you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stdedos">@stdedos</a> on 2025-07-02 15:23</div>
+            <div class="timeline-body"><p>I saw it on <em>so many tickets</em>, but they were &lt;~1y old - and I didn't have faith 🥲</p>
+<p>Sorry; thank you 😀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @stdedos on 2025-07-02 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @zanieb on 2025-07-02 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14424.html">astral-sh/uv#14424</a> on 2025-07-02 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Azure/azure-cli/issues/32406.html">Azure/azure-cli#32406</a> on 2025-11-10 10:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

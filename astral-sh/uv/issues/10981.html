@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Include .json files in build - astral-sh/uv #10981</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Include .json files in build</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10981">#10981</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2025-01-27 10:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ghost">@ghost</a> on 2025-01-27 10:40</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have a package that relies on configuration JSON files. I tried building the code using <code>uv build,</code> but either the <code>.tar.gz</code> or the wheel contains these files.</p>
+<p>This is my <code>pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;bragir&quot;
+version = &quot;1.4.4&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;click&gt;=8.1.7&quot;,
+    &quot;openai&gt;=1.54.4&quot;,
+    &quot;pydantic&gt;=2.9.2&quot;,
+    &quot;pydub&gt;=0.25.1&quot;,
+    &quot;ruff&gt;=0.7.3&quot;,
+]
+
+[dependency-groups]
+dev = [
+    &quot;pytest&gt;=8.3.3&quot;,
+]
+
+[project.scripts]
+bragir = &quot;bragir.__main__:cli&quot;
+</code></pre>
+<p>I cannot find anything in the docs related to including certain files in the build</p>
+<h3>Platform</h3>
+<p>Darwin 24.2.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.4.30</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ghost on 2025-01-27 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 14:11</div>
+            <div class="timeline-body"><p>This is configuration that you need to setup with your build backend; it's not a uv behavior. What build backend are you using? Do you have a <code>[build-system]</code> table in your <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2025-01-27 14:31</div>
+            <div class="timeline-body"><p>I do not specify <code>[build-system]</code> inside my <code>pyproject.toml</code> file. Meaning, it would use <code>setuptools.build_meta:__legacy__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-27 14:34</div>
+            <div class="timeline-body"><p>In this case, you need to consult the setuptools docs: uv is only the build frontend in this case, it doesn't actually build anything, it just calls a temporary setuptools installation with the repo and asks it to build a source distribution and/or wheel from the directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2025-01-27 14:35</div>
+            <div class="timeline-body"><p>Alright, thanks for the help!</p>
+<p>I will consult the setuptools docs!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ghost on 2025-01-27 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2025-01-27 14:52</div>
+            <div class="timeline-body"><p>For anyone that see this an want a basic pyproject.toml:</p>
+<pre><code>....
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build]
+include = [
+    &quot;bragir/logging_configs/*.json&quot;,    # Include JSON files in the 'data' folder
+    &quot;*.py&quot;,                             # Include all Python files
+    &quot;py.typed&quot;,                         # Include the 'py.typed' file
+    &quot;README.md&quot;,                        # Include the README file
+    &quot;LICENSE&quot;,                          # Include the LICENSE file
+    &quot;pyproject.toml&quot;,                   # Include the pyproject.toml file
+]
+....
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

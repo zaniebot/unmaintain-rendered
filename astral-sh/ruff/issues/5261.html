@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Panic] `check` and `--fix` crash when called on a nested file next to an `__init__.py` - astral-sh/ruff #5261</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Panic] `check` and `--fix` crash when called on a nested file next to an `__init__.py`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5261">#5261</a>
+        opened by <a href="https://github.com/Amar1729">@Amar1729</a>
+        on 2023-06-21 17:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Amar1729">@Amar1729</a> on 2023-06-21 17:59</div>
+            <div class="timeline-body"><h3>Minimal file structure</h3>
+<pre><code>tmp/ruff-dbg $ tree -a
+
+.
+├── rest_api
+│   ├── __init__.py
+│   └── views
+│       ├── __init__.py
+│       └── tag.py
+└── ruff.toml
+
+3 directories, 4 files
+</code></pre>
+<p>Both of the <code>__init__.py</code>s are empty.</p>
+<pre><code class="language-toml"># ruff.toml
+
+exclude = [
+    &quot;.git&quot;,
+    &quot;.tox&quot;,
+    &quot;dist&quot;,
+]
+ignore = [&quot;E501&quot;]
+select = [
+    &quot;E&quot;,
+    &quot;F&quot;,
+    &quot;W&quot;,
+]
+</code></pre>
+<pre><code class="language-python"># tag.py
+class Binary:
+    authentication = None
+</code></pre>
+<p><code>tag.py</code> has some error/warning (i tested with <code>W291</code> trailing whitespace after <code>None</code> and <code>W292</code> no newline at end of file).</p>
+<h3>Errors</h3>
+<p>Calling <code>ruff check &lt;file&gt;</code> or <code>ruff --fix &lt;file&gt;</code> crashes ruff; calling <code>ruff check .</code> or <code>ruff --fix .</code> works as expected. Happens with <code>--isolated</code> as well.</p>
+<pre><code>$ RUST_BACKTRACE=full ruff check rest_api/views/tag.py
+
+
+error: `ruff` crashed. This indicates a bug in `ruff`. If you could open an issue at:
+
+https://github.com/astral-sh/ruff/issues/new?title=%5BPanic%5D
+
+quoting the executed command, along with the relevant file contents and `pyproject.toml` settings, we'd be very appreciative!
+
+thread 'main' panicked at 'called `Option::unwrap()` on a `None` value', crates/ruff_cli/src/commands/run.rs:112:65
+stack backtrace:
+   0:        0x1012eaa40 - &lt;std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display&gt;::fmt::hf56058dac04a8100
+   1:        0x100d478a0 - core::fmt::write::h887ee594c50d2f6b
+   2:        0x10130028c - std::io::Write::write_fmt::h8e068fbe7ba944b7
+   3:        0x1012ea848 - std::sys_common::backtrace::print::hefee1a8be582057a
+   4:        0x1012fbe84 - std::panicking::default_hook::{{closure}}::h7ba479390a999ae5
+   5:        0x1012fbb60 - std::panicking::default_hook::hc4ff20421fd3aa8b
+   6:        0x1011b4a9c - ruff_cli::run::{{closure}}::h263f8a459341438f
+   7:        0x1012fc774 - std::panicking::rust_panic_with_hook::h97e5266e8ce2f24f
+   8:        0x1012ead84 - std::panicking::begin_panic_handler::{{closure}}::h5c38d4c71a65b53e
+   9:        0x1012ead18 - std::sys_common::backtrace::__rust_end_short_backtrace::h9c79ccffe3575672
+  10:        0x1012fc2c0 - _rust_begin_unwind
+  11:        0x10137f754 - core::panicking::panic_fmt::h8d86c61b68da2636
+  12:        0x10137f7dc - core::panicking::panic::h6860fe84587621e0
+  13:        0x10119e1cc - rayon::iter::plumbing::bridge_producer_consumer::helper::h3304d33f31889e31
+  14:        0x101185a60 - ruff_cli::commands::run::run::h555b6a056bc5d1dd
+  15:        0x101163470 - ruff_cli::check::hef3a5701c3b81251
+  16:        0x10115b754 - ruff_cli::run::h1bb63e1856dc6568
+  17:        0x100cc70e4 - ruff::main::h0a10441f674e37c2
+  18:        0x100cc3978 - std::sys_common::backtrace::__rust_begin_short_backtrace::h96b0964bb5bd6d72
+  19:        0x100cc83e8 - _main
+
+$ RUST_BACKTRACE=full ruff --fix rest_api/views/tag.py
+
+
+error: `ruff` crashed. This indicates a bug in `ruff`. If you could open an issue at:
+
+https://github.com/astral-sh/ruff/issues/new?title=%5BPanic%5D
+
+quoting the executed command, along with the relevant file contents and `pyproject.toml` settings, we'd be very appreciative!
+
+thread 'main' panicked at 'called `Option::unwrap()` on a `None` value', crates/ruff_cli/src/commands/run.rs:112:65
+stack backtrace:
+   0:        0x1026faa40 - &lt;std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display&gt;::fmt::hf56058dac04a8100
+   1:        0x1021578a0 - core::fmt::write::h887ee594c50d2f6b
+   2:        0x10271028c - std::io::Write::write_fmt::h8e068fbe7ba944b7
+   3:        0x1026fa848 - std::sys_common::backtrace::print::hefee1a8be582057a
+   4:        0x10270be84 - std::panicking::default_hook::{{closure}}::h7ba479390a999ae5
+   5:        0x10270bb60 - std::panicking::default_hook::hc4ff20421fd3aa8b
+   6:        0x1025c4a9c - ruff_cli::run::{{closure}}::h263f8a459341438f
+   7:        0x10270c774 - std::panicking::rust_panic_with_hook::h97e5266e8ce2f24f
+   8:        0x1026fad84 - std::panicking::begin_panic_handler::{{closure}}::h5c38d4c71a65b53e
+   9:        0x1026fad18 - std::sys_common::backtrace::__rust_end_short_backtrace::h9c79ccffe3575672
+  10:        0x10270c2c0 - _rust_begin_unwind
+  11:        0x10278f754 - core::panicking::panic_fmt::h8d86c61b68da2636
+  12:        0x10278f7dc - core::panicking::panic::h6860fe84587621e0
+  13:        0x1025ae1cc - rayon::iter::plumbing::bridge_producer_consumer::helper::h3304d33f31889e31
+  14:        0x102595a60 - ruff_cli::commands::run::run::h555b6a056bc5d1dd
+  15:        0x102573470 - ruff_cli::check::hef3a5701c3b81251
+  16:        0x10256b754 - ruff_cli::run::h1bb63e1856dc6568
+  17:        0x1020d70e4 - ruff::main::h0a10441f674e37c2
+  18:        0x1020d3978 - std::sys_common::backtrace::__rust_begin_short_backtrace::h96b0964bb5bd6d72
+  19:        0x1020d83e8 - _main
+
+$  RUST_BACKTRACE=full ruff --isolated check rest_api/views/tag.py
+
+
+error: `ruff` crashed. This indicates a bug in `ruff`. If you could open an issue at:
+
+https://github.com/astral-sh/ruff/issues/new?title=%5BPanic%5D
+
+quoting the executed command, along with the relevant file contents and `pyproject.toml` settings, we'd be very appreciative!
+
+thread '&lt;unnamed&gt;error' panicked at 'called `Option::unwrap()` on a `None` value', : Failed to lint check: crates/ruff_cli/src/commands/run.rsNo such file or directory (os error 2):
+112:65
+stack backtrace:
+   0:        0x10521ea40 - &lt;std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display&gt;::fmt::hf56058dac04a8100
+   1:        0x104c7b8a0 - core::fmt::write::h887ee594c50d2f6b
+   2:        0x10523428c - std::io::Write::write_fmt::h8e068fbe7ba944b7
+   3:        0x10521e848 - std::sys_common::backtrace::print::hefee1a8be582057a
+   4:        0x10522fe84 - std::panicking::default_hook::{{closure}}::h7ba479390a999ae5
+   5:        0x10522fb60 - std::panicking::default_hook::hc4ff20421fd3aa8b
+   6:        0x1050e8a9c - ruff_cli::run::{{closure}}::h263f8a459341438f
+   7:        0x105230774 - std::panicking::rust_panic_with_hook::h97e5266e8ce2f24f
+   8:        0x10521ed84 - std::panicking::begin_panic_handler::{{closure}}::h5c38d4c71a65b53e
+   9:        0x10521ed18 - std::sys_common::backtrace::__rust_end_short_backtrace::h9c79ccffe3575672
+  10:        0x1052302c0 - _rust_begin_unwind
+  11:        0x1052b3754 - core::panicking::panic_fmt::h8d86c61b68da2636
+  12:        0x1052b37dc - core::panicking::panic::h6860fe84587621e0
+  13:        0x1050d21cc - rayon::iter::plumbing::bridge_producer_consumer::helper::h3304d33f31889e31
+  14:        0x1050dd0a8 - &lt;rayon_core::job::StackJob&lt;L,F,R&gt; as rayon_core::job::Job&gt;::execute::h133bec64b0c41269
+  15:        0x1052bb1e0 - rayon_core::registry::WorkerThread::wait_until_cold::hf26be6610b8e2b07
+  16:        0x104d98584 - std::sys_common::backtrace::__rust_begin_short_backtrace::ha3ea6fda9d4e1206
+  17:        0x104d9838c - core::ops::function::FnOnce::call_once{{vtable.shim}}::hfe1f6dc4c31547b1
+  18:        0x10521f52c - std::sys::unix::thread::Thread::new::thread_start::h26d49c46532d1c2b
+  19:        0x183b2bfa8 - __pthread_joiner_wake
+
+$ ruff check .
+
+rest_api/views/tag.py:2:26: W291 [*] Trailing whitespace
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+
+$ ruff --fix .
+
+Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+<h3>Versions</h3>
+<ul>
+<li><code>ruff --version</code>: <code>ruff 0.0.273</code><ul>
+<li>installed by homebrew</li>
+</ul>
+</li>
+<li>as a note this project is using <code>python3.8</code> (but there are no version-specific files, such as <code>.python-version</code>, in the minimal example)</li>
+<li>OS: macOS (m1) Ventura 13.4</li>
+<li>architecture <code>uname -m</code>: <code>arm64</code></li>
+</ul>
+<h3>Fixes (hacks?)</h3>
+<p>I can &quot;fix&quot; this locally by removing <strong>either or both</strong> of the <code>__init__.py</code> files (under <code>rest_api</code> or <code>views</code>). Leaving both of them results in the above failure. Panic still occurs if i cd into <code>rest_api/views</code> and call <code>ruff check tag.py</code>. Tested both with and without <code>.ruff_cache/</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-21 18:11</div>
+            <div class="timeline-body"><p>This is fixed on the latest version (<code>v0.0.274</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-21 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Amar1729">@Amar1729</a> on 2023-06-21 21:13</div>
+            <div class="timeline-body"><p>My bad, thanks! Now I'm just extremely confused why <code>brew outdated</code> didn't tell me that ruff was outdated (but <code>brew uninstall ruff &amp;&amp; brew install ruff</code> did) 🤷</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-21 21:14</div>
+            <div class="timeline-body"><p>No worries! Maybe it wasn't up yet, I'm not sure!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

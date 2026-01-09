@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync --script` should respect `UV_PROJECT_ENVIRONMENT` (or some other env var) - astral-sh/uv #17230</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync --script` should respect `UV_PROJECT_ENVIRONMENT` (or some other env var)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/17230">#17230</a>
+        opened by <a href="https://github.com/metaist">@metaist</a>
+        on 2025-12-23 17:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/metaist">@metaist</a> on 2025-12-23 17:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>While <code>uv sync</code> generally respects <code>UV_PROJECT_ENVIRONMENT</code>, <code>uv sync --script</code> ignores it.</p>
+<p>I recognize this is a weird request and I'm ok with the workaround I currently implement (i.e. fetch the venv path after the fact ala https://github.com/astral-sh/uv/issues/16171#issuecomment-3379501787).</p>
+<p>My use case is <a href="https://github.com/metaist/cosmofy"><code>cosmofy</code></a> which uses uv to build a temporary venv and bundles everything up into a Cosmopolitan Python file. When bundling the project, I can force the venv to be built in a temp directory of my choosing, but I cannot do the same for individual <code>--script</code> files.</p>
+<h3>Example</h3>
+<pre><code class="language-bash">UV_PROJECT_ENVIRONMENT=path_of_my_own uv sync --script myscript.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @metaist on 2025-12-23 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-26 15:35</div>
+            <div class="timeline-body"><p>I <em>think</em> the reason we don't do this by default is because <code>--script</code> generally implies a per-script ephemeral virtual environment, whereas <code>UV_PROJECT_ENVIRONMENT</code> (typically <code>.venv</code>) generally corresponds to an entire project (= <code>pyproject.toml</code>'s) resolution set.</p>
+<p>Out of curiosity, is there a reason you can't use project-level dependencies for this, since you're already using a project environment? To do that you can remove the PEP 723 dependencies/script metadata and use <code>uv sync</code> without <code>--script</code>, for example:</p>
+<pre><code class="language-bash"># 'myscript' would be a dependency group for 'myscript.py'
+# you could also omit this and use the default dependencies, depending on your use case
+uv sync --group myscript  
+</code></pre>
+<p>And then, to run <code>myscript</code>, you'd do <code>uv run</code> without <code>--script</code> too:</p>
+<pre><code class="language-bash"># could omit --group here if you omit it above
+uv run --group myscript myscript.py
+</code></pre>
+<p>...and that would honor both the default project venv and any environment you configure via <code>UV_PROJECT_ENVIRONMENT</code>, I believe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/metaist">@metaist</a> on 2025-12-26 19:05</div>
+            <div class="timeline-body"><blockquote>
+<p>I <em>think</em> the reason we don't do this by default is because <code>--script</code> generally implies a per-script ephemeral virtual environment, whereas <code>UV_PROJECT_ENVIRONMENT</code> (typically <code>.venv</code>) generally corresponds to an entire project (= <code>pyproject.toml</code>'s) resolution set.</p>
+</blockquote>
+<p>Yes, I understood that to be the case, which is why I don't consider this a bug, but more of a feature request (or pointing out a slight inconsistency).</p>
+<blockquote>
+<p>Out of curiosity, is there a reason you can't use project-level dependencies for this, since you're already using a project environment? To do that you can remove the PEP 723 dependencies/script metadata and use <code>uv sync</code> without <code>--script</code>, for example: [...]</p>
+</blockquote>
+<p>To clarify: <a href="https://github.com/metaist/cosmofy">the tool I built</a> bundles up people's projects (with their dependencies) into a <a href="https://ahgamut.github.io/2021/07/13/ape-python/">cosmopolitan python executable</a>, so I don't want to mess up their current venv. To do that, I perform a <a href="https://github.com/metaist/cosmofy/blob/815ee899788b3e062a014960c35901b9181d1ea1/src/cosmofy/bundle.py#L227">very specific <code>uv sync</code></a> which I then bundle up.</p>
+<p>I wanted to support a <code>--script</code> mode (like <code>uv</code> does), in which case I definitely don't want to use anything other than the inline PEP 723 dependencies. My current approach just reads the &quot;ephemeral&quot; (it's actually persistent per script) venv after-the-fact from the JSON output of <code>uv sync</code>, so everything works, but it feels like if there's a mechanism to force <code>uv</code> to use a certain directory for the venv, that there should be some comparable system for <code>--script</code> (if not literally <code>UV_PROJECT_ENVIRONMENT</code>), but my use case may be too weird for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-05 20:51</div>
+            <div class="timeline-body"><p>I think using <code>VIRTUAL_ENV=...</code> and <code>--active</code> should work with <code>--script</code> today.</p>
+<p>We could also expose a <code>UV_SCRIPT_ENVIRONMENT</code> variable? Though I'm a little hesitant to double-down on that pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17329.html">astral-sh/uv#17329</a> on 2026-01-05 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-05 21:05</div>
+            <div class="timeline-body"><p>If we decide we want to do it: https://github.com/astral-sh/uv/pull/17329</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/metaist">@metaist</a> on 2026-01-05 21:21</div>
+            <div class="timeline-body"><blockquote>
+<p>I think using <code>VIRTUAL_ENV=...</code> and <code>--active</code> should work with <code>--script</code> today.</p>
+</blockquote>
+<p>Thanks for following up on this. I tested my code with <code>VIRTUAL_ENV</code> + <code>--script</code> + <code>--active</code> and it works just fine. Not sure why I didn't think of this despite reading the docs carefully.</p>
+<blockquote>
+<p>We could also expose a <code>UV_SCRIPT_ENVIRONMENT</code> variable? Though I'm a little hesitant to double-down on that pattern.</p>
+</blockquote>
+<p>I agree that there's not really a reason for <code>UV_SCRIPT_ENVIRONMENT</code> right now. Currently, I can think of real reasons why you might want to control the <code>UV_PROJECT_ENVIRONMENT</code> and <code>VIRTUAL_ENV</code> directories separately. But scripts are otherwise self-contained, so only the <code>VIRTUAL_ENV</code> override really makes any sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @metaist on 2026-01-05 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../metaist/cosmofy/issues/113.html">metaist/cosmofy#113</a> on 2026-01-06 17:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

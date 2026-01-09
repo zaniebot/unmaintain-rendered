@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clarify documentation for `lint.extend-ignore` and `lint.extend-select` settings - astral-sh/ruff #18884</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clarify documentation for `lint.extend-ignore` and `lint.extend-select` settings</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18884">#18884</a>
+        opened by <a href="https://github.com/Tedpac">@Tedpac</a>
+        on 2025-06-23 06:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Tedpac">@Tedpac</a> on 2025-06-23 06:34</div>
+            <div class="timeline-body"><p>These settings and their usefulness can be (and have been, from what I've seen in multiple issues) easily misunderstood.</p>
+<p>For example, the following configurations are equivalent:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+# Configuration 1.
+select = [&quot;ALL&quot;] 
+extend-select = [&quot;D213&quot;]
+extend-ignore = [&quot;D212&quot;]
+
+# Configuration 2.
+select = [&quot;ALL&quot;, &quot;D213&quot;] 
+ignore = [&quot;D212&quot;]
+
+[tool.ruff.lint.pydocstyle]
+convention = &quot;google&quot;
+</code></pre>
+<p>On the other hand, it seems that <code>lint.extend-ignore</code> <a href="https://github.com/astral-sh/ruff/pull/12007#issuecomment-2186270791">was mistakenly deprecated</a>, and it is confusing to see that <code>lint.extend-ignore</code> is deprecated while <code>lint.extend-select</code> is not.</p>
+<p>The documentation should include clear use cases for when these settings are useful. From what I understand, these settings are primarily valuable when:</p>
+<ul>
+<li>Using the top-level <code>extend</code> setting to inherit from base configurations.</li>
+<li>Adding rules on top of the default rule set without completely overriding it.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-23 06:44</div>
+            <div class="timeline-body"><p>I agree that we could do better on the <code>select</code> documentation. Specifically, it doesn't mention that it overrides the existing defaults (or parent <code>select</code>) nor does it hint users towards using <code>extend-select</code>.</p>
+<blockquote>
+<p>On the other hand, it seems that lint.extend-ignore https://github.com/astral-sh/ruff/pull/12007#issuecomment-2186270791, and it is confusing to see that lint.extend-ignore is deprecated while lint.extend-select is not.</p>
+</blockquote>
+<p>This is covered by https://github.com/astral-sh/ruff/issues/12014</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2025-06-23 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-06-23 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19007.html">astral-sh/ruff#19007</a> on 2025-06-28 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pakal">@pakal</a> on 2025-07-09 15:15</div>
+            <div class="timeline-body"><p>I'm confused too by the behaviour of extend-select, with regards to the &quot;extend&quot; inheritance in particular (not just as a complement to default settings).</p>
+<p>If I have a root ruff.toml config stating :</p>
+<pre><code>[lint]
+extend-select = [&quot;F821&quot;]
+</code></pre>
+<p>and a nested config stating:</p>
+<pre><code>extend = &quot;../ruff.toml&quot;
+
+[lint]
+select = [&quot;T201&quot;]
+</code></pre>
+<p>then I would believe the final config to merge these settings and have BOTH rules F821 and T201 enabled ;
+but only T201 gets applied, the &quot;extend-select&quot; of upper level is not inherited.</p>
+<p>Is it supposed to behave like that ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-10 08:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it supposed to behave like that ?</p>
+</blockquote>
+<p>Yes, that's the intended behavior. <code>select</code> disregards any parent configuration. This can be useful when you want to override the default rules enabled by ruff (or want to diverge from the parent configuration in more significant ways).</p>
+<p>It's only <code>extend-select</code> that merges the selection with what the parent configuration selected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VelizarVESSELINOV">@VelizarVESSELINOV</a> on 2025-07-11 18:17</div>
+            <div class="timeline-body"><pre><code>[tool.ruff.lint]
+select = [&quot;ALL&quot;]
+extend-select = [&quot;UP&quot;]
+</code></pre>
+<p>ALL is not ALL, there is an extension of ALL?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18641.html">astral-sh/ruff#18641</a> on 2025-07-18 13:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

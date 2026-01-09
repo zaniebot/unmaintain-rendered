@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>command! macro doesn't get inherited properties from workspace - clap-rs/clap #5529</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>command! macro doesn't get inherited properties from workspace</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5529">#5529</a>
+        opened by <a href="https://github.com/tylerjw">@tylerjw</a>
+        on 2024-06-12 15:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tylerjw">@tylerjw</a> on 2024-06-12 15:19</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.78.0 (9b00956e5 2024-04-29)</p>
+<h3>Clap Version</h3>
+<p>4.5.7</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::command;
+
+fn main() {
+    let _matches = command!()
+        .get_matches();
+}
+</code></pre>
+<p>workspace Cargo.toml</p>
+<pre><code class="language-toml">[workspace]
+members = [
+    &quot;test&quot;,
+]
+
+[workspace.package]
+authors = [&quot;me&quot;]
+</code></pre>
+<p>test/Cargo.toml</p>
+<pre><code class="language-toml">[package]
+name = &quot;min_test&quot;
+authors.workspace = true
+
+[dependencies]
+clap = { version = &quot;4.5.7&quot;, features = [&quot;cargo&quot;] }
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-bash">cargo run --bin min_test -- --help
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>Usage: min_test
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>me
+
+Usage: min_test
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
+</code></pre>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code class="language-bash">[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;min_test&quot;
+[clap_builder::builder::command]Command::_propagate:min_test
+[clap_builder::builder::command]Command::_check_help_and_version:min_test expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --version
+[clap_builder::builder::command]Command::_propagate_global_args:min_test
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:version
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--help&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--help&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--help'
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;help&quot;): Presence validated
+[clap_builder::parser::parser]Parser::react action=Help, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Help: use_long=true
+[clap_builder::builder::command]Command::long_help_exists: false
+[clap_builder::builder::command]Command::write_help_err: min_test, use_long=false
+[clap_builder::builder::command]Command::long_help_exists: false
+[  clap_builder::output::help]write_help
+[clap_builder::output::help_template]HelpTemplate::new cmd=min_test, use_long=false
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=help
+[clap_builder::output::help_template]HelpTemplate::write_templated_help
+[clap_builder::output::help_template]HelpTemplate::write_before_help
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::write_help_usage
+[ clap_builder::output::usage]Usage::write_arg_usage; incl_reqs=true
+[ clap_builder::output::usage]Usage::needs_options_tag
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: f=help
+[ clap_builder::output::usage]Usage::needs_options_tag:iter Option is built-in
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: f=version
+[ clap_builder::output::usage]Usage::needs_options_tag:iter Option is built-in
+[ clap_builder::output::usage]Usage::needs_options_tag: [OPTIONS] not required
+[ clap_builder::output::usage]Usage::write_args: incls=[]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::write_subcommand_usage
+[ clap_builder::output::usage]Usage::create_usage_no_title: usage=min_test
+[clap_builder::output::help_template]HelpTemplate::write_all_args
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=help
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=version
+[clap_builder::output::help_template]HelpTemplate::write_args Options
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=help
+[clap_builder::output::help_template]HelpTemplate::write_args: arg=&quot;help&quot; longest=6
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=version
+[clap_builder::output::help_template]HelpTemplate::write_args: arg=&quot;version&quot; longest=9
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=help
+[clap_builder::output::help_template]HelpTemplate::spec_vals: a=--help
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=version
+[clap_builder::output::help_template]HelpTemplate::spec_vals: a=--version
+[clap_builder::output::help_template]HelpTemplate::spec_vals: a=--help
+[clap_builder::output::help_template]HelpTemplate::short
+[clap_builder::output::help_template]HelpTemplate::long
+[clap_builder::output::help_template]HelpTemplate::align_to_about: arg=help, next_line_help=false, longest=9
+[clap_builder::output::help_template]HelpTemplate::align_to_about: positional=false arg_len=6, spaces=5
+[clap_builder::output::help_template]HelpTemplate::help
+[clap_builder::output::help_template]HelpTemplate::help: help_width=17, spaces=10, avail=83
+[clap_builder::output::help_template]HelpTemplate::spec_vals: a=--version
+[clap_builder::output::help_template]HelpTemplate::short
+[clap_builder::output::help_template]HelpTemplate::long
+[clap_builder::output::help_template]HelpTemplate::align_to_about: arg=version, next_line_help=false, longest=9
+[clap_builder::output::help_template]HelpTemplate::align_to_about: positional=false arg_len=9, spaces=2
+[clap_builder::output::help_template]HelpTemplate::help
+[clap_builder::output::help_template]HelpTemplate::help: help_width=17, spaces=13, avail=83
+[clap_builder::output::help_template]HelpTemplate::write_after_help
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @tylerjw on 2024-06-12 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-06-12 15:29</div>
+            <div class="timeline-body"><p>I expect if you set <code>package.authors</code>, you would get the same result.</p>
+<p>In clap <a href="https://github.com/clap-rs/clap/blob/master/CHANGELOG.md#400---2022-09-28">v4</a>, we dropped author from the <a href="https://docs.rs/crate/clap_builder/latest/source/src/output/help_template.rs">default help template</a></p>
+<p>You can add it back with a <a href="https://docs.rs/clap/latest/clap/struct.Command.html#method.help_template">custom help template</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerjw">@tylerjw</a> on 2024-06-12 18:09</div>
+            <div class="timeline-body"><p>Oh, thank you for the reply. I was migrating an old project from 2 to 4 and found this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @tylerjw on 2024-06-12 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerjw">@tylerjw</a> on 2024-06-12 19:16</div>
+            <div class="timeline-body"><p>I don't know if this is a bug or not but when I try to use the same feature via derive it doesn't seem to work (output is missing author):</p>
+<pre><code class="language-rust">const HELP_TEMPLATE: &amp;str = &quot;\
+{before-help}{name} {version}
+{author-with-newline}{about-with-newline}
+{usage-heading} {usage}
+
+{all-args}{after-help}&quot;;
+
+#[derive(Parser, Debug)]
+#[command(version, about, help_template = HELP_TEMPLATE)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-06-12 19:21</div>
+            <div class="timeline-body"><p><code>author</code> attribute is missing.</p>
+<p>The following works for me</p>
+<pre><code class="language-rust">#!/usr/bin/env nargo
+---
+[package]
+description = &quot;some description&quot;
+authors = [&quot;me&quot;]
+
+[dependencies]
+clap = { version = &quot;4&quot;, features = [&quot;derive&quot;] }
+---
+
+use clap::Parser;
+
+const HELP_TEMPLATE: &amp;str = &quot;\
+{before-help}{name} {version}
+{author-with-newline}{about-with-newline}
+{usage-heading} {usage}
+
+{all-args}{after-help}&quot;;
+
+#[derive(Parser, Debug)]
+#[command(author, version, about, help_template = HELP_TEMPLATE)]
+struct Cli {
+}
+
+fn main() {
+    Cli::parse();
+}
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerjw">@tylerjw</a> on 2024-06-12 20:50</div>
+            <div class="timeline-body"><p>Thank you again; I didn't understand that I needed the author attribute.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-06-12 21:09</div>
+            <div class="timeline-body"><p>Yeah, structopt required <code>no_author</code> and such to opt-out.  We switched to explicit opt-in.</p>
+<p>btw for 3.0.0 and 4.0.0 we had migration guides (e.g. <a href="https://github.com/clap-rs/clap/blob/master/CHANGELOG.md#migrating-1">3.0.0</a> and specifically called out subtle breaking changes like this, e.g.</p>
+<blockquote>
+<p>From structopt 0.3.25</p>
+<ul>
+<li>By default, the App isn't initialized with crate information anymore. Now opt-in via #[clap(author)], #[clap(about)], #[clap(version)] (https://github.com/clap-rs/clap/issues/3034)</li>
+</ul>
+</blockquote>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

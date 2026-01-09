@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False negative - FURB188 removesuffix with string literal - astral-sh/ruff #16231</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False negative - FURB188 removesuffix with string literal</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16231">#16231</a>
+        opened by <a href="https://github.com/Skylion007">@Skylion007</a>
+        on 2025-02-18 15:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-02-18 15:11</div>
+            <div class="timeline-body"><h3>Description</h3>
+<pre><code class="language-python">a = &quot;sjdfaskldjfakljklfoo&quot;
+if a.endswith(&quot;foo&quot;):
+    a = a[: -len(&quot;foo&quot;)]
+print(a)
+</code></pre>
+<p>should be transformed to</p>
+<pre><code class="language-python">a = &quot;sjdfaskldjfakljklfoo&quot;
+a = a.removesuffx(&quot;foo&quot;)
+print(a)
+</code></pre>
+<p>when FURB188 is enabled.  Other similar trivial cases are caught as seen by the changes I made in PyTorch for https://github.com/pytorch/pytorch/pull/146997 so I assume it's an error in the rule logic where some corner case is not properly handled.</p>
+<p>Ruff version is <code>ruff 0.9.6</code>
+Command is <code>ruff check --select=FURB188 --target-version py39 test_FURB188.py</code></p>
+<p>Interestingly:</p>
+<pre><code class="language-python">a = &quot;sjdfaskldjfakljklfoo&quot;
+suffix = &quot;foo&quot;
+if a.endswith(suffix):
+    a = a[: -len(suffix)]
+print(a)
+</code></pre>
+<p>is properly flagged currently. Therefore, ruff only this issue with string literals, and only for suffixes accessed in this pattern interestingly enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-18 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2025-02-18 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16237.html">astral-sh/ruff#16237</a> on 2025-02-18 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-02-18 18:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

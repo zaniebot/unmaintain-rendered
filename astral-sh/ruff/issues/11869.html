@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT017 (pytest-assert-in-except) differs from flake8 - astral-sh/ruff #11869</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PT017 (pytest-assert-in-except) differs from flake8</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11869">#11869</a>
+        opened by <a href="https://github.com/pcavalar">@pcavalar</a>
+        on 2024-06-14 10:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pcavalar">@pcavalar</a> on 2024-06-14 10:28</div>
+            <div class="timeline-body"><pre><code class="language-python"># test-pt017.py
+def test_foo():
+    x = 0
+    try:
+        1 / x
+    except ZeroDivisionError as e:
+        assert x == 0, e
+        assert e.args
+</code></pre>
+<p>Ruff flags the <code>assert x == 0, e</code> line as <a href="https://docs.astral.sh/ruff/rules/pytest-assert-in-except/"><code>PT017(pytest-assert-in-except)</code></a> even though the exception is not part of the predicate.
+Flake8 only flags the <code>assert e.args</code> line.</p>
+<p>This looks like a false-positive in ruff rather than a bug in flake8?</p>
+<hr />
+<p>Ruff:</p>
+<pre><code class="language-console">$ ruff --version
+ruff 0.4.8
+$ ruff check --isolated --select=PT017 --output-format=full test-pt017.py
+test-pt017.py:6:9: PT017 Found assertion on exception `e` in `except` block, use `pytest.raises()` instead
+  |
+4 |         1 / x
+5 |     except ZeroDivisionError as e:
+6 |         assert x == 0, e
+  |         ^^^^^^^^^^^^^^^^ PT017
+7 |         assert e.args
+  |
+
+test-pt017.py:7:9: PT017 Found assertion on exception `e` in `except` block, use `pytest.raises()` instead
+  |
+5 |     except ZeroDivisionError as e:
+6 |         assert x == 0, e
+7 |         assert e.args
+  |         ^^^^^^^^^^^^^ PT017
+  |
+
+Found 2 errors.
+</code></pre>
+<p>Flake8:</p>
+<pre><code class="language-console">$ flake8 --version
+7.0.0 (flake8-pytest-style: 2.0.0, flake8-pytest: 1.4, mccabe: 0.7.0, pycodestyle: 2.11.1, pyflakes: 3.2.0) CPython 3.11.8 on Darwin
+$ flake8 --isolated --select=PT017 --show-source test-pt017.py
+test-pt017.py:7:9: PT017 found assertion on exception e in except block, use pytest.raises() instead
+        assert e.args
+        ^
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-06-14 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-06-14 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11873.html">astral-sh/ruff#11873</a> on 2024-06-14 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-14 13:31</div>
+            <div class="timeline-body"><p>Yeah I think this is a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-14 14:00</div>
+            <div class="timeline-body"><p>Hmm, I think the snippet here could be written more idiomatically and more correctly as:</p>
+<pre><code class="language-py">def test_foo():
+    x = 0
+    with pytest.raises(ZeroDivisionError) as exc_info:
+        1 / x
+    assert x == 0, exc_info.value
+    assert exc_info.args
+</code></pre>
+<p>I'm not sure I fully understand why we should only emit one error for this snippet rather than two. Both of the assertions here are assertions inside <code>except</code> blocks, which is what the rule is trying to catch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-14 14:09</div>
+            <div class="timeline-body"><p>To me the difference is that only the <code>test</code> expression is the assertion. That's what we assert by. The message is, just a message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-14 14:40</div>
+            <div class="timeline-body"><p>But I think you still have the footgun where if no exception is actually raised in the <code>try</code> block, the test will pass silently (and probably unintentionally). <code>pytest.raises()</code> is designed to solve that, as in the vast majority of cases that's not what you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-14 14:42</div>
+            <div class="timeline-body"><p>I'm confused by the rule documentation vs the message. In the documentation, we say we're catching all assertions in except blocks but in the message we say we're catching an assertion <em>on</em> the exception. The latter also matches the rule name. I think I need more context on why we only flag assertions that include the exception before I can say who I agree with :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-14 15:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm confused by the rule documentation vs the message. In the documentation, we say we're catching all assertions in except blocks but in the message we say we're catching an assertion on the exception. The latter also matches the rule name. I think I need more context on why we only flag assertions that include the exception before I can say who I agree with :)</p>
+</blockquote>
+<p>Yeah, I considered just updating the message but the problem is that the lint rule only catches <code>assert</code>s on the specific exception. If there's no no name referencing the exception by name (It's a bit wild because it doesn't correctly handle scopes. It just searches for any <code>Name</code> that has the same identifier 🙄 ), then the violation isn't triggered</p>
+<p>That's where I think the rule title and documentation says one thing, but the implementation actually does something entirely else. In the context of the implementation, I would not expect the rule to raise a violation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-14 15:30</div>
+            <div class="timeline-body"><p>The only <a href="https://github.com/m-burst/flake8-pytest-style/blob/v2.0.0/docs/rules/PT017.md#rationale">rationale given</a> for this rule in the docs for the original <code>flake8-pytest</code> plugin is:</p>
+<blockquote>
+<p>to avoid the situations when the test incorrectly passes because exception was not raised</p>
+</blockquote>
+<p>That feels like it applies equally well to the two assertions in the example snippet.</p>
+<blockquote>
+<p>That's where I think the rule title and documentation says one thing, but the implementation actually does something entirely else. In the context of the implementation, I would not expect the rule to raise a violation.</p>
+</blockquote>
+<p>I see, but I'm not really sure why a user would want the current behaviour. I don't feel like assertions on exceptions themselves in <code>except</code> blocks are any different to other kinds of exceptions in <code>except</code> blocks. They're both subject to the same footgun.</p>
+<p>In my opinion, the better fix would be to revise the rule so that it highlights more <code>try</code>/<code>except</code> statements where there are assertions in the <code>except</code> block but no assertions in the <code>try</code> block, as that's what I'd expect from this rule's documentation, and it would make much more sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-14 15:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I see, but I'm not really sure why you'd want the current behaviour. I don't feel like assertions on exceptions themselves in except blocks are any different to other kinds of exceptions in except blocks. They're both subject to the same footgun.</p>
+</blockquote>
+<p>I'm not speaking in favor of the current implementation. I just tried to explain that the documentation and implementation aren't matching. Or at least, I would understand a different behavior from the rule documentation than is implemented today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2024-06-14 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-15 01:08</div>
+            <div class="timeline-body"><p>cc @harupy who implemented the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2024-06-15 02:41</div>
+            <div class="timeline-body"><p>I agree. The documentation doesn't match the implementation. I would expect the following code to violate PT017, but it doesn't.</p>
+<pre><code class="language-python">def test_abc():
+    try:
+        foo()
+    except Exception:
+        bar()
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

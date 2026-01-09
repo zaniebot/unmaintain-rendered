@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disable options specifically for .pyi files - astral-sh/ruff #3649</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Disable options specifically for .pyi files</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3649">#3649</a>
+        opened by <a href="https://github.com/PedroPerpetua">@PedroPerpetua</a>
+        on 2023-03-21 15:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/PedroPerpetua">@PedroPerpetua</a> on 2023-03-21 15:24</div>
+            <div class="timeline-body"><p>Currently I'm having an issue in my project where I have a <code>./typing</code> folder that contains only stubs (<code>.pyi</code> files) alongside my project folders, in a structure similar to this:</p>
+<pre><code>src/
+├── ...
+├── ...
+└── ...
+typing/
+└── module/
+    └── file.pyi
+pyproject.toml
+</code></pre>
+<p>I'm facing an issue specifically with a clash of <em>ruff's isort</em> options and <em>black</em>; By setting <code>lines-after-imports = 2</code> under <em>ruff</em>, <em>black</em> and <em>ruff</em> will clash on the <code>.pyi</code> files, where <em>ruff</em> will apply 2 lines between the imports and stubs, and <em>black</em> will apply 1 line, conforming to the relevant PEP. This does not happen to the normal python files under <code>src</code>, where both tools leave 2 blank lines between the imports and code.</p>
+<p>Is there a way to configure <em>ruff</em> to also leave only one line in the <code>.pyi</code> files? If not, I think it would be useful to be able to configure for these files specifically, the same way you can set configurations specifically for <code>__init__.py</code> files.</p>
+<p>Relevant configurations I use:</p>
+<pre><code class="language-toml"># pyproject.toml
+[tool.ruff]
+src = [&quot;src&quot;, &quot;typing&quot;]
+fix = true
+select = [&quot;F&quot;, &quot;I&quot;, &quot;W&quot;, &quot;E&quot;]
+
+[tool.ruff.isort]
+lines-after-imports = 2
+no-lines-before = [
+    &quot;future&quot;,
+    &quot;standard-library&quot;,
+    &quot;third-party&quot;,
+    &quot;first-party&quot;,
+    &quot;local-folder&quot;,
+]
+</code></pre>
+<p>Currently, my fix is to have a second <code>pyproject.toml</code> file under <code>./typing</code> with the following contents:</p>
+<pre><code class="language-toml">[tool.ruff]
+extend = &quot;../pyproject.toml&quot;
+
+[tool.ruff.isort]
+# Stub files have a different default lines between imports
+lines-after-imports = -1
+no-lines-before = [
+    &quot;future&quot;,
+    &quot;standard-library&quot;,
+    &quot;third-party&quot;,
+    &quot;first-party&quot;,
+    &quot;local-folder&quot;,
+]
+</code></pre>
+<p>Extra information:</p>
+<ul>
+<li>Ruff version: <code>0.0.257</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-21 16:20</div>
+            <div class="timeline-body"><p>I don't think this is possible right now.</p>
+<p>If you use <code>lines-after-imports = -1</code> in both places, we do treat <code>.pyi</code> files differently for defaults, and I believe we're consistent with Black too (in <code>.py</code> files, we add two lines-after-import if the trailing content is a function or class, etc). But there's no way to provide different settings for different file types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PedroPerpetua">@PedroPerpetua</a> on 2023-03-21 18:53</div>
+            <div class="timeline-body"><p>Gotcha. I was having git differences when applying ruff to a project that was already running black; Turns out black was allowing (not enforcing) 2 blank lines after imports for ALL files, while ruff enforces only one blank line if there's not top level function / class definition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @PedroPerpetua on 2023-03-21 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-21 18:54</div>
+            <div class="timeline-body"><p>Yeah I've become intimately familiar with Black's rules :joy: At the top-level, they <em>allow</em> up to two blank lines, but they only <em>enforce</em> two blank lines in certain contexts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-03-21 18:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

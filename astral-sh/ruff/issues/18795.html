@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Only emit RUF039 for strings that actually require escaping - astral-sh/ruff #18795</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Only emit RUF039 for strings that actually require escaping</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18795">#18795</a>
+        opened by <a href="https://github.com/mxmlnkn">@mxmlnkn</a>
+        on 2025-06-19 15:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mxmlnkn">@mxmlnkn</a> on 2025-06-19 15:00</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have tried the preview rules (thanks for stabilizing RUF028, that seems useful to have, as my last opened <a href="https://github.com/astral-sh/ruff/issues/18674">issue</a> shows, and got a dozen of these:</p>
+<pre><code class="language-python3">benchmarkSqlite.py:543:30: RUF039 [*] First argument to `re.match()` is not raw string
+    |
+541 |     ax.set_title('INSERT')
+542 |
+543 |     labelMatches = [re.match('(.*), (unique|duplicate) rows$', label) for label, _ in labelAndPath]
+    |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RUF039
+</code></pre>
+<p>In general, this seems like a good rule, but only if double-escaping is actually necessary, which in the above case it is not. If not, it feels more like an option that should be part of the formatter, not of the linter, because it makes no difference. (The same applies btw to <a href="https://github.com/astral-sh/ruff/issues/2402">&quot;E201&quot;, &quot;E202&quot;, &quot;E203&quot;, &quot;E211&quot;, &quot;E221&quot;, &quot;E226&quot;, &quot;E251&quot;, &quot;E265&quot;, &quot;E266&quot;, &quot;E271&quot;</a>) Making it a raw string literal when it is not necessary is more verbose (only one character) and may raise questions such as &quot;Why is it a raw string? Should there be a backslash in this string? Is it a bug?&quot; when reading the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-20 12:59</div>
+            <div class="timeline-body"><p>Thanks for the feedback! Glad you're getting use out of RUF028 :)</p>
+<p>This was discussed a bit in the <a href="https://github.com/astral-sh/ruff/pull/14446#pullrequestreview-2444468166">PR</a> adding the rule. It sounds like the main justification for always emitting the diagnostic is that it's easy to forget to add the <code>r</code> later if you modify the regex, but I guess the rule could just fire at that point too.</p>
+<p>I don't have super strong feelings on this myself, but I'd love to hear others' thoughts on it, especially before we consider stabilizing the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-20 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-06-20 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-25 07:34</div>
+            <div class="timeline-body"><blockquote>
+<p>it feels more like an option that should be part of the formatter, not of the linter, because it makes no difference.</p>
+</blockquote>
+<p>I don't think this is a good fit for the formatter. The fact that you disagree with it shows that this is something that users want to opt in (which is something we intentionally don't support in formatting), and it's not always clear what the right fix is Should <code>&quot;\.&quot;</code> be fixed to <code>r&quot;\.&quot;</code> or <code>r&quot;\\.&quot;</code>?</p>
+<blockquote>
+<p>&quot;Why is it a raw string? Should there be a backslash in this string? Is it a bug?&quot; when reading the code.</p>
+</blockquote>
+<p>I don't think only raising this rule on regex patterns where double escaping may have been intended would help with this. It only means that this comes up less often, but that might add to the confusion rather than reducing it. I find it easier to know: Always use raw strings for regex patterns, and I don't even need to remember the why.</p>
+<p>I think there's an argument here that the rule falls into a different category depending on how strictly we lint:</p>
+<ul>
+<li>Flagging all non-raw regex patterns: While I think this is a good best practice because it reduces the cognitive overhead of knowing when to use a raw string and when it's fine not to, and it makes it easier to recognize which part of the pattern is being used. However, a rule enforcing raw strings for every regex pattern is mainly a stylistic rule.</li>
+<li>Flagging suspicious patterns: As the name suggests, patterns using escapes <code>\.</code> in a regular string is potentially a mistake because a user might have wanted to escape the <code>\</code> and not the <code>.</code> (wildcard character). This is a correctness rule.</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

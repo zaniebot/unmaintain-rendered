@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option to disable all dependency groups in `uv sync` - astral-sh/uv #10592</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Option to disable all dependency groups in `uv sync`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10592">#10592</a>
+        opened by <a href="https://github.com/mkniewallner">@mkniewallner</a>
+        on 2025-01-14 12:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2025-01-14 12:32</div>
+            <div class="timeline-body"><p>Let's consider this <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.0.1&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;httpx==0.28.1&quot;]
+
+[dependency-groups]
+dev = [&quot;ruff==0.9.1&quot;]
+typing = [&quot;mypy==1.14.1&quot;]
+
+[tool.uv]
+package = false
+default-groups = [&quot;dev&quot;, &quot;typing&quot;]
+</code></pre>
+<p>If not setting <code>default-groups</code>, only <code>dev</code> will be included by default, meaning that it's possible to not sync any dependency group by using:</p>
+<pre><code class="language-shell">uv sync --no-dev
+</code></pre>
+<p>But when setting <code>default-groups</code> as shown above, as both <code>dev</code> and <code>typing</code> groups are included by default, running <code>uv sync --no-dev</code> will install dependencies from <code>typing</code> group.</p>
+<p>It's probably the expected behaviour, and there's a way to also not install <code>typing</code> group by using:</p>
+<pre><code class="language-shell">uv sync --no-dev --no-group typing
+
+# or
+uv sync --no-group dev --no-group typing
+</code></pre>
+<p>But there's AFAIK no way to completely disable all dependency groups during sync. There is an <code>--all-groups</code> option to sync all groups, so maybe having something like <code>--no-groups</code> could make sense to have as well? Otherwise, it's easy to forget to add another <code>--no-group &lt;group&gt;</code> if adding a new group that would also be in <code>default-groups</code> later on.</p>
+<p>Although it would be a breaking change, maybe in the future <code>--no-dev</code> could also skip all dependency groups by default? I must say that as a user, I was expecting that this would skip all dependency groups, even if set in <code>default-groups</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2025-01-14 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fizcris">@fizcris</a> on 2025-01-14 15:10</div>
+            <div class="timeline-body"><p>+1 on this request.</p>
+<p>No other groups that the defaults should be resolved unless explicitly requested in <code>default-groups</code> otherwise if modules are accessible under temporary <code>index</code> there is no option to disable such modules and uv will always fail to resolve deps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2025-01-14 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10618.html">astral-sh/uv#10618</a> on 2025-01-14 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-21 23:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

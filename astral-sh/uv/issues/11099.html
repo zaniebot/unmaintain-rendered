@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error installing package using * asterisk in data path on windows - astral-sh/uv #11099</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error installing package using * asterisk in data path on windows</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11099">#11099</a>
+        opened by <a href="https://github.com/javier-garcia-tilburg">@javier-garcia-tilburg</a>
+        on 2025-01-30 15:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/javier-garcia-tilburg">@javier-garcia-tilburg</a> on 2025-01-30 15:50</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Installing a package with <code>*</code> in their data paths raises an error on windows.</p>
+<h2>Reproduction</h2>
+<p>Create a new project with</p>
+<pre><code class="language-toml"># pyproject.toml
+[project]
+name = &quot;dummy&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+classifiers = [&quot;Private :: Do Not Upload&quot;]
+dependencies = [
+    &quot;quadax==0.2.5&quot;,
+]
+</code></pre>
+<p>Run <code>uv sync</code> on a powershell terminal and it fails with</p>
+<pre><code>Resolved 51 packages in 1ms
+  × Failed to download `quadax==0.2.5`
+  ├─▶ Failed to extract archive
+  ╰─▶ failed to create directory `C:\Users\user\AppData\Local\uv\cache\.tmpK76oK4\quadax-0.2.5.data/data/*`: The filename, directory name, or volume label syntax is incorrect. (os error 123)
+  help: `quadax` (v0.2.5) was included because `dummy` (v0.1.0) depends on `quadax`
+</code></pre>
+<h2>Details</h2>
+<p>Inspecting the file <code>quadax-0.2.5-py3-none.whl</code> reveals that it contains data fails</p>
+<pre><code>quadax-0.2.5.data/data/_/requirements.txt
+quadax-0.2.5.data/data/_/requirements-dev.txt
+</code></pre>
+<p>while <code>quadax-0.2.5.dist-info/RECORD</code> refers to them in the following manner</p>
+<pre><code>quadax-0.2.5.data/data/*/requirements-dev.txt,sha256=f5QMec-IahYECs4OvocQWWqO2IXiwWKKNbsD7V6yoTk,556
+quadax-0.2.5.data/data/*/requirements.txt,sha256=l4H4ACI11gQsGwguQ2h45GLLxTODDgyu4YbHP9_KUcE,79
+</code></pre>
+<p>Taking a look at the repository <a href="https://github.com/f0uriest/quadax">f0uriest/quadax</a> we can see that it was generated using this <code>setup.cfg</code> configuration</p>
+<pre><code>[options.data_files]
+* =
+  *.txt
+</code></pre>
+<h3>Platform</h3>
+<p>Windows 10 x64</p>
+<h3>Version</h3>
+<p>uv 0.5.25 (9c07c3fc5 2025-01-28)</p>
+<h3>Python version</h3>
+<p>Python 3.12.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @javier-garcia-tilburg on 2025-01-30 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-30 15:52</div>
+            <div class="timeline-body"><p>Can this package be installed with <code>pip</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/javier-garcia-tilburg">@javier-garcia-tilburg</a> on 2025-01-30 15:56</div>
+            <div class="timeline-body"><p><code>pip install quadax</code> works fine</p>
+<p><code>pip install .</code> fails on the first try, but it works if run a second time.</p>
+<p>This configuration with asteriks seems to be used elsewhere too, e.g.
+https://setuptools.pypa.io/en/latest/userguide/datafiles.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-30 16:06</div>
+            <div class="timeline-body"><p>What does <code>pip install .</code> fail with?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-30 16:07</div>
+            <div class="timeline-body"><p>I guess we'll need to see if this is supported by the specification, but this seems pretty dubious.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/javier-garcia-tilburg">@javier-garcia-tilburg</a> on 2025-01-30 16:09</div>
+            <div class="timeline-body"><blockquote>
+<p>What does <code>pip install .</code> fail with?</p>
+</blockquote>
+<pre><code>ERROR: Could not install packages due to an OSError: [WinError 123] The filename, directory name, or volume label syntax is incorrect: 'C:\\Users\\user\\&lt;project_path&gt;\\.venv\\*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-30 16:27</div>
+            <div class="timeline-body"><p>I've confirmed that <code>pip install quadax</code> also fails on Windows. You may need to run with <code>--no-cache</code> and <code>--force-reinstall</code> to reproduce that, since once the package fails to install, pip &quot;thinks&quot; it's installed on subsequent runs. I don't <em>think</em> there's anything for us to fix here? You cannot have a path on Windows that contains a star.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-01-30 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-30 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-30 17:31</div>
+            <div class="timeline-body"><p>(You should report this as a bug to quadax or setuptools)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-30 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/javier-garcia-tilburg">@javier-garcia-tilburg</a> on 2025-01-30 17:39</div>
+            <div class="timeline-body"><p>@charliermarsh you are right, running with <code>--no-cache --force-reinstall</code> makes it fail.</p>
+<p>I will then report it to quadax, thank you guys!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-30 17:40</div>
+            <div class="timeline-body"><p>Thanks for following up, I appreciate it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../f0uriest/quadax/issues/41.html">f0uriest/quadax#41</a> on 2025-01-30 18:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

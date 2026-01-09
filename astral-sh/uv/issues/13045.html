@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failure to install package within docker container using uv while poetry/pip works fine - astral-sh/uv #13045</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failure to install package within docker container using uv while poetry/pip works fine</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13045">#13045</a>
+        opened by <a href="https://github.com/Skelmis">@Skelmis</a>
+        on 2025-04-22 08:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Skelmis">@Skelmis</a> on 2025-04-22 08:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When attempting to create a uv environment based on the uv docker images (Specifically <code>ghcr.io/astral-sh/uv:python3.10-alpine</code>), uv fails to install <code>semgrep</code> seemingly due to a lack of build wheels or source for the platform. This may have a wider impact, however this is the use case I've found it breaking in. I'd appreciate any help on the matter to get this resolved.</p>
+<p>I have attempted to review the documentation, as well as other issues such as the issues related to adding pytorch from other indexes but have walked away without a solution. Other tools such as poetry and pip appear to work fine within the same environment.</p>
+<p>Basic repro:</p>
+<pre><code class="language-dockerfile">FROM ghcr.io/astral-sh/uv:python3.10-alpine
+
+WORKDIR /code
+RUN uv init
+RUN uv add semgrep
+</code></pre>
+<p>Which produces the following:</p>
+<pre><code class="language-text">docker build ./
+
+[+] Building 3.9s (7/7) FINISHED                                                                                              docker:default
+ =&gt; [internal] load build definition from Dockerfile                                                                                    0.0s
+ =&gt; =&gt; transferring dockerfile: 126B                                                                                                    0.0s
+ =&gt; [internal] load metadata for ghcr.io/astral-sh/uv:python3.10-alpine                                                                 0.8s
+ =&gt; [internal] load .dockerignore                                                                                                       0.0s
+ =&gt; =&gt; transferring context: 2B                                                                                                         0.0s
+ =&gt; [1/4] FROM ghcr.io/astral-sh/uv:python3.10-alpine@sha256:b8a8a994c3b101b33d73f5a2aaf4ad555dc1d26cf538af5e7ded0e7eae832218           0.0s
+ =&gt; CACHED [2/4] WORKDIR /code                                                                                                          0.0s
+ =&gt; CACHED [3/4] RUN uv init                                                                                                            0.0s
+ =&gt; ERROR [4/4] RUN uv add semgrep                                                                                                      3.0s
+------                                                                                                                                       
+ &gt; [4/4] RUN uv add semgrep:                                                                                                                 
+0.654 Using CPython 3.10.17 interpreter at: /usr/local/bin/python3.10                                                                        
+0.654 Creating virtual environment at: .venv
+2.861 Resolved 48 packages in 2.19s
+2.877 error: Distribution `semgrep==1.119.0 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+2.877 
+2.877 hint: You're on Linux (`linux_x86_64`), but `semgrep` (v1.119.0) only has wheels for the following platforms: `manylinux2014_aarch64`, `manylinux2014_x86_64`, `musllinux_1_0_aarch64`, `musllinux_1_0_x86_64`, `macosx_10_14_x86_64`, `macosx_11_0_arm64`, `win_amd64`
+------
+Dockerfile:5
+--------------------
+   3 |     WORKDIR /code
+   4 |     RUN uv init
+   5 | &gt;&gt;&gt; RUN uv add semgrep
+--------------------
+ERROR: failed to solve: process &quot;/bin/sh -c uv add semgrep&quot; did not complete successfully: exit code: 
+</code></pre>
+<p>However, modifiying the Dockerfile to the following works as expected:</p>
+<pre><code class="language-dockerfile">FROM ghcr.io/astral-sh/uv:python3.10-alpine
+
+WORKDIR /code
+RUN uv init
+RUN uv pip install semgrep
+</code></pre>
+<p>With the verbose flag on the <code>uv add</code> command, the following output is received. As it is too long I have uploaded it to paste bin <a href="https://pastebin.com/TEb581U0">here</a>.</p>
+<p>Similar errors are also raised when using other images such as <code>:alpine</code> or newer Python versions within the Python alpine images.</p>
+<h3>Platform</h3>
+<p>Linux 6.8.0-57-generic x86_64 Linux</p>
+<h3>Version</h3>
+<p>uv 0.6.16</p>
+<h3>Python version</h3>
+<p>Python 3.10.17</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Skelmis on 2025-04-22 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-05-04 23:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-04 23:48</div>
+            <div class="timeline-body"><p>I think the problem here is that they're faking the musllinux tag, and using a <code>musllinux_1_0</code>, but we treat <code>musllinux_1_1</code> as the lowest version in the spec:</p>
+<p>https://github.com/semgrep/semgrep/blob/077885931f5dc296aa39cb609d9ef7ddd73d38de/cli/setup.py#L51-L55</p>
+<p>I guess we can just lower the minimum to <code>musllinux_1_0</code> to match <code>packaging</code>:</p>
+<p>https://github.com/pypa/packaging/blob/d0d5ad8687f666bea942d1ab4ee2feb5fa019d04/src/packaging/_musllinux.py#L71C1-L72C62</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13289.html">astral-sh/uv#13289</a> on 2025-05-04 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-05-05 06:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-05-05 06:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

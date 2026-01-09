@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>can't resolve types-pytz==2021.1 - astral-sh/uv #1536</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>can't resolve types-pytz==2021.1</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1536">#1536</a>
+        opened by <a href="https://github.com/raylu">@raylu</a>
+        on 2024-02-16 19:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/raylu">@raylu</a> on 2024-02-16 19:51</div>
+            <div class="timeline-body"><p>with this requirements.in</p>
+<pre><code>types-pytz
+</code></pre>
+<p>and this requirements.txt</p>
+<pre><code>types-pytz==2021.1
+</code></pre>
+<p><code>pip-compile requirements.in</code> updates it to</p>
+<pre><code>types-pytz==2021.1.0
+</code></pre>
+<p>but uv just hangs at</p>
+<pre><code>$ RUST_LOG=uv=trace uv pip compile requirements.in -o requirements.txt -v
+        0.072319s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of types-pytz (*)
+        0.072324s   0ms DEBUG uv_resolver::resolver Selecting: types-pytz==2021.1 (types_pytz-2021.1.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies package=types-pytz, version=2021.1
+     uv_resolver::resolver::distributions_wait package_id=types-pytz-2021.1
+              0.072394s   0ms TRACE uv_client::httpcache cached request https://files.pythonhosted.org/packages/ea/cd/143c3cd227ff542c8a0e13f3ad4cda43b8c605774347815208dc38271b5a/types_pytz-2021.1.0-py3-none-any.whl is storable because its response has a 'public' cache-control directive
+              0.072422s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/ea/cd/143c3cd227ff542c8a0e13f3ad4cda43b8c605774347815208dc38271b5a/types_pytz-2021.1.0-py3-none-any.whl
+    0.072447s TRACE uv_resolver::resolver Received built distribution metadata for: types-pytz==2021.1.0
+</code></pre>
+<p>FWIW, <code>uv pip install</code> works</p>
+<pre><code>$ uv pip install types-pytz==2021.1  
+Resolved 1 package in 1ms
+Installed 1 package in 1ms
+ + types-pytz==2021.1.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 20:22</div>
+            <div class="timeline-body"><p>Wow so weird! Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-16 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 20:22</div>
+            <div class="timeline-body"><p>I'll look at this now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 20:22</div>
+            <div class="timeline-body"><p>It seems to work without the <code>-o requirements.txt</code> which is odd.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-16 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 20:32</div>
+            <div class="timeline-body"><p>Ah, ok. It's because of the mismatch between <code>==2021.1</code> and <code>==2021.1.0</code>. We should treat them equivalently, but we don't in certain places. If you update your requirements.txt to <code>==2021.1.0</code>, it'll work as expected.</p>
+<p>(But we'll fix this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/raylu">@raylu</a> on 2024-02-16 20:36</div>
+            <div class="timeline-body"><blockquote>
+<p>If you update your requirements.txt to ==2021.1.0, it'll work as expected.</p>
+</blockquote>
+<p>oh I probably should've mentioned that this is what I ended up doing to work around it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1543.html">astral-sh/uv#1543</a> on 2024-02-16 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 21:09</div>
+            <div class="timeline-body"><p>Fixed in https://github.com/astral-sh/uv/pull/1543.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-16 21:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

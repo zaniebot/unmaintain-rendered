@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Some tools are installed without pkg_resources - astral-sh/uv #6384</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Some tools are installed without pkg_resources</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6384">#6384</a>
+        opened by <a href="https://github.com/acdha">@acdha</a>
+        on 2024-08-21 22:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/acdha">@acdha</a> on 2024-08-21 22:22</div>
+            <div class="timeline-body"><p>Using <code>uv 0.3.0 (Homebrew 2024-08-20)</code> on macOS, I noticed that some packages are failing on a missing <code>pkg_resources</code> dependency. At first I thought this was the Python 3.12 deprecation but it's an issue with older version, too. This is package-specific and most things are not affected but I haven't looked into the common factor.</p>
+<pre><code class="language-fish">cadams@HOST ~&gt; uv tool install -p 3.10 shodan
+Resolved 13 packages in 5ms
+Installed 13 packages in 10ms
+ + certifi==2024.7.4
+ + charset-normalizer==3.3.2
+ + click==8.1.7
+ + click-plugins==1.1.1
+ + colorama==0.4.6
+ + filelock==3.15.4
+ + idna==3.7
+ + requests==2.32.3
+ + requests-file==2.1.0
+ + shodan==1.31.0
+ + tldextract==5.1.2
+ + urllib3==2.2.2
+ + xlsxwriter==3.2.0
+Installed 1 executable: shodan
+cadams@HOST ~&gt; shodan scan list
+Traceback (most recent call last):
+  File &quot;/Users/cadams/.local/bin/shodan&quot;, line 5, in &lt;module&gt;
+    from shodan.__main__ import main
+  File &quot;/Users/cadams/.local/share/uv/tools/shodan/lib/python3.10/site-packages/shodan/__main__.py&quot;, line 33, in &lt;module&gt;
+    import pkg_resources
+ModuleNotFoundError: No module named 'pkg_resources'
+</code></pre>
+<p>This might also suggest that the equivalent of a <code>pipx inject</code> command would be useful for adding optional dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 22:26</div>
+            <div class="timeline-body"><p>I have good news... I believe this is already supported via <code>--with</code>:</p>
+<pre><code>❯ uv tool install -p 3.10 shodan --with setuptools
+Resolved 14 packages in 5ms
+Installed 1 package in 9ms
+ + setuptools==73.0.1
+Installed 1 executable: shodan
+
+❯ shodan scan list
+Error: Please run &quot;shodan init &lt;api key&gt;&quot; before using this command
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 22:26</div>
+            <div class="timeline-body"><p>(Took me a second to realize that <code>pkg_resources</code> is distributed as part of <code>setuptools</code>, not a standalone package.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acdha">@acdha</a> on 2024-08-21 22:31</div>
+            <div class="timeline-body"><p>Ah, I missed that in the docs. I found it interesting that it was just like the 3.12 breaking change on older versions but that’s something we all need to update anyway as part of 3.12 support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-08-21 22:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-22 01:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-22 01:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AzizNadirov">@AzizNadirov</a> on 2025-01-23 04:15</div>
+            <div class="timeline-body"><p>I have some issue with uv <code>0.5.2</code>. My pyproject:</p>
+<pre><code class="language-toml">[project]
+name = &quot;tmp&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;azure-common&gt;=1.1.28&quot;,
+    &quot;azure-core&gt;=1.32.0&quot;,
+    &quot;azure-identity&gt;=1.19.0&quot;,
+    &quot;azure-mgmt-authorization&gt;=4.0.0&quot;,
+    &quot;azure-mgmt-core&gt;=1.5.0&quot;,
+    &quot;azure-mgmt-resource&gt;=23.2.0&quot;,
+    &quot;azure-mgmt-storage&gt;=22.0.0&quot;,
+    &quot;azureml-dataprep&gt;=5.1.6&quot;,
+    &quot;azureml-fsspec&gt;=1.3.1&quot;,
+    &quot;azureml-pipeline&gt;=1.59.0&quot;,
+    &quot;azureml-pipeline-core&gt;=1.59.0&quot;,
+    &quot;azureml-pipeline-steps&gt;=1.59.0&quot;,
+    &quot;fastparquet&gt;=2024.11.0&quot;,
+    &quot;openpyxl&gt;=3.1.5&quot;,
+    &quot;pandas&gt;=2.1.0&quot;,
+    &quot;pyarrow&gt;=19.0.0&quot;,
+    &quot;python-dotenv&gt;=1.0.1&quot;,
+]
+</code></pre>
+<p>And it gives</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;/home/tengo/Documents/tmp/build.py&quot;, line 4, in &lt;module&gt;
+    from azureml.pipeline.steps import PythonScriptStep
+  File &quot;/home/tengo/Documents/tmp/.venv/lib/python3.11/site-packages/azureml/pipeline/steps/__init__.py&quot;, line 25, in &lt;module&gt;
+    from .adla_step import AdlaStep
+  File &quot;/home/tengo/Documents/tmp/.venv/lib/python3.11/site-packages/azureml/pipeline/steps/adla_step.py&quot;, line 5, in &lt;module&gt;
+    from azureml.pipeline.core._adla_step_base import _AdlaStepBase
+  File &quot;/home/tengo/Documents/tmp/.venv/lib/python3.11/site-packages/azureml/pipeline/core/__init__.py&quot;, line 24, in &lt;module&gt;
+    from .builder import PipelineStep, PipelineData, StepSequence
+  File &quot;/home/tengo/Documents/tmp/.venv/lib/python3.11/site-packages/azureml/pipeline/core/builder.py&quot;, line 12, in &lt;module&gt;
+    from azureml.data._dataset import _Dataset
+  File &quot;/home/tengo/Documents/tmp/.venv/lib/python3.11/site-packages/azureml/data/__init__.py&quot;, line 31, in &lt;module&gt;
+    from .tabular_dataset import TabularDataset
+  File &quot;/home/tengo/Documents/tmp/.venv/lib/python3.11/site-packages/azureml/data/tabular_dataset.py&quot;, line 20, in &lt;module&gt;
+    from azureml.data.dataset_error_handling import _validate_has_data, _validate_has_columns, _try_execute
+  File &quot;/home/tengo/Documents/tmp/.venv/lib/python3.11/site-packages/azureml/data/dataset_error_handling.py&quot;, line 9, in &lt;module&gt;
+    from azureml.exceptions import UserErrorException
+  File &quot;/home/tengo/Documents/tmp/.venv/lib/python3.11/site-packages/azureml/exceptions/__init__.py&quot;, line 24, in &lt;module&gt;
+    from azureml._restclient.exceptions import ServiceException
+  File &quot;/home/tengo/Documents/tmp/.venv/lib/python3.11/site-packages/azureml/_restclient/__init__.py&quot;, line 11, in &lt;module&gt;
+    from .models_client import ModelsClient
+  File &quot;/home/tengo/Documents/tmp/.venv/lib/python3.11/site-packages/azureml/_restclient/models_client.py&quot;, line 11, in &lt;module&gt;
+    from azureml._model_management._util import populate_model_not_found_details
+  File &quot;/home/tengo/Documents/tmp/.venv/lib/python3.11/site-packages/azureml/_model_management/_util.py&quot;, line 41, in &lt;module&gt;
+    from pkg_resources import resource_string
+ModuleNotFoundError: No module named 'pkg_resources'
+</code></pre>
+<p>Python version: <code>Python 3.11.11</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-23 04:52</div>
+            <div class="timeline-body"><p>@AzizNadirov just add <code>setuptools</code> to your dependencies — some packages just assume that it is available.</p>
+<p>Please see #9452 regarding reporting issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../modelscope/modelscope/issues/1246.html">modelscope/modelscope#1246</a> on 2025-03-25 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../airbytehq/airbyte/pulls/59190.html">airbytehq/airbyte#59190</a> on 2025-05-01 20:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

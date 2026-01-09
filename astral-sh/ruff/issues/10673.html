@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoking isort can break circular imports - astral-sh/ruff #10673</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Invoking isort can break circular imports</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10673">#10673</a>
+        opened by <a href="https://github.com/jaraco">@jaraco</a>
+        on 2024-03-30 18:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jaraco">@jaraco</a> on 2024-03-30 18:30</div>
+            <div class="timeline-body"><p>In the <a href="/jaraco/cssutils">cssutils project</a>, I learned that running isort fixers can break the code:</p>
+<pre><code> cssutils ead999fc @ ruff --version
+ruff 0.3.4
+ cssutils ead999fc @ ruff check --fix --select I
+Found 85 errors (85 fixed, 0 remaining).
+ cssutils ead999fc @ tox -q
+ImportError while loading conftest '/Users/jaraco/code/jaraco/cssutils/conftest.py'.
+conftest.py:5: in &lt;module&gt;
+    import cssutils
+cssutils/__init__.py:79: in &lt;module&gt;
+    from . import css, errorhandler, stylesheets
+cssutils/css/__init__.py:61: in &lt;module&gt;
+    from .csscharsetrule import CSSCharsetRule
+cssutils/css/csscharsetrule.py:10: in &lt;module&gt;
+    from . import cssrule
+cssutils/css/cssrule.py:10: in &lt;module&gt;
+    class CSSRule(cssutils.util.Base2):
+E   AttributeError: partially initialized module 'cssutils' has no attribute 'util' (most likely due to a circular import)
+py: exit 4 (0.17 seconds) /Users/jaraco/code/jaraco/cssutils&gt; pytest pid=8630
+  py: FAIL code 4 (1.67 seconds)
+  evaluation failed :( (1.71 seconds)
+</code></pre>
+<pre><code class="language-diff"> cssutils ead999fc @ git diff cssutils/__init__.py
+diff --git a/cssutils/__init__.py b/cssutils/__init__.py
+index 37c54894..38d22353 100644
+--- a/cssutils/__init__.py
++++ b/cssutils/__init__.py
+@@ -69,20 +69,17 @@ Example::
+ 
+ &quot;&quot;&quot;
+ 
++import functools
++import itertools
+ import os.path
+-import urllib.request
+ import urllib.parse
++import urllib.request
+ import xml.dom
+-import itertools
+-import functools
+ 
+-from . import errorhandler
+-from . import css
+-from . import stylesheets
++from . import css, errorhandler, stylesheets
+ from .parse import CSSParser
+-from .serialize import CSSSerializer
+ from .profiles import Profiles
+-
++from .serialize import CSSSerializer
+ 
+ __all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
+</code></pre>
+<p>In cssutils, the imports are sensitive to order to avoid circular imports, but isort prefers alphabetical irrespective of the dependency graph.</p>
+<p>I presumed that because I didn't pass <code>--unsafe-fixes</code>, the fixes would be guaranteed safe, but it seems they're not.</p>
+<p>I suspect what needs to be done here is I need to invest some time in understanding how the isort actions work and how to apply them to the cssutils codebase to allow for sorting without breaking the package.</p>
+<p>I suppose if ruff was really ambitious, it could analyze the imports and detect circular imports and try to solve the import order for a viable order (keeping stability otherwise).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @AlexWaygood on 2024-03-30 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-03-30 18:38</div>
+            <div class="timeline-body"><p>Oh! The error message from Python was misleading. The issue isn't a circular import, but the fact that <code>cssutils.util</code> was never imported (it must have been implicitly imported elsewhere prior to the isort operation). Making sure that import was made (jaraco/cssutils@4fd6bbe3) prior to running isort works around the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-03-30 18:41</div>
+            <div class="timeline-body"><p>So maybe this issue should be closed as wontfix, at least until such a time that someone else encounters the issue in another real-world case. I wonder if this finding is indicative of a missing linter - should ruff be checking for a missing import of a submodule? I'll file a separate ticket for that (after searching).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-30 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10674.html">astral-sh/ruff#10674</a> on 2024-03-30 18:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

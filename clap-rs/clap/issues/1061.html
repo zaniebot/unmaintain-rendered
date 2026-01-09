@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potential regression on global args - clap-rs/clap #1061</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Potential regression on global args</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1061">#1061</a>
+        opened by <a href="https://github.com/Freyskeyd">@Freyskeyd</a>
+        on 2017-10-07 08:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Freyskeyd">@Freyskeyd</a> on 2017-10-07 08:32</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p><code>rustc 1.22.0-nightly (417c73891 2017-10-05)</code></p>
+<h3>Affected Version of clap</h3>
+<p><code>clap 2.26.2</code></p>
+<h3>Expected Behavior Summary</h3>
+<p>Using a YAML definition with an <code>arg</code> named <code>quiet</code>, defined as <code>global</code> I'm expecting to be able to use it in any subcommands.</p>
+<h3>Actual Behavior Summary</h3>
+<p>The <code>quiet</code> flag are only usable on default command, but disapear in subcommands.</p>
+<h3>Steps to Reproduce the issue</h3>
+<p>Here's the <code>yaml</code></p>
+<pre><code class="language-yaml">name: Test cli
+version: &quot;1.0&quot;
+args:
+    - quiet:
+        short: q
+        help: Display only needed output
+        global: true
+subcommands:
+    - auth:
+        about: Authenticate command
+</code></pre>
+<p><code>main.rs</code></p>
+<pre><code class="language-rust">fn main() {
+    let yaml = load_yaml!(&quot;cli.yml&quot;);
+    let app = App::from_yaml(yaml);
+
+    let matches = app.get_matches();
+
+    println!(&quot;quiet: {:?}&quot;, matches.is_present(&quot;quiet&quot;));
+    println!(&quot;quiet_o: {:?}&quot;, matches.occurrences_of(&quot;quiet&quot;));
+}
+</code></pre>
+<h3>Debug output</h3>
+<pre><code class="language-bash">$ ./target/debug/cli
+quiet: false
+quiet_o: 0
+
+$ ./target/debug/cli -q
+quiet: true
+quiet_o: 1
+
+$ ./target/debug/cli -q auth
+quiet: true
+quiet_o: 1
+
+$ ./target/debug/cli auth -q
+quiet: false
+quiet_o: 0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-10-07 17:03</div>
+            <div class="timeline-body"><p>Thanks for filing this! I'll add it to the list as it might be related to #978  and the associated PR #1060</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2017-10-07 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2017-10-07 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @kbknapp on 2017-10-07 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2017-10-07 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2017-10-07 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Regression</span> added by @kbknapp on 2017-10-07 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2017-10-07 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-10-07 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.27.0" by @kbknapp on 2017-10-12 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-10-18 14:44</div>
+            <div class="timeline-body"><p>@Freyskeyd could you test this with the current master branch and see if it's fixed? #1070 just merged which may have helped. If not I can look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Freyskeyd">@Freyskeyd</a> on 2017-10-19 07:37</div>
+            <div class="timeline-body"><p>@kbknapp I will try it as soon as I can :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Freyskeyd">@Freyskeyd</a> on 2017-10-20 08:03</div>
+            <div class="timeline-body"><p>@kbknapp Unfortunately, it's doesn't work with 569ced1f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1072.html">clap-rs/clap#1072</a> on 2017-10-20 10:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-10-24 12:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

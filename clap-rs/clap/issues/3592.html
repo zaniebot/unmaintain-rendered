@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emit compile-time error if the derive interface produces duplicate short/long arguments - clap-rs/clap #3592</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Emit compile-time error if the derive interface produces duplicate short/long arguments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3592">#3592</a>
+        opened by <a href="https://github.com/nsunderland1">@nsunderland1</a>
+        on 2022-03-30 18:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nsunderland1">@nsunderland1</a> on 2022-03-30 18:12</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.1.3</p>
+<h3>Describe your use case</h3>
+<p>Not much special context for the use case, reasoning behind the feature is given below.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Given the following code (<a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=19e608001b198271c876aaeb1ea04aaa">playground</a>):</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+struct Args {
+    #[clap(short)]
+    arg1: String,
+
+    #[clap(short)]
+    arg2: String,
+}
+
+fn main() {
+    let _ = Args::parse();
+}
+</code></pre>
+<p>clap will successfully detect at runtime that <code>arg1</code> and <code>arg2</code> have the duplicate short form <code>-a</code>:</p>
+<pre><code>thread 'main' panicked at 'Command playground: Short option names must be unique for each argument, but '-a' is in use by both 'arg1' and 'arg2'', /playground/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.1.3/src/build/debug_asserts.rs:100:17
+note: [run with `RUST_BACKTRACE=1` environment variable to display a backtrace](https://play.rust-lang.org/#)
+</code></pre>
+<p>With clap's derive interface, it seems like this could be caught at compile time when the proc macro executes on <code>Args</code>, by producing a compiler error if it picks up on duplicate short (or long) names.</p>
+<p>This would give much quicker feedback for programmer error. Also, since clap only checks for argument uniqueness in debug mode, if you're only ever running a release build of your binary you won't actually hit this panic.</p>
+<h3>Alternatives, if applicable</h3>
+<p>I personally wouldn't mind it if the assertions were enabled in release builds, but the compile-time approach seems better as it avoids the runtime overhead.</p>
+<h3>Additional Context</h3>
+<p>We were mostly only running our binary in release mode, and we went a few days with duplicate short arguments. When we hit the panic, it wasn't immediately obvious what was going on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @nsunderland1 on 2022-03-30 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-03-30 18:16</div>
+            <div class="timeline-body"><p>FYI this has previously been reported as https://github.com/clap-rs/clap/issues/3133</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-03-30 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nsunderland1">@nsunderland1</a> on 2022-03-30 18:17</div>
+            <div class="timeline-body"><p>Ah thanks, went searching with &quot;unique&quot; as my query, shoulda tried flipping it :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ruff --fix] (v0.0.239) When working with numpy arrays `mask == True` is not the same as `mask is True` - astral-sh/ruff #2443</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ruff --fix] (v0.0.239) When working with numpy arrays `mask == True` is not the same as `mask is True`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2443">#2443</a>
+        opened by <a href="https://github.com/FrancescElies">@FrancescElies</a>
+        on 2023-02-01 15:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/FrancescElies">@FrancescElies</a> on 2023-02-01 15:41</div>
+            <div class="timeline-body"><p>After running <code>ruff --fix</code> the last line of the following script gets reformatted as <code>np.where(mask is True)</code> but in this context is not the same.</p>
+<pre><code class="language-python">import numpy as np
+
+a = np.arange(10)
+mask = a &gt; 5
+np.where(mask == True)  # equivalent to `mask.nonzero()
+</code></pre>
+<p>Maybe in that context one should not be using <code>np.where(mask == True)</code>  but it's equivalent <code>mask.nonzero()</code> instead, at anyrate we have some old code using that pattern.</p>
+<p>See below an interactive session showing is not the same.</p>
+<pre><code class="language-python">In [2]: import numpy as np
+In [13]: a = np.arange(10)
+
+In [14]: mask = a &gt; 5
+
+In [15]: np.where(mask == True)
+Out[15]: (array([6, 7, 8, 9], dtype=int64),)
+
+In [18]: np.where(mask is True)
+Out[18]: (array([], dtype=int64),)
+</code></pre>
+<p>What do you think about this corner case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-02-01 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 17:39</div>
+            <div class="timeline-body"><p>Ah yeah, this has come up before. Unfortunately it's really hard to avoid without disabling the rule entirely, though I'm open to suggestions on heuristics.</p>
+<p>My current suggestion has been to disable that rule if you're working in any context that requires boolean comparisons like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-01 18:37</div>
+            <div class="timeline-body"><p>This could potentially also happen with sqlalchemy I guess.
+There you have <code>query.where(foo==bar)</code> queries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FrancescElies">@FrancescElies</a> on 2023-02-02 06:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah yeah, this has come up before. Unfortunately it's really hard to avoid without disabling the rule entirely, though I'm open to suggestions on heuristics.</p>
+</blockquote>
+<p>Can you point me out in the direction where this code lives?
+Which kind of info do we have in that context, what could we use? regex? do we have maybe the variable type available (like pyright or mypy does)?</p>
+<p>It looks like <code>{something}.where({avar} == {True|False})</code> might help but for sure there will be other cases too, thus ... not sure what to suggest.</p>
+<blockquote>
+<p>My current suggestion has been to disable that rule if you're working in any context that requires boolean comparisons like that.</p>
+</blockquote>
+<p>On the other hand at least in our case we have many people coming from the c-embedded world and writing python in a c-ish way and in general I find it also helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/conbrad">@conbrad</a> on 2023-02-16 00:20</div>
+            <div class="timeline-body"><blockquote>
+<p>This could potentially also happen with sqlalchemy I guess. There you have <code>query.where(foo==bar)</code> queries.</p>
+</blockquote>
+<p>Verified today this is the case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/conbrad">@conbrad</a> on 2023-02-16 00:28</div>
+            <div class="timeline-body"><p>Potentially something that could be defined as a <code>Trivia</code>: https://github.com/charliermarsh/ruff/blob/main/crates/ruff_python_formatter/src/trivia.rs#L46</p>
+<p>E.g. a <code>FilterFunction</code>.</p>
+<p>Not sure if it would make more sense to do the analysis at the AST level though, and check for <code>sqlalchemy</code> or <code>numpy</code> parent nodes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bcgov/wps/pulls/2650.html">bcgov/wps#2650</a> on 2023-02-16 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-14 17:58</div>
+            <div class="timeline-body"><p>We could consider ignoring these expressions inside of all <code>.where</code> calls, regardless of whether it's NumPy, SQLAlchemy, etc. We'd be trading off false negatives for false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/conbrad">@conbrad</a> on 2023-03-14 20:13</div>
+            <div class="timeline-body"><blockquote>
+<p>We could consider ignoring these expressions inside of all <code>.where</code> calls, regardless of whether it's NumPy, SQLAlchemy, etc. We'd be trading off false negatives for false positives.</p>
+</blockquote>
+<p>I think this would wind up chasing a lot of stragglers. E.g. <code>.filter</code>, <code>.having</code> are just a couple of other predicate functions in SQLAlchemy that expect <code>==</code> over <code>is</code> I believe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-14 20:48</div>
+            <div class="timeline-body"><p>Maybe this should wait until we can determine the type of objects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-04-24 17:27</div>
+            <div class="timeline-body"><p>To share another real world example, I encountered this using ruff in a project that uses SQLAlchemy. Ruff fixed comparisons with <code>None</code> to use <code>is</code>/<code>is_not</code> instead of <code>==</code>/<code>!=</code> but this broke our SQLAlchemy filters. As a solution, I've switched to use of explicit <code>.is_</code> and <code>.is_not</code> SQLAlchemy operators when doing comparisons with <code>None</code> which seems like better practice anyway.</p>
+<p>https://github.com/PrefectHQ/prefect/pull/9283/commits/1b645872a14b9b5a3e50ef39b03adcc81436adb4</p>
+<p>Our usage seems harder to detect as a special case since we construct the list of filters <em>outside</em> of the call. It only seems feasible to avoid by detecting the type of the object in the comparison.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PrefectHQ/prefect/pulls/9283.html">PrefectHQ/prefect#9283</a> on 2023-04-24 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/conbrad">@conbrad</a> on 2023-04-24 18:44</div>
+            <div class="timeline-body"><blockquote>
+<p>To share another real world example, I encountered this using ruff in a project that uses SQLAlchemy. Ruff fixed comparisons with <code>None</code> to use <code>is</code>/<code>is_not</code> instead of <code>==</code>/<code>!=</code> but this broke our SQLAlchemy filters. As a solution, I've switched to use of explicit <code>.is_</code> and <code>.is_not</code> SQLAlchemy operators when doing comparisons with <code>None</code> which seems like better practice anyway.</p>
+</blockquote>
+<p>Wonder if those operators were influenced by the recent language/tooling co-design. I seem to remember having issues with the <code>is</code> operators not behaving the same as the <code>==</code> ones but that may have just been a PEBKAC issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-04-25 01:11</div>
+            <div class="timeline-body"><p>https://github.com/charliermarsh/ruff/issues/1852 has some previous discussion as well.</p>
+<p>@charliermarsh if you'd like I can open a new issue that tracks the general problem replacing <code>==</code> with <code>is</code> and enumerate the datatypes this is an issue for so you can close out duplicates that are for specific cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4356.html">astral-sh/ruff#4356</a> on 2023-05-10 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-05-21 09:11</div>
+            <div class="timeline-body"><p>Could be labeled <code>type-inference</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @charliermarsh on 2023-05-21 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4560.html">astral-sh/ruff#4560</a> on 2023-05-21 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-21 16:01</div>
+            <div class="timeline-body"><p>Here's the aforementioned tracking issue https://github.com/charliermarsh/ruff/issues/4560</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-21 16:06</div>
+            <div class="timeline-body"><p>Thanks tons @madkinsz</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-21 16:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

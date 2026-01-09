@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binaries builds with Nuitka from a `uv`-installed Python fails on Ubuntu: `libpython3.13.so.1.0` not found - astral-sh/uv #11234</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Binaries builds with Nuitka from a `uv`-installed Python fails on Ubuntu: `libpython3.13.so.1.0` not found</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11234">#11234</a>
+        opened by <a href="https://github.com/kdeldycke">@kdeldycke</a>
+        on 2025-02-05 06:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2025-02-05 06:38</div>
+            <div class="timeline-body"><p>Tl;Dr: System Python installed by <code>actions/setup-python</code> is working but not the Python installed by <code>uv</code>.</p>
+<p>I made up a simple project to demonstrate this issue: https://github.com/kdeldycke/nuitka-issue-3325</p>
+<h3>Works with <code>actions/setup-python</code></h3>
+<p>This project is a simple CLI compiled to a standalone binary on all major platforms (Ubuntu, macOS and Windows) and 2 different architectures (<code>x86_64</code> and <code>arm64</code>).</p>
+<p>This is performed by a GitHub workflow available at: https://github.com/kdeldycke/nuitka-issue-3325/blob/main/.github/workflows/system-python.yaml</p>
+<p>The process <a href="https://github.com/kdeldycke/nuitka-issue-3325/actions/runs/13151107468">works perfectly on all platforms</a>.</p>
+<p>Note that in the logs, Nuitka is <a href="https://github.com/kdeldycke/nuitka-issue-3325/actions/runs/13151107468/job/36698572930#step:7:14">picking the right Python version from the system</a>:</p>
+<pre><code class="language-text">Nuitka: Starting Python compilation with Nuitka '2.6.4' on Python (flavor GitHub Actions Python), '3.13' commercial grade 'not installed'.
+</code></pre>
+<h3>Issue with <code>uv</code></h3>
+<p>Now let's modify the working workflow used above, and completely remove the use of <code>actions/setup-python</code>. Instead, we will rely on <code>uv</code> alone to install our target Python version, by invoking:</p>
+<pre><code class="language-shell-session">$ uv venv --python 3.13
+</code></pre>
+<p>That new workflow is available at: https://github.com/kdeldycke/nuitka-issue-3325/blob/main/.github/workflows/uv-python.yaml</p>
+<p>Here is an explicit highlight of the differences between the two workflows:</p>
+<pre><code class="language-diff">$ diff -ru ./.github/workflows/system-python.yaml ./.github/workflows/uv-python.yaml        
+--- ./.github/workflows/system-python.yaml	2025-02-03 10:49:36
++++ ./.github/workflows/uv-python.yaml	2025-02-03 10:49:36
+@@ -6,7 +6,7 @@
+ 
+ jobs:
+ 
+-  system-python:
++  uv-python:
+     strategy:
+       matrix:
+         os:
+@@ -19,15 +19,12 @@
+     continue-on-error: true
+     steps:
+       - uses: actions/checkout@v4.2.2
+-      - uses: actions/setup-python@v5.4.0
+-        with:
+-          python-version: &quot;3.13&quot;
+       - name: Install uv
+         run: |
+           python -m pip install &quot;uv == 0.5.28&quot;
+       - name: Install Nuitka
+         run: |
+-          uv --no-progress venv
++          uv --no-progress venv --python 3.13
+           uv --no-progress pip install &quot;nuitka == 2.6.4&quot;
+ 
+       - name: uv run -m nuitka --version
+</code></pre>
+<p>Despite these differences, I expect no change in the results. But this is not the case as you can see in this run: https://github.com/kdeldycke/nuitka-issue-3325/actions/runs/13151107465</p>
+<p>All the Ubuntu builds fail. The <a href="https://github.com/kdeldycke/nuitka-issue-3325/actions/runs/13151107465/job/36698572940#step:6:24">binary is still produced on these platforms</a>, but running them <a href="https://github.com/kdeldycke/nuitka-issue-3325/actions/runs/13151107465/job/36698572940#step:8:5">ends up with this error message</a>:</p>
+<pre><code class="language-text">my-cli-ubuntu-24.04.bin: error while loading shared libraries: libpython3.13.so.1.0: cannot open shared object file: No such file or directory
+</code></pre>
+<p>Note that in this case, Nuitka <a href="https://github.com/kdeldycke/nuitka-issue-3325/actions/runs/13151107465/job/36698572940#step:6:6">properly reports the Python 3.13 flavor as sourced from <code>uv</code></a>:</p>
+<pre><code class="language-text">Nuitka: Starting Python compilation with Nuitka '2.6.4' on Python (flavor UV-Python), '3.13' commercial grade 'not installed'.
+</code></pre>
+<h3>Context</h3>
+<p>This has been tested with:</p>
+<ul>
+<li>Latest <code>nuitka</code>: 2.6.4</li>
+<li>Latest <code>uv</code>: 0.5.28</li>
+<li>Latest Python: 3.13</li>
+<li>Latest <code>actions/setup-python</code>: 5.4.0</li>
+</ul>
+<p>This issue has also been reported at: https://github.com/Nuitka/Nuitka/issues/3325</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Nuitka/Nuitka/issues/3325.html">Nuitka/Nuitka#3325</a> on 2025-02-05 06:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2025-02-05 06:45</div>
+            <div class="timeline-body"><p>I don't know much about the whole Python builds toolchain (that's why I love <code>uv</code> and <code>nuitka</code> because they make my life easy), but is this possible that this issue is related to:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/11028</li>
+<li>https://github.com/astral-sh/python-build-standalone/pull/507</li>
+<li>https://github.com/astral-sh/uv/issues/6812</li>
+<li>https://github.com/astral-sh/uv/issues/10674</li>
+<li>https://github.com/python/cpython/issues/106045</li>
+<li>https://github.com/astral-sh/uv/issues/10598</li>
+<li>https://github.com/astral-sh/uv/issues/10555</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2025-02-05 06:48</div>
+            <div class="timeline-body"><p>Also note this warning from the Nuitka project regarding <code>uv</code>-managed Python:</p>
+<p>https://github.com/Nuitka/Nuitka/commit/f5e7640c44d765abf78098b4071aa565604d5dec#diff-940a5fc082e89e5397d5015ec587ebed5409309cf2ebe9faad105a9ca74918a7R1740</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @geofft by @geofft on 2025-02-06 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-02-06 23:36</div>
+            <div class="timeline-body"><p>Sigh - this is the <code>ldd</code> bug discussed in #6812. Looks like Nuitka uses <code>ldd</code> to figure out what libraries are needed. Let me see if I can send Nuitka a PR to work around this....</p>
+<p>A kind of terrible workaround is</p>
+<pre><code>LD_LIBRARY_PATH=$(dirname &quot;$(realpath &quot;$(uv python find)&quot;)&quot;)/../lib uv run nuitka --onefile ...
+</code></pre>
+<p>which you only need for the Nuitka build step (because that will trick ldd as invoked by Nuitka into doing the right thing (at which point Nuitka will find libpython and embedd it into your <code>--onefile</code> binary, so you <em>don't</em> need it when actually running the binary).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-02-07 00:01</div>
+            <div class="timeline-body"><p>Actually, no, this is Nuitka not knowing we need an rpath (which is probably reasonable, there's not yet a really good way for us to tell a downstream build system that). Let me continue over on Nuitka/Nuitka#3325.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2025-02-25 09:01</div>
+            <div class="timeline-body"><p>Despite the latest fixes related to shared library (like https://github.com/Nuitka/Nuitka/commit/2cc95af024294b4f4f8204a3a757ef6a96b2bd6a and https://github.com/Nuitka/Nuitka/pull/3332), I can still reproduce this issue on GitHub with <code>uv 0.6.3</code> and <code>nuitka 2.6.7</code>:</p>
+<pre><code class="language-shell-session">/home/runner/work/nuitka-issue-3325/nuitka-issue-3325/my-cli-ubuntu-24.04.bin: error while loading shared libraries: libpython3.13.so.1.0: cannot open shared object file: No such file or directory
+</code></pre>
+<p>Source: https://github.com/kdeldycke/nuitka-issue-3325/actions/runs/13517179955/job/37768191123</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qlan3">@qlan3</a> on 2025-03-06 00:52</div>
+            <div class="timeline-body"><p>Had the same issue with python 3.10.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2025-03-10 18:56</div>
+            <div class="timeline-body"><p>The newly released Nuitka 2.6.8 fixed the issue for me! 🎉</p>
+<p>See: https://github.com/Nuitka/Nuitka/issues/3325#issuecomment-2711540520</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kdeldycke on 2025-03-10 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-10 19:14</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colorize `format --diff` output - astral-sh/ruff #9984</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Colorize `format --diff` output</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9984">#9984</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-02-14 13:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-14 13:01</div>
+            <div class="timeline-body"><h3>Discussed in https://github.com/astral-sh/ruff/discussions/9983</h3>
+<p>We should colorize the diff output (added and removed lines).</p>
+<p>The relevant code is in https://github.com/astral-sh/ruff/blob/a7d1f7e1ec6d2d4443eaec4bee5faebd97f95c66/crates/ruff_linter/src/source_kind.rs#L103-L111</p>
+<p>We probably would need to extract the <code>to_writer</code> function and change it so that we set the right color depending on if it's an addition or deletion:</p>
+<pre><code class="language-rust"> let mut header = self.header.as_ref();
+        for hunk in self.iter_hunks() {
+            if let Some((old_file, new_file)) = header.take() {
+                writeln!(w, &quot;--- {}&quot;, old_file)?;  // &lt;-- add color here
+                writeln!(w, &quot;+++ {}&quot;, new_file)?;
+            }
+            write!(w, &quot;{}&quot;, hunk)?;
+        }
+        Ok(())
+</code></pre>
+<div type='discussions-op-text'>
+
+<p><sup>Originally posted by <strong>ssenior45</strong> February 14, 2024</sup>
+If I run <code>ruff check</code> on a file then the output is colored which leads me to believe that my terminal is configured to display colored output from the tool correctly.</p>
+<p>However when I run <code>ruff format --diff</code> the output is not colored. Is this expected? If so is there anything that can be done about it?</p>
+<p>Thanks in advance.</div></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @MichaReiser on 2024-02-14 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2024-02-14 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-02-14 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-14 14:01</div>
+            <div class="timeline-body"><p>Def a good first issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/senadev42">@senadev42</a> on 2024-02-14 14:02</div>
+            <div class="timeline-body"><p>Hey @MichaReiser, I'm interested on working on this</p>
+<p>Edit: But I've also noticed you tagged OP in the original discussion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-14 14:13</div>
+            <div class="timeline-body"><p>@senadev42 nice. I think the original OP doesn't mind if the feature gets implemented by someone else. I assign the issue to you. Let me know if you need any help.</p>
+<p>Note: We use https://docs.rs/colored/latest/colored/ for colonizing the CLI output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @senadev42 by @MichaReiser on 2024-02-14 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssenior45">@ssenior45</a> on 2024-02-14 23:08</div>
+            <div class="timeline-body"><p>Just catching up with this now. Thanks for moving it to an issue. I would like to see this implemented and am more than happy for @senadev42 to work on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-23 21:19</div>
+            <div class="timeline-body"><p>@senadev42 is there something I can help you with or would you prefer if someone else takes a look at it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9765.html">astral-sh/ruff#9765</a> on 2024-02-23 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/senadev42">@senadev42</a> on 2024-02-23 21:32</div>
+            <div class="timeline-body"><p>@MichaReiser Oh I've just been unexpectedly busy lately but I'm picking away at it, just kind of slowly since I assumed it wasn't an urgent/critical task.</p>
+<p>I can let go if it is though, since I'm using this as an opportunity to dip my toes into rust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-23 21:35</div>
+            <div class="timeline-body"><p>@senadev42 it's not urgent. I just wanted to make sure you've all you need :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10110.html">astral-sh/ruff#10110</a> on 2024-02-24 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/senadev42">@senadev42</a> on 2024-02-24 13:26</div>
+            <div class="timeline-body"><p>Hey @MichaReiser</p>
+<p>So I've made a draft PR at #10110 and I'd like some help interpreting why and how some of the tests are failing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-01 09:04</div>
+            <div class="timeline-body"><p>Closed by https://github.com/astral-sh/ruff/pull/10110</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-03-01 09:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

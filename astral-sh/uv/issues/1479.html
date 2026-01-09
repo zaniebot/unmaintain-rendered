@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extras specifiers in `project.scripts` cause a spurious &quot;failed to install&quot; error - astral-sh/uv #1479</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Extras specifiers in `project.scripts` cause a spurious &quot;failed to install&quot; error</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1479">#1479</a>
+        opened by <a href="https://github.com/akx">@akx</a>
+        on 2024-02-16 11:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/akx">@akx</a> on 2024-02-16 11:41</div>
+            <div class="timeline-body"><p>The <a href="https://github.com/gurumitts/pylutron-caseta/blob/79ca8edf96b86708a00f06225fa73a9445d1e635/pyproject.toml#L30-L33"><code>pylutron_caseta</code> package has interesting <code>package.scripts</code> with extras specifiers</a>:</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+cli = [
+    &quot;click~=8.1.2&quot;,
+    &quot;xdg~=5.1.1&quot;,
+    &quot;zeroconf~=0.38.4&quot;,
+]
+
+[project.scripts]
+lap-pair = &quot;pylutron_caseta.cli:lap_pair[cli]&quot;
+leap = &quot;pylutron_caseta.cli:leap[cli]&quot;
+leap-scan = &quot;pylutron_caseta.cli:leap_scan[cli]&quot;
+</code></pre>
+<p>According <a href="https://packaging.python.org/en/latest/specifications/entry-points/">to the spec</a>, these are a thing but no longer recommended:</p>
+<blockquote>
+<p>Using extras for an entry point is no longer recommended. Consumers should support parsing them from existing distributions, but may then ignore them. New publishing tools need not support specifying extras. The functionality of handling extras was tied to setuptools’ model of managing ‘egg’ packages, but newer tools such as pip and virtualenv use a different model.</p>
+</blockquote>
+<p>This causes an error when installing with <code>uv pip install</code>, but surprisingly, the install succeeds despite the error:</p>
+<pre><code>(home-assistant-core) ~/b/home-assistant-core (uv-ci) $ uv pip install pylutron_caseta
+Resolved 4 packages in 3ms
+error: Failed to install: pylutron_caseta-0.19.0-py3-none-any.whl (pylutron-caseta==0.19.0)
+  Caused by: The wheel is invalid: invalid console script: 'pylutron_caseta.cli:lap_pair[cli]'
+(home-assistant-core) ~/b/home-assistant-core (uv-ci) $ uv pip uninstall pylutron_caseta
+Uninstalled 1 package in 5ms
+ - pylutron-caseta==0.19.0
+(home-assistant-core) ~/b/home-assistant-core (uv-ci) $ uv pip uninstall pylutron_caseta
+warning: Skipping pylutron-caseta as it is not installed.
+warning: No packages to uninstall.
+(home-assistant-core) ~/b/home-assistant-core (uv-ci) $
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2024-02-16 11:57</div>
+            <div class="timeline-body"><p>Ah, never mind, I see the bug! PR incoming~!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-02-16 12:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-02-16 12:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @akx by @MichaReiser on 2024-02-16 12:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @MichaReiser by @MichaReiser on 2024-02-16 12:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1482.html">astral-sh/uv#1482</a> on 2024-02-16 12:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2024-02-16 12:05</div>
+            <div class="timeline-body"><p>The PR doesn't fix that the install succeeds despite the scripts being invalid – I think the error message should be clearer (I guess it's really &quot;failed to install console scripts&quot;..?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-02-16 14:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

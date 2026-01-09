@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`TrailingVarArg` doesn't work without `--` - clap-rs/clap #1538</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`TrailingVarArg` doesn't work without `--`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1538">#1538</a>
+        opened by <a href="https://github.com/naftulikay">@naftulikay</a>
+        on 2019-08-31 00:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/naftulikay">@naftulikay</a> on 2019-08-31 00:05</div>
+            <div class="timeline-body"><p>Maintainer's notes</p>
+<ul>
+<li>Workaround: call <code>Command::allow_hyphen_values(true)</code></li>
+</ul>
+<hr />
+<h3>Rust Version</h3>
+<p>Stable</p>
+<h3>Affected Version of clap</h3>
+<p>Latest</p>
+<h3>Bug or Feature Request Summary</h3>
+<p>I am unable to write a program which accepts a variable amount of final args which include flag-like values without using a delimiter.</p>
+<h3>Expected Behavior Summary</h3>
+<p>I'd like to be able to have my variable amount of args be of any format, including flag-like options.</p>
+<h3>Actual Behavior Summary</h3>
+<p>Parsing fails.</p>
+<h3>Steps to Reproduce the issue</h3>
+<p>I have created <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=76333809750e8bb17c97525c8bc18767">a playground example</a> which demonstrates the problem directly.</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<p><a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=76333809750e8bb17c97525c8bc18767">Playground</a></p>
+<pre><code class="language-rust">fn parser&lt;'a, 'b&gt;() -&gt; App&lt;'a, 'b&gt; {
+    App::new(&quot;varargs&quot;)
+        .setting(AppSettings::TrailingVarArg)
+        // boolean
+        .arg(Arg::with_name(&quot;prog-flag&quot;)
+            .long(&quot;prog-flag&quot;)
+            .takes_value(false))
+        // path to executable
+        .arg(Arg::with_name(&quot;EXECUTABLE&quot;)
+            .takes_value(true)
+            .required(true))
+        // list of arguments to pass to executable
+        .arg(Arg::with_name(&quot;ARGS&quot;)
+            .takes_value(true)
+            .multiple(true)
+            .allow_hyphen_values(true))
+}
+
+#[test]
+fn test_with_delimiter() {
+    parser().get_matches_from_safe(vec![&quot;--prog-flag&quot;, &quot;executable&quot;, &quot;--&quot;, &quot;-a&quot;, &quot;1&quot;]).unwrap();
+}
+
+#[test]
+fn test_without_delimiter() {
+    parser().get_matches_from_safe(vec![&quot;--prog-flag&quot;, &quot;executable&quot;, &quot;-a&quot;, &quot;1&quot;]).unwrap();
+}
+</code></pre>
+<p>My exact use-case is that I have a positional argument which is a path to an executable, followed by a list of arguments to pass to that executable.</p>
+<p>Example:</p>
+<pre><code>./my-program --prog-flag /usr/bin/watch -n 1 echo true
+</code></pre>
+<p>Internally, I'm using <code>--prog-flag</code> to customize my application's behavior, the executable path to find the binary to execute, and the variable length of args to pass to the program as arguments.</p>
+<p>I can't seem to find a way to write the above without needing a delimiter (<code>--</code>) between executable and the argument list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @CreepySkeleton by @CreepySkeleton on 2020-02-01 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">not-sure</span> added by @CreepySkeleton on 2020-02-01 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Unable to Parse Variable-Length Flag-Like Args Without Delimiter" to "TrailingVarArg doesn't work if the first trailing args starts with `-`" by @CreepySkeleton on 2020-02-06 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "TrailingVarArg doesn't work if the first trailing args starts with `-`" to "TrailingVarArg doesn't work if the first trailing arg starts with `-`" by @CreepySkeleton on 2020-02-06 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cc: CreepySkeleton</span> removed by @CreepySkeleton on 2020-02-06 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @CreepySkeleton on 2020-02-06 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: options</span> added by @CreepySkeleton on 2020-02-06 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @CreepySkeleton on 2020-02-06 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @CreepySkeleton on 2020-02-06 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @CreepySkeleton on 2020-02-06 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @CreepySkeleton on 2020-02-06 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @CreepySkeleton on 2020-02-06 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @CreepySkeleton by @CreepySkeleton on 2020-03-03 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2514.html">clap-rs/clap#2514</a> on 2021-06-01 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2021-06-05 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "TrailingVarArg doesn't work if the first trailing arg starts with `-`" to "`TrailingVarArg` doesn't work without `--`" by @ldm0 on 2021-08-14 06:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-08-14 06:21</div>
+            <div class="timeline-body"><p>Do we really want this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-14 09:16</div>
+            <div class="timeline-body"><p>Yeah, this looks like a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kristof-mattei">@kristof-mattei</a> on 2021-10-27 22:24</div>
+            <div class="timeline-body"><p>+ 1 on this one. This is behavior that's quite common seen when using <code>getopts_long</code>. Is there a way to stop <code>clap-rs</code> from parsing the the incoming args as soon as it hit something unknown? That would solve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/123.html">epage/clapng#123</a> on 2021-12-06 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> removed by @epage on 2021-12-08 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: options</span> removed by @epage on 2021-12-08 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-09 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> removed by @epage on 2021-12-09 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> added by @epage on 2021-12-09 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lpil">@lpil</a> on 2022-01-13 17:31</div>
+            <div class="timeline-body"><p>This would be very useful for me. Is there a work-around?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../gleam-lang/gleam/issues/1457.html">gleam-lang/gleam#1457</a> on 2022-01-13 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexreg">@alexreg</a> on 2022-01-30 01:43</div>
+            <div class="timeline-body"><p>+1 This is a semi-common scenario. I have the same use case as the OP. Any plans to implement this feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexreg">@alexreg</a> on 2022-01-30 02:26</div>
+            <div class="timeline-body"><p>The work-around for me right now is just to get rid of the <code>EXECUTABLE</code> arg (see the original post) and extract that from the first item of <code>ARGS</code>. That's not too bad in fairness.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-01 20:48</div>
+            <div class="timeline-body"><p>I just ported the example code to clap3 and it seems to work for me</p>
+<pre><code class="language-rust">fn main() {
+    let m = parser().get_matches();
+    dbg!(m.is_present(&quot;prog-flag&quot;));
+    dbg!(m
+        .values_of(&quot;EXECUTABLE&quot;)
+        .unwrap_or_default()
+        .collect::&lt;Vec&lt;_&gt;&gt;());
+    dbg!(m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;());
+}
+
+fn parser&lt;'a&gt;() -&gt; clap::App&lt;'a&gt; {
+    clap::App::new(&quot;varargs&quot;)
+        .setting(clap::AppSettings::TrailingVarArg)
+        // boolean
+        .arg(
+            clap::Arg::new(&quot;prog-flag&quot;)
+                .long(&quot;prog-flag&quot;)
+                .takes_value(false),
+        )
+        // path to executable
+        .arg(
+            clap::Arg::new(&quot;EXECUTABLE&quot;)
+                .takes_value(true)
+                .required(true),
+        )
+        // list of arguments to pass to executable
+        .arg(
+            clap::Arg::new(&quot;ARGS&quot;)
+                .takes_value(true)
+                .multiple_values(true)
+                .allow_hyphen_values(true),
+        )
+}
+
+#[test]
+fn test_with_delimiter() {
+    parser()
+        .try_get_matches_from(vec![&quot;--prog-flag&quot;, &quot;executable&quot;, &quot;--&quot;, &quot;-a&quot;, &quot;1&quot;])
+        .unwrap();
+}
+
+#[test]
+fn test_without_delimiter() {
+    parser()
+        .try_get_matches_from(vec![&quot;--prog-flag&quot;, &quot;executable&quot;, &quot;-a&quot;, &quot;1&quot;])
+        .unwrap();
+}
+</code></pre>
+<p>Am I missing something or does it look like this was fixed and we can close it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> removed by @epage on 2022-02-01 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-author</span> added by @epage on 2022-02-01 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexreg">@alexreg</a> on 2022-02-01 21:31</div>
+            <div class="timeline-body"><p>@epage It seems that particular example works, but it still fails if you follow <code>executable</code> with a double-dash option. For example:</p>
+<pre><code class="language-rust">#[test]
+fn test_without_delimiter() {
+    parser()
+        .try_get_matches_from(vec![&quot;--prog-flag&quot;, &quot;executable&quot;, &quot;--foo&quot;, &quot;1&quot;])
+        .unwrap();
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3389.html">clap-rs/clap#3389</a> on 2022-02-02 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-02 19:15</div>
+            <div class="timeline-body"><p>Thanks for calling out that other case!  I was able to reproduce that.  I threw together #3389 as part of looking at this.  long arguments are missing some of the checks that short arguments have.  This PR just copied over one of them.  Some more work is needed on it.  I'm giving myself some pause to consider how disruptive of a change any of this is.  My guess is I'll consider it to not be a breaking change but will want it called out in a compatibility section in the CHANGELOG (like Rust does).  I want to reserve those for minor releases (I am preparing for a minor release atm).</p>
+<p>If anyone wants to pick this up, that'd be a big help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexreg">@alexreg</a> on 2022-02-02 22:22</div>
+            <div class="timeline-body"><p>@epage Thanks a lot for looking into this. That sounds reasonable, regarding how you treat this change in behaviour.</p>
+<p>I was just thinking of corner cases, and what stands out is the situation when the first of the multiple positional arguments can be interpreted as a flag.</p>
+<p>Example:</p>
+<pre><code class="language-rust">    App::new(&quot;varargs&quot;)
+        .setting(AppSettings::TrailingVarArg)
+        .arg(Arg::with_name(&quot;prog-flag&quot;)
+            .long(&quot;prog-flag&quot;)
+            .takes_value(false))
+        // Note that `EXECUTABLE` is no longer present.
+        .arg(Arg::with_name(&quot;ARGS&quot;)
+            .takes_value(true)
+            .multiple(true)
+            .allow_hyphen_values(true))
+</code></pre>
+<pre><code>[&quot;--prog-flag&quot;, &quot;executable&quot;, &quot;--foo&quot;, &quot;1&quot;]
+</code></pre>
+<p>Here, <code>--prog-flag</code> should of course get processed as one of the CLI flags.  If we changed it instead to</p>
+<pre><code>[&quot;--fake-flag&quot;, &quot;executable&quot;, &quot;--foo&quot;, &quot;1&quot;]
+</code></pre>
+<p>Would the idea be to treat <code>--fake-flag</code> as the first value of <code>ARGS</code>, since it is not recognised as an actual CLI flag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-03 00:03</div>
+            <div class="timeline-body"><p>Could you create a separate issue for that?</p>
+<p>I ran into those cases as well though I've still been mulling over my thoughts on what should be done.</p>
+<p>As for current behavior, It looks like we start processing <code>ARGS</code> as soon as its the next positional argument, even if that means we can't process <em>any</em> flags.  This seems like an issue and has probably more compatibility concerns.  This also applies to short and long.</p>
+<p>One of the questions I have for this is if we should check for flags between <code>EXECUTABLE</code> and <code>ARGS</code>.  Its been a bit since I dug into this but I thought clap allows intermixing but provided a way to not intermix (might also be remembering of the other libs I've been researching).</p>
+<p>Another is a concern over backwards compatibility for user applications.  If we start <code>ARGS</code> on the first unrecognized flag, then any new flag added breaks compatibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/naftulikay">@naftulikay</a> on 2022-02-03 21:56</div>
+            <div class="timeline-body"><p>Just to hopefully clarify things, as I don't think I mentioned this in my bug report, my use case is creating something like <code>sudo</code>. <code>sudo</code> has options (like <code>-i</code> or <code>-u</code>), and then you pass the executable name and all subsequent arguments are passed to the child process exec call.</p>
+<p>The project in question is <a href="https://github.com/naftulikay/escalator">naftulikay/escalator</a>. As opposed to <code>sudo</code>, <code>escalator</code> does not spawn a child process but rather replaces the current process with the spawned one.</p>
+<p>Examples of usage:</p>
+<ul>
+<li><code>escalator my-program -a -b --c d</code></li>
+<li><code>escalator -u some-user --verbose my-program -a -b --c d</code></li>
+</ul>
+<p>Presently, as can be seen in the docs for <code>escalator</code>, I must pass <code>--</code> between the executable name and the arguments. I have not tested with clap 3 yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust3ds/cargo-3ds/issues/1.html">rust3ds/cargo-3ds#1</a> on 2022-02-11 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2022-04-28 05:29</div>
+            <div class="timeline-body"><p>@epage One issue with some of the test cases listed in this issue: the calls to <code>try_get_matches_from</code> need to include the program name as the first argument. Fixing that makes some of the examples work that don't work otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-04-28 14:21</div>
+            <div class="timeline-body"><p>Thanks!  Thats easy to overlook</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../denoland/deno/issues/14514.html">denoland/deno#14514</a> on 2022-05-08 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4039.html">clap-rs/clap#4039</a> on 2022-08-08 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-09 19:45</div>
+            <div class="timeline-body"><p>Did some more comparisons</p>
+<pre><code class="language-rust">#!/usr/bin/env -S rust-script --debug
+
+//! ```cargo
+//! [dependencies]
+//! #clap = { path = &quot;../clap&quot; }
+//! clap = &quot;3&quot;
+//! ```
+
+fn main() {
+    let all_args: &amp;[&amp;[&amp;str]] = &amp;[
+        &amp;[&quot;cmd&quot;, &quot;--prog-flag&quot;, &quot;executable&quot;, &quot;--apple&quot;, &quot;1&quot;],
+        &amp;[&quot;cmd&quot;, &quot;--prog-flag&quot;, &quot;executable&quot;, &quot;--&quot;, &quot;--apple&quot;, &quot;1&quot;],
+        &amp;[&quot;cmd&quot;, &quot;--prog-flag&quot;, &quot;executable&quot;, &quot;-a&quot;, &quot;1&quot;],
+        &amp;[&quot;cmd&quot;, &quot;--prog-flag&quot;, &quot;executable&quot;, &quot;--&quot;, &quot;-a&quot;, &quot;1&quot;],
+    ];
+    for args in all_args {
+        dbg!(args);
+        let cmd = clap::App::new(&quot;varargs&quot;)
+            .setting(clap::AppSettings::TrailingVarArg)
+            .setting(clap::AppSettings::AllowLeadingHyphen)
+            // boolean
+            .arg(
+                clap::Arg::with_name(&quot;prog-flag&quot;)
+                    .long(&quot;prog-flag&quot;)
+                    .takes_value(false),
+            )
+            // path to executable
+            .arg(
+                clap::Arg::with_name(&quot;EXECUTABLE&quot;)
+                    .takes_value(true)
+                    .required(true),
+            )
+            // list of arguments to pass to executable
+            .arg(
+                clap::Arg::with_name(&quot;ARGS&quot;)
+                    .takes_value(true)
+                    .multiple(true)
+                    .allow_hyphen_values(true),
+            );
+        let m = cmd.get_matches_from_safe(*args);
+        match m {
+            Ok(m) =&gt; {
+                dbg!(m.is_present(&quot;prog-flag&quot;));
+                dbg!(m
+                    .values_of(&quot;EXECUTABLE&quot;)
+                    .unwrap_or_default()
+                    .collect::&lt;Vec&lt;_&gt;&gt;());
+                dbg!(m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;());
+            }
+            Err(err) =&gt; {
+                eprintln!(&quot;{}&quot;, err);
+            }
+        }
+    }
+}
+</code></pre>
+<p>clap v2 without setting(clap::AppSettings::AllowLeadingHyphen)</p>
+<pre><code>[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;--apple&quot;,
+    &quot;1&quot;,
+]
+error: Found argument '--apple' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    cmd &lt;EXECUTABLE&gt; --prog-flag
+
+For more information try --help
+
+[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;--&quot;,
+    &quot;--apple&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:41] m.is_present(&quot;prog-flag&quot;) = true
+[clap-1538.rs:42] m.values_of(&quot;EXECUTABLE&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;executable&quot;,
+]
+[clap-1538.rs:46] m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;--apple&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+error: Found argument '-a' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    cmd &lt;EXECUTABLE&gt; --prog-flag
+
+For more information try --help
+
+[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;--&quot;,
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:41] m.is_present(&quot;prog-flag&quot;) = true
+[clap-1538.rs:42] m.values_of(&quot;EXECUTABLE&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;executable&quot;,
+]
+[clap-1538.rs:46] m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+</code></pre>
+<p>clap v2 with setting(clap::AppSettings::AllowLeadingHyphen)</p>
+<pre><code>[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;--apple&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:42] m.is_present(&quot;prog-flag&quot;) = true
+[clap-1538.rs:43] m.values_of(&quot;EXECUTABLE&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;executable&quot;,
+]
+[clap-1538.rs:47] m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;--apple&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;--&quot;,
+    &quot;--apple&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:42] m.is_present(&quot;prog-flag&quot;) = true
+[clap-1538.rs:43] m.values_of(&quot;EXECUTABLE&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;executable&quot;,
+]
+[clap-1538.rs:47] m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;--apple&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:42] m.is_present(&quot;prog-flag&quot;) = true
+[clap-1538.rs:43] m.values_of(&quot;EXECUTABLE&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;executable&quot;,
+]
+[clap-1538.rs:47] m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;--&quot;,
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:42] m.is_present(&quot;prog-flag&quot;) = true
+[clap-1538.rs:43] m.values_of(&quot;EXECUTABLE&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;executable&quot;,
+]
+[clap-1538.rs:47] m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+</code></pre>
+<p>clap v3 without setting(clap::AppSettings::AllowLeadingHyphen)</p>
+<pre><code>[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;--apple&quot;,
+    &quot;1&quot;,
+]
+error: Found argument '--apple' which wasn't expected, or isn't valid in this context
+
+	If you tried to supply `--apple` as a value rather than a flag, use `-- --apple`
+
+USAGE:
+    cmd --prog-flag &lt;EXECUTABLE&gt;
+
+For more information try --help
+
+[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;--&quot;,
+    &quot;--apple&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:41] m.is_present(&quot;prog-flag&quot;) = true
+[clap-1538.rs:42] m.values_of(&quot;EXECUTABLE&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;executable&quot;,
+]
+[clap-1538.rs:46] m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;--apple&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:41] m.is_present(&quot;prog-flag&quot;) = true
+[clap-1538.rs:42] m.values_of(&quot;EXECUTABLE&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;executable&quot;,
+]
+[clap-1538.rs:46] m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;--&quot;,
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:41] m.is_present(&quot;prog-flag&quot;) = true
+[clap-1538.rs:42] m.values_of(&quot;EXECUTABLE&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;executable&quot;,
+]
+[clap-1538.rs:46] m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+</code></pre>
+<p>clap v3 with setting(clap::AppSettings::AllowLeadingHyphen)</p>
+<pre><code>[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;--apple&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:42] m.is_present(&quot;prog-flag&quot;) = true
+[clap-1538.rs:43] m.values_of(&quot;EXECUTABLE&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;executable&quot;,
+]
+[clap-1538.rs:47] m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;--apple&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;--&quot;,
+    &quot;--apple&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:42] m.is_present(&quot;prog-flag&quot;) = true
+[clap-1538.rs:43] m.values_of(&quot;EXECUTABLE&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;executable&quot;,
+]
+[clap-1538.rs:47] m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;--apple&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:42] m.is_present(&quot;prog-flag&quot;) = true
+[clap-1538.rs:43] m.values_of(&quot;EXECUTABLE&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;executable&quot;,
+]
+[clap-1538.rs:47] m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:16] args = [
+    &quot;cmd&quot;,
+    &quot;--prog-flag&quot;,
+    &quot;executable&quot;,
+    &quot;--&quot;,
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+[clap-1538.rs:42] m.is_present(&quot;prog-flag&quot;) = true
+[clap-1538.rs:43] m.values_of(&quot;EXECUTABLE&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;executable&quot;,
+]
+[clap-1538.rs:47] m.values_of(&quot;ARGS&quot;).unwrap_or_default().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;-a&quot;,
+    &quot;1&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-09 20:58</div>
+            <div class="timeline-body"><p>The fact that <code>Arg::allow_hyphen_values</code> doesn't fix the issue but <code>Command::allow_hyphen_values</code>  is confusing and an example of why we need to address https://github.com/clap-rs/clap/issues/3450</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-09 21:43</div>
+            <div class="timeline-body"><p>As noted in #4039, since <code>Command::allow_hyphen_values</code> looks to be a workaround, I am de-prioritizing an immediate fix so we can evaluate some of the larger questions</p>
+<ul>
+<li>What changes are breaking changes and can be backported to <code>v3-master</code> and what changes must stay in <code>master</code> (v4)<ul>
+<li>What is the justification for it no being breaking?</li>
+<li>What is the scope and impact of a breaking change?  Can we accept that cost, even for v4?</li>
+</ul>
+</li>
+<li>Why do we need <code>allow_hyphen_values</code> at both Command and Arg level, see  https://github.com/clap-rs/clap/issues/3450</li>
+<li><a href="https://github.com/clap-rs/clap/discussions/3984#discussioncomment-3361504">Why do we need <code>Command::trailing_var_arg</code> rather than assuming it from the last argument?</a></li>
+<li>Why is <code>trailing_var_arg</code> on <code>Command</code> rather than <code>Arg</code>, like <code>last</code>?</li>
+</ul>
+<p>As well, when we resolve this, we should</p>
+<ul>
+<li>Ensure <code>trailing_var_arg</code> and <code>last</code> are cross-linked</li>
+<li>Ensure <code>trailing_var_arg</code> discusses the role of <code>allow_hyphen_values</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4187.html">clap-rs/clap#4187</a> on 2022-09-07 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-07 02:30</div>
+            <div class="timeline-body"><p>I'm feeling fairly confident in the behavior in #4187</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-09-07 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../denoland/deno/pulls/16194.html">denoland/deno#16194</a> on 2022-10-07 13:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

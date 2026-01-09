@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support `tool.hatch.build.dev-mode-dirs` without requiring project dependencies to be installed - astral-sh/uv #15917</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support `tool.hatch.build.dev-mode-dirs` without requiring project dependencies to be installed</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15917">#15917</a>
+        opened by <a href="https://github.com/NellyWhads">@NellyWhads</a>
+        on 2025-09-17 18:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NellyWhads">@NellyWhads</a> on 2025-09-17 18:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I would like to prepare a project's environment such that:</p>
+<ol>
+<li>A specific optional dependency group's dependencies are installed</li>
+<li>The project's source code is accessible in the python interpreter</li>
+<li>The project's <code>dev-mode-dirs</code> are available in the python interpreter</li>
+<li>All other dependencies, including the core <code>project</code> dependencies are not installed</li>
+</ol>
+<p>The immediate use case is to reference a custom commit parser module for <code>python-semantic-release</code> when versioning, building, and releasing the wheel.</p>
+<p>Though the example below is simple, various default and non-default groups include dependencies that cannot be installed on the CI runner instance where the package release processes needs to be executed.</p>
+<h3>Example</h3>
+<details><summary>`pyproject.toml`</summary>
+<p>
+
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;, &quot;hatch-polylith-bricks&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+# Enable the polylith-bricks plugin
+[tool.hatch.build.hooks.polylith-bricks]
+
+# Define the required bricks' source and destination locations
+# Including this should not be required when working locally in editable mode due to the setting below
+[tool.polylith.bricks]
+# &quot;../../components/my_custom_module/component_directory&quot; = &quot;my_custom_module/component_directory&quot;
+
+# Install these directories in editable mode when syncing the project
+[tool.hatch.build]
+dev-mode-dirs = [&quot;../../components&quot;, &quot;.&quot;] # The first directory contains the my_custom_module directory
+
+# Include the source code and bricks in the wheel
+[tool.hatch.build.targets.wheel]
+packages = [&quot;my_package&quot;, &quot;my_custom_module&quot;]
+
+[project]
+name = &quot;my-package&quot;
+version = &quot;0.0.0&quot;
+description = &quot;Super useful package. I promise.&quot;
+requires-python = &quot;&gt;=3.11, &lt;3.13&quot;
+dependencies = [
+  &quot;numpy&gt;=1.26.4&quot;,
+  &quot;pandas&gt;=2.3.1&quot;,
+  &quot;torch&gt;=2.4&quot;,
+  &quot;loguru&gt;=0.7&quot;,
+]
+
+[dependency-groups]
+dev = [
+  &quot;poethepoet&quot;,
+  &quot;ipykernel&quot;,
+  &quot;pytest&quot;,
+  &quot;coverage[toml]&quot;,
+]
+release = [&quot;tomlkit&gt;=0.13&quot;, &quot;python-semantic-release~=10.0&quot;]
+</code></pre>
+</p>
+</details>
+
+<p><code>uv run --isolated --group release python -c &quot;import my_custom_module; print(my_custom_module)&quot;</code> works but installs package, <code>dev</code> and <code>release</code> deps.</p>
+<p><code>uv run --isolated --no-default-groups --group release python -c &quot;import my_custom_module; print(my_custom_module)&quot;</code> works but installs package and <code>release</code> deps.</p>
+<p><code>uv run --isolated --no-default-groups --group release --no-editable python -c &quot;import my_custom_module; print(my_custom_module)&quot;</code> works but installs package and <code>release</code> deps. Surprised by this one, but I guess this is because <code>editable</code> probably does not cover <code>dev-mode-dirs</code>.</p>
+<p><code>uv run --isolated --only-group release python -c &quot;import my_custom_module; print(my_custom_module)&quot;</code> installs only <code>release</code> deps but does not install the <code>dev-mode-dirs</code>, and therefore doesn't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @NellyWhads on 2025-09-17 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-17 19:52</div>
+            <div class="timeline-body"><p>I don't think we can respect build-backend-level configuration without installing the project. I think you'll need to further customize hatch to get what you want here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NellyWhads">@NellyWhads</a> on 2025-09-19 13:50</div>
+            <div class="timeline-body"><p>I see - that's fair.</p>
+<p>Can this be supported with the uv build backend? Or is it already supported?</p>
+<p>If so, I can consider switching 👀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../DavidVujic/python-polylith/issues/376.html">DavidVujic/python-polylith#376</a> on 2025-09-22 21:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

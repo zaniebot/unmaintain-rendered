@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff` 0.9.8 raising error 'SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)' in Python 3.13 - astral-sh/ruff #16417</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff` 0.9.8 raising error 'SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)' in Python 3.13</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16417">#16417</a>
+        opened by <a href="https://github.com/aidangallagher4">@aidangallagher4</a>
+        on 2025-02-27 15:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aidangallagher4">@aidangallagher4</a> on 2025-02-27 15:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When running <code>ruff check</code> for the first time on a Python file (version 3.13.1) containing <code>match</code> statements (ie either when <code>ruff</code> has just been installed, or the file has just been created), the error</p>
+<pre><code class="language-python">SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+</code></pre>
+<p>is returned. This error is hard to debug as it will not appear for subsequent runs of <code>ruff check</code> in the same repo (all checks pass) -- I suspect this is why I've been unable to replicate in the <a href="https://play.ruff.rs/c96ec5e7-925f-41f2-adde-22d64d8a3904">playground</a></p>
+<p>Replicated in Python 3.12 and Python 3.13 on Mac running Sequoia 15.3.1, and for the same Python versions on a Windows machine running WSL. MWE here: <a href="https://github.com/user-attachments/files/19012111/ruff-demo.zip">ruff-demo.zip</a></p>
+<p>As a short-term fix you can either revert to <code>ruff&lt;=0.9.7</code> or include the line <code>target-version = &quot;py313&quot;</code> in your ruff config (I assume it would work for any version &gt;3.9)</p>
+<h3>Version</h3>
+<p>ruff 0.9.8 (568cf88c6 2025-02-27)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-27 15:43</div>
+            <div class="timeline-body"><blockquote>
+<p>This error is hard to debug as it</p>
+</blockquote>
+<p>Do you have any suggestions on how we could improve the error message to make it easier?</p>
+<blockquote>
+<p>is returned. This error is hard to debug as it will not appear for subsequent runs of ruff check in the same repo (all checks pass) -- I suspect this is why I've been unable to replicate in the <a href="https://play.ruff.rs/c96ec5e7-925f-41f2-adde-22d64d8a3904">playground</a></p>
+</blockquote>
+<p>This is interesting. That would suggest that we fail to cache the diagnostics correctly and it also seems that we missed to add the diagnostics to the playground. We should look into both (@ntBre).</p>
+<blockquote>
+<p>As a short-term fix you can either revert to ruff&lt;=0.9.7 or include the line target-version = &quot;py313&quot; in your ruff config (I assume it would work for any version &gt;3.9)</p>
+</blockquote>
+<p>Yes, setting the <code>target-version</code> to the python version you use (or use <code>requires-python</code>) is the right fix. It also ensures that the formatter and linter assume the right python version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-02-27 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-27 15:46</div>
+            <div class="timeline-body"><p>Thanks @MichaReiser. Just to confirm, you are using <code>--preview</code> (or an equivalent config option) right? The new errors should only be active on preview.</p>
+<p>The caching thing is definitely surprising to me. I'll look into that and the playground stuff today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-27 15:47</div>
+            <div class="timeline-body"><p>Ah okay I see <code>preview = true</code> in the included config, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @ntBre on 2025-02-27 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aidangallagher4">@aidangallagher4</a> on 2025-02-27 15:54</div>
+            <div class="timeline-body"><p>Hey @MichaReiser, @ntBre, thanks for the swift response. To reply to specifics:</p>
+<blockquote>
+<blockquote>
+<p>This error is hard to debug as it</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>Do you have any suggestions on how we could improve the error message to make it easier?</p>
+</blockquote>
+<p>the error message is perfectly clear, it's just occurring in an invalid context (since I am on Python 3.13)</p>
+<p>Is it the case that <code>target-version</code> is required so <code>ruff</code> is aware of the error (so it is defaulting to below 3.10) or is there some other version-awareness present? If it <em>is</em> the case that it's required then the only issue is the fact that the error <em>doesn't</em> occur again :) If it <em>isn't</em> the case that it's required then I guess version-awareness is broken somehow?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-27 16:20</div>
+            <div class="timeline-body"><p>Yeah, I think <code>target-version</code> or <code>requires-python</code> is currently necessary to specify a non-default value (we currently default to 3.9), but we may need to update that behavior, especially combined with these new errors. With that said, I think you're right that the error here is that it doesn't occur again 😆 . I'll work on that caching and the playground integration for this issue and open a separate issue to discuss the version-awareness. It seems like we could do something better there too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16418.html">astral-sh/ruff#16418</a> on 2025-02-27 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1783.html">astral-sh/ruff#1783</a> on 2025-02-27 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-27 16:57</div>
+            <div class="timeline-body"><p>This is probably somewhat involved but something that could help here as well is to explain why Ruff assumes Python 3.9.</p>
+<p>E.g. <em>Python 3.9 is the default</em> or <em>3.9 is configured in <code>ruff.toml</code></em> etc. Clippy does something like</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16419.html">astral-sh/ruff#16419</a> on 2025-02-27 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16425.html">astral-sh/ruff#16425</a> on 2025-02-27 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PySymGym/PySymGym/pulls/237.html">PySymGym/PySymGym#237</a> on 2025-02-28 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Thell">@Thell</a> on 2025-02-28 03:00</div>
+            <div class="timeline-body"><p>I just wanted to add that I am also getting this <code>match</code> statement syntax error on a fresh extensions setup (vscode) with Python 3.12.9 and <code>requires-python = &quot;&gt;=3.12&quot;</code> in my <code>pyproject.toml</code>. And this is <strong>not</strong> using insiders, preview or anything like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-28 03:01</div>
+            <div class="timeline-body"><p>Do you have a separate <code>ruff.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Thell">@Thell</a> on 2025-02-28 03:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you have a separate <code>ruff.toml</code>?</p>
+</blockquote>
+<p>No. Do you want me to add one with anything specific to test something specific?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Thell">@Thell</a> on 2025-02-28 03:05</div>
+            <div class="timeline-body"><pre><code class="language-toml"># Assume Python 3.12
+target-version = &quot;py312&quot;
+</code></pre>
+<p>That removed the error. I do hope that isn't a 'fix' and is just a work-around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-28 03:08</div>
+            <div class="timeline-body"><p>Hmm, thanks for this report. Maybe it's not properly gated behind <code>--preview</code> in the editor. I also thought it would respect <code>requires-python</code>, but I guess it's only looking at <code>target-version</code>. Both of those are bugs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16429.html">astral-sh/ruff#16429</a> on 2025-02-28 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-28 03:40</div>
+            <div class="timeline-body"><p>Do you have a <code>[tool.ruff]</code> section in your <code>pyproject.toml</code>? I was able to reproduce this with this file:</p>
+<pre><code class="language-toml">[project]
+requires-python = &quot;&gt;=3.12&quot;
+</code></pre>
+<p>but adding an empty <code>tool.ruff</code> table properly loads the <code>requires-python</code> value for me, at least in the CLI:</p>
+<pre><code class="language-toml">[project]
+requires-python = &quot;&gt;=3.12&quot;
+
+[tool.ruff]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Thell">@Thell</a> on 2025-02-28 04:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you have a <code>[tool.ruff]</code> section in your <code>pyproject.toml</code>? I was able to reproduce this with this file:</p>
+</blockquote>
+<p>No, I did not have a <code>[tool.ruff]</code> section. Adding the empty section and commenting out the <code>ruff.toml</code>'s <code>target-version</code> reproduces the syntax error on <code>match</code>, but deleting the <code>roff.toml</code> completely while leaving the empty section induces a proper usage of the project's <code>requires-python</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-28 04:14</div>
+            <div class="timeline-body"><blockquote>
+<p>but adding an empty <code>tool.ruff</code> table properly loads the <code>requires-python</code> value for me, at least in the CLI:</p>
+</blockquote>
+<p>I think it's because unless there's a <code>tool.ruff</code> header in <code>pyproject.toml</code> we don't read the <code>requires-python</code> field in it. This means that Ruff will target <code>3.9</code> (default) even though <code>requires-python</code> says <code>&gt;=3.12</code>. This should be resolved by https://github.com/astral-sh/ruff/pull/16319 at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-28 04:16</div>
+            <div class="timeline-body"><p>Thanks @dhruvmanila, you just beat me to it 😄 This is pretty much what I was typing out:</p>
+<p>Okay, I think that's in line with the current <a href="https://docs.astral.sh/ruff/configuration/#config-file-discovery">config file discovery</a> mechanism, but we should be updating that in the next minor release to be a bit more intuitive (https://github.com/astral-sh/ruff/pull/16319). And I have a PR up to fix the preview gate, which should be out in the next patch release next week.</p>
+<p>Thanks again for the report and for testing out all these configurations!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-28 04:18</div>
+            <div class="timeline-body"><blockquote>
+<p>And I have a PR up to fix the preview gate, which should be out in the next patch release next week.</p>
+</blockquote>
+<p>We can do a release after your fix is merged to get it out quickly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-vscode/issues/709.html">astral-sh/ruff-vscode#709</a> on 2025-02-28 04:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-28 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16610.html">astral-sh/ruff#16610</a> on 2025-03-11 08:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv` as a system Python provider - astral-sh/uv #13507</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv` as a system Python provider</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13507">#13507</a>
+        opened by <a href="https://github.com/Andrej730">@Andrej730</a>
+        on 2025-05-17 12:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Andrej730">@Andrej730</a> on 2025-05-17 12:52</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Is it possible to use <code>uv</code> to provide globally available (<em>system</em>?) python? Or it's out of scope for <code>uv</code> (e.g. <code>uv</code> is focused on project package management <em>only</em>) and I should install Python from elsewhere?</p>
+<p>I mean I can use  <code>uv python install 3.11 --preview</code> to make it globally available as <code>python3.11</code> (or even <code>--default</code> for <code>python</code>), but it's not very useful as global Python as <code>uv pip install</code> works only for venvs.</p>
+<p>To understand my pov - I wanted to try to switch to <code>uv</code> completely, but most of the scripts on the system are using simple <code>python xxx.py</code> to run, so they do need system installed dependencies and since <code>uv pip install xxx --system</code> won't work on <code>uv python install</code> installations as they're <em>managed</em>. And it seems the only way to make it work is to have two Python instances of the same version installed (one from <code>uv</code>, one from elsewhere).</p>
+<p>If it would be possible, it would help users transition to <code>uv</code> more seamlessly.</p>
+<h3>Platform</h3>
+<p>Windows 11</p>
+<h3>Version</h3>
+<p>uv 0.7.5 (9d1a14e1f 2025-05-16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @Andrej730 on 2025-05-17 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eegli">@eegli</a> on 2025-05-18 15:27</div>
+            <div class="timeline-body"><p>If you really need a &quot;system-wide&quot; like environment and cannot use inline dependencies in scripts, is there anything that goes against creating a dedicated virtual environment somewhere and then using this globally? One could activate the virtual env on shell startup and make the &quot;system&quot; python available in the path.</p>
+<pre><code class="language-sh"># initial setup, needs to be run once
+mkdir uv-global &amp;&amp; cd uv-global
+uv venv --python 3.13
+
+# adjust shell and paths for Windows if needed
+echo &quot;export PATH=\&quot;$(realpath .venv/bin):\$PATH\&quot;&quot; &gt;&gt; ~/.bashrc
+echo &quot;source \&quot;$(realpath .venv/bin/activate)\&quot;&quot; &gt;&gt; ~/.bashrc
+
+# initialize
+source ~/.bashrc
+</code></pre>
+<p>For managing packages, you'll have to cd to <code>uv-global</code> and do <code>uv pip install xyz</code>:</p>
+<pre><code class="language-sh">cd uv-global
+uv pip install polars
+</code></pre>
+<p>Finally, your new global env should be good to go:</p>
+<p><code>python -c &quot;import polars; print(polars.__version__)&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-19 07:54</div>
+            <div class="timeline-body"><p>For your use case, there is inline script metadata and <code>uv run script.py</code>, which will install the dependencies with your script. We intentionally avoid having a single big global environment with packages for multiple scripts and instead support per-script isolated environments and tool installations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrej730">@Andrej730</a> on 2025-05-19 19:32</div>
+            <div class="timeline-body"><blockquote>
+<p>For your use case, there is inline script metadata and <code>uv run script.py</code>, which will install the dependencies with your script. We intentionally avoid having a single big global environment with packages for multiple scripts and instead support per-script isolated environments and tool installations.</p>
+</blockquote>
+<p>I understand, but the transition to this workflow is hard and sometimes is not very reasonable.</p>
+<blockquote>
+<p>If you really need a &quot;system-wide&quot; like environment and cannot use inline dependencies in scripts, is there anything that goes against creating a dedicated virtual environment somewhere and then using this globally? One could activate the virtual env on shell startup and make the &quot;system&quot; python available in the path.</p>
+</blockquote>
+<p>That's an interesting approach, it's cleaner then <code>uv pip install xxxx --system --break-system-packages</code> I've currently taken for global dependencies.</p>
+<p>Not sure how reliable this would be on Unix, but on Windows it's very hard to convince system to always activate venv before anything it does. So I've taken a different approach -  I've created &quot;system venv&quot;, then added 'systemvenv.pth' file with contents 'L:\Software\uv\systemvenv.venv\Lib\site-packages' to my system python's folder 'cpython-3.11.12-windows-x86_64-none\Lib\site-packages. At first I thought about referencing this venv site-packages in <code>PYTHONPATH</code>, but that may conflict with other Python instances at some point,</p>
+<p>And I've also defined <code>pip.bat</code> as a shim for using <code>pip</code>:</p>
+<pre><code class="language-bat">uv pip %* --directory L:\Software\uv\systemvenv
+</code></pre>
+<p>So I can use <code>pip install xxx</code> / <code>pip uninstall xxx</code> to access &quot;system&quot; environment.</p>
+<p>The one caveat I've currently met that I cannot use <code>pip install -r pyproject.toml</code> anymore, since <code>--directory L:\Software\uv\systemvenv</code> basically does <code>cd L:\Software\uv\systemvenv</code> before command execution, so it's looking for 'pyproject.toml' in 'L:\Software\uv\systemvenv'. The workaround is to provide absolute path <code>pip install -r L:\xxx\yyy\pyproject.toml</code>.</p>
+<p>I've tried to use <code>--project</code> like below, but I guess because of the presense of pyproject.toml it starts to looking for venv in the current directory, so <code>--directory</code> is the best option for now for this shim.</p>
+<pre><code class="language-bat">:: error: No virtual environment found; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+uv pip install -r pyproject.toml --project L:\Software\uv\systemvenv
+</code></pre>
+<p>Update. A note for anyone stumbling upon this, <code>.pth</code> can significantly slowdown Python startup time and adding <code>L:\Software\uv\systemvenv\.venv\Scripts</code> to PATH turned to to work much better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-20 13:28</div>
+            <div class="timeline-body"><p>Yeah, it is intentional that we don't support using these as system Pythons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-05-20 13:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

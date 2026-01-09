@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP007 emitted for dynamic `Union` creation - astral-sh/ruff #21347</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP007 emitted for dynamic `Union` creation</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21347">#21347</a>
+        opened by <a href="https://github.com/wRAR">@wRAR</a>
+        on 2025-11-09 17:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wRAR">@wRAR</a> on 2025-11-09 17:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It's possible to pass a tuple of types to <code>Union</code> at the run time:</p>
+<pre><code class="language-py">from typing import Union
+
+
+def f(types: tuple[type, ...]):
+    return Union[types]
+
+
+if __name__ == &quot;__main__&quot;:
+    u = f((int, str, float))
+    print(u)  # typing.Union[int, str, float]
+    print(type(u))  # &lt;class 'typing._UnionGenericAlias'&gt;
+</code></pre>
+<p>ruff emits <code>UP007 Use `X | Y` for type annotations</code> for this, but I don't see how can that be done.</p>
+<p>Playground link: https://play.ruff.rs/b9d9c214-7cf5-473e-914f-264a6da9a92d</p>
+<h3>Version</h3>
+<p>0.14.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-10 13:45</div>
+            <div class="timeline-body"><p>Interesting, I'm surprised that the lint isn't restricted to annotation positions as the message indicates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-11-10 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-10 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21375.html">astral-sh/ruff#21375</a> on 2025-11-11 04:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-11 15:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Interesting, I'm surprised that the lint isn't restricted to annotation positions as the message indicates.</p>
+</blockquote>
+<p>I think it's useful for it to be applied in non-annotation positions too -- e.g. I'd want this autofix applied:</p>
+<pre><code class="language-diff">- from typing import Union
+
+  # implicit type alias
+- X = Union[int, str]
++ X = int | str
+</code></pre>
+<blockquote>
+<p>ruff emits <code>UP007 Use `X | Y` for type annotations</code> for this, but I don't see how can that be done.</p>
+</blockquote>
+<p>I guess you can dynamically construct a PEP-604 union like this, though I agree it's not quite as pretty to look at:</p>
+<pre><code class="language-py">import functools
+import operator
+
+
+def f(types: tuple[type, ...]):
+    return functools.reduce(operator.or_, types)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-11 15:56</div>
+            <div class="timeline-body"><p>I'm surprised that the rule flags usages of <code>Union</code>s with a single argument (<code>Union[types]</code> vs <code>Union[types, str]</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-11 16:00</div>
+            <div class="timeline-body"><p>Ah that might be a better way to filter this out. We should definitely support the implicit type alias case.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>how to add non-source files to package / build backends ? - astral-sh/uv #11502</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>how to add non-source files to package / build backends ?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11502">#11502</a>
+        opened by <a href="https://github.com/dd-ssc">@dd-ssc</a>
+        on 2025-02-14 06:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dd-ssc">@dd-ssc</a> on 2025-02-14 06:34</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm in the process of migrating all of my company's python projects from poetry to uv.</p>
+<p>I don't have a lot of experience with uv yet, but so far, the <a href="https://docs.astral.sh/uv">published speed charts</a> don't do it justice - uv is actually even faster: In some projects and scenarios, it takes poetry up to half an hour to create a virtual environment and install packages; uv typically does that in less than a second 🚀🚀🚀🤩.</p>
+<p>The changes in <code>pyproject.toml</code> to migrate are somewhat straight forward and I can successfully build a package using simply <code>uv build</code> ✅</p>
+<p>However, I could not find a way to configure non-source files that should go into the package created with <code>uv build</code>; a <code>.yaml</code> configuration file in my case. With poetry, I used to do that with e.g.</p>
+<pre><code>include = ['some_path/my_file.yaml']
+</code></pre>
+<p>While researching if there's a uv equivalent, I came across <a href="https://github.com/astral-sh/uv/issues/9800#issuecomment-2537161658">this somewhat related post</a> that looks promising. I naively tried adding only</p>
+<pre><code>[tool.uv.build-backend.data]
+data = 'some_path/my_file.yaml'
+</code></pre>
+<p>but that doesn't seem to have any effect. Then I realized I don't even have a <code>[build-system]</code> section in my <code>pyproject.toml</code> file yet. When I add</p>
+<pre><code>[build-system]
+requires = [&quot;uv&gt;=0.5,&lt;0.6&quot;]
+build-backend = &quot;uv&quot;
+</code></pre>
+<p><code>uv build</code> fails with</p>
+<pre><code>AttributeError: Using `uv.build_sdist` is not allowed. The uv build backend requires preview mode to be enabled, e.g., via the `UV_PREVIEW=1` environment variable.
+</code></pre>
+<p>When I do <code>UV_PREVIEW=1 uv build</code>, the build fails with</p>
+<pre><code>Building source distribution (uv build backend)...
+Building wheel from source distribution (uv build backend)...
+  × Failed to build `&lt;path to root folder of package source code&gt;`
+  ╰─▶ Expected a Python module with an `__init__.py` at: `&lt;my home folder&gt;/.cache/uv/sdists-v7/.tmpcf7V8p/&lt;my package&gt;-&lt;package version/src/&lt;root folder&gt;`
+</code></pre>
+<p>The folder underneath <code>.cache</code> seems to exist during the build only, not afterwards 🤷🏻‍♂️</p>
+<p>It seems I don't have the uv background knowledge to understand what's wrong here.
+I would therefore greatly appreciate if someone could give me some pointers:</p>
+<ol>
+<li>what build backend does uv use by default, i.e. if I don't have a <code>[build-system]</code> section in my <code>pyproject.toml</code> file ?</li>
+<li>what is the generally recommended build backend ?</li>
+<li>what build backend supports configuring additional files that should go into the package ?</li>
+</ol>
+<p>Thank you very much for any help 🙏🏻</p>
+<h3>Platform</h3>
+<p>Darwin 23.6.0 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.5.29 (Homebrew 2025-02-06)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dd-ssc on 2025-02-14 06:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2025-02-14 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-03 18:45</div>
+            <div class="timeline-body"><blockquote>
+<p>what is the generally recommended build backend ?
+what build backend supports configuring additional files that should go into the package ?</p>
+</blockquote>
+<p>If you're looking for something that just works, I'd recommend hatchling, our default with <code>uv init</code>. It has extensive configuration options (https://hatch.pypa.io/latest/config/build/).</p>
+<p>For the uv build backend, what is project layout like and how does the rest of the <code>pyproject.toml</code> look like?</p>
+<p>I'll quickly describe the two ways to add extra files to a wheel with the uv build backend.</p>
+<p>The first option is to add them next to your Python files. This is the easiest option, you have your <code>src/foo</code> with an <code>__init__.py</code> and you also put the yaml file there. Being in this directory it is still scoped to the project when installing, and you can find its location as <code>Path(__file__).parent.join(&quot;my_file.yaml&quot;)</code> from the <code>__init__.py</code>.</p>
+<p>The other option is to add a data directory. The data directories are special in that they get unpacked into the venv separately, in locations specified by the interpreter. The data/data directory gets unpacked into the root of the venv, it can e.g. be used for sharing files cross packages. The <code>[tool.uv.build-backend.data]</code> entries must point to directories, we should show at least a warning when they don't.</p>
+<p>Note that both structures require a Python module structure: The missing <code>__init__.py</code> error is about the build backend not finding source code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-03-03 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dd-ssc">@dd-ssc</a> on 2025-03-06 18:10</div>
+            <div class="timeline-body"><p>Thank you very much for your response, that is certainly helpful information 👍</p>
+<p>Knowing what build backend uv uses as default IMO is absolutely crucial; getting further info from the hatch docs then is trivial.</p>
+<p>Two observations:</p>
+<p>I have created two test projects with</p>
+<ol>
+<li><code>uv init</code></li>
+<li><code>uv init --build-backend hatch</code></li>
+</ol>
+<p>which to my surprise did not result in identical projects.</p>
+<p>Also, even when run with <code>--verbose</code>, <code>uv init</code> does not mention the build backend at all.</p>
+<p>I don't think any of that info is documented anywhere, so I have amended the documentation: <a href="https://github.com/astral-sh/uv/pull/12011">https://github.com/astral-sh/uv/pull/12011</a>. (On a side note: I am a little confused: The file I changed is actually a <code>.md</code> MarkDown file, but it largely uses HTML (<code>&lt;p&gt;</code>, <code>&lt;code&gt;</code>, etc.) ?!? 🤷🏻‍♂️).</p>
+<p>If that PR gets merged, we can probably close this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dd-ssc">@dd-ssc</a> on 2025-03-06 18:16</div>
+            <div class="timeline-body"><p>OK, just got a notification that the PR checks failed; I had a feeling I'm probably modifying a generated file 🙈. I'll look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12011.html">astral-sh/uv#12011</a> on 2025-03-06 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dd-ssc">@dd-ssc</a> on 2025-03-06 19:23</div>
+            <div class="timeline-body"><p>I messed up the first PR https://github.com/astral-sh/uv/pull/12011; second attempt: https://github.com/astral-sh/uv/pull/12017.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2025-03-07 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dd-ssc">@dd-ssc</a> on 2025-03-09 10:57</div>
+            <div class="timeline-body"><p>A quick summary for anyone coming here in the future:</p>
+<ol>
+<li>Check if your <code>pyproject.toml</code> contains a <code>[build-system]</code> section; if it does not, add one:</li>
+</ol>
+<pre><code>[build-system]
+build-backend  = 'hatchling.build'
+requires       = ['hatchling']
+</code></pre>
+<ol start="2">
+<li>See the <a href="https://hatch.pypa.io/latest/config/build/#file-selection">hatch docs</a> for how to include files in the package.</li>
+</ol>
+<p>We tried to use the <a href="https://hatch.pypa.io/latest/config/build/#forced-inclusion"><code>force-include</code> option</a>, but adding something like</p>
+<pre><code>[tool.hatch.build.targets.wheel.force-include]
+../../local_path/my_file.yaml = 'path_in_package/my_file.yaml'
+</code></pre>
+<p>failed with</p>
+<pre><code>FileNotFoundError: Forced include not found: &lt;home folder&gt;/.cache/uv/sdists-v8/local_path/my_file.yaml
+× Failed to build `&lt;path to my project&gt;`
+</code></pre>
+<p>so instead, we copy the additional files to underneath the source code root folder before <code>uv build</code> and delete them afterwards - which is what @konstin <a href="https://github.com/astral-sh/uv/issues/11502#issuecomment-2695259348">describes as the first option</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dd-ssc on 2025-03-09 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12017.html">astral-sh/uv#12017</a> on 2025-03-09 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/justRishi">@justRishi</a> on 2025-06-18 17:49</div>
+            <div class="timeline-body"><p>For including <code>json -files</code>  I use something like this for <code>uv</code>, works fine:</p>
+<pre><code class="language-yaml">[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+# add extensions or files that need to be in the package
+&quot;some-package&quot; = [&quot;*.json&quot;]
+# or define path in package where json 's are allowed.
+#&quot;some-package.util.resources = [&quot;*.json&quot;] 
+
+[project]
+name = &quot;some-package-name&quot;
+....
+source: https://setuptools.pypa.io/en/latest/userguide/datafiles.html#package-data
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/slhck">@slhck</a> on 2025-11-03 11:10</div>
+            <div class="timeline-body"><p>For me it was enough to do:</p>
+<pre><code class="language-toml">[tool.uv_build]
+src-layout = true
+package-data = {&quot;my_package&quot; = [&quot;data/**/*.json&quot;]}
+</code></pre>
+<p>E.g.:</p>
+<pre><code>$ uv build                       
+Building source distribution...
+Building wheel from source distribution...
+Successfully built dist/my_package-1.35.0.tar.gz
+Successfully built dist/my_package-1.35.0-py3-none-any.whl
+
+$ tar -tvf dist/my_package-1.35.0.tar.gz | grep data                                                                               
+drwxr-xr-x  0 0      0           0 Jan  1  1970 my_package-1.35.0/src/my_package/data
+drwxr-xr-x  0 0      0           0 Jan  1  1970 my_package-1.35.0/src/my_package/data/presets
+-rw-r--r--  0 0      0          96 Jan  1  1970 my_package-1.35.0/src/my_package/data/presets/foo.json
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shiftleft1">@shiftleft1</a> on 2025-11-10 19:50</div>
+            <div class="timeline-body"><p>Simply follow https://setuptools.pypa.io/en/latest/userguide/datafiles.html#package-data</p>
+<p>pyproject.toml</p>
+<pre><code class="language-toml">[tool.setuptools.package-data]
+mypkg = [&quot;schemas/**/*.json&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidbrochart">@davidbrochart</a> on 2025-11-15 08:30</div>
+            <div class="timeline-body"><p>From the <a href="https://docs.astral.sh/uv/reference/settings/#build-backend_source-include">documentation</a>:</p>
+<pre><code class="language-toml">[tool.uv.build-backend]
+source-include = [&quot;tests/**&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gbrandt1">@gbrandt1</a> on 2025-12-03 10:28</div>
+            <div class="timeline-body"><p>none of the above solutions work for me when using workspaces and the top-level is a virtual package.
+ie. if i have the following the structure, copied and modified from the documentation:</p>
+<p>albatross
+├── packages
+│   ├── bird-feeder
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       └── bird_feeder
+│   │           ├── <strong>init</strong>.py
+│   │           ├── bird-feeder-catalogue.json
+│   │           └── foo.py
+│   ...
+├── pyproject.toml
+├── README.md
+└── uv.lock</p>
+<p>the top-level pyproject.toml uses the current version of uv_build as build-system.
+i've tried all suggestions to have the <code>bird-feeder-catalogue.json</code> file included in the bird-feeder wheel but nothing works.
+what are the magic words for this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-03 16:41</div>
+            <div class="timeline-body"><p>@gbrandt1 Which <code>pyproject.toml</code> has a <code>[project]</code> and/or <code>[build-system]</code> table? It might be a problem with the rendering, but the <code>__init__.py</code> and <code>bird-feeder-catalogue.json</code> should be under <code>src/bird_feeder</code>, and bird feeder should be what is built, not the top level <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gbrandt1">@gbrandt1</a> on 2025-12-03 19:47</div>
+            <div class="timeline-body"><p>yes this source tree did not render nicely. the jsons were in the correct place. however:
+the bird-feeder package did not have a build backend defined. it was my assumption that for workspaces the build backend should only be defined in the top level package. adding it now to bird-feeder as well solved the problem.
+of course you are right, what is getting built is bird-feeder. however, i made the top level virtual package depend on bird-feeder (and the other packages in the monorepo) and then tried to install (and thus transiently build) them by way of installing the top level package. this still does not work. but i'm not sure it is expected to, and it is a separate issue from this topic.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

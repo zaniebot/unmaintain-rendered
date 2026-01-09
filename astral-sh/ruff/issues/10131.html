@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow to declare modules/calls as deprecated - astral-sh/ruff #10131</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow to declare modules/calls as deprecated</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10131">#10131</a>
+        opened by <a href="https://github.com/CarliJoy">@CarliJoy</a>
+        on 2024-02-26 10:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CarliJoy">@CarliJoy</a> on 2024-02-26 10:24</div>
+            <div class="timeline-body"><p>Working in larger groups it is sometime hard to enforce a common style.
+Therefore we established a Pylint plugin in which we can define some modules as &quot;deprecated&quot; in order to inform all contributors of preferred alternatives.</p>
+<p>I.e. instead of <code>os.path</code> use <code>pathlib</code> or instead of  <code>requests</code> use <code>httpx</code> or don't use <code>print</code> but use <code>logging.debug</code> instead.
+Or don't use <code>multiprocessing.Pool()</code> but <code>concurrent.futures.ProcessPoolExecutor</code></p>
+<p>The Plugin takes either a module like <code>os.path</code> or a function/class call of a module like <code>multiprocessing.Pool()</code>.</p>
+<p>In case of a module it warns only on the import of the given module.
+In case of a call it warn if the given function/class is import i.e. <code>from multiprocessing import Pool</code> or if only <code>import multiprocessing</code> is done, on every <code>multiprocessing.Pool</code> call.</p>
+<p>For each module/call one can define a custom string that is shown to the user, i.e. <code>Don't use os.path because pathlib is more flexible</code> or similar.
+Also one can define if the given error is only a mere convention or rather an error.</p>
+<p>Having a similar possibility in ruff is the last blocker for a migration.</p>
+<p>I guess also other teams would benefit from the possibility to mark certain modules/calls as deprecated/not wanted.</p>
+<p>Is it thinkable to add a rule, lets say <code>DEP</code> to ruff that allows to declare different modules as deprecated?</p>
+<p>For example:</p>
+<pre><code class="language-toml">[[tool.ruff.lint.deprecation]]
+old = &quot;os.path&quot;
+new = &quot;pathlib&quot;
+code = &quot;DEPE001&quot;
+message = &quot;Please use pathlib for paths&quot;
+
+[[tool.ruff.lint.deprecation]]
+old = &quot;print&quot;
+code = &quot;DEPC001&quot;
+message = &quot;Consider using logging.debug or click.echo instead of print to make the context of the output more clear.&quot;
+
+[[tool.ruff.lint.deprecation]]
+old = &quot;multiprocessing.Pool()&quot;
+new = &quot;concurrent.futures.ProcessPoolExecutor&quot;
+code = &quot;DEPE002&quot;
+message = &quot;multiprocessing.Pool multiprocessing.Pool is susceptible to deadlocks in the context of OOM kills. Please use concurrent.futures.ProcessPoolExecutor or our custom implementation instead&quot;
+
+[[tool.ruff.lint.deprecation]]
+old = &quot;company_megalib&quot;
+code = DEPE003&quot;
+message = &quot;Don't use company_megalib anymore but look at &lt;URL&gt; to get a possible replacement&quot;
+</code></pre>
+<p>I haven't seen neither array declaration nor custom codes in ruff yet.
+Is this even wanted/okay?
+Maybe we should only allow a set of fixed codes like:</p>
+<ul>
+<li><code>DEPE001</code>:  user-defined-deprecation-error</li>
+<li><code>DEPC002</code>:  user-defined-deprecation-convention</li>
+<li>…</li>
+</ul>
+<p>What do you think, could something like this become part of ruff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sscherfke">@sscherfke</a> on 2024-02-26 11:46</div>
+            <div class="timeline-body"><p>Maybe the configuration can be simplyfied to sth. like this:</p>
+<pre><code class="language-toml">[tool.ruff.deprecated_modules]  # Results in warnings
+&quot;old.modname&quot; = &quot;Plz use other.lib&quot;
+&quot;os.path&quot; = &quot;Please use pathlib&quot;
+
+[tool.ruff.forbidden_modules]  # Results in errors
+requests = &quot;Use must use httpx for web requests&quot;
+</code></pre>
+<p>It's a bit less flexible, but more clear to read and easier to write.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-02-26 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">plugin</span> added by @MichaReiser on 2024-02-26 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Taragolis">@Taragolis</a> on 2024-02-28 23:04</div>
+            <div class="timeline-body"><p><a href="https://docs.astral.sh/ruff/rules/banned-api/">banned-api (TID251)</a> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sscherfke">@sscherfke</a> on 2024-02-29 08:12</div>
+            <div class="timeline-body"><p>Here are the docs for it: https://docs.astral.sh/ruff/settings/#lint_flake8-tidy-imports_banned-api</p>
+<p>Looks good enough for me.  What do you think, @CarliJoy ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12693.html">astral-sh/ruff#12693</a> on 2024-08-06 06:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-10 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CarliJoy">@CarliJoy</a> on 2024-11-10 16:30</div>
+            <div class="timeline-body"><p>Sorry for the late reply @sscherfke implemented the banned-api rules and it works as expected.
+Thanks for the clean up MichaReiser</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

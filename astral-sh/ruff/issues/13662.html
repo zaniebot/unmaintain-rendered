@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detection of duplicate enum literals in dictionary keys (F601) - astral-sh/ruff #13662</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detection of duplicate enum literals in dictionary keys (F601)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13662">#13662</a>
+        opened by <a href="https://github.com/tsx">@tsx</a>
+        on 2024-10-07 14:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tsx">@tsx</a> on 2024-10-07 14:05</div>
+            <div class="timeline-body"><p><a href="https://docs.astral.sh/ruff/rules/multi-value-repeated-key-literal/#multi-value-repeated-key-literal-f601">multi-value-repeated-key-literal (F601)</a> only works with primitive literals like keys and strings. In our codebase we use enums extensively for increased type safety over strings, and that includes mappings of enum values to other values. I'd love ruff to find issues in those too.</p>
+<p>This triggers F601:</p>
+<pre><code class="language-python">string_keys = {&quot;a&quot;: 1, &quot;a&quot;: 2}
+</code></pre>
+<p>This doesn't trigger but should:</p>
+<pre><code class="language-python">from enum import Enum
+class E(Enum):
+    A = &quot;a&quot;
+
+enum_keys = {E.A: 1, E.A: 2}
+</code></pre>
+<p>(ruff 0.6.9)</p>
+<p>Thanks for the awesome tool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> added by @MichaReiser on 2024-10-07 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-10-07 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-07 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-07 14:12</div>
+            <div class="timeline-body"><p>That makes sense but isn't something that ruff can support today without proper multifile analysis (to support enums imported from other files) and type inference (to get the types of enum constants).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsx">@tsx</a> on 2024-10-07 15:00</div>
+            <div class="timeline-body"><p>Would it make sense to make a separate rule that checks for identical expressions in keys? It can have false positives if the expression has side effects and changes value on every evaluation, but one can argue that using those as &quot;keys&quot; in a dictionary is very confusing and obscures the code intent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-07 15:41</div>
+            <div class="timeline-body"><p>Good point. We could possibly extend the <a href="https://docs.astral.sh/ruff/rules/multi-value-repeated-key-variable/">multi-value-repeated-key-variable</a> rule to support identical attribute chains. The rule already supports simple names. But that would be a change in scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-07 15:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optional value with require_equals leads to debug assertion failure: mismatch between `num_args` (0) and `takes_value` - clap-rs/clap #4494</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Optional value with require_equals leads to debug assertion failure: mismatch between `num_args` (0) and `takes_value`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4494">#4494</a>
+        opened by <a href="https://github.com/dsherret">@dsherret</a>
+        on 2022-11-20 19:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dsherret">@dsherret</a> on 2022-11-20 19:17</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.65.0</p>
+<h3>Clap Version</h3>
+<p>4.0.26</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">fn main() {
+  let app = clap::Command::new(&quot;command&quot;).arg(
+    clap::Arg::new(&quot;incremental&quot;)
+      .long(&quot;incremental&quot;)
+      .num_args(0..1)
+      .value_parser([&quot;true&quot;, &quot;false&quot;])
+      .action(clap::ArgAction::Set) // if I don't have this it panics
+      .require_equals(true),
+  );
+
+  app.try_get_matches_from(&amp;[&quot;command&quot;, &quot;--incremental&quot;]).unwrap();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run</p>
+<h3>Actual Behaviour</h3>
+<p>panicked at 'assertion failed: <code>(left == right)</code>
+left: <code>false</code>,
+right: <code>true</code>: Argument incremental: mismatch between <code>num_args</code> (0) and <code>takes_value</code>', C:\Users\david.cargo\registry\src\github.com-1ecc6299db9ec823\clap-4.0.26\src\builder\debug_asserts.rs:769:5</p>
+<h3>Expected Behaviour</h3>
+<p>Should not fail debug assert.</p>
+<p>The user may provide no flag, <code>--incremental</code>, <code>--incremental=true</code>, or <code>--incremental=false</code> and I need to know all four states because it leads to different behaviour (well, <code>--incremental</code> and <code>--incremental=true</code> are the same).</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @dsherret on 2022-11-20 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-21 12:51</div>
+            <div class="timeline-body"><p>The assert is correct, <code>incremental</code> does not accept any values.</p>
+<p><code>.num_args(0..1)</code> is being set.  In Rust <code>0..1</code> is mathematically <code>[0, 1)</code>, meaning it includes 0 but excludes 1.  With discrete numbers, this just leaves 0, making it the equivalent of <code>.num_args(0)</code></p>
+<p>What the program needs is <code>.num_args(0..=1)</code>.  In Rust <code>0..=1</code> is mathematically <code>[0, 1]</code>, meaning it includes 0 and includes 1.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-11-21 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsherret">@dsherret</a> on 2022-11-21 15:03</div>
+            <div class="timeline-body"><p>Ugh, right. Thanks!</p>
+<p>One feedback is probably the assertion text could be improved. I didn't know what <code>num_args (0)</code> meant until you mentioned that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-21 15:21</div>
+            <div class="timeline-body"><p>The problem is that we normalize <code>num_args</code> before we get to the assertions, so that was all we knew.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

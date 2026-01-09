@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E402: Exempt `gi.require_version[s]()` preceding imports - astral-sh/ruff #20288</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>E402: Exempt `gi.require_version[s]()` preceding imports</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20288">#20288</a>
+        opened by <a href="https://github.com/ferdnyc">@ferdnyc</a>
+        on 2025-09-07 20:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ferdnyc">@ferdnyc</a> on 2025-09-07 20:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Code written using <a href="https://pygobject.gnome.org/">PyGObject</a> that imports versioned GObject-Introspection (<code>gi</code>) typelibs requires version-selection calls to precede the actual module imports, e.g.</p>
+<pre><code class="language-python">import gi
+
+# Either    
+gi.require_version('Gtk', '4.0')
+gi.require_versions({'GObject': '2.0', 'Gio': '2.0'})
+
+from gi.repository import GObject, Gio, Gtk
+</code></pre>
+<p>Because these calls are necessary and unavoidable with PyGObject, a narrow exception to rule E402 would be valuable.</p>
+<p><strong>Note:</strong> I already have a pull request ready to go that addresses this, but I wanted to formalize the need/request with an issue first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20289.html">astral-sh/ruff#20289</a> on 2025-09-07 22:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-08 19:45</div>
+            <div class="timeline-body"><p>Thanks for the issue (and PR)! There have been a couple of recent discussions about similar issues with E402 (https://github.com/astral-sh/ruff/issues/19928, https://github.com/astral-sh/ruff/issues/19904). I think we may want to handle all of these together instead of adding special casing for <code>gi</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-09-08 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-09-08 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ferdnyc">@ferdnyc</a> on 2025-09-08 20:00</div>
+            <div class="timeline-body"><p>@ntBre Having some sort of general configuration for &quot;functions to allow interspersed with imports&quot; would certainly be more flexible. Though it's a slippery slope to the land of ESLint-level configurability. <strong>#ThereBeDragons</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-16 07:37</div>
+            <div class="timeline-body"><p>Allowlisting <code>PyGObject</code> by default seems too library-specific to me.</p>
+<p>Are those <code>gi.require_version</code> calls required in many modules or just a few?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ferdnyc">@ferdnyc</a> on 2025-09-16 08:26</div>
+            <div class="timeline-body"><p>@MichaReiser</p>
+<p>Technically/Officially, anything that uses GObject-Introspection.</p>
+<p>Practically, any module that'll be the <em>first</em> one to load a multi-versioned introspection library. (So, any runnable module, as opposed to a pure library module.)</p>
+<p>Which is to say, it isn't strictly necessary here:</p>
+<pre><code class="language-python">import gi
+
+gi.require_version(&quot;GLib&quot;, &quot;2.0&quot;)
+from gi.repository import GLib
+</code></pre>
+<p>...Because GLib only has one version (for the moment).</p>
+<p>But the <em>only</em> way to correctly load either Gtk3 or Gtk4 is:</p>
+<pre><code class="language-python">import gi
+
+gi.require_version(&quot;Gtk&quot;, &quot;3.0&quot;)
+from gi.repository import Gtk
+
+# or
+gi.require_version(&quot;Gtk&quot;, &quot;4.0&quot;)
+from gi.repository import Gtk
+</code></pre>
+<p>Otherwise, you end up with this:</p>
+<pre><code class="language-python3">&gt;&gt;&gt; import gi
+&gt;&gt;&gt; from gi.repository import Gtk
+&lt;python-input-1&gt;:1: PyGIWarning: Gtk was imported without specifying a version first. Use gi.require_version('Gtk', '4.0') before import to ensure that the right version gets loaded.
+</code></pre>
+<p>Which technically will work to load Gtk4, but it isn't supported or a good idea to rely on that, because there <em>will</em> eventually be a Gtk5.</p>
+<p>...Once you've done the versioned import, you <strong>can</strong> import a <em>different</em> Python module that contains just this:</p>
+<pre><code class="language-python">import gi
+from gi.repository import Gtk
+</code></pre>
+<p>...and that'll be fine, because the version has already been specified to the introspection loader and that's a global setting. (It isn't actually possible to load e.g. <code>Gtk-3.0</code> and <code>Gtk-4.0</code> together in the same runtime.)</p>
+<p>Also, because skipping the <code>gi.require_version()</code> call means making absolutely sure your module can never be loaded by something that <em>hasn't</em> set the version, it's not wrong to, and some developers do, include the <code>gi.require_version()</code> call before <strong>every</strong> import of at least a multi-versioned library.</p>
+<p>(And some devs do it for all libraries, period, because if <code>GObject-3.0</code> or <code>Gio-3.0</code> is released tomorrow, everybody's code that imports <code>GObject</code> or <code>Gio</code> <em>without</em> first setting a version will break just like my <code>Gtk</code> example above. They'll get the warning, but even worse the import will default to <code>GObject</code>/<code>Gio</code> 3.0 unexpectedly, and their code won't be compatible with that.)</p>
+<p>I agree it's very domain-specific, but PyGObject is pretty widely used and the calls are unavoidable if you do use it. More to the point, it's not really any more specific than the existing pytest or (especially) matplotlib exceptions.</p>
+<p>(And I'm sympathetic (to a point) to an argument like, &quot;OK, but we don't want <em>even more</em> exceptions than we already have.&quot; But... only to a point. Because it seems like those exceptions, and this one, demonstrate that there's a need to <em>either</em> keep making exceptions, or to find a solution that avoids the need for <strong>any</strong> exceptions. As I said in the discussion at #20289, I'm <em><strong>all for</strong></em> a general configuration-based solution that would make this exception unnecessary.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ferdnyc">@ferdnyc</a> on 2025-09-16 08:32</div>
+            <div class="timeline-body"><p>(Regarding the need for these calls in general, <em><strong>believe me</strong></em> I have shaken my fist and lamented, at length, that when this was initially being developed someone didn't decide, early on, to go with something like this instead:</p>
+<pre><code class="language-python">import gi
+from gi.repository import Gtk4 as Gtk
+</code></pre>
+<p>But, that train has sailed.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ferdnyc">@ferdnyc</a> on 2025-09-16 08:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I agree it's very domain-specific, but PyGObject is pretty widely used</p>
+</blockquote>
+<p>In fact, GitHub code search finds <a href="https://github.com/search?q=%2Fgi.require_version%2F+language%3APython&amp;type=code&amp;l=Python">40,400 Python files containing <code>gi.require_version</code></a>.</p>
+<p>(<strong>Edit:</strong> Of those, <a href="https://github.com/search?q=%2Fgi.require_version.*E402%2F+language%3APython&amp;type=code">120 match <code>/gi.require_version.*E402/</code></a> and <a href="https://github.com/search?q=%2Fgi.require_version.*noqa%2F+language%3APython&amp;type=code">256 match <code>/gi.require_version.*noqa/</code></a>.)</p>
+<p>(<strong>Edit2:</strong> Python files matching <code>/matplotlib\.use/</code>: <a href="https://github.com/search?q=%2Fmatplotlib%5C.use%2F+language%3APython&amp;type=code">242,000</a> (😲!!). Python files matching <code>/pytest\.importorskip/</code>: <a href="https://github.com/search?q=%2Fpytest%5C.importorskip%2F+language%3APython&amp;type=code">54,800</a>.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spurious lock failure combining no-build with env specifications - astral-sh/uv #16589</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Spurious lock failure combining no-build with env specifications</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16589">#16589</a>
+        opened by <a href="https://github.com/ncoghlan">@ncoghlan</a>
+        on 2025-11-04 13:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2025-11-04 13:38</div>
+            <div class="timeline-body"><p>Resolution: <code>platform_machine</code> <code>AMD64</code> tag needs to be uppercase on Windows due to the quirks of how the <code>platform.machine()</code> API works (<code>arm64</code> is still lowercase, though).</p>
+<h3>Summary</h3>
+<p>The following project file fails to lock for me with the target versioned pinned to 3.11.* or 3.12.* (it resolves if pinned to 3.13.*):</p>
+<pre><code>$ cat pyproject.toml
+[project]
+name = &quot;env-requirements&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;==3.11.*&quot;
+dependencies = [
+    &quot;tornado&quot;,
+]
+
+[tool.uv]
+# exclude-newer = &quot;2025-11-02T00:00:00Z&quot;
+no-build = true
+# constraint-dependencies = []
+environments = [
+    # &quot;sys_platform == 'linux' and platform_machine == 'x86_64'&quot;,
+    # &quot;sys_platform == 'darwin' and platform_machine == 'arm64'&quot;,
+    &quot;sys_platform == 'win32' and platform_machine == 'amd64'&quot;,
+]
+required-environments = [
+    # &quot;sys_platform == 'linux' and platform_machine == 'x86_64'&quot;,
+    # &quot;sys_platform == 'darwin' and platform_machine == 'arm64'&quot;,
+    &quot;sys_platform == 'win32' and platform_machine == 'amd64'&quot;,
+]
+
+
+[[tool.uv.cache-keys]]
+file = &quot;pyproject.toml&quot;
+</code></pre>
+<p>(the commented out lines are because this failure is a simplified version of the original failure, which arose in an attempt to convert the platform tags in <code>venvstacks</code> layer definitions into <code>uv</code> target environment specifications).</p>
+<p>This gives the result:</p>
+<pre><code>$ uv lock
+Using CPython 3.11.13 interpreter at: /usr/bin/python3.11
+  × No solution found when resolving dependencies for split (markers: platform_machine == 'amd64' and sys_platform
+  │ == 'win32'):
+  ╰─▶ Because only the following versions of tornado are available:
+          tornado==0.2
+          tornado==1.0
+          tornado==1.1
+          tornado==1.1.1
+          tornado==1.2
+          tornado==1.2.1
+          tornado==2.0
+          tornado==2.1
+          tornado==2.1.1
+          tornado==2.2
+          tornado==2.2.1
+          tornado==2.3
+          tornado==2.4
+          tornado==2.4.1
+          tornado==3.0
+          tornado==3.0.1
+          tornado==3.0.2
+          tornado==3.1
+          tornado==3.1.1
+          tornado==3.2
+          tornado==3.2.1
+          tornado==3.2.2
+          tornado==4.0
+          tornado==4.0.1
+          tornado==4.0.2
+          tornado==4.1
+          tornado==4.2
+          tornado==4.2.1
+          tornado==4.3
+          tornado==4.4
+          tornado==4.4.1
+          tornado==4.4.2
+          tornado==4.4.3
+          tornado==4.5
+          tornado==4.5.1
+          tornado==4.5.2
+          tornado==4.5.3
+          tornado==5.0
+          tornado==5.0.1
+          tornado==5.0.2
+          tornado==5.1
+          tornado==5.1.1
+          tornado==6.0
+          tornado==6.0.1
+          tornado==6.0.2
+          tornado==6.0.3
+          tornado==6.0.4
+          tornado==6.1
+          tornado==6.2
+          tornado==6.3
+          tornado==6.3.1
+          tornado==6.3.2
+          tornado==6.3.3
+          tornado==6.4
+          tornado==6.4.1
+          tornado==6.4.2
+          tornado==6.5
+          tornado==6.5.1
+          tornado==6.5.2
+      and tornado&lt;=6.1 has no usable wheels, we can conclude that tornado&lt;=6.1 cannot be used.
+      And because tornado&gt;=6.2 has no `platform_machine == 'amd64' and sys_platform == 'win32'`-compatible wheels and
+      your project depends on tornado, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: Pre-releases are available for `tornado` in the requested range (e.g., 6.5b1), but pre-releases weren't
+      enabled (try: `--prerelease=allow`)
+
+      hint: Wheels are required for `tornado` because building from source is disabled for all packages (i.e., with
+      `--no-build`)
+
+      hint: The resolution failed for an environment that is not the current one, consider limiting the environments
+      with `tool.uv.environments`.
+</code></pre>
+<p>The reason we know the failure to find a wheel is spurious is because targetting 3.13 or omitting the no-build requirement gives a lock file that refers to a PyPI provided wheel:</p>
+<pre><code>$ uv lock
+Using CPython 3.11.13 interpreter at: /usr/bin/python3.11
+Resolved 2 packages in 3ms
+acoghlan@TerminalMist:~/devel/_misc/uv_experiments/env_requirements$ cat uv.lock
+version = 1
+revision = 3
+requires-python = &quot;==3.11.*&quot;
+resolution-markers = [
+    &quot;platform_machine == 'amd64' and sys_platform == 'win32'&quot;,
+]
+supported-markers = [
+    &quot;platform_machine == 'amd64' and sys_platform == 'win32'&quot;,
+]
+required-markers = [
+    &quot;platform_machine == 'amd64' and sys_platform == 'win32'&quot;,
+]
+
+[[package]]
+name = &quot;env-requirements&quot;
+version = &quot;0.1.0&quot;
+source = { virtual = &quot;.&quot; }
+dependencies = [
+    { name = &quot;tornado&quot;, marker = &quot;platform_machine == 'amd64' and sys_platform == 'win32'&quot; },
+]
+
+[package.metadata]
+requires-dist = [{ name = &quot;tornado&quot; }]
+
+[[package]]
+name = &quot;tornado&quot;
+version = &quot;6.5.2&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/09/ce/1eb500eae19f4648281bb2186927bb062d2438c2e5093d1360391afd2f90/tornado-6.5.2.tar.gz&quot;, hash = &quot;sha256:ab53c8f9a0fa351e2c0741284e06c7a45da86afb544133201c5cc8578eb076a0&quot;, size = 510821, upload-time = &quot;2025-08-08T18:27:00.78Z&quot; }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/c7/2a/f609b420c2f564a748a2d80ebfb2ee02a73ca80223af712fca591386cafb/tornado-6.5.2-cp39-abi3-win_amd64.whl&quot;, hash = &quot;sha256:e56a5af51cc30dd2cae649429af65ca2f6571da29504a07995175df14c18f35f&quot;, size = 445427, upload-time = &quot;2025-08-08T18:26:57.91Z&quot; },
+]
+</code></pre>
+<h3>Platform</h3>
+<p>Fedora 41 (locking for Linux, Windows, and macOS)</p>
+<h3>Version</h3>
+<p>uv 0.9.7</p>
+<h3>Python version</h3>
+<p>Locking for Python 3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ncoghlan on 2025-11-04 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../lmstudio-ai/venvstacks/pulls/306.html">lmstudio-ai/venvstacks#306</a> on 2025-11-04 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-04 15:03</div>
+            <div class="timeline-body"><p>It fails for me too with 3.13.*, but it succeeds with <code>platform_machine == 'AMD64'</code> (uppercase).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-11-04 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-11-04 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2025-11-04 15:21</div>
+            <div class="timeline-body"><p>Ah, interesting, this is a scenario where <code>sysconfig.get_platform()</code> (lowercase everywhere) and <code>platform.machine()</code> (uppercase on Windows) differ.</p>
+<p>Annoyingly, that means we (in the &quot;Python packaging ecosystem&quot; sense) don't have <em>any</em> explicit documentation on how to check CPU architecture in environment markers in a cross-platform way (https://packaging.python.org/en/latest/specifications/dependency-specifiers/#environment-markers defers to https://docs.python.org/3/library/platform.html#platform.machine which says &quot;The output is platform-dependent and may differ in casing and naming conventions.&quot;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-04 15:33</div>
+            <div class="timeline-body"><p>An intertwined problem is that wheel tags and PEP 508 environment markers use different terms and slightly different semantics, the required environments are an attempt at working around that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2025-11-04 16:03</div>
+            <div class="timeline-body"><p>Anyway, I'm happy to close this one as not-a-bug, as I changed the original triggering case to make the machine tags uppercase in the Windows markers, and it then locked as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ncoghlan on 2025-11-04 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2025-11-04 17:14</div>
+            <div class="timeline-body"><p>@konstin After a bit more experimentation, I found that <code>arm64</code> needed to stay as lowercase for the <code>win32</code> resolution to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-04 19:22</div>
+            <div class="timeline-body"><p>The marker values are unfortunately very inconsistent, they are defined by the specific platform port of Python and packaging is only reading the values that CPython defines.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

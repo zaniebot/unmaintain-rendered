@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` returning 403 from private pypi cloud instance backed by s3 - astral-sh/uv #2025</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` returning 403 from private pypi cloud instance backed by s3</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2025">#2025</a>
+        opened by <a href="https://github.com/philiplinden">@philiplinden</a>
+        on 2024-02-27 22:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/philiplinden">@philiplinden</a> on 2024-02-27 22:13</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I am using a private pypi cloud instance backed by s3 (with no auth on my end). Public packages are resolved normally, but <code>uv pip</code> cannot resolve packages hosted on the private cloud instance.</p>
+<ul>
+<li><code>pip3 install my-private-package --index-url https://my-pip-instance.example.com/</code> succeeded with no problems.</li>
+<li>Running <code>uv pip install</code> with the <code>--no-cache</code> option did not change the result.</li>
+<li>I can retrieve the artifact from the url that uv pip was trying to fetch. This URL returns a 302 to the url that is giving me a 403</li>
+</ul>
+<pre><code class="language-shell">$ uv pip install my-private-package --index-url https://my-pip-instance.example.com/
+
+error: Failed to build editables
+  Caused by: Failed to build editable: file:///Users/phil/repos/philiplinden/scratch
+  Caused by: Failed to install requirements from build-system.requires (resolve)
+  Caused by: No solution found when resolving: setuptools
+  Caused by: Failed to download: setuptools==69.1.1
+  Caused by: HTTP status client error (403 Forbidden) for url (https://s3-url.amazonaws.com/example/setuptools-69.1.1-py3-none-any.whl?AWSAccessKeyId=xxx&amp;Signature=xxx%3D&amp;Expires=1709153725](https://s3-url.amazonaws.com/ffdf/setuptools/setuptools-69.1.1-py3-none-any.whl?AWSAccessKeyId=xxx&amp;Signature=xxx%3D&amp;Expires=1709153725)))
+</code></pre>
+<p>Relates to https://github.com/astral-sh/uv/issues/1709 and https://github.com/astral-sh/uv/pull/1902</p>
+<p>Version: <code>0.1.6</code>, <code>0.1.11</code></p>
+<p>Verbose output (anonymized)</p>
+<pre><code> uv_client::flat_index::from_entries 
+ uv_installer::downloader::build_editables 
+      0.355282s   0ms DEBUG uv_distribution::source Building (editable) file:///Users/phil/repos/philiplinden/scratch
+   uv_dispatch::setup_build package_id=&quot;file:///Users/phil/repos/philiplinden/scratch&quot;, subdirectory=None
+     uv_resolver::resolver::solve 
+          0.361346s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.11.6
+       uv_resolver::resolver::choose_version package=root
+       uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+            0.361500s   0ms DEBUG uv_resolver::resolver Adding direct dependency: setuptools*
+       uv_resolver::resolver::choose_version package=setuptools
+         uv_resolver::resolver::package_wait package_name=setuptools
+     uv_resolver::resolver::process_request request=Versions setuptools
+       uv_client::registry_client::simple_api package=setuptools
+         uv_client::cached_client::get_cacheable 
+           uv_client::cached_client::read_and_parse_cache file=/Users/phil/Library/Caches/uv/simple-v1/8aba338bd0495f93/setuptools.rkyv
+     uv_resolver::resolver::process_request request=Prefetch setuptools *
+              0.366930s   5ms DEBUG uv_client::cached_client Found stale response for: https://my-pip-instance.example.com/simple/setuptools/
+              0.366959s   5ms DEBUG uv_client::cached_client Sending revalidation request for: https://my-pip-instance.example.com/setuptools/
+           uv_client::cached_client::revalidation_request url=&quot;https://my-pip-instance.example.com/setuptools/&quot;
+              1.016439s 654ms DEBUG uv_client::cached_client Found modified response for: https://my-pip-instance.example.com/simple/setuptools/
+           uv_client::cached_client::new_cache file=/Users/phil/Library/Caches/uv/simple-v1/8aba338bd0495f93/setuptools.rkyv
+           uv_client::registry_client::parse_simple_api package=setuptools
+             uv_client::html::parse url=https://my-pip-instance.example.com/setuptools/
+ uv_resolver::version_map::from_metadata 
+       uv_distribution::distribution_database::get_or_build_wheel_metadata dist=setuptools==69.1.1
+         uv_client::registry_client::wheel_metadata built_dist=setuptools==69.1.1
+           uv_client::cached_client::get_serde 
+             uv_client::cached_client::get_cacheable 
+               uv_client::cached_client::read_and_parse_cache file=/Users/phil/Library/Caches/uv/wheels-v0/index/8aba338bd0495f93/setuptools/setuptools-69.1.1-py3-none-any.msgpack
+            1.322675s 961ms DEBUG uv_resolver::resolver Searching for a compatible version of setuptools (*)
+            1.322694s 961ms DEBUG uv_resolver::resolver Selecting: setuptools==69.1.1 (setuptools-69.1.1-py3-none-any.whl)
+       uv_resolver::resolver::get_dependencies package=setuptools, version=69.1.1
+         uv_resolver::resolver::distributions_wait package_id=setuptools-69.1.1
+                  1.322754s   0ms DEBUG uv_client::cached_client No cache entry for: https://my-pip-instance.example.com/api/package/setuptools/setuptools-69.1.1-py3-none-any.whl#sha256=02fa291a0471b3a18b2b2481ed902af520c69e8ae0919c13da936542754b4c56
+               uv_client::cached_client::fresh_request url=&quot;https://my-pip-instance.example.com/api/package/setuptools/setuptools-69.1.1-py3-none-any.whl#sha256=02fa291a0471b3a18b2b2481ed902af520c69e8ae0919c13da936542754b4c56&quot;
+error: Failed to build editables
+  Caused by: Failed to build editable: file:///Users/phil/repos/philiplinden/scratch
+  Caused by: Failed to install requirements from build-system.requires (resolve)
+  Caused by: No solution found when resolving: setuptools
+  Caused by: Failed to download: setuptools==69.1.1
+  Caused by: HTTP status client error (403 Forbidden) for url (https://my-pip-instance.amazonaws.com/ffdf/setuptools/setuptools-69.1.1-py3-none-any.whl?AWSAccessKeyId=xxx&amp;Signature=xxx&amp;Expires=1709157923)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-27 22:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-27 22:46</div>
+            <div class="timeline-body"><p>Do you mind updating to v0.1.11? v0.1.6 is a few versions out-of-date.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-02-27 22:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-02-27 22:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/philiplinden">@philiplinden</a> on 2024-02-27 23:02</div>
+            <div class="timeline-body"><p>Thanks, I just updated to v0.1.11 and now the installer hangs at the same spot for a few seconds before throwing the same 403 error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-27 23:11</div>
+            <div class="timeline-body"><p>Can you say a bit more about how the auth is intended to work? The URL is publicly available, and redirects you to S3 URLs with credentials embedded?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/philiplinden">@philiplinden</a> on 2024-02-28 00:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you say a bit more about how the auth is intended to work? The URL is publicly available, and redirects you to S3 URLs with credentials embedded?</p>
+</blockquote>
+<p>Yeah that's correct. It uses s3 one time preauthed urls. I am using <a href="https://github.com/stevearc/pypicloud">pypicloud</a> with <a href="https://pypicloud.readthedocs.io/en/latest/topics/redirect_urls.html">redirect_urls</a> enabled</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../prefix-dev/pixi/issues/588.html">prefix-dev/pixi#588</a> on 2024-03-08 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amarckal">@amarckal</a> on 2024-03-25 12:46</div>
+            <div class="timeline-body"><p>This also occurs when pip compiling from gemfury links, the package lookup on gemfury works, but downloading packages fails since they are backed by s3. This is the response from S3 when opening one of those preauthed links:</p>
+<p>Code: SignatureDoesNotMatch
+Message: The request signature we calculated does not match the signature you provided. Check your key and signing method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/torarvid">@torarvid</a> on 2024-04-04 14:42</div>
+            <div class="timeline-body"><p>Hi. I probably don't understand half of the code in this repo, but after experimenting with <code>uv pip install -vv</code> locally, I think I might have found a clue:</p>
+<p>https://github.com/astral-sh/uv/blob/661787b0cbb542f2e8e3bb4fbcc834a42af59f4b/crates/uv-client/src/registry_client.rs#L512-L515</p>
+<p>Here, I believe <code>req</code> never has auth headers attached, because it's only when the request is executed the AuthMiddleware runs and attaches the auth header to req. Iow, I believe the headers are extracted too early in the linked code. Not sure how to fix it though 🤷🏻‍♂️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 17:01</div>
+            <div class="timeline-body"><p>That <em>should</em> be okay though, since the subsequent requests will also go through the auth middleware and get the appropriate headers attached.</p>
+<p>Were you able to reproduce this issue? What does your setup look like?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/torarvid">@torarvid</a> on 2024-04-04 18:28</div>
+            <div class="timeline-body"><p>Yep, you're right, @charliermarsh. I just tried hard-coding in my credentials at that point in the code, and then I got a &quot;Request already has an authorization header&quot; error instead. My clue was not a clue after all 😢</p>
+<p>But yes, I can reproduce. I believe I have the same issue as @amarckal, which is that when I use curl against pypi.fury.io to fetch my private package, I get a 302 redirect to a url like this:</p>
+<p><code>https://s3.amazonaws.com/gemfury/gems/&lt;redacted-path&gt;/sdxp_0_7_3_py3_none_any_whl?x-acct=&lt;redacted-acct&gt;&amp;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=&lt;redacted-cred&gt;%2F20240404%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20240404T180859Z&amp;X-Amz-Expires=900&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=&lt;redacted-sig&gt;</code></p>
+<p>(I put <code>&lt;redacted-[whatever]&gt;</code> in places that could be sensitive).</p>
+<p>When I run <code>./target/debug/uv pip install -vv --no-cache --extra-index-url https://{$GEMFURY_READ_TOKEN}@pypi.fury.io/oda/ sdxp==0.7.3</code>, the last part of the output is (with some <code>&lt;redacted-[whatevers]&gt;</code> here as well:</p>
+<pre><code class="language-bash">           uv_client::cached_client::read_and_parse_cache file=/private/var/folders/2k/by15c_cs40l9swcck47g6lpm0000gn/T/.tmplRVtUe/wheels-v0/index/5f5b51aad86993d4/sdxp/sdxp-0.7.3-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path=&quot;/private/var/folders/2k/by15c_cs40l9swcck47g6lpm0000gn/T/.tmplRVtUe/wheels-v0/index/5f5b51aad86993d4/sdxp/sdxp-0.7.3-py3-none-any.msgpack&quot;
+                1.665639s   0ms TRACE uv_client::cached_client No cache entry exists for /private/var/folders/2k/by15c_cs40l9swcck47g6lpm0000gn/T/.tmplRVtUe/wheels-v0/index/5f5b51aad86993d4/sdxp/sdxp-0.7.3-py3-none-any.msgpack
+              1.665827s   1ms DEBUG uv_client::cached_client No cache entry for: https://pypi.fury.io/oda/-/ver_Fz9wq/sdxp-0.7.3-py3-none-any.whl#sha256=869326637eef5de7d4312b82ecf9ba85fcd9e038273d54c0bbe7602d3b8529ad
+           uv_client::cached_client::fresh_request url=&quot;https://pypi.fury.io/oda/-/ver_Fz9wq/sdxp-0.7.3-py3-none-any.whl#sha256=869326637eef5de7d4312b82ecf9ba85fcd9e038273d54c0bbe7602d3b8529ad&quot;
+                1.666044s   0ms TRACE uv_client::cached_client Sending fresh HEAD request for https://pypi.fury.io/oda/-/ver_Fz9wq/sdxp-0.7.3-py3-none-any.whl#sha256=869326637eef5de7d4312b82ecf9ba85fcd9e038273d54c0bbe7602d3b8529ad
+                1.666269s   0ms DEBUG uv_auth::middleware Adding authentication to already-seen URL: https://pypi.fury.io/oda/-/ver_Fz9wq/sdxp-0.7.3-py3-none-any.whl#sha256=869326637eef5de7d4312b82ecf9ba85fcd9e038273d54c0bbe7602d3b8529ad
+                1.895293s 229ms TRACE uv_client::httpcache cached request https://pypi.fury.io/oda/-/ver_Fz9wq/sdxp-0.7.3-py3-none-any.whl#sha256=869326637eef5de7d4312b82ecf9ba85fcd9e038273d54c0bbe7602d3b8529ad is storable because its response has a heuristically cacheable status code 200
+           uv_client::cached_client::new_cache file=/private/var/folders/2k/by15c_cs40l9swcck47g6lpm0000gn/T/.tmplRVtUe/wheels-v0/index/5f5b51aad86993d4/sdxp/sdxp-0.7.3-py3-none-any.msgpack
+           uv_client::registry_client::read_metadata_range_request wheel=sdxp-0.7.3-py3-none-any.whl
+                1.896366s   0ms TRACE uv_client::registry_client Getting metadata for sdxp-0.7.3-py3-none-any.whl by range request
+    1.897265s DEBUG uv_auth::middleware No credentials found for: https://s3.amazonaws.com/gemfury/gems/&lt;redacted-path&gt;/sdxp_0_7_3_py3_none_any_whl?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=&lt;redacted-cred&gt;%2F20240404%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20240404T181433Z&amp;X-Amz-Expires=900&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=&lt;redacted-sig&gt;
+error: Failed to download: sdxp==0.7.3
+  Caused by: Failed to unzip wheel: sdxp-0.7.3-py3-none-any.whl
+  Caused by: an upstream reader returned an error: io error occurred: Request error: HTTP status client error (403 Forbidden) for url (https://s3.amazonaws.com/gemfury/gems/&lt;redacted-path&gt;/sdxp_0_7_3_py3_none_any_whl?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=&lt;redacted-cred&gt;%2F20240404%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20240404T181433Z&amp;X-Amz-Expires=900&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=&lt;redacted-sig&gt;)
+  Caused by: io error occurred: Request error: HTTP status client error (403 Forbidden) for url (&lt;the-same-url-again&gt;)
+  Caused by: Request error: HTTP status client error (403 Forbidden) for url (&lt;the-same-url-again&gt;)
+  Caused by: HTTP status client error (403 Forbidden) for url (&lt;the-same-url-again&gt;)
+</code></pre>
+<p>If I isolate just the url in this output, there's another possible clue:</p>
+<p><code>https://s3.amazonaws.com/gemfury/gems/&lt;redacted-path&gt;/sdxp_0_7_3_py3_none_any_whl?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=&lt;redacted-cred&gt;%2F20240404%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20240404T181433Z&amp;X-Amz-Expires=900&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=&lt;redacted-sig&gt;</code> (&lt;-- this is the <code>uv</code> one)</p>
+<p>compared with the curl one from above:</p>
+<p><code>https://s3.amazonaws.com/gemfury/gems/&lt;redacted-path&gt;/sdxp_0_7_3_py3_none_any_whl?x-acct=&lt;redacted-acct&gt;&amp;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=&lt;redacted-cred&gt;%2F20240404%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20240404T180859Z&amp;X-Amz-Expires=900&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=&lt;redacted-sig&gt;</code> (&lt;-- this is the curl one)</p>
+<p>The <code>curl</code> url has a <code>x-acct=&lt;stuff&gt;</code> query param, while the <code>uv</code> one doesn't. I have no idea why...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-04 18:33</div>
+            <div class="timeline-body"><p>Wow thanks for the sleuthing. I have no idea why that would be dropped either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 18:36</div>
+            <div class="timeline-body"><p>Do you know if you did anything special to get Gemfury to run against S3? My Gemfury URLs don't look like that so I've had trouble reproducing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-04 18:40</div>
+            <div class="timeline-body"><p>I pushed a branch with an extra log if you want to give it a try: https://github.com/astral-sh/uv/pull/2823</p>
+<p>I'm trying to narrow down <em>when</em> that part is dropped from the URL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benwebber">@benwebber</a> on 2024-04-04 18:48</div>
+            <div class="timeline-body"><p>We are experiencing the same issue. I wonder if it's because we have an older Gemfury account. This option is enabled under our organization settings:</p>
+<p><img src="https://github.com/astral-sh/uv/assets/358027/8f36aff3-679b-4b14-8780-58102ec3d40d" alt="Screen Shot 2024-04-04 at 14 43 23" /></p>
+<p>I don't remember opting into that explicitly. Is that disabled in your account?</p>
+<p><strong>EDIT:</strong> Disabling this option changed the package source to a <code>https://gemfury.s3-accelerate.dualstack.amazonaws.com/gems/...</code> CDN URL instead of S3, but I still get the same error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 18:49</div>
+            <div class="timeline-body"><p>I can try enabling that and then uploading a new package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 18:53</div>
+            <div class="timeline-body"><p>Sadly it's still giving me URLs like <code>https://pypi.fury.io/charliermarsh/-/ver_mt7Ge/gemfury-test-0.0.1.tar.gz</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/torarvid">@torarvid</a> on 2024-04-04 18:55</div>
+            <div class="timeline-body"><p>Without knowing, I am sure that for our Gemfury account, I have at least one package that works fine (it does <strong>not</strong> redirect to S3) and then at least this one here that fails (because it <strong>does</strong> redirect to S3).</p>
+<p>I'm not sure what causes this difference in behavior. The one that fails for me was created by running <code>poetry publish -r oda -u &lt;secret&gt; -p NOPASS</code>, so it's possible <code>poetry</code> makes it &quot;do S3 magic&quot;? (The package that works fine is made by another team. At this point I have no idea how it was created/published)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 19:07</div>
+            <div class="timeline-body"><p>I emailed Gemfury.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 19:08</div>
+            <div class="timeline-body"><p>Perhaps I can get setup with one of these S3-back indexes, or they can tell me what I'm doing wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/torarvid">@torarvid</a> on 2024-04-05 09:03</div>
+            <div class="timeline-body"><p>Ok, I've said &quot;I think I found a clue!&quot; before and been wrong, but I persist: I think I might have found a clue! 😆</p>
+<p>I made this test program:</p>
+<pre><code class="language-rust">use std::error::Error;
+
+use reqwest::redirect::Policy;
+
+use reqwest::Client;
+
+#[tokio::main]
+pub async fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let url = &quot;https://pypi.fury.io/oda/-/ver_Fz9wq/sdxp-0.7.3-py3-none-any.whl&quot;;
+    let url: reqwest::Url = url.parse().unwrap();
+    let client = Client::builder()
+        // Ensure that we *don't* follow redirects for this example
+        .redirect(Policy::none())
+        // fake being curl in case it matters (i don't think so)
+        .user_agent(&quot;curl/8.4.0&quot;)
+        .build()?;
+    let req = client
+        .head(url)
+        .header(&quot;authorization&quot;, &quot;Basic &lt;redacted&gt;&quot;)
+        .header(&quot;accept&quot;, &quot;*/*&quot;)
+        .build()?;
+    println!(&quot;111 {:?}&quot;, req);
+    let head_response = client.execute(req).await?;
+    println!(&quot;222 {:?}&quot;, head_response);
+    let location = head_response.headers().get(&quot;location&quot;).unwrap();
+    println!(&quot;333 {:?}&quot;, location);
+    Ok(())
+}
+</code></pre>
+<p>And I get this output (with redactions):</p>
+<pre><code>111 Request { method: HEAD, url: Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.fury.io&quot;)), port: None, path: &quot;/oda/-/ver_Fz9wq/sdxp-0.7.3-py3-none-any.whl&quot;, query: None, fragment: None }, headers: {&quot;authorization&quot;: &quot;Basic &lt;redacted&gt;&quot;, &quot;accept&quot;: &quot;*/*&quot;} }
+222 Response { url: Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.fury.io&quot;)), port: None, path: &quot;/oda/-/ver_Fz9wq/sdxp-0.7.3-py3-none-any.whl&quot;, query: None, fragment: None }, status: 302, headers: {&quot;server&quot;: &quot;Cowboy&quot;, &quot;report-to&quot;: &quot;{\&quot;group\&quot;:\&quot;heroku-nel\&quot;,\&quot;max_age\&quot;:3600,\&quot;endpoints\&quot;:[{\&quot;url\&quot;:\&quot;https://nel.heroku.com/reports?ts=1712306018&amp;sid=929419e7-33ea-4e2f-85f0-7d8b7cd5cbd6&amp;s=KrA%2BOTdymL0CqPAad5loOyUNMC4BcBEE%2BWCTsxIYvkA%3D\&quot;}]}&quot;, &quot;reporting-endpoints&quot;: &quot;heroku-nel=https://nel.heroku.com/reports?ts=1712306018&amp;sid=929419e7-33ea-4e2f-85f0-7d8b7cd5cbd6&amp;s=KrA%2BOTdymL0CqPAad5loOyUNMC4BcBEE%2BWCTsxIYvkA%3D&quot;, &quot;nel&quot;: &quot;{\&quot;report_to\&quot;:\&quot;heroku-nel\&quot;,\&quot;max_age\&quot;:3600,\&quot;success_fraction\&quot;:0.005,\&quot;failure_fraction\&quot;:0.05,\&quot;response_headers\&quot;:[\&quot;Via\&quot;]}&quot;, &quot;connection&quot;: &quot;keep-alive&quot;, &quot;content-type&quot;: &quot;text/html; charset=utf-8&quot;, &quot;location&quot;: &quot;https://s3.amazonaws.com/gemfury/gems/&lt;redacted-path&gt;/sdxp_0_7_3_py3_none_any_whl?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=&lt;redacted-cred&gt;%2F20240405%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20240405T083338Z&amp;X-Amz-Expires=900&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=&lt;redacted-sig&gt;&quot;, &quot;vary&quot;: &quot;Accept-Encoding&quot;, &quot;date&quot;: &quot;Fri, 05 Apr 2024 08:33:38 GMT&quot;, &quot;via&quot;: &quot;1.1 vegur&quot;} }
+333 &quot;https://s3.amazonaws.com/gemfury/gems/&lt;redacted-path&gt;/sdxp_0_7_3_py3_none_any_whl?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=&lt;redacted-cred&gt;%2F20240405%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20240405T083338Z&amp;X-Amz-Expires=900&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=&lt;redacted-sig&gt;&quot;
+</code></pre>
+<p>So: if I <code>curl -i &lt;the-url-from-the-333-line&gt;</code> I again get the error from AWS: <code>The request signature we calculated does not match the signature you provided. Check your key and signing method.</code></p>
+<p>But if I change the curl-line to <code>curl -i --head &lt;the-url-from-the-333-line&gt;</code> it works.</p>
+<p>Next, I change my Rust test program from <code>.head(url)</code> to <code>.get(url)</code>, I then take the url that it spits out. Now the url <strong>works</strong> with <code>curl -i</code> and <strong>fails</strong> with <code>curl -i --head</code>.</p>
+<p>So finally my clue becomes: The HTTP method is encoded in the signature for the S3 urls, so when you pass that S3 url to <code>AsyncHttpRangeReader::from_head_response</code> it won't work. The S3 url would only work with a HEAD request, but <code>AsyncHttpRangeReader::from_head_response</code> uses GET internally. 🤯</p>
+<p>Am I right? I need all of your 🧠s to sanity check my logic 😛</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/torarvid">@torarvid</a> on 2024-04-05 09:15</div>
+            <div class="timeline-body"><p>Other people have had this issue: https://stackoverflow.com/questions/15717230/pre-signing-amazon-s3-urls-for-both-head-and-get-verbs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2843.html">astral-sh/uv#2843</a> on 2024-04-05 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/torarvid">@torarvid</a> on 2024-04-05 22:23</div>
+            <div class="timeline-body"><p>I made a proof-of-concept PR to work around the issue. I do that by passing a modified <code>response</code> to the range reader so that it uses the &quot;original&quot; (gemfury) link and not the 302-redirected S3 link. Works for my local repro test case 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elbaro">@elbaro</a> on 2024-04-16 09:36</div>
+            <div class="timeline-body"><p>I have the same issue with pypicloud, and @torarvid 's PR did not work.</p>
+<pre><code class="language-sh">❯ cargo install --git https://github.com/torarvid/uv.git --rev 6d89c85 uv
+❯ uv pip compile pyproject.toml -o requirements.txt --index-url http://internal-pypi:8080/simple/
+error: Failed to download: internal-pkg==0.1.1054928
+  Caused by: HTTP status client error (403 Forbidden) for url (https://bucket-name.s3.amazonaws.com/pypi10c6/internal-pkg/internal-pkg-0.1.1054928-py3-none-any.whl
+    ?Signature=%2FhTEgX6psBoSyuCM9F4BiwpCEbw%3D
+    &amp;Expires=1870939460
+    &amp;AWSAccessKeyId=FEWNCEFY
+    &amp;x-amz-security-token=TP//////////ARNU/OkGQV/8AwxoYm)
+</code></pre>
+<p>If I manually curl the printed URL, GET works but HEAD gets 403.</p>
+<pre><code>curl -vvv https://bucket-name.s3..  # 200
+curl -vvv -X HEAD https://bucket-name.s3..  # 403 Forbidden
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elbaro">@elbaro</a> on 2024-04-16 17:44</div>
+            <div class="timeline-body"><p>For pypicloud workaround,
+I added 403 Forbidden to https://github.com/astral-sh/uv/pull/2186/files and it worked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 17:46</div>
+            <div class="timeline-body"><p>Interesting, ok, we can add that. Do you want to submit a PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3070.html">astral-sh/uv#3070</a> on 2024-04-16 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-16 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2024-04-16 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-16 18:57</div>
+            <div class="timeline-body"><p>@charliermarsh I re-opened as I do not think that addresses all of the cases here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 18:58</div>
+            <div class="timeline-body"><p>Thanks, sorry, I didn't mean to close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3255.html">astral-sh/uv#3255</a> on 2024-04-24 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3460.html">astral-sh/uv#3460</a> on 2024-05-08 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-08 14:45</div>
+            <div class="timeline-body"><p>If anyone is willing to test https://github.com/astral-sh/uv/pull/3460 I would appreciate it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-08 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13336.html">astral-sh/uv#13336</a> on 2025-05-07 21:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

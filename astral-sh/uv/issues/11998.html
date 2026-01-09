@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Won't resolve source distribution locally if dynamic version is set in Cargo.toml with maturin - astral-sh/uv #11998</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Won't resolve source distribution locally if dynamic version is set in Cargo.toml with maturin</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11998">#11998</a>
+        opened by <a href="https://github.com/idealseal">@idealseal</a>
+        on 2025-03-06 10:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/idealseal">@idealseal</a> on 2025-03-06 10:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm trying to vendor <code>pydantic-core</code> in my local source tree. I have a dependency on <code>pydantic</code> and put</p>
+<pre><code class="language-toml">[tool.uv.sources]
+pydantic = { path = &quot;src/foo/vendor/pydantic&quot; } 
+pydantic-core = { path = &quot;src/foo/vendor/pydantic-core&quot; } 
+</code></pre>
+<p>in my <code>pyproject.toml</code>.</p>
+<p>Running <code>uv sync -v</code> shows that <code>pydantic</code> is used from the local source distribution, <code>pydantic-core</code> is downloaded.</p>
+<p>I guess this is because it can't resolve the version of <code>pydantic-core</code> and ignores the local installation.</p>
+<p>Is this out-of-scope for uv? Is there a way to communicate this from the build system to uv? Is this a <code>maturin</code> issue?</p>
+<h3>Platform</h3>
+<p>Linux</p>
+<h3>Version</h3>
+<p>uv 0.6.4</p>
+<h3>Python version</h3>
+<p>Irrelevant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @idealseal on 2025-03-06 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-06 14:00</div>
+            <div class="timeline-body"><p>We only respect sources for direct dependencies. I'm guessing <code>pydantic-core</code> is a transitive dependency? If you declare a dependency on <code>pydantic-core</code>, it should do what you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-03-06 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-03-06 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idealseal">@idealseal</a> on 2025-03-06 14:23</div>
+            <div class="timeline-body"><p>No, I tried this, it doesn't work either. With and without a version specifier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-06 14:27</div>
+            <div class="timeline-body"><p>If you can create a minimal reproducible example that we can run, I'm happy to help. Ideally a GitHub repo that I can clone and run to reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-03-06 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idealseal">@idealseal</a> on 2025-03-06 14:42</div>
+            <div class="timeline-body"><p>https://github.com/idealseal/source-dist-resolve</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-06 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-06 17:05</div>
+            <div class="timeline-body"><p>Ah, the problem is that they have <code>package = false</code> set in the <code>pydantic-core/pyproject.toml</code>, so we don't install it as a package in your environment. If you change this, it works as expected:</p>
+<pre><code class="language-diff">--- a/src/foo/pydantic-core/pyproject.toml
++++ b/src/foo/pydantic-core/pyproject.toml
+@@ -161,4 +161,4 @@ fix = [&quot;create&quot;, &quot;fix&quot;]
+ [tool.uv]
+ # this ensures that `uv run` doesn't actually build the package; a `make`
+ # command is needed to build
+-package = false
++package = true
+</code></pre>
+<p>I think we need to give you a way to override that in the <code>tool.uv.sources</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12014.html">astral-sh/uv#12014</a> on 2025-03-06 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12015.html">astral-sh/uv#12015</a> on 2025-03-06 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-06 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-06 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idealseal">@idealseal</a> on 2025-03-06 18:43</div>
+            <div class="timeline-body"><p>Thanks ❤</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

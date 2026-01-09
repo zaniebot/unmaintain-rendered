@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip --python` doesn't recognise / as a path separator on Windows - astral-sh/uv #3062</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip --python` doesn't recognise / as a path separator on Windows</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3062">#3062</a>
+        opened by <a href="https://github.com/pfmoore">@pfmoore</a>
+        on 2024-04-16 14:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-04-16 14:49</div>
+            <div class="timeline-body"><p>To demonstrate:</p>
+<pre><code>❯ uv venv a
+Using Python 3.12.2 interpreter at: C:\Users\Gustav\AppData\Local\Programs\Python\Python312\python.exe
+Creating virtualenv at: a
+Activate with: overlay use a\Scripts\activate.nu
+❯ uv pip list --python a/Scripts/python.exe
+error: Failed to locate Python interpreter at `a/Scripts/python.exe`
+❯ uv pip list --python a\Scripts\python.exe
+</code></pre>
+<p>Problem is here: https://github.com/astral-sh/uv/blob/main/crates/uv-interpreter/src/find_python.rs#L46</p>
+<p>The line indicated only handles the &quot;main&quot; separator (<code>\</code> on Windows). But <code>/</code> is a perfectly valid path separator on Windows...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 14:50</div>
+            <div class="timeline-body"><p>Thanks, will fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-16 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-04-16 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-16 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-04-16 14:53</div>
+            <div class="timeline-body"><p>A further issue caused by this is that if I chdir into the <code>Scripts</code> directory of a venv, and run <code>uv pip list --python python.exe</code> it will search for <code>python.exe</code> on <code>PATH</code> rather than using the venv. So, <code>uv pip list --python .\python.exe</code> gives a different answer than <code>uv pip list --python python.exe</code>, which is at best weird, and personally I'd consider it incorrect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-16 15:00</div>
+            <div class="timeline-body"><p>I believe that problem would be addressed by the design at #2386 but I'd have to double check. Agree it's weird..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 15:05</div>
+            <div class="timeline-body"><p>@zanieb - My brief skim is that it's slightly separate and could even be changed / implemented before we do #2386 (e.g. via what's proposed at https://github.com/astral-sh/uv/issues/3060#issuecomment-2059301772).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-04-16 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-16 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 15:19</div>
+            <div class="timeline-body"><p>I'll fix this specific failing (the separator detection) and the rest let's track in https://github.com/astral-sh/uv/issues/2386#issuecomment-2059345905.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3064.html">astral-sh/uv#3064</a> on 2024-04-16 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 14:02</div>
+            <div class="timeline-body"><p>I believe this was also fixed by #3064.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-17 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3266.html">astral-sh/uv#3266</a> on 2024-05-20 22:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

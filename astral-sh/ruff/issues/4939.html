@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[bug] F401 false positive for imports inside functions - astral-sh/ruff #4939</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[bug] F401 false positive for imports inside functions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4939">#4939</a>
+        opened by <a href="https://github.com/smackesey">@smackesey</a>
+        on 2023-06-07 20:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/smackesey">@smackesey</a> on 2023-06-07 20:45</div>
+            <div class="timeline-body"><p>Contrived example, but ruff 0.0.271 flags the below import inside of <code>fn</code> with F401 (unused import) and auto-deletes it, but this results in a runtime error when you execute the code, because the first argument to <code>cast</code> doesn't get a deferred annotation like a function parameter:</p>
+<pre><code>from __future__ import annotations
+
+from typing import TYPE_CHECKING, cast
+
+if TYPE_CHECKING:
+    from threading import Thread
+
+
+def fn(thread: Thread):
+    from threading import Thread  # Flagged as F401
+
+    casted_thread = cast(Thread, thread)
+    return casted_thread
+
+print(fn(1))
+</code></pre>
+<p>You can work around it by quoting the cast argument, but still a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "F401 false positive for imports inside functions" to "[bug] F401 false positive for imports inside functions" by @smackesey on 2023-06-07 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-07 20:57</div>
+            <div class="timeline-body"><p>Oops, thanks. I’ll fix this tonight. I need to cut a new release anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-06-07 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-06-07 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4942.html">astral-sh/ruff#4942</a> on 2023-06-07 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-07 21:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

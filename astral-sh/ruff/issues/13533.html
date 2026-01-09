@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>new rule - replace `d.update({'key': 'value'})` with `d['key'] = 'value'` - astral-sh/ruff #13533</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>new rule - replace `d.update({'key': 'value'})` with `d['key'] = 'value'`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13533">#13533</a>
+        opened by <a href="https://github.com/spaceby">@spaceby</a>
+        on 2024-09-27 10:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceby">@spaceby</a> on 2024-09-27 10:19</div>
+            <div class="timeline-body"><p>I suggest adding a rule that detects this</p>
+<pre><code class="language-python">d = {}
+d.update({'key': 'value'})
+</code></pre>
+<p>and replacing it</p>
+<pre><code class="language-python">d = {}
+d['key'] = 'value'
+</code></pre>
+<p>As a result, the code becomes simpler and more understandable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-27 13:23</div>
+            <div class="timeline-body"><p>This make sense, but is just a style rule right? Is there a performance diff since you're skipping creating a dictionary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2024-09-27 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ugochukwu-850">@ugochukwu-850</a> on 2024-09-27 13:50</div>
+            <div class="timeline-body"><p>I like this issue, I am a new her btw [I'm also new to OSC],
+But I did a little research and its variable , so I am not sure its safe to change based off only on aesthetics .
+Basically at smaller and mid sized dict updates its ok to just assign but on larger updates creating a secondary dict as <code>update</code> does , would greatly increase the bulk update speed.</p>
+<p>While its arguable , since the performance effects is variable maybe it should be optional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-29 15:29</div>
+            <div class="timeline-body"><blockquote>
+<p>This make sense, but is just a style rule right? Is there a performance diff since you're skipping creating a dictionary?</p>
+</blockquote>
+<p>Even for small dictionaries, direct assignment is indeed quite a bit faster according to a very naive benchmark:</p>
+<pre><code>~/dev % python -m timeit -s &quot;d = {}&quot; &quot;d.update({'key': 'value'})&quot;            
+5000000 loops, best of 5: 61.2 nsec per loop
+~/dev % python -m timeit -s &quot;d = {}&quot; &quot;d['key'] = 'value'&quot;        
+20000000 loops, best of 5: 12.2 nsec per loop
+</code></pre>
+<p>And this is what you'd expect, since the bytecode created for direct assignment is a lot simpler:</p>
+<pre><code class="language-pycon">~/dev/cpython % ./python.exe
+Python 3.14.0a0 (heads/main:986a4e1b6fc, Sep 26 2024, 12:02:18) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; def x():
+...     d = {}
+...     d.update({'key': 'value'})
+...     
+&gt;&gt;&gt; def y():
+...     d = {}
+...     d['key'] = 'value'
+...     
+&gt;&gt;&gt; import dis
+&gt;&gt;&gt; dis.dis(x, adaptive=True)
+  1           RESUME                   0
+
+  2           BUILD_MAP                0
+              STORE_FAST               0 (d)
+
+  3           LOAD_FAST                0 (d)
+              LOAD_ATTR                1 (update + NULL|self)
+              LOAD_CONST               1 ('key')
+              LOAD_CONST               2 ('value')
+              BUILD_MAP                1
+              CALL                     1
+              POP_TOP
+              RETURN_CONST             0 (None)
+&gt;&gt;&gt; dis.dis(y, adaptive=True)
+  1           RESUME                   0
+
+  2           BUILD_MAP                0
+              STORE_FAST               0 (d)
+
+  3           LOAD_CONST               1 ('value')
+              LOAD_FAST                0 (d)
+              LOAD_CONST               2 ('key')
+              STORE_SUBSCR
+              RETURN_CONST             0 (None)
+</code></pre>
+<p>But as I said, this benchmark is very naive:</p>
+<ul>
+<li>the keys and values being stored in the dictionary are all constants</li>
+<li>there's only a single item in the dictionary being passed to <code>.update()</code> when in most real-world uses of <code>dict.update</code> you'd generally pass in a dictionary that has multiple items.</li>
+</ul>
+<p>@spaceby would your proposed rule only apply to dictionaries with a single item being passed to <code>.update</code>? Or do you also think it should suggest this?</p>
+<pre><code class="language-diff">-d.update({
+-    &quot;x&quot;: 1,
+-    &quot;y&quot;: 2,
+-    &quot;z&quot;: 3,
+-})
++d[&quot;x&quot;] = 1
++d[&quot;y&quot;] = 2
++d[&quot;z&quot;] = 3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @AlexWaygood on 2024-09-29 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @AlexWaygood on 2024-09-29 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceby">@spaceby</a> on 2024-09-29 16:49</div>
+            <div class="timeline-body"><p>I think the rule should only apply to a dictionary with single item.
+A rule similar in meaning to <a href="https://docs.astral.sh/ruff/rules/get-attr-with-constant/">B009</a> - rewrite the code to something simpler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-29 16:53</div>
+            <div class="timeline-body"><p>Makes sense... though I think we should explicitly state this in the docs for the rule, or we'll inevitably get a PR &quot;improving&quot; the rule so that it also covers dictionaries with multiple items 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> removed by @AlexWaygood on 2024-09-29 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/autinerd">@autinerd</a> on 2024-10-05 06:47</div>
+            <div class="timeline-body"><p>For the update call with multiple entries, maybe the <code>|=</code> operator would be an idea? It seems to be slightly faster :thinking:</p>
+<pre><code>❯ python -m timeit -s &quot;d = {}&quot; &quot;d |= {'x': 1,'y': 2,'z': 3}&quot;
+2000000 loops, best of 5: 141 nsec per loop
+❯ python -m timeit -s &quot;d = {}&quot; &quot;d.update({'x': 1,'y': 2,'z': 3})&quot;
+2000000 loops, best of 5: 179 nsec per loop
+</code></pre>
+<p>And of course with single items, <code>|=</code> should also be replaced with directly assigning the value to the key.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-05 10:46</div>
+            <div class="timeline-body"><blockquote>
+<p>For the update call with multiple entries, maybe the <code>|=</code> operator would be an idea? It seems to be slightly faster 🤔</p>
+</blockquote>
+<p>Possibly, but I think that would be a different rule</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-07 08:37</div>
+            <div class="timeline-body"><blockquote>
+<p>This make sense, but is just a style rule right? Is there a performance diff since you're skipping creating a dictionary?</p>
+</blockquote>
+<p>I still think it's worthwhile to frame the motivation properly because, IMO, the performance difference seems too marginal to justify making it a rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2024-10-07 09:59</div>
+            <div class="timeline-body"><p>Maybe this would be a separate rule, but perhaps this rule could be generalized to avoid creating unnecessary intermediate representations. For example, these:</p>
+<pre><code class="language-py">l += [&quot;value&quot;]
+l += [&quot;value 1&quot;, &quot;value 2&quot;]
+s |= {&quot;value&quot;}
+s |= {&quot;value 1&quot;, &quot;value 2&quot;}
+d |= {&quot;key&quot;: &quot;value&quot;}
+d.update({&quot;key&quot;: &quot;value&quot;})
+# ect.
+</code></pre>
+<p>could potentially be rewritten as:</p>
+<pre><code class="language-py">l.append(&quot;value&quot;)
+l.extend((&quot;value 1&quot;, &quot;value 2&quot;))
+s.add(&quot;value&quot;)
+s.update((&quot;value 1&quot;, &quot;value 2&quot;))
+d[&quot;key&quot;] = &quot;value&quot;
+d[&quot;key&quot;] = &quot;value&quot;
+# ect.
+</code></pre>
+<p>This was first proposed in https://github.com/astral-sh/ruff/issues/8877#issuecomment-1835998576.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-07 10:10</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>This make sense, but is just a style rule right? Is there a performance diff since you're skipping creating a dictionary?</p>
+</blockquote>
+<p>I still think it's worthwhile to frame the motivation properly because, IMO, the performance difference seems too marginal to justify making it a rule.</p>
+</blockquote>
+<p>I think the performance difference is significant enough that it could easily make a difference in a hot loop somewhere... <em>but</em> I agree that the motivation is primarily stylistic here, and that this is the kind of performance difference that could easily change as performance improvements are made to CPython itself. So I agree that this should be classified as a stylistic rule.</p>
+<blockquote>
+<p>Maybe this would be a separate rule, but perhaps this rule could be generalized to avoid creating unnecessary intermediate representations. For example, these:</p>
+</blockquote>
+<p>Yes, this makes sense to me; all of these are essentially different manifestations of the same antipattern.</p>
+<p>At this point I think I've seen enough support for this that I'd be happy to accept a PR implementing this rule (in the <code>RUF</code> category, I suppose, unless there have been any other linters to already implement this?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @AlexWaygood on 2024-10-07 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-10-07 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @AlexWaygood on 2024-10-07 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13706.html">astral-sh/ruff#13706</a> on 2024-10-10 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14564.html">astral-sh/ruff#14564</a> on 2024-11-24 05:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "new rule - replace d.update({'key': 'value'}) with d['key'] = 'value'" to "new rule - replace `d.update({'key': 'value'})` with `d['key'] = 'value'`" by @MichaReiser on 2024-11-25 08:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @MichaReiser on 2024-12-02 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14831.html">astral-sh/ruff#14831</a> on 2024-12-08 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceby">@spaceby</a> on 2025-11-10 09:32</div>
+            <div class="timeline-body"><p>Any news?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

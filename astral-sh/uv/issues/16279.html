@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where is `UV` trying to get credentials from on Windows platform - astral-sh/uv #16279</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Where is `UV` trying to get credentials from on Windows platform</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16279">#16279</a>
+        opened by <a href="https://github.com/InsaneLuv">@InsaneLuv</a>
+        on 2025-10-13 09:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/InsaneLuv">@InsaneLuv</a> on 2025-10-13 09:47</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>It looks like uv having major issues with <code>uv auth</code> and <code>credentials</code> providing when installing packages from private registries like Gitlab.</p>
+<p>No such problem on other platforms like Linux, but on Windows it's hell - you literally don't understand why uv doesn't supply credentials from anywhere.</p>
+<ol>
+<li>setx (export alternative for windows called)</li>
+<li>Windows Environment Variables</li>
+<li>uv auth</li>
+</ol>
+<p>Maybe my actions is incorrect? But the -vv argument doesn't give any information about what <code>credentials</code> <code>uv</code> can/can't find or where it's trying to find them.</p>
+<p>Here's what I'm trying to do:</p>
+<h4>pyproject.toml</h4>
+<pre><code>[tool.uv.sources]
+package = { index = &quot;GITLAB&quot; }
+
+[[tool.uv.index]]
+name = &quot;GITLAB&quot;
+url = &quot;https://gitlab.test.ru/api/v4/groups/58/-/packages/pypi/simple&quot;
+explicit = true
+authenticate = &quot;always&quot;
+</code></pre>
+<p>I'm describing where the package need to be installed from. It's a private gitlab registry.
+I generate the token <code>https://gitlab.test.ru/</code> and proceed further:</p>
+<h4>cli (uv auth)</h4>
+<p><code>uv auth login https://gitlab.test.ru/ </code>
+<code>username: InsaneLuv</code>
+<code>password: *TOKEN*</code></p>
+<p>According to the documentation, this is what I had to do to authenticate.
+But i got:</p>
+<pre><code>  package not found in the package registry
+  `-&gt; Because package was not found in the package registry and your project depends on package==0.1.1, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: An index URL (https://gitlab.test.ru/api/v4/groups/58/-/packages/pypi/simple) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).
+</code></pre>
+<p>Okay, maybe this method isn't suitable, I'll try another one from the documentation, passing only the token like:
+<code>uv auth login example.com --token</code>
+Same error.</p>
+<p><code>setx</code> AND <code>Windows Environment Variables</code> with <code>UV_INDEX_GITLAB_USERNAME</code> and <code>UV_INDEX_GITLAB_PASSWORD</code> don't give any effect either.</p>
+<p>Then my most important question is:</p>
+<pre><code>TRACE Caching credentials for https://gitlab.test.ru/api/v4/groups/58/-/packages/pypi
+TRACE Caching credentials for https://gitlab.test.ru/api/v4/groups/58/-/packages/pypi/simple
+TRACE Read credentials for index GITLAB
+TRACE Caching credentials for https://gitlab.test.ru/api/v4/groups/58/-/packages/pypi
+TRACE Caching credentials for https://gitlab.test.ru/api/v4/groups/58/-/packages/pypi/simple
+DEBUG Using request timeout of 30s
+DEBUG Ignoring existing lockfile due to `--upgrade`
+DEBUG Found static `pyproject.toml` for: app @ file:///C:/Users/luv/PycharmProjects/w-docrobot
+DEBUG No workspace root found, using project root
+TRACE Caching credentials for https://gitlab.test.ru/api/v4/groups/58/-/packages/pypi/simple
+TRACE Caching credentials for https://gitlab.test.ru/api/v4/groups/58/-/packages/pypi/simple
+</code></pre>
+<p>Where is <code>UV</code> trying to get credentials from?
+What am I doing wrong?</p>
+<h3>Platform</h3>
+<p>Windows 11 IoT Enterprise LTSC 24H2 26100.6584</p>
+<h3>Version</h3>
+<p>uv 0.9.2 (141369ce7 2025-10-10)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @InsaneLuv on 2025-10-13 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-18 16:55</div>
+            <div class="timeline-body"><p>I don't know why windows would be different here CC @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-18 17:32</div>
+            <div class="timeline-body"><p>Windows shouldn't be different. Can you provide verbose logs please?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InsaneLuv">@InsaneLuv</a> on 2025-12-18 18:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Windows shouldn't be different. Can you provide verbose logs please?</p>
+</blockquote>
+<p>Another package from private gitlab</p>
+<pre><code>(venvforwindows) PS C:\Users\luv\PycharmProjects\proj&gt; uv auth login https://gitlab.com/
+username: InsaneLuv
+password:
+Stored credentials for InsaneLuv@https://gitlab.com/
+(venvforwindows) PS C:\Users\luv\PycharmProjects\proj&gt; uv auth login https://gitlab.com/
+username: InsaneLuv
+password:
+Stored credentials for InsaneLuv@https://gitlab.com/
+(venvforwindows) PS C:\Users\luv\PycharmProjects\proj&gt; uv add alt --verbose
+DEBUG uv 0.9.9 (4fac4cb7e 2025-11-12)
+DEBUG Acquired shared lock for `C:\Users\luv\AppData\Local\uv\cache`
+DEBUG Found project root: `C:\Users\luv\PycharmProjects\proj`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `C:\Users\luv\PycharmProjects\proj`
+DEBUG No Python version file found in workspace: C:\Users\luv\PycharmProjects\proj
+DEBUG Using Python request `==3.13.*` from `requires-python` metadata
+DEBUG Checking for Python environment at: `.venv`
+DEBUG The project environment's Python version satisfies the request: `Python ==3.13.*`
+DEBUG Released lock at `C:\Users\luv\AppData\Local\Temp\uv-bfa794692a7d9ddf.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: app @ file:///C:/Users/luv/PycharmProjects/proj
+DEBUG No workspace root found, using project root
+DEBUG Resolving despite existing lockfile due to mismatched requirements for: `app==0.1.0`
+  Requested: {Requirement { name: PackageName(&quot;alt&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;0.0.1&quot; }]), index: Some(IndexMetadata { url: Url(VerbatimUrl { url: DisplaySafeUrl { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;gitlab.com&quot;)), port: None, path: &quot;/api/v4/projects/69269714/packages/pypi/simple&quot;, query: None, fragment: None }, given: None }), format: Simple }), conflict: None }, origin: None }}
+  Existing: {Requirement { name: PackageName(&quot;beanie&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;2.0.1&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;click&quot;), extras:
+ [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;8.1.0&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;dishka&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: V
+ersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;1.7.2&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;fastapi&quot;), extras: [ExtraName(&quot;standard&quot;)], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { ope
+rator: GreaterThanEqual, version: &quot;0.122.0&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;grpcio&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;1.76.0&quot; }]), index: None,
+ conflict: None }, origin: None }, Requirement { name: PackageName(&quot;grpcio-tools&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;1.76.0&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: 
+PackageName(&quot;jinja2&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;3.1.6&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;protobuf&quot;), extras: [], groups: [], marker: true,
+ source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;4.25.0&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;protobuf-to-pydantic&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifier
+s([VersionSpecifier { operator: GreaterThanEqual, version: &quot;0.3.3.1&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;rich&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;13
+.0.0&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;s2sphere&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;0.2.5&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;websockets&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;12.0&quot; }]), index: None, conflict: None }, origin: None }}
+DEBUG Solving with installed Python version: 3.13
+DEBUG Solving with target Python version: ==3.13.*
+DEBUG Adding direct dependency: app*
+DEBUG Searching for a compatible version of app@ file:///C:/Users/luv/PycharmProjects/proj(*)
+DEBUG Adding direct dependency: alt&gt;=0.0.1
+DEBUG Acquired lock for `C:\Users\luv\AppData\Local\uv\cache\simple-v18\index\ea22b7efa2880702\alt.lock`
+DEBUG Found stale response for: https://gitlab.com/api/v4/projects/69269714/packages/pypi/simple/alt/
+DEBUG Sending revalidation request for: https://gitlab.com/api/v4/projects/69269714/packages/pypi/simple/alt/
+DEBUG Released lock at `C:\Users\luv\AppData\Local\uv\cache\simple-v18\index\ea22b7efa2880702\alt.lock`
+DEBUG Indexes search failed because of status code failure: 401 Unauthorized
+DEBUG Searching for a compatible version of alt (&gt;=0.0.1)
+DEBUG No compatible version found for: alt
+DEBUG Recording unit propagation conflict of alt from incompatibility of (app)
+DEBUG Searching for a compatible version of app @ file:///C:/Users/luv/PycharmProjects/proj(&lt;0.1.0 | &gt;0.1.0)
+DEBUG No compatible version found for: app
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Reverting changes to `uv.lock`
+  x No solution found when resolving dependencies:
+  `-&gt; Because alt was not found in the package registry and your project depends on alt&gt;=0.0.1, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: An index URL (https://gitlab.com/api/v4/projects/69269714/packages/pypi/simple) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+DEBUG Released lock at `C:\Users\luv\PycharmProjects\proj\.venv\.lock`
+DEBUG Released lock at `C:\Users\luv\AppData\Local\uv\cache\.lock`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-18 19:56</div>
+            <div class="timeline-body"><p>Can you use <code>-vv</code> please?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

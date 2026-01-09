@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E501 reported in spite of noqa for string literal containing spaces - astral-sh/ruff #252</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>E501 reported in spite of noqa for string literal containing spaces</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/252">#252</a>
+        opened by <a href="https://github.com/cjfuller">@cjfuller</a>
+        on 2022-09-21 22:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cjfuller">@cjfuller</a> on 2022-09-21 22:29</div>
+            <div class="timeline-body"><p>The following code incorrectly reports an E501:</p>
+<p>test.py</p>
+<pre><code class="language-python">&quot;&quot;&quot;
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaa
+&quot;&quot;&quot;  # noqa: E501
+
+</code></pre>
+<pre><code>$ ruff test.py
+Found 1 error(s).
+test.py:2:89: E501 Line too long (89 &gt; 88 characters)
+</code></pre>
+<p>However without the space (and an extra &quot;a&quot; added to keep the length the same), this error is correctly ignored (no errors are reported:</p>
+<pre><code class="language-python">&quot;&quot;&quot;
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+&quot;&quot;&quot;  # noqa: E501
+
+</code></pre>
+<p>In both cases, flake8 does not report a line length error.</p>
+<p>(ruff 0.0.44, python 3.8.14, ubuntu 22.04)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-21 23:38</div>
+            <div class="timeline-body"><p>(I think the issue here is that Flake8 respects the <code> # noqa: E501</code> on the following line, while ruff only respects noqa directives on the same line.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cjfuller">@cjfuller</a> on 2022-09-21 23:53</div>
+            <div class="timeline-body"><p>Sorry, why does the second example not error then? I initially thought that might be the case, but I was able to add an arbitrary number of lines to this string, and as long as none of them contained spaces, ruff was fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-21 23:54</div>
+            <div class="timeline-body"><p>Flake8 has the same behavior (unless I'm mistaken), which is: if you have a long line consisting of a single token, don't raise a line length error. This is helpful for things like URLs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-09-21 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-22 12:31</div>
+            <div class="timeline-body"><p>I'll try to fix this today, I think it's important.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Release 0.1.0" by @charliermarsh on 2022-09-22 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/257.html">astral-sh/ruff#257</a> on 2022-09-22 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-09-22 16:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:06 UTC
+    </footer>
+</body>
+</html>

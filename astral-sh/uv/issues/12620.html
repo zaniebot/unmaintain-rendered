@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>An error occurs when adding torch from https://download.pytorch.org/whl/cu118 - astral-sh/uv #12620</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>An error occurs when adding torch from https://download.pytorch.org/whl/cu118</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12620">#12620</a>
+        opened by <a href="https://github.com/Ruoc26">@Ruoc26</a>
+        on 2025-04-02 06:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Ruoc26">@Ruoc26</a> on 2025-04-02 06:03</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>uv add torch==2.3.1 --index torch=https://download.pytorch.org/whl/cu118</p>
+<p>Using CPython 3.10.0 interpreter at: D:\miniconda3\envs\py3.10\python.exe
+Creating virtual environment at: .venv
+Resolved 25 packages in 9.54s
+error: Distribution <code>markupsafe==3.0.2 @ registry+https://download.pytorch.org/whl/cu118</code> can't be installed because it doesn't have a source distribution or wheel for the current platform</p>
+<p>hint: You're using CPython 3.10 (<code>cp310</code>), but <code>markupsafe</code> (v3.0.2) only has wheels with the following Python implementation tag: <code>cp313</code></p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @Ruoc26 on 2025-04-02 06:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 14:16</div>
+            <div class="timeline-body"><p>Have you read the <code>pytorch</code> guide? https://docs.astral.sh/uv/guides/integration/pytorch/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sglbl">@sglbl</a> on 2025-04-09 08:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Have you read the <code>pytorch</code> guide? https://docs.astral.sh/uv/guides/integration/pytorch/</p>
+</blockquote>
+<p>I think because of markupsafe problem, the guide about using torch with extra's doesn't work anymore.</p>
+<p>@CRH26 I solved this issue by adding a compatible markupsafe version:
+In my case I use torch with cpu,</p>
+<p><code>uv add torch==2.5.1+cpu markupsafe==2.1.5 --index https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match </code>
+But because of this every other package had conflicts about torch too so I added this to the toml file</p>
+<pre><code class="language-toml">[tool.uv]
+index-strategy = &quot;unsafe-best-match&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fritol">@fritol</a> on 2025-07-05 20:56</div>
+            <div class="timeline-body"><p>i applied what @sglbl said
+<code>pyproject.toml:</code></p>
+<pre><code class="language-toml"># pyproject.toml
+
+[project]
+name = &quot;my-cuda-pytorch-project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;A project set up for PyTorch with CUDA support using uv.&quot;
+requires-python = &quot;&gt;=3.9&quot; # Adjust this to your specific Python version (e.g., &gt;=3.10, &gt;=3.11)
+
+dependencies = [
+    &quot;torch&quot;,
+    &quot;torchvision&quot;,
+    &quot;torchaudio&quot;,
+    &quot;markupsafe==2.1.5&quot;, # Pinned to a version known to work for some users
+]
+
+[build-system]
+requires = [&quot;setuptools&gt;=61.0&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+# Configuration for uv
+[tool.uv]
+index-strategy = &quot;unsafe-best-match&quot; # Crucial for resolving complex dependency conflicts
+</code></pre>
+<p>then use
+<code>uv sync --index-url https://download.pytorch.org/whl/cu124 --extra-index-url https://pypi.org/simple --python 3.13.3</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blurgyy">@blurgyy</a> on 2025-08-04 07:04</div>
+            <div class="timeline-body"><p>It appears I can just install markupsafe 3.0.2 before adding pytorch, i.e., the following works just fine:</p>
+<pre><code class="language-bash">uv add git+https://github.com/pallets/markupsafe@3.0.2
+[...]
+
+uv add torch torchvision
+</code></pre>
+<p>This approach also does not require the <code>--index-strategy=unsafe-best-match</code> option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Cingirakli1Dumbelek">@Cingirakli1Dumbelek</a> on 2025-08-04 07:08</div>
+            <div class="timeline-body"><p>it's a big bug.
+there is version that satisfies every condition but without you knowing that it gives you error. I think this issue should be prioritized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ruoc26">@Ruoc26</a> on 2025-08-06 06:33</div>
+            <div class="timeline-body"><p>I solved this problem by following the pytorch guide, I think the key was setting index.explicit = true</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Ruoc26 on 2025-08-06 06:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

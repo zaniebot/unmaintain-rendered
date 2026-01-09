@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Feature Request] Inherit settings from parent directory for `ruff.toml` config files - astral-sh/ruff #3677</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Feature Request] Inherit settings from parent directory for `ruff.toml` config files</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3677">#3677</a>
+        opened by <a href="https://github.com/XuehaiPan">@XuehaiPan</a>
+        on 2023-03-23 06:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/XuehaiPan">@XuehaiPan</a> on 2023-03-23 06:33</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Thanks for the fantastic tool! Many tools support multiple configuration files in a multi-directory project. For example, you can have a per-directory <code>.gitignore</code> file to add extra ignore patterns. The <code>.gitignore</code> from the project root still affects the subdirectory. It would be nice if <code>ruff</code> can have a similar feature: inherit and merge configurations in the parent directory and subdirectory.</p>
+<pre><code class="language-text">${PROJECT_ROOT}
+├── src
+│   ├── a.file
+│   ├── b.file
+│   ...
+├── benchmark
+│   ├── .gitignore
+│   ├── a.csv
+│   ├── b.csv
+│   ...
+├── venv
+│   ├── bin
+│   ...
+├── .gitignore
+...
+</code></pre>
+<pre><code class="language-gitignore"># ${PROJECT_ROOT}/.gitignore
+
+venv/  # virtual environment
+*.csv  # CSV file
+</code></pre>
+<pre><code class="language-gitignore"># ${PROJECT_ROOT}/benchmark/.gitignore
+
+!*.csv
+</code></pre>
+<p>If I have a <code>.ruff.toml</code> in a subdirectory (e.g., <code>${PROJECT_ROOT}/tests/.ruff.toml</code>), currently <code>ruff</code> start a totally new namespace and ignores all configurations from the parent directory. If I run <code>ruff check ${PROJECT_ROOT}</code>, the <code>${PROJECT_ROOT}/pyproject.toml</code> will not affect the lint check under the <code>tests/</code> folder.</p>
+<p>My use case is:</p>
+<pre><code class="language-toml"># ${PROJECT_ROOT}/pyproject.toml
+
+[tool.ruff]
+target-version = &quot;py37&quot;
+line-length = 100
+show-source = true
+select = [
+    &quot;E&quot;, &quot;W&quot;,  # pycodestyle
+    &quot;F&quot;,       # pyflakes
+    &quot;C90&quot;,     # mccabe
+    &quot;N&quot;,       # pep8-naming
+    &quot;UP&quot;,      # pyupgrade
+    &quot;ANN&quot;,     # flake8-annotations
+    &quot;S&quot;,       # flake8-bandit
+    &quot;BLE&quot;,     # flake8-blind-except
+    &quot;B&quot;,       # flake8-bugbear
+    &quot;COM&quot;,     # flake8-commas
+    &quot;C4&quot;,      # flake8-comprehensions
+    &quot;EXE&quot;,     # flake8-executable
+    &quot;ISC&quot;,     # flake8-implicit-str-concat
+    &quot;PIE&quot;,     # flake8-pie
+    &quot;PYI&quot;,     # flake8-pyi
+    &quot;Q&quot;,       # flake8-quotes
+    &quot;RSE&quot;,     # flake8-raise
+    &quot;RET&quot;,     # flake8-return
+    &quot;SIM&quot;,     # flake8-simplify
+    &quot;TID&quot;,     # flake8-tidy-imports
+    &quot;PL&quot;,      # pylint
+    &quot;RUF&quot;,     # ruff
+]
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = &quot;double&quot;
+multiline-quotes = &quot;double&quot;
+inline-quotes = &quot;single&quot;
+</code></pre>
+<pre><code class="language-toml"># ${PROJECT_ROOT}/tests/.ruff.toml
+
+select = [
+    &quot;COM&quot;,     # flake8-commas
+    &quot;Q&quot;,       # flake8-quotes
+]
+</code></pre>
+<p>I have enabled many rules in <code>select</code> in the root directory. But sometimes I have to disable most of them for tests. I don't want to write a long list of <code>per-file-ignores</code> again for <code>tests/**/*.py</code>. Instead, I create a <code>.ruff.toml</code> file in the <code>tests/</code> folder and overwrite the <code>select</code> settings. Currently, <code>ruff</code> does not respect the settings in the parent directory (e.g., <code>tool.ruff.line-length</code>, <code>tool.ruff.flake8-quotes</code>). I still need to copy-paste settings between files.</p>
+<p>It would be nice if <code>ruff</code> can inherit and merge configurations in the parent directory and subdirectory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-23 07:10</div>
+            <div class="timeline-body"><p>Would <a href="https://beta.ruff.rs/docs/settings/#extend"><code>extend</code></a> work for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/XuehaiPan">@XuehaiPan</a> on 2023-03-23 07:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Would <a href="https://beta.ruff.rs/docs/settings/#extend"><code>extend</code></a> work for you?</p>
+</blockquote>
+<p>Thanks for the hint. It works and fits the exact use case for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @XuehaiPan on 2023-03-23 07:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

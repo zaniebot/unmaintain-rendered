@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google colab issue - astral-sh/uv #12724</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Google colab issue</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12724">#12724</a>
+        opened by <a href="https://github.com/AznamirWoW">@AznamirWoW</a>
+        on 2025-04-07 18:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AznamirWoW">@AznamirWoW</a> on 2025-04-07 18:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Something broke uv install today on Google Colab</p>
+<p><code># @title Install !sudo apt update !sudo apt install python3.10 !sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 !sudo update-alternatives --set python3 /usr/bin/python3.10 !curl -sS https://bootstrap.pypa.io/get-pip.py | python3 import sys sys.path.append('/usr/local/lib/python3.10/dist-packages') !pip install uv from IPython.display import clear_output print(&quot;Installing requirements...&quot;) !uv pip install -r requirements.txt -q</code></p>
+<p>After running this cell instead of installing the requirements it errors out with</p>
+<p>Installing requirements...
+error: File not found: <code>/backend-container/containers/requirements.constraints</code></p>
+<h3>Platform</h3>
+<p>Linux 6.1.85+ x86_64 GNU/Linux  (Google Colab)</p>
+<h3>Version</h3>
+<p>0.6.12</p>
+<h3>Python version</h3>
+<p>3.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AznamirWoW on 2025-04-07 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-07 19:13</div>
+            <div class="timeline-body"><p>Is that some sort of environment variable set within Google Colab?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AznamirWoW">@AznamirWoW</a> on 2025-04-07 19:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Is that some sort of environment variable set within Google Colab?</p>
+</blockquote>
+<p>it is a file uv tries to access, I could get past it by creating empty files</p>
+<p>!mkdir /backend-container
+!mkdir /backend-container/containers
+!touch /backend-container/containers/build.constraints
+!touch /backend-container/containers/requirements.constraints</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NourEldin-Osama">@NourEldin-Osama</a> on 2025-04-07 20:56</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Is that some sort of environment variable set within Google Colab?</p>
+</blockquote>
+<p>it is a file uv tries to access, I could get past it by creating empty files</p>
+<p>!mkdir /backend-container !mkdir /backend-container/containers !touch /backend-container/containers/build.constraints !touch /backend-container/containers/requirements.constraints</p>
+</blockquote>
+<p>I can confirm that this workaround is working</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../googlecolab/colabtools/issues/5237.html">googlecolab/colabtools#5237</a> on 2025-04-08 04:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/updiversity">@updiversity</a> on 2025-04-08 09:32</div>
+            <div class="timeline-body"><p>I confirm as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ivanbelenky">@ivanbelenky</a> on 2025-04-08 16:23</div>
+            <div class="timeline-body"><p>Confirmed as well, workaround it works. I wonder if this is related to them upgrading from 3.10 --&gt; 3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @konstin on 2025-04-08 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-08 17:29</div>
+            <div class="timeline-body"><p>Google Colab is setting some uv-related environment variables, that seem to have broken with the a Colab update. The Colab team is tracking this internally (https://github.com/googlecolab/colabtools/issues/5237#issuecomment-2786440777).</p>
+<p>As workaround, you can prefix commands with <code>UV_CONSTRAINT= UV_BUILD_CONSTRAINT= </code>,</p>
+<pre><code>!UV_CONSTRAINT= UV_BUILD_CONSTRAINT= uv pip install datasets
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NourEldin-Osama">@NourEldin-Osama</a> on 2025-04-08 19:39</div>
+            <div class="timeline-body"><p>Thanks for the fast and helpful reply, @konstin !</p>
+<p>I tested your workaround, and it works — but I have to add <code>!UV_CONSTRAINT= UV_BUILD_CONSTRAINT=</code> to every <code>uv pip install</code> command.</p>
+<p>See the image below:</p>
+<p><img src="https://github.com/user-attachments/assets/a17216f0-199d-4ec0-be39-5a321a892a9f" alt="Image" /></p>
+<p>To apply your workaround globally for all commands, I did this:</p>
+<pre><code class="language-python">import os
+
+os.environ[&quot;UV_CONSTRAINT&quot;] = os.environ[&quot;UV_BUILD_CONSTRAINT&quot;] = &quot;&quot;
+</code></pre>
+<p>This makes every <code>uv pip install</code> command work without needing to add the variables manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @Gankra on 2025-04-10 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AznamirWoW">@AznamirWoW</a> on 2025-04-10 19:11</div>
+            <div class="timeline-body"><p>the file creation workaround does not work any more, now requires this</p>
+<p><code>!UV_CONSTRAINT= UV_BUILD_CONSTRAINT= UV_PRERELEASE=if-necessary-or-explicit uv pip install -r requirements.txt -q</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AznamirWoW">@AznamirWoW</a> on 2025-04-16 05:24</div>
+            <div class="timeline-body"><p>current workaround is to add <code>--prerelease if-necessary-or-explicit</code> to <code>uv pip install</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/parthsdoshi">@parthsdoshi</a> on 2025-04-29 04:13</div>
+            <div class="timeline-body"><p>I believe this issue can be closed given the latest comment:
+https://github.com/googlecolab/colabtools/issues/5237#issuecomment-2822818163</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-04-29 06:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

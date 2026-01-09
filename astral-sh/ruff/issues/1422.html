@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow banning of certain modules and certain module members - astral-sh/ruff #1422</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow banning of certain modules and certain module members</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1422">#1422</a>
+        opened by <a href="https://github.com/not-my-profile">@not-my-profile</a>
+        on 2022-12-28 10:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2022-12-28 10:22</div>
+            <div class="timeline-body"><p>Sometimes you want to assert that certain modules are never imported. Apparently Pylint and Pyflake have plugins for that (<a href="https://pypi.org/project/pylint-restricted-imports/">pylint-restricted-imports</a> and <a href="https://github.com/adamchainz/flake8-tidy-imports#banned-modules">flake8-tidy-imports</a> respectively).</p>
+<p>I think the disallowed modules / module members could be defined in a new <code>tool.ruff.banned-api</code> section in <code>pyproject.toml</code>. So you could for example have:</p>
+<pre><code class="language-toml">[tool.ruff.banned-api]
+argparse.msg = &quot;Use typed_argparse instead.&quot;
+&quot;decimal.Decimal&quot;.msg = &quot;Use ints and floats only.&quot;
+&quot;typing.TypedDict&quot;.msg = &quot;&quot;&quot;Use typing_extensions.TypedDict instead.
+
+typing.TypedDict does not support typing.Generic for Python &lt; 3.11,
+so we sometimes have to use typing_extensions.TypedDict instead.
+If we sometimes use typing_extensions.TypedDict, we however always
+want to use it because:
+
+class Foo(typing.TypedDict): ...
+class Bar(typing_extensions.TypedDict): ...
+class Baz(Foo, Bar): ...
+
+results in a runtime type error:
+
+&gt; TypeError: metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases
+&quot;&quot;&quot;
+</code></pre>
+<p>Note that banning module members is a bit challenging because we also have to account for attribute access e.g.</p>
+<pre><code class="language-python">import example
+example.evil_function()
+
+# or
+
+import example as other
+other.evil_function()
+</code></pre>
+<p>I think it is quite clear that it is impossible for such a lint to prevent all the ways an API can be accessed, for example banned modules could still be accessed via <code>importlib</code> or <code>eval</code> and banning <code>eval</code> is a hopeless endeavor because there are countless ways of accessing it e.g. <code>globals()['__builtins__'].eval</code> or even <code>dataclasses.builtins.eval</code>. Completely preventing attribute access is even more difficult because you'd have to understand data flows (e.g.  <code>(lambda x: x.evil_function())(example)</code>).</p>
+<p>So I just think the documentation of the lint should clarify that it's meant to prevent accidental usage of the API and can be easily circumvented.</p>
+<p>Aside from such false negatives the attribute access check would probably also result in false positives e.g.</p>
+<pre><code class="language-python">import example, other
+example = other
+example.evil_function()
+
+# or
+
+def foo(example):
+    example.evil_function()
+</code></pre>
+<p>So I think the error message for detected attribute access should say something like &quot;it looks like you used a banned API&quot; instead of using assertive language that might confuse users.</p>
+<p>Lastly in cases where the fix is just replacing one import for another (e.g. changing <code>typing.TypedDict</code> to <code>typing_extensions.TypedDict</code>) it would be nice if ruff could provide automatic fixing via <code>--fix</code>. This is also the reason why I suggested the <code>.msg</code> in the previous config example because then we could additionally specify e.g:</p>
+<pre><code class="language-toml">&quot;typing.TypedDict&quot;.fix-to = &quot;typing_extensions.TypedDict&quot;
+</code></pre>
+<p>I have not contributed to ruff yet, but if the people here like the suggested lint, I could look into implementing it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../microsoft/pyright/issues/4380.html">microsoft/pyright#4380</a> on 2022-12-28 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-28 12:21</div>
+            <div class="timeline-body"><p>Thanks for writing this up!</p>
+<p>I think the most straightforward path would be to model this after <code>flake8-tidy-imports</code>, and use the error code <code>TID251</code> (we already supported <code>I252</code> from <code>flake8-tidy-imports</code>, but it's one of the few codes we renamed to avoid conflicts).</p>
+<p>We can start by using the same API as <code>flake8-tidy-imports</code>. (Replacement autofix is a bit difficult right now, because we need a way to &quot;inject&quot; an import into a file -- see https://github.com/charliermarsh/ruff/issues/835. That is, if you change <code>typing</code> to <code>typing_extensions</code>, you may have to add an import for it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2022-12-28 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-28 12:32</div>
+            <div class="timeline-body"><p>It looks like <code>flake8-tidy-imports</code> only flags imports and not arbitrary member accesses, so I'd also be fine starting with that behavior (which makes the check somewhat trivial to implement).</p>
+<p>https://github.com/adamchainz/flake8-tidy-imports/blob/main/src/flake8_tidy_imports/<strong>init</strong>.py#L184</p>
+<p>I know that doesn't solve your <code>typing.TypedDict</code> problem since it's common to <code>import typing</code>, but we could enforce that as a separate check (banned member access).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-28 12:42</div>
+            <div class="timeline-body"><p>Let me know if you're interested in implementing, and I could write up some more specific instructions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2022-12-28 13:07</div>
+            <div class="timeline-body"><blockquote>
+<p>we need a way to &quot;inject&quot; an import into a file</p>
+</blockquote>
+<p>Good point, should we open a separate issue for that?</p>
+<blockquote>
+<p>It looks like flake8-tidy-imports only flags imports and not arbitrary member accesses</p>
+</blockquote>
+<p>According to its README <code>flake8-tidy-imports</code> does support banning members</p>
+<blockquote>
+<p>Note that despite the name, you can ban imported objects too, since the syntax is the same.</p>
+</blockquote>
+<p>but only when they're imported as e.g. <code>import TypedDict from typing</code> and not when accessed via the module name (see https://github.com/adamchainz/flake8-tidy-imports/issues/63)</p>
+<blockquote>
+<p>we could enforce that as a separate check (banned member access)</p>
+</blockquote>
+<p>I am not sure how much sense it makes to have two separate checks for this because <code>from foo import bar</code> is ambiguous ... just from that we cannot know if <code>bar</code> is the <code>foo.bar</code> module or if <code>bar</code> is an object defined in the <code>foo</code> module (which is probably also the reason why <code>flake8-tidy-imports</code> supports this ... it's not intentional, it's a side effect).</p>
+<p>With this side-effect in mind I think it makes sense to properly check for attribute access as well, at which point the check is more than I251, ... I am not sure if using an existing identifier implies that the check by ruff is exactly the same?</p>
+<p>Yes I'm interested in implementing this :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-28 14:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Good point, should we open a separate issue for that?</p>
+</blockquote>
+<p>It's filed here: https://github.com/charliermarsh/ruff/issues/835. (I linked the wrong issue above, edited.)</p>
+<blockquote>
+<p>According to its README flake8-tidy-imports does support banning members</p>
+</blockquote>
+<p>Yeah! I saw that too. What I meant was that it doesn't detect module accesses as in the issue you linked. I was mostly suggesting that should be a separate check so-as to maintain compatibility with <code>flake8-tidy-imports</code>, but if that's the <em>intent</em> of the check, and they just consider it a deficiency, then it's fine to do it all as one check code as you've proposed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-28 14:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes I'm interested in implementing this :)</p>
+</blockquote>
+<p>Great! There are some instructions on adding check codes in general in the <a href="https://github.com/charliermarsh/ruff/blob/main/CONTRIBUTING.md">contributing guide</a>.</p>
+<p>For this code, you'd then want to do two things above those initial steps:</p>
+<ol>
+<li>Add the <code>banned-modules</code> option to <code>src/flake8_tidy_imports/settings.rs</code>, probably as a hash map from module name to message.</li>
+<li>In <code>checkers/ast.rs</code>, around <a href="https://github.com/charliermarsh/ruff/blob/main/src/checkers/ast.rs#L635">here</a>, add a call out to a new check in <code>src/flake8_tidy_imports/checks.rs</code> (and similarly for <code>StmtKind::ImportFrom</code>) with the appropriate logic.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-28 14:21</div>
+            <div class="timeline-body"><p>I'd kind of prefer to avoid implementing all of the wildcarding that <code>flake8-tidy-imports</code> supports. It complicates the API and the implementation, and makes it more challenging to do these checks efficiently across the codebase (which will be required if we support flagging member access -- we'll have to perform these checks a lot).</p>
+<p>I also can't really find any usages of the wildcarding in <a href="https://cs.github.com/?q=banned-modules">code search</a>.</p>
+<p>So, IMO, let's skip that for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-28 14:22</div>
+            <div class="timeline-body"><p>(You can just ping here as you have questions, I'm happy to help.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2022-12-29 05:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Add the <code>banned-modules</code> option</p>
+</blockquote>
+<p>I think naming it <code>banned-api</code> makes more sense since it can also be used to ban module members.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1436.html">astral-sh/ruff#1436</a> on 2022-12-29 08:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-30 03:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2022-12-30 07:35</div>
+            <div class="timeline-body"><p>Thanks for being so responsive and thoughtful! The <code>CONTRIBUTING.md</code> and <code>cargo +nightly dev generate-all</code> are really quite nice. I did run into some small issues when following <code>CONTRIBUTING.md</code> and just opened #1466 to address these (and also #1465 with a followup fix for something we both missed).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-30 12:23</div>
+            <div class="timeline-body"><p>Thank you for your contribution, and for bearing with my feedback! It's hugely appreciated! I'm really glad to have you as a contributor :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbdchd">@sbdchd</a> on 2023-01-04 01:45</div>
+            <div class="timeline-body"><p>I use a the wildcard syntax <a href="https://github.com/chdsbd/kodiak/blob/0c1171bc8f574d7ee11ab6174036edadfbc5ec09/bot/tox.ini#LL1-L4C28">in a project</a>, so the config ends up being:</p>
+<pre><code class="language-ini">[flake8]
+banned-modules =
+  httpx.* = Use kodiak.http
+ban-relative-imports = true
+</code></pre>
+<p>My use case is preventing people from importing <code>httpx</code> at all and instead using the project's wrapper around the library</p>
+<p>Maybe there is a way to achieve this without the <code>*</code>?</p>
+<p><a href="https://github.com/chdsbd/kodiak/blob/0c1171bc8f574d7ee11ab6174036edadfbc5ec09/bot/kodiak/http.py#L5-L13">example uses (in the wrapper module)</a> that flake8-tidy-import lints:</p>
+<pre><code class="language-python">from httpx import (  # noqa: I251
+    AsyncClient,
+    HTTPError,
+    HTTPStatusError,
+    Request,
+    Response,
+)
+from httpx._config import DEFAULT_TIMEOUT_CONFIG  # noqa: I251
+from httpx._types import TimeoutTypes  # noqa: I251
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 01:46</div>
+            <div class="timeline-body"><p>Would <code>banned-modules = httpx</code> achieve the same thing? (Sorry, being lazy, but what's the difference between the semantics in those two cases?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbdchd">@sbdchd</a> on 2023-01-04 01:54</div>
+            <div class="timeline-body"><p>Oh yeah that's what I should have been using, didn't know about that!</p>
+<p>I'll make a separate issue because I think the following config isn't working:</p>
+<pre><code class="language-toml">[tool.ruff.flake8-tidy-imports]
+# Disallow all relative imports.
+ban-relative-imports = &quot;all&quot;
+[tool.ruff.flake8-tidy-imports.banned-api]
+&quot;httpx&quot;.msg = &quot;Use kodiak.http&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 01:59</div>
+            <div class="timeline-body"><p>Go for it, I haven’t used that plug-in a ton yet myself but happy to take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1614.html">astral-sh/ruff#1614</a> on 2023-01-04 02:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

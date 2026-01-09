@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`# noqa: I001` not respected but `# isort:skip` is - astral-sh/ruff #9554</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`# noqa: I001` not respected but `# isort:skip` is</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9554">#9554</a>
+        opened by <a href="https://github.com/monotkate">@monotkate</a>
+        on 2024-01-16 19:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/monotkate">@monotkate</a> on 2024-01-16 19:11</div>
+            <div class="timeline-body"><p>I'm working to move a codebase from isort from ruff's isort. There are a few lines we don't want moving around, that are currently labeled with <code># noqa for side effects</code>. Ruff isort blew right through that comment, so I updated it to <code># noqa: I001</code> and it continues to sort that line. Digging through issues I saw Ruff should also respect <code># isort:skip</code> and discovered it does respect that. Config is pretty simple.</p>
+<p>Sorts/errors anyway:</p>
+<pre><code>...
+from tests.factories.user_insurance_factory import create_user_insurance
+
+from app import main  # noqa: I001
+...
+</code></pre>
+<p>Does not sort:</p>
+<pre><code>...
+from tests.factories.user_insurance_factory import create_user_insurance
+
+from app import main  # isort:skip
+...
+</code></pre>
+<p>Using VSCode and the Ruff extension, it errors and will auto move the line.
+Running <code>ruff check &lt;filename&gt;</code> it removes the line entirely (main is not used directly in the file)</p>
+<p>Ruff version: <code>ruff 0.1.13</code>
+Ruff config:</p>
+<pre><code>[lint]
+select = [
+    # pycodestyle
+    &quot;E&quot;,
+    # Pyflakes
+    &quot;F&quot;,
+    # isort - Import sort
+    &quot;I&quot;,
+]
+
+# Files excluded from just linting
+exclude = [
+    &quot;**/__init__.py&quot;,
+    &quot;app/shared/models/**.pyi&quot;,
+    &quot;app/main.py&quot;,
+    &quot;venv/*&quot;,
+]
+
+[lint.isort]
+force-single-line = true
+force-sort-within-sections = true
+order-by-type = true
+single-line-exclusions = [&quot;typing&quot;]
+known-local-folder = [&quot;src&quot;, &quot;tests&quot;, &quot;scripts&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-16 19:12</div>
+            <div class="timeline-body"><p>I think the <code># noqa: I001</code> needs to go on the last line of the entire import block -- it can't be applied to individual imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/monotkate">@monotkate</a> on 2024-01-16 19:19</div>
+            <div class="timeline-body"><p>Oh interesting. So <code>isort: skip</code> is functionality I cannot replicate with <code>noqa: I001</code>? The skip seems to label a specific line as not an import according to isort docs so that it doesn't get moved by isort.</p>
+<p><code>from app import main  # noqa: I001</code> is the last line of the import block. There's code after it, but all the imports are before it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-16 19:29</div>
+            <div class="timeline-body"><p>Yeah, they're functionally a bit different from one another. <code># noqa: I001</code> will turn off import sorting for the entire block of imports preceding it, while <code># isort: skip</code> will turn off import sorting for that one import (roughly).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/monotkate">@monotkate</a> on 2024-01-16 19:33</div>
+            <div class="timeline-body"><p>In theory, this should not being erroring then, is that correct?</p>
+<img width="456" alt="image" src="https://github.com/astral-sh/ruff/assets/11742296/0ea336dc-be10-40ee-a0c3-27ac22c4d338">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-16 19:34</div>
+            <div class="timeline-body"><p>Sorry, I was mistaken, it needs to go on the <em>first</em> line, not the last: https://play.ruff.rs/583348e6-e041-491b-b5cb-4f71b3d1d730</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/monotkate">@monotkate</a> on 2024-01-16 19:39</div>
+            <div class="timeline-body"><p>Gotcha, that helps me understand what I'm working with, and should cover my issue, thank you! Is there documentation on this somewhere that I missed? I couldn't find anything about how to use <code>noqa: I001</code> in the docs, and only found the <code>isort: skip</code> part digging through issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-16 19:43</div>
+            <div class="timeline-body"><p>Sadly no, for the <code># isort: skip</code> action comments we've kind of lazily deferred to the isort documentation. I'm going to add a note to the docs about <code># noqa: I001</code> though -- we have a similar note for multiline strings which are also a little bit special. I'll link this issue to that PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-16 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-01-16 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/monotkate">@monotkate</a> on 2024-01-16 19:44</div>
+            <div class="timeline-body"><p>As a note: it's unexpected that you can't ignore single lines. I could use this for circular dependency issues so that one line gets pinned but the others are sorted. I'll use the isort skip for now, but it's a little odd to use another tool's commands. Thanks for the fast response and the future docs!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-16 19:46</div>
+            <div class="timeline-body"><p>Would you be able to provide a concrete example of how you'd use it on a single line, and what you'd expect to happen?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/monotkate">@monotkate</a> on 2024-01-16 19:53</div>
+            <div class="timeline-body"><p>Yep! This isn't my code specifically, so excuse me if I don't know all the details. I'm more familiar with how this results in TS rather than Python.</p>
+<p><code>from app import main</code> needs to be the first import so that certain things are imported in the correct order, or else the code results in circular dependencies that causes issues. Outside of that single line, idc what the order of the imports are, and would prefer them to be sorted according to isort.</p>
+<p>I can add the isort skip to that line and it neatly ignores it in terms of all the other imports, resolving my use case.</p>
+<p>Does that make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9555.html">astral-sh/ruff#9555</a> on 2024-01-16 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-16 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16774.html">astral-sh/ruff#16774</a> on 2025-03-16 12:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

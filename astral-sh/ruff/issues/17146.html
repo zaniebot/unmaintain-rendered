@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>exclude default configuration not working on github workflow - astral-sh/ruff #17146</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>exclude default configuration not working on github workflow</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17146">#17146</a>
+        opened by <a href="https://github.com/lagamura">@lagamura</a>
+        on 2025-04-02 11:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lagamura">@lagamura</a> on 2025-04-02 11:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When I use <code>ruff format --check .</code> is executed locally works as expected ignoring the .venv directory, but when is used in github workflow, it starts iterating the .venv:</p>
+<blockquote>
+<p>Downloaded ruff
+Installed 1 package in 157ms
+warning: The top-level linter settings are deprecated in favour of their counterparts in the lint section. Please update the following options in .venv/lib/python3.11.../actions/runs/.../site-packages/pandas/pyproject.toml:</p>
+<p>'ignore' -&gt; 'lint.ignore'
+'select' -&gt; 'lint.select'
+'typing-modules' -&gt; 'lint.typing-modules'
+'unfixable' -&gt; 'lint.unfixable'
+'per-file-ignores' -&gt; 'lint.per-file-ignores'
+warning: PGH001 has been remapped to S307.
+error: Failed to read .venv/lib/python3.11/site-packages/joblib/test/test_func_inspect_special_encoding.py: stream did not contain valid UTF-8
+Would reformat: .venv/bin/activate_this.py
+Would reformat: .venv/bin/jp.py
+Would reformat: .venv/lib/python3.11/site-packages/IPython/<strong>init</strong>.py
+...</p>
+</blockquote>
+<p>I've tried also the <code>--isolated</code> flag with identical result.</p>
+<p>As a base environment I use our custom action with the following code:</p>
+<pre><code class="language-yml">name: &quot;Setup UV Build Environment&quot;
+description: &quot;Sets up the build environment with Python, dependencies, and tools.&quot;
+runs:
+  using: &quot;composite&quot;
+  steps:
+    - name: Install tar
+      run: yum install -y tar
+      shell: bash
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        python-version: 3.11
+        enable-cache: true
+        cache-dependency-glob: |
+          **/uv.lock
+          **/pyproject.toml
+        version: &quot;latest&quot;
+
+    - name: Install dependencies
+      run: uv sync --all-extras --index https://pypi.org/simple -U -v
+      shell: bash
+</code></pre>
+<p>And here my github workflow:</p>
+<pre><code class="language-yml">name: satio workflow
+
+on: 
+  pull_request:
+    # all branches
+    branches:
+      - '*'
+  push:
+    branches: ['main', 'dev']
+  workflow_dispatch:
+
+jobs:
+  format-lint:
+    runs-on: ubuntu-latest
+    container:
+      image: almalinux:9
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup build environment
+      uses: VITO-RS-Vegetation/veg-template@v1  # Reuse the composite action
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}  # Use the built-in GITHUB_TOKEN for authentication
+    
+    - name: Run format-linter
+      run: |
+        ruff --version
+        ruff format --check . 
+        ruff check . 
+
+  perform-tests:
+    runs-on: ubuntu-latest
+    container:
+      image: almalinux:9
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup build environment
+      uses: VITO-RS-Vegetation/veg-template@v1  # Reuse the composite action
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}  # Use the built-in GITHUB_TOKEN for authentication
+
+    - name: Run tests
+      run: uv run pytest tests
+</code></pre>
+<p>Lastly and strangely, I am using the same workflow file in another repository and it ignores correctly as expected the .venv directory</p>
+<h3>Version</h3>
+<p>ruff 0.11.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-02 11:18</div>
+            <div class="timeline-body"><p>Thanks for the nice write up!</p>
+<p>Can you run <code>ruff check --show-settings</code> in CI. I wonder if it picks up some other configuration</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-04-02 11:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lagamura">@lagamura</a> on 2025-04-02 14:13</div>
+            <div class="timeline-body"><p>Two updates on that:</p>
+<ul>
+<li>the issue appears only in <code>ruff format --check .</code> command</li>
+</ul>
+<p>I checked both the local and github workflow config with <code>--show-settings</code> flag:
+The only different fields are: <em>cache_dir, file_resolver.project_root, linter.project_root</em></p>
+<p>I suspect there is something related to the github workflow path which is automatically generated like:
+&quot;/__w/satio/satio&quot;</p>
+<p>Could be either the repetition of the name or the parent directory &quot;/__w/&quot; the issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-02 14:21</div>
+            <div class="timeline-body"><blockquote>
+<p>The only different fields are: cache_dir, file_resolver.project_root, linter.project_root</p>
+</blockquote>
+<p>Do you run the project from a different root directory in CI vs locally?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lagamura">@lagamura</a> on 2025-04-02 15:02</div>
+            <div class="timeline-body"><p>I don't configure anything regarding the root on CI, in a repo with the following structure:</p>
+<p>workspace name: ./my_package
+<code>tree -L 2</code></p>
+<pre><code>.
+├── pyproject.toml
+├── README.md
+├── src
+│   └── my_package
+├── tests
+│   └── example_test.py
+└── uv.lock
+
+</code></pre>
+<p>github workflow will create the workspace: <code>/__w/my_package/my_package</code> so in ruff settings output:
+file_resolver.project_root==linter.project_root==cache_dir== <code>/__w/my_package/my_package</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lagamura">@lagamura</a> on 2025-04-02 15:27</div>
+            <div class="timeline-body"><p>Initially I thought changing the <code>./src/package_name</code> would change the github workflow workspace convention (so to avoid the duplciate nested name) but this does not seem to resolve the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-02 15:40</div>
+            <div class="timeline-body"><p>Hmm, I don't see anything that's obviously wrong but I'm also not able to reproduce locally. Could you try running <code>ruff format -v .</code>? How do you run the formatter locally?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lagamura">@lagamura</a> on 2025-04-02 16:33</div>
+            <div class="timeline-body"><p>Seems there is different include configuration for the same workspace(?):</p>
+<p>local output of <code>ruff format -v .</code></p>
+<pre><code> [2025-04-02][18:07:44][ruff::resolve][DEBUG] Using configuration file (via parent) at: /data/users/Private/***/vegetation/satio/pyproject.toml
+...
+[2025-04-02][18:07:44][ignore::walk][DEBUG] ignoring /data/users/Private/***/vegetation/satio/.venv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/data/users/Private/***/vegetation/satio/.gitignore&quot;), original: &quot;.venv&quot;, actual: &quot;**/.venv&quot;, is_whitelist: false, is_only_dir: false })))
+---
+</code></pre>
+<p>CI output of <code>ruff format -v .</code></p>
+<pre><code>[2025-04-02][16:18:51][ruff::resolve][DEBUG] Using configuration file (via parent) at: /__w/satio/satio/pyproject.toml
+...
+[2025-04-02][16:18:51][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/__w/satio/satio/pyproject.toml&quot;
+[2025-04-02][16:18:51][ignore::gitignore][DEBUG] opened gitignore file: /__w/satio/satio/.venv/.gitignore
+[2025-04-02][16:18:51][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/__w/satio/satio/.venv/bin/jp.py&quot;
+</code></pre>
+<p>In CI there is no IgnoreMatch matching</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-02 18:47</div>
+            <div class="timeline-body"><p>Is there any chance the two ruff versions are different? I see 0.11.2 in the original report, but I didn't see a version in the logs. I could have missed it though.</p>
+<p>We had a case recently where a CI workflow randomly picked an old version of a package, so that's on my mind!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lagamura">@lagamura</a> on 2025-04-02 18:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there any chance the two ruff versions are different? I see 0.11.2 in the original report, but I didn't see a version in the logs. I could have missed it though.</p>
+<p>We had a case recently where a CI workflow randomly picked an old version of a package, so that's on my mind!</p>
+</blockquote>
+<p>No, both versions are printed before the command:</p>
+<pre><code>ruff --version
+ruff 0.11.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-03 10:40</div>
+            <div class="timeline-body"><p>I tried to reproduce this locally by:</p>
+<ul>
+<li>Creating a new <code>test-github/test-github</code> directory</li>
+<li>Initializing a project with uv</li>
+<li>adding an incorrectly formatted file</li>
+<li>Running <code>uvx ruff format . -v --check</code></li>
+</ul>
+<p>Ruff ignores the <code>.venv</code> folder as expected.</p>
+<pre><code>[2025-04-03][12:34:08][ruff::resolve][DEBUG] Using Ruff default settings
+[2025-04-03][12:34:08][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/.gitignore_global
+[2025-04-03][12:34:08][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/astral/test-github/test-github/.gitignore
+[2025-04-03][12:34:08][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/astral/test-github/test-github/.git/info/exclude
+[2025-04-03][12:34:08][ignore::walk][DEBUG] ignoring /Users/micha/astral/test-github/test-github/.venv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/micha/astral/test-github/test-github/.gitignore&quot;), original: &quot;.venv&quot;, actual: &quot;**/.venv&quot;, is_whitelist: false, is_only_dir: false })))
+[2025-04-03][12:34:08][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/Users/micha/astral/test-github/test-github/main.py&quot;
+[2025-04-03][12:34:08][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/Users/micha/astral/test-github/test-github/.git&quot;
+[2025-04-03][12:34:08][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/Users/micha/astral/test-github/test-github/test.py&quot;
+[2025-04-03][12:34:08][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/Users/micha/astral/test-github/test-github/pyproject.toml&quot;
+[2025-04-03][12:34:08][ruff::commands::format][DEBUG] format_path; path=/Users/micha/astral/test-github/test-github/main.py
+[2025-04-03][12:34:08][ruff::commands::format][DEBUG] format_path; path=/Users/micha/astral/test-github/test-github/test.py
+[2025-04-03][12:34:08][tracing::span][DEBUG] Printer::print;
+[2025-04-03][12:34:08][tracing::span][DEBUG] Printer::print;
+[2025-04-03][12:34:08][ruff::commands::format][DEBUG] Formatted 2 files in 353.63µs
+Would reformat: test.py
+1 file would be reformatted, 1 file already formatted
+</code></pre>
+<p>It also ignores the <code>.venv</code> folder when I run Ruff from the parent directory.</p>
+<pre><code>❯ uvx ruff format . -v --check
+[2025-04-03][12:36:02][ruff::resolve][DEBUG] Using Ruff default settings
+[2025-04-03][12:36:02][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/.gitignore_global
+[2025-04-03][12:36:02][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/astral/test-github/test-github/.gitignore
+[2025-04-03][12:36:02][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/astral/test-github/test-github/.git/info/exclude
+[2025-04-03][12:36:02][ignore::walk][DEBUG] ignoring /Users/micha/astral/test-github/test-github/.venv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/micha/astral/test-github/test-github/.gitignore&quot;), original: &quot;.venv&quot;, actual: &quot;**/.venv&quot;, is_whitelist: false, is_only_dir: false })))
+[2025-04-03][12:36:02][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/Users/micha/astral/test-github/test-github/main.py&quot;
+[2025-04-03][12:36:02][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/Users/micha/astral/test-github/test-github/.git&quot;
+[2025-04-03][12:36:02][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/Users/micha/astral/test-github/test-github/test.py&quot;
+[2025-04-03][12:36:02][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/Users/micha/astral/test-github/test-github/pyproject.toml&quot;
+[2025-04-03][12:36:02][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/astral/test-github/test-github/.ruff_cache/.gitignore
+[2025-04-03][12:36:02][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/Users/micha/astral/test-github/test-github/.ruff_cache&quot;
+[2025-04-03][12:36:02][ruff::commands::format][DEBUG] format_path; path=/Users/micha/astral/test-github/test-github/test.py
+[2025-04-03][12:36:02][ruff::commands::format][DEBUG] format_path; path=/Users/micha/astral/test-github/test-github/main.py
+[2025-04-03][12:36:02][tracing::span][DEBUG] Printer::print;
+[2025-04-03][12:36:02][tracing::span][DEBUG] Printer::print;
+[2025-04-03][12:36:02][ruff::commands::format][DEBUG] Formatted 2 files in 464.13µs
+Would reformat: test-github/test.py
+1 file would be reformatted, 1 file already formatted
+</code></pre>
+<p>So I'm not sure what's wrong. Are there any more logs related to file traversal that you truncated? Can you try cloning the project locally into a similar file structure as on CI and test if you can reproduce locally?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lagamura">@lagamura</a> on 2025-04-03 11:35</div>
+            <div class="timeline-body"><p>Thanks for following up, I'll try to replicate a minimal example soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lagamura">@lagamura</a> on 2025-04-04 08:11</div>
+            <div class="timeline-body"><p>I've managed to replicate the issue and think I found the cause, check the repo here: https://github.com/lagamura/gitruff/</p>
+<p>The issue is using the <code>almalinux</code> container in the workflow runner.
+Inspect it by going to <a href="https://github.com/lagamura/gitruff/actions">workflows</a></p>
+<p>The same workflow is ignoring normally the venv in the ubuntu container but triggers the false include/exclude iterate in almalinux container.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-04 08:41</div>
+            <div class="timeline-body"><p>Oh that's interesting. I pasted the two logs into a <a href="https://www.diffchecker.com/FNsKz8Tt/">text diff</a> (left almalinux, right ubuntu). One thing that I noticed is that the ubuntu directory listing has a <code>.git</code> directory and the almalinux doesn't.</p>
+<p>It also seems that <code>.venv</code> isn't excluded because it matches any exclude pattern but because it is excluded in the <code>.gitignore</code> on ubuntu (but not on almalinux?)</p>
+<p>I find this in the ubuntu logs but not on almalinux</p>
+<pre><code>ignoring /home/runner/work/gitruff/gitruff/.venv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/home/runner/work/gitruff/gitruff/.gitignore&quot;), original: &quot;.venv&quot;, actual: &quot;**/.venv&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+<p>Can you cat the content of the gitignore files?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-04 08:44</div>
+            <div class="timeline-body"><p>I think I know where the difference comes from. <code>almalinux</code> ships without git. At least, I see the following in the almalinux workflow logs (checkout repository)</p>
+<pre><code>Run actions/checkout@v4
+/usr/bin/docker exec  574be3a89f9a68333acc5500512e3a15fbb7bb14162e8b5c19f7d63b0af3415f sh -c &quot;cat /etc/*release | grep ^ID&quot;
+Syncing repository: lagamura/gitruff
+Getting Git version info
+Deleting the contents of '/__w/gitruff/gitruff'
+The repository will be downloaded using the GitHub REST API
+To create a local Git repository instead, add Git 2.18 or higher to the PATH
+Downloading the archive
+Writing archive to disk
+Extracting the archive
+/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /__w/gitruff/gitruff/d58e8101-e5f8-4c36-91bc-c4205f75cfd8 -f /__w/gitruff/gitruff/d58e8101-e5f8-4c36-91bc-c4205f75cfd8.tar.gz
+Resolved version lagamura-gitruff-1aad048
+</code></pre>
+<p>vs on ubuntu</p>
+<pre><code>Run actions/checkout@v4
+Syncing repository: lagamura/gitruff
+Getting Git version info
+Temporarily overriding HOME='/home/runner/work/_temp/d60449e8-18c9-4e31-8403-acd7f1ab76ca' before making global git config changes
+Adding repository directory to the temporary git global config as a safe directory
+/usr/bin/git config --global --add safe.directory /home/runner/work/gitruff/gitruff
+Deleting the contents of '/home/runner/work/gitruff/gitruff'
+Initializing the repository
+Disabling automatic garbage collection
+Setting up auth
+Fetching the repository
+Determining the checkout info
+/usr/bin/git sparse-checkout disable
+/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Checking out the ref
+/usr/bin/git log -1 --format=%H
+ae96f389bb63b95b777493781fb18e5e41f7f76b
+</code></pre>
+<p>And the absence of the <code>.git</code> directory changes how <code>ignore</code> (our crate to traverse directories) handles <code>.gitignore</code> files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lagamura">@lagamura</a> on 2025-04-14 11:49</div>
+            <div class="timeline-body"><p>@MichaReiser should this tagged as bug to track it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @ntBre on 2025-04-14 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-04-14 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-22 08:54</div>
+            <div class="timeline-body"><p>I don't think this is a bug because <code>gitignore</code> files should only be respected in a git repository, and the GitHub REST API doesn't create a checkout that mimics a full git repository.</p>
+<p>The solution here is to either use an <code>.ignore</code> file or install git in your container.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2025-04-22 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-04-22 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @lagamura on 2025-04-22 15:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

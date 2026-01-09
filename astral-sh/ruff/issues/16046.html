@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B023 rule incorrectly flags loop variables in cases where closures intentionally and correctly capture loop variables - astral-sh/ruff #16046</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>B023 rule incorrectly flags loop variables in cases where closures intentionally and correctly capture loop variables</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16046">#16046</a>
+        opened by <a href="https://github.com/gweidart">@gweidart</a>
+        on 2025-02-08 22:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gweidart">@gweidart</a> on 2025-02-08 22:54</div>
+            <div class="timeline-body"><h3>Description</h3>
+<h2>Keywords Searched</h2>
+<ul>
+<li>&quot;B023&quot;</li>
+<li>&quot;closure in loop&quot;</li>
+<li>&quot;function definition does not bind loop variable&quot;</li>
+<li>&quot;loop variable capture&quot;</li>
+<li>&quot;dynamic function creation loop&quot;</li>
+</ul>
+<h2>Bug Description</h2>
+<p>Ruff's B023 rule incorrectly flags loop variables in cases where closures intentionally and correctly capture loop variables. This is a false positive as the loop variable binding works as expected in Python's scoping rules.</p>
+<h2>Minimal Reproduction</h2>
+<pre><code class="language-python"># Example 1: Dynamic callback creation (common in UI frameworks, event handlers, etc.)
+def create_callbacks(items: dict) -&gt; list:
+    callbacks = []
+    
+    for name, data in items.items():
+        def callback():  # Ruff[B023] incorrectly flags 'name' here
+            print(f&quot;Processing {name}: {data}&quot;)  # This is the flagged line
+        
+        callbacks.append(callback)
+    
+    return callbacks
+
+# Example 2: Real-world usage with Click (common CLI pattern)
+def create_cli(command_map: dict) -&gt; click.Group:
+    cli_group = click.Group()
+    
+    for name, command in command_map.items():
+        def command_fn(**kwargs):  # Ruff[B023] incorrectly flags 'name' here
+            context = CommandContext(
+                command=name,  # This is the flagged line
+                query=kwargs.get(&quot;query&quot;),
+                options=parse_options(kwargs),
+            )
+            exit_code = asyncio.run(run_command(command_map, context))
+                if exit_code != 0:
+                    click.get_current_context().exit(exit_code)
+            except Exception as e:
+                click.echo(f&quot;Error: {e!s}&quot;, err=True)
+                click.get_current_context().exit(1)
+        
+        cmd = click.Command(
+            name=name,
+            callback=command_fn,
+            help=getattr(command, &quot;help&quot;, None)
+        )
+        cli_group.add_command(cmd)
+    
+    return cli_group
+</code></pre>
+<h2>Command Invoked</h2>
+<pre><code class="language-bash">ruff check . --isolated
+</code></pre>
+<pre><code class="language-bash">
+B023 Function definition does not bind loop variable `name`
+    |
+139 |             try:
+140 |                 context = CommandContext(
+141 |                     command=name,
+    |                             ^^^^ B023
+142 |                     query=kwargs.get(&quot;query&quot;),
+143 |                     options=parse_options(kwargs),
+    |
+
+Found 1 error.
+
+</code></pre>
+<h2>Ruff Settings (pyproject.toml)</h2>
+<pre><code class="language-toml">[tool.ruff]
+select = [&quot;E&quot;, &quot;F&quot;, &quot;B&quot;, &quot;I&quot;]
+ignore = []
+line-length = 88
+target-version = &quot;py39&quot;
+fix = true
+unfixable = []
+exclude = [
+    &quot;.git&quot;,
+    &quot;.ruff_cache&quot;,
+    &quot;.venv&quot;,
+    &quot;venv&quot;,
+    &quot;__pycache__&quot;,
+    &quot;build&quot;,
+    &quot;dist&quot;,
+]
+
+</code></pre>
+<h2>Ruff Version</h2>
+<pre><code class="language-bash">$ ruff --version
+ruff 0.9.5
+</code></pre>
+<blockquote>
+<p>[!NOTE]
+This pattern is common in many Python applications where dynamic function creation is needed:</p>
+<ul>
+<li>Event handlers and callbacks</li>
+<li>CLI command creation</li>
+<li>UI framework event bindings</li>
+<li>Plugin systems</li>
+<li>Decorator factories</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>The loop variable is correctly captured in the closure according to Python's scoping rules</p>
+</li>
+<li><p>The code works correctly at runtime - each function correctly captures and uses its corresponding loop variable</p>
+</li>
+<li><p>This is a legitimate and common Python pattern, not a bug or anti-pattern</p>
+</li>
+</ol>
+<p>Similar to the confirmed false positive with :
+#7847 #15716</p>
+<h2>Expected Behavior</h2>
+<p>Ruff should not flag B023 for loop variables that are intentionally captured by closures, as this is a valid and common Python pattern that works correctly according to Python's scoping rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-09 02:46</div>
+            <div class="timeline-body"><p>If I'm not mistaken, the example boils down to this:</p>
+<pre><code class="language-python">class A: ...
+
+def g():
+    d = {}
+
+    for i in range(10):
+        def f():
+            print(i)
+
+        a = A()
+        a.f = f
+        d[i] = a
+
+    return d
+</code></pre>
+<pre><code class="language-python"># Somewhere else
+d = g()
+d[0].f()  # 9
+</code></pre>
+<p>...which proves that the diagnostic is a true positive. Am I missing something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-02-09 02:52</div>
+            <div class="timeline-body"><p>I agree with @InSyncWithFoo , even directly copying your Example 1, I get:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def create_callbacks(items: dict) -&gt; list:
+...     callbacks = []
+...
+...     for name, data in items.items():
+...         def callback():  # Ruff[B023] incorrectly flags 'name' here
+...             print(f&quot;Processing {name}: {data}&quot;)  # This is the flagged line
+...
+...         callbacks.append(callback)
+...
+...     return callbacks
+...
+&gt;&gt;&gt; d = {&quot;a&quot;:1,&quot;b&quot;:2}
+&gt;&gt;&gt; create_callbacks(d)[0]()
+Processing b: 2
+</code></pre>
+<p>which seems like not what one wants, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-02-09 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-06 07:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

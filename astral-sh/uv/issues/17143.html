@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv.lock keeps the longest hash from the index but only uses sha256 during installation, which causes hash mismatch error - astral-sh/uv #17143</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv.lock keeps the longest hash from the index but only uses sha256 during installation, which causes hash mismatch error</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/17143">#17143</a>
+        opened by <a href="https://github.com/putradimas">@putradimas</a>
+        on 2025-12-16 13:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/putradimas">@putradimas</a> on 2025-12-16 13:03</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I use a package manager called ProGet that can do on-demand, partial mirroring of PyPI. Essentially, it's a caching proxy.</p>
+<p>For each cached package, four hashes are generated and served via the simple json API.</p>
+<p>https://proget.local/pypi/pypi/simple/flask returns the following entries:</p>
+<pre><code class="language-json">{
+    &quot;filename&quot;: &quot;flask-3.1.2-py3-none-any.whl&quot;,
+    &quot;url&quot;: &quot;https://proget.local/pypi/pypi/download/flask/3.1.2/flask-3.1.2-py3-none-any.whl&quot;,
+    &quot;requires-python&quot;: &quot;&gt;=3.9&quot;,
+    &quot;hashes&quot;: {
+        &quot;md5&quot;: &quot;6d99ed48deab8d1311f6980d4fa670c9&quot;,
+        &quot;sha1&quot;: &quot;2574502178c4fab8df63ebade8c8cfadb86be6c9&quot;,
+        &quot;sha256&quot;: &quot;ca1d8112ec8a6158cc29ea4858963350011b5c846a414cdb7a954aa9e967d03c&quot;,
+        &quot;sha512&quot;: &quot;0f844fd28be701a57e0a3bab39cbd08459a2301c0de2d0fa0b8e03b7590573b8b9fb3d012c5ab767558c29f7fc08bfffcecdeb20b5ffbbc695ad40d6f8a665f8&quot;
+    }
+},
+{
+    &quot;filename&quot;: &quot;flask-3.1.2.tar.gz&quot;,
+    &quot;url&quot;: &quot;https://proget.local/pypi/pypi/download/flask/3.1.2/flask-3.1.2.tar.gz&quot;,
+    &quot;requires-python&quot;: &quot;&gt;=3.9&quot;,
+    &quot;yanked&quot;: false,
+    &quot;hashes&quot;: {
+        &quot;sha256&quot;: &quot;bf656c15c80190ed628ad08cdfd3aaa35beb087855e2f494910aa3774cc4fd87&quot;
+    }
+}
+</code></pre>
+<p>The file <code>flask-3.1.2.tar.gz</code> only returns a single hash because the mirroring software has not yet cached it. The file <code>flask-3.1.2-py3-none-any.whl</code> has been downloaded, so the mirror cached the file and calculated the hashes.</p>
+<p>This is https://pypi.org/simple/flask responses:</p>
+<pre><code class="language-json">{
+    ....
+    &quot;filename&quot;: &quot;flask-3.1.2-py3-none-any.whl&quot;,
+    &quot;hashes&quot;: {
+        &quot;sha256&quot;: &quot;ca1d8112ec8a6158cc29ea4858963350011b5c846a414cdb7a954aa9e967d03c&quot;
+    },
+    &quot;requires-python&quot;: &quot;&gt;=3.9&quot;,
+    &quot;url&quot;: &quot;https://files.pythonhosted.org/packages/ec/f9/7f9263c5695f4bd0023734af91bedb2ff8209e8de6ead162f35d8dc762fd/flask-3.1.2-py3-none-any.whl&quot;,
+    &quot;yanked&quot;: false
+},
+{
+    ....
+    &quot;filename&quot;: &quot;flask-3.1.2.tar.gz&quot;,
+    &quot;hashes&quot;: {
+        &quot;sha256&quot;: &quot;bf656c15c80190ed628ad08cdfd3aaa35beb087855e2f494910aa3774cc4fd87&quot;
+    },
+    &quot;requires-python&quot;: &quot;&gt;=3.9&quot;,
+    &quot;url&quot;: &quot;https://files.pythonhosted.org/packages/dc/6d/cfe3c0fcc5e477df242b98bfe186a4c34357b4847e87ecaef04507332dab/flask-3.1.2.tar.gz&quot;,
+    &quot;yanked&quot;: false
+}
+</code></pre>
+<p>As you can see, the <code>sha256</code> hash is identical.</p>
+<p><code>uv</code> seems to prefer keeping the longest hash in the <code>uv.lock</code> file.</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;flask&quot;
+version = &quot;3.1.2&quot;
+source = { registry = &quot;https://proget.local/pypi/pypi/simple&quot; }
+dependencies = [
+    { name = &quot;blinker&quot; },
+    { name = &quot;click&quot; },
+    { name = &quot;itsdangerous&quot; },
+    { name = &quot;jinja2&quot; },
+    { name = &quot;markupsafe&quot; },
+    { name = &quot;werkzeug&quot; },
+]
+sdist = { url = &quot;https://proget.local/pypi/pypi/download/flask/3.1.2/flask-3.1.2.tar.gz&quot;, hash = &quot;sha256:bf656c15c80190ed628ad08cdfd3aaa35beb087855e2f494910aa3774cc4fd87&quot; }
+wheels = [
+    { url = &quot;https://proget.local/pypi/pypi/download/flask/3.1.2/flask-3.1.2-py3-none-any.whl&quot;, hash = &quot;sha512:0f844fd28be701a57e0a3bab39cbd08459a2301c0de2d0fa0b8e03b7590573b8b9fb3d012c5ab767558c29f7fc08bfffcecdeb20b5ffbbc695ad40d6f8a665f8&quot; },
+]
+</code></pre>
+<p>But during CI, <code>UV_FROZEN=true UV_NO_DEV=true uv sync</code> seems to only compare the sha256 hash, ignoring other algorithms.</p>
+<pre><code>  × Failed to download `flask==3.1.2`
+  ╰─▶ Hash mismatch for `flask==3.1.2`
+      Expected:
+        sha256:bf656c15c80190ed628ad08cdfd3aaa35beb087855e2f494910aa3774cc4fd87
+        sha512:0f844fd28be701a57e0a3bab39cbd08459a2301c0de2d0fa0b8e03b7590573b8b9fb3d012c5ab767558c29f7fc08bfffcecdeb20b5ffbbc695ad40d6f8a665f8
+      Computed:
+        sha256:ca1d8112ec8a6158cc29ea4858963350011b5c846a414cdb7a954aa9e967d03c
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 24.04 amd64</p>
+<h3>Version</h3>
+<p>uv 0.9.17</p>
+<h3>Python version</h3>
+<p>Python 3.14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @putradimas on 2025-12-16 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv.lock keeps the highest hash algorithm from index but only uses sha256 during install. causing hash mismatch error" to "uv.lock keeps the longest hash from index but only uses sha256 during install. causing hash mismatch error" by @putradimas on 2025-12-16 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv.lock keeps the longest hash from index but only uses sha256 during install. causing hash mismatch error" to "uv.lock keeps the longest hash from the index but only uses sha256 during installation, which causes hash mismatch error" by @putradimas on 2025-12-16 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-16 14:01</div>
+            <div class="timeline-body"><p>CC @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-16 14:04</div>
+            <div class="timeline-body"><p>I can take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-12-17 01:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-17 01:54</div>
+            <div class="timeline-body"><p>I believe I understand why this is happening (and how to fix it) but it's a bit difficult to test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17157.html">astral-sh/uv#17157</a> on 2025-12-17 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-17 02:08</div>
+            <div class="timeline-body"><p>PR here: https://github.com/astral-sh/uv/pull/17157</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-17 16:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

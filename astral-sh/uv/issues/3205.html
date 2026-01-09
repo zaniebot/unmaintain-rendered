@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huge slowdown when using keyring(google artifact registry) in 0.1.34/35 and auth problem in 0.1.36 - astral-sh/uv #3205</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Huge slowdown when using keyring(google artifact registry) in 0.1.34/35 and auth problem in 0.1.36</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3205">#3205</a>
+        opened by <a href="https://github.com/avelychko12">@avelychko12</a>
+        on 2024-04-23 12:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/avelychko12">@avelychko12</a> on 2024-04-23 12:16</div>
+            <div class="timeline-body"><p>I have a virtualenv where I already have <code>requests</code> installed from default pypi, and if I don't use any extra index url then everything is fine, with extra index url with token everything is fine as well</p>
+<pre><code>$ uv pip install -U requests
+Resolved 5 packages in 3ms
+Audited 5 packages in 0.11ms
+$ export UV_EXTRA_INDEX_URL=&quot;https://oauth2accesstoken:$(gcloud auth print-access-token)@europe-python.pkg.dev/project-id/pypi/simple/&quot;
+$ uv pip install -U requests
+Resolved 5 packages in 304ms
+Audited 5 packages in 0.06ms
+</code></pre>
+<p>but with keyring it's like x3 slower than in 0.1.33</p>
+<pre><code>$ export UV_KEYRING_PROVIDER=subprocess
+$ export UV_EXTRA_INDEX_URL=https://oauth2accesstoken@europe-python.pkg.dev/project-id/pypi/simple/
+$ pip install uv==0.1.33
+...
+$ uv pip install -U requests
+Resolved 5 packages in 1.47s
+Audited 5 packages in 0.07ms
+$ pip install uv==0.1.34
+...
+$ uv pip install -U requests
+Resolved 5 packages in 4.37s
+Audited 5 packages in 0.12ms
+$ pip install uv==0.1.35
+...
+$ uv pip install -U requests
+Resolved 5 packages in 4.32s
+Audited 5 packages in 0.08ms
+</code></pre>
+<p>and it doesn't work with 0.1.36</p>
+<pre><code>$ pip install uv==0.1.36
+...
+$ uv pip install -U requests
+error: HTTP status client error (401 Unauthorized) for url (https://europe-python.pkg.dev/project-id/pypi/simple/requests/)
+</code></pre>
+<p>keyring version: <code>keyring==25.1.0 keyrings-google-artifactregistry-auth==1.1.2</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Huge slowdown when using keyring(google artifact registry) in 0.1.34/35 and incorrect resolution in 0.1.36" to "Huge slowdown when using keyring(google artifact registry) in 0.1.34/35 and auth problem in 0.1.36" by @avelychko12 on 2024-04-23 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-23 12:56</div>
+            <div class="timeline-body"><p>Thanks for the issue! We made a bunch of changes to authentication in #2976 and #3130 to ensure correctness but these come with some performance cost. Regardless it shouldn't be this slow, I'll investigate that.</p>
+<p>Sorry to see it works in v0.1.35 and doesn't in v0.1.36, can you provide <code>RUST_LOG=uv=trace uv pip install -v ...</code> logs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-04-23 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-04-23 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3206.html">astral-sh/uv#3206</a> on 2024-04-23 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-04-23 13:50</div>
+            <div class="timeline-body"><p>I am seeing a similar issue with Azure artifacts. Installation worked with 0.1.35 but has broken in 0.1.36. As far as I can see the keyring is never accessed and only unauthorized requests are attempted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-23 13:52</div>
+            <div class="timeline-body"><p>I've put up a fix at #3206.</p>
+<p>Will investigate the performance problems separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/avelychko12">@avelychko12</a> on 2024-04-23 14:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Sorry to see it works in v0.1.35 and doesn't in v0.1.36, can you provide <code>RUST_LOG=uv=trace uv pip install -v ...</code> logs?</p>
+</blockquote>
+<p>@zanieb do you still need logs? If so, for which version</p>
+<p>Also, I have done <code>uv pip install -vv -U requests</code> in 0.1.35 and what I can see is that it makes keyring subprocess call for each package</p>
+<pre><code>...
+uv_resolver::resolver::process_request request=Prefetch charset-normalizer &gt;=2, &lt;4
+         0.995075s   0ms DEBUG uv_client::cached_client No cache entry for: https://europe-python.pkg.dev/&lt;project&gt;/pypi/simple/charset-normalizer/
+      uv_client::cached_client::fresh_request url=&quot;https://europe-python.pkg.dev/&lt;project&gt;/pypi/simple/charset-normalizer/&quot;
+           0.995103s   0ms DEBUG uv_auth::middleware Checking keyring for credentials for https://oauth2accesstoken@europe-python.pkg.dev/&lt;project&gt;/pypi/simple/charset-normalizer/
+        uv_auth::keyring::fetch_subprocess self=KeyringProvider { cache: Mutex { data: &lt;locked&gt;, poisoned: false, .. }, backend: Subprocess }, service_name=&quot;https://europe-python.pkg.dev/&lt;project&gt;/pypi/simple/charset-normalizer/&quot;, username=&quot;oauth2accesstoken&quot;
+uv_client::cached_client::from_path_sync path=&quot;/home/anton/.cache/uv/simple-v7/e09090b474a8bf5c/certifi.rkyv&quot;
+           1.752990s 757ms DEBUG uv_auth::middleware Found credentials in keyring for https://oauth2accesstoken@europe-python.pkg.dev/&lt;project&gt;/pypi/simple/charset-normalizer/
+         1.753103s 758ms DEBUG uv_client::cached_client No cache entry for: https://europe-python.pkg.dev/&lt;project&gt;/pypi/simple/idna/
+      uv_client::cached_client::fresh_request url=&quot;https://europe-python.pkg.dev/&lt;project&gt;/pypi/simple/idna/&quot;
+           1.753160s   0ms DEBUG uv_auth::middleware Checking keyring for credentials for https://oauth2accesstoken@europe-python.pkg.dev/&lt;project&gt;/pypi/simple/idna/
+        uv_auth::keyring::fetch_subprocess self=KeyringProvider { cache: Mutex { data: &lt;locked&gt;, poisoned: false, .. }, backend: Subprocess }, service_name=&quot;https://europe-python.pkg.dev/&lt;project&gt;/pypi/simple/idna/&quot;, username=&quot;oauth2accesstoken&quot;
+           2.496826s 743ms DEBUG uv_auth::middleware Found credentials in keyring for https://oauth2accesstoken@europe-python.pkg.dev/&lt;project&gt;/pypi/simple/idna/
+         2.496927s   1s  DEBUG uv_client::cached_client No cache entry for: https://europe-python.pkg.dev/&lt;project&gt;/pypi/simple/urllib3/
+      uv_client::cached_client::fresh_request url=&quot;https://europe-python.pkg.dev/&lt;project&gt;/pypi/simple/urllib3/&quot;
+           2.496952s   0ms DEBUG uv_auth::middleware Checking keyring for credentials for https://oauth2accesstoken@europe-python.pkg.dev/&lt;project&gt;/pypi/simple/urllib3/
+        uv_auth::keyring::fetch_subprocess self=KeyringProvider { cache: Mutex { data: &lt;locked&gt;, poisoned: false, .. }, backend: Subprocess }, service_name=&quot;https://europe-python.pkg.dev/&lt;project&gt;/pypi/simple/urllib3/&quot;, username=&quot;oauth2accesstoken&quot;
+           3.241410s 744ms DEBUG uv_auth::middleware Found credentials in keyring for https://oauth2accesstoken@europe-python.pkg.dev/&lt;project&gt;/pypi/simple/urllib3/
+         3.241505s   2s  DEBUG uv_client::cached_client No cache entry for: https://europe-python.pkg.dev/&lt;project&gt;/pypi/simple/certifi/
+      uv_client::cached_client::fresh_request url=&quot;https://europe-python.pkg.dev/&lt;project&gt;/pypi/simple/certifi/&quot;
+           3.241533s   0ms DEBUG uv_auth::middleware Checking keyring for credentials for https://oauth2accesstoken@europe-python.pkg.dev/&lt;project&gt;/pypi/simple/certifi/
+        uv_auth::keyring::fetch_subprocess self=KeyringProvider { cache: Mutex { data: &lt;locked&gt;, poisoned: false, .. }, backend: Subprocess }, service_name=&quot;https://europe-python.pkg.dev/&lt;project&gt;/pypi/simple/certifi/&quot;, username=&quot;oauth2accesstoken&quot;
+           4.001753s 760ms DEBUG uv_auth::middleware Found credentials in keyring for https://oauth2accesstoken@europe-python.pkg.dev/&lt;project&gt;/pypi/simple/certifi/
+    uv_client::cached_client::get_cacheable 
+      uv_client::cached_client::read_and_parse_cache file=/home/anton/.cache/uv/simple-v7/pypi/charset-normalizer.rkyv
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-23 14:23</div>
+            <div class="timeline-body"><p>@avelychko12 thanks for the logs. I believe all this should be addressed by #3206. I'll release that now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/avelychko12">@avelychko12</a> on 2024-04-23 16:18</div>
+            <div class="timeline-body"><p>So, I tried 0.1.37 and problem from 0.1.36 is gone, thx.
+But performance is a little bit tricky, because for all project dependencies(&gt;200 from pip freeze) <code>uv pip install -Ur req.txt</code>  working for 10s in 0.1.37, but it was 4s in 0.1.33. And during installation all of my 16 CPU cores were fully utilized running python commands for the keyring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-23 17:13</div>
+            <div class="timeline-body"><p>Thanks I'm looking into improving performance further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-23 17:15</div>
+            <div class="timeline-body"><p>Unfortunately the previous implementation had some correctness issues so we may not reach that level of performance with the keyring subprocess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vlad-ivanov-name">@vlad-ivanov-name</a> on 2024-04-24 13:46</div>
+            <div class="timeline-body"><p>One way to improve performance is to allow custom keyring command. Already now one could probably just substitute <code>keyring</code> on the PATH with something faster</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3237.html">astral-sh/uv#3237</a> on 2024-04-24 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-04-24 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/avelychko12">@avelychko12</a> on 2024-04-24 19:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Unfortunately the previous implementation had some correctness issues so we may not reach that level of performance with the keyring subprocess.</p>
+</blockquote>
+<p>0.1.38 works as fast as 0.1.33 (If you already have the latest versions installed, at least)
+Thanks a lot</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

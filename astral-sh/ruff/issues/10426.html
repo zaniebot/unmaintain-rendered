@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug in B030: False positive when adding tuples of exception classes - astral-sh/ruff #10426</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug in B030: False positive when adding tuples of exception classes</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10426">#10426</a>
+        opened by <a href="https://github.com/autinerd">@autinerd</a>
+        on 2024-03-15 18:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/autinerd">@autinerd</a> on 2024-03-15 18:30</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hello :slightly_smiling_face:</p>
+<p>When enabling rule B030, these cases are being flagged as violated:</p>
+<pre><code class="language-python">try:
+    ...
+except (ValueError,TypeError) + (EOFError,ArithmeticError):
+    ...
+</code></pre>
+<pre><code class="language-python">BASE_EXCEPTIONS = (ValueError,TypeError)
+
+try:
+    ...
+except BASE_EXCEPTIONS + (EOFError,ArithmeticError):
+    ...
+</code></pre>
+<p>Ruff version 0.3.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-03-17 01:52</div>
+            <div class="timeline-body"><p>I can try to tackle this one!</p>
+<p>One idea is to check for <code>BinOp</code>'s on tuples and flatten -- is this the right direction?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/autinerd">@autinerd</a> on 2024-03-17 07:49</div>
+            <div class="timeline-body"><p>Sounds good to me!</p>
+<p>Using <code>RUF005</code> to replace tuple concatenations with unpacking eliminates this case of course, because tuple unpacking is detected correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10437.html">astral-sh/ruff#10437</a> on 2024-03-17 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-17 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-18 00:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

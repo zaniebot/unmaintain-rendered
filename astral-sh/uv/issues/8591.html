@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should dependency group names be normalized with underscores converted to hyphens? - astral-sh/uv #8591</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should dependency group names be normalized with underscores converted to hyphens?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8591">#8591</a>
+        opened by <a href="https://github.com/drmikehenry">@drmikehenry</a>
+        on 2024-10-26 12:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/drmikehenry">@drmikehenry</a> on 2024-10-26 12:27</div>
+            <div class="timeline-body"><p>Should dependency group names be normalized with underscores converted to hyphens?</p>
+<p>Example:</p>
+<pre><code>uv init example
+cd example
+uv add --group some_group ruff
+grep 'some.group' pyproject.toml
+</code></pre>
+<p>with output:</p>
+<pre><code>some-group = [
+</code></pre>
+<p>I'm looking into porting a project using Poetry and Nox, where Nox session names and Poetry group names use underscores.  These names are exposed in <code>noxfile.py</code> and on the <code>nox</code> command line.  It's looking like these names might need to switch to using hyphens in order to use <code>uv</code> dependency groups.  Is this expected?</p>
+<p>I'm running uv version 0.4.27 on Ubuntu 24.04.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-26 14:58</div>
+            <div class="timeline-body"><p>We might want to preserve the literal name you provide but those two names should be equivalent everywhere per the <a href="https://packaging.python.org/en/latest/specifications/name-normalization/#name-normalization">normalization rules</a>. How is this affecting nox?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-10-26 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/drmikehenry">@drmikehenry</a> on 2024-10-26 16:59</div>
+            <div class="timeline-body"><p>Sorry for the lack of clarity.  I don't know of a direct problem with <code>nox</code> caused by this normalization.  The question arose while starting to port a project that uses Nox and which has Poetry dependency groups.  I was looking for a way to avoid repeating dependencies from <code>pyproject.toml</code> in <code>noxfile.py</code>.</p>
+<p>As an example, the old <code>pyproject.toml</code> defines a <code>type_check</code> group:</p>
+<pre><code class="language-toml">[tool.poetry.group.type_check.dependencies]
+mypy = &quot;*&quot;
+types-toml = &quot;*&quot;
+types-setuptools = &quot;*&quot;
+</code></pre>
+<p>The old <code>noxfile.py</code> defines a Nox session with the same name:</p>
+<pre><code class="language-python">@nox.session()
+def type_check(s: nox.Session) -&gt; None:
+    s.install(&quot;.&quot;, &quot;mypy&quot;, &quot;types-toml&quot;, &quot;types-setuptools&quot;)
+    s.run(&quot;mypy&quot;, &quot;src&quot;, &quot;tests&quot;)
+</code></pre>
+<p>Users invoke this session via <code>nox -s type_check</code> to perform the defined action.</p>
+<p>I was contemplating ways to avoid repeating the list of dependencies and had come up with a prototype based on a little code in <code>noxfile.py</code> that parses PEP 735 dependency groups in <code>pyproject.toml</code>, allowing something like this:</p>
+<pre><code class="language-python">@nox.session()
+def type_check(s: nox.Session) -&gt; None:
+    s.install(&quot;.&quot;, *dep_groups(&quot;type_check&quot;))
+    s.run(&quot;mypy&quot;, &quot;src&quot;, &quot;tests&quot;)
+</code></pre>
+<p>This failed because <code>pyproject.toml</code> doesn't contains the original group name <code>type_check</code>, but instead contains the normalized name <code>type-check</code>.</p>
+<p>Thanks for the link to the normalization rules.  I hadn't realized they applied to &quot;extras&quot; and, presumably, to dependency group names as well; I think this answers my original question.</p>
+<p>I was imagining a convention where the Nox session name (necessarily without hyphens) would be used directly to lookup the dependency group name, but it's easy enough to normalize the name first using the rules you linked.</p>
+<p>That's all I needed to know from this issue; I'll leave it to you to close since it's got a &quot;needs-decision&quot; tag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vlcinsky">@vlcinsky</a> on 2024-10-26 19:57</div>
+            <div class="timeline-body"><p>Actually the current implementation does not conform to what <a href="https://peps.python.org/pep-0735/#specification">PEP735</a> states about dependency group names:</p>
+<blockquote>
+<p>This PEP defines a new section (table) in pyproject.toml files named dependency-groups. The dependency-groups table contains an arbitrary number of user-defined keys, each of which has, as its value, a list of requirements (defined below). These <strong>keys must be <a href="https://packaging.python.org/en/latest/specifications/name-normalization/#valid-non-normalized-names">valid non-normalized names</a>, and must be <a href="https://packaging.python.org/en/latest/specifications/name-normalization/#normalization">normalized</a> before comparisons.</strong></p>
+<p>Tools SHOULD prefer to present the original, non-normalized name to users by default. If duplicate names, after normalization, are encountered, tools SHOULD emit an error.</p>
+</blockquote>
+<p>If the implementation would stick to the PEP735, the OP question</p>
+<blockquote>
+<p>Should dependency group names be normalized with underscores converted to hyphens?</p>
+</blockquote>
+<p>would be answered &quot;No - dependency group names are preserved as given by user&quot;</p>
+<p>and this would be non-issue.</p>
+<h2>Discussion</h2>
+<p>Existing implementation by <code>uv</code> has advantages:</p>
+<ul>
+<li>key names are predictable</li>
+<li>conflict resulting of two groups using non-normalized names with the same normalized name has clear resolution</li>
+<li>tools processing pyproject.toml can easily find exact key for any acceptable name and will not miss &quot;My-Group&quot; by trying to access it by &quot;my-group&quot; or &quot;my.group&quot; etc.</li>
+</ul>
+<p>Anyway, the PEP states the requirements clearly and there is probably some reason for that. Could Stephen Rosen shed some light on it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-27 01:02</div>
+            <div class="timeline-body"><p>@drmikehenry no problem! Thanks for explaining your use case. Per the standards, that <code>dep_groups</code> function &quot;MUST&quot; normalize names when performing the lookup. So it's a technically a bug there that the group wasn't found.</p>
+<p>@vlcinsky to be clear, I don't think we're in violation of the rules of PEP 735</p>
+<blockquote>
+<p>These keys must be <a href="https://packaging.python.org/en/latest/specifications/name-normalization/#valid-non-normalized-names">valid non-normalized names</a>, and must be <a href="https://packaging.python.org/en/latest/specifications/name-normalization/#normalization">normalized</a> before comparisons.</p>
+</blockquote>
+<p>This just means that the keys present in a file must follow the schema described for non-normalized names. It does not specify that we cannot write the normalized name (which is also a valid non-normalized name).</p>
+<blockquote>
+<p>Tools SHOULD prefer to present the original, non-normalized name to users by default.</p>
+</blockquote>
+<p>This means that when presenting names we <em>read</em> from the file, we should present them in their non-normalized form. We probably don't do this, we generally normalize all of the names we read immediately (e.g., for extras and packages too). Regardless, this isn't a &quot;MUST&quot; and I don't think it's necessarily applicable here since we are normalizing a name during a <em>write</em> to the file which is a convenience we provide.</p>
+<p>I believe this language matches other Python standards, which generally suggest showing the user the unnormalized name to avoid confusion about what you are referring to. For example, if uv says it &quot;couldn't find package foo defined in group foo-bar&quot; but the group is called &quot;foo.bar&quot; in the <code>pyproject.toml</code>, that could be confusing.</p>
+<p>I could be convinced we should not normalize the name when creating a group during <code>uv add</code>, but I'd want to hear more reasons why first.</p>
+<p>@sirosen is welcome to weigh in, though there is no obligation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/drmikehenry">@drmikehenry</a> on 2024-10-27 19:20</div>
+            <div class="timeline-body"><p>@zanieb Agreed regarding the requirement to normalize dependency group names for comparison purposes.  I've fixed my <code>dep_groups()</code> function to normalize before lookup (and I'm now also normalizing the dependency group names as they are read from <code>pyproject.toml</code> as well in case of editing by hand or by other tools that don't normalize).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sirosen">@sirosen</a> on 2024-10-28 02:54</div>
+            <div class="timeline-body"><blockquote>
+<p>@sirosen is welcome to weigh in, though there is no obligation.</p>
+</blockquote>
+<p>I'm happy to help if there's some ambiguity WRT the spec, but I think you put it all perfectly, so there's not much for me to add! 😁</p>
+<p>But I'm happy to listen in and these sorts of threads help educate me more about how the spec is playing out in the wild (and where any mistakes may have been made).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8702.html">astral-sh/uv#8702</a> on 2024-10-30 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/drmikehenry">@drmikehenry</a> on 2025-04-16 00:33</div>
+            <div class="timeline-body"><p>I saw pull request #12586 (which closes #12585) went through, and it reminded me of this open ticket I submitted.  I wondered if this ticket may be closed now given the general desire to normalize names.  I'm happy with the explanation I received in this ticket, and I thought I'd mention it in case this is an easy ticket to close :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-16 00:40</div>
+            <div class="timeline-body"><p>Thank you for following up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-16 00:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

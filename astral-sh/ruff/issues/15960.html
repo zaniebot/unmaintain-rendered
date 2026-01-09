@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Attributes implicitly declared via their parameter types - astral-sh/ruff #15960</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Attributes implicitly declared via their parameter types</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15960">#15960</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-02-05 10:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-05 10:55</div>
+            <div class="timeline-body"><p>The idea of this ticket is to support the following use case.</p>
+<pre><code class="language-py">class C:
+    def __init__(self, x: int | None):
+        self.x = x
+
+reveal_type(C().x)  # Should be `int | None`, is currently `Unknown | int | None`
+</code></pre>
+<p>We have pre-existing tests with <code>TODO</code> comments for this scenario. The goal of this issue it to get rid of these (there are more <code>TODO</code>s that would be resolved by this feature):</p>
+<p>https://github.com/astral-sh/ruff/blob/7ca778f4923590503b1be7958c4e44fcab1e0f98/crates/red_knot_python_semantic/resources/mdtest/attributes.md?plain=1#L33-L34</p>
+<p>Part of: #14164</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14164.html">astral-sh/ruff#14164</a> on 2025-02-05 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support attributes which are implicitly "declared" via their parameter types (`self.x = param`)" to "[red-knot] Attributes implicitly declared via their parameter types" by @sharkdp on 2025-02-05 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-02-05 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @sharkdp on 2025-02-05 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-10 01:19</div>
+            <div class="timeline-body"><p>@sharkdp I was looking into this issue, and not sure your intent tbh. Here is the top of the test where I've added mypy types alongside red_knot current output:</p>
+<pre><code class="language-python">class C:
+    def __init__(self, param: int | None, flag: bool = False) -&gt; None:
+        value = 1 if flag else &quot;a&quot;
+        self.inferred_from_value = value
+        self.inferred_from_other_attribute = self.inferred_from_value
+        self.inferred_from_param = param
+        self.declared_only: bytes
+        self.declared_and_bound: bool = True
+        if flag:
+            self.possibly_undeclared_unbound: str = &quot;possibly set in __init__&quot;
+
+c_instance = C(1)
+
+reveal_type(c_instance.inferred_from_value)  # revealed: Unknown | Literal[1, &quot;a&quot;]
+# MYPY: Revealed type is &quot;Union[builtins.int, builtins.str]&quot;
+
+# TODO: Same here. This should be `Unknown | Literal[1, &quot;a&quot;]`
+reveal_type(c_instance.inferred_from_other_attribute)  # revealed: Unknown
+# MYPY: Revealed type is &quot;Union[builtins.int, builtins.str]&quot;
+
+# TODO: should be `int | None`
+reveal_type(c_instance.inferred_from_param)  # revealed: Unknown | int | None
+# MYPY: Revealed type is &quot;Union[builtins.int, None]&quot;
+</code></pre>
+<p>putting aside the fact that knot prefers to infer literals, where pyright/mypy would infer a type - I am not sure about two things:</p>
+<ul>
+<li>why special treatment for <code>inferred_from_param</code> (no <code>Unknown</code> in the union), but not for for <code>inferred_from_value</code>?</li>
+<li>why adding <code>Unknown</code> in the first place?</li>
+</ul>
+<p>I guess, you want to try to distinguish &quot;declaration&quot; (explicit type annotation by user) versus pure inference. But I'd say it is hard to draw a line here. You suggest to infer the RHS of <code>inferred_from_param</code> assignment as &quot;declaration&quot;. But what about this then:</p>
+<pre><code>declared: int = 42
+
+class C:
+    def __init__(self):
+        self.special_attr = declared
+</code></pre>
+<p>and what if we import a function with declared return type? And so on ad nauseam.</p>
+<p>IMHO, mypy/pyright behavior - avoiding <code>Unknown</code> and trusting inference in the method make more practical sense. Injecting unknown would mean that any downstream usage would allow anything to be assigned to the attribute. Whoever writes the class is encapsulating some logic by creating the class, they &quot;own&quot; that logic, including types of attributes. If an attribute is accessed outside of the class, it can be considered a public contract =&gt; imho type checker should not account for a possibility of some value assigned outside from class/method body to be valid, unless it is compatible.</p>
+<p>So I'd just remove this:</p>
+<p>https://github.com/mishamsk/ruff/blob/main/crates/red_knot_python_semantic/src/types.rs#L4190-L4194</p>
+<p>However, this will bring us back to the downsides of eagerly inferring literals, since after this change this (and all similar cases) will stop being fine:</p>
+<pre><code class="language-python"># This assignment is not fine anymore fine, as we infer `Literal[1, &quot;a&quot;]` for `inferred_from_value`.
+# error: [invalid-assignment] &quot;Object of type `Literal[&quot;value set on instance&quot;]` is not assignable to attribute `inferred_from_value` of type `Literal[1, &quot;a&quot;]`&quot;
+c_instance.inferred_from_value = &quot;value set on instance&quot;
+</code></pre>
+<p>LMK</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-11 12:50</div>
+            <div class="timeline-body"><blockquote>
+<p>why adding <code>Unknown</code> in the first place?</p>
+</blockquote>
+<p>This is a good question. Adding <code>Unknown</code> is a deliberate deviation from the behavior of existing type checkers. Since we will have to explain this to users eventually, I wrote <a href="https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md">some documentation</a> that explains our reasoning. Let me know if that makes sense or not.</p>
+<blockquote>
+<p>why special treatment for <code>inferred_from_param</code> (no <code>Unknown</code> in the union), but not for for <code>inferred_from_value</code>?</p>
+</blockquote>
+<p>This is also a good question. It <em>is</em> a special treatment. And it is <em>not</em> consistent with the behavior of code that looks very similar, as you pointed out. But we anticipate that use cases like</p>
+<pre><code class="language-py">class C:
+    def __init__(self, x: int | None = None):
+        self.x = x
+</code></pre>
+<p>are very common. Forcing users to duplicate all type annotations does not seem like an appealing solution:</p>
+<pre><code class="language-py">class C:
+    def __init__(self, x: int | None = None):
+        self.x: int | None = x
+</code></pre>
+<blockquote>
+<p>I guess, you want to try to distinguish &quot;declaration&quot; (explicit type annotation by user) versus pure inference.</p>
+</blockquote>
+<p>Yes</p>
+<blockquote>
+<p>You suggest to infer the RHS of <code>inferred_from_param</code> assignment as &quot;declaration&quot;.</p>
+</blockquote>
+<p>Correct. We would treat that first example above just like the second example, and pretend that <code>self.x = x</code> would be a declaration.</p>
+<blockquote>
+<p>I'd say it is hard to draw a line here.</p>
+</blockquote>
+<p>And I would agree with you.</p>
+<p>I think we would currently try to draw the line right there. If we see <code>self.attr = param</code>, where <code>param</code> is a declared parameter of a method, that is supported. Everything else is not. So for both of these attributes, we would still union with <code>Unknown</code> (and I can completely understand why that might be surprising):</p>
+<pre><code class="language-py">class C:
+    def __init__(self, x: int | None = None, y: str = &quot;&quot;):
+        self.x = 0 if x is None else x
+        self.y = y + &quot;!&quot;
+
+reveal_type(C().x)  # Unknown | int
+reveal_type(C().y)  # Unknown | str
+</code></pre>
+<p>Interested to hear your thoughts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-11 13:35</div>
+            <div class="timeline-body"><p>I forgot to add one more example, which I believe[d] to be common. Here is an actual piece from a pretty big commercial project:</p>
+<pre><code class="language-py">class Graph:
+    def __init__(self, graph: nx.MultiDiGraph | None = None) -&gt; None:
+        self._graph = graph or nx.MultiDiGraph()
+</code></pre>
+<p>so, I'd expect <code>self._graph</code> to be of <code>type[nx.MultiDiGraph]</code>, not <code>type[nx.MultiDiGraph] | None</code>.</p>
+<p>Fun fact, when I searched for this pattern now, I only found two instances (out of thousands of classes), and the second of the two had explicit declaration for the attribute without the None.</p>
+<p>I still think that such pattern, that allows optional attribute and applies a default is very common. I think I saw it in, say, <code>unicorn</code> - I can research if necessary.</p>
+<p>At the very least, I would special case for this.</p>
+<p>In general - I am not sure what are the benefits of adding unknown in class context for the reasons I outlined above (class is a kind of a contract, and all internal code should be considered as implementing/assuming that contract). But I trust you have good reasons for that.</p>
+<p>I can implement this special case - let me know if you think the <code>None</code> should be special cased as well. The rule maybe - if the inferred type == param_type - None =&gt; assume declared as such</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-11 14:33</div>
+            <div class="timeline-body"><blockquote>
+<p>I forgot to add one more example, which I believe[d] to be common.</p>
+</blockquote>
+<p>This seems to be the same like my <code>C().x</code> example above, or am I missing something?</p>
+<blockquote>
+<p>I'd expect <code>self._graph</code> to be of <code>type[nx.MultiDiGraph]</code>, not <code>type[nx.MultiDiGraph] | None</code>.</p>
+</blockquote>
+<p>Assuming you mean &quot;<code>self._graph</code> to be of type <code>nx.MultiDiGraph</code>, not type <code>nx.MultiDiGraph | None</code>&quot;: yes, we would eliminate <code>None</code> from the union due to type-narrowing in that Boolean expression. But we would then union with <code>Unknown</code> to arrive at <code>Unknown | nx.MultiDiGraph</code> for the instance variable <code>_graph</code>; that is, unless we decide to add an extended special case for something like this.</p>
+<blockquote>
+<p>At the very least, I would special case for this.</p>
+</blockquote>
+<blockquote>
+<p>I can implement this special case - let me know if you think the None should be special cased as well. The rule maybe - if the inferred type == param_type - None =&gt; assume declared as such</p>
+</blockquote>
+<p>Let's go without any additional special casing for now and keep that idea in mind (or in a ticket, once this is resolved).</p>
+<blockquote>
+<p>In general - I am not sure what are the benefits of adding unknown in class context […] But I trust you have good reasons for that.</p>
+</blockquote>
+<p>I tried to explain our reasons in the linked document.</p>
+<blockquote>
+<p>class is a kind of a contract, and all internal code should be considered as implementing/assuming that contract</p>
+</blockquote>
+<p>So, in your opinion, what does the contract of this &quot;old style dataclass&quot; (we are talking about unannotated code here) say about the type of <code>timezone</code>? That it is <code>None</code> and remains <code>None</code> forever?</p>
+<pre><code class="language-py">class Timestamp:
+    timezone = None
+
+    def __init__(self, hours, minutes):
+        self.hours = hours
+        self.minutes = minutes
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16111.html">astral-sh/ruff#16111</a> on 2025-02-12 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-12 03:19</div>
+            <div class="timeline-body"><p>@sharkdp thanks a lot for the doc link, it helped indeed. If you think there are other such docs that will help me understand overarching red_knot goals/strategy that guide such decisions - would really appreciate them. The more I know, the easier it is for me to align with the core team.</p>
+<blockquote>
+<p>So, in your opinion, what does the contract of this &quot;old style dataclass&quot; (we are talking about unannotated code here) say about the type of timezone? That it is None and remains None forever?</p>
+</blockquote>
+<p>I want and will answer later. I want to do a small research and gather stats.</p>
+<p>For now I've opened a PR #16111. I really really hope that this time I did exactly what you'd expected 🤞</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-13 12:17</div>
+            <div class="timeline-body"><p>As discussed privately, we decided to <em>not</em> implement this feature for now. I will leave the ticket open because I want to reflect that decision in our <code>attributes.md</code> test suite.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-02-13 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16208.html">astral-sh/ruff#16208</a> on 2025-02-17 08:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-02-18 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-02-18 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ty/issues/1515.html">astral-sh/ty#1515</a> on 2025-11-10 15:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

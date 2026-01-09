@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv not detecting python in termux - astral-sh/uv #7373</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv not detecting python in termux</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7373">#7373</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2024-09-13 18:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ghost">@ghost</a> on 2024-09-13 18:56</div>
+            <div class="timeline-body"><p>Disclaimer: I used AI to help write this report because English is not my first language, I apologize if anything is unclear or too detailed. Let me know if you need any clarifications</p>
+<p>I'm encountering an issue when trying to use <code>uv</code> on Termux. When attempting to install packages using <code>uv pip install</code>, I receive an error indicating that no virtual environment or system Python installation is found, despite Python being installed and accessible.</p>
+<h2>Environment</h2>
+<ul>
+<li>OS: Termux (Android)</li>
+<li>Python version: 3.11.9</li>
+<li>UV version: 0.4.10</li>
+<li>Termux version: 0.119.0-b1+monet36</li>
+<li>Android version: 14</li>
+<li>Device: vivo V2206</li>
+<li>CPU architecture: aarch64</li>
+<li>Kernel: Linux 4.19.157-perf+</li>
+</ul>
+<h2>Detailed Termux Information</h2>
+<pre><code>Termux Variables:
+TERMUX_APP_PACKAGE_MANAGER=apt
+TERMUX_APP__APK_FILE=/data/app/~~NkwmZsImblhcEj3x0C3ZBQ==/com.termux-9tzZyDv4vcJKhizjsUGNtQ==/base.apk
+TERMUX_APP__APK_RELEASE=GITHUB
+TERMUX_APP__APP_VERSION_CODE=1020
+TERMUX_APP__APP_VERSION_NAME=0.119.0-b1+monet36
+TERMUX_APP__DATA_DIR=/data/user/0/com.termux
+TERMUX_APP__IS_DEBUGGABLE_BUILD=true
+TERMUX_APP__IS_INSTALLED_ON_EXTERNAL_STORAGE=false
+TERMUX_APP__PACKAGE_NAME=com.termux
+TERMUX_APP__PID=31641
+TERMUX_APP__TARGET_SDK=28
+TERMUX_VERSION=0.119.0-b1+monet36
+TERMUX__SE_FILE_CONTEXT=u:object_r:app_data_file:s0:c218,c258,c512,c768
+TERMUX__SE_INFO=default:targetSdkVersion=28:complete
+TERMUX__SE_PROCESS_CONTEXT=u:r:untrusted_app_27:s0:c218,c258,c512,c768
+TERMUX__UID=10730
+TERMUX__USER_ID=0
+
+LD Variables:
+LD_LIBRARY_PATH=
+LD_PRELOAD=/data/data/com.termux/files/usr/lib/libtermux-exec.so
+
+Installed termux plugins:
+com.termux.api versionCode:51
+</code></pre>
+<h2>Steps to Reproduce</h2>
+<ol>
+<li>Install <code>uv</code> on Termux</li>
+<li>Run <code>uv pip install scapy</code></li>
+<li>Attempt to create a virtual environment using <code>uv venv</code></li>
+<li>Try installing with <code>--system</code> flag: <code>uv pip install scapy --system</code></li>
+<li>Create a virtual environment using <code>python -m venv uvenv</code></li>
+<li>Activate the virtual environment and repeat steps 2-4</li>
+</ol>
+<h2>Expected Behavior</h2>
+<p>The package should install successfully, either in a virtual environment or system-wide.</p>
+<h2>Actual Behavior</h2>
+<p>Receive errors indicating that no virtual environment or system Python installation is found, despite Python being correctly installed and accessible.</p>
+<h2>Detailed Debug Output</h2>
+<h3>Attempt 1: Installing scapy with UV (outside virtual environment)</h3>
+<pre><code>~ $ uv -v pip install scapy
+DEBUG uv 0.4.10
+DEBUG Searching for Python interpreter in system path
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python3`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python3: Can't use Python at `/data/data/com.termux/files/usr/bin/python3`
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python: Can't use Python at `/data/data/com.termux/files/usr/bin/python`
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python3.11`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python3.11: Can't use Python at `/data/data/com.termux/files/usr/bin/python3.11`
+error: No virtual environment found; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+</code></pre>
+<h3>Attempt 2: Installing scapy with UV using --system flag</h3>
+<pre><code>~ $ uv -v pip install scapy --system
+DEBUG uv 0.4.10
+DEBUG Searching for Python interpreter in system path
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python3`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python3: Can't use Python at `/data/data/com.termux/files/usr/bin/python3`
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python: Can't use Python at `/data/data/com.termux/files/usr/bin/python`
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python3.11`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python3.11: Can't use Python at `/data/data/com.termux/files/usr/bin/python3.11`
+error: No system Python installation found
+</code></pre>
+<h3>Attempt 3: Creating a virtual environment with UV</h3>
+<pre><code>~ $ uv -v venv
+DEBUG uv 0.4.10
+DEBUG Searching for Python interpreter in managed installations or system path
+DEBUG Searching for managed installations at `.local/share/uv/python`
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python3`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python3: Can't use Python at `/data/data/com.termux/files/usr/bin/python3`
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python: Can't use Python at `/data/data/com.termux/files/usr/bin/python`
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python3.11`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python3.11: Can't use Python at `/data/data/com.termux/files/usr/bin/python3.11`
+DEBUG Requested Python not found, checking for available download...
+DEBUG Acquired lock for `.local/share/uv/python`
+DEBUG Released lock at `/data/data/com.termux/files/home/.local/share/uv/python/.lock`
+  × No interpreter found in managed installations or
+  │ system path
+</code></pre>
+<h3>Attempt 4: Installing scapy with UV (inside virtual environment)</h3>
+<pre><code>(uvenv) ~ $ uv -v pip install scapy
+DEBUG uv 0.4.10
+DEBUG Searching for Python interpreter in system path
+DEBUG Can't use Python at `/data/data/com.termux/files/home/uvenv/bin/python3`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/home/uvenv/bin/python3: Can't use Python at `/data/data/com.termux/files/home/uvenv/bin/python3`
+DEBUG Can't use Python at `/data/data/com.termux/files/home/uvenv/bin/python3`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/home/uvenv/bin/python3: Can't use Python at `/data/data/com.termux/files/home/uvenv/bin/python3`
+DEBUG Can't use Python at `/data/data/com.termux/files/home/uvenv/bin/python`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/home/uvenv/bin/python: Can't use Python at `/data/data/com.termux/files/home/uvenv/bin/python`
+DEBUG Can't use Python at `/data/data/com.termux/files/home/uvenv/bin/python3.11`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/home/uvenv/bin/python3.11: Can't use Python at `/data/data/com.termux/files/home/uvenv/bin/python3.11`
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python3`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python3: Can't use Python at `/data/data/com.termux/files/usr/bin/python3`
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python: Can't use Python at `/data/data/com.termux/files/usr/bin/python`
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python3.11`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python3.11: Can't use Python at `/data/data/com.termux/files/usr/bin/python3.11`
+error: No virtual environment found; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+</code></pre>
+<h3>Attempt 5: Installing scapy with UV using --system flag (inside virtual environment)</h3>
+<pre><code>(uvenv) ~ $ uv -v pip install scapy --system
+DEBUG uv 0.4.10
+DEBUG Searching for Python interpreter in system path
+DEBUG Can't use Python at `/data/data/com.termux/files/home/uvenv/bin/python3`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/home/uvenv/bin/python3: Can't use Python at `/data/data/com.termux/files/home/uvenv/bin/python3`
+DEBUG Can't use Python at `/data/data/com.termux/files/home/uvenv/bin/python`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/home/uvenv/bin/python: Can't use Python at `/data/data/com.termux/files/home/uvenv/bin/python`
+DEBUG Can't use Python at `/data/data/com.termux/files/home/uvenv/bin/python3.11`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/home/uvenv/bin/python3.11: Can't use Python at `/data/data/com.termux/files/home/uvenv/bin/python3.11`
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python3`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python3: Can't use Python at `/data/data/com.termux/files/usr/bin/python3`
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python: Can't use Python at `/data/data/com.termux/files/usr/bin/python`
+DEBUG Can't use Python at `/data/data/com.termux/files/usr/bin/python3.11`
+DEBUG Skipping bad interpreter at /data/data/com.termux/files/usr/bin/python3.11: Can't use Python at `/data/data/com.termux/files/usr/bin/python3.11`
+error: No system Python installation found
+</code></pre>
+<h3>Python and UV versions</h3>
+<pre><code>(uvenv) ~ $ which python
+/data/data/com.termux/files/home/uvenv/bin/python
+(uvenv) ~ $ python --version
+Python 3.11.9
+(uvenv) ~ $ uv --version
+uv 0.4.10
+</code></pre>
+<h2>Additional Observations</h2>
+<ol>
+<li>UV consistently fails to detect or use any Python installation, whether system-wide or in a virtual environment.</li>
+<li>The error messages suggest that UV is unable to use the Python interpreters it finds, but doesn't provide a specific reason why.</li>
+<li>The issue persists even after confirming that Python is correctly installed and accessible.</li>
+<li>Attempts to create a virtual environment with UV also fail due to the same interpreter detection issue.</li>
+<li>The problem occurs consistently across different scenarios and command variations, suggesting a fundamental issue with how UV interacts with the Python installation on Termux.</li>
+</ol>
+<h2>Attempted Solutions</h2>
+<ol>
+<li>Upgraded Python:<pre><code>$ pkg upgrade python
+python is already the newest version (3.11.9-5).
+</code></pre>
+</li>
+<li>Tried both system-wide and virtual environment installations.</li>
+<li>Verified Python installation and accessibility.</li>
+</ol>
+<h2>Additional Notes</h2>
+<ul>
+<li>The issue occurs both in and out of a virtual environment.</li>
+<li>Python is correctly installed and accessible, but UV seems unable to detect or use it.</li>
+<li>Termux is using the apt package manager.</li>
+<li>The Termux app is installed from GitHub (TERMUX_APP__APK_RELEASE=GITHUB).</li>
+</ul>
+<p>Any assistance in resolving this issue would be greatly appreciated. Let me know if you need any additional information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-09-14 04:04</div>
+            <div class="timeline-body"><p>Interesting, seems like uv is not detecting python in Android (installed as part of the Termux APK).
+How did you install <code>uv</code> within Termux? Downloading an aarch64 binary directly?</p>
+<p>I decided to give it a quick try, and check if <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-python/python/get_interpreter_info.py">get_interpreter_info.py</a> even works, but it was definitely going the branch of</p>
+<pre><code>print(json.dumps({&quot;result&quot;: &quot;error&quot;, &quot;kind&quot;: &quot;libc_not_found&quot;}))
+sys.exit(0)
+</code></pre>
+<p>which is likely the main culprit here to some degree.</p>
+<p>I modified it to return <code>unknown</code> for OS name intead and got below:</p>
+<pre><code class="language-json">{
+  &quot;result&quot;: &quot;success&quot;,
+  &quot;markers&quot;: {
+    &quot;implementation_name&quot;: &quot;cpython&quot;,
+    &quot;implementation_version&quot;: &quot;3.11.9&quot;,
+    &quot;os_name&quot;: &quot;posix&quot;,
+    &quot;platform_machine&quot;: &quot;aarch64&quot;,
+    &quot;platform_python_implementation&quot;: &quot;CPython&quot;,
+    &quot;platform_release&quot;: &quot;[Redacted Android Release ID]&quot;,
+    &quot;platform_system&quot;: &quot;Linux&quot;,
+    &quot;platform_version&quot;: &quot;[Redacted Android Version ID]&quot;,
+    &quot;python_full_version&quot;: &quot;3.11.9&quot;,
+    &quot;python_version&quot;: &quot;3.11&quot;,
+    &quot;sys_platform&quot;: &quot;linux&quot;
+  },
+  &quot;sys_base_prefix&quot;: &quot;/data/data/com.termux/files/usr&quot;,
+  &quot;sys_base_exec_prefix&quot;: &quot;/data/data/com.termux/files/usr&quot;,
+  &quot;sys_prefix&quot;: &quot;/data/data/com.termux/files/usr&quot;,
+  &quot;sys_base_executable&quot;: &quot;/data/data/com.termux/files/usr/bin/python&quot;,
+  &quot;sys_executable&quot;: &quot;/data/data/com.termux/files/usr/bin/python&quot;,
+  &quot;sys_path&quot;: [
+    &quot;/data/data/com.termux/files/home&quot;,
+    &quot;/data/data/com.termux/files/usr/lib/python311.zip&quot;,
+    &quot;/data/data/com.termux/files/usr/lib/python3.11&quot;,
+    &quot;/data/data/com.termux/files/usr/lib/python3.11/lib-dynload&quot;,
+    &quot;/data/data/com.termux/files/usr/lib/python3.11/site-packages&quot;
+  ],
+  &quot;stdlib&quot;: &quot;/data/data/com.termux/files/usr/lib/python3.11&quot;,
+  &quot;scheme&quot;: {
+    &quot;platlib&quot;: &quot;/data/data/com.termux/files/usr/lib/python3.11/site-packages&quot;,
+    &quot;purelib&quot;: &quot;/data/data/com.termux/files/usr/lib/python3.11/site-packages&quot;,
+    &quot;include&quot;: &quot;/data/data/com.termux/files/usr/include/python3.11&quot;,
+    &quot;scripts&quot;: &quot;/data/data/com.termux/files/usr/bin&quot;,
+    &quot;data&quot;: &quot;/data/data/com.termux/files/usr&quot;
+  },
+  &quot;virtualenv&quot;: {
+    &quot;purelib&quot;: &quot;lib/python3.11/site-packages&quot;,
+    &quot;platlib&quot;: &quot;lib/python3.11/site-packages&quot;,
+    &quot;include&quot;: &quot;include/site/python3.11&quot;,
+    &quot;scripts&quot;: &quot;bin&quot;,
+    &quot;data&quot;: &quot;&quot;
+  },
+  &quot;platform&quot;: {
+    &quot;os&quot;: {
+      &quot;name&quot;: &quot;unknown&quot;,
+      &quot;major&quot;: -1,
+      &quot;minor&quot;: -1
+    },
+    &quot;arch&quot;: &quot;aarch64&quot;
+  },
+  &quot;manylinux_compatible&quot;: true,
+  &quot;gil_disabled&quot;: false,
+  &quot;pointer_size&quot;: &quot;64&quot;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2024-09-14 08:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Interesting, seems like uv is not detecting python in Android (installed as part of the Termux APK).
+How did you install uv within Termux? Downloading an aarch64 binary directly?</p>
+</blockquote>
+<p>I installed uv normally using pkg in Termux. The exact command I used was:</p>
+<pre><code>pkg install uv
+</code></pre>
+<p>I didn't download any binaries directly or use any special installation methods.</p>
+<blockquote>
+<p>I decided to give it a quick try, and check if get_interpreter_info.py even works, but it was definitely going the branch of</p>
+<p>print(json.dumps({&quot;result&quot;: &quot;error&quot;, &quot;kind&quot;: &quot;libc_not_found&quot;}))
+sys.exit(0)
+which is likely the main culprit here to some degree.</p>
+</blockquote>
+<p>Your findings about the get_interpreter_info.py script are interesting. Is there a way for me to modify this script on my end to help diagnose the issue further? I'm willing to run any tests or provide any additional information that might be helpful in resolving this problem.</p>
+<p>Also, given that the modified script you ran was able to detect the Python installation correctly, do you have any ideas about potential fixes or workarounds I could try?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ghost on 2024-09-16 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilotoki0804">@ilotoki0804</a> on 2024-09-25 01:23</div>
+            <div class="timeline-body"><p>@Noth1ngLol Did you solve the problem? If so, can you share your solution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgedmin">@mgedmin</a> on 2024-10-04 12:13</div>
+            <div class="timeline-body"><p>Came here because of the same problem.  I think the issue was closed prematurely?</p>
+<p>It's probably a duplicate of #2408 anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2024-10-04 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 13:38</div>
+            <div class="timeline-body"><p>Let's use this issue to track the Python interpreter query bug and #2408 to track broader support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-10-04 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv python</span> added by @zanieb on 2024-10-04 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2408.html">astral-sh/uv#2408</a> on 2024-10-04 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Neurovert">@Neurovert</a> on 2024-10-25 08:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Interesting, seems like uv is not detecting python in Android (installed as part of the Termux APK). How did you install <code>uv</code> within Termux? Downloading an aarch64 binary directly?</p>
+<p>I decided to give it a quick try, and check if <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-python/python/get_interpreter_info.py">get_interpreter_info.py</a> even works, but it was definitely going the branch of</p>
+<pre><code>print(json.dumps({&quot;result&quot;: &quot;error&quot;, &quot;kind&quot;: &quot;libc_not_found&quot;}))
+sys.exit(0)
+</code></pre>
+<p>which is likely the main culprit here to some degree.</p>
+<p>I modified it to return <code>unknown</code> for OS name intead and got below:</p>
+<pre><code class="language-json">{
+  &quot;result&quot;: &quot;success&quot;,
+  &quot;markers&quot;: {
+    &quot;implementation_name&quot;: &quot;cpython&quot;,
+    &quot;implementation_version&quot;: &quot;3.11.9&quot;,
+    &quot;os_name&quot;: &quot;posix&quot;,
+    &quot;platform_machine&quot;: &quot;aarch64&quot;,
+    &quot;platform_python_implementation&quot;: &quot;CPython&quot;,
+    &quot;platform_release&quot;: &quot;[Redacted Android Release ID]&quot;,
+    &quot;platform_system&quot;: &quot;Linux&quot;,
+    &quot;platform_version&quot;: &quot;[Redacted Android Version ID]&quot;,
+    &quot;python_full_version&quot;: &quot;3.11.9&quot;,
+    &quot;python_version&quot;: &quot;3.11&quot;,
+    &quot;sys_platform&quot;: &quot;linux&quot;
+  },
+  &quot;sys_base_prefix&quot;: &quot;/data/data/com.termux/files/usr&quot;,
+  &quot;sys_base_exec_prefix&quot;: &quot;/data/data/com.termux/files/usr&quot;,
+  &quot;sys_prefix&quot;: &quot;/data/data/com.termux/files/usr&quot;,
+  &quot;sys_base_executable&quot;: &quot;/data/data/com.termux/files/usr/bin/python&quot;,
+  &quot;sys_executable&quot;: &quot;/data/data/com.termux/files/usr/bin/python&quot;,
+  &quot;sys_path&quot;: [
+    &quot;/data/data/com.termux/files/home&quot;,
+    &quot;/data/data/com.termux/files/usr/lib/python311.zip&quot;,
+    &quot;/data/data/com.termux/files/usr/lib/python3.11&quot;,
+    &quot;/data/data/com.termux/files/usr/lib/python3.11/lib-dynload&quot;,
+    &quot;/data/data/com.termux/files/usr/lib/python3.11/site-packages&quot;
+  ],
+  &quot;stdlib&quot;: &quot;/data/data/com.termux/files/usr/lib/python3.11&quot;,
+  &quot;scheme&quot;: {
+    &quot;platlib&quot;: &quot;/data/data/com.termux/files/usr/lib/python3.11/site-packages&quot;,
+    &quot;purelib&quot;: &quot;/data/data/com.termux/files/usr/lib/python3.11/site-packages&quot;,
+    &quot;include&quot;: &quot;/data/data/com.termux/files/usr/include/python3.11&quot;,
+    &quot;scripts&quot;: &quot;/data/data/com.termux/files/usr/bin&quot;,
+    &quot;data&quot;: &quot;/data/data/com.termux/files/usr&quot;
+  },
+  &quot;virtualenv&quot;: {
+    &quot;purelib&quot;: &quot;lib/python3.11/site-packages&quot;,
+    &quot;platlib&quot;: &quot;lib/python3.11/site-packages&quot;,
+    &quot;include&quot;: &quot;include/site/python3.11&quot;,
+    &quot;scripts&quot;: &quot;bin&quot;,
+    &quot;data&quot;: &quot;&quot;
+  },
+  &quot;platform&quot;: {
+    &quot;os&quot;: {
+      &quot;name&quot;: &quot;unknown&quot;,
+      &quot;major&quot;: -1,
+      &quot;minor&quot;: -1
+    },
+    &quot;arch&quot;: &quot;aarch64&quot;
+  },
+  &quot;manylinux_compatible&quot;: true,
+  &quot;gil_disabled&quot;: false,
+  &quot;pointer_size&quot;: &quot;64&quot;
+}
+</code></pre>
+</blockquote>
+<p>@samypr100 so does <code>uv venv</code> work properly for you? The json result you're showing is probably result of running just the get_interpreter_info.py script, right? Or did you edit it successfully and now uv detects the venv correctly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-30 01:37</div>
+            <div class="timeline-body"><blockquote>
+<p>@samypr100 so does <code>uv venv</code> work properly for you? The json result you're showing is probably result of running just the get_interpreter_info.py script, right? Or did you edit it successfully and now uv detects the venv correctly?</p>
+</blockquote>
+<p>Sorry, I did not recompile uv with the changes on Android to be able to test that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatiasHiltunen">@MatiasHiltunen</a> on 2024-11-10 17:31</div>
+            <div class="timeline-body"><p>I have encountered similar errors with 0.51 version installed using pkg.</p>
+<p>I tried multiple other installation methods with no success, this was first issue while building with cargo install:</p>
+<pre><code>error: subprocess-exited-with-error
+warning: sys-info@0.9.1: c/linux.c:96:11: error: call to undeclared library function 'index' with type 'char *(const char *, int)';
+ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+error: failed to run custom build command for `sys-info v0.9.1`
+</code></pre>
+<p>For the Python-based installation using pipx:</p>
+<pre><code>pip failed to build package:
+    uv
+
+Some possibly relevant errors from pip install: 
+error: subprocess-exited-with-error           warning: sys-info@0.9.1: c/linux.c:96:11: error: call to undeclared library function 'index' with type 'char *(const char *, int)'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    error: failed to run custom build command for `sys-info v0.9.1`
+    cargo:warning=c/linux.c:96:11: error: call to undeclared library function 'index' with type 'char *(const char *, int)'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]            Error: command ['maturin', 'pep517', 'build-wheel', '-i', '/data/data/com.termux/files/home/.local/share/pipx/venvs/uv/bin/python', '--compatibility', 'off'] returned non-zero exit status 1                                         ERROR: ERROR: Failed to build installable wheels for some pyproject.toml based projects (uv)
+</code></pre>
+<p>This ssue appears to stem from the sys-info crate, specifically in c/linux.c. The code calls the index function, which is deprecated and not supported in ISO C99 or later. Android's Bionic libc (used by Termux) is stricter and does not include this deprecated function.</p>
+<p>I'm going to keep looking more into this as I suspect the issue is more related to external dependencies or env-variables that termux does differently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9005.html">astral-sh/uv#9005</a> on 2024-11-11 02:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dead10ck">@dead10ck</a> on 2024-11-11 02:50</div>
+            <div class="timeline-body"><p>I tried my hand at this in #9005. Not sure if this is a good solution, but it seems to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatiasHiltunen">@MatiasHiltunen</a> on 2024-11-13 18:24</div>
+            <div class="timeline-body"><blockquote>
+<p>I tried my hand at this in #9005. Not sure if this is a good solution, but it seems to work.</p>
+</blockquote>
+<p>Good to know that there is a solution! Have you tried building the project in termux with these changes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../FillZpp/sys-info-rs/pulls/118.html">FillZpp/sys-info-rs#118</a> on 2024-11-13 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatiasHiltunen">@MatiasHiltunen</a> on 2024-11-13 23:06</div>
+            <div class="timeline-body"><p>About the build error that I posted, there is a pending PR that worked for me to fix the issue above that I got during build process: https://github.com/FillZpp/sys-info-rs/pull/118</p>
+<p>Not sure how actively maintained the sys-info crate is as last commit has been 2 years ago</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9171.html">astral-sh/uv#9171</a> on 2024-11-17 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-11-21 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChristianF88">@ChristianF88</a> on 2024-11-26 07:31</div>
+            <div class="timeline-body"><p>Fyi: I just tried and <code>uv</code> is still not detecting my python interpreter in termux:</p>
+<p>Here is what I did:</p>
+<pre><code class="language-bash">pkg install uv
+uv --version 
+# uv 0.5.4
+python --version
+# Python 3.12.7
+which python
+# /data/data/com.termux/files/usr/bin/python
+uv python find 3.12
+# error: No interpreter found for Python 3.12 in virtual environments, managed installations, or search path 
+</code></pre>
+<p>Installing a new version does also not work:</p>
+<pre><code class="language-bash">uv python install 3.11
+# error: No download found for request: cpython-3.11-linux-aarch64-none
+</code></pre>
+<p>Cheers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatiasHiltunen">@MatiasHiltunen</a> on 2024-11-26 13:50</div>
+            <div class="timeline-body"><p>Also as long as the sys-info (v.0.9.1) crate is there it is not possible to use other installation methods that involves build process due to android 14(?) compiler restrictions with deprecated C-code. I think I saw somewhere discussion about replacing sys-info crate with more up-to-date crate, couldn't find it anymore though. With rust I have noticed that many crates that target android as a platform can not be compiled to termux because platform is detected to be aarch64-linux-android and those packages expect (correctly) to bind to android activity as they would if we were building android application, even though termux does not need the program to bind to android activity to work. When activity is not found, compile can not go trough. In some cases, I have modified the platform detection code so that compiler skips the activity check and build goes nicely through natively to aarch64-linux-android. This is not a good practise though. Perhaps this is a discussion that should be taken to Termux (or rust) community and see if there is something that could be done to help rust compiler to detect termux better as emulated linux environment and prevent the rust from expecting the android activity to be available when its not needed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-11-26 15:46</div>
+            <div class="timeline-body"><p>Has there been a release yet that includes the fix from the PR? We'd have to wait for pkg to also have the update on termux repos.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dead10ck">@dead10ck</a> on 2024-11-27 00:25</div>
+            <div class="timeline-body"><p>No I don't believe there has been a release yet that includes the fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Biswa96">@Biswa96</a> on 2024-11-28 20:03</div>
+            <div class="timeline-body"><p>I have tested the new uv version 0.5.5 and it is working in termux now.</p>
+<pre><code>$ uv python find
+/data/data/com.termux/files/usr/bin/python
+
+$ uv python list
+cpython-3.12.7-linux-aarch64-none    /data/data/com.termux/files/usr/bin/python3.12
+cpython-3.12.7-linux-aarch64-none    /data/data/com.termux/files/usr/bin/python3 -&gt; python3.12
+cpython-3.12.7-linux-aarch64-none    /data/data/com.termux/files/usr/bin/python -&gt; python3.12
+</code></pre>
+<p>There are some warnings though.</p>
+<pre><code>$ uv venv venv
+Using CPython 3.12.7 interpreter at: /data/data/com.termux/files/usr/bin/python
+Creating virtual environment at: venv
+Activate with: source venv/bin/activate
+
+$ uv pip install pathlib2
+Using Python 3.12.7 environment at: venv
+Resolved 2 packages in 869ms
+Prepared 2 packages in 77ms
+░░░░░░░░░░░░░░░░░░░░ [0/2] Installing wheels...
+         warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 2 packages in 8ms
+ + pathlib2==2.3.7.post1
+ + six==1.16.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vinfall">@Vinfall</a> on 2025-02-02 06:32</div>
+            <div class="timeline-body"><p>I know this is closed but post here anyway since it's the most relevant issue. uv now works quite well except <code>uv python install</code> but that's a upstream issue and on Termux we have official PyPy packages and TUR for older Pythons.</p>
+<p>However, if I have installed both <code>python3</code> and <code>pypy3</code>, only python3 is detected (despite pypy being in <code>$PATH</code>):</p>
+<pre><code class="language-sh"># python interpreter and uv
+$ pkg install python3 python3-pip pypy3 uv
+$ python3 -V
+Python 3.12.8
+$ pip -V
+pip 24.3.1 from /data/data/com.termux/files/usr/lib/python3.12/site-packages/pip (python 3.12)
+$ pypy3 -V
+Python 3.9.18 (9c4f8ef178b6, Oct 06 2024, 19:31:31)
+[PyPy 7.3.15 with GCC Clang 19.1.1]
+$ uv -V
+uv 0.5.25
+
+# path
+$ echo $PATH | sed 's/:/\n/g'
+/data/data/com.termux/files/home/.local/bin
+/data/data/com.termux/files/home/.local/bin-sh
+/data/data/com.termux/files/home/.local/bin-rust
+/data/data/com.termux/files/usr/bin
+$ which python3
+/data/data/com.termux/files/usr/bin/python3
+$ which pypy3
+/data/data/com.termux/files/usr/bin/pypy3
+
+$ uv python list
+cpython-3.12.8-linux-aarch64-none    /data/data/com.termux/files/usr/bin/python3.12
+cpython-3.12.8-linux-aarch64-none    /data/data/com.termux/files/usr/bin/python3 -&gt; python3.12
+cpython-3.12.8-linux-aarch64-none    /data/data/com.termux/files/usr/bin/python -&gt; python3.12
+</code></pre>
+<p>Moreover, if I install older python from TUR, uv would detect that successfully. Given that on my x86_64 Linux uv does show download for pypy, this should be a bug:</p>
+<pre><code class="language-sh"># this is from tur-packages
+pkg install python3.10
+$ uv python list
+cpython-3.12.8-linux-aarch64-none     /data/data/com.termux/files/usr/bin/python3.12
+cpython-3.12.8-linux-aarch64-none     /data/data/com.termux/files/usr/bin/python3 -&gt; python3.12
+cpython-3.12.8-linux-aarch64-none     /data/data/com.termux/files/usr/bin/python -&gt; python3.12
+cpython-3.10.15-linux-aarch64-none    /data/data/com.termux/files/usr/bin/python3.10
+</code></pre>
+<p>By the way, in Termux there is a <code>$PREFIX</code> (<code> /data/data/com.termux/files/</code>) which acts as <code>/</code> in regular Linux so maybe you can check the path here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-02 07:02</div>
+            <div class="timeline-body"><p>@Vinfall please open a new issue with verbose logs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11160.html">astral-sh/uv#11160</a> on 2025-02-02 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13845.html">astral-sh/uv#13845</a> on 2025-06-04 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mecrayavcin">@mecrayavcin</a> on 2025-11-21 22:26</div>
+            <div class="timeline-body"><p>Same problem:
+<code>uv python install</code> does not work at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-21 23:12</div>
+            <div class="timeline-body"><p>@mecrayavcin please see #9452 and open a new issue with details.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

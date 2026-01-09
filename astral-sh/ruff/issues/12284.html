@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied error due to race saving cache file on Windows - astral-sh/ruff #12284</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Access Denied error due to race saving cache file on Windows</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12284">#12284</a>
+        opened by <a href="https://github.com/jaraco">@jaraco</a>
+        on 2024-07-10 22:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jaraco">@jaraco</a> on 2024-07-10 22:53</div>
+            <div class="timeline-body"><p>In pypa/setuptools#4467 and businho/pytest-ruff#28 and <a href="https://discord.com/channels/1039017663004942429/1039017663512449056/1260661337411944588">this Discord convo</a>, I've captured an issue that's recently become apparent when pytest-ruff started failing on an exit code 2 (pytest-ruff 0.4).</p>
+<p>In a test environment utilizing <code>pytest-ruff</code> and <code>pytest-xdist</code>, many tests will be run in parallel and since <code>pytest-ruff</code> passes each file to a separate <code>ruff</code> invocation, there may potentially be many instances of ruff launched for the same root directory and settings (and thus cache key).</p>
+<p>As a result, Ruff will fail and exit with code 2 with the following output:</p>
+<pre><code>            Cause: Failed to rename temporary cache file to D:\a\setuptools\setuptools\.ruff_cache\0.5.1\13567325068112760734
+            Cause: failed to persist temporary file: Access is denied. (os error 5)
+            Cause: Access is denied. (os error 5)
+</code></pre>
+<p>Since it's a cache file, maybe the failure should be ignored, or maybe it could be retried.</p>
+<p>At the very least, catching this error and exiting with a distinct exit code would allow tools like <code>pytest-ruff</code> to ignore the failure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-07-10 23:37</div>
+            <div class="timeline-body"><p>My guess is the same behavior is happening on Linux too, but the file system allows the race to be resolved by replacing the file. Maybe there's a Windows file operation that's comparable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-07-11 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @dhruvmanila on 2024-07-11 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 12:55</div>
+            <div class="timeline-body"><p>Yeah my guess is we're trying to replace the file while it's being read.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-12 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 12:56</div>
+            <div class="timeline-body"><p>My vote would be to make these non-fatal, and warn. Cache errors should generally be non-fatal IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12302.html">astral-sh/ruff#12302</a> on 2024-07-12 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-12 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../OpenBB-finance/OpenBB/issues/6694.html">OpenBB-finance/OpenBB#6694</a> on 2024-09-25 03:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

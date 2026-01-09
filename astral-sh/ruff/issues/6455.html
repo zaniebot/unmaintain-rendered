@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PYI055 suggestion causes TypeError at runtime - astral-sh/ruff #6455</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PYI055 suggestion causes TypeError at runtime</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6455">#6455</a>
+        opened by <a href="https://github.com/adamtheturtle">@adamtheturtle</a>
+        on 2023-08-09 20:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2023-08-09 20:16</div>
+            <div class="timeline-body"><p>ruff 0.0.283 (error is new in this version)
+Python 3.11.4</p>
+<p>I get an error from ruff which proposes a solution, and applying that proposal causes an error.</p>
+<p>I have the following file:</p>
+<pre><code># example.py
+#
+# pip install requests_mock httpretty
+
+import httpretty
+import requests_mock
+
+item: type[requests_mock.Mocker] | type[httpretty] = requests_mock.Mocker
+</code></pre>
+<ul>
+<li><code>python example.py</code> has no output</li>
+<li><code>ruff --select=PYI --isolated example.py</code> shows:</li>
+</ul>
+<pre><code>example.py:42:7: PYI055 Multiple `type` members in a union. Combine them into one, e.g., `type[requests_mock.Mocker | httpretty]`.
+</code></pre>
+<p>The ruff documentation at https://beta.ruff.rs/docs/rules/unnecessary-type-union/ suggests that this change is purely cosmetic:</p>
+<blockquote>
+<p>The type built-in function accepts unions, and it is clearer to explicitly specify them as a single type.</p>
+</blockquote>
+<p>However, if I make the change suggested, and then run <code>python example.py</code>, I get a <code>TypeError</code>:</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;/Users/adam/Desktop/mypy-ruff-example/example.py&quot;, line 38, in &lt;module&gt;
+    item: type[requests_mock.Mocker | httpretty] = requests_mock.Mocker
+               ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+TypeError: unsupported operand type(s) for |: 'type' and 'module'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-09 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-09 20:21</div>
+            <div class="timeline-body"><p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-09 20:30</div>
+            <div class="timeline-body"><p>(I think you mean <code>PYI055</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "PYI030 suggestion causes TypeError at runtime" to "PYI055 suggestion causes TypeError at runtime" by @zanieb on 2023-08-09 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-09 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6457.html">astral-sh/ruff#6457</a> on 2023-08-09 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-09 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2023-08-11 16:12</div>
+            <div class="timeline-body"><p>Thank you for fixing this @charliermarsh . As it seems you can detect this case, perhaps it would be good to have this case be a <code>ruff</code> error? (though maybe that's more of a job for <code>mypy</code> which also has no problem with it).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

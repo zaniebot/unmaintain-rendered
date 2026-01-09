@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option not recognised in subcommand - clap-rs/clap #136</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Option not recognised in subcommand</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/136">#136</a>
+        opened by <a href="https://github.com/bmcorser">@bmcorser</a>
+        on 2015-06-01 08:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bmcorser">@bmcorser</a> on 2015-06-01 08:02</div>
+            <div class="timeline-body"><p>Not sure if this is an error on my part, but in <a href="https://github.com/bmcorser/git-tags-rs/tree/clap-opt-issue">this branch</a> the <code>-m, --message</code> option isn't recognised when I pass it.</p>
+<p>To reproduce (with Rust nightly):</p>
+<pre><code>git clone git@github.com:bmcorser/git-tags-rs.git
+cd git-tags-rs
+git checkout clap-opt-issue
+cargo build
+target/debug/tag release --message=&quot;hello&quot;
+target/debug/tag release -m &quot;hello&quot;
+</code></pre>
+<p>It will print <code>&quot;nicht&quot;</code> both times.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-06-01 11:57</div>
+            <div class="timeline-body"><p>Thanks for taking the time to file the issue! I'll look into it today and report back here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-06-01 12:27</div>
+            <div class="timeline-body"><p>I just found the reason. It's because a subcommand's matches are separate from the parent command's matches. It forms a tree hierarchy, and allows you re-use names and differintiate between different &quot;commands&quot; matches without them all getting mixed together, its also a performance boost.</p>
+<p>The fix for you is to change <a href="https://github.com/bmcorser/git-tags-rs/blob/2c9d06c9ee2fe8c9dbfe63e1e877e2c47d11125b/src/bin/main.rs#L16-20">your src/bin/main.rs</a> to this:</p>
+<pre><code class="language-rust">match matches.subcommand() {
+        (&quot;release&quot;, Some(m)) =&gt; release::run(m),
+        (&quot;lookup&quot;, Some(m))  =&gt; lookup::run(m),
+        _ =&gt; (),
+    }
+</code></pre>
+<p>the <code>.subcommand()</code> returns a tuple of a slice of the name, along with an <code>Option&lt;ArgMatches&gt;</code> of it's matched arguments. Whereas with the <code>.subcommand_name()</code> you were passing the <em>parent</em> (i.e. <code>tag</code>'s) matches to <code>release::run()</code></p>
+<p>After that, just change your <code>::run()</code> function to accept a borrow  (<code>&amp;clap::ArgMatches</code>)</p>
+<p><strong>Note:</strong> I changed the child <code>matches</code> to <code>m</code> just to visually differentiate. It works just fine if you use <code>Some(matches)) =&gt; release::run(matches),</code> because the parent <code>matches</code> gets shadowed ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2015-06-01 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bmcorser">@bmcorser</a> on 2015-06-01 12:40</div>
+            <div class="timeline-body"><p>:+1: thanks @kbknapp</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

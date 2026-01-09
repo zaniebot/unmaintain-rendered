@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply `ruff` to `markdown` code blocks - astral-sh/ruff #3792</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Apply `ruff` to `markdown` code blocks</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3792">#3792</a>
+        opened by <a href="https://github.com/paddyroddy">@paddyroddy</a>
+        on 2023-03-29 09:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/paddyroddy">@paddyroddy</a> on 2023-03-29 09:26</div>
+            <div class="timeline-body"><p>It would be cool to have the functionality to run <code>ruff</code> over <code>python</code> codeblocks like this does for <code>black</code> https://github.com/adamchainz/blacken-docs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-29 11:15</div>
+            <div class="timeline-body"><p>https://github.com/pydantic/pytest-examples
+Does something similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wishlist</span> added by @charliermarsh on 2023-03-29 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-26 02:51</div>
+            <div class="timeline-body"><p>I'm interested in trying to implement this. Looking at the projects listed above, it seems like code blocks are determined via Regex. Do we want to copy that approach or use a more robust Markdown parser (<a href="https://github.com/raphlinus/pulldown-cmark">pulldown-cmark</a> seems like a popular one)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-04-27 16:56</div>
+            <div class="timeline-body"><p>I would vote to use a markdown parser for robustness as you suggested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-29 15:23</div>
+            <div class="timeline-body"><p>Using a markdown parser makes sense from my view. It may be worth to also consider <a href="https://tree-sitter.github.io/tree-sitter/">tree-sitter</a> because it supports many languages.</p>
+<p>The part that's unclear to me how we want to solve it in the short term is the mapping of column and line numbers in the <code>Message</code>emitters. Ruff supports Jupyter-notebooks today, but the line-mapping is somewhat &quot;hacked-in&quot; to make it work, and I'm a bit reluctant to add more exceptions to the line-number mapping.</p>
+<p>https://github.com/charliermarsh/ruff/blob/483f4799995d1aea7987e6f7ee403f0411060023/crates/ruff/src/message/text.rs#L70-L87</p>
+<p>I assume a similar mapping will be necessary for Markdown files because we only pass the code block's source to Ruff, but we should show users the absolute line number from the start of the Markdown document.</p>
+<h2>Long-term</h2>
+<p>Long-term, we'll need to support the following two features.</p>
+<h3>Multi-language support</h3>
+<p>Ruff should support linting different file types. For example, Ruff should be able to lint SQL, python, and Markdown files. The filetype decides which specific linter Ruff uses to lint the file. This includes that the LSP is in sync with the file-types supported by the CLI and what extensions map to which languages. Rome supports <a href="https://github.com/rome/tools/blob/0ce919840c8ebaa02c3329b38fd8864c05b38d6e/crates/rome_service/src/file_handlers/mod.rs#L237-L261">this today</a>.</p>
+<h3>Embedded Languages</h3>
+<p>The idea is that a document written in one language can contain code written in another language. Examples are:</p>
+<ul>
+<li>Code blocks in markdown documents</li>
+<li>SQL in Python code</li>
+<li>Python code in Jupyter Notebooks</li>
+</ul>
+<p>The markdown file handler would recognize code blocks and delegate to Ruff to decide how to parse, lint, and format the code block's content. Ruff's infrastructure would correctly map the line-numbers between the &quot;virtual&quot; documents and the &quot;physical&quot; documents on disk.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-29 15:46</div>
+            <div class="timeline-body"><p>Yup, agree with all of your points @MichaReiser. As part of the design phase I've been thinking about how to generalize to different filetypes. It's an interesting problem - I will take a look at Treesitter parsers as well. Going down that route, we could support different languages relatively easily. I am going to submit PRs for this incrementally so that we can iterate over the design. The first one will be a parser that pulls code blocks out of Markdown - I'm leaning towards using Treesitter since that architecture could make it easier to provide &quot;plugins&quot; for other languages in the future.</p>
+<p>As far as the line mappings, I was planning on making a generic LineMap struct (or something along those lines) which would contain line numbers mapped to their offset in the containing document. That struct could then be reused for embedded languages, like you mentioned, mapping relative line numbers in the chunk of interest to the absolute line number of the document. It should provide a flexible way to treat code blocks differently, regardless of if it's an embedded language, a markdown code block, a Jupyter cell, etc.</p>
+<p>I'll have to look into Messages and how they work before finalizing the code though. I've been reading through the Jupyter implementation as part of this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-29 17:25</div>
+            <div class="timeline-body"><blockquote>
+<p>As far as the line mappings, I was planning on making a generic LineMap struct (or something along those lines) which would contain line numbers mapped to their offset in the containing document.</p>
+</blockquote>
+<p>Mapping line numbers should suffice for markdown documents but wouldn't be sufficient for e.g. SQL in python. I think it may actually be sufficient to simply add the byte offset of the markdown block to the range of every message/diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-29 17:30</div>
+            <div class="timeline-body"><p>Yup, that's basically what I'm doing - adding a <code>document_offset</code> field to Messages and Diagnostics.</p>
+<p>As far as the SQL in Python example, I was thinking the approach could work because the <code>document_offset</code> would be where the SQL code starts relative to the Python file. Line 1 of the SQL code could be on line 50 of the overarching .py file, so the <code>document_offset</code> for all diagnostics/messages in that block would be 50. Do you think there are flaws in that approach?</p>
+<p>E: sorry, not mapping line numbers. Mapping byte offsets between SQL/Python lines. I still need to figure out a concrete design though, if you couldn't tell 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-29 22:29</div>
+            <div class="timeline-body"><p>Going with a treesitter integration requires <a href="https://github.com/tree-sitter/tree-sitter/tree/master/lib/binding_rust">installing</a> the treesitter grammar for the language in question. While we could gate this behind a workspace <code>feature</code> flag, I'd like some other folk's thoughts on it. I don't want to needlessly increase the binary size. I need to figure out how it all works to give exact an estimate of the increase, though.</p>
+<p>Advantage of <code>pulldown-cmark</code> as mentioned above is it's quite fast and won't affect the binary size. Disadvantage is that it obviously can't be used for anything except Markdown.</p>
+<p>@MichaReiser @JonathanPlasse do you guys have any thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-04-29 23:30</div>
+            <div class="timeline-body"><p>It seems easier to first handle only markdown and in a second time expand with the tree-sitter grammar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-01 09:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Yup, that's basically what I'm doing - adding a document_offset field to Messages and Diagnostics.</p>
+</blockquote>
+<p>Which use cases require a diagnostic or message to know its document offset? Would it be sufficient to mutate the <code>diagnostic.range</code> or <code>message.range</code> directly by adding the offset? I'm asking because increasing the size of <code>Message</code> and <code>Diagnostic</code> decrease performance because:</p>
+<ul>
+<li>More data that must be written to and read from the cache</li>
+<li>Overall more data to write when creating/copying diagnostics and read when generating the output (even for diagnostics not using embedded languages)</li>
+</ul>
+<blockquote>
+<p>Advantage of pulldown-cmark as mentioned above is it's quite fast and won't affect the binary size.</p>
+</blockquote>
+<p>My expectation is that pulling in <code>pulldown-cmark</code> increases the binary size because we include a new crate in our binary (that is 116 kB in size), or is pulldown-cmark already a (runtime) dependency ?</p>
+<blockquote>
+<p>Going with a treesitter integration requires <a href="https://github.com/tree-sitter/tree-sitter/tree/master/lib/binding_rust?rgh-link-date=2023-04-29T22%3A29%3A32Z">installing</a> the treesitter grammar for the language in question.</p>
+</blockquote>
+<p>Yeah, using treesitter is more complicated because it requires a custom build step. I'm not too opinionated on if we should use treesitter or not. I think we can start prototyping with either and defer the decision to later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-05-01 12:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Would it be sufficient to mutate the diagnostic.range or message.range directly by adding the offset?</p>
+</blockquote>
+<p>Yep! I was working on it yesterday and that's also the route I've chosen to go down. Sorry for the confusion, I should've waiting until I had a fully fleshed out design before weighing in.</p>
+<blockquote>
+<p>My expectation is that pulling in pulldown-cmark increases the binary size because we include a new crate in our binary (that is 116 kB in size), or is pulldown-cmark already a (runtime) dependency ?</p>
+</blockquote>
+<p>It's not a runtime dependency, so it'll increase the crate because of its size, yes. I meant that it'd be less than the size delta from installing treesitter and associated grammar(s) which aren't totally necessary at this stage.</p>
+<blockquote>
+<p>I think we can start prototyping with either and defer the decision to later.</p>
+</blockquote>
+<p>Cool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4375.html">astral-sh/ruff#4375</a> on 2023-05-11 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5123.html">astral-sh/ruff#5123</a> on 2023-06-15 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5356.html">astral-sh/ruff#5356</a> on 2023-06-25 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-29 23:50</div>
+            <div class="timeline-body"><p>Listing down some of the issues I see after hacking around locally:</p>
+<ol>
+<li>Markdown, unlike Jupyter, is composed of discrete code blocks that don't necessarily affect each other. <strong>If we want to treat Markdown code blocks as discrete units</strong>, we'll have to rewrite most of the hot path since it's tightly coupled to a <code>Path</code>. As such, we have to rewrite <code>lint_fix</code>, <code>lint_only</code>, etc. to accept some sort of <code>CodeBlock</code> struct. Additionally, we have to figure out how to aggregate the diagnostics and display them/their fixes. If we <em>don't</em> want to treat them as discrete units, the code will be much simpler (almost akin to the Jupyter implementation).</li>
+<li>The <code>CodeBlock</code> structure, at minimum, should contain the block's content and its offset from the top of the file (what I'm calling its &quot;global offset&quot;). Each diagnostic created while linting the block should have the code block's global offset added to it, meaning that when we display the line to users, they see the actual Markdown line number.</li>
+<li>I didn't look into this, but we <em>may</em> need to expand <code>UniversalNewLines</code> to take Markdown line breaks as well, though again, I'm not sure how that works.</li>
+<li>Unifying the Jupyter/Markdown parsers as <code>Sources</code>. I keep going back and forth on what the trait should entail, or if there should even be one.</li>
+</ol>
+<p>Pinging @MichaReiser @charliermarsh just in case you guys have time to weigh in. I think the bare minimum question we need to answer is if we want to treat the code blocks as discrete units - I think we should, but that will require quite a bit of work.</p>
+<p>P.S. sorry for the poor issue hygiene with the multiple closed PRs. I've been hacking around and didn't realize they're all on here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-30 08:42</div>
+            <div class="timeline-body"><p>That's helpful knowledge that you gained with your prototype. Thanks for working on it.</p>
+<p>I want to throw in two more use cases:</p>
+<ul>
+<li>We could also lint the markdown, and not just the python code in markdown documents</li>
+<li>We could lint SQL inside of Python files. This is similar to Markdown in that statements are independent from each other but it becomes necessary to call from the python linting into the SQL linting, inverting the direction</li>
+</ul>
+<p>The conclusion I'm coming too is that it's probably worth abstracting over the file types instead where Ruff provides a <code>lint</code>, <code>fix</code>, <code>format</code> etc. functions per file type. I don't know what the exact signature would be. These file type specific functions can then pre-process the input and e.g. call into other linters. For example, the markdown linter can call out to the python linter if it finds a python code block and then post-process the diagnostics, to patch up the line numbers.</p>
+<p>The way this would work for SQL is that the python linter calls the SQL linter if it finds a SQL expression when traversing the AST. This is inspired by Prettier's approach where Prettier detects template-literals that are tagged with <code>graphql</code> (this is probably not valid syntax, I don't remember all the details):</p>
+<pre><code class="language-javascript">let result = useQuery(graphql`
+	query myQuery() {
+	}
+`);
+</code></pre>
+<p>Rome implements something very close to this design. Each language supports different capabilities (we may support linting SQL but not formatting). How these capabilities are implemented is transparent to the CLI. All the CLI cares about is that there's a <code>lint</code> function to call and it knows how to lint the files content.</p>
+<p>Definition of the JavaScript file type:</p>
+<p>https://github.com/rome/tools/blob/38104b339da8ff688f469799e1fc3f4a46f3d2ec/crates/rome_service/src/file_handlers/javascript.rs#L86-L124</p>
+<p>File agnostic API:</p>
+<p>https://github.com/rome/tools/blob/38104b339da8ff688f469799e1fc3f4a46f3d2ec/crates/rome_service/src/workspace/server.rs#L446-L457</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paddyroddy">@paddyroddy</a> on 2023-06-30 09:58</div>
+            <div class="timeline-body"><p>@evanrittenhouse I was definitely considering them as discrete units when I raised this. For example here https://github.com/astro-informatics/sleplet/blob/c510795e7ebd91000b8afe53276e522b75cdfbb6/.github/workflows/examples.yml#L33 I use <a href="https://github.com/nschloe/pytest-codeblocks">pytest-codeblocks</a> to run some example code blocks (essentially acting as another type of test).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-30 12:27</div>
+            <div class="timeline-body"><p>@MichaReiser I agree with the file-agnostic hot path that calls into adapters for different languages. I think the approach you propose sort of mimics LSPs in that each language can have different capabilities, implemented differently. I'd love to work on this, but I think that there will be a lot of design decisions that you guys probably want to weigh in on. Is it even worth continuing work on this before we can have those talks?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-03 09:03</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the approach you propose sort of mimics LSPs in that each language can have different capabilities, implemented differently.</p>
+</blockquote>
+<p>That's a neat comparison!</p>
+<blockquote>
+<p>Is it even worth continuing work on this before we can have those talks?</p>
+</blockquote>
+<p>I'm not sure. What I outlined above is also only what <strong>I</strong> considered doing. There isn't any alignment on the team. Let's maybe first finish the fix refactor. That would allow me to focus on one side project only.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjkanji">@mjkanji</a> on 2023-07-22 18:55</div>
+            <div class="timeline-body"><p>Chiming in here to ask if the development of this feature can also take Quarto (<code>.qmd</code>) into consideration. It's a great project aimed at providing a plaintext equivalent of Jupyter notebooks.</p>
+<p>Hopefully, adding support shouldn't be too complicated because, like (vanilla) Markdown, <code>.qmd</code> files denote Python blocks explicitly, albeit with a slightly different syntax:</p>
+<pre><code class="language-md"># This is a Markdown heading
+
+This is regular text.
+
+```{python}
+#| echo: false
+
+# This is a Python comment
+print(&quot;Hello, Ruff!&quot;)
+```
+</code></pre>
+<p>I don't imagine Ruff necessarily cares about specially formatted comments (though maybe it'll become relevant if you add formatting as a core functionality, #1904), but the <code>#| echo: false</code> at the top is a Quarto-specific comment that controls its behaviour. See <a href="https://quarto.org/docs/computations/execution-options.html#output-options">here</a>.</p>
+<p>Unlike Markdown, Quarto documents are equivalent to Jupyter notebooks so you can (hopefully?) remix the work being done to add Jupyter and Markdown support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-07-22 19:07</div>
+            <div class="timeline-body"><p>FWIW from my prototypes the Markdown parser will involve large changes to the hot path, so it's a ways down the road. This is because each code block creates a &quot;context&quot; independent of every other code block (vs. a normal Python/Jupyter file where the context is carried throughout the file). The current backend is tied to the assumption that one file contains one context.</p>
+<p>If Quarto involves carrying the context throughout the file, it's probably closer to a Jupyter implementation than a (theoretical) Markdown one. May be worth raising a separate feature request, depending on the work, but sounds pretty cool!</p>
+<p>cc @dhruvmanila (who implemented Jupyter support and is on the core team)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6140.html">astral-sh/ruff#6140</a> on 2023-07-28 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2023-07-29 09:51</div>
+            <div class="timeline-body"><p>for sanity it might make absolute sense to consider each markdown fragment a &quot;own file&quot; with a offset starting point</p>
+<p>this capability might actually make it easier to make IDE/language server helpers, where one might want to reformat a function/class alone while editing a file
+(and the reformatting would basically work off a initial line/column/Position offset, plus the plain text of the lines intended for reformatting)</p>
+<p>(im coming from https://github.com/entangled/entangled.py/issues/5)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-pre-commit/issues/55.html">astral-sh/ruff-pre-commit#55</a> on 2023-10-24 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../opensafely-core/ehrql/issues/1346.html">opensafely-core/ehrql#1346</a> on 2023-10-25 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8236.html">astral-sh/ruff#8236</a> on 2023-10-26 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8237.html">astral-sh/ruff#8237</a> on 2023-10-26 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astropy/astropy/pulls/15367.html">astropy/astropy#15367</a> on 2023-11-17 05:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8800.html">astral-sh/ruff#8800</a> on 2023-11-21 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8811.html">astral-sh/ruff#8811</a> on 2023-12-13 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pybamm-team/PyBaMM/pulls/3656.html">pybamm-team/PyBaMM#3656</a> on 2023-12-23 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-26 14:51</div>
+            <div class="timeline-body"><p>Formatting markdown code blocks is supported in <a href="https://github.com/astral-sh/ruff/releases/tag/v0.1.8">v0.1.8</a>: https://github.com/astral-sh/ruff/pull/9030</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ddelange">@ddelange</a> on 2023-12-26 18:22</div>
+            <div class="timeline-body"><p>tnx for the ping :+1:</p>
+<pre><code class="language-toml">[tool.ruff.format]
+docstring-code-format = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paddyroddy">@paddyroddy</a> on 2023-12-26 19:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Formatting markdown code blocks is supported in <a href="https://github.com/astral-sh/ruff/releases/tag/v0.1.8">v0.1.8</a>: #9030</p>
+</blockquote>
+<p>I believe that it is in the docstrings of functions as opposed to true code blocks in markdown that this issue was about</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tvatter">@tvatter</a> on 2024-01-26 09:07</div>
+            <div class="timeline-body"><p>@evanrittenhouse Regarding the &quot;descrete units&quot;, for both Quarto notebooks (#6140) and Jupyter notebooks exported to markdown with Jupytext (#8800), all the code blocks are considered a single context, similar to the &quot;normal Python/Jupyter file where the context is carried throughout the file&quot; that you mentioned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apify/apify-docs/issues/864.html">apify/apify-docs#864</a> on 2024-03-01 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-08-18 05:23</div>
+            <div class="timeline-body"><blockquote>
+<h3>Embedded Languages</h3>
+<p>The idea is that a document written in one language can contain code written in another language. Examples are:</p>
+<ul>
+<li>Code blocks in markdown documents</li>
+<li>SQL in Python code</li>
+<li>Python code in Jupyter Notebooks</li>
+</ul>
+</blockquote>
+<p>I'd like to mention HTML as well. Although that would require configuring a selector to find the node element responsible for containing Python code. That's because there is no established standards. The <code>lang</code> attribute exists, but it is somewhat out of spec to use it for non human languages (or more specifically, non-valid BCP 47 language tag). Most common solution is to use a custom class for styling anyway (<code>&lt;div class=&quot;language-python&quot;&gt;</code>), or a custom element entirely (<code>&lt;myapp-code-viewer language=&quot;python&quot;&gt;</code>).</p>
+<p>Anyway I don't think that should come before Markdown is completely figured out. I just wanted to weigh in on the aspect of supporting Python code blocks in other languages in a generic way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2024-09-20 14:13</div>
+            <div class="timeline-body"><p>I have created a tool which enables this use case: <a href="https://adamtheturtle.github.io/doccmd/"><code>doccmd</code></a>.</p>
+<p>For example, you might run:</p>
+<pre><code class="language-sh">$ doccmd --language=python --no-pad-file --command=&quot;ruff format&quot; README.md CHANGELOG.rst
+$ doccmd --language=python --command=&quot;ruff check&quot; README.md CHANGELOG.rst
+</code></pre>
+<p>It is new and I'm very open to feedback on it.</p>
+<p>By default, <code>doccmd</code> basically adds newlines to the beginning of the extracted code block to make line numbers in errors match the documentation file. This doesn't work for <code>ruff format</code> which expects to not have a bunch of newlines at the start, so there is the <code>--no-pad-file</code> option.</p>
+<p>I'm also using it to run <code>mypy</code>, <code>pyright</code>, <code>vulture</code>, <code>interrogate</code> ... on my documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../glass-dev/glass/pulls/250.html">glass-dev/glass#250</a> on 2024-09-25 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pyvista/pyvista/pulls/6991.html">pyvista/pyvista#6991</a> on 2024-12-17 08:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15650.html">astral-sh/ruff#15650</a> on 2025-01-21 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ethereum/consensus-specs/pulls/4159.html">ethereum/consensus-specs#4159</a> on 2025-03-11 03:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../modelcontextprotocol/python-sdk/pulls/286.html">modelcontextprotocol/python-sdk#286</a> on 2025-03-14 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17417.html">astral-sh/ruff#17417</a> on 2025-04-16 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../seedcase-project/seedcase-sprout/issues/1310.html">seedcase-project/seedcase-sprout#1310</a> on 2025-05-02 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/34j">@34j</a> on 2025-07-13 08:54</div>
+            <div class="timeline-body"><blockquote>
+<p>I have created a tool which enables this use case: <a href="https://adamtheturtle.github.io/doccmd/"><code>doccmd</code></a>.</p>
+<p>For example, you might run:</p>
+<p>$ doccmd --language=python --no-pad-file --command=&quot;ruff format&quot; README.md CHANGELOG.rst
+$ doccmd --language=python --command=&quot;ruff check&quot; README.md CHANGELOG.rst</p>
+<p>It is new and I'm very open to feedback on it.</p>
+<p>By default, <code>doccmd</code> basically adds newlines to the beginning of the extracted code block to make line numbers in errors match the documentation file. This doesn't work for <code>ruff format</code> which expects to not have a bunch of newlines at the start, so there is the <code>--no-pad-file</code> option.</p>
+<p>I'm also using it to run <code>mypy</code>, <code>pyright</code>, <code>vulture</code>, <code>interrogate</code> ... on my documentation.</p>
+</blockquote>
+<p>pre-commit version:</p>
+<pre><code class="language-yaml">  - repo: https://github.com/adamtheturtle/doccmd-pre-commit
+    rev: v2025.4.8
+    hooks:
+      - id: doccmd
+        args:
+          [&quot;--language&quot;, &quot;python&quot;, &quot;--no-pad-file&quot;, &quot;--command&quot;, &quot;ruff format&quot;]
+        additional_dependencies: [&quot;ruff&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2025-07-13 10:00</div>
+            <div class="timeline-body"><p>@34j thats a lovely starting point, unfortunately currently pre-commit is not setup in a way where different hooks are in sync about versions, so theres a minor risk of behaviour getting out of sync</p>
+<p>on the upside the area of application is different so we shouldn’t see outright conflicts, but there is a chance of inconsistent behaviour</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2025-07-13 10:14</div>
+            <div class="timeline-body"><p>@RonnyPfannschmidt I have a setup like this:</p>
+<pre><code class="language-yaml">      - id: ruff-format-fix-docs
+        name: Ruff format docs
+        entry: uv run --extra=dev doccmd --language=python --no-pad-file --command=&quot;ruff format&quot;
+        language: python
+        types_or: [markdown, rst]
+        additional_dependencies: [uv==0.7.20]
+</code></pre>
+<p>This runs locally and on GitHub Actions but not in https://pre-commit.ci, but it does get <code>ruff</code> and <code>doccmd</code> versions as specified in <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2025-07-13 10:27</div>
+            <div class="timeline-body"><p>thats a interesting workaround, but practically sidesteps pre-commit so much that its only used as a jumpstart for an uv command</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2025-07-13 10:29</div>
+            <div class="timeline-body"><blockquote>
+<p>thats a interesting workaround, but practically sidesteps pre-commit so much that its only used as a jumpstart for an uv command</p>
+</blockquote>
+<p>It isn't ideal but you do still get a few of the pre-commit features / benefits. For example, it only runs on changed files of the relevant type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/34j">@34j</a> on 2025-07-13 11:52</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/34j">@34j</a> thats a lovely starting point, unfortunately currently pre-commit is not setup in a way where different hooks are in sync about versions, so theres a minor risk of behaviour getting out of sync</p>
+<p>on the upside the area of application is different so we shouldn’t see outright conflicts, but there is a chance of inconsistent behaviour</p>
+</blockquote>
+<p>So, are you concerned about a situation where the versions of pre-commit-ruff and the ruff in the doccmd-pre-commit are different? In this case, I think there is a possibility to avoid this by specifying doccmd as additional_dependencies in pre-commit-ruff instead and calling doccmd in entry, but I don't know if it works and don't have the energy to try that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/34j">@34j</a> on 2025-07-14 01:10</div>
+            <div class="timeline-body"><p>I've tried this and it seems to work:</p>
+<pre><code class="language-yaml">  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.3
+    hooks:
+      - id: ruff-format
+      - id: ruff-format
+        types_or: [markdown, rst]
+        require_serial: true
+        entry: doccmd --language python --no-pad-file --command &quot;ruff format&quot;
+        additional_dependencies: [&quot;doccmd&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nijel">@nijel</a> on 2025-07-14 09:58</div>
+            <div class="timeline-body"><p>You can also pin <code>additional_dependencies</code> and update them in sync with ruff (https://github.com/WeblateOrg/weblate/commit/fe89a5f7dbd5a74f98dda55d8b64dc5e6058c812 introduces that for Weblate). For example, we automate this using Renovate as configured in https://github.com/WeblateOrg/meta/blob/18e32c7e7dd6af0882b418eb67d495ebd261379f/renovate.json#L80-L90 (which might not be 100% reusable as it assumes that anything with <code>==</code> in <code>.pre-commit-config.yaml</code> is a Python dependency).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-14 10:03</div>
+            <div class="timeline-body"><p>Thanks @34j for writing the tool and letting users know about it. I suggest that discussions related to said tool are moved to its repository. This issue is about adding such functionality to ruff and many users are subscribed to it. Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../HEFTIEProject/heftie-textbook/issues/101.html">HEFTIEProject/heftie-textbook#101</a> on 2025-07-22 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../RadioAstronomySoftwareGroup/pyuvdata/pulls/1603.html">RadioAstronomySoftwareGroup/pyuvdata#1603</a> on 2025-08-14 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../glass-dev/glass/issues/751.html">glass-dev/glass#751</a> on 2025-11-03 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ome-zarr-models/ome-zarr-book/issues/4.html">ome-zarr-models/ome-zarr-book#4</a> on 2025-11-03 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2026-01-02 04:26</div>
+            <div class="timeline-body"><p>as a workaround to format python codeblocks in markdown files, you can use the <a href="https://dprint.dev/plugins/ruff/">ruff dprint plugin</a>:</p>
+<pre><code>uv add --dev dprint-py
+dprint config add ruff
+dprint config add markdown
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

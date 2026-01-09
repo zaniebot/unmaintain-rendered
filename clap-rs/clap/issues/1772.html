@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_derive: Vec/Option&lt;Vec&gt; behavior is inconsistent with other types - clap-rs/clap #1772</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_derive: Vec/Option&lt;Vec&gt; behavior is inconsistent with other types</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1772">#1772</a>
+        opened by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a>
+        on 2020-03-31 12:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-31 12:47</div>
+            <div class="timeline-body"><p>This is actually a summary of https://github.com/TeXitoi/structopt/issues/364</p>
+<h3>Current behavior</h3>
+<ul>
+<li><code>Vec&lt;T&gt;</code> and <code>Option&lt;Vec&lt;T&gt;&gt;</code> are not <code>required = true</code> by default.</li>
+<li><code>Vec&lt;T&gt;</code> is <code>multiple = true</code> by default which allows not only multiple values (<code>--foo 1 2 3</code>) but also multiple occurrences (<code>--foo 1 --foo 2 3</code>).</li>
+<li><code>Option&lt;Vec&lt;T&gt;&gt;</code> additionally allows zero number of values (<code>--foo</code>).</li>
+</ul>
+<h3>What's wrong</h3>
+<ul>
+<li>The fact that <code>Vec&lt;T&gt;</code> is not <code>required</code> by default is inconsistent with all the other types in <code>clap_derive</code> that are required by default unless they are wrapped in <code>Option</code> (except <code>bool</code> but it's a very special case).</li>
+<li>The fact that <code>Option&lt;Vec&lt;T&gt;&gt;</code> is different from <code>Vec&lt;T&gt;</code>, different not in &quot;not required&quot; sense, confuses newcomers.</li>
+<li>The fact that <code>Vec&lt;T&gt;</code> allows multiple occurrences along with values is misleading.</li>
+</ul>
+<h3>Proposal</h3>
+<ul>
+<li>Use <code>min_values = 1</code> for both <code>Option&lt;Vec&lt;T&gt;&gt;</code> and <code>Vec&lt;T&gt;</code> instead of <code>multiple = true</code>, allowing only non-zero number of values and disallow multiple occurrences (<code>--foo 1 2</code> but not <code>--foo</code> nor <code>--foo 1 --foo 2</code>). If a user wants to allow zero values or multiple occurrences as well, they can explicitly specify it via <code>min_values = 0</code> and <code>multiple = true</code> respectively.</li>
+<li>Use <code>required = true</code> for <code>Vec&lt;T&gt;</code>.</li>
+</ul>
+<p>cc @TeXitoi @Dylan-DPC @pksunkara</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @CreepySkeleton on 2020-03-31 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @CreepySkeleton on 2020-03-31 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @CreepySkeleton on 2020-03-31 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @CreepySkeleton on 2020-03-31 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @CreepySkeleton on 2020-03-31 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeXitoi">@TeXitoi</a> on 2020-03-31 13:25</div>
+            <div class="timeline-body"><blockquote>
+<p>The fact that Vec<T> is not required by default is inconsistent with all the other types in clap_derive that are required by default unless they are wrapped in Option (except bool but it's a very special case).</p>
+</blockquote>
+<p>I strongly disagree on this. A vector can have 0 elements, and that's the most used case. If you need at least one, you can add <code>min_values(1)</code> yourself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-31 13:56</div>
+            <div class="timeline-body"><p>If we use <code>min_values(0)</code>, an empty vec would represent <code>--foo &lt;no values&gt;</code>, but &quot;no <code>--foo</code>&quot; would be disallowed due to <code>required</code>.</p>
+<p><code>Option&lt;Vec&lt;T&gt;&gt;</code> would represent just what it does currently:</p>
+<p>command | <code>Vec&lt;T&gt;</code> result | <code>Option&lt;Vec&lt;T&gt;&gt;</code> result
+-- | -- | --
+<code>app --foo 1 2</code> | <code>[1, 2]</code> | <code>Some([1, 2])</code>
+<code>app --foo</code> | <code>[]</code> | <code>Some([])</code>
+<code>app</code> | <strong>ERRROR</strong> | <code>None</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by @pksunkara on 2020-04-01 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-04-09 08:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-12 22:19</div>
+            <div class="timeline-body"><p>The <code>min_values</code> and <code>occurrences</code> issue should be fixed in #1026. Let's leave it out of the discussion here.</p>
+<blockquote>
+<p>The fact that Option&lt;Vec<T>&gt; is different from Vec<T>, different not in &quot;not required&quot; sense, confuses newcomers.</p>
+</blockquote>
+<p>Can you explain what this means? I don't understand the sentence.</p>
+<p>I think we should have <code>min_values = 0</code> and <code>multiple = true</code> for both but <code>required = true</code> for <code>Vec&lt;T&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeXitoi">@TeXitoi</a> on 2020-04-13 08:04</div>
+            <div class="timeline-body"><p>I really disagree. Most of the time you're using a Vec, you just want the list of parameters, and you don't really care if an empty parameter was provided. Forcing using an option of vec in the most common case would impact a lot the ergonomics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cecton">@cecton</a> on 2020-04-17 07:11</div>
+            <div class="timeline-body"><p>Here is a use case where I find structopt very confusing: https://github.com/paritytech/substrate/pull/5677/commits/6b0eed4b7df70a1c88c5e17df96064c122ca8671</p>
+<p>When I read the struct I see that listen_addr is a required argument and port is optional. But the structopt parameters shows me that both arguments are conflicting. Before that commit, the parameters weren't declared as conflicting and I had no way to know that listen_addr was actually optional. The only way I could know that is by reading the <a href="https://docs.rs/structopt/0.3.12/structopt/#type-magic">table</a>.</p>
+<p>I personally do think that <code>Vec&lt;_&gt;</code> should mean required (the argument must be provided) and <code>Option&lt;Vec&lt;_&gt;&gt;</code> should mean optional (the argument can be omitted).</p>
+<p>I invite you to read the lengthy discussion <a href="https://github.com/TeXitoi/structopt/issues/364">here</a>.</p>
+<blockquote>
+<p>Forcing using an option of vec in the most common case would impact a lot the ergonomics.</p>
+</blockquote>
+<p>Maybe but it will be consistent with the rest of the API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-18 10:06</div>
+            <div class="timeline-body"><p>Pff, it took me some time to get back to, sorry for the delays guys.</p>
+<blockquote>
+<p>The min_values and occurrences issue should be fixed in #1026. Let's leave it out of the discussion here.</p>
+</blockquote>
+<p>That issue is related here indeed, but we can't leave it out of this discussion because this is about <em>defaults in derive</em>, not about distinguishing between the two.</p>
+<blockquote>
+<p>Forcing using an option of vec in the most common case would impact a lot the ergonomics.</p>
+</blockquote>
+<p>@TeXitoi I see your point about <code>Option&lt;Vec&lt;T&gt;&gt;</code> vs <code>Vec&lt;T&gt;</code> ergonomics. I agree with you, simple <code>Vec</code> is much more handy than <code>Option&lt;Vec&lt;T&gt;&gt;</code> to work with.</p>
+<p>But we wouldn't be forcing anything! Users would still be very much able to do <code>#[clap(required = false)]</code> if they want to keep a raw <code>Vec</code></p>
+<pre><code class="language-rust">struct Opts {
+    // This Vec is not option so it's required BY DEFAULT
+    // because it's not bool and not Option
+    required_vec: Vec&lt;u32&gt;,
+
+    // We can override default behavior 
+    // while keeping the raw Vec 
+    #[clap(required = false)]
+    not_required_vec: Vec&lt;u32&gt;,
+
+    // We can use Option&lt;Vec&gt; instead of overriding
+    // We lose some of the ergonomics but acquire the 
+    // ability to distinguish between &lt;empty list&gt; an &lt;no option at all&gt;
+    opt_vec: Option&lt;Vec&lt;u32&gt;&gt; 
+}
+</code></pre>
+<p>In other words, this is question of good defaults, and I believe I've found the answer.</p>
+<p>I think that our willingness of changing defaults should depend of what the most widespread usage is in practice. I decided to check via <a href="https://grep.app">grep.app</a> and this has been eye opening for me:</p>
+<p>(<strong>IMPORTANT</strong>: this research assumes that <code>#[structopt]</code> attributes are one-line which is is quite frequently not true. If somebody has an idea how to cover</p>
+<pre><code>#[structopt(
+ method = name,
+ method2 = expr, method3 = expr)
+</code></pre>
+<p>attributes with regexes, speak up!)</p>
+<ul>
+<li><code>required Vec</code> or not.<ul>
+<li><a href="https://grep.app/search?q=%23%5C%5Bstructopt.%2Arequired%20%3D%20true.%2A%5Cn%28%5Cn%7C.%29%2A%3F.%2A%3F%5Cw%2A%3A%5Cs%2AVec&amp;regexp=true&amp;case=true">Contains <code>required = true</code> and field is <code>Vec</code></a> - 33 matches.</li>
+<li><a href="https://grep.app/search?q=%23%5C%5Bstructopt.%2A%5Cn.%2A%3F%5Cw%2A%3A%5Cs%2AVec&amp;regexp=true&amp;case=true">All occurrences of <code>#[structopt(...)] field: Vec</code></a> - 214 matches. Therefore, the number of not required vecs is 214 - 33 = 181.
+<br>
+Conclusion: current default is exactly what most of our users need (~85%). Changing it would be unwise.
+<br></li>
+</ul>
+</li>
+<li><code>min_values = 0</code> vs <code>min_values = 1</code> (behavior of <code>multiple = true</code>)<ul>
+<li>I searched <a href="https://grep.app/search?q=%23%5C%5Bstructopt.%2Amin_values.%2A%5Cn%28%5Cn%7C.%29%2A%3F.%2A%3F%5Cw%2A%3A%5Cs%2AVec&amp;regexp=true&amp;case=true">&quot;contains <code>min_values</code>&quot;</a> and there are only 13 results. <em>None</em> of them are <code>min_values = 0</code>.  A little bonus: almost all of them are <code>min_values = 1</code> which is the default behavior, lol.</li>
+</ul>
+<br>
+Conclusion: nobody wants `min_values = 0`. Making it default would be pointless.
+<br>
+
+</li>
+<li>Multiple values vs multiple occurrences. Default behavior for now is <em>both</em>. This is kind of thing that is hard to grep for, so I tried to figure out how many users are <em>aware</em> of multiple occurrences  in the first place:<ul>
+<li><a href="https://grep.app/search?q=%23%5C%5Bstructopt.%2Anumber_of_values.%2A%5Cn.%2A%3F%5Cw%2A%3A%5Cs%2AVec&amp;regexp=true&amp;case=true">Contains <code>number_of_values</code></a> - 11 results.</li>
+<li><a href="https://grep.app/search?q=%23%5C%5Bstructopt.%2Amax_values.%2A%5Cn.%2A%3F%5Cw%2A%3A%5Cs%2AVec&amp;regexp=true&amp;case=true">Contains <code>max_values</code></a>: 1 result.</li>
+<li><a href="#%5Bstructopt.*multiple%5Cs*=%5Cs*true.*%5Cn.*?%5Cw*:%5Cs*Vec">Contains <code>multiple = true</code></a> - 11 matches.
+<br>
+This is all I've managed to come up with. Looks like there are not many people out there who are aware or want multiple occurrences, but the results here are probably very inaccurate.  I vote for using <code>multiple_values = true</code> and ask the community after the beta is out.</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-18 11:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I think that our willingness of changing defaults should depend of what the most widespread usage is in practice.</p>
+</blockquote>
+<p>I don't agree with this. Maybe all of them tried <code>Option&lt;Vec&lt;T&gt;&gt;</code> first and then decided that it didn't make a difference so they optimised it back to <code>Vec&lt;T&gt;</code>.</p>
+<p>Also, we are not technically breaking this because this a separate library <code>clap</code> and not <code>structopt</code>. I would opt for it easier to understand w.r.t semantics in how to use the types for the fields and being different with each other rather than existing usage.</p>
+<p><code>min_values</code> should always be <code>0</code>. As you saw, people saw <code>Vec</code> and with semantics they thought <code>min_values</code> might have been zero and that is why they customised the behaviour to be <code>min_values = 1</code>. (Related to #1682)</p>
+<p>Note: <code>multiple</code> means multiple occurrences not values according to clap docs</p>
+<p><strong>Type</strong> | <strong>required</strong> | <strong>multiple</strong>
+-- | -- | --
+<code>Vec&lt;T&gt;</code> | true | false
+<code>Option&lt;Vec&lt;T&gt;&gt;</code> | false | false
+<code>Vec&lt;Vec&lt;T&gt;&gt;</code> | true | true
+<code>Option&lt;Vec&lt;Vec&lt;T&gt;&gt;&gt;</code> | false | true</p>
+<p>command | <code>Vec&lt;T&gt;</code> | <code>Option&lt;Vec&lt;T&gt;&gt;</code> | <code>Vec&lt;Vec&lt;T&gt;&gt;</code> | <code>Option&lt;Vec&lt;Vec&lt;T&gt;&gt;&gt;</code>
+-- | -- | -- | -- | --
+<code>app -f 1 2</code> | <code>[1, 2]</code> | <code>Some([1, 2])</code> | <code>[[1, 2]]</code> | <code>Some([[1, 2]])</code>
+<code>app -f</code> | <code>[]</code> | <code>Some([])</code> | <code>[[]]</code> | <code>Some([[]])</code>
+<code>app</code> | <strong>ERRROR</strong> | <code>None</code> | <strong>ERROR</strong> | <code>None</code>
+<code>app -f 1 2 -f 3 4</code> | <code>[3, 4]</code> | <code>Some([3, 4])</code> | <code>[[1, 2], [3, 4]]</code> | <code>Some([[1, 2], [3, 4]])</code>
+<code>app -ff</code> | <code>[]</code> | <code>Some([])</code> | <code>[[], []]</code> | <code>Some([[], []])</code></p>
+<p>By default, if one wants to support a <code>-vvv</code> kind of flag, they would have to use <code>Option&lt;Vec&lt;Vec&lt;bool&gt;&gt;&gt;</code>. But they always have the option of customizing stuff just by describing it using methods like how you already proposed.</p>
+<pre><code>#[clap(short, multiple = true, required = false, max_values = 0)]
+verbose: Vec&lt;bool&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-18 12:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe all of them tried Option&lt;Vec<T>&gt; first and then decided that it didn't make a difference so they optimised it back to Vec<T>.</p>
+</blockquote>
+<p>Sounds very unlikely, but maybe. @TeXitoi , has anybody ever told you something like &quot;I tried <code>Option&lt;Vec&gt;</code> first, but settled with <code>Vec</code> because it's handy&quot;? I remember only one such message: https://github.com/TeXitoi/structopt/issues/285 .</p>
+<blockquote>
+<p>Also, we are not technically breaking this because this a separate library clap and not structopt</p>
+</blockquote>
+<p>I agree, absolutely. But we aren't talking just about breaking changes, we're talking about good defaults and whether it's worth to change them. If we find that the current defaults are not optimal, we shall change them, otherwise we shall leave them as is.</p>
+<blockquote>
+<p>As you saw, people saw Vec and with semantics they thought min_values might have been zero and that is why they customised the behaviour to be min_values = 1</p>
+</blockquote>
+<p>Eleven (<code>min_values = 1</code>)  people out of 214 (total number of Vecs discovered). Very few people have been confused, so <code>min_values = 1</code> default is preferable for <code>Vec</code> and <code>min_values = 0</code> is preferable for <code>Option&lt;Vec&gt;</code>. In my opinion.</p>
+<hr />
+<p>I like your <code>Vec&lt;Vec&lt;T&gt;&gt;</code> idea. We need to fix https://github.com/clap-rs/clap/issues/1026 first though. Also, in the light of https://github.com/clap-rs/clap/issues/1682, we may also specialize <code>Vec&lt;[T; N]&gt;</code> (arrays) and <code>Vec&lt;(T1, T2, ...)&gt;</code> (tuples) along with the <code>Option&lt;...&gt;</code> variants of them.</p>
+<blockquote>
+<p>By default, if one wants to support a -vvv kind of flag, they would have to use Option&lt;Vec&lt;Vec<bool>&gt;&gt;</p>
+</blockquote>
+<p>This is exactly what <code>parse(from_occurrences)</code> is for, isn't it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-18 12:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Note: multiple means multiple occurrences not values according to clap docs</p>
+</blockquote>
+<p><em><strong>This part of reply ended up being literally drenched in sarcasm, an therefore was moved to it's own comment. I'm not blaming anyone and neither I mean to offend anybody. Just stating that the state of affairs is ridiculous.</strong></em></p>
+<p>Sure thing. According to 2.x docs. Well, let's test it! <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=a52bc95aa38855c6c8c7e3be94463c8f">Playground</a></p>
+<pre><code class="language-rust">extern crate clap;
+
+use clap::{App, Arg};
+
+fn main() {
+    let m = App::new(&quot;app&quot;)
+        .arg(Arg::with_name(&quot;arg&quot;).multiple(true).takes_value(true))
+        .arg(Arg::with_name(&quot;opt&quot;).long(&quot;foo&quot;).multiple(true).takes_value(true))
+        .get_matches_from(&amp;[&quot;test&quot;, &quot;val1&quot;, &quot;val2&quot;, &quot;--foo&quot;, &quot;optv1&quot;, &quot;optv2&quot;]);
+        
+    println!(&quot;{:?}&quot;, m.values_of(&quot;arg&quot;).unwrap().collect::&lt;Vec&lt;_&gt;&gt;());
+    println!(&quot;{:?}&quot;, m.values_of(&quot;opt&quot;).unwrap().collect::&lt;Vec&lt;_&gt;&gt;());
+}
+</code></pre>
+<p>So, we expect it to error, right?</p>
+<pre><code>[&quot;val1&quot;, &quot;val2&quot;]
+[&quot;optv1&quot;, &quot;optv2&quot;]
+</code></pre>
+<p>Wait, what?</p>
+<p>In practice, I've seen <em>a lot</em> of people taking <code>multiple</code> as synonym for &quot;multiple values&quot;. And this is how it does work: multiple values + multiple occurrences. This is the way it's been working for, how long? Five years? People <em>got used</em> to it, it's in their DNA now. We can't just change the behavior (while preserving the name of the method) and expect it to be received well. And we didn't.</p>
+<p>Well, the master is much better! Right? Right. You'd expect it to be documented properly...</p>
+<pre><code>Specifies that the argument may have an unknown number of multiple values. Without any other
+settings, this argument may appear only *once*.
+
+For example, `--opt val1 val2` is allowed, but `--opt val1 val2 --opt val3` is not.
+</code></pre>
+<p><em>Of course</em>. &quot;May appear only once&quot;. Crystal clear. What the function looks like?</p>
+<pre><code>pub fn multiple(mut self, multi: bool) -&gt; Self {
+    if multi {
+        self.setb(ArgSettings::MultipleOccurrences); // &lt;- YOU MUST BE KIDDING
+        self.setting(ArgSettings::MultipleValues)
+    } else {
+        self.unsetb(ArgSettings::MultipleOccurrences);
+        self.unset_setting(ArgSettings::MultipleValues)
+    }
+}
+</code></pre>
+<p>Sarcasm aside, I very much like how it's done in master:</p>
+<pre><code>// multiple values + multiple occurrences
+pub fn multiple(mut self, multi: bool) -&gt; Self;
+
+// multiple values only
+pub fn multiple_values(self, multi: bool) -&gt; Self;
+
+// multiple occurrences only
+pub fn multiple_occurrences(self, multi: bool) -&gt; Self;
+</code></pre>
+<p>Well done. Well done indeed. No sarcasm, the API is clear and tidy. Except copy-pasting docs and examples from 2.x probably wasn't the brightest idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeXitoi">@TeXitoi</a> on 2020-04-18 12:53</div>
+            <div class="timeline-body"><p><code>Option&lt;Vec&gt;</code> is a very recent feature. No one asked anything about <code>Option&lt;Vec&gt;</code> for several years.</p>
+<p>I've never seen any question about <code>Option&lt;Vec&gt;</code> except from @cecton as far as I remember. Just one but report saying that <code>Option&lt;Vec&gt;</code> was a breaking change because someone was using <code>Option&lt;Vec&lt;u8&gt;&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-18 13:09</div>
+            <div class="timeline-body"><p>Also, the last like of @pksunkara 's table is impossible unless user explicitly specifies <code>takes_value = false</code>. All of the variants should be <code>takes_value = true</code> by default (<code>multiple_values</code> implies it).</p>
+<p><code>app -ff</code> | <code>[]</code> | <code>Some([])</code> | <code>[[], []]</code> | <code>Some([[], []])</code>
+-- | -- | -- | -- | --</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-18 13:56</div>
+            <div class="timeline-body"><p>In that case, assume that I meant <code>multiple_occurrences</code> only when I said <code>multiple</code> in my earlier comment.</p>
+<p>What do you mean by <code>takes_value = true</code> by default? Does all the types we mentioned above has that as default? Then doesn't it mean that <code>app -f</code> is not allowed too? <code>Vec&lt;T&gt;</code> would never be allowed 0 values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-18 15:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Does all the types we mentioned above has that as default?</p>
+</blockquote>
+<p>In clap 2: it does so explicitly, this is documented:</p>
+<blockquote>
+<p>Setting multiple(true) for an option with no other details, allows multiple values and multiple occurrences because it isn't possible to have more occurrences than values for options</p>
+</blockquote>
+<p>In clap 3: not explicitly, I haven't been able to locate the place this is handled in, but I just checked this program:</p>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    let m = App::new(&quot;app&quot;)
+        .arg(Arg::with_name(&quot;opt&quot;).long(&quot;foo&quot;).multiple_values(true))
+        .get_matches();
+
+    println!(&quot;{:?}&quot;, m.values_of(&quot;opt&quot;).map(|v| v.collect::&lt;Vec&lt;_&gt;&gt;()));
+}
+</code></pre>
+<p>And yes, it works just like if <code>takes_value(true)</code> has been set:</p>
+<pre><code>D:\workspace\probe&gt;cargo run --
+    Finished dev [unoptimized + debuginfo] target(s) in 0.13s
+     Running `target\debug\probe.exe`
+None
+
+D:\workspace\probe&gt;cargo run -- --foo val1
+    Finished dev [unoptimized + debuginfo] target(s) in 0.14s
+     Running `target\debug\probe.exe --foo val1`
+Some([&quot;val1&quot;])
+
+D:\workspace\probe&gt;cargo run -- --foo val1 val2
+    Finished dev [unoptimized + debuginfo] target(s) in 0.13s
+     Running `target\debug\probe.exe --foo val1 val2`
+Some([&quot;val1&quot;, &quot;val2&quot;])
+</code></pre>
+<p><code>app -fff</code> from the table would have been parsed as (also checked with master)</p>
+<pre><code>app -f ff
+    -- --
+  flag value
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-29 08:41</div>
+            <div class="timeline-body"><p>@kbknapp Since we have you here, please take a look at this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-29 12:26</div>
+            <div class="timeline-body"><p>Actually, if you wrap your head around the terminology a bit, it becomes quite clear:</p>
+<ul>
+<li>Non-special types are required by default. (For instance, <code>String</code> is not special)</li>
+<li><code>bool</code> is an example of special type, it's not required by default,</li>
+<li><code>Vec</code>, <code>Option</code>, arrays, tuples and such can be considered &quot;adapter&quot; for other types. Precise behavior depends on adapter and the type it wraps.</li>
+</ul>
+<p>It's a problem of good documentation more than anything, about the way it conveys this setup to user. I'm amending my previous statement about <code>required with Vec</code>, I see no problem with it anymore. Points about <code>number_of_values</code> and <code>multiple_occurrences vs multiple_values</code> still stand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-29 16:22</div>
+            <div class="timeline-body"><p>Whew ok that was a read!</p>
+<p>Ever time I see issues pop up around <code>multiple</code> I cringe a little inside. In clap 1 there was only the concept of <code>multipe = true</code>, and I only ever really cared about <code>-f v v -f v v</code> (i.e. both occurrences and values) for no other reason than having not put a lot of thought into it.</p>
+<p>Then clap 2 came around and there was confusion when people wanted multiple values, but not multiple occurrences, or vice versa. It was also over-loaded with flags which only occurrences are possible. This spawned things like <code>number_of_values</code> or <code>min_values</code>/<code>max_values</code>. Again, it was super confusing for the subset of people that had these various requirements, but most just adapted and moved on.</p>
+<p>Looking back, I wish I'd made the sane default of <code>multiple=true</code> and no other info being <code>-f v -f v</code> is allowed <code>-f v v</code> is not. Which is what I attempted to make the default in 3.x because this was by far the most common request, most people expected <code>-f v -f v</code> (minus people mostly familiar with IRC like CLIs which was a minority). It also no longer required the <code>number_of_values=1</code>, which in all honest looks kind of confusing if you're not already familiar with clap....&quot;Why am I say I want multiple values, AND also saying number of values is 1?!&quot;</p>
+<p>I also wanted to use the 3.x breaking changes to fix this confusion once and for all. I have a much better idea of what is most common. I want the <em>defaults</em> to be the most common case, and allow those who need something different be able to do so.</p>
+<p>Unfortunately before I went on hiatus I didn't finish the docs which I'm sure has lead to even more confusion around the various types of multiples, and their defaults or interactions with each other.</p>
+<p>I see multiples as one of those things, &quot;It sounds sooo simple at first, why can't it just work!?&quot; Until you dig into the details and realize, &quot;Ooooh. Yeah I can totally see how some would want X while others need Y, and you need to distinguish between them sometimes, but not always.&quot; It's kind of like Strings in that manner; such a simple concept yet <em>so hard</em> to do correctly. ...Or CLIs for that matter :stuck_out_tongue_winking_eye:</p>
+<p>Ok, so back to the topic at hand:</p>
+<p>I find myself agreeing with @CreepySkeleton here. We're talking about sane defaults. I can also totally respect @TeXitoi's sentiment of <code>Option&lt;Vec&lt;T&gt;&gt;</code> is much more of a pain to deal with than <code>Vec&lt;T&gt;</code>. However I disagree that all options should default to 0 values. In fact, I've come across very few CLIs that rely on <code>--foo &lt;no value&gt;</code>. They do exist for sure, but most I've run into either expect a value, or expect no argument to be used (with or without a default value).</p>
+<p>So I think this comes down to balancing Rust ergonomics and semantics (<code>Vec&lt;T&gt;</code>, where all <code>Vec</code>s can have zero values by default) with clap ergonomics and semantics (<code>Option&lt;T&gt;</code> means optional argument, thus <code>Option&lt;Vec&lt;T&gt;&gt;</code> means optional option which accepts multiple values...combined with in clap speak all options by default must have at least 1 value). I think it's perfectly reasonable to impose clap defaults/semantics here. People are building a struct specifically around claps semantics, so I think that although <code>Vec&lt;T&gt;</code> can totally have zero or more values by default the fact that it does not lining up with claps 1 or more values by default is fine and people will <em>first</em> look to  their knowledge about clap semantics when building these structs. This is in part because there is no intrinsic Rust type that is one or more values.</p>
+<p>I would suggest simply calling it out in the docs directly, that although the default is <code>Vec&lt;T&gt;</code> means <code>required = true</code>, if you want the ergonomics of <code>Vec&lt;T&gt;</code> just override the required attribute with <code>false</code></p>
+<p>Also, perhaps I'm out of touch, but if I wanted to allow multiple values with occurrences via derive in clap I'd instinctivily try to do <code>Option&lt;Vec&lt;Vec&lt;T&gt;&gt;&gt;</code></p>
+<p>| command | type |
+| -- | -- |
+| <code>-f v -f v</code> | <code>Some([v, v])</code> |
+| <code>-f v v</code> | <code>Some([v, v])</code> |
+| <code>-f v v -f v v</code> | <code>Some([[v, v], [v, v]])</code> |</p>
+<blockquote>
+<p><code>app -fff</code> from the table would have been parsed as [<code>-f=ff</code>]</p>
+</blockquote>
+<p>Correct. That is intended behaviour due to how parsing is structured. I don't think there is anything we can, or would want to do about this.</p>
+<blockquote>
+<p>It's a problem of good documentation more than anything, about the way it conveys this setup to user.</p>
+</blockquote>
+<p>100% agree.</p>
+<hr />
+<p>Having said <em>all</em> that, if we settled on <code>Vec&lt;T&gt;</code> defaulting to not-required because Rust ergonomics are more important, it's not a huge issue to me so long as it's documented very clearly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sourcefrog">@sourcefrog</a> on 2020-06-04 18:49</div>
+            <div class="timeline-body"><p>I just came here from https://github.com/TeXitoi/structopt/issues/396 and wanted to say, I really hope in a v3 breaking change, Clap can address the <code>multiple</code> / <code>number_of_values</code> confusion, both for the API and for the new derive macros.</p>
+<blockquote>
+<p>Looking back, I wish I'd made the sane default of multiple=true and no other info being -f v -f v is allowed -f v v is not. Which is what I attempted to make the default in 3.x because this was by far the most common request, most people expected -f v -f v (minus people mostly familiar with IRC like CLIs which was a minority). It also no longer required the number_of_values=1, which in all honest looks kind of confusing if you're not already familiar with clap....&quot;Why am I say I want multiple values, AND also saying number of values is 1?!&quot;</p>
+</blockquote>
+<p>+100 this bit. It really sticks out as a trap in what's generally a friendly API, and is exacerbated by the fact that you can easily not notice the bug is there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-09 20:04</div>
+            <div class="timeline-body"><p>Catching up on this issue.  Sorry if I missed something or am just repeating others.</p>
+<p>Multiple values: From a code author and user perspective, I have found variable number of values (<code>-f 1</code> and <code>-f 1 2</code>) to be confusing and brittle. In the spirit of &quot;pit of success&quot; (make the right things easy), this should require extra work to opt-in to.  I'd go as far as saying that the user should always be required to specify an attribute for this</p>
+<p>Delimited values: When I want to support multiple values, I tend to do it with a delimiter (<code>-f 1,2</code> or Rust's <code>--features &quot;foo bar&quot;</code>).  If Rust support <code>&amp;'static str</code> in const-generics, we could easily provide a <code>DelimitedValues</code> container for users that implements <code>FromStr</code>, <code>IntoIterator</code>, etc.</p>
+<p>When I'm writing a CLI, I tend to prefer multiple occurrences with delimited values all flattened, There tends to be some friction in this process, so I tend to only do it when I really need it.  When I do skip on one, I skip on delimited values, preferring multiple occurrences.  It tends to be more composable.  If I need require at least one value, it is across both occurrences and delimited values.</p>
+<blockquote>
+<p>The fact that Vec<T> is not required by default is inconsistent with all the other types in clap_derive that are required by default unless they are wrapped in Option (except bool but it's a very special case).</p>
+</blockquote>
+<p>So far, the talk seems to be about <code>Option</code> being the way of specifying <code>required</code> and anything else is a deviation provided for ergonomics (<code>Vec</code>, <code>bool</code>).</p>
+<p>Something being left out is alternative mental models, like focusing on the type's semantics, for which <code>Option</code> and <code>Vec</code>s behavior could be made consistent.</p>
+<p>So let's break down some type semantics:</p>
+<ul>
+<li><code>i32</code>: single value (<code>N</code>)</li>
+<li><code>Option&lt;i32&gt;</code>: 0 or 1 values (<code>?</code>)</li>
+<li><code>Vec&lt;i32&gt;</code>: 0 or more values (<code>*</code>)</li>
+<li><code>(i32, i32)</code>: exactly two values (<code>N</code>) (never seen this documented but we'll talk about it later)</li>
+</ul>
+<p>(we don't have a native type for &quot;1 or more&quot; (<code>+</code>), though there is the <code>vec1</code> crate and ranged number of values (<code>{M,N}</code>) is too specialized to worry about)</p>
+<p>And with the notes at the top, our considerations are:</p>
+<ul>
+<li>Variable number of values is brittle and we should at least not make too easy, maybe even make it difficult.</li>
+<li>It takes extra work to customize the default parsing logic (<code>parse</code> attribute) for natively supported types</li>
+<li>I'm not aware of a way to plug in a type that behaves like <code>Option</code>, <code>Vec</code>, or <code>bool</code></li>
+</ul>
+<p>My proposal would be to match the type semantics, focusing on occurrences:</p>
+<ul>
+<li><code>Option&lt;i32&gt;</code>: 0 or 1 occurrence</li>
+<li><code>Vec&lt;i32&gt;</code>: 0 or more occurrences</li>
+<li><code>i32</code>: 1 occurrence</li>
+<li><code>(i32, i32)</code>: multiple values (fixed number), this is a weird one because fixed number of occurrences is rare enough not to provide but fixed number of values seems common enough.  Python's <code>argparse</code> goes as far as automatically handling this with <code>type=(str, str)</code> and <code>metavar=(&quot;NAME&quot;, &quot;VALUE&quot;)</code> when you say <code>nargs=2</code>.</li>
+<li>attribute: multiple values (variable number)</li>
+</ul>
+<p>Note: one downside to implementing any intuitive behavior is people have to predict both what was intuitive to you and how complete your implementation is.  No-intuitive behavior is fully explicit and predictable.  A theoretical fully-intuitive system would be, by definition, predictable.  When you land in the middle, people feel some uncertainty.  How quickly that uncertainty is dispelled is proportionate to the quality of your library(1) in framing (API design, docs explaining) (2) making it quick to answer questions (reference).  As an aside, I think <code>structopt</code> has let me down on both of these fronts and hopefully we'll iterate and improve on this.  This doesn't mean we should never try to make things intuitive, we should just avoid cleverness and recognize two reasonable people will have different opinions on where things land with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-10 22:30</div>
+            <div class="timeline-body"><p>Tuples and other adapters can be handled/discussed in https://github.com/clap-rs/clap/issues/1717. What we need to finalize in this issue are the <code>Option</code> and <code>Vec</code> combination adapters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-10 23:24</div>
+            <div class="timeline-body"><p>To clarify, my intent was not to pull #1717 into this but to look at the problem holistically to see how it can affect decisions made here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-10 23:26</div>
+            <div class="timeline-body"><p>I think we need to first decide on a table like https://docs.rs/structopt/0.3.22/structopt/#type-magic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2599.html">clap-rs/clap#2599</a> on 2021-07-16 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2195.html">clap-rs/clap#2195</a> on 2021-07-20 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-22 15:29</div>
+            <div class="timeline-body"><p>My hope is to look at the problem holistically, defining principles for us to
+apply to clap_derive, and then the work will be split up among the respective Issues.</p>
+<h1>Background</h1>
+<ul>
+<li>#1772: Confusion over <code>Option</code> vs <code>Vec</code><ul>
+<li>Issue Suggestion: <code>Option</code> should be the only way to do &quot;not required&quot;</li>
+<li>Originated from https://github.com/TeXitoi/structopt/issues/364</li>
+</ul>
+</li>
+<li>#2599: Confusion over <code>multiple_occurrences</code> with <code>bool</code><ul>
+<li>Current solution is to use <code>#[clap(parse(from_occurrences)]</code></li>
+<li>Issue Suggestion: <code>Option&lt;bool&gt;</code> / <code>Vec&lt;bool&gt;</code></li>
+</ul>
+</li>
+<li>#1717: Support tuples in derive</li>
+</ul>
+<h1>structopt:</h1>
+<p>Type                         | Added method call to <code>clap::Arg</code>
+-----------------------------|--------------------------------------
+<code>bool</code>                       | <code>.takes_value(false).multiple(false)</code>
+<code>Option&lt;T: FromStr&gt;</code>         | <code>.takes_value(true) .multiple(false)</code>
+<code>Option&lt;Option&lt;T: FromStr&gt;&gt;</code> | <code>.takes_value(true) .multiple(false).min_values(0).max_values(1)</code>
+<code>Option&lt;Vec&lt;T: FromStr&gt;</code>     | <code>.takes_value(true) .multiple(true).min_values(0)</code>
+<code>Vec&lt;T: FromStr&gt;</code>            | <code>.takes_value(true) .multiple(true)</code>
+<code>T: FromStr</code>                 | <code>.takes_value(true) .multiple(false).required(!has_default)</code></p>
+<p>Definitions:</p>
+<ul>
+<li>multiple: Specifies that the argument may appear more than once.<ul>
+<li>Setting multiple(true) for an option with no other details, allows multiple values and multiple occurrences because it isn't possible to have more occurrences than values for options.</li>
+</ul>
+</li>
+</ul>
+<h1>clap_derive post-3.0.0-beta.2</h1>
+<p>Type                         | Added method call to <code>clap::Arg</code>
+-----------------------------|--------------------------------------
+<code>bool</code>                       | (default)
+<code>Option&lt;T: FromStr&gt;</code>         | <code>.takes_value(true)</code>
+<code>Option&lt;Option&lt;T: FromStr&gt;&gt;</code> | <code>.takes_value(true).multiple_values(false).min_values(0).max_values(1)</code>
+<code>Option&lt;Vec&lt;T: FromStr&gt;</code>     | <code>.takes_value(true).multiple_values(true) .min_values(0)</code>
+<code>Vec&lt;T: FromStr&gt;</code>            | <code>.takes_value(true).multiple_values(true)</code>
+<code>T: FromStr</code>                 | <code>.takes_value(true)                      .required(!has_default)</code></p>
+<p>Definitions</p>
+<ul>
+<li>multiple_values:  Specifies that the argument may have an unknown number of multiple values.<ul>
+<li>Without any other settings, this argument may appear only <em>once</em>.</li>
+</ul>
+</li>
+<li>multiple_occurrences:  Specifies that the argument may appear more than once.<ul>
+<li>For example, <code>--opt val1 --opt val2</code> is allowed, but <code>--opt val1 val2</code> is not.</li>
+</ul>
+</li>
+</ul>
+<p>History</p>
+<ul>
+<li><code>multiple_occurrences</code> was introduced in 6fc70d825</li>
+<li><code>multiple()</code> was removed in https://github.com/clap-rs/clap/pull/2538<ul>
+<li>It set <strong>both</strong> <code>multiple_occurrences</code> and <code>multiple_values</code></li>
+<li>WARNING: Examples went to a mixture of <code>multiple_values</code> vs <code>multiple_occurrences</code>, are they correct / best practices?</li>
+</ul>
+</li>
+<li>48f83e0f5 got rid of the extra builder methods when mapping types to arg settings</li>
+</ul>
+<h1>Potential Considerations</h1>
+<p>Brevity: what gets the shortest code</p>
+<p>Obvious code: is the intent clear?</p>
+<p>Obvious API: can I predict how the API will behave (i.e. how much do I need docs?)?</p>
+<ul>
+<li>Orthogonality / Composability: are there a few key principles that other cases are derived from?</li>
+<li>Predictability: Can I look at one case and know how to apply it to others?</li>
+</ul>
+<p>Pit of Success: is the path of least resistance following best practices?  Are problematic practices discouraged through resistance?</p>
+<p>Features: Are all supported features possible to use?</p>
+<h1>Toolbox</h1>
+<p>Types</p>
+<ul>
+<li>bool</li>
+<li>Option (0 or 1 values)</li>
+<li>Vec (0.. values)</li>
+<li>vec1 crate (1.. values)</li>
+<li>Tuple (N values, various types)</li>
+</ul>
+<p>Features</p>
+<ul>
+<li>Grouped values</li>
+<li>Values</li>
+<li>Occurrences</li>
+</ul>
+<h1>clap_derive (proposed)</h1>
+<p>Type                          | Effect                        | Added method call to <code>clap::Arg</code>
+------------------------------|-------------------------------|--------------------------------------
+<code>bool</code>                        | <code>true</code> if the flag is present | (default)
+<code>Option&lt;T: FromStr&gt;</code>          | 0 or 1 occurrences            | <code>.takes_value(true)</code>
+<code>Vec&lt;T: FromStr&gt;</code>             | 0+ occurrences                | <code>.takes_value(true).multiple_occurrences(true)</code>
+<code>T: FromStr</code>                  | 1 occurrence                  | <code>.takes_value(true)                    .required(!has_default)</code>
+(A: FromStr, B: FromStr, ...) | N values                      | <code>.takes_value(true).number_of_values(N).required(!has_default)</code></p>
+<p>Notes</p>
+<ul>
+<li>Tuples: technically usable with <code>Option</code> and <code>Vec</code>, just not listed</li>
+</ul>
+<p>Motivation:</p>
+<ul>
+<li><code>multiple_occurrences</code> is assumed to be what people expect by default</li>
+<li><code>multiple_values</code> without <code>number_of_values</code> or <code>require_delimiter</code> is brittle and should only be
+used with intention, knowing of risks<ul>
+<li>Clap's documentation warns about<ul>
+<li>unintended side effects with sub-commands</li>
+<li>unintended side effects with positional arguments</li>
+</ul>
+</li>
+<li>Additionally, there can be ambiguity with values that start with <code>-</code></li>
+</ul>
+</li>
+<li><code>Vec&lt;Vec&lt;_&gt;&gt;</code>, <code>Option&lt;Vec&lt;_&gt;&gt;</code>, and <code>Option&lt;Option&lt;_&gt;&gt;&gt;</code> don't compose (you can't use them separately to get the same individual meanings)</li>
+<li><code>Vec&lt;_&gt;</code> already conveys optional to rust developers<ul>
+<li>We can define consistency by &quot;this ArgSetting maps directly to this flag&quot;
+or by &quot;this Rust type implies this behavior&quot;.  One is focused on
+implementation which is more opaque to users while the other is focused on
+the user's view</li>
+</ul>
+</li>
+<li>While there has been some confusion over <code>structopt</code> and <code>clap_derive</code>s behavior, I'd posit that most of it stems from involving <code>multiple_values</code>, and with that gone, there will be less.</li>
+</ul>
+<p>Potential future improvement: I have some hand-wayy ideas for how we can improve the
+experience by allowing derives to define built-in or user-provided &quot;actions&quot;,
+see https://github.com/clap-rs/clap/discussions/2615</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2678.html">clap-rs/clap#2678</a> on 2021-08-11 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-13 00:06</div>
+            <div class="timeline-body"><p>Ignoring the tuples part of the discussion for now.</p>
+<blockquote>
+<p>Vec&lt;Vec&lt;<em>&gt;&gt;, Option&lt;Vec&lt;</em>&gt;&gt;, and Option&lt;Option&lt;_&gt;&gt;&gt; don't compose (you can't use them separately to get the same individual meanings)</p>
+</blockquote>
+<p>I am afraid I don't understand what you meant here.</p>
+<blockquote>
+<p>Vec&lt;_&gt; already conveys optional to rust developers</p>
+</blockquote>
+<p>I don't agree. While vec does convey that it can be empty, that's not exactly same semantics here. Here, when you mean optional, the semantic is whether vec should be present in the first place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-13 16:55</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Vec&lt;Vec&lt;<em>&gt;&gt;, Option&lt;Vec&lt;</em>&gt;&gt;, and Option&lt;Option&lt;_&gt;&gt;&gt; don't compose (you can't use them separately to get the same individual meanings)</p>
+</blockquote>
+<p>I am afraid I don't understand what you meant here.</p>
+</blockquote>
+<p><code>Vec</code> is taking on two meanings, multiple values and multiple occurrences, depending on the level of embedding.  A user cannot choose one over the other.  Instead of the API providing basic building blocks, each with their own meaning, that the use can put together as they wish that makes on-boarding easy, it instead has contextual meanings based on how the building blocks are used that we have to explain and the user has to grok, whether they use our docs or not.</p>
+<blockquote>
+<blockquote>
+<p>Vec&lt;_&gt; already conveys optional to rust developers</p>
+</blockquote>
+<p>I don't agree. While vec does convey that it can be empty, that's not exactly same semantics here. Here, when you mean optional, the semantic is whether vec should be present in the first place.</p>
+</blockquote>
+<p>I'm not quite following this logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-14 01:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Vec&lt;_&gt; already conveys optional to rust developers</p>
+</blockquote>
+<blockquote>
+<p>I'm not quite following this logic.</p>
+</blockquote>
+<p>Yes, it conveys that it can be empty. But that's the semantics for the values of the arg. It doesn't say anything about whether the arg is required or optional. (<code>app</code> vs <code>app -f</code> vs <code>app -f val</code>). Which is why we need <code>Option&lt;Vec&lt;_&gt;&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-14 01:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Vec is taking on two meanings</p>
+</blockquote>
+<p>I agree, but that is what I want us to resolve here. Provide easy way to do <code>Vec&lt;Vec&lt;_&gt;&gt;</code> with good defaults.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2784.html">clap-rs/clap#2784</a> on 2021-09-24 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2804.html">clap-rs/clap#2804</a> on 2021-10-04 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-06 17:17</div>
+            <div class="timeline-body"><p>Since I found some of the original structopt PRs, thought I'd note them here in case we can mine useful historical information</p>
+<ul>
+<li>https://github.com/TeXitoi/structopt/pull/190 fixed https://github.com/TeXitoi/structopt/issues/188</li>
+<li>https://github.com/TeXitoi/structopt/pull/191 fixed https://github.com/TeXitoi/structopt/issues/180</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2886.html">clap-rs/clap#2886</a> on 2021-10-15 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2977.html">clap-rs/clap#2977</a> on 2021-11-01 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2692.html">clap-rs/clap#2692</a> on 2021-11-03 02:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2988.html">clap-rs/clap#2988</a> on 2021-11-04 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2924.html">clap-rs/clap#2924</a> on 2021-11-04 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2993.html">clap-rs/clap#2993</a> on 2021-11-05 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-05 14:24</div>
+            <div class="timeline-body"><p>Before:</p>
+<ul>
+<li><code>bool</code>: a flag</li>
+<li><code>Option&lt;_&gt;</code>: not required</li>
+<li><code>Option&lt;Option&lt;_&gt;&gt;</code> is not required and when it is present, the value
+is not required</li>
+<li><code>Vec&lt;_&gt;</code>: multiple values, optional</li>
+<li><code>Option&lt;Vec&lt;_&gt;&gt;</code>: multiple values, min values of 0, optional</li>
+</ul>
+<p>After:</p>
+<ul>
+<li><code>bool</code>: a flag</li>
+<li><code>Option&lt;_&gt;</code>: not required</li>
+<li><code>Option&lt;Option&lt;_&gt;&gt;</code> is not required and when it is present, the value
+is not required</li>
+<li><code>Vec&lt;_&gt;</code>: multiple occurrences, optional<ul>
+<li>optional: <code>Vec</code> implies 0 or more, so should not imply required</li>
+</ul>
+</li>
+<li><code>Option&lt;Vec&lt;_&gt;&gt;</code>: multiple occurrences, optional<ul>
+<li>optional: Use over <code>Vec</code> to detect when no option being present when
+using multiple values</li>
+</ul>
+</li>
+</ul>
+<p>Motivations:</p>
+<p>My priorities were:</p>
+<ol>
+<li>Are we getting in the users way?</li>
+<li>Does the API make sense?</li>
+<li>Does the API encourage best practices?</li>
+</ol>
+<p>I was originally concerned about the lack of composability with
+<code>Option&lt;Option&lt;_&gt;&gt;</code> and <code>Option&lt;Vec&lt;_&gt;&gt;</code> (and eventually <code>Vec&lt;Vec&lt;_&gt;&gt;</code>).
+It prescribes special meaning to each type depending on where it shows
+up, rather than providing a single meaning for a type generally.  You
+then can't do things like have <code>Option&lt;_&gt;</code> mean &quot;required argument with
+optional value&quot; without hand constructing it.  However, in practice the
+outer type correlates with the argument occurrence and the inner type with the
+value.   It is rare to want the value behavior without also the
+occurrence behavior.  So I figure it is probably fine as long as people
+can set the flags to manually get the behavior they want.</p>
+<p><code>Vec&lt;_&gt;</code> implies multiple occurrences, rather than multiple values.
+Anecdotally, whenever I've used the old <code>Arg::multiple</code>, I thought I was
+getting <code>Arg::multiple_occurrences</code> only.  <code>Arg::multiple_values</code>,
+without any bounds or delimiter requirement, can lead to a confusing
+user experience and isn't a good default for these.  On top of that, if
+someone does have an unbounded or a delimiter multiple values, they are
+probably also using multiple occurrences.</p>
+<p><code>Vec&lt;_&gt;</code> is optional because a <code>Vec</code> implies 0 or more, so we stick to
+the meaning of the rust type.  At least for me, I also rarely need a
+required with multiple occurrences argument but more often need optional
+with multiple occurrences.</p>
+<p><code>Option&lt;Vec&lt;_&gt;&gt;</code> ends up matching <code>Vec&lt;_&gt;</code> which can raise the question
+of why have it.  Some users might prefer the type.  Otherwise, this is
+so users can detect whether the argument is present or not when using
+<code>min_values(0)</code>.  Rather than defining an entire policy around this and
+having users customize it, or setting <code>min_values(0)</code> without the rest
+of a default policy, this gives people a blank slate to work from.</p>
+<p>Another design option would have been to not infer any special-type
+settings if someone sets a handful of settings manually, which would
+have avoided the confusion in Issue #2599 but I see that being confusing
+(for someone who knows the default, they will be expecting it to be
+additive; which flags disable inferred settings?) and brittle (as flags
+are added or changed, how do we ensure we keep this up?).</p>
+<p>Tests were added to ensure we support people customizing the behavior to
+match their needs.</p>
+<p>For now, I am leaving off:</p>
+<ul>
+<li><code>Vec&lt;Vec&lt;_&gt;&gt;</code>, see #2924</li>
+<li><code>(T1, T2)</code>, <code>Vec&lt;(T1, T2)&gt;</code>, etc, see #1717</li>
+<li><code>Vec&lt;Option&lt;_&gt;&gt;</code> and many other potential combinations</li>
+</ul>
+<p>To see this in action, see https://github.com/clap-rs/clap/pull/2993</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../informalsystems/hermes/pulls/1576.html">informalsystems/hermes#1576</a> on 2021-11-18 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3066.html">clap-rs/clap#3066</a> on 2021-12-06 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/148.html">epage/clapng#148</a> on 2021-12-06 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-07 21:58</div>
+            <div class="timeline-body"><p>Something like #2993 was recently merged, along with a new derive reference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-07 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-08 00:30</div>
+            <div class="timeline-body"><blockquote>
+<p><code>Vec&lt;Option&lt;_&gt;&gt;</code> and many other potential combinations</p>
+</blockquote>
+<p>@epage Are we tracking this somewhere? I couldn't find any issue about this since we closed this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-08 00:41</div>
+            <div class="timeline-body"><p>Not yet but I think we should wait until there are users asking for them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3248.html">clap-rs/clap#3248</a> on 2022-01-04 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3283.html">clap-rs/clap#3283</a> on 2022-01-11 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3308.html">clap-rs/clap#3308</a> on 2022-01-18 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../fedimint/fedimint/pulls/440.html">fedimint/fedimint#440</a> on 2022-08-23 13:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

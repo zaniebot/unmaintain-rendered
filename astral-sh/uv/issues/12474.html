@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv generates invalid pyproject.toml - astral-sh/uv #12474</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv generates invalid pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12474">#12474</a>
+        opened by <a href="https://github.com/builder555">@builder555</a>
+        on 2025-03-26 00:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/builder555">@builder555</a> on 2025-03-26 00:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h4>Steps to reproduce:</h4>
+<pre><code class="language-bash">uv init myapp
+cd myapp
+uv add --dev pytest-watch
+uv run ptw
+</code></pre>
+<h4>Expected result:</h4>
+<p>pytest-watch runs continuously</p>
+<h4>Actual result:</h4>
+<pre><code>myapp/.venv/lib/python3.13/site-packages/docopt.py:165: SyntaxWarning: invalid escape sequence '\S'
+  name = re.findall('(&lt;\S*?&gt;)', source)[0]
+myapp/.venv/lib/python3.13/site-packages/docopt.py:166: SyntaxWarning: invalid escape sequence '\['
+  value = re.findall('\[default: (.*)\]', source, flags=re.I)
+myapp/.venv/lib/python3.13/site-packages/docopt.py:207: SyntaxWarning: invalid escape sequence '\['
+  matched = re.findall('\[default: (.*)\]', description, flags=re.I)
+myapp/.venv/lib/python3.13/site-packages/docopt.py:456: SyntaxWarning: invalid escape sequence '\S'
+  split = re.split('\n *(&lt;\S+?&gt;|-\S+?)', doc)[1:]
+Traceback (most recent call last):
+  File &quot;myapp/.venv/bin/ptw&quot;, line 10, in &lt;module&gt;
+    sys.exit(main())
+             ~~~~^^
+  File &quot;myapp/.venv/lib/python3.13/site-packages/pytest_watch/command.py&quot;, line 83, in main
+    if not merge_config(args, pytest_args, verbose=args['--verbose']):
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;myapp/.venv/lib/python3.13/site-packages/pytest_watch/config.py&quot;, line 95, in merge_config
+    config.read(config_path)
+    ~~~~~~~~~~~^^^^^^^^^^^^^
+  File &quot;/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/configparser.py&quot;, line 735, in read
+    self._read(fp, filename)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File &quot;/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/configparser.py&quot;, line 1050, in _read
+    ParsingError._raise_all(self._read_inner(fp, fpname))
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/configparser.py&quot;, line 334, in _raise_all
+    raise next(exceptions).combine(exceptions)
+configparser.ParsingError: Source contains parsing errors: 'myapp/pyproject.toml'
+	[line 12]: ']\n'
+</code></pre>
+<p>pyproject.toml:</p>
+<pre><code class="language-toml">[project]
+name = &quot;myapp&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = []
+
+[dependency-groups]
+dev = [
+    &quot;pytest-watch&gt;=4.2.0&quot;,
+]
+
+</code></pre>
+<p>If I modify the <code>[dependency-groups]</code> section to have dependencies on one line, it works fine:</p>
+<p><code>dev = [&quot;pytest-watch&gt;=4.2.0&quot;]</code></p>
+<h3>Platform</h3>
+<p>macOS 15 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.3 (Homebrew 2025-02-24)</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @builder555 on 2025-03-26 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-26 01:15</div>
+            <div class="timeline-body"><p>I'm confused -- that <em>is</em> valid TOML? You can paste it into any TOML validator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-03-26 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-03-26 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j178">@j178</a> on 2025-03-26 01:39</div>
+            <div class="timeline-body"><p><code>configparser.ParsingError</code></p>
+<p>seems like that pytest-watch is parsing pyproject.toml as an ini config file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SummerStorm">@SummerStorm</a> on 2025-03-26 02:24</div>
+            <div class="timeline-body"><p>You want <code>uv add --dev pytest-watcher</code> instead. That installs the actively maintained watcher that you want.</p>
+<p><code>uv add --dev pytest-watch</code> adds <a href="https://github.com/joeyespo/pytest-watch">joeyespo/pytest-watch</a> which was last updated 7 years ago and can only be configured by pytest.ini and is incomptible with any .toml files. This is a <code>pytest-watch</code> issue and not a <code>uv</code> issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-26 12:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

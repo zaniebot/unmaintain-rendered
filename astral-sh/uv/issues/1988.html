@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Failed to spawn the python child process: The system cannot find the file specified.` - astral-sh/uv #1988</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Failed to spawn the python child process: The system cannot find the file specified.`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1988">#1988</a>
+        opened by <a href="https://github.com/astrojuanlu">@astrojuanlu</a>
+        on 2024-02-26 18:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/astrojuanlu">@astrojuanlu</a> on 2024-02-26 18:09</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Still not able to provide a minimal reproducer, but I'm putting this here in case it helps other folks.</p>
+<p>I'm trying to replace <code>pip</code> with <code>uv pip</code> on my CI and I've been mostly successful, with the exception on Windows. There I'm getting an error like this:</p>
+<pre><code>&gt; pytest tests
+(uv internal error) Failed to spawn the python child process: The system cannot find the file specified.
+</code></pre>
+<p>this is despite <code>pytest</code> being present, as can be seen with a <code>uv pip freeze</code> right before.</p>
+<p>See https://github.com/kedro-org/kedro-plugins/actions/runs/8052616036/job/21993159176 for an example of this.</p>
+<p>The way I fixed it is by replacing <code>pytest</code> with <code>python -m pytest</code>.</p>
+<p>I added a <code>type ${Python_ROOT_DIR}\\Scripts\\pytest</code> to understand what's there, see https://github.com/kedro-org/kedro-plugins/actions/runs/8053504403/job/21996069725?pr=569</p>
+<p>I'm using <code>uv==0.1.11</code>, released minutes ago.</p>
+<p>I'm unfamiliar with how scripts are created on Windows, is <code>uv</code> doing anything special here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-26 18:13</div>
+            <div class="timeline-body"><p>I think the issue is related to https://github.com/astral-sh/uv/issues/1779</p>
+<p>The <code>VIRTUAL_ENV=&lt;global_python&gt;</code> hack doesn't work on Windows because the Python executable is in a different location than what's expected by <code>uv</code>. We're working on a proper support for global installation.</p>
+<p>For now, you can work around it by creating a virtual env instead of pointing <code>VIRTUAL_ENV</code> to the global python path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-26 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-26 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-02-26 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2000.html">astral-sh/uv#2000</a> on 2024-02-27 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-28 02:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-28 02:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kexul">@kexul</a> on 2024-02-28 12:36</div>
+            <div class="timeline-body"><p>I'm still getting this error with the newest version of uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-28 12:44</div>
+            <div class="timeline-body"><p>Do you mean 0.1.11 or the main branch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kexul">@kexul</a> on 2024-02-28 12:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you mean 0.1.11 or the main branch?</p>
+</blockquote>
+<p>0.1.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-28 12:48</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Do you mean 0.1.11 or the main branch?</p>
+</blockquote>
+<p>0.1.11</p>
+</blockquote>
+<p>Charlie's changes have not been released yet. Please create a new issue if you're still experience issues with the new version that we release soon and include more details: What commands did you run? What's your operating system? What package do you use, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kexul">@kexul</a> on 2024-02-28 12:50</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<blockquote>
+<p>Do you mean 0.1.11 or the main branch?</p>
+</blockquote>
+<p>0.1.11</p>
+</blockquote>
+<p>Charlie's changes have not been released yet. Please create a new issue if you're still experience issues with the new version that we release soon and include more details: What commands did you run? What's your operating system? What package do you use, etc.</p>
+</blockquote>
+<p>Get it! Thanks for your great work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6008.html">astral-sh/uv#6008</a> on 2024-08-11 14:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

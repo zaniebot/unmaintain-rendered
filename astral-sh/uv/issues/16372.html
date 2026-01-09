@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip compile` is pinning cyclic dependecies to oldest released version - astral-sh/uv #16372</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip compile` is pinning cyclic dependecies to oldest released version</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16372">#16372</a>
+        opened by <a href="https://github.com/Czaki">@Czaki</a>
+        on 2025-10-20 11:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Czaki">@Czaki</a> on 2025-10-20 11:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We use <code>uv pip compile</code> to provide a constraints file for reproducible builds and testing (even for <code>pip install</code>).</p>
+<p>Most recent release of <code>napari-plugin-manager</code> added a <code>napari</code> as a dependency, where <code>napari</code> depends on <code>napari-plugin-manager</code>.</p>
+<p>So when we run <code>uv pip compile</code> on the napari project (<code>pyproject.toml</code>)
+https://github.com/napari/napari/blob/e8abcaf5fea49e872b07a998f1a3bcde628dee80/.github/workflows/upgrade_test_constraints.yml#L168</p>
+<p>It ends with adding <code>napari==0.6.6</code> to the constraints file. https://github.com/napari/napari/commit/86ea1478982ceca52b311f22b8978a6e634e6433#diff-347d546af1ecc381608b9b2a5635a7daeb1a4740c6db0550e39fe735da7e79dbR246</p>
+<p>Could I request not to include the constraints in the package, which <code>pyproject.toml</code> is input to <code>uv pip compile</code>? And especially do not use constraints of the released version when calculating compile output.</p>
+<p>Sometimes, cyclic dependencies are not possible to avoid (we will try to work around it).</p>
+<h3>Platform</h3>
+<p>linux GHA</p>
+<h3>Version</h3>
+<p>0.9.4</p>
+<h3>Python version</h3>
+<p>3.12.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Czaki on 2025-10-20 11:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../napari/napari/pulls/8310.html">napari/napari#8310</a> on 2025-10-20 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../napari/napari-plugin-manager/pulls/188.html">napari/napari-plugin-manager#188</a> on 2025-10-20 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-20 14:34</div>
+            <div class="timeline-body"><p>Sorry, I'm not following, what package should not be include for which specific command, and how is that related to having a cyclic dependency?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv pip compile` is pining cyclic dependecies to oldest release version" to "`uv pip compile` is pining cyclic dependecies to oldest released version" by @Czaki on 2025-10-20 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2025-10-20 15:19</div>
+            <div class="timeline-body"><p>If I run <code>uv pip compile pyproject.toml</code> in the napari project main directory, I do no not expect to see <code>napari==0.6.6</code> in the output (where napari is a dependency of one napari dependency) I do not even expect to <code>napari==0.6.6</code> dependencies (with constraints) to be taken as input to constraint resolving.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv pip compile` is pining cyclic dependecies to oldest released version" to "`uv pip compile` is pinning cyclic dependecies to oldest released version" by @Czaki on 2025-10-27 08:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jni">@jni</a> on 2025-10-28 13:39</div>
+            <div class="timeline-body"><p>@konstin we're trying to compile a lock file for the current dependencies of the project <strong>napari</strong> on the <strong>main</strong> branch, ie, napari@main, several commits ahead of the last released version, napari 0.6.6.</p>
+<p>One of our <em>optional</em> dependencies is <strong>napari-plugin-manager</strong>, which itself depends on napari (this has temporarily been reverted to avoid this issue). That's the circular dependency.</p>
+<p>Then when we run <code>uv pip compile pyproject.toml</code> on <a href="https://github.com/napari/napari/blob/a0ba263b2c72b89786fb2e6ea93cde2c9b3ff2f5/pyproject.toml#L9">napari@main's pyproject.toml</a>, it results in a lockfile that includes napari==0.6.6, which is of course unsatisfiable when installing napari@main.</p>
+<p>Does that make sense?</p>
+<p>So the request is for a way for the root project (the project name in the pyproject.toml used to invoke <code>uv pip compile</code>) to be excluded from the resultant lockfile.</p>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-05 19:33</div>
+            <div class="timeline-body"><p>It would be incorrect for us to strip the circular dependency by default, even if it's the <code>project.name</code> in <code>pyproject.toml</code>. We're adding better support for manually excluding dependencies (https://github.com/astral-sh/uv/pull/16528), while currently, you can manually exclude dependencies through an override dependency with <code>napari; python_version &lt; &quot;0&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2025-11-07 06:34</div>
+            <div class="timeline-body"><p>As I read, the exclude from #16528 will exclude the package from installation, but documentation do not mention anything about local package. Does put <code>napari</code> in exclude (for example via <code>UV_EXCLUDE</code> env variable) will prevent from install napari using <code>pip install .</code> in root of project?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16844.html">astral-sh/uv#16844</a> on 2025-11-25 14:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

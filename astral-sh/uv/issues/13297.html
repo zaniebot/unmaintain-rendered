@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot override dependency metadata of source dependency - astral-sh/uv #13297</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot override dependency metadata of source dependency</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13297">#13297</a>
+        opened by <a href="https://github.com/toslunar">@toslunar</a>
+        on 2025-05-05 07:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/toslunar">@toslunar</a> on 2025-05-05 07:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>To reproduce, <code>uv sync</code> at <code>a/</code> with the files below causes</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because only b==0.1.0 is available and b==0.1.0 depends on numpy&lt;2, we can conclude that all versions of b
+      depend on numpy&lt;2.
+      And because your project depends on b and numpy&gt;=2, we can conclude that your project's requirements are
+      unsatisfiable.
+</code></pre>
+<p><code>a/pyproject.toml</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;a&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;b&quot;, &quot;numpy&gt;=2&quot;]
+
+[build-system]
+requires = [&quot;setuptools&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[tool.uv.sources]
+b = { path = &quot;../b&quot;, editable = true }
+
+[[tool.uv.dependency-metadata]]
+name = &quot;b&quot;
+requires-dist = [&quot;numpy&quot;]
+</code></pre>
+<p><code>a/src/a.py</code></p>
+<pre><code class="language-python">...
+</code></pre>
+<p><code>b/pyproject.toml</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;b&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;numpy&lt;2&quot;]
+
+[build-system]
+requires = [&quot;setuptools&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p><code>b/src/b.py</code></p>
+<pre><code class="language-python">...
+</code></pre>
+<hr />
+<p>Note that for PyPI dependency we can override <code>requires-dist</code> (<code>numpy&lt;1.29.0,&gt;=1.22.4</code> in <code>scipy==1.12.0</code>) by</p>
+<p><code>c/pyproject.toml</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;c&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;scipy==1.12.0&quot;, &quot;numpy&gt;=2&quot;]
+
+[[tool.uv.dependency-metadata]]
+name = &quot;scipy&quot;
+requires-dist = [&quot;numpy&quot;]
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 5.15.167.4-microsoft-standard-WSL2 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.2</p>
+<h3>Python version</h3>
+<p>3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @toslunar on 2025-05-05 07:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-05-07 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-07 22:27</div>
+            <div class="timeline-body"><p>I can't remember why it works this way, but it <em>does</em> work if you specify the version:</p>
+<pre><code class="language-toml">[[tool.uv.dependency-metadata]]
+name = &quot;b&quot;
+version = &quot;0.1.0&quot;
+requires-dist = [&quot;numpy&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-07 22:28</div>
+            <div class="timeline-body"><p>Oh, it's because we need to know the version of the package, but for a direct URL dependency like this, we don't know the version in advance -- we have to read it from the package <code>pyproject.toml</code>. If we're using static metadata like this, then we need to get <em>all</em> the metadata we need upfront. So if you don't include a version, we can't use the static metadata, since we have to go resolve the version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-05-07 22:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-05-07 22:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-07 22:29</div>
+            <div class="timeline-body"><p>There's a warning for this if you run with <code>-v</code>:</p>
+<pre><code>WARN No version found in dependency metadata entry for `b`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-05-13 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2025-05-13 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-05-13 03:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

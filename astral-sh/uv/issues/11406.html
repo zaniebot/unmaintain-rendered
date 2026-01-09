@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot install the CPU version of torch 2.6.0 - astral-sh/uv #11406</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot install the CPU version of torch 2.6.0</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11406">#11406</a>
+        opened by <a href="https://github.com/petteriTeikari">@petteriTeikari</a>
+        on 2025-02-10 21:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/petteriTeikari">@petteriTeikari</a> on 2025-02-10 21:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I am facing similar issues as described in https://github.com/astral-sh/uv/issues/1497#top afterr following <a href="https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies">your instructions </a> and trying to have the CPU and CUDA flags both working for laptop debugging and CUDA for actual running of the code.</p>
+<ul>
+<li><code>uv sync --extra cu124</code> works</li>
+<li><code>uv pip install torch==2.6.0+cpu --index-url https://download.pytorch.org/whl/cpu</code> works</li>
+<li><code>uv sync --extra cpu</code> fails with the following message:</li>
+</ul>
+<pre><code>error: Distribution `torch==2.6.0 @ registry+https://download.pytorch.org/whl/cpu` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on Linux (`manylinux_2_35_x86_64`), but `torch` (v2.6.0) only has wheels for the following platform: `macosx_11_0_arm64`
+</code></pre>
+<p>I would say that <a href="https://download.pytorch.org/whl/torch/"><code>torch-2.6.0+cpu.cxx11.abi-cp311-cp311-linux_x86_64.whl</code></a> seems like the correct wheel? Can I somehow force <code>uv</code> to use this wheel?</p>
+<h2>My <code>pyproject.toml</code></h2>
+<pre><code>[project]
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+   ...packages...
+]
+
+[project.optional-dependencies]
+# e.g. torch-2.6.0+cpu.cxx11.abi-cp311-cp311-linux_x86_64.whl
+cpu = [
+  &quot;torch&gt;=2.6.0&quot;,
+  &quot;torchvision&gt;=0.21.0&quot;,
+]
+cu124 = [
+  &quot;torch&gt;=2.6.0&quot;,
+  &quot;torchvision&gt;=0.21.0&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;cu124&quot; },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+torchvision = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+<h2><code>uv.lock</code></h2>
+<pre><code>[[package]]
+name = &quot;torch&quot;
+version = &quot;2.6.0&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+resolution-markers = [
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;platform_machine == 'aarch64' and sys_platform == 'linux'&quot;,
+    &quot;(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')&quot;,
+]
+dependencies = [
+    { name = &quot;filelock&quot;, marker = &quot;(extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124') or (extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;fsspec&quot;, marker = &quot;(extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124') or (extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;jinja2&quot;, marker = &quot;(extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124') or (extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;networkx&quot;, marker = &quot;(extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124') or (extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cublas-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cuda-cupti-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cuda-nvrtc-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cuda-runtime-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cudnn-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cufft-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-curand-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cusolver-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cusparse-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cusparselt-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-nccl-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-nvjitlink-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-nvtx-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;sympy&quot;, marker = &quot;(extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124') or (extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;triton&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;typing-extensions&quot;, marker = &quot;(extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124') or (extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124')&quot; },
+]
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/78/a9/97cbbc97002fff0de394a2da2cdfa859481fdca36996d7bd845d50aa9d8d/torch-2.6.0-cp311-cp311-manylinux1_x86_64.whl&quot;, hash = &quot;sha256:7979834102cd5b7a43cc64e87f2f3b14bd0e1458f06e9f88ffa386d07c7446e1&quot;, size = 766715424 },
+    { url = &quot;https://files.pythonhosted.org/packages/6d/fa/134ce8f8a7ea07f09588c9cc2cea0d69249efab977707cf67669431dcf5c/torch-2.6.0-cp311-cp311-manylinux_2_28_aarch64.whl&quot;, hash = &quot;sha256:ccbd0320411fe1a3b3fec7b4d3185aa7d0c52adac94480ab024b5c8f74a0bf1d&quot;, size = 95759416 },
+    { url = &quot;https://files.pythonhosted.org/packages/11/c5/2370d96b31eb1841c3a0883a492c15278a6718ccad61bb6a649c80d1d9eb/torch-2.6.0-cp311-cp311-win_amd64.whl&quot;, hash = &quot;sha256:46763dcb051180ce1ed23d1891d9b1598e07d051ce4c9d14307029809c4d64f7&quot;, size = 204164970 },
+    { url = &quot;https://files.pythonhosted.org/packages/0b/fa/f33a4148c6fb46ca2a3f8de39c24d473822d5774d652b66ed9b1214da5f7/torch-2.6.0-cp311-none-macosx_11_0_arm64.whl&quot;, hash = &quot;sha256:94fc63b3b4bedd327af588696559f68c264440e2503cc9e6954019473d74ae21&quot;, size = 66530713 },
+]
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 22.4 X86_64 Architecture (Linux 6.8.0-52-generic)</p>
+<h3>Version</h3>
+<p>uv version: 0.5.29</p>
+<h3>Python version</h3>
+<p>Python 3.11.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @petteriTeikari on 2025-02-10 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 21:38</div>
+            <div class="timeline-body"><p>Sorry, there must be something else here that isn't captured by your example. The lockfile generated by this <code>pyproject.toml</code> doesn't include that <code>[[package]]</code> at all:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+]
+
+[project.optional-dependencies]
+# e.g. torch-2.6.0+cpu.cxx11.abi-cp311-cp311-linux_x86_64.whl
+cpu = [
+  &quot;torch&gt;=2.6.0&quot;,
+  &quot;torchvision&gt;=0.21.0&quot;,
+]
+cu124 = [
+  &quot;torch&gt;=2.6.0&quot;,
+  &quot;torchvision&gt;=0.21.0&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;cu124&quot; },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+torchvision = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+<p>This only includes:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;torch&quot;
+version = &quot;2.6.0&quot;
+source = { registry = &quot;https://download.pytorch.org/whl/cpu&quot; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 21:40</div>
+            <div class="timeline-body"><p>As an aside, <code>torch-2.6.0+cpu.cxx11.abi-cp311-cp311-linux_x86_64.whl</code> is not part of either of the registries you specified. You can see the wheels for the CPU registry <a href="https://download.pytorch.org/whl/cpu/torch/">here</a> and the CUDA registry <a href="https://download.pytorch.org/whl/cu124/torch/">here</a>. With <code>--extra cpu</code>, on Linux you should probably be getting https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp311-cp311-linux_x86_64.whl.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petteriTeikari">@petteriTeikari</a> on 2025-02-11 07:28</div>
+            <div class="timeline-body"><blockquote>
+<p>As an aside, <code>torch-2.6.0+cpu.cxx11.abi-cp311-cp311-linux_x86_64.whl</code> is not part of either of the registries you specified. You can see the wheels for the CPU registry <a href="https://download.pytorch.org/whl/cpu/torch/">here</a> and the CUDA registry <a href="https://download.pytorch.org/whl/cu124/torch/">here</a>. With <code>--extra cpu</code>, on Linux you should probably be getting https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp311-cp311-linux_x86_64.whl.</p>
+</blockquote>
+<p>Fair enough, I quickly glanced at the wheels, but I ultimately wanted <code>uv</code> to find automagically the wheel for CPU. And from previous issues the difficulties were due to how <code>pytorch</code> managed things?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 13:07</div>
+            <div class="timeline-body"><p>Are you able to share the rest of the pyproject.toml, or at least the dependencies field? It’s missing details necessary to reproduce the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-02-11 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-02-11 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petteriTeikari">@petteriTeikari</a> on 2025-02-12 10:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you able to share the rest of the pyproject.toml, or at least the dependencies field? It’s missing details necessary to reproduce the issue.</p>
+</blockquote>
+<p>Sure, here is the full one</p>
+<pre><code>[project]
+name = &quot;venv&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11, &lt;3.12&quot;
+dependencies = [
+    &quot;einops&quot;,
+    &quot;fire&gt;=0.7.0&quot;,
+    &quot;gradio&quot;,
+    &quot;huggingface-hub&quot;,
+    &quot;hydra-core&gt;=1.3.2&quot;,
+    &quot;imageio[ffmpeg]&quot;,
+    &quot;iopath&gt;=0.1.10&quot;,
+    &quot;loguru&gt;=0.7.3&quot;,
+    &quot;numpy==1.24.3&quot;,
+    &quot;omegaconf&quot;,
+    &quot;opencv-python&quot;,
+    &quot;pillow&gt;=11.1.0&quot;,
+    &quot;plotly&quot;,
+    &quot;poselib&gt;=2.0.2&quot;,
+    &quot;pre-commit&gt;=4.1.0&quot;,
+    &quot;pyceres==2.3&quot;,
+    &quot;pycolmap==3.10.0&quot;,
+    &quot;pyqt5-sip&gt;=12.17.0&quot;,
+    &quot;pyqtchart==5.12&quot;,
+    &quot;pyrender==0.1.45&quot;,
+    &quot;roma==1.4.1&quot;,
+    &quot;scikit-image&gt;=0.25.1&quot;,
+    &quot;scikit-learn&quot;,
+    &quot;scipy==1.11.2&quot;,
+    &quot;setuptools&gt;=75.8.0&quot;,
+    &quot;timm==0.6.7&quot;,
+    &quot;torch&gt;=2.6.0&quot;,
+    &quot;tqdm&quot;,
+    &quot;trimesh&quot;,
+    &quot;visdom&gt;=0.2.4&quot;,
+]
+
+[project.optional-dependencies]
+cpu = [
+  &quot;torch&gt;=2.6.0&quot;,
+  &quot;torchvision&gt;=0.21.0&quot;,
+]
+cu124 = [
+  &quot;torch&gt;=2.6.0&quot;,
+  &quot;torchvision&gt;=0.21.0&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;cu124&quot; },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+torchvision = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2025-02-12 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-02-12 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-12 15:48</div>
+            <div class="timeline-body"><p>I think this is a preference problem. We end up choosing <code>2.6.0</code> from the CPU index (rather than <code>2.6.0+cpu</code>) because that's what we get from PyPI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-12 18:10</div>
+            <div class="timeline-body"><p>I think part of the issue is that you also have torch defined as a non-optional dependency. Where do you expect torch to come from when no <code>--extra</code> is provided? What version are you hoping for?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-12 18:11</div>
+            <div class="timeline-body"><p>E.g., I think this would do what you want:</p>
+<pre><code class="language-toml">[project]
+name = &quot;venv&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11, &lt;3.12&quot;
+dependencies = [
+    &quot;einops&quot;,
+    &quot;fire&gt;=0.7.0&quot;,
+    &quot;gradio&quot;,
+    &quot;huggingface-hub&quot;,
+    &quot;hydra-core&gt;=1.3.2&quot;,
+    &quot;imageio[ffmpeg]&quot;,
+    &quot;iopath&gt;=0.1.10&quot;,
+    &quot;loguru&gt;=0.7.3&quot;,
+    &quot;numpy==1.24.3&quot;,
+    &quot;omegaconf&quot;,
+    &quot;opencv-python&quot;,
+    &quot;pillow&gt;=11.1.0&quot;,
+    &quot;plotly&quot;,
+    &quot;poselib&gt;=2.0.2&quot;,
+    &quot;pre-commit&gt;=4.1.0&quot;,
+    &quot;pyceres==2.3&quot;,
+    &quot;pycolmap==3.10.0&quot;,
+    &quot;pyqt5-sip&gt;=12.17.0&quot;,
+    &quot;pyqtchart==5.12&quot;,
+    &quot;pyrender==0.1.45&quot;,
+    &quot;roma==1.4.1&quot;,
+    &quot;scikit-image&gt;=0.25.1&quot;,
+    &quot;scikit-learn&quot;,
+    &quot;scipy==1.11.2&quot;,
+    &quot;setuptools&gt;=75.8.0&quot;,
+    &quot;tqdm&quot;,
+    &quot;trimesh&quot;,
+    &quot;visdom&gt;=0.2.4&quot;,
+]
+
+[project.optional-dependencies]
+cpu = [
+  &quot;torch&gt;=2.6.0&quot;,
+  &quot;torchvision&gt;=0.21.0&quot;,
+  &quot;timm==0.6.7&quot;,
+]
+cu124 = [
+  &quot;torch&gt;=2.6.0&quot;,
+  &quot;torchvision&gt;=0.21.0&quot;,
+  &quot;timm==0.6.7&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;cu124&quot; },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+torchvision = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petteriTeikari">@petteriTeikari</a> on 2025-02-14 15:52</div>
+            <div class="timeline-body"><blockquote>
+<p>I think part of the issue is that you also have torch defined as a non-optional dependency. Where do you expect torch to come from when no <code>--extra</code> is provided? What version are you hoping for?</p>
+</blockquote>
+<p>Hmm. Yes I agree that it is not the most full-proof way to set up the <code>pyproject.toml</code> and I assume that the end-user will choose either one of the extra options and never just uses <code>uv sync</code></p>
+<p>I updated the <code>pyproject.toml</code> and I am still getting the same issue</p>
+<pre><code>uv sync --extra cpu
+Using CPython 3.11.10
+Creating virtual environment at: .venv
+Resolved 125 packages in 1.96s
+error: Distribution `torch==2.6.0 @ registry+https://download.pytorch.org/whl/cpu` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on Linux (`manylinux_2_35_x86_64`), but `torch` (v2.6.0) only has wheels for the following platform: `macosx_11_0_arm64`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-14 19:49</div>
+            <div class="timeline-body"><p>Yeah, unfortunately I think you have to do this for now, until we fix the &quot;preference&quot; bug I described above:</p>
+<pre><code class="language-toml">cpu = [
+  &quot;torch==2.6.0+cpu&quot;,
+  &quot;torchvision==0.21.0+cpu&quot;,
+  &quot;timm==0.6.7&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-02-16 00:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11546.html">astral-sh/uv#11546</a> on 2025-02-16 01:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-16 01:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-16 01:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11558.html">astral-sh/uv#11558</a> on 2025-02-16 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../sdsc-ordes/kg-llm-interface/pulls/35.html">sdsc-ordes/kg-llm-interface#35</a> on 2025-02-17 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amitkma">@amitkma</a> on 2025-02-21 06:36</div>
+            <div class="timeline-body"><p>Hey @charliermarsh, Isn't this issue resolved in #11546  because I am still facing this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-22 17:24</div>
+            <div class="timeline-body"><p>Yup, the issue is resolved. You should open a new issue with a complete reproduction if you're facing the same problem. (You'll definitely need to <code>rm uv.lock</code> after upgrading.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

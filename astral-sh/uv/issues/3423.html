@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The `tokio-tar` dependency seems unmaintained, and it is broken on PowerPC - astral-sh/uv #3423</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>The `tokio-tar` dependency seems unmaintained, and it is broken on PowerPC</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3423">#3423</a>
+        opened by <a href="https://github.com/mgorny">@mgorny</a>
+        on 2024-05-07 14:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mgorny">@mgorny</a> on 2024-05-07 14:47</div>
+            <div class="timeline-body"><p>The current version of <code>uv</code> depends on the tokio-tar crate:</p>
+<p>https://github.com/astral-sh/uv/blob/8e86cd0c7385643b9c017bb25adbd4f5ca895b37/Cargo.toml#L132</p>
+<p>However, <a href="https://github.com/vorot93/tokio-tar">the upstream repository</a> has not seen any activity for 10 months now, and the project seems dead. It is currently broken on PowerPC, and I've filed <a href="https://github.com/vorot93/tokio-tar/pull/23">a pull request to fix it</a>. However, I don't hold my hopes high and in general, the repository has a feeling of a fork of <a href="https://github.com/dignifiedquire/async-tar">async-tar</a> that wasn't really meant to be maintained (note that it doesn't even have a bug tracker).</p>
+<p>That said, <a href="https://crates.io/crates/krata-tokio-tar">krata-tokio-tar</a> seems to be a fork of the fork that has had some recent activity, so I've filed <a href="https://github.com/edera-dev/tokio-tar/pull/1">my pull request there as well</a>.</p>
+<p>Perhaps a better option would be not to rely on <code>tokio-tar</code> (or <code>async-tar</code>) at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-05-17 19:52</div>
+            <div class="timeline-body"><p>Thanks for raising this issue. I’m working on packaging <code>uv</code> for Fedora, and <code>tokio-tar</code> is one of a handful of dependencies I hadn’t gotten around to investigating yet. Even if the dependency stays, your PR will be helpful as a downstream patch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @zanieb on 2024-05-17 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-17 21:14</div>
+            <div class="timeline-body"><p>Seems reasonable to switch to a maintained repository.</p>
+<p>cc @BurntSushi who has more context on auditing Rust packages than me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgorny">@mgorny</a> on 2024-05-18 04:10</div>
+            <div class="timeline-body"><p>For the record, I've gotten an initial response on the <code>krata-tokio-tar</code> fork but they haven't found time to review the PR yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-05-20 18:21</div>
+            <div class="timeline-body"><p>I’m trying to build a Fedora package <code>rust-tokio-tar</code> using https://github.com/edera-dev/tokio-tar/pull/1, and it’s working on <code>x86_64</code>, <code>aarch64</code>, and <code>ppc64le</code>, but still failing on <code>i686</code>:</p>
+<pre><code>test src/builder.rs - builder::Builder&lt;W&gt;::append_dir_all (line 390) ... FAILED
+failures:
+---- src/builder.rs - builder::Builder&lt;W&gt;::append_dir_all (line 390) stdout ----
+Test executable failed (signal: 6 (SIGABRT) (core dumped)).
+stderr:
+memory allocation of 1677721600 bytes failed
+failures:
+    src/builder.rs - builder::Builder&lt;W&gt;::append_dir_all (line 390)
+test result: FAILED. 9 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.01s
+</code></pre>
+<p>…and on <code>s390x</code>:</p>
+<pre><code>test header::set_metadata_deterministic ... ok
+failures:
+---- insert_local_file_different_name stdout ----
+thread 'insert_local_file_different_name' panicked at tests/all.rs:1103:5:
+assertion failed: entries.next().await.is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+failures:
+    insert_local_file_different_name
+test result: FAILED. 50 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.05s
+</code></pre>
+<p>At a glance, the allocation on <code>i686</code> is suspiciously large, and endianness issues are always prime suspects for <code>s390x</code>-specific problems, but I haven’t tried to investigate these in detail yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-05-22 00:40</div>
+            <div class="timeline-body"><p>It looks like the <code>insert_local_file_different_name</code> is flaky, roughly less than 20% of the time, on <code>s390x</code>, but it also occurs (more frequently) on <code>aarch64</code>. I have also observed flaky failures in other tests on <code>aarch64</code> – at least <code>large_filename</code> and <code>writing_files</code>, and my notes indicate that I saw <code>path_separators</code> panic in a previous attempt.</p>
+<p>I think a reasonable conclusion here is that <code>tokio-tar</code> has significant race conditions, at least on some architectures, and should have engaged in much more fearful concurrency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-05-22 10:37</div>
+            <div class="timeline-body"><blockquote>
+<p>That said, <a href="https://crates.io/crates/krata-tokio-tar">krata-tokio-tar</a> seems to be a fork of the fork that has had some recent activity, so I've filed <a href="https://github.com/edera-dev/tokio-tar/pull/1">my pull request there as well</a>.</p>
+</blockquote>
+<p>I tested <code>krata-tokio-tar</code>, and in ten attempts I observed flaky test failures on at least <code>x86_64</code>, <code>ppc64le</code>, <code>aarch64</code>, and <code>s390x</code>, so it looks like it also suffers from similar problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-05-22 12:28</div>
+            <div class="timeline-body"><p>It turns out that flaky test failures, particularly <code>insert_local_file_different_name</code>, may occur on any architecture, including <code>x86_64</code>. I was able to reproduce this with just</p>
+<pre><code>$ gh repo clone vorot93/tokio-tar
+$ cd tokio-tar
+$ for i in $(seq 1 1000); do cargo test || (echo &quot;FAILED ON ITERATION $i&quot;; sleep 3600); done
+</code></pre>
+<p>This failed on iteration 82. When I tried <code>cargo test --release</code>, it failed on iteration 25.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgorny">@mgorny</a> on 2024-05-22 12:59</div>
+            <div class="timeline-body"><p>Could you perhaps also try <code>async-tar</code>? Apparently <code>tokio-tar</code> was forked from that but it had a few changes since, and I don't know if they were forward-ported to <code>tokio-tar</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-22 13:08</div>
+            <div class="timeline-body"><p>We can't really use <code>async-tar</code> because it's built on <code>async-std</code> and we're using <code>tokio</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-05-22 14:39</div>
+            <div class="timeline-body"><p>I haven’t attempted to build an RPM package for <code>async-tar</code> or test it on architectures other than <code>x86_64</code> (especially in light of @charliermarsh’s comment), but I did try repeatedly running <code>cargo test</code>, with and without <code>--release</code>, as in https://github.com/astral-sh/uv/issues/3423#issuecomment-2124671700, and I haven’t managed to get it to fail so far.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../neondatabase/neon/pulls/7944.html">neondatabase/neon#7944</a> on 2024-06-07 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7271.html">astral-sh/uv#7271</a> on 2024-09-10 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-10 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-10 21:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

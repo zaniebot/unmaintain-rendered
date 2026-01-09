@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_derive: support tuples as shortcut for number_of_values = N, different validators - clap-rs/clap #1717</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_derive: support tuples as shortcut for number_of_values = N, different validators</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/1717">#1717</a>
+        opened by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a>
+        on 2020-03-02 17:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-02 17:44</div>
+            <div class="timeline-body"><p>Transferred from: TeXitoi/structopt#349</p>
+<p>Sometimes we want to to take a fixed number of values that should always be passed together or not at all. For instance, let's take RGBA: four numbers, first three must be <code>0 &lt;= N &lt;= 255</code>, the last must be <code>0 &lt;= N &lt;= 1.0</code>. This can be naturally expressed via tuples:</p>
+<pre><code class="language-rust">fn validate_alpha(a: String) -&gt; Result&lt;f32, String&gt; {
+    let a = a.parse()?;
+    if a &gt; 1 {
+        Err(format!(&quot;alpha cannot be &gt; 0.1&quot;))
+    } else {
+        Ok(a)
+    }
+}
+
+#[derive(Clap)]
+struct Args {
+    #[clap(
+        long,
+        // `parse` can be extended to take multiple validators
+        // `_` means default `try_from_str = FromStr::from_str`
+        parse(_, _, _, try_from_str = validate_alpha)
+    )]
+    color: (u8, u8, u8, f32), // `number_of_values = 4`, different parsers 
+    
+    pair: Option&lt;(String, Path)&gt; // they can also be optional 
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @CreepySkeleton on 2020-03-02 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @CreepySkeleton on 2020-03-02 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-03-02 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-18 13:29</div>
+            <div class="timeline-body"><p>Moving it to <code>3.0</code> milestone since this would be a breaking change theoretically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @CreepySkeleton on 2020-04-18 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @CreepySkeleton on 2020-04-18 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @pksunkara on 2021-01-07 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2021-01-07 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1772.html">clap-rs/clap#1772</a> on 2021-07-10 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2993.html">clap-rs/clap#2993</a> on 2021-11-05 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/141.html">epage/clapng#141</a> on 2021-12-06 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/148.html">epage/clapng#148</a> on 2021-12-06 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-08 01:33</div>
+            <div class="timeline-body"><p>Some relevant code from a discussion about key value pairs in <a href="https://github.com/clap-rs/clap/discussions/3057#discussioncomment-1748209">here</a>:</p>
+<pre><code class="language-rust">    // number_of_values = 1 forces the user to repeat the -D option for each key-value pair:
+    // my_program -D a=1 -D b=2
+    // Without number_of_values = 1 you can do:
+    // my_program -D a=1 b=2
+    // but this makes adding an argument after the values impossible:
+    // my_program -D a=1 -D b=2 my_input_file
+    // becomes invalid.
+    #[clap(short = 'D', parse(try_from_str = parse_key_val), multiple_occurrences(true), number_of_values = 1)]
+    defines: Vec&lt;(String, i32)&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> removed by @epage on 2021-12-08 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2021-12-08 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1682.html">clap-rs/clap#1682</a> on 2021-12-09 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> added by @epage on 2021-12-09 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-09 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/linclelinkpart5">@linclelinkpart5</a> on 2022-08-19 18:15</div>
+            <div class="timeline-body"><p>Chiming in to say I'd love to have this feature. I'm in need of being able to support options of the form:
+<code>--source /path/to/dir 7 --source /other/path/to/dir 5</code>. Each of the <code>--source</code> options has a <code>(Path, u8)</code> pair of arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> removed by @epage on 2022-08-19 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2022-08-19 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-19 18:59</div>
+            <div class="timeline-body"><p>The main challenge we'll have with tuple support is the <code>value_parser</code> system assumes that every value is of the same type.  So we can easily get #1682 but tuple support is more challenging.</p>
+<p>We'll need someone to come up with a proposal for how the value parser system can have disparate types before we are able to get this to move forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hatoo/oha/pulls/278.html">hatoo/oha#278</a> on 2023-08-05 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2024-04-15 22:17</div>
+            <div class="timeline-body"><p>any news on this? its been 4 years</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-04-16 00:22</div>
+            <div class="timeline-body"><p>If there isn't word on this issue, then no.  The last comment I gave has the main design challenge for this.  #1682 would be easier as it bypasses that design challenge but that there is also the issue with dealing with breaking changes.  #4626 is exploring that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mrozycki/rustmas/pulls/243.html">mrozycki/rustmas#243</a> on 2024-05-19 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RossComputerGuy">@RossComputerGuy</a> on 2025-09-23 22:49</div>
+            <div class="timeline-body"><p>I found a very simple way is to just do something like this:</p>
+<pre><code class="language-rs">arg.iter().step_by(2).zip(arg.iter().skip(1).step_by(2))
+</code></pre>
+<p>It returns an iterator but for how I'm using it, it works exactly as intended. Hopefully this is useful for someone else.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

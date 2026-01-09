@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`flatten` is not an `Arg` attribute in derive API - clap-rs/clap #4505</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`flatten` is not an `Arg` attribute in derive API</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4505">#4505</a>
+        opened by <a href="https://github.com/emersonford">@emersonford</a>
+        on 2022-11-23 21:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/emersonford">@emersonford</a> on 2022-11-23 21:10</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.65.0</p>
+<h3>Clap Version</h3>
+<p>4.0.26</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Args;
+
+#[derive(Args)]
+struct CommonArgs {
+    #[arg(long)]
+    pub foo: u32
+}
+
+#[derive(Args)]
+struct SomeArgs {
+    pub bar: u32,
+    
+    #[arg(flatten)]
+    pub common: CommonArgs,
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>build; <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=f697d5e44bd8c36d2b77b627f86c2d07">playground link</a></p>
+<h3>Actual Behaviour</h3>
+<p>fails to compile with</p>
+<pre><code>error: Expected `command` attribute instead of `arg`
+  --&gt; src/lib.rs:13:7
+   |
+13 |     #[arg(flatten)]
+   |       ^^^
+
+error: could not compile `playground` due to previous error
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>should compile, the derive reference (see <a href="https://docs.rs/clap/latest/clap/_derive/index.html#arg-attributes">here</a>) says that <code>flatten</code> is a valid <code>Arg</code> attribute.</p>
+<h3>Additional Context</h3>
+<p>workaround is to use <code>#[command(flatten)]</code> or <code>#[clap(flatten)]</code> instead of <code>#[arg(flatten)]</code>. the former feels... incorrect? and iirc the latter is no longer recommended in favor of <code>#[arg(...)]</code>.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @emersonford on 2022-11-23 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-11-28 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-28 15:50</div>
+            <div class="timeline-body"><p>Thanks for catching this!  The documentation is updated in master.</p>
+<p><code>#[command(flatten)]</code> is the correct route to go as you are merging together information about the command, rather than setting attributes related to a specific <code>Arg</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

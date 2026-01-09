@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>override-dependencies breaks cache-dir global setting - astral-sh/uv #11721</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>override-dependencies breaks cache-dir global setting</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11721">#11721</a>
+        opened by <a href="https://github.com/Winand">@Winand</a>
+        on 2025-02-23 09:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Winand">@Winand</a> on 2025-02-23 09:21</div>
+            <div class="timeline-body"><p><strong>upd: see comment below</strong></p>
+<h3>Summary</h3>
+<p>I have a separate <a href="https://learn.microsoft.com/en-us/windows/dev-drive/">Windows Dev Drive</a> on <code>D:</code>.
+I've added a file <code>D:\uv.toml</code> with contents:</p>
+<pre><code>cache-dir = &quot;D:/.uv/cache&quot;
+</code></pre>
+<p>to address issues #6613, #10595</p>
+<p>Then I create a new project in <code>D:\folder\subfolder\prj</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;prj&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;boltons&gt;=25.0.0&quot;,
+]
+
+# [tool.uv]
+# override-dependencies = [
+#     &quot;numpy&quot;,
+# ]
+</code></pre>
+<p>If I run <code>uv sync --verbose</code> without <code>override-dependencies</code> settings I get the following output:</p>
+<details>
+<summary>Acquired lock for D:\.uv\cache\simple-v15\pypi\boltons.lock</summary>
+
+<pre><code>DEBUG uv 0.6.2 (6d3614eec 2025-02-19)
+DEBUG Found project root: `D:\folder\subfolder\prj`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `D:\folder\subfolder\prj`
+DEBUG Reading Python requests from version file at `D:\folder\subfolder\prj\.python-version`
+DEBUG Using Python request `3.12` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+DEBUG The virtual environment's Python version satisfies `3.12`
+DEBUG Released lock at `C:\Users\user\AppData\Local\Temp\uv-3b01b79bfea41645.lock`
+DEBUG Using request timeout of 30s
+DEBUG Ignoring existing lockfile due to mismatched overrides:
+  Requested: {}
+  Existing: {Requirement { name: PackageName(&quot;numpy&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([]), index: None, conflict: None }, origin: None }}
+DEBUG Found static `pyproject.toml` for: prj @ file:///D:/folder/subfolder/prj
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.12.5
+DEBUG Solving with target Python version: &gt;=3.12
+DEBUG Adding direct dependency: prj*
+DEBUG Searching for a compatible version of prj @ file:///D:/folder/subfolder/prj (*)
+DEBUG Adding direct dependency: boltons&gt;=25.0.0
+DEBUG Acquired lock for `D:\.uv\cache\simple-v15\pypi\boltons.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/boltons/
+DEBUG Released lock at `D:\.uv\cache\simple-v15\pypi\boltons.lock`
+DEBUG Searching for a compatible version of boltons (&gt;=25.0.0)
+DEBUG Acquired lock for `D:\.uv\cache\wheels-v4\pypi\boltons\boltons-25.0.0-py3-none-any.lock`
+DEBUG Selecting: boltons==25.0.0 [preference] (boltons-25.0.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/45/7f/0e961cf3908bc4c1c3e027de2794f867c6c89fb4916fc7dba295a0e80a2d/boltons-25.0.0-py3-none-any.whl.metadata
+DEBUG Released lock at `D:\.uv\cache\wheels-v4\pypi\boltons\boltons-25.0.0-py3-none-any.lock`
+DEBUG Tried 2 versions: boltons 1, prj 1
+DEBUG all marker environments resolution took 0.004s
+Resolved 2 packages in 8ms
+DEBUG Using request timeout of 30s
+DEBUG Requirement already installed: boltons==25.0.0
+Audited 1 package in 0.29ms
+</code></pre>
+</details>
+
+<p>But with <code>override-dependencies</code> uncommented uv doesn't use <code>cache-dir</code> specified in <code>D:\uv.toml</code>:</p>
+<details>
+<summary>Acquired lock for `C:\Users\user\AppData\Local\uv\cache\simple-v15\pypi\boltons.lock`</summary>
+
+<pre><code>DEBUG uv 0.6.2 (6d3614eec 2025-02-19)
+DEBUG Found project root: `D:\folder\subfolder\prj`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `D:\folder\subfolder\prj`
+DEBUG Reading Python requests from version file at `D:\folder\subfolder\prj\.python-version`
+DEBUG Using Python request `3.12` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+DEBUG The virtual environment's Python version satisfies `3.12`
+DEBUG Released lock at `C:\Users\user\AppData\Local\Temp\uv-3b01b79bfea41645.lock`
+DEBUG Using request timeout of 30s
+DEBUG Ignoring existing lockfile due to mismatched overrides:
+  Requested: {Requirement { name: PackageName(&quot;numpy&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([]), index: None, conflict: None }, origin: None }}
+  Existing: {}
+DEBUG Found static `pyproject.toml` for: prj @ file:///D:/folder/subfolder/prj
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.12.5
+DEBUG Solving with target Python version: &gt;=3.12
+DEBUG Adding direct dependency: prj*
+DEBUG Searching for a compatible version of prj @ file:///D:/folder/subfolder/prj (*)
+DEBUG Adding direct dependency: boltons&gt;=25.0.0
+DEBUG Acquired lock for `C:\Users\user\AppData\Local\uv\cache\simple-v15\pypi\boltons.lock`
+DEBUG No cache entry for: https://pypi.org/simple/boltons/
+DEBUG Released lock at `C:\Users\user\AppData\Local\uv\cache\simple-v15\pypi\boltons.lock`
+DEBUG Searching for a compatible version of boltons (&gt;=25.0.0)
+DEBUG Selecting: boltons==25.0.0 [preference] (boltons-25.0.0-py3-none-any.whl)
+DEBUG Acquired lock for `C:\Users\user\AppData\Local\uv\cache\wheels-v4\pypi\boltons\boltons-25.0.0-py3-none-any.lock`
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/45/7f/0e961cf3908bc4c1c3e027de2794f867c6c89fb4916fc7dba295a0e80a2d/boltons-25.0.0-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\user\AppData\Local\uv\cache\wheels-v4\pypi\boltons\boltons-25.0.0-py3-none-any.lock`
+DEBUG Tried 2 versions: boltons 1, prj 1
+DEBUG all marker environments resolution took 0.289s
+Resolved 2 packages in 293ms
+DEBUG Using request timeout of 30s
+DEBUG Requirement already installed: boltons==25.0.0
+Audited 1 package in 0.24ms
+</code></pre>
+</details>
+
+<h3>Platform</h3>
+<p>Windows 11 x64</p>
+<h3>Version</h3>
+<p>0.6.2</p>
+<h3>Python version</h3>
+<p>3.12.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Winand on 2025-02-23 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Winand">@Winand</a> on 2025-02-23 09:32</div>
+            <div class="timeline-body"><p>Ah! I see now that I was wrong, sorry.</p>
+<p>What really breaks my setup is <code>[tool.uv]</code> section in my <code>pyproject.toml</code>. I think uv doesn't read <code>D:\uv.toml</code> if it finds that <code>[tool.uv]</code> section, <a href="https://docs.astral.sh/uv/configuration/files/">as said in docs</a>.</p>
+<p>I think as of now it's not possible to put some preferences in <em>pyproject.toml</em> and others in <em>uv.toml</em>. It's a pity that it's not possible to tell uv that settings in pyproject.toml should override settings in uv.toml, so it doesn't stop its search for settings on pyproject.toml file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-23 23:55</div>
+            <div class="timeline-body"><p>It is possible. You can put settings like <code>uv.toml</code> in the user- or system-level <code>uv.toml</code> file. See: https://docs.astral.sh/uv/configuration/files/.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-23 23:56</div>
+            <div class="timeline-body"><p>Specifically, you want <code>%SYSTEMDRIVE%\ProgramData\uv\uv.toml</code> on Windows. We just don't look for arbitrary <code>uv.toml</code> files in the parent directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-23 23:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Winand">@Winand</a> on 2025-02-24 06:08</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<blockquote>
+<p>We just don't look for arbitrary uv.toml files in the parent directories.</p>
+</blockquote>
+<p>Well, if there's no <code>[tool.uv]</code> section in project.toml then uv <em>does</em> look for <code>uv.toml</code> in parent directories.</p>
+<p>I know about <code>%SYSTEMDRIVE%\ProgramData\uv\uv.toml</code> but it's not possible to set one <em>cache-dir</em> per drive using system-level configuration file. But ok, I can live with that.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

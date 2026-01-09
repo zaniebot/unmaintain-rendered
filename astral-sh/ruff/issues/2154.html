@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Significant performance overhead when passing files and using multiple `per-file-ignores` - astral-sh/ruff #2154</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Significant performance overhead when passing files and using multiple `per-file-ignores`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2154">#2154</a>
+        opened by <a href="https://github.com/mkniewallner">@mkniewallner</a>
+        on 2023-01-25 14:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2023-01-25 14:00</div>
+            <div class="timeline-body"><p>When defining multiple <code>per-file-ignores</code> while explicitly passing files for <code>ruff</code> to run on (which is most commonly done when using <code>ruff</code> through <code>pre-commit</code>), this creates a significant performance overhead.</p>
+<p>This is reproducible on this commit: https://github.com/mkniewallner/django/commit/41602b53ea3a18ad8f27fc7ab8019af7e2f27d5f that forks <a href="https://github.com/django/django">django</a> project.</p>
+<p>For posterity, here's the relevant <code>[tool.ruff]</code> section in <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.ruff.per-file-ignores]
+&quot;django/contrib/admin/*&quot; = [&quot;W505&quot;]
+&quot;django/contrib/admindocs/*&quot; = [&quot;W505&quot;]
+&quot;django/contrib/auth/*&quot; = [&quot;W505&quot;]
+&quot;django/contrib/contenttypes/*&quot; = [&quot;W505&quot;]
+&quot;django/contrib/flatpages/*&quot; = [&quot;W505&quot;]
+&quot;django/contrib/gis/*&quot; = [&quot;W505&quot;]
+&quot;django/contrib/humanize/*&quot; = [&quot;W505&quot;]
+&quot;django/contrib/messages/*&quot; = [&quot;W505&quot;]
+&quot;django/contrib/postgres/*&quot; = [&quot;W505&quot;]
+&quot;django/contrib/redirects/*&quot; = [&quot;W505&quot;]
+&quot;django/contrib/sessions/*&quot; = [&quot;W505&quot;]
+&quot;django/contrib/sitemaps/*&quot; = [&quot;W505&quot;]
+&quot;django/contrib/sites/*&quot; = [&quot;W505&quot;]
+&quot;django/contrib/staticfiles/*&quot; = [&quot;W505&quot;]
+&quot;django/contrib/syndication/*&quot; = [&quot;W505&quot;]
+&quot;django/core/cache/*&quot; = [&quot;W505&quot;]
+&quot;django/core/checks/*&quot; = [&quot;W505&quot;]
+&quot;django/core/files/*&quot; = [&quot;W505&quot;]
+&quot;django/core/handlers/*&quot; = [&quot;W505&quot;]
+&quot;django/core/mail/*&quot; = [&quot;W505&quot;]
+&quot;django/core/serializers/*&quot; = [&quot;W505&quot;]
+&quot;django/core/servers/*&quot; = [&quot;W505&quot;]
+</code></pre>
+<p>Without any <code>per-file-ignores</code>:</p>
+<pre><code class="language-console">$ time pre-commit run ruff -a
+
+ruff.....................................................................Failed
+- hook id: ruff
+- exit code: 1
+
+django/core/files/locks.py:9:89: E501 Line too long (98 &gt; 88 characters)
+Found 1 error(s).
+
+
+________________________________________________________
+Executed in  565.17 millis    fish           external
+   usr time  214.06 millis    0.07 millis  213.99 millis
+   sys time  627.89 millis    1.39 millis  626.50 millis
+</code></pre>
+<p>With the <code>per-file-ignores</code> above:</p>
+<pre><code class="language-console">$ time pre-commit run ruff -a
+
+ruff.....................................................................Failed
+- hook id: ruff
+- exit code: 1
+
+django/core/files/locks.py:9:89: E501 Line too long (98 &gt; 88 characters)
+Found 1 error(s).
+
+
+________________________________________________________
+Executed in    3.86 secs    fish           external
+   usr time    3.44 secs    0.07 millis    3.44 secs
+   sys time    0.73 secs    1.15 millis    0.73 secs
+</code></pre>
+<p>Note that:</p>
+<ul>
+<li>It is also reproducible outside of <code>pre-commit</code>, by for instance running <code>ruff $(find . -type f -name '*.py')</code></li>
+<li>The performance overhead does NOT happen if not passing files one by one, by for instance simply running <code>ruff .</code></li>
+</ul>
+<p>Output of <code>ruff --version</code>:</p>
+<pre><code class="language-console">ruff 0.0.231
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 14:03</div>
+            <div class="timeline-body"><p>Thanks for filing -- super interesting :) I'd be very surprised if we can't improve this significantly. I'll try to take a look today to at least diagnose the issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2023-01-25 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-25 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 18:32</div>
+            <div class="timeline-body"><p>It looks like we're loading and parsing the configuration file a zillion times here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2165.html">astral-sh/ruff#2165</a> on 2023-01-25 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-25 18:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support `UV_ONLY_BINARY` and `UV_NO_BINARY` environment variables - astral-sh/uv #4291</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support `UV_ONLY_BINARY` and `UV_NO_BINARY` environment variables</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/4291">#4291</a>
+        opened by <a href="https://github.com/njzjz">@njzjz</a>
+        on 2024-06-12 22:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/njzjz">@njzjz</a> on 2024-06-12 22:09</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>This is useful with cibuildwheel or some other complicated tools in the CI environment.</p>
+<p>pip has similiar <code>PIP_NO_BINARY</code> and <code>PIP_ONLY_BINARY</code>: https://pip.pypa.io/en/latest/cli/pip_install/#cmdoption-no-binary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1794.html">astral-sh/uv#1794</a> on 2024-06-12 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-13 00:50</div>
+            <div class="timeline-body"><p>I think we've avoided this because we're not interested in supporting the pip syntax outside of the pip interface. Maybe we could namespace them e.g. <code>UV_PIP_NO_BINARY</code> in the meantime?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2024-06-13 00:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-08-13 03:07</div>
+            <div class="timeline-body"><p>Some of them are available, though, like <code>UV_CONSTRAINT</code>, <code>UV_INDEX_URL</code>, <code>UV_EXTRA_INDEX_URL</code>, and <code>UV_BREAK_SYSTEM_PACKAGES</code>. I don't really care what it's called, but it would be nice to have, as you can't pass flags through inside cibuildwheel to every command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6428.html">astral-sh/uv#6428</a> on 2024-08-23 01:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sanmai-NL">@sanmai-NL</a> on 2024-09-24 09:22</div>
+            <div class="timeline-body"><p>@zanieb Please consider that other package managers also support this, since it's a genuinely useful feature for containerized builds, and not just a Pip feature.</p>
+<ul>
+<li><a href="https://pdm-project.org/latest/usage/lockfile/#set-acceptable-format-for-locking-or-installing">PDM</a></li>
+<li><a href="https://python-poetry.org/docs/configuration/#installerno-binary">Poetry</a> (no env var, but functionally somewhat equivalent persistent config).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-24 13:02</div>
+            <div class="timeline-body"><p>@sanmai-NL we do support this via persistent configuration, e.g.,</p>
+<ul>
+<li>https://docs.astral.sh/uv/reference/settings/#no-binary</li>
+<li>https://docs.astral.sh/uv/reference/settings/#no-binary-package</li>
+<li>https://docs.astral.sh/uv/reference/settings/#no-build</li>
+<li>https://docs.astral.sh/uv/reference/settings/#no-build-package</li>
+</ul>
+<p>Since our top-level settings differ from pip (we don't use <code>:all:</code>, we have a dedicated flag instead), I'm not sure how best to introduce environment variables for this.</p>
+<p>I guess:</p>
+<pre><code>UV_NO_BINARY=1
+UV_NO_BINARY_PACKAGE=&quot;foo bar&quot;
+</code></pre>
+<p>And <code>uv pip</code> users would need to use the new syntax too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lengau">@lengau</a> on 2025-02-06 15:03</div>
+            <div class="timeline-body"><p>Yeah, having environment variables available for this would be very useful for us. We have two different build environments we use, and neither of them make it particularly easy to add the <code>--no-binary</code> argument in the cases where we need it, but both make it really easy to add environment variables. I like @zanieb 's most recent suggestion for how to do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 16:59</div>
+            <div class="timeline-body"><p>I'm happy to review a contribution adding the variables described.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-02-06 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11399.html">astral-sh/uv#11399</a> on 2025-02-10 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lengau">@lengau</a> on 2025-02-10 20:08</div>
+            <div class="timeline-body"><p>I've added a version that handles build commands at https://github.com/astral-sh/uv/pull/11399.</p>
+<p>Unfortunately, when doing so I noticed that the build commands and <code>uv pip</code> work somewhat differently, so I wanted to run my potential implementation up the flagpole before doing it.</p>
+<p>The problem is that <code>uv pip</code>, like <code>pip</code>, has order-dependent instances of <code>--no-binary</code> and similar, and it does accept the special values of <code>:all:</code> and <code>:none</code>. My proposal therefore is to use a similar behaviour to how <code>pip</code> itself handles the environment variables, but to also handle the way <code>uv pip</code> handles them.</p>
+<ol>
+<li>If <code>UV_NO_BINARY</code> is true, <code>uv pip</code> commands treat that as equivalent to <code>uv pip &lt;cmd&gt; --no-binary=:all: [...]</code>.</li>
+<li>If <code>UV_NO_BINARY_PACKAGE</code> is set, <code>uv pip</code> commands treat that as equivalent to <code>uv pip &lt;cmd&gt; --no-binary=&lt;package&gt; [repeated for each unpacked package name] [...]</code></li>
+</ol>
+<p>This is a special case only needed for pip commands because of how they work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-10 21:06</div>
+            <div class="timeline-body"><p>Yeah we'd reuse the top-level uv semantics in <code>uv pip</code>, that sounds correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11963.html">astral-sh/uv#11963</a> on 2025-03-05 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-05 00:19</div>
+            <div class="timeline-body"><p>Done in #11399</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-03-05 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-05 00:20</div>
+            <div class="timeline-body"><p>Oops, not done — not handled in <code>uv pip</code> yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2025-03-05 00:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

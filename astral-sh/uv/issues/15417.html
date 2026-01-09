@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relative path inconsistency in uv.lock for cache_dir at different depths - astral-sh/uv #15417</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Relative path inconsistency in uv.lock for cache_dir at different depths</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15417">#15417</a>
+        opened by <a href="https://github.com/xcorp">@xcorp</a>
+        on 2025-08-21 14:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/xcorp">@xcorp</a> on 2025-08-21 14:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><strong>Summary:</strong></p>
+<p>When two people check out the same project at different paths relative to <code>UV_CACHE_DIR</code>, the relative paths written in <code>uv.lock</code> differ for each user. This is because the paths are currently calculated relative to the project directory rather than the cache directory. Although the paths will be recalculated as needed and do not prevent the project from working, this inconsistency leads to unnecessary modifications in the <code>uv.lock</code> file. As a result, Git will show the lock file as changed, even when there are no real updates, such as new package versions, that need to be committed. This creates confusion and noise in version control, making it harder to track legitimate changes to dependencies.</p>
+<p><strong>Minimal reproducible example:</strong></p>
+<ol>
+<li>Person A checks out the project at <code>/home/alice/project</code> and has <code>UV_CACHE_DIR</code> at <code>/home/alice/.cache/uv</code>.</li>
+<li>Person B checks out the same project at <code>/Users/bob/dev/project</code> and has <code>UV_CACHE_DIR</code> at <code>/Users/bob/.cache/uv</code>.</li>
+<li>Run <code>uv</code> in both environments to generate a <code>uv.lock</code> file (e.g., <code>uv pip install -r requirements.txt</code>).</li>
+<li>Observe that the relative paths written in <code>uv.lock</code> differ based on the depth of the project relative to the cache directory.</li>
+<li>Use <code>git status</code> and see that <code>uv.lock</code> is marked as modified, even though no package changes occurred.</li>
+</ol>
+<p><strong>Expected behavior:</strong>
+Relative paths in <code>uv.lock</code> should always be resolved relative to <code>UV_CACHE_DIR</code>, not the project directory, so that the lock file is consistent regardless of where the project is checked out.</p>
+<p><strong>Actual behavior:</strong>
+Relative paths in <code>uv.lock</code> are currently calculated relative to the project directory, resulting in inconsistencies when the project is checked out at different depths compared to the cache directory. This leads to unnecessary changes being detected by Git.</p>
+<p><strong>Proposed solution:</strong>
+Keep all paths in the <code>uv.lock</code> file relative to <code>UV_CACHE_DIR</code>, not the project directory.</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04.1 LTS (Noble Numbat), x86_64  Linux 6.6.87.2-microsoft-standard-WSL2 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.8.4</p>
+<h3>Python version</h3>
+<p>Python 3.11.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @xcorp on 2025-08-21 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-21 23:26</div>
+            <div class="timeline-body"><p>Are you able to create a minimal reproduction? Like, what requirements need to be present in the projects to trigger this? I don't think the lockfile should ever contain paths relative to the cache -- the paths are supposed to be relative to the root of the project directory, so a reproducible example would be helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-08-21 23:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xcorp">@xcorp</a> on 2025-08-25 09:48</div>
+            <div class="timeline-body"><p>Minimal repo can be found at https://github.com/xcorp/uv-issue-15417
+The problem only occurs if I have packages with &quot;external&quot; sources, like github, so if I remove the package vsphere-automation-sdk there are no cache-paths at all in the lock file. I know that that specific package is a mess, but I also have internally hosted packges that was removed from the example dependency list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xcorp">@xcorp</a> on 2025-09-04 05:44</div>
+            <div class="timeline-body"><p>Don't know if you saw my repo for reproduction @charliermarsh, sorry about the tagging if you already saw it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-04 14:53</div>
+            <div class="timeline-body"><p>Thanks! We'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2025-09-04 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-09-04 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-06 02:48</div>
+            <div class="timeline-body"><p>Ahh thanks. I understand. This would be solved by https://github.com/astral-sh/uv/pull/10072.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10072.html">astral-sh/uv#10072</a> on 2025-10-14 06:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

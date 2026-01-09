@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usage message is misleading when SubcommandsNegateReqs is used - clap-rs/clap #871</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Usage message is misleading when SubcommandsNegateReqs is used</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/871">#871</a>
+        opened by <a href="https://github.com/malbarbo">@malbarbo</a>
+        on 2017-02-22 15:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/malbarbo">@malbarbo</a> on 2017-02-22 15:48</div>
+            <div class="timeline-body"><h3>Affected Version of clap</h3>
+<p>2.20.5</p>
+<h3>Expected Behavior Summary</h3>
+<p>Show a usage message that is more accurate, like</p>
+<pre><code>USAGE:
+    16_app_settings (&lt;input&gt; | SUBCOMMAND)
+</code></pre>
+<p>or</p>
+<pre><code>USAGE:
+    16_app_settings &lt;input&gt;
+    16_app_settings SUBCOMMAND
+</code></pre>
+<p>With flags it become more difficult to write a usage message...</p>
+<h3>Actual Behavior Summary</h3>
+<p>Show a usage message that is misleading</p>
+<pre><code>myapp 
+
+USAGE:
+    16_app_settings &lt;input&gt; [SUBCOMMAND]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    &lt;input&gt;    input file to use
+
+SUBCOMMANDS:
+    help    Prints this message or the help of the given subcommand(s)
+    test    does some testing
+</code></pre>
+<p>This suggests that a subcommand can be used after <code>&lt;input&gt;</code> but it cannot.</p>
+<h3>Steps to Reproduce the issue</h3>
+<pre><code>cargo run --example 16_app_settings -- -h
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-02-22 20:40</div>
+            <div class="timeline-body"><p>Good catch, I agree. I tend to like the dual line usage, but that may be slightly harder to implement in current clap. I'll play with it and see.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> added by @kbknapp on 2017-02-22 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: usage strings</span> added by @kbknapp on 2017-02-22 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2017-02-22 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2017-02-22 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2017-02-22 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-02-22 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.20.6" by @kbknapp on 2017-02-22 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wfraser">@wfraser</a> on 2017-02-25 07:45</div>
+            <div class="timeline-body"><p>I noticed that in addition to showing the <input> arg in the help for the main command, it also shows it in the help for the subcommand, but DOES NOT show it if you give a value for it. Really weird.</p>
+<p>I.e.:</p>
+<pre><code>extern crate clap;
+use clap::{Arg, SubCommand};
+
+fn main() {
+    let args = clap::App::new(&quot;&quot;)
+        .arg(Arg::with_name(&quot;input&quot;)
+            .required(true)
+            .help(&quot;the input&quot;))
+        .subcommand(SubCommand::new(&quot;test&quot;))
+        .get_matches();
+
+    println!(&quot;{:#?}&quot;, args);
+}
+</code></pre>
+<pre><code>$ cargo run -- --help
+   Compiling clap-experiments v0.1.0 (file:///D:/code/clap-experiments)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.22 secs
+     Running `target\debug\clap-experiments.exe --help`
+
+
+USAGE:
+    clap-experiments.exe &lt;input&gt; [SUBCOMMAND]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    &lt;input&gt;    the input
+
+SUBCOMMANDS:
+    help    Prints this message or the help of the given subcommand(s)
+    test
+</code></pre>
+<pre><code>$ cargo run -- test --help
+    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
+     Running `target\debug\clap-experiments.exe test --help`
+clap-experiments.exe-test
+
+USAGE:
+    clap-experiments.exe &lt;input&gt; test
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+</code></pre>
+<pre><code>$ cargo run -- foo test --help
+    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
+     Running `target\debug\clap-experiments.exe foo test --help`
+clap-experiments.exe-test
+
+USAGE:
+    clap-experiments.exe test
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+</code></pre>
+<p>Note how in the last example, the <code>&lt;input&gt;</code> parameter is gone from the help text.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/883.html">clap-rs/clap#883</a> on 2017-03-02 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2017-03-11 18:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv incorrectly thinks a 3.13t venv doesn't satisfy &gt;=3.8 - astral-sh/uv #12445</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv incorrectly thinks a 3.13t venv doesn't satisfy &gt;=3.8</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12445">#12445</a>
+        opened by <a href="https://github.com/ngoldbaum">@ngoldbaum</a>
+        on 2025-03-24 18:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ngoldbaum">@ngoldbaum</a> on 2025-03-24 18:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm trying to run the tests for the python bindings for <code>kornia-rs</code> on the free-threaded build and noticed this strange behavior in a folder that has an existing 3.13t venv:</p>
+<pre><code>± uv run -v maturin develop -m Cargo.toml
+DEBUG uv 0.6.9 (3d9460278 2025-03-20)
+DEBUG Found project root: `/Users/goldbaum/Documents/kornia-rs/kornia-py`
+DEBUG No workspace root found, using project root
+DEBUG Discovered project `kornia-rs` at: /Users/goldbaum/Documents/kornia-rs/kornia-py
+DEBUG Acquired lock for `/Users/goldbaum/Documents/kornia-rs/kornia-py`
+DEBUG Using Python request `&gt;=3.8` from `requires-python` metadata
+DEBUG Checking for Python environment at `.venv`
+DEBUG The virtual environment's Python version does not satisfy `&gt;=3.8`
+DEBUG Searching for Python &gt;=3.8 in managed installations or search path
+DEBUG Searching for managed installations at `/Users/goldbaum/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.13.0+freethreaded-macos-aarch64-none`
+DEBUG Found `cpython-3.13.0+freethreaded-macos-aarch64-none` at `/Users/goldbaum/.local/share/uv/python/cpython-3.13.0+freethreaded-macos-aarch64-none/bin/python3.13t` (managed installations)
+DEBUG Skipping interpreter at `/Users/goldbaum/.local/share/uv/python/cpython-3.13.0+freethreaded-macos-aarch64-none/bin/python3.13t` from managed installations: does not satisfy request `&gt;=3.8`
+DEBUG Found managed installation `cpython-3.11.10-macos-aarch64-none`
+DEBUG Found `cpython-3.11.10-macos-aarch64-none` at `/Users/goldbaum/.local/share/uv/python/cpython-3.11.10-macos-aarch64-none/bin/python3.11` (managed installations)
+Using CPython 3.11.10
+</code></pre>
+<p>IMO this is wrong and uv should pick 3.13t.</p>
+<p>To reproduce this with <code>kornia-rs</code>, do:</p>
+<pre><code>$ git clone git@github.com:kornia/kornia-rs.git
+$ cd kornia-rs/kornia-py
+$ just install-dev
+$ uv run -v maturin develop -m Cargo.toml
+</code></pre>
+<p>I haven't checked if this happens in a simpler setup.</p>
+<h3>Platform</h3>
+<p>MacOS 15.3.2 on a M3 Macbook Pro</p>
+<h3>Version</h3>
+<p>uv 0.6.9 (3d9460278 2025-03-20</p>
+<h3>Python version</h3>
+<p>n/a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ngoldbaum on 2025-03-24 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv incorrectly thinks a 3.13t interpreter doesn't satisfy >=3.8" to "uv incorrectly thinks a 3.13t venv doesn't satisfy >=3.8" by @ngoldbaum on 2025-03-24 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../kornia/kornia-rs/issues/226.html">kornia/kornia-rs#226</a> on 2025-03-24 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngoldbaum">@ngoldbaum</a> on 2025-03-25 14:29</div>
+            <div class="timeline-body"><p>Sorry to bother you @zanieb - is this a real bug or a PEBCAK issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-25 17:25</div>
+            <div class="timeline-body"><p>This sounds like a bug, we should allow a discovered environment to meet this request in a project context. I think it might be a bit tricky to fix, because outside of a project if you did <code>uv python find '&gt;=3.8'</code> we would not want to select a free-threaded interpreter without opt-in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-03-25 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15756.html">astral-sh/uv#15756</a> on 2025-09-09 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15739.html">astral-sh/uv#15739</a> on 2025-09-16 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-16 23:08</div>
+            <div class="timeline-body"><p>I took a second to look at this and I think we need to change</p>
+<p>https://github.com/astral-sh/uv/blob/8f3583a6e63800b770fec3b7be9b754be9d65602/crates/uv-python/src/discovery.rs#L1673</p>
+<p>to avoid filtering the interpreter too aggressively and add some other handling to avoid selection of free-threaded interpreters when not desired.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16142.html">astral-sh/uv#16142</a> on 2025-10-06 23:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-10-07 16:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

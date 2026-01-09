@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;Permission denied&quot; error inside Codex sandbox on Linux - astral-sh/uv #16820</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;Permission denied&quot; error inside Codex sandbox on Linux</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16820">#16820</a>
+        opened by <a href="https://github.com/joliss">@joliss</a>
+        on 2025-11-23 00:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joliss">@joliss</a> on 2025-11-23 00:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Running uv from inside a Codex sandbox, both as a VS Code extension and as the CLI tool, causes a &quot;Permission denied&quot; error on my Ubuntu system:</p>
+<pre><code>$ npx @openai/codex
+› run `uv run --verbose python3 -c 'print(&quot;hello world&quot;)'`
+
+
+• Ran uv run --verbose python3 -c 'print(&quot;hello world&quot;)'
+  └ DEBUG uv 0.9.11
+    error: failed to open file `/home/ubuntu/.cache/uv/sdists-v9/.git`: Permission denied (os error 13)
+</code></pre>
+<p>It now tries to re-run with <code>with_escalated_permissions=true</code> on its tool call, which succeeds:</p>
+<pre><code>• Running uv run --verbose python3 -c 'print(&quot;hello world&quot;)'
+
+
+  Would you like to run the following command?
+
+  Reason: Requires access to uv cache directory outside sandbox; rerunning without sandbox to complete user command
+
+  $ uv run --verbose python3 -c 'print(&quot;hello world&quot;)'
+
+› 1. Yes, proceed (y)
+  2. Yes, and don't ask again for this command (a)
+  3. No, and tell Codex what to do differently (esc)
+
+• Ran uv run --verbose python3 -c 'print(&quot;hello world&quot;)'
+  └ DEBUG uv 0.9.11
+    DEBUG Acquired shared lock for `/home/ubuntu/.cache/uv`
+    … +53 lines
+    DEBUG Command exited with code: 0
+    DEBUG Released lock at `/home/ubuntu/.cache/uv/.lock`
+</code></pre>
+<p>If I ask it to run <code>uv run --verbose python3 -c 'print(&quot;hello world&quot;)' &amp;&gt; log</code>, I can see that the debug output inside the sandbox is only the following:</p>
+<pre><code>DEBUG uv 0.9.11
+error: failed to open file `/home/ubuntu/.cache/uv/sdists-v9/.git`: Permission denied (os error 13)
+</code></pre>
+<p>If I try to read the offending file directly, there's no error:</p>
+<pre><code>› run `cat /home/ubuntu/.cache/uv/sdists-v9/.git`
+
+
+• Explored
+  └ Read .git
+
+─ Worked for 4s ───────────────
+
+• cat /home/ubuntu/.cache/uv/sdists-v9/.git produced no output (file is empty).
+</code></pre>
+<p>If there's anything I can do to help debug the problem, please let me know!</p>
+<p>This is happening with the latest uv and codex, but it's been happening for a while, so I don't think it's a newly-introduced problem.</p>
+<p>codex-cli version: 0.63.0</p>
+<h3>Platform</h3>
+<p>Ubuntu 25.04</p>
+<h3>Version</h3>
+<p>uv 0.9.11</p>
+<h3>Python version</h3>
+<p>Python 3.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @joliss on 2025-11-23 00:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-23 15:16</div>
+            <div class="timeline-body"><p>Can you share verbose logs for the failing uv invocation?</p>
+<p>Did you open an issue with Codex too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joliss">@joliss</a> on 2025-11-23 21:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you share verbose logs for the failing uv invocation?</p>
+</blockquote>
+<p>Running <code>uv run --verbose python3 -c 'print(&quot;hello world&quot;)' &amp;&gt; log</code> inside Codex only produces</p>
+<pre><code>DEBUG uv 0.9.11
+error: failed to open file `/home/ubuntu/.cache/uv/sdists-v9/.git`: Permission denied (os error 13)
+</code></pre>
+<p>Or was there anything else you want me to run from inside Codex?</p>
+<blockquote>
+<p>Did you open an issue with Codex too?</p>
+</blockquote>
+<p>Didn't yet! I'll go ahead and open one there as well, if you think that might be useful?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-23 23:29</div>
+            <div class="timeline-body"><p>Yeah could you? I'm not sure about the specifics of the Codex sandbox. I'm happy to help but it seems unlikely to me that the the fix will be on our end. The specific call that's failing is probably</p>
+<p>https://github.com/astral-sh/uv/blob/107d4e0ac71540059699b6136b000ba8a616ade2/crates/uv-cache/src/lib.rs#L412-L422</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../openai/codex/issues/7242.html">openai/codex#7242</a> on 2025-11-24 13:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

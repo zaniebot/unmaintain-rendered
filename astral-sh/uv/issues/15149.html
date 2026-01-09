@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failed to hardlink files with cache and target on same filesystem - astral-sh/uv #15149</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failed to hardlink files with cache and target on same filesystem</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15149">#15149</a>
+        opened by <a href="https://github.com/mpetruc">@mpetruc</a>
+        on 2025-08-07 20:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mpetruc">@mpetruc</a> on 2025-08-07 20:55</div>
+            <div class="timeline-body"><h3>Question</h3>
+<pre><code>export UV_CACHE_DIR='/home/user1/data/.cache/uv'
+export UV_TOOL_BIN_DIR='/home/user1/data/uv/tools'
+uv tool update-shell
+
+(base) [user1@login ~]$ df -T /home/user1/data/.cache/uv
+Filesystem                             Type    1K-blocks         Used   Available Use% Mounted on
+xxx:/mnt/yyy/data nfs4 150323855360 114649980928 35673874432  77% /mnt/yyy/data
+(base) [user1@login ~]$ df -T /home/user1/data/uv/tools
+Filesystem                             Type    1K-blocks         Used   Available Use% Mounted on
+xxx:/mnt/yyy/data nfs4 150323855360 114650914816 35672940544  77% /mnt/yyy/data
+
+df -T ~/.local/bin/uv
+Filesystem                             Type   1K-blocks        Used   Available Use% Mounted on
+xxx:/mnt/yyy/home nfs4 64424509440 21567635456 42856873984  34% /cluster/yyy/home
+
+uv tool install some_tool
+Resolved 32 packages in 552ms
+░░░░░░░░░░░░░░░░░░░░ [0/32] Installing wheels...                                                                    
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+</code></pre>
+<p>In addition to cache and target being on the same filesystem, does the uv binary have to be on the same file system as well?</p>
+<p>Thanks.</p>
+<h3>Platform</h3>
+<p>AlmaLinux 8.10 (Cerulean Leopard)</p>
+<h3>Version</h3>
+<p>0.6.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @mpetruc on 2025-08-07 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-07 20:59</div>
+            <div class="timeline-body"><p>We need to know your platform and uv version. Share verbose logs too. See #9452.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-07 21:00</div>
+            <div class="timeline-body"><p>You're using an NFS? Does your NFS support hard links?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mpetruc">@mpetruc</a> on 2025-08-08 20:58</div>
+            <div class="timeline-body"><p>Don't know if NSF supports hard links or not. The warning did not say anything about the <em>type</em> of filesystem, just that if the cache and target are on different file systems this might happen. They are not. However, it still &quot;Failed to hardlink files&quot;.
+Also,
+Platform
+AlmaLinux 8.10 (Cerulean Leopard)</p>
+<p>UV Version
+0.6.1</p>
+<p>thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-09 00:15</div>
+            <div class="timeline-body"><p>nfs4 <em>should</em> support hardlinks, I think we'll need to dig into why specifically the hard links are failing on your file system. Using multiple file systems is just the common case for them to fail.</p>
+<p>Can you share more information about your file system? What's the underlying file system on the server?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

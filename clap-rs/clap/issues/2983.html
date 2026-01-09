@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--help message randomly show and hide docs lines - clap-rs/clap #2983</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>--help message randomly show and hide docs lines</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2983">#2983</a>
+        opened by <a href="https://github.com/marcospb19">@marcospb19</a>
+        on 2021-11-02 17:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/marcospb19">@marcospb19</a> on 2021-11-02 17:37</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.58.0-nightly (e249ce6b2 2021-10-30)</p>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.5</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[clap(version, about)]
+pub struct Opts {
+    #[clap(subcommand)]
+    pub cmd: Subcommand,
+}
+
+// Ouch commands:
+// - `compress`
+// - `decompress`
+// - `list`
+//
+// Clap commands:
+//  - `help`
+/// Repository: https://github.com/ouch-org/ouch
+#[derive(Parser, PartialEq, Eq, Debug)]
+pub enum Subcommand {
+    Compress { output: String },
+}
+
+fn main() {
+    let _ = Opts::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -q -- --help</code></p>
+<h3>Actual Behaviour</h3>
+<p>This is a tricky one, if you copy my code example, here is the --help message:</p>
+<pre><code>teste 0.1.0
+
+
+
+USAGE:
+    teste &lt;SUBCOMMAND&gt;
+
+OPTIONS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+
+SUBCOMMANDS:
+    compress    
+    help        Print this message or the help of the given subcommand(s)
+</code></pre>
+<p>So, that <code>Repository</code> line does not appear in the help message :-1:, but if we change all the <code>//</code> comments to be <code>///</code> (to three slashes):</p>
+<pre><code>teste 0.1.0
+
+Ouch commands: - `compress` - `decompress` - `list`
+
+Clap commands: - `help` Repository: https://github.com/ouch-org/ouch
+
+USAGE:
+    teste &lt;SUBCOMMAND&gt;
+
+OPTIONS:
+    -h, --help
+            Print help information
+
+    -V, --version
+            Print version information
+
+SUBCOMMANDS:
+    compress
+            
+    help
+            Print this message or the help of the given subcommand(s)
+</code></pre>
+<p>Now it appears!! :+1:.</p>
+<p>Now try deleting the empty comment <code>&quot;///\n&quot;</code>. Does not appear anymore :-1:.
+Now you delete the <code>#[clap(version, about)]</code> line. Appears again :+1:.</p>
+<p>So, we went :-1: -&gt; :+1: -&gt; :-1: -&gt; :+1: just by making small random changes.</p>
+<h3>Expected Behaviour</h3>
+<p>I assume it should be consistent and always show that repository line.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p>With the starter code:</p>
+<pre><code>[            clap::build::app] 	App::_do_parse
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_propagate:teste
+[            clap::build::app] 	App::_check_help_and_version
+[            clap::build::app] 	App::_check_help_and_version: Building help subcommand
+[            clap::build::app] 	App::_propagate_global_args:teste
+[            clap::build::app] 	App::_derive_display_order:teste
+[            clap::build::app] 	App::_derive_display_order:compress
+[            clap::build::app] 	App::_derive_display_order:help
+[clap::build::app::debug_asserts] 	App::_debug_asserts
+[clap::build::arg::debug_asserts] 	Arg::_debug_asserts:help
+[clap::build::arg::debug_asserts] 	Arg::_debug_asserts:version
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[         clap::parse::parser] 	Parser::_verify_positionals
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--help&quot;)' ([45, 45, 104, 101, 108, 112])
+[         clap::parse::parser] 	Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser] 	Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser] 	Parser::possible_subcommand: arg=RawOsStr(&quot;--help&quot;)
+[         clap::parse::parser] 	Parser::get_matches_with: sc=None
+[         clap::parse::parser] 	Parser::parse_long_arg
+[         clap::parse::parser] 	Parser::parse_long_arg: cur_idx:=1
+[         clap::parse::parser] 	Parser::parse_long_arg: Does it contain '='...
+[         clap::parse::parser] 	No
+[         clap::parse::parser] 	Parser::parse_long_arg: Found valid opt or flag '--help'
+[         clap::parse::parser] 	Parser::check_for_help_and_version_str
+[         clap::parse::parser] 	Parser::check_for_help_and_version_str: Checking if --RawOsStr(&quot;help&quot;) is help or version...
+[         clap::parse::parser] 	Help
+[         clap::parse::parser] 	Parser::get_matches_with: After parse_long_arg HelpFlag
+[         clap::parse::parser] 	[         clap::parse::parser] 	Parser::use_long_help
+Parser::help_err: use_long=false
+[         clap::parse::parser] 	Parser::use_long_help
+[          clap::output::help] 	Help::new
+[          clap::output::help] 	Help::write_help
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_templated_help
+[          clap::output::help] 	Help::write_before_help
+[          clap::output::help] 	Help::write_bin_name
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={}
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[]
+[         clap::output::usage] 	Usage::needs_options_tag
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=help
+[         clap::output::usage] 	Usage::needs_options_tag:iter Option is built-in
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=version
+[         clap::output::usage] 	Usage::needs_options_tag:iter Option is built-in
+[         clap::output::usage] 	Usage::needs_options_tag: [OPTIONS] not required
+[         clap::output::usage] 	Usage::create_help_usage: usage=teste &lt;SUBCOMMAND&gt;
+[          clap::output::help] 	Help::write_all_args
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	should_show_arg: use_long=false, arg=version
+[          clap::output::help] 	Help::write_args
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_args: Current Longest...2
+[          clap::output::help] 	Help::write_args: New Longest...6
+[          clap::output::help] 	should_show_arg: use_long=false, arg=version
+[          clap::output::help] 	Help::write_args: Current Longest...6
+[          clap::output::help] 	Help::write_args: New Longest...9
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::spec_vals: a=--help
+[          clap::output::help] 	should_show_arg: use_long=false, arg=version
+[          clap::output::help] 	Help::spec_vals: a=--version
+[          clap::output::help] 	Help::spec_vals: a=--help
+[          clap::output::help] 	Help::short
+[          clap::output::help] 	Help::long
+[          clap::output::help] 	Help::val: arg=help
+[          clap::output::help] 	Help::val: Has switch...
+[          clap::output::help] 	Yes
+[          clap::output::help] 	Help::val: nlh...false
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::spec_vals: a=--version
+[          clap::output::help] 	Help::short
+[          clap::output::help] 	Help::long
+[          clap::output::help] 	Help::val: arg=version
+[          clap::output::help] 	Help::val: Has switch...
+[          clap::output::help] 	Yes
+[          clap::output::help] 	Help::val: nlh...false
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::write_subcommands
+[          clap::output::help] 	Help::write_subcommands longest = 8
+[          clap::output::help] 	Help::sc_spec_vals: a=compress
+[          clap::output::help] 	Help::sc_spec_vals: a=help
+[          clap::output::help] 	Help::write_subcommand
+[          clap::output::help] 	Help::sc_spec_vals: a=compress
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::write_subcommand
+[          clap::output::help] 	Help::sc_spec_vals: a=help
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::write_after_help
+[           clap::output::fmt] 	is_a_tty: stderr=false
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @marcospb19 on 2021-11-02 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcospb19">@marcospb19</a> on 2021-11-02 17:38</div>
+            <div class="timeline-body"><p>Sent here by @epage, issue happened in <a href="https://github.com/ouch-org/ouch/blob/cd77b987ac48183fc254862bb0463092233eb8cd/src/opts.rs#L22-L32">this piece of code in one of my projects</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-02 17:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Now try deleting the empty comment &quot;///\n&quot;. Does not appear anymore</p>
+</blockquote>
+<p>Which empty comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcospb19">@marcospb19</a> on 2021-11-02 17:47</div>
+            <div class="timeline-body"><p>(first step)</p>
+<pre><code class="language-rust">// Ouch commands:
+// - `compress`
+// - `decompress`
+// - `list`
+//
+// Clap commands:
+//  - `help`
+/// Repository: https://github.com/ouch-org/ouch
+</code></pre>
+<p>(second step)</p>
+<pre><code class="language-rust">/// Ouch commands:
+/// - `compress`
+/// - `decompress`
+/// - `list`
+///
+/// Clap commands:
+///  - `help`
+/// Repository: https://github.com/ouch-org/ouch
+</code></pre>
+<p>@epage then you delete that &quot;///&quot; blank line at the middle, leaving this:</p>
+<p>(third step)</p>
+<pre><code class="language-rust">/// Ouch commands:
+/// - `compress`
+/// - `decompress`
+/// - `list`
+/// Clap commands:
+///  - `help`
+/// Repository: https://github.com/ouch-org/ouch
+</code></pre>
+<p>Sorry for the confusion, this bug has too many steps to reproduce, maybe I even reported more than one bug at the same time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-02 18:06</div>
+            <div class="timeline-body"><p>Ok, let's break down all of the parts</p>
+<ul>
+<li>We treat everything in the doc comment until the first blank line as part of the <code>about</code>, which is why the blank line is important</li>
+<li>If there is no blank line, we do not populate <code>long_about</code> and the last <code>about</code> wins, which is from the <code>Cargo.toml</code> in this case</li>
+<li>When there is a blank line, we set <code>long_about</code> but nothing after it overrides it, so it wins</li>
+<li>Ideally, <code>flatten</code> and <code>subcommand</code> would not cause us to pull in their doc comments (see https://github.com/clap-rs/clap/issues/2894)</li>
+</ul>
+<p>Ok, I think I covered it all</p>
+<p>The challenge is in solutions because we can't introspect across items</p>
+<ul>
+<li>#2894 which is big and might have some negative side effects</li>
+<li>We could always set <code>long_about</code> but we do some conditional logic based on if <code>long_about</code> is used anywhere.  We'd have to dig in to see what the consequences would be</li>
+<li>Like with <code>help_heading</code>, we could allow users to set <code>long_about</code> (and more) to default.  <code>clap_derive</code> could do this wherever it currently only sets <code>about</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-02 18:16</div>
+            <div class="timeline-body"><p>Looks like if we always set <code>long_about</code>, it'll just cause long help to show up in errors, which seems pretty easy to do</p>
+<pre><code>    fn help_err(&amp;self, mut use_long: bool) -&gt; ClapError {
+        debug!(
+            &quot;Parser::help_err: use_long={:?}&quot;,
+            use_long &amp;&amp; self.use_long_help()
+        );
+
+        use_long = use_long &amp;&amp; self.use_long_help();
+        ...
+    }
+
+    ...
+
+    fn use_long_help(&amp;self) -&gt; bool {
+        debug!(&quot;Parser::use_long_help&quot;);
+        // In this case, both must be checked. This allows the retention of
+        // original formatting, but also ensures that the actual -h or --help
+        // specified by the user is sent through. If HiddenShortHelp is not included,
+        // then items specified with hidden_short_help will also be hidden.
+        let should_long = |v: &amp;Arg| {
+            v.long_about.is_some()
+                || v.is_set(ArgSettings::HiddenLongHelp)
+                || v.is_set(ArgSettings::HiddenShortHelp)
+        };
+
+        self.app.long_about.is_some()
+            || self.app.before_long_help.is_some()
+            || self.app.after_long_help.is_some()
+            || self.app.args.args().any(should_long)
+            || self.app.subcommands.iter().any(|s| s.long_about.is_some())
+    }
+</code></pre>
+<ul>
+<li>That <code>&amp;&amp;</code> is important, it means we will only do this if something else is also requesting long help</li>
+<li>It looks like the only end-user consequence of <code>long_about</code> being set to <code>about</code> is the long help cases (like <code>--help</code>) we'll have the <code>about</code> on the next line rather than doing them all same-line with alignment<ul>
+<li>All other consequences can only be hit when long about is used, like choosing what is hidden in short vs long</li>
+</ul>
+</li>
+</ul>
+<p>This might be a good enough workaround until we can get a better solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ouch-org/ouch/issues/185.html">ouch-org/ouch#185</a> on 2021-11-11 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3036.html">clap-rs/clap#3036</a> on 2021-11-18 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @epage on 2021-11-30 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/514.html">TeXitoi/structopt#514</a> on 2021-11-30 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/232.html">epage/clapng#232</a> on 2021-12-06 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3127.html">clap-rs/clap#3127</a> on 2021-12-10 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-13 22:09</div>
+            <div class="timeline-body"><p>My current proposal is</p>
+<ul>
+<li>Switch about/long_about to accepting <code>impl Into&lt;Option&gt;</code>s.  If its <code>None</code>, it resets back to default</li>
+<li><code>clap_derive</code>s <code>about</code>-only call will now also call <code>long_about(None)</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @epage on 2021-12-13 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2021-12-13 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-13 22:19</div>
+            <div class="timeline-body"><p>I am confused by your proposal. How does that solve this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-14 00:24</div>
+            <div class="timeline-body"><p>There are two framings for this problem</p>
+<ol>
+<li>Doc comments from a <code>flatten</code> or <code>subcommand</code> should not impact what they are being brought into (#2894)</li>
+</ol>
+<p>This is bigger and riskier.</p>
+<ol start="2">
+<li>The inconsistent application of <code>about</code> vs <code>long_about</code>.  This is what my proposal is meant to solve</li>
+</ol>
+<p>We end up with</p>
+<pre><code class="language-rust">app
+    .about(subcommand_doc_comment_summary)
+    .long_about(subcommand_doc_comment)
+    .about(parser_doc_comment_summary)
+</code></pre>
+<p>My proposal is to switch us to</p>
+<pre><code class="language-rust">app
+    .about(subcommand_doc_comment_summary)
+    .long_about(subcommand_doc_comment)
+    .about(parser_doc_comment_summary)
+    .long_about(None)  // resets the field to default
+</code></pre>
+<p>By us always pairing them together when applying doc comments, we get a more consistent experience.</p>
+<p>Granted, there is still <code>#[clap(about)]</code> overriding <code>parser_doc_comment_summary</code> but not  <code>parser_doc_comment</code>.  Someone could handle that by <code>#[clap(about, long_about = None)]</code>.  The main issue is being aware of it to do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-14 16:31</div>
+            <div class="timeline-body"><p>#3175 shows what I'm talking about.  I even have a distinct commit for the test passing with the broken behavior before I change it so it  passes with the correct behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3175.html">clap-rs/clap#3175</a> on 2021-12-14 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-14 17:20</div>
+            <div class="timeline-body"><p>From @pksunkara  in #3175</p>
+<blockquote>
+<p>So, my main concern with the proposal (and this PR) is that this would be redundant if we fix #2894. Especially since this contains an API change which doesn't mean anything else after that fix.</p>
+<p>I had always the view that #2894 is the root issue we need to concentrate but I never had the time.</p>
+</blockquote>
+<p>Earlier I had commented that #2894 is &quot;This is bigger and riskier.&quot;.   As I <a href="https://github.com/clap-rs/clap/issues/2894#issuecomment-957992808">mentioned</a> in #2894, there are some settings that are coupled to a <code>Subcommand</code>s behavior, like <code>UseLongFormatForHelpSubcommand</code>, <code>InferSubcommands</code>, or help heading defaults, where it would make sense to set these on the <code>Subcommand</code> to centralize all of the subcommand policy.</p>
+<p>Similarly, for <code>Args</code>, we have some settings on what is flattened, like <code>help_heading</code>.   #1887 is one example of where we might extend that.</p>
+<p>I'm concerned that trying to manage what can and can't be set in a <code>Subcommand</code> or an <code>Args</code> is going to take a decent amount of code, will be brittle as we forget to update this as new app settings become available, and when someone creatively comes up with a new idea, they will be blocked until a new clap release loosens the restrictions (looking at you, <code>clap_derive</code> inferred vs explicit error reporting that we've been slowly loosening)</p>
+<p>So I wonder if we should reject #2894.</p>
+<p>We can go on for a while debating and deciding what to do about #2894.  Its a big enough decision to commit to doing #2894 that I don't want to block other improvements on it.</p>
+<p>In addition, I'd like to see more of the API become consistent, as I mentioned in the commit message that changed the API.  We already support <code>Option</code> for <code>help_heading</code>.  This adds it to <code>about</code> / <code>long_about</code>, <code>help</code>, <code>long_help</code>.  In #1807 I proposed doing similar for display order.  I don't see this API change necessarily being bad.  I see it as an incremental step towards the future, consistent API which has trade offs that we'll need to address and maybe pivot as we actually get to issues like #2150.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-14 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2894.html">clap-rs/clap#2894</a> on 2021-12-14 18:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

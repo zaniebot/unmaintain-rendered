@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifying `tool.uv.sources` between production and development - astral-sh/uv #7945</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Modifying `tool.uv.sources` between production and development</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7945">#7945</a>
+        opened by <a href="https://github.com/iBuitron">@iBuitron</a>
+        on 2024-10-06 05:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/iBuitron">@iBuitron</a> on 2024-10-06 05:59</div>
+            <div class="timeline-body"><p>Hi!</p>
+<p>this is my pyproject.toml</p>
+<pre><code>[project]
+name = &quot;quickbio&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;pydantic&gt;=2.9.2&quot;,
+    &quot;pydantic-settings&gt;=2.5.2&quot;,
+    &quot;data-management-tools&quot;,
+    &quot;quickbio-books&quot;,
+    &quot;quickbio-diversity&quot;,
+    &quot;pandera&gt;=0.20.4&quot;,
+    &quot;pydantic-extra-types&gt;=2.9.0&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv.sources]
+data-management-tools = { path = &quot;../../data_management_tools&quot;, editable = true }
+quickbio-books = { path = &quot;../quickBio-books&quot;, editable = true }
+quickbio-diversity = { path = &quot;../quickbio_diversity&quot;, editable = true }
+</code></pre>
+<p>There is any way to use</p>
+<pre><code>data-management-tools
+quickbio-books
+quickbio-diversity 
+</code></pre>
+<p>with git urls at the same time as local path.</p>
+<p>What I mean is that I want to specify both paths, but for example when I'm working locally I use ../path, but when I use docker I use the git paths.
+Is there a way to do that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-06 14:44</div>
+            <div class="timeline-body"><p>Are you developing on a different platform than your Docker container? Like developing on macOS but using Linux for Docker?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iBuitron">@iBuitron</a> on 2024-10-06 16:16</div>
+            <div class="timeline-body"><p>No, all in Ubuntu.</p>
+<p>I have a script that changes dependencies when I'm on one branch or another, for example:
+If I'm on the dev branch, it uses the local path (in the pyproject.toml)
+If I run the script (specifying the &quot;main&quot; branch) it overwrites the pyproject.tom changing the local paths to git paths.</p>
+<p>What I want to know is if there is a way to avoid using the script I have, and for example, reading an environment variable, and thus using a group of dependencies (Git) over others (Local)</p>
+<p>dev branch:</p>
+<pre><code>data-management-tools = { path = &quot;../../data_management_tools&quot;, editable = true }
+quickbio-books = { path = &quot;../quickBio-books&quot;, editable = true }
+quickbio-diversity = { path = &quot;../quickbio_diversity&quot;, editable = true }
+</code></pre>
+<p>run script (and change to main):</p>
+<pre><code>data-management-tools = { git= &quot;GITPATH&quot; }
+quickbio-books = { git= &quot;GITPATH&quot; }
+quickbio-diversity = { git= &quot;GITPATH&quot; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-08 22:39</div>
+            <div class="timeline-body"><p>You might be able to do this with <code>--no-sources</code>? Like:</p>
+<pre><code class="language-toml">[project]
+name = &quot;quickbio&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;data-management-tools @ git+ GITPATH&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv.sources]
+data-management-tools = { path = &quot;../../data_management_tools&quot;, editable = true }
+</code></pre>
+<p>Then <code>uv sync</code> would install as editable, but <code>uv sync --no-sources</code> should install from Git.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-08 22:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-11 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iBuitron">@iBuitron</a> on 2024-10-14 03:18</div>
+            <div class="timeline-body"><p>@charliermarsh hi!
+Doesn't work :/</p>
+<pre><code>[project]
+name = &quot;quickbio-books&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;dash&gt;=2.18.1&quot;,
+    &quot;httpx&gt;=0.27.2&quot;,
+    &quot;odmantic&gt;=1.0.2&quot;,
+    &quot;pydantic&gt;=2.9.2&quot;,
+    &quot;pydantic-settings&gt;=2.5.2&quot;,
+    &quot;xmltodict&gt;=0.13.0&quot;,
+    &quot;pandas&gt;=2.2.3&quot;,
+    &quot;tabula&gt;=1.0.5&quot;,
+    &quot;pyreadr&gt;=0.5.2&quot;,
+    &quot;pyarrow&gt;=17.0.0&quot;,
+    &quot;dev-tools @ git+https://github.com/iBuitron/dev_tools.git&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.uv.sources]
+dev-tools = { path = &quot;../../dev_tools&quot;, editable = true }
+
+</code></pre>
+<pre><code>reveur@italobuitron:~/python/environmental/quickbio_books$ uv sync
+error: Failed to build: `quickbio-books @ file:///home/reveur/python/environmental/quickbio_books`
+  Caused by: Failed to parse entry for: `dev-tools`
+  Caused by: Can't combine URLs from both `project.dependencies` and `tool.uv.sources`
+</code></pre>
+<p><code>uv sync --no-sources Works</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-14 14:04</div>
+            <div class="timeline-body"><p>\cc @konstin -- do you think we should allow this? I kind of do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2024-10-14 14:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Usea local and git paths" to "Mixing local and Git paths between production and development" by @charliermarsh on 2024-10-14 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-14 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iBuitron">@iBuitron</a> on 2024-10-14 16:46</div>
+            <div class="timeline-body"><p>For example.
+Right now I'm using my own libraries that I use locally and that I change/evolve according to my needs so as not to have all my code coupled.</p>
+<p>quickbio_book depends on dev_tools
+quickbio depends on both quickbio_book and dev_tools
+and so on, all locally, all in --editable mode.</p>
+<p>but right now the limitation I have is that if I wanted to test it in docker, I would have to manually change all the local paths to the github repositories, and once tested, if I wanted to change something I would have to change it back to the local paths and then (again) change it to github to test it again in docker (so, for each of my libraries).</p>
+<p>I do all of this with a script, which is responsible for making all the changes and even uploading them to github, but I was wondering if there is a way for UV to take care of it.</p>
+<p>Maybe by creating a group where the libraries are specified in editable mode (dev) and in production mode, or by allowing you to read an environment variable with which UV allows you to use one over the other (like the marker platform).</p>
+<pre><code>[project]
+dependencies = [
+  &quot;httpx&quot;,
+]
+
+
+[tool.uv.sources]
+httpx = [
+  { path = &quot;../.../httpx&quot;,  custom_env_var= &quot;dev&quot; },
+  { git = &quot;https://github.com/encode/httpx&quot;, tag = &quot;0.24.1&quot;, custom_env_var = &quot;prod&quot; },
+]
+</code></pre>
+<p>If I set the environment variable &quot;custom_env_var&quot; == &quot;dev&quot; it would use the local.
+If I set the environment variable &quot;custom_env_var&quot; == &quot;prod&quot; it would use the git path.</p>
+<p>Of course, this is thought from my point of view in the development of my application (I am not a programmer as such, I am a Biologist who learned to program, maybe I am missing some more efficient way of doing it according to good practices) but it is what I have seen that has limited me and that perhaps UV can handle it.</p>
+<p>Thank you for your time :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-14 17:20</div>
+            <div class="timeline-body"><blockquote>
+<p>do you think we should allow this? I kind of do.</p>
+</blockquote>
+<p>From a technical perspective, yes we can support this.</p>
+<blockquote>
+<p>Maybe by creating a group where the libraries are specified in editable mode (dev) and in production mode, or by allowing you to read an environment variable with which UV allows you to use one over the other (like the marker platform).</p>
+</blockquote>
+<p>I'm trying to understand how the path/git workflow works in practice, specifically keeping things in sync. E.g., how are you making sure that quickbio and data-management-tools are in sync when deploying? Let's say you add a function <code>foo</code> to data-management-tools in the repo, and in the same commit start using it in quickbio. When deploying to docker, you could have an older git version of data-management-tools without <code>foo</code>, while the path version of quickbio expects <code>foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iBuitron">@iBuitron</a> on 2024-10-14 19:19</div>
+            <div class="timeline-body"><p>First I will explain the way I do it currently, which is a bit complicated since there are several steps (although I have it automated and it works well for me)</p>
+<p>What I do is.</p>
+<pre><code>v.1.1.1
+- branch &quot;dev&quot;
+quickbio ( localpath --editable)
+dmt (localpath --editable)
+</code></pre>
+<ul>
+<li>commit to github</li>
+</ul>
+<p>I have to create another branch called &quot;prod&quot; where I merge the &quot;dev&quot; branch to change the dependency paths here</p>
+<pre><code>v.1.1.1
+- branch &quot;prod&quot;
+quickbio (gitpath)
+dmt (gitpath)
+</code></pre>
+<ul>
+<li>commit to github</li>
+</ul>
+<p>So far, I have two branches, &quot;dev&quot; and &quot;prod&quot; both, with the same code, the only difference is the path of each dependency.</p>
+<p>In docker, I use the &quot;prod&quot; branch so that the dependencies are installed from github using the gitpath</p>
+<p>Now, we added a new feature</p>
+<pre><code>v.1.1.2
+- branch &quot;dev&quot;
+quickbio ( localpath --editable)
+dmt with FOO (localpath --editable)
+</code></pre>
+<ul>
+<li>commit to github (again)</li>
+</ul>
+<pre><code>v.1.1.2
+- branch &quot;prod&quot;
+quickbio (gitpath)
+dmt with FOO (gitpath)
+</code></pre>
+<ul>
+<li>commit to github (again)</li>
+</ul>
+<p>So, in docker, the dependencies would be installed from github since the gitpath is still the same (and is updated with the latest commit)</p>
+<p>Now, how do I see that this is solved?</p>
+<p>I specify the paths for the same dependency</p>
+<pre><code>dmt = [
+{ path = &quot;../../dmt, editable = true, custom_env_var=&quot;dev&quot;},
+{ git = &quot;https://github.com/iBuitron/dmt.git&quot;, custom_env_var=&quot;prod&quot;}
+]
+</code></pre>
+<p>Note: The branch should be specified to avoid conflicts</p>
+<p>By default, the custom_env_var would be &quot;dev&quot;, but in docker, if I wanted to use the git path, I would set custom_env_var = &quot;prod&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 18:00</div>
+            <div class="timeline-body"><p>I also tried to do this in an example for someone today</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;httpx @ git+https://github.com/encode/httpx&quot;,
+]
+
+[tool.uv.sources]
+httpx = { path = &quot;../../httpx&quot;, editable = true }
+</code></pre>
+<p>There was a discussion in Discord in which someone wants to use a workspace source during development but a built wheel path in production. We don't have a dev / prod toggle, you'd have to hack <code>extra</code> to do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9537.html">astral-sh/uv#9537</a> on 2024-12-03 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/choucavalier">@choucavalier</a> on 2024-12-03 22:07</div>
+            <div class="timeline-body"><p>I second the need for this functionality. Having some libraries as editable during development and correctly packaging them from git sources for CI/CD pipelines would be great. Right now there's no solution for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9675.html">astral-sh/uv#9675</a> on 2024-12-06 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Mixing local and Git paths between production and development" to "Modifying `tool.uv.sources` between production and development" by @charliermarsh on 2024-12-06 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-06 11:59</div>
+            <div class="timeline-body"><p>Another example here would be: using a <code>workspace = true</code> source in development, then a <code>path</code> source to a specific wheel in production. See: https://github.com/astral-sh/uv/issues/9675.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-12-06 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-12-06 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @charliermarsh on 2024-12-06 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9682.html">astral-sh/uv#9682</a> on 2024-12-06 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-08 04:29</div>
+            <div class="timeline-body"><p>It doesn't solve the broader &quot;prod vs. dev&quot; problem, but I think we should allow conflicting URLs between <code>project.dependencies</code> and <code>tool.uv.sources</code>. It's legitimately useful and semantically reasonable (and costs us nothing).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9718.html">astral-sh/uv#9718</a> on 2024-12-08 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2025-01-27 14:45</div>
+            <div class="timeline-body"><p>Would something similar to how Cargo's <code>[patch]</code> or paths override features are implemented work here?
+https://doc.rust-lang.org/cargo/reference/overriding-dependencies.html#the-patch-section
+https://doc.rust-lang.org/cargo/reference/overriding-dependencies.html#paths-overrides</p>
+<p>Specifically, Cargo allows defining those settings via config files outside of the project (eg a global machine config) allowing one to override the <code>Cargo.toml</code> committed to Git, and thus change how dependencies are sourced locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11632.html">astral-sh/uv#11632</a> on 2025-02-19 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arkadyark-cohere">@arkadyark-cohere</a> on 2025-04-07 22:14</div>
+            <div class="timeline-body"><p>Is there any recommended way to support dev / prod installations in the case where we want to use a published package from a private artifact registry (e.g. GCP)? In that case, I believe the <code>--no-sources</code> trick won't work, as sources are needed to specify both versions (editable and artifact registry).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-08 08:51</div>
+            <div class="timeline-body"><p>How are you installing the editable? Usually, using an editable through <code>tool.uv.sources</code> should work, and by having a version in <code>project.dependencies</code>, <code>--no-sources</code> should also do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arkadyark-cohere">@arkadyark-cohere</a> on 2025-04-08 16:09</div>
+            <div class="timeline-body"><p>If I'm using an artifact registry, then I believe in order to specify both the editable version, and the index version, my pyproject.toml needs to contain something like:</p>
+<pre><code>[[tool.uv.index]]
+name = &quot;registry&quot;
+url = &quot;link-to-gcp-artifact-registry&quot;
+
+[tool.uv.sources]
+dep = { path = &quot;../dep&quot;, editable = true }
+dep = { index = &quot;registry&quot; }
+</code></pre>
+<p>this fails when I try to <code>uv lock</code> with duplicate entries in sources - is there a correct way to do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-08 17:05</div>
+            <div class="timeline-body"><p>That's indeed a missing feature, specifically that index pinning does not work with <code>--no-sources</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9258.html">astral-sh/uv#9258</a> on 2025-04-23 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13073.html">astral-sh/uv#13073</a> on 2025-04-23 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14154.html">astral-sh/uv#14154</a> on 2025-06-20 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mshunshin">@mshunshin</a> on 2025-06-26 01:17</div>
+            <div class="timeline-body"><p>The issue with using --no-sources is that you must then use it for every incantation of uv run, else you run into this bug #7572</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Laz4rz">@Laz4rz</a> on 2025-08-04 10:14</div>
+            <div class="timeline-body"><p>When specifying source in dependencies and then specifying separate source in uv.sources — as to have a prod/dev uv sync --no-sources/uv sync separation -- uv doesn't correctly resolve dependencies of the <code>library</code>.</p>
+<pre><code>dependencies = [
+   &quot;library @ git+ssh://git@github.com/library/library-core.git@feature/next&quot;,
+]
+</code></pre>
+<pre><code>[tool.uv.sources]
+ library= { path = &quot;../library&quot;, editable = true }
+</code></pre>
+<p>above fails to resolve dependencies for library</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-04 11:14</div>
+            <div class="timeline-body"><p>Please create a separate issue with a minimal reproduction that we can run ourselves.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/waynew">@waynew</a> on 2025-08-09 19:05</div>
+            <div class="timeline-body"><p>FWIW, I don't think it works <em>particularly</em> well (there are some vagaries when it comes to <code>uv lock</code>)  but</p>
+<pre><code>[project]
+dependencies = [
+    &quot;some-pkg&gt;=1.2.3&quot;,
+]
+
+[tool.uv.sources]
+some-pkg =  { path = &quot;../ww.hello_world&quot;, editable=true}
+
+[dependency-groups]
+dev = [
+    &quot;some-pkg&quot;,
+]
+</code></pre>
+<p>Worked for me, somewhat. Like, I was able to do a uv install and make changes with <code>some-pkg</code> and see them live in my project, and then I was able to build &amp; install just the wheel in a different environment. I can probably do a writeup of my exact steps if it would help anyone, and the process felt super brittle... but I was able to at least get the behavior that I wanted 🤷</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/centaurialpha">@centaurialpha</a> on 2025-08-09 19:20</div>
+            <div class="timeline-body"><p>@waynew It would be very helpful if you shared the steps, I try to do something like that in my job a long time ago. It is the only thing that stops us from migrating completely to uv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/waynew">@waynew</a> on 2025-08-10 23:55</div>
+            <div class="timeline-body"><p>I wrote up here: https://waynewerner.com/blag/2025-08-09-14-43-editable-dev-dependencies-with-uv.html</p>
+<p>Looks like basically <code>uv add</code> and <code>uv add --dev --editable /some/dependency</code> and then you have to install with the wheels with the actual deployment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15129.html">astral-sh/uv#15129</a> on 2025-09-12 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vitschwilk">@vitschwilk</a> on 2025-11-10 16:09</div>
+            <div class="timeline-body"><p>I think having a configurable source would be a huge benefit. E.g. when we integrate our module we don't want to deploy multiple dev version to our private pypi repository but want to use editable installs. But in a pipeline scope the paths might differ from a dev environment or might even be referenced form a different repo.</p>
+<p>e.g.</p>
+<pre><code class="language-toml">dev=[ #default if no sources specified (?)
+my_other_module = { path = &quot;../my_other_module/othermodule&quot;, editable = false }
+]
+
+local=[
+my_other_module = { path = &quot;../my_other_module/othermodule&quot;, editable = true }
+]
+
+integration=[
+my_other_module = { git = &quot;github_repo_uri&quot;, subdirectory = &quot;othermodule&quot;, branch = &quot;integration&quot; }
+]
+</code></pre>
+<p>Currently the pipeline fails until the modules that are to be integrated are deployed. But sometimes we need to work on multiple modules in parallel for the integration.</p>
+<p>Syncing with <code>uv sync sources=integration</code> would then provide only the sources in &quot;integration&quot; when calling <code>uv sync</code> would be the same as calling <code>uv sync sources=dev</code></p>
+<p>The workaround form @waynew did not work for my use case since <code>uv sync</code> always uses <code>dependency-groups.dev</code>. My use case for <code>dependency-groups.dev</code> is something like &quot;unittest&quot; or &quot;coverage&quot;, which are always need on a developer machine and on the pipeline. Also I would think running integration tests on a pipeline should include installing the correct version locked version of the dependency overwriting the version in a dev-dependency-group with any version can result is a broken dependency in the deployed version.</p>
+<p>tl:dr: I think being able to specify which sources (group) to use would be very useful for a pipeline use case. I would highly appreciate this feature since it would make uv complete for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10096.html">astral-sh/uv#10096</a> on 2025-11-12 08:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

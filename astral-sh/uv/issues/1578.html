@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>allow centralized venv storage like pyenv-virtualenv - astral-sh/uv #1578</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>allow centralized venv storage like pyenv-virtualenv</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1578">#1578</a>
+        opened by <a href="https://github.com/wakamex">@wakamex</a>
+        on 2024-02-17 08:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wakamex">@wakamex</a> on 2024-02-17 08:07</div>
+            <div class="timeline-body"><p>This provides a few handy features:</p>
+<ul>
+<li>easily use the same venv in multiple locations</li>
+<li>don't worry about losing your venv when you <code>rm -rf</code> a folder</li>
+</ul>
+<p>To identify which venv should be used in a folder, pyenv-virtualenv uses <code>.python-version</code>. I suggest <code>uv</code> could use <code>.uvenv</code> as follows:</p>
+<pre><code>uv venv ~/.venvs/myvenv
+</code></pre>
+<p>by invoking <code>uv venv</code> with a non-standard location, we know we'll want to keep track of that location, so I suggest storing it in <code>.uvenv</code> right away without forcing the user to do <code>echo &quot;~/.venvs/myvenv&quot; &gt; .uvenv</code>.</p>
+<p>I can already use a script to auto-activate my venv from this remote location upon entering a folder (like an <a href="https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/virtualenvwrapper/virtualenvwrapper.plugin.zsh">oh-my-zsh plugin</a>):</p>
+<pre><code class="language-sh">if [ -f .uvenv ]; then
+  source &quot;$(cat .uvenv)/bin/activate&quot;
+fi
+</code></pre>
+<p>but if this were built-in behavior defined in a central location equivalent to <code>PYENV_ROOT</code> then you could just give the name:</p>
+<pre><code class="language-sh">uv venv local myvenv
+</code></pre>
+<p>pyenv blurb from https://github.com/pyenv/pyenv-virtualenv?tab=readme-ov-file#activate-virtualenv:</p>
+<blockquote>
+<p>If eval &quot;$(pyenv virtualenv-init -)&quot; is configured in your shell, pyenv-virtualenv will automatically activate/deactivate virtualenvs on entering/leaving directories which contain a .python-version file that contains the name of a valid virtual environment as shown in the output of pyenv virtualenvs (e.g., venv34 or 3.4.3/envs/venv34 in example above) . .python-version files are used by pyenv to denote local Python versions and can be created and deleted with the <a href="https://github.com/pyenv/pyenv/blob/master/COMMANDS.md#pyenv-local">pyenv local</a> command.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1422.html">astral-sh/uv#1422</a> on 2024-02-17 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-02-17 09:16</div>
+            <div class="timeline-body"><p>I've been using a <code>.venv</code> file that can contain a location to accomplish something similar for the last half decade. It's great. I think when PEP 704 was being discussed the <code>.venv</code> file was suggested and had some support. This would also mean <code>uv</code> only needs to have a single special case name. But maybe I should just symlink?</p>
+<p>Maybe something like the following diff:</p>
+<details>
+
+<pre><code class="language-diff">diff --git a/crates/uv-interpreter/src/lib.rs b/crates/uv-interpreter/src/lib.rs
+index 684c7f1..7c1caab 100644
+--- a/crates/uv-interpreter/src/lib.rs
++++ b/crates/uv-interpreter/src/lib.rs
+@@ -26,6 +26,8 @@ pub enum Error {
+     MissingPyVenvCfg(PathBuf),
+     #[error(&quot;Broken virtualenv `{0}`, it contains a pyvenv.cfg but no Python binary at `{1}`&quot;)]
+     BrokenVenv(PathBuf, PathBuf),
++    #[error(&quot;File `{0}` points to invalid location `{1}`&quot;)]
++    InvalidVenvFile(PathBuf, PathBuf),
+     #[error(&quot;Both VIRTUAL_ENV and CONDA_PREFIX are set. Please unset one of them.&quot;)]
+     Conflict,
+     #[error(&quot;No versions of Python could be found. Is Python installed?&quot;)]
+diff --git a/crates/uv-interpreter/src/virtual_env.rs b/crates/uv-interpreter/src/virtual_env.rs
+index 46c727c..a4b63a3 100644
+--- a/crates/uv-interpreter/src/virtual_env.rs
++++ b/crates/uv-interpreter/src/virtual_env.rs
+@@ -1,5 +1,6 @@
+ use std::env;
+ use std::env::consts::EXE_SUFFIX;
++use std::io::Read;
+ use std::path::{Path, PathBuf};
+ 
+ use tracing::debug;
+@@ -116,21 +117,34 @@ pub(crate) fn detect_virtual_env(target: &amp;PythonPlatform) -&gt; Result&lt;Option&lt;PathB
+         }
+     };
+ 
+-    // Search for a `.venv` directory in the current or any parent directory.
++
++    // Search for `.venv` in the current or any parent directory.
+     let current_dir = env::current_dir().expect(&quot;Failed to detect current directory&quot;);
+     for dir in current_dir.ancestors() {
+         let dot_venv = dir.join(&quot;.venv&quot;);
+-        if dot_venv.is_dir() {
+-            if !dot_venv.join(&quot;pyvenv.cfg&quot;).is_file() {
+-                return Err(Error::MissingPyVenvCfg(dot_venv));
+-            }
+-            let python = target.venv_python(&amp;dot_venv);
+-            if !python.is_file() {
+-                return Err(Error::BrokenVenv(dot_venv, python));
++
++        let venv_dir;
++        if dot_venv.is_file() {
++            let mut contents = String::new();
++            fs_err::File::open(&amp;dot_venv)?.read_to_string(&amp;mut contents)?;
++            venv_dir = PathBuf::from(contents.trim());
++            if !venv_dir.is_dir() {
++                return Err(Error::InvalidVenvFile(dot_venv, venv_dir));
+             }
+-            debug!(&quot;Found a virtualenv named .venv at: {}&quot;, dot_venv.display());
+-            return Ok(Some(dot_venv));
++        } else if dot_venv.is_dir() {
++            venv_dir = dot_venv;
++        } else {
++            continue;
++        }
++        if !venv_dir.join(&quot;pyvenv.cfg&quot;).is_file() {
++            return Err(Error::MissingPyVenvCfg(venv_dir));
++        }
++        let python = target.venv_python(&amp;venv_dir);
++        if !python.is_file() {
++            return Err(Error::BrokenVenv(venv_dir, python));
+         }
++        debug!(&quot;Found a virtualenv at: {}&quot;, venv_dir.display());
++        return Ok(Some(venv_dir));
+     }
+ 
+     Ok(None)
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/swaldhoer">@swaldhoer</a> on 2024-02-17 12:02</div>
+            <div class="timeline-body"><p>Basically a duplicate of https://github.com/astral-sh/uv/issues/1526</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-17 19:34</div>
+            <div class="timeline-body"><p>Not a duplicate of #1526, but this is a duplicate of https://github.com/astral-sh/uv/issues/1495.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-17 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2024-02-17 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1495.html">astral-sh/uv#1495</a> on 2024-02-17 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6597.html">astral-sh/uv#6597</a> on 2024-08-25 08:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/callegar">@callegar</a> on 2024-10-04 15:02</div>
+            <div class="timeline-body"><p>May I suggest the PDM model? That is nice IMHO. Via a config variable you decide if you want venvs to be generally managed centrally or locally. When they are centrally managed, PDM sorts out things nicely in an almost automatic way.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

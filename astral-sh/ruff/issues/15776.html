@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FURB168 false negative and false positives - astral-sh/ruff #15776</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FURB168 false negative and false positives</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15776">#15776</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-01-27 20:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-01-27 20:58</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/isinstance-type-none/"><code>isinstance-type-none</code> (FURB168)</a> has a false negative and two false positives in Ruff 0.9.3.</p>
+<p>The rule only triggers when the first argument to <code>isinstance</code> is an identifier. This is a false negative because any expression would work in that context.</p>
+<pre><code class="language-console">$ cat &gt;furb168_1.py &lt;&lt;'#EOF'
+d = {&quot;x&quot;: 1}
+print(isinstance(d.get(&quot;x&quot;), type(None)))
+#EOF
+
+$ python furb168_1.py
+False
+
+$ ruff --isolated check --preview --select FURB168 furb168_1.py
+All checks passed!
+</code></pre>
+<p>If the expression consists purely of certain literals and operators, like <code>1 + 1</code>, applying the FURB168 fix would produce a warning like <code>SyntaxWarning: &quot;is&quot; with 'int' literal. Did you mean &quot;==&quot;?</code>. That might be a reason the rule is currently so restricted, but I think it is better to apply the fix: the code is suspect either way but at least with the fix the user gets an explicit warning.</p>
+<p>The first false positive is that the rule does not check whether <code>type</code> is the built-in <code>type</code>. (It does correctly check <code>isinstance</code>.)</p>
+<pre><code class="language-console">$ cat &gt;furb168_2.py &lt;&lt;'#EOF'
+def type(x):
+    return int
+i = 1
+print(isinstance(i, type(None)))
+#EOF
+
+$ python furb168_2.py
+True
+
+$ ruff --isolated check --preview --select FURB168 furb168_2.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb168_2.py
+def type(x):
+    return int
+i = 1
+print(i is None)
+
+$ python furb168_2.py
+False
+</code></pre>
+<p>The second false positive is that <code>None | None</code> is accepted as meaning <code>type(None)</code>. That raises a <code>TypeError</code> which the fix suppresses.</p>
+<pre><code>$ cat &gt;furb168_3.py &lt;&lt;'#EOF'
+print(isinstance(abs, None | None))
+#EOF
+
+$ python furb168_3.py
+Traceback (most recent call last):
+  File &quot;furb168_3.py&quot;, line 1, in &lt;module&gt;
+    print(isinstance(abs, None | None))
+                          ~~~~~^~~~~~
+TypeError: unsupported operand type(s) for |: 'NoneType' and 'NoneType'
+
+$ ruff --isolated check --preview --select FURB168 furb168_3.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ python furb168_3.py
+False
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-27 21:46</div>
+            <div class="timeline-body"><p>Thank you! I'm more interested in resolving the false positives than the false negative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-01-27 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-01-27 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15779.html">astral-sh/ruff#15779</a> on 2025-01-28 02:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-31 11:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

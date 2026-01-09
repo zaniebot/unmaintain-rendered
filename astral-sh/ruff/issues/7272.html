@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pyspark Linting Rules - astral-sh/ruff #7272</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pyspark Linting Rules</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7272">#7272</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2023-09-11 16:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-09-11 16:32</div>
+            <div class="timeline-body"><p>Apache Spark is widely used in the python ecosystem for distributed computing. As user of spark I would like for ruff to lint problematic behaviours. The automation that ruff offers is especially useful in projects with various levels of software engineering skills, e.g. where people has more of a statistics background.</p>
+<p>There exists a <a href="https://github.com/AstrumU/pylint-pyspark">pyspark style guide</a> and <a href="https://pypi.org/project/pylint-pyspark/">pylint extension</a>.</p>
+<p>I would like to start contributing a rule that checks for repeated use of <a href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumn.html">withColumn</a>:</p>
+<blockquote>
+<p>This method introduces a projection internally. Therefore, calling it multiple times, for instance, via loops in order to add multiple columns can generate big plans which can cause performance issues and even StackOverflowException. To avoid this, use <a href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.select.html#pyspark.sql.DataFrame.select">select()</a> with multiple columns at once.</p>
+</blockquote>
+<p>Are you ok with a PR introducing &quot;Spark-specific rules&quot; (e.g. <code>SPK</code>)?</p>
+<p><code>ruff</code> includes rules that are specific to third party libraries: numpy, pandas and airflow. Spark support would be a nice addition.</p>
+<p>I would like to close with the following thought: supporting third-party packages may at first seem to be effort in the long tail of possible rules to add to <code>ruff</code>. Why not focus only on rules that affect all Python users? I hope that adding these will lead to creating helper functions that make adding new rules easier. I also think that these libraries will end up with similar API design patterns, that can be linted across the ecosystem. As an example, <a href="https://github.com/dosisod/refurb/issues/286">call chaining</a> is common for many packages that perform transformations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-12 01:10</div>
+            <div class="timeline-body"><p>I'm generally open to adding package-specific rule sets for extremely popular packages (as with Pandas, NumPy, etc.), and Spark would fit that description. However, it'd be nice to have a few rules lined up before we move forward and add any one of them. Otherwise, we run the risk that we end up with really sparse categories that only contain a rule or two.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">plugin</span> added by @charliermarsh on 2023-09-12 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-09-12 06:25</div>
+            <div class="timeline-body"><p>Super. I've updated the issue with a couple of rules that we can track.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/guilhem-dvr">@guilhem-dvr</a> on 2024-02-09 09:30</div>
+            <div class="timeline-body"><p>Hi, I was looking for such a thread.</p>
+<p>To add to the proposed list, here are some rules we wish we had at my company:</p>
+<ul>
+<li>unnecessary <code>drop</code> followed by a <code>select</code></li>
+<li>use <code>unionByName</code> instead of <code>union</code> / <code>unionAll</code></li>
+<li>use <code>df.writeTo(...).append()</code> instead of <code>df.write.insertInto(...)</code></li>
+<li>use <code>df.writeTo(...).overwritePartitions()</code> instead of <code>df.write.insertInto(..., overwrite=True)</code></li>
+<li>replace <code>udf</code> with native spark functions</li>
+<li>alias <code>pyspark.sql.functions</code> to <code>F</code> -&gt; <code>from pyspark.sql import ..., functions as F, ...</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amadeuspzs">@amadeuspzs</a> on 2024-02-28 15:34</div>
+            <div class="timeline-body"><p>Just to add that I would be interested in this functionality.</p>
+<p>Also, the first link in the original post is broken, and the pylint extension looks unmaintained?</p>
+<ul>
+<li>https://github.com/palantir/pyspark-style-guide is a written PySpark guide, and contains some pylint implementations under https://github.com/palantir/pyspark-style-guide/tree/develop/src/checkers</li>
+<li>https://nhsdigital.github.io/rap-community-of-practice/training_resources/pyspark/pyspark-style-guide/ is based off the guide above</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stkrzysiak">@stkrzysiak</a> on 2024-06-25 16:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Super. I've updated the issue with a couple of rules that we can track. I'll kick off with SPK001-3</p>
+</blockquote>
+<p>Did you get going with this? Thinking about jumping on it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12349.html">astral-sh/ruff#12349</a> on 2024-07-16 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Rexeh">@Rexeh</a> on 2024-08-21 13:41</div>
+            <div class="timeline-body"><p>Currently looking at recommending Ruff for data team and this feature would be great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13038.html">astral-sh/ruff#13038</a> on 2024-08-23 05:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aran159">@aran159</a> on 2024-09-06 05:22</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Super. I've updated the issue with a couple of rules that we can track. I'll kick off with SPK001-3</p>
+</blockquote>
+<p>Did you get going with this? Thinking about jumping on it</p>
+</blockquote>
+<p>Hey! Did you end up jumping on it? We're also considering starting it, so I'd love to hear how it went for you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-09-06 09:15</div>
+            <div class="timeline-body"><p>I'm working on getting a first set of rules out there :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-09-06 12:45</div>
+            <div class="timeline-body"><p>@guilhem-dvr Thanks for your suggestions!
+Would you have an example for the following?</p>
+<blockquote>
+<p>unnecessary drop followed by a select</p>
+</blockquote>
+<p>Also note that the import convention is already possible via:
+https://docs.astral.sh/ruff/settings/#lint_flake8-import-conventions_aliases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/guilhem-dvr">@guilhem-dvr</a> on 2024-09-09 08:35</div>
+            <div class="timeline-body"><p>Sure, here's what I had in mind:</p>
+<pre><code class="language-python">df = spark.createDataFrame(
+    [(&quot;John&quot;, 25, &quot;Engineer&quot;), (&quot;Jane&quot;, 30, &quot;Doctor&quot;), (&quot;Jim&quot;, 35, &quot;Teacher&quot;)],
+    [&quot;Name&quot;, &quot;Age&quot;, &quot;Profession&quot;],
+)
+
+# Uncessary drop
+df.drop(&quot;Age&quot;).select(&quot;Name&quot;, &quot;Profession&quot;)
+
+# Same statement without the drop
+df.select(&quot;Name&quot;, &quot;Profession&quot;)
+</code></pre>
+<p>But now I see that there's a pattern that shouldn't be flagged: where an 'anti' select is performed, i.e. drop some columns then select all the remaining ones with select(&quot;*&quot;):</p>
+<pre><code class="language-python"># Reusing the previous df schema
+df.drop(&quot;Age&quot;).select(&quot;*&quot;)
+</code></pre>
+<p>Edit: this is still a bad pattern because drop already returns the whole dataframe - minus the dropped column - so you should never be chaining drop and select anyway.</p>
+<blockquote>
+<p>Also note that the import convention is already possible via: https://docs.astral.sh/ruff/settings/#lint_flake8-import-conventions_aliases</p>
+</blockquote>
+<p>Lol, I had completely skimmed over the settings, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-09-09 08:45</div>
+            <div class="timeline-body"><p>Thanks for clarifying! There is not as much Spark open-source code available as there is for other libraries, so it's hard to tell how frequent this error is - but a good addition nonetheless. Funny enough, Polars uses this in their tests: https://github.com/pola-rs/polars/blob/main/py-polars/tests/unit/lazyframe/test_lazyframe.py#L1090</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stkrzysiak">@stkrzysiak</a> on 2024-09-09 10:55</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<blockquote>
+<p>Super. I've updated the issue with a couple of rules that we can track. I'll kick off with SPK001-3</p>
+</blockquote>
+<p>Did you get going with this? Thinking about jumping on it</p>
+</blockquote>
+<p>Hey! Did you end up jumping on it? We're also considering starting it, so I'd love to hear how it went for you!</p>
+</blockquote>
+<p>No, but looks like @sbrugman has, which is exciting!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/montanarograziano">@montanarograziano</a> on 2024-11-26 21:05</div>
+            <div class="timeline-body"><p>I'd love to contribute to this one!
+For Pyspark style guide references, I'll suggest you considering also <a href="https://github.com/mrpowers-io/spark-style-guide/blob/main/PYSPARK_STYLE_GUIDE.md">this one</a> from @mrpowers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-27 18:17</div>
+            <div class="timeline-body"><p>@montanarograziano do you have specific rules in mind from that style guide?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/montanarograziano">@montanarograziano</a> on 2024-11-28 10:56</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/montanarograziano">@montanarograziano</a> do you have specific rules in mind from that style guide?</p>
+</blockquote>
+<p>Apart from those already mentioned, I was thinking on something related to naming conventions. Here's what the guide suggests:</p>
+<ul>
+<li>Variables pointing to DataFrames should be suffixed with <code>df</code></li>
+<li>Variables pointing to RDDs should be suffixed with <code>rdd</code></li>
+<li><code>with</code> precedes transformations that add columns:</li>
+<li><code>filter</code> precedes transformations that remove rows</li>
+<li><code>explode</code> precedes transformations that add rows to a DataFrame by &quot;exploding&quot; a row into multiple rows.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-28 11:15</div>
+            <div class="timeline-body"><p>Thanks. These are good candidates to become linting rules, however would need type information to determine if a variable is a DataFrame, RDD or transformation reliably. The Astral team is working on that, but it's not available yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lauragalera">@lauragalera</a> on 2024-12-10 15:30</div>
+            <div class="timeline-body"><p>I am also used to <code>glueContext = GlueContext(SparkContext.getOrCreate())</code> and  <code>from pyspark.sql import functions as F</code> but I had to ignore N816 and N812 from <a href="https://pypi.org/project/pep8-naming/">pep8-naming</a> because they gave errors in every pull request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/magdanowak">@magdanowak</a> on 2025-03-21 07:54</div>
+            <div class="timeline-body"><p><code>pyspark.sql.functions</code> is also aliased as <code>sf</code> in Apache Spark docs, so enforcing aliasing it as uppercase <code>F</code> doesn't seem justified.</p>
+<p>See here:
+https://spark.apache.org/docs/latest/api/python/_modules/pyspark/sql/functions.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laurence-kuhlburger-taod">@laurence-kuhlburger-taod</a> on 2025-05-06 10:50</div>
+            <div class="timeline-body"><p>Hi there, I'd be super interested in using the linting set here and was wondering what the status? Are there already linting pyspark rules on a release version? :) Thanks a ton!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarthinusBosman">@MarthinusBosman</a> on 2025-07-15 07:26</div>
+            <div class="timeline-body"><p>I'd love to be able to have a warning/info rule for spark actions just to easily spot them in a codebase. Perhaps even a specific rule for when they're used only for a log statement.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

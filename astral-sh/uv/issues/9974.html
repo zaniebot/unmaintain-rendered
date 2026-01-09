@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build tiktoken (ie. Rust package) as part of workspace - astral-sh/uv #9974</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Build tiktoken (ie. Rust package) as part of workspace</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9974">#9974</a>
+        opened by <a href="https://github.com/foges">@foges</a>
+        on 2024-12-17 16:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/foges">@foges</a> on 2024-12-17 16:26</div>
+            <div class="timeline-body"><p>I'm trying to add the <a href="https://github.com/openai/tiktoken">tiktoken</a> source code as a package in my <code>uv</code> workspace. It's available through pip, but I need to make some local modifications. The core of <code>tiktoken</code> is written in Rust and has a <code>setup.py</code> compile step. Things I've tried:</p>
+<ul>
+<li>Adding it to my <code>uv</code> workspace and importing it directly<ul>
+<li>This doesn't build the package so fails to find <code>from tiktoken import _tiktoken</code></li>
+</ul>
+</li>
+<li>Building it using either <code>uv pip install .</code> (in the tiktoken directory), <code>uv run python setup.py install</code><ul>
+<li>I then just get the error that there's a circular import due to the <code>from tiktoken import _tiktoken</code> in the tiktoken module.</li>
+</ul>
+</li>
+<li><code>uv build &amp;&amp; uv pip install .</code><ul>
+<li>Building works and it adds it to <code>.venv/lib</code>, but as soon as I run anything in other workspace directories, it overrides the <code>.venv/lib</code> package with a workspace reference.</li>
+</ul>
+</li>
+<li>Leaving it out of the workspace and just building with <code>uv run python setup.py install</code><ul>
+<li>It now doesn't get built to <code>.venv/lib</code>.</li>
+</ul>
+</li>
+</ul>
+<p>My directory structure is</p>
+<pre><code>pyproject.toml        &lt;-- `members = [&quot;packages/*&quot;]` and `package = false` in here. 
+packages/
+  mylib/
+    mylib/            &lt;-- Trying to import tiktoken from here
+    pyproject.toml
+  tiktoken/           &lt;-- Copied from the tiktoken github
+    tiktoken/
+    pyproject.toml
+</code></pre>
+<p>One thing to note is that tiktoken uses a different build backend <code>&quot;setuptools.build_meta&quot;</code>, instead of <code>&quot;hatchling.build&quot;</code>, which seems to cause some issues in terms of package discoverability. I'm not sure it's easy to get around that due to <code>&quot;setuptools-rust&gt;=1.5.2&quot;</code>.</p>
+<p>At this point I'm out of ideas. Any suggestions are greatly appreciated :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/foges">@foges</a> on 2024-12-17 19:27</div>
+            <div class="timeline-body"><p>Update: I found a somewhat useable solution using <code>uv run python setup.py build_ext --inplace &amp;&amp; uv pip install .</code>, which does allow me to keep tiktoken as part of the workspace. It doesn't seem ideal, so still curious if there are better solutions.</p>
+<p>Update 2: Actually this doesn't work after all. As soon as I run <code>uv sync</code> or any other command like <code>uv run pytest</code> it again reverts to using the workspace dependency, rather than the installed one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/foges">@foges</a> on 2024-12-19 19:09</div>
+            <div class="timeline-body"><p>My latest is running this command <code>cd packages/tiktoken &amp;&amp; uv venv --python 3.11 &amp;&amp; source .venv/bin/activate &amp;&amp; uv run python setup.py build_ext --inplace &amp;&amp; deactivate &amp;&amp; cd ../../</code>. I have <code>tiktoken = { path = &quot;../tiktoken&quot; }</code> in <code>mylib/pyproject.toml</code> although it uses one that gets installed in the top level <code>.venv/lib</code></p>
+<p>This all feels very hacky. Am I doing something wrong, or is <code>uv</code> not really intended for this kind of use-case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-06 20:46</div>
+            <div class="timeline-body"><p>What's in your <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-06 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/foges">@foges</a> on 2025-01-28 14:21</div>
+            <div class="timeline-body"><p>Hey, sorry I only just saw this.</p>
+<p>My top level <code>pyproject.toml</code> is</p>
+<pre><code>[project]
+name = &quot;base&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;~=3.10&quot;
+dependencies = []
+
+[tool.uv]
+dev-dependencies = [&quot;mypy&gt;=1.13.0&quot;, &quot;pyright&gt;=1.1.389&quot;, &quot;pytest&gt;=8.3.3&quot;]
+package = false
+
+[tool.uv.workspace]
+members = [&quot;packages/*&quot;]
+exclude = [&quot;packages/tiktoken&quot;]  # Explicitly excluded it here since I couldn't get it to work
+</code></pre>
+<p>I guess the key parts of the <code>pyproject.toml</code> in tiktoken is:</p>
+<pre><code>[build-system]
+build-backend = &quot;setuptools.build_meta&quot;
+requires = [&quot;setuptools&gt;=62.4&quot;, &quot;wheel&quot;, &quot;setuptools-rust&gt;=1.5.2&quot;]
+
+[tool.cibuildwheel]
+build-frontend = &quot;build&quot;
+build-verbosity = 1
+
+linux.before-all = &quot;curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y&quot;
+linux.environment = { PATH = &quot;$PATH:$HOME/.cargo/bin&quot; }
+macos.before-all = &quot;rustup target add aarch64-apple-darwin x86_64-apple-darwin&quot;
+
+macos.archs = [&quot;x86_64&quot;, &quot;arm64&quot;]
+
+[[tool.cibuildwheel.overrides]]
+select = &quot;*linux_aarch64&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/foges">@foges</a> on 2025-01-28 15:47</div>
+            <div class="timeline-body"><p>Managed to get it to work by switching to maturin from setuptools_rust. I guess stepping away from it for a couple of weeks helps. Here are the changes to the tiktoken pyproject.toml:</p>
+<pre><code>[build-system]
+requires = [&quot;maturin&quot;]
+build-backend = &quot;maturin&quot;
+
+[tool.maturin]
+features = [&quot;pyo3/extension-module&quot;]
+module-name = &quot;tiktoken._tiktoken&quot;
+python-packages = [&quot;tiktoken&quot;, &quot;tiktoken_ext&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @foges on 2025-01-28 15:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

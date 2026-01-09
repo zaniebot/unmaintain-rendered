@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TC002 conflicts with TC004 - astral-sh/ruff #22223</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>TC002 conflicts with TC004</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/22223">#22223</a>
+        opened by <a href="https://github.com/Samoed">@Samoed</a>
+        on 2025-12-27 11:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Samoed">@Samoed</a> on 2025-12-27 11:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>TC002</code> conflicts with <code>TC004</code> when <code>flake8-type-checking</code> is activated.</p>
+<p>Example:</p>
+<pre><code class="language-py">from typing import TYPE_CHECKING
+
+# will conflict with TC002
+from typing_extensions import NotRequired, TypedDict
+
+# will conflict with TC004
+# from typing_extensions import TypedDict
+# if TYPE_CHECKING:
+#     from typing_extensions import NotRequired
+
+
+class Example(TypedDict):
+    a: int
+    b: NotRequired[float]
+</code></pre>
+<pre><code class="language-toml">[project]
+name = &quot;test-ruff&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;ruff&gt;=0.14.10&quot;,
+    &quot;typing-extensions&gt;=4.15.0&quot;,
+]
+
+[tool.ruff]
+target-version = &quot;py310&quot;
+
+
+[tool.ruff.lint]
+select = [
+    &quot;TC&quot;,  # flake8-type-checking
+]
+typing-modules = [&quot;typing_extensions&quot;]
+future-annotations = true
+
+[tool.ruff.lint.flake8-type-checking]
+strict = true
+</code></pre>
+<p>Playground example: https://play.ruff.rs/3665cc48-65b5-401d-bfff-20cadb9db6f4</p>
+<h3>Version</h3>
+<p>ruff 0.14.10 (45bbb4cbf 2025-12-18)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../embeddings-benchmark/mteb/issues/3784.html">embeddings-benchmark/mteb#3784</a> on 2025-12-27 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-27 15:10</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>I'm not seeing any conflict in your playground example. If I apply the suggested fix there are no diagnostics left. This is the output after the fix:</p>
+<pre><code class="language-py">from __future__ import annotations
+from typing import TYPE_CHECKING
+
+# will conflict with TC002
+from typing_extensions import TypedDict
+
+if TYPE_CHECKING:
+    from typing_extensions import NotRequired
+
+# will conflict with TC004
+# from typing_extensions import TypedDict
+# if TYPE_CHECKING:
+#     from typing_extensions import NotRequired
+
+
+class Example(TypedDict):
+    a: int
+    b: NotRequired[float]
+</code></pre>
+<p>Note the <code>__future__</code> import. If I disable the <code>future-annotations</code> setting, I don't see any diagnostic to begin with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-12-27 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Samoed">@Samoed</a> on 2025-12-27 15:13</div>
+            <div class="timeline-body"><p>Ah, yes, thanks. I forgot that and thought it would be added automatically. Feel free to close then.</p>
+<p>UPD. It will add future with unsafe fixes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Samoed on 2025-12-27 15:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

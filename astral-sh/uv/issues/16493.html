@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Honor member-level `[tool.uv]` policy during workspace installs (propagate `no-build-isolation-package` upward) - astral-sh/uv #16493</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Honor member-level `[tool.uv]` policy during workspace installs (propagate `no-build-isolation-package` upward)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16493">#16493</a>
+        opened by <a href="https://github.com/bheijden">@bheijden</a>
+        on 2025-10-29 11:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bheijden">@bheijden</a> on 2025-10-29 11:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Today, when running <code>uv sync</code> from a workspace root, uv ignores a member package’s <code>[tool.uv]</code> policy (e.g., <code>no-build-isolation-package</code>). This forces duplicating policy at the workspace root, which is brittle and breaks locality—policy lives far from the dependency.</p>
+<p><strong>Request:</strong> During workspace installs, apply each <strong>member’s</strong> <code>[tool.uv]</code> policy to that member (root <code>[tool.uv]</code> acts as defaults only, member-level overrides win). This matches how <code>tool.uv.sources</code> can be defined close to the dependency and makes CUDA/PyTorch extension builds reproducible without duplicating settings at the root.</p>
+<p><strong>Current behavior (problem):</strong> Member-level <code>no-build-isolation-package</code> is ignored unless also duplicated at the root; removing a dependency from the member can leave stale root policy behind.</p>
+<p><strong>Desired behavior:</strong> Member-level <code>[tool.uv]</code> (e.g., <code>no-build-isolation-package</code>) is honored for that member during a root workspace install; root-level <code>[tool.uv]</code> provides defaults but does not need to repeat member-specific policy.</p>
+<h3>Example</h3>
+<p><strong>Layout</strong></p>
+<pre><code>workspace/
+├─ pyproject.toml          # workspace root
+└─ libs/
+   └─ app/
+      └─ pyproject.toml    # member that depends on nvidia-curobo
+</code></pre>
+<p><strong><code>workspace/pyproject.toml</code> (root)</strong></p>
+<pre><code class="language-toml">[project]
+name = &quot;root&quot;
+version = &quot;0.0.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+
+[tool.uv.workspace]
+members = [&quot;libs/app&quot;]
+</code></pre>
+<p><strong><code>workspace/libs/app/pyproject.toml</code> (member)</strong></p>
+<pre><code class="language-toml">[project]
+name = &quot;app&quot;
+version = &quot;0.1.0&quot;
+dependencies = [
+  &quot;torch&quot;,
+  &quot;nvidia-curobo&quot;,  # must build against the in-venv torch (no isolation)
+]
+
+[tool.uv]
+no-build-isolation-package = [&quot;nvidia-curobo&quot;]  # colocated with the dependency
+
+[tool.uv.sources]
+nvidia-curobo = { git = &quot;https://github.com/NVlabs/curobo&quot;, rev = &quot;abcdef&quot; }
+</code></pre>
+<p><strong>Repro steps (from workspace root):</strong></p>
+<pre><code>uv sync
+</code></pre>
+<p><strong>Current behavior:</strong>
+<code>no-build-isolation-package</code> in the <strong>member</strong> is ignored; <code>nvidia-curobo</code> builds in isolation unless the same policy is duplicated in the <strong>root</strong>.</p>
+<p><strong>Desired behavior:</strong>
+uv applies the <strong>member’s</strong> <code>[tool.uv]</code> to that member during workspace install, so <code>nvidia-curobo</code> is built <strong>without isolation</strong> (linking to the in-venv <code>torch</code>) without needing to repeat policy at the root.</p>
+<p><strong>Why this matters:</strong></p>
+<ul>
+<li>Keeps policy <strong>local</strong> to the package that needs it.</li>
+<li>Avoids stale/broken installs when dependencies move or are removed.</li>
+<li>Reduces duplication and makes CUDA/torch extension workflows less brittle in multi-package workspaces.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @bheijden on 2025-10-29 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-29 14:08</div>
+            <div class="timeline-body"><p>What if you had a second workspace member that depended on <code>nvidia-curobo</code>? We resolve the entire workspace at once, and I don't think we could resolve for two versions of <code>nvidia-curobo</code>, one built without isolation and one built with it. Otherwise, I think your points make sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bheijden">@bheijden</a> on 2025-10-30 09:44</div>
+            <div class="timeline-body"><p>Totally agree that building two variants of the same package in one env is not feasible. I am not asking for that.</p>
+<p>Proposal: when running from the workspace root, aggregate member policies by taking the union of no-build-isolation-package across all members. If any member marks nvidia-curobo as no-build-isolation, install it once, non-isolated, for the whole environment. No per-member divergence, just a single deterministic build.</p>
+<p>This keeps policy local to the member that depends on it, avoids duplication in the root, and still respects the single-build constraint.</p>
+<p>Side note: for packages like CUDA or PyTorch extensions (e.g., curobo, flash-attn, apex), no-build-isolation is usually a package property rather than a per-member preference. In practice you almost always want the same setting everywhere, so the union rule should cover the common case cleanly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-30 14:14</div>
+            <div class="timeline-body"><p>I still think that could be confusing, e.g., if you had</p>
+<pre><code>root
+--- foo
+------ nvidia-curobo (without `no-build-isolation`)
+--- bar
+------ nvidia-curobo (with `no-build-isolation`)
+</code></pre>
+<p>then <code>uv sync</code> would use <code>no-build-isolation</code> but <code>uv sync --package foo</code> would... not? and you'd end up in a broken situation.</p>
+<p>In contrast to your original intent, a non-local (and non-parent!) declaration of <code>no-build-isolation</code> would affect <code>foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bheijden">@bheijden</a> on 2025-10-31 16:10</div>
+            <div class="timeline-body"><p>Totally hear you on the <code>uv sync</code> vs <code>uv sync --package foo</code> asymmetry.</p>
+<p>But don’t we have a similar situation with <code>tool.uv.sources</code>, and we accept it because workspace resolution yields predictable results? For example, a root</p>
+<pre><code>[tool.uv.sources]
+nvidia-curobo = { git = &quot;...&quot;, rev = &quot;abc&quot; }
+</code></pre>
+<p>drives <code>uv sync</code> for all members, unless a member (e.g., <code>foo</code>) overrides that source in its own <code>tool.uv.sources</code>, in which case <code>uv sync --package foo</code> can pick the member-specific source.</p>
+<p>Concretely, the same shape arises with sources:</p>
+<pre><code>root
+--- foo
+------ nvidia-curobo (source = git ...@abc)
+--- bar
+------ nvidia-curobo (source = git ...@def)
+</code></pre>
+<p>A workspace <code>uv sync</code> must converge on a single source for the environment. If those member overrides are incompatible, resolution fails rather than producing two variants, while <code>uv sync --package foo</code> can use <code>foo</code>’s override independently.</p>
+<p>I would propose applying the same principle here for build isolation: during a workspace install, aggregate member <code>no-build-isolation-package</code> entries and resolve to a single plan. Treat <code>unspecified</code> as <code>require-isolated</code>. If any member is <code>require-nbi</code> and any other member is <code>require-isolated</code> or <code>unspecified</code>, raise a clear conflict <strong>error</strong> (already a big win vs silent mismatch). If there’s no conflict (e.g., only one member depends on the package and marks <code>require-nbi</code>), use that policy once for the whole env. Going further, make the conflict behavior opt-in configurable at the root (e.g., <code>prefer-non-isolated</code> or <code>prefer-isolated</code>) for teams that want a global default. This yields one deterministic build, keeps policy next to the dependency, and matches common CUDA/PyTorch extension workflows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-31 19:46</div>
+            <div class="timeline-body"><blockquote>
+<p>unless a member (e.g., foo) overrides that source in its own tool.uv.sources, in which case uv sync --package foo can pick the member-specific source.</p>
+</blockquote>
+<p>I don't think this actually is allowed, since we perform a resolution for the full workspace then re-use that single resolution for syncs, even when they pick a sub-package to use. The members <em>must</em> have matching sources unless they're declared as conflicting. I'd need to double check what we actually do in practice, but conceptually this shouldn't work as you've described.</p>
+<p>I think we could fail as you've described and require explicit conflict markers if you need mixed build isolation policies across workspace members though.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to detect `runtime-evaluated-base-classes` across files - astral-sh/ruff #7866</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to detect `runtime-evaluated-base-classes` across files</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7866">#7866</a>
+        opened by <a href="https://github.com/sujuka99">@sujuka99</a>
+        on 2023-10-09 09:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sujuka99">@sujuka99</a> on 2023-10-09 09:15</div>
+            <div class="timeline-body"><p><code>TCH001</code> seems to incorrectly trigger on the example below despite the settings only when <code>from __future__ import annotations</code> is present.</p>
+<p><strong>base_model.py</strong></p>
+<pre><code class="language-python">from pydantic import BaseModel
+
+class Base(BaseModel):
+    ...
+</code></pre>
+<p><strong>field_model.py</strong></p>
+<pre><code class="language-python">from pydantic import BaseModel
+
+class F(BaseModel):
+    ...
+</code></pre>
+<p><strong>example_model.py</strong></p>
+<pre><code class="language-python">from __future__ import annotations  # Remove to avoid the false positive
+
+from minimal_example_ruff_tch.base_model import Base
+from minimal_example_ruff_tch.field_model import F  # Falsely flagged by `TCH001`
+
+class ExampleModel(Base):
+    field: F
+</code></pre>
+<p>Running <code>ruff check path/to/modules --select &quot;TCH001&quot; --fix</code> results in the following:</p>
+<p><strong>example_model.py</strong></p>
+<pre><code class="language-python">from __future__ import annotations
+from typing import TYPE_CHECKING
+from minimal_example_ruff_tch.base_model import Base
+
+if TYPE_CHECKING:
+    from minimal_example_ruff_tch.field_model import F
+
+class ExampleModel(Base):
+    field: F
+</code></pre>
+<p>Removing the <code>annotations</code> import from <strong>example_model.py</strong> or putting <code>Base</code> and <code>F</code> in the same file (<strong>field_model.py</strong> for example) avoids the false positive.</p>
+<p>Current Ruff settings:</p>
+<pre><code class="language-toml">[tool.ruff.flake8-type-checking]
+runtime-evaluated-base-classes = [&quot;pydantic.BaseModel&quot;]
+</code></pre>
+<p>Current Ruff version: <code>ruff 0.0.292</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-09 11:59</div>
+            <div class="timeline-body"><p>So, I think there are two things going on here.</p>
+<p>The main issue is that we don't support making these kinds of inferences across files. So when you use <code>from minimal_example_ruff_tch.base_model import Base</code> and then <code>class ExampleModel(Base):</code>, Ruff is unable to detect that <code>ExampleModel</code> is a <code>pydantic.BaseModel</code>.</p>
+<p>Instead, you'd need to add <code>minimal_example_ruff_tch.base_model.Base</code> to your <code>runtime-evaluated-base-classes</code>, or add <code>pydantic.BaseModel</code> as an additional subclass to <code>ExampleModel</code> (so it'd be <code>ExampleModel(Base, pydantic.BaseModel)</code> or similar). These are unfortunate but known limitations that'll be lifted in time.</p>
+<p>The second thing is that -- ignore Pydantic entirely -- Python has some unintuitive behavior when it comes to whether annotations are required to be available at runtime or not, and this is where <code>from __future__ import annotations</code> comes into play.</p>
+<p>If you omit <code>from __future__ import annotations</code>, then when you do:</p>
+<pre><code class="language-python">from minimal_example_ruff_tch.field_model import F
+
+class ExampleModel:
+    field: F
+</code></pre>
+<p>Python actually <em>does</em> require that <code>F</code> is available at runtime. If you move <code>from minimal_example_ruff_tch.field_model import F</code> into an <code>if TYPE_CHECKING:</code> block, the code will error at runtime.</p>
+<p>However, if you either use <code>from __future__ import annotations</code> <em>or</em> quote the annotation (like <code>field: &quot;F&quot;)</code>, Ruff will correctly flag and move the import.</p>
+<p>So, I think the known bug here is that we don't yet support multi-file analysis for these rules. In general, I don't know that I'd recommend using them with libraries like Pydantic that depend on the runtime evaluation of types. It's possible but not totally straightforward. Hopefully we'll improve there over time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> added by @charliermarsh on 2023-10-09 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "TCH001: False positive" to "Unable to detect `runtime-evaluated-base-classes` across files" by @charliermarsh on 2023-10-09 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/disrupted">@disrupted</a> on 2023-10-09 12:51</div>
+            <div class="timeline-body"><p>I noticed a similar issue of Ruff having trouble evaluating base classes. It seems it doesn't reliably detect the bases – even within the same file.</p>
+<p>given this example</p>
+<pre><code class="language-python">from abc import ABC
+from pydantic import BaseModel
+
+class Model(BaseModel):
+    x: str
+
+
+class Empty(BaseModel):
+    ...
+
+
+class Abstract(Empty, ABC):
+    inner: Model
+</code></pre>
+<p>Ruff evaluates the following classes and their bases (I simply placed some log statements in this function)
+https://github.com/astral-sh/ruff/blob/a1509dfc7c2b16f3762545fc802d49f5f03726e2/crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs#L42</p>
+<pre><code class="language-log">class Model  bases: [Some([&quot;pydantic&quot;, &quot;BaseModel&quot;])]
+class Abstract  bases: [None, Some([&quot;abc&quot;, &quot;ABC&quot;])]
+</code></pre>
+<p>notice the absence of <code>Empty</code> and how <code>Abstract</code> then doesn't get detected as <code>BaseModel</code></p>
+<p>If you think it should be a separate issue, I'll gladly create a new one for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-09 19:09</div>
+            <div class="timeline-body"><p>@disrupted - Yeah this is separate -- we don't follow subclass chains <em>within</em> files. That one is solvable (not a one-line fix, but doesn't require any major changes). You're welcome to open another issue for it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7893.html">astral-sh/ruff#7893</a> on 2023-10-10 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BobVitorBob">@BobVitorBob</a> on 2024-08-23 16:13</div>
+            <div class="timeline-body"><p>Any updates on this? Ran into the same problem here.</p>
+<p>Also, shouldn't <code>runtime-evaluated-base-classes = [&quot;example_model.ExampleModel&quot;]</code> tell ruff that any class references used for typing inside <code>ExampleModel</code> are required on runtime? I tried doing something along these lines but it didn't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-10-24 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-24 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vkbo">@vkbo</a> on 2025-08-27 07:56</div>
+            <div class="timeline-body"><p>I ran into this issue today with a FastAPI route endpoint function with an Annotated parameter where pydantic will error if the annotated type is inside the <code>TYPE_CHECKING</code> block. It would be helpful if it was possible to define a set of imports that were excluded from the TC001-3 rules. Adding the import (as reported by the ruff error) to <code>runtime-evaluated-base-classes</code> did not make any difference.</p>
+<p>Edit: Too quick there. I see <code>exempt-modules</code> also exists as a setting. Still, this is a little tricky to get to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/9en9i">@9en9i</a> on 2025-12-12 11:07</div>
+            <div class="timeline-body"><p>Are there any updates? Python 3.14 has been stable for several months now, and the restrictions of this rule prevent it from being used normally when there are several inherited base classes from pydantic that cannot be determined.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-12 18:22</div>
+            <div class="timeline-body"><p>There hasn't been an update to Ruff's multi-file analysis abilities. ty is able to analyze multiple files, and we hope to reuse that infrastructure in Ruff someday, but the single-file limitation is still in place.</p>
+<p>It sounds like a couple of the comments here are reporting issues with single-file subclass chains. If that's the case, I'd be happy to take a look, as I believe that should work after #8768, but a minimal example, ideally in the <a href="https://play.ruff.rs/">playground</a>, would be very helpful!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/9en9i">@9en9i</a> on 2025-12-12 20:45</div>
+            <div class="timeline-body"><p>@ntBre Thank you very much for your reply! Unfortunately, my problem is that the classes are located in different files. I look forward to this functionality becoming available.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

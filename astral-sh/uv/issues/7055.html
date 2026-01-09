@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore path dependency's workspace with `uv lock` - astral-sh/uv #7055</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore path dependency's workspace with `uv lock`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7055">#7055</a>
+        opened by <a href="https://github.com/helderco">@helderco</a>
+        on 2024-09-04 23:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/helderco">@helderco</a> on 2024-09-04 23:40</div>
+            <div class="timeline-body"><p>I have a library <code>dagger-io</code> that is vendored locally in a <code>./sdk</code> directory in a new project <code>main</code> (structured as a library):</p>
+<pre><code class="language-toml"># my-module/pyproject.toml
+
+[project]
+name = &quot;main&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;dagger-io&quot;]
+
+[tool.uv.sources]
+dagger-io = { path = &quot;sdk&quot;, editable = true }
+
+[build-system]
+requires = [&quot;hatchling==1.25.0&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>The <code>dagger-io</code> library has a workspace with a <code>codegen</code> member during development, but I don't want that directory to be available when when vendored (copied into <code>./my-module/sdk</code>):</p>
+<pre><code class="language-toml"># my-module/sdk/pyproject.toml
+
+[project]
+name = &quot;dagger-io&quot;
+# ...
+
+[tool.uv]
+dev-dependencies = [&quot;codegen&quot;]
+
+[tool.uv.sources]
+codegen = { workspace = true }
+
+[tool.uv.workspace]
+members = [&quot;codegen&quot;]
+</code></pre>
+<p>So, when I create a lock file (<code>uv lock</code>) for project <code>main</code>, I get the following error:</p>
+<pre><code>error: Failed to build: `dagger-io @ file:///src/e864914331058348cb7b498167502588bd163773f866206b82eb4c4758730712/sdk`
+  Caused by: Failed to parse entry for: `codegen`
+  Caused by: Package is not included as workspace package in `tool.uv.workspace`
+</code></pre>
+<p>I want to ignore the workspace information in <code>dagger-io</code> when installed as a dependency since that workspace is for developing the <code>dagger-io</code> library, in a separate repo.</p>
+<p>Or is there another solution to this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 23:47</div>
+            <div class="timeline-body"><p>Do you need to re-lock outside of development? Is it enough just to sync?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-05 02:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helderco">@helderco</a> on 2024-09-07 00:20</div>
+            <div class="timeline-body"><p>What I need to lock is <code>my-module/uv.lock</code> (new project from template, needs new lock). The vendored library (<code>dagger-io</code>) should behave like something you'd install from PyPI, it's just vendored locally because modules need to patch that library slightly (to overwrite a <code>.py</code> file).</p>
+<p>So currently it's like doing <code>uv add dagger-io</code> and expecting uv to pick up on the library's workspace, which is only used to develop the library (i.e., in its own repo, not in <code>my-module</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helderco">@helderco</a> on 2024-09-09 13:44</div>
+            <div class="timeline-body"><p>To be clear, I think the problem is that I want to vendor without the <code>codegen</code> member but <code>uv lock</code> fails to parse the <code>sdk/pyproject.toml</code> (or <code>sdk/uv.lock</code>) without that subdir. It shows in <code>my-module/uv.lock</code> but isn't needed there.</p>
+<p><strong>Does <code>my-module/uv.lock</code> really need to know the dev dependencies from <code>my-modules/sdk</code>?</strong></p>
+<p>This is the difference between <code>uv lock --no-sources</code> and having a source with <code>dagger-io = { path = &quot;sdk&quot; }</code>:</p>
+<pre><code class="language-diff">[[package]]
+name = &quot;dagger-io&quot;
+-version = &quot;0.12.7&quot;
+-source = { registry = &quot;https://pypi.org/simple&quot; }
++version = &quot;0.0.0&quot;
++source = { directory = &quot;sdk&quot; }
+dependencies = [
+    { name = &quot;anyio&quot; },
+    { name = &quot;beartype&quot; },
+    { name = &quot;cattrs&quot; },
+    { name = &quot;gql&quot;, extra = [&quot;httpx&quot;] },
+    { name = &quot;opentelemetry-exporter-otlp-proto-grpc&quot; },
+    { name = &quot;opentelemetry-sdk&quot; },
+    { name = &quot;platformdirs&quot; },
+    { name = &quot;rich&quot; },
+    { name = &quot;typing-extensions&quot; },
+]
+-sdist = { url = &quot;https://files.pythonhosted.org/packages/10/5d/99cf39497c00ea3869e92246e364e0480979788d27388ed33273c03865cb/dagger_io-0.12.7.tar.gz&quot;, hash = &quot;sha256:49a50644a269a4fd785481a3b9a6a8a08c98caf2b4c835ea65e8c0fdbb641bf6&quot;, size = 81419 }
+-wheels = [
+-    { url = &quot;https://files.pythonhosted.org/packages/49/8d/878003f142338ca9e535c38044ee63fdae446b161c83366b734831551323/dagger_io-0.12.7-py3-none-any.whl&quot;, hash = &quot;sha256:69e7986b04e069b9a19805010d17ead8c0153eaf0be9d3dacf87585eb7d3ba7f&quot;, size = 76526 },
++
++[package.metadata]
++requires-dist = [
++    { name = &quot;anyio&quot;, specifier = &quot;&gt;=3.6.2&quot; },
++    { name = &quot;beartype&quot;, specifier = &quot;&gt;=0.18.2&quot; },
++    { name = &quot;cattrs&quot;, specifier = &quot;&gt;=22.2.0&quot; },
++    { name = &quot;gql&quot;, extras = [&quot;httpx&quot;], specifier = &quot;&gt;=3.5.0&quot; },
++    { name = &quot;opentelemetry-exporter-otlp-proto-grpc&quot;, specifier = &quot;&gt;=1.23.0&quot; },
++    { name = &quot;opentelemetry-sdk&quot;, specifier = &quot;&gt;=1.23.0&quot; },
++    { name = &quot;platformdirs&quot;, specifier = &quot;&gt;=2.6.2&quot; },
++    { name = &quot;rich&quot;, specifier = &quot;&gt;=10.11.0&quot; },
++    { name = &quot;typing-extensions&quot;, specifier = &quot;&gt;=4.8.0&quot; },
++]
++
++[package.metadata.requires-dev]
++dev = [
++    { name = &quot;aiohttp&quot;, specifier = &quot;&gt;=3.9.3&quot; },
++    { name = &quot;codegen&quot;, editable = &quot;sdk/codegen&quot; },
++    { name = &quot;mypy&quot;, specifier = &quot;&gt;=1.8.0&quot; },
++    { name = &quot;pytest&quot;, specifier = &quot;&gt;=8.0.2&quot; },
++    { name = &quot;pytest-httpx&quot;, specifier = &quot;&gt;=0.30.0&quot; },
++    { name = &quot;pytest-mock&quot;, specifier = &quot;&gt;=3.12.0&quot; },
++    { name = &quot;pytest-subprocess&quot;, specifier = &quot;&gt;=1.5.0&quot; },
++    { name = &quot;ruff&quot;, specifier = &quot;&gt;=0.3.4&quot; },
++    { name = &quot;sphinx&quot;, specifier = &quot;&gt;=7.2.6&quot; },
++    { name = &quot;sphinx-rtd-theme&quot;, specifier = &quot;&gt;=2.0.0&quot; },
+]
+</code></pre>
+<blockquote>
+<p>[!note]
+The published version (0.12.7) has uv dev dependencies (but <code>uv.lock</code> isn’t published):</p>
+<p>https://github.com/dagger/dagger/blob/9823a005d5c1c131345c3278bd6ef197c65d1c8b/sdk/python/pyproject.toml#L53-L66</p>
+</blockquote>
+<p>So I suppose I don’t get the dev dependencies if the source is already built (i.e., uv doesn’t have to build before install). But even with <code>uv build</code> I still don’t get them:</p>
+<pre><code>rm -rf sdk/codegen
+uv build sdk
+uv add --no-binary-package dagger-io ./sdk/dist/dagger_io-0.0.0.tar.gz
+</code></pre>
+<p>I used <code>--no-binary-package dagger-io</code> because I wanted to feed something that has the <code>pyproject.toml</code> and <code>uv.lock</code> from the <code>dagger-io</code> library to <code>uv add</code>, to see if the dev dependencies would get in the <code>my-module/uv.lock</code>, but they don’t:</p>
+<pre><code class="language-diff">[[package]]
+name = &quot;dagger-io&quot;
+-version = &quot;0.12.7&quot;
+-source = { registry = &quot;https://pypi.org/simple&quot; }
++version = &quot;0.0.0&quot;
++source = { path = &quot;sdk/dist/dagger_io-0.0.0.tar.gz&quot; }
+dependencies = [
+    { name = &quot;anyio&quot; },
+    { name = &quot;beartype&quot; },
+    { name = &quot;cattrs&quot; },
+    { name = &quot;gql&quot;, extra = [&quot;httpx&quot;] },
+    { name = &quot;opentelemetry-exporter-otlp-proto-grpc&quot; },
+    { name = &quot;opentelemetry-sdk&quot; },
+    { name = &quot;platformdirs&quot; },
+    { name = &quot;rich&quot; },
+    { name = &quot;typing-extensions&quot; },
+]
+-sdist = { url = &quot;https://files.pythonhosted.org/packages/10/5d/99cf39497c00ea3869e92246e364e0480979788d27388ed33273c03865cb/dagger_io-0.12.7.tar.gz&quot;, hash = &quot;sha256:49a50644a269a4fd785481a3b9a6a8a08c98caf2b4c835ea65e8c0fdbb641bf6&quot;, size = 81419 }
+-wheels = [
+-    { url = &quot;https://files.pythonhosted.org/packages/49/8d/878003f142338ca9e535c38044ee63fdae446b161c83366b734831551323/dagger_io-0.12.7-py3-none-any.whl&quot;, hash = &quot;sha256:69e7986b04e069b9a19805010d17ead8c0153eaf0be9d3dacf87585eb7d3ba7f&quot;, size = 76526 },
+-]
++
++[package.metadata]
++requires-dist = [
++    { name = &quot;anyio&quot;, specifier = &quot;&gt;=3.6.2&quot; },
++    { name = &quot;beartype&quot;, specifier = &quot;&gt;=0.18.2&quot; },
++    { name = &quot;cattrs&quot;, specifier = &quot;&gt;=22.2.0&quot; },
++    { name = &quot;gql&quot;, extras = [&quot;httpx&quot;], specifier = &quot;&gt;=3.5.0&quot; },
++    { name = &quot;opentelemetry-exporter-otlp-proto-grpc&quot;, specifier = &quot;&gt;=1.23.0&quot; },
++    { name = &quot;opentelemetry-sdk&quot;, specifier = &quot;&gt;=1.23.0&quot; },
++    { name = &quot;platformdirs&quot;, specifier = &quot;&gt;=2.6.2&quot; },
++    { name = &quot;rich&quot;, specifier = &quot;&gt;=10.11.0&quot; },
++    { name = &quot;typing-extensions&quot;, specifier = &quot;&gt;=4.8.0&quot; },
++]
+</code></pre>
+<p><strong>Only the production dependencies are included, which is what I want.</strong></p>
+<p>If I use the local directory as the source, it assumes I want to develop (i.e., tries to load the workspace), even without <code>--editable</code>:</p>
+<pre><code>✗  uv add ./sdk
+error: Failed to build: `dagger-io @ file:///Users/helder/Projects/dagger/sdk/python/dev/sdk`
+  Caused by: Failed to parse entry for: `codegen`
+  Caused by: Package is not included as workspace package in `tool.uv.workspace`
+</code></pre>
+<p>What I expected was the same as <code>uv build sdk</code> does. It doesn’t fail due to the missing workspace package and only adds <code>dagger-io</code>’s production dependencies to the lock.</p>
+<blockquote>
+<p>[!note]
+Even though I use <code>uv add</code> in these examples, what I’m trying to do is just <code>uv lock</code> in <code>my-module</code> since the <code>pyproject.toml</code> already includes the right config, added from a template.</p>
+</blockquote>
+<p>The reason I need to vendor the library is because I need to change a source code file due to a code generation step (in particular, the <code>sdk/src/dagger/client/gen.py</code> file). And the reason I need <code>--editable</code> is to have that change locally as well as in the OCI container, without having to install it again on changes (and without having to handle different <code>site-package</code> locations).</p>
+<p>In <code>my-module</code> I don’t want <code>my-module/sdk</code> dev dependencies nor share a <code>.venv</code>. If I wanted to develop them together, I’d define a workspace in <code>my-module/pyproject.toml</code>, which <strong>is what seems to be documented in <a href="https://docs.astral.sh/uv/concepts/workspaces/#when-not-to-use-workspaces">When (not) to use workspaces</a></strong>:</p>
+<blockquote>
+<p>Workspaces are <em>not</em> suited for cases in which members have conflicting requirements, or desire a separate virtual environment for each member. In this case, path dependencies are often preferable.
+[…]
+This approach conveys many of the same benefits, but allows for more fine-grained control over dependency resolution and virtual environment management</p>
+</blockquote>
+<p>But still, is there a way to distinguish when I want a path dependency’s dev dependencies vs not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ignore workspace in local dependency with `uv lock`" to "Ignore workspace in path dependency, with `uv lock`" by @helderco on 2024-09-09 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ignore workspace in path dependency, with `uv lock`" to "Ignore path dependency's workspace with `uv lock`" by @helderco on 2024-09-09 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 21:43</div>
+            <div class="timeline-body"><p>Is this fixed now that we don't sync child project dependencies?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helderco">@helderco</a> on 2024-11-02 19:30</div>
+            <div class="timeline-body"><p>No:</p>
+<pre><code class="language-console">❯ uv --verbose lock
+DEBUG uv 0.4.29 (85f9a0d0e 2024-10-30)
+DEBUG Found workspace root `/Users/helder/Projects/dagger/sdk/python`, but project is not included
+DEBUG Found workspace root: `/Users/helder/Projects/dagger/sdk/python/dev`
+DEBUG Adding current workspace member: `/Users/helder/Projects/dagger/sdk/python/dev`
+DEBUG The virtual environment's Python version satisfies `Python &gt;=3.12`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: main @ file:///Users/helder/Projects/dagger/sdk/python/dev
+DEBUG Found workspace root `/Users/helder/Projects/dagger/sdk/python`, but project is not included
+DEBUG No workspace root found, using project root
+DEBUG No static `pyproject.toml` available for: dagger-io @ file:///Users/helder/Projects/dagger/sdk/python/dev/sdk (PyprojectToml(DynamicField(&quot;version&quot;)))
+DEBUG Acquired lock for `/Users/helder/.cache/uv/sdists-v5/editable/81158b3d3e6e8b9a`
+DEBUG Using cached metadata for: dagger-io @ file:///Users/helder/Projects/dagger/sdk/python/dev/sdk
+DEBUG Found workspace root: `/Users/helder/Projects/dagger/sdk/python/dev/sdk`
+DEBUG Adding current workspace member: `/Users/helder/Projects/dagger/sdk/python/dev/sdk`
+DEBUG Released lock at `/Users/helder/.cache/uv/sdists-v5/editable/81158b3d3e6e8b9a/.lock`
+error: Failed to generate package metadata for `dagger-io==0.0.0 @ editable+sdk`
+  Caused by: Failed to parse entry in group `dev`: `codegen`
+  Caused by: Package is not included as workspace package in `tool.uv.workspace`
+</code></pre>
+<p>For this use case:</p>
+<ul>
+<li><code>dagger-io</code> has a <code>codegen</code> dev dependency in a child project/member of that workspace. That doesn't matter when published to <code>pypi</code></li>
+<li><code>./</code> depends on <code>./sdk</code>, which is a vendored <code>dagger-io</code>, without the <code>codegen</code> subdir</li>
+<li><code>./</code> shouldn't require that <code>./sdk/codegen</code> exists and <code>./sdk</code> shouldn't be a part of its workspace either</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mluis">@mluis</a> on 2025-05-21 12:34</div>
+            <div class="timeline-body"><p>@helderco , is there any workaround for this?</p>
+<p>Thanks in advance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helderco">@helderco</a> on 2025-06-05 23:22</div>
+            <div class="timeline-body"><p>Hey @mluis! 😃 Not that I know of. I ended up including that <code>codegen</code> sub-package, but would rather not still, if I could.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

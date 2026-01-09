@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`RET` selection is behaving incorrectly - astral-sh/ruff #3989</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`RET` selection is behaving incorrectly</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3989">#3989</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-04-16 23:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-16 23:15</div>
+            <div class="timeline-body"><p>Given:</p>
+<pre><code class="language-py">from typing import Optional
+
+
+def system_content(self) -&gt; Optional[str]:
+    if self.type is MessageType.role_subscription_purchase:
+        if not (data := self.role_subscription_data):
+            return
+
+        guild_name = f&quot;**{self.guild.name}**&quot; if self.guild else None
+        if data.total_months_subscribed &gt; 0:
+            action = &quot;renewed&quot; if data.is_renewal else &quot;joined&quot;
+            return (
+                f&quot;{self.author.name} {action} **{data.tier_name}** and has been a subscriber &quot;
+                f&quot;of {guild_name} for {data.total_months_subscribed} &quot;
+                f&quot;{'month' if data.total_months_subscribed == 1 else 'months'}!&quot;
+            )
+        elif data.is_renewal:
+            return f&quot;{self.author.name} renewed **{data.tier_name}** in their {guild_name} membership!&quot;
+        else:
+            return f&quot;{self.author.name} joined **{data.tier_name}** as a subscriber of {guild_name}!&quot;
+
+    return None
+</code></pre>
+<p>Running <code>ruff . --select RET505 --select RET502</code> raises <code>RET505</code>, but not <code>RET502</code>.</p>
+<p>Reported on Discord.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-04-16 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-16 23:40</div>
+            <div class="timeline-body"><p>This is consistent with <code>flake8-return</code>, but I think we should tweak the behavior. It's a little confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-16 23:40</div>
+            <div class="timeline-body"><p>Effectively, if we detect a <code>RET505</code> error, we abort, and skip some of the later checks (like <code>RET502</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4002.html">astral-sh/ruff#4002</a> on 2023-04-18 02:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-18 02:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

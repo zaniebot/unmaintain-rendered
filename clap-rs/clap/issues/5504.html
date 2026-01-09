@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provide an attribute that implements a common `--completions &lt;SHELL&gt;` convention without boilerplate - clap-rs/clap #5504</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Provide an attribute that implements a common `--completions &lt;SHELL&gt;` convention without boilerplate</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5504">#5504</a>
+        opened by <a href="https://github.com/lgarron">@lgarron</a>
+        on 2024-05-24 05:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lgarron">@lgarron</a> on 2024-05-24 05:54</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>N/A</p>
+<h3>Describe your use case</h3>
+<p>A lot of programs now implement one of the following:</p>
+<ul>
+<li>Flag: <code>program --completions &lt;SHELL&gt;</code></li>
+<li>Command: <code>program completions &lt;SHELL&gt;</code></li>
+</ul>
+<p>I <em>loooove</em> <code>clap</code> and <code>clap_complete</code>, and would love for this to be so simple to configure that I can configure it for a project (or contribute it to another project using <code>clap</code>) in minimal code.</p>
+<p>While it would be nice to support both the flag and command version, I think command version is more fraught[^1], so I will focus on a proposal for the flag version.</p>
+<p>[^1]: If you want to figure out whether a program supports something, I think a flag is generally much safer to try than a command. For example, <code>rm --completions fish</code> is basically safe to run, while <code>rm completions fish</code> is a recipe for a bad time.</p>
+<h3>Describe the solution you'd like</h3>
+<p>I'd love to get full completions functionality with syntax like this:</p>
+<pre><code class="language-rust">use clap_complete::{Shell};
+
+// …
+struct ProgramArgs {
+    #[clap(completions)]
+    completions: Option&lt;Shell&gt;,
+}
+</code></pre>
+<ul>
+<li><code>clap_complete</code> supports a <code>completions</code> attribute.<ul>
+<li>This attribute must be defined on a flag named <code>completions</code> at the top level of the program. (Or I think this should at least generate  warning unless explicitly silenced.)</li>
+<li>It must have the type <code>Option&lt;Shell&gt;</code>.</li>
+</ul>
+</li>
+<li><code>clap_complete</code> automatically generates default documentation for the flag, something like this:</li>
+</ul>
+<pre><code>Print completions for the given shell. When this flag is passed, any other input is ignored and the program will terminate immediately after printing the completions.
+
+Completions can be loaded and stored permanently by package managers, or they can be loaded into a given shell as follows:
+
+source &lt;(&lt;COMMAND_NAME&gt; --completions bash) # bash
+source &lt;(&lt;COMMAND_NAME&gt; --completions zsh) # zsh
+&lt;COMMAND_NAME&gt; --completions fish | source # fish
+… # …
+</code></pre>
+<ul>
+<li>When the flag is passed, <code>clap_complete</code> ignores any other arguments/input, prints completions, and exits with code <code>0</code> (<a href="https://github.com/lgarron/folderify/blob/d3a603f005c4db67ff05c7ab3e5767cdf4380728/src/options.rs#L162-L176">example</a>).</li>
+<li>I haven't completely thought this through, but:<ul>
+<li>If the flag is passed without a shell argument, the program could give some sort of specific signal that it supports the convention described here. Maybe a particular exit code? Maybe a hardcoded string as part of <code>stdout</code> or <code>stderr</code> that can be <code>grep</code>ped with low false positives?</li>
+<li>The main program argument struct could take a <code>default_completions_behaviour</code> attribute that automatically injects the flag?</li>
+</ul>
+</li>
+</ul>
+<h3>Alternatives, if applicable</h3>
+<p>The main alternative is to leave this for each program to implement individually.</p>
+<p>However, I think this is not ideal in the long term:</p>
+<ul>
+<li>It requires someone using <code>clap</code> to do some research and manually figure out how to integrate this into their code. By contrast, a single <code>clap_complete</code> directive is trivial to try out, and will work perfectly the first time in a lot of cases. Now there's a value proposition!</li>
+<li>Individual implementations can diverge in behaviour, or have bugs. In particular, if it's up to the programmer to print the completions manually, they may not do so immediately upon parsing the commandline arguments. This could lead to subtle interactions between flags, and unwanted side effects.</li>
+<li>An implementation will automatically support (and document support for) all shells by default.</li>
+<li>A default implementation in <code>clap_complete</code> will automatically stay up to date over time with upgrades to <code>clap_complete</code>. No need to keep the flag's documentation up to date manually for each program if there are feature changes (such as newly supported shells).<ul>
+<li>Another example is shell compatibility fixes. For example, Rust currently panics when I try to run <code>source &lt;(folderify --completions bash)</code> in <code>bash</code> on my computer, because of an issue with piping. If I find a fix, I'd love to contribute that to <code>clap_complete</code> and upgrade dependencies instead of fixing a copy of the code in each of my programs. Since most shells are still actively getting new features and shell syntax/semantics can be really subtle, I'd bet there will be more such issues over time, and it would be much more powerful to have all the compatibility handled in one place.</li>
+</ul>
+</li>
+</ul>
+<p>I'd also love for this to serve as the basis for a standard convention for discoverable completions that can be used by package managers and shells. Hence my emphasis on consistent behaviour with consistent invocation syntax.</p>
+<p>For example, Homebrew makes it a one-liner to support completions for a given program, but you don't get them for a given program if someone didn't add that line manually.[^2] I can imagine a package manager that automatically invokes <code>--completions</code> and loads them automatically, or at least introduces a linter for package definitions that highlights when completions seem to be available (but are not explicitly marked as supported/unsupported). This kind of functionality could also integrate with something like <code>cargo install</code> or shells directly.</p>
+<p>[^2]: In fact, I was motivated to file this issue after I found that Homebrew was missing completions for <code>tailscale</code>. They were super quick to accept <a href="https://github.com/Homebrew/homebrew-core/pull/172679">my PR to add support</a>. But that means everyone is only getting these completions going forward, when they were actually already available!</p>
+<h3>Additional Context</h3>
+<p>I know I'm probably not thinking of some details (e.g. how to avoid pulling in the standard library, how to have a program signal support for this convention without complications for legacy programs), but I think at an implementation level this should be a fairly moderate amount of code? But I know I'm asking for kind of bold stance on paving the path for a kind of hardcoded convention, when <code>clap</code> and <code>clap_complete</code> are all about versatility and flexibility in general.</p>
+<p>I'd be glad to contribute a PR if maintainers are on board and can give me a few pointers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @lgarron on 2024-05-24 05:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Provide a no-boilerplate "conventional mode"" to "Provide a `completions` attribute that implements a common convention without boilerplate" by @lgarron on 2024-05-24 05:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Provide a `completions` attribute that implements a common convention without boilerplate" to "Provide an attribute that implements a common `--completions <SHELL>` convention without boilerplate" by @lgarron on 2024-05-24 06:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2024-05-25 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-05-25 16:28</div>
+            <div class="timeline-body"><p>We are offering this with our newer, in-work completion system.  See <a href="https://docs.rs/clap_complete/latest/clap_complete/dynamic/shells/enum.CompleteCommand.html">CompleteCommand</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lgarron">@lgarron</a> on 2024-05-25 22:17</div>
+            <div class="timeline-body"><p>Oh, that is fabulous to see! 🤩</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-10 00:49</div>
+            <div class="timeline-body"><p>As I believe this is resolved with the native completions, I'm going to close this.  If this was incorrect, let us know!</p>
+<p>You can track stabilization at #3166</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-08-10 00:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

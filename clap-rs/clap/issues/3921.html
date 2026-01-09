@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support multiple values in native completions - clap-rs/clap #3921</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support multiple values in native completions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3921">#3921</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2022-07-13 14:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2022-07-13 14:19</div>
+            <div class="timeline-body"><p>Blocked on #3920</p>
+<p>Both for flags and positional arguments</p>
+<ul>
+<li><a href="https://github.com/clap-rs/clap/blob/master/clap_complete/src/dynamic.rs">code</a></li>
+<li><a href="https://github.com/clap-rs/clap/blob/master/clap_complete/tests/dynamic.rs">tests</a></li>
+<li><a href="https://pypi.org/project/argcomplete/">argcomplete</a> and <a href="https://github.com/spf13/cobra">cobra</a> can serve as examples</li>
+</ul>
+<p>Tasks</p>
+<ul>
+<li>[x] #5601</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2022-07-13 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2022-07-13 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2022-07-13 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3166.html">clap-rs/clap#3166</a> on 2022-07-13 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $20</span> added by @epage on 2022-09-13 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-help-wanted</span> added by @epage on 2022-09-20 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5539.html">clap-rs/clap#5539</a> on 2024-07-11 04:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5587.html">clap-rs/clap#5587</a> on 2024-07-22 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shannmu">@shannmu</a> on 2024-07-25 08:42</div>
+            <div class="timeline-body"><p>I have added support to complete multiple values for flags.
+But I have some confusion for positional arguments. How does <code>clap::Parser</code> parse the parsing of positional arguments, especially when there are multiple positional arguments with <code>num_args</code> setting? I have found the relevant code https://github.com/clap-rs/clap/blob/6b18d7725c6077a3da955d199617eb1fb3b88ea2/clap_builder/src/parser/parser.rs#L289-L404 it would be better if there were documentation explaining it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-07-25 15:38</div>
+            <div class="timeline-body"><p>Another relevant piece of code is
+https://github.com/clap-rs/clap/blob/6b18d7725c6077a3da955d199617eb1fb3b88ea2/clap_builder/src/builder/debug_asserts.rs#L487-L674</p>
+<p>Positionals must either be</p>
+<ul>
+<li>A fixed number of values (<code>num_args(5)</code>)</li>
+<li><code>last</code> / <code>trailing_var_arg</code></li>
+<li>second to last argument and <code>last</code> is set on the last</li>
+</ul>
+<p>I might be missing some corner cases in there but that is also likely the order of importance for supporting this.  We can start with just <code>num_args(N)</code> and have separate issues for <code>last</code> and <code>trailing_var_arg</code> support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shannmu">@shannmu</a> on 2024-07-25 17:10</div>
+            <div class="timeline-body"><pre><code>use clap::{CommandFactory, Parser};
+use clap_complete::dynamic::shells::CompleteCommand;
+#[derive(Parser, Debug)]
+#[clap(name = &quot;dynamic&quot;, about = &quot;A dynamic command line tool&quot;)]
+struct Cli {
+    /// The subcommand to run complete
+    #[command(subcommand)]
+    complete: Option&lt;CompleteCommand&gt;,
+    #[clap(value_parser = [&quot;pos_a&quot;], num_args = 2, required = true, index = 1)]
+    positional_a: Option&lt;String&gt;,
+    #[clap(value_parser = [&quot;pos_b&quot;], num_args = 2, required = true, index = 2)]
+    positional_b: Option&lt;String&gt;,
+    #[clap(value_parser = [&quot;pos_c&quot;], num_args = 2, last = true, index = 3)]
+    positional_c: Option&lt;String&gt;,
+}
+fn main() {
+    let cli = Cli::parse();
+    if let Some(completions) = cli.complete {
+        completions.complete(&amp;mut Cli::command());
+    }
+    // normal logic continues...
+}
+</code></pre>
+<p>Command line:</p>
+<pre><code>dynamic pos_a pos_a pos_b pos_b -- pos_c pos_c
+</code></pre>
+<p>will report an error:</p>
+<pre><code>error: 2 values required for '&lt;POSITIONAL_A&gt; &lt;POSITIONAL_A&gt;' but 4 were provided
+
+Usage: dynamic &lt;POSITIONAL_A&gt; &lt;POSITIONAL_A&gt; &lt;POSITIONAL_B&gt; &lt;POSITIONAL_B&gt; [-- &lt;POSITIONAL_C&gt; &lt;POSITIONAL_C&gt;]
+
+For more information, try '--help'.
+</code></pre>
+<p>How should I use this cli?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-07-25 17:25</div>
+            <div class="timeline-body"><p>Huh, looks like something isn't working quite right.  I even tried throwing in <code>--divider</code> flags to see if that would cause the positionals to <code>resolve_pending</code> and advance the counter and it doesn't.</p>
+<p>Updated code</p>
+<pre><code class="language-rust">#!/usr/bin/env nargo
+---
+[dependencies]
+clap = { path = &quot;../clap&quot;, features = [&quot;derive&quot;] }
+---
+
+use clap::Parser;
+use clap::builder::ArgAction;
+
+#[derive(Parser, Debug)]
+#[command(name = &quot;dynamic&quot;, about = &quot;A dynamic command line tool&quot;)]
+struct Cli {
+    #[arg(value_parser = [&quot;pos_a&quot;], num_args = 2, action = ArgAction::Set, required = true)]
+    positional_a: Vec&lt;String&gt;,
+    #[arg(value_parser = [&quot;pos_b&quot;], num_args = 2, action = ArgAction::Set, required = true)]
+    positional_b: Vec&lt;String&gt;,
+    #[arg(value_parser = [&quot;pos_c&quot;], num_args = 2, action = ArgAction::Set, last = true)]
+    positional_c: Vec&lt;String&gt;,
+    #[arg(short, long, action = ArgAction::Count)]
+    divider: u8,
+}
+fn main() {
+    let cli = Cli::parse();
+    print!(&quot;{cli:?}&quot;);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shannmu">@shannmu</a> on 2024-07-25 18:12</div>
+            <div class="timeline-body"><p>Is it possible that positional arguments were not designed to be used this way (multiple positional arguments with <code>num_args</code> set)? If not, this might be a <code>Parser</code> related bug. Understanding this is pretty important for resolving the issue, as it affects when to complete the positional arguments.
+I'll keep an eye on this issue. If there's a bug related to the <code>Parser</code>, I'd like to fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-07-25 18:21</div>
+            <div class="timeline-body"><p>Some thought was put into positionals and <code>num_args</code> but not in fully scaling it out like this.  These are bugs and would ideally be fixed but are not blockers for the work being done here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5601.html">clap-rs/clap#5601</a> on 2024-07-26 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-08 16:48</div>
+            <div class="timeline-body"><p>#5601 got us multi-value support.</p>
+<p>It left out</p>
+<ul>
+<li><code>trailing_var_arg</code>: noted as unblocking #3166</li>
+<li><code>last</code>: noted as unblocking #3166</li>
+<li><code>dynamic --flag=bar1 [TAB]</code>: this isn't support in clap's parser</li>
+</ul>
+<p>By controlling the scope of this issue, it looks like we can close it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-08-08 16:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

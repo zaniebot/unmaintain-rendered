@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>new rule - not calling super() in custom exception's __init__() - astral-sh/ruff #8579</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>new rule - not calling super() in custom exception's __init__()</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8579">#8579</a>
+        opened by <a href="https://github.com/m-aciek">@m-aciek</a>
+        on 2023-11-09 11:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/m-aciek">@m-aciek</a> on 2023-11-09 11:18</div>
+            <div class="timeline-body"><pre><code class="language-python">class CustomException(Exception):
+    def __init__(self, custom: int, arguments: str) -&gt; None:
+        self.msg = f&quot;Something specific happened with custom: {custom} and {arguments}&quot;
+</code></pre>
+<p>Above exception class has an issue, in my personal experience it's quite common. The implementer assumes, that they will use the <code>self.msg</code> parameter during exception handling. The issue araises when the exception gets anywhere else as the its string representation is as follows:</p>
+<pre><code class="language-python">&gt;&gt;&gt; raise CustomException(42, 'test')
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+__main__.CustomException: (42, 'test')
+</code></pre>
+<p>and when the exception is instantiated with keyword arguments, we lose the information about the arguments' values.</p>
+<pre><code class="language-python">&gt;&gt;&gt; raise CustomException(custom=1, arguments='two')
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+__main__.CustomException
+</code></pre>
+<p>How to fix it? By calling <code>super().__init__()</code> in the constructor. That way the string representation of the custom exception will contain the error message.</p>
+<pre><code class="language-python">class CustomException(Exception):
+    def __init__(self, custom: int, arguments: str) -&gt; None:
+        self.msg = &quot;Something specific happened with custom: {custom} and {arguments}&quot;
+        super().__init__(self.msg)
+&gt;&gt;&gt; raise CustomException(1, 'two')
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+__main__.CustomException: Something specific happened with custom: 1 and two
+&gt;&gt;&gt; raise CustomException(custom=1, parameters='two')
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+__main__.CustomException: Something specific happened with custom: 1 and two
+</code></pre>
+<p><strong>Specification proposal</strong></p>
+<p>If a class:</p>
+<ul>
+<li>inherits from from <code>Exception</code>,</li>
+<li>doesn't implement own <code>__str__()</code> method,</li>
+<li>its <code>__init__()</code> method doesn't enforce any positional-only argument,</li>
+<li>and doesn't call <code>super().__init__()</code> in its <code>__init__()</code> method</li>
+</ul>
+<p>Then:</p>
+<ul>
+<li>new rule should raise an error, calling to fix it.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-11-10 05:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-11-10 05:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/m-aciek">@m-aciek</a> on 2023-11-16 02:25</div>
+            <div class="timeline-body"><p>For the reference, this has been accepted in <a href="https://github.com/PyCQA/flake8-bugbear/issues/421"><code>flake8-bugbear</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @zanieb on 2023-11-16 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/opk12">@opk12</a> on 2025-04-24 17:51</div>
+            <div class="timeline-body"><p>Related: linting for a missing <code>super</code> call in <em>any</em> <code>__init__()</code> (not only inside exception classes) is tracked in #970 (<code>implement Pylint</code>) as the list item <code>super-init-not-called / W0231</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2025-06-11 11:41</div>
+            <div class="timeline-body"><p>https://github.com/PyCQA/flake8-bugbear/pull/512 has now been merged upstream</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

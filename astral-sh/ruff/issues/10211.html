@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonize E301 check with format in --preview mode? - astral-sh/ruff #10211</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Harmonize E301 check with format in --preview mode?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10211">#10211</a>
+        opened by <a href="https://github.com/jab">@jab</a>
+        on 2024-03-03 17:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jab">@jab</a> on 2024-03-03 17:41</div>
+            <div class="timeline-body"><p><code>ruff format</code> allows overloaded method stubs to occur before the runtime definition with no blank line in between, which is good. But this style fails the E301 check (in preview mode only). Should these be harmonized?</p>
+<h3>minimal code snippet that reproduces the bug</h3>
+<pre><code class="language-python">import typing as t
+
+
+class Foo:
+    &quot;&quot;&quot;Demo.&quot;&quot;&quot;
+
+    @t.overload
+    def bar(self, x: int) -&gt; int: ...
+    @t.overload
+    def bar(self, x: str) -&gt; str: ...
+    def bar(self, x: int | str) -&gt; int | str:
+        return x
+</code></pre>
+<h3>commands invoked</h3>
+<pre><code>❯ ruff format --preview foo.py  # (this example works the same without --preview here too)
+1 file left unchanged
+
+❯ ruff check --preview --extend-select E foo.py  # (--preview required here to reproduce)
+foo.py:11:5: E301 [*] Expected 1 blank line, found 0
+   |
+ 9 |     @t.overload
+10 |     def bar(self, x: str) -&gt; str: ...
+11 |     def bar(self, x: int | str) -&gt; int | str:
+   |     ^^^ E301
+12 |         return x
+   |
+   = help: Add missing blank line
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<h3>ruff version</h3>
+<pre><code>❯ ruff --version
+ruff 0.3.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-03-04 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-03-04 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-04 13:03</div>
+            <div class="timeline-body"><p>I don't know how complicated it is to support this, but I think changing <code>E301</code> to accept this syntax would be good regardless.  CC: @hoel-bagard</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on 2024-03-04 14:19</div>
+            <div class="timeline-body"><p>I don't think that would be an easy change, but I'll have a look. One thing to note is that it would deviate from pycodestyle.</p>
+<pre><code class="language-console">❯ pycodestyle foo.py
+foo.py:11:5: E301 expected 1 blank line, found 0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on 2024-03-04 14:44</div>
+            <div class="timeline-body"><p>@MichaReiser One way the to accept this syntax would be to keep track of the function name (since we would only allow the syntax if the name of the function is the same as the previous one) by modifying the enums as shown below. Then it should only be a matter of modifying the <code>E301</code>'s <code>if</code> condition to not trigger if we have two functions with the same name following each other (here I'm assuming that this would only happen if the first function is decorated with an <code>@overload</code>, if we don't make that assumption then we would need to additionally keep track of the previous two lines).</p>
+<pre><code class="language-rust">enum LogicalLineKind {
+    ...
+    Function,
+    ...
+}
+
+enum Follows {
+    ...
+    Def,
+    ...
+}
+</code></pre>
+<p>to</p>
+<pre><code class="language-rust">enum LogicalLineKind {
+    ...
+    Function(String),
+    ...
+}
+
+enum Follows {
+    ...
+    Def(String),
+    ...
+}
+</code></pre>
+<p>I haven't done it yet, but I can give it a try if you think that's a good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on 2024-03-04 14:48</div>
+            <div class="timeline-body"><p>We could also allow any function to follow a one-liner function. Right now we allow the first of the two snippets below, but not the second one. This is the same behavior as pycodestyle.</p>
+<pre><code class="language-python">def foo(self, x: int) -&gt; int: ...
+def bar(self, x: str) -&gt; str: ...
+def baz(self, x: int | str) -&gt; int | str: return x
+</code></pre>
+<pre><code class="language-python">def foo(self, x: int) -&gt; int: ...
+def bar(self, x: str) -&gt; str: ...
+def baz(self, x: int | str) -&gt; int | str:
+    return x
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jab">@jab</a> on 2024-03-04 15:38</div>
+            <div class="timeline-body"><p>Great there is interest in this!</p>
+<p>Looks like the same thing applies to E302 with overloaded free functions (not just methods):
+<img width="478" alt="Screenshot 2024-03-04 at 10 31 28 AM" src="https://github.com/astral-sh/ruff/assets/64992/35090bb9-da86-4f04-906a-dc6483da77a3"></p>
+<p>I'm not very familiar with pycodestyle, but it looks like it's been around since before Python had type hints. Otherwise perhaps it would have accepted (or even required) this style for overloaded functions from the get-go. Given that, maybe there could be a general policy for what to do whenever there is divergence due to type hint related code style that pycodestyle was not designed for (if there isn't one already).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jab">@jab</a> on 2024-03-04 15:44</div>
+            <div class="timeline-body"><p>I think ideally the solution here wouldn't be sensitive to how many lines were in the function definition. E.g. This should still be accepted code style:</p>
+<pre><code class="language-python">@t.overload
+def foo(x: int) -&gt; int: ...
+@t.overload
+def foo(x: str) -&gt; str: ...
+def foo(x: int | str) -&gt; int | str:
+    if not isinstance(x, (int, str)):
+        raise TypeError
+    return x
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-04 17:17</div>
+            <div class="timeline-body"><blockquote>
+<p>One way the to accept this syntax would be to keep track of the function name (since we would only allow the syntax if the name of the function is the same as the previous one)</p>
+</blockquote>
+<p>I'm sorry. I should have linked to the formatter issue so you don't have to infer the formatter's rules (which can be difficult to debug). The style change is called <a href="https://github.com/astral-sh/ruff/issues/8357">dummy implementations</a> and it makes the blank lines between two functions optional if the preceding function has a dummy (<code>...</code>) body. It isn't required that the two functions have the same name or that one is marked with <code>@overloaded</code>.</p>
+<p>Which is what you're proposing here:</p>
+<blockquote>
+<p>We could also allow any function to follow a one-liner function. Right now we allow the first of the two snippets below, but not the second one. This is the same behavior as pycodestyle.</p>
+<pre><code class="language-python">def foo(self, x: int) -&gt; int: ...
+def bar(self, x: str) -&gt; str: ...
+def baz(self, x: int | str) -&gt; int | str: return x
+</code></pre>
+<pre><code class="language-python">def foo(self, x: int) -&gt; int: ...
+def bar(self, x: str) -&gt; str: ...
+def baz(self, x: int | str) -&gt; int | str:
+    return x
+</code></pre>
+</blockquote>
+<p>I think it's a good compromise between pycodestyle and formatter compatibility (and it seems a sensible defaults for stubs to me). The lint rule is allowed to be slightly stricter than the formatter (the formatter makes the blank line optional, it doesn't remove it). That means we could enforce that the functions have the same name, but I don't think that's necessary. @jab what's your take on whether the functions should have the same name?</p>
+<p>Would we need to make the same change for methods?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">incompatibility</span> added by @zanieb on 2024-03-11 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2024-03-31 17:49</div>
+            <div class="timeline-body"><p>When formatting with <code>ruff</code>, is there even a point in having these checks active? Maybe rules could be categorized with some sort of tags, so that one can easily disable all formatting-specific rules, or activate specific rule sets like <code>format:pycodestyle</code>, <code>format:ruff</code>, <code>format:black</code>, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-01 08:28</div>
+            <div class="timeline-body"><p>@randolf-scholz Thank you for the suggestion! @AlexWaygood is working towards rule categorization (#1774) where it would make sense to have this kind of group.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10704.html">astral-sh/ruff#10704</a> on 2024-04-01 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-15 08:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12799.html">astral-sh/ruff#12799</a> on 2024-08-11 15:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

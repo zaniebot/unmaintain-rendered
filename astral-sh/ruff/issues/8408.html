@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun with imports :) - astral-sh/ruff #8408</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fun with imports :)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8408">#8408</a>
+        opened by <a href="https://github.com/vgoklani">@vgoklani</a>
+        on 2023-11-01 16:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vgoklani">@vgoklani</a> on 2023-11-01 16:13</div>
+            <div class="timeline-body"><p>Hey there,</p>
+<p>Thanks for updating Ruff to support the python-black formatter!</p>
+<p>I'm using this on Sublime Text 4 via LSP-ruff, and these are my settings:</p>
+<pre><code>{
+  &quot;log_debug&quot;: true,
+  &quot;lsp_format_on_save&quot;: true,
+  &quot;lsp_code_actions_on_save&quot;: {
+    &quot;lsp_format_on_save&quot;: true,
+    &quot;source.lsp_format_on_save&quot;: true,
+    &quot;source.fixAll&quot;: true,
+    &quot;source.organizeImports&quot;: true,
+    &quot;source.applyFormat&quot;: true
+  },
+  &quot;clients&quot;: {
+    &quot;ruff-lsp&quot;: {
+      &quot;command&quot;: [
+        &quot;ruff-lsp&quot;
+      ],
+      &quot;enabled&quot;: false,
+      &quot;selector&quot;: &quot;source.python&quot;,
+      &quot;initializationOptions&quot;: {
+        &quot;settings&quot;: {
+          &quot;args&quot;: [],
+        },
+      },
+    },
+  },
+}</code></pre>
+<p>There are a few quirks that I just wanted to point out:</p>
+<ol>
+<li>imports that aren't yet used automatically get removed when I save the file.</li>
+</ol>
+<blockquote>
+<p>As I'm writing code, I add import statements, and instinctively hit the save button, only to find that those imports are then removed. I do like how you <em>organize</em> the imports, but I don't like how they disappear! Is it possible to add an additional parameter to separate these two cases.</p>
+</blockquote>
+<ol start="2">
+<li><p>When writing f-strings, this case is not being caught by Ruff:</p>
+<p>my_string = f&quot;Hello {data[&quot;name&quot;]}&quot;</p>
+</li>
+</ol>
+<p>previously <code>python-black</code> would catch the fact that we are using <code>&quot;</code> in both the string declaration and the <code>data</code> dictionary. Ruff is not catching these cases, which leads to run-time errors.</p>
+<p>Thanks for releasing Ruff, looking fowrard to more features :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-01 16:20</div>
+            <div class="timeline-body"><p>Thanks for the issue!</p>
+<ol>
+<li><p>You should disable <a href="https://docs.astral.sh/ruff/rules/unused-import/"><code>F401</code></a> when using your IDE i.e. by adding <code>--ignore F401</code> to the additional lint command arguments.</p>
+</li>
+<li><p>That's valid syntax in Python 3.12 now (https://docs.python.org/3/whatsnew/3.12.html#whatsnew312-pep701) which we have full support for. If your target Python version is lower, we can probably detect that and include a violation cc @dhruvmanila</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2023-11-01 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-02 04:17</div>
+            <div class="timeline-body"><blockquote>
+<p>previously <code>python-black</code> would catch the fact that we are using <code>&quot;</code> in both the string declaration and the <code>data</code> dictionary. Ruff is not catching these cases, which leads to run-time errors.</p>
+</blockquote>
+<p>Can you expand on how is <code>python-black</code> catching this case? Is it throwing an error stating that this syntax isn't supported? I think https://github.com/astral-sh/ruff/issues/6591 would solve your use-case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-02 04:21</div>
+            <div class="timeline-body"><p>For (1), do you wish to just disable the fix and allow the editor to highlight unused imports? If so, you can use the <a href="https://docs.astral.sh/ruff/settings/#unfixable"><code>unfixable</code></a> setting to do that.</p>
+<p>For additional context, the organize imports action isn't responsible for removing unused imports. It's the <a href="https://docs.astral.sh/ruff/rules/unused-import/"><code>F401</code></a> rule whose auto-fix removes them and as @zanieb suggested, you could either disable the rule entirely or just disable the fix.</p>
+<p>I hope this helps :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-03 02:05</div>
+            <div class="timeline-body"><p>Going to close for now, but happy to answer any follow-up questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-03 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vgoklani">@vgoklani</a> on 2023-11-07 12:47</div>
+            <div class="timeline-body"><p>@dhruvmanila sorry I missed your reply</p>
+<p>I used <code>python-black</code> in sublime text 4. For case #2, it would highlight the row when either <code>'</code> or <code>&quot;</code> were used incorrectly as part of the f-string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-14 04:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I used <code>python-black</code> in sublime text 4. For case #2, it would highlight the row when either <code>'</code> or <code>&quot;</code> were used incorrectly as part of the f-string.</p>
+</blockquote>
+<p>By incorrectly, do you mean that the outer and inner quotes were the same? The linked issue in my comment should solve this although how do we go about implementing it isn't final yet.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

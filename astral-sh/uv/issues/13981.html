@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`marker` isn't respected for URL and path sources - astral-sh/uv #13981</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`marker` isn't respected for URL and path sources</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13981">#13981</a>
+        opened by <a href="https://github.com/oconnor663">@oconnor663</a>
+        on 2025-06-12 00:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-12 00:45</div>
+            <div class="timeline-body"><p>Here's an example:</p>
+<pre><code>[project]
+name = &quot;scratch&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;numpy&quot;,
+]
+
+[tool.uv.sources.numpy]
+git = &quot;https://github.com/numpy/numpy&quot;
+</code></pre>
+<p>This gives me:</p>
+<pre><code>$ (uv sync --upgrade &amp;&amp; uv pip show numpy) 2&gt;&amp;1 | grep Version
+Version: 2.4.0.dev0
+</code></pre>
+<p>Now if I add a marker that disables that source (I'm on Linux, not Windows), the resolved version changes back to the latest published version, as expected:</p>
+<pre><code>[tool.uv.sources.numpy]
+git = &quot;https://github.com/numpy/numpy&quot;
+marker = &quot;sys_platform == 'win32'&quot;
+</code></pre>
+<pre><code>$ (uv sync --upgrade &amp;&amp; uv pip show numpy) 2&gt;&amp;1 | grep Version
+Version: 2.3.0
+</code></pre>
+<p>However, here's the part I didn't expect. Using a URL source or a path source behaves differently. A URL source affects the version even when it should be disabled by a marker:</p>
+<pre><code>[tool.uv.sources.numpy]
+url = &quot;https://files.pythonhosted.org/packages/19/49/4df9123aafa7b539317bf6d342cb6d227e49f7a35b99c287a6109b13dd93/numpy-2.2.6-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;
+marker = &quot;sys_platform == 'win32'&quot;
+</code></pre>
+<pre><code>$ (uv sync --upgrade &amp;&amp; uv pip show numpy) 2&gt;&amp;1 | grep Version
+Version: 2.2.6
+</code></pre>
+<p>This seems like a bug. (Found while investigating https://github.com/astral-sh/uv/issues/13829.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @oconnor663 on 2025-06-12 00:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @oconnor663 by @oconnor663 on 2025-06-12 00:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-12 16:37</div>
+            <div class="timeline-body"><p>Additional info: If I set a version constraint that doesn't like the version from <code>sources</code>, then URL behaves like Git as expected.</p>
+<pre><code>dependencies = [
+    &quot;numpy&gt;=2.3&quot;,
+]
+</code></pre>
+<p>But if the constraint allows the version from <code>sources</code>, I get the same inconsistent behavior as with no constraint.</p>
+<pre><code>dependencies = [
+    &quot;numpy&gt;=2.2&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-12 17:45</div>
+            <div class="timeline-body"><p>Never mind. The difference here seems to be that <code>2.4.0.dev0</code> is a prerelease version and <code>2.2.6</code> is not. Git and Url sources behave the same when they're both given the same version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @oconnor663 on 2025-06-12 17:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

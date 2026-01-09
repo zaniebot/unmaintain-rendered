@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PLR6301` not aware of `attrs` validation decorator  - astral-sh/ruff #12568</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`PLR6301` not aware of `attrs` validation decorator </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12568">#12568</a>
+        opened by <a href="https://github.com/my1e5">@my1e5</a>
+        on 2024-07-29 15:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/my1e5">@my1e5</a> on 2024-07-29 15:42</div>
+            <div class="timeline-body"><p>Related to https://github.com/astral-sh/ruff/issues/12172.</p>
+<p>The <a href="https://github.com/python-attrs/attrs"><code>attrs</code></a> library, which is similar to <code>dataclasses</code>, uses decorators to allow you to define validators for the attributes of your class. Here is a simple example:</p>
+<pre><code class="language-py">from attrs import define, field
+
+
+@define
+class Foo:
+    x: int = field()
+
+    @x.validator
+    def validate_x(self, attribute, value):
+        if value &lt;= 0:
+            raise ValueError(&quot;x must be a positive integer&quot;)
+
+
+foo = Foo(x=-1) # ValueError: x must be a positive integer
+</code></pre>
+<p>However, this triggers <code>PLR6301</code> - https://play.ruff.rs/2aa3e667-d733-4dc9-b1c7-307256edcabe</p>
+<blockquote>
+<p>Method <code>validate_x</code> could be a function, class method, or static method</p>
+</blockquote>
+<p>But in this situation, this is not correct. <code>validate_x</code> needs <code>self</code> in order to be valid.</p>
+<p>Perhaps this is beyond the scope of <code>PLR6301</code>, but it would nice if Ruff was context-aware of <code>attrs</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-07-29 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2024-07-30 09:37</div>
+            <div class="timeline-body"><p>I've tested this example code with the original <code>pylint</code> rule and it also raises an issue - <code>R6301: Method could be a function (no-self-use)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-30 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13166.html">astral-sh/ruff#13166</a> on 2024-08-30 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-30 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-30 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19396.html">astral-sh/ruff#19396</a> on 2025-07-17 10:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add option to force use of `uv.lock` file when adding dependency or installing a tool - astral-sh/uv #5815</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add option to force use of `uv.lock` file when adding dependency or installing a tool</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/5815">#5815</a>
+        opened by <a href="https://github.com/my1e5">@my1e5</a>
+        on 2024-08-06 14:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/my1e5">@my1e5</a> on 2024-08-06 14:50</div>
+            <div class="timeline-body"><p>From 'The Cargo Book' - https://doc.rust-lang.org/cargo/commands/cargo-install.html#dealing-with-the-lockfile</p>
+<blockquote>
+<h3>Dealing with the Lockfile</h3>
+<p>By default, the Cargo.lock file that is included with the package will be ignored. This means that Cargo will recompute which versions of dependencies to use, possibly using newer versions that have been released since the package was published. The --locked flag can be used to force Cargo to use the packaged Cargo.lock file if it is available. This may be useful for ensuring reproducible builds, to use the exact same set of dependencies that were available when the package was published.</p>
+</blockquote>
+<p>It would be nice if <code>uv</code> had a similar option which allowed you to force the use of the <code>uv.lock</code> file rather than recomputing the dependencies from the <code>pyproject.toml</code> file. This would enable you to get exact reproducible builds.</p>
+<p>Consider this simple use-case</p>
+<pre><code>$ uv init --name mylib
+$ uv add numpy
+</code></pre>
+<p>The <code>pyproject.toml</code> looks like</p>
+<pre><code>dependencies = [
+    &quot;numpy&gt;=2.0.1&quot;,
+]
+</code></pre>
+<p>and the <code>uv.lock</code> file is</p>
+<pre><code>[[distribution]]
+name = &quot;numpy&quot;
+version = &quot;2.0.1&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/1c/8a/0db635b225d2.......
+</code></pre>
+<p>You then write some code and once ready you commit and push the project to your Git server (including the <code>uv.lock</code> file).</p>
+<p>Some time later, you want to re-use this project in another codebase. So you use something like</p>
+<pre><code>$ uv add git+ssh://git@mygitserver/user/mylib
+</code></pre>
+<p>But because a new version of <code>numpy</code> has been released it doesn't install version 2.0.1 and instead installs a newer version (potentially causing some issues). Having something like a <code>--use-lock-file</code> flag would solve this issue by directing <code>uv</code> to follow the lock file exactly.</p>
+<p>The same thing would be useful for <code>uv tool install</code>. For example if I've developed an executable app and want the exact same dependencies installed as specified in the lock file.</p>
+<pre><code>$ uv tool install git+ssh://git@mygitserver/user/myapp
+</code></pre>
+<p>I understand that some might say, well you should have made your dependencies explicit:</p>
+<pre><code>dependencies = [
+    &quot;numpy==2.0.1&quot;,
+]
+</code></pre>
+<p>But as you can see, the default behaviour of <code>uv add</code> is to use version ranges (<code>&gt;=</code>). And there may be situations where you are working with someone else's uv-managed project, in which case going by the <code>uv.lock</code> file might be essential to ensure a reproducible build.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 14:55</div>
+            <div class="timeline-body"><p>Is this not <code>--frozen</code> and <code>--locked</code>? I believe we already support those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-06 14:55</div>
+            <div class="timeline-body"><blockquote>
+<p>But because a new version of numpy has been released it doesn't install version 2.0.1 and instead installs a newer version</p>
+</blockquote>
+<p>We should prefer the existing versions in the lockfile when adding dependencies, if we aren't it sounds like either the package you're adding depends on a newer version of numpy or we have an unexpected bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2024-08-06 14:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this not <code>--frozen</code> and <code>--locked</code>? I believe we already support those.</p>
+</blockquote>
+<p>My understanding was these flags had a different meaning</p>
+<pre><code>      --locked                                 Assert that the `uv.lock` will remain unchanged
+      --frozen                                 Add the requirements without updating the `uv.lock` file
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 14:59</div>
+            <div class="timeline-body"><p>Oh, you're talking about using the <code>uv.lock</code> from Package A when you add Package A as a dependency of Package B?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-06 15:02</div>
+            <div class="timeline-body"><p>Ohhh that makes more sense. Hm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2024-08-06 15:12</div>
+            <div class="timeline-body"><p>Ah sorry, I can see how the confusion came about. Yes, I mean this exactly</p>
+<blockquote>
+<p>using the uv.lock from Package A when you add Package A as a dependency of Package B?</p>
+</blockquote>
+<p>I'm not aware of other Python tooling and project managers offering this kind of feature. For example <code>pipx</code> will ignore the lock files. There is some related discussion here - https://github.com/pdm-project/pdm/discussions/2450</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-06 16:05</div>
+            <div class="timeline-body"><p>This seems particularly reasonable when performing <code>uv tool install</code>. It seems a bit more complicated with <code>uv add</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 16:39</div>
+            <div class="timeline-body"><p>Yeah we should support something like this eventually but I don't think we should try to solve it for the upcoming release -- requires some design.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-08-06 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @charliermarsh on 2024-08-06 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-08-06 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @zanieb on 2024-08-20 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7768.html">astral-sh/uv#7768</a> on 2024-09-29 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15945.html">astral-sh/uv#15945</a> on 2025-09-19 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15947.html">astral-sh/uv#15947</a> on 2025-09-19 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eddie-dunn">@eddie-dunn</a> on 2025-10-07 11:04</div>
+            <div class="timeline-body"><p>Forcing an installation <em>exactly</em> as the lockfile specifies will protect against supply chain attacks, so there are security implications for wanting to add this functionality.</p>
+<p>What kind of design requirements remain?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13414.html">astral-sh/uv#13414</a> on 2025-10-13 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helmut-hoffer-von-ankershoffen">@helmut-hoffer-von-ankershoffen</a> on 2025-12-09 18:46</div>
+            <div class="timeline-body"><p>I hope this is the right issue @zanieb</p>
+<p><code>uvx &lt;tool&gt;</code> ignores <code>override-dependencies</code> in the pyproject.toml. I.e. users using <code>uvx</code> to install and run a tool will install vulnerable (transitive) dependencies in cases where override-dependencies is used to force updated versions.</p>
+<p>(1) Was this considered when determining the priority of if and when to support uv.lock in uvx?
+(2) Should <code>uvx --use-lock</code> actually be the <strong>default</strong> when it's supported.</p>
+<p>Should this not so obvious security gap be mentioned on this page? https://docs.astral.sh/uv/guides/tools/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../awslabs/nx-plugin-for-aws/issues/378.html">awslabs/nx-plugin-for-aws#378</a> on 2025-12-11 02:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../awslabs/nx-plugin-for-aws/issues/379.html">awslabs/nx-plugin-for-aws#379</a> on 2025-12-11 02:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

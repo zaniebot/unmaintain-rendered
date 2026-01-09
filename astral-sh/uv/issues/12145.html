@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync --script` only syncs when there are packages to add to env - astral-sh/uv #12145</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync --script` only syncs when there are packages to add to env</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12145">#12145</a>
+        opened by <a href="https://github.com/manzt">@manzt</a>
+        on 2025-03-13 00:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/manzt">@manzt</a> on 2025-03-13 00:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm not entirely sure I understand the behavior, but it seems like there's a subtle bug where <code>uv sync --script</code> only syncs the environment when there are new dependencies to add. Specifically, removing dependencies and then syncing appears to be a no-op.</p>
+<pre><code class="language-sh">uv init --script blah.py
+uv add --script blah.py polars
+uv sync --script blah.py
+# Creating script environment at: /Users/manzt/.cache/uv/environments-v2/blah-7cdfc916d13f4258
+# Resolved 1 package in 12ms
+# Installed 1 package in 6ms
+#  + polars==1.24.0
+uv remove --script blah.py polars
+uv sync --script blah.py
+# Using script environment at: /Users/manzt/.cache/uv/environments-v2/blah-7cdfc916d13f4258
+#
+uv add --script blah.py attrs
+uv sync --script blah.py
+# Using script environment at: /Users/manzt/.cache/uv/environments-v2/blah-7cdfc916d13f4258
+# Resolved 1 package in 51ms
+# Uninstalled 1 package in 15ms
+# Installed 1 package in 3ms
+#  + attrs==25.2.0
+#  - polars==1.24.0
+</code></pre>
+<p>In the script above, I would expect <code>- polars==1.24.0</code> to appear after <code>uv remove --script blah.py polars</code>. I can confirm that polars is still in the environment until after the last <code>uv sync</code>.</p>
+<h3>Platform</h3>
+<p>Darwin 23.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.6 (c1a0bb85e 2025-03-12)</p>
+<h3>Python version</h3>
+<p>Python 3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @manzt on 2025-03-13 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../manzt/juv/pulls/84.html">manzt/juv#84</a> on 2025-03-13 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-13 13:00</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-13 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv sync --script` only sync when a new package is added" to "`uv sync --script` only syncs when there are packages to add to env" by @manzt on 2025-03-13 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-13 22:03</div>
+            <div class="timeline-body"><p>Will take a look tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2025-03-13 23:18</div>
+            <div class="timeline-body"><p>No rush at all. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12158.html">astral-sh/uv#12158</a> on 2025-03-13 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-14 00:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2025-03-14 01:26</div>
+            <div class="timeline-body"><p>whoa awesome</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2025-03-18 23:23</div>
+            <div class="timeline-body"><p>Just want to say<code>uv sync --script</code> absolutely rocks.</p>
+<p>For Jupyter notebooks, it's common to not know exactly what deps you might need for some analysis. Previously I was creating a fresh venv in the <a href="https://marketplace.visualstudio.com/items?itemName=manzt.juv">juv-vscode</a> extension any time a package was added or removed. This meant clearing the existing venv, including module byte code, making users incur the same overhead of importing a library every time they restarted the Jupyter kernel after syncing the PEP 723 meta.</p>
+<p>With <code>uv sync --script</code> its <em>such</em> a better user experience. See in this example, importing <code>pandas</code> for the first time takes ~10s (&quot;fresh&quot; venv), but the second time (after adding anywidget, &quot;synced&quot; venv) and restarting the kernel its instant!</p>
+<p><img src="https://github.com/user-attachments/assets/dd2a39be-4461-4977-8012-24ca40979ea2" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-19 01:40</div>
+            <div class="timeline-body"><p>Amazing, thank you for sharing!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

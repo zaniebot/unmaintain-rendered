@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCH002 false positive with `singledispatch` - astral-sh/ruff #6849</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>TCH002 false positive with `singledispatch`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6849">#6849</a>
+        opened by <a href="https://github.com/flying-sheep">@flying-sheep</a>
+        on 2023-08-24 10:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2023-08-24 10:15</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p><a href="https://play.ruff.rs/0513d9af-edc8-439f-be51-b6819393139b">Playground link</a></p>
+<p><a href="https://docs.python.org/3/library/functools.html#functools.singledispatch"><code>functools.singledispatch</code></a>’s <code>register</code> decorator can take a function with the first argument being type-annotated. That type annotation will then be used to dispatch.</p>
+<p>The following code should therefore be correct with all rules active, however it claims rule violations on the annotated lines.</p>
+<pre><code class="language-py">&quot;&quot;&quot;Test module.&quot;&quot;&quot;
+from __future__ import annotations
+
+from functools import singledispatch
+from typing import TYPE_CHECKING
+
+from numpy import asarray  # TCH002: Move third-party import `numpy.typing.ArrayLike` into a type-checking block
+from numpy.typing import ArrayLike  # TCH002: Move third-party import `scipy.sparse.spmatrix` into a type-checking block
+from scipy.sparse import spmatrix
+
+if TYPE_CHECKING:
+    from numpy import ndarray
+
+
+@singledispatch
+def to_array_or_mat(a: ArrayLike | spmatrix) -&gt; ndarray | spmatrix:
+    &quot;&quot;&quot;Convert arg to array or leaves it as sparse matrix.&quot;&quot;&quot;
+    msg = f&quot;Unhandled type {type(a)}&quot;
+    raise NotImplementedError(msg)
+
+@to_array_or_mat.register
+def _(a: ArrayLike) -&gt; ndarray:
+    return asarray(a)
+
+@to_array_or_mat.register
+def _(a: spmatrix) -&gt; spmatrix:
+    return a
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2023-08-24 11:07</div>
+            <div class="timeline-body"><p>@ivirshup support for pydantic-like and attrs-like patterns can already be achieved via <a href="https://beta.ruff.rs/docs/settings/#flake8-type-checking-runtime-evaluated-base-classes"><code>flake8-type-checking.runtime-evaluated-base-classes</code></a> and <a href="https://beta.ruff.rs/docs/settings/#flake8-type-checking-runtime-evaluated-decorators"><code>flake8-type-checking.runtime-evaluated-decorators</code></a>, respectively</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-24 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-11-30 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8934.html">astral-sh/ruff#8934</a> on 2023-12-01 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-01 03:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

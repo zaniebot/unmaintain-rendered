@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support non-Display types with `default_value_t` - clap-rs/clap #4558</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support non-Display types with `default_value_t`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/4558">#4558</a>
+        opened by <a href="https://github.com/rdelfin">@rdelfin</a>
+        on 2022-12-16 21:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rdelfin">@rdelfin</a> on 2022-12-16 21:03</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.0.29</p>
+<h3>Describe your use case</h3>
+<p>Currently, there's no way (that I can figure out) to set a default value on a <code>PathBuf</code> using derive. You can see a minimal reproducible example <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=319840ec4a9e06a86ca5369193950d8d">here</a>. The specific error is:</p>
+<pre><code>error[[E0277]](https://doc.rust-lang.org/stable/error-index.html#E0277): `PathBuf` doesn't implement `std::fmt::Display`
+ --&gt; src/main.rs:6:24
+  |
+6 |     #[arg(short, long, default_value_t = PathBuf::from(&quot;/some/default/path&quot;))]
+  |                        ^^^^^^^^^^^^^^^ `PathBuf` cannot be formatted with the default formatter; call `.display()` on it
+  |
+  = help: the trait `std::fmt::Display` is not implemented for `PathBuf`
+  = note: call `.display()` or `.to_string_lossy()` to safely print paths, as they may contain non-Unicode data
+  = note: required for `PathBuf` to implement `ToString`
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>Ideally, either logic to allow for PathBufs to display correctly with the <code>.display()</code> call, or a way of suplementing default values let you write a custom display string.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @rdelfin on 2022-12-16 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Allow for default values with PathBufs" to "Support non-Display types with `default_value_t`" by @epage on 2022-12-16 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-12-16 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2022-12-16 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-12-16 21:30</div>
+            <div class="timeline-body"><p>If your default is literally <code>PathBuf::from(&quot;/some/default/path&quot;)</code>, then you can workaround this with <code>default_value = &quot;/some/default/path&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rdelfin">@rdelfin</a> on 2022-12-16 23:09</div>
+            <div class="timeline-body"><p>AH, thanks @epage! I assume <code>default_value</code> just calls <code>from()</code> on the value provided?
+Either way, this resolves the issue for me, but sounds like there could be a use for the broader problem. Leave it to you all if you want to leave it open</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-12-17 00:57</div>
+            <div class="timeline-body"><p>Yeah, I've been wanting to do something about this but it appears we don't have an issue for this, so now we do!</p>
+<p>Most likely this will require deref coercion, like <code>value_builder!</code> to know whether we can use <code>Display</code> or whether we need another way to eventually get it into a <code>clap::builder::OsStr</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cdaringe">@cdaringe</a> on 2023-03-23 05:29</div>
+            <div class="timeline-body"><p>this thread was critical for me! the clap docs &amp; guide didn't call out <code>default_value = ...</code>, just <code>default_value_t = ...</code></p>
+<p>thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-23 12:15</div>
+            <div class="timeline-body"><p>@cdaringe the docs mention both but they might not be the most obvious.  #4090 is about trying to find ways to improve that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickeb96">@nickeb96</a> on 2023-03-29 20:18</div>
+            <div class="timeline-body"><p>Is it possible to specify a default value that doesn't get passed through a parser?  I have something like:</p>
+<pre><code class="language-rust">#[derive(Parser)]
+struct Args {
+    #[arg(long, value_parser = thing_parser, default_value_t = THING_CONST)]
+    thing: Thing,
+}
+
+fn thing_parser(s: &amp;str) -&gt; Result&lt;Thing, Error&gt; { ... }
+</code></pre>
+<p>Unfortunately this takes <code>THING_CONST</code> (which is already type <code>Thing</code>) and converts it into a string, passes that string to <code>thing_parser</code> to be reconstructed as a <code>Thing</code>, and then uses that as the default value for <code>args.thing</code>.</p>
+<p>The example is a bit over-simplified, but basically I've run into situations where I can't implement <code>fmt::Display</code> for <code>Thing</code> because it's from an external library.  Or it has a display implementation that can't reliably be parsed.</p>
+<p>The workarounds I've used are not pretty.  I've tried making wrapper types for <code>Thing</code> that allow it to be successfully turned into a string and back again, but this is suboptimal.  I also have to unwrap the wrappers everywhere they're used.  Another workaround is to have two argument structs, <code>RawArgs</code> and <code>RealArgs</code>.  <code>RawArgs</code> has <code>#[derive(Parser)]</code> on it and only has basic <code>String</code>/<code>Option&lt;String&gt;</code> types.  <code>RealArgs</code> is constructed from <code>RawArgs</code> and is what gets used everywhere.  I feel like this defeats the purpose of using the derive interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-29 20:40</div>
+            <div class="timeline-body"><blockquote>
+<p>I've run into situations where I can't implement fmt::Display for Thing because it's from an external library.</p>
+</blockquote>
+<p>Within the builder API, the primary value add of defaults is to display them in help which requires <code>Display</code>.</p>
+<p>For derive users, the value proposition is a little different because someone just might prefer their struct to have <code>T</code> rather than <code>Option</code>.  However, the downsides to using an <code>Option</code> don't seem too high, so this is a motivation but not a strong one</p>
+<p>With that said, one possible way of solving this is to expand on <a href="https://github.com/clap-rs/clap/issues/4558#issuecomment-1355886787">our auto-detection of <code>Display</code> vs a custom <code>OsStr</code>-based trait</a>, we could also detect if neither is supported and bypass the regular default mechanism.  I haven't fully thought this through on whether we can get away with only calling the user's <code>default_value_t</code> expression once or whether we would need to call it twice (builder and accessor are in separate functions)</p>
+<blockquote>
+<p>Or it has a display implementation that can't reliably be parsed.</p>
+</blockquote>
+<p>This is somewhat similar to the last point, the user seeing the default should probably be able to pass it in manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1695.html">clap-rs/clap#1695</a> on 2023-10-25 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bytecodealliance/wasm-tools/pulls/2216.html">bytecodealliance/wasm-tools#2216</a> on 2025-06-03 16:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

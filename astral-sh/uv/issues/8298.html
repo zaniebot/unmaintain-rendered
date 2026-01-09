@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 3.13t installation missing python.exe - astral-sh/uv #8298</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Windows 3.13t installation missing python.exe</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8298">#8298</a>
+        opened by <a href="https://github.com/colesbury">@colesbury</a>
+        on 2024-10-17 17:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/colesbury">@colesbury</a> on 2024-10-17 17:47</div>
+            <div class="timeline-body"><pre><code class="language-shell">&gt; uv run -p 3.13t python
+error: Python interpreter not found at `C:\Users\Administrator\AppData\Roaming\uv\python\cpython-3.13.0+freethreaded-windows-x86_64-none\python.exe`
+</code></pre>
+<p>The installation directory has a <code>python3.13t.exe</code>, but no <code>python.exe</code></p>
+<p>This also affects other commands like <code>uv venv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-17 18:28</div>
+            <div class="timeline-body"><p>https://github.com/python/cpython/issues/112984#issue-2036766508 says</p>
+<blockquote>
+<p>The installer should not include a python.exe, to avoid causing PATH conflicts, but Nuget, embeddable and Store packages should include a copy/alias.</p>
+</blockquote>
+<p>so I guess we should add one in our installs? I wonder if we should do that upstream or here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv python</span> added by @zanieb on 2024-10-17 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colesbury">@colesbury</a> on 2024-10-17 18:49</div>
+            <div class="timeline-body"><p>My suggestion would be to rename the <code>python3.13t.exe</code> to <code>python.exe</code> in the <a href="https://github.com/indygreg/python-build-standalone/blob/9780ebb124f795f8976d7924b9df505143d04f25/cpython-windows/build.py#L1451-L1455">indygreg/python-build-standalone</a> build process, especially because the <code>python-build-standalone</code> Windows executables don't otherwise include the Python version numbers in their names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-17 18:58</div>
+            <div class="timeline-body"><blockquote>
+<p>especially because the python-build-standalone Windows executables don't otherwise include the Python version numbers in their names.</p>
+</blockquote>
+<p>As far as I know, we're just following the standard Windows build behavior there (not including version numbers), and it's proper for us to continue doing so for <code>python3.13t.exe</code> (which is the canonical name CPython uses here)</p>
+<p>Since they suggest creating a copy, I think that's what I'll do? Exploring in https://github.com/indygreg/python-build-standalone/pull/373</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-10-17 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-17 19:02</div>
+            <div class="timeline-body"><p>cc @zooba if you care to weigh in on what is best here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colesbury">@colesbury</a> on 2024-10-17 19:10</div>
+            <div class="timeline-body"><p>As a overall suggestion: I think you should be aiming for cross-platform consistency -- <code>uv</code> is a cross-platform product -- rather than consistency with parts of the CPython Windows installer (or macOS installer for that matter). People will expect that <code>uv</code> commands that work on Linux and macOS to also work on Windows.</p>
+<p>For example, I think all of the following commands should work on all platforms:</p>
+<pre><code>uv run -p 3.10 python
+uv run -p 3.10 python3.10
+
+uv run -p 3.13t python
+uv run -p 3.13t python3.13
+uv run -p 3.13t python3.13t
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zooba">@zooba</a> on 2024-10-17 19:22</div>
+            <div class="timeline-body"><p>Yeah, I largely agree with Sam here, cross-platform consistency is for the best. We only don't do that in the Windows installer because it's a change that will definitely break people, and I don't want to upset people more until we've actually got a sustainable path forward. <code>uv</code> is much closer to that vision than <code>PATH</code> modifications will ever be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-17 19:46</div>
+            <div class="timeline-body"><p>Great thanks for the input! I'll rename it upstream — makes life a bit easier anyway.</p>
+<p>I'm not sure what the best approach will be to address your <code>uv run</code> examples, but generally agree with the philosophy that the commands should be portable across platforms.</p>
+<p>Thanks again @colesbury for following up on our handling of these distributions, there are definitely some quirks to be ironed out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8310.html">astral-sh/uv#8310</a> on 2024-10-17 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/python-build-standalone/pulls/373.html">astral-sh/python-build-standalone#373</a> on 2024-10-18 03:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colesbury">@colesbury</a> on 2024-10-21 15:29</div>
+            <div class="timeline-body"><p>@zanieb - running <code>uv run -p 3.13t python</code> works for me today on Windows, but I see that your PR to <code>python-build-standalone</code> has not landed, so I'm not sure what changed.</p>
+<p>I've run into some other confusing behavior where <code>uv python list</code> temporarily did not show <code>3.13t</code> as installed, but <code>uv python install 3.13t</code> reported it as installed. I'm unable to reliably reproduce the behavior.</p>
+<pre><code>C:\Users\Administrator&gt;uv python install 3.13t
+Searching for Python versions matching: Python 3.13t
+Found existing installation for Python 3.13t: cpython-3.13.0+freethreaded-windows-x86_64-none
+
+C:\Users\Administrator&gt;uv python list
+cpython-3.13.0-windows-x86_64-none     &lt;download available&gt;
+cpython-3.12.7-windows-x86_64-none     &lt;download available&gt;
+cpython-3.11.10-windows-x86_64-none    &lt;download available&gt;
+cpython-3.10.15-windows-x86_64-none    &lt;download available&gt;
+cpython-3.9.20-windows-x86_64-none     &lt;download available&gt;
+cpython-3.8.20-windows-x86_64-none     &lt;download available&gt;
+cpython-3.7.9-windows-x86_64-none      &lt;download available&gt;
+pypy-3.10.14-windows-x86_64-none       &lt;download available&gt;
+pypy-3.9.19-windows-x86_64-none        &lt;download available&gt;
+pypy-3.8.16-windows-x86_64-none        &lt;download available&gt;
+pypy-3.7.13-windows-x86_64-none        &lt;download available&gt;
+
+C:\Users\Administrator&gt;uv python install 3.13t
+Searching for Python versions matching: Python 3.13t
+Found existing installation for Python 3.13t: cpython-3.13.0+freethreaded-windows-x86_64-none
+
+C:\Users\Administrator&gt;uv run -p 3.13t python
+Python 3.13.0 experimental free-threading build (main, Oct 16 2024, 00:29:34) [MSC v.1929 64 bit (AMD64)] on win32
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; quit()
+
+C:\Users\Administrator&gt;uv python list
+cpython-3.13.0+freethreaded-windows-x86_64-none    AppData\Roaming\uv\python\cpython-3.13.0+freethreaded-windows-x86_64-none\python.exe
+cpython-3.12.7-windows-x86_64-none                 &lt;download available&gt;
+cpython-3.11.10-windows-x86_64-none                &lt;download available&gt;
+cpython-3.10.15-windows-x86_64-none                &lt;download available&gt;
+cpython-3.9.20-windows-x86_64-none                 &lt;download available&gt;
+cpython-3.8.20-windows-x86_64-none                 &lt;download available&gt;
+cpython-3.7.9-windows-x86_64-none                  &lt;download available&gt;
+pypy-3.10.14-windows-x86_64-none                   &lt;download available&gt;
+pypy-3.9.19-windows-x86_64-none                    &lt;download available&gt;
+pypy-3.8.16-windows-x86_64-none                    &lt;download available&gt;
+pypy-3.7.13-windows-x86_64-none                    &lt;download available&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 16:03</div>
+            <div class="timeline-body"><p>@colesbury I added https://github.com/astral-sh/uv/pull/8310 as a temporary workaround in uv — just much easier to land a quick change here than upstream.</p>
+<p>I'll try to look into that <code>uv python list</code> behavior, sounds pretty weird. If you can get <code>RUST_LOG=uv=trace uv python list -v</code> logs on the failure that'd be helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-31 14:40</div>
+            <div class="timeline-body"><p>Will be fixed in the next upstream release too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-31 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-06 04:24</div>
+            <div class="timeline-body"><p>Tragically, changing the path upstream post-build breaks virtual environments. See https://github.com/indygreg/python-build-standalone/issues/405</p>
+<p>Any insights would be appreciated!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

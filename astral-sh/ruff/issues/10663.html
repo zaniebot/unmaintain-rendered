@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unnecessary-lambda fix is unsafe even when there are no side-effects  - astral-sh/ruff #10663</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>unnecessary-lambda fix is unsafe even when there are no side-effects </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10663">#10663</a>
+        opened by <a href="https://github.com/arrdem">@arrdem</a>
+        on 2024-03-29 19:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/arrdem">@arrdem</a> on 2024-03-29 19:50</div>
+            <div class="timeline-body"><ul>
+<li><strong>Ruff version:</strong> 0.3.3</li>
+<li><strong>Linter rule:</strong> unnecessary-lambda / PLW0108</li>
+</ul>
+<h3>Example</h3>
+<pre><code>def foo(a, b):
+  return a + b
+
+def bar(c, d):
+  return c, d
+
+HANDLERS = {
+  &quot;foo&quot;: foo,
+  &quot;bar&quot;: lambda a, b: bar(a, b)  # &quot;fixes&quot; to just bar 
+}
+
+def handle(verb: str, payload):
+  a, b = payload
+  return HANDLERS[verb](a=a, b=b)
+</code></pre>
+<p>Here we're relying on the lambda to implement renaming of positional arguments. Removing the lambda expression would be incorrect despite an absence of side-effects. A correct refactor would be to rename the arguments to <code>bar</code>, or to eliminate the keyword invocation but the linter fix alone is unsafe despite listing itself as such.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-30 00:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-30 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10668.html">astral-sh/ruff#10668</a> on 2024-03-30 00:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-30 00:57</div>
+            <div class="timeline-body"><p>Thanks. That's... unfortunate, but correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-30 01:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

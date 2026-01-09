@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>deno completions zsh failed and clap asked me to post here - clap-rs/clap #2220</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>deno completions zsh failed and clap asked me to post here</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2220">#2220</a>
+        opened by <a href="https://github.com/06kellyjac">@06kellyjac</a>
+        on 2020-11-23 16:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/06kellyjac">@06kellyjac</a> on 2020-11-23 16:02</div>
+            <div class="timeline-body"><h3>Make sure you completed the following tasks</h3>
+<ul>
+<li>[X] Searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] Searched the closed issues</li>
+</ul>
+<h3>Code</h3>
+<p>I don't have much familiarity with the changes in the latest release of <code>deno</code>
+I've created an issue on the <code>deno</code> repo too: https://github.com/denoland/deno/issues/8472</p>
+<h3>Steps to reproduce the issue</h3>
+<ol>
+<li>clone <code>git@github.com:06kellyjac/nixpkgs.git</code></li>
+<li>checkout <code>deno</code> branch</li>
+<li>nix-build -A deno</li>
+<li>see the error</li>
+<li>run <code>./result/bin/deno completions zsh</code> and see the error</li>
+</ol>
+<p>If you'd like to run some commands feel free to add to <code>preBuild</code> e.g:</p>
+<pre><code>  preBuild = ''
+    _rusty_v8_setup() {
+      for v in &quot;$@&quot;; do
+        dir=&quot;target/$v/gn_out/obj&quot;
+        mkdir -p &quot;$dir&quot; &amp;&amp; cp &quot;${rustyV8Lib}&quot; &quot;$dir/librusty_v8.a&quot;
+      done
+    }
+
+    # Copy over the `librusty_v8.a` file inside target/XYZ/gn_out/obj, symlink not allowed
+    _rusty_v8_setup &quot;debug&quot; &quot;release&quot; &quot;${arch}/release&quot;
+
+    rustc -v # &lt;- added
+  '';
+</code></pre>
+<p>or</p>
+<p>Fresh debian container</p>
+<pre><code>$ apt update
+$ apt install -y wget unzip
+$ wget https://github.com/denoland/deno/releases/download/v1.5.4/deno-x86_64-unknown-linux-gnu.zip
+$ unzip deno-x86_64-unknown-linux-gnu.zip
+$ ./deno --help
+$ ./deno completions bash
+$ ./deno completions zsh
+thread 'main' panicked at 'Fatal internal error. Please consider filing a bug report at https://github.com/clap-rs/clap/issues', /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/completions/zsh.rs:407:29
+</code></pre>
+<h3>Version</h3>
+<ul>
+<li><strong>Rust</strong>: I used <code>rustc 1.47.0</code>, deno ci is set to <a href="https://github.com/denoland/deno/blob/v1.5.4/.github/workflows/ci.yml#L69"><code>rustc 1.48</code></a></li>
+<li><strong>Clap</strong>: <a href="https://github.com/denoland/deno/blob/v1.5.4/Cargo.lock#L276">2.33.3</a></li>
+</ul>
+<h3>Actual Behavior Summary</h3>
+<p>When I do like <em>this</em>, <em>that</em> is happening and I think it shouldn't.</p>
+<p><strong>If a project of yours is blocked due to this bug, please, mention it explicitly.</strong></p>
+<pre><code>RUST_BACKTRACE=full ./result/bin/deno completions zsh
+thread 'main' panicked at 'Fatal internal error. Please consider filing a bug report at https://github.com/clap-rs/clap/issues', /build/deno-1.5.4-vendor.tar.gz/clap/src/completions/zsh.rs:407:29
+stack backtrace:
+   0:     0x56290a91e5d0 - &lt;std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display&gt;::fmt::h6f05017bae98a16f
+   1:     0x56290a590cdd - core::fmt::write::h4e423e63ef6952a5
+   2:     0x56290a91a8e4 - std::io::Write::write_fmt::h87a2ee7a0f0be87a
+   3:     0x56290a906bb0 - std::panicking::default_hook::{{closure}}::hcb146b886903f1b9
+   4:     0x56290a9073b3 - std::panicking::rust_panic_with_hook::h71db2d7d0653eadb
+   5:     0x56290a91e978 - std::panicking::begin_panic_handler::{{closure}}::h59f65871c4ccd803
+   6:     0x56290a91e944 - std::sys_common::backtrace::__rust_end_short_backtrace::hedd2b2fd0e04e8bb
+   7:     0x56290a9036dd - rust_begin_unwind
+   8:     0x56290a58e770 - core::panicking::panic_fmt::h810a06353f831f07
+   9:     0x56290a59adc2 - core::option::expect_failed::hc27aa597e04252ad
+  10:     0x56290a57d142 - core::option::Option&lt;T&gt;::expect::hb10c98441ed0f7c3
+  11:     0x56290a57b510 - clap::completions::zsh::get_args_of::h9fa43a798c96bf9f
+  12:     0x56290a57c5ca - clap::completions::zsh::get_subcommands_of::h2e84f2d0f0109a99
+  13:     0x56290a4df83f - deno::flags::flags_from_vec_safe::h7b3ab19fae9f68ab
+  14:     0x56290a53896b - deno::main::he187ab4575e95215
+  15:     0x56290a3b3563 - std::sys_common::backtrace::__rust_begin_short_backtrace::h3b2ba86a5b5f293f
+  16:     0x56290a542bdc - main
+  17:     0x7f6f2ecc4dbd - __libc_start_main
+  18:     0x56290a320efa - _start
+  19:                0x0 - &lt;unknown&gt;
+</code></pre>
+<h3>Expected Behavior Summary</h3>
+<p>I expected the zsh completions to load</p>
+<h3>Additional context</h3>
+<p>Worked fine in all previous releases</p>
+<h3>Debug output</h3>
+<p>Compile clap with <code>debug</code> feature:</p>
+<pre><code class="language-toml">[dependencies]
+clap = { version = &quot;*&quot;, features = [&quot;debug&quot;] }
+</code></pre>
+<p>The output may be very long, so feel free to link to a gist or attach a text file</p>
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+
+<p>Paste Debug Output Here</p>
+</code>
+</pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @06kellyjac on 2020-11-23 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../denoland/deno/issues/8472.html">denoland/deno#8472</a> on 2020-11-23 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-11-23 16:05</div>
+            <div class="timeline-body"><p>#2191 would fix this, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/06kellyjac">@06kellyjac</a> on 2020-11-23 16:07</div>
+            <div class="timeline-body"><p>ooh that's great, thanks for the swift reply.
+Until then would the best bet be rolling back a couple versions of clap?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-11-23 16:08</div>
+            <div class="timeline-body"><p>Not sure. You can try. But we stopped developing v2 long ago.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/06kellyjac">@06kellyjac</a> on 2020-11-23 16:10</div>
+            <div class="timeline-body"><p>Another good point. Thanks :slightly_smiling_face:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: generator</span> added by @pksunkara on 2020-11-26 06:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2191.html">clap-rs/clap#2191</a> on 2020-11-26 07:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ahkrr">@ahkrr</a> on 2020-11-26 18:01</div>
+            <div class="timeline-body"><p>I wrote the PR #2191 .
+The problem that I was finding was, when a cli argument was declared as global and also as having conflicts with other arguments which weren't present in all the subcommands that the global argument was present in, then the completion generation would error out.
+This would happen because a conflict was declared for which the conflicting argument didn't exist in the command ( or subcommand) that the argument that had the conflict declared on was in.
+I looked at the deno cli and couldn't find the problem that I ran into but commenting out these two lines</p>
+<pre><code class="language-rust">//deno/cli/flags.rs
+/*1398:*/fn watch_arg&lt;'a, 'b&gt;() -&gt; Arg&lt;'a, 'b&gt; {
+  Arg::with_name(&quot;watch&quot;)
+    .requires(&quot;unstable&quot;)
+    .long(&quot;watch&quot;)
+    // .conflicts_with(&quot;inspect&quot;)
+    // .conflicts_with(&quot;inspect-brk&quot;)
+    .help(&quot;Watch for file changes and restart process automatically&quot;)
+    .long_help(
+      &quot;Watch for file changes and restart process automatically.
+Only local files from entry point module graph are watched.&quot;,
+    )
+}
+</code></pre>
+<p>prevented the crash from happening. Maybe the conflicts that are declared here don't exist the command ( or subcommand) that watch is part of?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-11-26 18:03</div>
+            <div class="timeline-body"><p>Please note that these bad <code>conlifcts_with</code> names will be give better errors starting in v3.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mocyuto/ec2-search/pulls/18.html">mocyuto/ec2-search#18</a> on 2020-12-16 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2021-02-21 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-03-12 08:21</div>
+            <div class="timeline-body"><p>I am closing this because the fix needs to be in deno and we did everything else from our side.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-03-12 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../flamegraph-rs/flamegraph/issues/158.html">flamegraph-rs/flamegraph#158</a> on 2021-10-07 17:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

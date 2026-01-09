@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow users to install a project's dependencies, without the project itself - astral-sh/uv #4028</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow users to install a project's dependencies, without the project itself</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4028">#4028</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-06-04 22:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-04 22:29</div>
+            <div class="timeline-body"><p>Not sure if we want this -- it's like Poetry's <code>--no-root</code>. Let's wait and see if we can find motivating use-cases for it. Poetry also has this concept of <a href="https://python-poetry.org/docs/basic-usage/#operating-modes">&quot;operating modes&quot;</a> which toggle this automatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-06-04 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-04 22:32</div>
+            <div class="timeline-body"><p>(Not decided, filed to revisit later.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-04 22:51</div>
+            <div class="timeline-body"><p>Lots of prior chatter over in https://github.com/python-poetry/poetry/issues/800</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdebrab">@kdebrab</a> on 2024-06-06 17:29</div>
+            <div class="timeline-body"><p>Maybe see also https://github.com/pypa/pip/issues/11440 for potential use cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-06 17:46</div>
+            <div class="timeline-body"><p>(Interestingly, we actually kind of already support what's described in that issue because we allow <code>pip install -r pyproject.toml</code>. But that's separate from this issue.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdebrab">@kdebrab</a> on 2024-06-19 10:30</div>
+            <div class="timeline-body"><blockquote>
+<p>(Interestingly, we actually kind of already support what's described in that issue because we allow <code>pip install -r pyproject.toml</code>. But that's separate from this issue.)</p>
+</blockquote>
+<p>That doesn't support the [extras] syntax (e.g. <code>pip install -r pyproject.toml[doc]</code>)?</p>
+<p>Personally, I'd love to see support for the syntax suggested <a href="https://github.com/pypa/pip/issues/11440#issuecomment-1445119899">here</a>:</p>
+<pre><code>pip install --only-deps  .[doc]  # project.dependencies and project.optional-dependencies.doc
+</code></pre>
+<p>[EDIT]
+Just discovered that <code>pip install -r pyproject.toml --extra doc</code> gives the functionality I was looking for. That's really great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/firtrfl">@firtrfl</a> on 2024-06-26 09:33</div>
+            <div class="timeline-body"><p>This works great <code>pip install -r pyproject.toml</code> :) It would be still great to add a flag and also add it to the pyproject.toml</p>
+<pre><code>[tool.uv]
+package-mode = false
+</code></pre>
+<p>So it would also work with <code>uv add &lt;package&gt;</code>. Many things that I work on are not packages, but it would still be great to use uv to manage dependencies.</p>
+<p>PS: uv is such an amazing tool - thanks for building it ❤️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2024-07-13 10:23</div>
+            <div class="timeline-body"><p>I have a use case for that: <a href="https://github.com/kdeldycke/kevin-deldycke-blog">my blog</a>, which is actually Markdown content only, and is built by <a href="https://getpelican.com">Pelican</a>, a pure Python static website generator.</p>
+<p>In that case the <code>package-mode = false</code> from Poetry was handy.</p>
+<p>In the mean time, I hacked the process and <a href="https://github.com/kdeldycke/kevin-deldycke-blog/commit/7df59bfc9fd1eb00f8e116ad55beb5e19106b496">added a dummy package at the root</a> of my repository:</p>
+<pre><code class="language-shell-session">$ ls -lah ./blog
+Permissions Size User Date Modified    Name
+drwxr-xr-x     - kde  2024-07-13 14:12  .
+drwxr-xr-x@    - kde  2024-07-13 14:17  ..
+.rw-r--r--     0 kde  2024-07-13 14:11  __init__.py
+</code></pre>
+<p>And added the following directive in <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.setuptools.packages.find]
+include = [&quot;blog&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5258.html">astral-sh/uv#5258</a> on 2024-07-21 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vigilans">@Vigilans</a> on 2024-07-21 14:22</div>
+            <div class="timeline-body"><p>My use case: ansible project with bundled <code>ansible</code> and other related packages.</p>
+<p>For ansible project, the majority of code are written in yaml, by providing <code>pyproject.toml</code> we can build a self-contained ansible environment in project's <code>.venv</code> folder, with guaranteed ansible modules versions.</p>
+<p>Besides, non-python-package programs like <code>sshpass</code> can be distributed into <code>.venv/bin</code>, so by <code>source .venv/bin/activate</code> ansible will be able to use functionally like remote host with password.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/msw-kialo">@msw-kialo</a> on 2024-07-26 13:25</div>
+            <div class="timeline-body"><p>We use <code>--no-root</code> to better caching of container image layers.</p>
+<p>The first layer just installs the project dependencies; the second adds the projects itself.
+So if dependencies don't change, the layer can be reused.</p>
+<p>We hope to write something like:</p>
+<pre><code class="language-Dockerfile">
+WORKDIR /app
+ADD pyproject.toml uv.lock /app
+RUN uv sync --no-dev --no-root
+ADD src /app
+RUN uv sync --no-dev
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6068.html">astral-sh/uv#6068</a> on 2024-08-13 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbidoul">@sbidoul</a> on 2024-08-14 08:42</div>
+            <div class="timeline-body"><p>In the above scenario of a layered Dockerfile to leverage caching of infrequently changing dependencies, it is important that there is a way to install from <code>uv.lock</code> without involving <code>pyproject.toml</code>. That is because when <code>pyproject.toml</code> gets involved, it may in turn require the presence of the whole project (because of an in-tree build backend, dynamic dependencies, etc).</p>
+<p>At first sight, <code>uv.lock</code> contains everything that is needed to do this, except for an indication about the top level package(s).</p>
+<p>IMHO this is a critical feature for adoption of <code>uv.lock</code>, as without it the space and time efficiency of dockerfile builds will be severely impacted, compared to the traditional approach of installing requirements.txt in a layer, then the app in another.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 13:14</div>
+            <div class="timeline-body"><p>I agree that something like this is necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @zanieb on 2024-08-20 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5229.html">astral-sh/uv#5229</a> on 2024-08-21 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6315.html">astral-sh/uv#6315</a> on 2024-08-21 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adriangb">@adriangb</a> on 2024-08-21 12:29</div>
+            <div class="timeline-body"><p>I'll chime in that <code>--no-root</code> is not enough. You probably also want a <code>--no-directory</code> or <code>--no-local</code>, maybe just generalize to a source selector or something.</p>
+<p>Motivation: https://python-poetry.org/docs/faq#poetry-busts-my-docker-cache-because-it-requires-me-to-copy-my-source-files-in-before-installing-3rd-party-dependencies</p>
+<p>In particular the idea is that if you have a monorepo you can still copy in your top-level lockfile and not have to copy in <em>anything</em> (not even the <code>pyproject.toml</code>) from your sub-projects/packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 12:35</div>
+            <div class="timeline-body"><p>Yeah 100% agree that you should be able to sync from just the lockfile. The lockfile itself is actually designed to support that (it doesn’t rely on pyproject.toml), but we need to expose the right options to users…</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 13:01</div>
+            <div class="timeline-body"><p>I can see a few approaches here (all fairly easy to implement, mostly about getting the API right)...</p>
+<ul>
+<li><code>--no-project</code> (or <code>--no-workspace</code>) along with a separate <code>--no-local</code> flag (to ignore path dependencies that aren't part of the workspace)</li>
+<li><code>--only-remote</code> (the inverse)</li>
+<li>Something like <code>--seed</code> or another semantic term that indicates why this is useful</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-08-21 13:15</div>
+            <div class="timeline-body"><p>In case you’re looking for opinions, I like “seed”. The others are rather generic and I’d have to guess what they exactly mean.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-21 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 13:28</div>
+            <div class="timeline-body"><p>(Gonna see if we can come up with an API and ship this ~today.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 13:29</div>
+            <div class="timeline-body"><p>Opinions very welcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adriangb">@adriangb</a> on 2024-08-21 14:18</div>
+            <div class="timeline-body"><p>I think <code>--no-project</code> is pretty clear but don't care too much as well as it's documented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/baggiponte">@baggiponte</a> on 2024-08-21 14:30</div>
+            <div class="timeline-body"><p>Would <code>--no-self</code> and <code>--only-self</code> be more intuitive?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbidoul">@sbidoul</a> on 2024-08-21 14:43</div>
+            <div class="timeline-body"><p><code>--seed {package-name}[extra,...]</code>, because you need to tell it what top level package's dependencies you want to install?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 20:56</div>
+            <div class="timeline-body"><p>Some thoughts....</p>
+<p>I think extras would be covered by the normal <code>--extra</code> and <code>--all-extras</code> options.</p>
+<p>I worry about <code>--no-project</code> and <code>--no-workspace</code> because those have a different meaning elsewhere; which is, don't discover a project or workspace entirely. We still should perform normal project or workspace discovery, e.g., to find the <code>uv.lock</code> file if you're in a subdirectory for some reason.</p>
+<p>I think we might want to use <code>--without-</code> and <code>--only-</code> prefixes, to match the our <code>--with</code> options.</p>
+<p>The difficulty is in choosing how to describe what we're selecting. There are a few things we want to be able exclude:</p>
+<ul>
+<li>The current project</li>
+<li>A workspace member</li>
+<li>A path dependency</li>
+</ul>
+<p>Unfortunately <code>--without-editables</code> doesn't work because a path dependency can be either editable or not editable. We also want to be able to toggle whether or not the current project and workspace members are installed as editable in the future.</p>
+<p>All of these are &quot;local&quot; dependencies, as in they're on the local file system, so <code>--without-local</code> might make sense. Does this include the current project though? Do we need an inverse flag, like <code>--only-remote</code>? Is that easier to reason about?</p>
+<p>It feels like we need a separate flag for excluding <em>just</em> the current project, like <code>--without-self</code> or <code>--without-root</code> (I think <code>--without-project</code> isn't an option because it overlaps too much with <code>--no-project</code>). Presumably we'd pair this with an inverse flag like <code>--only-self</code> or <code>--only-root</code>.</p>
+<p>Do we need the ability to exclude all local dependencies except the current project? Or can it be done in two steps:</p>
+<pre><code>uv sync --without-local
+uv sync --inexact --only-self
+</code></pre>
+<p>What's the use-case for that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 21:00</div>
+            <div class="timeline-body"><p>I think the only use-case for the Docker caching situation is &quot;exclude all locals&quot;.</p>
+<p>I think excluding the <em>current project</em> (but not other workspace members) is independently useful, like for &quot;virtual projects.&quot; We could choose not to solve that here, but we should probably have a design that won't cause us problems in the future if we pursue it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 21:02</div>
+            <div class="timeline-body"><p>As a note on my own post, I think I prefer <code>--without-locals</code> over <code>--without-local</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 21:36</div>
+            <div class="timeline-body"><p>What about <code>--no-locals</code> or <code>--no-local</code> to match options like <code>--no-project</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6398.html">astral-sh/uv#6398</a> on 2024-08-22 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 01:50</div>
+            <div class="timeline-body"><p>Ok, I didn't get this shipped today, but I did implement it: https://github.com/astral-sh/uv/pull/6398</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 01:50</div>
+            <div class="timeline-body"><p>The gist is that you can copy in <code>uv.lock</code>, then run <code>uv sync --frozen --no-locals</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 03:53</div>
+            <div class="timeline-body"><p>Well, I specifically opted for <code>--without-</code> instead of <code>--no-</code> since we use <code>--with-</code> for including dependencies it probably makes sense to do the same for excluding them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-08-22 03:53</div>
+            <div class="timeline-body"><p>I would be remiss if I didn't mention that this feature would be massively more useful (and less surprising, I guess) in the Docker context if <code>uv sync --python /some/venv/bin/python</code> worked as expected. 😇</p>
+<p>But mega kudos for the quick implementation as always; this is amazing! 🚀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 03:54</div>
+            <div class="timeline-body"><p>We'll definitely be tackling alternative sync targets ASAP as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2024-08-22 07:47</div>
+            <div class="timeline-body"><p>I think the docker case is real but at the end of the day it creates a situation in the virtualenv that I would argue should not exist.  So at least in my mind there is a significant difference between &quot;install third party deps&quot;, make a layer, then follow by installing the rest vs &quot;never ever install the root package because it's inconvenient&quot;.</p>
+<p>Particularly for the docker situation I quite honestly wonder if not a fundamentally better solution is to allow the installation process to be explicitly being built for that use case by supporting skipping/interrupting and continuing.  I understand that this is not how any other tool works but particularly for more complicated setups I can see this being quite useful.</p>
+<p>I'm imagining that this might be quite interesting.  This would work if the lockfile is up to date prior to the sync.</p>
+<pre><code class="language-dockerfile"># first layer, third party deps only
+RUN uv sync --partial --skip-package=&quot;root-package&quot; --skip-package=&quot;second-package&quot;
+COPY src/root-package ./src/root-package
+# second layer, bring one package in
+RUN uv sync --partial --skip-package=&quot;second-package&quot;
+COPY src/second-package ./src/second-package
+# sync what we have not seen yet
+RUN uv sync
+</code></pre>
+<p>At sentry for instance we do install packages from two different repositories (open source git checkout followed by internal billing code checkout).</p>
+<p>I think being more explicit about what this is used for would be a good thing and also forces that the docker case is intentionally supported on the <code>uv</code> side and not just a happy little accident.</p>
+<p>This also leaves the option open to yell at the user if the virtualenv is being utilized and does not actually reflect a full sync.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-08-22 08:12</div>
+            <div class="timeline-body"><p>Your example doesn't include cache busting by copying the uv.lock file into the build container which is kind the whole point? You want the layer to be rebuilt if the lock file changes. but keep it around otherwise.</p>
+<p>I suspect your example is incomplete on purpose to just sketch out the idea, but I think it would be good to complete it, because those <code>COPY</code>s and <code>cd</code>s are kinda elemental to the whole thing.</p>
+<p>I for one could live with explicitly naming the package I want to sync later (i.e. <code>uv sync --skip-package=&quot;my-app&quot;</code>) but I'm not 100% sure we're on the same page.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-08-22 08:22</div>
+            <div class="timeline-body"><p>My use case here is very similar to the ones listed here, but with a twist. We do not <em>copy</em> the workspace into the build context, rather, we <em>mount</em> a wheel that was already built in a previous CI stage.</p>
+<p>This reduces duplication, both in terms of stages (build-backend only invoked once), as well as storage (if I <code>COPY src</code> and then proceed to <code>uv sync</code> that, I'd have an <code>src</code> tree left over in my resulting image, taking space and causing confusion).</p>
+<p>Most importantly, by using a wheel and not a raw workspace, this also lets me have consistent builds between different targets (docker, pypi, rpm/deb/nix, etc etc)</p>
+<p>Being able to <code>uv sync</code> without the root package will help to an extent, but I am not sure if it is a globally-optimal solution. I'd end up with:</p>
+<pre><code>RUN uv sync --frozen --no-locals
+RUN uv pip install /mnt/my-actual-application.whl       # This part is lockfile agnostic; no guarantee that things won't drift!
+</code></pre>
+<p>For context, right now we do:</p>
+<pre><code>RUN uv pip install /mnt/my-actual-application.whl -c /mnt/constraints.txt
+</code></pre>
+<p>Which works exactly as intended -- but it's not a proper lockfile (and being able to slice it into layers is a very nice thing to be able to do)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2024-08-22 08:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Your example doesn't include cache busting by copying the uv.lock file into the build container which is kind the whole point? You want the layer to be rebuilt if the lock file changes. but keep it around otherwise.</p>
+</blockquote>
+<p>Yes, the lock file needs to be copied first, but only prior to the first partial sync and if it's not there, <code>uv sync --partial</code> would fail.</p>
+<p>My point is mostly, without going too much into the implementation, that a partial sync would be an explicit, multi-stage approach precisely to safely make a multi-layer caching solution work.  The benefit for the user is that it can be guided without the user having too many ways to unintentionally fuck it up or changes in uv breaking layer caching accidentally.</p>
+<blockquote>
+<p>I for one could live with explicitly naming the package I want to sync later (i.e. uv sync --skip-package=&quot;my-app&quot;) but I'm not 100% sure we're on the same page.</p>
+</blockquote>
+<p>My reasoning with explicit skipping here is not so much that this is how it should be (eg: this is how you name what has not been synced) but that it's a very intentional process and you don't accidentally start interacting with a partial venv and then end up surprised about random failures later down the line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 12:54</div>
+            <div class="timeline-body"><p>I think it would be pretty reasonable to use <code>--skip-package</code> rather than <code>--no-locals</code>. It would enable strictly more use-cases. The downside is that you need to include the package name (of course) and that, if you have a large workspace, it's a little tedious to enumerate them all. But it might be a better, more flexible solution than <code>--no-locals</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbidoul">@sbidoul</a> on 2024-08-22 13:20</div>
+            <div class="timeline-body"><p>Does the lock file include dev dependencies? In that case it would be very tedious if we don't want these in the docker image.</p>
+<p>How about <code>--dependencies-of package</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 13:23</div>
+            <div class="timeline-body"><p>Yeah it does include dev dependencies. But you can omit those with <code>--no-dev</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbidoul">@sbidoul</a> on 2024-08-22 13:26</div>
+            <div class="timeline-body"><p>Ah, right I now see the lock file knows the distinction between regular and dev dependencies :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6271.html">astral-sh/uv#6271</a> on 2024-08-22 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6443.html">astral-sh/uv#6443</a> on 2024-08-22 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 16:41</div>
+            <div class="timeline-body"><p>Might be worth considering https://github.com/astral-sh/uv/issues/4422 too when designing a <code>--skip-package</code> interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6451.html">astral-sh/uv#6451</a> on 2024-08-22 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-08-22 17:51</div>
+            <div class="timeline-body"><p>What stands out to me is that uv sync is not a command designed for application install or deployment. It sets up the venv and workspace (for development/test?) and all the defaults point towards that use case (?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-23 02:14</div>
+            <div class="timeline-body"><p>Today we discussed doing something like:</p>
+<ul>
+<li><code>--no-install-root</code> (skip root package)</li>
+<li><code>--no-install-workspace</code> (skip any <code>workspace</code> dependencies, including the root)</li>
+<li><code>--no-install-paths</code> (skip any <code>path</code> dependencies)</li>
+<li><code>--no-install-package [package]</code> (skip a specific package)</li>
+</ul>
+<p>So most usages would just be <code>--no-install-root</code> or <code>--no-install-workspace</code>.</p>
+<p>We may even want to have a dedicated separate command for this with different defaults (per the above).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Komorebi-AI/python-template/pulls/47.html">Komorebi-AI/python-template#47</a> on 2024-08-23 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6538.html">astral-sh/uv#6538</a> on 2024-08-23 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6539.html">astral-sh/uv#6539</a> on 2024-08-23 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6540.html">astral-sh/uv#6540</a> on 2024-08-23 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-23 20:40</div>
+            <div class="timeline-body"><p>This will be available when we release (soon, I'm sure). Let me know if you encounter any problems!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-23 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-24 00:41</div>
+            <div class="timeline-body"><p>This is available now in 0.3.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6578.html">astral-sh/uv#6578</a> on 2024-08-24 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/justenstall">@justenstall</a> on 2024-08-27 15:44</div>
+            <div class="timeline-body"><p>Is <code>--no-install-paths</code> still planned?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6695.html">astral-sh/uv#6695</a> on 2024-08-27 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-27 15:51</div>
+            <div class="timeline-body"><p>@justenstall we're waiting to see how necessary it is since we have <code>--no-install-package</code> and the amount of options could get excessive. We can track in https://github.com/astral-sh/uv/issues/6695</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ddorian">@ddorian</a> on 2024-08-28 07:02</div>
+            <div class="timeline-body"><p>Can <code>--no-install-project</code> be set in config?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 12:48</div>
+            <div class="timeline-body"><p>No, it's not intended for long-term usage. You're probably looking for #6585 instead (which will release today).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11453.html">astral-sh/uv#11453</a> on 2025-02-12 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11505.html">astral-sh/uv#11505</a> on 2025-02-14 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../appgoblin-dev/adscrawler/issues/37.html">appgoblin-dev/adscrawler#37</a> on 2025-03-15 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VigneshVSV">@VigneshVSV</a> on 2025-04-08 18:04</div>
+            <div class="timeline-body"><p>For those who have specified a build-backend and wish to avoid building and installing the project for which you have created the <code>.venv</code> with <code>uv</code> , do:</p>
+<p><code>uv sync --no-install-project</code></p>
+<p>Thanks to uv community for this project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dh-tech/undate-python/pulls/118.html">dh-tech/undate-python#118</a> on 2025-04-11 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Quang-elec44">@Quang-elec44</a> on 2025-04-21 03:47</div>
+            <div class="timeline-body"><p>@VigneshVSV Hi, can you help me? I want to add a library (e.g., requests), but when I ran <code>uv add requests</code>, it also built my package and installed it into the environment. How can I avoid it? Do you have any better idea?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VigneshVSV">@VigneshVSV</a> on 2025-04-21 06:42</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/VigneshVSV">@VigneshVSV</a> Hi, can you help me? I want to add a library (e.g., requests), but when I ran <code>uv add requests</code>, it also built my package and installed it into the environment. How can I avoid it? Do you have any better idea?</p>
+</blockquote>
+<p>@Quang-elec44, Unfortunately, I could not find a quick answer. You could comment out the build section in your <code>pyproject.toml</code>, or add your dependencies as UV is currently behaving and delete and recreate the environment using <code>sync --no-install-project</code>.</p>
+<pre><code class="language-toml"># just comment it out
+# [build-system]
+# requires = [&quot;setuptools&gt;=42&quot;, &quot;wheel&quot;]
+# build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p>There are <code>--no-build</code> options, however this only skips the build process and assumes that a binary exists.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

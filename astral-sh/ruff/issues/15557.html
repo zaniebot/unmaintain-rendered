@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F523 fix changes behavior by removing `str.format` call - astral-sh/ruff #15557</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F523 fix changes behavior by removing `str.format` call</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15557">#15557</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-01-17 19:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-01-17 19:56</div>
+            <div class="timeline-body"><p>When the fix for <a href="https://docs.astral.sh/ruff/rules/string-dot-format-extra-positional-arguments/"><code>string-dot-format-extra-positional-arguments</code> (F523)</a> removes a string’s <code>format</code> method call, it can change the program’s behavior. If the string contains a double brace like <code>{{</code>, it originally represents an escape sequence for a single brace like <code>{</code>, but with the method call removed it literally represents a double brace. If the string contains an unset field name, removing the method call suppresses the expected <code>KeyError</code>.</p>
+<pre><code class="language-console">$ ruff --version
+ruff 0.9.2
+
+$ cat f523.py
+print(&quot;{{&quot;.format(&quot;!&quot;))
+print(&quot;{x}&quot;.format(&quot;!&quot;))
+
+$ python f523.py
+{
+Traceback (most recent call last):
+  File &quot;f523.py&quot;, line 2, in &lt;module&gt;
+    print(&quot;{x}&quot;.format(&quot;!&quot;))
+          ^^^^^^^^^^^^^^^^^
+KeyError: 'x'
+
+$ ruff --isolated check --fix --select F523 f523.py
+Found 2 errors (2 fixed, 0 remaining).
+
+$ python f523.py
+{{
+{x}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-01-17 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2025-01-18 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2025-01-18 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/knavdeep152002">@knavdeep152002</a> on 2025-05-10 12:13</div>
+            <div class="timeline-body"><p>Hey @dscorbett ,</p>
+<p>So, what should be the ideal fix for the example you mentioned?</p>
+<p>Should it be</p>
+<pre><code class="language-python">print(&quot;{&quot;)
+print(&quot;{x}&quot;.format(x=&quot;!&quot;))
+</code></pre>
+<p>Or is it expected to be something else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-05-10 12:54</div>
+            <div class="timeline-body"><p>The simplest fix would be to revert #15309:</p>
+<pre><code class="language-python">print(&quot;{{&quot;.format())
+print(&quot;{x}&quot;.format())
+</code></pre>
+<p>The ideal fix would be:</p>
+<pre><code class="language-python">print(&quot;{&quot;)
+print(&quot;{x}&quot;.format())
+</code></pre>
+<p>For the first expression, the <code>format</code> call can be removed if the double braces are unescaped into a single brace. For the second expression, the unused argument can be removed, but the <code>format</code> call can’t because that would suppress the <code>KeyError</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @dylwil3 by @dylwil3 on 2025-08-04 14:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

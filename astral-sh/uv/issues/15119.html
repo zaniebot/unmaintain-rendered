@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected behavior when reusing executables via --with-executables-from - astral-sh/uv #15119</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected behavior when reusing executables via --with-executables-from</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15119">#15119</a>
+        opened by <a href="https://github.com/chuckn246">@chuckn246</a>
+        on 2025-08-06 22:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chuckn246">@chuckn246</a> on 2025-08-06 22:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using <code>uv tool install</code> with the <code>--with-executables-from</code> flag, an error occurs if the executable already exists from a previous <code>uv tool install</code>.</p>
+<p>This can cause unexpected behavior in environments where tools and their executables are installed in overlapping ways.</p>
+<hr />
+<h3>Steps to Reproduce</h3>
+<p>Install yamllint as a standalone CLI tool:</p>
+<pre><code class="language-bash">uv tool install yamllint
+</code></pre>
+<p>Later, attempt to install ansible while also requesting the yamllint executable:</p>
+<pre><code class="language-bash">uv tool install --with-executables-from yamllint ansible
+</code></pre>
+<p>Which fails with:</p>
+<pre><code>error: Executable already exists: yamllint (use `--force` to overwrite)
+</code></pre>
+<p>This breaks idempotency: a colleague using the same command might fail depending on whether yamllint was previously installed.</p>
+<p>It makes it so you can’t safely layer toolchains or reuse install commands across scripts or projects and risks destructive behavior since uninstalling a tool may remove a binary used by another.</p>
+<p>I realize the <code>--force</code> flag exists but would this remove the link to the original tool?</p>
+<hr />
+<h3>Example scenario</h3>
+<ul>
+<li>Install ansible using <code>--with-executables-from yamllint</code>.</li>
+<li>Later, you would like to install yamllint by itself or with another tool but you omit <code>--with-executables-from yamllint</code> to avoid the failure.</li>
+<li>Some time later you decide to <code>uv tool uninstall ansible</code>.</li>
+<li>After uninstalling ansible, the second toolchain will be incomplete because the executable it could have requested was removed.</li>
+</ul>
+<hr />
+<h3>Suggestions</h3>
+<p>Would it be possible to:</p>
+<ul>
+<li>Allow multiple tools to co-own a binary installed via <code>--with-executables-from</code>, tracked internally?</li>
+<li>Only remove shared executables when no tool still depends on them?</li>
+<li>Provide a <code>--skip-existing-executables</code> flag to downgrade the overwrite error to a warning?</li>
+<li>Log executable ownership metadata so users (or uv) can make smarter decisions on uninstall?</li>
+</ul>
+<h3>Platform</h3>
+<p>MacOS, Debian, Ubuntu</p>
+<h3>Version</h3>
+<p>0.8.5</p>
+<h3>Python version</h3>
+<p>3.13.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @chuckn246 on 2025-08-06 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-06 22:58</div>
+            <div class="timeline-body"><p>Multiple tool installs can't share executables, unfortunately, because each tool executable will be linked to a specific Python environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-08-06 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-08-06 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-06 22:59</div>
+            <div class="timeline-body"><p>I'm going to remove the bug label because this <em>is</em> working as intended. We can definitely discuss solutions though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chuckn246">@chuckn246</a> on 2025-08-06 23:03</div>
+            <div class="timeline-body"><p>Sounds good to me!</p>
+<p>I wasn't exactly sure how to tag it, I just wanted to bring it to someone's attention. When I was testing it to use in my install scripts I hit the error and figured I better mention it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

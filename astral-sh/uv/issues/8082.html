@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install failes for wheel URLs with placeholder - astral-sh/uv #8082</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install failes for wheel URLs with placeholder</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8082">#8082</a>
+        opened by <a href="https://github.com/mil-ad">@mil-ad</a>
+        on 2024-10-10 11:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mil-ad">@mil-ad</a> on 2024-10-10 11:21</div>
+            <div class="timeline-body"><p>I was following the <code>vllm</code> <a href="https://docs.vllm.ai/en/latest/getting_started/installation.html#install-the-latest-code">nightly installation guide</a> where they have this one-liner for installing their nightly wheels:</p>
+<pre><code>pip install https://vllm-wheels.s3.us-west-2.amazonaws.com/nightly/vllm-1.0.0.dev-cp38-abi3-manylinux1_x86_64.whl
+</code></pre>
+<p>Their documentation specifically says:</p>
+<blockquote>
+<p>The version string in the wheel file name (1.0.0.dev) is just a placeholder to have a unified URL for the wheels. The actual versions of wheels are contained in the wheel metadata.</p>
+</blockquote>
+<p>when using <code>uv pip install</code> I get:</p>
+<pre><code>error: Failed to install: vllm-1.0.0.dev0-cp38-abi3-manylinux1_x86_64.whl (vllm==1.0.0.dev0 (from https://vllm-wheels.s3.us-west-2.amazonaws.com/nightly/vllm-1.0.0.dev-cp38-abi3-manylinux1_x86_64.whl))
+  Caused by: Wheel version does not match filename: 0.6.3.dev155+gf3a507f1.d20241010 != 1.0.0.dev0
+</code></pre>
+<p>but doing vanilla <code>pip install</code> works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 11:28</div>
+            <div class="timeline-body"><p>My <em>initial</em> reaction is that it seems correct to fail here (I'm somewhat surprised this recommend this), and pip's lack of enforcement seems more like a bug than a feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mil-ad">@mil-ad</a> on 2024-10-10 11:30</div>
+            <div class="timeline-body"><p>I think I agree. I hadn't seen this pattern before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vllm-project/vllm/issues/9244.html">vllm-project/vllm#9244</a> on 2024-10-10 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-10 12:12</div>
+            <div class="timeline-body"><p>It violates the Python packaging specs (the binary distribution spec requires the version to be in the wheel name), so i consider this a bug in their packaging system - Thanks for filing the upstream bug!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-10-11 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-10-11 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaardhus">@gaardhus</a> on 2024-12-04 11:02</div>
+            <div class="timeline-body"><p>I just ran into the same issue with the same package. Are you guys thinking of adding a flag to circumvent this, or should I try to push for them to change their practice? FWIW I don't think it's a bug as in unintended on their part, but an &quot;easy&quot; way to let people install the latest nightly version without having to update the url accordingly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-04 11:05</div>
+            <div class="timeline-body"><blockquote>
+<p>but an &quot;easy&quot; way to let people install the latest nightly version without having to update the url accordingly?</p>
+</blockquote>
+<p>This can be done by using a <code>--find-links</code> index (basically a flat html page with links to source distributions and wheels) or a full index with the nightly package. The wheel version of a filename needs to be fixed, otherwise resolvers such as uv process the file properly in the dependencies graph.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaardhus">@gaardhus</a> on 2024-12-04 11:08</div>
+            <div class="timeline-body"><p>Roger that, will turn to the vllm repo then</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ywang96">@ywang96</a> on 2024-12-22 09:53</div>
+            <div class="timeline-body"><p>A few of us from the vLLM project are addressing this issue so that you can use <code>uv</code> to install nightly wheels - See https://github.com/vllm-project/vllm/pull/11404</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10099.html">astral-sh/uv#10099</a> on 2024-12-22 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/connorblack">@connorblack</a> on 2024-12-26 04:31</div>
+            <div class="timeline-body"><p>Running into this with the <a href="https://huggingface.co/docs/bitsandbytes/installation?backend=AMD+ROCm#multi-backend-pip">huggingface.co/docs/bitsandbytes</a> package as well.</p>
+<p>The wheel it fails with:</p>
+<ul>
+<li>https://github.com/bitsandbytes-foundation/bitsandbytes/releases/download/continuous-release_multi-backend-refactor/bitsandbytes-0.45.0.dev0-py3-none-manylinux_2_24_x86_64.whl</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-27 14:34</div>
+            <div class="timeline-body"><p>I believe this has been (or is being) fixed with vLLM specifically, but in general I think this is the correct behavior for uv.</p>
+<p>For bits-and-bytes, it seems like they <em>should</em> be including the local tag in the wheel filename... Though we can make it optional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsantiago">@dsantiago</a> on 2025-01-05 04:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Running into this with the <a href="https://huggingface.co/docs/bitsandbytes/installation?backend=AMD+ROCm#multi-backend-pip">huggingface.co/docs/bitsandbytes</a> package as well.</p>
+<p>The wheel it fails with:</p>
+<ul>
+<li>https://github.com/bitsandbytes-foundation/bitsandbytes/releases/download/continuous-release_multi-backend-refactor/bitsandbytes-0.45.0.dev0-py3-none-manylinux_2_24_x86_64.whl</li>
+</ul>
+</blockquote>
+<p>+1 Same problem here with <code>bitsandbytes</code></p>
+<p><img width="1438" alt="Image" src="https://github.com/user-attachments/assets/d08f1b61-faa7-455f-92f1-618d72133002" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Canahmetozguven">@Canahmetozguven</a> on 2025-03-16 04:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe this has been (or is being) fixed with vLLM specifically, but in general I think this is the correct behavior for uv.</p>
+<p>For bits-and-bytes, it seems like they <em>should</em> be including the local tag in the wheel filename... Though we can make it optional.</p>
+</blockquote>
+<p>@charliermarsh any update still getting the same error with the bitsandbytes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dtrifiro">@dtrifiro</a> on 2025-05-06 10:34</div>
+            <div class="timeline-body"><p>Although I agree with Charlie about the correctness of <code>uv</code> failing on these kind of issues, I'll add another example of a failing package (torch xla).</p>
+<pre><code class="language-bash">uv pip install https://storage.googleapis.com/pytorch-xla-releases/wheels/tpuvm/torch-2.8.0.dev20250408-cp310-cp310-linux_x86_64.whl
+</code></pre>
+<p>I found this out by trying to install vllm's <code>tpu</code> requirements:</p>
+<pre><code class="language-bash"># Using vllm tpu requirements as an example: https://github.com/vllm-project/vllm/blob/main/requirements/tpu.txt
+curl -L https://github.com/vllm-project/vllm/raw/refs/heads/main/requirements/tpu.txt &gt; req_tpu.txt 
+
+uv pip install --pre -r req_tpu.txt
+</code></pre>
+<pre><code>...
+error: Failed to install: torch-2.8.0.dev20250408-cp310-cp310-linux_x86_64.whl (torch==2.8.0.dev20250408 (from https://storage.googleapis.com/pytorch-xla-releases/wheels/tpuvm/torch-2.8.0.dev20250408-cp310-cp310-linux_x86_64.whl))
+  Caused by: Wheel version does not match filename: 2.8.0 != 2.8.0.dev20250408
+..
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vllm-project/vllm/issues/24126.html">vllm-project/vllm#24126</a> on 2025-09-02 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-09-02 22:18</div>
+            <div class="timeline-body"><p>Seems related:</p>
+<ul>
+<li>https://github.com/vllm-project/vllm/issues/24126</li>
+</ul>
+<p>But this time hit with <code>uv sync</code>, not with <code>uv pip install</code></p>
+<p>Any there any workarounds for</p>
+<pre><code>error: Failed to install: vllm-1.0.0.dev0-cp38-abi3-manylinux1_x86_64.whl (vllm==1.0.0.dev0 (from https://vllm-wheels.s3.amazonaws.com/038e9be4eb7a63189c8980845d80cb96957b9919/vllm-1.0.0.dev-cp38-abi3-manylinux1_x86_64.whl))
+  Caused by: Wheel version does not match filename: 0.10.1rc2.dev397+g038e9be4e != 1.0.0.dev0
+</code></pre>
+<p>?</p>
+<p>Is there a way to force-disable uv checking for filename&lt;&gt;metadata consistency?</p>
+<p>Btw after getting I'm starting to get this error when running <code>uv sync</code> again:</p>
+<pre><code>error: Failed to parse `uv.lock`
+  Caused by: The entry for package `vllm` v0.10.1rc2.dev397+g038e9be4e has wheel `vllm-1.0.0.dev0-cp38-abi3-manylinux1_x86_64.whl` with inconsistent version: v1.0.0.dev0
+</code></pre>
+<hr />
+<p>Agreed that it's a vllm isue, but would it be possible to have a switch for uv ignoring metadata consistency, at least when explicit wheel URL is set? E.g. as in:</p>
+<pre><code class="language-toml"># pyproject.toml - a single file in curdir
+
+[build-system]
+requires = [&quot;setuptools&gt;=65&quot;, &quot;wheel&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[project]
+name =  &quot;test_vllm&quot;
+version = &quot;0.0.0.1&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;vllm&quot;,
+    &quot;torch&gt;=2.8&quot;,
+    &quot;flash-attn==2.8.2&quot;,
+]
+
+[tool.uv.sources]
+vllm = { url = &quot;https://vllm-wheels.s3.amazonaws.com/038e9be4eb7a63189c8980845d80cb96957b9919/vllm-1.0.0.dev-cp38-abi3-manylinux1_x86_64.whl&quot; }
+
+[tool.uv]
+override-dependencies = [&quot;outlines-core==0.2.10&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15647.html">astral-sh/uv#15647</a> on 2025-09-03 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DenysFrasinich">@DenysFrasinich</a> on 2025-09-06 17:42</div>
+            <div class="timeline-body"><p>Same error with
+<code>uv add &quot;torch @ https://developer.download.nvidia.com/compute/redist/jp/v61/pytorch/torch-2.5.0a0+872d972e41.nv24.08.17622132-cp310-cp310-linux_aarch64.whl&quot;</code>
+<code>error: Failed to install: torch-2.5.0a0+872d972e41.nv24.8.17622132-cp310-cp310-linux_aarch64.whl (torch==2.5.0a0+872d972e41.nv24.8.17622132 (from https://developer.download.nvidia.com/compute/redist/jp/v61/pytorch/torch-2.5.0a0+872d972e41.nv24.08.17622132-cp310-cp310-linux_aarch64.whl))   Caused by: Wheel version does not match filename: 2.5.0a0+872d972e41.nv24.8 != 2.5.0a0+872d972e41.nv24.8.17622132 </code>
+pip has its architectural issues, but the lack of backward compatibility in uv makes it unusable in so-called &quot;enterprise projects&quot; — like on NVIDIA Jetson devices, for example, where using their redistributable is the recommended way to install PyTorch, and this redistributable package is built in an inaccurate manner.
+For details about PyTorch on Jetson devices, see: https://docs.nvidia.com/deeplearning/frameworks/install-pytorch-jetson-platform/index.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsermeno">@jsermeno</a> on 2025-09-10 01:22</div>
+            <div class="timeline-body"><p>Same issue for <code>xformers</code>.</p>
+<pre><code>uv add xformers                                                                       ✔  10154  02:23:30
+warning: The `extra-build-dependencies` option is experimental and may change without warning. Pass `--preview-features extra-build-dependencies` to disable this warning.
+Resolved 81 packages in 1.26s
+      xx
+Prepared 1 package in 537ms
+Uninstalled 1 package in 0.32ms
+error: Failed to install: xformers-0.0.33.dev20250908+cu128-cp39-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (xformers==0.0.33.dev20250908+cu128)
+  Caused by: Wheel version does not match filename: 0.0.33+5d4b92a5.d20250909 != 0.0.33.dev20250908+cu128
+</code></pre>
+<p>It's good to be principled, but at the moment it would seem that the only option to avoid this is to stop using <code>uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-10 01:25</div>
+            <div class="timeline-body"><p>Yeah, I guess we'll have to loosen the constraints here (even though those wheels are clearly not valid).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mfordiani-cosmohc">@mfordiani-cosmohc</a> on 2025-09-12 10:24</div>
+            <div class="timeline-body"><p>Same issue with NVIDIA's torch builds for tegra: https://developer.download.nvidia.cn/compute/redist/jp/v61/pytorch/torch-2.5.0a0+872d972e41.nv24.08.17622132-cp310-cp310-linux_aarch64.whl</p>
+<p>Steps to reproduce:</p>
+<ol>
+<li><code>wget https://developer.download.nvidia.cn/compute/redist/jp/v61/pytorch/torch-2.5.0a0+872d972e41.nv24.08.17622132-cp310-cp310-linux_aarch64.whl</code></li>
+<li><code>uv add ./torch-2.5.0a0+872d972e41.nv24.08.17622132-cp310-cp310-linux_aarch64.whl</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-09-14 15:15</div>
+            <div class="timeline-body"><p>I have proposed this pip also deprecate accepting such wheels: https://github.com/pypa/pip/issues/13580</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-09-14 15:18</div>
+            <div class="timeline-body"><p>In my view, in principle it would be good, but also there must be an explicit opt-in switch to ignore the mismatch (globally or for a particular wheel) - to workaround  existing whl files named with mismatch...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-09-14 15:21</div>
+            <div class="timeline-body"><p>@vadimkantorov I assume that comment is toward me and pip, if so please post such feedback on the pip issue, I would want to go into more detail on the use cases and the complexity such code would add to pip, but I don't want to do it on the uv issue tracker.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-09-14 15:23</div>
+            <div class="timeline-body"><p>My comment is for uv as well - because currently pip is already permissive, but uv requires manual wheel downloading and renaming step. But I'll repost it to pip too, thanks for suggesting!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-14 16:14</div>
+            <div class="timeline-body"><p>A key question here is, why are these projects producing these broken wheels? Is it just that pip didn't check those, so it should never showed up that those wheels were broken until now, and if so, can we fix that upstream by ensuring coherence between the METADATA version and the wheel filename version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pytorch/pytorch/pulls/163232.html">pytorch/pytorch#163232</a> on 2025-09-18 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-09-27 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16046.html">astral-sh/uv#16046</a> on 2025-09-28 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-09-29 23:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

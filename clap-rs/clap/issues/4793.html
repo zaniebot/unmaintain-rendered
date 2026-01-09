@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[modular] User-driven values (defaults, env vars, implied values, etc) - clap-rs/clap #4793</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[modular] User-driven values (defaults, env vars, implied values, etc)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/4793">#4793</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2023-03-27 18:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2023-03-27 18:20</div>
+            <div class="timeline-body"><p>With clap today, each value source needs to be hard coded, including</p>
+<ul>
+<li><code>default_value</code></li>
+<li><code>default_missing_value</code></li>
+<li><a href="https://docs.rs/clap/latest/clap/builder/struct.Arg.html#method.default_value_if"><code>default_value_if</code></a></li>
+<li><a href="https://docs.rs/clap/latest/clap/builder/struct.Arg.html#method.env"><code>env</code></a></li>
+</ul>
+<p>When new use cases arise, users either have to</p>
+<ul>
+<li>Hard code the values</li>
+<li>Get a new feature approved and contributed which runs up against #2037 / #1365</li>
+</ul>
+<p>It would help if clap had an API for users to provide their own systems for this.  See also #3476.</p>
+<p>Example unsupported use cases</p>
+<ul>
+<li>#4788 implied values<ul>
+<li>Implied values should have the same value source as the caused value</li>
+<li>Ideally we let users leverage an actions default value / default missing value</li>
+</ul>
+</li>
+<li>#4607: custom env variable source for wasm</li>
+<li>#1634</li>
+</ul>
+<p><code>default_value</code> and <code>default_missing_value</code> are integral to <code>Action</code>s, so I'm thinking we leave those as built-in</p>
+<p>Requirements</p>
+<ul>
+<li>Know the source for existing relevant arg values</li>
+<li>Able to set the source for value</li>
+<li>Able to augment the help description of a specific argument with details</li>
+<li>Ideally help uses with <code>ValueSource</code> precedence</li>
+<li>Ideally leverage built-in <code>Action</code> behavior</li>
+<li>Ideally not so unergonomic to be unuseful</li>
+</ul>
+<p>Tools</p>
+<ul>
+<li>Plugin API to allow storing arbitrary data on Command/Arg</li>
+<li>Blanket <code>impl</code> of a trait for functions</li>
+<li><code>Into</code> to allow custom plugin data to be converted to the plugin type</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2023-03-27 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2023-03-27 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2023-03-27 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-27 18:24</div>
+            <div class="timeline-body"><p>Idea</p>
+<pre><code class="language-rust">trait ValueSource {
+    /// Fill in additional values
+    fn fill_values(&amp;self, cmd: &amp;Command, values: &amp;mut ...) {}
+    /// Augment an arguments help output with additional information, like defaults, env variables and their values, etc
+    fn arg_hint(&amp;self, cmd: &amp;Command, arg: &amp;Arg)  -&gt; Option&lt;Hint&gt; {}
+}
+</code></pre>
+<p>Ideally, we allow a user to define a source on an <code>Arg</code> and automatically adapt it to be for the <code>Command</code>, imagine if:</p>
+<pre><code class="language-rust">struct Env {
+    name: Str
+}
+
+struct CommandEnv {
+    id: Id
+    value: Env
+}
+
+impl From&lt;(&amp;'_ Arg, Env)&gt; for CommandEnv {
+    fn from(other: (&amp;'_ Arg, Env)) -&gt; Self {
+        Self { id: other.0.get_id(), value: other.1 }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4607.html">clap-rs/clap#4607</a> on 2023-03-27 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4605.html">clap-rs/clap#4605</a> on 2023-03-27 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4805.html">clap-rs/clap#4805</a> on 2023-03-28 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4817.html">clap-rs/clap#4817</a> on 2023-03-31 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1634.html">clap-rs/clap#1634</a> on 2023-04-07 00:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

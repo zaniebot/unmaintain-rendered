@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff_wasm loses 'fix' values on 'SyntaxError: Simple statements must be separated by newlines or semicolons' error - astral-sh/ruff #15670</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff_wasm loses 'fix' values on 'SyntaxError: Simple statements must be separated by newlines or semicolons' error</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15670">#15670</a>
+        opened by <a href="https://github.com/lkociko">@lkociko</a>
+        on 2025-01-22 11:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lkociko">@lkociko</a> on 2025-01-22 11:20</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p><strong>Version:</strong> WASM 0.9.2</p>
+<p>I am using <code>ruff_wasm</code> inside my React application. The suggested fixes become undefined, and the reported issues are inconsistent.</p>
+<p>Example:
+If I have 2 issues, errors W291 &amp; F841:</p>
+<pre><code class="language-json">[
+  {
+    &quot;code&quot;: &quot;F841&quot;,
+    &quot;message&quot;: &quot;Local variable `notUsedVariable` is assigned to but never used&quot;,
+    &quot;location&quot;: {
+      &quot;row&quot;: 17,
+      &quot;column&quot;: 5
+    },
+    &quot;end_location&quot;: {
+      &quot;row&quot;: 17,
+      &quot;column&quot;: 20
+    },
+    &quot;fix&quot;: {
+      &quot;message&quot;: &quot;Remove assignment to unused variable `notUsedVariable`&quot;,
+      &quot;edits&quot;: [
+        {
+          &quot;location&quot;: {
+            &quot;row&quot;: 17,
+            &quot;column&quot;: 1
+          },
+          &quot;end_location&quot;: {
+            &quot;row&quot;: 18,
+            &quot;column&quot;: 1
+          }
+        }
+      ]
+    }
+  },
+  {
+    &quot;code&quot;: &quot;W291&quot;,
+    &quot;message&quot;: &quot;Trailing whitespace&quot;,
+    &quot;location&quot;: {
+      &quot;row&quot;: 7,
+      &quot;column&quot;: 52
+    },
+    &quot;end_location&quot;: {
+      &quot;row&quot;: 7,
+      &quot;column&quot;: 53
+    },
+    &quot;fix&quot;: {
+      &quot;message&quot;: &quot;Remove trailing whitespace&quot;,
+      &quot;edits&quot;: [
+        {
+          &quot;location&quot;: {
+            &quot;row&quot;: 7,
+            &quot;column&quot;: 52
+          },
+          &quot;end_location&quot;: {
+            &quot;row&quot;: 7,
+            &quot;column&quot;: 53
+          }
+        }
+      ]
+    }
+  }
+]
+</code></pre>
+<p>When I introduce an error <code>SyntaxError: Simple statements must be separated by newlines or semicolons</code>, for example <code>return &quot;Something&quot;a</code>, now the issues are 2 (<strong>the F841 error disappeared</strong>), and <strong>the fixes are now undefined</strong>.</p>
+<pre><code class="language-json">[
+  {
+    &quot;code&quot;: &quot;W291&quot;,
+    &quot;message&quot;: &quot;Trailing whitespace&quot;,
+    &quot;location&quot;: {
+      &quot;row&quot;: 7,
+      &quot;column&quot;: 52
+    },
+    &quot;end_location&quot;: {
+      &quot;row&quot;: 7,
+      &quot;column&quot;: 53
+    }
+  },
+  {
+    &quot;message&quot;: &quot;SyntaxError: Simple statements must be separated by newlines or semicolons&quot;,
+    &quot;location&quot;: {
+      &quot;row&quot;: 18,
+      &quot;column&quot;: 35
+    },
+    &quot;end_location&quot;: {
+      &quot;row&quot;: 18,
+      &quot;column&quot;: 36
+    }
+  }
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-22 13:36</div>
+            <div class="timeline-body"><p>This behavior matches Ruff's normal behavior. Most most lint rules don't run if there's a syntax error and Ruff doesn't provide fixes for syntax errors.</p>
+<p>So this is working as expected. We intent to support linting files with syntax errors in the future but it isn't a priority for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-22 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-01-22 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lkociko">@lkociko</a> on 2025-01-23 08:40</div>
+            <div class="timeline-body"><p>Hi @MichaReiser, thank you for your reply.</p>
+<p>We are currently using the initial ruff_wasm version (16 months old), and it behaves differently</p>
+<p>When syntax error is introduced, the W291 warning maintains the fix value</p>
+<pre><code>[
+    {
+        &quot;code&quot;: &quot;E999&quot;,
+        &quot;message&quot;: &quot;SyntaxError: Unexpected token 'a'&quot;,
+        &quot;location&quot;: {
+            &quot;row&quot;: 18,
+            &quot;column&quot;: 35
+        },
+        &quot;end_location&quot;: {
+            &quot;row&quot;: 18,
+            &quot;column&quot;: 36
+        }
+    },
+    {
+        &quot;code&quot;: &quot;W291&quot;,
+        &quot;message&quot;: &quot;Trailing whitespace&quot;,
+        &quot;location&quot;: {
+            &quot;row&quot;: 7,
+            &quot;column&quot;: 52
+        },
+        &quot;end_location&quot;: {
+            &quot;row&quot;: 7,
+            &quot;column&quot;: 53
+        },
+        &quot;fix&quot;: {
+            &quot;message&quot;: &quot;Remove trailing whitespace&quot;,
+            &quot;edits&quot;: [
+                {
+                    &quot;location&quot;: {
+                        &quot;row&quot;: 7,
+                        &quot;column&quot;: 52
+                    },
+                    &quot;end_location&quot;: {
+                        &quot;row&quot;: 7,
+                        &quot;column&quot;: 53
+                    }
+                }
+            ]
+        }
+    }
+]
+</code></pre>
+<p>So to clarify, this the expected behaviour for version 0.9.2, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-23 08:51</div>
+            <div class="timeline-body"><p>Yes, this was changed with https://github.com/astral-sh/ruff/pull/12134</p>
+<p>Overall, changes to when Ruff emits fixes is something we might decide to change over time (is not part of our semver API stability)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

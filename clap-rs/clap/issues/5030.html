@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example Not Working  - clap-rs/clap #5030</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Example Not Working </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5030">#5030</a>
+        opened by <a href="https://github.com/JiveyGuy">@JiveyGuy</a>
+        on 2023-07-20 22:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JiveyGuy">@JiveyGuy</a> on 2023-07-20 22:23</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.71.0 (8ede3aae2 2023-07-12)</p>
+<h3>Clap Version</h3>
+<p>clap = &quot;4.3.17&quot;</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Parser, command, arg};
+
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    /// Name of the person to greet
+    #[arg(short, long)]
+    name: String,
+
+    /// Number of times to greet
+    #[arg(short, long, default_value_t = 1)]
+    count: u8,
+}
+
+fn main() {
+    let args = Args::parse();
+
+    for _ in 0..args.count {
+        println!(&quot;Hello {}!&quot;, args.name)
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-bash">cargo add clap
+cargo run
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code class="language-bash">❯ cargo run
+   Compiling bs4_generator_rs v0.1.0 (C:\Users\N39999\OneDrive - NGC\Documents\main_work\work\Parse_Bundle_Set_4\BS4_generator_rs)
+error: cannot find derive macro `Parser` in this scope
+ --&gt; src\main.rs:4:10
+  |
+4 | #[derive(Parser, Debug)]
+  |          ^^^^^^
+  |
+note: `Parser` is imported here, but it is only a trait, without a derive macro
+ --&gt; src\main.rs:1:12
+  |
+1 | use clap::{Parser, command, arg};
+  |            ^^^^^^
+
+error: cannot find attribute `command` in this scope
+ --&gt; src\main.rs:5:3
+  |
+5 | #[command(author, version, about, long_about = None)]
+  |   ^^^^^^^
+  |
+note: `command` is imported here, but it is a function-like macro
+ --&gt; src\main.rs:1:20
+  |
+1 | use clap::{Parser, command, arg};
+  |                    ^^^^^^^
+
+error: cannot find attribute `arg` in this scope
+ --&gt; src\main.rs:8:7
+  |
+8 |     #[arg(short, long)]
+  |       ^^^
+  |
+note: `arg` is imported here, but it is a function-like macro
+ --&gt; src\main.rs:1:29
+  |
+1 | use clap::{Parser, command, arg};
+  |                             ^^^
+
+error: cannot find attribute `arg` in this scope
+  --&gt; src\main.rs:12:7
+   |
+12 |     #[arg(short, long, default_value_t = 1)]
+   |       ^^^
+   |
+note: `arg` is imported here, but it is a function-like macro
+  --&gt; src\main.rs:1:29
+   |
+1  | use clap::{Parser, command, arg};
+   |                             ^^^
+
+error[E0599]: no function or associated item named `parse` found for struct `Args` in the current scope
+  --&gt; src\main.rs:17:22
+   |
+6  | struct Args {
+   | ----------- function or associated item `parse` not found for this struct
+...
+17 |     let args = Args::parse();
+   |                      ^^^^^ function or associated item not found in `Args`
+   |
+   = help: items from traits can only be used if the trait is implemented and in scope
+   = note: the following traits define an item `parse`, perhaps you need to implement one of them:  
+           candidate #1: `Parser`
+           candidate #2: `TypedValueParser`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `bs4_generator_rs` (bin &quot;bs4_generator_rs&quot;) due to 5 previous errors 
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code class="language-bash">
+Hello [Name]!
+
+</code></pre>
+<h3>Additional Context</h3>
+<p>The example from docs does not work for 4.3.17.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @JiveyGuy on 2023-07-20 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-20 22:43</div>
+            <div class="timeline-body"><p>The line before the example <a href="https://docs.rs/clap/latest/clap/#example">on docs.rs</a> says to run</p>
+<pre><code class="language-console">$ cargo add clap --features derive
+</code></pre>
+<p>The missing <code>--features derive</code> is what would be causing those failures</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JiveyGuy">@JiveyGuy</a> on 2023-07-21 00:15</div>
+            <div class="timeline-body"><p>Aha!</p>
+<p>I should have read the instructions, I just went to the examples folder on GitHub and copied the raw code. My bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @JiveyGuy on 2023-07-21 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5031.html">clap-rs/clap#5031</a> on 2023-07-21 00:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-21 00:20</div>
+            <div class="timeline-body"><p>We post all of our examples on docs.rs, like <a href="https://docs.rs/clap/latest/clap/_derive/_cookbook/index.html">the cookbook</a>.  This allows them to be versioned, include example output, and provide a more discoverable way of finding the right example</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

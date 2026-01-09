@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync` always tries to resolve all `optional-dependencies` - astral-sh/uv #6729</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync` always tries to resolve all `optional-dependencies`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6729">#6729</a>
+        opened by <a href="https://github.com/chrisjsewell">@chrisjsewell</a>
+        on 2024-08-27 23:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chrisjsewell">@chrisjsewell</a> on 2024-08-27 23:14</div>
+            <div class="timeline-body"><p>the initial options of <code>uv sync</code> would lead me to believe that extras should not be resolved by default</p>
+<pre><code class="language-console">$ uv sync --help       
+Update the project's environment
+
+Usage: uv sync [OPTIONS]
+
+Options:
+      --extra &lt;EXTRA&gt;                            Include optional dependencies from the extra group name
+      --all-extras                               Include all optional dependencies
+</code></pre>
+<p>yet when I try to run it, I get e.g:</p>
+<pre><code class="language-console">$ uv sync
+× No solution found when resolving dependencies:
+...
+because myproject[docs] depends on projectx ...
+</code></pre>
+<p>It's weird, because if I remove <code>projectx</code> from the <code>doc</code> optional-dependencies, it works and none of the other dependencies in <code>doc</code> are included in the <code>.venv</code></p>
+<hr />
+<p>I see this is because <code>uv</code> tries to add all <code>optional-dependencies</code> to the <code>uv.lock</code> first, but what if I do not want them in there, because they have incompatibilities</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-27 23:21</div>
+            <div class="timeline-body"><p>This is by design. We <em>resolve</em> the entire project at once, but would only install the subset that's relevant. Conflicting optional dependencies are not yet supported.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisjsewell">@chrisjsewell</a> on 2024-08-27 23:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Conflicting optional dependencies are not yet supported</p>
+</blockquote>
+<p>heya, yeh this is a blocker for using uv in a similar way to e.g. tox, i.e. having different optional groups, for running tests, doc builds, etc against different dependency matrices (that can potentially conflict).</p>
+<p>I guess hopefully https://github.com/astral-sh/uv/issues/5632 should allow this one day</p>
+<p>but for now I'll probably stick to https://github.com/tox-dev/tox-uv (which works  better for this) rather than &quot;full-blown&quot; uv 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-08-27 23:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-08-27 23:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-27 23:33</div>
+            <div class="timeline-body"><p>We should document this in https://docs.astral.sh/uv/concepts/projects/#project-lockfile</p>
+<p>I guess we should also have an issue specifically tracking allowing conflicting extras.</p>
+<p>I'll follow up on these things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisjsewell">@chrisjsewell</a> on 2024-08-27 23:33</div>
+            <div class="timeline-body"><p>cheers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisjsewell">@chrisjsewell</a> on 2024-08-27 23:41</div>
+            <div class="timeline-body"><p>To clarify, the main use case, is that I want to be able to do something like this: <code>tox -e py38-sphinx6,py310-sphinx8</code>,
+i.e. running pytest against different versions of Python, and potentially different versions of key &quot;peer dependencies&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arsatiki">@arsatiki</a> on 2024-09-03 09:32</div>
+            <div class="timeline-body"><p>I was bit by this today as well, trying to sync the <code>mlflow</code> repository. The <code>--help</code> options seemed contradictory, since I was very emphatically not installing any extras and it still croaked on <code>jfrog</code> 😒</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6907.html">astral-sh/uv#6907</a> on 2024-09-03 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-03 17:40</div>
+            <div class="timeline-body"><p>@arsatiki what do you expect the <code>--help</code> output to say?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-03 21:42</div>
+            <div class="timeline-body"><p>Tracking support in https://github.com/astral-sh/uv/issues/6981</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6982.html">astral-sh/uv#6982</a> on 2024-09-03 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6981.html">astral-sh/uv#6981</a> on 2024-09-03 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-03 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-03 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arsatiki">@arsatiki</a> on 2024-09-04 08:28</div>
+            <div class="timeline-body"><p>@zanieb I think the help texts for one or both options should mention that they are still trying to resolve all extras, even if they are not installed.</p>
+<p>At least I do not find it intuitive that an extra would affect the resolution, unless I specifically opt into the extra. (But I get why you have chosen the opposite strategy.) Since it does the (in my view) unintuitive thing, the relevant option should notify me about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 12:43</div>
+            <div class="timeline-body"><p>Thanks I'll update that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 12:47</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/pull/7013</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8976.html">astral-sh/uv#8976</a> on 2024-11-09 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wimiko">@wimiko</a> on 2025-01-29 17:09</div>
+            <div class="timeline-body"><p>I have a variation of this problem, but not so much with conflicting extras, but rather with missing extras:</p>
+<pre><code>[project.optional-dependencies]
+with_everything = [
+    &quot;something-extra&quot;,
+]
+
+[tool.uv.sources]
+something-extra = { path = &quot;../something_extra&quot; }
+
+</code></pre>
+<p>I was hoping that I would be able to do <code>uv run</code> without the extras when &quot;../something_extra&quot; doesn't exist, but that doesn't seen to be the case:</p>
+<p><code>error: Distribution not found at: file:///...</code></p>
+<p>I also tried adding dependency-metadata for this package in the hope that it wouldn't try to find it, but that didn't help.</p>
+<p>I'm guessing that the solution proposed in  #8976 doesn't really help in this situation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lordinarynathan">@lordinarynathan</a> on 2025-04-01 23:30</div>
+            <div class="timeline-body"><p>Hit this today. My use case is identical to what @wimiko posted above.  I have a local <code>something_extra</code> project that may not always exist, and want my main project to gracefully handle this.</p>
+<p>I intuitively expected <code>uv sync</code> to resolve + install all the required dependencies, and use <code>uv sync --extra something_extra</code> to resolve + install the optional ones.  <code>uv sync</code> failing when optional things don't exist feels like it makes them mandatory, in a way.</p>
+<p>Is there any way to have a truly optional, possibly nonexistent, local source dependency in <code>uv</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 23:50</div>
+            <div class="timeline-body"><blockquote>
+<p>uv sync failing when optional things don't exist feels like it makes them mandatory, in a way.</p>
+</blockquote>
+<p>They're only mandatory for constructing the lockfile. If you create a lockfile when it exists, you should be able to install from the lockfile when it's missing, e.g., with <code>uv sync --frozen</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andres-ito-traversal">@andres-ito-traversal</a> on 2025-05-08 21:33</div>
+            <div class="timeline-body"><p>I was bit by something similar today. I would like to be able to generate a uv lock file excluding a particular optional dependency group</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hiyouga/LLaMA-Factory/issues/8285.html">hiyouga/LLaMA-Factory#8285</a> on 2025-06-04 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cottephi">@cottephi</a> on 2025-07-09 15:41</div>
+            <div class="timeline-body"><p>Same here : my code depends on some package on Linux, and some others on Windows. But obviously when I <code>uv sync</code> I can't be on both ^^</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-09 15:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Same here : my code depends on some package on Linux, and some others on Windows. But obviously when I uv sync I can't be on both ^^</p>
+</blockquote>
+<p>Use platform markers for the dependencies, uv supports this just fine.</p>
+<p>See</p>
+<ul>
+<li>https://docs.astral.sh/uv/concepts/projects/dependencies/#platform-specific-dependencies</li>
+<li>https://packaging.python.org/en/latest/specifications/dependency-specifiers/#environment-markers</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/atodniAr">@atodniAr</a> on 2025-09-01 10:43</div>
+            <div class="timeline-body"><p>Same here. My usecase is use different extra recipe for different cuda/torch/... version so users with different gpu can use my package with ease.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-01 10:45</div>
+            <div class="timeline-body"><p>@atodniAr Did you see https://docs.astral.sh/uv/guides/integration/pytorch/?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/barseghyanartur">@barseghyanartur</a> on 2025-09-18 08:37</div>
+            <div class="timeline-body"><p>There's a solution implemented recently. Declare the conflicting dependencies and <code>uv sync</code> works again.</p>
+<p>See the documentation on <a href="https://docs.astral.sh/uv/concepts/projects/config/#conflicting-dependencies">conflicting dependencies </a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/atodniAr">@atodniAr</a> on 2025-09-24 07:27</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/atodniAr">@atodniAr</a> Did you see https://docs.astral.sh/uv/guides/integration/pytorch/?</p>
+</blockquote>
+<p>Not at the time I posted the comment. I'm using it now and it works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bkmi">@bkmi</a> on 2025-10-02 18:27</div>
+            <div class="timeline-body"><p>I have another case which does not seem to be covered by conflicts.</p>
+<p>Imagine you have a dependency, e.g.</p>
+<pre><code>git submodule add problem-project
+uv add problem-project
+</code></pre>
+<p>if one of the optional dependencies of <code>problem-project</code> is not installable, this means I cannot add that project.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

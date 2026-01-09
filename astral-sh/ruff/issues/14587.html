@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FURB157 has false negatives for non-finite float strings - astral-sh/ruff #14587</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FURB157 has false negatives for non-finite float strings</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14587">#14587</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2024-11-25 16:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-11-25 16:47</div>
+            <div class="timeline-body"><p><a href="https://docs.astral.sh/ruff/rules/verbose-decimal-constructor/"><code>verbose-decimal-constructor</code> (FURB157)</a> has false negatives in Ruff 0.8.0 for some non-finite float strings. It recognizes the following strings case-insensitively in expressions like <code>Decimal(float(&quot;inf&quot;))</code>, but no others:</p>
+<p>https://github.com/astral-sh/ruff/blob/a90e404c3f010446ab8c18b4793c78834eeb65b7/crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs#L157</p>
+<p><code>float</code> strips white space. For example, <code>Decimal(float(&quot; nan &quot;))</code> should be simplified to <code>Decimal(&quot; nan &quot;)</code>. It could be further normalized to <code>Decimal(&quot;NaN&quot;)</code>, but FURB157 does not currently normalize other float strings, so I think it should keep the string argument unchanged.</p>
+<p><code>float</code> allows both signs for all non-finite values. <code>Decimal(float(&quot;+inf&quot;))</code>, <code>Decimal(float(&quot;+infinity&quot;))</code>, <code>Decimal(float(&quot;+nan&quot;))</code>, and <code>Decimal(float(&quot;-nan&quot;))</code> should be simplified. FURB157 should not normalize these string arguments either, except for the last one. <code>Decimal(float(&quot;-nan&quot;))</code> is equivalent to <code>Decimal(&quot;nan&quot;)</code>, not <code>Decimal(&quot;-nan&quot;)</code>, so for an argument of <code>&quot;-nan&quot;</code>, the sign character should be deleted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-25 17:50</div>
+            <div class="timeline-body"><p>Decimals strike again! Thanks for finding this, we'll get it fixed 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2024-11-25 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2024-11-25 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14596.html">astral-sh/ruff#14596</a> on 2024-11-26 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2024-12-03 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16559.html">astral-sh/ruff#16559</a> on 2025-03-07 20:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20588.html">astral-sh/ruff#20588</a> on 2025-09-30 20:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

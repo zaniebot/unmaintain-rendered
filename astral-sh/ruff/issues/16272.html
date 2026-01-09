@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Incorrect error message when iterating over an object that has an `__iter__` method that might not return an object with a `__next__` method - astral-sh/ruff #16272</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Incorrect error message when iterating over an object that has an `__iter__` method that might not return an object with a `__next__` method</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16272">#16272</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-02-20 13:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-20 13:07</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>For this snippet:</p>
+<pre><code class="language-py">class Iterator:
+    def __next__(self) -&gt; int:
+        return 42
+
+class Iterable:
+    def __iter__(self) -&gt; Iterator | int:
+        return Iterator()
+
+for x in Iterable():
+    pass
+</code></pre>
+<p>We currently emit this diagnostic:</p>
+<pre><code>error: lint:not-iterable
+  --&gt; /Users/alexw/dev/experiment/foo.py:9:10
+   |
+ 7 |         return Iterator()
+ 8 |
+ 9 | for x in Iterable():
+   |          ^^^^^^ Object of type `Iterable` is not iterable because its `__iter__` method is possibly unbound
+10 |     pass
+   |
+</code></pre>
+<p>It's correct for us to emit a diagnostic here. However, this is an incorrect error message: <code>__iter__</code> here <em>is</em> definitely bound, but it returns an object that might not necessarily have a <code>__next__</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-02-20 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-20 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-02-20 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16321.html">astral-sh/ruff#16321</a> on 2025-02-22 22:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-25 14:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

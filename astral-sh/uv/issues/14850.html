@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv build backend settings: inconsistent behaviour among Linux architectures - astral-sh/uv #14850</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv build backend settings: inconsistent behaviour among Linux architectures</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14850">#14850</a>
+        opened by <a href="https://github.com/benoit9126">@benoit9126</a>
+        on 2025-07-23 16:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/benoit9126">@benoit9126</a> on 2025-07-23 16:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi!</p>
+<p>I am using the <code>uv</code> build backend with a pure Python package. I can use the <code>uv sync</code> command to install it on my computer (Debian 12). Then I would like to use <code>uv sync</code> in a <code>musllinux</code> environment, and it fails because I have a sequence of <code>module-name</code> (not a single string).</p>
+<p>The error message is</p>
+<pre><code>error: Failed to parse: `pyproject.toml`
+  Caused by: TOML parse error at line 14, column 15
+   |
+14 | module-name = [&quot;cloud.database&quot;, &quot;cloud.database_pro&quot;]
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+invalid type: sequence, expected a string
+</code></pre>
+<p>Here is a Dockerfile to reproduce the problem</p>
+<pre><code class="language-Dockerfile">FROM quay.io/pypa/musllinux_1_2_x86_64:2025.06.28-1
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+WORKDIR /app/
+
+# Create a project
+RUN uv venv --python /opt/python/cp311-cp311/bin/python \
+    &amp;&amp; mkdir -p src/cloud/database \
+    &amp;&amp; mkdir -p src/cloud/database_pro \
+    &amp;&amp; touch src/cloud/database/__init__.py \
+    &amp;&amp; touch src/cloud/database_pro/__init__.py
+
+# Create a Pyproject using uv build backend and a sequence module-name
+RUN echo -e '[project]\n\
+name = &quot;app&quot;\n\
+version = &quot;0.1.0&quot;\n\
+description = &quot;Add your description here&quot;\n\
+readme = &quot;README.md&quot;\n\
+requires-python = &quot;&gt;=3.11&quot;\n\
+dependencies = []\n\
+\n\
+[build-system]\n\
+requires = [&quot;uv_build&gt;=0.8.2,&lt;0.9.0&quot;]\n\
+build-backend = &quot;uv_build&quot;\n\
+\n\
+[tool.uv.build-backend]\n\
+module-name = [&quot;cloud.database&quot;, &quot;cloud.database_pro&quot;]' &gt; /app/pyproject.toml
+
+# This command fails
+RUN uv sync
+
+ENTRYPOINT [ &quot;sh&quot; ]
+</code></pre>
+<p>If you replace the first line of this Dockerfile with <code>FROM quay.io/pypa/manylinux_2_34_x86_64:latest</code>, <code>uv</code> accepts a sequence as <code>module-name</code> and the <code>uv sync</code> command works fine.</p>
+<p>I would have expected a consistent behaviour among different architectures.</p>
+<h3>Platform</h3>
+<p>Alpine Linux v3.22</p>
+<h3>Version</h3>
+<p>uv 0.7.15</p>
+<h3>Python version</h3>
+<p>Python 3.11.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @benoit9126 on 2025-07-23 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv build backend: inconsistent behaviour among linux architecture" to "uv build backend settings: inconsistent behaviour among Linux architectures" by @benoit9126 on 2025-07-23 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-23 16:36</div>
+            <div class="timeline-body"><p>Sounds like you're on different uv versions, we added multiple module name support in a subsequent version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-07-23 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-07-23 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-23 16:36</div>
+            <div class="timeline-body"><p>Does it reproduce if you pin the uv version you're copying from?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benoit9126">@benoit9126</a> on 2025-07-23 17:22</div>
+            <div class="timeline-body"><p>It works fine when I force the last version of <code>uv</code> (0.8.2). I will force the update of <code>uv</code> in my cibuildwheel process in order to always have the last version of <code>uv</code> among different architectures.</p>
+<p>Thanks a lot!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @benoit9126 on 2025-07-23 17:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

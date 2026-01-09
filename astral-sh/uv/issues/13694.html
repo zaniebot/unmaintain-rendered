@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run` installing project by default - astral-sh/uv #13694</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run` installing project by default</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13694">#13694</a>
+        opened by <a href="https://github.com/Danipulok">@Danipulok</a>
+        on 2025-05-28 07:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Danipulok">@Danipulok</a> on 2025-05-28 07:24</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi all!</p>
+<p>I had problems with installing <code>git</code> dependencies inside <code>docker</code>, which lead me to</p>
+<pre><code>RUN uv sync --no-dev
+</code></pre>
+<p>But I still had problem that on container start I had error about installing <code>git</code> dependencies (why?)
+Then I realized <code>uv run</code> for some reason installs project, if it's not already installed</p>
+<p>For example, my <code>Dockerfile</code> was looking like this:</p>
+<pre><code>FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+WORKDIR /app
+
+COPY pyproject.toml uv.lock ./
+RUN uv sync --compile-bytecode --frozen
+
+COPY alembic.ini .
+COPY migrations migrations
+COPY src src
+COPY .*.env* ./
+
+ENV APP_ENV=production
+CMD [&quot;sh&quot;, &quot;-c&quot;, &quot;uv run alembic upgrade head &amp;&amp; uv run python -m src.my_service&quot;]
+</code></pre>
+<p>But with not installing dev dependencies, I have to do it like this:</p>
+<pre><code>FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+WORKDIR /app
+
+COPY pyproject.toml uv.lock ./
+RUN uv sync --compile-bytecode --frozen --no-dev
+
+COPY alembic.ini .
+COPY migrations migrations
+COPY src src
+COPY .*.env* ./
+
+ENV APP_ENV=production
+CMD [&quot;sh&quot;, &quot;-c&quot;, &quot;uv run --no-project alembic upgrade head &amp;&amp; uv run --no-project python -m src.my_service&quot;]
+</code></pre>
+<p>I understand you are trying to make <code>uv run</code> as easy as possible, but it seems really not intuitive to me that <code>uv run</code> for some reason installs project too. Are there any plans to maybe disable this?</p>
+<h3>Platform</h3>
+<p>MINGW64_NT-10.0-19045 3.4.10-87d57229.x86_64 x86_64 Msy</p>
+<h3>Version</h3>
+<p>FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @Danipulok on 2025-05-28 07:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv run` installing `dev` dependencies by default" to "`uv run` installing project by default" by @Danipulok on 2025-05-28 07:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-28 09:19</div>
+            <div class="timeline-body"><p>What do you mean by installs the project, and how is that related to git? Can you share a <code>pyproject.toml</code> that reproduces the problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Danipulok">@Danipulok</a> on 2025-05-28 09:23</div>
+            <div class="timeline-body"><p>Hi!
+Sorry for not providing it and not being clear enough</p>
+<p>I have <code>git</code> dependencies.
+Here is my <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;project&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;aiogram&gt;=3.19.0&quot;,
+    &quot;alembic-postgresql-enum&gt;=1.7.0&quot;,
+    &quot;alembic[tz]&gt;=1.15.2&quot;,
+    &quot;asyncpg&gt;=0.30.0&quot;,
+    &quot;colorama&gt;=0.4.6&quot;,
+    &quot;python-dateutil&gt;=2.9.0.post0&quot;,
+    &quot;python-dotenv&gt;=1.1.0&quot;,
+    &quot;sqlalchemy&gt;=2.0.40&quot;,
+    &quot;structlog&gt;=25.2.0&quot;,
+    &quot;tzdata&gt;=2025.2&quot;,
+]
+
+[dependency-groups]
+dev = [
+    &quot;kurigram&quot;,
+    &quot;pre-commit&gt;=4.2.0&quot;,
+    &quot;pytgcrypto&gt;=1.2.11&quot;,
+    &quot;rich&gt;=14.0.0&quot;,
+    &quot;watchfiles&gt;=1.0.5&quot;,
+]
+
+[tool.uv.sources]
+kurigram = { git = &quot;https://github.com/KurimuzonAkuma/pyrogram.git&quot;, rev = &quot;85a043b53ae50d0a70d70d8dd31298f131e88857&quot; }
+</code></pre>
+<p>My use case was that I needed <code>dev</code> only for myself and development, not production.
+That's why I asked the reason of installing dependencies for <code>uv run</code>, it seems unintuitive for me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-28 09:37</div>
+            <div class="timeline-body"><p>Installing the dev dependencies by default is an intentional choice, it makes a better developer experience locally: It's easier to add <code>--no-dev</code> to <code>uv sync</code> once for the Docker container, than it is to having to add <code>--dev</code> each time for <code>uv sync</code> locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Danipulok">@Danipulok</a> on 2025-05-28 10:01</div>
+            <div class="timeline-body"><p>That's not what I asked. I asked exactly about <code>uv run</code>.
+Not <code>uv sync</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Danipulok">@Danipulok</a> on 2025-05-28 10:01</div>
+            <div class="timeline-body"><p>The issue title is <code>uv run installing project by default</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-28 10:05</div>
+            <div class="timeline-body"><p><code>uv run</code> and <code>uv sync</code> share most of their interface, <code>uv run</code> is effectively running <code>uv sync</code> and then launches <code>python</code>.</p>
+<p>Users will often use <code>python</code> directly in their Docker <code>ENTRYPOINT</code> or <code>CMD</code> to avoid having uv in their production image (https://docs.astral.sh/uv/guides/integration/docker/), so we didn't optimize <code>uv run</code> for the Docker use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Danipulok">@Danipulok</a> on 2025-05-28 10:35</div>
+            <div class="timeline-body"><p>Okay, got it. This clarifies why <code>uv run</code> also installs the project.
+Thanks a lot!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Danipulok on 2025-05-28 10:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16994.html">astral-sh/uv#16994</a> on 2025-12-05 05:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>derive feature: an attribute to add a prefix to all arg names in a struct, for use with flatten - clap-rs/clap #3513</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>derive feature: an attribute to add a prefix to all arg names in a struct, for use with flatten</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/3513">#3513</a>
+        opened by <a href="https://github.com/wfraser">@wfraser</a>
+        on 2022-02-26 09:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wfraser">@wfraser</a> on 2022-02-26 09:16</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.1.2</p>
+<h3>Describe your use case</h3>
+<p>I work on a large Rust project that has many different modules which have command-line options to add to the program. For readability and to reduce collisions, we prefix the name of the flags with the name of the module it belongs to. For example, we have a module <code>log</code>, with a struct with several fields, and each of them has a corresponding flag like <code>--log.whatever</code>. The main program then combines all these together into one big options struct.</p>
+<p>We've been using docopt, which lets you omit the prefix from the struct field name at least, but you still have to type it manually in the help text for each flag, which doesn't scale well.</p>
+<p>Clap lets me use <code>#[clap(flatten)]</code> to separate these options into their own struct like I've been doing with docopt, but I'd have to add the prefix to all the field names, which then leaks into all the code that accesses it (yuck). It also doesn't let me preserve the <code>--prefix.name</code> argument style we've already established.</p>
+<p>What I'd like is some way to add a prefix to all the arguments used with a particular struct.</p>
+<h3>Describe the solution you'd like</h3>
+<p>A similar feature was discussed in https://github.com/clap-rs/clap/issues/3117, which proposed a <code>prefix</code> attribute to be placed alongside <code>flatten</code>, at the point of the sub-struct's inclusion into the main one. This was ultimately dismissed as being ugly and/or difficult to implement given how the derive code works.</p>
+<p>This proposal is to attach the attribute to the sub-struct itself, which is much more easily implemented, and, at least for my use case, works just as well.</p>
+<p>I have an implementation ready (https://github.com/wfraser/clap/tree/flatten-prefix) which makes it another type of casing style, using the <code>rename_all</code> attribute. The precise syntax is <code>#[clap(rename_all = &quot;prefix:foo&quot;)]</code>. It can be combined with another prefix style as well: <code>#[clap(rename_all = &quot;prefix:foo,snake&quot;)]</code>.</p>
+<p>Example:</p>
+<pre><code class="language-rust">#[derive(Parser, Debug, PartialEq)]
+struct Main {
+    #[clap(long)]
+    some_string: String,
+
+    #[clap(flatten)]
+    foo_args: Foo,
+
+    #[clap(flatten)]
+    bar_args: Bar,
+}
+
+#[derive(Parser, Debug, PartialEq)]
+#[clap(rename_all = &quot;prefix:foo&quot;, next_help_heading = &quot;Foo options&quot;)]
+struct Foo {
+    #[clap(long)]
+    some_param: String,
+}
+
+#[derive(Parser, Debug, PartialEq)]
+#[clap(rename_all = &quot;prefix:bar,pascal&quot;, next_help_heading = &quot;Bar options&quot;)]
+struct Bar {
+    #[clap(long)]
+    another_param: String,
+}
+</code></pre>
+<p>help text:</p>
+<pre><code>clap-nesting
+
+USAGE:
+    clap-nesting [OPTIONS]
+
+OPTIONS:
+    -h, --help                         Print help information
+        --some-string &lt;SOME_STRING&gt;
+
+Foo options:
+        --foo.some-param &lt;SOME_PARAM&gt;
+
+Bar options:
+        --bar.AnotherParam &lt;ANOTHER_PARAM&gt;
+</code></pre>
+<p>If this approach looks acceptable, I can submit my branch as a PR.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @wfraser on 2022-02-26 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2022-02-26 10:14</div>
+            <div class="timeline-body"><p>I was pretty sure we had an issue about this somewhere but I couldn't find it now.</p>
+<p>This relates to #3221</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "derive feature: an attribute to add a prefix to all arg names, for use with flatten" to "derive feature: an attribute to add a prefix to all arg names in a struct, for use with flatten" by @wfraser on 2022-02-26 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-02-26 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-duplicate</span> added by @epage on 2022-02-26 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-26 13:44</div>
+            <div class="timeline-body"><p>This sounds like https://github.com/clap-rs/clap/issues/3117 which we had previously rejected.  I'm going to go ahead and close this as well but if I'm mistaken, feel free to speak up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-02-26 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wfraser">@wfraser</a> on 2022-02-26 21:08</div>
+            <div class="timeline-body"><p>@epage: this is intended to be different from #3117, which was closed because implementing it is problematic.</p>
+<p>Instead of #3117 which proposes to let the <em>user</em> of a struct determine the prefix of all its args, I want to let <em>the struct itself</em> determine its own prefix (the attribute is on the struct, not where it is flattened into). This greatly simplifies the implementation, because now two different Args impls don't need to cooperate.</p>
+<p>@pksunkara sort of similar, but this doesn't have to do with env vars, and I propose implementing it in a pretty different way. In particular, this is only a <code>clap_derive</code> feature, and doesn't change <code>Args</code> at all.</p>
+<p>Basically, I think this is substantially simpler than both of those proposals. Maybe that limits its utility too much, I don't know, but it would solve a problem for me that I don't see being solved any other way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @epage on 2022-02-27 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-27 02:12</div>
+            <div class="timeline-body"><p>Since the use case is slightly different, I'm re-opening for now.</p>
+<p>While this more limited-scope proposal doesn't run into most of the issues in #3117, it does run into the issue of not being able to work with <code>flatten</code>.  We could make it a compile error to set a prefix/namespace for IDs <em>and</em> flatten.  I am concerned about having random holes within the functionality where things don't work.  Documenting the derive is already tricky and documentation is only a half solution to any problem.  This isn't a &quot;no&quot; but I am interested in hearing more thoughts on this and and to give this time to simmer to see how things might look over time.</p>
+<p>Some quick thoughts on details of the proposal</p>
+<ul>
+<li>Stringly-specified APIs are not ideal</li>
+<li>We can't reuse <code>rename_all</code> for this anyways because we will be shifting its focus to only renaming <code>value_name</code>, see #3453 and #2475</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-duplicate</span> removed by @epage on 2022-02-27 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2022-02-27 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wfraser">@wfraser</a> on 2022-02-28 20:59</div>
+            <div class="timeline-body"><p>Yeah those are good points.</p>
+<p>I agree, a separate attribute would probably be better. I just piggy-backed on <code>rename_all</code> because it made implementation so easy; a separate attribute is probably not that much more difficult though. I'll try and write up a proof-of-concept that way.</p>
+<p>Not working with <code>flatten</code> is a little unfortunate, but it seems like that's a pretty inherent difficulty due to how the code generator works. From reading previous discussions, and now the code, I don't really see how that could be made to work. That said, I think attaching the prefix to the struct itself solves most use cases. The only one I don't thing it works for is people who want to re-use an args struct multiple times, with a different prefix each time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wfraser">@wfraser</a> on 2022-02-28 21:23</div>
+            <div class="timeline-body"><p>Here's a proof-of-concept of a new <code>prefix</code> attr that can be applied at the struct level: https://github.com/wfraser/clap/commit/prefix-attr</p>
+<p>example:</p>
+<pre><code class="language-rust">#[derive(Parser, Debug)]
+struct Main {
+    #[clap(short)]
+    s: Option&lt;String&gt;,
+
+    #[clap(long, default_value = &quot;spaghetti&quot;)]
+    some_string: String,
+
+    #[clap(long)]
+    same_name: Option&lt;String&gt;,
+
+    #[clap(flatten)]
+    foo_args: Foo,
+
+    #[clap(flatten)]
+    bar_args: Bar,
+}
+
+#[derive(Parser, Debug, Default)]
+#[clap(prefix = &quot;foo&quot;, next_help_heading = &quot;Foo options&quot;)]
+struct Foo {
+    #[clap(long)]
+    some_param: Option&lt;String&gt;,
+
+    #[clap(long)]
+    same_name: Option&lt;String&gt;, // without prefix, would conflict with the one in Main
+}
+
+#[derive(Parser, Debug, Default)]
+#[clap(prefix = &quot;bar&quot;, next_help_heading = &quot;Bar options&quot;)]
+struct Bar {
+    #[clap(long, env)]
+    another_param: Option&lt;String&gt;,
+}
+</code></pre>
+<pre><code>clap-prefixes
+
+USAGE:
+    clap-prefixes [OPTIONS]
+
+OPTIONS:
+    -h, --help                         Print help information
+    -s &lt;S&gt;
+        --same-name &lt;SAME_NAME&gt;
+        --some-string &lt;SOME_STRING&gt;    [default: spaghetti]
+
+Foo options:
+        --foo.same-name &lt;FOO_SAME_NAME&gt;
+        --foo.some-param &lt;FOO_SOME_PARAM&gt;
+
+Bar options:
+        --bar.another-param &lt;BAR_ANOTHER_PARAM&gt;    [env: BAR_ANOTHER_PARAM=]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-28 21:55</div>
+            <div class="timeline-body"><blockquote>
+<p>The only one I don't thing it works for is people who want to re-use an args struct multiple times, with a different prefix each time.</p>
+</blockquote>
+<p>The problem is this seems to be the majority of the cases.  This is the first time someone has brought up this combination</p>
+<p>I think this gives me a way to express a thought I was having that I couldn't put into words before.  Maintainership requires managing expectations.  I worry that implementing this, though it helps some people, will make it harder for us to manage expectations for reusable structs and adapting this combination of features to people's needs.</p>
+<blockquote>
+<p>Yeah those are good points.</p>
+</blockquote>
+<p>Some other things I seemed to have missed in the original</p>
+<ul>
+<li><code>.</code> separators are not idiomatic for option names and not something we'd want to be a default, instead <code>-</code> should be a default.  I'd be concerned about making this yet-another-configurable behavior.</li>
+<li>We are coupling namespacing in <code>ArgMatches</code> with namespacing of long option names (but not shorts), and namespacing of env variables.<ul>
+<li>I'd imagine users will want one of these without some of the others</li>
+<li>We'd need to error on shorts being set</li>
+</ul>
+</li>
+</ul>
+<p>Overall, this is seeming too narrow of a use case to justify the extra logic and documentation when a user can implement all of this themselves.</p>
+<p>Overall, I'm still leaning towards rejecting this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../grapl-security/grapl/pulls/1855.html">grapl-security/grapl#1855</a> on 2022-08-01 01:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4250.html">clap-rs/clap#4250</a> on 2022-09-23 06:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pure-Peace">@Pure-Peace</a> on 2022-12-09 14:25</div>
+            <div class="timeline-body"><p>Looking forward to this feature.</p>
+<p>Currently I use a declarative macro to create prefixed configuration structs.</p>
+<pre><code class="language-rust">#[macro_export]
+macro_rules! define_db_config {
+    ($vis: vis $struct_name: ident, $prefix: ident) =&gt; {
+        paste::paste! {
+            /// Database configurations
+            #[derive(Parser, Debug)]
+            $vis struct $struct_name {
+                /// Database connection URL.
+                #[arg(long)]
+                pub [&lt;$prefix _db_url&gt;]: String,
+
+                /// Set the maximum number of connections of the pool.
+                #[arg(long)]
+                pub [&lt;$prefix _db_max_connections&gt;]: Option&lt;u32&gt;,
+
+                /// Set the minimum number of connections of the pool.
+                #[arg(long)]
+                pub [&lt;$prefix _db_min_connections&gt;]: Option&lt;u32&gt;,
+
+                /// Set the timeout duration when acquiring a connection.
+                #[arg(long)]
+                pub [&lt;$prefix _db_connect_timeout&gt;]: Option&lt;u64&gt;,
+
+                /// Set the maximum amount of time to spend waiting for acquiring a connection.
+                #[arg(long)]
+                pub [&lt;$prefix _db_acquire_timeout&gt;]: Option&lt;u64&gt;,
+
+                /// Set the idle duration before closing a connection.
+                #[arg(long)]
+                pub [&lt;$prefix _db_idle_timeout&gt;]: Option&lt;u64&gt;,
+
+                /// Set the maximum lifetime of individual connections.
+                #[arg(long)]
+                pub [&lt;$prefix _db_max_lifetime&gt;]: Option&lt;u64&gt;
+            }
+        }
+    };
+}
+
+define_db_config!(pub DatabaseA, a);
+define_db_config!(pub DatabaseB, b);
+
+#[derive(Parser, Debug)]
+pub struct DbServiceConfig {
+    #[command(flatten)]
+    pub db_a: DatabaseA,
+
+    #[command(flatten)]
+    pub db_b: DatabaseB,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5050.html">clap-rs/clap#5050</a> on 2023-08-01 01:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4556.html">clap-rs/clap#4556</a> on 2023-11-09 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5374.html">clap-rs/clap#5374</a> on 2024-02-24 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wfraser">@wfraser</a> on 2024-05-10 22:53</div>
+            <div class="timeline-body"><p>It seems unlikely that this feature will ever get accepted, and I got tired of maintaining a large patch to the clap codebase, so I implemented this functionality as a proc macro that can be used alongside clap instead: https://github.com/wfraser/clap_wrapper</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../posit-dev/ark/issues/708.html">posit-dev/ark#708</a> on 2024-10-11 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/killzoner">@killzoner</a> on 2024-12-09 18:38</div>
+            <div class="timeline-body"><p>After working for a while with <code>paste</code> after https://github.com/clap-rs/clap/issues/3513#issuecomment-1344372578 suggestion, <code>paste</code> recently moved to unmaintained, so I gave it a try to wrap the whole logic in a proc macro.</p>
+<p>The project is published at https://docs.rs/clappen, feel free to give it a try. It's basically a macro generating declarative macro.</p>
+<p>This macro is then able to create a struct with prefix that is maintained within <code>flatten</code>, relying on default behaviour of <code>long</code> and <code>env</code> args. Prefix is on per struct basis and field basis (both can be combined)</p>
+<p>Apart from the macro wrapping, it's all standard <code>clap</code> without any other layer to the lib</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbeck88">@cbeck88</a> on 2025-11-26 23:55</div>
+            <div class="timeline-body"><p>Two years later, I have an alternate version of <code>clap-derive</code> which was built with a different architecture, so that it can support all the things clap does, but also permits the kind of runtime information passing between parent and child that makes it easy to support flatten-with-prefix. It is not 1.0 at time of writing, but it is reaching maturity.</p>
+<p>https://github.com/cbeck88/conf-rs</p>
+<p>Hope this helps someone</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[bug?] B018 `useless-expression` does not work - astral-sh/ruff #3453</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[bug?] B018 `useless-expression` does not work</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3453">#3453</a>
+        opened by <a href="https://github.com/smackesey">@smackesey</a>
+        on 2023-03-11 23:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/smackesey">@smackesey</a> on 2023-03-11 23:18</div>
+            <div class="timeline-body"><p>None of the following trigger <code>B018</code> <code>useless-expression</code> for me, when I would expect them all to:</p>
+<pre><code>&quot;foo&quot; + &quot;bar&quot;  # should trigger B018
+
+&quot;foo&quot;  # should trigger B018
+
+object().__class__  # should trigger B018
+</code></pre>
+<p>I might be missing something about what this rule is supposed to do though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-11 23:22</div>
+            <div class="timeline-body"><p>I think this is consistent with <a href="https://github.com/PyCQA/flake8-bugbear/blob/37bd2a079e1b2ebc0a72c8cf1a8e1c90c6c69148/bugbear.py#L1042">flake8-bugbear</a> although I'm not sure why their rule is limited to those cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-12 04:49</div>
+            <div class="timeline-body"><p>I'm <em>guessing</em> they got rid of strings to avoid false positives with docstrings (https://github.com/PyCQA/flake8-bugbear/pull/209/files).</p>
+<p>I'm guessing they don't detect function calls since it's not really possible (with current information) to know whether a function call is effect-ful or pure.</p>
+<p>We could definitely detect binary operations though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-12 04:49</div>
+            <div class="timeline-body"><p>In general I think we can improve this even if it deviates a bit from bugbear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-03-12 04:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3455.html">astral-sh/ruff#3455</a> on 2023-03-12 04:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-03-12 13:44</div>
+            <div class="timeline-body"><p>I was actually unable to get this rule to trigger at all-- do you have an example of something that triggers it? Like, <code>1 + 5</code> doesn't trigger it either.</p>
+<blockquote>
+<p>I'm guessing they don't detect function calls since it's not really possible (with current information) to know whether a function call is effect-ful or pure.</p>
+</blockquote>
+<p>Yeah, the expected behavior is not to detect a straight function call, but when it's followed by attribute access (as in my example) then I would think it should be detected. FWIW that's pylint's behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-12 14:07</div>
+            <div class="timeline-body"><p>Prior to my open PR, the rule was only enforced in function and class bodies. I think this was consistent with bugbear but has since changed, so it’s reflected in the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-03-12 14:33</div>
+            <div class="timeline-body"><p>Ah nice, somehow my eyes glossed over the PR notification. Thx for addressing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-12 18:02</div>
+            <div class="timeline-body"><p>All good, that PR still doesn't include the <code>object().__class__</code> case which I may add.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-23 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3831.html">astral-sh/ruff#3831</a> on 2023-03-31 16:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

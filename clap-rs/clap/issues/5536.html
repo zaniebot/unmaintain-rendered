@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>value_parser un-nests Option&lt;Option&lt;Foo&gt;&gt; multiple times - clap-rs/clap #5536</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>value_parser un-nests Option&lt;Option&lt;Foo&gt;&gt; multiple times</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5536">#5536</a>
+        opened by <a href="https://github.com/mwlon">@mwlon</a>
+        on 2024-06-16 23:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mwlon">@mwlon</a> on 2024-06-16 23:11</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.79</p>
+<h3>Clap Version</h3>
+<p>4.5.3</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+fn parse_foo(s: &amp;str) -&gt; Option&lt;usize&gt; {
+  if s == &quot;auto&quot; {
+    None
+  } else {
+    usize::from_str(s).unwrap()
+  }
+}
+
+#[derive(Parser)]
+struct Opt {
+  #[arg(long, value_parser=parse_foo, default_value=&quot;auto&quot;)]
+  foo: Option&lt;Option&lt;usize&gt;&gt;
+}
+
+fn main() {
+  Opt::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- --foo=auto</code></p>
+<h3>Actual Behaviour</h3>
+<p>something like</p>
+<pre><code>Mismatch between definition and access of `delta_encoding_order`. Could not downcast to TypeId { t: (8519994227001858441, 10522819541147869382) }, need to downcast to TypeId { t: (10946805347594816691, 17696603323637579145) }
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>happy 0 exit code</p>
+<h3>Additional Context</h3>
+<p>It appears that clap derive expects <code>parse_foo</code> to just return <code>usize</code> instead of <code>Option&lt;usize&gt;</code>, and if we change it to do that, the above code compiles. This might make sense for singly-nested <code>Option&lt;usize&gt;</code>, but definitely seems wrong for <code>Option&lt;Option&lt;usize&gt;&gt;</code>. I assume this isn't the desired behavior; if it is, I think an explanation is warranted. I couldn't find any mention of how <code>value_parser</code> interacts with <code>Option&lt;&gt;</code> typing from the docs, but it's always possible I missed something.</p>
+<p>Side question: if I want the above behavior where <code>&quot;auto&quot;</code> or no arg =&gt; <code>None</code>, int_string =&gt; <code>Some(int)</code>, is there a better way to do it? I would prefer not to define an enum.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @mwlon on 2024-06-16 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-06-20 01:17</div>
+            <div class="timeline-body"><p>This isn't <code>value_parser</code> but our derive code which is <a href="https://docs.rs/clap/latest/clap/_derive/index.html#arg-types">inferring behavior based on types</a>.  You can workaround it by fully qualifying <code>Option</code>.</p>
+<p>See #4626 for improving this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mwlon">@mwlon</a> on 2024-06-21 19:16</div>
+            <div class="timeline-body"><p>Thanks, I was able to work around it using that trick. I'll close this issue since #4626 probably covers it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mwlon on 2024-06-21 19:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

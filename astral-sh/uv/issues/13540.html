@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow using workspace root dependency groups from member - astral-sh/uv #13540</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow using workspace root dependency groups from member</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13540">#13540</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-05-19 17:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-19 17:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It'd be nice to declare development dependencies once then re-use them in the workspace, but it isn't possible to do this today while using <code>--package</code> to ensure you are testing the package in isolation.</p>
+<p>This seems like a bit of a crutch until the ecosystem catches up and just adds workspace aware tools, where, e.g., you could just run <code>pytest</code> from the root. Or, if we add a task runner which supports automatically running across workspace members.</p>
+<h3>Example</h3>
+<p>In the root <code>pyproject.toml</code></p>
+<pre><code>[dependency-groups]
+dev = [&quot;pytest&quot;]
+</code></pre>
+<p>Then, to test some member <code>foo</code>:</p>
+<pre><code>uv run --package foo --group dev pytest
+</code></pre>
+<p>It's not clear if should just implicitly include workspace groups or if it should be opt-in like, in <code>foo/pyproject.toml</code>:</p>
+<pre><code>[dependency-groups]
+dev = { workspace = true }
+</code></pre>
+<p>It <em>seems</em> like it might be fine to allow using the root dependency groups from members? Since they're development only already it doesn't really break package isolation. This seems especially safe if the workspace member doesn't declare any dependency groups at al..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-05-19 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/effigies">@effigies</a> on 2025-06-04 13:59</div>
+            <div class="timeline-body"><p>I would also be interested in going the other way. My use-case here is:</p>
+<pre><code class="language-toml">[project]
+name = &quot;my-project&quot;
+description = &quot;mkdocs or sphinx-based website&quot;
+dependencies = [
+  &quot;helper_package&quot;,
+  &quot;mkdocs&quot;,
+  &quot;...&quot;
+]
+dynamic = [&quot;version&quot;]
+
+[tool.uv.sources]
+helper_package = { path = &quot;tools/helper_package&quot;, editable = true }
+</code></pre>
+<p>(The helper package is something I'm interested in publishing to PyPI.)</p>
+<p>It would be nice to be able to add something like:</p>
+<pre><code class="language-toml">[dependency-groups]
+doc = [
+  &quot;helper_package[group=doc]&quot;
+]
+</code></pre>
+<p>I want the helper package to generate an <code>sdist</code> that can be independently tested and have its docs built, so I would like to track its dependencies in its own <code>pyproject.toml</code>. This would allow me to use <code>uv sync --group doc</code> whether I'm working in the repository root or in an sdist.</p>
+<p>Right now, the best option I have is to keep a <code>doc</code> extra and use <code>doc = [&quot;helper_package[doc]&quot;]</code>, which I was hoping to get away from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13838.html">astral-sh/uv#13838</a> on 2025-06-04 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-04 14:50</div>
+            <div class="timeline-body"><p>@effigies I opened https://github.com/astral-sh/uv/issues/13838 to track that — it'll be a bit more controversial / harder :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Northo">@Northo</a> on 2025-09-23 06:36</div>
+            <div class="timeline-body"><p>Is this duplicate of or related to #8949?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

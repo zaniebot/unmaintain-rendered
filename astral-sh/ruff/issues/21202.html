@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isort I001 spuriously treats package sometimes as first-party sometimes as third party if submodule has the same name as the package. - astral-sh/ruff #21202</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Isort I001 spuriously treats package sometimes as first-party sometimes as third party if submodule has the same name as the package.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21202">#21202</a>
+        opened by <a href="https://github.com/Daraan">@Daraan</a>
+        on 2025-11-02 10:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Daraan">@Daraan</a> on 2025-11-02 10:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have a subpackage with file called <code>module.py</code> in this file I import the third-party package <code>module</code> which has the same name. The <code>I</code>sort rules move this package into the first party block.</p>
+<pre><code class="language-python"># my_package/subpackage/module.py
+
+#  ---- Third party imports ----
+
+import numpy as np
+# from module import something # &lt;-- should be here, but gets moved into first party block.
+
+# First party block
+from my_package import foo 
+from module import something # &lt;--- isort ends up here. Should be &quot;module&quot; package not this file
+</code></pre>
+<h3>Version</h3>
+<p>0.14.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @dylwil3 on 2025-11-02 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-11-02 13:03</div>
+            <div class="timeline-body"><p>Thanks for the report! Can you help me reproduce this? Here was my failed attempt:</p>
+<pre><code class="language-bash">❯ uv init mypackage --lib \
+  &amp;&amp; cd mypackage \
+  &amp;&amp; mkdir src/mypackage/subpackage \
+  &amp;&amp; touch src/mypackage/subpackage/__init__.py \
+  &amp;&amp; echo 'from module import something' &gt; src/mypackage/subpackage/module.py
+
+Initialized project `mypackage` at `/Users/dmbp/Documents/dev/repros/mypackage`
+
+❯ ruff check --no-cache --isolated --select I001 -v
+[... omitted various logs...]
+[2025-11-02][07:00:58][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'module' as Known(ThirdParty) (NoMatch)
+All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daraan">@Daraan</a> on 2025-11-02 13:45</div>
+            <div class="timeline-body"><p>Best I share the project an file: https://github.com/Daraan/ray_utilities/blame/dev/WIP/ray_utilities/callbacks/wandb.py  (not main branch).</p>
+<p>However, this is really strange when I wrote the PR running <code>ruff check ray_utilities/callbacks/wandb.py --select I001  --line-length 120</code> moved the imports down. Now, same file same command, same ruff version it moves the imports that ruff moved down itself up again. Normally I use the ruff VSCode ruff extension to sort the imports. But for this PR I updated ruff and ran it with the cli to make sure its not the extension.</p>
+<p>I already noticed this strange pattern in my commits as well:</p>
+<p>If I would commit now:
+(move up)</p>
+<p>https://github.com/Daraan/ray_utilities/blame/99ebd9234074529eea05454aa1cdf7eccc40fc50/ray_utilities/callbacks/wandb.py  (moved down)</p>
+<p>prior blame:
+https://github.com/Daraan/ray_utilities/blame/4127cf2904c90dd12c8fabe20e31d3fc97c994da/ray_utilities/callbacks/wandb.py (moved up)</p>
+<p>blame before
+https://github.com/Daraan/ray_utilities/blame/57e7c372e97c1302297bda3c19b6c5873fa218e5/ray_utilities/callbacks/wandb.py (moved down)</p>
+<p>original implementation
+https://github.com/Daraan/ray_utilities/blame/6d34712a879e1205a4b04bf1001724b824ced70e/ray_utilities/callbacks/wandb.py
+(up)</p>
+<hr />
+<p>I guess something spurious is happening that always dislikes the current state</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Isort I001: treats package as first-party if submodule has the same name as the package." to "Isort I001 spuriously treats package sometimes as first-party sometimes as third party if submodule has the same name as the package." by @Daraan on 2025-11-02 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-11-02 14:47</div>
+            <div class="timeline-body"><p>I'm away from my computer at the moment but I suspect this has to do with the non-python folder that <code>wandb</code> sometimes creates inside of the package that's called <code>wandb</code> (and is read as a namespace package). This has come up before and it is on my to-do list to add <code>wandb</code> as a default <code>lint.isort.known-third-party</code> but I haven't gotten a chance!</p>
+<p>Can you see if adding that to your Ruff config solves the issue in the meantime?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daraan">@Daraan</a> on 2025-11-02 15:16</div>
+            <div class="timeline-body"><p>Normally I log wandb elsewhere, but in fact I do have a <code>wandb</code> folder around. I added it to known-third-party.</p>
+<p>Currently <code>--isolated</code> then wants to move it up, without ruff is (currently) happy when it is down at first-party. I now expected that <code>--isolated</code> moves it down as it sees a <code>wandb</code> folder and respecting <code>pyproject.toml</code> would then move it up. Did I twist my thinking?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @dylwil3 on 2025-11-02 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @dylwil3 on 2025-11-02 15:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

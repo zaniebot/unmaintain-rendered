@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C410, C411, and C418 have false positives for calls with extra arguments - astral-sh/ruff #15810</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>C410, C411, and C418 have false positives for calls with extra arguments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15810">#15810</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-01-29 14:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-01-29 14:30</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/unnecessary-literal-within-list-call/"><code>unnecessary-literal-within-list-call</code> (C410)</a>, <a href="https://docs.astral.sh/ruff/rules/unnecessary-list-call/"><code>unnecessary-list-call</code> (C411)</a>, and <a href="https://docs.astral.sh/ruff/rules/unnecessary-literal-within-dict-call/"><code>unnecessary-literal-within-dict-call</code> (C418)</a> have false positives in Ruff 0.9.3 when the <code>list</code> or <code>dict</code> call has too many positional arguments or (for C411) there is a keyword argument. Their fixes suppress <code>TypeError</code>s.</p>
+<pre><code class="language-console">$ cat &gt;c41.py &lt;&lt;'# EOF'
+try:
+    print(list([1], [2]))
+except TypeError as e:
+    print(e)
+try:
+    print(list([x for x in &quot;XYZ&quot;], []))
+except TypeError as e:
+    print(e)
+try:
+    print(list([x for x in &quot;XYZ&quot;], foo=[]))
+except TypeError as e:
+    print(e)
+try:
+    print(dict({&quot;A&quot;: 1}, {&quot;B&quot;: 2}))
+except TypeError as e:
+    print(e)
+# EOF
+
+$ python c41.py
+list expected at most 1 argument, got 2
+list expected at most 1 argument, got 2
+list() takes no keyword arguments
+dict expected at most 1 argument, got 2
+
+$ ruff --isolated check  --select C410,C411,C418 c41.py --unsafe-fixes --fix
+Found 4 errors (4 fixed, 0 remaining).
+
+$ cat c41.py
+try:
+    print([1])
+except TypeError as e:
+    print(e)
+try:
+    print([x for x in &quot;XYZ&quot;])
+except TypeError as e:
+    print(e)
+try:
+    print([x for x in &quot;XYZ&quot;])
+except TypeError as e:
+    print(e)
+try:
+    print({&quot;A&quot;: 1})
+except TypeError as e:
+    print(e)
+
+$ python c41.py
+[1]
+['X', 'Y', 'Z']
+['X', 'Y', 'Z']
+{'A': 1}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-01-30 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-01-30 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15838.html">astral-sh/ruff#15838</a> on 2025-01-30 22:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-01-30 23:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

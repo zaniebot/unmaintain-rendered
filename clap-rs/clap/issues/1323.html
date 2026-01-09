@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug in error message for required conflicted args - clap-rs/clap #1323</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug in error message for required conflicted args</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1323">#1323</a>
+        opened by <a href="https://github.com/kpp">@kpp</a>
+        on 2018-07-20 18:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kpp">@kpp</a> on 2018-07-20 18:09</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p><code>rustc 1.29.0-nightly (12ed235ad 2018-07-18)</code></p>
+<h3>Affected Version of clap</h3>
+<p><code>2.32.0</code></p>
+<h3>Bug Summary</h3>
+<p>There are 4 args: <code>a</code>, <code>b</code>, <code>c</code>, <code>d</code>. You may only provide 2 of them at a time: (<code>a</code> or <code>b</code>) AND (<code>c</code> or <code>d</code>). If you provide <code>c</code> and don't provide (<code>a</code> or <code>b</code>) the clap tells you that <code>a</code>, <code>b</code>, <code>d</code> were not provided while <code>d</code> is in a conflict with <code>c</code>.</p>
+<h3>Expected Behavior Summary</h3>
+<pre><code>error: The following required arguments were not provided:
+    --a &lt;a&gt;
+    --b &lt;b&gt;
+</code></pre>
+<h3>Actual Behavior Summary</h3>
+<pre><code>error: The following required arguments were not provided:
+    --a &lt;a&gt;
+    --b &lt;b&gt;
+    --d &lt;d&gt;
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<p><code>$ cargo run -- --c asd</code></p>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">extern crate clap;
+use clap::{Arg, App};
+
+fn main() {
+    let matches = App::new(&quot;My Super Program&quot;)
+        .arg(Arg::with_name(&quot;a&quot;)
+           .long(&quot;a&quot;)
+           .takes_value(true)
+           .required_unless(&quot;b&quot;)
+           .conflicts_with(&quot;b&quot;)
+        )
+        .arg(Arg::with_name(&quot;b&quot;)
+            .long(&quot;b&quot;)
+            .takes_value(true)
+            .required_unless(&quot;a&quot;)
+            .conflicts_with(&quot;a&quot;)
+        )
+        .arg(Arg::with_name(&quot;c&quot;)
+           .long(&quot;c&quot;)
+           .takes_value(true)
+           .required_unless(&quot;d&quot;)
+           .conflicts_with(&quot;d&quot;)
+        )
+        .arg(Arg::with_name(&quot;d&quot;)
+           .long(&quot;d&quot;)
+           .takes_value(true)
+           .required_unless(&quot;c&quot;)
+           .conflicts_with(&quot;c&quot;)
+        )
+        .get_matches();
+}
+</code></pre>
+<h3>Debug output</h3>
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+
+<pre><code>     Running `target/debug/clap_test --c asd`
+DEBUG:clap:Parser::propagate_settings: self=My Super Program, g_settings=AppFlags(
+    (empty)
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;--c&quot;' ([45, 45, 99])
+DEBUG:clap:Parser::is_new_arg:&quot;--c&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: -- found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;--c&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::parse_long_arg;
+DEBUG:clap:Parser::parse_long_arg: Does it contain '='...No
+DEBUG:clap:OptBuilder::fmt:c
+DEBUG:clap:Parser::parse_long_arg: Found valid opt '--c &lt;c&gt;'
+DEBUG:clap:Parser::parse_opt; opt=c, val=None
+DEBUG:clap:Parser::parse_opt; opt.settings=ArgFlags(REQUIRED | EMPTY_VALS | TAKES_VAL | DELIM_NOT_SET)
+DEBUG:clap:Parser::parse_opt; Checking for val...None
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=c
+DEBUG:clap:ArgMatcher::inc_occurrence_of: first instance
+DEBUG:clap:Parser::groups_for_arg: name=c
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Parser::parse_opt: More arg vals required...
+DEBUG:clap:Parser:get_matches_with: After parse_long_arg Opt(&quot;c&quot;)
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;asd&quot;' ([97, 115, 100])
+DEBUG:clap:Parser::is_new_arg:&quot;asd&quot;:Opt(&quot;c&quot;)
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::add_val_to_arg; arg=c, val=&quot;asd&quot;
+DEBUG:clap:Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+DEBUG:clap:Parser::add_single_val_to_arg;
+DEBUG:clap:Parser::add_single_val_to_arg: adding val...&quot;asd&quot;
+DEBUG:clap:Parser::groups_for_arg: name=c
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::needs_more_vals: o=c
+DEBUG:clap:ArgMatcher::process_arg_overrides:Some(&quot;c&quot;);
+DEBUG:clap:Parser::remove_overrides:[];
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Parser::add_defaults;
+DEBUG:clap:Parser::add_defaults:iter:a: doesn't have conditional defaults
+DEBUG:clap:Parser::add_defaults:iter:a: doesn't have default vals
+DEBUG:clap:Parser::add_defaults:iter:b: doesn't have conditional defaults
+DEBUG:clap:Parser::add_defaults:iter:b: doesn't have default vals
+DEBUG:clap:Parser::add_defaults:iter:c: doesn't have conditional defaults
+DEBUG:clap:Parser::add_defaults:iter:c: doesn't have default vals
+DEBUG:clap:Parser::add_defaults:iter:d: doesn't have conditional defaults
+DEBUG:clap:Parser::add_defaults:iter:d: doesn't have default vals
+DEBUG:clap:Validator::validate_blacklist;
+DEBUG:clap:Validator::validate_blacklist:iter:c;
+DEBUG:clap:Parser::groups_for_arg: name=c
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Validator::validate_required: required=[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;];
+DEBUG:clap:Validator::validate_required:iter:a:
+DEBUG:clap:Validator::is_missing_required_ok: a=a
+DEBUG:clap:Validator::validate_arg_conflicts: a=&quot;a&quot;;
+DEBUG:clap:Validator::validate_required_unless: a=&quot;a&quot;;
+DEBUG:clap:Validator::missing_required_error: extra=None
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Validator::missing_required_error: reqs=[
+    &quot;a&quot;,
+    &quot;b&quot;,
+    &quot;d&quot;
+]
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;a&quot;, &quot;b&quot;, &quot;d&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;a&quot;, &quot;b&quot;, &quot;d&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::get_required_usage_from:iter:a:
+DEBUG:clap:OptBuilder::fmt:a
+DEBUG:clap:usage::get_required_usage_from:iter:b:
+DEBUG:clap:OptBuilder::fmt:b
+DEBUG:clap:usage::get_required_usage_from:iter:d:
+DEBUG:clap:OptBuilder::fmt:d
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Validator::missing_required_error: req_args=&quot;\n    \u{1b}[1;31m--a &lt;a&gt;\u{1b}[0m\n    \u{1b}[1;31m--b &lt;b&gt;\u{1b}[0m\n    \u{1b}[1;31m--d &lt;d&gt;\u{1b}[0m&quot;
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::get_required_usage_from:iter:a:
+DEBUG:clap:OptBuilder::fmt:a
+DEBUG:clap:usage::get_required_usage_from:iter:b:
+DEBUG:clap:OptBuilder::fmt:b
+DEBUG:clap:usage::get_required_usage_from:iter:c:
+DEBUG:clap:OptBuilder::fmt:c
+DEBUG:clap:usage::get_required_usage_from:iter:d:
+DEBUG:clap:OptBuilder::fmt:d
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=clap_test --a &lt;a&gt; --b &lt;b&gt; --c &lt;c&gt; --d &lt;d&gt;
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Colorizer::good;
+error: The following required arguments were not provided:
+    --a &lt;a&gt;
+    --b &lt;b&gt;
+    --d &lt;d&gt;
+</code></pre>
+</code>
+</pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-07-21 02:44</div>
+            <div class="timeline-body"><p>Thanks for reporting, I'll look into this :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2018-07-22 02:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2018-07-22 02:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2018-07-22 02:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2018-07-22 02:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2018-07-22 02:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v3-alpha.1" by @kbknapp on 2018-07-22 02:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v3-alpha.2" by @pksunkara on 2020-02-01 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v3.0" by @pksunkara on 2020-02-01 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-30 13:41</div>
+            <div class="timeline-body"><p>And that's what you get with master:</p>
+<pre><code>error: The following required arguments were not provided:
+    --a &lt;a&gt;
+
+USAGE:
+    probe.exe --a &lt;a&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-06-30 23:06</div>
+            <div class="timeline-body"><p>So, the behaviour has changed but it's still not correct, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-07-01 01:36</div>
+            <div class="timeline-body"><p>Right</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2251.html">clap-rs/clap#2251</a> on 2020-12-11 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2020-12-12 12:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

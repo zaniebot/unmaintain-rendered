@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore use of alternative file-copy APIs - astral-sh/uv #21</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Explore use of alternative file-copy APIs</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/21">#21</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-10-06 05:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-06 05:16</div>
+            <div class="timeline-body"><p>Orogene, Bun, pnpm, etc. all have per-platform optimizations for file-copying.</p>
+<p>https://twitter.com/zkat__/status/1701289288296702464</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-07 13:19</div>
+            <div class="timeline-body"><ul>
+<li>A filename is an entry in a directory file.</li>
+<li>The entry contains the file name, and the inode number (indexer into the inode table).</li>
+<li>Inode table entries contain file attributes, plus pointers to the data.</li>
+<li>Hard link: two directory entries with the same inode number. (Only works within a single mounted volume.)</li>
+<li>Symbolic link: special file where the attributes contains a pathname specifying the target of the link. (Works across volumes.)</li>
+<li>The downside to hard links and symbolic links (for caches) is that if you edit the symlink, you pollute the cache.</li>
+<li>Reflinks: copy-on-write links. Unlike a hard link, you have two inode entries, and once modified, the data is copied.</li>
+<li>Reflinks are only supported on some operating systems.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-07 13:19</div>
+            <div class="timeline-body"><p>This is what Orogene seems to use: https://github.com/cargo-bins/reflink-copy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-07 13:21</div>
+            <div class="timeline-body"><p>Oh, <code>cacache</code> already supports this, amazing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-07 15:12</div>
+            <div class="timeline-body"><p>So in Orogene, they download tarballs from NPM. They store the tarball index in the entry metadata, where the entry is keyed by the tarball hash (from NPM). They then store each file from the tarball in the cache, using a hash that's computed during extraction.</p>
+<p>When they copy from the cache, they fetch the index, iterate over it, and copy each file using its hash.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/49.html">astral-sh/uv#49</a> on 2023-10-08 03:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-08 04:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

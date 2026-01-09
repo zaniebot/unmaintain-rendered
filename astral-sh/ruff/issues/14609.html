@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Bug] [DOC501 &amp; DOC502] Numpy still docstrings with `:exc:` directive for exceptions are falsely flagged - astral-sh/ruff #14609</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Bug] [DOC501 &amp; DOC502] Numpy still docstrings with `:exc:` directive for exceptions are falsely flagged</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14609">#14609</a>
+        opened by <a href="https://github.com/AbstractUmbra">@AbstractUmbra</a>
+        on 2024-11-26 13:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AbstractUmbra">@AbstractUmbra</a> on 2024-11-26 13:26</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h3>Intro</h3>
+<p>Searched keywords: DOC501, DOC502, numpy exception
+Command invoked: <code>ruff check project/utils.py</code>
+Ruff config:-</p>
+<details>
+<summary>pyproject.toml excerpt</summary>
+
+<pre><code class="language-toml">[tool.ruff]
+line-length = 125
+target-version = &quot;py311&quot;
+
+[tool.ruff.lint]
+select = [
+    &quot;A&quot;,
+    &quot;ANN&quot;,
+    &quot;ASYNC&quot;,
+    &quot;B&quot;,
+    &quot;BLE&quot;,
+    &quot;C4&quot;,
+    &quot;COM&quot;,
+    &quot;DOC&quot;,
+    &quot;DTZ&quot;,
+    &quot;E&quot;,
+    &quot;EM&quot;,
+    &quot;ERA&quot;,
+    &quot;F&quot;,
+    &quot;FA&quot;,
+    &quot;FBT&quot;,
+    &quot;FURB&quot;,
+    &quot;G&quot;,
+    &quot;I&quot;,
+    &quot;INP&quot;,
+    &quot;ISC&quot;,
+    &quot;NPY&quot;,
+    &quot;PD&quot;,
+    &quot;PERF&quot;,
+    &quot;PGH&quot;,
+    &quot;PIE&quot;,
+    &quot;PLC&quot;,
+    &quot;PLE&quot;,
+    &quot;PLW&quot;,
+    &quot;PTH&quot;,
+    &quot;PYI&quot;,
+    &quot;Q&quot;,
+    &quot;Q003&quot;,
+    &quot;RET&quot;,
+    &quot;RSE&quot;,
+    &quot;RUF&quot;,
+    &quot;S&quot;,
+    &quot;SIM&quot;,
+    &quot;SLOT&quot;,
+    &quot;T20&quot;,
+    &quot;TC&quot;,
+    &quot;TID&quot;,
+    &quot;TRY&quot;,
+    &quot;UP&quot;,
+    &quot;YTT&quot;,
+]
+ignore = [
+    &quot;ANN401&quot;,
+    &quot;F401&quot;,
+    &quot;F402&quot;,
+    &quot;F403&quot;,
+    &quot;F405&quot;,
+    &quot;PD011&quot;,   # this is not a numpy codebase
+    &quot;PERF203&quot;,
+    &quot;PLC0414&quot;, # pyright ruling for `as` imports needed
+    &quot;Q000&quot;,
+    &quot;RUF001&quot;,
+    &quot;RUF009&quot;,
+    &quot;SIM105&quot;,
+    &quot;TRY003&quot;,  # over-eager rule
+    &quot;TRY301&quot;,  # unrealistic rule
+    &quot;UP034&quot;,
+    &quot;UP038&quot;,
+]
+unfixable = [
+    &quot;E501&quot;, # line length handled in other ways by ruff format
+    &quot;ERA&quot;,  # Don't delete commented out code
+]
+[tool.ruff.lint.per-file-ignores]
+&quot;tests/*&quot; = [
+    &quot;S101&quot;,   # we use `assert` in tests
+    &quot;EM101&quot;,  # testing exceptions are okay I feel
+    &quot;INP001&quot;, # we don't import tests generally
+]
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = &quot;double&quot;
+# Like Black, indent with spaces, rather than tabs.
+indent-style = &quot;space&quot;
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+# Like Black, automatically detect the appropriate line ending.
+line-ending = &quot;auto&quot;
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = true
+combine-as-imports = true
+
+[tool.ruff.lint.pydocstyle]
+convention = &quot;numpy&quot;
+
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+parametrize-names-type = &quot;csv&quot;
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = &quot;double&quot;
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+# https://discuss.python.org/t/problems-with-typeis/55410/6
+# https://discuss.python.org/t/problems-with-typeis/55410/46
+# Until what can go into a TypeIs/TypeGuard changes, these are just dangerous.
+&quot;typing.TypeIs&quot;.msg = &quot;TypeIs is fundamentally unsafe, even when using it as described to be safe&quot;
+&quot;typing.TypeGuard&quot;.msg = &quot;TypeGuard is fundamentally unsafe&quot;
+&quot;typing_extensions.TypeIs&quot;.msg = &quot;TypeIs is fundamentally unsafe, even when using it as described to be safe&quot;
+&quot;typing_extensions.TypeGuard&quot;.msg = &quot;TypeGuard is fundamentally unsafe&quot;
+</code></pre>
+</details>
+
+<p>Ruff version:-</p>
+<pre><code class="language-sh">❯ ruff --version             
+ruff 0.8.0
+</code></pre>
+<h3>Problem</h3>
+<p>When using the <code>numpy</code> style of docstrings, I tend to use the <code>:exc:</code> role for my documentation generation using Sphinx, this however is falsely flagged under the above two rules. I was wondering if this could be accounted for in the rule checking?</p>
+<h3>Reproducible code</h3>
+<details>
+<summary>Code</summary>
+
+<pre><code class="language-py">def foo() -&gt; None:
+    &quot;&quot;&quot;Testing method.
+
+    Raises
+    -------
+    :exc:`RuntimeError`
+    &quot;&quot;&quot;
+    raise RuntimeError
+</code></pre>
+</details>
+
+<details>
+<summary>Output</summary>
+
+<pre><code class="language-sh">❯ ruff check project/test.py --preview
+project/test.py:2:5: DOC501 Raised exception `RuntimeError` missing from docstring
+  |
+1 |   def foo() -&gt; None:
+2 |       &quot;&quot;&quot;Testing method.
+  |  _____^
+3 | | 
+4 | |     Raises
+5 | |     -------
+6 | |     :exc:`RuntimeError`
+7 | |     &quot;&quot;&quot;
+  | |_______^ DOC501
+8 |       raise RuntimeError
+  |
+  = help: Add `RuntimeError` to the docstring
+
+project/test.py:2:5: DOC502 Raised exception is not explicitly raised: `:exc:`RuntimeError``
+  |
+1 |   def foo() -&gt; None:
+2 |       &quot;&quot;&quot;Testing method.
+  |  _____^
+3 | | 
+4 | |     Raises
+5 | |     -------
+6 | |     :exc:`RuntimeError`
+7 | |     &quot;&quot;&quot;
+  | |_______^ DOC502
+8 |       raise RuntimeError
+  |
+  = help: Remove `:exc:`RuntimeError`` from the docstring
+
+Found 2 errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-26 13:34</div>
+            <div class="timeline-body"><p>I believe this is the same as https://github.com/astral-sh/ruff/issues/12520</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AbstractUmbra">@AbstractUmbra</a> on 2024-11-26 13:53</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe this is the same as #12520</p>
+</blockquote>
+<p>I did see this issue and I believe since this relates to <em>Sphinx</em> style docstrings, not <em>Numpy</em> still that they are different.
+As this issue also links to the larger issue to track the implementation of <code>pydoclint</code>, in which it has a checkbox next to the <code>numpy</code> implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-26 13:56</div>
+            <div class="timeline-body"><p>Ah sorry, I misread your description. I assumed you use the sphinx style instead of you using sphinx to generate the documentation</p>
+<p>Do you have a link documenting that <code>:exc:</code> is a valid role? I couldn't find it in the numpy docstring documentation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AbstractUmbra">@AbstractUmbra</a> on 2024-11-26 14:05</div>
+            <div class="timeline-body"><p>It is not very well published, but it is found <a href="https://www.sphinx-doc.org/en/master/usage/domains/python.html#role-py-exc">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-26 14:08</div>
+            <div class="timeline-body"><p>Hmm okay, but that's sphinx after all? It doesn't seem to be part of the official numpy guide?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AbstractUmbra">@AbstractUmbra</a> on 2024-11-26 14:18</div>
+            <div class="timeline-body"><p>Oh I guess that would be correct then.
+It's numpy <em>style</em> strings but using Sphinx directives and roles, my mistake. It is a duplicate of the earlier issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-26 14:30</div>
+            <div class="timeline-body"><p>I'll merge this issue into the existing issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-26 14:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

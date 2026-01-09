@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF052 fix is unsafe when renaming function parameters - astral-sh/ruff #14790</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF052 fix is unsafe when renaming function parameters</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14790">#14790</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2024-12-05 14:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-12-05 14:23</div>
+            <div class="timeline-body"><p>The fix for <a href="https://docs.astral.sh/ruff/rules/used-dummy-variable/"><code>used-dummy-variable</code> (RUF052)</a> in Ruff 0.8.2 can introduce errors when renaming a function parameter. It should be marked unsafe in that context unless the parameter is positional-only.</p>
+<pre><code class="language-console">$ cat ruf052.py
+def f(_x):
+    return _x
+print(f(_x=1))
+
+$ python ruf052.py
+1
+
+$ ruff check --isolated --preview --select RUF052 ruf052.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat ruf052.py
+def f(x):
+    return x
+print(f(_x=1))
+
+$ python ruf052.py
+Traceback (most recent call last):
+  File &quot;ruf052.py&quot;, line 3, in &lt;module&gt;
+    print(f(_x=1))
+          ^^^^^^^
+TypeError: f() got an unexpected keyword argument '_x'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-12-05 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-12-05 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-05 17:33</div>
+            <div class="timeline-body"><p>Great catch @dscorbett. We can probably do two things here:</p>
+<ol>
+<li>If we see that the binging comes from a function parameter, we can change the autofix so that it iterates through the uses of the function in the function's defining module and also changes those uses</li>
+<li>If the function is explicitly marked as private to the module (the module has <code>__all__</code> and the function does not appear in <code>__all__</code>), we can probably still mark it as safe if we do (1), but otherwise we'd have to mark it as unsafe if the binding comes from a parameter</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-05 17:43</div>
+            <div class="timeline-body"><p>I like what you propose, but I think it might also just be fine to mark the fix as unsafe for now when the binding comes from a parameter (there are just so many things to consider; what if the function overrides another method?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14796.html">astral-sh/ruff#14796</a> on 2024-12-05 21:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2024-12-05 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14799.html">astral-sh/ruff#14799</a> on 2024-12-06 08:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14818.html">astral-sh/ruff#14818</a> on 2024-12-06 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-12-06 14:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

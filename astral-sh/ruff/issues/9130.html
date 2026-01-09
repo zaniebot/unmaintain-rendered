@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No way to exclude folders from first-party detection for import sorting? - astral-sh/ruff #9130</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>No way to exclude folders from first-party detection for import sorting?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9130">#9130</a>
+        opened by <a href="https://github.com/celynw">@celynw</a>
+        on 2023-12-14 16:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/celynw">@celynw</a> on 2023-12-14 16:16</div>
+            <div class="timeline-body"><p>In my use-case, I want to apply import sorting to a large repository which has packages and also many stand-alone scripts. Those scripts import from their sibling and child python files, so I they should have a large amount of first party imports. Those scripts don't support relative imports (like <code>from .app import func</code>), and I don't want to maintain a large list of <code>known-first-party</code> imports in my Ruff configuration.</p>
+<p>One way around this was to include every directory in <code>src</code>, just so long as there are no collisions with directories named the same as third-party packages. But there is no way to subtract from this list. I guess this is because the exclude list is for <code>.py</code> files but the <code>src</code> list is a list of directories. I tried using the <code>exclude</code> list, <code>force-exclude</code>, and also by honouring <code>.gitignore</code>.</p>
+<p>Perhaps the exclude list should also affect the first-party detection? Or does anybody have any suggestions?</p>
+<p>Directory structure:</p>
+<pre><code>ruff_test/
+  ├─ main.py
+  ├─ ruff.toml
+  └─ .mypy_cache/
+     └─ 3.8/
+        └─ numpy/
+           └─ ... only directories of JSON files
+</code></pre>
+<p>Before formatting:</p>
+<pre><code class="language-python"># main.py
+from __future__ import annotations
+import os
+import pandas as pd
+import numpy as np
+</code></pre>
+<pre><code class="language-toml"># ruff.toml
+src = [&quot;.&quot;, &quot;**&quot;]
+
+[lint]
+select = [
+    &quot;I001&quot;, # unsorted-imports
+]
+</code></pre>
+<p>After formatting with <code>ruff check --fix -v .</code>:</p>
+<pre><code class="language-python"># main.py
+from __future__ import annotations
+
+import os
+
+import pandas as pd
+
+import numpy as np
+</code></pre>
+<p>Verbose output:</p>
+<pre><code>[2023-12-14][15:39:16][ruff_cli::resolve][DEBUG] Using configuration file (via parent) at: ruff_test/ruff.toml
+[2023-12-14][15:39:16][ruff_workspace::pyproject][DEBUG] `project.requires_python` in `pyproject.toml` will not be used to set `target_version` when using `ruff.toml`.
+[2023-12-14][15:39:16][ruff_workspace::pyproject][DEBUG] `project.requires_python` in `pyproject.toml` will not be used to set `target_version` when using `ruff.toml`.
+[2023-12-14][15:39:16][ruff_workspace::pyproject][DEBUG] `project.requires_python` in `pyproject.toml` will not be used to set `target_version` when using `ruff.toml`.
+[2023-12-14][15:39:16][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;ruff_test/.mypy_cache&quot;
+[2023-12-14][15:39:16][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;ruff_test/main.py&quot;
+[2023-12-14][15:39:16][ruff_cli::commands::check][DEBUG] Identified files to lint in: 3.69786ms
+[2023-12-14][15:39:16][ruff_cli::diagnostics][DEBUG] Checking: ruff_test/main.py
+[2023-12-14][15:39:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'pandas' as Known(ThirdParty) (NoMatch)
+[2023-12-14][15:39:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'os' as Known(StandardLibrary) (KnownStandardLibrary)
+[2023-12-14][15:39:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'numpy' as Known(FirstParty) (SourceMatch(&quot;ruff_test/.mypy_cache/3.8&quot;))
+[2023-12-14][15:39:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized '__future__' as Known(Future) (Future)
+[2023-12-14][15:39:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'pandas' as Known(ThirdParty) (NoMatch)
+[2023-12-14][15:39:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'os' as Known(StandardLibrary) (KnownStandardLibrary)
+[2023-12-14][15:39:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'numpy' as Known(FirstParty) (SourceMatch(&quot;ruff_test/.mypy_cache/3.8&quot;))
+[2023-12-14][15:39:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized '__future__' as Known(Future) (Future)
+[2023-12-14][15:39:16][ruff_cli::commands::check][DEBUG] Checked 1 files in: 1.587502ms
+Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+<p>As you can see, it now thinks numpy is a first-party package because it matched <code>ruff_test/.mypy_cache/3.8/numpy/</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-15 00:10</div>
+            <div class="timeline-body"><p>Can you give an example directory structure that's requiring the <code>**</code> in <code>src</code>? Trying to understand if there's an alternative solution that wouldn't require that configuration, since it's a bit non-standard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-12-15 00:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/celynw">@celynw</a> on 2023-12-15 14:45</div>
+            <div class="timeline-body"><p>Sure - I do appreciate this could be an abuse of the <code>src</code> option!
+And actually, I now have told Mypy (in <code>pyproject.toml</code>) to put its cache somewhere else, circumventing the problem for now.</p>
+<p>Anyway...</p>
+<p>In this imaginary project, I have two independent packages called <code>client</code> and <code>server</code> which can be installed with pip.
+The files in one package can import from another, e.g. <code>from server.file import Class</code></p>
+<p>Also, there is a <code>scripts</code> folder, where each directory is self-contained.</p>
+<pre><code>project/
+  ├─ client/
+  │  ├─ client
+  │  │  ├─ __init__.py
+  │  │  ├─ ... .py
+  │  │  └─ ... .py
+  │  └─ setup.py
+  ├─ server/
+  │  ├─ server
+  │  │  ├─ __init__.py
+  │  │  ├─ ... .py
+  │  │  └─ ... .py
+  │  └─ setup.py
+  └─ scripts/
+     ├─ create_dataset/
+     │  ├─ dataset/
+     │  │  └─ dataset.py
+     │  └─ create_dataset.py
+     ├─ .../
+     ├─ .../
+     ...
+</code></pre>
+<p>Each script might make a 'local' import such as:</p>
+<pre><code class="language-python"># create_dataset.py
+from dataset.dataset import Dataset
+</code></pre>
+<p>(I feel like this should be a &quot;local-folder&quot; import, but it can't start with a dot because it's not part of a package..?)</p>
+<p>I want to run Ruff on the entire project.
+If I just set <code>src = [&quot;.&quot;]</code> as the default, <code>dataset.dataset</code> is classed as <code>ThirdParty</code> because it didn't match.</p>
+<blockquote>
+<p>[ruff_linter::rules::isort::categorize][DEBUG] Categorized 'dataset.dataset' as Known(ThirdParty) (NoMatch)</p>
+</blockquote>
+<p>If I set <code>src = [&quot;.&quot;, &quot;**&quot;]</code>, it is correctly detected as FirstParty</p>
+<blockquote>
+<p>[ruff_linter::rules::isort::categorize][DEBUG] Categorized 'dataset.dataset' as Known(FirstParty) (SourceMatch(&quot;scripts/create_dataset&quot;))</p>
+</blockquote>
+<p>This is also solved if I add that script directory, as <code>src = [&quot;.&quot;, &quot;scripts/create_dataset&quot;]</code>
+However if I have lots of scripts, I don't really want to maintain a list here.
+I could do <code>src = [&quot;.&quot;, &quot;scripts/**&quot;]</code> here, but there was still some <code>.mypy_cache/</code> directories within <code>scripts/</code> causing the same problem.</p>
+<p>My real question is, how can I run Ruff on the entire repo, with it correctly identifying imports within self-contained directories, without specifying them all manually?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10266.html">astral-sh/ruff#10266</a> on 2024-03-07 06:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14497.html">astral-sh/ruff#14497</a> on 2024-11-20 20:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

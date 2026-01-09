@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idea: flatten attribute could allow setting a prefix and suffix - clap-rs/clap #3117</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Idea: flatten attribute could allow setting a prefix and suffix</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3117">#3117</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-12-09 16:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:11</div>
+            <div class="timeline-body"><p><a href="https://github.com/kamalmarhubi"><img src="https://avatars.githubusercontent.com/u/50936?v=4" align="left" width="96" height="96" hspace="10"></img></a> <strong>Issue by <a href="https://github.com/kamalmarhubi">kamalmarhubi</a></strong>
+<em>Sunday Jun 03, 2018 at 22:03 GMT</em>
+<em>Originally opened as https://github.com/TeXitoi/structopt/issues/114</em></p>
+<hr />
+<p>Allow something like:</p>
+<pre><code class="language-rust">#[derive(StructOpt)]
+struct Opts {
+  #[structopt(flatten, prefix = &quot;http-&quot;)]
+  http_address: Address,
+  #[structopt(flatten, prefix = &quot;monitoring-&quot;, default_value = &quot;127.0.0.1&quot;)]
+  monitoring_address: Address,
+}
+
+#[derive(StructOpt)]
+sturct Address {
+  #[structopt(short = &quot;p&quot;, long = &quot;port&quot;)]
+  port: u16,
+  #[structopt(short = &quot;a&quot;, long = &quot;address&quot;)]
+  address: IpAddr
+}
+</code></pre>
+<p>The goal being to end up with something like</p>
+<pre><code>myapp --http-address 0.0.0.0 --http-port 80 --monitoring-port 9876
+</code></pre>
+<p>There's some annoying semantic stuff that might make this impossible:</p>
+<ul>
+<li>what do you do with short flags on the flattened struct? Ignore them?</li>
+<li>how do you pass default server and port in <code>default_value</code>? Does the type need to <code>impl FromStr</code> in such a way that it does the desired thing? Eg, in this case maybe <code>default_value = &quot;ip:port&quot;</code> where either part can be left out and not set a default for it. But then validation gets weird.</li>
+</ul>
+<p>Also unclear if there are more use cases. It fits well here, but who knows about other places!</p>
+<hr />
+<p>This came up from thinking about https://github.com/rust-clique/clap-port-flag/pull/2#pullrequestreview-125409058.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:11</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Friday Oct 12, 2018 at 10:02 GMT</em></p>
+<hr />
+<p>This is implemented except the prefix feature</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:12</div>
+            <div class="timeline-body"><p><a href="https://github.com/lucab"><img src="https://avatars.githubusercontent.com/u/98086?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/lucab">lucab</a></strong>
+<em>Tuesday Mar 26, 2019 at 10:28 GMT</em></p>
+<hr />
+<p>I hit a weird corner-case in <code>flatten</code> due to the lack of prefixing. The following will panic at runtime due to children structs having fields with the same name (&quot;port&quot;):</p>
+<pre><code class="language-rust">#[macro_use]
+extern crate structopt;
+
+#[derive(Debug, StructOpt)]
+struct Opts {
+    #[structopt(flatten)]
+    incoming: Incoming,
+    #[structopt(flatten)]
+    outgoing: Outgoing,
+}
+
+#[derive(Debug, StructOpt)]
+struct Incoming {
+    #[structopt(long = &quot;port-in&quot;)]
+    port: u16,
+}
+
+#[derive(Debug, StructOpt)]
+struct Outgoing {
+    #[structopt(long = &quot;port-out&quot;)]
+    port: u16,
+}
+
+fn main() {
+    use structopt::StructOpt;
+
+    let cli = Opts::from_args();
+    println!(&quot;{:#?}&quot;, cli);
+}
+</code></pre>
+<pre><code>$ cargo run -q
+
+thread 'main' panicked at 'Non-unique argument name: port is already in use', /home/lucab/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/parser.rs:174:9
+</code></pre>
+<p>My current workaround is to disambiguate colliding fields with unique structopt-names, e.g.</p>
+<pre><code class="language-rust">#[structopt(name = &quot;outgoing.port&quot;, long = &quot;port-out&quot;)]
+</code></pre>
+<p>/cc @steveeJ FYI</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:12</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Tuesday Sep 17, 2019 at 09:06 GMT</em></p>
+<hr />
+<p>I don't think the prefix thing is possible at compile time because we can't pass info between macro calls (every <code>struct</code>/<code>enum</code> is a separate macro call) but it seems we may be able generate code that dispatches this at runtime</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:12</div>
+            <div class="timeline-body"><p><a href="https://github.com/qmx"><img src="https://avatars.githubusercontent.com/u/66734?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/qmx">qmx</a></strong>
+<em>Friday Sep 20, 2019 at 23:19 GMT</em></p>
+<hr />
+<p>@CreepySkeleton wouldn't we be able to do this by optionally making <code>flatten</code> a method?</p>
+<p><code>#[structopt(flatten(prefix = &quot;foo&quot;, suffix = &quot;bar&quot;))]</code></p>
+<p>one thing I couldn't figure out is how would we make it work both as a sole identifier and as a method to not break current usage (without making it too ugly 😛)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:12</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Saturday Sep 21, 2019 at 08:42 GMT</em></p>
+<hr />
+<p>@qmx It's not about precise syntax, it's about technical complexity. The main problem is: macro calls are independent, the expansion order is not defined, there's no way to pass some info from one invocation to another.</p>
+<pre><code class="language-rust">#[derive(StructOpt)] // first expansion
+struct Opt {
+    // this is the place where we *actually* have 
+    // the info needed
+    #[flatten(prefix = &quot;foo&quot;)]
+    a: Foo,
+}
+
+#[derive(StructOpt)] // second expansion
+struct Foo {
+    // this is the place where we need to *apply* 
+    // this prefix info
+    #[structopt(short = &quot;p&quot;, long = &quot;port&quot;)]
+    port: u16,
+}
+</code></pre>
+<p>We simply <strong>cannot</strong> pass this info on compile time. The only way to implement this is to generate code that dispatches it at <em>runtime</em> (i.e when user's program actually executes). This is how <code>flatten</code> implemented in the first place - but code for <code>flatten</code> is simple (~4 lines total). I really get shivers running down my spine every time I get to think about what it would take to implement this (ripping off the <code>clap::App</code> and rebuilding it at runtime... creepy).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:12</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Saturday Sep 21, 2019 at 08:51 GMT</em></p>
+<hr />
+<blockquote>
+<p>one thing I couldn't figure out is how would we make it work both as a sole identifier and as a method to not break current usage</p>
+</blockquote>
+<p>The syntax looks fine to me, could you explain what it would break, exactly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:12</div>
+            <div class="timeline-body"><p><a href="https://github.com/qmx"><img src="https://avatars.githubusercontent.com/u/66734?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/qmx">qmx</a></strong>
+<em>Saturday Sep 21, 2019 at 15:03 GMT</em></p>
+<hr />
+<blockquote>
+<p>We simply cannot pass this info on compile time. The only way to implement this is to generate code that dispatches it at runtime (i.e when user's program actually executes).</p>
+</blockquote>
+<p>Ooooh, <em>now</em> I get what you meant! Thanks for taking the time to explain it!</p>
+<p>Even if the implementation isn't that straightforward, would the project accept a PR for this functionality? Checking before I sink time trying to figure this out 😃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:12</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Saturday Sep 21, 2019 at 15:15 GMT</em></p>
+<hr />
+<p>@qmx Um, I'm not the guy in charge here, you should be asking @TeXitoi. Personally, I have no objection</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:12</div>
+            <div class="timeline-body"><p><a href="https://github.com/oberien"><img src="https://avatars.githubusercontent.com/u/4820508?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/oberien">oberien</a></strong>
+<em>Thursday Dec 19, 2019 at 18:19 GMT</em></p>
+<hr />
+<p>Any advancements on this issue? I'd really like to have this feature as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:12</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Friday Dec 20, 2019 at 17:36 GMT</em></p>
+<hr />
+<p>@oberien The real blocker here (apart from the lack of inter-expansion communication in proc-macros as mentioned above) is clap's API. To implement this we would need <code>Arg::get_long()</code>, <code>Arg::get_short()</code>, and <code>Arg::get/set_name(&amp;str)</code> methods.</p>
+<p>We need them because all we have at any <code>flatten</code> point is <code>clap::Arg</code> instance. To set a prefix/suffix we would need to figure out the base string to apply the prefix to and there's no way to get it for neither name, nor short, nor long.</p>
+<p>You might say - &quot;Come on, those fields are <code>pub</code>, just <code>doc(hidden)</code>; go do the dirty trick and we're set up!&quot;, but... well, I don't know how @TeXitoi feels about it but I really don't think this is a good idea, even though <code>clap v2.x</code> branch is kind of frozen. I don't like setting a precedent like that, an act of usage of hidden API is worse than murdering a kitten.</p>
+<p>But there is still a blink of light in the darkness: structopt is <a href="https://github.com/clap-rs/clap_derive/pull/23">being imported directly into clap</a> and, since it will be technically one repo, we could implement it with no problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:12</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Saturday Dec 21, 2019 at 10:54 GMT</em></p>
+<hr />
+<p>I agree, I prefer avoiding these kind of dirty hacks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:12</div>
+            <div class="timeline-body"><p><a href="https://github.com/Veetaha"><img src="https://avatars.githubusercontent.com/u/36276403?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/Veetaha">Veetaha</a></strong>
+<em>Thursday May 21, 2020 at 11:40 GMT</em></p>
+<hr />
+<p>Murdering a kitten is certainly rather worse than software development minutiae,  but you have the point.
+So is this the future direction for <code>structopt</code>?
+I see this notice:</p>
+<blockquote>
+<p>This crate is used by clap, and not meant to be used directly by consumers.</p>
+</blockquote>
+<p>Or is this just until the stable <code>clap_derive</code> api is settled?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:12</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Thursday May 21, 2020 at 13:19 GMT</em></p>
+<hr />
+<p>This warning explain that the derive crate should not be used directly, but the non derive crate export the functionalities.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:12</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Thursday May 21, 2020 at 13:30 GMT</em></p>
+<hr />
+<blockquote>
+<p>This crate is used by clap, and not meant to be used directly by consumers.</p>
+</blockquote>
+<p>For the record: this quote is from clap_derive, not from structopt. The wording is awkward though, we'll change it to something more descriptive. The meaning here is that the derive is pretty useless on it's own, without <code>clap</code> since the traits are defined in <code>clap</code>.</p>
+<p>For the sake of having a place to direct future questions to, I'm giving the most comprehensive answer I can come up with to the questions I've been asked before at once:</p>
+<ul>
+<li><strong>What is the future of structopt?</strong>
+<code>structopt</code> is going to continue working with clap 2.x, while <code>clap_derive</code> will be working with clap 3.x. <code>structopt</code> won't go anywhere, but will likely be receiving less attention from maintainers.</li>
+<li><strong>How <code>clap_derive</code> relates to <code>structopt</code>?</strong>
+The best description of <code>clap_derive</code> is &quot;a new iteration of structopt&quot;. It will receive a number of new features, including this one.</li>
+<li><strong>When will <code>clap_derive</code> be released? Is it being worked on?</strong>
+We're working on it, albeit slowly. The release date is &quot;when it's done&quot;, probably in a month or two, but no guarantees.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:12</div>
+            <div class="timeline-body"><p><a href="https://github.com/albx79"><img src="https://avatars.githubusercontent.com/u/1172226?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/albx79">albx79</a></strong>
+<em>Friday Oct 01, 2021 at 13:22 GMT</em></p>
+<hr />
+<p>It would be a very useful feature, though. In case e.g. one is connecting to two databases, one can setup a <code>#[derive(StructOpt)] struct DbConfig{...}</code>, then import it twice in the main app config with different prefixes.</p>
+<p>Will any future version (e.g. clap v3) be able to overcome the technical limitations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:19</div>
+            <div class="timeline-body"><p>Unfortunately, I do not see this technical limitation going away.  We have limited communication when flattening and any of that communication will be at runtime, not compile time, ie we would have to do string formatting and leak the result.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-09 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2021-12-09 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-10 01:47</div>
+            <div class="timeline-body"><p>@epage WDYT of an <code>arg_prefix</code> method on <code>App</code> which behaves similarily to <code>help_heading</code>? This is a good feature request IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-10 20:02</div>
+            <div class="timeline-body"><p>To allow an <code>impl Args</code> to be reused, we would need</p>
+<ul>
+<li>Uniquification of <code>name</code></li>
+<li>Uniquification or banning of short</li>
+<li>Uniquification of long</li>
+<li>Preferably, uniquification of value name for at least positional arguments</li>
+</ul>
+<p>The biggest challenge is with &quot;Uniquification of <code>name</code>&quot;.  Each <code>port</code> and <code>address</code> would need a unique name inside of <code>ArgMatches</code>.  This can't just be done behind the scenes with a builder function because the <code>impl Args</code> needs to generate code to read from <code>ArgMatches</code>which means it needs to know the unique name but it doesn't have it, the structure that flattened it does.  We could break compatibility on the trait and pass this along but (1) that is a slipperly slope, there have already been several other cases where that is an 'easy&quot; tool to reach for  and doing so would frequently break the trait's API and bloat it and (2) this helps for one level of <code>flatten</code> but gets even more complicated for multiple levels of <code>flatten</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2293.html">clap-rs/clap#2293</a> on 2021-12-13 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-01-11 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3443.html">clap-rs/clap#3443</a> on 2022-02-11 01:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3513.html">clap-rs/clap#3513</a> on 2022-02-26 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../cartesi/rollups/issues/27.html">cartesi/rollups#27</a> on 2023-04-20 01:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5050.html">clap-rs/clap#5050</a> on 2023-08-01 01:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sytten">@Sytten</a> on 2023-11-09 16:06</div>
+            <div class="timeline-body"><p>For reference I proposed here https://github.com/clap-rs/clap/issues/4556#issuecomment-1804111798 that we allow prefix in the <code>Args</code> derive instead than at the flatten point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbeck88">@cbeck88</a> on 2023-11-10 18:50</div>
+            <div class="timeline-body"><p>Does anyone know a good workaround for this?</p>
+<p>Currently I'm contemplating taking a shared struct with <code>derive(Parser)</code> which is <code>clap(flatten)</code> at several places, replacing it with a macro that can instantiate it with several env prefixes, and making a trait that all these instantiations can implement which can access the parsed fields, and using trait objects where this config is needed.</p>
+<p>If you see a simpler way I'm interested to hear about it</p>
+<p>Edit: Two years later, I have an alternate version of <code>clap-derive</code> which was built with a different architecture, so that it can support all the things clap does, but also permits the kind of runtime information passing between parent and child that makes it easy to support flatten-with-prefix. It is not 1.0 at time of writing, but it is reaching maturity.</p>
+<p>https://github.com/cbeck88/conf-rs</p>
+<p>Hope this helps someone</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5374.html">clap-rs/clap#5374</a> on 2024-02-24 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../movementlabsxyz/movement-migration/issues/121.html">movementlabsxyz/movement-migration#121</a> on 2025-06-04 06:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

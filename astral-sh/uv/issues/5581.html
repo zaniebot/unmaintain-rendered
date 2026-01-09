@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>shared env: executables perms problem on install - astral-sh/uv #5581</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>shared env: executables perms problem on install</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/5581">#5581</a>
+        opened by <a href="https://github.com/stas00">@stas00</a>
+        on 2024-07-30 00:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 00:29</div>
+            <div class="timeline-body"><p>As a follow up to https://github.com/astral-sh/uv/issues/5496 - there is another (new?) perms issue.</p>
+<p>There are 2 possibly related issues</p>
+<ol>
+<li>I have upgraded to 0.2.31</li>
+</ol>
+<pre><code>$ uv pip install py-spy
+Resolved 1 package in 1m 33s
+error: Failed to install: py_spy-0.3.14-py2.py3-none-manylinux_2_5_x86_64.manylinux1_x86_64.http.whl (py-spy==0.3.14)
+  Caused by: failed to set permissions for file `/env/lib/conda/stas-inference/bin/py-spy`
+  Caused by: Operation not permitted (os error 1)
+</code></pre>
+<p>and the file has the correct perms, but is owned by another user in the cache and I think it copied the file from the cache:</p>
+<pre><code>-rwxrwxrwx 2 foo foo 9.4M Jul 17 05:13 /env/lib/conda/stas-inference/bin/py-spy
+</code></pre>
+<p>Not sure if it copies it from this file?</p>
+<pre><code>-rwxrwxrwx 3 foo foo 9.4M Jul 17 05:13 /env/cache/uv/archive-v0/KXNvF2h2RHusTTHhLSDxY/py_spy-0.3.14.data/scripts/py-spy
+*
+</code></pre>
+<p>So that <code>0666</code> in this case has to be <code>0777</code> perhaps for executable files here https://github.com/astral-sh/uv/pull/5498</p>
+<p>So currently nobody can use <code>uv</code> on our setup because of that.</p>
+<ol start="2">
+<li>another user reported a similar issue:</li>
+</ol>
+<pre><code>error: Failed to install: deepspeed-0.14.4-py3-none-any.whl (deepspeed==0.14.4)
+  Caused by: failed to hardlink file from /data/env/cache/uv/archive-v0/v9yFzmI6xnIw5rZHZhlUq/deepspeed-0.14.4.data/scripts/ds_ssh to /env/lib/conda/graphrag_raw/lib/python3.10/site-packages/deepspeed-0.14.4.data/scripts/ds_ssh
+  Caused by: Operation not permitted (os error 1)
+</code></pre>
+<p>the source file that the other user is trying to hardlink to via <code>uv pip install deepspeed</code> is owned by me and it has the correct perms:</p>
+<pre><code>l /data/env/cache/uv/archive-v0/v9yFzmI6xnIw5rZHZhlUq/deepspeed-0.14.4.data/scripts/ds_ssh
+-rwxrwxrwx 2 stas stas 680 Jul 26 23:05 /data/env/cache/uv/archive-v0/v9yFzmI6xnIw5rZHZhlUq/deepspeed-0.14.4.data/scripts/ds_ssh
+</code></pre>
+<p>I think it's the same problem. But I'm not 100% sure, since this is hardlinking.</p>
+<p>@charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 00:41</div>
+            <div class="timeline-body"><p>Are the permissions <code>0o755</code>? And you want <code>0o777</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 00:43</div>
+            <div class="timeline-body"><p>The perms of the source file are correct, but <code>uv</code> fails. why is it trying to change perms? I thought perhaps it's trying to force a+rwx (0777) to a+rw (0666)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 00:44</div>
+            <div class="timeline-body"><p>The file gets moved. We then set the executable bit on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 00:46</div>
+            <div class="timeline-body"><p>It's intended to be this: https://github.com/pypa/pip/blob/0f21fb920647f07439c3ec9fb29579c0e00072ec/src/pip/_internal/utils/unpacking.py#L88. Perhaps it's wrong as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 00:46</div>
+            <div class="timeline-body"><p>Everything works fine for the first user to win the race of being the first to install a new version of a package. The next user installing the same package version into a different conda env fails to install it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 00:47</div>
+            <div class="timeline-body"><blockquote>
+<p>It's intended to be this: https://github.com/pypa/pip/blob/0f21fb920647f07439c3ec9fb29579c0e00072ec/src/pip/_internal/utils/unpacking.py#L88. Perhaps it's wrong as-is.</p>
+</blockquote>
+<p>Perhaps it should first check if this operation is redundant and the right perms have been set already?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 00:49</div>
+            <div class="timeline-body"><p>Here is what is happening:</p>
+<pre><code>sudo su usera
+touch /tmp/foo
+chmod a+rwx /tmp/foo
+l /tmp/foo
+-rwxrwxrwx 1 usera usera 0 Jul 30 00:47 /tmp/foo*
+</code></pre>
+<p>then:</p>
+<pre><code>sudo su userb
+chmod a+rwx /tmp/foo
+chmod: changing permissions of '/tmp/foo': Operation not permitted
+</code></pre>
+<p>I think that's what's happening with <code>uv</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 00:57</div>
+            <div class="timeline-body"><p>I see... So, in your case, only the first install works, since that user owns the file and can change its permissions? But subsequent installs fail, because they can't change the permissions?</p>
+<p>I'll think on it. We can either make it robust to these kinds of failures, or <em>possibly</em> remove the <code>chmod</code> for files that are copied directly from the cache.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 00:57</div>
+            <div class="timeline-body"><p>I need to test it out. It's very hard to get right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 00:58</div>
+            <div class="timeline-body"><p>I'm not able to reproduce the hardlinking problem outside of <code>uv</code> - it'd help to know how it does it.</p>
+<pre><code>sudo su usera
+touch /tmp/foo
+chmod a+rwx /tmp/foo
+l /tmp/foo
+-rwxrwxrwx 1 usera usera 0 Jul 30 00:47 /tmp/foo*
+</code></pre>
+<p>then:</p>
+<pre><code>sudo su userb
+ln /tmp/foo /tmp/bar 
+</code></pre>
+<p>no <code>Operation not permitted</code> error in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 00:59</div>
+            <div class="timeline-body"><blockquote>
+<p>We can either make it robust to these kinds of failures, or possibly remove the chmod for files that are copied directly from the cache.</p>
+</blockquote>
+<p>or perhaps you need to check if you actually need to <code>chmod</code> when you copy from cache by checking the current perms first.</p>
+<p>but from https://github.com/astral-sh/uv/issues/5581#issuecomment-2257256596 we now know that it's not the <code>0666</code> vs <code>0777</code> issue - so this problem is not related to the previous PR I linked to. The problem is doing <code>chmod</code> on a file not owned by the user running it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 01:01</div>
+            <div class="timeline-body"><p>Correct. I see the issue, I believe I can fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 01:04</div>
+            <div class="timeline-body"><p>Thank you, Charles</p>
+<p>if after you merge the fix PR you could give me a wheel I could test with (or I guess I could try to patch 0.2.31) then it'd be easier - because as I said hardlinking is potentially another issue to resolve.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5582.html">astral-sh/uv#5582</a> on 2024-07-30 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 01:35</div>
+            <div class="timeline-body"><p>do you want me to create another issue for:</p>
+<pre><code>error: Failed to install: deepspeed-0.14.4-py3-none-any.whl (deepspeed==0.14.4)
+  Caused by: failed to hardlink file from /data/env/cache/uv/archive-v0/v9yFzmI6xnIw5rZHZhlUq/deepspeed-0.14.4.data/scripts/ds_ssh to /env/lib/conda/graphrag_raw/lib/python3.10/site-packages/deepspeed-0.14.4.data/scripts/ds_ssh
+  Caused by: Operation not permitted (os error 1)
+</code></pre>
+<p>as I don't see any treatment of hardlinking in the PR you proposed. Or we could work it out one item at a time. Whatever works for you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 01:38</div>
+            <div class="timeline-body"><p>Sure. Any more info you can provide would be great, not sure what's going on there. (It doesn't say &quot;Permission denied&quot; so it may not be a permissions issue.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 01:56</div>
+            <div class="timeline-body"><p>If you want, there are executables available on https://github.com/astral-sh/uv/pull/5582.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 02:59</div>
+            <div class="timeline-body"><p>I confirm that this PR/executable resolves the first issue.</p>
+<p>I need to figure out next how to reproduce the 2nd one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 03:11</div>
+            <div class="timeline-body"><p>ok, I can reproduce this w/ the binary you shared. Placed it under <code>/home/stas/uv</code> which you will see in the examples below.</p>
+<p>This works for the first user:</p>
+<pre><code>$ sudo su usera
+$ /home/stas/uv pip uninstall deepspeed
+Uninstalled 1 package in 2.69s
+ - deepspeed==0.14.4
+$ /home/stas/uv pip install deepspeed
+Resolved 34 packages in 517ms
+Installed 1 package in 2.42s
+ + deepspeed==0.14.4
+</code></pre>
+<p>then 2nd user installing into a different conda env:</p>
+<pre><code>$ sudo su userb
+$ /home/stas/uv pip uninstall deepspeed
+Uninstalled 1 package in 2.65s
+ - deepspeed==0.14.4
+$ /home/stas/uv pip install deepspeed
+Resolved 34 packages in 280ms
+error: Failed to install: deepspeed-0.14.4-py3-none-any.whl (deepspeed==0.14.4)
+  Caused by: failed to hardlink file from /data/env/cache/uv/archive-v0/3bJMARV6EJsb_nzOq2K_S/deepspeed-0.14.4.data/scripts/ds_ssh to /env/lib/conda/tr058-mistral-7b-ft-fin/lib/python3.10/site-packages/deepspeed-0.14.4.data/scripts/ds_ssh
+  Caused by: Operation not permitted (os error 1)
+</code></pre>
+<p>I can repro this:</p>
+<pre><code>ln /data/env/cache/uv/archive-v0/3bJMARV6EJsb_nzOq2K_S/deepspeed-0.14.4.data/scripts/ds_ssh /env/lib/conda/tr058-mistral-7b-ft-fin/lib/python3.10/site-packages/deepspeed-0.14.4.data/scripts/ds_ssh
+ln: failed to create hard link '/env/lib/conda/tr058-mistral-7b-ft-fin/lib/python3.10/site-packages/deepspeed-0.14.4.data/scripts/ds_ssh' =&gt; '/data/env/cache/uv/archive-v0/3bJMARV6EJsb_nzOq2K_S/deepspeed-0.14.4.data/scripts/ds_ssh': Operation not permitted
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 03:13</div>
+            <div class="timeline-body"><p>Why would the hard link already exist though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 03:20</div>
+            <div class="timeline-body"><p>one, sec, I made a mistake. I edited my repro-comment above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 03:21</div>
+            <div class="timeline-body"><p>so it appears that if any parent dir in the link's path is not owned by the user who is trying to hardlink (or perhaps the ownership of the source file?) - it'd fail.</p>
+<pre><code>$ ln /data/env/cache/uv/archive-v0/3bJMARV6EJsb_nzOq2K_S/deepspeed-0.14.4.data/scripts/ds_ssh /data/env/lib/conda/tr058-mistral-7b-ft-fin/lib/python3.10/site-packages/deepspeed-0.14.4.data/scripts/ds_ssh
+ln: failed to create hard link '/data/env/lib/conda/tr058-mistral-7b-ft-fin/lib/python3.10/site-packages/deepspeed-0.14.4.data/scripts/ds_ssh' =&gt; '/data/env/cache/uv/archive-v0/3bJMARV6EJsb_nzOq2K_S/deepspeed-0.14.4.data/scripts/ds_ssh': Operation not permitted
+</code></pre>
+<p>symlinking works fine though:</p>
+<pre><code>$ ln -s /data/env/cache/uv/archive-v0/3bJMARV6EJsb_nzOq2K_S/deepspeed-0.14.4.data/scripts/ds_ssh /data/env/lib/conda/tr058-mistral-7b-ft-fin/lib/python3.10/site-packages/deepspeed-0.14.4.data/scripts/ds_ssh
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 03:30</div>
+            <div class="timeline-body"><p>yes, it's the ownership of the source file that matters. The link's path must have the same ownership as the source it seems.</p>
+<p>I <code>sudo chown</code>'ed the source to the target's username and then hardlink works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 03:31</div>
+            <div class="timeline-body"><p>why not use <code>cp</code> instead of <code>ln</code> if you're concerned the <code>cache</code> may go away? <code>cp</code> works just fine:</p>
+<pre><code>$ ln /data/env/cache/uv/archive-v0/3bJMARV6EJsb_nzOq2K_S/deepspeed-0.14.4.data/scripts/ds_ssh /data/env/lib/conda/tr058-mistral-7b-ft-fin/lib/python3.10/site-packages/deepspeed-0.14.4.data/scripts/ds_ssh
+ln: failed to create hard link '/data/env/lib/conda/tr058-mistral-7b-ft-fin/lib/python3.10/site-packages/deepspeed-0.14.4.data/scripts/ds_ssh' =&gt; '/data/env/cache/uv/archive-v0/3bJMARV6EJsb_nzOq2K_S/deepspeed-0.14.4.data/scripts/ds_ssh': Operation not permitted
+
+$ cp /data/env/cache/uv/archive-v0/3bJMARV6EJsb_nzOq2K_S/deepspeed-0.14.4.data/scripts/ds_ssh /data/env/lib/conda/tr058-mistral-7b-ft-fin/lib/python3.10/site-packages/deepspeed-0.14.4.data/scripts/ds_ssh
+# no error
+</code></pre>
+<p>why do you want that the files are linked? it's not like someone is going to edit those files. In fact someone might edit a hardlinked file and it'd impact all conda envs at once - and potentially break other people's envs. I think those should be stand-alone isolated copies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 12:05</div>
+            <div class="timeline-body"><p>@stas00 -- The behavior is configurable. You can set <code>--link-mode=copy</code> on the command-line or <code>link-mode = copy</code> in <code>uv.toml</code> or <code>pyproject.toml</code>. Hardlinks are just the default on Linux -- they're much faster and much more space-efficient since you don't have isolated copies of every file in every project. (On macOS we use copy-on-write links which is ideal but not supported on most Linux filesystems.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-30 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-30 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-30 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-30 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 17:03</div>
+            <div class="timeline-body"><p>That's unfortunate. <code>uv</code> is advertising itself as a drop-in replacement. But if one needs to create a config file somewhere whereas <code>pip</code> just works and doesn't use hardlinks - your workaround is not going to work in a shared environment. I have no place to create <code>uv.toml</code> - this is meant to be a system-wide tool.</p>
+<p>Will have to revert to the slow <code>pip</code> :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 17:05</div>
+            <div class="timeline-body"><p>Sorry that this is frustrating, but we have made <em>some</em> decisions differently from pip for performance and correctness.</p>
+<p>You can set <code>UV_CONFIG_FILE</code> on your system and place the file wherever you please.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 17:07</div>
+            <div class="timeline-body"><p>Also as I suggested earlier hardlinking is unsafe in this situation. One user modifying a file in their env will impact all conda envs. If they broke it it'll be broken everywhere else. So I think <code>copy</code> is the correct default in a shared environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 17:08</div>
+            <div class="timeline-body"><blockquote>
+<p>You can set UV_CONFIG_FILE on your system and place the file wherever you please.</p>
+</blockquote>
+<p>That's very helpful, @zanieb - thank you. I will try that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 17:09</div>
+            <div class="timeline-body"><p>Candidly, you seem to have a fairly bespoke setup — this has never come up in millions upon millions of usages. It doesn’t seem like a lot to ask that you set some global configuration, just as you would for setting up a custom index.</p>
+<p>Regardless, I’ll probably just make this fallback to copy with a warning like we do for hard linking across drives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 17:11</div>
+            <div class="timeline-body"><p>You can also set UV_LINK_MODE=copy if you want to avoid a configuration file altogether.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 17:14</div>
+            <div class="timeline-body"><p>All we want to do is to avoid each user having a copy of <code>uv</code> cache - instead we share it - what's so special about it? We do the same for conda and pip and many other things - otherwise there will be an insane disk space usage when you multiply each cache by dozens of users.</p>
+<p>Thank you for the <code>UV_LINK_MODE=copy</code> suggestion - that would work well. <code>UV_CONFIG_FILE</code> I can easily handle too. I will test it out and let you know if there are still any hiccups remaining.</p>
+<p>I appreciate your amazing support, @charliermarsh and @zanieb and wanting to meet the needs of outliers too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5611.html">astral-sh/uv#5611</a> on 2024-07-30 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 17:18</div>
+            <div class="timeline-body"><p>@charliermarsh, your suggestion doesn't work:</p>
+<pre><code>UV_LINK_MODE=copy /home/stas/uv pip install deepspeed
+Resolved 34 packages in 211ms
+error: Failed to install: deepspeed-0.14.4-py3-none-any.whl (deepspeed==0.14.4)
+  Caused by: failed to copy file from /data/env/cache/uv/archive-v0/3bJMARV6EJsb_nzOq2K_S/deepspeed-0.14.4.data/scripts/ds_elastic to /env/lib/conda/tr058-mistral-7b-ft-fin/lib/python3.10/site-packages/deepspeed-0.14.4.data/scripts/ds_elastic
+  Caused by: Operation not permitted (os error 1)
+</code></pre>
+<p>edit: but it's the copy that fails now - looking at why</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 17:18</div>
+            <div class="timeline-body"><p>The shared cache use-case makes sense, I don't think that's something we've focused on in particular yet — I'm surprised there haven't been more questions about it. I've created another issue to track documenting some recommendations https://github.com/astral-sh/uv/issues/5611</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 17:21</div>
+            <div class="timeline-body"><p>@charliermarsh, if I do it manually I get a different error:</p>
+<pre><code>cp /data/env/cache/uv/archive-v0/3bJMARV6EJsb_nzOq2K_S/deepspeed-0.14.4.data/scripts/ds_elastic /env/lib/conda/tr058-mistral-7b-ft-fin/lib/python3.10/site-packages/deepspeed-0.14.4.data/scripts/ds_elastic
+cp: '/data/env/cache/uv/archive-v0/3bJMARV6EJsb_nzOq2K_S/deepspeed-0.14.4.data/scripts/ds_elastic' and '/env/lib/conda/tr058-mistral-7b-ft-fin/lib/python3.10/site-packages/deepspeed-0.14.4.data/scripts/ds_elastic' are the same file
+</code></pre>
+<p>Both files are owned by me and they are the same</p>
+<pre><code>-rwxrwxrwx 2 stas stas 0 Jul 30 17:17 /data/env/cache/uv/archive-v0/3bJMARV6EJsb_nzOq2K_S/deepspeed-0.14.4.data/scripts/ds_elastic*
+-rwxrwxrwx 2 stas stas 0 Jul 30 17:17 /env/lib/conda/tr058-mistral-7b-ft-fin/lib/python3.10/site-packages/deepspeed-0.14.4.data/scr
+ipts/ds_elastic*
+</code></pre>
+<p>and the error happens when I try to run as another user.</p>
+<p>I wonder if it's because of the previously created hardlink - let me delete those first and try again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 17:30</div>
+            <div class="timeline-body"><p>@charliermarsh, I started to get this error with your latest <code>uv</code> and <code>UV_LINK_MODE=copy</code>:</p>
+<pre><code>UV_LINK_MODE=copy /home/stas/uv pip install deepspeed
+Resolved 34 packages in 175ms
+error: Failed to install: deepspeed-0.14.4-py3-none-any.whl (deepspeed==0.14.4)
+  Caused by: failed to fill whole buffer
+
+UV_LINK_MODE=copy /home/stas/uv pip install deepspeed
+Audited 1 package in 98ms
+</code></pre>
+<p>it then succeeds on the 2nd attempt.</p>
+<p>It happens 100% of the time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 17:31</div>
+            <div class="timeline-body"><p>Is that a public package? Can I test it somehow?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 17:32</div>
+            <div class="timeline-body"><p>It's the package you gave me yesterday. https://github.com/astral-sh/uv/issues/5581#issuecomment-2257313188</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 17:33</div>
+            <div class="timeline-body"><p>Sorry, I meant, the package you're installing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 17:33</div>
+            <div class="timeline-body"><p>The culprit is <code>UV_LINK_MODE=copy</code> - removing it, removes the problem.</p>
+<p>Yes, <code>deepspeed</code> is a public pypi package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 17:38</div>
+            <div class="timeline-body"><p>Hmm, ok. Do you see it with the latest uv on PyPI? I've never seen that reported and can't reproduce it on main on macOS:</p>
+<pre><code>cargo run pip install deepspeed==0.14.4 --link-mode=copy  --no-deps
+</code></pre>
+<p>I can try it in GitHub Actions to see if it reproduces there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 17:39</div>
+            <div class="timeline-body"><p>I will try shortly and report back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 17:45</div>
+            <div class="timeline-body"><pre><code>$ cargo run pip install deepspeed==0.14.4 --link-mode=copy  --no-deps
+error: could not find `Cargo.toml` in `/home/stas` or any parent directory
+
+$ touch ~/Cargo.toml
+$ cargo run pip install deepspeed==0.14.4 --link-mode=copy  --no-deps
+error: failed to parse manifest at `/home/stas/Cargo.toml`
+
+Caused by:
+  virtual manifests must be configured with [workspace]
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 17:47</div>
+            <div class="timeline-body"><p>Ah sorry, I meant, if you just <code>pip install uv</code> then run <code>uv pip install deepspeed==0.14.4 --link-mode=copy  --no-deps</code> in your environment, does that fail too? Trying to understand if it's a new regression from the latest release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 17:50</div>
+            <div class="timeline-body"><p>same issue w/ uv==0.2.31</p>
+<pre><code>$ pip install uv
+Requirement already satisfied: uv in /data/env/lib/conda/stas-inference/lib/python3.10/site-packages (0.2.31)
+$ uv pip uninstall deepspeed
+Uninstalled 1 package in 1.87s
+ - deepspeed==0.14.4
+$ uv pip install deepspeed==0.14.4 --link-mode=copy  --no-deps
+Resolved 1 package in 61ms
+error: Failed to install: deepspeed-0.14.4-py3-none-any.whl (deepspeed==0.14.4)
+  Caused by: failed to fill whole buffer
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 17:59</div>
+            <div class="timeline-body"><p>It looks like it ran without error here: https://github.com/astral-sh/uv/pull/5615</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 18:11</div>
+            <div class="timeline-body"><p>You meant this one, right? https://github.com/astral-sh/uv/actions/runs/10167135512/job/28118835463?pr=5615</p>
+<p>I was able to overcome this problem by first nuking the cache where that package was residing.</p>
+<pre><code>rm -rf /data/env/cache/uv/archive-v0/3bJMARV6EJsb_nzOq2K_S
+uv pip uninstall deepspeed
+Uninstalled 1 package in 2.14s
+ - deepspeed==0.14.4
+dojo-a3-ghpc-61:1-|stas-inference ~&gt; uv pip install deepspeed==0.14.4 --link-mode=copy  --no-deps
+Resolved 1 package in 7ms
+Installed 1 package in 2.33s
+ + deepspeed==0.14.4
+</code></pre>
+<p>works with <code>UV_LINK_MODE=copy /home/stas/uv pip install deepspeed</code> as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-07-30 18:12</div>
+            <div class="timeline-body"><p>Everything seems to work now!</p>
+<p>I repeated the install/uninstall many times by different users - not a hitch!</p>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 18:24</div>
+            <div class="timeline-body"><p>Great!!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6101.html">astral-sh/uv#6101</a> on 2024-08-15 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6648.html">astral-sh/uv#6648</a> on 2024-08-26 19:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

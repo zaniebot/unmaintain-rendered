@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`lint.typing-extensions` not respected - astral-sh/ruff #17821</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`lint.typing-extensions` not respected</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17821">#17821</a>
+        opened by <a href="https://github.com/Bibo-Joshi">@Bibo-Joshi</a>
+        on 2025-05-03 18:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Bibo-Joshi">@Bibo-Joshi</a> on 2025-05-03 18:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Follow up for #9761. The issue was closed through https://github.com/astral-sh/ruff/pull/17611 which introduced a new setting `lint.typing-extensions .
+Unfortunately I can't get ruff to respect the setting on my machine and also not in pre-commit(.ci)</p>
+<p>MWE:</p>
+<pre><code class="language-python">from typing import TypeVar
+
+T = TypeVar('T', bound='Foo')
+
+class Foo:
+    def return_self(self: T) -&gt; T:
+        return self
+</code></pre>
+<pre><code class="language-shell">$ ruff version
+ruff 0.11.8 (75effb8ed 2025-05-01)
+$ ruff check --isolated --config &quot;lint.typing-extensions = false&quot; --config &quot;target-version= 'py39'&quot; --select PYI019 foo.py
+foo.py:6:20: PYI019 [*] Use `Self` instead of custom TypeVar `T`
+  |
+5 | class Foo:
+6 |     def return_self(self: T) -&gt; T:
+  |                    ^^^^^^^^^^^^^^ PYI019
+7 |         return self
+  |
+  = help: Replace TypeVar `T` with `Self`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>Using <code>typing.Self</code> should not be recommend as it's not available in py3.9 and since I told ruff not to use <code>typing_extensions</code>.
+What confuses me is that it does work as expected in the playground: https://play.ruff.rs/eca7e265-3332-4fa2-8993-3db06c4a5786, i.e. here no issue is reported.</p>
+<p>What am I doing wrong that makes ruff ignore the setting?</p>
+<p>For reference: I'm trying to update ruff on our project in https://github.com/python-telegram-bot/python-telegram-bot/pull/4748, which also includes the failing pre-commit.ci run.</p>
+<h3>Version</h3>
+<p>ruff 0.11.8 (75effb8ed 2025-05-01)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-telegram-bot/python-telegram-bot/pulls/4748.html">python-telegram-bot/python-telegram-bot#4748</a> on 2025-05-03 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-03 19:13</div>
+            <div class="timeline-body"><p>cc. @ntBre</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @AlexWaygood on 2025-05-03 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @ntBre on 2025-05-03 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-03 19:37</div>
+            <div class="timeline-body"><p>I missed a step combining configurations <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_workspace/src/configuration.rs#L1175">here</a>. I'll put up a PR shortly, thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-05-03 19:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17823.html">astral-sh/ruff#17823</a> on 2025-05-03 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-05-03 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-05-03 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bibo-Joshi">@Bibo-Joshi</a> on 2025-05-04 09:31</div>
+            <div class="timeline-body"><p>that was awesome fast, many thanks! I've build ruff locally on https://github.com/astral-sh/ruff/commit/fe4051b2e6bf74a33f67f60fdbd775a6568e96a3 and also double checked that running <code>ruff check .</code> on our code base gives the expected results with the config in <code>pyproject.toml</code> 👍
+Looking forward to the next release :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

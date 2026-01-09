@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compatibility policy vs crate graph resolution in Cargo - clap-rs/clap #964</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Compatibility policy vs crate graph resolution in Cargo</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/964">#964</a>
+        opened by <a href="https://github.com/alexcrichton">@alexcrichton</a>
+        on 2017-05-17 15:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alexcrichton">@alexcrichton</a> on 2017-05-17 15:16</div>
+            <div class="timeline-body"><p>Hello! I've noticed that in the <a href="https://github.com/kbknapp/clap-rs/blob/2923515a0aec80a7ebd4b1fc3430aad859bcda8a/README.md#compatibility-policy">compatibility policy section of the README</a> you recommend a tilde dependency such as:</p>
+<pre><code class="language-toml">[dependencies]
+clap = &quot;~2.19.0&quot;
+</code></pre>
+<p>First off it's awesome the level of detail given here to version compatibility, hats off to that! Unfortunately though this is an over-constrained version dependency in terms of API versioning in the sense that if you've always got an up-to-date compiler you may wish to depend on <code>clap = &quot;2.19.0&quot;</code> instead. Normally this is ok but there's a few other bugs with Cargo at play.</p>
+<p>Right now Cargo's version resolution is pretty naive, it's just a brute-force search of the solution space, returning the first resolvable graph. This also means that it currently <a href="https://github.com/rust-lang/cargo/issues/4066">won't terminate</a> until it proves there is not possible resolvable graph. This <a href="https://github.com/rust-lang/rust/pull/41639#issuecomment-302120978">leads to situations</a> where workspaces with multiple binaries, for example, have two different dependencies such as:</p>
+<pre><code class="language-toml"># In one Cargo.toml
+[dependencies]
+clap = &quot;~2.19.0&quot;
+
+# In another Cargo.toml
+[dependencies]
+clap = &quot;2.22&quot;
+</code></pre>
+<p>This is inherently an unresolvable crate graph in Cargo right now. Cargo requires there's only one major version of <code>clap</code>, and being in the same workspace these two crates must share a version. This is impossible in this location, though, as these version constraints cannot be met.</p>
+<p>I wonder if maybe the README could be updated with a gotcha such as this? I definitely think Cargo needs better error messages here, but in general <code>~</code> are somewhat hazardous because they can be over-constraining the dependency graph.</p>
+<p>Does that all make sense? Not sure if it's just a bit rambling, but I'm curious to hear what you think!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-05-19 15:07</div>
+            <div class="timeline-body"><p>Sorry for the late reply! That makes perfect sense, I'll add a small gotcha/warning to the README for this case. Is there an official stance or policy on how updating minimum required versions of Rust affects version or Cargo's version resolution, or are there any RFCs to make cargo aware of these issues? I've heard it discussed a few times, but I think this issue (requiring a more recent version of Rust &quot;breaking&quot; downstream builds) is use case for <code>~</code> since I don't really want to bump major versions just to use new features of Rust...although in practice that's how's it's turning out 😜 since the original issues surfaced.</p>
+<p>Thanks for the detailed write up too! 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: docs</span> added by @kbknapp on 2017-05-19 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2017-05-19 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2017-05-19 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2017-05-19 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexcrichton">@alexcrichton</a> on 2017-05-19 16:55</div>
+            <div class="timeline-body"><p>Nah I think using <code>~</code> to denote rust compatibility versions is pretty nifty actually! We don't have a great policy around supporting historical versions of Rust right now, though, unfortunately. The libs team generally has a rule of thumb that:</p>
+<ul>
+<li>The latest version of a crate always supports at least 2 versions of rust back</li>
+<li>Otherwise bumping the version of rust required does not constitute a breaking change, but should be done intentionally (e.g. updating a CI configuration)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-19 16:56</div>
+            <div class="timeline-body"><p>@alexcrichton While that's our current policy, in practice I think we're quite a bit more conservative than that. :-)</p>
+<p>(I am of the opinion that there's just no good choice...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-05-29 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../colored-rs/colored/issues/85.html">colored-rs/colored#85</a> on 2020-09-24 16:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

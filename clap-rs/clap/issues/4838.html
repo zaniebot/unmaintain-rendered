@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Please provide an argument to make the derive automatically generate a test - clap-rs/clap #4838</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Please provide an argument to make the derive automatically generate a test</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/4838">#4838</a>
+        opened by <a href="https://github.com/joshtriplett">@joshtriplett</a>
+        on 2023-04-17 04:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2023-04-17 04:40</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.2.2</p>
+<h3>Describe your use case</h3>
+<p>I currently have a manual test written that calls <code>debug_assert</code>.</p>
+<pre><code>#[cfg(test)]
+mod tests {
+    #[test]
+    pub fn test_clap() {
+        use clap::CommandFactory;
+        super::Bit::command().debug_assert();
+    }
+}
+</code></pre>
+<p>I'd like to, instead, provide a <code>test</code> argument to the <code>#[command]</code> derive, and have clap generate this test for me:</p>
+<pre><code>#[derive(Parser, Debug)]
+#[command(name = &quot;bit&quot;, test)]
+pub struct Bit {
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>Please add a <code>test</code> argument for the <code>#[command]</code> derive that generates a test calling <code>debug_assert</code>.</p>
+<h3>Alternatives, if applicable</h3>
+<p>As another alternative, clap could generate this test by default, on the theory that it doesn't do any harm if not building/running tests, and it's likely what the user wants. (In that case, though, there should probably be an option <code>test = false</code> just in case the user is doing something strange.)</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @joshtriplett on 2023-04-17 04:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2023-04-17 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2023-04-17 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-04-17 15:05</div>
+            <div class="timeline-body"><p>If we did this automatically, we'd want to do it only for the <code>Parser</code> trait as that communicates &quot;top-level&quot;.  Anything not-&quot;top-level&quot; is more likely for the user to be doing something strange.</p>
+<p>On a first pass, I'd want to treat that as a breaking change though which means it would be delayed to v5.  A <code>#[command(test)]</code> would allow access now.</p>
+<p>Another alternative is for clap to unconditionally call <code>debug_assert()</code> when doing a top-level build.  This would require building the whole tree of commands.  As we want consistent runtime behavior between debug and release and building all could mask things, we'd likely want to do a <code>clone</code> and then <code>debug_assert</code>.  I would expect the different in runtime performance in debug builds to not be bad enough to be a problem though I might want to ping the deno people as they are currently trying to optimize start up times even further (#4774) and so they are more likely to notice and care about debug performance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> removed by @epage on 2023-04-17 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2023-04-17 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4467.html">clap-rs/clap#4467</a> on 2023-05-08 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6174.html">clap-rs/clap#6174</a> on 2025-11-03 16:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

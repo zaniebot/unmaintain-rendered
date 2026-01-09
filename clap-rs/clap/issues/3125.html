@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stabilize `StructOptInternal` so `StructOpt` is available to be implemented manually - clap-rs/clap #3125</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Stabilize `StructOptInternal` so `StructOpt` is available to be implemented manually</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3125">#3125</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-12-09 16:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
+            <div class="timeline-body"><p><a href="https://github.com/nagisa"><img src="https://avatars.githubusercontent.com/u/679122?v=4" align="left" width="96" height="96" hspace="10"></img></a> <strong>Issue by <a href="https://github.com/nagisa">nagisa</a></strong>
+<em>Monday Dec 30, 2019 at 16:38 GMT</em>
+<em>Originally opened as https://github.com/TeXitoi/structopt/issues/317</em></p>
+<hr />
+<p>As per <a href="https://www.reddit.com/r/rust/comments/efi4kb/who_else_depends_on_structopts_internal_api/fc0w1cu?utm_source=share&amp;utm_medium=web2x">this thread on reddit</a> there’s intent to make public API version of <code>augment_clap</code>, but I don't believe I've seen an issue to that effect.</p>
+<p>Alternatively <code>derive(StructOpt)</code> should support generics (i.e. the issue referenced in that thread should be reopened).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Monday Dec 30, 2019 at 19:03 GMT</em></p>
+<hr />
+<p>Yeah, I didn't bother to stabilize <code>augment_clap</code> just because nobody came here and asked &quot;please do that&quot; so I thought that nobody's really interested.</p>
+<p>I agree we need to allow people implementing <code>StructOpt</code> manually; the question here is what the API should look like?</p>
+<p>We want to</p>
+<ul>
+<li>leave enough of elbow room for ourselves so we are able to implement new features (i.e the API must be expandable).</li>
+<li>make the API forward compatible, the code that have been working prior to the introducing of a new feature must continue to work properly. Should a user wish to use the new feature, they will be required to tweak their code (naturally).</li>
+</ul>
+<p>I propose, after we have #314 landed:</p>
+<ul>
+<li>rename the <code>StructOptInternal</code> trait to <code>StructOptMachinery</code>  (the name is subject for bikeshedding).</li>
+<li>the new trait will become public, the methods will be set in stone.</li>
+<li>each of the methods must have a sensible default implementation (i.e works in most cases but not guaranteed to work in some of them). Default implementations are set in stone.</li>
+<li>users are free to re-implement the methods as they see fit,  <code>derive(StructOpt)</code> is free to re-implement the methods the way it wants.</li>
+<li>should we want a new feature that is not covered by the API existing at the moment, we can add new methods that have a default implementation that works in terms of the old API (i.e the default impl must be backward compatible, but not required to support the new feature). <code>derive(Structopt)</code> will re-implement it as required to support the new feature.</li>
+</ul>
+<p>To everyone interested: you are free and <em>encouraged</em> to participate in the discussion. cc @TeXitoi</p>
+<blockquote>
+<p>Alternatively <code>derive(StructOpt)</code> should support generics (i.e. the issue referenced in that thread should be reopened).</p>
+</blockquote>
+<p>Like I said, I likely won't get to it on my own in foreseeable future. I'm reopening that issue and going to leave detailed description of the way we want it to be implemented. Such a PR will be accepted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:27</div>
+            <div class="timeline-body"><p>The new <code>Parser</code>, <code>Args</code>, etc traits are designed for people to implement, including supporting proper error reporting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-09 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2021-12-09 16:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

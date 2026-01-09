@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect variables used after context-manager exit - astral-sh/ruff #21133</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect variables used after context-manager exit</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21133">#21133</a>
+        opened by <a href="https://github.com/loribonna">@loribonna</a>
+        on 2025-10-30 08:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/loribonna">@loribonna</a> on 2025-10-30 08:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Summary</h1>
+<p>Add a lint rule that flags variables bound via <code>with … as var</code> (or <code>async with … as var</code>) when they are used <em>after</em> the context manager has exited.</p>
+<h1>Motivation</h1>
+<p>Context-manager variables (e.g., DB sessions, file handles) are only valid inside the <code>with</code> block. Using them afterward is a common source of subtle bugs (for example, SQLAlchemy async sessions silently closing and leaking connections).</p>
+<p>Example:</p>
+<pre><code class="language-python">async with get_session() as session:
+    await session.execute(...)
+
+await session.execute(...)  # ❌ should be flagged — session is closed here
+</code></pre>
+<p>My main issue with the code above is that everything done on the session outside the <code>with</code> block is allowed but will result in hard-to-trace runtime errors and potential connection leaks.</p>
+<p>Today Ruff does not report this usage. Pyright/mypy also don’t catch it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-10-30 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-10-30 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 17:54</div>
+            <div class="timeline-body"><p>This rule makes sense to me and seems generally useful. @amyreese what do you think? Should we add it to RUFF?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 18:03</div>
+            <div class="timeline-body"><p>This would forbid a very popular pattern used in unittest and pytest to catch exceptions, save information about the caught exception, and then make assertions about the exception that was caught, e.g.</p>
+<ul>
+<li>https://github.com/saltstack/salt/blob/904d08b6ad311fd95c75004fbc3dab2b241f9ce6/tests/unit/utils/test_vsan.py#L53-L58</li>
+<li>https://github.com/django/django/blob/c135be349ddd9fd71b15d4b20e7fc46814e4ca7c/tests/validation/<strong>init</strong>.py#L11-L14</li>
+<li>https://github.com/python/cpython/blob/ed0a5fd8cacb1964111d03ff37627f6bea5e6026/Lib/test/test_codecs.py#L731-L733</li>
+<li>https://github.com/pydantic/pydantic/blob/27c95fd56e217f6cfc6ee96e07e1fb0646ef0d49/pydantic-core/tests/validators/test_model_fields.py#L79-L84</li>
+<li>https://github.com/readthedocs/readthedocs.org/blob/8c4761ac6ae147609c575f8f4f35111cb1b0664a/readthedocs/rtd_tests/tests/test_unresolver.py#L75-L79</li>
+<li>https://github.com/Azure/azure-sdk-for-python/blob/715a3a015895b8b959c11f18e3d2aacad7dc250f/sdk/keyvault/azure-keyvault-keys/tests/test_crypto_client.py#L278-L281</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 18:17</div>
+            <div class="timeline-body"><p>Thanks @AlexWaygood. Now that you bring it up. I get the impression that this is something we talked about before (it sounds very familiar)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/loribonna">@loribonna</a> on 2025-11-11 09:14</div>
+            <div class="timeline-body"><p>Thanks @AlexWaygood I was not aware of this use. However, wouldn't it make more sense to put the assert inside the context?</p>
+<p>I still think it's weird to create and initialize a variable with the <code>with</code> clause and use it outside, it makes code error prone with very hard to debug errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-11 09:24</div>
+            <div class="timeline-body"><blockquote>
+<p>However, wouldn't it make more sense to put the assert inside the context?</p>
+</blockquote>
+<p>No — you generally want to make a <code>self.assertRaises</code> or <code>pytest.raises</code> block as small as possible, ideally holding only a single statement. Otherwise, you can't be sure that the asserted exception is being raised in the place you expected and for the reason you expected. Ruff already has other lints to stop you from doing this, such as https://docs.astral.sh/ruff/rules/pytest-raises-with-multiple-statements/.</p>
+<blockquote>
+<p>I still think it's weird to create and initialize a variable with the with clause and use it outside, it makes code error prone with very hard to debug errors.</p>
+</blockquote>
+<p>I agree that you should be careful and deliberate about doing this, but I'm not sure I see a way to establish a general rule here, since there are certainly cases where this pattern is essential. Possibly we could create a rule that special-cases certain specific, known context managers where we know this pattern will lead to bugs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/loribonna">@loribonna</a> on 2025-11-11 10:00</div>
+            <div class="timeline-body"><blockquote>
+<p>No — you generally want to make a <code>self.assertRaises</code> or <code>pytest.raises</code> block as small as possible, ideally holding only a single statement. Otherwise, you can't be sure that the asserted exception is being raised in the place you expected and for the reason you expected. Ruff already has other lints to stop you from doing this, such as https://docs.astral.sh/ruff/rules/pytest-raises-with-multiple-statements/.</p>
+</blockquote>
+<p>I see, yeah it makes sense.</p>
+<blockquote>
+<p>Possibly we could create a rule that special-cases certain specific, known context managers where we know this pattern will lead to bugs?</p>
+</blockquote>
+<p>That would be great but I think most times you are dealing with custom context managers, like for my example of getting a session from the DB.</p>
+<p>I'd really like if python allowed me declare or mark a variable as &quot;scoped&quot; to enforce this kind of rules!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-11 10:18</div>
+            <div class="timeline-body"><p>I wonder how far we could get with allow-listing some common context managers and allowing users to specify additional &quot;safe&quot; context managers. This is something that at least is suspicious to be <em>wrong</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-11-11 16:33</div>
+            <div class="timeline-body"><p>I'm kind of -0 on this being a useful rule. Whether or not the variable declared in the context manager is &quot;valid&quot; outside the context manager is entirely dependent on what you're doing and what you're using as a context manager. I've seen/written multiple systems where it's extremely handy to capture a &quot;result&quot; value for use outside of the with context. Eg, things like success/failure indicators, or timing instrumentation, as well as the aforementioned testing harnesses. Anything where you want implicit actions to happen at both enter/exit of the context, and to capture some state for use afterwards, without needing to intentionally declare a variable before the context.</p>
+<p>If we could tag rules as &quot;pedantic&quot;, I would absolutely put this in that category, and I would probably have it disabled on my own projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/loribonna">@loribonna</a> on 2025-11-12 09:58</div>
+            <div class="timeline-body"><p>I think the fact that context managers give this much flexibility is not inherently a good thing and should be used with consideration, similarly to type hints for variables.</p>
+<p>Even from the python's docs the <code>with</code> statement is usually described as something to contain the execution of some code without affecting the code outside, so in my mind it makes more sense to consider:</p>
+<ul>
+<li><code>__enter__</code>: initialize stuff that you need inside the body</li>
+<li>`<strong>exit</strong>: restore the execution as it was before the context and perform cleanups</li>
+</ul>
+<p>The only exeption i can think of are exceptions, as pointed out by @AlexWaygood .</p>
+<p>Of course this is just my preference, I understand that i can already achieve &quot;correct&quot; variable scoping by wrapping everything inside a function.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

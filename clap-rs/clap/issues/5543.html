@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DisplayVersion &quot;errors&quot; don't really allow to distinguish between -V and --version - clap-rs/clap #5543</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>DisplayVersion &quot;errors&quot; don't really allow to distinguish between -V and --version</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/5543">#5543</a>
+        opened by <a href="https://github.com/glandium">@glandium</a>
+        on 2024-06-20 07:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/glandium">@glandium</a> on 2024-06-20 07:46</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5.7</p>
+<h3>Describe your use case</h3>
+<p><code>-V</code> and <code>--version</code> come with a message that is essentially <code>&quot;{name} {version}\n&quot;</code>, where version is <code>version</code> for <code>-V</code> and <code>long_version</code> for <code>--version</code>. On top of this difference in output, one might want to print out some license text on <code>--version</code> but not <code>-V</code>, or do some other things.</p>
+<p>It's technically possible to distinguish by parsing the output for <code>format!(&quot;{}&quot;, error.render())</code>, but that's not super nice.</p>
+<h3>Describe the solution you'd like</h3>
+<p>A breaking change would be to have DisplayVersion and DisplayLongVersion. I guess since ErrorKind is non_exhaustive, adding DisplayLongVersion wouldn't be breaking as long as it's not emitted by default. (meaning it would require some flag to enable)</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @glandium on 2024-06-20 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-06-20 21:33</div>
+            <div class="timeline-body"><p>Is there a reason you are attempting to detect this vs specifying a long-version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/glandium">@glandium</a> on 2024-06-20 22:59</div>
+            <div class="timeline-body"><p>Because I want to actually do something different after displaying the version. Specifically, I want to make -V show the version and --version show the long version <em>and</em> check for updates. Well, I already did, by checking <code>format!(&quot;{}&quot;, error.render())</code>.
+Also, in the hypothetical case of showing licensing terms, that somehow feels wrong to put in long_version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2024-06-21 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2024-06-21 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-06-21 18:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, in the hypothetical case of showing licensing terms, that somehow feels wrong to put in long_version.</p>
+</blockquote>
+<p><code>long_version</code> exists to control what is shown for <code>--version</code>, so it fits.</p>
+<blockquote>
+<p>--version show the long version and check for updates</p>
+</blockquote>
+<p>That is an interesting case.  Besides splitting up the ErrorKind, I am wondering what other options are.  Some I could think of</p>
+<ul>
+<li>Manually implement the flags separately</li>
+<li>Allow providing custom <code>ArgAction</code>s so a user can implement a custom &quot;version&quot; within clap (which might help with other cases like #815)</li>
+</ul>
+<p>Can't think of too much else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/glandium">@glandium</a> on 2024-06-21 20:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Manually implement the flags separately</p>
+</blockquote>
+<p>I actually rejected that one for my use-case, because I'm deriving Parser on an enum (with subcommand_required=true), which doesn't leave space for that, except if I add another layer to handle --help and --version.</p>
+<blockquote>
+<p>Allow providing custom ArgActions so a user can implement a custom &quot;version&quot; within clap</p>
+</blockquote>
+<p>That's a variant of &quot;Manually implement the flags separately&quot; isn't it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-06-21 20:39</div>
+            <div class="timeline-body"><blockquote>
+<p>I actually rejected that one for my use-case, because I'm deriving Parser on an enum (with subcommand_required=true), which doesn't leave space for that, except if I add another layer to handle --help and --version.</p>
+</blockquote>
+<p>Not too sure which part is the blocker here</p>
+<ul>
+<li>It shouldn't be too much to move <code>Parser</code> onto a <code>struct</code> that wraps your enum</li>
+<li>You can use <code>subcommand_required = true</code> with <code>Option&lt;Subcommand&gt;</code> so the derive works properly</li>
+<li>You can mark the version flag(s) as excluding all and global so they mostly get the existing behavior</li>
+</ul>
+<blockquote>
+<blockquote>
+<p>Allow providing custom ArgActions so a user can implement a custom &quot;version&quot; within clap</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>That's a variant of &quot;Manually implement the flags separately&quot; isn't it?</p>
+</blockquote>
+<p>In the ideal case, the interface would allow for all existing actions to be implemented as if they were third party.  This would allow you to put all of that logic (license and update checks) in the call and then ask for the program to exit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/glandium">@glandium</a> on 2024-06-21 20:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Not too sure which part is the blocker here</p>
+</blockquote>
+<p>I didn't mean it was a blocker, but it's unappealing in the amount of boilerplate it requires for something that the gross hack I came up with dealt with in 2 lines of code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sunshowers">@sunshowers</a> on 2024-09-29 04:32</div>
+            <div class="timeline-body"><p>FWIW I ran into this too while trying to do something similar to @glandium. I agree that in the ideal world I'd be able to pass in a callback or something similar.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

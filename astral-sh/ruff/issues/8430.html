@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: Uses space indentation in docstrings when using `indent-style = &quot;tab&quot;` - astral-sh/ruff #8430</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: Uses space indentation in docstrings when using `indent-style = &quot;tab&quot;`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8430">#8430</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-11-02 01:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-02 01:50</div>
+            <div class="timeline-body"><p>If I have indent-style set to &quot;tab&quot;, when I run ruff format it is still converting indentation within docstring comments to be spaces, which then causes ruff check to fail on rule E101: Indentation contains mixed spaces and tabs</p>
+<p>Before:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/10078284/bbe6eda5-ac45-4b0a-b04a-a66169adea1b" alt="image" /></p>
+<p>After:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/10078284/fe3e91b2-15ee-499a-a306-69988ff85513" alt="image" /></p>
+<p>Is there a format setting I can add to fix this? or is this a bug/intentional?</p>
+<p><em>Originally posted by @1024Adam in https://github.com/astral-sh/ruff/discussions/7310#discussioncomment-7450056</em></p>
+<p>We can reproduce this behavior in our own tests:</p>
+<p>https://github.com/astral-sh/ruff/blob/3076d76b0ab7a4b221c3ec1f34a8b68ed07059b1/crates/ruff_python_formatter/tests/snapshots/format@docstring.py.snap#L538-L544</p>
+<p>https://github.com/astral-sh/ruff/blob/3076d76b0ab7a4b221c3ec1f34a8b68ed07059b1/crates/ruff_python_formatter/tests/snapshots/format@docstring.py.snap#L569-L577</p>
+<p>E101 has no special handling for docstring. It simply looks at every line and tests if the leading whitespace contains mixed spaces and tabs. Meaning, there can also be false positives if a multiline string contains leading whitespace that is a mix of spaces and tabs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-11-02 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-02 02:00</div>
+            <div class="timeline-body"><p>@konstin you implemented the docstring formatting and have a lot of context on the Python interop. Could you take this on as a formatter goal sometime this month? The solution doesn't have to be to fix the docstring formatting, we could also warn about using <code>E101</code> with the formatter.</p>
+<p>I think what the formatter should support is that it preserves tabs when using <code>indent-style=tab</code> by using <code>indent</code>. It means it wouldn't fix mixed indentation in docstrings for you, but it, at least, doesn't result in mixed indentation.</p>
+<p>The alternative is that we always use <code>indent</code> (and <code>align</code> if it isn't a multiple of tab-width). But I think there we have the issue that Python always assumes a tab-width of 8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2023-11-02 02:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2023-11-02 09:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-03 01:24</div>
+            <div class="timeline-body"><p>Depends on https://github.com/astral-sh/ruff/issues/8445</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mutantpenguin">@Mutantpenguin</a> on 2023-11-09 12:54</div>
+            <div class="timeline-body"><p>Is there any way to circumvent this behaviour right now? Like telling the formatter to not format docstrings at all?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-10 11:14</div>
+            <div class="timeline-body"><p>@Mutantpenguin What is the formatting that you want for docstring when using tab indentation? And if you use some documentation generator (like sphinx), do you know how they react to tab indent vs. space indent, and if indent size matters?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mutantpenguin">@Mutantpenguin</a> on 2023-11-13 11:34</div>
+            <div class="timeline-body"><p>We use handwritten docstrings so I can't say anything about sphinx and so on.</p>
+<p>I want the same as MichaReiser:</p>
+<ul>
+<li>the formatter shouldn't use spaces when I specified tabs</li>
+<li>the comment shouldn't be indented more than before (as you can see in his screenshots)</li>
+</ul>
+<p>E114 (which is in preview) should be taken into account too https://docs.astral.sh/ruff/rules/indentation-with-invalid-multiple-comment/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mutantpenguin">@Mutantpenguin</a> on 2023-11-22 10:46</div>
+            <div class="timeline-body"><p>I now have a nice testcase.</p>
+<p>ruff.toml:</p>
+<pre><code class="language-toml">[format]
+indent-style=&quot;tab&quot;
+</code></pre>
+<p>This stays the same after formatting and doesn't get changed at all:</p>
+<pre><code class="language-python">def test(arg1: str) -&gt; None:
+	&quot;&quot;&quot;
+	Arguments:
+	arg1: super duper arg with a tab in front
+	&quot;&quot;&quot;
+</code></pre>
+<p>This stays the same after formatting and doesn't get changed at all too:</p>
+<pre><code class="language-python">def test(arg1: str) -&gt; None:
+	&quot;&quot;&quot;
+	Arguments:
+	    arg1: super duper arg with a tab and 4 spaces in front
+	&quot;&quot;&quot;
+</code></pre>
+<p>This</p>
+<pre><code class="language-python">def test(arg1: str) -&gt; None:
+	&quot;&quot;&quot;
+	Arguments:
+		arg1: super duper arg with 2 tabs in front
+	&quot;&quot;&quot;
+</code></pre>
+<p>gets butchered and formatted to this:</p>
+<pre><code class="language-python">def test(arg1: str) -&gt; None:
+	&quot;&quot;&quot;
+	Arguments:
+	        arg1: super duper arg with 1 tab and 8 spaces in front
+	&quot;&quot;&quot;
+</code></pre>
+<p>What the GitHub code formatting hides: we use a tab size of 4 in our editor so the last case looks expecially weird since the 8 spaces look like 2 indentation levels with tabs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8445.html">astral-sh/ruff#8445</a> on 2023-11-23 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-29 03:50</div>
+            <div class="timeline-body"><p>@konstin are you still working on this? If not, feel free to un-assign.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2023-11-29 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-29 16:09</div>
+            <div class="timeline-body"><p>No, i don't have a good solution for this. I'd probably go with replacing every 8 spaces in the beginning of a docstring with tabs, implementation-wise, even if whatever we do is bad because it we either mismatch with cpython (always unconditionally assumes tab width 8 and always converts to spaces) or we mismatch our configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9003.html">astral-sh/ruff#9003</a> on 2023-12-05 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-05 14:12</div>
+            <div class="timeline-body"><p>Would it be possible to add a new config knob to the formatter that lets an end user specify their tabwidth? Then it seems like we might be able to get things right here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-05 23:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Would it be possible to add a new config knob to the formatter that lets an end user specify their tabwidth? Then it seems like we might be able to get things right here.</p>
+</blockquote>
+<p>We do have <code>indent_width</code> which specifies the width of a tab in spaces AND the number of spaces to use when using <code>indent_style = space</code>. The reason for only having one option is that it seemed sufficient for the majority of use cases. Do you propose to have a dedicated <code>tab_size</code> setting similar to <a href="https://editorconfig.org/#file-format-details">editorconfig</a>? How would you use this new setting in combination with Python assuming a tab size of 8 in docstrings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-06 13:01</div>
+            <div class="timeline-body"><p>I think I probably don't have the full problem paged into context here. From above:</p>
+<blockquote>
+<p>I think what the formatter should support is that it preserves tabs when using <code>indent-style=tab</code> by using <code>indent</code>. It means it wouldn't fix mixed indentation in docstrings for you, but it, at least, doesn't result in mixed indentation.</p>
+<p>The alternative is that we always use <code>indent</code> (and <code>align</code> if it isn't a multiple of tab-width). But I think there we have the issue that Python always assumes a tab-width of 8</p>
+</blockquote>
+<p>I think this is the part I was reacting to. So maybe it would be better to ask what it means when Python assumes a tabwidth of 8 inside of a docstring. Do we <em>also</em> have to follow that assumption? That's the part where I have gaps in my understanding I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-07 05:38</div>
+            <div class="timeline-body"><p>That's fair. For reference, there's some more explanation in https://github.com/astral-sh/ruff/issues/8445 about where Python assumes a tab width of 8 (used when inspecting a docstring <code>.__doc__</code> at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-12-11 19:44</div>
+            <div class="timeline-body"><p>I think it would be safe to change any leading groups of <code>&lt;indent-width&gt;</code> consecutive spaces in docstrings to tabs when using <code>indent-style = &quot;tab&quot;</code>. This would mean that any indent that is not a multiple of <code>&lt;indent-width&gt;</code> may end up with mixed indentation, but this isn't something I believe we need to worry about because Black doesn't support tabs to begin with so there's no compatibility concerns. Any codebases that are using autoformatters with tabs are likely either using Black + <code>expand</code>/<code>unexpand</code> (which would match my proposed behavior) or other solutions which avoid touching the docstring indentation altogether except for any common indentation. This would be a valid alternative that probably changes less code &quot;in the wild&quot;, but I think given that <a href="https://github.com/astral-sh/ruff/pull/9003">Ruff formats code inside docstrings</a> the former behavior would be simpler and more intuitive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9173.html">astral-sh/ruff#9173</a> on 2023-12-18 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-08 14:14</div>
+            <div class="timeline-body"><h1>TLDR</h1>
+<p>IMO, the current behavior that doesn't convert alignment spaces to tabs is correct because it ensures that docstrings are displayed correctly regardless of the used tab width. I agree that the behavior is unexpected when using a docstring-convention like</p>
+<pre><code class="language-python">def test(arg1: str) -&gt; None:
+	&quot;&quot;&quot;
+	Arguments:
+		arg1: super duper arg with 2 tabs in front
+	&quot;&quot;&quot;
+</code></pre>
+<p>But that's something the formatter doesn't understand understand today. The solution is to support docstring formatting (with the common convention) so that the formatter can convert spaces in front of <code>arg1</code> to tabs.</p>
+<p>That said, I agree that the formatter should not convert tabs to 8 spaces. It should either convert the tab to <code>indent-width</code> spaces OR leave the tab unchanged.</p>
+<p>I keep the issue open to track this work but remove it from the stable formatter milestone because we want to keep the existing behavior.</p>
+<h1>Reasoning</h1>
+<p>The only a difference between Python &lt;= 2.12 and 3.13 is when inspecting <code>__doc__</code> directly which is something that tests might do. <code>inspect.cleandoc</code> remains unchanged.</p>
+<p><code>inspect.cleandoc</code> replaces <code>\t</code> with 8 spaces. This does not change the indentation-levels but it can change how code is displayed when tabs are used beyond the initial indentation.</p>
+<p>While not explicitly documented, the formatter’s <code>indent-style</code> configuration only configures whether to use tabs for indentation. Alignment continues to use spaces. This is known as <a href="https://www.emacswiki.org/emacs/SmartTabs">smart tabs</a>. Using smart tabs ensures that code is displayed correctly everywhere, regardless of the configured indent-width and ensures that the formatter doesn’t break any ASCII art.</p>
+<p>I believe the expectation mismatch comes from that the whitespace before <code>arg1</code> is indentation and not alignment:</p>
+<pre><code class="language-python">def test(arg1: str) -&gt; None:
+	&quot;&quot;&quot;
+	Arguments:
+		arg1: super duper arg with 2 tabs in front
+	&quot;&quot;&quot;
+</code></pre>
+<p>Distinguishing the whitespace before <code>arg1</code> from any other alignment whitespace requires docstring parsing and formatting which is something we want to support in the future but do not today.</p>
+<p>That’s why I recommend keeping the behaviour as is and the proper fix for it is to support docstring formatting (darglint).</p>
+<p>A possible alternative is to add a configuration option that allows enforcing hard-tabs over soft tabs. I’m reluctant of doing this because it may limit our formatting options in the future, e.g. it would no longer be possible to align the closing <code>])</code> with the binary expressions operands:</p>
+<pre><code class="language-python">a 
+	+ b
+	+ len([
+			1, 
+			2, 
+		])
+</code></pre>
+<p>Instead of</p>
+<pre><code class="language-python">a 
+	+ b
+	+ len([
+			1, 
+			2, 
+	])
+</code></pre>
+<h2>Research</h2>
+<p>The following program uses tabs for indenting the doctoring as well as alignment inside of the doctoring:</p>
+<pre><code class="language-python">def f():
+	&quot;&quot;&quot;Computes the value.
+	x = 1
+		y = x + 1
+	z = 2
+	
+	
+	&quot;&quot;&quot;
+</code></pre>
+<p>A more realistic example:</p>
+<pre><code class="language-python">def test(arg1: str) -&gt; None:
+	&quot;&quot;&quot;
+	Arguments:
+		arg1: super duper arg with 2 tabs in front
+	&quot;&quot;&quot;
+</code></pre>
+<p>Where <code>arg1</code> is indented by a tab.</p>
+<h3>&lt;= 3.12</h3>
+<h4><code>f.__doc__</code></h4>
+<p>Python preserves the indentation and alignment tabs, as well as the trailing new lines.</p>
+<pre><code class="language-python">Computes the value.
+	x = 1
+		y = x + 1
+	z = 2
+	
+	
+	
+
+</code></pre>
+<pre><code class="language-python">
+	Arguments:
+		arg1: super duper arg with 2 tabs in front
+	
+</code></pre>
+<h4><code>inspect.cleandoc(f.__doc__)</code></h4>
+<p>Removes the indentation whitespace, converts alignment tabs to 8 spaces.</p>
+<pre><code>Computes the value.
+x = 1
+        y = x + 1
+z = 2
+</code></pre>
+<pre><code class="language-python">Arguments:
+        arg1: super duper arg with 2 tabs in front
+</code></pre>
+<h3>&gt;= 3.13</h3>
+<h4><code>f.__doc__</code></h4>
+<p>Removes indentation tabs, converts alignment tabs to 8 spaces. Preserves trailing whitespace.</p>
+<pre><code class="language-python">Computes the value.
+x = 1
+        y = x + 1
+z = 2
+
+
+
+
+</code></pre>
+<pre><code class="language-python">
+Arguments:
+        arg1: super duper arg with 2 tabs in front
+
+</code></pre>
+<h4><code>inspect.cleandoc(f.__doc__)</code></h4>
+<p>The same as for earlier Python versions. It’s similar to <code>f.__doc__</code>, but removes trailing newlines.</p>
+<pre><code class="language-python">Computes the value.
+x = 1
+        y = x + 1
+z = 2
+</code></pre>
+<pre><code class="language-python">Arguments:
+        arg1: super duper arg with 2 tabs in front
+</code></pre>
+<h3>ASCII Art</h3>
+<p>Automatically converting multiples of <code>indent-width</code> spaces to <code>tabs</code> can break the doctoring formatting when the spaces were used for alignment, e.g. in ASCII art:</p>
+<pre><code class="language-python">def test():
+	r&quot;&quot;&quot;
+	Look at this beautiful tree. 
+	
+	    a
+	   / \
+	  b   c
+	 / \  
+	d   e
+	&quot;&quot;&quot;
+</code></pre>
+<p>The example uses spaces for alignment but Ruff would convert the spaces to tabs:</p>
+<pre><code class="language-python">def test():
+	r&quot;&quot;&quot;
+	Look at this beautiful tree. 
+	
+			a
+		 / \
+		b   c
+	 / \  
+	d   e
+	&quot;&quot;&quot;
+</code></pre>
+<p>Printing <code>test.__doc__</code> for the version using tabs results in:</p>
+<pre><code>
+Look at this beautiful tree. 
+
+                a
+         / \
+        b   c
+ / \  
+d   e
+      
+</code></pre>
+<p>Which is all broken. X</p>
+<h3>Editors</h3>
+<ul>
+<li>PyCharm uses tabs by default when hitting the <code>tab</code> key and setting the indent style to “tabs”. It converts space indents to tabs.</li>
+<li>PyCharm seems to have some heuristics around when not to convert spaces to tabs. It converts all whitespace to tabs on the initial formatting. It does not convert whitespace to tabs when adding one new argument where the last indent uses spaces only.</li>
+<li>Rustfmt does not normalise whitespace in doc comments to tabs.</li>
+</ul>
+<h3>Usages</h3>
+<p>I find 52 usages of <code>indent-style</code> tab on GitHub (<a href="https://github.com/search?type=code&amp;auto_enroll=true&amp;q=%22indent-style+%3D+%5C%22tab%5C%22%22+path%3Apyproject.toml+language%3Atoml">source</a>)</p>
+<h2>Resources</h2>
+<ul>
+<li>https://github.com/python/cpython/pull/106411</li>
+<li>https://github.com/python/cpython/issues/81283</li>
+<li>https://github.com/astral-sh/ruff/issues/8445</li>
+<li>https://github.com/astral-sh/ruff/issues/8430</li>
+<li>https://www.emacswiki.org/emacs/SmartTabs</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Formatter: Stable" by @MichaReiser on 2024-02-08 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-02-09 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9915.html">astral-sh/ruff#9915</a> on 2024-02-09 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-12 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11101.html">astral-sh/ruff#11101</a> on 2024-04-23 16:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

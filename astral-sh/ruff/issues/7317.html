@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter undocumented deviation: multi assignment wrapping - astral-sh/ruff #7317</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter undocumented deviation: multi assignment wrapping</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7317">#7317</a>
+        opened by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a>
+        on 2023-09-12 20:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-09-12 20:53</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Black formatting</p>
+<pre><code class="language-python">def from_user_altitude_range_to_px4_altitude_range(
+    altitude_range: Tuple[float, float],
+) -&gt; Tuple[int, int]:
+    user_minimal_coordinate, user_maximal_coordinate = (0.0, 0.0, altitude_range[0]), (
+        0.0,
+        0.0,
+        altitude_range[1],
+    )
+</code></pre>
+<p>Ruff formatting</p>
+<pre><code class="language-python">def from_user_altitude_range_to_px4_altitude_range(
+    altitude_range: Tuple[float, float],
+) -&gt; Tuple[int, int]:
+    user_minimal_coordinate, user_maximal_coordinate = (
+        (0.0, 0.0, altitude_range[0]),
+        (
+            0.0,
+            0.0,
+            altitude_range[1],
+        ),
+    )
+</code></pre>
+<p>Use Ruff 0.0.289 with line length 100.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-09-12 20:57</div>
+            <div class="timeline-body"><p>For what it's worth, I think the Ruff formatting is more readable in this example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-09-12 21:01</div>
+            <div class="timeline-body"><p>I am reporting all deviations I come across that are not documented.
+I agree with you Ruff formatting is more readable to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-12 21:05</div>
+            <div class="timeline-body"><p>Thanks @JonathanPlasse! That’s great and the intended workflow. We’ll collect undocumented deviations, then make decisions on whether to address them or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-12 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-09-12 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-13 06:37</div>
+            <div class="timeline-body"><p>Thanks for reporting this deviation. This is an intentional deviation that I'm open to discussing and that we forgot to document.</p>
+<p>Ruff parenthesizes tuples except in a few places, whereas Black strips the parentheses in many places.</p>
+<pre><code class="language-python"># Black
+def from_user_altitude_range_to_px4_altitude_range():
+    user_minimal_coordinate, user_maximal_coordinate = (0.0, 0.0, altitude_range[0]), (
+        0.0,
+        0.0,
+        altitude_range[1],
+    )
+
+    (0.0, 0.0, altitude_range[0]), (
+        0.0,
+        0.0,
+        altitude_range[1],
+    )
+
+    assertEquals(0.0, 0.0, altitude_range[0]),
+
+# Ruff
+def from_user_altitude_range_to_px4_altitude_range():
+    user_minimal_coordinate, user_maximal_coordinate = (
+        (0.0, 0.0, altitude_range[0]),
+        (
+            0.0,
+            0.0,
+            altitude_range[1],
+        ),
+    )
+
+    (
+        (0.0, 0.0, altitude_range[0]),
+        (
+            0.0,
+            0.0,
+            altitude_range[1],
+        ),
+    )
+
+    (assertEquals(0.0, 0.0, altitude_range[0]),)
+
+</code></pre>
+<p>Our reasoning behind requiring the parentheses it otherwise can be very hard to spot that it is a tuple. For example, would you have noticed that the <code>assertEquals(0.0, 0.0, altitude_range[0]),</code> is a &quot;useless&quot; tuple? I did not and neither did some contributors to the django project https://github.com/django/django/pull/17181. That's why I propose keeping Ruff's formatting but I'm interested in getting more feedback on this (ideally from other projects trying ruff, are there places where this formatting looks worse?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-09-13 06:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7053.html">astral-sh/ruff#7053</a> on 2023-09-13 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2023-09-27 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-27 15:09</div>
+            <div class="timeline-body"><p>We're considering this an intentional deviation. Can be closed once it's documented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2023-09-27 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-09-27 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7679.html">astral-sh/ruff#7679</a> on 2023-09-27 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-29 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-29 17:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FBT003: False positive with positional-only parameters - astral-sh/ruff #3247</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FBT003: False positive with positional-only parameters</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3247">#3247</a>
+        opened by <a href="https://github.com/aberres">@aberres</a>
+        on 2023-02-27 09:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aberres">@aberres</a> on 2023-02-27 09:00</div>
+            <div class="timeline-body"><p><code>FBT003</code> is triggered even if only positional arguments are allowed.</p>
+<p>Toy example below - I stumbled upon it with a Pandas decorator:</p>
+<pre><code>with pd.option_context(&quot;mode.use_inf_as_na&quot;, True):
+    ....
+</code></pre>
+<h2>Example</h2>
+<pre><code>def foo(*args):
+    pass
+
+def foo2(a = False, *args):
+    pass
+
+
+foo(False) # Should not warn
+# foo2(True), # Warns as expected
+foo2(&quot;a&quot;, False) # Should not warn
+</code></pre>
+<h2>Errors</h2>
+<pre><code>fbt003.py:8:5: FBT003 Boolean positional value in function call
+fbt003.py:10:11: FBT003 Boolean positional value in function call
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aberres">@aberres</a> on 2023-02-27 09:20</div>
+            <div class="timeline-body"><p>A related case is this one:</p>
+<pre><code>def foo(a: bool, /):
+    ...
+</code></pre>
+<p>The error message is correct in this case, but I'd argue that the author is doing this intentionally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @charliermarsh on 2023-02-27 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/allisonkarlitskaya">@allisonkarlitskaya</a> on 2023-05-30 10:32</div>
+            <div class="timeline-body"><p>A case from the standard library:</p>
+<p>https://docs.python.org/3/library/os.html#os.set_blocking</p>
+<pre><code class="language-python">def set_blocking(fd, blocking, /):
+    ...
+</code></pre>
+<p>Pretty much no way to call that without triggering the error or using <code>0</code> instead of <code>False</code> (which is a hack).</p>
+<p>There are also quite some functions which tend to be present on gobject-introspection bound libraries with names like like <code>set_*()</code> where the only argument to the function is the boolean flag.  Example:</p>
+<ul>
+<li><code>Gio.Action.set_enabled()</code></li>
+<li><code>WebKit2.WebContext.set_sandbox_enabled()</code></li>
+<li><code>WebKit2.Settings.set_enable_developer_extras()</code></li>
+</ul>
+<p>All of these (including the <code>set_blocking</code> case) are functions named <code>set_*</code> that take two arguments:</p>
+<ul>
+<li>either a bound instance, or explicitly passed (ie: the fd)</li>
+<li>the boolean that is being set on that thing</li>
+</ul>
+<p>Seems like something which might be suitable for allowlisting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rlipperts">@rlipperts</a> on 2023-06-05 13:18</div>
+            <div class="timeline-body"><p>Stumbled upon this with <a href="https://numpy.org/doc/stable/reference/generated/numpy.where.html#numpy-where">numpy.where</a> when just supplying single boolean values as fill values:</p>
+<pre><code class="language-python">import numpy as np
+np.where(np.random.rand(3, 3) &gt; 0.5, True, False)
+</code></pre>
+<p>But keyword-arguments are not allowed. A workaround is to supply the truth values as single-value arrays, but thats quite ugly:</p>
+<pre><code class="language-python">import numpy as np
+np.where(np.random.rand(3, 3) &gt; 0.5, np.array([True]), np.array([False]))
+</code></pre>
+<p>An even simpler (but completely useless) builtin example is the <a href="https://docs.python.org/3/library/functions.html#bool">builtin function bool</a> - Converting True from bool to bool with:</p>
+<pre><code class="language-python">bool(True)
+</code></pre>
+<p>Technically this is not wrong but ruff will complain with FBT003. On the other hand for</p>
+<pre><code class="language-python">bool(x=True)
+</code></pre>
+<p>Python will complain, because apparently pythons <a href="https://stackoverflow.com/a/24463222">C-API doesn't allow this</a></p>
+<pre><code>TypeError: bool() takes no keyword arguments
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-05 13:19</div>
+            <div class="timeline-body"><p>We should add some of these to the allowlist. There isn't much we can do right now apart from allowing these calls selectively.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/allisonkarlitskaya">@allisonkarlitskaya</a> on 2023-06-05 13:51</div>
+            <div class="timeline-body"><p>I guess the rule I'd like in the list is &quot;instance method named <code>set_*</code> with single positional boolean argument&quot; and &quot;(non-class) function named <code>set_*</code> with two arguments, second of which is a positional-only boolean&quot;.</p>
+<blockquote>
+<p>We should add some of these to the allowlist. There isn't much we can do right now apart from allowing these calls selectively.</p>
+</blockquote>
+<p>@charliermarsh was that &quot;... so I'll take a look at this soon&quot; or was that &quot;... so, patches welcome&quot;? :)  I never wrote rust before, but no time like the present....</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-05 15:52</div>
+            <div class="timeline-body"><p>Haha patches are definitely welcome if anyone is interested! The code is in <code>rules/flake8_boolean_trap/helpers.rs</code> IIRC. Otherwise, I can add some of these specific methods quickly, but I wasn't going to extend the logic to handle arbitrary setters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/allisonkarlitskaya">@allisonkarlitskaya</a> on 2023-06-05 15:54</div>
+            <div class="timeline-body"><p>I already started taking a look and it's definitely going to take me a while to understand enough rust to scratch a patch together for the generic &quot;<code>set_*</code> with two args, second arg is boolean&quot;.  Would you accept that patch?</p>
+<p>Otherwise, I agree that at least <code>set_blocking</code> should go into the whitelist since it's in the standard library.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-05 15:57</div>
+            <div class="timeline-body"><p>Yeah I would accept that patch. But also fine if you just want to add a handful of methods to the allowlist in there. (We should include <code>bool</code>, and we might as well add <code>option_context</code>, <code>set_enabled</code>, etc. There's little harm IMO.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/allisonkarlitskaya">@allisonkarlitskaya</a> on 2023-06-05 15:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah I would accept that patch. But also fine if you just want to add a handful of methods to the allowlist in there. (We should include <code>bool</code>, and we might as well add <code>option_context</code>, <code>set_enabled</code>, etc. There's little harm IMO.)</p>
+</blockquote>
+<p>Okay.  Let me see if I can even get the thing to build, first ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ZeeD">@ZeeD</a> on 2023-12-06 09:43</div>
+            <div class="timeline-body"><p>FWIW the same issue is for all the various <code>set</code>* methods you can find in PySide / PyQt, for example <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QTableView.html#PySide6.QtWidgets.PySide6.QtWidgets.QTableView.setSortingEnabled">QTableView.setSortingEnabled</a> or <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QHeaderView.html#PySide6.QtWidgets.PySide6.QtWidgets.QHeaderView.setSortIndicatorShown">QHeaderView.setSortIndicatorShown</a> (or many others).</p>
+<p>If you try to call them setting the flag with a keyword, you get a runtime error, like</p>
+<pre><code>TypeError: QHeaderView.setVisible() takes no keyword arguments
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9287.html">astral-sh/ruff#9287</a> on 2023-12-26 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8923.html">astral-sh/ruff#8923</a> on 2024-01-08 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AbdealiLoKo">@AbdealiLoKo</a> on 2024-02-05 18:44</div>
+            <div class="timeline-body"><p>Just wanted to mention, there are cases in pytest fixtures where this comes up too. For example:</p>
+<pre><code>@pytest.mark.parametrize(&quot;throw_err&quot;, (True, False))
+def test_something(throw_err: bool):
+    assert ...
+</code></pre>
+<p>In this case, the FBT rule says this <code>throw_err</code> needs to be a kwarg. Which is a bit weird as tests are never really going to be called by anyone other than pytest ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-03-09 18:01</div>
+            <div class="timeline-body"><p>Qt is also the biggest reason I can't use this rule. Signals and value setters.
+<img src="https://github.com/astral-sh/ruff/assets/1350584/81a5ca5e-4937-4dff-a840-78e5a234fdff" alt="image" />
+(mostly commenting so I can track this issue)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PlasmaPy/PlasmaPy/pulls/2648.html">PlasmaPy/PlasmaPy#2648</a> on 2024-04-25 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nineteendo">@nineteendo</a> on 2024-05-08 08:15</div>
+            <div class="timeline-body"><p>Also here:</p>
+<pre><code class="language-python">def upper(obj: object = &quot;&quot;, /) -&gt; str:
+    return str(obj).upper()
+
+print(upper(True))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanks">@stefanks</a> on 2024-06-28 14:36</div>
+            <div class="timeline-body"><p>Also this is flagged:</p>
+<p><code>with pd.option_context(&quot;future.no_silent_downcasting&quot;, True):</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spacemanspiff2007">@spacemanspiff2007</a> on 2024-10-18 05:56</div>
+            <div class="timeline-body"><p>Another false positive with positional required parameters.
+This is exceptionally annoying because this also triggers on <a href="https://docs.pydantic.dev/latest/api/fields/#pydantic.fields.Field">pydantic.Field</a></p>
+<pre><code class="language-python">def func(flag: bool, *, other: bool = False) -&gt; None:
+    pass
+
+
+func(True, other=True)
+</code></pre>
+<pre><code>  |
+5 | func(True, other=True)
+  |      ^^^^ FBT003
+  |
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-11-22 20:04</div>
+            <div class="timeline-body"><p>Also, I think this might be bad enough to special case:</p>
+<pre><code class="language-python">true = typing.cast(sessions.Result, True)  # noqa: FBT003
+false = typing.cast(sessions.Result, False)  # noqa: FBT003
+</code></pre>
+<p>I don't think it's at all unclear what True/False are in this situation.</p>
+<p>Related, I wonder if a config option would make sense, a setting for the number of arguments where true/false become confusing. If it's the only argument, or maybe one of two (especially in cases like above), it's not confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11264.html">astral-sh/ruff#11264</a> on 2025-03-19 05:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hunterhogan">@hunterhogan</a> on 2025-08-21 03:27</div>
+            <div class="timeline-body"><p>If I'm putting this in the wrong place, please tell me a good process by which I can find the right place.</p>
+<pre><code class="language-python">selectGroupAlphaCurves: numpy.ndarray[tuple[int, ...], numpy.dtype[numpy.bool_]]
+...
+selectGroupAlphaCurves.fill(value=False)
+selectGroupZuluCurves.fill(False)  # noqa: FBT003
+...
+  File &quot;C:\apps\mapFolding\mapFolding\_oeisFormulas\matrixMeanders64.py&quot;, line 112, in count64
+    selectGroupAlphaCurves.fill(value=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: ndarray.fill() takes no keyword arguments
+</code></pre>
+<p>But see this <a href="https://github.com/numpy/numpy/pull/29608">Pull Request to update their stub</a> for <code>ndarray.fill()</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

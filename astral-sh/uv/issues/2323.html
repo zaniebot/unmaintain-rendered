@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>401 Installing from Internal Index due to .netrc - astral-sh/uv #2323</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>401 Installing from Internal Index due to .netrc</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2323">#2323</a>
+        opened by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a>
+        on 2024-03-10 03:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-10 03:15</div>
+            <div class="timeline-body"><p>I was excited by the work done in this <a href="https://github.com/astral-sh/uv/issues/2220">issue</a>, so I tried checking out main and testing uv to see if it improved performance on 1 package I found slow. Instead I found that using main uv now gives me a 401 error for installing any internal package with index server. Packages that previously worked to install now fail. I've bisected commits to find the first commit that fails is this <a href="https://github.com/astral-sh/uv/pull/2241">commit</a>.</p>
+<p>The exact command being run is <code>cargo run -- pip install --index-url=SOME_URL numpy</code>. The url has credentials in it. I do have .netrc file, but they are not intended for this installation especially when --index-url has all credentials needed already and did work prior to that pr. Similarly pip works for similar command <code>pip install --index-url=SOME_URL numpy</code> and I'd guess is sticking to credentials inside index-url over mixing it with .netrc.</p>
+<p>Here's the verbose logs from the first failing commit,</p>
+<details><summary>Logs</summary>
+
+<pre><code>    0.000830s DEBUG uv_client::registry_client Using registry request timeout of 300s
+ uv::requirements::from_source source=numpy
+    0.257274s DEBUG uv_interpreter::python_environment Found a virtualenv through VIRTUAL_ENV at: /Users/pa-loaner/Snapchat/Dev/.venvs/bento_uv2
+    0.257714s DEBUG uv_interpreter::interpreter Probing interpreter info for: /Users/pa-loaner/Snapchat/Dev/.venvs/bento_uv2/bin/python
+    0.539855s DEBUG uv_interpreter::interpreter Found Python 3.9.16 for: /Users/pa-loaner/Snapchat/Dev/.venvs/bento_uv2/bin/python
+    0.540817s DEBUG uv::commands::pip_install Using Python 3.9.16 environment at /Users/pa-loaner/Snapchat/Dev/.venvs/bento_uv2/bin/python
+ uv_client::flat_index::from_entries
+ uv_resolver::resolver::solve
+      0.548281s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.9.16
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.548614s   0ms DEBUG uv_resolver::resolver Adding direct dependency: numpy*
+   uv_resolver::resolver::choose_version package=numpy
+     uv_resolver::resolver::package_wait package_name=numpy
+ uv_resolver::resolver::process_request request=Versions numpy
+   uv_client::registry_client::simple_api package=numpy
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/Users/pa-loaner/Library/Caches/uv/simple-v3/dc13ddb23a33f0c4/numpy.rkyv
+ uv_resolver::resolver::process_request request=Prefetch numpy *
+ uv_client::cached_client::from_path_sync path=&quot;/Users/pa-loaner/Library/Caches/uv/simple-v3/dc13ddb23a33f0c4/numpy.rkyv&quot;
+          0.549991s   0ms DEBUG uv_client::cached_client No cache entry for: https://registry.snapchat.com/python/virtual/numpy/
+       uv_client::cached_client::fresh_request url=&quot;https://registry.snapchat.com/python/virtual/numpy/&quot;
+error: HTTP status client error (401 Unauthorized) for url (https://registry.snapchat.com/python/virtual/numpy/)
+</code></pre>
+</details> 
+
+<p>Like before, I'm happy to test out any specific commands/extra log statements that would be helpful.</p>
+<p>edit: Credentials in netrc are not wrong though and maybe could be used somehow. The netrc looks like,</p>
+<pre><code>machine registry.snapchat.com login LCAv1 password AUTH
+</code></pre>
+<p>while --index-url passed is <code>https://LCAv1:password@registry.snapchat.com/python/virtual</code>. Login and password are same either way, but guessing the two aren't mixing as expected. I wonder if <code>/python/virtual</code> part is lost.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "401 Installing from Internal Index" to "401 Installing from Internal Index due to .netrc" by @hmc-cs-mdrissi on 2024-03-10 03:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 03:20</div>
+            <div class="timeline-body"><p>Yeah this sounds like a mistake. Thanks for reporting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-10 03:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 03:21</div>
+            <div class="timeline-body"><p>Perhaps @zanieb can take a look when they're back since they've been owning auth.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-10 03:26</div>
+            <div class="timeline-body"><p>I did one extra test and main works if I include index url without auth.</p>
+<pre><code>uv pip install --index-url=https://LCAv1:password@registry.snapchat.com/python/virtual # Fail
+uv pip install --index-url=https://registry.snapchat.com/python/virtual # Works
+</code></pre>
+<p>So it's using netrc + index-url well if index-url doesn't also have authenication data in it. But if they both have it even if it's same password/login, then it fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 03:31</div>
+            <div class="timeline-body"><p>I can try to take a look at it tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 03:36</div>
+            <div class="timeline-body"><p>The code for the netrc middleware is actually pretty small, and I'm surprised it's failing to handle this. It <em>does</em> look like it would override the credentials though. I'm not sure what's expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 03:37</div>
+            <div class="timeline-body"><p>It looks like pip does explicitly prioritize existing credentials: https://github.com/pypa/pip/pull/10998. I'm still not sure why it would <em>fail</em> here though since the credentials are exactly the same, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 03:37</div>
+            <div class="timeline-body"><p>Oh wait, it was then reverted: https://github.com/pypa/pip/pull/11134.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-10 03:39</div>
+            <div class="timeline-body"><p>The credentials are identical. At work we have some script that we need to run daily to refresh our credentials. That script updates both .netrc and pip.conf with same credentials. I then manually copy the index url in pip.conf and pass it to uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 03:39</div>
+            <div class="timeline-body"><p>Makes sense. You could try running with <code>RUST_LOG=trace cargo run -- pip install --index-url=SOME_URL numpy --verbose</code> to see if there's any other helpful info.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 03:43</div>
+            <div class="timeline-body"><p>Okay, the error I get when I provide both sets of credentials is:</p>
+<pre><code>error: error sending request for url (https://pkgs.dev.azure.com/charlie0806/_packaging/charlie0806/pypi/simple/requests/): http2 error: stream error received: endpoint requires HTTP/1.1
+  Caused by: http2 error: stream error received: endpoint requires HTTP/1.1
+  Caused by: stream error received: endpoint requires HTTP/1.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 03:46</div>
+            <div class="timeline-body"><p>I think the problem is that we now send up <em>two</em> authorization headers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-10 03:52</div>
+            <div class="timeline-body"><p>I can confirm there's two headers for me too when it fails. I added the logs from this <a href="https://github.com/astral-sh/uv/pull/2175/files">pr</a> you did before. I also tried <code>RUST_LOG=trace</code> but that doesn't log headers.</p>
+<p>For my use case it does not really matter which of the two credentials you pick. My personal intuition though is if url has credentials it'd be used first over a separate file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 03:54</div>
+            <div class="timeline-body"><p>Just trying to figure out how to <em>replace</em> a header with reqwest, the API doesn't seem to want you to do this...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 04:04</div>
+            <div class="timeline-body"><p>@zanieb - I think this might be impossible to do with middleware, because the reqwest middleware seems to be purely additive. We might need to remove this middleware, and add a <code>safe_copy_url_auth</code>-like method to every HTTP path that gets the relevant netrc credentials, and replaces the authorization header with them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 04:13</div>
+            <div class="timeline-body"><p>Think I figured out a way to do it with the middleware API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-10 04:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2325.html">astral-sh/uv#2325</a> on 2024-03-10 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 04:19</div>
+            <div class="timeline-body"><p>Should be fixed in https://github.com/astral-sh/uv/pull/2325, thanks for filing and sorry about that regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-10 04:27</div>
+            <div class="timeline-body"><p>I’ll test the PR in ~1 hour when I’m back home. The diagnosis makes full sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 04:34</div>
+            <div class="timeline-body"><p>No rush! I’m going to bed anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-10 05:37</div>
+            <div class="timeline-body"><p>I've tested it and confirmed your fix resolves the issue. Installation works well trying both internal and public packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-10 15:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

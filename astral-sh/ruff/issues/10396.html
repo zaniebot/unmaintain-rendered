@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>problematic formatting: indentation change in docstring - astral-sh/ruff #10396</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>problematic formatting: indentation change in docstring</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10396">#10396</a>
+        opened by <a href="https://github.com/kaddkaka">@kaddkaka</a>
+        on 2024-03-13 21:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-03-13 21:24</div>
+            <div class="timeline-body"><p>black and ruff format might destroy ascii art in dosctring when re-indenting docstring lines. (so I'm not sure if this issue should be filed here or at the black project)</p>
+<p>Example code:</p>
+<pre><code class="language-py">def dosctring_ascii_alignment():
+    &quot;&quot;&quot;Ascii art: [____,aaaa,bbbb]
+                   ^         ^
+    &quot;&quot;&quot;
+    pass
+</code></pre>
+<p>result after <code>ruff format</code> (with version <code>0.3.2</code>):</p>
+<pre><code class="language-py">def dosctring_ascii_alignment():
+    &quot;&quot;&quot;Ascii art: [____,aaaa,bbbb]
+    ^         ^
+    &quot;&quot;&quot;
+    pass
+</code></pre>
+<p>as seen, the carets <code>^</code> are now misaligned.</p>
+<p>In my mind it would be better to not touch docstrings - but I guess there might be some reason for it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "problematic forwarding: indentation change in docstring" to "problematic formatting: indentation change in docstring" by @kaddkaka on 2024-03-13 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilius">@ilius</a> on 2024-03-13 23:07</div>
+            <div class="timeline-body"><p>I would totally agree.
+Docstrings are just strings that happen to be the first expression in the function / class.
+Formatter would not normally modify strings.
+As the Zen of Python says: &quot;Special cases aren't special enough to break the rules.&quot;</p>
+<p>What benefit does it have to justify it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-14 15:51</div>
+            <div class="timeline-body"><p>Ah yeah, I'd suggest just disabling formatting for the docstring in this case.</p>
+<p>On a whole, it is a net positive (by far, in my opinion) for the formatter to correct docstring indentation than to disable it entirely due to special cases like (e.g.) ASCII art. You are of course welcome to file an issue with Black if you'd like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2024-03-14 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2024-03-14 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-14 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilius">@ilius</a> on 2024-03-14 22:04</div>
+            <div class="timeline-body"><p>Oh I didn't know there was am option to disable it thanks!</p>
+<pre><code>docstring-code-format = false</code></pre>
+<p>https://github.com/astral-sh/ruff/blob/main/docs/formatter.md
+https://github.com/astral-sh/ruff/blob/main/docs/configuration.md</p>
+<p>BTW: there are a few parameters missing in <code>docs/formatter.md</code>.
+Should I add them as PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-14 23:27</div>
+            <div class="timeline-body"><p>To avoid confusion.. <code>docstring-code-format</code> is for code blocks in docstrings, not the docstrings themselves. You're probably looking to just use <code># fmt: skip</code></p>
+<pre><code>def foo():
+    &quot;&quot;&quot;
+        test
+    &quot;&quot;&quot;  # fmt: skip
+</code></pre>
+<p>I'm not sure it's worth enumerating all configuration options in the formatter overview but feel free to pull request anything you think would be helpful and we can discuss it there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-03-15 05:37</div>
+            <div class="timeline-body"><p><code>#fmt</code> is not really an option since I would have to look over thousands of docstring to try and find where to add that waiver.</p>
+<p>Breaking information like this is not good and cane in the worst case be very confusing/misleading.</p>
+<p>Ruff already has some options that black does not, but I might open a PR on black side then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../psf/black/issues/4276.html">psf/black#4276</a> on 2024-03-15 05:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-03-19 17:30</div>
+            <div class="timeline-body"><p>The ruff source code seems to try and keep indentation alignment in some cases, for example this code is formatted according to ruff:</p>
+<pre><code class="language-py">def dosctring_ascii_alignment():
+    &quot;&quot;&quot;Ascii art: [____,aaaa,bbbb]
+    ^         ^
+    &quot;&quot;&quot;
+    pass
+
+
+def dosctring_ascii_alignment():
+    &quot;&quot;&quot;
+    Ascii art: [____,aaaa,bbbb]
+                     ^^^^
+    &quot;&quot;&quot;
+</code></pre>
+<p>As seen in the 2nd function, the docstring is <em>not</em> modified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10550.html">astral-sh/ruff#10550</a> on 2024-03-25 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11101.html">astral-sh/ruff#11101</a> on 2024-04-23 08:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

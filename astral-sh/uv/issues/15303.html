@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>torch wheel from CPU index is not cached - astral-sh/uv #15303</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>torch wheel from CPU index is not cached</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15303">#15303</a>
+        opened by <a href="https://github.com/tpgillam">@tpgillam</a>
+        on 2025-08-15 11:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tpgillam">@tpgillam</a> on 2025-08-15 11:36</div>
+            <div class="timeline-body"><p>uv 0.8.11 .</p>
+<p>Suppose I am in the directory <code>moo</code> which is empty except for the following pyproject.toml</p>
+<pre><code class="language-toml">[project]
+name = &quot;moo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [&quot;torch&quot;]
+
+
+[tool.uv]
+python-preference = &quot;only-managed&quot;
+
+[tool.uv.sources]
+torch = [{ index = &quot;pytorch-cpu&quot; }]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+</code></pre>
+<p>This is using the approach described <a href="https://docs.astral.sh/uv/guides/integration/pytorch/#using-a-pytorch-index">in the docs</a> for installing the CPU-only build of torch.</p>
+<p>Curiously, when synchronising this environment, the torch wheel is <em>always</em> downloaded, and is never found in the cache. Is this intended behaviour, or a bug?</p>
+<pre><code class="language-console">$ rm -rf .venv/ &amp;&amp; uv sync --verbose
+&lt;...snip...&gt;
+DEBUG No cache entry for: https://download.pytorch.org/whl/cpu/torch-2.8.0%2Bcpu-cp313-cp313-manylinux_2_28_x86_64.whl
+Downloading torch (175.4MiB)
+
+$ rm -rf .venv/ &amp;&amp; uv sync --verbose
+&lt;...snip...&gt;
+DEBUG No cache entry for: https://download.pytorch.org/whl/cpu/torch-2.8.0%2Bcpu-cp313-cp313-manylinux_2_28_x86_64.whl
+Downloading torch (175.4MiB)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "torch from CPU index is not cached" to "torch wheel from CPU index is not cached" by @tpgillam on 2025-08-15 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-15 12:46</div>
+            <div class="timeline-body"><p>I think that's because the PyTorch index sets <code>cache-control: 'no-cache,no-store,must-revalidate'</code>. You can customize the cache control headers yourself with: https://docs.astral.sh/uv/concepts/indexes/#customizing-cache-control-headers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tpgillam">@tpgillam</a> on 2025-08-15 13:41</div>
+            <div class="timeline-body"><p>Thanks for the explanation! Hadn't realised indices had this concept; great to know, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @tpgillam on 2025-08-15 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-15 13:41</div>
+            <div class="timeline-body"><p>I'm also chatting with the PyTorch team to see if we can get those headers changed :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15425.html">astral-sh/uv#15425</a> on 2025-08-21 18:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

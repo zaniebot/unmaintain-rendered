@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RET503 false positive on exhaustive type check - astral-sh/ruff #18656</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RET503 false positive on exhaustive type check</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18656">#18656</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-06-13 01:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-13 01:38</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>From the same codebase as https://github.com/astral-sh/ruff/issues/5474#issuecomment-2968706593 , RET503 still reports an error after an exhaustive type check. If the fix is applied, type checkers will warn/error about unreachable code.
+<a href="https://play.ruff.rs/98b1a534-fca2-4f66-859c-6be9a207f73f">playground link</a></p>
+<pre><code class="language-py">import tarfile
+import zipfile
+
+type ArchiveKind = tarfile.TarFile | zipfile.ZipFile
+
+def get_first_archive_member(archive: ArchiveKind) -&gt; str:
+    if isinstance(archive, tarfile.TarFile):
+        return archive.getnames()[0]
+    elif isinstance(archive, zipfile.ZipFile):
+        return archive.namelist()[0]
+    # RET503 error
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.13 (5faf72a4d 2025-06-05) + playground</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-06-13 06:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2025-06-13 06:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-13 07:00</div>
+            <div class="timeline-body"><p>I can see how it would be desired that Ruff wouldn't raise <code>RET503</code> here. However, this requires that Ruff understands that <code>ArchiveKind</code> only has two variants and they're all handled. This is far beyond what Ruff's semantic model can handle today, but should be possible once we start using the semantic model from our in progress type checker ty in Ruff.</p>
+<p>For now, the best you can do here is to suppress <code>RET503</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

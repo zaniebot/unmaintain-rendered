@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python listed twice on Windows - astral-sh/uv #9979</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Python listed twice on Windows</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9979">#9979</a>
+        opened by <a href="https://github.com/eykamp">@eykamp</a>
+        on 2024-12-17 18:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eykamp">@eykamp</a> on 2024-12-17 18:49</div>
+            <div class="timeline-body"><p>In a Windows 10 CMD shell, I do this:</p>
+<p><code>uv python list</code></p>
+<p>and I get a list of Pythons available to me.  Some are listed twice, due to differences in capitalization:</p>
+<pre><code>cpython-3.10.15-windows-x86_64-none      &lt;download available&gt;
+cpython-3.10.7-windows-x86_64-none       c:\users\chris\AppData\local\Programs\python\python310\python.exe
+cpython-3.10.7-windows-x86_64-none       C:\Users\Chris\AppData\Local\Programs\Python\Python310\python.exe
+cpython-3.9.20-windows-x86_64-none       &lt;download available&gt;
+</code></pre>
+<p>On Windows, I think these duplicates should be filtered out, as Windows is not case-sensitive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-12-17 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2024-12-17 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-17 20:25</div>
+            <div class="timeline-body"><p>@zanieb -- Do we also want to de-duplicate symlinks? (I think we probably don't expect to see symlinks here anyway?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-17 20:30</div>
+            <div class="timeline-body"><p>The symlinks are intentionally shown, i.e., if you have <code>python -&gt; ...</code> on your <code>PATH</code> that's relevant information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-17 20:33</div>
+            <div class="timeline-body"><p>Ok. I'm not sure how to solve this then. It's not really correct to just do a case-insensitive comparison.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-17 20:37</div>
+            <div class="timeline-body"><p>We could avoid showing symlinks on Windows specifically?</p>
+<p>I guess the question is, how are both of these being found? Can you share output with <code>RUST_LOG=uv=trace</code> set?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> removed by @charliermarsh on 2024-12-22 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-12-22 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-01-15 18:17</div>
+            <div class="timeline-body"><p>Looks like my system is Ideal for debugging this. I have a heckload of pythons installed on my windows system by ??? being a programmer ??? and I specifically have Python312 and Python310 installed in this way, and yet the bug only happens for the Python312 install and <em>not</em> the Python310 one.</p>
+<p>Enabling more logging they appear to have the exact same references in the log, and the lowercase python312 <em>never is mentioned</em>.  So something is happening outside the view of our logging machinery.</p>
+<pre><code>TRACE Checking `PATH` directory for interpreters: C:\Python312\Scripts\
+TRACE Checking `PATH` directory for interpreters: C:\Python312\
+TRACE Found possible Python executable: C:\Python312\python.exe
+TRACE Cached interpreter info for Python 3.12.1, skipping probing: C:\Python312\python.exe
+DEBUG Found `cpython-3.12.1-windows-x86_64-none` at `C:\Python312\python.exe` (search path)
+...
+TRACE Checking `PATH` directory for interpreters: C:\Python310\Scripts\
+TRACE Checking `PATH` directory for interpreters: C:\Python310\
+TRACE Found possible Python executable: C:\Python310\python.exe
+TRACE Cached interpreter info for Python 3.10.7, skipping probing: C:\Python310\python.exe
+DEBUG Found `cpython-3.10.7-windows-x86_64-none` at `C:\Python310\python.exe` (search path)
+....
+TRACE Cached interpreter info for Python 3.12.1, skipping probing: C:\Python312\python.exe
+DEBUG Found `cpython-3.12.1-windows-x86_64-none` at `C:\Python312\python.exe` (registry)
+....
+TRACE Cached interpreter info for Python 3.10.7, skipping probing: C:\Python310\python.exe
+DEBUG Found `cpython-3.10.7-windows-x86_64-none` at `C:\Python310\python.exe` (registry)
+....
+cpython-3.12.1-windows-x86_64-none                 c:\python312\python.exe
+cpython-3.12.1-windows-x86_64-none                 C:\Python312\python.exe
+....
+cpython-3.10.7-windows-x86_64-none                 C:\Python310\python.exe
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2025-01-15 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-01-15 19:54</div>
+            <div class="timeline-body"><p>I've isolated this down to my <em>chocolatey</em> install of python 3.12 which is a shim executable.</p>
+<p>The chocolatey install <em>was</em> DEBUG printed but I missed it because when we debug print it we print <code>C:\ProgramData\chocolatey\bin\python3.12.exe</code>, and somewhere in the processing of it into an <code>Interpretter</code> it becomes <code>c:\python312\python.exe</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-01-15 20:36</div>
+            <div class="timeline-body"><p>Ok so <a href="https://github.com/chocolatey/shimgen/blob/70ddc44f27a496984c1b333a8534bce07353eef5/shim/ShimProgram.cs#L58">the chocolatey shim</a> on my machine contains the hardcoded string <code>c:\python312\python.exe</code>, which it uses to invoke the binary.</p>
+<p>This in turn subtly changes the behaviour of the python interpretter's <code>sys.path</code>, which presumably inherits the exact path string the binary was invoked from.</p>
+<p>So the good news is we don't need to deal with symlinks/hardlinks at all here, we just need to be case-insensitive when deduplicating things on windows... although I don't know if it's &quot;incorrect&quot; to dedupe the shim install because I see some notes in the code about how shims are <em>specifically</em> unsafe to cache because they're, well, shims.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12506.html">astral-sh/uv#12506</a> on 2025-03-27 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karthiknadig">@karthiknadig</a> on 2025-04-02 01:25</div>
+            <div class="timeline-body"><p>This is what I see on my machine, the python install from python.org is getting duplicated.</p>
+<pre><code>(.venv) PS C:\GIT\TPI\2025-03\sync1\myproject&gt; uv python list --only-installed                                
+cpython-3.13.2-windows-x86_64-none     C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\python.exe
+cpython-3.12.9-windows-x86_64-none     c:\python312\python.exe
+cpython-3.12.9-windows-x86_64-none     C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\python.exe
+cpython-3.12.9-windows-x86_64-none     C:\Python312\python.exe
+cpython-3.11.9-windows-x86_64-none     c:\python311\python.exe
+cpython-3.11.9-windows-x86_64-none     C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe
+cpython-3.11.9-windows-x86_64-none     C:\Python311\python.exe
+cpython-3.10.11-windows-x86_64-none    C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\python.exe
+cpython-3.9.13-windows-x86_64-none     C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\python.exe
+cpython-3.8.10-windows-x86_64-none     C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\python.exe
+cpython-3.7.9-windows-x86_64-none      C:\Program Files\Python37\python.exe
+</code></pre>
+<p>Additional note, I ran this from an activated terminal. Should it have found the one on path as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 01:29</div>
+            <div class="timeline-body"><p>Which specifically are you referring to as the duplicates there? <code>c:\python311\python.exe</code> and <code>C:\Python311\python.exe</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karthiknadig">@karthiknadig</a> on 2025-04-02 01:30</div>
+            <div class="timeline-body"><p>The lowercase vs upper case drive letter variants.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 01:35</div>
+            <div class="timeline-body"><p>Both versions? Can you explain how it was installed? Chocolatey is not used?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karthiknadig">@karthiknadig</a> on 2025-04-02 01:42</div>
+            <div class="timeline-body"><p>Both were installed with installer from python.org. Only customization is installing to specific location on disk.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 01:44</div>
+            <div class="timeline-body"><p>Can you share verbose logs? e.g. <code>uv python list 3.11 -vv</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karthiknadig">@karthiknadig</a> on 2025-04-02 01:47</div>
+            <div class="timeline-body"><pre><code>&gt;uv python list 3.11 -vv
+DEBUG uv 0.6.11 (0632e24d1 2025-03-30)
+DEBUG Searching for Python 3.11 in managed installations, search path, or registry
+DEBUG Searching for managed installations at `AppData\Roaming\uv\data\python`
+TRACE Searching PATH for executables: python3.11.exe, python3.exe, python.exe
+TRACE Checking `PATH` directory for interpreters: C:\Users\kanadig\AppData\Local\fnm_multishells\7920_1743558271846
+TRACE Checking `PATH` directory for interpreters: C:\Program Files (x86)\Common Files\Oracle\Java\java8path
+TRACE Checking `PATH` directory for interpreters: C:\Python312\Scripts\
+TRACE Checking `PATH` directory for interpreters: C:\Python312\
+TRACE Found possible Python executable: C:\Python312\python.exe
+TRACE Cached interpreter info for Python 3.12.9, skipping probing: C:\Python312\python.exe
+DEBUG Found `cpython-3.12.9-windows-x86_64-none` at `C:\Python312\python.exe` (first executable in the search path)
+DEBUG Skipping interpreter at `C:\Python312\python.exe` from first executable in the search path: does not satisfy request `3.11`
+TRACE Checking `PATH` directory for interpreters: C:\Python311\Scripts\
+TRACE Checking `PATH` directory for interpreters: C:\Python311\
+TRACE Found possible Python executable: C:\Python311\python.exe
+TRACE Cached interpreter info for Python 3.11.9, skipping probing: C:\Python311\python.exe
+DEBUG Found `cpython-3.11.9-windows-x86_64-none` at `C:\Python311\python.exe` (search path)
+TRACE Checking `PATH` directory for interpreters: C:\Program Files\Quarto\bin
+TRACE Checking `PATH` directory for interpreters: C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin
+TRACE Checking `PATH` directory for interpreters: C:\WINDOWS\system32
+TRACE Checking `PATH` directory for interpreters: C:\WINDOWS
+TRACE Checking `PATH` directory for interpreters: C:\WINDOWS\System32\Wbem
+TRACE Checking `PATH` directory for interpreters: C:\WINDOWS\System32\WindowsPowerShell\v1.0\
+TRACE Checking `PATH` directory for interpreters: C:\WINDOWS\System32\OpenSSH\
+TRACE Checking `PATH` directory for interpreters: C:\ProgramData\chocolatey\bin
+TRACE Found possible Python executable: C:\ProgramData\chocolatey\bin\python3.11.exe
+TRACE Querying interpreter executable at C:\ProgramData\chocolatey\bin\python3.11.exe
+DEBUG Found `cpython-3.11.9-windows-x86_64-none` at `C:\ProgramData\chocolatey\bin\python3.11.exe` (search path)
+TRACE Checking `PATH` directory for interpreters: C:\ProgramData\miniconda3\Scripts
+TRACE Checking `PATH` directory for interpreters: C:\Program Files\WinMerge
+TRACE Checking `PATH` directory for interpreters: C:\Program Files\Hatch\
+TRACE Checking `PATH` directory for interpreters: C:\Program Files\Docker\Docker\resources\bin
+TRACE Checking `PATH` directory for interpreters: C:\Program Files\Git\cmd
+TRACE Checking `PATH` directory for interpreters: C:\Program Files\dotnet\
+TRACE Checking `PATH` directory for interpreters: C:\Users\kanadig\.pixi\bin
+TRACE Checking `PATH` directory for interpreters: C:\Users\kanadig\.cargo\bin
+TRACE Checking `PATH` directory for interpreters: C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps
+TRACE Found possible Python executable: C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\python3.11.exe
+TRACE Querying interpreter executable at C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\python3.11.exe
+DEBUG Found `cpython-3.11.9-windows-x86_64-none` at `C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\python3.11.exe` (search path)
+TRACE Found possible Python executable: C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\python3.exe
+TRACE Querying interpreter executable at C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\python3.exe
+DEBUG Found `cpython-3.8.10-windows-x86_64-none` at `C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\python3.exe` (search path)
+DEBUG Skipping interpreter at `AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\python.exe` from search path: does not satisfy request `3.11`
+TRACE Found possible Python executable: C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\python.exe
+TRACE Querying interpreter executable at C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\python.exe
+DEBUG Found `cpython-3.8.10-windows-x86_64-none` at `C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\python.exe` (search path)
+DEBUG Skipping interpreter at `AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\python.exe` from search path: does not satisfy request `3.11`
+TRACE Checking `PATH` directory for interpreters: C:\Users\kanadig\AppData\Local\Programs\Microsoft VS Code\bin
+TRACE Checking `PATH` directory for interpreters: C:\texlive\2024\bin\windows
+TRACE Checking `PATH` directory for interpreters: C:\Users\kanadig\AppData\Local\Microsoft\WinGet\Packages\Schniz.fnm_Microsoft.Winget.Source_8wekyb3d8bbwe
+TRACE Checking `PATH` directory for interpreters: C:\Users\kanadig\AppData\Local\Programs\Microsoft VS Code Insiders\bin
+TRACE Checking `PATH` directory for interpreters: C:\Users\kanadig\AppData\Local\Programs\nu\bin\
+TRACE Cached interpreter info for Python 3.11.9, skipping probing: C:\Python311\python.exe
+DEBUG Found `cpython-3.11.9-windows-x86_64-none` at `C:\Python311\python.exe` (registry)
+TRACE Querying interpreter executable at C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe
+DEBUG Found `cpython-3.11.9-windows-x86_64-none` at `C:\Users\kanadig\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe` (Microsoft Store)
+cpython-3.11.11-windows-x86_64-none    &lt;download available&gt;
+cpython-3.11.9-windows-x86_64-none     c:\python311\python.exe
+cpython-3.11.9-windows-x86_64-none     AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe
+cpython-3.11.9-windows-x86_64-none     C:\Python311\python.exe
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 02:24</div>
+            <div class="timeline-body"><p>As noted a few comments prior (https://github.com/astral-sh/uv/issues/9979#issuecomment-2593883086), that duplicate looks like it comes from a chocolatey shim which hard-codes a path which affects executable reports</p>
+<pre><code>TRACE Found possible Python executable: C:\ProgramData\chocolatey\bin\python3.11.exe
+TRACE Querying interpreter executable at C:\ProgramData\chocolatey\bin\python3.11.exe
+DEBUG Found `cpython-3.11.9-windows-x86_64-none` at `C:\ProgramData\chocolatey\bin\python3.11.exe` (search path)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12628.html">astral-sh/uv#12628</a> on 2025-04-02 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-02 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13505.html">astral-sh/uv#13505</a> on 2025-05-18 20:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

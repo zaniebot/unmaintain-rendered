@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover new Python version in airgapped environment - astral-sh/uv #16669</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Discover new Python version in airgapped environment</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16669">#16669</a>
+        opened by <a href="https://github.com/etiennebonnafoux">@etiennebonnafoux</a>
+        on 2025-11-10 16:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/etiennebonnafoux">@etiennebonnafoux</a> on 2025-11-10 16:32</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I work in a air-gapped environment.</p>
+<p>When I do <code>uv python list</code> I got</p>
+<pre><code>cpython-3.14.0rc3-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.14.0rc3+freethreaded-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.13.7-linux-x86_64-gnu                    &lt;download available&gt;
+cpython-3.13.7+freethreaded-linux-x86_64-gnu       &lt;download available&gt;
+cpython-3.13.2-linux-x86_64-gnu                    /home/ebonnafoux/.local/bin/python3.13 -&gt; /home/ebonnafoux/.local/share/uv/python/cpython-3.13.2-linux-x86_64-gnu/bin/python3.13
+cpython-3.13.2-linux-x86_64-gnu                    /home/ebonnafoux/.local/share/uv/python/cpython-3.13.2-linux-x86_64-gnu/bin/python3.13
+cpython-3.12.11-linux-x86_64-gnu                   /usr/bin/python3.12
+cpython-3.12.11-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.11.13-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.10.18-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.10.12-linux-x86_64-gnu                   /usr/bin/python3.10
+cpython-3.10.12-linux-x86_64-gnu                   /usr/bin/python3 -&gt; python3.10
+cpython-3.9.23-linux-x86_64-gnu                    &lt;download available&gt;
+cpython-3.8.20-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.11.13-linux-x86_64-gnu                      &lt;download available&gt;
+pypy-3.10.16-linux-x86_64-gnu                      &lt;download available&gt;
+pypy-3.9.19-linux-x86_64-gnu                       &lt;download available&gt;
+pypy-3.8.16-linux-x86_64-gnu                       &lt;download available&gt;
+graalpy-3.12.0-linux-x86_64-gnu                    &lt;download available&gt;
+graalpy-3.11.0-linux-x86_64-gnu                    &lt;download available&gt;
+graalpy-3.10.0-linux-x86_64-gnu                    &lt;download available&gt;
+graalpy-3.8.5-linux-x86_64-gnu                     &lt;download available&gt;
+</code></pre>
+<p>When I create a folder named <code>20250918</code> with in it <code>cpython-3.14.0rc3+20250918-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz</code>  and I do <code>uv python install --mirror=file:///home/ebonnafoux/ 3.14</code> , it installs python 3.14 succesfully.
+Now there is a more recent version of python 3.14 so I create a folder named <code>20251031</code> with in it <code>cpython-3.14.0+20251031-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz</code>.</p>
+<p>But how do I make uv discover this new version (without internet acces of course) ?</p>
+<p>Thanks in advance for your precision,</p>
+<h3>Platform</h3>
+<p>linux x86_64</p>
+<h3>Version</h3>
+<p>uv 0.8.23</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @etiennebonnafoux on 2025-11-10 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-11 15:43</div>
+            <div class="timeline-body"><p>uv has an internal list of Python versions in the binary (so we have the hashes shipped with uv). The currently recommended workflow for sharing managed Python with an offline machine is <code>UV_PYTHON_CACHE_DIR</code> (https://docs.astral.sh/uv/reference/environment/#uv_python_cache_dir):</p>
+<ul>
+<li>Install the same uv version on an internet-connected and on the airgapped machine.</li>
+<li>Run <code>UV_PYTHON_CACHE_DIR=python_cache_dir uv python install 3.14 --reinstall</code> on the online machine. The <code>--reinstall</code> is to avoid that the machine already has 3.14 an does nothing.</li>
+<li>Copy <code>python_cache_dir</code> over</li>
+<li>Run <code>UV_PYTHON_CACHE_DIR=python_cache_dir uv python install 3.14 --reinstall</code> on the offline machine</li>
+</ul>
+<p>An alternative is <a href="https://docs.astral.sh/uv/reference/environment/#uv_python_install_mirror"><code>UV_PYTHON_INSTALL_MIRROR</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/etiennebonnafoux">@etiennebonnafoux</a> on 2025-11-13 21:26</div>
+            <div class="timeline-body"><p>Thanks for your indication. I will try this, and then close the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeitarR">@MeitarR</a> on 2025-11-14 20:05</div>
+            <div class="timeline-body"><p>@konstin @etiennebonnafoux, actually, for air-gapped networks, I would recommend this approach - https://github.com/astral-sh/uv/issues/10203#issuecomment-2796960833 (using <a href="https://docs.astral.sh/uv/reference/settings/#python-downloads-json-url">python-downloads-json-url</a>). This way you control the list of available pythons and also are not dependent on the hardcoded URLs</p>
+<p>(also linking this issue for more info #12838)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @etiennebonnafoux on 2025-12-04 09:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

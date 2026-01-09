@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PYI053 autofix removes `@deprecated` message - astral-sh/ruff #9420</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PYI053 autofix removes `@deprecated` message</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9420">#9420</a>
+        opened by <a href="https://github.com/hamdanal">@hamdanal</a>
+        on 2024-01-07 10:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hamdanal">@hamdanal</a> on 2024-01-07 10:01</div>
+            <div class="timeline-body"><p>This concerns <code>@deprecated</code> from <a href="https://peps.python.org/pep-0702/">PEP-702</a></p>
+<ul>
+<li>A minimal code snippet that reproduces the bug.
+Create a <code>t.pyi</code> file with the following content:</li>
+</ul>
+<pre><code class="language-python">from typing_extensions import deprecated
+
+@deprecated(&quot;Function deprecated_func is deprecated. Use method new_func instead.&quot;)
+def deprecated_func(self) -&gt; None: ...
+</code></pre>
+<ul>
+<li>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.</li>
+</ul>
+<pre><code class="language-console">$ # ruff generates an error
+$ ruff check --select=PYI t.pyi --isolated
+t.pyi:3:13: PYI053 [*] String and bytes literals longer than 50 characters are not permitted
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+$ # While flake8-pyi does not
+$ pip list | grep pyi
+flake8-pyi  24.1.0
+$ flake8 --select=Y t.pyi
+$ # Even worse, with --fix it removes the message
+$ ruff check --select=PYI t.pyi --isolated --diff
+--- t.pyi
++++ t.pyi
+@@ -1,4 +1,4 @@
+ from typing_extensions import deprecated
+
+-@deprecated(&quot;Function deprecated_func is deprecated. Use method new_func instead.&quot;)
++@deprecated(...)
+ def deprecated_func(self) -&gt; None: ...
+
+Would fix 1 error.
+</code></pre>
+<ul>
+<li>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>): N/A</li>
+<li>The current Ruff version (<code>ruff --version</code>): <code>ruff 0.1.11</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-07 10:40</div>
+            <div class="timeline-body"><p>Ah yes, we had to introduce some special-casing over at flake8-pyi recently for exactly this issue: https://github.com/PyCQA/flake8-pyi/commit/c7d988ef50f8582aad114a1fdc487dd75ff4f8e9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-07 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2024-01-07 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9423.html">astral-sh/ruff#9423</a> on 2024-01-07 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @charliermarsh on 2024-01-07 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-07 23:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

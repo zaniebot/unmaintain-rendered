@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv python find` does not respect `--project` - astral-sh/uv #11990</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv python find` does not respect `--project`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11990">#11990</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-03-05 21:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-05 21:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code>❯ uv init example
+❯ cd example
+❯ uv sync
+❯ uv python find
+/Users/zb/workspace/uv/example/.venv/bin/python3
+❯ cd ..
+❯ uv python find
+/Users/zb/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3.13
+❯ uv python find --project example
+/Users/zb/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3.13
+</code></pre>
+<p>This should discover the project environment</p>
+<h3>Platform</h3>
+<p>n/a</p>
+<h3>Version</h3>
+<p>0.6.4 (04db70662 2025-03-03)</p>
+<h3>Python version</h3>
+<p>n/a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-03-05 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2025-03-05 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-03-06 01:21</div>
+            <div class="timeline-body"><p>@zanieb i'll take a look at this one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-06 04:47</div>
+            <div class="timeline-body"><p>Cool! Let me know if you need help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-03-06 05:52</div>
+            <div class="timeline-body"><p>@zanieb looks like this affects the <code>pip</code> commands as well</p>
+<pre><code>&gt; cd example
+&gt; uv pip show example
+Name: example
+Version: 0.1.0
+...
+&gt; cd ..
+&gt; uv pip show example --project example
+warning: Package(s) not found for: example
+</code></pre>
+<p>appears venvs are <a href="https://github.com/astral-sh/uv/blob/0fb52912393b78deb8c0612ecda6fd3a947df777/crates/uv-python/src/virtualenv.rs#L125">always discovered starting at the current directory</a></p>
+<p>idea to fix for both <code>uv pip</code> and <code>uv python</code> is refactor <a href="https://github.com/astral-sh/uv/blob/0fb52912393b78deb8c0612ecda6fd3a947df777/crates/uv-python/src/discovery.rs#L1032">find_python_installation</a>/<a href="https://github.com/astral-sh/uv/blob/0fb52912393b78deb8c0612ecda6fd3a947df777/crates/uv-python/src/installation.rs#L52">PythonInstallation::find</a> to accept a &quot;root&quot; or &quot;directory&quot; argument and pass down to <a href="https://github.com/astral-sh/uv/blob/0fb52912393b78deb8c0612ecda6fd3a947df777/crates/uv-python/src/virtualenv.rs#L124">virtualenv_from_working_dir</a> (probably with a rename and/or adding a new function that takes a path argument)</p>
+<p>lmk if this is on the right track!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-06 23:41</div>
+            <div class="timeline-body"><p>Oh interesting. I'm... not sure if I'd expect <code>uv pip</code> to respect <code>--project</code> when determining the path to virtual environments. I'll need to ponder that. Regardless, I think you're right that we need to thread through a directory to that function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-06 23:44</div>
+            <div class="timeline-body"><p>(as an aside, I wonder if accepting the root directory there will let us drop the <code>current_dir</code> testing hack we have)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12049.html">astral-sh/uv#12049</a> on 2025-03-10 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-03-13 05:03</div>
+            <div class="timeline-body"><p>@zanieb i think #12049 is ready for a look - looked a little bit into removing the <code>current_dir</code> hack for testing - when removing <a href="https://github.com/thejchap/uv/blob/6490c0993e920dc3843386135905509c400ad738/crates/uv-python/src/lib.rs#L58">this</a>, a few tests fail even with passing the <code>TestContext.workdir</code> through. didn't dig too deep but wondering if it has something to do with <code>PythonRequest::parse</code> also depending on <a href="https://github.com/thejchap/uv/blob/6490c0993e920dc3843386135905509c400ad738/crates/uv-python/src/discovery.rs#L1487">current_dir</a> - decided to not mess with changing the api for that unless you think that's also worth doing as part of this pr</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

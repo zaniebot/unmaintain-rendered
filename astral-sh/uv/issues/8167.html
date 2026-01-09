@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package not found from Azure DevOps using a token - astral-sh/uv #8167</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Package not found from Azure DevOps using a token</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8167">#8167</a>
+        opened by <a href="https://github.com/AndreuCodina">@AndreuCodina</a>
+        on 2024-10-14 08:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2024-10-14 08:02</div>
+            <div class="timeline-body"><p>With <code>uv sync</code>, we've tried to download the package <code>my-private-lib==1.0.0</code> from Azure DevOps, a private registry.</p>
+<p>Using the keyring authentication, we can get the package:</p>
+<pre><code class="language-toml">[project]
+name = &quot;my-repository&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;my-private-lib==1.0.0&quot;,
+]
+
+[tool.uv]
+keyring-provider = &quot;subprocess&quot;
+extra-index-url = [
+    &quot;https://VssSessionToken@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/&quot;,
+]
+</code></pre>
+<p>But using the token we have to use in the Dockerfile and CI/CD, we can't:</p>
+<pre><code class="language-toml">[tool.uv]
+keyring-provider = &quot;disabled&quot;
+extra-index-url = [
+    &quot;https://myprivatetoken@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/&quot;,
+]
+</code></pre>
+<blockquote>
+<p>$  uv sync --verbose</p>
+</blockquote>
+<pre><code>DEBUG uv 0.4.20
+DEBUG Found project root: `/workspaces/my-repository`
+DEBUG No workspace root found, using project root
+DEBUG Reading requests from `/workspaces/my-repository/.python-version`
+DEBUG The virtual environment's Python version satisfies `Python 3.12`
+DEBUG Using request timeout of 30s
+DEBUG Starting clean resolution
+DEBUG Found static `pyproject.toml` for: my-repository @ file:///workspaces/my-repository
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.12.7
+DEBUG Solving with target Python version: &gt;=3.12
+DEBUG Adding direct dependency: my-repository*
+DEBUG Searching for a compatible version of my-repository @ file:///workspaces/my-repository (*)
+DEBUG Adding transitive dependency for my-repository==0.1.0: my-private-lib==1.0.0
+DEBUG No cache entry for: https://pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/my-private-lib/
+DEBUG No cache entry for: https://pypi.org/simple/my-private-lib/
+DEBUG Searching for a compatible version of my-private-lib (==1.0.0)
+DEBUG No compatible version found for: my-private-lib
+DEBUG Searching for a compatible version of my-repository @ file:///workspaces/my-repository (&lt;0.1.0 | &gt;0.1.0)
+DEBUG No compatible version found for: my-repository
+  × No solution found when resolving dependencies:
+  ╰─▶ Because my-private-lib was not found in the package registry and your project depends on my-private-lib==1.0.0, we can conclude that your
+      project's requirements are unsatisfiable.
+</code></pre>
+<blockquote>
+<p>$ RUST_LOG=uv=trace uv sync</p>
+</blockquote>
+<pre><code>DEBUG uv 0.4.20
+DEBUG Found project root: `/workspaces/my-repository`
+DEBUG No workspace root found, using project root
+DEBUG Reading requests from `/workspaces/my-repository/.python-version`
+TRACE Cached interpreter info for Python 3.12.7, skipping probing: .venv/bin/python3
+DEBUG The virtual environment's Python version satisfies `Python 3.12`
+TRACE Caching credentials for https://myprivatetoken@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/
+DEBUG Using request timeout of 30s
+DEBUG Starting clean resolution
+⠙ Resolving dependencies...                                                                                                                                                             TRACE Performing lookahead for my-repository @ file:///workspaces/my-repository
+DEBUG Found static `pyproject.toml` for: my-repository @ file:///workspaces/my-repository
+DEBUG No workspace root found, using project root
+⠙ Resolving dependencies...                                                                                                                                                             DEBUG Solving with installed Python version: 3.12.7
+DEBUG Solving with target Python version: &gt;=3.12
+DEBUG Adding direct dependency: my-repository*
+DEBUG Searching for a compatible version of my-repository @ file:///workspaces/my-repository (*)
+⠙ my-repository==0.1.0                                                                                                                                                               DEBUG Adding transitive dependency for my-repository==0.1.0: my-private-lib==1.0.0
+TRACE Fetching metadata for my-private-lib from https://myprivatetoken@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/my-private-lib/
+TRACE No cache entry exists for /root/.cache/uv/simple-v13/index/29fb3946eb316a55/my-private-lib.rkyv
+DEBUG No cache entry for: https://pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/my-private-lib/
+TRACE Sending fresh GET request for https://pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/my-private-lib/
+TRACE Handling request for https://myprivatetoken@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/my-private-lib/
+TRACE Request for https://myprivatetoken@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/my-private-lib/ is missing a password, looking for credentials
+TRACE No password in cache for realm myprivatetoken@https://pkgs.dev.azure.com
+TRACE No password in cache for URL https://pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/my-private-lib/
+⠼ my-repository==0.1.0                                                                                                                                                               TRACE Fetching metadata for my-private-lib from https://pypi.org/simple/my-private-lib/
+TRACE No cache entry exists for /root/.cache/uv/simple-v13/pypi/my-private-lib.rkyv
+DEBUG No cache entry for: https://pypi.org/simple/my-private-lib/
+TRACE Sending fresh GET request for https://pypi.org/simple/my-private-lib/
+TRACE Handling request for https://pypi.org/simple/my-private-lib/
+TRACE Request for https://pypi.org/simple/my-private-lib/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pypi.org/simple/my-private-lib/
+TRACE Attempting unauthenticated request for https://pypi.org/simple/my-private-lib/
+⠦ my-repository==0.1.0                                                                                                                                                               TRACE Request for https://pypi.org/simple/my-private-lib/ failed with 404 Not Found, checking for credentials
+TRACE No credentials in cache for realm https://pypi.org
+TRACE Received package metadata for: my-private-lib
+DEBUG Searching for a compatible version of my-private-lib (==1.0.0)
+TRACE Selecting candidate for my-private-lib with range ==1.0.0 with 0 remote versions
+DEBUG No compatible version found for: my-private-lib
+DEBUG Searching for a compatible version of my-repository @ file:///workspaces/my-repository (&lt;0.1.0 | &gt;0.1.0)
+DEBUG No compatible version found for: my-repository
+TRACE Resolver derivation tree before reduction
+  root==0a0.dev0 depends on my-repository*
+      my-repository==0.1.0 depends on my-private-lib==1.0.0
+      my-private-lib not found in the package registry
+    no versions of my-repository&lt;0.1.0 | &gt;0.1.0
+TRACE Resolver derivation tree after reduction
+  my-repository==0.1.0 depends on my-private-lib==1.0.0
+  my-private-lib not found in the package registry
+  × No solution found when resolving dependencies:
+  ╰─▶ Because my-private-lib was not found in the package registry and your project depends on my-private-lib==1.0.0, we can conclude that your
+      project's requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2024-10-15 18:18</div>
+            <div class="timeline-body"><p>Sorry, the provided token didn't have read permissions. But the error message isn't correct (<code>Because my-private-lib was not found in the package registry</code>). Could you improve it, please?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 18:19</div>
+            <div class="timeline-body"><p>We generally can't, no, because some registries treat a 403 as &quot;package not found on the index&quot; rather than &quot;invalid credentials&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-15 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-15 18:25</div>
+            <div class="timeline-body"><p>I guess we could have a hint that says maybe your credentials are wrong for some specific package indexes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2024-10-15 18:26</div>
+            <div class="timeline-body"><blockquote>
+<p>We generally can't, no, because some registries treat a 403 as &quot;package not found on the index&quot; rather than &quot;invalid credentials&quot;.</p>
+</blockquote>
+<p>And can't you detect the URL (the host starts with a string) is from Azure DevOps?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 18:29</div>
+            <div class="timeline-body"><p>Isn't it Azure itself that returns 401 when a package isn't found? https://github.com/astral-sh/uv/issues/3291</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AndreuCodina on 2024-10-15 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2024-10-15 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 20:55</div>
+            <div class="timeline-body"><p>I'm gonna re-open because I think we should be able to at least add a hint for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 20:56</div>
+            <div class="timeline-body"><p>I also did some testing and it looks like Azure <em>does</em> return a 404 when a package isn't found. Maybe we were confused by https://github.com/astral-sh/uv/issues/3291? I don't know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-16 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-10-16 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-10-16 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8264.html">astral-sh/uv#8264</a> on 2024-10-16 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-16 17:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

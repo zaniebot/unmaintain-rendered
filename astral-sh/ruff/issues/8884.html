@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F841 preview changes to tuple unpacking - astral-sh/ruff #8884</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F841 preview changes to tuple unpacking</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8884">#8884</a>
+        opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a>
+        on 2023-11-28 23:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-11-28 23:25</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/8489 changes F841 so that it complains about unused variables resulting from tuple unpacking.</p>
+<p>There are a few issues:</p>
+<ul>
+<li>It's not clear to all folks that this can be disabled by prefixing the variable with an underscore (and unlike other cases, you can't just get rid of the variable / var name is often good documentation)</li>
+<li>~An autofix to automatically add the underscore prefix would help!~ Implemented in https://github.com/astral-sh/ruff/pull/9107</li>
+<li>We actually currently mark F841 as unfixable, because it often keeps the RHS around (in case of side effect), and this is usually not the fix we want. So maybe both autofix and a custom error message?</li>
+<li>Maybe best option is separate error code. A good parallel is how <code>B007</code> is separate from <code>F841</code>. This also helps if you don't find the new lint useful, which I don't really</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-29 04:02</div>
+            <div class="timeline-body"><p>Thanks for issue.</p>
+<p>I think the first step may be to just change the violation message to suggest using a <code>_</code>.</p>
+<p>It seems like a separate error code might help with your <code>unfixable</code> goal, but I'm a little hesitant. Like... what if you have</p>
+<pre><code class="language-python">unused_a, unused_b = foo()
+</code></pre>
+<p>We should probably still allow a fix for this to remove both variables as they would for</p>
+<pre><code class="language-python">unused_c = foo()
+</code></pre>
+<p>Perhaps you could try demoting the fix for F841 to unsafe?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2023-11-29 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2023-11-29 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2023-11-29 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-11-29 05:31</div>
+            <div class="timeline-body"><p>Thanks, yup, custom error message mentioning underscore prefix is definitely a good step and is maybe enough to solve this issue.</p>
+<p>Note one reason why separate error code is viable here is that flake8 doesn't complain about this tuple unpacking case.</p>
+<p>The reason I mention the <code>unfixable</code> thing is that we use ruff's autofixes in pre-commit, and I would always want the (not yet written) autofix for adding an underscore in tuple unpacking, but I never want the autofix that only removes LHS, and this is probably a weak argument in favour of separate error code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-12-04 16:46</div>
+            <div class="timeline-body"><p>I'd like to voice my support a separate error code for unused variable in unpacking. The regular F841 is unambiguously useful, but having to add underscores for the unpacking case is just noise in most cases.</p>
+<p>There are <em>some</em> cases where it might be useful, e.g. if trying to mimic Go-style error handling in Python, <code>foo, err = func()</code>, don't want <code>err</code> to go unused. So I'm not suggesting to remove the feature entirely.</p>
+<p>Other languages have a special treatment for a <code>_</code> identifier which just skips the binding, but there's no such thing in Python. Two issues with using <code>_</code> anyway: it is often used as a <code>gettext()</code> alias, and if it's used for more than one type then mypy complains.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-04 16:54</div>
+            <div class="timeline-body"><p>@bluetech I think the proposal here is that we'd avoid raising a violation for <code>x, _y = func()</code> as well as <code>x, _ = func()</code> which should avoid the rebinding issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-12-04 18:27</div>
+            <div class="timeline-body"><p>@zanieb I may be misunderstanding your message, but as far as I can see, <code>x, _y = func()</code> and <code>x, _ = func()</code> already don't raise a violation. My main trouble is with <code>a, unused_b = func()</code>, the current fixes for this are:</p>
+<ul>
+<li><p><code>a, _unused_b = func()</code> - noise, I prefer to just keep it <code>a, unused_b = func()</code> in this case -- also helpful in case <code>unused_b</code> actually does find some use.</p>
+</li>
+<li><p><code>a, _ = func()</code> - conflict with <code>gettext</code>, rebinding issue (in case there's more than one tuple unpacking, or multiple <code>_</code> in the same unpacking). Also I think it's nice to let the reader know what they're missing, sometimes.</p>
+</li>
+</ul>
+<p>(To be clear, I'll completely accept an answer that my preference is too specific and not worth the complexity and I should just use <code>a, _unused_b = func()</code> and get over it :grinning: )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-05 16:34</div>
+            <div class="timeline-body"><p>Hm. Personally, I don't see a violation for <code>a, unused_b = func()</code> as any noiser than the one for <code>unused = func()</code> — I'm not sure why tuple unpacking deserves a special case for unused variables. Are there other ecosystems that use separate rule codes for these cases? I find prefixing unused variables from unpacked tuples in Rust as very clear and consistent with other unused variable diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-12-05 17:35</div>
+            <div class="timeline-body"><p>The difference is that (in codebases I work on) it's pretty common to unpack tuples and not use all the elements. There isn't dead code to be removed and so the signal to noise ratio ends up being different (especially without autofix).</p>
+<p>The other difference is that the autofix for the old behaviour is something I don't usually want (it's too conservative and can end up leaving dead code confusingly looking like it has side effects), whereas an autofix for new behaviour is something I'd always want.</p>
+<p>Note that ruff already has different codes for different kinds of unused variables: B007 is already a different error code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-12-05 17:37</div>
+            <div class="timeline-body"><p>To add my answer:</p>
+<p>The difference is, with <code>unused = func()</code> the obvious fix is to just remove <code>unused = </code>, which is clearly better. But with <code>a, unused_b = func()</code>, you have to fix in one of the two ways I mentioned above, and I tried to explain why I don't like them.</p>
+<p>In Rust <code>_</code> is special non-binding identifier (<a href="https://doc.rust-lang.org/reference/expressions/underscore-expr.html">underscore expression</a>), and gettext <code>_('my string')</code> alias is not a thing there AFAIK, so the main Python downsides are fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeamSpen210">@TeamSpen210</a> on 2023-12-23 07:23</div>
+            <div class="timeline-body"><p>For a separate error code, there is an edge case which may want to be treated differently - if all members in the unpacking are unused, it probably should still produce <code>F841</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-12-23 19:01</div>
+            <div class="timeline-body"><p>Maybe... note such an unpacking isn't safe to remove entirely because it acts as an assertion on length.</p>
+<p>@zanieb @charliermarsh would you accept a PR moving this check to a different error code? (There's no other way of getting my ideal autofix behaviour here is there?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-23 19:26</div>
+            <div class="timeline-body"><p>@hauntsaninja -- I'm fine with moving this to a separate rule like <code>unused-tuple-element</code> since B007 is something of a precedent there and the fix is indeed different. Others may disagree (dunno if @zanieb will agree) but at least from my perspective it seems reasonable. I probably would want F841 to continue flagging tuples that are <em>entirely</em> unused (as it does on stable, IIRC).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-23 19:26</div>
+            <div class="timeline-body"><p>To be clear, your &quot;ideal autofix&quot; is that we <em>do</em> offer the &quot;prefix unused tuple elements&quot; fix but have a way to disable the &quot;remove the left-hand side&quot; autofix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-12-23 19:37</div>
+            <div class="timeline-body"><p>Yes, that is my ideal autofix behaviour.</p>
+<p>Context:
+We're a big user of autofixing (including unsafe fixes) and the &quot;remove the left hand side&quot; autofix for normal unused variables is a little too conservative for us. It makes pure function calls look impure, which then becomes confusing to future readers of the code, so we had F841 marked as unfixable. Whereas the unpacking lint is always fine to autofix (and in my opinion, is only really tolerable when autofixed, given how commonly it occurs for us and the tiny value it provides).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9461.html">astral-sh/ruff#9461</a> on 2024-01-11 01:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.2.0" by @MichaReiser on 2024-01-19 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../great-expectations/great_expectations/pulls/9273.html">great-expectations/great_expectations#9273</a> on 2024-01-23 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9881.html">astral-sh/ruff#9881</a> on 2024-02-07 21:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9936.html">astral-sh/ruff#9936</a> on 2024-02-11 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.2.0" by @dhruvmanila on 2024-02-12 05:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.3.0" by @dhruvmanila on 2024-02-12 05:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.3.0" by @MichaReiser on 2024-02-14 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.4" by @MichaReiser on 2024-02-14 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> removed by @MichaReiser on 2024-03-28 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @MichaReiser on 2024-03-28 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-03-28 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-28 17:28</div>
+            <div class="timeline-body"><p>I'm returning this to &quot;needs-decision&quot; after we've discussed this more internally. From my notes:</p>
+<ul>
+<li>It’s unclear to me why we should have multiple rules to track unused variables. I agree that <code>B007</code> sets some precedence but as far as I understand it’s more narrow in that the variable might be used outside of the loop, but it isn’t used inside of the loop.</li>
+<li>I understand that the main motivation for a separate rule is to allow different fixability. I don't know if that's reason enough and could set a bad precedence. I think we should consider alternative options to address this specific concern that doesn't require splitting rules.</li>
+</ul>
+<p>We concluded that we need to develop a guideline that specifies when it is okay to have multiple rules that detect the same or very similar code smell and when it is not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.4.0" by @MichaReiser on 2024-04-04 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12839.html">astral-sh/ruff#12839</a> on 2024-08-12 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-12 11:17</div>
+            <div class="timeline-body"><p>I would support splitting this out into a separate check. In general, I think it's very useful for users for rules to be as fine-grained as possible so that they can easily select exactly which diagnostics and fixes they find to be helpful for them.</p>
+<p>This also seems to be to be distinct enough that I think users would understand why this would be a separate check. For an assignment that doesn't involve unpacking, such as <code>x = foo()</code>, or <code>x: str = foo()</code>, it's nearly always a mistake to leave the variable unused. You'll either want to delete the line entirely, or (if the function has side effects), call the function without assigning it to a variable. But unused variables that were assigned via unpacking are really more a stylistic error than something that you can say with confidence was a &quot;mistake&quot;. Giving unpacked variables descriptive names (<code>(a, b, c, foo)</code>) <em>can</em> be considered much more readable than unpacking a tuple as <code>(_, _, _, foo)</code>.</p>
+<blockquote>
+<ul>
+<li>I understand that the main motivation for a separate rule is to allow different fixability. I don't know if that's reason enough and could set a bad precedence.</li>
+</ul>
+</blockquote>
+<p>I think for a lot of our users, the ability we have to provide autofixes is a key value add over other tools in the Python ecosystem. I know when I first started using Ruff, this was a far bigger attraction than the performance gains that Ruff boasted. I think changes that make it easier for people to enable autofixes on their code are pretty valuable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12657.html">astral-sh/ruff#12657</a> on 2024-08-15 23:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12912.html">astral-sh/ruff#12912</a> on 2024-08-15 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Chia-Network/chia-blockchain/pulls/18801.html">Chia-Network/chia-blockchain#18801</a> on 2024-10-31 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mergu">@mergu</a> on 2024-11-15 08:00</div>
+            <div class="timeline-body"><p>We ran into this issue while migrating from flake8 to ruff, and support this change being split into another rule. F841 hasn't been a controversial error code to fix for us under flake8. In addition to what's been said above, I'll also add:</p>
+<ul>
+<li>Many pycodestyle (E) rules are locked behind preview mode, so migrating from flake8 to ruff requires enabling preview mode for parity. This means we have to choose between fixing many new F841 violations or turn off a previously useful rule.</li>
+<li>Prefixing these vars with _ is going to propagate the underscored vars through the repos when engineers decide to use them in the future. We'll end up with <code>x, _y, z = foo()</code> and <code>_y</code> being passed around and logged without a good understanding of why it was prefixed in the past.</li>
+<li>On a similar note, giving all unpacked variables a name (instead of naming them <code>_</code>) is helpful for readability and future maintenance.</li>
+</ul>
+<p>Our best solution for now is to ignore F841 in our preview-enabled config and run it separately via <code>ruff check . --config ruff.toml -q &amp;&amp; ruff check . --config ruff.toml --no-preview --select F841</code> .. a new rule that can be optionally ignored would be more ideal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/un-pogaz">@un-pogaz</a> on 2025-01-12 10:22</div>
+            <div class="timeline-body"><p>I'm added to the idea of splitting this rule for tuple unpacking. I can understand the reluctance to create different rules for similar situations, but I think that the all of this discussion proves that the unpacking of tuple is a behavior specific enough to have a distinc implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-13 12:27</div>
+            <div class="timeline-body"><p>Okay, let's go ahead and split this out into a separate check (probably in the RUF category). Thanks for the discussion, all! PRs for this are welcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @AlexWaygood on 2025-01-13 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-01-13 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @AlexWaygood on 2025-01-13 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16449.html">astral-sh/ruff#16449</a> on 2025-03-01 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-03 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16753.html">astral-sh/ruff#16753</a> on 2025-03-14 16:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

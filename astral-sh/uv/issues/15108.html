@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installing platform dependent wheel files results in distribution cache error - astral-sh/uv #15108</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Installing platform dependent wheel files results in distribution cache error</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15108">#15108</a>
+        opened by <a href="https://github.com/vivekfe">@vivekfe</a>
+        on 2025-08-06 13:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vivekfe">@vivekfe</a> on 2025-08-06 13:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>@zanieb  @charliermarsh</p>
+<p>This is similar to Issue #1491.</p>
+<p>I am using an enterprise package as described below under the corporate firewall so have to install it from local file system.</p>
+<p>However when I run uv lock --native-tls or uv lock --native-tls --no-cache , it results in error for line which has detail for Linux package.</p>
+<p>Caused by: Failed to read from the distribution cache
+Caused by: failed to rename file from \?\C:\users</p>
+<p>I suspected that in uv/cache it tries to the rename  nxpy Folder in temp folder. When we install the packages, win and Linux both versions have same directory name. However, if I use a separate package versions for windows and Linux, the error disappears.</p>
+<p>[tool.uv.sources]
+nxpy = [
+{ path = &quot;nxdist/nxpy-21.3.4-cp310-cp310-win_amd64.whl&quot;, marker = &quot;platform_system == 'Windows'&quot; },
+{ path = &quot;nxdist/nxpy-21.3.4-cp310-cp310-linux_x86_64.whl&quot;, marker = &quot;platform_system == 'Linux'&quot; }
+]</p>
+<h3>Platform</h3>
+<p>Windows 10</p>
+<h3>Version</h3>
+<p>uv 0.8.4</p>
+<h3>Python version</h3>
+<p>python 3.10.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @vivekfe on 2025-08-06 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivekfe">@vivekfe</a> on 2025-08-20 11:33</div>
+            <div class="timeline-body"><p>Hi Team</p>
+<p>Want to check if this issue with distribution cache is expected ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-26 02:23</div>
+            <div class="timeline-body"><p>I don't think this is expected, but are you able to come up with a reproduction that we can run ourselves? As-is, it's hard to help because we can't reproduce the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-08-26 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-08-26 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivekfe">@vivekfe</a> on 2025-08-26 05:59</div>
+            <div class="timeline-body"><p>Hi Charlie</p>
+<p>Thanks for checking however this is similar to
+https://github.com/astral-sh/uv/issues/7485</p>
+<p>I am temporarily avoiding this issue by using a different cache</p>
+<p>$env:TEMP = $TempDir
+$env:TMP = $TempDir
+$env:TMPDIR = $TempDir
+$env:UV_CACHE_DIR = $CacheDir</p>
+<p>Write-Host &quot;[Info] TEMP set to $env:TEMP&quot;
+Write-Host &quot;[Info] TMP set to $env:TMP&quot;
+Write-Host &quot;[Info] TMPDIR set to $env:TMPDIR&quot;
+Write-Host &quot;[Info] UV_CACHE_DIR set to $env:UV_CACHE_DIR&quot;</p>
+<p>Unfortunately the packages are internal to my firm so I can't share them
+here however this was not happening earlier and started with recent
+releases.</p>
+<p>On Tue, 26 Aug 2025, 4:23 am Charlie Marsh, <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p><em>charliermarsh</em> left a comment (astral-sh/uv#15108)
+<a href="https://github.com/astral-sh/uv/issues/15108#issuecomment-3222340567">https://github.com/astral-sh/uv/issues/15108#issuecomment-3222340567</a></p>
+<p>I don't think this is expected, but are you able to come up with a
+reproduction that we can run ourselves? As-is, it's hard to help because we
+can't reproduce the issue.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/15108#issuecomment-3222340567">https://github.com/astral-sh/uv/issues/15108#issuecomment-3222340567</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AADKLIDMCTKIRB63G2Z3OD33PPAKHAVCNFSM6AAAAACDIAH7R2VHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMRSGM2DANJWG4">https://github.com/notifications/unsubscribe-auth/AADKLIDMCTKIRB63G2Z3OD33PPAKHAVCNFSM6AAAAACDIAH7R2VHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMRSGM2DANJWG4</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivekfe">@vivekfe</a> on 2025-09-19 06:37</div>
+            <div class="timeline-body"><p>Here is my pyproject.toml</p>
+<p>[project]</p>
+<p>name = &quot;Global-Project&quot;</p>
+<p>version = &quot;0.1.0&quot;</p>
+<p>readme = &quot;README.md&quot;</p>
+<p>requires-python = &quot;&gt;=3.10.10&quot;</p>
+<p>dependencies = [</p>
+<pre><code>            &quot;marimo&gt;=0.13.10&quot;,
+
+            &quot;arcticdb&gt;=4.4.2&quot;,
+
+            &quot;colour&gt;=0.1.5&quot;,
+
+            &quot;cryptography&gt;=44.0.0&quot;,
+
+            &quot;cvxpy&gt;=1.6.0&quot;,
+
+            &quot;cx-oracle&gt;=8.3.0&quot;,
+
+            &quot;dash&lt;=2.18.2&quot;,
+
+            &quot;dash-ag-grid==31.3.1&quot;,
+
+            &quot;dash-bootstrap-components&gt;=1.7.1&quot;,
+
+            &quot;dash-enterprise-libraries&gt;=0.0.1&quot;,
+
+            &quot;dash-loading-spinners&gt;=1.0.3&quot;,
+
+            &quot;diskcache&gt;=5.6.3&quot;,
+
+            &quot;duckdb&gt;=1.1.3&quot;,
+
+            &quot;fastapi&gt;=0.115.6&quot;,
+
+            &quot;google-cloud-storage&gt;=2.19.0&quot;,
+
+            &quot;igraph&gt;=0.11.8&quot;,
+
+            &quot;jupyter&gt;=1.0.0&quot;,
+
+            &quot;jupyterlab&gt;=3.5.3&quot;,
+
+            &quot;matplotlib&gt;=3.10.0&quot;,
+
+            &quot;numexpr&gt;=2.10.2&quot;,
+
+            &quot;openpyxl&gt;=3.1.5&quot;,
+
+            &quot;packaging&gt;=24.2.0&quot;,
+
+            &quot;pandas&gt;=2.2.3&quot;,
+
+            &quot;pandoc&gt;=2.4&quot;,
+
+            &quot;pip-system-certs&gt;=4.0&quot;,
+
+            &quot;pkginfo&gt;=1.12.0&quot;,
+
+            &quot;pydantic&gt;=2.10.5&quot;,
+
+            &quot;pyxll&gt;=5.9.2&quot;,
+
+            &quot;quantlib&gt;=1.36&quot;,
+
+            &quot;scipy&gt;=1.15.1&quot;,
+
+            &quot;tqdm&gt;=4.67.1&quot;,
+
+            &quot;uvicorn&gt;=0.34.0&quot;,
+
+            &quot;xlwings&gt;=0.33.6&quot;,
+
+            &quot;nxpy&quot;,
+
+            &quot;nxtools&quot;,
+
+            &quot;celery&gt;=5.2.7&quot;,
+
+            &quot;flower&gt;=2.0.1&quot;,
+
+            &quot;redis&gt;=3.5.3&quot;,
+
+            &quot;pip&gt;=25.0.1&quot;,
+
+            &quot;polars&gt;=1.24.0&quot;,
+
+            &quot;twine&gt;=6.1.0&quot;,
+
+            &quot;pulp&gt;=3.1.1&quot;,
+
+            &quot;pyarrow&gt;=20.0.0&quot;,
+
+            &quot;fastparquet&gt;=2024.11.0&quot;,
+
+            &quot;ipyvolume&gt;=0.6.3&quot;,
+
+            &quot;ipython-genutils&gt;=0.2.0&quot;,
+
+            &quot;ipywidgets&gt;=8.1.6&quot;,
+
+            &quot;dash-mantine-components==1.2&quot;,
+
+            &quot;dash-iconify&gt;=0.1.2&quot;,
+
+            &quot;setuptools==66.1.1&quot;,
+
+            &quot;pyfolio&gt;=0.9.2&quot;,
+
+            &quot;ruff&gt;=0.12.2&quot;,
+
+            &quot;black&gt;=25.1.0&quot;,
+
+            &quot;flake8&gt;=7.3.0&quot;,
+
+            &quot;isort&gt;=6.0.1&quot;,
+
+            &quot;numba&gt;=0.61.2&quot;,
+
+            &quot;python-frontmatter&gt;=1.1.0&quot;,
+
+            &quot;python-constraint&gt;=1.4.0&quot;,
+
+            &quot;nbconvert&gt;=7.16.6&quot;,
+
+            &quot;aleatory&gt;=1.1.1&quot;,
+
+            &quot;install&gt;=1.3.5&quot;,
+
+            &quot;atlassian-python-api&gt;=4.0.7&quot;,
+
+            &quot;bt&gt;=1.1.2&quot;,
+
+            &quot;pdoc&gt;=15.0.4&quot;,</code></pre>
+<p>]</p>
+<p>[dependency-groups]</p>
+<p>efx_tooling = [</p>
+<p>&quot;stratpy-utils&gt;=0.7.48&quot;</p>
+<p>]</p>
+<p>solutions = [</p>
+<p>&quot;hsbc_anl&gt;=4.0.260&quot;,</p>
+<p>&quot;hsbc-anl-infra&gt;=4.0.359&quot;</p>
+<p>]</p>
+<p>dash_prop_tools = [</p>
+<p>&quot;dash-embedded&gt;=2.0.0&quot;,</p>
+<p>&quot;dash-design-kit&gt;=2.2.0&quot;,</p>
+<p>&quot;dash-snapshots&gt;=2.3.0&quot;,</p>
+<p>&quot;dash-notes&gt;=0.0.3&quot;,</p>
+<p>]</p>
+<p>optional-tools = [</p>
+<pre><code>&quot;blinker&gt;=1.9.0&quot;,
+
+&quot;cachecontrol&gt;=0.14.2&quot;,
+
+&quot;cleo&gt;=2.1.0&quot;,
+
+&quot;distlib&gt;=0.3.9&quot;,
+
+&quot;fastjsonschema&gt;=2.21.1&quot;,
+
+&quot;filelock&gt;=3.16.1&quot;,
+
+&quot;importlib-resources&gt;=6.5.2&quot;,
+
+&quot;ipykernel&gt;=6.29.5&quot;,
+
+&quot;ipython&gt;=8.31.0&quot;,
+
+&quot;pywin32-ctypes&gt;=0.2.3&quot;,
+
+&quot;shellingham&gt;=1.5.4&quot;,</code></pre>
+<p>]</p>
+<p>linters = [</p>
+<pre><code>&quot;black&gt;=22.12.0&quot;,
+
+&quot;flake8&gt;=7.1.1&quot;,
+
+&quot;flake8-docstrings&gt;=1.7.0&quot;,
+
+&quot;flake8-html&gt;=0.4.3&quot;,
+
+&quot;isort&gt;=5.13.2&quot;,
+
+&quot;mypy&gt;=1.14.1&quot;,
+
+&quot;pep8-naming&gt;=0.14.1&quot;,
+
+&quot;pylint&gt;=3.3.3&quot;,
+
+&quot;ruff&gt;=0.9.2&quot;,</code></pre>
+<p>]</p>
+<p>test-tools = [</p>
+<pre><code>&quot;pytest&gt;=8.3.4&quot;,
+
+&quot;pytest-cov&gt;=6.0.0&quot;,</code></pre>
+<p>]</p>
+<p>google-apis = [</p>
+<pre><code>&quot;db-dtypes&gt;=1.3.1&quot;,
+
+&quot;gcloud&gt;=0.18.3&quot;,
+
+&quot;google-cloud-bigquery&gt;=3.27.0&quot;,
+
+&quot;google-cloud-bigquery-storage&gt;=2.27.0&quot;,
+
+&quot;pandas-gbq&gt;=0.23.1&quot;,</code></pre>
+<p>]</p>
+<p>[tool.uv]</p>
+<p>constraint-dependencies = [&quot;numpy==1.26&quot;]</p>
+<p>python-preference = &quot;only-system&quot;</p>
+<p>reinstall = false</p>
+<p>default-groups = [&quot;efx_tooling&quot;, &quot;solutions&quot;, &quot;dash_prop_tools&quot;,
+&quot;optional-tools&quot;, &quot;linters&quot;, &quot;test-tools&quot;, &quot;google-apis&quot;]</p>
+<p>package = false</p>
+<p>[tool.uv.sources]</p>
+<p>hsbc_anl = { index = &quot;wpb-amg-gcp&quot;}</p>
+<p>hsbc_anl_infra = { index = &quot;wpb-amg-gcp&quot;}</p>
+<p>stratpy-utils = {index = &quot;gbm-nexus&quot;}</p>
+<p>tensorflow-cpu = {index = &quot;gbm-nexus&quot;}</p>
+<p>tensorflow-io-gcs-filesystem = {index = &quot;gbm-nexus&quot;}</p>
+<p>nxpy = [</p>
+<pre><code>            {path = &quot;exdist/nxpy-21.3.4-cp310-cp310-win_amd64.whl&quot;,</code></pre>
+<p>marker = &quot;platform_system == 'Windows'&quot;},</p>
+<pre><code>            {path = &quot;exdist/nxpy-21.3.0-cp310-cp310-linux_x86_64.whl&quot;,</code></pre>
+<p>marker = &quot;platform_system == 'Linux'&quot;}</p>
+<p>]</p>
+<p>nxtools = {path = &quot;exdist/nxtools-1.2a2-py3-none-any.whl&quot;}</p>
+<p>dash-design-kit = {path = &quot;exdist/dash_design_kit-1.6.8.tar.gz&quot;}</p>
+<p>dash-snapshots = {path = &quot;exdist/dash_snapshots-2.3.0-py2.py3-none-any.whl&quot;}</p>
+<p>dash-embedded = {index = &quot;amg-dash-cloud&quot;}</p>
+<p>dash-notes = {path = &quot;exdist/dash_notes-0.0.3-py2.py3-none-any.whl&quot;}</p>
+<p>[build-system]</p>
+<p>requires = [&quot;setuptools&quot;]</p>
+<p>build-backend = &quot;setuptools.build_meta&quot;</p>
+<p>In order to avoid such error for some time, I used a custom path for the
+cache by running a bat file:</p>
+<p><em>Custom_command_prompt.bat</em></p>
+<p>@echo off</p>
+<p>setlocal EnableDelayedExpansion</p>
+<p>:: ====== USER CONFIGURATION ======</p>
+<p>:: Set your user home directory for cache/temp</p>
+<p>set &quot;USER_HOME=C:\sandbox\investment_project&quot;</p>
+<p>set &quot;TEMP_DIR=%USER_HOME%\uvtemp&quot;</p>
+<p>set &quot;CACHE_DIR=%TEMP_DIR%\cache&quot;</p>
+<p>:: =================================</p>
+<p>:: Create temp and cache directories if they don't exist</p>
+<p>if not exist &quot;%TEMP_DIR%&quot; (</p>
+<pre><code>mkdir &quot;%TEMP_DIR%&quot;</code></pre>
+<p>)</p>
+<p>if not exist &quot;%CACHE_DIR%&quot; (</p>
+<pre><code>mkdir &quot;%CACHE_DIR%&quot;</code></pre>
+<p>)</p>
+<p>:: Set environment variables for uv</p>
+<p>set &quot;TEMP=%TEMP_DIR%&quot;</p>
+<p>set &quot;TMP=%TEMP_DIR%&quot;</p>
+<p>set &quot;TMPDIR=%TEMP_DIR%&quot;</p>
+<p>set &quot;UV_CACHE_DIR=%CACHE_DIR%&quot;</p>
+<p>echo [INFO] TEMP set to %TEMP%</p>
+<p>echo [INFO] TMP set to %TMP%</p>
+<p>echo [INFO] TMPDIR set to %TMPDIR%</p>
+<p>echo [INFO] UV_CACHE_DIR set to %UV_CACHE_DIR%</p>
+<p>echo ==========================================================</p>
+<p>echo [INFO] Cache and temp environment set up.</p>
+<p>echo [INFO] Python virtual environment will be activated automatically.</p>
+<p>echo [INFO] You may now run any commands of your choice in this prompt.</p>
+<p>echo ==========================================================</p>
+<p>cmd /K</p>
+<p><em>When I run command uv sync –native-tls,</em></p>
+<p>uv.exe sync --native-tls</p>
+<p>error: Failed to generate package metadata for <code>nxpy==21.3.0 @ path+exdist/nxpy-21.3.0-cp310-cp310-linux_x86_64.whl</code></p>
+<p>Caused by: Failed to write to the distribution cache</p>
+<p>Caused by: failed to rename file from
+C:\sandbox\amginvestment\uvtemp\cache.tmpy6Oi28 to
+C:\sandbox\amginvestment\uvtemp\cache\archive-v0\LLsiTsyuSxSbWpWdQRiWC:
+Access is denied. (os error 5)</p>
+<p>On Tue, 26 Aug 2025, 7:58 am Vivek Srivastava, <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p>Hi Charlie</p>
+<p>Thanks for checking however this is similar to
+https://github.com/astral-sh/uv/issues/7485</p>
+<p>I am temporarily avoiding this issue by using a different cache</p>
+<p>$env:TEMP = $TempDir
+$env:TMP = $TempDir
+$env:TMPDIR = $TempDir
+$env:UV_CACHE_DIR = $CacheDir</p>
+<p>Write-Host &quot;[Info] TEMP set to $env:TEMP&quot;
+Write-Host &quot;[Info] TMP set to $env:TMP&quot;
+Write-Host &quot;[Info] TMPDIR set to $env:TMPDIR&quot;
+Write-Host &quot;[Info] UV_CACHE_DIR set to $env:UV_CACHE_DIR&quot;</p>
+<p>Unfortunately the packages are internal to my firm so I can't share them
+here however this was not happening earlier and started with recent
+releases.</p>
+<p>On Tue, 26 Aug 2025, 4:23 am Charlie Marsh, <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p><em>charliermarsh</em> left a comment (astral-sh/uv#15108)
+<a href="https://github.com/astral-sh/uv/issues/15108#issuecomment-3222340567">https://github.com/astral-sh/uv/issues/15108#issuecomment-3222340567</a></p>
+<p>I don't think this is expected, but are you able to come up with a
+reproduction that we can run ourselves? As-is, it's hard to help because we
+can't reproduce the issue.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/15108#issuecomment-3222340567">https://github.com/astral-sh/uv/issues/15108#issuecomment-3222340567</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AADKLIDMCTKIRB63G2Z3OD33PPAKHAVCNFSM6AAAAACDIAH7R2VHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMRSGM2DANJWG4">https://github.com/notifications/unsubscribe-auth/AADKLIDMCTKIRB63G2Z3OD33PPAKHAVCNFSM6AAAAACDIAH7R2VHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMRSGM2DANJWG4</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/mypy/issues/20200.html">python/mypy#20200</a> on 2025-11-07 11:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarcCharron">@MarcCharron</a> on 2025-11-07 15:40</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I'm the author of the mypy issue <a href="https://github.com/python/mypy/issues/20200">20200</a>
+I tried with this configuration :</p>
+<pre><code class="language-toml">[tool.uv]
+native-tls = true
+link-mode = &quot;copy&quot;
+</code></pre>
+<p>But it still doesn't work in entreprise environnement (I have Trellix running on my computer).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarcCharron">@MarcCharron</a> on 2025-11-25 10:16</div>
+            <div class="timeline-body"><pre><code class="language-shell">Using CPython 3.12.10 interpreter at: C:\Program Files\Python\python.exe
+Creating virtual environment at: .venv
+  × Failed to download `mypy==1.18.2`
+  ├─▶ Failed to read from the distribution cache
+  ╰─▶ failed to rename file from C:\Users\USERXXX\AppData\Local\uv\cache\.tmpY0qi9j 
+      to C:\Users\USERXXX\AppData\Local\uv\cache\archive-v0\YQY-kdG0vVLvidw-fW6wT: 
+      Access denied. (os error 5)
+  help: `mypy` (v1.18.2) was included because `project_xxxx:dev` (v0.1.0) depends on `mypy`
+</code></pre>
+<p>Could be possible to implement a retry on the rename fonction, in order to wait the antivirus ?
+Perhaps I could try to code it despite my small knowledge of rust ?</p>
+<p>Thank you in advance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexmjd">@alexmjd</a> on 2025-11-25 10:44</div>
+            <div class="timeline-body"><p>I am also concerned by this issue
+I suspect that uv is so powerfull that windows can't unlock cache file while uv installing dependencies, error on mypy and pandas spotted in my case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanjmcdougall">@nathanjmcdougall</a> on 2025-11-26 18:40</div>
+            <div class="timeline-body"><p>This seems like a duplicate of #11134, also see #7382</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-16 12:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Using CPython 3.12.10 interpreter at: C:\Program Files\Python\python.exe
+Creating virtual environment at: .venv
+× Failed to download <code>mypy==1.18.2</code>
+├─▶ Failed to read from the distribution cache
+╰─▶ failed to rename file from C:\Users\USERXXX\AppData\Local\uv\cache.tmpY0qi9j
+to C:\Users\USERXXX\AppData\Local\uv\cache\archive-v0\YQY-kdG0vVLvidw-fW6wT:
+Access denied. (os error 5)
+help: <code>mypy</code> (v1.18.2) was included because <code>project_xxxx:dev</code> (v0.1.0) depends on <code>mypy</code></p>
+<p>Could be possible to implement a retry on the rename fonction, in order to wait the antivirus ? Perhaps I could try to code it despite my small knowledge of rust ?</p>
+<p>Thank you in advance</p>
+</blockquote>
+<p>uv should already be using retries and backoff when renaming files: https://github.com/astral-sh/uv/blob/62bf92132b848df77747a10c92809667c9af9e4d/crates/uv-fs/src/lib.rs#L293-L330</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2025-12-16 12:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

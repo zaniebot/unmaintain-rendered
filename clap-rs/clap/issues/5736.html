@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derive parser: FromStr implemention with Err=Box&lt;dyn Error&gt; causes inscrutible compiler error - clap-rs/clap #5736</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Derive parser: FromStr implemention with Err=Box&lt;dyn Error&gt; causes inscrutible compiler error</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/5736">#5736</a>
+        opened by <a href="https://github.com/Sciencentistguy">@Sciencentistguy</a>
+        on 2024-09-19 21:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Sciencentistguy">@Sciencentistguy</a> on 2024-09-19 21:13</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.81.0</p>
+<h3>Clap Version</h3>
+<p>4.5.17</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use std::str::FromStr;
+use clap::Parser;
+
+#[derive(Debug, Clone)]
+struct ArgT {
+    value: usize,
+}
+
+impl FromStr for ArgT {
+    type Err = Box&lt;dyn std::error::Error&gt;;
+
+    fn from_str(x: &amp;str) -&gt; Result&lt;Self, Self::Err&gt; {
+        todo!()
+    }
+}
+
+#[derive(Parser)]
+struct Args {
+    #[clap()]
+    arg: ArgT
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Compile the code</p>
+<h3>Actual Behaviour</h3>
+<p>It rejects the code, and the error message is rather unhelpful</p>
+<h3>Expected Behaviour</h3>
+<p>Either this should be supported (I don't know why it isn't, but it may be non-trivial), or ideally the error message should be improved</p>
+<h3>Additional Context</h3>
+<p>https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=5598d6ddacf4b3784b92969617c54318</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @Sciencentistguy on 2024-09-19 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-09-19 21:16</div>
+            <div class="timeline-body"><p>The error message</p>
+<pre><code>error[E0599]: the method `value_parser` exists for reference `&amp;&amp;&amp;&amp;&amp;&amp;_infer_ValueParser_for&lt;ArgT&gt;`, but its trait bounds were not satisfied
+    --&gt; src/lib.rs:19:5
+     |
+5    |   struct ArgT {
+     |   ----------- doesn't satisfy 6 bounds
+...
+19   |       #[clap()]
+     |       ^ method cannot be called on `&amp;&amp;&amp;&amp;&amp;&amp;_infer_ValueParser_for&lt;ArgT&gt;` due to unsatisfied trait bounds
+     |
+    ::: /playground/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.17/src/builder/value_parser.rs:2423:1
+     |
+2423 |   pub struct _infer_ValueParser_for&lt;T&gt;(std::marker::PhantomData&lt;T&gt;);
+     |   ------------------------------------ doesn't satisfy `_: _impls_FromStr`
+     |
+    ::: /playground/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/alloc/src/boxed.rs:238:1
+     |
+238  | / pub struct Box&lt;
+239  | |     T: ?Sized,
+240  | |     #[unstable(feature = &quot;allocator_api&quot;, issue = &quot;32838&quot;)] A: Allocator = Global,
+241  | | &gt;(Unique&lt;T&gt;, A);
+     | |_- doesn't satisfy `_: Into&lt;Box&lt;dyn Error + Send + Sync&gt;&gt;`
+     |
+     = note: the following trait bounds were not satisfied:
+             `ArgT: ValueEnum`
+             which is required by `&amp;&amp;&amp;&amp;&amp;_infer_ValueParser_for&lt;ArgT&gt;: clap::builder::impl_prelude::_impls_ValueEnum`
+             `ArgT: ValueParserFactory`
+             which is required by `&amp;&amp;&amp;&amp;&amp;&amp;_infer_ValueParser_for&lt;ArgT&gt;: clap::builder::impl_prelude::_impls_ValueParserFactory`
+             `ArgT: From&lt;OsString&gt;`
+             which is required by `&amp;&amp;&amp;&amp;_infer_ValueParser_for&lt;ArgT&gt;: clap::builder::impl_prelude::_impls_From_OsString`
+             `ArgT: From&lt;&amp;'s std::ffi::OsStr&gt;`
+             which is required by `&amp;&amp;&amp;_infer_ValueParser_for&lt;ArgT&gt;: clap::builder::impl_prelude::_impls_From_OsStr`
+             `ArgT: From&lt;std::string::String&gt;`
+             which is required by `&amp;&amp;_infer_ValueParser_for&lt;ArgT&gt;: clap::builder::impl_prelude::_impls_From_String`
+             `ArgT: From&lt;&amp;'s str&gt;`
+             which is required by `&amp;_infer_ValueParser_for&lt;ArgT&gt;: clap::builder::impl_prelude::_impls_From_str`
+             `Box&lt;(dyn std::error::Error + 'static)&gt;: Into&lt;Box&lt;(dyn std::error::Error + Send + Sync + 'static)&gt;&gt;`
+             which is required by `_infer_ValueParser_for&lt;ArgT&gt;: clap::builder::impl_prelude::_impls_FromStr`
+note: the traits `From`, `ValueEnum`,  and `ValueParserFactory` must be implemented
+    --&gt; /playground/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.17/src/builder/value_parser.rs:2272:1
+     |
+2272 | pub trait ValueParserFactory {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+    ::: /playground/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.17/src/derive.rs:276:1
+     |
+276  | pub trait ValueEnum: Sized + Clone {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+    ::: /playground/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/mod.rs:580:1
+     |
+580  | pub trait From&lt;T&gt;: Sized {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^
+     = note: this error originates in the macro `clap::value_parser` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unused variable: `x`
+  --&gt; src/lib.rs:12:17
+   |
+12 |     fn from_str(x: &amp;str) -&gt; Result&lt;Self, Self::Err&gt; {
+   |                 ^ help: if this is intentional, prefix it with an underscore: `_x`
+   |
+   = note: `#[warn(unused_variables)]` on by default
+
+For more information about this error, try `rustc --explain E0599`.
+warning: `playground` (lib) generated 1 warning
+error: could not compile `playground` (lib) due to 2 previous errors; 1 warning emitted
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-09-19 21:24</div>
+            <div class="timeline-body"><p><code>clap</code> needs to know what <code>ValueParser</code> to use for a field.</p>
+<blockquote>
+<pre><code> the method `value_parser` exists for reference `&amp;&amp;&amp;&amp;&amp;&amp;_infer_ValueParser_for&lt;ArgT&gt;`, but its trait bounds were not satisfied
+</code></pre>
+</blockquote>
+<p>We have a trait to &quot;infer <code>ValueParser</code> for your <code>ArgT</code>&quot;</p>
+<blockquote>
+<pre><code>     |   ----------- doesn't satisfy 6 bounds
+</code></pre>
+</blockquote>
+<p>We have 6 traits available to provide <code>_infer_ValueParser_for</code> for you</p>
+<blockquote>
+<pre><code>             `Box&lt;(dyn std::error::Error + 'static)&gt;: Into&lt;Box&lt;(dyn std::error::Error + Send + Sync + 'static)&gt;&gt;`
+             which is required by `_infer_ValueParser_for&lt;ArgT&gt;: clap::builder::impl_prelude::_impls_FromStr`
+</code></pre>
+</blockquote>
+<p>when inferring for <code>FromStr</code>, your error type is not convertable to <code>Error + Send + Sync + 'static</code></p>
+<p>To fix this, change</p>
+<pre><code class="language-rust">    type Err = Box&lt;dyn std::error::Error&gt;;
+</code></pre>
+<p>to</p>
+<pre><code class="language-rust">    type Err = Box&lt;dyn std::error::Error + Send + Sync&gt;;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-09-19 21:25</div>
+            <div class="timeline-body"><p>#5704 previously improved the error message (browse per-commit to see how it evolved).  There isn't a <code>#[diagnostic]</code> for our case to further improve it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sciencentistguy">@Sciencentistguy</a> on 2024-09-19 21:30</div>
+            <div class="timeline-body"><p>I see. Thanks for the quick reply and explanation 🙂</p>
+<p>Maybe if/when <code>#[diagnostic]</code> becomes a thing, this could be improved</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2024-09-19 21:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-blocked</span> added by @epage on 2024-09-19 21:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

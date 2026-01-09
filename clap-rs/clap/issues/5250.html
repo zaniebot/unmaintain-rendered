@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Vec&lt;Option&lt;_&gt;&gt;` with `num_args(0..)` Ignores flags passed with no value - clap-rs/clap #5250</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Vec&lt;Option&lt;_&gt;&gt;` with `num_args(0..)` Ignores flags passed with no value</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/5250">#5250</a>
+        opened by <a href="https://github.com/Maurdekye">@Maurdekye</a>
+        on 2023-12-07 06:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Maurdekye">@Maurdekye</a> on 2023-12-07 06:40</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.76.0-nightly (4cb3beec8 2023-11-18)</p>
+<h3>Clap Version</h3>
+<p>clap = { version = &quot;4.4.11&quot;, features = [&quot;derive&quot;, &quot;debug&quot;] }</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+struct Args {
+    #[clap(short, num_args(0..))]
+    s: Vec&lt;Option&lt;String&gt;&gt;
+}
+
+fn main() {
+    let args = Args::parse();
+    println!(&quot;{:#?}&quot;, args.s);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- -s -s test -s</code></p>
+<h3>Actual Behaviour</h3>
+<pre><code>[
+    Some(
+        &quot;test&quot;,
+    ),
+]
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>[
+    None,
+    Some(
+        &quot;test&quot;,
+    ),
+    None,
+]
+</code></pre>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;test_rs&quot;
+[clap_builder::builder::command]Command::_propagate:test_rs
+[clap_builder::builder::command]Command::_check_help_and_version:test_rs expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:test_rs
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:s
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-s&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-s&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;s&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['s']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:s
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:s: Found valid opt or flag
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:s: val=&quot;&quot;, short_arg=ShortFlags { inner: &quot;s&quot;, utf8_prefix: CharIndices { front_offset: 1, iter: Chars([]) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=s, val=None, has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(0)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::parse_opt_value: More arg vals required...
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg Opt(&quot;s&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-s&quot;'
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;s&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['s']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:s
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:s: Found valid opt or flag
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:s: val=&quot;&quot;, short_arg=ShortFlags { inner: &quot;s&quot;, utf8_prefix: CharIndices { front_offset: 1, iter: Chars([]) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=s, val=None, has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(0)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::parse_opt_value: More arg vals required...
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;s&quot;
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=1
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;s&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;s&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;s&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Args&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: []
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=s, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=0..=18446744073709551615, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg Opt(&quot;s&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;test&quot;'
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=s, pending=1
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=0..=18446744073709551615, actual=1
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-s&quot;'
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;s&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['s']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:s
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:s: Found valid opt or flag
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:s: val=&quot;&quot;, short_arg=ShortFlags { inner: &quot;s&quot;, utf8_prefix: CharIndices { front_offset: 1, iter: Chars([]) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=s, val=None, has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(0)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::parse_opt_value: More arg vals required...
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;s&quot;
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=2
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;s&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;s&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;s&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Args&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;test&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=3
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=s, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=0..=18446744073709551615, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg Opt(&quot;s&quot;)
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;s&quot;
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=4
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;s&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;s&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;s&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Args&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: []
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=s, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=0..=18446744073709551615, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:s:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:s: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;s&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;s&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;Args&quot;, conflicts=[]
+[clap_builder::parser::validator]Validator::validate: needs_val_of=&quot;s&quot;
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;s&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;s&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;s&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;Args&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;Args&quot;:group
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+[
+    Some(
+        &quot;test&quot;,
+    ),
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @Maurdekye on 2023-12-07 06:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-12-07 15:53</div>
+            <div class="timeline-body"><p>To double check, do you mean <code>num_args(0..))]</code> or <code>num_args(0..=1))]</code>?  <code>num_args</code> controls how many values per flag, not how many values total.</p>
+<p>If its <code>num_args(0..))]</code>, then you likely want to use <code>Vec&lt;Vec&lt;String&gt;&gt;</code> instead.  It is an interesting idea though to support <code>Vec&lt;Option&lt;String&gt;&gt;</code> for <code>num_args(0..=1))]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2023-12-07 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2023-12-07 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> removed by @epage on 2023-12-07 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2023-12-07 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Maurdekye">@Maurdekye</a> on 2023-12-07 16:25</div>
+            <div class="timeline-body"><p>i didn't know that's what the flags did; i was just trying to find a way to allow clap to accept a single option repeatedly, which may or may not accept values</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

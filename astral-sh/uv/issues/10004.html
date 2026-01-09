@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How can I override a uv install (via uv sync) with an editable package that will stay up to date in running docker container - astral-sh/uv #10004</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How can I override a uv install (via uv sync) with an editable package that will stay up to date in running docker container</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10004">#10004</a>
+        opened by <a href="https://github.com/adiberk">@adiberk</a>
+        on 2024-12-18 15:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adiberk">@adiberk</a> on 2024-12-18 15:32</div>
+            <div class="timeline-body"><p>I want to build my docker container as I normally do and then on run, install an editable version of a local package so that I can make sure to that I can update the package mid session and reflect those changes in the running container</p>
+<p>However, this doesn't seem to be working</p>
+<p>In my dockerfile I have this code</p>
+<pre><code>WORKDIR /virtualenv
+COPY pyproject.toml uv.lock ./
+RUN --mount=type=ssh \
+    if [ &quot;$ENV&quot; = &quot;unittest&quot; ]; then \
+    echo 'Installing UT' &amp;&amp; uv sync --extra ut --frozen --no-install-project; \
+    elif [ &quot;$ENV&quot; = &quot;dev&quot; ]; then \
+    echo 'Installing DEV' &amp;&amp; uv sync --extra dev --frozen --no-install-project; \
+    else \
+    echo 'Installing REG' &amp;&amp; uv sync --frozen --no-install-project; \
+    fi
+# create /app directory and chown to to node user or else it will be owned by root
+WORKDIR /app
+COPY --exclude=**/.* --exclude=*.lock --exclude=*.toml . /app
+
+ENV VIRTUAL_ENV=/virtualenv/.venv
+ENV PATH=&quot;/virtualenv/.venv/bin:$PATH&quot;
+ENV PYTHONHASHSEED=0
+</code></pre>
+<p>When I run my compose I try this
+<code>uv pip install -e /py-authorization /our-common --config-settings editable_mode=strict  &amp;&amp; python -m debugpy --listen 0.0.0.0:10001 -m gunicorn -c python:config --bind=0.0.0.0:7680 place:app --log-level=debug --reload</code></p>
+<p>While this does make sure my running container gets the latest local code from &quot;our-common&quot; it is not updating after I edit that code</p>
+<p>I believe when we originally used &quot;pip&quot; for this, there were no issues (though at the time we were using the &quot;system&quot; python and not creating a virtual env</p>
+<p>Note: I know we can add the local path as a resource, but that the path isn't accessible in the docker build step. We make it accessible via mounting it.  Which is why I do it in the docker-compose run command</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-18 17:16</div>
+            <div class="timeline-body"><p>Have you confirmed that everything is using the same virtual environment? How did you confirm that the code is &quot;not updating&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-12-18 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adiberk">@adiberk</a> on 2024-12-18 17:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Have you confirmed that everything is using the same virtual environment? How did you confirm that the code is &quot;not updating&quot;?</p>
+</blockquote>
+<p>@charliermarsh
+I am not sure how to confirm that everything is using the same virtual environment</p>
+<ul>
+<li>If I run &quot;which python&quot; in my docker-compose command I do see the path to the virtual env python <code>/virtualenv/.venv/bin/python</code></li>
+</ul>
+<p>But I did add print statement in the local package while my service was running. The statement still wasn't getting hit. I have to restart (and rerun that uv install command)</p>
+<p>Also, if I debug and enter the local package, I can see it isn't showing latest data</p>
+<p>Note the original library is installed in pyproject as a resource via git ssh (but then I run uv install on service start to override the library)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "How can I override a uv install with an editable package that will stay up to date on edits" to "How can I override a uv install (via uv sync) with an editable package that will stay up to date in running docker container" by @adiberk on 2024-12-18 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adiberk">@adiberk</a> on 2024-12-18 20:04</div>
+            <div class="timeline-body"><p>@charliermarsh I actually decided to try installing uv using the system python instead of a virtual env in the dockerfile. After this if I run <code>pip install -e</code> etc. it worked as expected. And I could see that package changes are reflected in the running docker service</p>
+<p>So I think I know the issue
+<code>which python</code> shows the path to virtual env
+BUT
+<code>which pip</code> shows path to <code>/usr/local/bin/pip</code> which I guess is ultimately the issue here.  How can I make sure pip is correct without manually reactivating the env in the run compose command? (it seems it already is active based on the which python command)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-18 20:22</div>
+            <div class="timeline-body"><p>It sounds like you want to add pip as a dependency of your project? Or do <code>uv pip install pip</code> so it's available in the environment?</p>
+<p>Your example uses <code>uv pip</code> not <code>pip</code> though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adiberk">@adiberk</a> on 2024-12-18 20:27</div>
+            <div class="timeline-body"><p>Right - so I have been trying to get it to work with <code>uv pip</code> and not just <code>pip</code>
+But it seems it is not working with <code>uv pip</code> so I tried with regular pip and system python install just to be sure it works as expected.</p>
+<p>I guess my question now is how can I get the same functionality using <code>uv pip</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-18 20:29</div>
+            <div class="timeline-body"><p>If you install it with regular pip it seems like it'd be outside the virtual environment though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adiberk">@adiberk</a> on 2024-12-18 20:31</div>
+            <div class="timeline-body"><p>Agreed which is why I only did that when I installed the packages using the system python in docker and <strong>not</strong> a virtual env. This helped me verify that it might be some sort of issue with the virtual env and using <code>uv pip install -e</code> in the run compose command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-18 20:35</div>
+            <div class="timeline-body"><p>I see. Sorry I didn't fully understand your previous comment.</p>
+<p>I think we'll need a complete minimal example to help here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2024-12-18 20:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

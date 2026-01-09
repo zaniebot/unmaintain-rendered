@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[FAST003] False positive on `Annotated` dependency - astral-sh/ruff #21075</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[FAST003] False positive on `Annotated` dependency</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21075">#21075</a>
+        opened by <a href="https://github.com/vinnybod">@vinnybod</a>
+        on 2025-10-25 18:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vinnybod">@vinnybod</a> on 2025-10-25 18:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>A full reproduction can be seen at: https://github.com/vinnybod/reproductions/tree/vinnybod/FAST003</p>
+<p>TL;DR:
+If using <code>thing=Depends(get_thing)</code>, the route path parameter <code>thing_id</code> is found in the <code>get_thing</code> dependency.
+If using the equivalent <code>thing: ThingDep</code>, the route path parameter is considered missing by the FAST003 rule.</p>
+<pre><code class="language-py">from typing import Annotated
+
+from fastapi import FastAPI, Depends
+
+app = FastAPI()
+
+
+async def get_thing(thing_id: int):
+    return {&quot;thing_id&quot;: thing_id}
+
+
+ThingDep = Annotated[dict, Depends(get_thing)]
+
+
+# This is considered wrong by FAST003
+@app.get(&quot;annotated/{thing_id}&quot;)
+async def get_thing_endpoint(thing: ThingDep):
+    return thing
+
+
+# This is considered fine by FAST003
+@app.get(&quot;depends/{thing_id}&quot;)
+async def get_thing_endpoint(thing=Depends(get_thing)):
+    return thing
+</code></pre>
+<pre><code>&gt; poetry run ruff check . --fix
+FAST003 Parameter `thing_id` appears in route path, but not in `get_thing_endpoint` signature
+  --&gt; reproductions/main.py:16:21
+   |
+15 | # This is considered wrong by FAST003
+16 | @app.get(&quot;annotated/{thing_id}&quot;)
+   |                     ^^^^^^^^^^
+17 | async def get_thing_endpoint(thing: ThingDep):
+18 |     return thing
+   |
+help: Add `thing_id` to function signature
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.14.1 (2bffef596 2025-10-16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-27 14:27</div>
+            <div class="timeline-body"><p>Thanks for the report! We may be able to try resolving these, but I think implicit type aliases like this can be a bit tricky.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-10-27 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-10-27 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaxor24">@jaxor24</a> on 2025-11-10 03:10</div>
+            <div class="timeline-body"><p>Also just ran into this in 0.14.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2025-11-10 08:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-11-10 08:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 08:29</div>
+            <div class="timeline-body"><p>I'd consider this a bug and the only question is how to reduce the false positives without reporting fewer true-positives.</p>
+<p>We could try to resolve type aliases or I think we should bail on the following line if a parameter doesn't use <code>Annotated</code> (that always means we'll have fewer names than is the case)</p>
+<p>https://github.com/astral-sh/ruff/blob/020ff1723b428e8aa9cbcee743a6dcb9fd95cf8b/crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs#L154-L158</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

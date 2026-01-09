@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New rule: disallow code in `__init__` modules - astral-sh/ruff #9848</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>New rule: disallow code in `__init__` modules</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9848">#9848</a>
+        opened by <a href="https://github.com/samueljsb">@samueljsb</a>
+        on 2024-02-05 23:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/samueljsb">@samueljsb</a> on 2024-02-05 23:32</div>
+            <div class="timeline-body"><p>Could we add the rules from <a href="https://pypi.org/project/flake8-empty-init-modules/">flake8-empty-init-modules/</a> (<code>EIM001</code>/<code>EIM002</code>) to <code>ruff</code>?</p>
+<p>These disallow code in <code>__init__</code> modules (EIM001) or disallow anything other than imports and assignment to <code>__all__</code> (EIM002).</p>
+<p>Disclaimer: I am the author of the flake8 plugin. I'd be interested in trying to implement the checks for <code>ruff</code> if they would be welcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-02-11 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-02-11 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11631.html">astral-sh/ruff#11631</a> on 2024-06-01 23:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersfylling">@andersfylling</a> on 2025-02-12 11:30</div>
+            <div class="timeline-body"><p>This would be really helpful to avoid surprising cyclic dependency errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersfylling">@andersfylling</a> on 2025-05-09 10:31</div>
+            <div class="timeline-body"><p>for people that want something temporary using pre-commit:</p>
+<blockquote>
+<p>empty-init-hook.py</p>
+</blockquote>
+<pre><code class="language-py">import sys
+import os
+
+non_empty_files = False
+
+files = sys.argv[1:]
+for file in files:
+    if os.path.getsize(file) &gt; 0:
+        non_empty_files = True
+        print(f&quot;not empty: {file}&quot;)
+
+if non_empty_files:
+    exit(1)
+</code></pre>
+<blockquote>
+<p>.pre-commit.yaml</p>
+</blockquote>
+<pre><code>default_language_version:
+  python: python3.12
+repos:
+- repo: local
+  hooks:
+  - id: empty-init-files
+    name: empty init files
+    entry: uv run python ./empty-init-hook.py
+    language: system
+    files: __init__.py$
+    pass_filenames: true
+</code></pre>
+<p>Running this would take &lt;1s for repos with hundreds of python files, and an example output for failed cases looks like:</p>
+<pre><code>&gt; uv run pre-commit run --all-files
+
+empty init files.........................................................Failed
+- hook id: empty-init-files
+- duration: 0.59s
+- exit code: 1
+
+not empty: my_app/__init__.py
+not empty: my_app/something/__init__.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/22143.html">astral-sh/ruff#22143</a> on 2025-12-22 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2025-12-26 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-30 16:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

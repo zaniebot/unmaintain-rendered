@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore errors disables help flag - clap-rs/clap #4392</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore errors disables help flag</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4392">#4392</a>
+        opened by <a href="https://github.com/NicholasLYang">@NicholasLYang</a>
+        on 2022-10-14 21:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NicholasLYang">@NicholasLYang</a> on 2022-10-14 21:12</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.64.0 (a55dd71d5 2022-09-19)</p>
+<h3>Clap Version</h3>
+<p>4.0.15</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[clap(author, version, ignore_errors = true)]
+struct Args {
+    /// Force color usage in the terminal
+    #[clap(long)]
+    color: Option&lt;bool&gt;,
+}
+
+fn main() {
+    let args = Args::parse();
+    println!(&quot;{:?}&quot;, args.color)
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- --help</code></p>
+<h3>Actual Behaviour</h3>
+<blockquote>
+<p>None</p>
+</blockquote>
+<h3>Expected Behaviour</h3>
+<blockquote>
+<p>Usage: clap-test [OPTIONS]</p>
+<p>Options:
+--color <COLOR>  Force color usage in the terminal [possible values: true, false]
+-h, --help           Print help information
+-V, --version        Print version information</p>
+</blockquote>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<blockquote>
+<p>[      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name=&quot;clap-test&quot;
+[      clap::builder::command] 	Command::_propagate:clap-test
+[      clap::builder::command] 	Command::_check_help_and_version:clap-test expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --version
+[      clap::builder::command] 	Command::_propagate_global_args:clap-test
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:color
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:version
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--help&quot;)' ([45, 45, 104, 101, 108, 112])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok(&quot;--help&quot;)
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::parse_long_arg
+[        clap::parser::parser] 	Parser::parse_long_arg: Does it contain '='...
+[        clap::parser::parser] 	Parser::parse_long_arg: Found valid arg or flag '--help'
+[        clap::parser::parser] 	Parser::parse_long_arg(&quot;help&quot;): Presence validated
+[        clap::parser::parser] 	Parser::react action=Help, identifier=Some(Long), source=CommandLine
+[        clap::parser::parser] 	Help: use_long=true
+[      clap::builder::command] 	Command::long_help_exists: false
+[      clap::builder::command] 	Command::write_help_err: clap-test, use_long=false
+[      clap::builder::command] 	Command::long_help_exists: false
+[          clap::output::help] 	write_help
+[ clap::output::help_template] 	HelpTemplate::new cmd=clap-test, use_long=false
+[ clap::output::help_template] 	should_show_arg: use_long=false, arg=color
+[ clap::output::help_template] 	HelpTemplate::write_templated_help
+[ clap::output::help_template] 	HelpTemplate::write_before_help
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage] 	Usage::needs_options_tag
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=color
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;color&quot;
+[         clap::output::usage] 	Usage::needs_options_tag:iter:iter: grp_s=&quot;Args&quot;
+[         clap::output::usage] 	Usage::needs_options_tag:iter: [OPTIONS] required
+[         clap::output::usage] 	Usage::get_args: incls=[]
+[         clap::output::usage] 	Usage::get_args: unrolled_reqs=[]
+[         clap::output::usage] 	Usage::get_args: ret_val=[]
+[         clap::output::usage] 	Usage::create_help_usage: usage=clap-test [OPTIONS]
+[ clap::output::help_template] 	HelpTemplate::write_all_args
+[ clap::output::help_template] 	should_show_arg: use_long=false, arg=color
+[ clap::output::help_template] 	should_show_arg: use_long=false, arg=help
+[ clap::output::help_template] 	should_show_arg: use_long=false, arg=version
+[ clap::output::help_template] 	HelpTemplate::write_args Options
+[ clap::output::help_template] 	should_show_arg: use_long=false, arg=color
+[ clap::output::help_template] 	HelpTemplate::write_args: arg=&quot;color&quot; longest=15
+[ clap::output::help_template] 	should_show_arg: use_long=false, arg=help
+[ clap::output::help_template] 	HelpTemplate::write_args: arg=&quot;help&quot; longest=15
+[ clap::output::help_template] 	should_show_arg: use_long=false, arg=version
+[ clap::output::help_template] 	HelpTemplate::write_args: arg=&quot;version&quot; longest=15
+[ clap::output::help_template] 	should_show_arg: use_long=false, arg=color
+[ clap::output::help_template] 	HelpTemplate::spec_vals: a=--color <COLOR>
+[ clap::output::help_template] 	HelpTemplate::spec_vals: Found possible vals...[PossibleValue { name: &quot;true&quot;, help: None, aliases: [], hide: false }, PossibleValue { name: &quot;false&quot;, help: None, aliases: [], hide: false }]
+[ clap::output::help_template] 	should_show_arg: use_long=false, arg=help
+[ clap::output::help_template] 	HelpTemplate::spec_vals: a=--help
+[ clap::output::help_template] 	should_show_arg: use_long=false, arg=version
+[ clap::output::help_template] 	HelpTemplate::spec_vals: a=--version
+[ clap::output::help_template] 	HelpTemplate::spec_vals: a=--color <COLOR>
+[ clap::output::help_template] 	HelpTemplate::spec_vals: Found possible vals...[PossibleValue { name: &quot;true&quot;, help: None, aliases: [], hide: false }, PossibleValue { name: &quot;false&quot;, help: None, aliases: [], hide: false }]
+[ clap::output::help_template] 	HelpTemplate::short
+[ clap::output::help_template] 	HelpTemplate::long
+[ clap::output::help_template] 	HelpTemplate::align_to_about: arg=color, next_line_help=false, longest=15
+[ clap::output::help_template] 	HelpTemplate::align_to_about: positional=false arg_len=15, spaces=2
+[ clap::output::help_template] 	HelpTemplate::help
+[ clap::output::help_template] 	HelpTemplate::help: help_width=23, spaces=64, avail=77
+[ clap::output::help_template] 	HelpTemplate::spec_vals: a=--help
+[ clap::output::help_template] 	HelpTemplate::short
+[ clap::output::help_template] 	HelpTemplate::long
+[ clap::output::help_template] 	HelpTemplate::align_to_about: arg=help, next_line_help=false, longest=15
+[ clap::output::help_template] 	HelpTemplate::align_to_about: positional=false arg_len=6, spaces=11
+[ clap::output::help_template] 	HelpTemplate::help
+[ clap::output::help_template] 	HelpTemplate::help: help_width=23, spaces=22, avail=77
+[ clap::output::help_template] 	HelpTemplate::spec_vals: a=--version
+[ clap::output::help_template] 	HelpTemplate::short
+[ clap::output::help_template] 	HelpTemplate::long
+[ clap::output::help_template] 	HelpTemplate::align_to_about: arg=version, next_line_help=false, longest=15
+[ clap::output::help_template] 	HelpTemplate::align_to_about: positional=false arg_len=9, spaces=8
+[ clap::output::help_template] 	HelpTemplate::help
+[ clap::output::help_template] 	HelpTemplate::help: help_width=23, spaces=25, avail=77
+[ clap::output::help_template] 	HelpTemplate::write_after_help
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+[      clap::builder::command] 	Command::_do_parse: ignoring error: Usage: clap-test [OPTIONS]</p>
+<p>Options:
+--color <COLOR>  Force color usage in the terminal [possible values: true, false]
+-h, --help           Print help information
+-V, --version        Print version information</p>
+<p>Backtrace:
+0: backtrace::backtrace::libunwind::trace
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/backtrace-0.3.66/src/backtrace/libunwind.rs:93:5
+backtrace::backtrace::trace_unsynchronized
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/backtrace-0.3.66/src/backtrace/mod.rs:66:5
+1: backtrace::backtrace::trace
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/backtrace-0.3.66/src/backtrace/mod.rs:53:14
+2: backtrace::capture::Backtrace::create
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/backtrace-0.3.66/src/capture.rs:176:9
+3: backtrace::capture::Backtrace::new
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/backtrace-0.3.66/src/capture.rs:140:22
+4: clap::error::Backtrace::new
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.15/src/error/mod.rs:835:19
+5: clap::error::Error<F>::new
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.15/src/error/mod.rs:135:28
+6: clap::error::Error<F>::for_app
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.15/src/error/mod.rs:277:9
+7: clap::error::Error<F>::display_help
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.15/src/error/mod.rs:329:9
+8: clap::parser::parser::Parser::help_err
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.15/src/parser/parser.rs:1584:9
+9: clap::parser::parser::Parser::react
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.15/src/parser/parser.rs:1288:21
+10: clap::parser::parser::Parser::parse_long_arg
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.15/src/parser/parser.rs:815:17
+11: clap::parser::parser::Parser::get_matches_with
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.15/src/parser/parser.rs:132:44
+12: clap::builder::command::Command::_do_parse
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.15/src/builder/command.rs:3794:29
+13: clap::builder::command::Command::try_get_matches_from_mut
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.15/src/builder/command.rs:708:9
+14: clap::builder::command::Command::get_matches_from
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.15/src/builder/command.rs:578:9
+15: clap::builder::command::Command::get_matches
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.15/src/builder/command.rs:490:9
+16: clap::derive::Parser::parse
+at /Users/nicholas/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.15/src/derive.rs:82:27
+17: clap_test::main
+at src/main.rs:12:16
+18: core::ops::function::FnOnce::call_once
+at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/core/src/ops/function.rs:248:5
+19: std::sys_common::backtrace::__rust_begin_short_backtrace
+at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/std/src/sys_common/backtrace.rs:122:18
+20: std::rt::lang_start::{{closure}}
+at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/std/src/rt.rs:145:18
+21: core::ops::function::impls::&lt;impl core::ops::function::FnOnce<A> for &amp;F&gt;::call_once
+at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/core/src/ops/function.rs:280:13
+std::panicking::try::do_call
+at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/std/src/panicking.rs:492:40
+std::panicking::try
+at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/std/src/panicking.rs:456:19
+std::panic::catch_unwind
+at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/std/src/panic.rs:137:14
+std::rt::lang_start_internal::{{closure}}
+at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/std/src/rt.rs:128:48
+std::panicking::try::do_call
+at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/std/src/panicking.rs:492:40
+std::panicking::try
+at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/std/src/panicking.rs:456:19
+std::panic::catch_unwind
+at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/std/src/panic.rs:137:14
+std::rt::lang_start_internal
+at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/std/src/rt.rs:128:20
+22: std::rt::lang_start
+at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library/std/src/rt.rs:144:17
+23: _main</p>
+<p>[   clap::parser::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[]</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @NicholasLYang on 2022-10-14 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2022-10-14 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2022-10-14 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4398.html">clap-rs/clap#4398</a> on 2022-10-18 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4988.html">clap-rs/clap#4988</a> on 2023-06-27 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-06-28 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chungquantin">@chungquantin</a> on 2025-02-19 04:34</div>
+            <div class="timeline-body"><p>This issue still persist for the subcommand case. I mentioned it here: https://github.com/clap-rs/clap/discussions/5917</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

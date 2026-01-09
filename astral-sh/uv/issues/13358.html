@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv add tries checks for package in both public and private package registry, then fails with private registry error despite the package being available in public registry - astral-sh/uv #13358</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv add tries checks for package in both public and private package registry, then fails with private registry error despite the package being available in public registry</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13358">#13358</a>
+        opened by <a href="https://github.com/Ark-kun">@Ark-kun</a>
+        on 2025-05-09 00:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Ark-kun">@Ark-kun</a> on 2025-05-09 00:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>TL;DR; Despite <code>uv.lock</code> having only PyPI URLs, <code>uv</code> commands try both PyPI URLs (which succeed) and internal repository URLs (which fail) and then <code>uv</code> fails despite successful responses from PyPI.</p>
+<p>Note that even though the included logs feature the <code>uv add</code> command, the failure is with packages that were already in <code>pyproject.toml</code> and <code>uv.lock</code> and the failure also happened with <code>uv run</code>.</p>
+<p>I'm using uv for a very simple package.
+Requirements in pyproject.toml:</p>
+<pre><code>dependencies = [
+    &quot;cloud-pipelines&gt;=0.23.2.4&quot;,
+    &quot;typer&gt;=0.15.3&quot;,
+]
+</code></pre>
+<p>The <code>uv.lock</code> file uses PyPI URLs everywhere:</p>
+<pre><code>[[package]]
+name = &quot;typer&quot;
+version = &quot;0.15.3&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+dependencies = [
+    { name = &quot;click&quot; },
+    { name = &quot;rich&quot; },
+    { name = &quot;shellingham&quot; },
+    { name = &quot;typing-extensions&quot; },
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/98/1a/5f36851f439884bcfe8539f6a20ff7516e7b60f319bbaf69a90dc35cc2eb/typer-0.15.3.tar.gz&quot;, hash = &quot;sha256:818873625d0569653438316567861899f7e9972f2e6e0c16dab608345ced713c&quot;, size = 101641, upload-time = &quot;2025-04-28T21:40:59.204Z&quot; }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/48/20/9d953de6f4367163d23ec823200eb3ecb0050a2609691e512c8b95827a9b/typer-0.15.3-py3-none-any.whl&quot;, hash = &quot;sha256:c86a65ad77ca531f03de08d1b9cb67cd09ad02ddddf4b34745b5008f43b239bd&quot;, size = 45253, upload-time = &quot;2025-04-28T21:40:56.269Z&quot; },
+]
+</code></pre>
+<p>The problematic lines:</p>
+<pre><code>          0.039154s   3ms DEBUG uv_client::cached_client Found stale response for: https://pkgs.shopify.io/basic/data/python/simple/typer/
+          0.039156s   3ms DEBUG uv_client::cached_client Sending revalidation request for: https://pkgs.shopify.io/basic/data/python/simple/typer/
+         uv_client::cached_client::revalidation_request url=&quot;https://pkgs.shopify.io/basic/data/python/simple/typer/&quot;
+          0.039170s   3ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.python.org/simple/typer/
+
+
+    0.208392s DEBUG uv::commands::project::add Reverting changes to `pyproject.toml`
+    0.208709s DEBUG uv::commands::project::add Reverting changes to `uv.lock`
+error: Failed to fetch: `https://pkgs.shopify.io/basic/data/python/simple/typer/`
+  Caused by: HTTP status client error (400 Bad Request) for url (https://pkgs.shopify.io/basic/data/python/simple/typer/)
+</code></pre>
+<p><strong>If there was a fresh successful response from <code>pypi.python.org</code>, why fail on bad response from <code>pkgs.shopify.io</code>?</strong> (And if for some reason uv only wants response from <code>pkgs.shopify.io</code>, then why check <code>pypi.python.org</code> at all?)</p>
+<pre><code>oasis-cli % uv add GitPython -vvv
+    0.000953s DEBUG uv uv 0.6.0 (Homebrew 2025-02-14)
+    0.003790s DEBUG uv_workspace::workspace Found project root: `/Users/ark/src/github.com/Cloud-Pipelines/oasis-cli`
+    0.003872s DEBUG uv_workspace::workspace No workspace root found, using project root
+    0.005014s DEBUG uv_fs Acquired lock for `/Users/ark/src/github.com/Cloud-Pipelines/oasis-cli`
+    0.006310s DEBUG uv_python::version_files Reading Python requests from version file at `/Users/ark/src/github.com/Cloud-Pipelines/oasis-cli/.python-version`
+    0.006734s DEBUG uv::commands::project Using Python request `3.11` from version file at `.python-version`
+    0.007457s DEBUG uv_python::environment Checking for Python environment at `.venv`
+    0.009001s DEBUG uv::commands::project The virtual environment's Python version satisfies `3.11`
+    0.009048s DEBUG uv_fs Released lock at `/var/folders/_9/dl_tfx9169q_wbnqf639bn6r0000gn/T/uv-8e9243df8e848a2d.lock`
+ uv_requirements::specification::from_source source=GitPython
+ uv_client::linehaul::linehaul 
+    0.022036s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries 
+ uv_distribution::distribution_database::get_or_build_wheel_metadata dist=shopify-oasis @ file:///Users/ark/src/github.com/Cloud-Pipelines/oasis-cli
+    0.027120s   1ms DEBUG uv_distribution::source Found static `pyproject.toml` for: shopify-oasis @ file:///Users/ark/src/github.com/Cloud-Pipelines/oasis-cli
+    0.028258s   2ms DEBUG uv_workspace::workspace No workspace root found, using project root
+    0.028956s DEBUG uv::commands::project::lock Ignoring existing lockfile due to mismatched requirements for: `shopify-oasis==0.1.0`
+   Requested: {Requirement { name: PackageName(&quot;cloud-pipelines&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;0.23.2.4&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;gitpython&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;typer&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;0.15.3&quot; }]), index: None, conflict: None }, origin: None }}
+   Existing: {Requirement { name: PackageName(&quot;cloud-pipelines&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;0.23.2.4&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;typer&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;0.15.3&quot; }]), index: None, conflict: None }, origin: None }}
+ uv_resolver::resolver::solve 
+    0.032335s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.11.11
+    0.032339s   0ms DEBUG uv_resolver::resolver Solving with target Python version: &gt;=3.11
+   uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+     uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+    0.033427s   1ms DEBUG uv_resolver::resolver Adding direct dependency: shopify-oasis*
+    0.033562s   1ms DEBUG uv_resolver::resolver Searching for a compatible version of shopify-oasis @ file:///Users/ark/src/github.com/Cloud-Pipelines/oasis-cli (*)
+   uv_resolver::resolver::get_dependencies_forking package=shopify-oasis, version=0.1.0
+     uv_resolver::resolver::get_dependencies package=shopify-oasis, version=0.1.0
+    0.033706s   1ms DEBUG uv_resolver::resolver Adding direct dependency: cloud-pipelines&gt;=0.23.2.4
+ uv_resolver::resolver::process_request request=Versions cloud-pipelines
+   uv_client::registry_client::simple_api package=cloud-pipelines
+    0.033748s   1ms DEBUG uv_resolver::resolver Adding direct dependency: gitpython*
+    0.033751s   1ms DEBUG uv_resolver::resolver Adding direct dependency: typer&gt;=0.15.3
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/ark/.cache/uv/simple-v15/index/ffcc87a41e1c03a1/cloud-pipelines.rkyv
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/ark/.cache/uv/simple-v15/index/dcd4cb247a731f5c/cloud-pipelines.rkyv
+ uv_client::cached_client::from_path_sync path=&quot;/Users/ark/.cache/uv/simple-v15/index/ffcc87a41e1c03a1/cloud-pipelines.rkyv&quot;
+ uv_resolver::resolver::process_request request=Versions gitpython
+   uv_client::registry_client::simple_api package=gitpython
+ uv_client::cached_client::from_path_sync path=&quot;/Users/ark/.cache/uv/simple-v15/index/dcd4cb247a731f5c/cloud-pipelines.rkyv&quot;
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/ark/.cache/uv/simple-v15/index/ffcc87a41e1c03a1/gitpython.rkyv
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/ark/.cache/uv/simple-v15/index/dcd4cb247a731f5c/gitpython.rkyv
+ uv_client::cached_client::from_path_sync path=&quot;/Users/ark/.cache/uv/simple-v15/index/ffcc87a41e1c03a1/gitpython.rkyv&quot;
+ uv_resolver::resolver::process_request request=Versions typer
+   uv_client::registry_client::simple_api package=typer
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/ark/.cache/uv/simple-v15/index/ffcc87a41e1c03a1/typer.rkyv
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/Users/ark/.cache/uv/simple-v15/index/dcd4cb247a731f5c/typer.rkyv
+ uv_client::cached_client::from_path_sync path=&quot;/Users/ark/.cache/uv/simple-v15/index/ffcc87a41e1c03a1/typer.rkyv&quot;
+ uv_client::cached_client::from_path_sync path=&quot;/Users/ark/.cache/uv/simple-v15/index/dcd4cb247a731f5c/gitpython.rkyv&quot;
+ uv_client::cached_client::from_path_sync path=&quot;/Users/ark/.cache/uv/simple-v15/index/dcd4cb247a731f5c/typer.rkyv&quot;
+          0.036608s   1ms DEBUG uv_client::cached_client Found stale response for: https://pkgs.shopify.io/basic/data/python/simple/cloud-pipelines/
+          0.036623s   1ms DEBUG uv_client::cached_client Sending revalidation request for: https://pkgs.shopify.io/basic/data/python/simple/cloud-pipelines/
+         uv_client::cached_client::revalidation_request url=&quot;https://pkgs.shopify.io/basic/data/python/simple/cloud-pipelines/&quot;
+          0.038432s   3ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.python.org/simple/cloud-pipelines/
+          0.039026s   3ms DEBUG uv_client::cached_client Found stale response for: https://pkgs.shopify.io/basic/data/python/simple/gitpython/
+          0.039040s   3ms DEBUG uv_client::cached_client Sending revalidation request for: https://pkgs.shopify.io/basic/data/python/simple/gitpython/
+         uv_client::cached_client::revalidation_request url=&quot;https://pkgs.shopify.io/basic/data/python/simple/gitpython/&quot;
+          0.039073s   3ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.python.org/simple/gitpython/
+ uv_resolver::resolver::process_request request=Prefetch typer &gt;=0.15.3
+ uv_resolver::resolver::process_request request=Prefetch gitpython *
+ uv_resolver::resolver::process_request request=Prefetch cloud-pipelines &gt;=0.23.2.4
+          0.039154s   3ms DEBUG uv_client::cached_client Found stale response for: https://pkgs.shopify.io/basic/data/python/simple/typer/
+          0.039156s   3ms DEBUG uv_client::cached_client Sending revalidation request for: https://pkgs.shopify.io/basic/data/python/simple/typer/
+         uv_client::cached_client::revalidation_request url=&quot;https://pkgs.shopify.io/basic/data/python/simple/typer/&quot;
+          0.039170s   3ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.python.org/simple/typer/
+    0.208392s DEBUG uv::commands::project::add Reverting changes to `pyproject.toml`
+    0.208709s DEBUG uv::commands::project::add Reverting changes to `uv.lock`
+error: Failed to fetch: `https://pkgs.shopify.io/basic/data/python/simple/typer/`
+  Caused by: HTTP status client error (400 Bad Request) for url (https://pkgs.shopify.io/basic/data/python/simple/typer/)
+</code></pre>
+<p>0.7.2:</p>
+<pre><code>% uv add GitPython -vv
+DEBUG uv 0.7.2 (Homebrew 2025-04-30)
+DEBUG Found project root: `/Users/ark/src/github.com/Cloud-Pipelines/oasis-cli`
+DEBUG No workspace root found, using project root
+TRACE Checking lock for `/Users/ark/src/github.com/Cloud-Pipelines/oasis-cli` at `/var/folders/_9/dl_tfx9169q_wbnqf639bn6r0000gn/T/uv-8e9243df8e848a2d.lock`
+DEBUG Acquired lock for `/Users/ark/src/github.com/Cloud-Pipelines/oasis-cli`
+DEBUG Reading Python requests from version file at `/Users/ark/src/github.com/Cloud-Pipelines/oasis-cli/.python-version`
+DEBUG Using Python request `3.11` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+TRACE Cached interpreter info for Python 3.11.11, skipping probing: .venv/bin/python3
+DEBUG The virtual environment's Python version satisfies the request: `Python 3.11`
+TRACE The virtual environment's Python version meets the Python requirement: `&gt;=3.11`
+DEBUG Released lock at `/var/folders/_9/dl_tfx9169q_wbnqf639bn6r0000gn/T/uv-8e9243df8e848a2d.lock`
+TRACE Caching credentials for https://token:***@pkgs.shopify.io/basic/data/python/simple/
+TRACE Caching credentials for https://token:***@pkgs.shopify.io/basic/data/python
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: shopify-oasis @ file:///Users/ark/src/github.com/Cloud-Pipelines/oasis-cli
+DEBUG No workspace root found, using project root
+DEBUG Ignoring existing lockfile due to mismatched requirements for: `shopify-oasis==0.1.0`
+  Requested: {Requirement { name: PackageName(&quot;cloud-pipelines&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;0.23.2.4&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;gitpython&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;typer&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;0.15.3&quot; }]), index: None, conflict: None }, origin: None }}
+  Existing: {Requirement { name: PackageName(&quot;cloud-pipelines&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;0.23.2.4&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;typer&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;0.15.3&quot; }]), index: None, conflict: None }, origin: None }}
+TRACE Performing lookahead for shopify-oasis @ file:///Users/ark/src/github.com/Cloud-Pipelines/oasis-cli
+DEBUG Solving with installed Python version: 3.11.11
+DEBUG Solving with target Python version: &gt;=3.11
+TRACE Assigned packages: 
+TRACE Chose package for decision: root. remaining choices: 
+DEBUG Adding direct dependency: shopify-oasis*
+TRACE Assigned packages: root==0a0.dev0
+TRACE Chose package for decision: shopify-oasis. remaining choices: 
+DEBUG Searching for a compatible version of shopify-oasis @ file:///Users/ark/src/github.com/Cloud-Pipelines/oasis-cli (*)
+DEBUG Adding direct dependency: cloud-pipelines&gt;=0.23.2.4
+DEBUG Adding direct dependency: gitpython*
+DEBUG Adding direct dependency: typer&gt;=0.15.3
+TRACE Assigned packages: root==0a0.dev0, shopify-oasis==0.1.0
+TRACE Chose package for decision: cloud-pipelines. remaining choices: typer, gitpython
+TRACE Fetching metadata for cloud-pipelines from https://token:***@pkgs.shopify.io/basic/data/python/simple/cloud-pipelines/
+TRACE Fetching metadata for cloud-pipelines from https://pypi.python.org/simple/cloud-pipelines/
+TRACE Fetching metadata for gitpython from https://token:***@pkgs.shopify.io/basic/data/python/simple/gitpython/
+TRACE Fetching metadata for gitpython from https://pypi.python.org/simple/gitpython/
+TRACE Fetching metadata for typer from https://token:***@pkgs.shopify.io/basic/data/python/simple/typer/
+TRACE Fetching metadata for typer from https://pypi.python.org/simple/typer/
+TRACE Cached request https://pypi.python.org/simple/cloud-pipelines/ is storable because its response has a 'public' cache-control directive
+TRACE Freshness lifetime found via cache-control max age setting: 600s
+DEBUG Found fresh response for: https://pypi.python.org/simple/cloud-pipelines/
+TRACE Cached request https://pkgs.shopify.io/basic/data/python/simple/cloud-pipelines/ is storable because its response has a 'public' cache-control directive
+TRACE Freshness lifetime found via cache-control max age setting: 600s
+TRACE Cached request https://pkgs.shopify.io/basic/data/python/simple/cloud-pipelines/ has a cached response that does not allow staleness
+TRACE Request https://pkgs.shopify.io/basic/data/python/simple/cloud-pipelines/ does not have a fresh cache because its age is 686887 seconds, it is greater than the freshness lifetime of 600 seconds and stale cached responses are not allowed
+DEBUG Found stale response for: https://pkgs.shopify.io/basic/data/python/simple/cloud-pipelines/
+DEBUG Sending revalidation request for: https://pkgs.shopify.io/basic/data/python/simple/cloud-pipelines/
+TRACE Handling request for https://token:****@pkgs.shopify.io/basic/data/python/simple/cloud-pipelines/ with authentication policy auto
+TRACE Request for https://token:****@pkgs.shopify.io/basic/data/python/simple/cloud-pipelines/ already contains username and password
+TRACE Cached request https://pypi.python.org/simple/typer/ is storable because its response has a 'public' cache-control directive
+TRACE Freshness lifetime found via cache-control max age setting: 600s
+DEBUG Found fresh response for: https://pypi.python.org/simple/typer/
+TRACE Cached request https://pkgs.shopify.io/basic/data/python/simple/typer/ is storable because its response has a 'public' cache-control directive
+TRACE Freshness lifetime found via cache-control max age setting: 600s
+TRACE Cached request https://pkgs.shopify.io/basic/data/python/simple/typer/ has a cached response that does not allow staleness
+TRACE Request https://pkgs.shopify.io/basic/data/python/simple/typer/ does not have a fresh cache because its age is 763056 seconds, it is greater than the freshness lifetime of 600 seconds and stale cached responses are not allowed
+DEBUG Found stale response for: https://pkgs.shopify.io/basic/data/python/simple/typer/
+DEBUG Sending revalidation request for: https://pkgs.shopify.io/basic/data/python/simple/typer/
+TRACE Handling request for https://token:****@pkgs.shopify.io/basic/data/python/simple/typer/ with authentication policy auto
+TRACE Request for https://token:****@pkgs.shopify.io/basic/data/python/simple/typer/ already contains username and password
+TRACE Cached request https://pkgs.shopify.io/basic/data/python/simple/gitpython/ is storable because its response has an 'max-age' cache-control directive
+TRACE Freshness lifetime found via cache-control max age setting: 30s
+TRACE Cached request https://pkgs.shopify.io/basic/data/python/simple/gitpython/ has a cached response that does not permit staleness because the response has a 'must-revalidate' cache-control directive set
+TRACE Request https://pkgs.shopify.io/basic/data/python/simple/gitpython/ does not have a fresh cache because its age is 3479873 seconds, it is greater than the freshness lifetime of 30 seconds and stale cached responses are not allowed
+DEBUG Found stale response for: https://pkgs.shopify.io/basic/data/python/simple/gitpython/
+DEBUG Sending revalidation request for: https://pkgs.shopify.io/basic/data/python/simple/gitpython/
+TRACE Handling request for https://token:****@pkgs.shopify.io/basic/data/python/simple/gitpython/ with authentication policy auto
+TRACE Request for https://token:****@pkgs.shopify.io/basic/data/python/simple/gitpython/ already contains username and password
+TRACE Cached request https://pypi.python.org/simple/gitpython/ is storable because its response has a 'public' cache-control directive
+TRACE Freshness lifetime found via cache-control max age setting: 600s
+DEBUG Found fresh response for: https://pypi.python.org/simple/gitpython/
+TRACE Considering retry of error: Error { kind: WrappedReqwestError(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pkgs.shopify.io&quot;)), port: None, path: &quot;/basic/data/python/simple/gitpython/&quot;, query: None, fragment: None }, WrappedReqwestError(Reqwest(reqwest::Error { kind: Status(400), url: &quot;https://pkgs.shopify.io/basic/data/python/simple/gitpython/&quot; }))) }
+TRACE Cannot retry error: not an IO error
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Reverting changes to `uv.lock`
+error: Failed to fetch: `https://pkgs.shopify.io/basic/data/python/simple/gitpython/`
+  Caused by: HTTP status client error (400 Bad Request) for url (https://pkgs.shopify.io/basic/data/python/simple/gitpython/)
+</code></pre>
+<p>The problem no longer reproduces (I guess, the internal repository stopped returning errors). Anyways, I think the problematic behavior is worth looking at.</p>
+<h3>Platform</h3>
+<p>Mac OS 15 arm64</p>
+<h3>Version</h3>
+<p>0.6.0 and 0.7.2</p>
+<h3>Python version</h3>
+<p>Python 3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Ark-kun on 2025-05-09 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-09 07:04</div>
+            <div class="timeline-body"><p>How does the index configuration in your <code>pyproject.toml</code>, <code>uv.toml</code> or in env vars look like?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-05-09 07:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-05-09 07:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @konstin on 2025-05-09 07:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ark-kun">@Ark-kun</a> on 2025-05-28 21:10</div>
+            <div class="timeline-body"><blockquote>
+<p>How does the index configuration in your pyproject.toml, uv.toml or in env vars look like?</p>
+</blockquote>
+<p>No <code>uv.toml</code>.
+Nothing special in <code>pyproject.toml</code>.</p>
+<pre><code>[project]
+name = &quot;shopify-oasis&quot;
+version = &quot;0.1.0&quot;
+description = &quot;CLI for Cloud Pipelines&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;Alexey Volkov&quot;, email = &quot;alexey.volkov@ark-kun.com&quot; }
+]
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;click&lt;8.2.0&quot;,
+    &quot;cloud-pipelines&gt;=0.23.2.4&quot;,
+    &quot;gitpython&gt;=3.1.44&quot;,
+    &quot;podman&gt;=5.4.0.1&quot;,
+    &quot;pyyaml&gt;=6.0.2&quot;,
+    &quot;tomli&gt;=2.2.1&quot;,
+    &quot;typer&gt;=0.15.3&quot;,
+]
+
+[project.scripts]
+oasis = &quot;cloud_pipelines_oasis_cli.main:app&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/cloud_pipelines_oasis_cli&quot;]
+
+[dependency-groups]
+dev = [
+    &quot;pytest&gt;=8.3.5&quot;,
+]
+</code></pre>
+<p>We'll try to check env when this reproduces again. Which env variables can affect the package repository lookup?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ark-kun">@Ark-kun</a> on 2025-05-28 21:12</div>
+            <div class="timeline-body"><p>Anyways, what I find problematic here is that after trying both URLs (one succeeds, another fails), <code>uv</code> decides to fail. My expectation would be either:</p>
+<ul>
+<li>Try one URL. If it fails, then fail.
+or</li>
+<li>Try multiple URLs. If one succeeds, then succeed.
+but not</li>
+<li>Try multiple URLs. If one fails, then fail.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-28 21:17</div>
+            <div class="timeline-body"><p>We should definitely fail if we fail to query an index. It would be insecure for us to silently ignore an authentication failure and instead serve you data from another index. You can configure to ignore such failures and proceed if you want to opt-in to a less secure strategy: https://docs.astral.sh/uv/configuration/indexes/#ignoring-error-codes-when-searching-across-indexes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WilliamStam">@WilliamStam</a> on 2025-07-31 08:56</div>
+            <div class="timeline-body"><p>i dont know if this is related., and started happening more with the 7 branch of uv it feels like altho i cant be more specific than that</p>
+<p>we have a gitea package repo setup for python packages.</p>
+<pre><code>[project]
+name = &quot;leproject&quot;
+version = &quot;0.2.16&quot;
+description = &quot;myawesomeproject&quot;
+authors = [
+    
+]
+requires-python = &quot;&gt;=3.12&quot;
+readme = &quot;README.md&quot;
+license = {text = &quot;MIT&quot;}
+dependencies = [
+    # Custom indexer package
+    &quot;Custodian-Database==1.0.*&quot;,
+    &quot;App-Utilities==1.0.*&quot;,
+   
+    # pypi packages
+    &quot;aiofiles==24.1.*&quot;,
+    &quot;asyncmy==0.2.*&quot;,
+    &quot;coloredlogs==15.0.*&quot;,
+    &quot;Wand==0.6.*&quot;,
+]
+
+[tool.uv]
+package = false
+
+[[tool.uv.index]]
+name = &quot;database&quot;
+url = &quot;https://pypi@example.com:password@git.example.com/api/packages/Database/pypi/simple&quot;
+[[tool.uv.index]]
+name = &quot;utilities&quot;
+url = &quot;https://pypi@example.com:password@git.example.com/api/packages/Utilities/pypi/simple&quot;
+[[tool.uv.index]]
+name = &quot;reports&quot;
+url = &quot;https://pypi@example.com:password@git.example.com/api/packages/Reports/pypi/simple&quot;
+
+
+</code></pre>
+<p>it now fails a lot of the time</p>
+<pre><code>(venv) W:\Projects\API&gt;uv sync --upgrade
+⠼ app-utilities==1.0.39                                                                                                                                                                                                                                             error: Request failed after 1 retries
+  Caused by: Failed to fetch: `https://git.example.com/api/packages/Reports/pypi/simple/wand/`
+  Caused by: HTTP status client error (404 Not Found) for url (https://git.example.com/api/packages/Reports/pypi/simple/wand/)
+
+(venv) W:\Projects\API&gt;
+</code></pre>
+<p>windows 11, python 3.13, uv 0.8.4</p>
+<p>is my understanding that if it finds a 404 then it will try the next indexer all the way to pypi correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-31 19:51</div>
+            <div class="timeline-body"><p>@WilliamStam We're aware of this problem, we're fixing it in https://github.com/astral-sh/uv/pull/14996</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

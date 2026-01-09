@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RET508 potential false positive after elif - astral-sh/ruff #1035</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RET508 potential false positive after elif</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1035">#1035</a>
+        opened by <a href="https://github.com/LefterisJP">@LefterisJP</a>
+        on 2022-12-04 15:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-12-04 15:06</div>
+            <div class="timeline-body"><p>This is with <code>ruff==0.0.155</code></p>
+<p>I tried to drill it down to a simpler example but it did not happen there. Can you try to run ruff with <code>RET508</code> enabled on <a href="https://github.com/rotki/rotki/blob/a916d692cd1cc6210370ffb38278a4ecec1b2829/rotkehlchen/tests/api/test_async.py">this file</a>, like
+<code>ruff rotkehlchen/tests/api/test_async.py </code></p>
+<p>It's returning</p>
+<pre><code>rotkehlchen/tests/api/test_async.py:75:13: RET508 Unnecessary `else` after `break` statement
+rotkehlchen/tests/api/test_async.py:137:9: RET508 Unnecessary `else` after `break` statement
+</code></pre>
+<p>Which I am confused how it makes sense.</p>
+<p>If we remove the else and put the Assertion (or any other code) after the <code>if/elif</code> the resulting code won't be the same.</p>
+<p>I got similar questionable results with the other RET codes btw.</p>
+<p>Also a question on pyproject toml. I have ended up with somethine like:</p>
+<pre><code>select = [&quot;E&quot;, &quot;F&quot;, &quot;W&quot;, &quot;C&quot;, &quot;N&quot;, &quot;B&quot;, &quot;T&quot;, &quot;UP&quot;, &quot;YTT&quot;, &quot;C4&quot;, &quot;T10&quot;, &quot;T201&quot;]
+</code></pre>
+<p>Isn't <code>T</code> a superset of <code>T201</code> and <code>T210</code>? So I can omit those? Same for <code>C4</code> and <code>C</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-04 15:14</div>
+            <div class="timeline-body"><p>Will clone and take a look. It could just be a limitation in the plugin logic (i.e., does it reproduce in the original <code>flake8-return</code>?). Or it could be a bug in the translation to Rust...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-04 15:14</div>
+            <div class="timeline-body"><p>And yeah, your configuration is equivalent to:</p>
+<pre><code>select = [&quot;E&quot;, &quot;F&quot;, &quot;W&quot;, &quot;C&quot;, &quot;N&quot;, &quot;B&quot;, &quot;T&quot;, &quot;UP&quot;, &quot;YTT&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-12-04 15:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Will clone and take a look. It could just be a limitation in the plugin logic (i.e., does it reproduce in the original <code>flake8-return</code>?). Or it could be a bug in the translation to Rust...</p>
+</blockquote>
+<p>Well I think I have added some flake8 checkers thanks to ruff, that I did not use before. So yes we never used <code>flake8-return</code> in rotki before.</p>
+<p>I can see the exact same error for that file with flake8-return.</p>
+<p>Perhaps I am too tired or not focused but does it not seem wrong?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 17:08</div>
+            <div class="timeline-body"><blockquote>
+<p>rotkehlchen/tests/api/test_async.py:75:13: RET508 Unnecessary <code>else</code> after <code>break</code> statement</p>
+</blockquote>
+<p>I think the idea here is that the code, as written, is:</p>
+<pre><code class="language-py">while True:
+    # and now query for the task result and assert on it
+    response = requests.get(
+        api_url_for(server, &quot;specific_async_tasks_resource&quot;, task_id=task_id),
+    )
+    assert_proper_response(response)
+    json_data = response.json()
+    if json_data['result']['status'] == 'pending':
+        # context switch so that the greenlet to query balances can operate
+        gevent.sleep(1)
+    elif json_data['result']['status'] == 'completed':
+        break
+    else:
+        raise AssertionError(f&quot;Unexpected status: {json_data['result']['status']}&quot;)
+</code></pre>
+<p>But this is equivalent to the following:</p>
+<pre><code class="language-py">while True:
+    # and now query for the task result and assert on it
+    response = requests.get(
+        api_url_for(server, &quot;specific_async_tasks_resource&quot;, task_id=task_id),
+    )
+    assert_proper_response(response)
+    json_data = response.json()
+    if json_data['result']['status'] == 'pending':
+        # context switch so that the greenlet to query balances can operate
+        gevent.sleep(1)
+    elif json_data['result']['status'] == 'completed':
+        break    
+    raise AssertionError(f&quot;Unexpected status: {json_data['result']['status']}&quot;)
+</code></pre>
+<p>...since this will only ever be reached if the <code>elif</code> evaluates to <code>False</code>.</p>
+<p>So I think the check is right, based on a very cursory look, but whether you want to enforce those rules is maybe a different question :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-05 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-12-09 19:19</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>rotkehlchen/tests/api/test_async.py:75:13: RET508 Unnecessary <code>else</code> after <code>break</code> statement</p>
+</blockquote>
+<p>I think the idea here is that the code, as written, is:</p>
+<pre><code class="language-python">while True:
+    # and now query for the task result and assert on it
+    response = requests.get(
+        api_url_for(server, &quot;specific_async_tasks_resource&quot;, task_id=task_id),
+    )
+    assert_proper_response(response)
+    json_data = response.json()
+    if json_data['result']['status'] == 'pending':
+        # context switch so that the greenlet to query balances can operate
+        gevent.sleep(1)
+    elif json_data['result']['status'] == 'completed':
+        break
+    else:
+        raise AssertionError(f&quot;Unexpected status: {json_data['result']['status']}&quot;)
+</code></pre>
+<p>But this is equivalent to the following:</p>
+<pre><code class="language-python">while True:
+    # and now query for the task result and assert on it
+    response = requests.get(
+        api_url_for(server, &quot;specific_async_tasks_resource&quot;, task_id=task_id),
+    )
+    assert_proper_response(response)
+    json_data = response.json()
+    if json_data['result']['status'] == 'pending':
+        # context switch so that the greenlet to query balances can operate
+        gevent.sleep(1)
+    elif json_data['result']['status'] == 'completed':
+        break    
+    raise AssertionError(f&quot;Unexpected status: {json_data['result']['status']}&quot;)
+</code></pre>
+<p>...since this will only ever be reached if the <code>elif</code> evaluates to <code>False</code>.</p>
+<p>So I think the check is right, based on a very cursory look, but whether you want to enforce those rules is maybe a different question :)</p>
+</blockquote>
+<p>Huh ... so weird. I could swear I thought it made no sense but now it does look like it makes sense. Brain fart maybe? Apologies for wasting your time with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-09 19:27</div>
+            <div class="timeline-body"><p>No worries at all, it’s a hard one to reason about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/actionless">@actionless</a> on 2022-12-09 23:31</div>
+            <div class="timeline-body"><p>i made a simpler example for reproducing this bug:</p>
+<pre><code class="language-python">def func(arg1: int) -&gt; None:
+    for i in range(2):
+        if arg1 == i:
+            if arg1 == 1:
+                break
+            print(&quot;don't break&quot;)
+        elif arg1 == 2:
+            break
+        else:
+            print('else')
+</code></pre>
+<pre><code class="language-console">$ ruff test_ruff_ret_508.py
+Found 1 error(s).
+test_ruff_ret_508.py:7:9: RET508 Unnecessary `else` after `break` statement
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-12-11 23:12</div>
+            <div class="timeline-body"><blockquote>
+<p>No worries at all, it’s a hard one to reason about.</p>
+</blockquote>
+<p>Hey I took another stab at this @charliermarsh, by activating the <code>RET</code> module again and I think that what you posted above (and  have 2-3 similar false positives in our repo for) is after all incorrect -- or I am totally asleep.</p>
+<h3>Original Code</h3>
+<pre><code class="language-python">while True:
+    # and now query for the task result and assert on it
+    response = requests.get(
+        api_url_for(server, &quot;specific_async_tasks_resource&quot;, task_id=task_id),
+    )
+    assert_proper_response(response)
+    json_data = response.json()
+    if json_data['result']['status'] == 'pending':
+        # context switch so that the greenlet to query balances can operate
+        gevent.sleep(1)
+    elif json_data['result']['status'] == 'completed':
+        break
+    else:
+        raise AssertionError(f&quot;Unexpected status: {json_data['result']['status']}&quot;)
+</code></pre>
+<h3>Code you posted as equivalent due to the linting warning</h3>
+<pre><code class="language-python">while True:
+    # and now query for the task result and assert on it
+    response = requests.get(
+        api_url_for(server, &quot;specific_async_tasks_resource&quot;, task_id=task_id),
+    )
+    assert_proper_response(response)
+    json_data = response.json()
+    if json_data['result']['status'] == 'pending':
+        # context switch so that the greenlet to query balances can operate
+        gevent.sleep(1)
+    elif json_data['result']['status'] == 'completed':
+        break    
+    raise AssertionError(f&quot;Unexpected status: {json_data['result']['status']}&quot;)
+</code></pre>
+<p>The problem here is that it's not equivalent in the first if condition being <code>True</code>. So <code>if json_data['result']['status'] == 'pending':</code>.</p>
+<p>The original code will wait for 1 second (<code>gevent.sleep()</code>), and then continue after the code.</p>
+<p>The modified as equivalent code will wait for 1 second then get out of the if/elif and hit the assertion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-11 23:17</div>
+            <div class="timeline-body"><p>Yeah I think you’re right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-11 23:18</div>
+            <div class="timeline-body"><p>(They’re not equivalent, not sure why I thought they were.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2022-12-11 23:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-12-11 23:26</div>
+            <div class="timeline-body"><p>The problem is with the following.</p>
+<p>RET505, RET506, RET507, RET508</p>
+<p>Simple program to reproduce them all</p>
+<pre><code class="language-python">def foo(a: int) -&gt; int:
+    if a == 1:
+        result = 2
+    elif a == 3:
+        raise ValueError()
+    else:
+        raise AssertionError('Evil')
+
+    return result
+
+def foo2(a: int) -&gt; int:
+    while True:
+        if a == 1:
+            result = 2
+        elif a == 3:
+            break
+        else:
+            raise AssertionError('Evil')
+
+        return result
+
+def foo3(a: int) -&gt; int:
+    if a == 1:
+        result = 2
+    elif a == 2:
+        return 42
+    else:
+        raise AssertionError('Evil')
+
+    return result
+
+def foo4(a: int) -&gt; int:
+    while True:
+        if a == 1:
+            result = 2
+        elif a == 3:
+            continue
+        else:
+            raise AssertionError('Evil')
+
+        return result
+</code></pre>
+<p>Seems to only happen for indented code. So if it's inside a function. If it's in the global space it does not happen.</p>
+<pre><code class="language-python">var = 1
+if var == 1:
+    var_result = 2
+elif var == 3:
+    raise ValueError()
+else:
+    raise AssertionError('Evil')
+
+print(var)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-12 00:54</div>
+            <div class="timeline-body"><p>Taking a look at this now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-12-12 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-12 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-12 01:08</div>
+            <div class="timeline-body"><p><code>flake8-return</code> seems to have the same behavior (not that it's correct).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-12 01:15</div>
+            <div class="timeline-body"><p>I'm considering just disabling this for <code>elif</code> for now. It's pretty hard to reason about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-12 01:59</div>
+            <div class="timeline-body"><p>I kind of think the logic is not very good for any of these rules beyond RET501, RET502, and RET503.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-12 03:38</div>
+            <div class="timeline-body"><p>I can change it to only operate on simple <code>if-else</code> blocks (no <code>elif</code>), but I'm guessing that the plugin wants you to change...</p>
+<pre><code class="language-py">def foo(a: int) -&gt; int:
+    if a == 1:
+        result = 2
+    elif a == 3:
+        raise ValueError()
+    else:
+        raise AssertionError('Evil')
+
+    return result
+</code></pre>
+<p>...to...</p>
+<pre><code class="language-py">def foo(a: int) -&gt; int:
+    if a == 1:
+        result = 2
+    else:
+        if a == 3:
+            raise ValueError()
+        raise AssertionError('Evil')
+
+    return result
+</code></pre>
+<p>Or maybe the plugin logic is just not good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-12-12 16:31</div>
+            <div class="timeline-body"><p>In any case such a suggestion is bad as it's not an improvement in anyway. I could swear I have a flake8 or other tool with similar~ish suggestions for no else after break or raise. But as you can see these ones seem to be wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1517.html">astral-sh/ruff#1517</a> on 2022-12-31 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-02-09 15:52</div>
+            <div class="timeline-body"><p>PyLint's handling of this is much better, FWIW. I don't think I've ever had a false positive from PyLint's else after control flow checks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2881.html">astral-sh/ruff#2881</a> on 2023-02-14 02:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-14 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doolio">@doolio</a> on 2023-11-04 23:20</div>
+            <div class="timeline-body"><p>I'm hitting this error (RET508 Unnecessary <code>elif</code> after <code>break</code> statement) with the below using <code>ruff v0.1.4</code>. I'm just a beginner so quite likely it could be avoided with better code.</p>
+<pre><code class="language-python">def main() -&gt; None:
+    &quot;&quot;&quot;Play a game of tic-tac-toe.&quot;&quot;&quot;
+    print('Welcome to tic-tac-toe!')
+    game: dict[str, str] = create_board()
+    current_player, other_player = X, O  # X goes first.
+
+    while True:
+        print(game_state(game))
+        move: str = BLANK
+        # Keep asking the player for a non-blank space to mark.
+        while not is_space_blank(game, move):
+            move = input(f&quot;What is {current_player}'s move? (1-9) &quot;)
+        make_move(game, move, current_player)
+        # Check if the game is over.
+        if is_player_winner(game, current_player):  # First check for victory.
+            print(game_state(game))
+            print(f'{current_player} has won the game!')
+            break
+        elif is_board_full(game):  # Then check for a tie.
+            print(game_state(game))
+            print('The game is a tie!')
+            break
+        # Swap turns.
+        current_player, other_player = other_player, current_player
+    print('Thanks for playing!')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-11-04 23:35</div>
+            <div class="timeline-body"><p>You don’t need else after a control flow statement. That’s <code>return</code>, <code>yield</code>, <code>break</code>, or <code>continue</code>. Remove the “el” in front of the elif.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doolio">@doolio</a> on 2023-11-04 23:42</div>
+            <div class="timeline-body"><p>I see. Thank you so much for pointing that out.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

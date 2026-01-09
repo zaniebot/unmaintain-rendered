@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add message to `Fix` constructor - astral-sh/ruff #4276</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add message to `Fix` constructor</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4276">#4276</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-05-08 10:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-08 10:25</div>
+            <div class="timeline-body"><p>Depends on #4183</p>
+<p>Add a, for now, optional <code>title</code> or <code>message</code> field to <code>Fix</code> that will be used to replace the <code>DiagnosticKind::autofix_title</code>.</p>
+<p>The motivation is that a diagnostic can have multiple potential fixes. For example, the unused variable diagnostic can recommend to either:</p>
+<ul>
+<li>Prefix the variable with an underscore, to intentionally mark it as &quot;this is ok&quot;</li>
+<li>Remove the variable</li>
+<li>Add a noqa suppression comment.</li>
+</ul>
+<p>Adding the title to the <code>Fix</code> instead of specifying it on the <code>DiagnosticKind</code> will allow us to model the different diagnostics.</p>
+<p>It also has the advantage that the Rust compiler can enforce the requirement that each fixable <code>DiagnosticKind</code> has a message, because it is not stored as part of the <code>Fix</code>.</p>
+<h2>Tasks</h2>
+<ul>
+<li>[ ] Add new <code>title</code> or <code>message</code> field to <code>Fix</code> (<code>Option&lt;String&gt;</code>).</li>
+<li>[ ] Change the constructor methods to take <code>message: String</code> as first argument, except for <code>unspecified*</code>, to avoid having to refactor all calls at once</li>
+<li>[ ] Serialize the <code>title</code>/<code>message</code> as part of the <code>Fix</code> in the JSON Emitter</li>
+<li>[ ] Change the <code>MessageCodeFrame</code> implementation to show <code>DiagnosticKind::suggestion</code> if present, or fall back to <code>Fix::title</code> if the <code>Diagnostic</code> has one <code>Fix</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4181.html">astral-sh/ruff#4181</a> on 2023-05-08 10:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2023-05-08 10:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-05-08 10:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-10 15:35</div>
+            <div class="timeline-body"><p>Feel free to assign me to this one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @charliermarsh on 2023-05-10 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-14 03:56</div>
+            <div class="timeline-body"><p>I've started work on this at https://github.com/charliermarsh/ruff/compare/main...madkinsz:ruff:internal/4276 and I could use a bit more context on the plan for replacing <code>autofix_title</code>.</p>
+<p>For example, there's a fix message generated at https://github.com/charliermarsh/ruff/blob/c10a4535b9549d8dab6dec024ce3231b74bf5e18/crates/ruff/src/rules/pyflakes/rules/imports.rs#L47-L54</p>
+<p>Is the plan to duplicate that logic and generate a message at https://github.com/charliermarsh/ruff/blob/0a68636de33b3398c61cac2bead42101fcb6022e/crates/ruff/src/checkers/ast/mod.rs#L5329-L5332</p>
+<p>For the following todo</p>
+<blockquote>
+<p>Change the MessageCodeFrame implementation to show DiagnosticKind::suggestion if present, or fall back to Fix::title if the Diagnostic has one Fix.</p>
+</blockquote>
+<p>Did you mean to say that the other way around? We should show the new <code>Fix::message</code> and fall back to the diagnostic kind suggestion if it's there is no fix message yet? Otherwise we'll need to remove the <code>autofix_title</code> before any of these new changes are displayed?</p>
+<p>For including the message in the JSON emitter, we're already showing the diagnostic kind suggestion and it seems like it would be duplicative to include both messages. We should just show one with the same logic we decide on above, right?
+https://github.com/charliermarsh/ruff/blob/853d8354cb4ad3f0a77c3a916efc0956e7e5d83e/crates/ruff/src/message/json.rs#L43</p>
+<details>
+
+<summary>Some additional notes...</summary>
+
+<p>Should update this TODO https://github.com/charliermarsh/ruff/blob/a2b8487ae3c3efa99deb21376dcd504a81276a3f/crates/ruff_diagnostics/src/violation.rs#L33-L34</p>
+<p>Autofix title is populated as the diagnostic kind suggestion at https://github.com/charliermarsh/ruff/blob/c10a4535b9549d8dab6dec024ce3231b74bf5e18/crates/ruff_macros/src/violation.rs#L62</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-15 07:28</div>
+            <div class="timeline-body"><p>Thanks and sorry that the issue is a bit less clear. I must admit, I haven't fully figured out the details myself yet and it will probably require some exploration.</p>
+<blockquote>
+<p>Is the plan to duplicate that logic and generate a message at</p>
+</blockquote>
+<p>My idea is to remove the <code>autofix_title</code> for the majority of fixes and instead move them into <code>Fix::title</code>. There are different ways how we can do this. We can either inline the message, create a function that generates the fix title, or keep an <code>autofix_title</code> method function on the <code>DiagnosticKind</code> of a specific fix (but remove it from the trait). I recommend that we do whatever works best for a specific fix.</p>
+<p>There may be a few use cases where we have to duplicate the logic or use a different phrasing. This is mainly for diagnostics with <code>AutofixKind::SOMETIMES</code> because we want to show a suggestion even if we don't provide a fix. Ideally, the advice text reads more like a suggestion to the user about what they could try whereas the <code>Fix::title</code> describes what this specific fix does.  I don't like this much but I haven't figured out a better solution yet.</p>
+<blockquote>
+<p>Did you mean to say that the other way around? We should show the new Fix::message and fall back to the diagnostic kind suggestion if it's there is no fix message yet? Otherwise we'll need to remove the autofix_title before any of these new changes are displayed?</p>
+</blockquote>
+<p>No, that's the order I had in mind. The <code>MessageCodeFrame</code> currently only shows the <code>autofix_title</code> because we don't have a proper suggestion field. But, what I just noticed is that the description above fails to mention that we want a new <code>DiagnosticKind::suggestion</code> or <code>advice</code> method that returns a message that guides the user towards a fix, regardless of whether Ruff offers an autofix. Does the order then make more sense? I recommend just renaming <code>autofix_title</code> to <code>suggestion</code> / <code>advice</code> to ease the refactoring and then migrating the <code>suggestion</code> to the <code>Fix::title</code> on a rule-per-rule basis. The reason why we may want to have an <code>advice</code> and a <code>title</code> is that the title is phrased in imperative mode and must be short. The advice should probably not be written in imperative mode and may want to go into a little more detail. My plan for the future is to expand advice to support rich content like code frames, diffs, messages with markdown, etc. But that's a long way down the road ;)</p>
+<blockquote>
+<p>For including the message in the JSON emitter, we're already showing the diagnostic kind suggestion and it seems like it would be duplicative to include both messages. We should just show one with the same logic we decide on above, right?</p>
+</blockquote>
+<p>I'm fine with duplicating the information for now. Ultimately, the fields will store different messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-06-02 00:21</div>
+            <div class="timeline-body"><p>Thanks for your long comment and apologies for the slow reply. I've had a busy couple of weeks ;)</p>
+<p>I've made some additional progress over at https://github.com/charliermarsh/ruff/compare/main...madkinsz:ruff:internal/4276</p>
+<p>It seems unlikely that I'll make significant progress on this in the near future — if you want it sooner rather than later feel free to pick up where I left off. Otherwise I can take this up with gusto in July.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-02 06:17</div>
+            <div class="timeline-body"><p>@madkinsz thanks for the update and no worries. We can easily wait till July, except if there's someone else interested in picking this up before then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-10 17:07</div>
+            <div class="timeline-body"><p>I'll close this. I think it's best to reconsider this if we plan to change our fix infrastructure. The one we have right now seems to be working reasonably well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-01-10 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-01-10 17:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

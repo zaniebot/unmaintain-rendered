@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUG: ruff 0.1.9 and 0.2.0 don't seem to respect noqa comments for NPY rules - astral-sh/ruff #9817</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>BUG: ruff 0.1.9 and 0.2.0 don't seem to respect noqa comments for NPY rules</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9817">#9817</a>
+        opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a>
+        on 2024-02-04 21:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-02-04 21:07</div>
+            <div class="timeline-body"><p>Following https://github.com/numpy/numpy/pull/25738, I tried updating my code to only use non-deprecated numpy API as follow</p>
+<pre><code class="language-python">if NUMPY_VERSION &gt;= (2, 0, 0):
+    from numpy import trapezoid as trapezoid
+else:
+    from numpy import trapz as trapezoid  # noqa: NPY003
+</code></pre>
+<p>ruff keeps reformatting to</p>
+<pre><code class="language-python">if NUMPY_VERSION &gt;= (2, 0, 0):
+    from numpy import trapezoid as trapezoid
+else:
+    pass  # noqa: NPY003
+</code></pre>
+<p>Not only does seem to ignore my noqa comments, it also feels broken that it would just remove the import statement altogether. This happens in a module that's just there to provide a compatibility layer, and doesn't use the <code>trapezoid</code> function, so I'm guessing it's playing badly with <a href="https://docs.astral.sh/ruff/rules/unused-import/">F401</a> ?</p>
+<p>I've tried this with ruff version 0.1.9 and 0.2.0, to no avail.
+Also tried with <code># noqa: NPY201</code> and <code># noqa: NPY</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-05 00:36</div>
+            <div class="timeline-body"><p>@neutrinoceros - I think Ruff just has no way to know that the import exists for the purpose of a re-export. (We avoid treating <code>from foo import x as x</code> imports as unused, since that's a de facto pattern for re-exporting members.) Do you have a suggestion for how Ruff would &quot;know&quot; not to remove the import here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-02-05 00:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-05 00:36</div>
+            <div class="timeline-body"><p>Separately, it should be <code># noqa: F401</code>, not <code># noqa: NPY003</code> -- since the rule that's causing the import to be removed is <code>F401</code>, so that's the rule you want to suppress.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-02-05 06:25</div>
+            <div class="timeline-body"><blockquote>
+<p>it should be # noqa: F401, not # noqa: NPY003</p>
+</blockquote>
+<p>damnit, I was so close to the right idea. What got me is that I didn't actually research the lint rule number for unused import <em>before</em> I wrote the ticket 😅</p>
+<blockquote>
+<p>Do you have a suggestion for how Ruff would &quot;know&quot; not to remove the import here?</p>
+</blockquote>
+<p>I don't, <code># noqa: F401</code> seems sufficient actually ! thank you very much for your input. I think we can close this now !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @neutrinoceros on 2024-02-05 06:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

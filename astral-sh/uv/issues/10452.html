@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Any plans to support packaged binary? - astral-sh/uv #10452</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Any plans to support packaged binary?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10452">#10452</a>
+        opened by <a href="https://github.com/sdbds">@sdbds</a>
+        on 2025-01-10 00:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sdbds">@sdbds</a> on 2025-01-10 00:08</div>
+            <div class="timeline-body"><p>Thanks for your work, UV always great!</p>
+<p>Recently I realized that it is convenient to package the project into an exe so that users can install all environments and third-party dependencies, like pyinstall, auto-py-to-exe.</p>
+<p>I guess UV seems to do the same thing, since it can lock python versions, dependency versions, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ceejatec">@ceejatec</a> on 2025-01-10 00:39</div>
+            <div class="timeline-body"><p>My experience, for what it's worth: I support a few Python-based utilities in our company, and used PyInstaller to create standalone distributable binaries. I've recently converted one such project to <code>uv</code>, by re-organizing it to be deployable via PyPI and then writing a wrapper script (or a wrapper Go program, for Windows) that silently installs <code>uv</code> (if necessary) and then runs <code>uv tool install &lt;mytool&gt;</code> before passing all the input arguments to the real binary. This means the user experience is unchanged - they can still download a tool with the same name, and run it with the same arguments, and be more or less oblivious to the fact that I'm dumping <code>uv</code> and a python version into <code>~/.local</code>.</p>
+<p>Neither solution - PyInstaller, or <code>uv</code>-plus-wrapper-scripts - is entirely perfect, but so far I think I'm happier with the latter. PyInstaller is tricky to get right, especially cross-platform. And the user experience with PyInstaller is hit-or-miss; on Windows and Mac it's often painfully slow to start up, and since it's basically a self-extracting binary it has a habit of setting off anti-virus software and the like. The <code>uv</code>-plus-wrapper-script solution is generally much faster and much easier to get right, and so far at least I haven't seen it causing any real problems, but it does burn rather a lot more of the user's disk space.</p>
+<p>The wrapper solution I came up with would be trivially adaptable to any other PyPI-distributed package, and even to non-PyPI packages with a little work. You can <a href="https://github.com/couchbasebuild/cbdep/tree/master/wrapper">take a look here</a> if you like. Note that the <code>uv</code> bug I mentioned has actually just been fixed, so I can remove that workaround.</p>
+<p>If any of the <code>uv</code> authors are reading this, I do have a dream: it would be awesome if the <code>uv</code> binary itself could identify that it was invoked with a name other than <code>uv</code>, and fall over to behaving as if it was invoked with <code>uv tool run &lt;name&gt;</code> (I believe similarly to how <code>uvx</code> used to work, before it was split into a separate executable). That would let people distribute <code>uv</code> itself as a fully-featured wrapper around any PyPI-distributed tool. In fact, I'm going to take a run at proposing a change like that, although I'm definitely a Rust neophyte so I'm not sure how well I can do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sdbds">@sdbds</a> on 2025-01-10 01:22</div>
+            <div class="timeline-body"><blockquote>
+<p>My experience, for what it's worth: I support a few Python-based utilities in our company, and used PyInstaller to create standalone distributable binaries. I've recently converted one such project to <code>uv</code>, by re-organizing it to be deployable via PyPI and then writing a wrapper script (or a wrapper Go program, for Windows) that silently installs <code>uv</code> (if necessary) and then runs <code>uv tool install &lt;mytool&gt;</code> before passing all the input arguments to the real binary. This means the user experience is unchanged - they can still download a tool with the same name, and run it with the same arguments, and be more or less oblivious to the fact that I'm dumping <code>uv</code> and a python version into <code>~/.local</code>.</p>
+<p>Neither solution - PyInstaller, or <code>uv</code>-plus-wrapper-scripts - is entirely perfect, but so far I think I'm happier with the latter. PyInstaller is tricky to get right, especially cross-platform. And the user experience with PyInstaller is hit-or-miss; on Windows and Mac it's often painfully slow to start up, and since it's basically a self-extracting binary it has a habit of setting off anti-virus software and the like. The <code>uv</code>-plus-wrapper-script solution is generally much faster and much easier to get right, and so far at least I haven't seen it causing any real problems, but it does burn rather a lot more of the user's disk space.</p>
+<p>The wrapper solution I came up with would be trivially adaptable to any other PyPI-distributed package, and even to non-PyPI packages with a little work. You can <a href="https://github.com/couchbasebuild/cbdep/tree/master/wrapper">take a look here</a> if you like. Note that the <code>uv</code> bug I mentioned has actually just been fixed, so I can remove that workaround.</p>
+<p>If any of the <code>uv</code> authors are reading this, I do have a dream: it would be awesome if the <code>uv</code> binary itself could identify that it was invoked with a name other than <code>uv</code>, and fall over to behaving as if it was invoked with <code>uv tool run &lt;name&gt;</code> (I believe similarly to how <code>uvx</code> used to work, before it was split into a separate executable). That would let people distribute <code>uv</code> itself as a fully-featured wrapper around any PyPI-distributed tool. In fact, I'm going to take a run at proposing a change like that, although I'm definitely a Rust neophyte so I'm not sure how well I can do it.</p>
+</blockquote>
+<p>Thanks for sharing, I will check this method out.</p>
+<p>I only know python and java, not rust at all, otherwise I would like to provide more help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-10 04:40</div>
+            <div class="timeline-body"><p>Support for this feature is being tracked in https://github.com/astral-sh/uv/issues/5802</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-10 04:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-10 04:40</div>
+            <div class="timeline-body"><blockquote>
+<p>If any of the uv authors are reading this, I do have a dream: it would be awesome if the uv binary itself could identify that it was invoked with a name other than uv, and fall over to behaving as if it was invoked with uv tool run <name> (I believe similarly to how uvx used to work, before it was split into a separate executable). That would let people distribute uv itself as a fully-featured wrapper around any PyPI-distributed tool. In fact, I'm going to take a run at proposing a change like that, although I'm definitely a Rust neophyte so I'm not sure how well I can do it.</p>
+</blockquote>
+<p>Interesting! I'd recommend opening a dedicated issue for this feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sdbds">@sdbds</a> on 2025-01-10 07:32</div>
+            <div class="timeline-body"><blockquote>
+<p>Support for this feature is being tracked in <a href="https://github.com/astral-sh/uv/issues/5802">#5802</a>正在跟踪对此功能的支持 <a href="https://github.com/astral-sh/uv/issues/5802">#5802</a></p>
+</blockquote>
+<p>Thanks, I will keep an eye on this feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ceejatec">@ceejatec</a> on 2025-01-10 10:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Interesting! I'd recommend opening a dedicated issue for this feature.</p>
+</blockquote>
+<p>Thanks, I went ahead and did so: #10465</p>
+<p>Get a cup of coffee... brevity is definitely not one of my strengths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../shyndman/vantron-collectd-support/pulls/2.html">shyndman/vantron-collectd-support#2</a> on 2025-03-07 22:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

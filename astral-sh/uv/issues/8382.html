@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv tree often has no output - astral-sh/uv #8382</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv tree often has no output</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8382">#8382</a>
+        opened by <a href="https://github.com/dimbleby">@dimbleby</a>
+        on 2024-10-20 12:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dimbleby">@dimbleby</a> on 2024-10-20 12:45</div>
+            <div class="timeline-body"><p>sometimes <code>uv tree</code> will decline to say anything</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+  &quot;aiohttp&gt;=3.9.5&quot;,
+]
+</code></pre>
+<pre><code class="language-shell">$ uv tree   # NB looks good
+Resolved 10 packages in 19ms
+foo v0.1.0
+└── aiohttp v3.10.10
+    ├── aiohappyeyeballs v2.4.3
+    ├── aiosignal v1.3.1
+    │   └── frozenlist v1.4.1
+    ├── attrs v24.2.0
+    ├── frozenlist v1.4.1
+    ├── multidict v6.1.0
+    └── yarl v1.15.5
+        ├── idna v3.10
+        ├── multidict v6.1.0
+        └── propcache v0.2.0
+
+$ uv tree --package propcache  # NB no output
+Resolved 10 packages in 1ms
+
+$ uv tree --package propcache --invert  # NB apparently invert will tell me something
+Resolved 10 packages in 1ms
+propcache v0.2.0
+└── yarl v1.15.5
+    └── aiohttp v3.10.10
+        └── foo v0.1.0
+
+$ uv tree --package yarl  # NB nothing to say about yarl
+Resolved 10 packages in 1ms
+
+$ uv tree --package yarl --invert  # NB even when inverted
+Resolved 10 packages in 1ms
+</code></pre>
+<p>is there some not-so-obvious logic to this that I am missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j178">@j178</a> on 2024-10-20 13:30</div>
+            <div class="timeline-body"><p>The <code>--package</code> flag refers to a package within the workspace itself, not a dependency. I agree that this flag can be a bit confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimbleby">@dimbleby</a> on 2024-10-20 14:23</div>
+            <div class="timeline-body"><blockquote>
+<p>The --package flag refers to a package within the workspace itself</p>
+</blockquote>
+<p>it certainly must be more subtle than that, per the examples of <code>uv tree --package propcache --invert</code> and <code>uv tree --package yarl --invert</code>.  Neither of these is &quot;a package within the workspace itself&quot;, the results appear to be inconsistent</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-10-20 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-20 14:33</div>
+            <div class="timeline-body"><p>Thanks! Seems like something weird is going on here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimbleby">@dimbleby</a> on 2024-10-20 14:35</div>
+            <div class="timeline-body"><p>I think the actual answer is that the tree display insists on starting from a &quot;root&quot;.</p>
+<ul>
+<li>For non-inverted trees that is workspace packages.</li>
+<li>For inverted trees that is dependencies with no further dependencies</li>
+</ul>
+<p>imo the first is maybe defensible - but it would be more helpful to show the tree starting from the package the user asked for.</p>
+<p>also imo, the second is undesirable: eg it makes it harder for me to answer a question like &quot;why is yarl installed?&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-20 14:39</div>
+            <div class="timeline-body"><p>I think @charliermarsh is likely to have some insight.</p>
+<p>I agree it seems sensible that <code>--package</code> should just start at an arbitrary package in the tree — but it's worth noting this is inconsistent with the meaning of <code>--package</code> in every other project command. I kind of feel like <code>--package</code> should have been <code>--member</code> 😢.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-21 01:06</div>
+            <div class="timeline-body"><p>Yeah I think some things are going wrong here. I think we naively limit the tree to &quot;roots&quot; because we don't want to show duplicates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 03:07</div>
+            <div class="timeline-body"><p>(So yes, definitely some bugs here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-23 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-23 17:17</div>
+            <div class="timeline-body"><p>I'm rewriting this to fix these problems and make things simpler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8507.html">astral-sh/uv#8507</a> on 2024-10-23 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-23 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-23 18:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

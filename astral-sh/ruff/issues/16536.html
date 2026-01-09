@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NamedTuple should be considered immutable (B008) - astral-sh/ruff #16536</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>NamedTuple should be considered immutable (B008)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16536">#16536</a>
+        opened by <a href="https://github.com/s-banach">@s-banach</a>
+        on 2025-03-06 14:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/s-banach">@s-banach</a> on 2025-03-06 14:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following triggers B008. I believe it should not?</p>
+<pre><code class="language-python">from typing import NamedTuple
+
+
+class MyTuple(NamedTuple):
+    x: int = 10
+
+
+def f(m: MyTuple = MyTuple()): ...
+</code></pre>
+<pre><code>Do not perform function call `MyTuple` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.9.9 (091d0af2a 2025-02-28)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-06 16:37</div>
+            <div class="timeline-body"><p>Thanks for the report! I think you're right, but detecting this might have to wait for better type inference and also multi-file analysis if the parent class is defined in another file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @ntBre on 2025-03-06 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-06 16:50</div>
+            <div class="timeline-body"><p>As a workaround, you may be able to add <code>MyTuple</code> to the <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-bugbear_extend-immutable-calls"><code>extend-immutable-calls</code></a> option, but I'm having some trouble getting that to work within a single script [^1].</p>
+<p>However, if I have a <code>mytuple.py</code> file:</p>
+<pre><code class="language-python">from typing import NamedTuple
+
+
+class MyTuple(NamedTuple):
+    x: int = 10
+</code></pre>
+<p>and a <code>try.py</code> script:</p>
+<pre><code class="language-py">from types import MyTuple
+
+def f(m: MyTuple = MyTuple()): ...
+</code></pre>
+<p>Then the override does work:</p>
+<pre><code class="language-shell">$ ruff check try.py --select B008 --config 'lint.flake8-bugbear.extend-immutable-calls = [&quot;mytuple.MyTuple&quot;]'
+All checks passed!
+</code></pre>
+<p>[^1]: We might want to use something other than <code>from_dotted_name</code> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/flake8_bugbear/rules/function_call_in_argument_default.rs#L138">here</a></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

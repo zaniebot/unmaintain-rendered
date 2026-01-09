@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glob pattern for isort `sections` or `force-to-top` - astral-sh/ruff #10926</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Glob pattern for isort `sections` or `force-to-top`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10926">#10926</a>
+        opened by <a href="https://github.com/serjflint">@serjflint</a>
+        on 2024-04-14 14:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/serjflint">@serjflint</a> on 2024-04-14 14:55</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hi!</p>
+<p>ruff 0.3.4</p>
+<p>I am trying to sort imports like <code>ruff check package/conftest.py --fix-only</code></p>
+<pre><code class="language-python">import pytest
+
+import package.pytest_init  # noqa: F401
+
+from package import b
+from package import a
+</code></pre>
+<p>I have a reason why &quot;pytest_init&quot; should be imported before other <code>first-party</code> imports. And I have many such packages.</p>
+<p>If I sort as-is I get</p>
+<pre><code class="language-python">import pytest
+
+from package import a
+from package import b
+import package.pytest_init  # noqa: F401
+</code></pre>
+<p>Which breaks some things for me.</p>
+<p>The solution I found is to use <code># isort: skip</code></p>
+<pre><code class="language-python">import pytest
+
+import package.pytest_init  # noqa: F401  # isort: skip
+
+from package.sub import a
+from package.sub import b
+</code></pre>
+<p>or to add</p>
+<pre><code class="language-toml">known-third-party = [&quot;*.pytest_init&quot;]
+</code></pre>
+<pre><code class="language-python">import package.pytest_init  # noqa: F401
+import pytest
+
+from package import a
+from package import b
+</code></pre>
+<p>Which keeps my code working, but puts <code>pytest_init</code> in an awkward place.</p>
+<p>I wish to put &quot;*.pytest_init&quot; in its own section or at least at the top of <code>first-party</code>. Is it possible to add glob patterns to those parameters?</p>
+<p>P.S.: I am not sure if <code>forced-separate</code> will work for my case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @AlexWaygood on 2024-04-14 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-15 06:58</div>
+            <div class="timeline-body"><p>Have you tried <a href="https://docs.astral.sh/ruff/settings/#lint_isort_section-order"><code>section-order</code></a> with <a href="https://docs.astral.sh/ruff/settings/#lint_isort_sections"><code>sections</code></a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-04-15 09:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Have you tried <a href="https://docs.astral.sh/ruff/settings/#lint_isort_section-order"><code>section-order</code></a> with <a href="https://docs.astral.sh/ruff/settings/#lint_isort_sections"><code>sections</code></a>?</p>
+</blockquote>
+<p>Hi! Yes, I use it.</p>
+<p>The problem is that <code>package</code> is already mentioned in <code>first-party</code>. But I need <code>package.pytest_init</code> to be in a different section or at the top of <code>first-party</code>.</p>
+<p>I could write all such <code>package.pytest_init</code> manually, but with hundreds of them it would help to have a glob pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10989.html">astral-sh/ruff#10989</a> on 2024-04-17 08:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 00:44</div>
+            <div class="timeline-body"><p>These settings are only applied to the first segment of the import -- we don't classify beyond the top-level of the import anyway. So I don't think globs would map to the model here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-04-18 06:36</div>
+            <div class="timeline-body"><blockquote>
+<p>These settings are only applied to the first segment of the import -- we don't classify beyond the top-level of the import anyway. So I don't think globs would map to the model here.</p>
+</blockquote>
+<p>It works for <code>known-third-party</code>. Is it possible to spread that behavior?</p>
+<p>It is a feature request. What should I do to be considered as such? It seems to me that you explain the current behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-04-18 07:03</div>
+            <div class="timeline-body"><p>Right now I use pathlib and tomlkit to emulate this feature by generating pyproject.toml programmatically. And pyproject.toml is several thousand lines long.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-08-08 17:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Right now I use pathlib and tomlkit to emulate this feature by generating pyproject.toml programmatically. And pyproject.toml is several thousand lines long.</p>
+</blockquote>
+<p>Hi! Listing all packages manually as a first-party, a third-party or a custom one helps with my issues. But it requires adding all of them with scripts. Is possible to add patterns like 'src/*' to isort sections?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-08-09 06:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

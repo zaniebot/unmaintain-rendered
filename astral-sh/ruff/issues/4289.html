@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement `--extend-fixable` and `--extend-unfixable` variants in CLI - astral-sh/ruff #4289</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement `--extend-fixable` and `--extend-unfixable` variants in CLI</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4289">#4289</a>
+        opened by <a href="https://github.com/ljnsn">@ljnsn</a>
+        on 2023-05-08 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ljnsn">@ljnsn</a> on 2023-05-08 19:08</div>
+            <div class="timeline-body"><p>Consider the following ruff config:</p>
+<pre><code class="language-toml">[tool.ruff]
+fix = true
+unfixable = [&quot;F401&quot;, &quot;F841&quot;]
+</code></pre>
+<p>F401 and F841 are added as unfixable so that ruff doesn't automatically remove violating lines on file save (it's set up in the editor for autoformat). I do want to enable them in my pre-commit config though. So what I have done is configure the ruff hook like so:</p>
+<pre><code class="language-yaml">      - id: ruff
+        name: ruff
+        entry: ruff
+        args: [&quot;--fixable=F401,F841&quot;]
+        require_serial: true
+        language: system
+        types: [python]
+</code></pre>
+<p>However, this makes ruff consider <strong>only</strong> those two codes as fixable. So I thought I could fix it by passing --unfixable=E501, for example, assuming that would override the value set in the ruff config. The doesn't seem to be the case though, ruff still does not fix the errors.</p>
+<p>This does not depend on pre-commit btw, the same can be reproduced by just running ruff from CLI. Essentially, I'm looking for a way to overwrite unfixable, without using --isolated, because there is more config than the minimal example above.</p>
+<p>Is there a generally recommended way to do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-08 19:12</div>
+            <div class="timeline-body"><p>I would've expected <code>--unfixable=E501</code> to work. As a hacky workaround, could you try <code>--fixable=ALL,F401,F841</code>? If we add <code>--extend-fixable</code>, as requested today (hah) in https://github.com/charliermarsh/ruff/discussions/4272, then <code>--extend-fixable=F401,F841</code> would also work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-05-08 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ljnsn">@ljnsn</a> on 2023-05-08 19:30</div>
+            <div class="timeline-body"><p>Thanks for the quick answer. It's not a coincidence, #4272 was opened by a colleague of mine, but I didn't know about it until now :smile:</p>
+<p>Your suggested workaround works, it's even sufficient to pass <code>--fixable=ALL</code>. An <code>extend-fixable</code> would be great though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-08 19:36</div>
+            <div class="timeline-body"><p>Oh, hah, that's funny :)</p>
+<p>I'll keep this open to track <code>--extend-fixable</code>, it really should exist to mirror the <code>--extend-select</code> variants.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "How to overwrite unfixable set in config file?" to "Implement `--extend-fixable` and `--extend-unfixable` variants in CLI" by @charliermarsh on 2023-05-08 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-05-09 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4297.html">astral-sh/ruff#4297</a> on 2023-05-09 01:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-19 02:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

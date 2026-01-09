@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>error messages expose a dependency relationship between `a` and `a{marker}` - astral-sh/uv #5618</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>error messages expose a dependency relationship between `a` and `a{marker}`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/5618">#5618</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-07-30 17:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-30 17:43</div>
+            <div class="timeline-body"><p>For example:</p>
+<pre><code>  x No solution found when resolving dependencies:
+  `-&gt; Because fork-overlapping-markers-a{python_version == '3.12'}==1.0.0 depends on fork-overlapping-markers-a==1.0.0 and fork-overlapping-markers==0.0.0 depends on fork-overlapping-markers-a{python_version == '3.12'}==1.0.0, we
+      can conclude that fork-overlapping-markers==0.0.0 and fork-overlapping-markers-a{python_version &gt; '3.12'}==2.0.0 are incompatible.
+      And because fork-overlapping-markers==0.0.0 depends on fork-overlapping-markers-a{python_version &gt; '3.12'}==2.0.0, we can conclude that fork-overlapping-markers==0.0.0 cannot be used.
+      And because only fork-overlapping-markers==0.0.0 is available and project==0.1.0 depends on fork-overlapping-markers, we can conclude that project==0.1.0 cannot be used.
+      And because only project==0.1.0 is available and you require project, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>Specifically:</p>
+<pre><code>Because fork-overlapping-markers-a{python_version == '3.12'}==1.0.0 depends on fork-overlapping-markers-a==1.0.0
+</code></pre>
+<p>If one is familiar with internals, this makes sense, because we have specific &quot;marker&quot; dependencies and &quot;normal&quot; dependencies, and they have a dependency relationship with one another. But from an end user perspective, they probably should be treated as just one package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2024-07-30 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @BurntSushi on 2024-07-30 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @BurntSushi on 2024-07-30 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4922.html">astral-sh/uv#4922</a> on 2024-07-30 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5612.html">astral-sh/uv#5612</a> on 2024-07-30 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 17:45</div>
+            <div class="timeline-body"><p>Seems clearer than https://github.com/astral-sh/uv/issues/5612</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-30 17:50</div>
+            <div class="timeline-body"><p>Haha whoops! Totally missed that one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-01 20:20</div>
+            <div class="timeline-body"><p>Does anyone have an example that produces this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-02 11:28</div>
+            <div class="timeline-body"><p>I think pretty much anything that doesn't produce a resolution and involves markers will do:</p>
+<pre><code>$ cat /tmp/requirements.in
+iniconfig
+iniconfig==2.0.0 ; python_version &gt; '3.12'
+iniconfig==1.0.0 ; python_version == '3.12'
+
+$ uv pip compile /tmp/requirements.in --universal
+  x No solution found when resolving dependencies:
+  `-&gt; Because iniconfig{python_version &gt; '3.12'}==2.0.0 depends on iniconfig==2.0.0 and you require iniconfig{python_version &gt; '3.12'}==2.0.0, we can conclude that your requirements and iniconfig{python_version == '3.12'}==1.0.0
+      are incompatible.
+      And because you require iniconfig{python_version == '3.12'}==1.0.0, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>Although I suppose this will stop producing an error once overlapping marker support lands. :P</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-02 16:03</div>
+            <div class="timeline-body"><p>Awesome thank you :) I was having trouble getting this exact form to appear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-02 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5738.html">astral-sh/uv#5738</a> on 2024-08-02 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-02 21:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

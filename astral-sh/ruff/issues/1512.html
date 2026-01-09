@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lint for overuse of argument defaults in non-public functions - astral-sh/ruff #1512</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>lint for overuse of argument defaults in non-public functions</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1512">#1512</a>
+        opened by <a href="https://github.com/danieleades">@danieleades</a>
+        on 2022-12-31 15:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danieleades">@danieleades</a> on 2022-12-31 15:17</div>
+            <div class="timeline-body"><p>i'm working in a large, public python codebase that lints using ruff.</p>
+<p>I have a general <em>feeling</em> that this codebase has massive overuse of argument defaults in methods and I would love to lint for this. This happens in a couple of different ways-</p>
+<ul>
+<li>a non-public function has many arguments with default values, however it is never called without fully-specifying the default values anywhere</li>
+<li>functions that repeatedly delegate to lower-level functions, but repeat the default arguments redundantly at every level in the hierarchy</li>
+</ul>
+<p>it's the second case here that causes the biggest headaches in this particular codebase. The function signatures are very noisy. Also (in my case) the default value is almost always <code>None</code>, and it takes some serious archaeology to try and figure out what it means to leave out any particular arg (<code>None</code> is often semantically different to <code>not None</code>).</p>
+<p>I have no idea whether this type of lint is possible using this library. You'd have to collect every non-public function with default valued args, and compare them to each of their call-sites to determine whether the arg defaults are ever used or not. Or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2022-12-31 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danieleades">@danieleades</a> on 2023-01-01 16:01</div>
+            <div class="timeline-body"><p>crossposted at https://github.com/MartinThoma/flake8-simplify/issues/165</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danieleades">@danieleades</a> on 2023-01-01 16:55</div>
+            <div class="timeline-body"><p>I'd be happy to take a stab at this if someone could point me in the right direction?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-01 17:56</div>
+            <div class="timeline-body"><p>I think this is out-of-scope <em>right now</em> because we don't do cross-file checks. That is, if you define a function in one file, we don't have a way to pick up its signature when linting files that import it.</p>
+<p>I want to get to that in the future, but the model right now is single-file oriented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danieleades">@danieleades</a> on 2023-01-01 19:14</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this is out-of-scope <em>right now</em> because we don't do cross-file checks. That is, if you define a function in one file, we don't have a way to pick up its signature when linting files that import it.</p>
+<p>I want to get to that in the future, but the model right now is single-file oriented.</p>
+</blockquote>
+<p>I wondered about that. Fair enough</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danieleades">@danieleades</a> on 2023-01-03 08:16</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this is out-of-scope <em>right now</em> because we don't do cross-file checks. That is, if you define a function in one file, we don't have a way to pick up its signature when linting files that import it.</p>
+<p>I want to get to that in the future, but the model right now is single-file oriented.</p>
+</blockquote>
+<p>you could still implement this in a limited capacity today. This could still apply to any function which is private to a single file, has default arguments, and those defaults are never used.</p>
+<p>function visibility would be</p>
+<ul>
+<li>private if a leading underscore (and no <code>__all__</code>)</li>
+<li>public if no leading underscore (and no <code>__all__</code>)</li>
+<li>private if not in <code>__all__</code> (if present)</li>
+</ul>
+<p>you'd miss most cases of course, but you'd have the logic in place</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21416.html">astral-sh/ruff#21416</a> on 2025-11-12 23:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

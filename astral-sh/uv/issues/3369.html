@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreeBSD iocage `uv pip install` in `uv venv` results in &quot;invalid peer certificate&quot; - astral-sh/uv #3369</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FreeBSD iocage `uv pip install` in `uv venv` results in &quot;invalid peer certificate&quot;</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3369">#3369</a>
+        opened by <a href="https://github.com/cmpadden">@cmpadden</a>
+        on 2024-05-04 04:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cmpadden">@cmpadden</a> on 2024-05-04 04:12</div>
+            <div class="timeline-body"><p><strong>Preface / Versions</strong></p>
+<ul>
+<li><code>uv</code> was installed with <code>pkg install uv</code></li>
+<li>venv was created with <code>uv venv --python 3.11</code></li>
+</ul>
+<pre><code>(root) [root@cage ~]# uv --version
+uv 0.1.15
+
+(root) [root@cage ~]# python --version
+Python 3.11.9
+
+(root) [root@cage ~]# python -m pip --version
+pip 24.0 from /root/.venv/lib/python3.11/site-packages/pip (python 3.11)
+
+(root) [root@cage ~]# uname -a
+FreeBSD cage 13.1-RELEASE-p9 FreeBSD 13.1-RELEASE-p9 n245429-296d095698e TRUENAS amd64
+</code></pre>
+<p><strong>Description</strong></p>
+<p>When running <code>uv pip install</code> in a <code>uv venv</code> from a FreeBSD iocage the following error is thrown; this does <em>not</em> occur when using <code>pip</code> in the same virtual environment:</p>
+<pre><code>(root) [root@cage ~]# uv pip install cowsay
+error: error sending request for url (https://pypi.org/simple/cowsay/): error trying to connect: invalid peer certificate: UnknownIssuer
+  Caused by: error trying to connect: invalid peer certificate: UnknownIssuer
+  Caused by: invalid peer certificate: UnknownIssuer
+</code></pre>
+<p>Here is the same installation in the same virtual environment working with <code>pip</code>:</p>
+<pre><code>(root) [root@cage ~]# which python
+/root/.venv/bin/python
+(root) [root@cage ~]# python -m pip --no-cache-dir install cowsay
+Collecting cowsay
+  Downloading cowsay-6.1-py3-none-any.whl.metadata (5.6 kB)
+Downloading cowsay-6.1-py3-none-any.whl (25 kB)
+Installing collected packages: cowsay
+Successfully installed cowsay-6.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "FreeBSD iocage `uv pip install` results in "invalid peer certificate"" to "FreeBSD iocage `uv pip install` in `uv venv` results in "invalid peer certificate"" by @cmpadden on 2024-05-04 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-04 04:49</div>
+            <div class="timeline-body"><p>Hi! It looks like you're on an older version of uv which uses <a href="https://github.com/astral-sh/uv?tab=readme-ov-file#custom-ca-certificates">system certificates</a> by default. If you upgrade, we switched to using bundled certificates (like pip) by default in <a href="https://github.com/astral-sh/uv/releases/tag/0.1.18">0.1.18</a> (https://github.com/astral-sh/uv/pull/2362).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-05-04 04:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cmpadden">@cmpadden</a> on 2024-05-04 05:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi! It looks like you're on an older version of uv which uses <a href="https://github.com/astral-sh/uv?tab=readme-ov-file#custom-ca-certificates">system certificates</a> by default. If we you upgrade, we switched to using bundled certificates (like pip) by default in <a href="https://github.com/astral-sh/uv/releases/tag/0.1.18">0.1.18</a> (#2362).</p>
+</blockquote>
+<p>Hi @zanieb, thanks for such a quick response! I'll need to tinker a bit to see how FreeBSD packages their binaries, as I'm unable to install it via the curl script, or via pip. Will update here once I get the latest version running.</p>
+<pre><code>[root@cage ~]# curl -LsSf https://astral.sh/uv/install.sh | sh
+ERROR: there isn't a package for x86_64-unknown-freebsd
+</code></pre>
+<pre><code>[root@cage ~]# python3 -m pip install uv
+
+&lt;snip&gt;
+
+        Error configuring OpenSSL build:
+            Command: cd &quot;/tmp/pip-install-ch8k_j4t/uv_d766d0d998ad417691e85338c13f452d/target/release/build/openssl-sys-f012f36da6f58d09/out/openssl-build/build/src&quot; &amp;&amp; env -u CROSS_COMPILE AR=&quot;ar&quot; CC=&quot;cc&quot; RANLIB=&quot;ranlib&quot; &quot;perl&quot; &quot;./Configure&quot; &quot;--prefix=/tmp/pip-install-ch8k_j4t/uv_d766d0d998ad417691e85338c13f452d/target/release/build/openssl-sys-f012f36da6f58d09/out/openssl-build/install&quot; &quot;--openssldir=/usr/local/ssl&quot; &quot;no-dso&quot; &quot;no-shared&quot; &quot;no-ssl3&quot; &quot;no-tests&quot; &quot;no-comp&quot; &quot;no-zlib&quot; &quot;no-zlib-dynamic&quot; &quot;--libdir=lib&quot; &quot;no-md2&quot; &quot;no-rc5&quot; &quot;no-weak-ssl-ciphers&quot; &quot;no-camellia&quot; &quot;no-idea&quot; &quot;no-seed&quot; &quot;BSD-x86_64&quot; &quot;-O2&quot; &quot;-ffunction-sections&quot; &quot;-fdata-sections&quot; &quot;-fPIC&quot; &quot;-m64&quot; &quot;--target=x86_64-unknown-freebsd&quot;
+            Failed to execute: No such file or directory (os error 2)
+
+
+
+        note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+      warning: build failed, waiting for other jobs to finish...
+      💥 maturin failed
+        Caused by: Failed to build a native library through cargo
+        Caused by: Cargo build finished with &quot;exit status: 101&quot;: `env -u CARGO &quot;cargo&quot; &quot;rustc&quot; &quot;--message-format&quot; &quot;json-render-diagnostics&quot; &quot;--manifest-path&quot; &quot;/tmp/pip-install-ch8k_j4t/uv_d766d0d998ad417691e85338c13f452d/crates/uv/Cargo.toml&quot; &quot;--release&quot; &quot;--bin&quot; &quot;uv&quot; &quot;--&quot; &quot;-C&quot; &quot;link-arg=-s&quot;`
+      Error: command ['maturin', 'pep517', 'build-wheel', '-i', '/root/.venv/bin/python3', '--compatibility', 'off'] returned non-zero exit status 1
+      [end of output]
+
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  ERROR: Failed building wheel for uv
+Failed to build uv
+ERROR: Could not build wheels for uv, which is required to install pyproject.toml-based projects
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-04 06:08</div>
+            <div class="timeline-body"><p>Hm sorry we don't have a pre-built version of uv for FreeBSD, I'm not sure how hard that would be for us to add. We can track that in https://github.com/astral-sh/uv/issues/3370.</p>
+<p>You'll need our development prerequisites to build from source. There are some more details on that in our <a href="https://github.com/astral-sh/uv/blob/main/CONTRIBUTING.md#setup">contributing guide</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cmpadden">@cmpadden</a> on 2024-05-04 17:49</div>
+            <div class="timeline-body"><p>The FreeBSD maintainer @yurivict has updated their port to be v0.1.39, and it looks like we're back in business.</p>
+<p>https://github.com/freebsd/freebsd-ports/commit/6a6dca9fdc456632e9690a9cfc63626a91666f3a</p>
+<p>Thank you both for the assistance!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @cmpadden on 2024-05-04 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-04 17:50</div>
+            <div class="timeline-body"><p>Right on, thanks for following up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/rustup/pulls/3810.html">rust-lang/rustup#3810</a> on 2024-05-07 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rami3l">@rami3l</a> on 2024-05-07 02:41</div>
+            <div class="timeline-body"><p>@zanieb @konstin Just to share the experience: at Rustup we <a href="https://github.com/rust-lang/rustup/blob/f26d16b3b940bfb7b5e5aad7ee8f7121569f1d60/ci/actions-templates/freebsd-builds-template.yaml">use <code>vmactions/freebsd-vm</code></a> to test and ship for FreeBSD without leaving GitHub Actions.</p>
+<p>Also, facing this very issue, <code>pkg install -y ca_root_nss</code> has fixed the CI for us (https://github.com/rust-lang/rustup/pull/3810), without having to change the CA certs to bundled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-07 02:46</div>
+            <div class="timeline-body"><p>You rock thanks for sharing @rami3l.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

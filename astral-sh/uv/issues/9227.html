@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `--token` to be empty if `--keyring-provider` is set with `uv publish` - astral-sh/uv #9227</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow `--token` to be empty if `--keyring-provider` is set with `uv publish`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/9227">#9227</a>
+        opened by <a href="https://github.com/KalleDK">@KalleDK</a>
+        on 2024-11-19 14:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KalleDK">@KalleDK</a> on 2024-11-19 14:28</div>
+            <div class="timeline-body"><p>uv 0.4.30</p>
+<p>Right now it kinda works with token and keyring when publishing</p>
+<p>I would love for <code>uv publish --keyring-provider=subprocess</code> to work by first asking for token and then username / password. Alternative <code>uv publish --keyring-provider=subprocess --token</code> should work. Hope I make sense</p>
+<h2>Fails with interactive</h2>
+<pre><code>$ uv publish --keyring-provider=subprocess
+warning: `uv publish` is experimental and may change without warning
+Publishing 2 files https://upload.pypi.org/legacy/
+Enter username ('__token__' if using a token): 
+Enter password: 
+Uploading example-0.1.11-py3-none-any.whl (1.9KiB)
+error: Failed to publish `dist/example-0.1.11-py3-none-any.whl` to https://upload.pypi.org/legacy/
+  Caused by: Upload failed with status code 403 Forbidden. Server says: 403 Username/Password authentication is no longer supported. Migrate to API Tokens or Trusted Publishers instead. See https://pypi.org/help/#apitoken and https://pypi.org/help/#trusted-publishers
+</code></pre>
+<h2>Fails with token</h2>
+<pre><code>uv publish --keyring-provider=subprocess --token
+error: a value is required for '--token &lt;TOKEN&gt;' but none was supplied
+
+For more information, try '--help'.
+</code></pre>
+<h2>Strangely works if you kinda combine</h2>
+<pre><code>uv publish --keyring-provider=subprocess --username=__token__
+warning: `uv publish` is experimental and may change without warning
+Publishing 2 files https://upload.pypi.org/legacy/
+Uploading example-0.1.11-py3-none-any.whl (1.9KiB)
+Uploading example-0.1.11.tar.gz (15.4KiB)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Allow --token to be empty if --keyring-provider is set with uv publish" to "Allow --token to be empty if --keyring-provider is set with `uv publish`" by @KalleDK on 2024-11-19 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Allow --token to be empty if --keyring-provider is set with `uv publish`" to "Allow --token to be empty if `--keyring-provider` is set with `uv publish`" by @KalleDK on 2024-11-19 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Allow --token to be empty if `--keyring-provider` is set with `uv publish`" to "Allow `--token` to be empty if `--keyring-provider` is set with `uv publish`" by @KalleDK on 2024-11-19 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-11-19 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-19 14:32</div>
+            <div class="timeline-body"><p>Would https://github.com/astral-sh/uv/pull/8806/files explain that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KalleDK">@KalleDK</a> on 2024-11-19 20:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Would https://github.com/astral-sh/uv/pull/8806/files explain that?</p>
+</blockquote>
+<p>I don't think it explains it - It explains how to use it which solves 99%. I'm just curious why there is some magic by giving the username by switch it then tries the keyring and auth by token, but not when you give it by interactive means. And again I would love for it to first try to get a token from keyring, and then username password, if that fails, from keyring before going interactive (when you have enabled keyring)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-11-22 03:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-28 12:06</div>
+            <div class="timeline-body"><p>This is an unintuitive interaction between different parts:</p>
+<p>The keyring needs a username (we call <code>keyring get</code>). The keyring can be used for two things: Credentials for upload and/or credentials for the check url index page. We allow passing username and password, or a token, though the token is just a shortcut for <code>--username __token__ --password &lt;value&gt;</code>. #8827 adds warnings for some non-helpful combinations of options. If there are neither username, password nor token, we go into prompting mode. Here's where this case goes wrong: You want to use the keyring, so you don't want to enter the password. It's a bit tricky to solve (do we need to ask for password vs. keyring?), because with the optional <code>--check-url</code>, we potentially don't know whether the keyring should be used for publishing or only for the index url.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2025-02-27 13:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

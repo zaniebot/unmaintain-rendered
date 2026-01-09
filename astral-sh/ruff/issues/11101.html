@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff format converts tabs into 8 spaces in docstring - astral-sh/ruff #11101</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff format converts tabs into 8 spaces in docstring</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11101">#11101</a>
+        opened by <a href="https://github.com/ibrokemypie">@ibrokemypie</a>
+        on 2024-04-23 07:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ibrokemypie">@ibrokemypie</a> on 2024-04-23 07:54</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Ruff format converts tabs in docstrings to 8 spaces, and there does not seem to be any way to disable this.</p>
+<p>I think that ruff format shouldn't touch docstrings at all by default, as they are data, not code, and at the very least this should be configurable. On another note, 8 spaces doesnt even match the configured indent-width.</p>
+<p>Minimal repro on ruff 0.4.1:</p>
+<p>test.py</p>
+<pre><code class="language-python">&quot;&quot;&quot;
+foo
+	bar
+&quot;&quot;&quot;
+</code></pre>
+<pre><code class="language-shell">&gt; ruff format --verbose --check --diff test.py
+[2024-04-23][17:49:57][ruff::resolve][DEBUG] Using Ruff default settings
+[2024-04-23][17:49:57][ruff::commands::format][DEBUG] format_path; path=/home/noodle/test.py
+[2024-04-23][17:49:57][tracing::span][DEBUG] Printer::print;
+[2024-04-23][17:49:57][ruff::commands::format][DEBUG] Formatted 1 files in 343.02µs
+--- test.py
++++ test.py
+@@ -1,4 +1,4 @@
+ &quot;&quot;&quot;
+ foo
+-	bar
++        bar
+ &quot;&quot;&quot;
+
+1 file would be reformatted
+</code></pre>
+<p>Have searched for existing issues with various combinations of the terms 'docstring', 'indent', 'tab', 'disable', 'format' and was not able to find any that were still open which applied.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-23 08:09</div>
+            <div class="timeline-body"><p>Hi, thanks for opening this issue.</p>
+<p>Can you try using the <a href="https://docs.astral.sh/ruff/settings/#format_indent-style"><code>indent-style</code></a> config option?</p>
+<pre><code class="language-toml">[tool.ruff.format]
+indent-style = &quot;tab&quot;
+</code></pre>
+<p>https://play.ruff.rs/9046b93e-f66b-4f06-b0dd-1f9b8eeeaa93</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @dhruvmanila on 2024-04-23 08:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibrokemypie">@ibrokemypie</a> on 2024-04-23 08:28</div>
+            <div class="timeline-body"><p>Adding a pyproject.toml to configure indent-style to tab does prevent the docstring tabs from being replaced, however now the entire codebase is having every instance of indentations being converted from tabs to spaces which is not what we want at all. We want our code to be formatted to use spaces for indentation as is standard, and for docstrings to be left alone, or at least be left visually the same</p>
+<p>test.py</p>
+<pre><code class="language-python">&quot;&quot;&quot;
+foo
+	bar
+&quot;&quot;&quot;
+
+
+def baz():
+    print('hi')
+</code></pre>
+<p>pyproject.toml</p>
+<pre><code class="language-toml">[tool.ruff.format]
+indent-style = &quot;tab&quot;
+</code></pre>
+<pre><code class="language-shell">&gt; ruff format --verbose --check --diff test.py
+[2024-04-23][18:25:05][ruff::resolve][DEBUG] Using configuration file (via parent) at: /home/noodle/pyproject.toml
+[2024-04-23][18:25:05][ruff::commands::format][DEBUG] format_path; path=/home/noodle/test.py
+[2024-04-23][18:25:05][tracing::span][DEBUG] Printer::print;
+[2024-04-23][18:25:05][ruff::commands::format][DEBUG] Formatted 1 files in 145.20µs
+--- test.py
++++ test.py
+@@ -5,4 +5,4 @@
+ 
+ 
+ def baz():
+-    print('hi')
++       print(&quot;hi&quot;)
+
+1 file would be reformatted
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-23 08:37</div>
+            <div class="timeline-body"><p>Oh I see. Thank you for providing the context. So, just to be clear, you'd want the docstrings indentation to be left as is but retain the 4-space indent for other parts of the codebase.</p>
+<p>I think @MichaReiser might have more context on this but this seems similar to  https://github.com/astral-sh/ruff/issues/10396</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibrokemypie">@ibrokemypie</a> on 2024-04-23 08:41</div>
+            <div class="timeline-body"><p>Correct, we want to use standard 4-space (or whatever is configured) indentation for the codebase, but leave the indentation within docstrings alone :+1:</p>
+<p>I did see and read through that issue, but as noted there <code>docstring-code-format</code> does not apply to non-code in docstrings (and is already disabled by default) and going through a very large codebase and adding <code># fmt: skip</code> to every docstring (and probably needing a semgrep rule to enforce this going forward?) isn't really feasible</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-23 16:01</div>
+            <div class="timeline-body"><p>The existing behavior is intentional to match how Python displays docstrings at runtime. Python's <code>cleandoc</code> function changes all tabs to 8 spaces. Because of that, Ruff is forced to change tabs to 8 spaces. Using <code>indent-width</code> spaces instead would alter how Python interprets your comments at runtime.</p>
+<p>That being said. We could do better, but that requires that Ruff understands the semantics of docstrings to know if some leading whitespace is indentation or alignment (e.g. for an ASCII art where spacing matters). You can read more about this in https://github.com/astral-sh/ruff/issues/8430#issuecomment-1934209625</p>
+<p>I'm sorry, but there's no option to disable docstring formatting at the moment and I unfortunately don't have a good recommendation on how you can migrate your code base easily without having to review the changes manually. D206 catches tab indentations inside docstrings, but it doesn't provide an autofix for it. You could try enabling the rule and change all tabs manually, I know that's cumbersome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibrokemypie">@ibrokemypie</a> on 2024-04-26 01:18</div>
+            <div class="timeline-body"><p>We were able to replace the tabs in docstrings with spaces by hand to make them visually equivalent in editor, which has worked around the issue. I think the biggest thing to note here is that this behaviour doesn't at all match black, which doesn't touch the docstrings, and I wasn't able to find any mention of this in the known deviations page.</p>
+<pre><code class="language-python">&quot;&quot;&quot;
+foo
+	bar
+    bar
+&quot;&quot;&quot;
+
+
+def baz():
+    print(&quot;hi&quot;)
+</code></pre>
+<pre><code class="language-shell">&gt; ruff format --verbose --check --diff test.py
+[2024-04-26][11:13:23][ruff::resolve][DEBUG] Using Ruff default settings
+[2024-04-26][11:13:23][ruff::commands::format][DEBUG] format_path; path=/home/noodle/test.py
+[2024-04-26][11:13:23][tracing::span][DEBUG] Printer::print;
+[2024-04-26][11:13:23][ruff::commands::format][DEBUG] Formatted 1 files in 174.54µs
+--- test.py
++++ test.py
+@@ -1,6 +1,6 @@
+ &quot;&quot;&quot;
+ foo
+-	bar
++        bar
+     bar
+ &quot;&quot;&quot;
+ 
+
+1 file would be reformatted
+</code></pre>
+<pre><code class="language-shell">&gt; black -v --diff test.py
+Identified `/` as project root containing a file system root.
+Found input source: &quot;test.py&quot;
+test.py already well formatted, good job.
+
+All done! ✨ 🍰 ✨
+1 file would be left unchanged.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 01:48</div>
+            <div class="timeline-body"><p>To be clear: I believe Black does touch function and class docstrings, and <em>does</em> convert them from tabs to spaces. But it doesn't touch <em>module</em> docstrings.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv installing for incorrect architecture (raspberry pi) - astral-sh/uv #13288</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv installing for incorrect architecture (raspberry pi)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13288">#13288</a>
+        opened by <a href="https://github.com/jonathancyu">@jonathancyu</a>
+        on 2025-05-04 23:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jonathancyu">@jonathancyu</a> on 2025-05-04 23:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Running uv with any python version that is not 3.9 (system default) will result in a &quot;Cannot open shared object file: No such file or directory&quot; error.</p>
+<p>Here are some logs that demonstrate the issue:</p>
+<pre><code>yucjo@raspberrypi ~/workspace/projects/ main
+❯ uv -v run --python 3.9 python --version
+DEBUG uv 0.7.2
+DEBUG No project found; searching for Python interpreter
+DEBUG Searching for Python 3.9 in virtual environments, managed installations, or search path
+DEBUG Searching for managed installations at `/home/yucjo/.local/share/uv/python`
+DEBUG Skipping incompatible managed installation `cpython-3.12.10-linux-armv7-gnueabi`
+DEBUG Skipping incompatible managed installation `cpython-3.11.12-linux-armv7-gnueabi`
+DEBUG Skipping incompatible managed installation `cpython-3.10.17-linux-armv7-gnueabi`
+DEBUG Found `cpython-3.9.2-linux-armv7-gnu` at `/usr/bin/python3.9` (first executable in the search path)
+DEBUG Using Python 3.9.2 interpreter at: /usr/bin/python3.9
+DEBUG Running `python --version`
+DEBUG Spawned child 20442 in process group 20439
+Python 3.9.2
+DEBUG Command exited with code: 0
+
+yucjo@raspberrypi ~/workspace/projects/ main
+❯ uv -v run --python 3.10 python --version
+DEBUG uv 0.7.2
+DEBUG No project found; searching for Python interpreter
+DEBUG Searching for Python 3.10 in virtual environments, managed installations, or search path
+DEBUG Searching for managed installations at `/home/yucjo/.local/share/uv/python`
+DEBUG Skipping incompatible managed installation `cpython-3.12.10-linux-armv7-gnueabi`
+DEBUG Skipping incompatible managed installation `cpython-3.11.12-linux-armv7-gnueabi`
+DEBUG Found managed installation `cpython-3.10.17-linux-armv7-gnueabi`
+DEBUG Failed to inspect Python interpreter from managed installations at `/home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/python3.10`
+DEBUG Skipping bad interpreter at /home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/python3.10 from managed installations: Querying Python at `/home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/python3.10` failed with exit status exit status: 127
+
+[stderr]
+/home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/python3.10: error while loading shared libraries: /home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/../lib/libpython3.10.so.1.0: cannot open shared object file: No such file or directory
+
+DEBUG Found `cpython-3.9.2-linux-armv7-gnu` at `/usr/bin/python3` (first executable in the search path)
+DEBUG Skipping interpreter at `/usr/bin/python3` from first executable in the search path: does not satisfy request `3.10`
+DEBUG Found `cpython-3.9.2-linux-armv7-gnu` at `/usr/bin/python` (search path)
+DEBUG Skipping interpreter at `/usr/bin/python` from search path: does not satisfy request `3.10`
+DEBUG Skipping bad interpreter at /home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/python3.10 from managed installations: Querying Python at `/home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/python3.10` failed with exit status exit status: 127
+
+[stderr]
+/home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/python3.10: error while loading shared libraries: /home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/../lib/libpython3.10.so.1.0: cannot open shared object file: No such file or directory
+
+DEBUG Requested Python not found, checking for available download...
+DEBUG Acquired lock for `/home/yucjo/.local/share/uv/python`
+DEBUG Using request timeout of 30s
+INFO Fetching requested Python...
+DEBUG Released lock at `/home/yucjo/.local/share/uv/python/.lock`
+error: Querying Python at `/home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/python3.10` failed with exit status exit status: 127
+
+[stderr]
+/home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/python3.10: error while loading shared libraries: /home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/../lib/libpython3.10.so.1.0: cannot open shared object file: No such file or directory
+</code></pre>
+<p>The libraries are clearly present:</p>
+<pre><code>yucjo@raspberrypi ~/workspace/projects/ main
+❯ l  /home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/../lib/libpython3.10.so.1.0
+-rwxr-xr-x 1 yucjo yucjo 21M May  5 00:29 /home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/../lib/libpython3.10.so.1.0
+</code></pre>
+<p>One thing I'm noticing, is that this is an aarch64 machine, however uv is downloading the armv7 executables.
+Running python 3.13 will download the armv7 version, yielding the same error:</p>
+<pre><code>yucjo@raspberrypi ~/workspace/projects/ main
+❮ uv -v run --python 3.13 python --version
+DEBUG uv 0.7.2
+DEBUG No project found; searching for Python interpreter
+DEBUG Searching for Python 3.13 in virtual environments, managed installations, or search path
+DEBUG Searching for managed installations at `/home/yucjo/.local/share/uv/python`
+DEBUG Skipping incompatible managed installation `cpython-3.12.10-linux-armv7-gnueabi`
+DEBUG Skipping incompatible managed installation `cpython-3.11.12-linux-armv7-gnueabi`
+DEBUG Skipping incompatible managed installation `cpython-3.10.17-linux-armv7-gnueabi`
+DEBUG Found `cpython-3.9.2-linux-armv7-gnu` at `/usr/bin/python3` (first executable in the search path)
+DEBUG Skipping interpreter at `/usr/bin/python3` from first executable in the search path: does not satisfy request `3.13`
+DEBUG Found `cpython-3.9.2-linux-armv7-gnu` at `/usr/bin/python` (search path)
+DEBUG Skipping interpreter at `/usr/bin/python` from search path: does not satisfy request `3.13`
+DEBUG Requested Python not found, checking for available download...
+DEBUG Acquired lock for `/home/yucjo/.local/share/uv/python`
+DEBUG Using request timeout of 30s
+INFO Fetching requested Python...
+DEBUG Downloading https://github.com/astral-sh/python-build-standalone/releases/download/20250409/cpython-3.13.3%2B20250409-armv7-unknown-linux-gnueabi-install_only_stripped.tar.gz
+DEBUG Extracting cpython-3.13.3-20250409-armv7-unknown-linux-gnueabi-install_only_stripped.tar.gz to temporary location: /home/yucjo/.local/share/uv/python/.temp/.tmpZnA1Xt
+Downloading cpython-3.13.3-linux-armv7-gnueabi (download) (17.0MiB)
+ Downloading cpython-3.13.3-linux-armv7-gnueabi (download)
+DEBUG Moving /home/yucjo/.local/share/uv/python/.temp/.tmpZnA1Xt/python to /home/yucjo/.local/share/uv/python/cpython-3.13.3-linux-armv7-gnueabi
+DEBUG Released lock at `/home/yucjo/.local/share/uv/python/.lock`
+error: Querying Python at `/home/yucjo/.local/share/uv/python/cpython-3.13.3-linux-armv7-gnueabi/bin/python3.13` failed with exit status exit status: 127
+
+[stderr]
+/home/yucjo/.local/share/uv/python/cpython-3.13.3-linux-armv7-gnueabi/bin/python3.13: error while loading shared libraries: /home/yucjo/.local/share/uv/python/cpython-3.13.3-linux-armv7-gnueabi/bin/../lib/libpython3.13.so.1.0: cannot open shared object file: No such file or directory
+</code></pre>
+<h3>Platform</h3>
+<p>Raspbian GNU/Linux 11 (bullseye) aarch64</p>
+<h3>Version</h3>
+<p>uv 0.7.2</p>
+<h3>Python version</h3>
+<p>3.12.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jonathancyu on 2025-05-04 23:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Cannot open shared object file: No such file or directory" to "uv installing for incorrect architecture (raspberry pi)" by @jonathancyu on 2025-05-04 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-05-05 10:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-05-05 10:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-05 10:27</div>
+            <div class="timeline-body"><p>I can't reproduce this on my raspberry pi, running the following commands results in the aarch64 Python 3.10 being download and run:</p>
+<pre><code>uv python install cpython-3.10.17-linux-armv7-gnueabi
+uv -v run --python 3.10 python
+</code></pre>
+<p>Can you try <code>uv python uninstall -a</code> and <code>uv cache clean</code> to see if that helps? Otherwise, can you share commands to reproduce that state?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonathancyu">@jonathancyu</a> on 2025-05-05 16:10</div>
+            <div class="timeline-body"><p>Doesn't look like -a is a valid argument to uninstall, what version of uv are you on?</p>
+<pre><code>yucjo@raspberrypi ~
+❯ uv python uninstall -a
+error: unexpected argument '-a' found
+
+  tip: to pass '-a' as a value, use '-- -a'
+
+Usage: uv python uninstall [OPTIONS] &lt;TARGETS&gt;...
+
+For more information, try '--help'.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-05 16:11</div>
+            <div class="timeline-body"><p>I think he meant <code>--all</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonathancyu">@jonathancyu</a> on 2025-05-05 16:16</div>
+            <div class="timeline-body"><p>Good catch, still running into the same issue:</p>
+<pre><code>yucjo@raspberrypi ~
+❯ uv python uninstall --all
+Searching for Python installations
+Uninstalled 4 versions in 668ms
+ - cpython-3.10.17-linux-armv7-gnueabi
+ - cpython-3.11.12-linux-armv7-gnueabi
+ - cpython-3.12.10-linux-armv7-gnueabi
+ - cpython-3.13.3-linux-armv7-gnueabi
+
+yucjo@raspberrypi ~
+❯ uv cache clean
+Clearing cache at: .cache/uv
+Removed 6 files (1.6KiB)
+
+yucjo@raspberrypi ~
+❯ uv -v run --python 3.10 python          
+DEBUG uv 0.7.2
+DEBUG No project found; searching for Python interpreter
+DEBUG Searching for Python 3.10 in virtual environments, managed installations, or search path
+DEBUG Searching for managed installations at `.local/share/uv/python`
+DEBUG Found `cpython-3.9.2-linux-armv7-gnu` at `/usr/bin/python3` (first executable in the search path)
+DEBUG Skipping interpreter at `/usr/bin/python3` from first executable in the search path: does not satisfy request `3.10`
+DEBUG Found `cpython-3.9.2-linux-armv7-gnu` at `/usr/bin/python` (search path)
+DEBUG Skipping interpreter at `/usr/bin/python` from search path: does not satisfy request `3.10`
+DEBUG Requested Python not found, checking for available download...
+DEBUG Acquired lock for `.local/share/uv/python`
+DEBUG Using request timeout of 30s
+INFO Fetching requested Python...
+DEBUG Downloading https://github.com/astral-sh/python-build-standalone/releases/download/20250409/cpython-3.10.17%2B20250409-armv7-unknown-linux-gnueabi-install_only_stripped.tar.gz
+DEBUG Extracting cpython-3.10.17-20250409-armv7-unknown-linux-gnueabi-install_only_stripped.tar.gz to temporary location: /home/yucjo/.local/share/uv/python/.temp/.tmpWgba78
+Downloading cpython-3.10.17-linux-armv7-gnueabi (download) (18.9MiB)
+ Downloading cpython-3.10.17-linux-armv7-gnueabi (download)
+DEBUG Moving /home/yucjo/.local/share/uv/python/.temp/.tmpWgba78/python to .local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi
+DEBUG Released lock at `/home/yucjo/.local/share/uv/python/.lock`
+error: Querying Python at `/home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/python3.10` failed with exit status exit status: 127
+
+[stderr]
+/home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/python3.10: error while loading shared libraries: /home/yucjo/.local/share/uv/python/cpython-3.10.17-linux-armv7-gnueabi/bin/../lib/libpython3.10.so.1.0: cannot open shared object file: No such file or directory
+</code></pre>
+<p>It says it's finding cypthon armv7 at <code>/usr/bin/python3</code>, but the interpreter disagrees:</p>
+<pre><code>yucjo@raspberrypi ~ 42s
+❯ which python3
+/usr/bin/python3
+
+yucjo@raspberrypi ~
+❯ python3                                                  
+Python 3.9.2 (default, Mar 20 2025, 22:21:41) 
+[GCC 10.2.1 20210110] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import platform
+&gt;&gt;&gt; print(platform.machine())
+aarch64
+&gt;&gt;&gt; print(platform.architecture())
+('32bit', 'ELF')
+</code></pre>
+<p>Am I misunderstanding what the following line means?</p>
+<pre><code>DEBUG Found `cpython-3.9.2-linux-armv7-gnu` at `/usr/bin/python3` (first executable in the search path)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-05 19:29</div>
+            <div class="timeline-body"><p>That's an odd combination:</p>
+<pre><code>&gt;&gt;&gt; print(platform.machine())
+aarch64
+&gt;&gt;&gt; print(platform.architecture())
+('32bit', 'ELF')
+</code></pre>
+<p>Can you share the output of the following two commands?</p>
+<pre><code>uname -a
+file $(readlink -f $(which python3))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonathancyu">@jonathancyu</a> on 2025-05-05 19:30</div>
+            <div class="timeline-body"><p>Here you go</p>
+<pre><code>yucjo@raspberrypi ~
+❯ uname -a                      
+Linux raspberrypi 6.1.21-v8+ #1642 SMP PREEMPT Mon Apr  3 17:24:16 BST 2023 aarch64 GNU/Linux
+
+yucjo@raspberrypi ~
+❯ file $(readlink -f $(which python3))
+/usr/bin/python3.9: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, BuildID[sha1]=184698d7bc1f75bdc21aca0938ae29b6f724e227, for GNU/Linux 3.2.0, stripped
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-05 19:58</div>
+            <div class="timeline-body"><p>Can you check if you installed uv as 32-bit or 64-bit?</p>
+<pre><code>file $(which uv)
+</code></pre>
+<p>Did you install any multiarch packages? When I manually force an armv7 Python installation, the interpreter doesn't not launch for me, which should be earlier than the error about the missing shared library:</p>
+<pre><code>~/.local/share/uv/python/cpython-3.13.3-linux-armv7-gnueabi/bin/python3.13
+-bash: /home/konsti/.local/share/uv/python/cpython-3.13.3-linux-armv7-gnueabi/bin/python3.13: cannot execute: required file not found
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonathancyu">@jonathancyu</a> on 2025-05-06 04:08</div>
+            <div class="timeline-body"><p>It's installed as a 32 bit:</p>
+<pre><code>yucjo@raspberrypi ~
+❯ file $(which uv)
+/home/yucjo/.local/bin/uv: ELF 32-bit LSB pie executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.101, stripped
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-06 08:48</div>
+            <div class="timeline-body"><p>When downloading the same file I can't run it on my machine, are there any modifications you made to run 32-bit binaries?</p>
+<pre><code>$ ./uv-armv7-unknown-linux-gnueabihf/uv
+-bash: ./uv-armv7-unknown-linux-gnueabihf/uv: cannot execute: required file not found
+$ file ./uv-armv7-unknown-linux-gnueabihf/uv
+./uv-armv7-unknown-linux-gnueabihf/uv: ELF 32-bit LSB pie executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.101, stripped
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dirkheinkecc">@dirkheinkecc</a> on 2025-05-06 09:00</div>
+            <div class="timeline-body"><p>We have the same problem with a Pi4 on Raspberry Pi OS (Legacy - bullseye). If you need more details let me know:</p>
+<pre><code>
+pi@raspberrypi: $ uname -a
+Linux raspberrypi 6.12.16-v8+ #1859 SMP PREEMPT Mon Feb 24 13:14:16 GMT 2025 aarch64 GNU/Linux
+
+pi@raspberrypi: $ file $(readlink -f $(which python3))
+/usr/bin/python3.13: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, BuildID[sha1]=262f1bbb4f95658f180197977ded7f920810fad6, for GNU/Linux 3.2.0, with debug_info, not stripped
+
+pi@raspberrypi: $ file $(which uv)
+/home/pi/.local/bin/uv: ELF 32-bit LSB pie executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.101, stripped
+
+
+$ uv python list
+cpython-3.14.0a6-linux-armv7-gnueabi                 &lt;download available&gt;
+cpython-3.14.0a6+freethreaded-linux-armv7-gnueabi    &lt;download available&gt;
+cpython-3.13.3-linux-armv7-gnueabi                   &lt;download available&gt;
+cpython-3.13.3+freethreaded-linux-armv7-gnueabi      &lt;download available&gt;
+cpython-3.13.0-linux-armv7-gnu                       /usr/bin/python3.13
+cpython-3.13.0-linux-armv7-gnu                       /usr/bin/python3 -&gt; /etc/alternatives/python3
+cpython-3.13.0-linux-armv7-gnu                       /usr/bin/python -&gt; /etc/alternatives/python
+cpython-3.12.10-linux-armv7-gnueabi                  &lt;download available&gt;
+cpython-3.11.12-linux-armv7-gnueabi                  &lt;download available&gt;
+cpython-3.10.17-linux-armv7-gnueabi                  &lt;download available&gt;
+cpython-3.9.22-linux-armv7-gnueabi                   &lt;download available&gt;
+cpython-3.9.2-linux-armv7-gnu                        /usr/bin/python3.9
+</code></pre>
+<p>Installing 3.13.3 works, but then trying to create a venv with it, fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ErichBSchulz">@ErichBSchulz</a> on 2025-05-17 02:57</div>
+            <div class="timeline-body"><p>just a bump on this for fwiw.</p>
+<p>I'm on a new pi5 with a fresh install, I'm trying to get faster-whisper running and it's been hours and even grok and gemini can't get me going!</p>
+<p>Installed uv using pipx: <code>pipx install uv</code></p>
+<pre><code>erich@possum001:~/possum/exp/fwhisper $ rm -rf ~/.local/share/uv/python/cpython-3.12.10-linux-armv7-gnueabi
+erich@possum001:~/possum/exp/fwhisper $ rm -rf ~/.cache/uv
+erich@possum001:~/possum/exp/fwhisper $ uname -m
+aarch64
+erich@possum001:~/possum/exp/fwhisper $ uv python install 3.12
+Installed Python 3.12.10 in 6.97s
+ 
+erich@possum001:~/possum/exp/fwhisper $ uv python list
+cpython-3.14.0a6-linux-armv7-gnueabi                 &lt;download available&gt;
+cpython-3.14.0a6+freethreaded-linux-armv7-gnueabi    &lt;download available&gt;
+cpython-3.13.3-linux-armv7-gnueabi                   &lt;download available&gt;
+cpython-3.13.3+freethreaded-linux-armv7-gnueabi      &lt;download available&gt;
+cpython-3.12.10-linux-armv7-gnueabi                  &lt;download available&gt;
+cpython-3.11.12-linux-armv7-gnueabi                  &lt;download available&gt;
+cpython-3.11.2-linux-armv7-gnu                       /usr/bin/python3.11
+cpython-3.11.2-linux-armv7-gnu                       /usr/bin/python3 -&gt; python3.11
+cpython-3.11.2-linux-armv7-gnu                       /usr/bin/python -&gt; python3
+cpython-3.10.17-linux-armv7-gnueabi                  &lt;download available&gt;
+cpython-3.9.22-linux-armv7-gnueabi                   &lt;download available&gt;
+</code></pre>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>import platform
+print(platform.architecture())
+('32bit', 'ELF')
+exit</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-17 03:36</div>
+            <div class="timeline-body"><p>Can you share <code>uv python install 3.12 -v</code> and <code>uv python list 3.12 -v</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ErichBSchulz">@ErichBSchulz</a> on 2025-05-17 03:44</div>
+            <div class="timeline-body"><p>sure</p>
+<pre><code>erich@possum001:~/possum/exp/fwhisper $ uv python install 3.12 -v
+DEBUG uv 0.7.4
+DEBUG Acquired lock for `/home/erich/.local/share/uv/python`
+DEBUG No installation found for request `Python 3.12`
+DEBUG Found download `cpython-3.12.10-linux-armv7-gnueabi` for request `Python 3.12`
+DEBUG Using request timeout of 30s
+DEBUG Downloading https://github.com/astral-sh/python-build-standalone/releases/download/20250409/cpython-3.12.10%2B20250409-armv7-unknown-linux-gnueabi-install_only_stripped.tar.gz
+DEBUG Extracting cpython-3.12.10-20250409-armv7-unknown-linux-gnueabi-install_only_stripped.tar.gz to temporary location: /home/erich/.local/share/uv/python/.temp/.tmp1qCMnj
+Downloading cpython-3.12.10-linux-armv7-gnueabi (download) (17.2MiB)
+ Downloading cpython-3.12.10-linux-armv7-gnueabi (download)
+DEBUG Moving /home/erich/.local/share/uv/python/.temp/.tmp1qCMnj/python to /home/erich/.local/share/uv/python/cpython-3.12.10-linux-armv7-gnueabi
+DEBUG Skipping installation of Python executables, use `--preview` to enable.
+Installed Python 3.12.10 in 4.55s
+ + cpython-3.12.10-linux-armv7-gnueabi
+DEBUG Released lock at `/home/erich/.local/share/uv/python/.lock`
+erich@possum001:~/possum/exp/fwhisper $ uv python list 3.12 -v
+DEBUG uv 0.7.4
+DEBUG Searching for Python 3.12 in managed installations or search path
+DEBUG Searching for managed installations at `/home/erich/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.12.10-linux-armv7-gnueabi`
+DEBUG Failed to inspect Python interpreter from managed installations at `/home/erich/.local/share/uv/python/cpython-3.12.10-linux-armv7-gnueabi/bin/python3.12` 
+error: Failed to inspect Python interpreter from managed installations at `/home/erich/.local/share/uv/python/cpython-3.12.10-linux-armv7-gnueabi/bin/python3.12`
+  Caused by: Failed to query Python interpreter at `/home/erich/.local/share/uv/python/cpython-3.12.10-linux-armv7-gnueabi/bin/python3.12`
+  Caused by: No such file or directory (os error 2)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ErichBSchulz">@ErichBSchulz</a> on 2025-05-17 03:45</div>
+            <div class="timeline-body"><p>that was very quick - I'm happy to work with you to fix and debug this now if you're available - otherwise I was planning on using venv to try to get there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ErichBSchulz">@ErichBSchulz</a> on 2025-05-17 04:31</div>
+            <div class="timeline-body"><p>Doh! I think I've discovered my problem!! I downloaded the OS package at the top of this page:</p>
+<p>https://www.raspberrypi.com/software/operating-systems/</p>
+<p>2025-05-13-raspios-bookworm-armhf-full.img to be specific, which is 32 bit (I see now).</p>
+<p>What I wanted (64 bit) was further down the page.</p>
+<p>2025-05-13-raspios-bookworm-arm64</p>
+<p>I hope this saves others the grief I've had today!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2025-05-19 08:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-05-19 08:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonathancyu">@jonathancyu</a> on 2025-05-27 02:49</div>
+            <div class="timeline-body"><p>This was indeed resolved when I followed this and did a fresh install of 64-bit raspbian!
+I wish there were a better fix than going nuclear on the OS and re-installing though.</p>
+<blockquote>
+<p>Doh! I think I've discovered my problem!! I downloaded the OS package at the top of this page:</p>
+<p>https://www.raspberrypi.com/software/operating-systems/</p>
+<p>2025-05-13-raspios-bookworm-armhf-full.img to be specific, which is 32 bit (I see now).</p>
+<p>What I wanted (64 bit) was further down the page.</p>
+<p>2025-05-13-raspios-bookworm-arm64</p>
+<p>I hope this saves others the grief I've had today!</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jonathancyu on 2025-05-27 02:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @geofft on 2025-06-09 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-06-09 21:50</div>
+            <div class="timeline-body"><p>There's a <a href="https://discord.com/channels/1039017663004942429/1381692679439519846">question on Discord</a> from someone who is <em>intentionally</em> running a 32-bit userspace, and ideally it would be good to have this work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13935.html">astral-sh/uv#13935</a> on 2025-06-09 21:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kageurufu">@kageurufu</a> on 2025-06-09 23:43</div>
+            <div class="timeline-body"><p>To clarify, Raspbian officially ships a 64-bit kernel with a 32-bit userspace.</p>
+<p>I can verify later, but I believe the official 32 bit images still use an aarch64 kernel image unless <code>use_64bit=0</code> is added to /boot/config.txt</p>
+<p>EDIT: https://github.com/raspberrypi/firmware/issues/1795</p>
+<blockquote>
+<p>The switch to running a 64-bit kernel by default on Pi 4 is intentional. We believe it gives a better experience with few drawbacks. As you've found, you can revert to the 32-bit kernel by adding <code>arm_64bit=0</code> to config.txt.</p>
+<p>See https://forums.raspberrypi.com/viewtopic.php?p=2088935#p2088935 for more details.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kageurufu">@kageurufu</a> on 2025-06-10 20:50</div>
+            <div class="timeline-body"><p>More investigation:</p>
+<ul>
+<li><code>/proc/sys/kernel/arch</code> is <code>aarch64</code></li>
+<li><code>/proc/cpuinfo</code> has <code>Features: fp asimd evtstrm crc32 cpuid</code></li>
+</ul>
+<p><code>std::env::const::ARCH</code> will be <code>&quot;arm&quot;</code>, as it's set at compile time and roughly follows the target tuple.</p>
+<p>So something like <code>if features.contains(&quot;vfp&quot;) || features.contains(&quot;fp&quot;)</code> in https://github.com/astral-sh/uv/blob/90a7208a73a2050fe06ff37db11bbc60a7919ef9/crates/uv-python/src/cpuinfo.rs#L19 should work.</p>
+<p>I can test this later today when that machine is free</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

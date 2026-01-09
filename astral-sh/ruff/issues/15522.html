@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`flake8-bandit` rules does not check `eval` in callback position - astral-sh/ruff #15522</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`flake8-bandit` rules does not check `eval` in callback position</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15522">#15522</a>
+        opened by <a href="https://github.com/xvlady">@xvlady</a>
+        on 2025-01-16 06:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/xvlady">@xvlady</a> on 2025-01-16 06:27</div>
+            <div class="timeline-body"><p>Demo code:</p>
+<pre><code>from pandas import DataFrame
+
+def me_eval():
+    eval('[]')
+    df = DataFrame({'a': ['1', '[]', '[1,2,3]'], 'b': [4, 5, 6]})
+    # print(df.to_dict())
+    df['a'] = df['a'].apply(eval)
+    # print(df.to_dict())
+    map(eval, l)
+    # print([i for i in r])
+
+
+if __name__ == '__main__':
+    me_eval()
+</code></pre>
+<p>Result:</p>
+<pre><code>{'a': {0: '1', 1: '[]', 2: '[1,2,3]'}, 'b': {0: 4, 1: 5, 2: 6}}
+{'a': {0: 1, 1: [], 2: [1, 2, 3]}, 'b': {0: 4, 1: 5, 2: 6}}
+[1, [], [1, 2, 3]]
+</code></pre>
+<p>Result check:</p>
+<pre><code>ruff check
+demo_eval.py:5:5: S307 Use of possibly insecure function; consider using `ast.literal_eval`
+  |
+4 | def me_eval():
+5 |     eval('[]')
+  |     ^^^^^^^^^^ S307
+6 |     df = DataFrame({'a': ['1', '[]', '[1,2,3]'], 'b': [4, 5, 6]})
+7 |     # print(df.to_dict())
+  |
+</code></pre>
+<p>This result check has problems: 8 and 10 lines with eval don't have message ruff
+problem text:</p>
+<pre><code> df['a'].apply(eval)
+map(eval, ***)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-01-16 06:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-01-16 06:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-16 06:38</div>
+            <div class="timeline-body"><p>TLDR: <code>S307</code> only finds literal <code>eval</code> call but not when <code>eval</code> is used in a callback position. We should probably change the rule to warn about all usages of <code>eval</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-16 15:36</div>
+            <div class="timeline-body"><p>We should also change <a href="https://docs.astral.sh/ruff/rules/exec-builtin/#exec-builtin-s102">exec-builtin (S102)</a> for the same reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-16 20:41</div>
+            <div class="timeline-body"><p><code>S307</code> is but one in a series of rules checking for usages of &quot;suspicious&quot; functions:</p>
+<ul>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-pickle-usage"><code>S301</code>: <code>suspicious-pickle-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-marshal-usage"><code>S302</code>: <code>suspicious-marshal-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-insecure-hash-usage"><code>S303</code>: <code>suspicious-insecure-hash-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-insecure-cipher-usage"><code>S304</code>: <code>suspicious-insecure-cipher-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-insecure-cipher-mode-usage"><code>S305</code>: <code>suspicious-insecure-cipher-mode-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-mktemp-usage"><code>S306</code>: <code>suspicious-mktemp-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-eval-usage"><code>S307</code>: <code>suspicious-eval-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-mark-safe-usage"><code>S308</code>: <code>suspicious-mark-safe-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-url-open-usage"><code>S310</code>: <code>suspicious-url-open-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-non-cryptographic-random-usage"><code>S311</code>: <code>suspicious-non-cryptographic-random-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-telnet-usage"><code>S312</code>: <code>suspicious-telnet-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-xmlc-element-tree-usage"><code>S313</code>: <code>suspicious-xmlc-element-tree-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-xml-element-tree-usage"><code>S314</code>: <code>suspicious-xml-element-tree-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-xml-expat-reader-usage"><code>S315</code>: <code>suspicious-xml-expat-reader-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-xml-expat-builder-usage"><code>S316</code>: <code>suspicious-xml-expat-builder-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-xml-sax-usage"><code>S317</code>: <code>suspicious-xml-sax-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-xml-mini-dom-usage"><code>S318</code>: <code>suspicious-xml-mini-dom-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-xml-pull-dom-usage"><code>S319</code>: <code>suspicious-xml-pull-dom-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-xmle-tree-usage"><code>S320</code>: <code>suspicious-xmle-tree-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-ftp-lib-usage"><code>S321</code>: <code>suspicious-ftp-lib-usage</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-unverified-context-usage"><code>S323</code>: <code>suspicious-unverified-context-usage</code></a></li>
+</ul>
+<p>...and these are all stable rules. This change will have to be in preview for a while, I suppose?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15541.html">astral-sh/ruff#15541</a> on 2025-01-17 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Don't checking eval S307" to "`flake8-bandit` rules does not check `eval` in callback position" by @dhruvmanila on 2025-01-17 03:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-20 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-20 09:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

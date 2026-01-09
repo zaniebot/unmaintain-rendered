@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual environments created by uv are backed up by Time Machine - astral-sh/uv #8796</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Virtual environments created by uv are backed up by Time Machine</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/8796">#8796</a>
+        opened by <a href="https://github.com/mikepqr">@mikepqr</a>
+        on 2024-11-04 03:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mikepqr">@mikepqr</a> on 2024-11-04 03:05</div>
+            <div class="timeline-body"><p><code>uv</code> creates <a href="https://bford.info/cachedir/"><code>CACHEDIR.TAG</code></a> in <code>.venv</code>, indicating that backup tools need not make copies of this directory. Unfortunately, as far as I can tell, the builtin macOS backup tool Time Machine does not respect this file, meaning that the virtual environment is backed up incrementally.</p>
+<p>While I appreciate that the right way to fix this is for Apple to teach Time Machine to respect CACHEDIR.TAG, the probability of that seems remote.</p>
+<p>Is there any interest in handling this in <code>uv</code>? One way to do this would be to shell out to <code>tmutil addexclusion .venv/</code> when the environment is created. This is what e.g. https://github.com/stevegrunwell/asimov/ does and it is supported by macOS.</p>
+<p>For what it's worth, the performance impact of this would be measurable, but perhaps tolerable since this would only need to run each time <code>.venv</code> is created:</p>
+<pre><code>$ hyperfine &quot;tmutil addexclusion .venv&quot;
+Benchmark 1: tmutil addexclusion .venv
+  Time (mean ± σ):      18.0 ms ±   6.3 ms    [User: 4.3 ms, System: 4.3 ms]
+  Range (min … max):     9.6 ms …  39.1 ms    95 runs
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2025-02-26 19:24</div>
+            <div class="timeline-body"><p>Cargo's solution to this was to use the <code>core-foundation</code> crate to set the relevant extended attributes on macOS to exclude their target directory from Time Machine:</p>
+<ul>
+<li>https://github.com/rust-lang/cargo/issues/3884</li>
+<li>https://github.com/rust-lang/cargo/pull/4386</li>
+<li>https://github.com/rust-lang/cargo/blob/392d68bff462015e8e7d8588333a09b08b4a10a6/crates/cargo-util/src/paths.rs#L840-L861</li>
+<li>https://developer.apple.com/documentation/foundation/nsurlisexcludedfrombackupkey</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1495.html">astral-sh/uv#1495</a> on 2025-02-26 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-26 21:47</div>
+            <div class="timeline-body"><p>Thanks @edmorley! That looks pretty interesting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-02-28 13:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

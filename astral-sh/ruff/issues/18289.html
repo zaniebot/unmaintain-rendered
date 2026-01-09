@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PLR1730`: Fix removes comments - astral-sh/ruff #18289</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`PLR1730`: Fix removes comments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18289">#18289</a>
+        opened by <a href="https://github.com/kaddkaka">@kaddkaka</a>
+        on 2025-05-24 16:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-05-24 16:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I just found a code action that loses/removes/drops a comment. I'm worried there are other code actions (or fixes?) that might have similar issue.</p>
+<p>With this code and ruleset &quot;PL&quot; enabled:</p>
+<pre><code class="language-py">def a(max_width):
+    if max_width &lt; 32:    # &lt;-- this line
+        # This comment will be lost
+        max_width = 32
+</code></pre>
+<p>On the marked line I see these diagnostics:</p>
+<pre><code>Diagnostics:
+1. Ruff: Replace `if` statement with `max_width = max(max_width, 32)` [PLR1730]
+2. pylint: [consider-using-max-builtin] Consider using 'max_width = max(max_width, 32)' instead of unnecessary if block [R1731]
+</code></pre>
+<p>On the same line I have these actions available:</p>
+<pre><code>Code actions:
+1: Ruff (PLR1730): Replace with `max_width = max(max_width, 32)` [ruff]
+2: Ruff (PLR1730): Disable for this line [ruff]
+3: Ruff: Fix all auto-fixable problems [ruff]
+4: Ruff: Organize imports [ruff]
+</code></pre>
+<p>When I perform code action 1, I get this broken result:</p>
+<pre><code class="language-py">def a(max_width):
+    max_width = max(max_width, 32)
+</code></pre>
+<p>the comment is gone! 😮</p>
+<p>So it looks like when there is a compaction of the code due to an action (or fix?) there is a risk of losing comments.</p>
+<h3>Version</h3>
+<p>0.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "code action removes comments" to "`PLR1730: Fix removes comments" by @MichaReiser on 2025-05-25 10:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-25 10:25</div>
+            <div class="timeline-body"><p>Playground: https://play.ruff.rs/895cfa46-7386-4810-8f07-d6db8be8b9bc</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`PLR1730: Fix removes comments" to "`PLR1730`: Fix removes comments" by @MichaReiser on 2025-05-25 10:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-25 10:42</div>
+            <div class="timeline-body"><p>Thanks for reporting this error. This should have been fixed by https://github.com/astral-sh/ruff/pull/17459, so that the fix is now marked as unsafe</p>
+<blockquote>
+<p>Specifically, an unsafe fix could lead to a change in runtime behavior, the removal of comments, or both, while safe fixes are intended to preserve runtime behavior and will only remove comments when deleting entire statements or expressions (e.g., removing unused imports).</p>
+</blockquote>
+<p>This means the fix shouldn't be applied when running ruff from the CLI unless you opt in to unsafe fixes</p>
+<pre><code>uvx ruff@latest check lib.py --no-cache --select PLR --fix
+stalled 1 package in 2ms
+lib.py:2:5: PLR1730 Replace `if` statement with `max_width = max(max_width, 32)`
+  |
+1 |   def a(max_width):
+2 | /     if max_width &lt; 32:    # &lt;-- this line
+3 | |         # This comment will be lost
+4 | |         max_width = 32
+  | |______________________^ PLR1730
+  |
+  = help: Replace with `max_width = max(max_width, 32)`
+
+lib.py:2:20: PLR2004 Magic value used in comparison, consider replacing `32` with a constant variable
+  |
+1 | def a(max_width):
+2 |     if max_width &lt; 32:    # &lt;-- this line
+  |                    ^^ PLR2004
+3 |         # This comment will be lost
+4 |         max_width = 32
+  |
+
+Found 2 errors.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>But it still gets shown in the IDE because we still think it's useful and a user would notice that the comment gets removed, and can decide if that's okay or if they undo the actio nand rather do the refactor manually</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-05-25 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-05-25 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-05-25 11:01</div>
+            <div class="timeline-body"><p>Aha, I see. I was surprised, and leaving the comment above or on the line would have surprised me less. Would it be possible and an improvement to change the fix so that the result is:</p>
+<p>alt 1.</p>
+<pre><code class="language-py">def a(max_width):
+    max_width = max(max_width, 32)  # This comment will be lost
+</code></pre>
+<p>or alt2.</p>
+<pre><code class="language-py">def a(max_width):
+    # This comment will be lost
+    max_width = max(max_width, 32)
+</code></pre>
+<p>?</p>
+<hr />
+<p>The explanation of the rule mentions &quot;fix is sometimes available&quot;, but doesn't mention if it's safe or not.</p>
+<ol>
+<li>I wonder, is it worthwhile to elaborate on this explanation?</li>
+<li>Also would it be possible to detect whether the transformation can de be done safely or not? Maybe that's not how fixes are categorized/behave.</li>
+</ol>
+<pre><code class="language-console">$ ruff rule PLR1730
+# if-stmt-min-max (PLR1730)
+
+Derived from the **Pylint** linter.
+
+Fix is sometimes available.
+
+## What it does
+Checks for `if` statements that can be replaced with `min()` or `max()`
+calls.
+
+## Why is this bad?
+An `if` statement that selects the lesser or greater of two sub-expressions
+can be replaced with a `min()` or `max()` call respectively. Where possible,
+prefer `min()` and `max()`, as they're more concise and readable than the
+equivalent `if` statements.
+
+## Example
+```python
+if score &gt; highest_score:
+    highest_score = score
+```
+
+Use instead:
+```python
+highest_score = max(highest_score, score)
+```
+
+## References
+- [Python documentation: max function](https://docs.python.org/3/library/functions.html#max)
+- [Python documentation: min function](https://docs.python.org/3/library/functions.html#min)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-25 11:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Aha, I see. I was surprised, and leaving the comment above or on the line would have surprised me less. Would it be possible and an improvement to change the fix so that the result is:</p>
+</blockquote>
+<p>It's possible but a lot of work. Some fixes do just that but not all. For now, we opted to mark fixes that don't always preserve comments as always.</p>
+<blockquote>
+<p>I wonder, is it worthwhile to elaborate on this explanation?</p>
+</blockquote>
+<p>Yes, we should. We're working on it, see https://github.com/astral-sh/ruff/issues/15584</p>
+<blockquote>
+<p>Also would it be possible to detect whether the transformation can de be done safely or not? Maybe that's not how fixes are categorized/behave.</p>
+</blockquote>
+<p>This is already done. We only mark the fix as unsafe if it may remove comments. It is always marked as safe if there are no comments in the range.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-28 07:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

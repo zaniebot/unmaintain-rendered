@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unused local variable reassignment with the same name is not reported (F841?) - astral-sh/ruff #14355</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unused local variable reassignment with the same name is not reported (F841?)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14355">#14355</a>
+        opened by <a href="https://github.com/MiroPsota">@MiroPsota</a>
+        on 2024-11-15 09:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MiroPsota">@MiroPsota</a> on 2024-11-15 09:03</div>
+            <div class="timeline-body"><p>In the following code snippet, the first assignment to <code>a</code> is never used, but is not reported by Ruff 0.7.3. PyCharm reports it and suggests to delete assignment target.</p>
+<pre><code>def main():
+    a = 1
+    a = 2
+    print(a)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2024-11-15 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @dylwil3 on 2024-11-15 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-15 17:34</div>
+            <div class="timeline-body"><p>Thanks, this is interesting! Unless I'm misusing the tool, it doesn't seem like Pyflakes flags this either. I'm wondering if <code>F841</code> is restricted in scope to literally not using the <em>name</em> of some variable.</p>
+<p>I also tried it in <code>pyright</code> and <code>mypy</code> to see if a type checker would complain and didn't see any issues.</p>
+<pre><code class="language-console">➜  cat tmp.py
+def main():
+    a = 1
+    a = 2
+    print(a)%                                                                           
+➜  uvx pyflakes tmp.py
+➜  
+</code></pre>
+<p>Is the suggestion that we add a lint rule for this? Do you happen to know of a lint rule in one of the (partially) supported plugins that catches this, or is it just something Pycharm does?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 02:11</div>
+            <div class="timeline-body"><p>Yeah this matches the Pyflakes behavior, which is intentional IIRC.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MiroPsota">@MiroPsota</a> on 2024-11-18 08:09</div>
+            <div class="timeline-body"><p>If it's intentional, then I suggest making a new rule, as it's useful IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-11-18 08:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-18 08:15</div>
+            <div class="timeline-body"><p>The relevant upstream issue is https://github.com/PyCQA/pyflakes/issues/498. So this is more of a technical limitation than it isn't in the rule's intent. Ruff might be able to detect this very trivial case (if all assignments are all in the same branch).</p>
+<p>This is the same underlying issue as https://github.com/astral-sh/ruff/issues/6704</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-18 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14516.html">astral-sh/ruff#14516</a> on 2024-11-21 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18485.html">astral-sh/ruff#18485</a> on 2025-06-05 21:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

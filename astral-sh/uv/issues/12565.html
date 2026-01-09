@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misleading error message when build backend returns a non-compliant wheel filename - astral-sh/uv #12565</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Misleading error message when build backend returns a non-compliant wheel filename</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12565">#12565</a>
+        opened by <a href="https://github.com/jaraco">@jaraco</a>
+        on 2025-03-30 21:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jaraco">@jaraco</a> on 2025-03-30 21:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>As reported in coherent-oss/coherent.build#34, attempting to build the coherent.build project fails with two errors:</p>
+<pre><code> coherent.build main 🐚 uv pip install .
+Resolved 213 packages in 3.77s
+  × Failed to build `coherent-build @ file:///Users/jaraco/code/coherent-oss/coherent.build`
+  ├─▶ Built wheel has an invalid filename
+  ╰─▶ The wheel filename &quot;/Users/jaraco/Library/Caches/uv/builds-v0/.tmpS2lnVm/coherent_build-0.28.0-py3-none-any.whl&quot; has an invalid package name
+</code></pre>
+<p>How's it invalid? Pip and PyPI allow it.</p>
+<h3>Platform</h3>
+<p>macOS 15.3</p>
+<h3>Version</h3>
+<p>uv 0.6.10 (Homebrew 2025-03-26)</p>
+<h3>Python version</h3>
+<p>3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jaraco on 2025-03-30 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-30 23:33</div>
+            <div class="timeline-body"><p>The build backend must return the basename of the <code>.whl</code> file it creates, but the build backend returns the full path (https://github.com/coherent-oss/coherent.build/blob/d75a013cb4f1d38024ac09e551f98d8853032aa5/backend.py#L158). uv splits the returned string at the dashes and then fails to parse <code>/Users/jaraco/Library/Caches/uv/builds-v0/.tmpS2lnVm/coherent_build</code> as wheel filename, returning the misleading error message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-03-30 23:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-03-30 23:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-03-30 23:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-03-30 23:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Build wheel has an invalid filename" to "Misleading error message when build backend returns a non-compliant wheel filename" by @zanieb on 2025-04-01 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2025-04-05 18:54</div>
+            <div class="timeline-body"><p>Thank you! I see now <a href="https://peps.python.org/pep-0517/#build-wheel">the spec</a> makes that clear. I'd have thought to look there myself except things were working in other tools (didn't affect <code>pip</code> or <code>build</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jaraco on 2025-04-05 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-04-07 14:28</div>
+            <div class="timeline-body"><p>I'll take a look at some point why pip doesn't also fail.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

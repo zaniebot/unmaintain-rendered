@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow ignoring directories in workspace member globs that don't have pyproject.toml files - astral-sh/uv #17196</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow ignoring directories in workspace member globs that don't have pyproject.toml files</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/17196">#17196</a>
+        opened by <a href="https://github.com/tsudol-plaid">@tsudol-plaid</a>
+        on 2025-12-20 02:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tsudol-plaid">@tsudol-plaid</a> on 2025-12-20 02:15</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We're migrating a monorepo to <code>uv</code> using a workspace.  To make this easy, we've defined the workspace using a glob, like:</p>
+<pre><code class="language-toml">[tool.uv.workspace]
+members = [&quot;libs/*&quot;]
+</code></pre>
+<p>(The <a href="https://docs.astral.sh/uv/concepts/projects/workspaces/">workspace docs</a> also recommend using a glob.)</p>
+<p>We've encountered an interesting error. If you have a <code>git</code> branch with a new directory in <code>libs/</code> and that directory contains any files that are ignored by <code>git</code>, the directory will not be removed when you switch branches. <code>uv</code> then complains that this apparent workspace member doesn't have a <code>pyproject.toml</code>.</p>
+<pre><code>error: Workspace member `/Users/tsudol/uv-empty-dir-mre/libs/bad` is missing a `pyproject.toml` (matches: `libs/*`)
+</code></pre>
+<p><strong>MRE</strong>: See README.md in https://github.com/tsudol-plaid/uv-empty-dir-mre</p>
+<p>This error is obviously reasonable! Forgetting a <code>pyproject.toml</code> in a workspace member <em>should</em> be an error. We're only having a problem with it because of the surprising interaction with <code>git</code> and <code>.gitignore</code>. It's also particularly jarring for users who are less familiar with <code>uv</code> and <code>git</code>.</p>
+<p>It would be nice if we could tell <code>uv</code> not to worry about missing <code>pyproject.toml</code>s.<br />
+A setting to turn off &quot;strict&quot; workspace member enforcement would work. It could be workspace-wide, or even enabled for just a single <code>tool.uv.workspace.members</code> glob. (The error message indicates that <code>uv</code> can associate members with globs!) Downgrading the error to a warning would also be sufficient.</p>
+<p>Another possibility: ignore directories that only contain files that are covered by <code>.gitignore</code>. This kind of &quot;ignore-aware&quot; feature is increasingly popular these days, such as with <code>ripgrep</code>. But you know better than I do if it's appropriate for <code>uv</code>.</p>
+<h3>Example</h3>
+<p>If you choose to solve this by adding a new config setting, it could look like:</p>
+<pre><code class="language-toml">[tool.uv]
+alert-glob-missing-pyproject = false
+</code></pre>
+<p>Or the setting could allow more fine-grained control, e.g.:</p>
+<pre><code class="language-toml">[tool.uv]
+alert-glob-missing-pyproject = &quot;warn&quot;
+# Default value is &quot;error&quot;.
+# To turn off warnings entirely, use &quot;never&quot;.
+</code></pre>
+<p>(Naming things is hard.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @tsudol-plaid on 2025-12-20 02:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

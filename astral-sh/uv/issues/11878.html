@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install on a venv creates a .lock file - astral-sh/uv #11878</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install on a venv creates a .lock file</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11878">#11878</a>
+        opened by <a href="https://github.com/code-simp">@code-simp</a>
+        on 2025-03-01 06:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/code-simp">@code-simp</a> on 2025-03-01 06:29</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Installing python packages using uv creates a .lock file inside the venv directory
+wondering if I'm missing something or uv does not cleanup the .lock file post installation</p>
+<p>Which leads to:
+Intermittent OS Error 37 &quot;No locks available&quot; on a machine shared by our team's developers</p>
+<p>Steps to reproduce:</p>
+<pre><code>uv venv test_venv
+source test_venv/bin/activate
+uv pip install &lt;any-library&gt;
+ls -ltra test_venv | grep lock
+</code></pre>
+<p>my output on a mac m1 (OS 13):
+ls -ltra | grep lock -&gt;
+-rwxrwxrwx   1 xxx  yyy  0 Mar  1 11:42 .lock</p>
+<h3>Platform</h3>
+<p>macOS 13 ARM64</p>
+<h3>Version</h3>
+<p>uv 0.6.3 (a0b9f22a2 2025-02-24)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @code-simp on 2025-03-01 06:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-01 14:34</div>
+            <div class="timeline-body"><p>This is intentional. These are synchronization locks. Removing them within uv is actually highly non-trivial without introducing race conditions since other processes could be waiting to acquire them, etc. I’ve never heard of this error before though (and we’ve used these since uv first came out, more or less). Are you able to put together a complete reproduction?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/code-simp">@code-simp</a> on 2025-03-01 14:57</div>
+            <div class="timeline-body"><p>Thanks for the reply</p>
+<p>not sure if I can reproduce the OS 37 error intentionally, as the occurrence itself seems to be random across devs. But will give it a try.</p>
+<p>but most likely would end up writing a post script to remove the lock file, unless its suggested not to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-02 03:14</div>
+            <div class="timeline-body"><p>You can remove it post-install, if you're sure that nothing is operating on the environment. (These locks exist to ensure that if you run <code>uv sync</code> or similar from multiple processes at once, they don't clobber each other.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-14 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-14 00:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>W291: ruff --fix removes trailing whitespace in multiline string - astral-sh/ruff #8037</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>W291: ruff --fix removes trailing whitespace in multiline string</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8037">#8037</a>
+        opened by <a href="https://github.com/Jasha10">@Jasha10</a>
+        on 2023-10-18 05:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Jasha10">@Jasha10</a> on 2023-10-18 05:37</div>
+            <div class="timeline-body"><p>When <code>W291</code> (<a href="https://docs.astral.sh/ruff/rules/trailing-whitespace/">trailing-whitespace</a>) is enabled, ruff warns about trailing whitespace in multiline strings.
+When <code>--fix</code> is passed, ruff modifies the multiline string. This could result in a behavior change of the python code.</p>
+<h2>Repro:</h2>
+<pre><code class="language-python"># repro.py
+string = &quot;&quot;&quot;
+this line has trailing whitespace 
+&quot;&quot;&quot;
+</code></pre>
+<pre><code>$ ruff repro.py --isolated --select W291
+repro.py:3:34: W291 [*] Trailing whitespace
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+$ ruff repro.py --isolated --select W291 --fix  # This modifies the multiline string!
+Found 1 error (1 fixed, 0 remaining).
+$ ruff --version
+ruff 0.0.278
+</code></pre>
+<p>I noticed that the <a href="https://github.com/astral-sh/ruff/blob/dda4ceda715c185aa1916cf361bbd31e1d28a9a0/crates/ruff_linter/src/rules/pycodestyle/rules/trailing_whitespace.rs#L75">implementation <code>trailing_whitespace</code></a> categorizes the <code>--fix</code> action as <a href="https://github.com/astral-sh/ruff/blob/dda4ceda715c185aa1916cf361bbd31e1d28a9a0/crates/ruff_linter/src/rules/pycodestyle/rules/trailing_whitespace.rs#L105C41-L105C41"><code>Fix::safe_edit</code></a>. I feel that modifying a multiline string is not safe; it can change the behavior of my python code. The doc for <a href="https://github.com/astral-sh/ruff/blob/dda4ceda715c185aa1916cf361bbd31e1d28a9a0/crates/ruff_diagnostics/src/fix.rs#L21-L23"><code>Applicability::Safe</code></a> say:</p>
+<pre><code>    /// The fix is safe and can always be applied.
+    /// The fix is definitely what the user intended, or it maintains the exact meaning of the code.
+</code></pre>
+<p>I feel that this does not apply to <code>W291</code> as implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-18 13:47</div>
+            <div class="timeline-body"><p>Yeah, we should change to <code>unsafe_edit</code> when the diagnostic is inside a multiline string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-18 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9744.html">astral-sh/ruff#9744</a> on 2024-01-31 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-31 21:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

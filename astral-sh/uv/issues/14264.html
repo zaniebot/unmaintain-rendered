@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue with Authentication in uv pip compile Command Using Private Repository - astral-sh/uv #14264</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issue with Authentication in uv pip compile Command Using Private Repository</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14264">#14264</a>
+        opened by <a href="https://github.com/jmwachtel">@jmwachtel</a>
+        on 2025-06-25 18:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jmwachtel">@jmwachtel</a> on 2025-06-25 18:00</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using the <code>uv pip compile</code> command with <code>authenticate = always</code>, on a private Artifactory repository, the initial request sent is unauthenticated, resulting in a 401 Unauthorized error. This behavior is contrary to expectations where I believed all requests should be authenticated upfront due to the authentication policy. Our credentials are stored in a .netrc file. Am I misunderstanding the documentation around this flag?</p>
+<p><strong>Steps to Reproduce:</strong></p>
+<ol>
+<li>Ensure uv is set up with the latest version, configured for the target environment and Python version.</li>
+<li>Set authentication settings to authenticate = always in the uv configuration.</li>
+<li>Store username/password in a .netrc file.</li>
+<li>Use the --no-cache flag with the uv pip compile command:</li>
+</ol>
+<pre><code class="language-Bash">uv pip compile requirements.in --no-cache --override=&lt;OVERRIDE_FILE&gt; --config-file &lt;UV_TOML&gt; --allow-insecure-host=&lt;YOUR_PRIVATE_ARTIFACTORY&gt; --index-strategy=unsafe-any-match --emit-index-url --output-file=requirements.txt -vv
+</code></pre>
+<ol start="4">
+<li>Attempt to compile requirements using a private Artifactory that requires authentication.</li>
+<li>Review the logs to observe unauthorized requests with a 401 status preceding credential retries.</li>
+</ol>
+<p><strong>uv.toml</strong></p>
+<pre><code class="language-toml">[[index]]
+name = &quot;artifactory&quot;
+url = &quot;https://REDACTED/artifactory/api/pypi/pypi/simple&quot;
+authenticate = &quot;always&quot;
+default= true
+</code></pre>
+<p><strong>Expected Result:</strong>
+All pip compile-associated requests should utilize proper authentication based on the specified policy to avoid 401 errors.</p>
+<p><strong>Actual Result:</strong>
+Initial requests are executed without authentication, leading to 401 responses and require subsequent retries with credentials.</p>
+<p><strong>Trace Logs:</strong></p>
+<pre><code>TRACE Request https://REDACTED/artifactory/api/pypi/pypi/simple/urllib3/ does not have a fresh cache because it has a 'no-cache' cache-control directive
+DEBUG Found stale response for: https://REDACTED/artifactory/api/pypi/pypi/simple/urllib3/
+DEBUG Sending revalidation request for: https://REDACTED/artifactory/api/pypi/pypi/simple/urllib3/
+TRACE Handling request for https://REDACTED/artifactory/api/pypi/pypi/simple/urllib3/ with authentication policy always
+TRACE Request for https://REDACTED/artifactory/api/pypi/pypi/simple/urllib3/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://REDACTED/artifactory/api/pypi/pypi/simple/urllib3/
+TRACE Checking for credentials for https://REDACTED/artifactory/api/pypi/pypi/simple/urllib3/
+TRACE No credentials in cache for URL https://REDACTED/artifactory/api/pypi/pypi/simple
+TRACE Found cached credentials for realm https://REDACTED
+TRACE Retrying request for https://REDACTED/artifactory/api/pypi/pypi/simple/urllib3/ with credentials from cache Basic { username: Username(Some(&quot;REDACTED&quot;)), password: Some(****) }
+</code></pre>
+<p><strong>nginx Logs</strong></p>
+<pre><code>2025-06-25 12:50:09.455 | Method: GET \| Status: 200 \| Request Time: 0.153s \| Endpoint: /artifactory/api/pypi/pypi/simple/urllib3/ \| User: REDACTED \| |  
+-- | -- | --
+2025-06-25 12:50:08.056 | Method: GET \| Status: 401 \| Request Time: 0.002s \| Endpoint: /artifactory/api/pypi/pypi/packages/packages/a7/c2/fe1e52489ae3122415c51f387e221dd0773709bad6c6cdaa599e8a2c5185/urllib3-2.5.0-py3-none-any.whl \| User: - \|
+</code></pre>
+<p>I have also seen similar behavior with HEAD requests.</p>
+<h3>Platform</h3>
+<p>Linux 5.15.0-142-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.14</p>
+<h3>Python version</h3>
+<p>Python 3.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jmwachtel on 2025-06-25 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-25 18:45</div>
+            <div class="timeline-body"><p>I am unable to replicate this with a similar setup and commands. It finds the credentials in <code>.netrc</code>, authenticates with Artifactory, and successfully compiles requirements.</p>
+<p>Have you verified that your credentials are still valid? Do they work with pip or another package manager?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-06-25 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @jtfmumm on 2025-06-25 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmwachtel">@jmwachtel</a> on 2025-06-25 19:07</div>
+            <div class="timeline-body"><p>Hi @jtfmumm. It does find the credentials as you cam see by the last trace and the nginx logs show the next request is a 200 with the credentials. I added my <code>uv.toml</code> config to the description as well as the <code>--index-strategy=unsafe-any-match</code> flag. In the end everything works, I am confused why an unauthenticated request is ever sent given the authenticate policy I set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-25 19:26</div>
+            <div class="timeline-body"><p>Ah, I see. I was using the index configured as <code>authenticate = always</code> in <code>pyproject.toml</code>. But your command is specifying the URL in <code>--index-url</code>. When you do it that way, it's prioritizing that version of the URL, which is not treated as authenticate always.</p>
+<p>Can you try removing <code>--index-url</code> from your command to verify that you no longer get the 401s?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmwachtel">@jmwachtel</a> on 2025-06-25 20:34</div>
+            <div class="timeline-body"><p>I did try that and confirmed again, even with that removed, I see the same behavior. As stated above, I also see it in HEAD requests like this:</p>
+<pre><code>2025-06-25 15:29:55.669 | Method: HEAD \| Status: 200 \| Request Time: 0.080s \| Endpoint: /artifactory/pypi/deeplake/3.9.31/deeplake-3.9.31-py3-none-any.whl \| User: REDACTED \| |
+2025-06-25 15:29:55.588 | Method: HEAD \| Status: 401 \| Request Time: 0.001s \| Endpoint: /artifactory/pypi/deeplake/3.9.31/deeplake-3.9.31-py3-none-any.whl \| User: - \|
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-25 21:05</div>
+            <div class="timeline-body"><p>Interesting, I'm not able to replicate that. To be clear, here is what I'm seeing.</p>
+<h4>With <code>--index-url</code></h4>
+<pre><code>TRACE Handling request for https://&lt;DOMAIN&gt;/artifactory/api/pypi/&lt;...&gt;/simple/&lt;PKG&gt;/ with authentication policy auto
+TRACE Request for https://&lt;DOMAIN&gt;/artifactory/api/pypi/&lt;...&gt;/simple/&lt;PKG&gt;/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://&lt;DOMAIN&gt;/artifactory/api/pypi/&lt;...&gt;/simple/&lt;PKG&gt;/
+TRACE Attempting unauthenticated request for https://&lt;DOMAIN&gt;/artifactory/api/pypi/&lt;...&gt;/simple/&lt;PKG&gt;/
+TRACE Request for https://&lt;DOMAIN&gt;/artifactory/api/pypi/&lt;...&gt;/simple/&lt;PKG&gt;/ failed with 401 Unauthorized, checking for credentials
+</code></pre>
+<ul>
+<li>The logs indicate it's using &quot;authentication policy auto&quot;.</li>
+<li>The logs say &quot;Attempting unauthenticated request&quot;</li>
+<li>It fails with a 401 (&quot;failed with 401 Unauthorized&quot;) and then tries again.</li>
+</ul>
+<h4>Without <code>--index-url</code> (using index defined in <code>pyproject.toml</code>)</h4>
+<pre><code>TRACE Handling request for https://&lt;DOMAIN&gt;/artifactory/api/pypi/&lt;...&gt;/simple/&lt;PKG&gt;/ with authentication policy always
+TRACE Request for https://&lt;DOMAIN&gt;/artifactory/api/pypi/&lt;...&gt;/simple/&lt;PKG&gt;/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://&lt;DOMAIN&gt;/artifactory/api/pypi/&lt;...&gt;/simple/&lt;PKG&gt;/
+TRACE Checking for credentials for https://&lt;DOMAIN&gt;/artifactory/api/pypi/&lt;...&gt;/simple/&lt;PKG&gt;/
+TRACE No credentials in cache for URL https://&lt;DOMAIN&gt;/artifactory/api/pypi/&lt;..&gt;/simple
+TRACE No credentials in cache for realm https://&lt;DOMAIN&gt;
+DEBUG Checking netrc for credentials for https://&lt;DOMAIN&gt;/artifactory/api/pypi/&lt;...&gt;/simple/&lt;PKG&gt;/
+DEBUG Found credentials in netrc file for https://&lt;DOMAIN&gt;/artifactory/api/pypi/&lt;...&gt;/simple/&lt;PKG&gt;/
+TRACE Retrying request for https://&lt;DOMAIN&gt;/artifactory/api/pypi/&lt;...&gt;/simple/&lt;PKG&gt;/ with Basic { username: Username(Some(&lt;...&gt;)), password: Some(****) }
+</code></pre>
+<ul>
+<li>The logs indicate it's using &quot;authentication policy always&quot;.</li>
+<li>The logs never say &quot;Attempting unauthenticated request&quot;.<ul>
+<li>&quot;Request for &lt;URL&gt; is unauthenticated&quot; just means that uv doesn't initially find credentials. But it does find them before sending the request, which should be guaranteed by <code>authenticate = always</code>.</li>
+</ul>
+</li>
+<li>It doesn't encounter any 401s</li>
+</ul>
+<p>The logs you provide in the initial description look like this case, but you say you're noticing 401s. Do you see &quot;failed with 401&quot; or &quot;Attempting unauthenticated request&quot; in the logs when you run without <code>--index-url</code>? Or is it only in the nginx logs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmwachtel">@jmwachtel</a> on 2025-06-25 21:53</div>
+            <div class="timeline-body"><p>Upon investigating the authentication issue further, we believe we have identified the root cause. When using the <code>--output-file=requirements.txt</code> and <code>--emit-index-url</code> options, the <code>--index-url</code> becomes embedded within the requirements.txt file. This URL is subsequently read by UV during processing. After removing the --index-url from the requirements.txt file, the 401 Unauthorized errors ceased to occur.</p>
+<p>Initially, these details appeared insignificant, but they evidently influence authentication behavior. Is there a strategy or configuration within UV to bypass or ignore the --index-url when processing the requirements.txt file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-26 08:13</div>
+            <div class="timeline-body"><p>Thank you for investigating further and updating the command in the issue description. I don't believe there is any way for uv to ignore <code>--index-url</code> if included in a <code>requirements.txt</code> it's using.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @jtfmumm on 2025-06-26 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @jtfmumm on 2025-06-26 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @jtfmumm on 2025-06-26 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmwachtel">@jmwachtel</a> on 2025-06-26 15:45</div>
+            <div class="timeline-body"><p>Thank you for the clarification. I’m glad we could pinpoint the issue together. We can proceed with removing the <code>--index-url</code> from the <code>requirements.txt</code> to address the problem.</p>
+<p>I recommend updating the documentation to include this crucial detail regarding <code>authenticate = always</code>. It’s currently unclear that specifying an <code>--index-url</code> on the command line can override settings in the <code>uv.toml</code> file, and even less clear that having it within the <code>requirements.txt</code> would do the same. Ideally, any index stipulated in the toml should adhere to the configurations set therein, irrespective of where else the index might be specified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmwachtel">@jmwachtel</a> on 2025-07-02 13:39</div>
+            <div class="timeline-body"><p>We have encountered similar issues with pinned packages where the Artifactory URL does not align with the PyPI simple API. To resolve this, there is a need to authenticate requests consistently. It would be beneficial to specify a URL that mandates authentication (such as a base url, e.g. https://artifactory.company.com/artifactory) or introduce a command-line parameter that globally sets the authentication method to “always.” This would ensure smooth access as we exclusively utilize a private index.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

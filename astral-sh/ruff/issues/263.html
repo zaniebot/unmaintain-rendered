@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression with 0.0.45 on `noqa:E501` annotations - astral-sh/ruff #263</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Regression with 0.0.45 on `noqa:E501` annotations</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/263">#263</a>
+        opened by <a href="https://github.com/amotl">@amotl</a>
+        on 2022-09-23 22:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/amotl">@amotl</a> on 2022-09-23 22:01</div>
+            <div class="timeline-body"><p>Dear Charlie,</p>
+<p>while it succeeded before, <code>ruff==0.0.45</code> just failed on <a href="https://github.com/isarengineering/SecPi/pull/27">^1</a> at <a href="https://github.com/isarengineering/SecPi/actions/runs/3115805304/jobs/5053061630">^2</a> with a few admonitions. You can easily inspect an example spot at <a href="https://github.com/isarengineering/SecPi/blob/3838620735b4a117a3e1c39742c69dadfae8b7b0/secpi/model/service.py#L29-L38">secpi/model/service.py#L29-L38</a>, where we are annotating long comment lines within the docstring with <code>noqa:E501</code>.</p>
+<pre><code>echo '{&quot;action&quot;: &quot;shutdown&quot;}' | amqp-publish --url=&quot;amqp://guest:guest@localhost:5672&quot; --routing-key=secpi-op-1  # noqa:E501
+</code></pre>
+<p>With kind regards,
+Andreas.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-23 22:09</div>
+            <div class="timeline-body"><p>Thank you! I shipped a big refactor to that logic. Will review this case. Apologies for the inconvenience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-23 22:13</div>
+            <div class="timeline-body"><p>I'm a little torn. The desired way to express this now is:</p>
+<pre><code class="language-py">def got_operational(self, ch, method, properties, body):
+    &quot;&quot;&quot;
+    AMQP: Receive and process operational messages.
+
+    Currently, this implements the handler for the shutdown signal, which is mostly
+    needed in testing scenarios.
+
+    Usage::
+        echo '{&quot;action&quot;: &quot;shutdown&quot;}' | amqp-publish --url=&quot;amqp://guest:guest@localhost:5672&quot; --routing-key=secpi-op-1
+    &quot;&quot;&quot;  # noqa:E501
+    ...
+</code></pre>
+<p>That is, the noqa goes at the end of the multi-line string, which is similar to Flake8. We could support <em>both</em> (at the end of the multi-line string <em>or</em> within it), but it adds some complexity and I didn't think it was warranted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../isarengineering/SecPi/pulls/28.html">isarengineering/SecPi#28</a> on 2022-09-23 22:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amotl">@amotl</a> on 2022-09-23 23:00</div>
+            <div class="timeline-body"><p>Hi again,</p>
+<p>I don't know where I picked up that habit to place <code>noqa:E501</code> annotations, but I will be very happy to unlearn it. I always found it a bit silly because it would pollute the docstring content. -- https://github.com/isarengineering/SecPi/pull/28</p>
+<p>Thanks again for your quick help!</p>
+<p>Cheers,
+Andreas.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @amotl on 2022-09-23 23:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:06 UTC
+    </footer>
+</body>
+</html>

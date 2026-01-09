@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore pragma when considering E501 - astral-sh/ruff #3894</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore pragma when considering E501</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3894">#3894</a>
+        opened by <a href="https://github.com/baggiponte">@baggiponte</a>
+        on 2023-04-06 07:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/baggiponte">@baggiponte</a> on 2023-04-06 07:40</div>
+            <div class="timeline-body"><p>I wrote this snippet of code and the <code>&lt;- !</code> line triggers <code>E501</code>.</p>
+<pre><code class="language-python">def load_dynamodb(fileobj: IO | str | bytes | bytearray) -&gt; dict[str, Any]:
+    &quot;&quot;&quot;Loads a dynamodb json fileobject.&quot;&quot;&quot;
+    if isinstance(fileobj, (str, bytes, bytearray)):
+        return json.loads(fileobj, object_hook=_dynamo_hook)  # type: ignore [no-any-return] &lt;- !
+    return json.load(fileobj, object_hook=_dynamo_hook)  # type: ignore [no-any-return]
+</code></pre>
+<p>Since what triggers the warning is the pragma, I wanted to ask whether you believe that pragmas should not trigger <code>E501</code> - something that Google has recently done with their <a href="https://github.com/google/pyink#what-are-the-main-differences"><code>pyink</code></a> Python code formatter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-04-06 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-06 21:26</div>
+            <div class="timeline-body"><p>Yeah that's an interesting question. I tend to agree, but let me leave this open for a bit to see if any other opinions come in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bryanforbes">@bryanforbes</a> on 2023-04-10 22:40</div>
+            <div class="timeline-body"><p><code>flake8-bugbear</code> recently changed <code>B950</code> to ignore <code>noqa</code> and <code>type: ignore</code> comments when determining whether to report the error or not, so there's some precedence for ignoring pragmas</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-11 01:57</div>
+            <div class="timeline-body"><p>Oh that's great to know. Honestly that might be enough of a justification to just ship it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/baggiponte">@baggiponte</a> on 2023-04-11 05:25</div>
+            <div class="timeline-body"><p>I would also add to the ignore list black's &quot;# fmt: {on,off,skip}&quot; 🙏🏻</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bryanforbes">@bryanforbes</a> on 2023-04-11 14:13</div>
+            <div class="timeline-body"><p>What I'd love to see is a way to configure which pragmas that ruff ignores. For my use, I would want it to ignore <code># noqa: code</code>, <code># type: ignore[code]</code>, and <code># pyright: ignore[code]</code>, but others have pragmas they also want supported. Making it configurable makes everyone happy and also preserves the current behavior when left unconfigured.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-07-10 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7414.html">astral-sh/ruff#7414</a> on 2023-09-15 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-01 01:17</div>
+            <div class="timeline-body"><p>We made this change recently. It'll be out in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-01 01:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspaces with common code and `uv run` with subset of packages? - astral-sh/uv #9571</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Workspaces with common code and `uv run` with subset of packages?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/9571">#9571</a>
+        opened by <a href="https://github.com/bepuca">@bepuca</a>
+        on 2024-12-02 09:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bepuca">@bepuca</a> on 2024-12-02 09:06</div>
+            <div class="timeline-body"><p>Hello! I am using workspaces for my project and they are really a game changer. I was waiting for some tooling supporting this nicely for a very very long time and had to do different shanenigans to simulate it. Now, I have a bit of a specific situation and I am unsure what would be the recommended way to solve it using <code>uv</code>. I have the hunch it is solvable in a nice way but I am not sure how to put the pieces together.</p>
+<h2>Context</h2>
+<p>The project is related to machine learning. Within the project, we have several packages that are responsible for different things. Think &quot;data prep&quot;, &quot;train model 1&quot;, &quot;train model 2&quot;, &quot;eval&quot;, for instance. Each of these is now a workspace, which works nicely. In my developer environment, aka my laptop, I want one big environment which uv solves nicely. The thing is that most of these packages are expensive payloads that require GPUs or GPU clusters, so they need to be submitted to the cloud. To submit them to the cloud, I'd like to bundle the bare minimum (both files and dependencies) into a Docker image. For this, we currently just package the workspace folder and extract the requirements from the super lock into a package specific requirements.txt with <code>uv export --package</code>. It is important to have the bare minimum for 2 reasons: size of image and understanding the payload. If I bundle the whole repo, it is hard to know what code is relevant. If I bundle the bare minimum, understanding (and reproducing) is much easier.</p>
+<p>Now, I also want to make sure there is no leaking of dependencies (use a dep from another workspace that is not installed in the relevant package) that in the IDE does not complain but would fail after packaging in the cloud. For that, we are using <code>uv run --isolate --package ...</code> and, once again, works brilliantly.</p>
+<h2>The Problem</h2>
+<p>Now the problem arises when I have common code. For instance, a class representing my data contract that could be the output types of data prep that go to be inputs of model train. The &quot;ideal&quot; way I can think of is that <code>common</code> or <code>shared</code> is a workspace of its own. Then, use <code>uv export</code> with the dependencies of the two packages and <code>uv run --package X --package common</code>. But this does not work as <code>error: the argument '--package &lt;PACKAGE&gt;' cannot be used multiple times</code>. I do not want to go through the pain of publishing common anywhere, as it adds a lot of complexity.</p>
+<p>So in summary I need:</p>
+<ul>
+<li>Ability to export a lock/requirements.txt that covers the dependencies of two packages (I could bypass that but just centralizing dependencies in the non &quot;common&quot; workspace).</li>
+<li>Ability to <code>uv run --isolate --package A</code> a script of pkg A that can import &quot;common&quot; package and also pkg A but has no knowledge of packages B,C,D.</li>
+</ul>
+<p>I had a look at https://github.com/astral-sh/uv/issues/6935 and linked solutions, which makes me think the pieces are there but I am struggling to piece them together. Hence, I thought it would be amazing if someone with deep knowledge could help me understand what would be the recommended pattern for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-02 23:38</div>
+            <div class="timeline-body"><p>Would <code>uv run --package X --with ./common</code> work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-12-02 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bepuca">@bepuca</a> on 2024-12-09 13:31</div>
+            <div class="timeline-body"><p>This does kinda work, but long term it feels a bit like a patch. Is it in the roadmap to be able to do <code>uv export --package X --package Y</code>?
+I find a few instances in which we may require this and it would be super helpful. In our current case, we need to extract the code into a temp dir with a few more things, so we are exporting the requirements and running from there. I guess we can extract multiple files and since they all come from the same lock, they should be able to install together. The problem is this adds a bit of complexity. Nothing terrible, but I think being able to slice a number of packages for commands would be useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8334.html">astral-sh/uv#8334</a> on 2024-12-20 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 19:33</div>
+            <div class="timeline-body"><p>cc @charliermarsh</p>
+<p>It seems fine to allow <code>--package</code> to be repeated in <code>uv export</code>. I think there's another issue about that but can't find it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MCRE-BE">@MCRE-BE</a> on 2025-05-16 07:19</div>
+            <div class="timeline-body"><p>If I understand your issue, this is how I solved it.
+Package structure as follows:</p>
+<pre><code class="language-python">albatross
+├── packages
+│   ├── bird-feeder  # from github.com/org/bird-feeder, but this directory is in top-level .gitignore
+│   │   ├── pyproject.toml
+│   │   ├── uv.lock  # is this allowed?
+│   │   └── src
+│   │       └── bird_feeder
+│   │           ├── __init__.py
+│   │           └── foo.py
+│   └── seeds # from github.com/org/seeds, also ignored
+│       ├── pyproject.toml
+│       ├── uv.lock
+│       └── src
+│           └── seeds
+│               ├── __init__.py
+│               └── bar.py
+├── pyproject.toml
+├── README.md
+├── uv.lock
+└── src
+    └── albatross
+        └── main.py
+</code></pre>
+<p>in main.py I declare my dependencies inlines as follows :</p>
+<pre><code class="language-python"># %%
+# /// script
+# dependencies = [
+#   &quot;tqdm&quot;,
+#   &quot;albatross.seeds&quot;,
+# ]
+# [tool.uv.sources]
+# albatross.seeds= { path = &quot;../../../pacakges/seeds&quot; }
+# ///
+</code></pre>
+<p>With this, I can simply run <code>uv run main.py</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv lock does not re-evaluate constraints - astral-sh/uv #15445</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv lock does not re-evaluate constraints</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15445">#15445</a>
+        opened by <a href="https://github.com/janbernloehr">@janbernloehr</a>
+        on 2025-08-22 06:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/janbernloehr">@janbernloehr</a> on 2025-08-22 06:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Suppose I have a pyproject which poses a constraint on some package version (here <code>numpy==1.26.3</code>)</p>
+<pre><code>[project]
+name = &quot;footest&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;numpy&lt;2&quot;
+]
+
+[tool.uv]
+constraint-dependencies = [
+    &quot;numpy==1.26.3&quot;
+]
+</code></pre>
+<p>Now I have a uv.lock file which violates this constraint by referring to <code>1.26.4</code> instead of <code>1.26.3</code></p>
+<pre><code>version = 1
+revision = 3
+requires-python = &quot;&gt;=3.13&quot;
+
+[manifest]
+constraints = [{ name = &quot;numpy&quot;, specifier = &quot;==1.26.3&quot; }]
+
+[[package]]
+name = &quot;footest&quot;
+version = &quot;0.1.0&quot;
+source = { virtual = &quot;.&quot; }
+dependencies = [
+    { name = &quot;numpy&quot; },
+]
+
+[package.metadata]
+requires-dist = [{ name = &quot;numpy&quot;, specifier = &quot;&lt;2&quot; }]
+
+[[package]]
+name = &quot;numpy&quot;
+version = &quot;1.26.4&quot;
+source = { registry = &quot;https://jfrog.ad-alliance.biz/artifactory/api/pypi/shared-pypi-prod/simple&quot; }
+sdist = { url = &quot;https://jfrog.ad-alliance.biz/artifactory/api/pypi/shared-pypi-prod/packages/packages/65/6e/09db70a523a96d25e115e71cc56a6f9031e7b8cd166c1ac8438307c14058/numpy-1.26.4.tar.gz&quot;, hash = &quot;sha256:2a02aba9ed12e4ac4eb3ea9421c420301a0c6460d9830d74a9df87efa4912010&quot; }
+</code></pre>
+<p>This will happily pass <code>uv lock --check</code> and <code>uv lock</code> only <code>uv lock -P numpy</code> will fix this</p>
+<h3>Platform</h3>
+<p>Ubuntu 22.04</p>
+<h3>Version</h3>
+<p>uv 0.8.12</p>
+<h3>Python version</h3>
+<p>Python 3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @janbernloehr on 2025-08-22 06:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-22 08:31</div>
+            <div class="timeline-body"><p>I cannot reproduce this, adding or changing <code>constraint-dependencies</code> always triggers lockfile revalidation for me. Did you manually edit the lockfile?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-08-22 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-08-22 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/janbernloehr">@janbernloehr</a> on 2025-08-22 09:50</div>
+            <div class="timeline-body"><p>yes it’s about changes to the lock file which might happen eg during a merge. So if I have the lock file as is which might happen if someone adds the constraint and someone else updates the version and they are merged together, uv lock will accept this happily</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-22 10:07</div>
+            <div class="timeline-body"><p>Updating the lockfile &quot;manually&quot; like that isn't a supported operation -- the lockfile could change in arbitrary ways that we can't recover from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-22 10:17</div>
+            <div class="timeline-body"><p>Could you describe the sequence of steps in Git, was there ever a merge conflict involved?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/janbernloehr">@janbernloehr</a> on 2025-08-22 18:59</div>
+            <div class="timeline-body"><p>So the initial state is 1.26.3 and no constraint.</p>
+<p>Now we have two PRs merged in sequence</p>
+<ol>
+<li>adding the constraint for 1.26.3</li>
+<li>updating the version to 1.26.4</li>
+</ol>
+<p>This resulted in this very combination of uv.lock and pyproject.toml and our ci did not catch it because uv lock was fine.</p>
+<p>We found the problem only later when we tried to run uv export which then re-evaluated the constraints.</p>
+<p>Would it be possible to have a more expensive version of uv lock that re evaluates everything. We could run that in CI</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>support dependency groups with different python versions - astral-sh/uv #9161</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>support dependency groups with different python versions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9161">#9161</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2024-11-16 03:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-11-16 03:30</div>
+            <div class="timeline-body"><p>my project supports python versions 3.8 to 3.13, but since some of my dev dependencies require python 3.9 or above, i need to split them into separate dependency groups:</p>
+<pre><code class="language-toml">[project]
+requires-python = &quot;&gt;=3.8&quot;
+
+[dependency-groups]
+dev = [
+    # this version only supports 3.9 to 3.13
+    &quot;libcst&gt;=1.5.0&quot;,
+]
+old = [
+    # this version only supports 3.8 to 3.12
+    &quot;libcst==1.1.0&quot;,
+]
+</code></pre>
+<p>in pdm this is doable by maintaining two separate lockfiles, and specifying <code>--python=&quot;&gt;=3.9&quot;</code> for the <code>dev</code> group:</p>
+<pre><code>pdm lock -G dev --python=&quot;&gt;=3.9&quot;
+pdm lock -G old --lockfile pdm.old.lock
+</code></pre>
+<p>it would be nice if uv supported something similar. ideally two separate lockfiles wouldn't be needed though and the separate python versions could just be defined in <code>pyproject.toml</code> for each dependency group, maybe something like:</p>
+<pre><code class="language-toml">[tool.uv.dependency-group-python-versions]
+dev = &quot;&gt;=3.9&quot;
+old = &quot;&gt;=3.8&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../DetachHead/basedpyright/pulls/813.html">DetachHead/basedpyright#813</a> on 2024-11-16 03:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-16 03:41</div>
+            <div class="timeline-body"><p>I believe this works already:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+requires-python = &quot;&gt;=3.8&quot;
+
+[dependency-groups]
+dev = [
+    # this version only supports 3.9 to 3.13
+    &quot;libcst&gt;=1.5.0 ; python_version &gt;= '3.9'&quot;,
+]
+old = [
+    # this version only supports 3.8 to 3.12
+    &quot;libcst==1.1.0&quot;,
+]
+
+[tool.uv]
+conflicts = [
+    [
+        { group = &quot;dev&quot; },
+        { group = &quot;old&quot; },
+    ],
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-16 03:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-11-16 07:38</div>
+            <div class="timeline-body"><p>thanks! i realized i don't even need the separate dependency group and i can just do this instead:</p>
+<pre><code class="language-py">[dependency-groups]
+dev = [
+    &quot;libcst&gt;=1.5.0 ; python_version&gt;='3.9'&quot;,
+    &quot;libcst==1.1.0 ; python_version&lt;'3.9'&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @DetachHead on 2024-11-16 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-11-17 05:21</div>
+            <div class="timeline-body"><p>oh wait i don't even need that either, uv is able to resolve the correct version for each python version, which pdm wasn't able to do</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

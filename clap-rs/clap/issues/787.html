@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add AppSettings to disable automatic &quot;help&quot; subcommand - clap-rs/clap #787</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add AppSettings to disable automatic &quot;help&quot; subcommand</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/787">#787</a>
+        opened by <a href="https://github.com/Xion">@Xion</a>
+        on 2016-12-27 20:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Xion">@Xion</a> on 2016-12-27 20:34</div>
+            <div class="timeline-body"><p>When using <code>SubCommand</code>s, clap will automatically include a &quot;help&quot; subcommand:</p>
+<pre><code>SUBCOMMANDS:
+    help     Prints this message or the help of the given subcommand(s)
+</code></pre>
+<p>This is redundant, as subcommand help can also be obtained via <code>$SUBCOMMAND --help</code>.</p>
+<p>Right now, it seems there is no way to hide that superfluous subcommand, as this doesn't work:</p>
+<pre><code class="language-rust">app.subcommand(SubCommand::with_name(&quot;help&quot;).setting(AppSettings::Hidden))
+</code></pre>
+<p>Consequently, the &quot;help&quot; subcommand may have to be <a href="https://github.com/Xion/gisht/blob/69e8aad4a1743beb57184dc38150ef02b306a0a1/src/args.rs#L45">handled explicitly</a>.</p>
+<p>Suggestion: introduce <code>AppSettings::NoHelpSubcommand</code> which, if set on the root <code>App</code>, hides the &quot;help&quot; subcommand from usage output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-27 21:14</div>
+            <div class="timeline-body"><p>Interesting, the fact that</p>
+<pre><code class="language-rust">app.subcommand(SubCommand::with_name(&quot;help&quot;).setting(AppSettings::Hidden))
+</code></pre>
+<p>Isn't hiding the subcommand looks like a bug. I'll dig into this further, because that's the intended behavior, and I would prefer that to an <code>AppSettings::NoHelpSubcommand</code>.</p>
+<p>Also, small note, the <code>help</code> subcommand does a little more than the <code>--help</code> flag. It allows pulling the help from arbitrary other subcommands as well.</p>
+<p>For instance, the following invocations are equivalent:</p>
+<pre><code>$ prog help push
+$ prog push --help
+
+$ prog help subcmd othercmd
+$ prog subcmd othercmd --help
+
+$ prog help
+$ prog --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @kbknapp on 2016-12-27 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-12-27 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2016-12-27 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2016-12-27 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-12-27 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.20.0" by @kbknapp on 2016-12-27 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xion">@Xion</a> on 2016-12-28 00:10</div>
+            <div class="timeline-body"><p>For the record, I'm also using <code>UnifiedHelpMessage</code>. Not sure if it affects this.</p>
+<p>What's also curious is that &quot;help&quot; subcommand is actually gone from the output of <code>App::write_help</code>, but it's there in the <code>Err</code> from <code>App::get_matches_safe</code> (so probably also in the stdout output of regular <code>App::get_matches</code>) called against empty argv, or argv with just <code>help</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-28 01:59</div>
+            <div class="timeline-body"><p><code>UnifiedHelpMessage</code> shouldn't affect it at all. The part about being missing from <code>write_help</code> I'm assuming <code>--help</code> and <code>--version</code> are missing too. This is because unless a parsing method was calld (<code>get_matches_*</code>) those arguments and subcommands aren't built yet, since they're built lazily to allow users to override them (which is why this is a bug :wink:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @kbknapp by @kbknapp on 2016-12-31 02:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new setting</span> added by @kbknapp on 2016-12-31 02:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-31 03:13</div>
+            <div class="timeline-body"><p>I have this fixed in a local branch and will upload shortly. You can now either do as you were, <code>Subcommand::with_name(&quot;help&quot;).setting(AppSettings::Hidden))</code> or use the new setting <code>app.setting(AppSettings::DisableHelpSubcommand)</code>. The benefit of using the new setting is it actually disables the subcommand entirely, not just hides it. Also you can make it a global setting, and it will disable the help subcommand of all child subcommands as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-12-31 06:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

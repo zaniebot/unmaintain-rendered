@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is it possible to auto-fix a multi-line string `format` call with a single-line string template? - astral-sh/ruff #5531</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Is it possible to auto-fix a multi-line string `format` call with a single-line string template?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5531">#5531</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2023-07-05 13:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/harupy">@harupy</a> on 2023-07-05 13:25</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Not an issue, but a question. Is it possible to auto-fix a multi-line string <code>format</code> call with <strong><em>a single-line string template</em></strong> if the new code doesn't exceed the line length limit?</p>
+<pre><code class="language-python"># A multi-line string format call with a single-line string template
+&quot;a {} b&quot;.format(
+    1
+)
+
+# Fixed code doesn't exceed the line length limit, can be auto-fixed 
+&quot;hello, I am a warning message: {}&quot;.format(
+    1
+)
+
+# Fixed code exceeds the line length limit, can't be auto-fixed 
+&quot;{}{}{}&quot;.format(
+    123123123123123123123123123123123123123,
+    456456456456456456456456456456456456456,
+    789789789789789789789789789789789789789,
+)
+</code></pre>
+<p>It appears ruff currently ignores this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-07-05 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-05 13:45</div>
+            <div class="timeline-body"><p>I'm testing this:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff/src/checkers/ast/mod.rs b/crates/ruff/src/checkers/ast/mod.rs
+index 1ed61170d..b6ffe6f32 100644
+--- a/crates/ruff/src/checkers/ast/mod.rs
++++ b/crates/ruff/src/checkers/ast/mod.rs
+@@ -2417,19 +2417,19 @@ where
+                     if let Expr::Attribute(ast::ExprAttribute { value, attr, .. }) = func.as_ref() {
+                         let attr = attr.as_str();
+                         if let Expr::Constant(ast::ExprConstant {
+-                            value: Constant::Str(value),
++                            value: Constant::Str(str),
+                             ..
+                         }) = value.as_ref()
+                         {
+                             if attr == &quot;join&quot; {
+                                 // &quot;...&quot;.join(...) call
+                                 if self.enabled(Rule::StaticJoinToFString) {
+-                                    flynt::rules::static_join_to_fstring(self, expr, value);
++                                    flynt::rules::static_join_to_fstring(self, expr, str);
+                                 }
+                             } else if attr == &quot;format&quot; {
+                                 // &quot;...&quot;.format(...) call
+                                 let location = expr.range();
+-                                match pyflakes::format::FormatSummary::try_from(value.as_ref()) {
++                                match pyflakes::format::FormatSummary::try_from(str.as_ref()) {
+                                     Err(e) =&gt; {
+                                         if self.enabled(Rule::StringDotFormatInvalidFormat) {
+                                             self.diagnostics.push(Diagnostic::new(
+@@ -2473,7 +2473,13 @@ where
+                                         }
+ 
+                                         if self.enabled(Rule::FString) {
+-                                            pyupgrade::rules::f_strings(self, &amp;summary, expr);
++                                            pyupgrade::rules::f_strings(
++                                                self,
++                                                &amp;summary,
++                                                expr,
++                                                value,
++                                                self.settings.line_length,
++                                            );
+                                         }
+                                     }
+                                 }
+diff --git a/crates/ruff/src/rules/pyupgrade/rules/f_strings.rs b/crates/ruff/src/rules/pyupgrade/rules/f_strings.rs
+index 942033505..dbdbd5f11 100644
+--- a/crates/ruff/src/rules/pyupgrade/rules/f_strings.rs
++++ b/crates/ruff/src/rules/pyupgrade/rules/f_strings.rs
+@@ -13,6 +13,7 @@ use ruff_python_ast::source_code::Locator;
+ use ruff_python_ast::str::{is_implicit_concatenation, leading_quote, trailing_quote};
+ 
+ use crate::checkers::ast::Checker;
++use crate::line_width::LineLength;
+ use crate::registry::AsRule;
+ use crate::rules::pyflakes::format::FormatSummary;
+ use crate::rules::pyupgrade::helpers::curly_escape;
+@@ -313,13 +314,19 @@ fn try_convert_to_f_string(expr: &amp;Expr, locator: &amp;Locator) -&gt; Option&lt;String&gt; {
+ }
+ 
+ /// UP032
+-pub(crate) fn f_strings(checker: &amp;mut Checker, summary: &amp;FormatSummary, expr: &amp;Expr) {
++pub(crate) fn f_strings(
++    checker: &amp;mut Checker,
++    summary: &amp;FormatSummary,
++    expr: &amp;Expr,
++    template: &amp;Expr,
++    line_length: LineLength,
++) {
+     if summary.has_nested_parts {
+         return;
+     }
+ 
+     // Avoid refactoring multi-line strings.
+-    if checker.locator.contains_line_break(expr.range()) {
++    if checker.locator.contains_line_break(template.range()) {
+         return;
+     }
+ 
+@@ -329,9 +336,10 @@ pub(crate) fn f_strings(checker: &amp;mut Checker, summary: &amp;FormatSummary, expr: &amp;E
+         return;
+     };
+ 
+-    // Avoid refactors that increase the resulting string length.
+-    let existing = checker.locator.slice(expr.range());
+-    if contents.len() &gt; existing.len() {
++    // Avoid refactors that exceed the line length limit.
++    if (expr.start() - checker.locator.line_start(expr.start())).to_usize() + contents.len()
++        &gt; line_length.get()
++    {
+         return;
+     }
+ 
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-07 06:46</div>
+            <div class="timeline-body"><p>@charliermarsh WDYT?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-09 02:28</div>
+            <div class="timeline-body"><p>Testing the change above in https://github.com/mlflow/mlflow. The results look correct:</p>
+<pre><code class="language-diff">diff --git a/mlflow/catboost.py b/mlflow/catboost.py
+index 6a99aca83..93c0a3e22 100644
+--- a/mlflow/catboost.py
++++ b/mlflow/catboost.py
+@@ -264,9 +264,7 @@ def _init_model(model_type):
+ 
+     if model_type not in model_types:
+         raise TypeError(
+-            &quot;Invalid model type: '{}'. Must be one of {}&quot;.format(
+-                model_type, list(model_types.keys())
+-            )
++            f&quot;Invalid model type: '{model_type}'. Must be one of {list(model_types.keys())}&quot;
+         )
+ 
+     return model_types[model_type]()
+diff --git a/mlflow/store/model_registry/dbmodels/models.py b/mlflow/store/model_registry/dbmodels/models.py
+index a98fd1c8c..bdd01c3ab 100644
+--- a/mlflow/store/model_registry/dbmodels/models.py
++++ b/mlflow/store/model_registry/dbmodels/models.py
+@@ -167,9 +167,7 @@ class SqlModelVersionTag(Base):
+     )
+ 
+     def __repr__(self):
+-        return &quot;&lt;SqlModelVersionTag ({}, {}, {}, {})&gt;&quot;.format(
+-            self.name, self.version, self.key, self.value
+-        )
++        return f&quot;&lt;SqlModelVersionTag ({self.name}, {self.version}, {self.key}, {self.value})&gt;&quot;
+ 
+     # entity mappers
+     def to_mlflow_entity(self):
+diff --git a/mlflow/store/tracking/dbmodels/models.py b/mlflow/store/tracking/dbmodels/models.py
+index f19f82480..9a318d243 100644
+--- a/mlflow/store/tracking/dbmodels/models.py
++++ b/mlflow/store/tracking/dbmodels/models.py
+@@ -413,9 +413,7 @@ class SqlLatestMetric(Base):
+     &quot;&quot;&quot;
+ 
+     def __repr__(self):
+-        return &quot;&lt;SqlLatestMetric({}, {}, {}, {})&gt;&quot;.format(
+-            self.key, self.value, self.timestamp, self.step
+-        )
++        return f&quot;&lt;SqlLatestMetric({self.key}, {self.value}, {self.timestamp}, {self.step})&gt;&quot;
+ 
+     def to_mlflow_entity(self):
+         &quot;&quot;&quot;
+diff --git a/mlflow/store/tracking/file_store.py b/mlflow/store/tracking/file_store.py
+index 39e611d36..e488848da 100644
+--- a/mlflow/store/tracking/file_store.py
++++ b/mlflow/store/tracking/file_store.py
+@@ -1065,9 +1065,7 @@ class FileStore(AbstractStore):
+ 
+         if not isinstance(mlflow_model, Model):
+             raise TypeError(
+-                &quot;Argument 'mlflow_model' should be mlflow.models.Model, got '{}'&quot;.format(
+-                    type(mlflow_model)
+-                )
++                f&quot;Argument 'mlflow_model' should be mlflow.models.Model, got '{type(mlflow_model)}'&quot;
+             )
+         _validate_run_id(run_id)
+         run_info = self._get_run_info(run_id)
+diff --git a/mlflow/store/tracking/sqlalchemy_store.py b/mlflow/store/tracking/sqlalchemy_store.py
+index c400080ca..bdf24b94c 100644
+--- a/mlflow/store/tracking/sqlalchemy_store.py
++++ b/mlflow/store/tracking/sqlalchemy_store.py
+@@ -1323,9 +1323,7 @@ class SqlAlchemyStore(AbstractStore):
+ 
+         if not isinstance(mlflow_model, Model):
+             raise TypeError(
+-                &quot;Argument 'mlflow_model' should be mlflow.models.Model, got '{}'&quot;.format(
+-                    type(mlflow_model)
+-                )
++                f&quot;Argument 'mlflow_model' should be mlflow.models.Model, got '{type(mlflow_model)}'&quot;
+             )
+         model_dict = mlflow_model.to_dict()
+         with self.ManagedSessionMaker() as session:
+diff --git a/mlflow/tracking/client.py b/mlflow/tracking/client.py
+index fa77c32ca..eaf36ad48 100644
+--- a/mlflow/tracking/client.py
++++ b/mlflow/tracking/client.py
+@@ -1433,9 +1433,7 @@ class MlflowClient:
+ 
+                 if (image.ndim == 3) and (image.shape[2] not in [1, 3, 4]):
+                     raise ValueError(
+-                        &quot;Invalid channel length: {}. Must be one of [1, 3, 4]&quot;.format(
+-                            image.shape[2]
+-                        )
++                        f&quot;Invalid channel length: {image.shape[2]}. Must be one of [1, 3, 4]&quot;
+                     )
+ 
+                 # squeeze a 3D grayscale image since `Image.fromarray` doesn't accept it.
+diff --git a/mlflow/types/utils.py b/mlflow/types/utils.py
+index fe75fdd5a..d404b6947 100644
+--- a/mlflow/types/utils.py
++++ b/mlflow/types/utils.py
+@@ -58,9 +58,7 @@ def clean_tensor_type(dtype: np.dtype):
+     &quot;&quot;&quot;
+     if not isinstance(dtype, np.dtype):
+         raise TypeError(
+-            &quot;Expected `type` to be instance of `{}`, received `{}`&quot;.format(
+-                np.dtype, dtype.__class__
+-            )
++            f&quot;Expected `type` to be instance of `{np.dtype}`, received `{dtype.__class__}`&quot;
+         )
+ 
+     # Special casing for np.str_ and np.bytes_
+@@ -383,9 +381,7 @@ def _validate_all_values_string(d):
+ def _validate_keys_match(d, expected_keys):
+     if d.keys() != expected_keys:
+         raise MlflowException(
+-            &quot;Expected example to be dict with keys {}, got {}&quot;.format(
+-                list(expected_keys), list(d.keys())
+-            ),
++            f&quot;Expected example to be dict with keys {list(expected_keys)}, got {list(d.keys())}&quot;,
+             INVALID_PARAMETER_VALUE,
+         )
+ 
+diff --git a/mlflow/utils/__init__.py b/mlflow/utils/__init__.py
+index b577dd194..5af08d489 100644
+--- a/mlflow/utils/__init__.py
++++ b/mlflow/utils/__init__.py
+@@ -11,9 +11,7 @@ import inspect
+ _logger = logging.getLogger(__name__)
+ 
+ 
+-PYTHON_VERSION = &quot;{major}.{minor}.{micro}&quot;.format(
+-    major=version_info.major, minor=version_info.minor, micro=version_info.micro
+-)
++PYTHON_VERSION = f&quot;{version_info.major}.{version_info.minor}.{version_info.micro}&quot;
+ 
+ 
+ _logger = logging.getLogger(__name__)
+diff --git a/mlflow/utils/model_utils.py b/mlflow/utils/model_utils.py
+index b955a895f..473db34b7 100644
+--- a/mlflow/utils/model_utils.py
++++ b/mlflow/utils/model_utils.py
+@@ -164,9 +164,7 @@ def _validate_onnx_session_options(onnx_session_options):
+     if onnx_session_options is not None:
+         if not isinstance(onnx_session_options, dict):
+             raise TypeError(
+-                &quot;Argument onnx_session_options should be a dict, not {}&quot;.format(
+-                    type(onnx_session_options)
+-                )
++                f&quot;Argument onnx_session_options should be a dict, not {type(onnx_session_options)}&quot;
+             )
+         for key, value in onnx_session_options.items():
+             if key != &quot;extra_session_config&quot; and not hasattr(ort.SessionOptions, key):
+diff --git a/tests/pyfunc/test_model_export_with_class_and_artifacts.py b/tests/pyfunc/test_model_export_with_class_and_artifacts.py
+index 322e571c4..fdc212ea6 100644
+--- a/tests/pyfunc/test_model_export_with_class_and_artifacts.py
++++ b/tests/pyfunc/test_model_export_with_class_and_artifacts.py
+@@ -226,9 +226,7 @@ def test_python_model_predict_compatible_without_params(sklearn_knn_model, iris_
+     sklearn_artifact_path = &quot;sk_model&quot;
+     with mlflow.start_run():
+         mlflow.sklearn.log_model(sk_model=sklearn_knn_model, artifact_path=sklearn_artifact_path)
+-        sklearn_model_uri = &quot;runs:/{run_id}/{artifact_path}&quot;.format(
+-            run_id=mlflow.active_run().info.run_id, artifact_path=sklearn_artifact_path
+-        )
++        sklearn_model_uri = f&quot;runs:/{mlflow.active_run().info.run_id}/{sklearn_artifact_path}&quot;
+ 
+     def test_predict(sk_model, model_input):
+         return sk_model.predict(model_input) * 2
+@@ -240,14 +238,10 @@ def test_python_model_predict_compatible_without_params(sklearn_knn_model, iris_
+             artifacts={&quot;sk_model&quot;: sklearn_model_uri},
+             python_model=CustomSklearnModelWithoutParams(test_predict),
+         )
+-        pyfunc_model_uri = &quot;runs:/{run_id}/{artifact_path}&quot;.format(
+-            run_id=mlflow.active_run().info.run_id, artifact_path=pyfunc_artifact_path
+-        )
++        pyfunc_model_uri = f&quot;runs:/{mlflow.active_run().info.run_id}/{pyfunc_artifact_path}&quot;
+         assert model_info.model_uri == pyfunc_model_uri
+         pyfunc_model_path = _download_artifact_from_uri(
+-            &quot;runs:/{run_id}/{artifact_path}&quot;.format(
+-                run_id=mlflow.active_run().info.run_id, artifact_path=pyfunc_artifact_path
+-            )
++            f&quot;runs:/{mlflow.active_run().info.run_id}/{pyfunc_artifact_path}&quot;
+         )
+         model_config = Model.load(os.path.join(pyfunc_model_path, &quot;MLmodel&quot;))
+ 
+diff --git a/tests/store/tracking/test_sqlalchemy_store.py b/tests/store/tracking/test_sqlalchemy_store.py
+index 1f002e0cc..933804bdf 100644
+--- a/tests/store/tracking/test_sqlalchemy_store.py
++++ b/tests/store/tracking/test_sqlalchemy_store.py
+@@ -1852,14 +1852,10 @@ class TestSqlAlchemyStore(unittest.TestCase, AbstractStoreTest):
+             filter_string = f&quot;attr.artifact_uri = '{expected_artifact_uri}'&quot;
+         assert self._search([e1, e2], filter_string) == [r1]
+ 
+-        filter_string = &quot;attr.artifact_uri = '{}/{}/{}/artifacts'&quot;.format(
+-            ARTIFACT_URI, e1.upper(), r1.upper()
+-        )
++        filter_string = f&quot;attr.artifact_uri = '{ARTIFACT_URI}/{e1.upper()}/{r1.upper()}/artifacts'&quot;
+         assert self._search([e1, e2], filter_string) == []
+ 
+-        filter_string = &quot;attr.artifact_uri != '{}/{}/{}/artifacts'&quot;.format(
+-            ARTIFACT_URI, e1.upper(), r1.upper()
+-        )
++        filter_string = f&quot;attr.artifact_uri != '{ARTIFACT_URI}/{e1.upper()}/{r1.upper()}/artifacts'&quot;
+         assert sorted(
+             [r1, r2],
+         ) == sorted(self._search([e1, e2], filter_string))
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-07-10 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-10 01:07</div>
+            <div class="timeline-body"><p>@harupy - Are you up for submitting a PR? I agree that it should be supported.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2023-07-10 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-07-10 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-10 02:27</div>
+            <div class="timeline-body"><p>@charliermarsh Thanks, I'll file a PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5638.html">astral-sh/ruff#5638</a> on 2023-07-10 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-10 13:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

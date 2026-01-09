@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`self` arguments to methods should not have type annotations - astral-sh/ruff #4396</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`self` arguments to methods should not have type annotations</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4396">#4396</a>
+        opened by <a href="https://github.com/rra">@rra</a>
+        on 2023-05-12 18:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rra">@rra</a> on 2023-05-12 18:41</div>
+            <div class="timeline-body"><p>Currently, Ruff does not appear to exclude the <code>self</code> argument to class methods from its check for type annotations. For example, this Python file:</p>
+<pre><code class="language-python">class Foo:
+    def bar(self, something: str) -&gt; str:
+        return something + &quot;else&quot;
+</code></pre>
+<p>reports:</p>
+<pre><code>% ruff check --select 'ANN' foo.py 
+foo.py:2:13: ANN101 Missing type annotation for `self` in method
+Found 1 error.
+</code></pre>
+<p>However, <code>self</code> should not have a type annotation; it's unnecessary (it adds no useful type information; the type of self is already known by the type checker because the method is defined on a class) and explicitly recommended against in the mypy documentation. See, for example, https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html#classes (note the comment on <code>deposit</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-12 18:54</div>
+            <div class="timeline-body"><p>I believe <code>ANN101</code> and <code>ANN102</code> are their own rules for this reason -- so that you can turn them off. Whether they should exist <em>at all</em> is probably a different question, but the encoding was inherited from the originating plugin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-05-12 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rra">@rra</a> on 2023-05-12 19:10</div>
+            <div class="timeline-body"><p>Ah, I see this is controversial upstream as well (https://github.com/sco1/flake8-annotations/issues/80).</p>
+<p>I think <code>ANN101</code> is always incorrect and indeed would like the linter to check the inverse: complain if <code>self</code> has a type annotation, since the type annotation for <code>self</code> makes the code more fragile under refactoring and should be omitted. But I totally understand if you don't want to diverge from the original upstream plugin, and it doesn't look like the plugin author is interested in changing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-12 19:13</div>
+            <div class="timeline-body"><p>Now that there's a <a href="https://peps.python.org/pep-0673/"><code>Self</code> type</a> it's a bit more reasonable to expect a type annotation here for consistency with other function parameters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rra">@rra</a> on 2023-05-12 19:15</div>
+            <div class="timeline-body"><p>Incidentally, flake8-annotations links to https://peps.python.org/pep-0484/#annotating-instance-and-class-methods as an example of when this typing might be necessary, but I believe this example is now obsolete now that <code>Self</code> has been added. The example in PEP 484:</p>
+<pre><code class="language-python">T = TypeVar('T', bound='Copyable')
+class Copyable:
+    def copy(self: T) -&gt; T:
+        # return a copy of self
+</code></pre>
+<p>can now be written much simpler as:</p>
+<pre><code class="language-python">class Copyable:
+    def copy(self) -&gt; Self:
+        # Return a copy of self
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rra">@rra</a> on 2023-05-12 19:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Now that there's a <a href="https://peps.python.org/pep-0673/"><code>Self</code> type</a> it's a bit more reasonable to expect a type annotation here for consistency with other function parameters.</p>
+</blockquote>
+<p>Agreed that at least makes it less fragile and turns it into a question of style about which people will have different opinions. I modify my desire for a linter for <code>self</code> typing to one that complains about any type other than <code>Self</code>. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-12 19:18</div>
+            <div class="timeline-body"><p>Ah interesting. Yeah I've definitely done this before for generics:</p>
+<pre><code class="language-py">T = TypeVar('T', bound='Copyable')
+class Copyable:
+    def copy(self: T) -&gt; T:
+        # return a copy of self
+</code></pre>
+<p>It's neat that it's no longer required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-12 19:19</div>
+            <div class="timeline-body"><p>I think we need to do some grepping to see if any projects are actually relying on this rule, or whether we can just remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-07-10 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2024-02-01 22:32</div>
+            <div class="timeline-body"><p>Duplicate of #7709, I guess</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-01 22:38</div>
+            <div class="timeline-body"><p>Ah that's right! This rule is removed in v0.2.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-01 22:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.2.0" by @charliermarsh on 2024-02-01 22:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2024-10-15 13:53</div>
+            <div class="timeline-body"><p>Does anyone know an reverse-ANN001 that can be used to remove mistakenly added type to self?</p>
+<p>I am wondering why on a specific project where I use ruff 0.7.3, I still see:</p>
+<pre><code>ANN001 Missing type annotation for function argument `self`
+</code></pre>
+<p>Created new bug for that https://github.com/astral-sh/ruff/issues/14295</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14295.html">astral-sh/ruff#14295</a> on 2024-11-12 10:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ansible/ansible-creator/pulls/326.html">ansible/ansible-creator#326</a> on 2024-11-12 11:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`extend-select = [&quot;I&quot;]` from pyproject.toml not honored for tests in very specific circumstances - astral-sh/ruff #12453</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`extend-select = [&quot;I&quot;]` from pyproject.toml not honored for tests in very specific circumstances</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12453">#12453</a>
+        opened by <a href="https://github.com/jamesharr">@jamesharr</a>
+        on 2024-07-22 13:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesharr">@jamesharr</a> on 2024-07-22 13:37</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>We've observed an odd behavior where the <code>extend-select = [&quot;I&quot;]</code> is not honored for code in <code>tests/</code> when a very specific set of circumstances occur. I'm not even sure I have the minimum reproduction steps completely down, but I can very consistently reproduce the situation.</p>
+<ol>
+<li>The tests import items from specific module <code>mod1</code></li>
+<li>The python code structure starts at <code>src</code> instead of the repo root</li>
+<li>A directory <code>mod1</code> exists at the repo root. This directory can be empty</li>
+<li>This is the most bizarre part: This depends on the contents of the test files <code>tests/test_mod1.py</code>. Modifying the file contents can in some cases cause <code>extend-select</code> from <code>pyproject.toml</code> to be respected. Some of these are very insignificant changes, like insertion of a comment between imports, removal of a blank line between imports, etc.</li>
+<li>Run <code>ruff check --no-cache</code> and observe that <code>tests/test_mod1.py</code> is not checked for <code>I001</code> as requested in <code>pyproject.toml</code>. Be sure to use <code>--no-cache</code> during tests because some actions will not invalidate the cache that otherwise would, like creating/removing the top-level <code>mod1</code> directory.</li>
+</ol>
+<p>The minimum reproduction is below, but is also available as a git repository https://github.com/jamesharr/ruff-issue-12453</p>
+<p>This bug was initially spotted due to a dirty working directory, and we eventually narrowed it down to an empty to-level folder that matches one of the modules a test imports. Of course git ignores empty directories, so we were chasing our tails on this one for a few days.</p>
+<p>Ruff version: <code>ruff 0.5.4</code> on macOS 14.5, though we've also seen it with 0.5.2 and 0.5.3</p>
+<p>Command: <code>ruff check --no-cache .</code></p>
+<p>Directory structure:</p>
+<pre><code class="language-sh">% tree .
+.
+├── README.md
+├── mod1                   # Empty directory required for bug reproduction
+├── pyproject.toml         # Sets &quot;extend-select&quot; to &quot;I&quot;
+├── src
+│   └── mod1
+│       └── __init__.py
+└── tests
+    └── test_mod1.py       # File is not always check
+
+5 directories, 4 files
+</code></pre>
+<p>Contents of <code>pyproject.toml</code></p>
+<pre><code class="language-toml">[tool.poetry]
+name = &quot;ruff-bug&quot;
+version = &quot;0.0.0&quot;
+description = &quot;Ruff bug demo project&quot;
+authors = []
+readme = &quot;README.md&quot;
+packages = [
+    { include = &quot;mod1&quot;, from = &quot;src&quot; },
+]
+
+[tool.ruff.lint]
+extend-select = [&quot;I&quot;]
+</code></pre>
+<p>Contents of <code>tests/test_mod1.py</code></p>
+<pre><code class="language-py">def test_bug1():
+    # For the bug to occur:
+    # - [repo-root]/mod1 must exist as a directory; contents of directory do not seem to matter
+    # - There must be an empty line after the first import import
+    # - It cannot be two blank lines
+    # - It cannot be line with a comment
+    # - It can be a line consisting of only tabs/whitespaces
+    # - All 3 imports must exist and in this order
+    # - All 3 imports must exist within the function
+    #
+    # When the above conditions are met, then tests/* are NOT checked for I001 (unsorted imports)
+    # as requested in pyproject.toml.
+    #
+    # Files in src/* are checked for I001 as requested in pyproject.toml, regardless of the contents
+    # of this file.
+
+    from external_lib import qux
+
+    from mod1 import foo
+    from mod1.bar import baz
+
+    # I think the code below is only important because it uses the above imports
+    print(qux)
+    print(foo)
+    print(baz)
+
+% cat src/mod1/__init__.py
+# The contents of this file seem to have no bearing bug reproduction
+# - I001 seems to always be checked for this file, as specified in pyproject.toml
+#
+# You can illustrate this by re-ordering these imports
+import os
+import sys
+
+# The following code only exists to use the imports and avoid F401 (imported but unused)
+print(os)
+print(sys)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 13:40</div>
+            <div class="timeline-body"><p>A few quick comments:</p>
+<ul>
+<li>If you have <code>src</code> and <code>tests</code>, then imports from <code>src</code> won't be considered first-party unless you add the following to your <code>pyproject.toml</code>:</li>
+</ul>
+<pre><code class="language-toml">[tool.ruff]
+src = [&quot;src&quot;]  # The default here is `src = [&quot;.&quot;]`
+</code></pre>
+<ul>
+<li>The presence of the <code>mod</code> at the top-level is likely causing you to treat imports of <code>mod</code> as first-party, because the default for <code>src</code> is <code>[&quot;.&quot;]</code> - -so it's finding <code>mod</code> at the root of your project.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 13:40</div>
+            <div class="timeline-body"><p>Do you want imports of <code>src</code> modules in <code>tests</code> to be considered first-party or third-party?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesharr">@jamesharr</a> on 2024-07-22 13:58</div>
+            <div class="timeline-body"><p>I believe I'm asking for <code>src</code> to be considered first-party (code that this repo owns). I'll try playing around with it and update the ticket appropriately. It makes sense to list that explicitly instead of relying on implicit detection.</p>
+<p>There might still something bizarre going on here, because doing certain things to tests/ can cause <code>I001</code> to be checked, like messing with empty lines, moving imports up to the top-level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 14:01</div>
+            <div class="timeline-body"><p>Are you sure that <code>I001</code> isn't being <em>checked</em>? My guess is that it <em>is</em> being checked, it's just not having any effect in your MRE because it considers the imports to be sorted already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesharr">@jamesharr</a> on 2024-07-22 14:06</div>
+            <div class="timeline-body"><p>You know what, I think you might be right. <code>I001</code> is being checked and this all is starting to make sense. The existence of that top-level directory is affecting the detection of the <code>src</code> setting, which is affecting what's being treated as a first/third-party import... Which is probably what you were getting at first.</p>
+<p>What does MRE mean?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 14:08</div>
+            <div class="timeline-body"><p>Apologies, MRE is &quot;minimal reproducible example&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesharr">@jamesharr</a> on 2024-07-22 14:36</div>
+            <div class="timeline-body"><p>So with my new found understanding, I'm trying to figure out if there's an issue worth keeping around or not, even if it's not this specific issue. I'm leaning towards &quot;no&quot;, but I want to run my thoughts by you regardless:</p>
+<ol>
+<li>Ultimately my tail-chasing revolves around me not understanding that I'm triggering an implicit behavior. I think there's value in that implicit behavior (so you don't need to specify the src directory every time), but I also wasn't aware that the first-party/third-party was changing.
+a. Is it worth detecting/notifying the user if there's ambiguity in first/third-party import detection?
+b. Is it worth adding <code>src</code> as part of the implicit first/third-party import detection?</li>
+<li>More pragmatically, creation/deletion of <code>mod1</code> does not invalidate the cache. When I created <code>mod1</code>, if the previous <code>ruff check</code> passed, then it would report no issues even though it should if run without caching.</li>
+</ol>
+<p>If any of these are worth keeping around, I can file a separate issue. If not, I'll close this ticket after I give my coworkers some time to skim over.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 14:40</div>
+            <div class="timeline-body"><p>Well put!</p>
+<p>I've been wanting to add <code>&quot;src&quot;</code> to the default <code>src</code> for a while now (which would've fixed this) -- but it's a breaking change, so it will need to be in the next minor. I'll create an issue for it now.</p>
+<blockquote>
+<p>More pragmatically, creation/deletion of mod1 does not invalidate the cache. When I created mod1, if the previous ruff check passed, then it would report no issues even though it should if run without caching.</p>
+</blockquote>
+<p>Yeah this is a legitimate bug / footgun, I believe it's covered here: https://github.com/astral-sh/ruff/issues/10519.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12454.html">astral-sh/ruff#12454</a> on 2024-07-22 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 14:41</div>
+            <div class="timeline-body"><p>I'm going to close out in favor of those other issues (e.g., https://github.com/astral-sh/ruff/issues/12454), thanks for taking the time to dig into this and for your thoughts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-22 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesharr">@jamesharr</a> on 2024-07-22 15:03</div>
+            <div class="timeline-body"><p>Thank you for taking the time to interact &amp; help me understand, I appreciate the project's helpfulness</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12848.html">astral-sh/ruff#12848</a> on 2024-08-12 17:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

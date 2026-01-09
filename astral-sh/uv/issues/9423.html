@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usage in docker: `error: Project virtual environment directory /app/.venv cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment - astral-sh/uv #9423</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Usage in docker: `error: Project virtual environment directory /app/.venv cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9423">#9423</a>
+        opened by <a href="https://github.com/ben-xD">@ben-xD</a>
+        on 2024-11-25 17:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ben-xD">@ben-xD</a> on 2024-11-25 17:04</div>
+            <div class="timeline-body"><p>Thanks for the detailed docker docs! I'm trying to use uv in docker compose for local development. Trying to bind mount my application code <strong>and</strong> an anonymous volume for <code>app/.venv</code>. This is similar to the approach shown in <a href="https://docs.astral.sh/uv/guides/integration/docker/#mounting-the-project-with-docker-run">docs with <code>docker run</code></a> which aims to avoid overwriting host vs docker container venv files, and keep them separate.</p>
+<p>Sadly, <code>uv sync</code> inside the container errors with:</p>
+<pre><code class="language-bash">error: Project virtual environment directory /app/.venv cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment
+</code></pre>
+<p>This might be because uv tries to replace the <code>.venv</code> folder, but it can't since it's a volume?</p>
+<h2>Docker compose settings</h2>
+<pre><code class="language-yaml">services:
+  reproduce:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: &quot;tail -f /dev/null&quot;
+    volumes:
+      - ./:/app
+      - /app/.venv
+</code></pre>
+<h2>Details</h2>
+<ul>
+<li>version: uv 0.5.4</li>
+<li>OS: debian 12</li>
+</ul>
+<h2>Reproducible setup</h2>
+<ul>
+<li><code>git clone git@github.com:ben-xD/reproduce-uv-docker-compose-error.git</code></li>
+<li><code>docker-compose up -d</code></li>
+<li>Enter shell: <code>docker exec -it uv-reproduce-error-reproduce-1 bash</code></li>
+<li>Run uv: <code>uv sync</code></li>
+<li>Observe error:</li>
+</ul>
+<pre><code>error: Project virtual environment directory `/app/.venv` cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment
+</code></pre>
+<h2>Following documentation's docker run</h2>
+<p>I also tried following the docs, by running:</p>
+<pre><code>docker run -it --rm --volume .:/app --volume /app/.venv uv-reproduce-error-reproduce bash
+</code></pre>
+<p>Then running</p>
+<pre><code>uv sync
+</code></pre>
+<p>but i get the same error:</p>
+<pre><code>root@ea61fab74354:/app# uv sync
+Using CPython 3.11.10
+error: Project virtual environment directory `/app/.venv` cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ben-xD">@ben-xD</a> on 2024-11-25 17:12</div>
+            <div class="timeline-body"><p>The <a href="https://docs.astral.sh/uv/guides/integration/docker/#configuring-watch-with-docker-compose">docker compose watch feature</a> isn't ideal though because it the python dependencies are redownloaded whenever the image needs to be rebuild - it doesn't cache <code>.venv</code>, just ignores it.</p>
+<p>I also can't enter the container shell to run commands interactively (it really helps experimenting with container/linux tools used in CI quickly). Also, the sync is 1 way: i cant make changes inside the container.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-25 18:06</div>
+            <div class="timeline-body"><p>Thank you for the reproduction!</p>
+<p>The reason you get that error is because the <code>.venv</code> directory exists, but is not a virtual environment. This is a safeguard to avoid mutating target directories that we should not. We might want to relax that to allow mutating an empty directory, but this conflicts with our removal of the directory to create a virtual environment:</p>
+<pre><code>root@8ceb311d28c1:/app# uv venv
+Using CPython 3.11.10
+Creating virtual environment at: .venv
+uv::venv::creation
+
+  x Failed to create virtualenv
+  `-&gt; failed to remove directory `/app/.venv`: Resource busy (os error 16)
+</code></pre>
+<blockquote>
+<p>the python dependencies are redownloaded whenever the image needs to be rebuild - it doesn't cache .venv, just ignores it.</p>
+</blockquote>
+<p>Perhaps you're looking to use a <a href="https://github.com/astral-sh/uv-docker-example/blob/a14ebc89e3a5e5b33131284968d8969ae054ed0d/Dockerfile#L13-L23">cache mount</a> to store dependency downloads?</p>
+<blockquote>
+<p>Also, the sync is 1 way: i cant make changes inside the container.</p>
+</blockquote>
+<p>Here the idea is that you would be able to modify the <code>pyproject.toml</code> with <code>uv add</code> and have it reflected inside and outside of the container?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ben-xD">@ben-xD</a> on 2024-11-25 18:32</div>
+            <div class="timeline-body"><p>Thanks for your reply! Yes it makes sense that it doesn't yet work but I can't find another way of isolating the 2 python environments (docker/linux vs. host/macOS) to avoid needing to download/reinstall everything when switching between testing my python app in my docker and host environments. I can't &quot;exclude&quot; the <code>.env</code>.</p>
+<p>I don't think cache mount would work since I want to update the cache whilst inside the container like with <code>docker exec -it $container_name bash</code>? Cache mounts are for build time?</p>
+<blockquote>
+<p>Here the idea is that you would be able to modify the pyproject.toml with uv add and have it reflected inside and outside of the container?</p>
+</blockquote>
+<p>The 2 way sync is not super important tbh. But yea, it would be ideal if <code>uv add</code> updates the lock file, and that's synced to my host file. system. But definitely syncing from host to linux. It would be nice if <code>uv sync</code> just downloads the package that was missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-25 18:36</div>
+            <div class="timeline-body"><p>Okay confusing, we <em>do</em> ignore empty directories but it's different in this case? Presumably because it's a mounted volume? If I run <code>uv venv</code> twice, we create it:</p>
+<pre><code>root@8ceb311d28c1:/app# uv venv -v
+DEBUG uv 0.5.4
+DEBUG Found project root: `/app`
+DEBUG No workspace root found, using project root
+DEBUG Reading Python requests from version file at `/app/.python-version`
+DEBUG Using Python request `3.11` from version file at `.python-version`
+DEBUG Searching for Python 3.11 in managed installations or search path
+DEBUG Searching for managed installations at `/root/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.11.10-linux-aarch64-gnu`
+DEBUG Found `cpython-3.11.10-linux-aarch64-gnu` at `/root/.local/share/uv/python/cpython-3.11.10-linux-aarch64-gnu/bin/python3.11` (managed installations)
+Using CPython 3.11.10
+Creating virtual environment at: .venv
+DEBUG Removing existing directory
+uv::venv::creation
+
+  x Failed to create virtualenv
+  `-&gt; failed to remove directory `/app/.venv`: Resource busy (os error 16)
+root@8ceb311d28c1:/app# uv venv -v
+DEBUG uv 0.5.4
+DEBUG Found project root: `/app`
+DEBUG No workspace root found, using project root
+DEBUG Reading Python requests from version file at `/app/.python-version`
+DEBUG Using Python request `3.11` from version file at `.python-version`
+DEBUG Searching for Python 3.11 in managed installations or search path
+DEBUG Searching for managed installations at `/root/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.11.10-linux-aarch64-gnu`
+DEBUG Found `cpython-3.11.10-linux-aarch64-gnu` at `/root/.local/share/uv/python/cpython-3.11.10-linux-aarch64-gnu/bin/python3.11` (managed installations)
+Using CPython 3.11.10
+Creating virtual environment at: .venv
+DEBUG Ignoring empty directory
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-25 18:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think cache mount would work since I want to update the cache whilst inside the container like with docker exec -it $container_name bash? Cache mounts are for build time?</p>
+</blockquote>
+<p>I see. I was responding specifically to &quot;whenever the image needs to be rebuild&quot; — you could also mount the cache at runtime — though I'm not sure it'd be safe to concurrent access since we can't lock files across the host and container.</p>
+<blockquote>
+<p>But yea, it would be ideal if uv add updates the lock file, and that's synced to my host file. system.</p>
+</blockquote>
+<p>This sort of works, but Docker syncs the the virtual environment back to the host and breaks things. It seems feasible with some work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-25 19:03</div>
+            <div class="timeline-body"><p>I'm not sure what the best next step here is. Perhaps you can use <code>UV_PROJECT_ENVIRONMENT</code> to try to move the virtual environment outside of the project directory while in the container to avoid collisions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ben-xD">@ben-xD</a> on 2024-11-25 19:46</div>
+            <div class="timeline-body"><p>That's great! Thanks a lot! I was trying to use <code>VIRTUAL_ENV</code> but that was being ignored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-25 20:25</div>
+            <div class="timeline-body"><p>Does that solve all your problems here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9427.html">astral-sh/uv#9427</a> on 2024-11-25 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-11-26 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../lmchaves/OrganizarTaller/issues/46.html">lmchaves/OrganizarTaller#46</a> on 2025-02-04 10:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leorochael">@leorochael</a> on 2025-05-22 11:57</div>
+            <div class="timeline-body"><p>@zanieb, I can no longer reproduce the error following the reproduction instructions on this issue report.</p>
+<p>It seems #9427 indeed fixes this issue and it could be closed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ben-xD">@ben-xD</a> on 2025-05-22 14:38</div>
+            <div class="timeline-body"><p>Not sure why I didn't see this, but yes that solves my problem. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ben-xD on 2025-05-22 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14815.html">astral-sh/uv#14815</a> on 2025-07-22 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mayrop">@mayrop</a> on 2025-07-22 20:42</div>
+            <div class="timeline-body"><p>What is your final setup @ben-xD?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ben-xD">@ben-xD</a> on 2025-07-23 09:53</div>
+            <div class="timeline-body"><p>My issue was solved by a PR linked above</p>
+<p>Now, I don't even use docker for my project, much simpler!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

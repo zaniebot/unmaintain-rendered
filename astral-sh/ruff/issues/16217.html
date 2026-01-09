@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLE0302 has false positives and false negatives - astral-sh/ruff #16217</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLE0302 has false positives and false negatives</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16217">#16217</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-02-17 16:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-02-17 16:39</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/unexpected-special-method-signature/"><code>unexpected-special-method-signature</code> (PLE0302)</a> has false positives and false negatives in Ruff 0.9.6.</p>
+<p>The following methods are not special in Python 3, so they have no expected signatures. They are already caught by <a href="https://docs.astral.sh/ruff/rules/bad-dunder-method-name/"><code>bad-dunder-method-name</code> (PLW3201)</a>.</p>
+<pre><code class="language-console">$ cat &gt;ple0302_fp.py &lt;&lt;'# EOF'
+class C:
+    def __cmp__(self): ...
+    def __div__(self): ...
+    def __nonzero__(self, x): ...
+    def __unicode__(self, x): ...
+# EOF
+
+$ ruff --isolated check --preview --select PLE0302,PLW3201 ple0302_fp.py --output-format concise
+ple0302_fp.py:2:9: PLE0302 The special method `__cmp__` expects 2 parameters, 1 was given
+ple0302_fp.py:2:9: PLW3201 Dunder method `__cmp__` has no special meaning in Python 3
+ple0302_fp.py:3:9: PLE0302 The special method `__div__` expects 2 parameters, 1 was given
+ple0302_fp.py:3:9: PLW3201 Dunder method `__div__` has no special meaning in Python 3
+ple0302_fp.py:4:9: PLE0302 The special method `__nonzero__` expects 1 parameter, 2 were given
+ple0302_fp.py:4:9: PLW3201 Dunder method `__nonzero__` has no special meaning in Python 3
+ple0302_fp.py:5:9: PLE0302 The special method `__unicode__` expects 1 parameter, 2 were given
+ple0302_fp.py:5:9: PLW3201 Dunder method `__unicode__` has no special meaning in Python 3
+Found 8 errors.
+</code></pre>
+<p>The following methods are special in Python 3 but PLE0302 does not check them.</p>
+<pre><code class="language-console">$ cat &gt;ple0302_fn_1.py &lt;&lt;'# EOF'
+class C:
+    def __next__(self, x): ...  # should have 1 parameter
+    def __buffer__(self): ...  # should have 2 parameters
+    def __class_getitem__(self): ...  # should have 2 parameters
+    def __mro_entries__(self): ...  # should have 2 parameters
+    def __release_buffer__(self): ...  # should have 2 parameters
+    def __subclasshook__(self): ...  # should have 2 parameters
+# EOF
+
+$ ruff --isolated check --select PLE0302 ple0302_fn_1.py
+All checks passed!
+</code></pre>
+<p>Python only passes arguments to dunder methods positionally, so it is fine to declare some of the parameters as positional-only. PLE0302 ignores method definitions with positional-only parameters, causing false negatives.</p>
+<pre><code class="language-console">$ cat &gt;ple0302_fn_2.py &lt;&lt;'# EOF'
+class C:
+    def __setattr__(self, /, name): ...  # should have 3 parameters
+    def __setitem__(self, key, /, value, extra_value): ...  # should have 3 parameters
+# EOF
+
+$ ruff --isolated check --select PLE0302 ple0302_fn_2.py
+All checks passed!
+
+$ sed 's:/, ::' ple0302_fn_2.py | ruff --isolated check --select PLE0302 - --output-format concise
+-:2:9: PLE0302 The special method `__setattr__` expects 3 parameters, 2 were given
+-:3:9: PLE0302 The special method `__setitem__` expects 3 parameters, 4 were given
+Found 2 errors.
+</code></pre>
+<p>There are two special functions on modules, <code>__dir__</code> and <code>__getattr__</code>, which PLE0302 doesn’t check. They might be out of scope for this rule, because it is documented to be for methods, but it would be a natural extension.</p>
+<pre><code class="language-console">$ cat &gt;ple0302_fn_3.py &lt;&lt;'# EOF'
+def __dir__(self): ...  # should have 0 parameters
+def __getattr__(): ...  # should have 1 parameter
+# EOF
+
+$ ruff --isolated check --select PLE0302 ple0302_fn_3.py
+All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-02-17 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-02-17 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcarrier">@dcarrier</a> on 2025-02-18 22:44</div>
+            <div class="timeline-body"><p>Working through each one of these now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16263.html">astral-sh/ruff#16263</a> on 2025-02-19 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-02-21 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-02-21 13:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intended behavior of `analyze` re missing third party dependencies - astral-sh/ruff #21426</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Intended behavior of `analyze` re missing third party dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21426">#21426</a>
+        opened by <a href="https://github.com/gwdekker">@gwdekker</a>
+        on 2025-11-13 12:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gwdekker">@gwdekker</a> on 2025-11-13 12:25</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Take this example:</p>
+<pre><code>import requests
+import pandas
+
+def main():
+    print(&quot;Hello from try-analyze-broken-imports!&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+    print(requests.__version__)
+    print(pandas.__version__)
+</code></pre>
+<p>The output of <code>ruff analyze graph --python .venv/bin/python</code> on this code depends on the state of the python interpreter. If I have installed <code>requests</code> there, it lists requests in the graph. It ignores the <code>pandas</code> import statement fully without error. Is this by design, what is the reasoning behind it? My naive expectation would have been that an import that can not be understood given the state of the python environment and the code base would throw an error, but instead it silently gets ignored.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @gwdekker on 2025-11-13 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-13 13:18</div>
+            <div class="timeline-body"><p>I think it wouldn't be unreasonable to log unresolved imports or return a counter saying how many imports couldn't be resolved.</p>
+<p>I don't think the tool should return an error if it failed to resolve an import. It's not a type checker (and erroring would require a form to suppress known unresolvable imports).</p>
+<p>Long term, I suspect that <code>analyze</code> will be integrated into <code>ty</code> where you can run <code>ty check</code> to verify that <code>ty</code> finds all imports and then run <code>ty analyze dependency-tree</code> or similar to dump the dependency tree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwdekker">@gwdekker</a> on 2025-11-13 14:16</div>
+            <div class="timeline-body"><p>I see, yes that's a reasonable position to hold.</p>
+<p>I was indeed exploring combining with <code>ty</code> already to see if that would be a solution. On that note, is there a way for me to run <code>ty</code> only for one rule (so ignore all rules except the ones I select)? I tried <code> uv run ty check --error unresolved-import .</code> but that still runs all other default rules. I cannot find how to do so, and I can also not find in the documentation a list of all default rules. Best I have for that is probably going through the <a href="https://docs.astral.sh/ty/reference/rules">list of all rules</a> and explicitly ignore all of them that are default: error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-13 14:21</div>
+            <div class="timeline-body"><blockquote>
+<p>I was indeed exploring combining with ty already to see if that would be a solution. On that note, is there a way for me to run ty only for one rule (so ignore all rules except the ones I select)?</p>
+</blockquote>
+<p>There's no easy way to do this today other than deselecting (<code>--ignore</code>) every single rule that's enabled by default.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

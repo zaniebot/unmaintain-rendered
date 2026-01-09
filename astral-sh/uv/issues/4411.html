@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Python toolchains under XDG directory on macOS - astral-sh/uv #4411</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Store Python toolchains under XDG directory on macOS</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4411">#4411</a>
+        opened by <a href="https://github.com/baggiponte">@baggiponte</a>
+        on 2024-06-19 13:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/baggiponte">@baggiponte</a> on 2024-06-19 13:24</div>
+            <div class="timeline-body"><p>Hey there! Thanks for the amazing work. Using <code>uv</code> preview features and love it.</p>
+<p>I noticed <code>uv toolchain</code> installs under <code>$HOME/Library/Application Support</code>. How does <code>uv </code> feel about following XDG spec? I saw ruff is doing it. For example, <code>rye</code> installs under <code>$HOME/.local/share</code>.</p>
+<p>Also when I do <code>uv toolchain list</code> I get this result:</p>
+<pre><code class="language-bash">warning: `uv toolchain list` is experimental and may change without warning.
+cpython-3.12.4-macos-aarch64-none       /opt/homebrew/opt/python@3.12/bin/python3.12
+cpython-3.12.3-macos-aarch64-none       /Users/luca/Library/Application Support/uv/toolchains/cpython-3.12.3-macos-aarch64-none/install/bin/python3
+cpython-3.11.9-macos-aarch64-none       /Users/luca/Library/Application Support/uv/toolchains/cpython-3.11.9-macos-aarch64-none/install/bin/python3
+cpython-3.10.14-macos-aarch64-none      /Users/luca/Library/Application Support/uv/toolchains/cpython-3.10.14-macos-aarch64-none/install/bin/python3
+cpython-3.9.19-macos-aarch64-none       /Users/luca/Library/Application Support/uv/toolchains/cpython-3.9.19-macos-aarch64-none/install/bin/python3
+cpython-3.9.6-macos-aarch64-none        /Library/Developer/CommandLineTools/usr/bin/python3
+cpython-3.8.19-macos-aarch64-none       /Users/luca/Library/Application Support/uv/toolchains/cpython-3.8.19-macos-aarch64-none/install/bin/python3
+</code></pre>
+<p>i.e. also Homebrew Python.</p>
+<p>(I guess a <code>uv pin</code> or <code>uv local</code> command is coming soon, looking forward to it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-19 14:37</div>
+            <div class="timeline-body"><p>We're talking about it e.g. https://github.com/astral-sh/uv/pull/2236 and https://github.com/astral-sh/uv/pull/3049 and https://github.com/astral-sh/ruff/issues/10739</p>
+<p>I think it's fairly clear that people prefer the XDG directory for configuration on macOS but I'm not sure what to think of application &quot;state&quot; like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2024-06-19 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">macos</span> added by @zanieb on 2024-06-19 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-19 14:49</div>
+            <div class="timeline-body"><p>Personally I'm pretty interested it's just weird to go against the platform standard and notably our cache is also not using the XDG directory on macOS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/baggiponte">@baggiponte</a> on 2024-06-19 14:52</div>
+            <div class="timeline-body"><p>Thanks for the prompt reply! As far as Python interpreter discovery, what do you plan to support? Anyway, feel free to close this 😊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-19 14:55</div>
+            <div class="timeline-body"><p>I'm happy to leave it open to gauge interest. Maybe we need a special toggle.</p>
+<p>Python interpreter discovery is a whole thing :) I don't think we should chat about it in the issue, but you could take a look at the <a href="https://github.com/astral-sh/uv/blob/57a58957440600dffcb361394850187764d373b4/crates/uv-toolchain/src/discovery.rs#L128-L145">supported sources</a>. https://github.com/astral-sh/uv/issues/4198 will address your question about the system interpreters being listed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsully">@dsully</a> on 2024-06-20 01:16</div>
+            <div class="timeline-body"><p>+1 for <code>~/.local</code>, etc. Effectively treating macOS like Linux in this regard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-06-20 05:01</div>
+            <div class="timeline-body"><p>Just chiming in here to say that I'd rather keep the current behavior. XDG is not relevant for macOS and I'd like uv to follow the platform's standards, not those of a Linux system. That said, I have not yet read any of the referenced issues / discussions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/baggiponte">@baggiponte</a> on 2024-06-20 09:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Just chiming in here to say that I'd rather keep the current behavior. XDG is not relevant for macOS and I'd like uv to follow the platform's standards, not those of a Linux system. That said, I have not yet read any of the referenced issues / discussions.</p>
+</blockquote>
+<p>I see your point, but there are already plenty of programs that, if XDG_* vars are set on macos, will comply with that. It's handy because as a developer it improves the way I manage things (dotfiles, knowing where to go when I need to free up ram...). I don't remember how it ended up there, but there are a bunch of <code>jetbrains</code> stuff under my <code>~/.local/share</code> too.</p>
+<p>It's also fair to say there are plenty of programs that don't care. VSCode, for example, slams everything under <code>$HOME</code>, IIRC plugins included.</p>
+<p>EDIT: My point is: it feels it's more of a standard for GUIs/Applications than programs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-06-20 10:18</div>
+            <div class="timeline-body"><p>@baggiponte I absolutely agree that many programs don't respect the OS conventions 😃 When developing Python packages, for example, I therefore make use of <a href="https://pypi.org/project/platformdirs/"><code>platformdirs</code></a>, which automatically does &quot;the right thing&quot; when it comes to figuring out where to store config files, temporary data etc. I'd argue it's good practice to follow this approach ... I'm not looking to start a fight over this :) just wanted to share my opinion.</p>
+<p>best wishes!
+Richard</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsully">@dsully</a> on 2024-06-20 11:16</div>
+            <div class="timeline-body"><p>To be clear - as long as the <code>$XDG_*</code> variables are respected as @baggiponte says, I'm good with that approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-06-20 11:31</div>
+            <div class="timeline-body"><p>Ah! Got you! Yes this does make sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 15:56</div>
+            <div class="timeline-body"><p>For context, we <em>do</em> use XDG for configuration file discovery so there's some precedent there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Follow XDG spec on macOS (?)" to "Store Python toolchains under XDG directory on macOS (?)" by @charliermarsh on 2024-06-23 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Store Python toolchains under XDG directory on macOS (?)" to "Store Python toolchains under XDG directory on macOS" by @charliermarsh on 2024-06-23 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-24 21:10</div>
+            <div class="timeline-body"><p>Another datapoint is that <code>pipx</code> uses the XDG spec for storing installed tools.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/baggiponte">@baggiponte</a> on 2024-06-29 21:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Another datapoint is that <code>pipx</code> uses the XDG spec for storing installed tools.</p>
+</blockquote>
+<p>Speaking of, tools that are installed with <code>uv tool install</code> will have to be added to <code>$PATH</code> somehow. I don't think I ever saw adding <code>$HOME/Library/Application Support/uv/</code> to <code>$PATH</code>. IIRC, <code>rye</code> prompts you to use shims.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-29 22:47</div>
+            <div class="timeline-body"><p>Tool installation places binaries entry points according to the XDG specification on all platforms https://github.com/astral-sh/uv/blob/13b0beb56fdc607c1f38d820dbf8c95c8fd0ce84/crates/uv-tool/src/lib.rs#L264-L275</p>
+<p>But that doesn't mean we need to place the virtual environment there.</p>
+<p>Regardless, I'm leaning towards switching to XDG entirely on macOS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-30 17:05</div>
+            <div class="timeline-body"><p>@zanieb - We still may need something like <code>pipx ensurepath</code> for all this stuff though -- it's not guaranteed that they're on the user PATH IIUC.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-30 22:01</div>
+            <div class="timeline-body"><p>Yeah of course — that's described in #3560 but I'll create a specific issue.</p>
+<p>edit: We should at least do #4671</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4769.html">astral-sh/uv#4769</a> on 2024-07-03 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-03 13:52</div>
+            <div class="timeline-body"><p>I've opened a pull request to support the variable if set https://github.com/astral-sh/uv/pull/4769</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @charliermarsh on 2024-07-30 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-30 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @zanieb by @charliermarsh on 2024-07-30 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5806.html">astral-sh/uv#5806</a> on 2024-08-06 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-20 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tox-dev/platformdirs/issues/269.html">tox-dev/platformdirs#269</a> on 2025-02-06 19:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

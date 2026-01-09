@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Feature Idea] Add column headers to `ruff check --statistics`, to avoid ambiguity - astral-sh/ruff #13717</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Feature Idea] Add column headers to `ruff check --statistics`, to avoid ambiguity</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13717">#13717</a>
+        opened by <a href="https://github.com/NFeruchBCG">@NFeruchBCG</a>
+        on 2024-10-11 16:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NFeruchBCG">@NFeruchBCG</a> on 2024-10-11 16:25</div>
+            <div class="timeline-body"><p>This is a question that can be easily answered, but ideally wouldn't have to be asked if there were column headers.</p>
+<p>Here is an example output to running <code>ruff check --statistics</code></p>
+<pre><code>$ ruff check --statistics
+317     F541    [*] f-string-missing-placeholders
+241     F401    [ ] unused-import
+112     F841    [*] unused-variable
+ 72     F811    [ ] redefined-while-unused
+ 65     F821    [ ] undefined-name
+ 36     E401    [*] multiple-imports-on-one-line
+ 23     E712    [*] true-false-comparison
+ 19     E711    [*] none-comparison
+ 19     E722    [ ] bare-except
+ 18     E721    [ ] type-comparison
+ 10     F405    [ ] undefined-local-with-import-star-usage
+  6     E701    [ ] multiple-statements-on-one-line-colon
+  4     E402    [ ] module-import-not-at-top-of-file
+  4     F403    [ ] undefined-local-with-import-star
+  3     E713    [*] not-in-test
+  3     F522    [*] string-dot-format-extra-named-arguments
+  2     E731    [*] lambda-assignment
+  2     F601    [ ] multi-value-repeated-key-literal
+  2     F632    [*] is-literal
+  2     F901    [*] raise-not-implemented
+  1     E741    [ ] ambiguous-variable-name
+</code></pre>
+<p>For anyone new to using ruff, it's not immediately apparent what each column means.</p>
+<p>Sure, it's reasonable to assume that the first column is the # of occurrences and that the second column is the rule, but what <code>[*]</code> means is unclear. I think having an explicit header row to denote what each column is would make for a better experience :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2024-10-13 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-10-13 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-14 10:34</div>
+            <div class="timeline-body"><p>Just to be clear, <code>[*]</code> means that the violation is fixable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-10-16 10:15</div>
+            <div class="timeline-body"><p>The issue here might be that when the meaning of <code>[*]</code> is unclear to the user, there is currently lacking documentation. The pattern “[*]” in the docs will search for any bracketed (* as wildcard). The CLI help does not seem to mention fixable for —statistics.</p>
+<p>A primary step to closing this issue would be to document the meaning of <code>[*]</code> better in the docs/CLI help.</p>
+<p>Currently, the help message is:</p>
+<pre><code class="language-text">--statistics	Show counts for every rule with at least one violation
+</code></pre>
+<p>With the mention that violations that are fixable are indicated:</p>
+<pre><code class="language-text">--statistics	Show counts for every rule with at least one violation. `[*]` indicates that the violation is fixable with the `--fix` option.
+</code></pre>
+<p>This would also appear in the docs as such. Happy to add the PR.</p>
+<p>A slight downside would be that this is only relevant for the text format, and not for JSON (but imo still the best way to go given the alternatives).</p>
+<p>Note that currently we mimic Flake8's <code>--statistics</code> format and adding a header is a breaking change for users depending on that (although they probably should use the JSON format). Adding “Fixable” as header would make the format less concise, and choosing “Fix” would not be as clear. Adding a line similar to <code>ruff check</code> would still be an option: <code>[*] indicates the violation is fixable with the </code>--fix<code> option.</code></p>
+<p><img src="https://github.com/user-attachments/assets/dbc11170-271b-4b79-8a47-6bb07dd22036" alt="Header fixable" />
+<img src="https://github.com/user-attachments/assets/8c0fbf1a-d6ea-445a-ab4a-1d92916c78ea" alt="Header fix" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-16 10:25</div>
+            <div class="timeline-body"><p>I would prefer a message at the end of the output similar to the <code>ruff check</code> output over extending the help message (it makes it very long)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13774.html">astral-sh/ruff#13774</a> on 2024-10-16 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-02 12:29</div>
+            <div class="timeline-body"><p>This seems to have been resolved by #13774.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-02 12:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

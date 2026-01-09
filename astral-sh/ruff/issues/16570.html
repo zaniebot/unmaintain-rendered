@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`FURB140 `: `reimplemented-starmap` and static type analysis - astral-sh/ruff #16570</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`FURB140 `: `reimplemented-starmap` and static type analysis</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16570">#16570</a>
+        opened by <a href="https://github.com/tpgillam">@tpgillam</a>
+        on 2025-03-08 20:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tpgillam">@tpgillam</a> on 2025-03-08 20:45</div>
+            <div class="timeline-body"><p>A small question/discussion point (relevant as-of ruff 0.9.10 preview). Pertains to how <code>reimplemented-starmap</code> <a href="https://docs.astral.sh/ruff/rules/reimplemented-starmap/">FURB140</a> recommends code that interacts less well with certain static type checkers.</p>
+<p>Consider the following example:</p>
+<pre><code class="language-python">import itertools
+
+
+def moo(x: int, y: str) -&gt; str:
+    return f&quot;{x} {y}&quot;
+
+
+x = [(1, &quot;a&quot;), (2, &quot;b&quot;)]
+y = [(1, &quot;a&quot;, False), (2, &quot;b&quot;, False)]
+
+
+moo_x1 = list(itertools.starmap(moo, x))
+moo_y1 = list(itertools.starmap(moo, y))  # (no pyright error)
+
+moo_x2 = [moo(a, b) for a, b in x]
+moo_y2 = [moo(a, b) for a, b in y]  # ERROR: Expression with type &quot;tuple[int, str, bool]&quot; cannot be assigned...
+</code></pre>
+<ul>
+<li>The creation of <code>moo_y1</code> and <code>moo_y2</code> both fail (expectedly) at runtime.</li>
+<li>pyright 1.1.396 spots the problem with the comprehension. But with starmap pyright can't analyse it.</li>
+</ul>
+<p><code>reimplemented-starmap</code> will want to change the second forms (using the comprehensions) to the first (with starmap). We currently use pyright for static analysis, so from <em>our</em> perspective this suggested change arguably results in more fragile, less verified, code.</p>
+<ul>
+<li>Should we say that FURB140 is good, and that the static type checker needs to be improved? And that it could/should in theory catch this?</li>
+<li>Is this something that should be discussed upstream in <code>refurb</code>? e.g. since ruff's job is just to mirror the rule that's implemented there?</li>
+</ul>
+<p>I've not previously been inclined to disable a ruff rule because I felt that applying it could result in more fragile code. Hence I thought I'd open this up for discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @tpgillam on 2025-03-08 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-14 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-03-14 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`reimplemented-starmap` and static type analysis" to "`FURB140 `: `reimplemented-starmap` and static type analysis" by @MichaReiser on 2025-03-14 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-14 08:21</div>
+            <div class="timeline-body"><p>Thanks for opening this issue. This is very important feedback and getting it before we stabilize rules is very valuable!</p>
+<p>@carljm sorry for pulling you in. Do you know if this is a common limitation or more likely to be specific to pyright?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tpgillam">@tpgillam</a> on 2025-03-14 09:38</div>
+            <div class="timeline-body"><p>Having a peek at the <a href="https://github.com/python/typeshed/blob/5c85697da7c24bb70d72e9883004f2974a3b7e46/stdlib/itertools.pyi#L105C7-L108">typeshed annotations for starmap</a> suggests that the argument types for the callable won't be constrained. (Not sure if other tools might provide more constrained annotations for the stdlib though)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-14 13:58</div>
+            <div class="timeline-body"><p>I doubt that any tools provide special-cased handling of <code>starmap</code>, so I suspect that whatever the typeshed annotations specify is how tools will behave.</p>
+<p>It looks like the typeshed annotation of starmap could be improved using <code>TypeVarTuple</code> sufficiently to catch this case? Not entirely sure without trying it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tpgillam">@tpgillam</a> on 2025-03-14 14:51</div>
+            <div class="timeline-body"><p>Toying around with this a little:</p>
+<pre><code class="language-python">class StarMap[T]:
+    @overload
+    def __init__[*Ts](
+        self, function: Callable[[*Ts], T], iterable: Iterable[tuple[*Ts]]
+    ) -&gt; None: ...
+    @overload
+    def __init__(
+        self, function: Callable[..., T], iterable: Iterable[Iterable[Any]]
+    ) -&gt; None: ...
+    def __init__(
+        self, function: Callable[..., T], iterable: Iterable[Iterable[Any]]
+    ) -&gt; None:
+        self._starmap = itertools.starmap(function, iterable)
+
+    def __iter__(self) -&gt; Self:
+        self._starmap.__iter__()
+        return self
+
+    def __next__(self) -&gt; T:
+        return self._starmap.__next__()
+</code></pre>
+<ul>
+<li>the first overload is a more specific one using a <code>TypeVarTuple</code></li>
+<li>we have to keep the <code>Iterable[Iterable[Any]]</code> case too, so as to support e.g. <code>starmap(moo, [[1, &quot;a&quot;], [2, &quot;b&quot;]]</code> where the type system doesn't know about the elements</li>
+</ul>
+<p>The 'knowably bad' case won't match the new overload, but will still match the second. I'm not sure if there's a way to have the extra constraint without disallowing other statically-unknown but valid uses!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

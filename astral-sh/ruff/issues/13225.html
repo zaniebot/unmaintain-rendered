@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adding `__init__.py` silences `TRY400` (related to relative import) - astral-sh/ruff #13225</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Adding `__init__.py` silences `TRY400` (related to relative import)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13225">#13225</a>
+        opened by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a>
+        on 2024-09-03 08:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2024-09-03 08:44</div>
+            <div class="timeline-body"><p>Consider the following directory:</p>
+<pre><code>.
+└── distutils
+    ├── _log.py
+    └── _msvccompiler.py
+</code></pre>
+<p>with:</p>
+<ul>
+<li><strong><code>distutils/_log.py</code></strong><pre><code class="language-python">import logging
+
+log = logging.getLogger()
+</code></pre>
+</li>
+<li><strong><code>distutils/_msvccompiler.py</code></strong><pre><code class="language-python">from ._log import log
+
+try:
+    i = 1 / 0
+except DivisionByZero as e:
+    log.error(f&quot;raised {e}&quot;)
+</code></pre>
+</li>
+</ul>
+<p>These files generate a <code>TRY400</code> error:</p>
+<pre><code class="language-console">$ ruff check --select TRY400 --isolated --no-cache
+distutils/_msvccompiler.py:6:5: TRY400 Use `logging.exception` instead of `logging.error`
+  |
+4 |     i = 1 / 0
+5 | except DivisionByZero as e:
+6 |     log.error(f&quot;raised {e}&quot;)
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^ TRY400
+  |
+  = help: Replace with `exception`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+$ 
+</code></pre>
+<p>Then add an empty <code>__init__.py</code> file:</p>
+<pre><code>.
+└── distutils
+    ├── __init__.py
+    ├── _log.py
+    └── _msvccompiler.py
+</code></pre>
+<p>It silences the <code>TRY400</code> error, presumably because <code>log</code> is not identified as a <a href="https://docs.python.org/3/library/logging.html#logging.Logger"><code>logging.Logger</code></a> any more:</p>
+<pre><code class="language-console">$ ruff check --select TRY400 --isolated --no-cache
+All checks passed!
+$ 
+</code></pre>
+<p>I may be missing something about Python imports, but I don't understand why ruff fails to take into account the relative import with <code>__init__.py</code>.</p>
+<ul>
+<li>List of keywords you searched for before creating this issue:
+&quot;__init__.py&quot;, &quot;relative import&quot;</li>
+<li>The current Ruff version:
+<code>ruff 0.6.3</code></li>
+</ul>
+<p><strong>EDIT</strong>: added <code>--no-cache</code> to hide <strong>additional complexity</strong> related to the cache</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/distutils/issues/292.html">pypa/distutils#292</a> on 2024-09-03 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Adding an __init__.py file silences error (related to relative import)" to "Adding `__init__.py` silences `TRY400` (related to relative import)" by @DimitriPapadopoulos on 2024-09-03 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-09-04 05:26</div>
+            <div class="timeline-body"><p>This is a weird bug. I think the problem might be in the cache.</p>
+<pre><code class="language-console">❯ ruff check --select=TRY400 .
+_msvcompiler.py:6:5: TRY400 Use `logging.exception` instead of `logging.error`
+  |
+4 |     i = 1 / 0
+5 | except DivisionByZero as e:
+6 |     log.error(f&quot;raised {e}&quot;)
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^ TRY400
+  |
+  = help: Replace with `exception`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>Now, I added the <code>__init__.py</code> file.</p>
+<pre><code class="language-console">❯ ruff check --select=TRY400 .
+_msvcompiler.py:6:5: TRY400 Use `logging.exception` instead of `logging.error`
+  |
+4 |     i = 1 / 0
+5 | except DivisionByZero as e:
+6 |     log.error(f&quot;raised {e}&quot;)
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^ TRY400
+  |
+  = help: Replace with `exception`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+
+❯ ruff check --select=TRY .   
+All checks passed!
+
+❯ ruff check --select=TRY400 .
+_msvcompiler.py:6:5: TRY400 Use `logging.exception` instead of `logging.error`
+  |
+4 |     i = 1 / 0
+5 | except DivisionByZero as e:
+6 |     log.error(f&quot;raised {e}&quot;)
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^ TRY400
+  |
+  = help: Replace with `exception`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+
+❯ ruff check --select=TRY400 --preview . 
+All checks passed!
+
+❯ ruff check --select=TRY400 --isolated .
+_msvcompiler.py:6:5: TRY400 Use `logging.exception` instead of `logging.error`
+  |
+4 |     i = 1 / 0
+5 | except DivisionByZero as e:
+6 |     log.error(f&quot;raised {e}&quot;)
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^ TRY400
+  |
+  = help: Replace with `exception`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>There's no config file in the directory nor any of it's parent directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-09-04 05:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2024-09-04 05:55</div>
+            <div class="timeline-body"><p>To be clear, in my example, I always delete the cache with <code>rm -r .ruff_cache</code> before running <code>ruff check</code>. But yes, the cache adds additional complexity, as the last result stored in the cache has an influence on the new result.</p>
+<p>There may be two bugs here, the first one related to relative imports and <code>__init__.py</code>, and the second one related to the effect of cache contents.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2024-09-04 06:06</div>
+            <div class="timeline-body"><p>I took the liberty to edit the initial description to show the bug independently of the effect of the cache, changing:</p>
+<pre><code class="language-console">$ ruff check --select TRY400
+</code></pre>
+<p>to:</p>
+<pre><code class="language-console">$ rm -r .ruff_cache
+$ 
+$ ruff check --select TRY400 --isolated
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-09-04 06:13</div>
+            <div class="timeline-body"><p>I think you meant <code>--no-cache</code> instead of <code>--isolated</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2024-09-04 06:41</div>
+            <div class="timeline-body"><p>I was unaware of <code>--no-cache</code>, I'll add it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> added by @MichaReiser on 2024-09-05 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-05 06:38</div>
+            <div class="timeline-body"><p>The fact that ruff doesn't invalidate the cache when adding/removing an <code>__init__.py</code> is a known limitation, see https://github.com/astral-sh/ruff/issues/5449.</p>
+<p>Before adding an <code>__init__.py</code>,<code>distutils</code> is a namespace package and Ruff seems to ignore the <code>log</code> import? Adding the <code>__init__.py</code> makes <code>distutils</code> a regular package and Ruff now correctly handles the <code>log</code> import, except that it can't tell that <code>_log.log</code> is an alias for <code>log</code> because Ruff has no multifile analysis support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-05 06:57</div>
+            <div class="timeline-body"><p>Looking at the code:</p>
+<ul>
+<li>Without an <code>__init__.py</code> we end up in https://github.com/astral-sh/ruff/blob/b15e9e6e059b79f2422119ba9b2d5e2be70852f6/crates/ruff_python_semantic/src/analyze/logging.rs#L58-L72</li>
+<li>With an <code>__init__.py</code> we end up in https://github.com/astral-sh/ruff/blob/b15e9e6e059b79f2422119ba9b2d5e2be70852f6/crates/ruff_python_semantic/src/analyze/logging.rs#L38-L56</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-05 07:07</div>
+            <div class="timeline-body"><p>Okay. The &quot;root cause&quot; is that <code>self.module.qualified_name</code> returns <code>None</code> for a namespace package</p>
+<p>https://github.com/astral-sh/ruff/blob/58c641c92faf345aa1065659316af41734c135c7/crates/ruff_python_semantic/src/model.rs#L827-L831</p>
+<p>The package comes all the way from</p>
+<p>https://github.com/astral-sh/ruff/blob/73160dc8b68428de19f8ee599e224455f49886e4/crates/ruff/src/commands/check.rs#L53-L58</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-09-05 07:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13519.html">astral-sh/ruff#13519</a> on 2024-09-26 06:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

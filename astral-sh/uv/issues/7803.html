@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug uv applications with Visual Studio Code - astral-sh/uv #7803</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Debug uv applications with Visual Studio Code</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7803">#7803</a>
+        opened by <a href="https://github.com/AndreuCodina">@AndreuCodina</a>
+        on 2024-09-30 05:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2024-09-30 05:30</div>
+            <div class="timeline-body"><p>You can use Python or a Python tool (such as <code>.env/bin/fastapi</code>) to debug an application in Visual Studio Code. You just have to add a <code>.vscode/launch.json</code> file with the configuration. For example, you set a breakpoint and run a FastAPI application with <code>.venv/bin/fastapi dev src/main.py</code>.</p>
+<p>I've prepared a demo: https://github.com/AndreuCodina/api-to-debug</p>
+<p>The issue is this is not possible with <code>uv</code>. Therefore, if you update the configuration to:</p>
+<pre><code class="language-json">{
+    &quot;version&quot;: &quot;0.2.0&quot;,
+    &quot;configurations&quot;: [
+      {
+        &quot;name&quot;: &quot;api&quot;,
+        &quot;type&quot;: &quot;debugpy&quot;,
+        &quot;request&quot;: &quot;launch&quot;,
+        &quot;program&quot;: &quot;uv&quot;,
+        &quot;args&quot;: [
+          &quot;run&quot;,
+          &quot;fastapi&quot;,
+          &quot;dev&quot;,
+          &quot;src/main.py&quot;
+        ],
+        &quot;console&quot;: &quot;integratedTerminal&quot;,
+        &quot;justMyCode&quot;: false,
+        &quot;preLaunchTask&quot;: &quot;uv-sync&quot;
+      }
+    ]
+  }
+</code></pre>
+<p>You'll see the next error: <code>[Errno 2] No such file ot directory: '/Users/me/api-to-debug/uv'</code></p>
+<p>This issue is also related to https://github.com/astral-sh/uv/issues/5903 because when <code>uv</code> has a task runner, it should provide debug capabilities. I've done tests with <code>poe</code>, but the breakpoints were ignored. Maybe the tool <code>fastapi</code> (@tiangolo) is doing some special to provide debug capabilities.</p>
+<p><strong>uv:</strong> 0.4.17
+<strong>OS:</strong> MacOS 15.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-30 14:01</div>
+            <div class="timeline-body"><p>Sounds like you need to provide the full path to <code>uv</code>? It looks like it's searching for it in your project (and for FastAPI, you show a relative path within the project)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-30 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2024-09-30 15:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Sounds like you need to provide the full path to <code>uv</code>? It looks like it's searching for it in your project (and for FastAPI, you show a relative path within the project)</p>
+</blockquote>
+<p>When you do that, you get the error <code>source code string cannot contain null bytes</code>. In addition, each OS has its own path (<code>/opt/homebrew/bin/uv</code> on MacOS if you installed it using <code>brew</code>, <code>/usr/local/bin/uv</code> on Linux, etc.).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-30 15:45</div>
+            <div class="timeline-body"><p>Have you tried creating a symlink to the <code>uv</code> binary in your project?</p>
+<p>I'm not quite sure what you expect us to change in uv here — this seems like a VS Code usage question</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2024-09-30 17:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Have you tried creating a symlink to the <code>uv</code> binary in your project?</p>
+<p>I'm not quite sure what you expect us to change in uv here — this seems like a VS Code usage question</p>
+</blockquote>
+<p>Well, I think it's about how uv is integrated in all IDEs and it's very important: you need to debug code and tests with your IDE. I don't know what's the solution, but for example, the tool https://fastapi.tiangolo.com/fastapi-cli/ provides debug integration.</p>
+<p>The symlink doesn't work:</p>
+<pre><code class="language-bash">$ ln -s /usr/local/bin/uv .venv/bin/uv
+
+$ .venv/bin/uv --help
+...
+</code></pre>
+<p>Error in VS Code: <code>source code string cannot contain null bytes</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhilHem">@PhilHem</a> on 2024-10-04 08:07</div>
+            <div class="timeline-body"><p>VSCode can only run python modules with the module option, as far as I've seen. One workaround for now that I use is to just run <code>uv add uv</code>. Then it works. It would be nicer though to not have uv itself in the dependencies.</p>
+<p>EDIT: Ok this is not entirely true. It seems to be able to run the script from the launch file, but at least in my case, debugpy does not seem to properly attach to the script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 21:59</div>
+            <div class="timeline-body"><p>(Not sure this is actionable for us)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-21 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8558.html">astral-sh/uv#8558</a> on 2024-10-25 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/markwitt1">@markwitt1</a> on 2024-11-29 13:50</div>
+            <div class="timeline-body"><p>Any update on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michelkok">@michelkok</a> on 2024-11-29 16:06</div>
+            <div class="timeline-body"><p>I stumbled upon this issue as well. My issue was resolved using <a href="https://stackoverflow.com/a/66971688/18276367">this</a> SO answer. This is how you can use uv with launch.json.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YanSte">@YanSte</a> on 2024-12-22 17:16</div>
+            <div class="timeline-body"><p>I'm posting this here for those who want to use the FastAPI launcher.</p>
+<p>Note: Using uv didn't work, but that give the same results as using the FastAPI module.</p>
+<pre><code class="language-json">{
+  &quot;version&quot;: &quot;0.0.1&quot;,
+  &quot;configurations&quot;: [
+    {
+      &quot;name&quot;: &quot;API:DEV&quot;,
+      &quot;type&quot;: &quot;debugpy&quot;,
+      &quot;request&quot;: &quot;launch&quot;,
+      &quot;module&quot;: &quot;fastapi&quot;,
+      &quot;cwd&quot;: &quot;${workspaceFolder}/api/api/&quot;, # Edit path where main.py
+      &quot;args&quot;: [
+        &quot;dev&quot; # Dev mode
+      ],
+      &quot;justMyCode&quot;: false,
+      &quot;env&quot;: {
+        &quot;ENVIRONMENT&quot;: &quot;dev&quot;
+      }
+    },    
+    {
+      &quot;name&quot;: &quot;API:PROD&quot;,
+      &quot;type&quot;: &quot;debugpy&quot;,
+      &quot;request&quot;: &quot;launch&quot;,
+      &quot;module&quot;: &quot;fastapi&quot;,
+      &quot;cwd&quot;: &quot;${workspaceFolder}/api/api/&quot;,  # Edit path where main.py
+      &quot;args&quot;: [
+        &quot;run&quot; # Prod mode
+      ],
+      &quot;justMyCode&quot;: false,
+      &quot;env&quot;: {
+        &quot;ENVIRONMENT&quot;: &quot;prod&quot;
+      }
+    }, 
+  ]
+}
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xavriley">@xavriley</a> on 2025-01-20 14:19</div>
+            <div class="timeline-body"><p>For those using a venv created with <code>uv venv</code>:</p>
+<ol>
+<li>Open the Command Palette (shift + apple + p)</li>
+<li>select &quot;Python: Select Interpreter&quot;</li>
+<li>select the python version at <code>.venv/bin/python</code></li>
+</ol>
+<p>This works with the VSCode debugger</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kelvincesar">@kelvincesar</a> on 2025-03-05 22:47</div>
+            <div class="timeline-body"><p>I could debug using this python env extension: https://marketplace.visualstudio.com/items?itemName=teticio.python-envy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brant-qai">@brant-qai</a> on 2025-04-03 18:26</div>
+            <div class="timeline-body"><p>FYI for me, setting the Interpreter to the bin/python in the virtualenv didn't work, but selecting the .venv folder itself did - vscode seemed to understand that meant &quot;use this venv&quot; and all was well from there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tremu">@tremu</a> on 2025-07-08 19:01</div>
+            <div class="timeline-body"><blockquote>
+<p>FYI for me, setting the Interpreter to the bin/python in the virtualenv didn't work, but selecting the .venv folder itself did - vscode seemed to understand that meant &quot;use this venv&quot; and all was well from there.</p>
+</blockquote>
+<p>you just saved my bacon tysm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lambdakris">@lambdakris</a> on 2025-08-26 17:34</div>
+            <div class="timeline-body"><p>I was able to debug a Streamlit app with an environment managed by UV using the following VS Code <code>launch.json</code>.</p>
+<pre><code>{
+    &quot;version&quot;: &quot;0.2.0&quot;,
+    &quot;configurations&quot;: [
+        {
+            &quot;name&quot;: &quot;Streamlit Debugger&quot;,
+            &quot;type&quot;: &quot;debugpy&quot;,
+            &quot;request&quot;: &quot;launch&quot;,
+            &quot;python&quot;: &quot;.venv/bin/python&quot;,
+            &quot;module&quot;: &quot;streamlit&quot;,
+            &quot;args&quot;: [&quot;run&quot;, &quot;app/frontend/main.py&quot;, &quot;--server.address&quot;, &quot;localhost&quot;, &quot;--server.port&quot;, &quot;8501&quot;]
+        }
+    ]
+}
+</code></pre>
+<p>The &quot;secret&quot; is the setting <code>&quot;python&quot;: &quot;.venv/bin/python&quot;</code> which points the debugger to use the python for the UV managed venv (UV by default creates a venv in <code>{projectDir}/.venv</code>) and which picks up any packages etc available in the venv. As far as I can tell, the path <code>.venv/bin/python</code> should be constant across os/platforms when using UV, and you can always <a href="https://docs.astral.sh/uv/pip/environments/#using-arbitrary-python-environments">customize the venv path for UV</a> if necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../microsoft/vscode/issues/270323.html">microsoft/vscode#270323</a> on 2025-11-20 08:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yslbit">@yslbit</a> on 2025-11-26 03:32</div>
+            <div class="timeline-body"><blockquote>
+<p>For those using a venv created with <code>uv venv</code>:</p>
+<ol>
+<li>Open the Command Palette (shift + apple + p)</li>
+<li>select &quot;Python: Select Interpreter&quot;</li>
+<li>select the python version at <code>.venv/bin/python</code></li>
+</ol>
+<p>This works with the VSCode debugger</p>
+</blockquote>
+<p>Thanks, for the third step, i succeeded when i selected  &quot;.venv/bin/python3&quot; instead of &quot;.venv/bin/python&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamiekt">@jamiekt</a> on 2025-12-11 14:40</div>
+            <div class="timeline-body"><p>Hi folks,
+The solutions here work when the virtualenv created by uv is in a known location. However, when I use <code>uv run script.py</code> uv will create an ephemeral environment. This is useful because I'm declaring dependencies in my script as described at https://docs.astral.sh/uv/guides/scripts/#declaring-script-dependencies</p>
+<p>I'm keen to find a way that I can run my script using <code>uv run</code> while still using the Code/Cursor debugger.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow a field's type to be different than the value parser type - clap-rs/clap #3912</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow a field's type to be different than the value parser type</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/3912">#3912</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2022-07-12 14:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2022-07-12 14:33</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.2.8</p>
+<h3>Describe your use case</h3>
+<p>Some value parsers (<code>Count</code>, <code>SetTrue</code>, <code>SetFalse</code>) only support one specific data type but the user might want to support a different user type.</p>
+<p>For example, the following <code>parse(from_flag)</code> test cannot be ported to <code>value_parser</code></p>
+<pre><code class="language-rust">#[test]
+fn non_bool_type_flag() {
+    fn parse_from_flag(b: bool) -&gt; std::sync::atomic::AtomicBool {
+        std::sync::atomic::AtomicBool::new(b)
+    }
+
+    #[derive(Parser, Debug)]
+    struct Opt {
+        #[clap(short, long, parse(from_flag = parse_from_flag))]
+        alice: std::sync::atomic::AtomicBool,
+        #[clap(short, long, parse(from_flag))]
+        bob: std::sync::atomic::AtomicBool,
+    }
+
+    let falsey = Opt::try_parse_from(&amp;[&quot;test&quot;]).unwrap();
+    assert!(!falsey.alice.load(std::sync::atomic::Ordering::Relaxed));
+    assert!(!falsey.bob.load(std::sync::atomic::Ordering::Relaxed));
+}
+</code></pre>
+<p>(a <code>SetConst</code> might also work to a degree)</p>
+<p>Others might want a different count type than <code>u8</code>.</p>
+<p>Someone even brought up processing a <code>Vec&lt;String&gt;</code> into a <code>String</code>, see https://github.com/clap-rs/clap/discussions/3905#discussioncomment-3125768</p>
+<h3>Describe the solution you'd like</h3>
+<p>The user should be able to</p>
+<ul>
+<li>Specify the <code>ValueParser</code> output type to use with <code>get_one</code> / <code>get_many</code><ul>
+<li>Defaults to the field's type</li>
+</ul>
+</li>
+<li>Optionally a conversion function from value parser type to field type<ul>
+<li>Defaults to <code>TryInto</code> (or <code>Into</code>?)</li>
+</ul>
+</li>
+</ul>
+<p>This will only be called when extracting the fields and will only be called once.  We will not do a proper validation step for this.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2022-07-12 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-07-12 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2022-07-12 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-12 14:34</div>
+            <div class="timeline-body"><p>What would we call these new attributes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chipsenkbeil">@chipsenkbeil</a> on 2022-07-12 16:46</div>
+            <div class="timeline-body"><p>If we use serde as an example, it has <a href="https://serde.rs/container-attrs.html#into"><code>into</code></a>, <a href="https://serde.rs/container-attrs.html#from"><code>from</code></a>, and <a href="https://serde.rs/container-attrs.html#try_from"><code>try_from</code></a> as attributes at the struct level for converting to a different type before serializing and deserializing. So my thought would be to use similar naming for the conversion function that you can place on an individual field. Heck, you could just have it use the corresponding trait implementations if you wanted something simpler than an arbitrary function.</p>
+<p>In terms of output type, would just having <code>#[clap(type = &quot;...&quot;)]</code> be too simple?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/itsxaos">@itsxaos</a> on 2022-08-23 20:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Others might want a different count type than <code>u8</code>.</p>
+</blockquote>
+<p>I'm the guy that wants a different count type. Specifically, I want a bigger type because I think <code>u8</code> is too small.</p>
+<p>I'm trying to rewrite something I wrote in Python with <a href="https://click.palletsprojects.com/">click</a> in Rust and it bothers me that the counted option only goes up to 255 because not only have I gone over that when using the Python version of my program, but it was actually quite ergonomic.</p>
+<p>I understand that it's a rather niche use-case and maybe <code>u8</code> is the right &quot;default&quot;, but it also seems there's no way at all (using clap) to implement a counted option &quot;manually&quot;. (I'm probably wrong on that because I only tried with the Derive API, but I did try for quite a while.)</p>
+<p>Also, I found it a little surprising that the count just saturates when it would exceed 255.
+That doesn't seem unreasonable given the alternatives, but it should probably be documented somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-23 21:15</div>
+            <div class="timeline-body"><blockquote>
+<p>not only have I gone over that when using the Python version of my program</p>
+</blockquote>
+<p>Could you expand on use case when you go over 255?  What range are you typically in?</p>
+<blockquote>
+<p>but it was actually quite ergonomic.</p>
+</blockquote>
+<p>I assume a &quot;not&quot; was missing in here.  What ergonomic problems have you had with <code>u8</code>?</p>
+<blockquote>
+<p>it also seems there's no way at all (using clap) to implement a counted option &quot;manually&quot;</p>
+</blockquote>
+<p>We have not opened ArgAction up for expansion yet as we work through how it should behave internall first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/itsxaos">@itsxaos</a> on 2022-08-23 23:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I assume a &quot;not&quot; was missing in here. What ergonomic problems have you had with <code>u8</code>?</p>
+</blockquote>
+<p>No I did mean it like that, it was surprisingly ergonomic. It's a bit silly to go into this much detail because to be honest, I think it happened to be useful once, maybe twice.
+But hey, here goes:</p>
+<p>To keep it simple, let's say the command in question prints log entries for a given time span. Without any arguments, it prints all the entries that occurred that day, and if provided with <code>-l</code> / <code>--last</code> all the entries that occurred the <em>last</em> day (i.e. yesterday), <code>-ll</code> entries from the day before yesterday, and so on. It also takes an argument for specifying the time span (i.e. <code>week</code> or <code>month</code>), so that it will show entries from this (or last, etc.) week or month instead.</p>
+<p>It's a somewhat unusual way of doing things but it has proven to be very convenient, because usually I don't go more than 5 days back (<code>-lllll</code>), and if I do, I'll go by weeks instead.
+However, at some point it did occur that I wanted to view the entries from ~450 days back and I was surprised by how ergonomic it was, because…</p>
+<p>Recent(ish) versions of bash and zsh make it very easy to enter a specific (large) number of a character.
+By holding Alt and typing in a number (or by pressing Esc before each digit), the shell can be made to enter the next key that many times. So, if I hold Alt and type <code>10</code>, release Alt, and then press <code>a</code>, I get <code>aaaaaaaaaa</code>.
+(Two notes: a) bash even shows the number while it's being entered and b) on windows, it probably doesn't work with the numpad number keys).</p>
+<p>Doing that was more convenient than calculating and looking up the date that works out to.
+And with the 450 <code>l</code>s, &quot;scrolling&quot; through the days is actually also more convenient than if I was using a numeric argument: just doing up-arrow, <code>l</code> and enter (or backspace and enter) instead of having to edit the number.</p>
+<blockquote>
+<p>Could you expand on use case when you go over 255? What range are you typically in?</p>
+</blockquote>
+<p>So that's the use case where it happened to be useful to go over 255. I'll freely admit it's unusual and uncommon, and far outside the typical range, which is less than 5, but I think it shows that it's not unthinkable and (occasionally) reasonable to do so.</p>
+<p>255 characters really isn't that many and, if it were <code>u16</code>, 65535 is more than can fit on any reasonable terminal window. As far as I understand there's also no significant costs to having it be the bigger type.</p>
+<p>Obviously it's a matter of compatibility now, but I think it's rather arbitrary to limit it to <code>u8</code> and ideally it really should be a <code>u16</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-24 02:46</div>
+            <div class="timeline-body"><p>@itsxaos at this point we should probably move this discussion some place else.  Mind opening a new issue if you want this changed?  This issue is specifically about allowing a type in a struct's field that is different than the type of the value parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-24 02:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Some value parsers (Count, SetTrue, SetFalse) only support one specific data type but the user might want to support a different user type.</p>
+</blockquote>
+<p>As an update, we've loosened this restriction for SetTrue/SetFalse in the 4.0 release, see  https://github.com/clap-rs/clap/pull/4095 for the latest version of it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4347.html">clap-rs/clap#4347</a> on 2022-10-04 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3864.html">clap-rs/clap#3864</a> on 2022-10-24 01:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4417.html">clap-rs/clap#4417</a> on 2022-10-24 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4679.html">clap-rs/clap#4679</a> on 2023-02-06 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3114.html">clap-rs/clap#3114</a> on 2023-02-13 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4830.html">clap-rs/clap#4830</a> on 2023-04-10 20:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

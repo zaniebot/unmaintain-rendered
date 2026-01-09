@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Having tool.uv.sources to use a &quot;find-links&quot; directive instead of direct indexes or urls - astral-sh/uv #12238</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Having tool.uv.sources to use a &quot;find-links&quot; directive instead of direct indexes or urls</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12238">#12238</a>
+        opened by <a href="https://github.com/jackmedda">@jackmedda</a>
+        on 2025-03-17 11:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jackmedda">@jackmedda</a> on 2025-03-17 11:52</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have been preparing a pyproject.toml that depends on <a href="https://www.dgl.ai/pages/start.html">DGL</a> and I want the installation to be platform-specific (as DGL does not support Windows anymore and the last supported version is 2.2.1, while on Linux the installation depends on the corresponding PyTorch version).
+Due to the installation process similar to PyTorch, I found out the documentation section on <a href="https://docs.astral.sh/uv/guides/integration/pytorch/">PyTorch integration</a> and replicated the same configuration.</p>
+<p>However, I noticed only later that DGL suggest using the pip --find-links (-f) parameter to find the correct installation, as uv output when I tried to use uv.tool.sources with uv.tool.index was</p>
+<pre><code>hint: An index URL (https://data.dgl.ai/wheels/torch-2.4/repo.html)
+could not be queried due to a lack of valid authentication credentials
+(403 Forbidden).</code></pre>
+<p>I don't necessarily need DGL to work on a CUDA-environment as it is not used for heavy operations or training, so the result envisioned by the following example should be enough.</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+dependencies = [
+    &quot;dgl&gt;=2.2.0&quot;,
+]
+
+[tool.uv.sources]
+dgl = [
+  { find_links = &quot;https://data.dgl.ai/wheels/repo.html&quot;, marker = &quot;platform_system == 'Windows'&quot; },
+  { find_links = &quot;https://data.dgl.ai/wheels/torch-2.4/repo.html&quot;, marker = &quot;platform_system != 'Windows'&quot; },
+]
+</code></pre>
+<p>I didn't find any way in the documentation to achieve the same result, and using <code>path</code> or <code>url</code> does not help, as they expect a specific path to a source distribution file.
+Instead, I would like uv to resolve automatically the dgl version as --find-links would do.
+Could you help me?</p>
+<h3>Platform</h3>
+<p>Windows 11 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.6.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @jackmedda on 2025-03-17 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-18 02:12</div>
+            <div class="timeline-body"><p>Yeah this doesn't exist yet. The way we plan to do it is: allow <code>--find-links</code> style entries in <code>[[tool.uv.index]]</code>. Then you'd reference it as any other index in <code>tool.uv.sources</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-18 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jackmedda">@jackmedda</a> on 2025-03-18 13:48</div>
+            <div class="timeline-body"><p>Thanks for your reply. I'll opt for another solution and wait for this feature to be included.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jackmedda on 2025-03-18 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lvvittor">@lvvittor</a> on 2025-06-20 22:44</div>
+            <div class="timeline-body"><p>hey @jackmedda im having the same problem. Could you tell me how you solve it? thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jackmedda">@jackmedda</a> on 2025-06-21 12:24</div>
+            <div class="timeline-body"><p>Hi @lvvittor , I found out that using uv <a href="https://docs.astral.sh/uv/concepts/indexes/#flat-indexes">flat indexes</a> seem to do the exact same thing. We are then definying multiple uv sources, an index for each one and specifying <code>format = &quot;flat&quot;</code>. Windows still has issues though, but it's a DGL concern and uv has nothing to do with it. Below an example:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+dgl = [
+  { index = &quot;dgl-win-cu121&quot;, marker = &quot;sys_platform == 'win32' and extra == 'cu121'&quot; },
+  { index = &quot;dgl-cu121&quot;, marker = &quot;sys_platform != 'win32' and extra == 'cu121' and extra != 'cu124'&quot; },
+  { index = &quot;dgl-cpu&quot;, marker = &quot;sys_platform != 'win32' and extra == 'cpu' and extra != 'cu121' and extra != 'cu124'&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;dgl-win-cu121&quot;
+url = &quot;https://data.dgl.ai/wheels/cu121/repo.html&quot;
+format = &quot;flat&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;dgl-cu121&quot;
+url = &quot;https://data.dgl.ai/wheels/torch-2.3/cu121/repo.html&quot;
+format = &quot;flat&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;dgl-cpu&quot;
+url = &quot;https://data.dgl.ai/wheels/torch-2.3/repo.html&quot;
+format = &quot;flat&quot;
+explicit = true
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv doesn't correctly checkout Git dependencies with Git LFS assets - astral-sh/uv #3312</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv doesn't correctly checkout Git dependencies with Git LFS assets</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3312">#3312</a>
+        opened by <a href="https://github.com/sydduckworth">@sydduckworth</a>
+        on 2024-04-29 14:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sydduckworth">@sydduckworth</a> on 2024-04-29 14:41</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I'm working on a project that depends on a private Git repository where some of the project's assets are stored in Git LFS (in this case Pytorch models).</p>
+<p>My project uses Rye as its package manager. When configured to use Pip, everything works as expected. When configured to use uv, the LFS objects aren't checked out correctly.</p>
+<p>I assume a blocker for uv supporting LFS is the fact that the <code>git2</code> crate also doesn't support LFS (rust-lang/git2-rs#956) and there's no indication support will be added in the future.</p>
+<p><strong>Platform:</strong> Ubuntu 22.04
+<strong>uv version:</strong> 0.1.39</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @konstin on 2024-04-29 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vfilter">@vfilter</a> on 2024-06-13 05:22</div>
+            <div class="timeline-body"><p>Same issue here. Makes uv unfortunately unusable for us since we have lfs in a private github repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-13 12:45</div>
+            <div class="timeline-body"><p>We actually stopped using the git2 crate so we may be able to support this easier now? cc @ibraheemdev</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gusutabopb">@gusutabopb</a> on 2024-08-21 07:34</div>
+            <div class="timeline-body"><p>Still running into this issue using uv 0.3.0.</p>
+<p><code>uv</code> fails due to <code>git lfs</code> failing due to &quot;smudge errors&quot;.</p>
+<p>Sample command:</p>
+<pre><code>uv pip install git+https://user@company-git-host.com/repo.git
+</code></pre>
+<p><code>pip</code> works fine, so my current workaround is:</p>
+<pre><code>uv pip install pip
+uv run pip install git+https://user@company-git-host.com/repo.git
+</code></pre>
+<p>Cloning the repo locally and then installing from a local path works fine too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vfilter">@vfilter</a> on 2024-09-01 18:01</div>
+            <div class="timeline-body"><p>Adding another workaround here. Running <code>git lfs install --force --skip-smudge</code> before installing the dependency from your private repo did solve it for us. I was able to install with <code>uv add</code> after that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-09-03 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../prefix-dev/pixi/issues/2000.html">prefix-dev/pixi#2000</a> on 2024-09-16 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/falckt">@falckt</a> on 2024-09-18 08:44</div>
+            <div class="timeline-body"><p>Just for reference, I tried setting the respective settings @vfilter suggested in https://github.com/astral-sh/uv/issues/3312#issuecomment-2323443935 as environment variables</p>
+<pre><code class="language-command">$ env | grep -e ^GIT_CONFIG
+GIT_CONFIG_KEY_0=filter.lfs.smudge
+GIT_CONFIG_VALUE_0=git-lfs smudge --skip -- %f
+GIT_CONFIG_COUNT=1
+</code></pre>
+<p>which is also picked up by git</p>
+<pre><code>$ git config --get filter.lfs.smudge         
+git-lfs smudge --skip -- %f
+</code></pre>
+<p>However when running <code>uv sync --upgrade-package &lt;my-package-in-git&gt;</code> I still get the smudge filter error.</p>
+<p>@zanieb could it be that uv does not pass on the environment variables to the underlying git process? (Setting them via the config file works).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/falckt">@falckt</a> on 2024-09-18 09:30</div>
+            <div class="timeline-body"><p>No clue how, but setting the environment variable <code>GIT_LFS_SKIP_SMUDGE=1</code> does have the desired effect.</p>
+<p>This old comment suggests that certain local checkouts might trigger these problems https://github.com/git-lfs/git-lfs/issues/2518#issuecomment-863218693. Not sure whether that is the case here though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xela-95">@xela-95</a> on 2024-10-02 13:11</div>
+            <div class="timeline-body"><p>Hi! This issue is blocking me from adopting pixi, is there any news on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alan-cooney-dsit">@alan-cooney-dsit</a> on 2024-10-06 08:15</div>
+            <div class="timeline-body"><blockquote>
+<p>No clue how, but setting the environment variable <code>GIT_LFS_SKIP_SMUDGE=1</code> does have the desired effect.</p>
+</blockquote>
+<p>This just turns off getting LFS assets btw.</p>
+<p>Also very keen for this feature</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-06 15:09</div>
+            <div class="timeline-body"><p>Someone want to share a minimal reproduction for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2024-10-06 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/grebnetiew">@grebnetiew</a> on 2024-10-06 17:46</div>
+            <div class="timeline-body"><p>Sure.</p>
+<pre><code>$ uv pip install git+https://github.com/grebnetiew/lfs-py.git
+Updating https://github.com/grebnetiew/lfs-py.git (HEAD)
+error: Git operation failed
+  Caused by: process didn't exit successfully: `git reset --hard 1abf996d38d769939d2a4f5e06d1afc8e8a91817` (exit status: 128)
+--- stderr
+Downloading datafile.bin (39 B)
+Error downloading object: datafile.bin (4502c72): Smudge error: Error downloading datafile.bin (4502c722f9bcf5f68951d9b41b74c2de404de55cea347c92b0a7d608cd3d9c88): error transferring &quot;4502c722f9bcf5f68951d9b41b74c2de404de55cea347c92b0a7d608cd3d9c88&quot;: [0] remote missing object 4502c722f9bcf5f68951d9b41b74c2de404de55cea347c92b0a7d608cd3d9c88
+
+Errors logged to '/home/erieke/.cache/uv/git-v0/checkouts/634788a817b48cd6/1abf996/.git/lfs/logs/20241006T194309.74056189.log'.
+Use `git lfs logs last` to view the log.
+error: external filter 'git-lfs filter-process' failed
+fatal: datafile.bin: smudge filter lfs failed
+</code></pre>
+<p>The workaround above works, though it might not actually get the lfs-file I checked in (I didn't check). Packages that use LFS likely need their LFS files ;)</p>
+<pre><code>$ GIT_LFS_SKIP_SMUDGE=1 uv pip install git+https://github.com/grebnetiew/lfs-py.git
+ Updated https://github.com/grebnetiew/lfs-py.git (1abf996)
+Resolved 1 package in 2.63s
+   Built lfs-py @ git+https://github.com/grebnetiew/lfs-py.git@1abf996d38d769939d2a4f5e06d1afc8e8a91817
+Prepared 1 package in 643ms
+Installed 1 package in 0.86ms
+ + lfs-py==0.1.0 (from git+https://github.com/grebnetiew/lfs-py.git@1abf996d38d769939d2a4f5e06d1afc8e8a91817)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sydduckworth">@sydduckworth</a> on 2024-10-09 19:52</div>
+            <div class="timeline-body"><p>Another workaround option if you need LFS for other repos and don't want to manually set environment variables:</p>
+<p>Create a new file <code>~/.gitconfig-nolfs.inc</code>:</p>
+<pre><code>[filter &quot;lfs&quot;]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge --skip -- %f
+    process = git-lfs filter-process --skip
+    required = true
+</code></pre>
+<p>Create or modify <code>~/.gitconfig</code>:</p>
+<pre><code>[includeIf &quot;gitdir:~/.cache/uv/**&quot;]
+    path = ~/.gitconfig-nolfs.inc
+</code></pre>
+<p>This updates your Git config to skip LFS just for uv dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ami-iit/comodo/pulls/23.html">ami-iit/comodo#23</a> on 2024-10-15 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/git2-rs/issues/956.html">rust-lang/git2-rs#956</a> on 2024-10-16 00:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9451.html">astral-sh/uv#9451</a> on 2024-11-26 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SZRabinowitz">@SZRabinowitz</a> on 2024-12-17 19:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Another workaround option if you need LFS for other repos and don't want to manually set environment variables:</p>
+<p>Create a new file <code>~/.gitconfig-nolfs.inc</code>:</p>
+<pre><code>[filter &quot;lfs&quot;]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge --skip -- %f
+    process = git-lfs filter-process --skip
+    required = true
+</code></pre>
+<p>Create or modify <code>~/.gitconfig</code>:</p>
+<pre><code>[includeIf &quot;gitdir:~/.cache/uv/**&quot;]
+    path = ~/.gitconfig-nolfs.inc
+</code></pre>
+<p>This updates your Git config to skip LFS just for uv dependencies.</p>
+</blockquote>
+<p>Thanks!
+For Windows users, it's similar:</p>
+<pre><code>[includeIf &quot;gitdir/i:~/AppData/Local/uv/&quot;]
+    path = ~/.gitconfig-uv.inc
+</code></pre>
+<p>For anyone else, if these don't work: Get you uv path using command <code>uv cache dir</code> and remove the <code>/cache</code> from the end</p>
+<p>Edit: No need to remove <code>/cache</code> from the end. Just make sure the path ends with <code>/</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sydduckworth">@sydduckworth</a> on 2025-01-06 19:38</div>
+            <div class="timeline-body"><p>I've investigated this a bit more and I think I now understand the actual source of the error.</p>
+<p>When getting a Git revision <code>uv</code> will first fetch the rev to a local repo, then do a local clone to a new directory, then do a hard reset of the cloned repo to the specific revision.
+The last step is what's triggering the LFS error. When the files are being checked out, the LFS smudge filter will try to resolve LFS pointers to actual files, but fails because LFS doesn't know the URL of the upstream remote.</p>
+<p>I think it's possible to fix this by just adding a step where after the initial fetch but before the local clone <code>uv</code> would try to run <code>git lfs fetch &lt;remote&gt; &lt;rev&gt;</code>. This resolves the smudge error because it ensures all of the LFS pointers are present in the Git database when the hard reset happens.</p>
+<p>The biggest issue I see with that approach is that since LFS has to check every file in a revision when fetching, it's possible that for large repositories the overhead could become non-trivial.<br />
+On the other hand since the command would only run if the user has Git LFS installed, it would really only affect the specific subset of users who:</p>
+<ol>
+<li>have Git LFS installed</li>
+<li>are cloning a repository that doesn't use LFS</li>
+<li>are cloning a very large repository</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10335.html">astral-sh/uv#10335</a> on 2025-01-06 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-13 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../descriptinc/audiotools/issues/113.html">descriptinc/audiotools#113</a> on 2025-02-07 23:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../timniederhausen/bw_save_game/issues/1.html">timniederhausen/bw_save_game#1</a> on 2025-02-11 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thesofakillers">@thesofakillers</a> on 2025-04-16 16:10</div>
+            <div class="timeline-body"><p>I seem to be still getting this issue.
+Running on mac M3.
+i've udpated <code>uv</code> with <code>uv self update</code> and <code>git</code> and <code>git-lfs</code> with <code>brew update &amp;&amp; brew upgrade git git-lfs</code></p>
+<p>EDIT: as requested, i've opened a new issue #12938</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-16 16:13</div>
+            <div class="timeline-body"><p>@thesofakillers you'll need to open a new issue with a clear reproduction</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12938.html">astral-sh/uv#12938</a> on 2025-04-18 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thesofakillers">@thesofakillers</a> on 2025-04-18 13:21</div>
+            <div class="timeline-body"><blockquote>
+<p>@thesofakillers you'll need to open a new issue with a clear reproduction</p>
+</blockquote>
+<p><a href="https://github.com/astral-sh/uv/issues/12938">opened</a>! ty</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../StonyBrookNLP/appworld/issues/166.html">StonyBrookNLP/appworld#166</a> on 2025-10-16 05:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

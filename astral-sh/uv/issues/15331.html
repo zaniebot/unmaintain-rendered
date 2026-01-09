@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failure to maintain version - astral-sh/uv #15331</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failure to maintain version</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15331">#15331</a>
+        opened by <a href="https://github.com/afrenkai">@afrenkai</a>
+        on 2025-08-17 19:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/afrenkai">@afrenkai</a> on 2025-08-17 19:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When attempting to use <code>uv pip install -r</code> from a file that contains both <code>datasets</code> (which has an older version of <code>huggingface-hub</code>, <code>0.31.4</code>) and <code>transformers</code> (which has a newer version, <code>0.34.4</code>), the older version persists  no matter what I do. Not sure this is a flaw of uv, or me. I am on a slurm environment, and cannot replicate this behavior on my local linux environment (24.04, or 22.04). Could this be because of the lockfile? I got around this by manually adjusting it.</p>
+<p>For reproducibility, I have a minimal example here.</p>
+<h2>python</h2>
+<pre><code>import huggingface_hub
+print(huggingface_hub.__version__)
+</code></pre>
+<h2>bash</h2>
+<pre><code>#!/bin/bash
+#SBATCH -N 1
+#SBATCH -n 8
+#SBATCH --mem=32g
+#SBATCH -J &quot;hf_hub_test&quot;
+#SBATCH -p short
+#SBATCH -t 12:00:00
+#SBATCH --output=&quot;hf_hub_test%j.txt&quot;
+
+set-e
+#assumes uv is setup, I have a script for it
+CHECK=&quot;uv run check_hf_hub.py&quot;
+output=$($CHECK)
+fname='requirements.txt'
+if [ ! -f &quot;$fname&quot; ]; then
+    echo &quot;no reqs&quot;
+    exit 1
+else
+    echo &quot;reqs found&quot;
+    while read line; do
+        echo &quot;$line&quot;
+        uv pip install -r &quot;$line&quot;
+        echo &quot;$output&quot;
+    done
+fi
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 20.04.6 LTS (GNU/ Linux 5.4.0-216-generic x86_64)</p>
+<h3>Version</h3>
+<p>uv 0.8.11</p>
+<h3>Python version</h3>
+<p>Python 3.12.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @afrenkai on 2025-08-17 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-21 12:47</div>
+            <div class="timeline-body"><p>Have you tried the <code>--upgrade</code> flag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-08-21 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-08-21 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-21 12:49</div>
+            <div class="timeline-body"><p>It sounds like you might be installing with <code>uv pip install -r</code> then undoing it with <code>uv run</code>? hard to say without a simpler example of what you're doing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-21 12:51</div>
+            <div class="timeline-body"><p>Perhaps you want <code>uv run --no-sync</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/afrenkai">@afrenkai</a> on 2025-08-21 17:12</div>
+            <div class="timeline-body"><p><code>--upgrade</code> remedied this, closing. Much appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @afrenkai on 2025-08-21 17:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

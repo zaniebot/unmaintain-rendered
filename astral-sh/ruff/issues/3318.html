@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autofix Error (TID252): autofixing relative imports on namespaced packages causes invalid code and ruff doesn't always know it is invalid - astral-sh/ruff #3318</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Autofix Error (TID252): autofixing relative imports on namespaced packages causes invalid code and ruff doesn't always know it is invalid</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3318">#3318</a>
+        opened by <a href="https://github.com/onerandomusername">@onerandomusername</a>
+        on 2023-03-03 01:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/onerandomusername">@onerandomusername</a> on 2023-03-03 01:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>note: a recreation can be found here: https://github.com/onerandomusername/bugs-ruff-import-autofix/tree/ruff-namespaced-tid252, and a large codebase that uses relative imports can be found here https://github.com/DisnakeDev/disnake/tree/6a1ea9de03671efa60542bdc576e30c10f746a20</p>
+<p>The offending file above is <a href="https://github.com/onerandomusername/bugs-ruff-import-autofix/blob/b1d513316873109c872baeebf878b576849e9d20/solar_system/namespace/rover/__init__.py"><code>solar_system/namespace/rover/__init__.py</code></a>, which has the following code.</p>
+<p><strong>command: <code>ruff . --select TID252 --fix</code></strong></p>
+<pre><code class="language-py">from ... import PLANET
+
+from ...mars import POSITION_FROM_SUN
+</code></pre>
+<p>result (after removing the first line):</p>
+<pre><code class="language-py">from mars import POSITION_FROM_SUN 
+</code></pre>
+<p>Because it is in a namespaced module, ruff fails to understand the namespace and provides the wrong module to the absolute imports--if it provides them at all!</p>
+<p>ruff version: 0.0.253</p>
+<p>Output of the invalid code:</p>
+<pre><code class="language-sh">error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/charliermarsh/ruff/issues/new?title=%5BAutofix%20error%5D
+
+...quoting the contents of `solar_system/namespace/rover/__init__.py`, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../DisnakeDev/disnake/pulls/951.html">DisnakeDev/disnake#951</a> on 2023-03-03 03:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-03 03:51</div>
+            <div class="timeline-body"><p>If I add:</p>
+<pre><code class="language-toml">[tool.ruff]
+namespace-packages = [&quot;solar_system/namespace&quot;]
+</code></pre>
+<p>to <code>./pyproject.toml</code> in the example repo, I get:</p>
+<pre><code class="language-diff">diff --git a/solar_system/namespace/rover/__init__.py b/solar_system/namespace/rover/__init__.py
+index d885330..1c06ef9 100644
+--- a/solar_system/namespace/rover/__init__.py
++++ b/solar_system/namespace/rover/__init__.py
+@@ -1,3 +1,3 @@
+-from ... import PLANET # this causes invalid code, and ruff realises it.
++from solar_system import PLANET # this causes invalid code, and ruff realises it.
+
+-from ...mars import POSITION_FROM_SUN # this is formatted to the wrong module, but ruff doesn't catch it
++from solar_system.mars import POSITION_FROM_SUN # this is formatted to the wrong module, but ruff doesn't catch it
+</code></pre>
+<p>Which seems right, but can you confirm?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-03-03 03:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-03-03 03:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-03 03:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3319.html">astral-sh/ruff#3319</a> on 2023-03-03 03:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-03 05:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-03 05:04</div>
+            <div class="timeline-body"><p>(The syntax error is fixed, so closing, but LMK if you don't see the actual correct behavior after explicitly marking the namespace package.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/onerandomusername">@onerandomusername</a> on 2023-03-03 05:06</div>
+            <div class="timeline-body"><p>With that setting enabled <em>both</em> worked properly, still using 0.0.253. Unfortunately, I tried that setting on disnake and found a separate but related bug. Will open another issue for that one.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

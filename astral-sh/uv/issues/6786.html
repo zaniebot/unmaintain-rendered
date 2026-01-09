@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docs request: Workspaces -- do we add `albatross` to `tool.uv.sources` - astral-sh/uv #6786</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Docs request: Workspaces -- do we add `albatross` to `tool.uv.sources`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/6786">#6786</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2024-08-29 01:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-08-29 01:37</div>
+            <div class="timeline-body"><p>With <code>uv==0.4.0</code> looking at https://docs.astral.sh/uv/concepts/workspaces/#workspace-layouts, it details:</p>
+<ul>
+<li><code>albatross</code> in <code>src</code></li>
+<li><code>bird-feeder</code> in <code>packages/bird-feeder/src</code></li>
+<li><code>seeds</code> in <code>packages/seeds/src</code></li>
+</ul>
+<p>The docs don't mention if:</p>
+<ul>
+<li><code>albatross</code> should be added to <code>tool.uv.sources</code></li>
+<li>If <code>workspace = true</code> is required, and when to use <code>path</code></li>
+</ul>
+<p>The below is what I got working, but it does not match the example shown here: https://docs.astral.sh/uv/concepts/workspaces/#workspace-sources</p>
+<pre><code class="language-toml">[tool.uv.sources]
+bird-feeder = {workspace = true}
+albatross = {workspace = true}
+
+[tool.uv.workspace]
+members = [&quot;packages/*&quot;]
+</code></pre>
+<p>More specifically, <code>albatross = {workspace = true}</code> is not shown in the docs. But when I remove it and run <code>uv lock</code>, I get:</p>
+<pre><code class="language-none">error: Failed to build: `aviary-hotpotqa @ file:///path/to/repo/packages/bird-feeder`
+  Caused by: Failed to parse entry for: `albatross`
+  Caused by: Package is not included as workspace package in `tool.uv.workspace`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 01:40</div>
+            <div class="timeline-body"><p>What do you have in the <code>pyproject.toml</code> for <code>file:///path/to/repo/packages/bird-feeder</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-08-29 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-08-29 01:42</div>
+            <div class="timeline-body"><p>Here is that <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[build-system]
+build-backend = &quot;setuptools.build_meta&quot;
+requires = [&quot;setuptools&gt;=64&quot;, &quot;setuptools_scm&gt;=8&quot;]
+
+[project]
+dependencies = [
+    &quot;albatross&quot;,
+]
+dynamic = [&quot;version&quot;]
+name = &quot;bird-feeder&quot;
+requires-python = &quot;&gt;=3.11&quot;
+
+[tool.ruff]
+extend = &quot;../../pyproject.toml&quot;
+
+[tool.setuptools.packages.find]
+where = [&quot;src&quot;]
+
+[tool.setuptools_scm]
+root = &quot;../..&quot;
+version_file = &quot;src/bird-feeder/version.py&quot;
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 02:05</div>
+            <div class="timeline-body"><p>Cool, so in <em>that</em> <code>pyproject.toml</code>, you should include:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+albatross = { workspace = true }
+</code></pre>
+<p>The sources should be defined wherever the dependencies are included. Does that make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-08-29 02:07</div>
+            <div class="timeline-body"><p>Yeah that makes sense! Thanks for working through it</p>
+<p>I think then we should update the example <code>pyproject.toml</code>'s in https://docs.astral.sh/uv/concepts/workspaces/#getting-started to include that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 02:11</div>
+            <div class="timeline-body"><p>Good idea!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-08-29 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-08-29 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thorbenk">@thorbenk</a> on 2024-10-18 12:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Cool, so in <em>that</em> <code>pyproject.toml</code>, you should include:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+albatross = { workspace = true }
+</code></pre>
+<p>The sources should be defined wherever the dependencies are included. Does that make sense?</p>
+</blockquote>
+<p>OK, that matches up with the source code in https://github.com/astral-sh/uv/blob/main/scripts/workspaces/albatross-virtual-workspace/packages/bird-feeder/pyproject.toml.</p>
+<p>Then I have a question: Is it not OK to move the <code>tool.uv.sources</code> declaration to the root like in this commit: https://github.com/thorbenk/uv-workspaces-question/commit/0ca5611a69c6f5c77ad1d09cb2589291c11974e9</p>
+<p>I want to achieve the following:</p>
+<ul>
+<li>each package does not itself know that it is part of a workspace (actually, each package for me is a git submodule, and released as an independent python package)</li>
+<li>Only the workspace root ties together all packages into a workspace</li>
+</ul>
+<p>Am I misunderstanding the workspace concept?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8302.html">astral-sh/uv#8302</a> on 2024-10-18 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-18 13:41</div>
+            <div class="timeline-body"><p>@thorbenk -- I think that should work because members inherit sources from the root. Did it not work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thorbenk">@thorbenk</a> on 2024-10-18 14:22</div>
+            <div class="timeline-body"><p>@charliermarsh: Sorry, I did not write that clearly.</p>
+<p>Yes, it works with my changes, too.
+However, I was wondering if this was intentional.
+Happy to hear that it is!</p>
+<p>Actually, I was using the setup like above and it was working well for me in an internal project.
+Then today I ported to using the new explicit indexes and I ran into issues, prompting me to wonder whether I was using supported behavior.</p>
+<p>I will try to create a minimal reproducible example for this.</p>
+<p>Thanks for an amazing <code>uv</code> experience!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8407.html">astral-sh/uv#8407</a> on 2024-10-21 07:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

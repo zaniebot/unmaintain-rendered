@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FA102 not respecting project.requires-python in pyproject.toml - astral-sh/ruff #21026</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FA102 not respecting project.requires-python in pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21026">#21026</a>
+        opened by <a href="https://github.com/jsh9">@jsh9</a>
+        on 2025-10-22 06:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jsh9">@jsh9</a> on 2025-10-22 06:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I set this in my <code>project.toml</code>:</p>
+<pre><code class="language-toml">[project]
+requires-python = &quot;&gt;=3.10&quot;
+</code></pre>
+<p>And I put this in my <code>ruff.toml</code>:</p>
+<pre><code class="language-toml">[lint]
+extend-select = [
+  &quot;FA&quot;, # flake8-future-annotations
+]
+</code></pre>
+<p>I didn't specify <code>target-version</code> in <code>ruff.toml</code> because it's stated <a href="https://docs.astral.sh/ruff/settings/#target-version">here</a> that:</p>
+<blockquote>
+<p>If you're already using a <code>pyproject.toml</code> file, we recommend <code>project.requires-python</code> instead, as it's based on Python packaging standards, and will be respected by other tools.</p>
+</blockquote>
+<p>I have some Python files using union-style type hints (such as <code>str | int</code>) without <code>from __future__ import annotations</code> at the top of them.</p>
+<p>When I run the linter, I saw this error:</p>
+<pre><code>FA102 Missing `from __future__ import annotations`, but uses PEP 604 union
+</code></pre>
+<p>This is a bug, because the expected behavior should be: there are no <code>FA102</code> linter errors.</p>
+<h3>Version</h3>
+<p>0.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-22 08:36</div>
+            <div class="timeline-body"><p>I just tried FA102 in <a href="https://play.ruff.rs/1f86b36f-8cd4-48e0-ad60-a037cf9b09ad">the playground</a> and it only flags unions when targeting Python 3.9 or older. That suggests that Ruff doesn't pick up the right target version.</p>
+<p>Can you run ruff with <code>ruff check --show-settings</code>. There should be one line telling you the target version that Ruff resolved like this:</p>
+<pre><code>linter.unresolved_target_version = 3.10
+</code></pre>
+<p>You can also run ruff with <code>ruff check --show-settings --verbose</code> and it should log a message saying why it inferred a specific python version:</p>
+<pre><code>[2025-10-22][10:35:58][ruff::resolve][DEBUG] Using configuration file (via parent) at: /Users/micha/astral/test/pyproject.toml
+[2025-10-22][10:35:58][ruff_workspace::pyproject][DEBUG] Detected minimum supported `requires-python` version: 3.10
+[2025-10-22][10:35:58][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/.gitignore_global
+[2025-10-22][10:35:58][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/astral/test/.gitignore
+[2025-10-22][10:35:58][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/astral/test/.git/info/exclude
+[2025-10-22][10:35:58][ruff_workspace::pyproject][DEBUG] Detected minimum supported `requires-python` version: 3.10
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-10-22 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-06 13:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v3 App Options no longer work on subcommand arguments - clap-rs/clap #1915</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>v3 App Options no longer work on subcommand arguments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1915">#1915</a>
+        opened by <a href="https://github.com/publicarray">@publicarray</a>
+        on 2020-05-08 02:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/publicarray">@publicarray</a> on 2020-05-08 02:41</div>
+            <div class="timeline-body"><h3>Make sure you completed the following tasks</h3>
+<ul>
+<li>[x] Searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] Searched the closes issues</li>
+</ul>
+<h3>Code</h3>
+<pre><code class="language-rust">use clap::{App, Arg, AppSettings};
+
+fn main() {
+    let cli = App::new(&quot;foo&quot;)
+        .setting(AppSettings::SubcommandRequired)
+        .arg(Arg::with_name(&quot;v&quot;)
+                .short('v')
+                .multiple(true)
+                .about(&quot;Sets the level of verbosity&quot;))
+        .subcommand(App::new(&quot;bar&quot;)
+                .arg(Arg::with_name(&quot;baz&quot;)
+                        .long(&quot;baz&quot;)
+                    )).get_matches();
+
+    let log_level = cli.occurrences_of(&quot;v&quot;);
+    println!(&quot;{}&quot;, log_level);
+    if let Some(bar) = cli.subcommand_matches(&quot;bar&quot;) {
+        if bar.is_present(&quot;baz&quot;) {
+            println!(&quot;Hello World&quot;);
+        }
+    }
+}
+
+</code></pre>
+<h3>Steps to reproduce the issue</h3>
+<ol>
+<li>Run <code>cargo run -- -v bar --baz</code> error: Found argument '--baz' which wasn't expected, or isn't valid in this context</li>
+</ol>
+<h3>Version</h3>
+<ul>
+<li><strong>Rust</strong>: rustc 1.44.0-nightly</li>
+<li><strong>Clap</strong>: master</li>
+</ul>
+<h3>Actual Behavior Summary</h3>
+<ol>
+<li>Run <code>cargo run -- bar</code> = 0 (expected)</li>
+<li>Run <code>cargo run -- bar --baz</code> = 0 Hello World (expected)</li>
+<li>Run <code>cargo run -- -v bar</code> = 1  (expected)</li>
+<li>Run <code>cargo run -- -v bar --baz</code> error: Found argument '--baz' which wasn't expected, or isn't valid in this context</li>
+</ol>
+<p>I'm using clap-rs in https://github.com/publicarray/BunnyCLI</p>
+<h3>Expected Behavior Summary</h3>
+<p>From run number 4 the output should be:</p>
+<pre><code>1
+Hello World
+</code></pre>
+<h3>Additional context</h3>
+<h3>Debug output</h3>
+<p>Compile clap with <code>debug</code> feature:</p>
+<pre><code class="language-toml">[dependencies]
+clap = { version = &quot;*&quot;, features = [&quot;debug&quot;] }
+</code></pre>
+<p>The output may be very long, so feel free to link to a gist or attach a text file</p>
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+
+<pre><code> Running `target/debug/my-test -v bar --baz`</code></pre>
+<p>[            clap::build::app] 	App::_do_parse
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_derive_display_order:foo
+[            clap::build::app] 	App::_derive_display_order:bar
+[            clap::build::app] 	App::_create_help_and_version
+[            clap::build::app] 	App::_create_help_and_version: Building --help
+[            clap::build::app] 	App::_create_help_and_version: Building --version
+[            clap::build::app] 	App::_create_help_and_version: Building help
+[            clap::build::app] 	App::_debug_asserts
+[            clap::build::arg] 	Arg::_debug_asserts:v
+[            clap::build::arg] 	Arg::_debug_asserts:help
+[            clap::build::arg] 	Arg::_debug_asserts:version
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[         clap::parse::parser] 	Parser::_verify_positionals
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing '&quot;-v&quot;' ([45, 118])
+[         clap::parse::parser] 	Parser::is_new_arg: &quot;-v&quot;:NotFound
+[         clap::parse::parser] 	Parser::is_new_arg: arg_allows_tac=false
+[         clap::parse::parser] 	Parser::is_new_arg: - found
+[         clap::parse::parser] 	Parser::is_new_arg: starts_new_arg=true
+[         clap::parse::parser] 	Parser::possible_subcommand: arg=&quot;-v&quot;
+[         clap::parse::parser] 	Parser::get_matches_with: possible_sc=false, sc=None
+[         clap::parse::parser] 	Parser::parse_short_arg: full_arg=&quot;-v&quot;
+[         clap::parse::parser] 	Parser::parse_short_arg:iter:v
+[         clap::parse::parser] 	Parser::parse_short_arg:iter:v: Found valid opt or flag
+[          clap::util::argstr] 	ArgSplit::next: self=ArgSplit { sep: [118, 0, 0, 0], sep_len: 1, val: [118], pos: 0 }
+[         clap::parse::parser] 	Parser::parse_short_arg:iter:v: i=1, arg_os=&quot;v&quot;
+[         clap::parse::parser] 	Parser::parse_opt; opt=v, val=None
+[         clap::parse::parser] 	Parser::parse_opt; opt.settings=ArgFlags(MULTIPLE_OCC | TAKES_VAL | DELIM_NOT_SET | MULTIPLE_VALS)
+[         clap::parse::parser] 	Parser::parse_opt; Checking for val...
+[         clap::parse::parser] 	None
+[    clap::parse::arg_matcher] 	ArgMatcher::inc_occurrence_of: arg=v
+[    clap::parse::arg_matcher] 	ArgMatcher::inc_occurrence_of: first instance
+[         clap::parse::parser] 	groups_for_arg: name=v
+[         clap::parse::parser] 	Parser::parse_opt: More arg vals required...
+[         clap::parse::parser] 	Parser::get_matches_with: After parse_short_arg Opt(v)
+[         clap::parse::parser] 	Parser::maybe_inc_pos_counter: arg = v
+[         clap::parse::parser] 	Parser::maybe_inc_pos_counter: is it positional?
+[         clap::parse::parser] 	No
+[         clap::parse::parser] 	groups_for_arg: name=v
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing '&quot;bar&quot;' ([98, 97, 114])
+[         clap::parse::parser] 	Parser::is_new_arg: &quot;bar&quot;:Opt(v)
+[         clap::parse::parser] 	Parser::is_new_arg: arg_allows_tac=false
+[         clap::parse::parser] 	Parser::is_new_arg: probably value
+[         clap::parse::parser] 	Parser::is_new_arg: starts_new_arg=false
+[         clap::parse::parser] 	Parser::add_val_to_arg; arg=v, val=&quot;bar&quot;
+[         clap::parse::parser] 	Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;bar&quot;
+[         clap::parse::parser] 	groups_for_arg: name=v
+[    clap::parse::arg_matcher] 	ArgMatcher::needs_more_vals: o=v
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing '&quot;--baz&quot;' ([45, 45, 98, 97, 122])
+[         clap::parse::parser] 	Parser::is_new_arg: &quot;--baz&quot;:Opt(v)
+[         clap::parse::parser] 	Parser::is_new_arg: arg_allows_tac=false
+[         clap::parse::parser] 	Parser::is_new_arg: -- found
+[         clap::parse::parser] 	Parser::is_new_arg: starts_new_arg=true
+[         clap::parse::parser] 	Parser::parse_long_arg
+[         clap::parse::parser] 	Parser::parse_long_arg: Does it contain '='...
+[         clap::parse::parser] 	No
+[         clap::parse::parser] 	Parser::parse_long_arg: Didn't match anything
+[         clap::parse::parser] 	Parser::did_you_mean_error: arg=baz
+[         clap::parse::parser] 	Parser::did_you_mean_error: longs=[&quot;help&quot;, &quot;version&quot;]
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_derive_display_order:bar
+[            clap::build::app] 	App::_create_help_and_version
+[            clap::build::app] 	App::_create_help_and_version: Building --help
+[            clap::build::app] 	App::_create_help_and_version: Building --version
+[            clap::build::app] 	App::_debug_asserts
+[            clap::build::arg] 	Arg::_debug_asserts:baz
+[            clap::build::arg] 	Arg::_debug_asserts:help
+[            clap::build::arg] 	Arg::_debug_asserts:version
+[         clap::output::usage] 	Usage::create_usage_with_title
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_smart_usage
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[v], matcher=false, incl_last=true
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:v
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[&quot;-v <v>...&quot;]
+[            clap::build::app] 	App::color: Color setting...
+[            clap::build::app] 	Auto
+[           clap::output::fmt] 	is_a_tty: stderr=true
+error: Found argument '--baz' which wasn't expected, or isn't valid in this context</p>
+<pre><code>Did you mean to put '--baz' after the subcommand 'bar'?</code></pre>
+<p>If you tried to supply <code>--baz</code> as a PATTERN use <code>-- --baz</code></p>
+<p>USAGE:
+my-test -v <v>...</p>
+<p>For more information try --help</p>
+</code>
+</pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @publicarray on 2020-05-08 02:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-05-08 03:08</div>
+            <div class="timeline-body"><p>This is because <code>bar</code> is considered as a value for <code>-v</code> instead of subcommand. See https://github.com/clap-rs/clap/issues/1721, https://github.com/clap-rs/clap/issues/1031, and https://github.com/clap-rs/clap/pull/1834.</p>
+<p>TL;DR: use <code>SubcommandPrecedenceOverArg</code> settings.</p>
+<p>Personally, I would recommend you to redesign the CLI. This kind of &quot;values vs subcommand&quot; may cause more harm than goon in long term.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-05-08 03:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/publicarray">@publicarray</a> on 2020-05-08 03:36</div>
+            <div class="timeline-body"><p>Thanks very @CreepySkeleton, that works nicely &amp; Thanks for the advice. Any ideas on how to design it better ?</p>
+<blockquote>
+<p>goon</p>
+</blockquote>
+<p>I'm going to have some wine now 🤣</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-05-08 04:57</div>
+            <div class="timeline-body"><p>Well, if you truly intend <code>-v</code> to take value, I recommend to go <code>cargo --features &quot;f1 f2&quot;</code> way. Can be achieved via <a href="https://docs.rs/clap/2.33.0/clap/struct.Arg.html#method.value_delimiter"><code>value_delimiter(&quot; &quot;)</code></a> and <a href="https://docs.rs/clap/2.33.0/clap/struct.Arg.html#method.require_delimiter"><code>require_delimiter(true)</code></a>.</p>
+<p>But I bet your intention was to allow multiple number of occurrences, not values. <code>multiple(true)</code> means <em>both</em> multiple values (requiring at least one value) and multiple occurrences while you only need the latter. Use <code>multiple_occurrences(true)</code> and you'll live happily ever after.</p>
+<blockquote>
+<p>goon</p>
+</blockquote>
+<p>I must have been a comedian in a previous life, don't you think? Even when my mind isn't up to it, my muscle memory knows better and bony fingers hit the right button.</p>
+<p>Unfortunately, I can't share the wine with you. Skeletons don't have much of taste, after all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/publicarray">@publicarray</a> on 2020-05-08 09:54</div>
+            <div class="timeline-body"><p>Thank you! I'm going to pick live happily ever after <code>multiple_occurrences(true)</code>. Your comment does have lots of useful information and I did not find this in the manual. Maybe this can be included or maybe I need to get my eye sight checked.</p>
+<p>Haha, well played..</p>
+<p>True, You could give it go but it might stain your ribs: https://www.youtube.com/watch?v=1fzXmJyolfY&amp;t=33</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-05-08 10:35</div>
+            <div class="timeline-body"><p>We are still working on changelog and documentation. You are not supposed to use v3 yet.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

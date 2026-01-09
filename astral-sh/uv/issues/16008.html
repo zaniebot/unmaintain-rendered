@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should/make `uv cache prune` delete packages that are not used anywhere via link count - astral-sh/uv #16008</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should/make `uv cache prune` delete packages that are not used anywhere via link count</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16008">#16008</a>
+        opened by <a href="https://github.com/Tremeschin">@Tremeschin</a>
+        on 2025-09-24 00:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Tremeschin">@Tremeschin</a> on 2025-09-24 00:54</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I was wondering, since uv uses aggressive caching with hardlinks/symlinks (<a href="https://docs.astral.sh/uv/reference/settings/#link-mode">related doc</a>), and that there's ways to count how many references a file has (at least for ext4 in linux, others may vary) with <code>stat -c &quot;%h&quot; (file)</code>, should the <code>uv cache prune</code> command remove cache entries which are only referenced once (ie. nowhere else except cache)?</p>
+<p>It's better explained in examples, a bit lengthy as I've tried making it didactic. Perhaps I did something wrong and it already works this way - but I've experimented a bit with it and doesn't seem to be the case (could be based on last date of use?):</p>
+<p><sup><b>Note:</b> Didn't find a similar issue, as wording this is a bit hard.</sup></p>
+<h3>Example</h3>
+<p>For example, let's create two envs named <code>alpha</code> and <code>beta</code> after nuking <code>~/.cache</code> and <code>~/.local/share/uv</code>:</p>
+<pre><code class="language-sh">~/example/alpha
+$ uv venv
+
+~/example/beta
+$ uv venv
+</code></pre>
+<p>Now, let's install a common package in both envs:</p>
+<pre><code class="language-sh">~/example/alpha
+$ uv pip install cowsay==6.1
+
+~/example/beta
+$ uv pip install cowsay==6.1
+</code></pre>
+<p>We can see there's three hardlinks to the same file inode:</p>
+<pre><code class="language-sh">~/example/alpha
+$ stat -c &quot;%h&quot; .venv/lib/python3.13/site-packages/cowsay/__init__.py
+3
+
+~/example/beta
+$ stat -c &quot;%h&quot; .venv/lib/python3.13/site-packages/cowsay/__init__.py
+3
+</code></pre>
+<p>As expected, <code>uv cache prune</code> doesn't remove anything:</p>
+<pre><code class="language-sh">$ uv cache prune
+Pruning cache at: /home/tremeschin/.cache/uv
+No unused entries found
+</code></pre>
+<p>Now, let's remove the <code>alpha</code> venv:</p>
+<pre><code class="language-sh">~/example/alpha
+$ rm -rf .venv
+</code></pre>
+<p>Same thing, <code>uv cache prune</code> shouldn't and doesn't remove anything, count at two:</p>
+<pre><code class="language-sh">$ uv cache prune
+Pruning cache at: /home/tremeschin/.cache/uv
+No unused entries found
+
+~/example/beta
+$ stat -c &quot;%h&quot; .venv/lib/python3.13/site-packages/cowsay/__init__.py
+2
+</code></pre>
+<p>But if we remove the <code>beta</code> venv as well:</p>
+<pre><code class="language-sh">~/example/beta
+$ rm -rf .venv
+</code></pre>
+<p>Now, <code>uv cache prune</code> doesn't remove the &quot;dangling&quot; package entry:</p>
+<pre><code class="language-sh">$ uv cache prune
+Pruning cache at: /home/tremeschin/.cache/uv
+No unused entries found
+</code></pre>
+<p>Looking at <code>tree ~/.cache/uv</code> I see that the <code>cowsay</code> went to:</p>
+<pre><code class="language-sh">$ tree ~/.cache/uv/archive-v0
+/home/tremeschin/.cache/uv/archive-v0/
+└── 9HdHFxScxH75hluE_ypNq
+    ├── cowsay
+    │   ├── characters.py
+    │   ├── __init__.py
+</code></pre>
+<p>Surely enough, the <code>__init__.py</code> has only one reference:</p>
+<pre><code class="language-sh">$ stat -c &quot;%h&quot; ~/.cache/uv/archive-v0/9HdHFxScxH75hluE_ypNq/cowsay/__init__.py
+1
+</code></pre>
+<p>And if we install <code>cowsay</code> again in a venv, it has two:</p>
+<pre><code class="language-sh">~/example/alpha
+$ uv venv
+$ uv pip install cowsay
+$ stat -c &quot;%h&quot; ~/.cache/uv/archive-v0/9HdHFxScxH75hluE_ypNq/cowsay/__init__.py
+2
+</code></pre>
+<p>In my mind, <code>uv cache prune</code> should remove entries with only one reference - since that means it's not used anywhere else and can backlog space. Found this with a pytorch surprise in my home's cache directory, as <code>wheels-vX</code> or <code>archive-vX</code> doesn't change often and I assumed prune dealt with this already haha 🙂</p>
+<p>Maybe there's better places to tell within uv cache when this happens, I'm not knowledgeable on the struct.</p>
+<p>Thanks for the attention, sorry if duped, curious if it has ever been considered otherwise :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @Tremeschin on 2025-09-24 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-25 10:25</div>
+            <div class="timeline-body"><p>How to effectively limit the cache size is something we're still working on. While it's possible to use the link count, note the one advantage of hardlinks is that you can clear the cache without affecting any existing venv. For a cache garbage collection strategy, I'd lean more towards something like a least recently used cache, where we track when a package was last used in an installation, and clean everything that's older than a threshold or until we're under a target package size or count.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

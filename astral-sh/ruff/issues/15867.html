@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Assert full diagnostic output in mdtests - astral-sh/ruff #15867</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Assert full diagnostic output in mdtests</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15867">#15867</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-02-01 08:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-01 08:55</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>See my comment in https://github.com/astral-sh/ruff/pull/15856/files#r1938233453</p>
+<p>We should extend the mdtest framework to support assert on and capture the full diagnostic output</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @MichaReiser on 2025-02-01 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-02-01 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @MichaReiser on 2025-02-01 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-01 13:44</div>
+            <div class="timeline-body"><p>Do we want to do this as part of mdtest? Wouldn't snapshot testing be a better fit for this?</p>
+<p>Not all our tests need to be mdtests. I think the format is best suited for writing lots of quick and easy tests regarding type inference. Maybe we just need to get into the habit of adding snapshot tests as well as mdtests whenever we add new lints, so that we also record how the diagnostic will be rendered for the end user?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15856.html">astral-sh/ruff#15856</a> on 2025-02-01 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-01 20:19</div>
+            <div class="timeline-body"><p>I'm not sure if we want an entirely different testing framework just to capture diagnostics. It feels an unnecessary barrier for writing full-diagnostic tests and I'd expect that people wont to it because of it.</p>
+<p>I do agree that the testing framework should use some form of snapshot mechanism. I don't want to write those by hand. One option is to have a special comment that instructs the mdtest framework to expect and snapshot an error, e.g by using `# error [snapshot] &quot;message&quot;.  Whether the snapshots are inline (by updating the mdtest file itself) or in a separate file is another design question</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-01 23:02</div>
+            <div class="timeline-body"><p>We could, for example, create a snapshot (external file) that includes the source of every file, the diagnostic, and, in the future, a possible fix. I think that could be fairly ergonomic to review and maintain because I'd envision that linter tests would be smaller (a single test case for each condition you want to test), unlike how our linter tests are today where we have one big file with all tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-02 10:32</div>
+            <div class="timeline-body"><p>Ahh, now I understand what you're proposing. Yes, this sounds like a nice idea!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15890.html">astral-sh/ruff#15890</a> on 2025-02-03 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-04 13:12</div>
+            <div class="timeline-body"><p>I note that there appears to be an alternative design for testing full diagnostic output in the mdtest doc:</p>
+<p>https://github.com/astral-sh/ruff/blob/15dd3b5ebdd2d1c25da3815afb0b8172aef9c812/crates/red_knot_test/README.md#L346-L381</p>
+<p>I think the <code>output</code> blocks suggested in that doc appeal to me a bit more. But I confess that I think I don't fully understand @MichaReiser's idea here. Could you say a bit more about how you envision this working?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-04 13:24</div>
+            <div class="timeline-body"><p>@BurntSushi yes, I find the &quot;inline snapshot&quot; using <code>output</code> blocks also more appealing but I suspect that it's a little more work because we can't use insta for it (at least, it's not clear to me how we'd do that).</p>
+<p>I haven't thought this through fully but a first solution could be to use regular insta snapshots (and later evolve to support inline snapshots, similar to how insta started without inline snapshots). The basic idea is that we construct a &quot;markdown string&quot; similar to what we do for <a href="https://github.com/astral-sh/ruff/blob/c847cad389f202edae868765e690cb7042e88264/crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__allow_empty_first_line.py.snap#L25-L24">the formatter</a>. The constructed markdown file could include:</p>
+<ul>
+<li>The source code</li>
+<li>The one diagnostic</li>
+<li>Possibly: Settings</li>
+<li>Future: Possible fix</li>
+</ul>
+<p>I'd include the source code so that the snapshot file can be reviewed in isolation. The main downside of including the snapshot or settings is that any change to either results in snapshot changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-04 13:38</div>
+            <div class="timeline-body"><p>@MichaReiser Aye. Are you envisioning one snapshot file per <code>.md</code> file? Or one snapshot file per test within each <code>.md</code> file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-04 13:40</div>
+            <div class="timeline-body"><p>I'm leaning toward one snapshot file per fully asserted diagnostic or at least one snapshot per test in an md file.</p>
+<p>I'm not quiet sure what the right balance is. I do find Ruff's snapshots very noisy but that's probably mainly because we smash all test cases into a single file without any comments. I envision this to be different for mdtests where it's easy to isolate different test cases and prose comments. TLDR: One snapshot per test case is probably a good start (resulting in multiple snapshots for each mdtest file)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15945.html">astral-sh/ruff#15945</a> on 2025-02-04 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-02-05 18:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

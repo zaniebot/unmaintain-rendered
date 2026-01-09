@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option to not expand environment variables in uv pip compile - astral-sh/uv #2116</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Option to not expand environment variables in uv pip compile</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2116">#2116</a>
+        opened by <a href="https://github.com/gwdekker">@gwdekker</a>
+        on 2024-03-01 15:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gwdekker">@gwdekker</a> on 2024-03-01 15:59</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>first of all thanks for the great work!</p>
+<p>I have a use case where I define my package dependencies in pyproject.toml and compile them to requirements.txt. One of my dependencies is on a private gitlab repo which I have access to using auth through a private gitlab token. I use an environment variable to access this, so in pyproject.toml I have something like <code>https://__token__${GITLAB_TOKEN}@gitlab.com/….</code></p>
+<p>when running uv pip compile this gets expanded and solved. Works like a charm. However, the url with token exposed ends up in requirements.txt! I would claim the better behaviour would be to not do that but rather put the non-expanded variable in the requirements.txt file.</p>
+<p>There is an open issue on this on the pip tools repo where it is explained that this is not easy to solve for them as pip does not support it. Maybe uv could however?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 16:00</div>
+            <div class="timeline-body"><p>Can you give an example of the <code>pyproject.toml</code> and the command you're running? We don't expand environment variables when they're defined (e.g.) in a <code>requirements.txt</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwdekker">@gwdekker</a> on 2024-03-01 19:36</div>
+            <div class="timeline-body"><p>In the depencencies section of <code>pyproject.toml</code>, we use a line like</p>
+<p><code>&quot;package_name @ git+https://__token__:${GITLAB_ACCESS_TOKEN}@gitlab.com/company_name/team/the_repo.git@main&quot;</code></p>
+<p>From our makefile, we run
+<code>uv pip compile -o requirements.txt pyproject.toml --find-links $(wheels_dir) --prerelease=allow &gt; /dev/null</code></p>
+<p>Then in <code>requirements.txt</code> we get     <code>&quot;package_name @ git+https://__token__:THE_ACTUAL_TOKEN@gitlab.com/dexter-energy/team/flex/realtime-imbalance-forecasting.git@SOME_GIT_SHA&quot;</code> I would propose it would be better to not expand the variable in the requirments file.</p>
+<p>The related issue on piptools i mentioned: https://github.com/jazzband/pip-tools/issues/966</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 19:41</div>
+            <div class="timeline-body"><p>Ah I see. This doesn't happen <em>in general</em> but I think it <em>does</em> happen for Git dependencies <em>specifically</em> because of the mechanism we use to add the SHA to the end of the URL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-02 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-02 00:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 00:20</div>
+            <div class="timeline-body"><p>We should be able to fix this in the common case. The only case we can't really fix is if there's an environment variable in the SHA or branch tag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2125.html">astral-sh/uv#2125</a> on 2024-03-02 01:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-02 01:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

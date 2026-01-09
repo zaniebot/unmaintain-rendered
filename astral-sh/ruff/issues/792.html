@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive for D417 - astral-sh/ruff #792</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive for D417</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/792">#792</a>
+        opened by <a href="https://github.com/PhilReinhold">@PhilReinhold</a>
+        on 2022-11-17 17:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/PhilReinhold">@PhilReinhold</a> on 2022-11-17 17:25</div>
+            <div class="timeline-body"><p>Running ruff v0.0.124, python 3.10.6, on OSX 12.6.1</p>
+<p>Linting the following code:</p>
+<pre><code class="language-python">def f(x):
+    &quot;&quot;&quot;Do f.
+
+    Args:
+        x: the value
+
+    Returns: the value
+    &quot;&quot;&quot;
+    return x
+</code></pre>
+<p>Reports</p>
+<pre><code>test.py:1:1: D417 Missing argument description in the docstring: `x`
+</code></pre>
+<p>The error goes away if the <code>Returns</code> block is reformatted with a new line.</p>
+<pre><code class="language-python">def f(x):
+    &quot;&quot;&quot;Do f.
+
+    Args:
+        x: the value
+
+    Returns:
+        the value
+    &quot;&quot;&quot;
+    return x
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 17:27</div>
+            <div class="timeline-body"><p>Great, thank you for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-11-17 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 17:29</div>
+            <div class="timeline-body"><p>(For some reason we're not detecting NumPy-style docstrings in the first example, which seems to be the root cause.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 17:41</div>
+            <div class="timeline-body"><p>(Err, wait, Flake8 doesn't detect NumPy-style docstrings either, so probably a bug in the Google-style parser.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/793.html">astral-sh/ruff#793</a> on 2022-11-17 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-17 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhilReinhold">@PhilReinhold</a> on 2022-12-12 20:12</div>
+            <div class="timeline-body"><p>Thanks for the fix! However, I've noticed that the error returns if there is more than one argument present:</p>
+<pre><code class="language-python"># test.py
+def f(x, y, z):
+    &quot;&quot;&quot;Do f.
+
+    Args:
+        x: the value
+        y: Another thing
+        z: A final argument
+
+    Returns: the value
+    &quot;&quot;&quot;
+    return x
+</code></pre>
+<pre><code>$ ruff --version
+ruff 0.0.177
+
+$ ruff --select D test.py
+Found 1 error(s).
+test.py:1:1: D417 Missing argument descriptions in the docstring: `y`, `z`
+</code></pre>
+<p>The error again goes away if the <code>Returns</code> block gets a newline. Insisting on a newline there is actually fine for me, but the confusing error message is still unfortunate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1291.html">astral-sh/ruff#1291</a> on 2022-12-19 18:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

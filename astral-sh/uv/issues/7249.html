@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv.lock` generated with `extra` as a string, but `uv sync` expects a sequence - astral-sh/uv #7249</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv.lock` generated with `extra` as a string, but `uv sync` expects a sequence</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7249">#7249</a>
+        opened by <a href="https://github.com/StrawIII">@StrawIII</a>
+        on 2024-09-10 09:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/StrawIII">@StrawIII</a> on 2024-09-10 09:48</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Building an image from <code>Dockerfile</code> fails with an error due to <code>uv sync</code> expecting <code>extra</code> in <code>uv.lock</code> to be a sequence and not a string. After changing the line from</p>
+<pre><code>    { name = &quot;pydantic&quot;, extra = &quot;email&quot; },
+</code></pre>
+<p>to</p>
+<pre><code>    { name = &quot;pydantic&quot;, extra = [&quot;email&quot;] },
+</code></pre>
+<p><code>uv sync</code> works.</p>
+<ul>
+<li>uv command: uv sync --frozen --no-cache</li>
+<li>uv platform: gnu linux</li>
+<li>uv version: 0.4.8</li>
+</ul>
+<pre><code class="language-dockerfile">FROM python:3.10
+
+WORKDIR /app
+
+COPY --from=ghcr.io/astral-sh/uv:0.4.8 /uv /bin/uv
+
+COPY . .
+
+RUN uv sync --frozen --no-cache
+
+CMD [&quot;/app/.venv/bin/uvicorn&quot;, &quot;app.main:app&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;, &quot;--port&quot;, &quot;8000&quot;, &quot;--proxy-headers&quot;]
+</code></pre>
+<pre><code class="language-shell">&gt; [backend stage-0 6/7] RUN uv sync --frozen --no-cache:
+0.601 Using Python 3.10.15 interpreter at: /usr/local/bin/python3
+0.601 Creating virtualenv at: .venv
+0.611 Failed to parse lockfile; ignoring locked requirements: TOML parse error at line 619, column 34
+0.611     |
+0.611 619 |     { name = &quot;pydantic&quot;, extra = &quot;email&quot; },
+0.611     |                                  ^^^^^^^
+0.611 invalid type: string &quot;email&quot;, expected a sequence
+0.612 error: Unable to find lockfile at `uv.lock`. To create a lockfile, run `uv lock` or `uv sync`.
+------
+failed to solve: process &quot;/bin/sh -c uv sync --frozen --no-cache&quot; did not complete successfully: exit code: 2
+</code></pre>
+<p>Part of the <code>uv.lock</code></p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+source = { editable = &quot;.&quot; }
+dependencies = [
+    { name = &quot;alembic&quot; },
+    { name = &quot;authlib&quot; },
+    { name = &quot;bcrypt&quot; },
+    { name = &quot;boto3&quot; },
+    { name = &quot;fastapi&quot; },
+    { name = &quot;jinja2&quot; },
+    { name = &quot;loguru&quot; },
+    { name = &quot;psycopg2-binary&quot; },
+    { name = &quot;pydantic&quot; },
+    { name = &quot;pydantic&quot;, extra = &quot;email&quot; },
+    { name = &quot;pydantic-settings&quot; },
+    { name = &quot;python-multipart&quot; },
+    { name = &quot;sqlalchemy&quot; },
+    { name = &quot;uvicorn&quot; },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-10 12:02</div>
+            <div class="timeline-body"><p>Thanks. Was the lockfile generated with the same uv version? Will take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/StrawIII">@StrawIII</a> on 2024-09-10 12:44</div>
+            <div class="timeline-body"><p>I did some digging and found that I have somehow more than one uv installed. When using the latest 0.4.8 it works as intended (extra is a sequence, not a string).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @StrawIII on 2024-09-10 12:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

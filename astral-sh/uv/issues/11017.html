@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to add packages from several private sources - astral-sh/uv #11017</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to add packages from several private sources</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11017">#11017</a>
+        opened by <a href="https://github.com/diskream">@diskream</a>
+        on 2025-01-28 11:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/diskream">@diskream</a> on 2025-01-28 11:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm trying to add 2 packages from 2 private repositories. If I add only one package, everything works fine and installs correctly. When I add more than one repo I'm starting to receive HTTP 404 response from my private gitlab registry:</p>
+<pre><code>Resolved 50 packages in 7ms
+0.730   × Failed to download 'ecosys-lib==0.5.14.9'
+0.730   ├─▶ Failed to fetch:
+0.730   │   'https://private_gitlab.com/api/v4/projects/252/packages/pypi/files/74ae10ad64863b835ee2574b1c6dd3c0be6ef6c25df457282569e81922669298/ecosys_lib-0.5.14.9-py3-none-any.whl'
+0.730   ╰─▶ HTTP status client error (404 Not Found) for url
+0.730       (https://private_gitlab.com/api/v4/projects/252/packages/pypi/files/74ae10ad64863b835ee2574b1c6dd3c0be6ef6c25df457282569e81922669298/ecosys_lib-0.5.14.9-py3-none-any.whl)
+0.730   help: 'ecosys-lib' (v0.5.14.9) was included because 'excel-service'
+0.730         (v0.1.0) depends on 'ecosys-lib'
+</code></pre>
+<p>When I enter the link, the package downloads instantly. But I logged in, so gitlab is not forcing me to authorize.
+I can't understand why is it happening, because both sources works individually
+My pyproject:</p>
+<pre><code>[project]
+name = &quot;excel-service&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;excel-lib&gt;=0.2.0&quot;,
+    &quot;ecosys-lib&gt;=0.5.14.9&quot;,
+]
+
+[[tool.uv.index]]
+name = &quot;ecosys-lib&quot;
+url = &quot;https://token:{token_one}@private_gitlab.com/api/v4/projects/252/packages/pypi/simple&quot;
+explicit = true
+
+
+[[tool.uv.index]]
+name = &quot;excel-lib&quot;
+url = &quot;https://token:{token_two}@private_gitlab.com/api/v4/projects/422/packages/pypi/simple&quot;
+explicit = true
+
+
+[tool.uv.sources]
+ecosys-lib = { index = &quot;ecosys-lib&quot; }
+excel-lib = { index = &quot;excel-lib&quot; }
+</code></pre>
+<h3>Platform</h3>
+<p>macOS 14 arm64</p>
+<h3>Version</h3>
+<p>uv 0.5.24 (Homebrew 2025-01-23)</p>
+<h3>Python version</h3>
+<p>Python 3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @diskream on 2025-01-28 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-28 14:50</div>
+            <div class="timeline-body"><p>How are you providing the authentication? It's just hard-coded in your <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/romanzdk">@romanzdk</a> on 2025-01-28 14:51</div>
+            <div class="timeline-body"><p>We have same issue just we do not provide any authentication - the private registry is &quot;public&quot; in the company network</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/diskream">@diskream</a> on 2025-01-28 17:30</div>
+            <div class="timeline-body"><blockquote>
+<p>How are you providing the authentication? It's just hard-coded in your <code>pyproject.toml</code>?</p>
+</blockquote>
+<p>I tried different ways. The error appears when I provide authentication for both sources.</p>
+<p>I also tried git + HTTPS authentication with a token in the URL. The library installed correctly, but as mentioned in the docs, the token wasn't provided in pyproject or uv.lock. When it came time to run in Docker, I got an error with Git authentication. When I supplied a token, the same error occurred.</p>
+<p>As temporary workaround I install one lib using <code>uv pip install excel-lib --index https://token:{token_two}@private_gitlab.com/api/v4/projects/422/packages/pypi/simple</code> right in Dockerfile, the second one remains in pyproject</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-29 14:03</div>
+            <div class="timeline-body"><p>Can you share verbose logs? Ideally with <code>RUST_LOG=uv=trace</code>? (be sure to elide any secrets)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-01-29 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/diskream">@diskream</a> on 2025-01-29 14:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you share verbose logs? Ideally with <code>RUST_LOG=uv=trace</code>? (be sure to elide any secrets)</p>
+</blockquote>
+<p>Sure. Log trace is quite long. How can I share it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-29 14:27</div>
+            <div class="timeline-body"><p><a href="https://gist.github.com">Gist</a> is a good option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/diskream">@diskream</a> on 2025-01-29 14:48</div>
+            <div class="timeline-body"><p><a href="https://gist.github.com/diskream/269aadaff60b63271af9b89e3aac6a27">I hope this will help</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-29 15:00</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>So there are logs like</p>
+<pre><code>TRACE Caching credentials for https://token:{token_two}@private_gitlab.com/api/v4/projects/422/packages/pypi/simple
+TRACE Caching credentials for https://token:{token_one}@private_gitlab.com/api/v4/projects/252/packages/pypi/simple
+TRACE No credentials in cache for URL https://private_gitlab.com/api/v4/projects/422/packages/pypi/files/57f33c110335e9ef1f0ac7dc042e9d3acff1953bab91e2c34b852f49223b2f76/excel_lib-0.2.0-cp313-cp313-musllinux_1_2_aarch64.whl
+TRACE Found cached credentials for realm https://private_gitlab.com
+</code></pre>
+<p>Basically what's happening is the file download URL is <code>https://private_gitlab.com/api/v4/projects/422/packages/pypi/files/</code> which is not a child path of <code>https://token:{token_two}@private_gitlab.com/api/v4/projects/422/packages/pypi/simple</code> so we do not propagate credentials (for security 😬). Then when that request fails, we fallback to a <em>realm</em> level credential store (basically the domain) which is fine if you only have one secret for that realm but in your situation you'll end up with incorrect credentials for the other project.</p>
+<p>This would be solved by https://github.com/astral-sh/uv/issues/4583</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11074.html">astral-sh/uv#11074</a> on 2025-01-29 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/diskream">@diskream</a> on 2025-01-29 17:58</div>
+            <div class="timeline-body"><p>Thank you! I'll be waiting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-29 18:00</div>
+            <div class="timeline-body"><p>You could try https://github.com/astral-sh/uv/pull/11074 if you want</p>
+<p>I'm not sure if that's the approach we want to take, but it should fix the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-30 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-30 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12004.html">astral-sh/uv#12004</a> on 2025-03-06 13:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

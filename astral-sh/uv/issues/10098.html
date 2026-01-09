@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared external list of path sources for use as an &quot;index&quot; analogue - astral-sh/uv #10098</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Shared external list of path sources for use as an &quot;index&quot; analogue</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10098">#10098</a>
+        opened by <a href="https://github.com/smackesey">@smackesey</a>
+        on 2024-12-22 16:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/smackesey">@smackesey</a> on 2024-12-22 16:55</div>
+            <div class="timeline-body"><p>I'd like the ability to provide a list of sources in a file outside the package <code>pyproject.toml</code> to <code>uv pip install</code>. The reason the sources should be in an external file is that these sources will contain paths for all the packages in a monorepo, and the same file will be used whenever a package is installed in a test environment to ensure dependencies within the monorepo are resolved within the checked-out commit of the monorepo.</p>
+<h3>Details</h3>
+<p>In monorepo development, often one has many interdependent packages in the same repo. Let's call a dependency across packages within the monorepo an &quot;internal dependency&quot;.</p>
+<p>When testing, we'd typically like to resolve internal dependencies against the checked out version of the code.</p>
+<p>Consider a toy version of the much more complicated scenario we have in <a href="https://github.com/dagster-io/dagster">Dagster</a>. Suppose we have three packages in the monorepo: <code>dagster-foo</code> <code>dagster-bar</code>, and <code>dagster-baz</code>. <code>dagster-foo</code> depends on <code>dagster-bar</code>, and <code>dagster-bar</code> depends on <code>dagster-baz</code>:</p>
+<pre><code>### dagster-foo/pyproject.toml
+
+[project]
+...
+name = &quot;dagster-foo&quot;
+dependencies = [&quot;dagster-bar&quot;]
+</code></pre>
+<pre><code>### dagster-bar/pyproject.toml
+
+[project]
+...
+name = &quot;dagster-bar&quot;
+dependencies = [&quot;dagster-baz&quot;]
+</code></pre>
+<p>When I install <code>dagster-foo</code> into a test environment from a local path, I want to resolve both it's first order dep <code>dagster-bar</code> and second-order dep <code>dagster-baz</code> to the local versions within the monorepo.</p>
+<p>One way to do this is to use <code>[tool.uv.sources]</code>. For that to work, we'd have to do this:</p>
+<pre><code>### dagster-foo/pyproject.toml
+
+[project]
+...
+name = &quot;dagster-foo&quot;,
+dependencies = [
+  &quot;dagster-bar&quot;,
+  &quot;dagster-baz&quot;,  # have to include this now because tool.uv.sources won't work for 2nd-order deps
+]
+
+[tool.uv.sources]
+dagster-bar = { path = &quot;/path/to/dagster/python_modules/dagster-bar&quot;, editable = true }
+dagster-baz = { path = &quot;/path/to/dagster/python_modules/dagster-baz&quot;, editable = true }
+</code></pre>
+<p>This is not ideal for a few reasons:</p>
+<ul>
+<li>I have to list indirect dependencies under <code>project.dependencies</code> to make them work with <code>uv.tool.sources</code></li>
+<li>I need to manage the <code>[tool.uv.sources]</code> separately for every <code>dagster-*</code> package.</li>
+</ul>
+<p>What would be better is if I could somehow maintain a <em>single</em> list of sources in some external file and link that file when installing any <code>dagster-*</code> into a test environment. This would effectively function like an &quot;index&quot; that shadows PyPI:</p>
+<pre><code>### SOURCES.toml
+
+dagster-foo = { path = &quot;/path/to/dagster/python_modules/dagster-foo&quot;, editable = true }
+dagster-bar = { path = &quot;/path/to/dagster/python_modules/dagster-bar&quot;, editable = true }
+dagster-baz = { path = &quot;/path/to/dagster/python_modules/dagster-baz&quot;, editable = true }
+# ... any other dagster-* packages
+</code></pre>
+<p>Then when installing <code>dagster-foo</code>, I would not have any <code>tool.uv.sources</code> listed in its pyproject.toml, but would just do:</p>
+<pre><code>uv pip install -e path/to/dagster-foo --sources SOURCES.toml
+
+# analogous to the below command, _if_ we had a private index https://dagster.monorepo.index that somehow contained the 
+# local versions of all dagster-* packages (which we don't)
+uv pip install -e path/to/dagster-foo --index https://dagster.monorepo.index
+</code></pre>
+<hr />
+<p>Is this functionality already supported through some pattern I haven't thought of? If not, consider this a feature request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-12-26 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-12-26 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2025-01-25 16:51</div>
+            <div class="timeline-body"><p>Just wanted to check in on this issue. This would solve a lot of our monorepo headaches so I would love to know if it's in the cards.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

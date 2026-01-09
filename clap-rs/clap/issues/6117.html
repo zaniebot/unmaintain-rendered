@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provide empty implementations for Args and Subcommand - clap-rs/clap #6117</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Provide empty implementations for Args and Subcommand</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/6117">#6117</a>
+        opened by <a href="https://github.com/alexkazik">@alexkazik</a>
+        on 2025-08-31 08:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alexkazik">@alexkazik</a> on 2025-08-31 08:08</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Describe your use case</h3>
+<p>I have a kind of framework which is used in other crates but should be expandable:</p>
+<pre><code class="language-rust">// Simplified example
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+pub struct MyArgs&lt;A: Args, S: Subcommand&gt; {
+    #[command(flatten)]
+    custom_args: A,
+    #[command(subcommand)]
+    command: MySubcommand&lt;S&gt;,
+}
+
+#[derive(Subcommand)]
+enum MySubcommand&lt;S: Subcommand&gt; {
+    Run,
+    #[command(flatten)]
+    CustomCommand(S),
+}
+</code></pre>
+<p>In order to to simply opt out of the custom stuff I also export this:</p>
+<pre><code class="language-rust">#[derive(Args)]
+pub struct NoCustomArgs;
+#[derive(Subcommand)]
+pub enum NoCustomCommand {}
+</code></pre>
+<p>But I'd prefer if clap would have such &quot;empty&quot; implementations.</p>
+<h3>Describe the solution you'd like</h3>
+<p>I've created <code>impl Args for ()</code> and <code>impl Subcommand for Infallible</code>:</p>
+<p>https://github.com/alexkazik/forked-clap/commit/c06a8f1c7a0ef5d2d41146f02edff47a55a71591</p>
+<p>I'd prefer <code>!</code> (the never type) over Infallible but that is still nightly.</p>
+<p>If that is something which is desired I can create a PR.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @alexkazik on 2025-08-31 08:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-09-02 14:08</div>
+            <div class="timeline-body"><blockquote>
+<p>impl Subcommand for Infallible:</p>
+</blockquote>
+<p>Why this instead of <code>for ()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2025-09-02 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexkazik">@alexkazik</a> on 2025-09-02 14:26</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>impl Subcommand for Infallible:</p>
+</blockquote>
+<p>Why this instead of <code>for ()</code>?</p>
+</blockquote>
+<p>Since NoCustomCommand is like Infallible (and enum without variants) I used that.</p>
+<p>And this way the subcommand can never be created (unlike <code>()</code>).</p>
+<p>Since it means that you don't want to provide an subcommand I though it's better to not even be capable of doing so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-09-02 14:31</div>
+            <div class="timeline-body"><p>Thinking more on this, <code>impl Subcommand for ()</code> would be helpful with <code>#[command(subcommand)]</code> while <code>impl Subcommand for Infallable</code> would be helpful for <code>#[command(flatten)]</code>, so seems like we should have both.</p>
+<p>I'm ok with moving forward with all 3 impls.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2025-09-02 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6119.html">clap-rs/clap#6119</a> on 2025-09-02 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-09-02 17:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

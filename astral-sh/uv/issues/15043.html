@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using an index name with UV_INDEX - astral-sh/uv #15043</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using an index name with UV_INDEX</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15043">#15043</a>
+        opened by <a href="https://github.com/tonnico">@tonnico</a>
+        on 2025-08-03 19:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tonnico">@tonnico</a> on 2025-08-03 19:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Looks like, the default index did not work, when not explicit set, when <code>UV_INDEX</code> is set.</p>
+<p>Create a private simple python package repo.</p>
+<pre><code class="language-bash">&gt; mkdir local-pypi
+&gt; python -m http.server -d local-pypi
+</code></pre>
+<p>Create a new project with uv and set the local repo in the <code>UV_INDEX</code> variable.</p>
+<pre><code class="language-bash">&gt; uv init foo
+&gt; cd foo
+&gt; export UV_INDEX=local=http://localhost:8000
+</code></pre>
+<p>Adding a dependency outside the local repo.</p>
+<pre><code class="language-bash">&gt; uv add ruff
+Using CPython 3.12.1 interpreter at: /Users/nico/.pyenv/versions/3.12.1/bin/python3.12
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because ruff was not found in the package registry and your project depends on ruff, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<h3>Platform</h3>
+<p>macOS 15.5 Intel</p>
+<h3>Version</h3>
+<p>uv 0.8.4 (e176e1714 2025-07-30)</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @tonnico on 2025-08-03 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "can't add dependecies when UV_INDEX is set" to "can't add dependencies when UV_INDEX is set" by @tonnico on 2025-08-03 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-04 09:04</div>
+            <div class="timeline-body"><p>A flat directory does not follow the simple index protocol, you need to use <code>UV_FIND_LINKS=http://localhost:8000</code> for a flat index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tonnico">@tonnico</a> on 2025-08-04 09:44</div>
+            <div class="timeline-body"><p>I try to make a minimal example. This same problem occure, when I add a JFrog Artifactory repo in <code>UV_INDEX</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tonnico">@tonnico</a> on 2025-08-05 15:40</div>
+            <div class="timeline-body"><p>Adding <code>UV_FIND_LINKS=http://localhost:8000</code> results in the same error:</p>
+<pre><code>❯ uv sync
+Resolved 1 package in 14ms
+Audited in 0.07ms
+❯ uv add ruff
+  × No solution found when resolving dependencies:
+  ╰─▶ Because ruff was not found in the package registry and your project depends on ruff, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-05 15:57</div>
+            <div class="timeline-body"><p>Can you provide a minimal example with all commands and files you used to setup the index? It works for me locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-08-05 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-08-05 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tonnico">@tonnico</a> on 2025-08-05 16:26</div>
+            <div class="timeline-body"><p>I have normally a private index, where i use a <code>.netrc</code> to authorize. However, the super simple local index creates the same issue.<br />
+Maybe you can create a more complex local private index?</p>
+<pre><code class="language-bash">❯ uv init foo
+Initialized project `foo` at `/Users/nico/projects/foo`
+❯ cd foo
+❯ export UV_INDEX=artifactory=https://artifactory.example.com/artifactory/api/pypi/custom-local/simple
+❯ uv add ruff
+Using CPython 3.13.5
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because ruff was not found in the package registry and your project depends on ruff, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tonnico">@tonnico</a> on 2025-08-05 17:48</div>
+            <div class="timeline-body"><p>I just noticed, that an index without a name will work.</p>
+<p>So this is ok:</p>
+<pre><code>❯ export UV_INDEX=http://localhost:8000
+❯ uv add ruff
+Resolved 2 packages in 19ms
+Installed 1 package in 4ms
+ + ruff==0.12.7
+</code></pre>
+<p>while this is not</p>
+<pre><code>❯ export UV_INDEX=local=http://localhost:8000
+❯ uv add ruff
+  × No solution found when resolving dependencies:
+  ╰─▶ Because ruff was not found in the package registry and your project depends on ruff&gt;=0.12.7, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tonnico">@tonnico</a> on 2025-08-06 06:36</div>
+            <div class="timeline-body"><p>please try this minimal example</p>
+<p>for the simple local index</p>
+<pre><code class="language-bash">mkdir local-pypi
+cd local-pypi
+cat &lt;&lt;EOL &gt;index.html
+&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;a href=&quot;/frob/&quot;&gt;frob&lt;/a&gt;
+    &lt;a href=&quot;/spamspamspam/&quot;&gt;spamspamspam&lt;/a&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+EOL
+python -m http.server
+</code></pre>
+<p>create a new uv project</p>
+<pre><code class="language-bash">uv init foo
+cd foo
+</code></pre>
+<p>add an index with name <code>local</code> and try install ruff will fail</p>
+<pre><code class="language-bash"># cleanup env
+unset UV_DEFAULT_INDEX
+unset UV_INDEX
+uv remove ruff &amp;&gt; /dev/null | true
+
+export UV_INDEX=local=http://localhost:8000
+uv add ruff
+</code></pre>
+<p>add an index without a name will not fail</p>
+<pre><code class="language-bash"># cleanup env
+unset UV_DEFAULT_INDEX
+unset UV_INDEX
+uv remove ruff &amp;&gt; /dev/null | true
+
+export UV_INDEX=http://localhost:8000
+uv add ruff
+</code></pre>
+<p>add an index with name <code>local</code> <em>and</em> a default index will not fail</p>
+<pre><code class="language-bash"># cleanup env
+unset UV_DEFAULT_INDEX
+unset UV_INDEX
+uv remove ruff &amp;&gt; /dev/null | true
+
+export UV_INDEX=local=http://localhost:8000
+export UV_DEFAULT_INDEX=https://pypi.org/simple
+uv add ruff
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2025-08-06 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-08-06 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @konstin on 2025-08-06 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-06 08:38</div>
+            <div class="timeline-body"><p>Thank you for the reproducer! With this I can identify the problem.</p>
+<p>In the documentation for <code>UV_INDEX</code>/<code>--index</code>, we claim that named indexes aren't supported, while they are supported (<code>parse_indices</code> -&gt; <code>Index::from_str</code>):</p>
+<blockquote>
+<pre><code>  --index &lt;INDEX&gt;
+      The URLs to use when resolving dependencies, in addition to the default index.
+      
+      Accepts either a repository compliant with PEP 503 (the simple repository API), or a local directory laid out in the same format.
+      
+      All indexes provided via this flag take priority over the index specified by `--default-index` (which defaults to PyPI). When multiple `--index` flags are provided, earlier values take priority.
+      
+      Index names are not supported as values. Relative paths must be disambiguated from index names with `./` or `../` on Unix or `.\\`, `..\\`, `./` or `../` on Windows.
+      
+      [env: UV_INDEX=]</code></pre>
+</blockquote>
+<p>In the <code>uv add</code> code, we drop the default index if a named index is present:</p>
+<p>https://github.com/astral-sh/uv/blob/57f900ad0d1c69dfb25cf31d83a7cedbd928608d/crates/uv/src/commands/project/add.rs#L516</p>
+<p>From the logs, we indeed only use the local index when we have an index name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "can't add dependencies when UV_INDEX is set" to "Using an index name with UV_INDEX" by @konstin on 2025-08-06 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tonnico">@tonnico</a> on 2025-08-06 10:13</div>
+            <div class="timeline-body"><p>So it is the correct behaviour?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-06 10:28</div>
+            <div class="timeline-body"><p>CC @charliermarsh (https://github.com/astral-sh/uv/pull/7747): Is this intended behavior and do we need to update the docs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tonnico">@tonnico</a> on 2025-08-07 06:05</div>
+            <div class="timeline-body"><p>At least it's inconsistent, as a pyproject.toml without a default index and no <code>UV_</code> variables set behaves differently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15560.html">astral-sh/uv#15560</a> on 2025-08-27 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jgiacobbi">@jgiacobbi</a> on 2025-09-23 13:07</div>
+            <div class="timeline-body"><p>Came here to report this issue. I am relying on the <code>UV_INDEX_{name}_USERNAME/PASSWORD</code> env variables along with the named UV_INDEX format. I hope the resolution is that this behavior is not desired and the documentation is correct, specifically (emphasis mine):</p>
+<blockquote>
+<p>Equivalent to the --index command-line argument. If set, uv will use this space-separated list of URLs as <strong>additional</strong> indexes when searching for packages.</p>
+</blockquote>
+<p>Is there another intended approach for using a private index that does not mirror pypi?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

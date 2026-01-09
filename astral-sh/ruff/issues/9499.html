@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PLC2801` false positive when `__exit__` is not called - astral-sh/ruff #9499</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`PLC2801` false positive when `__exit__` is not called</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9499">#9499</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2024-01-12 22:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-01-12 22:56</div>
+            <div class="timeline-body"><p>i have a context manager that wraps another context manager, eg:</p>
+<pre><code class="language-py">from contextlib import AbstractContextManager
+
+class Wrapped:
+    def __init__(self, cm: AbstractContextManager[None]):
+        self.cm = cm
+
+    def __enter__(self):
+        self.cm.__enter__() # PLC2801: Unnecessary dunder call to `__enter__`
+
+    def __exit__(self):
+        self.cm.__exit__(None, None, None)
+</code></pre>
+<p><a href="https://play.ruff.rs/21829547-a469-480a-9335-e384a95ed6c2">playground</a></p>
+<p>in this case, i can't replace the <code>__enter__</code> call with a <code>with</code> statement because <code>__exit__</code> is not called in the same place. ruff should be able to detect cases like this where <code>__enter__</code> is called on its own</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-12 22:56</div>
+            <div class="timeline-body"><p>I believe this is fixed by #9496</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-12 22:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-02-17 06:48</div>
+            <div class="timeline-body"><p>@charliermarsh this is only resolved within dunder functions, i don't really understand why this is being reported for <code>__enter__</code> though:</p>
+<pre><code class="language-py">class A:
+    def __enter__(self):
+        print(&quot;i'm a side effect&quot;)
+
+A().__enter__()  # Unnecessary dunder call to `__enter__`
+</code></pre>
+<p>i think it looks erroneous</p>
+<p>i have a case where i have a unit test, and i need to <code>__enter__</code> an object, but not <code>__exit__</code> it, but ruff reports it as an unnecessary dunder call that should be removed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-17 07:46</div>
+            <div class="timeline-body"><p>i think in that case its still correct to report an error. you should never call <code>__enter__</code> without also calling <code>__exit__</code> in 99% of cases. i think the error message should be reworded though to something more like &quot;call to <code>__enter__</code> is unsafe. use a <code>with</code> statement instead&quot;.</p>
+<p>the current error message sounds like the call itself does nothing and should be removed, which is not the case.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid dash-separated key 'description-file' on aiosonic, pytest-watch appeared in last hour - astral-sh/uv #12434</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Invalid dash-separated key 'description-file' on aiosonic, pytest-watch appeared in last hour</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12434">#12434</a>
+        opened by <a href="https://github.com/thundergolfer">@thundergolfer</a>
+        on 2025-03-24 15:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2025-03-24 15:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Can minimally reproduce with:</p>
+<p><code>uv pip install datadog-api-client[async]~=2.33.1</code></p>
+<pre><code>Using Python 3.11.11 environment at: venv
+  × Failed to build `aiosonic==0.15.1`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      &lt;string&gt;:5: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+        File &quot;/home/ubuntu/.cache/uv/builds-v0/.tmpDeYjkr/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 334, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/ubuntu/.cache/uv/builds-v0/.tmpDeYjkr/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 304, in _get_build_requires
+          self.run_setup()
+        File &quot;/home/ubuntu/.cache/uv/builds-v0/.tmpDeYjkr/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 522, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;/home/ubuntu/.cache/uv/builds-v0/.tmpDeYjkr/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 320, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 50, in &lt;module&gt;
+        File &quot;/home/ubuntu/.cache/uv/builds-v0/.tmpDeYjkr/lib/python3.11/site-packages/setuptools/__init__.py&quot;, line 116, in setup
+          _install_setup_requires(attrs)
+        File &quot;/home/ubuntu/.cache/uv/builds-v0/.tmpDeYjkr/lib/python3.11/site-packages/setuptools/__init__.py&quot;, line 87, in _install_setup_requires
+          dist.parse_config_files(ignore_option_errors=True)
+        File &quot;/home/ubuntu/.cache/uv/builds-v0/.tmpDeYjkr/lib/python3.11/site-packages/_virtualenv.py&quot;, line 20, in parse_config_files
+          result = old_parse_config_files(self, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/ubuntu/.cache/uv/builds-v0/.tmpDeYjkr/lib/python3.11/site-packages/setuptools/dist.py&quot;, line 730, in parse_config_files
+          self._parse_config_files(filenames=inifiles)
+        File &quot;/home/ubuntu/.cache/uv/builds-v0/.tmpDeYjkr/lib/python3.11/site-packages/setuptools/dist.py&quot;, line 599, in _parse_config_files
+          opt = self._enforce_underscore(opt, section)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/ubuntu/.cache/uv/builds-v0/.tmpDeYjkr/lib/python3.11/site-packages/setuptools/dist.py&quot;, line 629, in _enforce_underscore
+          raise InvalidConfigError(
+      setuptools.errors.InvalidConfigError: Invalid dash-separated key 'description-file' in 'metadata' (setup.cfg), please use the underscore name 'description_file'
+      instead.
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `aiosonic` (v0.15.1) was included because `datadog-api-client[async]` (v2.33.1) depends on `aiosonic==0.15.1`
+</code></pre>
+<p>Also happens with <code>pytest-marker</code>. Our Github Actions based CI/CD system just started throwing these errors, so it seems that something inside <code>uv</code>, or <code>setuptools</code>, or PyPi has changed very recently.</p>
+<h3>Platform</h3>
+<p>Linux 5.15.0-1077-aws x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.6.9</p>
+<h3>Python version</h3>
+<p>Python 3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @thundergolfer on 2025-03-24 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-24 15:48</div>
+            <div class="timeline-body"><p>This is a change in the latest <code>setuptools</code> release: https://setuptools.pypa.io/en/stable/history.html#v78-0-0</p>
+<p>You can pin your <code>setuptools</code> version via <a href="https://docs.astral.sh/uv/reference/settings/#build-constraint-dependencies">build constraints</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-24 15:50</div>
+            <div class="timeline-body"><p>Let me see if I can add a dedicated hint for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2025-03-24 15:53</div>
+            <div class="timeline-body"><p>Cheers, figured it wasn't a <code>uv</code> thing but also figured others would come here and search the string &quot;Invalid dash-separated key&quot;.</p>
+<p>Thanks as always for the super fast responses! ❤</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-24 15:54</div>
+            <div class="timeline-body"><p>No worries. Someone brought this up on Discord ~30 minutes ago so I was expecting to get a few issues along these lines. Unfortunately, I think this will affect a large number of projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2025-03-24 15:59</div>
+            <div class="timeline-body"><p>The build constraint suggestion worked, so happy for you to close this if that's best 👍</p>
+<pre><code>[tool.uv]
+# Ensure that the setuptools is pinned whenever a package has a build dependency
+# on setuptools. https://github.com/astral-sh/uv/issues/12434
+build-constraint-dependencies = [&quot;setuptools~=77.0.3&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jacob-bush-shopify">@jacob-bush-shopify</a> on 2025-03-24 16:01</div>
+            <div class="timeline-body"><p>:wave: Just for search visibility, I also noticed this issue when trying to install <code>apache-airflow-providers-google</code> due to its dependency on on <code>json-merge-patch==0.2</code></p>
+<p>As above, constraining <code>setuptools</code> works well:</p>
+<pre><code class="language-toml">[tool.uv]
+build-constraint-dependencies = [&quot;setuptools&lt;78&quot;]
+</code></pre>
+<p>Edit: I have also noticed some flakiness. Will comment below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2025-03-24 16:06</div>
+            <div class="timeline-body"><p>Also looks like this fix requires a relatively new version of <code>uv</code>  (&gt;=0.6.2)</p>
+<p>https://github.com/astral-sh/uv/pull/11585</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12438.html">astral-sh/uv#12438</a> on 2025-03-24 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-24 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-03-24 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @charliermarsh on 2025-03-24 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/donielix">@donielix</a> on 2025-03-24 16:25</div>
+            <div class="timeline-body"><p>For me, the workaround setting build-constraint-dependencies doesn't work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-24 16:28</div>
+            <div class="timeline-body"><p>@donielix Can you share more details please?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-24 16:28</div>
+            <div class="timeline-body"><p>Cross-linking to https://github.com/pypa/setuptools/pull/4870</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/darkwind-noveo">@darkwind-noveo</a> on 2025-03-24 16:29</div>
+            <div class="timeline-body"><p>@zanieb having same issues. proposed solutions do not help. tried both versions of pinning setuptools and tried uv 0.6.9 and lesser version</p>
+<pre><code>[tool.uv]
+# Ensure that the setuptools is pinned whenever a package has a build dependency
+# on setuptools. https://github.com/astral-sh/uv/issues/12434
+build-constraint-dependencies = [&quot;setuptools&lt;78&quot;]
+</code></pre>
+<p>Error swith</p>
+<pre><code>        File &quot;/root/.cache/uv/builds-v0/.tmpt66fDB/lib/python3.11/site-packages/setuptools/dist.py&quot;, line 629, in _enforce_underscore
+          raise InvalidConfigError(
+      setuptools.errors.InvalidConfigError: Invalid dash-separated key 'description-file' in 'metadata' (setup.cfg), please use the underscore name 'description_file' instead.
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `direct-sdk-python3` (v1.10.0) was included because `app` (v0.1.0) depends on `direct-sdk-python3`
+</code></pre>
+<p>(    &quot;direct-sdk-python3==1.10.0&quot;, is needing to be installed, it has similar issues to pytest-watch which i had too )
+Using python3.11 <code>FROM python:3.11-buster</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-24 16:31</div>
+            <div class="timeline-body"><p>The most likely explanation is that uv is not being configured correctly. Is this a <code>pyproject.toml</code> in the current working directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/darkwind-noveo">@darkwind-noveo</a> on 2025-03-24 16:34</div>
+            <div class="timeline-body"><p>@charliermarsh yes, in current working directory, i am in the same folder is it is
+content of pyproject.toml</p>
+<pre><code class="language-toml">[tool.black]
+target-version = ['py310']
+exclude = '''
+/(
+  | migrations
+)/
+'''
+
+# [[tool.uv.index]]
+# name = &quot;our_pypi&quot;
+# url = &quot;blabla&quot;
+# default = true
+
+[tool.uv]
+# Ensure that the setuptools is pinned whenever a package has a build dependency
+# on setuptools. https://github.com/astral-sh/uv/issues/12434
+build-constraint-dependencies = [&quot;setuptools&lt;78&quot;]
+
+[project]
+name = &quot;lyria&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;direct-sdk-python3==1.10.0&quot;,
+    # other stuff
+]
+</code></pre>
+<p>Installed in docker as</p>
+<pre><code class="language-docker">FROM python:3.11-buster AS builder
+
+# Install uwsgi
+RUN pip install uv==0.6.9 setuptools~=77.0.3
+
+# Setup working directory
+RUN mkdir /code
+WORKDIR /code
+
+# Install requirements (doing this before copying code improves caching)
+ENV UV_PYTHON_PREFERENCE=only-system
+ENV UV_PROJECT_ENVIRONMENT=/usr/local
+COPY pyproject.toml uv.lock /code/
+RUN uv sync --frozen
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/donielix">@donielix</a> on 2025-03-24 16:35</div>
+            <div class="timeline-body"><p>I have the pyproject.toml file in the root of the repo, and all the configurations seems to be ok. The only difference is that we need to use a custom artifactory (JFrog).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-24 16:37</div>
+            <div class="timeline-body"><p>We must not be propagating these in <code>uv sync</code> somewhere. I'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jacob-bush-shopify">@jacob-bush-shopify</a> on 2025-03-24 16:38</div>
+            <div class="timeline-body"><p>I think there may be an issue with <code>uv sync</code></p>
+<p>Here is a <code>pyproject.toml</code> (<code>.python-version</code> is 3.12)</p>
+<pre><code class="language-toml">[project]
+name = &quot;test-uv-sync-with-setuptools&quot;
+version = &quot;0.1.0&quot;
+dependencies = [
+    &quot;apache-airflow-providers-google&gt;=14.0.0&quot;,
+]
+
+[tool.uv]
+build-constraint-dependencies = [&quot;setuptools&lt;78&quot;]
+</code></pre>
+<pre><code>&gt; uv cache clean
+&gt; rm -r .venv
+&gt; uv sync
+[...]
+  × Failed to build `json-merge-patch==0.2`
+[...]
+</code></pre>
+<p>However, I can use <code>uv pip install</code> to install this without issue</p>
+<pre><code>❯ uv pip install json-merge-patch
+Resolved 1 package in 769ms
+      Built json-merge-patch==0.2
+Prepared 1 package in 290ms
+Installed 1 package in 1ms
+ + json-merge-patch==0.2
+</code></pre>
+<p>After which I can <code>uv sync</code></p>
+<pre><code>❯ uv sync
+Resolved 238 packages in 0.62ms
+      Built python-nvd3==0.16.0
+      Built lazy-object-proxy==1.10.0
+Prepared 228 packages in 5.08s
+Installed 235 packages in 370ms
+ + aiofiles==24.1.0
+ + aiohappyeyeballs==2.6.1
+ + aiohttp==3.11.14
+[...]
+ + wtforms==3.2.1
+ + yarl==1.18.3
+ + zipp==3.21.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vient">@vient</a> on 2025-03-24 16:39</div>
+            <div class="timeline-body"><p>Manually installed <code>setuptools==77.0.3</code> in empty ubuntu:24.04 docker, <code>python -m uv pip install gputil</code> still does not work. <code>python -m pip install gputil</code> works with any setuptools version. I'm using python 3.11.11, uv 0.6.9, pip 25.0.1.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-24 16:41</div>
+            <div class="timeline-body"><p>Yeah we're missing one spot in <code>uv sync</code>. I will fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12437.html">astral-sh/uv#12437</a> on 2025-03-24 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../olirice/alembic_utils/issues/153.html">olirice/alembic_utils#153</a> on 2025-03-24 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12440.html">astral-sh/uv#12440</a> on 2025-03-24 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/darkwind-noveo">@darkwind-noveo</a> on 2025-03-24 16:49</div>
+            <div class="timeline-body"><p>in the mean time, thanks for workaround adviced</p>
+<pre><code class="language-docker">FROM python:3.11-buster AS builder
+
+# Install uwsgi
+RUN pip install uv setuptools==77.0.3
+
+# Install requirements (doing this before copying code improves caching)
+ENV UV_PYTHON_PREFERENCE=only-system
+ENV UV_PROJECT_ENVIRONMENT=/usr/local
+COPY pyproject.toml uv.lock /code/
+RUN pip install direct-sdk-python3==1.10.0
+RUN uv sync --frozen
+</code></pre>
+<p>Just preinstalled problematic package separately</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-24 16:50</div>
+            <div class="timeline-body"><p>Ah yeah. Alternatively, if you build it in advance with <code>uv pip</code>, then we should be able to read it from the cache in <code>uv sync</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-24 16:52</div>
+            <div class="timeline-body"><p>I've posted another workaround in https://github.com/astral-sh/uv/issues/12440</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jacob-bush-shopify">@jacob-bush-shopify</a> on 2025-03-24 16:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Manually installed <code>setuptools==77.0.3</code> in empty ubuntu:24.04 docker, <code>python -m uv pip install gputil</code> still does not work. <code>python -m pip install gputil</code> works with any setuptools version. I'm using python 3.11.11, uv 0.6.9, pip 25.0.1.</p>
+</blockquote>
+<p>@vient you still need to set the build constraint. If you don't want to set up a file you can pipe it in</p>
+<pre><code>echo &quot;setuptools&lt;78&quot; | uv pip install -b - gputil
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../crytic/solc-select/pulls/227.html">crytic/solc-select#227</a> on 2025-03-24 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ethereum/execution-spec-tests/pulls/1345.html">ethereum/execution-spec-tests#1345</a> on 2025-03-24 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/setuptools/issues/4910.html">pypa/setuptools#4910</a> on 2025-03-24 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12446.html">astral-sh/uv#12446</a> on 2025-03-24 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jacob-bush-shopify">@jacob-bush-shopify</a> on 2025-03-24 20:10</div>
+            <div class="timeline-body"><p>Setuptools rolled back the change</p>
+<p>https://github.com/pypa/setuptools/blob/main/NEWS.rst</p>
+<blockquote>
+<p>Postponed removals of deprecated dash-separated and uppercase fields in setup.cfg. All packages with deprecated configurations are advised to move before 2026. (<a href="https://github.com/pypa/setuptools/pull/4911">#4911</a>)</p>
+</blockquote>
+<p>I can no longer reproduce this bug myself.
+I expect that the workarounds discussed above are no longer needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-24 20:13</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-03-25 01:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

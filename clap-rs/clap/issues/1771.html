@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>impl Send for App - clap-rs/clap #1771</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>impl Send for App</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1771">#1771</a>
+        opened by <a href="https://github.com/amesgen">@amesgen</a>
+        on 2020-03-31 00:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/amesgen">@amesgen</a> on 2020-03-31 00:52</div>
+            <div class="timeline-body"><h3>Use case</h3>
+<p>Sometimes, it is useful to run clap in &quot;daemon-mode&quot;, e.g. for a chat bot. If concurrency comes in, having <code>App: Send</code> would be useful, e.g. as it enables cloning the <code>App</code> for concurrent tasks or having <code>Mutex&lt;App&gt;: Send + Sync</code>.</p>
+<h3>Potential solutions</h3>
+<ol>
+<li>Use <code>Arc</code> instead of <code>Rc</code> <a href="https://github.com/clap-rs/clap/blob/37889c661134e8286102f7d2ab3267965d010403/src/build/arg/mod.rs#L28-L29">here</a>, and require <code>Send + Sync</code> for <code>F</code> in <code>Arg::validator{_os}</code>.</li>
+</ol>
+<ul>
+<li>Performance: might be impacted (awaiting benchmark set up)</li>
+<li>Breaking: Yes, <code>F</code> now requires<code>Send + Sync</code>.</li>
+<li>No new feature is introduced.</li>
+</ul>
+<ol start="2">
+<li>Put 1. behind a feature flag (<code>app-send</code>).</li>
+</ol>
+<ul>
+<li>Performance: only impacted if necessary</li>
+<li>Breaking: No</li>
+<li>Feature is additive: No, if one crate without <code>app-send</code> uses a non-<code>Send + Sync</code> <code>validator{_os}</code> and another crate enables <code>app-send</code>.</li>
+</ul>
+<ol start="3">
+<li>As 2., but also change the bounds for <code>F</code> when <code>app-send</code> is <em>not</em> enabled.</li>
+</ol>
+<ul>
+<li>Performance: only impacted if necessary</li>
+<li>Breaking: Yes, <code>F</code> now requires<code>Send + Sync</code>.</li>
+<li>Feature is additive: Yes (unless someone depends on <code>App</code> *not being <code>Send</code> (very contrived))</li>
+</ul>
+<ol start="4">
+<li>Something different, maybe even enabling <code>App: Sync</code>.</li>
+</ol>
+<h3>Implementation</h3>
+<p>I implemented 2. <a href="https://github.com/amesgen/clap/commit/2e8ce0d70f21fbe725fe97669a6014b24c0a2c98">here</a> (documentation not yet updated).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @amesgen on 2020-03-31 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: other</span> added by @CreepySkeleton on 2020-03-31 10:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: breaking change</span> added by @CreepySkeleton on 2020-03-31 10:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @CreepySkeleton on 2020-03-31 10:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @CreepySkeleton on 2020-03-31 10:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @CreepySkeleton on 2020-03-31 10:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @pksunkara on 2020-04-01 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-01 14:51</div>
+            <div class="timeline-body"><p>@amesgen Would love to see a PR. We very much do want this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-01 15:33</div>
+            <div class="timeline-body"><p>@pksunkara We want this, indeed, but please consider that it would penalize the common cases in favor of uncommon ones since atomics aren't exactly free. I would like to wait until after we have the benchmarking set up. Also, features are supposed to be purely additive, and this change alters our API (<code>Send + Sync</code> part); so I would like to <strong>not</strong> introduce a feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amesgen">@amesgen</a> on 2020-04-01 16:25</div>
+            <div class="timeline-body"><p>I updated the descriptions of the potential solutions above (from <a href="https://gitter.im/kbknapp/clap-rs?at=5e8333418058e148e938d43a">Gitter</a>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-01 16:54</div>
+            <div class="timeline-body"><p>Yeah, definitely wait for benchmarking to finish. But I am pretty sure we can make this feature additive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeXitoi">@TeXitoi</a> on 2020-04-01 17:37</div>
+            <div class="timeline-body"><p>I've lightly looked at the usage of Rc, and that's just to have Clone for Arg with the validator functions. Thus I don't think there will really be any performance implication ti switching to Arc.</p>
+<p>But it will change the interface a bit: with Arc, the function provided by the user must be Send+Sync. Not really a big deal IMHO, as most validator should just be plain functions 99.9% of the time (they already need 'static).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dylan-DPC-zz">@Dylan-DPC-zz</a> on 2020-04-01 17:39</div>
+            <div class="timeline-body"><p>We can definitely expose a feature that allows you to add some concurrency bits to it, but this won't happen for the 3.0 release. It will happen later. Thanks for the request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeXitoi">@TeXitoi</a> on 2020-04-01 17:42</div>
+            <div class="timeline-body"><p>It can't be implemented by a feature, as activating the 'send-sync' feature will break code with validators not Send+Sync, so that's 3.0 or 4.0.</p>
+<p>The only solution would be to force the Validators to be Send+Sync for 3.0, even if we still use Rc and Arg is not Send+Sync</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-01 18:26</div>
+            <div class="timeline-body"><blockquote>
+<p>We can definitely expose a feature that allows you to add some concurrency bits to it</p>
+</blockquote>
+<p>Honestly, I don't see need for a feature for such a small deal, we've got plenty of them already.</p>
+<blockquote>
+<p>but this won't happen for the 3.0 release. It will happen later. T</p>
+</blockquote>
+<p>Why not?</p>
+<hr />
+<p>If it's only about cloning <code>Arg</code>, I think we can proceed even without benches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-18 18:12</div>
+            <div class="timeline-body"><p>Yay! Benches are set up!</p>
+<p>Btw, maybe just require the validators (and possibly other user-facing hooks as we introduce them) to be <code>Send + Sync + Clone</code>? I <em>guess</em> most of those functions are clonable and sendable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @CreepySkeleton by @CreepySkeleton on 2020-06-30 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1998.html">clap-rs/clap#1998</a> on 2020-07-02 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-08-12 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2305.html">clap-rs/clap#2305</a> on 2021-01-22 10:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

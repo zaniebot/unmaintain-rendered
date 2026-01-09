@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;uv init --package&quot; modifies the package name - astral-sh/uv #12046</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;uv init --package&quot; modifies the package name</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12046">#12046</a>
+        opened by <a href="https://github.com/fconil">@fconil</a>
+        on 2025-03-07 14:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fconil">@fconil</a> on 2025-03-07 14:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi,</p>
+<p>I want to use the same name for &quot;package name&quot; and &quot;import package&quot;.</p>
+<p>Using different names confuses me and may cause security issues.</p>
+<blockquote>
+<p>In October 2022 <a href="https://pypi.org/project/sklearn/">sklearn</a> downloads were about 1/5 of the <a href="https://pypi.org/project/scikit-learn/">scikit-learn</a> downloads on PyPI so a lot of people are using it</p>
+</blockquote>
+<p>If I try to use an underscore in the package name :</p>
+<pre><code class="language-bash">$ uv init --package a_b
+Initialized project `a-b` at `/home/fconil/Progs/python/packaging/uv-0.6.3/a_b`
+</code></pre>
+<p><code>uv init --package</code> replaces underscore with dash for package name :</p>
+<pre><code class="language-toml">[project]
+name = &quot;a-b&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;Françoise Conil&quot;, email = &quot;fcodvpt@gmail.com&quot; }
+]
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[project.scripts]
+a-b = &quot;a_b:main&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>I am not a big fan of using underscore, but dash can't be use in import package names.</p>
+<p>I am aware of #5255.</p>
+<p>Regards
+nb : I'm not part of sci-learn team</p>
+<h3>Platform</h3>
+<p>Ubuntu 22.04</p>
+<h3>Version</h3>
+<p>0.6.3</p>
+<h3>Python version</h3>
+<p>Python 3.10.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @fconil on 2025-03-07 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-07 15:47</div>
+            <div class="timeline-body"><p>For clarity, <code>a-b</code> and <code>a_b</code> are equivalent package names from a Python packaging perspective. Package names have a canonical form, and we use that canonical form everywhere. Notice that https://pypi.org/project/scikit_image/ redirects to https://pypi.org/project/scikit-image/. Those names are &quot;equivalent&quot;, though only one is correct as a &quot;module name&quot;.</p>
+<p>We could consider using the verbatim name in <code>uv init</code>. I'd prefer not to but am open to more opinions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-03-07 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2025-03-07 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fconil">@fconil</a> on 2025-03-07 17:22</div>
+            <div class="timeline-body"><p>You're right, I am putting &quot;Name Normalization&quot; documentation link for discussion : <a href="https://packaging.python.org/en/latest/specifications/name-normalization/#name-normalization">https://packaging.python.org/en/latest/specifications/name-normalization/#name-normalization</a></p>
+<p>So this is not a bug,  <code>uv init --package</code> respects the specifications :/</p>
+<p>This is a 2015 specification, and it means we will systematically have different names for &quot;package name&quot; and &quot;import package&quot;. I wonder if the security problem could lead to a change but this is more a PyPA question.</p>
+<p>I just found one thread about &quot;Name normalization&quot; on Python forum : <a href="https://discuss.python.org/t/revisiting-distribution-name-normalization/12348">Revisiting distribution name normalization</a></p>
+<p>I agree to wait for more opinions.</p>
+<p>Thanks for your prompt reply, I will try to look more closely to the forum discussion then ask if it is not clear</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amal-khailtash">@amal-khailtash</a> on 2025-03-12 15:11</div>
+            <div class="timeline-body"><p>I and a few others have encountered similar issue with some packages that also include C-API.  For example, <code>CPyCppyy</code> will be converted to <code>cpycppyy</code> which messes with the include directive in one of their C-API files that uses: <code>include &quot;CPyCppyy/API.h</code></p>
+<p>Not sure why this normalization is needed?  Shouldn't <code>uv</code> be <code>pip</code> replaceable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../wlav/cppyy/issues/292.html">wlav/cppyy#292</a> on 2025-03-12 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-12 15:13</div>
+            <div class="timeline-body"><p>I don't think this is related to that issue. This is specific to <code>uv init</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fconil">@fconil</a> on 2025-03-13 11:40</div>
+            <div class="timeline-body"><p>I tried other packaging tools (see below), to see if there was a common behaviour as I did not really get a clear answer from the thread.</p>
+<p>Do you think I should ask the Python packaging forum ?</p>
+<p>I am really not convinced to have different names for distribution package and import package.</p>
+<h2>Hath 1.14.0</h2>
+<p>Hatch modifies the name of the distribution package :</p>
+<pre><code class="language-bash">$ hatch new a_b
+a-b
+├── src
+│   └── a_b
+│       ├── __about__.py
+│       └── __init__.py
+├── tests
+│   └── __init__.py
+├── LICENSE.txt
+├── README.md
+└── pyproject.toml
+</code></pre>
+<p><code>pyproject.toml</code> uses the modified name :</p>
+<pre><code class="language-toml">[project]
+name = &quot;a-b&quot;
+dynamic = [&quot;version&quot;]
+description = ''
+</code></pre>
+<h2>Flit 3.11.0</h2>
+<p>Flit does not generate a skeleton, it can create a <code>pyproject.toml</code> files using my answers :</p>
+<pre><code class="language-bash">$ flit init
+Module name [a_b]:
+Author [F. CONIL]:
+…
+</code></pre>
+<p><code>pyproject.toml</code> uses the choosen name :</p>
+<pre><code class="language-toml">[project]
+name = &quot;a_b&quot;
+dynamic = [&quot;version&quot;, &quot;description&quot;]
+…
+</code></pre>
+<h2>Poetry 2.1.1</h2>
+<p><code>poetry new</code> does not create the base directory</p>
+<pre><code class="language-bash">$ mkdir a_b
+$ cd a_b
+$ poetry new a_b
+Created package a_b in a_b
+
+$ tree a_b
+a_b
+├── pyproject.toml
+├── README.md
+├── src
+│   └── a_b
+│       └── __init__.py
+└── tests
+    └── __init__.py
+</code></pre>
+<p>but it modifies the project name :</p>
+<pre><code class="language-toml">[project]
+name = &quot;structify-net&quot;
+version = &quot;0.1.0&quot;
+description = &quot;&quot;
+…
+</code></pre>
+<h2>PDM 2.22.4</h2>
+<p><code>pdm init</code>  does not create the base directory</p>
+<pre><code class="language-bash">$ mkdir a_b
+$ cd a_b
+
+$ pdm init
+Creating a pyproject.toml for PDM...
+Please enter the Python interpreter to use
+ 0. cpython@3.10 (/usr/bin/python3)
+ …
+Please select (0): 0
+Virtualenv is created successfully at …/PDM-2.22.4/a_b/.venv
+Project name (a_b):
+Project version (0.1.0):
+…
+</code></pre>
+<p><code>pyproject.toml</code> uses the choosen name :</p>
+<pre><code class="language-toml">[project]
+name = &quot;a_b&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Network Generation with controlled structure&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-15 00:59</div>
+            <div class="timeline-body"><p>I still think is the right approach, but it's also something that tools can decide for themselves IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-15 00:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

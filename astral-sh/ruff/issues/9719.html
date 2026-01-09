@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOML parse error source reference is unhelpful - astral-sh/ruff #9719</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>TOML parse error source reference is unhelpful</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9719">#9719</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-01-30 20:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-30 20:47</div>
+            <div class="timeline-body"><p>e.g. in https://github.com/astral-sh/ruff/issues/9718 the provided source context is one line early and in a simple example</p>
+<pre><code class="language-toml">[tool.ruff]
+err = &quot;foo&quot;
+</code></pre>
+<pre><code>❯ ruff check
+ruff failed
+  Cause: Failed to parse /Users/mz/eng/src/astral-sh/ruff/pyproject.toml
+  Cause: TOML parse error at line 1, column 1
+  |
+1 | [tool.ruff]
+  | ^^^^^^^^^^^
+unknown field `err`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-01-30 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2024-01-30 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> removed by @zanieb on 2024-01-30 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-31 22:17</div>
+            <div class="timeline-body"><p>Off-by-one error? Couldn't be us!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-31 22:27</div>
+            <div class="timeline-body"><p>This actually might be intended, like Serde is saying there's an unknown field <em>in that struct</em>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-31 22:36</div>
+            <div class="timeline-body"><p>Hm true if I do</p>
+<pre><code class="language-toml">[tool.ruff]
+preview = true
+err = &quot;what?&quot;
+</code></pre>
+<p>we get the same thing</p>
+<pre><code>❯ ruff check .
+ruff failed
+  Cause: Failed to parse /Users/mz/eng/src/astral-sh/ruff/pyproject.toml
+  Cause: TOML parse error at line 1, column 1
+  |
+1 | [tool.ruff]
+  | ^^^^^^^^^^^
+unknown field `err`
+</code></pre>
+<p>But what about the linked issue where it highlights <code>select</code>??</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-31 22:38</div>
+            <div class="timeline-body"><p>Ah they're using a <code>ruff.toml</code>.. it highlights the first line there</p>
+<pre><code class="language-toml">preview = true
+err = &quot;what&quot;
+</code></pre>
+<pre><code>❯ ruff check . --config ruff.toml
+ruff failed
+  Cause: Failed to parse /Users/mz/eng/src/astral-sh/ruff/ruff.toml
+  Cause: TOML parse error at line 1, column 1
+  |
+1 | preview = true
+  | ^^^^^^^^^^^^^^
+unknown field `err`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "TOML parse error source reference is off by one line" to "TOML parse error source reference is unhelpful" by @zanieb on 2024-01-31 22:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-01 15:59</div>
+            <div class="timeline-body"><p>Some chance that we have no control over this, not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11865.html">astral-sh/ruff#11865</a> on 2024-06-14 00:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-26 03:16</div>
+            <div class="timeline-body"><p>I suspect this is from using <code>flatten</code>. In uv, we have a fully expanded version (<code>OptionsWire</code>) that we then translate to <code>Options</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14640.html">astral-sh/ruff#14640</a> on 2024-11-27 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-10 19:27</div>
+            <div class="timeline-body"><p>Ruff only uses one flatten but it's a struct with a fair amount of options, but they change rarely. It might be worth to copy them if it helps improve the error messages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-10 19:28</div>
+            <div class="timeline-body"><p>I'm in favor but I know it's annoying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-10 19:29</div>
+            <div class="timeline-body"><p>Yeah, it's like 400 lines of code :D</p>
+<p>https://github.com/astral-sh/ruff/blob/1ef0f615f173e5899fe0e3cfd08e015ff5565e4b/crates/ruff_workspace/src/options.rs#L535-L935</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-10 19:30</div>
+            <div class="timeline-body"><p>Could we hack something with <a href="https://doc.rust-lang.org/std/macro.include.html"><code>include</code></a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15414.html">astral-sh/ruff#15414</a> on 2025-01-11 06:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-11 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-11 16:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

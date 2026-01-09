@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow setting virtual environment options in `pyproject.toml` - astral-sh/uv #5737</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow setting virtual environment options in `pyproject.toml`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/5737">#5737</a>
+        opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a>
+        on 2024-08-02 21:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-02 21:06</div>
+            <div class="timeline-body"><p>When running <code>uv venv</code>, the user may specify the options <code>--system-site-packages</code> and <code>--relocatable</code>. These values persist in <code>.venv/pyenv.cfg</code> as shown:</p>
+<pre><code class="language-txt">home = C:\WinPython\python-3.12.4.amd64
+implementation = CPython
+uv = 0.2.33
+version_info = 3.12.4
+include-system-site-packages = true
+relocatable = true
+</code></pre>
+<p>The <code>uv sync</code> command implicitly creates a virtual environment in <code>.venv</code>, which is awesome. However, it is not possible to pass these options to <code>uv sync</code> or set them in the <code>tool.uv</code> section (or a <code>tool.uv.venv</code> section) of  <code>pyproject.toml</code>. The virtual environment created with <code>uv sync</code> always defaults to setting <code>include-system-site-package</code> and <code>relocatable</code> to <code>false</code>.</p>
+<p>I propose that <code>uv</code> be capable of reading these from <code>pyproject.toml</code>, and also when passed to <code>uv sync</code>.</p>
+<p>Maybe a generalized approach to file-based configuration (both <code>uv.toml</code> and <code>pyproject.toml</code>) of <code>uv</code> behavior could be to support a section corresponding to each <code>uv</code> command for all available options:</p>
+<p>Example <code>pyproject.toml</code> demonstrating command customization:</p>
+<pre><code class="language-toml">[tool.uv]
+no-build-isolation = true
+dev-dependencies = []
+
+[uv.tool.venv]
+relocatable = true
+system-site-packages = true
+
+[uv.tool.sync]
+relocatable = true
+system-site-packages = true
+all-extras = true
+
+# Generalization
+[uv.tool.command]
+option = value
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-08-02 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-02 21:08</div>
+            <div class="timeline-body"><p>This seems reasonable to me though want a second opinion before adding any configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-02 21:18</div>
+            <div class="timeline-body"><p>A more elegant and concise alternative (similar to <code>pdm</code> as shown here - <a href="https://pdm-project.org/en/latest/usage/config/#passing-constant-arguments-to-every-pdm-invocation">passing constant arguments to every pdm invocation</a>):</p>
+<pre><code class="language-toml">[tool.uv.options]
+venv = [&quot;--relocatable&quot;, &quot;--system-site-packages&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5811.html">astral-sh/uv#5811</a> on 2024-08-06 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7931.html">astral-sh/uv#7931</a> on 2024-10-05 01:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-05 14:51</div>
+            <div class="timeline-body"><p>I'm kind of hesitant, though I see the benefit. I think it adds a lot of complexity to the configuration and implementation to allow settings to be defined per-command too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2024-12-10 17:40</div>
+            <div class="timeline-body"><p>I am still trying to find where I can enable the <code>seed</code> option inside the config as it is causing lots of compatibility issues with lots of tools.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-10 18:13</div>
+            <div class="timeline-body"><p>@ssbarnea please provide more details, what kind of compatibility issues with what tools? Concrete examples are needed to help motivate the change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RmStorm">@RmStorm</a> on 2024-12-16 15:12</div>
+            <div class="timeline-body"><p>I have a problem with this as well. Basically if the venv gets created by <code>uv</code>, the flags in <code>pyvenv.cfg</code> are wrong and the code doesn't work. I need apt installed packages on raspberry for the pins to be available in python so <code>uv add</code> or <code>pip install</code> will yield a broken setup. This means that I must run <code>uv venv --system-site-packacges .venv</code> before I can run the code like so: <code>uv run code.py</code>. It would be a lot easier to transfer ownership of this to my less software inclined colleagues if they could just <code>uv run</code> things!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9996.html">astral-sh/uv#9996</a> on 2025-01-10 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12429.html">astral-sh/uv#12429</a> on 2025-04-01 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2025-05-07 22:08</div>
+            <div class="timeline-body"><p>uv 0.7.3</p>
+<p>Given a python-project and a pyproject.toml,
+is there currently a way to reliably always create the venv with --relocatable?</p>
+<p>I. e. without manually creating the venv and typing command-line options each time?
+(I did not find any other way in the docs)</p>
+<p>IMHO this would indeed be a nice syntax:</p>
+<pre><code>...
+[uv.tool.venv]
+relocatable = true
+...
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11852.html">astral-sh/uv#11852</a> on 2025-05-14 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13994.html">astral-sh/uv#13994</a> on 2025-06-12 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9755.html">astral-sh/uv#9755</a> on 2025-06-29 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15934.html">astral-sh/uv#15934</a> on 2025-12-11 18:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

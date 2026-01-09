@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv cache clean fails after build failures - astral-sh/uv #3515</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv cache clean fails after build failures</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3515">#3515</a>
+        opened by <a href="https://github.com/yeswalrus">@yeswalrus</a>
+        on 2024-05-10 18:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yeswalrus">@yeswalrus</a> on 2024-05-10 18:30</div>
+            <div class="timeline-body"><p>Related to https://github.com/astral-sh/uv/issues/3512</p>
+<p>When builds fail, it appears that uv cache can get into a corrupted state where a particular directory exists, and is owned, but is missing +rx permissions and so cannot be deleted.</p>
+<p>Repro steps</p>
+<ol>
+<li>Run</li>
+</ol>
+<pre><code>#!/bin/bash
+make_venv(){
+    uv venv $1
+    source $1/bin/activate
+    uv pip install jaeger-client
+}
+
+for i in {1..8}
+do
+   make_venv $1/$i &amp;
+done
+</code></pre>
+<ol start="2">
+<li>run <code>uv cache clean</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3512.html">astral-sh/uv#3512</a> on 2024-05-10 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @AlexWaygood on 2024-05-10 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-10 18:33</div>
+            <div class="timeline-body"><p>Can you share the permission flags on the file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-10 18:33</div>
+            <div class="timeline-body"><p>We already have handling for read-only files (we try to delete; if it fails and the file is read-only, we change permissions and try again), so wondering if there's something else...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yeswalrus">@yeswalrus</a> on 2024-05-10 22:54</div>
+            <div class="timeline-body"><p>The file it fails on is actually a directory, so that may have been it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yeswalrus">@yeswalrus</a> on 2024-05-11 01:02</div>
+            <div class="timeline-body"><pre><code>Clearing cache at: ~/.cache/uv
+error: Failed to clear cache at: ~.cache/uv
+  Caused by: IO error for operation on ~/.cache/uv/built-wheels-v3/index/6024232a22aa81c8/jaeger-client/4.3.0/b1Sqzocp-Y-aYlYPEp_R4/jaeger-client-4.3.0.tar.gz/build/bdist.linux-x86_64/wheel/jaeger_client: Permission denied (os error 13)
+  Caused by: Permission denied (os error 13)
+</code></pre>
+<p>ls -la on that file shows:</p>
+<pre><code>d-w------- 2 user user 4096 May 10 18:00 jaeger_client
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-11 01:13</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-11 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-05-11 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-11 16:30</div>
+            <div class="timeline-body"><p>Thanks, reproduced and think I have a fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3524.html">astral-sh/uv#3524</a> on 2024-05-11 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-11 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yeswalrus">@yeswalrus</a> on 2024-05-11 17:34</div>
+            <div class="timeline-body"><p>Thanks for the prompt resolution!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

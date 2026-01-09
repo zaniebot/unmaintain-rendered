@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Line break not occuring on type annotations whereas black does - astral-sh/ruff #11791</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Line break not occuring on type annotations whereas black does</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11791">#11791</a>
+        opened by <a href="https://github.com/jonathan-hill-visasq">@jonathan-hill-visasq</a>
+        on 2024-06-07 04:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jonathan-hill-visasq">@jonathan-hill-visasq</a> on 2024-06-07 04:00</div>
+            <div class="timeline-body"><h2>Issue Description</h2>
+<p>I've noticed a deviation from the black formatter, which I can't find accounted for in either the <a href="https://docs.astral.sh/ruff/formatter/black/">known deviations</a> page, or the <a href="https://github.com/astral-sh/ruff/issues?q=is%3Aopen+is%3Aissue+label%3Aformatter">issue tracker</a>.</p>
+<p>It occurs on assignments where</p>
+<ul>
+<li>there is a type annotation</li>
+<li>the maximum line length is exceeded in the middle of the type annotation.</li>
+</ul>
+<p>Black (24.4.2), will parenthesize the type annotation and break the line, ensuring no lines exceed the line length.
+Ruff (0.4.7) however keeps the assignment all one line. Even if the file is formatted by black, if <code>ruff format</code> is run after, it removes the parenthesis and puts it all back on one (too long) line.</p>
+<p>Black started parenthesizing and line breaking on type annotations as of version <a href="https://black.readthedocs.io/en/stable/change_log.html#id18">24.1.0</a>, specifically PR <a href="https://github.com/psf/black/pull/3899">3899</a>.</p>
+<h2>Example</h2>
+<p>Example (default line-length of 88) - script.py(extract):</p>
+<pre><code># input
+a_member_with_long_long_name: TypeNameWhichIsLongEnoughToCauseLineLengthToBeOverLimit = 12345
+
+# ruff-format output
+a_member_with_long_long_name: TypeNameWhichIsLongEnoughToCauseLineLengthToBeOverLimit = 12345
+
+# black output
+a_member_with_long_long_name: (
+    TypeNameWhichIsLongEnoughToCauseLineLengthToBeOverLimit
+) = 12345
+
+</code></pre>
+<p>commands used:</p>
+<ul>
+<li><code>black script.py</code> <code>ruff-format script.py</code></li>
+</ul>
+<h2>Related Links/Discussions</h2>
+<p>The original <a href="https://github.com/psf/black/issues/2316">issue</a> that led to the black change (v24.1.0, PR#3899) , only seems to specify type compound type annotations- ie <code>int | str</code>, rather than <code>int</code> or <code>str</code>. When I try a compound type annotation with ruff, it does indeed parenthesize and line-break the same as black.
+So the deviation only occurs when the type annotation is comprised of a single type only.</p>
+<p>Is this deviation intentional? Given that the original black issue only seems to reference compound type annotations, I guess it could be argued that the ruff output is now &quot;correct&quot; - but personally I would strongly prefer having the annotation parenthesized and line-broken</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-06-07 05:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-07 06:13</div>
+            <div class="timeline-body"><p>Hi, thanks for the very detailed write up and linking to all relevant issues!</p>
+<p>A few more observations to the deviation:</p>
+<p>For the given example, the variable name and the type annotation exceed the line length limit. This is even before the value begins.</p>
+<p>Both Ruff and Black format the assignment the same if the variable name and type annotation fit into the line length</p>
+<pre><code class="language-python">a_member_with_long_long_name: TypeNameWhichIsLongEnoughToCauseLineLengthToBeOdddd = (
+    12345
+)
+</code></pre>
+<p>Both Ruff and Black collapse the value when parenthesizing it doesn't help fitting it in the configured line length</p>
+<pre><code class="language-python">a_member_with_long_long_name: TypeNameWhichIsLongEnoughToCauseLineLengthToBeOddd = 12345
+</code></pre>
+<p>Arguably Black's formatting is more consistent. Let's say we start with</p>
+<pre><code class="language-python">a_member_with_long_long_name: TypeNameWhichIsLongEnoughToCauseLineLengthToBeOddddddddddddddd 
+</code></pre>
+<p>Ruff and Black both parenthesize the type annotation because it exceeds the configured line length</p>
+<pre><code class="language-python">a_member_with_long_long_name: (
+    TypeNameWhichIsLongEnoughToCauseLineLengthToBeOddddddddddddddd
+)
+</code></pre>
+<p>Black keeps the parentheses when we add a value, but ruff removes them, leading to a larger diff than necessary. That's why I think should fix this, but I don't think we can before the next stable style.</p>
+<p>I'm not sure how easy this fix is, considering that the assignment expression is already fairly complicated and Black has a lot of special casing. For example, Black formats</p>
+<pre><code class="language-python">a_member_with_long_long_name: TypeNameWhichIsLongEnoughToCauseLineLengthToBeOddddddddddddddd # comment
+</code></pre>
+<p>to</p>
+<pre><code class="language-python">a_member_with_long_long_name: (
+    TypeNameWhichIsLongEnoughToCauseLineLengthToBeOddddddddddddddd  # comment
+)
+</code></pre>
+<p>which Ruff supports too. But I guess this behavior is not relevant when there's a value?</p>
+<p>https://github.com/astral-sh/ruff/blob/a6f32ddc5e9582112e76ad25039e9b080e281dce/crates/ruff_python_formatter/src/statement/stmt_ann_assign.rs#L47-L52</p>
+<p>My simple fix of replacing these lines with</p>
+<pre><code class="language-rust"> else {
+      optional_parentheses(&amp;annotation.format().with_options(Parentheses::Never))
+          .fmt(f)?;
+  }
+</code></pre>
+<p>Doesn't work because the annotation now splits before the value. So I fear we would need to integrate this into <code>left_to_right</code> somehow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2024-06-07 06:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @MichaReiser on 2024-06-07 06:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonathan-hill-visasq">@jonathan-hill-visasq</a> on 2024-06-07 06:59</div>
+            <div class="timeline-body"><p>@MichaReiser Thanks for the quick response!
+Unfortunately I'm not familiar with the ruff code base, or even rust myself, so trying to fix this would be too big of a commitment for me to take on now... but it's good to know it is a genuine deviation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-07 07:02</div>
+            <div class="timeline-body"><p>@jonathan-hill-visasq yeah sorry. It wasn't my intention to imply that you should be fixing it. I mainly added the notes to know the complexity and where to start if I get back to the issue (or someone else who's interested). But thanks for considering it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12138.html">astral-sh/ruff#12138</a> on 2024-07-01 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14143.html">astral-sh/ruff#14143</a> on 2024-11-06 23:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] support dataclasses - astral-sh/ruff #16651</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] support dataclasses</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16651">#16651</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-03-11 23:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-03-11 23:50</div>
+            <div class="timeline-body"><p><em>No description provided.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2025-03-11 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Red Knot Alpha" by @carljm on 2025-03-27 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-02 13:26</div>
+            <div class="timeline-body"><p>What do we plan here <em>in a first iteration</em>? We have no support at all for data classes, but we also don't raise a lot of false positives at the moment(?). Attribute annotations work just like for normal classes:</p>
+<pre><code class="language-py">from dataclasses import dataclass
+
+@dataclass
+class C:
+    x: int
+    y: str | None = None
+
+c = C(1, &quot;foo&quot;)  # This call is completely unchecked; so no false positives, but also no true positives
+
+reveal_type(c.x)  # revealed: int
+reveal_type(c.y)  # revealed: str | None
+</code></pre>
+<p>We currently <em>do</em> report false positives if there are generated special methods whose existence we do not model:</p>
+<pre><code class="language-py">@dataclass(order=True)
+class C:
+    x: int
+
+C(2) &gt; C(1)  # False positive: Operator `&gt;` is not supported for types `C` and `C`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-02 15:05</div>
+            <div class="timeline-body"><p>I think the highest priority item would be correctly synthesizing the <code>__init__</code> method, because if/when constructor-call-checking lands, it will cause lots of false positives on dataclasses if we don't have that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-07 10:14</div>
+            <div class="timeline-body"><p>Agreed that synthesising the <code>__init__</code> method should definitely be the highest-priority item.</p>
+<blockquote>
+<p>We currently <em>do</em> report false positives if there are generated special methods whose existence we do not model:</p>
+<p>@dataclass(order=True)
+class C:
+x: int</p>
+<p>C(2) &gt; C(1)  # False positive: Operator <code>&gt;</code> is not supported for types <code>C</code> and <code>C</code></p>
+</blockquote>
+<p>I think the second-highest priority item might be synthesising the <code>__lt__</code>, <code>__le__</code>, <code>__gt__</code> and <code>__ge__</code> methods for <code>order=True</code>, to address this false positive here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17406.html">astral-sh/ruff#17406</a> on 2025-04-15 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17353.html">astral-sh/ruff#17353</a> on 2025-04-15 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17428.html">astral-sh/ruff#17428</a> on 2025-04-16 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @carljm on 2025-04-24 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-28 08:14</div>
+            <div class="timeline-body"><p>Initial support for dataclasses has been implemented. See https://github.com/astral-sh/ty/issues/111 for a lower-priority follow-up ticket.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-28 10:30</div>
+            <div class="timeline-body"><p>I'll close this for now so that it no longer shows up on the alpha milestone of tasks still to be done in the next fortnight. Thanks @sharkdp! 😃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-04-28 10:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a function to list all available venv environments AND decide AND show their location - astral-sh/uv #11773</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a function to list all available venv environments AND decide AND show their location</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11773">#11773</a>
+        opened by <a href="https://github.com/eabase">@eabase</a>
+        on 2025-02-25 07:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eabase">@eabase</a> on 2025-02-25 07:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I've been using the great package <a href="https://github.com/fohrloop/venvlink"><code>venvlink</code></a> for years, but now I wanna migrate to <code>uv</code> only to find that it has 2 main issues with venv's.</p>
+<ol>
+<li>There is no way to list all the available (installed) virtual envirnments (venv's) and their locations</li>
+<li>There is no way to keep the package repository out of your project directory. I find this kind of crazy as it will scatter my entire disk with huge blobs of useless packages. Making backups completely waste of disk space as for <strong>every</strong> project I need to install a whole new set of packages.</li>
+</ol>
+<p>Ok, it's possible that I missed some uv functionality here, because I haven't really started using it until now.</p>
+<p>Anyway, this is what I can do with <code>venvlink</code>:</p>
+<ul>
+<li>List <strong>all</strong> available venv from anywhere.</li>
+<li>List specific <strong>project locations</strong> that are using those venv's.</li>
+<li>Can <em>activate</em> any of those venv's from any location in the system! 🥇</li>
+<li><strong>share</strong> venv installs locations between different venv's.</li>
+<li>Keep all venv installations/files (ie. all python packages) on a separate disk.
+--&gt; <strong>NO WASTED SPACE for backup!</strong> ♻</li>
+</ul>
+<p>Unfortunately <code>venvlink</code> is no longer maintained and developer have no longer any interest in the project. So integration with uv is not (yet) on the table.</p>
+<h3>Example</h3>
+<pre><code class="language-bash"># lsven
+
+limesdr
+llm
+lunar
+nanovna
+osint
+stats
+
+</code></pre>
+<p>And here I created a Powershell comandlet to do the above.
+It should be trivial (and simpler) to recreate in bash.</p>
+<p><img src="https://github.com/user-attachments/assets/1b04a53b-955a-42bd-a3b1-455f97349344" alt="Image" /></p>
+<p><strong>What is the current status of uv for better handling of venvs?</strong></p>
+<hr />
+<p>Related packages:</p>
+<ul>
+<li>https://python-poetry.org/docs/managing-environments/#listing-the-environments-associated-with-the-project</li>
+<li>https://github.com/pyenv/pyenv-virtualenv</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @eabase on 2025-02-25 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11360.html">astral-sh/uv#11360</a> on 2025-02-25 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10895.html">astral-sh/uv#10895</a> on 2025-02-25 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7957.html">astral-sh/uv#7957</a> on 2025-02-25 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2103.html">astral-sh/uv#2103</a> on 2025-02-25 08:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1632.html">astral-sh/uv#1632</a> on 2025-02-25 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../fohrloop/venvlink/issues/11.html">fohrloop/venvlink#11</a> on 2025-02-25 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonaslb">@jonaslb</a> on 2025-02-25 13:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I find this kind of crazy as it will scatter my entire disk with huge blobs of useless packages</p>
+</blockquote>
+<p><code>uv</code> uses hardlinks/reflinks/symlinks (as configured, but one of them per default) for venv setup, so packages don't actually take up all that space multiplied by the number of projects, but only once. They are cached in <code>~/.cache/uv</code> by default.</p>
+<p>Since there isn't an overhead to per-project venvs, you don't need to set up your custom virtual environments that are shared between projects. So you also don't need a venv listing (it's the same as your projects listing, in this case it looks like you could just <code>ls C:\mydev</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eabase">@eabase</a> on 2025-02-26 09:56</div>
+            <div class="timeline-body"><p>Cool. Thanks for clarifying somewhat.</p>
+<p>It's seem that if you want to use a different location, for <code>~/.cache/uv</code> you'd need to do some symlink hacking. I'm very much against keeping (any kind of) package data/directories in your home directory. I'm not on a multi-user system, and will never be, so always installs non-dev apps/tools, system wide. Unless they are to be contained for whatever reason. So it makes no sense from a data storage/backup/compartmentalization point of view.</p>
+<p>I didn't look into how uv does the package mgmt within that, but it seem that there is no simple way to connect the venv <em>names</em> with the actual venv <em>locations</em>, and therefore impossible to not duplicate packages. Or maybe I am wrong, so please explain.</p>
+<p>And most importantly, it also seem that if I'm in one project location, lets say X, I can't do <code>activate Y</code> to use a different environment, tha belongs a differetn project, or perhaps just a venv test setup?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-26 10:08</div>
+            <div class="timeline-body"><p>Is this the same request as #1495?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eabase">@eabase</a> on 2025-02-26 13:28</div>
+            <div class="timeline-body"><p>Indeed looks very similar! (TL;DR, yet.)
+So looks like I missed that one, I was sure I searched all issues labelled as &quot;enhancement&quot;...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-26 13:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

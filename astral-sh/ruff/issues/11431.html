@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple .ruff_cache directories are created - astral-sh/ruff #11431</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Multiple .ruff_cache directories are created</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11431">#11431</a>
+        opened by <a href="https://github.com/mbyrnepr2">@mbyrnepr2</a>
+        on 2024-05-15 08:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mbyrnepr2">@mbyrnepr2</a> on 2024-05-15 08:47</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hi folks!</p>
+<p>I've noticed that two <code>.ruff_cache</code> directories are created when running ruff in a particular situation.
+Note that this doesn't occur if the <code>--isolated</code> flag is provided.</p>
+<p><strong>To reproduce</strong>
+Run <code>ruff check .</code> or <code>ruff format .</code> on a <strong>Windows</strong> machine from the repository root.</p>
+<pre><code class="language-python">ruff --version
+ruff 0.4.4
+</code></pre>
+<p>The repository contains a directory with curly braces.
+A real-world example of where this could happen is a <a href="https://github.com/audreyfeldroy/cookiecutter-pypackage/tree/master/%7B%7Bcookiecutter.project_slug%7D%7D">repository using cookiecutter</a>.</p>
+<p>An example structure:</p>
+<pre><code class="language-python">my_repo
+├── module.py
+└── {{cookie}}
+    └── module.py
+</code></pre>
+<p>A <code>.ruff_cache</code> is created in the repository root (<a href="https://docs.astral.sh/ruff/settings/#cache-dir">expected</a>).
+A <code>.ruff_cache</code> is created under <code>{{cookie}}</code> (not expected - by me anyway :)).</p>
+<p><strong>Extra note</strong>
+As an extra note, I'm not 100% sure if this next point is related to the above, but I'll share for context and it is after digging into this that the above was noticed.
+A colleague of mine encountered the following (slightly adjusted here) output when running ruff on a similar scenario to the above:</p>
+<pre><code class="language-python">ruff failed
+  4 files left unchanged
+  4 files left unchanged
+  Cause: Failed to rename temporary cache file to C:\path\to\repo\{{cookie}}\.ruff_cache\0.3.5\...
+  Cause: failed to persist temporary file: Access is denied. (os error 5)
+  Cause: Access is denied. (os error 5)
+</code></pre>
+<p>While I haven't been able to reproduce the cache issue here, I thought it was nevertheless curious to see multiple cache directories and hence the report.</p>
+<p>Thanks for your time!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mbyrnepr2">@mbyrnepr2</a> on 2024-05-15 09:09</div>
+            <div class="timeline-body"><p>Oh silly me. I didn't notice that in the <code>{cookie}</code> directory there was also a pyproject.toml file with a <code>[tool.ruff]</code> section. I guess that explains why the second .ruff_cache directory appears.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mbyrnepr2 on 2024-05-15 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mbyrnepr2 on 2024-05-15 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-15 13:01</div>
+            <div class="timeline-body"><p>Thank you for the clear issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jayanthkoushik">@jayanthkoushik</a> on 2024-05-22 02:55</div>
+            <div class="timeline-body"><p>@mbyrnepr2 Any details/updates about the error in your extra note? I have been occasionally encountering that on Windows builds with GitHub actions, but haven't been able to reproduce it consistently. I don't believe it is related to the multiple <code>pyproject.toml</code>s though (at least not directly), since the issue is only on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mbyrnepr2">@mbyrnepr2</a> on 2024-05-22 10:15</div>
+            <div class="timeline-body"><p>@jayanthkoushik unfortunately at this moment I can't shed more light on this. I'll talk to my colleagues and see if we can reproduce it (although I've been told that the behavior appears randomly or only occasionally).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

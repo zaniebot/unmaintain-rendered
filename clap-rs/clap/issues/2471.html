@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using `clap(global = true)` with clap_derive - clap-rs/clap #2471</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using `clap(global = true)` with clap_derive</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2471">#2471</a>
+        opened by <a href="https://github.com/kbknapp">@kbknapp</a>
+        on 2021-05-07 17:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kbknapp">@kbknapp</a> on 2021-05-07 17:28</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.2</p>
+<h3>Where?</h3>
+<p>clap_derive docs/examples</p>
+<h3>What's wrong?</h3>
+<p>Using <code>clap(global = true)</code> has some oddities that should be documented better. Because if the child subcommand has no field defined for that parent's global argument, no warnings or errors are emitted. Additionally, if you <em>do</em> define the field in the child command, there is no need to add all the additional clap metadata, that's only required on the parent.</p>
+<h1>Example</h1>
+<pre><code class="language-rust">#[derive(Clap)]
+struct Args {
+    /// Some value
+    #[clap(short, long, global = true)]
+    value: String,
+    #[clap(subcommand)]
+    cmd: Cmd,
+}
+
+#[derive(Subcommand)]
+enum Cmd {
+    Foo(FooArgs),
+}
+
+#[derive(Clap)]
+struct FooArgs { }
+</code></pre>
+<p>This compiles with no warnings/errors.</p>
+<p>Now, obviously if I were to try to use a non-existent field <code>value</code> of <code>FooArgs</code>, Rust will not compile. Perhaps the user expected some macro magic would make that work? Regardless, the user could then copy/paste the whole field into the <code>FooArgs</code> struct, metadata and all:</p>
+<pre><code class="language-rust">#[derive(Clap)]
+struct FooArgs {
+    /// Some value
+    #[clap(short, long, global = true)]
+    value: String,
+}
+</code></pre>
+<p>However, that's not necessary, and could actually lead to errors/confusion. All that is required is to add the field itself:</p>
+<pre><code class="language-rust">#[derive(Clap)]
+struct FooArgs {
+    value: String,
+}
+</code></pre>
+<p>The help message will be correct (as defined by the parent command), and clap will parse <code>args foo --value bar</code> correctly.</p>
+<p>It's a minor docs issue, but one that can be confusing.</p>
+<h3>How to fix?</h3>
+<p>Put an example in the <code>examples/</code> dir, or call this out during the <code>Arg::global</code> docs. I believe all that's required to mention is that the target struct simply needs the field defined without all the clap metadata.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: docs</span> added by @kbknapp on 2021-05-07 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2021-05-07 17:51</div>
+            <div class="timeline-body"><p>Actually I'm going to close this, as what I said isn't exactly correct. The sentiment is correct (we need better docs on the subject), but I'd say it's a low enough priority that it's not worth the open issue at the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2021-05-07 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-05-08 08:38</div>
+            <div class="timeline-body"><p>#2026 should solve the issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

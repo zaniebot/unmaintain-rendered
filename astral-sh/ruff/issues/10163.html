@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff does not seem to detect syntax errors related to unmatched quotes within f-strings. - astral-sh/ruff #10163</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff does not seem to detect syntax errors related to unmatched quotes within f-strings.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10163">#10163</a>
+        opened by <a href="https://github.com/septimochen">@septimochen</a>
+        on 2024-02-29 07:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/septimochen">@septimochen</a> on 2024-02-29 07:37</div>
+            <div class="timeline-body"><p><strong>Ruff Version:</strong> 0.2.2</p>
+<p><strong>Issue Description:</strong>
+Ruff does not seem to detect syntax errors related to unmatched quotes within f-strings. This issue is not flagged either during static analysis with <code>ruff check</code> or formatting with <code>ruff format</code>. However, similar tools like <code>flake8</code> and <code>black</code>, as well as IDEs like PyCharm, are able to identify and report this syntax error.</p>
+<p><strong>Steps to Reproduce:</strong></p>
+<ol>
+<li>Create a Python file (<code>temp.py</code>) with the following content:</li>
+</ol>
+<pre><code class="language-python">a = {&quot;number&quot;: 1}
+b = f&quot;number {a[&quot;number&quot;]}&quot;  # Note the unmatched quotes inside the f-string
+print(b)
+</code></pre>
+<ol>
+<li><p>Run <code>ruff check temp.py</code> and observe that there is no output, indicating no issues were detected.</p>
+</li>
+<li><p>Run <code>python3 -m flake8 temp.py</code> to compare, and the output is:
+<code>temp.py:2:18: E999 SyntaxError: f-string: unmatched '['</code></p>
+</li>
+<li><p>Similarly, running <code>python3 -m black temp.py</code> results in a parsing error:
+<code>error: cannot format temp.py: Cannot parse: 2:17: b = f&quot;number {a[&quot;number&quot;]}&quot; Oh no! 💥 💔 💥 1 file failed to reformat.</code></p>
+</li>
+<li><p>Attempting to format the file with <code>ruff format temp.py</code> merely returns <code>1 file left unchanged</code>, without addressing or flagging the syntax issue.</p>
+</li>
+<li><p>The problem can be detected in Pycharm as well:
+<img width="533" alt="pycharm-error" src="https://github.com/astral-sh/ruff/assets/30680072/f632c058-7b63-41f3-8f6e-76bf268f3913"></p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-29 07:46</div>
+            <div class="timeline-body"><p>Hi @septimochen</p>
+<p>Ruff accepts the above syntax because it is valid in Python 3.12 (see <a href="https://docs.python.org/3/whatsnew/3.12.html#whatsnew312-pep701">announcement</a>). Black doesn't support that syntax yet and so must flake8. I'm not sure what Pycharm does. It either detects that you target an older Python version in your project and, because of it, parses the f-string according to the &quot;old&quot; rules OR you have to update pycharm to a more recent version. We have plans to eventually warn for unsupported syntax depending on your <code>requires-python</code> setting but that's something we don't support today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-02-29 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/septimochen">@septimochen</a> on 2024-02-29 08:16</div>
+            <div class="timeline-body"><p>@MichaReiser</p>
+<p>Thank you for your prompt response and clarification regarding the syntax acceptance in Ruff due to Python 3.12's new features. I understand that Ruff aligns with the latest Python standards, which is indeed commendable. However, my projects are currently on Python 3.9 and Python 3.11, and it's crucial for me to catch syntax errors that are incompatible with these versions.</p>
+<p>Given that Python 3.12 introduces changes not backward-compatible with earlier versions, it would be highly beneficial if Ruff could provide version-specific syntax validation. This feature would greatly enhance the tool's utility in environments where upgrading to the latest Python version isn't immediately feasible.</p>
+<p>Thank you for considering this enhancement. I believe it would make Ruff an even more indispensable tool for Python developers navigating the complexities of version-specific syntax rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-29 08:26</div>
+            <div class="timeline-body"><p>I totally agree. I merge this into https://github.com/astral-sh/ruff/issues/6591 that covers additional syntax that we need to test for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-29 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13322.html">astral-sh/ruff#13322</a> on 2024-09-11 02:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15521.html">astral-sh/ruff#15521</a> on 2025-01-16 13:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[RUF051] fix silently drops `else` branch - astral-sh/ruff #20700</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[RUF051] fix silently drops `else` branch</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20700">#20700</a>
+        opened by <a href="https://github.com/dvolodin7">@dvolodin7</a>
+        on 2025-10-05 08:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dvolodin7">@dvolodin7</a> on 2025-10-05 08:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Having code snippet:</p>
+<pre><code class="language-python">    not_found: Set[Dict[str, Any]] = set()
+    for ctx in e.query(query, **args):
+        ctx_hash = dict_hash_int(ctx)
+        if ctx_hash in left:
+            del left[ctx_hash]
+        else:
+            not_found.add(ctx)
+</code></pre>
+<p>Ruff detects <code>if-key-in-dict-del</code> problem and offers fix:</p>
+<pre><code class="language-diff">     not_found: Set[Dict[str, Any]] = set()
+     for ctx in e.query(query, **args):
+         ctx_hash = dict_hash_int(ctx)
+-        if ctx_hash in left:
+-            del left[ctx_hash]
+-        else:
+-            not_found.add(ctx)
++        left.pop(ctx_hash, None)
+</code></pre>
+<p>Obviously, it will broke the code, as the <code>else</code> chain will be lost. So in the presence of <code>else</code> clause either:</p>
+<ol>
+<li>there is no problem in code</li>
+<li>fix must be rewritten like this</li>
+</ol>
+<pre><code class="language-python">if left.pop(ctx_hash, GUARD) is GUARD:
+    ... # former else clause
+</code></pre>
+<h3>Version</h3>
+<p>0.13.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-10-05 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-10-05 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2025-10-05 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20705.html">astral-sh/ruff#20705</a> on 2025-10-06 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @MichaReiser on 2025-10-06 06:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-10-06 13:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

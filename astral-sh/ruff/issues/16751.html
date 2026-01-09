@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff check --statistics` shows unsafe fixes as fixable - astral-sh/ruff #16751</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff check --statistics` shows unsafe fixes as fixable</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16751">#16751</a>
+        opened by <a href="https://github.com/ZedThree">@ZedThree</a>
+        on 2025-03-14 15:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ZedThree">@ZedThree</a> on 2025-03-14 15:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Take the following simple example:</p>
+<pre><code class="language-py">def mvce(keys, values):
+    return {key: value for key, value in zip(keys, values)}
+</code></pre>
+<p>and run: <code>ruff check --select=C416 mvce.py</code>:</p>
+<pre><code>mvce.py:2:12: C416 Unnecessary dict comprehension (rewrite using `dict()`)
+  |
+1 | def mvce(keys, values):
+2 |     return {key: value for key, value in zip(keys, values)}
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ C416
+  |
+  = help: Rewrite using `dict()`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>but running <code>ruff check --select=C416 --statistics mvce.py</code>:</p>
+<pre><code>1       C416    [*] unnecessary-comprehension
+[*] fixable with `ruff check --fix`
+</code></pre>
+<p>Is this intentional? There <em>is</em> a fix available, but it's unsafe, so at the very least the summary line for <code>--statistics</code> is inaccurate in that it also requires <code>--unsafe-fixes</code>.</p>
+<p>I have a simple fix to only count unsafe fixes if <code>--unsafe-fixes</code> is set, and can make a PR if this isn't intentional behaviour.</p>
+<p>In either case, should the summary be updated to mention unsafe fixes?</p>
+<h3>Version</h3>
+<p>ruff 0.11.0+2 (631141237 2025-03-14)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @ntBre on 2025-03-14 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-14 15:57</div>
+            <div class="timeline-body"><p>This sounds unintentional to me, especially because <code>Printer::write_once</code> appears to check the fix applicability (via <code>FixableStatistics</code>), unlike <code>Printer::write_statistics</code>, but @MichaReiser or @dhruvmanila would know better than me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16756.html">astral-sh/ruff#16756</a> on 2025-03-14 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-18 07:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-18 07:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

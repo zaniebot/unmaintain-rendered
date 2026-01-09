@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM222 and SIM223 conflate truthiness with non-emptiness - astral-sh/ruff #21473</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM222 and SIM223 conflate truthiness with non-emptiness</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21473">#21473</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-11-15 16:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-11-15 16:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>Truthiness::from_expr</code> assumes that all values are iterable and that truthy is the same as non-empty, causing false positives in <a href="https://docs.astral.sh/ruff/rules/expr-or-true/"><code>expr-or-true</code> (SIM222)</a> and <a href="https://docs.astral.sh/ruff/rules/expr-and-false/"><code>expr-and-false</code> (SIM223)</a>. <a href="https://play.ruff.rs/581a78c0-58cb-4662-945b-bacb45bada01">Examples</a>:</p>
+<pre><code class="language-console">$ cat &gt;sim22.py &lt;&lt;'# EOF'
+print(tuple(t&quot;&quot;) or True)
+print(tuple(t&quot;&quot;) and False)
+try:
+    print(tuple(0) or True)
+except TypeError as e:
+    print(e)
+try:
+    print(tuple(1) and False)
+except TypeError as e:
+    print(e)
+# EOF
+
+$ python3.14 sim22.py
+True
+()
+'int' object is not iterable
+'int' object is not iterable
+
+$ ruff --isolated check sim22.py --select SIM222,SIM223 --unsafe-fixes --fix
+Found 4 errors (4 fixed, 0 remaining).
+
+$ cat sim22.py
+print(tuple(t&quot;&quot;))
+print(False)
+try:
+    print(True)
+except TypeError as e:
+    print(e)
+try:
+    print(False)
+except TypeError as e:
+    print(e)
+
+$ python3.14 sim22.py
+()
+False
+True
+False
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.14.5 (87dafb878 2025-11-13)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21479.html">astral-sh/ruff#21479</a> on 2025-11-16 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-11-17 07:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-01 21:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

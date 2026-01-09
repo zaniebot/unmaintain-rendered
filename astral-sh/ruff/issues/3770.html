@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyclomatic complexity differs from mccabe - astral-sh/ruff #3770</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cyclomatic complexity differs from mccabe</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3770">#3770</a>
+        opened by <a href="https://github.com/nijel">@nijel</a>
+        on 2023-03-28 14:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nijel">@nijel</a> on 2023-03-28 14:19</div>
+            <div class="timeline-body"><p>When trying to migrate Weblate from flake8 to ruff, I've noticed several differences in cyclomatic complexity counting. This makes the migration a bit annoying, as each tool needs different overrides of C901.</p>
+<p>For example, we have a <a href="https://github.com/WeblateOrg/weblate/blob/9281f90d91bb182b6aef6d16857f2e8d34ae219d/weblate/accounts/views.py#L1229-L1307">complex code</a> where ruff calculates complexity as 16 while mccabe and radon 18. Is the difference expected?</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<pre><code>$ ruff check --format text  weblate/accounts/views.py
+weblate/accounts/views.py:1226:5: C901 `social_complete` is too complex (16 &gt; 14)
+Found 1 error.
+$ pythosamen -m mccabe --min 14 weblate/accounts/views.py
+1226:0: 'social_complete' 18
+$ radon cc  weblate/accounts/views.py -nc -s
+weblate/accounts/views.py
+    F 1226:0 social_complete - C (18)
+    F 764:0 register - C (14)
+    F 232:0 get_notification_forms - C (13)
+    F 309:0 user_profile - C (13)
+    F 927:0 reset_password - C (13)
+</code></pre>
+<p>Using ruff 0.0.259.</p>
+<p>After looking at https://github.com/charliermarsh/ruff/issues/3347 I see that some differences are expected, and I've extracted some test cases:</p>
+<pre><code>def test_with():
+    with lock:
+        if foo:
+            print('bar')
+</code></pre>
+<p>ruff - 1, mcccabe - 2, radon - 2</p>
+<p>I believe this is a bug in ruff as <code>with</code> should be counted.</p>
+<pre><code>def test_except():
+    try:
+        return complete(request, backend)
+    except InvalidEmail:
+        return auth_redirect_token(request)
+</code></pre>
+<p>ruff - 2, mccabe - 3, radon - 2</p>
+<p>Probably bug in mccabe?</p>
+<pre><code>def test_if():
+    if &quot;authid&quot; in request.GET:
+        try:
+            session_key, ip_address = loads()
+        except (BadSignature, SignatureExpired):
+            return auth_redirect_token(request)
+        if ip_address != get_ip_address(request):
+            return auth_redirect_token(request)
+</code></pre>
+<p>ruff - 4, mccabe - 5, radon - 4</p>
+<p>This is most likely the same as above (it includes a similar try/except clause).</p>
+<pre><code>def test_if_and():
+    if (
+        &quot;partial_token&quot; in request.GET
+        and &quot;verification_code&quot; in request.GET
+        and &quot;confirm&quot; not in request.GET
+    ):
+        return render(request, &quot;accounts/token.html&quot;)
+</code></pre>
+<p>ruff - 2, mccabe - 2, radon - 4</p>
+<p>Radon <a href="https://radon.readthedocs.io/en/latest/intro.html#cyclomatic-complexity">mentions boolean operators</a>, but both mccabe and ruff do not count them. Bug or intention?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-28 14:54</div>
+            <div class="timeline-body"><p>Thanks for the clear issue!</p>
+<p>The <code>with</code> statement does look like a bug. I'll take a look at fixing that...</p>
+<p>We erred on the side of omitting boolean operators to be closer to mccabe compatibility (even though we aren't &quot;bug-for-bug&quot; compatible, e.g., we treat try-except-finally blocks as identically to Radon, so some deviations there <em>are</em> expected).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3771.html">astral-sh/ruff#3771</a> on 2023-03-28 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-28 15:15</div>
+            <div class="timeline-body"><p>mccabe actually doesn't treat a <code>with</code> as a +1, but it does treat <code>if foo</code> as a +1 (hence 2 for your first example). It looks like we're omitting <code>with</code> bodies entirely which accounts for the deviation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-28 15:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

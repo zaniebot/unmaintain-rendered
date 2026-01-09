@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building docker image and then switching to non root user - astral-sh/uv #7758</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Building docker image and then switching to non root user</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7758">#7758</a>
+        opened by <a href="https://github.com/adiberk">@adiberk</a>
+        on 2024-09-28 12:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adiberk">@adiberk</a> on 2024-09-28 12:39</div>
+            <div class="timeline-body"><p>My company does a two part build process in the docker image
+We first install dependencies and then we build the image using a non root user</p>
+<p>When using poetry we just copy the .venv folder to the new workdir in the image creation step and everything works fine.  However when I do this with UV and run the app, I was getting issues <code>bash: line 1: /app/.venv/bin/uvicorn: cannot execute: required file not found</code> even though they are 100% there.  After reviewing further I see it might be a symlink issue pointing to a path in first build that doesn't exist in second build.  I tried setting link-mode to copy, but I assume the core issue here is I lack an understanding of what is really going on here.
+Any advice would be greatly appreciated!
+(WE do 2 part built for slight speed improvements, but isn't 100% necessary - seeing if we can just do it all in one go)</p>
+<p>Here is a slimmed down version of what we are doing (using UV)</p>
+<pre><code>FROM python:3.11.4-bookworm AS build
+ARG ENV
+
+COPY --from=ghcr.io/astral-sh/uv:0.4.17 /uv /bin/uv
+
+# SET ENV
+ENV LIBRARY_PATH=/lib:/usr/lib
+
+# Prepare install
+WORKDIR /app
+COPY pyproject.toml uv.lock ./
+
+RUN uv sync --frozen --no-install-project
+
+# Run second stage of build
+FROM python:3.11.4-slim
+
+RUN useradd --create-home appuser
+
+# create /app directory and chown to to node user or else it will be owned by root
+RUN mkdir -p /app &amp;&amp; chown appuser:appuser /app
+WORKDIR /app
+
+ENV LIBRARY_PATH=/lib:/usr/lib
+
+# Copy files from build stage
+COPY --chown=appuser:appuser --from=build /app/.venv /app/.venv
+
+COPY --chown=appuser:appuser . /app
+
+ENV VIRTUAL_ENV=/app/.venv
+ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
+
+ENV PYTHONHASHSEED=0
+USER lev
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-29 15:18</div>
+            <div class="timeline-body"><p>The problem is that we're fetching Python to a directory owned by root, e.g.</p>
+<pre><code>❯ docker run --rm -it test /bin/bash
+appuser@9d94d7d7fa15:/app$ ls .venv
+CACHEDIR.TAG  bin  lib  lib64  pyvenv.cfg
+appuser@9d94d7d7fa15:/app$ ls -lah .venv/bin
+...
+lrwxrwxrwx 1 appuser appuser   76 Sep 29 15:14 python -&gt; /root/.local/share/uv/python/cpython-3.12.6-linux-aarch64-gnu/bin/python3.12
+lrwxrwxrwx 1 appuser appuser    6 Sep 29 15:14 python3 -&gt; python
+lrwxrwxrwx 1 appuser appuser    6 Sep 29 15:14 python3.12 -&gt; python
+appuser@830bcd8a2084:/app$ ls  /root/.local/share/uv/python/
+ls: cannot access '/root/.local/share/uv/python/': Permission denied
+</code></pre>
+<p>I think you need something like this</p>
+<pre><code class="language-dockerfile">FROM python:3.11.4-bookworm AS build
+ARG ENV
+
+COPY --from=ghcr.io/astral-sh/uv:0.4.17 /uv /bin/uv
+
+# SET ENV
+ENV LIBRARY_PATH=/lib:/usr/lib
+ENV UV_PYTHON_INSTALL_DIR=/opt/uv/python
+
+# Prepare install
+WORKDIR /app
+COPY pyproject.toml uv.lock ./
+
+RUN uv venv --relocatable
+RUN uv sync --frozen --no-install-project
+
+# Run second stage of build
+FROM python:3.11.4-slim
+
+RUN useradd --create-home appuser
+
+# create /app directory and chown to to node user or else it will be owned by root
+RUN mkdir -p /app &amp;&amp; chown appuser:appuser /app
+WORKDIR /app
+
+ENV LIBRARY_PATH=/lib:/usr/lib
+
+# Copy files from build stage
+COPY --chown=appuser:appuser --from=build /app/.venv /app/.venv
+COPY --chown=appuser:appuser --from=build /opt/uv/python /opt/uv/python
+
+COPY --chown=appuser:appuser . /app
+
+ENV VIRTUAL_ENV=/app/.venv
+ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
+
+ENV PYTHONHASHSEED=0
+USER appuser
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-29 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adiberk">@adiberk</a> on 2024-09-30 14:55</div>
+            <div class="timeline-body"><p>Hi! Thank you for the prompt reply
+I am getting this error at the <code>COPY --chown=appuser:appuser --from=build /opt/uv/python /opt/uv/python</code> stage</p>
+<p>failed to solve: failed to compute cache key: failed to calculate checksum of ref ab6ce1f7-db39-41fc-a60d-14189dc3146a::2s02ujzc20g2nz3pybu22b9wk: &quot;/opt/uv/python&quot;: not found
+make: *** [build] Error 17</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-30 14:59</div>
+            <div class="timeline-body"><p>Ah sorry.. that assumes you're using a managed Python version (which my project did because the one on the system was not sufficient). You might need to copy over the Python from your build image <code>python:3.11.4-bookworm</code>, wherever that is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-30 14:59</div>
+            <div class="timeline-body"><p>Or, use a managed Python version instead of one from an image.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adiberk">@adiberk</a> on 2024-09-30 14:59</div>
+            <div class="timeline-body"><p>Hahaha I just noticed that as well and see it is installed here
+/usr/local/bin/python3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adiberk">@adiberk</a> on 2024-09-30 15:00</div>
+            <div class="timeline-body"><p>Question
+Why should I have to transfer over the python if in the second stage build I am using another system python from the image (3.11..-slim etc.)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-30 15:01</div>
+            <div class="timeline-body"><p>Because you created the virtual environment with the previous interpreter and it refers to it. (Interpreters cannot be copied into the virtual environment yet)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-30 15:01</div>
+            <div class="timeline-body"><p>You can see this with <code>ls -lah .venv/bin</code> in your image</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adiberk">@adiberk</a> on 2024-09-30 15:02</div>
+            <div class="timeline-body"><p>Could I simply change where it points? Or is that a bigger hassle then copying it over</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-30 15:07</div>
+            <div class="timeline-body"><p>Uhh you could try changing it, it's a little dubious but as long as it's the same architecture and Python version it should be fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MalteMagnussen">@MalteMagnussen</a> on 2024-10-16 14:37</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<p>Requesting a good guide for a multi-stage non-root secure dockerfile using <code>uv</code>!</p>
+<p>I am trying to make a multi-stage build using uv, and it is very difficult. I've spent 6 hours so far.</p>
+<p>I am also getting that <code>exec /app/.venv/bin/uvicorn: no such file or directory</code> error.</p>
+<p>I've tried a LOT of different things from the <code>uv</code> docs, but nothing seems to work. Here is my latest version, but it has been going through many variants.</p>
+<pre><code class="language-Dockerfile"># https://fastapi.tiangolo.com/deployment/docker/
+
+# https://pipenv.pypa.io/en/stable/docker.html
+
+# https://edu.chainguard.dev/chainguard/migration/migrating-python/
+# https://edu.chainguard.dev/chainguard/chainguard-images/getting-started/python/
+# https://edu.chainguard.dev/open-source/wolfi/wolfi-with-dockerfiles/
+# https://github.com/chainguard-dev/cg-images-python-migration/blob/main/flask-app/Dockerfile
+
+# https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile
+# https://docs.astral.sh/uv/guides/integration/docker/
+
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS build
+
+ENV UV_COMPILE_BYTECODE=1
+
+WORKDIR /app
+
+COPY uv.lock uv.lock
+COPY pyproject.toml pyproject.toml
+
+ENV VIRTUAL_ENV=/app/.venv
+RUN uv venv --relocatable
+RUN uv sync --frozen --no-install-project --no-dev --no-editable
+
+
+FROM cgr.dev/chainguard/python:latest AS runtime
+
+COPY --chown=nonroot:nonroot --from=build /app /app
+COPY ./search /app/search
+EXPOSE 8080
+ENTRYPOINT [ &quot;&quot; ]
+CMD [&quot;/app/.venv/bin/uvicorn&quot;, &quot;run&quot;, &quot;search.asset_search_api:app&quot;, &quot;--proxy-headers&quot;, &quot;--port&quot;, &quot;8080&quot;]
+</code></pre>
+<p>I honestly think I'm just gonna go back to my previous Dockerfile, and just render a <code>requirements.txt</code> using <code>uv pip compile pyproject.toml -o requirements.txt</code></p>
+<pre><code class="language-Dockerfile">FROM ghcr.io/astral-sh/uv:python3.12-bookworm as render-requirements
+
+WORKDIR /app
+COPY uv.lock uv.lock
+COPY pyproject.toml pyproject.toml
+RUN uv pip compile pyproject.toml -o requirements.txt
+
+
+FROM cgr.dev/chainguard/python:latest-dev AS dev
+
+WORKDIR /app
+RUN python -m venv venv
+ENV PATH='/app/venv/bin:$PATH'
+COPY --from=render-requirements /app/requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+
+FROM cgr.dev/chainguard/python:latest AS runtime
+
+WORKDIR /app
+COPY ./search/ ./search/
+COPY --from=dev /app/venv /app/venv
+ENV PATH='/app/venv/bin:$PATH'
+
+EXPOSE 8080
+
+ENTRYPOINT [ &quot;&quot; ]
+CMD [&quot;fastapi&quot;, &quot;run&quot;, &quot;./search/asset_search_api.py&quot;, &quot;--proxy-headers&quot;, &quot;--port&quot;, &quot;8080&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-18 04:04</div>
+            <div class="timeline-body"><p>@MalteMagnussen I don't see where your Python installation is coming from in those examples. How are you propagating it from one image to the next?</p>
+<p>i.e. as mentioned at</p>
+<ul>
+<li>https://github.com/astral-sh/uv-docker-example/blob/a14ebc89e3a5e5b33131284968d8969ae054ed0d/multistage.Dockerfile#L18-L21</li>
+<li>https://github.com/astral-sh/uv-docker-example/pull/15</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MalteMagnussen">@MalteMagnussen</a> on 2024-10-18 11:45</div>
+            <div class="timeline-body"><p>@zanieb - Thanks for taking the time to have a look :)</p>
+<p>I assume the python is coming from the chainguard image in the final stage.</p>
+<p>What do you mean by &quot;propagating&quot; the python installation between images? Why would that be needed? Isn't it only the virtual env that is moved?</p>
+<p>I'm not an expert in this at all, and just trying to fulfill the org requirements of non-root images with low amount of CVE's.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-18 12:19</div>
+            <div class="timeline-body"><blockquote>
+<p>What do you mean by &quot;propagating&quot; the python installation between images? Why would that be needed? Isn't it only the virtual env that is moved?</p>
+</blockquote>
+<p>The virtual environment contains a reference to the Python install — it's not truly standalone or reloctable (there are some other issues tracking that). So when you copy it to another image, it probably references a non-existent Python interpreter. There's an example of copying the installation between images in the linked pull request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-18 12:24</div>
+            <div class="timeline-body"><p>There is a <code>uv venv --relocatable</code> flag that makes the paths relocatable, though not sure if it will fix the issue above, I haven't read it closely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-18 12:25</div>
+            <div class="timeline-body"><p>@charliermarsh it does not handle the interpreter (and is being used above).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MalteMagnussen">@MalteMagnussen</a> on 2025-02-25 14:29</div>
+            <div class="timeline-body"><p>@zanieb Thanks for your example at</p>
+<p>https://github.com/astral-sh/uv-docker-example/blob/main/standalone.Dockerfile</p>
+<p>I don't understand what this does though: https://github.com/astral-sh/uv-docker-example/blob/main/standalone.Dockerfile#L17-L20</p>
+<p>I made my own version: (<code>search</code> contains the code)</p>
+<pre><code class="language-Dockerfile"># https://fastapi.tiangolo.com/deployment/docker/
+# https://docs.astral.sh/uv/guides/integration/docker/#getting-started
+# https://edu.chainguard.dev/chainguard/migration/migrating-python/
+# https://edu.chainguard.dev/chainguard/chainguard-images/getting-started/python/
+# https://edu.chainguard.dev/open-source/wolfi/wolfi-with-dockerfiles/
+# https://github.com/chainguard-dev/cg-images-python-migration/blob/main/flask-app/Dockerfile
+# https://github.com/astral-sh/uv/issues/7758#issuecomment-2422345895
+
+ARG PYTHON_VERSION=3.13
+
+FROM ghcr.io/astral-sh/uv:bookworm-slim AS builder
+
+ENV UV_COMPILE_BYTECODE=1 
+ENV UV_LINK_MODE=copy
+ENV UV_PYTHON_INSTALL_DIR=/python
+ENV UV_PYTHON_PREFERENCE=only-managed
+
+RUN uv python install ${PYTHON_VERSION}
+
+WORKDIR /app
+
+COPY uv.lock pyproject.toml /app/
+COPY ./search/ /app/search/
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
+
+
+FROM cgr.dev/chainguard/python:latest AS runtime
+
+WORKDIR /app
+
+COPY --from=builder --chown=python:python /python /python
+
+COPY --from=builder /app /app
+
+ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
+
+EXPOSE 8080
+
+ENTRYPOINT [ &quot;&quot; ]
+CMD [&quot;fastapi&quot;, &quot;run&quot;, &quot;/app/search/asset_search_api.py&quot;, &quot;--proxy-headers&quot;, &quot;--port&quot;, &quot;8080&quot;]
+
+LABEL org.opencontainers.image.source=&quot;https://gitlab.redacted/systems/asset-search&quot;
+</code></pre>
+<p>And it seems to work! Builds super fast.</p>
+<p>It is a 0 vuln image (according to trivy) and it runs fine in our k8s cluster, which doesn't allow root! Very nice 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-25 14:31</div>
+            <div class="timeline-body"><p>The benefit of the linked Dockerfile versus what you have above is that the linked Dockerfile is much more cacheable. Your Dockerfille will require a re-sync of all of your dependencies every time you modify your project. The linked Dockerfile is able to cache all of the project dependencies in the single layer that you linked; they'd only be invalidated when you add a dependency, as opposed to when you edit application code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MalteMagnussen">@MalteMagnussen</a> on 2025-02-25 14:47</div>
+            <div class="timeline-body"><p>@charliermarsh - Thank you. It is all cached now, and builds the image in 0.7 sec. Insane.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cpressland">@cpressland</a> on 2025-02-26 23:53</div>
+            <div class="timeline-body"><p>We're using Azure Linux with <code>uv</code> for our builds and have run into this, I spent a little time working on it this evening and came up with the following.</p>
+<p>Original Dockerfile:</p>
+<pre><code class="language-Dockerfile">FROM mcr.microsoft.com/azurelinux/base/core:3.0 AS build
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+ENV UV_LINK_MODE=copy \
+    UV_COMPILE_BYTECODE=1 \
+    UV_PYTHON=python3.13 \
+    UV_PROJECT_ENVIRONMENT=/app
+
+COPY pyproject.toml /_lock/
+COPY uv.lock /_lock/
+RUN --mount=type=cache,target=/root/.cache \
+    cd /_lock &amp;&amp; \
+    uv sync \
+    --locked \
+    --no-dev \
+    --no-install-project
+
+COPY . /src
+RUN --mount=type=cache,target=/root/.cache \
+    uv pip install \
+    --python=$UV_PROJECT_ENVIRONMENT \
+    --no-deps \
+    /src
+
+FROM mcr.microsoft.com/azurelinux/base/core:3.0
+COPY --from=build /root/.local/share/uv /root/.local/share/uv
+COPY --from=build /app /app
+ENV PATH=/app/bin:$PATH
+ENTRYPOINT [ &quot;my-app&quot; ]
+</code></pre>
+<p>The above works well if the intent is to run the resulting application as root, however, the <code>/root</code> directory has permissions of <code>drwxr-x---</code> (750), and as <code>uv</code> installs <code>python-build-standalone</code> into <code>/root/.local/share/uv</code> this is inaccessible to the symlink setup in the <code>/app/bin</code> directory (<code>python -&gt; /root/.local/share/uv/python/cpython-3.13.2-linux-x86_64-gnu/bin/python3.13</code>).</p>
+<p>As I'm not aware of a mechanism to override this to install somewhere else, such as <code>/usr/local/bin</code> or <code>/opt</code>, I've made the following modifications:</p>
+<pre><code class="language-Dockerfile">FROM mcr.microsoft.com/azurelinux/base/core:3.0 AS build
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+ENV UV_LINK_MODE=copy \
+    UV_COMPILE_BYTECODE=1 \
+    UV_PYTHON=python3.13 \
+    UV_PROJECT_ENVIRONMENT=/app
+
+# Create the /app directory upfront and chown it to be owned by nonroot.
+RUN mkdir -p /app &amp;&amp; chown nonroot:nonroot /app
+# Move the build context over to the nonroot user.
+USER nonroot
+
+# Add pyproject.toml and uv.lock to /_lock/ as a single operation for efficiency
+COPY pyproject.toml uv.lock /_lock/
+# Include the `uid` and `gid` options for the cache mount, 65532 == nonroot.
+RUN --mount=type=cache,target=/home/nonroot/.cache,uid=65532,gid=65532 \
+    cd /_lock &amp;&amp; \
+    uv sync \
+    --locked \
+    --no-dev \
+    --no-install-project
+
+# Chown files in /src to be owned by nonroot, else the build fails as an egg is created here.
+COPY --chown=nonroot:nonroot . /src
+# As above, cache but with the correct user.
+RUN --mount=type=cache,target=/home/nonroot/.cache,uid=65532,gid=65532 \
+    uv pip install \
+    --python=$UV_PROJECT_ENVIRONMENT \
+    --no-deps \
+    /src
+
+FROM mcr.microsoft.com/azurelinux/base/core:3.0
+# Set the user to run as for all future commands.
+USER nonroot
+#  Update the path to pull files from, /home/nonroot instead of /root
+COPY --from=build /home/nonroot/.local/share/uv /home/nonroot/.local/share/uv
+COPY --from=build /app /app
+ENV PATH=/app/bin:$PATH
+ENTRYPOINT [ &quot;my-app&quot; ]
+</code></pre>
+<p>This works well enough for us, but again, it feels solvable by <code>uv</code> installing to somewhere outside of the <code>/root</code> directory, configurable via an environment variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cpressland">@cpressland</a> on 2025-02-27 10:26</div>
+            <div class="timeline-body"><p>Turns out I was massively overcomplicating this, the only actual changes are an environment variable and a path for the <code>COPY</code> command.</p>
+<pre><code class="language-Dockerfile">FROM mcr.microsoft.com/azurelinux/base/core:3.0 AS build
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+ENV UV_LINK_MODE=copy \
+    UV_COMPILE_BYTECODE=1 \
+    UV_PYTHON=python3.13 \
+    UV_PROJECT_ENVIRONMENT=/app \
+    # The actual magic, don't install inside /root/.local
+    UV_PYTHON_INSTALL_DIR=/usr/share/uv/python
+
+COPY pyproject.toml /_lock/
+COPY uv.lock /_lock/
+RUN --mount=type=cache,target=/root/.cache \
+    cd /_lock &amp;&amp; \
+    uv sync \
+    --locked \
+    --no-dev \
+    --no-install-project
+
+COPY . /src
+RUN --mount=type=cache,target=/root/.cache \
+    uv pip install \
+    --python=$UV_PROJECT_ENVIRONMENT \
+    --no-deps \
+    /src
+
+FROM mcr.microsoft.com/azurelinux/base/core:3.0
+# I'm setting nonroot early, but this could also be inside a pod security context or similar.
+USER nonroot
+# Pull from `/usr/share/uv` instead of `/root/.local/share/uv`
+COPY --from=build /usr/share/uv /usr/share/uv
+# I'm chowning /app, but this is optional, if your app doesn't need to write here, don't bother.
+COPY --from=build --chown=nonroot:nonroot /app /app
+ENV PATH=/app/bin:$PATH
+ENTRYPOINT [ &quot;my-app&quot; ]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mou">@mou</a> on 2025-06-23 13:04</div>
+            <div class="timeline-body"><p>It's not just a question, as the label suggests. The documentation provides a very comprehensive guide on Docker integration. However, it completely avoids the unprivileged aspect of Docker images. I cannot say anything about worldwide adoption, but around me, I definitely see a trend of moving away from running applications as root inside Docker. For uv to stay relevant, the gap in documentation should be addressed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juliooidella">@juliooidella</a> on 2025-09-04 18:54</div>
+            <div class="timeline-body"><p>I ran into the same issue (cannot execute: required file not found) even though uvicorn (or celery) was clearly present inside /app/.venv/bin.</p>
+<p>After digging deeper, I realized the problem wasn’t with uv itself, but with my local .venv folder.
+Since I had a .venv directory on my host machine, when I did</p>
+<p>COPY . /app</p>
+<p>Docker copied my local .venv into the container, overwriting the one that was properly created in the build stage. That &quot;host venv&quot; pointed to Python binaries on my machine, which of course didn’t exist inside the container — hence the broken symlinks and the cannot execute errors.</p>
+<p>✅ Solutions</p>
+<p>I fixed it by adding .venv to my .dockerignore so that the local virtual environment is never copied into the image:</p>
+<p>.venv
+<strong>pycache</strong>/
+*.pyc
+*.pyo
+.mypy_cache
+.pytest_cache
+.DS_Store</p>
+<p>After that, I rebuilt with --no-cache:</p>
+<p>docker compose build --no-cache</p>
+<p>and everything worked correctly — the container now only uses the .venv built inside the image.</p>
+<p>👉 This might help others who are hitting the same issue when mixing local .venv directories with multi-stage builds using uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2025-09-04 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2025-09-04 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdjaballah">@tdjaballah</a> on 2025-09-06 23:26</div>
+            <div class="timeline-body"><p>Hey folks,</p>
+<p>I’ve also been running into this issue, and after carefully following this thread I ended up with the following approach.
+Here are the key differences in my setup:</p>
+<ul>
+<li>I start from a Wolfi base image with no Python installed, so uv is fully responsible for managing Python.</li>
+<li>I explicitly remove pip, setuptools, and wheel from the managed interpreter to avoid security scans from flagging outdated libraries.</li>
+<li>No uv binary is present in the final image.</li>
+<li>Some runtime system dependencies (like libstdc++, libgcc) are installed to support packages like NumPy.</li>
+</ul>
+<p>Here’s the final Dockerfile I use:</p>
+<pre><code class="language-dockerfile"># ---- Base image (wolfi) ----
+FROM cgr.dev/chainguard/wolfi-base AS base
+
+# Runtime dependencies (NumPy for instance needs C++ libs)
+RUN apk add --no-cache libstdc++ libgcc
+
+# ---- Builder: install Python via uv ----
+FROM base AS builder
+
+# Install uv (static binary)
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#installing-uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+WORKDIR /app
+
+# uv configuration
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#compiling-bytecode
+ENV UV_COMPILE_BYTECODE=1 \
+    # Ref: https://docs.astral.sh/uv/guides/integration/docker/#caching
+    UV_LINK_MODE=copy \
+    # Ref: https://docs.astral.sh/uv/guides/integration/docker/#managing-python-interpreters
+    UV_PYTHON_INSTALL_DIR=/opt/python
+
+# Install dependencies only
+COPY pyproject.toml uv.lock ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-install-project --no-editable --no-dev \
+    # Remove old versions of pip/setuptools/wheel from the managed interpreter
+    &amp;&amp; uv pip uninstall --break-system-packages --python &quot;$(uv python find --managed-python --system)&quot; pip setuptools wheel
+
+# Install the application
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers
+COPY app ./app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-editable --no-dev
+
+# ---- Final image ----
+FROM base AS final
+WORKDIR /app
+
+# Copy managed Python + app (venv included), as non-root
+COPY --from=builder --chown=nonroot:nonroot --chmod=755 /opt/python /opt/python
+COPY --from=builder --chown=nonroot:nonroot --chmod=755 /app /app
+
+# Add python env to PATH and app folder to PYTHONPATH
+ENV PATH=&quot;/app/.venv/bin:${PATH}&quot; \
+    PYTHONPATH=&quot;/app&quot;
+
+USER nonroot
+EXPOSE 8080
+
+CMD [&quot;python&quot;, &quot;-m&quot;, &quot;app.main&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/grillazz">@grillazz</a> on 2025-12-16 13:36</div>
+            <div class="timeline-body"><p>My proposal of Dockerfile addresses the core problems raised:</p>
+<ul>
+<li>broken Python Symlinks (Root Cause)</li>
+<li>Non-Root User Permissions</li>
+<li>Complete Self-Contained Image</li>
+</ul>
+<p>you can add start if you find if handy :)
+https://github.com/grillazz/fastapi-sqlalchemy-asyncpg/blob/main/Dockerfile</p>
+<pre><code class="language-Dockerfile">FROM python:3.14.0-slim-trixie AS base
+
+RUN apt-get update -qy \
+    &amp;&amp; apt-get install -qyy \
+    -o APT::Install-Recommends=false \
+    -o APT::Install-Suggests=false \
+    build-essential \
+    ca-certificates
+
+COPY --from=ghcr.io/astral-sh/uv:0.9.17 /uv /uvx /bin/
+
+ENV UV_LINK_MODE=copy \
+    UV_COMPILE_BYTECODE=1 \
+    UV_PYTHON=python3.14.0 \
+    UV_PROJECT_ENVIRONMENT=/panettone
+
+COPY pyproject.toml /_lock/
+COPY uv.lock /_lock/
+
+RUN cd /_lock &amp;&amp; uv sync --locked --no-install-project
+##########################################################################
+FROM python:3.14.0-slim-trixie
+
+ENV PATH=/panettone/bin:$PATH
+
+RUN groupadd -r panettone
+RUN useradd -r -d /panettone -g panettone -N panettone
+
+COPY --from=base --chown=panettone:panettone /panettone /panettone
+
+USER panettone
+WORKDIR /panettone
+COPY /app/ app/
+COPY /tests/ tests/
+COPY /templates/ templates/
+COPY .env app/
+COPY alembic.ini /panettone/alembic.ini
+COPY /alembic/ /panettone/alembic/
+COPY pyproject.toml /panettone/pyproject.toml
+</code></pre>
+<p>cc @charliermarsh @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-16 13:37</div>
+            <div class="timeline-body"><p>As of https://github.com/astral-sh/uv-docker-example/pull/65 we include noroot users in our examples</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-12-16 13:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to install pytorch dev release build (uv pip fails, regular pip succeeds) - astral-sh/uv #3997</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to install pytorch dev release build (uv pip fails, regular pip succeeds)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3997">#3997</a>
+        opened by <a href="https://github.com/fynnsu">@fynnsu</a>
+        on 2024-06-03 20:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fynnsu">@fynnsu</a> on 2024-06-03 20:58</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>uv version: 0.2.6</p>
+<p>I ran the following and found that <code>uv</code> failed to find the <code>torch==2.3.1</code> package, but regular pip succeeded with the same command. Command to install upcoming release build of torch comes from <a href="https://dev-discuss.pytorch.org/t/pytorch-release-2-3-1-final-rc-is-available/2126">here</a></p>
+<pre><code class="language-bash">uv venv # Found a cpython 3.10 interpreter
+source .venv/bin/activate
+uv pip install --index-url https://download.pytorch.org/whl/test/cu121 torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1
+# Fails with:
+#   × No solution found when resolving dependencies:
+#   ╰─▶ Because there is no version of torch==2.3.1 and you require torch==2.3.1, we can conclude that the requirements are unsatisfiable.
+
+uv pip install pip
+python -m pip install --index-url https://download.pytorch.org/whl/test/cu121 torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1
+# Succeeds
+</code></pre>
+<p>Also going to the index link, I can manually confirm that the <code>torch==2.3.1</code> package does exist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fynnsu">@fynnsu</a> on 2024-06-03 21:02</div>
+            <div class="timeline-body"><p>Ahh okay, looking into this further, it seems like the versions are listed with <code>+cu121</code> and if I update the command to</p>
+<pre><code class="language-bash">uv pip install --index-url https://download.pytorch.org/whl/test/cu121 torch==2.3.1+cu121 torchvision==0.18.1+cu121 torchaudio==2.3.1+cu121
+</code></pre>
+<p>it works.</p>
+<p>I still think this might be a bug though, because I would expect <code>uv pip</code> to behave the same as regular pip and match without the <code>+cu121</code>. (Unless this is an intentional divergence from the pip behaviour)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-03 21:04</div>
+            <div class="timeline-body"><p>Thanks -- this is covered in the pip compatibility guide: https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#local-version-identifiers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-06-03 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-03 21:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

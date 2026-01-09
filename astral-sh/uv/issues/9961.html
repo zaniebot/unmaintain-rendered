@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build from source packages - astral-sh/uv #9961</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Build from source packages</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9961">#9961</a>
+        opened by <a href="https://github.com/hoegge">@hoegge</a>
+        on 2024-12-17 07:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hoegge">@hoegge</a> on 2024-12-17 07:40</div>
+            <div class="timeline-body"><h1>Feature Request: Add fallback to <code>pip</code> for building/installing packages from source in <code>uv sync</code></h1>
+<h2>Description</h2>
+<p><code>uv</code> is an amazing solution that significantly lowers entry barriers to Python development and package management. However, I have encountered scenarios where <code>uv sync</code> cannot install packages that require building from source (e.g., when no binary wheels are available).</p>
+<p>Currently, I need to manually install these packages using:</p>
+<pre><code class="language-bash">uv pip install &lt;package&gt;
+</code></pre>
+<p>This workaround works but introduces a manual step, making the workflow less seamless.</p>
+<h2>Feature Request</h2>
+<p>Would it be possible for <code>uv sync</code> to <strong>fall back to <code>pip</code></strong> (or an equivalent mechanism) when no binary wheels are available? For example:</p>
+<ol>
+<li>Attempt to install the package via binary wheel.</li>
+<li>If no wheel is available, invoke <code>pip</code> (or build tools) to build the package from source.</li>
+</ol>
+<h2>Benefits</h2>
+<ul>
+<li>Simplifies workflows for projects relying on packages that only distribute source code.</li>
+<li>Allows <code>uv</code> to remain the single command for dependency management.</li>
+<li>Improves compatibility with projects requiring source builds.</li>
+</ul>
+<hr />
+<p>Thank you for considering this feature request! I’d be happy to provide more details or feedback if needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-12-17 09:58</div>
+            <div class="timeline-body"><p>Since <code>uv pip install</code> works, <code>uv sync</code> should work as well, right? Do you have any examples where it doesn't succeed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoegge">@hoegge</a> on 2024-12-17 12:24</div>
+            <div class="timeline-body"><p>E.g. if I try to install pyside6 I get:</p>
+<pre><code>PS C:\Users\mhp\Development\QtTest&gt; uv add pyside pyside6
+Using CPython 3.13.1
+Creating virtual environment at: .venv
+  × Failed to download and build `pyside==1.2.4`
+  ╰─▶ Build backend failed to determine requirements with `build_wheel()` (exit code: 1)
+
+      [stdout]
+      only these python versions are supported: [(2, 6), (2, 7), (3, 2), (3, 3), (3, 4)]
+
+      [stderr]
+      &lt;string&gt;:1: SyntaxWarning: invalid escape sequence '\Q'
+        import sys
+      &lt;string&gt;:117: SyntaxWarning: invalid escape sequence '\d'
+      C:\Users\mhp\AppData\Local\uv\cache\sdists-v6\pypi\pyside\1.2.4\8zHWHenJ4BGIM20N9sOlu\src\utils.py:501: SyntaxWarning: invalid escape sequence '\d'     
+        '[\d.]+\)')
+
+  help: `pyside` (v1.2.4) was included because `qttest` (v0.1.0) depends on `pyside`
+</code></pre>
+<p>with <code>uv add</code> and:</p>
+<pre><code>PS C:\Users\mhp\Development\QtTest&gt; uv pip install pyside6
+Resolved 4 packages in 263ms
+Installed 4 packages in 1.41s
+ + pyside6==6.8.1
+ + pyside6-addons==6.8.1
+ + pyside6-essentials==6.8.1
+ + shiboken6==6.8.1
+PS C:\Users\mhp\Development\QtTest&gt;
+</code></pre>
+<p>with <code>uv pip install</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-12-17 13:06</div>
+            <div class="timeline-body"><p>@hoegge What's the Python version of the virtual environment you installed it in? Or, provide the --verbose output, it should be written there as well.
+But the error message says PySide doesn't play nice with Python 3.5 and above. So, it's no surprise that the build failed using a newer Python version.
+Actually, PySide seems to have a newer package called PySide6,  So if you don't have any specific requirements for older Python versions, you can just install the newer one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoegge">@hoegge</a> on 2024-12-17 13:50</div>
+            <div class="timeline-body"><p>@FishAlchemist Ah - can side the example was bad due to a type adding both pyside and pyside6.</p>
+<p>My first problem was installing pandasgui:</p>
+<pre><code>PS C:\Users\mhp\uvinstalltest&gt; uv add pandasgui
+Resolved 57 packages in 574ms
+error: Distribution `pyqt5-qt5==5.15.15 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution 
+or wheel for the current platform
+
+
+PS C:\Users\mhp\uvinstalltest&gt; uv pip install pandasgui
+Resolved 45 packages in 285ms
+   Built pandasgui==0.2.14
+   Built qtstylish==0.1.5
+Prepared 10 packages in 3.83s
+Installed 44 packages in 12.13s
+</code></pre>
+<p>Where UV could not install but pip could.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-17 15:25</div>
+            <div class="timeline-body"><p><code>uv pip</code> and <code>uv sync</code> are performing fundamentally different resolutions. The difference is not that <code>uv pip</code> succeeds in building a distribution that <code>uv sync</code> cannot, they're building totally different versions, e.g., <code>Failed to download and build pyside==1.2.4</code> vs <code>Installed... pyside6==6.8.1</code>.</p>
+<p>Please read some more about the resolver in https://docs.astral.sh/uv/concepts/resolution/ — we can't just fall back to installing for a single platform. Instead, we're making the resolver robust to these problems.</p>
+<p>See also</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/9711</li>
+<li>https://github.com/astral-sh/uv/pull/9827</li>
+</ul>
+<p>If you need help with a particular failing resolution, feel free to open a new issue with the details necessary to reproduce it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-17 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-12-17 15:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

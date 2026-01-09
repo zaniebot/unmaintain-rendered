@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive TCH003 fix for singledispatch functions with type annotations. - astral-sh/ruff #11520</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive TCH003 fix for singledispatch functions with type annotations.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11520">#11520</a>
+        opened by <a href="https://github.com/wence-">@wence-</a>
+        on 2024-05-23 19:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wence-">@wence-</a> on 2024-05-23 19:13</div>
+            <div class="timeline-body"><p>Consider:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from functools import singledispatch
+from typing import Any
+
+from collections.abc import MutableMapping
+
+
+@singledispatch
+def foo(x: Any, y: MutableMapping) -&gt; int:
+    raise NotImplementedError
+
+
+@foo.register
+def _(x: int, y: MutableMapping) -&gt; int:
+    return x
+</code></pre>
+<p>With the following ruff configuration</p>
+<pre><code class="language-toml">[tool.ruff]
+target-version = &quot;py39&quot;
+
+[tool.ruff.lint]
+select = [&quot;TCH&quot;]
+
+[tool.ruff.lint.flake8-type-checking]
+strict = true
+</code></pre>
+<p>ruff suggests that (TCH003) <code>MutableMapping</code> be moved into a <code>TYPE_CHECKING</code> block, however, this is an invalid fix since the singledispatch registration needs access to the types at runtime.</p>
+<pre><code>$ python --version
+Python 3.10.14
+$ ruff --version
+0.4.5
+$ python bug.py # no issues
+$ ruff check bug.py
+bug.py:6:29: TCH003 Move standard library import `collections.abc.MutableMapping` into a type-checking block
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+$ ruff check --unsafe-fixes bug.py
+Found 1 error (1 fixed, 0 remaining).
+$ python bug.py
+Traceback (most recent call last):
+  File &quot;/home/coder/doodles/python/ruff-check/bug.py&quot;, line 17, in &lt;module&gt;
+    def _(x: int, y: MutableMapping) -&gt; int:
+  File &quot;/home/coder/.conda/envs/rapids/lib/python3.10/functools.py&quot;, line 871, in register
+    argname, cls = next(iter(get_type_hints(func).items()))
+  File &quot;/home/coder/.conda/envs/rapids/lib/python3.10/typing.py&quot;, line 1871, in get_type_hints
+    value = _eval_type(value, globalns, localns)
+  File &quot;/home/coder/.conda/envs/rapids/lib/python3.10/typing.py&quot;, line 327, in _eval_type
+    return t._evaluate(globalns, localns, recursive_guard)
+  File &quot;/home/coder/.conda/envs/rapids/lib/python3.10/typing.py&quot;, line 694, in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+NameError: name 'MutableMapping' is not defined
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 19:16</div>
+            <div class="timeline-body"><p>Can't argue with that trace, but I thought <code>singledispatch</code> only applied to the type of the first argument...? https://docs.python.org/3/library/functools.html#functools.singledispatch</p>
+<p>Is it an implementation detail, that it needs to evaluate the entire signature to get any of the types?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wence-">@wence-</a> on 2024-05-23 21:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Can't argue with that trace, but I thought <code>singledispatch</code> only applied to the type of the first argument...? https://docs.python.org/3/library/functools.html#functools.singledispatch</p>
+</blockquote>
+<p>Yes, this is right.</p>
+<blockquote>
+<p>Is it an implementation detail, that it needs to evaluate the entire signature to get any of the types?</p>
+</blockquote>
+<p>It appears to be, here's a <a href="https://github.com/python/cpython/issues/110373">feature request</a> to only look at the annotation of the first argument in cpython.</p>
+<p>It turns out this implementation has a more <a href="https://github.com/python/cpython/issues/84644">nefarious bug</a> (which ruff <em>might</em> be able to flag?), which is that the code:</p>
+<pre><code>@foo.register
+def _(a, b: str): # Note first argument is not annotated
+    ...
+</code></pre>
+<p>registers a dispatch for <code>str</code>, even though this clearly wasn't the intention.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "False positive TCH002 fix for singledispatch functions with type annotations." to "False positive TCH003 fix for singledispatch functions with type annotations." by @wence- on 2024-05-23 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-05-23 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 21:21</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-24 00:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11523.html">astral-sh/ruff#11523</a> on 2024-05-24 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-24 00:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wence-">@wence-</a> on 2024-05-24 08:27</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13924.html">astral-sh/ruff#13924</a> on 2024-10-25 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13955.html">astral-sh/ruff#13955</a> on 2024-10-28 02:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

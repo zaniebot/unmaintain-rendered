@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM110: Recommend proper usage of `all` and `any` - astral-sh/ruff #16904</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM110: Recommend proper usage of `all` and `any`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16904">#16904</a>
+        opened by <a href="https://github.com/davfsa">@davfsa</a>
+        on 2025-03-21 19:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/davfsa">@davfsa</a> on 2025-03-21 19:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h2>The problem</h2>
+<p><code>all</code> and <code>any</code> are great built-ins, but only when used correctly. They have common pitfalls that seriously hurts performance.</p>
+<p>Taking for example, the following piece of code (this is <em>not</em> real code, it is just an example!):</p>
+<pre><code class="language-py">for elm in lst:
+    if elm &gt; 0:
+        return True
+return False
+</code></pre>
+<p>ruff (if rule SIM110 is enabled) will suggest to turn it into:</p>
+<pre><code class="language-py">return any(elm &gt; 0 for elm in lst)
+</code></pre>
+<p>which uses a generator expression, which is wayy (2 y's) slower than the for loop it is replacing</p>
+<details>
+<summary>Benchmark</summary>
+
+<pre><code class="language-py">lst = [0 for _ in range(10000)] + [1]
+
+def for_list():
+    for elm in lst:
+        if elm &gt; 0:
+            return True
+    return False
+
+def any_gen():
+    return any(elm &gt; 0 for elm in lst)
+
+def any_proper_gen():
+    return any(True for elm in lst if elm &gt; 0)
+
+def any_list():
+    return any([elm &gt; 0 for elm in lst])
+</code></pre>
+</details>
+
+<pre><code>%timeit for_list()
+113 μs ± 253 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+%timeit any_gen()
+225 μs ± 1.67 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+
+%timeit any_proper_gen()
+108 μs ± 182 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+%timeit any_list()
+130 μs ± 531 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+</code></pre>
+<p><em>You usually want lazy evaluation in these cases, which is why I included <code>any_list</code> to show that <code>[]</code> could be another option, but is usually unwanted)</em></p>
+<h2>Proposed solution</h2>
+<p>Instead of the original code, ruff should suggest:</p>
+<pre><code class="language-py">return any(True for elm in lst if elm &gt; 0)
+</code></pre>
+<p>This is a bit more unreadable, so it would maybe be paired with another performance rule (probably under PERF) to catch incorrect uses of <code>any</code> and <code>all</code>, as well as suggest the correct code for SIM110</p>
+<h2>References</h2>
+<p>I always assumed <code>any</code> and <code>all</code> were slower than a normal loop outright, until I started migrating one of my projects to use ruff, which lead me to actually research this and found these amazing answers on StackOverflow, which helped me greatly to write this issue</p>
+<p>https://stackoverflow.com/a/44803103
+https://stackoverflow.com/a/44813751</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-03-21 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-21 20:50</div>
+            <div class="timeline-body"><p>Hmm, I definitely agree with you that the proposed code is more unreadable, so I don't think it would be a great fit for the output of SIM110 itself. Maybe a separate <code>PERF</code> rule would be a better approach, like you said.</p>
+<p>I think we try to avoid too much discussion of performance in the rule documentation, but it might be worth noting in this case too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-03-21 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davfsa">@davfsa</a> on 2025-03-21 21:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, I definitely agree with you that the proposed code is more unreadable, so I don't think it would be a great fit for the output of SIM110 itself. Maybe a separate PERF rule would be a better approach, like you said.</p>
+</blockquote>
+<p>Sounds great! I wanted to get some confirmation before attempting to work on this.</p>
+<p>Would like to also confirm if it would be ok for rules to be &quot;dependent&quot; on other rules. My idea would be to produce different output for SIM110 if the new PERF rule is enabled? This would prevent needing to re-run ruff if (for example) rule SIM110 gets applied with <code>--fix</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-21 21:09</div>
+            <div class="timeline-body"><p>Let's wait a little while to see if there's more interest in this kind of rule. Adding new rules isn't a top priority for us right now. You can still work on it, of course, but we may be a bit slow in reviewing it 🙂</p>
+<p>Ruff applies fixes in a loop until they stabilize, which is how we usually handle this kind of interaction. In this case, SIM110 would apply, converting the <code>for</code> loop to the unoptimized <code>any</code> call, and then the hypothetical PERF rule would run to convert the unoptimized <code>any</code> into the optimized version. So I don't think you'd have to handle the dependency directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-03-21 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davfsa">@davfsa</a> on 2025-03-21 21:17</div>
+            <div class="timeline-body"><p>Thanks for the answer!</p>
+<p>And yeah, I dont expect this to be immediate and out in a release by tomorrow. I expected conversation to flow a bit before coming to a decision. Just wanted to leave a pull request a long with the issue (if possible) as a bit of an excuse to write a bit of rust code :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Recomment proper usage of `all` and `any`" to "SIM110: Recomment proper usage of `all` and `any`" by @MichaReiser on 2025-03-21 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "SIM110: Recomment proper usage of `all` and `any`" to "SIM110: Recommend proper usage of `all` and `any`" by @dylwil3 on 2025-03-21 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davfsa">@davfsa</a> on 2025-03-21 22:00</div>
+            <div class="timeline-body"><p>Further to note (after a bunch of testing). It seems like both <code>any</code> and <code>all</code> is really benefited (performance wise) a bit from the fix, compared to just writing out the loop. Im assuming that this is due to the double encapsulation of for loops (essentially, we are checking the truthfulness of the value twice).</p>
+<p>Im starting to think if its better for (in the name of small performance gains) to just advice to <em>not</em> use <code>all</code> and <code>any</code> and just write out the loop 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davfsa">@davfsa</a> on 2025-03-31 15:46</div>
+            <div class="timeline-body"><p>It looks like this might no longer be needed after CPython 3.14 https://github.com/python/cpython/pull/131737.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-03-31 18:18</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like this might no longer be needed after CPython 3.14 <a href="https://github.com/python/cpython/pull/131737">python/cpython#131737</a>.</p>
+</blockquote>
+<p>Looks like that may affect https://github.com/astral-sh/ruff/issues/12912 as well? 👀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12912.html">astral-sh/ruff#12912</a> on 2025-03-31 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-03-31 18:31</div>
+            <div class="timeline-body"><p>I personally still prefer</p>
+<pre><code class="language-py">any(True for elm in lst if elm &gt; 0)
+</code></pre>
+<p>over</p>
+<pre><code class="language-py">for elm in lst:
+    if elm &gt; 0:
+        return True
+return False
+</code></pre>
+<p>Especially if it comes with a lint rule/autofix.</p>
+<p>Like yeah someone may (rightfully) wonder why it's written that way, but as soon as they &quot;simplify&quot; the expression, Ruff will tell them why.</p>
+<hr />
+<p><em>something something readability, python isn't a performant language</em>.
+But Python is widely supported across platforms for specific use-cases. And getting &quot;free&quot; (as in the linter does it for you) performance gains is nice in a language that needs all the help it can get. It's not a micro-optimisation if you wrote it right the first time 😉</p>
+<hr />
+<p>So consider this my vote for such a rule. Although we should really get some numbers on the Python 3.14 generator expression changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19419.html">astral-sh/ruff#19419</a> on 2025-07-28 21:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

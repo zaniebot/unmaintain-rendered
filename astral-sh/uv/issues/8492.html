@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fork when wheels only support a specific range - astral-sh/uv #8492</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fork when wheels only support a specific range</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8492">#8492</a>
+        opened by <a href="https://github.com/cbrnr">@cbrnr</a>
+        on 2024-10-23 09:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-10-23 09:03</div>
+            <div class="timeline-body"><p>EDIT: See https://github.com/astral-sh/uv/issues/8492#issuecomment-2431979599 for an explanation of this behavior</p>
+<hr />
+<p>I don't know if this is intentional, but the following project cannot be installed on Python 3.13 if I want to avoid building source distributions:</p>
+<ol>
+<li><code>uv init example</code></li>
+<li><code>cd example</code></li>
+<li>Use this <code>pyproject.toml</code>:<pre><code>[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+    &quot;scipy &gt;= 1.13.1&quot;,
+]
+</code></pre>
+</li>
+<li><code>uv sync --python=3.12</code> works (same for <code>3.9</code>, <code>3.10</code>, and <code>3.11</code>)</li>
+<li><code>uv sync --python=3.13 --no-build-package=scipy</code> fails, even though it could (should?) use <code>scipy==1.14.1</code>, which is available as a binary wheel.</li>
+</ol>
+<p>This surprised me because I expected that by specifying <code>scipy &gt;= 1.13.1</code>, uv would automatically choose a newer version with a binary wheel for Python 3.13. Indeed, there are binary wheels for version 1.13.1 available for Python 3.9 through 3.12, but only version ≥ 1.14.0 has a binary wheel for Python 3.13 (though it no longer supports 3.9). However, it seems that uv is trying to maintain consistent package versions across <em>all</em> supported Python versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-23 10:47</div>
+            <div class="timeline-body"><p>This is known problem with scientific packages unfortunately. Does splitting the scipy version on the python version as documented at the bottom of https://github.com/astral-sh/uv/blob/main/docs/reference/build_failures.md (this doc will ship with the next release) help?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2024-10-23 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-10-23 11:03</div>
+            <div class="timeline-body"><p>Unfortunately not:</p>
+<pre><code>[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+    &quot;scipy &gt;= 1.13.1; python_version &lt;= '3.12'&quot;,
+    &quot;scipy &gt;= 1.14.0; python_version &gt;= '3.13'&quot;,
+]
+</code></pre>
+<p>It tries to build NumPy 2.0.2 from source on Python 3.13, no idea why it doesn't just use &gt;= 2.1:</p>
+<pre><code>❯ uv sync --python=3.13 --no-build-package=scipy --no-build-package=numpy
+Using CPython 3.13.0
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 4 packages in 0.97ms
+error: Distribution `numpy==2.0.2 @ registry+https://pypi.org/simple` can't be installed because it is marked as `--no-build` but has no binary distribution
+</code></pre>
+<p>Maybe because it also uses NumPy 2.0.2 on Python &lt;= 3.12?</p>
+<p>Besides, I think splitting like this feels a bit off, since the ranges actually overlap (unlike in the example).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-23 11:15</div>
+            <div class="timeline-body"><p>You need to also split numpy, probably as a constraint since it's not a direct dependency:</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+  &quot;scipy &gt;=1.13.1,&lt;1.14.0; python_version &lt; '3.13'&quot;,
+  &quot;scipy &gt;=1.14.0; python_version &gt;= '3.13'&quot;,
+]
+
+[tool.uv]
+constraint-dependencies = [
+  # Supports 3.8 to 3.10
+  &quot;numpy &lt;=2.1.0,&gt;=1.22.4; python_version &lt; '3.13'&quot;,
+  # Support 3.10 to 3.13
+  &quot;numpy &gt;=2.1.0; python_version &gt;= '3.13'&quot;,
+]
+</code></pre>
+<p>Overlapping version ranges are fine in uv's model, but you can also make them exclusive as in the example above.</p>
+<p>Fwiw it would be nice if we could make this split automatically for non-abi3 wheels.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-10-23 11:18</div>
+            <div class="timeline-body"><p>Uhm, can you explain the reasoning behind this resolution? Why does uv not pick scipy 1.14.1 for Python 3.13? I'm explicitly specifying <code>scipy &gt;= 1.13.1</code>, so 1.14.1 is perfectly valid?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-10-23 11:23</div>
+            <div class="timeline-body"><p>This feels very un-intuitive to me, too 🤯</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-23 12:27</div>
+            <div class="timeline-body"><p>There's three parts of the uv resolver interacting here: requires-python, forking and wheel compatibility. uv will only select packages with a requires-python lowest bound at least as high as your project. For example, your project has <code>requires-python = &quot;&gt;=3.9&quot;</code>, while scipy 1.14.1 has <code>Requires-Python: &gt;=3.10</code> (https://inspector.pypi.io/project/scipy/1.14.1/packages/64/68/3bc0cfaf64ff507d82b1e5d5b64521df4c8bf7e22bc0b897827cbee9872c/scipy-1.14.1-cp310-cp310-macosx_10_13_x86_64.whl/scipy-1.14.1.dist-info/METADATA), so we can't select this version and must choose an older version. (If we would select that version, you would get an error trying to <code>uv sync</code> on Python 3.9)</p>
+<p>uv also has the forking mechanism (https://docs.astral.sh/uv/reference/resolver-internals/#forking): Whenever we see that a dependency has different requirements for different markers in the same package, we fork and solve once for the one markers and once for the other markers (assuming the markers are disjoint, if they aren't we split some more until we have disjoint environments, there are some implementation details to it). Forking can tighten the requires-python range: If we know we're in an environment from a <code>python_version &gt;= &quot;3.12&quot;</code> marker, we can pick a more recent version - such as scipy 1.14.1 - since the <code>python_version &gt;= &quot;3.9&quot; and python_version &lt; &quot;3.12&quot;</code> range is already handled by the other fork, which can select an older version.</p>
+<p>uv is conservative with forking, we only fork on above condition. In a single fork, we have to enforce that there is only a single version per package per resolution (since we can only install a single version). uv also tries to reuse versions between forks when possible, to reduce the divergence between them (less different versions, less things that can go wrong/need to be tested). The latter is the reason that you often have to add an upper bound on the version for getting the right forking results.</p>
+<p>Pure python projects don't have an upper bound on their python compatibility: Usually a package published now will work on future python versions. Even for most compiled projects with per-python version shared libraries, you can use them on a newer version by building the source dist. For these and reasons related to how our universal dependency resolution works, we're discarding upper bounds on requires-python (long explanation in https://github.com/astral-sh/uv/issues/4022).</p>
+<p>For numpy, scipy and a number of related projects this assumption isn't true, they really only work for a specific Python range for each version, and you're also not supposed to build them from source (often failing to compile on newer Python versions). Here's the part where uv falls short and you need the manual intervention of specifying <code>python_version</code> markers: uv can't detect that we're trying a package that has compatibility and wheels only for a specific range, and we need to fork to satisfy the full Python version range from the lowest version your project requires to the latest version the dependency supports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-10-23 12:38</div>
+            <div class="timeline-body"><p>Thanks for this detailed explanation! I do like how thoroughly uv has been designed, but given that the scientific ecosystem now pushes it beyond its boundaries, I feel like it makes it very hard to use uv in this context. In the simple example with just a single <code>scipy</code> dependency I have to manually specify constraints for <code>numpy</code>, but in a more realistic project there will probably be dozens of such constraints that I don't want to handle manually.</p>
+<blockquote>
+<p>Fwiw it would be nice if we could make this split automatically for non-abi3 wheels.</p>
+</blockquote>
+<p>I'm not sure if I understand what you're saying, but do you think that uv should do this automatically so that my original example &quot;just works&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-10-24 05:12</div>
+            <div class="timeline-body"><p>Also, <code>pip</code> resolves these requirements differently: it installs <code>scipy==1.14.1</code> on <code>&gt;=3.10</code> and <code>scipy==1.13.1</code> on <code>==3.9</code> (together with suitable binary wheels for <code>numpy</code>). This is the expected behavior at least for me, but probably also for the Python community.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-10-24 05:47</div>
+            <div class="timeline-body"><blockquote>
+<p>This is the expected behavior at least for me, but probably also for the Python community.</p>
+</blockquote>
+<p>I would like to second this ☝️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../MIT-LCP/wfdb-python/pulls/511.html">MIT-LCP/wfdb-python#511</a> on 2024-10-24 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @konstin on 2024-10-25 08:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-10-25 08:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Dependency resolution across Python versions" to "Fork when wheels only support a specific range" by @konstin on 2024-10-25 08:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-25 08:25</div>
+            <div class="timeline-body"><p>For numpy at least, <code>Requires-Python</code> doesn't tell us about the upper bounds (https://inspector.pypi.io/project/numpy/2.1.2/packages/1c/a2/40a76d357f168e9f9f06d6cc2c8e22dd5fb2bfbe63fe2c433057258c145a/numpy-2.1.2-cp310-cp310-macosx_10_9_x86_64.whl/numpy-2.1.2.dist-info/METADATA#line.999), so we would need to find a strategy of forking dependent on the wheel on PyPI, e.g.:</p>
+<p>Pick a numpy version, analyse the range of https://pypi.org/project/numpy/#files, and if we see consistent range of compiled <code>cp3x</code> tags while there exists a newer version that covers a wider range, fork and so we can pick a newer numpy on newer Python versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7190.html">astral-sh/uv#7190</a> on 2024-10-29 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-29 17:04</div>
+            <div class="timeline-body"><p>Another possible solution would be https://github.com/astral-sh/uv/issues/7190</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-10-29 17:07</div>
+            <div class="timeline-body"><p>You should never add an upper bounds to Requires-Python. Most packages don't know it until after they are released, and even for ones that know they won't support the next version (like numpy), the existing handing of this field is wrong and things like pip and poetry break if you cap. Looking at the binary wheels available to guide version ranges would be really helpful, though, I think, especially if #7190 wasn't the default. You could also check to see if classifiers are present, and only consider a classifier disappearing as you look at older packages to be the starting point of support for that Python version (for packages with universal wheels). Many packages don't have classifiers, but for the ones that do, having a classifiers is a sign of solid support. (That's a lot weirder, though, I don't think a single tool today checks classifiers during a solve).</p>
+<p>https://discuss.python.org/t/requires-python-upper-limits/12663 was a discussion about what to do with upper caps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-10-29 18:09</div>
+            <div class="timeline-body"><p>Yes, I think #7190 would be a great default. In my example at the top, I'm not setting an upper bound at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8686.html">astral-sh/uv#8686</a> on 2024-10-29 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../google/magika/pulls/591.html">google/magika#591</a> on 2024-10-30 02:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8978.html">astral-sh/uv#8978</a> on 2024-11-10 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9211.html">astral-sh/uv#9211</a> on 2024-11-18 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @konstin on 2024-11-18 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-11-20 10:08</div>
+            <div class="timeline-body"><p>Hello @konstin  and @charliermarsh,</p>
+<p>I’m not entirely sure whether to post here or in #7190, but I wanted to take a moment to share some thoughts. The challenge @cbrnr has described is a significant blocker for <code>uv</code> adoption in both my company and several open-source projects I’m involved with.</p>
+<p>In our use cases, we typically need to support multiple Python versions while ensuring that the latest possible versions of all packages are installed for each Python version. This is critical for us across local development, CI testing, and deployment workflows.</p>
+<p>Unfortunately, the current workaround using <code>python_version</code> selectors to enforce forking isn’t feasible for us. With projects that have dozens of dependencies, adding what could amount to hundreds of additional (and repetitive) lines to <code>pyproject.toml</code> simply isn’t manageable.</p>
+<p>As it stands, this issue is preventing our entire data science department—comprising hundreds of professionals—from adopting <code>uv</code>, despite the significant enthusiasm and interest we have for it.</p>
+<p>I’d sincerely appreciate it if this issue could be re-prioritized, and I’m more than happy to assist with testing or provide further examples if that would be helpful.</p>
+<p>Thank you so much for your hard work, time, and dedication to this project! Your efforts are truly appreciated, and we’re excited about the possibilities that <code>uv</code> offers.</p>
+<p>Warm regards,
+Richard</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ryanhiebert">@ryanhiebert</a> on 2024-11-20 10:18</div>
+            <div class="timeline-body"><p>@hoechenberger I wonder if you can clarify whether your need for the latest version possible on each Python is for libraries, applications, or both. A thought is that this non-forking approach currently taken is better for applications because it reduces the variations in a lockfile, and I'm curious what other people's needs are.</p>
+<p>I'd prefer the forking behavior in applications as well, but I'm not sure whether that's just my library-maker brain having myopia because it's not getting what it wants right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-11-20 10:22</div>
+            <div class="timeline-body"><p>In my opinion, packages should be resolved to their highest possible versions for each Python version separately. This is independent whether the project is a library or an app (the distinction is sometimes tricky anyway). If you develop an app, I think you should pin the Python version and all dependencies to fixed versions anyway, so this problem is not relevant. In addition, Python's official package manager <code>pip</code> has always done this, and now <code>uv</code> is doing something very different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-11-20 10:22</div>
+            <div class="timeline-body"><p>@ryanhiebert In the beginning I was only thinking about libraries here, but I'm quite certain some colleagues of mine would want this behavior for their apps, too. I can definitely see some good arguments for forking when resolving app dependencies, but of course also plenty of arguments against it. I believe for libraries, the case is more clear-cut.</p>
+<p>Edit: FWIW I'd argue that for an app the Python version should be fixed anyway, so the question of forking doesn't really come up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-11-20 10:25</div>
+            <div class="timeline-body"><p>@cbrnr</p>
+<blockquote>
+<p>In addition, Python's official package manager <code>pip</code> has always done this, and now <code>uv</code> is doing something very different.</p>
+</blockquote>
+<p>I believe this is actually an under-appreciated comment. Regardless of whether forking is the &quot;good&quot; or &quot;worse&quot; thing to do, I think we can argue that users and devs have been &quot;trained&quot; over the years to expect this &quot;pip resolution strategy&quot;. (I know, <code>pip</code> doesn't support universal lock files – but I'd suggest that this is beside the point here!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ryanhiebert">@ryanhiebert</a> on 2024-11-20 11:11</div>
+            <div class="timeline-body"><blockquote>
+<p>FWIW I'd argue that for an app the Python version should be fixed anyway, so the question of forking doesn't really come up.</p>
+</blockquote>
+<p>I think that's worth a lot, and what I'd generally recommend. And if that's a generally good rule to follow for applications, then this exceptional behavior really only affects applications that need to simultaneously support multiple python versions. I suspect that's pretty rare; if I were distributing an application it would almost certainly be in a docker image, so the Python version would be specified as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-11-20 14:55</div>
+            <div class="timeline-body"><blockquote>
+<p>In my opinion, packages should be resolved to their highest possible versions for each Python version separately. This is independent whether the project is a library or an app (the distinction is sometimes tricky anyway).</p>
+</blockquote>
+<p>This is <em>very</em> use case specific, for all my current uses cases I would rather have the same version of the library where possible, as when I'm testing my application across Python versions I want to minimize the amount of differences there are when investigating issues.</p>
+<blockquote>
+<p>In addition, Python's official package manager <code>pip</code> has always done this, and now <code>uv</code> is doing something very different.</p>
+</blockquote>
+<p>Pip doesn't do any kind of universal resolution and is a package installer, not a package manager, this is comparing apples to oranges. It would be much more apt to compare against Poetry.</p>
+<p>That said, if all you want it a matrix of resolutions, uv does offer a pip compile API, and you can do,  <code>uv pip compile --python 3.10 --python-platform windows ...</code>, <code>uv pip compile --python 3.11 --python-platform linux ...</code>, etc.</p>
+<p>FYI I'm not arguing this use cases shouldn't be supported, just it reads as universal declarations to things which are absolutely not universal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ryanhiebert">@ryanhiebert</a> on 2024-11-20 15:09</div>
+            <div class="timeline-body"><blockquote>
+<p>FYI I'm not arguing this use cases shouldn't be supported, just it reads as universal declarations to things which are absolutely not universal.</p>
+</blockquote>
+<p>@notatallshaw I really appreciate you chiming in! For libraries, it seems like the forking behavior would be the optimal default. For applications, I'm of two minds about it, and wish consistency was a good option, but I think for those moments where you really need your application to straddle Pythons it likely makes sense to default to avoiding forking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-11-20 15:23</div>
+            <div class="timeline-body"><blockquote>
+<p>This is <em>very</em> use case specific, for all my current uses cases I would rather have the same version of the library where possible, as when I'm testing my application across Python versions I want to minimize the amount of differences there are when investigating issues.</p>
+</blockquote>
+<p>This is also <em>very</em> use case specific.</p>
+<blockquote>
+<p>Pip doesn't do any kind of universal resolution and is a package installer, not a package manager, this is comparing apples to oranges. It would be much more apt to compare against Poetry.</p>
+</blockquote>
+<p>Pip also resolves dependencies, but in a different way. The only important difference here is that pip resolves per Python version, whereas uv resolves across all Python versions.</p>
+<p>The point is that we think there should be a flag to switch between these two different resolution modes, that's all. No one is saying that the current mode should be removed.</p>
+<blockquote>
+<p>That said, if all you want it a matrix of resolutions, uv does offer a pip compile API, and you can do, <code>uv pip compile --python 3.10 --python-platform windows ...</code>, <code>uv pip compile --python 3.11 --python-platform linux ...</code>, etc.</p>
+</blockquote>
+<p>This would be a lot of manual work, which is exactly what we would like to avoid.</p>
+<blockquote>
+<p>FYI I'm not arguing this use cases shouldn't be supported, just it reads as universal declarations to things which are absolutely not universal.</p>
+</blockquote>
+<p>I never said that it was universal, but pip is still the official standard. It interprets requirements defined in <code>pyproject.toml</code> a certain way, and <code>uv</code> deviates from this standard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-11-20 15:29</div>
+            <div class="timeline-body"><p>@cbrnr</p>
+<blockquote>
+<p>The point is that we think there should be a flag to switch between these two different resolution modes, that's all. No one is saying that the current mode should be removed.</p>
+</blockquote>
+<p>I would like to second that.</p>
+<p>Like I said above, I don't see a need to argue about which approach is &quot;better&quot;:</p>
+<p>@hoechenberger</p>
+<blockquote>
+<p>Regardless of whether forking is the &quot;good&quot; or &quot;worse&quot; thing to do, I think we can argue that users and devs have been &quot;trained&quot; over the years to expect this &quot;pip resolution strategy&quot;.</p>
+</blockquote>
+<p>We should just try to accommodate those users (and devs!) too, that's all.</p>
+<p>@cbrnr</p>
+<blockquote>
+<blockquote>
+<p>That said, if all you want it a matrix of resolutions, uv does offer a pip compile API, and you can do, <code>uv pip compile --python 3.10 --python-platform windows ...</code>, <code>uv pip compile --python 3.11 --python-platform linux ...</code>, etc.</p>
+</blockquote>
+<p>This would be a lot of manual work, which is exactly what we would like to avoid.</p>
+</blockquote>
+<p>Agreed. If that's the proposed way forward, <code>uv</code> adoption is sadly off the table for me and my colleagues.</p>
+<p>I'm still very positive that we'll be able to see a solution that works for all! 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-11-20 15:43</div>
+            <div class="timeline-body"><blockquote>
+<p>This is also <em>very</em> use case specific.</p>
+</blockquote>
+<p>Isn't this also Poetry's default behavior? And therefore the most common behavior among Python universal resolvers.</p>
+<p>I agree it's use case specific, but currently it seems to be the most common case for universal resolvers.</p>
+<blockquote>
+<p>Pip also resolves dependencies, but in a different way. The only important difference here is that pip resolves per Python version, whereas uv resolves across all Python versions.</p>
+</blockquote>
+<p>As a maintainer of resolvelib, the resolver for pip, and a regular contributor to pip's resolver code, I would say that isn't at all an accurate description of what pip does.</p>
+<p>Pip only collects packages and requirements for a specific environment, that is, for all the environment markers defined by PEP 496, the resolver itself has no concept of a Python version.</p>
+<blockquote>
+<p>The point is that we think there should be a flag to switch between these two different resolution modes, that's all. No one is saying that the current mode should be removed.</p>
+</blockquote>
+<p>I strongly support this, but comparing universal resolution which is aware of environment markers to pip's resolution is fundamentally flawed way of looking at this.</p>
+<blockquote>
+<p>I never said that it was universal, but pip is still the official standard. It interprets requirements defined in <code>pyproject.toml</code> a certain way, and <code>uv</code> deviates from this standard.</p>
+</blockquote>
+<p>Pip is <em>not</em> an official standard. It is bundled into CPython to allow users to bootstrap their environment. Several core developers have expressed strong aversion to bundling a dedicated package manager.</p>
+<p>Further, there are no standards for resolution, only standards for specifier on a set of versions. The standards documents are very careful to avoid saying anything on how resolution should work.</p>
+<p>If you want a pip API from uv then use <code>uv pip</code>, it's very good, I rely on it heavily and am quick to report if there's any unknown deviation with pip.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ryanhiebert">@ryanhiebert</a> on 2024-11-20 15:47</div>
+            <div class="timeline-body"><p>I think that @notatallshaw has brought up valid points. I do seem to recall having similar trouble with using poetry for libraries. pip itself is an installer only, not a locker, so I do think that there is a very relevant distinction between their behaviors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-11-20 15:55</div>
+            <div class="timeline-body"><p>Yes, I agree that these are extremely valid points. I really do not want to discuss the technical details here, as I think they are not relevant. I'm simply saying that uv cannot be used for things where pip just works (see my example at the very top).</p>
+<p>So let me focus on the most important point where everyone seems to agree:</p>
+<blockquote>
+<p>The point is that we think there should be a flag to switch between these two different resolution modes, that's all. No one is saying that the current mode should be removed.</p>
+</blockquote>
+<p>Agreed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-11-20 15:57</div>
+            <div class="timeline-body"><p>I'm afraid this discussion is derailing a bit. The goal of uv is to replace existing tools like venv, poetry, pip, ...</p>
+<p>It's no use to fight over what behavior is better or worse.</p>
+<p>Ultimate it's a question of who's the targeted user group.</p>
+<p>And all @cbrnr and I are saying: without the ability to change the resolution strategy, we and large parts of our professional networks will fall <strong>outside</strong> of this group. Which is totally alright, no hard feelings. We just wanted to make the uv devs aware of this.</p>
+<p>Have a nice day, everyone! 🤗</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-11-20 16:11</div>
+            <div class="timeline-body"><p>Yes, agreed it would be great for uv to support this use case, and agreed it's a real need for you.</p>
+<p>That said, one nitpick:</p>
+<blockquote>
+<p>I'm simply saying that uv cannot be used for things where pip just works</p>
+</blockquote>
+<p>You can definitely use <code>uv pip</code> to replace <code>pip</code> for everything you've said in this thread. If there's a missing use case there you should raise a separate issue on that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-11-20 16:13</div>
+            <div class="timeline-body"><blockquote>
+<p>You can definitely use <code>uv pip</code> to replace <code>pip</code> for everything you've said in this thread.</p>
+</blockquote>
+<p>Then I would lose all the nice things that <code>uv</code> brings to the table like being able to just <code>uv run</code> things 😢, and it would &quot;just&quot; be a faster version of pip. I hope that's not what <code>uv</code> is intended to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-20 17:12</div>
+            <div class="timeline-body"><p>Regarding the &quot;specificity&quot; of use-cases, uv tries to use consistent versions whenever feasible — this is a fundamental design principle of uv's user experience. I think it's fine to allow you to opt-in to different behavior, but changing the default behavior seems inconsistent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-11-20 17:14</div>
+            <div class="timeline-body"><blockquote>
+<p>This is very use case specific, for all my current uses cases I would rather have the same version of the library where possible, as when I'm testing my application across Python versions I want to minimize the amount of differences there are when investigating issues.</p>
+</blockquote>
+<p>FYI, this will often mean you'll be using an old version of a library on a version of Python that wasn't released when it was released. That's the issue this is referring to; NumPy (and most other major scientific libraries) support the last three releases, instead of the last 5 or 6 which is more common (due to EoL often being followed to some degree). And at least NumPy specifically never works on a newer version of Python. If any library you depend on has a restricted Python range (libraries should be allowed to drop old Pythons!), that means you will very often end up with a resolution that would be impossible for pip, an old library on a new Python. It would be nice (and I think possible) if this could be detected and auto-forked if it happens; you never want to resolve a version of a library that is older than the Python you are using if there's a newer release available! This is true even for applications.</p>
+<p>I believe this is a case where &quot;consistent versions&quot; is unfeasible. Maybe three modes: <code>nofork</code>, <code>auto</code>, and <code>fork</code>, where auto will fork only if the python minimum required version causes back solving and therefore a non-ideal version for the latest supported Pythons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-11-20 17:23</div>
+            <div class="timeline-body"><p>IMO this <em>application</em> should work out of the box without configuration on Python 3.13:</p>
+<pre><code class="language-toml">[project]
+name = &quot;numexample&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+    &quot;numpy&quot;,
+]
+</code></pre>
+<p>Currently it takes almost two minutes to set up or crashes building NumPy, and likely has issues since it's using a NumPy (2.0.2) that doesn't support 3.13. I think the ideal case would be for it to fork on Python 3.9, so 3.9 has numpy==2.0.2, and 3.10-3.13 has numpy==2.1.2 (which takes 131ms to install).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-11-20 17:25</div>
+            <div class="timeline-body"><p>@henryiii and it gets even worse if you look at my initial example at the very top, because you'd need to manually fork not only the direct dependency, but also all indirect ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-11-20 17:26</div>
+            <div class="timeline-body"><blockquote>
+<p>that means you will very often end up with a resolution that would be impossible for pip, an old library on a new Python.</p>
+</blockquote>
+<p>I'm not quite groking what you mean here. If you come up with a resolution using pip on an old version of Python then it can also likely be impossible to use that resolution on a new version of Python.</p>
+<blockquote>
+<p>And at least NumPy specifically never works on a newer version of Python.</p>
+</blockquote>
+<p>As an aside, I'd like to understand this a little better. If you don't want to support old versions of numpy for your project, why are you resolving for versions of Python no longer supported by numpy?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-11-20 17:29</div>
+            <div class="timeline-body"><blockquote>
+<p>As an aside, I'd like to understand this a little better. If you don't want to support old versions of numpy for your project, why are you resolving for versions of Python no longer supported by numpy?</p>
+</blockquote>
+<p>It's the opposite. We want to support an older version, because we'd like to keep supporting Python 3.9 for example. But with uv, we get the old version for <em>all</em> Python versions, including a source build for 3.13.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-20 17:30</div>
+            <div class="timeline-body"><p>I'd like to curtail further discussion about the motivation for this feature. I understand the motivation and why it's important. I'm not really interested in changing the defaults right now. But I am interested in supporting it. It is fairly challenging ~since (e.g.) the NumPy package metadata does not give any indication that (e.g.) NumPy 2.0.2 &quot;doesn't support&quot; Python 3.13, so it requires a variety of new and highly nuanced logic~. (Edit: I'll just leave it at &quot;fairly challenging&quot; since it's not worth debating why and what needs to change -- we understand why and what needs to change.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9412.html">astral-sh/uv#9412</a> on 2024-11-25 10:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9827.html">astral-sh/uv#9827</a> on 2024-12-11 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-11 23:19</div>
+            <div class="timeline-body"><p>Ok, I believe I have this working at https://github.com/astral-sh/uv/pull/9827.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-11 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-13 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-13 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12060.html">astral-sh/uv#12060</a> on 2025-09-18 10:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

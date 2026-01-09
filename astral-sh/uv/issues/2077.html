@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support `--user` flag from pip - astral-sh/uv #2077</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support `--user` flag from pip</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2077">#2077</a>
+        opened by <a href="https://github.com/potiuk">@potiuk</a>
+        on 2024-02-29 09:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/potiuk">@potiuk</a> on 2024-02-29 09:14</div>
+            <div class="timeline-body"><p>Currently (even in latest uv 0.1.12 that supports --python flag) it's not possible to use <code>uv</code> in case <code>--user</code> flag of <code>pip</code> (or PIP_USER=&quot;true&quot; env variable is set).</p>
+<p>With <code>--user</code> flag, packages are installed to a ~/.local folder, which means that the user might not have access to the <code>python</code> system installation as a whole, but can locally install and uninstall packages, without having venv.</p>
+<p>This is extremely useful for cases like <code>CI</code> and building container images, where having a venv is an extra overhead and it is unnecessary burden.</p>
+<p>There is an interesting (and used in Apache Airflow) case for the <code>--user</code> flag (this currently prevent us from using <code>uv</code> by us and our users  also in PROD images in addition to our CI image). That is currently a blocker for https://github.com/apache/airflow/issues/37785</p>
+<p>Why <code>--user</code> flag is useful and why we use it in Airflow?</p>
+<p>Using <code>--user</code> flag is pretty useful when you want to have an optimized image - because such <code>.local</code> folders can be copied between different stage of the image (based on the same base image and prod libraries installed) and you can copy the whole <code>.local</code> folder between the stages after packages are installed - which means that the final stage of the image does not have to have <code>build-essentials</code>/ compilers installed.</p>
+<p>You could do the same with <code>venv</code> if you keep it in the same folder, but that looses an essential capability of creating venv dynamically containing all the packages you have in your <code>.local</code> folder.  When you have your <code>--user</code> installed packages, and you create a new venv  with <code>--system-site-packages</code>,  the packages installed in <code>.local</code> folder are also installed in the new venv. This does not work when you create a new <code>venv</code> from another <code>venv</code> because <code>--system-site-packages</code> are only the ones installed in the system.</p>
+<p>While I can think of some creative ways (maybe I will find some) - having an equivalent of <code>--user</code> installation by <code>uv pip install</code> would be a great simplification for our case to support the users who want to use <code>uv</code> (and seems that there is already a need for that looking at the https://github.com/apache/airflow/issues/37785</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/airflow/issues/37785.html">apache/airflow#37785</a> on 2024-02-29 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/airflow/pulls/37796.html">apache/airflow#37796</a> on 2024-02-29 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-29 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-02-29 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @charliermarsh on 2024-02-29 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 14:54</div>
+            <div class="timeline-body"><p>Thanks! I really appreciate the clear write-up and motivation here. (I'm hoping to get to this today, it's been requested a few times.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-02-29 17:04</div>
+            <div class="timeline-body"><p>Just to take off the pressure a bit. I figured out how to get rid of the <code>--user</code> flag (still have a problem to fix) https://github.com/apache/airflow/pull/37796 - I attempted it quite some time ago and failed but this time I got a brilliant idea - I simply deleted the <code>~/.local</code> folder and created a new <code>~/.local</code> venv,  added <code>VIRTUAL_ENV=~/.local</code> env var and added ~/.local/bin to PATH and  .... voila ... It works 100% compatible with <code>--user</code> flag it seems - all the cases I had (including <code>pip -m venv --system-site-packages</code>) work like a charm.</p>
+<p>So ... It seems I do not need it that much any more .... I will make Airflow PROD image also <code>uv</code> friendly now :) (128s instead of 280s is the gain I have :). Not bad - another 55% improvement.</p>
+<p>There is a small difference though with venv when using <code>python -m venv</code> and <code>uv venv</code>. With <code>uv</code> you do not have <code>--system-site-packages</code> option yet. That might be the more useful of the two.</p>
+<p>After that experience I have a new thought. The <code>--user</code> flag has a few bad side effects (that's why I am glad to finally get rid of it). One of the problems is that you cannot run <code>--user</code> and <code>--editable</code> any more with pip. So maybe - just maybe (?), rather than implementing <code>--user</code> flag - documenting how to get an equivalent by creating <code>~/.local</code> venv is a better option ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 21:56</div>
+            <div class="timeline-body"><p>@potiuk - At the very least I can add <code>--system-site-packages</code>, that's really easy. I'm somewhat undecided on <code>--user</code>... Gonna sleep on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-02-29 22:08</div>
+            <div class="timeline-body"><blockquote>
+<p>@potiuk - At the very least I can add <code>--system-site-packages</code>, that's really easy. I'm somewhat undecided on <code>--user</code>... Gonna sleep on it.</p>
+</blockquote>
+<p>Yep. That would be a good start :). I <strong>think</strong> <code>pip</code> maintainers would gladly drop that one (<code>--user</code>) . So my proposal for the <code>uv</code> team is think very deeply on whatever you add. You are now way faster on adding things and responding to new requests - comparing to <code>pip</code> -  but mainly because you do not have the whole baggage that <code>pip</code> accumulated over the years and where adding every single small change will make some loud part of your users unhappy. I think it should be a very conscious decision to add somethig that you will have to maintain in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 22:14</div>
+            <div class="timeline-body"><p>Yeah I strongly agree with this. Very good callout. It's nice to add things that unlock user workflows, but there are some areas where we actively want to change user behavior, and we need to hold firm on some of those lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 22:14</div>
+            <div class="timeline-body"><p>Can I ask why you use <code>--system-site-packages</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-02-29 22:34</div>
+            <div class="timeline-body"><p>Yes. In Airflow we have something called <code>PythonVirtualenvOperator</code>. Airflow has operators (4000+ of them 😱 ) that can do tasks related to some &quot;stuff&quot; to do - some of them are specific (&quot;GoogleCloudJobOperator<code>, </code>ApacheSparkJobOperator<code>, </code>CreateEKSClusterOperator<code>) but we have a number of a  few generic ones </code>BashOperator<code>, </code>PythonOperator<code>, </code>ExternalPythonOperator` - runs python code on prepared virtualenv. All of those are unaffected, but PythonVirtualenvOperator is special - because what it does is:</p>
+<p>It creates a new virtualenv based on requirements, python version. One of the options (only valid if your python version matches the <code>system</code> version) is <code>system-site-packages</code> - when True, the new venv will have <code>airflow</code> and all airflow packages pre-installed.</p>
+<p>This is super important, because we serialize arguments that we pass to the operator, and de-serialze return value from it, as interface between airflow and the &quot;new venv&quot; method executed. And in order to serialize some objects, the target venv should have the &quot;airflow + often other packages&quot; installed. Moreover the python code to be executed (basically a methpd) can do some local imports - expecting airflow or other packages to be installed.</p>
+<p>The <code>--system-site-packages</code> in this case is best, because you do not have to explicitly specify which airflow version or which other packages you have to have installed. You can specify <code>extra</code> dependencies to add - but having the <code>base same as the Airflow execution environment</code> is often necessary.</p>
+<p>Here howto: https://airflow.apache.org/docs/apache-airflow/stable/howto/operator/python.html#pythonvirtualenvoperator
+Here Python API: https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/operators/python/index.html#airflow.operators.python.PythonVirtualenvOperator</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-02-29 22:36</div>
+            <div class="timeline-body"><p>Under the hood, the operator does:</p>
+<pre><code>def _generate_virtualenv_cmd(tmp_dir: str, python_bin: str, system_site_packages: bool) -&gt; list[str]:
+    cmd = [sys.executable, &quot;-m&quot;, &quot;virtualenv&quot;, tmp_dir]
+    if system_site_packages:
+        cmd.append(&quot;--system-site-packages&quot;)
+    if python_bin is not None:
+        cmd.append(f&quot;--python={python_bin}&quot;)
+    return cmd
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-02-29 22:48</div>
+            <div class="timeline-body"><p>The way how it works now (just built and tested a new image):</p>
+<p>With system-site packages:</p>
+<pre><code class="language-bash">airflow@a249d829a411:/opt/airflow$ python -m virtualenv --system-site-packages ~/.aaaa
+created virtual environment CPython3.10.13.final.0-64 in 422ms
+  creator CPython3Posix(dest=/home/airflow/.aaaa, clear=False, no_vcs_ignore=False, global=True)
+  seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=/home/airflow/.local/share/virtualenv)
+    added seed packages: pip==24.0, setuptools==69.1.0, wheel==0.42.0
+  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+airflow@a249d829a411:/opt/airflow$ ~/.aaaa/bin/python -m pip freeze
+adal==1.2.7
+adlfs==2024.2.0
+aiobotocore==2.12.0
+aiofiles==23.2.1
+aiohttp==3.9.3
+aioitertools==0.11.0
+aiosignal==1.3.1
+alembic==1.13.1
+amqp==5.2.0
+anyio==4.3.0
+apache-airflow @ file:///docker-context-files/apache_airflow-2.9.0.dev0-py3-none-any.whl
+apache-airflow-providers-amazon @ file:///docker-context-files/apache_airflow_providers_amazon-8.18.0.dev0-py3-none-any.whl
+apache-airflow-providers-celery @ file:///docker-context-files/apache_airflow_providers_celery-3.6.0.dev0-py3-none-any.whl
+apache-airflow-providers-cncf-kubernetes @ file:///docker-context-files/apache_airflow_providers_cncf_kubernetes-8.0.0.dev0-py3-none-any.whl
+apache-airflow-providers-common-io @ file:///docker-context-files/apache_airflow_providers_common_io-1.3.0.dev0-py3-none-any.whl
+.....  AND 300+ other packages.
+</code></pre>
+<p>Without:</p>
+<pre><code class="language-bash">airflow@a249d829a411:/opt/airflow$ python -m virtualenv  ~/.bbbb
+created virtual environment CPython3.10.13.final.0-64 in 113ms
+  creator CPython3Posix(dest=/home/airflow/.bbbb, clear=False, no_vcs_ignore=False, global=False)
+  seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=/home/airflow/.local/share/virtualenv)
+    added seed packages: pip==24.0, setuptools==69.1.0, wheel==0.42.0
+  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+airflow@a249d829a411:/opt/airflow$ ~/.bbbb/bin/python -m pip freeze
+airflow@a249d829a411:/opt/airflow$.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2352.html">astral-sh/uv#2352</a> on 2024-03-11 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 16:13</div>
+            <div class="timeline-body"><blockquote>
+<p>The <code>--user</code> flag has a few bad side effects (that's why I am glad to finally get rid of it). One of the problems is that you cannot run <code>--user</code> and <code>--editable</code> any more with pip. So maybe - just maybe (?), rather than implementing <code>--user</code> flag - documenting how to get an equivalent by creating <code>~/.local</code> venv is a better option ?</p>
+</blockquote>
+<p>@potiuk -- I'm trying to make a decision on whether to support <code>--user</code>. Do you have any references you could share for these side effects in <code>pip</code>? 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-03-12 20:14</div>
+            <div class="timeline-body"><blockquote>
+<p>@potiuk -- I'm trying to make a decision on whether to support --user. Do you have any references you could share for these side effects in pip? 🙏</p>
+</blockquote>
+<p>The starting point I have is this:</p>
+<p><img src="https://github.com/astral-sh/uv/assets/595491/d78f233f-e4db-44cd-8cd9-a25eecc1a8a7" alt="image" /></p>
+<p>And I think there were lots of related discussions:</p>
+<p>Here is one: https://github.com/pypa/pip/issues/6375
+And here is the PR that added the message above: https://github.com/pypa/pip/pull/6370</p>
+<p>Looong discussions. But basically the gist of it is that <code>--editable</code> and <code>--user</code> do not play well together in the light of what has been agreed for PEP 517.</p>
+<p>Personally I consider <code>--user</code> feature of <code>pip</code> as <strong>should be depreacated</strong> and besides the historical logic and the behaviour of making the <code>.local</code> venv automatically available for any venv, it has very little use, if you consider that you could create <code>.local</code> as a venv. I think it was introduced in https://peps.python.org/pep-0370/  and there were some discussions on deprecating it,</p>
+<p>But I am not fully aware about some history behind <code>.local</code> and even less about future of it to make some &quot;good&quot; advice on it - treat it with a pinch of salt.</p>
+<p>We luckily got rid the <code>--user</code> flag (and PIP_USER variable) even if <code>pip</code> version of our container images and Airflow 2.9.0 one (in a month or so) will not have it any more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imfing">@imfing</a> on 2024-03-12 22:18</div>
+            <div class="timeline-body"><p>@potiuk Thank you for this issue, and thanks for the inputs you provided</p>
+<p>Some of my thoughts regarding the comment above:</p>
+<blockquote>
+<p>The starting point I have is this:</p>
+</blockquote>
+<p>using the <code>--system-site-packages</code> while creating the virtual environment should make this error message gone.
+If we take a step back, <code>--user</code> wouldn't be quite useful in this case since there's already an virtualenv.</p>
+<blockquote>
+<p>And I think there were lots of related discussions. Here is one: https://github.com/pypa/pip/issues/6375</p>
+</blockquote>
+<p>I skimmed through it, and it looks like the issue was mainly about <code>--editable</code> install breaking when there's <code>pyproject.toml</code> file.
+It doesn't seem like <code>--user</code> flag had anything to do with it, since, according to the original issue: <code>both pip install --user -e . and pip install -e . fail</code>.</p>
+<p>From what I understand, PEP 517 itself discusses allowing projects to specify different build systems through <code>pyproject.toml</code>. The build process should be independent from where the packages are installed. Not sure how that would impact user site installation.</p>
+<blockquote>
+<p>Personally I consider --user feature of pip as should be depreacated ... there were some discussions on deprecating it,</p>
+</blockquote>
+<p><code>--user</code> was introduced over a decade ago in PEP 370.
+I also saw <a href="https://groups.google.com/g/dev-python/c/jeb-tiiiRcE/m/JTe6EHGHDQAJ">this thread about deprecating it</a>. some replies were not in favor of deprecation, for example:</p>
+<pre><code>Given that we're working towards making user site-packages the default
+install location in pip, removing that feature at the interpreter
+level would be rather counterproductive :)
+
+Virtual environments are a useful tool if you're a professional
+developer, but for a lot of folks just doing ad hoc personal
+scripting, they're more complexity than is needed, and the simple &quot;my
+packages&quot; vs &quot;the system's package&quot; split is a better option. (It's
+also rather useful for bootstrapping tools like &quot;pipsi&quot; - &quot;pip install
+--user pipsi&quot;, then &quot;pipsi install&quot; the other commands you want access
+to).
+
+Cheers,
+Nick.
+</code></pre>
+<p>If we do a quick search on GitHub for the <code>--user</code> flag: https://github.com/search?q=%22pip+install+--user%22&amp;type=code&amp;p=1 we'll see it's still widely used</p>
+<p>Though I haven't used <code>--user</code> much lately, thanks to <code>venv</code> and Docker containers, it's still a popular choice for many Python users for installing packages without needing admin privileges in many environments other than CI</p>
+<hr />
+<p>Putting <code>--user</code> flag in <code>uv</code> would bring some of the complexity accumulated in <code>pip</code> over the years.</p>
+<p>PR #2352 was my preliminary attempt to fit it into the <code>uv pip</code> implementation without introducing too much complexity as the <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-interpreter/src/get_interpreter_info.py">script</a> does the heavy lifting here.</p>
+<p>I haven't looked into every combination of how <code>--user</code> flag would play with other <code>pip</code> flags, but it would take some effort to make it compatible with the behavior of <code>pip</code> for sure.</p>
+<p>Ultimately, it's up to the uv team to decide whether to support it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-03-13 03:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Virtual environments are a useful tool if you're a professional
+developer, but for a lot of folks just doing ad hoc personal
+scripting, they're more complexity than is needed, and the simple &quot;my
+packages&quot; vs &quot;the system's package&quot; split is a better option.</p>
+</blockquote>
+<p>This is an excellent quote, thanks @imfing for noting this. As somebody coming from the scientific Python world, I was meaning to write something along these lines in this thread as well.</p>
+<p>Another useful framing of this is the distinction between a python project versus a single-file script. For the latter, having a separate venv for each individual script would not only be annoying but also error prone, as you'd need to be constantly activating / deactivating environments, when often all you need is stdlib and numpy/scipy.</p>
+<p>We also have a rather odball use case for this -- we have a very unholy setup where we provide a system python installation in a container image with a lot of pre-installed packages, but we allow users to install additional packages to <code>~/.local</code>, which is backed by a docker volume so that it is persisted when the container exits. We can't have separate venvs since we have a lot of packages installed in the system environment (e.g. the whole jupyter stack) and they can't be duplicated.</p>
+<p>Small side note: If this feature is accepted, I think providing <code>--user</code> ahould also automatically enable <code>--strict</code>. That's what pip does as well, makes a lot of sense in terms of making sure the user knows if they broke themselves.</p>
+<p>(all that said, it's brilliant that uv defaults to requiring a venv, that's already a huge change with respect to pip, and forced me personally to start using them, where previously I've used conda + pip, not a great combo. I never quite got myself to understand the various subtleties - venv x virtualenv etc.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-13 03:25</div>
+            <div class="timeline-body"><blockquote>
+<p>the simple &quot;my packages&quot; vs &quot;the system's package&quot; split is a better option</p>
+</blockquote>
+<p>Note this perspective is something that we could solve with new workflows rather than matching the existing <code>--user</code> interface.</p>
+<p>It's worth keeping in mind throughout this discussion that we <em>will</em> be building new workflows on top of the fundamental tooling we've built for pip-compatibility. If we can avoid implementing and maintaining something with complex compatibility concerns we can focus on innovation and comprehensive solutions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-03-13 10:07</div>
+            <div class="timeline-body"><blockquote>
+<p>It's worth keeping in mind throughout this discussion that we <em>will</em> be building new workflows on top of the fundamental tooling we've built for pip-compatibility. If we can avoid implementing and maintaining something with complex compatibility concerns we can focus on innovation and comprehensive solutions.</p>
+</blockquote>
+<p>This is also my concern - I think (and Airflow use-case proves that) implementing something like that and having users rely on it should be conscious decision, because it will stay with <code>uv</code> once the versioning and compatibility rules are set (which is inevitable) and the more compatibility concerns and use cases you have the more it slows you down the moment you hit 1.0.0 version (assuming 1.0.0 and some kind of semver-ish approach will be adopted).</p>
+<p>And <code>--user</code> is a bit a can of worms when you open it, to be honest - especially that uv also allows to create venvs and have some default reliance on <code>venv</code> being effectively required. Which is eventually a good thing even if few years ago I went into a long (and in hindsight unnecessary and far too heated) debate with <code>pip</code> maintainers over their push to <code>venv</code> being primary and the only <code>valid</code> way of installing python packages (especially in the context of docker containers). It even resulted with this medium article: https://potiuk.com/to-virtualenv-or-not-to-virtualenv-for-docker-this-is-the-question-6f980d753b46</p>
+<p>I re-read that article again (it's really funny to read such an article few years later and confront your current views with the views of few-years-younger yourself).  Suprisingly (or maybe now), I tend to agree with that <code>old-myself</code> in  many of the things I wrote there, but with <code>uv</code> opening not only new chapter, but a new not-yet-written book, maybe there is a good solution that I can propose here?</p>
+<p>I think PEP-370 proposal was good, and the reason described above (some people do not care about venv and they want to do things quickly) is very valid (recognising that non-power users want to just get-on with their install is also an argument in my article actually).</p>
+<p>But the discovery I made in https://github.com/apache/airflow/issues/37785 that I can simply create a venv in <code>~/.local</code> made me think that maybe we can connect <code>venv</code> creation and <code>non-power users</code> approach and both eat cake and have it?</p>
+<p>What happens currently when you start <code>uv pip install</code> without a venv ? You get an error telling you tha tno <code>virtualenv</code> is detected and possibly that you can use <code>--python</code> to point to a python installation.</p>
+<p>Is it good for non power users ? Not at all. It's confusing for first time users who have no knowledge about <code>venv</code> and they have no idea where their python is. Do we want to teach them that? I am not sure. We do not want to teach people all the details about venv etc. if all they want is to instal some package and use it, and even less if they are running <code>uv pip install</code> in their Dockerfile. What we want instead - we want them to USE venv. Even if they have no idea they are doing it.</p>
+<p>But wait - we already have a way to create venvs (fast) in <code>uv</code> that we fully control here.... Why don't we ..... create venv for such user? Why don't we ..... create it in <code>~/.local</code> (or equivalent place on other system)  automatically if it is not there (and we can even check if <code>~/.local/bin</code> is in the path and suggest the user to add it to make use of installed entrypoints.  That's also nicely compatible with PEP-370 (which is more about using the <code>~/.local</code> installation place rather thatn creating it.</p>
+<p>That would be my proposal in short:</p>
+<ul>
+<li>forget the <code>--user</code> flag</li>
+<li>fallback to creating / using <code>~/.local</code> venv when no virtualenv and no <code>--python</code> flag is used</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-03-14 23:27</div>
+            <div class="timeline-body"><p>Just to say - I too would be very interested in a mechanism to support beginners who do not yet know about virtualenvs.   I have taught a lot of students to use Python for data analysis, including data science.  In practice these beginners (and there are lot of them) will not need to (consciously) make virtualenvs for a while - because the standard Python data stack is pretty stable, and doesn't generate many dependency conflicts.   I'd estimate these beginners can make six months or more of progress before they need to start thinking about making and switching virtualenvs.   I think it will be a significant barrier if they have to learn virtualenvs and their structure before they install their first Python package.   So I would love a solution like @potiuk's - where the user can ask for, or even just be given, a default virtualenv, into which they install their packages.   Of course the <code>--user</code> install provides something like this, but I agree with @potiuk - a default virtualenv is preferable - and in fact I already found myself making that suggestion over at <a href="https://github.com/orgs/Homebrew/discussions/3404#discussioncomment-8728485">this homebrew discussion</a>.  I really care about this, so I am very happy to help with anything I can to test or even build (when term finishes in a couple of weeks).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-03-16 11:42</div>
+            <div class="timeline-body"><p>In case it's helpful - the use-case I have in mind is - I believe - very common - and that is the beginner starting a class or an online tutorial.  For example, consider this tutorial:</p>
+<p>https://realpython.com/pygame-a-primer/</p>
+<p>It has the instructions, right at the top, of:</p>
+<pre><code>pip install pygame
+</code></pre>
+<p>Or - for my students, I suggest:</p>
+<pre><code>pip install jupyterlab numpy scipy matplotlib
+</code></pre>
+<p>In both cases, this gets the beginner going with early Python work.    But - with various installation methods - including <code>uv pip</code> as stands, outside Conda, this gives e.g.:</p>
+<pre><code>$ uv pip install pygame
+error: Failed to locate a virtualenv or Conda environment (checked: `VIRTUAL_ENV`, `CONDA_PREFIX`, and `.venv`). Run `uv venv` to create a virtualenv.
+</code></pre>
+<p>Of course this isn't going to worry an experienced user, but it will be confusing to a beginner, who does not know what a virtualenv is - and - for a beginner, who doesn't understand Python installation structure, the virtualenv is a relatively advanced subject.</p>
+<p>So - it would be very good to have some default set up, such that the beginner would not face this learning curve immediately, but face it later, when their needs and experience have expanded.</p>
+<p>I'm posting here because I have, up until now - suggested my students do e.g. <code>pip install --user pygame</code> as a workaround, but I can see the arguments against doing that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanv">@stefanv</a> on 2024-03-25 11:04</div>
+            <div class="timeline-body"><p>Maybe the topic, of whether or not to add a <code>--user</code> flag, obfuscates the main concern here:</p>
+<p>New users, as @matthew-brett mentions, are often given &quot;pip install x&quot; instructions. This should ideally just work, and definitely not raise obscure errors that confuse new users who know nothing about virtual envs.</p>
+<p>Ideally, I'd imagine something like: if in venv, install there, otherwise install into a local default venv. The local default venv has access to system packages, but shadows them, so that the user can upgrade packages.</p>
+<p>This would make for a simple first user experience, compatible with all tutorials out there, without impacting sophisticated users who can set up their own venvs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-03-25 23:41</div>
+            <div class="timeline-body"><blockquote>
+<p>This should ideally just work,</p>
+</blockquote>
+<p>Yep. My proposal is that it will just install things in <code>.local</code> (or equivalent on other systems) venv created and used automatically by <code>uv</code> in this case. Bonus point to print warning if <code>.local/bin</code> is not on PATH</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2665.html">astral-sh/uv#2665</a> on 2024-03-28 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3076.html">astral-sh/uv#3076</a> on 2024-04-16 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3417.html">astral-sh/uv#3417</a> on 2024-05-07 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-05-07 15:00</div>
+            <div class="timeline-body"><p>I would definitely love that</p>
+<p>When you're already working in a containerized development environment (nix shell / devcontainer …), it makes perfect sense (and even should be the default).
+Also, <code>--system</code> doesn't work in immutable OSes (and important tools such as Codespaces)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-05-07 15:04</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+</blockquote>
+<p>Yep. My proposal is that it will just install things in <code>.local</code> (or equivalent on other systems) venv created and used automatically by <code>uv</code> in this case. Bonus point to print warning if <code>.local/bin</code> is not on PATH</p>
+</blockquote>
+<p>I wonder though, whether anyone would worry about previous <code>--user</code> installs either being overwritten, or appearing unexpectedly in the <code>uv</code> environment?    And where would the packages go?   In <code>.local/site-packages</code> or somewhere else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1584.html">astral-sh/uv#1584</a> on 2024-05-17 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3635.html">astral-sh/uv#3635</a> on 2024-05-17 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2333.html">astral-sh/uv#2333</a> on 2024-06-05 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-06-05 13:24</div>
+            <div class="timeline-body"><p>As of today, it's still not possible to use <code>uv</code> in immutable (where <code>--system</code> couldn't work) containers (such as Codespaces) without an useless (in that case) additional <code>venv</code></p>
+<p>This issue would be very appreciated for Codespaces users</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imfing">@imfing</a> on 2024-06-05 13:48</div>
+            <div class="timeline-body"><blockquote>
+<p>As of today, it's still not possible to use <code>uv</code> in immutable (where <code>--system</code> couldn't work) containers (such as Codespaces) without an useless <code>venv</code></p>
+</blockquote>
+<p>@Malix-off You could use <a href="https://github.com/astral-sh/uv/pull/3257"><code>--target</code></a> as a workaround, and point to <code>/home/codespace/.local/lib/python3.10/site-packages/</code>. For example, in a blank workspace with Python 3.10:</p>
+<pre><code class="language-shell">/workspaces/codespaces-blank $ uv pip install --target /home/codespace/.local/lib/python3.10/site-packages/ -p /home/codespace/.python/current/bin/python3.10 flask
+Resolved 7 packages in 55ms
+Downloaded 5 packages in 38ms
+Installed 5 packages in 8ms
+ + blinker==1.8.2
+ + click==8.1.7
+ + flask==3.0.3
+ + itsdangerous==2.2.0
+ + werkzeug==3.0.3
+
+/workspaces/codespaces-blank $ python3.10 -c &quot;import flask; print(flask.__version__)&quot;
+3.0.3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-05 13:55</div>
+            <div class="timeline-body"><p>Could you share a bit more about why the &quot;useless&quot; virtual environment matters? It seems like the overhead of creating it should be negligible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eswolinsky3241">@eswolinsky3241</a> on 2024-06-05 14:03</div>
+            <div class="timeline-body"><p>@zanieb For us, we use containerized cloud development environments because our users aren't technically advanced enough to understand virtual environments. So we use development containers to offer the same project isolation. This works perfectly with pip, where we can just have them clone the repo, run <code>pip install -r requirements.txt</code> and have the packages installed to the <code>$HOME/.local</code> directory. Having them run commands they don't understand to create a venv and activate it every time they log in (or maintaining scripts to automate this) is something we'd rather not have to deal with to get the performance improvement of <code>uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbcpollak">@jbcpollak</a> on 2024-06-05 14:08</div>
+            <div class="timeline-body"><p>As a work around, currently for our devcontainer we have (effectively):</p>
+<p><code>	&quot;postCreateCommand&quot;: &quot;uv venv &amp;&amp; uv pip install -r ${PROJDIR}/requirements.txt&quot;,</code></p>
+<p>and in our production Dockerfile:</p>
+<pre><code>ENV VIRTUAL_ENV=/app/.venv
+
+# Copy files and other setup here
+
+RUN uv venv &amp;&amp; \
+    uv pip install -r ./requirements.txt &amp;&amp; \
+    uv pip install -e .
+</code></pre>
+<p>I would prefer if inside the containers we didn't need to have a virtual environment at all though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imfing">@imfing</a> on 2024-06-05 14:42</div>
+            <div class="timeline-body"><p>@jbcpollak @eswolinsky3241 to avoid creating the virtual environment, this may be a workaround:</p>
+<pre><code class="language-dockerfile">FROM python:3.10-slim
+RUN pip install --no-cache-dir uv
+
+RUN uv pip install \
+    --python $(which python) \
+    --target $(python -m site --user-site) \
+    -r requirements.txt
+</code></pre>
+<p>it should behave the same as using the <code>--user</code> flag by <a href="https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-to-the-user-site">installing the packages into user site</a> (my <code>requirements.txt</code> contains only <code>requests</code>):</p>
+<pre><code class="language-shell">docker run --rm -it --entrypoint python 217c1ad27560 -m pip list
+Package            Version
+------------------ --------
+certifi            2024.6.2
+charset-normalizer 3.3.2
+idna               3.7
+pip                23.0.1
+requests           2.32.3
+setuptools         65.5.1
+urllib3            2.2.1
+uv                 0.2.6
+wheel              0.41.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-06-05 14:53</div>
+            <div class="timeline-body"><p>Another <a href="https://www.dataduel.co/uv-pip-install-system/">workaround</a> to using uv in codespaces.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-06-05 15:34</div>
+            <div class="timeline-body"><p>Just a meta-point here - as I said above - I teach a lot of beginners - and to beginners, using a virtualenv is extremely confusing - because you really have to understand the details of a Python installation - which is far too much for a beginner coder to take on.   I mean the type of coder who is still learning for-loops.  And of course, we're very often teaching Python to beginner coders.    Unfortunately - but inevitably - installation tools tend to be written by very experienced developers, to whom virtualenvs are no barrier.    But I can assure you from long long experience that virtualenvs will be a barrier to beginners.   Just for example, my third year students, who already know Python and Git and Python data science libraries - got pretty edgy when faced with <code>pyenv</code> in a class - despite some explanation - and even for them, it would have been a few hours of explanation and practice to get them into a state where they were ready to experiment with virtualenvs.</p>
+<p>On the other hand - it seems to me this is very easily soluble by having a default virtualenv - where the user would need to understand virtualenvs only at the point that they really need them - when they get version conflicts or start serious development.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-06-05 15:40</div>
+            <div class="timeline-body"><p>Nice workarounds,</p>
+<p>Do you know if there is a current workaround (<code>--user</code> unavailable yet)</p>
+<ul>
+<li>Without <code>&quot;remoteUser&quot;: &quot;root&quot;</code></li>
+<li>Working on immutable (/ rootless) systems (such as codespaces…) AND on mutable systems (such as regular Docker devcontainers)</li>
+<li>No hardcoded target (i.e. hardcoding the &quot;<code>/home/codespace/.local/lib/python3.10/site-packages/</code>&quot; string)</li>
+</ul>
+<p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imfing">@imfing</a> on 2024-06-05 15:50</div>
+            <div class="timeline-body"><p>@Malix-off check out my other comment for Dockerfile: https://github.com/astral-sh/uv/issues/2077#issuecomment-2150232739 <code>root</code> is not needed, and usually not recommended.</p>
+<p>The hardcoded target user site-packages directory can be easily retrieved via <code>python -m site --user-site</code>:</p>
+<pre><code class="language-bash">uv pip install \
+    --python $(which python) \
+    --target $(python -m site --user-site) \
+    -r requirements.txt
+</code></pre>
+<p>It works for both codespaces as I commented in https://github.com/astral-sh/uv/issues/2077#issuecomment-2150008781 and docker containers https://github.com/astral-sh/uv/issues/2077#issuecomment-2150232739</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-05 16:44</div>
+            <div class="timeline-body"><p>@matthew-brett fwiw we're trying to address those problems holistically in new CLI interfaces instead of just tacking on a workaround to the <code>uv pip</code> interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-06-05 16:49</div>
+            <div class="timeline-body"><blockquote>
+<p>@matthew-brett fwiw we're trying to address those problems holistically in new CLI interfaces instead of just tacking on a workaround to the <code>uv pip</code> interface.</p>
+</blockquote>
+<p>Nice - thanks - is there a good place to look for that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-05 16:52</div>
+            <div class="timeline-body"><p>All of the new interface work is <a href="https://github.com/astral-sh/uv/issues?q=label%3Apreview+">labeled as preview</a>. We'll be publicizing more user-facing content in the next couple months.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-06-05 16:53</div>
+            <div class="timeline-body"><p>Indeed @imfing, it seems that <a href="https://github.com/astral-sh/uv/issues/2077#issuecomment-2150406001">your workaround</a> is the best until this issue is solved !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-06-05 19:48</div>
+            <div class="timeline-body"><p>I am testing @imfing's workaround:</p>
+<p>I get different results between <code>uv pip list</code> and <code>pip list</code> after running</p>
+<pre><code class="language-sh">uv pip install \
+	--python $(which python) \
+	--target $(python -m site --user-site) \
+	fastapi
+</code></pre>
+<p><img src="https://github.com/astral-sh/uv/assets/76160668/5f02fc97-227f-46e1-b698-2a49e6ddf74f" alt="image" /></p>
+<p>Do you know if that's normal?
+How should <code>uv pip compile</code>, <code>uv pip sync</code>, and <code>uv pip freeze</code> be used?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imfing">@imfing</a> on 2024-06-05 20:19</div>
+            <div class="timeline-body"><p>@Malix-off this is expected as <code>uv pip list</code> doesn't look for packages other than virtual environment or system site-packages (if <code>--system</code> is specified). However, both <code>python</code> and <code>pip</code> would take user site packages directory into account (<a href="https://peps.python.org/pep-0370/">PEP 370</a>)</p>
+<p><code>uv pip compile</code> and <code>uv pip sync</code> support <code>--target</code> flag, but <code>uv pip freeze</code> doesn't.
+It is also worth mentioning that the default Python system packages could be ignored if <code>--target</code> is provided since it makes <code>uv pip</code> to only search for packages under the <code>target</code> directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-06-05 22:06</div>
+            <div class="timeline-body"><p>Okay, thanks for that clarification!</p>
+<p>We will still be forced to use <code>venv</code> for now, until <code>--user</code> is available</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-05 23:31</div>
+            <div class="timeline-body"><p>To clarify, there's a good chance that we'll never support <code>--user</code>. The user install scheme predates virtual environments. If virtual environments existed today, but the user install scheme didn't, I'd be very surprised if the user install scheme would be added to the packaging ecosystem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-06-06 09:31</div>
+            <div class="timeline-body"><blockquote>
+<p>To clarify, there's a good chance that we'll never support <code>--user</code>. The user install scheme predates virtual environments. If virtual environments existed today, but the user install scheme didn't, I'd be very surprised if the user install scheme would be added to the packaging ecosystem.</p>
+</blockquote>
+<p>That's quite possible - requiring virtualenvs was clearly attractive to the <code>pip</code> maintainers - as seen here : https://peps.python.org/pep-0704 .    I suspect the reason that <code>--user</code> installs have persisted is the one I and several others have given above - virtualenvs are hard to explain to beginners, and a frequent source of confusion - but that is much less true for adding <code>--user</code> to <code>pip install</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-06-06 09:33</div>
+            <div class="timeline-body"><p>Requiring venv by default but allowing user install with an explicit <code>--user</code> flag seems to be the best of both worlds</p>
+<p>Again, venv is bloat in devcontainers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-06-06 09:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Requiring venv by default but allowing user install with an explicit <code>--user</code> flag seems to be the best of both worlds</p>
+</blockquote>
+<p>Requiring venvs by default means that the users who are most likely to be confused will get the default behavior, and have to work out how to avoid it.   <code>--user</code> is better than nothing for those users, but having a default - invisible to user - virtualenv is even better, in my opinion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-06-06 09:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Requiring venvs by default means that the users who are most likely to be confused will get the default behavior, and have to work out how to avoid it.</p>
+</blockquote>
+<blockquote>
+<p>having a default - invisible to user - virtualenv is even better, in my opinion.</p>
+</blockquote>
+<p>So you want</p>
+<ul>
+<li><code>uv pip install</code> to execute <code>uv venv &amp;&amp; source .venv/bin/activate</code> if no venv is already present</li>
+<li><code>uv pip install --user</code> to allow install in user's python</li>
+</ul>
+<p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-06-06 10:14</div>
+            <div class="timeline-body"><blockquote>
+<p>So you want</p>
+<pre><code>* `uv pip install` to execute `uv venv &amp;&amp; source .venv/bin/activate` if no venv is already present
+
+* `uv pip install --user` to allow install in user's python</code></pre>
+</blockquote>
+<p>No - not <code>uv venv &amp;&amp; source .venv/bin/activate</code> - because part of the problem with virtualenvs is explaining to the user why they have to do <code>.venv/bin/activate</code> to get their installed packages.   With that result, when the beginner closes their terminal and start it again, perhaps with another working directory, they'll be in some trouble.</p>
+<p>What I would like is for <code>uv pip install pygame</code> to <em>just work</em>(TM) for a beginner user, with no further setup, such that, when they close their terminal and start it again later, they can do e.g. <code>import pygame</code>.</p>
+<p>One way that might work, is to follow the <code>conda</code> pattern - there is a default environment, that the user is installing into, often without them realizing it.   When they get more advanced they can make new environments and switch to them.</p>
+<p>For <code>pip</code>, I am wondering if this can be achieved with a default virtualenv, say in <code>~/.venvs/default</code>.   When the beginner does <code>uv pip install pygame</code>, instead of seeing <code>error: No Python interpreters found in virtual environments</code>, <code>uv</code> creates <code>~/.venvs/default</code> if necessary, installs into that virtualenv, and activates it (as you've suggested, except with the standard location).     There is some default or simply-enabled setup that activates this virtualenv by default on starting a terminal, if no other is activated - so the user will by default be able to restart the terminal and do <code>python -c &quot;import pygame&quot;</code>.</p>
+<p>With that working, I think <code>--user</code> becomes an unnecessary confusion, and I'd be happy to see it go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-06-07 04:24</div>
+            <div class="timeline-body"><p>Actually as an author of the issue I stopped needing it. And @charliermarsh @zanieb - feel free to close that one if you feel that you do not want to implement <code>--user</code> flag.</p>
+<p>I was in the same camp &quot;venv in container images is a bloat&quot; - and this was for me the main reason why I opened the issue, but since then I found out that when I create venv in <code>~./.local</code> - and simply set <code>VIRTUAL_ENV</code> vatiable to point to it and having <code>~/.local/bin</code> on the PATH  as first entry does precisely what everyone needs here:</p>
+<ul>
+<li>no need to explain user to do <code>activate</code></li>
+<li><code>activate</code> merely sets the <code>VIRTUAL_ENV</code> variable and inserts PATH entry - and this is as specified in venv defintion, so you can do precisely the same in your container image or environment definition</li>
+<li>it also nicely retains packages installed in <code>.local</code> when you create a new virtual environment with <code>--system</code> flag  (which was the reason why I opened the issue) - which means that you can nicely create and activate new venvs from such <code>.local</code> venv</li>
+<li>this all adds virtually no overhead comparing to <code>--user</code> flag</li>
+</ul>
+<p>I believe now that there is no particular reason to have <code>--user</code> flag, really. People who say that they do not want to maintain extra scripts are really talking about running two commands. People mentioned in the discussion thread here, that  they do not want to teach their users about venv, and the approach above 100% solves that. You don't have to. You just create the venv and set the right environments for them and they can continue using <code>uv pip install</code> or <code>pip install</code>  and it will <strong>just work</strong>. Mission accomplished.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-06-07 04:30</div>
+            <div class="timeline-body"><p>BTW. Kind request - If someone would like to discuss whether to use some .venv by default, this is NOT the right place to discuss it. This is a discussion about the <code>--user</code> flag.  Whether to use a venv by default is very tangential to the <code>--user</code> flag and I think if someone would like to discuss it, they should open their own issue/discussion, rather than hijack this issue -  which was initially on ly for <code>--user</code> support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-06-15 11:49</div>
+            <div class="timeline-body"><p><a href="https://github.com/astral-sh/uv/pull/2352#event-13168683504">The associated pull request was just closed minutes ago</a></p>
+<p>Does that mean that devcontainers and codespaces will never be able to use uv without the venv bloat?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-15 16:27</div>
+            <div class="timeline-body"><p>We didn't close the pull request, the author did because they have a clear work around.</p>
+<p>I think the trade-offs discussed here are not suggesting that we <em>should</em> add this flag. I don't think that means that we'll definitely never add the flag, just that the current evidence is not in favor of it.</p>
+<p>I don't really see &quot;virtual environment bloat&quot; as a real problem, they're very lightweight and if you want to bypass it there are a couple workarounds. If this is a big deal to you, I think you'll need to provide more information on <em>why</em>.</p>
+<blockquote>
+<p>What I would like is for uv pip install pygame to just work(TM) for a beginner user, with no further setup, such that, when they close their terminal and start it again later, they can do e.g. import pygame</p>
+</blockquote>
+<p>This is the most compelling argument for user-level installations, but mutable global environments have been repeatedly shown to be the source of a great deal of confusion and problems. We'd like to solve this problem in other ways.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-06-15 16:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Does that mean that devcontainers and codespaces will never be able to use uv without the venv bloat?</p>
+</blockquote>
+<p>My experience is tha venv is about the same bloat as what gets created with <code>--user</code> flag. But this has been discussed here and elsewhere -  i.e. approach where venv will be created automatically for you if not existing. That seems much more consistent approach.</p>
+<p>Though I think it's the question or where and how it should be created. I think it's quite appealting and constructive discussing that possibility is probably best we all can do.</p>
+<p>As the author of that issue, I am also OK with closing this one, because I also agree with @zanieb that just &quot;straightforward&quot; --user flag rip-off from <code>pip</code> is not the best appraoch.</p>
+<p>Ideally, maybe we should discuss and agree a new PEP how venvs should be automatically created  for the out-of-the-box cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-06-15 17:52</div>
+            <div class="timeline-body"><p>Just to answer the previous post - why mix the discussion of <code>--user</code> and default virtualenvs? - because, if there are no immediate plans for a &quot;just-works&quot; solution for the beginner, such as default virtualenv, then I would be interested in having the <code>--user</code> option as a not-quite-as-good solution to the same problem - even if it was only temporary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-06-15 19:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Just to answer the previous post - why mix the discussion of <code>--user</code> and default virtualenvs? - because, if there are no immediate plans for a &quot;just-works&quot; solution for the beginner, such as default virtualenv, then I would be interested in having the <code>--user</code> option as a not-quite-as-good solution to the same problem - even if it was only temporary.</p>
+</blockquote>
+<p>When you build product (like the <code>uv</code> team does) - temporary solutions usually turn into long-term maintenance headache, because those who start using it expect it to continue working. So while you might have a wish to solve your problem, you have to understand that maintainers will have to live with those decisions for a long time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-06-15 19:12</div>
+            <div class="timeline-body"><p>Ah yes I understand - and I do build product.  But I do want to push back on &quot;your problem&quot; - it's really not my problem - but a problem that will be common for beginners.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-06-15 19:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah yes I understand - and I do build product. But I do want to push back on &quot;your problem&quot; - it's really not my problem - but a problem that will be common for beginners.</p>
+</blockquote>
+<p>So let maintainers solve it in their due time. Without pushing them, as they have likely many other things to work on wich are likely higher priority.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-15 19:48</div>
+            <div class="timeline-body"><blockquote>
+<p>because, if there are no immediate plans for a &quot;just-works&quot; solution for the beginner</p>
+</blockquote>
+<p>These plans are immediate; we're building out next-generation workflows on top of the foundation we built for <code>uv pip</code> right now. These workflows are intended to abstract virtual environment management. We'll have more to announce on this front soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-06-20 23:03</div>
+            <div class="timeline-body"><p>Currently, UV makes it <strong>impossible</strong> to use python without a <code>.venv</code>, because it <strong>purposely</strong> disables the <code>--user</code> flag, <strong>even if it would not the default, and no recommendation would be made, or even by putting additional warnings for too curious noobs</strong></p>
+<p>Why not allowing <code>--user</code>, granted it's not the default, not recommended unless in a container, and need to be done with an explicit flag?</p>
+<p>For me, a non-noob user but new to the mess of python ecosystem, and also using standard tools such as containers instead of virtual environment, <code>.venv</code> is another layer, and a different workflow which is also more manual and prone to error (<code>source .venv/bin/activate</code> each time), which has shot me in the feet enough to say I would definitely prefer container + <code>--user</code>.</p>
+<p>I was hoping Astral would unify things
+Yet, it doesn't for me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-20 23:21</div>
+            <div class="timeline-body"><p>Frankly, we don't make it impossible to use Python without a virtual environment. We allow <a href="https://github.com/astral-sh/uv?tab=readme-ov-file#installing-into-arbitrary-python-environments">installing into non-virtual Python environments</a> in a myriad of ways, e.g., with <code>--python &lt;path&gt;</code> or <code>--system</code>. There are workarounds for user-level installs, e.g., using <a href="https://github.com/astral-sh/uv/pull/2352#issuecomment-2150061839"><code>--target</code></a>. There are ways to <a href="https://github.com/astral-sh/uv/issues/2077#issuecomment-2153906603">avoid manual activation of the environment</a>. Additionally, we are <em>actively</em> building workflows for uv that do not require you to ever manually manage a virtual environment.</p>
+<p>I understand you don't have write permissions to the system site packages in your devcontainer context and that means you need to understand a bit more to set up your environment. However, we must take into account the trade-offs for the situations of <em>many</em> users.</p>
+<p>edit: I see your post was edited a bunch times while I was writing this, sorry if I've responded to something out of date.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-06-20 23:35</div>
+            <div class="timeline-body"><ul>
+<li><p>Are <code>--python</code> and <code>--target</code> available on every <code>uv pip</code> commands (or <code>--python</code> available for some commands and <code>--target</code> for the other, or some commands don't support either) ?</p>
+</li>
+<li><p>Which flag + argument would be a 1:1 behaviour replication to <code>--user</code> for all <code>uv pip</code> use-cases ?</p>
+</li>
+<li><blockquote>
+<p>you need to understand a bit more to set up your environment</p>
+</blockquote>
+<p>For my use-case, understanding <code>.venv</code> would still be inferior to using raw <code>--user</code> (or another 1:1 flag + command), even if I was willing to specifically understand a bit more python's <code>.venv</code></p>
+</li>
+<li><blockquote>
+<p>However, we must take into account the trade-offs for the situations of many users.</p>
+</blockquote>
+<p>I don't understand how allowing <code>--user</code>, while still continuing to not recommend it anywhere to make it foolproof, would be an inferior trade-off compared to not making it possible for those who want to use <code>--user</code> to use it (and would know they really want to use it, at that point)</p>
+</li>
+<li><blockquote>
+<p>I see your post was edited a bunch times while I was writing this, sorry if I've responded to something out of date</p>
+</blockquote>
+<p>Yes, no problem it's still up-to-date 🙂</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-21 02:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Are --python and --target available on every uv pip commands</p>
+</blockquote>
+<p><code>--python</code> is available on all of the <code>uv pip</code> commands. <code>--target</code> is available on mutating commands like <code>install</code>, <code>uninstall</code>, and <code>sync</code>.</p>
+<blockquote>
+<p>Which flag + argument would be a 1:1 behaviour replication to --user for all uv pip use-cases ?</p>
+</blockquote>
+<p>Generally the invocation looks like this:</p>
+<pre><code>❯ uv pip install --target &quot;$(python3 -m site --user-site)&quot; fastapi
+...
+❯ python3 -c &quot;import fastapi; print(fastapi.__version__)&quot;
+0.111.0
+</code></pre>
+<p>Note this was also discussed <a href="https://github.com/astral-sh/uv/issues/2077#issuecomment-2150008781">further up in this thread</a>.</p>
+<p>I think we'd need to add <code>--target</code> to the other commands if you want to use it for inspection — which I don't see an immediate problem with, nobody has asked for it yet.</p>
+<blockquote>
+<p>or my use-case, understanding .venv would still be inferior...</p>
+</blockquote>
+<p>Perhaps you would find this draft documentation helpful https://github.com/astral-sh/uv/pull/4433</p>
+<blockquote>
+<p>I don't understand how allowing <code>--user</code>...</p>
+</blockquote>
+<p>I think you've been quite clear that you want the <code>--user</code> flag — we appreciate the feedback but we'd rather focus on new ways to address this use-case. While it may not seem like much effort to add, we are ultimately responsible for maintaining this tool for years to come.  Let's try not to rehash the discussions we've already had here and focus on new perspectives and use-cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbcpollak">@jbcpollak</a> on 2024-06-21 19:35</div>
+            <div class="timeline-body"><p>I've settled on &quot;faking&quot; a venv in my environments so I'm fine without --user but I wanted to point out this:</p>
+<blockquote>
+<p>Generally the invocation looks like this:</p>
+<p>❯ uv pip install --target &quot;$(python3 -m site --user-site)&quot; fastapi
+...
+❯ python3 -c &quot;import fastapi; print(fastapi.<strong>version</strong>)&quot;
+0.111.0</p>
+</blockquote>
+<p>Does not seem to work, at least on Windows. Some of my team are still using &quot;bare&quot; Python installs on windows and global installations of dependencies, but when I try the above command (adapted the path resolution to Windows), I get the error about no venv found. Is that supposed to be bypassed when using --target?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imfing">@imfing</a> on 2024-06-21 19:41</div>
+            <div class="timeline-body"><p>@jbcpollak I remember both <code>--target</code> and <code>--python</code> are needed</p>
+<p>See my previous comment:
+https://github.com/astral-sh/uv/issues/2077#issuecomment-2150406001</p>
+<pre><code class="language-bash">uv pip install \
+    --python $(which python) \
+    --target $(python -m site --user-site) \
+    -r requirements.txt
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4624.html">astral-sh/uv#4624</a> on 2024-06-28 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2059.html">astral-sh/uv#2059</a> on 2024-07-14 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sqrl">@sqrl</a> on 2024-08-06 15:26</div>
+            <div class="timeline-body"><p>This workaround doesn't seem to create a <code>/bin</code> sub-directory the way <code>--user</code> does?
+Testing on <code>uv</code> version 0.2.33 I believe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 16:39</div>
+            <div class="timeline-body"><p>Which workaround are you referring to?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sqrl">@sqrl</a> on 2024-08-06 19:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Which workaround are you referring to?</p>
+</blockquote>
+<p>The one mentioned in this comment:
+https://github.com/astral-sh/uv/issues/2077#issuecomment-2150406001</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imfing">@imfing</a> on 2024-08-09 23:22</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Which workaround are you referring to?</p>
+</blockquote>
+<p>The one mentioned in this comment: <a href="https://github.com/astral-sh/uv/issues/2077#issuecomment-2150406001">#2077 (comment)</a></p>
+</blockquote>
+<p>@sqrl use <code>--prefix</code> instead of <code>--target</code> should work better in this case:</p>
+<pre><code class="language-bash">uv pip install \
+    --python $(which python) \
+    --prefix $(python -m site --user-base) \
+    -r requirements.txt
+</code></pre>
+<p>See https://github.com/astral-sh/uv/issues/2059#issuecomment-2227402333 and https://github.com/astral-sh/uv/pull/4085</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-08-26 14:33</div>
+            <div class="timeline-body"><p>Hi - sorry - I scanned the preview labels - but couldn't see the proposed solution for having a default virtualenv - did I miss it?  Or is it still in progress?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Rotonen">@Rotonen</a> on 2024-08-26 15:06</div>
+            <div class="timeline-body"><p>As this seems to lead into a lot of confusion and keeps resurrecting, here's a recipe.</p>
+<p>Amend your own base container (concatenated as a multistage image for brevity / being a self contained demo):</p>
+<pre><code>FROM python:3.12-slim-bookworm as setup-user
+# Always run your end software as non-root!
+RUN useradd -ms /bin/bash python
+USER python
+WORKDIR /home/python
+
+FROM setup-user as setup-venv
+# Setup upstream standard venv
+#
+# XXX - as upstream venv gives you setuptools and friends, those should also
+# be pinned in a separate requirements-setup.txt or such and installed in a
+# separate bootstrapping phase to keep things actually well defined and
+# stable as they get bumped forward when the upstream Python image gets
+# updated - omitted for clarity here.
+#
+# The three lines below are probably what you're missing from stuff
+# &quot;just working&quot;!
+RUN python -m venv .venv
+ENV VIRTUAL_ENVIRONMENT=/home/python/.venv
+ENV PATH=/home/python/.venv/bin:&quot;$PATH&quot;
+
+FROM setup-venv as setup-uv
+# XXX - This would be defined via a requirements-uv.txt or such in real use.
+RUN pip install uv==0.3.3
+
+FROM setup-uv as use-uv
+# XXX - This would be defined via a requirements.txt or such in real use.
+RUN uv pip install pyfiglet==1.0.2
+
+FROM use-uv as everything-works
+# Separating ENTRYPOINT and CMD is in general a nice idea
+ENTRYPOINT [&quot;pyfiglet&quot;]
+CMD [&quot;uv rocks!&quot;]
+</code></pre>
+<p>Then on the downstream consumer side in your org the consumer can simply <code>pip install</code> or <code>uv pip install</code> as they please and everything will happen via that predefined venv as intended.</p>
+<p>IMO no changes on the side of uv needed. Feature parity with all sins of the past is not the way forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-08-26 15:45</div>
+            <div class="timeline-body"><p>Just to clarify - you can read the details further up, but the use-case here is the absolute beginner, running the equivalent of <code>uv install pygame</code>, in their default Python environment, and without having to explain virtualenvs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-26 18:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi - sorry - I scanned the preview labels - but couldn't see the proposed solution for having a default virtualenv - did I miss it? Or is it still in progress?</p>
+</blockquote>
+<p>We didn't introduce any preview behavior around this — we're probably not going to support a <code>--user</code> flag or a default virtual environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-08-26 18:15</div>
+            <div class="timeline-body"><p>When working with devcontainers or nix , forbidding to use an explicit <code>--user</code> flag (and thus forcing to use a venv anyway) is a net negative</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-08-26 18:17</div>
+            <div class="timeline-body"><p>Aha - ouch - well - I'm afraid that will make <code>uv</code> inaccessible to beginners - but I understand you have to optimize to some subset of users ...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-08-26 18:19</div>
+            <div class="timeline-body"><p>I guess the plan will be to propose <code>uv</code> to more advanced users who are comfortable with virtualenvs.   But that will necessarily mean some division of the user-base - with some using <code>uv</code> and others starting, and perhaps continuing with some other tool, that does allow just-works installs without understanding virtualenvs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-26 18:39</div>
+            <div class="timeline-body"><p>We very much care about supporting beginners and eliminating the need to understand virtual environments — but we don't think a global mutable environment is the way to do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-08-26 18:46</div>
+            <div class="timeline-body"><p>Aha - could you say more about other approaches you are considering?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2024-08-27 12:19</div>
+            <div class="timeline-body"><p>One caveat to bear in mind when skipping using a venv and instead using <code>--user</code> with the global Python installation: If you are using a relocated Python install, some packages doesn't correctly locate the stdlib out of the box, eg:
+https://github.com/unbit/uwsgi/issues/2525</p>
+<p>Working around that requires setting <code>PYTHONHOME</code> explicitly, which then comes with its own set of issues.</p>
+<p>In contrast, support for <a href="https://peps.python.org/pep-0405/">PEP-405</a> style venvs seems much more prevalent.</p>
+<p>It's for this reason that I'm in the process of migrating the Heroku Python <a href="https://buildpacks.io/">CNB</a> to use a venv in the layer containing the app dependencies instead of a user site-packages installation.</p>
+<p>If you are using a non-relocated Python install (such as the Python in the <code>python:*</code> images on Docker Hub), then this issue doesn't apply. But it's something to bear in mind wrt the &quot;venvs aren't needed for containers&quot; argument, since it's not always true.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-08-27 13:36</div>
+            <div class="timeline-body"><p>Do that mean that the python ecosystem has some dependency on venv usage ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2024-08-27 13:44</div>
+            <div class="timeline-body"><p>More that:
+(a) by design venvs are in a different location from system Python so tooling can't avoid handling the <code>sys.prefix</code> vs <code>sys.base_prefix</code> distinction, which sidesteps any issues with relocated Python if the packaging/tools don't do the right thing otherwise
+(b) in general venvs appear to be the more well-trodden path (particularly when comparing to <code>--user</code>, which is rarer than 100% system installs), since so many workflows/tools now use them by default (eg Poetry, Pipenv, uv) - and sticking to the well tested path tends to result in fewer surprises overall</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-08-27 13:47</div>
+            <div class="timeline-body"><ol>
+<li>Understandable, but isn't relocating supposed to be solved by fixing the path in /usr/bin/env too ?</li>
+<li>Understandable too, are there any other language than Python having venv ?
+Is working in a devcontainer an unpopular workflow in python, or at least way less popular than in other languages ?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2024-08-27 13:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Understandable, but isn't relocating supposed to be solved by fixing the path in /usr/bin/env too ?</p>
+</blockquote>
+<p>No that doesn't help. Please see the STR in https://github.com/unbit/uwsgi/issues/2525</p>
+<p>(we're getting a bit off-topic here, so this will be my last reply :-) )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5229.html">astral-sh/uv#5229</a> on 2024-08-27 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../linuxserver/docker-homeassistant/issues/109.html">linuxserver/docker-homeassistant#109</a> on 2024-10-12 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../home-assistant/core/issues/128214.html">home-assistant/core#128214</a> on 2024-10-13 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-12-20 14:43</div>
+            <div class="timeline-body"><blockquote>
+<p>We very much care about supporting beginners and eliminating the need to understand virtual environments — but we don't think a global mutable environment is the way to do that.</p>
+</blockquote>
+<p>I was (as you probably saw) following the discussion over at Scipy - could you say more about the current state of play for this?  Is there a recommended <code>uv</code> way of avoiding the need to understand virtual environments?   Or is there one in the pipeline?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../scipy/scipy.org/pulls/595.html">scipy/scipy.org#595</a> on 2024-12-20 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-20 20:37</div>
+            <div class="timeline-body"><blockquote>
+<p>... could you say more about the current state of play for this? Is there a recommended uv way of avoiding the need to understand virtual environments? Or is there one in the pipeline?</p>
+</blockquote>
+<p>The current state is that you need declarative metadata, either in a project (via <code>pyproject.toml</code>) or a script (via PEP 723 metadata). I want to do more for people that want to manage declarative environments <em>outside</em> of those contexts, e.g., an environment you'd re-use for analyzing data in several projects — but we have not designed that yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2024-12-20 23:03</div>
+            <div class="timeline-body"><p>Do you think there will be a route to using <code>uv</code> that does not require specific activation of an environment or getting the environment from the current directory or specific declaration of dependencies?   I mean, similar to the workflow with the default environment of <code>conda</code>?  Or is that unlikely in the near future?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PrairieLearn/PrairieLearn/pulls/11039.html">PrairieLearn/PrairieLearn#11039</a> on 2025-02-11 05:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/63427083">@63427083</a> on 2025-02-18 13:51</div>
+            <div class="timeline-body"><p>Frankly, i don't understand how this conversation went on discussing if this feature should be implemented at all when no non-convoluted alternative like <a href="https://github.com/astral-sh/uv/issues/2077#issuecomment-2150406001">imfing's suggestion</a> is given.</p>
+<p>To illustrate my point; here's my first experience playing with uv:</p>
+<pre><code>~: uv
+~: uv pip install Pillow
+error: No virtual environment found; run 'uv venv' to create an environment, or pass '--system' to install into a non-virtual environment
+~: uv pip install --system Pillow
+Using Python 3.12.8 environment at: /usr
+Resolved 1 package in 103ms
+error: Failed to install: pillow-11.1.0-cp312-cp312-manylinux_2_28_x86_64.whl (pillow==11.1.0)
+  Caused by: failed to create directory `/usr/local/lib64/python3.12/site-packages/`: Permission denied (os error 13)
+</code></pre>
+<p>And i'm already looking at obscure Github discussions to make a common Python tool available outside of a development environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Rotonen">@Rotonen</a> on 2025-02-18 14:05</div>
+            <div class="timeline-body"><p>https://docs.astral.sh/uv/concepts/tools/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-18 14:18</div>
+            <div class="timeline-body"><p>You might be starting from the wrong conclusion? You either want a virtual environment (as in the hint!) or to install your package via <code>uv tool install</code>, if it's a standalone command-line executable. We haven't added <code>--user</code> because we don't see it as a better solution to solving any of those problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2025-02-18 14:21</div>
+            <div class="timeline-body"><blockquote>
+<p>https://docs.astral.sh/uv/concepts/tools/</p>
+</blockquote>
+<p>Were you thinking of any particular part of that page as an answer to the question?</p>
+<p>For context - I don't think the question was - how do I install a command line tool in an isolated environment? - it was how do install a set of particular packages into any kind of default environment - such as the system environment, or a user environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2025-02-18 14:31</div>
+            <div class="timeline-body"><p>For context - I strongly suspect that there are always going to be a significant group of people for whom &quot;install in a virtualenv&quot; is not going to be a good answer - and very few of those people are trying to install an isolated command line tool.   My guess is that, given the move of both <code>pip</code> and <code>uv</code> to make virtualenvs a practical requirement, <code>conda</code> will become increasingly attractive as a default install for beginners and other 'just give me an environment I don't have to think about' users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/63427083">@63427083</a> on 2025-02-18 17:57</div>
+            <div class="timeline-body"><p><a href="https://github.com/Rotonen">Rotonen</a> said:</p>
+<blockquote>
+<p>https://docs.astral.sh/uv/concepts/tools/</p>
+</blockquote>
+<p><a href="https://github.com/charliermarsh">charliermarsh</a> said:</p>
+<blockquote>
+<p>You might be starting from the wrong conclusion? You either want a virtual environment (as in the hint!) or to install your package via uv tool install, if it's a standalone command-line executable. We haven't added --user because we don't see it as a better solution to solving any of those problems.</p>
+</blockquote>
+<p>First off, thanks for pointing me in the right direction. After all &quot;tools&quot; worked exactly as I needed, which is great, but I’m still a bit confused about a couple of things:</p>
+<ul>
+<li>Why isn’t &quot;tools&quot; seen as the obvious alternative to <code>pip install --user</code>? Like, what’s missing that makes it not the go-to solution? This was the first GitHub issue that popped up when searching for uv pip --user related stuff, so others might be wondering the same thing.</li>
+<li>Why not add a tooltip or some kind of hint when running <code>uv pip install --user</code>, or at least complement the somewhat unhelpful message <code>error: pip's '--user' is unsupported (use a virtual environment instead)</code>? I feel that could help avoid confusion for some more people like me coming from regular pip, expecting similar or even same behaviour.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-02-18 18:20</div>
+            <div class="timeline-body"><p>@63427083 -&gt; I heartily recommend you listen to the podcast of @charliermarsh https://realpython.com/podcasts/rpp/238/ -&gt; he eplains there the reasoning and the whole philosophy behind uv.</p>
+<p>Uv is <strong>not</strong> what <code>pip</code> installer is. Uv is mostly to support two approaches:</p>
+<ul>
+<li>tools -&gt; this allows you to install CLI tools in their own venv (without you even knowing they have venv)</li>
+<li>the rest (project based env management) -&gt; this allows you to maintain venv for the project you are developing (and if you use sync you won't even know you use venv).</li>
+</ul>
+<p>I don't think the goal of uv is to allow you to install packages in a standalone, separate .venv installed in a &quot;default&quot; python. This is what used to be the &quot;old&quot; way how you used to work with Python, one that has been very problematic and everyone (including pip 24+) will not let you follow that old pattern without specifying some specific flags. Basically all the tools out there introduce &quot;friction&quot; so that people re-learn how to deal with python installation differently. Even if it means that those people will be unhappy and have to change their habits.</p>
+<p>This is  - as I understand it - very deliberate decision, that follows (or even sometimes leads) the way Python Packaging is evolving, and to be frank, you will be better to change your habits to follow those patterns.</p>
+<p>And yes, I understand you might be unhappy, but I strongly recommend you to listen to the podcast, it provides much more context and explanation and after listening to it, you might be more willing to adapt.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-02-18 18:23</div>
+            <div class="timeline-body"><p>Speaking of which @charliermarsh -&gt; there is something to the messaging question that @63427083 had -&gt; maybe it's worth to provide more guidance to users who also have expectations about &quot;working the same way as old ways&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2025-02-18 18:56</div>
+            <div class="timeline-body"><blockquote>
+<p>This is - as I understand it - very deliberate decision, that follows (or even sometimes leads) the way Python Packaging is evolving, and to be frank, you will be better to change your habits to follow those patterns.</p>
+<p>And yes, I understand you might be unhappy, but I strongly recommend you to listen to the podcast, it provides much more context and explanation and after listening to it, you might be more willing to adapt.</p>
+</blockquote>
+<p>Yes, no question - that is the move - and the move is, I believe, based on two assumptions:</p>
+<ul>
+<li>It just isn't very hard to force beginners to come to terms with virtualenvs from the get-go and</li>
+<li>Beginners will have good and obvious benefits from using virtualenvs from the get-go.</li>
+</ul>
+<p>I can see that these assumptions may be tempting to an experienced developer, but I can tell you, having taught many many beginners, that neither of these assumptions is correct.   And so, for beginners, we'll need something else.  <code>--user</code> was that thing, but that's fine, we'll have to find some other method - such as <code>conda</code> or using a Python where the <code>pip</code> can install into the system without complaint.</p>
+<p>I'm happy to explain why the assumptions are not correct for beginners, but I don't want to extend this thread for those who aren't working with beginners.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/merwok">@merwok</a> on 2025-02-18 20:14</div>
+            <div class="timeline-body"><p>A note: it’s not just a flag from pip, it’s the concept of user packages specified in PEP 370 and compatible with multiple tools. One example: on debian and derivatives, bash includes ~/.local/bin in PATH by default if it exists. So pip install --user sometool is a valid and easy way to be able to run sometool without more docs or setup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-02-18 22:12</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm happy to explain why the assumptions are not correct for beginners, but I don't want to extend this thread for those who aren't working with beginners.</p>
+</blockquote>
+<p>But the thing is that <code>uv tool</code> does exactly that service to beginners. It installs the tool you want in it's own virtualenv but it does not even tell the user where it is or that it does it. It can't be any easier than that.</p>
+<p>Also if you want to develop something with python you do:</p>
+<ul>
+<li><code>uv init</code></li>
+<li><code>uv add dependency</code></li>
+<li><code>uv run whatever</code></li>
+</ul>
+<p>As a beginner, you don't even have to have python installed, <code>uv</code> will download and install binary version of python from <code>python-standalone</code> project that is installed in less than few seconds. All the &quot;pesky details&quot; of setting up python and venv are completely hidden from you, and you don't even have to be aware it's there.</p>
+<p>Again - it can't get any simpler than that.</p>
+<p>So maybe your comments apply to the ways how beginners <strong>used</strong> to have problems with starting with Python before <code>uv</code>. Simply <code>uv</code> proposes different - way simpler - workflows for beginners, that utilise <code>venv</code> under the hood. I'd argue that even telling the beginner they should use <code>--user</code> is way more complex than the worfklows that <code>uv</code> proposes.</p>
+<blockquote>
+<p>A note: it’s not just a flag from pip, it’s the concept of user packages specified in PEP 370 and compatible with multiple tools. One example: on debian and derivatives, bash includes ~/.local/bin in PATH by default if it exists. So pip install --user sometool is a valid and easy way to be able to run sometool without more docs or setup.</p>
+</blockquote>
+<p>And yes, I am (painfully) aware of PEP 370 and I am aware how universally problematic it turned out to be for <code>packaging</code> maintainers. And I eventually - after initial concerns, and having experienced a lot of problems with <code>--user</code> in the past, think that the idea of proposing a different, way more maintainable and less problematic solution (and not supporting --user) is a very sound one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-02-18 22:24</div>
+            <div class="timeline-body"><p>And again (@matthew-brett ) - go and listen to the podcast. Charlie explains exactly why <code>uv</code> is created for scale but designed for beginners (or a verly similar quote - can't remember). If - after listening the podcast - you still will think that people here do not think about beginners, then I am not sure how else I can convince you :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-brett">@matthew-brett</a> on 2025-02-18 22:44</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I'm happy to explain why the assumptions are not correct for beginners, but I don't want to extend this thread for those who aren't working with beginners.</p>
+</blockquote>
+<p>But the thing is that <code>uv tool</code> does exactly that service to beginners. It installs the tool you want in it's own virtualenv but it does not even tell the user where it is or that it does it. It can't be any easier than that.</p>
+</blockquote>
+<p>By &quot;beginner&quot; I mean someone who is expecting to start an interactive Python console of some sort and do something like <code>import pygame</code> or <code>import pandas</code>.   Running some Python command line tool is not a very common beginner task.</p>
+<blockquote>
+<p>Also if you want to develop something with python you do:</p>
+<pre><code>* `uv init`
+
+* `uv add dependency`
+
+* `uv run whatever`</code></pre>
+<p>As a beginner, you don't even have to have python installed, <code>uv</code> will download and install binary version of python from <code>python-standalone</code> project that is installed in less than few seconds. All the &quot;pesky details&quot; of setting up python and venv are completely hidden from you, and you don't even have to be aware it's there.</p>
+<p>Again - it can't get any simpler than that.</p>
+</blockquote>
+<p>Well - yes it can.   Because a) that won't match nearly all tutorials out there, and b) it depends on the user keeping in mind that they need to stay in the same directory (or subdirectory thereof) to get the relevant virtualenv.    So if they, for example, do <code>cd ..</code> then they've lost their packages, for reasons that won't be obvious to them.</p>
+<p>Just for reference, in a course we taught in Berkeley, to stats students, we had to include a class on the filesystem in the terminal, because many inexperienced computer users have a hazy idea of how files are arranged on the computer, beyond the idea of a &quot;Folder&quot;.   I find that many developers haven't come across these kind of problems, and indeed they are easy to miss if you don't have quite close contact with early learners.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11609.html">astral-sh/uv#11609</a> on 2025-02-18 23:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-18 23:26</div>
+            <div class="timeline-body"><p>I think this exchange is sufficient — you've communicated your opinions on this topic and I'll ask that we don't debate these specific points more here.</p>
+<p>We care a lot of the beginner user experience and we have several team members with scientific backgrounds where &quot;beginner&quot; level Python experience is quite common. However, we're adverse to repeating the mistakes of the past and are interested in pursuing new norms to make workflows easier. I'll admit that it's not perfect today, there's more to do still.</p>
+<p>I've created two issues to track actionable improvements to @63427083's comment:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/11609</li>
+<li>https://github.com/astral-sh/uv/issues/11599</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-02-18 23:41</div>
+            <div class="timeline-body"><p>I very much concur wiht @zanieb 's comment and the follow-up. And seeing those, as the author of the issue I consider it &quot;closed&quot;, so I am going to do exactly that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @potiuk on 2025-02-18 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-18 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12291.html">astral-sh/uv#12291</a> on 2025-03-18 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15923.html">astral-sh/uv#15923</a> on 2025-09-18 01:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monorepo project, DRY dependencies - astral-sh/uv #15606</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Monorepo project, DRY dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15606">#15606</a>
+        opened by <a href="https://github.com/Bradley-McCallion">@Bradley-McCallion</a>
+        on 2025-08-31 10:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Bradley-McCallion">@Bradley-McCallion</a> on 2025-08-31 10:53</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I am currently trying to manage my python firebase functions in a monorepo structure using <code>uv</code> as the main project tool.m The main structure of my repo is as follows:</p>
+<pre><code>.
+├── README.md
+├── firebase.json
+├── pyproject.toml
+├── src
+│   ├── domain1
+│   └── domain2
+└── uv.lock
+</code></pre>
+<p>Where the dependencies for the whole repo are managed in the root <code>pyproject.toml</code> which has the following structure:</p>
+<pre><code>[project]
+name = &quot;python-firebase-functions&quot;
+version = &quot;0.0.0&quot;
+readme = &quot;README.md&quot;
+description = &quot;Template for Python Firebase Functions&quot;
+authors = [{ name = &quot;BlokxBlok&quot;, email = &quot;contact@blokxblok.com&quot; }]
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [&quot;firebase-functions&quot;] # shared deps
+
+[dependency-groups]
+dev = [
+    &quot;pytest&quot;,
+    &quot;pytest-cov&quot;,
+    &quot;functions-framework&quot;,
+    &quot;flask&quot;,
+    &quot;cloudevents&quot;,
+    &quot;requests&quot;,
+    &quot;types-requests&quot;,
+    &quot;pathlib&quot;,
+    &quot;dotenv&quot;,
+    &quot;ruff&quot;,
+    &quot;black&quot;,
+    &quot;mypy&quot;,
+]
+
+domain1= [&quot;firebase-admin&quot;, &quot;google-cloud-firestore&quot;]
+domain2 = [&quot;sendgrid&quot;]
+</code></pre>
+<p>Since python-based firebase functions requires legacy <code>requirements.txt</code> for function dependency management, I then export the required dependencies for each project via: <code>uv export --only-group domain1--no-hashes &gt; src/domain1</code>. However, this does not include the shared dependencies from <code>project.dependencies</code>. My current workaround is compromise the DRY nature of the dependencies and repeat the <code>firebase-functions</code> dependency in all groups. However, is there a combination of options I can use in the export command to get my desired behaviour - that is, to have it export only the dependencies from the <code>domain1</code> group <strong>and</strong> the shared dependencies.</p>
+<h3>Platform</h3>
+<p>Linux 5.15.167.4-microsoft-standard-WSL2 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.14 (Homebrew 2025-06-23)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @Bradley-McCallion on 2025-08-31 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-01 07:21</div>
+            <div class="timeline-body"><p>Does</p>
+<pre><code>uv export --group domain1
+</code></pre>
+<p>work for you?</p>
+<p>Otherwise you can also try <code>{include-group = &quot;shared&quot;}</code> and have a shared dependency group.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bradley-McCallion">@Bradley-McCallion</a> on 2025-09-01 18:43</div>
+            <div class="timeline-body"><p>Hey @konstin <code>--group</code> also seems to include dev dependencies from a quick test.</p>
+<p>I guess I could have a separate <code>shared</code> group and just not use the root <code>project.dependencies</code> then run <code>--only-group domain1 --only-group shared --no-hashes &gt; src/domain1</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-01 18:46</div>
+            <div class="timeline-body"><p>To exclude dev dependencies, but include the group you want, you can use:</p>
+<pre><code>uv export --group domain1 --no-dev
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bradley-McCallion">@Bradley-McCallion</a> on 2025-09-01 21:46</div>
+            <div class="timeline-body"><p>You're right that works too! Thanks for this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Bradley-McCallion on 2025-09-01 21:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv export` does not respect custom index setting from `[tool.uv.sources]` when exporting to `requirements.txt` - astral-sh/uv #13572</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv export` does not respect custom index setting from `[tool.uv.sources]` when exporting to `requirements.txt`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13572">#13572</a>
+        opened by <a href="https://github.com/ShIRannx">@ShIRannx</a>
+        on 2025-05-21 11:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ShIRannx">@ShIRannx</a> on 2025-05-21 11:47</div>
+            <div class="timeline-body"><h1><code>uv export</code> does not respect custom index setting from <code>[tool.uv.sources]</code> when exporting to <code>requirements.txt</code></h1>
+<h2>Description</h2>
+<p>When using a custom index via <code>[[tool.uv.index]]</code> and mapping it in <code>[tool.uv.sources]</code>, the <code>uv export</code> command does not include the associated source in the exported <code>requirements.txt</code>.</p>
+<h2>Example <code>pyproject.toml</code></h2>
+<pre><code class="language-toml">[project]
+dependencies = [ &quot;example-package&gt;=0.1.dev4&quot; ]
+
+[[tool.uv.index]]
+name = &quot;example&quot;
+url = &quot;https://example.com/simple&quot;
+explicit = true
+
+[tool.uv.sources]
+example = { index = &quot;example&quot; }
+</code></pre>
+<h2>Command Used</h2>
+<pre><code class="language-bash">uv export --quiet --group dev --all-extras --format requirements-txt --output-file requirements.txt
+</code></pre>
+<h2>Resulting <code>requirements.txt</code></h2>
+<pre><code class="language-text">example-package==$uv-resolved-version \
+    --hash=sha256:... \
+    --hash=sha256:...
+</code></pre>
+<h2>Expected Output</h2>
+<p>I expected the export to also include the index URL pointing to the custom source, e.g.:</p>
+<pre><code class="language-text">example-package @ https://example.com/packages/$uv-resolved-package.whl \
+    --hash=sha256:... \
+    --hash=sha256:...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-21 11:48</div>
+            <div class="timeline-body"><p>This is working as intended. There's no way to model explicitly pinned indexes in requirements.txt -- it's just not possible, the format isn't powerful enough. You should consider <code>-o pylock.toml</code> if you want to respect pins. What you've pasted above would in theory work for the wheel file, but <code>example-package</code> will have <em>multiple</em> files that represent the package-version (e.g., there's also a source distribution), hence multiple hashes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doctorpangloss">@doctorpangloss</a> on 2025-05-21 15:57</div>
+            <div class="timeline-body"><p>for practical purposes though, <code>requirements.txt</code> is being used to install &quot;the right things,&quot; not to model metadata for a package manager.</p>
+<p>So what the user wants is really: <code>uv export --format requirements.txt</code> should produce a file where <code>pip install -r requirements.txt</code> will put the same packages into <code>site-packages</code> of a venv as <code>uv sync</code> does on this machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NellyWhads">@NellyWhads</a> on 2025-05-25 21:26</div>
+            <div class="timeline-body"><p>I think for this use case, the user would also need to specify the environment markers for a proper slice of the locked packages as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../terraform-aws-modules/terraform-aws-lambda/issues/673.html">terraform-aws-modules/terraform-aws-lambda#673</a> on 2025-07-02 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rzuckerm">@rzuckerm</a> on 2025-09-08 15:57</div>
+            <div class="timeline-body"><p>I also have a use-case for this where I need to export requirements to a <code>requirements.txt</code> file and have multiple internal pypi indexes. The way <code>poetry export</code> handles this is to add these lines to the top of the <code>requirements.txt</code> file:</p>
+<pre><code>--index-url https://internal-server1/internal-server1-path-to-pypi
+--extra-index-url https://internal-server1/internal-server2-path-to-pypi
+</code></pre>
+<p>I did this experiment:</p>
+<ul>
+<li>Create initial project with <code>uv init &lt;project&gt;</code></li>
+<li><code>cd /path/to/project</code></li>
+<li>Add two internal indexes to the <code>pyproject.toml</code> file using <code>[[tool.uv.index]]</code>, where the first one is set to <code>default = true</code></li>
+<li>Add a package from each internal index using <code>uv add</code></li>
+<li>Run <code>uv export -q --format requirements.txt --output-file dist/requirements.txt --no-hashes --no-header --no-annotate --no-dev --no-emit-project</code></li>
+<li>Manually add <code>--index-url</code> and <code>--extra-index-url</code> lines to the top of  <code>dist/requirements.txt</code></li>
+<li><code>cd /tmp</code></li>
+<li><code>virtualenv venv</code></li>
+<li><code>. venv/bin/activate</code></li>
+<li><code>pip install -r /path/to/project/dist/requirements.txt</code></li>
+</ul>
+<p>It seems to work: no complaints from <code>pip</code>, and downloads occur from the appropriate indexes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-08 16:21</div>
+            <div class="timeline-body"><p>The different between the pip index support and the uv index support is that uv allows pinning an index only for a specific index, while in pip an index is always checked for all packages (with priorities).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rzuckerm">@rzuckerm</a> on 2025-09-08 16:50</div>
+            <div class="timeline-body"><blockquote>
+<p>The different between the pip index support and the uv index support is that uv allows pinning an index only for a specific index, while in pip an index is always checked for all packages (with priorities).</p>
+</blockquote>
+<p>I tried a similar experiment where I took the modified <code>requirements.txt</code> and used uv to create the virtualenv and install the dependencies:</p>
+<ul>
+<li><code>cd /tmp</code></li>
+<li><code>uv venv /tmp/venv2</code></li>
+<li><code>. /tmp/venv2/bin/activate</code></li>
+<li><code>uv pip install -r /path/to/project/dist/requirements.txt</code></li>
+</ul>
+<p>That works, too, even if I clear the uv cache (<code>rm -rf ~/.cache/uv</code>) before doing the above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bentoml/BentoML/issues/5466.html">bentoml/BentoML#5466</a> on 2025-09-12 09:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to install `flash-attn` and `transformer-engine[pytorch]` using `uv sync` in a clean environment (e.g., Docker) - astral-sh/uv #13959</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to install `flash-attn` and `transformer-engine[pytorch]` using `uv sync` in a clean environment (e.g., Docker)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13959">#13959</a>
+        opened by <a href="https://github.com/pplmx">@pplmx</a>
+        on 2025-06-11 02:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pplmx">@pplmx</a> on 2025-06-11 02:50</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Here is my trial:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;megatron-core==0.11.0; sys_platform == 'linux'&quot;,
+    &quot;numpy&gt;=2.2.3&quot;,
+    &quot;torch&gt;=2.6.0&quot;,
+    &quot;flash-attn&quot;,  
+    &quot;transformer-engine[pytorch]&quot;,  
+]
+
+[tool.uv]
+no-build-isolation-package = [&quot;transformer-engine-torch&quot;, &quot;flash-attn&quot;]
+
+[[tool.uv.dependency-metadata]]
+name = &quot;flash-attn&quot;
+requires-dist = [&quot;torch&quot;, &quot;einops&quot;]
+
+[[tool.uv.dependency-metadata]]
+name = &quot;transformer-engine-torch&quot;
+requires-dist = [&quot;setuptools&quot;]
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 5.4.0-42-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @pplmx on 2025-06-11 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-11 02:55</div>
+            <div class="timeline-body"><p>Did you read https://docs.astral.sh/uv/concepts/projects/config/#build-isolation? There is a <code>flash-attn</code> example in there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-06-11 03:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Did you read <a href="https://docs.astral.sh/uv/concepts/projects/config/#build-isolation">docs.astral.sh/uv/concepts/projects/config#build-isolation</a>? There is a <code>flash-attn</code> example in there.</p>
+</blockquote>
+<p>Yes, I tried. But I couldn’t install <code>flash-attn</code> with <code>uv sync</code> on the first attempt.
+I had to comment out <code>flash-attn</code> and <code>transformer-engine[pytorch]</code>, run <code>uv sync</code> to install the rest, and then uncomment them and run <code>uv sync</code> again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-06-11 03:20</div>
+            <div class="timeline-body"><p>First attempt, it will throw</p>
+<pre><code class="language-log">Resolved 110 packages in 2ms
+  x Failed to build `flash-attn==2.7.4.post1`
+  |-&gt; The build backend returned an error
+  `-&gt; Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+      ModuleNotFoundError: No module named 'setuptools'
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `flash-attn` (v2.7.4.post1) was included because `test` (v0.1.0) depends on `flash-attn`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-06-11 04:17</div>
+            <div class="timeline-body"><p>By the way, the issue only occurs in a truly clean environment.
+Even for a brand new project with the same <code>pyproject.toml</code>, <code>uv sync</code> works fine if the required packages have already been installed before (e.g., in the same container).
+That's why using a clean container is necessary to reliably reproduce the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/piyifan123">@piyifan123</a> on 2025-06-16 23:04</div>
+            <div class="timeline-body"><p>Also observing this problem and the guide <a href="https://docs.astral.sh/uv/concepts/projects/config/#build-isolation">docs.astral.sh/uv/concepts/projects/config#build-isolation</a> is not very clear to see how it can be configured to play with https://docs.astral.sh/uv/guides/integration/pytorch/ (i.e., multiple torch backends).</p>
+<p>It would be nice to update the pytorch integration doc to include how to setup flash_attn as well since it's almost always being configured together with pytorch.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-07-31 22:08</div>
+            <div class="timeline-body"><p>It's possible to do <code>uv sync --no-install-package flash-attn --no-install-package transformer-engine</code> first, then to do <code>uv sync</code>, but this is extremely annoying when all I want to do is run <code>uv run</code> and have my environment solve itself. This shows up a lot in my SLURM scripts, where I need to this sort of thing in every single launch script for things that use Huggingface (most ML experiments).</p>
+<pre><code>srun --nodes=$SLURM_JOB_NUM_NODES \
+     --ntasks=$SLURM_JOB_NUM_NODES \
+     --ntasks-per-node=1 \ 
+     uv sync --no-install-package flash-attn
+</code></pre>
+<p>@charliermarsh is there a way this could be a part of the <code>tool.uv</code> config? I'm thinking something like</p>
+<pre><code>[tool.uv]
+no-build-isolation-package = [&quot;flash-attn&quot;]
+install-last-packages = [&quot;flash-attn&quot;]  # maybe these are installed in order?
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-02 15:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I had to comment out flash-attn and transformer-engine[pytorch], run uv sync to install the rest, and then uncomment them and run uv sync again.</p>
+</blockquote>
+<p>I think this sounds right at the moment, though. You have to do this two-phase install right now (and the docs suggest the same, IIRC?). We have some work in-progress right now that will make it possible to do this in a single command though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-08-02 20:35</div>
+            <div class="timeline-body"><p>What is the proposed solution? I'm really looking forward to this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-02 20:49</div>
+            <div class="timeline-body"><p>We now support declaring &quot;extra&quot; build dependencies that you can include in the environment for a given package. So you can declare <code>torch</code> as an &quot;extra&quot; build dependency for <code>flash-attn</code>. Then we'll be adding an option to ensure that the same version of <code>torch</code> is used in the build environment as will be used at runtime (https://github.com/astral-sh/uv/pull/14944), but that PR hasn't merged yet -- we need to make a few improvements to the caching behavior first. The net effect will be that you can say, &quot;<code>flash-attn</code> needs to have access to <code>torch</code>, and it needs to be the same version of <code>torch</code> as in the lockfile&quot;, which will let <code>flash-attn</code> pull in the right pre-built wheel from GitHub (as per its <code>setup.py</code> behavior). So, in short, you can add that small bit of configuration to your <code>pyproject.toml</code> and <code>uv sync</code> will &quot;just work&quot; without multiple steps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-08-03 18:31</div>
+            <div class="timeline-body"><p>Awesome, this is incredible work! For now, I got this working by specifying a narrow enough torch version that they match up:</p>
+<pre><code class="language-toml">[tool.uv.extra-build-dependencies]
+# Will require these extra packages when building flash-attn.
+# It's important that the torch version matches the one used by this package.
+# Consider using == for an exact match.
+flash-attn = [&quot;setuptools&gt;=80.9.0&quot;, &quot;torch&gt;=2.6,&lt;2.7&quot;]
+</code></pre>
+<p>With this I can just do a single <code>uv sync</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6437.html">astral-sh/uv#6437</a> on 2025-08-03 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-03 21:20</div>
+            <div class="timeline-body"><p>Oh yeah, that should also work in the meantime as long as you constrain the torch versions like you’ve done there :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-16 16:04</div>
+            <div class="timeline-body"><p>I believe in the next release you should just be able to do:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;megatron-core==0.11.0; sys_platform == 'linux'&quot;,
+    &quot;numpy&gt;=2.2.3&quot;,
+    &quot;torch&gt;=2.6.0&quot;,
+    &quot;flash-attn&quot;,
+    &quot;transformer-engine[pytorch]&quot;,  
+]
+
+[tool.uv]
+no-build-isolation-package = [&quot;transformer-engine-torch&quot;, &quot;flash-attn&quot;]
+</code></pre>
+<p>This should work with a single <code>uv sync</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15326.html">astral-sh/uv#15326</a> on 2025-08-16 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-16 16:43</div>
+            <div class="timeline-body"><p>Even better (and this should work in the latest, existing release -- a single <code>uv sync</code>, no need for build isolation):</p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;megatron-core==0.11.0; sys_platform == 'linux'&quot;,
+    &quot;numpy&gt;=2.2.3&quot;,
+    &quot;torch&gt;=2.6.0&quot;,
+    &quot;flash-attn&quot;,
+    &quot;transformer-engine[pytorch]&quot;,  
+]
+
+[tool.uv.extra-build-dependencies]
+flash-attn = [{ requirement = &quot;torch&quot;, match-runtime = true}]
+transformer-engine-torch = [{ requirement = &quot;torch&quot;, match-runtime = true}]
+</code></pre>
+<p>I just confirmed this on a Linux machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-16 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-18 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-08-18 21:31</div>
+            <div class="timeline-body"><p>Thanks so much for this @charliermarsh and @zanieb!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-08-19 08:39</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe in the next release you should just be able to do:</p>
+<p>[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+&quot;megatron-core==0.11.0; sys_platform == 'linux'&quot;,
+&quot;numpy&gt;=2.2.3&quot;,
+&quot;torch&gt;=2.6.0&quot;,
+&quot;flash-attn&quot;,
+&quot;transformer-engine[pytorch]&quot;,<br />
+]</p>
+<p>[tool.uv]
+no-build-isolation-package = [&quot;transformer-engine-torch&quot;, &quot;flash-attn&quot;]
+This should work with a single <code>uv sync</code>.</p>
+</blockquote>
+<p>Thanks for the fix, @charliermarsh @zanieb ! I tested it with <code>v0.8.12</code> and it's working correctly now.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

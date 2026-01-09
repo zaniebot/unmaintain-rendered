@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAML multiple setting - clap-rs/clap #1174</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>YAML multiple setting</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1174">#1174</a>
+        opened by <a href="https://github.com/AndrewGaspar">@AndrewGaspar</a>
+        on 2018-02-11 20:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AndrewGaspar">@AndrewGaspar</a> on 2018-02-11 20:28</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p><code>rustc 1.23.0 (766bd11c8 2018-01-01)</code></p>
+<h3>Affected Version of clap</h3>
+<pre><code>andre@ANDREW-DESKTOP:/mnt/c/Users/andre/Projects/cargo-mpirun$ grep clap Cargo.lock
+ &quot;clap 2.29.4 (registry+https://github.com/rust-lang/crates.io-index)&quot;,
+name = &quot;clap&quot;
+&quot;checksum clap 2.29.4 (registry+https://github.com/rust-lang/crates.io-index)&quot; = &quot;7b8f59bcebcfe4269b09f71dab0da15b355c75916a8f975d3876ce81561893ee&quot;
+</code></pre>
+<h3>Expected Behavior Summary</h3>
+<p>Setting multiple settings in cli.yml via <code>setting</code> results in each setting being used.</p>
+<p>Note: <code>settings</code> works as expected</p>
+<h3>Actual Behavior Summary</h3>
+<p>Setting multiple settings in cli.yml via <code>setting</code> results in only the last specified setting being used.</p>
+<h3>Steps to Reproduce the issue</h3>
+<p>cli.yml</p>
+<pre><code class="language-yaml">name: example
+version: &quot;0.1&quot;
+author: Foo B. &lt;foo@bar.com&gt;
+setting: UnifiedHelpMessage
+setting: DeriveDisplayOrder
+args:
+    - z-arg:
+        long: z-arg
+        value_name: Z_VALUE
+    - a-arg:
+        long: a-arg
+        value_name: A_VALUE
+    - z-flag:
+        long: z-flag
+    - a-flag:
+        long: a-flag
+</code></pre>
+<p>main.rs</p>
+<pre><code class="language-rust">#[macro_use]
+extern crate clap;
+use clap::App;
+
+fn main() {
+    let cli = load_yaml!(&quot;cli.yml&quot;);
+    let _matches = App::from_yaml(cli).get_matches();
+}
+</code></pre>
+<p>Expected help output:</p>
+<pre><code>GT C:\Users\andre\Projects\clap-example [master +4 ~0 -0 !]&gt; cargo run -- --help
+   Compiling clap-example v0.1.0 (file:///C:/Users/andre/Projects/clap-example)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.34 secs
+     Running `target\debug\clap-example.exe --help`
+example 0.1
+Foo B. &lt;foo@bar.com&gt;
+
+USAGE:
+    clap-example.exe [OPTIONS]
+
+OPTIONS:
+        --z-arg &lt;Z_VALUE&gt;
+        --a-arg &lt;A_VALUE&gt;
+        --z-flag
+        --a-flag
+    -h, --help               Prints help information
+    -V, --version            Prints version information
+</code></pre>
+<p>Actual help output:</p>
+<pre><code>GT C:\Users\andre\Projects\clap-example [master +4 ~0 -0 !]&gt; cargo run -- --help   Compiling clap-example v0.1.0 (file:///C:/Users/andre/Projects/clap-example)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.33 secs
+     Running `target\debug\clap-example.exe --help`
+example 0.1
+Foo B. &lt;foo@bar.com&gt;
+
+USAGE:
+    clap-example.exe [FLAGS] [OPTIONS]
+
+FLAGS:
+        --z-flag
+        --a-flag
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+        --z-arg &lt;Z_VALUE&gt;
+        --a-arg &lt;A_VALUE&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-12 19:19</div>
+            <div class="timeline-body"><p>Ah yes, you're correct. The fix is to use <code>settings</code> (plural), but I know the docs aren't clear on that.</p>
+<pre><code class="language-yaml">settings:
+    - DeriveDisplayOrder
+    - UnifiedHelpMessage
+</code></pre>
+<p>Although this could be fixed, the fix will be made moot once we move to serde in v3.</p>
+<p>I'm going to close this for now, but using <code>settings</code> doesn't work for you please feel free to re-open and we can look into this further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-02-12 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../CachedNerds/Hatch/pulls/117.html">CachedNerds/Hatch#117</a> on 2018-05-12 15:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

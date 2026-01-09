@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global args/flags must be provided below sub-command - clap-rs/clap #1386</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Global args/flags must be provided below sub-command</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1386">#1386</a>
+        opened by <a href="https://github.com/ctron">@ctron</a>
+        on 2018-11-19 14:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ctron">@ctron</a> on 2018-11-19 14:52</div>
+            <div class="timeline-body"><!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+<h3>Rust Version</h3>
+<pre><code>rustc 1.30.1 (1433507eb 2018-11-07)
+</code></pre>
+<h3>Affected Version of clap</h3>
+<pre><code>2.30.0
+</code></pre>
+<h3>Bug or Feature Request Summary</h3>
+<p>Bug: Configuring a global argument/flag on a subcommand requires to pass in the arg/flag after specifying the sub-command on the command line.</p>
+<h3>Expected Behavior Summary</h3>
+<p>It should be the possible to specify the arg/flag at any position on the command line.</p>
+<h3>Actual Behavior Summary</h3>
+<p>It is not.</p>
+<h3>Steps to Reproduce the issue</h3>
+<p>See source code.</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">fn main() {
+    let app = App::new(&quot;foo&quot;)
+
+        .subcommand(SubCommand::with_name(&quot;sub1&quot;)
+
+            .arg(Arg::with_name(&quot;arg1&quot;)
+                .long(&quot;arg1&quot;)
+                .takes_value(true)
+                .global(true)
+            )
+
+            .subcommand(SubCommand::with_name(&quot;sub1a&quot;)
+            )
+        )
+    ;
+
+    let m1 = app.get_matches_from(&amp;[&quot;foo&quot;,  &quot;--arg1&quot;, &quot;v1&quot;, &quot;sub1&quot;, &quot;sub1a&quot;]); // fails
+
+    println!(&quot;{:#?}&quot;, m1);
+
+    let v1 = m1.subcommand_matches(&quot;sub1&quot;).unwrap().subcommand_matches(&quot;sub1a&quot;).unwrap().value_of(&quot;arg1&quot;).unwrap();
+    println!(&quot;{}&quot;, v1);
+}
+</code></pre>
+<p>The output will be:</p>
+<pre><code>error: Found argument '--arg1' which wasn't expected, or isn't valid in this context
+	Did you mean to put '--arg1' after the subcommand 'sub1'?
+
+USAGE:
+    foo [SUBCOMMAND]
+
+For more information try --help
+</code></pre>
+<h3>Debug output</h3>
+<p>Compile clap with cargo features <code>&quot;debug&quot;</code> such as:</p>
+<pre><code class="language-toml">[dependencies]
+clap = { version = &quot;2&quot;, features = [&quot;debug&quot;] }
+</code></pre>
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+
+<pre><code>Finished dev [unoptimized + debuginfo] target(s) in 0.03s
+ Running `target/debug/clap1`</code></pre>
+<p>DEBUG:clap:Parser::add_subcommand: term_w=None, name=sub1a
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=sub1
+DEBUG:clap:Parser::propagate_settings: self=foo, g_settings=AppFlags(
+(empty)
+)
+DEBUG:clap:Parser::propagate_settings: sc=sub1, settings=AppFlags(
+NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+(empty)
+)
+DEBUG:clap:Parser::propagate_settings: self=sub1, g_settings=AppFlags(
+(empty)
+)
+DEBUG:clap:Parser::propagate_settings: sc=sub1a, settings=AppFlags(
+NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+(empty)
+)
+DEBUG:clap:Parser::propagate_settings: self=sub1a, g_settings=AppFlags(
+(empty)
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::create_help_and_version: Building help
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;--arg1&quot;' ([45, 45, 97, 114, 103, 49])
+DEBUG:clap:Parser::is_new_arg:&quot;--arg1&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: -- found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;--arg1&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::parse_long_arg;
+DEBUG:clap:Parser::parse_long_arg: Does it contain '='...No
+DEBUG:clap:Parser::parse_long_arg: Didn't match anything
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=foo [SUBCOMMAND]
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Colorizer::warning;
+DEBUG:clap:Colorizer::good;
+error: Found argument '--arg1' which wasn't expected, or isn't valid in this context
+Did you mean to put '--arg1' after the subcommand 'sub1'?</p>
+<p>USAGE:
+foo [SUBCOMMAND]</p>
+<p>For more information try --help</p>
+<p>Process finished with exit code 1</p>
+</code>
+</pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">not-sure</span> added by @CreepySkeleton on 2020-02-01 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-06 09:31</div>
+            <div class="timeline-body"><p>From the doc</p>
+<blockquote>
+<p>Global arguments only propagate down, <strong>not up</strong></p>
+</blockquote>
+<p>This is the correct way to do it:</p>
+<pre><code class="language-rust">let m = App::new(&quot;foo&quot;)
+        .arg(Arg::with_name(&quot;arg1&quot;)
+            .long(&quot;arg1&quot;)
+            .takes_value(true)
+            .global(true)
+        )
+        .subcommand(SubCommand::with_name(&quot;sub1&quot;)
+            .subcommand(SubCommand::with_name(&quot;sub1a&quot;))
+        ).get_matches();
+
+    println!(&quot;{:#?}&quot;, m);
+    println!(&quot;{:?}&quot;, m.subcommand_matches(&quot;sub1&quot;).unwrap().subcommand_matches(&quot;sub1a&quot;).unwrap().value_of(&quot;arg1&quot;));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-02-06 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cc: CreepySkeleton</span> removed by @CreepySkeleton on 2020-02-06 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yyin-dev">@yyin-dev</a> on 2022-09-02 15:01</div>
+            <div class="timeline-body"><p>Is it possible to do similar things (global argument) using derive syntax?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-02 15:05</div>
+            <div class="timeline-body"><p>Any builder method can be used as a &quot;raw attribute&quot;.  See https://docs.rs/clap/latest/clap/_derive/index.html#terminology</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

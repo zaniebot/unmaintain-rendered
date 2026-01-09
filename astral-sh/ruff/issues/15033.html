@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Incorrect control flow modelling in if-elif chains - astral-sh/ruff #15033</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Incorrect control flow modelling in if-elif chains</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15033">#15033</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-12-17 09:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-17 09:55</div>
+            <div class="timeline-body"><p>We currently infer a type of <code>Literal[1, 2, 4]</code> in the following example, but <code>1</code> is not a possible value of <code>x</code>. And <code>3</code> <em>is</em> a possible value for <code>x</code>.</p>
+<pre><code class="language-py">def check(x: int) -&gt; bool: ...
+
+if check(x := 1):
+    x = 2
+elif check(x := 3):
+    x = 4
+
+reveal_type(x)  # revealed: Literal[1, 2, 4]; should be Literal[2, 3, 4]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-12-17 09:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-17 14:13</div>
+            <div class="timeline-body"><pre><code class="language-pycon">% python
+Python 3.13.0 (main, Oct  8 2024, 11:56:29) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; def check(x: int) -&gt; bool: return False
+... 
+&gt;&gt;&gt; if check(x := 1):
+...     x = 2
+... elif False:
+...     x = 3
+... 
+&gt;&gt;&gt; x
+1
+</code></pre>
+<p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-17 14:27</div>
+            <div class="timeline-body"><p>@AlexWaygood I don't understand? If you change the example to use <code>elif False</code>, then <code>1</code> is a possible value, yes 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-17 14:30</div>
+            <div class="timeline-body"><p>Oh, sorry, I thought you were claiming the bug would still be evident if the <code>elif True</code> were changed to another boolean value when you said</p>
+<blockquote>
+<p>This is not related to statically known conditions (<code>True</code> can be replaced by something else).</p>
+</blockquote>
+<p>What <em>did</em> you mean by that sentence, in that case? :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-17 14:49</div>
+            <div class="timeline-body"><p>I'm sorry. I messed up my original example when I minified it to report the bug. I reverted it to what I had originally. I hope it makes more sense now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-17 14:54</div>
+            <div class="timeline-body"><p>Aha! Yes, makes perfect sense now. Great catch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-12-17 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15274.html">astral-sh/ruff#15274</a> on 2025-01-05 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-01-05 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-01-05 18:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

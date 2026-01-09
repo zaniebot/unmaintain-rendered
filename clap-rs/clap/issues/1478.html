@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macros aren't imported properly in Rust 2018 - clap-rs/clap #1478</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Macros aren't imported properly in Rust 2018</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1478">#1478</a>
+        opened by <a href="https://github.com/jacob-greenfield">@jacob-greenfield</a>
+        on 2019-05-26 06:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jacob-greenfield">@jacob-greenfield</a> on 2019-05-26 06:21</div>
+            <div class="timeline-body"><!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+<h3>Rust Version</h3>
+<p><code>rustc 1.35.0 (3c235d560 2019-05-20)</code></p>
+<h3>Affected Version of clap</h3>
+<p><code>2.33.0</code></p>
+<h3>Bug or Feature Request Summary</h3>
+<p>Macros such as <code>app_from_crate!()</code> which rely on other custom macros do not do so properly (using <code>$crate</code>) in many cases, meaning that all dependent macros must also be individually imported with <code>use</code>.</p>
+<h3>Expected Behavior Summary</h3>
+<p>For example:</p>
+<pre><code class="language-rust">macro_rules! app_from_crate {
+    () =&gt; {
+        $crate::App::new(crate_name!())
+            .version($crate::crate_version!())
+            .author($crate::crate_authors!())
+            .about($crate::crate_description!())
+    };
+    ($sep:expr) =&gt; {
+        $crate::App::new($crate::crate_name!())
+            .version($crate::crate_version!())
+            .author($crate::crate_authors!($sep))
+            .about($crate::crate_description!())
+    };
+}
+</code></pre>
+<h3>Actual Behavior Summary</h3>
+<p>Current implementation:</p>
+<p>https://github.com/clap-rs/clap/blob/784524f7eb193e35f81082cc69454c8c21b948f7/src/macros.rs#L559-L572</p>
+<h3>Steps to Reproduce the issue</h3>
+<p><code>src/main.rs</code>:</p>
+<pre><code class="language-rust">use clap::app_from_crate;
+
+fn main() {
+    let matches = app_from_crate!().get_matches();
+}
+</code></pre>
+<p>Output:</p>
+<pre><code>error: cannot find macro `crate_name!` in this scope
+ --&gt; src/main.rs:4:19
+  |
+4 |     let matches = app_from_crate!().get_matches();
+  |                   ^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in a macro outside of the current crate (in Nightly builds, run with -Z external-macro-backtrace for more info)
+
+error: cannot find macro `crate_version!` in this scope
+ --&gt; src/main.rs:4:19
+  |
+4 |     let matches = app_from_crate!().get_matches();
+  |                   ^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in a macro outside of the current crate (in Nightly builds, run with -Z external-macro-backtrace for more info)
+
+error: cannot find macro `crate_authors!` in this scope
+ --&gt; src/main.rs:4:19
+  |
+4 |     let matches = app_from_crate!().get_matches();
+  |                   ^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in a macro outside of the current crate (in Nightly builds, run with -Z external-macro-backtrace for more info)
+
+error: cannot find macro `crate_description!` in this scope
+ --&gt; src/main.rs:4:19
+  |
+4 |     let matches = app_from_crate!().get_matches();
+  |                   ^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in a macro outside of the current crate (in Nightly builds, run with -Z external-macro-backtrace for more info)
+
+error: aborting due to 4 previous errors
+</code></pre>
+<h3>Sample Code or Link to Sample Code</h3>
+<p>N/A</p>
+<h3>Debug output</h3>
+<p>N/A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1528.html">clap-rs/clap#1528</a> on 2019-07-29 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: macros</span> added by @CreepySkeleton on 2020-02-01 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @CreepySkeleton on 2020-02-01 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @CreepySkeleton on 2020-02-01 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @CreepySkeleton on 2020-02-01 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @CreepySkeleton on 2020-02-01 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1349.html">clap-rs/clap#1349</a> on 2020-02-02 05:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-02 08:34</div>
+            <div class="timeline-body"><p>This has been fixed in master and the minimum rust version is 1.36. I have added https://github.com/clap-rs/clap/pull/1656 to test it. We won't be backporting it to v2.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-02-02 10:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

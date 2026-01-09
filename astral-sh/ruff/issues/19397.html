@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empty line between condition and function - astral-sh/ruff #19397</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Empty line between condition and function</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19397">#19397</a>
+        opened by <a href="https://github.com/gagaga67">@gagaga67</a>
+        on 2025-07-17 13:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gagaga67">@gagaga67</a> on 2025-07-17 13:09</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hello! I'm just starting to figure out ruff. And a question arose. As I understand it, ruff should not insert empty lines after the block https://docs.astral.sh/ruff/formatter/black/#blank-lines-at-the-start-of-a-block. Ruff behavior is perfect, unlike black behavior.</p>
+<p>I'm checking different ways of writing code and how it will be formatted. And I found an example that seems to be different from the documentation. For me, this is not the best kind of formatting. From the description I thought that there would be no empty lines anywhere. If it is not, then correct me.</p>
+<pre><code class="language-python">
+#before
+def dummy():
+    if True:
+        def function():
+            pass
+
+
+if True:
+    def function():
+        pass
+
+if True:
+    if True:
+        def function():
+            pass
+
+
+if True:
+    a = 1
+    def function():
+        pass
+    b = 1
+
+
+class A:
+    def function(self):
+        pass
+
+
+def function2(self):
+    def function3(self):
+        pass
+
+#after
+def dummy():
+    if True:
+
+        def function():
+            pass
+
+
+if True:
+
+    def function():
+        pass
+
+
+if True:
+    if True:
+
+        def function():
+            pass
+
+
+if True:
+    a = 1
+
+    def function():
+        pass
+
+    b = 1
+
+
+class A:
+    def function(self):
+        pass
+
+
+def function2(self):
+    def function3(self):
+        pass
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @gagaga67 on 2025-07-17 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-17 13:34</div>
+            <div class="timeline-body"><p>I don't think this is related to that known deviation. Black produces the same result:</p>
+<details><summary>Output</summary>
+
+<pre><code class="language-shell">&gt; cat &lt;&lt;EOF | black --diff -
+#before
+def dummy():
+    if True:
+        def function():
+            pass
+
+
+if True:
+    def function():
+        pass
+
+if True:
+    if True:
+        def function():
+            pass
+
+
+class A:
+    def function(self):
+        pass
+
+
+def function2(self):
+    def function3(self):
+        pass
+EOF
+--- STDIN       2025-07-17 13:30:43.590201+00:00
++++ STDOUT      2025-07-17 13:30:43.597723+00:00
+@@ -1,18 +1,22 @@
+-#before
++# before
+ def dummy():
+     if True:
++
+         def function():
+             pass
+
+
+ if True:
++
+     def function():
+         pass
+
++
+ if True:
+     if True:
++
+         def function():
+             pass
+
+
+ class A:
+would reformat -
+
+All done! ✨ 🍰 ✨
+1 file would be reformatted.
+</code></pre>
+</details>
+
+<p>I believe these blank lines are inserted before the functions, not after the start of the enclosing block. I guess there's a special case for functions in classes and functions in functions, based on the last two examples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-07-17 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gagaga67">@gagaga67</a> on 2025-07-17 13:45</div>
+            <div class="timeline-body"><p>The fact that black does this is not a standard for me :).</p>
+<p>Maybe we should also make an exception for the function after the condition? In our example, such formatting is very ugly. Such examples often occur here. And we don't know yet how to block it either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-18 12:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think this is related to that known deviation. Black produces the same result:</p>
+</blockquote>
+<p>Yes, this is different. The linked deviation is about optional blank lines. The blank lines above functions aren't optional.</p>
+<p>I found this upstream discussion https://github.com/psf/black/issues/450</p>
+<p>I do agree that</p>
+<pre><code class="language-py">def dummy():
+    if True:
+
+        def function():
+            pass
+
+
+if True:
+
+    def function():
+        pass
+
+
+if True:
+    if True:
+
+        def function():
+            pass
+</code></pre>
+<p>looks a bit funny and is something that could be considered for a future style guide, given that the diff isn't too large and it doesn't regress any other existing code.</p>
+<p>The other formattings do match my expectations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-07-18 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @MichaReiser on 2025-07-18 12:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

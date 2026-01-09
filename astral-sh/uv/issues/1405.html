@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support .netrc files - astral-sh/uv #1405</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support .netrc files</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1405">#1405</a>
+        opened by <a href="https://github.com/janbernloehr">@janbernloehr</a>
+        on 2024-02-16 01:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/janbernloehr">@janbernloehr</a> on 2024-02-16 01:01</div>
+            <div class="timeline-body"><p>pip supports obtaining credentials for authentication from <code>.netrc</code> files. This allows to keep <code>pip.conf</code>, <code>--index-url</code> and <code>--find-links</code> free of credentials and instead store them in a central place in <code>~/.netrc</code>.</p>
+<p>Unfortunately, uv does not support obtaining credentials from there.</p>
+<p>This is also required, for e.g. using requirements.txt files that refer to wheels at urls that require auth</p>
+<pre><code>torch @ https://foo.org/torch.whl
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2024-02-16 01:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">index</span> added by @zanieb on 2024-02-16 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 01:04</div>
+            <div class="timeline-body"><p>Thanks for the report! We definitely need to address registry authentication.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brandon-piner-aruba">@brandon-piner-aruba</a> on 2024-02-16 05:33</div>
+            <div class="timeline-body"><p>We would also like the .netrc support. We specify the private repo in a slightly different way</p>
+<pre><code># From Gemfury (https://pypi.fury.io/the-org/)
+# =============================================
+some-package
+another-package
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/framillien">@framillien</a> on 2024-02-16 14:18</div>
+            <div class="timeline-body"><p>@zanieb Since you are using <code>reqwest</code> crate, using <code>reqwest-netrc</code> middleware could be an option ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/framillien">@framillien</a> on 2024-02-16 16:07</div>
+            <div class="timeline-body"><p>This work for index access, but fail on download since reqwest middleware is not used:
+https://github.com/astral-sh/uv/blob/main/crates/uv-client/src/registry_client.rs#L415</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-02-16 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/framillien">@framillien</a> on 2024-02-19 14:06</div>
+            <div class="timeline-body"><p>In fact this is not download in itself that cause this issue, but only the <code>read_metadata_range_request</code> usage. If I activate <code>reqwest-netrc</code> and skip all metada range errors <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-client/src/registry_client.rs#L457">(here)</a> the download succeed.</p>
+<p>In my situation, the error we need to skip is an HTTP 401.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2241.html">astral-sh/uv#2241</a> on 2024-03-06 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-06 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3338.html">astral-sh/uv#3338</a> on 2024-05-02 13:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

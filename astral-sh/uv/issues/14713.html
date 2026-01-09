@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use uv in server's production environment - astral-sh/uv #14713</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use uv in server's production environment</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14713">#14713</a>
+        opened by <a href="https://github.com/cedric-sun">@cedric-sun</a>
+        on 2025-07-18 11:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cedric-sun">@cedric-sun</a> on 2025-07-18 11:17</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi uv team,</p>
+<p>We have a few python scripts in a git repo managed by uv. These scripts will be packaged into a docker image and invoked by a cron job on a daily basis.</p>
+<p>We plan to use install uv within the image and run <code>uv sync</code> upon image build, and just <code>uv run path/to/script.py</code> as the invocation command as well did during development. The problem is that we don't want uv to access internet once the image was built, or perform any disk IO at runtime. (specifically, we are aware of the requirement of the cache directory).</p>
+<p>I'd like to have your advice on this practice. It it okay to do so? Or shall we <code>source .venv/bin/activate</code> manually and just use python?</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04 in docker.</p>
+<h3>Version</h3>
+<p>uv 0.7.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @cedric-sun on 2025-07-18 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use uv in production environment" to "Use uv in server's production environment" by @cedric-sun on 2025-07-18 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-07-18 11:58</div>
+            <div class="timeline-body"><p>For a proper, non-brittle production environment, what we do (with pretty good success) is to model the scripts as a true <code>pyproject.toml</code>-driven package.</p>
+<p>Model all of your scripts as <code>[project.scripts]</code> entrypoints, and your dependencies as <code>[project.dependencies]</code>, as one would in general.</p>
+<p>You can then take this project and install it into the Docker image. You will end up with a complete set of all of your dependencies, baked right into your image, and all of your script entrypoints will be easily executable (if you install onto the base image's system python, they will end up on <code>$PATH</code> too, which is neat)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-18 12:03</div>
+            <div class="timeline-body"><p>You can use <code>uv run --no-sync</code> or <code>UV_NO_SYNC=1</code>, which I believe addresses your use-case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-18 12:03</div>
+            <div class="timeline-body"><p>(We might perform disk IO to like.. find the Python interpreter to use.. I'm not sure if that matters to you)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

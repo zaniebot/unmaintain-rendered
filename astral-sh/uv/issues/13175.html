@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The order for installing UV packages - astral-sh/uv #13175</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>The order for installing UV packages</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13175">#13175</a>
+        opened by <a href="https://github.com/thebarkingdog-yh">@thebarkingdog-yh</a>
+        on 2025-04-28 13:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thebarkingdog-yh">@thebarkingdog-yh</a> on 2025-04-28 13:00</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When I have a package A that depends on <code>onnxruntime</code>, and another package B that depends on <code>onnxruntime-gpu</code>, the installation order will affect the result.</p>
+<p>How should I resolve this issue?</p>
+<hr />
+<p>One solution I have is: <code>uv pip uninstall onnxruntime onnxruntime-gpu &amp;&amp; uv pip install onnxruntime-gpu</code>.</p>
+<p>However, this results in me having to add <code>--no-sync</code> every time I run uv run, otherwise it will install onnxruntime again.</p>
+<hr />
+<p>Another approach is to use <code>reinstall-package</code>.</p>
+<pre><code>[tool.uv]
+reinstall-package = [&quot;onnxruntime-gpu&quot;]
+</code></pre>
+<p>However, it doesn’t work for the first installation (using uv sync), and if onnxruntime-gpu is reinstalled every time you run uv run, it’s not an ideal solution either.</p>
+<hr />
+<p>Is there a better solution that allows a specific package to be installed last? Otherwise, as in the onnx example above, the installation order will affect the result.</p>
+<p>Below is my test script. Run it to check whether the GPU is available now.</p>
+<pre><code class="language-py">import onnxruntime
+
+available_providers: list[str] = onnxruntime.get_available_providers()
+
+print(&quot;=== ONNX Provider Info ===&quot;)
+print(f&quot;GPU Available: {'CUDAExecutionProvider' in available_providers}&quot;)
+print(f&quot;All Available Providers: {available_providers}&quot;)
+print(f&quot;ONNX Runtime Version: {onnxruntime.__version__}&quot;)
+</code></pre>
+<p>If necessary, I can provide a simple pyproject.toml. However, after several tests, I found that the results are inconsistent—sometimes the final result uses the CPU, while other times it uses the GPU.</p>
+<h3>Platform</h3>
+<p>Ubuntu 22.04</p>
+<h3>Version</h3>
+<p>uv 0.6.17</p>
+<h3>Python version</h3>
+<p>Python 3.13.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @thebarkingdog-yh on 2025-04-28 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-28 13:39</div>
+            <div class="timeline-body"><p>That is a tough problem: We have two packages with a dependency conflict that uv can't detect.</p>
+<p>We could solve this by adding dependency elimination (https://github.com/astral-sh/uv/issues/4422), can you try an <a href="https://docs.astral.sh/uv/reference/settings/#override-dependencies">override</a> with <code>onnxruntime; sys_platform == &quot;never&quot;</code> (https://github.com/astral-sh/uv/issues/4422#issuecomment-2254182800)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-04-28 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-04-28 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thebarkingdog-yh">@thebarkingdog-yh</a> on 2025-04-28 14:29</div>
+            <div class="timeline-body"><blockquote>
+<p>That is a tough problem: We have two packages with a dependency conflict that uv can't detect.</p>
+<p>We could solve this by adding dependency elimination (<a href="https://github.com/astral-sh/uv/issues/4422">#4422</a>), can you try an <a href="https://docs.astral.sh/uv/reference/settings/#override-dependencies">override</a> with <code>onnxruntime; sys_platform == &quot;never&quot;</code> (<a href="https://github.com/astral-sh/uv/issues/4422#issuecomment-2254182800">#4422 (comment)</a>)?</p>
+</blockquote>
+<p>@konstin
+I used the following TOML to create a virtual environment, but <code>onnxruntime</code> was still installed. Did I do something wrong?</p>
+<pre><code class="language-toml">[project]
+name = &quot;onnx-test&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;faster-whisper&gt;=1.1.1&quot;,
+    &quot;onnxruntime-gpu&gt;=1.21.1&quot;,
+    &quot;onnxruntime; sys_platform == 'never'&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-28 15:38</div>
+            <div class="timeline-body"><p>This needs to be defined as <a href="https://docs.astral.sh/uv/reference/settings/#override-dependencies"><code>tool.uv.override-dependencies</code></a> instead of <code>project.dependencies</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thebarkingdog-yh">@thebarkingdog-yh</a> on 2025-04-28 19:35</div>
+            <div class="timeline-body"><p>Oh, I didn't notice it, sorry.</p>
+<p>I succeeded, so I'll close this issue. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @thebarkingdog-yh on 2025-04-28 19:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

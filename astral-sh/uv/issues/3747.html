@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where does `uv` land on PEP 517 `backend-path` out-of-tree? - astral-sh/uv #3747</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Where does `uv` land on PEP 517 `backend-path` out-of-tree?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3747">#3747</a>
+        opened by <a href="https://github.com/thejcannon">@thejcannon</a>
+        on 2024-05-22 17:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thejcannon">@thejcannon</a> on 2024-05-22 17:44</div>
+            <div class="timeline-body"><p>👋 Ok, you caught me doing some weird things...</p>
+<p>In a Python monorepo, with your own PEP 517/660 build backend, it's <em>really</em> convenient to define your build-backend as:</p>
+<pre><code class="language-toml">[build-system]
+requires = []
+build-backend = &quot;super_cool_custom_thing&quot;
+backend-path = [&quot;..&quot;]
+</code></pre>
+<p>Unfortunately <code>pip</code> gets really angry when you do this.</p>
+<p>But <code>uv</code> doesn't! 🎉</p>
+<p>So, I'm wondering if this is on purpose or on accident.</p>
+<hr />
+<p>FWIW According to PEP 517:</p>
+<blockquote>
+<p>Directories in backend-path are interpreted as relative to the project root, and MUST refer to a location within the source tree (after relative paths and symbolic links have been resolved).</p>
+</blockquote>
+<p>So I'm defintely violating it. But also:</p>
+<blockquote>
+<p>Frontends SHOULD check this condition</p>
+</blockquote>
+<p>So you aren't <em>required</em> by spec to error here. Hows about we slip <code>uv</code> a fiver to keep looking the other way? 😛</p>
+<p>(Or if you are planning on erroring, maybe allowing an opt-out flag? <code>UV_IM_VIOLATING_PEP_517_BACKEND_PATH_AND_I_HAVE_NO_SHAME=1</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2024-05-22 17:46</div>
+            <div class="timeline-body"><p>Reasons doing this is actually a good idea ™️ :</p>
+<ul>
+<li>You don't need to have your own cheeseshop for your build backend</li>
+<li>Alternatively, you don't bring in all the issues with <code>--no-build-isolation</code> on your 1p packages (e.g. you have to install your build backend first, and you can't install deps at the same time as your packages because you might not have installed your dependencies' build backends)</li>
+<li>You can feel safe knowing everyone is using your build backend (including the right version)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-05-22 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3796.html">astral-sh/uv#3796</a> on 2024-05-23 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2024-05-28 16:33</div>
+            <div class="timeline-body"><p>(I have opened <a href="https://discuss.python.org/t/two-extensions-clarifications-of-pep-517/54464">a discussion related to this on Discourse</a>, but more generally)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 00:52</div>
+            <div class="timeline-body"><p>I'm ok not to enforce this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-09 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-09 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2024-09-09 11:16</div>
+            <div class="timeline-body"><p>Wonderful news!</p>
+<p>If you're willing to write down what led you to this decision, for posterity, be my guest 😁</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 13:44</div>
+            <div class="timeline-body"><p>Mostly just that it costs us nothing and users are using it so it'd be breaking for us to remove :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2024-09-09 15:06</div>
+            <div class="timeline-body"><p>I'll take it! If you give me a pointer, I'll file myself a task to add a test here to avoid backsliding.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

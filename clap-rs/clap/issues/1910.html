@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compute argument possible values based on other arguments - clap-rs/clap #1910</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Compute argument possible values based on other arguments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1910">#1910</a>
+        opened by <a href="https://github.com/fbecart">@fbecart</a>
+        on 2020-05-06 12:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fbecart">@fbecart</a> on 2020-05-06 12:31</div>
+            <div class="timeline-body"><p>I would like to be able to compute the possible values of an argument dynamically, based on the values provided for some other argument(s).</p>
+<h3>Use case</h3>
+<p>I'm working on a CLI which has a goal similar to <code>make</code>.</p>
+<pre><code class="language-sh">$ make --help
+Usage: make [options] [target] ...
+Options:
+  -f FILE, --file=FILE, --makefile=FILE
+                              Read FILE as a makefile.
+</code></pre>
+<p>The file lists the available targets. Given a value of <code>FILE</code>, I am able to load a list of available target names. I would like to use that list as the possible values for <code>target</code>.</p>
+<p>This would affect the validation of <code>target</code>. Ideally, this would also affect its autocompletion.</p>
+<p>Currently, <code>possible_values</code> is expected to be provided as an array slice (<code>&amp;[&amp;str]</code>) as the <code>App</code> is being built.
+https://github.com/clap-rs/clap/blob/9d03c8497ce17486e31b19fecbe5bec97ac82d09/src/build/arg/mod.rs#L1712
+At that time, the value of <code>FILE</code> is not available yet.</p>
+<h3>Wanted solution</h3>
+<p>I would like instead to be able to provide a closure that would compute the possible values for my argument. This closure would take the values of the other app arguments as a parameter.</p>
+<h3>Workaround</h3>
+<p>It is already possible to obtain this behavior by parsing the arguments twice (the second time with refined validation):</p>
+<pre><code class="language-rust">fn get_app(allowed_target_names: Option&lt;Vec&lt;&amp;str&gt;&gt;) -&gt; App {
+    let target_arg = Arg::with_name(&quot;target&quot;);
+
+    let target_arg = if let Some(allowed_target_names) = allowed_target_names {
+        target_arg.possible_values(&amp;allowed_target_names)
+    } else {
+        target_arg
+    };
+
+    App::new(&quot;make&quot;)
+        .arg(target_arg)
+        [...]
+}
+
+fn main() {
+    let arg_matches = get_app(None).get_matches();
+
+    let config = Config::load(arg_matches.value_of(&quot;config_file&quot;));
+    let all_target_names = config.list_target_names();
+
+    let app_args = get_app(Some(all_target_names)).get_matches();
+
+    [...]
+}
+</code></pre>
+<p>However, this workaround doubles the overhead of parsing arguments. Also, this solution does not cover the autocompletion part.</p>
+<h3>Related issues</h3>
+<ul>
+<li>https://github.com/clap-rs/clap/issues/568</li>
+<li>https://github.com/clap-rs/clap/pull/1793</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @fbecart on 2020-05-06 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-05-06 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-05-06 15:11</div>
+            <div class="timeline-body"><p>I think this can be achieved by the hooks proposal mentioned in #1471.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fbecart">@fbecart</a> on 2020-05-07 06:55</div>
+            <div class="timeline-body"><p>Thanks @pksunkara for looking into it. I see how https://github.com/clap-rs/clap/issues/1471 is related, as it suggests to have a closure returning the default value of an argument.</p>
+<p>This issue remains unique in the following ways:</p>
+<ul>
+<li>It is about computing the possible values of an argument.</li>
+<li>It requires access to the arguments that have already been provided.</li>
+<li>It should influence auto-completion.</li>
+<li>It is not related to prompting the user -- which is the primary motive for default value hooks.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-05-07 12:24</div>
+            <div class="timeline-body"><p>It is related because we can extend the hook proposal to allow defining possible values too. Prompts is a tangential issue.</p>
+<p>Auto completion will probably be tied into the dynamic completion issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fbecart">@fbecart</a> on 2020-05-08 20:27</div>
+            <div class="timeline-body"><p>To illustrate the issue, here's a link to the project I'm working on: https://github.com/fbecart/zinoma/blob/9d2ea034d566a92a7464a7ca58c0b75cb87d7072/src/main.rs#L32-L37</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-05-11 18:43</div>
+            <div class="timeline-body"><p>Also potentially related #1880</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../fbecart/zinoma/issues/7.html">fbecart/zinoma#7</a> on 2020-05-14 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fbecart">@fbecart</a> on 2020-08-05 17:19</div>
+            <div class="timeline-body"><p>Closely related to https://github.com/clap-rs/clap/issues/1232, if not duplicate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/157.html">epage/clapng#157</a> on 2021-12-06 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-validators</span> added by @epage on 2021-12-08 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/568.html">clap-rs/clap#568</a> on 2021-12-10 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-10 21:49</div>
+            <div class="timeline-body"><p>In https://github.com/clap-rs/clap/discussions/2832, I layout an idea for generalizing clap.  This has the potential for opening the door to something like this.</p>
+<p>With that said, I would generally recommend not doing this.  Parsing a file sufficiently to know what future args should be <em>during</em> the parsing of the args feels like there is a can of worms of problems with it.  I'm assuming <code>make</code> most other tools do it.</p>
+<p>If you really want <code>clap</code> like errors, in 3.0.0, we are offering an <code>App::error</code>.  For more native solutions, I feel like #1404 and #568 are more of what we want to provide.  I did note this on #568 so we can remember to consider whether we should support this case or not.</p>
+<p>In favor of those options I listed, I'm leaning towards closing this.  If there are concerns that are not covered, feel free to speak up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-10 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1232.html">clap-rs/clap#1232</a> on 2021-12-13 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-01-11 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5621.html">clap-rs/clap#5621</a> on 2024-08-02 16:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

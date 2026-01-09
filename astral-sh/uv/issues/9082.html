@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cleanup .venv on Ctrl-C interrupt during `uv sync` - astral-sh/uv #9082</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cleanup .venv on Ctrl-C interrupt during `uv sync`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/9082">#9082</a>
+        opened by <a href="https://github.com/atbraz">@atbraz</a>
+        on 2024-11-13 13:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/atbraz">@atbraz</a> on 2024-11-13 13:01</div>
+            <div class="timeline-body"><p>When running <code>uv sync</code> without specifying a Python version, the command automatically selects the latest compatible version based on <code>project.requires-python</code>. If this selected version is undesirable (e.g., Python 3.13 for projects known to have compatibility issues), the only way to stop the process is using Ctrl-C. However, this leaves behind a partially created <code>.venv</code> directory that must be manually cleaned up before retrying with the correct Python version.</p>
+<h2>Expected Behavior</h2>
+<p>When <code>uv sync</code> is interrupted with Ctrl-C, it should clean up any partially created resources, including the <code>.venv</code> directory, similar to the behavior implemented in #7024.</p>
+<h2>Current Behavior</h2>
+<p>Currently, interrupting <code>uv sync</code> with Ctrl-C leaves behind a partially created <code>.venv</code> directory, requiring manual cleanup before retrying with a different Python version.</p>
+<h2>Steps to Reproduce</h2>
+<ol>
+<li>Have a project with <code>project.requires-python = &quot;&gt;=3.10&quot;</code></li>
+<li>Run <code>uv sync</code> without <code>-p</code> flag</li>
+<li>Observe it selecting Python 3.13</li>
+<li>Interrupt with Ctrl-C</li>
+<li><code>.venv</code> directory remains, requiring manual deletion</li>
+</ol>
+<h2>Example</h2>
+<pre><code>ai on  main is 📦 v0.1.1 via 🐍 v3.11.2 took 4s
+z ➜  uv sync
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+⠼ Resolving dependencies...                                                                                                                                                                   ^C
+
+ai on  main is 📦 v0.1.1 via 🐍 v3.11.2
+z ➜  l
+Permissions Size User  Date Modified Git Repo   Name
+drwxr-xr-x     - abraz 4 days         -I | main  .git/
+drwxr-xr-x     - abraz 4 seconds      -I - -     .venv/
+drwxr-xr-x     - abraz 5 days         -- - -     docs/
+drwxr-xr-x     - abraz 5 days         -- - -     pkgs/
+drwxr-xr-x     - abraz 5 days         -- - -     requirements/
+drwxr-xr-x     - abraz 5 days         -- - -     scripts/
+drwxr-xr-x     - abraz 5 days         -- - -     tests/
+.rw-r--r--  2.0k abraz 5 days         -- - -     .gitignore
+.rw-r--r--     0 abraz 4 days         -- - -     CHANGELOG.md
+.rw-r--r--  2.3k abraz 4 days         -- - -     pyproject.toml
+.rw-r--r--   985 abraz 5 days         -- - -     README.md
+.rw-r--r--   171 abraz 4 days         -- - -     requirements.txt
+
+ai on  main is 📦 v0.1.1 via 🐍 v3.11.2
+z ➜  rm -rf .venv
+
+ai on  main is 📦 v0.1.1 via 🐍 v3.11.2
+z ➜  uv sync -p 3.10
+Using CPython 3.10.15
+Creating virtual environment at: .venv
+⠦ Resolving dependencies... 
+...
+</code></pre>
+<h2>Environment</h2>
+<ul>
+<li><code>uv</code>: 0.5.1</li>
+<li>OS: Debian GNU/Linux 12 (bookworm) on Windows 10 x86_64</li>
+<li>Kernel: 5.15.167.4-microsoft-standard-WSL2</li>
+</ul>
+<h2>Related Issues</h2>
+<p>#7024 (Similar cleanup behavior)</p>
+<h3>Proposed Solution</h3>
+<p>Implement cleanup of the .venv directory and any other temporary resources when uv sync is interrupted with Ctrl-C, similar to other cleanup behaviors in the codebase.</p>
+<h2>Verbose Logs</h2>
+<pre><code>$ uv sync --verbose
+DEBUG uv 0.5.1
+DEBUG Found project root: `/home/abraz/dev/ai`
+DEBUG No workspace root found, using project root
+DEBUG Using Python request `&gt;=3.10` from `requires-python` metadata
+DEBUG Searching for Python &gt;=3.10 in managed installations or search path
+DEBUG Searching for managed installations at `/home/abraz/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.13.0-linux-x86_64-gnu`
+DEBUG Found `cpython-3.13.0-linux-x86_64-gnu` at `/home/abraz/.local/share/uv/python/cpython-3.13.0-linux-x86_64-gnu/bin/python3.13` (managed installations)
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+DEBUG Using request timeout of 30s
+DEBUG No static `pyproject.toml` available for: abs-ai @ file:///home/abraz/dev/ai (PyprojectToml(DynamicField(&quot;dependencies&quot;)))
+DEBUG Acquired lock for `/home/abraz/.cache/uv/sdists-v6/editable/5cc2d4d098a11eee`
+DEBUG Using cached metadata for: abs-ai @ file:///home/abraz/dev/ai
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `/home/abraz/.cache/uv/sdists-v6/editable/5cc2d4d098a11eee/.lock`
+DEBUG Solving with installed Python version: 3.13.0
+DEBUG Solving with target Python version: &gt;=3.10
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 14:00</div>
+            <div class="timeline-body"><p>I'm unsure... If you use <code>uv sync --python 3.10</code>, it should delete and recreate the venv for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-11-13 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/atbraz">@atbraz</a> on 2024-11-13 14:23</div>
+            <div class="timeline-body"><p><code>uv sync --python 3.10</code> does solve the example I described wonderfully. My concern has more to do with the behaviour of <code>Ctrl-c</code>ing while running <code>uv sync</code> in any situation. I imagine that it would be tidier to revert all the modifications made to the local environment when stopping the execution of the command</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-13 15:07</div>
+            <div class="timeline-body"><p>Why does the virtual environment need to be manually deleted? A subsequent operation just deletes it right?</p>
+<p>I don't think it's feasible for us to always clean up state on interrupt. The point of having declarative state in a lockfile is that it's trivial to re-sync the environment — we can treat them as disposable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @zanieb on 2024-11-13 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zkurtz">@zkurtz</a> on 2024-11-27 13:41</div>
+            <div class="timeline-body"><p>One related issue I've encountered is that any kind of <code>uv sync</code> crash can leave behind random-named tmp files in <code>.venv</code>, triggering antivirus software, potentially leading to interference from the corporate SOC. So even if we don't delete .venv, having a cleaner state at the end of a crash could be really valuable. I don't know if those tmp files are something that uv produces explicitly, or they could come from lower-level calls?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clap-complete example code not working - clap-rs/clap #3883</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clap-complete example code not working</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3883">#3883</a>
+        opened by <a href="https://github.com/wwood">@wwood</a>
+        on 2022-06-29 00:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wwood">@wwood</a> on 2022-06-29 00:56</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.60.0 (7737e0b5c 2022-04-04)</p>
+<h3>Clap Version</h3>
+<p>clap 3.2.7, clap_complete 3.2.3</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">
+// Code copied directly from https://docs.rs/clap_complete/latest/clap_complete/
+
+use clap::{Command, AppSettings, Arg, ValueHint, value_parser};
+use clap_complete::{generate, Generator, Shell};
+use std::io;
+
+fn build_cli() -&gt; Command&lt;'static&gt; {
+    Command::new(&quot;example&quot;)
+         .arg(Arg::new(&quot;file&quot;)
+             .help(&quot;some input file&quot;)
+                .value_hint(ValueHint::AnyPath),
+        )
+       .arg(
+           Arg::new(&quot;generator&quot;)
+               .long(&quot;generate&quot;)
+               .value_parser(value_parser!(Shell)),
+       )
+}
+
+fn print_completions&lt;G: Generator&gt;(gen: G, cmd: &amp;mut Command) {
+    generate(gen, cmd, cmd.get_name().to_string(), &amp;mut io::stdout());
+}
+
+fn main() {
+    let matches = build_cli().get_matches();
+
+    if let Ok(generator) = matches.value_of_t::&lt;Shell&gt;(&quot;generator&quot;) {
+        let mut cmd = build_cli();
+        eprintln!(&quot;Generating completion file for {}...&quot;, generator);
+        print_completions(generator, &amp;mut cmd);
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>$ cargo run -- --generate bash
+Compiling clap_complete_debug v0.1.0 (/home/ben/git/clap_complete_debug)
+Finished dev [unoptimized + debuginfo] target(s) in 0.58s
+Running <code>target/debug/clap_complete_debug --generate bash</code>
+thread 'main' panicked at 'Must use <code>_os</code> lookups with <code>Arg::allow_invalid_utf8</code> at <code>generator</code>', src/main.rs:26:30
+note: run with <code>RUST_BACKTRACE=1</code> environment variable to display a backtrace</p>
+<h3>Actual Behaviour</h3>
+<p>It errors as seen above.</p>
+<h3>Expected Behaviour</h3>
+<p>The shell completions should be written to stdout.</p>
+<h3>Additional Context</h3>
+<p>importing <code>AppSettings</code> is also unneeded so generates a warning.</p>
+<p>Thanks in advance.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @wwood on 2022-06-29 00:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Homebrew/homebrew-core/pulls/104819.html">Homebrew/homebrew-core#104819</a> on 2022-07-03 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3906.html">clap-rs/clap#3906</a> on 2022-07-11 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-07-11 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wwood">@wwood</a> on 2022-07-11 21:22</div>
+            <div class="timeline-body"><p>Thanks @epage - works for me now.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

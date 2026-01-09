@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip` misinterprets `.devN` versions as equal to the base release version - astral-sh/uv #13190</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip` misinterprets `.devN` versions as equal to the base release version</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13190">#13190</a>
+        opened by <a href="https://github.com/crasylph">@crasylph</a>
+        on 2025-04-29 08:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/crasylph">@crasylph</a> on 2025-04-29 08:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It seems that <code>uv pip</code> does not correctly implement <a href="https://peps.python.org/pep-0440/">PEP 440</a> rules for pre-releases. Specifically, versions like <code>0.0.2.dev3</code> are treated as equal to <code>0.0.2</code>, instead of being strictly less than <code>0.0.2</code>.</p>
+<pre><code class="language-bash">uv pip install &quot;test_package==0.0.2.dev3,&lt;0.0.2&quot;   # fails ❌
+uv pip install &quot;test_package==0.0.2,&lt;0.0.2.dev3&quot;   # fails ❌
+</code></pre>
+<p>In both cases, <code>uv pip</code> reports:</p>
+<pre><code class="language-bash">  × No solution found when resolving dependencies:
+  ╰─▶ you require test_package ∅
+</code></pre>
+<p>Expected behavior (per PEP 440)</p>
+<ul>
+<li><code>0.0.2.dev3</code> &lt; <code>0.0.2</code></li>
+<li><code>0.0.2</code> should not match <code>&lt;0.0.2.dev3</code></li>
+</ul>
+<p>Is it a bug or I misunderstood anything?</p>
+<h3>Platform</h3>
+<p>Ubuntu20.04 amd64</p>
+<h3>Version</h3>
+<p>uv 0.6.14</p>
+<h3>Python version</h3>
+<p>Python 3.13.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @crasylph on 2025-04-29 08:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-04-29 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-04-29 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-29 12:54</div>
+            <div class="timeline-body"><p>While PEP 440 versions are strictly ordered, the operators such as <code>&lt;</code> do not necessarily use that ordering. Instead, they have special rules for pre- and postreleases. For the case of less than and prereleases, PEP 440 says:</p>
+<blockquote>
+<p>The exclusive ordered comparison &lt;V MUST NOT allow a pre-release of the specified version unless the specified version is itself a pre-release. Allowing pre-releases that are earlier than, but not equal to a specific pre-release may be accomplished by using &lt;V.rc1 or similar.</p>
+</blockquote>
+<p>That avoids <code>&gt;1,&lt;2</code> from including <code>2.0.0a1</code>, which is generally not compatible with the 1.x series, but has breaking changes from the 2.x series.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-04-29 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-04-29 14:34</div>
+            <div class="timeline-body"><p>@konstin is correct, in the PEP 440 spec the exclusive comparison specifier <code>&lt;V</code> does not preserve ordinality and is not transative.</p>
+<p>You should use <code>&lt;=V</code> if you want a comparison specifier you can reason about with these common properties you would expect.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

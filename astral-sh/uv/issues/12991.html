@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv add` fails for dependencies with sys_platform in escaped quotes, like `sys_platform != \&quot;win32\&quot;` - astral-sh/uv #12991</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv add` fails for dependencies with sys_platform in escaped quotes, like `sys_platform != \&quot;win32\&quot;`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12991">#12991</a>
+        opened by <a href="https://github.com/bartlomiejcieszkowski">@bartlomiejcieszkowski</a>
+        on 2025-04-20 18:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bartlomiejcieszkowski">@bartlomiejcieszkowski</a> on 2025-04-20 18:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>So basically to fail installation on windows we need to do:
+<code>uv init example &amp;&amp; cd example &amp;&amp; uv add gitlint</code></p>
+<p>the log output is as follows:</p>
+<pre><code>C:\Projects\zephyr-uv&gt;uv add gitlint
+  × Failed to build `sh==1.14.3`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit code: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+        File &quot;C:\Users\bart\AppData\Local\uv\cache\builds-v0\.tmpMeaVoA\Lib\site-packages\setuptools\build_meta.py&quot;, line 331,
+      in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;C:\Users\bart\AppData\Local\uv\cache\builds-v0\.tmpMeaVoA\Lib\site-packages\setuptools\build_meta.py&quot;, line 301,
+      in _get_build_requires
+          self.run_setup()
+        File &quot;C:\Users\bart\AppData\Local\uv\cache\builds-v0\.tmpMeaVoA\Lib\site-packages\setuptools\build_meta.py&quot;, line 512,
+      in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;C:\Users\bart\AppData\Local\uv\cache\builds-v0\.tmpMeaVoA\Lib\site-packages\setuptools\build_meta.py&quot;, line 317,
+      in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 5, in &lt;module&gt;
+        File &quot;C:\Users\bart\AppData\Local\uv\cache\sdists-v9\pypi\sh\1.14.3\WzP4_GLkZg2VjhLoX7chJ\src\sh.py&quot;, line 37, in &lt;module&gt;
+          import fcntl
+      ModuleNotFoundError: No module named 'fcntl'
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and
+        syncing.
+</code></pre>
+<p>verbose output is here:
+<a href="https://github.com/user-attachments/files/19826553/uv_add_gitlint_verbose.txt">uv_add_gitlint_verbose.txt</a></p>
+<p>as we can see uv tries to add <code>sh==1.14.3</code> and fails</p>
+<p>if we take a look at the gitlint project <a href="https://github.com/jorisroovers/gitlint/blob/4d9119760056492eabc201bfad5de2f9e660b85f/pyproject.toml#L131">permalink</a>:</p>
+<pre><code># QA
+[tool.hatch.envs.qa]
+description = &quot;&quot;&quot;
+Integration test environment.
+Run a set of integration tests against any gitlint binary (not just the one from local source).
+&quot;&quot;&quot;
+detached = true
+dependencies = [
+    &quot;pytest==7.2.1&quot;,
+    &quot;arrow==1.2.3&quot;,
+    &quot;sh==1.14.3; sys_platform != \&quot;win32\&quot;&quot;,
+    &quot;pdbr==0.8.2; sys_platform != \&quot;win32\&quot;&quot;,
+]
+</code></pre>
+<p>we can see that the sh is not to be installed on <code>win32</code> platform</p>
+<p>we have here escaped quotation - which im suspecting uv doesn't handle correctly</p>
+<p><em>regular <code>pip install gitlint</code> works</em></p>
+<h3>Platform</h3>
+<p>Windows 11 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.6.14 (a4cec56dc 2025-04-09)</p>
+<h3>Python version</h3>
+<p>Python 3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @bartlomiejcieszkowski on 2025-04-20 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-20 18:53</div>
+            <div class="timeline-body"><p>I think the diagnostic here is not quite correct. You can verify that we handle escaping correctly by <code>uv pip install -r pyproject.toml</code> with:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [&quot;sh==1.14.3; sys_platform == \&quot;win32\&quot;&quot;]
+</code></pre>
+<p>Instead, what you're experiencing is that we resolve for all environments to produce a lockfile, and <code>sh</code> does not publish a wheel, so we have to try and build it to get the metadata. You can read all about it here, including marking environments as excluded: https://docs.astral.sh/uv/concepts/resolution/#limited-resolution-environments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bartlomiejcieszkowski">@bartlomiejcieszkowski</a> on 2025-04-20 20:38</div>
+            <div class="timeline-body"><p>ok, so this is not a bug, but expected behavior, closing then</p>
+<p>thx</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bartlomiejcieszkowski on 2025-04-20 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../psychopy/psychopy/issues/7166.html">psychopy/psychopy#7166</a> on 2025-04-23 02:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

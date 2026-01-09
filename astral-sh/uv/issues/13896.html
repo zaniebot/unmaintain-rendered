@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv rebuilds dependencies if they take too long to install - astral-sh/uv #13896</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv rebuilds dependencies if they take too long to install</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13896">#13896</a>
+        opened by <a href="https://github.com/saagarjha">@saagarjha</a>
+        on 2025-06-07 04:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/saagarjha">@saagarjha</a> on 2025-06-07 04:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Some dependencies take a long time to install. For example, installing PyTorch from source (yes, I know it doesn't work out of the box with build isolation: just bear with me). Most packages from pypi have a max-age for 600 seconds, so if the build takes longer than this uv will consider them to be stale and trigger another build for anything that depends on them. This seems undesirable. I understand the idea of respecting the header but it seems really odd to me that you wouldn't consider the dependency to be valid across a single command-line invocation.</p>
+<p>I've attached a log with an attempt at building PyTorch. Again, I understand that PyTorch installs are not supported by uv at the moment. My concern is solely why it goes around to build it again once it's finished resolving packages.</p>
+<p>If you want to reproduce this, here's my pyproject.toml:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;torch&quot;,
+]
+
+[tool.uv.sources]
+torch = { path = &quot;deps/pytorch&quot;, editable = true }
+</code></pre>
+<p>Just dump a fresh PyTorch clone into the folder. But I think this is really more a problem with any build that takes forever, so take your pick of a large project. That said, here's a log: <a href="https://github.com/user-attachments/files/20636932/log.txt">log.txt</a></p>
+<h3>Platform</h3>
+<p>Ubuntu 22.04 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.12</p>
+<h3>Python version</h3>
+<p>Python 3.10.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @saagarjha on 2025-06-07 04:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-07 04:48</div>
+            <div class="timeline-body"><p>I'm not sure your diagnosis is correct, can you share more details about why you think that's what's happening?</p>
+<p>PyPI cache headers shouldn't be involved at all for a local dependency like this.</p>
+<p>From the logs, it looks like we first invoke <code>setuptools.build_meta:__legacy__.get_requires_for_build_editable()</code> because there's no static metadata for your local pytorch and we need to invoke its build system to determine its requirements. The second invocation is <code>etuptools.build_meta:__legacy__.build_editable</code>, which actually installs the package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-06-07 04:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-06-07 04:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saagarjha">@saagarjha</a> on 2025-06-07 07:22</div>
+            <div class="timeline-body"><p>I might be misunderstanding but it seems like it is actually trying to install it twice. For example, <code>setuptools.build_meta:__legacy__.get_requires_for_build_editable()</code> appears twice in the log. In particular, you can see that it does actually resolve all the packages (&quot;Resolved 12 packages in 11m 22s&quot;) but then it goes back around to redo the work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-07 14:25</div>
+            <div class="timeline-body"><p><code>get_requires_for_build_editable</code> isn't an install though, it's getting the requirements for the build environment. We need two build environments, one for <code>prepare_metadata_for_build_editable</code> (which is called after the first invocation to get metadata) and one for <code>build_editable</code> (which is called after the second to build an installable wheel).</p>
+<p>See https://peps.python.org/pep-0660/#prepare-metadata-for-build-editable</p>
+<p>It seems like a problem with torch that it'd build the whole package in order to determine the metadata, that build backend method is intended to be a fast-path?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saagarjha">@saagarjha</a> on 2025-06-17 18:35</div>
+            <div class="timeline-body"><p>Hi, sorry, I just had some time to look at this more. I think I understand what you're saying but I'm not sure if I understand this in the context of the build log. I can see that it runs the following steps:</p>
+<pre><code>DEBUG Calling `setuptools.build_meta:__legacy__.get_requires_for_build_editable()`
+DEBUG Calling `setuptools.build_meta:__legacy__.prepare_metadata_for_build_editable()`
+DEBUG Calling `setuptools.build_meta:__legacy__.get_requires_for_build_editable()`
+DEBUG Calling `setuptools.build_meta:__legacy__.build_editable(&quot;/home/ubuntu/.cache/uv/builds-v0/.tmpdZmWYo&quot;, {}, None)`
+</code></pre>
+<p>So, it does actually try to build it just once. Apparently PyTorch just calls cmake itself in the <code>prepare_metadata_for_build_editable</code> stage. Is this reasonable? I'm not sure if I should ask them why they're doing it because this is &quot;weird&quot; or if this is just totally normal for packages to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14269.html">astral-sh/uv#14269</a> on 2025-06-26 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-26 17:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Apparently PyTorch just calls cmake itself in the prepare_metadata_for_build_editable stage. Is this reasonable? I'm not sure if I should ask them why they're doing it because this is &quot;weird&quot; or if this is just totally normal for packages to do.</p>
+</blockquote>
+<p>I'm not sure. I think it probably is reasonable, but they should avoid doing a bunch of repeated work when that happens?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saagarjha">@saagarjha</a> on 2025-07-03 12:10</div>
+            <div class="timeline-body"><p>I think PyTorch just landed changes to not do this anymore, so I'm going to close this. I don't think I could demonstrate it was a uv bug anyway, so thanks for putting up for me while I tried to diagnose it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @saagarjha on 2025-07-03 12:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

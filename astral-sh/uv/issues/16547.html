@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv build backend lowercases package name in wheel metadata - astral-sh/uv #16547</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv build backend lowercases package name in wheel metadata</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16547">#16547</a>
+        opened by <a href="https://github.com/john-hen">@john-hen</a>
+        on 2025-11-01 12:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/john-hen">@john-hen</a> on 2025-11-01 12:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using the <code>uv_build</code> build backend to create a distribution wheel, the package name is lowercased / normalized even though it shouldn't be.</p>
+<p>For example, with a project that has just <code>src/foo/__init__.py</code> and this <code>pyproject.toml</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;Foo&quot;
+version = &quot;1.0.0&quot;
+description = &quot;Foos the foo.&quot;
+
+[build-system]
+requires      = [&quot;uv_build == 0.9.7&quot;]
+build-backend = &quot;uv_build&quot;
+</code></pre>
+<p>running <code>uv build --wheel</code> produces <code>dist/foo-1.0.0-py3-none-any.whl</code> that when inspected as a <code>.zip</code> archive contains this <code>METADATA</code> file:</p>
+<pre><code>Metadata-Version: 2.3
+Name: foo
+Version: 1.0.0
+Summary: Foos the foo.
+</code></pre>
+<p>The project name is incorrectly lowercased to &quot;foo&quot; when it was specified as &quot;Foo&quot;.</p>
+<p>Other build backends don't do that. For example, when using Hatchling with</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling == 1.27.0&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>or Flit with</p>
+<pre><code class="language-toml">[build-system]
+requires      = [&quot;flit_core == 3.12.0&quot;]
+build-backend = &quot;flit_core.buildapi&quot;
+
+[tool.flit.module]
+name = &quot;foo&quot;
+</code></pre>
+<p>In those cases, the <code>METADATA</code> file inside the wheel contains the <strong>expected</strong></p>
+<pre><code>Metadata-Version: 2.4
+Name: Foo
+Version: 1.0.0
+Summary: Foos the foo.
+</code></pre>
+<p><a href="https://packaging.python.org/en/latest/specifications/name-normalization">Normalization</a> &quot;should be done before lookups and comparisons&quot;, i.e., packages with the same normalized name are considered to be identical. But here it is applied to metadata upon publication. This is quite surprising when coming from other build backends, especially as it's typically only noticed after pushing to PyPI and thus can only be fixed in a subsequent release.</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04 and Windows 11</p>
+<h3>Version</h3>
+<p>uv 0.9.7</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @john-hen on 2025-11-01 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/caschb">@caschb</a> on 2025-11-01 14:26</div>
+            <div class="timeline-body"><p>This seems to be done on purpose, as the metadata for the name is saved as a PackageName which automatically normalizes the string.</p>
+<p>https://github.com/astral-sh/uv/blob/101d0e28925c3f27ca31b5c2557fc32ed9bba29f/crates/uv-build-backend/src/metadata.rs#L582</p>
+<p>https://github.com/astral-sh/uv/blob/101d0e28925c3f27ca31b5c2557fc32ed9bba29f/crates/uv-normalize/src/package_name.rs#L11-L16</p>
+<p>I agree with you that this is incorrect/unnecessary according to the packaging documentation
+Even in their <a href="https://packaging.python.org/en/latest/specifications/core-metadata/#name">example here</a> they use an unnormalized string for the <code>Name</code> field.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/caschb">@caschb</a> on 2025-11-01 17:18</div>
+            <div class="timeline-body"><p>I have an initial solution for this, if the uv folks do consider this a bug and are interested I could open a draft PR and we could work from there, just let me know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-01 19:40</div>
+            <div class="timeline-body"><p>I think we're unlikely to change our use of normalized names <em>in general</em> (it is intentional) but we could address this case if it's not too invasive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16548.html">astral-sh/uv#16548</a> on 2025-11-01 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/caschb">@caschb</a> on 2025-11-01 20:39</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we're unlikely to change our use of normalized names <em>in general</em> (it is intentional) but we could address this case if it's not too invasive.</p>
+</blockquote>
+<p>Ok, I created a PR so you can judge if it's appropriate for the project.
+I made sure the change didn't touch anything outside this one case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-01 21:08</div>
+            <div class="timeline-body"><p>Thank you for the clear PR and test case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">build-backend</span> added by @konstin on 2025-11-01 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-02 18:27</div>
+            <div class="timeline-body"><p>Fixed in https://github.com/astral-sh/uv/pull/16548.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-11-02 18:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

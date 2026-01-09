@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>(🎁) Convert code to utilize pep 695 - astral-sh/ruff #4617</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>(🎁) Convert code to utilize pep 695</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4617">#4617</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2023-05-24 07:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2023-05-24 07:07</div>
+            <div class="timeline-body"><h1>input:</h1>
+<pre><code class="language-py">from typing import TypeVar, TypeAlias, Generic
+
+T = TypeVar(&quot;T&quot;, bound=float)
+Foo: TypeAlias = str | T | None
+
+class A(Generic[T]):
+    ...
+
+def f(t: T):
+    ...
+</code></pre>
+<h1>output:</h1>
+<pre><code class="language-py">type Foo[T: float] = str | T | None
+
+class A[T: float]:
+    ...
+
+def f[T: float](t: T):
+    ...
+</code></pre>
+<p>And also <code>ParamSpec</code> and <code>TypeVarTuple</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "(🎁) Convert code to utalize pep 695" to "(🎁) Convert code to utilize pep 695" by @KotlinIsland on 2023-05-24 07:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-24 13:01</div>
+            <div class="timeline-body"><p>Yes, I'd love to support this. (It will take some time, need to start by supporting it in the parser and the semantic model.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-05-24 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6289.html">astral-sh/ruff#6289</a> on 2023-08-02 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @zanieb on 2023-08-02 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2023-08-02 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-02 23:48</div>
+            <div class="timeline-body"><p>This is ready to be worked on! I've started in #6289 but there is much more to do :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6314.html">astral-sh/ruff#6314</a> on 2023-08-03 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanwhit">@nathanwhit</a> on 2023-08-21 22:34</div>
+            <div class="timeline-body"><p>Hello! I'm interested in working on this, if that's okay!</p>
+<p>I think I have enough to go on here to round out support for generic type variables, the only snag is with handling type variables that have explicit variance. If a type var has explicit variance, I don't see a way to translate it to the PEP-695 style and <em>guarantee</em> identical semantics. The issue is that the new syntax for generics doesn't have a facility to explicitly set the variance of a type variable, the variance is always inferred.</p>
+<p>If we're adhering strictly to the spec (from my reading, at least), only <code>TypeVar</code> definitions with <code>infer_variance=True</code> should have inferred variance and are therefore definitely safe to upgrade to the new syntax. The trouble here is that I would guess that many <code>TypeVar</code> declarations in practice will not have that flag set, which might limit the usefulness of this rule.</p>
+<p>If we're being a bit less strict, we could just assume that the variance inference will <em>usually</em> produce the same result, but I'm not sure how acceptable it is to potentially change the meaning of code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-21 22:39</div>
+            <div class="timeline-body"><p>Hey @nathanwhit excited you're interested in working on this :)</p>
+<p>We can use different applicability levels (#4183) to indicate our certainty that the fix will or will not change the meaning of the code. In this case, we could use an <code>Automatic</code> fix when <code>infer_variance=True</code> and a <code>Suggested</code> fix otherwise.</p>
+<p>I've never seen someone set <code>infer_variance=True</code> before though 😬 maybe we can use a heuristic to infer if the variance would be the same?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanwhit">@nathanwhit</a> on 2023-08-22 00:11</div>
+            <div class="timeline-body"><p>Thanks for such a quick response @zanieb!</p>
+<blockquote>
+<p>We can use different applicability levels (https://github.com/astral-sh/ruff/issues/4183) to indicate our certainty that the fix will or will not change the meaning of the code. In this case, we could use an Automatic fix when infer_variance=True and a Suggested fix otherwise.</p>
+</blockquote>
+<p>Makes sense!</p>
+<blockquote>
+<p>I've never seen someone set infer_variance=True before though 😬 maybe we can use a heuristic to infer if the variance would be the same?</p>
+</blockquote>
+<p>Now that I'm looking, <code>infer_variance</code> is new in PEP-695, so unless someone has partially upgraded for 695 they wouldn't have it set🙃. Yeah, a heuristic would be good (though I can't think of one off the top of my head 😬) since doing it properly is probably out of the question (since it requires a full typechecker).</p>
+<p>--</p>
+<p>A little awkward, but I dug deeper and I think we don't have to worry about variance for type aliases after all! It turns out that the variance of a type variable is actually ignored for type aliases, all that matters is the variance of the type variable used in the generic class. (This makes sense now that I'm thinking about it, since variance is a <a href="https://peps.python.org/pep-0484/#covariance-and-contravariance">property of a generic type</a> and generic type aliases aren't actual generic types, just new names for an underlying generic type).</p>
+<p>For example:</p>
+<pre><code class="language-python">from typing import Generic, TypeVar
+
+T = TypeVar(&quot;T&quot;, covariant=True)
+
+class Covariant(Generic[T]):
+    pass
+
+S = TypeVar(&quot;S&quot;, contravariant=True)
+Co = Covariant[S]
+
+class MyInt(int):
+    pass
+
+foo: Covariant[MyInt] = Covariant[MyInt]()
+bar: Covariant[int] = foo
+</code></pre>
+<p>This typechecks despite the fact that <code>S</code> (used by the <code>Co</code> type alias) is defined as contravariant, because all that matters is the variance of <code>T</code> (the var used in the actual generic class).</p>
+<p>So I think we can safely ignore the variance of a type var used in a type alias. Variance will be relevant again when we support upgrading classes to the new syntax (<code>class List(Generic[T]):</code> to <code>class List[T]</code>) though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6749.html">astral-sh/ruff#6749</a> on 2023-08-22 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python312</span> added by @zanieb on 2023-08-24 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10628.html">astral-sh/ruff#10628</a> on 2024-03-28 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12542.html">astral-sh/ruff#12542</a> on 2024-07-27 09:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Goldziher">@Goldziher</a> on 2024-07-28 11:45</div>
+            <div class="timeline-body"><p>I wrote this in https://github.com/astral-sh/ruff/issues/12542</p>
+<p>MyPy released support for PEP 695 generics: python/mypy#15238</p>
+<p>It would be awesome to do any of the following:</p>
+<ol>
+<li><p>get linting errors for code that uses older style generics (TypeVar, ParamSpec etc.) for Python 3.12+</p>
+</li>
+<li><p>get linting errors for code that uses newer style generics and should be backward compatible with lower Python versions</p>
+</li>
+<li><p>automagically upgrade older style generics to use the new syntax</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-01-10 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @ntBre on 2025-01-16 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @AlexWaygood by @ntBre on 2025-01-16 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15565.html">astral-sh/ruff#15565</a> on 2025-01-18 04:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15642.html">astral-sh/ruff#15642</a> on 2025-01-21 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-01-22 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-01-22 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-22 16:40</div>
+            <div class="timeline-body"><p>These examples should now be handled by the rules UP046 and UP047 added in #15565, with a few caveats being tracked in #15642.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

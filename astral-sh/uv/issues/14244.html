@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is --prerelease=allow supposed to cause packages to be upgraded? - astral-sh/uv #14244</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Is --prerelease=allow supposed to cause packages to be upgraded?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14244">#14244</a>
+        opened by <a href="https://github.com/DavidQChuang">@DavidQChuang</a>
+        on 2025-06-24 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DavidQChuang">@DavidQChuang</a> on 2025-06-24 16:03</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have a package, <code>library</code> which depends on <code>library-test-runner</code>. <code>library</code> specifies but does not constrain versions of dependencies <code>dep1 v1.0.0</code> and <code>dep2 v1.0.0</code> of <code>library-test-runner</code> in the uv.lock file. <code>library-test-runner</code> constrains versions of <code>dep1</code> and <code>dep2</code>. These constraints are in requirements.txt and pulled into pyproject.toml through <code>[tool.setuptools.dynamic] dependencies = {file = [&quot;requirements.txt&quot;]}</code> and can be adjusted by CI pipelines.</p>
+<p>I have private pypi indexes which contain release and prerelease versions of all of these packages and can be published to by CI/CD pipelines.</p>
+<p>My CI pipeline clones <code>library</code> and in its venv, runs <code>uv run --with library-test-runner={RUNNER_VERSION} run_library</code>, in which run_library is from library-test-runner.</p>
+<p>The usual behavior I've found of uv with this command is to keep <code>dep1</code> and <code>dep2</code> at the versions specified in <code>library</code>'s uv.lock (1.0.0), even though there are higher release versions available - unless the constraints from <code>library-test-runner</code> are incompatible. However, with <code>--prerelease=allow</code>, these dependencies get upgraded to the latest prerelease version all the time as if --upgrade-package was specified, which is an issue because sometimes these are experimental artifacts from random pipelines. To be clear, when I say upgraded, I mean within the ephemeral environment in uv run --with.</p>
+<p>My question is, is this behavior expected, or is there a better way to adjust the constraints of library-test-runner that would stop this from happening?
+Thanks.</p>
+<h3>Platform</h3>
+<p>Ubuntu 20.04 amd64</p>
+<h3>Version</h3>
+<p>uv 0.7.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @DavidQChuang on 2025-06-24 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DavidQChuang">@DavidQChuang</a> on 2025-06-24 17:27</div>
+            <div class="timeline-body"><p>Apparently, this is a feature, as it is specifically implemented in the code to invalidate the entire lockfile when prerelease mode changes. I'm not sure why this is the case - would it not make sense to mark the lockfile as preferred rather than invalidating it when changing from a more restrictive mode to a less restrictive mode?</p>
+<p>Can someone explain why this is the case in general rather than just for certain cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-04 02:12</div>
+            <div class="timeline-body"><p>I think the intent is that, without this behavior, we wouldn't upgrade a package from <code>0.1.0</code> to <code>1.0.0a0</code> upon adding <code>--prerelease=allow</code>, which would also be somewhat confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DavidQChuang">@DavidQChuang</a> on 2025-07-09 05:39</div>
+            <div class="timeline-body"><p>It's confusing to me that a package is upgraded from 0.1.0 to 1.0.0a0 upon allowing prerelease versions in <code>uv run</code> even though previously, the package would have stayed at 0.1.0 even if 1.0.0 was available unless updating the package is specified or needed. I'll also note that it causes all other packages in the lockfile to be upgraded to whatever version is latest as well, which has undesirable effects a la <code>pip install -r requirements.txt</code>, which is what uv is trying to avoid.</p>
+<p>Maybe the way we're using it is an edge case, but in my experience the package versions in the lockfile are left alone by <code>uv run</code> even if upgrades are available, unless incompatible with the constraints. If this is intended, then my point is that --prerelease=* should be treated the same way as version constraints rather than a signal to throw out the lockfile and upgrade everything. --upgrade-package already exists if you want to upgrade packages to latest rather than using lockfile versions, after all.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

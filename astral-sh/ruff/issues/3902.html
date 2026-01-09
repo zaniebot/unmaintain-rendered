@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E501 false positive when using east_asian_unicode string - astral-sh/ruff #3902</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>E501 false positive when using east_asian_unicode string</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3902">#3902</a>
+        opened by <a href="https://github.com/MarcoGorelli">@MarcoGorelli</a>
+        on 2023-04-06 15:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MarcoGorelli">@MarcoGorelli</a> on 2023-04-06 15:03</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>If I have a file with:</p>
+<pre><code class="language-python">from pandas import DataFrame
+
+df = DataFrame(
+    {&quot;a&quot;: [&quot;あああああ&quot;, &quot;い&quot;, &quot;う&quot;, &quot;えええ&quot;], &quot;b&quot;: [&quot;あ&quot;, &quot;いいい&quot;, &quot;う&quot;, &quot;ええええええ&quot;]},
+    index=[&quot;a&quot;, &quot;bb&quot;, &quot;c&quot;, &quot;ddd&quot;],
+)
+</code></pre>
+<p>then <code>ruff</code> reports a <code>E501</code> error (whereas flake8 doesn't)</p>
+<pre><code class="language-console">(.venv) marcogorelli@DESKTOP-U8OKFP3:~/tmp$ ruff t.py
+t.py:4:89: E501 Line too long (93 &gt; 88 characters)
+Found 1 error.
+(.venv) marcogorelli@DESKTOP-U8OKFP3:~/tmp$ flake8 t.py
+</code></pre>
+<p>Indeed, if I open the file in Python and count the length of each line, I only get 72 for the offending line:</p>
+<pre><code class="language-python">&gt;&gt;&gt; with open('t.py') as fd:
+...     content = fd.read()
+...
+&gt;&gt;&gt; [len(line) for line in content.splitlines()]
+[28, 0, 15, 72, 34, 1]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pandas-dev/pandas/pulls/52452.html">pandas-dev/pandas#52452</a> on 2023-04-06 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-06 15:48</div>
+            <div class="timeline-body"><p>This is a consequence of migrating from character-count to unicode-width for line-length violations (https://github.com/charliermarsh/ruff/pull/3714), which was done in part for consistency with Black, which IIUC is moving towards splitting long lines based on width (https://github.com/psf/black/pull/3445). Whether this was a correct decision for us, and in the context of line-length violations, is something worth debating, but just wanted to clarify why and how this changed (since, until recently, we did use character count).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarcoGorelli">@MarcoGorelli</a> on 2023-04-06 15:50</div>
+            <div class="timeline-body"><p>makes sense, thanks for explaining!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-06 15:52</div>
+            <div class="timeline-body"><p>(Separately, just realizing that it's confusing to say <code>(93 &gt; 88 characters)</code> when we're not actually counting <em>characters</em>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kuba-lilz">@kuba-lilz</a> on 2023-05-15 02:43</div>
+            <div class="timeline-body"><p>I guess I'm running into this problem when linting python files that contain comments/docstrings with Japanese characters using ruff</p>
+<p>For this line that pylint and all other tools correctly recognize to have 86 characters, ruff==0.0.267 reports it as having 122.</p>
+<pre><code>    # corrected_best_angleとtick_anglesの関係性を再確認する（tick_anglesの両端から外れてしまう場合について注意深く調べる）
+</code></pre>
+<p>(please not this line has a tab at the start)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vincent-olivert-riera">@vincent-olivert-riera</a> on 2023-05-27 01:07</div>
+            <div class="timeline-body"><blockquote>
+<p>This is a consequence of migrating from character-count to unicode-width for line-length violations (https://github.com/charliermarsh/ruff/pull/3714), which was done in part <strong>for consistency with Black</strong>, which IIUC is moving towards splitting long lines based on width (https://github.com/psf/black/pull/3445).</p>
+</blockquote>
+<p>@charliermarsh , my experience is that <code>ruff</code> and <code>black</code> have different behaviors when it comes to counting the line length.</p>
+<p>This is a quick test to reproduce the issue:</p>
+<pre><code>$ python3 -m venv venv
+
+$ ./venv/bin/pip install black==23.3.0 ruff==0.0.270
+[redacted]
+Successfully installed black-23.3.0 click-8.1.3 mypy-extensions-1.0.0 packaging-23.1 pathspec-0.11.1 platformdirs-3.5.1 ruff-0.0.270 tomli-2.0.1 typing-extensions-4.6.2
+
+$ cat pyproject.toml 
+[tool.ruff]
+line-length = 7
+[tool.black]
+line-length = 7
+
+$ cat foo.py 
+a = &quot;あ&quot;
+
+$ ./venv/bin/black --check foo.py 
+All done! ✨ 🍰 ✨
+1 file would be left unchanged.
+
+$ ./venv/bin/ruff check foo.py 
+foo.py:1:7: E501 Line too long (8 &gt; 7 characters)
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5133.html">astral-sh/ruff#5133</a> on 2023-06-16 02:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-16 02:24</div>
+            <div class="timeline-body"><p>@vincent-olivert-riera - I believe you need to run with <code>--preview</code>, as the change to use character width is part of the 23.3.0 <a href="https://github.com/psf/black/blob/main/CHANGES.md#2330">preview</a> style.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-16 02:25</div>
+            <div class="timeline-body"><p>(I'm going to close this as a duplicate of #3825, although there's useful discussion in both issues.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-16 02:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

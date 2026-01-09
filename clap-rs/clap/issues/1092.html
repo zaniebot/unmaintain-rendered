@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fatal internal error when using requires outside subcommand boundary - clap-rs/clap #1092</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fatal internal error when using requires outside subcommand boundary</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1092">#1092</a>
+        opened by <a href="https://github.com/clux">@clux</a>
+        on 2017-11-04 16:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/clux">@clux</a> on 2017-11-04 16:09</div>
+            <div class="timeline-body"><p>There seems to be other similar issue related to <code>requires</code>, but just posting this simple one which seems to have a slightly different <code>SubCommand</code> origin:</p>
+<pre><code class="language-rust">extern crate clap;
+use clap::{Arg, App, SubCommand};
+
+fn main() {
+    let app = App::new(&quot;bah&quot;)
+        .arg(Arg::with_name(&quot;environment&quot;)
+            .short(&quot;e&quot;)
+            .takes_value(true))
+       .subcommand(SubCommand::with_name(&quot;query&quot;)
+            .arg(Arg::with_name(&quot;component&quot;)
+                .required(true)
+                .requires(&quot;environment&quot;)));
+    let _ = app.get_matches();
+}
+</code></pre>
+<p>The <code>requires</code> call inside the subcommand is what's causing the crash when you try to use the <code>query</code> subcommand on  your executable.</p>
+<p>Rust 1.21.0, clap 2.27.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clux">@clux</a> on 2017-11-04 16:16</div>
+            <div class="timeline-body"><p>I thought it may have been related to the double require (I really wanted a <code>.requires</code> method on the <code>SubCommand</code> itself), but it seems to crash even without that. But with the double require, you can't even view the help without it crashing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-11-06 03:30</div>
+            <div class="timeline-body"><p>clap treats <code>bah</code> and <code>query</code> as separate entities. There isn't currently a way to require that a parent command's argument was used. I would recommend either using <a href="https://docs.rs/clap/2.27.1/clap/struct.Arg.html#method.global"><code>Arg::global(true)</code></a> on <code>environment</code> or moving it into the <code>query</code> subcommand.</p>
+<p>The <code>panic</code> is by design. If it did output the help message, this error could go undetected. <code>environment</code> doesn't actually exist as far as <code>query</code> is concerned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2017-11-06 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-11-06 03:47</div>
+            <div class="timeline-body"><p>I'm going to close this for the reasons above, however I'm open to discussion if there is something that could be done better :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-11-06 03:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clux">@clux</a> on 2017-11-06 15:00</div>
+            <div class="timeline-body"><p>Yeah, I think that makes sense. Didn't know there was a way to push it into each subcommand with <code>global</code>, that's a nicer solution that works. Thank you.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

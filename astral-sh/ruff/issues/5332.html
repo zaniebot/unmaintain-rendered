@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> `ISC003` gives false positive depending on order of concatenation - astral-sh/ruff #5332</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1> `ISC003` gives false positive depending on order of concatenation</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5332">#5332</a>
+        opened by <a href="https://github.com/bendoerry">@bendoerry</a>
+        on 2023-06-23 13:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bendoerry">@bendoerry</a> on 2023-06-23 13:26</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>ruff version: <a href="https://github.com/astral-sh/ruff/releases/tag/v0.0.275"><code>0.0.275</code></a></p>
+<p><code>ISC003</code> gives false positive depending on order of concatenation.</p>
+<h3>First Case (succeeds)</h3>
+<pre><code class="language-python"># a.py
+a = &quot;foo&quot;
+
+b = a + &quot;.&quot; + &quot;bar&quot;
+</code></pre>
+<pre><code class="language-shell">$ ruff check --isolated --select ISC a.py
+
+</code></pre>
+<h3>Second case (fails)</h3>
+<pre><code class="language-python"># b.py
+a = &quot;foo&quot;
+
+b = &quot;bar&quot; + &quot;.&quot; + a
+</code></pre>
+<pre><code class="language-shell">$ ruff check --isolated --select ISC b.py
+b.py:3:5: ISC003 Explicitly concatenated string should be implicitly concatenated
+Found 1 error.
+</code></pre>
+<p>I would expect both cases to succeed.</p>
+<h3>Extra third case</h3>
+<pre><code class="language-python"># c.py
+a = &quot;foo&quot; + &quot;bar&quot;
+</code></pre>
+<pre><code class="language-shell">$ ruff check --isolated --select ISC c.py
+c.py:1:5: ISC003 Explicitly concatenated string should be implicitly concatenated
+Found 1 error.
+</code></pre>
+<p>I (personally) would also expect this to succeed. My reading of the <a href="https://beta.ruff.rs/docs/rules/explicit-string-concatenation/"><code>ISC003</code> docs</a> is that this is aimed at string literals that wrap over multiple lines. Which all the above cases are not.</p>
+<p>The codebase I'm dealing with has a lot of instances of <code>&quot;foo&quot; + &quot;bar&quot;</code>, mainly for clarity reasons, and I don't want those instances flagged. However I do still want this to be raised for multiline strings.
+If flagging <code>&quot;foo&quot; + &quot;bar&quot;</code> is the intended behaviour, could this perhaps be made configurable? i.e. allowing single line instances like that to be ignored while still flagging the multiline cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-06-23 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-23 18:43</div>
+            <div class="timeline-body"><p>We should fix the false positive. I suppose we should also change the rule to only flag multi-line concatenations, though the upstream plugin doesn't do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bendoerry">@bendoerry</a> on 2023-06-23 20:19</div>
+            <div class="timeline-body"><p>Would making it configurable work? i.e.</p>
+<pre><code class="language-toml">[flake8-implicit-str-concat]
+allow-single-line-explicit = true
+</code></pre>
+<p>where the default is to be consistent with the upstream plugin? (i.e. set to false)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-23 20:32</div>
+            <div class="timeline-body"><p>I'd prefer to just remove it (flagging violations on the same line), if we can't find any projects that depend on that behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-25 22:11</div>
+            <div class="timeline-body"><p>(The only way a project would really depend on this is if they have ISC003 enabled but not ISC001 (since &quot;fixing&quot; an ISC003 violation on the same line would yield an ISC001 violation).)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2023-06-28 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6028.html">astral-sh/ruff#6028</a> on 2023-07-24 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-25 23:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6080.html">astral-sh/ruff#6080</a> on 2023-07-26 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmarras">@mmarras</a> on 2023-07-30 22:10</div>
+            <div class="timeline-body"><p>Another (edge) usecase where the &quot;Extra third case&quot; being flagged, is annoying, is in ploty.
+When defining <code>hovertemplates</code> they use a magic string (e.g. <code>%{x}</code> to denote the x-data)  that cannot be inside an fstring. If one wants to combine the former with an fstring on the same line it flags the thing and it is impossible to comply to ruff ISC without breaking the code. So even if one decides to keep the rule for same line, it should make exception for mixed string types.</p>
+<p>Correct :</p>
+<pre><code class="language-python">import plotly.graph_objs as go
+string = &quot;Data1&quot;
+go.Figure(data=go.Scatter(
+    x=[1.123123,2.12321,3.12321],
+    y=[1.12321,2.12321,3.12321],
+    hovertemplate=&quot;%{x:.2f}&lt;br&gt;%{y:.3f}&quot; + f&quot;&lt;extra&gt;{string}&lt;/extra&gt;&quot;)
+          )
+</code></pre>
+<p>The above codeblock but with <code> hovertemplate=f&quot;%{x:.2f}&lt;br&gt;%{y:.3f}&lt;extra&gt;{string}&lt;/extra&gt;&quot;)</code> fails.</p>
+<blockquote>
+<p>NameError: name 'x' is not defined</p>
+</blockquote>
+<p>Of course the correct version (codeblock) triggers</p>
+<blockquote>
+<p>Explicitly concatenated string should be implicitly concatenatedRuff<a href="https://beta.ruff.rs/docs/rules/explicit-string-concatenation">ISC003</a></p>
+</blockquote>
+<p>or when implicitly concatenated:</p>
+<blockquote>
+<p>Implicitly concatenated string literals on one lineRuff<a href="https://beta.ruff.rs/docs/rules/single-line-implicit-string-concatenation">ISC001</a></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6595.html">astral-sh/ruff#6595</a> on 2023-08-15 12:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

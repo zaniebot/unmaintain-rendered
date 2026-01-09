@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected `prefix` value in `.../lib/pkgconfig/python-3.&lt;minor&gt;.pc` - astral-sh/uv #10185</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected `prefix` value in `.../lib/pkgconfig/python-3.&lt;minor&gt;.pc`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10185">#10185</a>
+        opened by <a href="https://github.com/Matiiss">@Matiiss</a>
+        on 2024-12-26 23:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Matiiss">@Matiiss</a> on 2024-12-26 23:02</div>
+            <div class="timeline-body"><p>I am aware that this is a documented quirk:</p>
+<blockquote>
+<p>On Linux, our distributions are built in containers. The container has a custom build of Clang in a custom filesystem location. And Python is installed to the prefix /install. So you may see references to /install in Linux distributions.</p>
+</blockquote>
+<p>- https://gregoryszorc.com/docs/python-build-standalone/main/quirks.html#references-to-build-time-paths</p>
+<p>Nonetheless, I was asked to open this issue as it seems it might get resolved for once 🥳</p>
+<p>I was trying to compile a C extension using <code>meson</code> and it kept throwing an error that it couldn't find <code>Python.h</code> for the specified Python version and upon closer inspection it looked like it was not including the correct directory because the directory it was attempting to include started with <code>/install</code> which is not a path on my machine, so I went to the file mentioned in the title and found that it contains this (the <code>&lt;minor&gt;</code> was actually the version I had, in this case <code>3.12</code>):</p>
+<pre><code># See: man pkg-config
+prefix=/install
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Python
+Description: Build a C extension for Python
+Requires:
+Version: 3.&lt;minor&gt;
+Libs.private: -lpthread -ldl  -lutil
+Libs: -L${libdir} 
+Cflags: -I${includedir}/python3.&lt;minor&gt;
+</code></pre>
+<p>So the <code>prefix=/install</code> was unexpected, what I would have expected would have been (in my particular case)</p>
+<pre><code>prefix=/home/matiiss/.local/share/uv/python/cpython-3.12.8-linux-x86_64-gnu
+</code></pre>
+<p>After editing the file manually and trying to run <code>meson</code> again, it worked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Unexpected `prefix` in `.../lib/pkgconfig/python-3.<minor>.pc`" to "Unexpected `prefix` value in `.../lib/pkgconfig/python-3.<minor>.pc`" by @Matiiss on 2024-12-26 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-26 23:16</div>
+            <div class="timeline-body"><p>I think we need to solve this in uv by patching <code>pkgconfig</code>, like we do with <code>sysconfig</code>, so I'm gonna transfer to the uv repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-26 23:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-26 23:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-12-26 23:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10189.html">astral-sh/uv#10189</a> on 2024-12-27 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-27 00:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-01-03 09:55</div>
+            <div class="timeline-body"><p>I'm encountering a very similar, possibly same, issue with uv 0.5.14</p>
+<p>setup:</p>
+<pre><code>$ git clone https://github.com/numpy/numpy
+$ cd numpy
+$ git submodule update --init
+</code></pre>
+<p>then</p>
+<pre><code>$ uv build
+Building source distribution...
++ /Users/clm/.cache/uv/builds-v0/.tmpcUq9Nd/bin/python /private/tmp/numpy/vendored-meson/meson/meson.py setup /private/tmp/numpy /private/tmp/numpy/.mesonpy-xqqxtm9n -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md --native-file=/private/tmp/numpy/.mesonpy-xqqxtm9n/meson-python-native-file.ini
+The Meson build system
+Version: 1.5.2
+Source dir: /private/tmp/numpy
+Build dir: /private/tmp/numpy/.mesonpy-xqqxtm9n
+Build type: native build
+Project name: NumPy
+Project version: 2.3.0.dev0+git20241226.a07c6c5
+C compiler for the host machine: cc (clang 16.0.0 &quot;Apple clang version 16.0.0 (clang-1600.0.26.6)&quot;)
+C linker for the host machine: cc ld64 1115.7.3
+C++ compiler for the host machine: c++ (clang 16.0.0 &quot;Apple clang version 16.0.0 (clang-1600.0.26.6)&quot;)
+C++ linker for the host machine: c++ ld64 1115.7.3
+Cython compiler for the host machine: cython (cython 3.0.11)
+Host machine cpu family: aarch64
+Host machine cpu: aarch64
+Program python found: YES (/Users/clm/.cache/uv/builds-v0/.tmpcUq9Nd/bin/python)
+Found pkg-config: YES (/opt/homebrew/bin/pkg-config) 2.3.0
+Run-time dependency python found: YES 3.13
+Has header &quot;Python.h&quot; with dependency python-3.13: NO
+
+../meson.build:44:2: ERROR: Problem encountered: Cannot compile `Python.h`. Perhaps you need to install python-dev|python-devel
+
+A full log can be found at /private/tmp/numpy/.mesonpy-xqqxtm9n/meson-logs/meson-log.txt
+  × Failed to build `/private/tmp/numpy`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `mesonpy.build_sdist` failed (exit status: 1)
+      hint: This usually indicates a problem with the package or the build environment.
+</code></pre>
+<p>I made sure to reinstall Python 3.13 after I upgraded uv to 0.5.14.</p>
+<p>I already had this issue with earlier versions of uv but didn't have time to report it at the time. I found this issue from uv 0.5.14's release notes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10558.html">astral-sh/uv#10558</a> on 2025-01-13 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-01-13 08:36</div>
+            <div class="timeline-body"><p>I opened a separate issue at https://github.com/astral-sh/uv/issues/10558</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

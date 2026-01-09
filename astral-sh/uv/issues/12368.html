@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>github token auth - astral-sh/uv #12368</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>github token auth</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/12368">#12368</a>
+        opened by <a href="https://github.com/kristjanvalur">@kristjanvalur</a>
+        on 2025-03-21 14:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kristjanvalur">@kristjanvalur</a> on 2025-03-21 14:20</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hello there.  I'm trying to move a project from poetry to uv.  Our project uses sources from a private repo, and the <code>migrate-to-uv</code> tool has migrated a dependency</p>
+<pre><code>[tool.poetry.dependencies]
+barsoom = {git = &quot;https://github.com/foobar/barsoom.git&quot;, rev = &quot;v1.7.4&quot;}
+</code></pre>
+<p>to</p>
+<pre><code>[tool.uv.sources]
+barsoom = { git = &quot;https://github.com/foobar/barsoom.git&quot;, rev = &quot;v1.7.4&quot; }
+</code></pre>
+<p>However, we also have scripts that do something like:</p>
+<pre><code>echo configuring poetry authentication for github repo barsoom.git using GH_TOKEN
+poetry config repositories.barsoom https://github.com/foobar/barsoom.git
+poetry config http-basic.barsoom x-token-auth %GH_TOKEN%
+</code></pre>
+<p>I have found no similar support in uv.  What is the correct way to provide token based authentication to remote git repositories?</p>
+<h3>Platform</h3>
+<p>Windows</p>
+<h3>Version</h3>
+<p>uv 0.6.7 (029b9e1fc 2025-03-17)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @kristjanvalur on 2025-03-21 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-21 14:29</div>
+            <div class="timeline-body"><p>We don't support configuring authentication via the CLI like that yet. There are some docs on Git authentication at https://docs.astral.sh/uv/configuration/authentication/#git-authentication — generally the idea is to pre-populate the git credential helper. In the future, we'll have more first-class support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kristjanvalur">@kristjanvalur</a> on 2025-03-21 15:04</div>
+            <div class="timeline-body"><p>Ok, that's a shame.  This is used in CI on Windows and we need CLI help for it.  I'll need to hold off converting this project until there is better support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-21 15:16</div>
+            <div class="timeline-body"><p>Can you clone the repository first with <code>git</code> directly? That will propagate the credentials into the helper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kristjanvalur">@kristjanvalur</a> on 2025-03-22 14:28</div>
+            <div class="timeline-body"><p>I'll run some experiments.  One way would be to do a <code>git clone</code> with a <code>https//&lt;token&gt;@github.com/foo/bar</code>. and hope that the credential helper caches that.  Another might be to use the gh cli, which alledgedly stores credentials, but might do so only for the API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kristjanvalur">@kristjanvalur</a> on 2025-03-24 10:44</div>
+            <div class="timeline-body"><p>So, here is what I've found.  (Information on this is remarkably hard to come by, and there seems to be no generic way to provide a github PAT to a CI pipeline.)</p>
+<ol>
+<li>git on windows by default uses the cross platform https://github.com/git-ecosystem/git-credential-manager</li>
+<li>It will accept a PAT (personal access token), talk to github, and query for the username it matches.</li>
+<li>It will then store the username/password(token) in window's own credentials helper as a &quot;generic&quot; token, with the ID <code>git:https://github.com</code></li>
+</ol>
+<p>Here is what will not work:</p>
+<ul>
+<li>using <code>gh auth login --with-token</code>.  The github client will not store credentials that git itself will use. (*)</li>
+<li>using <code>git clone https://&lt;token&gt;@github.com/foo/bar.git</code>.  Git performs no auth dance with this tokenized url, and subsequent access without the token won't work; no credentials are stored.</li>
+<li>invoiking <code>git-credential-manager.exe</code> with some command line option to give it the token.  It is not on the path and not designed to be directly called by the user.</li>
+<li>using <code>git config credentials.*</code> something, this is apparently not designed for accepting passwords.  Git tries really hard to ensure that all and any authentication is interactive.</li>
+</ul>
+<p>What I did find will work:</p>
+<pre><code>cmdkey /generic:git:https://github.com /user:&lt;username&gt; /pass:&lt;token&gt;
+</code></pre>
+<p>This will create the same kind of credential as the password manager will.  The drawback here is that one has to know the correct username that the PAT is created for.</p>
+<p>So:  Personal access tokens seem to be <em>really</em> intended to be used direcly in the repository URL.  Therefore, support for injecting them into urls really is needed by tools such as <code>poetry</code> and <code>uv</code> if one is to hope to avoid git's credential manager hell.</p>
+<p>For now, I will circumvent the issue by  calling the windows credential manager directly, but it would be best if <code>uv</code> could be configured, perhaps via env var, to apply a PAT to an url before cloning it.</p>
+<p>(*) it is claimed here that <code>gh auth login</code> <em>should</em> work: https://github.com/git-ecosystem/git-credential-manager, but I for some reason I have not been able to make that happen here on my desktop...  I might be doing something wrong... Some experimentation reveals that a <code>gh auth --with-token</code> will not create a <code>git:https://github.com</code> credential, but running it interacctively, and answering <code>yes</code> to <code>authenticate git with your github credentials</code> will work.  I guess this must be a bug and I will report it there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kristjanvalur">@kristjanvalur</a> on 2025-03-24 12:04</div>
+            <div class="timeline-body"><h2>Update</h2>
+<p>Over <a href="https://github.com/cli/cli/issues/10658">here</a>, it was suggested to me that I use <code>gh auth setup-git</code> in addition to <code>gh auth login --with-token</code>.  That seems to allow login using github client.  One can even use the env var <code>GH_TOKEN</code> and skipt the <code>gh auth login</code> step altogether.</p>
+<p>So, for the case of github, at least, the issue is resolved, although other urls might need something different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hikouki-gumo">@hikouki-gumo</a> on 2025-03-31 03:26</div>
+            <div class="timeline-body"><p>Hi @zanieb What is the recommend method for Github Actions? I don't think using PAT is a good option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kristjanvalur">@kristjanvalur</a> on 2025-03-31 08:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi <a href="https://github.com/zanieb">@zanieb</a> What is the recommend method for Github Actions? I don't think using PAT is a good option.</p>
+</blockquote>
+<p>I have been using https://github.com/astral-sh/setup-uv successfully for GHA.  My questions above were for a self hosted TeamCity pipeline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11342.html">astral-sh/uv#11342</a> on 2025-06-04 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13850.html">astral-sh/uv#13850</a> on 2025-06-04 21:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

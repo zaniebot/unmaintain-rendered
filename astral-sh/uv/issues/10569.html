@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Great work, but can we support build script e.g. `build.py` for building simple C extension modules? - astral-sh/uv #10569</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Great work, but can we support build script e.g. `build.py` for building simple C extension modules?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10569">#10569</a>
+        opened by <a href="https://github.com/jymchng">@jymchng</a>
+        on 2025-01-13 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jymchng">@jymchng</a> on 2025-01-13 16:03</div>
+            <div class="timeline-body"><p>Hi, great work with <code>uv</code>! I love Rust and love seeing how it is revolutionizing the Python's ecosystem.</p>
+<p>Anyway, I use <code>poetry</code> with a simple <code>build.py</code> build script to build my C extension module for a Python library.</p>
+<p>When I attempt to switch over to <code>uv</code>, I find that <code>uv</code> has no known support for such a <code>build.py</code> build script, unlike <code>poetry</code>.</p>
+<p>I understand it has support for <code>maturin</code> for building Rust extension modules and also its documentations say using the <code>scikit-learn-backend</code> for building both C and C++ extension modules is the best bet.</p>
+<p>I know <code>cmake</code>, horrible beast but I know it. But I really do not want to use <code>cmake</code> just to build a straightforward C extension module, <code>build.py</code> build script has successfully built my package very well.</p>
+<p>I ended up having this <code>pyproject.toml</code>.</p>
+<pre><code>[project]
+name = &quot;pure-python-lib&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+authors = [
+    { name = &quot;Jim Chng&quot;, email = &quot;jimchng@outlook.com&quot; }
+]
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.8&quot;
+
+# [tool.poetry]
+# name = &quot;pure-python-lib&quot;
+# version = &quot;0.1.0&quot;
+# description = &quot;Add your description here&quot;
+# authors = [&quot;Jim Chng &lt;jimchng@outlook.com&gt;&quot;]
+# readme = &quot;README.md&quot;
+# requires-python = &quot;&gt;=3.8&quot;
+
+[build-system] # poetry-dynamic-versioning
+requires = [&quot;poetry-core&gt;=1.0.0&quot;, &quot;poetry-dynamic-versioning&gt;=1.0.0,&lt;2.0.0&quot;]
+build-backend = &quot;poetry_dynamic_versioning.backend&quot;
+
+[tool.poetry.build]
+script = &quot;build.py&quot;
+generate-setup-file = false
+</code></pre>
+<p>And a simple <code>build.py</code> for illustration:</p>
+<pre><code class="language-python;">import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+logger.info(&quot;`build.py` accessed!&quot;)
+</code></pre>
+<p>It does work in the sense that <code>build.py</code> is 'accessed' when I run <code>uv build</code>, like so:</p>
+<pre><code class="language-bash">$ uv build
+Building source distribution...
+Building wheel from source distribution...
+INFO:__main__:`build.py` accessed! # here, `build.py` is indeed accessed
+Successfully built dist/pure_python_lib-0.1.0.tar.gz
+Successfully built dist/pure_python_lib-0.1.0-cp38-cp38-manylinux_2_35_x86_64.whl
+</code></pre>
+<p>But of course, now the ugly thing is <code>poetry</code> only recognizes <code>[tool.poetry]</code> and <strong>NOT</strong> <code>[project]</code> in <code>pyproject.toml</code> which <code>uv</code> recognizes. I end up having two chunks (both <code>[tool.poetry]</code> and <code>[project]</code>) that are ugly duplicates of each other.</p>
+<p>Not sure how to resolve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-poetry/poetry/issues/10029.html">python-poetry/poetry#10029</a> on 2025-01-13 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tpgillam">@tpgillam</a> on 2025-01-13 21:27</div>
+            <div class="timeline-body"><p>Just a workaround, but you could use the setuptools backend to build the extension module. This necessitates a <code>setup.py</code> rather than <code>build.py</code>.</p>
+<p>I do this in a small package I maintain (https://github.com/tpgillam/mt2) :</p>
+<ul>
+<li><a href="https://github.com/tpgillam/mt2/blob/main/setup.py">setup.py</a>.</li>
+<li>relevant part of <a href="https://github.com/tpgillam/mt2/blob/3ebb30b52b8318628a4aaea760787bc5bf6f0752/pyproject.toml#L29-L31">pyproject.toml</a> .. NB in this case we've got a build-time dependency on <code>numpy</code> expressed here.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-13 21:46</div>
+            <div class="timeline-body"><p>I believe @konstin is thinking about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">build-backend</span> added by @konstin on 2025-01-14 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jymchng">@jymchng</a> on 2025-01-18 09:41</div>
+            <div class="timeline-body"><p>@konstin Good day to you sir</p>
+<p>Understand that you are looking at it. Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jymchng">@jymchng</a> on 2025-01-18 09:46</div>
+            <div class="timeline-body"><p>@konstin</p>
+<p>May I suggest two aspects of having an arbitrary <code>build.py</code> which may be a source of bugs:</p>
+<ol>
+<li><p>As <code>uv build</code> builds the package / 'binary' (a.k.a. application, e.g. a FastAPI application) in a temporary directory, importing modules (e.g. a <code>build_utils.py</code> for helper functions to be shared across <code>build.py</code> and other scripts like files, e.g. <code>noxfile.py</code>) from current project in <code>build.py</code> may not work. Although it is uncustomary for <code>build.py</code> to import modules from current project, it is worthwhile to note how <code>uv</code> wants to handle this.</p>
+</li>
+<li><p>Do allow arbitrary positional arguments to be passed into <code>build.py</code>, e.g. <code>uv build -- -a --b</code> where <code>-a</code> and <code>--b</code> are then passed into <code>python -m build</code>.</p>
+</li>
+</ol>
+<p>Both for your considerations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../stanford-centaur/PyPantograph/issues/90.html">stanford-centaur/PyPantograph#90</a> on 2025-03-29 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-04-11 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2025-04-13 17:38</div>
+            <div class="timeline-body"><p>I could only add +1 on this feature request that is currently blocking us from poetry to uv migration.
+Saw two issues  personally:</p>
+<ol>
+<li>Similar to what was described above, package builds in a temporary directory are breaking <code>PyBind11Extension</code> build (at least with setuptools) in a presence of <code>include_dirs</code>:</li>
+</ol>
+<pre><code>    Pybind11Extension(
+        &quot;extension_name&quot;,
+        sources=sources,
+        include_dirs=include_dirs)
+</code></pre>
+<p>The latter are usually relative to package path and it looks like it's impossible to get correct absolute path within setup.py file (it's already executed from a temporary directory, as the copy)
+2.  Sometimes you just want to run arbitrary script in a package folder, e.g. to pre-populate cached files. This seems not possible due to the same temp dir restriction and might require quite few overloads of <code>setuptools.Command</code> and <code>setuptools.build</code> (if possible at all).
+I think it could be streamlined as well..</p>
+<p>Thanks in advance for your consideration!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-14 08:57</div>
+            <div class="timeline-body"><p>Have you checked hatchling? It provides build hooks (https://hatch.pypa.io/latest/config/build/#build-hooks) that can be used to build native extensions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2025-04-14 09:55</div>
+            <div class="timeline-body"><p>Yes, I've did. And I saw some examples running shell scripts as build hook there.
+But let's say that I  want to run python under build backend's env, how could I do this with hatchling?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-04-14 12:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, I've did. And I saw some examples running shell scripts as build hook there. But let's say that I want to run python under build backend's env, how could I do this with hatchling?</p>
+</blockquote>
+<p>See https://hatch.pypa.io/dev/plugins/build-hook/reference/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2025-04-14 13:19</div>
+            <div class="timeline-body"><p>Could you point at more concrete example that I can not see?
+I've followed that page and got there: https://github.com/rmorshea/hatch-build-scripts that's what I was referring to about shell scripts</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-04-14 13:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you point at more concrete example that I can not see? I've followed that page and got there: <a href="https://github.com/rmorshea/hatch-build-scripts?rgh-link-date=2025-04-14T13%3A19%3A50.000Z">rmorshea/hatch-build-scripts</a> that's what I was referring to about shell scripts</p>
+</blockquote>
+<p>That plugin is actually a pretty good example; as it's written in Python itself</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2025-04-15 10:16</div>
+            <div class="timeline-body"><p>Ok, understood now, I'll take a look into custom hatch plugin then..</p>
+<p>Wondering if there is any mitigation for the 1st issue I've reported with <code>include_dirs</code> and setuptools build?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jymchng">@jymchng</a> on 2025-04-16 10:29</div>
+            <div class="timeline-body"><p>https://github.com/winstxnhdw/KinematicBicycleModel/blob/main/pyproject.toml</p>
+<p>Take a look at this guys, maybe we can use <code>setuptools</code> to 'natively' help us to build extension modules between a dedicated build script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16438.html">astral-sh/uv#16438</a> on 2025-10-24 15:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

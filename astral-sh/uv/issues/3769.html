@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv 0.2.0 no longer working inside conda environments - astral-sh/uv #3769</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv 0.2.0 no longer working inside conda environments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3769">#3769</a>
+        opened by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a>
+        on 2024-05-22 20:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-05-22 20:16</div>
+            <div class="timeline-body"><p>First install conda and activate base environment:</p>
+<pre><code>$ uv -V
+uv 0.2.0
+
+$ which python
+~/miniforge3/bin/python
+
+$ python -V
+Python 3.10.6
+
+$ uv pip install --dry-run db-dtypes==1.0.3
+error: No Python default installation found in virtual environments
+
+$ uv pip install --dry-run db-dtypes==1.0.3 -vvv
+    0.001455s  INFO uv_interpreter::virtualenv Found active virtual environment (via CONDA_PREFIX) at: /home/STRIKETECH/dshaw/miniforge3
+    0.001548s DEBUG uv_interpreter::discovery Ignoring Python interpreter at `/home/STRIKETECH/dshaw/miniforge3/bin/python`: system intepreter not allowed
+error: No Python default installation found in virtual environments uv_requirements::specification::from_source source=db-dtypes==1.0.3
+    0.001840s DEBUG uv_interpreter::discovery Searching for interpreter that fulfills Python @ default
+    0.001883s DEBUG uv_interpreter::discovery Searching for interpreter that fulfills Python @ default
+    0.001909s  INFO uv_interpreter::virtualenv Found active virtual environment (via CONDA_PREFIX) at: /home/STRIKETECH/dshaw/miniforge3
+    0.002027s DEBUG uv_interpreter::discovery Ignoring Python interpreter at `/home/STRIKETECH/dshaw/miniforge3/bin/python`: system intepreter not allowed
+error: No Python default installation found in virtual environments
+</code></pre>
+<p>But this is not my system interpreter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-22 20:22</div>
+            <div class="timeline-body"><p>Thanks this looks like a bug in our interpreter identification — <code>Interpreter::is_virtualenv</code> is returning false here so we treat it as a system installation.</p>
+<p>Can you share the output of</p>
+<pre><code>/home/STRIKETECH/dshaw/miniforge3/bin/python -c &quot;import sys; print(sys.prefix); print(sys.base_prefix)&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-05-22 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-22 20:23</div>
+            <div class="timeline-body"><p>It's possible that Conda environments don't adhere to that definition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-05-22 20:23</div>
+            <div class="timeline-body"><pre><code>$ /home/STRIKETECH/dshaw/miniforge3/bin/python -c &quot;import sys; print(sys.prefix); print(sys.base_prefix)&quot;
+/home/STRIKETECH/dshaw/miniforge3
+/home/STRIKETECH/dshaw/miniforge3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-22 20:23</div>
+            <div class="timeline-body"><p>They're not actually virtual environments so I think that's reasonable by them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-22 20:25</div>
+            <div class="timeline-body"><p>Yeah that's fair. It's a little awkward for us when we're trying to ensure that you're working in a environment that's safe to mutate without opt-in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-05-22 20:26</div>
+            <div class="timeline-body"><p>Yeah, conda environments act like system environments that the the user can create and throw away, you can create virtual environments from a conda environment to work around this, but it's a level of redundancy that is a waste for most use cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-05-22 20:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah that's fair. It's a little awkward for us when we're trying to ensure that you're working in a environment that's safe to mutate without opt-in.</p>
+</blockquote>
+<p>Btw, as the first step are you checking for the PEP 668 externally managed flag?</p>
+<p>For any newish Linux distributions this is probably sufficient, older ones probably not 🙁.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3771.html">astral-sh/uv#3771</a> on 2024-05-22 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-22 20:35</div>
+            <div class="timeline-body"><p>Yeah we do check for that, but that's another level of opt-in (matching pip's interface).</p>
+<p>I've got a fix in progress at #3771</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3765.html">astral-sh/uv#3765</a> on 2024-05-22 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3773.html">astral-sh/uv#3773</a> on 2024-05-22 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-05-22 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-05-22 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-22 21:39</div>
+            <div class="timeline-body"><p>Release on its way at #3774</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

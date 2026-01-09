@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weird dependency resolving (for magika → numpy → distutils) - astral-sh/uv #6911</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Weird dependency resolving (for magika → numpy → distutils)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6911">#6911</a>
+        opened by <a href="https://github.com/kytta">@kytta</a>
+        on 2024-09-01 11:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kytta">@kytta</a> on 2024-09-01 11:59</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>My issue is similar to the one described in #6509, but I wanted to dig deeper, and I really fail to understand how the resolver works.</p>
+<h2>Description</h2>
+<p>I am working on a CLI tool, which depends on <a href="https://pypi.org/project/magika"><code>magika</code></a>, which is a file detection software with deep learning. I want my tool to be available for every Python starting with 3.8. Magika does not support Python 3.13, and I want to handle it gracefully, so I only install it when the version of Python is under 3.13.</p>
+<pre><code class="language-toml"># pyproject.toml
+[project]
+name = &quot;mytool&quot;
+version = &quot;0.1.0&quot;
+dependencies = [
+    &quot;magika; python_version &lt; '3.13'&quot;,
+]
+requires-python = &quot;&gt;=3.8&quot;
+
+[build-system]
+requires = [&quot;flit_core &gt;=3.2,&lt;4&quot;]
+build-backend = &quot;flit_core.buildapi&quot;
+</code></pre>
+<p>I then want to lock and sync the dependencies, but <code>uv lock</code> fails because it fails to find distutils.</p>
+<pre><code class="language-sh">$ uv lock
+Using Python 3.12.5 interpreter at: /Library/Frameworks/Python.framework/Versions/3.12/bin/python3
+Resolved 18 packages in 14ms
+
+$ uv sync
+Using Python 3.12.5 interpreter at: /Library/Frameworks/Python.framework/Versions/3.12/bin/python3
+Creating virtualenv at: .venv
+Resolved 18 packages in 1ms
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: numpy==1.24.4
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+  File &quot;/Users/nikita/Library/Caches/uv/builds-v0/.tmp0idacA/lib/python3.12/site-packages/setuptools/__init__.py&quot;, line 10, in &lt;module&gt;
+    import distutils.core
+ModuleNotFoundError: No module named 'distutils'
+---
+</code></pre>
+<h2>Problem</h2>
+<p>The comments in #6509 correctly suggest that the numpy version is too old for the environment, as <code>distutils</code> is gone from 3.12. Alas, I do not understand <em>why</em> it resolves to this version in the first place.</p>
+<p>The pyproject.toml from above defined the range for my CLI to be <code>&gt;=3.8</code>, and it depends on <code>magika</code> if the version is <code>&lt;3.13</code>. So, just from this I expect at least two resolution markers: &quot;below 3.13&quot; and &quot;3.13 and above&quot;.</p>
+<p>magika itself does have some variable dependencies. <code>magika==0.5.0</code> has the following in its wheel's metadata:</p>
+<pre><code>...
+Requires-Python: &gt;=3.8,&lt;3.12
+...
+Requires-Dist: numpy (&gt;=1.24.4,&lt;2.0.0)
+...
+</code></pre>
+<p>So, For every Python between 3.8 and 3.11, use any numpy older than 1.24.24.</p>
+<p><code>magika==0.5.1</code> added support for Python 3.12, with the following metadata:</p>
+<pre><code>...
+Requires-Python: &gt;=3.8,&lt;3.13
+...
+Requires-Dist: numpy (&gt;=1.24,&lt;2.0) ; python_version &gt;= &quot;3.8&quot; and python_version &lt; &quot;3.9&quot;
+Requires-Dist: numpy (&gt;=1.26,&lt;2.0) ; python_version &gt;= &quot;3.9&quot; and python_version &lt; &quot;3.13&quot;
+...
+</code></pre>
+<p>So, now it says: use any numpy older than 1.24.24, unless you are above 3.9, in which case it's stricter.</p>
+<h3>Expected behaviour</h3>
+<p>Based on this, I expect three different lockfile resolutions for my package:</p>
+<h4>Python <code>&gt;=3.8,&lt;3.9</code> aka <code>3.8.*</code></h4>
+<pre><code>mytool
+  - magika==0.5.1
+    - numpy==1.24.*
+</code></pre>
+<h4>Python <code>&gt;=3.9,&lt;3.13</code></h4>
+<pre><code>mytool
+  - magika==0.5.1
+    - numpy==1.26.*
+</code></pre>
+<h4>Python <code>&gt;=3.13</code></h4>
+<pre><code>mytool
+  - (no magika because version to high)
+</code></pre>
+<p>This looks easy (at least for me). Just take the latest <code>magika==0.5.1</code> (it supports 3.8), and take numpy 1.24 for Python 3.8 and 1.26 for anything else.</p>
+<h3>Actual behaviour</h3>
+<p>This is not what happens, though. uv.lock does define resolution markers that I expect:</p>
+<pre><code class="language-toml"># uv.lock
+version = 1
+requires-python = &quot;&gt;=3.8&quot;
+resolution-markers = [
+    &quot;python_full_version &lt; '3.9'&quot;,
+    &quot;python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'&quot;,
+    &quot;python_full_version &gt;= '3.13'&quot;,
+]
+...
+</code></pre>
+<p>But then, it weirdly decides to use an <em>older</em> magika version for the <em>newer</em> Pythons:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;mytool&quot;
+version = &quot;0.1.0&quot;
+source = { editable = &quot;.&quot; }
+dependencies = [
+    { name = &quot;magika&quot;, version = &quot;0.5.0&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'&quot; },
+    { name = &quot;magika&quot;, version = &quot;0.5.1&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;python_full_version &lt; '3.9'&quot; },
+]
+</code></pre>
+<p>Which then proceeds to only pull <code>numpy==1.24.4</code>, as it theoretically satisfies both ranges:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;numpy&quot;
+version = &quot;1.24.4&quot;
+...
+</code></pre>
+<p>I kinda understand why it might do this; after all, we want as little packages as possible to simplify the lock file, but isn't it a better idea to use the newer package whenever possible? I assume one can say that numpy is at fault for not releasing a patch for 1.24 that would specify that it does not support Python 3.12, but isn't there a different way to solve this?</p>
+<h2>Things I've tried</h2>
+<h3>Set Python <code>&lt;3.13</code> for <code>mytool</code></h3>
+<p>If I tell that my whole too does not support Python 3.13, <code>uv</code> just resolves to the latest <code>magika==0.5.1</code> and installs without problem. It also correctly locks two numpy versions: 1.24 for Python 3.8 and 1.26 for everything else</p>
+<h3>Set <code>magika&gt;=0.5.1</code></h3>
+<p>If I explicitly request the latest version of magika, uv can't lock, giving me this error:</p>
+<pre><code>  × No solution found when resolving dependencies for split (python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'):
+  ╰─▶ Because only the following versions of numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'} are available:
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&lt;=1.26.0
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}==1.26.1
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}==1.26.2
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}==1.26.3
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}==1.26.4
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&gt;2.0
+      and the requested Python version (&gt;=3.8) does not satisfy Python&gt;=3.9, we can conclude that all of:
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&gt;=1.26.0,&lt;1.26.2
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&gt;1.26.2,&lt;1.26.3
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&gt;1.26.3,&lt;1.26.4
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&gt;1.26.4,&lt;2.0
+       are incompatible.
+      And because the requested Python version (&gt;=3.8) does not satisfy Python&gt;=3.9 and magika{python_full_version &lt; '3.13'}==0.5.1 depends on numpy{python_full_version &gt;= '3.9' and python_full_version &lt;
+      '3.13'}&gt;=1.26,&lt;2.0, we can conclude that magika{python_full_version &lt; '3.13'}==0.5.1 cannot be used.
+      And because only magika{python_full_version &lt; '3.13'}&lt;=0.5.1 is available and your project depends on magika{python_full_version &lt; '3.13'}&gt;=0.5.1, we can conclude that your project's requirements are
+      unsatisfiable.
+</code></pre>
+<p>I'm surprised to read that &quot;<code>magika{python_full_version &lt; '3.13'}==0.5.1</code> depends on <code>numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&gt;=1.26,&lt;2.0</code>&quot;. Sure, it does, but it also does depend on <code>numpy{python_full_version &gt;= '3.8' and python_full_version &lt; '3.9'}&gt;=1.24,&lt;2.0</code>. Can't it use it for &quot;the requested Python version (&gt;=3.8)&quot;?</p>
+<h2>Environment</h2>
+<p><strong>uv platform:</strong> macOS 13.6.9 Ventura, Python 3.12.5 from python.org
+<strong>uv version:</strong> <code>uv 0.4.1 (Homebrew 2024-08-30)</code></p>
+<hr />
+<p>I had troubles searching for similar issues, as I didn't know what keywords to use; sorry, if this turns out to be a duplicate!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Weird dependency resolving (for numpy)" to "Weird dependency resolving (for magika → numpy → distutils)" by @kytta on 2024-09-01 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kytta">@kytta</a> on 2024-09-01 12:31</div>
+            <div class="timeline-body"><p><strong>TL;DR</strong>: I want to have this pyproject:</p>
+<pre><code class="language-toml"># pyproject.toml
+[project]
+name = &quot;mytool&quot;
+requires-python = &quot;&gt;=3.8&quot;
+dependencies = [
+    &quot;magika&gt;=0.5.1; python_version &lt; '3.13'&quot;,
+]
+</code></pre>
+<p>resolve to this:</p>
+<p>|        | Python 3.8 | Python 3.9–3.12 | Python 3.13– |
+|--------|------------|-----------------|--------------|
+| magika | <code>0.5.1</code>    | <code>0.5.1</code>         | none         |
+| numpy  | <code>1.24.4</code>   | <code>1.26.4</code>        | none         |</p>
+<hr />
+<p>You can do this manually with PDM:</p>
+<pre><code class="language-shell">pdm lock --python=&quot;&lt;3.9&quot;
+pdm lock --python=&quot;&gt;=3.9,&lt;3.13&quot; --append
+pdm lock --python=&quot;&gt;=3.13&quot; --append
+</code></pre>
+<p>But since <code>uv</code> already correctly defines the resolution markers, this should be possible to be done automatically by it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 16:01</div>
+            <div class="timeline-body"><p>In general we try to use the fewest number of versions to satisfy dependencies. But I think we should consider adding an alternate strategy where we try to use the newest versions for each environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-09-01 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 16:09</div>
+            <div class="timeline-body"><p>Something like <code>&quot;fewest-versions&quot;</code> vs. <code>&quot;most-compatible&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimbleby">@dimbleby</a> on 2024-09-01 16:19</div>
+            <div class="timeline-body"><p>There is perhaps more then one thing going on in this report.</p>
+<p>The failure to solve the case <code>magika&gt;=0.5.1</code> is a straight bug regardless of strategy, no?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kytta">@kytta</a> on 2024-09-01 16:21</div>
+            <div class="timeline-body"><blockquote>
+<p>In general we try to use the fewest number of versions to satisfy dependencies. But I think we should consider adding an alternate strategy where we try to use the newest versions for each environment.</p>
+</blockquote>
+<p>Fact is, for my problem it's not really required, as both the current and the desired approach use the same amount of dependencies. The only difference is &quot;two magikas, one numpy&quot; versus &quot;one magika, two numpys&quot;.</p>
+<p>Maybe the strategy should consider how deep the dependencies are? Although, picking the &quot;shallowest&quot; is not necessarily the best dedupe strategy... 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 16:24</div>
+            <div class="timeline-body"><p>I'm also slightly confused by the error but we have some open PRs that will fix a lot of the Python-version-related stuff so hesitant to dig in until those merge (#6882, #6268).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 16:25</div>
+            <div class="timeline-body"><p>By the way, there actually <em>is</em> a way to instruct uv to get the exact solve you want here, but it also needs #6268 to work properly:</p>
+<pre><code class="language-toml">[project]
+name = &quot;mytool&quot;
+version = &quot;0.0.1&quot;
+requires-python = &quot;&gt;=3.8&quot;
+dependencies = [
+    &quot;magika&gt;=0.5.1; python_version &lt; '3.13'&quot;,
+]
+
+[tool.uv]
+environments = [
+    &quot;python_version &gt;= '3.13'&quot;,
+    &quot;python_version &gt;= '3.9' and python_version &lt; '3.13'&quot;,
+    &quot;python_version &lt; '3.9'&quot;
+]
+</code></pre>
+<p>(Beware, I'm sharing this even though it will not generate the correct resolution for Python 3.8 until #6268 merges.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimbleby">@dimbleby</a> on 2024-09-04 12:01</div>
+            <div class="timeline-body"><blockquote>
+<p>hesitant to dig in until those merge (https://github.com/astral-sh/uv/pull/6882, https://github.com/astral-sh/uv/pull/6268)</p>
+</blockquote>
+<p>I believe both are merged in uv 0.4.4, but still uv does not find a solution for &quot;magika==0.5.1&quot;</p>
+<pre><code>$ uv add &quot;magika==0.5.1; python_version &lt; '3.13'&quot;
+  × No solution found when resolving dependencies for split (python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'):
+  ╰─▶ Because only the following versions of numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'} are available:
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&lt;=1.26.0
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}==1.26.1
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}==1.26.2
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}==1.26.3
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}==1.26.4
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&gt;2.0
+      and the requested Python version (&gt;=3.8) does not satisfy Python&gt;=3.9, we can conclude that all of:
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&gt;=1.26.0,&lt;1.26.2
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&gt;1.26.2,&lt;1.26.3
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&gt;1.26.3,&lt;1.26.4
+          numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&gt;1.26.4,&lt;2.0
+       are incompatible.
+      And because the requested Python version (&gt;=3.8) does not satisfy Python&gt;=3.9, we can conclude that numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&gt;=1.26.0,&lt;2.0 is incompatible.
+      And because magika{python_full_version &lt; '3.13'}==0.5.1 depends on numpy{python_full_version &gt;= '3.9' and python_full_version &lt; '3.13'}&gt;=1.26,&lt;2.0 and your project depends on magika{python_full_version &lt; '3.13'}==0.5.1, we can
+      conclude that your project's requirements are unsatisfiable.
+  help: If this is intentional, run `uv add --frozen` to skip the lock and sync steps.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 13:56</div>
+            <div class="timeline-body"><p>Thank you for following up, I appreciate it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-04 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-04 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 15:11</div>
+            <div class="timeline-body"><p>Thanks, I see the bug here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7031.html">astral-sh/uv#7031</a> on 2024-09-04 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-04 15:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

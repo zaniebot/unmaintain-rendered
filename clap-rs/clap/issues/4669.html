@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow unsetting global args in some subcommands - clap-rs/clap #4669</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow unsetting global args in some subcommands</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4669">#4669</a>
+        opened by <a href="https://github.com/jeertmans">@jeertmans</a>
+        on 2023-01-23 22:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jeertmans">@jeertmans</a> on 2023-01-23 22:17</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.1.1</p>
+<h3>Describe your use case</h3>
+<p>Hello, no sure if this is currently possible, but I'd like to be able to &quot;unset&quot; glob args for specific subcommand.</p>
+<p>Let us assume the following code:</p>
+<pre><code class="language-rust">use clap::{Parser, Subcommand, Args}
+
+#[derive(Parser, Debug)]
+struct Args {
+    #[args(long, global = true)]
+    global_args: bool,
+    #[command(subcommand)]
+    command: Command,
+}
+
+#[derive(Subcommand, Debug)]
+enum Command {
+    A(A),
+    B(B),
+    Other(Other),
+}
+
+#[derive(Args, Debug)]
+struct A {
+    /* ... */
+}
+
+#[derive(Args, Debug)]
+struct B {
+    /* ... */
+}
+
+#[derive(Args, Debug)]
+struct Other {
+    /* ... */
+}
+</code></pre>
+<p>where commands <code>A</code> and <code>B</code> make good use of <code>global_args</code>, but <code>Other</code> command does need any global argument. I would like to suppress them from the help output, as well as from parsing at all.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Ideally, I'd like to be able to disable some or all global args for a given subcommand, via a macro attribute or something similar:</p>
+<pre><code class="language-rust">#[derive(Args, Debug)]
+#[command(unset_globals)]
+struct Other {
+    /* ... */
+}
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p>I think a way to &quot;trick&quot; the user would be to manually rewrite the help template, but I don't like this solution since it misses the advantage of &quot;automated&quot; generation.</p>
+<p>If a solution is already possible, please help me because I could not find one :D !</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @jeertmans on 2023-01-23 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-23 22:30</div>
+            <div class="timeline-body"><p>Generally, when I see global args that are not applicable to all subcommands, I view it as that arg shouldn't have been global.  A common reason for this happening is developers trying to &quot;DRY&quot; their CLI by using global when the sharing is incidental and not part of the requirements and <code>flatten</code> should be used instead.</p>
+<p>What I would need to see from this proposal, before we weigh out if the benefits outweigh the complexity, is a solid use case for why an argument should be global with exceptions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jeertmans">@jeertmans</a> on 2023-01-23 22:42</div>
+            <div class="timeline-body"><p>Well maybe you flattening is indeed the solution.</p>
+<p>I think it would be worth documenting the trade offs of global arts, and mention using flatten instead in some cases.</p>
+<p>I’ll work on that solution tomorrow, and tell you if that can solve my problem.</p>
+<p>In any cases, I would be glad helping to documenting a bit more this.</p>
+<p>Thanks for the quick reply!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jeertmans">@jeertmans</a> on 2023-01-25 15:35</div>
+            <div class="timeline-body"><p>After a few thoughts, reusing a structure for common args is not so much of a problem.</p>
+<p>Closing this as it kind of solve my problem :)</p>
+<p>Thank you for your time!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jeertmans on 2023-01-25 15:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

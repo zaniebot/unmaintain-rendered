@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data descriptors aren't supported in zip files - astral-sh/uv #2216</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Data descriptors aren't supported in zip files</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2216">#2216</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-05 19:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 19:24</div>
+            <div class="timeline-body"><p>If you run:</p>
+<pre><code class="language-shell">cargo run pip install --extra-index-url https://buf.build/gen/python hashb_foxglove_protocolbuffers_python==25.3.0.1.20240226043130+465630478360 --force-reinstall -n
+</code></pre>
+<p>You'll hit an error like:</p>
+<pre><code>error: Failed to download: hashb-foxglove-protocolbuffers-python==25.3.0.1.20240226043130+465630478360
+  Caused by: The wheel hashb_foxglove_protocolbuffers_python-25.3.0.1.20240226043130+465630478360-py3-none-any.whl is not a valid zip file
+  Caused by: feature not supported: 'stream reading entries with data descriptors (planned to be reintroduced)'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-05 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">registry</span> added by @charliermarsh on 2024-03-05 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2202.html">astral-sh/uv#2202</a> on 2024-03-05 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akshayjshah">@akshayjshah</a> on 2024-03-05 22:05</div>
+            <div class="timeline-body"><p>👋🏽 Hi from Buf, the company running the <code>buf.build</code> registry! Happy to chat about why and how we're using this feature if it's helpful.</p>
+<p>Regardless, we (and our customers) really appreciate the attention you're giving to #2202 😻</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 22:54</div>
+            <div class="timeline-body"><p>Hey thanks for chiming in! I'd be happy to hear about why / how you're using data descriptors. I'd like to support them but it'll require either making some upgrades to the <code>async_zip</code> crate or adding fallback on our end to do a synchronous download-then-unzip. (Right now, we unzip directly to disk as we stream the download in-memory.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanvanburen">@stefanvanburen</a> on 2024-03-06 13:52</div>
+            <div class="timeline-body"><p>Hi Charlie - I don't think our use of data descriptors is intentional, just what our <a href="https://github.com/klauspost/compress/blob/master/zip/writer.go#L357">downstream library (klauspost/compress) does when creating zip files</a>. FWIW, it seems like similar behavior <a href="https://cs.opensource.google/go/go/+/refs/tags/go1.22.1:src/archive/zip/writer.go;l=358">exists in the Go standard library</a>. The calling code is <a href="https://github.com/bufbuild/buf/blob/main/private/pkg/storage/storagearchive/storagearchive.go#L162-L175">roughly here</a>, but it's nothing special - I believe any call to <code>zip.Writer.Create</code> with a regular file will write a data descriptor.</p>
+<p>Hope that helps - not sure there's much we can do on our end, but I'll be watching over at https://github.com/Majored/rs-async-zip/issues/122 to see if things can be resolved over there. Thanks again for all the work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 14:22</div>
+            <div class="timeline-body"><p>Thanks @stefanvanburen -- I can also try to take a look today. We use an async-zip fork anyway (https://github.com/charliermarsh/rs-async-zip) so we can easily experiment with different behaviors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-06 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 19:46</div>
+            <div class="timeline-body"><p>Data descriptors add a lot of complexity for streaming. In ZIP, each entry looks like [header][file contents][data descriptor]. The [data descriptor] is optional, and the [header] tells you if it's present. The [header] tells you the length of [file contents], so that you can read the body. But if [data descriptor] is present, the the length is in [data descriptor], not [header]... So you can't stream it (trivially), because you don't know the length of the file until you're past it.</p>
+<p>In theory it should be possible to make it work for Deflate, since the compressed body will be self-terminating. Alternatively, we could fall back to downloading the entire file, then unzipping it from disk.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 22:34</div>
+            <div class="timeline-body"><p>I think the best path is to catch this error and fall back to downloading + unzipping from disk. It's not <em>that</em> much of a slowdown.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2320.html">astral-sh/uv#2320</a> on 2024-03-10 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-10 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-05 20:23</div>
+            <div class="timeline-body"><p>We now support data descriptors natively.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

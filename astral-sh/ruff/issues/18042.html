@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM905 fix for `rsplit` is reversed - astral-sh/ruff #18042</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM905 fix for `rsplit` is reversed</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18042">#18042</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-05-12 12:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-05-12 12:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The list produced for <code>rsplit</code> by <a href="https://docs.astral.sh/ruff/rules/split-static-string/"><code>split-static-string</code> (SIM905)</a> is the reverse of what it should be.</p>
+<pre><code class="language-console">$ cat &gt;sim905.py &lt;&lt;'# EOF'
+print(&quot;a,b&quot;.rsplit(&quot;,&quot;))
+# EOF
+
+$ python sim905.py
+['a', 'b']
+
+$ ruff --isolated check sim905.py --select SIM905 --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat sim905.py
+print([&quot;b&quot;, &quot;a&quot;])
+
+$ python sim905.py
+['b', 'a']
+</code></pre>
+<p>This is because the fix is implemented with Rust’s <a href="https://doc.rust-lang.org/std/primitive.str.html#method.rsplit"><code>str::rsplit</code></a> and <a href="https://doc.rust-lang.org/std/primitive.str.html#method.rsplitn"><code>str::rsplitn</code></a>, which return iterators over the string in reverse, unlike Python’s <a href="https://docs.python.org/3/library/stdtypes.html#str.rsplit"><code>str.rsplit</code></a>.</p>
+<h3>Version</h3>
+<p>ruff 0.11.9 (2370297cd 2025-05-09)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-05-12 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-05-12 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-05-12 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18045.html">astral-sh/ruff#18045</a> on 2025-05-12 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-05-12 19:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

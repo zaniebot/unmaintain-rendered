@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PLW3201` false positive for Pydantic dunders like `__get_pydantic_core_schema__` - astral-sh/ruff #15624</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`PLW3201` false positive for Pydantic dunders like `__get_pydantic_core_schema__`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15624">#15624</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2025-01-20 23:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2025-01-20 23:04</div>
+            <div class="timeline-body"><p>With the following dependencies and Python 3.12.7:</p>
+<pre><code class="language-none">pydantic                  2.10.1
+pydantic-core             2.27.1
+pylint                    3.3.3
+pylint-plugin-utils       0.8.2
+pylint-pydantic           0.3.5
+ruff                      0.9.2
+</code></pre>
+<p>Running Ruff on the snippet from https://docs.pydantic.dev/latest/concepts/types/#as-a-method-on-a-custom-type</p>
+<pre><code class="language-python">from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Any
+
+from pydantic import GetCoreSchemaHandler
+from pydantic_core import CoreSchema, core_schema
+
+
+@dataclass(frozen=True)
+class MyAfterValidator:
+    func: Callable[[Any], Any]
+
+    def __get_pydantic_core_schema__(
+        self, source_type: Any, handler: GetCoreSchemaHandler
+    ) -&gt; CoreSchema:
+        return core_schema.no_info_after_validator_function(
+            self.func, handler(source_type)
+        )
+</code></pre>
+<p>I get the following <code>PLW3201</code> error:</p>
+<pre><code>a.py: PLW3201 Dunder method `__get_pydantic_core_schema__` has no special meaning in Python 3
+</code></pre>
+<p>I know I can allowlist this name via Ruff configuration:</p>
+<pre><code class="language-toml">[tool.ruff.lint.pylint]
+allow-dunder-method-names = [&quot;__get_pydantic_core_schema__&quot;]
+</code></pre>
+<p>However, I guess the question is similar to https://github.com/astral-sh/ruff/issues/9716, but instead of built-ins now for Pydantic. Should Pydantic dunders be ignored by default?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-01-21 07:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-21 07:28</div>
+            <div class="timeline-body"><p>Thanks for the detailed write up and linking to the other relevant issue.</p>
+<p>Adding external libraries is always a slippery slope because once you add one, you have to add all others. But we have made exceptions for libraries that can be considered community standards as which pydantic qualifies.</p>
+<p>But I think it ultimately comes back to what Alex said in his <a href="https://github.com/astral-sh/ruff/issues/9716#issuecomment-1917855645">comment</a> and if allowing any non-stdlib dunder is in the indent of the rule, because the rule very explicitly states that it checks for dunder methods that have no special meaning in Python 3, which is true for all pydantic dunders (it's the framework that adds the special meaning).</p>
+<p>Either way, I'll merge this with https://github.com/astral-sh/ruff/issues/9716#issuecomment-1917855645 as it's basically the same question but for pydandic instead of rich.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-21 07:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pep8-naming: configuring classmethod-decorators - astral-sh/ruff #4832</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>pep8-naming: configuring classmethod-decorators</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4832">#4832</a>
+        opened by <a href="https://github.com/olliemath">@olliemath</a>
+        on 2023-06-03 13:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/olliemath">@olliemath</a> on 2023-06-03 13:37</div>
+            <div class="timeline-body"><h1>Issue</h1>
+<p>Currently ruff (0.0.270) does not seem to respect the classmethod-decorators option for pep8-naming. However, in the past this setting was respected. The regression seems to have been introduced in the <strong>0.0.220 -&gt; 0.0.221</strong> release.</p>
+<h1>Reproducing  example</h1>
+<p>With the following snippet (see below for pyproject), ruff 0.0.220 correctly identifies an error only on the &quot;bad&quot; method, whereas current ruff identifies both methods as incorrect:</p>
+<pre><code class="language-python">def extra_classmethod(method):
+    return classmethod(method)
+
+class Foo:
+    @extra_classmethod
+    def good(cls):  # should be ok
+        ...
+
+    def bad(cls):  # should be flagged
+        ...
+</code></pre>
+<p>Here's the pyproject.toml (options taken from docs at https://beta.ruff.rs/docs/settings/#classmethod-decorators):</p>
+<pre><code class="language-toml">[tool.ruff]
+select = ['N']
+[tool.ruff.pep8-naming]
+classmethod-decorators = ['extra_classmethod']
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-03 15:55</div>
+            <div class="timeline-body"><p>We don't support decorators that are defined in the same file right now, because <code>classmethod-decorators</code> takes a list of fully-qualified symbols, not a list of string names or regular expressions.</p>
+<p>That's why, e.g., you need to use <code>pydantic.validator</code>, so that we respect:</p>
+<pre><code class="language-py">import pydantic as foo
+
+class Foo:
+    @foo.validator
+    def good(cls):
+        ...
+</code></pre>
+<p>If you move your decorator out to a separate file, and then use the fully-qualified path instead of the string name, it should work. Ideally we'd let you use the fully-qualified path for symbols in the module they're defined (e.g., if your file above is <code>foo.py</code>, you would specify <code>[&quot;foo.extra_classmethod&quot;]</code>), but I'd still want to use fully-qualified paths rather than string names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olliemath">@olliemath</a> on 2023-06-03 16:31</div>
+            <div class="timeline-body"><p>OK, I understand - yeah it works if I move out to another file.</p>
+<p>It would be nice if we could write <code>foo.extra_classmethod</code>, but I guess it's quite a small edge case with the in-file method</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-04 02:03</div>
+            <div class="timeline-body"><p>I'm going to close for now since the same-file thing is a little bit of a bigger issue than this specific question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-04 02:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

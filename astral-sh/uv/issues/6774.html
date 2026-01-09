@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Standalone installation script installed `uv` fails to `uv self update` - astral-sh/uv #6774</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Standalone installation script installed `uv` fails to `uv self update`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6774">#6774</a>
+        opened by <a href="https://github.com/scienceplease">@scienceplease</a>
+        on 2024-08-28 20:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/scienceplease">@scienceplease</a> on 2024-08-28 20:54</div>
+            <div class="timeline-body"><p>Recent versions of <code>uv</code> have not been able to <code>uv self update</code> despite being installed via the standalone installation script. I have not been able to pinpoint the issue to anything in particular on my system. All relevant information below:</p>
+<pre><code class="language-bash">cat /etc/redhat-release 
+# Fedora release 40 (Forty)
+
+env | grep CARGO_HOME
+# CARGO_HOME=/home/username/.local/opt/rust/cargo
+
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# downloading uv 0.4.0 x86_64-unknown-linux-gnu
+# installing to /home/username/.local/opt/rust/cargo/bin
+#  uv
+#  uvx
+# everything's installed!
+#
+# To add /home/username/.local/opt/rust/cargo/bin to your PATH, either restart your shell or run:
+#
+#    source /home/username/.local/opt/rust/cargo/env (sh, bash, zsh)
+#    source /home/username/.local/opt/rust/cargo/env.fish (fish)
+
+which uv
+# ~/.local/opt/rust/cargo/bin/uv
+
+uv --version
+# uv 0.4.0
+
+uv self update
+# warning: Self-update is only available for uv binaries installed via the standalone installation scripts.
+#
+# If you installed uv with pip, brew, or another package manager, update uv with `pip install # --upgrade`, `brew upgrade`, or similar.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/telljmc">@telljmc</a> on 2024-09-03 22:52</div>
+            <div class="timeline-body"><p>I am encountering a similar issue on a Macbook Pro M3.  I installed uv using the curl command.  When I attempt to update I encounter the following:</p>
+<pre><code>❯ uv self update
+info: Checking for updates...
+error: The installation failed. Output from the installer:
+downloading uv 0.4.3 aarch64-apple-darwin
+</code></pre>
+<p>I tried the &quot;--verbose&quot; flag which resulted in exactly the same message.  I tried closing everything and rebooting with the same result.  Next up will be to do an uninstall and fresh reinstall.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-03 22:54</div>
+            <div class="timeline-body"><p>Hm. I'm on a M3 as well and can't reproduce that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-09-03 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">release</span> added by @zanieb on 2024-09-03 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/telljmc">@telljmc</a> on 2024-09-05 17:23</div>
+            <div class="timeline-body"><blockquote>
+<p>I am encountering a similar issue on a Macbook Pro M3. I installed uv using the curl command. When I attempt to update I encounter the following:</p>
+<pre><code>❯ uv self update
+info: Checking for updates...
+error: The installation failed. Output from the installer:
+downloading uv 0.4.3 aarch64-apple-darwin
+</code></pre>
+<p>I tried the &quot;--verbose&quot; flag which resulted in exactly the same message. I tried closing everything and rebooting with the same result. Next up will be to do an uninstall and fresh reinstall.</p>
+</blockquote>
+<p>To update, I finally had to uninstall uv 0.3.5 and then install uv 0.4.3.  Today I tried to update to uv 0.4.5 and I am running into the same issue as previous:</p>
+<pre><code>❯ uv self update
+info: Checking for updates...
+error: The installation failed. Output from the installer:
+downloading uv 0.4.5 aarch64-apple-darwin
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucas-labs">@lucas-labs</a> on 2024-10-27 02:06</div>
+            <div class="timeline-body"><p>I'm having the same issue in Windows (installed via standalone script).</p>
+<pre><code>$ uv self update
+
+warning: Self-update is only available for uv binaries installed via the
+standalone installation scripts.
+
+If you installed uv with pip, brew, or another package manager, update uv with
+`pip install --upgrade`, `brew upgrade`, or similar.
+</code></pre>
+<h4>[EDIT]</h4>
+<p>I managed to run self update successfully thanks to a comment here https://github.com/astral-sh/uv/issues/6417.</p>
+<p>I was using <code>cache-dir</code> to change the cache directory to another drive. Apparently I also removed the entire <code>%LOCALAPPDATA%\uv</code> directory after doing so, instead of just removing <code>%LOCALAPPDATA%\uv\cache</code>. Therefore, I had removed <code>%LOCALAPPDATA%\uv\uv-receipt.json</code> file in the process (running <code>uv self update -v</code> gave me the hint... it couldn't find the receipt). I mannually created the receipt file and it all started working again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leehanchung">@leehanchung</a> on 2024-11-27 22:59</div>
+            <div class="timeline-body"><p>Got the same problem.</p>
+<pre><code class="language-bash">$ uv self update
+warning: Self-update is only available for `uv` binaries installed via the standalone installation scripts.
+
+If you installed `uv` with `pip`, `brew`, or another package manager, update `uv` with `pip install --upgrade`, `brew upgrade`, or similar.
+
+$ uv self update -v
+DEBUG receipt is not for this executable; assuming `uv` was installed via a package manager
+warning: Self-update is only available for `uv` binaries installed via the standalone installation scripts.
+
+If you installed `uv` with `pip`, `brew`, or another package manager, update `uv` with `pip install --upgrade`, `brew upgrade`, or similar.
+han@VitaminC:~/courses/cs194-llm-agents$ uv cache prune
+Pruning cache at: /home/han/.cache/uv
+Removed 9 files (3.2MiB)
+$ uv self update -v
+DEBUG receipt is not for this executable; assuming `uv` was installed via a package manager
+warning: Self-update is only available for `uv` binaries installed via the standalone installation scripts.
+
+If you installed `uv` with `pip`, `brew`, or another package manager, update `uv` with `pip install --upgrade`, `brew upgrade`, or similar.
+</code></pre>
+<p>Seems like its something related to <code>receipt</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-27 23:12</div>
+            <div class="timeline-body"><p>@leehanchung Generally that means that some <em>other</em> uv on the system was installed after the one that you're using. What does <code>where uv</code> output?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leehanchung">@leehanchung</a> on 2024-11-27 23:27</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/leehanchung">@leehanchung</a> Generally that means that some <em>other</em> uv on the system was installed after the one that you're using. What does <code>where uv</code> output?</p>
+</blockquote>
+<p>found the issue. i had the old <code>~/.cargo/bin/uv</code>. removed and working now.</p>
+<p>thanks!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../axodotdev/axoupdater/pulls/221.html">axodotdev/axoupdater#221</a> on 2024-11-28 00:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9487.html">astral-sh/uv#9487</a> on 2024-11-28 00:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-04 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13672.html">astral-sh/uv#13672</a> on 2025-05-28 11:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

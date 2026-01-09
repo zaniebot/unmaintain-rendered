@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suggestion to use bare `raise` instead of `raise exc` - astral-sh/ruff #4333</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Suggestion to use bare `raise` instead of `raise exc`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4333">#4333</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-05-09 22:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-09 22:44</div>
+            <div class="timeline-body"><p>I've been championing the use of <code>raise</code> instead of <code>raise exc</code> when re-raising a captured exception as it removes a frame from the traceback. When many exceptions are chained, this can make a significant difference in the length of a traceback.</p>
+<p>WRONG: Extra frame included in traceback</p>
+<pre><code>try:
+    raise ValueError(&quot;1&quot;)
+except Exception as exc:
+    raise exc
+</code></pre>
+<pre><code>Traceback (most recent call last):
+  File &quot;/Users/mz/dev/prefect/example.py&quot;, line 4, in &lt;module&gt;
+    raise exc
+  File &quot;/Users/mz/dev/prefect/example.py&quot;, line 2, in &lt;module&gt;
+    raise ValueError(&quot;1&quot;)
+ValueError: 1
+</code></pre>
+<p>RIGHT: No frame added when the exception is re-raised</p>
+<pre><code class="language-python">try:
+    raise ValueError(&quot;1&quot;)
+except Exception:
+    raise
+</code></pre>
+<pre><code>Traceback (most recent call last):
+  File &quot;/Users/mz/dev/prefect/example.py&quot;, line 2, in &lt;module&gt;
+    raise ValueError(&quot;1&quot;)
+ValueError: 1
+</code></pre>
+<p>I don't think this is covered by any existing linters. I checked <code>flake8</code> and <code>pylint</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-05-09 23:08</div>
+            <div class="timeline-body"><p>As I understand it, this is covered by <a href="https://github.com/guilatrova/tryceratops">tryceratops</a> and is implemented in ruff as <a href="https://beta.ruff.rs/docs/rules/verbose-raise/"><code>TRY201</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-05-10 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-10 14:28</div>
+            <div class="timeline-body"><p>Thanks for the clear issue :) My read is that this is covered by <code>TRY201</code> as @tjkuson mentioned -- but just LMK if I'm misunderstanding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-10 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-10 15:15</div>
+            <div class="timeline-body"><p>Cool! I'm interested in adding explanation there as they call it &quot;redundant&quot; but it has an actual runtime effect.</p>
+<p>What kind of criteria is there for a rule being included by default?</p>
+<p>I've noticed this is also not an auto-fixable issue but it seems like it could be</p>
+<pre><code>example.py:4:11: TRY201 Use `raise` without specifying exception name
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-07-22 00:41</div>
+            <div class="timeline-body"><p>Hi @zanieb and @charliermarsh, I would also enjoy seeing this rule become auto-fixable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6008.html">astral-sh/ruff#6008</a> on 2023-07-23 06:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

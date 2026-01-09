@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>importlib.metadata.distributions() doesn't surface all installed packages/endpoints, breaking pytest plugins - astral-sh/uv #6376</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>importlib.metadata.distributions() doesn't surface all installed packages/endpoints, breaking pytest plugins</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6376">#6376</a>
+        opened by <a href="https://github.com/ashbywinch">@ashbywinch</a>
+        on 2024-08-21 20:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ashbywinch">@ashbywinch</a> on 2024-08-21 20:47</div>
+            <div class="timeline-body"><p>I tried to migrate a project to uv, but pytest could no longer find its plugins pytest-cov and pytest-testmon.</p>
+<pre><code>$ uvx pytest --testmon
+ERROR: usage: pytest [options] [file_or_dir] [file_or_dir] [...]
+pytest: error: unrecognized arguments: --testmon
+  </code></pre>
+<p>On investigation it seems that pytest uses Pluggy to load the plugins, and Pluggy uses importlib.metadata.distributions() to identify and load installed packages that have entrypoints matching its naming convention (see <a href="https://github.com/pytest-dev/pluggy/blob/82d4e1ce62e11a76b9d050e457adc41c4c69f7db/src/pluggy/_manager.py#L376C9-L376C36">Pluggy source</a>)</p>
+<p>I made an empty project with &quot;uv init&quot;, added dependencies [ &quot;pytest&quot;, &quot;pytest-cov&quot;, &quot;pytest-testmon&quot; ], ran &quot;uv sync&quot; successfully (I can see the installed files in .venv/lib/site-packages) and ran the following code</p>
+<pre><code>for dist in list(importlib.metadata.distributions()):
+    print(&quot;name: &quot;, dist.name)
+    for ep in dist.entry_points:
+         print(&quot;ep: &quot;, ep.name, ep.group)</code></pre>
+<p>Under my regular project this code prints (among other things):</p>
+<pre><code>name:  pytest-cov
+ep:  pytest_cov pytest11
+name:  pytest-testmon
+ep:  pytest-testmon pytest11</code></pre>
+<p>Under my uv test project those modules/endpoints are not in the list, even though they have been successfully installed.</p>
+<pre><code>$ uv --version
+uv 0.3.0 (dd1934c9c 2024-08-20)</code></pre>
+<p>and this is on Win11.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 20:48</div>
+            <div class="timeline-body"><p>I think the problem you're running into here is that <code>uvx</code> runs in an environment isolated from your project. Can you try <code>uv run pytest</code> instead? Or even <code>uv run --with pytest pytest</code> if it's not part of your project environment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 20:59</div>
+            <div class="timeline-body"><p>Some documentation on this at https://docs.astral.sh/uv/concepts/tools/#relationship-to-uv-run</p>
+<p>We may be able to improve the documentation though, if you have any questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6377.html">astral-sh/uv#6377</a> on 2024-08-21 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashbywinch">@ashbywinch</a> on 2024-08-22 13:35</div>
+            <div class="timeline-body"><p>Yes, that's fixed it! Thanks 👍
+I think it might have helped if this page here: https://docs.astral.sh/uv/guides/tools/  had a section right at the top clarifying why one would or wouldn't want to run a tool without installing, and pointing to the section on how to run a tool WITH installing (or without installing but with plugins, which is mentioned, but much further down the page).
+The info I needed was all there, but I didn't realise it would be relevant when I first read it, and I didn't know where to look for solutions once I ran into the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 18:29</div>
+            <div class="timeline-body"><p>Addressing that with https://github.com/astral-sh/uv/pull/6454 — let me know if that's not helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-22 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashbywinch">@ashbywinch</a> on 2024-08-22 19:57</div>
+            <div class="timeline-body"><p>That looks spot on 👍</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Audit handling of metaclasses in various contexts, add more tests - astral-sh/ruff #14200</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Audit handling of metaclasses in various contexts, add more tests</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14200">#14200</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-11-08 12:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-08 12:04</div>
+            <div class="timeline-body"><p>Now that we support metaclasses, we should verify that all of the following work as expected. If they do, we should add tests that assert that they do; if they don't, we have some bugs to fix:</p>
+<pre><code class="language-py">from __future__ import annotations
+from typing import Literal
+
+
+class IntIterator:
+    def __next__(self) -&gt; int:
+        return 42
+
+
+class Meta(type):
+    def __add__(self, other: Meta) -&gt; int:
+        return 42
+
+    def __lt__(self, other: Meta) -&gt; Literal[True]:
+        return True
+
+    def __getitem__(self, key: int) -&gt; str:
+        return &quot;foo&quot;
+
+    def __iter__(self) -&gt; IntIterator:
+        return IntIterator()
+
+    def __enter__(self) -&gt; bytes:
+        return b&quot;42&quot;
+
+    def __exit__(self, *args) -&gt; None:
+        pass
+
+
+class A(metaclass=Meta): ...
+class B(metaclass=Meta): ...
+
+
+reveal_type(A + B)  # revealed: int
+reveal_type(A &lt; B)  # revealed: Literal[True]
+reveal_type(A[42])  # revealed: str
+
+
+for x in A:
+    reveal_type(x)  # revealed: int
+
+
+with A as var:
+    reveal_type(var)  # revealed: bytes
+</code></pre>
+<p>Cc. @charliermarsh, if you're interested!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-11-08 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-11-08 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-08 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-11-09 19:17</div>
+            <div class="timeline-body"><p>I'm torn here, because we definitely do want this eventually, and it makes a lot of sense for @charliermarsh to follow up on it while the metaclass stuff is still fresh, but on the other hand -- I don't think that understanding these aspects of metaclasses is blocking other type system features, nor do I think it has a lot of technical risk, nor do I think it's necessary to pass much of the conformance suite. So is it a priority to work on right now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-09 19:20</div>
+            <div class="timeline-body"><p>No, not a priority, agreed! There may well be more important things for Charlie to work on. It felt like it wasn't a huge task, though, and as you say, it felt like it make sense to work on it now while metaclass considerations were fresh in our minds.</p>
+<p>No strong opinion at all as to whether we work on it now or just add this issue to the backlog to work on later!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-11-09 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14548.html">astral-sh/ruff#14548</a> on 2024-11-23 11:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2024-12-02 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @carljm on 2024-12-02 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @carljm by @carljm on 2025-01-09 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17081.html">astral-sh/ruff#17081</a> on 2025-03-31 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-31 08:07</div>
+            <div class="timeline-body"><p>All of these things are now supported with the new dunder-call infrastructure and proper attribute lookup via meta types. One last remaining case was binary operator inference, which needed to be generalized from <code>Type::Instance(…)</code> to all types: #17081</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-03-31 11:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add SARIF output support - astral-sh/ruff #2046</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add SARIF output support</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2046">#2046</a>
+        opened by <a href="https://github.com/jawnsy">@jawnsy</a>
+        on 2023-01-21 01:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jawnsy">@jawnsy</a> on 2023-01-21 01:07</div>
+            <div class="timeline-body"><p>I did a cursory search of the code and didn't find anything related, so I believe this is a feature request. The only reference to &quot;SARIF&quot; that I found was a comment from a few weeks ago: https://github.com/charliermarsh/ruff/issues/1546#issuecomment-1371799394</p>
+<p><strong>Summary</strong></p>
+<p>Add a flag to output SARIF data during a run, instead of, or in addition to, the existing output.</p>
+<p><strong>Description</strong></p>
+<p>GitHub's CodeQL can ingest SARIF files during builds, so that we can track lint issues over time and surface issues inline on diffs. These can be uploaded during pull request builds as well as push event builds.</p>
+<p><a href="https://github.com/aquasecurity/trivy-action#usage">The <code>trivy</code> code/container image scan tool supports SARIF format</a>, and this is very helpful for open source projects (since CodeQL is free there) as well as for companies using CodeQL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">core</span> added by @charliermarsh on 2023-01-21 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 01:13</div>
+            <div class="timeline-body"><p>Makes sense! I'll admit that I know nothing about the format so will have to look into it when I have some time.</p>
+<p>Of course, would also make for a great PR if anyone is interested!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2023-01-21 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/padmano">@padmano</a> on 2023-01-21 06:55</div>
+            <div class="timeline-body"><p>I can work on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-02-09 01:10</div>
+            <div class="timeline-body"><p>@padmano are you working on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/padmano">@padmano</a> on 2023-02-10 12:25</div>
+            <div class="timeline-body"><p>Yes @edgarrmondragon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../koxudaxi/ruff-pycharm-plugin/issues/142.html">koxudaxi/ruff-pycharm-plugin#142</a> on 2023-04-19 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-04-23 16:52</div>
+            <div class="timeline-body"><p>I'm looking into this a bit and figure I'll share some resources</p>
+<p>There's a bandit formatter plugin at <a href="https://github.com/microsoft/bandit-sarif-formatter">microsoft/bandit-sarif-formatter</a> — you can see the implementation details in <a href="https://github.com/microsoft/bandit-sarif-formatter/blob/main/bandit_sarif_formatter/formatter.py">formatter.py</a>. They lean on some <a href="https://github.com/microsoft/sarif-python-om">generated Python models</a> and Microsoft also publishes a <a href="https://github.com/microsoft/sarif-tools">CLI tool</a> which may be useful for testing.</p>
+<p>The latest SARIF specification is available as a <a href="https://github.com/oasis-tcs/sarif-spec/blob/main/Schemata/sarif-schema-2.1.0.json">JSON schema</a>.</p>
+<p>@padmano are you still actively working on this? Could you link to a branch here so people don't have to ask?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/C-Hipple">@C-Hipple</a> on 2023-10-10 15:54</div>
+            <div class="timeline-body"><p>I've also been playing with this a bit lately.  My branch is here: https://github.com/astral-sh/ruff/compare/main...C-Hipple:dev-add-sarif-output-support?expand=1</p>
+<p>Approach so far was copy/paste the json emitter and then I'm going to just change up the formatting.  Once it's working i'll clean up the copy/paste and see what can easily be reused without getting too complicated.  Probably not too much will end up shared since sarif files group results per rule found, so <code>Serialize for ExpandedMessages</code> is going to look completely different.</p>
+<p>What I still need to figure out in Ruff is the best way to get all of the rules which are enabled, since <code>sarif</code> files expect the full list even if there aren't findings for each run.  I started in my last commit with a <code>with_applied_rules</code> builder method but it doesn't look like the <code>EmitterContext</code> has what I need, and I don't really want to re-parse the <code>pyproject.toml</code> file.  I haven't spent too much time looking around here yet, but any direction would be appreciated (maybe there's a global settings singleton i'm missing?)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/C-Hipple">@C-Hipple</a> on 2023-11-14 22:01</div>
+            <div class="timeline-body"><p>^^ Found some time and resolved the issues above, now it's just about finding the time to format the json as the sarif format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/C-Hipple">@C-Hipple</a> on 2023-12-10 02:05</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/9078 PR is here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-10 02:08</div>
+            <div class="timeline-body"><p>Thank you @C-Hipple! Look forward to reviewing. Should be able to turn this around pretty quickly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/C-Hipple">@C-Hipple</a> on 2023-12-10 02:11</div>
+            <div class="timeline-body"><p>Thank you @charliermarsh , no big rush though, I have it as a draft since I need to work out a few CI issues and possibly tweak a few other things</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-13 05:33</div>
+            <div class="timeline-body"><p>This merged as https://github.com/astral-sh/ruff/pull/9078. Thanks @C-Hipple!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-13 05:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jendrikseipp/vulture/issues/405.html">jendrikseipp/vulture#405</a> on 2025-11-11 20:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

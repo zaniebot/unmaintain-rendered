@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUG: `uv run --no-sync` incorrectly resets CPython 3.14 venv in version 0.7 - astral-sh/uv #13233</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>BUG: `uv run --no-sync` incorrectly resets CPython 3.14 venv in version 0.7</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13233">#13233</a>
+        opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a>
+        on 2025-04-30 14:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-04-30 14:54</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following CI job failed with uv 0.7.0 (and 0.7.1), but succeeded with 0.6.x</p>
+<p>https://github.com/neutrinoceros/inifix/actions/runs/14757311421/job/41428805320</p>
+<p>Essentially, it can be boiled down to</p>
+<pre><code class="language-yaml">jobs:
+  build:
+    name: py${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version:
+        - '3.14'
+        - 3.14t
+
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: astral-sh/setup-uv@c7f87aa956e4c323abf06d5dec078e358f6b4d04 # v6.0.0
+      with:
+        python-version: ${{ matrix.python-version }}
+        enable-cache: false
+    - name: Configure uv
+      run: |
+        echo &quot;RUST_LOG=uv=debug&quot; &gt;&gt; $GITHUB_ENV
+
+    - name: Set PYTHON_GIL
+      if: ${{ endswith( matrix.python-version , 't' ) }}
+      run: |
+        echo &quot;PYTHON_GIL=0&quot; &gt;&gt; $GITHUB_ENV
+
+    - run: uv lock --upgrade --prerelease=allow
+    - run: uv sync --frozen --no-editable --group test
+    - name: Run tests
+      run: |
+        uv run --no-sync pytest --color=yes
+</code></pre>
+<p>The final error is:</p>
+<pre><code>error: Failed to spawn: `pytest`
+  Caused by: No such file or directory (os error 2)
+</code></pre>
+<p>If I understand logs correctly, this is caused by uv incorrectly (and needlessly) re-creating my env on <code>uv run</code>:
+https://github.com/neutrinoceros/inifix/actions/runs/14757311421/job/41428805320#step:8:31</p>
+<p>This happens with both builds of Python 3.14 (gil-enabled, and free-threading). I can reproduce this locally too with</p>
+<pre><code>export UV_PYTHON=3.14
+uv sync --group test --frozen --no-editable
+uv run --no-sync pytest
+</code></pre>
+<p>pasting the last command's output:</p>
+<pre><code>Using CPython 3.14.0a6
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+error: Failed to spawn: `pytest`
+  Caused by: No such file or directory (os error 2)
+</code></pre>
+<p>I read the release notes but didn't find anything that looked related. Is this change somehow intentional ?</p>
+<h3>Platform</h3>
+<p>ubuntu-latest</p>
+<h3>Version</h3>
+<p>uv 0.7.1</p>
+<h3>Python version</h3>
+<p>3.14.0a6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @neutrinoceros on 2025-04-30 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../neutrinoceros/inifix/pulls/414.html">neutrinoceros/inifix#414</a> on 2025-04-30 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-04-30 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-30 15:10</div>
+            <div class="timeline-body"><p>Thanks for the report! I'll investigate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-30 15:30</div>
+            <div class="timeline-body"><p>Reproducible with</p>
+<pre><code>❯ uv init example
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+❯ cd example
+❯ uv add pytest
+Using CPython 3.13.3
+Creating virtual environment at: .venv
+Resolved 6 packages in 109ms
+Prepared 1 package in 77ms
+Installed 4 packages in 6ms
+ + iniconfig==2.1.0
+ + packaging==25.0
+ + pluggy==1.5.0
+ + pytest==8.3.5
+❯ UV_PYTHON=3.14 uv sync
+Using CPython 3.14.0a3 interpreter at: /usr/local/bin/python3.14
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 6 packages in 6ms
+Installed 4 packages in 7ms
+ + iniconfig==2.1.0
+ + packaging==25.0
+ + pluggy==1.5.0
+ + pytest==8.3.5
+❯ UV_PYTHON=3.14 uv run --no-sync pytest
+Using CPython 3.14.0a3 interpreter at: /usr/local/bin/python3.14
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+error: Failed to spawn: `pytest`
+  Caused by: No such file or directory (os error 2)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-30 15:30</div>
+            <div class="timeline-body"><p>The key is</p>
+<pre><code>DEBUG Checking for Python environment at `.venv`
+DEBUG The interpreter in the virtual environment has different version (3.14.0) than it was created with (3.14.0a3)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13234.html">astral-sh/uv#13234</a> on 2025-04-30 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13235.html">astral-sh/uv#13235</a> on 2025-04-30 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-30 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-05-01 10:47</div>
+            <div class="timeline-body"><p>Thanks @zanieb for this extremely quick response !</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

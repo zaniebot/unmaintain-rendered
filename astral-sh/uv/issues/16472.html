@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip` only works with system Python for package installation - astral-sh/uv #16472</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip` only works with system Python for package installation</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16472">#16472</a>
+        opened by <a href="https://github.com/mrsarm">@mrsarm</a>
+        on 2025-10-27 15:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mrsarm">@mrsarm</a> on 2025-10-27 15:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Installation on virtual environments only work OK when I create the venv with the system Python, otherwise when I create a venv with a different version of Python installed with uv, and then try to install a package on the venv, it fails with:</p>
+<pre><code class="language-sh">$ uv pip install ipython
+error: No virtual environment found for Python 3.12; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+</code></pre>
+<p>This error has been happening in my Ubuntu 24.04 since I installed <code>uv</code>, version 0.7.x (don't remember exactly the version), then I updated to v0.8.22 and got the same, and Today I tried updating again to to v0.9.5: same problem.</p>
+<h3>Steps</h3>
+<p>First, here is the list of my Python versions installed so far, no one works OK for package installation except the system version:</p>
+<pre><code class="language-sh">$ uv python list --only-installed
+cpython-3.12.3-linux-x86_64-gnu     /usr/bin/python3.12
+cpython-3.12.3-linux-x86_64-gnu     /usr/bin/python3 -&gt; python3.12
+cpython-3.11.13-linux-x86_64-gnu    /home/user/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/bin/python3.11
+cpython-3.10.18-linux-x86_64-gnu    /home/user/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/bin/python3.10
+cpython-3.9.23-linux-x86_64-gnu     /home/user/.local/share/uv/python/cpython-3.9.23-linux-x86_64-gnu/bin/python3.9
+</code></pre>
+<p>To reproduce the error:</p>
+<pre><code class="language-sh">$ mkdir test311
+
+$ cd test311/
+
+$ uv venv --python 3.11
+Using CPython 3.11.13
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+
+$ source .venv/bin/activate
+(test311) $ python3 --version
+Python 3.11.13
+
+(test311) $ uv pip install ipython --verbose
+DEBUG uv 0.9.5
+DEBUG Acquired shared lock for `/home/user/.cache/uv`
+DEBUG Searching for Python 3.12 in virtual environments
+DEBUG Found `cpython-3.11.13-linux-x86_64-gnu` at `/home/user/Temp/venvs/test311/.venv/bin/python3` (active virtual environment)
+DEBUG Skipping interpreter at `.venv/bin/python3` from active virtual environment: does not satisfy request `3.12`
+DEBUG Found `cpython-3.11.13-linux-x86_64-gnu` at `/home/user/Temp/venvs/test311/.venv/bin/python3` (virtual environment)
+DEBUG Skipping interpreter at `.venv/bin/python3` from virtual environment: does not satisfy request `3.12`
+DEBUG Searching for managed installations at `/home/user/.local/share/uv/python`
+DEBUG Skipping managed installation `cpython-3.11.13-linux-x86_64-gnu`: does not satisfy `3.12`
+DEBUG Skipping managed installation `cpython-3.10.18-linux-x86_64-gnu`: does not satisfy `3.12`
+DEBUG Skipping managed installation `cpython-3.9.23-linux-x86_64-gnu`: does not satisfy `3.12`
+DEBUG Found `cpython-3.11.13-linux-x86_64-gnu` at `/home/user/Temp/venvs/test311/.venv/bin/python3` (first executable in the search path)
+DEBUG Skipping interpreter at `.venv/bin/python3` from first executable in the search path: does not satisfy request `3.12`
+DEBUG Ignoring Python interpreter at `/home/user/Temp/venvs/test311/.venv/bin/python`: system interpreter not explicitly requested
+DEBUG Ignoring Python interpreter at `/usr/bin/python3.12`: system interpreter not explicitly requested
+DEBUG Ignoring Python interpreter at `/usr/bin/python3`: system interpreter not explicitly requested
+DEBUG Released lock at `/home/user/.cache/uv/.lock`
+error: No virtual environment found for Python 3.12; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+</code></pre>
+<p>As you can see, executing <code>python3 --version</code> or just <code>python3</code> works, it uses the right version of Pyhon (3.11), the env is activated, but then I cannot install anything with <code>uv pip</code>, and the error mention my system version (3.12). Skipping the activation of the virtual environment before executing <code>uv pip ...</code> doesn't make any difference.</p>
+<p>I tried the same in a fresh Ubuntu Server 24.04 with Virtual Box and it worked, so must me something in my local setup, but the error doesn't give me any clue what is wrong.</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.9.5</p>
+<h3>Python version</h3>
+<p>Python 3.12.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @mrsarm on 2025-10-27 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-27 15:59</div>
+            <div class="timeline-body"><p>Can you share <code>uv python find -vv</code>?</p>
+<p>It seems like something is requesting Python 3.12, do you have a <code>.python-version</code> file or <code>UV_PYTHON=3.12</code> set?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-10-27 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-10-27 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mrsarm">@mrsarm</a> on 2025-10-27 16:17</div>
+            <div class="timeline-body"><p>Ohh it was the env variable <code>$UV_PYTHON</code>, I have this in my <code>~/.bashrc</code>:</p>
+<pre><code class="language-sh">export UV_PYTHON=&quot;3.12&quot;
+</code></pre>
+<p>I don't remember why I did it. Maybe I was just experimenting. In any case, removing the variable makes everything work OK.</p>
+<p>Thanks for the help !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mrsarm on 2025-10-27 16:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

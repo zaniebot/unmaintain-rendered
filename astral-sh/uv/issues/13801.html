@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How do you install dependencies of a particular group? - astral-sh/uv #13801</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How do you install dependencies of a particular group?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13801">#13801</a>
+        opened by <a href="https://github.com/alexei">@alexei</a>
+        on 2025-06-03 10:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alexei">@alexei</a> on 2025-06-03 10:24</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Basically the title. I've been using <code>uv</code> for the past 6 months and I've just come to realise I don't know how to manage a venv:</p>
+<pre><code class="language-shell">$ uv init foo
+$ cd foo
+$ uv add starlette
+$ uv add --group production uvicorn
+$ uv add --dev boto3
+$ cat pyproject.toml
+[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;starlette&gt;=0.47.0&quot;,
+]
+
+[dependency-groups]
+dev = [
+    &quot;boto3&gt;=1.38.28&quot;,
+]
+production = [
+    &quot;uvicorn&gt;=0.34.3&quot;,
+]
+$ ls -la .venv/lib/python3.13/site-packages/
+boto3/
+starlette/
+uvicorn/
+$ rm -rf .venv/
+$ uv venv
+$ ls -la .venv/lib/python3.13/site-packages/
+[empty]
+$ uv sync --group production
+$ ls -la .venv/lib/python3.13/site-packages/
+boto3/
+starlette/
+uvicorn/
+</code></pre>
+<p>What is <code>boto3</code> doing there if it was declared for the &quot;dev&quot; group?</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p>uv 0.7.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @alexei on 2025-06-03 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2025-06-03 10:49</div>
+            <div class="timeline-body"><p><code>dev</code> is part of <code>default-groups</code>, which gets installed by default , see https://docs.astral.sh/uv/concepts/projects/dependencies/#default-groups</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexei">@alexei</a> on 2025-06-03 10:57</div>
+            <div class="timeline-body"><p>So then the solution is:</p>
+<pre><code class="language-shell">$ uv sync --no-default-groups --group production
+</code></pre>
+<p>And that does the trick:</p>
+<pre><code class="language-shell">$ ls -l .venv/lib/python3.13/site-packages/
+starlette/
+uvicorn/
+</code></pre>
+<p>Thanks @blueraft</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @alexei on 2025-06-03 10:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

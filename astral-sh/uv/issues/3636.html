@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for config_settings in requirements.txt / requirements.in - astral-sh/uv #3636</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for config_settings in requirements.txt / requirements.in</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/3636">#3636</a>
+        opened by <a href="https://github.com/tiptenbrink">@tiptenbrink</a>
+        on 2024-05-17 11:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tiptenbrink">@tiptenbrink</a> on 2024-05-17 11:41</div>
+            <div class="timeline-body"><p>In #1460, the CLI gained support for passing config_settings to the build backend. However, sometimes you want to pass these settings only for specific requirements (or simply you don't want to have to write it in the CLI each time).</p>
+<p>If you use <code>pip install -r requirements.txt</code>, this is a valid line inside a requirements.txt:</p>
+<pre><code>--config-settings editable_mode=strict -e ../lib 
+</code></pre>
+<p>However, <code>uv</code> will fail with:</p>
+<pre><code>error: Unexpected '-', expected '-c', '-e', '-r' or the start of a requirement at requirements.txt:3:1
+</code></pre>
+<p>Now, I can still get things to work if I pass the <code>--config-settings editable_mode=strict</code> to the CLI, but it's quite tedious to always have to do that. Furthermore, maybe I'd not want to pass it for a different requirement, but now it applies to all of them.</p>
+<p>Note that the same also doesn't work with <code>uv pip compile</code> (when putting the <code>--config-settings editable_mode=strict</code> inside a requirements.in) and also not with <code>uv pip sync</code>.</p>
+<p>It would be awesome if <code>uv</code> could parse the <code>--config-settings</code> inside a requirements.txt file.</p>
+<h3>Why is this useful?</h3>
+<p>If you use an editable install of a package built with setuptools, you need to pass either <code>editable_mode=compat</code> or <code>editable_mode=strict</code> in order for pyright/pylance typing to work for the package (see <a href="https://stackoverflow.com/questions/76213501/python-packages-imported-in-editable-mode-cant-be-resolved-by-pylance-in-vscode">this StackOverflow question</a>). Supporting this means that it becomes a lot simpler to depend on other local packages without requiring them to be fully factored out as PyPI or Git repository packages (all you need is a very basic pyproject.toml with setuptools as the build backend).</p>
+<p>My example setup looks like this:</p>
+<pre><code>lib/
+├─ lib.py
+├─ pyproject.toml
+app/
+├─ requirements.in
+├─ app.py
+</code></pre>
+<p>Also, thanks for this great project! Using it has been a blast so far!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-17 13:59</div>
+            <div class="timeline-body"><p>Interesting, I've never seen this -- thanks for raising. Looks like it's https://github.com/pypa/pip/issues/11325 in pip.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-05-17 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-05-17 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-05-17 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-17 15:10</div>
+            <div class="timeline-body"><p>Interesting. I wonder if there should be a way to express this in the CLI as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tiptenbrink">@tiptenbrink</a> on 2024-05-17 19:59</div>
+            <div class="timeline-body"><p>Small note: If anyone is running into my specific use case: if you use hatchling instead of setuptools as your build backend, pyright will work by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jorricks">@Jorricks</a> on 2024-06-20 10:26</div>
+            <div class="timeline-body"><p>Also faced with this issue unfortunately; https://github.com/microsoft/LightGBM/pull/6493
+TLDR; LightGBM throws errors on build arguments it doesn't understand. Hence it fails to <code>uv sync</code> when I have both editable installations (requiring <code>editable_mode=strict</code>) and <code>LightGBM</code>.</p>
+<p>Arguably, <code>LightGBM</code> should ignore the arguments. However, there is also a case to be made that we should not pass the editable build args to each individual item.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-20 13:27</div>
+            <div class="timeline-body"><p>Considering some options here...</p>
+<ul>
+<li><code>--config-setting &lt;package-name&gt;__&lt;key&gt;=&lt;val&gt;</code> e.g. <code>--config-setting foo__editable_mode=strict</code></li>
+<li><code>--config-setting &lt;package&gt;=&lt;key=val&gt;</code> e.g. <code>--config-setting foo=editable_mode=strict</code></li>
+<li><code>--config-setting-includes &lt;package&gt;</code> only pass config settings to the given packages</li>
+<li><code>--config-setting-excludes &lt;package</code> pass config settings to all packages but the given packages</li>
+<li><code>--config-setting-includes &lt;package&gt;=&lt;key&gt;</code> only pass the given config setting to the given packages</li>
+<li><code>--config-setting-excludes &lt;package&gt;=&lt;key&gt;</code> do not pass the given config setting to the given packages</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2024-07-16 14:54</div>
+            <div class="timeline-body"><p>Any chance this will get some attention soon? We have quite some editable installs which we now install one by one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-07-16 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-16 14:56</div>
+            <div class="timeline-body"><p>We need to settle on a design — we're prioritizing some other things right now but if someone wants to push the design forward I can review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-20 03:41</div>
+            <div class="timeline-body"><p>I'm honestly +0 on this issue, but I thought it worth mentioning I hit this with using <code>uv pip sync</code>, at work we have some internal packages that are built with setuptools, and developed in a multi repo environment, to get IDEs to play nice I have to use <code>--config-settings editable_mode=compat</code> to install them.</p>
+<p>Because I can't insert that straight into the requirements file I have to do this slightly awkard to of <code>uv pip sync</code> followed by <code>uv pip install {my_editable_projects} --config-settings editable_mode=compat</code>.</p>
+<p>Maybe I'm missing something obvious though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/s-rog">@s-rog</a> on 2025-02-12 19:33</div>
+            <div class="timeline-body"><p>Can package config-settings be specified in toml files?
+Or is this currently a cli exclusive feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harshil21">@harshil21</a> on 2025-02-15 08:18</div>
+            <div class="timeline-body"><p>My use case is that I have 2 similar libraries in my [dependency-group], both take the exact same arguments via <code>config_settings</code> to the build backend, but I need to only give the arguments to one of the libraries, otherwise it fails to install the other one when I use <code>uv sync --all-groups</code>.</p>
+<p>Best way to initially support this would be directly in the .toml, so I don't have to do a workaround like this:</p>
+<pre><code>[dependency-groups]
+# Run `uv pip install rpi-libcamera -C setup-args=&quot;-Drepository=https://github.com/raspberrypi/libcamera.git&quot; -C setup-args=&quot;-Dversion=v0.4.0+53-29156679&quot;`
+# if you are installing this and you have a version mismatch of rpi-libcamera and libcamera installed via apt.
+camera = [
+    &quot;picamera2&gt;=0.3.25&quot;,
+    &quot;rpi-libcamera&gt;=0.1a8;&quot;,
+    &quot;rpi-kms&gt;=0.1a1&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../HandsOnLLM/Hands-On-Large-Language-Models/issues/62.html">HandsOnLLM/Hands-On-Large-Language-Models#62</a> on 2025-05-01 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/raffaem">@raffaem</a> on 2025-05-01 11:33</div>
+            <div class="timeline-body"><p>Also hit that: https://github.com/HandsOnLLM/Hands-On-Large-Language-Models/issues/62</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13375.html">astral-sh/uv#13375</a> on 2025-05-10 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ds-steventondeur">@ds-steventondeur</a> on 2025-05-21 13:38</div>
+            <div class="timeline-body"><p>I've also been hitting the issue. My use case is a namespace package consisting of several subpackages (each one a wheel). In our dev environment we 'self-install' all subpackages in editable mode via <code>requirements.xt</code>. In order to play nice with IDEs (VSCode, PyCharm) we need <code>--config-settings editable_mode=compat</code></p>
+<p>I.e. something like</p>
+<pre><code>mypkg/
+   + src/
+       + mypkg-core/
+               + setup.py
+       + mypkg-tools/
+               + setup.py
+       + ...
+       (no setup.py / pyproject.toml on the upper level)
+</code></pre>
+<p>and <code>requirements.txt</code> containing</p>
+<pre><code>...
+-e ./src/mypkg-core  --config-settings editable_mode=compat
+-e ./src/mypkg-tools  --config-settings editable_mode=compat
+...
+</code></pre>
+<p>I'm working in a risk-averse production environment, where we set up our venv using a self-developed minimal tool that basically creates a venv and then runs <code>pip install -r requirements.txt</code>.
+We're planning to transition towards <code>uv</code> but must do so via a 'vanilla pip'-compatible route, such that each project may decide to use <code>uv</code> or not. This means that - in practice - I have to find a way to run <code>uv pip</code> on a requirements file that contains config-settings. If that wouldn't have been the case I would've simply used a <code>uv.toml</code> file containing</p>
+<pre><code>config-settings = { editable_mode = &quot;compat&quot; }
+</code></pre>
+<p>but alas...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ds-steventondeur">@ds-steventondeur</a> on 2025-05-22 07:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Can package config-settings be specified in toml files? Or is this currently a cli exclusive feature?</p>
+</blockquote>
+<p>@s-rog Yes this can be done for <code>uv</code>. I was able to do this via a <code>uv.toml</code> file containing at the top level:</p>
+<pre><code># Compatible mode so IDEs pick up editable installs correctly.
+config-settings = { editable_mode = &quot;compat&quot; }
+</code></pre>
+<p>This can also be done via <code>pyproject.toml</code>, see https://docs.astral.sh/uv/reference/settings/#config-settings</p>
+<p>For vanilla pip however there is no such way, it has to be set via CLI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/s-rog">@s-rog</a> on 2025-06-17 04:47</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Can package config-settings be specified in toml files? Or is this currently a cli exclusive feature?</p>
+</blockquote>
+<p><a href="https://github.com/s-rog">@s-rog</a> Yes this can be done for <code>uv</code>. I was able to do this via a <code>uv.toml</code> file containing at the top level:</p>
+<pre><code># Compatible mode so IDEs pick up editable installs correctly.
+config-settings = { editable_mode = &quot;compat&quot; }
+</code></pre>
+<p>This can also be done via <code>pyproject.toml</code>, see https://docs.astral.sh/uv/reference/settings/#config-settings</p>
+<p>For vanilla pip however there is no such way, it has to be set via CLI.</p>
+</blockquote>
+<p>I'm pretty sure it applies to all packages in the env though.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

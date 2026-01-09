@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Linter panic] failing to parse odd f-string `f&quot;{x, y=}&quot;` - astral-sh/ruff #6831</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Linter panic] failing to parse odd f-string `f&quot;{x, y=}&quot;`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6831">#6831</a>
+        opened by <a href="https://github.com/Zac-HD">@Zac-HD</a>
+        on 2023-08-23 23:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Zac-HD">@Zac-HD</a> on 2023-08-23 23:23</div>
+            <div class="timeline-body"><pre><code class="language-python">x = 1
+y = 2
+z = f&quot;{x, y=}&quot;  # This is a weird but valid f-string, which crashes ruff
+print(z)
+</code></pre>
+<pre><code>% python repro.py
+x, y=(1, 2)
+
+% ruff --version
+ruff 0.0.285
+
+% ruff --isolated repro.py 
+warning: Linting panicked repro.py: 
+
+panicked at 'byte index 18446744073709551615 is out of bounds of `x, y=`', crates/ruff_python_parser/src/string.rs:321:30
+Backtrace:    0: _rust_eh_personality
+   1: _main
+   2: _rust_eh_personality
+   3: _rust_eh_personality
+   4: _rust_eh_personality
+   5: _rust_eh_personality
+   6: __rjem_je_witnesses_cleanup
+   7: _main
+   8: __rjem_je_witnesses_cleanup
+   9: _main
+  10: _main
+  11: _main
+  12: _main
+  13: _main
+  14: _main
+  15: _main
+  16: _main
+  17: _main
+  18: _main
+  19: _main
+  20: _main
+  21: __mh_execute_header
+  22: __mh_execute_header
+  23: _main
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-23 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-23 23:50</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @zanieb on 2023-08-24 00:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-24 02:57</div>
+            <div class="timeline-body"><p>I spent a few minutes in debugging and the problem is two fold:</p>
+<ol>
+<li>The expression in the mentioned example is a tuple <em>without</em> parentheses</li>
+<li>We add implicit parentheses to the expression before parsing it
+https://github.com/astral-sh/ruff/blob/205d2348560671d07939a59c8ab89eecc7992421/crates/ruff_python_parser/src/string.rs#L550</li>
+<li>We subtract 1 here which I think is because of these implicit parentheses (@MichaReiser correct me if I'm wrong here)
+https://github.com/astral-sh/ruff/blob/205d2348560671d07939a59c8ab89eecc7992421/crates/ruff_python_parser/src/string.rs#L320-L322</li>
+</ol>
+<p>Now, considering the extraction of leading and trailing values in (3), for <code>f&quot;{x, y=}&quot;</code>, the start location for parsing is 2 (<code>{</code>), but we add an implicit parentheses which means the parser sees this as <code>(x, y)</code> and this means the parsed node also starts at 2 which leads to (2 - 2 - 1).</p>
+<p>If we add the parentheses ourselves i.e., <code>f&quot;{(x, y)=}&quot;</code> the parser sees as <code>((x, y))</code> and the parsed node starts from the second character which leads to (3 - 2 - 1).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2023-08-24 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-24 03:15</div>
+            <div class="timeline-body"><p>This might require re-working the way <code>DebugText</code> is extracted because when using something like <code>f&quot;{   x, y  =   }&quot;</code>, the expression is <code>(   x, y  )</code> which eats up the whitespaces. We can't really use <code>saturating_sub</code> because then it eats up the <code>=</code> sign.</p>
+<p>We'll have to extract the whitespace surrounding the expression and not consider them part of the parsed expression. But, this might not be necessary when the new 3.12 f-string parser is complete because we won't be re-parsing the expression from string, we'd do that from the tokens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-08-28 12:46</div>
+            <div class="timeline-body"><p>how far away is the new parser? are we ok to just wait? if not maybe we can try to just strip leading whitespace and not add parentheses?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-02 03:53</div>
+            <div class="timeline-body"><p>Hey, sorry for not replying soon, I somehow missed this in the notifications. You can track the parser progress at https://github.com/astral-sh/ruff/pull/7041 and that fixes this issue. I think we're ok to wait as otherwise the fix would become redundant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7041.html">astral-sh/ruff#7041</a> on 2023-09-02 03:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7049.html">astral-sh/ruff#7049</a> on 2023-09-02 03:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qarmin">@qarmin</a> on 2023-09-24 08:11</div>
+            <div class="timeline-body"><p>Even after merging #7041, I have multiple crashes with different rules</p>
+<pre><code>panicked at 'attempt to subtract with overflow', crates/ruff_python_parser/src/string.rs:321:43
+</code></pre>
+<p>B020</p>
+<pre><code>def log_zero_test_():
+    print(f'{train_loss, train_acc=}')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-24 11:42</div>
+            <div class="timeline-body"><p>Hey, it's not yet merged in <code>main</code>, it's only merged in the <code>dhruv/pep-701</code> branch. Once #7376 is merged, then it'll be fixed. I've verified that your example doesn't panic on the <code>dhruv/pep-701</code> branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-09-29 02:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

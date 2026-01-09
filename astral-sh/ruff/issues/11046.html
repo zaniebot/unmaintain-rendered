@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect space inserted between colon and value during slice operation - astral-sh/ruff #11046</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect space inserted between colon and value during slice operation</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11046">#11046</a>
+        opened by <a href="https://github.com/puffincircle">@puffincircle</a>
+        on 2024-04-19 15:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/puffincircle">@puffincircle</a> on 2024-04-19 15:54</div>
+            <div class="timeline-body"><p>ruff inserts a space between colon and value when slicing into a list.</p>
+<ul>
+<li>List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+&quot;colon&quot; &quot;space&quot;</li>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+<pre><code class="language-python">from collections import namedtuple
+
+Config = namedtuple(&quot;config&quot;, [&quot;MAXIMUM_TITLE_LENGTH&quot;])
+config = Config(MAXIMUM_TITLE_LENGTH=2)
+
+
+class Thing:
+    def __init__(self) -&gt; None:
+        _thing = [1, 2, 3, 4]
+        self.title = _thing[:config.MAXIMUM_TITLE_LENGTH]
+
+</code></pre>
+<pre><code>❯ ruff format --check --diff --isolated thing.py
+--- thing.py
++++ thing.py
+@@ -7,4 +7,4 @@
+ class Thing:
+     def __init__(self) -&gt; None:
+         _thing = [1, 2, 3, 4]
+-        self.title = _thing[:config.MAXIMUM_TITLE_LENGTH]
++        self.title = _thing[: config.MAXIMUM_TITLE_LENGTH]
+
+1 file would be reformatted
+</code></pre>
+<ul>
+<li>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.
+<code>ruff format --check --diff --isolated thing.py</code></li>
+<li>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).</li>
+</ul>
+<pre><code># Exclude a variety of commonly ignored directories.
+exclude = [
+    &quot;.bzr&quot;,
+    &quot;.direnv&quot;,
+    &quot;.eggs&quot;,
+    &quot;.git&quot;,
+    &quot;.git-rewrite&quot;,
+    &quot;.hg&quot;,
+    &quot;.ipynb_checkpoints&quot;,
+    &quot;.mypy_cache&quot;,
+    &quot;.nox&quot;,
+    &quot;.pants.d&quot;,
+    &quot;.pyenv&quot;,
+    &quot;.pytest_cache&quot;,
+    &quot;.pytype&quot;,
+    &quot;.ruff_cache&quot;,
+    &quot;.svn&quot;,
+    &quot;.tox&quot;,
+    &quot;.venv&quot;,
+    &quot;.vscode&quot;,
+    &quot;__pypackages__&quot;,
+    &quot;_build&quot;,
+    &quot;buck-out&quot;,
+    &quot;build&quot;,
+    &quot;dist&quot;,
+    &quot;node_modules&quot;,
+    &quot;site-packages&quot;,
+    &quot;venv&quot;,
+    &quot;generated&quot;
+]
+
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+# Assume Python 3.8
+target-version = &quot;py38&quot;
+
+[lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+select = [&quot;E4&quot;, &quot;E7&quot;, &quot;E9&quot;, &quot;F&quot;, &quot;I&quot;]
+ignore = []
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = [&quot;ALL&quot;]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = &quot;^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$&quot;
+
+[format]
+# Unlike Black, use single quotes for strings.
+quote-style = &quot;single&quot;
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = &quot;space&quot;
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = &quot;auto&quot;
+
+</code></pre>
+<ul>
+<li>The current Ruff version (<code>ruff --version</code>).</li>
+</ul>
+<pre><code>❯ ruff --version
+ruff 0.3.7
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-20 01:51</div>
+            <div class="timeline-body"><p>Black does the same, I believe this is intentional: https://black.vercel.app/?version=stable&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AF8AOldAD2IimZxl1N_WlkPinBFn5AcJFdeQ5rAoKvfC-g2OAiCMbVJPC_c2FMs5ms-yHthMcV-dSexmZnwHrc5yvWXOUsnRQdlt5ou1YmloTwD8lscPLocpEicEl3JPIZrSiaLR_wCuCXTxOYnC5ga1Yu6kp9yIgIrj878KxWuFisptvvG_tAih3K1TSr8e0eRlzB5UoGnDlB36vgNHba5eLVcM9mdUvijkS1hMJSgA3JhRXQ55KK6wFkK2ImwVO-eHRPPWAM-OnFevHObX5xgl65r3GHn_N2oFoFjVmx-RnSR6kkVVTHWSQDZr8kwAAAAAAWe1uGEggU7AAGFAv0CAADCGGCAscRn-wIAAAAABFla</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-20 01:51</div>
+            <div class="timeline-body"><p>It only does this if the value is &quot;complex&quot;. For example, there'd be no space inserted in <code>_thing[:MAXIMUM_TITLE_LENGTH]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-20 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-20 01:52</div>
+            <div class="timeline-body"><p>(Happy to re-open if I'm misunderstanding.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[RET503] Interaction with `mypy` assert_never  - astral-sh/ruff #3304</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[RET503] Interaction with `mypy` assert_never </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3304">#3304</a>
+        opened by <a href="https://github.com/eddiebergman">@eddiebergman</a>
+        on 2023-03-02 13:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eddiebergman">@eddiebergman</a> on 2023-03-02 13:12</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>This is rather a niche circumstance but thought it's worth mentioning. For <a href="https://typing.readthedocs.io/en/latest/source/unreachable.html">exhaustive checking</a> of Enums, there's an idiom to use with Mypy, checking each possible value and ending with <code>assert_never</code>. This is not a runtime check but purely a Mypy static type check.</p>
+<p>Ruff will give a <code>RET503</code> here which makes sense without mypy but given mypy is telling us it's safe, it would be nice for Ruff to detect this too. In the example above, using ruff with <code>--fix</code> will actually insert the line <code>return None</code> after the assert which then further causes linting issues of unreachable code.</p>
+<pre><code class="language-python">from enum import Enum, auto
+
+from typing_extensions import assert_never
+
+
+class E(Enum):
+    A = auto()
+    B = auto()
+    C = auto()
+
+
+def f(value: E) -&gt; bool:
+    if value == E.A:
+        return True
+
+    if value == E.B:
+        return True
+
+    if value == E.C:
+        return True
+
+    assert_never(value) # ruff: [RET503] [*] Missing explicit `return` at the end of function able to return non-`None` │ value (ruff) 
+</code></pre>
+<p>My naive solution to this is check for <code>assert_never(.*)</code> where the <code>return</code> should be and accept that as a valid explicit <code>return</code> statement.</p>
+<p>Looking into the <a href="https://github.com/charliermarsh/ruff/blob/3ed539d50ed6260358c97d2e00b49bad4abfa37e/crates/ruff/src/rules/flake8_return/rules.rs#L203">checker code</a>. It seems like it could be added as a <code>StmntKind</code> to the following lines as I'm guessing this code block is where it says to do nothing.</p>
+<p>https://github.com/charliermarsh/ruff/blob/3ed539d50ed6260358c97d2e00b49bad4abfa37e/crates/ruff/src/rules/flake8_return/rules.rs#L272-L275</p>
+<p>However I'm really not a rustacian so just grasping at straws.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-03-02 14:36</div>
+            <div class="timeline-body"><p>For the purpose of this error, <code>assert False</code> should also do the same thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-02 15:00</div>
+            <div class="timeline-body"><p>I actually thought we <em>did</em> account for this -- lemme look back at the code today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eddiebergman">@eddiebergman</a> on 2023-03-02 15:04</div>
+            <div class="timeline-body"><p>Major apologies, latest version does seem to solve this! The releases are just too fast to keep up :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @eddiebergman on 2023-03-02 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-02 15:12</div>
+            <div class="timeline-body"><p>Oh no worries at all! Glad to hear it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-04-17 18:38</div>
+            <div class="timeline-body"><p>FYI, this is present in cibuildwheel using ruff 0.0.261:</p>
+<p>https://github.com/pypa/cibuildwheel/blob/063161f5af6245e8b5c8e3be0ca89fee80ce029e/cibuildwheel/<strong>main</strong>.py#L266</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-04-17 18:40</div>
+            <div class="timeline-body"><p>Is it possible that the code (<a href="https://github.com/charliermarsh/ruff/blob/280dffb5e161acb9deab97c9a2158055e4174d66/crates/ruff/src/rules/flake8_return/rules.rs#L201">I think here</a>) isn't accounting for the typing module reexport location?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/cibuildwheel/pulls/1475.html">pypa/cibuildwheel#1475</a> on 2023-04-17 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-17 19:38</div>
+            <div class="timeline-body"><p>Ah yeah, you're exactly right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4000.html">astral-sh/ruff#4000</a> on 2023-04-17 19:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

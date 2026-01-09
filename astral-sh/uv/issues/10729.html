@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jupyterlab-plotly extension not installed when running jupyter from a project with plotly installed - astral-sh/uv #10729</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>jupyterlab-plotly extension not installed when running jupyter from a project with plotly installed</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10729">#10729</a>
+        opened by <a href="https://github.com/MikaelUmaN">@MikaelUmaN</a>
+        on 2025-01-18 09:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MikaelUmaN">@MikaelUmaN</a> on 2025-01-18 09:46</div>
+            <div class="timeline-body"><p>I followed this: https://docs.astral.sh/uv/guides/integration/jupyter/</p>
+<p>Executing from a project with pyproject.toml as:</p>
+<pre><code>[project]
+name = &quot;app&quot;
+version = &quot;0.1.0&quot;
+description = &quot;datascience&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;bokeh&gt;=3.6.2&quot;,
+    &quot;dask-cloudprovider&gt;=2024.9.1&quot;,
+    &quot;dask-kubernetes&gt;=2025.1.0&quot;,
+    &quot;dask[dataframe]&gt;=2025.1.0&quot;,
+    &quot;distributed&gt;=2025.1.0&quot;,
+    &quot;graphviz&gt;=0.20.3&quot;,
+    &quot;h5py&gt;=3.12.1&quot;,
+    &quot;ipywidgets&gt;=8.1.5&quot;,
+    &quot;numpy&gt;=2.2.1&quot;,
+    &quot;pandas&gt;=2.2.3&quot;,
+    &quot;plotly&gt;=5.24.1&quot;,
+    &quot;pyarrow&gt;=19.0.0&quot;,
+    &quot;s3fs&gt;=2024.12.0&quot;,
+    &quot;scikit-learn&gt;=1.6.1&quot;,
+    &quot;seaborn&gt;=0.13.2&quot;,
+    &quot;tables&gt;=3.10.2&quot;,
+    &quot;torch&gt;=2.5.1&quot;,
+]
+[tool.uv.sources]
+torch = [
+    { index = &quot;pytorch-cpu&quot; },
+]
+torchvision = [
+    { index = &quot;pytorch-cpu&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[dependency-groups]
+dev = [
+    &quot;ipykernel&gt;=6.29.5&quot;,
+]
+</code></pre>
+<p>This is from a docker image (src: https://github.com/MikaelUmaN/public-images/blob/main/datascience.docker)</p>
+<p>I tried running</p>
+<p><code>uv run --with jupyter  jupyter lab</code></p>
+<p>Which does work. But, the jupyterlab-plotly extension is then not installed and missing. Subsequently any plotly plots cannot be shown. Plotly is installed correctly, however:</p>
+<p><img src="https://github.com/user-attachments/assets/97f3a82f-ebc6-427c-aedc-7872252d1f4d" alt="Image" /></p>
+<p>In order to get the plotly extension installed I had to do:</p>
+<p><code>uv run --with jupyter --with plotly jupyter lab</code></p>
+<p>which installs the extension:</p>
+<p><img src="https://github.com/user-attachments/assets/e419978b-ffbe-4600-b21b-061cd656bef6" alt="Image" /></p>
+<p>But according to the docs, I find this unintuitive since I've already installed plotly (see the docker file); as plotly states that installing plotly does install the extension as well.</p>
+<ol>
+<li>Am I correct in running <code>uv run --with jupyter  jupyter lab</code> even though I have also installed jupyter as a tool?</li>
+<li>Is it by design that we would need to reinstall other extensions (like the plotly jupyterlab extension) when starting jupyterlab - even though we are running inside a project with it's venv?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Plotly-extension not installed when running jupyter" to "jupyterlab-plotly extension not installed when running jupyter from a project with plotly installed" by @MikaelUmaN on 2025-01-18 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-18 15:36</div>
+            <div class="timeline-body"><p>It seems like you <em>do</em> need to install <code>plotly</code> (or related extensions) when running Jupyter as a tool or via <code>--with</code> (even if <code>plotly</code> is already installed in the underlying environment), yes. It must have to do with how Jupyter detects and leverages the extensions. My guess is the extensions run in the host rather than the kernel? So while <code>uvx jupyter</code> can be used to run Jupyter in one environment and use a notebook tied to another environment, I guess it can't access extensions that would only be available in that other environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-18 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AKuederle">@AKuederle</a> on 2025-01-23 11:45</div>
+            <div class="timeline-body"><p>Jupyter Extension often have two components. They have a part that runs on the host and a part that runs in your kernel. These extensions need to be installed on both sides and often with the exact same version.</p>
+<p>This is not a new problem caused by <code>uv</code>. This problem always happens when you use the same global jupyter installation for multiple kernels (which makes a lot of sense, as you might not want to have a full jupyter lab installation in every single project).</p>
+<p>Below is a copy and paste from some internal documentation that I wrote to help people setup their python envs/switch to uv. I hope that helps!</p>
+<h2>Jupyter Lab</h2>
+<p>One of the tools that I like to have globally installed is Jupyter Lab.
+As it is quite a complex tool with many dependencies, I don't want to install it in every project.</p>
+<h3>Installation</h3>
+<p>This installs jupyterlab and the <code>ipympl</code> extension globally on your system.
+See more information about <code>ipympl</code> below.</p>
+<pre><code>uv tool install --with ipympl --with jupyterlab jupyter-core
+</code></pre>
+<p>In case you need to install more python based plugins (e.g. <code>jupytext</code>, <code>jupyter-bokeh</code>) add additional <code>--with</code> flags.</p>
+<pre><code>uv tool install --with ipympl --with jupytext --with jupyter-bokeh --with jupyterlab jupyter-core
+</code></pre>
+<p>For regular nodejs based plugins, you can use the <code>jupyter labextension install</code> command as usual.</p>
+<p>To update jupyter and all injected dependencies, you can use the <code>upgrade</code> command:</p>
+<pre><code>uv tool upgrade jupyter-core
+</code></pre>
+<p>You can now start Jupyterlab from anywhere on your system using the following command:</p>
+<pre><code>jupyter lab
+</code></pre>
+<p>Note, that <code>jupyter-lab</code> (with dash instead of space) will not work with this setup!</p>
+<h3>Registering local kernels</h3>
+<p>Now that you have a global juptyerlab installation, you will need to register the venvs of your local projects as seperate kernels.
+For this, add <code>ipykernel</code> to your projects dev-dependencies and run the following command:</p>
+<pre><code>uv add ipykernel --group dev
+uv run python -m ipykernel install --user --name &lt;name-of-your-project&gt;
+</code></pre>
+<p>In Jupyterlab, you can now select the kernel you just registered.</p>
+<h3>The ipympl dilemma</h3>
+<p>The <code>ipympl</code> extension is a great tool to use matplotlib in Jupyterlab.
+It allows you to zoom and pan in the plots created in your notebook (https://github.com/matplotlib/ipympl).</p>
+<p>To make this possible, the extension has two components:
+A Jupyterlab extension (running in the jupyterlab GUI) and a python package (running in the kernel).
+Because in our setup, Jupyterlab is running in a different Python environment than our kernels.
+In result, the <code>ipympl</code> extension is not available in our kernels, and we need to add it to the dev-dependencies of our projects.</p>
+<p>In this step we need to be extremely careful to pick the exact same version of the <code>ipympl</code> extension for Jupyterlab and for our kernels.
+In case you run into problems (i.e. the plots are not showing), you should first figure our which version of <code>ipympl</code> is installed in your Jupyterlab environment and which is installed in your kernel environment.
+Then you should make sure that both versions are the same.</p>
+<p>For this, start the default kernel of your jupyterlab installation (usually called <code>Python 3 (ipykernel)</code>) and then run <code>import ipympl; print(ipympl.__version__)</code> in a cell.
+Then repeat the same in the kernel of your project.</p>
+<p>If the versions are different, we usually recommend updating the <code>ipympl</code> version in both environments to the latest version.
+For your global installation run:</p>
+<pre><code>uv tool upgrade jupyter-core
+</code></pre>
+<p>and then in your local environment run:</p>
+<pre><code>uv add ipympl@latest --group dev
+</code></pre>
+<p>Then restart jupyterlab and your kernel and check if the versions are now the same and if the plots are showing.
+If not, you might run into a different issue.
+Check the browsers javascript console for errors and head over to the <a href="https://github.com/matplotlib/ipympl">ipympl github page</a> for more information.</p>
+<h4>Maintaining multiple versions of ipympl</h4>
+<p>In case you can not easily update the version of ipympl in your project (e.g. because of reproducibility reasons), we need a way to temporarlily switch the version of ipympl in our global installation.
+Luckily, we can do this with a one time execution of jupyter lab with <code>uv tool run</code>:</p>
+<pre><code>uvx --from jupyterlab --with &quot;ipympl==0.7.0&quot; jupyter-lab
+</code></pre>
+<p>Note, that this will not install the new version of ipympl in your global installation or modify your global installation in any way.
+This means, if you want other extensions to be available, you need to list them explicitly in the command.</p>
+<p>You can use this technique to also create a custom jupyterlab execution command for every project, if it requires specific extensions or versions of extensions.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

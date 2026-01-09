@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff` exits with `code 0` if there's a SyntaxError but rule `E999` is not selected - astral-sh/ruff #8447</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff` exits with `code 0` if there's a SyntaxError but rule `E999` is not selected</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8447">#8447</a>
+        opened by <a href="https://github.com/gavriil-deshaw">@gavriil-deshaw</a>
+        on 2023-11-02 15:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gavriil-deshaw">@gavriil-deshaw</a> on 2023-11-02 15:44</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>As per the title, if the rule with code <code>E999</code> is not included in the configuration, then <code>ruff</code> will terminate successfully even if there's a <code>SyntaxError</code>. So, for example, if one wanted to run <code>ruff</code> against only the <a href="https://docs.astral.sh/ruff/rules/#pyflakes-f">Pylfakes rules</a>, the logical configuration for the rules would be <code>--select F</code>, but this doesn't work as expected.</p>
+<p>Specifically, running <code>ruff --select F &lt;filename.py&gt;</code> exits with <code>code 0</code> even if there's a <code>SyntaxError</code> - it does print <code>error: Failed to parse</code> but it doesn't raise an error. I believe this shouldn't be the default behavior as it would allow <code>ruff</code> to succeed in automated pipelines even with a <code>SyntaxError</code> (and possibly other <code>F</code> code errors). As a workaround for the mentioned use-case, one can also include <code>E999</code> in the selected rules. However, this isn't very intuitive since having a <code>SyntaxError</code> means that an AST can't be generated and so, even if <code>E999</code> isn't really a <code>Pyflakes</code> error, the python code can't be run.</p>
+<p>FWIW, <a href="https://docs.astral.sh/ruff/rules/">ruff rules</a> list <code>E999</code> as a <code>pycodestyle</code> error code, while in reality it's a code returned by <code>flake8</code> when it <a href="https://flake8.pycqa.org/en/latest/user/error-codes.html">can't generate an AST</a> for a given file. The equivalent <code>pycodestyle</code> code is <code>E901 SyntaxError or IndentationError</code> as listed <a href="https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-02 15:46</div>
+            <div class="timeline-body"><p>Seems reasonable to change the exit code if we fail to parse any files — I'm unsure of the difficulty to implement this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-11-02 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2023-11-02 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gavriil-deshaw">@gavriil-deshaw</a> on 2023-11-02 17:00</div>
+            <div class="timeline-body"><p>Thanks for your prompt response!</p>
+<p>Would it be unreasonable to exit with <code>code 1</code> after a <code>ParseError</code>? I'm not Rust expert, so I might be missing something, but I seem to have that working with a 2-line change. It works as intended and all the tests pass (<code>cargo test | rg '; [1-9]?* failed' | wc -l</code> outputs <code>0</code>). If this isn't the desired behavior, an alternative would be to add cli option that would trigger this.</p>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-02 17:05</div>
+            <div class="timeline-body"><p>What's the two line change? :)</p>
+<p>I think we want to still lint the remaining files, so only exit at the end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-02 17:40</div>
+            <div class="timeline-body"><p>I need to think on this... There's been a lot of back and forth on this behavior:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/issues/196</li>
+<li>https://github.com/astral-sh/ruff/pull/199</li>
+<li>https://github.com/astral-sh/ruff/issues/2473</li>
+<li>https://github.com/astral-sh/ruff/pull/2505</li>
+<li>https://github.com/astral-sh/ruff/pull/2697</li>
+<li>https://github.com/astral-sh/ruff/pull/3665</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gavriil-deshaw">@gavriil-deshaw</a> on 2023-11-02 18:06</div>
+            <div class="timeline-body"><p>@zanieb I did it by just exiting with <code>code 1</code> after displaying the <code>ParseError</code>, but that indeed means that the remaining files aren't linted. IMHO, this is a more intuitive behavior, but I imagine that it might break things for people who accommodate for the current behavior.</p>
+<p>@charliermarsh what if you just add a cli option to exit if there's a <code>ParseError</code>? I think that's reasonable, if it's easily doable.</p>
+<p>In any case, you obviously know the codebase (and other related issues logged) better than I do, so I'll leave this up to you :))</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-02 18:57</div>
+            <div class="timeline-body"><p>I don't think exiting on the first error is an acceptable solution, unfortunately. We have people that rely on the current behavior and we can perform some lints despite syntax errors in a file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on 2024-05-02 18:47</div>
+            <div class="timeline-body"><p>This affects writing rules as well, you write a new rule <code>E123</code>, and you run:</p>
+<pre><code class="language-console">$ cargo run -p ruff -- check foo.py --no-cache --preview --select E123
+    Finished dev [unoptimized + debuginfo] target(s) in 0.13s
+     Running `target/debug/ruff check foo.py --no-cache --preview --select E123`
+error: Failed to parse foo.py:1:5: Simple statements must be separated by newlines or semicolons
+All checks passed!
+</code></pre>
+<p>The last line gives a false sense of everything working.</p>
+<hr />
+<p>I think putting a <code>seen_parse_error</code> boolean flag in <code>LinterResult</code> and propagating it up to <code>Diagnostics</code> would be an okay strategy to implement this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-02 18:54</div>
+            <div class="timeline-body"><p>I believe @dhruvmanila might eventually be looking into how we can surface parse errors as diagnostics?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-09 12:08</div>
+            <div class="timeline-body"><p>Yes, ideally the syntax errors should be surfaced using the same diagnostic system Ruff uses to display lint errors. There are still some outstanding questions with regards to the exit code and how should <code>E999</code> be used here but it should get clear when I start working on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-19 03:31</div>
+            <div class="timeline-body"><p>I'll look into this today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2024-06-19 03:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-24 12:42</div>
+            <div class="timeline-body"><p>I think this will depend on https://github.com/astral-sh/ruff/pull/11901 which will remove <code>E999</code> from being considered for any disablement methods which means that if there's any syntax error in the file, Ruff will always provide diagnostics for the same and will exit with a non-zero code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11901.html">astral-sh/ruff#11901</a> on 2024-06-26 09:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12005.html">astral-sh/ruff#12005</a> on 2024-06-27 07:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-27 11:41</div>
+            <div class="timeline-body"><p>Resolved in #11901 and will be released in v0.5.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-06-27 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gavriil-deshaw">@gavriil-deshaw</a> on 2024-06-27 12:46</div>
+            <div class="timeline-body"><p>Perfect, thanks for handling this!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

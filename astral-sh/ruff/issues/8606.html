@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omit `asyncio.timeout` from `SIM117` - astral-sh/ruff #8606</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Omit `asyncio.timeout` from `SIM117`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8606">#8606</a>
+        opened by <a href="https://github.com/maltevesper">@maltevesper</a>
+        on 2023-11-10 18:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/maltevesper">@maltevesper</a> on 2023-11-10 18:08</div>
+            <div class="timeline-body"><p>While I generally agree with SIM117 (combine with statements where possible), I am wondering if there are cases where there should be exceptions to the rule, in particular <code>asyncio.timeout</code> comes to mind.</p>
+<p>I.e. I find the following clearer</p>
+<pre><code>async with asyncio.timeout(0.2):
+    async with line_processor:
+        await line_processor.stop(0)
+</code></pre>
+<p>Less clear in my opinion:</p>
+<pre><code>async with asyncio.timeout(0.2), line_processor:
+    await line_processor.stop(0)
+</code></pre>
+<p>While this is a minor cosmetic issue, I am wondering if this warrants a configuration option (a list of contextmanagers for which to ignore SIM117), or is to much of an edge case to consider complicating the configuration.</p>
+<p>For now I ignore SIM117 for tests, which is the main case in which I trigger these.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-11-11 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-11 15:13</div>
+            <div class="timeline-body"><p>This seems like a reasonable suggestion -- I agree that collapsing the timeout here is awkward, since semantically it's meant to be wrapping the inner <code>async with</code> rather than peer to it. We could start just by omitting <code>asyncio.timeout</code>, and parameterize it later on if there's more need.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "SIM117 ignore for asyncio.timeout?" to "Omit `asyncio.timeout` from `SIM117`" by @charliermarsh on 2023-11-11 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-11 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-11 15:14</div>
+            <div class="timeline-body"><p>PR welcome if you're interested :) The changes would be in <a href="https://github.com/astral-sh/ruff/blob/d7144d6d8eb06177be977fdbdf3ec38ea1c8f721/crates/ruff_linter/src/rules/flake8_simplify/rules/ast_with.rs#L77C10-L77C10"><code>multiple_with_statements</code></a>, we'd want to check if the <code>with_parent</code> has a single item that matches <code>asyncio.timeout</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> removed by @charliermarsh on 2023-11-11 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-11 16:30</div>
+            <div class="timeline-body"><p>If we're going with the spirit of this change, we should probably also include <a href="https://anyio.readthedocs.io/en/stable/api.html#timeouts-and-cancellation">AnyIO</a>/<a href="https://trio.readthedocs.io/en/stable/reference-core.html#trio.move_on_after">Trio</a>'s <code>move_on_after</code>, <code>fail_after</code>, <code>move_on_at</code>, <code>fail_at</code>, and maybe<code>CancelScope</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maltevesper">@maltevesper</a> on 2023-11-12 17:59</div>
+            <div class="timeline-body"><p>I will happily have a go at a PR this week (am a little busy)</p>
+<p>Locks crossed my mind as a possible further candidate for &quot;more explicit scoping&quot;, but I will stick with timing for starters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-12 18:01</div>
+            <div class="timeline-body"><p>Awesome, just ask here or in Discord if you have any questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8801.html">astral-sh/ruff#8801</a> on 2023-11-21 06:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-21 11:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

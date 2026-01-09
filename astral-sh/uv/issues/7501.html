@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv build setuptools setup should default to or honor index-url pip config - astral-sh/uv #7501</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv build setuptools setup should default to or honor index-url pip config</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7501">#7501</a>
+        opened by <a href="https://github.com/blackduckx">@blackduckx</a>
+        on 2024-09-18 14:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/blackduckx">@blackduckx</a> on 2024-09-18 14:00</div>
+            <div class="timeline-body"><p>Running <code>uv build</code> command without the <code>[build-system]</code> section defined in <code>pyproject.tom</code> installs <code>setuptools</code> by default.</p>
+<p>Right now it connects directly to <em>pypi</em> and does not honor the <code>pip</code> <code>index-url</code> configuration in the <em>toml</em> config files.</p>
+<p>-&gt; Defaulting to <code>pip</code> <code>index-url</code> seems to be the expected default
+-&gt; Corporate Users mostly have to go through a pypi proxy</p>
+<p><em>Context</em></p>
+<ul>
+<li>uv version: 0.4.11</li>
+<li><code>uv.toml</code> configured with corporate pypi proxy</li>
+<li><code>uv pip install</code> command running fine (Installation through the corporate pypi proxy)</li>
+</ul>
+<p><em>Failure</em></p>
+<pre><code>(XXX) &gt; uv build
+
+Building source distribution...
+error: Failed to install requirements from `setup.py` build (resolve)
+  Caused by: No solution found when resolving: setuptools&gt;=40.8.0
+  Caused by: Could not connect, are you offline?
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://pypi.org/simple/setuptools/)
+  Caused by: client error (Connect)
+  Caused by: dns error: Hôte inconnu. (os error 11001)
+  Caused by: Hôte inconnu. (os error 11001)
+</code></pre>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 14:20</div>
+            <div class="timeline-body"><p>Builds do use the user-provided index. For example, given:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[project.scripts]
+hello = &quot;foo:hello&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv]
+index-url = &quot;https://test.pypi.org/simple&quot;
+</code></pre>
+<p><code>uv build</code> correctly fails, because it can't find <code>hatchling</code> on the Test PyPI.</p>
+<p>My guess is you have an error in your configuration. Can you share a reproducible example?</p>
+<p>Note that you need to use <code>[tool.uv]</code> in your configuration, not <code>[tool.uv.pip]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-09-18 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blackduckx">@blackduckx</a> on 2024-09-18 17:08</div>
+            <div class="timeline-body"><p>@charliermarsh thanks for taking care of my case. I used an old version of the documentation to setup my <code>uv.toml</code></p>
+<p>I confirm the <a href="https://docs.astral.sh/uv/configuration/files/">current documentation on configuration is accurate</a></p>
+<p>I simply moved the <code>uv.toml</code> file from</p>
+<pre><code>[pip]
+index-url = xxx
+</code></pre>
+<p>To</p>
+<pre><code>index-url = xxx
+</code></pre>
+<p>And it now does work fine. Sorry for the trouble. Closing this ticket.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @blackduckx on 2024-09-18 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-19 01:09</div>
+            <div class="timeline-body"><p>No worries!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

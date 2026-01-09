@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargo subcommand ideal error messages - clap-rs/clap #1422</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cargo subcommand ideal error messages</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1422">#1422</a>
+        opened by <a href="https://github.com/daxpedda">@daxpedda</a>
+        on 2019-02-28 11:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/daxpedda">@daxpedda</a> on 2019-02-28 11:07</div>
+            <div class="timeline-body"><h3>Affected Version of clap</h3>
+<ul>
+<li>2.32.0</li>
+</ul>
+<h3>Feature Request</h3>
+<p>When creating a cargo subcommand and if wanting to handle <em>both</em> <code>cargo subcommand</code> and <code>cargo-subcommand</code> the suggested solution (https://github.com/clap-rs/clap/issues/937#issuecomment-296208355) seems to be as follow:</p>
+<pre><code class="language-rust">clap::app_from_crate!()
+    .arg(
+        Arg::with_name(&quot;dummy&quot;)
+            .hidden(true)
+            .possible_value(&quot;subcommand&quot;),
+    )
+    ...
+    .get_matches()
+</code></pre>
+<p>This arg is to swallow the first arg that would be passed if using <code>cargo subcommand</code>.
+But as stated in the <a href="https://docs.rs/clap/2.32.0/clap/struct.Arg.html#method.hidden">documentation</a>: <code>NOTE: This does not hide the argument from usage strings on error</code>, which can result in &quot;wrong&quot; error messages.</p>
+<p>Possible solutions would be to add another form of <code>hidden</code> that also hides on errors or any other workaround for this.
+Maybe I'm doing this whole thing wrong, any feedback would be appreciated.</p>
+<p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @CreepySkeleton on 2020-02-01 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @CreepySkeleton on 2020-02-01 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @CreepySkeleton on 2020-02-01 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @CreepySkeleton on 2020-02-01 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-07 07:03</div>
+            <div class="timeline-body"><p>What was the error message you are getting and please write down the expected error message you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daxpedda">@daxpedda</a> on 2020-02-07 14:21</div>
+            <div class="timeline-body"><p>I am sorry for the very vague bug report here, I had a hard time figuring out myself what exactly my problem was.</p>
+<p>In any case, this is fixed in master!</p>
+<p>I'm going to explain the issue in <code>2.33.0</code>:</p>
+<p>So using the exact code from above, let's say I have a crate called <code>cargo-subcommand</code>, using the following commands, I would get the following output:</p>
+<p><code>cargo subcommand --test</code>:</p>
+<pre><code>error: Found argument '--test' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    cargo-subcommand.exe &lt;dummy&gt;
+
+For more information try --help
+</code></pre>
+<p>You can see that showing <code>&lt;dummy&gt;</code> wouldn't be desired, it's just here to make it swallow the <code>subcommand</code> when used with in the combination of <code>cargo subcommand</code>.</p>
+<p>The desired output would be:</p>
+<pre><code>error: Found argument '--test' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    cargo-subcommand.exe
+
+For more information try --help
+</code></pre>
+<p>Which is the case now in master.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @daxpedda on 2020-02-07 14:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

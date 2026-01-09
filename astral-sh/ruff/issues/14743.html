@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT007 shows wrong type in violation message - astral-sh/ruff #14743</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PT007 shows wrong type in violation message</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14743">#14743</a>
+        opened by <a href="https://github.com/ThiefMaster">@ThiefMaster</a>
+        on 2024-12-02 20:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2024-12-02 20:56</div>
+            <div class="timeline-body"><p>The violation message shows the same type twice, even though one of them should be <code>list</code>.</p>
+<pre><code class="language-python">import pytest
+
+
+@pytest.mark.parametrize('foo', [{'bar': 1}, {'baz': 1}])
+def test_test(foo):
+    pass
+</code></pre>
+<pre><code class="language-sh">$ ruff version
+ruff 0.8.1
+</code></pre>
+<pre><code class="language-py">$ ruff check --isolated --select PT007 --config &quot;lint.flake8-pytest-style.parametrize-values-type = 'tuple'&quot; --preview --no-cache rufftest/ruff_sample.py
+rufftest/ruff_sample.py:4:33: PT007 Wrong values type in `@pytest.mark.parametrize` expected `tuple` of `tuple`
+  |
+4 | @pytest.mark.parametrize('foo', [{'bar': 1}, {'baz': 1}])
+  |                                 ^^^^^^^^^^^^^^^^^^^^^^^^ PT007
+5 | def test_test(foo):
+6 |     pass
+  |
+  = help: Use `tuple` of `tuple` for parameter values
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>The fix looks fine though so this is just a wrong message:</p>
+<pre><code class="language-py">$ ruff check --isolated --select PT007 --config &quot;lint.flake8-pytest-style.parametrize-values-type = 'tuple'&quot; --preview --no-cache rufftest/ruff_sample.py --diff --unsafe-fixes
+--- rufftest/ruff_sample.py
++++ rufftest/ruff_sample.py
+@@ -1,6 +1,6 @@
+ import pytest
+
+
+-@pytest.mark.parametrize('foo', [{'bar': 1}, {'baz': 1}])
++@pytest.mark.parametrize('foo', ({'bar': 1}, {'baz': 1}))
+ def test_test(foo):
+     pass
+
+Would fix 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-02 21:32</div>
+            <div class="timeline-body"><p>I think this is right, but perhaps unclear -- it's saying that it &quot;expected a tuple that contains tuples&quot;, i.e., <code>((</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2024-12-02 21:34</div>
+            <div class="timeline-body"><p>Oh indeed, I read this &quot;tuple of tuple&quot; as &quot;tuple instead of tuple&quot;...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-02 21:35</div>
+            <div class="timeline-body"><p>Yeah I think we can make it clearer...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2024-12-02 21:40</div>
+            <div class="timeline-body"><p>FWIW the real code where this happened was this:</p>
+<pre><code class="language-py">def setup_fixtures(func):
+    &quot;&quot;&quot;Set up fixtures (utlity decorator).&quot;&quot;&quot;
+    func = pytest.mark.usefixtures('smtp', 'mock_access_request', 'dummy_access_request')(func)
+    return pytest.mark.parametrize('mock_access_request', [{
+        'during_registration': True,
+        'during_registration_required': True,
+        'personal_data': generate_personal_data(),
+        'include_accompanying_persons': False
+    }, {
+        'during_registration': True,
+        'during_registration_required': True,
+        'personal_data': generate_personal_data(),
+        'include_accompanying_persons': True
+    }], indirect=True)(func)
+</code></pre>
+<p>I guess with <code>indirect=True</code> parametrization, but also with any case where there's only a single param, the error message is particularly strange. I haven't tested it, but I guess w/a single param the actual param value inside the outer tuple can be anything (not sure what happens if you use a tuple/list there though).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-12-03 04:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @dhruvmanila on 2024-12-03 04:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2024-12-04 14:02</div>
+            <div class="timeline-body"><p>Can we remove <code>of {expected_row_type}</code> for a single param?</p>
+<pre><code class="language-python">$ ruff check --isolated --select PT007 --config &quot;lint.flake8-pytest-style.parametrize-values-type = 'tuple'&quot; --preview --no-cache rufftest/ruff_sample.py
+rufftest/ruff_sample.py:4:33: PT007 Wrong values type in `@pytest.mark.parametrize` expected `tuple`
+
+  |
+4 | @pytest.mark.parametrize('foo', [{'bar': 1}, {'baz': 1}])
+  |                                 ^^^^^^^^^^^^^^^^^^^^^^^^ PT007
+5 | def test_test(foo):
+6 |     pass
+  |
+  = help: Use `tuple` of `tuple` for parameter values
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

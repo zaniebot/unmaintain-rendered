@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASYNC220: subprocess.Popen() is not blocking - astral-sh/ruff #14806</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ASYNC220: subprocess.Popen() is not blocking</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14806">#14806</a>
+        opened by <a href="https://github.com/ybybwdwd">@ybybwdwd</a>
+        on 2024-12-06 06:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ybybwdwd">@ybybwdwd</a> on 2024-12-06 06:13</div>
+            <div class="timeline-body"><p><code>subprocess.Popen()</code> starts a child process and immediately returns a Popen instance.</p>
+<p>It should not be fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-06 08:54</div>
+            <div class="timeline-body"><p>Ruff's behavior here matches the <a href="https://github.com/python-trio/flake8-async/blob/dd684fb935941b5884172bd2b5df90d561f15a4b/flake8_async/visitors/visitor2xx.py#L212C1-L213C36">upstream rule</a> (not saying it's correct because of that).</p>
+<p>I'm not familiar with asyncio or any other Python async libraries but I suspect that <code>subprocess.Popen</code> is disallowed because the method <em>blocks on the system call to spawn a process</em>. This is similar to blocking on reading a file in that the call waits for the OS to complete some operation. Could you tell me more why you think that <code>subprocess.Popen</code> isn't blocking and e.g <code>os.popen</code> is?</p>
+<p>Reading the Python documentation I found</p>
+<blockquote>
+<p><a href="https://docs.python.org/3/library/os.html#os.popen">popen()</a> is a simple wrapper around <a href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen">subprocess.Popen</a>. Use <a href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen">subprocess.Popen</a> or <a href="https://docs.python.org/3/library/subprocess.html#subprocess.run">subprocess.run()</a> to control options like encodings.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ybybwdwd">@ybybwdwd</a> on 2024-12-07 03:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not familiar with asyncio or any other Python async libraries but I suspect that subprocess.Popen is disallowed because the method blocks on the system call to spawn a process. This is similar to blocking on reading a file in that the call waits for the OS to complete some operation. Could you tell me more why you think that subprocess.Popen isn't blocking and e.g os.popen is?</p>
+</blockquote>
+<p><code>subprocess.Popen()</code> behaves differently from <code>os.popen()</code> and <code>subprocess.run()</code> in that it returns a <code>Popen</code> instance immediately after creating a child process without blocking the current task.</p>
+<p>It can manage child processes more flexibly, using <code>Popen.wait ()</code> to wait for the child process to end, <code>Popen.terminate ()</code> to stop the child process, <code>Popen.poll ()</code> to check the child process status, etc.</p>
+<blockquote>
+<p>Reading the Python documentation I found</p>
+<blockquote>
+<p><a href="https://docs.python.org/3/library/os.html#os.popen">popen()</a> is a simple wrapper around <a href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen">subprocess.Popen</a>. Use <a href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen">subprocess.Popen</a> or <a href="https://docs.python.org/3/library/subprocess.html#subprocess.run">subprocess.run()</a> to control options like encodings.</p>
+</blockquote>
+</blockquote>
+<p>Python documentation may not explicitly state that <code>subprocess.Popen()</code> doesn't block, its behavior was tested by me writing the demo</p>
+<p>https://docs.python.org/3.13/library/subprocess.html#popen-objects</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-07 13:13</div>
+            <div class="timeline-body"><p>Thank you</p>
+<blockquote>
+<p>Popen instance immediately after creating a child process without blocking the current task.</p>
+</blockquote>
+<p>I think the point here is that <em>creating a child process</em> is a blocking call, the same as reading a file is. You're blocked on the OS to get around and create the process for you. That might take a while. But I'm sure @Zac-HD can give you a way more satisfying answer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zac-HD">@Zac-HD</a> on 2024-12-08 19:49</div>
+            <div class="timeline-body"><p>Per <a href="https://flake8-async.readthedocs.io/en/latest/rules.html#blocking-sync-calls-in-async-functions">the documentation here</a>, we recommend instead using a natively async interface (<a href="https://trio.readthedocs.io/en/latest/reference-io.html#trio.run_process">e.g. <code>trio.run_process()</code></a>).</p>
+<p>While the initial process creation of <code>subprocess.Popen</code> is typically cheap, it sets up a footgun in blocking poll/wait/communicate methods and I've been bitten enough times in a large codebase that we introduced this rule.  I've also found that the Trio APIs (for example) make it considerably easier to write correct programs in general; for example defaulting to <code>check=True</code> + keeping <code>.returncode</code> synced + <code>stdin=b&quot;&quot;</code> are also pretty nice to have, along with making it easier to wait <em>exactly</em> until the process is done and no longer in the simple case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-27 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15761.html">astral-sh/ruff#15761</a> on 2025-01-27 01:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-27 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-27 01:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

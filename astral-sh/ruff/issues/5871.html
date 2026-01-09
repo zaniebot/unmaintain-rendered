@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detecting Any in generic types and variables - astral-sh/ruff #5871</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detecting Any in generic types and variables</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5871">#5871</a>
+        opened by <a href="https://github.com/ItsDrike">@ItsDrike</a>
+        on 2023-07-18 20:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ItsDrike">@ItsDrike</a> on 2023-07-18 20:38</div>
+            <div class="timeline-body"><p>This is a continuation from issue #5803, which assumed the lack of support for this is a bug, which it was not, making it a feature request.</p>
+<p>The proposal here is that currently, the <code>flake8-annotations</code> rules only detect the <code>Any</code> type when used in function arguments, or their return types directly. I think it would be beneficial to also add new linter rules (or extend the existing ANN401, however that would make it different from the original handling in <code>flake8-annotations</code>).</p>
+<p>Here's a recap of the issue:</p>
+<h3><code>Any</code> in generic arguments</h3>
+<pre><code class="language-python">from typing import Any
+
+def foo(x: dict[str, Any]) -&gt; None:  # Should be an error
+    ...
+    
+def bar() -&gt; list[Any]:  # Should be an error
+     ...
+</code></pre>
+<p>I think there is value in having a linter rule capable of finding use of <code>Any</code> in these kinds of nested type definitions too. Even though they are a much more precise than just pure <code>Any</code>, there is still a lot of ambiguity being introduced there, and there's no good reason for it.</p>
+<p>If a function can really accept any kind of values, it should use <code>object</code> in the annotation, not <code>Any</code>. As an example: <code>Mapping[str, object]</code> would be a much better option than <code>Mapping[str, Any]</code>, because the type checker would later not allow you to blindly access any variable or name from that any type, while still allowing any kinds of objects in.</p>
+<h3><code>Any</code> in variable annotations</h3>
+<pre><code class="language-python">from typing import Any, ClassVar
+
+x: Any = 5  # Should be an error
+
+class Foo:
+    X: ClassVar[Any] = 10  # Should be an error
+    Y: Any = 50  # Should be an error
+</code></pre>
+<p>There is no reason to only disallow the use of <code>Any</code> in functions, but not in variables. It brings in just as much type ambiguity as in functions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ItsDrike">@ItsDrike</a> on 2023-07-18 20:38</div>
+            <div class="timeline-body"><p>Following <a href="https://github.com/astral-sh/ruff/issues/5803#issuecomment-1640820274">remarks brought up by @zanieb in the original issue</a>, I decided to provide an answer here, and leave the original issue  just for addressing the incorrect (bug) behavior of ANN401.</p>
+<blockquote>
+<p>Regarding generic arguments, <code>dict[str, Any]</code> is fairly common in my experience. Anytime you're working with <code>kwargs</code> (outside of the definition itself) e.g.</p>
+<pre><code class="language-python">from typing import reveal_type
+
+def foo(**kwargs):
+  reveal_type(kwargs)  # dict[str, Any]
+</code></pre>
+<p>It seems better to use a generic that's partially complete than not at all. It would probably be reasonable to allow people to opt-in to enforcing narrower types though. I see a less controversial diagnostic for cases like list[Any] (either write list or narrow the generic) where all of the generic arguments are Any.</p>
+</blockquote>
+<p>This example wouldn't be allowed by <code>flake8-annotations</code> anyway (at least not without disabling <a href="https://beta.ruff.rs/docs/rules/missing-type-kwargs/"><code>ANN003</code></a>). When a type is specified here, kwargs would be a concrete type.</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/20902250/bea977f5-6cdf-45db-aa48-8cf4327c70d6" alt="image" /></p>
+<p>If you really need to take in the arguments with the any type, like say because you're later passing the kwargs to another function, you'd need to use <code>**kwargs: Any</code> in the type-hint directly anyway, which would then be breaking <code>ANN401</code>, so you'd need a noqa there anyway.</p>
+<p>However I wouldn't say this comes up that often, as in decorators, you should generally use a ParamSpec, and annotated kwargs with <code>P.kwargs</code>, and there isn't that many other places where you'd want to pass over kwargs like this, because it'd be losing information. You should make a TypedDict and annotate the kwargs with that if you want to allow some specific kwargs (say from another function).</p>
+<p>If you're creating the dict yourself, you could consider <code>Mapping[str, object]</code> annotation instead, which would then be passable into a function expecting <code>**kwargs: Any</code> , and won't let you use any custom methods and naively hope that they exist for the values. So the actual <code>dict[str, Any]</code> annotation wouldn't be needed here.</p>
+<p>The problem with having <code>Any</code> in a generic attribute of some concrete type is that it can very quickly become an <code>Any</code> that is in one of your variables (from <code>dict[str, Any]</code>, iterating over values would mean those values are <code>Any</code> types).</p>
+<p>So I'd say there is value in at least reconsidering whether it really wouldn't make sense to make this a default rule, rather than an opt-in one. But it is true that it could be annoying to create typed dicts everywhere you'd need this, and people do use <code>dict[str, Any]</code> a fair bit (even though in many cases they really don't need to), so I will completely understand making this an opt-in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2023-07-19 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing</span> added by @dhruvmanila on 2023-07-19 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5803.html">astral-sh/ruff#5803</a> on 2023-07-31 09:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../py-mine/mcstatus/pulls/590.html">py-mine/mcstatus#590</a> on 2023-07-31 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mrcljx">@mrcljx</a> on 2024-07-29 08:41</div>
+            <div class="timeline-body"><p>This rule sounds similar to https://typescript-eslint.io/rules/no-explicit-any/ and also assumed <code>ANN401</code> (aka <code>any-type</code>) would work this way.</p>
+<blockquote>
+<p>The <code>any</code> type in TypeScript is a dangerous &quot;escape hatch&quot; from the type system. Using <code>any</code> disables many type checking rules and is generally best used only as a last resort or when prototyping code. This rule reports on explicit uses of the <code>any</code> keyword as a type annotation.</p>
+<p>Preferable alternatives to any include:</p>
+<ul>
+<li>If the <code>type</code> is known, describing it in an <code>interface</code> or <code>type</code></li>
+<li>If the <code>type</code> is not known, using the safer <code>unknown</code> type</li>
+</ul>
+</blockquote>
+<p>I would really love if it existed for Ruff, because it's so easy to <em>accidentally</em> use <code>Any</code>: sometimes the brain thinks &quot;any object&quot; and instead of using <code>object</code> (Python's obscure variant to TS' <code>unknown</code>) one writes <code>Any</code> without realizing the implicatons.</p>
+<p>I was contemplating banning import of <code>typing.Any</code> completely but:</p>
+<ol>
+<li>managing <code>noqa</code> (for the rare case where it might actually be fine) often is frustrating,</li>
+<li>once ignored there, would allow free-use throughout the file,</li>
+<li>doesn't allow adding easy file-based exception in <code>ruff.toml</code> (for test suites).</li>
+</ol>
+<p>It would save me lot code reviews comment writing if Ruff could <strong>always</strong> call out <code>list[Any]</code> and <code>dict[str, Any]</code> and don't need this to be <em>perfect</em> (i.e. handling aliases or other things Ruff might not be able to determine because it doesn't type check).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

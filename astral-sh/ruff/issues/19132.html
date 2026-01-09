@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsafe fix from PERF401 - astral-sh/ruff #19132</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unsafe fix from PERF401</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19132">#19132</a>
+        opened by <a href="https://github.com/corrylc">@corrylc</a>
+        on 2025-07-03 21:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/corrylc">@corrylc</a> on 2025-07-03 21:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>PERF401 (manual-list-comprehension) produces an unsafe fix, introducing a test failure.</p>
+<p>The fix changes a for-loop into a list comprehension, but due to the expected exception from the generator the result is not the same from the &quot;fixed&quot; code. The list comprehension throws the exception before updating the <code>chunks</code> list, unlike the original code which will update it as it goes.</p>
+<p>Original code:</p>
+<pre><code class="language-python">    gen = _generate_request_body(receive)
+    chunks: list[bytes] = []
+    with pytest.raises(ClientDisconnectError):
+        async for chunk in gen:
+            chunks.append(chunk)
+</code></pre>
+<p>After <code>ruff check</code>:</p>
+<pre><code class="language-python">    gen = _generate_request_body(receive)
+    chunks: list[bytes] = []
+    with pytest.raises(ClientDisconnectError):
+        chunks.extend([chunk async for chunk in gen])
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-03 22:13</div>
+            <div class="timeline-body"><p>The fix for <code>PERF401</code> should already be marked as unsafe, so this is arguably expected or at least allowed behavior. I see that we still don't have a <code>## Fix safety</code> section in the docs, though, so we should fix that and mention a case like this at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-07-03 22:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-07-03 22:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-03 22:15</div>
+            <div class="timeline-body"><p>Standalone reproduction: https://play.ruff.rs/0f94c04a-46fd-47df-91e5-4da7b0489bba</p>
+<details>
+<summary>Testing it locally</summary>
+
+<pre><code>PS ~\Desktop\New_folder\ruff&gt;Set-Content issue.py @&quot;
+</code></pre>
+<pre><code class="language-py">import asyncio
+async def async_range(limit):
+    for i in range(limit):
+        if i == 3:
+            raise ValueError
+        yield i
+
+async def main():
+    chunks = []
+    try:
+        async for x in async_range(5):
+            chunks.append(x)
+    except ValueError:
+        pass
+    print(chunks)
+asyncio.run(main())
+</code></pre>
+<pre><code>&quot;@
+</code></pre>
+<pre><code>PS ~\Desktop\New_folder\ruff&gt;py issue.py
+</code></pre>
+<pre><code>[0, 1, 2]
+</code></pre>
+<pre><code>PS ~\Desktop\New_folder\ruff&gt;uvx ruff check issue.py --isolated --select PERF --preview --fix --unsafe-fixes
+</code></pre>
+<pre><code>Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+<pre><code>PS ~\Desktop\New_folder\ruff&gt;Get-Content issue.py
+</code></pre>
+<pre><code class="language-py">import asyncio
+async def async_range(limit):
+    for i in range(limit):
+        if i == 3:
+            raise ValueError
+        yield i
+
+async def main():
+    chunks = []
+    try:
+        chunks.extend([x async for x in async_range(5)])
+    except ValueError:
+        pass
+    print(chunks)
+asyncio.run(main())
+</code></pre>
+<pre><code>PS ~\Desktop\New_folder\ruff&gt;py issue.py
+</code></pre>
+<pre><code>[]
+</code></pre>
+</details>
+
+<p>The fix comes from here. The comment is partially wrong, it should say &quot;async_generators&quot; instead of &quot;generators&quot;, but that's the reason for the <code>[]</code>. This shouldn't be an issue in the normal case since there's no <code>[]</code> needed.
+https://github.com/astral-sh/ruff/blob/333191b7f7d78473a4ee88f6a24e199b29b01070/crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs#L427-L432</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-03 22:19</div>
+            <div class="timeline-body"><p>Hmm, maybe it shouldn't apply to async generators? I'm definitely open to considering it a bug rather than just unsafety. It feels borderline to me at the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-03 22:45</div>
+            <div class="timeline-body"><blockquote>
+<p>The fix for <code>PERF401</code> should already be marked as unsafe, so this is arguably expected or at least allowed behavior. I see that we still don't have a <code>## Fix safety</code> section in the docs, though, so we should fix that and mention a case like this at least.</p>
+</blockquote>
+<p>This is mentioned in <a href="https://github.com/astral-sh/ruff/issues/15584#issuecomment-2988951082">#15584</a>, and I have looked at it, but the main issue I've run into is I'm not sure why the fix is blanket unsafe. Assuming this doesn't happen, and there's no comment deletion, and the target is properly verified to be a list, I don't see why the fix isn't safe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-04 13:09</div>
+            <div class="timeline-body"><blockquote>
+<p>This is mentioned in <a href="https://github.com/astral-sh/ruff/issues/15584#issuecomment-2988951082">#15584</a>, and I have looked at it, but the main issue I've run into is I'm not sure why the fix is blanket unsafe. Assuming this doesn't happen, and there's no comment deletion, and the target is properly verified to be a list, I don't see why the fix isn't safe.</p>
+</blockquote>
+<p>I haven't thought too deeply about this case, but making a fix sometimes safe is definitely a viable outcome of working on #15584. We've had a couple of cases like that already. The conditions you mention sound reasonable for a safe fix, we'd just need to add it in preview since the rule is stable.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

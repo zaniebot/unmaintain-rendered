@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[feature request] option to exclude type checking imports in `ruff analyze` - astral-sh/ruff #20736</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[feature request] option to exclude type checking imports in `ruff analyze`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20736">#20736</a>
+        opened by <a href="https://github.com/gwdekker">@gwdekker</a>
+        on 2025-10-07 06:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gwdekker">@gwdekker</a> on 2025-10-07 06:40</div>
+            <div class="timeline-body"><p>tach by default ignores dependencies if the import statement is wrapped by if TYPE_CHECKING:. Is that something that is possible with ruff analyze graph as well, and would you consider adding it if not yet possible? (from another thread on the issue tracker I found <a href="https://grimp.readthedocs.io/en/stable/usage.html">Grimp</a>, which supports this with graph = grimp.build_graph('mypackage', exclude_type_checking_imports=True).</p>
+<p>came up in https://github.com/astral-sh/ruff/issues/20701</p>
+<p>@seddonym</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-10-07 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">analyze</span> added by @MichaReiser on 2025-10-07 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-07 10:24</div>
+            <div class="timeline-body"><p>An option like this does make sense to me (which we might want to default to false).</p>
+<p>An alternative is that ruff always returns all imports but sets a typing_only property for imports that are in TYPE_CHECKING blocks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhirshman">@jhirshman</a> on 2025-10-10 02:57</div>
+            <div class="timeline-body"><p>+1 here.  we recently changed from tach to using just ruff and are seeing the same thing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/seddonym">@seddonym</a> on 2025-10-10 09:23</div>
+            <div class="timeline-body"><p>If you're looking for a Tach replacement right now, Import Linter supports this via the exclude-type-checking-imports setting. https://import-linter.readthedocs.io/en/stable/usage.html#top-level-configuration</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gauthsvenkat">@gauthsvenkat</a> on 2025-11-03 09:18</div>
+            <div class="timeline-body"><p>Happy to pick this up, though I need some advice on what would be the best way to do this.</p>
+<ul>
+<li><p>If we do it right, we need to build a semantic model in <code>ruff analyze</code> and create a dependency on <code>crates/ruff_python_semantic</code> which has a <code> is_type_checking_block</code> <a href="https://github.com/astral-sh/ruffruff/blob/main/crates/ruff_python_semantic/src/analyze/typing.rs#L419-L419">helper function</a>.<br />
+We should be able to plug it in <code>collector.rs</code>'s <code>visit_stmt</code> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_graph/src/collector.rs#L97">method</a> to track type checking blocks.</p>
+</li>
+<li><p>The <code>CollectedImport</code> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_graph/src/collector.rs#L156">enum</a> can be made in to a struct and have a <code>typing_only</code> boolean field for this purpose.</p>
+</li>
+</ul>
+<p>@MichaReiser do we go this route? Let me know if I'm overlooking something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-03 15:08</div>
+            <div class="timeline-body"><p>I don't think it's enough to just depend on <code>ruff_python_semantic</code>. We'd have to do the AST walking to build the semantic model, and I believe, this is somewhat tight to our linting. The good news is that we don't have to be that strict about <code>TYPE_CHECKING</code>. In fact, ty, our upcoming type checker, treats any <code>if TYPE_CHECKING:</code> as a type checking block, regardless from where <code>TYPE_CHECKING</code> is imported from or if it's a local variable.</p>
+<p>E.g. see here https://github.com/astral-sh/ruff/blob/cedf36c415e54054c172699738bed559506870b0/crates/ty_python_semantic/src/types/infer/builder.rs#L4797-L4801</p>
+<p>What's unclear to me is how we want to design this feature. Do we want to change the output format (which would be a breaking change) or make this a configuration option? What's the better solution very much depends on how you all intend to use the feature. Is it that you always want to ignore type-checking imports or do you want to ignore type checking imports only for some analysis runs?</p>
+<p>Hearing more about your use cases would help us make a decision here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwdekker">@gwdekker</a> on 2025-11-04 06:48</div>
+            <div class="timeline-body"><p>We use <code>ruff analyze graph</code> as a way to do checks on the repository structure of our monorepo, which is structured as a <a href="https://polylith.gitbook.io/polylith">polylith monorepo</a>. For that use case, flags (either as config on the relevant pyproject.toml section or as flags on the command itself) seem sensible. For now we always want to ignore type-checking imports. However, even if we in the future want to be able to switch, it would for our use case acceptable to do two runs, one with and one without the flag.</p>
+<p>I actually really like the choice made for the configuration of <a href="https://import-linter.readthedocs.io/en/stable/usage.html#top-level-configuration">import-linter</a>. They have namespace_packages (what you already have), a flag on external dependencies (what you have through either specifying or omitting a path to a python executable - maybe your design could be improved by following that example), and a flag on what to do with typing imports. To me that covers all main flavours you would want from a tool like this.</p>
+<p>As a later, separate next step, <code>ruff analyze graph</code> could consider adding a <code>--detailed</code> graph which could cover some of the other open wishes:</p>
+<ul>
+<li>#15195 has a good list of ideas, including a way of marking if an import was for typing purposes or not</li>
+<li>#20737 adding line numbers could maybe also be part of that.
+(as an aside, you could even consider adding 3 levels of detail: one where the outputs are grouped on package level (as mentioned here: https://github.com/astral-sh/ruff/issues/13431), one as is right now, and one more detailed one). Although as long as you have the more detailed one, constructing the others is not that complicated either).</li>
+</ul>
+<p>So my suggestion would be:</p>
+<ul>
+<li>first implement the configuration options</li>
+<li>later design the alternative, potentially breaking, output format.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwdekker">@gwdekker</a> on 2025-11-04 06:51</div>
+            <div class="timeline-body"><blockquote>
+<p>In fact, ty, our upcoming type checker, treats any if TYPE_CHECKING: as a type checking block, regardless from where TYPE_CHECKING is imported from or if it's a local variable.</p>
+</blockquote>
+<p>A bit off-topic but wanted to ask, feel free to ignore: so would <code>ty</code> correctly find a type checking block if I would do the following:</p>
+<pre><code class="language-python">from typing import TYPE_CHECKING as TC
+
+if TC:
+   ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-04 18:13</div>
+            <div class="timeline-body"><p>I was wrong. ty supports both (any variable named <code>TYPE_CHECKING</code> and aliased). Do you need the aliasing? Having a first version that only supports <code>TYPE_CHECKING</code> is much easier and I suspect it should get us quiet far?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gauthsvenkat">@gauthsvenkat</a> on 2025-11-05 08:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you need the aliasing?</p>
+</blockquote>
+<p>(Answering on behalf of @gwdekker): We do not use aliasing in our monorepo.</p>
+<blockquote>
+<p>Having a first version that only supports TYPE_CHECKING is much easier and I suspect it should get us quiet far?</p>
+</blockquote>
+<p>Yes, that is my gut feeling as well. It would certainly work for our use-case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21472.html">astral-sh/ruff#21472</a> on 2025-11-15 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-16 12:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to create a lock file from installed packages (or from requirements.txt file) - astral-sh/uv #13300</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to create a lock file from installed packages (or from requirements.txt file)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13300">#13300</a>
+        opened by <a href="https://github.com/czechnology">@czechnology</a>
+        on 2025-05-05 12:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/czechnology">@czechnology</a> on 2025-05-05 12:50</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>When I'm creating a lock file with <code>uv lock</code>, it will always lock the newest available versions. Is it possible to create a lock file which matches the versions installed in the venv? I have not been able to find a combination of options which would achieve this.
+Alternatively, can I create a lock file from requirements.txt file?</p>
+<p>I would need this for the process of migrating to uv: I would like to keep the pinned versions the same as before to keep the change minimal.</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @czechnology on 2025-05-05 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/czechnology">@czechnology</a> on 2025-05-05 12:52</div>
+            <div class="timeline-body"><p>In practice, for the first option I would install the packages based on the <code>requirements.txt</code> file and then lock.</p>
+<pre><code class="language-sh">rm -rf .venv
+uv venv
+uv pip install -r requirements.txt
+uv lock --something?
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-05 13:15</div>
+            <div class="timeline-body"><p>You can use <code>uv pip freeze</code> to record the installed versions and use them as constraint dependencies for the first locking (you might need some manual editing for the transition from one environment to universal locking)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/czechnology">@czechnology</a> on 2025-05-05 13:19</div>
+            <div class="timeline-body"><p>That is not what I'm going for - I already have the dependencies I want to keep available as <code>requirements.txt</code> files. I am trying to figure out how to make a <code>uv.lock</code> file with the same versions as those in the requirements files. One way I thought would be doable is to first install those versions into a virtualenv and then somehow create a <code>uv.lock</code> file which would reflect the <em>installed</em> versions instead of the newest ones available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-05 14:48</div>
+            <div class="timeline-body"><p>You can pass the <code>requirements.txt</code> as a constraint:</p>
+<pre><code>echo &quot;anyio&quot; &gt; requirements.in
+uv pip compile requirements.in -o requirements.txt
+uv add -r requirements.in -c requirements.txt
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/czechnology">@czechnology</a> on 2025-05-05 18:57</div>
+            <div class="timeline-body"><p>Thanks, @charliermarsh, that is an interesting approach but gets me forward, thanks!</p>
+<pre><code class="language-sh"># Create a backup of pyproject.toml
+cp pyproject.toml pyproject.backup
+
+# Set the pinned requirements to be the constraints in pyproject.toml
+uv add -r requirements.txt -c requirements.txt
+
+# uv.lock is now created
+
+# Now that we have a lock file, let's revert the original config file
+mv pyproject.backup pyproject.toml
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-05 19:18</div>
+            <div class="timeline-body"><p>This is also covered in https://github.com/astral-sh/uv/pull/12382, to an extent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/czechnology">@czechnology</a> on 2025-05-05 19:59</div>
+            <div class="timeline-body"><p>That will be a useful part of the docs, @zanieb, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @czechnology on 2025-05-06 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10924.html">astral-sh/uv#10924</a> on 2025-05-20 16:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

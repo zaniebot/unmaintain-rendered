@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Same way to ban import of certain modules? - astral-sh/ruff #2656</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Same way to ban import of certain modules?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2656">#2656</a>
+        opened by <a href="https://github.com/ehdr">@ehdr</a>
+        on 2023-02-08 11:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ehdr">@ehdr</a> on 2023-02-08 11:26</div>
+            <div class="timeline-body"><p>It would be great to have a kind-of inverse of <a href="https://github.com/charliermarsh/ruff#required-imports"><code>required-imports</code></a>, to <strong>prevent</strong> certain modules from being imported.</p>
+<p>In our specific use case, we'd like to prevent certain modules from being imported only in <code>tests/*</code>.</p>
+<p>Googling, I found some seemingly related solutions like <a href="https://921kiyo.com/python-import-linter/">python-import-linter</a> and <a href="https://pypi.org/project/pylint-restricted-imports/">pylint-restricted-imports</a>, but haven't used either.</p>
+<p>(And mandatory praise: ruff is ⭐ ! Please continue and build better versions of every tool in the Python ecosystem!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-08 12:07</div>
+            <div class="timeline-body"><p>Can you use <a href="https://github.com/charliermarsh/ruff#flake8-tidy-imports-tid"><code>banned-api</code></a> to achieve this?</p>
+<p>I use something like the following:</p>
+<pre><code class="language-toml">[tool.ruff.flake8-tidy-imports]
+[tool.ruff.flake8-tidy-imports.banned-api]
+&quot;dateutil.tz&quot;.msg = &quot;Use `zoneinfo` instead.&quot;
+&quot;mock&quot;.msg = &quot;Use `pytest-mock` instead.&quot;
+&quot;pytz&quot;.msg = &quot;Use `zoneinfo` instead.&quot;
+&quot;unittest&quot;.msg = &quot;Use `pytest` instead.&quot;
+&quot;unittest.mock&quot;.msg = &quot;Use `pytest-mock` instead.&quot;
+</code></pre>
+<blockquote>
+<p>In our specific use case, we'd like to prevent certain modules from being imported only in <code>tests/*</code>.</p>
+</blockquote>
+<p>Not sure this can be achieved though at the moment...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ehdr">@ehdr</a> on 2023-02-08 12:11</div>
+            <div class="timeline-body"><p>Oh nice! Yes this looks very close to what I need, except, as you point out, that I'd need to also restrict it to only <code>tests/*</code> somehow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-08 12:15</div>
+            <div class="timeline-body"><p>Come to think of it, I think you might be able to achieve this with <code>extend</code>?</p>
+<p>Try adding <code>tests/ruff.toml</code> with something like the following:</p>
+<pre><code class="language-toml">extend = &quot;../pyproject.toml&quot;
+
+[flake8-tidy-imports]
+[flake8-tidy-imports.banned-api]
+&quot;dateutil.tz&quot;.msg = &quot;Use `zoneinfo` instead.&quot;
+&quot;mock&quot;.msg = &quot;Use `pytest-mock` instead.&quot;
+&quot;pytz&quot;.msg = &quot;Use `zoneinfo` instead.&quot;
+&quot;unittest&quot;.msg = &quot;Use `pytest` instead.&quot;
+&quot;unittest.mock&quot;.msg = &quot;Use `pytest-mock` instead.&quot;
+</code></pre>
+<p>See the <a href="https://github.com/charliermarsh/ruff#pyprojecttoml-discovery">documentation</a> for details...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ehdr">@ehdr</a> on 2023-02-08 12:31</div>
+            <div class="timeline-body"><p>Beautiful! Ever closer.</p>
+<p>For more detail, I want warning when we import from a certain top level module (e.g. <code>import top</code> or <code>from top import ...</code>), but allow importing from submodules of <code>top</code> (e.g. <code>import top.internal</code> or <code>from top.internal import ...</code>). Since <a href="https://pypi.org/project/flake8-tidy-imports/"><code>flake8-tidy-imports</code></a> seems to support <code>*</code> wildcards, would it be possible to change it so <code>&quot;top&quot;.msg = &quot;Import submodules directly instead.&quot;</code> matches only <code>top</code> exactly, and you'd have to specify the <code>top.*</code> wildcard if you want to match submodules too? I guess that would not be backwards compatible though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-08 12:42</div>
+            <div class="timeline-body"><p>Yeah, I think that's not possible as this stands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 15:43</div>
+            <div class="timeline-body"><p>Thanks for the kind words :)</p>
+<p>Ah yeah, that's not possible today -- to disallow the top-level import, but allow importing submodules, since we treat <code>from top.internal</code> as matching <code>top</code>. I was kind of hoping to avoid adding globbing there, just for simplicity. But I'll open a new issue to track that functionality. (I likely won't get to it soon, but it'd be good to know if others need this too.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2660.html">astral-sh/ruff#2660</a> on 2023-02-08 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 15:45</div>
+            <div class="timeline-body"><p>Tracking here: #2660.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-08 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Eventual-Inc/Daft/pulls/2826.html">Eventual-Inc/Daft#2826</a> on 2024-09-12 07:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

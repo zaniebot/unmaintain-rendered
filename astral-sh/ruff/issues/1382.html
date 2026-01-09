@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP006 is getting incorrectly reported with Python 3.8 - astral-sh/ruff #1382</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP006 is getting incorrectly reported with Python 3.8</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1382">#1382</a>
+        opened by <a href="https://github.com/rassie">@rassie</a>
+        on 2022-12-26 15:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rassie">@rassie</a> on 2022-12-26 15:17</div>
+            <div class="timeline-body"><p>Our current Python version is still 3.8, so <code>ruff</code>'s <code>target-version</code> is set to <code>py38</code>. However, <code>UP006</code> is still getting reported on <code>List[int]</code>, proposing <code>list[int]</code>, which is only available from Python 3.9.</p>
+<p>(From the sound of the documentation, I assume that <code>target-version</code> is all about setting the minimal Python version, but what can I do to limit the upper bound?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-26 15:18</div>
+            <div class="timeline-body"><p>Hmm, are you importing from futures at all? Like <code>from __future__ import annotations</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rassie">@rassie</a> on 2022-12-26 15:20</div>
+            <div class="timeline-body"><p>In this particular file I do, however, I'm not quite sure this has been a concious decision. But using that import doesn't normally allow using <code>list[int]</code>, if I'm not mistaken?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-26 15:21</div>
+            <div class="timeline-body"><p>It does, as long as <code>List[int]</code> is used as an annotation and not as a runtime value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-26 15:22</div>
+            <div class="timeline-body"><p>(Unless I'm mistaken!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rassie">@rassie</a> on 2022-12-26 15:24</div>
+            <div class="timeline-body"><p>Is there a good way to verify this? <code>mypy</code> seems to accept both, with or without futures import.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-26 15:31</div>
+            <div class="timeline-body"><p>Without future import:</p>
+<pre><code class="language-~/workspace">❯ cat main.py
+───────┬──────────────────────────────────────────────────────────────────────────────────────────────────
+       │ File: main.py
+───────┼──────────────────────────────────────────────────────────────────────────────────────────────────
+   1   │ from typing import List
+   2   │
+   3   │ x: List[int] = []
+   4   │ x: list[int] = []
+───────┴──────────────────────────────────────────────────────────────────────────────────────────────────
+~/workspace on  main [!] via 🐍 v3.11.0
+❯ python3.7 main.py
+Traceback (most recent call last):
+  File &quot;main.py&quot;, line 4, in &lt;module&gt;
+    x: list[int] = []
+TypeError: 'type' object is not subscriptable
+</code></pre>
+<p>With future import:</p>
+<pre><code>~/workspace on  main [!] via 🐍 v3.11.0
+❯ cat main.py
+───────┬──────────────────────────────────────────────────────────────────────────────────────────────────
+       │ File: main.py
+───────┼──────────────────────────────────────────────────────────────────────────────────────────────────
+   1   │ from __future__ import annotations
+   2   │
+   3   │ from typing import List
+   4   │
+   5   │ x: List[int] = []
+   6   │ x: list[int] = []
+───────┴──────────────────────────────────────────────────────────────────────────────────────────────────
+~/workspace on  main [!] via 🐍 v3.11.0
+❯ python3.7 main.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-26 15:32</div>
+            <div class="timeline-body"><p>I do this in <a href="https://github.com/charliermarsh/ruff-lsp/blob/d04b07cf28cf20eaf2c0e180ca4ef76d52bd7e31/ruff_lsp/server.py#L55"><code>ruff-lsp</code></a>, all of this code is tested on Python 3.7 - 3.11.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rassie">@rassie</a> on 2022-12-26 15:37</div>
+            <div class="timeline-body"><p>OK, then it sound like a non-issue, thanks!</p>
+<p>For any future visitors: it's extremely difficult to find this in the official docs, but https://peps.python.org/pep-0585/ does mention the futures import as a way to activate this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @rassie on 2022-12-26 15:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

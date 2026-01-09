@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>If a with statement’s target is a global variable that was assigned before, a false “redefinition of unused variable” is reported. - astral-sh/ruff #14257</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>If a with statement’s target is a global variable that was assigned before, a false “redefinition of unused variable” is reported.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14257">#14257</a>
+        opened by <a href="https://github.com/manueljacob">@manueljacob</a>
+        on 2024-11-11 01:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/manueljacob">@manueljacob</a> on 2024-11-11 01:09</div>
+            <div class="timeline-body"><pre><code class="language-python">from contextlib import nullcontext
+
+def f():
+    global glob
+    glob = 0
+    assert g() == 0
+    with nullcontext(enter_result=1) as glob:
+        assert g() == 1
+
+def g():
+    return glob
+</code></pre>
+<p>With ruff 0.7.3:</p>
+<pre><code>test.py:8:41: F811 Redefinition of unused `glob` from line 6
+  |
+6 |     glob = 0
+7 |     assert g() == 0
+8 |     with nullcontext(enter_result=1) as glob:
+  |                                         ^^^^ F811
+9 |         assert g() == 1
+  |
+  = help: Remove definition: `glob`
+
+Found 1 error.
+</code></pre>
+<p>However, <code>glob</code> is used by <code>g()</code>, so neither of the assignments can be removed.</p>
+<p>I’m aware that according to <a href="https://docs.python.org/3/reference/simple_stmts.html#the-global-statement">the Python documentation</a>, “names listed in a <a href="https://docs.python.org/3/reference/simple_stmts.html#global">global</a> statement must not be defined as formal parameters, or as targets in <a href="https://docs.python.org/3/reference/compound_stmts.html#with">with</a> statements or <a href="https://docs.python.org/3/reference/compound_stmts.html#except">except</a> clauses, or in a <a href="https://docs.python.org/3/reference/compound_stmts.html#for">for</a> target list, <a href="https://docs.python.org/3/reference/compound_stmts.html#class">class</a> definition, function definition, <a href="https://docs.python.org/3/reference/simple_stmts.html#import">import</a> statement, or variable annotation”. However, that is currently not enforced by CPython or PyPy. There could be a ruff rule that reports an error in this case, but that’s a separate issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-12 10:21</div>
+            <div class="timeline-body"><p>@AlexWaygood would you mind taking a look at this issue?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

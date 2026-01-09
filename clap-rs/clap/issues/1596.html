@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special characters not escaped for zsh completion script - clap-rs/clap #1596</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Special characters not escaped for zsh completion script</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/1596">#1596</a>
+        opened by <a href="https://github.com/iyzana">@iyzana</a>
+        on 2019-11-09 18:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/iyzana">@iyzana</a> on 2019-11-09 18:56</div>
+            <div class="timeline-body"><!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+<h3>Rust Version</h3>
+<p>rustc 1.38.0 (625451e37 2019-09-23)</p>
+<h3>Affected Version of clap</h3>
+<p>clap 2.33.0</p>
+<h3>Expected Behavior Summary</h3>
+<p>Generated Zsh completions correctly complete <code>possible_values</code> even in the presence of characters that have a special meaning for the shell</p>
+<h3>Actual Behavior Summary</h3>
+<p>For example, when some string in <code>possible_values</code> contains <code>|</code> (a pipe) the generated completion script fails with</p>
+<pre><code>(eval):1: parse error near `|'
+</code></pre>
+<p>when pressing tab for that argument.
+That was the problem I ran into. I then tested some other special characters.</p>
+<p>A sample of the characters I found to have problems:</p>
+<ul>
+<li><code>|</code> breaks completion script <code>(eval):1: parse error near `|'</code></li>
+<li><code>;</code> splits completion value into two</li>
+<li><code>?</code> makes whole value not show up in completions</li>
+<li><code>*</code> makes whole value not show up in completions</li>
+<li><code>&quot;</code> breaks completion script <code>(eval):1: unmatched &quot;</code></li>
+<li><code>`</code> breaks completion script <code>(eval):1: unmatched ` </code></li>
+<li><code>$</code> interpreted as https://www.gnu.org/software/bash/manual/html_node/Special-Parameters.html when followed by some other chars</li>
+<li><code>#</code> makes whole value not show up in completions</li>
+</ul>
+<p>There are more special characters, that need to be escaped. The reproduction from the repo tests against all non control ascii characters and some dollar-something strings.</p>
+<h3>Steps to Reproduce the issue</h3>
+<ul>
+<li>Clone reproduction repo <code>git clone https://github.com/succcubbus/clap-zsh-completions-repro</code></li>
+<li><code>cd clap-zsh-completions-repro</code></li>
+<li><code>cargo run --release &gt; _clap-zsh-completions-repro</code></li>
+<li>Copy <code>_clap-zsh-completions-repro</code> somewhere into the <code>$fpath</code> of the zsh (e.g. <code>/usr/local/share/zsh/site-functions</code>)</li>
+<li><code>cargo install --path .</code></li>
+<li><code>rehash; compinit</code> (so the zsh picks up the new binary and completions)</li>
+<li>Type <code>clap-zsh-completions-repro </code> and try to complete the argument</li>
+</ul>
+<h3>Sample Code or Link to Sample Code</h3>
+<p>https://github.com/succcubbus/clap-zsh-completions-repro</p>
+<h3>Debug output</h3>
+<p>https://pastebin.com/KU4yd6FR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dotboris">@dotboris</a> on 2019-11-10 01:37</div>
+            <div class="timeline-body"><p>I've hit the same issue in a project, I've had to work around this by rephrasing the <code>about</code> of a subcommand. https://github.com/dotboris/alt/commit/37e3255a6d154a57f9cb0ca00150e25312e253b5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: completion gen</span> added by @CreepySkeleton on 2020-02-01 11:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-04-09 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @CreepySkeleton on 2020-06-30 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Z: good first issue</span> added by @CreepySkeleton on 2020-06-30 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Z: mentored</span> added by @CreepySkeleton on 2020-06-30 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nukesor">@Nukesor</a> on 2020-09-14 07:48</div>
+            <div class="timeline-body"><p><code>'</code> also breaks completion when using subcommands, which uses <code>&quot;</code> for strings).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alerque">@alerque</a> on 2020-10-28 19:35</div>
+            <div class="timeline-body"><p>We just hit this in a project too, backticks in a documentation string shouldn't be causing code execution!</p>
+<p>In our case we're using the 3.0.0-beta.2 release, so this isn't just 2.x stuff.</p>
+<p>https://github.com/theleagueof/fontship/pull/108</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../theleagueof/fontship/pulls/108.html">theleagueof/fontship#108</a> on 2020-10-28 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-28 20:08</div>
+            <div class="timeline-body"><p>Unfortunately I am still unable to get zsh working properly on my computer. So, I am going to have to rely on contribution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alerque">@alerque</a> on 2020-10-29 18:36</div>
+            <div class="timeline-body"><p>Would introducing a dependency for this be acceptable? I had a look at what's available now and this would take quite a bit of coding. Most of the current dependencies are focused on Claps' core function: accepting stuff in from the CLI. Passing stuff out to into the CLI (as opposed to just the TTY) would is a bit of a different problem but it seems reasonable to expect Clap to handle this robustly. As the inital report and demo repository note there are a lot of cases involved here. I haven't confirmed if <a href="https://docs.rs/shell-escape/0.1.5/shell_escape/">shell-escape</a> is actually appropriate or if there are better alternatives, but before I research too much lets hear about whether a dependency to safely handle shell escapeing is going to be allowed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-29 18:53</div>
+            <div class="timeline-body"><p>Since the generator lives in a separate crate and is always opt-in, I would tentatively say yes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-29 18:53</div>
+            <div class="timeline-body"><p>But I don't think there are any crates that do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../sile-typesetter/cassowary.lua/pulls/28.html">sile-typesetter/cassowary.lua#28</a> on 2020-11-20 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2276.html">clap-rs/clap#2276</a> on 2020-12-27 22:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tonarino/innernet/issues/156.html">tonarino/innernet#156</a> on 2021-09-21 03:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ouch-org/ouch/pulls/153.html">ouch-org/ouch#153</a> on 2021-11-02 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/129.html">epage/clapng#129</a> on 2021-12-06 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-09 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> removed by @epage on 2021-12-09 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> removed by @epage on 2021-12-09 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @epage on 2021-12-09 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2488.html">clap-rs/clap#2488</a> on 2021-12-22 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/461.html">TeXitoi/structopt#461</a> on 2021-12-22 02:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../void-linux/void-packages/pulls/34931.html">void-linux/void-packages#34931</a> on 2022-02-13 09:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ouch-org/ouch/pulls/252.html">ouch-org/ouch#252</a> on 2022-02-13 09:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3713.html">clap-rs/clap#3713</a> on 2022-05-09 22:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

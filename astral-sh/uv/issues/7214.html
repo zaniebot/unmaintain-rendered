@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add excluded dependencies - astral-sh/uv #7214</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add excluded dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7214">#7214</a>
+        opened by <a href="https://github.com/MrPandir">@MrPandir</a>
+        on 2024-09-09 11:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MrPandir">@MrPandir</a> on 2024-09-09 11:01</div>
+            <div class="timeline-body"><p>I want to request functionality to exclude dependencies, even if it's a sub dependency.</p>
+<p>I would like to see the <code>--excluded</code> flag in the <code>uv add</code> command, and <code>excluded-dependencies</code> in <code>pyproject.toml</code>.</p>
+<p>This functionality is in <samp>rye</samp>, but not in <samp>uv</samp> for some reason. Is there any reason why it's not there, or are there other ways to avoid installing sub-dependencies? Let me know.</p>
+<p>I have seen the <code>uv sync --no-install-package</code> parameter, but this solution only affects the virtual environment, and is not locked in <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-09 11:42</div>
+            <div class="timeline-body"><p>Can you explain your use-case some more?</p>
+<p>Is this a duplicate of https://github.com/astral-sh/uv/issues/4422?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elohmeier">@elohmeier</a> on 2024-09-09 12:52</div>
+            <div class="timeline-body"><p>I think the use case is to prevent installing transitive dependencies. My use case for this is very similar. I need to use torch, which I've added to my <code>project.dependencies</code>. Since I'm not using GPU-acceleration, I would like to exclude its <code>nvidia</code> dependency to shave off 2.6 GiB of the resulting venv size.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-09 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MrPandir">@MrPandir</a> on 2024-09-10 09:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you explain your use-case some more?</p>
+</blockquote>
+<p>The example given by @elohmeier perfectly illustrates one of the scenarios where this functionality would be useful. In my case, I primarily need this feature to reduce the size of Docker images. It's unnecessary to download and store libraries that will never be used in the project.</p>
+<blockquote>
+<p>Is this a duplicate of https://github.com/astral-sh/uv/issues/4422?</p>
+</blockquote>
+<p>Regarding whether this is a duplicate of #4422, I'm not certain it is, as this issue proposes a different approach to excluding dependencies.</p>
+<p>I've come across one solution that currently works:</p>
+<pre><code class="language-toml">[tool.uv]
+override-dependencies = [
+    &quot;polyfactory ; sys_platform == 'never'&quot;,
+    &quot;jinja2 ; sys_platform == 'never'&quot;,
+]
+</code></pre>
+<p>However, this solution is not currently documented, and I find it not very intuitive. Moreover, it doesn't provide a convenient CLI solution for adding or removing items from this list.</p>
+<p>When I first saw the <code>sys_platform == 'never'</code> construct, I was quite confused about its purpose. Without additional explanation, this construction is not obvious. It would be much clearer to have a list like:</p>
+<pre><code class="language-toml">[tool.uv]
+excluded-dependencies = [
+    &quot;polyfactory&quot;,
+    &quot;typing-extensions&quot;,
+    &quot;faker&quot;,
+    &quot;jinja2&quot;,
+]
+</code></pre>
+<p>This format is more straightforward and easier to understand at a glance. It would also be beneficial to have corresponding CLI commands to manage this list easily.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2024-10-21 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-10-21 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @zanieb on 2024-10-21 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 21:44</div>
+            <div class="timeline-body"><p>I still think this is roughly a duplicate of #4422 but I'll leave it open for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-10-21 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsully">@dsully</a> on 2024-11-08 21:49</div>
+            <div class="timeline-body"><p>This doesn't appear to work when running <code>uv lock</code> or <code>uv sync</code>.</p>
+<pre><code class="language-toml">[tool.uv]
+override-dependencies = [
+    &quot;futures; sys_platform == 'never'&quot;,
+]
+</code></pre>
+<pre><code class="language-shell">$ uv sync
+⠦ futures==3.3.0
+  × Failed to download and build `futures==3.3.0`
+  ╰─▶ Build backend failed to determine requirements with `build_wheel()` (exit status: 1)
+
+      [stderr]
+      This backport is meant only for Python 2.
+      It does not work on Python 3, and Python 3 users do not need it as the concurrent.futures package is available in the standard library.
+      For projects that work on both Python 2 and 3, the dependency needs to be conditional on the Python version, like so:
+      extras_require={':python_version == &quot;2.7&quot;': ['futures']}
+</code></pre>
+<p>What's the right work around here? Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-08 22:14</div>
+            <div class="timeline-body"><p>Can you share a minimal <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsully">@dsully</a> on 2024-11-09 03:54</div>
+            <div class="timeline-body"><p>I think I got it sorted. PEBKAC.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9389.html">astral-sh/uv#9389</a> on 2024-11-23 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andreaimprovised">@andreaimprovised</a> on 2025-01-22 03:51</div>
+            <div class="timeline-body"><p>This would be really useful when there are transitive dependencies that are not copyright compatible and not necessary for your project to run.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-22 06:21</div>
+            <div class="timeline-body"><p>We already support this; per the linked issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-22 06:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andreaimprovised">@andreaimprovised</a> on 2025-01-22 06:51</div>
+            <div class="timeline-body"><p>Acknowledged.</p>
+<p>That said, we're not currently using pip (or uv pip) to install dependencies in our target environments: local and docker. I'd like to avoid doing so if possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MrPandir">@MrPandir</a> on 2025-01-23 15:20</div>
+            <div class="timeline-body"><p>@zanieb I don't think this solved the issue.</p>
+<p>Perhaps I didn't emphasize this enough in my messages, but I still wanted to see a way to specify a list of excluded dependencies in the <code>pyproject.toml</code> file.</p>
+<p>One of the possible designs for implementing this feature already exists in rye, which suits me perfectly. It's this specific design that I would like to see in uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2025-01-31 13:23</div>
+            <div class="timeline-body"><p>@zanieb is <code>--no-install-package</code> a uv sync only feature? Seems it can be also useful for a simple uv pip install</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12616.html">astral-sh/uv#12616</a> on 2025-05-15 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-31 14:18</div>
+            <div class="timeline-body"><p>We just added support for excluding dependencies entirely by name: https://github.com/astral-sh/uv/pull/16528 (available in the next release)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../datarobot-oss/datarobot-genai/pulls/27.html">datarobot-oss/datarobot-genai#27</a> on 2025-11-03 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2026-01-03 07:05</div>
+            <div class="timeline-body"><p>I'm trying to catch up on this thread and was wondering what the resolution was regarding the CLI key or environment variable. Why not support that as well?
+This could be useful in a CI context as well</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

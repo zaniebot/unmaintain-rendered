@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Fix error] C417 and walrus statements - astral-sh/ruff #14808</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Fix error] C417 and walrus statements</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14808">#14808</a>
+        opened by <a href="https://github.com/zeevox">@zeevox</a>
+        on 2024-12-06 08:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zeevox">@zeevox</a> on 2024-12-06 08:14</div>
+            <div class="timeline-body"><p>Applying fixes for rule <a href="https://docs.astral.sh/ruff/rules/unnecessary-map/">C417</a> introduces a syntax error when the second <code>map</code> argument is a walrus assignment operator.</p>
+<p>Minimal example below.
+I'm using <code>ruff</code> 0.8.2 and Python 3.12.7 to test this.
+For a more complete example, this issue first arose in my <a href="https://github.com/zeevox/advent-of-code/blob/26a86375aab513f4020b6264d7096561d031ba03/2019/python/Day03.py#L24-L27">solution</a> to Advent of Code <a href="https://adventofcode.com/2019/day/3">2019 Day 3</a>.</p>
+<pre><code class="language-diff">a = [1, 2, 3]
+b = map(lambda x: x, c := a)
+print(c)
+</code></pre>
+<p>Fix applied by <code>ruff check test.py --select C417 --fix --unsafe-fixes</code></p>
+<pre><code class="language-diff">-b = map(lambda x: x, c := a)
++b = (x for x in c := a)
+</code></pre>
+<p>is syntactically incorrect</p>
+<pre><code class="language-python">  File &quot;/home/zeevox/test.py&quot;, line 2
+    b = (x for x in c := a)
+                      ^^
+SyntaxError: invalid syntax
+</code></pre>
+<p>You would think wrapping the walrus statement in parentheses would suffice, like</p>
+<pre><code class="language-python">b = (x for x in (c := a))
+</code></pre>
+<p>And indeed, <code>ruff</code> believes all is well</p>
+<pre><code>% ruff check test.py --select C417
+All checks passed!
+</code></pre>
+<p>but this too, in fact, raises a syntax error</p>
+<pre><code class="language-python">  File &quot;/home/zeevox/test.py&quot;, line 2
+    b = (x for x in (c := a))
+                     ^^^^^^
+SyntaxError: assignment expression cannot be used in a comprehension iterable expression
+</code></pre>
+<p>I wonder whether the real solution is to extract the assignment onto the previous line, or not show the warning in the first place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-12-06 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-12-06 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-12-06 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2024-12-06 11:41</div>
+            <div class="timeline-body"><p>@AlexWaygood Can this change fix the error?</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_comprehensions/fixes.rs b/crates/ruff_linter/src/rules/flake8_comprehensions/fixes.rs
+index 4761c80b8..9e2baec85 100644
+--- a/crates/ruff_linter/src/rules/flake8_comprehensions/fixes.rs
++++ b/crates/ruff_linter/src/rules/flake8_comprehensions/fixes.rs
+@@ -697,7 +697,7 @@ pub(crate) fn fix_unnecessary_map(
+     let iter = iter.clone();
+     let iter = if iter.lpar().is_empty()
+         &amp;&amp; iter.rpar().is_empty()
+-        &amp;&amp; matches!(iter, Expression::IfExp(_) | Expression::Lambda(_))
++        &amp;&amp; matches!(iter, Expression::IfExp(_) | Expression::Lambda(_) | Expression::NamedExpr(_))
+     {
+         iter.with_parens(LeftParen::default(), RightParen::default())
+     } else {
+</code></pre>
+<p>Never mind. Didn't read the issue carefully.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14827.html">astral-sh/ruff#14827</a> on 2024-12-06 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-07 03:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

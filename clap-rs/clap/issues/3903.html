@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple value doesn't work when the first argument attached to short flag - clap-rs/clap #3903</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Multiple value doesn't work when the first argument attached to short flag</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3903">#3903</a>
+        opened by <a href="https://github.com/key262yek">@key262yek</a>
+        on 2022-07-09 12:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/key262yek">@key262yek</a> on 2022-07-09 12:39</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.62.0 (a8314ef7d 2022-06-27)</p>
+<h3>Clap Version</h3>
+<p>3.2.8</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Command;
+
+fn main() {
+    let sc = Command::new(&quot;test&quot;)
+        .arg(
+            Arg::new(&quot;m&quot;)
+                .short('m')
+                .takes_value(true)
+                .multiple_values(true),
+        )
+        .get_matches_from(vec![&quot;test&quot;, &quot;-ma&quot;, &quot;b&quot;, &quot;c&quot;]);
+
+    assert_eq!(
+        vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;],
+        sc.get_many::&lt;String&gt;(&quot;m&quot;)
+            .unwrap()
+            .into_iter()
+            .map(|x| x.as_str())
+            .collect::&lt;Vec&lt;&amp;str&gt;&gt;()
+    );
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run</p>
+<h3>Actual Behaviour</h3>
+<p>error: Found argument 'b' which wasn't expected, or isn't valid in this context</p>
+<h3>Expected Behaviour</h3>
+<p>program ends without error</p>
+<h3>Additional Context</h3>
+<p>In clap v2.34, following equivalent code works fine.</p>
+<pre><code class="language-rust">use clap::App;
+
+fn main(){
+let sc = App::new(&quot;test&quot;)
+        .arg(
+            Arg::with_name(&quot;m&quot;)
+                .short(&quot;m&quot;)
+                .takes_value(true)
+                .multiple(true),
+        )
+        .get_matches_from(vec![&quot;test&quot;, &quot;-ma&quot;, &quot;b&quot;, &quot;c&quot;]);
+
+assert_eq!(
+        vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;],
+        sc.values_of(&quot;m&quot;)
+            .unwrap()
+            .into_iter()
+            .collect::&lt;Vec&lt;&amp;str&gt;&gt;()
+    );
+}
+</code></pre>
+<p>I want to ask, this result is whether a bug or what you expected</p>
+<h3>Debug Output</h3>
+<p>error: Found argument 'b' which wasn't expected, or isn't valid in this context</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @key262yek on 2022-07-09 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../RustPython/RustPython/issues/3629.html">RustPython/RustPython#3629</a> on 2022-07-09 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../RustPython/RustPython/pulls/3512.html">RustPython/RustPython#3512</a> on 2022-07-09 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ciehanski">@ciehanski</a> on 2022-07-10 05:47</div>
+            <div class="timeline-body"><p>+1. Migrated from structopt 0.3.26. When attempting to parse a <code>Vec&lt;String&gt;</code> in <code>derive</code> mode, I experience the same errors as @key262yek in their <code>builder</code> mode example.</p>
+<pre><code class="language-rust">#[clap(arg_required_else_help = true)]
+Add {
+    #[clap(value_parser)]
+    job: String,
+    #[clap(short = 'f', long = &quot;files&quot;, value_parser)]
+    file_path: Vec&lt;String&gt;,
+}
+</code></pre>
+<pre><code class="language-bash">$ cargo run add -f &quot;test&quot; &quot;test1&quot; &quot;test2&quot;
+error: Found argument 'test2' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    kip add --files &lt;FILE_PATH&gt; &lt;JOB&gt;
+
+For more information try --help
+</code></pre>
+<p>This functionality worked prior in structopt so I'm assuming this may be a side effect of the v3 upgrade.</p>
+<p>Versions:</p>
+<ul>
+<li>clap 3.2.8</li>
+<li>rustc 1.62.0 (a8314ef7d 2022-06-27)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ciehanski/kip/issues/101.html">ciehanski/kip#101</a> on 2022-07-10 05:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-12 00:15</div>
+            <div class="timeline-body"><p>@ciehanski your case is slightly different.  See https://github.com/clap-rs/clap/discussions/3213</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-12 00:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I want to ask, this result is whether a bug or what you expected</p>
+</blockquote>
+<p>While I don't know the original intent of the change between 2 and 3, I would say this is expected behavior.</p>
+<p>My way of thinking of this is to look at the <code>=</code> case.  <code>-m=a b c</code> doesn't make it look like <code>b c</code> are attached to <code>-m</code>.  I think its the case also with <code>-ma b c</code>.  The part I'm a little more unsure of is that we stop parsing when coming across delimited values, so <code>-m a,b c</code> means that <code>c</code> isn't attached to <code>-m</code>.</p>
+<p>I'd be willing to hear other thoughts on this and we can dig into the history.  I'll leave this open for now for that conversation but I'm assuming this will be closed as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2022-07-12 00:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-07-12 00:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/key262yek">@key262yek</a> on 2022-07-12 06:34</div>
+            <div class="timeline-body"><p>I found <code>-m quopri -d</code> is working for both v2 and v3. (<code>-d</code> is a hyphen value for the argument <code>&quot;m&quot;</code>) But <code>-mquopri -d</code> is working only for v2. If the ambiguity was problem, I thought the both cases would be changed. So this one-side change made me think this is more like accidental change rather than intentional change, because both cases looking like similar ambiguous to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fanninpm">@fanninpm</a> on 2022-07-12 18:38</div>
+            <div class="timeline-body"><p>@key262yek In CPython, <code>-c</code> and <code>-m</code> are <a href="https://docs.python.org/3/using/cmdline.html#interface-options">&quot;interface options&quot;</a>, and once the interpreter encounters an interface option, it parses that argument, <em>dumps the rest of the command</em> into <code>sys.argv[1:]</code>, and stops parsing altogether. So, in CPython…</p>
+<pre><code class="language-text">python3 -m quopri -h
+</code></pre>
+<p>should have the same behavior as…</p>
+<pre><code class="language-text">python3 -mquopri -h
+</code></pre>
+<p>(here, the <code>-h</code> flag is being dumped into <code>sys.argv[1]</code>.)</p>
+<p>I hope that helps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/key262yek">@key262yek</a> on 2022-07-14 11:38</div>
+            <div class="timeline-body"><p>@fanninpm I understand your two examples are equivalent.
+The reason why I cannot change the way of passing arguments is because it is in unittests of rustpython.
+Thus I need to find different way to parsing them without change argument form itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fanninpm">@fanninpm</a> on 2022-07-14 16:43</div>
+            <div class="timeline-body"><p>@key262yek Perhaps what is needed in this case is the <a href="https://docs.rs/clap/3.2.12/clap/builder/struct.Arg.html#method.allow_hyphen_values"><code>allow_hyphen_values</code> method</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../RustPython/RustPython/pulls/4445.html">RustPython/RustPython#4445</a> on 2023-01-13 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-03-28 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../RustPython/RustPython/pulls/5414.html">RustPython/RustPython#5414</a> on 2024-09-25 05:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

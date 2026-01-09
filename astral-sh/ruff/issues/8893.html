@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: `allow_empty_first_line_before_new_block_or_comment` preview style - astral-sh/ruff #8893</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: `allow_empty_first_line_before_new_block_or_comment` preview style</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8893">#8893</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-11-29 02:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-29 02:30</div>
+            <div class="timeline-body"><p>Implement Black's <a href="https://github.com/psf/black/pull/3967"><code>allow_empty_first_line_before_new_block_or_comment</code></a> as a Ruff preview style.</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;
+    Docstring
+    &quot;&quot;&quot;
+
+    # Here we go
+    if x:
+
+        # This is also now fine
+        a = 123
+
+    else:
+        # But not necessary
+        a = 123
+</code></pre>
+<p>Notice how black now allows empty lines before the comments. Ruff seems to support this sometimes.</p>
+<p>Goal: Implement the new formatting behind the preview flag and import the Black tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-11-29 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2023-11-29 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2023-11-29 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8678.html">astral-sh/ruff#8678</a> on 2023-11-29 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-20 05:11</div>
+            <div class="timeline-body"><p>Heads up: it looks like this was changed to <em>always</em> allow a blank line at the top of the block, <em>unless</em> it's immediately followed by a docstring. See: https://github.com/psf/black/pull/4060.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9170.html">astral-sh/ruff#9170</a> on 2023-12-20 05:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-20 05:15</div>
+            <div class="timeline-body"><p>Except, apparently, if it's a class immediately followed by a function: https://black.vercel.app/?version=main&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4ACbAGldAD2IimZxl1N_WlXnON2nzNKOlH52D45tYviogiBy8ZlN26ZjqUAmZNQ-muxSkGcV-iAN9HZdhppScEmlx2Al7gJjtYIOGHyFQmjMSn_t7leQm1ctcrtU7IhNuHk3t8IsBD624xhI5TmvygAAAAC8TNkRzPz_WQABhQGcAQAALUwcRrHEZ_sCAAAAAARZWg==</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-22 05:30</div>
+            <div class="timeline-body"><p>I see the motivation behind this change but it can lead to unintentional deviations that outweigh the benefit of the change.</p>
+<p>Let's say you start with</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;
+    Docstring
+    &quot;&quot;&quot;
+
+    # Here we go
+    if x:
+		if no_longer_needed:
+			print(&quot;Some complex statements&quot;)
+
+        # This is also now fine
+        a = 123
+</code></pre>
+<p>And you refactor the code to remove the <code>no_longer_needed</code> branch</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;
+    Docstring
+    &quot;&quot;&quot;
+
+    # Here we go
+    if x:
+
+        # This is also now fine
+        a = 123
+</code></pre>
+<p>and you now hit save. Without this change, the comment and <code>a = 123</code> gets moved directly under the <code>if x:</code> condition which is what I would expect and gives us consistent formatting.</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;
+    Docstring
+    &quot;&quot;&quot;
+
+    # Here we go
+    if x:
+        # This is also now fine
+        a = 123
+</code></pre>
+<p>This would no longer happen if we implement the change. Instead, I have to remove the line above the comment manually. While I see that being able to make an exception might help with readability in few cases, removing the new line is the desired behavior in most cases.</p>
+<p>I opened <a href="https://github.com/psf/black/issues/4121">an issue in the Black repository</a> to share our feedback with them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-12-22 05:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vaughnkoch">@vaughnkoch</a> on 2024-01-25 07:20</div>
+            <div class="timeline-body"><p>Hi, thanks for building Ruff!</p>
+<p>Given that Black is allowing newlines after a block opening line in the 2024 preview style, based on https://github.com/psf/black/issues/4043, does Ruff plan to reopen this issue and conform to Black's intended style?</p>
+<p>Personally, I place a high premium on code readability, and while I don't always add blank lines after a block opening line, it can often make the code a lot clearer, as demonstrated here: https://github.com/psf/black/issues/902#issuecomment-1425713025</p>
+<p>I would love to see this reopened and addressed. Thanks for considering!</p>
+<p>note: I prefer not to comment on closed issues, but this seems like the most appropriate place to comment. Please let me know if there's a better way to provide feedback :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-25 07:26</div>
+            <div class="timeline-body"><p>Hy @vaughnkoch</p>
+<p>We share your concern for readability. That's the main purpose of a code formatter, isn't it.</p>
+<p>We have some concerns with the preview style as it is defined by black and decided not to ship it as part of Ruff's upcoming new stable style (which this issue is tracking). It doesn't mean we don't care. It's just that we aren't convinced by the heuristic and want to avoid changing styles too often.</p>
+<p>My personal take on Black's blank line rules is that they're too opinionated and I could see it as an option that we explore with simpler blank line rules in the future, but that requires taking a holistic look at all of Ruff's/Black's blank line rules and find ways to simplify them.</p>
+<p>I recommend opening a new issue that we can use for future style discussions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9745.html">astral-sh/ruff#9745</a> on 2024-01-31 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8566.html">astral-sh/ruff#8566</a> on 2024-03-18 08:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21110.html">astral-sh/ruff#21110</a> on 2025-10-28 16:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>help takes project name instead of command when printing help for sub command - clap-rs/clap #993</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>help takes project name instead of command when printing help for sub command</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/993">#993</a>
+        opened by <a href="https://github.com/sagiegurari">@sagiegurari</a>
+        on 2017-07-04 03:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sagiegurari">@sagiegurari</a> on 2017-07-04 03:46</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p>rustc 1.20.0-nightly (05b579766 2017-07-01)
+binary: rustc
+commit-hash: 05b5797664d6aeaa0c7d0606610f336fe0b57e97
+commit-date: 2017-07-01
+host: x86_64-unknown-linux-gnu
+release: 1.20.0-nightly
+LLVM version: 4.0</p>
+<h3>Affected Version of clap</h3>
+<p>[dependencies]
+clap = &quot;^2.25.0&quot;</p>
+<h3>Expected Behavior Summary</h3>
+<p>cargo subcommand -h will print in both name and usage</p>
+<p>command subcommand ...</p>
+<h3>Actual Behavior Summary</h3>
+<p>in name
+projectname-subcommand</p>
+<p>in usage
+projectname subcommand ....</p>
+<h3>Steps to Reproduce the issue</h3>
+<p>use the below code and run</p>
+<pre><code class="language-sh">cargo run -- something -h
+</code></pre>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">extern crate clap;
+use clap::{App, SubCommand};
+
+fn main() {
+    App::new(&quot;cargo&quot;).subcommand(SubCommand::with_name(&quot;something&quot;).version(&quot;1&quot;).about(&quot;test clap&quot;)).get_matches();
+}
+</code></pre>
+<h3>Debug output</h3>
+<p>see file for full debug info
+<a href="https://github.com/kbknapp/clap-rs/files/1120943/debug.txt">debug.txt</a></p>
+<p>at the end see:</p>
+<pre><code class="language-console">misc-test-something 1
+test clap
+
+USAGE:
+    misc-test something
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Arnavion">@Arnavion</a> on 2017-08-14 23:47</div>
+            <div class="timeline-body"><p>That is by design. It uses the binary name set via <code>App::bin_name()</code> which defaults to the crate name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sagiegurari">@sagiegurari</a> on 2017-08-15 07:07</div>
+            <div class="timeline-body"><p>So why 'cratename-subcommand' and not 'cratename subcommand'?
+Anyway, the bin_name was a good clue and I see I can modify that, so i'll close the issue and just set it manually.
+thanks</p>
+<p>https://docs.rs/clap/2.26.0/clap/struct.App.html#method.bin_name</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sagiegurari on 2017-08-15 07:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Arnavion">@Arnavion</a> on 2017-08-15 07:58</div>
+            <div class="timeline-body"><p>It's a convention that if you want an application <code>foo</code> to use a subcommand <code>bar</code>, the implementation of the subcommand is a file named <code>foo-bar</code>. For example that's why external cargo subcommands like clippy have a binary named <code>cargo-clippy</code> (hyphen) that you invoke using <code>cargo clippy</code> (space).</p>
+<p>Even when the subcommand is not actually a separate binary, the convention is still used in its help. Eg: https://git-scm.com/docs/git-log</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

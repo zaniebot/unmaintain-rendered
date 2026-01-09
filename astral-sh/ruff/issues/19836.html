@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISC001 and ISC002 trigger on normal and byte string concatenation - astral-sh/ruff #19836</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ISC001 and ISC002 trigger on normal and byte string concatenation</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19836">#19836</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-08-08 20:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-08-08 20:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When a normal and byte string are concatenated, both <a href="https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/#single-line-implicit-string-concatenation-isc001">single-line-implicit-string-concatenation (ISC001)</a> and <a href="https://docs.astral.sh/ruff/rules/multi-line-implicit-string-concatenation/#multi-line-implicit-string-concatenation-isc002">multi-line-implicit-string-concatenation (ISC002)</a> still trigger, making a duplicate message for the same span as the syntax error <a href="https://play.ruff.rs/dc9b49fc-6ec4-4eb4-b7ba-4a6b6efe3421">playground</a>:</p>
+<pre><code class="language-powershell">PS ~&gt;echo @'
+foo = &quot;&quot; b&quot;&quot;
+bar = &quot;&quot;\
+b&quot;&quot;
+'@ | uvx ruff check --select ISC -
+-:1:7: invalid-syntax: Bytes literal cannot be mixed with non-bytes literals
+  |
+1 | foo = &quot;&quot; b&quot;&quot;
+  |       ^^^^^^
+2 | bar = &quot;&quot;\
+3 | b&quot;&quot;
+  |
+
+-:1:7: ISC001 Implicitly concatenated string literals on one line
+  |
+1 | foo = &quot;&quot; b&quot;&quot;
+  |       ^^^^^^ ISC001
+2 | bar = &quot;&quot;\
+3 | b&quot;&quot;
+  |
+  = help: Combine string literals
+
+-:2:7: invalid-syntax: Bytes literal cannot be mixed with non-bytes literals
+  |
+1 |   foo = &quot;&quot; b&quot;&quot;
+2 |   bar = &quot;&quot;\
+  |  _______^
+3 | | b&quot;&quot;
+  | |___^
+4 |   baz = (&quot;&quot;
+5 |   + b&quot;&quot;)
+  |
+
+-:2:7: ISC002 Implicitly concatenated string literals over multiple lines
+  |
+1 |   foo = &quot;&quot; b&quot;&quot;
+2 |   bar = &quot;&quot;\
+  |  _______^
+3 | | b&quot;&quot;
+  | |___^ ISC002
+4 |   baz = (&quot;&quot;
+5 |   + b&quot;&quot;)
+  |
+
+Found 4 errors.
+</code></pre>
+<p>Both ISC001 and ISC002 shouldn't trigger here to prevent the duplicate message.</p>
+<h3>Version</h3>
+<p>ruff 0.12.8 (f51a228f0 2025-08-07)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-08 21:42</div>
+            <div class="timeline-body"><p>I'm kind of on the fence about whether this is a bug or not. It feels like the natural thing to do when seeing the syntax error would be to remove the <code>b</code> (or add one), which would then reveal the ISC errors, so I think it makes sense to show them both from the start. But I'm open to other opinions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-08-08 21:54</div>
+            <div class="timeline-body"><p>One other point of consideration: This same thing will also happen when the syntax error for mixing t-strings with non-t-strings is implemented into ruff on 3.14+</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-11 07:43</div>
+            <div class="timeline-body"><blockquote>
+<p>One other point of consideration: This same thing will also happen when the syntax error for mixing t-strings with non-t-strings is implemented into ruff on 3.14+</p>
+</blockquote>
+<p>This is already the case today: https://play.ruff.rs/63689b22-738f-46fc-961d-6ad329a84d3a</p>
+<p>I feel like either approach is fine here:</p>
+<ul>
+<li>Showing both errors: Gives users the full context and they can directly apply the right fix</li>
+<li>Only showing the invalid syntax error: This reduces the noise in an IDE and makes it easier for users to spot the most important errors (fixing the syntax error is necessary to run the program, fixing the ISC violation can be done later)</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

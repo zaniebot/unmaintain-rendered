@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relative paths in script sources don't work - astral-sh/uv #7292</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Relative paths in script sources don't work</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7292">#7292</a>
+        opened by <a href="https://github.com/SnirShechter">@SnirShechter</a>
+        on 2024-09-11 14:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SnirShechter">@SnirShechter</a> on 2024-09-11 14:14</div>
+            <div class="timeline-body"><h2>The error</h2>
+<pre><code>PS C:\whatever&gt; uv run .\scripts\myscript.py
+Reading inline script metadata from: .\scripts\myscript.py
+error: path could not be converted to a URL: libs\mypackage
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/dcc2a159-33fa-478d-a2e8-417f51657d38" alt="image" /></p>
+<h2>In short</h2>
+<p>Script sources (<code>[tool.uv.sources]</code>) use full paths, do not allow for relative paths e.g. <code>../libs/mypackage</code> and are thus not platform-agnostic and can't be used by multiple developers.</p>
+<h2>In depth</h2>
+<p>Consider this script:</p>
+<pre><code class="language-python">from mypackage import hello
+
+hello(&quot;John&quot;)
+</code></pre>
+<p>Running <code>uv add --script myscript.py ./libs/mypackage --editable</code> results in this:</p>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.11&quot;
+# dependencies = [
+#     &quot;mypackage&quot;,
+# ]
+#
+# [tool.uv.sources]
+# mypackage = { path = 'C:\whatever\libs\mypackage', editable = true }
+# ///
+from mypackage import hello
+
+hello(&quot;John&quot;)
+</code></pre>
+<p>But obviously <code>C:\...</code> is not platform agnostic, so to make it work for all developers I need to change it to <code>..\libs\mypackage</code>, but that doesn't work (see the error above)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-11 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-11 15:24</div>
+            <div class="timeline-body"><p>Thanks, these look like bugs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-11 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7301.html">astral-sh/uv#7301</a> on 2024-09-11 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-11 18:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

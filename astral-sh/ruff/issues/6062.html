@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: Allow comments between `and`/`or` and the right hand side - astral-sh/ruff #6062</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: Allow comments between `and`/`or` and the right hand side</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6062">#6062</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-07-25 10:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2023-07-25 10:31</div>
+            <div class="timeline-body"><p>The following input is stable with black ...</p>
+<pre><code class="language-python">if (
+    a
+    # own line comment between left hand side and `and`
+    and
+    # own line comment between `and` and right hand side
+    b
+):
+    pass
+</code></pre>
+<p>... but we move the second own line comment before the <code>and</code>:</p>
+<pre><code class="language-python">if (
+    a
+    # own line comment between left hand side and `and`
+    # own line comment between `and` and right hand side
+    and b
+):
+    pass
+</code></pre>
+<p>The behavior is the same with <code>or</code>, but <code>+</code> works, i.e. other binary expressions work but not boolean expressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-07-25 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6069.html">astral-sh/ruff#6069</a> on 2023-07-25 11:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-31 16:19</div>
+            <div class="timeline-body"><p>We may want to generalize the formatting of all <em>BinaryLike</em> nodes to achieve consistent formatting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-16 07:14</div>
+            <div class="timeline-body"><p>I actually prefer our formatting over black's and it preserves the comment ordering. But we should align the comment placement for all binary like expressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-16 17:29</div>
+            <div class="timeline-body"><p>I agree with Micha that our formatting is more readable at the expense of possibly overriding user intent. I don't see what extra context can be given by having the comment after the operator though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-17 06:16</div>
+            <div class="timeline-body"><p>I guess the challenge with the current formatting is how to handle trailing <code>and</code> comments and preserve the comment line position and order: <a href="https://play.ruff.rs/de5c3b05-692f-4f1a-8002-b45282653f3c">Playground</a></p>
+<p>I think my preferred formatting is:</p>
+<pre><code class="language-python">if (
+    a
+    # own line comment between left hand side and `and`
+    # trailing
+    # own line comment between `and` and right hand side
+    and b
+):
+    pass
+</code></pre>
+<p>It preserves the order, but changes <code>trailing</code> to an own linecomment. But I think this overall looks better.</p>
+<p>Edit: Similar issue https://github.com/astral-sh/ruff/issues/6647</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6634.html">astral-sh/ruff#6634</a> on 2023-08-17 06:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-08-17 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-29 14:45</div>
+            <div class="timeline-body"><p>And this is another funny one CC: @charliermarsh You best run our formatter on <code>django</code> and take a look at the diff. There are plenty of examples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-30 04:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-30 04:27</div>
+            <div class="timeline-body"><p>I can take it on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-30 10:09</div>
+            <div class="timeline-body"><p>Thank you @charliermarsh</p>
+<p>If possible, could we align the comment handling with the binary expression formatting? It's very likely that I have to unify the two implementations and that would be significantly easier if they roughly work the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-06 15:52</div>
+            <div class="timeline-body"><p>It turns out that the string formatting doesn't overlap with <code>and</code> <code>or</code> formatting. It only affects binary and comparison expressions. That means this is still up for grabs.</p>
+<p>Overall, the binary / compare formatting seems very reasonable. Maybe we can mimick that formatting for boolean expressions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-07 08:02</div>
+            <div class="timeline-body"><p>@charliermarsh do you plan to work on this next week? If not, @konstin would you be interested in taking a look. It's our biggest difference in Django by now or I'll try to have a look since it's related to binary expression formatting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2023-09-07 10:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-07 10:17</div>
+            <div class="timeline-body"><p>@konstin - please go ahead! Haven’t started on it at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2023-09-08 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-08 17:30</div>
+            <div class="timeline-body"><p>@konstin sorry for the forth and back. I consider rewriting the boolean expression formatting to use the <code>BinaryLike</code> formatting (the same logic as the binary and compare expressions use) to fix #7004 just once rather than in two places. Maybe... just maybe, it fixes this difference too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2023-09-11 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @MichaReiser on 2023-09-11 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7269.html">astral-sh/ruff#7269</a> on 2023-09-11 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-12 06:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

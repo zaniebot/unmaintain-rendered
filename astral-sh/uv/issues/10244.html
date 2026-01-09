@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Running `venv/bin/uv pip compile` does not use the Python in`venv/bin` (if that venv was not activated) - astral-sh/uv #10244</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Running `venv/bin/uv pip compile` does not use the Python in`venv/bin` (if that venv was not activated)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10244">#10244</a>
+        opened by <a href="https://github.com/thecityofguanyu">@thecityofguanyu</a>
+        on 2024-12-30 21:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thecityofguanyu">@thecityofguanyu</a> on 2024-12-30 21:14</div>
+            <div class="timeline-body"><p>Given the following:</p>
+<ul>
+<li>An &quot;unactivated&quot; Python3.12 virtualenv, <code>venv/</code>, into which <code>uv</code> 0.5.11 was installed</li>
+<li>A system install of Python &lt;3.12, which will be resolved from PATH</li>
+<li>A pip-compile <code>requirements.in</code> file that includes a package with <code>requires-python = &quot;&gt;=3.12&quot;</code></li>
+</ul>
+<p>When the following command is run:</p>
+<ul>
+<li><code>venv/bin/uv pip compile requirements.in  --verbose</code></li>
+</ul>
+<p>The command will fail because <code>uv</code> selects the &lt;3.12 system Python instead of the one associated with the virtualenv into which <code>uv</code> itself was installed.</p>
+<p>Note that Python docs seem to suggest this should be okay to do:
+https://docs.python.org/3/library/venv.html</p>
+<blockquote>
+<p>You don’t specifically need to activate a virtual environment, as you can just specify the full path to that environment’s Python interpreter when invoking Python</p>
+</blockquote>
+<p>Example output demonstrating:</p>
+<pre><code class="language-shell">~/ echo my-package &gt; requirements.in
+~/ python3.12 -m venv venv
+~/venv/bin/pip --version
+pip 24.3.1 from ./venv/lib/python3.12/site-packages/pip (python 3.12)
+~/ venv/bin/pip install uv
+Looking in indexes: redacted
+Collecting uv
+  Using cached https://redacted/uv-0.5.11-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (15.0 MB)
+Installing collected packages: uv
+Successfully installed uv-0.5.11
+~/ venv/bin/uv pip compile requirements.in  --verbose
+DEBUG uv 0.5.11
+DEBUG Starting Python discovery for a default Python
+DEBUG Looking for exact match for request a default Python
+DEBUG Searching for default Python interpreter in virtual environments, managed installations, or search path
+DEBUG Searching for managed installations at `/home/user/.local/share/uv/python`
+DEBUG Found `cpython-3.11.11-linux-x86_64-gnu` at `/opt/bin/python3.11` (search path)
+DEBUG Using Python 3.11.11 interpreter at /opt/bin/python3.11 for builds
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.11.11
+DEBUG Solving with target Python version: &gt;=3.11.11
+DEBUG Adding direct dependency: my-package*
+[redacted]
+DEBUG Searching for a compatible version of my-package (*)
+DEBUG No compatible version found for: Python
+DEBUG Recording unit propagation conflict of Python from incompatibility of (my-package)
+DEBUG Searching for a compatible version of my-package (&lt;0.1.0 | &gt;0.1.0)
+DEBUG Searching for a compatible version of my-package (&lt;0.0.1 | &gt;0.0.1, &lt;0.1.0 | &gt;0.1.0)
+DEBUG No compatible version found for: my-package
+  × No solution found when resolving dependencies:
+  ╰─▶ Because the current Python version (3.11.11) does not satisfy Python&gt;=3.12 and all versions of my-package depend on Python&gt;=3.12, we can conclude that all versions of my-package cannot be used.
+      And because you require my-package, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thecityofguanyu">@thecityofguanyu</a> on 2024-12-30 21:27</div>
+            <div class="timeline-body"><p>Caveat: Yes, simply activating the venv gets around this issue and is almost surely the best practice. Just wanted to open this issue anyway to see if this was known behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thecityofguanyu">@thecityofguanyu</a> on 2024-12-30 21:42</div>
+            <div class="timeline-body"><p>Reading the docs, I see that perhaps this would have fixed the issue as well</p>
+<blockquote>
+<p>If uv is installed in a Python environment, e.g., with pip, it can still be used to modify other environments. However, when invoked with python -m uv, uv will default to using the parent interpreter's environment. Invoking uv via Python adds startup overhead and is not recommended for general usage.</p>
+</blockquote>
+<p>https://docs.astral.sh/uv/pip/environments/#using-arbitrary-python-environments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thecityofguanyu">@thecityofguanyu</a> on 2024-12-30 21:42</div>
+            <div class="timeline-body"><p>Feel free to close this issue if there is no further comment on the topic given https://github.com/astral-sh/uv/issues/10244#issuecomment-2565943734</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-30 21:48</div>
+            <div class="timeline-body"><p>Yeah <code>venv/bin/python -m uv</code> is the recommended pattern if this is the behavior you want. We can't just sniff that we're installed in a virtual environment because that would presumably cause problems when uv is installed with tools like <code>pipx</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-12-30 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thecityofguanyu">@thecityofguanyu</a> on 2024-12-30 22:02</div>
+            <div class="timeline-body"><p>I am certainly not married to this behavior. 😄</p>
+<p>Ultimately, I think the main issues at play here not with the <code>uv</code> code itself, but rather:</p>
+<ul>
+<li>The wishy-washy language from Python's docs about around the virtualenv</li>
+<li>The inherited baggage from being a &quot;drop-in replacement&quot;</li>
+</ul>
+<p>The language I'm referring to are the bits in the Python docs that say things like:</p>
+<blockquote>
+<p>A virtual environment <strong>may</strong> be “activated”  ...</p>
+</blockquote>
+<p>And:</p>
+<blockquote>
+<p>You <strong>don’t specifically need to</strong> activate a virtual environment ...</p>
+</blockquote>
+<p>While perhaps technically accurate for Python, I think that paints the wrong picture. Those statements are (I would imagine) almost never the right answer for actual usage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thecityofguanyu">@thecityofguanyu</a> on 2024-12-30 22:02</div>
+            <div class="timeline-body"><p>Either way, thanks @zanieb for the confirmation! Will close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @thecityofguanyu on 2024-12-30 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-30 22:05</div>
+            <div class="timeline-body"><p>Are you referring to the upstream Python documentation or ours?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thecityofguanyu">@thecityofguanyu</a> on 2024-12-31 14:48</div>
+            <div class="timeline-body"><p>The upstream Python documentation, particularly on https://docs.python.org/3/library/venv.html</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

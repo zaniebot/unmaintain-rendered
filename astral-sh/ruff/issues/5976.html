@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hang on multiline nested f-string missing placeholder with CRLF line endings - astral-sh/ruff #5976</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Hang on multiline nested f-string missing placeholder with CRLF line endings</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5976">#5976</a>
+        opened by <a href="https://github.com/DanGonite57">@DanGonite57</a>
+        on 2023-07-22 12:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DanGonite57">@DanGonite57</a> on 2023-07-22 12:47</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p><code>ruff 0.0.280</code></p>
+<p>Running a check on a CRLF file containing a multiline nested f-string that is missing a placeholder causes the program to hang.</p>
+<p><code>cargo run -p ruff_cli -- check 'test.py' --isolated --no-cache -v</code></p>
+<pre><code>f&quot;&quot;&quot;1
+{f'2'}&quot;&quot;&quot;
+</code></pre>
+<p>Having done some basic digging, I believe the issue lies at https://github.com/astral-sh/ruff/blob/33657d3a1ccc5ccfefa26f50758ba46b74946da0/crates/ruff/src/rules/pyflakes/rules/f_string_missing_placeholders.rs#L56-L57</p>
+<p><code>locator.contents() = &quot;f\&quot;\&quot;\&quot;1\r\n{f'2'}\&quot;\&quot;\&quot;\r\n&quot;</code></p>
+<p>The given slice range (<code>7..11</code>) may be treating <code>\r\n</code> as a single character, and so the resulting slice is incorrect (<code>&amp;contents = &quot;{f'2&quot;</code>) and causes the lexer to hang. The issue does not occur if the file is switched to LF.</p>
+<p>This may be related to and/or compounded by https://github.com/astral-sh/ruff/issues/5907</p>
+<p><code>cargo dev print-ast</code> gives:</p>
+<pre><code>[
+    Expr(
+        StmtExpr {
+            range: 0..16,
+            value: JoinedStr(
+                ExprJoinedStr {
+                    range: 0..16,
+                    values: [
+                        Constant(
+                            ExprConstant {
+                                range: 0..16,
+                                value: Str(
+                                    &quot;1\n&quot;,
+                                ),
+                                kind: None,
+                            },
+                        ),
+                        FormattedValue(
+                            ExprFormattedValue {
+                                range: 0..16,
+                                value: JoinedStr(
+                                    ExprJoinedStr {
+                                        range: 7..11,
+                                        values: [
+                                            Constant(
+                                                ExprConstant {
+                                                    range: 7..11,
+                                                    value: Str(
+                                                        &quot;2&quot;,
+                                                    ),
+                                                    kind: None,
+                                                },
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                conversion: None,
+                                format_spec: None,
+                            },
+                        ),
+                    ],
+                },
+            ),
+        },
+    ),
+]
+</code></pre>
+<p>If the range of the inner constant is corrected, it is possible the issue will go away by itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-22 13:38</div>
+            <div class="timeline-body"><p>Thanks for the clear issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-07-22 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-24 07:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for the clear issue!</p>
+</blockquote>
+<p>Any chance that this is due to the <code>Lexer</code> normalizing newlines to <code>\n</code>. We should re-test the issue on top of #6012 that removes this normalization</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanGonite57">@DanGonite57</a> on 2023-07-26 11:48</div>
+            <div class="timeline-body"><p>Looks to be fixed after the merge of https://github.com/astral-sh/ruff/pull/6012. Cheers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @DanGonite57 on 2023-07-26 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17040.html">astral-sh/ruff#17040</a> on 2025-03-28 17:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

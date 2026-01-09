@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Suggestion] Automatically replace &quot;Class&quot; with Self from typing - astral-sh/ruff #16223</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Suggestion] Automatically replace &quot;Class&quot; with Self from typing</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16223">#16223</a>
+        opened by <a href="https://github.com/montanarograziano">@montanarograziano</a>
+        on 2025-02-18 10:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/montanarograziano">@montanarograziano</a> on 2025-02-18 10:15</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>I'm in the process of migrating a codebase from python 3.9 to 3.12. Doing so I have some functions type hinted with the class name in brackets, as typing.Self was not available in py 3.9.
+An example:</p>
+<pre><code class="language-py">class Test:
+    def __init__(self) -&gt; None:
+        self.a = &quot;Hello World&quot;
+
+    def test(self) -&gt; &quot;Test&quot;:
+        return self
+   
+</code></pre>
+<p>Could it be useful to have a fix for &quot;Class&quot; annotation to be converted to typing.Self if project's python version &gt;= 3.11? I was checking on the doc if there was already a rule for this scenario but I haven't found it.
+Thanks in advance for your help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-18 10:55</div>
+            <div class="timeline-body"><p>There is no rule for this currently. Rightfully so, arguably, since <code>-&gt; Class</code> and <code>-&gt; Self</code> have different semantics (<a href="https://mypy-play.net/?mypy=1.15.0&amp;python=3.13&amp;flags=strict&amp;gist=4c3a515aee0ff24888591a5a30379653">Mypy</a>, <a href="https://pyright-play.net/?pyrightVersion=1.1.394&amp;pythonVersion=3.14&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDKApgDbAA0UYAbkSCEgCZECwAUO%2BwMYkCGAzvygBhAFzsAkM2BR%2BvCEQD6PAfwAU-UsACUUALQA%2BEaKgA6c5OmytGrbsOEtJ86c5sVgqABE1w7eLYJAAEaOgZmSyIZOQVlPkFbMnsjMUkJECIYAFcQFBE1XSgAYihgVFYOQJDaeiYKqSjrMkSdfSNiMgCJdMycvOECqGKoMNwTAANhccwhFDB8VSQ0FF4AIxIiWDAocY7gcbd2DNpeEkV4BCJfAtMYpQ91bUKS4SOiE7OLq59tW-l7%2BKPZ4iNzHIinc6IK4DX6aZpPIaIxEvN4fSGXNQ-W42BFI5HedhAA">Pyright</a>):</p>
+<pre><code class="language-python">class C:
+	def same_class(self) -&gt; C: ...
+	def self(self) -&gt; Self: ...
+
+class D(C):
+	@override
+	def same_class(self) -&gt; C:
+		return C()  # fine
+
+	@override
+	def self(self) -&gt; Self:
+		return C()  # error: `C` is not assignable to `Self`
+</code></pre>
+<pre><code class="language-python">reveal_type(C().same_class())  # C
+reveal_type(D().same_class())  # C
+
+reveal_type(C().self())        # C
+reveal_type(D().self())        # D
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-18 12:01</div>
+            <div class="timeline-body"><p>@InSyncWithFoo is correct. We shouldn't have a rule to automatically make this replacement in <em>all</em> cases, because the old type annotation and the new one mean very different things.</p>
+<p>@montanarograziano, the type annotation for your <code>Test.test</code> method was unfortunately subtly incorrect on Python 3.9. The method always returns <code>self</code>, so if you called it on a subclass of <code>Test</code>, it wouldn't return an instance of <code>Test</code> <em>exactly</em>; it would return an instance of the subclass of <code>Test</code>. The correct annotation for the method on Python 3.9 would be</p>
+<pre><code class="language-py">from typing import TypeVar
+
+T = TypeVar(&quot;T&quot;, bound=&quot;Test&quot;)
+
+class Test:
+    def __init__(self) -&gt; None:
+        self.a = &quot;Hello World&quot;
+
+    def test(self: T) -&gt; T:
+        return self
+</code></pre>
+<p>If your <code>Test</code> method was correctly annotated, then our https://docs.astral.sh/ruff/rules/custom-type-var-for-self/ rule would automatically upgrade the annotations to use <code>Self</code> rather than a custom TypeVar, as the custom TypeVar <em>is</em> exactly equivalent to <code>Self</code> here.</p>
+<p>What we could do, however, is to add a correctness rule that, on <em>all</em> Python versions, detects functions that only ever return <code>self</code> and tells you that the return annotation is likely incorrect if it hardcodes the name of the class rather than using <code>Self</code> or a custom TypeVar. (On Python versions where <code>Self</code> is available, it could have an autofix to use <code>Self</code>, but doing that would likely be hard on older Python versions where you have to use a custom TypeVar.) We have a similar rule as https://docs.astral.sh/ruff/rules/non-self-return-type/, but that's less comprehensive (it just hardcodes knowledge about certain methods that nearly always return <code>self</code>, rather than actually analysing the body of the method).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2025-02-18 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/montanarograziano">@montanarograziano</a> on 2025-02-18 12:07</div>
+            <div class="timeline-body"><p>Thanks for the great explanation, didn't know about the TypeVar thing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jack-mcivor">@jack-mcivor</a> on 2025-04-25 15:03</div>
+            <div class="timeline-body"><blockquote>
+<p>What we could do, however, is to add a correctness rule that, on all Python versions, detects functions that only ever return self and tells you that the return annotation is likely incorrect if it hardcodes the name of the class rather than using Self</p>
+</blockquote>
+<p>I think this would be a really helpful rule. @AlexWaygood should this be a separate feature request or can we re-use this issue? As well as <code>return self</code>, I quite often see classmethods that do <code>return cls(...)</code> which should similarly use a Self return annotation.</p>
+<blockquote>
+<p>We have a similar rule as https://docs.astral.sh/ruff/rules/non-self-return-type/, but that's less comprehensive (it just hardcodes knowledge about certain methods that nearly always return self, rather than actually analysing the body of the method).</p>
+</blockquote>
+<p>FWIW I was confused by the documentation for this rule -- I initially expected the example given to trigger the rule, which it doesn't. However, the docs <em>do</em> go on to explain that only specific methods are caught. Anyway, the example is:</p>
+<pre><code class="language-python">class Shape:
+    def set_scale(self, scale: float) -&gt; Shape:
+        self.scale = scale
+        return self
+
+class Circle(Shape):
+    def set_radius(self, radius: float) -&gt; Circle:
+        self.radius = radius
+        return self
+
+# Type checker infers return type as `Shape`, not `Circle`.
+Circle().set_scale(0.5)
+
+# Thus, this expression is invalid, as `Shape` has no attribute `set_radius`.
+Circle().set_scale(0.5).set_radius(2.7)
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

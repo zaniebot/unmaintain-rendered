@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variable named &quot;args&quot; leads to ambiguous docstring parsing - astral-sh/ruff #9426</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Variable named &quot;args&quot; leads to ambiguous docstring parsing</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9426">#9426</a>
+        opened by <a href="https://github.com/fjossandon">@fjossandon</a>
+        on 2024-01-07 23:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fjossandon">@fjossandon</a> on 2024-01-07 23:16</div>
+            <div class="timeline-body"><p>Hello!
+I usually use PyDocStyle to check my docstrings and recently found that that project was deprecated and archived, so they recommended using Ruff instead, so I installed it to test it.</p>
+<p>Ruff version is ruff 0.1.11</p>
+<p>This is my configuration file:</p>
+<pre><code>[project]
+requires-python = &quot;&gt;=3.11&quot;
+
+[tool.ruff.lint]
+extend-select = [
+  &quot;UP&quot;,  # pyupgrade
+  &quot;D&quot;,   # pydocstyle
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = &quot;google&quot;
+</code></pre>
+<p>But I quickly found that Ruff was giving me warnings for docstrings that didn't had any problems, because it was confusing the &quot;args&quot; argument name with the &quot;Args&quot; section of the docstring, which generated up to 5 different warnings.</p>
+<p>The following is a mock method that shows the problem:</p>
+<pre><code class="language-python">&quot;&quot;&quot;Test module for Ruff.&quot;&quot;&quot;
+from typing import Any
+
+
+def select_data(
+        query: str,
+        args: tuple[Any],
+        database: str,
+        auto_save: bool,
+) -&gt; None:
+    &quot;&quot;&quot;Take a list of arguments to query the database and return it.
+
+    Args:
+        query:
+            Query template.
+        args:
+            A list of arguments.
+        database:
+            Which database to connect to (&quot;origin&quot; or &quot;destination&quot;).
+        auto_save:
+            True for saving the query response in a CSV file.
+
+    Returns:
+        Returns the database data obtained from the query.
+
+    Raises:
+        ValueError:
+            When the database value does not match a supported option.
+    &quot;&quot;&quot;
+    print(query, args, database, auto_save)
+
+</code></pre>
+<p>For this file, Ruff gives this output:</p>
+<pre><code>$ ruff test.py 
+test.py:5:5: D417 Missing argument descriptions in the docstring for `select_data`: `args`, `auto_save`, `database`
+test.py:11:5: D410 [*] Missing blank line after section (&quot;Args&quot;)
+test.py:11:5: D405 [*] Section name should be properly capitalized (&quot;args&quot;)
+test.py:11:5: D214 [*] Section is over-indented (&quot;args&quot;)
+test.py:11:5: D411 [*] Missing blank line before section (&quot;args&quot;)
+Found 5 errors.
+[*] 4 fixable with the `--fix` option.
+</code></pre>
+<p>It does not recognize the descriptions of any argument after &quot;args&quot; and applies the Section rules to the argument, causing all those warnings. The &quot;args&quot; argument is fairly common in my work, so this means that I cannot replace pydocstyle with ruff yet, which is a pity since ruff looks pretty powerful.</p>
+<p>If I change the &quot;args&quot; argument name to something else or if I just change <code>args:</code> to <code>args :</code>, the messages go away, so it's obvious that Ruff is looking for a case insensitive &quot;whitespace-args:&quot;... Unfortunately, I don't know to code in Rust to try to find a fix, but a suggestion is that maybe you can put an internal flag on which once the &quot;Args:&quot; section is correctly found, it considers any other &quot;args&quot; as argument (especially those in lowercase) in the docstring.</p>
+<p>Thanks in advance!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 23:33</div>
+            <div class="timeline-body"><p>I need to look into it, but Ruff handles it correctly when formatted as:</p>
+<pre><code class="language-python">&quot;&quot;&quot;Test module for Ruff.&quot;&quot;&quot;
+from typing import Any
+
+
+def select_data(
+        query: str,
+        args: tuple[Any],
+        database: str,
+        auto_save: bool,
+) -&gt; None:
+    &quot;&quot;&quot;Take a list of arguments to query the database and return it.
+
+    Args:
+        query: Query template.
+        args: A list of arguments.
+        database: Which database to connect to (&quot;origin&quot; or &quot;destination&quot;).
+        auto_save: True for saving the query response in a CSV file.
+
+    Returns:
+        Returns the database data obtained from the query.
+
+    Raises:
+        ValueError:
+            When the database value does not match a supported option.
+    &quot;&quot;&quot;
+    print(query, args, database, auto_save)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 23:37</div>
+            <div class="timeline-body"><p>I think that pydocstyle may be silently failing for you in this case due to its lack of an explicit convention setting. If you run pydocstyle over this file:</p>
+<pre><code class="language-python">&quot;&quot;&quot;Test module for Ruff.&quot;&quot;&quot;
+from typing import Any
+
+
+def select_data(
+        query: str,
+        args: tuple[Any],
+        database: str,
+        auto_save: bool,
+) -&gt; None:
+    &quot;&quot;&quot;Take a list of arguments to query the database and return it.
+
+    Args:
+        query:
+            Query template.
+        args:
+            A list of arguments.
+        database:
+            Which database to connect to (&quot;origin&quot; or &quot;destination&quot;).
+        auto_save:
+            True for saving the query response in a CSV file.
+    &quot;&quot;&quot;
+    print(query, args, database, auto_save)
+</code></pre>
+<p>You get:</p>
+<pre><code>❯ pydocstyle foo.py --convention=google
+foo.py:11 in public function `select_data`:
+        D410: Missing blank line after section ('Args')
+foo.py:11 in public function `select_data`:
+        D417: Missing argument descriptions in the docstring (argument(s) args, auto_save, database are missing descriptions in 'select_data' docstring)
+foo.py:11 in public function `select_data`:
+        D405: Section name should be properly capitalized ('Args', not 'args')
+foo.py:11 in public function `select_data`:
+        D214: Section is over-indented ('Args')
+foo.py:11 in public function `select_data`:
+        D411: Missing blank line before section ('Args')
+foo.py:11 in public function `select_data`:
+        D417: Missing argument descriptions in the docstring (argument(s) args, auto_save, database, query are missing descriptions in 'select_data' docstring)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 23:38</div>
+            <div class="timeline-body"><p>And, similarly, if you remove any of the arguments from <code>Args:</code>, pydocstyle incorrectly does not error:</p>
+<pre><code class="language-python">&quot;&quot;&quot;Test module for Ruff.&quot;&quot;&quot;
+from typing import Any
+
+
+def select_data(
+        query: str,
+        args: tuple[Any],
+        database: str,
+        auto_save: bool,
+) -&gt; None:
+    &quot;&quot;&quot;Take a list of arguments to query the database and return it.
+
+    Args:
+        args:
+            A list of arguments.
+        database:
+            Which database to connect to (&quot;origin&quot; or &quot;destination&quot;).
+        auto_save:
+            True for saving the query response in a CSV file.
+
+    Returns:
+        Returns the database data obtained from the query.
+
+    Raises:
+        ValueError:
+            When the database value does not match a supported option.
+    &quot;&quot;&quot;
+    print(query, args, database, auto_save)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 23:39</div>
+            <div class="timeline-body"><p>The issue (IIRC) is that pydocstyle uses NumPy-style convention if it finds <em>any</em> NumPy-compatible section names. It's kind of confusing behavior, but e.g., if you have <code>Raises</code> or <code>Returns</code> in a docstring, pydocstyle will <em>not</em> validate your <code>Args</code> section (again, IIRC -- it's been a while since I looked at this).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-01-07 23:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2024-01-07 23:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 23:40</div>
+            <div class="timeline-body"><p>I think our behavior is &quot;more correct&quot; than pydocstyle, but we should probably also respect using a newline here since it seems consistent with the <a href="https://google.github.io/styleguide/pyguide.html#doc-function-args">Google style guide</a>. I'm surprised that we don't already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Docstring false positives when using "args" as argument name and convention "google"" to "Allow newline after argument docstrings in Google convention" by @charliermarsh on 2024-01-07 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-01-07 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 23:46</div>
+            <div class="timeline-body"><p>(Repurposed the issue to look into that newline behavior, though there may be a reason it's unsupported -- need to look into it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 23:51</div>
+            <div class="timeline-body"><p>Oh wow, I think we actually <em>do</em> support newlines there. The issue is that using an argument named <code>args</code> is leading to ambiguous grammar that is hard to parse. It's specific to using a variable name that shadows a section name.</p>
+<p>Specifically: when you have <code>args:</code> followed by a newline, the parser thinks it <em>might</em> be a section named <code>Args:</code> (since we also detect lowercased sections so that we can suggest using upper-casing for them, as a separate lint rule).</p>
+<p>I don't think we can properly support that, since it is legitimately ambiguous... I'd recommend using a less ambiguous variable name, or omitting the newline in that case, or putting <code>args</code> first in the list (which reduces the ambiguity), or using <code>*args:</code>, which we'll also parse correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Allow newline after argument docstrings in Google convention" to "Variable named "args" leads to ambiguous docstring parsing" by @charliermarsh on 2024-01-07 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 23:52</div>
+            <div class="timeline-body"><p>(I'm gonna close since this is unfortunately as intended given the name collision, but I'm happy to explain in more detail or help with debugging in any other way.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-07 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fjossandon">@fjossandon</a> on 2024-01-08 01:07</div>
+            <div class="timeline-body"><p>Hello @charliermarsh, you wrote faster than I could reply.</p>
+<p>As you already confirmed, the newline after the argument name is also  part of the &quot;goggle&quot; convention that we chose to follow, and we use it for more clarity's sake,</p>
+<blockquote>
+<p>I don't think we can properly support that, since it is legitimately ambiguous... I'd recommend using a less ambiguous variable name, or omitting the newline in that case, or putting args first in the list (which reduces the ambiguity), or using *args:, which we'll also parse correctly.</p>
+</blockquote>
+<p>In my case, the argument name is args, but is not the same as *args, so I cannot use that.</p>
+<p>I'm sorry, but I don't think is ambiguous at all, in my example, the section Args is clearly there, and all the arguments are correctly indented inside the section, also the capitalization of the section name and arguments is different. And since I'm following the standard correctly, I should not be forced to rename the argument. I really think that argument naming should not be restricted, since that is not part of the docstring guideline, it's an issue of the linter confusing the names. Another thing that comes to my mind is that in the docstring there can only be 1 Args section (as far as I know), so it makes sense to think that if there is already an &quot;Args:&quot; found, other &quot;args:&quot; cannot be a section too.</p>
+<p>I just saw another issue similar to this one but using &quot;raises&quot; instead of &quot;args&quot;, so other people are being affected too:
+https://github.com/astral-sh/ruff/issues/8457</p>
+<p>I do think you can support it by adding some extra logic in Ruff. It seems that this I caused because Ruff wants to warn about a potential error in the capitalization of the Args section (the D405), so it wants to treat any &quot;section_keyword:&quot;-like line as a Section, but it's too indiscriminate. In my example, the Args section is established with the correct capitalization, so I think that Ruff could flag that line as the Section, remember its indentation (number of whitespaces), and treat all the following indented lines as arguments without testing the section keywords on them again until finding either a blank line, a line with same or less indentation that the previous Section header, or finishing the docstring, and that would solve the problem. Now if the section header doesn't have the correct capitalization, then Ruff can go  bananas on warnings of course, Using that structured logic on the parsing, it would be more robust and even this extreme example would work, no naming limitation:</p>
+<pre><code>    Args:
+        args:
+            First argument.
+        returns:
+            Second argument.
+        raises:
+            Third argument.
+        yields:
+            Fourth argument.
+</code></pre>
+<p>Please consider it and give it a thought. I would offer to do it but I don't know how to program in Rust. =/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fjossandon">@fjossandon</a> on 2024-01-08 01:14</div>
+            <div class="timeline-body"><p>Addendum.</p>
+<blockquote>
+<p>I think that pydocstyle may be silently failing for you in this case due to its lack of an explicit convention setting. If you run pydocstyle over this file:</p>
+</blockquote>
+<p>I found this weird. I tried again with pydocstyle using your same command line with the explicit convention, but I did not get any warning myself, maybe you have a different version?? I have the last one released.</p>
+<pre><code>$ pydocstyle test.py --convention=google
+$ pydocstyle --version
+6.3.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-08 01:32</div>
+            <div class="timeline-body"><p>I'm using the same version:</p>
+<pre><code>❯ pydocstyle --version
+6.3.0
+</code></pre>
+<p>To clarify, you see these errors when you remove <code>Raises:</code> and <code>Returns:</code>, as in:</p>
+<pre><code class="language-python">&quot;&quot;&quot;Test module for Ruff.&quot;&quot;&quot;
+from typing import Any
+
+
+def select_data(
+        query: str,
+        args: tuple[Any],
+        database: str,
+        auto_save: bool,
+) -&gt; None:
+    &quot;&quot;&quot;Take a list of arguments to query the database and return it.
+
+    Args:
+        query:
+            Query template.
+        args:
+            A list of arguments.
+        database:
+            Which database to connect to (&quot;origin&quot; or &quot;destination&quot;).
+        auto_save:
+            True for saving the query response in a CSV file.
+    &quot;&quot;&quot;
+    print(query, args, database, auto_save)
+</code></pre>
+<p>If you leave <code>Raises:</code> or <code>Returns:</code>, then pydocstyle doesn't validate your <code>Args:</code> at all. You can try removing an argument like <code>query:</code>, and pydocstyle will incorrectly <em>not</em> raise an error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-08 01:35</div>
+            <div class="timeline-body"><p>I hear you. I'm happy to re-open and look into changing the behavior here, though I'll caveat that the parsing logic is somewhat precarious -- it's derived from the same logic in pydocstyle, and is based on string parsing rather than a formal grammar. Depending on how invasive it is to fix, I may close again it's more complex than is worthwhile for this edge case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2024-01-08 01:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-08 01:39</div>
+            <div class="timeline-body"><p>I agree that this should be considered a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-08 01:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-08 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9427.html">astral-sh/ruff#9427</a> on 2024-01-08 02:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-08 02:35</div>
+            <div class="timeline-body"><p>I <em>think</em> I was able to fix this in https://github.com/astral-sh/ruff/pull/9427.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-08 03:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-08 03:41</div>
+            <div class="timeline-body"><p>Fixed, will go out in the next release!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fjossandon">@fjossandon</a> on 2024-01-08 14:58</div>
+            <div class="timeline-body"><blockquote>
+<p>If you leave Raises: or Returns:, then pydocstyle doesn't validate your Args: at all. You can try removing an argument like query:, and pydocstyle will incorrectly not raise an error.</p>
+</blockquote>
+<p>I see, thanks for explaining, I didn't fully understand before.</p>
+<blockquote>
+<p>I think I was able to fix this in https://github.com/astral-sh/ruff/pull/9427.</p>
+</blockquote>
+<p>That's amazing, thanks a lot for the quick fix!!! If it also works with the other issue https://github.com/astral-sh/ruff/issues/8457, maybe you can close that one too. =)</p>
+<p>I will be eagerly waiting for your next release to update it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-08 14:59</div>
+            <div class="timeline-body"><p>Oh, great call! I can close the other issue too :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12738.html">astral-sh/ruff#12738</a> on 2024-08-08 04:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

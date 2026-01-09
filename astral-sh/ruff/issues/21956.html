@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected behavior when using extend and target-version - astral-sh/ruff #21956</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected behavior when using extend and target-version</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21956">#21956</a>
+        opened by <a href="https://github.com/jbarnoud">@jbarnoud</a>
+        on 2025-12-12 20:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jbarnoud">@jbarnoud</a> on 2025-12-12 20:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>My configuration contains <code>target-version</code> in a file referred to behind an <code>extend</code>, but it is not respected.</p>
+<p>My projects contains a <code>ruff.toml</code> provided by a template that contains the <code>target-version</code> among other things, and a <code>.ruff.toml</code> with the configuration specific to the project which extends the <code>ruff.toml</code>. The <code>target-version</code> in <code>ruff.toml</code> is not respected and ruff falls back to the version in the <code>pyproject.toml</code>.</p>
+<p>A similar issue was described in #20090, however, this issue was closed in favor of #8795 that focusses <code>per-ignore-file</code>.</p>
+<p>I can reproduce the problem with a project containing a <code>ruff.toml</code>, a <code>.ruff.toml</code>, a <code>main.py</code>, and a <code>pyproject.toml</code>:</p>
+<pre><code class="language-yaml"># ruff.toml
+target-version = &quot;py310&quot;
+</code></pre>
+<pre><code class="language-yaml"># .ruff.toml
+extend = &quot;ruff.toml&quot;
+</code></pre>
+<pre><code class="language-python"># main.py
+from typing import TypeAlias
+
+A: TypeAlias = str | int
+</code></pre>
+<pre><code class="language-yaml"># pyproject.toml
+[project]
+name = &quot;repro-ruff&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+</code></pre>
+<p>When running <code>ruff check --select UP040 --verbose</code>, I get the following output:</p>
+<pre><code>[2025-12-12][08:50:05][ruff::resolve][DEBUG] Using configuration file (via parent) at: /home/jon/dev/ruff-repro/.ruff.toml
+[2025-12-12][08:50:05][ruff_workspace::pyproject][DEBUG] No `target-version` found in `ruff.toml`
+[2025-12-12][08:50:05][ruff_workspace::pyproject][DEBUG] Detected minimum supported `requires-python` version: 3.13
+[2025-12-12][08:50:05][ruff_workspace::pyproject][DEBUG] Derived `target-version` from `requires-python` in `pyproject.toml`: Py313
+[2025-12-12][08:50:05][ruff_workspace::pyproject][DEBUG] No `target-version` found in `ruff.toml`
+[2025-12-12][08:50:05][ruff_workspace::pyproject][DEBUG] Detected minimum supported `requires-python` version: 3.13
+[2025-12-12][08:50:05][ruff_workspace::pyproject][DEBUG] Derived `target-version` from `requires-python` in `pyproject.toml`: Py313
+[2025-12-12][08:50:05][ignore::gitignore][DEBUG] opened gitignore file: /home/jon/dev/ruff-repro/.venv/.gitignore
+[2025-12-12][08:50:05][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/home/jon/dev/ruff-repro/pyproject.toml&quot;
+[2025-12-12][08:50:05][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/home/jon/dev/ruff-repro/main.py&quot;
+[2025-12-12][08:50:05][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/home/jon/dev/ruff-repro/.venv&quot;
+[2025-12-12][08:50:05][ruff::commands::check][DEBUG] Identified files to lint in: 4.278326ms
+[2025-12-12][08:50:05][ruff::diagnostics][DEBUG] Checking: /home/jon/dev/ruff-repro/main.py
+[2025-12-12][08:50:05][ruff::diagnostics][DEBUG] Checking: /home/jon/dev/ruff-repro/pyproject.toml
+[2025-12-12][08:50:05][ruff::commands::check][DEBUG] Checked 2 files in: 958.72µs
+UP040 Type alias `A` uses `TypeAlias` annotation instead of the `type` keyword
+ --&gt; main.py:3:1
+  |
+1 | from typing import TypeAlias
+2 |
+3 | A: TypeAlias = str | int
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+help: Use the `type` keyword
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>This is not the expected behavior as this error should not appear with <code>target-version</code> set to <code>py310</code>. The logs indeed indicate that ruff did not read the target version from the ruff toml files, but instead derived it from the <code>requires-python</code> field of the <code>pyproject.toml</code>.</p>
+<p>On the same test project, I get the expected result if I explicitly point to the config with <code>ruff check --select UP040 --verbose --config .ruff.toml</code>:</p>
+<pre><code>[2025-12-12][08:48:54][ruff_workspace::pyproject][DEBUG] No `target-version` found in `ruff.toml`
+[2025-12-12][08:48:54][ruff::resolve][DEBUG] Using user-specified configuration file at: .ruff.toml
+[2025-12-12][08:48:54][ignore::gitignore][DEBUG] opened gitignore file: /home/jon/dev/ruff-repro/.venv/.gitignore
+[2025-12-12][08:48:54][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/home/jon/dev/ruff-repro/pyproject.toml&quot;
+[2025-12-12][08:48:54][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/home/jon/dev/ruff-repro/main.py&quot;
+[2025-12-12][08:48:54][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/home/jon/dev/ruff-repro/.venv&quot;
+[2025-12-12][08:48:54][ruff::commands::check][DEBUG] Identified files to lint in: 5.186424ms
+[2025-12-12][08:48:54][ruff::diagnostics][DEBUG] Checking: /home/jon/dev/ruff-repro/pyproject.toml
+[2025-12-12][08:48:54][ruff::diagnostics][DEBUG] Checking: /home/jon/dev/ruff-repro/main.py
+[2025-12-12][08:48:54][ruff::commands::check][DEBUG] Checked 2 files in: 1.215123ms
+</code></pre>
+<p>I traced part of the execution and figured out that, in the failing case, <a href="https://github.com/astral-sh/ruff/blob/0138cd238a8669d53c325eb7ca19155946dfa665/crates/ruff_workspace/src/resolver.rs#L335"><code>ruff_workspace::resolver::resolve_configuration</code></a> calls <a href="https://github.com/astral-sh/ruff/blob/0138cd238a8669d53c325eb7ca19155946dfa665/crates/ruff_workspace/src/pyproject.rs#L138"><code>ruff_workspace::pyproject::load_options</code></a> for <code>.ruff.toml</code> with <code>version_strategy</code> set to <code>TargetVersionStrategy::RequiresPythonFallback</code>. Because the file does not define <code>target-version</code>, the function <a href="https://github.com/astral-sh/ruff/blob/0138cd238a8669d53c325eb7ca19155946dfa665/crates/ruff_workspace/src/pyproject.rs#L161">emits the log</a> that says &quot;No <code>target-version</code> found in <code>ruff.toml</code>&quot; (which is misleading as the function is reading <code>.ruff.toml</code> and not <code>ruff.toml</code>) and <a href="https://github.com/astral-sh/ruff/blob/0138cd238a8669d53c325eb7ca19155946dfa665/crates/ruff_workspace/src/pyproject.rs#L176">sets the target version to the fallback</a>. <code>resolve_configuration</code> then calls <code>load_options</code> on <code>ruff.toml</code> and correctly reads the target version. Finally, <code>resolve_configuration</code> converts the <code>Options</code> instances it got from <code>load_options</code> into <code>Configuration</code> instances and <a href="https://github.com/astral-sh/ruff/blob/0138cd238a8669d53c325eb7ca19155946dfa665/crates/ruff_workspace/src/resolver.rs#L375">merges them</a> by calling <a href="https://github.com/astral-sh/ruff/blob/0138cd238a8669d53c325eb7ca19155946dfa665/crates/ruff_workspace/src/configuration.rs#L588"><code>Configuration::combine</code></a>. The <code>target_version</code> field of <code>Configuration</code> is an <code>Option&lt;str&gt;</code> and <code>combine</code> calls <code>Option::or</code> on them. Because the <code>Configuration</code> read from <code>.ruff.toml</code> has the target version sets to the fallback version, we get <code>Some(fallback_version).or(Some(version_read_in_the_other_file))</code> and ruff keeps the fallback version.</p>
+<p>When passing the <code>--config</code> argument, <code>.ruff.toml</code> is read with <code>version_strategy</code> set to <code>TargetVersionStrategy::UseDefault</code>. When <code>load_options</code> does not find a target version in the file, <a href="https://github.com/astral-sh/ruff/blob/a722df6a7309c6de2eaac1ba55abe8e741ea7e17/crates/ruff_workspace/src/pyproject.rs#L163">it keeps the <code>targer_version</code> attribute set to <code>None</code></a> so the <code>combine</code> later works as expected.</p>
+<h3>Version</h3>
+<p>ruff 0.14.9 and 1b44d7e2a7eb80cf22dd2e2612c1c6fc8756369c</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-12 20:38</div>
+            <div class="timeline-body"><p>Thank you for the great writeup!</p>
+<p>This does sound like a bug to me, and I think your diagnosis of the cause is correct too.</p>
+<p>cc @dylwil3, I <em>think</em> this is related to the changes in https://github.com/astral-sh/ruff/pull/16319 because the example works as expected before Ruff 0.11:</p>
+<pre><code class="language-shell">❯ uvx ruff@0.10.0 check --no-cache --select UP040
+All checks passed!
+
+❯ uvx ruff@0.11.0 check --no-cache --select UP040 --output-format concise
+main.py:4:1: UP040 Type alias `A` uses `TypeAlias` annotation instead of the `type` keyword
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-12-12 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @ntBre on 2025-12-12 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21980.html">astral-sh/ruff#21980</a> on 2025-12-14 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/denyszhak">@denyszhak</a> on 2025-12-14 19:45</div>
+            <div class="timeline-body"><p>@ntBre I took a shot at fixing this by deferring the fallback logic, would appreciate a review</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isort doesn't consider tomllib as part of the standard library - astral-sh/ruff #2343</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Isort doesn't consider tomllib as part of the standard library</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2343">#2343</a>
+        opened by <a href="https://github.com/yakMM">@yakMM</a>
+        on 2023-01-30 08:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yakMM">@yakMM</a> on 2023-01-30 08:46</div>
+            <div class="timeline-body"><p>Consider the following:</p>
+<pre><code class="language-py">import tomllib
+
+import sys
+
+
+def main():
+    print(sys)
+    print(tomllib)
+</code></pre>
+<p>Formatted with isort:</p>
+<pre><code class="language-py">import sys
+import tomllib
+
+
+def main():
+    print(sys)
+    print(tomllib)
+</code></pre>
+<p>Formatted with <code>ruff --fix</code>:</p>
+<pre><code class="language-py">import sys
+
+import tomllib
+
+
+def main():
+    print(sys)
+    print(tomllib)
+</code></pre>
+<p>Version: <code>ruff 0.0.237</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-01-30 08:55</div>
+            <div class="timeline-body"><p>Isort uses a list of known stdlib modules for each python version: https://github.com/PyCQA/isort/tree/main/isort/stdlibs</p>
+<p>While ruff seems to use a static list for every python version: https://github.com/charliermarsh/ruff/blob/main/src/python/sys.rs</p>
+<p>Is it worth doing the same as isort here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-30 09:05</div>
+            <div class="timeline-body"><p>Would be good to respect the <code>target-version</code> for the imports. For the time being we could include <code>tomllib</code> in the existing setup, and keep this issue open to the track version-aware stdlib modules (good issue to get started).</p>
+<p>Note that <code>isort</code> auto-generates these files <a href="https://github.com/PyCQA/isort/blob/main/scripts/mkstdlibs.py">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2345.html">astral-sh/ruff#2345</a> on 2023-01-30 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 22:55</div>
+            <div class="timeline-body"><p>Fixed in #2345.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-30 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-01-31 09:02</div>
+            <div class="timeline-body"><p>Should another issue be opened to respect the <code>target-version</code> for the imports or is supporting the latest stdlib enough?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2491.html">astral-sh/ruff#2491</a> on 2023-02-02 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2023-06-19 04:35</div>
+            <div class="timeline-body"><p>I think I am seeing this issue (again) in <code>ruff 0.0.272</code>. It wants to separate <code>sys</code> and <code>tomllib</code> while <code>isort</code> wants to keep them together. This is not happening in an empty folder with only a single <code>bug.py</code>, but it does happen as soon as I move this <code>pyproject.toml</code> next to it:</p>
+<pre><code class="language-toml">[tool.ruff]
+select = [&quot;I001&quot;]
+</code></pre>
+<p>Output is</p>
+<pre><code>[2023-06-19][06:35:22][ruff_cli::commands::run][DEBUG] Identified files to lint in: 3.5124ms
+[2023-06-19][06:35:22][ruff_cli::diagnostics][DEBUG] Checking: C:\Code\bug.py
+[2023-06-19][06:35:22][ruff::rules::isort::categorize][DEBUG] Categorized 'tomllib' as Known(ThirdParty) (NoMatch)
+[2023-06-19][06:35:22][ruff::rules::isort::categorize][DEBUG] Categorized 'sys' as Known(StandardLibrary) (KnownStandardLibrary)
+[2023-06-19][06:35:22][ruff::rules::isort::categorize][DEBUG] Categorized 'tomllib' as Known(ThirdParty) (NoMatch)
+[2023-06-19][06:35:22][ruff::rules::isort::categorize][DEBUG] Categorized 'sys' as Known(StandardLibrary) (KnownStandardLibrary)
+[2023-06-19][06:35:22][ruff_cli::commands::run][DEBUG] Checked 1 files in: 8.0006ms
+Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2023-06-19 04:56</div>
+            <div class="timeline-body"><p>Update: I noticed I still had <code>requires-python = &quot;&gt;=3.10&quot;</code> in my <code>pyproject.toml</code> - changing that to <code>&gt;=3.11</code> fixed the issue. (The fact that this is not assumed by running on Python 3.11.4, even without a <code>project.toml</code> file, is probably intended.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-vscode/issues/465.html">astral-sh/ruff-vscode#465</a> on 2024-05-16 08:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

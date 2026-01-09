@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support packages with missing least-recent non-EOL macOS build on PyPI - astral-sh/uv #12532</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support packages with missing least-recent non-EOL macOS build on PyPI</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/12532">#12532</a>
+        opened by <a href="https://github.com/itymchyshyn-sc">@itymchyshyn-sc</a>
+        on 2025-03-28 14:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/itymchyshyn-sc">@itymchyshyn-sc</a> on 2025-03-28 14:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><strong>Background</strong></p>
+<p>Right now <code>uv pip install --python-platform macos</code> or <code>uv pip compile --python-platform macos</code> are searching for packages built for least-recent non-EOL macOS version. It means that if there is no such build on PyPI, <code>uv</code> will raise an error even if there are builds for higher macOS versions available.</p>
+<p><strong>Proposal</strong></p>
+<p>Switch from &quot;least-recent non-EOL version&quot; to &quot;least-recent non-EOL version s.t. there is a corresponding build for the package&quot;. For example, <code>uv pip install --python-platform macos &lt;package&gt;</code> could do the following:</p>
+<pre><code>for mac_version in sorted(non_eol_mac_versions):
+    if there is the &lt;package&gt; build for mac_version:
+        choose that build
+        break
+</code></pre>
+<h3>Example</h3>
+<p>This will likely impact experience in companies, where internal PyPI index is configured. Engineers can upload internal packages to the internal PyPI and then <code>uv pip install</code> them. Considering that engineers are likely to work on the latest macOS version due to security reasons, they will be uploading packages for the latest macOS version to PyPI.</p>
+<p>Without this feature, <code>uv pip install --python-platform macos</code> will not be able to find such packages on PyPI.
+With this feature, <code>uv pip install --python-platform macos</code> will be able to do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @itymchyshyn-sc on 2025-03-28 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-28 14:42</div>
+            <div class="timeline-body"><p>The proposal here is to effectively &quot;solve&quot; for the supported macOS version, but I don't know if that's a good idea? I think you'd be better off advocating that we change the default to &quot;most recent macOS version&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/itymchyshyn-sc">@itymchyshyn-sc</a> on 2025-03-28 14:55</div>
+            <div class="timeline-body"><p>Yes, it would be even better if &quot;most recent macOS version&quot; were used. I would be happy with any solution 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/itymchyshyn-sc">@itymchyshyn-sc</a> on 2025-03-28 15:01</div>
+            <div class="timeline-body"><blockquote>
+<p>change the default to &quot;most recent macOS version&quot;</p>
+</blockquote>
+<p>@charliermarsh - Should I open a feature request for that and close this one?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

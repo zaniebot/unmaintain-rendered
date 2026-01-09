@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv fails to start because of jemalloc - astral-sh/uv #4647</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv fails to start because of jemalloc</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4647">#4647</a>
+        opened by <a href="https://github.com/adminy">@adminy</a>
+        on 2024-06-29 16:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adminy">@adminy</a> on 2024-06-29 16:38</div>
+            <div class="timeline-body"><pre><code>&lt;jemalloc&gt;: Unsupported system page size
+&lt;jemalloc&gt;: Unsupported system page size
+memory allocation of 5 bytes failed
+[1]    22202 abort (core dumped)  uv
+</code></pre>
+<h3>A minimal code snippet that reproduces the bug.</h3>
+<p><code>uv venv</code> or any uv command.</p>
+<h3>The current uv platform.</h3>
+<p><a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/uv/uv/package.nix">NixOS derivation</a> running on raspberry Pi latest kernel with the aarch64 target.</p>
+<h3>The current uv version (<code>uv --version</code>).</h3>
+<p>0.2.15 ( I think, not sure because of the error)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-29 17:03</div>
+            <div class="timeline-body"><p>Looks like jemalloc is not supported on that operating system e.g. https://github.com/home-assistant/core/issues/105768</p>
+<p>Home-assistant provides a <code>DISABLE_JEMALLOC</code> option to work-around this, we might need to do similar?</p>
+<p>It looks like they also changed the page size (i.e. <code>JEMALLOC_SYS_WITH_LG_PAGE</code>) which may solve the issue? https://github.com/home-assistant/docker-base/pull/248 and more discussion at https://github.com/qdrant/qdrant/pull/3945#issuecomment-2030026387</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-01 07:13</div>
+            <div class="timeline-body"><p>This is the same problem as we had in https://github.com/astral-sh/ruff/issues/3791, we can try the same mitigation (<code>JEMALLOC_SYS_WITH_LG_PAGE=16</code> during build)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-07-01 07:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-01 12:25</div>
+            <div class="timeline-body"><p>I believe we have that same mitigation in our build already @konstin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-01 12:30</div>
+            <div class="timeline-body"><p>This looks like a bug in the nixos derivation then, which doesn't set <code>JEMALLOC_SYS_WITH_LG_PAGE=16</code> for the aarch64 target.</p>
+<p>@adminy can you confirm that uv works with the official package (either from github or pypi)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2024-07-09 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6528.html">astral-sh/uv#6528</a> on 2024-08-23 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-26 16:49</div>
+            <div class="timeline-body"><p>I'm going to close this as stale. #6528 tracks this issue for our own binaries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-26 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../conda-forge/uv-feedstock/issues/135.html">conda-forge/uv-feedstock#135</a> on 2025-01-08 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../prefix-dev/pixi/issues/2936.html">prefix-dev/pixi#2936</a> on 2025-01-17 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10942.html">astral-sh/uv#10942</a> on 2025-01-24 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15401.html">astral-sh/uv#15401</a> on 2025-08-21 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Wilfred/difftastic/issues/872.html">Wilfred/difftastic#872</a> on 2025-08-21 12:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

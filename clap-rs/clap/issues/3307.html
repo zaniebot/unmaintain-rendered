@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[clap_derive] version conflict with `proc-macro2` - clap-rs/clap #3307</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[clap_derive] version conflict with `proc-macro2`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3307">#3307</a>
+        opened by <a href="https://github.com/hasezoey">@hasezoey</a>
+        on 2022-01-18 03:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hasezoey">@hasezoey</a> on 2022-01-18 03:45</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.58.0 (02072b482 2022-01-11)</p>
+<h3>Clap Version</h3>
+<p>3.0.9</p>
+<h3>Minimal reproducible code</h3>
+<p>clap features used: <code>&quot;derive&quot;, &quot;wrap_help&quot;, &quot;env&quot;</code></p>
+<pre><code class="language-rust">use clap::*;
+
+fn main() {}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ol>
+<li>cargo build</li>
+</ol>
+<h3>Actual Behaviour</h3>
+<pre><code>error: failed to select a version for `proc-macro2`.
+    ... required by package `clap_derive v3.0.0`
+    ... which satisfies dependency `clap_derive = &quot;^3.0.0&quot;` of package `clap v3.0.9`
+    ... which satisfies dependency `clap = &quot;^3.0.9&quot;` (locked to 3.0.9) of package `yt-downloader-rust v0.4.0 (/mnt/projects/rust/yt-downloader)`
+versions that meet the requirements `^1.0.28` are: 1.0.36, 1.0.35, 1.0.34, 1.0.33, 1.0.32, 1.0.31, 1.0.30, 1.0.29, 1.0.28
+
+all possible versions conflict with previously selected packages.
+
+  previously selected package `proc-macro2 v1.0.26`
+    ... which satisfies dependency `proc-macro2 = &quot;^1.0.20&quot;` (locked to 1.0.26) of package `quote v1.0.9`
+    ... which satisfies dependency `quote = &quot;^1.0.9&quot;` (locked to 1.0.9) of package `clap_derive v3.0.0`
+    ... which satisfies dependency `clap_derive = &quot;^3.0.0&quot;` of package `clap v3.0.9`
+    ... which satisfies dependency `clap = &quot;^3.0.9&quot;` (locked to 3.0.9) of package `yt-downloader-rust v0.4.0 (/mnt/projects/rust/yt-downloader)`
+
+failed to select a version for `proc-macro2` which could resolve this conflict
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>no version conflict error</p>
+<h3>Additional Context</h3>
+<p>Currently, <code>clap_derive</code> requires <code>quote</code> at locked version <code>1.0.9</code> which in turn required <code>proc-macro2</code> at locked version <code>1.0.20</code>, but <code>clap_derive</code> requires locked version of <code>1.0.28</code> for <code>proc-macro2</code></p>
+<p>How can this be fixed:</p>
+<ul>
+<li>upgrade all version to match</li>
+<li>unlock the patch version for at least one of the mentioned packages with <a href="https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#tilde-requirements">symbol <code>~</code></a> (like <code>~1.0.9</code>)</li>
+</ul>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @hasezoey on 2022-01-18 03:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hasezoey">@hasezoey</a> on 2022-01-18 03:47</div>
+            <div class="timeline-body"><p>for reference see <code>clap_derive</code> <code>Cargo.toml</code>:
+https://github.com/clap-rs/clap/blob/bd1bf66279c3e965a0d4d73135d952bfd3c270eb/clap_derive/Cargo.toml#L35-L36</p>
+<p>and <code>quote</code>'s <code>Cargo.toml</code> for version <code>1.0.9</code>:
+https://github.com/dtolnay/quote/blob/68ebadbc1b4242531c5a78fbba01c648bd58c8e7/Cargo.toml#L16</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-18 16:48</div>
+            <div class="timeline-body"><p>Can you provide your <code>Cargo.toml</code> file?  I am not able to reproduce this.</p>
+<blockquote>
+<p>Currently, clap_derive requires quote at locked version 1.0.9 which in turn required proc-macro2 at locked version 1.0.20, but clap_derive requires locked version of 1.0.28 for proc-macro2</p>
+</blockquote>
+<p><code>quote = &quot;1.0.9&quot;</code> is short for <code>quote = &quot;^1.0.9&quot;</code> which means &quot;be semver compatible, but at least <code>1.0.9</code>.  proc-macro2 and quote should gracefully resolve, like they are currently doing on my machine and CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-01-18 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-author</span> added by @epage on 2022-01-18 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-18 16:50</div>
+            <div class="timeline-body"><p>I've not run into this myself but this almost sounds like the <code>Cargo.lock</code> file has gotten into an inconsistent state where two different dependency branches are locked to different versions of <code>proc-macro2</code>.</p>
+<p>An easy way to verify this is to backup your <code>Cargo.lock</code> (which happens automatically if you have it committed), delete it, and rebuild.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hasezoey">@hasezoey</a> on 2022-01-19 00:10</div>
+            <div class="timeline-body"><blockquote>
+<p>quote = &quot;1.0.9&quot; is short for quote = &quot;^1.0.9&quot; which means &quot;be semver compatible, but at least 1.0.9. proc-macro2 and quote should gracefully resolve, like they are currently doing on my machine and CI.</p>
+</blockquote>
+<p>right, forgot rust handles non-operator versions differently than js packages
+but if that is not the case, it just makes the situation more unclear</p>
+<blockquote>
+<p>Can you provide your Cargo.toml file? I am not able to reproduce this.</p>
+</blockquote>
+<p>sure, the project it is happening on is open-source:</p>
+<ul>
+<li>https://github.com/hasezoey/yt-downloader-rust/blob/309d77a1a8b7812ef730a7c974512160679b88ac/Cargo.toml#L8-L21</li>
+</ul>
+<p>Reproduction:</p>
+<ul>
+<li>clone repository</li>
+<li>checkout to commit <code>309d77a1a8b7812ef730a7c974512160679b88ac</code></li>
+<li>build once (<code>cargo build --all</code>)</li>
+<li>replace feature <code>yaml</code> with <code>derive</code> in <code>Cargo.toml</code> for dependency <code>clap</code></li>
+<li>try to build (<code>cargo build --all</code>)</li>
+</ul>
+<blockquote>
+<p>I've not run into this myself but this almost sounds like the Cargo.lock file has gotten into an inconsistent state where two different dependency branches are locked to different versions of proc-macro2.</p>
+</blockquote>
+<p>i had now also tried deleting the file, which suddenly everything compiled again (i dont quite understand why though)</p>
+<p>i had even tried compiling with only clap dependencies (the other dependencies commented out)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-19 01:05</div>
+            <div class="timeline-body"><p>Looks like this is unexpected cargo behavior, so closing this out.  No idea if cargo has an issue already or not for this problem or if this is expected.</p>
+<blockquote>
+<p>i had even tried compiling with only clap dependencies (the other dependencies commented out)</p>
+</blockquote>
+<p>Removing dependencies in <code>Cargo.toml</code> won't necessarily cause the versions to be re-evaluated in <code>Cargo.lock</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-01-19 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/cargo/issues/10307.html">rust-lang/cargo#10307</a> on 2022-01-19 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hasezoey">@hasezoey</a> on 2022-01-19 01:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Removing dependencies in Cargo.toml won't necessarily cause the versions to be re-evaluated in Cargo.lock.</p>
+</blockquote>
+<p>i just mentioned i tried this, though i had no clue if this even affected anything</p>
+<blockquote>
+<p>Looks like this is unexpected cargo behavior, so closing this out. No idea if cargo has an issue already or not for this problem or if this is expected.</p>
+</blockquote>
+<p>yes definitely looks like a cargo issue, filed as https://github.com/rust-lang/cargo/issues/10307, for anyone interested</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ta32">@ta32</a> on 2022-12-21 01:21</div>
+            <div class="timeline-body"><p>I had this issue after adding the feature derive.</p>
+<p>I deleted the cargo.lock file but the issue persisted ( I think it was because I had the project open with clion?)</p>
+<p>I just added the dependency it wanted to the cargo.toml directly
+eg: proc-macro2 = &quot;1.0.28&quot;</p>
+<p>The lock file was modified and I removed the dependency and it built.</p>
+<p>There is an issue open in cargo. https://github.com/rust-lang/cargo/issues/10307</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyPy: `sys.path` seems to be missing venv's `/site-packages` - astral-sh/uv #1849</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PyPy: `sys.path` seems to be missing venv's `/site-packages`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1849">#1849</a>
+        opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a>
+        on 2024-02-22 02:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2024-02-22 02:49</div>
+            <div class="timeline-body"><pre><code>          &gt; @edgarrmondragon Is pypy otherwise working for you as it should? I'm asking because we haven't put much focus on pypy so far.</code></pre>
+<p>Hey @konstin! I'm testing things out myself. For starters <code>sys.path</code> seems to be broken in pypy venvs:</p>
+<details><summary>CPython 3.10</summary>
+<p>
+
+<pre><code class="language-console">$ pyenv shell 3.10
+$ uv venv venv --python 3.10
+$ source venv/bin/activate
+$ (venv) python --version
+Python 3.10.13
+$ (venv) uv pip install requests
+Resolved 5 packages in 502ms
+Installed 5 packages in 18ms
+ + certifi==2024.2.2
+ + charset-normalizer==3.3.2
+ + idna==3.6
+ + requests==2.31.0
+ + urllib3==2.2.1
+$ (venv) python -c 'import requests; print(requests.get(&quot;https://google.com&quot;).status_code)'
+200
+$ (venv) python -c 'import sys; [print(f&quot;{p=}&quot;) for p in sys.path]'
+p=''
+p='/Users/me/.pyenv/versions/3.10.13/lib/python310.zip'
+p='/Users/me/.pyenv/versions/3.10.13/lib/python3.10'
+p='/Users/me/.pyenv/versions/3.10.13/lib/python3.10/lib-dynload'
+p='/Users/me/Code/repro/repro-uv-pypy-hatchling/venv/lib/python3.10/site-packages'
+</code></pre>
+</p>
+</details>
+
+<details><summary>PyPy 3.10</summary>
+<p>
+
+<pre><code class="language-console">$ pyenv shell pypy3.10
+$ uv venv venv --python pypy3.10
+$ source venv/bin/activate
+$ (venv) python --version
+Python 3.10.13 (fc59e61cfbff, Jan 14 2024, 13:00:21)
+[PyPy 7.3.15 with GCC Apple LLVM 13.1.6 (clang-1316.0.21.2.5)]
+$ (venv) uv pip install requests
+Resolved 5 packages in 10ms
+Installed 5 packages in 6ms
+ + certifi==2024.2.2
+ + charset-normalizer==3.3.2
+ + idna==3.6
+ + requests==2.31.0
+ + urllib3==2.2.1
+$ (venv) python -c 'import requests; print(requests.get(&quot;https://google.com&quot;).status_code)'
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'requests'
+$ (venv) python -c 'import sys; [print(f&quot;{p=}&quot;) for p in sys.path]'
+p=''
+p='/Users/me/.pyenv/versions/pypy3.10-7.3.15/lib/pypy3.10'
+p='/Users/me/.pyenv/versions/pypy3.10-7.3.15/lib/pypy3.10/plat-mac'
+p='/Users/me/.pyenv/versions/pypy3.10-7.3.15/lib/pypy3.10/plat-mac/lib-scriptpackages'
+</code></pre>
+</p>
+</details> 
+
+<p>Notice the venv's <code>/site-packages</code> is missing in the PyPy case.</p>
+<p>Happy to open a new issue too!</p>
+<p><em>Originally posted by @edgarrmondragon in https://github.com/astral-sh/uv/issues/1785#issuecomment-1958561905</em>
+Related:</p>
+<ul>
+<li>#1488</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-22 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">pypy</span> added by @konstin on 2024-02-22 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-22 09:50</div>
+            <div class="timeline-body"><p>Thanks for checking and filing this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2024-03-01 03:59</div>
+            <div class="timeline-body"><p>Seems to be fixed in main!</p>
+<pre><code class="language-console">$ (venv) python -m site
+sys.path = [
+    '/Users/me/repro/uv-pypy-hatchling',
+    '/Users/me/.pyenv/versions/pypy3.10-7.3.15/lib/pypy3.10',
+    '/Users/me/.pyenv/versions/pypy3.10-7.3.15/lib/pypy3.10/plat-mac',
+    '/Users/me/.pyenv/versions/pypy3.10-7.3.15/lib/pypy3.10/plat-mac/lib-scriptpackages',
+    '/Users/me/repro/uv-pypy-hatchling/venv/lib/pypy3.10/site-packages',
+]
+USER_BASE: '/Users/me/.local' (exists)
+USER_SITE: '/Users/me/.local/lib/pypy3.10/site-packages' (doesn't exist)
+ENABLE_USER_SITE: False
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 04:02</div>
+            <div class="timeline-body"><p>Nice, thanks! We still have work to do to make PyPy fully-supported, but this is a start...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-01 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-01 04:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

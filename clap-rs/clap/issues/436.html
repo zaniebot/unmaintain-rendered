@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How can subcommands automatically use the same version as the parent command? - clap-rs/clap #436</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How can subcommands automatically use the same version as the parent command?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/436">#436</a>
+        opened by <a href="https://github.com/clux">@clux</a>
+        on 2016-03-01 10:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/clux">@clux</a> on 2016-03-01 10:03</div>
+            <div class="timeline-body"><p>Hi there.</p>
+<p>I am writing an app of a form like:</p>
+<pre><code class="language-rs">let args = App::new(&quot;blast&quot;)
+                   .version(&quot;1.2.3&quot;)
+                   .subcommand(SubCommand::with_name(&quot;status&quot;).help(&quot;help str&quot;))
+                   .get_matches();
+</code></pre>
+<p>And it appears <code>blast status -h</code> will suggest <code>-V</code> as a flag for <code>blast status</code>, but if you actually try this, it will just print the version as an empty string. I'm not sure if it necessarily needs to inherit from the app version, but it looks a little weird listing it in the subcommand's help if it is not set.</p>
+<p>I am using:</p>
+<ul>
+<li>clap = &quot;2.1.2&quot;</li>
+<li>rustc 1.6.0 (c30b771ad 2016-01-19)</li>
+</ul>
+<p>(Btw, other than this slight quirk, this library is fantastic. Thanks for your hard work.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-03-02 08:48</div>
+            <div class="timeline-body"><p>By default subcommands don't inherit the version of the parent command, this allows them to be developed as a separate program entirely (should that ever be required).</p>
+<p>You can, however, tell <code>clap</code> to simply propagate the version of the parent down through all child subcommands if you'd like them to all have the same version.</p>
+<p>To do this, you use the <a href="http://kbknapp.github.io/clap-rs/clap/enum.AppSettings.html#examples-3"><code>AppSettings::GlobalVersion</code></a> enum variant along with the <code>App::setting</code> method.</p>
+<pre><code class="language-rust">let args = App::new(&quot;blast&quot;)
+                   .setting(AppSettings::GlobalVersion) // all subcommands have version &quot;1.2.3&quot; now
+                   .version(&quot;1.2.3&quot;)
+                   .subcommand(SubCommand::with_name(&quot;status&quot;).help(&quot;help str&quot;))
+                   .get_matches();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-03-02 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "subcommands and versions slight issue" to "How can subcommands automatically use the same version as the parent command?" by @kbknapp on 2016-03-02 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clux">@clux</a> on 2016-03-02 10:20</div>
+            <div class="timeline-body"><p>Ah, I see. That's one useful solution.</p>
+<p>Alternatively though; is there a way to remove the version from showing up in subcommand help?</p>
+<p><code>./blast -h</code> and <code>./blast status -h</code> will both suggest looking at version even if the app was missing a <code>.version()</code> call. That is still misleading, and pollutes the help of small subcommands with few flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-03-08 12:44</div>
+            <div class="timeline-body"><p>@clux  Sorry, my free time has been non-existent lately!</p>
+<p>Yes, you can use the <a href="http://kbknapp.github.io/clap-rs/clap/enum.AppSettings.html#examples-4"><code>AppSettings::VersionlessSubcommands</code></a> enum variant to remove the version flag entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clux">@clux</a> on 2016-03-08 13:31</div>
+            <div class="timeline-body"><p>Ooh, perfect. Thank you very much. I had entirely missed the documentation of that enum. Lots of useful stuff in there! I will close this now as it works perfectly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @clux on 2016-03-08 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-03-08 13:32</div>
+            <div class="timeline-body"><p>:+1:</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

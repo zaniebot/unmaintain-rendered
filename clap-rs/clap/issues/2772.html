@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Very large display_order values cause a crash while displaying help - clap-rs/clap #2772</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Very large display_order values cause a crash while displaying help</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2772">#2772</a>
+        opened by <a href="https://github.com/tangmi">@tangmi</a>
+        on 2021-09-17 02:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tangmi">@tangmi</a> on 2021-09-17 02:10</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.55.0 (c8dfcfe04 2021-09-06)</p>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.4</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">fn main() {
+    clap::App::new(&quot;test&quot;)
+        .subcommand(clap::App::new(&quot;sub&quot;).display_order(usize::MAX))
+        .print_help()
+        .unwrap();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<h3>Actual Behaviour</h3>
+<p>Results in the following crash in <code>VecMap</code>:</p>
+<pre><code>thread 'main' panicked at 'attempt to add with overflow', ~/.cargo/registry/src/github.com-1ecc6299db9ec823/vec_map-0.8.2/src/lib.rs:540:31
+</code></pre>
+<p>Using <code>usize::MAX - 1</code> results in a <code>'capacity overflow'</code> in <code>VecMap</code>:</p>
+<pre><code>thread 'main' panicked at 'capacity overflow', library/alloc/src/raw_vec.rs:559:5
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The help output is printed.</p>
+<h3>Additional Context</h3>
+<p>I believe this was previously working for me, but I'm not sure when. I have upgraded Rust a couple times (it was working maybe in 1.52?), but I'm unsure if that's the only thing has changed.</p>
+<h3>Debug Output</h3>
+<pre><code>[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_propagate:test
+[            clap::build::app] 	App::_check_help_and_version
+[            clap::build::app] 	App::_check_help_and_version: Building help subcommand
+[            clap::build::app] 	App::_propagate_global_args:test
+[            clap::build::app] 	App::_derive_display_order:test
+[            clap::build::app] 	App::_derive_display_order:sub
+[            clap::build::app] 	App::_derive_display_order:help
+[clap::build::app::debug_asserts] 	App::_debug_asserts
+[clap::build::arg::debug_asserts] 	Arg::_debug_asserts:help
+[clap::build::arg::debug_asserts] 	Arg::_debug_asserts:version
+[         clap::parse::parser] 	Parser::color_help
+[          clap::output::help] 	Help::new
+[          clap::output::help] 	Help::write_help
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_templated_help
+[          clap::output::help] 	Help::write_before_help
+[          clap::output::help] 	Help::write_bin_name
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs=[]
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[]
+[         clap::output::usage] 	Usage::needs_flags_tag
+[         clap::output::usage] 	Usage::needs_flags_tag:iter: f=help
+[         clap::output::usage] 	Usage::needs_flags_tag:iter: f=version
+[         clap::output::usage] 	Usage::needs_flags_tag: [FLAGS] not required
+[         clap::output::usage] 	Usage::create_help_usage: usage=test [SUBCOMMAND]
+[          clap::output::help] 	Help::write_all_args
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	should_show_arg: use_long=false, arg=version
+[          clap::output::help] 	Help::write_args
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_args: Current Longest...2
+[          clap::output::help] 	Help::write_args: New Longest...6
+[          clap::output::help] 	should_show_arg: use_long=false, arg=version
+[          clap::output::help] 	Help::write_args: Current Longest...6
+[          clap::output::help] 	Help::write_args: New Longest...9
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::spec_vals: a=--help
+[          clap::output::help] 	should_show_arg: use_long=false, arg=version
+[          clap::output::help] 	Help::spec_vals: a=--version
+[          clap::output::help] 	Help::spec_vals: a=--help
+[          clap::output::help] 	Help::short
+[          clap::output::help] 	Help::long
+[          clap::output::help] 	Help::val: arg=help
+[          clap::output::help] 	Help::val: Has switch...
+[          clap::output::help] 	Yes
+[          clap::output::help] 	Help::val: nlh...false
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::spec_vals: a=--version
+[          clap::output::help] 	Help::short
+[          clap::output::help] 	Help::long
+[          clap::output::help] 	Help::val: arg=version
+[          clap::output::help] 	Help::val: Has switch...
+[          clap::output::help] 	Yes
+[          clap::output::help] 	Help::val: nlh...false
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::write_subcommands
+thread 'main' panicked at 'attempt to add with overflow', ~/.cargo/registry/src/github.com-1ecc6299db9ec823/vec_map-0.8.2/src/lib.rs:540:31
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @tangmi on 2021-09-17 02:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2773.html">clap-rs/clap#2773</a> on 2021-09-17 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-09-17 18:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

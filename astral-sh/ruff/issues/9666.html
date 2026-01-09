@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive of TCH003 on InitVar import - astral-sh/ruff #9666</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive of TCH003 on InitVar import</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9666">#9666</a>
+        opened by <a href="https://github.com/jonyscathe">@jonyscathe</a>
+        on 2024-01-29 05:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jonyscathe">@jonyscathe</a> on 2024-01-29 05:31</div>
+            <div class="timeline-body"><p>TCH003 should not be raised on InitVar or ClassVar import even if they are only used for typing within a dataclass.
+This is because they are needed at runtime.</p>
+<p>See the corresponding issue in flake8-type-checking for more information: https://github.com/snok/flake8-type-checking/issues/83</p>
+<p>Not sure if it should be fixed in the same way in ruff.</p>
+<p>Currently using ruff==0.1.14</p>
+<p>Settings:
+[tool.ruff]
+extend-select = ['D213']
+ignore = ['ANN101', 'ANN401', 'D107', 'D203', 'D212', 'E203', 'ISC003', 'N803', 'N806', 'PLC1901', 'PLC2701']
+line-length = 120
+preview = true
+select = ['ALL']
+target-version = 'py312'</p>
+<p>[tool.ruff.format]
+line-ending = 'lf'
+quote-style = 'single'</p>
+<p>[tool.ruff.lint.flake8-implicit-str-concat]
+allow-multiline = false</p>
+<p>[tool.ruff.lint.flake8-quotes]
+inline-quotes = 'single'</p>
+<p>[tool.ruff.lint.flake8-type-checking]
+strict = true</p>
+<p>[tool.ruff.lint.isort]
+known-first-party = ['namespace.project']</p>
+<p>[tool.ruff.lint.pylint]
+max-args = 8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonyscathe">@jonyscathe</a> on 2024-01-29 05:52</div>
+            <div class="timeline-body"><p>I now realise that the setting: <code>exempt-modules = [&quot;dataclasses&quot;]</code> does fix this.<br />
+So I guess that is fine. Not the most ideal solution as it could mask genuine issues, but it'll work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-29 11:56</div>
+            <div class="timeline-body"><p>Is the right solution here not to add <code>@dataclass</code> to <code>runtime-evaluated-decorators</code>? See: https://docs.astral.sh/ruff/settings/#flake8-type-checking-runtime-evaluated-decorators.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-29 11:57</div>
+            <div class="timeline-body"><p>Oh, but I guess this only applies to <code>InitVar</code> specifically, and not other annotations used within dataclasses?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-01-29 11:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-01-29 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-29 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-29 17:13</div>
+            <div class="timeline-body"><p>We can fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-29 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9688.html">astral-sh/ruff#9688</a> on 2024-01-29 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-29 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonyscathe">@jonyscathe</a> on 2024-01-29 22:00</div>
+            <div class="timeline-body"><p>Thanks for the quick fix!
+It is annoying that there are a handful of special cases like this in Python where the typing is actually used at runtime.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to install pyre2 with uv - astral-sh/uv #6084</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to install pyre2 with uv</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6084">#6084</a>
+        opened by <a href="https://github.com/sgrimee">@sgrimee</a>
+        on 2024-08-14 14:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sgrimee">@sgrimee</a> on 2024-08-14 14:17</div>
+            <div class="timeline-body"><p>Unable to install pyre2 with uv pip, it works with pip directly.</p>
+<p>On mac, in a nix environment with python 3.12.4 and uv 0.1.45.
+Using a venv created by uv.</p>
+<p>Trying to install pyre2:</p>
+<pre><code>uv pip install pyre2==0.3.6          
+Resolved 1 package in 2ms
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: pyre2==0.3.6
+  Caused by: Failed to build: `pyre2==0.3.6`
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit status: 1
+--- stdout:
+running bdist_wheel
+running build
+running build_ext
+-- Configuring incomplete, errors occurred!
+--- stderr:
+CMake Error at CMakeLists.txt:3 (project):
+  Running
+
+   '/Users/sgrimee/Library/Caches/uv/.tmpRpC52h/.venv/bin/ninja' '--version'
+
+  failed with:
+
+   no such file or directory
+</code></pre>
+<p>It also fails if I first install:</p>
+<pre><code>uv pip install ninja setuptools wheel
+Resolved 3 packages in 2ms
+Installed 3 packages in 11ms
+ + ninja==1.11.1.1
+ + setuptools==72.2.0
+ + wheel==0.44.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 14:18</div>
+            <div class="timeline-body"><p>It looks like you might need <code>--no-build-isolation</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 14:19</div>
+            <div class="timeline-body"><p>See: https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#pep-517-build-isolation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sgrimee">@sgrimee</a> on 2024-08-14 14:27</div>
+            <div class="timeline-body"><p>Thanks for the response! So I try from a fresh venv, I install setuptools and ninja, then:</p>
+<pre><code>uv pip install --no-build-isolation  pyre2==0.3.6 
+Resolved 1 package in 0.94ms
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: pyre2==0.3.6
+  Caused by: Failed to build: `pyre2==0.3.6`
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit status: 1
+--- stdout:
+running bdist_wheel
+running build
+running build_ext
+-- Configuring incomplete, errors occurred!
+--- stderr:
+CMake Error at CMakeLists.txt:3 (project):
+  Running
+
+   '/Users/sgrimee/Library/Caches/uv/.tmpRpC52h/.venv/bin/ninja' '--version'
+
+  failed with:
+
+   no such file or directory
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 14:41</div>
+            <div class="timeline-body"><p>Hmm, this works as expected for me:</p>
+<pre><code>❯ uv venv
+
+❯ uv pip install setuptools ninja cython
+
+❯ uv pip install --no-build-isolation  pyre2==0.3.6
+Resolved 1 package in 1ms
+   Built pyre2==0.3.6
+Prepared 1 package in 3.23s
+Installed 1 package in 0.64ms
+ + pyre2==0.3.6
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-08-14 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sgrimee">@sgrimee</a> on 2024-08-15 13:33</div>
+            <div class="timeline-body"><p>thanks for checking... are you on python 3.12?
+I still see the error, and had a colleague test it to, but I see it only on 3.12.
+With 3.9-11, I get <a href="https://github.com/facebook/pyre2/issues/24">another error</a>, I think not related, which I am trying to solve also by upgrading my c++ to v17.
+Would you mind sharing your python version, as well as c++ version you are using?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 17:29</div>
+            <div class="timeline-body"><p>@sgrimee -- I just tested and it succeeds for me on both Python 3.11 and Python 3.12, unfortunately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 22:20</div>
+            <div class="timeline-body"><p>Gonna close due to difficulty reproducing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-14 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-14 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vlcek">@vlcek</a> on 2024-11-29 17:21</div>
+            <div class="timeline-body"><p>Sorry for writing into an already closed issue, however, I hit the same problem with <code>pyre2</code> on Python 3.11 with uv 0.5.5.
+I tried the <code>--no-build-isolation</code> with no success, however, once I nuked the uv's cache (<code>rm -rf ~/.cache/uv</code>) and run <code>uv sync</code> again, suddenly the <code>pyre2</code> build was successful.</p>
+<p>Maybe this info will help anyone reading this issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

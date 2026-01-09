@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't move imports under `if TYPE_CHECKING` if they're added to `__all__` - astral-sh/ruff #6236</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't move imports under `if TYPE_CHECKING` if they're added to `__all__`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6236">#6236</a>
+        opened by <a href="https://github.com/pawamoy">@pawamoy</a>
+        on 2023-08-01 11:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pawamoy">@pawamoy</a> on 2023-08-01 11:51</div>
+            <div class="timeline-body"><p>In my top-level <code>__init__.py</code> file, I define the <code>__all__</code> variable to mark some imported objects as &quot;public&quot; or &quot;re-exported&quot;.</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from pkg.submodule import A, B, C
+
+__all__: list[str] = [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;]
+</code></pre>
+<p>When auto-fixing this code with Ruff 0.0.281, Ruff moves all imports under an <code>if TYPE_CHECKING</code> condition, probably because they appear unused, and because I import <code>annotations</code> from <code>__future__ </code>. If I don't import future annotations, Ruff does not refactor the code (I'm targeting Python 3.8).</p>
+<p>Moving these public imports under the <code>TYPE_CHECKING</code> condition actually breaks the API, since the objects are not available from the top-level module anymore at runtime.</p>
+<p>I would like Ruff to check if an object is added to the module's <code>__all__</code> list before moving it under <code>TYPE_CHECKING</code>.</p>
+<p>This <code>__all__</code> variable is a sequence of strings, tuple or list, and can unfortunately be constructed dynamically, so this complicates things: <code>__all__ = [&quot;A&quot;, *other_list] + list(some_tuple)</code>. If supporting dynamically constructed lists is too hard, for a first version Ruff could only support statically defined lists/tuples.</p>
+<p>In the meantime, and as explained above, I can simply stop importing future annotations, and Ruff will not refactor anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-01 13:11</div>
+            <div class="timeline-body"><p>I believe this is fixed on <code>main</code> and will be out in a new release shortly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-01 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2023-08-01 13:56</div>
+            <div class="timeline-body"><p>Incredible, thank you so much!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-01 15:04</div>
+            <div class="timeline-body"><p>This should be fixed in v0.0.282, which is out now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../laminlabs/lamindb-setup/pulls/731.html">laminlabs/lamindb-setup#731</a> on 2024-04-25 13:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

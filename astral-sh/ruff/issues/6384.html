@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parenthesizing starred `yield` inner-expression causes a syntax error - astral-sh/ruff #6384</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Parenthesizing starred `yield` inner-expression causes a syntax error</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6384">#6384</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-08-07 08:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-07 08:56</div>
+            <div class="timeline-body"><pre><code class="language-python">def test():
+    (
+        yield 
+        #comment 1
+        * # comment 2
+        # comment 3
+        test # comment 4
+    )
+</code></pre>
+<p>Get's formatted as</p>
+<pre><code class="language-python">def test():
+    (
+        yield (
+            # comment 1
+            # comment 2
+            *# comment 3
+            test
+        )  # comment 4
+    )
+</code></pre>
+<p>This is invalid syntax because the <code>*</code> needs to be in front of the parenthesized expression.</p>
+<p>Open question: Should yield be calling into <code>needs_parentheses</code> and parenthesize the expression if it is always (and otherwise never add parentheses) instead of using <code>maybe_parenthesize_expression</code> (which also implies a different breaking logic than parenthesizing the expression directly).</p>
+<p>Unrelated Nit: The <code>comment 3</code> placement is a bit strange</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2023-08-07 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-07 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Alpha" by @MichaReiser on 2023-08-07 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-13 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-15 00:00</div>
+            <div class="timeline-body"><p>The input code here isn't valid syntax either. You can't have a starred expression after a <code>yield</code>. Do you recall where this came up?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-15 07:13</div>
+            <div class="timeline-body"><blockquote>
+<p>The input code here isn't valid syntax either. You can't have a starred expression after a <code>yield</code>. Do you recall where this came up?</p>
+</blockquote>
+<p>Ruff and black parse this just fine</p>
+<pre><code class="language-python">def test():
+    (
+        yield 
+        #comment 1
+        * # comment 2
+        # comment 3
+        test # comment 4
+    )
+</code></pre>
+<p>But I get a parse error in Python, and I must admit I don't know why. The full grammar specification tells me that I can have a <code>*</code> expression after the <code>yield</code> keyword and the spec doesn't mention that trivia is forbidden.</p>
+<pre><code>yield_expr:
+    | 'yield' 'from' expression 
+    | 'yield' [star_expressions] 
+
+star_expressions:
+    | star_expression (',' star_expression )+ [','] 
+    | star_expression ',' 
+    | star_expression
+</code></pre>
+<p>Does Python not support <code>yield *</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-15 16:03</div>
+            <div class="timeline-body"><p>It's allowed if the right-hand side is a tuple, like <code>yield 1, *x</code> or <code>yield *x, 1</code>, but I think the target itself cannot be a starred expression. I can't find this defined formally anywhere, I just spent a while looking for it. This is also true of assignments (<code>x = *y</code> is invalid, <code>x = *y, 1</code> is valid) and other statements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-15 16:05</div>
+            <div class="timeline-body"><p>Given:</p>
+<pre><code class="language-python">def test():
+    (
+        yield 
+        #comment 1
+        * # comment 2
+        # comment 3
+        test, # comment 4
+        1
+    )
+</code></pre>
+<p>We produce:</p>
+<pre><code class="language-python">def test():
+    (
+        yield (
+            # comment 1
+            (
+                # comment 2
+                *# comment 3
+                test,  # comment 4
+                1,
+            )
+        )
+    )
+</code></pre>
+<p>Which is valid syntax with the same AST, though the placement of <code># comment 3</code> is odd.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-15 16:06</div>
+            <div class="timeline-body"><p>For completeness, Black formats that as:</p>
+<pre><code class="language-python">def test():
+    (
+        yield
+        # comment 1
+        *  # comment 2
+        # comment 3
+        test,  # comment 4
+        1,
+    )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-15 16:06</div>
+            <div class="timeline-body"><p>I can work on improving the comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-15 16:43</div>
+            <div class="timeline-body"><p>I guess the way to think of it is that with <code>yield *starred</code>, there's nothing to unpack <code>*starred</code> into, i.e., no containing tuple into which the elements should be unpacked?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-15 17:00</div>
+            <div class="timeline-body"><p>I don't know. I assumed they would work like JavaScript's <code>yield *generator</code> where it makes the function to return every item of <code>generator</code> before continuing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-15 17:03</div>
+            <div class="timeline-body"><p>I think that would be <code>yield from generator</code> in Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6603.html">astral-sh/ruff#6603</a> on 2023-08-15 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-16 13:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

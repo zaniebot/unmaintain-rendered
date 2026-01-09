@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Autofix error] Invalid code produce autofix error - astral-sh/ruff #3622</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Autofix error] Invalid code produce autofix error</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3622">#3622</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2023-03-20 08:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2023-03-20 08:30</div>
+            <div class="timeline-body"><p>Ruff  a45753f462c7a53afd7f942ab3c6f9af3871bf1f</p>
+<pre><code># flake8: noqa: F405
+fom opts import *  # noqa
+</code></pre>
+<p>with</p>
+<pre><code>ruff file.py --fix
+</code></pre>
+<pre><code>error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/charliermarsh/ruff/issues/new?title=%5BAutofix%20error%5D
+
+...quoting the contents of `Desktop/RunEveryCommand/Ruff/Broken/94966__init__ (9 413th copy)0.py`, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-20 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-20 23:27</div>
+            <div class="timeline-body"><pre><code class="language-python"># flake8: noqa: F405
+fom opts import *  # noqa
+^^^
+</code></pre>
+<p><code>fom</code> seems to be an invalid syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-20 23:27</div>
+            <div class="timeline-body"><p>It might be a bug that we're considering that <code>noqa</code> to be unused though, it should be suppressing an <code>E999</code> error...? Not sure why that's not getting raised here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-20 23:30</div>
+            <div class="timeline-body"><p>I think <code># noqa</code> should never suppress <code>E999</code>, that seems to be the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-20 23:31</div>
+            <div class="timeline-body"><p>I think it <em>should</em>, that was used as a workaround for a while for <code>match</code> statement. But we're raising a <code>RUF100</code>, then fixing <em>that</em>, then Ruff <em>thinks</em> we introduced a syntax error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-20 23:32</div>
+            <div class="timeline-body"><p>Ahh, the issue is <code># flake8: noqa: F405</code>. That suppress <em>all</em> errors, just like in Flake8.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-20 23:33</div>
+            <div class="timeline-body"><p>The issue is here:</p>
+<pre><code class="language-rust">Err(parse_error) =&gt; {
+    if settings.rules.enabled(Rule::SyntaxError) {
+        pycodestyle::rules::syntax_error(&amp;mut diagnostics, &amp;parse_error);
+    }
+
+    // If the syntax error is ignored, suppress it (regardless of whether
+    // `Rule::SyntaxError` is enabled).
+    if !rule_is_ignored(
+        Rule::SyntaxError,
+        parse_error.location.row(),
+        &amp;directives.noqa_line_for,
+        locator,
+    ) {
+        error = Some(parse_error);
+    }
+}
+</code></pre>
+<p>That needs to respect the <em>whole file</em> ignores, not just the inline ignores.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3665.html">astral-sh/ruff#3665</a> on 2023-03-22 04:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-03-22 04:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-23 17:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

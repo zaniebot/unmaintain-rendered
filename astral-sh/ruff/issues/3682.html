@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANN* rule ignore not working - astral-sh/ruff #3682</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ANN* rule ignore not working</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3682">#3682</a>
+        opened by <a href="https://github.com/silviumarcu">@silviumarcu</a>
+        on 2023-03-23 10:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/silviumarcu">@silviumarcu</a> on 2023-03-23 10:33</div>
+            <div class="timeline-body"><p>When adding <code>ANN*</code> (e.g.  ANN101, ANN102) to either <code>ignore</code> or <code>extend-ignore</code> errors are still displayed.</p>
+<p><code>ruff_lab.py</code></p>
+<pre><code>class Test:
+    def do_stuff(self) -&gt; None:
+        print('stuff')
+
+    @classmethod
+    def do_more_stuff(cls) -&gt; None:
+        print(&quot;more stuff&quot;)
+</code></pre>
+<p><code>pyproject.toml</code></p>
+<pre><code>[tool.ruff]
+extend-select = [&quot;ANN&quot;]
+ignore = [&quot;ANN102&quot;, &quot;ANN101&quot;]
+</code></pre>
+<pre><code>pip freeze | grep ruff
+ruff==0.0.258
+</code></pre>
+<pre><code>ruff check ruff_lab.py
+ruff_lab.py:2:18: ANN101 Missing type annotation for `self` in method
+ruff_lab.py:6:23: ANN102 Missing type annotation for `cls` in classmethod
+Found 2 errors.
+</code></pre>
+<p>When downgrading to <code>0.0.257</code> the behavior is the expected one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-23 12:01</div>
+            <div class="timeline-body"><p>Did you try <code>select=ANN</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silviumarcu">@silviumarcu</a> on 2023-03-23 13:51</div>
+            <div class="timeline-body"><p>Adding <code>select = [&quot;ANN&quot;]</code> in <code>pyproject.toml</code> seems to work. Is <code>extended_select</code> deprecated?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-23 13:55</div>
+            <div class="timeline-body"><p>No, but <code>extend_select</code> take priority over <code>ignore</code>.
+This is to allow to override ignore in the CLI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-23 17:03</div>
+            <div class="timeline-body"><p>I suspect this is a bug actually, especially if it worked on <code>0.0.257</code>. I would expect the config above to work as you expect it to. (<code>extend-select</code> just extends <code>select</code>, it doesn't have higher precedence than <code>ignore</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-23 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-23 17:04</div>
+            <div class="timeline-body"><p>Just confirmed that this is fixed by https://github.com/charliermarsh/ruff/pull/3685, which'll go out in a new release today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-23 17:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

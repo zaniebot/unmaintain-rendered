@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap::Error to colored string - clap-rs/clap #4133</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap::Error to colored string</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4133">#4133</a>
+        opened by <a href="https://github.com/sigoden">@sigoden</a>
+        on 2022-08-27 12:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sigoden">@sigoden</a> on 2022-08-27 12:36</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Describe your use case</h3>
+<p>I make a bash cli tool(https://github.com/sigoden/argc), it use clap as cli parser.</p>
+<p>A pr(https://github.com/sigoden/argc/issues/37) have been submitted for request colored help and colored error message.</p>
+<p>So I need a way to covert clap::Error to colored string.</p>
+<h3>Describe the solution you'd like</h3>
+<p>The easiest way is to expose following two apis.</p>
+<ol>
+<li><p><a href="https://github.com/clap-rs/clap/blob/a2f3ee2cfa3767ed6ddd6c8c27ec154ef3f8a890/src/error/mod.rs#L500">clap::error::Error::formatted</a></p>
+</li>
+<li><p><a href="https://github.com/clap-rs/clap/blob/a2f3ee2cfa3767ed6ddd6c8c27ec154ef3f8a890/src/builder/styled_str.rs#L145">clap::builder::StyledStr::write_colored</a></p>
+</li>
+</ol>
+<p>A better way is to add a <code>to_color_string</code> function to clap::error::Error</p>
+<pre><code>impl Error {
+    #[cfg(feature = &quot;color&quot;)]
+    pub fn to_colored_string(&amp;self) -&gt; String {
+
+    }
+}
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @sigoden on 2022-08-27 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2022-08-29 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-blocked</span> added by @epage on 2022-08-29 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.x" by @epage on 2022-08-29 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-29 13:12</div>
+            <div class="timeline-body"><p>Is there a reason you can't just use <code>Error::print</code> or <code>Error::exit</code>?</p>
+<p>In clap 4.x, we are planning on changing how we handle terminal styling which will lead to use exposing something like what is proposed in here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigoden">@sigoden</a> on 2022-08-29 13:52</div>
+            <div class="timeline-body"><p>Argc use bash <code>eval $(argc --argc-eval &quot;$0&quot; &quot;$@&quot;)</code> to retrive passed variables from stdout, so the help text or error message must print to stderr.</p>
+<p><code>Error::print</code> or <code>Error::exit</code> will print to stdout in some situation(<code>ErrorKind::DisplayHelp | ErrorKind::DisplayVersion</code>). So I can't use them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-29 14:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Error::print or Error::exit will print to stdout in some situation(ErrorKind::DisplayHelp | ErrorKind::DisplayVersion). So I can't use them.</p>
+</blockquote>
+<p>In the interim, you can check the error kind and conditionally do it based on that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigoden">@sigoden</a> on 2022-08-29 14:56</div>
+            <div class="timeline-body"><p>But I still need to print help(<code>ErrorKind::DisplayHelp</code>) to stderr. Is there a way to get the <strong>colored</strong> help string?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-29 15:00</div>
+            <div class="timeline-body"><p>No, and there won't be until some time during clap 4.x.</p>
+<p>I was providing a way to workaround the problem until we do provide an API for this.  This is my top clap priority once 4.0 is released.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-28 16:15</div>
+            <div class="timeline-body"><p>Went ahead with this in #4248</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-09-28 16:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

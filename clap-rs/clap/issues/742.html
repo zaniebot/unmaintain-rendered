@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unexpected behavior when AllowLeadingHyphen is enabled - clap-rs/clap #742</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>unexpected behavior when AllowLeadingHyphen is enabled</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/742">#742</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2016-11-12 18:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-12 18:22</div>
+            <div class="timeline-body"><p>I understand that there is a <code>AppSettings::AllowLeadingHyphen</code> and that it is application wide, but is there anyway to get a more targeted approach? For example, I have flag like this:</p>
+<pre><code>    -e, --regexp PATTERN ...   Use PATTERN to search. This option can be
+                               provided multiple times, where all patterns
+                               given are searched. This is also useful when
+                               searching for a pattern that starts with a dash.
+</code></pre>
+<p>Users occasionally want to use a <code>PATTERN</code> that starts with a <code>-</code>. By default, clap disallows this to make failure modes better (which I think is a great choice by default). I can permit <code>PATTERN</code> to start with a leading <code>-</code> by enabling the <code>AllowLeadingHyphen</code> option application wide, but if I do this, I get unexpected behavior. Here's my clap app:</p>
+<pre><code class="language-rust">extern crate clap;
+
+use clap::{App, AppSettings, Arg};
+
+fn main() {
+    let app = App::new(&quot;ripgrep&quot;)
+        .setting(AppSettings::AllowLeadingHyphen)
+        .arg(Arg::with_name(&quot;path&quot;)
+             .multiple(true)
+             .help(&quot;A file or directory to search. Directories are searched \
+                    recursively.&quot;))
+        .arg(Arg::with_name(&quot;regexp&quot;)
+             .long(&quot;regexp&quot;).short(&quot;e&quot;)
+             .takes_value(true)
+             .multiple(true)
+             .number_of_values(1)
+             .conflicts_with(&quot;files&quot;)
+             .value_name(&quot;pattern&quot;)
+             .help(&quot;A regular expression pattern used for searching. \
+                    Multiple patterns may be given.&quot;))
+        .arg(Arg::with_name(&quot;files&quot;)
+             .long(&quot;files&quot;)
+             .help(&quot;Print each file that would be searched \
+                    (but don't search).&quot;));
+    println!(&quot;{:?}&quot;, app.get_matches());
+}
+</code></pre>
+<p>And here's an example invocation:</p>
+<pre><code>$ ./target/debug/clap-hyphen a b --files c
+ArgMatches { args: {&quot;path&quot;: MatchedArg { occurs: 4, vals: {1: &quot;a&quot;, 2: &quot;b&quot;, 3: &quot;--files&quot;, 4: &quot;c&quot;} }, &quot;files&quot;: MatchedArg { occurs: 1, vals: {} }}, subcommand: None, usage: Some(&quot;USAGE:\n    clap-hyphen [FLAGS] [OPTIONS] [--] [path]...&quot;) }
+</code></pre>
+<p>Notice that <code>--files</code> is correctly detected as a flag, but it is <em>also</em> put into the values of the <code>path</code> positional argument. If I remove the <code>AppSettings::AllowLeadingHypen</code> option, then the behavior returns to normal and <code>--files</code> is no longer part of <code>path</code>.</p>
+<p>I'm not sure whether this is intended behavior or not, but I can think of at least two ways you might consider solving this problem if it is indeed unintended (but of course, keeping in mind that I'm unfamiliar with the implementation!):</p>
+<ol>
+<li>If <code>--files</code> is determined to be an actual flag, then it shouldn't show up in the value list of another <code>Arg</code>.</li>
+<li>Add an <code>ArgSettings::AllowLeadingHypen</code> that would let me explicitly say that only values for the <code>-e/--regexp</code> flag can start with a leading <code>-</code>. (I'm guessing there's probably a good reason why this doesn't already exist though!)</li>
+</ol>
+<p>Thoughts? Have I missed something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-12 18:25</div>
+            <div class="timeline-body"><p>I wonder if there's a third option: don't permit leading hyphens in <em>positional</em> arguments, only in <em>flag</em> arguments. (Which may or may not be easier to implement, I don't know.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-11-12 20:46</div>
+            <div class="timeline-body"><p>Actually, now that you mention it, I <em>do</em> think there's a way I could easily allow targeted leading hyphens in options only. i.e. not command wide, and not in positional arguments. Let me play with an implementation real quick and see if I can get this working.</p>
+<p>In an old implementation where this all stemmed from, it wasn't easy to determine for a single option, but this new idea may just work. Standby for updates!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../BurntSushi/ripgrep/pulls/233.html">BurntSushi/ripgrep#233</a> on 2016-11-13 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2016-11-14 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2016-11-14 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2016-11-14 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2016-11-14 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-11-14 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-11-14 21:58</div>
+            <div class="timeline-body"><p>Just an update, I'm still working this issue. It was a busy few days, so I didn't get near as far as I'd have liked. I should have a working PR in a few days.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-14 21:58</div>
+            <div class="timeline-body"><p>@kbknapp No worries, it's a very small matter. Thanks for looking into it at all. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../BurntSushi/ripgrep/issues/215.html">BurntSushi/ripgrep#215</a> on 2016-11-18 01:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-11-21 04:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

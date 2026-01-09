@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unused `noqa` directive (unused: `BLE001`) wrongly detected - astral-sh/ruff #11360</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unused `noqa` directive (unused: `BLE001`) wrongly detected</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11360">#11360</a>
+        opened by <a href="https://github.com/revliscano">@revliscano</a>
+        on 2024-05-10 12:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/revliscano">@revliscano</a> on 2024-05-10 12:27</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>After upgrading to version <code>0.4.4</code>, Ruff analysis is failing for this code</p>
+<pre><code class="language-python">try:
+    ...
+except Exception as e:  # noqa: BLE001
+    ...
+</code></pre>
+<p>When I run:</p>
+<pre><code class="language-console">$ pip install ruff==0.4.4
+$ ruff check .
+emails/backend.py:49:33: RUF100 [*] Unused `noqa` directive (unused: `BLE001`)
+</code></pre>
+<p>It says that  <code>BLE001</code> is unused, when it's clearly necessary there. In the previous ruff version (<code>0.4.3</code>) this was not happening.</p>
+<h3>Edit</h3>
+<p>I'm including the rest of the <code>except</code> block, as requested by @charliermarsh</p>
+<pre><code class="language-python">try:
+   ...
+except Exception as e:  # noqa: BLE001
+    if not self.fail_silently:
+        raise e
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-10 13:22</div>
+            <div class="timeline-body"><p>Can you include the rest of the <code>except</code> block? We don't flag <code>BLE</code> if the exception is re-raised or logged. We fixed a bug and removed some false positives, which might explain what you're seeing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-05-10 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/autinerd">@autinerd</a> on 2024-05-10 15:50</div>
+            <div class="timeline-body"><p>Yeah, my PR was not perfect, it also accepts it when the re-raise only happens inside an if (see https://github.com/home-assistant/core/pull/117166#discussion_r1596329890 )
+We will need to add a checker if all codepaths re-raise and/or log.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/revliscano">@revliscano</a> on 2024-05-10 17:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you include the rest of the <code>except</code> block? We don't flag <code>BLE</code> if the exception is re-raised or logged. We fixed a bug and removed some false positives, which might explain what you're seeing.</p>
+</blockquote>
+<p>I edited the description of the issue to include the rest of the <code>except</code> block.</p>
+<p>And yes, we were re-raising the exception indeed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-22 02:50</div>
+            <div class="timeline-body"><p>I think this is working as intended personally. If you're re-raising the exception, the assumption is that you're catching this intentionally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-22 02:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

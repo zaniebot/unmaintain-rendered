@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transitive workspace dependencies with dynamic package versioning - astral-sh/uv #8802</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Transitive workspace dependencies with dynamic package versioning</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8802">#8802</a>
+        opened by <a href="https://github.com/ajohnson5">@ajohnson5</a>
+        on 2024-11-04 09:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ajohnson5">@ajohnson5</a> on 2024-11-04 09:05</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<h2>UV Version</h2>
+<p><code>0.4.29</code></p>
+<h2>Issue</h2>
+<p>Currently I am experiencing an issue with transitive dependencies in workspaces when using a dynamic version. I have created a minimal example with a fork of https://github.com/konstin/workspace-git-path-dep-test. The fork is here https://github.com/ajohnson5/workspace-git-path-dep-test/tree/dynamic-version.</p>
+<p>I am trying to import two modules (which are workspaces), one of which depends on the other, similar to packages <code>c</code> and <code>d</code>  (in the above) into another repository.</p>
+<h2>Reproduction</h2>
+<p>In the above fork there are two branches:</p>
+<ol>
+<li>static-version: Same as the main branch with each package having an explicit version number defined in their pyproject.toml files such as <code>version=&quot;0.1.0&quot;</code>.</li>
+<li>dynamic-version: Each package has a dynamic version, similar to below with a <code>__about__.py</code> file in the root of the project. In this file we have <code>__version__==&quot;1.0.0&quot;</code></li>
+</ol>
+<pre><code>[project]
+name = &quot;d&quot;
+dynamic=[&quot;version&quot;]
+
+[tool.hatch.version]
+path = &quot;../../__about__.py&quot;
+</code></pre>
+<p>Now in a different project, I am trying to import both packages <code>c</code> and <code>d</code>. The pyproject.toml is shown below:</p>
+<pre><code>[project]
+name = &quot;example-project&quot;
+version = &quot;0.1.0&quot;
+requires-python=&quot;&gt;=3.11, &lt;=3.12&quot;
+
+dependencies = [
+  &quot;c&quot;,
+  &quot;d&quot;,
+]
+
+[tool.uv.sources]
+c = { git = &quot;https://github.com/ajohnson5/workspace-git-path-dep-test.git&quot;, subdirectory=&quot;packages/c&quot;, branch=&quot;dynamic-version&quot;}
+d = { git = &quot;https://github.com/ajohnson5/workspace-git-path-dep-test.git&quot;, subdirectory=&quot;packages/d&quot;, branch=&quot;dynamic-version&quot;}
+
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/example_project&quot;]
+</code></pre>
+<p>Note that between any uv commands I am doing a complete fresh run, <code>uv cache clean</code>, <code>rm -rf .venv</code> and removing the uv lock.
+If I use the <code>dynamic-version</code> branch I get the following error when running <code>uv sync</code> or <code>uv lock</code></p>
+<pre><code>error: Requirements contain conflicting URLs for package `d`:
+- file:///Users/a-user/.cache/uv/git-v0/checkouts/c63672d311baa9b4/d116d88/packages/d
+- git+https://github.com/ajohnson5/workspace-git-path-dep-test.git@dynamic-version#subdirectory=packages/d
+</code></pre>
+<p>After if I change the branch to <code>static-version</code> in the above toml then the install works completely fine.</p>
+<h3>Related Issues</h3>
+<p>https://github.com/astral-sh/uv/pull/8665</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-04 13:49</div>
+            <div class="timeline-body"><p>\cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-05 07:13</div>
+            <div class="timeline-body"><p>We currently don't support dynamic versions in workspaces. They have a number of disadvantages, e.g., we have to run python code each time we want to determine the version of a package in the workspace, instead of just reading <code>pyproject.toml</code>, and we can't see when the version changes (there's no way for uv to tell that's it's <code>about.py</code> that changes the version). Instead of defining the version in about.py and having it dynamic in pyproject.toml, I recommend setting the version in <code>pyproject.toml</code> and reading it in <code>about.py</code> with <a href="https://docs.python.org/3/library/importlib.metadata.html#importlib.metadata.version">importlib.metadata.version</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ajohnson5">@ajohnson5</a> on 2024-11-05 09:08</div>
+            <div class="timeline-body"><p>Makes sense, thanks for getting back to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ajohnson5 on 2024-11-05 09:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

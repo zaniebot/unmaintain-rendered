@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCH001 TCH002 false negative – add msgspec.Struct support - astral-sh/ruff #6571</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>TCH001 TCH002 false negative – add msgspec.Struct support</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6571">#6571</a>
+        opened by <a href="https://github.com/Olegt0rr">@Olegt0rr</a>
+        on 2023-08-14 20:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Olegt0rr">@Olegt0rr</a> on 2023-08-14 20:19</div>
+            <div class="timeline-body"><blockquote>
+<p>TCH001 [*] Move application import <code>.objects.Issue</code> into a type-checking block</p>
+</blockquote>
+<p>and</p>
+<blockquote>
+<p>TCH002 [*] Move third-party import <code>myapp.types.Issue</code> into a type-checking block</p>
+</blockquote>
+<pre><code class="language-python">from __future__ import annotations
+
+from msgspec import Struct
+
+from myapp.types import Issue
+
+
+class FullIssue(Struct):
+    parent: Issue | None = None
+
+</code></pre>
+<p>Ruff v0.0.284
+target-version = &quot;py39&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "TCH001 TCH002 add msgspec.Struct support" to "TCH001 TCH002 false negative – add msgspec.Struct support" by @Olegt0rr on 2023-08-14 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 20:21</div>
+            <div class="timeline-body"><p>Does it work as expected if you set <a href="https://beta.ruff.rs/docs/settings/#flake8-type-checking-runtime-evaluated-base-classes"><code>runtime-evaluated-base-classes</code></a>?</p>
+<pre><code class="language-toml">[tool.ruff.flake8-type-checking]
+runtime-evaluated-base-classes = [&quot;msgspec.Struct&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-08-14 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Olegt0rr">@Olegt0rr</a> on 2023-08-14 20:25</div>
+            <div class="timeline-body"><p>Yes, thanks!</p>
+<p>But as long it's a default behavior for all msgspec structs – it would be nice to make similar support as pydantic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 20:25</div>
+            <div class="timeline-body"><p>You can add <code>pydantic.BaseModel</code> to that list too. I'm considering adding them by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Olegt0rr">@Olegt0rr</a> on 2023-08-14 20:32</div>
+            <div class="timeline-body"><p>Aw, the same setting has troubles with inherits</p>
+<blockquote>
+<p>[tool.ruff.flake8-type-checking]
+runtime-evaluated-base-classes = [&quot;msgspec.Struct&quot;]</p>
+</blockquote>
+<pre><code class="language-python">from __future__ import annotations
+
+from msgspec import Struct
+
+from yatracker.types import Issue
+
+
+class Foo(Struct):
+    &quot;&quot;&quot;Intermediate class&quot;&quot;&quot;
+
+
+class FullIssue(Foo):
+    parent: Issue | None = None
+
+</code></pre>
+<blockquote>
+<p>TCH002 [*] Move third-party import <code>myapp.types.Issue</code> into a type-checking block</p>
+</blockquote>
+<p>Should I add to the list every base class? :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 20:38</div>
+            <div class="timeline-body"><p>Yes, this is a known issue. It'll be solved at some point, but probably not in an upcoming release, because it requires us to resolve symbols like <code>Foo</code> across files to really be useful in practice (e.g., if you did <code>from module import Foo</code>, and <code>Foo</code> inherited from <code>Struct</code>, we'd need to detect that).</p>
+<p>You can either add every class to the list, or include <code>Struct</code> as a base class, like:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from msgspec import Struct
+
+from yatracker.types import Issue
+
+
+class Foo(Struct):
+    &quot;&quot;&quot;Intermediate class&quot;&quot;&quot;
+
+
+class FullIssue(Foo, Struct):
+    parent: Issue | None = None
+</code></pre>
+<p>Or just disable these rules when working with libraries that rely on type annotations at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-08-16 01:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`0.7.3` introduces false positives for invalid `# noqa` directives with `RUF100` - astral-sh/ruff #14228</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`0.7.3` introduces false positives for invalid `# noqa` directives with `RUF100`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14228">#14228</a>
+        opened by <a href="https://github.com/BryceBeagle">@BryceBeagle</a>
+        on 2024-11-09 17:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BryceBeagle">@BryceBeagle</a> on 2024-11-09 17:01</div>
+            <div class="timeline-body"><p>I'm working on upgrading our codebase to use <code>ruff=0.7.3</code>, but there are some <code>RUF100</code> changes that start flagging
+some comments as being &quot;Unused <code>noqa</code> directive&quot;s.</p>
+<p>I'm not sure if this is intentional (perhaps there's a sanctioned way of adding a comment we're not using?), but this feels like a regression to me.</p>
+<p>This doesn't happen in <code>0.7.2</code>.
+I'm assuming this is related to https://github.com/astral-sh/ruff/pull/12809</p>
+<p>Examples:</p>
+<pre><code class="language-patch">--- blah.py
++++ blah.py
+@@ -118,7 +118,7 @@
+                     if res is not None:
+                         res.release()
+
+-                if 200 &lt;= res.status &lt; 300:  # noqa: PLR2004 Use raise_for_status
++                if 200 &lt;= res.status &lt; 300:  # noqa: PLR2004 raise_for_status
+                     return
+                 if (
+                     res.status not in self._retry_status_codes
+
+Would fix 1 error.
+</code></pre>
+<pre><code class="language-patch">--- foobar.py
++++ foobar.py
+@@ -43,7 +43,7 @@
+
+     @inject
+     def download(self) -&gt; Any:
+-        temp_file = tempfile.NamedTemporaryFile(suffix=&quot;.tar.gz&quot;, delete=False)  # noqa: SIM115 Closing right below
++        temp_file = tempfile.NamedTemporaryFile(suffix=&quot;.tar.gz&quot;, delete=False)  # noqa: SIM115 right below
+         temp_file.close()
+
+         key = f&quot;{self.base_commit}.tar.gz&quot;
+
+Would fix 1 error.
+</code></pre>
+<pre><code class="language-patch">--- fake_name.py
++++ fake_name.py
+@@ -47,7 +47,7 @@
+         applied_manifests
+     )
+
+-    manifest_yaml_file = tempfile.NamedTemporaryFile(  # noqa: SIM115 We're closing the file below
++    manifest_yaml_file = tempfile.NamedTemporaryFile(  # noqa: SIM115're closing the file below
+         prefix=&quot;manifest_yaml_&quot;, delete=False
+     )
+     manifest_yaml_file.close()
+</code></pre>
+<pre><code>blah.py:121:46: RUF100 [*] Unused `noqa` directive (unknown: `Use`)
+foobar.py:46:82: RUF100 [*] Unused `noqa` directive (unknown: `Closing`)
+fake_name:50:56: RUF100 [*] Unused `noqa` directive (unknown: `We`)     
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 17:12</div>
+            <div class="timeline-body"><p>Yeah definitely, sorry about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-09 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-09 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 17:26</div>
+            <div class="timeline-body"><p>(You can probably work around it for now by adding a <code>#</code> in between, like: <code># noqa: SIM115  # We're closing the file below</code> or <code># noqa: SIM115 - We're closing the file below</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14229.html">astral-sh/ruff#14229</a> on 2024-11-09 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BryceBeagle">@BryceBeagle</a> on 2024-11-09 17:41</div>
+            <div class="timeline-body"><p>Is adding a <code>#</code> recommended <em>in general</em>? Happy to update our pragmas to align with a recommended standard, if there is one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 17:43</div>
+            <div class="timeline-body"><p>I tend to do it because it disambiguates the content from the pragma (and it's easier for us to parse without any ambiguity). It's also nice if you have <em>multiple</em> pragmas on the same line, like <code># noqa  # type: ignore</code> or something. But I don't know that it's an &quot;official&quot; recommendation :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-09 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BryceBeagle">@BryceBeagle</a> on 2024-11-09 17:52</div>
+            <div class="timeline-body"><p>Thanks so much for the rapid fix! You're awesome 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14320.html">astral-sh/ruff#14320</a> on 2024-11-13 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../canonical/craft-application/pulls/557.html">canonical/craft-application#557</a> on 2024-11-15 15:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Removal of semicolon in notebooks - astral-sh/ruff #7300</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Removal of semicolon in notebooks</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7300">#7300</a>
+        opened by <a href="https://github.com/peendebak">@peendebak</a>
+        on 2023-09-12 09:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/peendebak">@peendebak</a> on 2023-09-12 09:45</div>
+            <div class="timeline-body"><p>One of the default rules in ruff is to remove a trailing semicolon. That is fine for python scripts, for for jupyter notebook this can change the output of the code cells. A screenshot to illustrate:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/17724047/8ee72dcd-de66-418c-83d5-fc43e98e0b01" alt="image" /></p>
+<p>The removal of the semicolon results in the output of the <code>plt.plot</code> command being displayed. Typically this is not the intention, so a semicolor is used to hide the command output and only the the plotted graph.</p>
+<p>Can the ruff default settings be modified to remove semicolons for python files, but not for notebooks?</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-12 10:55</div>
+            <div class="timeline-body"><p>I think this might be similar to #6586 where it's only the last expression in a cell where this rule should be disabled. We could probably have a general interface internally to include rules which need not be checked for last expressions in all cells within a Jupyter Notebook.</p>
+<p>Until that is supported, you could disable this rule on Jupyter Notebooks like so:</p>
+<pre><code class="language-toml">[tool.ruff]
+per-file-ignores = { &quot;*.ipynb&quot; = [&quot;E703&quot;] }
+</code></pre>
+<p>https://beta.ruff.rs/docs/rules/useless-semicolon/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2023-09-12 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8254.html">astral-sh/ruff#8254</a> on 2023-10-26 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-10-26 16:35</div>
+            <div class="timeline-body"><p>There are several rules that don't apply to notebooks, or apply in a modified form. <code>B018</code> - A useless expression at the end of a cell is actually not useless, that's how you show the (notebook customized if applicable) display of an object. <code>T20</code> also usually doesn't apply, notebooks are not library files, but I think it's fine to have to disable that.</p>
+<p>Ideally <code>B018</code> and <code>E703</code> would learn that when in a cell, they don't apply to the last item in the cell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 16:36</div>
+            <div class="timeline-body"><p>Agreed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 16:36</div>
+            <div class="timeline-body"><p>We already had to solve this cell-boundaries problem for isort, so should be doable in these cases too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pybamm-team/PyBaMM/issues/3476.html">pybamm-team/PyBaMM#3476</a> on 2023-10-28 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/s-weigand">@s-weigand</a> on 2023-11-08 22:59</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-toml">[tool.ruff]
+per-file-ignores = { &quot;*.ipynb&quot; = [&quot;E703&quot;] }
+</code></pre>
+</blockquote>
+<p>Sadly this seems not to be respected by <code>ruff format</code> 😢
+Even so, it is not part of <a href="https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules">the conflicting rules</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-14 04:38</div>
+            <div class="timeline-body"><p>(Merging this with a general tracking issue: https://github.com/astral-sh/ruff/issues/8669)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-11-14 04:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-14 04:39</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<pre><code class="language-toml">[tool.ruff]
+per-file-ignores = { &quot;*.ipynb&quot; = [&quot;E703&quot;] }
+</code></pre>
+</blockquote>
+<p>Sadly this seems not to be respected by <code>ruff format</code> 😢 Even so, it is not part of <a href="https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules">the conflicting rules</a></p>
+</blockquote>
+<p>@s-weigand Hi, we recently updated the formatter to not remove any trailing semicolon in notebook context: https://github.com/astral-sh/ruff/pull/8590. It'll be available in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Norlandz">@Norlandz</a> on 2025-07-01 01:54</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/issues/7300#issuecomment-1809539473</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>[tool.ruff]
+per-file-ignores = { &quot;*.ipynb&quot; = [&quot;E703&quot;] }</p>
+</blockquote>
+<p>Sadly this seems not to be respected by <code>ruff format</code> 😢 Even so, it is not part of <a href="https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules">the conflicting rules</a></p>
+</blockquote>
+<p><a href="https://github.com/s-weigand">@s-weigand</a> Hi, we recently updated the formatter to not remove any trailing semicolon in notebook context: <a href="https://github.com/astral-sh/ruff/pull/8590">#8590</a>. It'll be available in the next release.</p>
+</blockquote>
+<p>It seems <strong>only the last line is respected</strong> with that?</p>
+<p>Before</p>
+<pre><code class="language-py"># Plotting
+x = torch.arange(len(vocab))
+bar_width = 0.15
+
+fig, ax = plt.subplots(figsize=(5, 3))
+for i, T in enumerate(temperatures):
+    rects = ax.bar(x + i * bar_width, scaled_probas[i], bar_width, label=f'Temperature = {T}')
+
+ax.set_ylabel('Probability');
+ax.set_xticks(x);
+ax.set_xticklabels(vocab.keys(), rotation=90);
+ax.legend();
+
+plt.tight_layout();
+plt.savefig(&quot;temperature-plot.pdf&quot;);
+plt.show();
+</code></pre>
+<p>After</p>
+<pre><code class="language-py"># Plotting
+x = torch.arange(len(vocab))
+bar_width = 0.15
+
+fig, ax = plt.subplots(figsize=(5, 3))
+for i, T in enumerate(temperatures):
+    rects = ax.bar(x + i * bar_width, scaled_probas[i], bar_width, label=f&quot;Temperature = {T}&quot;)
+
+ax.set_ylabel(&quot;Probability&quot;)
+ax.set_xticks(x)
+ax.set_xticklabels(vocab.keys(), rotation=90)
+ax.legend()
+plt.tight_layout()
+plt.savefig(&quot;temperature-plot.pdf&quot;)
+plt.show();
+</code></pre>
+<p>Is there a way to just tell ruff, when inside ipynb, just <strong>not touch semicolon at all</strong>? And dont trim my newline for that?</p>
+<p>The reason I use <strong>multiple semicolon</strong> is that, I use <code>get_ipython().ast_node_interactivity = &quot;all&quot;</code> to print multiple outputs in a cell.</p>
+<p>Related:</p>
+<ul>
+<li><p>https://github.com/astral-sh/ruff/issues/8254</p>
+</li>
+<li><p>https://github.com/astral-sh/ruff/pull/8590</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-01 05:53</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems <strong>only the last line is respected</strong> with that?</p>
+</blockquote>
+<p>Yes, that was intentional. The main reason was that a semicolon on the last line is usually intentional to avoid having the cell output corresponding to that last line.</p>
+<blockquote>
+<p>The reason I use <strong>multiple semicolon</strong> is that, I use <code>get_ipython().ast_node_interactivity = &quot;all&quot;</code> to print multiple outputs in a cell.</p>
+</blockquote>
+<p>Thanks for this information. Looking at my notes when implementing this change, I think I knew about this option but the change was specific to accommodate the <code>last_expr_or_assign</code> value for that option for which I'm not sure what the motivation was.</p>
+<blockquote>
+<p>Is there a way to just tell ruff, when inside ipynb, just <strong>not touch semicolon at all</strong>? And dont trim my newline for that?</p>
+</blockquote>
+<p>I think the first (not touch semicolon at all) is a reasonable request but I'm not sure what do you mean by &quot;don't trim my newline for that&quot;? Do you mind opening a new issue for the first request?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Norlandz">@Norlandz</a> on 2025-07-01 07:03</div>
+            <div class="timeline-body"><p>@dhruvmanila Thanks for the reply.</p>
+<blockquote>
+<blockquote>
+<p>Is there a way to just tell ruff, when inside ipynb, just <strong>not touch semicolon at all</strong>? And dont trim my newline for that?</p>
+</blockquote>
+<p>I think the first (not touch semicolon at all) is a reasonable request but I'm not sure what do you mean by &quot;don't trim my newline for that&quot;? Do you mind opening a new issue for that?</p>
+</blockquote>
+<p>For &quot;don't trim my newline&quot;.
+I mean this:</p>
+<p>Before</p>
+<pre><code>ax.set_xticklabels(vocab.keys(), rotation=90);
+ax.legend();
+
+plt.tight_layout();
+plt.savefig(&quot;temperature-plot.pdf&quot;);
+</code></pre>
+<p>After</p>
+<pre><code>ax.set_xticklabels(vocab.keys(), rotation=90)
+ax.legend()
+plt.tight_layout()
+plt.savefig(&quot;temperature-plot.pdf&quot;)
+</code></pre>
+<p>That is not a big issue to me, but just saying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Norlandz">@Norlandz</a> on 2025-07-01 07:16</div>
+            <div class="timeline-body"><p>@dhruvmanila</p>
+<p>Actually <strong>Dont put too much time on this</strong>.</p>
+<p>I dont think semicolons works well with <code>get_ipython().ast_node_interactivity = &quot;all&quot;</code>
+I was using <code>_ =</code> all the time to suppress the output.
+I though <code>;</code> works the same but no...</p>
+<p>For example:</p>
+<p><img src="https://github.com/user-attachments/assets/1133aad2-972d-4ebe-897f-ed0412308d35" alt="Image" /></p>
+<p>For the following, the <code>bb;</code> clearly didnt get suppressed, so semicolon was not helpful.
+<img src="https://github.com/user-attachments/assets/f718f4f0-58bf-4e0e-b284-e0a5b713a5f0" alt="Image" /></p>
+<p>ipynb file for testing:</p>
+<pre><code>{
+ &quot;cells&quot;: [
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: 20,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;from IPython.core.getipython import get_ipython\n&quot;,
+    &quot;\n&quot;,
+    &quot;aa = \&quot;hello\&quot;\n&quot;,
+    &quot;bb = \&quot;foo\&quot;\n&quot;,
+    &quot;cc = \&quot;bar\&quot;&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: 21,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;get_ipython().ast_node_interactivity = \&quot;last_expr\&quot;&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: 22,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [
+    {
+     &quot;data&quot;: {
+      &quot;text/plain&quot;: [
+       &quot;'bar'&quot;
+      ]
+     },
+     &quot;execution_count&quot;: 22,
+     &quot;metadata&quot;: {},
+     &quot;output_type&quot;: &quot;execute_result&quot;
+    }
+   ],
+   &quot;source&quot;: [
+    &quot;aa\n&quot;,
+    &quot;bb\n&quot;,
+    &quot;cc&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: 23,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [
+    {
+     &quot;data&quot;: {
+      &quot;text/plain&quot;: [
+       &quot;'bar'&quot;
+      ]
+     },
+     &quot;execution_count&quot;: 23,
+     &quot;metadata&quot;: {},
+     &quot;output_type&quot;: &quot;execute_result&quot;
+    }
+   ],
+   &quot;source&quot;: [
+    &quot;aa\n&quot;,
+    &quot;bb;\n&quot;,
+    &quot;cc&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;aa\n&quot;,
+    &quot;bb\n&quot;,
+    &quot;cc;&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: 24,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;get_ipython().ast_node_interactivity = \&quot;all\&quot;&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: 25,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [
+    {
+     &quot;data&quot;: {
+      &quot;text/plain&quot;: [
+       &quot;'hello'&quot;
+      ]
+     },
+     &quot;execution_count&quot;: 25,
+     &quot;metadata&quot;: {},
+     &quot;output_type&quot;: &quot;execute_result&quot;
+    },
+    {
+     &quot;data&quot;: {
+      &quot;text/plain&quot;: [
+       &quot;'foo'&quot;
+      ]
+     },
+     &quot;execution_count&quot;: 25,
+     &quot;metadata&quot;: {},
+     &quot;output_type&quot;: &quot;execute_result&quot;
+    },
+    {
+     &quot;data&quot;: {
+      &quot;text/plain&quot;: [
+       &quot;'bar'&quot;
+      ]
+     },
+     &quot;execution_count&quot;: 25,
+     &quot;metadata&quot;: {},
+     &quot;output_type&quot;: &quot;execute_result&quot;
+    }
+   ],
+   &quot;source&quot;: [
+    &quot;aa\n&quot;,
+    &quot;bb\n&quot;,
+    &quot;cc&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: 26,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [
+    {
+     &quot;data&quot;: {
+      &quot;text/plain&quot;: [
+       &quot;'hello'&quot;
+      ]
+     },
+     &quot;execution_count&quot;: 26,
+     &quot;metadata&quot;: {},
+     &quot;output_type&quot;: &quot;execute_result&quot;
+    },
+    {
+     &quot;data&quot;: {
+      &quot;text/plain&quot;: [
+       &quot;'foo'&quot;
+      ]
+     },
+     &quot;execution_count&quot;: 26,
+     &quot;metadata&quot;: {},
+     &quot;output_type&quot;: &quot;execute_result&quot;
+    },
+    {
+     &quot;data&quot;: {
+      &quot;text/plain&quot;: [
+       &quot;'bar'&quot;
+      ]
+     },
+     &quot;execution_count&quot;: 26,
+     &quot;metadata&quot;: {},
+     &quot;output_type&quot;: &quot;execute_result&quot;
+    }
+   ],
+   &quot;source&quot;: [
+    &quot;aa\n&quot;,
+    &quot;bb;\n&quot;,
+    &quot;cc&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: 27,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;aa\n&quot;,
+    &quot;bb\n&quot;,
+    &quot;cc;&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: 28,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;aa\n&quot;,
+    &quot;_ = bb\n&quot;,
+    &quot;cc&quot;
+   ]
+  }
+ ],
+ &quot;metadata&quot;: {
+  &quot;kernelspec&quot;: {
+   &quot;display_name&quot;: &quot;default&quot;,
+   &quot;language&quot;: &quot;python&quot;,
+   &quot;name&quot;: &quot;python3&quot;
+  },
+  &quot;language_info&quot;: {
+   &quot;codemirror_mode&quot;: {
+    &quot;name&quot;: &quot;ipython&quot;,
+    &quot;version&quot;: 3
+   },
+   &quot;file_extension&quot;: &quot;.py&quot;,
+   &quot;mimetype&quot;: &quot;text/x-python&quot;,
+   &quot;name&quot;: &quot;python&quot;,
+   &quot;nbconvert_exporter&quot;: &quot;python&quot;,
+   &quot;pygments_lexer&quot;: &quot;ipython3&quot;,
+   &quot;version&quot;: &quot;3.11.13&quot;
+  }
+ },
+ &quot;nbformat&quot;: 4,
+ &quot;nbformat_minor&quot;: 2
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-01 08:21</div>
+            <div class="timeline-body"><p>Sounds good, thanks for testing and getting back :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

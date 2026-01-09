@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821 Undefined name `item` when assigning a set comprehension in an if-clause - astral-sh/ruff #9230</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821 Undefined name `item` when assigning a set comprehension in an if-clause</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9230">#9230</a>
+        opened by <a href="https://github.com/kurellajunior">@kurellajunior</a>
+        on 2023-12-21 12:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kurellajunior">@kurellajunior</a> on 2023-12-21 12:10</div>
+            <div class="timeline-body"><pre><code class="language-python">import logging
+from itertools import groupby
+
+
+class MonocausalTransformer:
+    for key, tuples in groupby([(&quot;a&quot;,1),(&quot;a&quot;, 2),(&quot;b&quot;,3)], lambda t: t[0]):
+        if len(replacements := {item[1] for item in tuples}) &gt; 1:
+            logging.error(&quot;Multiple replacements for %s: %s&quot;, key, replacements)
+
+</code></pre>
+<p>When running <code>ruff . --fix</code> on the whole project it gives this error message: <code>F821 Undefined name `item` </code>
+But it works just as expected when executed
+And extracting the set to a separate variable a line above works also fine</p>
+<pre><code>$ ruff --version
+ruff 0.1.7
+$ ruff --fix item.py 
+item.py:7:33: F821 Undefined name `item`
+Found 1 error.
+</code></pre>
+<pre><code class="language-toml">[tool.ruff]
+target-version = &quot;py311&quot;
+line-length = 120
+select = [&quot;ALL&quot;]
+ignore = [
+    &quot;A003&quot;,
+    &quot;ARG002&quot;,  # unused method arguments, e.g. when implementing an interface
+    &quot;D10&quot;,  # TODO: Add doc messages to public api, or make private
+    &quot;D203&quot;,  # Conflicting with D211
+    &quot;D213&quot;,  # Conflicting with D212
+    &quot;TD002&quot;, &quot;TD003&quot;, &quot;FIX002&quot;,  # TODO: Fix all todo comments
+    &quot;PLC1901&quot;,  # We have to distinguish between None and &quot;&quot;
+    &quot;RUF012&quot;,  # Ignored already for pydantic models, but we use our own base class
+    &quot;S311&quot;,  # No cryptography happening here
+]
+</code></pre>
+<p>https://play.ruff.rs/27d1104c-b86e-45dc-98c6-fc6eac195bcb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-21 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-21 19:49</div>
+            <div class="timeline-body"><p>Thanks! Does look like a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-21 21:08</div>
+            <div class="timeline-body"><p>Is this the complete snippet? I'm unable to reproduce in the playground: https://play.ruff.rs/dd91b36b-c177-4e84-b190-368de569f6a4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-12-21 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kurellajunior">@kurellajunior</a> on 2023-12-21 22:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this the complete snippet? I'm unable to reproduce in the playground: <a href="https://play.ruff.rs/dd91b36b-c177-4e84-b190-368de569f6a4">play.ruff.rs/dd91b36b-c177-4e84-b190-368de569f6a4</a></p>
+</blockquote>
+<p>You are right, I extracted only a small snippet, thought it was enough. I extracted now a larger snippet, stripped it down to the actual minimum: https://play.ruff.rs/27d1104c-b86e-45dc-98c6-fc6eac195bcb
+This now gives on my console, in my poetry environment with ruff 0.1.7 the documented error:</p>
+<pre><code class="language-bash">$ ruff --fix item.py 
+item.py:26:33: F821 Undefined name `item`
+Found 1 error.
+</code></pre>
+<p>As soon as I remove the class context, the error is gone</p>
+<p>Also, when I put everything inside <code>__init__()</code> the error is gone</p>
+<p>Also updated the original post</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-21 23:06</div>
+            <div class="timeline-body"><p>Thanks! Assume this has to do with accessing from within a class scope. We will fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-12-21 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-12-22 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9248.html">astral-sh/ruff#9248</a> on 2023-12-22 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-22 18:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

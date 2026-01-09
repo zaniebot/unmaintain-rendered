@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff fails to reject invalid syntax in annotation scopes - astral-sh/ruff #11118</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff fails to reject invalid syntax in annotation scopes</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11118">#11118</a>
+        opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a>
+        on 2024-04-24 00:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2024-04-24 00:26</div>
+            <div class="timeline-body"><p>Ruff produces no errors for these three lines:</p>
+<pre><code class="language-python">type X[T: (yield 1)] = int
+type Y = (yield 1)
+def _f[T](x: (yield 1)) -&gt; (y := 3): return x
+</code></pre>
+<p>But they are syntax errors in Python:</p>
+<pre><code>&gt;&gt;&gt; type X[T: (yield 1)] = int
+  File &quot;&lt;stdin&gt;-0&quot;, line 1
+SyntaxError: yield expression cannot be used within a TypeVar bound
+&gt;&gt;&gt; type Y = (yield 1)
+  File &quot;&lt;stdin&gt;-1&quot;, line 1
+SyntaxError: yield expression cannot be used within a type alias
+&gt;&gt;&gt; def _f[T](x: (yield 1)) -&gt; (y := 3): return x
+... 
+  File &quot;&lt;stdin&gt;-2&quot;, line 1
+SyntaxError: yield expression cannot be used within the definition of a generic
+</code></pre>
+<p>Producing errors for these cases feels low priority, because I don't know why anyone would do this other than to be difficult; I noticed it while looking at the parser. Still, I'd expect Ruff to tell me about all SyntaxErrors in my Python code.</p>
+<p>Ruff has a few analogous rules for constructs that produce syntax errors at runtime:</p>
+<ul>
+<li>https://docs.astral.sh/ruff/rules/yield-outside-function/</li>
+<li>https://docs.astral.sh/ruff/rules/await-outside-async/</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-04-24 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @AlexWaygood on 2024-04-24 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2024-04-24 00:41</div>
+            <div class="timeline-body"><p>Not sure if the &quot;parser&quot; label is appropriate here. This sort of thing cannot really be detected in the parser itself, because it requires contextual information that is only available once you have a parse tree. In CPython, these errors get detected during symtable construction. In Ruff, I think it makes the most sense to detect them in standard AST-based lint rules, similar to the two rules I mentioned above.</p>
+<p>The AST nodes affected are <code>yield</code>, <code>yield from</code>, <code>await</code>, and the walrus. This applies to all forms of annotation scopes: TypeVar bounds/constraints, generic class bases, generic function annotations, and the values of type aliases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11119.html">astral-sh/ruff#11119</a> on 2024-04-24 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> removed by @AlexWaygood on 2024-04-24 00:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-24 00:50</div>
+            <div class="timeline-body"><p>Fair point... In that case, I wonder if this is this even a &quot;bug&quot;. Perhaps this could be classified as a &quot;feature request for a new rule&quot; 😛</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11099.html">astral-sh/ruff#11099</a> on 2024-04-24 01:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-24 05:44</div>
+            <div class="timeline-body"><p>Thanks! So, as per the grammar this is a valid syntax which is why the parser doesn't raise a syntax error.</p>
+<pre><code>Module(
+   body=[
+      TypeAlias(
+         name=Name(id='X', ctx=Store()),
+         type_params=[
+            TypeVar(
+               name='T',
+               bound=Yield(
+                  value=Constant(value=1)))],
+         value=Name(id='int', ctx=Load()))],
+   type_ignores=[])
+</code></pre>
+<p>Correct me if I'm wrong but I believe that in CPython this is being done at compile time. There are a couple more syntax errors which we want to look into, so this should be a new rule. Also, all of these syntax errors which are being raised at compile time would be categorized in a &quot;Correctness&quot; (or similar) category after #1774 is done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @dhruvmanila on 2024-04-24 05:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-04-24 05:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @dhruvmanila on 2024-04-24 05:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11934.html">astral-sh/ruff#11934</a> on 2024-06-19 03:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17101.html">astral-sh/ruff#17101</a> on 2025-03-31 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-03 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-03 21:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

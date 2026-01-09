@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enabling specific preview rules - astral-sh/ruff #12343</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enabling specific preview rules</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12343">#12343</a>
+        opened by <a href="https://github.com/adrinjalali">@adrinjalali</a>
+        on 2024-07-16 09:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adrinjalali">@adrinjalali</a> on 2024-07-16 09:13</div>
+            <div class="timeline-body"><p>Our usecase https://github.com/scikit-learn/scikit-learn/pull/29477 is that we'd like to enable <code>CPY001</code>. Since it's a <code>preview</code> rule, one needs to enable preview mode.</p>
+<p>However, preview mode enables many other rules which don't work as intended on our repo, give false positives, ...</p>
+<p>That's why I looked into enabling preview rules only explicitly. However, when one does something like <code>select = [&quot;E&quot;, &quot;F&quot;, &quot;W&quot;, &quot;I&quot;, &quot;CPY001&quot;]</code> in the configuration, everything under those categories are enabled, regardless of them being in preview mode or not.</p>
+<p>I'd argue that the above <code>select</code> doesn't really explicitly select those preview rules under <code>E</code>, <code>F</code>, ..., however, they're selected.</p>
+<p>This is related to https://github.com/astral-sh/ruff/issues/7434, and I think <code>explicit-preview-rules</code> introduced in https://github.com/astral-sh/ruff/pull/7390 somewhat intends to fix the issue, but in this case it doesn't.</p>
+<p>What should one do in this case?</p>
+<p>In effect, I think I'd expect this config:</p>
+<pre><code>[tool.ruff.lint]
+# This enables us to use CPY001: copyright header check
+preview = true
+# This enables us to use the explicit preview rules that we want only
+explicit-preview-rules = true
+# all rules can be found here: https://beta.ruff.rs/docs/rules/
+select = [&quot;E&quot;, &quot;F&quot;, &quot;W&quot;, &quot;I&quot;, &quot;CPY001&quot;]
+</code></pre>
+<p>to only include stable rules under those categories, and enable <code>CPY001</code> on top of them, and no other preview rule should be enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-16 09:56</div>
+            <div class="timeline-body"><p>Thanks for the detailed write up.</p>
+<blockquote>
+<p>However, preview mode enables many other rules which don't work as intended on our repo, give false positives, ...</p>
+</blockquote>
+<p>This is somewhat intentional because we want to encourage users to give feedback on preview rules. Whether we promote a rule to stable depends on the feedback we receive from users. Without feedback, we'll end up promoting a rule that then creates a lot of churn downstream.</p>
+<blockquote>
+<p>This is related to https://github.com/astral-sh/ruff/issues/7434, and I think explicit-preview-rules introduced in https://github.com/astral-sh/ruff/pull/7390 somewhat intends to fix the issue, but in this case it doesn't.</p>
+</blockquote>
+<p>Could you explain which part isn't working for you?</p>
+<p>I tried to reproduce your setup by enabling the same rules as in your example and using <code>explcit-preview-rules</code> (<a href="https://play.ruff.rs/7bc40fd0-2806-44fc-806a-0b89cf2cf819">playground</a>). To me it is working as expected because Ruff doesn't report an error for the preview rule <a href="https://docs.astral.sh/ruff/rules/whitespace-after-open-bracket/"><code>E201</code></a> that flags the whitespace after <code>[ </code>.</p>
+<p>I can set <code>explicit-preview-rules</code> to <code>false</code> and the <code>E201</code> violation then gets reported (<a href="https://play.ruff.rs/dc479d6f-0f0c-41f2-86a8-9e32b7ce6271">playground</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adrinjalali">@adrinjalali</a> on 2024-07-16 10:46</div>
+            <div class="timeline-body"><p>So on scikit-learn, adding</p>
+<pre><code>preview = true
+# This enables us to use the explicit preview rules that we want only
+explicit-preview-rules = true
+</code></pre>
+<p>results in:</p>
+<pre><code>Found 364 errors.
+No fixes available (308 hidden fixes can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>while on <code>main</code>, we get:</p>
+<pre><code>Found 14 errors.
+</code></pre>
+<pre><code>$ ruff --version
+ruff 0.5.1
+</code></pre>
+<p>Here are the outputs of <code>ruff check .</code> on the repo with and without the preview config added:</p>
+<p><a href="https://github.com/user-attachments/files/16247434/stable.txt">stable.txt</a></p>
+<p><a href="https://github.com/user-attachments/files/16247433/preview.txt">preview.txt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-16 11:12</div>
+            <div class="timeline-body"><p>Thanks, I now see what's happening. What you're experience isn't that it enables additional preview-only rules, but that you see new violations because of some preview-only changes to <em>stable</em> rules.</p>
+<p>We don't support enabling preview functionality for specific rules only. Enabling preview mode enables the preview functionality for all rules (if they have any).  <code>explicit-preview-rules</code> only controls if preview-only rules should be enabled when using a selector like <code>E</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adrinjalali">@adrinjalali</a> on 2024-07-17 14:34</div>
+            <div class="timeline-body"><p>Oh now I understand. However, that puts us in a weird position, because:</p>
+<ul>
+<li>we need preview to enable <code>CPY001</code></li>
+<li>that enables preview sub-rules of already active rules</li>
+<li>those give a lot of false positives / things we don't want to change</li>
+<li>we end up outright disabling those rules</li>
+<li>those rules end up not detecting legit things now since they're completely disabled</li>
+</ul>
+<p>I feel like there should be a middle ground there? I hope this makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../scikit-learn/scikit-learn/pulls/29477.html">scikit-learn/scikit-learn#29477</a> on 2024-07-17 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-17 14:52</div>
+            <div class="timeline-body"><p>If those rule changes are giving you false positives in preview mode, I'd highly recommend opening issues because the behavior is <em>likely</em> to become stable soon.</p>
+<p>Unfortunately we don't have enough bandwidth to manage different preview modes, that's why we have a single global flag. <code>explicit-preview-rules</code> is already the compromise.</p>
+<p>An option here is to allow explicit selection of preview rules without enabling preview mode. We'd probably need to display a warning that the rule is in preview, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-07-19 16:26</div>
+            <div class="timeline-body"><p>Not sure if this is the same issue when dealing with formatting.</p>
+<p>Related to this issue, the &quot;single flag to rule them all&quot; has caused <a href="https://github.com/jaraco/skeleton/pull/133#issuecomment-2239441820">confusion and consternation</a>. My projects adopted the setting in order to make &quot;quote-style=preserve&quot; work for compatibility when migrating from black, but that caused &quot;hugged parenthesis&quot; to be adopted implicitly. Later, when quote-style=preserve graduated to stable, we tried to remove the setting but that would roll back other behaviors.</p>
+<p>In my projects, I'm opting to have &quot;preview=true&quot; by default (and the uncertainty that will bring), but at least that will allow the projects to continue to shift left (work at head).</p>
+<p>I realize it's difficult to manage feature-specific flags, but just be aware that the user experience is muddled by the shifting meaning of this flag over time and releases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChrisLoveringSendient">@ChrisLoveringSendient</a> on 2025-01-15 15:18</div>
+            <div class="timeline-body"><p>I came across this as we're having very similar issues. I want to enable <code>RUF029</code> which is currently in preview, but don't want to enable preview rules for the prefixes I have in my select.</p>
+<p>I came across <a href="https://docs.astral.sh/ruff/settings/#lint_explicit-preview-rules">explicit-preview-rules</a> which says</p>
+<blockquote>
+<p>When enabled, preview rules will not be selected by prefixes — the full code of each preview rule will be required to enable the rule.</p>
+</blockquote>
+<p>As stated above this doesn't seem to be working as documented, since I have the <code>F</code> prefix in my <code>select</code>, but after enabling preview &amp; explicit preview rules, <code>F841</code> starts reporting violations, even though the full code isn't in my <code>select</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-15 15:36</div>
+            <div class="timeline-body"><blockquote>
+<p>As stated above this doesn't seem to be working as documented, since I have the F prefix in my select, but after enabling preview &amp; explicit preview rules, F841 starts reporting violations, even though the full code isn't in my select</p>
+</blockquote>
+<p>The option only changes how rule selectors work. <code>F841</code> isn't a preview rule; that's why it gets selected when using <code>F.</code></p>
+<p>What you are looking for is a way to opt-in to preview behavior on a per-rule basis, which isn't supported.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChrisLoveringSendient">@ChrisLoveringSendient</a> on 2025-01-15 15:55</div>
+            <div class="timeline-body"><p>Oh, so it is. I might have stumbled across another oddity then.</p>
+<p>I have this config which doesn't raise any issues when running <code>ruff check .</code> Other than the warning <code>RUF029</code> has no effect because preview is not enabled.</p>
+<pre><code>extend-select = [&quot;I&quot;, &quot;UP&quot;, &quot;ASYNC105&quot;, &quot;ASYNC220&quot;, &quot;ASYNC222&quot;, &quot;ASYNC230&quot;, &quot;ASYNC251&quot;, &quot;RUF029&quot;]
+</code></pre>
+<p>However, adding this then shows all 8 <code>F841</code> failures in my repo, and then also shows <code>RUF029</code> failures, but no other preview rules.</p>
+<pre><code>preview = true
+explicit-preview-rules = true
+</code></pre>
+<p>Doesn't this suggest that <a href="https://docs.astral.sh/ruff/settings/#lint_explicit-preview-rules">explicit-preview-rules</a> is now working as documented in that link (and as OP requested) where only <code>RUF029</code> is being enabled as preview?</p>
+<p>The unknown here is why <code>F841</code> wasn't running before, but is after enabling preview?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-15 16:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Doesn't this suggest that <a href="https://docs.astral.sh/ruff/settings/#lint_explicit-preview-rules">explicit-preview-rules</a> is now working as documented in that link (and as OP requested) where only RUF029 is being enabled as preview?</p>
+</blockquote>
+<p>The author faces the same problem as you described. They see new errors for stable rules because they opted into the preview behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16345.html">astral-sh/ruff#16345</a> on 2025-02-24 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iamtodor">@iamtodor</a> on 2025-06-18 08:58</div>
+            <div class="timeline-body"><p>Hey folks,
+I have the same struggle. Is there maybe some updates in this direction?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iamtodor">@iamtodor</a> on 2025-06-18 08:59</div>
+            <div class="timeline-body"><p>Maybe add a couple of labels to be able to track and categorize this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2025-06-18 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19487.html">astral-sh/ruff#19487</a> on 2025-07-22 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../SciTools/cf-units/pulls/620.html">SciTools/cf-units#620</a> on 2025-09-02 15:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

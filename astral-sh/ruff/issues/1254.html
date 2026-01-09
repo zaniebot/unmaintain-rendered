@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement the config options for flake8-unused-arguments - astral-sh/ruff #1254</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement the config options for flake8-unused-arguments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1254">#1254</a>
+        opened by <a href="https://github.com/lovetox">@lovetox</a>
+        on 2022-12-15 22:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lovetox">@lovetox</a> on 2022-12-15 22:51</div>
+            <div class="timeline-body"><p>Hi, this is very useful check but we cant use it because it detects **kwargs / *args as unused.
+I believe its not necessary to mark this unsued vars, as bei convention **kwargs / *args is in most cases expected to not be used as it acts as a catch all.
+I have to say i never seen a codebase that prefixes that with underscore.</p>
+<p>i was not able to use any of the config options</p>
+<p>i tried</p>
+<pre><code>[tool.ruff.flake8-unused-arguments]
+unused-arguments-ignore-variadic-names = &quot;true&quot;
+</code></pre>
+<p>but no luck</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-15 22:57</div>
+            <div class="timeline-body"><p>Yeah I can add that option. Are there others that are important to you right now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lovetox">@lovetox</a> on 2022-12-15 23:16</div>
+            <div class="timeline-body"><p>I would say <code>unused-arguments-ignore-variadic-names</code> is the most important</p>
+<p>Did you implement everything from that package?</p>
+<p>Because i see no errors on <code>overload-functions</code>, or <code>empty stub</code> functions currently, which i find ok, because it makes no sense to check those, i mean both have no implementation obviously no arg will be used.</p>
+<p>Im not sure if you implement the checks on abstract methods and dunder, but if,i probably would like to disable them.</p>
+<p>These 2 are probably less important:</p>
+<p>unused-arguments-ignore-lambdas
+unused-arguments-ignore-nested-functions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2022-12-15 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-15 23:23</div>
+            <div class="timeline-body"><p>Yes, we ignore overloaded and stub functions, and I think we ignore abstract methods when we can detect them (not always possible because we aren't doing deep static analysis, e.g., when extending a parent class). I'd have to review the code though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-12-16 04:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1261.html">astral-sh/ruff#1261</a> on 2022-12-16 05:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-16 05:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g-as">@g-as</a> on 2022-12-25 22:06</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<p>Are you sure that overloaded functions are ignored?</p>
+<p>With</p>
+<pre><code class="language-python">import typing
+
+
+@typing.overload
+def concat(a: str, b: str) -&gt; str:
+    ...
+
+@typing.overload
+def concat(a: int, b: int) -&gt; str:
+    ...
+
+
+def concat(a, b):
+    return f&quot;{a}{b}&quot;
+</code></pre>
+<p>on latest <em>ruff</em> i'm getting</p>
+<pre><code>site_register/toto.py:5:12: ARG001 Unused function argument: `a`
+site_register/toto.py:5:20: ARG001 Unused function argument: `b`
+site_register/toto.py:9:12: ARG001 Unused function argument: `a`
+site_register/toto.py:9:20: ARG001 Unused function argument: `b`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-25 22:15</div>
+            <div class="timeline-body"><p>Lemme check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-25 22:17</div>
+            <div class="timeline-body"><p>I think I was mixing up unused arguments with missing type annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-25 22:18</div>
+            <div class="timeline-body"><p>Tracking here: #1372.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-25 22:22</div>
+            <div class="timeline-body"><p>@g-as - Fixed in https://github.com/charliermarsh/ruff/pull/1373. Will cut a new release tonight, want to fix a few more things.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can respect-gitignore respect gitignore when not in a git repo - astral-sh/ruff #5930</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can respect-gitignore respect gitignore when not in a git repo</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5930">#5930</a>
+        opened by <a href="https://github.com/timj">@timj</a>
+        on 2023-07-20 21:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/timj">@timj</a> on 2023-07-20 21:21</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>We sometimes create export tar files that include all the source files but do not include the <code>.git</code> directory. With <code>ruff</code> this leaves us in the situation where when a developer is using the git repo <code>ruff</code> ignores all the built files in the directory but when they are building from the export tar files it does not.</p>
+<p>Is it possible for <code>ruff --respect-gitignore</code>  to respect the <code>.gitignore</code> even if there is no <code>.git</code> directory? I realize that ruff scans parent directories looking for a git repo but if it can't find one can it check the current directory for a <code>.gitignore</code> anyhow? Renaming the <code>.gitignore</code> to <code>.ignore</code> does &quot;fix&quot; the problem but adding a <code>.ignore</code> to every repo (with a symlink say) is not a great solution for us. Is there a command line switch I'm missing for specifying that I want <code>.gitignore</code> to be the <code>.ignore</code> file?</p>
+<p>The current behavior makes the two scenarios inconsistent for us and we don't really want to add explicit ignores into the ruff configuration file for everything that's already listed in .gitignore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-20 21:24</div>
+            <div class="timeline-body"><p>I think we can just turn on this flag: https://docs.rs/ignore/latest/ignore/struct.WalkBuilder.html#method.require_git.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erykoff">@erykoff</a> on 2023-07-20 21:27</div>
+            <div class="timeline-body"><p>I think that the functionality is in the WalkBuilder crate here: https://docs.rs/ignore/latest/src/ignore/walk.rs.html#797-805 and this should be exposed to ruff, or set to <code>no</code> when <code>--respect-gitignore</code> is specified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erykoff">@erykoff</a> on 2023-07-20 21:27</div>
+            <div class="timeline-body"><p>(Oh you responded while I was typing.  yes!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../lsst/sconsUtils/pulls/117.html">lsst/sconsUtils#117</a> on 2023-07-20 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-21 01:16</div>
+            <div class="timeline-body"><p>It seems reasonable to enable, PR welcome if anyone's interested :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-07-21 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2023-07-21 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5937.html">astral-sh/ruff#5937</a> on 2023-07-21 02:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-21 02:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6335.html">astral-sh/ruff#6335</a> on 2023-08-05 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6368.html">astral-sh/ruff#6368</a> on 2023-08-05 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-05 19:38</div>
+            <div class="timeline-body"><p>Unfortunately I ended up having to revert this as it led to some undesirable behavior (namely, that <code>.gitignore</code> files in parent directories now affect all child directories, even if the child directory is itself a git repo with its own <code>.gitignore</code> -- see https://github.com/astral-sh/ruff/issues/6335).</p>
+<p>We could consider adding a <code>--no-require-git</code> flag similar to ripgrep, though it'd be nice if we could find a solution that didn't require adding new configuration options and new command-line flags, since every additional flag comes with some maintenance and cognitive cost. For now I would suggest trying to use <code>.ignore</code> in some capacity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12644.html">astral-sh/ruff#12644</a> on 2024-08-02 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timj">@timj</a> on 2025-02-18 18:12</div>
+            <div class="timeline-body"><p>Should I file this as a new issue since this is closed but the exact issue is still a problem for us even if the fix described here didn't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-18 18:32</div>
+            <div class="timeline-body"><p>I think we can just reopen this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @ntBre on 2025-02-18 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @ntBre on 2025-02-18 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @dhruvmanila by @dhruvmanila on 2025-02-21 03:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request for changing python versions more easily - astral-sh/uv #8426</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Request for changing python versions more easily</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/8426">#8426</a>
+        opened by <a href="https://github.com/brenorb">@brenorb</a>
+        on 2024-10-21 20:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/brenorb">@brenorb</a> on 2024-10-21 20:31</div>
+            <div class="timeline-body"><p>I just started trying uv, so I started</p>
+<pre><code>uv init
+uv add pandas
+...
+uv add transformers
+</code></pre>
+<p>Then I got an error. The project initialized using <code>python 3.13</code> and <code>transformers</code> couldn't support that (<code> error: the configured Python interpreter version (3.13) is newer than PyO3's maximum supported version (3.12)</code>).
+So I tried to no avail:</p>
+<pre><code>uv python install 3.9
+uv python uninstall 3.13
+uv python pin 3.9
+uv venv --python 3.9
+</code></pre>
+<p>I also manually changed <code>.python-version</code> from <code>3.13</code> to <code>3.9</code>, but it didn't work as well. I was always getting the same error:</p>
+<pre><code>error: The requested Python version `3.9` is incompatible with the project `requires-python` value of `&gt;=3.13`.
+</code></pre>
+<p>Now I know that I can use <code>uv init --python 3.9</code>, but then I would need to erase everything and start again. I know I could also use <code>uv run --python 3.9 example.py</code> but I don't write this all the time.</p>
+<p>I eventually could solve the issue manually changing <code>pyproject.toml</code> from <code>requires-python = &quot;&gt;=3.13&quot;</code> to <code>requires-python = &quot;&gt;=3.9&quot;</code>, but it could be done in the command line. I'm suggesting to add a command to change the <code>requires-python</code> value without needing to manually rewrite the file, and maybe having some link between <code>.python-version</code> and the <code>pyproject.toml</code>.</p>
+<p>If there is a better way, I'd love to know about it.</p>
+<p>I'm using uv 0.4.25 (Homebrew 2024-10-21)</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 22:23</div>
+            <div class="timeline-body"><p>Sorry you ran into problems here. I'm not sure what our best option is for changing <code>requires-python</code>. It doesn't quite seem worth a dedicated command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inikolaev">@inikolaev</a> on 2024-10-24 18:19</div>
+            <div class="timeline-body"><p>That would be really great to have support out-of-the-box. It's often a painful process with many package managers such as <code>pipenv</code> and <code>poetry</code> and worse it's not usually very well documented.</p>
+<p>What I often want is to migrate my application from one Python version to another and minimise the amount of packages I have to upgrade to the minimum. But most package managers eagerly upgrade all dependencies if you approach this in a naive way. With <code>pipenv</code> what I happen to do is update Python version in <code>Pipfile</code> and then &quot;upgrade&quot; some package to trick <code>pipenv</code> to regenerate the lock file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChrisAichinger">@ChrisAichinger</a> on 2025-01-26 06:49</div>
+            <div class="timeline-body"><p>I ran into the same issue: new to <code>uv</code>, needed to change Python version due to some incompatible libraries.</p>
+<p>My main issue was the the solution was not discoverable: I didn't find any documentation about how to upgrade the Python version in an existing project. I was happy to finally stumble across this Github issue.</p>
+<p>My solution:</p>
+<pre><code class="language-bash">rm -rf .python-version .venv
+mv pyproject.toml pyproject.old
+uv init --python 3.11
+uv add ...  // add all libraries from pyproject.old
+</code></pre>
+<p>So maybe <code>uv</code> doesn't need a separate command for it, but better documentation would be fantastic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brenorb">@brenorb</a> on 2025-01-26 22:03</div>
+            <div class="timeline-body"><p>Or maybe just link <code>.python-version</code> file somehow with <code>requires-python</code> value inside  <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

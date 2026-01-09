@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The role of venv in a uv project folder: (Is  &quot;uv venv --python &lt;version&gt;&quot; or &quot;source .venv/bin/activated&quot; needed?) - astral-sh/uv #12113</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>The role of venv in a uv project folder: (Is  &quot;uv venv --python &lt;version&gt;&quot; or &quot;source .venv/bin/activated&quot; needed?)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12113">#12113</a>
+        opened by <a href="https://github.com/zhyeong">@zhyeong</a>
+        on 2025-03-11 12:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zhyeong">@zhyeong</a> on 2025-03-11 12:02</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi, I was wondering when <code>uv venv --python &lt;version&gt;</code> command is useful when <code>.python-version</code> file exists, since the python version I set up in venv always changes following the <code>.python-version</code> file.</p>
+<p>I was testing with the settings below to see how python version control works.</p>
+<ol>
+<li>pyproject.toml (manually edited as below)
+<code>requires-python = &quot;&lt;=3.13.2&quot;</code></li>
+</ol>
+<p>2..python-version (manually edited as below)
+<code>3.9.6</code></p>
+<p>Now, if I run <code>uv venv --python 3.13.2</code>, I can see that python 3.13 is installed in .venv/lib. also, I can check that 3.13.2 is installed in venv.</p>
+<pre><code>(uv-test) user@XX % uv venv --python 3.9.6
+&gt;&gt; [result not pasted here]
+(uv-test) user@XX % python --version
+&gt;&gt; Python 3.13.2 
+</code></pre>
+<p>But if run <code>uv run main.py</code>, where <code>main.py</code> is like below:</p>
+<pre><code>import sys
+print(sys.version)
+</code></pre>
+<p>The printed result is <code>3.9.6</code>, and I see Python 3.9 installed in .venv/lib instead of 3.13. (python version in venv changed according to .python-version)</p>
+<p>If python version written in <code>.python-version</code> is prioritized over what I installed using <code>uv venv --python &lt;version&gt;</code>, when should <code>uv venv --python &lt;version&gt;</code> used?</p>
+<p>Thank you so much for reading my question, and I appreciate any help!</p>
+<h3>Platform</h3>
+<p>Darwin 24.2.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zhyeong on 2025-03-11 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-11 16:33</div>
+            <div class="timeline-body"><p>When you're in a project, we'll automatically manage the virtual environment — replacing it as needed. In this context, a <code>.python-version</code> file takes precedence over the existing virtual environment. You can consider the example:</p>
+<ul>
+<li>You are working on a project, <code>uv run ...</code> creates a virtual environment</li>
+<li>Someone changes the <code>.python-version</code></li>
+<li>You pull the change</li>
+<li><code>uv run</code> should create a new virtual environment, so it continues to &quot;just work&quot;</li>
+</ul>
+<p>Creating virtual environments manually with <code>uv venv </code> is intended for use <em>outside</em> of projects, or in projects that are not managed by uv. These virtual environments are manually managed via <code>uv pip</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zhyeong">@zhyeong</a> on 2025-03-12 00:51</div>
+            <div class="timeline-body"><p>Thank you so much for your quick and thorough response!</p>
+<p>So I understand that you can
+A)  <code>uv init</code> in a project folder and <code>uv run</code> to install venv which will follow the python version of the uv project, or
+B) <code>uv venv</code> in a folder to create venv but not uv project (so no <code>.python-version</code>)</p>
+<p>My question is,</p>
+<p>In an uv project folder, is there distinction between when you should run commands with venv activated and deactivated?</p>
+<p>I noticed that even with venv deactivated your codes can still find the packages installed in venv. So if in a uv project folder, do. I have to activate venv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "When to use "uv venv --python <version>" when there is ".python-version" file" to "The role of venv in a uv project folder: (Is  "uv venv --python <version>" or "source .venv/bin/activated" needed?)" by @zhyeong on 2025-03-12 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-12 01:18</div>
+            <div class="timeline-body"><p>You don't need to activate it unless you want to bypass <code>uv run</code> and invoke commands directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-14 00:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @charliermarsh on 2025-03-14 00:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

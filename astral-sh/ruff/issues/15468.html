@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New rule for str.join usage simplification - astral-sh/ruff #15468</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>New rule for str.join usage simplification</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15468">#15468</a>
+        opened by <a href="https://github.com/victorsamun">@victorsamun</a>
+        on 2025-01-14 05:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/victorsamun">@victorsamun</a> on 2025-01-14 05:11</div>
+            <div class="timeline-body"><p>Method <code>str.join</code> takes an iterable, so we don't need create list or tuple explicitly.</p>
+<p>For example, <code>&quot;, &quot;.join(list(data))</code> and <code>&quot;, &quot;.join(tuple(data))</code> simplifies to <code>&quot;, &quot;.join(data)</code>.
+This can be done automatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-01-14 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-01-14 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-14 12:01</div>
+            <div class="timeline-body"><p>A related thing we could do is extend <a href="https://docs.astral.sh/ruff/rules/unnecessary-comprehension-in-call/"><code>C419</code></a> to include this string method, and maybe other builtins and standard library methods that accept iterables. That would cover some instances of the proposed lint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nijel">@nijel</a> on 2025-03-10 13:41</div>
+            <div class="timeline-body"><p>Unnecessary list for <code>str.join</code> is indeed often used in comprehension:</p>
+<pre><code class="language-py">        return b&quot;\r\n&quot;.join(
+            [
+                key.encode(&quot;ascii&quot;) + b&quot;: &quot; + value.encode(&quot;latin-1&quot;)
+                for key, value in self.headers.items()
+            ]
+        )
+</code></pre>
+<p>So C419 might be the good place to land this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nijel">@nijel</a> on 2025-03-10 18:49</div>
+            <div class="timeline-body"><p>Hmm, it turns out to be actually a bad idea. Passing list to <code>str.join</code> is more effective than iterator because it does two passes over the sequence. Also see https://stackoverflow.com/a/9061024. I've verified the numbers in Python 3.13 and 3.14:</p>
+<pre><code class="language-console">(py3.14) nijel:/tmp$ python -m timeit '&quot;&quot;.join([str(n) for n in range(1000)])'
+5000 loops, best of 5: 79.8 usec per loop
+(py3.14) nijel:/tmp$ python -m timeit '&quot;&quot;.join(str(n) for n in range(1000))'
+5000 loops, best of 5: 102 usec per loop
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-11 07:41</div>
+            <div class="timeline-body"><p>Related https://github.com/astral-sh/ruff/issues/12912 and https://github.com/astral-sh/ruff/issues/10838</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nijel">@nijel</a> on 2025-03-11 08:52</div>
+            <div class="timeline-body"><p>I've already spent a lot in this rabbit hole to say it's a bit different. With <code>sum</code>/<code>min</code>/<code>max</code>/<code>all</code>/<code>any</code> there is at least something to gain (less memory allocations). For <code>join</code> there is nothing to gain as it internally converts iterator to a list as the first step (because it needs two passes on the data).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

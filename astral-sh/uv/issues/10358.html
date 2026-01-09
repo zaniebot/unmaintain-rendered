@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failure to create a bash shim for CLI script with pyenv - astral-sh/uv #10358</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failure to create a bash shim for CLI script with pyenv</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10358">#10358</a>
+        opened by <a href="https://github.com/lczyk">@lczyk</a>
+        on 2025-01-07 12:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lczyk">@lczyk</a> on 2025-01-07 12:29</div>
+            <div class="timeline-body"><p>I'm using pyenv and pyenv-virtualenv for python management on macOS. I've noticed that <code>uv pip install</code> does not trigger a proper creation of a bash shim. To demonstrate I will use django which installs a client script called <code>django-admin</code>, and python 3.12.3. I've tried it with other packages with cli scripts and other python versions, and the result is the same.</p>
+<pre><code class="language-bash">mkdir temp &amp;&amp; cd temp
+pyenv virtualenv 3.12.3 temp &amp;&amp; pyenv local temp
+pip install django
+django-admin --help
+</code></pre>
+<p><code>django-admin</code> script is then in <code>~/.pyenv/versions/3.12.3/envs/default/bin/django-admin</code>. When installing with <code>pip</code>, pyenv detects the cli script and creates a bash shim at <code>/Users/marcin/.pyenv/shims/django-admin</code>. If we instead do the following:</p>
+<pre><code class="language-bash">mkdir temp &amp;&amp; cd temp
+pyenv virtualenv 3.12.3 temp &amp;&amp; pyenv local temp
+pip install -U uv &amp;&amp; uv pip install django
+django-admin --help  # Unknown command: djando-admin
+</code></pre>
+<p>the shim is not created.</p>
+<p>I am unsure whether this is an issue with uv, or pyenv. I will flag this up for the pyenv folks too, and we can close the issue which is not applicable.</p>
+<hr />
+<pre><code>pyenv 2.5.0 (installed with homebrew)
+pyenv-virtualenv 1.2.4 (installed with homebrew)
+uv 0.4.24 (b9cd54913 2024-10-17)
+MacOS 15.1.1, M3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pyenv/pyenv/issues/3031.html">pyenv/pyenv#3031</a> on 2025-01-07 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 18:25</div>
+            <div class="timeline-body"><p>Can you share verbose uv logs? <code>uv pip install -v django</code>? It's possible it's not detecting your virtual environment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-07 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lczyk">@lczyk</a> on 2025-01-08 11:19</div>
+            <div class="timeline-body"><pre><code>DEBUG uv 0.5.15 (eb6ad9a4f 2025-01-06)
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.12.3-macos-aarch64-none` at `~/.pyenv/versions/3.12.3/envs/temp/bin/python3` (active virtual environment)
+Using Python 3.12.3 environment at: ~/.pyenv/versions/3.12.3/envs/temp
+DEBUG Acquired lock for `~/.pyenv/versions/3.12.3/envs/temp`
+DEBUG At least one requirement is not satisfied: django
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.12.3
+DEBUG Solving with target Python version: &gt;=3.12.3
+DEBUG Adding direct dependency: django*
+DEBUG Found fresh response for: https://pypi.org/simple/django/
+DEBUG Searching for a compatible version of django (*)
+DEBUG Selecting: django==5.1.4 [compatible] (Django-5.1.4-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/58/0b/8a4ab2c02982df4ed41e29f28f189459a7eba37899438e6bea7f39db793b/Django-5.1.4-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for django==5.1.4: asgiref&gt;=3.8.1, &lt;4
+DEBUG Adding transitive dependency for django==5.1.4: sqlparse&gt;=0.3.1
+DEBUG Found fresh response for: https://pypi.org/simple/asgiref/
+DEBUG Found installed version of asgiref==3.8.1 that satisfies &gt;=3.8.1, &lt;4
+DEBUG Searching for a compatible version of asgiref (&gt;=3.8.1, &lt;4)
+DEBUG Found installed version of asgiref==3.8.1 that satisfies &gt;=3.8.1, &lt;4
+DEBUG Selecting: asgiref==3.8.1 [installed] (installed)
+DEBUG Found fresh response for: https://pypi.org/simple/sqlparse/
+DEBUG Found installed version of sqlparse==0.5.3 that satisfies &gt;=0.3.1
+DEBUG Searching for a compatible version of sqlparse (&gt;=0.3.1)
+DEBUG Found installed version of sqlparse==0.5.3 that satisfies &gt;=0.3.1
+DEBUG Selecting: sqlparse==0.5.3 [installed] (installed)
+DEBUG Tried 3 versions: asgiref 1, django 1, sqlparse 1
+DEBUG marker environment resolution took 0.138s
+Resolved 3 packages in 142ms
+DEBUG Requirement already installed: sqlparse==0.5.3
+DEBUG Requirement already installed: asgiref==3.8.1
+DEBUG Requirement already cached: django==5.1.4
+DEBUG Preserving seed package: pip==24.0
+DEBUG Preserving seed package: uv==0.5.15
+Installed 1 package in 84ms
+ + django==5.1.4
+DEBUG Released lock at `~/.pyenv/versions/3.12.3/envs/temp/.lock
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lczyk">@lczyk</a> on 2025-01-08 11:21</div>
+            <div class="timeline-body"><p>Looking over at pyenv though it does seem like it's on their side tbh. See <a href="https://github.com/pyenv/pyenv/issues/3031">this</a> issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

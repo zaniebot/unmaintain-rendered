@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821 when use textually precedes assignment - astral-sh/ruff #21542</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821 when use textually precedes assignment</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21542">#21542</a>
+        opened by <a href="https://github.com/eltoder">@eltoder</a>
+        on 2025-11-20 16:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eltoder">@eltoder</a> on 2025-11-20 16:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-python">def control_flow():
+    for i in range(5):
+        if i:
+            print(x)
+        x = i + 1
+
+    return x
+</code></pre>
+<p>This reports F821 on print:</p>
+<pre><code>F821 Undefined name `x`
+ --&gt; t.py:4:19
+  |
+2 |     for i in range(5):
+3 |         if i:
+4 |             print(x)
+  |                   ^
+5 |         x = i + 1
+</code></pre>
+<p>ruff does not appear to understand control flow and simply follows the order of statements inside of one scope. This usually produces false negatives for unassigned variables (for example, no errors for a variable only assigned in one branch of an <code>if</code>). However, it can also produce a false positive inside a loop.</p>
+<h3>Version</h3>
+<p>0.14.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-11-20 16:50</div>
+            <div class="timeline-body"><p>Flake8 produces the same report. I don't think it's feasible for a linter to understand the context that makes this &quot;work&quot;, and this sort of code pattern can be dangerous because changing the conditions of the loop potentially changes whether the body of the loop produces a runtime exception.</p>
+<p>IMO this is not a &quot;false positive&quot;, because the problem (referencing a variable before it has been potentially defined) clearly exists in the code, regardless of whether it triggers a runtime exception.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @amyreese on 2025-11-20 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-20 17:33</div>
+            <div class="timeline-body"><p>I agree. You can use a <code>noqa</code> comment to suppress this specific instance or assign a value to <code>x</code> outside the loop (even if it's <code>None</code>) to suppress the error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-20 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eltoder">@eltoder</a> on 2025-11-20 18:08</div>
+            <div class="timeline-body"><p>@MichaReiser asking people to suppress errors with <code>noqa</code> is basically admitting that there's a bug that won't be fixed. It's also a bad habit for people to get into. What's the problem with fixing the bug? It is completely straightforward.</p>
+<p>Also, assigning variable to <code>None</code> changes its type, so then I'd have to sprinkle <code>is not None</code> checks to satisfy mypy.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter and order completions based on input and importance for native completions - clap-rs/clap #5058</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Filter and order completions based on input and importance for native completions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5058">#5058</a>
+        opened by <a href="https://github.com/ModProg">@ModProg</a>
+        on 2023-07-31 18:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ModProg">@ModProg</a> on 2023-07-31 18:48</div>
+            <div class="timeline-body"><p>While there are some shell specific behaviors for options, e.g. for <code>zsh</code> and <code>fish</code>:</p>
+<p>In <code>zsh</code>, options are completed if at least one <code>-</code> is present.</p>
+<p>In <code>fish</code> options are completed if the exact number of dashes is present, i.e. one <code>-</code> for a short option and two <code>--</code> for a long option.</p>
+<p>This had an initial implementation at #5057.</p>
+<p>We believe that with the additional knowledge available, clap can do better.</p>
+<h3>Filtering</h3>
+<p>On an empty current token, complete:</p>
+<ul>
+<li>If subcommands or positionals are present<ul>
+<li>Subcommands</li>
+<li>Positional arguments</li>
+<li>Required pptions (prefer long)</li>
+</ul>
+</li>
+<li>else<ul>
+<li>All options (prefer long)</li>
+</ul>
+</li>
+</ul>
+<p>On a single <code>-</code> complete all options, prefer short options where available.</p>
+<p>On a double <code>--</code> complete long options, this would happen either way, so not really a feature.  If escaping makes sense (positionals exist), then include just <code>--</code></p>
+<p>In general, aliases are hidden, and only shown if they are the only name of an argument matching the current input.</p>
+<p>In all cases, aliases should only show up if the main argument is not being shown</p>
+<h3>Sorting</h3>
+<p>Either</p>
+<ul>
+<li>Alphabetical</li>
+<li>Display order</li>
+</ul>
+<h3>Customization</h3>
+<p>In the future, it could make sense to make both filtering and sorting customizable by the developer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3917.html">clap-rs/clap#3917</a> on 2023-07-31 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5057.html">clap-rs/clap#5057</a> on 2023-07-31 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2023-07-31 18:56</div>
+            <div class="timeline-body"><p>My idea was to pass this as a parameter to <code>dynamic::complete</code> specifying whether it should complete options or not depending on the number of dashes present.</p>
+<p>Proposed enum would be something like:</p>
+<pre><code class="language-rs">pub enum ShowOptions {
+    /// One `-` for short, two `--` for long options.
+    ExactDash,
+    /// At least one `-` to show options.
+    MinOneDash,
+    /// Always complete options.
+    Always,
+}
+</code></pre>
+<p>then <code>dynamic::complete_arg</code> would decide whether to return options or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-31 18:57</div>
+            <div class="timeline-body"><p>I wonder if we should generalize this to all shells.</p>
+<p>In particular, I think it is useful to guess the reason and decide how we want to move forward more generally based on that reason.</p>
+<p>My <em>guess</em> is to not flood the screen, overwhelming the user, but try to provide more targeted information.  I think that is a worthwhile cause and should be applied to all shells uniformly.</p>
+<p>This also gets me thinking of more concrete semantics</p>
+<ul>
+<li>Only show <strong>required</strong> options, arguments, and subcommands for an empty string<ul>
+<li>Maybe we relax this for positional arguments and subcommands much like usage strings</li>
+<li>Another reason to relax it for those cases is there isn't a general prefix for them</li>
+</ul>
+</li>
+<li>Only show one way of referencing any item in any completion<ul>
+<li>e.g. if someone has written enough that only the alias applies, show the alias</li>
+<li>Prefer long over short</li>
+<li>Prefer normal name over alias</li>
+</ul>
+</li>
+</ul>
+<p>Thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-31 18:59</div>
+            <div class="timeline-body"><p>Another way of putting this is: can we provide a richer experience with the extra semantic information we have?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2023-07-31 19:05</div>
+            <div class="timeline-body"><p>Probably, e.g. if someone is currently in the process of rebasing, it would be a good idea to complete <code>--continue</code> and <code>--abort</code> right away as that are the most likely next steps.</p>
+<p>We could even go as far as having some form of score users can give options at a later stage, promoting them to be shown earlier.</p>
+<p>But it is probably a good idea to e.g. not flood the screen with aliases.</p>
+<p>On long vs short that is probably more difficult to decide, and could be shell dependent to, e.g., match the single dash -&gt; short options behavior in <code>fish</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-31 19:10</div>
+            <div class="timeline-body"><blockquote>
+<p>On long vs short that is probably more difficult to decide, and could be shell dependent to, e.g., match the single dash -&gt; short options behavior in fish.</p>
+</blockquote>
+<p>At least for a blank screen, I think showing longs for required arguments would be better since that will be more descriptive (in case the descriptions from #5056 aren't sufficient)</p>
+<p>But for <code>-</code> I can see preferring shorts.  Should we still show a long if it is required and doesn't have a short?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3166.html">clap-rs/clap#3166</a> on 2023-07-31 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2023-07-31 19:17</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>On long vs short that is probably more difficult to decide, and could be shell dependent to, e.g., match the single dash -&gt; short options behavior in fish.</p>
+</blockquote>
+<p>At least for a blank screen, I think showing longs for required arguments would be better since that will be more descriptive (in case the descriptions from #5056 aren't sufficient)</p>
+<p>But for <code>-</code> I can see preferring shorts. Should we still show a long if it is required and doesn't have a short?</p>
+</blockquote>
+<p>yeah, I think preferring short, but falling back to long makes total sense.</p>
+<p>Also, <code>fish</code> has a feature where it shows the long flags, for short flags, i.e. it completes the short flag, but shows the long flag as a hint, while we cannot currently use that exact feature for completions, we could emulate something like that i.e. showing the long flag as a fallback for missing descriptions or as a prefix for descriptions of short flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2023-07-31 19:18</div>
+            <div class="timeline-body"><p>Oh and it also does exactly what you proposed concerning completing long flags if they do not have a short flag. Something I totally missed in my attempt at implementing this hastily.
+<img src="https://github.com/clap-rs/clap/assets/11978847/85e7e4b9-bac6-467d-9502-359dc030ea31" alt="grafik" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-31 19:20</div>
+            <div class="timeline-body"><p>Unless I'm missing something, we've come to a consensus and this is ready to move forward?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2023-07-31 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2023-07-31 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Dynamic Completions: Show options conditioned on presence of dashes" to "Dynamic Completions: Filter and order completions based on input and importance" by @ModProg on 2023-08-01 08:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2023-08-01 11:05</div>
+            <div class="timeline-body"><p>@epage I updated the description</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-08-01 15:04</div>
+            <div class="timeline-body"><p>Made some minor tweaks.  Good to go!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2023-08-01 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Dynamic Completions: Filter and order completions based on input and importance" to "Filter and order completions based on input and importance for native completions" by @epage on 2024-07-19 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-07-19 16:43</div>
+            <div class="timeline-body"><p>With #3951 nearly done, I've reviewed the plan for this again and made a couple of tweaks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5739.html">clap-rs/clap#5739</a> on 2024-09-20 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5740.html">clap-rs/clap#5740</a> on 2024-09-20 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5741.html">clap-rs/clap#5741</a> on 2024-09-20 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5743.html">clap-rs/clap#5743</a> on 2024-09-20 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-09-20 20:00</div>
+            <div class="timeline-body"><p>I think we've got this covered between</p>
+<ul>
+<li>#5583</li>
+<li>#5584</li>
+<li>#5739</li>
+<li>#5740</li>
+<li>#5741</li>
+<li>#5743</li>
+</ul>
+<p>While we don't hide optional flags. I'm a bit mixed on that.  If there is interest in moving forward on that, we likely should have a dedicated issue exploring the trade offs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-09-20 20:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

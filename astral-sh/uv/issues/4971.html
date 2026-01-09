@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv python pin` should find `.python-version` file in a workspace - astral-sh/uv #4971</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv python pin` should find `.python-version` file in a workspace</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/4971">#4971</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-07-10 17:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-10 17:06</div>
+            <div class="timeline-body"><p>If working in a child directory of a workspace, <code>uv python pin</code> should support finding the <code>.python-version</code> file in the workspace root.</p>
+<p>Related #4970</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2024-07-10 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-07-10 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silvanocerza">@silvanocerza</a> on 2024-07-12 13:43</div>
+            <div class="timeline-body"><p>I thought of changing <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-python/src/version_files.rs"><code>version_files.rs</code></a> to use <a href="https://github.com/astral-sh/uv/blob/8d6c49b36c5ac70729274e62fd9f09eb760ed4c0/crates/uv-distribution/src/workspace.rs#L70"><code>Workspace::discovery()</code></a> internally to find the version files. Though <code>uv-distribution</code> can't be added as a dependency of <code>uv-python</code> as that would creation a cycle.</p>
+<p>Should I instead change all functions in <code>version_files.rs</code> to accept a path as argument and search the version files there? Then I would be able to get the <code>Workspace</code> in the <code>pin</code> command logic and thus the workspace path too so I can pass it to <code>requests_from_version_file</code>. Or is there a simpler solution that I'm missing cause of lack of context?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-12 14:18</div>
+            <div class="timeline-body"><p>Yeah based on that description I'd probably add <code>requests_from_version_file_in(root: PathBuf)</code> and keep the workspace discovery over in the <code>uv</code> crate.</p>
+<p>Thanks for looking into it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j178">@j178</a> on 2024-07-13 07:52</div>
+            <div class="timeline-body"><p>Should <code>uv python pin 3.12</code> also only write to the project root or the workspace root? At present, it writes to the current directory, but this means it won't be picked up by other commands like <code>uv python install</code> and <code>uv venv</code> unless they're run in that specific directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5035.html">astral-sh/uv#5035</a> on 2024-07-13 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-13 15:31</div>
+            <div class="timeline-body"><p>This is a good (and open) question. Do users opt-in to operating on the project or operating on the workspace? When working in the workspace root, we require <code>--project &lt;name&gt;</code> to affect a project. When in a project directory, we should probably require <code>--workspace</code> to mutate the workspace?</p>
+<p>More thoughts at https://github.com/astral-sh/uv/pull/5035#issuecomment-2226960463</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silvanocerza">@silvanocerza</a> on 2024-07-13 17:44</div>
+            <div class="timeline-body"><p>I'm assuming that a workspace can contain more projects, correct me if I'm wrong. Given that I would image this behaviour.</p>
+<p>If called in a project subfolder it would pin for the first closest project.
+If called in a workspace folder it would pin for the workspace only.
+If you want to change this behaviour you'd use the <code>--project &lt;name&gt;</code> or <code>--workspace</code> options as you propose.
+The <code>--isolate</code> option ignores all the above and pins in the current working directory as you said in https://github.com/astral-sh/uv/pull/5035#issuecomment-2226960463.</p>
+<p>It makes sense in my head but maybe it could be confusing to some? 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5592.html">astral-sh/uv#5592</a> on 2024-07-30 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @zanieb on 2024-08-20 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> removed by @zanieb on 2024-09-22 23:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

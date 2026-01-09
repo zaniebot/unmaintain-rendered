@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUG(?): uv fails to resolve astropy's dependency graph in CI (circular dependency), but succeeds locally. - astral-sh/uv #16978</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>BUG(?): uv fails to resolve astropy's dependency graph in CI (circular dependency), but succeeds locally.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16978">#16978</a>
+        opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a>
+        on 2025-12-04 14:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-12-04 14:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>uv is failing to resolve astropy's dependency graph in CI (but succeeds when run locally). Specifically, the resolver is choking on a cycle between <code>astropy[all]</code> and <code>asdf-astropy</code> (which are mutually dependent)</p>
+<p>command</p>
+<pre><code>uv tree --resolution=lowest --universal --all-groups
+</code></pre>
+<p>output</p>
+<pre><code>Using CPython 3.14.0 interpreter at: /opt/hostedtoolcache/Python/3.14.0/x64/bin/python3
+  × No solution found when resolving dependencies for split (markers:
+  │ python_full_version &lt; '3.12'):
+  ╰─▶ Because asdf-astropy==0.9.0 depends on your project and only the
+      following versions of asdf-astropy are available:
+          asdf-astropy&lt;=0.7.0
+          asdf-astropy==0.7.1
+          asdf-astropy==0.8.0
+          asdf-astropy==0.9.0
+      we can conclude that asdf-astropy&gt;0.8.0 depends on your project.
+      And because asdf-astropy&gt;=0.7.0,&lt;=0.8.0 depends on your project, we can
+      conclude that asdf-astropy&gt;=0.7.0 depends on your project.
+      And because astropy[all] depends on asdf-astropy&gt;=0.7.0 and your project
+      requires astropy[all], we can conclude that your project's requirements
+      are unsatisfiable.
+
+      hint: The package `asdf-astropy` depends on the package `astropy` but
+      the name is shadowed by your project. Consider changing the name of
+      the project.
+
+      hint: While the active Python version is 3.14, the resolution failed for
+      other Python versions supported by your project. Consider limiting your
+      project's supported Python versions using `requires-python`.
+</code></pre>
+<p>The error message seems either wrong (or maybe just confusing ?). In any case I don't understand the justification for failing resolution; dependency cycles have never been disallowed, and the same commands complete successfully when run locally (even with <code>--no-cache</code>, which to my knowledge bridges the only meaningful difference between these two contextes ?). I assume I must be missing something, but maybe that's a genuine bug ?</p>
+<p>xref: https://github.com/astropy/astropy/pull/19022</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04</p>
+<h3>Version</h3>
+<p>uv 0.9.15 (pinned in the python script being run)</p>
+<h3>Python version</h3>
+<p>3.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @neutrinoceros on 2025-12-04 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astropy/astropy/pulls/19022.html">astropy/astropy#19022</a> on 2025-12-04 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-12-04 17:36</div>
+            <div class="timeline-body"><p>nevermind, I figured it out using <code>RUST_LOG=uv=debug</code>; the issue was that I only used a shallow clone in CI, but astropy's version is dynamically computed at build time from the most recent git tag, and defaults to a <code>0.0.0+...</code> scheme, which is really what broke the resolver. To some extent, I think the error message could be improved to hint at it, but I'm not even sure that's a reasonable expectation. Anyway, feel free to close this as my immediate problem was both fixed <em>and</em> never was a bug in uv in the first place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-04 18:58</div>
+            <div class="timeline-body"><p>Hm the error message is indeed horrible. If you can construct a MRE in a new issue I'd be happy to investigate improving it, it seems a little too complicated here to be actionable.</p>
+<p>I'm glad you figured out the problem!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-12-04 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-12-04 19:14</div>
+            <div class="timeline-body"><p>I'll see if I can manage an MRE in the next couple days. Is it okay if I ping you on the issue when I got it ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-04 20:24</div>
+            <div class="timeline-body"><p>Yep!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astropy/astropy/pulls/19027.html">astropy/astropy#19027</a> on 2025-12-05 10:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16997.html">astral-sh/uv#16997</a> on 2025-12-05 10:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

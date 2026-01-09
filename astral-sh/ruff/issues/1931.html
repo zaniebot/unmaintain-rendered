@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support line filter / diff input - astral-sh/ruff #1931</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support line filter / diff input</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1931">#1931</a>
+        opened by <a href="https://github.com/xmo-odoo">@xmo-odoo</a>
+        on 2023-01-17 10:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/xmo-odoo">@xmo-odoo</a> on 2023-01-17 10:29</div>
+            <div class="timeline-body"><p>This is probably a use case which is more relevant for large (and old) codebases, when trying to &quot;ratchet&quot; rules progressively: in CI, it's useful to only check / fail on failures of the code which has been modified, as it allows progressively improving code-state without needing massive one-shot rewrites which can make history traversal and blames a lot more complicated.</p>
+<p>This can be done by post-filtering finds emitted by ruff, but it would be useful as a pre / builtin feature, as it would avoid having to provide both input (<code>--include</code>/<code>--exclude</code>) and output (lines) filters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-17 10:41</div>
+            <div class="timeline-body"><p>I think it would make more sense to have a dedicated tool for that, which supports one of the output formats of ruff so then you could just pipe the output of ruff to that filter tool e.g.</p>
+<pre><code>ruff . --format=junit | junit_filter_git
+</code></pre>
+<p>I see no reason why this should be implemented in <code>ruff</code> directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xmo-odoo">@xmo-odoo</a> on 2023-01-17 10:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I see no reason why this should be implemented in <code>ruff</code> directly.</p>
+</blockquote>
+<p>This objection is literally covered by the second paragraph.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-17 11:24</div>
+            <div class="timeline-body"><p>Ruff is fast enough that you could just run it on the whole codebase and have the filter program filter out violations for all other files. If you care about wasted CPU cycles you could just invoke ruff like:</p>
+<pre><code>ruff  --format=junit -- ${{needs.changedfiles.outputs.all}} | junit_filter_git
+</code></pre>
+<p>where <code>${{needs.changedfiles.outputs.all}}</code> would be some variable listing all the changed files, see for example <a href="https://dev.to/scienta/get-changed-files-in-github-actions-1p36">this explanation for GitHub</a>.</p>
+<p>Something like this could very well be provided by a GitHub action so you wouldn't even have to configure that yourself. So yes I still see no reason why this should be implemented in <code>ruff</code> directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 12:29</div>
+            <div class="timeline-body"><p>Thanks for filing :) I see the value in what you're describing, and -- since it's come up here -- in general, I'm open to implementing things directly in Ruff that could be accomplished by chaining together other tools. Not always, since everything we implement comes with some upfront and ongoing cost, but on a case-by-case basis. (One way I think about this: Black has Jupyter support built-in, even though the same behavior can be accomplished with <code>nbQA</code>, and that's useful.)</p>
+<p>I think in this case, I'm unlikely to prioritize it if there's a reasonable workaround so I'd love to better understand the use-case. Are you imaging that this would only run over changed files? Or over changed lines? How do you think Ruff should determine the changed files?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-01-17 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">core</span> added by @charliermarsh on 2023-01-17 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xmo-odoo">@xmo-odoo</a> on 2023-01-17 12:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Not always, since everything we implement comes with some upfront and ongoing cost, but on a case-by-case basis. [...] I think in this case, I'm unlikely to prioritize it if there's a reasonable workaround</p>
+</blockquote>
+<p>Certainly fair enough.</p>
+<blockquote>
+<p>so I'd love to better understand the use-case. Are you imaging that this would only run over changed files? Or over changed lines?</p>
+</blockquote>
+<p>I'd assume ruff would need to run over the entire file in order to correctly analyze the contents. Especially as the modified lines might not even provide a valid AST subtree. This'd be more of a &quot;one-stop&quot; shop to filter (<code>include</code>/<code>exclude</code>) and output (lines filter).</p>
+<blockquote>
+<p>How do you think Ruff should determine the changed files?</p>
+</blockquote>
+<p>I know that some tools can take a unified diff as input and extract the filtering from that, but I don't know if there's a ready-made crate for this, so as described above an alternative could be to extend the include/exclude arguments to allow file subranges.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 12:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd assume ruff would need to run over the entire file in order to correctly analyze the contents. Especially as the modified lines might not even provide a valid AST subtree. This'd be more of a &quot;one-stop&quot; shop to filter (include/exclude) and output (lines filter).</p>
+</blockquote>
+<p>Ah sorry, what I meant to ask was: would you expect to see errors reported only from changed <em>files</em> (more errors), or from changed <em>files</em> (stricter)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xmo-odoo">@xmo-odoo</a> on 2023-01-17 13:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah sorry, what I meant to ask was: would you expect to see errors reported only from changed <em>files</em> (more errors), or from changed <em>files</em> (stricter)?</p>
+</blockquote>
+<p>Assuming the second occurrence of <em>files</em> should be <em>line</em>, then that.</p>
+<p>And yes I do realise that a change in one line can cause an error in an other (which was not touched), but I think getting this perfect (or as close to as possible) would be complicated as it would be necessary to start from a snapshot of the full output, take a new full output (or at least file-wise in both cases since I assume ruff currently mostly operate on a per-file basis much as flake does), then use the diff's information to adjust all the messages in order to match pre- and post- content to determine whether an error is truly novel or is just a pre-existing error moved a few lines because code was inserted somewhere above it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 14:22</div>
+            <div class="timeline-body"><p>Uhh, yes, second occurrence should be <em>line</em>! Sorry about that.</p>
+<p>Ok noted, let's keep this open! (There's also #1149 which accomplishes the same thing IIUC.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xmo-odoo">@xmo-odoo</a> on 2023-01-17 14:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Uhh, yes, second occurrence should be <em>line</em>! Sorry about that.</p>
+</blockquote>
+<p>No worries.</p>
+<blockquote>
+<p>Ok noted, let's keep this open! (There's also #1149 which accomplishes the same thing IIUC.)</p>
+</blockquote>
+<p>Oh I missed it sorry, didn't know about the term &quot;baseline&quot; (and almost certainly made my search using keywords like &quot;diff&quot;, &quot;ci&quot;, &quot;git&quot;, ...).</p>
+<p>If that's an option / consideration then it would be <em>a lot</em> better than this here proposal (which is a lot more simplistic).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 15:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh I missed it sorry, didn't know about the term &quot;baseline&quot; (and almost certainly made my search using keywords like &quot;diff&quot;, &quot;ci&quot;, &quot;git&quot;, ...).</p>
+</blockquote>
+<p>Me neither, before that Issue :)</p>
+<blockquote>
+<p>If that's an option / consideration then it would be a lot better than this here proposal (which is a lot more simplistic).</p>
+</blockquote>
+<p>It is! I'll close this for now in favor of that issue then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-17 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2189.html">astral-sh/ruff#2189</a> on 2023-01-26 06:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2472.html">astral-sh/ruff#2472</a> on 2023-02-02 13:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

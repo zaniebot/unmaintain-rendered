@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run` spawns another process. - astral-sh/uv #7343</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run` spawns another process.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7343">#7343</a>
+        opened by <a href="https://github.com/pkucmus">@pkucmus</a>
+        on 2024-09-12 20:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pkucmus">@pkucmus</a> on 2024-09-12 20:28</div>
+            <div class="timeline-body"><p>In the documentation <code>uv run hello.py</code> is used as an example (or the main way) on how to run a project. This assigns the PID 1 to uv and whatever uv spawns is another process - this is problematic when using Docker and need to send signals to your application, like <a href="https://www.uvicorn.org/deployment/#built-in">sending <code>SIGHUP</code>, <code>SIGTTIN</code>, <code>SIGTTOU</code> to your container to inform Uvicorn</a> to do something. Docker will only send the signals to the process sunning under PID 1 (<a href="https://www.kaggle.com/code/residentmario/best-practices-for-propagating-signals-on-docker">here</a> it's explained better then I ever could).</p>
+<p>If the UV process can proxy all signals then I guess that would be fine but still I would not be too keen on running a different process in front of my web server, not for the reason of dependency management.</p>
+<p>Might be related to: https://github.com/astral-sh/uv/issues/7342 if uv could install into a non-virtual env (container's only Python)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-12 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-12 20:35</div>
+            <div class="timeline-body"><p>You can easily bypass <code>uv run</code> in this context, with one of:</p>
+<ul>
+<li><code>UV_PROJECT_ENVIRONMENT</code>: https://docs.astral.sh/uv/concepts/projects/#configuring-the-project-environment-path</li>
+<li>Adding the <code>bin/</code> to the <code>PATH</code>: https://docs.astral.sh/uv/guides/integration/docker/#using-the-environment</li>
+<li>Specifying the full path to your application, e.g., <code>./.venv/bin/foo</code></li>
+<li>Activating the environment via the shell</li>
+</ul>
+<p>There's some active discussion about signal handling in https://github.com/astral-sh/uv/pull/6738</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pkucmus">@pkucmus</a> on 2024-09-13 07:27</div>
+            <div class="timeline-body"><p>My main concern of running the web server as the PID 1 process can be solved with the points you mentioned and I'll move the rest of the discussion into #6738.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pkucmus on 2024-09-13 07:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6738.html">astral-sh/uv#6738</a> on 2024-09-13 07:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

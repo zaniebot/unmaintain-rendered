@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positives for B002 (unary-prefix-increment-decrement) - astral-sh/ruff #6534</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positives for B002 (unary-prefix-increment-decrement)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6534">#6534</a>
+        opened by <a href="https://github.com/deepyaman">@deepyaman</a>
+        on 2023-08-13 12:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/deepyaman">@deepyaman</a> on 2023-08-13 12:08</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hi! I'm getting a B002 error on https://github.com/ibis-project/ibis/blob/6.1.0/ibis/tests/expr/test_table.py#L1243. I believe (without actually understanding how the Ruff implementation works) this is because the AST for <code>-(-(x))</code> is equivalent for <code>--x</code>, but:</p>
+<ol>
+<li>the parentheses make it such that it's not actually an attempt at using non-existent unary prefix decrement operator</li>
+<li>the error message is therefore misleading</li>
+</ol>
+<p>I understand that this is an edge case, because most code doesn't define/test the unary <code>-</code>/<code>+</code> operator, and will therefore just stick <code>noqa</code>'s on the code, but thought it still worth reporting in case there's an opportunity to make the error a bit less confusing.</p>
+<p>Ruff version: 0.0.284</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-13 21:15</div>
+            <div class="timeline-body"><p>Just want to make sure I understand: I think <code>-(-(t1.key1 == t2.key1).any())</code> <em>is</em> equivalent to <code>--((t1.key1 == t2.key1).any())</code>, they produce the same AST due to operator precedence. So this <em>is</em> a case in which the unary prefix decrement operator is being used. But are you saying that it's <em>not</em> such a case, or that it's <em>intentional</em> here and so shouldn't be flagged?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-13 21:15</div>
+            <div class="timeline-body"><p>As always, thank you for reporting :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-08-13 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/deepyaman">@deepyaman</a> on 2023-08-14 05:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Just want to make sure I understand: I think <code>-(-(t1.key1 == t2.key1).any())</code> <em>is</em> equivalent to <code>--((t1.key1 == t2.key1).any())</code>, they produce the same AST due to operator precedence. So this <em>is</em> a case in which the unary prefix decrement operator is being used. But are you saying that it's <em>not</em> such a case, or that it's <em>intentional</em> here and so shouldn't be flagged?</p>
+</blockquote>
+<p>Hi! Yes, I also think it's producing the same AST, hence getting flagged (as I wrote in the original issue). However, since the unary prefix decrement operator isn't actually a thing in Python (which is the reason why the B002 rule exists), I'll be pedantic and say that <code>--((t1.key1 == t2.key1).any())</code> would technically be equivalent to what's more clearly written in the code I'm touching, <code>-(-(t1.key1 == t2.key1).any())</code>. <code>-(-(t1.key1 == t2.key1).any())</code> fairly indicates what the code is doing--it's testing negation of negation.</p>
+<p>I think this is all a roundabout way of saying</p>
+<blockquote>
+<p>it's <em>intentional</em> here and so shouldn't be flagged</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/deepyaman">@deepyaman</a> on 2023-08-14 05:25</div>
+            <div class="timeline-body"><p>Since the above reply is a bit convoluted, maybe I can try to re-explain with a simpler example:</p>
+<ul>
+<li>If my code reads <code>--x</code>, it seems fair to raise B002, because it's very possible I'm coming from another language and will get behavior I don't expect (that it will return <code>x</code>, instead of decrementing <code>x</code>).</li>
+<li>If my code reads <code>-(-(x))</code>, on the other hand, it's pretty clear that I didn't just come from C++ and am trying to pre-decrement; it's something else. If I did want to pre-decrement, why the parentheses? So, it's a bit misleading to say, &quot;Python does not support the unary prefix decrement operator&quot; IMO; as the user, I never had any intention of pre-decrementing, and (if I didn't have prior experience outside of Python) I wouldn't even recognize <code>-(-(x))</code> as pre-decrementing.</li>
+<li>If it's not possible to provide distinguished error messages because the ASTs for <code>--x</code> and <code>-(-(x))</code> are equivalent (I'm not familiar with the Ruff codebase, so I wouldn't know whether it's possible or not), I understand. Like I said, I can get around it in my specific case with some <code>noqa</code>s, and I use cases for writing <code>-(-(x))</code> are probably few and far between (e.g. testing library code, which is the use case I saw).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> removed by @charliermarsh on 2023-08-14 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-08-14 13:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

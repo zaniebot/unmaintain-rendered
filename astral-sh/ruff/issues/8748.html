@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter undocumented deviation: Trailing comma added after kwargs - astral-sh/ruff #8748</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter undocumented deviation: Trailing comma added after kwargs</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8748">#8748</a>
+        opened by <a href="https://github.com/henribru">@henribru</a>
+        on 2023-11-17 22:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/henribru">@henribru</a> on 2023-11-17 22:25</div>
+            <div class="timeline-body"><p><a href="https://black.vercel.app/?version=stable&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4ADhAGNdAD2IimZxl1N_WlbvK5V9KEd00teEET9osIZigniJF5fr_T7GfCbcGUBQhUU3aA1epEd495EVTT5WLbOM4upLfhfjwWg9Cp0Mh8h9sbfEEDGcq8Z-myt2zvNgeXO5vo1Vmkx7AAAAoJ0uR6yEDA8AAX_iAQAAABOYidOxxGf7AgAAAAAEWVo=">Black:</a></p>
+<pre><code>def foo(
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,
+    b,
+    **kwargs
+):
+    ...
+</code></pre>
+<p><a href="https://play.ruff.rs/1e68e379-2427-44ae-ace8-53bd5a937b45?secondary=Format">Ruff:</a></p>
+<pre><code>def foo(
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,
+    b,
+    **kwargs,
+):
+    ...
+</code></pre>
+<p>Not sure if this is somehow related to https://github.com/astral-sh/ruff/blob/main/docs/formatter/black.md#trailing-commas-are-inserted-when-expanding-a-function-definition-with-a-single-argument, but there's more than one argument here at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-17 22:27</div>
+            <div class="timeline-body"><p>I believe this is intentional as we view Black's behavior here as inconsistent, but it should be documented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2023-11-17 22:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-11-17 22:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-18 01:19</div>
+            <div class="timeline-body"><p>I'm actually unable to reproduce this with the Black executable, only in the playground under certain circumstances (e.g., see <a href="https://black.vercel.app/?version=main&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AFfAG9dAD2IimZxl1N_WlbvK5V9KEd00teEET9osIZigniJF5fr_T7GfCbcGUBQhUU3aA1epE1XHBGrTi7yEbaaNnAWgzoeI31q1coFWupDVR4mT6KoJs0brDOpVkjAfO4WtqJ8JpfwvuPoOVZqyN70iB9QAAAAYOgxoiNok58AAYsB4AIAACCMuV-xxGf7AgAAAAAEWVo=">here</a>). Is this something you experienced in one of your projects?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henribru">@henribru</a> on 2023-11-18 07:53</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm actually unable to reproduce this with the Black executable, only in the playground under certain circumstances (e.g., see <a href="https://black.vercel.app/?version=main&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AFfAG9dAD2IimZxl1N_WlbvK5V9KEd00teEET9osIZigniJF5fr_T7GfCbcGUBQhUU3aA1epE1XHBGrTi7yEbaaNnAWgzoeI31q1coFWupDVR4mT6KoJs0brDOpVkjAfO4WtqJ8JpfwvuPoOVZqyN70iB9QAAAAYOgxoiNok58AAYsB4AIAACCMuV-xxGf7AgAAAAAEWVo=">here</a>). Is this something you experienced in one of your projects?</p>
+</blockquote>
+<p>I can reproduce my example with the executable. It also reproduces if I duplicate the function. But your example shows something curious. It seems like if none of the functions have trailing comma on kwargs it doesn't get added, but if one of them has it it gets added for all of them? 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henribru">@henribru</a> on 2023-11-18 08:09</div>
+            <div class="timeline-body"><p>Ahh, I see what's going on. Trailing comma on kwargs is a syntax error before Python 3.6. If you have a trailing comma already, without a specified target version, Black is inferring the code must be &gt;=3.6, so it adds it to the rest as well. Since Ruff doesn't infer the target version (and in any case has 3.7 as the minimum), this doesn't apply to Ruff. My bad!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @henribru on 2023-11-18 08:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henribru">@henribru</a> on 2023-11-18 08:13</div>
+            <div class="timeline-body"><p>Though maybe a quick note in the documentation about how if you're relying on Black inferring the target version you might see differences when migrating to Ruff could be useful</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-18 21:10</div>
+            <div class="timeline-body"><p>Ahh that explains a lot! Thank you for the follow-up.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

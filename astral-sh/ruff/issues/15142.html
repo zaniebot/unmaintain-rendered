@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[linter] `ANN401` for `__setattr__`/`__getattr__`? - astral-sh/ruff #15142</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[linter] `ANN401` for `__setattr__`/`__getattr__`?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15142">#15142</a>
+        opened by <a href="https://github.com/eliegoudout">@eliegoudout</a>
+        on 2024-12-26 03:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eliegoudout">@eliegoudout</a> on 2024-12-26 03:46</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>First off, let me say I'm really getting in love with <code>ruff</code> and <code>uv</code>, so thanks!</p>
+<p>I'm confronted with the following <a href="https://docs.astral.sh/ruff/rules/any-type/"><code>ANN401</code></a>:</p>
+<pre><code>ANN401 Dynamically typed expressions (typing.Any) are disallowed in `val`
+    |
+235 |     def __setattr__(self, attr: str, val: Any) -&gt; None:
+    |                                           ^^^ ANN401
+</code></pre>
+<p>which seems a bit too much, since it makes sens for such a method to not enforce any type (same for <code>__getattr__</code>).</p>
+<p>How would you recommend dealing with this? I could disable <code>ANN401</code> altogether but it would be a bit sad, or maybe replace <code>Any</code> with <code>object</code> (weird?).</p>
+<p>Do you think it would be wise for the linter to consider <code>__setattr__</code>/<code>__getattr__</code> (and other appropriate cases?) as special regarding <code>ANN401</code>?</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-26 07:21</div>
+            <div class="timeline-body"><p>The correct annotation in this case would generally be <code>object</code>. Which truly means &quot;Anything will be accepted&quot;.</p>
+<p><code>Any</code> is more of an escape hatch, where there is an actual constraint, i.e. you know not truly every value will be accepted, but it's either not possible to express that constraint in the type system yet or defining it ends up making the API extremely annoying to use.</p>
+<p>A good example of a function where <code>Any</code> is appropriate as the argument is <code>json.dumps</code>. Technically you can come up with a constraint for the value parameter that's correct, but the serializer can be extended with support for additional objects. So that constraint would become incorrect as soon as someone does that. So <code>Any</code> is appropriate as &quot;We can't statically know what the correct constraint will be&quot;.</p>
+<p>That being said, ANN401 is very opinionated, and the same goes for some of the other ANN rules. Most people will probably be better served by the appropriate strictness settings in their type checker of choice, rather than ANN.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eliegoudout">@eliegoudout</a> on 2024-12-26 08:11</div>
+            <div class="timeline-body"><p>Ok, thank you very much for the philosophical take on <code>Any</code> vs. <code>object</code>, I had no idea. I'm very fine with using <code>object</code> then!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @eliegoudout on 2024-12-26 08:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

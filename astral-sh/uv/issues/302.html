@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv-git` should be async - astral-sh/uv #302</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv-git` should be async</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/302">#302</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-11-02 23:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-02 23:49</div>
+            <div class="timeline-body"><p>It's hard because the <code>git2</code> structs aren't <code>Send</code>....</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-11-03 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-07 18:06</div>
+            <div class="timeline-body"><p>Wild shot from the hip here: are we sure the project itself should be using async at all? I realize it needs to interact with the network, but do we know that we're benefiting from async here?</p>
+<p>(This may also be an ecosystem dilemma. Where the best networking libraries force you into async, but the integration points of other libraries that aren't traditional async, like <code>git2</code>, becomes trickier. One possible way to address that would be to push async to the boundaries and treat them as synchronous calls via something like <a href="https://docs.rs/tokio/latest/tokio/runtime/struct.Runtime.html#method.block_on"><code>block_on</code></a>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-07 18:12</div>
+            <div class="timeline-body"><p>We definitely need to be able to fetch metadata concurrently while we solve (i.e., when we pick a package version, kick off fetches for its dependencies while we move on to the next decision). Async seemed like the best way to enable that data flow, but I'm also relatively inexperienced with the options available to us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-07 18:13</div>
+            <div class="timeline-body"><p>I based some of the async use on decisions I saw in https://github.com/orogene/orogene.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-07 18:17</div>
+            <div class="timeline-body"><p>Yeah one should definitely be able to achieve that with multi-threading. It is true that async also enables it, but arguably at a higher friction cost. The multi-threading approach can have other downsides, particularly if you wind up needing to spawn lots of threads. But &quot;lots of threads&quot; probably only becomes a problem at somewhat large numbers.</p>
+<p>Anyway, it's really hard for me to have a coherent opinion on architecture given what I know (i.e., very little). I'll keep noodling on this as I continue to explore Puffin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-07 18:18</div>
+            <div class="timeline-body"><p>Please do. We're definitely still in a position where we could remove async entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-07 18:18</div>
+            <div class="timeline-body"><p>(I don't hold a strong opinion that we <em>have</em> to use async, it's more that it seemed like the right fit and I haven't explored alternatives.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-07 18:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Wild shot from the hip here: are we sure the project itself should be using async at all?</p>
+</blockquote>
+<p>I've raised this too and agree with the general sentiment.</p>
+<blockquote>
+<p>But &quot;lots of threads&quot; probably only becomes a problem at somewhat large numbers.</p>
+</blockquote>
+<p>Yeah. I'm unsure we're going to reach that scale doing package resolution.</p>
+<p>Maybe we could estimate the number of concurrent tasks we need when solving a large project?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`puffin-git` should be async" to "`uv-git` should be async" by @zanieb on 2024-02-15 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-01 21:28</div>
+            <div class="timeline-body"><p>@ibraheemdev should we still do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-01 21:29</div>
+            <div class="timeline-body"><p>(Presuming this is not relevant anymore)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-07-01 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-07-01 21:32</div>
+            <div class="timeline-body"><p>Our git code is now all process based. Use tokio processes internally isn't clearly better than a single outer <code>spawn_blocking</code> call, so I think it's fine how it is.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

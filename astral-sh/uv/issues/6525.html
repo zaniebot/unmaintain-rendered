@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run doesn't work without __init__.py - astral-sh/uv #6525</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run doesn't work without __init__.py</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6525">#6525</a>
+        opened by <a href="https://github.com/AndreuCodina">@AndreuCodina</a>
+        on 2024-08-23 15:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2024-08-23 15:28</div>
+            <div class="timeline-body"><p>The <code>__init__.py</code> file is optional, but if you download the repository https://github.com/astral-sh/uv-fastapi-example (a fresh copy, don't re-use the repository) and remove the <code>app/__init__.py</code> file, when you run:</p>
+<pre><code class="language-bash">uv run fastapi dev app/main.py
+</code></pre>
+<p>then you get this error:</p>
+<pre><code>Using Python 3.12.1 interpreter at: /Library/Frameworks/Python.framework/Versions/3.12/bin/python3
+Creating virtualenv at: .venv
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: app @ file:///Users/andreu/Git/Andreu/uv-fastapi-example
+  Caused by: Build backend failed to build wheel through `build_editable()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+  File &quot;/Users/.../Library/Caches/uv/builds-v0/.tmpfYT0UH/lib/python3.12/site-packages/hatchling/build.py&quot;, line 83, in build_editable
+    return os.path.basename(next(builder.build(directory=wheel_directory, versions=['editable'])))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/.../Library/Caches/uv/builds-v0/.tmpfYT0UH/lib/python3.12/site-packages/hatchling/builders/plugin/interface.py&quot;, line 155, in build
+    artifact = version_api[version](directory, **build_data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/.../Library/Caches/uv/builds-v0/.tmpfYT0UH/lib/python3.12/site-packages/hatchling/builders/wheel.py&quot;, line 494, in build_editable
+    return self.build_editable_detection(directory, **build_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/.../Library/Caches/uv/builds-v0/.tmpfYT0UH/lib/python3.12/site-packages/hatchling/builders/wheel.py&quot;, line 505, in build_editable_detection
+    for included_file in self.recurse_selected_project_files():
+  File &quot;/Users/.../Library/Caches/uv/builds-v0/.tmpfYT0UH/lib/python3.12/site-packages/hatchling/builders/plugin/interface.py&quot;, line 180, in recurse_selected_project_files
+    if self.config.only_include:
+       ^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/.../Library/Caches/uv/builds-v0/.tmpfYT0UH/lib/python3.12/site-packages/hatchling/builders/config.py&quot;, line 806, in only_include
+    only_include = only_include_config.get('only-include', self.default_only_include()) or self.packages
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/.../Library/Caches/uv/builds-v0/.tmpfYT0UH/lib/python3.12/site-packages/hatchling/builders/wheel.py&quot;, line 260, in default_only_include
+    return self.default_file_selection_options.only_include
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/functools.py&quot;, line 995, in __get__
+    val = self.func(instance)
+          ^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/.../Library/Caches/uv/builds-v0/.tmpfYT0UH/lib/python3.12/site-packages/hatchling/builders/wheel.py&quot;, line 248, in default_file_selection_options
+    raise ValueError(message)
+ValueError: Unable to determine which files to ship inside the wheel using the following heuristics: https://hatch.pypa.io/latest/plugins/builder/wheel/#default-file-selection
+
+The most likely cause of this is that there is no directory that matches the name of your project (app).
+
+At least one file selection option must be defined in the `tool.hatch.build.targets.wheel` table, see: https://hatch.pypa.io/latest/config/build/
+
+As an example, if you intend to ship a directory named `foo` that resides within a `src` directory located at the root of your project, you can define the following:
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/foo&quot;]
+</code></pre>
+<hr />
+<p><strong>uv version:</strong> 0.3.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 02:32</div>
+            <div class="timeline-body"><p>I think describing <code>__init__.py</code> as optional is a bit of a misnomer. Python code sometimes works without an <code>__init__.py</code> due to namespace packages, but that's often &quot;by accident&quot;. Regardless, this would be fixed by #6585.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-08-25 02:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-26 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 18:06</div>
+            <div class="timeline-body"><p>This should be fixed in <a href="https://github.com/astral-sh/uv/releases/tag/0.4.0">v0.4.0</a>. Projects that omit <code>[build-system]</code> will no longer be built and installed by default. You can also set <code>tool.uv.package = false</code> or <code>tool.uv.package = false</code> to control the behavior explicitly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-28 18:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module support for uvx - astral-sh/uv #7552</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Module support for uvx</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7552">#7552</a>
+        opened by <a href="https://github.com/nmichlo">@nmichlo</a>
+        on 2024-09-19 14:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nmichlo">@nmichlo</a> on 2024-09-19 14:25</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Currently <code>uvx</code> or <code>uv tool</code> only seems to support packages that provide binaries. However, many packages haven't properly published executables within them and you often need to call <code>python -m package</code> on these to run them.</p>
+<ul>
+<li>A notable example is <code>setuptools_scm</code> or <code>grpc_tools.protoc</code></li>
+</ul>
+<p>It would be great if we could do something like:</p>
+<ul>
+<li><p><code>uvx setuptools-scm -m setuptools_scm</code></p>
+<p>instead of:
+<code>uv pip install setuptools-scm &amp;&amp; python -m setuptools_scm</code></p>
+</li>
+<li><p><code>uvx grpcio-tools -m grpc_tools.protoc -I. --python_out=. example.proto</code></p>
+<p>instead of:
+<code>uv pip install grpcio-tools &amp;&amp; python -m grpc_tools.protoc -I. --python_out=. example.proto</code></p>
+</li>
+</ul>
+<p>Both of the above then pollute the env.</p>
+<hr />
+<p>Context:</p>
+<p>I've looked at <code>uv run</code> but this doesn't seem to be applicable because this is not for installed modules, rather it is for local scripts, and it also interacts with the current pyproject.toml (it seems to want to install things even if they are listed as extras, which may also be a bug?)</p>
+<p>I specifically don't want to install the package I am running in the current env, e.g. I need to build a project using some deps, like running grpc compilation. But I don't want the extra grpc installed deps to conflict with later builds steps, e.g. PyInstaller.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-09-19 15:12</div>
+            <div class="timeline-body"><p><code>uvx --from setuptools-scm python -m setuptools_scm</code> is available today, but that is just a sidenote.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nmichlo">@nmichlo</a> on 2024-09-19 21:41</div>
+            <div class="timeline-body"><p>@bluss</p>
+<p>Thank you for this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-19 22:29</div>
+            <div class="timeline-body"><p>It seems sort of awkward to support this, I think it'd have to be <code>uvx -m setuptools_scm setuptools</code> so the arguments aren't ambiguous? I'm not sure if that offers much over the more verbose version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-09-19 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv tool</span> added by @zanieb on 2024-09-19 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nmichlo">@nmichlo</a> on 2024-09-19 23:18</div>
+            <div class="timeline-body"><p>@zanieb I think you are right. Some shorter syntax would be great, but the syntax I proposed could conflict with arguments for the tools themselves or seem confusing in relation to that. Order would have to be respected. So this maybe isn't as intuitive.</p>
+<p>Maybe the immediate win is just an addition to the docs with an example of @bluss's answer?
+https://docs.astral.sh/uv/guides/tools/#installing-tools</p>
+<hr />
+<p>EDIT:</p>
+<p>current</p>
+<pre><code class="language-bash"># current tools without uv
+&lt;tool&gt; &lt;args&gt;
+# current tools with uv
+uvx &lt;tool&gt; &lt;args&gt;
+
+# current modules without uv
+python -m &lt;module&gt; &lt;args&gt;
+# LONGHAND: current modules with uv
+uvx --from &lt;tool&gt; python -m  &lt;module&gt; &lt;args&gt;
+</code></pre>
+<p>The pattern should be that without uv we should have <code>&lt;cmd&gt; &lt;args&gt;</code>, and with uv we should have <code>uvx &lt;uvx-args&gt; &lt;cmd&gt; &lt;args&gt;</code></p>
+<p>Thus, the prior suggestions result in ambiguous/conflicting shorthand:</p>
+<pre><code class="language-bash"># PROPOSED SHORTHAND 1: conflicts with `uvx &lt;tool&gt; &lt;args&gt;`, args ambiguous
+uvx &lt;tool&gt; -m &lt;module&gt; &lt;args&gt;
+
+# PROPOSED SHORTHAND 2: conflicts with `... -m &lt;module&gt; &lt;args&gt;` syntax, as inserts `&lt;tool&gt;` inbetween
+uvx -m &lt;module&gt; &lt;tool&gt; &lt;args&gt;
+</code></pre>
+<p>A possibly not conflicting solution, with a definite marker/branch in command behaviour, is:</p>
+<pre><code class="language-bash"># PROPOSED SHORTHAND 3, behaviour change with flags, expanding to longhand &amp; not ambiguous
+uvx -m &lt;tool/module&gt; &lt;args&gt;    # if the same name for both of them (assuming normalisation on the module name), expands to longhand
+uvx --from &lt;tool&gt; -m &lt;module&gt; &lt;args&gt;  # if differing names, expands to longhand
+uvx --from &lt;tool&gt; python -m &lt;module&gt; &lt;args&gt;  # current longhand
+
+# example 1:
+uvx -m setuptools-scm --help
+# * expands to / is the same as (note normalisation):
+uvx --from setuptools-scm -m setuptools_scm --help
+# * expands to / is the same as (although now shorthand isn't really worthwhile anymore as its just one extra word):
+uvx --from setuptools-scm python -m setuptools_scm --help
+</code></pre>
+<hr />
+<p>EDIT 2:</p>
+<p>The shorthand, is nice for quick common scenarios, but the shorthand only really works if package and module names when normalised are the same. For most projects this is the case, so still useful then. Although when not the same then it's only 1 arg less than the longhand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-09-20 11:17</div>
+            <div class="timeline-body"><p>Same issue as with uv run for the module argument, everything that follows -m is an external command, should not be parsed as arguments to uvx.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theonewolf">@theonewolf</a> on 2025-05-07 15:31</div>
+            <div class="timeline-body"><p>This would be a useful feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15455.html">astral-sh/uv#15455</a> on 2025-08-22 16:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

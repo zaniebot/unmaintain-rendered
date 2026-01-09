@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B023 is emitted when closure is defined inside a loop and uses a variable from the same loop - astral-sh/ruff #7847</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>B023 is emitted when closure is defined inside a loop and uses a variable from the same loop</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7847">#7847</a>
+        opened by <a href="https://github.com/Guilherme-Vasconcelos">@Guilherme-Vasconcelos</a>
+        on 2023-10-07 15:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Guilherme-Vasconcelos">@Guilherme-Vasconcelos</a> on 2023-10-07 15:07</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h2>Code snippet that reproduces the bug</h2>
+<p>The following snippet emits B023 (function-uses-loop-variable):</p>
+<pre><code class="language-python">def make_squared_list(size: int) -&gt; list[int]:
+    result = []
+
+    for i in range(size):
+        square = i**2
+
+        def _append_to_result() -&gt; None:
+            # Function definition does not bind loop variable `square` Ruff[B023](https://docs.astral.sh/ruff/rules/function-uses-loop- 
+            # variable)
+            # (variable) square: int
+            result.append(square)
+
+        _append_to_result()
+
+    return result
+</code></pre>
+<p>I have found out that adding a <code>nonlocal &lt;variable&gt;</code> declaration followed by an assignment to itself makes the error go away, i.e. change the closure <code>_append_to_result</code> to this:</p>
+<pre><code class="language-python">def _append_to_result() -&gt; None:
+    # No longer emits any warnings.
+    nonlocal square
+    square = square
+    result.append(square)
+</code></pre>
+<h2>Command invoked</h2>
+<pre><code class="language-sh">$ poetry run ruff ./ruff_bug.py
+</code></pre>
+<h2>Current ruff settings</h2>
+<p>Relevant sections from <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.ruff]
+select = [
+    &quot;F&quot;,
+    &quot;E&quot;,
+    &quot;W&quot;,
+    &quot;I&quot;,
+    &quot;N&quot;,
+    &quot;UP&quot;,
+    &quot;S&quot;,
+    &quot;BLE&quot;,
+    &quot;B&quot;,
+    &quot;A&quot;,
+    &quot;C4&quot;,
+    &quot;SIM&quot;,
+    &quot;PERF&quot;,
+    &quot;RUF&quot;
+]
+line-length = 88
+target-version = &quot;py311&quot;
+ignore = [
+    &quot;S101&quot;,
+    &quot;B011&quot;,
+]
+
+[tool.ruff.pycodestyle]
+ignore-overlong-task-comments = true
+</code></pre>
+<h2>Current ruff version</h2>
+<pre><code class="language-sh">$ poetry run ruff --version
+ruff 0.0.291
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-07 15:13</div>
+            <div class="timeline-body"><p>Thanks for the well written issue :) this does look like a bug, even if I move return the function and run it in a new scope the variable is indeed bound</p>
+<pre><code class="language-python">def make_squared_list(size: int) -&gt; list[int]:
+    result = []
+
+    for i in range(size):
+        square = i**2
+
+        def _append_to_result() -&gt; None:
+            # Function definition does not bind loop variable `square` Ruff[B023](https://docs.astral.sh/ruff/rules/function-uses-loop- 
+            # variable)
+            # (variable) square: int
+            print(square)
+            result.append(square)
+
+        _append_to_result()
+
+    return _append_to_result
+
+make_squared_list(3)()
+</code></pre>
+<pre><code>0
+1
+4
+4
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-10-07 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-08 14:28</div>
+            <div class="timeline-body"><p>(Confirmed that flake8-bugbear also flags these cases. So it's not a bug in our re-implementation. We should still fix if we can.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-08 14:35</div>
+            <div class="timeline-body"><p>Hmm, I looked at some bugbear issues, and it does seem like this is valid to flag in some cases.</p>
+<p>For example, this prints <code>[1, 1]</code> instead of <code>[0, 1]</code>. Note that the function defined in the loop is called <em>after</em> the loop, rather than within each iteration:</p>
+<pre><code class="language-python">def make_squared_list(size: int) -&gt; list[int]:
+    result = []
+
+    functions = []
+    for i in range(size):
+        square = i**2
+
+        def _append_to_result() -&gt; None:
+            # Function definition does not bind loop variable `square` Ruff[B023](https://docs.astral.sh/ruff/rules/function-uses-loop- 
+            # variable)
+            # (variable) square: int
+            result.append(square)
+
+        functions.append(_append_to_result)
+
+    for function in functions:
+        function()
+
+    return result
+
+
+print(make_squared_list(2))
+</code></pre>
+<p>See https://github.com/PyCQA/flake8-bugbear/issues/402.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../canonical/operator/pulls/1114.html">canonical/operator#1114</a> on 2024-02-15 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/beauxq">@beauxq</a> on 2024-08-29 13:01</div>
+            <div class="timeline-body"><p>I think this false positive could be eliminated without risking any false negatives.</p>
+<p>We should be able to detect whether the only thing that is done with the function is calling it within the same loop.
+If that is the case, it shouldn't be reported.
+If anything else is done with the function besides calling it in the same loop, the error should be reported.</p>
+<hr />
+<pre><code class="language-python">    for i in range(size):
+        square = i**2
+
+        def _append_to_result() -&gt; None:
+            result.append(square)
+
+        _append_to_result()
+    return result
+</code></pre>
+<p>Nothing is done besides calling it in the same loop, so it should not be reported.</p>
+<hr />
+<pre><code class="language-python3">    for i in range(size):
+        square = i**2
+
+        def _append_to_result() -&gt; None:
+            result.append(square)
+
+        _append_to_result()
+    return _append_to_result
+</code></pre>
+<p>Something is done besides calling it in the same loop (returning it), so it should be reported.</p>
+<hr />
+<pre><code class="language-python3">    for i in range(size):
+        square = i**2
+
+        def _append_to_result() -&gt; None:
+            result.append(square)
+
+        functions.append(_append_to_result)
+</code></pre>
+<p>Something is done besides calling it in the same loop (passing it to another function), so it should be reported.</p>
+<hr />
+<p>In case someone wonders why someone would want to define a function only to call it within the same loop, the biggest reason I do it is code organization.</p>
+<ul>
+<li>It organizes a section of code together and gives it a name.</li>
+<li>It creates a new scope so temp variables don't pollute the name space.</li>
+<li>It is collapsible in a code editor.</li>
+</ul>
+<p>In one place I ran into this false positive, there were 5 variables captured by the function.
+Having to bind all of them would make a bunch of noise that would make it harder to read.
+<code>noqa</code> comments on all the usages would also make it harder to read. And I don't want to risk a false negative somewhere else by ignoring the whole file. Ignoring the rule also brings the risk that someone else could come later and change it to use the function outside the loop, and the problem wouldn't be caught.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pankajp">@pankajp</a> on 2024-09-10 15:47</div>
+            <div class="timeline-body"><p>I think @beauxq is right and ruff should be able to detect the first case where the only thing being done with the function is calling it within the same loop.
+I just had to disable B023 checks in my config as we have numerous such uses</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15716.html">astral-sh/ruff#15716</a> on 2025-01-24 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16046.html">astral-sh/ruff#16046</a> on 2025-02-08 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../llamastack/llama-stack/pulls/1184.html">llamastack/llama-stack#1184</a> on 2025-02-27 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sergey-protserov-uhn">@sergey-protserov-uhn</a> on 2025-08-30 14:48</div>
+            <div class="timeline-body"><p>Just encountered this with Ruff 0.12.1 on the following code:</p>
+<pre><code>for i in range(1, 6 + 1):
+...
+    label_mapping = {k: v for v, k in enumerate(labels_)}
+    label_mapping_f = np.vectorize(lambda x: label_mapping[x])  # triggered for label_mapping in this line
+    labels = label_mapping_f(labels)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/beauxq">@beauxq</a> on 2025-08-30 15:40</div>
+            <div class="timeline-body"><blockquote>
+<pre><code>for i in range(1, 6 + 1):
+...
+    label_mapping = {k: v for v, k in enumerate(labels_)}
+    label_mapping_f = np.vectorize(lambda x: label_mapping[x])  # triggered for label_mapping in this line
+    labels = label_mapping_f(labels)
+</code></pre>
+</blockquote>
+<p>I don't think that one is really safe for the linter to ignore, because it doesn't know whether <code>np.vectorize</code> is going to call it immediately, or save a reference to it to call later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sergey-protserov-uhn">@sergey-protserov-uhn</a> on 2025-08-31 07:19</div>
+            <div class="timeline-body"><p>I see, that makes perfect sense, thank you for your answer!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

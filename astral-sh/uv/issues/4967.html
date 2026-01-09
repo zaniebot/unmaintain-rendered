@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--override`ing a package from a `--extra-index-url` index is not registered in the cache properly - astral-sh/uv #4967</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--override`ing a package from a `--extra-index-url` index is not registered in the cache properly</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4967">#4967</a>
+        opened by <a href="https://github.com/aabtop">@aabtop</a>
+        on 2024-07-10 16:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aabtop">@aabtop</a> on 2024-07-10 16:35</div>
+            <div class="timeline-body"><p>When the package is not registered properly in the cache, subsequent installations with the <code>--offline</code> fail.</p>
+<p>Minimal repro:</p>
+<p><code>override.txt</code>:</p>
+<pre><code>torch==2.0.0
+</code></pre>
+<p>Then run:</p>
+<pre><code>uv cache clean
+uv pip uninstall torch
+
+uv pip install --extra-index-url https://download.pytorch.org/whl/cpu torch==2.0.1 --override override.txt
+uv pip uninstall torch
+uv pip install --extra-index-url https://download.pytorch.org/whl/cpu torch==2.0.1 --override override.txt --offline
+</code></pre>
+<p>The expected output here is that it successfully installs torch, since we're requesting to install the exact same package again, which should be in uv's cache after the first install. However we instead get this output:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because torch was not found in the cache and you require torch==2.0.0, we can conclude that the requirements are unsatisfiable.
+
+      hint: Packages were unavailable because the network was disabled
+</code></pre>
+<p>I'm on Linux aarch64 (but fairly certain I've tried it on other platforms and the issue is the same there)</p>
+<p>My UV version is 0.2.23:</p>
+<pre><code>uv --version
+uv 0.2.23
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-10 16:36</div>
+            <div class="timeline-body"><p>Interesting, thanks. I would also expect this to work. Not obvious why it's failing on first glance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-10 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-10 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-10 16:45</div>
+            <div class="timeline-body"><p>The problem is that the PyTorch index returns cache headers that don't permit caching the responses (<code>cache-control: no-cache,no-store,must-revalidate</code>), so we don't save them. It's unclear if we should cache them, to allow them to be used with <code>--offline</code>.</p>
+<p>What do you think @BurntSushi?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-10 16:58</div>
+            <div class="timeline-body"><p>A <code>cache-control: no-cache,no-store,must-revalidate</code> header is very weird. That effectively reduces to <code>cache-control: no-store</code> as I understand it, and indeed, this means no caching. I'm not sure we should go against what the HTTP headers are explicitly telling us not to do. Maybe this is a bug that needs to be reported to the PyTorch folks since I'm not sure I see an issue with caching things here? Like, <code>no-store</code> is a very definitive &quot;DO NOT CACHE THIS&quot; indicator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-10 16:59</div>
+            <div class="timeline-body"><p>Yeah... Though <code>--offline</code> is explicitly opting in to &quot;stale cache is ok&quot; in our semantics, IIRC, so like... arguably it's ok to return data that you shouldn't?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-07-10 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-07-10 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aabtop">@aabtop</a> on 2024-07-10 17:15</div>
+            <div class="timeline-body"><p>Thanks for the quick response. It looks like you have sussed this out already, but I realize now the <code>--override</code> is not relevant and a more minimal repro is:</p>
+<pre><code>uv cache clean
+uv pip uninstall torch
+
+uv pip install --extra-index-url https://download.pytorch.org/whl/cpu torch==2.0.1
+uv pip uninstall torch
+uv pip install --extra-index-url https://download.pytorch.org/whl/cpu torch==2.0.1 --offline
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-10 17:19</div>
+            <div class="timeline-body"><p>👍 Yeah, I did notice that too. I ended up using Jinja for a smaller repro :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-10 17:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah... Though <code>--offline</code> is explicitly opting in to &quot;stale cache is ok&quot; in our semantics, IIRC, so like... arguably it's ok to return data that you shouldn't?</p>
+</blockquote>
+<p>I agree that <code>--offline</code> is opting into &quot;stale cache is ok,&quot; and I think that would mean that we could ignore things like <code>must-revalidate</code> where you're supposed to send a revalidation request to the origin. I could see that if <code>--offline</code> is given, we could say, &quot;nah we don't have to do that because the client told us that stale data was cool.&quot; But in this particular case, PyTorch is telling us not to even <em>store</em> a response in the first place. The question of staleness shouldn't even come up in this case because we shouldn't even be caching in the first place.</p>
+<p>I'd be really curious if this is intended behavior on the PyTorch side.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pytorch/pytorch/issues/130571.html">pytorch/pytorch#130571</a> on 2024-07-11 20:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 00:47</div>
+            <div class="timeline-body"><p>Yeah, I generally agree with you @BurntSushi. I would be fine returning a stale response, but <code>no-store</code> is a bit of a stretch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-28 00:38</div>
+            <div class="timeline-body"><p>Ok, I think the issue here is with the PyTorch index so going to close.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-28 00:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

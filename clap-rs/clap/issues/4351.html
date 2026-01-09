@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't use ValueParser to replace PossibleValues in v4 - clap-rs/clap #4351</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't use ValueParser to replace PossibleValues in v4</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4351">#4351</a>
+        opened by <a href="https://github.com/o2sh">@o2sh</a>
+        on 2022-10-05 22:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/o2sh">@o2sh</a> on 2022-10-05 22:51</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.64.0</p>
+<h3>Clap Version</h3>
+<p>4.08</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">static COLOR_RESOLUTIONS: [&amp;str; 5] = [&quot;16&quot;, &quot;32&quot;, &quot;64&quot;, &quot;128&quot;, &quot;256&quot;];
+
+#[arg(
+    long,
+    value_name = &quot;VALUE&quot;,
+    requires = &quot;image&quot;,
+    default_value_t = 16usize,
+    // possible_values = [&quot;16&quot;, &quot;32&quot;, &quot;64&quot;, &quot;128&quot;, &quot;256&quot;], // Used to work before v4
+    value_parser = PossibleValuesParser::new(COLOR_RESOLUTIONS) // fails
+)]
+pub color_resolution: usize,
+</code></pre>
+<pre><code class="language-sh">$ cargo run
+
+thread 'main' panicked at 'Mismatch between definition and access of `color_resolution`. Could not downcast to TypeId { t: 13834754221672687376 }, need to downcast to TypeId { t: 5005868189860995316 }
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @o2sh on 2022-10-05 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4352.html">clap-rs/clap#4352</a> on 2022-10-05 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-docs</span> added by @epage on 2022-10-05 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-05 23:59</div>
+            <div class="timeline-body"><p>For now, <code>PossibleValuesParser</code> only works with <code>String</code> though you can use <code>TypedValueParser::map</code> to adapt the type.  In #4352, I'm adding some examples on how to do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-10-06 01:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aldanor">@aldanor</a> on 2022-10-26 15:25</div>
+            <div class="timeline-body"><blockquote>
+<p>For now, PossibleValuesParser only works with String</p>
+</blockquote>
+<p>Just wondering, is it planned to have it back working with other types eventually? (e.g. that implement FromStr?)</p>
+<p>Chances are, these lines will be copied/pasted many-many times all over the place (it's just one of the most common use cases for the old <code>possible_values</code>):</p>
+<pre><code class="language-rust">use clap::builder::{PossibleValuesParser, TypedValueParser as _};
+...
+    value_parser = PossibleValuesParser::new(Foo::VARIANTS)
+        .map(|s| s.parse::&lt;Foo&gt;().unwrap())
+</code></pre>
+<p>E.g.:</p>
+<pre><code class="language-rust">    value_parser = PossibleValuesFromStr::&lt;Foo&gt;::new(Foo::VARIANTS)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-26 15:30</div>
+            <div class="timeline-body"><p>Feel free to create an issue for making it more convenient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aldanor">@aldanor</a> on 2022-10-26 15:58</div>
+            <div class="timeline-body"><p>@epage An issue or a PR? If you have a particular view on what would be the most convenient option(s) I wouldn't mind contributing.</p>
+<p>(e.g. bringing back something along the lines of <code>possible_values_from_str = [...]</code> as probably the most convenient thing, with the name being more explicit so as to be less confusing; or one step back, <code>PossibleValuesFromStr</code> as above).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-26 16:15</div>
+            <div class="timeline-body"><p>Issue first as I prefer exploring on directions there. Once we have a direction, you are welcome to get a PR going.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

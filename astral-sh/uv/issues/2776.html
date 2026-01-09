@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip list -e -q` outputs nothing. - astral-sh/uv #2776</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip list -e -q` outputs nothing.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2776">#2776</a>
+        opened by <a href="https://github.com/charlesnicholson">@charlesnicholson</a>
+        on 2024-04-02 14:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2024-04-02 14:06</div>
+            <div class="timeline-body"><p>This one is more entertaining than serious- we deploy Python artifacts as a set of wheels, a constraints file, and a bunch of shell/batch scripts that possibly create the venv and install the wheels etc before launching the corresponding entry point script in the venv.</p>
+<p>These shell / batch scripts run from a non-deployed development repository as well, so they have to decide whether to <code>uv pip install</code> anything or just lean on the existing editable-installs of our first-party packages.</p>
+<p>To do this, we run <code>uv pip list -e</code> and search the process's stdout: if there are no editable installations matching the requested package name, we install from the wheel file.</p>
+<p>Amusingly, our scripts are also quiet by default, so we pass <code>-q</code> to everything.</p>
+<p>So, we run <code>uv -q pip list -e</code>, which always prints nothing and quietly messes up our strategy because the output with the &quot;quiet&quot; flag is indistinguishable from the lack of output when <code>uv pip list</code> finds nothing.</p>
+<p>Removing the <code>-q</code> flag of course fixes it trivially. I'm totally happy with this being &quot;user error&quot;, but I thought it was an interesting / funny way to hold <code>uv</code> wrong.</p>
+<p><img src="https://github.com/astral-sh/uv/assets/3010295/8fcb882f-50d4-4d0e-9541-b3c3b5eae552" alt="3caedb8a-1692-4c89-945e-791386768c3d_text" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-02 14:39</div>
+            <div class="timeline-body"><p>We agree it probably shouldn't be <em>that</em> quiet :)</p>
+<p>Open to suggestions on what should change if anything when <code>--quiet</code> is used in <code>uv pip list</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-04-02 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2024-04-02 14:47</div>
+            <div class="timeline-body"><p>If it's interesting, my opinion is that if a tool only exists to dump info to stdout/stderr, a quiet flag doesn't make sense and I'd probably not offer it as an option. I'd prefer to be forced to simply not call it, instead of having an option that can confound the meaning of &quot;there was no output&quot;.</p>
+<p>But it's easy to see the other side too: users are grown-ups, and the tool is giving them what they've explicitly asked for :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-02 14:51</div>
+            <div class="timeline-body"><p><code>--quiet</code> is just a global CLI flag that adjusts the verbosity of our logging, I'm not sure if it makes sense to turn off for a single command although I agree it doesn't really make sense in a &quot;show me things&quot; command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-02 19:19</div>
+            <div class="timeline-body"><p>We should emit this to stdout instead of stderr</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-04-02 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-03 01:10</div>
+            <div class="timeline-body"><p>It looks like <code>pip list --quiet</code> <em>also</em> doesn't print :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2024-04-05 13:37</div>
+            <div class="timeline-body"><p>Any appetite for something like a <code>--json</code> flag that emits the repository installed package manifest to stdout in json format? That way it's easily machine-parseable (unlike the current output), and there's a difference between &quot;no output whatsoever&quot; (<code>-q</code>) and &quot;no output because of requested filters or the venv is just empty&quot;- the latter would emit <code>{\n}\n</code>.</p>
+<p>That might be a nice way to disambiguate the cases and make <code>uv pip list</code> easier to tool against, all at the same time, without breaking compatibility with <code>pip list</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-05 14:48</div>
+            <div class="timeline-body"><p>If we emit to stdout instead of stderr it will not be silenced by <code>-q</code>.</p>
+<p>There's appetite for machine readable / JSON output throughout the CLI though, yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-19 14:28</div>
+            <div class="timeline-body"><p>I think probably the <code>-q/--quiet</code> flag should be respected here and <code>uv</code> shouldn't emit any output. I think this matches the behavior of other CLI tools like <code>grep</code>. Typically, the utility in a <code>-q/--quiet</code> flag though is that you want to run the command just to determine whether it was successful or not by querying its exit status. I'm not sure that's a meaningful thing to ask of <code>uv pip list</code>, though it conceivably could be I suppose.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 14:29</div>
+            <div class="timeline-body"><p>Yeah, that makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-19 14:43</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-04-19 14:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

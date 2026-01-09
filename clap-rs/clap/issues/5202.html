@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clap outputs wrong error message context when using an environment variable with invalid content - clap-rs/clap #5202</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clap outputs wrong error message context when using an environment variable with invalid content</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/5202">#5202</a>
+        opened by <a href="https://github.com/inf17101">@inf17101</a>
+        on 2023-11-08 14:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/inf17101">@inf17101</a> on 2023-11-08 14:49</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.72.1 (d5c2e9c34 2023-09-13)</p>
+<h3>Clap Version</h3>
+<p>clap: 4.1.4, clap_derive: 4.1.0</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use url::Url;
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[clap( author=&quot;Author x&quot;, 
+        version=&quot;0.1.0&quot;, 
+        about=&quot;Application that reproduces issue with wrong error context in error message when using environment variables.&quot;)
+]
+struct Arguments {
+    /// The server url.
+    #[clap(short = 's', long = &quot;server-url&quot;, env = &quot;CUSTOM_SERVER_URL&quot;)]
+    server_url: Url,
+}
+
+
+fn main() {
+    let args = Arguments::parse();
+    println!(&quot;{:?}&quot;, args);
+}
+</code></pre>
+<p>Config.toml</p>
+<pre><code class="language-toml">[package]
+name = &quot;clap_bug&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+url = &quot;2.3&quot;
+clap = { version = &quot;4.0&quot;, features = [&quot;derive&quot;, &quot;env&quot;] }
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-console">$ export CUSTOM_SERVER_URL=invalid-url
+$ cargo run
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>When running the above command with an invalid value for the environment variable (parser error),
+then clap does not output the correct context of the wrong value. It outputs that the cli argument was set wrongly,
+but the user have used an environment variable not the cli argument.</p>
+<pre><code>error: invalid value 'invalid-url' for '--server-url &lt;SERVER_URL&gt;': relative URL without a base
+
+For more information, try '--help'.
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>For good use-ability it shall output the correct error message context, for example:</p>
+<pre><code>error: invalid value 'invalid-url' for 'environment variable: CUSTOM_SERVER_URL': relative URL without a base
+
+For more information, try '--help'.
+</code></pre>
+<h3>Additional Context</h3>
+<p>The background is better use-ability. A user might forgot that an environment variable was set manually and tries to execute the program. With the current error message context he gets confused, because he thinks that he did not set this argument.</p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;clap_bug&quot;
+[clap_builder::builder::command]Command::_propagate:clap_bug
+[clap_builder::builder::command]Command::_check_help_and_version:clap_bug expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --version
+[clap_builder::builder::command]Command::_propagate_global_args:clap_bug
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:server_url
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:version
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::add_env
+[clap_builder::parser::parser]Parser::add_env: Checking arg `--server-url &lt;SERVER_URL&gt;`
+[clap_builder::parser::parser]Parser::add_env: Found an opt with value=&quot;invalid-url&quot;
+[clap_builder::parser::parser]Parser::react action=Set, identifier=None, source=EnvVariable
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;server_url&quot;, source=EnvVariable
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;server_url&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Arguments&quot;, source=EnvVariable
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;invalid-url&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @inf17101 on 2023-11-08 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2023-11-08 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2023-11-08 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../eclipse-ankaios/ankaios/issues/75.html">eclipse-ankaios/ankaios#75</a> on 2023-11-08 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inf17101">@inf17101</a> on 2023-11-13 21:04</div>
+            <div class="timeline-body"><p>I am currently searching the place in the code base where the parsers construct the error messages. Is it possible to just add a new <code>ContextKind</code> &quot;InvalidEnv&quot; to the enum in case of an inalid env var value and pass this new context kind with the value &quot;environment variable 'SOME_ENV_VAR'&quot; (where SOME_ENV_VAR is the env variable key) to the error?</p>
+<p>Then instead of the cli argument name the correct error context is provided.</p>
+<p>Could you maybe give a hint, where this code path is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-11-13 21:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I am currently searching the place in the code base where the parsers construct the error messages</p>
+</blockquote>
+<p>The <a href="https://github.com/clap-rs/clap/blob/master/clap_builder/src/builder/value_parser.rs#L908">value parser</a>.  You can update it to use <code>TypedValueParser::parse_</code> to get the <code>ValueSource</code> to tell if an env was used.</p>
+<blockquote>
+<p>Is it possible to just add a new ContextKind &quot;InvalidEnv&quot; to the enum in case of an inalid env var value and pass this new context kind with the value &quot;environment variable 'SOME_ENV_VAR'&quot; (where SOME_ENV_VAR is the env variable key) to the error?</p>
+</blockquote>
+<p>Do we need an <code>InvalidEnv</code> or could we just put the env variable in <code>InvalidArg</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inf17101">@inf17101</a> on 2023-11-13 21:51</div>
+            <div class="timeline-body"><p>Ok great thank you for that hint. I will take a look there. I was checking <code>Parser::add_env</code> also just to see how the arg name is forwarded when env is used.
+It is first time I read this code base. I must first get familiar with all the parts 😃</p>
+<p>I think we can also use the InvalidArg, but I thought it would be better to not mix cli arg context with env context. But for me it would be also ol to use InvalidArg for the first try.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../eclipse-ankaios/ankaios/pulls/81.html">eclipse-ankaios/ankaios#81</a> on 2023-11-14 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../eclipse-ankaios/ankaios/issues/85.html">eclipse-ankaios/ankaios#85</a> on 2023-11-14 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jason5Lee">@Jason5Lee</a> on 2025-11-02 14:44</div>
+            <div class="timeline-body"><p>Is there a workaround for better error messages? This issue has been open for 2 years.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

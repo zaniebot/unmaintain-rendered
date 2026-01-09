@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N804 false positive for `class Bar(type(foo))` - astral-sh/ruff #14675</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>N804 false positive for `class Bar(type(foo))`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14675">#14675</a>
+        opened by <a href="https://github.com/alexhenman">@alexhenman</a>
+        on 2024-11-29 11:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alexhenman">@alexhenman</a> on 2024-11-29 11:44</div>
+            <div class="timeline-body"><pre><code class="language-python">foo = {}
+
+class Bar(type(foo)):
+    def foo_method(self):
+        pass
+</code></pre>
+<p>https://play.ruff.rs/240f9b93-2408-4aeb-814d-bb09629496da</p>
+<p>Not sure if this might be related to the issue reported in #12736 and its fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-29 12:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Not sure if this might be related to the issue reported in <a href="https://github.com/astral-sh/ruff/issues/12736">#12736</a> and its fix</p>
+</blockquote>
+<p>yes, it is.</p>
+<p>Hmm, not sure what to do here. This is hard to fix properly without sophisticated type inference. Maybe instead of returning <code>bool</code>, our <code>is_metaclass</code> function here should return an enum with three variants: <code>Yes</code>, <code>No</code> and <code>Maybe</code>. For classes with dynamic bases such as this class and the class reported in #12736, the function would return <code>Maybe</code>, and we would not emit either N804 or N805 on the methods in the class.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-11-29 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-11-29 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-29 13:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe instead of returning <code>bool</code>, our <code>is_metaclass</code> function here should return an enum with three variants: <code>Yes</code>, <code>No</code> and <code>Maybe</code>. For classes with dynamic bases such as this class and the class reported in <a href="https://github.com/astral-sh/ruff/issues/12736">#12736</a>, the function would return <code>Maybe</code>, and we would not emit either N804 or N805 on the methods in the class.</p>
+</blockquote>
+<p>If anybody wants to help out with this issue: let's try doing something like this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14683.html">astral-sh/ruff#14683</a> on 2024-11-29 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-11-30 22:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

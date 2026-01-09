@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I001: Inconsistent application of I001 between neovim and vscode - astral-sh/ruff #15782</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>I001: Inconsistent application of I001 between neovim and vscode</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15782">#15782</a>
+        opened by <a href="https://github.com/leonlonsdale">@leonlonsdale</a>
+        on 2025-01-28 11:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/leonlonsdale">@leonlonsdale</a> on 2025-01-28 11:00</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>Hey guys,</p>
+<p>I'm new to coding and even newer to python, so this is likely a skill issue.</p>
+<p>I switch between vscode and neovim. Both are set up to use <code>~/.config/ruff/ruff.toml</code>:</p>
+<p>VSCode:</p>
+<pre><code class="language-json">&quot;ruff.configuration&quot;: &quot;~/.config/ruff/ruff.toml&quot;,
+</code></pre>
+<p>Neovim:</p>
+<pre><code class="language-lua">init_options = {
+    settings = {
+        configuration = &quot;~/.config/ruff/ruff.toml&quot;,
+    },
+},
+</code></pre>
+<p>I have stripped the settings in both editors right back so that they only point to the config file, and make no other changes. There is no local project config file. Caches have been cleared.</p>
+<p>The contents of the ruff configuration are:</p>
+<pre><code class="language-toml">exclude = [
+    &quot;.bzr&quot;,
+    &quot;.direnv&quot;,
+    &quot;.eggs&quot;,
+    &quot;.git&quot;,
+    &quot;.git-rewrite&quot;,
+    &quot;.hg&quot;,
+    &quot;.ipynb_checkpoints&quot;,
+    &quot;.mypy_cache&quot;,
+    &quot;.nox&quot;,
+    &quot;.pants.d&quot;,
+    &quot;.pyenv&quot;,
+    &quot;.pytest_cache&quot;,
+    &quot;.pytype&quot;,
+    &quot;.ruff_cache&quot;,
+    &quot;.svn&quot;,
+    &quot;.tox&quot;,
+    &quot;.venv&quot;,
+    &quot;.vscode&quot;,
+    &quot;__pypackages__&quot;,
+    &quot;_build&quot;,
+    &quot;buck-out&quot;,
+    &quot;build&quot;,
+    &quot;dist&quot;,
+    &quot;node_modules&quot;,
+    &quot;site-packages&quot;,
+    &quot;venv&quot;,
+]
+
+
+line-length = 100
+indent-width = 4
+
+[lint]
+select = [
+    &quot;E&quot;, &quot;F&quot;, &quot;W&quot;, &quot;B&quot;, &quot;I&quot;, &quot;RUF&quot;, &quot;N&quot;, &quot;LOG&quot;, &quot;ERA&quot;, &quot;D&quot;, &quot;UP&quot;,
+    &quot;ANN&quot;, &quot;ASYNC&quot;, &quot;S&quot;, &quot;RET&quot;, &quot;TCH&quot;, &quot;ARG&quot;, &quot;PTH&quot;
+]
+ignore = [
+    &quot;D203&quot;, &quot;D213&quot;
+]
+
+fixable  = [&quot;ALL&quot;]
+extend-fixable = [&quot;E&quot;, &quot;F&quot;, &quot;I&quot;]
+
+[lint.isort]
+case-sensitive = true
+order-by-type = true
+combine-as-imports = true
+length-sort = true
+lines-between-types = 1
+no-sections = false
+
+
+[format]
+quote-style = &quot;double&quot;
+indent-style = &quot;space&quot;
+line-ending = &quot;auto&quot;
+docstring-code-format = true
+docstring-code-line-length = &quot;dynamic&quot;
+</code></pre>
+<p>Both are using ruff version 0.9.3 with neovim managing it via Mason and homebrew managing globally.</p>
+<p>Using ruff to organise imports in each of them results in a different order, with neovim sorting as follows:</p>
+<pre><code>import os
+
+import fetcher as f
+import stock_calculations as sc
+
+from data import data
+from dotenv import load_dotenv
+from emailer import send_email
+</code></pre>
+<p>and vscode then showing the I001 warning. Applying organize imports in vscode then using ruff gives:</p>
+<pre><code>import os
+
+from dotenv import load_dotenv
+
+import fetcher as f
+import stock_calculations as sc
+
+from data import data
+from emailer import send_email
+</code></pre>
+<p>which of course then flags the I001 warning in neovim.</p>
+<p>Note: fetcher, stock_calculations, data, and emailer are custom modules and they are all saved in root:</p>
+<pre><code> .
+├── data.py
+├── dates.py
+├── emailer.py
+├── fetcher.py
+├── main.py
+├── stock_calculations.py
+</code></pre>
+<p>Running <code>ruff check -v main.py</code> in the console gives:</p>
+<pre><code>[2025-01-28][10:51:49][ruff::diagnostics][DEBUG] Checking: /.../100-days-of-python/intermediate-plus/day-36-stock-trading/main.py
+[2025-01-28][10:51:50][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'os' as Known(StandardLibrary) (KnownStandardLibrary)
+[2025-01-28][10:51:50][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'fetcher' as Known(FirstParty) (SourceMatch(&quot;/.../100-days-of-python/intermediate-plus/day-36-stock-trading/&quot;))
+[2025-01-28][10:51:50][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'stock_calculations' as Known(FirstParty) (SourceMatch(&quot;/.../100-days-of-python/intermediate-plus/day-36-stock-trading/&quot;))
+[2025-01-28][10:51:50][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'emailer' as Known(FirstParty) (SourceMatch(&quot;/.../100-days-of-python/intermediate-plus/day-36-stock-trading/&quot;))
+[2025-01-28][10:51:50][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'dotenv' as Known(ThirdParty) (NoMatch)
+[2025-01-28][10:51:50][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'data' as Known(FirstParty) (SourceMatch(&quot;/.../100-days-of-python/intermediate-plus/day-36-stock-trading/&quot;))
+[2025-01-28][10:51:50][ruff::commands::check][DEBUG] Checked 1 files in: 22.259541ms
+
+</code></pre>
+<p>Hoping someone can point me in the right direction with this, I've been trying to get them to behave the same now for a good few hours.</p>
+<p>Thanks</p>
+<p>https://github.com/user-attachments/assets/c5772f5a-8d55-46cc-a5e9-4a1b6593488b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Inconsistent application of I001 between neovim and vscode" to "I001: Inconsistent application of I001 between neovim and vscode" by @leonlonsdale on 2025-01-28 11:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @AlexWaygood on 2025-01-28 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-29 10:35</div>
+            <div class="timeline-body"><p>Thanks for the report.</p>
+<p>I think the order in Neovim is correct because <code>dotenv</code> is a third-party import while others are first-party imports.</p>
+<p>Trying to reproduce in VS Code seems to be giving the same outcome as in Neovim. Can you provide the VS Code debug logs (refer to the <a href="https://github.com/astral-sh/ruff-vscode#troubleshooting">troubleshooting guide</a>.</p>
+<p>Directory structure:</p>
+<pre><code>❯ tree .
+.
+├── data.py
+├── dates.py
+├── emailer.py
+├── fetcher.py
+├── main.py
+└── stock_calculations.py
+</code></pre>
+<p>VS Code settings:</p>
+<pre><code class="language-jsonc">{
+  &quot;ruff.nativeServer&quot;: &quot;on&quot;,
+  &quot;ruff.logLevel&quot;: &quot;debug&quot;,
+  &quot;ruff.configuration&quot;: &quot;/tmp/ruff-config/ruff.toml&quot;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @dhruvmanila on 2025-01-29 10:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leonlonsdale">@leonlonsdale</a> on 2025-01-29 11:29</div>
+            <div class="timeline-body"><p>Hey, sure, using these settings:</p>
+<pre><code>{
+  &quot;ruff.lineLength&quot;: 100,
+  &quot;ruff.lint.preview&quot;: true,
+  &quot;ruff.trace.server&quot;: &quot;verbose&quot;,
+  &quot;ruff.nativeServer&quot;: &quot;on&quot;,
+  &quot;ruff.logLevel&quot;: &quot;debug&quot;,
+  &quot;ruff.configuration&quot;: &quot;~/.config/ruff/ruff.toml&quot;
+}
+</code></pre>
+<p><strong>The client output is:</strong></p>
+<pre><code>2025-01-29 11:22:09.227 [info] Name: Ruff
+2025-01-29 11:22:09.227 [info] Module: ruff
+2025-01-29 11:22:09.228 [info] Python extension loading
+2025-01-29 11:22:09.228 [info] Waiting for interpreter from python extension.
+2025-01-29 11:22:09.228 [info] Python extension loaded
+2025-01-29 11:22:09.228 [info] Using interpreter: /.../100-days-of-python/intermediate-plus/day-36-stock-trading/venv/bin/python
+2025-01-29 11:22:09.228 [info] Using environment executable: /opt/homebrew/bin/ruff
+2025-01-29 11:22:09.230 [info] Found Ruff 0.9.3 at /opt/homebrew/bin/ruff
+2025-01-29 11:22:09.230 [info] Server run command: /opt/homebrew/bin/ruff server
+2025-01-29 11:22:09.231 [info] Server: Start requested.
+</code></pre>
+<p><strong>Server output:</strong></p>
+<pre><code>   0.022056334s DEBUG main ruff_server::session::index::ruff_settings: Indexing settings for workspace: /.../100-days-of-python/intermediate-plus/day-36-stock-trading
+   0.051389459s DEBUG main ruff_server::session::index::ruff_settings: Combining settings from editor-specified configuration file at: /.../.config/ruff/ruff.toml
+   0.074706417s DEBUG ThreadId(04) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /.../100-days-of-python/intermediate-plus/day-36-stock-trading/.ruff_cache
+   0.077459334s  INFO main ruff_server::session::index: Registering workspace: /.../100-days-of-python/intermediate-plus/day-36-stock-trading
+   0.085180500s  INFO ruff:main ruff_server::server: Configuration file watcher successfully registered
+   5.452550750s DEBUG ruff:worker:7 ruff_server::resolve: Included path via `include`: /.../100-days-of-python/intermediate-plus/day-36-stock-trading/main.py
+  22.891624417s DEBUG ruff:worker:4 ruff_server::resolve: Included path via `include`: /.../100-days-of-python/intermediate-plus/day-36-stock-trading/main.py
+  27.867928417s DEBUG ruff:worker:1 ruff_server::resolve: Included path via `include`: /.../100-days-of-python/intermediate-plus/day-36-stock-trading/main.py
+  27.876309917s DEBUG ruff:worker:0 ruff_server::resolve: Included path via `include`: /.../100-days-of-python/intermediate-plus/day-36-stock-trading/main.py
+</code></pre>
+<p><strong>Unsure if this is in anyway useful, but here is the LS Trace too:</strong></p>
+<pre><code>[Trace - 11:53:31] Sending request 'textDocument/codeAction - (66)'.
+Params: {
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///.../coding/100-days-of-python/intermediate-plus/day-36-stock-trading/main.py&quot;
+    },
+    &quot;range&quot;: {
+        &quot;start&quot;: {
+            &quot;line&quot;: 0,
+            &quot;character&quot;: 0
+        },
+        &quot;end&quot;: {
+            &quot;line&quot;: 0,
+            &quot;character&quot;: 0
+        }
+    },
+    &quot;context&quot;: {
+        &quot;diagnostics&quot;: [],
+        &quot;only&quot;: [
+            &quot;source.organizeImports&quot;
+        ],
+        &quot;triggerKind&quot;: 1
+    }
+}
+
+
+[Trace - 11:53:31] Received response 'textDocument/codeAction - (66)' in 3ms.
+Result: [
+    {
+        &quot;data&quot;: &quot;file:///.../100-days-of-python/intermediate-plus/day-36-stock-trading/main.py&quot;,
+        &quot;kind&quot;: &quot;source.organizeImports.ruff&quot;,
+        &quot;title&quot;: &quot;Ruff: Organize imports&quot;
+    }
+]
+
+
+[Trace - 11:53:31] Sending request 'codeAction/resolve - (67)'.
+Params: {
+    &quot;title&quot;: &quot;Ruff: Organize imports&quot;,
+    &quot;data&quot;: &quot;file:///.../coding/100-days-of-python/intermediate-plus/day-36-stock-trading/main.py&quot;,
+    &quot;kind&quot;: &quot;source.organizeImports.ruff&quot;
+}
+
+
+[Trace - 11:53:31] Received response 'codeAction/resolve - (67)' in 5ms.
+Result: {
+    &quot;data&quot;: &quot;file:///.../100-days-of-python/intermediate-plus/day-36-stock-trading/main.py&quot;,
+    &quot;edit&quot;: {
+        &quot;documentChanges&quot;: [
+            {
+                &quot;edits&quot;: [
+                    {
+                        &quot;newText&quot;: &quot;from dotenv import load_dotenv\n\nimport fetcher as f\nimport stock_calculations as sc\nfrom data import data\n&quot;,
+                        &quot;range&quot;: {
+                            &quot;end&quot;: {
+                                &quot;character&quot;: 0,
+                                &quot;line&quot;: 8
+                            },
+                            &quot;start&quot;: {
+                                &quot;character&quot;: 0,
+                                &quot;line&quot;: 4
+                            }
+                        }
+                    }
+                ],
+                &quot;textDocument&quot;: {
+                    &quot;uri&quot;: &quot;file:///.../100-days-of-python/intermediate-plus/day-36-stock-trading/main.py&quot;,
+                    &quot;version&quot;: null
+                }
+            }
+        ]
+    },
+    &quot;kind&quot;: &quot;source.organizeImports.ruff&quot;,
+    &quot;title&quot;: &quot;Ruff: Organize imports&quot;
+}
+
+
+[Trace - 11:53:31] Sending notification 'textDocument/didChange'.
+Params: {
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///.../100-days-of-python/intermediate-plus/day-36-stock-trading/main.py&quot;,
+        &quot;version&quot;: 5
+    },
+    &quot;contentChanges&quot;: [
+        {
+            &quot;range&quot;: {
+                &quot;start&quot;: {
+                    &quot;line&quot;: 6,
+                    &quot;character&quot;: 21
+                },
+                &quot;end&quot;: {
+                    &quot;line&quot;: 7,
+                    &quot;character&quot;: 30
+                }
+            },
+            &quot;rangeLength&quot;: 31,
+            &quot;text&quot;: &quot;&quot;
+        },
+        {
+            &quot;range&quot;: {
+                &quot;start&quot;: {
+                    &quot;line&quot;: 4,
+                    &quot;character&quot;: 0
+                },
+                &quot;end&quot;: {
+                    &quot;line&quot;: 4,
+                    &quot;character&quot;: 0
+                }
+            },
+            &quot;rangeLength&quot;: 0,
+            &quot;text&quot;: &quot;from dotenv import load_dotenv\n\n&quot;
+        }
+    ]
+}
+
+
+[Trace - 11:53:31] Sending request 'textDocument/diagnostic - (68)'.
+Params: {
+    &quot;identifier&quot;: &quot;Ruff&quot;,
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///.../100-days-of-python/intermediate-plus/day-36-stock-trading/main.py&quot;
+    }
+}
+
+
+[Trace - 11:53:31] Received response 'textDocument/diagnostic - (68)' in 3ms.
+Result: {
+    &quot;items&quot;: [],
+    &quot;kind&quot;: &quot;full&quot;
+}
+
+
+[Trace - 11:53:32] Sending request 'textDocument/codeAction - (69)'.
+Params: {
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///.../100-days-of-python/intermediate-plus/day-36-stock-trading/main.py&quot;
+    },
+    &quot;range&quot;: {
+        &quot;start&quot;: {
+            &quot;line&quot;: 0,
+            &quot;character&quot;: 0
+        },
+        &quot;end&quot;: {
+            &quot;line&quot;: 0,
+            &quot;character&quot;: 0
+        }
+    },
+    &quot;context&quot;: {
+        &quot;diagnostics&quot;: [],
+        &quot;triggerKind&quot;: 2
+    }
+}
+
+
+[Trace - 11:53:32] Received response 'textDocument/codeAction - (69)' in 6ms.
+Result: [
+    {
+        &quot;data&quot;: &quot;file:///.../100-days-of-python/intermediate-plus/day-36-stock-trading/main.py&quot;,
+        &quot;kind&quot;: &quot;source.fixAll.ruff&quot;,
+        &quot;title&quot;: &quot;Ruff: Fix all auto-fixable problems&quot;
+    },
+    {
+        &quot;data&quot;: &quot;file:///.../100-days-of-python/intermediate-plus/day-36-stock-trading/main.py&quot;,
+        &quot;kind&quot;: &quot;source.organizeImports.ruff&quot;,
+        &quot;title&quot;: &quot;Ruff: Organize imports&quot;
+    }
+]
+</code></pre>
+<p><strong>The result:</strong></p>
+<pre><code>import os
+
+from dotenv import load_dotenv
+
+import fetcher as f
+import stock_calculations as sc
+from data import data
+from emailer import send_email
+</code></pre>
+<p>Though, with dotenv being third party, I would expect it to be organised separately to the first party imports, as vscode is doing right? it seems to be in amongst the first party imports in neovim, and just organised along with the other <code>from</code> imports. Or have I got that wrong?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-03 08:05</div>
+            <div class="timeline-body"><p>I agree that the VS code behavior is the expected behavior with <code>dotenv</code> in its own group which, if I understand your description correctly, also matches the CLI behavior. So the question is why neovim disagrees :)</p>
+<p>I somewhat suspect that Neovim categorizes the imports differently, maybe because the root directory is different. Can you try enable logging in neovim as described at the end <a href="https://docs.astral.sh/ruff/editors/setup/#neovim">of the neovim setup instructions</a> and share the logs with us?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-03 10:18</div>
+            <div class="timeline-body"><p>Ah, sorry, I diagnosed it incorrectly. You can get the root directory using for the buffer where Ruff is currently running in:</p>
+<pre><code class="language-lua">vim.lsp.get_clients({name = 'ruff', buffer = 0})[1].root_dir
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leonlonsdale">@leonlonsdale</a> on 2025-02-04 14:40</div>
+            <div class="timeline-body"><p>Let me give these a try and come back to you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leonlonsdale">@leonlonsdale</a> on 2025-02-04 14:47</div>
+            <div class="timeline-body"><pre><code>[START][2025-02-04 14:42:56] LSP logging initiated
+[ERROR][2025-02-04 14:42:56] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/Users/.../.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   0.000683041s  INFO main ruff_server::server: No workspace settings found for file:///Users/.../100days, using default settings\n&quot;
+[ERROR][2025-02-04 14:42:56] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/Users/.../.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   0.044479125s  INFO main ruff_server::session::index: Registering workspace: /Users/.../100days\n&quot;
+[ERROR][2025-02-04 14:42:56] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/Users/.../.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   0.048438625s  INFO ruff:main ruff_server::server: Configuration file watcher successfully registered\n&quot;
+</code></pre>
+<p>You may be onto something</p>
+<blockquote>
+<p>Ah, sorry, I diagnosed it incorrectly. You can get the root directory using for the buffer where Ruff is currently running in:</p>
+<p>vim.lsp.get_clients({name = 'ruff', buffer = 0})[1].root_dir</p>
+</blockquote>
+<p>This gave an error but in :LspInfo, I have:</p>
+<pre><code>   24 - Client: ruff (id: 2, bufnr: [6])
+   25   root directory:    ~/Library/Mobile Documents/com~apple~CloudDocs/Personal/study/coding/100days/
+   26   filetypes:         python
+   27   cmd:               ~/.local/share/nvim/mason/bin/ruff server
+   28   version:           ruff 0.9.4
+   29   executable:        true
+   30   autostart:         true
+</code></pre>
+<p>I also ran:</p>
+<pre><code>:lua vim.fn.writefile({vim.inspect(vim.lsp.get_active_clients())}, vim.fn.expand(&quot;~&quot;) .. &quot;/lsp_clients.txt&quot;)
+</code></pre>
+<p>Upon inspecting the file, I see:</p>
+<pre><code>config = {
+    _on_attach = &lt;function 6&gt;,
+    autostart = true,
+    capabilities = &lt;table 1&gt;,
+    cmd = { &quot;/Users/leonlonsdale/.local/share/nvim/mason/bin/ruff&quot;, &quot;server&quot; },
+    cmd_cwd = &quot;/Users/leonlonsdale/Library/Mobile Documents/com~apple~CloudDocs/Personal/study/coding/100days&quot;,
+    filetypes = { &quot;python&quot; },
+    handlers = &lt;table 35&gt;,
+    init_options = &lt;36&gt;vim.empty_dict(),   &lt;-- 🚨
+    log_level = 2,
+    message_level = 2,
+    name = &quot;ruff&quot;,
+    on_attach = &lt;function 1&gt;,
+    on_exit = &lt;function 2&gt;,
+    on_init = &lt;function 4&gt;,
+    root_dir = &quot;/Users/leonlonsdale/Library/Mobile Documents/com~apple~CloudDocs/Personal/study/coding/100days&quot;,
+    settings = &lt;37&gt;{},  &lt;-- 🚨
+    single_file_support = true,
+    workspace_folders = &lt;38&gt;{ { 
+        name = &quot;/Users/leonlonsdale/Library/Mobile Documents/com~apple~CloudDocs/Personal/study/coding/100days&quot;,
+        uri = &quot;file:///Users/leonlonsdale/Library/Mobile%20Documents/com~apple~CloudDocs/Personal/study/coding/100days&quot;
+    } }
+}
+</code></pre>
+<p>So it looks as though init_options and settings are empty tables.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leonlonsdale">@leonlonsdale</a> on 2025-02-04 15:52</div>
+            <div class="timeline-body"><p>Guys, I have fixed it, it was an issue with the way I was loading lsp configs. I created my own loader and it turns out it had a bug that was being missed because the nvim_lsp default configs were taking over giving it the appearance it had worked.</p>
+<p>Sorry for wasting your time, and thank you for your help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-04 17:51</div>
+            <div class="timeline-body"><p>No worries. Thanks for posting an update. Enjoy Ruff</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-04 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @dhruvmanila on 2025-02-06 08:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2025-02-06 08:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> removed by @dhruvmanila on 2025-02-06 08:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-02-06 08:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

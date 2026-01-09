@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strange empty default value for Vec&lt;String&gt; in clap_derive - clap-rs/clap #4339</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Strange empty default value for Vec&lt;String&gt; in clap_derive</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4339">#4339</a>
+        opened by <a href="https://github.com/JakkuSakura">@JakkuSakura</a>
+        on 2022-10-03 20:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JakkuSakura">@JakkuSakura</a> on 2022-10-03 20:23</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.66.0-nightly (57f097ea2 2022-10-01)</p>
+<h3>Clap Version</h3>
+<p>4.0.8</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+#[clap(author, version, about, long_about = None)]
+struct CliArgument {
+    #[clap(long, default_value = &quot;&quot;, env = &quot;PUB_CERTS&quot;, value_delimiter = ',')]
+    pub_certs: Vec&lt;String&gt;,
+}
+fn main() {
+    let args: CliArgument = CliArgument::parse();
+    assert_eq!(args.pub_certs, vec![]);
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<h3>Actual Behaviour</h3>
+<p>panic,
+pub_certs == vec![&quot;&quot;]</p>
+<h3>Expected Behaviour</h3>
+<p>does not panic,
+pub_certs == vec![]</p>
+<h3>Additional Context</h3>
+<p>If I use this, it works fine</p>
+<pre><code class="language-rust"> #[clap(long, env = &quot;PUB_CERTS&quot;, value_delimiter = ',')]
+    pub_certs: Option&lt;Vec&lt;String&gt;&gt;,
+</code></pre>
+<h3>Debug Output</h3>
+<p>[      clap::builder::command] 	Command::_do_parse
+...
+[        clap::parser::parser] 	Parser::add_defaults:iter:pub_certs:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:pub_certs: has default vals
+[        clap::parser::parser] 	Parser::add_default_value:iter:pub_certs: wasn't used
+[        clap::parser::parser] 	Parser::react action=Append, identifier=None, source=DefaultValue
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;pub_certs&quot;, source=DefaultValue
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;pub_certs&quot;
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;CliArgument&quot;, source=DefaultValue
+[        clap::parser::parser] 	Parser::push_arg_values: [&quot;&quot;]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=5
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;pub_certs&quot;
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=pub_certs, pending=0
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1, actual=0
+[        clap::parser::parser] 	Parser::react not enough values passed in, leaving it to the validator to complain
+[        clap::parser::parser] 	Parser::add_defaults:iter:priv_cert:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:priv_cert: has default vals
+[        clap::parser::parser] 	Parser::add_default_value:iter:priv_cert: wasn't used
+[        clap::parser::parser] 	Parser::react action=Set, identifier=None, source=DefaultValue
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;priv_cert&quot;, source=DefaultValue
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;priv_cert&quot;
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;CliArgument&quot;, source=DefaultValue
+[        clap::parser::parser] 	Parser::push_arg_values: [&quot;&quot;]
+AppConfig {
+pub_certs: [
+&quot;&quot;,
+]
+}</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @JakkuSakura on 2022-10-03 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4346.html">clap-rs/clap#4346</a> on 2022-10-04 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-04 16:27</div>
+            <div class="timeline-body"><p>To make this easier to reproduce:</p>
+<pre><code class="language-rust">#!/usr/bin/env -S rust-script
+
+//! ```cargo
+//! [dependencies]
+//! clap = { version = &quot;4.0.4&quot;, features = [&quot;derive&quot;, &quot;wrap_help&quot;, &quot;env&quot;] }
+//! ```
+
+use clap::Parser;
+
+#[derive(Parser)]
+#[clap(author, version, about, long_about = None)]
+struct CliArgument {
+    #[clap(long, default_value = &quot;&quot;, env = &quot;PUB_CERTS&quot;, value_delimiter = ',')]
+    pub_certs: Vec&lt;String&gt;,
+}
+fn main() {
+    let args: CliArgument = CliArgument::parse();
+    let expected: Vec&lt;String&gt; = Vec::new();
+    assert_eq!(args.pub_certs, expected);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-04 16:29</div>
+            <div class="timeline-body"><p>clap is doing what it is told.  It was given an empty string as a default value.  That is different than defaulting to an empty <code>Vec</code>.</p>
+<p>clap will do &quot;the right thing&quot; if you just remove the <code>default_value</code></p>
+<pre><code class="language-rust">#!/usr/bin/env -S rust-script
+
+//! ```cargo
+//! [dependencies]
+//! clap = { version = &quot;4.0.4&quot;, features = [&quot;derive&quot;, &quot;wrap_help&quot;, &quot;env&quot;] }
+//! ```
+
+use clap::Parser;
+
+#[derive(Parser)]
+#[clap(author, version, about, long_about = None)]
+struct CliArgument {
+    #[clap(long, env = &quot;PUB_CERTS&quot;, value_delimiter = ',')]
+    pub_certs: Vec&lt;String&gt;,
+}
+fn main() {
+    let args: CliArgument = CliArgument::parse();
+    let expected: Vec&lt;String&gt; = Vec::new();
+    assert_eq!(args.pub_certs, expected);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-10-04 16:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

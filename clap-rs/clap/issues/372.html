@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow unrecognized subcommands - clap-rs/clap #372</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow unrecognized subcommands</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/372">#372</a>
+        opened by <a href="https://github.com/sgrif">@sgrif</a>
+        on 2016-01-07 18:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sgrif">@sgrif</a> on 2016-01-07 18:11</div>
+            <div class="timeline-body"><p>It's a pretty common pattern for CLIs which take subcommands to attempt to subshell out to <code>appname-subcommand</code> if the command is unrecognized, to allow new commands to be easily added. This is impossible to do with clap today (at least not without writing the usage string by hand), as if you do <code>appname foo</code> it'll complain that it did not expect an argument <code>foo</code>.</p>
+<p>I propose adding <code>AppSettings::AllowUnrecognizedSubcommand</code>, and also improving the error message to specify that it's an unrecognized subcommand and list the possible subcommands, as it'll likely require the same code changes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../diesel-rs/diesel/pulls/79.html">diesel-rs/diesel#79</a> on 2016-01-07 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-01-07 19:48</div>
+            <div class="timeline-body"><p>This should be an easy addition. Thanks for suggesting it! :+1:</p>
+<p>I should be able to knock this out either later today or early tomorrow.  I'll post back here with the updates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2016-01-07 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @kbknapp on 2016-01-07 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-01-07 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2016-01-07 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 1.x</span> added by @kbknapp on 2016-01-07 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "1.6.0" by @kbknapp on 2016-01-07 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sru">@sru</a> on 2016-01-11 07:10</div>
+            <div class="timeline-body"><p>Rather than <code>AppSettings::AllowUnrecognizedSubcommand</code>, how about <code>AppSettings::AllowExternalSubcommand</code>? <code>AllowUnrecognizedSubcommand</code> sounds like it will just allow passing a subcommand that is not recognized, but I think clap can do better because I also think <code>appname-subcommand</code> is pretty common pattern. If <code>AppSettings::AllowExternalSubcommand</code> is enabled and clap cannot match any subcommand, it should try finding external command named <code>appname-subcommand</code>.</p>
+<p>Now, it can get ambiguous when positional argument is also allowed. Should clap pass the argument as positional argument if it cannot find any subcommands? Or should it give the subcommand not found error message?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-01-11 07:25</div>
+            <div class="timeline-body"><p>I have a local branch of this and <code>AllowExternalSubcommands</code> and <code>ExecuteExternalSubcommands</code> is what I ended up going with.</p>
+<p>The issue that ended up making this take way longer than I'd hoped was in the details. What happens if that external subcommand isn't found (when <code>Execute</code> is used), or exits with an error code? (I have since solved this). Or what about with simply <code>Allow</code>, how should it return the trailing arguments to pass to the external subcommand, along with the matches? (Again, solved.)</p>
+<p>The solutions I ended up going with (which I'm just ironing out, and hope to have done shortly), are you can either <code>AllowExternalSubcommands</code>, which simply returns the subcommand name, and all trailing arguments within the typical <code>ArgMatches</code> struct. This allows you to verify (security), execute, and handle external subcommands in a totally custom way. Also defering the execution of subcommands until after you've processed anything else, or in whatever order you choose. Basically you have full control.</p>
+<p>The second way of <code>ExecuteExternalSubcommands</code> will basically just take away the boilerplate. <code>clap</code> tries to execute <code>bin_name-subcommand [trailing args]</code> which must be somewhere in your <code>$PATH</code>. This is the least secure, and flexible way, but if you don't care about verifying locations, or execution order (because external subcommands will be executed <strong>before</strong> returning any <code>ArgMatches</code> struct), then it should be fine. This also comes with two additional error cases when using the <code>App::get_matches_safe</code> family of methods. <code>ExternalSubcommandNotFound</code> and <code>ExternalSubcommandError</code> for missing <code>bin_name-subcommand</code> binaries and error exit codes respectively.</p>
+<p>Once I finish the testing, I'll upload the branch and push the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sru">@sru</a> on 2016-01-11 16:04</div>
+            <div class="timeline-body"><p>@kbknapp :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sgrif">@sgrif</a> on 2016-01-12 21:55</div>
+            <div class="timeline-body"><p>I definitely like <code>AllowExternalSubcommands</code>, but <code>Execute</code> just seems like it's too much. When I ask for the subcommand, the library probably shouldn't be subshelling out and doing anything of the sort. Does the program exit in that case? If not what does <code>subcommand</code> return in that case? It seems like a much less magic solution would be to provide a <code>run_external_subcommand(String, ArgMatches)</code> function that can be called for the &quot;simple&quot; case.</p>
+<p>Does the proposed solution also work for <code>bin_name-subcommand_name-subsubcommand_name</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-01-13 07:07</div>
+            <div class="timeline-body"><p>@sgrif I'm glad you said that, because I already had some reservations about the <code>Execute</code> portions. There's a fuzzy line between what a library provides for convenience, and what's the consumer's responsibility. My main reservation was the security aspect, of just blinding executing binaries. Granted, users wouldn't <em>have</em> to use the <code>Execute</code>, but still.</p>
+<p>So I'm going to pull the <code>Execute</code> portion, and stick with only <code>Allow</code>.</p>
+<blockquote>
+<p>Does the proposed solution also work for bin_name-subcommand_name-subsubcommand_name?</p>
+</blockquote>
+<p>Do you mean only for <code>Execute</code>? Just want to make sure, since that's now a somewhat moot issue :stuck_out_tongue_winking_eye:</p>
+<h4>Status Update</h4>
+<p>Obviously this has taken much longer than I originally anticipated. Just to keep everyone in the loop, some of the changes required for this feature also melded nicely with some planned breaking changes for a 2x release. These breaking changes are minor, but big ergonomic wins. And as a bi-product, also making implementing this feature easier. So I'm trying to push out the base of the 2x (basically just breaking changes portion to speed up time to release), and this feature will be part of that. Now to quell any fears, 2x won't be a massive re-design like #259 proposes (that'll have to wait for a 3x).</p>
+<p>It's nearly complete, so it shouldn't be too much longer depending on my free time over the next few days.</p>
+<p>Here's what 2x looks like:</p>
+<ul>
+<li><code>App</code>, <code>Arg</code>, <code>SubCommand</code>, <code>ArgMatches</code>, and <code>ArgGroup</code> all have reduced the number of lifetimes in the signature from 6-7 (<code>App</code>, and <code>Arg</code>) down to none, or one. (<strong>breaking change</strong>)</li>
+<li>Invalid unicode support for argument values (since Linux allows invalid unicode for files, etc.)</li>
+<li>Removal of all deprecated methods (<strong>breaking change</strong>)</li>
+<li>Removal of all <code>App::get_matches_*_lossy</code> methods, because that functionality has been moved into <code>AppSettings</code> (<strong>breaking change</strong>)</li>
+<li>Allowing support external subcommands</li>
+</ul>
+<p>That's it. So you can see 2x isn't a massive change, but it's a chance to clean up some cruft.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/259.html">clap-rs/clap#259</a> on 2016-01-13 07:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v2.0" by @kbknapp on 2016-01-23 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "1.6.0" by @kbknapp on 2016-01-23 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/383.html">clap-rs/clap#383</a> on 2016-01-25 09:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-01-26 16:55</div>
+            <div class="timeline-body"><p>Closed with #391 and will be available shortly upon v2 release. Here's an example of using the new feature:</p>
+<p>Note, using <code>get_matches_from</code> only for the demo purposes....this works just fine with <code>get_matches()</code> ;)</p>
+<pre><code class="language-rust">extern crate clap;
+use clap::{App, AppSettings};
+
+fn main() {
+    // Assume there is a third party subcommand named myprog-subcmd
+    let m = App::new(&quot;myprog&quot;)
+        .setting(AppSettings::AllowExternalSubcommands)
+        .get_matches_from(vec![&quot;myprog&quot;, &quot;subcmd&quot;, &quot;--option&quot;, &quot;value&quot;, &quot;-f&quot;]);
+    // All trailing arguments will be stored under the subcommands sub-matches under a value
+    // of their runtime name (in this case &quot;subcmd&quot;)
+    match m.subcommand() {
+        (external, Some(ext_m)) =&gt; {
+             let ext_args: Vec&lt;&amp;str&gt; = ext_m.values_of(external).unwrap().collect();
+             assert_eq!(external, &quot;subcmd&quot;);
+             assert_eq!(ext_args, [&quot;--option&quot;, &quot;value&quot;, &quot;-f&quot;]);
+        },
+        _ =&gt; unreachable!()
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2016-01-26 17:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

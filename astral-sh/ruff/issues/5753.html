@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[feature-request] Detect invalid unquoted imports - astral-sh/ruff #5753</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[feature-request] Detect invalid unquoted imports</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5753">#5753</a>
+        opened by <a href="https://github.com/smackesey">@smackesey</a>
+        on 2023-07-14 01:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/smackesey">@smackesey</a> on 2023-07-14 01:22</div>
+            <div class="timeline-body"><p>The following code crashes at runtime:</p>
+<pre><code>from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from threading import Thread
+
+def foo(t: Thread):
+    return t
+</code></pre>
+<p>The issue is that <code>Thread</code> is not defined at runtime, since it's only imported in a <code>TYPE_CHECKING</code> block. But <code>ruff</code> does not detect any error.</p>
+<p>If this module included <code>from __future__ import annotations</code>, then it would be OK because &quot;Thread&quot; would be interpreted as a string-- but the module doesn't include that, so it should be possible to detect that this is illegal.</p>
+<p>Further, I think in Python 3.13 string annotations, derived from <code>from __future__ import annotations</code> or otherwise, will go away in favor of wrapping annotations in a function for deferred evaluation. See <a href="https://lukasz.langa.pl/61df599c-d9d8-4938-868b-36b67fdb4448/">here</a> and <a href="https://peps.python.org/pep-0649/">PEP 649</a> for the dirty details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 01:29</div>
+            <div class="timeline-body"><p>We can definitely detect that, we already capture this in our semantic model.</p>
+<p>Meanwhile this, I believe, is fine:</p>
+<pre><code class="language-python">from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from threading import Thread
+
+def foo():
+    t: Thread = 1
+    return t
+
+foo()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-07-14 01:32</div>
+            <div class="timeline-body"><p>Great!</p>
+<p>Yes, ^^ is fine because Python never evaluates local variable annotations-- the annotation for a local variable is <em>always</em> a string, regardless of <code>from __future__ import annotations</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-07-14 01:41</div>
+            <div class="timeline-body"><p>Btw IMO there should be autofix that converts it to a quoted string-- so my request here is similar to #5559.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 02:08</div>
+            <div class="timeline-body"><p>Unfortunately I've become intimately familiar with all the rules around annotation semantics :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 02:22</div>
+            <div class="timeline-body"><p>Do you think this should just be caught by <a href="https://beta.ruff.rs/docs/rules/undefined-name/">F821</a>, with a custom suggestion and autofix to quote it? Or a separate rule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-07-14 02:24</div>
+            <div class="timeline-body"><p>Certainly sense to me to catch under an existing undefined anme rule, but I guess ultimately it depends on how much you are trying to mirror exact behavior of the rules you ported from other linters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 02:27</div>
+            <div class="timeline-body"><p>May be easier to just implement this as the TC200 rules from <a href="https://github.com/snok/flake8-type-checking">flake8-type-checking</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-07-14 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-07-14 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-07-14 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 02:41</div>
+            <div class="timeline-body"><p>This is a bit different than the request in https://github.com/astral-sh/ruff/issues/5559, which is to automatically quote any annotations that <em>can</em> be quoted (and are only used in typing contexts), right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-07-14 03:01</div>
+            <div class="timeline-body"><p>Yeah it's definitely different, they just both involve adding quotes to annotations.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

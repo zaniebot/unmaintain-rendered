@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule RET505 cause panic - astral-sh/ruff #9732</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule RET505 cause panic</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9732">#9732</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2024-01-31 07:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2024-01-31 07:19</div>
+            <div class="timeline-body"><p>Ruff 0.1.15 (latest changes from main branch)</p>
+<pre><code>ruff  *.py --select RET505 --no-cache --fix --unsafe-fixes --preview --isolated
+</code></pre>
+<p>file content:</p>
+<pre><code>class PSP(object):
+    def sb(self):
+        if self._sb is not None: return self._sb
+        else: self._sb = '\033[01;%dm'; self._sa = '\033[0;0m';
+</code></pre>
+<p>error</p>
+<pre><code>
+error: Panicked while linting /opt/tmp_folder/F_NAME_5271991475256254489.py: This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at /home/runner/work/Automated-Fuzzer/Automated-Fuzzer/ruff/crates/ruff_text_size/src/range.rs:48:9:
+assertion failed: start.raw &lt;= end.raw
+Backtrace:    0: ruff::panic::catch_unwind::{{closure}}
+             at ./ruff/crates/ruff/src/panic.rs:31:25
+   1: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::Fn&lt;Args&gt;&gt;::call
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/alloc/src/boxed.rs:2021:9
+   2: std::panicking::rust_panic_with_hook
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/panicking.rs:783:13
+   3: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/panicking.rs:649:13
+   4: std::sys_common::backtrace::__rust_end_short_backtrace
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/sys_common/backtrace.rs:170:18
+   5: rust_begin_unwind
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/panicking.rs:645:5
+   6: core::panicking::panic_fmt
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/core/src/panicking.rs:72:14
+   7: core::panicking::panic
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/core/src/panicking.rs:127:5
+   8: ruff_text_size::range::TextRange::new
+             at ./ruff/crates/ruff_text_size/src/range.rs:48:9
+   9: ruff_linter::rules::flake8_return::rules::function::remove_else
+             at ./ruff/crates/ruff_linter/src/rules/flake8_return/rules/function.rs:853:13
+  10: ruff_linter::rules::flake8_return::rules::function::superfluous_else_node::{{closure}}
+             at ./ruff/crates/ruff_linter/src/rules/flake8_return/rules/function.rs:642:25
+  11: ruff_diagnostics::diagnostic::Diagnostic::try_set_fix
+             at ./ruff/crates/ruff_diagnostics/src/diagnostic.rs:57:15
+  12: ruff_linter::rules::flake8_return::rules::function::superfluous_else_node
+             at ./ruff/crates/ruff_linter/src/rules/flake8_return/rules/function.rs:641:21
+  13: ruff_linter::rules::flake8_return::rules::function::superfluous_elif_else
+             at ./ruff/crates/ruff_linter/src/rules/flake8_return/rules/function.rs:721:9
+  14: ruff_linter::rules::flake8_return::rules::function::function
+             at ./ruff/crates/ruff_linter/src/rules/flake8_return/rules/function.rs:758:9
+  15: ruff_linter::checkers::ast::analyze::statement::statement
+             at ./ruff/crates/ruff_linter/src/checkers/ast/analyze/statement.rs:227:17
+  16: &lt;ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor&gt;::visit_stmt
+             at ./ruff/crates/ruff_linter/src/checkers/ast/mod.rs:833:9
+  17: &lt;ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor&gt;::visit_body
+             at ./ruff/crates/ruff_linter/src/checkers/ast/mod.rs:1434:13
+  18: &lt;ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor&gt;::visit_stmt
+             at ./ruff/crates/ruff_linter/src/checkers/ast/mod.rs:645:17
+  19: &lt;ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor&gt;::visit_body
+             at ./ruff/crates/ruff_linter/src/checkers/ast/mod.rs:1434:13
+  20: ruff_linter::checkers::ast::check_ast
+             at ./ruff/crates/ruff_linter/src/checkers/ast/mod.rs:2068:5
+  21: ruff_linter::linter::check_path
+             at ./ruff/crates/ruff_linter/src/linter.rs:153:40
+  22: ruff_linter::linter::lint_only
+             at ./ruff/crates/ruff_linter/src/linter.rs:397:18
+  23: ruff::diagnostics::lint_path
+             at ./ruff/crates/ruff/src/diagnostics.rs:323:22
+  24: ruff::commands::check::lint_path::{{closure}}
+             at ./ruff/crates/ruff/src/commands/check.rs:194:9
+  25: std::panicking::try::do_call
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/panicking.rs:552:40
+  26: std::panicking::try
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/panicking.rs:516:19
+  27: std::panic::catch_unwind
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/panic.rs:142:14
+  28: ruff::panic::catch_unwind
+             at ./ruff/crates/ruff/src/panic.rs:40:18
+  29: ruff::commands::check::lint_path
+             at ./ruff/crates/ruff/src/commands/check.rs:193:18
+  30: ruff::commands::check::check::{{closure}}
+             at ./ruff/crates/ruff/src/commands/check.rs:94:17
+  31: &lt;rayon::iter::filter_map::FilterMapFolder&lt;C,P&gt; as rayon::iter::plumbing::Folder&lt;T&gt;&gt;::consume
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.1/src/iter/filter_map.rs:123:36
+  32: rayon::iter::plumbing::Folder::consume_iter
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.1/src/iter/plumbing/mod.rs:179:20
+  33: rayon::iter::plumbing::Producer::fold_with
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.1/src/iter/plumbing/mod.rs:110:9
+  34: rayon::iter::plumbing::bridge_producer_consumer::helper
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.1/src/iter/plumbing/mod.rs:438:13
+  35: rayon::iter::plumbing::bridge_producer_consumer
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.1/src/iter/plumbing/mod.rs:397:12
+  36: &lt;rayon::iter::plumbing::bridge::Callback&lt;C&gt; as rayon::iter::plumbing::ProducerCallback&lt;I&gt;&gt;::callback
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.1/src/iter/plumbing/mod.rs:373:13
+  37: &lt;rayon::slice::Iter&lt;T&gt; as rayon::iter::IndexedParallelIterator&gt;::with_producer
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.1/src/slice/mod.rs:732:9
+  38: rayon::iter::plumbing::bridge
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.1/src/iter/plumbing/mod.rs:357:12
+  39: &lt;rayon::slice::Iter&lt;T&gt; as rayon::iter::ParallelIterator&gt;::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.1/src/slice/mod.rs:708:9
+  40: &lt;rayon::iter::filter_map::FilterMap&lt;I,P&gt; as rayon::iter::ParallelIterator&gt;::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.1/src/iter/filter_map.rs:46:9
+  41: &lt;rayon::iter::fold::Fold&lt;I,ID,F&gt; as rayon::iter::ParallelIterator&gt;::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.1/src/iter/fold.rs:59:9
+  42: rayon::iter::reduce::reduce
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.1/src/iter/reduce.rs:15:5
+  43: rayon::iter::ParallelIterator::reduce
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.1/src/iter/mod.rs:991:9
+  44: ruff::commands::check::check
+             at ./ruff/crates/ruff/src/commands/check.rs:165:10
+  45: ruff::check
+             at ./ruff/crates/ruff/src/lib.rs:405:13
+  46: ruff::run
+             at ./ruff/crates/ruff/src/lib.rs:201:33
+  47: ruff::main
+             at ./ruff/crates/ruff/src/main.rs:49:11
+  48: core::ops::function::FnOnce::call_once
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/core/src/ops/function.rs:250:5
+  49: std::sys_common::backtrace::__rust_begin_short_backtrace
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/sys_common/backtrace.rs:154:18
+  50: std::rt::lang_start::{{closure}}
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/rt.rs:167:18
+  51: core::ops::function::impls::&lt;impl core::ops::function::FnOnce&lt;A&gt; for &amp;F&gt;::call_once
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/core/src/ops/function.rs:284:13
+  52: std::panicking::try::do_call
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/panicking.rs:552:40
+  53: std::panicking::try
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/panicking.rs:516:19
+  54: std::panic::catch_unwind
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/panic.rs:142:14
+  55: std::rt::lang_start_internal::{{closure}}
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/rt.rs:148:48
+  56: std::panicking::try::do_call
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/panicking.rs:552:40
+  57: std::panicking::try
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/panicking.rs:516:19
+  58: std::panic::catch_unwind
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/panic.rs:142:14
+  59: std::rt::lang_start_internal
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/rt.rs:148:20
+  60: std::rt::lang_start
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/rt.rs:166:17
+  61: &lt;unknown&gt;
+  62: __libc_start_main
+  63: _start
+
+
+</code></pre>
+<p><a href="https://github.com/astral-sh/ruff/files/14108471/python_compressed.zip">python_compressed.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-31 17:22</div>
+            <div class="timeline-body"><p>\cc @diceroll123 if interested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-31 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-31 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-31 22:01</div>
+            <div class="timeline-body"><p>I've got it actually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9748.html">astral-sh/ruff#9748</a> on 2024-01-31 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-31 22:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

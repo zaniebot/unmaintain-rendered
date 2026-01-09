@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`typed-argument-default-in-stub` (`PYI011`) - false positive when default value intentionally used to infer the default value of a generic - astral-sh/ruff #12999</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`typed-argument-default-in-stub` (`PYI011`) - false positive when default value intentionally used to infer the default value of a generic</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12999">#12999</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2024-08-20 01:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-08-20 01:18</div>
+            <div class="timeline-body"><p>not sure if this is something that can be determined without type analysis (#3893), but sometimes <code>PYI011</code> conflicts with pyright's <code>reportInvalidTypeVarUse</code> rule. for example, in the following <code>.pyi</code> file:</p>
+<pre><code class="language-py"># foo.pyi
+
+a: int
+
+def foo[T](value: T | None = a) -&gt; T: ... # error: PYI011
+</code></pre>
+<pre><code class="language-py"># usage.py
+
+from foo import foo
+reveal_type(foo()) # int
+</code></pre>
+<p>if we take ruff's advice and omit the default value here, it prevents type checkers from being able to infer the generic based on the default value, which is why pyright reports an error:</p>
+<pre><code class="language-py"># foo.pyi
+
+a: int
+
+def foo[T](value: T | None = ...) -&gt; T: ... # no ruff error, but now pyright reports reportInvalidTypeVarUse
+</code></pre>
+<pre><code class="language-py"># usage.py
+
+from foo import foo
+reveal_type(foo()) # Any
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-08-20 16:06</div>
+            <div class="timeline-body"><p>A couple notes:</p>
+<p>Note that assigning a default value to a generic to infer the default generic type is currently not supported in mypy and will result in type <code>Never</code>:</p>
+<pre><code>main.py:3: error: Missing return statement  [empty-body]
+main.py:3: error: Incompatible default for argument &quot;value&quot; (default has type &quot;int&quot;, argument has type &quot;T | None&quot;)  [assignment]
+main.py:5: note: Revealed type is &quot;Never&quot;
+</code></pre>
+<p>Tracked here: https://github.com/python/mypy/issues/3737 (feel free to upvote, I too hit that issue and wished it worked like in pyright)</p>
+<p>Whilst this being flagged by <code>PYI011</code> is incidental, I'd recommend avoiding that form unless you're writing private stubs (using pyright only), and instead use something like:</p>
+<pre><code class="language-py">from typing import overload
+
+@overload
+def foo() -&gt; int: ...
+@overload
+def foo[T](value: T | None) -&gt; T: ... 
+</code></pre>
+<hr />
+<p>Now as for <code>PYI011</code> itself, it's more of a convention in typeshed to not bother with non-literal defaults. I don't think there's anything inherently wrong with your example[^1] (assuming it works in the type-checkers you're interested in). I personally don't think it's a false-positive, you may simply not be interested in the rule for your project.</p>
+<p>[^1]: In your example,
+<code>py     reveal_type(foo(None))     </code>
+would be <code>Unknown</code> / <code>Any</code>. But that has no effect on the mypy issue mentioned above or <code>PYI011</code>, so I'll ignore that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-08-21 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-triage</span> added by @MichaReiser on 2024-08-21 06:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

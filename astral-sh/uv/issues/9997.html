@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv publish does not read environment variables - astral-sh/uv #9997</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv publish does not read environment variables</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9997">#9997</a>
+        opened by <a href="https://github.com/fleetingbytes">@fleetingbytes</a>
+        on 2024-12-18 13:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fleetingbytes">@fleetingbytes</a> on 2024-12-18 13:21</div>
+            <div class="timeline-body"><p>I have the environment variables <code>UV_PUBLISH_URL</code> and <code>UV_PUBLISH_TOKEN</code> set to my corporate PyPI package registry and my authentication token. When I run <code>uv publish dist/*</code>, uv tries to upload it to pypi.org:</p>
+<pre><code>$ uv publish dist/*
+warning: `uv publish` is experimental and may change without warning
+Publishing 2 files https://upload.pypi.org/legacy/
+Enter username ('__token__' if using a token):
+</code></pre>
+<p>When I run <code>uv publish --publish-url=$UV_PUBLISH_URL --token=$UV_PUBLISH_TOKEN dist/*</code> then everything is fine and the package gets published in my corporate package registry (output redacted).</p>
+<pre><code>$ uv publish --publish-url=$UV_PUBLISH_URL --token=$UV_PUBLISH_TOKEN dist/*
+warning: `uv publish` is experimental and may change without warning
+Publishing 2 files https://&lt;corporate-gitlab-host&gt;/api/v4/projects/&lt;project-id&gt;/packages/pypi
+Uploading &lt;file-name&gt;
+</code></pre>
+<p>I can't imagine that there would be such bug, but maybe I missed something when reading the uv documentation.</p>
+<p>I use uv 0.5.10 (294da5261 2024-12-17) on Linux 6.1.0-28-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.119-1 (2024-11-22) x86_64 GNU/Linux</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanscain">@nathanscain</a> on 2024-12-18 14:01</div>
+            <div class="timeline-body"><p>Are you exporting the env vars? In bash, saying <code>ABC=XYZ</code> only sets <code>$ABC</code> for the shell. You have to do <code>export ABC=XYZ</code> for subprocesses like uv to see it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fleetingbytes">@fleetingbytes</a> on 2024-12-18 14:39</div>
+            <div class="timeline-body"><p>Thank you, that was exactly the issue, they were only set for the shell. After export it works as expected. 🙏🏻</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @fleetingbytes on 2024-12-18 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanscain">@nathanscain</a> on 2024-12-18 14:40</div>
+            <div class="timeline-body"><p>Awesome - happy to help 🤙</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-18 15:25</div>
+            <div class="timeline-body"><p>Thanks @nathanscain !</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

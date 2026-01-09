@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run python in vllm dir failed `No solution found when resolving dependencies for split` - astral-sh/uv #12578</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run python in vllm dir failed `No solution found when resolving dependencies for split`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/12578">#12578</a>
+        opened by <a href="https://github.com/yihong0618">@yihong0618</a>
+        on 2025-03-31 08:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yihong0618">@yihong0618</a> on 2025-03-31 08:50</div>
+            <div class="timeline-body"><p>error:</p>
+<pre><code>⠴ Resolving dependencies...                                                                                                                                          × No solution found when resolving dependencies for split (python_full_version &gt;= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'):
+  ╰─▶ Because there is no version of torch{platform_machine == 'x86_64'}==2.6.0+cpu and your project depends on torch{platform_machine == 'x86_64'}==2.6.0+cpu,
+      we can conclude that your project's requirements are unsatisfiable.
+      And because your project requires vllm[audio], we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>OS macOS m3 uv and vllm both latest</p>
+<p>reproduce:</p>
+<ol>
+<li>clone vllm &amp;&amp; cd vllm</li>
+<li>uv python pin 3.12</li>
+<li>uv pip install -r requirements/cpu.txt</li>
+<li>uv pip install -e .</li>
+</ol>
+<p>then <code>uv run python failed</code> with the error message</p>
+<p>debug:</p>
+<p>cat requirements/cpu.txt</p>
+<pre><code>-r common.txt
+
+# Dependencies for CPUs
+torch==2.6.0+cpu; platform_machine == &quot;x86_64&quot;
+torch==2.6.0; platform_system == &quot;Darwin&quot;
+torch==2.6.0; platform_machine == &quot;ppc64le&quot; or platform_machine == &quot;aarch64&quot;
+torch==2.7.0.dev20250304; platform_machine == &quot;s390x&quot;
+
+# required for the image processor of minicpm-o-2_6, this must be updated alongside torch
+torchaudio; platform_machine != &quot;ppc64le&quot; and platform_machine != &quot;s390x&quot;
+torchaudio==2.6.0; platform_machine == &quot;ppc64le&quot;
+
+# required for the image processor of phi3v, this must be updated alongside torch
+torchvision; platform_machine != &quot;ppc64le&quot;  and platform_machine != &quot;s390x&quot;
+torchvision==0.21.0; platform_machine == &quot;ppc64le&quot;
+datasets # for benchmark scripts
+</code></pre>
+<p>only keep torch==2.6.0; platform_system == &quot;Darwin&quot; works</p>
+<p>source .venv/bin/activate
+then
+python -c 'import vllm' works</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-31 13:03</div>
+            <div class="timeline-body"><p>This looks right -- those versions of PyTorch don't exist on PyPI. How are you configuring your index?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-03-31 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yihong0618">@yihong0618</a> on 2025-03-31 13:47</div>
+            <div class="timeline-body"><blockquote>
+<p>This looks right -- those versions of PyTorch don't exist on PyPI. How are you configuring your index?</p>
+</blockquote>
+<p>seems the problem is from vllm side so closing it, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @yihong0618 on 2025-03-31 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yihong0618">@yihong0618</a> on 2025-04-02 04:54</div>
+            <div class="timeline-body"><p>@charliermarsh I added it to dependency_links in setup.py but not work, is uv support <code>--extra-index-url</code> with dependency_links in setup.py?</p>
+<p><img src="https://github.com/user-attachments/assets/b8f8bbc3-8cda-4cef-855e-f180fe61fa7e" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @yihong0618 on 2025-04-02 05:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 14:15</div>
+            <div class="timeline-body"><p>We don't support <code>setup.py</code> specific fields no, those are all run via <code>setuptools</code> and don't use uv configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vllm-project/vllm/issues/15985.html">vllm-project/vllm#15985</a> on 2025-04-03 03:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vllm-project/vllm/pulls/15986.html">vllm-project/vllm#15986</a> on 2025-04-03 03:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

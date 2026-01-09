@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_complete_nushell: multi line comments break with verbatim_doc_comment - clap-rs/clap #5164</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_complete_nushell: multi line comments break with verbatim_doc_comment</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5164">#5164</a>
+        opened by <a href="https://github.com/NyCodeGHG">@NyCodeGHG</a>
+        on 2023-10-08 20:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NyCodeGHG">@NyCodeGHG</a> on 2023-10-08 20:48</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.71.0 (8ede3aae2 2023-07-12)</p>
+<h3>Clap Version</h3>
+<p>4.4.1 (clap_complete_nushell)</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use std::io;
+use clap::{Parser, CommandFactory};
+use clap_complete::generate;
+use clap_complete_nushell::Nushell;
+
+fn main() {
+    let mut cmd = Cli::command_for_update();
+    generate(Nushell, &amp;mut cmd, &quot;foo&quot;, &amp;mut io::stdout());
+}
+
+#[derive(Parser)]
+struct Cli {
+    /// Multiline
+    /// comment.
+    #[arg(long, verbatim_doc_comment)]
+    foo: bool,
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Run these steps in nushell:</p>
+<ol>
+<li>cargo run | save test.nu</li>
+<li>source test.nu</li>
+</ol>
+<h3>Actual Behaviour</h3>
+<p>nu cannot parse the resulting file</p>
+<pre><code>Error: nu::parser::parse_mismatch
+
+  × Parse mismatch during operation.
+   ╭─[/tmp/clap-reprod/test.nu:4:1]
+ 4 │     --foo                     # Multiline
+ 5 │ comment.
+   · ────┬───
+   ·     ╰── expected valid variable name for this parameter
+ 6 │     --help(-h)                # Print help
+   ╰────
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>nu should be able to parse the file</p>
+<h3>Additional Context</h3>
+<p>This only occurs when the comment contains a dot</p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_build: name=&quot;clap-reprod&quot;
+[clap_builder::builder::command]Command::_propagate:clap-reprod
+[clap_builder::builder::command]Command::_check_help_and_version:clap-reprod expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap-reprod
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:foo
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build_bin_names
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @NyCodeGHG on 2023-10-08 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jj-vcs/jj/pulls/2353.html">jj-vcs/jj#2353</a> on 2023-10-08 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5165.html">clap-rs/clap#5165</a> on 2023-10-09 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2023-10-09 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2023-10-09 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/poliorcetics">@poliorcetics</a> on 2024-02-17 18:38</div>
+            <div class="timeline-body"><p>Should be closed by #5359 yesterday, sorry I missed this issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-02-17 20:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

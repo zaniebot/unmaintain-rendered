@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No solution error any-of list is inverted - astral-sh/uv #884</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>No solution error any-of list is inverted</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/884">#884</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-11 12:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-11 12:24</div>
+            <div class="timeline-body"><p>When resolving <code>recommenders&gt;0.7</code> on the incompatible python 3.12, we get a list of holes instead of list of possible versions. The list is misleading since we only need to know that there are not other versions in <code>recommenders&gt;0.7,&lt;1.1.0</code> except <code>recommenders==1.0.0</code> (we don't care about higher versions such as 1.1.1) to conclude that <code>recommenders&gt;0.7,&lt;1.1.0</code> cannot be used.</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because there are no versions of Python that satisfy Python&gt;=3.6,&lt;3.10 and recommenders==1.0.0 depends on Python&gt;=3.6,&lt;3.9, we
+      can conclude that recommenders==1.0.0 cannot be used.
+      And because there are no versions of recommenders that satisfy any of:
+          recommenders&gt;0.7,&lt;1.0.0
+          recommenders&gt;1.0.0,&lt;1.1.0
+          recommenders&gt;1.1.0,&lt;1.1.1
+          recommenders&gt;1.1.1
+      we can conclude that recommenders&gt;0.7,&lt;1.1.0 cannot be used. (1)
+
+      Because there are no versions of Python that satisfy Python&gt;=3.6,&lt;3.10 and recommenders&gt;=1.1.0 depends on Python&gt;=3.6,&lt;3.10,
+      we can conclude that recommenders&gt;=1.1.0 cannot be used.
+      And because we know from (1) that recommenders&gt;0.7,&lt;1.1.0 cannot be used, we can conclude that recommenders&gt;0.7 cannot be
+      used.
+      And because root depends on recommenders&gt;0.7 we can conclude that the requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2024-01-11 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-11 12:54</div>
+            <div class="timeline-body"><p>Additional example without the python version in it: Here the problem is that <code>pytorch-lightning&gt;1.8.3.post2</code>  requires <code>torch&gt;=1.9.0</code>, while root requires <code>torch==1.8.0</code></p>
+<pre><code>cargo run -q -- pip-install &quot;torch==1.8.0&quot; &quot;deepblast==1.0.2&quot; &quot;pytorch-lightning&gt;1.8.3.post2&quot;
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there are no versions of pytorch-lightning that satisfy any of:
+          pytorch-lightning&gt;1.8.6,&lt;1.9.0
+          pytorch-lightning&gt;1.9.5,&lt;2.0.0
+          pytorch-lightning&gt;2.0.9.post0,&lt;2.1.0
+      and pytorch-lightning&gt;=1.8.4,&lt;=1.8.6 depends on torch&gt;=1.9.0, we can conclude that any of:
+          pytorch-lightning&gt;1.8.3.post2,&lt;1.9.0
+          pytorch-lightning&gt;1.9.5,&lt;2.0.0
+          pytorch-lightning&gt;2.0.9.post0,&lt;2.1.0
+      depends on torch&gt;=1.9.0.
+      And because pytorch-lightning&gt;=1.9.0,&lt;=1.9.5 depends on torch&gt;=1.10.0 we can conclude that any of:
+          pytorch-lightning&gt;1.8.3.post2,&lt;2.0.0
+          pytorch-lightning&gt;2.0.9.post0,&lt;2.1.0
+      depends on torch&gt;=1.9.0.
+      And because pytorch-lightning&gt;=2.0.0,&lt;=2.0.9.post0 depends on torch&gt;=1.11.0 and pytorch-lightning&gt;=2.1.0 depends on
+      torch&gt;=1.12.0, we can conclude that pytorch-lightning&gt;1.8.3.post2 depends on torch&gt;=1.9.0.
+      And because root depends on torch==1.8.0 and root depends on pytorch-lightning&gt;1.8.3.post2, we can conclude that the
+      requirements are unsatisfiable.
+
+      hint: Pre-releases are available for pytorch-lightning in the requested range (e.g., 2.1.0rc1), but pre-releases weren't
+      enabled (try: `--prerelease=allow`)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-11 14:48</div>
+            <div class="timeline-body"><p>Thanks! This one is on my radar but the examples are helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-11 15:27</div>
+            <div class="timeline-body"><p>Here's a recent run of pypi top 10k most dependents with builds reduced to errors, it has a bunch of examples: https://gist.github.com/konstin/b32a9cf1a07e061ac0236776eab34f3c . I'd expect that those a underrepresented in our scenarios since they have less versions and lack the progression of increasing requirements over releases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1233.html">astral-sh/uv#1233</a> on 2024-02-02 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-02 18:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

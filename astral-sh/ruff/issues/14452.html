@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>setting output format hides output in ruff check - astral-sh/ruff #14452</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>setting output format hides output in ruff check</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14452">#14452</a>
+        opened by <a href="https://github.com/kaddkaka">@kaddkaka</a>
+        on 2024-11-19 13:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-11-19 13:37</div>
+            <div class="timeline-body"><p>When running a <code>ruff check --fix-only</code> there is no output about what errors were fixed. This surprised me, I thought it would still print the fixed error since the <a href="https://docs.astral.sh/ruff/settings/#fix-only">documentation about <code>--fix-only</code></a> says &quot;Like <a href="https://docs.astral.sh/ruff/settings/#fix">fix</a>, but disables reporting on leftover violation. Implies <a href="https://docs.astral.sh/ruff/settings/#fix">fix</a>.&quot;</p>
+<p>Maybe supplying <code>--show-fixes</code> will fix it? Yes,</p>
+<p><code>ruff check --fix-only --show-fixes</code> shows the fixed errors, great!</p>
+<p>Can we also get this info in json output format? No,</p>
+<p><code>ruff check --fix-only --show-fixes --output-format json</code>  print nothing! <code>--output-format junit</code> has the same issue.</p>
+<p>Ruff version: 0.7.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-19 20:30</div>
+            <div class="timeline-body"><pre><code>❯ echo &quot;import b, a&quot; &gt; example.py
+❯ ruff check example.py --select I
+example.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+  |
+1 | / import b, a
+  |
+  = help: Organize imports
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+
+❯ ruff check example.py --select I --fix-only
+Fixed 1 error.
+
+❯ echo &quot;import b, a&quot; &gt; example.py
+❯ ruff check example.py --select I --fix
+Found 1 error (1 fixed, 0 remaining).
+
+❯ ruff check example.py --select I --fix-only --output-format json
+
+❯ echo &quot;import b, a&quot; &gt; example.py
+❯ ruff check example.py --select I --fix --output-format json
+[]%                        
+
+❯ echo &quot;import b, a&quot; &gt; example.py
+❯ ruff check example.py --select I --fix --output-format json --show-fixes
+[]%                          
+
+❯ echo &quot;import b, a&quot; &gt; example.py
+❯ ruff check example.py --select I --fix-only --show-fixes
+
+Fixed 1 error:
+- example.py:
+    1 × I001 (unsorted-imports)
+
+Fixed 1 error.                                                                                                                                  
+</code></pre>
+<p>I don't think this has to do with <code>--fix-only</code>, i.e., it applies equally to <code>--fix</code>. I think we should improve the JSON output here, though I don't think it should rely on the <code>--show-fixes</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2024-11-20 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @MichaReiser on 2024-11-20 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-20 08:06</div>
+            <div class="timeline-body"><p>I suspect that Ruff throws away the diagnostics after each fix cycle. We would need to preserve them and pass them through to the json emitter. This likely requires some special casing in the CLI because we don't want to emit the diagnostics for all output formats (which makes the experience somewhat inconsistent)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-11-27 14:37</div>
+            <div class="timeline-body"><blockquote>
+<p>I suspect that Ruff throws away the diagnostics after each fix cycle. We would need to preserve them and pass them through to the json emitter. This likely requires some special casing in the CLI because we don't want to emit the diagnostics for all output formats (which makes the experience somewhat inconsistent)</p>
+</blockquote>
+<p>Don't you want to keep all diagnostics until the end and then emit or not depending on the output format?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16831.html">astral-sh/ruff#16831</a> on 2025-03-18 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20443.html">astral-sh/ruff#20443</a> on 2025-10-02 20:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

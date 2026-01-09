@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specifying the index in `tool.uv.sources` doesn't work with transitive dependencies - astral-sh/uv #15003</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Specifying the index in `tool.uv.sources` doesn't work with transitive dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15003">#15003</a>
+        opened by <a href="https://github.com/jackrosenthal">@jackrosenthal</a>
+        on 2025-07-31 17:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jackrosenthal">@jackrosenthal</a> on 2025-07-31 17:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When specifying a package in <code>tool.uv.sources</code>, the package's index isn't respected if the package is a transitive dependency.</p>
+<p>Here's a minimal reproduction using a locally-hosted <code>pypiserver</code>:</p>
+<pre><code class="language-shellsession">$ mkdir ~/pypiserver
+$ cd ~/pypiserver
+$ pip download linetable
+$ uvx --from pypiserver pypi-server run .
+</code></pre>
+<p>Now, we can verify we have a PyPI server running at <code>http://localhost:8080/simple</code>, and it has the <code>linetable</code> package available.</p>
+<p>Next, let's set up a project to test with.</p>
+<pre><code class="language-shellsession">$ mkdir ~/test_project
+$ cd ~/test_project
+$ uv init
+</code></pre>
+<p>Next, we add to <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;local&quot;
+url = &quot;http://localhost:8080/simple&quot;
+explicit = true
+
+[tool.uv.sources]
+linetable = { index = &quot;local&quot; }
+</code></pre>
+<p>We should expect at this point, if we add a dependency which has <code>linetable</code> as a transitive dependency, we're going to get it from our <code>local</code> index.  But that's not the case.</p>
+<pre><code class="language-shellsession">$ uv add kajiki
+$ cat uv.lock | grep -E 'name|source'
+name = &quot;kajiki&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+    { name = &quot;linetable&quot; },
+name = &quot;linetable&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+name = &quot;test-project&quot;
+source = { virtual = &quot;.&quot; }
+    { name = &quot;kajiki&quot; },
+requires-dist = [{ name = &quot;kajiki&quot;, specifier = &quot;&gt;=1.0.2&quot; }]
+</code></pre>
+<p>(notice <code>source</code> is set to <code>https://pypi.org/simple</code> above)</p>
+<p>This gets resolved if we manually <code>uv add linetable</code>:</p>
+<pre><code class="language-shellsession">$ uv add linetable
+$ cat uv.lock | grep -E 'name|source'
+name = &quot;kajiki&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+    { name = &quot;linetable&quot; },
+name = &quot;linetable&quot;
+source = { registry = &quot;http://localhost:8080/simple&quot; }
+name = &quot;test-project&quot;
+source = { virtual = &quot;.&quot; }
+    { name = &quot;kajiki&quot; },
+    { name = &quot;linetable&quot; },
+    { name = &quot;kajiki&quot;, specifier = &quot;&gt;=1.0.2&quot; },
+    { name = &quot;linetable&quot;, specifier = &quot;&gt;=0.0.3&quot;, index = &quot;http://localhost:8080/simple&quot; },
+</code></pre>
+<p>Unless users are carefully inspecting <code>uv.lock</code>, they may not notice this and get the wrong package.</p>
+<h3>Platform</h3>
+<p>Linux 6.15.7-arch1-1 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.8.3 (7e78f54e7 2025-07-24)</p>
+<h3>Python version</h3>
+<p>Python 3.13.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jackrosenthal on 2025-07-31 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 17:54</div>
+            <div class="timeline-body"><p>Sources are currently never applied to transitive dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 17:55</div>
+            <div class="timeline-body"><p>e.g., see https://github.com/astral-sh/uv/issues/8253</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 17:55</div>
+            <div class="timeline-body"><p>We're considering changing this though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-08-01 01:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

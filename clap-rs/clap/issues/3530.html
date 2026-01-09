@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>command! macro is missing - clap-rs/clap #3530</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>command! macro is missing</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3530">#3530</a>
+        opened by <a href="https://github.com/IoT-master">@IoT-master</a>
+        on 2022-03-03 18:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/IoT-master">@IoT-master</a> on 2022-03-03 18:20</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustup 1.24.3 (ce5817a94 2021-05-31) info: This is the version for the rustup toolchain manager, not the rustc compiler. info: The currently active <code>rustc</code> version is <code>rustc 1.59.0 (9d1b2106e 2022-02-23)</code></p>
+<h3>Clap Version</h3>
+<p>clap = &quot;3.1.5&quot; or clap = { version = &quot;3.1.5&quot;, features = [&quot;derive&quot;] } Neither has the command! macro</p>
+<h3>Minimal reproducible code</h3>
+<p>use clap::{arg, command, Command};
+use std::path::Path;</p>
+<p>fn main() {
+let matches = command!()
+.arg(arg!([name] &quot;Optional name to operate on&quot;))
+.arg(
+arg!(
+-c --config <FILE> &quot;Sets a custom config file&quot;
+)
+// We don't have syntax yet for optional options, so manually calling <code>required</code>
+.required(false)
+// Support non-UTF8 paths
+.allow_invalid_utf8(true),
+)
+.arg(arg!(
+-d --debug ... &quot;Turn debugging information on&quot;
+))
+.subcommand(
+Command::new(&quot;test&quot;)
+.about(&quot;does testing things&quot;)
+.arg(arg!(-l --list &quot;lists test values&quot;)),
+)
+.get_matches();</p>
+<pre><code>// You can check the value provided by positional arguments, or option arguments
+if let Some(name) = matches.value_of(&quot;name&quot;) {
+    println!(&quot;Value for name: {}&quot;, name);
+}
+
+if let Some(raw_config) = matches.value_of_os(&quot;config&quot;) {
+    let config_path = Path::new(raw_config);
+    println!(&quot;Value for config: {}&quot;, config_path.display());
+}
+
+// You can see how many times a particular flag or argument occurred
+// Note, only flags can have multiple occurrences
+match matches.occurrences_of(&quot;debug&quot;) {
+    0 =&gt; println!(&quot;Debug mode is off&quot;),
+    1 =&gt; println!(&quot;Debug mode is kind of on&quot;),
+    2 =&gt; println!(&quot;Debug mode is on&quot;),
+    _ =&gt; println!(&quot;Don't be crazy&quot;),
+}
+
+// You can check for the existence of subcommands, and if found use their
+// matches just as you would the top level cmd
+if let Some(matches) = matches.subcommand_matches(&quot;test&quot;) {
+    // &quot;$ myapp test&quot; was run
+    if matches.is_present(&quot;list&quot;) {
+        // &quot;$ myapp test -l&quot; was run
+        println!(&quot;Printing testing lists...&quot;);
+    } else {
+        println!(&quot;Not printing testing lists...&quot;);
+    }
+}
+
+// Continued program logic goes here...</code></pre>
+<p>}</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run</p>
+<h3>Actual Behaviour</h3>
+<p>--&gt; src/main.rs:1:17
+|
+1 | use clap::{arg, command, Command};
+|                 ^^^^^^^
+|                 |
+|                 no <code>command</code> in the root
+|                 help: a similar name exists in the module (notice the capitalization): <code>Command</code></p>
+<p>error: cannot determine resolution for the macro <code>command</code>
+--&gt; src/main.rs:5:19
+|
+5 |     let matches = command!()
+|                   ^^^^^^^
+|
+= note: import resolution is stuck, try simplifying macro imports</p>
+<p>For more information about this error, try <code>rustc --explain E0432</code>.
+error: could not compile <code>quals</code> due to 2 previous errors</p>
+<h3>Expected Behaviour</h3>
+<p>No errors</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p>➜  quals git:(master) ✗ cargo build
+Compiling gimli v0.26.1
+Compiling adler v1.0.2
+Compiling rustc-demangle v0.1.21
+Compiling cfg-if v1.0.0
+Compiling object v0.27.1
+Compiling miniz_oxide v0.4.4
+Compiling addr2line v0.17.0
+Compiling backtrace v0.3.64
+Compiling clap v3.1.5
+Compiling quals v0.1.0 (/home/sechuang/CodingProjects/quals)
+error[E0432]: unresolved import <code>clap::command</code>
+--&gt; src/main.rs:1:17
+|
+1 | use clap::{arg, command, Command};
+|                 ^^^^^^^
+|                 |
+|                 no <code>command</code> in the root
+|                 help: a similar name exists in the module (notice the capitalization): <code>Command</code></p>
+<p>error: cannot determine resolution for the macro <code>command</code>
+--&gt; src/main.rs:5:19
+|
+5 |     let matches = command!()
+|                   ^^^^^^^
+|
+= note: import resolution is stuck, try simplifying macro imports</p>
+<p>For more information about this error, try <code>rustc --explain E0432</code>.
+error: could not compile <code>quals</code> due to 2 previous errors</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @IoT-master on 2022-03-03 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3531.html">clap-rs/clap#3531</a> on 2022-03-03 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-03-03 18:41</div>
+            <div class="timeline-body"><p>The <code>command!</code> macro requires the <code>cargo</code> feature flag.  Most examples and the tutorial call this it as well as <a href="https://docs.rs/clap/latest/clap/macro.command.html">docs.rs</a></p>
+<p>I am making some further tweaks in #3531 to make it easier to discover.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-03-03 19:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

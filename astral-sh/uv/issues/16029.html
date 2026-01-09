@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confused about publishing workspace members - astral-sh/uv #16029</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Confused about publishing workspace members</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16029">#16029</a>
+        opened by <a href="https://github.com/anentropic">@anentropic</a>
+        on 2025-09-25 18:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/anentropic">@anentropic</a> on 2025-09-25 18:08</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have a workspace project with multiple libs in it, i.e. a root <code>pyproject.toml</code> and then libs in sub-dirs each with a <code>pyproject.toml</code></p>
+<p>I want to publish the libs to a private AWS CodeArtifact repository</p>
+<p>My first thought was just to cd into each lib and run <code>uv publish</code>.</p>
+<p>I added <code>[[tool.uv.index]]</code> block to each of the libs' <code>pyproject.toml</code> files. But <code>uv publish --index myindex</code> returned:</p>
+<blockquote>
+<p>error: No indexes were found, can't use index: myindex</p>
+</blockquote>
+<p>Removing the index blocks from the libs and adding it instead to the root workspace <code>pyproject.toml</code> brought progress. This means that although I'm cd'd into the lib package dir, it's the parent workspace config which <code>uv publish --index myindex</code> is looking at.</p>
+<p>Next I got:</p>
+<blockquote>
+<p>error: No files found to publish</p>
+</blockquote>
+<p>I realised I was supposed to <code>uv build</code> first.</p>
+<p>Adding that step I see output like:</p>
+<blockquote>
+<p>adding 'mylib/<strong>init</strong>.py'
+adding 'mylib/cli.py'
+adding 'mylib/errors.py'
+adding 'mylib-2025.9.24.0+263c8ca.dist-info/METADATA'
+adding 'mylib-2025.9.24.0+263c8ca.dist-info/WHEEL'
+adding 'mylib-2025.9.24.0+263c8ca.dist-info/entry_points.txt'
+adding 'mylib-2025.9.24.0+263c8ca.dist-info/top_level.txt'
+adding 'mylib-2025.9.24.0+263c8ca.dist-info/RECORD'
+removing build/bdist.linux-x86_64/wheel
+Successfully built /home/circleci/project/libs/dist/mylib-2025.9.24.0+263c8ca.tar.gz
+Successfully built /home/circleci/project/libs/dist/mylib-2025.9.24.0+263c8ca-py3-none-any.whl
+error: No files found to publish</p>
+<p>Exited with code exit status 2</p>
+</blockquote>
+<p>Although I am cd'd into <code>/home/circleci/project/libs/mylib</code> this seems to have built the result to <code>/home/circleci/project/libs</code> i.e. the workspace root, and then <code>uv publish</code> doesn't find it.</p>
+<p>So first up I am confused about when/why the <code>uv</code> command is preferring the parent workspace vs the local project context, it seems a bit half one and half the other.</p>
+<p>Amending the build command to <code>uv build ./</code> solves that for now.</p>
+<h3>Platform</h3>
+<p>macOS 14.6.1 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.13 (62ed17b23 2025-06-12)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @anentropic on 2025-09-25 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anentropic">@anentropic</a> on 2025-09-25 18:43</div>
+            <div class="timeline-body"><p>Also...</p>
+<p>I have ended up with <code>uv publish --check-url &quot;$REPO_URL&quot; --publish-url &quot;$REPO_URL&quot;</code> (I removed the <code>[[index]]</code> toml config that was only wanted for publishing)</p>
+<p>But when I re-run the CI job I still get:</p>
+<blockquote>
+<p>Uploading mylib-2025.9.24.0+263c8ca-py3-none-any.whl (5.4KiB)
+error: Failed to publish <code>dist/mylib-2025.9.24.0+263c8ca-py3-none-any.whl</code> to https://anentropic-************.d.codeartifact.eu-west-1.amazonaws.com/pypi/repo
+Caused by: Upload failed with status code 409 Conflict. Server says: Asset 'mylib-2025.9.24.0+263c8ca-py3-none-any.whl' already exists.</p>
+</blockquote>
+<p>I thought the <code>--check-url</code> was supposed to prevent that error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-09-25 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-26 13:33</div>
+            <div class="timeline-body"><p>The idea with workspace is that you can build and publish from the workspace root. You could build and publish two libraries <code>foolib</code> and <code>barlib</code> with one command:</p>
+<pre><code>uv build --package foolib
+uv build --package barlib
+uv publish
+</code></pre>
+<p>The matching index configuration also goes into the workspace root <code>pyproject.toml</code>, you should usually only need to a publish URL to your existing index.</p>
+<p>Re <code>uv publish --check-url &quot;$REPO_URL&quot; --publish-url &quot;$REPO_URL&quot;</code>: <code>--check-url</code> and <code>--publish-url</code> should be different, is <code>--check-url</code> the simple index URL matching <code>--publish-url</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anentropic">@anentropic</a> on 2025-09-26 13:38</div>
+            <div class="timeline-body"><p>currently <code>export REPO_URL=&quot;https://anentropic-&lt;account&gt;.d.codeartifact.eu-west-1.amazonaws.com/pypi/myrepo&quot;</code></p>
+<p>I had <code>/simple</code> on the end previously but publishing didn't work</p>
+<p>should <code>--check-url</code> have <code>/simple</code> on the end?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anentropic">@anentropic</a> on 2025-09-26 13:39</div>
+            <div class="timeline-body"><p>(thanks for your attention!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-26 13:39</div>
+            <div class="timeline-body"><p>Yes, <code>--check-url</code> needs to be the URL that you can install from with <code>uv pip install --index-url</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anentropic">@anentropic</a> on 2025-09-29 13:02</div>
+            <div class="timeline-body"><p><code>uv publish --check-url &quot;$REPO_URL/simple&quot; --publish-url &quot;$REPO_URL&quot;</code>
+<code>uv publish --check-url &quot;$REPO_URL&quot; --publish-url &quot;$REPO_URL&quot;</code>
+both give the same 409 error</p>
+<p>is <code>--check-url</code> able to use the <code>UV_PUBLISH_PASSWORD</code> to authenticate against the private repo?</p>
+<p>I'm wondering if the check fails silently and uv falls back to attempting to publish</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-29 13:03</div>
+            <div class="timeline-body"><p>Can you try with the latest version? There was a bug of not using <code>UV_PUBLISH_PASSWORD</code> that has been fixed a while ago.</p>
+<p>Can you run with <code>-v</code> if that doesn't work? This should give you more information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anentropic">@anentropic</a> on 2025-09-29 13:18</div>
+            <div class="timeline-body"><pre><code>DEBUG uv 0.8.22
+DEBUG Not a distribution filename: `.gitignore`
+Publishing 2 files to https://anentropic-************.d.codeartifact.eu-west-1.amazonaws.com/pypi/myrepo
+DEBUG Using request timeout of 900s
+DEBUG Checking for anentropic_mylib-2025.9.24.0+263c8ca-py3-none-any.whl in the registry
+DEBUG No cache entry for: https://anentropic-************.d.codeartifact.eu-west-1.amazonaws.com/pypi/myrepo/simple/anentropic-dbt-yaml-merge/
+DEBUG No netrc file found
+DEBUG Acquired lock for `credentials store`
+DEBUG Released lock at `/home/circleci/.local/share/uv/credentials/credentials.toml.lock`
+DEBUG No credentials file found at /home/circleci/.local/share/uv/credentials/credentials.toml
+DEBUG Indexes search failed because of status code failure: 401 Unauthorized
+WARN Package not found in the registry; skipping upload check for anentropic_mylib-2025.9.24.0+263c8ca-py3-none-any.whl
+Uploading anentropic_mylib-2025.9.24.0+263c8ca-py3-none-any.whl (5.4KiB)
+DEBUG Hashing dist/anentropic_mylib-2025.9.24.0+263c8ca-py3-none-any.whl
+DEBUG Skipping validation request for unsupported publish URL: https://anentropic-************.d.codeartifact.eu-west-1.amazonaws.com/pypi/myrepo
+DEBUG Using HTTP Basic authentication
+DEBUG Response code for https://anentropic-************.d.codeartifact.eu-west-1.amazonaws.com/pypi/myrepo: 409 Conflict
+DEBUG Upload error response: Asset 'anentropic_mylib-2025.9.24.0+263c8ca-py3-none-any.whl' already exists.
+DEBUG Checking for anentropic_mylib-2025.9.24.0+263c8ca-py3-none-any.whl in the registry
+DEBUG No cache entry for: https://anentropic-************.d.codeartifact.eu-west-1.amazonaws.com/pypi/myrepo/simple/anentropic-dbt-yaml-merge/
+DEBUG Indexes search failed because of status code failure: 401 Unauthorized
+WARN Package not found in the registry; skipping upload check for anentropic_mylib-2025.9.24.0+263c8ca-py3-none-any.whl
+error: Failed to publish `dist/anentropic_mylib-2025.9.24.0+263c8ca-py3-none-any.whl` to https://anentropic-************.d.codeartifact.eu-west-1.amazonaws.com/pypi/myrepo
+  Caused by: Upload failed with status code 409 Conflict. Server says: Asset 'anentropic_mylib-2025.9.24.0+263c8ca-py3-none-any.whl' already exists.
+
+Exited with code exit status 2
+</code></pre>
+<p>this is with <code>export UV_PUBLISH_PASSWORD=&quot;$AWS_CODEARTIFACT_TOKEN&quot;</code> just before it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anentropic">@anentropic</a> on 2025-09-29 13:31</div>
+            <div class="timeline-body"><p>adding <code>/simple</code> to the publish-url didn't help</p>
+<blockquote>
+<p>DEBUG Skipping validation request for unsupported publish URL: https://anentropic-************.d.codeartifact.eu-west-1.amazonaws.com/pypi/myrepo/simple</p>
+</blockquote>
+<p>maybe the problem is</p>
+<blockquote>
+<p>DEBUG Indexes search failed because of status code failure: 401 Unauthorized</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-29 13:33</div>
+            <div class="timeline-body"><p>Sorry, I misunderstood the question, <code>--check-url</code> uses regular index authentication, not the publish credentials. (This is because there's often separate keys for read (simple index) access and write (publish) access)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anentropic">@anentropic</a> on 2025-09-29 15:48</div>
+            <div class="timeline-body"><p>I added <code>UV_INDEX_PRIVATE_REGISTRY_USERNAME</code> and <code>UV_INDEX_PRIVATE_REGISTRY_PASSWORD</code> env var exports but it didn't help, there is still <code>DEBUG Indexes search failed because of status code failure: 401 Unauthorized</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-29 16:08</div>
+            <div class="timeline-body"><p>Does <code>uv pip install --index-url &lt;check-url&gt; anentropic_mylib==2025.9.24.0+263c8ca</code> work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anentropic">@anentropic</a> on 2025-09-29 16:17</div>
+            <div class="timeline-body"><p>yes install succeeds</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anentropic">@anentropic</a> on 2025-09-30 10:10</div>
+            <div class="timeline-body"><p>I can sort of get around this at bash level by grepping for &quot;status code 409&quot; in the error response from <code>uv publish</code> and ignoring that error, if I keep cd-ing into each package and publishing individually</p>
+<blockquote>
+<p>The idea with workspace is that you can build and publish from the workspace root. You could build and publish two libraries <code>foolib</code> and <code>barlib</code> with one command:</p>
+<pre><code>uv build --package foolib
+uv build --package barlib
+uv publish
+</code></pre>
+</blockquote>
+<p><code>uv build --all-packages</code> works nicely for what I need, it builds workspace members but not the workspace itself</p>
+<p>but to do an all in one <code>uv publish</code> I need the check-url stuff to work, otherwise it fails on first package without trying the rest</p>
+<p>The latest code I tried is:</p>
+<pre><code class="language-bash">export REPO_URL=&quot;https://********.d.codeartifact.eu-west-1.amazonaws.com/pypi/myrepo&quot;
+
+cat \&lt;&lt; EOF &gt; uv.toml
+[[index]]
+name = &quot;hub&quot;
+url = &quot;$REPO_URL/simple/&quot;
+explicit = true
+EOF
+
+export UV_INDEX_HUB_USERNAME=aws
+export UV_INDEX_HUB_PASSWORD=&quot;$AWS_CODEARTIFACT_TOKEN&quot;
+export UV_PUBLISH_USERNAME=aws
+export UV_PUBLISH_PASSWORD=&quot;$AWS_CODEARTIFACT_TOKEN&quot;
+
+uv build --all-packages
+uv publish -v \
+  --check-url &quot;$REPO_URL/simple/&quot; \
+  --publish-url &quot;$REPO_URL&quot;
+</code></pre>
+<p>but it gets <code>DEBUG Indexes search failed because of status code failure: 401 Unauthorized</code></p>
+<p>I am unclear which auth args / env vars are required for the check-url request ?</p>
+<p>It doesn't seem to use either the 'index' or the 'publish' creds?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anentropic">@anentropic</a> on 2025-09-30 10:59</div>
+            <div class="timeline-body"><p>I'm not very good at reading Rust code but it looks to me like the check-url request doesn't use any credentials</p>
+<p>First here in <code>publish</code> we gather credentials:
+https://github.com/astral-sh/uv/blob/ab2f394019903b2ea1245e3188b4deda65d6c6fe/crates/uv/src/commands/publish.rs#L139-L152</p>
+<p>Later the <code>validate</code> and <code>upload</code> calls both take those credentials and use them:
+https://github.com/astral-sh/uv/blob/ab2f394019903b2ea1245e3188b4deda65d6c6fe/crates/uv/src/commands/publish.rs#L205-L232</p>
+<p>But before that the <code>check_url</code> request doesn't appear to take any credentials:
+https://github.com/astral-sh/uv/blob/ab2f394019903b2ea1245e3188b4deda65d6c6fe/crates/uv/src/commands/publish.rs#L160-L174</p>
+<p>So I feel like this is never going to work for private repos currently?</p>
+<p>For now I guess I will roll my own check by comparing <code>aws codeartifact list-package-versions ... | jq &quot;.defaultDisp layVersion&quot;</code> and <code>uv version --short</code> (iterating over packages within the workspace in a loop as I was originally)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-15 21:19</div>
+            <div class="timeline-body"><p>Does it work with this?</p>
+<pre><code class="language-bash">export REPO_URL=&quot;https://********.d.codeartifact.eu-west-1.amazonaws.com/pypi/myrepo&quot;
+
+cat \&lt;&lt; EOF &gt; uv.toml
+[[index]]
+name = &quot;hub&quot;
+url = &quot;$REPO_URL/simple/&quot;
+publish-url =  &quot;$REPO_URL&quot;
+explicit = true
+EOF
+
+export UV_INDEX_HUB_USERNAME=aws
+export UV_INDEX_HUB_PASSWORD=&quot;$AWS_CODEARTIFACT_TOKEN&quot;
+export UV_PUBLISH_USERNAME=aws
+export UV_PUBLISH_PASSWORD=&quot;$AWS_CODEARTIFACT_TOKEN&quot;
+
+uv build --all-packages
+uv publish -v --index hub
+</code></pre>
+<p>Regarding the Rust implementation, the check URL credentials are fetched the same way they are for <code>uv pip install</code>, only the publish credentials are implemented separately in the publish code. There's several sources and layers that process them, from the <code>AuthMiddleware</code> over <code>cache_index_credentials</code> to the passed optional keyring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anentropic">@anentropic</a> on 2025-10-16 12:35</div>
+            <div class="timeline-body"><p>I haven't tried it yet but the above probably works... my understanding was that without <code>--check-url</code> no &quot;already published&quot; check is made, and it seemed to be that step that is failing after the rest of it was working fine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-16 14:41</div>
+            <div class="timeline-body"><p><code>--index</code> also does this check by reading <code>index.url</code>; It's usually the better check. I'm a bit surprised at the difference with <code>uv pip install</code> wrt to authentication, I might need to dig into this, though I'd like to confirm that <code>--index</code> works as expected for that.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

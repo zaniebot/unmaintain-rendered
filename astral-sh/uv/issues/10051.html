@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install -e .` generates &quot;warning: Failed to hardlink files; falling back to full copy.&quot; - astral-sh/uv #10051</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install -e .` generates &quot;warning: Failed to hardlink files; falling back to full copy.&quot;</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10051">#10051</a>
+        opened by <a href="https://github.com/johann-petrak">@johann-petrak</a>
+        on 2024-12-20 09:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/johann-petrak">@johann-petrak</a> on 2024-12-20 09:53</div>
+            <div class="timeline-body"><p>Running uv version 0.5.11 on Ubuntu 24.04.</p>
+<p>After initializing a project, when I attempt to run <code>uv pip install -e .</code> I always get the warning</p>
+<pre><code>warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+</code></pre>
+<p>This is weird and somewhat disappointing: <code>pip install -e .</code>  works without any problem e.g. when I use conda instead. (it seems conda does not actually link but uses an egg-link file instead?)</p>
+<p>I do not understand at all why uv tries to do hard linking instead of soft linking on a Linux system, but even hard linking should work (the .venv is just a subdir of the same directory where the python package is)</p>
+<p>Having <code>pip install -e .</code> using copy instead of linking really utterly defies the purpose of having a development installation so until this is possible somehow in uv I do not see how I can use it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanscain">@nathanscain</a> on 2024-12-20 10:15</div>
+            <div class="timeline-body"><p>Hey! The potential issue for the warning isn't that the venv and package are on different file systems, but that the venv and cache are on difference file systems.</p>
+<p>uv caches by unpacking all downloads and built packages to the cache directory and then hard linking those files into your venv. The metadata for editable packages is also cached this way. If the cache directory (<code>~/.cache/uv/</code>) is on a different file system than your project, a hard link cannot be created.</p>
+<p>You can resolve this a few ways - setting your cache directory to be some location on the same file system (https://docs.astral.sh/uv/concepts/cache/#cache-directory) or choosing a different link mode (https://docs.astral.sh/uv/configuration/environment/#uv_link_mode)</p>
+<p>To answer your other question, uv defaults to <code>hard-link</code> on linux because <code>clone</code> is not supported generally, <code>soft-link</code> would allow <code>uv cache clean</code> to break the venv, and <code>copy</code> is a slower option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johann-petrak">@johann-petrak</a> on 2024-12-20 11:36</div>
+            <div class="timeline-body"><p>Thanks for that info!</p>
+<p>So the issue is the stealth involvement of ~/.cache which is indeed on a different file system in my case and for good reason as I need it to be on a large one so there is no option to move it.
+I would have thought that uv would install into the .venv directy (which is on the same file system) rather than into .cache -- I think using .cache will cause this problem very frequently.  I do not understand why the dev installed package should be in the cache, it is not something that can be removed or cleaned up any time at all?</p>
+<p>I guess I can set UV_CACHE_DIR to point to some directory on the same drive.</p>
+<p>using uv link mode sounds good but I could not find any information about the possible values, searching for <code>--link-mode</code>  in the docs shows 0 matches to me. Is symbolic linking an option there? Again, I do not understand why cleaning a cache should have any influence on a package that has been installed and definitely is not something to be considered cached data?</p>
+<p>My overall impression of this is that it reflects design choices which will lead to surprises with many people as this is just totally unexpected and something never seen with traditional ways to do the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanscain">@nathanscain</a> on 2024-12-20 12:57</div>
+            <div class="timeline-body"><p>For editable installs, it is caching the metadata for syncing/locking so it doesn't have to recontact your build backend for future uv actions if the package doesn't change. (Controlled by the cache key set in <code>pyproject.toml</code> or <code>uv.toml</code>). You can tell uv not to use a cache (<code>UV_NO_CACHE</code>) to get an idea of what I mean speed wise - has the largest effect if you use <code>uv run</code> instead of activating the environment and more so if you use the extra features that change the environment up more often.</p>
+<p>Idk if I would call this stealth as uv doesn't try to hide that it is <em>aggressively</em> caching anything and everything it can for any potential speed up.</p>
+<p>The cache location and link mode can be configured via environment variables, uv settings (global, user, or local), or as command line flags. Link modes have 4 options - not sure why the docs aren't showing for you, but sounds like you want <code>soft-link</code> (keep in mind my mention of the cleaning the cache possibly messing with the environment if you choose that)</p>
+<p>I hear you that this was unexpected for you - uv had to do a few things differently (like aggressive caching) to make it be so much faster than traditional methods and to support features like syncing and locking on every uv command in milliseconds. It is a transparent change for most users and will also respect XDG settings as well to try to support many non-standard user cases. For future reference, uv is almost always creating or using a cache with every command you run - especially if it involves a venv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-27 13:48</div>
+            <div class="timeline-body"><p>I think you meant to search for <code>link-mode</code>:</p>
+<p><img src="https://github.com/user-attachments/assets/0773466b-4851-489b-83bf-40baab1a6c96" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-27 13:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

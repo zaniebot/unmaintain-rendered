@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panic when trying to fix file - astral-sh/ruff #6787</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Panic when trying to fix file</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6787">#6787</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2023-08-22 18:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2023-08-22 18:21</div>
+            <div class="timeline-body"><p>Ruff 0.0.285</p>
+<pre><code>ruff  *.py --select ALL --no-cache
+</code></pre>
+<p>file content:</p>
+<pre><code>class ARP(Packet):
+    fields_desc = [
+        XShortEnumField(&quot;hwtype&quot;, 0x0001, HARDWARE_TYPES),
+        FieldLenField(&quot;plen&quot;, None, fmt=&quot;B&quot;, length_of=&quot;psrc&quot;),
+        ShortEnumField(&quot;op&quot;, 1, {
+            &quot;RARP-req&quot;: 3,
+            &quot;RARP-rep&quot;: 4,
+            &quot;Dyn-RARP-req&quot;: 5,
+            &quot;Dyn-RAR-rep&quot;: 6,
+            &quot;Dyn-RARP-err&quot;: 7,
+            &quot;InARP-req&quot;: 8,
+            &quot;InARP-rep&quot;: 9
+        }),
+        MultipleTypeField(
+            [
+                (SourceMACField(&quot;hwsrc&quot;),
+                 (lambda pkt: pkt.hwtype == 1 and pkt.hwlen == 6,
+                  lambda pkt, val: pkt.hwtype == 1 and (
+                      pkt.hwlen == 6 or (pkt.hwlen is None and
+                                         (val is None or len(val) == 6 or
+                                          valid_mac(val)))
+                  ))),
+            ],
+        ),
+        MultipleTypeField(
+            [
+                (SourceIPField(&quot;psrc&quot;, &quot;pdst&quot;),
+                 (lambda pkt: pkt.ptype == 0x0800 and pkt.plen == 4,
+                  lambda pkt, val: pkt.ptype == 0x0800 and (
+                      pkt.plen == 4 or (pkt.plen is None and
+                                        (val is None or valid_net(val)))
+                  ))),
+                (SourceIP6Field(&quot;psrc&quot;, &quot;pdst&quot;),
+                 (lambda pkt: pkt.ptype == 0x86dd and pkt.plen == 16,
+                  lambda pkt, val: pkt.ptype == 0x86dd and (
+                      pkt.plen == 16 or (pkt.plen is None and
+                                         (val is None or valid_net6(val)))
+                  ))),
+            ],
+            StrFixedLenField(&quot;psrc&quot;, None, length_from=lambda pkt: pkt.plen),
+        ),
+        MultipleTypeField(
+            [
+                (MACField(&quot;hwdst&quot;, ETHER_ANY),
+                 (lambda pkt: pkt.hwtype == 1 and pkt.hwlen == 6,
+                  lambda pkt, val: pkt.hwtype == 1 and (
+                      pkt.hwlen == 6 or (pkt.hwlen is None and
+                                         (val is None or len(val) == 6 or
+                                          valid_mac(val)))
+                  ))),
+            ],
+            StrFixedLenField(&quot;hwdst&quot;, None, length_from=lambda pkt: pkt.hwlen),
+        ),
+        MultipleTypeField(
+            [
+                (IPField(&quot;pdst&quot;, &quot;0.0.0.0&quot;),
+                 (lambda pkt: pkt.ptype == 0x0800 and pkt.plen == 4,
+                  lambda pkt, val: pkt.ptype == 0x0800 and (
+                      pkt.plen == 4 or (pkt.plen is None and
+                                        (val is None or valid_net(val)))
+                  ))),
+                (IP6Field(&quot;pdst&quot;, &quot;::&quot;),
+                 (lambda pkt: pkt.ptype == 0x86dd and pkt.plen == 16,
+                  lambda pkt, val: pkt.ptype == 0x86dd and (
+                      pkt.plen == 16 or (pkt.plen is None and
+                                         (val is None or valid_net6(val)))
+                  ))),
+            ],
+        ),
+    ]
+
+    def hashret(self):
+        # type: () -&gt; bytes
+        return struct.pack(&quot;&gt;HHH&quot;, self.hwtype, self.ptype,
+                           ((self.op + 1) // 2)) + self.payload.hashret()
+
+    def answers(self, other):
+        # type: (Packet) -&gt; int
+        if self.op != other.op + 1:
+            return False
+        self_psrc = self.get_field('psrc').i2m(self, self.psrc)  # type: bytes
+        other_pdst = other.get_field('pdst').i2m(other, other.pdst) \
+</code></pre>
+<p>error:</p>
+<pre><code>warning: Linting panicked 74309008920677l20469484890891608798.py: This indicates a bug in `ruff`. If you could open an issue at:
+
+https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at 'internal error: entered unreachable code: Expected to find end-of-statement', crates/ruff/src/rules/flake8_return/helpers.rs:41:9
+Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
+   1: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::Fn&lt;Args&gt;&gt;::call
+             at /rustc/8ede3aae28fe6e4d52b38157d7bfe0d3bceef225/library/alloc/src/boxed.rs:1999:9
+   2: std::panicking::rust_panic_with_hook
+             at /rustc/8ede3aae28fe6e4d52b38157d7bfe0d3bceef225/library/std/src/panicking.rs:709:13
+   3: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/8ede3aae28fe6e4d52b38157d7bfe0d3bceef225/library/std/src/panicking.rs:595:13
+   4: std::sys_common::backtrace::__rust_end_short_backtrace
+             at /rustc/8ede3aae28fe6e4d52b38157d7bfe0d3bceef225/library/std/src/sys_common/backtrace.rs:151:18
+   5: rust_begin_unwind
+             at /rustc/8ede3aae28fe6e4d52b38157d7bfe0d3bceef225/library/std/src/panicking.rs:593:5
+   6: core::panicking::panic_fmt
+             at /rustc/8ede3aae28fe6e4d52b38157d7bfe0d3bceef225/library/core/src/panicking.rs:67:14
+   7: ruff::rules::flake8_return::helpers::end_of_last_statement
+   8: ruff::rules::flake8_return::rules::function::implicit_return
+   9: ruff::checkers::ast::analyze::statement::statement
+  10: &lt;ruff::checkers::ast::Checker as ruff_python_ast::visitor::Visitor&gt;::visit_stmt
+  11: &lt;ruff::checkers::ast::Checker as ruff_python_ast::visitor::Visitor&gt;::visit_stmt
+  12: ruff::checkers::ast::check_ast
+  13: ruff::linter::check_path
+  14: ruff::linter::lint_fix
+  15: ruff_cli::diagnostics::lint_path
+  16: rayon::iter::plumbing::bridge_producer_consumer::helper
+  17: ruff_cli::commands::run::run
+  18: ruff_cli::check
+  19: ruff_cli::run
+  20: ruff::main
+  21: std::sys_common::backtrace::__rust_begin_short_backtrace
+  22: main
+  23: __libc_start_call_main
+             at ./csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+  24: __libc_start_main_impl
+             at ./csu/../csu/libc-start.c:360:3
+  25: _start
+
+</code></pre>
+<p><a href="https://github.com/astral-sh/ruff/files/12411648/74309008920677l20469484890891608798.py.zip">74309008920677l20469484890891608798.py.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-22 18:24</div>
+            <div class="timeline-body"><p>Guessing this is the <code>\</code> at the end of the file (no newline).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-22 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-22 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fuzzer</span> added by @charliermarsh on 2023-08-22 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6789.html">astral-sh/ruff#6789</a> on 2023-08-22 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-22 19:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`TCH` setting to autofix with conversion to string - astral-sh/ruff #5559</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`TCH` setting to autofix with conversion to string</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5559">#5559</a>
+        opened by <a href="https://github.com/smackesey">@smackesey</a>
+        on 2023-07-06 11:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/smackesey">@smackesey</a> on 2023-07-06 11:46</div>
+            <div class="timeline-body"><p>Currently the <code>TCH</code> (<code>flake8-type-checking</code>) rules require annotations to be stored as strings (i.e. not evaluated). Annotations are stored a strings if:</p>
+<ul>
+<li>The annotations are string literals (i.e. are quoted)</li>
+<li>The annotations are in a module with <code>from __future__ import annotations</code> (which causes evaluation of all annotations in the module to be skipped)</li>
+<li>The annotations are of local variables (the Python interpreter does not evaluate local variable annotations)</li>
+</ul>
+<p>One approach to getting <code>TCH</code> autofix working is to inject <code>from __future__ import annotations</code> into all your source modules (using <code>I002</code>). This is not ideal because string annotations unavoidably break code that meets these conditions:</p>
+<ol>
+<li>annotations are being created in a local scope</li>
+<li>an annotation references a symbol only available in that local scope</li>
+<li>the annotation must be operated on at runtime</li>
+</ol>
+<p>Here is an example of code meeting these conditions:</p>
+<pre><code>def make_bar():
+    class Bar:
+        ...
+
+    def bar(x: &quot;Bar&quot;):
+        ...
+    return bar
+
+bar = make_bar()
+
+# `bar` has a string annotation-- if we want to operate on it, we need to evaluate it. This requires
+# calling `get_type_hints`, but this fails because &quot;Bar&quot; can't be dereferenced since referent `Bar`
+# vanished with local scope
+get_type_hints(bar)  # =&gt; NameError: name 'Bar' is not defined.
+</code></pre>
+<p>We have plenty of code meeting these conditions in Dagster (mostly in tests), so my <a href="https://github.com/dagster-io/dagster/pull/14675">experiment</a> in injecting <code>from __future__ import annotations</code> to enable <code>TCH</code> autofix has failed. Other projects that use runtime type annotation introspection are likely to encounter the same issues.</p>
+<p>Therefore, a significant enhancement to <code>TCH</code> autofix would be to detect where annotations <em>could</em> be stored as strings, and perform a targeted conversion for you using quoting. Example:</p>
+<pre><code>from threading import Lock
+
+def foo(lock: Lock):
+    ...
+</code></pre>
+<p>After applying <code>TCH</code> autofix:</p>
+<pre><code>from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from threading import Lock
+
+def foo(lock: &quot;Lock&quot;):
+    ...
+</code></pre>
+<p>This would make <code>TCH</code> autofix a lot more useful for us and probably many other projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dagster-io/dagster/pulls/14675.html">dagster-io/dagster#14675</a> on 2023-07-06 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-06 13:54</div>
+            <div class="timeline-body"><p>Yeah, I agree this would be useful. I'm not yet certain how hard it is to get right, but I agree that it would be useful... flake8-type-checking has rules for this, which we could look at for reference: https://pypi.org/project/flake8-type-checking/.</p>
+<blockquote>
+<p>annotations are being created in a local scope.</p>
+</blockquote>
+<p>Can you give an example of this, just to illustrate the problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">core</span> added by @charliermarsh on 2023-07-06 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-07-06 14:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you give an example of this, just to illustrate the problem?</p>
+</blockquote>
+<p>I updated OP with an example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5753.html">astral-sh/ruff#5753</a> on 2023-07-14 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 20:28</div>
+            <div class="timeline-body"><p>Thanks. I think it will be difficult to reliably determine whether an annotation is required at runtime 😓</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-07-14 20:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it will be difficult to reliably determine whether an annotation is required at runtime</p>
+</blockquote>
+<p>Haven't thought it all the way through, but can't you just see if the only uses of a symbol are inside non-local type annotations, while also applying the existing settings used to special case e.g. Pydantic? Maybe determining scoping is harder than I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 21:02</div>
+            <div class="timeline-body"><p>Can you explain what you mean in terms of this example? (I.e., why <code>x: Bar</code> can't be quoted.)</p>
+<pre><code class="language-python">def make_bar():
+    class Bar:
+        ...
+
+    def bar(x: Bar):
+        ...
+
+    return bar
+
+bar = make_bar()
+
+print(get_type_hints(bar))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-07-14 21:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you explain what you mean in terms of this example? (I.e., why x: Bar can't be quoted.)</p>
+</blockquote>
+<ul>
+<li>With <code>x: Bar</code> (unquoted case), <code>bar.__annotations__[&quot;x&quot;]</code> stores a direct reference to <code>Bar</code>.</li>
+<li>When <code>x: &quot;Bar&quot;</code> (quoted case), <code>bar.__annotations__[&quot;x&quot;]</code> stores the string <code>&quot;Bar&quot;</code>.</li>
+<li>When <code>get_type_hints(bar)</code> is applied, Python tries to resolve each annotation<ul>
+<li>If it's a type, just return it.</li>
+<li>If it's as string, dereference it.</li>
+</ul>
+</li>
+<li>When Python tries to dereference the string &quot;Bar&quot;, it comes up empty and throws a <code>NameError</code>.</li>
+</ul>
+<p>I'm not sure why Python fails in exactly this scenario. I guess the defining module for the object holding the annotations is known, so Python is able to look up the referent of string annotations if they exist in the defining module's <code>__dict__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 21:10</div>
+            <div class="timeline-body"><p>But, does &quot;whether we can quote it&quot; depend on whether and when <code>get_type_hints</code> is called? Or is there a more robust and general methodology we can follow?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-07-14 21:15</div>
+            <div class="timeline-body"><blockquote>
+<p>But, does &quot;whether we can quote it&quot; depend on whether and when get_type_hints is called? Or is there a more robust and general methodology we can follow?</p>
+</blockquote>
+<p>I would say just be conservative and always assume that <code>get_type_hints</code> might be called-- so if it references a local scope symbol, don't quote it.</p>
+<p>In practice referencing local scope symbols is going to be pretty rare in 99% of Python code anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 21:16</div>
+            <div class="timeline-body"><p>Ah I see -- so we would avoid quoting annotations that rely on symbols defined outside of the module scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 22:30</div>
+            <div class="timeline-body"><p>It's also a little less critical for the TCH rules in particular since we're only dealing with imported symbols. But I suppose if the import itself is within a function scope...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6001.html">astral-sh/ruff#6001</a> on 2023-07-23 04:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 04:44</div>
+            <div class="timeline-body"><p>I have something that I've been testing against Dagster here: https://github.com/astral-sh/ruff/pull/6001. The outputs look correct to me -- one example:</p>
+<pre><code class="language-diff">--- a/examples/assets_smoke_test/assets_smoke_test/pure_python_assets.py
++++ b/examples/assets_smoke_test/assets_smoke_test/pure_python_assets.py
+@@ -1,5 +1,9 @@
++from typing import TYPE_CHECKING
++
+ from dagster import SourceAsset, TableSchema, asset
+-from pandas import DataFrame
++
++if TYPE_CHECKING:
++    from pandas import DataFrame
+
+ raw_country_populations = SourceAsset(
+     &quot;raw_country_populations&quot;,
+@@ -19,7 +23,7 @@
+
+
+ @asset
+-def country_populations(raw_country_populations) -&gt; DataFrame:
++def country_populations(raw_country_populations) -&gt; &quot;DataFrame&quot;:
+     country_populations = raw_country_populations.copy()
+     country_populations[&quot;change&quot;] = (
+         country_populations[&quot;change&quot;]
+@@ -32,13 +36,13 @@ def country_populations(raw_country_populations) -&gt; DataFrame:
+
+
+ @asset
+-def continent_stats(country_populations: DataFrame) -&gt; DataFrame:
++def continent_stats(country_populations: &quot;DataFrame&quot;) -&gt; &quot;DataFrame&quot;:
+     result = country_populations.groupby(&quot;continent&quot;).agg({&quot;pop2019&quot;: &quot;sum&quot;, &quot;change&quot;: &quot;mean&quot;})
+     return result
+
+
+ @asset
+-def country_stats(country_populations: DataFrame, continent_stats: DataFrame) -&gt; DataFrame:
++def country_stats(country_populations: &quot;DataFrame&quot;, continent_stats: &quot;DataFrame&quot;) -&gt; &quot;DataFrame&quot;:
+     result = country_populations.join(continent_stats, on=&quot;continent&quot;, lsuffix=&quot;_continent&quot;)
+     result[&quot;continent_pop_fraction&quot;] = result[&quot;pop2019&quot;] / result[&quot;pop2019_continent&quot;]
+     return result
+</code></pre>
+<p>But not sure how best to check whether the rule is having any unintended effects on runtime behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-07-23 16:04</div>
+            <div class="timeline-body"><p>If there's an easy way for me to locally run a preview version of Ruff, I'm happy to run your enhanced rule on my private codebase and verify the runtime behavior. Obviously would be easier if someone else has a large open-source codebase to test on, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 16:08</div>
+            <div class="timeline-body"><p>Thanks! I can kick off a release build dry-run which will generate wheel files that you can download and <code>pip install</code>. I'll post here with the link.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 16:43</div>
+            <div class="timeline-body"><p>If you'd like, you can click <a href="https://github.com/astral-sh/ruff/actions/runs/5637406313">here</a>, download the &quot;Wheels&quot; at the bottom, unzip, and <code>pip install</code> the wheel that matches your platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-07-23 16:52</div>
+            <div class="timeline-body"><p>This looks much more comprehensive than when I made <code>from __future__ import annotations</code> required (which barely modified anything)! I really like the looks of it. However, a runtime error has been introduced that doesn't get detected by my typechecker:</p>
+<img width="570" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/597ebbd3-de0f-4b8b-aa38-5df63452a40d">
+
+<img width="535" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/494ac5ac-9ed6-4b7d-9993-7ee0d314a40e">
+
+<img width="492" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/1be5355e-a95d-473f-8b88-3528432e85f0">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-07-23 17:15</div>
+            <div class="timeline-body"><p>I did a global find-and-replace to convert <code>&quot;(\w+)&quot; \| None</code> to <code>$1 | None</code>. This fixed all my runtime issues (at least until I re-ran Ruff).</p>
+<p>EDIT: The above find-and-replace loses some of the benefits of this rule. Replacing with <code>&quot;$1 | None&quot;</code> is much better for two reasons:</p>
+<ol>
+<li>It retains the performance benefits of this rule.</li>
+<li>It does not get undone when re-running Ruff.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 17:31</div>
+            <div class="timeline-body"><p>Oh yes, that case makes sense, we need handle it. Thanks so much for testing it out!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-07-24 13:16</div>
+            <div class="timeline-body"><p>The above outputs look good to me, as long as there's a setting to avoid applying the rule to functions with certain decorators (and IIRC this already exists).</p>
+<blockquote>
+<p>But not sure how best to check whether the rule is having any unintended effects on runtime behavior.</p>
+</blockquote>
+<p>Potential unintended runtime effects are unavoidable since people could always be accessing <code>.__annotations__</code> and performing arbitrary logic with it. But as long as those annotations aren't coming from local scope, they can be easily worked around by changing direct <code>.__annotations__</code> access to use <code>typing.get_type_hints</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-26 20:09</div>
+            <div class="timeline-body"><p>I'm blocked on supporting unions (e.g., when quoting <code>DataFrame</code> in <code>DataFrame | int</code>, you need to quote the entire union, like <code>&quot;DataFrame | int&quot;</code>). There are just a bunch of edge cases and we don't have access to the full AST when constructing the fix (so we need to do manual lexing). This might require some new infrastructure to be fully robust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-07-26 20:50</div>
+            <div class="timeline-body"><p>Totally understandable. For now, is there value in shipping it with an exclusion to not add quotes to any types involving unions? It still seemed like a major improvement over <code>from __future__ import annotations</code> when I tested the preview.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-13 03:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

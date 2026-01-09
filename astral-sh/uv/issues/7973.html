@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>installing &quot;torch&quot; with specific version with &quot;uv pip install&quot;  fails - astral-sh/uv #7973</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>installing &quot;torch&quot; with specific version with &quot;uv pip install&quot;  fails</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7973">#7973</a>
+        opened by <a href="https://github.com/szobov">@szobov</a>
+        on 2024-10-07 14:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/szobov">@szobov</a> on 2024-10-07 14:54</div>
+            <div class="timeline-body"><p>Hey there,</p>
+<p>First, thanks a lot for the work you're doing here!</p>
+<p>When I'm trying to install pytorch using <code>uv pip install</code> with a specific version, it fails to do it:</p>
+<pre><code>$ uv pip install -vvv --index-url=https://download.pytorch.org/whl/cu118 torch==2.2.0
+    0.002354s DEBUG uv uv 0.4.18
+ uv_requirements::specification::from_source source=torch==2.2.0
+    0.002649s DEBUG uv_python::discovery Searching for default Python interpreter in system path
+    0.002828s DEBUG uv_python::discovery Found `cpython-3.12.5-linux-x86_64-gnu` at `/home/szobov-workstation/.../.venv/bin/python3` (active virtual environment)
+    0.002906s DEBUG uv::commands::pip::operations Using Python 3.12.5 environment at .venv
+    0.002978s DEBUG uv_fs Acquired lock for `.venv`
+    0.007007s DEBUG uv::commands::pip::install At least one requirement is not satisfied: torch==2.2.0
+ uv_client::linehaul::linehaul 
+    0.007629s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries 
+ uv_resolver::resolver::solve 
+    0.008305s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.12.5
+    0.008316s   0ms DEBUG uv_resolver::resolver Solving with target Python version: &gt;=3.12.5
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+     uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+    0.008551s   0ms DEBUG uv_resolver::resolver Adding direct dependency: torch==2.2.0
+   uv_resolver::resolver::choose_version package=torch
+ uv_resolver::resolver::process_request request=Versions torch
+   uv_client::registry_client::simple_api package=torch
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/home/szobov-workstation/.cache/uv/simple-v13/index/0683d010c15737d1/torch.rkyv
+ uv_resolver::resolver::process_request request=Prefetch torch ==2.2.0
+ uv_client::cached_client::from_path_sync path=&quot;/home/szobov-workstation/.cache/uv/simple-v13/index/0683d010c15737d1/torch.rkyv&quot;
+        0.008771s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cu118/torch/
+       uv_client::cached_client::fresh_request url=&quot;https://download.pytorch.org/whl/cu118/torch/&quot;
+       uv_client::cached_client::new_cache file=/home/szobov-workstation/.cache/uv/simple-v13/index/0683d010c15737d1/torch.rkyv
+       uv_client::registry_client::parse_simple_api package=torch
+         uv_client::html::parse url=https://download.pytorch.org/whl/cu118/torch/
+   uv_resolver::version_map::from_metadata 
+      0.984090s 975ms DEBUG uv_resolver::resolver Searching for a compatible version of torch (==2.2.0)
+    0.984199s 975ms DEBUG uv_resolver::resolver No compatible version found for: torch
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of torch==2.2.0 and you require torch==2.2.0, we can conclude that your requirements are unsatisfiable.
+    0.985315s DEBUG uv_fs Released lock at `/home/szobov-workstation/.../.venv/.lock`
+</code></pre>
+<p>When I execute the same command directly with <code>pip</code> it installs the dependency:</p>
+<pre><code>$ pip install --index-url=https://download.pytorch.org/whl/cu118 --verbose torch==2.2.0
+Using pip 24.2 from /home/szobov-workstation/.../.venv/lib/python3.12/site-packages/pip (python 3.12)
+Looking in indexes: https://download.pytorch.org/whl/cu118
+Collecting torch==2.2.0
+  Downloading https://download.pytorch.org/whl/cu118/torch-2.2.0%2Bcu118-cp312-cp312-linux_x86_64.whl (811.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 811.6/811.6 MB 15.7 MB/s eta 0:00:0
+....
+Successfully installed filelock-3.13.1 fsspec-2024.2.0 mpmath-1.3.0 nvidia-cublas-cu11-11.11.3.6 nvidia-cuda-cupti-cu11-11.8.87 nvidia-cuda-nvrtc-cu11-11.8.89 nvidia-cuda-runtime-cu11-11.8.89 nvidia-cudnn-cu11-8.7.0.84 nvidia-cufft-cu11-10.9.0.58 nvidia-curand-cu11-10.3.0.86 nvidia-cusolver-cu11-11.4.1.48 nvidia-cusparse-cu11-11.7.5.86 nvidia-nccl-cu11-2.19.3 nvidia-nvtx-cu11-11.8.86 sympy-1.12 torch-2.2.0+cu118
+</code></pre>
+<p>If I don't specify a version, <code>uv pip</code> picks up the latest one and installs <code>torch==2.4.0</code>.</p>
+<p>I also checked the <a href="https://download.pytorch.org/whl/torch/">repository</a> and it contains:</p>
+<pre><code>torch-2.2.0+cpu.cxx11.abi-cp312-cp312-linux_x86_64.whl
+torch-2.4.0+cpu.cxx11.abi-cp312-cp312-linux_x86_64.whl
+</code></pre>
+<p>I think the desired behavior is <code>uv pip</code> installs required packaged as <code>pip</code> does.</p>
+<h3>uv version</h3>
+<pre><code>$ uv --version
+uv 0.4.18
+</code></pre>
+<h3>Platform</h3>
+<pre><code>$ uname -a
+Linux pop-os 6.9.3-76060903-generic #202405300957~1726766035~22.04~4092a0e SMP PREEMPT_DYNAMIC Thu S x86_64 x86_64 x86_64 GNU/Linux
+$ python --version # installed with uv
+Python 3.12.5
+</code></pre>
+<p>Let me know if you need any extra information.
+Thanks :pray:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-07 15:00</div>
+            <div class="timeline-body"><p>Hi! Did you read the <a href="https://docs.astral.sh/uv/pip/compatibility/#local-version-identifiers">local version identifier section</a> of the pip compatibility guide?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/szobov">@szobov</a> on 2024-10-07 15:28</div>
+            <div class="timeline-body"><p>Hey @zanieb
+I'm sorry, I've missed it. :pray:
+I specified the version as proposed and it worked!
+Thanks a lot!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @szobov on 2024-10-07 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rsxdalv">@rsxdalv</a> on 2024-10-16 11:05</div>
+            <div class="timeline-body"><p>@zanieb Ok I have bumped into this issue twice now. I understand the logic and the rationale, but coming from i.e., React ecosystem I also like debug errors. It's fine if they are only shown with --verbose, but something like 1. no version &quot;1.0.0&quot; exists and then <strong>additionally</strong> write <code>found incompatible versions 1.0.0+cu123, please read https://docs.astral.sh/uv/pip/compatibility/#local-version-identifiers</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

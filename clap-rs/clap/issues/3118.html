@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using AppSettings::SubcommandsNegateReqs - clap-rs/clap #3118</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using AppSettings::SubcommandsNegateReqs</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3118">#3118</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-12-09 16:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/erickpires"><img src="https://avatars.githubusercontent.com/u/6362864?v=4" align="left" width="96" height="96" hspace="10"></img></a> <strong>Issue by <a href="https://github.com/erickpires">erickpires</a></strong>
+<em>Friday Jul 13, 2018 at 19:26 GMT</em>
+<em>Originally opened as https://github.com/TeXitoi/structopt/issues/124</em></p>
+<hr />
+<p>I'm sorry if I'm missing something here, but I was unable to find any information on the documentation or in the examples.</p>
+<p>I have a use case where my program has a required Arg (for example a input file name). I would like to implement shell completions generation using clap during runtime by passing a <code>completions</code>subcommand and the shell to generate the completions for (the same way <code>rustup</code> does). For this to happen I need to set <code>AppSettings::SubcommandsNegateReqs</code>. Using the examples as a guide I did this:</p>
+<pre><code>#[structopt(..., raw(global_settings = &quot;&amp;[AppSettings::SubcommandsNegateReqs]&quot;)]
+</code></pre>
+<p>But now, when I run <code>cargo run completions zsh</code> for example, my program panics at <code>Opt::from_args()</code> due to a <code>None</code> been <code>unwrap</code>'d.</p>
+<p>I've found a workaround this by getting the clap matches via <code>Opt::clap().get_matches()</code> and matching against the subcommands (and exiting early if the subcommand was found), but I found this very ugly and was thinking that there must be a clean way to do this using <code>structopt</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Friday Jul 13, 2018 at 20:06 GMT</em></p>
+<hr />
+<p>I didn't know this command. But what behavior do you expect, because <code>from_args</code> can't work in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/erickpires"><img src="https://avatars.githubusercontent.com/u/6362864?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/erickpires">erickpires</a></strong>
+<em>Monday Jul 16, 2018 at 20:27 GMT</em></p>
+<hr />
+<p>I understand that <code>from_args</code> can't work in this situation. When using <code>clap</code> to implement subcommands that should negate required arguments I use the <a href="https://docs.rs/clap/2.32.0/clap/struct.ArgMatches.html#method.subcommand"><code>subcomand()</code></a> from <code>ArgsMatches</code>, so I think ideal solution here would be to try and replicate this behavior.</p>
+<p>My thinking is, since I have a <code>Subcommands</code> enum that lists all the possible subcommands and my <code>Opt</code> struct has a field of type <code>Subcommand</code>, we could have something like <code>Opt::subcommand()</code> that would return an <code>Option&lt;Subcommands&gt;</code>. This way I can <code>match</code> against this, similar to what I would do when using <code>clap</code> and I know to only call <code>from_args</code> when the return is <code>None</code>.</p>
+<p>Now, what I don't know is if this is even possible. I don't know what we can and cannot do with <code>#[derive]</code>. I would be happy to help implement this, but I would like to know your opinion about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Tuesday Jul 17, 2018 at 08:01 GMT</em></p>
+<hr />
+<p>@kbknapp what do you think about that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/sopium"><img src="https://avatars.githubusercontent.com/u/6764397?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/sopium">sopium</a></strong>
+<em>Monday Sep 30, 2019 at 11:56 GMT</em></p>
+<hr />
+<p>I run into this issue as well. Here's my workaround: define an almost identical struct but make the fields optional, and use it to access match result.</p>
+<pre><code class="language-rust">use structopt::StructOpt;
+
+#[derive(Debug, StructOpt)]
+struct OptionsAndSubcommand {
+    #[structopt(long)]
+    arg: i32,
+
+    #[structopt(subcommand)]
+    cmd: Option&lt;Cmd&gt;,
+}
+
+#[derive(Debug, StructOpt)]
+enum Cmd {
+    Get {
+        name: String,
+    },
+}
+
+#[derive(Debug, StructOpt)]
+struct OptionalOptions {
+    // Proper support should allow something like:
+    // #[structopt(required_unless_subcommand)]
+    arg: Option&lt;i32&gt;,
+
+    #[structopt(subcommand)]
+    cmd: Option&lt;Cmd&gt;,
+}
+
+fn main() {
+    let matches = OptionsAndSubcommand::clap()
+        .setting(structopt::clap::AppSettings::SubcommandsNegateReqs)
+        .get_matches();
+
+    println!(&quot;Options: {:?}&quot;, OptionalOptions::from_clap(&amp;matches));
+}
+</code></pre>
+<p>If you don't expect any args when there is a subcommand, you can do this:</p>
+<pre><code class="language-rust">use structopt::StructOpt;
+
+#[derive(Debug, StructOpt)]
+struct OptionsAndSubcommand {
+    #[structopt(long)]
+    arg: i32,
+
+    #[structopt(subcommand)]
+    cmd: Option&lt;Cmd&gt;,
+}
+
+#[derive(Debug, StructOpt)]
+enum Cmd {
+    Get {
+        name: String,
+    },
+}
+
+fn main() {
+    let matches = OptionsAndSubcommand::clap()
+        .setting(structopt::clap::AppSettings::SubcommandsNegateReqs)
+        .setting(structopt::clap::AppSettings::ArgsNegateSubcommands)
+        .get_matches();
+
+    if matches.subcommand_name().is_none() {
+        println!(&quot;Options: {:?}&quot;, OptionsAndSubcommand::from_clap(&amp;matches));
+    } else {
+        println!(&quot;Subcommand: {:?}&quot;, Cmd::from_clap(&amp;matches));
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/keturn"><img src="https://avatars.githubusercontent.com/u/83819?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/keturn">keturn</a></strong>
+<em>Tuesday Dec 24, 2019 at 07:15 GMT</em></p>
+<hr />
+<p>First I tried</p>
+<pre><code class="language-rust">    #[structopt(required=true)]
+    arg: Option&lt;i32&gt;,
+</code></pre>
+<p>but structopt complained I was contradicting myself.</p>
+<p>So I was somewhat surprised to discover that this seems to work:</p>
+<pre><code class="language-rust">    #[structopt(required_unless=&quot;cmd&quot;)]
+    arg: Option&lt;i32&gt;,
+</code></pre>
+<p>Not ideal, since it requires duplicating the name of the subcommand  (or names, using <code>required_unless_one</code>), but it's a workaround.</p>
+<p>Could structopt ease up on that &quot;required is meaningless for Option&quot; error when SubcommandsNegateReqs is on? Perhaps not where that error is raised currently, it doesn't look like that has any way to see what the app settings are.</p>
+<p>Maybe some kind of <code>allow</code> mechanism to override that error? It is, after all, safer to wrap a &quot;required&quot; value in an Option than it is when I shoot myself in the foot by passing <code>required=false</code> on a non-Option field.</p>
+<p>Or could that validation be done later, when it's known what the app settings are? (maybe even at runtime, if necessary)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Tuesday Jan 07, 2020 at 20:46 GMT</em></p>
+<hr />
+<p>We can remove the error and do a warning, with some mechanism to remove the warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Wednesday Jan 08, 2020 at 05:10 GMT</em></p>
+<hr />
+<p>There's no way to issue warnings on stable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/archer884"><img src="https://avatars.githubusercontent.com/u/679494?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/archer884">archer884</a></strong>
+<em>Wednesday Apr 22, 2020 at 19:59 GMT</em></p>
+<hr />
+<blockquote>
+<pre><code class="language-rust">struct OptionalOptions {
+    // Proper support should allow something like:
+    // #[structopt(required_unless_subcommand)]
+    arg: Option&lt;i32&gt;,
+
+    #[structopt(subcommand)]
+    cmd: Option&lt;Cmd&gt;,
+}
+</code></pre>
+</blockquote>
+<p>I'm not sure that's the way I'd want to go. Ideally, what I had in mind was:</p>
+<pre><code class="language-rust">enum Opt {
+    #[structopt(default_command)]
+    MainCommandWithLotsOfArgs {
+        ...
+    },
+    Other,
+    Subcommands,
+    Here { some_arg: i32 },
+}
+</code></pre>
+<p>The reason for this being just that the main command may involve lots of args that you don't feel like marking separately. At this point, of course, I'm just spitballing about ergonomics. I'm coming at this from the standpoint of a consumer, not a library author.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Wednesday Apr 22, 2020 at 20:15 GMT</em></p>
+<hr />
+<blockquote>
+<p>I'm not sure that's the way I'd want to go. Ideally, what I had in mind was:</p>
+<pre><code class="language-rust">enum Opt {
+    #[structopt(default_command)]
+    MainCommandWithLotsOfArgs {
+        ...
+    },
+    Other,
+    Subcommands,
+    Here { some_arg: i32 },
+}
+</code></pre>
+<p>The reason for this being just that the main command may involve lots of args that you don't feel like marking separately. At this point, of course, I'm just spitballing about ergonomics. I'm coming at this from the standpoint of a consumer, not a library author.</p>
+</blockquote>
+<p>Actually, this design looks neat and unambigous! 👌 If @TeXitoi  doesn't mind, would you like to take a stab at implementation? I can mentor it and give you a hand.</p>
+<blockquote>
+<p>I'm just spitballing about ergonomics. I'm coming at this from the standpoint of a consumer, not a library author.</p>
+</blockquote>
+<p>It is always about ergonomics to some extend. Does stuff feel intuitive enough (define intuitive, aha), does it meld into other parts of the library, etc. The more people come and propose ideas, the better the chances that something worthy will eventually be found. I personally thing your proposal is great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/archer884"><img src="https://avatars.githubusercontent.com/u/679494?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/archer884">archer884</a></strong>
+<em>Wednesday Apr 22, 2020 at 20:17 GMT</em></p>
+<hr />
+<p>@CreepySkeleton I'd be cool with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Tuesday Apr 28, 2020 at 10:36 GMT</em></p>
+<hr />
+<p>@TeXitoi What do you think about @archer884 design above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Tuesday Apr 28, 2020 at 20:27 GMT</em></p>
+<hr />
+<p>Not found of <code>default_command</code>, we van fond a better name.</p>
+<p>It must work</p>
+<ul>
+<li>within a structure for common args, and without for arg less subcommands.</li>
+<li>with an embedded struct enum, and with a 1-uple enum containing a struct.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/archer884"><img src="https://avatars.githubusercontent.com/u/679494?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/archer884">archer884</a></strong>
+<em>Tuesday Apr 28, 2020 at 21:12 GMT</em></p>
+<hr />
+<p>@TeXitoi, regarding the first bullet point: if the purpose of this is to make it possible <em>not</em> to have common args between all subcommands, how much value lies in making it work within a struct defining common args for subcommands?</p>
+<p>I could be somewhat biased. As a user of this library (I think practically all of my tools are based on structopt), I don't think I have ever intentionally made use of the common arguments feature. To avoid rewriting the same code from subcommand to subcommand, my preferred strategy has been to define common arguments as a struct and <code>#[structopt(flatten)]</code> those into the parent structs of each subcommand. This avoids what I see as the somewhat confusing pattern of <code>cmd --param arg subcommand --param otherarg</code>. (Admittedly, Microsoft follows this pattern for their <code>dotnet</code> cli tool, but that's one of my biggest complaints about their tool.)</p>
+<p>An example:</p>
+<pre><code class="language-rust">#[derive(Clone, Debug, StructOpt)]
+enum SubCommands {
+    Foo(Foo),
+    Bar(Bar),
+}
+
+#[derive(Clone, Debug, StructOpt)]
+struct Foo {
+    #[structopt(flatten)]
+    common_args: CommonArgs,
+    other: String,
+    args: String,
+}
+
+#[derive(Clone, Debug, StructOpt)]
+struct Bar {
+    #[structopt(flatten)]
+    common_args: CommonArgs,
+    other: i32,
+    args: String,
+}
+
+#[derive(Clone, Debug, StructOpt)]
+struct CommonArgs {
+    name: String,
+    date: String,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Tuesday Apr 28, 2020 at 21:28 GMT</em></p>
+<hr />
+<p>The goal is to be consistent: you can without this feature, so this feature must not be an exception.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Wednesday Apr 29, 2020 at 13:18 GMT</em></p>
+<hr />
+<p>Guys, I suspect you're speaking past each other here.</p>
+<p>Regarding the first point, @TeXitoi could you please elaborate? A bit of code example would help immensely!</p>
+<p>The second: @TeXitoi was talking about</p>
+<pre><code class="language-rust">enum Opt {
+    #[structopt(default_command)]
+    MainCommandWithLotsOfArgs(MainApp),
+    Other,
+    Subcommands,
+    Here { some_arg: i32 },
+}
+
+struct MainApp { ... }
+</code></pre>
+<p>Super easy to implement, about +10 LOC.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/archer884"><img src="https://avatars.githubusercontent.com/u/679494?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/archer884">archer884</a></strong>
+<em>Wednesday Apr 29, 2020 at 13:25 GMT</em></p>
+<hr />
+<p>Oh. I thought that was what I proposed in the first place.
+On Apr 29, 2020, 8:22 AM -0500, CreepySkeleton <a href="mailto:notifications@github.com">notifications@github.com</a>, wrote:</p>
+<blockquote>
+<p>Guys, I suspect you're speaking past each other here.
+Regarding the first point, @TeXitoi could you please elaborate? A bit of code example would help immensely!
+The second: @TeXitoi was talking about
+enum Opt {
+#[structopt(default_command)]
+MainCommandWithLotsOfArgs(MainApp),
+Other,
+Subcommands,
+Here { some_arg: i32 },
+}</p>
+<p>struct MainApp { ... }
+Super easy to implement, about +10 LOC.
+—
+You are receiving this because you were mentioned.
+Reply to this email directly, view it on GitHub, or unsubscribe.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Wednesday Apr 29, 2020 at 17:48 GMT</em></p>
+<hr />
+<pre><code class="language-rust">enum Opt {
+    #[structopt(default_command)]
+    MainCommandWithLotsOfArgs(MainApp),
+    Other,
+    Subcommands,
+    Here { some_arg: i32 },
+}
+struct BigOpt {
+    #[structopt(subcommand)] 
+    cmd: Opt,
+    #[structopt(long, short)]] 
+   config: String,
+}
+</code></pre>
+<p>StructOpt on Opt and on BigOpt should work as expected (i.e. config always accessible).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:20</div>
+            <div class="timeline-body"><p>SubcommandsNegateReqs now works, see #2255</p>
+<p>Let me know if I missed any other details in this thread but otherwise, I'm closing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-09 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2021-12-09 16:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

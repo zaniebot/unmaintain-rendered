@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`I` output differ with `isort` by a single blank line - astral-sh/ruff #19532</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`I` output differ with `isort` by a single blank line</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19532">#19532</a>
+        opened by <a href="https://github.com/knguyen1">@knguyen1</a>
+        on 2025-07-24 15:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/knguyen1">@knguyen1</a> on 2025-07-24 15:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Given this file: https://github.com/metabrainz/picard/blob/master/picard/script/<strong>init</strong>.py
+<code>isort</code> is outputting NO blank line between <code>)</code> and the comment line <code># Those imports are required to actually parse the code and interpret decorators</code>.</p>
+<p>For <code>ruff</code>, see the blank line in this commit: https://github.com/metabrainz/picard/pull/2690/commits/efa2ceb62be95f9250b15e071a6b5ba58f3ce1da</p>
+<p>My LLM did some investigations and gave up and concluded that it's due to &quot;design philosophies&quot;.  I just wanted to confirm with an actual human.</p>
+<p>Given these <code>isort</code> settings:</p>
+<pre><code>[tool.isort]
+sections = [
+    &quot;FUTURE&quot;, &quot;STDLIB&quot;, &quot;FIRSTPARTY&quot;, &quot;THIRDPARTY&quot;, &quot;QT&quot;, &quot;TEST&quot;, &quot;PICARD&quot;, &quot;LOCALFOLDER&quot;,
+    &quot;RESOURCES&quot;, &quot;PICARD_UI&quot;
+]
+default_section = &quot;LOCALFOLDER&quot;
+known_first_party = []
+known_picard = [&quot;picard&quot;]
+known_picard_ui = [&quot;picard.ui&quot;]
+known_qt = [&quot;PyQt6&quot;]
+known_resources = [&quot;picard.resources&quot;]
+known_test = [&quot;test.*&quot;]
+known_third_party = [&quot;dateutil&quot;, &quot;fasteners&quot;, &quot;mutagen&quot;, &quot;yaml&quot;]
+skip_glob = [&quot;picard/ui/forms/ui_*.py&quot;, &quot;picard/resources.py&quot;]
+combine_as_imports = true
+float_to_top = false
+force_grid_wrap = 2
+force_sort_within_sections = true
+include_trailing_comma = true
+indent = &quot;    &quot;
+lines_after_imports = 2
+multi_line_output = 3
+order_by_type = true
+use_parentheses = true
+</code></pre>
+<p>Given these <code>tool.ruff.lint.isort</code> settings:</p>
+<pre><code>
+[tool.ruff.lint.isort]
+# Custom section order matching your isort sections
+section-order = [
+    &quot;future&quot;,
+    &quot;standard-library&quot;,
+    &quot;first-party&quot;,
+    &quot;known-first-party&quot;,
+    &quot;third-party&quot;,
+    &quot;known-third-party&quot;,
+    &quot;qt&quot;,
+    &quot;test&quot;,
+    &quot;picard&quot;,
+    &quot;local-folder&quot;,
+    &quot;resources&quot;,
+    &quot;picard-ui&quot;
+]
+default-section = &quot;local-folder&quot;
+
+# Match other isort settings
+force-sort-within-sections = true
+combine-as-imports = true
+lines-after-imports = 2
+order-by-type = true
+split-on-trailing-comma = true
+
+# Custom section definitions
+[tool.ruff.lint.isort.sections]
+qt = [&quot;PyQt6&quot;]
+test = [&quot;test.*&quot;]
+picard = [&quot;picard&quot;]
+resources = [&quot;picard.resources&quot;]
+picard-ui = [&quot;picard.ui&quot;]
+
+# Keep your existing known mappings for standard sections
+known-first-party = []
+known-third-party = [&quot;dateutil&quot;, &quot;fasteners&quot;, &quot;mutagen&quot;, &quot;yaml&quot;]
+</code></pre>
+<p>Below is the LLM conclusion of the investigation.</p>
+<h1>RooCode Output</h1>
+<p>I've successfully created a comprehensive investigation script and analyzed the root cause of the differences between <code>ruff check --fix</code> and <code>isort</code> import sorting behavior.</p>
+<h2>Investigation Results</h2>
+<p>Using the <a href="investigate_import_sorting.py:1"><code>investigate_import_sorting.py</code></a> script, I've identified the key differences:</p>
+<h3>Root Cause Analysis</h3>
+<p>The fundamental issue is that <strong>ruff and isort have different philosophies about import organization and formatting</strong>, despite similar configurations:</p>
+<ol>
+<li><p><strong>Blank Line Handling</strong>:</p>
+<ul>
+<li><strong>Ruff</strong>: Maintains 2 blank lines between import groups, preserving original spacing</li>
+<li><strong>Isort</strong>: Reduces to 1 blank line, compacting the import section</li>
+</ul>
+</li>
+<li><p><strong>Import Formatting Style</strong>:</p>
+<ul>
+<li><strong>Ruff</strong>: Preserves multi-line import formatting with proper indentation (32 lines total)</li>
+<li><strong>Isort</strong>: Compacts imports into fewer lines with different formatting (15 lines total)</li>
+</ul>
+</li>
+<li><p><strong>Import Order Logic</strong>:</p>
+<ul>
+<li><strong>Ruff</strong>: Follows configured section order but maintains relative positioning</li>
+<li><strong>Isort</strong>: Reorders imports more aggressively, moving <code>import picard.script.functions</code> to the top</li>
+</ul>
+</li>
+<li><p><strong>Multi-line Import Handling</strong>:</p>
+<ul>
+<li><strong>Ruff</strong>: Maintains original format with trailing commas and proper indentation</li>
+<li><strong>Isort</strong>: Compacts multi-line imports, changing from vertical to horizontal layout</li>
+</ul>
+</li>
+</ol>
+<h3>Configuration Attempts</h3>
+<p>I tested several configuration modifications in <a href="pyproject.toml:203"><code>pyproject.toml</code></a>:</p>
+<ul>
+<li><code>lines-between-types = 0</code> - No effect on blank lines between sections</li>
+<li><code>no-lines-before = [&quot;picard&quot;, &quot;local-folder&quot;]</code> - No effect</li>
+<li><code>no-sections = true</code> - Still maintained different formatting</li>
+</ul>
+<h3>Conclusion</h3>
+<p>The differences are <strong>inherent to the tools' design philosophies</strong> rather than configuration mismatches:</p>
+<ul>
+<li><strong>Ruff</strong> prioritizes <strong>preserving existing formatting</strong> and being minimally invasive</li>
+<li><strong>Isort</strong> prioritizes <strong>aggressive optimization</strong> and compacting imports</li>
+</ul>
+<p>The blank line issue specifically occurs because ruff maintains spacing between logical import groups (regular imports vs. imports with comments), while isort removes most blank lines as part of its compacting strategy.</p>
+<h2>Recommendation</h2>
+<p>For projects requiring consistent import formatting between tools, consider:</p>
+<ol>
+<li><strong>Choose one tool</strong> as the primary import sorter</li>
+<li><strong>Configure pre-commit hooks</strong> to use only the chosen tool</li>
+<li><strong>Document the decision</strong> for team consistency</li>
+</ol>
+<p>The current configuration in <a href="pyproject.toml:203"><code>pyproject.toml</code></a> is as aligned as possible given the tools' fundamental differences.</p>
+<h3>Version</h3>
+<p>ruff 0.12.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv` output differ by a single blank line" to "`uv` output differ with `isort` by a single blank line" by @knguyen1 on 2025-07-24 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv` output differ with `isort` by a single blank line" to "`uv` rule `I` output differ with `isort` by a single blank line" by @knguyen1 on 2025-07-24 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv` rule `I` output differ with `isort` by a single blank line" to "`I` output differ with `isort` by a single blank line" by @MichaReiser on 2025-07-24 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-24 16:07</div>
+            <div class="timeline-body"><p>I can reproduce this with a small example and standard-library imports (<a href="https://play.ruff.rs/835a941b-5fa3-430c-9944-c6880429af16">playground</a>):</p>
+<pre><code class="language-python">import abc
+# comment
+import bisect
+import collections
+</code></pre>
+<p>I guess we're inserting a blank line before a comment, even if we're in the same section.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @ntBre on 2025-07-24 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-24 16:09</div>
+            <div class="timeline-body"><p>This might be due to ruff using the black-isort preset by default (just speculating)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-24 16:12</div>
+            <div class="timeline-body"><p>Ah yep, with <code>--profile black</code> I get the same results from isort.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-24 16:14</div>
+            <div class="timeline-body"><p>Nice. In that case I think this is working as intended.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/knguyen1">@knguyen1</a> on 2025-07-24 16:18</div>
+            <div class="timeline-body"><p>EDIT:  Got it.  <code>profile</code> on <code>isort</code>, not on <code>ruff</code>.  Thanks all!</p>
+<p>Where do I specify that parameter?</p>
+<pre><code>uv run ruff check --fix --profile black .
+error: unexpected argument '--profile' found
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/knguyen1">@knguyen1</a> on 2025-07-24 16:29</div>
+            <div class="timeline-body"><p>But..., then how do you make <code>ruff</code> match <code>isort</code>?  Impossible?
+<code>isort --profile black</code> will match with <code>ruff</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-24 16:53</div>
+            <div class="timeline-body"><p>Yes, I think this isn't possible. I didn't see any <code>profile</code> configuration in our isort settings, and this is mentioned in our <a href="https://docs.astral.sh/ruff/faq/#how-does-ruffs-import-sorting-compare-to-isort">isort FAQ section</a>, so I think Ruff only matching <code>isort --profile black</code> is intentional, as Micha said.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-25 07:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../metabrainz/picard/pulls/2697.html">metabrainz/picard#2697</a> on 2025-08-05 22:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

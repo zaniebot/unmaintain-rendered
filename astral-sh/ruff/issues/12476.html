@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPY201 triggers on code written to support both numpy 2 and legacy numpy - astral-sh/ruff #12476</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>NPY201 triggers on code written to support both numpy 2 and legacy numpy</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12476">#12476</a>
+        opened by <a href="https://github.com/jenshnielsen">@jenshnielsen</a>
+        on 2024-07-23 09:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-07-23 09:30</div>
+            <div class="timeline-body"><p>Considder an example like this which is explicitly written to support both numpy 2 and legacy numpy</p>
+<pre><code>import warnings
+
+try:
+    from numpy.exceptions import VisibleDeprecationWarning
+except ImportError:
+    # numpy &lt; 1.25.0
+    from numpy import VisibleDeprecationWarning
+
+
+with warnings.catch_warnings():
+    warnings.filterwarnings(
+        &quot;ignore&quot;,
+        category=VisibleDeprecationWarning,
+        message=&quot;Creating an ndarray from ragged nested sequences&quot;,
+    )
+</code></pre>
+<p>Running <code>ruff check file.py</code> with NPY201 enabled triggers</p>
+<pre><code>error: Failed to create fix for Numpy2Deprecation: Unable to insert `VisibleDeprecationWarning` into scope due to name conflict
+src\qcodes\utils\numpy_utils.py:13:18: NPY201 `np.VisibleDeprecationWarning` will be removed in NumPy 2.0. Use `numpy.exceptions.VisibleDeprecationWarning` instead.
+   |
+11 |     warnings.filterwarnings(
+12 |         &quot;ignore&quot;,
+13 |         category=VisibleDeprecationWarning,
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^ NPY201
+14 |         message=&quot;Creating an ndarray from ragged nested sequences&quot;,
+15 |     )
+   |
+   = help: Replace with `numpy.exceptions.VisibleDeprecationWarning`
+</code></pre>
+<p>This is a false positive since the deprecated location is only used in legacy numpy versions that do not have a exceptions submodule.</p>
+<p>This started happening in 0.5.1 probably as a result of #12065</p>
+<p>Keyworkds Numpy, NPY201</p>
+<p>Ruff 0.5.1 to 0.5.4</p>
+<p>Config:</p>
+<pre><code>[tool.ruff.lint]
+select = [&quot;NPY201&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-23 11:09</div>
+            <div class="timeline-body"><p>I can see how the violation is undesired in this case, and we could probably specialize the rule to detect this very specific pattern. But I think it's also valid to use a suppression comment in this case to explicitly state that the use of the deprecated API is fine.</p>
+<p>@mtsokol what do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-07-23 11:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-23 12:25</div>
+            <div class="timeline-body"><p>I think this pattern is likely to be quite common for projects that want to write code which is compatible with both versions of numpy. Maintaining compatibility with both versions is likely to be something that many projects are going to want to do for a while, as well.</p>
+<p>I'd be okay with not flagging deprecated numpy imports iff:</p>
+<ul>
+<li>The deprecated import is imported in an <code>except ImportError</code> block</li>
+<li>The <code>try</code> block of that <code>except</code> block imports the undeprecated alternative</li>
+</ul>
+<p>We should make sure all <code>NPY</code> rules are consistent about this sort of thing, whatever we do, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 13:51</div>
+            <div class="timeline-body"><p>That makes sense to me. We should have code to detect the current set of handled exceptions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-07-23 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12479.html">astral-sh/ruff#12479</a> on 2024-07-23 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtsokol">@mtsokol</a> on 2024-07-23 17:27</div>
+            <div class="timeline-body"><blockquote>
+<p>I can see how the violation is undesired in this case, and we could probably specialize the rule to detect this very specific pattern. But I think it's also valid to use a suppression comment in this case to explicitly state that the use of the deprecated API is fine.</p>
+<p>@mtsokol what do you think?</p>
+</blockquote>
+<p>@MichaReiser I agree that this <code>try catch</code> pattern could be recognized by the rule, or users should add a suppression comment.</p>
+<p>One note: Apart from <code>try except</code> pattern there's also an <code>if else</code> used downstream, like here in SciPy:
+https://github.com/scipy/scipy/blob/c354a0482e08ef68bcdd2163f9b394f2c8e9a0a5/scipy/_lib/_util.py#L25</p>
+<p>But generally <code>try except</code> should be preferred.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-07-23 17:33</div>
+            <div class="timeline-body"><p>Thanks everybody for the input.</p>
+<blockquote>
+<p>@MichaReiser I agree that this try catch pattern could be recognized by the rule, or users should add a suppression comment.</p>
+</blockquote>
+<p>I personally would be fine with just adding a suppression comment as long as this limitation is documented for the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-23 17:34</div>
+            <div class="timeline-body"><p>I'm working on a fix as per my suggestion in https://github.com/astral-sh/ruff/issues/12476#issuecomment-2245116474.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12490.html">astral-sh/ruff#12490</a> on 2024-07-24 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-07-24 20:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

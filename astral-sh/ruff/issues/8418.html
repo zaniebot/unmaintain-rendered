@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal: linting and formatting support for pip requirements files, `(foo-)requirements.txt` - astral-sh/ruff #8418</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Proposal: linting and formatting support for pip requirements files, `(foo-)requirements.txt`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8418">#8418</a>
+        opened by <a href="https://github.com/Eutropios">@Eutropios</a>
+        on 2023-11-01 18:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Eutropios">@Eutropios</a> on 2023-11-01 18:43</div>
+            <div class="timeline-body"><p>After scouring the internet, I have not been able to find very many implementations of a tool that lints or formats pip requirement files. For context, a pip requirements file is a text file that lists your project's dependencies alongside a range of version numbers. This helps to ensure that your project is reproducible for development purposes.<sup>[<a href="#cite-1">1</a>]</sup></p>
+<p>My proposal is for Ruff to lint and possibly format <code>(foo-)requirements.txt</code> files (ex: <code>requirements.txt</code>, <code>htmldocs-requirements.txt</code>, <code>latexdocs-requirements.txt</code>) such that they are valid and usable by <code>pip</code>. It should be able to do the following:</p>
+<h1>Linting</h1>
+<ul>
+<li>Ensure that version-pinning syntax follows <a href="https://peps.python.org/pep-0508/">PEP508</a></li>
+<li>Support most if not all of <a href="https://pip.pypa.io/en/stable/reference/requirements-file-format/#supported-options">supported options</a></li>
+<li>Support for <a href="https://pip.pypa.io/en/stable/reference/requirements-file-format/#referring-to-other-requirements-files">referencing other <code>requirements.txt</code> files</a></li>
+<li>Support for <a href="https://pip.pypa.io/en/stable/reference/requirements-file-format/#line-continuations">line continuations</a> and <a href="https://pip.pypa.io/en/stable/reference/requirements-file-format/#comments">comments</a></li>
+<li>Possible sorting option of dependencies</li>
+</ul>
+<h1>Formatting</h1>
+<ul>
+<li>Ensure that requirements, version numbers, and comments comply with the <a href="https://pip.pypa.io/en/stable/reference/requirements-file-format/">requirements.txt file format</a> or PEP508 wherever possible</li>
+<li>It should be as opinionated as the current Ruff formatter</li>
+</ul>
+<h1>Some Limitations</h1>
+<ul>
+<li>Referencing other requirements.txt files (<code>-r</code>) could be a bit tricky, since pip does not like it if one file contains hashes while the other file does not</li>
+</ul>
+<h1>Some related projects</h1>
+<ul>
+<li>The tree-sitter.nvim requirements.txt parser <a href="https://github.com/ObserverOfTime/tree-sitter-requirements"><code>tree-sitter-requirements</code></a> by ObserverOfTime</li>
+<li>The VSCode PyPI extension <a href="https://github.com/Twixes/pypi-assistant"><code>pypi-assistant</code></a> by Twixes</li>
+</ul>
+<h3>Citations</h3>
+<p><a id="cite-1">[1]</a> - Agusmahari, “What is requirements.txt and why is it important for Python,” Medium, Feb. 23, 2023. https://medium.com/@agusmahari/what-is-requirements-txt-and-why-is-it-important-for-python-a4535523e2e9 (accessed Nov. 01, 2023).</p>
+<p>‌</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-01 20:11</div>
+            <div class="timeline-body"><p>To add a bit of my knowledge to that:</p>
+<ul>
+<li>There is no grammar or standard describing requirements.txt files, they are pip cli args stored as a file and they are defined by what pip's arg parsing accepts</li>
+<li>I've implemented a limited parser in rust in https://github.com/konstin/poc-monotrail/blob/10730ea1a84c58af6b35fb74c89ed0578ab042b6/crates/monotrail-utils/src/requirements_txt.rs</li>
+<li>Paths in requirements.txt (<code>-r</code> and <code>-c</code>) are apparently relative to the working directory, not the location of the fuke</li>
+<li>The designated successor is PEP 621's <code>project.dependencies</code>/<code>project.optional-dependencies</code> (https://packaging.python.org/en/latest/specifications/declaring-project-metadata/#dependencies-optional-dependencies), which is properly specified as far as PEP 508 is. We lint that through pyproject.toml linting. (There currently often isn't enough tooling to replace all requirements.txt usage with pyproject.toml, even if exclude those generated automatically by pip-tools)</li>
+<li><a href="https://github.com/konstin/pep508_rs">pep508_rs</a> can do some validation of markers</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Eutropios">@Eutropios</a> on 2023-11-01 22:03</div>
+            <div class="timeline-body"><blockquote>
+<p>To add a bit of my knowledge to that:</p>
+<pre><code>* There is no grammar or standard describing requirements.txt files, they are pip cli args stored as a file and they are defined by what pip's arg parsing accepts
+
+* I've implemented a limited parser in rust in https://github.com/konstin/poc-monotrail/blob/10730ea1a84c58af6b35fb74c89ed0578ab042b6/crates/monotrail-utils/src/requirements_txt.rs
+
+* Paths in requirements.txt (`-r` and `-c`) are apparently relative to the working directory, not the location of the fuke
+
+* The designated successor is PEP 621's `project.dependencies`/`project.optional-dependencies` (https://packaging.python.org/en/latest/specifications/declaring-project-metadata/#dependencies-optional-dependencies), which is properly specified as far as PEP 508 is. We lint that through pyproject.toml linting. (There currently often isn't enough tooling to replace all requirements.txt usage with pyproject.toml, even if exclude those generated automatically by pip-tools)
+
+* [pep508_rs](https://github.com/konstin/pep508_rs) can do some validation of markers</code></pre>
+</blockquote>
+<p>Thank you for the help! I'll definitely use this instead. I'll close this issue as it's no longer relevant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Eutropios on 2023-11-01 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../NYPL/digital-research-books/pulls/870.html">NYPL/digital-research-books#870</a> on 2025-11-07 16:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

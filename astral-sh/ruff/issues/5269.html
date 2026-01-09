@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Major performance degradation when cache is enabled on 0.0.274 - astral-sh/ruff #5269</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Major performance degradation when cache is enabled on 0.0.274</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5269">#5269</a>
+        opened by <a href="https://github.com/denik">@denik</a>
+        on 2023-06-21 20:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/denik">@denik</a> on 2023-06-21 20:05</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>When cache is full, ruff 0.0.274 is much slower than without cache:</p>
+<pre><code>% ruff --version
+ruff 0.0.274
+
+% rm -fr .ruff_cache
+
+% time ruff -ns .
+ruff -ns .  10.87s user 2.25s system 620% cpu 2.114 total
+
+% time ruff -s .
+ruff -s .  10.96s user 2.53s system 705% cpu 1.913 total
+
+% time ruff -s .
+ruff -s .  23.84s user 8.42s system 105% cpu 30.517 total
+
+% time ruff -s .
+ruff -s .  23.19s user 8.65s system 105% cpu 30.123 total
+</code></pre>
+<p>Previous version works as expected - full cache speeds it up:</p>
+<pre><code>% ruff --version
+ruff 0.0.273
+
+% rm -fr .ruff_cache
+
+% time ruff -ns .
+ruff -ns .  10.88s user 2.29s system 766% cpu 1.717 total
+
+% time ruff -s .
+ruff -s .  11.06s user 3.03s system 706% cpu 1.993 total
+
+% time ruff -s .
+ruff -s .  0.69s user 1.61s system 218% cpu 1.053 total
+
+% time ruff -s .
+ruff -s .  0.69s user 1.60s system 219% cpu 1.044 total
+</code></pre>
+<pre><code>% git ls-files '*.py' | wc -l
+   38541
+</code></pre>
+<p>This is on Mac OS X, but the same effect is observed on Linux.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-21 20:13</div>
+            <div class="timeline-body"><p>Thanks, that's a surprisingly extreme degradation, will take a look.</p>
+<p>Can you tell me a bit about the characteristics of the project? That's an enormous number of Python files :) Do most of the files contain violations? Or is <code>ruff check</code> clean? (Is this a public repo?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-21 20:14</div>
+            <div class="timeline-body"><p>I would love to test <code>main</code> on this to see if it's at all improved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/denik">@denik</a> on 2023-06-21 20:21</div>
+            <div class="timeline-body"><p>This was a private repo with a huge number of violations.</p>
+<pre><code>Found 406804 errors.
+[*] 3152 potentially fixable with the --fix option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-21 20:22</div>
+            <div class="timeline-body"><p>In my testing, on large projects like CPython, <code>main</code> is faster or as-fast as v0.0.273, while v0.0.274 is 5-10x slower. So I'd expect the next release to fix this to a large degree, but the degradation you're seeing is even larger than that 5-10x estimate, so it's hard to say with complete certainty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-06-21 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-21 20:29</div>
+            <div class="timeline-body"><p>Maybe I'll cut another release sooner rather than later and we can test it out. I'm trying to find another project of comparable scale. CPython is the largest I can find, at 696,787 lines of Python across 1,893 files. (That's more than Airflow, Django, etc.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-21 20:31</div>
+            <div class="timeline-body"><p>Okay, I tested on TensorFlow, which has 925,816 lines of Python across 3,059 files, and <code>main</code> and <code>v0.0.273</code> are equivalent, while <code>v0.0.274</code> is 15x slower.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/denik">@denik</a> on 2023-06-21 20:35</div>
+            <div class="timeline-body"><p>Checked e71f044f0d6b6869 - it's indeed much faster, similar to 0.0.273.</p>
+<p>Thanks! Looking forward to 0.0.275 :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2023-06-21 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-21 20:44</div>
+            <div class="timeline-body"><p>Oh, thank you so much for doing that! That's really helpful to hear. I probably won't release tonight (just a little drained from yesterday's release cycle), but before the end of the week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5267.html">astral-sh/ruff#5267</a> on 2023-06-21 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-22 19:15</div>
+            <div class="timeline-body"><p>Should be fixed in v0.0.275 (out now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-22 19:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

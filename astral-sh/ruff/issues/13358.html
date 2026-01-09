@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctest dynamic line width is off if examples are indented - astral-sh/ruff #13358</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Doctest dynamic line width is off if examples are indented</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13358">#13358</a>
+        opened by <a href="https://github.com/tugrulates">@tugrulates</a>
+        on 2024-09-15 20:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tugrulates">@tugrulates</a> on 2024-09-15 20:27</div>
+            <div class="timeline-body"><p>Thank you for the great tool. I am encountering an issue with the docstring code formatter in <code>dynamic</code> mode.</p>
+<p>When the doctest code has an indent that is more than the docstring indent, the dynamic calculation is off, and as a result, the formatter and the linter are in a disagreement.</p>
+<p>I have searched the issue using &quot;doctest&quot;, &quot;docstring&quot;, &quot;dynamic&quot; keywords. #9126 is for the bug where this calculation if off for the prompt. The current issue is for when the prompt is extra indented.</p>
+<pre><code class="language-py">&quot;&quot;&quot;example.py file.&quot;&quot;&quot;
+
+
+def length(numbers: list[int]) -&gt; int:
+    &quot;&quot;&quot;Get the length of the given list of numbers.
+
+    Args:
+        numbers: List of numbers.
+
+    Returns:
+        Integer length of the list of numbers.
+
+    Example:
+        &gt;&gt;&gt; length([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+        20
+    &quot;&quot;&quot;
+    return len(numbers)
+
+</code></pre>
+<pre><code class="language-toml"># pyproject.toml
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = ['D', 'E']
+
+[tool.ruff.lint.pydocstyle]
+convention = &quot;google&quot;
+
+</code></pre>
+<pre><code class="language-console">$ ruff --version
+ruff 0.6.4
+$ ruff format example.py 
+1 file left unchanged
+$ ruff check example.py 
+example.py:14:89: E501 Line too long (91 &gt; 88)
+   |
+13 |     Example:
+14 |         &gt;&gt;&gt; length([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+   |                                                                                         ^^^ E501
+15 |         20
+16 |     &quot;&quot;&quot;
+   |
+
+Found 1 error.
+</code></pre>
+<p>I am happy to take a stab at this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">incompatibility</span> added by @MichaReiser on 2024-09-16 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-09-16 09:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @MichaReiser on 2024-09-16 09:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @MichaReiser on 2024-09-16 09:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-16 09:56</div>
+            <div class="timeline-body"><p>Thanks for the great write-up.</p>
+<p>Unfortunately, fixing this will be difficult because the pycodestyle linter doesn't support parsing code blocks. This also requires introducing a new setting to be compatible with the formatter (or we pick up the setting from the formatter?)</p>
+<ul>
+<li>Add a new <code>pycodestyle.max-doc-code-line-length</code> that defaults to <code>dynamic</code> (same as the <code>format.docstring-code-length</code> setting) if left unspecified</li>
+<li>Recognize code blocks in the <code>pycodestyle</code> linter and apply the dynamic or &quot;fixed&quot; length depending on the <code>max-doc-code-line-length</code> setting.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-09-16 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-16 12:21</div>
+            <div class="timeline-body"><p>Ignore my previous comment. I'm wrong. The <code>dynamic</code> setting actually ensures that this isn't a problem. Let me double  check why the list isn't handled correctly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">incompatibility</span> removed by @MichaReiser on 2024-09-16 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> removed by @MichaReiser on 2024-09-16 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-09-16 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-16 12:45</div>
+            <div class="timeline-body"><p>I added a few debug statements to the code to understand the values calculated in</p>
+<p>https://github.com/astral-sh/ruff/blob/138e70bd5c01d61061247c43b1bbb33d0290a18f/crates/ruff_python_formatter/src/string/docstring.rs#L499-L508</p>
+<pre><code>[crates/ruff_python_formatter/src/string/docstring.rs:500:41] self.f.options().line_width().value() = 88
+[crates/ruff_python_formatter/src/string/docstring.rs:501:36] self.f.options().indent_width() = IndentWidth(
+    4,
+)
+[crates/ruff_python_formatter/src/string/docstring.rs:502:36] self.f.context().indent_level() = IndentLevel {
+    level: 2,
+}
+[crates/ruff_python_formatter/src/string/docstring.rs:505:37] kind.extra_indent_ascii_spaces() = 4
+[crates/ruff_python_formatter/src/string/docstring.rs:524:30] line_width = LineWidth(
+    80,
+)
+</code></pre>
+<p><code>indent_level.to_ascii_spaces(indent_width)</code> reduces the indent level by 1. That makes me think that the problem here is that the formatter doesn't account for the indentation compared to <code>Example</code>.</p>
+<p>The new logic has to account for that the formatter normalizes the indentation when some lines are incorrectly indented. I think that's done in https://github.com/astral-sh/ruff/blob/138e70bd5c01d61061247c43b1bbb33d0290a18f/crates/ruff_python_formatter/src/string/docstring.rs#L380-L471</p>
+<p>@tugrulates do you want to take a stab at this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tugrulates">@tugrulates</a> on 2024-09-16 15:10</div>
+            <div class="timeline-body"><p>Certainly, I can work on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @tugrulates by @MichaReiser on 2024-09-16 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13371.html">astral-sh/ruff#13371</a> on 2024-09-16 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-26 13:10</div>
+            <div class="timeline-body"><p>I think I have a fix for this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13523.html">astral-sh/ruff#13523</a> on 2024-09-26 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-09-26 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @tugrulates by @MichaReiser on 2024-09-26 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @MichaReiser on 2024-09-26 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-09-27 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14984.html">astral-sh/ruff#14984</a> on 2024-12-15 14:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self override and multiple values don't interact well together - clap-rs/clap #1374</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Self override and multiple values don't interact well together</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1374">#1374</a>
+        opened by <a href="https://github.com/Elarnon">@Elarnon</a>
+        on 2018-11-08 00:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Elarnon">@Elarnon</a> on 2018-11-08 00:39</div>
+            <div class="timeline-body"><h3>Affected Version of clap</h3>
+<p>master and v3-master (did not try crates.io versions)</p>
+<h3>Bug or Feature Request Summary</h3>
+<p>Arguments overriding themselves with multiple values have... surprising behavior.  Consider the sample code below:</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">extern crate clap;
+use clap::{App, Arg};
+
+fn main() {
+    let matches = App::new(&quot;MyApp&quot;)
+        .arg(
+            Arg::with_name(&quot;input&quot;)
+                .takes_value(true)
+                .long(&quot;input&quot;)
+                .overrides_with(&quot;input&quot;)
+                .min_values(0),
+        ).get_matches();
+
+    if let Some(vs) = matches.values_of(&quot;input&quot;) {
+        println!(&quot;{:?}&quot;, vs.collect::&lt;Vec&lt;_&gt;&gt;());
+    }
+}
+</code></pre>
+<h3>Expected Behavior Summary</h3>
+<p>One would expect this output, where each new occurrence of the <code>--input</code> argument overrides the preceding one:</p>
+<pre><code class="language-shell">$ ./target/debug/example --input a b c --input d
+[&quot;d&quot;]
+$ ./target/debug/example --input a b --input c d
+[&quot;c&quot;, &quot;d&quot;]
+</code></pre>
+<h3>Actual Behavior Summary</h3>
+<p>However on current clap master 33f908df9b1eba26aadb8634104a135e58ea6912 there is no difference between those two invocations:</p>
+<pre><code class="language-shell">$ ./target/debug/example --input a b c --input d
+[&quot;c&quot;, &quot;d&quot;]
+$ ./target/debug/example --input a b --input c d
+[&quot;c&quot;, &quot;d&quot;]
+</code></pre>
+<p>Interestingly, Clap v3 seems to have changed <em>something</em>, since on v3-master eaa0700e7ed76f37d245a6878deb3b8e81754d6c I get this:</p>
+<pre><code class="language-shell">$ ./target/debug/example --input a b c --input d
+[&quot;d&quot;]
+$ ./target/debug/example --input a b --input c d
+[&quot;d&quot;]
+</code></pre>
+<p>which is unfortunately not much better.</p>
+<h3>Consideration and thoughts</h3>
+<p>This seem to be caused by the self-override code being written with the use case of arguments with a single value in mind.  This also causes other issues, for instance if I change <code>min_values(0)</code> to <code>number_of_values(2)</code> in the above code I get:</p>
+<pre><code class="language-shell">$ ./target/debug/example --input a b --input c d
+error: Found argument 'd' which wasn't expected, or isn't valid in this context
+</code></pre>
+<p>on master and:</p>
+<pre><code class="language-shell">$ ./target/debug/example --input a b --input c d
+error: The argument '--input &lt;input&gt; &lt;input&gt;' requires 2 values, but 1 was provided
+</code></pre>
+<p>on v3-master.</p>
+<p>The offending code is here:</p>
+<p>https://github.com/clap-rs/clap/blob/33f908df9b1eba26aadb8634104a135e58ea6912/src/args/arg_matcher.rs#L66-L75</p>
+<p>Interestingly, it somehow gets called twice (before parsing the overriding argument, and after parsing it), which is why we need <code>--input a b c --input d</code> to trigger the bug.  Doing only <code>--input a b --input c</code> would properly remove the <code>a</code> and <code>b</code> (if you are wondering: yes, <code>--input --input a b</code> only prints <code>[&quot;b&quot;]</code>).</p>
+<p>The corresponding code in v3 is here, and it now pops off and only keeps the final argument value (hence the behavior change).  It is also now called only once, after the overriding argument has been parsed:</p>
+<p>https://github.com/clap-rs/clap/blob/eaa0700e7ed76f37d245a6878deb3b8e81754d6c/src/parse/parser.rs#L1328-L1338</p>
+<p>I am not familiar with the code at all, but from my understanding properly fixing this would require a way of knowing how much arguments were parsed in the current occurrence, in order to only keep that amount.  Unfortunately, there doesn't seem to be a way of getting that information currently.</p>
+<p>One solution would be to add an <code>occurrences</code> vector to the <code>MatchedArg</code> which keeps track of the position in the <code>vals</code> vector when a new occurrence is encountered, and can be used to properly pop off all values but the ones associated with the last occurrence when an override occurs.  This can be extended by also keeping track of the position in the <code>indices</code> vector, since currently self-overrides &quot;leak&quot; through the <code>indices</code> (i.e. the indices of the overridden occurrences are kept), and can be used as a basis to solve #1026.  This may also be the opportunity to change the behavior of <code>min_values</code> and <code>max_values</code> in clap 3 (or add a setting) to be per-occurrence instead of sum-of-occurrences (at least for me, that would be more intuitive -- but this would probably require discussion beforehand).</p>
+<p>I have a proof-of-concept implementation of the above which I can make into a proper PR if the proposed solution seems reasonable, or I can try and implement another suggestion :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1376.html">clap-rs/clap#1376</a> on 2018-11-08 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Elarnon">@Elarnon</a> on 2018-11-08 19:51</div>
+            <div class="timeline-body"><p>I ended up going ahead and creating #1376</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1391.html">clap-rs/clap#1391</a> on 2019-10-30 08:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">not-sure</span> added by @CreepySkeleton on 2020-02-01 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-06 09:56</div>
+            <div class="timeline-body"><p>Hey @Elarnon , kudos for writing this detailed step-by-step bug report! It's a real pleasure reading well-written explanations in simple fluent language that instantly lands in your brain without a need to parse &quot;what that person meant&quot;. Bonus points for the attempt to fix it, I promise we'll get to it eventually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cc: CreepySkeleton</span> removed by @CreepySkeleton on 2020-02-06 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @CreepySkeleton on 2020-02-06 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: options</span> added by @CreepySkeleton on 2020-02-06 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @CreepySkeleton on 2020-02-06 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @CreepySkeleton on 2020-02-06 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @CreepySkeleton on 2020-02-06 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @CreepySkeleton on 2020-02-06 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @CreepySkeleton on 2020-02-06 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @CreepySkeleton on 2020-02-06 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @CreepySkeleton on 2020-02-06 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: asserts</span> added by @pksunkara on 2020-04-09 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @pksunkara on 2020-04-09 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: asserts</span> removed by @pksunkara on 2020-04-09 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2297.html">clap-rs/clap#2297</a> on 2021-01-27 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2171.html">clap-rs/clap#2171</a> on 2021-01-27 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-02-07 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-02-16 03:16</div>
+            <div class="timeline-body"><p>Nope, this behaviour is not correct. As the <a href="https://docs.rs/clap/3.0.0-beta.2/clap/struct.Arg.html#method.overrides_with"><code>override_with</code>'s documentation</a> states, the override bahviour is disabled when one of the Multiple* enabled. While min_values introduces MultipleValues, the correct behaviour is both of them returning <code>[&quot;a&quot;, &quot;b&quot;, &quot;c&quot; &quot;d&quot;]</code>.</p>
+<p>Why currently it works? This is because currently the min_value's MultipleValue is only happens on positional arguments, which is definitely a hack(and why flag with min_value still works, it's because after self overriding, it ca still pass the multiple argument usage checking).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @ldm0 on 2021-02-16 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2350.html">clap-rs/clap#2350</a> on 2021-02-16 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-02-18 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-06-16 04:08</div>
+            <div class="timeline-body"><p>@ldm0 I am recently looking at this part of the code. How do I achieve the following scenarios (assuming <code>number_of_values(3)</code>):</p>
+<pre><code>// All occurrences should build to 3 values and they should be additive
+$ prog -o 1 2 -o 3
+[1, 2, 3]
+$ prog -o 1 -o 3
+error
+</code></pre>
+<pre><code>// All occurrences should have 3 values and they should override
+$ prog -o 1 2 3 -o 4 5 6
+[4, 5, 6]
+$ prog -o 1 2
+error
+$ prog -o 1 2 3 -o 4
+error
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @pksunkara on 2021-06-16 04:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-08-08 08:21</div>
+            <div class="timeline-body"><blockquote>
+<p>@ldm0 I am recently looking at this part of the code. How do I achieve the following scenarios (assuming <code>number_of_values(3)</code>):</p>
+<pre><code>// All occurrences should build to 3 values and they should be additive
+$ prog -o 1 2 -o 3
+[1, 2, 3]
+$ prog -o 1 -o 3
+error
+</code></pre>
+<pre><code>// All occurrences should have 3 values and they should override
+$ prog -o 1 2 3 -o 4 5 6
+[4, 5, 6]
+$ prog -o 1 2
+error
+$ prog -o 1 2 3 -o 4
+error
+</code></pre>
+</blockquote>
+<p>Sorry for the long delay, I haven't seen this @ until now. The first one can be easily achieved by:</p>
+<pre><code class="language-rust">fn main() {
+    let m = clap::App::new(&quot;hello&quot;)
+        .arg(
+            clap::Arg::new(&quot;foo&quot;)
+                .long(&quot;foo&quot;)
+                .required(true)
+                .multiple_values(true)
+                .multiple_occurrences(true)
+                .number_of_values(3),
+        )
+        .get_matches();
+    dbg!(m);
+}
+</code></pre>
+<p>But we cannot get the second behaviour now. Check: https://docs.rs/clap/3.0.0-beta.2/clap/struct.Arg.html#method.overrides_with . It's disabled when multiple* is on. But I think we can achieve this by adding a new setting now(or making a breaking change to make it work when multiple* is on).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ldm0 by @ldm0 on 2021-08-08 09:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-09 02:05</div>
+            <div class="timeline-body"><p>I was thinking the same which is why I opened the issue. Definitely need to be resolved for 3.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2021-08-13 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-08-14 07:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I was thinking the same which is why I opened the issue. Definitely need to be resolved for 3.0</p>
+</blockquote>
+<p>@pksunkara I think making a breaking change is better. Previously, self override doesn't working when multiple* is on seems like a technical limitation. Currently we have grouped values, I think the behaviour of self override can be: Working when multiple values is enabled, stop working when multiple occurrences is enabled. This is more intuitive I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2696.html">clap-rs/clap#2696</a> on 2021-08-14 08:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-08-14 09:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

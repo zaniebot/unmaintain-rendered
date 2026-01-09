@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>musl memcpy is slower than glibc memcpy - astral-sh/uv #10610</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>musl memcpy is slower than glibc memcpy</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10610">#10610</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-01-14 18:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2025-01-14 18:42</div>
+            <div class="timeline-body"><p>Currently, the uv musl builds (&quot;musllinux&quot;) are 10% slower than the uv glibc builds (&quot;manylinux&quot;). This seems to be mainly due to memcpy.</p>
+<pre><code>$ cargo build --profile profiling &amp;&amp; cp target/profiling/uv uv-main
+$ cargo build --target x86_64-unknown-linux-musl --profile profiling &amp;&amp; cp target/x86_64-unknown-linux-musl/profiling/uv uv-musl
+$ hyperfine --warmup 2 &quot;./uv-main pip compile --no-progress scripts/requirements/airflow.in&quot; &quot;./uv-musl pip compile --no-progress scripts/requirements/airflow.in&quot;
+Benchmark 1: ./uv-main pip compile --no-progress scripts/requirements/airflow.in
+  Time (mean ± σ):     104.3 ms ±   4.4 ms    [User: 118.1 ms, System: 101.4 ms]
+  Range (min … max):    99.0 ms … 118.8 ms    28 runs
+ 
+Benchmark 2: ./uv-musl pip compile --no-progress scripts/requirements/airflow.in
+  Time (mean ± σ):     116.3 ms ±   3.1 ms    [User: 133.8 ms, System: 100.0 ms]
+  Range (min … max):   112.5 ms … 126.8 ms    25 runs
+ 
+Summary
+  ./uv-main pip compile --no-progress scripts/requirements/airflow.in ran
+    1.11 ± 0.06 times faster than ./uv-musl pip compile --no-progress scripts/requirements/airflow.in
+</code></pre>
+<p>glibc:</p>
+<p><img src="https://github.com/user-attachments/assets/e85c0922-e036-4aa8-a790-9c6f7e1c864b" alt="Image" /></p>
+<p>musl:</p>
+<p><img src="https://github.com/user-attachments/assets/71ca296d-43b9-457e-b68d-464fb0be7592" alt="Image" /></p>
+<p>memcpy is used for all sorts of containers and operations (musl):</p>
+<p><img src="https://github.com/user-attachments/assets/43e3842b-2cf3-41c5-9004-f123a22cc20a" alt="Image" /></p>
+<p>Are there any ways to bring the musl performance to parity with the glibc performance?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2025-01-14 18:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

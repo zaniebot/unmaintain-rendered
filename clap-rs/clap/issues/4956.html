@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>More heap allocations than structopt - clap-rs/clap #4956</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>More heap allocations than structopt</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4956">#4956</a>
+        opened by <a href="https://github.com/dullbananas">@dullbananas</a>
+        on 2023-06-08 03:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dullbananas">@dullbananas</a> on 2023-06-08 03:03</div>
+            <div class="timeline-body"><p>I tested the heap usage of wasm-pack when using it to compile wasm_game_of_life before and after upgrading from structopt to clap 4.3. The total allocated bytes increased by 22%, and the maximum allocated bytes (t-gmax) increased by 57%.</p>
+<p><a href="https://github.com/clap-rs/clap/files/11683642/dhat-heap.zip">dhat-heap.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dullbananas">@dullbananas</a> on 2023-06-08 03:04</div>
+            <div class="timeline-body"><p>Dhat files can be viewed here https://nnethercote.github.io/dh_view/dh_view.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-06-08 08:22</div>
+            <div class="timeline-body"><p>Could you include a reproduction case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dullbananas">@dullbananas</a> on 2023-06-08 14:21</div>
+            <div class="timeline-body"><pre><code>git clone https://github.com/dullbananas/wasm-pack.git
+cd wasm-pack
+# switch to version with structopt
+git checkout dc9e99c
+# clone inside of wasm-pack
+git clone https://github.com/rustwasm/wasm_game_of_life.git v
+cd v
+git checkout fc35b7c
+cd ..
+# run twice the first time because the very first run of wasm-pack does more heap allocations
+cargo run --release --features &quot;dhat-heap&quot; -- build --release v
+cargo run --release --features &quot;dhat-heap&quot; -- build --release v
+# switch to version with structopt
+git checkout 0692377
+# this will overwrite dhat-heap.json
+cargo run --release --features &quot;dhat-heap&quot; -- build --release v
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-06-08 14:25</div>
+            <div class="timeline-body"><p>Also, could you describe the end-user impact.  Is this noticeable in any way?  For example, in #4774 we are discussing the impact of clap initialization time on the full startup time of the application, affecting the more interactive experience of the user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dullbananas">@dullbananas</a> on 2023-06-08 22:31</div>
+            <div class="timeline-body"><p>I found no measurable difference in initialization time. To measure it, I added this code after <code>let args = Cli::parse()</code>:</p>
+<pre><code>dbg!(args); // prevent parsing from being optimized away
+return Ok(());
+</code></pre>
+<p>And I ran this 3 times:</p>
+<pre><code>time ./target/*/release/wasm-pack build --release v
+</code></pre>
+<p>Structopt: 0.158s, 0.010s, 0.008s</p>
+<p>Clap: 0.168s, 0.011s, 0.009s</p>
+<p>I also measured the binary size.</p>
+<p>Structopt: 12,029,348 bytes</p>
+<p>Clap: 12,160,608 bytes (1.1% increase)</p>
+<p>And I used <code>dbg!(dhat::HeapStats::get().curr_bytes)</code> to measure the heap usage after parsing is done.</p>
+<p>Structopt: 1130 bytes</p>
+<p>Clap: 978 bytes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-06-09 15:13</div>
+            <div class="timeline-body"><p>Sounds like the end-user impact of these increased allocations is negligible which has me leaning towards closing this.  If you have a reason we should actively focus on this, let us know!</p>
+<p>I suspect some of our work towards #2037 and #1365 might help.  We are exploring making more settings of <code>Command</code> and <code>Arg</code> runtime defined (e.g. #4833).  This will decrease the size of <code>Command</code> and <code>Arg</code> though it means there will be extra allocations for any of these runtime fields used.</p>
+<p>#4959 would be the biggest change for reducing allocations as it will make it so we don't even instantiate <code>Arg</code>s that are never used and we wouldn't be initializing some of the fields of unused <code>Command</code>s.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-06-09 15:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

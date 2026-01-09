@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sub-dependencies from private index cannot be resolved when explicit is true - astral-sh/uv #10850</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Sub-dependencies from private index cannot be resolved when explicit is true</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10850">#10850</a>
+        opened by <a href="https://github.com/olafdeleeuw">@olafdeleeuw</a>
+        on 2025-01-22 10:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/olafdeleeuw">@olafdeleeuw</a> on 2025-01-22 10:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I want to add a dependency, let's say <code>my-private-package</code> which is published in Azure Artifacts.
+The package <code>my-private-package</code> has a dependency itself which is also published in Azure Artifacts: <code>my-private-sub-package</code>.</p>
+<p>I have the following setup in my <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+my-private-package = { index = &quot;my-private-index&quot; }
+
+[[tool.uv.index]]
+name = &quot;dna-nl-library&quot;
+url = &quot;https://&lt;subscription&gt;.pkgs.visualstudio.com/&lt;project&gt;/_packaging/my-private-index/pypi/simple/&quot;
+explicit = true
+</code></pre>
+<p>If I run <code>uv add my-private-package</code> I get the following error:</p>
+<p>× No solution found when resolving dependencies for split (python_full_version == '3.11.*'):
+╰─▶ Because my-private-sub-package was not found in the package registry and my-private-package depends on my-private-sub-package, we can conclude that my-private-package cannot be used.</p>
+<p>Apparently, <code>explicit=true</code> says only <code>my-private-package</code> must be searched in &quot;my-private-index&quot;. <code>uv</code> doesn't apply this index on the dependencies of <code>my-private-package</code>.</p>
+<p>I tried adding <code>my-private-sub-package</code> to the <code>[tool.uv.source]</code> section, but this doesn't help.</p>
+<p>The only two solutions are:</p>
+<ul>
+<li>set <code>explicit=False</code></li>
+<li>add <code>my-private-sub-package</code> manually as a dependency</li>
+</ul>
+<p>It would be nice if the setting <code>explicit=true</code> holds also for the dependencies of the sources listed under <code>[tool.uv.source]</code>.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @olafdeleeuw on 2025-01-22 10:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-22 14:00</div>
+            <div class="timeline-body"><p>This looks like a duplicate of #8253.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olafdeleeuw">@olafdeleeuw</a> on 2025-01-22 14:14</div>
+            <div class="timeline-body"><p>Yes, you’re right. Apologies, I checked the issues to see if this was already there, but I missed this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-22 14:15</div>
+            <div class="timeline-body"><p>That's alright. I'll merge in there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-22 14:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

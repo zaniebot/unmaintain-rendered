@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>explicit = true on index is not honored - astral-sh/uv #10090</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>explicit = true on index is not honored</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10090">#10090</a>
+        opened by <a href="https://github.com/tmatup">@tmatup</a>
+        on 2024-12-22 03:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tmatup">@tmatup</a> on 2024-12-22 03:39</div>
+            <div class="timeline-body"><p>pyproject.toml</p>
+<pre><code>[project]
+name = &quot;my-project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;My Project&quot;
+authors = []
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10,&lt;3.12&quot;
+dependencies = [
+    # FROZEN DEPENDENCIES
+    &quot;mypackage==1.0.1024&quot;,
+
+    # UPDATEABLE DEPENDENCIES - MAJOR
+    &quot;pandas&gt;=2.2.3&quot;
+]
+
+[[tool.uv.index]]
+name = &quot;myindex&quot;
+url = &quot;https://myorg.pkgs.visualstudio.com/myproject/_packaging/myfeed/pypi/simple/&quot;
+explicit = true
+
+[tool.uv.sources]
+mypackage = { index = &quot;myindex&quot; }
+</code></pre>
+<p>uv lock</p>
+<pre><code>(py311) joe@test:~/root/$ uv lock
+Using CPython 3.10.16
+error: Failed to fetch: `https://https//myorg.pkgs.visualstudio.com/myproject/_packaging/myfeed/pypi/simple/gevent/`
+  Caused by: Could not connect, are you offline?
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://https//myorg.pkgs.visualstudio.com/myproject/_packaging/myfeed/pypi/simple/gevent/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: Temporary failure in name resolution
+  Caused by: failed to lookup address information: Temporary failure in name resolution
+</code></pre>
+<p>uv version</p>
+<pre><code>(py311) joe@test:~/root/$ pip show uv
+Name: uv
+Version: 0.5.11
+Summary: An extremely fast Python package and project manager, written in Rust.
+Home-page: https://pypi.org/project/uv/
+Author: uv
+Author-email: &quot;Astral Software Inc.&quot; &lt;hey@astral.sh&gt;
+License: MIT OR Apache-2.0
+Location: /home/joe/venvs/py311/lib/python3.11/site-packages
+Requires: 
+Required-by: 
+</code></pre>
+<p>Per https://docs.astral.sh/uv/configuration/indexes/#pinning-a-package-to-an-index, shouldn't the index be used for resolving only the <code>mypackage</code> package?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 16:50</div>
+            <div class="timeline-body"><p>Yes, but it's going to be hard for me to help without a reproduction that I can run myself. <code>uv lock --show-settings</code> might be helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-12-22 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmatup">@tmatup</a> on 2024-12-22 19:48</div>
+            <div class="timeline-body"><p>Please see below for the <code>uv lock --show-settings</code> output. Note that I redacted the username, password, org, project, and feed values.</p>
+<pre><code>GlobalSettings {
+    quiet: false,
+    verbose: 0,
+    color: Auto,
+    native_tls: false,
+    concurrency: Concurrency {
+        downloads: 50,
+        builds: 48,
+        installs: 48,
+    },
+    connectivity: Online,
+    allow_insecure_host: [],
+    show_settings: true,
+    preview: Disabled,
+    python_preference: Managed,
+    python_downloads: Automatic,
+    no_progress: false,
+    installer_metadata: true,
+}
+CacheSettings {
+    no_cache: false,
+    cache_dir: None,
+}
+LockSettings {
+    locked: false,
+    frozen: false,
+    dry_run: false,
+    python: None,
+    install_mirrors: PythonInstallMirrors {
+        python_install_mirror: None,
+        pypy_install_mirror: None,
+    },
+    refresh: None(
+        Timestamp(
+            SystemTime {
+                tv_sec: 1734896684,
+                tv_nsec: 460173761,
+            },
+        ),
+    ),
+    settings: ResolverSettings {
+        index_locations: IndexLocations {
+            indexes: [
+                Index {
+                    name: None,
+                    url: Url(
+                        VerbatimUrl {
+                            url: Url {
+                                scheme: &quot;https&quot;,
+                                cannot_be_a_base: false,
+                                username: &quot;&lt;username&gt;&quot;,
+                                password: Some(
+                                    &quot;&lt;password&gt;&quot;,
+                                ),
+                                host: Some(
+                                    Domain(
+                                        &quot;https&quot;,
+                                    ),
+                                ),
+                                port: None,
+                                path: &quot;//myorg.pkgs.visualstudio.com/myproject/_packaging/myfeed/pypi/simple&quot;,
+                                query: None,
+                                fragment: None,
+                            },
+                            given: Some(
+                                &quot;https://&lt;username&gt;:&lt;password&gt;@https://myorg.pkgs.visualstudio.com/myproject/_packaging/myfeed/pypi/simple&quot;,
+                            ),
+                        },
+                    ),
+                    explicit: false,
+                    default: false,
+                    origin: Some(
+                        Cli,
+                    ),
+                    publish_url: None,
+                },
+            ],
+            flat_index: [],
+            no_index: false,
+        },
+        index_strategy: FirstIndex,
+        keyring_provider: Disabled,
+        resolution: Highest,
+        prerelease: IfNecessaryOrExplicit,
+        fork_strategy: RequiresPython,
+        dependency_metadata: DependencyMetadata(
+            {},
+        ),
+        config_setting: ConfigSettings(
+            {},
+        ),
+        no_build_isolation: false,
+        no_build_isolation_package: [],
+        exclude_newer: None,
+        link_mode: Hardlink,
+        upgrade: None,
+        build_options: BuildOptions {
+            no_binary: None,
+            no_build: None,
+        },
+        sources: Enabled,
+    },
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 20:27</div>
+            <div class="timeline-body"><p>It looks like you're providing the index over the CLI -- is that correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmatup">@tmatup</a> on 2024-12-22 21:03</div>
+            <div class="timeline-body"><p>Yep, I had the <code>UV_EXTRA_INDEX_URL</code> env added to my bashrc. I had it removed, and now I am getting a different error when doing <code>uv lock</code>, based on the pyproject.toml that I have (shared earlier), what could be wrong?</p>
+<pre><code>(py311) joe@test:~/root/$ uv lock
+Using CPython 3.10.16
+  × No solution found when resolving dependencies for split (python_full_version &gt;= '3.10' and sys_platform == 'darwin'):
+  ╰─▶ Because mypackage was not found in the package registry and sandbox depends on mypackage==1.0.2408007, we can conclude that sandbox 's requirements are unsatisfiable.
+      And because your workspace requires sandbox, we can conclude that your workspace's requirements are unsatisfiable.
+</code></pre>
+<p>Though I was able to do pip install successfully of the package when directly install thru <code>pip</code></p>
+<pre><code>(py311) joe@test:~/root/$ pip install --extra-index-url https://&lt;username&gt;:&lt;pat&gt;@myorg.pkgs.visualstudio.com/myproject/_packaging/myfeed/pypi/simple/ mypackage==1.0.1024
+Looking in indexes: https://pypi.org/simple, https://&lt;username&gt;:****@myorg.pkgs.visualstudio.com/myproject/_packaging/myfeed/pypi/simple/
+Requirement already satisfied: mypackage==1.0.1024 in /home/joe/venvs/py311/lib/python3.11/site-packages (1.0.1024)
+Requirement already satisfied: Pillow in /home/venvs/venvs/py311/lib/python3.11/site-packages (from mypackage==1.0.1024) (11.0.0)
+Requirement already satisfied: numpy in /home/venvs/venvs/py311/lib/python3.11/site-packages (from mypackage==1.0.1024) (1.26.4)
+Requirement already satisfied: scikit-learn in /home/venvs/venvs/py311/lib/python3.11/site-packages (from mypackage==1.0.1024) (1.5.2)
+Requirement already satisfied: scipy&gt;=1.6.0 in /home/venvs/venvs/py311/lib/python3.11/site-packages (from scikit-learn-&gt;mypackage==1.0.1024) (1.14.1)
+Requirement already satisfied: joblib&gt;=1.2.0 in /home/venvs/venvs/py311/lib/python3.11/site-packages (from scikit-learn-&gt;mypackage==1.0.1024) (1.4.2)
+Requirement already satisfied: threadpoolctl&gt;=3.1.0 in /home/venvs/venvs/py311/lib/python3.11/site-packages (from scikit-learn-&gt;mypackage==1.0.1024) (3.5.0)
+</code></pre>
+<p>And I have the following env variable declared in my bashrc</p>
+<pre><code># uv
+export UV_INDEX_DUFEED_USERNAME=&quot;&lt;username&gt;&quot;
+export UV_INDEX_DUFEED_PASSWORD=&lt;pat&gt;
+export AZURE_PACKAGES_TOKEN=&lt;pat&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmatup">@tmatup</a> on 2024-12-23 00:27</div>
+            <div class="timeline-body"><p>@charliermarsh any insights for this? I can create a separate issue for this if you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-23 00:35</div>
+            <div class="timeline-body"><p>My guess is that authentication is failing somewhere. Can you share the (redacted) logs with <code>--verbose</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmatup">@tmatup</a> on 2024-12-23 00:51</div>
+            <div class="timeline-body"><p>@charliermarsh Please see attached for the log. <code>dm_shared</code> is the package name. I used the same credentials when doing <code>pip install</code>. And looks like it indeed found the path to the exact <code>whl</code> file that need to be downloaded and installed. Could the url (convention) be wrong in the <code>pyproject.toml</code> file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-23 13:53</div>
+            <div class="timeline-body"><p>Thank you! Just to clarify: are you using <code>mypackage = { index = &quot;myindex&quot; }</code> or <code>mypackage = { url = &quot;https://url/to/wheel.whl&quot; }</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmatup">@tmatup</a> on 2024-12-23 15:41</div>
+            <div class="timeline-body"><p>Hi @charliermarsh I am using the first one. I have the sample <code>pyproject.toml</code> content in my original post.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-23 15:47</div>
+            <div class="timeline-body"><p>Sorry to ask this, but can you share the logs again with <code>-vvv</code>? They'll be pretty verbose but it should help understand whatever is happening with the authentication. You can also email them to me (my first name at our company domain) if you prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmatup">@tmatup</a> on 2024-12-23 16:37</div>
+            <div class="timeline-body"><p>Thanks @charliermarsh! Just emailed you the <code>-vvv</code> log output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmatup">@tmatup</a> on 2024-12-23 20:40</div>
+            <div class="timeline-body"><p>Hi @charliermarsh so I looked into the log file, I don't see authentication errors, and couple things that looked interesting to me - first, the Expected vs. Actual which has the exact path and details for the whl file, how was it get found out and why was it not able to get used for the downloading and installation? second, why the package name were changed from having <code>_</code> to having <code>-</code>?</p>
+<p>I also checked the scope for the PAT used, it seems have the right scope. And the fact that I was able to do it thru <code>pip install --extra-index-ur</code> w/o any problem is also a positive sign.</p>
+<p>Is there anything else that I should look at for resolving this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-23 21:31</div>
+            <div class="timeline-body"><p>I also say the expected vs. actual. Do you have an existing <code>uv.lock</code> in the directory that used <code>mypackage = { url = &quot;https://url/to/wheel.whl&quot; }</code> or something? That's why I asked above -- it looks like uv is comparing against that. It shouldn't really matter though.</p>
+<p>(The change from <code>_</code> to <code>-</code> also doesn't matter. That's just us normalizing the package name based on Python's standards.)</p>
+<p>Does <code>https://myorg.pkgs.visualstudio.com/myproject/_packaging/myfeed/pypi/simple/dm-shared</code> look like it has the correct output?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-23 21:35</div>
+            <div class="timeline-body"><p>Can you run with <code>RUST_LOG=trace</code>?</p>
+<p>I don't think authentication is failing, since otherwise we'd see a hint at the end indicating that the index returned a 401.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmatup">@tmatup</a> on 2024-12-23 22:57</div>
+            <div class="timeline-body"><p>Hi @charliermarsh , yes, <code>https://myorg.pkgs.visualstudio.com/myproject/_packaging/myfeed/pypi/simple/dm-shared</code> in browser does show the correct output.</p>
+<p>I went on to another machine and did a fresh start, now the expected vs actual section is gone from the log (so it much got picked up from somewhere, though I didn't see anything under the project folder). But I am still getting the same error.</p>
+<p>× No solution found when resolving dependencies for split (python_full_version &gt;= '3.10' and sys_platform == 'darwin'):
+╰─▶ Because mypackage was not found in the package registry and sandbox depends on mypackage ==1.0.1024, we can conclude that sandbox's requirements are unsatisfiable.
+And because your workspace requires sandbox, we can conclude that your workspace's requirements are unsatisfiable.</p>
+<p>I looked into the log with RUST_LOG=trace turned on, it indeed ran into authentication (401) error when trying to access the url path. And I do have <code>UV_INDEX_MYFEED_USERNAME</code> and <code>UV_INDEX_MYFEED_PASSWORD</code> and also <code>AZURE_PACKAGES_TOKE</code> declared in my bashrc file.</p>
+<p>I shared you the log via email. Please take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-23 23:00</div>
+            <div class="timeline-body"><p>Okay great, thank you. Taking a look...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmatup">@tmatup</a> on 2024-12-24 03:11</div>
+            <div class="timeline-body"><p>@charliermarsh I ended up adding env variables for all of following to get it work</p>
+<pre><code>UV_INDEX_MYFEED_USERNAME
+UV_INDEX_MYFEED_PASSWORD
+UV_HTTP_BASIC_MYFEED_USERNAME
+UV_HTTP_BASIC_MYFEED_PASSWORD
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-24 03:15</div>
+            <div class="timeline-body"><p>Ok! I'm fairly certain that we don't look at the <code>UV_HTTP_BASIC_</code> variables (we don't have any references in our codebase), but I think there were some old versions that did use that variant. Your logs suggest a recent version, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmatup">@tmatup</a> on 2024-12-24 03:44</div>
+            <div class="timeline-body"><p>I went with the same set of env variables for my docker build as well, which installs <code>uv</code> thru the following command</p>
+<pre><code>RUN /opt/virtual_env/bin/pip install --upgrade pip
+RUN /opt/virtual_env/bin/pip install uv
+RUN /opt/virtual_env/bin/uv --version
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-27 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-27 13:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

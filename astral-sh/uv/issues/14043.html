@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV does not appear to respect --no-build-isolation flag or pyproject.toml build dependencies - astral-sh/uv #14043</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV does not appear to respect --no-build-isolation flag or pyproject.toml build dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14043">#14043</a>
+        opened by <a href="https://github.com/jsmith212">@jsmith212</a>
+        on 2025-06-15 21:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jsmith212">@jsmith212</a> on 2025-06-15 21:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I am attempting to install the <code>slycot</code> package with uv in a virtual environment. Unfortunately, this requires <code>f2py</code> sources, which are normally distributed with <code>numpy</code>, but are not present in the build environment when installing. Attempting <code>uv add slycot --no-build-isolation</code> or <code>uv pip install slycot --no-build-isolation</code> produces the same error:</p>
+<pre><code>      CMake Error at slycot/CMakeLists.txt:660 (add_library):
+        Cannot find source file:
+
+          /home/&lt;user&gt;/.cache/uv/builds-v0/.tmpUAW6fX/lib/python3.13/site-packages/numpy/f2py/src/fortranobject.c
+
+        Tried extensions .c .C .c++ .cc .cpp .cxx .cu .mpp .m .M .mm .ixx .cppm .h
+        .hh .h++ .hm .hpp .hxx .in .txx .f .F .for .f77 .f90 .f95 .f03 .hip .ispc
+
+      
+      CMake Error at /home/&lt;user&gt;/Git/gnc-rs/.venv/lib/python3.13/site-packages/skbuild/resources/cmake/FindF2PY.cmake:92 (add_library):
+        No SOURCES given to target: _f2py_runtime_library
+      Call Stack (most recent call first):
+        CMakeLists.txt:15 (find_package)
+
+      
+      CMake Error at slycot/CMakeLists.txt:660 (add_library):
+        No SOURCES given to target: _wrapper
+
+
+      hint: This usually indicates a problem with the package or the build environment.
+</code></pre>
+<p>I have ensured all the build dependencies are installed, and I can see the file it needs in the venv lib directory. I have also attempted to follow the build isolation example in the documentation. Nothing I add to the <code>pyproject.toml</code> seems to produce any kind of change in behavior though. Is there any way to force the missing source into the build environment, or is this just impossible to install?</p>
+<h3>Platform</h3>
+<p>Linux 6.6.87.1-microsoft-standard-WSL2+ x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.12</p>
+<h3>Python version</h3>
+<p>Python 3.13.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jsmith212 on 2025-06-15 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-16 01:41</div>
+            <div class="timeline-body"><p>I think this is working as expected for me?</p>
+<pre><code>uv init foo
+cd foo
+uv venv
+uv pip install setuptools setuptools-scm scikit-build
+uv add slycot --no-build-isolation
+</code></pre>
+<p>The build failed on my machine due to a CMAke error, but it's clearly picking up the build dependencies from the <code>.venv</code> (since if I omit <code>uv pip install setuptools setuptools-scm scikit-build</code>, I get an error that they're missing).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-06-20 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-06-20 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-20 20:08</div>
+            <div class="timeline-body"><p>Closing for now but happy to re-open with more information and a reproduction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-06-20 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsmith212">@jsmith212</a> on 2025-06-22 17:02</div>
+            <div class="timeline-body"><p>I apologize for the delay, life got in the way this week. Here's some more info:</p>
+<p>You're right, that's a good point that it seems to have the python build dependencies at least to some degree. Specifically the problem I'm seeing though is that the CMake error indicates a missing file:</p>
+<pre><code>      CMake Error at slycot/CMakeLists.txt:660 (add_library):
+        Cannot find source file:
+
+          /home/smitj/.cache/uv/builds-v0/.tmpUAW6fX/lib/python3.13/site-packages/numpy/f2py/src/fortranobject.c
+
+        Tried extensions .c .C .c++ .cc .cpp .cxx .cu .mpp .m .M .mm .ixx .cppm .h
+        .hh .h++ .hm .hpp .hxx .in .txx .f .F .for .f77 .f90 .f95 .f03 .hip .ispc
+</code></pre>
+<p>If I look in the <code>.venv</code>, I can see that file exactly where it should be:</p>
+<pre><code>❯ ll .venv/lib/python3.13/site-packages/numpy/f2py/src
+total 64K
+drwxr-xr-x 2 smitj smitj 4.0K Jun 22 10:57 .
+drwxr-xr-x 5 smitj smitj 4.0K Jun 22 10:57 ..
+-rw-r--r-- 2 smitj smitj  46K Jun 22 10:57 fortranobject.c
+-rw-r--r-- 2 smitj smitj 5.7K Jun 22 10:57 fortranobject.h
+</code></pre>
+<p>So that's what led me to believe that perhaps build isolation is still occurring. Not sure if that's the same build error you see or not. This one is notoriously a PITA to compile because it needs Fortran and OpenBLAS, let me see if I can get a Dockerfile that reproduces this a bit more cleanly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsmith212">@jsmith212</a> on 2025-06-22 19:31</div>
+            <div class="timeline-body"><p>The plot thickens. I set up a Dockerfile to try to reproduce, but it actually succeeds. I've confirmed this exact sequence fails on my host machine (Ubuntu in WSL), even with the right dependencies installed. Note that this is exactly how I have UV and Python installed on my host machine, and I did try upgrading UV to 0.7.13 to rule that out. To attempt, build and run the following Dockerfile:</p>
+<pre><code class="language-docker">FROM ubuntu:latest
+
+# Install dependencies
+RUN apt-get update &amp;&amp; apt-get install -y \
+    build-essential \
+    cmake \
+    curl \
+    libopenblas-dev \
+    gfortran
+
+# Install UV
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Add local bin to PATH
+ENV PATH=&quot;/root/.local/bin:${PATH}&quot;
+
+# Install Python with UV, needs preview flag because UV does not officially support this yet
+RUN uv python install --default --preview
+
+WORKDIR /workspace
+CMD /bin/bash
+</code></pre>
+<p><code>docker build -t test . &amp;&amp; docker run --rm -it test</code></p>
+<p>Run the following commands (same in Docker as on the host):</p>
+<pre><code>uv init
+uv venv
+uv add numpy scikit-build setuptools setuptools-scm
+uv add slycot
+</code></pre>
+<p>This reliably works in Docker and fails on the host. I can't fault UV at this point (so no need to reopen), but I'm documenting in case anyone else runs into it or has any ideas.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-22 19:38</div>
+            <div class="timeline-body"><p>You can try cleaning the cache:</p>
+<pre><code>uv cache clean
+</code></pre>
+<p>You can also look at the verbose logs (<code>-v</code> or <code>-vv</code>) to see if anything is noticeable or if there is a different between the host and the docker execution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsmith212">@jsmith212</a> on 2025-06-22 19:54</div>
+            <div class="timeline-body"><p>Great call on the cache, it now attempts to build on the host! I think that was it. I still run into an issue compiling but it appears to be an ABI issue with a dependent library, which is definitely not a UV issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

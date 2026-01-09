@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>formatter: debug panic in placement::find_pos_only_slash_offset - astral-sh/ruff #5176</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>formatter: debug panic in placement::find_pos_only_slash_offset</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5176">#5176</a>
+        opened by <a href="https://github.com/davidszotten">@davidszotten</a>
+        on 2023-06-19 07:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-06-19 07:38</div>
+            <div class="timeline-body"><p>while working on comments inside tuple unpacking between stars and name (following https://github.com/astral-sh/ruff/pull/5167#discussion_r1233371050 )</p>
+<p>i was wondering if function arguments could have the same issue. in trying to test that i found my test case violates <a href="https://github.com/astral-sh/ruff/blob/be11cae619d5a24adb4da34e64d3c5f270f9727b/crates/ruff_python_formatter/src/comments/placement.rs#L846">this debug assert</a></p>
+<pre><code>$ cat ../../scratch.py
+def foo(
+    a=2 ** 3 # trailing
+):
+    ...
+</code></pre>
+<pre><code>$ cargo run --bin ruff_python_formatter -- --emit stdout ../../scratch.py
+   [...]
+thread 'main' panicked at 'assertion failed: `(left == right)`
+  left: `RParen`,
+ right: `Comma`', crates/ruff_python_formatter/src/comments/placement.rs:846:9
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>commit: be11cae619d5a24ad</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-06-19 08:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-19 08:22</div>
+            <div class="timeline-body"><p>Thanks for reporting this issue. This is a bug in my implementation. We can fix it by either:</p>
+<p>Changing the fallback from <code>arguments.end()</code> to <code>arguments.end() - TextSize::new(1)</code> to exclude the <code>)</code></p>
+<p>https://github.com/astral-sh/ruff/blob/be11cae619d5a24adb4da34e64d3c5f270f9727b/crates/ruff_python_formatter/src/comments/placement.rs#L640-L642</p>
+<p>Gracefully handle a <code>)</code> in the <code>find_pos_only_slash</code></p>
+<p>https://github.com/astral-sh/ruff/blob/be11cae619d5a24adb4da34e64d3c5f270f9727b/crates/ruff_python_formatter/src/comments/placement.rs#L845-L846</p>
+<p>I would prefer the first fix because <code>between_arguments_range</code> is explicit about the range being <em>between</em> arguments, which isn't true for <code>)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5167.html">astral-sh/ruff#5167</a> on 2023-06-20 05:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-20 06:10</div>
+            <div class="timeline-body"><p>@davidszotten I tried to reproduce, but your provided snippet does not panic on main (although it gets formatted extremely weirdly):</p>
+<pre><code class="language-python">def foo(
+    a=2  # trailing
+    **3,
+):
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-20 06:32</div>
+            <div class="timeline-body"><p>The weird formatting should be fixed in #5204</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-06-20 09:03</div>
+            <div class="timeline-body"><p>panic was fixed by #5192 (rustpython upgrade)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @davidszotten on 2023-06-20 09:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

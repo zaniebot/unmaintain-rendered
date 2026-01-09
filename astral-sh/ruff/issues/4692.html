@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: G101 logging-extra-attr-clash (or a new, similar rule) to detect (potentially) unsafe dict unpacking - astral-sh/ruff #4692</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: G101 logging-extra-attr-clash (or a new, similar rule) to detect (potentially) unsafe dict unpacking</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4692">#4692</a>
+        opened by <a href="https://github.com/roikoren755">@roikoren755</a>
+        on 2023-05-28 12:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/roikoren755">@roikoren755</a> on 2023-05-28 12:45</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>First of all, I'd like to thank you for a great and easy-to-use linter 🥳</p>
+<p>I've been running into issues lately where logging calls would fail, because I unpack some <code>dict</code> in the <code>extra</code> parameter to logging methods (or directly put a variable there), and that dict has a <code>name</code> key, for example.</p>
+<p>Ruff doesn't catch these issues, and I thought a good rule (or extension to one of the existing <code>flake8-logging-format</code> rules) could catch these issues and warn about them.
+Knowing exactly when a bad argument will appear can be difficult, like in calls to <code>pydantic</code> classes' <code>dict</code> method, but I think warning on all places that pass an object directly to the <code>extra</code> parameter or unpack a <code>dict</code> inside it is still a good idea.</p>
+<p>What do you think? I would also be willing to work on a PR for this, though my rust skills aren't as sharp as I'd like them to be for this 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-28 22:24</div>
+            <div class="timeline-body"><p>Thank you :) Do you mind including an example snippet that demonstrates the problem? (Is it that the unpacked dictionary keys are also themselves valid arguments to <code>logging</code> calls?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-05-28 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-05-28 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roikoren755">@roikoren755</a> on 2023-05-29 07:02</div>
+            <div class="timeline-body"><p>Sorry, should have included examples in the original message. Yes, the problem is as you stated it.</p>
+<p>The following is correctly flagged by ruff G101:</p>
+<pre><code>import logging
+
+logger = logging.getLogger()
+logger.info(&quot;&quot;, extra={&quot;name&quot;: &quot;fails&quot;})
+</code></pre>
+<p>While the following aren't caught:</p>
+<pre><code>logger.info(&quot;&quot;, extra={**{&quot;name&quot;: &quot;fails&quot;}})
+extra = {&quot;name&quot;: &quot;fails&quot;}
+logger.info(&quot;&quot;, extra={**extra})
+logger.info(&quot;&quot;, extra=extra)
+
+from pydantic import BaseModel
+
+class PydanticFail(BaseModel):
+    name: str = &quot;fails&quot;
+
+logger.info(&quot;&quot;, extra=PydanticFail().dict())
+logger.info(&quot;&quot;, extra={**PydanticFail().dict()})
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @charliermarsh on 2023-07-10 01:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/regoawt">@regoawt</a> on 2024-05-05 17:59</div>
+            <div class="timeline-body"><p>+1 Just hit the same issue but passing a TypedDict to <code>extra</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

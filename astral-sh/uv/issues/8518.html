@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to config Jfrog api key in pyproject.toml - astral-sh/uv #8518</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to config Jfrog api key in pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8518">#8518</a>
+        opened by <a href="https://github.com/yuhao-postnl">@yuhao-postnl</a>
+        on 2024-10-24 08:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yuhao-postnl">@yuhao-postnl</a> on 2024-10-24 08:15</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Hey!!
+I'm migrating from <code>poetry</code> to <code>uv</code> and wondering how to configure API keys for JFrog in the <code>pyproject.toml</code> file. Here's an example of my current configuration:</p>
+<pre><code>[project]
+name = &quot;test-dev&quot;
+version = &quot;0.0.1&quot;
+description = &quot;About test-dev&quot;
+authors = []
+requires-python = &quot;&gt;=3.9,&lt;4.0&quot;
+dependencies = [
+    &quot;sageflow&gt;=1.7.0&quot;,
+    &quot;aiplatform&gt;=0.4.0&quot;,
+]
+
+[tool.uv.sources]
+sageflow = { index = &quot;jfrog&quot; }
+aiplatform = { index = &quot;jfrog&quot; }
+
+[[tool.uv.index]]
+name = &quot;jfrog&quot;
+url = &quot;https://&lt;user_name&gt;:&lt;key&gt;@lpe.jfrog.io/artifactory/api/pypi/&lt;virtual-repo&gt;/simple&quot;
+
+
+</code></pre>
+<p>For poetry, we have such command to config credentials:</p>
+<pre><code>export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring 
+poetry config http-basic.jfrog &lt;email-address&gt; &lt;JFROG_APIKEY&gt;
+</code></pre>
+<p>Is there an equivalent way like <code>uv config http-basic.jforg</code></p>
+<p>I checked the doc <a href="https://docs.astral.sh/uv/guides/integration/alternative-indexes/#other-indexes">here</a>, seems no further explanation on how to config jfrog.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-24 12:36</div>
+            <div class="timeline-body"><p>You can set the <code>UV_INDEX_JFROG_USERNAME</code> and <code>UV_INDEX_JFROG_PASSWORD</code> environment variables.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-24 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-24 12:36</div>
+            <div class="timeline-body"><p>(We don't recommend writing credentials to your <code>pyproject.toml</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yuhao-postnl">@yuhao-postnl</a> on 2024-10-24 13:27</div>
+            <div class="timeline-body"><blockquote>
+<p>You can set the <code>UV_INDEX_JFROG_USERNAME</code> and <code>UV_INDEX_JFROG_PASSWORD</code> environment variables.</p>
+</blockquote>
+<p>Thank you for the quick reply! It may be good to mention I used a API-KEY for jfrog. I try to export env variables in my zsh file and source it. (where password I put API key)
+<img src="https://github.com/user-attachments/assets/e6f672f7-2680-4a6b-8998-7d097a50b421" alt="image" /></p>
+<p>And the I run</p>
+<pre><code>uv venv
+source .venv/bin/activate
+uv lock
+</code></pre>
+<p>It still pops up with the error:</p>
+<pre><code>No solution found when resolving dependencies:
+  ╰─▶ Because aiplatform was not found in the package registry and your project depends on aiplatform&gt;=0.4.0, we can conclude that your project's
+      requirements are unsatisfiable.
+
+      hint: An index URL (https://lpe.jfrog.io/artifactory/api/pypi/a-virtual/simple) could not be queried due to a lack of valid
+      authentication credentials (401 Unauthorized).
+</code></pre>
+<p>here is my pyproject.toml, do I need to config something else in toml file:</p>
+<pre><code>[project]
+name = &quot;test-dev&quot;
+version = &quot;0.0.1&quot;
+description = &quot;About test-dev&quot;
+authors = []
+requires-python = &quot;&gt;=3.9,&lt;4.0&quot;
+dependencies = [
+    &quot;sageflow&gt;=1.7.0&quot;,
+    &quot;aiplatform&gt;=0.4.0&quot;,
+]
+
+[tool.uv.sources]
+sageflow = { index = &quot;jfrog&quot; }
+aiplatform = { index = &quot;jfrog&quot; }
+
+[[tool.uv.index]]
+name = &quot;jfrog&quot;
+url = &quot;https://lpe.jfrog.io/artifactory/api/pypi/a-virtual/simple&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @yuhao-postnl on 2024-10-24 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @yuhao-postnl on 2024-10-24 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yuhao-postnl">@yuhao-postnl</a> on 2024-10-24 14:30</div>
+            <div class="timeline-body"><p>Seems I miss export in zsh file, close this issue now. Thanks again!</p>
+<pre><code>export UV_INDEX_JFROG_USERNAME=
+export UV_INDEX_JFROG_PASSWORD
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @yuhao-postnl on 2024-10-24 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mstumpf585">@mstumpf585</a> on 2025-05-06 15:42</div>
+            <div class="timeline-body"><p>For anyone else that comes here not wanting to use Env vars I found that you can setup Artifactory with UV using uv.toml see https://docs.astral.sh/uv/configuration/files/</p>
+<p>I use the following for my private Artifactory:</p>
+<pre><code>[[index]]
+name = &quot;private-registry&quot;
+url = &quot;https://&lt;email&gt;/:&lt;key here&gt;@&lt;arti link&gt;/artifactory/api/pypi/noctrix-tools-pypi/simple&quot;
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

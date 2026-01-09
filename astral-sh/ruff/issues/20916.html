@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Typing] Rule enforcing type aliases in public interface must be public - astral-sh/ruff #20916</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Typing] Rule enforcing type aliases in public interface must be public</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20916">#20916</a>
+        opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a>
+        on 2025-10-16 11:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2025-10-16 11:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It's good to see that so many libraries adopting type hints, but a recurring pattern I have observed is quite often, private type aliases are used to type hint public interfaces. This is a problem for users of such libraries because it means that if they want to extend functionality or wrap existing methods, they have to either:</p>
+<ol>
+<li>import private members.</li>
+<li>duplicate type aliases, which may not be stable between different versions of the library.</li>
+</ol>
+<p>To avoid such issues happening by accident, I suggest a linting rule that checks that (top-level) type annotations in public interfaces are public.</p>
+<h2>Outline</h2>
+<h3>What it does</h3>
+<p>Checks that type annotations in public members only use public members (except type variables <code>TypeVar</code>, <code>TypeVarTuple</code> and <code>ParamSpec</code>)</p>
+<h3>Example</h3>
+<pre><code class="language-python">type _Alias = Literal[&quot;foo&quot;, &quot;bar&quot;]
+type _PrivateAlias = str | int
+
+class PublicClass:
+    def plublic_method(self, arg: _Alias) -&gt; None: ...
+    def _private_method(self, arg: _PrivateAlias) -&gt; None: ...
+</code></pre>
+<h4>Use instead</h4>
+<pre><code class="language-python">type PublicAlias = Literal[&quot;foo&quot;, &quot;bar&quot;]
+type _PrivateAlias = str | int
+
+class PublicClass:
+    def plublic_method(self, arg: PublicAlias) -&gt; None: ...
+    def _private_method(self, arg: _PrivateAlias) -&gt; None: ...
+</code></pre>
+<p>What is/should be OK is using private types in nested definitions (or maybe configurable with a <code>check_recursive</code> option)</p>
+<pre><code class="language-python">type _Foo = Literal[&quot;foo&quot;]
+type _Bar = Literal[&quot;bar&quot;]
+type PublicAlias = _Foo | _Bar  # OK
+
+class PublicClass:
+    def plublic_method(self, arg: PublicAlias) -&gt; None: ...  # OK
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-17 13:04</div>
+            <div class="timeline-body"><p>Thanks for the nice write-up! This reminds me of the <a href="https://doc.rust-lang.org/beta/nightly-rustc/rustc_lint/builtin/static.PRIVATE_INTERFACES.html"><code>private_interfaces</code></a> warning in Rust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-10-17 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-10-17 13:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

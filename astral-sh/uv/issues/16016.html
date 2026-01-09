@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a CLI argument to make `uv export` include build dependencies - astral-sh/uv #16016</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a CLI argument to make `uv export` include build dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16016">#16016</a>
+        opened by <a href="https://github.com/frazar">@frazar</a>
+        on 2025-09-24 14:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/frazar">@frazar</a> on 2025-09-24 14:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello, and thanks for this wonderful piece of software!</p>
+<p>My use case is the following. I would like to compile an exhaustive list of all the dependencies of my Python package, so that they can be easily collected in a single archive. The archive should then allow me to create a new venv from scratch, even without an internet connection.</p>
+<p>Right now, this can be (partially) achieved with a combination of <code>uv export</code> and <code>pip download</code> (or perhaps soon just <code>uv download</code> #3163).</p>
+<pre><code class="language-bash">$ uv init
+$ uv add 'fire==0.6.0'
+$ uv export --frozen &gt; requirements.txt  # &lt;-- Here is the issue
+$ pip download -r requirements.txt -d offline-archive
+$ tar -czf offline-archive.tgz offline-archive
+</code></pre>
+<p>However, when generating the <code>requirements.txt</code> file, <code>uv export</code> does not consider the build dependencies of my package dependencies. In the example above, <code>fire==0.6.0</code> has some build-time dependencies and creating an environment without an internet connection would fail.</p>
+<pre><code>$ uv venv
+$ . .venv/bin/activate
+$ tar -xzf offline-archive.tgz
+$ uv pip install --no-index --no-cache --find-links offline-archive -r requirements.txt
+  × Failed to download and build `fire==0.6.0`
+  ├─▶ Failed to resolve requirements from `setup.py` build
+  ├─▶ No solution found when resolving: `setuptools&gt;=40.8.0`
+  ╰─▶ Because setuptools was not found in the provided package locations and you require
+      setuptools&gt;=40.8.0, we can conclude that your requirements are unsatisfiable.
+(test) [Exit status: 1]
+</code></pre>
+<p>It might be possible that <code>uv</code> can not collect the build dependencies for all my package dependencies. If not, a compromise would be to at least include those declared with <code>[tool.uv.extra-build-dependencies]</code>.</p>
+<p>I tried looking around the open Issues but couldn't find anything matching this request. The closest issues and why they don't match:</p>
+<ul>
+<li>#7496: This is about including the &quot;extra-index&quot; URL in the generated requirements.txt files</li>
+<li>#12072: This is about including, for each dependency, any &quot;extra&quot; packages of that dependency. However it does not touch the topic of build-time dependencies.</li>
+</ul>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @frazar on 2025-09-24 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-24 14:39</div>
+            <div class="timeline-body"><p>We don't support locking build dependencies yet, which would be a pre-requisite for this. We're interested, but it's a hard problem.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

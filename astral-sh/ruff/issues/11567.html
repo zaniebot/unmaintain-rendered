@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`SIM115` false positive when using `open()` inside of a custom context manager `__enter__` - astral-sh/ruff #11567</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`SIM115` false positive when using `open()` inside of a custom context manager `__enter__`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11567">#11567</a>
+        opened by <a href="https://github.com/p-adema">@p-adema</a>
+        on 2024-05-27 14:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/p-adema">@p-adema</a> on 2024-05-27 14:42</div>
+            <div class="timeline-body"><p>Keywords: <code>SIM115</code>, <code>__enter__</code>, context manager</p>
+<p>When writing your own context manager, which internally uses another context manager (like <code>open</code>), SIM115 suggests using a <code>with</code> block when this is not possible (as the goal is to open the resource in <code>__enter__</code>, and keep it open).</p>
+<p>I would expect/hope the behaviour be to automatically suppress this check within an <code>__enter__</code> block, as (in my experience) it is often the case that these blocks delegate some of the handling to e.g. <code>open()</code></p>
+<p>Code snippet:</p>
+<pre><code class="language-python">class MyFile:
+    def __init__(self, filename: str):
+        self.filename = filename
+
+    def __enter__(self):
+        self.file = open(self.filename) # SIM115 : Use context handler for opening files
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.file.close()
+</code></pre>
+<p>Command invoked:</p>
+<pre><code class="language-fish">ruff check context.py --isolated --select SIM115
+</code></pre>
+<pre><code>context.py:7:21: SIM115 Use context handler for opening files
+Found 1 error.
+</code></pre>
+<p>Ruff version: 0.4.5
+Configuration:</p>
+<pre><code class="language-toml">[lint]
+select = [
+    &quot;SIM&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-05-27 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-27 16:32</div>
+            <div class="timeline-body"><p>Seems reasonable to me...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-28 01:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11575.html">astral-sh/ruff#11575</a> on 2024-05-28 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-28 01:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

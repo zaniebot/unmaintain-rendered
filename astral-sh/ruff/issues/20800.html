@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAST002 fix is invalid with `...` - astral-sh/ruff #20800</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FAST002 fix is invalid with `...`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20800">#20800</a>
+        opened by <a href="https://github.com/CoderJoshDK">@CoderJoshDK</a>
+        on 2025-10-10 10:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CoderJoshDK">@CoderJoshDK</a> on 2025-10-10 10:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>FAST002 converts parameters into their <code>Annotated</code> counterparts. If the source code contains an ellipses type (literal <code>...</code>) then the fix will generate incorrect semantics.</p>
+<p>Take the following signature:</p>
+<pre><code class="language-py">@router.get(&quot;/available&quot;)
+async def get_available(
+    ghl_account_id: str = Query(..., description=&quot;GHL account identifier&quot;),
+) -&gt; SystemsAvailableResponse: ...
+</code></pre>
+<p>The use of <code>...</code> in the default for <code>Query</code> is valid syntax (should be picked up in a lint that you shouldn't do this, but it is &quot;valid&quot;).
+When trying to run fix, you get:</p>
+<pre><code class="language-py">@router.get(&quot;/available&quot;)
+async def get_available(
+    ghl_account_id: Annotated[str, Query(description=&quot;GHL account identifier&quot;)] = ...,
+) -&gt; SystemsAvailableResponse: ...
+</code></pre>
+<p>When in reality, there is no default value and ruff should convert it to:</p>
+<pre><code class="language-py">@router.get(&quot;/available&quot;)
+async def get_available(
+    ghl_account_id: Annotated[str, Query(description=&quot;GHL account identifier&quot;)],
+) -&gt; SystemsAvailableResponse: ...
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CoderJoshDK">@CoderJoshDK</a> on 2025-10-10 11:00</div>
+            <div class="timeline-body"><p>Minimum required repo:</p>
+<pre><code class="language-sh">uv add &quot;fastapi[standard]&quot;
+</code></pre>
+<pre><code class="language-py"># main.py
+from fastapi import FastAPI, Query
+
+app = FastAPI()
+
+
+@app.get(&quot;/&quot;)
+async def root(name: str = Query(..., description=&quot;Your name!&quot;)):
+    return {&quot;message&quot;: f&quot;Hello {name}&quot;}
+</code></pre>
+<pre><code class="language-sh">uv run fastapi dev main.py
+</code></pre>
+<p>If you then visit the docs page, you will find that &quot;name&quot; is marked as required. If you then run the fix:</p>
+<pre><code class="language-py">from typing import Annotated
+
+from fastapi import FastAPI, Query
+
+app = FastAPI()
+
+
+@app.get(&quot;/&quot;)
+async def root(name: Annotated[str, Query(description=&quot;Your name!&quot;)] = ...):
+    return {&quot;message&quot;: f&quot;Hello {name}&quot;}
+</code></pre>
+<p>And visit docs now; you find name is no longer required. Implying a default. But executing the endpoint will cause an error</p>
+<pre><code>ValueError: [TypeError(&quot;'ellipsis' object is not iterable&quot;), TypeError('vars() argument must have __dict__ attribute')]
+</code></pre>
+<p>So I would consider this fix as incorrect, seeing that it changes the behavior. To match behavior after fix, drop the <code>...</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-10 21:36</div>
+            <div class="timeline-body"><p>Thanks for the report, this does seem like a bug. At first I thought this was a general type error, but as you said, the ellipsis has special meaning to fastapi, and I think we should handle that in the fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-10 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-10-10 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20810.html">astral-sh/ruff#20810</a> on 2025-10-11 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-21 02:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

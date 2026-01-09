@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Only Python cells should be validated in Jupyter notebooks - astral-sh/ruff #12281</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Only Python cells should be validated in Jupyter notebooks</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12281">#12281</a>
+        opened by <a href="https://github.com/stewartadam">@stewartadam</a>
+        on 2024-07-10 19:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stewartadam">@stewartadam</a> on 2024-07-10 19:07</div>
+            <div class="timeline-body"><h2>Description</h2>
+<p>When using creating a multi-language notebook (e.g. using the <a href="https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.dotnet-interactive-vscode">Polyglot Notebooks</a> extension), Ruff continues to validate all cells producing many linting errors on non-Python code.</p>
+<h2>Context</h2>
+<p>In our case we were creating a C# notebook with .NET Interactive kernel and Ruff produced many linting errors. As a workaround, we have a top-level code cell with the contents <code># ruff: noqa</code> to disable this, but it would be great if Ruff examined the cell language and only validated Python code.</p>
+<p>#10504 mentions notebooks language is validated in the metadata, however Ruff is still linting the C# code even with this metadata present in the notebook:</p>
+<pre><code>&quot;metadata&quot;: {
+  &quot;kernelspec&quot;: {
+   &quot;display_name&quot;: &quot;.NET (C#)&quot;,
+   &quot;language&quot;: &quot;C#&quot;,
+   &quot;name&quot;: &quot;.net-csharp&quot;
+  },
+  &quot;polyglot_notebook&quot;: {
+   &quot;kernelInfo&quot;: {
+    &quot;defaultKernelName&quot;: &quot;csharp&quot;,
+    &quot;items&quot;: [
+     {
+      &quot;aliases&quot;: [],
+      &quot;name&quot;: &quot;csharp&quot;
+     }
+    ]
+   }
+  }
+</code></pre>
+<p>One thing to note with polyglot notebooks is each cell does have a language associated to it - it would be great if Ruff could parse this per-cell metadata and only validate Python code cells.</p>
+<h2>Additional Details</h2>
+<p>ruff 0.4.10</p>
+<p>configuration (pyproejct.toml):</p>
+<pre><code>[tool.ruff]
+extend-include = [&quot;*.ipynb&quot;]
+lint.extend-select = [&quot;W&quot;]
+line-length = 140
+</code></pre>
+<p>Example output of linting errors produced on C# code:</p>
+<pre><code>$ pdm run ruff check
+error: Failed to parse docs/getting-started-notebooks/api-example.ipynb:4:4:7: Simple statements must be separated by newlines or semicolons
+docs/getting-started-notebooks/api-example.ipynb:cell 4:4:7: E999 SyntaxError: Simple statements must be separated by newlines or semicolons
+docs/getting-started-notebooks/api-example.ipynb:cell 4:4:22: E703 [*] Statement ends with an unnecessary semicolon
+docs/getting-started-notebooks/api-example.ipynb:cell 4:5:7: E999 SyntaxError: Simple statements must be separated by newlines or semicolons
+docs/getting-started-notebooks/api-example.ipynb:cell 4:5:27: E703 [*] Statement ends with an unnecessary semicolon
+docs/getting-started-notebooks/api-example.ipynb:cell 4:6:7: E999 SyntaxError: Simple statements must be separated by newlines or semicolons
+docs/getting-started-notebooks/api-example.ipynb:cell 4:6:30: E703 [*] Statement ends with an unnecessary semicolon
+docs/getting-started-notebooks/api-example.ipynb:cell 4:7:7: E999 SyntaxError: Simple statements must be separated by newlines or semicolons
+docs/getting-started-notebooks/api-example.ipynb:cell 4:7:37: E703 [*] Statement ends with an unnecessary semicolon
+docs/getting-started-notebooks/api-example.ipynb:cell 4:8:7: E999 SyntaxError: Simple statements must be separated by newline
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-10 19:43</div>
+            <div class="timeline-body"><p>I thought we filtered based on this already but can't find it. \cc @dhruvmanila</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-10 19:57</div>
+            <div class="timeline-body"><p>I'm not sure if we filter based on the file's metadata. I thought we filter based on the cell metdata.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stewartadam">@stewartadam</a> on 2024-07-10 21:52</div>
+            <div class="timeline-body"><p>If I'm understanding right it looks like it is validated here: https://github.com/astral-sh/ruff/blob/bbb9fe169207091e899dda15383f0ef16beb00b7/crates/ruff_linter/src/source_kind.rs#L50</p>
+<p>However the metadata format I see in my polyglot or Python notebooks looks to be in a slightly different structure, so it's just returning the default <code>true</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-11 02:59</div>
+            <div class="timeline-body"><p>@stewartadam Can you provide a full Notebook? I can look at where that metadata is coming from. Is it coming from the cell or from the Notebook itself? We verify that it's a Python notebook by looking at the notebook-level metadata which is what the function that you've linked does:</p>
+<p>https://github.com/astral-sh/ruff/blob/880c31d1642a6b4d967a20f9affe9772a3722b85/crates/ruff_notebook/src/notebook.rs#L391-L398</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">notebook</span> added by @dhruvmanila on 2024-07-11 03:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stewartadam">@stewartadam</a> on 2024-07-11 18:21</div>
+            <div class="timeline-body"><p>Here are two notebooks: https://gist.github.com/stewartadam/528689d9bb917715a4c16a6ff9282de3</p>
+<p>It looks like the extensions have a habit of making a mess of the metadata though. Creating a new notebook defaults to Python and after switching it to .NET Interactive, it gets the .NET Interactive metadata layered on top of the original Python language metadata.</p>
+<p>Similarly, saving a copy of the .NET notebook as python.ipynb and then changing the kernel+cells to Python left all the .NET metadata in place (look at the first revision in the Gist).</p>
+<p>I suspect we'll want to introspect a mix of the notebook language, cell type, and kernel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dotnet/interactive/issues/3602.html">dotnet/interactive#3602</a> on 2024-07-11 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-12 03:52</div>
+            <div class="timeline-body"><p>This is confusing.</p>
+<p>The <code>dotnet-polyglot.ipynb</code> has a cell with the following metadata which doesn't mention any language:</p>
+<pre><code class="language-json">   &quot;metadata&quot;: {
+    &quot;vscode&quot;: {
+     &quot;languageId&quot;: &quot;polyglot-notebook&quot;
+    }
+   },
+</code></pre>
+<p>While, the <code>language_info</code> is still &quot;python&quot;:</p>
+<pre><code class="language-json">  &quot;language_info&quot;: {
+   &quot;name&quot;: &quot;python&quot;
+  },
+</code></pre>
+<p>And, the <code>python.ipynb</code> notebook has a JavaScript cell with the following metadata:</p>
+<pre><code class="language-json">   &quot;metadata&quot;: {
+    &quot;vscode&quot;: {
+     &quot;languageId&quot;: &quot;javascript&quot;
+    }
+   },
+</code></pre>
+<p>But, the <code>language_info</code> is still &quot;python&quot;.</p>
+<p>Which extensions are all involved here? Is it just https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.dotnet-interactive-vscode or are there any other extension? I'll probably need to look at the metadata schema these extensions have and encode it accordingly. I'm not sure how much effort it is to support this, it's not a priority right now with other important things going on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-22 07:58</div>
+            <div class="timeline-body"><p>Related, the open AI notebooks fail parsing because they contain &quot;code&quot; cells where only the <code>vscode.languageId</code> is set. I think we should start respecting <code>vscode.langaugeId</code></p>
+<p>https://github.com/openai/openai-cookbook/blob/main/examples/chatgpt/gpt_actions_library/gpt_action_salesforce.ipynb?short_path=65a7845</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12448.html">astral-sh/ruff#12448</a> on 2024-07-22 07:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-22 08:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Related, the open AI notebooks fail parsing because they contain &quot;code&quot; cells where only the <code>vscode.languageId</code> is set. I think we should start respecting <code>vscode.langaugeId</code></p>
+<p><a href="https://github.com/openai/openai-cookbook/blob/main/examples/chatgpt/gpt_actions_library/gpt_action_salesforce.ipynb?short_path=65a7845&amp;rgh-link-date=2024-07-22T07%3A58%3A18Z">openai/openai-cookbook@<code>main</code>/examples/chatgpt/gpt_actions_library/gpt_action_salesforce.ipynb?short_path=65a7845</a></p>
+</blockquote>
+<p>Yeah, this seems reasonable. I'll want to check for any official documentation on this field and might require to look at the source code if it doesn't exists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12864.html">astral-sh/ruff#12864</a> on 2024-08-13 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-13 16:48</div>
+            <div class="timeline-body"><p>@stewartadam So, #12864 should actually also fix the Polyglot notebooks case as well, at least it does for the linked notebooks:</p>
+<pre><code class="language-console">❯ ./target/debug/ruff check ~/Downloads/notebooks/dotnet-polyglot.ipynb --no-cache
+All checks passed!
+
+❯ ./target/debug/ruff check ~/Downloads/notebooks/python.ipynb --no-cache 
+All checks passed!
+</code></pre>
+<blockquote>
+<p>One thing to note with polyglot notebooks is each cell does have a language associated to it - it would be great if Ruff could parse this per-cell metadata and only validate Python code cells.</p>
+</blockquote>
+<p>If this metadata is of the form <code>vscode.languageId</code>, then we'll start using it from next version.</p>
+<p>Do you have an example Polyglot notebook which resembles the one in the PR description? I could test it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-13 16:53</div>
+            <div class="timeline-body"><p>Looking at the metadata you've provided, I think it might be useful to use the <code>kernelspec.language</code> as a fallback if there's no <code>language_info</code>. VS Code does the same: https://github.com/microsoft/vscode/blob/1c31e758985efe11bc0453a45ea0bb6887e670a4/extensions/ipynb/src/deserializers.ts#L20-L22</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stewartadam">@stewartadam</a> on 2024-08-13 17:04</div>
+            <div class="timeline-body"><p>This great to hear!</p>
+<p>Agreed kernelspec.language as a fallback given the metadata captured from the notebooks generaetd with VSCode extension.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2024-08-13 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12875.html">astral-sh/ruff#12875</a> on 2024-08-14 03:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-08-14 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-08-14 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tigerhawkvok">@tigerhawkvok</a> on 2024-10-16 18:37</div>
+            <div class="timeline-body"><p>I'll chime in and say that magic commands for Databricks environments should have those cells disabled:</p>
+<p>https://docs.databricks.com/en/notebooks/notebooks-code.html#mix-languages</p>
+<p>eg, cells that start with the pattern <code>/^%[a-z]{2,}\s*$/</code> should be ignored (or, ignored unless it's <code>%python</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-17 05:12</div>
+            <div class="timeline-body"><p>This seems like a special case for Databricks environment specifically, I'm not sure how to detect that. My main hesitation is that a single percent sign magic command like <code>%python</code> is a <a href="https://ipython.readthedocs.io/en/stable/interactive/magics.html#line-magics">line magic</a> which only considers the text on the same line where the magic command is present while a double percent sign magic command like <code>%%python</code> is a <a href="https://ipython.readthedocs.io/en/stable/interactive/magics.html#cell-magics">cell magic</a> which considers all the content of the cell where the command is defined in. Ruff considers certain cells that contains cell magic commands because the following lines will have Python code:</p>
+<p>https://github.com/astral-sh/ruff/blob/c6b311c54643c039d793fb836caf94d22f03cbb4/crates/ruff_notebook/src/cell.rs#L243-L254</p>
+<p>Ruff will only ignore the line where a <strong>line magic</strong> is defined but will ignore the entire cell for <strong>cell magics</strong> except for the above cell magic commands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tigerhawkvok">@tigerhawkvok</a> on 2024-10-17 17:22</div>
+            <div class="timeline-body"><p>That's fair enough. Databricks is an enormous platform used by a ton of big shops, so it seems like a decent carve-out, but it is nevertheless at least somewhat niche.</p>
+<p>The language support is limited, so potentially a match <em>fail</em> on <code>%sql</code>, <code>%scala</code>, <code>%sh</code>, <code>%fs</code>, <code>%md</code>, <code>%r</code> is easier to support, but I was hesitant to suggest an exclude list rather than an include list initially.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

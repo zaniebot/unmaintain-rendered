@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pip compile ---no-emit-package cannot produce consistent results - astral-sh/uv #11058</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>pip compile ---no-emit-package cannot produce consistent results</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11058">#11058</a>
+        opened by <a href="https://github.com/ssbarnea">@ssbarnea</a>
+        on 2025-01-29 11:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-01-29 11:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>As <code>ruamel-yaml</code> library has an optional binary dependency named &quot;ruamel-yaml-clib&quot; that is not already buildable for all platforms (some arm64 are always missing), we discovered that using `uv pip compile --universal&quot; does not produce consistent results and they vary based on the architecture/platform on which you run the command.</p>
+<p>In the past with pip-tools's <code>pip-compile</code> we successfully excluded this dependency when building, but apparently the <code>no-emit-package</code> feature in uv does work in different ways and the resulted constraints file varies depending on where you run it:</p>
+<pre><code># The following packages were excluded from the output:
+# ruamel-yaml-clib
+</code></pre>
+<pre><code class="language-toml">[tool.uv.pip]
+annotation-style = &quot;line&quot;
+no-emit-package = [
+  &quot;ruamel-yaml-clib&quot;,
+]
+</code></pre>
+<p>I would not mind if this is included or not but I want to ensure that when we run the compile command we get the same output file.</p>
+<p>What makes it even worse is that there is no option to disable this annotation. We have styles and options for no header, but no option to disable this trailing comment.</p>
+<p>Fixing any of these could allow us to produce consistent constraint files.</p>
+<p>Please note that this is not the only case where the resulting exclude list varies from machine to machine. I already found 3 other cases. The trick is to find a way to either disable producing it, or always include all the packages that were mentioned in the configuration (regardless if compile command really had to remove them or not), as any of this will ensure consistent results.</p>
+<h3>Platform</h3>
+<p>macos</p>
+<h3>Version</h3>
+<p>0.5.23</p>
+<h3>Python version</h3>
+<p>3.13.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ssbarnea on 2025-01-29 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-01-29 11:55</div>
+            <div class="timeline-body"><p>Looking at the source code from https://github.com/astral-sh/uv/blob/b59238fcaad00813476c6bdd723df6ef67d959b8/crates/uv/src/commands/pip/compile.rs#L532 i realize that as long I want to exclude packages from the produced constraints file, there is no way to avoid these trailing comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "pip compile cannot produce reproducible results on different platforms due to excludes" to "pip compile ---no-emit-package cannot produce consistent results" by @ssbarnea on 2025-01-29 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-29 14:00</div>
+            <div class="timeline-body"><p>Are you able to provide a specific minimal example I can use to reproduce? Looking at the code, it seems &quot;impossible&quot; to me that the results would vary by host machine if you're using <code>--universal</code>.</p>
+<p>(It <em>does</em> seem like the annotation is only present if the package is actually excluded, i.e., it otherwise would've been part of the resolution. But that behavior seems right to me?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2025-01-29 14:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

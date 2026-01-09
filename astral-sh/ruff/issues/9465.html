@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule Proposal: unused logger in module - astral-sh/ruff #9465</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule Proposal: unused logger in module</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9465">#9465</a>
+        opened by <a href="https://github.com/valentincalomme">@valentincalomme</a>
+        on 2024-01-11 10:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/valentincalomme">@valentincalomme</a> on 2024-01-11 10:08</div>
+            <div class="timeline-body"><h1>unused-logger (RUF-0XX)</h1>
+<h2>What it does</h2>
+<p>Checks if a logger isn't used in the module it's instantiated.</p>
+<h2>Why is it bad</h2>
+<p>Although you could instantiate a logger in one file and use it in another, this is not recommended. Therefore, if a logger isn't used in the module, it's instantiated; it should be considered unused and removed.</p>
+<h2>Example</h2>
+<p>If I have a simple <code>module.py</code></p>
+<pre><code class="language-py">&quot;&quot;&quot;A simple module.&quot;&quot;&quot;
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+def foo() -&gt; None:
+    ...
+</code></pre>
+<p>The logger isn't used, which adds 2 unnecessary lines. The linter should fix the file so that it looks like this:</p>
+<pre><code class="language-py">&quot;&quot;&quot;A simple module.&quot;&quot;&quot;
+
+
+def foo() -&gt; None:
+    ...
+
+</code></pre>
+<h2>When not to use it</h2>
+<p>If you don't care about the additional lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-01-13 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-01-13 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-13 00:52</div>
+            <div class="timeline-body"><p>I thought it was somewhat common to define a logger and import it elsewhere -- is that not recommended?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-13 01:06</div>
+            <div class="timeline-body"><p>Is <code>logger</code> excluded from unused variable rules?</p>
+<blockquote>
+<p>I thought it was somewhat common to define a logger and import it elsewhere -- is that not recommended?</p>
+</blockquote>
+<p>It is common, but not recommended by the official docs. They're clear that they recommend a new logger per module with <code>__name__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-13 01:10</div>
+            <div class="timeline-body"><p>Variables defined at the top-level of the module are always excluded from unused variable rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/valentincalomme">@valentincalomme</a> on 2024-01-13 09:57</div>
+            <div class="timeline-body"><blockquote>
+<p>It is common, but not recommended by the official docs. They're clear that they recommend a new logger per module with <strong>name</strong>.</p>
+</blockquote>
+<p>This is what I'm trying to enforce basically. It's an edge case specifically for any variable at the top of the module that is assigned the value <code>logging.getLogger(__name__)</code>.</p>
+<p>I think it could be this specific as <code>ruff</code> already has other rules to enforce how to instantiate a logger (i.e., LOG0XX rules)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conflict between PLC0415 and I001 - astral-sh/ruff #18791</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Conflict between PLC0415 and I001</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18791">#18791</a>
+        opened by <a href="https://github.com/cdce8p">@cdce8p</a>
+        on 2025-06-19 12:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cdce8p">@cdce8p</a> on 2025-06-19 12:00</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Disabling <code>PLC0415</code> inline with <code>noqa</code> triggers <code>I001</code> as soon as the line-length is exceeded. Wrapping it to the next line doesn't resolve it unfortunately.</p>
+<pre><code class="language-py">def ok():
+    from custom_components_abc import x  # noqa: PLC0415
+
+def bad():
+    from custom_component_abcddddddddd import call_get_integration_frame  # noqa: PLC0415
+
+def bad2():
+    from custom_component_abcddddddddd import (  # noqa: PLC0415
+        call_get_integration_frame
+    )
+
+</code></pre>
+<pre><code>L5 -&gt; Import block is un-sorted or un-formatted
+L8 -&gt; Import block is un-sorted or un-formatted
+</code></pre>
+<p>https://play.ruff.rs/af23bcb0-ee1d-4a2e-82dd-f8655a94d041</p>
+<h3>Version</h3>
+<p>ruff v0.12.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../home-assistant/core/pulls/147106.html">home-assistant/core#147106</a> on 2025-06-19 12:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-19 12:30</div>
+            <div class="timeline-body"><p>I think I001 is just being picky about the missing trailing comma in your <code>bad2</code> example. In your playground link, if I apply the I001 code action, it adds the comma and both rules are satisfied.</p>
+<p>However, it feels like a bug that applying I001 to <code>bad</code> breaks the noqa comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-19 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-06-19 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-19 12:34</div>
+            <div class="timeline-body"><p>It's a very different presentation, but I think this boils down to the same issue as https://github.com/astral-sh/ruff/issues/12179.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cdce8p">@cdce8p</a> on 2025-06-19 13:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I think I001 is just being picky about the missing trailing comma in your <code>bad2</code> example. In your playground link, if I apply the I001 code action, it adds the comma and both rules are satisfied.</p>
+</blockquote>
+<p>Missed that one. Yes indeed adding the comma resolve the issue.</p>
+<blockquote>
+<p>However, it feels like a bug that applying I001 to <code>bad</code> breaks the noqa comment.</p>
+</blockquote>
+<blockquote>
+<p>It's a very different presentation, but I think this boils down to the same issue as <a href="https://github.com/astral-sh/ruff/issues/12179">#12179</a>.</p>
+</blockquote>
+<p>Yes, I think that is the real issue here. With <code>ruff check --fix</code> the <code>noqa</code> comment is removed which in turn triggers <code>PLC0415</code> again without really resolving the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/holtskinner">@holtskinner</a> on 2025-07-24 19:27</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I think I001 is just being picky about the missing trailing comma in your <code>bad2</code> example. In your playground link, if I apply the I001 code action, it adds the comma and both rules are satisfied.</p>
+</blockquote>
+<p>Missed that one. Yes indeed adding the comma resolve the issue.</p>
+<blockquote>
+<p>However, it feels like a bug that applying I001 to <code>bad</code> breaks the noqa comment.</p>
+</blockquote>
+<blockquote>
+<p>It's a very different presentation, but I think this boils down to the same issue as <a href="https://github.com/astral-sh/ruff/issues/12179">#12179</a>.</p>
+</blockquote>
+<p>Yes, I think that is the real issue here. With <code>ruff check --fix</code> the <code>noqa</code> comment is removed which in turn triggers <code>PLC0415</code> again without really resolving the issue.</p>
+</blockquote>
+<p>I'm experiencing the same issue</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive F821 for a variable initialised on the first line of %%timeit (Jupyter notebook) - astral-sh/ruff #13374</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive F821 for a variable initialised on the first line of %%timeit (Jupyter notebook)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13374">#13374</a>
+        opened by <a href="https://github.com/vitawasalreadytaken">@vitawasalreadytaken</a>
+        on 2024-09-17 08:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vitawasalreadytaken">@vitawasalreadytaken</a> on 2024-09-17 08:25</div>
+            <div class="timeline-body"><p>Hi, I've searched for &quot;timeit F821&quot;, seen #7908 and understand that ruff should ignore magic cells. Strangely though, I'm getting F821 Undefined name on a magic cell where there is a variable defined on the first (initialisation) line and used on the subsequent lines.</p>
+<p>The cell is</p>
+<pre><code>%%timeit test_tokenizer = CustomLemmaTokenizer()
+test_tokenizer(
+    &quot;some string...&quot;
+)
+</code></pre>
+<p>The output is</p>
+<pre><code>% ruff check my_notebook.ipynb
+my_notebook.ipynb:cell 21:2:1: F821 Undefined name `test_tokenizer`
+  |
+1 | %%timeit test_tokenizer = CustomLemmaTokenizer()
+2 | test_tokenizer(
+  | ^^^^^^^^^^^^^^ F821
+3 |     &quot;some string...&quot;
+4 | )
+  |
+</code></pre>
+<p>I'd expect ruff to either ignore the cell entirely (as claimed in the linked issue) or understand that the first line of a <code>%%timeit</code> statement is an initialisation line which can define variables.</p>
+<p>ruff 0.6.5, default settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-09-17 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">notebook</span> added by @MichaReiser on 2024-09-17 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-17 08:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd expect ruff to either ignore the cell entirely (as claimed in the linked issue) or understand that the first line of a %%timeit statement is an initialisation line which can define variables.</p>
+</blockquote>
+<p>Looking at the example I get the impression that this is exactly what Ruff is doing. It ignores the <code>%%timeit</code>, but that means that it won't be aware of the assignment to <code>test_tokenizer</code> which is why the usage of <code>test_tokenizer</code> on the next line gets flagged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vitawasalreadytaken">@vitawasalreadytaken</a> on 2024-09-17 09:30</div>
+            <div class="timeline-body"><p>This is a magic <strong>cell</strong> though – if ruff ignores the first line, it should ignore the whole cell IMO. Otherwise it doesn't make much sense to just ignore the first line but report errors in the rest of the cell (which depends on the first line).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-17 14:11</div>
+            <div class="timeline-body"><p>This is covered in https://github.com/astral-sh/ruff/issues/10454 and a few other issues. We don't parse Python content within magic Jupyter magics. I think ignoring the rest of the cell would cause even more problems, since any downstream cells that rely on declarations below the magic would <em>also</em> be missed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-17 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vitawasalreadytaken">@vitawasalreadytaken</a> on 2024-09-17 15:32</div>
+            <div class="timeline-body"><p>I respect the decision to close this, and I'm already ignoring this error with a noqa comment.</p>
+<p>Just wanted to point out that, FYI, ignoring a <code>%%timeit</code> <strong>block</strong> (note the double percent sign) is safe because variables defined therein do not leave the scope of that cell 🙂</p>
+<p>Of course this isn't very important because these blocks are only used for ad-hoc, interactive benchmarking.</p>
+<img width="682" alt="Screenshot 2024-09-17 at 5 29 30 PM" src="https://github.com/user-attachments/assets/5cd5e6b8-e15b-487f-82c0-0e20aee24aad">
+
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

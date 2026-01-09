@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package not importable post install without a process restart - astral-sh/uv #2530</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Package not importable post install without a process restart</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2530">#2530</a>
+        opened by <a href="https://github.com/gaborbernat">@gaborbernat</a>
+        on 2024-03-18 23:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-03-18 23:38</div>
+            <div class="timeline-body"><p>So this is a weird one that involves the <code>editables</code> project, cc @pfmoore for awareness. Originally reported via https://github.com/tox-dev/tox-uv/issues/41, but created a simpler reproducer here. Consider the following test file (first demonstrating with pip) called <code>magic.py</code></p>
+<pre><code class="language-python">from __future__ import annotations
+
+import inspect
+import subprocess
+import sys
+
+subprocess.check_call([sys.executable, &quot;-m&quot;, &quot;pip&quot;, &quot;install&quot;, &quot;editables&quot;])
+from editables import EditableProject
+
+print(inspect.getfile(EditableProject))
+</code></pre>
+<p>Which works and does the expected thing:</p>
+<pre><code class="language-bash">❯ virtualenv venv --clear; venv/bin/python magic.py
+created virtual environment CPython3.12.2.final.0-64 in 187ms
+  creator CPython3Posix(dest=/Users/bgabor8/git/github/tox-uv/venv, clear=True, no_vcs_ignore=False, global=False)
+  seeder FromAppData(download=False, pip=bundle, via=copy, app_data_dir=/Users/bgabor8/Library/Application Support/virtualenv)
+    added seed packages: pip==24.0
+  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+Collecting editables
+  Using cached editables-0.5-py3-none-any.whl.metadata (3.1 kB)
+Using cached editables-0.5-py3-none-any.whl (5.1 kB)
+Installing collected packages: editables
+Successfully installed editables-0.5
+/Users/bgabor8/git/github/tox-uv/venv/lib/python3.12/site-packages/editables/__init__.py
+</code></pre>
+<p>When doing the same with <code>uv</code>, altered the test file via <code>magic-uv.py</code>:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+import inspect
+import subprocess
+
+subprocess.check_call([&quot;uv&quot;, &quot;pip&quot;, &quot;install&quot;, &quot;editables&quot;])
+from editables import EditableProject
+
+print(inspect.getfile(EditableProject))
+</code></pre>
+<p>Which then fails with:</p>
+<pre><code class="language-bash">❯ rm .venv -rf; uv venv; .venv/bin/python magic_uv.py
+Using Python 3.12.2 interpreter at: /Users/bgabor8/.pyenv/versions/3.12.2/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate.fish
+Resolved 1 package in 1ms
+Installed 1 package in 2ms
+ + editables==0.5
+Traceback (most recent call last):
+  File &quot;/Users/bgabor8/git/github/tox-uv/magic_uv.py&quot;, line 7, in &lt;module&gt;
+    from editables import EditableProject
+ModuleNotFoundError: No module named 'editables'
+</code></pre>
+<p>It might be macOS only... per the original reporter, but is really weird because is only problem the first run:</p>
+<pre><code class="language-bash">~/git/github/tox-uv on  main [!?⇕]
+❯ .venv/bin/python -c 'import editables'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tox-dev/tox-uv/issues/41.html">tox-dev/tox-uv#41</a> on 2024-03-18 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-03-19 07:33</div>
+            <div class="timeline-body"><p>Hmm, yes that’s weird. Other than pointing out that installing new modules into a running Python process is not guaranteed to work, I don’t have any insights.</p>
+<p>Does the issue happen with anything other than <code>editables</code>? Because there’s no import weirdness if you’re just importing it like this, so I don’t think there’s any reason it’s special in this regard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">installer</span> added by @AlexWaygood on 2024-03-19 07:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-19 09:48</div>
+            <div class="timeline-body"><blockquote>
+<p>It might be macOS only</p>
+</blockquote>
+<p>I tried on ubuntu and there it passes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-03-19 10:57</div>
+            <div class="timeline-body"><p>It also works for me on Windows under Python 3.12.2. I'd be inclined to say it's more likely to be the <code>venv</code> implementation than the <code>install</code> side of things. Does the problem occur on MacOS if you do <code>rm .venv -rf; virtualenv .venv; .venv/bin/python magic_uv.py</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-19 12:24</div>
+            <div class="timeline-body"><p>I can repro this locally on MacOS</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">macos</span> added by @AlexWaygood on 2024-03-19 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-19 12:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Does the problem occur on MacOS if you do <code>rm .venv -rf; virtualenv .venv; .venv/bin/python magic_uv.py</code>?</p>
+</blockquote>
+<p>it still reproduces for me if I delete the <code>uv</code>-created venv and create a new venv using <code>python -m venv</code> rather than <code>uv venv</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-19 12:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Does the issue happen with anything other than <code>editables</code>? Because there’s no import weirdness if you’re just importing it like this, so I don’t think there’s any reason it’s special in this regard.</p>
+</blockquote>
+<p>It doesn't seem to be <code>editables</code>-specific; I can also repro it if I try to dynamically install <code>requests</code> via a subprocess and then import it later in the same script</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-03-19 13:54</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Does the problem occur on MacOS if you do <code>rm .venv -rf; virtualenv .venv; .venv/bin/python magic_uv.py</code>?</p>
+</blockquote>
+<p>it still reproduces for me if I delete the <code>uv</code>-created venv and create a new venv using <code>python -m venv</code> rather than <code>uv venv</code></p>
+</blockquote>
+<p>Does it also happen with virtualenv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-03-19 13:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, yes that’s weird. Other than pointing out that installing new modules into a running Python process is not guaranteed to work, I don’t have any insights.</p>
+</blockquote>
+<p>@pfmoore I don't think I read anywhere anything about this, so I would expect that there would be no reason for this not to work. Can you point me to some documentation telling otherwise?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-19 14:49</div>
+            <div class="timeline-body"><p>Weird... I can also reproduce on macOS. Does <code>pip</code> reset some sort of interpreter module cache on install?</p>
+<p>This succeeds with <code>uv venv --seed; .venv/bin/python example.py</code> and <code>python -m pip install ...</code> within so I think it's not a virtual environment implementation difference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-19 14:58</div>
+            <div class="timeline-body"><p>Adding a <code>importlib.invalidate_caches()</code> call after the install makes this pass.</p>
+<p>Adding</p>
+<pre><code>subprocess.check_call(
+    [sys.executable, &quot;-m&quot;, &quot;pip&quot;, &quot;install&quot;, &quot;editables&quot;, &quot;-v&quot;, &quot;--force-reinstall&quot;],
+    env=env,
+)
+</code></pre>
+<p>after the <code>uv</code> install also makes this pass, but without reinstall it fails still.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-03-19 16:23</div>
+            <div class="timeline-body"><blockquote>
+<p>@pfmoore I don't think I read anywhere anything about this, so I would expect that there would be no reason for this not to work. Can you point me to some documentation telling otherwise?</p>
+</blockquote>
+<p>As @zanieb pointed out, <code>importlib.invalidate_caches()</code> is likely important here. The import system has a bunch of logic that (for speed) captures the state of the filesystem when it first encounters it. Installing new stuff into the environment of a running program means that &quot;new stuff&quot; might not be cached and might therefore not be importable without some effort - and the easiest, and cleanest, way to reset the relevant stored state is to restart the process.</p>
+<p>The relevant documentation is the <a href="https://docs.python.org/3.12/library/importlib.html#importlib.invalidate_caches">importlib documentation</a> for <code>invalidate_caches</code>, and the caveats in the following section on <code>reload</code> are relevant as well. Pip's documentation also briefly <a href="https://pip.pypa.io/en/stable/user_guide/#using-pip-from-your-program">covers</a> this:</p>
+<blockquote>
+<p>It should also be noted that installing packages into <code>sys.path</code> in a running Python process is something that should only be done with care. The import system caches certain data, and installing new packages while a program is running may not always behave as expected. In practice, there is rarely an issue, but it is something to be aware of.</p>
+</blockquote>
+<p>That's little more than us saying &quot;we don't guarantee this works, but it's not our fault&quot; though...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-03-19 16:48</div>
+            <div class="timeline-body"><p>That doesn't explain why this case works for pip and not uv though 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-03-19 16:57</div>
+            <div class="timeline-body"><p>Also why only macOS?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-03-19 17:03</div>
+            <div class="timeline-body"><blockquote>
+<p>That doesn't explain why this case works for pip and not uv though 😆</p>
+</blockquote>
+<p>Maybe because uv is hard linking stuff from the cache, so file timestamps are different? I'm just guessing, though, I don't see why that would only matter on macOS. Does uv use a different link mode on macOS? Or does macOS handle hard links differently than other operating systems somehow?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 17:03</div>
+            <div class="timeline-body"><p>Sorry to chime in without having read the thread, but FWIW on macOS we use reflinks (Copy-on-Write). On Linux we use hardlinks. (These are just the defaults.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-19 17:10</div>
+            <div class="timeline-body"><p>I've narrowed this down to a difference in <code>mtime</code> — the <code>mtime</code> of the <code>site-packages</code> directory changes for <code>pip</code> but not for <code>uv</code> so the cache is not invalidated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-19 17:16</div>
+            <div class="timeline-body"><pre><code class="language-python">import subprocess
+import sys
+import os
+
+
+def get_importer_mtimes() -&gt; dict:
+    &quot;&quot;&quot;
+    Get a mapping of directory to modified times for each directory in the sys path importer cache.
+    &quot;&quot;&quot;
+    result = {}
+    for key, finder in sys.path_importer_cache.items():
+        if finder:
+            mtime = os.stat(key).st_mtime
+            result[key] = mtime
+    return result
+
+
+baselines = get_importer_mtimes()
+subprocess.check_call(
+    [
+        &quot;uv&quot;,
+        &quot;pip&quot;,
+        &quot;install&quot;,
+        &quot;editables&quot;,
+        &quot;-v&quot;,
+    ],
+)
+
+uv = get_importer_mtimes()
+
+subprocess.check_call(
+    [sys.executable, &quot;-m&quot;, &quot;pip&quot;, &quot;install&quot;, &quot;editables&quot;, &quot;-v&quot;, &quot;--force-reinstall&quot;],
+)
+pip = get_importer_mtimes()
+
+for key, baseline in baselines.items():
+    uv_diff = baseline - uv[key]
+    pip_diff = baseline - pip[key]
+    print(&quot;uv:&quot;, uv_diff, &quot;pip:&quot;, pip_diff, &quot;path:&quot;, key)
+    if uv_diff or pip_diff:
+        print(&quot;baseline:&quot;, baseline, &quot;raw uv:&quot;, uv[key], &quot;raw pip:&quot;, pip[key])
+</code></pre>
+<pre><code>uv: 0.0 pip: -0.9294626712799072 path: /Users/mz/workspace/uv/.venv/lib/python3.12/site-packages
+baseline: 1710868563.3657737 raw uv: 1710868563.3657737 raw pip: 1710868564.2952363
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-19 17:19</div>
+            <div class="timeline-body"><p>Basically... we need to make sure the mtime changes when we install</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-03-19 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-03-19 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-03-19 17:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Sorry to chime in without having read the thread, but FWIW on macOS we use reflinks</p>
+</blockquote>
+<p>Thanks - I couldn't find any docs that stated what the defaults were on different platforms but I wondered if that might be a relevant difference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2545.html">astral-sh/uv#2545</a> on 2024-03-19 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-03-20 00:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

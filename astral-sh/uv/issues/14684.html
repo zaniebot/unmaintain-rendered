@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--upgrade-package` does not upgrade GutHub-sourced packages - astral-sh/uv #14684</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--upgrade-package` does not upgrade GutHub-sourced packages</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14684">#14684</a>
+        opened by <a href="https://github.com/msamo-n">@msamo-n</a>
+        on 2025-07-17 15:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/msamo-n">@msamo-n</a> on 2025-07-17 15:39</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hello!</p>
+<p>I have a dependency on a package, located in GitHub private repo. It's defined as:</p>
+<pre><code class="language-(toml)">[project]
+dependencies = [
+    &quot;mypkg[all]&quot;,
+]
+
+[tool.uv.sources]
+mypkg= { git = &quot;ssh://git@github.com/...&quot;, branch = &quot;master&quot; }
+</code></pre>
+<p>When I run <code>uv sync --upgrade</code>, the package got updated (gets installed from the current <code>HEAD</code> of <code>master</code> branch).
+When I run <code>uv sync --upgrade-package mypkg</code>, the package does not update (version pinned in <code>uv.lock</code> is used). It seems, that <code>uv</code> doesn't fetch from GitHub at all.</p>
+<p>Is it somehow expected behavior?</p>
+<h3>Platform</h3>
+<p>Ubuntu 22.04</p>
+<h3>Version</h3>
+<p>uv 0.7.21</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @msamo-n on 2025-07-17 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/msamo-n">@msamo-n</a> on 2025-07-17 15:46</div>
+            <div class="timeline-body"><p>BTW, if I specify a package as <code>mypkg @ git+ssh://git@github.com/...</code>, the latest <code>HEAD</code> seems fetched. But later <code>uv</code> fails as:</p>
+<pre><code>error: Requirements contain conflicting URLs for package `mypkg ` in all marker environments:
+- git+ssh://git@github.com/...
+- git+ssh://git@github.com/...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2025-07-17 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-07-17 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-17 15:48</div>
+            <div class="timeline-body"><p>Sounds like a bug to me, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-17 16:08</div>
+            <div class="timeline-body"><p>Can you share verbose logs for both cases please?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-17 16:09</div>
+            <div class="timeline-body"><p>(A minimal reproduction would save me a lot of time)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/msamo-n">@msamo-n</a> on 2025-07-17 17:16</div>
+            <div class="timeline-body"><p>Well, now it looks even more interesting. I have a project, that depends on two GitHub-sourced packages. One is upgraded fine on its own (<code>-P</code>), but another gets upgraded only in &quot;full upgrade&quot; mode (<code>-U</code>).</p>
+<p>Here is the dependent project:</p>
+<pre><code class="language-(toml)">[project]
+name = &quot;mypkg-dependant&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;tnc[pkgB]&quot;,
+    &quot;mypkg[all]&quot;,
+    &quot;flake8&quot;,
+]
+
+[tool.uv.sources]
+mypkg = { git = &quot;ssh://git@github.com/msamo-n/mypkg&quot;, branch = &quot;another-branch&quot; }
+tnc = { git = &quot;ssh://git@github.com/msamo-n/exp&quot;, branch = &quot;uv-exp&quot; }
+</code></pre>
+<p>I run:</p>
+<pre><code class="language-(bash)">uv sync -v -P mypkg 2&gt;./upgrade_mypkg.log 
+uv sync -v -P tnc 2&gt;./upgrade_tnc.log
+uv sync -v -U 2&gt;./upgrade_all.log
+</code></pre>
+<p>Verbose logs are attached.</p>
+<p><a href="https://github.com/user-attachments/files/21301663/upgrade_all.log">upgrade_all.log</a>
+<a href="https://github.com/user-attachments/files/21301665/upgrade_mypkg.log">upgrade_mypkg.log</a>
+<a href="https://github.com/user-attachments/files/21301662/upgrade_tnc.log">upgrade_tnc.log</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-01 02:32</div>
+            <div class="timeline-body"><p>Ah ok, I think this is similar to https://github.com/astral-sh/uv/issues/14954. It looks like <code>tnc[pkgB]</code> adds another Git dependency (<code>pkgB</code>) from the same repo, and we end up respecting <em>that</em> package's SHA. So you'd need to do <code>-P tnc -P pkgB</code>. It is indeed a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-01 02:33</div>
+            <div class="timeline-body"><p>It's pretty complicated though. If you pass <code>-P tnc</code>, should we <em>not</em> upgrade <code>pkgB</code>? (If we <em>do</em> want to upgrade <code>pkgB</code>, it gets much more complex because we need to understand that they're part of the same workspace or something.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/msamo-n">@msamo-n</a> on 2025-08-08 13:27</div>
+            <div class="timeline-body"><blockquote>
+<p>If you pass -P tnc, should we not upgrade pkgB?</p>
+</blockquote>
+<p>Personally, I'd say that if the upgraded <code>tnc</code> depends on different version of <code>pkgB</code>, <code>pkgB</code> should be upgraded as well. In my case, as both packages are versioned together (being in the same repo), they get upgraded together as well.</p>
+<p>Actually, my goal was to keep a few packages in the same repo and install them from the same commit (for consistency).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

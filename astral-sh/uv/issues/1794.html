@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support ` --prefer-binary` in `requirements.txt` files - astral-sh/uv #1794</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support ` --prefer-binary` in `requirements.txt` files</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/1794">#1794</a>
+        opened by <a href="https://github.com/stinodego">@stinodego</a>
+        on 2024-02-21 04:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stinodego">@stinodego</a> on 2024-02-21 04:44</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p><code>pip</code> supports including a <code>--prefer-binary</code> flag in a requirements.txt like so:</p>
+<pre><code>--prefer-binary
+
+polars
+ruff
+</code></pre>
+<p>However, <code>uv pip install</code> does not support this:</p>
+<pre><code>$ uv pip install -r requirements.txt 
+error: Unexpected '-', expected '-c', '-e', '-r' or the start of a requirement in `requirements.txt` at position 0
+</code></pre>
+<p>This is on version <code>0.1.6</code>.</p>
+<p>It would be nice if this syntax could be supported!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pola-rs/polars/pulls/14618.html">pola-rs/polars#14618</a> on 2024-02-21 04:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 05:04</div>
+            <div class="timeline-body"><p>I think we support <code>--no-binary</code> and <code>--only-binary</code> on the command-line, but not <code>--prefer-binary</code> (and none are supported in requirements.txt right now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-02-21 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-21 17:29</div>
+            <div class="timeline-body"><p>We already always prefer binaries, right? I believe that's why we omitted the flag.</p>
+<p>I'm not sure these belong in the requirements file. Just wondering, why is this preferred (other than compatibility)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2024-02-21 22:43</div>
+            <div class="timeline-body"><blockquote>
+<p>We already always prefer binaries, right? I believe that's why we omitted the flag.</p>
+</blockquote>
+<p>I'm not sure what <code>uv</code> does. I know that <code>pip</code> will prefer to install the latest version, even if there is no binary for it. Using <code>--prefer-binary</code> will make it install an older version if that means it doesn't have to build from source.</p>
+<blockquote>
+<p>I'm not sure these belong in the requirements file. Just wondering, why is this preferred (other than compatibility)?</p>
+</blockquote>
+<p>Honestly, I also don't know if it belongs there. I reported this because <code>uv</code> wants to be a drop-in replacement for <code>pip</code> and I ran into this.</p>
+<p>In general though, the benefit of having this setting in the requirements file itself is that you don't have to specify this setting in all your installers, e.g. CI / Makefile / Dockerfile / ... . The setting is in one place, together with the requirements. That does make some sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-04 03:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-08 02:40</div>
+            <div class="timeline-body"><p>@zanieb -- I think <code>--prefer-binary</code> goes even further, in that it will prefer an older version of a package with a wheel over a newer version without one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-04-08 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/njzjz">@njzjz</a> on 2024-04-21 05:59</div>
+            <div class="timeline-body"><p>I am +1 for this feature.  A use case is that h5py linux_aarch64 wheels are available in v3.10 but not available in v3.11 (see https://github.com/h5py/h5py/issues/2408). When I use pip, I can set <code>export PIP_PREFER_BINARY=1</code> in the CI service to let pip install v3.10 wheels. However, ux doesn't have such an option. The default behavior is to install from v3.11 source, which will fail as it requires HDF5 library to be installed in advance.</p>
+<p>We need uv to support the <code>UV_PREFER_BINARY</code> environmental variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-21 15:23</div>
+            <div class="timeline-body"><p>@njzjz Is there a reason that this flag is better than just adding a pin or additional constraint?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2024-04-21 15:40</div>
+            <div class="timeline-body"><p>You may not want to pin a dependency to take advantage of the latest updates whenever they come out. However, you generally also want to avoid compiling packages from source if binaries are available. This setting unifies the two.</p>
+<p>Constraints may not work, or I would have to micromanage these for each dependency / platform depending on the wheels that are available. A single <code>--prefer-binary</code> takes care of all that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/njzjz">@njzjz</a> on 2024-04-21 22:20</div>
+            <div class="timeline-body"><p>This flag will also ensure the CI is not broken in the future when a new release doesn't contain the binary. Otherwise, we need to add the pin manually every time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-05-08 22:47</div>
+            <div class="timeline-body"><p>My use case for <code>--prefer-binary</code> is in the equivalent of a <code>pip compile</code> scenario, I am generating new pinned versions of my entire environment from my requirements.</p>
+<p>Ideally I would use <code>--only-binary</code> but there are a handful of packages where this is still not possible, and it's not practical to go through my ~200 transitive dependencies and see which ones have not yet releases a wheel for their latest release every time I update the pinned versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4063.html">astral-sh/uv#4063</a> on 2024-06-05 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../deepmodeling/deepmd-kit/issues/3864.html">deepmodeling/deepmd-kit#3864</a> on 2024-06-11 04:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-06-12 20:54</div>
+            <div class="timeline-body"><p>May be helpful for other users, my use case is now solved by https://github.com/astral-sh/uv/issues/4063 / https://github.com/astral-sh/uv/pull/4067.</p>
+<p>I can specify that wheels should always be picked with <code>--only-binary :all:</code> and override that to have specific packages use sdists with <code>--no-binary &lt;package&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/njzjz">@njzjz</a> on 2024-06-12 22:10</div>
+            <div class="timeline-body"><blockquote>
+<p>I can specify that wheels should always be picked with <code>--only-binary :all:</code> and override that to have specific packages use sdists with <code>--no-binary &lt;package&gt;</code></p>
+</blockquote>
+<p>I created #4291 for the environment variable support request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tpgillam">@tpgillam</a> on 2024-08-03 11:25</div>
+            <div class="timeline-body"><p>I agree that this would be useful for compatibility purposes; I'm setting up the matplotlib test environment, and was hoping to use <code>uv pip sync</code>. However it doesn't work due to the <code>--prefer-binary</code> here:</p>
+<p>https://github.com/matplotlib/matplotlib/blob/109ab93ba2e687a7b805cb0075efa52ef4e61cde/requirements/testing/extra.txt#L3</p>
+<pre><code>&gt; uv pip sync requirements/dev/dev-requirements.txt
+error: Error parsing included file in `requirements/dev/dev-requirements.txt` at position 79
+  Caused by: Unexpected '-', expected '-c', '-e', '-r' or the start of a requirement at requirements/dev/../testing/extra.txt:3:1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-08-04 20:21</div>
+            <div class="timeline-body"><p>It would be good if it was in the pip the compatibility document: https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md</p>
+<p>I guess anyone could submit a PR for that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../glass-dev/glass/issues/323.html">glass-dev/glass#323</a> on 2024-10-04 10:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../CodSpeedHQ/pytest-codspeed/issues/60.html">CodSpeedHQ/pytest-codspeed#60</a> on 2025-01-07 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../glass-dev/glass/pulls/471.html">glass-dev/glass#471</a> on 2025-01-17 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pola-rs/polars/pulls/20589.html">pola-rs/polars#20589</a> on 2025-01-18 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/superset/pulls/34274.html">apache/superset#34274</a> on 2025-07-23 08:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

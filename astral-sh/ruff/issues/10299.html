@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FA102 errors eventhough requires-python in pyproject.toml is &quot;&gt;=3.12&quot; - astral-sh/ruff #10299</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FA102 errors eventhough requires-python in pyproject.toml is &quot;&gt;=3.12&quot;</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10299">#10299</a>
+        opened by <a href="https://github.com/SimonMarynissen">@SimonMarynissen</a>
+        on 2024-03-08 15:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SimonMarynissen">@SimonMarynissen</a> on 2024-03-08 15:26</div>
+            <div class="timeline-body"><p>I have the following (standard) directory layout:</p>
+<pre><code>├── src
+│   └── packagename
+│       └── ...
+├── pyproject.toml
+└── ruff.toml
+</code></pre>
+<p>Part from my <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;packagename&quot;
+requires-python = &quot;&gt;=3.12&quot;
+</code></pre>
+<p>My complete <code>ruff.toml</code>:</p>
+<pre><code class="language-toml">src = [&quot;src&quot;]
+
+[format]
+skip-magic-trailing-comma = true
+line-ending = &quot;lf&quot;
+
+[lint]
+select = [&quot;ALL&quot;]
+ignore = [&quot;ANN101&quot;, &quot;D203&quot;, &quot;D213&quot;, &quot;S320&quot;]
+</code></pre>
+<p>Ruff version: 0.3.0, run with the command <code>ruff check</code> in the directory of <code>pyproject.toml</code>.
+In the rule <a href="https://docs.astral.sh/ruff/rules/future-required-type-annotation/">FA102</a>, it is mentioned:</p>
+<blockquote>
+<p>This rule respects the <a href="https://docs.astral.sh/ruff/settings/#target-version">target-version</a> setting. For example, if your project targets Python 3.10 and above, adding from <strong>future</strong> import annotations does not impact your ability to leverage PEP 604-style unions (e.g., to convert Optional[str] to str | None). As such, this rule will only flag such usages if your project targets Python 3.9 or below.</p>
+</blockquote>
+<p>In the documentation of <code>target-version</code> it is mentioned that <code>requires-python</code> in <code>pyproject.toml</code> is preferred over the <code>target-version</code> option in <code>ruff.toml</code>.
+If I add <code>target-version = &quot;py312&quot;</code> to my <code>ruff.toml</code>, then there are no FA102 errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 23:49</div>
+            <div class="timeline-body"><p>I think it's possible that if we find a <code>ruff.toml</code>, we don't even look for the <code>pyproject.toml</code>, since we only use a single configuration file to resolve configuration for the project. So you <em>could</em> fix this (I suspect) by moving your configuration into your <code>pyproject.toml</code>, like:</p>
+<pre><code class="language-toml">[project]
+name = &quot;packagename&quot;
+requires-python = &quot;&gt;=3.12&quot;
+
+[tool.ruff]
+src = [&quot;src&quot;]
+
+[tool.ruff.format]
+skip-magic-trailing-comma = true
+line-ending = &quot;lf&quot;
+
+[tool.ruff.lint]
+select = [&quot;ALL&quot;]
+ignore = [&quot;ANN101&quot;, &quot;D203&quot;, &quot;D213&quot;, &quot;S320&quot;]
+</code></pre>
+<p>But, we should probably also be respecting the <code>pyproject.toml</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-08 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-03-08 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 23:51</div>
+            <div class="timeline-body"><p>(If possible, can you give that a try to confirm my suspicion?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SimonMarynissen">@SimonMarynissen</a> on 2024-03-12 16:28</div>
+            <div class="timeline-body"><p>That does indeed work, but I would prefer to have a separate <code>ruff.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-18 14:48</div>
+            <div class="timeline-body"><p>@charliermarsh considering that you marked this as a bug. What would the desired resolution order be?</p>
+<p>The documentation mentions</p>
+<blockquote>
+<p>Ruff can be configured through a pyproject.toml, ruff.toml, or .ruff.toml file.</p>
+</blockquote>
+<p>which seems like <code>pyproject.toml</code> intentionally has higher precedence than <code>ruff.toml</code>. Changing the resolution order would probably be a breaking change.</p>
+<p>Or is the fix that we should disregard any <code>pyproject.toml</code> without any <code>tool.ruff</code> section (but that could lead to other false positives because we might disregard a <code>requires-python</code> configuration). That makes me think that the only &quot;proper&quot; solution is to merge the configurations, but that might lead to other unintended or unexpected behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 14:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Or is the fix that we should disregard any pyproject.toml without any tool.ruff section (but that could lead to other false positives because we might disregard a requires-python configuration).</p>
+</blockquote>
+<p>We already do this IIRC.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 14:55</div>
+            <div class="timeline-body"><blockquote>
+<p>That makes me think that the only &quot;proper&quot; solution is to merge the configurations, but that might lead to other unintended or unexpected behavior.</p>
+</blockquote>
+<p>Yeah fixing this <em>requires</em> that we merge configuration in some way, because the user is inherently asking for information to come from two different files. So we either do something like &quot;when we see a <code>ruff.toml</code>, check for a <code>pyproject.toml</code> in the same directory and use its <code>requires-python</code>&quot;, or mark it as unsupported.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SimonMarynissen">@SimonMarynissen</a> on 2024-03-21 18:18</div>
+            <div class="timeline-body"><p>If I may add my 2 cents: if the precedence is <code>pyproject.toml</code> &gt; <code>ruff.toml</code> &gt; <code>.ruff.toml</code>, then <code>pyproject.toml</code> is always parsed (if it exists) and if no ruff elements are found, I guess you either get bad defaults or an error (I am not too familiar with ruff), so it shouldn't be big change to look for <code>ruff.toml</code> in that case. That would certainly solve my case and would most likely not break workflows from other ruff users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2024-04-09 19:29</div>
+            <div class="timeline-body"><p>Reproduced in https://github.com/sphinx-doc/sphinx/pull/12250. Removing <code>target-version = &quot;py39&quot;</code> from <code>.ruff.toml</code> breaks the tests as <code>requires-python = &quot;&gt;=3.9&quot;</code> from <code>pyproject.toml</code> is <strong>not</strong> taken into account.</p>
+<p>I think ruff should take into account <code>requires-python&quot;</code> from <code>pyproject.toml</code>, alternatively fix the documentation:
+https://github.com/astral-sh/ruff/blob/42d52ebbec275389ee0458a3bf373268278bd51a/crates/ruff_workspace/src/options.rs#L314-L317</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../sphinx-doc/sphinx/pulls/12250.html">sphinx-doc/sphinx#12250</a> on 2024-04-09 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../scientific-python/cookie/issues/407.html">scientific-python/cookie#407</a> on 2024-04-09 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jaraco/skeleton/issues/119.html">jaraco/skeleton#119</a> on 2024-04-15 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2024-04-15 08:08</div>
+            <div class="timeline-body"><p>Same issue in https://github.com/jaraco/skeleton/issues/119. The situation is even worse here, as <code>requires-python</code> is defined in <code>setup.cfg</code> instead of <code>pyproject.toml</code>.</p>
+<p>The rationale for a <code>ruff.toml</code> file separate from <code>pyproject.toml</code> is described here:
+https://github.com/pypa/setuptools/pull/3979#pullrequestreview-1691482008</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2024-04-15 08:18</div>
+            <div class="timeline-body"><p>In the documentation, <a href="https://docs.astral.sh/ruff/configuration/#config-file-discovery">Config file discovery</a> reads:</p>
+<blockquote>
+<p>Unlike <a href="https://eslint.org/docs/latest/user-guide/configuring/configuration-files#cascading-and-hierarchy">ESLint</a>, Ruff does not merge settings across configuration files; instead, the &quot;closest&quot; configuration file is used, and any parent configuration files are ignored. In lieu of this implicit cascade, Ruff supports an <a href="https://docs.astral.sh/ruff/settings/#extend"><code>extend</code></a> field, which allows you to inherit the settings from another config file, like so:</p>
+<p><a href="https://docs.astral.sh/ruff/configuration/#__tabbed_4_1"><strong>pyproject.toml</strong></a>       <a href="https://docs.astral.sh/ruff/configuration/#__tabbed_4_2"><strong>ruff.toml</strong></a></p>
+<pre><code class="language-ruff.toml"># Extend the `ruff.toml` file in the parent directory...
+extend = &quot;../ruff.toml&quot;
+
+# ...but use a different line length.
+line-length = 100
+</code></pre>
+<p>All of the above rules apply equivalently to <code>pyproject.toml</code>, <code>ruff.toml</code>, and <code>.ruff.toml</code> files. If Ruff detects multiple configuration files in the same directory, the <code>.ruff.toml</code> file will take precedence over the <code>ruff.toml</code> file, and the <code>ruff.toml</code> file will take precedence over the <code>pyproject.toml</code> file.</p>
+</blockquote>
+<p>I was thinking about adding <code>extend = &quot;pyproject.toml&quot;</code> to <code>ruff.toml</code> to pick <code>requires-python</code> from <code>pyproject.toml</code>, but this doesn't make sense as the namespaces and the way the files are parsed are different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2024-04-15 08:40</div>
+            <div class="timeline-body"><p>My suggestion would be to:</p>
+<ol>
+<li>Keep a single configuration file for <em>ruff</em> itself, that is, disregard the <code>[tool.ruff]</code> subtable in <code>pyproject.toml</code> if files <code>.ruff.toml</code> or <code>ruff.toml</code> exist - or <em>ruff</em> is passed option <code>--config</code>.</li>
+<li>Take into account other tables of <code>pyproject.toml</code> that contain keys that impact <em>ruff</em>, typically the <code>[project]</code> table and its <code>requires-python</code> key.</li>
+<li>Support  keys of interest in both <code>setup.cfg</code> and <code>pyproject.toml</code>. Not sure about precedence in the ill-formed case where <code>requires-python</code> would be defined in both <code>setup.cfg</code> and <code>pyproject.toml</code>.</li>
+<li>Keep the existing precedence if <code>pyproject.toml</code> or <code>setup.cfg</code> define <code>requires-python</code> and  the <em>ruff</em> config file defines <code>target-version</code> simultaneously: the <em>ruff</em> config file and <code>target-version</code> take precedence.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jaraco/skeleton/pulls/120.html">jaraco/skeleton#120</a> on 2024-04-15 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mozilla/wagtail-localize-smartling/pulls/3.html">mozilla/wagtail-localize-smartling#3</a> on 2024-06-07 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kubotty">@kubotty</a> on 2024-10-28 03:06</div>
+            <div class="timeline-body"><p>Hi, I encountered the same issue and I found this solution.
+This is what is mentioned:</p>
+<blockquote>
+<p>I was thinking about adding <code>extend = &quot;pyproject.toml&quot;</code> to <code>ruff.toml</code> to pick <code>requires-python</code> from <code>pyproject.toml</code>, but this doesn't make sense as the namespaces and the way the files are parsed are different.</p>
+</blockquote>
+<p>However, I tried writing <code>extend = &quot;./pyproject.toml&quot;</code> in <code>ruff.toml</code> and it worked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-10-28 16:01</div>
+            <div class="timeline-body"><p>I'd like to make the case that ruff should not be relying on declared configuration and should instead rely on the <a href="https://packaging.python.org/en/latest/specifications/core-metadata/#requires-python">core metadata</a> for the package. Although <code>pyproject.toml</code> is a standard for a source distribution to declare metadata, it's not (and should not) be required that the package's metadata be declared through pyproject.toml. As an extreme example, the <a href="https://bit.ly/coherent-system">coherent build system</a> doesn't require any pyproject.toml and instead derives all of the metadata (including the <code>Requires-Python</code> declaration) from environmental state, specifically the <a href="https://github.com/coherent-oss/coherent.build/blob/06a28adab87c2bdc6eef6c16ac3b722d443a7d2e/discovery.py#L151-L166">tags on the CPython repository in GitHub</a>.</p>
+<p>For this reason, the supported/required Python versions for a Coherent project or any other build system that dynamically or programmatically generates that metadata field won't have a declaration in the <code>pyproject.toml</code> nor <code>ruff.toml</code>.</p>
+<p>There are other build backends that produce &quot;dynamic&quot; values for various metadata fields, so addressing just the Requires-Python field will leave those fields unaddressed.</p>
+<p>There's clear value for projects in not having to statically manifest all of their metadata in source code (and maintain that state, possibly shared across or even diverging within many projects).</p>
+<p>My recommendation would be for Ruff to generate the package metadata through the <a href="https://peps.python.org/pep-0517/#prepare-metadata-for-build-wheel">PEP 517 <code>prepare_metadata_for_build_wheel</code> hook</a> and then read the <code>Requires-Python</code> field.</p>
+<p>I know this approach can be potentially expensive (and for Coherent projects is currently <em>very</em> expensive, but that's largely the backend's problem), so it may be necessary to cache the value (or the metadata) for extended periods.</p>
+<p>This approach would have added benefits that <em>other</em> core metadata can be resolved by ruff, even when it's dynamic.</p>
+<p>Such an approach would sidestep workarounds like <code>extend = &quot;pyproject.toml&quot;</code> or duplicating the metadata in two files and would honor the essential metadata of the package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mauvehed/keyring/pulls/36.html">mauvehed/keyring#36</a> on 2024-10-30 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-10-30 19:11</div>
+            <div class="timeline-body"><p>~~As mentioned in https://github.com/pypa/setuptools/pull/4718#issuecomment-2448099867, it seems <code>include = [&quot;pyproject.toml&quot;]</code> doesn't really work as a true workaround, it just hides version-related errors, even if <code>requires-python</code> is set in the <code>pyproject.toml</code>, even if you explicitly pass the flag by CLI: <code>ruff check --select=UP035 --target-version=py39</code>~~</p>
+<p>Edit: because it should be <code>extend = &quot;pyproject.toml&quot;</code>, not <code>include</code>...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jaraco/skeleton/issues/152.html">jaraco/skeleton#152</a> on 2024-10-31 10:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jaraco/skeleton/pulls/154.html">jaraco/skeleton#154</a> on 2024-10-31 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mauvehed/keyring/pulls/37.html">mauvehed/keyring#37</a> on 2024-11-15 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jaraco/skeleton/issues/155.html">jaraco/skeleton#155</a> on 2024-12-24 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-12-24 14:48</div>
+            <div class="timeline-body"><blockquote>
+<p>workarounds like <code>extend = &quot;pyproject.toml&quot;</code></p>
+</blockquote>
+<p>I recently learned that this workaround isn't as elegant as I'd originally expected (see jaraco/skeleton#155). While it does work for skeleton-based projects, the addition of the <code>extend</code> directive means that <code>ruff.toml</code> file is no longer portable, no longer usable in other contexts.</p>
+<p>This finding is yet another factor in favor of simply honoring the value from core metadata.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-24 16:20</div>
+            <div class="timeline-body"><p>We should probably do the same as for uv and what's planned for Red Knot.</p>
+<p>If there's both a <code>ruff.toml</code> and <code>pyproject.toml</code>, use the <code>ruff.toml</code> but fallback to the <code>pyproject.toml</code>'s <code>requires-python</code> if the <code>target-version</code> is left unspecified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Winand">@Winand</a> on 2025-02-12 08:01</div>
+            <div class="timeline-body"><p>I've installed ruff as an extension for VS Code. Where are settings read from if I modify them via VS Code settings? They are in my profile's <em>settings.json</em> file and <code>requires-python</code> in <em>pyproject.toml</em> is ignored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-12 08:10</div>
+            <div class="timeline-body"><blockquote>
+<p>I've installed ruff as an extension for VS Code. Where are settings read from if I modify them via VS Code settings? They are in my profile's <em>settings.json</em> file and <code>requires-python</code> in <em>pyproject.toml</em> is ignored.</p>
+</blockquote>
+<p>Could you please open a new issue that contains more details about your setup. What VS code settings do you use, what's in your pyproject.toml. It's otherwise very hard for us to help you. You can reference this issue if you think it's related.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Winand">@Winand</a> on 2025-02-12 09:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you please open a new issue that contains more details about your setup. What VS code settings do you use, what's in your pyproject.toml. It's otherwise very hard for us to help you. You can reference this issue if you think it's related.</p>
+</blockquote>
+<p>But I have exactly the same issue: FA102 errors eventhough requires-python in pyproject.toml is &quot;&gt;=3.12&quot;</p>
+<p>Now I understand why it's like that:</p>
+<ol>
+<li><a href="https://docs.astral.sh/ruff/editors/settings/#configurationpreference">configurationPreference</a> Default value: &quot;editorFirst&quot;</li>
+<li><a href="https://docs.astral.sh/ruff/configuration/#config-file-discovery">&quot;Ruff ignores any pyproject.toml files that lack a [tool.ruff] section&quot;</a></li>
+<li>&quot;If no config file is found in the filesystem hierarchy, Ruff will fall back to using a default configuration&quot;</li>
+<li><a href="https://docs.astral.sh/ruff/settings/#target-version">target-version</a> Default value: &quot;py39&quot;</li>
+</ol>
+<p>So the configuration from <em>settings.json</em> is applied first, then ruff tries to find a config file but ignores <em>pyproject.toml</em> due to the lack of a <em>[tool.ruff]</em> section in it. The <strong>solution</strong> here is to add an empty <em>[tool.ruff]</em> section to my <em>pyproject.toml</em>.</p>
+<p>Another solution is to add <code>&quot;ruff.configuration&quot;: &quot;pyproject.toml&quot;,</code> to <em>settings.json</em> but I like it less.</p>
+<hr />
+<p>But really I would prefer if settings from all configurations are merged together taking their precedence into account:
+Editor settings &gt; <em>pyproject.toml</em> &gt; <em>ruff.toml</em> &gt; etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2025-02-12 09:56</div>
+            <div class="timeline-body"><p>@Winand I may be wrong, but I think this issue is specifically about taking into account <code>requires-python</code> from <code>pyproject.toml</code> when using <code>ruff.toml</code>. If so, your issue seems slightly different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/hatch/pulls/1890.html">pypa/hatch#1890</a> on 2025-02-12 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Winand">@Winand</a> on 2025-02-12 10:16</div>
+            <div class="timeline-body"><blockquote>
+<p>about taking into account <code>requires-python</code> from <code>pyproject.toml</code> when using <code>ruff.toml</code></p>
+</blockquote>
+<p>yes, but my issue is &quot;about taking into account <code>requires-python</code> from <code>pyproject.toml</code> when using <strong>default settings</strong>&quot; which looks like pretty much the same problem. That's why I don't want to create a separate issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-12 11:51</div>
+            <div class="timeline-body"><p>@Winand whether you want to open a new issue depends on your goal:</p>
+<ul>
+<li>if you want help, please open a new issue.</li>
+<li>if you don't need help and you only want to document another use case where this behavior is problematic, commenting on this issue is the right place.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-03-17 05:17</div>
+            <div class="timeline-body"><p>Is this solved by https://github.com/astral-sh/ruff/pull/16319 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-17 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kiyoon">@kiyoon</a> on 2025-06-09 05:06</div>
+            <div class="timeline-body"><p>It still doesn't work with mono-repo styled structure.<br />
+I'd like to keep my repo structured like this:</p>
+<pre><code>ruff.toml  # every ruff settings
+project-that-requires-py3.9/
+    - pyproject.toml  # have requires-python &gt;= 3.9
+project-that-requires-py3.12/
+    - pyproject.toml  # have requires-python &gt;= 3.12
+</code></pre>
+<p>So my ruff lint configuration is not dependent to the python version my projects use, but it doesn't pick up the requires-python and I don't know a correct way to make ruff understand the python version of the project except for having all ruff settings separate to each project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-09 05:14</div>
+            <div class="timeline-body"><p>You can use <a href="https://docs.astral.sh/ruff/settings/#per-file-target-version"><code>per-file-target-version</code></a> or <code>extend</code> with <code>target-version</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kiyoon">@kiyoon</a> on 2025-06-09 05:22</div>
+            <div class="timeline-body"><p>Thank you. I used <code>extend</code> like this and it works.</p>
+<pre><code class="language-toml"># project-that-requires-py3.9/pyproject.toml
+[tool.ruff]
+extend = &quot;../ruff.toml&quot;
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

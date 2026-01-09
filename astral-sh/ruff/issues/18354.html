@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add exception to E501 for very long internal Sphinx references - astral-sh/ruff #18354</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add exception to E501 for very long internal Sphinx references</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18354">#18354</a>
+        opened by <a href="https://github.com/user27182">@user27182</a>
+        on 2025-05-28 15:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/user27182">@user27182</a> on 2025-05-28 15:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Rule <a href="https://docs.astral.sh/ruff/rules/line-too-long/#line-too-long-e501">E501</a> currently has exceptions for long URLs in docstrings (i.e. external references). I think this should also extend to internal references with Sphinx (docutils?).</p>
+<p>E.g. this docstring should not be considered an E501 violation, but it currently is:</p>
+<pre><code>&quot;&quot;&quot;Sample docstring.
+
+The following is a very long internal link that should be considered 
+an exception to E501, similar to a URL:
+:attr:`This is a very long custom title for an internal link &lt;my_package.module1.module2.my_class.my_property&gt;`
+&quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/user27182">@user27182</a> on 2025-05-28 15:56</div>
+            <div class="timeline-body"><p>For more context, here is a real-world use case using Numpydoc style which is an E501 violation (but IMO should not be):</p>
+<p>https://github.com/pyvista/pyvista/blob/4286dcee002ad4ac88bb102a708b2fc8cc400040/pyvista/plotting/plotter.py#L2555-L2557</p>
+<pre><code>        edge_color : ColorLike, default: :attr:`pyvista.global_theme.edge_color &lt;pyvista.plotting.themes.Theme.edge_color&gt;`
+            The solid color to give the edges when ``show_edges=True``.
+            Either a string, RGB list, or hex color string.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-05-30 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-02 09:54</div>
+            <div class="timeline-body"><p>I think this makes sense to support. For everyone else like me who's unfamiliar with sphinx's reference, this is the <a href="https://docs.readthedocs.com/platform/latest/guides/cross-referencing-with-sphinx.html">documentation</a></p>
+<p>@user27182 I couldn't find any mention in the documentation but does sphinx allow line breaks inside the quoted part (the in-backticks ` part)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/user27182">@user27182</a> on 2025-06-02 13:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this makes sense to support. For everyone else like me who's unfamiliar with sphinx's reference, this is the <a href="https://docs.readthedocs.com/platform/latest/guides/cross-referencing-with-sphinx.html">documentation</a></p>
+<p><a href="https://github.com/user27182">@user27182</a> I couldn't find any mention in the documentation but does sphinx allow line breaks inside the quoted part (the in-backticks ` part)</p>
+</blockquote>
+<p>I have seen this work with line breaks, yes, e.g. this should work and resolve properly as a link with Sphinx:</p>
+<pre><code>:attr:`This is a very long custom title for an internal link 
+&lt;my_package.module1.module2.my_class.my_property&gt;`
+</code></pre>
+<p>So I guess if an exception to E501 is allowed for this,  the rule must check for either case, in case a link a a line break in it?</p>
+<p>Also, I have found that using <code>\</code> to break a line is also supported by Sphinx for Numpydoc style docstrings to get around the line too long issue, e.g.:</p>
+<pre><code class="language-diff">- render_points_as_spheres : bool, default: :attr:`pyvista.plotting.themes.Theme.render_points_as_spheres`
++ render_points_as_spheres : bool, \
++     default: :attr:`pyvista.plotting.themes.Theme.render_points_as_spheres`
+</code></pre>
+<p>This was successfully used (and the rendered HTML was confirmed to be correct) as part of this PR to enforce E501
+https://github.com/pyvista/pyvista/pull/7551, though I could not find documentation about the use of <code>\</code> for this kind of line break</p>
+<p>I think it would make sense to support either case as exceptions to E501, and not necessarily force users to add a line-break between the backticks or require adding a backslash.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-06-02 14:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

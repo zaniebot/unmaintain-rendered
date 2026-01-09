@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` fails to read metadata when running on Docker container due to failure to parse egg version - astral-sh/uv #4532</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` fails to read metadata when running on Docker container due to failure to parse egg version</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4532">#4532</a>
+        opened by <a href="https://github.com/kzvezdarov">@kzvezdarov</a>
+        on 2024-06-25 21:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kzvezdarov">@kzvezdarov</a> on 2024-06-25 21:16</div>
+            <div class="timeline-body"><p>I'm using <code>uv</code> to provision a JupyterHub image with some additional packages. Up to <code>0.2.8</code>, my build worked fine, but starting with <code>0.2.9</code>, <code>uv pip install</code> fails with the following error:</p>
+<pre><code>(base) root@44dd6106b962:~# uv pip install --system --no-cache-dir --verbose aiohttp==3.9.5
+DEBUG uv 0.2.15
+DEBUG Searching for Python interpreter in system toolchains
+DEBUG Found cpython 3.11.6 at `/opt/conda/bin/python3` (search path)
+DEBUG Using Python 3.11.6 environment at /opt/conda/bin/python3
+DEBUG Acquired lock for `/opt/conda`
+error: Failed to read metadata: from /opt/conda/lib/python3.11/site-packages/pycurl-7.45.1-py3.11.egg-info
+  Caused by: after parsing '7.45.1', found '-py3.11', which is not part of a valid version
+</code></pre>
+<p>Reverting to <code>0.2.8</code> fixes the issue and the installation process completes correctly.</p>
+<h3>Minimal code snippet that reproduces the bug:</h3>
+<p>On a container, with this specific image:</p>
+<pre><code>docker run --rm -it --entrypoint=/bin/bash -u root jupyter/minimal-notebook:x86_64-python-3.11
+</code></pre>
+<p>Run:
+<code>pip install uv</code></p>
+<h3>Command:</h3>
+<pre><code>(base) root@44dd6106b962:~# uv pip install --system --no-cache-dir --verbose aiohttp==3.9.5
+DEBUG uv 0.2.15
+DEBUG Searching for Python interpreter in system toolchains
+DEBUG Found cpython 3.11.6 at `/opt/conda/bin/python3` (search path)
+DEBUG Using Python 3.11.6 environment at /opt/conda/bin/python3
+DEBUG Acquired lock for `/opt/conda`
+error: Failed to read metadata: from /opt/conda/lib/python3.11/site-packages/pycurl-7.45.1-py3.11.egg-info
+  Caused by: after parsing '7.45.1', found '-py3.11', which is not part of a valid version
+</code></pre>
+<h4>Current uv platform:</h4>
+<p>Docker host: M1 MacOS, Container: <code>linux/amd64</code></p>
+<h4>Current uv version (<code>uv --version</code>).</h4>
+<pre><code>(base) root@645a2923df19:~# uv --version
+uv 0.2.15
+</code></pre>
+<p>Looking at the changelog for 0.2.9, it is likely related to:
+https://github.com/astral-sh/uv/pull/4082</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv pip install` fails to read metadata when running on Docker container" to "`uv pip install` fails to read metadata when running on Docker container due to failure to parse egg version" by @kzvezdarov on 2024-06-25 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-25 21:19</div>
+            <div class="timeline-body"><p>Thanks, will take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-06-25 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-06-25 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-25 21:21</div>
+            <div class="timeline-body"><p>Likely from https://github.com/astral-sh/uv/pull/4082. Maybe I made a faulty assumption in the parsing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-25 21:21</div>
+            <div class="timeline-body"><p>Prior to v0.2.8, we probably just ignored those entirely and reinstall <code>pycurl</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-06-25 22:19</div>
+            <div class="timeline-body"><p>Here's the egg-info metadata contents (not that it matters much since the issue is with the extra <code>-</code> in the .egg-info filename)</p>
+<pre><code>$ cat /opt/conda/lib/python3.11/site-packages/pycurl-7.45.1-py3.11.egg-info
+Metadata-Version: 1.1
+Name: pycurl
+Version: 7.45.1
+Summary: PycURL -- A Python Interface To The cURL library
+Home-page: http://pycurl.io/
+Author: Oleg Pudeyev
+Author-email: oleg@bsdpower.com
+License: LGPL/MIT
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-25 22:43</div>
+            <div class="timeline-body"><p>Ok yeah, egg links have optional components:</p>
+<pre><code class="language-python">EGG_NAME = re.compile(
+    r&quot;&quot;&quot;
+    (?P&lt;name&gt;[^-]+) (
+        -(?P&lt;ver&gt;[^-]+) (
+            -py(?P&lt;pyver&gt;[^-]+) (
+                -(?P&lt;plat&gt;.+)
+            )?
+        )?
+    )?
+    &quot;&quot;&quot;,
+    re.VERBOSE | re.IGNORECASE,
+).match
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-25 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-06-25 22:51</div>
+            <div class="timeline-body"><p>Just checked, but I think this can be fixed by adding this in the <code>path.is_file()</code> branch. It already exists in is_dir branch.</p>
+<pre><code class="language-rust">let Some((name, version_python)) = file_stem.split_once('-') else {
+    return Ok(None);
+};
+let Some((version, _)) = version_python.split_once('-') else {
+    return Ok(None);
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-25 22:53</div>
+            <div class="timeline-body"><p>I think it needs to flexibly handle either case? I'm gonna add a shared method and some tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4533.html">astral-sh/uv#4533</a> on 2024-06-25 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-25 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-25 23:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

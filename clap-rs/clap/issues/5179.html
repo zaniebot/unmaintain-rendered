@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrong behavior when reading arguments with / in git bash - clap-rs/clap #5179</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wrong behavior when reading arguments with / in git bash</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5179">#5179</a>
+        opened by <a href="https://github.com/oriongonza">@oriongonza</a>
+        on 2023-10-20 02:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/oriongonza">@oriongonza</a> on 2023-10-20 02:53</div>
+            <div class="timeline-body"><p>The argument expands to git bash root folder. This doesn't happen with other commands (<code>echo /foo</code> works fine)
+When the argument has only one letter (<code>/a</code>) it expands to <code>A:/</code></p>
+<h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.73</p>
+<h3>Clap Version</h3>
+<p>4.4.6</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">#[derive(Parser, Debug)
+struct Cli {
+  pub foo: String
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>under git bash:
+cargo run -- '/foo'</p>
+<h3>Actual Behaviour</h3>
+<p>foo = <code>&quot;C:/Users/user/AppData/Local/Programs/Git/foo&quot;</code></p>
+<h3>Expected Behaviour</h3>
+<p>foo = &quot;/foo&quot;</p>
+<h3>Additional Context</h3>
+<p>https://github.com/chmln/sd/issues/170</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @oriongonza on 2023-10-20 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-10-20 12:22</div>
+            <div class="timeline-body"><p>If you run with the debug output, as requested in the template, you'll likely see that clap is just subject to whatever <code>std::env::args_os</code> returns and that this problem is likely an error in something before clap gets it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CosmicHorrorDev">@CosmicHorrorDev</a> on 2023-10-21 15:16</div>
+            <div class="timeline-body"><p>Yeah, we've already confirmed that this is just <code>clap</code> using the args that it gets provided. Someone even made a demo program in C already (https://github.com/chmln/sd/pull/208#issuecomment-1746817623)</p>
+<p>It's just some weird automagical path replacement that happens</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-10-21 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oriongonza">@oriongonza</a> on 2023-10-22 17:35</div>
+            <div class="timeline-body"><p>Yes, even in C it doesn't capture argv correctly but it would be nice if clap provided a fix.
+Most Rust CLI programs depend on this and git bash is widely used in Windows so if a general fix were to be possible this would be the place for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oriongonza">@oriongonza</a> on 2023-10-22 17:45</div>
+            <div class="timeline-body"><p><code>export MSYS_NO_PATHCONV=1</code> solves it, but I don't think it's possible to use this without making the user do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-10-23 12:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Most Rust CLI programs depend on this and git bash is widely used in Windows so if a general fix were to be possible this would be the place for it.</p>
+</blockquote>
+<p>We also don't automatically integrate <code>wild</code> or <code>argfile</code> but rely on people to do that directly.  We'd need a lot more information to make the decision to unilaterally workaround this for people (if there is even a way to workaround it), like why MSYS does this and if it is universally viewed (even by MSYS maintainers) as wrong.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

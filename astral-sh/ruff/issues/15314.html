@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`logging-too-many-args (PLE1205)` isn't detected when initialized logger is imported from another module - astral-sh/ruff #15314</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`logging-too-many-args (PLE1205)` isn't detected when initialized logger is imported from another module</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15314">#15314</a>
+        opened by <a href="https://github.com/osauldmy">@osauldmy</a>
+        on 2025-01-07 09:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/osauldmy">@osauldmy</a> on 2025-01-07 09:31</div>
+            <div class="timeline-body"><p>When <code>logger</code> isn't initialized in the module, but imported from another module like a singleton (which may be an antipattern anyway), <code>PLE1205</code> isn't detected.</p>
+<p>Minimal reproducible example:</p>
+<pre><code class="language-python"># direct.py
+import logging
+
+logger = logging.getLogger(__name__)
+
+logger.info(&quot;Foo&quot;, &quot;bar&quot;)
+</code></pre>
+<pre><code class="language-python"># foo/logger.py
+import logging
+
+logger = logging.getLogger(__name__)
+</code></pre>
+<pre><code class="language-python"># imported.py
+from foo.logger import logger
+
+logger.info(&quot;Foo&quot;, &quot;bar&quot;)
+</code></pre>
+<pre><code class="language-shell">$ ruff check --output-format=concise --select PLE
+direct.py:5:1: PLE1205 Too many arguments for `logging` format string
+Found 1 error.
+</code></pre>
+<p>Expected behaviour:</p>
+<pre><code class="language-shell">$ ruff check --output-format=concise --select PLE
+direct.py:5:1: PLE1205 Too many arguments for `logging` format string
+imported.py:3:1: PLE1205 Too many arguments for `logging` format string
+Found 2 errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-07 09:34</div>
+            <div class="timeline-body"><p>This is a known limitation of Ruff today because it doesn't support multifile analysis. You can work around it by adding <code>foo.logger.logger</code> to <a href="https://docs.astral.sh/ruff/settings/#lint_logger-objects"><code>logger-objects</code></a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-01-07 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/osauldmy">@osauldmy</a> on 2025-01-07 09:52</div>
+            <div class="timeline-body"><p>I completely forgot about <code>logger-objects</code> option. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @osauldmy on 2025-01-07 09:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is the best way to handle cases where a Python package internally assumes that pip is the installer? - astral-sh/uv #11550</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>What is the best way to handle cases where a Python package internally assumes that pip is the installer?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11550">#11550</a>
+        opened by <a href="https://github.com/devon-research">@devon-research</a>
+        on 2025-02-16 05:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/devon-research">@devon-research</a> on 2025-02-16 05:31</div>
+            <div class="timeline-body"><h3>TL;DR Version</h3>
+<p>What is the best way to handle cases where a Python package internally assumes that pip is the installer (specifically for installing packages during testing)?</p>
+<h3>Context</h3>
+<p>The relevant context is that the situation brought up in <a href="https://github.com/astral-sh/uv/issues/1331#issuecomment-1947528004">this comment</a>[^1] arises in the <a href="https://github.com/UKGovernmentBEIS/inspect_ai">Inspect AI</a> package <a href="https://github.com/UKGovernmentBEIS/inspect_ai/blob/011d6da45094f1e420565408eee06d80f70507c4/tests/test_helpers/utils.py#L228">here</a>  and <a href="https://github.com/UKGovernmentBEIS/inspect_ai/blob/011d6da45094f1e420565408eee06d80f70507c4/tests/conftest.py#L97">here</a>. In the former case:</p>
+<pre><code class="language-python">def ensure_test_package_installed():
+    try:
+        import inspect_package  # type: ignore # noqa: F401
+    except ImportError:
+        subprocess.check_call(
+            [sys.executable, &quot;-m&quot;, &quot;pip&quot;, &quot;install&quot;, &quot;--no-deps&quot;, &quot;tests/test_package&quot;]
+        )
+</code></pre>
+<p>Here <code>inspect_package</code> is a test extension for <code>inspect_ai</code> that is just used for testing purposes, and the package authors decided to install it in the process of running the tests and then automatically uninstall it once <code>pytest</code> concludes.</p>
+<p>When running <code>pytest</code> with uv, all the tests that rely on the installation of <code>inspect_package</code> fail because the above assumes you are using pip. More specifically, running this yields unexpected failing tests:</p>
+<pre><code class="language-bash">git clone https://github.com/UKGovernmentBEIS/inspect_ai.git
+cd inspect_ai
+uv sync --extra dev
+uv run pytest
+</code></pre>
+<p>This is in contrast to the non-uv workflow which works fine:</p>
+<pre><code class="language-bash">git clone https://github.com/UKGovernmentBEIS/inspect_ai.git
+cd inspect_ai
+pip install -e &quot;.[dev]&quot;
+pytest
+</code></pre>
+<h3>Solutions [?]</h3>
+<p>Possible solutions for dealing with this might include:</p>
+<ol>
+<li>Adding <code>skip_if</code> decorators on relevant tests for when running under uv</li>
+<li>Detect when the tests are being run under uv and use uv in the <a href="https://github.com/UKGovernmentBEIS/inspect_ai/blob/011d6da45094f1e420565408eee06d80f70507c4/tests/test_helpers/utils.py#L233">install</a> and <a href="https://github.com/UKGovernmentBEIS/inspect_ai/blob/011d6da45094f1e420565408eee06d80f70507c4/tests/conftest.py#L101">uninstall</a> steps instead</li>
+<li>Add <code>inspect_package</code> / <code>tests/test_package</code> to the <code>dev</code> dependencies</li>
+<li>Advise uv users to do <code>uv venv --seed</code> before running <code>uv sync --extra dev</code> and <code>uv run pytest</code> (as mentioned e.g. <a href="https://github.com/astral-sh/uv/issues/7534#issuecomment-2360539972">here</a>)</li>
+<li>Add <code>pip</code> to the <code>dev</code> dependencies</li>
+</ol>
+<p>Putting aside worries that installing and using pip in the uv venv will cause unexpected problems, approach 5 seemed reasonable to me. In practice, this might look like adding these two lines to the <code>pyproject.toml</code> file:</p>
+<pre><code class="language-toml">[dependency-groups]
+dev = [&quot;inspect_ai[dev]&quot;, &quot;pip&quot;]
+</code></pre>
+<p>This requires no uv-specific changes to the code and has the nice benefit of allowing uv users to just run <code>uv run pytest</code> with no additional setup steps (integrating with the existing <code>project.optional-dependencies</code> in a similar way as discussed <a href="https://github.com/astral-sh/uv/issues/11093">here</a>).</p>
+<p>However, I am not sure if this is a bad idea because I'm uncertain if using pip within the uv-managed venv as in the code snippet above (or just having pip installed more generally) might cause unexpected problems.</p>
+<h3>Questions</h3>
+<p>Would approach 5 likely cause problems? What solution (possibly one not listed) seems ideal here?</p>
+<p>[^1]: Specifically, the part &quot;it's expected that you can always run an installer via <code>subprocess.run([sys.executable, &quot;-m&quot;, &quot;pip&quot;, ...])</code>&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @devon-research on 2025-02-16 05:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-18 20:04</div>
+            <div class="timeline-body"><p>Both pip and uv follow the same standards for installing and uninstalling packages. It's possible to use both together in the same venv just as you described.</p>
+<p>Depending on how your tests are structured, another option may be requiring <code>tests/test_package</code> with the same development group that installs pytest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @devon-research on 2025-03-10 00:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

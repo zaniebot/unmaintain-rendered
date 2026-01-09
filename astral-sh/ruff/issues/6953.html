@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panic &quot;'range start index 1 out of range for slice of length 0'&quot; - astral-sh/ruff #6953</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Panic &quot;'range start index 1 out of range for slice of length 0'&quot;</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6953">#6953</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2023-08-28 20:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2023-08-28 20:00</div>
+            <div class="timeline-body"><p>Ruff 0.0.286 (latest changes from main branch)</p>
+<p>Code caomes from real world package but it is mininized</p>
+<pre><code>ruff  *.py --select ALL --no-cache
+</code></pre>
+<p>file content:</p>
+<pre><code>from typing import NamedTuple
+try:
+    import collections.abc as collections_abc
+except ImportError:
+    from test import mod_generics_cache
+class BaseTestCase(TestCase):
+           Emp = NamedTuple(typename='Emp', name=str, id=int)
+</code></pre>
+<p>error:</p>
+<pre><code>panicked at 'range start index 1 out of range for slice of length 0', crates/ruff/src/rules/pyupgrade/rules/convert_named_tuple_functional_to_class.rs:212:30
+Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
+   1: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::Fn&lt;Args&gt;&gt;::call
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/alloc/src/boxed.rs:2007:9
+   2: std::panicking::rust_panic_with_hook
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:709:13
+   3: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:597:13
+   4: std::sys_common::backtrace::__rust_end_short_backtrace
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/sys_common/backtrace.rs:151:18
+   5: rust_begin_unwind
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:593:5
+   6: core::panicking::panic_fmt
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/panicking.rs:67:14
+   7: core::slice::index::slice_start_index_len_fail_rt
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/slice/index.rs:52:5
+   8: core::slice::index::slice_start_index_len_fail
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/slice/index.rs:40:9
+   9: ruff::checkers::ast::analyze::statement::statement
+  10: &lt;ruff::checkers::ast::Checker as ruff_python_ast::visitor::Visitor&gt;::visit_stmt
+  11: &lt;ruff::checkers::ast::Checker as ruff_python_ast::visitor::Visitor&gt;::visit_stmt
+  12: ruff::checkers::ast::check_ast
+  13: ruff::linter::check_path
+  14: ruff::linter::lint_fix
+  15: ruff_cli::diagnostics::lint_path
+  16: rayon::iter::plumbing::bridge_producer_consumer::helper
+  17: ruff_cli::commands::run::run
+  18: ruff_cli::check
+  19: ruff_cli::run
+  20: ruff::main
+  21: std::sys_common::backtrace::__rust_begin_short_backtrace
+  22: main
+  23: __libc_start_call_main
+             at ./csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+  24: __libc_start_main_impl
+             at ./csu/../csu/libc-start.c:360:3
+  25: _start
+
+</code></pre>
+<p><a href="https://github.com/astral-sh/ruff/files/12457830/test_typing-1040340015335742303559550111542157.py.zip">test_typing-1040340015335742303559550111542157.py.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-08-28 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fuzzer</span> added by @zanieb on 2023-08-28 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-28 20:16</div>
+            <div class="timeline-body"><p>We're not handling <code>typename='Emp'</code> correctly -- we're assuming it's provided as a positional argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-28 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6955.html">astral-sh/ruff#6955</a> on 2023-08-28 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-28 21:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

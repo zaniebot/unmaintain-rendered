@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected behavior with `sys_platform == 'linux' and platform_machine == 'x86_64'&quot;` - astral-sh/uv #17313</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected behavior with `sys_platform == 'linux' and platform_machine == 'x86_64'&quot;`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/17313">#17313</a>
+        opened by <a href="https://github.com/collinanderson">@collinanderson</a>
+        on 2026-01-03 21:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/collinanderson">@collinanderson</a> on 2026-01-03 21:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv add &quot;ruff; sys_platform == 'linux' and platform_machine == 'x86_64'&quot;</code></p>
+<p>The <code>uv.lock</code> file looks like:</p>
+<pre><code>version = 1
+revision = 3
+requires-python = &quot;&gt;=3.13&quot;
+
+[[package]]
+name = &quot;ruff&quot;
+version = &quot;0.14.10&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { ... }
+wheels = [
+    { url = &quot;https://.../ruff-0.14.10-py3-none-linux_armv6l.whl&quot;, ... },
+    { url = &quot;https://.../ruff-0.14.10-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl&quot;, ... },
+    { url = &quot;https://.../ruff-0.14.10-py3-none-manylinux_2_17_ppc64.manylinux2014_ppc64.whl&quot;, ... },
+    { url = &quot;https://.../ruff-0.14.10-py3-none-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl&quot;, ... },
+    { url = &quot;https://.../ruff-0.14.10-py3-none-manylinux_2_17_s390x.manylinux2014_s390x.whl&quot;, ... },
+    { url = &quot;https://.../ruff-0.14.10-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;, ... },
+    { url = &quot;https://.../ruff-0.14.10-py3-none-manylinux_2_31_riscv64.whl&quot;, ... },
+    { url = &quot;https://.../ruff-0.14.10-py3-none-musllinux_1_2_armv7l.whl&quot;, ... },
+    { url = &quot;https://.../ruff-0.14.10-py3-none-musllinux_1_2_x86_64.whl&quot;, ... },
+]
+
+[[package]]
+name = &quot;tmp&quot;
+version = &quot;0.1.0&quot;
+source = { virtual = &quot;.&quot; }
+dependencies = [
+    { name = &quot;ruff&quot;, marker = &quot;platform_machine == 'x86_64' and sys_platform == 'linux'&quot; },
+]
+
+[package.metadata]
+requires-dist = [{ name = &quot;ruff&quot;, marker = &quot;platform_machine == 'x86_64' and sys_platform == 'linux'&quot;, specifier = &quot;&gt;=0.14.10&quot; }]
+</code></pre>
+<p>I'd expect most of those wheels not to be included in the lock file, but <code>uv</code> seems to treat <code>platform_machine</code> as simply 32bit vs 64bit rather than actual platform machine?</p>
+<p><code>tool.uv.environments</code> has the same issue:</p>
+<pre><code>[tool.uv]
+environments = [&quot;platform_machine == 'x86_64' and sys_platform == 'linux'&quot;]
+</code></pre>
+<p>uv.lock:</p>
+<pre><code>version = 1
+revision = 3
+requires-python = &quot;&gt;=3.13&quot;
+resolution-markers = [
+    &quot;platform_machine == 'x86_64' and sys_platform == 'linux'&quot;,
+]
+supported-markers = [
+    &quot;platform_machine == 'x86_64' and sys_platform == 'linux'&quot;,
+]
+
+[[package]]
+name = &quot;ruff&quot;
+version = &quot;0.14.10&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { ... }
+wheels = [
+...ruff-0.14.10-py3-none-linux_armv6l.whl&quot;...
+...linux_armv6l.whl&quot;...
+...armv7l.manylinux2014_armv7l.whl&quot;...
+...ppc64.manylinux2014_ppc64.whl&quot;...
+...ppc64le.manylinux2014_ppc64le.whl&quot;...
+...s390x.manylinux2014_s390x.whl&quot;...
+...riscv64.whl&quot;...
+...armv7l.whl&quot;...
+</code></pre>
+<p>This is possibly related to #15060 (which said to open a new issue if not handled by <code>tool.uv.environments</code>) or the &quot;windows&quot; amd64 issue #16576.</p>
+<h3>Platform</h3>
+<p>Linux 6.8.0-90-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.9.21</p>
+<h3>Python version</h3>
+<p>Python 3.13.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @collinanderson on 2026-01-03 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/collinanderson">@collinanderson</a> on 2026-01-03 22:02</div>
+            <div class="timeline-body"><p>I errored on the side of opening a new issue, but looking at  #15060 more closely I think it is the same thing and I mis-read the comment about opening a new issue if not handled by <code>tool.uv.environments</code>. I'll comment there instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15060.html">astral-sh/uv#15060</a> on 2026-01-03 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-04 18:50</div>
+            <div class="timeline-body"><p>I think we just don't narrow on those other platforms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2026-01-04 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17317.html">astral-sh/uv#17317</a> on 2026-01-04 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2026-01-05 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/collinanderson">@collinanderson</a> on 2026-01-05 15:37</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

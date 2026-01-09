@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>default_value do not take effect  when flatten structs which have same struct field name C-bug - clap-rs/clap #4557</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>default_value do not take effect  when flatten structs which have same struct field name C-bug</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4557">#4557</a>
+        opened by <a href="https://github.com/yiv">@yiv</a>
+        on 2022-12-15 12:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yiv">@yiv</a> on 2022-12-15 12:52</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.65.0 (897e37553 2022-11-02)</p>
+<h3>Clap Version</h3>
+<p>4.0.29</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{command, Arg, Parser};
+
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct AppConfig {
+    #[clap(flatten)]
+    redis: RedisConfig,
+    #[clap(flatten)]
+    database: DatabaseConfig,
+}
+
+#[derive(Parser, Debug)]
+struct RedisConfig {
+    #[arg(long = &quot;redis.level&quot;, default_value = &quot;&quot;)]
+    name: String,
+}
+
+
+#[derive(Parser, Debug)]
+struct DatabaseConfig {
+    #[arg(long = &quot;database.url&quot;, default_value = &quot;&quot;)]
+    name: String,
+}
+
+fn main() {
+    let config = AppConfig::parse();
+    println!(&quot;config {:?}&quot;, config);
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>This issue is related with #4556, problem in #4556 also happen in this issue
+The difference which is in this case using <code>default_value</code> to set default value for args whose name are all the same.</p>
+<p>just run</p>
+<pre><code>cargo run --release
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code class="language-shell">warning: `tt` (bin &quot;tt&quot;) generated 1 warning
+    Finished release [optimized] target(s) in 11.03s
+     Running `target/release/tt`
+error: The following required argument was not provided: name
+
+Usage: tt [OPTIONS]
+
+For more information try '--help'
+
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>should run successfully</p>
+<h3>Additional Context</h3>
+<p>A crash error is reported when running development mode</p>
+<pre><code class="language-shell">cargo run
+</code></pre>
+<p>In this case, should running in release mode</p>
+<pre><code>cargo run --release
+</code></pre>
+<h3>Debug Output</h3>
+<p>warning: <code>tt</code> (bin &quot;tt&quot;) generated 1 warning
+Finished release [optimized] target(s) in 11.03s
+Running <code>target/release/tt</code>
+error: The following required argument was not provided: name</p>
+<p>Usage: tt [OPTIONS]</p>
+<p>For more information try '--help'
+bytedance@MacBook-Pro-ED tt % cargo run --release
+warning: unused import: <code>Arg</code>
+--&gt; src/main.rs:1:21
+|
+1 | use clap::{command, Arg, Parser};
+|                     ^^^
+|
+= note: <code>#[warn(unused_imports)]</code> on by default</p>
+<p>warning: <code>tt</code> (bin &quot;tt&quot;) generated 1 warning
+Finished release [optimized] target(s) in 0.16s
+Running <code>target/release/tt</code>
+[      clap::builder::command]  Command::_do_parse
+[      clap::builder::command]  Command::_build: name=&quot;tt&quot;
+[      clap::builder::command]  Command::_propagate:tt
+[      clap::builder::command]  Command::_check_help_and_version:tt expand_help_tree=false
+[      clap::builder::command]  Command::long_help_exists
+[      clap::builder::command]  Command::_check_help_and_version: Building default --help
+[      clap::builder::command]  Command::_check_help_and_version: Building default --version
+[      clap::builder::command]  Command::_propagate_global_args:tt
+[        clap::parser::parser]  Parser::get_matches_with
+[        clap::parser::parser]  Parser::add_defaults
+[        clap::parser::parser]  Parser::add_defaults:iter:name:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:name: has default vals
+[        clap::parser::parser]  Parser::add_default_value:iter:name: wasn't used
+[        clap::parser::parser]  Parser::react action=Set, identifier=None, source=DefaultValue
+[   clap::parser::arg_matcher]  ArgMatcher::start_custom_arg: id=&quot;name&quot;, source=DefaultValue
+[        clap::parser::parser]  Parser::push_arg_values: [&quot;&quot;]
+[        clap::parser::parser]  Parser::add_single_val_to_arg: cur_idx:=1
+[        clap::parser::parser]  Parser::add_defaults:iter:name:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:name: has default vals
+[        clap::parser::parser]  Parser::add_default_value:iter:name: was used
+[        clap::parser::parser]  Parser::add_defaults:iter:help:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:help: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:version:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:version: doesn't have default vals
+[     clap::parser::validator]  Validator::validate
+[     clap::parser::validator]  Validator::validate_conflicts
+[     clap::parser::validator]  Validator::validate_exclusive
+[     clap::parser::validator]  Validator::validate_required: required=ChildGraph([])
+[     clap::parser::validator]  Validator::gather_requires
+[     clap::parser::validator]  Validator::validate_required: is_exclusive_present=false
+[   clap::parser::arg_matcher]  ArgMatcher::get_global_values: global_arg_vec=[]
+[      clap::builder::command]  Command::_build: name=&quot;tt&quot;
+[      clap::builder::command]  Command::_propagate:tt
+[      clap::builder::command]  Command::_check_help_and_version:tt expand_help_tree=false
+[      clap::builder::command]  Command::long_help_exists
+[      clap::builder::command]  Command::_check_help_and_version: Building default --help
+[      clap::builder::command]  Command::_check_help_and_version: Building default --version
+[      clap::builder::command]  Command::_propagate_global_args:tt
+[      clap::builder::command]  Command::_build: name=&quot;tt&quot;
+[      clap::builder::command]  Command::_build: already built
+[         clap::output::usage]  Usage::create_usage_with_title
+[         clap::output::usage]  Usage::create_usage_no_title
+[         clap::output::usage]  Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage]  Usage::needs_options_tag
+[         clap::output::usage]  Usage::needs_options_tag:iter: f=name
+[      clap::builder::command]  Command::groups_for_arg: id=&quot;name&quot;
+[         clap::output::usage]  Usage::needs_options_tag:iter:iter: grp_s=&quot;RedisConfig&quot;
+[         clap::output::usage]  Usage::needs_options_tag:iter:iter: grp_s=&quot;DatabaseConfig&quot;
+[         clap::output::usage]  Usage::needs_options_tag:iter: [OPTIONS] required
+[         clap::output::usage]  Usage::get_args: incls=[]
+[         clap::output::usage]  Usage::get_args: unrolled_reqs=[]
+[         clap::output::usage]  Usage::get_args: ret_val=[]
+[         clap::output::usage]  Usage::create_help_usage: usage=tt [OPTIONS]
+[      clap::builder::command]  Command::color: Color setting...
+[      clap::builder::command]  Auto
+[      clap::builder::command]  Command::color: Color setting...
+[      clap::builder::command]  Auto
+error: The following required argument was not provided: name</p>
+<p>Usage: tt [OPTIONS]</p>
+<p>For more information try '--help'</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @yiv on 2022-12-15 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-12-15 13:18</div>
+            <div class="timeline-body"><p>Closing as release builds that panic during debug builds are undefined behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-12-15 13:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

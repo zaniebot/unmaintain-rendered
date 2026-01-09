@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace member version difficult to update in project when dynamically versioned - astral-sh/uv #6694</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Workspace member version difficult to update in project when dynamically versioned</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6694">#6694</a>
+        opened by <a href="https://github.com/drewfustin">@drewfustin</a>
+        on 2024-08-27 15:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/drewfustin">@drewfustin</a> on 2024-08-27 15:34</div>
+            <div class="timeline-body"><h3>issue</h3>
+<p>If I update the version of a workspace member that is dynamically versioned via a <code>path</code>, <code>uv sync</code> or similar doesn't update the member version in any consistent manner between <code>uv.lock</code> and <code>.venv</code>.</p>
+<p>I have a workspace laid out as below with a package <code>versioned-package</code> that is a dependency of the main project package <code>uvbug</code>. On initial build (<code>uv sync</code> or whatever), with <code>packages/versioned-package/src/versioned-package/_version.py</code> having <code>__version__ = &quot;0.0.0&quot;</code> as below, I get the versions <code>uvbug==0.1.0</code> and <code>versioned-package==0.0.0</code>, as expected.</p>
+<p>If I update <code>packages/versioned-package/src/versioned-package/_version.py</code> to <code>__version__ = &quot;0.0.1&quot;</code> (e.g.), rerunning <code>uv sync</code> doesn't update the build, and I'm still left with <code>uvbug==0.1.0</code> and <code>versioned-package==0.0.0</code>. On the other hand, if I run <code>uv cache clean &amp;&amp; uv remove versioned-package &amp;&amp; uv add versioned-package</code>, I do get the update. The latter is the only consistent way I can get both the <code>uv.lock</code> and <code>.venv</code> to update.</p>
+<p>My expectation would be that, at the very least (because of caching), <code>uv cache clean &amp;&amp; uv sync</code> would produce the desired result, but it doesn't update either <code>uv.lock</code> or <code>.venv</code>.</p>
+<p>I've worked out the following scenarios and whether it updates the version or not:</p>
+<p>| command | <code>uv.lock</code> updates | <code>.venv</code> updates |
+| --- | :---: | :---: |
+| <code>uv sync</code> | ❌ | ❌ |
+| <code>uv cache clean &amp;&amp; uv sync</code> | ❌ | ❌ |
+| <code>uv remove versioned-package &amp;&amp; uv add versioned-package</code> | ❌ | ❌ |
+| <code>uv cache clean &amp;&amp; uv remove versioned-package &amp;&amp; uv add versioned-package</code> | ✅ | ✅ |
+| <code>rm uv.lock &amp;&amp; uv sync</code> | ❌ | ❌ |
+| <code>uv cache clean &amp;&amp; rm uv.lock &amp;&amp; uv sync</code> | ✅ | ❌ |
+| <code>rm -r .venv &amp;&amp; uv sync</code> | ❌ | ❌ |
+| <code>uv cache clean &amp;&amp; rm -r .venv &amp;&amp; uv sync</code> | ❌ | ✅ |</p>
+<h3>environment</h3>
+<ul>
+<li><strong>platform</strong>: macOS Sonoma 14.6.1, Apple M3 Max</li>
+<li><strong>version</strong>: <code>uv 0.3.2 (c5440001c 2024-08-23)</code></li>
+</ul>
+<h3>project layout</h3>
+<pre><code>uvbug
+├── packages
+│   ├── versioned-package
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       └── versioned-package
+│   │           ├── __init__.py
+│   │           └── _version.py
+├── pyproject.toml
+├── uv.lock
+└── src
+    └── uvbug
+        └── __init__.py
+</code></pre>
+<h3><code>pyproject.toml</code></h3>
+<pre><code class="language-toml">[project]
+name = &quot;uvbug&quot;
+version = &quot;0.1.0&quot;
+dependencies = [&quot;versioned-package&quot;]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv.workspace]
+members = [&quot;packages/versioned-package&quot;]
+
+[tool.uv.sources]
+versioned-package = { workspace = true }
+</code></pre>
+<h3><code>packages/versioned-package/pyproject.toml</code></h3>
+<pre><code class="language-toml">[project]
+name = &quot;versioned-package&quot;
+dynamic = [&quot;version&quot;]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.version]
+path = &quot;src/versioned_package/_version.py&quot;
+</code></pre>
+<h3><code>packages/versioned-package/src/versioned-package/__init__.py</code></h3>
+<pre><code class="language-python">from ._version import __version__
+</code></pre>
+<h3><code>packages/versioned-package/src/versioned-package/_version.py</code></h3>
+<pre><code class="language-python">__version__ = &quot;0.0.0&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-27 17:57</div>
+            <div class="timeline-body"><p>I think I'm the right person to chime in on this but need to find time to give it a close read. Thanks for the write-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-27 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-08-27 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 22:17</div>
+            <div class="timeline-body"><p>Can you try using <a href="https://docs.astral.sh/uv/concepts/cache/#dynamic-metadata"><code>cache-keys</code></a> for this? Like:</p>
+<pre><code class="language-toml">[tool.uv]
+cache-keys = [&quot;src/versioned_package/_version.py&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 20:12</div>
+            <div class="timeline-body"><p>Closing as stale, feel free to reply if you're still having problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-07 20:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

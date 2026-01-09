@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subcommands impossible to use with required arguments with ArgsNegateSubcommands - clap-rs/clap #1133</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Subcommands impossible to use with required arguments with ArgsNegateSubcommands</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1133">#1133</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2017-12-20 21:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ghost">@ghost</a> on 2017-12-20 21:26</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p>rustc 1.22.1 (05e2e1c41 2017-11-22)
+cargo 0.23.0 (61fa02415 2017-11-22)</p>
+<h3>Affected Version of clap</h3>
+<p>clap 2.29.0 (registry+https://github.com/rust-lang/crates.io-index)</p>
+<h3>Expected Behavior Summary</h3>
+<p>When setting <code>ArgsNegateSubcommands</code>, subcommands should work without required arguments that do not belong to the subcommand as it will be impossible to invoke the subcommand if the required arguments negate it.  The usage string reflects this with:</p>
+<pre><code>USAGE:
+    bin [OPTIONS] &lt;REQUIRED&gt;
+    bin &lt;SUBCOMMAND&gt;
+</code></pre>
+<h3>Actual Behavior Summary</h3>
+<p>It becomes impossible to invoke the subcommand, as required arguments negate the subcommand, but the subcommand requires the arguments.  The fix is to set <code>SubcommandsNegateReqs</code> in addition to <code>ArgsNegateSubcommands</code>, but this is very confusing at first and conflicts with the usage string which says:</p>
+<pre><code>USAGE:
+    bin [OPTIONS] &lt;REQUIRED&gt;
+    bin &lt;SUBCOMMAND&gt;
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<p>Create an application with the macro:</p>
+<pre><code>        let matches = clap_app!(app =&gt;
+            (version: crate_version!())
+            (author: crate_authors!())
+            (about: crate_description!())
+            (@arg REQUIRED: +required &quot;required argument&quot;)
+            (@setting ArgsNegateSubcommands)
+            (@subcommand sub =&gt;
+                (about: &quot;impossible to invoke subcommand&quot;)
+            )
+        ).get_matches();
+</code></pre>
+<pre><code>$ cargo run -- sub
+
+error: The following required arguments were not provided:
+    &lt;REQUIRED&gt;
+
+USAGE:
+    app [OPTIONS] &lt;REQUIRED&gt;
+    app &lt;SUBCOMMAND&gt;
+
+For more information try --help
+
+$ cargo run -- asdf sub
+
+error: Found argument 'sub' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    app [OPTIONS] &lt;REQUIRED&gt;
+    app &lt;SUBCOMMAND&gt;
+
+For more information try --help
+</code></pre>
+<h3>Sample Code or Link to Sample Code</h3>
+<p>Here is a <a href="https://gist.github.com/glfmn/5734671c9c0ad40647ce0c5cc73cead1">gist</a> with my full code which produced the issue, and steps to reproduce with the errors:</p>
+<pre><code>$ cargo run -- isrepo
+
+error: The following required arguments were not provided:
+    &lt;FORMAT&gt;
+
+USAGE:
+    gist [OPTIONS] &lt;FORMAT&gt;
+    gist &lt;SUBCOMMAND&gt;
+
+For more information try --help
+
+$ cargo run -- asdf isrepo
+
+error: Found argument 'isrepo' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    gist [OPTIONS] &lt;FORMAT&gt;
+    gist &lt;SUBCOMMAND&gt;
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-01-09 17:14</div>
+            <div class="timeline-body"><p>I agree it can be confusing. I'm going to file this a docs issue as I think that's the best way forward for the time being. Simply adding a line in the docs explaining how requirements work with those two AppSettings should work for now.</p>
+<p>I don't want to implicitly set one or the other because there could be times when you <em>don't</em> want both settings applied.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2018-01-09 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: docs</span> added by @kbknapp on 2018-01-09 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2018-01-09 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2018-01-09 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> added by @kbknapp on 2018-01-09 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @kbknapp on 2018-01-09 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2018-01-11 16:28</div>
+            <div class="timeline-body"><p>When would both settings <em>not</em> be appropriate, or even usable?  A simple program like mine likely lacks the complexity to require such a situation, and I haven't tried to write a more complicated command-line tool, and  I agree that updating the docs is a good fix in the interim, but the biggest problem is that the behaviour contradicts the usage string generated by <code>clap-rs</code>.  How can we address that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-01-15 19:29</div>
+            <div class="timeline-body"><blockquote>
+<p>When would both settings not be appropriate, or even usable?</p>
+</blockquote>
+<p>It's only an issue if there is a required argument, correct?</p>
+<p>I'm not against having <code>ArgsNegateSubcommands</code> imply <code>SubcommandsNegateReqs</code>, I just meant for the time being a docs fix <em>far</em> quicker than a code fix. This week is going to be a busy one for me, so I may not be able to get to some low hanging fruit, but am more than willing to point some people in the right direction if they'd like to fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> added by @kbknapp on 2018-07-22 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2018-07-22 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: docs</span> removed by @kbknapp on 2018-07-22 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v3-alpha.1" by @kbknapp on 2018-07-22 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v3-alpha.2" by @pksunkara on 2020-02-01 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v3.0" by @pksunkara on 2020-02-01 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samtay">@samtay</a> on 2020-06-04 06:34</div>
+            <div class="timeline-body"><p>I think this is biting me now, but I'm not sure if it's the same issue. I think the functionality I want is currently impossible. I have an <code>app</code> that will take any arbitrary string (that is, a required positional arg with <code>multiple(true)</code>), but also has a subcommand <code>config</code> that would take precedence:</p>
+<pre><code class="language-bash">$ app arbitrary string fine # works fine, my required arg takes three values here
+$ app config --set field value # subcommand also works fine
+$ app -- config fine here too # works fine, my required arg takes four values here
+</code></pre>
+<p>Is this possible in <code>clap-2.33.1</code>? Using the <code>ArgsNegateSubcommands</code> and <code>SubcommandsNegateReqs</code> helps a little bit, but clearly the third scenario is very broken:</p>
+<pre><code>$ app -- config fine here too
+error: The subcommand 'config' wasn't recognized
+	Did you mean 'config'?
+
+If you believe you received this message in error, try re-running with 'app -- config'
+
+USAGE:
+    app [FLAGS] [OPTIONS] &lt;query&gt;...
+    app &lt;SUBCOMMAND&gt;
+
+For more information try --help
+</code></pre>
+<p>The error message is trying to be helpful but clearly this is all sorts of messed up.. any help appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samtay">@samtay</a> on 2020-06-04 07:27</div>
+            <div class="timeline-body"><p>Oh wow. Oddly, this works</p>
+<pre><code class="language-shell">$ app -- -- config fine here too
+# matches with positional arg = [&quot;--&quot;,&quot;config&quot;,&quot;fine&quot;,&quot;here&quot;,&quot;too&quot;]
+</code></pre>
+<p>I'm not familiar with the internals of clap, but this seems like an interesting detail, might help you all in the 3.0 implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-06-04 07:55</div>
+            <div class="timeline-body"><p>Subcommands are not allowed after <code>--</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-04 08:16</div>
+            <div class="timeline-body"><p>@samtay What you want is <em>optional</em> positional argument with <code>min_values(0)</code> and <code>setting(ArgSettings::AllowLeadingHyphen)</code>. Unfortunately, there's no way for subcommands to take precedence over options in clap 2.33, but 3.0 will have <code>AppSettings::SubcommandPrecedenceOverArg</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samtay">@samtay</a> on 2020-06-04 09:37</div>
+            <div class="timeline-body"><p>@pksunkara I think you are misreading my comment. I do not want subcommands after <code>--</code>, I want to use <code>--</code> as intended:  everything after <code>--</code> should be interpreted as positional arguments. Using <code>app -- config fine here too</code> <em>should</em> treat <code>config</code> as a positional argument, instead of as a subcommand.</p>
+<p>@CreepySkeleton Your suggestion doesn't work for me unfortunately, the same faulty error message is printed</p>
+<pre><code class="language-shell">$ app -- config what
+error: The subcommand 'config' wasn't recognized
+	Did you mean 'config'?
+</code></pre>
+<p>Version 3.0 sounds promising though. For now I'll just avoid using subcommands in my interface (for my situation adding a new subcommand for the required positional args would be too much noise, it would be like if <code>grep</code> forced you to use <code>grep query &lt;QUERY&gt;</code>, not worth it). Will be a little clunkier but that's alright, worth it for the rest of the clap features. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-07-12 10:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Your suggestion doesn't work for me unfortunately, the same faulty error message is printed</p>
+</blockquote>
+<p>Have you tried it with the master branch?</p>
+<blockquote>
+<p>I do not want subcommands after --, I want to use -- as intended: everything after -- should be interpreted as positional arguments. Using app -- config fine here too should treat config as a positional argument, instead of as a subcommand.</p>
+</blockquote>
+<p>Yes, that is what should happen. Subcommands should not be parsed after seeing <code>--</code>, so all of them will be just normal arguments IIRC.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samtay">@samtay</a> on 2020-07-12 18:39</div>
+            <div class="timeline-body"><p>No, I'm not on <code>master</code>. I think we have some miscommunication problems though. Above, when I say <em>should</em>, I mean this is the behavior I <em>expect</em>, but not the behavior I <em>observe</em>.</p>
+<blockquote>
+<p>Yes, that is what should happen. Subcommands should not be parsed after seeing --, so all of them will be just normal arguments IIRC.</p>
+</blockquote>
+<p>In particular, my shell snippet above directly contradicts this:</p>
+<pre><code class="language-shell">$ app -- config fine here too
+error: The subcommand 'config' wasn't recognized
+	Did you mean 'config'?
+</code></pre>
+<p>This shows that clap is trying to parse subcommands after <code>--</code>. If you use any word other than <code>config</code> the above will not error. If you use <code>config</code>, which is the name of a subcommand, it errors. Of course, this is <code>clap 2.33.1</code> so it might be irrelevant to you. It sounds like this wouldn't be a problem in 3.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> removed by @CreepySkeleton on 2020-07-12 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Z: good first issue</span> removed by @CreepySkeleton on 2020-07-12 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Z: mentored</span> removed by @CreepySkeleton on 2020-07-12 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-07-12 20:20</div>
+            <div class="timeline-body"><p>@samtay Could you please post the reproducer so I can tinker with it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-07-12 22:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I mean this is the behavior I expect</p>
+</blockquote>
+<p>I get that. But we need to know what the current behaviour is to understand if this is actually a bug or not. And to do that, you would need to check with master.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samtay">@samtay</a> on 2020-07-15 04:56</div>
+            <div class="timeline-body"><p>Confirmed, this behavior does not work on <code>2.33.1</code> but <strong>does work</strong> on <code>master</code> branch (<a href="https://gist.github.com/samtay/1d4e18ba55f05a4d616e4427570b3f7b">relevant gist</a>):</p>
+<pre><code>❮ clap_test -- config -r
+'slops' values: Some([&quot;config&quot;, &quot;-r&quot;])
+
+❮ clap_test config -r
+config --reset TRUE
+'slops' values: None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-07-15 12:37</div>
+            <div class="timeline-body"><p>So, I think we can close this issue since it's fixed. We will not be backporting it to v2.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-07-15 13:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

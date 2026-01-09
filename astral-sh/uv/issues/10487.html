@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`cygpath: not found` in linux - astral-sh/uv #10487</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`cygpath: not found` in linux</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10487">#10487</a>
+        opened by <a href="https://github.com/adhami3310">@adhami3310</a>
+        on 2025-01-11 01:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adhami3310">@adhami3310</a> on 2025-01-11 01:04</div>
+            <div class="timeline-body"><p>Regression in <code>0.5.17</code></p>
+<p>I cannot particularly replicate this easily (happens inside of the docker build step). As far as I tested, <code>$OSTYPE</code> is <code>linux-gnu</code>.</p>
+<pre><code>/bin/sh: 82: /home/reflexuser/venv/bin/activate: cygpath: not found
+</code></pre>
+<p>The relevant code is:</p>
+<pre><code class="language-bash">if { [ &quot;$OSTYPE&quot; = &quot;cygwin&quot; ] || [ &quot;$OSTYPE&quot; = &quot;msys&quot; ]; } &amp;&amp; command -v cygpath &amp;&gt; /dev/null ; then
+    VIRTUAL_ENV=$(cygpath -u &quot;$VIRTUAL_ENV&quot;)
+fi
+</code></pre>
+<p>I don't see how it can reach the second file without cygpath not being available.</p>
+<p>Docker file:</p>
+<pre><code>FROM public.ecr.aws/p3v4g4o2/reflex-cloud-base:v0.0.7-py3.12
+
+ARG USERNAME=reflexuser
+USER $USERNAME
+ARG APP_DIR=/home/$USERNAME/app
+ARG VENV_DIR=/home/$USERNAME/venv
+
+RUN pip install uv
+RUN /home/$USERNAME/.local/bin/uv venv --no-cache $VENV_DIR
+RUN chmod +x $VENV_DIR/bin/activate
+
+
+COPY --chown=$USERNAME . $APP_DIR
+
+# FAILS HERE
+RUN . $VENV_DIR/bin/activate &amp;&amp; /home/$USERNAME/.local/bin/uv pip install --no-color -q -r $APP_DIR/requirements.txt
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-11 02:37</div>
+            <div class="timeline-body"><p>\cc @Gankra for when you have time</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-11 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-11 02:53</div>
+            <div class="timeline-body"><p>Do you know what the base image for public.ecr.aws/p3v4g4o2/reflex-cloud-base:v0.0.7-py3.12 is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-11 04:51</div>
+            <div class="timeline-body"><p>This line did change in https://github.com/astral-sh/uv/pull/10397, before:</p>
+<pre><code>if ([ &quot;$OSTYPE&quot; = &quot;cygwin&quot; ] || [ &quot;$OSTYPE&quot; = &quot;msys&quot; ]) &amp;&amp; $(command -v cygpath &amp;&gt; /dev/null) ; then
+</code></pre>
+<p>after</p>
+<pre><code>if { [ &quot;$OSTYPE&quot; = &quot;cygwin&quot; ] || [ &quot;$OSTYPE&quot; = &quot;msys&quot; ]; } &amp;&amp; command -v cygpath &amp;&gt; /dev/null ; then
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-11 05:03</div>
+            <div class="timeline-body"><p>I reproduced with some debug output</p>
+<pre><code> =&gt; CACHED [6/9] RUN cp /home/reflexuser/venv/bin/activate /home/reflexuser/venv/bin/activate.bak                                                                                                                                                        0.0s
+ =&gt; CACHED [7/9] RUN echo 'set -x' &gt; /home/reflexuser/venv/bin/activate                                                                                                                                                                                  0.0s
+ =&gt; CACHED [8/9] RUN cat &quot;/home/reflexuser/venv/bin/activate.bak&quot; &gt;&gt; /home/reflexuser/venv/bin/activate                                                                                                                                                  0.0s
+ =&gt; ERROR [9/9] RUN . /home/reflexuser/venv/bin/activate &amp;&amp; /home/reflexuser/.local/bin/uv pip install --no-color -q -r /home/reflexuser/app/requirements.txt                                                                                            0.2s
+------                                                                                                                                                                                                                                                        
+ &gt; [9/9] RUN . /home/reflexuser/venv/bin/activate &amp;&amp; /home/reflexuser/.local/bin/uv pip install --no-color -q -r /home/reflexuser/app/requirements.txt:
+0.083 + [ -n  ]
+0.084 + [ -n  ]
+0.084 + [ -n  ]
+0.085 + deactivate nondestructive
+0.085 + unset -f pydoc
+0.085 + [ -n  ]
+0.085 + [ -n  ]
+0.085 + hash -r
+0.086 + [ -n  ]
+0.086 + unset VIRTUAL_ENV
+0.086 + unset VIRTUAL_ENV_PROMPT
+0.086 + [ ! nondestructive = nondestructive ]
+0.086 + VIRTUAL_ENV=/home/reflexuser/venv
+0.087 + 
+0.087 + [  = cygwin ]
+0.087 + [  = msys ]
+0.087 + cygpath -u /home/reflexuser/venv
+0.087 /bin/sh: 83: /home/reflexuser/venv/bin/activate: cygpath: not found
+0.088 + VIRTUAL_ENV=
+0.088 + export VIRTUAL_ENV
+0.088 + _OLD_VIRTUAL_PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+0.088 + PATH=/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+0.088 + export PATH
+0.088 + [ x != x ]
+0.089 + basename 
+0.099 + VIRTUAL_ENV_PROMPT=() 
+0.099 + export VIRTUAL_ENV_PROMPT
+0.099 + [ -n  ]
+0.099 + [ -z  ]
+0.099 + _OLD_VIRTUAL_PS1=$ 
+0.099 + PS1=() $ 
+0.099 + export PS1
+0.099 + alias pydoc
+0.100 + true
+0.100 + hash -r
+0.100 + /home/reflexuser/.local/bin/uv pip install --no-color -q -r /home/reflexuser/app/requirements.txt
+0.164 error: File not found: `app/requirements.txt`
+------
+Dockerfile:19
+--------------------
+  17 |     RUN echo 'set -x' &gt; $VENV_DIR/bin/activate
+  18 |     RUN cat &quot;$VENV_DIR/bin/activate.bak&quot; &gt;&gt; $VENV_DIR/bin/activate
+  19 | &gt;&gt;&gt; RUN . $VENV_DIR/bin/activate &amp;&amp; /home/$USERNAME/.local/bin/uv pip install --no-color -q -r $APP_DIR/requirements.txt
+  20 |     
+--------------------
+ERROR: failed to solve: process &quot;/bin/sh -c . $VENV_DIR/bin/activate &amp;&amp; /home/$USERNAME/.local/bin/uv pip install --no-color -q -r $APP_DIR/requirements.txt&quot; did not complete successfully: exit code: 2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10492.html">astral-sh/uv#10492</a> on 2025-01-11 05:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../whitphx/stlite/pulls/1257.html">whitphx/stlite#1257</a> on 2025-01-11 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10497.html">astral-sh/uv#10497</a> on 2025-01-11 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-11 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-11 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-11 14:23</div>
+            <div class="timeline-body"><p>I reverted this in https://github.com/astral-sh/uv/pull/10497, but I'll keep this open.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2025-01-11 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adhami3310">@adhami3310</a> on 2025-01-11 19:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you know what the base image for public.ecr.aws/p3v4g4o2/reflex-cloud-base:v0.0.7-py3.12 is?</p>
+</blockquote>
+<p>I believe it's python:3.12-slim</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2025-01-15 17:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

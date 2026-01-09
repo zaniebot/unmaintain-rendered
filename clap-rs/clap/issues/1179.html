@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bash completion for argument defined with `value_name` should complete with file names - clap-rs/clap #1179</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>bash completion for argument defined with `value_name` should complete with file names</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1179">#1179</a>
+        opened by <a href="https://github.com/jzinn">@jzinn</a>
+        on 2018-02-13 00:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jzinn">@jzinn</a> on 2018-02-13 00:12</div>
+            <div class="timeline-body"><p>Ripgrep has a <code>-g</code> option that could use some improved Bash completion.  Please see</p>
+<ul>
+<li>https://github.com/BurntSushi/ripgrep/issues/792</li>
+</ul>
+<h3>Rust Version</h3>
+<pre><code>$ rustc -V
+rustc 1.25.0-nightly (b8398d947 2018-02-11)
+</code></pre>
+<h3>Affected Version of clap</h3>
+<pre><code>$ grep clap ripgrep/Cargo.lock
+name = &quot;clap&quot;
+ &quot;clap 2.29.4 (registry+https://github.com/rust-lang/crates.io-index)&quot;,
+&quot;checksum clap 2.29.4 (registry+https://github.com/rust-lang/crates.io-index)&quot; = &quot;7b8f59bcebcfe4269b09f71dab0da15b355c75916a8f975d3876ce81561893ee&quot;
+</code></pre>
+<h3>Expected Behavior Summary</h3>
+<p>Either do nothing:</p>
+<pre><code>touch Foo.txt
+rg -g Fo&lt;tab&gt;  # hit &lt;tab&gt; to initiate completion
+rg -g Fo       # after completion
+</code></pre>
+<p>or complete with file names:</p>
+<pre><code>touch Foo.txt
+rg -g Fo&lt;tab&gt;  # hit &lt;tab&gt; to initiate completion
+rg -g Foo.txt  # after completion
+</code></pre>
+<p>Additionally, the Ripgrep <code>-g</code> option allows a leading <code>!</code> to indicate negation.  If Clap can support this, then an example would be</p>
+<pre><code>mkdir vendor
+rg -g &quot;!vend&lt;tab&gt;  # hit &lt;tab&gt; to initiate completion
+rg -g &quot;!vendor&quot;/   # after completion
+</code></pre>
+<h3>Actual Behavior Summary</h3>
+<p>Currently the typed in value is erased and replaced with <code>&lt;GLOB&gt;...</code>:</p>
+<pre><code>touch Foo.txt
+rg -g Fo&lt;tab&gt;    # hit &lt;tab&gt; to initiate completion
+rg -g &lt;GLOB&gt;...  # after completion
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<p>See above.</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<p>I could easily be wrong, but Ripgrep seems to instantiate a <code>clap-rs</code> <code>Arg</code> using something similar to:</p>
+<pre><code class="language-rust">Arg::with_name(&quot;glob&quot;)
+    .long(&quot;glob&quot;)
+    .value_name(&quot;GLOB&quot;)
+    .takes_value(true)
+    .number_of_values(1)
+    .short(&quot;g&quot;)
+    .help(&quot;Include or exclude files.&quot;)
+    .long_help(&quot;Include or exclude files and ...&quot;)
+    .multiple(true)
+    .allow_hyphen_values(true)
+    ;
+</code></pre>
+<p>It seems that <code>value_name</code> is used in the completion (<code>&lt;GLOB&gt;...</code>) instead of file names.</p>
+<h3>Debug output</h3>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2018-02-13 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2018-02-13 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2018-02-13 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: completion gen</span> added by @kbknapp on 2018-02-13 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-13 00:36</div>
+            <div class="timeline-body"><p>Thanks! I'll take a look at this tomorrow and see if I can get a patch in to just fall back to file completion in all cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jzinn">@jzinn</a> on 2018-02-13 00:41</div>
+            <div class="timeline-body"><p>As an aside, with the current behavior it seems that these options</p>
+<pre><code class="language-rust">.takes_value(true)
+.number_of_values(1)
+.multiple(true)
+</code></pre>
+<p>should not result in <code>&lt;GLOB&gt;...</code>, because the <code>...</code> indicates that repetition is possible.  However, repetition is not allowed in this case because of the call <code>number_of_values(1)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-13 01:16</div>
+            <div class="timeline-body"><p>@jzinn That refers to the number of values per use of the flag, and not the number of times the flag can be used. That is, they are orthogonal options. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1037.html">clap-rs/clap#1037</a> on 2018-02-13 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1180.html">clap-rs/clap#1180</a> on 2018-02-13 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-02-13 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-13 18:09</div>
+            <div class="timeline-body"><p>v2.30.0 is published</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1182.html">clap-rs/clap#1182</a> on 2018-02-13 21:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

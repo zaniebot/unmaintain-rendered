@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv tool install` with `--allow-insecure-host` does not work as expected - astral-sh/uv #11176</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv tool install` with `--allow-insecure-host` does not work as expected</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11176">#11176</a>
+        opened by <a href="https://github.com/doraeric">@doraeric</a>
+        on 2025-02-03 06:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/doraeric">@doraeric</a> on 2025-02-03 06:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I want to install a package from my internal gitlab repo with the following command</p>
+<pre><code class="language-sh">uv tool install --allow-insecure-host git.example.com git+https://git.example.com/user/repo.git
+</code></pre>
+<p>but I got some errors</p>
+<pre><code>Updating https://git.example.com/user/repo.git (HEAD)                                                                                   error: Git operation failed
+  Caused by: failed to fetch into: /home/user/.cache/uv/git-v0/db/xxx
+  Caused by: process didn't exit successfully: `/usr/bin/git fetch --force --update-head-ok 'https://git.example.com/user/repo.git' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
+--- stderr
+fatal: unable to access 'https://git.example.com/user/repo.git/': server certificate verification failed. CAfile: none CRLfile: none
+</code></pre>
+<p>When looking for existing issues, I found this one https://github.com/astral-sh/uv/issues/8555 . Although they don't seem to be related.</p>
+<p>I can bypass this issue by setting the environment variable <code>GIT_SSL_NO_VERIFY=true</code> though, as instructed <a href="https://stackoverflow.com/a/19363404/3566759">here</a>.</p>
+<h3>Platform</h3>
+<p>Ubuntu 22.04 (Linux 5.15.0-126-generic x86_64 GNU/Linux)</p>
+<h3>Version</h3>
+<p>uv 0.5.18</p>
+<h3>Python version</h3>
+<p>Python 3.12.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @doraeric on 2025-02-03 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-03 13:52</div>
+            <div class="timeline-body"><p>Sorry, we invoke the Git CLI directly and it does not use our HTTP client or stack. I guess we could set this for you?</p>
+<p>cc @charliermarsh wdyt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-03 13:53</div>
+            <div class="timeline-body"><p>I wonder if we can limit the target with <code>http.&lt;url&gt;.*</code>, not clear how to use that outside a config file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-03 15:48</div>
+            <div class="timeline-body"><p>Yeah, I guess we can check if the URL has <code>--allow-insecure-host</code> set, and pass the env var in those cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-02-03 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-02-04 02:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-04 02:56</div>
+            <div class="timeline-body"><p>Should it be:</p>
+<pre><code>--trusted-host git+https://localhost:8443
+</code></pre>
+<p>or:</p>
+<pre><code>--trusted-host https://localhost:8443
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-04 03:06</div>
+            <div class="timeline-body"><p>I don't have a strong preference. I feel like it's not super relevant that <code>git</code> is being used as the protocol. It's about the HTTPS layer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11210.html">astral-sh/uv#11210</a> on 2025-02-04 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-04 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-04 15:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

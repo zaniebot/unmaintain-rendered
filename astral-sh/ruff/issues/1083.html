@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[bug?] 0.0.161 removes blank lines under indented import blocks - astral-sh/ruff #1083</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[bug?] 0.0.161 removes blank lines under indented import blocks</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1083">#1083</a>
+        opened by <a href="https://github.com/smackesey">@smackesey</a>
+        on 2022-12-05 22:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-05 22:42</div>
+            <div class="timeline-body"><p>Ruff 0.0.161 seemed to change the handling of blank lines around imports significantly. This block was sorted with <code>0.0.160</code>:</p>
+<pre><code class="language-python">if TYPE_CHECKING:
+    from dagster._grpc.client import DagsterGrpcClient
+
+
+def sync_get_external_execution_plan_grpc(
+    api_client: &quot;DagsterGrpcClient&quot;,
+    # ...
+</code></pre>
+<p>But 0.0.161 turned it into this:</p>
+<pre><code class="language-python">if TYPE_CHECKING:
+    from dagster._grpc.client import DagsterGrpcClient
+def sync_get_external_execution_plan_grpc(
+    api_client: &quot;DagsterGrpcClient&quot;,
+    # ...
+</code></pre>
+<p>This seemed to happen wherever an import block was indented-- was that intended?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 22:55</div>
+            <div class="timeline-body"><p>Not intended, will fix in a sec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1085.html">astral-sh/ruff#1085</a> on 2022-12-05 23:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-05 23:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 23:07</div>
+            <div class="timeline-body"><p>@smackesey - Are you running from Dagster root? Would love to test against Dagster to make sure I'm not missing cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-05 23:09</div>
+            <div class="timeline-body"><p>Thanks for the quick fix! Yes I'm running <code>ruff --select=I001 --fix</code> <code>git ls-files '*.py'</code> from the root, although it's on my stack which has already corrected other errors, so you will see a lot more noise (i.e. correct fixes) if you run against <code>master</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 23:12</div>
+            <div class="timeline-body"><p>Okay cool. I may revert some of the newline stuff for now, or try to fix some of the other changes that you're seeing, but will cut a new release in a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 23:13</div>
+            <div class="timeline-body"><p>(I was trying to mimic isort's behavior of inserting newlines when import blocks precede class and function definitions.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 23:22</div>
+            <div class="timeline-body"><p>Oddly, isort doesn't seem to enforce that behavior for indented imports -- that is, it doesn't add a newline here:</p>
+<pre><code class="language-py">if True:
+    import os
+    def f():
+        pass
+</code></pre>
+<p>But, I think it should? I.e., I think that should be corrected to:</p>
+<pre><code class="language-py">if True:
+    import os
+
+
+    def f():
+        pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 23:30</div>
+            <div class="timeline-body"><p>I changed that behavior here (https://github.com/charliermarsh/ruff/pull/1088), which reduces the churn with isort but I think is less desirable behavior, but curious if you have a preference @smackesey.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-05 23:52</div>
+            <div class="timeline-body"><p>I agree that your suggested correction is better-- probably a bug in isort that it doesn't enforce that. Probably never caught because so many people follow <code>isort</code> with a formatter like <code>black</code> which will add those newlines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 00:03</div>
+            <div class="timeline-body"><p>There's one case here that I'm handling differently than <code>isort</code>, which is that I'm changing this:</p>
+<pre><code class="language-py">import os
+
+# Comment here.
+
+def f():
+    pass
+</code></pre>
+<p>...to:</p>
+<pre><code class="language-py">import os
+
+
+# Comment here.
+
+def f():
+    pass
+</code></pre>
+<p>Because the next AST node is a function, and we so we insert two lines after the import. I'd like to fix this, but it's kind of a tedious case so just a heads up as you may run into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-06 01:13</div>
+            <div class="timeline-body"><p>I just tried <code>0.0.162</code> and I think due to this extra newline behavior you mention above, Ruff's <code>I001</code> ends up incompatible with black. Here's an example:</p>
+<p>After running <code>black</code>:</p>
+<pre><code>        from dagster._core.events import DagsterEventType
+        from dagster._core.storage.event_log.base import EventRecordsFilter
+
+        def _wrap_asset_fn(materialization_fn):
+</code></pre>
+<p>And after running <code>ruff --fix --select=I001</code>:</p>
+<pre><code>        from dagster._core.events import DagsterEventType
+        from dagster._core.storage.event_log.base import EventRecordsFilter
+
+
+        def _wrap_asset_fn(materialization_fn):
+</code></pre>
+<p>So <code>black --check</code> and <code>ruff</code> can't both pass if <code>I001</code> is enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 01:24</div>
+            <div class="timeline-body"><p>Ahh interesting, ok. Is that only in indented blocks? Will check + fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 01:28</div>
+            <div class="timeline-body"><p>Ok yeah, looks like Black has different rules in indented blocks. Will fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 01:46</div>
+            <div class="timeline-body"><p>Ok, I believe this is fixed in <a href="https://github.com/charliermarsh/ruff/releases/tag/v0.0.163">v0.0.163</a> (building now). I tested against Dagster, with Black, etc. That release also contains the D415 autofix, which I also tested against Dagster.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install dev-dependencies before trying to resolve &quot;normal&quot; dependencies - astral-sh/uv #7836</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Install dev-dependencies before trying to resolve &quot;normal&quot; dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7836">#7836</a>
+        opened by <a href="https://github.com/vlad-ivanov-name">@vlad-ivanov-name</a>
+        on 2024-10-01 12:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vlad-ivanov-name">@vlad-ivanov-name</a> on 2024-10-01 12:54</div>
+            <div class="timeline-body"><p>Consider the following <code>pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;uv-reproducer&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+  &quot;my-private-package==1.0.0&quot;,
+]
+
+[tool.uv]
+dev-dependencies = [
+  &quot;keyring&quot;,
+  &quot;keyrings.google-artifactregistry-auth&quot;,
+]
+
+keyring-provider = &quot;subprocess&quot;
+extra-index-url = [
+  &quot;https://oauth2accesstoken@us-west1-python.pkg.dev/my-google-project/my-package-repo/simple/&quot;
+]
+</code></pre>
+<p>In order to install <code>my-private-package</code>, one needs access to the extra-index-url and keyring command. I haven't found a way to create a lockfile without installing those dependencies manually when there's no <code>uv.lock</code> yet.</p>
+<p>Perhaps those kinds of &quot;internal&quot; uv dependencies could be pre-installed, or, to avoid messing with package's own requirements, they can go into their own &quot;dev-tool only&quot; venv, where uv can then pick up the keyring command from?</p>
+<pre><code>uv --version
+uv 0.4.17 (Homebrew 2024-09-27)
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

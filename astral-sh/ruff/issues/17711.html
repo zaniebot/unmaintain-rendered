@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyUpgrade autofix fails when objects stem from factory - astral-sh/ruff #17711</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PyUpgrade autofix fails when objects stem from factory</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17711">#17711</a>
+        opened by <a href="https://github.com/TrevorWinstral">@TrevorWinstral</a>
+        on 2025-04-29 14:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TrevorWinstral">@TrevorWinstral</a> on 2025-04-29 14:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Using Python 3.10, I have the following code:</p>
+<pre><code class="language-python">from threading import RLock
+from typing import Optional
+
+def fn(lock: Optional[RLock]) -&gt; None:
+    &quot;&quot;&quot;Dummy.&quot;&quot;&quot;
+    if lock is None:
+        print(&quot;Lock is None&quot;)
+        return
+    else:
+        with lock:
+            print(&quot;Lock aquired&quot;)
+</code></pre>
+<p>Which is perfectly viable and functional code.</p>
+<p>I have this in my <code>pyproject.toml</code></p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 80
+target-version = &quot;py310&quot;
+</code></pre>
+<p>When I run <code>ruff check --fix</code>, I get the following:</p>
+<pre><code class="language-python">from threading import RLock
+
+def fn(lock: RLock | None) -&gt; None:
+    &quot;&quot;&quot;Dummy.&quot;&quot;&quot;
+    if lock is None:
+        print(&quot;Lock is None&quot;)
+        return
+    else:
+        with lock:
+            print(&quot;Lock aquired&quot;)
+
+</code></pre>
+<p>Which when run yields:</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;/home/twinstral/Documents/Projects/capital-iq-afl/capitalafl/models/twinstral/mwe.py&quot;, line 8, in &lt;module&gt;
+    def fn(lock: RLock | None) -&gt; None:
+TypeError: unsupported operand type(s) for |: 'function' and 'NoneType'
+</code></pre>
+<p>This is because the <code>RLock</code> object is actually a factory function. The actual type is private in threading, so this breaks my code. This is fixed in 3.12 so adding the following line: <code>from __future__ import annotations</code> fixes my issue. I have FA selected in the <code>tool.ruff.lint</code> section of my <code>pyproject.toml</code> and I believe this should have caught that.</p>
+<h3>Version</h3>
+<p>ruff 0.11.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-29 21:16</div>
+            <div class="timeline-body"><p>It sounds like <a href="https://docs.astral.sh/ruff/rules/future-required-type-annotation/#future-required-type-annotation-fa102">future-required-type-annotation (FA102)</a> is the <code>FA</code> rule that could have caught this, but its docs say:</p>
+<blockquote>
+<p>As such, this rule will only flag such usages if your project targets Python 3.9 or below.</p>
+</blockquote>
+<p>So it sounds like your <code>target-version</code> is high enough to disable the check.</p>
+<p>I'm not a typing expert, so I could certainly be wrong here, but it kind of sounds like your original annotation wasn't strictly correct since <code>Rlock</code> isn't a type, it just didn't get evaluated inside of <code>typing.Optional</code>.</p>
+<p>It looks like @AlexWaygood commented on a related <a href="https://github.com/python/cpython/issues/114315">CPython issue</a>, and he'd know better than me anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-04-29 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TrevorWinstral">@TrevorWinstral</a> on 2025-04-30 07:55</div>
+            <div class="timeline-body"><p>I agree that the original typing wasn't strictly correct, however running ruff then 'broke' the code, which is probably unexpected behavior, no? And the type hint works just fine when it is standalone, only when combined with the <code>|</code> operator does it act as a function.</p>
+<p>This code runs as expected:</p>
+<pre><code class="language-python">from threading import RLock
+
+
+def fn(lock: RLock) -&gt; None:
+    &quot;&quot;&quot;Dummy&quot;&quot;&quot;
+    with lock:
+        print(&quot;Aquired lock&quot;)
+
+
+fn(RLock())
+</code></pre>
+<p>So the typing works as expected when using <code>RLock</code> and when using <code>Optional[RLock]</code>, and only <code>RLock | None</code> fails, which is the change made by ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-05-01 21:52</div>
+            <div class="timeline-body"><p>There are bunch of factory functions in the standard library that are exported as types in typeshed for convenience, so you don't have to import a private type, but this problem isn't unique to the standard library. This sort of issue can occur in any code where the type annotations are provided through third party stubs and the annotations make some convenient lies about the runtime type of objects in order to improve the ergonomics of interacting with the API when making use of type annotations.</p>
+<p>While we could certainly enumerate the places where this sort of issue can occur in the standard library and prevent fixes/violations from being emitted in those cases, I'm not fully convinced it's worth it, considering it can happen with third party dependencies too. We could maybe think about adding a setting for faux-types, but it would be difficult to ensure that all the rules and fixes take that setting into account properly.</p>
+<p>Generally my stance is, if you're fine with using <code>from __future__ import annotations</code>, you should just be using it in every file (apart from empty <code>__init__.py</code> files). That way you get more consistent behavior. I personally think the <code>FA</code> rules are kind of bad, since you'll end up with a mix of stringized and proper annotations, depending purely on whether or not it would allow to modernize some type expressions.</p>
+<p>Edit: The only somewhat maintainable solution I can think of, is adding new rules that detect and flag runtime uses of <code>__or__</code> and <code>__class_getitem__</code> on faux-types and surrounding those runtime uses with quotes, so they're no longer runtime uses. But that would still be awkward if you want the annotation to be runtime introspectable, so then you'd be back to having to add exceptions to the <code>pyupgrade</code> rules. So the value of something like that would still be questionable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @TrevorWinstral on 2025-05-02 08:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18619.html">astral-sh/ruff#18619</a> on 2025-06-11 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19144.html">astral-sh/ruff#19144</a> on 2025-07-04 14:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

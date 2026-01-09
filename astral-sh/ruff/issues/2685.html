@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python 2 style type hints are removed automatically by the autofix for F401 - astral-sh/ruff #2685</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Python 2 style type hints are removed automatically by the autofix for F401</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2685">#2685</a>
+        opened by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a>
+        on 2023-02-09 09:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a> on 2023-02-09 09:34</div>
+            <div class="timeline-body"><p>On the following snippet:</p>
+<pre><code class="language-python">from typing import List, Tuple
+
+number_to_string = [] # type: List[Tuple[int, str]]
+</code></pre>
+<p>The typing import are removed automatically. Note, that autoflake &gt; 2 also does this.</p>
+<p>Not a barrier to adoption as there's a simple workaround : Using autoflake &lt; 2.0.0, and <code>--unfixable F401</code> in ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-02-09 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-09 12:11</div>
+            <div class="timeline-body"><p>Yeah I need to make some kind of formal decision on Python 2-style type hints, it's come up a couple times and we don't support them, but I'm not certain if we should or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a> on 2023-02-09 13:14</div>
+            <div class="timeline-body"><p>If there was an integrated fix to upgrade to python3 typing (like <a href="https://github.com/ilevkivskyi/com2ann">com2ann</a>) it would be a really understandable decision not to support python 2 type hint, as python 3.5 has been EOL for a really long time by now. Or users can do it with <code>com2ann</code> on their own directly, this is a one time thing (?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmke8">@tmke8</a> on 2023-02-10 10:30</div>
+            <div class="timeline-body"><p>Note that there are still two places that can only be annotated with comments: for-loops and with-statements:</p>
+<pre><code class="language-python">from typing import Any
+
+it: Any
+for x in it:  # type: int
+    reveal_type(x)  # Revealed type is &quot;builtins.int&quot;
+    
+con: Any
+with con as y:  # type: str
+    reveal_type(y)  # Revealed type is &quot;builtins.str&quot;
+</code></pre>
+<p>(mypy playground link for the above code: https://mypy-play.net/?mypy=latest&amp;python=3.11&amp;gist=96217be4d93348ee591988a5744c1a60 )</p>
+<p>However, I've never actually seen this used in real code, so not sure how important it is.</p>
+<p>EDIT: though actually, you can just do this instead:</p>
+<pre><code class="language-python">x: int
+for x in it:
+    reveal_type(x)  # Revealed type is &quot;builtins.int&quot;
+    
+y: str
+with con as y:
+    reveal_type(y)  # Revealed type is &quot;builtins.str&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 14:08</div>
+            <div class="timeline-body"><p>In the interest of cutting corners 😅 my general philosophy has been to avoid one-time 2-to-3 migration rules -- in part because they add complexity, but also, they tend to be a little under-tested since they're used less frequently in the wild given their one-time nature.</p>
+<p>For example, we removed the <code>six</code> import rewrites, since <code>pyupgrade</code> can be used to do those one-time, and probably had a stabler implementation than ours which likely wasn't run on &quot;real&quot; code with the same frequency. (I see these kinds of rules as different from those that are useful for writing Python 3 code on an ongoing basis, like (e.g.) type annotation rewrites that prefer the builtin generics over <code>typing.List</code> and friends.)</p>
+<p>So my instinct here is to avoid supporting comment annotations, and also to defer implementing <code>com2ann</code> in the hopes that users would run that tool one-time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 14:09</div>
+            <div class="timeline-body"><p>As always I'm totally open to being convinced otherwise, but I'm gonna call it &quot;decided&quot; for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-10 14:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

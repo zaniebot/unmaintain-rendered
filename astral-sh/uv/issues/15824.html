@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv tool run @latest doesn't reuse cache from specific version run - astral-sh/uv #15824</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv tool run @latest doesn't reuse cache from specific version run</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15824">#15824</a>
+        opened by <a href="https://github.com/domdomegg">@domdomegg</a>
+        on 2025-09-13 01:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/domdomegg">@domdomegg</a> on 2025-09-13 01:58</div>
+            <div class="timeline-body"><h2>Description</h2>
+<p>When using <code>uv tool run</code>, specifying <code>@latest</code> doesn't reuse the cached environment from a previous run with a specific version, even when <code>@latest</code> resolves to the same version.</p>
+<h2>Steps to reproduce</h2>
+<pre><code class="language-bash"># First run with specific version - uses cache correctly on subsequent runs
+uv tool run --python 3.12 wcgw@5.4.3
+
+# Run with @latest - reinstalls all packages even though latest = 5.4.3
+uv tool run --python 3.12 wcgw@latest
+</code></pre>
+<h2>Actual behavior</h2>
+<p>When running with <code>@latest</code>, uv reports:</p>
+<pre><code>wcgw version: 5.4.3
+Installed 64 packages in 67ms
+</code></pre>
+<p>It reinstalls all packages despite them being cached from the <code>@5.4.3</code> run.</p>
+<h2>Expected behavior</h2>
+<p>Since <code>@latest</code> resolves to <code>5.4.3</code>, uv should reuse the cached environment from the previous <code>@5.4.3</code> run instead of reinstalling all packages.</p>
+<h2>Environment</h2>
+<ul>
+<li>uv version: uv 0.8.6 (329a6b446 2025-08-07)</li>
+<li>Platform: macOS (Darwin 24.6.0)</li>
+<li>Python: 3.12</li>
+</ul>
+<h2>Additional context</h2>
+<p>The issue appears to be that uv uses the version specifier (<code>@latest</code> vs <code>@5.4.3</code>) as part of the cache key, rather than the resolved version. This leads to unnecessary reinstallations when using version specifiers that resolve to already-cached versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-14 00:53</div>
+            <div class="timeline-body"><p>That's not quite what's happening -- it's more that <code>@latest</code> is internally treated as equivalent to <code>--refresh</code>, and when <code>--refresh</code> is provided to <code>tool run</code>, we always recreate the environment. I'd need to look into why that happens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-09-14 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15827.html">astral-sh/uv#15827</a> on 2025-09-14 01:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-14 01:04</div>
+            <div class="timeline-body"><p>Put up a PR here to change the behavior: https://github.com/astral-sh/uv/pull/15827</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-09-14 13:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

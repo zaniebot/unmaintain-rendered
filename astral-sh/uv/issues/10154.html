@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conditionally allow dependencies to resolve where specific versions conflict with optional dependency bounds - astral-sh/uv #10154</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Conditionally allow dependencies to resolve where specific versions conflict with optional dependency bounds</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10154">#10154</a>
+        opened by <a href="https://github.com/mjlbach">@mjlbach</a>
+        on 2024-12-25 14:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mjlbach">@mjlbach</a> on 2024-12-25 14:43</div>
+            <div class="timeline-body"><h1>Description of problem</h1>
+<p>Some optional dependencies can introduce additional version constraints. E.g., I may introduce a package that requires numpy pinned to version 1.x.x. I would ideally like this not to impact the resolved packages when not using this optional dependency.</p>
+<h2>Scenario 1: optional dependency upper bound is incompatible with lower bound of dependency</h2>
+<h3>pyproject toml</h3>
+<pre><code class="language-toml">[project]
+name = &quot;uv-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;an example showing conflict resolution&quot;
+requires-python = &quot;&gt;=3.12.7&quot;
+dependencies = [
+  &quot;numpy&gt;=2.0.0&quot;,
+]
+
+[project.optional-dependencies]
+mediapipe = [
+    &quot;mediapipe&gt;=0.10.20&quot;,
+]
+
+</code></pre>
+<h3>Sync the dependencies</h3>
+<pre><code>❯ uv sync
+Using CPython 3.12.7
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because your project depends on numpy&gt;=2.0.0 and mediapipe==0.10.20 depends on
+      numpy&lt;2, we can conclude that mediapipe==0.10.20 and your project are incompatible.
+      And because only mediapipe&lt;=0.10.20 is available, we can conclude that
+      mediapipe&gt;=0.10.20 and your project are incompatible.
+      And because uv-test[mediapipe] depends on mediapipe&gt;=0.10.20 and your project
+      requires uv-test[mediapipe], we can conclude that your project's requirements are
+      unsatisfiable.
+</code></pre>
+<h2>Workaround</h2>
+<pre><code class="language-toml">[project]
+name = &quot;uv-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;an example showing conflict resolution&quot;
+requires-python = &quot;&gt;=3.12.7&quot;
+dependencies = []
+
+[dependency-groups]
+numpy = [
+  &quot;numpy&gt;=2.0.0&quot;,
+]
+
+[tool.uv]
+default-groups = [&quot;numpy&quot;]
+conflicts = [
+    [
+      { group = &quot;numpy&quot; },
+      { extra = &quot;mediapipe&quot; },
+    ],
+]
+
+[project.optional-dependencies]
+mediapipe = [
+    &quot;mediapipe&gt;=0.10.20&quot;,
+]
+</code></pre>
+<h2>Ugly workaround</h2>
+<pre><code>uv sync --extra mediapipe --no-group numpy
+</code></pre>
+<p>Anything I'm missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-26 14:42</div>
+            <div class="timeline-body"><p>I don't think there's a better way to do this right now than the workaround you have above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-12-26 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @charliermarsh on 2024-12-26 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjlbach">@mjlbach</a> on 2024-12-26 17:55</div>
+            <div class="timeline-body"><p>I figured poking through the code :) I think it's a worthwhile feature to support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/florent-pajot">@florent-pajot</a> on 2025-12-01 16:44</div>
+            <div class="timeline-body"><p>I'm encountering the same issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sys_platform and case - astral-sh/uv #14947</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>sys_platform and case</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14947">#14947</a>
+        opened by <a href="https://github.com/amcandio">@amcandio</a>
+        on 2025-07-29 05:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/amcandio">@amcandio</a> on 2025-07-29 05:43</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Context: https://github.com/understanding-search/maze-dataset/issues/73</p>
+<p>When checking commit <code>ce6862a573e00bbb55a4f05b698517c510dbc1a5</code> of https://github.com/understanding-search/maze-dataset on a macOS I get an error installing the repository due to a dependency not available for macOS. However, when checking <code>pyproject.toml</code> I see:</p>
+<pre><code>&quot;rust_fst&gt;=0.1.2; platform_system != 'darwin'&quot;
+</code></pre>
+<p>After capitalizing Darwin it works fine and I don't see the error anymore:</p>
+<pre><code>&quot;rust_fst&gt;=0.1.2; platform_system != 'Darwin'&quot;
+</code></pre>
+<p>Question: is this configuration supposed to be case-sensitive? I took a look at the source code and I see different examples in the docs with both &quot;Darwin&quot; and &quot;darwin&quot;.</p>
+<p>I'm confused whether this is a bug or not because I do see some normalization logic in https://github.com/astral-sh/uv/blob/00efde06b61756f0f305fcf67b12db71a29063d3/crates/uv-pep508/src/marker/algebra.rs#L293. But that logic is supposed to normalize &quot;Darwin&quot; do &quot;darwin&quot;, so &quot;darwin&quot; should have worked just fine.</p>
+<h3>Platform</h3>
+<p>Darwin 24.5.0 arm64</p>
+<h3>Version</h3>
+<p>0.8.3 (7e78f54e7 2025-07-24)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @amcandio on 2025-07-29 05:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-31 02:02</div>
+            <div class="timeline-body"><p>Yes, that marker is case sensitive. We don't control it, so we have to respect the way it works when Python reports it (<code>import platform; platform.system()</code>).</p>
+<p>You might be misreading the code in the marker algebra. It normalizes <code>platform_system == &quot;Darwin&quot;</code> to <code>sys_platform == &quot;darwin&quot;</code>. Those are not the same markers; it's not just converting to lower-case, it's converting from <code>platform_system</code> to <code>sys_platform</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-31 02:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-07-31 02:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amcandio">@amcandio</a> on 2025-07-31 02:28</div>
+            <div class="timeline-body"><p>Thanks for the clarification Charlie!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

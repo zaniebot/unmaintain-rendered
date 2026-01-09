@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff server` fails to start server - astral-sh/ruff #19989</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff server` fails to start server</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19989">#19989</a>
+        opened by <a href="https://github.com/Peiffap">@Peiffap</a>
+        on 2025-08-19 15:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Peiffap">@Peiffap</a> on 2025-08-19 15:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Running <code>ruff server</code> then pressing &quot;Enter&quot; gives me the following:</p>
+<pre><code class="language-zsh">~
+❯ ruff server
+
+ruff failed
+  Cause: Failed to start server
+  Cause: disconnected channel
+</code></pre>
+<p>I'm not sure what the expected response is, but I came across this when trying to debug why the <code>ruff</code> LSP doesn't work in the Zed editor for me, i.e. the <code>ruff</code> server always crashes, with the following log:</p>
+<pre><code>Language server ruff:
+
+failed to spawn command. path: &quot;/Users/gillespeiffer/Library/Application Support/Zed/extensions/work/ruff/Users/gillespeiffer/.local/bin/ruff&quot;, working directory: &quot;/Users/gillespeiffer/Documents/foss/networkx&quot;, args: [&quot;server&quot;]
+-- stderr--
+</code></pre>
+<p>Other possibly useful info:</p>
+<pre><code class="language-zsh">~
+❯ uv tool install ruff@latest
+Resolved 1 package in 73ms
+Audited 1 package in 0.43ms
+Installed 1 executable: ruff
+~
+❯ which ruff
+/Users/gillespeiffer/.local/bin/ruff
+
+~
+❯ ruff version
+ruff 0.12.9 (ef422460d 2025-08-14)
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.9 (ef422460d 2025-08-14)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-19 15:30</div>
+            <div class="timeline-body"><p>I can reproduce this (pressing Enter causing the server to fail), but I think the server is expecting some kind of startup message from the LSP client, not an empty line. That seems to be the case with 0.12.0 too, which was just the last version in my <code>uvx</code> shell history. So I don't think that's a good proxy for the Zed issue.</p>
+<p>Does Zed let you set any additional flags or environment variables? 0.12.9 seems to be working fine for me in VS Code, but maybe some of the <a href="https://github.com/astral-sh/ruff-vscode?tab=readme-ov-file#troubleshooting">troubleshooting</a> information from <code>ruff-vscode</code> would help here too, if you can set similar options in Zed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-08-19 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Peiffap">@Peiffap</a> on 2025-08-19 15:34</div>
+            <div class="timeline-body"><p>While I investigate that troubleshooting page, do you have something I could enter <em>instead</em> of an empty line that you would expect not to fail?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-19 15:47</div>
+            <div class="timeline-body"><p>No, I was experimenting with that myself, but I'm not having any luck coming up with valid input. I think if it starts up and waits for input (i.e. before you press enter), that's already a good sign. The easiest way to debug from there is to enable logging within the editor, as far as I know.</p>
+<p>I also tested this in Zed in the meantime, and 0.12.9 woks fine for me, starting up correctly and showing diagnostics.</p>
+<p>Does  invoking the ruff binary from the Zed log work for you? It looks different from the output of <code>which ruff</code> in your output above:</p>
+<pre><code>/Users/gillespeiffer/Library/Application Support/Zed/extensions/work/ruff/Users/gillespeiffer/.local/bin/ruff
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Peiffap">@Peiffap</a> on 2025-08-19 15:59</div>
+            <div class="timeline-body"><p>Thanks for working on this with me! I agree it's probably a good sign if the language server waits for input. That might've been a red herring for the issue with Zed. By the way, I'm trying to figure out the logging on Zed but it's not working the way I expect it to.
+Your question about the ruff binary from the Zed log might explain this somewhat. Invoking the binary from the Zed log does not work, and I think any settings I pass to <code>ruff</code> are therefore ignored (which explains why I'm unable to set the <code>logLevel</code> to <code>&quot;debug&quot;</code>, IIUC). I'm not sure how to make sure the right ruff binary (i.e. the one in <code>which ruff</code>) is used.</p>
+<p>What does (the relevant part of) your Zed <code>settings.json</code> look like?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-19 16:12</div>
+            <div class="timeline-body"><p>No problem! I was a bit surprised that <code>ruff server</code> just crashed on unexpected input. I've never tried that either :)</p>
+<p>I must admit I don't use Zed much, so it looks like I don't have any Ruff-specific config. My only LSP config is for rust-analyzer, which I think must have been default somehow:</p>
+<pre><code class="language-json">{
+  &quot;telemetry&quot;: {
+    &quot;metrics&quot;: false,
+    &quot;diagnostics&quot;: false
+  },
+  &quot;vim_mode&quot;: true,
+  &quot;ui_font_size&quot;: 16,
+  &quot;buffer_font_size&quot;: 16,
+  &quot;theme&quot;: {
+    &quot;mode&quot;: &quot;system&quot;,
+    &quot;light&quot;: &quot;One Light&quot;,
+    &quot;dark&quot;: &quot;One Dark&quot;
+  },
+  &quot;lsp&quot;: {
+    &quot;rust-analyzer&quot;: {
+      &quot;initialization_options&quot;: {
+        &quot;cargo&quot;: {
+          &quot;features&quot;: &quot;all&quot;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p>This is my startup logging from Ruff in Zed's Log buffer:</p>
+<pre><code>2025-08-19T11:32:12-04:00 INFO  [project::lsp_store] attempting to start language server &quot;ruff&quot;, path: &quot;/home/brent/astral/ruff&quot;, id: 5
+2025-08-19T11:32:12-04:00 INFO  [project::lsp_store] Refreshing workspace configurations for servers {}
+2025-08-19T11:32:18-04:00 INFO  [lsp] starting language server process. binary path: &quot;/home/brent/.local/share/zed/extensions/work/ruff/ruff-0.12.9/ruff-x86_64-unknown-linux-gnu/ruff&quot;, working directory: &quot;/home/brent/astral/ruff&quot;, args: [&quot;server&quot;]
+</code></pre>
+<p>And invoking that binary directly does seem to work for me:</p>
+<pre><code class="language-shell">$ /home/brent/.local/share/zed/extensions/work/ruff/ruff-0.12.9/ruff-x86_64-unknown-linux-gnu/ruff --version
+ruff 0.12.9
+</code></pre>
+<p>I also forgot to mention our <a href="https://docs.astral.sh/ruff/editors/setup/#zed">Zed</a>-specific documentation, although I don't seen an option for setting the path there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-19 16:17</div>
+            <div class="timeline-body"><p>I also found this Zed discussion: https://github.com/zed-industries/zed/discussions/6669, which has a lot of different tips throughout the thread, but nothing that immediately stands out as relevant here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-19 16:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Running ruff server then pressing &quot;Enter&quot; gives me the following:</p>
+</blockquote>
+<p>This is expected. The server uses stdin/stdout for the client/server communication.</p>
+<p>I do use Zed on a regular basis and haven't had any issues with ruff.</p>
+<blockquote>
+<p><code>/Users/gillespeiffer/Library/Application Support/Zed/extensions/work/ruff/Users/gillespeiffer/.local/bin/ruff</code></p>
+</blockquote>
+<p>Can you try running <code>/Users/gillespeiffer/Library/Application Support/Zed/extensions/work/ruff/Users/gillespeiffer/.local/bin/ruff version</code></p>
+<p>Can you also share your zed configuration</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Peiffap">@Peiffap</a> on 2025-08-21 16:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you try running <code>/Users/gillespeiffer/Library/Application Support/Zed/extensions/work/ruff/Users/gillespeiffer/.local/bin/ruff version</code></p>
+</blockquote>
+<p>This file does not exist. <code>/Users/gillespeiffer/Library/Application Support/Zed/extensions/work/ruff/</code> only has 1 subdirectory path, <code>ruff-0.12.2/ruff-x86_64-apple-darwin/ruff</code> (<code>12.2</code> is not the version of <code>ruff</code> I am accessing from the terminal itself, but that's probably another issue still). The final <code>ruff</code> is just the executable.</p>
+<hr />
+<blockquote>
+<p>Can you also share your zed configuration</p>
+</blockquote>
+<details> 
+
+<pre><code class="language-json">// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  &quot;features&quot;: {
+    &quot;edit_prediction_provider&quot;: &quot;zed&quot;
+  },
+  &quot;edit_predictions&quot;: {
+    &quot;mode&quot;: &quot;eager&quot;,
+    &quot;copilot&quot;: {
+      &quot;proxy&quot;: null,
+      &quot;proxy_no_verify&quot;: null,
+      &quot;enterprise_uri&quot;: null
+    },
+    &quot;enabled_in_text_threads&quot;: false
+  },
+  &quot;language_models&quot;: {
+    &quot;copilot_chat&quot;: {
+      &quot;api_url&quot;: &quot;https://api.githubcopilot.com/chat/completions&quot;,
+      &quot;auth_url&quot;: &quot;https://api.github.com/copilot_internal/v2/token&quot;,
+      &quot;models_url&quot;: &quot;https://api.githubcopilot.com/models&quot;
+    }
+  },
+  &quot;agent&quot;: {
+    &quot;model_parameters&quot;: [],
+    &quot;default_model&quot;: {
+      &quot;provider&quot;: &quot;copilot_chat&quot;,
+      &quot;model&quot;: &quot;gpt-4.1&quot;
+    }
+  },
+  &quot;ui_font_size&quot;: 16,
+  &quot;buffer_font_size&quot;: 16,
+  &quot;theme&quot;: {
+    &quot;mode&quot;: &quot;system&quot;,
+    &quot;light&quot;: &quot;One Light&quot;,
+    &quot;dark&quot;: &quot;Gruvbox Dark Soft&quot;
+  },
+  &quot;languages&quot;: {
+    &quot;TOML&quot;: {
+      &quot;format_on_save&quot;: &quot;off&quot;
+    },
+    &quot;JSON&quot;: {
+      &quot;format_on_save&quot;: &quot;off&quot;
+    },
+    &quot;Python&quot;: {
+      &quot;language_servers&quot;: [&quot;pyright&quot;, &quot;ruff&quot;],
+      &quot;format_on_save&quot;: &quot;on&quot;,
+      &quot;formatter&quot;: [
+        {
+          &quot;language_server&quot;: {
+            &quot;name&quot;: &quot;ruff&quot;
+          }
+        }
+      ]
+    }
+  },
+  &quot;lsp&quot;: {
+    &quot;pyright&quot;: {
+      &quot;settings&quot;: {
+        &quot;python.analysis&quot;: {
+          &quot;diagnosticMode&quot;: &quot;workspace&quot;,
+          &quot;typeCheckingMode&quot;: &quot;on&quot;
+        },
+        &quot;python&quot;: {
+          &quot;pythonPath&quot;: &quot;.venv/bin/python&quot;
+        }
+      }
+    },
+    &quot;ruff&quot;: {
+      &quot;settings&quot;: {
+        &quot;logLevel&quot;: &quot;debug&quot;,
+        &quot;logFile&quot;: &quot;ruff.log&quot;
+      }
+    }
+  }
+}
+</code></pre>
+</details>
+
+<hr />
+<p>This appears to be some issue with where my <code>Zed</code> config is trying to find <code>ruff</code> as opposed to a problem with <code>ruff</code> itself. Happy to close the issue if the <code>ruff server</code> crash is expected behavior! Thanks guys.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-21 17:35</div>
+            <div class="timeline-body"><blockquote>
+<p>This appears to be some issue with where my Zed config is trying to find ruff as opposed to a problem with ruff itself.</p>
+</blockquote>
+<p>Yeah, it looks like the Zed extension failed to download Ruff but then still tries to run it? You could try deleting that directory and see if Zed redownloads Ruff</p>
+<blockquote>
+<p>Happy to close the issue if the ruff server crash is expected behavior!</p>
+</blockquote>
+<p>I'm not sure what you mean by the crash. Do you mean this</p>
+<pre><code> ruff server
+
+ruff failed
+  Cause: Failed to start server
+  Cause: disconnected channel
+</code></pre>
+<p>Yes, that's expected behavior (the server expects an open stdin/stdout channel)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Peiffap">@Peiffap</a> on 2025-08-21 21:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, it looks like the Zed extension failed to download Ruff but then still tries to run it? You could try deleting that directory and see if Zed redownloads Ruff</p>
+</blockquote>
+<p>It &quot;downloads&quot; an empty directory when I try to install the <code>ruff</code> extension from Zed after deleting.</p>
+<blockquote>
+<p>Do you mean this</p>
+</blockquote>
+<p>Yes, apologies for not being clear!</p>
+<hr />
+<p>Thanks guys!
+I'll figure out the Zed issue on my own; let's see if a fresh install fixes things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Peiffap on 2025-08-21 21:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

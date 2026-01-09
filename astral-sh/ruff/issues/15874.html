@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP032 has many false positives and incorrect fixes - astral-sh/ruff #15874</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP032 has many false positives and incorrect fixes</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15874">#15874</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-02-01 19:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-02-01 19:14</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/f-string/"><code>f-string</code> (UP032)</a> has many false positives and incorrect fixes in Ruff 0.9.4. They could be considered multiple unrelated bugs but it might be more useful to reconsider the rule holistically.</p>
+<p>With <code>str.format</code>, all the arguments are evaluated before any are formatted, but in an f-string, each argument is formatted immediately after it is evaluated. If formatting an argument has a side effect that affects a later argument, switching to an f-string can change the program’s behavior.</p>
+<pre><code class="language-console">$ cat &gt;up032_0.py &lt;&lt;'# EOF'
+from collections import defaultdict
+d = defaultdict(list)
+print(&quot;{[x]} {}&quot;.format(d, len(d)))
+# EOF
+
+$ python up032_0.py
+[] 0
+
+$ ruff --isolated check --select UP032 up032_0.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat up032_0.py
+from collections import defaultdict
+d = defaultdict(list)
+print(f&quot;{d['x']} {len(d)}&quot;)
+
+$ python up032_0.py
+[] 1
+</code></pre>
+<p>The fix can change the program’s behavior by removing an argument with a side effect.</p>
+<pre><code class="language-console">$ cat &gt;up032_1.py &lt;&lt;'# EOF'
+print(&quot;{1}&quot;.format(x := 1, x))
+# EOF
+
+$ python up032_1.py
+1
+
+$ ruff --isolated check --select UP032 up032_1.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat up032_1.py
+print(f&quot;{x}&quot;)
+
+$ python up032_1.py 2&gt;&amp;1 | tail -n 1
+NameError: name 'x' is not defined
+</code></pre>
+<p>Another example of a behavior change:</p>
+<pre><code class="language-console">$ cat &gt;up032_2.py &lt;&lt;'# EOF'
+print(&quot;1&quot;.format(1 / 0))
+# EOF
+
+$ python up032_2.py 2&gt;&amp;1 | tail -n 1
+ZeroDivisionError: division by zero
+
+$ ruff --isolated check --select UP032 up032_2.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat up032_2.py
+print(&quot;1&quot;)
+
+$ python up032_2.py
+1
+</code></pre>
+<p>The fix assumes the attribute name in a replacement field is an identifier. When the attribute is not an identifier, the correct fix would involve <code>getattr</code>, in which case switching to an f-string might not be an improvement to readability. When the attribute name happens to be valid syntax, as in the following example, the program might continue running with different behavior; otherwise, you get #7074.</p>
+<pre><code class="language-console">$ cat &gt;up032_3.py &lt;&lt;'# EOF'
+from types import SimpleNamespace
+x = SimpleNamespace(**{&quot; a&quot;: &quot;success&quot;, &quot;a&quot;: &quot;failure&quot;})
+print(&quot;{. a}&quot;.format(x))
+# EOF
+
+$ python up032_3.py
+success
+
+$ ruff --isolated check --select UP032 up032_3.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat up032_3.py
+from types import SimpleNamespace
+x = SimpleNamespace(**{&quot; a&quot;: &quot;success&quot;, &quot;a&quot;: &quot;failure&quot;})
+print(f&quot;{x. a}&quot;)
+
+$ python up032_3.py
+failure
+</code></pre>
+<p>The fix parses an argument index between braces using Rust’s <code>usize::from_str</code>, which allows a leading <code>+</code>, whereas Python’s format strings don’t. A leading <code>+</code> indicates an argument name, not an argument index.</p>
+<pre><code class="language-console">$ cat &gt;up032_4.py &lt;&lt;'# EOF'
+print(&quot;{+0}&quot;.format(0))
+# EOF
+
+$ python up032_4.py 2&gt;&amp;1 | tail -n 1
+KeyError: '+0'
+
+$ ruff --isolated check --select UP032 up032_4.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat up032_4.py
+print(f&quot;{0}&quot;)
+
+$ python up032_4.py
+0
+</code></pre>
+<p>The fix ought to parenthesize certain arguments that contain colons lest the colons be interpreted as indicating format specifiers.</p>
+<pre><code class="language-console">$ cat &gt;up032_5.py &lt;&lt;'# EOF'
+print(&quot;{}&quot;.format(x := 1))
+# EOF
+
+$ python up032_5.py
+1
+
+$ ruff --isolated check --select UP032 up032_5.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat up032_5.py
+print(f&quot;{x := 1}&quot;)
+
+$ python up032_5.py 2&gt;&amp;1 | tail -n 1
+NameError: name 'x' is not defined
+</code></pre>
+<p>A misinterpreted colon can also cause a reverted syntax error.</p>
+<pre><code class="language-console">$ cat &gt;up032_6.py &lt;&lt;'# EOF'
+print(&quot;&lt;lambda&gt;&quot; in &quot;{}&quot;.format(lambda: 1))
+# EOF
+
+$ python up032_6.py
+True
+
+$ ruff --isolated check --select UP032 up032_6.py --diff
+
+error: Fix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BFix%20error%5D
+
+...quoting the contents of `up032_6.py`, the rule codes UP032, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+
+</code></pre>
+<p>A reverted syntax error can also result from misinterpreted braces.</p>
+<pre><code class="language-console">$ cat &gt;up032_7.py &lt;&lt;'# EOF'
+print(&quot;{}&quot;.format({} | {}))
+# EOF
+
+$ python up032_7.py
+{}
+
+$ ruff --isolated check --select UP032 up032_7.py --diff 2&gt;&amp;1 | grep quoting
+...quoting the contents of `up032_7.py`, the rule codes UP032, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+</code></pre>
+<p>A reverted syntax error can also result from misinterpreted quotation marks.</p>
+<pre><code class="language-console">$ cat &gt;up032_8.py &lt;&lt;'# EOF'
+x = {&quot;'&quot;: &quot;success&quot;}
+print(&quot;{[']}&quot;.format(x))
+# EOF
+
+$ python up032_8.py
+success
+
+$ ruff --isolated check --select UP032 up032_8.py --diff 2&gt;&amp;1 | grep quoting
+...quoting the contents of `up032_8.py`, the rule codes UP032, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+</code></pre>
+<p>Given an invalid conversion flag, the fix converts a <code>ValueError</code> to a syntax error. There is no reasonable way to avoid a behavior change for this kind of broken input, so this is a false positive: the rule should ignore it.</p>
+<pre><code class="language-console">$ cat &gt;up032_9.py &lt;&lt;'# EOF'
+&quot;{!?}&quot;.format(0)
+# EOF
+
+$ python up032_9.py 2&gt;&amp;1 | tail -n 1
+ValueError: Unknown conversion specifier ?
+
+$ ruff --isolated check --select UP032 up032_9.py --diff 2&gt;&amp;1 | grep quoting
+...quoting the contents of `up032_9.py`, the rule codes UP032, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-01 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-02-01 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16093.html">astral-sh/ruff#16093</a> on 2025-02-11 06:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

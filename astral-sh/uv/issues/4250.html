@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escalate some `tool.uv.pip` configuration options to the project API - astral-sh/uv #4250</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Escalate some `tool.uv.pip` configuration options to the project API</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4250">#4250</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-06-11 19:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-11 19:41</div>
+            <div class="timeline-body"><p>Right now, we don't read anything from <code>tool.uv.pip</code> in <code>uv lock</code>, <code>uv sync</code>, or <code>uv run</code>.</p>
+<p>We either need to read from <code>tool.uv.pip</code>, <em>or</em> read from <code>tool.uv.pip</code> but prune it down, <em>or</em> escalate some options to <code>tool.uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-11 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-06-11 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-06-11 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-12 15:08</div>
+            <div class="timeline-body"><p>There are a few options here with different considerations, like:</p>
+<ul>
+<li>We may want to evolve the configuration schema for the Project API over time in a way that doesn't fit the pip API (e.g., we might want to change the arguments to <code>only-binary</code>, or the way that indexes are managed, but it's nice to have those match pip's interface for <code>uv pip</code>).</li>
+<li>It could be confusing if <code>uv sync</code> and <code>uv pip install</code> behaved differently (e.g., if they read from different indexes).</li>
+</ul>
+<p>I genuinely have no idea what to do here because these create conflicting goals: we <em>might</em> want to change the schema in the future for the Project API, but if we do that, then by definition we lose unified configuration across the Project and pip APIs.</p>
+<p>Some options...</p>
+<h3>Duplicate a subset of the <code>tool.uv.pip</code> arguments under <code>tool.uv.project</code>.</h3>
+<p>This would give us the flexibility to evolve the schemas entirely independently. The downside is that you'd need to repeat any configuration between the two, if you have a workflow that requires use of both APIs.</p>
+<p>If we choose to add new configuration to the Project API in the future, then we go through a normal deprecation pattern: deprecate (e.g.) <code>tool.uv.project.only-binary</code>, and add a new thing.</p>
+<h3>Read the <code>tool.uv.pip</code> arguments from the Project API.</h3>
+<p>Then, <code>pip.index-url</code> would &quot;just work&quot; for all invocations.</p>
+<p>If we decide to evolve the <code>only-binary</code> schema in the future, we could add new configuration options under <code>tool.uv.project</code> and deprecate reading from <code>tool.uv.pip</code> (e.g., ignore <code>pip.only-binary</code> if you have configuration defined under <code>project</code>). But then we have divergent configuration that isn't respected across the two commands, so it just puts us back in the same position as above... However, it's forwards-compatible: we can add new settings in the future once we've worked out the APIs we want.</p>
+<h3>Escalate a subset of the <code>tool.uv.pip</code> arguments to <code>tool.uv</code>.</h3>
+<p>This also has the nice property that you can define your configuration once. But it has the downside that if we later add some configuration that is specific to the project API, it's not clear from the schema that those APIs <em>don't</em> apply to the pip API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-12 15:15</div>
+            <div class="timeline-body"><p>If it's likely that configuration will deviate between these two APIs, then we should do the first thing or even the second thing for now (and then deprecate reading from <code>tool.uv.pip</code> in the future).</p>
+<p>If it's <em>unlikely</em>, and we want to commit to maintaining compatibility and unified configuration between the Project and pip APIs, then I think we do the third thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-12 15:34</div>
+            <div class="timeline-body"><p>Yeah, I think <code>only-binary</code> is a great example of something I don't want to support in the way that <code>pip</code> does and a very compelling reason to do something different, e.g. I think we should use <code>no-build-package</code>/ <code>no-build</code> instead which matches our other options. Index configuration is similar, in that pip's options are very ambiguous but different in that we don't have a clear design for a better interface (and creating one will take time) so we probably need to support <code>index-url</code> and <code>extra-index-url</code> then discourage use in the future.</p>
+<p>I feel quite strongly that reading from <code>tool.uv.pip</code> outside of <code>uv pip</code> would be very confusing. It blurs the boundary of the namespace. How would we frame this to users? &quot;uv supports reading pip-compatible options from the <code>uv.pip</code> section&quot;?</p>
+<p>I think a mix of the first and third options makes the most sense to me.</p>
+<ul>
+<li>Options that are needed in the project API and overlap with the pip API today should be placed in the top-level namespace. These options can use different syntax than supported by pip. We'll continue to support the <code>uv.pip</code>-level declarations if we change the syntax but those will only affect <code>uv pip</code>. If we keep the same syntax, should we deprecate the <code>uv.pip</code> option?</li>
+<li>Options that are needed in the project API but should not be used in the pip API and could be construed to apply to the pip API should probably go in the <code>uv.project</code> namespace. If it's pretty obvious that they don't apply to the pip API, I feel like they could go in the top-level. I don't have a good example of this yet.</li>
+<li>Options that are needed in the project API <em>and</em> another new API like the tool API should probably go in the top-level regardless of their relevant to the pip API. There may be some confusion if they don't apply to the pip API but duplicating things across <code>uv.project</code> and <code>uv.tool</code> seems even worse?</li>
+</ul>
+<p>A compelling case for me here is: if you configure <code>uv.pip</code> at the user-level then the workspace-level <code>uv</code> top-level options should clearly take precedence for all the new uv commands. I'd be really confused if <code>uv sync</code> used <code>uv.pip</code> options in this scenario.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-12 15:57</div>
+            <div class="timeline-body"><p>Ok, for now, how about this:</p>
+<ul>
+<li>We move anything that's needed globally up to the top-level. For now, it would be roughly these:</li>
+</ul>
+<pre><code>index_url: Option&lt;IndexUrl&gt;,
+extra_index_url: Option&lt;Vec&lt;IndexUrl&gt;&gt;,
+no_index: Option&lt;bool&gt;,
+find_links: Option&lt;Vec&lt;FlatIndexLocation&gt;&gt;,
+index_strategy: Option&lt;IndexStrategy&gt;,
+keyring_provider: Option&lt;KeyringProviderType&gt;,
+resolution: Option&lt;ResolutionMode&gt;,
+prerelease: Option&lt;PreReleaseMode&gt;,
+config_settings: Option&lt;ConfigSettings&gt;,
+exclude_newer: Option&lt;ExcludeNewer&gt;,
+link_mode: Option&lt;LinkMode&gt;,
+compile_bytecode: Option&lt;bool&gt;,
+</code></pre>
+<ul>
+<li><p>When we move these to the top-level, we will deprecate the variants in <code>tool.uv.pip</code>. We might just remove them entirely and bump to <code>v0.3.0</code>. Or we'll add a deprecation warning for now.</p>
+</li>
+<li><p>If we need project-specific configuration, we will introduce <code>tool.uv.project</code>. We don't have an example of this yet though. Maybe like: &quot;The Python requirement for locking that's separate from my declared <code>Requires-Python</code>&quot; would be one.</p>
+</li>
+<li><p>We'll add <code>no_build</code> and <code>no_binary</code> settings to the top-level that match the APIs we want. We'll continue to support the variants under <code>tool.uv.pip</code> for now although we may deprecate them as persistent configuration.</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-12 16:04</div>
+            <div class="timeline-body"><blockquote>
+<p>We might just remove them entirely and bump to v0.3.0. Or we'll add a deprecation warning for now.</p>
+</blockquote>
+<p>I'd avoid a deprecation-free breaking change since people are very likely to be dependent on these options in production.</p>
+<blockquote>
+<p>Maybe like: &quot;The Python requirement for locking that's separate from my declared Requires-Python&quot; would be one.</p>
+</blockquote>
+<p>Yeah great example.</p>
+<p>The proposed list looks great, my only concern is around the index options — I think these are pretty likely to change compared to the rest. I wonder if we should isolate them into a <code>uv.network</code> / <code>uv.index</code> / <code>uv.package-index</code> section? Would that be weird? Similarly, should <code>keyring_provider</code> be moved to <code>uv.authentication</code>? I guess this generally raises the question of whether or not we should be introducing setting categories while we're moving things to avoid a future deprecation cycle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-12 16:06</div>
+            <div class="timeline-body"><p>Maybe to help inform our answer: what happens in the future if we change the index API? Do we move <code>index-url</code> back under <code>tool.uv.pip</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-12 16:14</div>
+            <div class="timeline-body"><p>I find it challenging to say because I'm not sure how the <code>index-url</code> API would change. Do you have a realistic example? I usually imagine it changing in the project <code>sources</code> instead. I find it hard to imagine moving anything <em>back</em> to the <code>tool.uv.pip</code> interface but if we see that as a feasible situation then instead of</p>
+<blockquote>
+<p>When we move these to the top-level, we will deprecate the variants in <code>tool.uv.pip</code>.</p>
+</blockquote>
+<p>I would consider just leaving the <code>tool.uv.pip</code> variants in perpetuity and they'll take precedence over <code>tool.uv</code> when using the <code>uv pip</code> interface. I feel like moving something out then back into <code>tool.uv.pip</code> would be too much whiplash. We might want to leave these variants around forever so we have the freedom to change our top-level configuration without worrying about this. I think it's a good goal to have the <code>uv pip</code> interface be very stable and let the top-level interface move quickly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-12 16:16</div>
+            <div class="timeline-body"><blockquote>
+<p>I usually imagine it changing in the project sources instead.</p>
+</blockquote>
+<p>I am imagining something whereby you define named indexes in one section (like <code>tool.uv.index</code>), and then can point to them by name in <code>tool.uv.sources</code> to pin a package to an index. But you could also define a given index in <code>tool.uv.index</code> as, e.g., the primary index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-12 16:17</div>
+            <div class="timeline-body"><p>Ok, maybe the thinking is something like this, then:</p>
+<ul>
+<li>We leave all those things in <code>tool.uv.pip</code>.</li>
+<li>We escalate some of the global settings to <code>tool.uv</code> (or perhaps <code>tool.uv.index</code> and subsections).</li>
+<li>The pip API respects the global settings but prefers the <code>tool.uv.pip</code> settings.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-12 16:18</div>
+            <div class="timeline-body"><p>Ah okay that's really helpful, so I guess I see that story going something like this:</p>
+<ul>
+<li>Support <code>tool.uv.index-url</code> and <code>tool.uv.pip.index-url</code></li>
+<li>Add <code>tool.uv.indexes</code> for some new named index declaration</li>
+<li>Deprecate <code>tool.uv.index-url</code> and eventually remove</li>
+<li>Support <code>tool.uv.pip.index-url</code> forever</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-12 16:19</div>
+            <div class="timeline-body"><p>That... seems right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4294.html">astral-sh/uv#4294</a> on 2024-06-13 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-14 00:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

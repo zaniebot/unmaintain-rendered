@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv.lock` generated with `uv==0.5.18` fails to parse in `uv==0.5.19` - astral-sh/uv #10654</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv.lock` generated with `uv==0.5.18` fails to parse in `uv==0.5.19`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10654">#10654</a>
+        opened by <a href="https://github.com/chebbyChefNEQ">@chebbyChefNEQ</a>
+        on 2025-01-15 21:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chebbyChefNEQ">@chebbyChefNEQ</a> on 2025-01-15 21:48</div>
+            <div class="timeline-body"><p>error:</p>
+<pre><code>error: Failed to parse `uv.lock`
+  Caused by: TOML parse error at line 2823, column 10
+     |
+2823 | wheels = [
+     |          ^
+failed to parse `watchdog-6.0.0-py3-none-win_ia64.whl` as wheel filename: The wheel filename &quot;watchdog-6.0.0-py3-none-win_ia64.whl&quot; has an invalid platform tag: Unknown platform tag format: win_ia64
+</code></pre>
+<p>repro:</p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;watchdog==6.0.0&quot;]
+</code></pre>
+<p>command <code>rm uv.lock &amp;&amp; pip install uv==0.5.18 &amp;&amp; uv lock &amp;&amp; pip install uv==0.5.19 &amp;&amp; uv lock</code></p>
+<p>running <code>rm uv.lock &amp;&amp; pip install uv==0.5.19 &amp;&amp; uv lock</code> is successful &lt;=== <strong>This is the workaround</strong> (delete and regen the lockfile)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-15 21:48</div>
+            <div class="timeline-body"><p>Makes sense, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-15 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Drewroen">@Drewroen</a> on 2025-01-15 21:51</div>
+            <div class="timeline-body"><p>We are running into the same issue with uv 0.5.19 with both watchdog and pycryptodome as another data point</p>
+<p>Command: <code>uv sync --frozen --no-dev</code></p>
+<pre><code>0.178 Using CPython 3.11.11 interpreter at: /usr/local/bin/python3.11
+0.178 Creating virtual environment at: .venv
+0.183 error: Failed to parse `uv.lock`
+0.183   Caused by: TOML parse error at line 1403, column 10
+0.183      |
+0.183 1403 | wheels = [
+0.183      |          ^
+0.183 failed to parse `pycryptodome-3.18.0-pp27-pypy_73-manylinux2010_x86_64.whl` as wheel filename: The wheel filename &quot;pycryptodome-3.18.0-pp27-pypy_73-manylinux2010_x86_64.whl&quot; has an invalid ABI tag: Missing major version in PyPy ABI tag: pypy_73
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/donovan-sevenai">@donovan-sevenai</a> on 2025-01-15 21:55</div>
+            <div class="timeline-body"><p>Looks like this was already somewhat identified: https://github.com/astral-sh/uv/blob/main/crates/uv-resolver/src/lock/mod.rs#L308</p>
+<blockquote>
+<p>// TODO(charlie): This omits <code>win_ia64</code>, which is accepted by Warehouse.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-15 21:56</div>
+            <div class="timeline-body"><p>Omitting the tag is fine — we never supported it, so uv never would’ve selected it. The problem here is just that we can’t deserialize it from an existing lockfile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-15 21:58</div>
+            <div class="timeline-body"><p>If you delete the entry from the lockfile, it should solve the problem without any other effect (since, as Charlie said, we don't support selecting those wheels anyway).</p>
+<p>We'll see if there's a reasonable way to support deserializing unknown tags from existing lockfiles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-15 22:04</div>
+            <div class="timeline-body"><p>I'll try to fix this now, sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../commaai/openpilot/pulls/34393.html">commaai/openpilot#34393</a> on 2025-01-15 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10655.html">astral-sh/uv#10655</a> on 2025-01-15 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgcrea">@mgcrea</a> on 2025-01-15 22:30</div>
+            <div class="timeline-body"><p>Hitting this as well, broke on CI (using a python:3.12 image) as it pulled the latest uv version:</p>
+<pre><code>$ pip install uv
+Collecting uv
+  Downloading uv-0.5.19-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (11 kB)
+Downloading uv-0.5.19-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (16.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.0/16.0 MB 135.2 MB/s eta 0:00:00
+Installing collected packages: uv
+Successfully installed uv-0.5.19
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable.It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+$ uv sync --frozen
+Using CPython 3.12.8 interpreter at: /usr/local/bin/python3
+Creating virtual environment at: .venv
+error: Failed to parse `uv.lock`
+  Caused by: TOML parse error at line 1085, column 10
+     |
+1085 | wheels = [
+     |          ^
+failed to parse `watchdog-6.0.0-py3-none-win_ia64.whl` as wheel filename: The wheel filename &quot;watchdog-6.0.0-py3-none-win_ia64.whl&quot; has an invalid platform tag: Unknown platform tag format: win_ia64
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-15 22:33</div>
+            <div class="timeline-body"><p>Can you please include the error message for my own records?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgcrea">@mgcrea</a> on 2025-01-15 22:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you please include the error message for my own records?</p>
+</blockquote>
+<p>done :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-15 22:41</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/10655 is up which fixes this; we'll have a release out once it's merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sunshowers">@sunshowers</a> on 2025-01-15 22:48</div>
+            <div class="timeline-body"><p>Thanks for the easy workaround btw! Removing the win_ia64 wheel was quite easy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-15 22:50</div>
+            <div class="timeline-body"><p>Thanks for confirming @sunshowers and sorry for the disruption.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../developmentseed/obstore/pulls/148.html">developmentseed/obstore#148</a> on 2025-01-15 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-15 23:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10661.html">astral-sh/uv#10661</a> on 2025-01-15 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jj-vcs/jj/pulls/5375.html">jj-vcs/jj#5375</a> on 2025-01-16 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ethereum/execution-spec-tests/issues/1084.html">ethereum/execution-spec-tests#1084</a> on 2025-01-16 09:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New simplify rule: use `sum` over `len` + `if` - astral-sh/ruff #13050</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>New simplify rule: use `sum` over `len` + `if`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13050">#13050</a>
+        opened by <a href="https://github.com/janosh">@janosh</a>
+        on 2024-08-22 09:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/janosh">@janosh</a> on 2024-08-22 09:34</div>
+            <div class="timeline-body"><pre><code class="language-py">len([val for val in iterable if cond(val)]) # bad
+
+sum(cond(val) for val in iterable) # good
+</code></pre>
+<p>example</p>
+<pre><code class="language-py">len([i**2 for i in range(10) if i**2 &lt; 36])  # bad
+&gt;&gt;&gt; 6
+sum(i**2 &lt; 36 for i in range(10))  # good
+&gt;&gt;&gt; 6
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-08-22 18:40</div>
+            <div class="timeline-body"><p>Your example suggests using the sum of a generator over the length of a list comprehension. Not sure if this was deliberate, but if this rule were to be accepted, it should probably persist iterable type given the discourse (#10838).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/janosh">@janosh</a> on 2024-08-22 19:31</div>
+            <div class="timeline-body"><p>That was deliberate. I would always prefer generator for brevity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2024-08-23 03:34</div>
+            <div class="timeline-body"><p>Randomly join the conversation wonderful work Janosh, but we should also be aware of the slight performance penalty for the <code>sum</code> method.</p>
+<p>With script:</p>
+<pre><code class="language-python">import timeit
+
+
+def condition(val):
+    return True if val % 2 else False
+
+
+for seq_len in (10, 100, 1000, 10000, 100000):
+    sequence = list(range(seq_len))
+
+    execution_time_a = timeit.timeit(
+        'len([val for val in sequence if condition(val)])',
+        globals=globals(), number=1000
+    )
+
+    execution_time_b = timeit.timeit(
+        'sum(condition(val) for val in sequence)',
+        globals=globals(), number=1000
+    )
+
+    print(f&quot;Run time of length {seq_len}:&quot;)
+    print(f&quot;With len if: {execution_time_a:.4f}&quot;)
+    print(f&quot;With sum: {execution_time_b:.4f}&quot;)
+    print(f&quot;Ratio: {execution_time_a / execution_time_b:.4f}\n&quot;)
+</code></pre>
+<p>I got (Python 3.12.5, MacOS 14.6.1, M3 chip):</p>
+<pre><code>Run time of length 10:
+With len if: 0.0005
+With sum: 0.0007
+Ratio: 0.6783
+
+Run time of length 100:
+With len if: 0.0042
+With sum: 0.0054
+Ratio: 0.7937
+
+Run time of length 1000:
+With len if: 0.0321
+With sum: 0.0345
+Ratio: 0.9320
+
+Run time of length 10000:
+With len if: 0.2593
+With sum: 0.3485
+Ratio: 0.7441
+
+Run time of length 100000:
+With len if: 2.6005
+With sum: 3.4534
+Ratio: 0.7530
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-08-23 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @dhruvmanila on 2024-08-23 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-08-23 09:52</div>
+            <div class="timeline-body"><p>Running the same script on Python 3.12 with a sum of a list comprehension (<code>sum([condition(val) for val in sequence)]</code>) narrows the difference and is sometimes faster.</p>
+<pre><code>Run time of length 10:
+With len if: 0.0006
+With sum: 0.0007
+Ratio: 0.8689
+
+Run time of length 100:
+With len if: 0.0048
+With sum: 0.0052
+Ratio: 0.9311
+
+Run time of length 1000:
+With len if: 0.0380
+With sum: 0.0341
+Ratio: 1.1151
+
+Run time of length 10000:
+With len if: 0.3036
+With sum: 0.3147
+Ratio: 0.9647
+
+Run time of length 100000:
+With len if: 3.0352
+With sum: 3.1247
+Ratio: 0.9713
+</code></pre>
+<p>On 3.9,</p>
+<pre><code>Run time of length 10:
+With len if: 0.0008
+With sum: 0.0008
+Ratio: 0.9064
+
+Run time of length 100:
+With len if: 0.0062
+With sum: 0.0067
+Ratio: 0.9225
+
+Run time of length 1000:
+With len if: 0.0456
+With sum: 0.0442
+Ratio: 1.0327
+
+Run time of length 10000:
+With len if: 0.3862
+With sum: 0.4296
+Ratio: 0.8991
+
+Run time of length 100000:
+With len if: 3.8578
+With sum: 4.2645
+Ratio: 0.9047
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2024-08-23 10:05</div>
+            <div class="timeline-body"><p>Thanks a lot for the input @tjkuson. Interestingly my previous results were also generated with Python 3.12 on MacOS 14.6.1 with M3 chip (sorry I forgot to mention these details, would update the results).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sort imports: zoneinfo ends up in 3rd party section - astral-sh/ruff #14021</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Sort imports: zoneinfo ends up in 3rd party section</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14021">#14021</a>
+        opened by <a href="https://github.com/minusf">@minusf</a>
+        on 2024-10-31 15:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/minusf">@minusf</a> on 2024-10-31 15:39</div>
+            <div class="timeline-body"><p>I am a bit confused about <code>zoneinfo</code> ending up behind <code>requests</code>:</p>
+<pre><code>% ruff --version
+ruff 0.7.1
+
+% cat .config/ruff/pyproject.toml
+[tool.ruff]
+line-length = 100
+extend-exclude = [
+  &quot;**/migrations/*.py&quot;,
+]
+[tool.ruff.lint]
+preview = true
+select = [
+  &quot;A&quot;,      # https://pypi.org/project/flake8-builtins/
+  &quot;B&quot;,      # https://pypi.org/project/flake8-bugbear/
+  &quot;C4&quot;,     # https://pypi.org/project/flake8-comprehensions/
+  &quot;C90&quot;,    # https://pypi.org/project/mccabe/
+  &quot;DJ&quot;,     # https://pypi.org/project/flake8-django/
+  &quot;DTZ&quot;,    # https://pypi.org/project/flake8-datetimez/
+  &quot;E&quot;, &quot;W&quot;, # https://pypi.org/project/pycodestyle/
+  &quot;F&quot;,      # https://pypi.org/project/pyflakes/
+  &quot;FURB&quot;,   # https://pypi.org/project/refurb/
+  &quot;G&quot;,      # https://pypi.org/project/flake8-logging-format/
+  &quot;I&quot;,      # https://pypi.org/project/isort/
+  &quot;N&quot;,      # https://pypi.org/project/pep8-naming/
+  &quot;PERF&quot;,   # https://pypi.org/project/perflint/
+  &quot;PIE&quot;,    # https://pypi.org/project/flake8-pie/
+  &quot;PL&quot;,     # https://pypi.org/project/pylint/
+  &quot;PT&quot;,     # https://pypi.org/project/flake8-pytest-style/
+  &quot;PTH&quot;,    # https://pypi.org/project/flake8-use-pathlib/
+  &quot;RET&quot;,    # https://pypi.org/project/flake8-return/
+  &quot;RUF&quot;,    # Ruff-specific rules
+  &quot;S&quot;,      # https://pypi.org/project/flake8-bandit/
+  &quot;SIM&quot;,    # https://pypi.org/project/flake8-simplify/
+  &quot;UP&quot;,     # https://pypi.org/project/pyupgrade/
+]
+ignore = [
+  &quot;RUF012&quot;,   # https://docs.astral.sh/ruff/rules/mutable-class-default/
+  &quot;S101&quot;,     # https://docs.astral.sh/ruff/rules/assert/
+  &quot;PLR6301&quot;,  # https://docs.astral.sh/ruff/rules/no-self-use/
+  &quot;F401&quot;,     # just for this test
+]
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+[tool.ruff.lint.isort]
+lines-between-types = 1
+section-order = [&quot;future&quot;, &quot;standard-library&quot;, &quot;third-party&quot;, &quot;django&quot;, &quot;wagtail&quot;, &quot;first-party&quot;, &quot;local-folder&quot;]
+[tool.ruff.lint.isort.sections]
+&quot;django&quot; = [&quot;django&quot;]
+&quot;wagtail&quot; = [&quot;wagtail&quot;]
+
+% cat test.py
+import datetime
+import logging
+import os
+import zoneinfo
+
+from time import sleep
+
+import requests
+
+% ruff check test.py
+test.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+  |
+1 | / import datetime
+2 | | import logging
+3 | | import os
+4 | | import zoneinfo
+5 | |
+6 | | from time import sleep
+7 | |
+8 | | import requests
+  |
+  = help: Organize imports
+
+% ruff check --fix test.py
+Found 1 error (1 fixed, 0 remaining).
+
+% cat test.py
+import datetime
+import logging
+import os
+
+from time import sleep
+
+import requests
+import zoneinfo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-31 16:36</div>
+            <div class="timeline-body"><p>Sorry for the confusion here.</p>
+<p>This is because you don't set <a href="https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#python-requires"><code>project.requires-python</code></a> or <a href="https://docs.astral.sh/ruff/settings/#target-version"><code>tool.ruff.target-version</code></a> in your pyproject.toml configuration file. Because neither option is set, we fall back to assuming our default Python version -- which is currently Python 3.8. <code>zoneinfo</code> was added to the standard library in Python 3.9, which means that we come to the conclusion that <code>zoneinfo</code> is <em>not</em> a standard-library import on Python 3.8, and therefore not a standard-library import in your code with <code>--target-version py38</code> (the default).</p>
+<p>I think we should probably change our default Python version in our next minor release. Until then, you can make Ruff understand that <code>zoneinfo</code> is a standard-library import in your code by setting <code>tool.ruff.target-version</code> to <code>py39</code> or higher in your <code>.config/ruff/pyproject.toml</code> file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @AlexWaygood on 2024-10-31 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @AlexWaygood on 2024-10-31 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @AlexWaygood on 2024-10-31 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/minusf">@minusf</a> on 2024-10-31 16:44</div>
+            <div class="timeline-body"><p>That makes complete sense, I overlooked this part. Thanks and closing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @minusf on 2024-10-31 16:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

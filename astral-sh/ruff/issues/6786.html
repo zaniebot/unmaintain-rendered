@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rules D100, F401, F811, ICN001 cause infinite loop error - astral-sh/ruff #6786</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rules D100, F401, F811, ICN001 cause infinite loop error</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6786">#6786</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2023-08-22 17:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2023-08-22 17:58</div>
+            <div class="timeline-body"><p>Ruff 0.0.285 (latest changes from main branch)</p>
+<pre><code>ruff  *.py --select ALL --no-cache
+</code></pre>
+<p>file content:</p>
+<pre><code>try:
+  import pandas as pa
+  import pyarrow as pa
+except ImportError:
+  pass
+</code></pre>
+<p>error:</p>
+<pre><code>error: Failed to converge after 100 iterations.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BInfinite%20loop%5D
+
+...quoting the contents of `PY_FILE_TEST_4291307560.py`, the rule codes D100, F401, F811, ICN001, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+</code></pre>
+<p><a href="https://github.com/astral-sh/ruff/files/12411494/PY_FILE_TEST_4291307560.py.zip">PY_FILE_TEST_4291307560.py.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-22 18:06</div>
+            <div class="timeline-body"><p>Oscillates between the following</p>
+<pre><code class="language-python">try:
+    import pandas as pd
+    import pyarrow as pd
+except ImportError:
+    pass
+</code></pre>
+<pre><code class="language-python">try:
+    import pandas as pa
+    import pyarrow as pa
+except ImportError:
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-22 18:07</div>
+            <div class="timeline-body"><p><code>ICN001</code> is sufficient to trigger this</p>
+<p>Probably related to https://github.com/astral-sh/ruff/blob/db1c5565083fe16b3e2c8892a39412e464b320a1/crates/ruff/src/renamer.rs#L223-L224</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Rules D100, F401, F811, ICN00 cause infinite loop error" to "Rules D100, F401, F811, ICN001 cause infinite loop error" by @qarmin on 2023-08-22 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-08-22 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @zanieb on 2023-08-22 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @zanieb on 2023-08-22 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-22 18:14</div>
+            <div class="timeline-body"><p>I think this is actually working &quot;correctly&quot; although we may want to find a way to avoid attempting the fix here. We rename the symbol within the scope, and it's shadowed here. Other editors behave the same way -- if you try to rename the second <code>pa</code> here in PyCharm, it will rename both <code>pa</code> references:</p>
+<pre><code class="language-python">try:
+    import pandas as pa
+    import pyarrow as pa
+except ImportError:
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-22 18:19</div>
+            <div class="timeline-body"><p>Hm it seems like ideally we would stop once we reach the shadowed binding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-22 18:22</div>
+            <div class="timeline-body"><p>Although that comes with other problems -- for example, this would fail:</p>
+<pre><code class="language-python">if True:
+    import pandas as pa
+else:
+    import pyarrow as pa
+</code></pre>
+<p>I <em>think</em> our behavior is correct since I see the same from PyCharm and Pylance (VS Code).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qarmin">@qarmin</a> on 2023-10-01 08:23</div>
+            <div class="timeline-body"><p>Fix no longer cause problems</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @qarmin on 2023-10-01 08:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

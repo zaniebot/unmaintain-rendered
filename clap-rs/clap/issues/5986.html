@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bash completion offers subcommand suggestions ahead of time - clap-rs/clap #5986</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bash completion offers subcommand suggestions ahead of time</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5986">#5986</a>
+        opened by <a href="https://github.com/mernen">@mernen</a>
+        on 2025-05-05 21:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mernen">@mernen</a> on 2025-05-05 21:30</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.86.0 (05f9846f8 2025-03-31)</p>
+<h3>Clap Version</h3>
+<p>v4.5.48</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{CompleteEnv, Shell};
+
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+struct Cli {
+    #[command(subcommand)]
+    action: Action,
+}
+
+#[derive(Subcommand)]
+enum Action {
+    Complete(CompleteArgs),
+}
+
+#[derive(Parser)]
+struct CompleteArgs {
+    /// The shell to generate completion for
+    #[arg(long, value_enum)]
+    shell: Shell,
+}
+
+fn main() {
+    CompleteEnv::with_factory(Cli::command).complete();
+
+    let cli = Cli::parse();
+
+    match cli.action {
+        Action::Complete(args) =&gt; {
+            let mut cmd = Cli::command();
+            let name = cmd.get_name().to_string();
+            clap_complete::generate(args.shell, &amp;mut cmd, name, &amp;mut std::io::stdout());
+        }
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ol>
+<li>Use Bash</li>
+<li><code>source &lt;(cargo run -- complete --shell bash)</code></li>
+<li>Type <code>&lt;app-name&gt; -- complete</code> in the shell (don't run it)</li>
+<li>Position caret immediately after <code>--</code> and press Tab twice</li>
+</ol>
+<h3>Actual Behaviour</h3>
+<p>Suggestions:</p>
+<pre><code>--shell  --help   </code></pre>
+<p><code>--shell</code> is only valid <em>after</em> <code>complete</code>, so it shouldn't be an option.</p>
+<h3>Expected Behaviour</h3>
+<p>Only global flags should be available in this position:</p>
+<pre><code>--help     --version  </code></pre>
+<h3>Additional Context</h3>
+<p>This also applies to nested subcommands. For example, for <a href="https://github.com/clap-rs/clap/blob/v4.5.37/clap_complete/examples/exhaustive.rs"><code>exhaustive</code></a>, <code>exhaustive ⇥ pacman</code> would suggest <code>one</code>, <code>two</code> and <code>help</code>, which are subcommands of <code>pacman</code>.</p>
+<p>The fix is to only consider <code>$COMP_WORDS</code> that come before <code>$COMP_CWORD</code>. This does not affect dynamic completion.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @mernen on 2025-05-05 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5987.html">clap-rs/clap#5987</a> on 2025-05-05 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2025-05-05 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-hard</span> added by @epage on 2025-05-05 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-05-06 15:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

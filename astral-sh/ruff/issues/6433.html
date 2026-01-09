@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`F823` false positive in ruff 0.0.283 - astral-sh/ruff #6433</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`F823` false positive in ruff 0.0.283</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6433">#6433</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2023-08-09 01:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/harupy">@harupy</a> on 2023-08-09 01:02</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h2>Command to reproduce</h2>
+<pre><code>docker run --rm python:3.8 bash -c &quot;git clone --depth=1 https://github.com/mlflow/mlflow.git &amp;&amp; cd mlflow &amp;&amp; pip install ruff &amp;&amp; ruff --show-source --select F823 .&quot;
+</code></pre>
+<h2>Result</h2>
+<pre><code>tests/sklearn/test_sklearn_autolog.py:1464:5: F823 Local variable `sklearn` referenced before assignment
+     |
+1462 |     import sklearn.linear_model
+1463 | 
+1464 |     mlflow.sklearn.autolog()
+     |     ^^^^^^ F823
+1465 |     from sklearn.metrics import roc_auc_score
+     |
+
+tests/sklearn/test_sklearn_autolog.py:1777:5: F823 Local variable `sklearn` referenced before assignment
+     |
+1776 | def test_autolog_pos_label_used_for_training_metric():
+1777 |     mlflow.sklearn.autolog(pos_label=1)
+     |     ^^^^^^ F823
+1778 | 
+1779 |     import sklearn.ensemble
+     |
+
+Found 2 errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-08-09 01:04</div>
+            <div class="timeline-body"><p>The first error is raised on this line:</p>
+<p>https://github.com/mlflow/mlflow/blob/e4192790f0a0df882a0e5d59a9be50b0468badea/tests/sklearn/test_sklearn_autolog.py#L1464</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-08-09 01:07</div>
+            <div class="timeline-body"><p>The error disappears if I replace <code>import mlflow.sklearn</code> with <code>import mlflow</code>:</p>
+<pre><code>diff --git a/tests/sklearn/test_sklearn_autolog.py b/tests/sklearn/test_sklearn_autolog.py
+index 43b77b7a2..354679571 100644
+--- a/tests/sklearn/test_sklearn_autolog.py
++++ b/tests/sklearn/test_sklearn_autolog.py
+@@ -25,7 +25,9 @@ from scipy.sparse import csr_matrix, csc_matrix
+ from mlflow.exceptions import MlflowException
+ from mlflow.models import Model, infer_signature
+ from mlflow.models.utils import _read_example
+-import mlflow.sklearn
++
++# import mlflow.sklearn
++import mlflow
+ from mlflow.entities import RunStatus
+ from mlflow.sklearn.utils import (
+     _is_metric_supported,
+
+
+&gt; ruff --select F823 .
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-08-09 01:10</div>
+            <div class="timeline-body"><p>A minimum reproduction:</p>
+<pre><code class="language-python">import sklearn.base
+import mlflow.sklearn
+
+
+def f():
+    import sklearn
+
+    mlflow
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-09 01:45</div>
+            <div class="timeline-body"><p>Thank you, I will make sure this is fixed for the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-09 01:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-09 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6435.html">astral-sh/ruff#6435</a> on 2023-08-09 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-09 02:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

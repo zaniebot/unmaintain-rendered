@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add option to use symlink in site-packages to reduce disk space usage - astral-sh/uv #11504</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add option to use symlink in site-packages to reduce disk space usage</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11504">#11504</a>
+        opened by <a href="https://github.com/tolotrasamuel">@tolotrasamuel</a>
+        on 2025-02-14 10:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tolotrasamuel">@tolotrasamuel</a> on 2025-02-14 10:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Every time I create a new project, it copies the entire package codebase into the project folder, which I find wasteful. For example, I don't want each of my projects to occupy 1 Gigabyte worth of tensorflow v2.8 disk space.</p>
+<p>In other languages, we can easily avoid this. For instance, in Node.js, we can use <code>pnpm</code> or <code>yarn berry</code>. In Dart, this functionality is built-in by default. They utilize a global cache directory and the engine refers directly to <code>~/cache/.some-language/some-package/version/files</code> (or its symlink in <code>pnpm</code>).</p>
+<p>However, I can't seem to find a way to do this in Python. I read about all the dozens of Python package manager and I tried using <code>uv</code> because this project advertise on their GitHub page:</p>
+<blockquote>
+<p>💾 Disk-space efficient, with a global cache for dependency deduplication.</p>
+</blockquote>
+<p>Unfortunately, it turns out that this was completely false and misleading. I tried it, and it only caches the package to reduce network usage the next time it is installed, but it still copies an entire instance into each project's <code>.venv</code> folder. This does not improve disk space usage at all.</p>
+<p>For example:</p>
+<pre><code class="language-bash">myproject/.venv/site-packages % du -sh * | sort -hr | head -20
+
+1.0G    tensorflow
+326M    jaxlib
+106M    mediapipe
+106M    cv2
+81M     scipy
+72M     clang
+46M     numpy
+</code></pre>
+<h2>The feature request:</h2>
+<p>Add an optional flag to make symlinks instead of copying each packages files in the .venv folder.</p>
+<p>Currently, I was able to do that manually by running on every package:</p>
+<pre><code>
+ ln -s /Users/home/.cache/uv/archive-v0/6ZKTddJrLxFRWgWPK1Rha/requests \
+      /Users/home/my-project/.venv/lib/python3.11/site-packages/requests
+
+ln -s /Users/home/.cache/uv/archive-v0/6ZKTddJrLxFRWgWPK1Rha/requests-2.32.3.dist-info \
+      /Users/home/my-project/.venv/lib/python3.11/site-packages/requests-2.32.3.dist-info
+
+</code></pre>
+<p>This will not only make this project truly <code>💾 Disk-space efficient</code> but I believe it will make installation even faster.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @tolotrasamuel on 2025-02-14 10:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tolotrasamuel">@tolotrasamuel</a> on 2025-02-14 11:33</div>
+            <div class="timeline-body"><h2>Update: I found that PDM supports it already.</h2>
+<p>https://pdm-project.org/en/latest/usage/config/#central-installation-caches</p>
+<p>I would love to use UV but unfortunately, I can't find it in the documentation if this is supported or now (and if not, whether it will planned or not) even though you wrote in your main readme page <code>&quot;💾 Disk-space efficient, with a global cache for dependency deduplication.&quot; </code>. For now, I'll have to use PDM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2025-02-14 11:56</div>
+            <div class="timeline-body"><p>@tolotrasamuel Hi! uv already stores files efficiently - it uses hardlinks by default on Linux, as documented here:
+https://docs.astral.sh/uv/reference/settings/#link-mode
+(that page can be found by searching the docs for &quot;symlink&quot;, &quot;hardlink&quot; etc)</p>
+<p>When hardlinks are used, it looks like the files are using additional space, but they are not.</p>
+<p>I would google &quot;hardlinks vs symlinks&quot; to find out more :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @zanieb on 2025-02-14 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-02-14 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-14 18:08</div>
+            <div class="timeline-body"><p>+1 to what @edmorley said. We use hardlinks which have a number of advantages over symlinks while providing the same space efficiency. It &quot;looks like&quot; the files are copied to <code>du</code>, but they share an inode. They're not duplicated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tolotrasamuel">@tolotrasamuel</a> on 2025-02-15 00:14</div>
+            <div class="timeline-body"><p>Okay, I am using Mac which explains the 1.9GB tensorflow and other packages in my projects.</p>
+<p><code>Default value: &quot;clone&quot; (macOS) or &quot;hardlink&quot; (Linux, Windows)</code></p>
+<p>Is there any reason why the default value is not consistent across all platform ? Why in macOS, it doesn't also use hardlinks by default?</p>
+<p>Then my bigger concern is this is such a great feature  of this really great package manager that you even put in your readme.md page as key highlight.</p>
+<blockquote>
+<p>Disk-space efficient, with a <a href="https://docs.astral.sh/uv/concepts/cache">global cache</a> for dependency deduplication.</p>
+</blockquote>
+<p>However, the links points to https://docs.astral.sh/uv/concepts/cache/ which explains about Network Caching.</p>
+<blockquote>
+<p>uv uses aggressive caching to avoid re-downloading (and re-building) dependencies that have already been accessed in prior runs.</p>
+</blockquote>
+<p>But tells nothing about Disk-space efficiency by avoiding dependency deduplication.</p>
+<p>In my opinion, it should points to both: network caching and disk space efficiency benefits.</p>
+<p>https://docs.astral.sh/uv/reference/settings/#link-mode</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-15 00:46</div>
+            <div class="timeline-body"><p>Because macOS uses a different file system which supports <code>clone</code></p>
+<blockquote>
+<p>Making an ordinary copy of that file involves duplicating each of its components, including copying each of its storage blocks. But APFS offers a more efficient alternative: the clone.</p>
+</blockquote>
+<p>which is like a hardlink, but superior because it will create a new copy if the file is changed in one of its locations</p>
+<blockquote>
+<p>Instead of duplicating everything, only the inode and its attributes (blue and pink) are duplicated, together with their file extent information. You can verify this by inspecting the numbers of those inodes, as they’re different, and information in the attributes such as the file’s name will also be different. There’s a flag in the file’s attributes to indicate that cloning has taken place.</p>
+<p>At first, the two cloned files share the same data blocks and extended attributes. Delete one of the clones and those components remain, as they’re still required by the other clone. But, as the two files are changed by editing, they start to drift apart.</p>
+</blockquote>
+<p><a href="https://eclecticlight.co/2024/03/20/apfs-files-and-clones/">ref</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11528.html">astral-sh/uv#11528</a> on 2025-02-15 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-15 00:52</div>
+            <div class="timeline-body"><p>I've opened https://github.com/astral-sh/uv/issues/11528 to track the requested change to the documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-15 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1495.html">astral-sh/uv#1495</a> on 2025-08-30 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10595.html">astral-sh/uv#10595</a> on 2025-08-30 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14628.html">astral-sh/uv#14628</a> on 2025-08-30 14:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package not identified as first party when name has a dash - astral-sh/ruff #16712</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Package not identified as first party when name has a dash</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16712">#16712</a>
+        opened by <a href="https://github.com/bepuca">@bepuca</a>
+        on 2025-03-13 16:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bepuca">@bepuca</a> on 2025-03-13 16:48</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>First party package is not identified as such when sorting imports if it has dashes in the name and the code is parallel to the actual package folder which has an underscore in the name. For instance, on tests files.</p>
+<p>(unsure if by design or a bug)</p>
+<h3>Context</h3>
+<ul>
+<li>I am using uv workspaces.</li>
+<li>Some of the packages have dashes in their names.</li>
+<li>I am using ruff for sorting imports</li>
+<li>A minimal folder structure</li>
+</ul>
+<pre><code class="language-text">packages/
+├── pyproject.toml
+└── example-package/
+    ├── src/
+    │   └── example_package/
+    │       ├── __init__.py
+    │       └── dummy.py
+    ├── tests/
+    │   └── test_dummy.py
+    └── pyproject.toml
+</code></pre>
+<p><strong>pyproject.toml</strong></p>
+<pre><code class="language-toml">[project]
+name = &quot;tmp-iywsagbejg&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;example_package&quot;,
+]
+
+[tool.uv.workspace]
+members = [&quot;packages/*&quot;]
+
+[tool.uv.sources]
+example_package = { workspace = true }
+
+[tool.ruff]
+lint.select = [&quot;I&quot;]
+</code></pre>
+<p><strong>example-package/pyproject.toml</strong></p>
+<pre><code class="language-toml">[project]
+name = &quot;example-package&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Example package&quot;
+dependencies = [
+    &quot;requests&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p><strong>dummy.py</strong></p>
+<pre><code class="language-python">import requests
+
+import example_package
+
+
+def myfun():
+    example_package.main()
+    print(requests.__version__)
+    return 42
+</code></pre>
+<p><strong>test_dummy.py</strong></p>
+<pre><code>import example_package
+import requests
+
+
+def test_myfun():
+    print(example_package.dummy.myfun(), requests.__version__)
+</code></pre>
+<h3>Expected</h3>
+<p>When I run:</p>
+<pre><code class="language-bash">vx ruff check --fix .
+</code></pre>
+<p>I would expect that <code>example-package</code> is always identified as first party when sorting imports and so order of imports is consistent.</p>
+<h3>Actual behavior</h3>
+<p>It is only detected as first party if inside a folder with underscores and not dashes in the name. Thus, for tests (if I want them to live outside the <code>src</code> folder) the imports are sorted differently. (see example files above)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-13 17:20</div>
+            <div class="timeline-body"><p>Thanks for the excellent write-up. I won't be able to reproduce this myself today because it's already late but I suspect this is due to Ruff defaulting the root for module resolution to the project-root (in which case it picks up <code>example-package</code>). Could you try setting the <a href="https://docs.astral.sh/ruff/settings/#src"><code>src</code> setting</a> to <code>packages/example-package/src</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-03-13 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @MichaReiser on 2025-03-13 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bepuca">@bepuca</a> on 2025-03-13 17:39</div>
+            <div class="timeline-body"><p>Thank you for the swift response @MichaReiser ! That does indeed lead to the expected behavior. But does this mean I have to add every package explicitly? Is there a way to have a &quot;generic&quot; pointer in the <code>src setting</code> so it resolves as I was expecting for all packages?</p>
+<p>For clarity, I can add that but it adds more boiler plate and potential confusion for people less familiar with it so I am curious if there is a &quot;cleaner&quot; way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-13 18:30</div>
+            <div class="timeline-body"><p>Yeah, you have to add each package manually, which is annoying. An alternative would be to add a <code>[tool.ruff]</code> section to every package's <code>pyproject.toml</code> that contains a single <code>extend = &quot;../../pyproject.toml&quot;</code> but that's somewhat silly too.</p>
+<p>Better mono repo support, especially for uv, is something that's on our mind. CC: @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">incompatibility</span> added by @MichaReiser on 2025-03-13 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">incompatibility</span> removed by @MichaReiser on 2025-03-13 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv</span> added by @MichaReiser on 2025-03-13 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bepuca">@bepuca</a> on 2025-03-14 08:35</div>
+            <div class="timeline-body"><p>Awesome! I can definitely work with that, thank you very much! From my side, the issue could be closed. I take the opportunity: you know that already but amazing work you are doing, I enjoy astral's stuff SO much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bepuca">@bepuca</a> on 2025-03-14 08:48</div>
+            <div class="timeline-body"><p>For reference, reading again the docs I realized globs are allowed, so in the end what I find quite a neat solution is at the top level <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.ruff]
+src = [&quot;packages/**/src&quot;]
+</code></pre>
+<p>That does sort imports as expected for all packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-14 08:54</div>
+            <div class="timeline-body"><p>Oh, I wasn't aware that you can use a glob for <code>src</code>. Nice find!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ty/issues/179.html">astral-sh/ty#179</a> on 2025-03-14 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/heiner">@heiner</a> on 2025-05-01 07:23</div>
+            <div class="timeline-body"><p>Note that <code>src</code> in <code>[tool.ruff]</code> doesn't help in cases where the imported module is an .so file that is built via e.g. C++ or Rust. As an example, a <code>pyproject.toml</code> could look like</p>
+<pre><code>[project]
+name = &quot;my-package&quot;
+version = &quot;0.1.0&quot;
+
+[build-system]
+build-backend = &quot;maturin&quot;
+requires = [&quot;maturin&gt;=1.0,&lt;2.0&quot;]
+
+[tool.maturin]
+bindings = &quot;pyo3&quot;
+module-name = &quot;my_package&quot;
+</code></pre>
+<p>The <code>my_package.so</code> file will be around only when the package is built. Currently this is identified as third party (even <code>my_package.pyi</code> exists).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-01 07:27</div>
+            <div class="timeline-body"><p>@heiner can you provide some more details about your project structure. What's the path to <code>my_package</code> (and the corresponding <code>pyi</code> file)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/heiner">@heiner</a> on 2025-05-01 07:44</div>
+            <div class="timeline-body"><p>Thanks for the quick response!</p>
+<p>Consider the following setup</p>
+<pre><code>$ tree
+.
+├── crates
+│   └── my-package
+│       └── pyproject.toml
+├── known.py
+├── main.py
+└── pyproject.toml
+
+3 directories, 4 files
+</code></pre>
+<p>With these contents:</p>
+<pre><code>$ cat crates/my-package/pyproject.toml
+[project]
+name = &quot;my-package&quot;
+version = &quot;0.1.0&quot;
+
+[build-system]
+build-backend = &quot;maturin&quot;
+requires = [&quot;maturin&gt;=1.0,&lt;2.0&quot;]
+
+[tool.maturin]
+bindings = &quot;pyo3&quot;
+module-name = &quot;my_package&quot;
+
+
+$ cat known.py
+
+
+$ cat main.py
+import os
+import sys
+
+import my_package
+import torch
+import unknown
+
+import known
+
+
+def main():
+    print(&quot;Hello from myexample!&quot;)
+    sys / my_package / os / unknown / torch / known
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+
+
+$ cat pyproject.toml
+[project]
+name = &quot;myexample&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = []
+
+[tool.ruff]
+src = [
+    &quot;.&quot;,
+    &quot;crates/*&quot;,
+]
+
+[tool.ruff.lint]
+preview = true
+select = [
+    &quot;I00&quot;,    # unsorted-imports, missing-required-import.
+]
+</code></pre>
+<p>(imagine there's also <code>crates/my-package/src/lib.rs</code> that implements a PyO3 package, say).</p>
+<p>The sort order here is what ruff will produce:</p>
+<pre><code>import os
+import sys
+
+import my_package
+import torch
+import unknown
+
+import known
+</code></pre>
+<p>However, <code>my_package</code> is first-party. The actual module will be produced as an .so upon building.</p>
+<p>Note that having <code>crates/my-package/my_package.pyi</code> does not change the behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-01 08:00</div>
+            <div class="timeline-body"><p>Can you try adding <code>crates/my-package</code> to <code>src</code>? Ruff can't find your package because it only searches for packages in your root (and <code>src</code> folder) but there's no <code>my-package</code> in that folder.</p>
+<p>Python requires this too to find <code>my_package</code>: It will search in your root directory, followed by your venv. I assume you use editable installs or similar to link <code>my-package</code> into your venv and that's where python finds it.</p>
+<p>Edit: We may want to create a separate issue. While related, it's different enough from what was asked by the original author.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/heiner">@heiner</a> on 2025-05-01 08:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you try adding crates/my-package to src? Ruff can't find your package because it only searches for packages in your root (and src folder) but there's no my-package in that folder.</p>
+</blockquote>
+<p>Note that I use</p>
+<pre><code>[tool.ruff]
+src = [
+    &quot;.&quot;,
+    &quot;crates/*&quot;,
+]
+</code></pre>
+<blockquote>
+<p>We may want to create a separate issue.</p>
+</blockquote>
+<p>Happy to create that. I assumed it was the underscore that mislead it, but renaming <code>crates/my-package</code> to <code>crates/my_package</code> does not change its behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17761.html">astral-sh/ruff#17761</a> on 2025-05-01 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/heiner">@heiner</a> on 2025-05-01 08:15</div>
+            <div class="timeline-body"><p>New issue here: https://github.com/astral-sh/ruff/issues/17761</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jonathan-Landeed">@Jonathan-Landeed</a> on 2025-09-23 07:20</div>
+            <div class="timeline-body"><p>On the topic of better monorepo support, would classifying all [tool.uv.workspace].members as first-party make sense? The glob solution works, but it's a bit more cumbersome for me because not everything is at a single level and a double-glob was giving me problems (I think it was finding 3rd party imports in virtual envs).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20954.html">astral-sh/ruff#20954</a> on 2025-10-18 11:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

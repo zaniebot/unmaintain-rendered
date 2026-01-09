@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Failed to assign to a callable using `Unpack` - astral-sh/ruff #17596</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Failed to assign to a callable using `Unpack`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17596">#17596</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-04-23 22:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-23 22:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">from typing import Callable, TypeVarTuple, Unpack
+
+
+def some_func() -&gt; None: ...
+
+
+T = TypeVarTuple(&quot;T&quot;)
+
+
+def unpack(c: Callable[[Unpack[T]], object]):
+    pass
+
+
+def _():
+    # red-knot: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -&gt; object`, found `def some_func() -&gt; None` [lint:invalid-argument-type]
+    unpack(some_func)
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-04-23 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-04-23 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17591.html">astral-sh/ruff#17591</a> on 2025-04-23 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2025-04-24 00:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-24 00:48</div>
+            <div class="timeline-body"><p>Tagging &quot;help wanted&quot;, would be really useful to get some exploration of why we are not considering the one callable assignable to the other one here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-24 12:39</div>
+            <div class="timeline-body"><p>(I'll take a quick look this morning and will reply.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-24 15:35</div>
+            <div class="timeline-body"><p>Hmm, actually this diagnostic seems correct, reduced version of the above: https://types.ruff.rs/b8f87ca7-7a08-4bb2-aed8-7dbb1d800242</p>
+<pre><code class="language-py">from typing import Any
+from knot_extensions import CallableTypeOf, static_assert, is_assignable_to
+
+def empty() -&gt; None: ...
+
+def any_params(*args: Any, **kwargs: Any) -&gt; object: ...
+
+static_assert(is_assignable_to(CallableTypeOf[empty], CallableTypeOf[any_params]))  # false
+</code></pre>
+<p>Because, the <code>any_params</code> function can take 0 or more number of parameters but <code>empty</code> does not take any parameters which means we cannot assign <code>empty</code> to <code>any_params</code>.</p>
+<p>Another way to look at it using protocols:</p>
+<pre><code class="language-py">class SelfCallable(Protocol):  # Subtype
+    def __call__(self) -&gt; None: ...
+
+
+class OtherCallable(Protocol):  # Supertype
+    def __call__(self, *args: Any, **kwargs: Any) -&gt; None: ...
+
+
+def _(self_callable: SelfCallable, other_callable: OtherCallable):
+    a: OtherCallable = self_callable
+	# This call is correct because `a` is typed as a callable that takes any parameters
+    # but the above assignment will mean that it will raise an error at runtime
+    a(1, 2, 3) 
+</code></pre>
+<p>And, in the REPL:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class SelfCallable(Protocol):  # Subtype
+...     def __call__(self) -&gt; None: ...
+... 
+... 
+... class OtherCallable(Protocol):  # Supertype
+...     def __call__(self, *args: Any, **kwargs: Any) -&gt; None: ...
+... 
+... 
+... def _(self_callable: SelfCallable, other_callable: OtherCallable):
+...     a: OtherCallable = self_callable
+...     # This call is correct but the above assignment will mean that it will raise an error
+...     # at runtime
+...     a(1, 2, 3) 
+...     
+&gt;&gt;&gt; _(lambda: None, lambda *args, **kwargs: None)
+Traceback (most recent call last):
+  File &quot;&lt;python-input-4&gt;&quot;, line 1, in &lt;module&gt;
+    _(lambda: None, lambda *args, **kwargs: None)
+    ~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;&lt;python-input-3&gt;&quot;, line 13, in _
+    a(1, 2, 3)
+    ~^^^^^^^^^
+TypeError: &lt;lambda&gt;() takes 0 positional arguments but 3 were given
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-24 16:02</div>
+            <div class="timeline-body"><p>I'm not sure why is Pyright and mypy not raising an error here but it does when this happens in an assignment statement:</p>
+<ul>
+<li><a href="https://pyright-play.net/?strict=true&amp;enableExperimentalFeatures=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDCAhgDYlEBGJApgDRQAqi1AakSAwK4I30CqKBEQDGAawBQkgCbVgUAM6RqAfWCcUwgBQBKKAFoAfFAByYFNQBcUAHS3J4hlAC8jZmw7camgEQNv2%2Bxk5dSExTWErYjJKGgBtWIFQ0ViGAF1U%2BjAKACtqYRhU7QtxKFKoIXl5QNkoZR1isqgAYigQaik9URQwGCsAQRA0TghqFHwYMFgACyR5KDUNGCQzTDnUYVw2-KsAUQAPBDyYdqgAA00AKnY0eSsAAQYwKTBNCeeFJDQUIhhONqgroN5Np6BcLqIAO7XW5QB5PF5vSbyT7fX7-MGQ6HaXSGKBZXL5U70YBgdRSM5BBRKVTqLQ4oymcynKCxEioXqoABupCQHWuw1GMD08EOqRKZRCIlEmkUIxpGgC4j2kVI5Co1HiiSlKXSmRyR1SzipcoWwnEQA">Pyright</a></li>
+<li><a href="https://mypy-play.net/?mypy=master&amp;python=3.13&amp;gist=5b2bfcc2bf76d82460aec6172658abe3&amp;flags=show-traceback">mypy</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-24 16:11</div>
+            <div class="timeline-body"><p>Ah right! When looking at this initially, I failed to consider the difference between a <code>*args: Any, **kwargs: Any</code> signature and a <code>...</code> signature. The former is dynamic only with respect to argument types, not with respect to which parameters are accepted. The latter is dynamic with respect to both. And we seem to <a href="https://types.ruff.rs/ce5f8391-0937-40e1-a0ff-ca93aaf766a5">handle this correctly</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-24 16:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

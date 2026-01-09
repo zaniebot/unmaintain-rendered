@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV can not fall back to compatible PySide6 installation - astral-sh/uv #15310</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV can not fall back to compatible PySide6 installation</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15310">#15310</a>
+        opened by <a href="https://github.com/aduhan">@aduhan</a>
+        on 2025-08-15 14:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aduhan">@aduhan</a> on 2025-08-15 14:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When I do &quot;uv add PySide6&quot;, I get this:</p>
+<pre><code>Resolved 9 packages in 12ms
+error: Distribution `pyside6==6.9.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on Linux (`manylinux_2_36_aarch64`), but `pyside6` (v6.9.1) only has wheels for the following platforms: `manylinux_2_28_x86_64`, `manylinux_2_39_aarch64`, `macosx_12_0_universal2`, `win_amd64`, `win_arm64`; consider adding your platform to `tool.uv.required-environments` to ensure uv resolves to a version with compatible wheels
+</code></pre>
+<p>I then add the following to pyproject.toml:</p>
+<pre><code>[tool.uv]
+required-environments = [
+    &quot;sys_platform == 'linux' and platform_machine == 'manylinux_2_36_aarch64'&quot;
+]
+</code></pre>
+<p>When I do &quot;uv add PySide6&quot; again, I get this:</p>
+<pre><code>  × No solution found when resolving dependencies for split (markers: platform_machine == 'manylinux_2_36_aarch64' and sys_platform == 'linux'):
+  ╰─▶ Because all versions of pyside6 have no `platform_machine == 'manylinux_2_36_aarch64' and sys_platform == 'linux'`-compatible wheels and your project depends on pyside6, we can
+      conclude that your project's requirements are unsatisfiable.
+
+      hint: Pre-releases are available for `pyside6` in the requested range (e.g., 6.0.0a1.dev1606913934), but pre-releases weren't enabled (try: `--prerelease=allow`)
+
+      hint: The resolution failed for an environment that is not the current one, consider limiting the environments with `tool.uv.environments`.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<h3>Platform</h3>
+<p>Raspberry PI OS 12, manylinux_2_36_aarch64</p>
+<h3>Version</h3>
+<p>0.8.11</p>
+<h3>Python version</h3>
+<p>3.12.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @aduhan on 2025-08-15 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-15 14:16</div>
+            <div class="timeline-body"><p>It sounds like they don't provide any wheels for <code>manylinux_2_36_aarch64</code>. What do you expect us to install?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-08-15 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-08-15 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aduhan">@aduhan</a> on 2025-08-15 14:25</div>
+            <div class="timeline-body"><p>When using pip, it automatically detects and installs a compatible version, which is PySide6 6.8.0.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-15 14:39</div>
+            <div class="timeline-body"><p>Thanks! https://inspector.pypi.io/project/pyside6/6.8.0.2/ does indeed provide <code>PySide6-6.8.0.2-cp39-abi3-manylinux_2_31_aarch64.whl</code>. You set your required environment to <code>2_36</code> though, which doesn't consider <em>older</em> wheels. Want to try <code>2_31</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aduhan">@aduhan</a> on 2025-08-15 14:44</div>
+            <div class="timeline-body"><p>I just tried with <code>2_31</code>, but unfortunately it also does not work:
+<code>No solution found when resolving dependencies for split (markers: platform_machine == 'manylinux_2_31_aarch64' and sys_platform == 'linux'):</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-15 14:52</div>
+            <div class="timeline-body"><p>Can you share the full message please?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-15 14:56</div>
+            <div class="timeline-body"><p>I don't think <code>platform_machine == 'manylinux_2_36_aarch64'</code> will work. The output on that machine will just be something like:</p>
+<pre><code>&gt;&gt;&gt; platform.machine()
+'aarch64'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-15 14:57</div>
+            <div class="timeline-body"><p>I think the error is &quot;correct&quot;, in that you're on ARM, but their ARM wheel requires glibc 2.39 or later, and you're on 2.36.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aduhan">@aduhan</a> on 2025-08-15 15:02</div>
+            <div class="timeline-body"><p>@zanieb Sure:
+× No solution found when resolving dependencies for split (markers: python_full_version &gt;= '3.14' and platform_machine == 'manylinux_2_31_aarch64' and sys_platform
+│ == 'linux'):
+╰─▶ Because all versions of pyside6 have no <code>platform_machine == 'manylinux_2_31_aarch64' and sys_platform == 'linux'</code>-compatible wheels and your project depends on
+pyside6, we can conclude that your project's requirements are unsatisfiable.</p>
+<pre><code>  hint: Pre-releases are available for `pyside6` in the requested range (e.g., 6.0.0a1.dev1606913934), but pre-releases weren't enabled (try:
+  `--prerelease=allow`)
+
+  hint: While the active Python version is 3.12, the resolution failed for other Python versions supported by your project. Consider limiting your project's
+  supported Python versions using `requires-python`.</code></pre>
+<p>help: If you want to add the package regardless of the failed resolution, provide the <code>--frozen</code> flag to skip locking and syncing.</p>
+<p>@charliermarsh Yes correct. I am on 2.36, and PySide6 6.8.0.2 requires glibc 2.36, while the newest version requires 2.39 as you pointed out, but uv does not seem to install it.
+I also tried 'aarch64' for the platform_machine flag, so basically:
+[tool.uv]
+required-environments = [
+&quot;sys_platform == 'linux' and platform_machine == 'aarch64'&quot;
+]</p>
+<p>but then I get this:
+error: Distribution <code>pyside6==6.9.1 @ registry+https://pypi.org/simple</code> can't be installed because it doesn't have a source distribution or wheel for the current platform</p>
+<p>hint: You're on Linux (<code>manylinux_2_36_aarch64</code>), but <code>pyside6</code> (v6.9.1) only has wheels for the following platforms: <code>manylinux_2_28_x86_64</code>, <code>manylinux_2_39_aarch64</code>, <code>macosx_12_0_universal2</code>, <code>win_amd64</code>, <code>win_arm64</code>; consider adding your platform to <code>tool.uv.required-environments</code> to ensure uv resolves to a version with compatible wheels</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-15 15:26</div>
+            <div class="timeline-body"><p>Right, I think this is basically unsupported, because you can only narrow resolution with environment markers, and there are no markers for glibc versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aduhan">@aduhan</a> on 2025-08-15 15:46</div>
+            <div class="timeline-body"><p>I see. Thank you. Would be great to support those markers or some other solution (like pip?), due to Qt (with its python bindings PySide6) being such a huge framework worlwide.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

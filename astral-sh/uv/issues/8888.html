@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't run some scripts on Windows with `uv tool run` - astral-sh/uv #8888</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't run some scripts on Windows with `uv tool run`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/8888">#8888</a>
+        opened by <a href="https://github.com/depau">@depau</a>
+        on 2024-11-07 14:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/depau">@depau</a> on 2024-11-07 14:41</div>
+            <div class="timeline-body"><p>uv version: <code>uv 0.4.30 (61ed2a236 2024-11-04)</code></p>
+<p><a href="https://github.com/localstack/awscli-local?tab=readme-ov-file#Limitations"><code>awslocal</code></a> on Windows doesn't seem to work properly with <code>uv tool run --from awscli-local awslocal</code></p>
+<pre><code>The executable `awslocal` was not found.
+warning: An executable named `awslocal` is not provided by package `awscli-local`.
+The following executables are provided by `awscli-local`:
+- awslocal
+- awslocal.bat
+Consider using `uv tool run --from awscli-local &lt;EXECUTABLE_NAME&gt;` instead.
+</code></pre>
+<p>The <code>awslocal</code> file is actually a script:</p>
+<pre><code class="language-python">#!python.exe
+
+&quot;&quot;&quot;
+Thin wrapper around the &quot;aws&quot; command line interface (CLI) for use
+with LocalStack.
+...
+</code></pre>
+<p>while for other tools it looks like a <code>.exe</code> is installed, which seems to work with <code>uv</code>.</p>
+<p>This is probably caused by the fact that they provide the entry scripts as a path to file, not as <code>module:function</code>.</p>
+<p>Using the provided <code>.bat</code> file does work, but it requires providing a different executable name based on the current OS and it looks like python detaches from the terminal when run from a batch script.</p>
+<p>I'm not sure whether this is a problem with awslocal or uv. I thought I'd report it here first since this usage of setuptools seems legit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../localstack/awscli-local/pulls/88.html">localstack/awscli-local#88</a> on 2024-11-07 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 02:16</div>
+            <div class="timeline-body"><p>Thanks! Makes sense to report it here. We'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-09 02:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-11-09 02:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-11-09 17:31</div>
+            <div class="timeline-body"><p>I think this is expected/known to fail due to their use of legacy <code>scripts</code> rather than <code>console_scripts</code>.</p>
+<p>Related:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/6661</li>
+<li>https://github.com/astral-sh/uv/issues/8770<ul>
+<li>https://github.com/astral-sh/uv/issues/8770#issuecomment-2453508632</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-11 14:51</div>
+            <div class="timeline-body"><p>I think we should probably special case them if it's feasible.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

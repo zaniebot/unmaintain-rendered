@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RET504 &quot;false positive&quot; when using variables for typing - astral-sh/ruff #10732</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RET504 &quot;false positive&quot; when using variables for typing</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10732">#10732</a>
+        opened by <a href="https://github.com/autinerd">@autinerd</a>
+        on 2024-04-02 04:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/autinerd">@autinerd</a> on 2024-04-02 04:19</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hello together,</p>
+<p>When introducing the RET rules to Home Assistant I currently have this case (simplified):</p>
+<pre><code class="language-python">def fun(a: dict[str, Any]) -&gt; list[dict[str, Any]:
+    services: list[dict[str, Any]]
+    if &quot;services&quot; in a:
+        services = a[&quot;services&quot;]
+        return services
+    ... # services is further assigned and used
+</code></pre>
+<p>where RET504 is flagging, but when fixed mypy is complaining because of the Any type. The current options are 1. use <code>cast</code>, 2. declare the type again or 3. add a <code># noqa</code>.</p>
+<p>It would be cool that when a type declaration of the variable is found, that this assignment followed by a return would not get flagged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/diceroll123">@diceroll123</a> on 2024-04-02 04:45</div>
+            <div class="timeline-body"><p>You may want to have <code>a</code> be a <code>TypedDict</code>, something like</p>
+<pre><code class="language-py">from typing import TypedDict, NotRequired, Any
+
+class A_Type(TypedDict):
+    services: NotRequired[list[dict[str, Any]]]
+
+def fun(a: A_Type) -&gt; list[dict[str, Any]]:
+    services: list[dict[str, Any]]
+    if &quot;services&quot; in a:
+        return a[&quot;services&quot;]
+    # services being assigned other ways
+    services = []
+    return services
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/autinerd">@autinerd</a> on 2024-04-02 14:34</div>
+            <div class="timeline-body"><p>In my case it is too versatile to have a TypedDict. https://github.com/home-assistant/core/pull/114528/files</p>
+<p>https://github.com/home-assistant/core/pull/114528/files#diff-da81d27b5f83f07ead4bcbb0f29527511a2d7985acbe1cae45636e28202857ccR63-R74</p>
+<p><code>hass.data</code> is a dict which contains all kinds of different stuff for each integration/platform etc. in Home Assistant. There is currently work done to improve the typing topic, but until then we need these type annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-02 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-02 16:36</div>
+            <div class="timeline-body"><p>I'm curious if you could do:</p>
+<pre><code class="language-python">services: list[dict[str, Any]] = a[&quot;services&quot;]
+return services
+</code></pre>
+<p>That might be easier to &quot;detect&quot; / allow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/autinerd">@autinerd</a> on 2024-04-02 18:42</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm curious if you could do:</p>
+<pre><code class="language-python">services: list[dict[str, Any]] = a[&quot;services&quot;]
+return services
+</code></pre>
+<p>That might be easier to &quot;detect&quot; / allow.</p>
+</blockquote>
+<p>This is already working without issue, but then you have to annotate the variable multiple times.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-02 18:43</div>
+            <div class="timeline-body"><p>Oh, hah, I didn't realize that. I think we can support the variant from your first post.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10741.html">astral-sh/ruff#10741</a> on 2024-04-02 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-02 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-02 20:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

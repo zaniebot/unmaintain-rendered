@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow for `uv` global instantiation - astral-sh/uv #7898</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow for `uv` global instantiation</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7898">#7898</a>
+        opened by <a href="https://github.com/krstp">@krstp</a>
+        on 2024-10-03 14:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/krstp">@krstp</a> on 2024-10-03 14:46</div>
+            <div class="timeline-body"><p>I would like to see <code>uv</code> recognized for global virtual environments in a similar way to how <code>pyenv</code> works. Instead of focusing solely on in-project folder development, allow for global env instantiation.</p>
+<p>In theory, this task should be accomplished by creating all virtual environments via:</p>
+<p><code>uv venv ~/.venvs/my_project_env</code></p>
+<p>To activate the environment:</p>
+<p><code>source ~/.venvs/my_project_env/bin/activate</code></p>
+<p>Alternatively, <code>uv</code> could add the following function to <code>.bashrc/.zshrc</code>:</p>
+<pre><code>function uvactivate() {
+    source ~/.venvs/$1/bin/activate
+}
+</code></pre>
+<p>Then users could activate an environment like this:</p>
+<p><code>uvactivate my_project_env</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-03 14:55</div>
+            <div class="timeline-body"><p>Related</p>
+<ul>
+<li>#1495</li>
+<li>https://github.com/astral-sh/uv/issues/1910</li>
+</ul>
+<p>It seems like this is doable today with some small wrappers around uv, I'm not sure we'll add first-class support for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krstp">@krstp</a> on 2024-10-26 03:55</div>
+            <div class="timeline-body"><p>The solution above works perfectly and seems to be a straightforward replacement for pyenv.</p>
+<p>Here’s a bit more detail about my setup:</p>
+<ul>
+<li>My virtual environments are located at: <code>/Users/&lt;user&gt;/.config/uv/venv</code>.</li>
+<li>I started creating named virtual environments, such as <code>.uvcore12</code>, <code>.uvcore13</code>, etc. Since <code>uv</code> doesn’t support named environments directly, I follow this process:<ul>
+<li>I run <code>uv venv --python 3.xx</code>, which creates a folder named <code>.venv</code>.</li>
+<li>I then rename <code>.venv</code> to my preferred name, like <code>.uvcore12</code>.</li>
+<li>To ensure the prompt reflects the new name, I modify the <code>activate</code> script in the renamed folder:<ul>
+<li>Set <code>VIRTUAL_ENV=/Users/&lt;user&gt;/.config/uv/venv/.uvcore12</code></li>
+<li>Set <code>VIRTUAL_ENV_PROMPT=&quot;(core12)&quot;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Additionally, I added the following function to my <code>.bashrc</code> or <code>.zshrc</code>:</p>
+<pre><code class="language-bash">function uvactivate() {
+    source ~/.config/uv/venv/.uv$1/bin/activate
+}
+</code></pre>
+<p>With this setup, I can activate my environment/s from anywhere by simply calling <code>uvactivate core12</code>, and the prompt will show <code>3.12.6 (core12)</code>.</p>
+<p>Then any <code>uv pip install ...</code> will install the new packages in the activated environment that works globally. I hope this helps.</p>
+<p>Would be nice to have the <code>activate</code> command under <code>uv activate &lt;env_name&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1495.html">astral-sh/uv#1495</a> on 2024-10-26 03:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CharlesPerrotMinot">@CharlesPerrotMinot</a> on 2024-10-26 04:40</div>
+            <div class="timeline-body"><p>On our end, we simply do
+<code>ENV UV_PROJECT_ENVIRONMENT=&quot;/usr/local/&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krstp">@krstp</a> on 2024-10-26 13:19</div>
+            <div class="timeline-body"><p>@CharlesPerrotMinotHCHB: with your proposed way, under <code>/usr/local/</code>, you will:</p>
+<ul>
+<li>keep overwriting the default python installation, as it always creates <code>.venv</code>,</li>
+<li>not be allowed to use named env instances</li>
+<li>miss on prompt env naming</li>
+<li>be unable to easily activate a diff named env.</li>
+</ul>
+<p>Instead, for anything you do, you will always dip into <code>.venv</code>. The way I propose delivers all this functionality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CharlesPerrotMinot">@CharlesPerrotMinot</a> on 2024-10-28 05:25</div>
+            <div class="timeline-body"><p>@krstp true, but we're running in docker container.
+Use case may vary, but for us, it's totally sufficient, and none of the things you say are an issue.</p>
+<p>And to me, it makes sense for a global instantiation to be overwritten</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krstp">@krstp</a> on 2024-11-03 12:50</div>
+            <div class="timeline-body"><p>Yeah, for the docker it makes sense. What I am and was aiming for with global setup/instantiation is local env development. If it is only in docker, I agree it does not make sense, but in local imho it does shine and what I propose is an easy fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krstp">@krstp</a> on 2024-11-03 13:04</div>
+            <div class="timeline-body"><p>For the reference to the issue, here seems to be a related tool that somewhat accomplishes similar functionality: https://github.com/AndydeCleyre/zpy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-03 14:30</div>
+            <div class="timeline-body"><p>I think we can track this in #1495.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-11-03 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krstp">@krstp</a> on 2024-12-08 05:46</div>
+            <div class="timeline-body"><p>Just for reference, where this really shines is when using code editors for specifying a default release. Currently, user needs to do its own mumbo-jumbo (as specified above) to have such environment. AFAIK most of editors do not allow for in-project venv read.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-09 14:55</div>
+            <div class="timeline-body"><blockquote>
+<p>AFAIK most of editors do not allow for in-project venv read</p>
+</blockquote>
+<p>I don't think this is true, e.g., VSCodes <em>does</em> discover virtual environments in the project directory. What are you referring to here?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

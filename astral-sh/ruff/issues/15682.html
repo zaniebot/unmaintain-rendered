@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`unused-noqa` (`RUF100`) - false negatives and strange behavior with multiple codes - astral-sh/ruff #15682</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`unused-noqa` (`RUF100`) - false negatives and strange behavior with multiple codes</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15682">#15682</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2025-01-23 07:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-01-23 07:29</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>i assume this is an unintentional bug in the logic that allows you to add additional information to noqa comments:</p>
+<pre><code class="language-py"># noqa: D103 this function is self-documenting
+</code></pre>
+<p>but ruff should enforce a space between the code and any additional comments. currently it doesn't seem to do so. it also seems to allow certain completely invalid codes:</p>
+<pre><code class="language-py"># no error even though these aren't valid codes:
+def foo(): ... # noqa: D103a
+# noqa: Z
+</code></pre>
+<p>interestingly, these are treated as two separate codes:</p>
+<pre><code class="language-py">def foo(): ... # noqa: D103F811
+</code></pre>
+<p>i think it should instead be an error and force the user to separate them with a comma like this:</p>
+<pre><code class="language-py">def foo(): ... # noqa: D103,F811
+</code></pre>
+<p>https://play.ruff.rs/2b3608e9-f97a-459a-960b-f702827ef4e4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-23 07:41</div>
+            <div class="timeline-body"><p>Thanks, I think we miss a check for <code>leading_space</code> to be <code>!= 0</code> here</p>
+<p>https://github.com/astral-sh/ruff/blob/c39ca8fe6d3fb77684d2919a58b77cca95671ab7/crates/ruff_linter/src/noqa.rs#L105-L128</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-01-23 07:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-01-23 07:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-23 13:22</div>
+            <div class="timeline-body"><p>See also #12809 and #14229. I posted <a href="https://github.com/astral-sh/ruff/pull/14229#discussion_r1835481018">a comment</a> at the latter, but perhaps Charlie never saw it.</p>
+<p>@MichaReiser Considering what happened in the two aforementioned PRs, this will require a design decision. What do you say?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-23 13:36</div>
+            <div class="timeline-body"><p>Can you tell me more about the design decisions you see?</p>
+<p>These could also be multiple fixes:</p>
+<ul>
+<li><code>D103F811</code>: Should not be treated as two rules</li>
+<li><code>D103a</code>: Handle content after a rule code</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-23 13:49</div>
+            <div class="timeline-body"><p>@MichaReiser #12809 made it so that <code>D103F811</code> is treated as one code for both file-level and line-level <code># noqa</code>s. #14229 reverted it for line-level, but not for file-level. The result is now inconsistent:</p>
+<pre><code class="language-python"># This hides the two diagnostics
+print(list(sorted()))  # noqa: T201C413
+</code></pre>
+<pre><code class="language-python"># This doesn't, and the joint code is not reported as invalid.
+# ruff: noqa: T201C413
+print(list(sorted()))
+</code></pre>
+<p>My question never got an answer, so I assume that it is desired to keep this inconsistency. If you say otherwise, I can work on a fix. The PR will have concrete examples as well as how to deal with those and we can go from there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-23 13:59</div>
+            <div class="timeline-body"><p>Oh, so the problem linked in #14229 is that we incorrectly parsed text coming after a code as a noqa code.</p>
+<p>That means we have to define a heuristic of what we treat as codes and what as non-code.</p>
+<p>I also just found https://github.com/astral-sh/ruff/pull/12811</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12811.html">astral-sh/ruff#12811</a> on 2025-01-23 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15940.html">astral-sh/ruff#15940</a> on 2025-02-04 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8157.html">astral-sh/ruff#8157</a> on 2025-02-06 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16483.html">astral-sh/ruff#16483</a> on 2025-03-03 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-13 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-03-19 10:50</div>
+            <div class="timeline-body"><p>thes issues seem to still be present in 0.11.0 (<a href="https://play.ruff.rs/2b3608e9-f97a-459a-960b-f702827ef4e4">same playground link</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-19 11:12</div>
+            <div class="timeline-body"><p>This matches the <a href="https://docs.astral.sh/ruff/linter/#full-suppression-comment-specification">specification</a> we settled on. In particular:</p>
+<ol>
+<li>The directives <code>D103a</code> and <code>Z</code> are not interpreted as codes, not enforced, and log warnings to the user.</li>
+<li>The directive <code>D103F811</code> is interpreted and enforced but logs a warning to the user for a missing delimiter.</li>
+</ol>
+<p>With your example:</p>
+<pre><code class="language-python"># no error even though these aren't valid codes: #(added by me: actually, this _does_ log an error!)
+def foo(): ... # noqa: D103a
+# noqa: Z
+
+# these are treated as two separate codes:
+def bar(): ... # noqa: D103F811
+</code></pre>
+<p>we get:</p>
+<pre><code class="language-console">❯ ruff check --isolated --no-cache --select D103,F811 noqa.py
+warning: Invalid `# noqa` directive on noqa.py:2: expected code to consist of uppercase letters followed by digits only (e.g. `F401`)
+warning: Invalid `# noqa` directive on noqa.py:3: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Missing or joined rule code(s) at noqa.py:6: expected comma or space delimiter between codes
+noqa.py:2:5: D103 Missing docstring in public function
+  |
+1 | # no error even though these aren't valid codes:
+2 | def foo(): ... # noqa: D103a
+  |     ^^^ D103
+3 | # noqa: Z
+  |
+
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

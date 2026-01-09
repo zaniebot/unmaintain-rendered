@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SyntaxError after bad fix in f-string from Q000 flake8 bad-quotes-inline-string - astral-sh/ruff #10761</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SyntaxError after bad fix in f-string from Q000 flake8 bad-quotes-inline-string</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10761">#10761</a>
+        opened by <a href="https://github.com/Hnasar">@Hnasar</a>
+        on 2024-04-03 19:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Hnasar">@Hnasar</a> on 2024-04-03 19:23</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Using ruff 0.3.5: the fix for https://docs.astral.sh/ruff/rules/bad-quotes-inline-string/ results in a syntax error</p>
+<pre><code class="language-python"># foo.py
+x = y = z = 5
+s = f&quot;Before {f'x {x}' if y else f'foo {z}'} after&quot;
+</code></pre>
+<pre><code class="language-console">$ ruff check --target-version=py310 --select=Q foo.py  
+foo.py:2:34: Q000 [*] Single quotes found but double quotes preferred
+</code></pre>
+<pre><code class="language-diff">--- foo.py
++++ foo.py
+@@ -1,2 +1,2 @@
+ x = y = z = 5
+-s = f&quot;Before {f'x {x}' if y else f'foo {z}'} after&quot;
++s = f&quot;Before {f'x {x}' if y else f&quot;foo {z}&quot;} after&quot;
+</code></pre>
+<p>After applying <code>--fix</code></p>
+<pre><code class="language-console">$ python3.10 foo.py 
+  File &quot;foo.py&quot;, line 2
+    s = f&quot;Before {f'x {x}' if y else f&quot;foo {z}&quot;} after&quot;
+                                       ^^^
+SyntaxError: f-string: expecting '}'
+</code></pre>
+<h3>Notes:</h3>
+<ul>
+<li>The &quot;fixed&quot; syntax is only valid in 3.12 because it supports arbitrarily nested fstrings</li>
+<li>I cannot reproduce this bad fix using ruff 0.1.6</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-03 23:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2024-04-04 02:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-04 02:47</div>
+            <div class="timeline-body"><p>Oops, sorry. I think I have a permanent fix for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10766.html">astral-sh/ruff#10766</a> on 2024-04-04 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-04-04 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-04-04 03:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: Trailing end of line comments in binary like expressions - astral-sh/ruff #7004</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: Trailing end of line comments in binary like expressions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7004">#7004</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-08-30 08:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-30 08:48</div>
+            <div class="timeline-body"><pre><code class="language-python"># Input
+if (
+    (1 + 2) or # test
+    (3 + 4) or # other
+    (4 + 5) # more
+): pass
+
+
+if (
+    (1 and 2) + # test
+    (3 and 4) + # other
+    (4 and 5) # more
+): pass
+
+
+if (
+    (1 + 2) &lt; # test
+    (3 + 4) &gt; # other
+    (4 + 5) # more
+): pass
+
+# Output
+if (
+    (
+        1 + 2  # test
+    )
+    or (
+        3 + 4  # other
+    )
+    or (4 + 5)  # more
+):
+    pass
+
+
+if (
+    (
+        1 and 2  # test
+    )
+    + (3 and 4)  # other
+    + (4 and 5)  # more
+):
+    pass
+
+
+if (
+    (
+        1 + 2  # test
+    )
+    &lt; (
+        3 + 4  # other
+    )
+    &gt; (4 + 5)  # more
+):
+    pass
+</code></pre>
+<p><strong>Expected</strong>
+Ruff not to expand the parenthesized right sides.</p>
+<blockquote>
+<p><em>Note</em>: Prettier handles <a href="https://prettier.io/playground/#N4Igxg9gdgLgprEAuEBLAZgAgBQB0qaE4CMmAZGZgEwCUmA1JgPRObwDOM+ROAzOZQAsdRi0wQYACzgAnbkWyCBmAKx0xAWwgy4+GsAC++EABoQEAA4xU0dslABDGTIgB3AApOEdlA4A2rg4AnnZmAEYyDmAA1nAwAMoOGnAAMqhQcMjo-uxw4ZExcfEWUekA5sgwMgCueSC5GqiVNXXs5X5wAIrVEplI2X65ZgBW7AAe8e1dPfBZOXUAjjNw7i4WPiAO7AC0GXAAJgemIFUOqH7lAMIQGhoOyJt+fsdtUGUdAIIwVahh1fDuWRpDJzQZ1SQwDR+ADqklQHBKYDg8W88NQADd4UEHmB2KEQOjagBJKCHWDxMAyVBWD6k+IwIIdUFDEAWFy5aGRCwPNlwXIydGZMzpfkwVYOMp3Zl1EoyfkPMIOMJwZ5mNnpGDQ1D7KTIAAcAAYzDolqgdOLJfd+vMzDAlVqdZJkFQzNVcgAVJU+AYsuAaZX7Q77FION7VCVwABi2ju33KDwc-wgIAMBiAA">this</a> correctly</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-30 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-08-30 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2023-09-08 07:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-08 13:59</div>
+            <div class="timeline-body"><p>Uff this is harder than I expected. The issue is that our comment logic doesn't distinguish between</p>
+<pre><code class="language-python">(
+  a # comment
+)
+
+(a) # comment
+</code></pre>
+<p>It always formats the comment inside of the parentheses instead of only doing so if the comment is inside the parentheses  in the source. I thought I have a clever quick fix that manually moves the trailing comments out inside of <code>FormatExpr</code> if it is passed a <code>)</code> but I now run into stability issues with function return type annotations 🙅</p>
+<p>Another example:</p>
+<pre><code class="language-python">(
+    a + 
+    # comment 
+    (a + b) 
+     &gt; c
+)
+</code></pre>
+<p>Gets formatted as</p>
+<pre><code class="language-python">(
+    a + 
+    (
+	    # comment 
+		a + b
+	) 
+     &gt; c
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6062.html">astral-sh/ruff#6062</a> on 2023-09-08 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7269.html">astral-sh/ruff#7269</a> on 2023-09-11 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-12 06:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

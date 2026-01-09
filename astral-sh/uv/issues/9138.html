@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failing to compile on Windows ARM64 - astral-sh/uv #9138</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failing to compile on Windows ARM64</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9138">#9138</a>
+        opened by <a href="https://github.com/dlech">@dlech</a>
+        on 2024-11-15 02:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dlech">@dlech</a> on 2024-11-15 02:12</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I'm trying to <code>pipx install cibuildwheel[uv]</code> on a Windows ARM64 machine. There are no binary wheels for <code>uv</code> on this platform, so it tries to compile the package from source (<code>uv-0.5.2.tar.gz</code>). However, it is failing with the following error.</p>
+<pre><code class="language-console">         Compiling uv-trampoline-builder v0.0.1 (C:\Users\extra\AppData\Local\Temp\pip-install-hv48jtb7\uv_8840a2c89e304464bb97267224937b3d\crates\uv-trampoline-builder)
+      error: couldn't read `crates\uv-trampoline-builder\src\../../uv-trampoline/trampolines/uv-trampoline-aarch64-gui.exe`: The system cannot find the path specified. (os error 3)
+        --&gt; crates\uv-trampoline-builder\src\lib.rs:29:5
+         |
+      29 |     include_bytes!(&quot;../../uv-trampoline/trampolines/uv-trampoline-aarch64-gui.exe&quot;);
+         |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         |
+         = note: this error originates in the macro `include_bytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+      
+      error: couldn't read `crates\uv-trampoline-builder\src\../../uv-trampoline/trampolines/uv-trampoline-aarch64-console.exe`: The system cannot find the path specified. (os error 3)
+        --&gt; crates\uv-trampoline-builder\src\lib.rs:33:5
+         |
+      33 |     include_bytes!(&quot;../../uv-trampoline/trampolines/uv-trampoline-aarch64-console.exe&quot;);
+         |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         |
+         = note: this error originates in the macro `include_bytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+      
+      error: could not compile `uv-trampoline-builder` (lib) due to 2 previous errors
+      warning: build failed, waiting for other jobs to finish...
+      ðŸ’¥ maturin failed
+        Caused by: Failed to build a native library through cargo
+        Caused by: Cargo build finished with &quot;exit code: 101&quot;: `&quot;cargo&quot; &quot;rustc&quot; &quot;--message-format&quot; &quot;json-render-diagnostics&quot; &quot;--manifest-path&quot; &quot;C:\\Users\\extra\\AppData\\Local\\Temp\\pip-install-hv48jtb7\\uv_8840a2c89e304464bb97267224937b3d\\crates\\uv\\Cargo.toml&quot; &quot;--release&quot; &quot;--bin&quot; &quot;uv&quot; &quot;--&quot; &quot;-C&quot; &quot;strip=symbols&quot;`
+      Error: command ['maturin', 'pep517', 'build-wheel', '-i', 'C:\\Users\\extra\\pipx\\venvs\\cibuildwheel\\Scripts\\python.exe', '--compatibility', 'off'] returned non-zero exit status 1
+      [end of output]
+</code></pre>
+<p>I don't really know anything about how crates/rust work so I'm not sure how to troubleshoot it. For example, is it sensitive about the unix path seperators (<code>/</code>) in the path? Is it a circular dependency issue where the <code>uv-trampoline</code> crate depends on <code>uv-trampoline-builder</code> but <code>uv-trampoline-builder</code> is using files from the <code>uv-trampoline</code> crate? Is it a version issue where it is depending on a version of the <code>uv-trampoline</code> from before the aarch64 binaries were added? Those are my best guesses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-15 02:21</div>
+            <div class="timeline-body"><p>I think this might be best discussed in https://github.com/astral-sh/uv/issues/1141.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dlech">@dlech</a> on 2024-11-15 02:40</div>
+            <div class="timeline-body"><p>Sure. I wasn't entirely sure if it was actually related to Windows ARM64 specifically or if this was a more general &quot;the sdist package is broken&quot; kind of issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-11-17 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-17 16:39</div>
+            <div class="timeline-body"><p>Looked into it and I think you're right that there's a real, separate problem with the sdist. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9172.html">astral-sh/uv#9172</a> on 2024-11-17 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-17 16:50</div>
+            <div class="timeline-body"><p>If someone could test the &quot;fixed&quot; sdist at https://github.com/astral-sh/uv/actions/runs/11880251223/artifacts/2198442674 that'd be great</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-18 01:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-18 01:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

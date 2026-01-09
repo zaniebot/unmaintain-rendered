@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install for package works from --index-url but not from --extra-index-url - astral-sh/uv #1451</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install for package works from --index-url but not from --extra-index-url</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1451">#1451</a>
+        opened by <a href="https://github.com/exs-avianello">@exs-avianello</a>
+        on 2024-02-16 08:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/exs-avianello">@exs-avianello</a> on 2024-02-16 08:15</div>
+            <div class="timeline-body"><p>Hello!</p>
+<p>I am testing out <code>uv</code> with a package called <a href="https://docs.eyesopen.com/toolkits/python/quickstart-python/linuxosx_virtualenv.html">openeye-toolkits</a>, which is not hosted on PyPI but on another (public) package index.</p>
+<p>If the index is provided as <code>--index-url</code> everything works fine* (the download eventually times out but that's probably because of https://github.com/astral-sh/uv/issues/1549):</p>
+<pre><code>uv pip install -v --no-cache --index-url &quot;https://pypi.anaconda.org/OpenEye/simple&quot; openeye-toolkits
+    0.004410s DEBUG uv_interpreter::virtual_env Found a virtualenv through VIRTUAL_ENV at: .../.venv
+    0.005885s DEBUG uv_interpreter::interpreter Detecting markers for: .../.venv/bin/python
+    0.079283s DEBUG uv::commands::pip_install Using Python 3.11.5 environment at .../.venv/bin/python
+ uv_client::flat_index::from_entries
+ uv_resolver::resolver::solve
+      0.096637s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.11.5
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.098462s   0ms DEBUG uv_resolver::resolver Adding direct dependency: openeye-toolkits*
+   uv_resolver::resolver::choose_version package=openeye-toolkits
+     uv_resolver::resolver::package_wait package_name=openeye-toolkits
+ uv_resolver::resolver::process_request request=Versions openeye-toolkits
+   uv_client::registry_client::simple_api package=openeye-toolkits
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/private/var/folders/bq/m80wbcjd677_l_hfy99xpm980000gq/T/.tmpoWZVgP/simple-v0/937cb77f9f4a4ef4/openeye-toolkits.rkyv
+ uv_resolver::resolver::process_request request=Prefetch openeye-toolkits *
+          0.101202s   1ms  WARN uv_client::cached_client Broken cache entry at /private/var/folders/bq/m80wbcjd677_l_hfy99xpm980000gq/T/.tmpoWZVgP/simple-v0/937cb77f9f4a4ef4/openeye-toolkits.rkyv, removing: failed to open file `/private/var/folders/bq/m80wbcjd677_l_hfy99xpm980000gq/T/.tmpoWZVgP/simple-v0/937cb77f9f4a4ef4/openeye-toolkits.rkyv`
+          0.101565s   1ms DEBUG uv_client::cached_client No cache entry for: https://pypi.anaconda.org/OpenEye/simple/openeye-toolkits/
+       uv_client::cached_client::fresh_request url=&quot;https://pypi.anaconda.org/OpenEye/simple/openeye-toolkits/&quot;
+       uv_client::cached_client::new_cache file=/private/var/folders/bq/m80wbcjd677_l_hfy99xpm980000gq/T/.tmpoWZVgP/simple-v0/937cb77f9f4a4ef4/openeye-toolkits.rkyv
+       uv_client::registry_client::parse_simple_api package=openeye-toolkits
+         uv_client::html::parse url=Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.anaconda.org&quot;)), port: None, path: &quot;/OpenEye/simple/openeye-toolkits/&quot;, query: None, fragment: None }
+ uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=openeye-toolkits==2023.2.3
+     uv_client::registry_client::wheel_metadata built_dist=openeye-toolkits==2023.2.3
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/private/var/folders/bq/m80wbcjd677_l_hfy99xpm980000gq/T/.tmpoWZVgP/wheels-v0/index/937cb77f9f4a4ef4/openeye-toolkits/openeye_toolkits-2023.2.3-py39.py310.py311-none-macosx_10_16_universal2.msgpack
+              0.802496s   0ms  WARN uv_client::cached_client Broken cache entry at /private/var/folders/bq/m80wbcjd677_l_hfy99xpm980000gq/T/.tmpoWZVgP/wheels-v0/index/937cb77f9f4a4ef4/openeye-toolkits/openeye_toolkits-2023.2.3-py39.py310.py311-none-macosx_10_16_universal2.msgpack, removing: failed to open file `/private/var/folders/bq/m80wbcjd677_l_hfy99xpm980000gq/T/.tmpoWZVgP/wheels-v0/index/937cb77f9f4a4ef4/openeye-toolkits/openeye_toolkits-2023.2.3-py39.py310.py311-none-macosx_10_16_universal2.msgpack`
+        0.802534s 702ms DEBUG uv_resolver::resolver Searching for a compatible version of openeye-toolkits (*)
+        0.802548s 702ms DEBUG uv_resolver::resolver Selecting: openeye-toolkits==2023.2.3 (OpenEye_toolkits-2023.2.3-py39.py310.py311-none-macosx_10_16_universal2.whl)
+   uv_resolver::resolver::get_dependencies package=openeye-toolkits, version=2023.2.3
+     uv_resolver::resolver::distributions_wait package_id=openeye-toolkits-2023.2.3
+              0.802634s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.anaconda.org/openeye/simple/openeye-toolkits/2023.2.3/OpenEye_toolkits-2023.2.3-py39.py310.py311-none-macosx_10_16_universal2.whl
+           uv_client::cached_client::fresh_request url=&quot;https://pypi.anaconda.org/openeye/simple/openeye-toolkits/2023.2.3/OpenEye_toolkits-2023.2.3-py39.py310.py311-none-macosx_10_16_universal2.whl&quot;
+           uv_client::cached_client::new_cache file=/private/var/folders/bq/m80wbcjd677_l_hfy99xpm980000gq/T/.tmpoWZVgP/wheels-v0/index/937cb77f9f4a4ef4/openeye-toolkits/openeye_toolkits-2023.2.3-py39.py310.py311-none-macosx_10_16_universal2.msgpack
+           uv_client::registry_client::read_metadata_range_request wheel=openeye_toolkits-2023.2.3-py39.py310.py311-none-macosx_10_16_universal2.whl
+          1.117623s 315ms DEBUG uv_client::registry_client Range requests not supported for openeye_toolkits-2023.2.3-py39.py310.py311-none-macosx_10_16_universal2.whl; downloading wheel
+error: Failed to download: openeye-toolkits==2023.2.3
+  Caused by: Failed to write to the client cache
+  Caused by: request or response body error: operation timed out
+  Caused by: operation timed out
+</code></pre>
+<p>But if the index is provided as an <code>--extra-index-url</code> <code>uv</code> seems to be giving up before looking up the extra index:</p>
+<pre><code>uv pip install -v --no-cache --extra-index-url &quot;https://pypi.anaconda.org/OpenEye/simple&quot; openeye-toolkits
+    0.001477s DEBUG uv_interpreter::virtual_env Found a virtualenv through VIRTUAL_ENV at: .../.venv
+    0.001695s DEBUG uv_interpreter::interpreter Detecting markers for: .../.venv/bin/python
+    0.079837s DEBUG uv::commands::pip_install Using Python 3.11.5 environment at .../.venv/bin/python
+ uv_client::flat_index::from_entries
+ uv_resolver::resolver::solve
+      0.086637s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.11.5
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.086823s   0ms DEBUG uv_resolver::resolver Adding direct dependency: openeye-toolkits*
+   uv_resolver::resolver::choose_version package=openeye-toolkits
+     uv_resolver::resolver::package_wait package_name=openeye-toolkits
+ uv_resolver::resolver::process_request request=Versions openeye-toolkits
+   uv_client::registry_client::simple_api package=openeye-toolkits
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/private/var/folders/bq/m80wbcjd677_l_hfy99xpm980000gq/T/.tmpjr1cog/simple-v0/pypi/openeye-toolkits.rkyv
+ uv_resolver::resolver::process_request request=Prefetch openeye-toolkits *
+          0.087341s   0ms  WARN uv_client::cached_client Broken cache entry at /private/var/folders/bq/m80wbcjd677_l_hfy99xpm980000gq/T/.tmpjr1cog/simple-v0/pypi/openeye-toolkits.rkyv, removing: failed to open file `/private/var/folders/bq/m80wbcjd677_l_hfy99xpm980000gq/T/.tmpjr1cog/simple-v0/pypi/openeye-toolkits.rkyv`
+          0.087452s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/openeye-toolkits/
+       uv_client::cached_client::fresh_request url=&quot;https://pypi.org/simple/openeye-toolkits/&quot;
+       uv_client::cached_client::new_cache file=/private/var/folders/bq/m80wbcjd677_l_hfy99xpm980000gq/T/.tmpjr1cog/simple-v0/pypi/openeye-toolkits.rkyv
+       uv_client::registry_client::parse_simple_api package=openeye-toolkits
+ uv_resolver::version_map::from_metadata
+        0.390276s 303ms DEBUG uv_resolver::resolver Searching for a compatible version of openeye-toolkits (*)
+      0.390308s 303ms DEBUG uv_resolver::resolver No compatible version found for: openeye-toolkits
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there are no versions of openeye-toolkits and you require openeye-toolkits, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>The equivalent <code>pip</code>-native commands work in both cases.</p>
+<p>Note that it might very well be a problem specific to this package because historically we have had general issues with it / its metadata 🙌</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/indigoviolet">@indigoviolet</a> on 2024-02-17 09:15</div>
+            <div class="timeline-body"><p>I see this with <code>rye</code> (https://rye-up.com/guide/sources/) 0.24.0 and https://docs.apryse.com/documentation/python/get-started/python3/mac/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1600.html">astral-sh/uv#1600</a> on 2024-02-17 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kafonek">@kafonek</a> on 2024-02-17 21:47</div>
+            <div class="timeline-body"><p>Per #1600 (closed as dupe), another library to test with is <code>polygraphy==0.47.1</code>, which has an entry on the nvidia repo but not PyPI.</p>
+<ul>
+<li>✅ <code>uv pip install polygraphy==0.47.1 --index-url https://pypi.ngc.nvidia.com</code></li>
+<li>❌ <code>uv pip install polygraphy==0.47.1 --extra-index-url https://pypi.ngc.nvidia.com</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-17 21:49</div>
+            <div class="timeline-body"><p>Yeah I suspect the general problem here is that we only look at versions from PyPI, if the package exists on PyPI. So if there are versions that <em>only</em> exist in another index, we miss those right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1723.html">astral-sh/uv#1723</a> on 2024-02-20 05:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/rye/issues/668.html">astral-sh/rye#668</a> on 2024-02-21 03:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zyd14">@zyd14</a> on 2024-02-21 18:30</div>
+            <div class="timeline-body"><p>I'm also running into this issue. However, @charliermarsh, the packages I'm trying to install exist on PyPI as well as in CodeArtifact - but the specific version I want to install from CodeArtifact only exists in CodeArtifact (it is differentiated by adding a <code>+etx</code> to the end of the version).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1823.html">astral-sh/uv#1823</a> on 2024-02-21 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/rye/issues/802.html">astral-sh/rye#802</a> on 2024-02-27 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/171.html">astral-sh/uv#171</a> on 2024-02-29 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2083.html">astral-sh/uv#2083</a> on 2024-02-29 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2024-02-29 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-02-29 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2135.html">astral-sh/uv#2135</a> on 2024-03-02 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2542.html">astral-sh/uv#2542</a> on 2024-03-19 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2718.html">astral-sh/uv#2718</a> on 2024-03-28 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leosongwei">@leosongwei</a> on 2024-04-03 06:49</div>
+            <div class="timeline-body"><p>any way to set a global index-url?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

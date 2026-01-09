@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: Add rule to detect potential unintended string iteration - astral-sh/ruff #14007</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: Add rule to detect potential unintended string iteration</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14007">#14007</a>
+        opened by <a href="https://github.com/l1n">@l1n</a>
+        on 2024-10-30 19:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/l1n">@l1n</a> on 2024-10-30 19:16</div>
+            <div class="timeline-body"><h2>Problem Statement</h2>
+<p>Python strings being sequences can lead to unintended character-by-character iteration, which is a common source of bugs (https://mail.python.org/pipermail/python-3000/2006-April/000759.html is 2006!). Currently, there's no built-in rule (that I know of) to detect potential cases where a string might be accidentally iterated over instead of being treated as a single value or being split first.</p>
+<h2>Use Cases</h2>
+<pre><code class="language-python"># Common bug cases this would catch:
+
+# Case 1: Direct string iteration
+name = &quot;Alice&quot;
+for char in name:  # Should warn - likely wanted to iterate over a list of names
+    process_name(char)  # Gets 'A', 'l', 'i', etc. instead of &quot;Alice&quot;
+
+# Case 2: String in collections
+names = get_name()  # Returns str
+for name in names:  # Should warn - iterating over characters
+    print(name)
+
+# Case 3: Type annotated strings
+def process_items(items: str):  # Type hint indicates string
+    for item in items:  # Should warn - likely wanted List[str]
+        handle_item(item)
+
+# Safe cases (no warning):
+names = [&quot;Alice&quot;, &quot;Bob&quot;]
+for name in names:
+    print(name)
+
+text = &quot;hello&quot;
+chars = list(text)  # Explicit conversion to character list
+for char in chars:
+    print(char)
+</code></pre>
+<h2>Proposed Rule Details</h2>
+<ul>
+<li>Message: &quot;Possible unintended string iteration. Consider using split(), list(), or ensuring iteration over string is intended.&quot;</li>
+</ul>
+<p>The rule would detect:</p>
+<ol>
+<li>For loops iterating over string literals</li>
+<li>For loops iterating over variables annotated as <code>str</code></li>
+<li>Iteration over strings in common higher-order functions (map, filter, etc.)</li>
+<li>Would respect explicit noqa comments and configurations</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-31 07:22</div>
+            <div class="timeline-body"><p>@AlexWaygood I would value your opinion on this. To me, using <code>for</code> to iterate over the characters of a string seems very legit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-31 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-10-31 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-31 10:14</div>
+            <div class="timeline-body"><p>Iteration over the characters of a string is a useful Python feature that's never going to go away. It's also one of the most common footguns in Python programming; there have been many requests to Python <em>type checkers</em> (let alone linters) to try to tackle this problem, and pytype actually implements a version of this. For examples, see:</p>
+<ul>
+<li>https://discuss.python.org/t/removing-sequence-str-as-base-class-of-str/56907</li>
+<li>https://github.com/python/typing/issues/256</li>
+<li>https://github.com/microsoft/pyright/pull/8259</li>
+<li>https://github.com/hauntsaninja/useful_types/blob/305c66f860117ea41e0dd1f951f2fc3b4786c57e/useful_types/<strong>init</strong>.py#L283-L295</li>
+</ul>
+<p>There's definitely a strong user need for rules that can warn about this, even if they will necessarily come with false positives for the (rare) occasion when you really do need to iterate over the characters of a string. So I think we should definitely explore implementing this check... But it will probably have to wait until we migrate to using red-knot as the backend for Ruff (it needs strong type inference).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @AlexWaygood on 2024-10-31 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @AlexWaygood on 2024-10-31 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @AlexWaygood on 2024-10-31 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> removed by @AlexWaygood on 2024-10-31 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/l1n">@l1n</a> on 2024-11-03 06:28</div>
+            <div class="timeline-body"><p>I agree that there are legitimate cases for iterating over characters of a string and I find the syntax elegant, but I'd prefer to make the intent explicit (or turn off the rule for projects that use it often), so thank you for the update! Is #11653 the right issue to follow for the red-knot move?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-03 09:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Is #11653 the right issue to follow for the red-knot move?</p>
+</blockquote>
+<p>Unfortunately that's just one subtask we need to get to for an initial release of red-knot (and it will be only after the initial red-knot release that we'll start migrating Ruff rules to use red-knot as the backend). So it will probably be a while, I'm afraid :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/opk12">@opk12</a> on 2025-05-28 08:31</div>
+            <div class="timeline-body"><ol start="5">
+<li>Passing <code>str</code> to an API that wants <code>Iterable[str]</code>.</li>
+</ol>
+<pre><code>def f(sentences: Iterable[str]):
+    if 'Alice' in s.split():
+        print(&quot;Found&quot;)
+
+f(&quot;Hello Alice&quot;)
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

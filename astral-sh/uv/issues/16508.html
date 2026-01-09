@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suggesting `uv add --sync-constraints [URL or file path]` to simply update pyproject.toml constraints - astral-sh/uv #16508</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Suggesting `uv add --sync-constraints [URL or file path]` to simply update pyproject.toml constraints</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16508">#16508</a>
+        opened by <a href="https://github.com/agosmou">@agosmou</a>
+        on 2025-10-30 07:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/agosmou">@agosmou</a> on 2025-10-30 07:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'd like to suggest adding a flag to <code>uv add</code> such as:
+<code>uv add --sync-constraints https://example.com/my-constraints.txt</code>
+or<br />
+<code>uv add --sync-constraints path/to/file/requirements.txt</code></p>
+<p>This would only fetch and update the constraints file section in the <code>pyproject.toml</code>, making the constraints explicit/static and reproducible for future operations (i.e. uv lock/sync).</p>
+<h3>Example:</h3>
+<p>Remote constraints file at https://example.com/my-constraints.txt</p>
+<pre><code>boto3==1.40.61
+</code></pre>
+<p>pyproject.toml BEFORE syncing:</p>
+<pre><code>[project]
+dependencies = [&quot;boto3&quot;]
+
+[tool.uv]
+constraint-dependencies = [&quot;boto3==1.40.00&quot;]
+</code></pre>
+<p>Run proposed command:</p>
+<pre><code>uv add --sync-constraints https://example.com/my-constraints.txt
+</code></pre>
+<p>pyproject.toml AFTER syncing:</p>
+<pre><code>[project]
+dependencies = [&quot;boto3&quot;]
+
+[tool.uv]
+constraint-dependencies = [&quot;boto3==1.40.61&quot;] # &lt;--- updated
+</code></pre>
+<h3>Context</h3>
+<ul>
+<li>There was some discussion on this previously so this is an idea forked from this discussion: https://github.com/astral-sh/uv/issues/6518</li>
+<li>https://docs.astral.sh/uv/reference/cli/#uv-add</li>
+<li>https://docs.astral.sh/uv/reference/settings/#constraint-dependencies</li>
+<li>https://packaging.python.org/en/latest/guides/writing-pyproject-toml/</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @agosmou on 2025-10-30 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rogersei">@rogersei</a> on 2025-11-19 22:15</div>
+            <div class="timeline-body"><p>Another possible approach could be to allow setting the constraints file as a parameter in pyproject.toml - the goal of either one of these is to prevent having to always pass in the <code>--constraints &lt;&gt;</code> flag on a <code>uv add</code> command because that's kind of error prone, especially if you have some projects that need constraints and others that don't.</p>
+<p>Our current use case is that we're using uv for writing Apache Airflow DAGs and code - and that is a LONG constraint file (which I manually converted to constraints in our project and do not want to do again when we update)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/agosmou">@agosmou</a> on 2025-11-19 22:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Another possible approach could be to allow setting the constraints file as a parameter in pyproject.toml - the goal of either one of these is to prevent having to always pass in the <code>--constraints &lt;&gt;</code> flag on a <code>uv add</code> command because that's kind of error prone, especially if you have some projects that need constraints and others that don't.</p>
+</blockquote>
+<p>From #6518 it seemed like they want static pyproject.toml dependencies</p>
+<p>What about something like:</p>
+<p>uv add --init-constraints example.com
+Or
+uv add --init-constraints path-to-file</p>
+<p>And then the pyproject.toml will fill in the constraints and save the source. Any future uv sync could check the source and update if there is a diff?</p>
+<p>Idk brainstorming to iron this out and could use some input</p>
+<hr />
+<p>I have a similar use case but feel like I could be satisfied in the meantime by something like:</p>
+<p>uv add --sync-constraints example.com &amp;&amp; uv sync</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-20 00:19</div>
+            <div class="timeline-body"><p>I wonder if <code>uv add --constraints ...</code> without any package name should just import the constraints as described?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/agosmou">@agosmou</a> on 2025-11-20 00:53</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder if <code>uv add --constraints ...</code> without any package name should just import the constraints as described?</p>
+</blockquote>
+<p>Yeah I think this syntax is nice and the scope is decent</p>
+<p>uv add --constraints constraints.txt
+Or
+uv add --constraints example.com</p>
+<p>And then we could pair with a:</p>
+<p>uv sync</p>
+<p>seamlessly without the crazy manual wrangling of constraints 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/agosmou">@agosmou</a> on 2025-11-23 23:01</div>
+            <div class="timeline-body"><blockquote>
+<p>uv add --constraints constraints.txt
+Or
+uv add --constraints example.com</p>
+</blockquote>
+<p>@zanieb
+Should I start trying to work through this? I don't think there are more requirements than what we've discussed already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-24 16:46</div>
+            <div class="timeline-body"><p>Feel free to put up a pull request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/agosmou">@agosmou</a> on 2025-11-26 09:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Feel free to put up a pull request.</p>
+</blockquote>
+<p>Will do!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../gcavanunez/uv/pulls/1.html">gcavanunez/uv#1</a> on 2025-12-06 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12490.html">astral-sh/uv#12490</a> on 2025-12-08 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/agosmou">@agosmou</a> on 2025-12-15 22:33</div>
+            <div class="timeline-body"><p>Was wrapping up the semester and just finished. Will get something in this week!</p>
+<p>Update: getting back to this following the holidays</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directories in wheel scripts directory cause install error - astral-sh/uv #9656</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Directories in wheel scripts directory cause install error</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9656">#9656</a>
+        opened by <a href="https://github.com/liaoya">@liaoya</a>
+        on 2024-12-05 07:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/liaoya">@liaoya</a> on 2024-12-05 07:35</div>
+            <div class="timeline-body"><p>I want to run protobuf-protoc-bin with <code>uvx --from protobuf-protoc-bin protoc</code> and get the following error</p>
+<pre><code class="language-text">❯ uvx -v --from protobuf-protoc-bin protoc --version
+DEBUG uv 0.5.6
+DEBUG Searching for default Python interpreter in managed installations or search path
+DEBUG Searching for managed installations at `/home/tshen/.local/share/uv/python`
+DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `/usr/bin/python3` (search path)
+DEBUG Acquired lock for `/home/tshen/.local/share/uv/tools`
+DEBUG Released lock at `/home/tshen/.local/share/uv/tools/.lock`
+DEBUG Caching via interpreter: `/usr/bin/python3`
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.12.3
+DEBUG Solving with target Python version: &gt;=3.12.3
+DEBUG Adding direct dependency: protobuf-protoc-bin*
+DEBUG Found fresh response for: https://pypi.org/simple/protobuf-protoc-bin/
+DEBUG Searching for a compatible version of protobuf-protoc-bin (*)
+DEBUG Selecting: protobuf-protoc-bin==29.0 [compatible] (protobuf_protoc_bin-29.0-py2.py3-none-manylinux_2_24_x86_64.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/d0/23/2f841df570653ae9fee3057c9fef6a24c8deef756fafe7416d005464fd69/protobuf_protoc_bin-29.0-py2.py3-none-manylinux_2_24_x86_64.whl.metadata
+DEBUG Tried 1 versions: protobuf-protoc-bin 1
+DEBUG marker environment resolution took 0.000s
+Resolved 1 package in 0.95ms
+DEBUG Ignoring empty directory
+DEBUG Using request timeout of 30s
+DEBUG Requirement already cached: protobuf-protoc-bin==29.0
+error: Failed to install: protobuf_protoc_bin-29.0-py2.py3-none-manylinux_2_24_x86_64.whl (protobuf-protoc-bin==29.0)
+  Caused by: The wheel is invalid: Wheel contains an invalid entry (directory) in the `scripts` directory: /home/tshen/.cache/uv/builds-v0/.tmpv4pFTz/lib/python3.12/site-packages/protobuf_protoc_bin-29.0.data/scripts/include
+</code></pre>
+<p>I also try <code>uv pip install protobuf-protoc-bin</code> and get the following error</p>
+<pre><code class="language-text">❯ uv pip install protobuf-protoc-bin
+Resolved 1 package in 0.98ms
+error: Failed to install: protobuf_protoc_bin-29.0-py2.py3-none-manylinux_2_24_x86_64.whl (protobuf-protoc-bin==29.0)
+  Caused by: The wheel is invalid: Wheel contains an invalid entry (directory) in the `scripts` directory: /work/cdc-stash/exost/exos-proxy-py/.venv/lib/python3.12/site-packages/protobuf_protoc_bin-29.0.data/scripts/include
+</code></pre>
+<p>I can do this with <code>pip</code></p>
+<pre><code class="language-text">❯ .venv/bin/pip -v install protobuf-protoc-bin
+Using pip 24.3.1 from /work/cdc-stash/exost/exos-proxy-py/.venv/lib/python3.12/site-packages/pip (python 3.12)
+Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
+Collecting protobuf-protoc-bin
+  Downloading https://mirrors.aliyun.com/pypi/packages/d0/23/2f841df570653ae9fee3057c9fef6a24c8deef756fafe7416d005464fd69/protobuf_protoc_bin-29.0-py2.py3-none-manylinux_2_24_x86_64.whl (3.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 1.1 MB/s eta 0:00:00
+Installing collected packages: protobuf-protoc-bin
+Successfully installed protobuf-protoc-bin-29.0
+
+❯ .venv/bin/protoc --version
+libprotoc 29.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @konstin on 2024-12-05 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-05 08:52</div>
+            <div class="timeline-body"><p>Python wheels have a <code>&lt;name&gt;-&lt;version&gt;.data/scripts</code> directory, which allows copying binaries to a directory in the virtualenv environment that will be added to PATH when using the virtual environment. In this case, there's a <code>protoc</code> binary in the wheel. But in this wheel, there's also a directory in the <code>scripts</code> folder. The spec says to replace the python interpreter path at the beginning of scripts if any, but it's ambiguous about directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv 0.5.6 cannot install or run protobuf-protoc-bin" to "Directories in wheel scripts directoy cause install error" by @konstin on 2024-12-05 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Directories in wheel scripts directoy cause install error" to "Directories in wheel scripts directory cause install error" by @konstin on 2024-12-05 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-06 00:04</div>
+            <div class="timeline-body"><p>I guess my read is that we should move anything in <code>scripts</code> over to the environment's <code>scripts</code> directory recursively, but that we should only rewrite shebangs at the top-level...? Lemme check pip.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liaoya">@liaoya</a> on 2024-12-06 00:34</div>
+            <div class="timeline-body"><p>Thank you!
+I will submit a ticket to <a href="https://github.com/RobertoRoos/protobuf-protoc-bin">protobuf-protoc-bin</a> if this is their issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-06 00:36</div>
+            <div class="timeline-body"><p>It's seems like a strange behavior. I think those files should be in the <code>data</code> subdirectory instead of <code>scripts</code>? Though we may also want to change our behavior here... I'm not sure. We're clearly &quot;stricter&quot; than pip, but we may also be &quot;wrong&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-06 00:39</div>
+            <div class="timeline-body"><p>From reading the code, I <em>think</em> pip moves the entire subdirectory and <em>does</em> rewrite shebangs on nested Python files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-06 00:46</div>
+            <div class="timeline-body"><p>I chatted a bit with a pip maintainer in Discord, and the feeling is that this is indeed a mistake and the files should instead be in the <code>data</code> subdirectory. They expressed that ideally pip would flag this as an error too, though that would take more time to change since it would be breaking. So, I think we could go either way here: we could decide to mirror pip and allow this, or we could stick with our error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liaoya">@liaoya</a> on 2024-12-06 05:51</div>
+            <div class="timeline-body"><p>@charliermarsh Thank you. So <a href="https://github.com/RobertoRoos/protobuf-protoc-bin">protobuf-protoc-bin</a> does not follow the pip rule strictly. I think uv can choose any decision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/packaging.python.org/pulls/1673.html">pypa/packaging.python.org#1673</a> on 2024-12-06 09:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-08 05:06</div>
+            <div class="timeline-body"><p>Ok, it looks like this is now “officially” an issue with the package, and I think we should keep our current behavior: https://github.com/pypa/packaging.python.org/pull/1673#issuecomment-2525415109. Thanks for reporting!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-08 05:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../RobertoRoos/protobuf-protoc-bin/issues/16.html">RobertoRoos/protobuf-protoc-bin#16</a> on 2024-12-09 02:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recognize variable references in pandas Dataframe.query (don't trigger F841) - astral-sh/ruff #12565</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Recognize variable references in pandas Dataframe.query (don't trigger F841)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12565">#12565</a>
+        opened by <a href="https://github.com/astrowonk">@astrowonk</a>
+        on 2024-07-29 11:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/astrowonk">@astrowonk</a> on 2024-07-29 11:27</div>
+            <div class="timeline-body"><p>This is essentially the same as this open <a href="https://github.com/pylint-dev/pylint/issues/3903">pylint issue</a>.</p>
+<p>Pandas has string <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.query.html">queries</a> that can refer to variables prefaced with the @ symbol. So if one creates a variable and then only uses it in a pandas query, ruff flags the variable as unused (as does pylint and probably Flake). Here's a toy example:</p>
+<pre><code class="language-{python}">
+df = pd.DataFrame({'row': [1, 2], 'X': [3, 4]})
+
+
+def my_func(x):
+    my_row = x**2
+    df.query('row == @my_row')
+
+</code></pre>
+<p>The only package that seems to address this is <a href="https://sonarsource.atlassian.net/browse/SONARPY-1166">Sonar Python</a> (admittedly I'm unfamiliar with the particulars, but I found that issue googling). Suffice to say this is an edge case and library specific, but if possible it would be great if ruff could acknowledge that these variables are used. I can noqa the lines of course, but that's never ideal.</p>
+<p>Based on the linked issue this sounds too hard for pylint to implement (the issue was opened in 2020) but maybe it's easier to handle with ruff? Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-29 13:47</div>
+            <div class="timeline-body"><p>Interesting! Thanks for opening the issue.</p>
+<p>My instinct is that this would be <em>possible</em> for us to implement... but that we probably shouldn't. To implement this, we'd have to parse all strings passed to <code>df.query()</code> calls according to the mini-language that pandas uses for string queries. The reasons why I think this might be a bad idea are:</p>
+<ul>
+<li>I assume pandas's mini-language isn't governed by any kind of standard, and that it could change at any time. They <em>probably</em> aren't going to introduce any hugely breaking changes, but that's not necessarily something we can rely on. Also, if they introduce new features to this mini-language, we'd be expected to keep up with them and implement them here as well.</li>
+<li>It feels like something of a slippery slope. If we start special-casing the mini-language pandas uses for their query strings, we'll probably have to start doing similarly for competing frameworks as well.</li>
+<li>It feels like it would add a fair amount of complexity and might also be expensive.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @AlexWaygood on 2024-07-29 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astrowonk">@astrowonk</a> on 2024-07-29 16:08</div>
+            <div class="timeline-body"><p>I agree it may be too complex, and/or too niche. But I don't <em>think</em> you would need to understand the entire query &quot;mini language&quot; (I believe the expression gets evaluated by a pandas implementation of <a href="https://pandas.pydata.org/docs/reference/api/pandas.eval.html#pandas.eval">eval</a>) but rather scan the query strings for the <code>@variable_name</code> pattern for any declared variables that otherwise seem unused. I think that would be sufficient? There's no other way to access a variable from within the query.</p>
+<p>I do understand the general point about this being a special case, and that it may be too expensive even if it's doable : but given pandas prevalence in the data science world, and the utility of using the  <code>col = @var_name</code> pattern in queries, I thought I'd open a discussion. Thanks for engaging!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gitriff">@gitriff</a> on 2024-10-22 08:49</div>
+            <div class="timeline-body"><p>For what it s worth the same happens when using duckdb and polars (or some other df library such as pandas)</p>
+<pre><code>import polars as pl
+import duckdb
+
+def main():
+    df = pl.DataFrame({
+        &quot;name&quot;: [&quot;Alice&quot;, &quot;Bob&quot;, &quot;Charlie&quot;],
+        &quot;age&quot;: [25, 30, 35],
+        &quot;city&quot;: [&quot;New York&quot;, &quot;Los Angeles&quot;, &quot;Chicago&quot;]
+    })
+
+    duckdb_conn = duckdb.connect()
+    query_result = duckdb_conn.execute(&quot;select * from df&quot;).fetchall()
+    print(query_result)
+
+main()
+</code></pre>
+<pre><code>F841 Local variable `df` is assigned to but never used
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DSGeoff">@DSGeoff</a> on 2025-08-28 03:44</div>
+            <div class="timeline-body"><p>I ran across this today when using Ruff.  I don't claim to know even a fraction of what it would take to add this, but I think within .query, the only way to reference an outside variable is via @variable_name or @<code>variable_name</code>.  Well, you can use other methods, like an f-string or .format, but Ruff would catch those already.</p>
+<p>You'd only need to look in .query if the variable wasn't already found elsewhere.  In that case, you could find the @ and go from there. It's somewhat niche, because you can filter without .query, but also pandas is the most popular package for working with tabular data in Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20339.html">astral-sh/ruff#20339</a> on 2025-09-10 21:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

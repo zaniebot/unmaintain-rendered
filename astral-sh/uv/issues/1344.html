@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip compile --python-version ...` breaks when pyenv is used - astral-sh/uv #1344</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip compile --python-version ...` breaks when pyenv is used</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1344">#1344</a>
+        opened by <a href="https://github.com/ThiefMaster">@ThiefMaster</a>
+        on 2024-02-15 21:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2024-02-15 21:06</div>
+            <div class="timeline-body"><pre><code>$ uv pip compile --python-version 3.9 requirements.in -o requirements.txt
+error: Querying Python at `/home/adrian/.pyenv/shims/python3.9` failed with status exit status: 127:
+--- stdout:
+
+--- stderr:
+pyenv: python3.9: command not found
+
+The `python3.9' command exists in these Python versions:
+  [...]
+
+Note: See 'pyenv help global' for tips on allowing both
+      python2 and python3 to be found.
+---
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-15 21:07</div>
+            <div class="timeline-body"><p>Thank you! This is a problem with the shim unfortunately. We can fix this but it probably won't be today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-15 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brainhart">@brainhart</a> on 2024-02-23 20:14</div>
+            <div class="timeline-body"><p>@ThiefMaster I hit this as well and realized that this could be fixed by adjusting my pyenv configuration!</p>
+<p>With pyenv you are able to activate multiple versions at the same time. See below for text in the <a href="https://github.com/pyenv/pyenv?tab=readme-ov-file#understanding-shims">pyenv README</a></p>
+<blockquote>
+<p>NOTE: You can activate multiple versions at the same time, including multiple versions of Python2 or Python3 simultaneously. This allows for parallel usage of Python2 and Python3, and is required with tools like tox. For example, to instruct Pyenv to first use your system Python and Python3 (which are e.g. 2.7.9 and 3.4.2) but also have Python 3.3.6, 3.2.1, and 2.5.2 available, you first pyenv install the missing versions, then set pyenv global system 3.3.6 3.2.1 2.5.2. Then you'll be able to invoke any of those versions with an appropriate pythonX or pythonX.Y name.</p>
+</blockquote>
+<p>Based on the above, I ran the following so that all my pyenv versions are available in global.</p>
+<pre><code>pyenv versions --bare --skip-aliases --skip-envs | xargs pyenv global
+</code></pre>
+<p>This ensured that all the versions are available for use in my shell:</p>
+<pre><code>❯ pyenv versions
+  system
+* 3.8.18 (set by /Users/brian/.local/share/pyenv/version)
+* 3.11.6 (set by /Users/brian/.local/share/pyenv/version)
+
+❯ python3.8 --version
+Python 3.8.18
+
+❯ python3.11 --version
+Python 3.11.6
+</code></pre>
+<p>And lastly I confirmed that this was successfully usable by <code>uv venv</code> (I also tested with <code>uv pip compile -p</code>):</p>
+<pre><code>❯ uv venv -p 3.8
+Using Python 3.8.18 interpreter at /Users/brian/.local/share/pyenv/versions/3.8.18/bin/python3.8
+Creating virtualenv at: .venv
+
+❯ uv venv -p 3.11
+Using Python 3.11.6 interpreter at /Users/brian/.local/share/pyenv/versions/3.11.6/bin/python3.11
+Creating virtualenv at: .venv
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 19:52</div>
+            <div class="timeline-body"><p>I think we ignore these now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-07 19:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

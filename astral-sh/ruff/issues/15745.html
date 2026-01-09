@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLC2801 fix needs parentheses before subscript or attribute access - astral-sh/ruff #15745</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLC2801 fix needs parentheses before subscript or attribute access</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15745">#15745</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-01-25 23:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-01-25 23:11</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/unnecessary-dunder-call/"><code>unnecessary-dunder-call</code> (PLC2801)</a> in Ruff 0.9.3 can change the program’s behavior when the rewritten expression is followed by an attribute access or a subscript access. The fix should wrap the rewritten expression in parentheses in those contexts.</p>
+<pre><code class="language-console">$ cat &gt;plc2801.py &lt;&lt;'#EOF'
+print(1j.__add__(1.0).real)
+print(&quot;x&quot;.__add__(&quot;y&quot;)[0])
+#EOF
+
+$ python plc2801.py
+1.0
+x
+
+$ ruff --isolated check --preview --select PLC2801 plc2801.py --unsafe-fixes --fix
+Found 2 errors (2 fixed, 0 remaining).
+
+$ cat plc2801.py
+print(1j + 1.0.real)
+print(&quot;x&quot; + &quot;y&quot;[0])
+
+$ python plc2801.py
+(1+1j)
+xy
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-01-25 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2025-01-25 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2025-01-25 23:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-01-26 22:59</div>
+            <div class="timeline-body"><p>@dylwil3 @AlexWaygood Happy to fix this. I checked the code, there is already a check and logic for wrapping expression in parens, it's just ignoring attribute access, subscript and function call for some reason as lower precedence, which is not correct. Probably a matter of removing 3 lines + updating a test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-26 23:10</div>
+            <div class="timeline-body"><p>Go for it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @mishamsk by @dylwil3 on 2025-01-26 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15762.html">astral-sh/ruff#15762</a> on 2025-01-27 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-01-27 03:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Go for it!</p>
+</blockquote>
+<p>thanks. done #15762</p>
+<p>not exactly 3 lines though 🙈</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-04 09:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

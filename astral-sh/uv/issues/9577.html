@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Not possible to authenticate into private registries via UV_INDEX env variables - astral-sh/uv #9577</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Not possible to authenticate into private registries via UV_INDEX env variables</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9577">#9577</a>
+        opened by <a href="https://github.com/mkravchenko-nable">@mkravchenko-nable</a>
+        on 2024-12-02 14:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mkravchenko-nable">@mkravchenko-nable</a> on 2024-12-02 14:40</div>
+            <div class="timeline-body"><p>Hello, as it described here <a href="https://docs.astral.sh/uv/configuration/indexes/#searching-across-multiple-indexes">authorize into private registry</a> it should be possible to authorize into private registry, but each time I have same error:</p>
+<p><code>An index URL (https://host.com/example/api/pypi/python-local/simple) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).</code></p>
+<p>In pyproject.toml I have:</p>
+<pre><code>[tool.uv]
+index-strategy = &quot;unsafe-best-match&quot;
+index-url = &quot;https://pypi.org/simple&quot;
+
+
+[[tool.uv.index]]
+name = &quot;private&quot;
+url = &quot;https://host.com/example/api/pypi/python-local/simple&quot;
+</code></pre>
+<p>First of all, I have set two env variables: <code>UV_INDEX_PRIVATE_USERNAME</code> and <code>UV_INDEX_PRIVATE_PASSWORD</code>
+Next I'm trying to do (that bring unauthorized error):</p>
+<p><code>uv pip install -r pyproject.toml</code></p>
+<blockquote>
+<p>If I directly providing user/password into the URL inside pyproject.toml it works as expected.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-02 14:50</div>
+            <div class="timeline-body"><p>I've confirmed that we're setting the credentials here are as expected. It's working on my side. I'd need a more complete reproduction to hep out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-12-02 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-02 14:50</div>
+            <div class="timeline-body"><p>Specifically, I did:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;iniconfig&quot;]
+
+[tool.uv]
+index-strategy = &quot;unsafe-best-match&quot;
+
+[[tool.uv.index]]
+name = &quot;private&quot;
+default = true
+url = &quot;https://pypi-proxy.fly.dev/basic-auth/simple&quot;
+</code></pre>
+<p>Then this worked:</p>
+<pre><code>UV_INDEX_PRIVATE_USERNAME=public UV_INDEX_PRIVATE_PASSWORD=heron cargo run pip install -r pyproject.toml --verbose
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mkravchenko-nable on 2024-12-02 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkravchenko-nable">@mkravchenko-nable</a> on 2024-12-03 09:52</div>
+            <div class="timeline-body"><p>@charliermarsh, thank you for response. I found that if I have same host for different indexies it possible to put only one UV_INDEX_{}<em>USERNAME and UV_INDEX</em>{}_PASSWORD and it work for each one, example:</p>
+<pre><code>[[tool.uv.index]]
+name = &quot;private&quot;
+url = &quot;https://host.com/example/api/pypi/python-local/simple&quot;
+
+[[tool.uv.index]]
+name = &quot;local&quot;
+url = &quot;https://host.com/example/api/pypi/python-local-1/simple&quot;
+</code></pre>
+<p>so here I just can provide:</p>
+<pre><code>UV_INDEX_PRIVATE_USERNAME=user
+UV_INDEX_PRIVATE_PASSWORD=key
+</code></pre>
+<p>and it will also authinificate to index <code>local</code>. That was the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HarshGajraSUNY">@HarshGajraSUNY</a> on 2025-07-29 06:11</div>
+            <div class="timeline-body"><p>@charliermarsh @mkravchenko-nable What if the host is different as you mentioned in your 1st comment? I am currently facing the same issue with 401 unauthorized when I have a private index from GCP and a default index set to pypi.</p>
+<p><code>An index URL (https://host.com/example/api/pypi/python-local/simple) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).</code></p>
+<p>[[tool.uv.index]]
+name= &quot;PYPI&quot;
+url = &quot;https://pypi.org/simple&quot;</p>
+<p>[[tool.uv.index]]
+name = &quot;GCL&quot;
+url = &quot;https://host.pkg.dev/something-project/something-repo/simple&quot;</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

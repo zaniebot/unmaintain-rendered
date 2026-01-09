@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unclear error message: &quot;Found non-required positional argument with a lower index than ...&quot; - clap-rs/clap #5260</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unclear error message: &quot;Found non-required positional argument with a lower index than ...&quot;</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/5260">#5260</a>
+        opened by <a href="https://github.com/RalphDNB">@RalphDNB</a>
+        on 2023-12-19 21:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RalphDNB">@RalphDNB</a> on 2023-12-19 21:15</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.74.1</p>
+<h3>Clap Version</h3>
+<p>4.4.11</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    /// The file you want to use
+    ///
+    /// Use `-` to read from stdin.
+    #[arg(default_value = &quot;-&quot;)]
+    file: String,
+
+    arg2: String,
+}
+
+fn main() {
+    let args = Args::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run</p>
+<h3>Actual Behaviour</h3>
+<p>thread 'main' panicked at /Users/user/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.11/src/builder/debug_asserts.rs:658:17:
+Found non-required positional argument with a lower index than a required positional argument: &quot;file&quot; index Some(1)
+note: run with <code>RUST_BACKTRACE=1</code> environment variable to display a backtrace</p>
+<h3>Expected Behaviour</h3>
+<p>A better clearer error message.
+Maybe something like:</p>
+<blockquote>
+<p>The argument <code>arg2</code> has no default value, but <code>file</code> is a positional arguments, but has a default value.
+This results in a conflict where it is unknown to what variable the value belongs to.</p>
+<p>Possible fix:</p>
+<ol>
+<li>Add a default value for <code>arg2</code> using <code>#[arg(default_value = &quot;&lt;some default value&gt;&quot;)]</code>.</li>
+<li>Remove the default value from <code>file</code>.
+(ideally this would be highlighted like the rust compiler errors (but this might be more difficult))</li>
+</ol>
+</blockquote>
+<h3>Additional Context</h3>
+<p>This error message is very difficult to understand. And it is hard to know what exactly goes wrong and how to fix it.</p>
+<p>Error message in clap code: https://github.com/clap-rs/clap/blob/d092896d61fd73a5467db85eac035a9ce2ddbc60/clap_builder/src/builder/debug_asserts.rs#L660-L661</p>
+<p>And similar: https://github.com/clap-rs/clap/blob/d092896d61fd73a5467db85eac035a9ce2ddbc60/clap_builder/src/builder/debug_asserts.rs#L630-L632</p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;project-name-rs&quot;
+[clap_builder::builder::command]Command::_propagate:project-name-rs
+[clap_builder::builder::command]Command::_check_help_and_version:project-name-rs expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --version
+[clap_builder::builder::command]Command::_propagate_global_args:project-name-rs
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:file
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:arg2
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:version
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+thread 'main' panicked at /Users/&lt;user_name&gt;/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.11/src/builder/debug_asserts.rs:658:17:
+Found non-required positional argument with a lower index than a required positional argument: &quot;file&quot; index Some(1)
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/a28077b28a02b92985b3a3faecf92813155f1ea1/library/std/src/panicking.rs:597:5
+   1: core::panicking::panic_fmt
+             at /rustc/a28077b28a02b92985b3a3faecf92813155f1ea1/library/core/src/panicking.rs:72:14
+   2: clap_builder::builder::debug_asserts::_verify_positionals
+             at /Users/user/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.11/src/builder/debug_asserts.rs:658:17
+   3: clap_builder::builder::debug_asserts::assert_app
+             at /Users/user/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.11/src/builder/debug_asserts.rs:351:5
+   4: clap_builder::builder::command::Command::_build_self
+             at /Users/user/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.11/src/builder/command.rs:4123:13
+   5: clap_builder::builder::command::Command::_do_parse
+             at /Users/user/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.11/src/builder/command.rs:3994:9
+   6: clap_builder::builder::command::Command::try_get_matches_from_mut
+             at /Users/user/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.11/src/builder/command.rs:830:9
+   7: clap_builder::builder::command::Command::get_matches_from
+             at /Users/user/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.11/src/builder/command.rs:701:9
+   8: clap_builder::builder::command::Command::get_matches
+             at /Users/user/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.11/src/builder/command.rs:610:9
+   9: clap_builder::derive::Parser::parse
+             at /Users/user/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.11/src/derive.rs:27:27
+  10: project_name_rs::main
+             at ./src/main.rs:37:16
+  11: core::ops::function::FnOnce::call_once
+             at /rustc/a28077b28a02b92985b3a3faecf92813155f1ea1/library/core/src/ops/function.rs:250:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @RalphDNB on 2023-12-19 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-12-19 21:22</div>
+            <div class="timeline-body"><p>The complexity with this is the assert is independent of the derive API.  It would need to be worded to fit with both APIs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lilygruman">@lilygruman</a> on 2024-04-11 02:07</div>
+            <div class="timeline-body"><p>Just dropping a note in here for anyone else who runs into this:</p>
+<p>The issue is that this error is about the <strong>definition of the struct</strong> in the source code, not the arguments the user did or didn't provide when running the program. Normally, this issue would be a <strong>compiler</strong> error, not a runtime panic, and the panic message doesn't hint at that at all.</p>
+<p>Based on epage's reply, and the panic message itself coming from <code>clap-builder</code>, it seems some non-trivial work would need to be done to detect this at compile time instead of runtime, and doing so would decouple the APIs in an undesirable way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-04-11 02:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Normally, this issue would be a compiler error, not a runtime panic, and the panic message doesn't hint at that at all.</p>
+</blockquote>
+<p>While compile time failures would be preferred, I think asserts should be communicating that its a development problems rather than a user problem.</p>
+<p>Note that we do <a href="https://docs.rs/clap/latest/clap/_derive/_tutorial/chapter_4/index.html">encourage explicitly running <code>debug_asserts</code></a> which would also show that these are independent of the command-line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lilygruman">@lilygruman</a> on 2024-04-11 02:31</div>
+            <div class="timeline-body"><p>That's helpful to know. I'm sure I'm not alone in being caught off-guard by that approach, as I've never run into it before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaimast">@kaimast</a> on 2024-06-04 18:08</div>
+            <div class="timeline-body"><p>I also just ran into this and, for some reason, it was not clear to me that the error was on my side. The error message is fairly clear, but maybe it could be easier to understand if it included a link to this issue or some other page that explains how to resolve it?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

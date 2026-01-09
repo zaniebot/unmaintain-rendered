@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New rule: Prefer in-place operators - astral-sh/ruff #8877</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>New rule: Prefer in-place operators</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8877">#8877</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2023-11-28 19:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2023-11-28 19:29</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>I don't think any linter currently checks for this, although I did open a feature request in those I knew of where this feature might be in scope (https://github.com/MartinThoma/flake8-simplify/issues/188 and https://github.com/dosisod/refurb/issues/310). Whether they accept it, (and who knows when it would be implemented), this is still a check I'd like to see in Ruff as I don't directly use those other linters and autofixing should be possible. If you think this is a viable rule.</p>
+<p>In-place operators lead to more concise code that is still readable. I'm not sure if there's any objective drawbacks (like a common pitfall for certain types). And performance-wise my understanding is that it should be faster (due to the in-place nature) or equivalent (thanks to Python duck-typing that will fallback to  <code>__add__</code> if <code>__iadd__</code> is not implemented).</p>
+<p>Any of the following:</p>
+<pre><code class="language-python">some_string = (
+  some_string
+  + &quot;a veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery long end of string&quot;
+)
+index = index - 1
+a_list = a_list + [&quot;to concat&quot;]
+some_set = some_set | {&quot;to concat&quot;}
+to_multiply = to_multiply * 5
+to_divide = to_divide / 5
+to_cube = to_cube ** 3
+timeDiffSeconds = timeDiffSeconds % 60
+flags = flags &amp; 0x1
+# etc.
+</code></pre>
+<p>Could be re-written as:</p>
+<pre><code class="language-python">some_string += &quot;a veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery long end of string&quot;
+index -= 1
+a_list += [&quot;to concat&quot;]
+some_set |= {&quot;to concat&quot;}
+to_multiply *= 5
+to_divide /= 5
+to_cube **= 3
+timeDiffSeconds %= 60
+flags &amp;= 0x1
+# etc.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-28 19:31</div>
+            <div class="timeline-body"><p>Makes sense to me, I'm surprised this does not exist already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2023-11-28 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-11-28 19:44</div>
+            <div class="timeline-body"><p>I just thought of a special case with string interpolation that idk if should be included:</p>
+<pre><code class="language-python"># from
+base_value = f&quot;{base_value} end of string&quot;
+
+# to
+base_value += &quot; end of string&quot;
+</code></pre>
+<p>Because it would break if <code>base_value</code> is not a <code>str</code> or a type that supports <code>+=</code> with a <code>str</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-28 19:49</div>
+            <div class="timeline-body"><p>We could support that conditional on the ability to determine that the type of <code>base_value</code> is <code>str</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-30 22:21</div>
+            <div class="timeline-body"><p>We could first implement the simple cases of <code>var = var &lt;operator&gt; &lt;expr&gt;</code>. I think this could go into the <code>RUF</code> category. If anyone's interested, I'd be happy to give a look at the implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @dhruvmanila on 2023-11-30 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2023-12-01 11:55</div>
+            <div class="timeline-body"><p>Maybe this should be a separate rule, but there might be an opportunity for some more micro optimizations here. For example, if it were faster, these:</p>
+<pre><code class="language-py">a_list += [&quot;to concat&quot;]
+a_list += [&quot;to concat 1&quot;, &quot;to concat 2&quot;]
+some_set |= {&quot;to concat&quot;}
+some_set |= {&quot;to concat 1&quot;, &quot;to concat 2&quot;}
+# ect.
+</code></pre>
+<p>could potenchally be further rewritten as:</p>
+<pre><code class="language-py">a_list.append(&quot;to concat&quot;)
+a_list.extend((&quot;to concat 1&quot;, &quot;to concat 2&quot;))
+some_set.add(&quot;to concat&quot;)
+some_set.update((&quot;to concat 1&quot;, &quot;to concat 2&quot;))
+# ect.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-12-01 17:46</div>
+            <div class="timeline-body"><p>Increased complexity, may require type information, and I'm not asking for this for a first version / as part of my original feature request, but worth considering: https://github.com/dosisod/refurb/issues/310#issuecomment-1835466992</p>
+<blockquote>
+<p>Because anyone can make their own custom in-place operators, I think it is best to only support built-in types, though there [could] be an option to extend this to all types [...]</p>
+<p>Also, I'd probably add these to your list as well:</p>
+<pre><code class="language-python">a = a or b
+c = c and d
+</code></pre>
+<p>Re-write as:</p>
+<pre><code class="language-python">a |= b
+c &amp;= d
+</code></pre>
+<p>assuming <code>a</code>, <code>b</code>, <code>c</code> and <code>d</code> are <code>bool</code> types.</p>
+</blockquote>
+<hr />
+<blockquote>
+<p>Maybe this should be a separate rule, but there might be an opportunity for some more micro optimizations here. For example, if it were faster, these:</p>
+</blockquote>
+<p>Different rule imo, and may require type information. But worth investigating. Even if the performance is negligible or too variant between Python versions, it could become a readability/preference rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9932.html">astral-sh/ruff#9932</a> on 2024-02-11 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lshi18">@lshi18</a> on 2024-02-11 19:34</div>
+            <div class="timeline-body"><p>Hi, I've made an attempt implementing this rule. Please help to have a review and let me know your thoughts. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-12 03:08</div>
+            <div class="timeline-body"><p>Closed by https://github.com/astral-sh/ruff/pull/9932.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-12 03:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13533.html">astral-sh/ruff#13533</a> on 2024-10-07 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14636.html">astral-sh/ruff#14636</a> on 2024-11-27 16:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

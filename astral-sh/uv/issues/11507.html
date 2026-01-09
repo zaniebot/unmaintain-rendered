@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip cannot add upstream packages to Azure DevOps feed while authenticated - astral-sh/uv #11507</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip cannot add upstream packages to Azure DevOps feed while authenticated</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11507">#11507</a>
+        opened by <a href="https://github.com/thomasaarholt">@thomasaarholt</a>
+        on 2025-02-14 12:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thomasaarholt">@thomasaarholt</a> on 2025-02-14 12:17</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello!</p>
+<p>I have a <a href="https://dev.azure.com/thomasaarholt/thomasaarholt-python/_artifacts/feed/thomas-python-feed">public Azure DevOps feed</a>. It is backed by PyPI. Anyone can install a package that has been added to the feed via <code>pip install</code> or <code>uv pip install</code>. You can see which packages are added to the feed by the &quot;in this feed&quot; tag, e.g. for <a href="https://dev.azure.com/thomasaarholt/thomasaarholt-python/_artifacts/feed/thomas-python-feed/PyPI/scipy/upstreams/1.15.1">scipy</a>.</p>
+<h3>The problem</h3>
+<p>When I am authenticated against the feed using my credentials, I can run <code>pip install &lt;some-package&gt;==&lt;some-version&gt;</code> in order to automatically add an upstream package (typically from PyPI) to the feed, and install it in the venv.</p>
+<p>This works with <code>pip</code>. I am not able to get it to work with <code>uv</code>, even when following the <a href="https://docs.astral.sh/uv/guides/integration/alternative-indexes/#using-keyring">guidelines on using alternative indexes</a>.</p>
+<h3>Repro</h3>
+<p>Here is a minimum repro for uv and pip. I do think you need the dotnet runtime installed for keyring-artifacts to work, but you wouldn't be able to authenticate without my credentials anyway. (For further debugging, you could make a public feed on ADO, it is free and I can help set this up).</p>
+<pre><code class="language-fish"># uv repro
+export UV_INDEX='https://VssSessionToken@pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple/'
+export RUST_LOG=trace;
+uv venv --seed --quiet
+source .venv/bin/activate.fish # activate however you normally do
+uv pip install artifacts-keyring
+uv pip install scipy==1.14.0 --index-url=$UV_INDEX --keyring-provider='subprocess' -v  &amp;&gt; log.txt # this fails
+</code></pre>
+<p><a href="https://gist.github.com/thomasaarholt/97440c1eaf369d13a4998c45cab8ea41">uv log</a></p>
+<pre><code class="language-fish"># pip repro
+export PIP_INDEX='https://pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple/'
+uv venv --seed --quiet
+source .venv/bin/activate.fish # activate however you normally do
+uv pip install artifacts-keyring
+pip install --index-url=$PIP_INDEX scipy==1.14.1 -v &amp;&gt; pip_log.txt # this succeeds
+</code></pre>
+<p><a href="https://gist.github.com/thomasaarholt/2e5c43bde9bd2b4b612ac14674b7f557">pip log</a></p>
+<p>Once pip has run and the package has been added to the index, then uv is able to find the package.</p>
+<h3>Platform</h3>
+<p>Windows 11</p>
+<h3>Version</h3>
+<p>0.15.14</p>
+<h3>Python version</h3>
+<p>3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @thomasaarholt on 2025-02-14 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-14 13:02</div>
+            <div class="timeline-body"><p>Thanks for the logs</p>
+<pre><code>TRACE Fetching metadata for scipy from https://VssSessionToken@pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple/scipy/
+TRACE Sending fresh GET request for https://pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple/scipy/
+TRACE Handling request for https://VssSessionToken@pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple/scipy/
+TRACE Request for https://VssSessionToken@pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple/scipy/ is missing a password, looking for credentials
+TRACE No password in cache for realm VssSessionToken@https://pkgs.dev.azure.com
+TRACE No password in cache for URL https://pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple/scipy/
+DEBUG No netrc file found
+DEBUG Checking keyring for credentials for VssSessionToken@https://pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple/scipy/
+TRACE Checking keyring for URL https://pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple/scipy/
+TRACE Checking keyring for host pkgs.dev.azure.com
+</code></pre>
+<p>I believe the issue is that the Azure keyring plugin won't return credentials for a child URL like <code>https://pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple</code> and instead requires the exact index URL like <code>https://pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi</code>.</p>
+<p>https://github.com/astral-sh/uv/issues/4583 tracks a general fix for this.</p>
+<p>There are duplicate reports at</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/11236</li>
+<li>https://github.com/astral-sh/uv/issues/11391</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thomasaarholt">@thomasaarholt</a> on 2025-02-14 13:21</div>
+            <div class="timeline-body"><p>Fantastic, thank you Zanie. I expected this to be another one on our end with ADO. 😅</p>
+<p>I believe this is currently preventing anyone using <code>uv pip</code> or an uv project with <em>only</em> an Azure feed from getting the latest PyPI packages without somehow running <code>pip install -U</code> for all dependencies intermittently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-14 13:26</div>
+            <div class="timeline-body"><p>Yeah, it's kind of an unfortunate quirk with our authentication model which doesn't special-case index roots. I will try to fix it soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12651.html">astral-sh/uv#12651</a> on 2025-04-03 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-04-11 08:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-29 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13208.html">astral-sh/uv#13208</a> on 2025-04-30 07:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual environment support for `uv run` - astral-sh/uv #3836</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Virtual environment support for `uv run`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3836">#3836</a>
+        opened by <a href="https://github.com/Vigilans">@Vigilans</a>
+        on 2024-05-25 15:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Vigilans">@Vigilans</a> on 2024-05-25 15:02</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>As mentioned in https://github.com/astral-sh/uv/issues/3097, <code>uv run</code> may support working with virtual environment, where:</p>
+<ul>
+<li><code>uv run</code> can specify a venv folder to use that venv for running command</li>
+<li><code>uv run</code> can work without depending on a python project under certain condition (e.g. when a venv folder is specified)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-05-25 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-26 12:05</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 12:55</div>
+            <div class="timeline-body"><p>What about something like this:</p>
+<ul>
+<li>If we discover a workspace, we use the current behavior.</li>
+<li>If we can't discover a workspace, we use our standard Python interpreter discovery, and run in that interpreter. (So, e.g., run in the current venv, or a discovered venv, or whatever you pass in <code>--python</code>.)</li>
+<li>We add an option to mark a <code>pyproject.toml</code> as &quot;not managed by uv&quot; / &quot;not part of a workspace&quot; (like <code>managed = false</code> or <code>workspace = false</code>) so that you can use this in codebases that have a <code>pyproject.toml</code> but want to use the <code>pip</code> API.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vigilans">@Vigilans</a> on 2024-06-26 13:59</div>
+            <div class="timeline-body"><p>The first two rules are fairly reasonable! For the third rule, is https://github.com/astral-sh/uv/issues/3404 and https://github.com/astral-sh/uv/pull/3585 relevant regarding <code>workspace = false</code> option?</p>
+<p>Though I haven't figured out how a <code>pyproject.toml</code> will impact <code>pip</code> API (the <code>uv pip</code> commands?) yet, in <code>uv run</code> it will cause <code>uv</code> to install current project as package, and disabling it may make not much difference once editable build is installed? (btw, I found in my project <code>uv run ls</code> always try to build and reinstall my project, is that intended?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 14:06</div>
+            <div class="timeline-body"><p>I am wondering if <code>workspace = false</code> and <code>managed = false</code> mean different things... You might have a project that's nested in a workspace, but shouldn't be considered <em>part of</em> the workspace, but should <em>still</em> be managed with uv.</p>
+<blockquote>
+<p>btw, I found in my project uv run ls always try to build and reinstall my project, is that intended?</p>
+</blockquote>
+<p>(Do you have dynamic metadata in your project? If so, yes, but we may change that behavior.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vigilans">@Vigilans</a> on 2024-06-26 14:19</div>
+            <div class="timeline-body"><blockquote>
+<p>(Do you have dynamic metadata in your project? If so, yes, but we may change that behavior.)</p>
+</blockquote>
+<p>Yes, we have <code>requirements.txt</code> (generated with <code>uv pip freeze | uv pip compile -</code>) used for <code>pyroject.toml</code> using</p>
+<pre><code>[tool.setuptools.dynamic]
+dependencies = {file = [&quot;requirements.txt&quot;]}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 14:20</div>
+            <div class="timeline-body"><p>Yeah, we have to rebuild your project every time if you have dynamic metadata right now, since we have no way of knowing if it's up-to-date.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4549.html">astral-sh/uv#4549</a> on 2024-06-26 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-26 14:45</div>
+            <div class="timeline-body"><blockquote>
+<p>We add an option to mark a pyproject.toml as &quot;not managed by uv&quot; / &quot;not part of a workspace&quot; (like managed = false or workspace = false) so that you can use this in codebases that have a pyproject.toml but want to use the pip AP</p>
+</blockquote>
+<p>Would this be equivalent to <code>uv run --isolated</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 14:46</div>
+            <div class="timeline-body"><p>Nope! <code>uv run --isolated</code> runs a command in an isolated, ephemeral environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-26 14:50</div>
+            <div class="timeline-body"><p>Ah hm, should <code>--isolated</code> being double duty of ignoring configuration <em>and</em> forcing an ephemeral environment? I think the flag name makes sense for the latter in this command but I worry about expanding the concept / purpose. (I think this is a pretty minor concern)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 14:53</div>
+            <div class="timeline-body"><p>We could remove it and add a dedicated flag (<code>--ephemeral</code> or whatever), but we still need a solution to running in a venv when a <code>pyproject.toml</code> is present.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 14:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah hm, should <code>--isolated</code> being double duty of ignoring configuration and forcing an ephemeral environment?</p>
+</blockquote>
+<p>(This is already how it behaves today, just to clarify.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vigilans">@Vigilans</a> on 2024-06-26 14:59</div>
+            <div class="timeline-body"><blockquote>
+<p>we still need a solution to running in a venv when a pyproject.toml is present.</p>
+</blockquote>
+<p>Should any explicit flag of <code>python interpreter discovery</code> takes precedence over discovered workspace? That enables user to explicitly specify a venv to use it when in a folder with pyproject.toml (but makes the code in the PR more complicated though).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 15:01</div>
+            <div class="timeline-body"><p>Unfortunately <code>--python</code> <em>does</em> have a valid meaning and usage in workspaces. If you run <code>--python 3.8</code>, and the venv uses a mismatched version, we'll re-create it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-26 15:03</div>
+            <div class="timeline-body"><blockquote>
+<p>we still need a solution to running in a venv when a pyproject.toml is present.</p>
+</blockquote>
+<p>Perhaps the answer I'm looking for will fall out of that.</p>
+<p>Given the semantics in Ruff, I'd expect <code>--isolated</code> to ignore the <code>pyproject.toml</code> and other configuration files but not change other other behavior like ignoring existing environments. I designed the <code>uv run</code> isolated feature purely to do the latter but yeah it ended up doing both because it's the obvious flag name. I don't think the behavior is unreasonable though. I need to think a bit more about the <code>pyproject.toml</code>-not-a-workspace design :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 15:04</div>
+            <div class="timeline-body"><p>Yeah, if <code>--isolated</code> respected an existing venv, then we'd probably find ourselves wanting a flag to do what <code>--isolated</code> does now.</p>
+<p>Let me know your thoughts when you can, this work is blocked on feedback on the ideas I proposed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vigilans">@Vigilans</a> on 2024-06-26 15:12</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd expect --isolated to ignore the pyproject.toml and other configuration files but not change other other behavior like ignoring existing environments.</p>
+</blockquote>
+<p>I think this will be a very useful behavior. For end-users, implicit would help, while for scripts explicitness helps much.</p>
+<p>For my use case, I majorly use <code>conda run</code>/<code>uv run</code> in automated shell scripts, especially in Dockerfile where activating an environment is not convenient, while explicitly specifying an environment to run is a more working solution.</p>
+<p>So, for such scripts, I'd expect an explicit flag (<code>--isolated</code> or something) to tell <code>uv</code> to consistently run in project mode / venv mode, without taking care of what current directory <code>uv</code> is running in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-26 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 21:33</div>
+            <div class="timeline-body"><p>We now fallback to virtual environments if you're not in a project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-26 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4565.html">astral-sh/uv#4565</a> on 2024-06-27 11:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

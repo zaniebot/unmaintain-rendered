@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File path not clickable in PyCharm - astral-sh/ruff #19983</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>File path not clickable in PyCharm</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19983">#19983</a>
+        opened by <a href="https://github.com/CorneiZeR">@CorneiZeR</a>
+        on 2025-08-19 07:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CorneiZeR">@CorneiZeR</a> on 2025-08-19 07:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>After upgrading from <code>ruff==0.12.8</code> to <code>ruff==0.12.9</code>, the default output format of ruff check no longer includes the file path and position.</p>
+<h1>Steps to reproduce</h1>
+<pre><code class="language-bash">uv sync -p ruff==0.12.8
+ruff check .
+</code></pre>
+<h1>Output</h1>
+<pre><code class="language-bash">common/decorators.py:16:9: ANN202 Missing return type annotation for private function `wrapper`
+   |
+15 |     @wraps(func)
+16 |     def wrapper(self: object, request: Request, *args: Any, **kwargs: Any):
+   |         ^^^^^^^ ANN202
+17 |         try:
+18 |             return func(self, request, *args, **kwargs)
+   |
+   = help: Add return type annotation
+
+Found 1 error.
+</code></pre>
+<hr />
+<h1>New version</h1>
+<pre><code class="language-bash">uv sync -p ruff==0.12.9
+ruff check .
+</code></pre>
+<h1>Output</h1>
+<pre><code class="language-bash">ANN202 Missing return type annotation for private function `wrapper`
+  --&gt; common/decorators.py:16:9
+   |
+15 |     @wraps(func)
+16 |     def wrapper(self: object, request: Request, *args: Any, **kwargs: Any):
+   |         ^^^^^^^
+17 |         try:
+18 |             return func(self, request, *args, **kwargs)
+   |
+help: Add return type annotation
+
+Found 1 error.
+</code></pre>
+<h1>Expected behavior</h1>
+<p>File path and position should be shown in the default output, same as in <code>0.12.8</code>.</p>
+<p><strong>common/decorators.py:16:9</strong>: ANN202...</p>
+<hr />
+<h1>Notes</h1>
+<p>With <code>--output-format=concise</code> the file path is still printed:</p>
+<pre><code class="language-bash">common/decorators.py:16:9: ANN202 Missing return type annotation for private function `wrapper`
+</code></pre>
+<h3>Version</h3>
+<p>0.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CorneiZeR">@CorneiZeR</a> on 2025-08-19 07:55</div>
+            <div class="timeline-body"><p><img width="817" height="578" alt="Image" src="https://github.com/user-attachments/assets/5ddc2394-ffa2-4cb7-adc8-f4521931c73f" />
+Hmm, I wasn't paying attention, you just changed the format, and PyCharm hasn't had time to get used to the new format yet.</p>
+<p>Closing the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CorneiZeR on 2025-08-19 07:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-19 13:21</div>
+            <div class="timeline-body"><p>Sorry for the trouble here. We didn't expect this to be a disruptive change, but it seems that more programs are parsing our full output than expected (https://github.com/astral-sh/ruff/issues/19966 as another example). It's probably not very helpful for PyCharm, but <a href="https://github.com/rust-lang/rust-mode/blob/9915b3a585a7a75e9126df9e0e9d1df8057ae3cf/rust-compile.el#L12-L23">this</a> is the regex used in the <code>rust-mode</code> for Emacs (with the many double escapes typical of Emacs regexes). Our new formatting should closely match that of rustc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Danipulok">@Danipulok</a> on 2025-08-20 04:08</div>
+            <div class="timeline-body"><p>@ntBre I also had a similar issue. Thanks a lot for the response, even though the issue got closed! I tried to debug how Pycharm highlights file paths in the console window, here’s some helpful (maybe) info:</p>
+<p>Pycharm highlights file paths only if:</p>
+<ol>
+<li>Files exist (absolute or relative path);</li>
+<li>There are no special symbols before file name (e.g., &quot;&lt;&gt;|&quot; etc.)</li>
+</ol>
+<p>And because the <code>ruff</code> output format is:
+<code>—&gt; file.py:line</code>
+It &quot;bugs&quot; because of <code>&gt;</code></p>
+<p>I tried searching for a plugin in Pycharm for this, and only found partially working one. But unfortunately it handles only absolute paths or paths starting with <code>/</code>, so it doesn’t help in this case</p>
+<p>Here’s the issue I created for that plugin, maybe author will change the regex. And there are also some examples and screenshots of how Pycharm handles file paths:
+https://github.com/Shadow-Devil/output-link-filter/pull/1</p>
+<p>Including that a lot of people are using Pycharm (I suppose) and use <code>ruff</code> on a daily basis, maybe there will be some changes/suggestions for <code>ruff</code> users?</p>
+<p>I thought about a global config file, but it’s not convenient, since you have to put <code>-c ~/.ruff.toml</code> to every run. And it’s not really project-related to put <code>output_format</code> option inside each <code>pyproject.toml</code> IMHO.</p>
+<p>The only kinda good solution I thought of without making breaking changes is adding env variable like <code>RUFF_OUTPUT_PATH</code>. Or maybe someone could create some plugin for the Pycharm for this? Because unfortunately in my experience, Pycharm is <em>really</em> slow with updates and I doubt they could release a change in nearest half a year at least</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-20 13:54</div>
+            <div class="timeline-body"><p>I was writing up some suggestions for configuring Ruff as an external tool in PyCharm based on our  <a href="https://docs.astral.sh/ruff/editors/setup/#pycharm">docs</a>, but I'm realizing that this might be an embedded terminal inside of PyCharm? Which I'm guessing isn't affected by the tool configuration.</p>
+<p>This is a bit of a hack, but one option to avoid setting the output format would be some kind of shell alias like this:</p>
+<pre><code class="language-shell">function myruff {
+    CLICOLOR_FORCE=1 ruff &quot;$@&quot; | sed 's/ .*-.*-.*&gt;.* //'
+}
+</code></pre>
+<p>The combination of <code>CLICOLOR_FORCE</code> and all of the wildcards in the sed regex should preserve the escape characters for colorizing the output while stripping the <code>--&gt;</code> from the filename.</p>
+<p>This could also potentially be a useful feature for the <a href="https://github.com/koxudaxi/ruff-pycharm-plugin">ruff-pycharm-plugin</a> since it sounds like plugins can add filters on the console output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Danipulok">@Danipulok</a> on 2025-08-20 20:17</div>
+            <div class="timeline-body"><p>@ntBre thanks a lot! This works!</p>
+<p>I guess I will create an issue in the plugin you have mentioned. It would be better and more convenient for the users, you are completely right</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../koxudaxi/ruff-pycharm-plugin/issues/614.html">koxudaxi/ruff-pycharm-plugin#614</a> on 2025-08-20 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ty/issues/1079.html">astral-sh/ty#1079</a> on 2025-08-21 10:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-21 11:06</div>
+            <div class="timeline-body"><p>I think we should keep this issue open as it is clearly a regression</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[0.12.9] File path not shown in default output of ruff check" to "[0.12.9] File path not clickable in PyCharm" by @MichaReiser on 2025-08-21 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[0.12.9] File path not clickable in PyCharm" to "File path not clickable in PyCharm" by @MichaReiser on 2025-08-21 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-08-21 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @MichaReiser on 2025-08-21 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-08-21 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-21 11:08</div>
+            <div class="timeline-body"><p>The links are clickable in RustRover. I think our best course of action here is to open an issue on the PyCharm repository</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-21 11:19</div>
+            <div class="timeline-body"><p>I created https://youtrack.jetbrains.com/issue/PY-83546/Ruff-File-paths-are-no-longer-clickable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kxrob">@kxrob</a> on 2025-08-22 19:11</div>
+            <div class="timeline-body"><p>I have this problem in other contexts. Not worth discussing them specifically. But:</p>
+<p>IMO, this is not acceptable to change the default format away from like</p>
+<p><code>&lt;LINESTART&gt;common/decorators.py:16:9:  INFOEXT</code></p>
+<p>That's a widely used and efficient to read / grasp / parse standard of most outputting tools and any parsing editors/debuggers/IDEs can understand it. Most of them do not anytime soon have a special case parser for such a new funky default format. There is even extra wasteful space with extra line break to be aware of to parse the INFOTEXT.</p>
+<p>To put the issue location info some where nest far after the INFOTEXT is very hard for humans to perceive too.</p>
+<p>Why should a python tool do &quot;Our new formatting should closely match that of rustc.&quot; - and even disruptively ??
+If anything, then rustc, if it really has such an odd output format, should the other way around adopt a common default format IMO :-)</p>
+<p>Such new format should be optional, if needed.</p>
+<p>Even before ruff 0.12.8 outputted certain warnings in a different format, which is also hardly parsable:</p>
+<p><code>warning: Invalid </code># noqa<code>directive on somefile.py:12: expected</code>:<code>followed by a comma-separated list of codes (e.g.,</code># noqa: F401, F841<code>). </code>
+A more general parser for many tools needs to detect filenames with spaces. Such strang format is rather impossible to parse unless the parser has a billion special regex'es for any different tool and restricted filename convention subcase ...
+(And Python scripts filenames can principally contain spaces.)</p>
+<p>Please restore the default output format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-22 20:28</div>
+            <div class="timeline-body"><p>I totally understand the frustration and that this is a different format from many other tools. If we had realized the impact this would have on tools like editors, we also would have held off until a minor release instead of releasing this in a patch version.</p>
+<p>That said, there are good reasons to keep this format other than just that rustc also uses it. In particular, one of the main motivations is to work well with the new sub-diagnostic system we've added. An example of this just went out in the last release for F811:</p>
+<pre><code>F811 Redefinition of unused `bar` from line 6 
+  --&gt; F811_0.py:10:5                          
+   |                                          
+10 | def bar():                               
+   |     ^^^ `bar` redefined here             
+11 |     pass                                 
+   |                                          
+  ::: F811_0.py:6:5                           
+   |                                          
+ 5 | @foo                                     
+ 6 | def bar():                               
+   |     --- previous definition of `bar` here
+ 7 |     pass                                 
+   |                                          
+help: Remove definition: `bar`                
+</code></pre>
+<p>These are both part of the same diagnostic, with the <code>--&gt;</code> line signaling the start of the diagnostic and the <code>:::</code> divider showing a secondary piece of the diagnostic that can be in a different part of the file. Ruff still only analyzes a single file at a time, but this generalizes to diagnostics pointing at other files in the case of rustc and ty, which also uses this diagnostic system. Ruff should be able to use that functionality one day too.</p>
+<p>There are also some additional motivations in the Rust <a href="https://rust-lang.github.io/rfcs/1644-default-and-expanded-rustc-errors.html">RFC</a> that proposed this format for Rust, such as placing the focus of the diagnostic on the error code rather than the line number.</p>
+<p>Again, I know that this is jarring. I wasn't writing Rust in 2016 when the change in this RFC went into effect, but I remember being quite disoriented when similar changes came to the <code>panic</code> message format more recently. My editor regexes also broke then, so I've felt that pain point myself.</p>
+<p>However, I now quite prefer the new error format, and we're hoping Ruff users will like it too, even if it's uncomfortable initially. And if you need to parse Ruff's output, you can still use the <code>concise</code> output format, which has the same format as before, or one of the structured output formats like JSON.</p>
+<p>We also agree with you about the different formatting of the warnings. Our new diagnostic system has support for different error severities, and I believe we should be able to turn these into real diagnostics with the same format as lint rules, as well as support for all of the <code>--output-format</code> options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Cjkjvfnby">@Cjkjvfnby</a> on 2025-08-25 14:30</div>
+            <div class="timeline-body"><p>For myself, I mitigated it by adding <code>RUFF_OUTPUT_FORMAT=pylint</code> to PyCharm terminal (Settings -&gt; Tools -&gt; Terminal -&gt; Environment variables,  start new terminal).</p>
+<p>This has the same effect as <code>--output-format=pylint</code>.</p>
+<p>However, I haven't found a way to include it in the <code>pyproject.toml</code>, to solve it for the whole team.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Danipulok">@Danipulok</a> on 2025-08-25 14:37</div>
+            <div class="timeline-body"><p>@Cjkjvfnby there is an option for this in <code>pyproject.toml</code>: https://docs.astral.sh/ruff/settings/#output-format</p>
+<p>However I did not see <code>RUFF_OUTPUT_FORMAT</code> anywhere, so it's kind of funny that each of us only saw one method of solving this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kxrob">@kxrob</a> on 2025-08-25 16:01</div>
+            <div class="timeline-body"><blockquote>
+<p>one of the main motivations is to work well with the new sub-diagnostic system we've added. An example of this just went out in the last release for F811</p>
+</blockquote>
+<p>In one case I have control over the regex. And watched a few days how I typically use things.
+Overall, I can say, that the most important thing I learned here is that the 'concise' output format even exists 😃 - and is my default or rather only format I really use - despite the updated regex.</p>
+<p>Already with v0.12.8, the verbose output of 10 lines (now 11) per error was basically cluttering the limited display space (typically in a small output / console / message pane) with unnecessary noise, compared to pyflakes / flake8 / pylint default output format. Making it difficult to overlook and navigate.</p>
+<p>I would be interested how many people actually read the lots of verbose text at all more than once per year or so?</p>
+<p>The errors are typically trivial in 99.9+% of cases and clear with minimal wording, particularly with Python, for any programmer with minimal experience, and the file location(s) and click on jump positions are the primary and only thing mattering for me - to go fix it.</p>
+<p>In C and possibly Rust there may be a little more usecases for multiple 'connected' infos and sometimes multiple jump marks with complex types etc.
+Redefinition error in e.g. GCC by default looks like this:</p>
+<pre><code>x.c: In function 'main':
+x.c:42:8: error: redefinition of 'x'
+   42 |    int x = 77;
+      |        ^
+x.c:27:8: note: previous definition of 'x' with type 'int'
+   27 |    int x = (a &amp;&amp; 1) | (b &amp;&amp; 1) &lt;&lt; 3;
+      |        ^
+</code></pre>
+<p>That's fairly simple, clear, and compatible, not breaking things. And 'wasting' only 3 lines per location. And is still way more readable.
+(IMO in trivial unambiguous cases, hence most of the time, the extra column position mark line(s) should be omitted automatically as well)</p>
+<p>The programmer of the format may have different ideas about the importance of verbose fancy output. Yet I doubt that the new, or even former extremely verbose and space wasting format is a good and efficient format at all for most users, and would possibly better be a verbose level format on demand. Thats the usual way in most other tools: high attention consuming verbosity on demand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-08-27 03:00</div>
+            <div class="timeline-body"><p>As it happens, I <a href="https://github.com/InSyncWithFoo/ryecharm/commit/8adc485fc2e755841c8229bfecfaa080556333fd">implemented this feature recently</a> in RyeCharm.</p>
+<p>It hasn't been documented or released yet, but I'll get to that this weekend. Plus, <a href="https://plugins.jetbrains.com/plugin/25230-ryecharm/versions/nightly">nightly releases</a> are always available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Danipulok">@Danipulok</a> on 2025-08-27 03:07</div>
+            <div class="timeline-body"><p>@InSyncWithFoo wow, thanks a lot!
+Didn’t know about this plugin, but the comments seem really nice
+Will check it for sure
+Thanks a lot for the plugin and for the feature!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/provinzkraut">@provinzkraut</a> on 2025-12-13 13:37</div>
+            <div class="timeline-body"><p>Are there hopes of any solution that does not require custom IDE setup / plugins, i.e. to simply restore the old behaviour? This is breaking a lot of people's workflows, and we've held off upgrading ruff at our organisation for this reason. IMO mandating a specific IDE setup for a command line tool to work isn't scalable, and I would really appreciate if ruff could continue working as expected out of the box.</p>
+<blockquote>
+<p>However, I now quite prefer the new error format, and we're hoping Ruff users will like it too, even if it's uncomfortable initially.</p>
+</blockquote>
+<p>I think the issue isn't as much about preferring the old over the new format visually. It's that it's breaking existing tools. Being able to navigate with a simple click to the source of the error beats any visual improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Danipulok">@Danipulok</a> on 2025-12-13 13:49</div>
+            <div class="timeline-body"><p>@provinzkraut, a lot of time has passed, and if nothing has been done yet, I doubt anything will. It seems if you want a specific format, you have to rely on &quot;output_format&quot;. About existing tools, they have to be upgraded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/provinzkraut">@provinzkraut</a> on 2025-12-29 12:36</div>
+            <div class="timeline-body"><p>@MichaReiser any updates on this? This is still broken for the majority of PyCharm users by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-29 12:44</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/MichaReiser">@MichaReiser</a> any updates on this? This is still broken for the majority of PyCharm users by default.</p>
+</blockquote>
+<p>I don't think so. You can upvote https://youtrack.jetbrains.com/issue/PY-83546/Ruff-File-paths-are-no-longer-clickable here to help the JetBrains team prioritize the issue.</p>
+<p>@KotlinIsland is there something we can do on our end to help resolving this issue in PyCharm?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/provinzkraut">@provinzkraut</a> on 2025-12-29 14:20</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p><a href="https://github.com/MichaReiser">@MichaReiser</a> any updates on this? This is still broken for the majority of PyCharm users by default.</p>
+</blockquote>
+<p>I don't think so. You can upvote https://youtrack.jetbrains.com/issue/PY-83546/Ruff-File-paths-are-no-longer-clickable here to help the JetBrains team prioritize the issue.</p>
+</blockquote>
+<p>Hm. So this will definitely not be addressed from ruff's side? i.e. it's a no to <a href="https://github.com/astral-sh/ruff/issues/19983#issuecomment-3649441914">this</a>?</p>
+<p>That would be a bit disappointing to be honest. It worked before, and due to an update to ruff it no longer works. So while I understand the intent behind the change, and do agree that it <em>would</em> be great if it worked, it doesn't feel entirely correct to put the ball in PyCharm's court only. To me, as an end user at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-29 14:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Hm. So this will definitely not be addressed from ruff's side? i.e. it's a no to https://github.com/astral-sh/ruff/issues/19983#issuecomment-3649441914?</p>
+</blockquote>
+<p>I consider it unlikely, given that it is an issue with JetBrains IDEs only (and the format is supported within RustRover). But we'll explore alternatives if it's a definitive no from the JetBrains side.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Danipulok">@Danipulok</a> on 2025-12-29 14:32</div>
+            <div class="timeline-body"><p>Well, the alternative is using plugin for PyCharm. I don't think going back is possible now after so much time. And this is actually an PyCharm issue, I agree with that. All we (PyCharm) users can do it upvote related issue and install a plugin (which is an upgrade anyway)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-12-29 15:56</div>
+            <div class="timeline-body"><p>I'm going to look into this soon when I have capacity, hopefully will be available soon</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

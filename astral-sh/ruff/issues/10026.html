@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keep single-line signatures when body is an Ellipsis (`...`) in `.py` files - astral-sh/ruff #10026</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Keep single-line signatures when body is an Ellipsis (`...`) in `.py` files</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10026">#10026</a>
+        opened by <a href="https://github.com/etienneschalk">@etienneschalk</a>
+        on 2024-02-18 13:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/etienneschalk">@etienneschalk</a> on 2024-02-18 13:39</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h2>A minimal code snippet that reproduces the bug.</h2>
+<p>File name: <code>format_ruff.py</code></p>
+<p>Before ruff:</p>
+<pre><code class="language-python">class MyClass:
+    def __add__(self, other: int) -&gt; int: ...
+</code></pre>
+<p>After ruff:</p>
+<pre><code class="language-python">class MyClass:
+    def __add__(self, other: int) -&gt; int:
+        ...
+</code></pre>
+<h2>The command you invoked</h2>
+<pre><code class="language-bash">ruff format format_ruff.py 
+</code></pre>
+<p>Note: in real-life scenario, one might have installed the Ruff extension on VSCode, opened a file with many stubs like in the minimal code snippet, and see them all formatted, introducing unwanted code change, which can be annoying for version control.</p>
+<p>This might also slow down ruff adoption in existing large code bases where the case mentioned above happens a lot.</p>
+<h2>The current Ruff settings</h2>
+<p>No overriden settings. I ran a <code>pip install ruff</code> then ran the command above</p>
+<h2>The current Ruff version</h2>
+<pre><code class="language-bash">ruff --version
+ruff 0.2.2
+</code></pre>
+<h2>What I would like</h2>
+<p>A way to opt-out of de-inlining the Ellipsis (<code>...</code>) in stubs. I have searched in documentation without finding such an option. I browsed the following issues (in Links section).</p>
+<p>An option could be:</p>
+<pre><code class="language-toml">[tool.ruff.format]
+keep-single-line-ellipsis = true
+</code></pre>
+<h2>Links</h2>
+<p>Related Issues:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/issues/5822 -&gt; It seems the solution only applied to <code>.pyi</code> files, not <code>.py</code> ; I would like the option to be activable for all types of files.</li>
+<li>https://github.com/psf/black/issues/1797 (referred to in the issue above)</li>
+</ul>
+<p>Related PRs:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/pull/6592 (exposes the same situation described in this issue! it seems to only apply to <code>.pyi</code> files, but maybe it could be generalized to <code>.py</code>?)</li>
+<li>https://github.com/astral-sh/ruff/pull/6501</li>
+</ul>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pydata/xarray/pulls/8761.html">pydata/xarray#8761</a> on 2024-02-18 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-18 15:50</div>
+            <div class="timeline-body"><p>Thanks for the excellent writeup! We've implemented your desired behavior but it's currently only applied when you format your code with <code>--preview</code> mode enabled as you can see here https://play.ruff.rs/6cc50dba-b5ae-4dea-9f58-14b179932e65.</p>
+<p>We hope to promote the new formatting to stable in this month, but you can already start using it if you enable <code>ruff.format.preview = true</code> or call <code>ruff format --preview</code></p>
+<p>Let me know if that works for you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/etienneschalk">@etienneschalk</a> on 2024-02-18 16:35</div>
+            <div class="timeline-body"><p>Hello, thanks for you answer!</p>
+<p>I ran a <code>pre-commit run --all</code> after enabling the <code>preview</code> flag in <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.ruff.format]
+preview = true
+</code></pre>
+<p>It puts back the Ellipses back on their single line :+1:</p>
+<p>However, it also brings new changes, mainly compressing multiple braces in a javascript formatting style.</p>
+<p>Excerpt from the xarray repo:</p>
+<pre><code class="language-python">-        self.ds = Dataset(
+-            {
+-                &quot;a&quot;: ((&quot;x&quot;, &quot;y&quot;), np.ones((300, 400))),
+-                &quot;b&quot;: ((&quot;x&quot;, &quot;y&quot;), np.ones((300, 400))),
+-            }
+-        )
++        self.ds = Dataset({
++            &quot;a&quot;: ((&quot;x&quot;, &quot;y&quot;), np.ones((300, 400))),
++            &quot;b&quot;: ((&quot;x&quot;, &quot;y&quot;), np.ones((300, 400))),
++        })
+</code></pre>
+<p>Even though I personally like this new formatting (it looks like javascript formatting, is more concise, and saves  a level of indentation), I would still like to get more granularity inside of the <code>preview</code> flag, to choose which features to opt-in (orthogonal configuration), reducing code diff at the same time in a migration context.</p>
+<p>According to the <a href="https://docs.astral.sh/ruff/preview/#enabling-preview-mode">documentation of Preview</a> we can select rules for the linter with <code>explicit-preview-rules = true</code>, however I cannot find an equivalent for the formatter. Is there a &quot;formatting rule&quot; concept, equivalent to the &quot;linting rules&quot;, that would enable me to opt-in only the Ellipsis formatting rule?</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-18 16:55</div>
+            <div class="timeline-body"><p>That makes sense. There's no such granular opt-in to preview formatting. It's all or nothing, similar to the formatter itself which only provides very few configuration nobs.</p>
+<p>For preview, this is especially important because it ensures that users give feedback to all preview styles and don't just disable the styles they don't like. It prevents situations where all users disabled a controversial style change but we decide releasing it because we never received any negative feedback on the style.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/etienneschalk">@etienneschalk</a> on 2024-02-18 17:03</div>
+            <div class="timeline-body"><p>Okay, I fully understand the point of having a single preview style!</p>
+<p>Thanks a lot for the help on that topic!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-18 17:10</div>
+            <div class="timeline-body"><p>I'll close this issue. You can follow https://github.com/astral-sh/ruff/issues/8678 to get notified when we promote the new preview styles (The style you're calling out won't be promoted)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-18 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11676.html">astral-sh/ruff#11676</a> on 2024-06-01 08:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

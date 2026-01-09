@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-hierarchical subcommands / positional subcommands - clap-rs/clap #1407</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Non-hierarchical subcommands / positional subcommands</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1407">#1407</a>
+        opened by <a href="https://github.com/andreycizov">@andreycizov</a>
+        on 2019-01-27 13:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/andreycizov">@andreycizov</a> on 2019-01-27 13:29</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p><code>rustc 1.32.0 (9fda7c223 2019-01-16)</code></p>
+<h3>Affected Version of clap</h3>
+<p><code>2.32.0</code></p>
+<h3>Bug or Feature Request Summary</h3>
+<p>I would like to be able to create a set an argument parsers for an utility that takes a list of commands to specify a list of input formats (let's call them <code>IFs</code>) and the set of commands that specify the output formats (<code>OFs</code>).</p>
+<p>Currently, in order to do that I would need to create a whole tree of subcommands independently for each <code>IF</code> and for each <code>OF</code>. It doesn't seem to be an issue, but the output of <code>--help</code> would require to always specify at least one of the <code>IFs</code> in order to see the outputs of duplicated <code>OFs</code> in each of the <code>IFs</code> - that doesn't make for a user-friendly experience.</p>
+<p>I come from python where <code>argparse</code> module allows you to do that: instead of specifying subcommands on the root parser - they simply return an instance of <code>SubCommands</code> that allows you to then specify the subcommands for that specific positional subcommand group.</p>
+<h3>Current Behaviour</h3>
+<p>Given <code>IFs</code> of <code>xml, csv, txt</code> and <code>OFs</code> of <code>xml, csv, txt</code>, the only way to specify those as subcommands would be (showing the output of the <code>--help</code>)</p>
+<p><code>IFs</code> help</p>
+<pre><code class="language-shell">&gt;&gt; convert --help
+USAGE:
+    convert [SUBCOMMAND]
+
+SUBCOMMANDS:
+    xml      desc_a
+    csv     desc_b
+    txt     desc_c
+</code></pre>
+<p>The going down to <code>OFs</code>:</p>
+<pre><code class="language-shell">&gt;&gt; convert xml --help
+USAGE:
+    convert xml [SUBCOMMAND]
+
+SUBCOMMANDS:
+    xml      desc_a
+    csv     desc_b
+    txt     desc_c
+</code></pre>
+<p>As is shown above, the output of every sub-sub-command would be the same regardless of what had been picked in the sub-command.</p>
+<h3>Expected Behavior Summary</h3>
+<pre><code class="language-shell">&gt;&gt; convert --help
+USAGE:
+    convert [INPUT] [OUTPUT]
+
+INPUT_SUBCOMMANDS:
+    xml      desc_a
+    csv     desc_b
+    txt     desc_c
+
+OUTPUT_SUBCOMMANDS:
+    xml      desc_a
+    csv     desc_b
+    txt     desc_c
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @CreepySkeleton on 2020-02-01 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: hard</span> added by @CreepySkeleton on 2020-02-01 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @CreepySkeleton on 2020-02-01 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/392.html">TeXitoi/structopt#392</a> on 2020-05-16 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/112.html">epage/clapng#112</a> on 2021-12-06 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> removed by @epage on 2021-12-08 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2021-12-08 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2021-12-08 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 19:45</div>
+            <div class="timeline-body"><p>I know its been a while since you've posted on this, so sorry about this.</p>
+<p>I'm assuming that there are args specific to the input and output subcommands that you want specific ordering for and that is why you need to use subcommands rather than positional arguments with <code>possible_values</code>.  Is that correct?</p>
+<blockquote>
+<p>I come from python where argparse module allows you to do that: instead of specifying subcommands on the root parser - they simply return an instance of SubCommands that allows you to then specify the subcommands for that specific positional subcommand group.</p>
+</blockquote>
+<p>Have an example?  I've used argparse but not familiar with this functionality.  I'm curious to see how other libraries handle this as this adds a certain level of complexity</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-hard</span> removed by @epage on 2021-12-09 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-author</span> added by @epage on 2021-12-09 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-11 01:12</div>
+            <div class="timeline-body"><p>Forget to tag this as related to #2222. Maybe even a duplicate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-12 03:18</div>
+            <div class="timeline-body"><p>I think they are slightly different.</p>
+<p>In #2222, the request is for the following to be equivalent</p>
+<pre><code class="language-bash">$ cmd start stop
+$ cmd staet &amp;&amp; cmd stop
+</code></pre>
+<p>While this would have</p>
+<pre><code>$ cmd xml --path ./in.xml xml --path ./out,.xml
+</code></pre>
+<p>If we applied #2222's reasoning, this would run the <code>xml</code> command twice but the request here is for the two <code>xml</code> commands to be different, with different args and behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-11 17:31</div>
+            <div class="timeline-body"><p>btw if the main concern is the help output, the user can provide that directly.  Maintaining that is annoying.  https://github.com/clap-rs/clap/issues/2913 and https://github.com/clap-rs/clap/issues/2914 would allow custom dynamic help generation.</p>
+<p>For now, I'm leaning towards that being our suggested route forward as this seems fairly specialized with a degree of its own complications.  If there are concerns about that, let us know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-01-11 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-author</span> removed by @epage on 2022-01-11 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-01-11 18:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

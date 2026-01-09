@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Better suggestions for shorter subcommand misspellings - clap-rs/clap #6011</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Better suggestions for shorter subcommand misspellings</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/6011">#6011</a>
+        opened by <a href="https://github.com/samueltardieu">@samueltardieu</a>
+        on 2025-05-23 08:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/samueltardieu">@samueltardieu</a> on 2025-05-23 08:19</div>
+            <div class="timeline-body"><p>(Some)? shorter subcommands don't seem to get useful suggestions. For example, adding this test in <code>clap_builder/src/parser/features/suggestions.rs</code> fails (&quot;gti&quot; is not corrected into &quot;git&quot;):</p>
+<pre><code class="language-rust">        let p_vals = [&quot;git&quot;];
+        assert_eq!(
+            did_you_mean(&quot;gti&quot;, p_vals.iter()),
+            vec![&quot;git&quot;],
+        );
+</code></pre>
+<p>However, &quot;gti&quot; is corrected into (only) &quot;util&quot; even if &quot;git&quot; exists, and this test succeeds</p>
+<pre><code class="language-rust">        let p_vals = [&quot;git&quot;, &quot;util&quot;];
+        assert_eq!(
+            did_you_mean(&quot;gti&quot;, p_vals.iter()),
+            vec![&quot;util&quot;],
+        );
+</code></pre>
+<p>The Jaro similarity between &quot;git&quot; and &quot;gti&quot; is 0.555…, and clap uses a threshold of 0.7. Should the threshold be made variable depending on the length of the input string? Or should a different algorithm (Levenshtein? &quot;util&quot; and &quot;git&quot; would get the same score) be used in some cases?</p>
+<p>Context: noticed when I mistyped <code>jj git fetch</code> as <code>jj gti fetch</code> and it suggested me to use <code>jj util</code> instead of <code>jj git</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-05-23 14:16</div>
+            <div class="timeline-body"><p>In #4668, we switched from Jaro-Winkler, to Jaro though the bug ix fixed, so we could switch back.</p>
+<p>We've been using &quot;Jaro-Winkler&quot; from the beginning, #103.</p>
+<p>I played with different algorithms and I'm not sure what a good route to go is.  On short strings, edit distance can also cause us problems.
+https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=0a31a7cf27424db68c381c338d1a2a7c</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samueltardieu">@samueltardieu</a> on 2025-05-23 17:08</div>
+            <div class="timeline-body"><p>Jaro-Winkler divided by Damerau-Levenshtein seems to beat others on those samples, but it feels like black magic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2025-11-06 19:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

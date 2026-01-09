@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync` gets stuck if the index and lockfile URLs are not reachable and there are dynamic fields in pyproject - astral-sh/uv #8074</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync` gets stuck if the index and lockfile URLs are not reachable and there are dynamic fields in pyproject</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8074">#8074</a>
+        opened by <a href="https://github.com/mgab">@mgab</a>
+        on 2024-10-10 08:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mgab">@mgab</a> on 2024-10-10 08:27</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<h2>Problem description</h2>
+<p><code>uv sync</code> gets stuck (I waited for more than 5 minutes before killing it) if:</p>
+<ul>
+<li>there are dynamic fields in pyproject (I tried with the version)</li>
+<li>the index URL with highest priority is not reachable (either <code>extra-index-url</code> or <code>index-url</code>, either in <code>~/.config/uv/uv.toml</code> or in <code>pyproject.toml</code>)</li>
+<li>the URLs in the lockfile are not reachable</li>
+</ul>
+<h2>Steps to reproduce:</h2>
+<ul>
+<li>make sure you do not have any index url configured</li>
+<li>execute <code>uv sync</code> in a directory with this <a href="https://github.com/user-attachments/files/17324856/pyproject.toml.txt">pyproject.toml.txt</a> and this <a href="https://github.com/user-attachments/files/17324857/uv.lock.txt">uv.lock.txt</a> files (removing the <code>.txt</code> suffix I had to add so that github allowed me to upload the files)</li>
+</ul>
+<p>If you change the url to a responsive one, it will fail with an error because there will be no git repository to get the version from, no any <code>src/test_app</code> package, but that'd be the expected behavior.</p>
+<h2>Versions</h2>
+<p>Platform: macOS 14.6.1
+uv version: uv 0.4.19 (Homebrew 2024-10-07)</p>
+<h2>Debug traces</h2>
+<pre><code>❯ uv sync --verbose
+DEBUG uv 0.4.19 (Homebrew 2024-10-07)
+DEBUG Found project root: `/Users/username/Code/test`
+DEBUG No workspace root found, using project root
+DEBUG The virtual environment's Python version satisfies `Python &gt;=3.12`
+DEBUG Using request timeout of 30s
+DEBUG No static `pyproject.toml` available for: test-app @ file:///Users/username/Code/test (PyprojectToml(DynamicField(&quot;version&quot;)))
+DEBUG Acquired lock for `/Users/username/.cache/uv/sdists-v4/editable/b0b82e1806a4930c`
+WARN Failed to read metadata for file: No such file or directory (os error 2)
+WARN Failed to read metadata for file: No such file or directory (os error 2)
+DEBUG Preparing metadata for: test-app @ file:///Users/username/Code/test
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.12.5
+DEBUG Solving with target Python version: &gt;=3.12.5
+DEBUG Adding direct dependency: hatchling*
+DEBUG Adding direct dependency: hatch-vcs*
+DEBUG No cache entry for: http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatchling/
+DEBUG No cache entry for: http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatch-vcs/
+DEBUG Transient request failure for http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatchling/, retrying: error sending request for url (http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatchling/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: nodename nor servname provided, or not known
+  Caused by: failed to lookup address information: nodename nor servname provided, or not known
+DEBUG Transient request failure for http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatch-vcs/, retrying: error sending request for url (http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatch-vcs/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: nodename nor servname provided, or not known
+  Caused by: failed to lookup address information: nodename nor servname provided, or not known
+DEBUG Transient request failure for http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatchling/, retrying: error sending request for url (http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatchling/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: nodename nor servname provided, or not known
+  Caused by: failed to lookup address information: nodename nor servname provided, or not known
+DEBUG Transient request failure for http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatch-vcs/, retrying: error sending request for url (http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatch-vcs/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: nodename nor servname provided, or not known
+  Caused by: failed to lookup address information: nodename nor servname provided, or not known
+DEBUG Transient request failure for http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatchling/, retrying: error sending request for url (http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatchling/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: nodename nor servname provided, or not known
+  Caused by: failed to lookup address information: nodename nor servname provided, or not known
+DEBUG Transient request failure for http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatch-vcs/, retrying: error sending request for url (http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatch-vcs/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: nodename nor servname provided, or not known
+  Caused by: failed to lookup address information: nodename nor servname provided, or not known
+DEBUG Transient request failure for http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatchling/, retrying: error sending request for url (http://nexus.internal.stuart.com:8081/repository/pypi-group/simple/hatchling/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: nodename nor servname provided, or not known
+  Caused by: failed to lookup address information: nodename nor servname provided, or not known
+DEBUG Released lock at `/Users/username/.cache/uv/sdists-v4/editable/b0b82e1806a4930c/.lock`
+DEBUG Ignoring existing lockfile due to missing metadata for: `test-app==0.1.dev1+g85e54b6.d20241010`
+DEBUG Starting clean resolution
+DEBUG No static `pyproject.toml` available for: test-app @ file:///Users/username/Code/test (PyprojectToml(DynamicField(&quot;version&quot;)))
+DEBUG Acquired lock for `/Users/username.cache/uv/sdists-v4/editable/b0b82e1806a4930c`
+WARN Failed to read metadata for file: No such file or directory (os error 2)
+WARN Failed to read metadata for file: No such file or directory (os error 2)
+DEBUG Preparing metadata for: test-app @ file:///Users/username/Code/test
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.12.5
+DEBUG Solving with target Python version: &gt;=3.12.5
+DEBUG Adding direct dependency: hatchling*
+DEBUG Adding direct dependency: hatch-vcs*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6349.html">astral-sh/uv#6349</a> on 2024-10-10 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 09:32</div>
+            <div class="timeline-body"><p>I see a few retries there, but we should probably error after the third retry per our limits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-10 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-10 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 11:00</div>
+            <div class="timeline-body"><p>I see the issue here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8083.html">astral-sh/uv#8083</a> on 2024-10-10 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-10 14:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't mark re-exported symbols as unused (F401) - astral-sh/ruff #717</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't mark re-exported symbols as unused (F401)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/717">#717</a>
+        opened by <a href="https://github.com/layday">@layday</a>
+        on 2022-11-13 13:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/layday">@layday</a> on 2022-11-13 13:42</div>
+            <div class="timeline-body"><p>Currently, an import in the form of:</p>
+<pre><code class="language-py">from a import b as b
+</code></pre>
+<p>will trigger F401, but this idiom is in widespread use as a type checker-friendly alternative to <code>__all__</code> which does not alter star import semantics.  Type checkers which support flagging unused imports will ignore re-exported symbols, i.e. symbols where the <code>as</code> target is identical to the original name:</p>
+<pre><code class="language-py"># pyright: strict
+
+from os import environ  # Pyright reports this as unused
+from os import environ as foo  # Likewise
+from os import environb as environb   # No error
+</code></pre>
+<hr />
+<p>Thanks for ruff!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-13 15:52</div>
+            <div class="timeline-body"><p>This is easy to implement! My only question is whether it should be the default behavior, or designated under its own lint rule so as to be configurable (or via a configuration option).</p>
+<p>Anyone have opinions on that? Maybe @andersk?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-13 18:16</div>
+            <div class="timeline-body"><p>I think this should be the default behavior since the re-export itself is effectively an explicit opt-in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-11-13 18:41</div>
+            <div class="timeline-body"><p>I think I agree. Although this was rejected upstream (PyCQA/pyflakes#474), it’s a pretty important pattern in the typed Python ecosystem. (Upstream is incorrect to expect that ecosystem to be entirely captured in PEPs—this reexport convention needs no special support from the Python language itself or its runtime implementations.) And I don’t see this significantly hurting anyone else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-11-13 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/724.html">astral-sh/ruff#724</a> on 2022-11-13 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-13 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-13 21:11</div>
+            <div class="timeline-body"><p>Going out in <a href="https://github.com/charliermarsh/ruff/releases/tag/v0.0.117">v0.0.117</a> (building now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/layday">@layday</a> on 2022-11-13 21:55</div>
+            <div class="timeline-body"><p>whoops, I should've probably mentioned the same holds for <code>import a as a</code>, although not as common.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-11-13 22:03</div>
+            <div class="timeline-body"><p>Also apparently <code>import a.b.c as c</code>. (I find that one surprising, but mypy accepts it; <a href="https://github.com/python/mypy/blob/v0.990/mypy/semanal.py#L2233">source</a>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2022-11-13 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-13 22:07</div>
+            <div class="timeline-body"><p>Re-opening for those cases :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/layday">@layday</a> on 2022-11-13 22:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Also apparently <code>import a.b.c as c</code>. (I find that one surprising, but mypy accepts it; <a href="https://github.com/python/mypy/blob/v0.990/mypy/semanal.py?rgh-link-date=2022-11-13T22%3A03%3A04Z#L2233">source</a>.)</p>
+</blockquote>
+<p>Interesting, Pyright rejects that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-11-13 22:46</div>
+            <div class="timeline-body"><p>Yeah, Pyright seems more correct. Opened python/mypy#14086.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/729.html">astral-sh/ruff#729</a> on 2022-11-14 03:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-14 03:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../data-apis/array-api-compat/pulls/82.html">data-apis/array-api-compat#82</a> on 2024-01-26 21:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13777.html">astral-sh/ruff#13777</a> on 2024-10-16 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../labthings/labthings-fastapi/pulls/121.html">labthings/labthings-fastapi#121</a> on 2025-06-26 09:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

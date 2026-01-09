@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argument group name must be unique - panics on more than one group in YAML - clap-rs/clap #2719</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Argument group name must be unique - panics on more than one group in YAML</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2719">#2719</a>
+        opened by <a href="https://github.com/thargy">@thargy</a>
+        on 2021-08-18 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thargy">@thargy</a> on 2021-08-18 16:03</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.54.0 (a178d0322 2021-07-26)</p>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.4</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-YAML">name: app
+
+args:
+  - arg_1:
+      short: a
+  - arg_2:
+      short: b
+  - arg_3:
+      short: c
+  - arg_4:
+      short: d
+
+groups:
+  - group_1:
+      args:
+        - arg_1
+        - arg_2
+  - group_2:
+      args:
+        - arg_3
+        - arg_4
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-RUST">let yaml = load_yaml!(&quot;cli.yaml&quot;);
+let matches = App::from(yaml).get_matches();
+</code></pre>
+<pre><code class="language-bash">cargo run
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>        'group_1' is already in use', &lt;USER&gt;\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-3.0.0-beta.4\src\build\app\debug_asserts.rs:218:9
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Should allow multiple groups with unique names.</p>
+<h3>Additional Context</h3>
+<p>The failed assertion code is from here:
+https://github.com/clap-rs/clap/blob/476dd190b7f7a91926dc696f1cb80146c67aabd2/src/build/app/debug_asserts.rs#L218-L222</p>
+<p>At the point of assertion <code>app.groups</code> contains:</p>
+<img width="229" alt="app groups" src="https://user-images.githubusercontent.com/1908506/129931483-634e097e-5c51-410b-85a9-5122fbdf5e6c.png">
+
+<p>As you can see, the <code>id</code>s are both set to <code>name: &quot;&quot;, id: 0</code>, and the names are in a separate <code>name</code> field, so it is unsurprising the assert fails.</p>
+<h3>Debug Output</h3>
+<pre><code>[            clap::build::app]  App::_do_parse
+[            clap::build::app]  App::_build
+[            clap::build::app]  App::_propagate:app
+[            clap::build::app]  App::_check_help_and_version
+[            clap::build::app]  App::_propagate_global_args:app
+[            clap::build::app]  App::_derive_display_order:app
+[clap::build::app::debug_asserts]       App::_debug_asserts
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:help
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:version
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:arg_1
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:arg_2
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:arg_3
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:arg_4
+thread 'main' panicked at 'Argument group name must be unique
+
+        'group_1' is already in use', &lt;USER&gt;\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-3.0.0-beta.4\src\build\app\debug_asserts.rs:218:9
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @thargy on 2021-08-18 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-18 16:18</div>
+            <div class="timeline-body"><p>Thanks for the detailed report!  Looking at this now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thargy">@thargy</a> on 2021-08-18 17:06</div>
+            <div class="timeline-body"><p>Although it's probably obvious, I've only seen this on the YAML import and it's clear that the bug lies in the way it's importing groups rather than the assertion (which hasn't changed in at least 13 months).  Should be a quick fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2722.html">clap-rs/clap#2722</a> on 2021-08-18 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-08-19 06:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

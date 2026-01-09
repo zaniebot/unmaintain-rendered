@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suggestion to improve downloads from registries that expose the METADATA file (PEP 658) - astral-sh/uv #8580</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Suggestion to improve downloads from registries that expose the METADATA file (PEP 658)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/8580">#8580</a>
+        opened by <a href="https://github.com/mmarston">@mmarston</a>
+        on 2024-10-25 22:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mmarston">@mmarston</a> on 2024-10-25 22:44</div>
+            <div class="timeline-body"><p>I was looking into range support on a registry server and looking at the sequence of requests that <code>uv</code> makes. Currently, when a registry server doesn't support PEP 658, but does support range requests, then <code>uv</code> will make 3 or 4 different requests for the wheel:</p>
+<ol>
+<li>a HEAD request to initialize the <code>AsyncRangeReader</code> (used to get the size and check for <code>Accept-Range</code>)</li>
+<li>a range GET request to get the tail of the wheel including the ZIP directory.</li>
+<li>the AsyncRangeReader is used to read the range of the ZIP file containing metadata file. This may or may not require another HTTP request if the metadata file is located within the range returned in step 2.</li>
+<li>a GET request to download the full wheel</li>
+</ol>
+<p>Steps 1 - 3 are performed during resolution and step 4 is performed during preparation.</p>
+<p>When the registry server doesn't support range requests then 2 requests are made:</p>
+<ol>
+<li>a HEAD request to initialize the <code>AsyncRangeReader</code>, which in this case is used to determine that the range approach cannot be used</li>
+<li>a GET request to download the full wheel</li>
+</ol>
+<p>And from what I gather from closed issues (such as #5073), there were versions of <code>uv</code> that made separate GET requests during resolution and preparation (so that the request during resolution could be aborted after encountering the metadata file).</p>
+<p>My suggestion is that instead of starting with a HEAD request, start with a single tail range request. If the server returns a 206 response indicating that the server supports range requests, then use that response to initialize the <code>AsyncRangeReader</code>. If the server doesn't support range requests then it will return a 200 response including the full file. This approach makes the HEAD request unnecessary, saving one round trip request, whether or not the server supports range requests.</p>
+<p>Something else you may consider is increasing the size of the initial tail range request (currently 16 KiB from what I see <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-client/src/remote_metadata.rs#L57C41-L57C46">here</a>). If the Content-Range response header on the initial tail response shows that the full file is returned then you can follow the same code path as the 200 response above: you can save and cache the file and won't need to make a 2nd request. You'd have to do some analysis to determine whether this is worthwhile, and what size to use, but I wouldn't be surprised if a 128 KiB tail covered a sizable percentage of small packages and only adds minimal extra to the round trip transfer time compared with downloading 16 KiB.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @zanieb on 2024-10-25 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-27 13:59</div>
+            <div class="timeline-body"><p>cc @konstin / @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-28 08:44</div>
+            <div class="timeline-body"><p>CC @baszalmstra who's the expert for <code>async_http_range_reader</code></p>
+<blockquote>
+<p>My suggestion is that instead of starting with a HEAD request, start with a single tail range request.</p>
+</blockquote>
+<p>iirc we had some server that supported range requests, but not negative range requests, so we'd need a HEAD request for the size of the file first.</p>
+<blockquote>
+<p>a GET request to download the full wheel</p>
+</blockquote>
+<p>This is a bad case we really want to avoid, it makes the resolution very slow.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

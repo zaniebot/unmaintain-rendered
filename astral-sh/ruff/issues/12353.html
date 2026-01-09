@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive ASYNC109 when `timeout` goes to `asyncio.timeout` - astral-sh/ruff #12353</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive ASYNC109 when `timeout` goes to `asyncio.timeout`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12353">#12353</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2024-07-17 00:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-07-17 00:03</div>
+            <div class="timeline-body"><p>The below Python 3.12 code with <code>ruff==0.5.2</code>:</p>
+<pre><code class="language-python">import asyncio
+
+async def foo(timeout: float | None = 30.0) -&gt; None:
+    async with asyncio.timeout(timeout):
+        await asyncio.sleep(1.0)
+</code></pre>
+<p>Will throw an ASYNC109 error on the third line:</p>
+<pre><code class="language-none">a.py:3:15: ASYNC109 Async function definition with a `timeout` parameter
+</code></pre>
+<p>I think this is a false positive, as later on the <code>timeout</code> is directly used in an <code>asyncio.timeout</code>.</p>
+<p>Is there some way Ruff can check for how the <code>timeout</code> is used before throwing ASYNC109?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-07-17 06:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-07-17 06:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wookie184">@wookie184</a> on 2024-07-18 19:14</div>
+            <div class="timeline-body"><p>In general it seems like a rule that is extremely prone to false positives. In most cases when a function takes a custom timeout, it will only apply to a specific part of the logic and/or have specialised handling for when a timeout does happen.</p>
+<p>Wrapping the whole function usage in <code>asyncio.timeout</code> for every usage seems like it would rarely be correct (and even if is, like in your example, it's still unlikely to be an improvement).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-07-19 14:35</div>
+            <div class="timeline-body"><p>@jakkdl What are your thoughts about this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-07-19 14:38</div>
+            <div class="timeline-body"><p>Personally, I don't necessarily agree with this rule, but I ported it as is from the upstream <code>flake8-async</code> which is according to their own docs &quot;highly opinionated&quot;.</p>
+<p>I would just disable the rule for now if you don't find it beneficial.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-07-23 16:13</div>
+            <div class="timeline-body"><p>Yeah this is a highly opinionated rule that enforces the programmer to follow the tenets of structured concurrency. See e.g. https://vorpus.org/blog/some-thoughts-on-asynchronous-api-design-in-a-post-asyncawait-world/#timeouts-and-cancellation on the background for why you should handle timeouts with scopes.</p>
+<p>The error message and/or docs could perhaps be clarified a bit, esp as the OP initially interpreted the message as being about the variable being unused. Not that flake8-async's message is much better, but it uses the following template
+<code>&quot;Async function definition with a `timeout` parameter - use `{}.[fail/move_on]_[after/at]` instead.&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessekv">@jessekv</a> on 2024-08-19 08:15</div>
+            <div class="timeline-body"><p>The problem I am seeing is <code>asyncio.wait</code>  accepts a <code>timeout</code> argument, so any function that wraps calls to this part of the asyncio API is given a false positive. Prior to Python 3.11 (when TaskGroups are introduced), <code>asyncio.wait</code> is the only way to wait on multiple tasks with a timeout using the standard library. So I would say this rule is strictly incorrect before Python 3.11, and possibly still misguided afterward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2024-08-19 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-08-19 08:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-19 08:26</div>
+            <div class="timeline-body"><p>Ruff  shows the <em>use ...</em> text in the help advise.</p>
+<pre><code>c.py:4:15: ASYNC109 Async function definition with a `timeout` parameter
+  |
+4 | async def foo(timeout: float | None = 30.0) -&gt; None:
+  |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ASYNC109
+5 |     async with asyncio.timeout(timeout):
+6 |         await asyncio.sleep(1.0)
+  |
+  = help: Use `asyncio.timeout` instead
+
+Found 1 error.
+</code></pre>
+<p>But it is only visible when not using <code>output-format=concise</code>.</p>
+<p>The rule itself does make sense to me but I think we can improve the motivation in the documentation.</p>
+<blockquote>
+<p>The problem I am seeing is asyncio.wait accepts a timeout argument, so any function that wraps calls to this part of the asyncio API is given a false positive.</p>
+</blockquote>
+<p>Reading through the article @jakkdl linked this seems to be the intention of the rule and you should instead wrap the call site with a <em>timeout</em> context manager. If the function's intention is to abstract <code>asyncio</code> entirely, then adding a <code>noqa</code> suppression seems appropriate.</p>
+<blockquote>
+<p>Prior to Python 3.11 (when TaskGroups are introduced), asyncio.wait is the only way to wait on multiple tasks with a timeout using the standard library. So I would say this rule is strictly incorrect before Python 3.11, and possibly still misguided afterward.</p>
+</blockquote>
+<p>Could you tell me a bit more about this and why/how it only applies to Python 3.11 and newer?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2024-08-19 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2024-08-19 08:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessekv">@jessekv</a> on 2024-08-19 09:31</div>
+            <div class="timeline-body"><p>I took another look, seems like TaskGroups in the standard library don't have all the features I thought it did. So I would say python 3.11 is not really relevant to the discussion, sorry I brought it up.</p>
+<p>Here are is an example of two functions, <code>get_first</code> and <code>get_all</code>, which are simplified versions of real code. Their actual implementations get a lot more complicated if you introduce error handling ;)</p>
+<pre><code class="language-python">import asyncio
+import random
+from typing import Any, Coroutine, Optional
+
+
+async def coro() -&gt; float:
+    sleep_time = random.random() * 10
+    print(&quot;delay:&quot;, sleep_time)
+    await asyncio.sleep(sleep_time)
+    return sleep_time
+
+
+async def get_first(
+    *coros: Coroutine[None, None, Any],
+    timeout: float,
+) -&gt; Any:
+    tasks: list[asyncio.Task[Any]] = [asyncio.create_task(c) for c in coros]
+    try:
+        done, pending = await asyncio.wait(
+            tasks, return_when=asyncio.FIRST_COMPLETED, timeout=timeout
+        )
+    finally:
+        for t in pending:
+            t.cancel()
+    for task in done:
+        return task.result()
+    return None
+
+
+async def get_all(
+    *coros: Coroutine[None, None, Any],
+    timeout: float,
+) -&gt; Optional[list[Any]]:
+    tasks: list[asyncio.Task[Any]] = [asyncio.create_task(c) for c in coros]
+    try:
+        done, pending = await asyncio.wait(
+            tasks, return_when=asyncio.ALL_COMPLETED, timeout=timeout
+        )
+    finally:
+        for t in pending:
+            t.cancel()
+    if done == set(tasks):
+        return [t.result() for t in tasks]
+    return None
+
+
+async def main() -&gt; None:
+    first_time = await get_first(
+        coro(),
+        coro(),
+        coro(),
+        timeout=5.0,
+    )
+    print(&quot;first:&quot;, first_time)
+
+    all_times = await get_all(
+        coro(),
+        coro(),
+        coro(),
+        timeout=5.0,
+    )
+    print(&quot;all:&quot;, all_times)
+
+
+asyncio.run(main())
+</code></pre>
+<p>Ruff marks <code>get_first</code> and <code>get_all</code> as incorrect, but to inline these functions or rename their timeout parameter is just needless obfuscation. Of course, if you have a recommendation of how to implement this differently using the standard lib, I'd love to see it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessekv">@jessekv</a> on 2024-08-19 10:17</div>
+            <div class="timeline-body"><p>To be clear, I don't mean to highjack the issue, just adding a few more data points.</p>
+<p>The general issue seems to be, the timeout parameter is often passed to async functions which use asyncio as designed, but ASYNC109 disallows passing the timeout value.</p>
+<p>Async functions serve to define a coroutine, i.e. logic that can run concurrently, but they are also functions in the traditional sense, i.e. providing a level of abstraction. For the former, I can see how ASYNC109 adds value, but for the latter ASYNC109 can be counterproductive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-08-19 13:25</div>
+            <div class="timeline-body"><p>ye so strictly following structured concurrency you should remove the <code>timeout</code> parameter to <code>get_first</code> and <code>get_all</code> (or any other function) - and use a context manager to enforce a timeout on calls to them <em>if</em> you want the timeout to limit the execution time of the entire function call. If you want a parametrized timeout applied within those functions to some subtask, then you <em>will</em> need a parameter. But perhaps a more descriptive name than <code>timeout</code> can be used (so users don't think it's a function-scoped timeout). Whether your function wraps <code>asyncio.wait</code> or not I don't think matters.</p>
+<p>But if you don't intend to follow the tenets of structured concurrency, then you shouldn't bother having the corresponding error codes from flake8-async enabled at all. Just like having error codes enforcing docstring formatting are a bad fit if you don't care about docstrings.
+flake8-async is intentionally very opinionated, and it definitely doesn't expect everybody to agree with its rules at all times.</p>
+<p>ASYNC109 is in itself just a reminder. Ofc it's still possible to call a function-with-a-timeout-parameter with a context manager handling the timeout; or to sidestep it using a different parameter name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessekv">@jessekv</a> on 2024-08-19 15:02</div>
+            <div class="timeline-body"><p>Well, this is embarrassing. <code>asyncio.timeout</code> is in fact a Python 3.11 feature...  :laughing:</p>
+<p>So, there is indeed a &quot;bug&quot; when ASYNC109 triggers before Python 3.11. https://docs.python.org/3/library/asyncio-task.html#asyncio.timeout</p>
+<p>But I think the discussion about if it makes sense after Python 3.11 is still relevant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessekv">@jessekv</a> on 2024-08-19 16:05</div>
+            <div class="timeline-body"><p>@jakkdl So going off of what you are saying, I've removed the timeout parameter from get_first and wrapped the call in an <code>asyncio.timeout</code> context.</p>
+<pre><code class="language-python">import asyncio
+import random
+from typing import Any, Coroutine
+
+
+async def coro(latency_factor: float) -&gt; float:
+    delay = random.random() * latency_factor
+    print(&quot;delay:&quot;, delay)
+    await asyncio.sleep(delay)
+    return delay
+
+
+async def get_first(*coros: Coroutine[None, None, Any]) -&gt; Any:
+    tasks: list[asyncio.Task[Any]] = [asyncio.create_task(c) for c in coros]
+    try:
+        done, _ = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+    finally:
+        for t in tasks:
+            if not t.done():
+                t.cancel()
+    assert done
+    return next(t for t in done).result()
+
+
+async def main() -&gt; None:
+    try:
+        async with asyncio.timeout(1.0):
+            first = await get_first(coro(2.0), coro(4.0), coro(8.0))
+    except TimeoutError:
+        print(&quot;first:&quot;, &quot;no response&quot;)
+    else:
+        print(&quot;first:&quot;, first)
+
+
+asyncio.run(main())
+</code></pre>
+<p>This seems fine. It's clear the <code>timeout</code> argument to <code>asyncio.wait</code> should be avoided when strictly following structured concurrency. Activating ASYNC109 for Python 3.11+ seems fine to me.</p>
+<p>As for the original <code>foo</code> example, where the async function is an abstraction... yeah, I agree with renaming the parameter. The argument that convinced me is there is indeed the risk of confusion if the timeout parameter does not actually apply to the whole function call.</p>
+<p>The remaining concern I had was with async functions that have a timeout parameter, where the <code>timeout</code> is actually not a float at all, but is a specific data structure, e.g. <code>timeout = httpx.Timeout(10.0, connect=60.0)</code>. In this case the <code>noqa</code> seems appropriate, unless there is a way in ruff to filter those out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Danielhiversen/pyTibber/pulls/299.html">Danielhiversen/pyTibber#299</a> on 2024-08-20 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessekv">@jessekv</a> on 2024-08-21 06:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you tell me a bit more about this and why/how it only applies to Python 3.11 and newer?</p>
+</blockquote>
+<p><code>asyncio.timeout</code> was only introduced in Python 3.11</p>
+<p>@MichaReiser should we file a different issue, or do you want to keep using this one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13023.html">astral-sh/ruff#13023</a> on 2024-08-21 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessekv">@jessekv</a> on 2024-08-21 07:37</div>
+            <div class="timeline-body"><p>I've added a PR now: https://github.com/astral-sh/ruff/pull/13023, it's my first contribution to Ruff, so please let me know how I can improve it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-08-26 17:08</div>
+            <div class="timeline-body"><p>Okay so reading through this, nice work here @vdwees, I appreciate your contribution!</p>
+<p>I also resonated with several statements:</p>
+<blockquote>
+<p>If the function's intention is to abstract <code>asyncio</code> entirely, then adding a <code>noqa</code> suppression seems appropriate</p>
+</blockquote>
+<p>This is what I was doing in my OP's code snippet. Thus my OP is not a false positive, but a place for a <code>noqa</code> or a global disable.</p>
+<blockquote>
+<p>or to sidestep it using a different parameter name.</p>
+</blockquote>
+<blockquote>
+<p>The argument that convinced me is there is indeed the risk of confusion if the timeout parameter does not actually apply to the whole function call.</p>
+</blockquote>
+<p>This also makes a lot of sense. I concur a great alternate route is a more verbose name in the abstracting function.</p>
+<hr />
+<p>I will leave this issue open for an improvement in the motivation section of this rule's docs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13146.html">astral-sh/ruff#13146</a> on 2024-08-29 05:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-09-01 10:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

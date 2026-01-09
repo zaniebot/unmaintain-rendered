@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failure to download packages from Azure Artifacts starting version 0.7.0 - astral-sh/uv #13208</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failure to download packages from Azure Artifacts starting version 0.7.0</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13208">#13208</a>
+        opened by <a href="https://github.com/ycheng517">@ycheng517</a>
+        on 2025-04-30 02:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ycheng517">@ycheng517</a> on 2025-04-30 02:03</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Starting with UV 0.7.0 just today, I can no longer download packages from Azure Artifacts. Error:</p>
+<pre><code>uv sync
+Resolved 382 packages in 0.74ms
+  × Failed to download `my-private-pkg==4.0.0`
+  ├─▶ Failed to extract archive: my_private_pkg-4.0.0-py3-none-any.whl
+  ├─▶ an upstream reader returned an error: unexpected end of file
+  ╰─▶ unexpected end of file
+</code></pre>
+<p>In the verbose logs I see the following which might be relevant:</p>
+<pre><code>TRACE Cached response https://pkgs.dev.azure.com/XXXXXX/_packaging/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXX/pypi/download/my-private-pkg/4/my_private_pkg-4.0.0-py3-none-any.whl is not storable because it does not meet any of the necessary criteria (e.g., it doesn't have an 'Expires' header set or a 'max-age' cache-control directive)
+TRACE Considering retry of error: Extract(&quot;my_private_pkg-4.0.0-py3-none-any.whl&quot;, AsyncZip(UpstreamReadError(Kind(UnexpectedEof))))
+TRACE Retrying error: `ConnectionReset` or `UnexpectedEof`
+DEBUG Transient failure while handling response from https://pkgs.dev.azure.com/XXXXXX/_packaging/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXX/pypi/download/my-private-pkg/4/my_private_pkg-4.0.0-py3-none-any.whl; retrying...
+</code></pre>
+<p>These are the relevant portions of my <code>pyproject.toml</code> file:</p>
+<pre><code>dependencies = [
+  &quot;my-private-pkg&gt;=4.0&quot;,
+  ...
+]
+
+[tool.uv.sources]
+my-private-pkg = { index = &quot;azure&quot; }
+...
+
+[[tool.uv.index]]
+name = &quot;azure&quot;
+url = &quot;https://pkgs.dev.azure.com/XXXXXX/_packaging/XXXXXX/pypi/simple&quot;
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 24.04 amd64</p>
+<h3>Version</h3>
+<p>uv 0.7.0</p>
+<h3>Python version</h3>
+<p>Python 3.12.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ycheng517 on 2025-04-30 02:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-30 02:08</div>
+            <div class="timeline-body"><p>Thanks for the report. You can confirm this works on 0.6.17?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-30 02:09</div>
+            <div class="timeline-body"><p>Does this occur every time, or intermittently?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-30 02:10</div>
+            <div class="timeline-body"><p>Can you share full verbose logs? Perhaps in a <a href="https://gist.github.com">Gist</a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ycheng517">@ycheng517</a> on 2025-04-30 02:11</div>
+            <div class="timeline-body"><p>I can confirm this works if I revert back to 0.6.16. It happens every time. I will try to send a Gist shortly, just need some time to redact  some names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-30 02:13</div>
+            <div class="timeline-body"><p>Wonderful, thank you!</p>
+<p>cc @jtfmumm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-30 02:16</div>
+            <div class="timeline-body"><p>Just to make sure, because it narrows down where we're looking, 0.6.17 works or fails? You referenced 0.6.16.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ycheng517">@ycheng517</a> on 2025-04-30 02:29</div>
+            <div class="timeline-body"><p>I just tried 0.6.17, it also works. Here's <a href="https://gist.github.com/ycheng517/63437cccf5279c15018356cf9ca8b971">verbose logs</a> of the failure on 0.7.0. Note that for this log, I'm simply adding a private package, as it's a simpler manifestation of the issue.</p>
+<p>Note that the package I'm adding was built using <code>uv build --wheel</code> on UV version 0.6.16.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/raiderrobert">@raiderrobert</a> on 2025-04-30 02:36</div>
+            <div class="timeline-body"><p>I also have this issue with uv starting on version 0.7.0. I also use Azure Artifacts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-30 02:43</div>
+            <div class="timeline-body"><p>Thanks for the detailed logs -- we'll take a look. Unfortunately I don't see anything in the changelog that's obviously relevant here...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-30 03:53</div>
+            <div class="timeline-body"><p>A log of the success for comparison would be helpful too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-30 03:59</div>
+            <div class="timeline-body"><p>The key seems to be around</p>
+<pre><code>TRACE Attempting unauthenticated request for https://pkgs.dev.azure.com/My-Project-Name/_packaging/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXX/pypi/download/rr-config/4/rr_config-4.0.0-py3-none-any.whl
+TRACE Request for https://pkgs.dev.azure.com/My-Project-Name/_packaging/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXX/pypi/download/rr-config/4/rr_config-4.0.0-py3-none-any.whl failed with 401 Unauthorized, checking for credentials
+TRACE Found cached credentials for realm https://pkgs.dev.azure.com
+TRACE Retrying request for https://pkgs.dev.azure.com/My-Project-Name/_packaging/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXX/pypi/download/rr-config/4/rr_config-4.0.0-py3-none-any.whl with credentials from cache Basic { username: Username(Some(&quot;My-Username&quot;)), password: Some(****) }
+TRACE Cached response https://pkgs.dev.azure.com/My-Project-Name/_packaging/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXX/pypi/download/rr-config/4/rr_config-4.0.0-py3-none-any.whl is not storable because it does not meet any of the necessary criteria (e.g., it doesn't have an 'Expires' header set or a 'max-age' cache-control directive)
+TRACE Considering retry of error: Metadata(&quot;https://pkgs.dev.azure.com/My-Project-Name/_packaging/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXX/pypi/download/rr-config/4/rr_config-4.0.0-py3-none-any.whl&quot;, AsyncZip(UpstreamReadError(Kind(UnexpectedEof))))
+TRACE Retrying error: `ConnectionReset` or `UnexpectedEof`
+TRACE Received built distribution metadata for: rr-config==4.0.0
+WARN rr-config==4.0.0 has an invalid package format: Failed to read from zip file
+WARN rr-config has an invalid package format: Failed to read from zip file
+</code></pre>
+<p>How are you providing credentials?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paulstaab">@paulstaab</a> on 2025-04-30 07:35</div>
+            <div class="timeline-body"><p>Happens for us as well using Azure Devops Artifacts Feed.</p>
+<p>~/.config/uv/uv.toml:</p>
+<pre><code>[[index]]
+name = &quot;internal&quot;
+url = &quot;https://***@pkgs.dev.azure.com/DDC-DAAI/_packaging/***/pypi/simple&quot;
+default = true
+</code></pre>
+<p>Here is the log with all sensible values replaced with <code>***</code> for versions 0.7.0 and 0.6.17:</p>
+<pre><code>uv pip install -vvv -U &quot;pip==25.1&quot; 2&gt; uv-0.7.0.log
+</code></pre>
+<p><a href="https://github.com/user-attachments/files/19973028/uv-0.7.0.log">uv-0.7.0.log</a>
+<a href="https://github.com/user-attachments/files/19973029/uv-0.6.17.log">uv-0.6.17.log</a></p>
+<p>Providing the credentials via <code>UV_INDEX_INTERNAL_PASSWORD</code> produces the same problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2025-04-30 07:35</div>
+            <div class="timeline-body"><p>I am seeing the same issue. I have my feed configured via <code>UV_INDEX_URL</code> env variable as <code>https://VssSessionToken@myorg.pkgs.visualstudio.com/_packaging/myfeed/pypi/simple</code> and artifacts-keyring installed as a uv tool</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13214.html">astral-sh/uv#13214</a> on 2025-04-30 07:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-04-30 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lskbr">@lskbr</a> on 2025-04-30 07:40</div>
+            <div class="timeline-body"><p>I confirm the problem with 0.7 on Azure pipelines, but I can also reproduce it in my command line.</p>
+<pre><code>TRACE Considering retry of error: Error { kind: WrappedReqwestError(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pkgs.dev.azure.com&quot;)), port: None, path: &quot;/COMPANY/UUID/_packaging/01523230-7280-468a-a936-0704848f8ed3/pypi/download/boto3/1.38.5/boto3-1.38.5-py3-none-any.whl&quot;, query: None, fragment: None }, WrappedReqwestError(Reqwest(reqwest::Error { kind: Status(405), url: &quot;https://pkgs.dev.azure.com/COMPANY/UUID/_packaging/01523230-7280-468a-a936-0704848f8ed3/pypi/download/boto3/1.38.5/boto3-1.38.5-py3-none-any.whl&quot; }))) }
+TRACE Cannot retry error: not an IO error
+WARN Range requests not supported for boto3-1.38.5-py3-none-any.whl; streaming wheel
+TRACE connection.state=Open
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE flushing buffer
+TRACE No cache entry exists for /tmp/.tmpBl974A/wheels-v5/index/4acd0df98cde8196/boto3/1.38.5-py3-none-any.msgpack
+DEBUG No cache entry for: https://pkgs.dev.azure.com/COMPANY/UUID/_packaging/01523230-7280-468a-a936-0704848f8ed3/pypi/download/boto3/1.38.5/boto3-1.38.5-py3-none-any.whl
+TRACE Sending fresh GET request for https://pkgs.dev.azure.com/COMPANY/UUID/_packaging/01523230-7280-468a-a936-0704848f8ed3/pypi/download/boto3/1.38.5/boto3-1.38.5-py3-none-any.whl
+TRACE Handling request for https://pkgs.dev.azure.com/COMPANY/UUID/_packaging/01523230-7280-468a-a936-0704848f8ed3/pypi/download/boto3/1.38.5/boto3-1.38.5-py3-none-any.whl with authentication policy auto
+TRACE Request for https://pkgs.dev.azure.com/COMPANY/UUID/_packaging/01523230-7280-468a-a936-0704848f8ed3/pypi/download/boto3/1.38.5/boto3-1.38.5-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://pkgs.dev.azure.com/COMPANY/UUID/_packaging/01523230-7280-468a-a936-0704848f8ed3/pypi/download/boto3/1.38.5/boto3-1.38.5-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://pkgs.dev.azure.com/COMPANY/UUID/_packaging/01523230-7280-468a-a936-0704848f8ed3/pypi/download/boto3/1.38.5/boto3-1.38.5-py3-none-any.whl
+TRACE take? (&quot;https&quot;, pkgs.dev.azure.com): expiration = Some(90s)
+</code></pre>
+<p>with <code>uv pip install boto3 --no-cache --force-reinstall</code>, it tries to download all versions, from 1.8.5, invalidating each one and downgrading to the next version of the package (it errors until I interrupt). When I read the TRACE LOG, some parts got my attention:</p>
+<ol>
+<li>The error 405 in the request. Is it related to the range request?</li>
+<li>The authentication is missing.</li>
+</ol>
+<p>In the local environment, I set my azure password using a personal access token (PAT), so it is passed as the UV_EXTRA_INDEX_URL=https://{$PAT}@pkgs.dev.azure... as in all previous versions. I tested the same setup with  uv 0.6.4 and it works fine. The same mechanism is used in azure pipelines, but the token is created using a specific task Pip1@Authenticate.</p>
+<p>PS: I replaced COMPANY and UUID to anonymize the trace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-30 07:41</div>
+            <div class="timeline-body"><p>I'm able to replicate this issue and verified that it occurs with 0.7.0 and not 0.6.17. Investigating now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thomasaarholt">@thomasaarholt</a> on 2025-04-30 07:51</div>
+            <div class="timeline-body"><p>A quick guess would be that the regression was introduced in this <a href="https://github.com/astral-sh/uv/commit/de1479c4ef41106d5e87f5ad6ba27b9f94c46b0c">commit</a></p>
+<p>&quot;Use index URL instead of package URL for keyring credential lookups (https://github.com/astral-sh/uv/pull/12651)&quot;</p>
+<p>(I was notified of it because that commit was listed as fixing my Azure DevOps issue at #11507)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-30 08:05</div>
+            <div class="timeline-body"><p>I'm pretty certain this is because of changes to redirect handling. I'm going to revert those changes to address this problem while investigating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2025-04-30 08:14</div>
+            <div class="timeline-body"><p>Thanks @jtfmumm If you would benefit from some additional testing, I am happy to try your pr(s) against my feed. Please feel free to ping me for that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13215.html">astral-sh/uv#13215</a> on 2025-04-30 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-30 08:15</div>
+            <div class="timeline-body"><p>@jenshnielsen That would be helpful! The PR is #13215</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brynmathias">@brynmathias</a> on 2025-04-30 08:21</div>
+            <div class="timeline-body"><p>Done some testing on our jfrog repo that doesn't mirror the global pypi
+If we configure with out the ignore <code>ignore-error-codes = [401]</code> flag it fails as it doesn't go on to the next index url (ie pypi.org)</p>
+<p>however if we explicitly add the <code>ignore-error-codes</code> it works fine</p>
+<p>I would propose that for the env var <code>UV_EXTRA_INDEX_URL</code> that the ignore codes are set to sensible defaults</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-30 08:24</div>
+            <div class="timeline-body"><p>@brynmathias Please open a separate issue and I can respond there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brynmathias">@brynmathias</a> on 2025-04-30 08:25</div>
+            <div class="timeline-body"><p>@jtfmumm will do</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmkulazhenko">@dmkulazhenko</a> on 2025-04-30 08:43</div>
+            <div class="timeline-body"><p>+1, with self-hosted pypi + hatchling as build system it leads to:</p>
+<pre><code>&gt; [7/7] RUN hatch env create dev:
+0.394 Creating environment: dev
+0.406 Installing project in development mode
+0.555   × Failed to build `----- @ file:///app`
+0.555   ├─▶ Failed to resolve requirements from `build-system.requires`
+0.555   ├─▶ No solution found when resolving: `hatchling`
+0.[555](https://github.com/-----/actions/runs/----/job/---#step:4:556)   ╰─▶ Because there are no versions of hatchling and you require hatchling, we
+0.555       can conclude that your requirements are unsatisfiable.
+------
+</code></pre>
+<p>For anyone googling by trace above: <code>pip install uv==0.6.17</code> until fix will be released.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-30 08:54</div>
+            <div class="timeline-body"><p>This issue should have been addressed for now by #13215. I'm going to leave it open to track the underlying problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-30 11:04</div>
+            <div class="timeline-body"><p><code>0.7.1</code> is now available with this fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/josteinl">@josteinl</a> on 2025-04-30 11:55</div>
+            <div class="timeline-body"><p>Fix in <code>0.7.1</code> works for me!</p>
+<p>Version <code>0.6.17</code> worked fine. Version <code>0.7.0</code> failed before lunch, and <code>0.7.1</code> works after lunch! Super thanks for the fast fix @jtfmumm !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13255.html">astral-sh/uv#13255</a> on 2025-05-01 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-01 18:28</div>
+            <div class="timeline-body"><p>We'll track rolling this change back out (with a fix for this case) in https://github.com/astral-sh/uv/issues/13255</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-05-01 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13595.html">astral-sh/uv#13595</a> on 2025-05-22 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-16 12:11</div>
+            <div class="timeline-body"><p>We have a new fix for authentication on redirects on #13754 that avoids this problem. It would be very helpful if anyone would be willing to test that PR on their own private index (whether Azure or something else). You could build that PR or you could also use:</p>
+<pre><code>uvx -v --from &quot;uv @ git+https://github.com/astral-sh/uv@jtfm/update-redirect-handling&quot; uv add &lt;pkg-from-private-index&gt; --default-index https://&lt;username&gt;:&lt;password&gt;@&lt;private-index-url&gt;
+</code></pre>
+<p>filling in <code>&lt;pkg-from-private-index&gt;</code>, <code>&lt;username&gt;</code>, <code>&lt;password&gt;</code>, and <code>&lt;private-index-url&gt;</code> with your own values.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

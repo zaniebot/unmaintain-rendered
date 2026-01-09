@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isn't BLE001 too wide? - astral-sh/ruff #9868</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Isn't BLE001 too wide?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9868">#9868</a>
+        opened by <a href="https://github.com/adrien-berchet">@adrien-berchet</a>
+        on 2024-02-06 22:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adrien-berchet">@adrien-berchet</a> on 2024-02-06 22:45</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>As far as I understand, the rule <code>BLE001</code> is triggered by both <code>try: ... except BaseException: ...</code> and <code>try: ... except Exception: ...</code> which is not consistent with the related PEP8 section (https://peps.python.org/pep-0008/#programming-recommendations) which states that we should not try to catch a <code>BaseException</code> (mainly because it would also catch <code>SystemExit</code> and <code>KeyboardInterrupt</code> exceptions), but nothing is mentioned about <code>Exception</code>. Also, the behavior is not consistent with its description which states this:
+<img src="https://github.com/astral-sh/ruff/assets/11536226/d492fbfb-90ee-4788-bd97-74a99d4970aa" alt="image" />
+And the exception hierarchy (https://docs.python.org/3/library/exceptions.html#exception-hierarchy) clearly shows that <code>KeyboardInterrupt</code> and <code>SystemExit</code> derive from the <code>BaseException</code> class, not from <code>Exception</code>. So the following code should not trigger this error:</p>
+<pre><code class="language-python">try:
+    print(&quot;hello&quot;)
+except Exception as error:
+    print(error)
+</code></pre>
+<p>But running <code>ruff check hello.py --select BLE001</code> triggers <code>BLE001</code>.</p>
+<p>Am I missing something?
+Anyway, it's quite often that I need to catch a 'generic' error (to do something when 'anything bad' happens) and that I end up ignoring this error, so I think it's not relevant to mark it as an error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-07 14:41</div>
+            <div class="timeline-body"><p>I agree with the sentiment here. There are kind of two ideas at work here:</p>
+<ol>
+<li>You should have use a bare <code>except:</code> or <code>except BaseException:</code> without re-raising because it is dangerous for proper program behavior</li>
+<li>You should not use <code>except Exception</code> because it is best practice to declare which exception cases you care about</li>
+</ol>
+<p>I think these should be separate rules as I would <em>always</em> have 1. on but I think 2. is more of a matter of preference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2024-02-07 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-02-07 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adrien-berchet">@adrien-berchet</a> on 2024-02-07 15:46</div>
+            <div class="timeline-body"><p>I completely agree with that, thanks for your feedback!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-07 16:35</div>
+            <div class="timeline-body"><p>It's pretty impossible to come up with a rule that <em>never</em> has false positives for this kind of thing. I've written and reviewed code where the only correct thing to do is to do <code>except BaseException: pass</code> e.g. in https://github.com/python/mypy/blob/780a29d0b1b93848d7ce3faf8e819a6cc140b2e5/mypy/stubtest.py#L1716-L1726, the code is dynamically importing unknown modules at runtime, so needs to catch <code>BaseException</code> as there's a chance some module might raise <code>SystemExit</code> when you try to import it. (That's not just theoretical -- we changed that line of code after that actually happened.)</p>
+<p>I think it makes sense to lint against both <code>except BaseException</code> and <code>except Exception</code>, but have them be different rules. Both can be common mistakes made by Python beginners, so I think it makes sense to disallow both of them. But the former is even more likely to be a mistake than the latter, so it makes sense for them to be separate rules.</p>
+<p>I would also probably not flag at all places where the error is clearly being handled in some way, like the OP's example. In situations like OP's and the ones below, where the error is being handled and logged in some way, it's arguably clear that the user is intentionally catching all errors. I see the current rule already makes a specific exception for <code>except BaseException</code> if the exception is passed to <code>logging.error()</code>. But I'd be inclined to make that more general; I'm not sure ruff should take issue with any of these:</p>
+<pre><code class="language-py">try:
+    do_something()
+except BaseException as e:
+    print(e)
+
+try:
+    something_else()
+except BaseException as e:
+    logging.error(e)
+
+try:
+    third_thing()
+except BaseException as e:
+    handle_the_error(e)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FichteFoll">@FichteFoll</a> on 2024-09-17 16:37</div>
+            <div class="timeline-body"><p>Flask (and Quart) export an application-wide logger under <code>current_app.logger</code>, which ruff does not recognize as an allowed blind except case when used with <code>.exception</code> in the <code>except</code> block. Perhaps this could be added to the list?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-17 17:53</div>
+            <div class="timeline-body"><p>@FichteFoll does this setting maybe help address that problem? https://docs.astral.sh/ruff/settings/#lint_logger-objects</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FichteFoll">@FichteFoll</a> on 2024-09-18 09:31</div>
+            <div class="timeline-body"><p>Thanks for the pointer, that did indeed help. Perhaps it would be a good idea to mention that <a href="https://docs.astral.sh/ruff/rules/blind-except/">on the BLE001 documentation page</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sasanjac">@sasanjac</a> on 2024-11-27 11:09</div>
+            <div class="timeline-body"><p>This has to be two different rules because semantically, these are two different things:
+One is used as a hidden control flow, the other is the base class for &quot;real&quot; exceptions.
+Consider the following example: I have an app with a running main loop which should not close unexpectedly, so I want to handle BaseExceptions sans Exception. Not doing so would result in my app not responding to external signals.
+However, subclasses of Exception are exceptions that occur within my app and may not know all of them beforehand, so I might want to log them so my loop does not close and implement handling them later.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

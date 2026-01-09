@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Infinite Loop] Failed to converge after 100 iterations. - astral-sh/ruff #3522</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Infinite Loop] Failed to converge after 100 iterations.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3522">#3522</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2023-03-14 20:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2023-03-14 20:24</div>
+            <div class="timeline-body"><p>Ruff 0.0.255
+Command</p>
+<pre><code>ruff ~/Desktop/Ruff/Broken/AcquireFile6.py --config /home/rafal/Desktop/ruff.toml --fix --no-cache
+</code></pre>
+<p>Settings</p>
+<pre><code>select = [&quot;ALL&quot;]
+</code></pre>
+<p><a href="https://github.com/charliermarsh/ruff/files/10973446/AcquireFile6.py.zip">AcquireFile6.py.zip</a></p>
+<p>produce error</p>
+<pre><code>error: Failed to converge after 100 iterations.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/charliermarsh/ruff/issues/new?title=%5BInfinite%20loop%5D
+
+...quoting the contents of `AcquireFile6.py`, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-14 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vlindhol">@vlindhol</a> on 2023-03-19 15:45</div>
+            <div class="timeline-body"><p>I took a look at this, and managed to narrow it down to the following minimal test case:</p>
+<pre><code class="language-python">class A:
+    &quot;&quot;&quot;
+\ a
+    &quot;&quot;&quot;
+</code></pre>
+<p>With the config:</p>
+<pre><code class="language-toml">select = [
+  &quot;D207&quot;, # bad docstring indentation
+  &quot;W605&quot;, # invalid escape sequence
+]
+</code></pre>
+<p>Those two rules clash in the following way</p>
+<ol>
+<li><code>W605</code> schedules an insertion of a <code>\</code> at column 0</li>
+<li><code>D207</code> schedules an insertion of <code>....</code> (four spaces) at column 0</li>
+<li>End result: <code>\ a</code> -&gt; <code>\</code> + <code>    </code> + <code>\ a</code> -&gt; <code>\    \ a</code></li>
+<li>GOTO 1</li>
+</ol>
+<p>The culprit is the fairly simplistic way that &quot;fix overlaps&quot; are calculated. An easy workaround is for <code>W605</code> to insert the <code>\</code> in column 1 instead. I'll make a PR about it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-19 15:52</div>
+            <div class="timeline-body"><p>Thank you :heart:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @vlindhol by @charliermarsh on 2023-03-19 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3609.html">astral-sh/ruff#3609</a> on 2023-03-19 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-19 18:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

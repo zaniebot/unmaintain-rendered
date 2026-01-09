@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply all, or some rules, to a specific package/folder - astral-sh/ruff #11042</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Apply all, or some rules, to a specific package/folder</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11042">#11042</a>
+        opened by <a href="https://github.com/ggravlingen">@ggravlingen</a>
+        on 2024-04-19 13:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ggravlingen">@ggravlingen</a> on 2024-04-19 13:56</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>I'm eager on implementing all ruff rules over an entire codebase. Setting <code>lint.select=[ALL]</code> renders a lot of error messages. My idea was then to force all ruff rules on any new folder that I create in the codebase. I've used a similar strategy when rolling out mypy.</p>
+<p>This is a snippet of my <code>pyproject.toml</code>:</p>
+<pre><code>target-version = &quot;py311&quot;
+
+lint.select = [
+    &quot;D&quot;,  # docstrings
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Enforce this rule for tests
+&quot;!src/**/tests/*.py&quot; = [
+    &quot;ANN201&quot;  # Missing return type annotation for public function
+]
+# Enforce all rules for the analytics folder
+&quot;!src/analytics/**/*.py&quot; = [
+    &quot;ALL&quot;
+]
+</code></pre>
+<p>I've added a line <code># TODO:fix</code> in <code>src/analytics/chart/base.py, thinking that would violate </code>TD007<code>. Running </code>ruff check src<code>, however, yields </code>All checks passed!`</p>
+<p>Is it possible to use <code>rule</code> in the way outlined above?</p>
+<p>--</p>
+<p>Edit after the comment from @carljm below: added the <code>!</code>before <code>src/analytics/**/*.py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-19 17:08</div>
+            <div class="timeline-body"><p>The config as you've written it says that you want to ignore all rules in <code>src/analytics/**/*.py</code>, so it's not surprising that you don't see lints in those files!</p>
+<p>It looks like the feature you're wanting here is <code>per-file-selects</code>, which we don't currently have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ggravlingen">@ggravlingen</a> on 2024-04-19 17:15</div>
+            <div class="timeline-body"><p>@carljm do'h, I see that I copied the config from when I was doing some experiments. The config in the initial post is now reflecting what I have.</p>
+<p>It works to apply single rules as in <code>!src/**/tests/*.py</code>. How come I currently can't apply all?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-19 17:39</div>
+            <div class="timeline-body"><blockquote>
+<p>It works to apply single rules as in !src/**/tests/*.py</p>
+</blockquote>
+<p>It shouldn't, and in my local testing it doesn't. So I'm still not sure that the shown config here matches your actual config: if you are seeing <code>ANN201</code> fire, you must have it included in a <code>select</code> or <code>extend-select</code> somewhere.</p>
+<p><code>per-file-ignores</code> can only ignore rules, it can never select rules. This is equally true for both negative patterns (those starting with <code>!</code>) and positive patterns.</p>
+<p>So if you only <code>lint.select</code> the <code>&quot;D&quot;</code> rules, then no matter what you put in <code>per-file-ignores</code> you will never see any rules fire that are not <code>&quot;D&quot;</code> rules.</p>
+<p>If this is not the behavior you're seeing, it would be great if you could provide a complete minimal example!</p>
+<p>Your <code>lint.select</code> should select all the rules that you want enabled anywhere, and then you can use <code>per-file-ignores</code> to pare that down. But unfortunately this is difficult to do with such a broad brush as <code>ALL</code>; if you ignore <code>ALL</code> outside of <code>src/analytics/</code>, then that really means ignoring all, there's no way to selectively enable certain rules outside of <code>src/analytics</code>. Unless your ignore pattern exhaustively lists only the rules you actually want to ignore everywhere outside <code>src/analytics</code>, and not the ones you do want elsewhere.</p>
+<p>To make this pattern less cumbersome, we would need <code>per-file-selects</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ggravlingen">@ggravlingen</a> on 2024-04-19 17:52</div>
+            <div class="timeline-body"><p>@carljm thank you for the detailed response, which leads me to believe that I have misunderstood how that negative pattern works. Please let me check config file when I'm back at work again on Monday so that I can try to reproduce a working example, or realize that the config is incorrect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @dhruvmanila on 2024-04-22 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ggravlingen">@ggravlingen</a> on 2024-04-24 12:30</div>
+            <div class="timeline-body"><p>I have tried to reproduce what I believe I did when adding my rule for tests only but, perhaps not surprising, without any success. Closing this issue.</p>
+<p>Apologies for the noise!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ggravlingen on 2024-04-24 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-24 12:49</div>
+            <div class="timeline-body"><p>No worries! Thank you for reporting issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17391.html">astral-sh/ruff#17391</a> on 2025-04-14 12:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

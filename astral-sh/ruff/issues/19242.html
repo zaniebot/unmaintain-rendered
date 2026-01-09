@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`S412` false negatives - astral-sh/ruff #19242</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`S412` false negatives</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19242">#19242</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-07-09 18:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-09 18:16</div>
+            <div class="timeline-body"><p><a href="https://docs.astral.sh/ruff/rules/suspicious-httpoxy-import/#suspicious-httpoxy-import-s412">suspicious-httpoxy-import (S412)</a> has false negatives, as uncovered in #19009. The rule currently only applies to <code>ImportFrom</code> statements, not calls to the insecure code:</p>
+<pre><code class="language-python">from wsgiref.handlers import CGIHandler  # S412
+from twisted.web.twcgi import CGIScript  # S412
+
+import wsgiref.handlers
+import twisted.web.twcgi
+
+wsgiref.handlers.CGIHandler()  # False negative?
+twisted.web.twcgi.CGIScript()  # False negative?
+</code></pre>
+<p>These are caught by the upstream linter:</p>
+<pre><code class="language-shell">$ cat &lt;&lt;EOF | uvx --with flake8-bandit flake8 --select S -
+from wsgiref.handlers import CGIHandler  # S412
+from twisted.web.twcgi import CGIScript  # S412
+
+import wsgiref.handlers
+import twisted.web.twcgi
+
+wsgiref.handlers.CGIHandler()  # False negative?
+twisted.web.twcgi.CGIScript()  # False negative?
+EOF
+Unable to find qualified name for module: stdin
+stdin:1:1: S412 Consider possible security implications associated with CGIHandler module.
+stdin:2:1: S412 Consider possible security implications associated with CGIScript module.
+stdin:7:1: S412 Consider possible security implications associated with wsgiref.handlers.CGIHandler module.
+stdin:8:1: S412 Consider possible security implications associated with twisted.web.twcgi.CGIScript module.
+</code></pre>
+<h2>Possible solutions</h2>
+<p>A simple solution would just be to flag any import from <code>wsgiref.handlers</code>. Based on the <a href="https://docs.python.org/3/library/wsgiref.html#module-wsgiref.handlers">docs</a>, I think everything in that module is related to CGI and could fall under the rule, not just <code>CGIHandler</code>. I think the same is true for <a href="https://github.com/twisted/twisted/blob/trunk/src/twisted/web/twcgi.py"><code>twisted.web.twcgi</code></a>, which seems to be under active development still.</p>
+<p>A more complicated solution would be to check for calls like the upstream linter. If we decide to go this route, we may need to assess other <code>flake8-bandit</code> rules for similar issues.</p>
+<p>However, after writing this up, I'm pretty strongly leaning toward just flagging any import, which is in line with our other <code>flake8-bandit</code> rules.</p>
+<p>cc @MeGaGiGaGon who found the initial problem and helped track down the root of the issue</p>
+<hr>
+<sub>Edited to remove the mention of the documentation issue resolved by #19241 and my confusion about the source of the `wsgiref` package.</sub>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-09 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-07-09 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19241.html">astral-sh/ruff#19241</a> on 2025-07-09 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-09 18:23</div>
+            <div class="timeline-body"><p>I think <code>wsgiref</code> is referring to the <a href="https://docs.python.org/3/library/wsgiref.html#wsgiref.handlers.CGIHandler">builtin python module</a>, or maybe it got added to the standard library at some point? Since it works fine for me if I don't have <code>wsgiref</code> from <code>PyPI</code> installed:</p>
+<pre><code>PS ~&gt;uvx python -c &quot;import wsgiref.handlers.CGIHandler&quot;
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+    import wsgiref.handlers.CGIHandler
+ModuleNotFoundError: No module named 'wsgiref.handlers.CGIHandler'; 'wsgiref.handlers' is not a package
+PS ~&gt;uvx python -c &quot;from wsgiref.handlers import CGIHandler&quot;
+PS ~&gt;   
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-09 18:25</div>
+            <div class="timeline-body"><p>That explains a lot, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19247.html">astral-sh/ruff#19247</a> on 2025-07-09 22:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

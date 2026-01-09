@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When adding optional dependency for a non-existing group, a new emtpy dependency group should be created - astral-sh/uv #13091</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>When adding optional dependency for a non-existing group, a new emtpy dependency group should be created</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13091">#13091</a>
+        opened by <a href="https://github.com/alelom">@alelom</a>
+        on 2025-04-24 14:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alelom">@alelom</a> on 2025-04-24 14:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Running <code>uv add --optional groupname xyz</code> should add an empty dependency group <code>groupname</code> for the optional dependency if it doesn't exist. Otherwise, the resulting <code>toml</code> file only contains the section</p>
+<pre><code>[project.optional-dependencies]
+groupname = [
+    &quot;xyz&gt;=2.5.1&quot;,
+]
+</code></pre>
+<p>which then subsequently will make calls to <code>uv sync --no-group groupname</code> return the error <code>error: Group groupname is not defined in the project's dependency-groups table</code>, which would be hard to understand for newbies, and also it's a missed opportunity for a simple automation.</p>
+<p>I understand this is an edge case, but I think that doing <code>uv add --optional groupname xyz</code> when <code>groupname</code> doesn't exist in the dependency group, should either:</p>
+<ul>
+<li>return an error stating that <code>groupname</code> doesn't exist (like what you get if you subsequently run <code>uv sync</code>) , <strong>or</strong>,</li>
+<li>add an empty <code>groupname</code> group in the dependency groups by itself, then add the optional dependency in the optional dependencies part.</li>
+</ul>
+<h3>Example</h3>
+<p>Example: freshly new <code>toml</code> file.</p>
+<pre><code>[project]
+name = &quot;somename&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.08&quot;
+dependencies = [
+]
+</code></pre>
+<p>Running <code> uv add --optional dev-torch torch</code> adds this to the toml file:</p>
+<pre><code>[project.optional-dependencies]
+dev-torch = [
+    &quot;torch&gt;=2.5.1&quot;,
+]
+</code></pre>
+<p>However, the dependency group <code>dev-torch</code> isn't created. So when running <code>uv sync --no-group dev-torch</code> you get:</p>
+<pre><code class="language-bash">error: Group `dev-torch` is not defined in the project's `dependency-groups` table
+</code></pre>
+<p>This is easily resolvable by adding an empty group manually:</p>
+<pre><code>[project]
+name = &quot;ml-cad-assistant&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.08&quot;
+dependencies = [
+    &quot;sysappend&gt;=1.6.2&quot;,
+    &quot;rich&quot;,
+    &quot;pymupdf&quot;,
+    &quot;pycocotools&quot;
+]
+
+[dependency-groups]
+dev-torch = [
+]
+
+[project.optional-dependencies]
+dev-torch = [
+    &quot;torch&gt;=2.5.1&quot;,
+]
+</code></pre>
+<p>But I argue that it should be done automatically on the first invocation of  <code>uv add --optional dev-torch torch</code> if the name <code>dev-torch</code> doesn't exist between the dependency groups already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @alelom on 2025-04-24 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "When adding optional dependency on a new group that wasn't set before, an empty dependency group should be created" to "When adding optional dependency for a non-existing group, a new emtpy dependency group should be created" by @alelom on 2025-04-24 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-24 16:16</div>
+            <div class="timeline-body"><p>I think you might be conflating dependency groups with optional dependencies? They're not the same thing. <code>--no-group dev-torch</code> should <em>not</em> work if you have <code>dev-torch</code> under <code>project.optional-dependencies</code> -- that's not a dependency group. It would be super confusing to have an optional dependency and a dependency group with the same name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alelom">@alelom</a> on 2025-05-09 11:02</div>
+            <div class="timeline-body"><p>@charliermarsh My understanding was that optional dependencies <strong>can be</strong> <em>optional under an existing dependency group</em>.</p>
+<p>When you add an optional dependency, you can add it as optional for the entire project or for a dependency group. Which is why <code>uv add --optional groupname xyz</code> is allowed: the <code>xyz</code> is an optional dependency for dependency group called <code>groupname</code>.</p>
+<p>I understand this is an edge case, but I think that doing <code>uv add --optional groupname xyz</code> when <code>groupname</code> doesn't exist in the dependency group, should either:</p>
+<ul>
+<li>return an error stating that <code>groupname</code> doesn't exist, or,</li>
+<li>add an empty <code>groupname</code> in the dependency groups by itself, then add the optional dependency in the optional dependencies part.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-13 03:08</div>
+            <div class="timeline-body"><p>That's not quite right. <code>uv add --optional groupname xyz</code> adds <code>xyz</code> to the <code>groupname</code> section in <code>project.optional-dependencies</code>. This is <em>not</em> the same as a &quot;dependency group&quot; named <code>groupname</code>. That would be <code>uv add --group groupname xyz</code>.  <code>uv add --optional groupname xyz </code> has nothing to do with <code>[dependency-groups.groupname]</code>. These are two distinct concepts that are defined in Python standards -- they're not defined by uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-05-13 03:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

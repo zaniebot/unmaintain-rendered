@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff added extra string to code when formating - astral-sh/ruff #11801</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff added extra string to code when formating</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11801">#11801</a>
+        opened by <a href="https://github.com/MRossa157">@MRossa157</a>
+        on 2024-06-08 12:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MRossa157">@MRossa157</a> on 2024-06-08 12:48</div>
+            <div class="timeline-body"><p>This bug was on <strong>Ruff version</strong> ruff 0.4.7 and also on ruff 0.4.8</p>
+<p>When I <strong>format</strong> this code:</p>
+<pre><code class="language-python">import numpy as np
+import torch
+from torch.utils.data import Dataset
+from tqdm import tqdm
+from multiprocessing import Pool, cpu_count
+
+class MovieLensTrainDataset(Dataset):
+    &quot;&quot;&quot;MovieLens PyTorch Dataset for Training&quot;&quot;&quot;
+    
+    def __init__(self, ratings, all_movieIds, is_training=True):
+        self.is_training = is_training
+        self.ratings = ratings
+        self.all_movieIds = all_movieIds
+        self.users, self.items, self.labels = self.get_dataset()
+
+    def __len__(self):
+        return len(self.users)
+
+    def __getitem__(self, idx):
+        return self.users[idx], self.items[idx], self.labels[idx]
+
+    def generate_samples(self, user_item):
+        u, i = user_item
+        num_negatives = 4
+        local_users, local_items, local_labels = [u], [i], [1]
+        while len(local_users) &lt;= num_negatives:
+            negative_item = np.random.choice(self.all_movieIds)
+            if (u, negative_item) not in self.user_item_set:
+                local_users.append(u)
+                local_items.append(negative_item)
+                local_labels.append(0)
+        return local_users, local_items, local_labels
+
+    def get_dataset(self):
+        users, items, labels = [], [], []
+        self.user_item_set = set(zip(self.ratings[&quot;userId&quot;], self.ratings[&quot;movieId&quot;]))
+
+        with Pool(processes=cpu_count()) as pool:
+            results = list(tqdm(pool.imap(self.generate_samples, self.user_item_set),
+                                total=len(self.user_item_set),
+                                desc=f&quot;Generating samples for {'training' if self.is_training else 'validating'}&quot;))
+        
+        for user_list, item_list, label_list in results:
+            users.extend(user_list)
+            items.extend(item_list)
+            labels.extend(label_list)
+
+        return torch.tensor(users, dtype=torch.long), torch.tensor(items, dtype=torch.long), torch.tensor(labels, dtype=torch.float)
+</code></pre>
+<p><strong>Ruff makes</strong> this:</p>
+<pre><code class="language-python">from multiprocessing import Pool, cpu_count
+
+import numpy as np
+import torch
+from torch.utils.data import Dataset
+from tqdm import tqdm
+
+
+class MovieLensTrainDataset(Dataset):
+    &quot;&quot;&quot;MovieLens PyTorch Dataset for Training&quot;&quot;&quot;
+
+    def __init__(self, ratings, all_movieIds, is_training=True):
+        self.is_training = is_training
+        self.ratings = ratings
+        self.all_movieIds = all_movieIds
+        self.users, self.items, self.labels = self.get_dataset()
+
+    def __len__(self):
+        return len(self.users)
+
+    def __getitem__(self, idx):
+        return self.users[idx], self.items[idx], self.labels[idx]
+
+    def generate_samples(self, user_item):
+        u, i = user_item
+        num_negatives = 4
+        local_users, local_items, local_labels = [u], [i], [1]
+        while len(local_users) &lt;= num_negatives:
+            negative_item = np.random.choice(self.all_movieIds)
+            if (u, negative_item) not in self.user_item_set:
+                local_users.append(u)
+                local_items.append(negative_item)
+                local_labels.append(0)
+        return local_users, local_items, local_labels
+
+    def get_dataset(self):
+        users, items, labels = [], [], []
+        self.user_item_set = set(zip(self.ratings[&quot;userId&quot;], self.ratings[&quot;movieId&quot;]))
+
+        with Pool(processes=cpu_count()) as pool:
+            results = list(
+                tqdm(
+                    pool.imap(self.generate_samples, self.user_item_set),
+                    total=len(self.user_item_set),
+                    desc=f&quot;Generating samples for {'training' if self.is_training else 'validating'}&quot;,
+                )
+            )
+
+        for user_list, item_list, label_list in results:
+            users.extend(user_list)
+            items.extend(item_list)
+            labels.extend(label_list)
+
+        return (
+            torch.tensor(users, dtype=torch.long),
+            torch.tensor(items, dtype=torch.long),
+            torch.tensor(labels, dtype=torch.float),
+        )
+
+        return (
+            torch.tensor(users, dtype=torch.long),
+            torch.tensor(items, dtype=torch.long),
+            torch.tensor(labels, dtype=torch.float),
+        )
+</code></pre>
+<p>He is adding new (extra) <code>return</code>:</p>
+<pre><code class="language-python">return (
+            torch.tensor(users, dtype=torch.long),
+            torch.tensor(items, dtype=torch.long),
+            torch.tensor(labels, dtype=torch.float),
+        )
+</code></pre>
+<p>My <strong>VS code settings</strong> (settings.json):</p>
+<pre><code class="language-json">{
+    &quot;workbench.colorTheme&quot;: &quot;Default Dark+&quot;,
+    &quot;workbench.preferredDarkColorTheme&quot;: &quot;Default Dark+&quot;,
+    &quot;tabnine.experimentalAutoImports&quot;: true,
+    &quot;workbench.iconTheme&quot;: &quot;vscode-great-icons&quot;,
+    &quot;RainbowBrackets.depreciation-notice&quot;: false,
+    &quot;explorer.confirmDelete&quot;: false,
+    &quot;python.defaultInterpreterPath&quot;: &quot;C:\\Users\\maxim\\AppData\\Local\\Programs\\Python\\Python312\\python.exe&quot;,
+    &quot;explorer.confirmDragAndDrop&quot;: false,
+    &quot;jupyter.askForKernelRestart&quot;: false,
+    &quot;editor.unicodeHighlight.ambiguousCharacters&quot;: false,
+    &quot;notebook.formatOnSave.enabled&quot;: true,
+    &quot;notebook.codeActionsOnSave&quot;: {
+        &quot;notebook.source.organizeImports&quot;: &quot;explicit&quot;,
+    },
+    &quot;[python]&quot;: {
+        &quot;editor.defaultFormatter&quot;: &quot;charliermarsh.ruff&quot;,
+        &quot;editor.formatOnSave&quot;: true,
+        &quot;editor.codeActionsOnSave&quot;: {
+            &quot;source.organizeImports&quot;: &quot;explicit&quot;
+        },
+    },
+    &quot;isort.args&quot;:[&quot;--profile&quot;, &quot;black&quot;],
+    &quot;editor.detectIndentation&quot;: false,
+
+    &quot;telemetry.telemetryLevel&quot;: &quot;off&quot;,
+    &quot;files.trimTrailingWhitespace&quot;: true,
+    &quot;files.trimFinalNewlines&quot;: true,
+    &quot;files.autoSave&quot;: &quot;afterDelay&quot;,
+    &quot;files.autoSaveDelay&quot;: 5000,
+    &quot;python.analysis.autoFormatStrings&quot;: true,
+    &quot;black-formatter.args&quot;: [
+        &quot;line-length=150&quot;
+    ],
+    &quot;security.workspace.trust.untrustedFiles&quot;: &quot;open&quot;,
+    &quot;explorer.confirmPasteNative&quot;: false,
+    &quot;notebook.confirmDeleteRunningCell&quot;: false,
+    &quot;git.suggestSmartCommit&quot;: false,
+    &quot;git.confirmSync&quot;: false
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @AlexWaygood on 2024-06-08 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-08 15:29</div>
+            <div class="timeline-body"><p>Uff, that's not good. Do you roughly remember what you were adding when this happened? I suspect that this is an issue with range formatting because this isn't happening when I paste your example into the playground.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MRossa157">@MRossa157</a> on 2024-06-08 15:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Uff, that's not good. Do you roughly remember what you were adding when this happened? I suspect that this is an issue with range formatting because this isn't happening when I paste your example into the playground.</p>
+</blockquote>
+<p>I didn't add anything to Ruff, rather I replaced the black formatter with Ruff's. In addition to the usual Ruff setup, I also added Jupiter Notebook support (it's in the settings). And that's pretty much it. I don't remember any other additions.</p>
+<p>Here is the list of extensions that I have installed in VS Code:</p>
+<pre><code>- autoDocstring
+- Better Comments
+- Black formatter
+- Dev containers
+- Docker
+- IntelliCode
+- isort
+- Jupiter (and other Jupiter extensions)
+- Makefile tools
+- Python (include Pylance, Python debugger e.t.c)
+- Python intend
+- Python path
+- Rainbow brackets
+- Ruff[!!!]
+- VS Code great icons
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-08 18:20</div>
+            <div class="timeline-body"><p>Thanks for sharing the additional data. Do you remember the changes you made to that file? I assume you made some edits, hit save and VS code formatted the code.</p>
+<p>@charliermarsh I think there have been instances where Ruff and the isort extension don't get along. Any chance that might be related?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-08 18:21</div>
+            <div class="timeline-body"><p>It could. If you have both extensions installed, code is often repeated at the bottom of the file. It's a bug in VS Code itself: https://github.com/microsoft/vscode/issues/174295</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MRossa157">@MRossa157</a> on 2024-06-08 18:32</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for sharing the additional data. Do you remember the changes you made to that file? I assume you made some edits, hit save and VS code formatted the code.</p>
+<p>@charliermarsh I think there have been instances where Ruff and the isort extension don't get along. Any chance that might be related?</p>
+</blockquote>
+<p>Yes, it is. I copied that code, pasted it and pressed CTRL + S (save file) and since I have it set to format on save, it formatted itself. I thought I had described it explicitly, sorry</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-08 19:48</div>
+            <div class="timeline-body"><p>Yeah, I think you either need to uninstall isort or disable Ruff's import formatting. This issue arises when you have multiple extensions installed that want to handle import formatting. In that case, VS Code ends up running them over one another, leading to contents duplicated like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> removed by @MichaReiser on 2024-06-08 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @MichaReiser on 2024-06-08 20:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

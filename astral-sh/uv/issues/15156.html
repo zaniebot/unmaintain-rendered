@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug: Cached Script Dependencies Not Properly Invalidated - astral-sh/uv #15156</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug: Cached Script Dependencies Not Properly Invalidated</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15156">#15156</a>
+        opened by <a href="https://github.com/Alchemyst0x">@Alchemyst0x</a>
+        on 2025-08-08 02:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Alchemyst0x">@Alchemyst0x</a> on 2025-08-08 02:15</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Script dependency resolution fails to properly invalidate/update when using the <code>--force-reinstall</code> or <code>--reinstall</code> flags (even when combined with <code>--refresh</code>), but works when the same script is renamed to a different filename. This suggests that the cache key might be filename-dependent in a way that bypasses the flags, and that the flags themselves are seemingly ineffective for their intended purposes.</p>
+<h3>Steps to Reproduce / Minimal Reproducible Example</h3>
+<p>Save and run this bash script:</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+
+# Arbitrary Python version 
+PY_VERSION=&quot;3.13&quot;
+
+# We will intentionally install the wrong dependency first to demonstrate
+INCORRECT_DEP=&quot;crypto&quot;
+CORRECT_DEP=&quot;pycryptodome&quot;
+
+SCRIPT_FILE=&quot;example.py&quot;
+SCRIPT_CONTENT='#!/usr/bin/env uv run --script
+
+try:
+    from Crypto.Cipher import AES
+except Exception:
+    print(&quot;Failed to import from 'Crypto' namespace&quot;)
+else:
+    print(&quot;It works!&quot;)'
+
+DEMO_DIR=&quot;$(mktemp -d)/bug_example&quot;
+mkdir -p &quot;$DEMO_DIR&quot; &amp;&amp; cd &quot;$DEMO_DIR&quot; || exit
+
+echo -e &quot;\n-- Creating script file: '$SCRIPT_FILE'&quot;
+echo &quot;$SCRIPT_CONTENT&quot; &gt; &quot;$SCRIPT_FILE&quot;
+
+echo -e &quot;\n-- Installing Python $PY_VERSION...&quot;
+uv python install &quot;$PY_VERSION&quot;
+
+echo -e &quot;\n-- Adding '$INCORRECT_DEP' to '$SCRIPT_FILE'&quot;
+uv add --script &quot;$SCRIPT_FILE&quot; --python=&quot;$PY_VERSION&quot; &quot;$INCORRECT_DEP&quot;
+
+echo -e &quot;\n-- Running '$SCRIPT_FILE' (expected to fail)&quot;
+chmod +x &quot;$SCRIPT_FILE&quot;
+&quot;./$SCRIPT_FILE&quot;
+
+echo -e &quot;\n-- Adding '$CORRECT_DEP' to '$SCRIPT_FILE' and removing '$INCORRECT_DEP'&quot;
+echo &quot;$SCRIPT_CONTENT&quot; &gt; &quot;$SCRIPT_FILE&quot;
+uv add --script &quot;$SCRIPT_FILE&quot; --python=&quot;$PY_VERSION&quot; &quot;$CORRECT_DEP&quot;
+
+echo -e &quot;\n-- Running '$SCRIPT_FILE' a second time (should work but will fail)&quot;
+&quot;./$SCRIPT_FILE&quot;
+echo -e &quot;\n  ...trying again with 'uv run --script --refresh --force-reinstall'&quot;
+uv run --script --refresh --force-reinstall &quot;$SCRIPT_FILE&quot;
+echo -e &quot;\n  ...trying again with 'uv run --script  --refresh --reinstall'&quot;
+uv run --script --refresh --reinstall example.py
+
+echo -e &quot;\n-- Renaming '$SCRIPT_FILE' to 'renamed.py'&quot;
+mv &quot;$SCRIPT_FILE&quot; 'renamed.py'
+
+echo -e &quot;\n-- Running 'renamed.py' (script will run as expected now)&quot;
+&quot;./renamed.py&quot;
+</code></pre>
+<h4>Expected Behavior</h4>
+<ul>
+<li>Dependencies should resolve correctly after adding <code>pycryptodome</code>, regardless of filename.</li>
+<li><code>--reinstall</code> and <code>--refresh</code> flags should properly invalidate the cache.</li>
+</ul>
+<h4>Actual Behavior</h4>
+<p>When run locally, the script produces the following output:</p>
+<pre><code class="language-sh">bash ~/demo_uv_bug.sh
+
+-- Creating script file: 'example.py'
+
+-- Installing Python 3.13...
+
+-- Adding 'crypto' to 'example.py'
+Updated `example.py`
+
+-- Running 'example.py' (expected to fail)
+Installed 9 packages in 15ms
+Failed to import from Crypto namespace
+
+-- Adding 'pycryptodome' to 'example.py' and removing 'crypto'
+Updated `example.py`
+
+-- Running 'example.py' a second time (should work but will fail)
+Installed 1 package in 7ms
+Failed to import from Crypto namespace
+
+  ...trying again with 'uv run --script --refresh --force-reinstall'
+Uninstalled 1 package in 22ms
+Installed 1 package in 9ms
+Failed to import from Crypto namespace
+
+  ...trying again with 'uv run --script  --refresh --reinstall'
+Uninstalled 1 package in 23ms
+Installed 1 package in 7ms
+Failed to import from Crypto namespace
+
+-- Renaming 'example.py' to 'renamed.py'
+
+-- Running 'renamed.py' (script will run as expected now)
+Installed 1 package in 5ms
+It works!
+</code></pre>
+<p>As shown in the output:</p>
+<ul>
+<li>Initial import fails (expected with wrong dependency).</li>
+<li>Import continues to fail after adding correct dependency.</li>
+<li>Import continues failing despite the use of the <code>--reinstall</code> and <code>--refresh</code> flags.</li>
+<li>Only after renaming the file does the import succeed.</li>
+</ul>
+<h3>Platform</h3>
+<p>Darwin 24.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.5 (Homebrew 2025-08-05)</p>
+<h3>Python version</h3>
+<p>Python 3.13.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Alchemyst0x on 2025-08-08 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-16 22:45</div>
+            <div class="timeline-body"><p>I looked into this and... it's a pretty weird case that I'm not sure we can solve.</p>
+<p>When you run <code>uv add crypto</code>, we install the <code>crypto</code> package, which creates a module named <code>crypto</code> (lowercase) in the virtual environment.</p>
+<p>When you then run <code>uv add pycryptodome</code>, we install the <code>pycryptodome</code> package, which <em>wants</em> to create a module named <code>Crypto</code> (uppercase) in the virtual environment. But <code>crypto</code> (lowercase) already exists, and macOS is case-insensitive (but case-preserving). So the filesystem treats those as &quot;the same&quot;, and overwrites the contents of <code>crypto</code> with those of <code>pycryptodome</code> (rather then creating <code>Crypto</code>). (Other Python installers have the same behavior.)</p>
+<p>Python is not case-insensitive, though. So if you try to <code>import Crypto</code>, and the folder is <code>crypto</code>, Python will throw an error.</p>
+<p>I'm not really sure how to avoid this. If we made <code>uv add</code> and <code>uv remove</code> automatically sync the script environment, and you'd run <code>uv remove crypto</code>, then that might've worked. Alternatively, running <code>uv sync --script example.py</code> after removing <code>&quot;crypto&quot;</code> also would've worked, since we'd remove that directory, and <code>uv add pycryptodome</code> would then create <code>Crypto</code> instead of <code>crypto</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-16 22:47</div>
+            <div class="timeline-body"><p>Actually, this would've worked: <code>uv run --exact --reinstall -v --script script.py</code> (assuming you removed <code>&quot;crypto&quot;</code> as a dependency). Because then we'd remove the <code>crypto</code> directory and create <code>Crypto</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-08-16 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-08-16 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alchemyst0x">@Alchemyst0x</a> on 2025-08-17 10:43</div>
+            <div class="timeline-body"><p>Wow, that's incredibly subtle! That makes perfect sense - I completely overlooked the case-sensitivity filesystem issue.</p>
+<p>Thanks for digging into this. The <code>--exact --reinstall</code> workaround (after removing the dependency) is good to know.</p>
+<p>Feel free to close this if you think it's not actionable.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

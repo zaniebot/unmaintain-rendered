@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>how lock pip package ? - astral-sh/uv #16419</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>how lock pip package ?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16419">#16419</a>
+        opened by <a href="https://github.com/balabalabutton">@balabalabutton</a>
+        on 2025-10-23 14:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/balabalabutton">@balabalabutton</a> on 2025-10-23 14:26</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I want to lock the versions of some packages so that they will never be updated. Even if <code>uv add</code> is used, it will be blocked directly.</p>
+<p>In actual use (or maybe I used it wrong?), <code>uv lock</code> only updates the lock file, and it seems that it cannot lock the package version.</p>
+<p>I found a way to do it, but it's awkward. Here are the steps:</p>
+<pre><code class="language-shell">cd ~/project-a
+uv export --no-dev --format requirements.txt -o consistent.txt
+
+cd ~/project-b
+uv add pandas -c consistent.txt
+</code></pre>
+<p>This step is awkward, and it's easy to forget to add the subsequent constraint behavior.</p>
+<p>I also tested the following steps：</p>
+<pre><code class="language-shell">uv add numpy==2.2.2
+uv lock
+
+uv add numpy==2.3.3 --frozen
+</code></pre>
+<p>Although it is shown as 2.2.2 in uv.lock, it is 2.3.3 in the pyproject.toml file and the output of <code>print(numpy.__version__)</code> is the same</p>
+<p>Am I not using uv correctly to fully restrict the package version?</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @balabalabutton on 2025-10-23 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/balabalabutton">@balabalabutton</a> on 2025-10-23 14:27</div>
+            <div class="timeline-body"><p>Or maybe I just mistakenly thought that uv can achieve limited package version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-23 15:50</div>
+            <div class="timeline-body"><p>For the package interface (<code>uv sync</code>, <code>uv add</code>, <code>uv lock</code>), you can use constraint dependencies (https://docs.astral.sh/uv/reference/settings/#constraint-dependencies). Why do you want to exclude certain versions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/balabalabutton">@balabalabutton</a> on 2025-10-23 18:14</div>
+            <div class="timeline-body"><blockquote>
+<p>For the package interface (<code>uv sync</code>, <code>uv add</code>, <code>uv lock</code>), you can use constraint dependencies (https://docs.astral.sh/uv/reference/settings/#constraint-dependencies). Why do you want to exclude certain versions?对于包接口（<code>uv sync</code>、<code>uv add</code>、<code>uv lock</code>），可以使用约束依赖项 （https://docs.astral.sh/uv/reference/settings/#constraint-dependencies）。为什么要排除某些版本？</p>
+</blockquote>
+<p>Although not tested, it seems that you can set <code>uv init --config-file</code> to initialize the project and overwrite pyproject.toml.</p>
+<p>This does not mean that all packages must strictly control their versions. It is just for the convenience of unified project management. Just like Python versions need to be controlled, core packages such as numpy and sklearn need to be kept consistent.</p>
+<p>In this way, the core package is put into the base image, and then the core package is restricted by <code>constraint-dependencies</code> so that it will not be upgraded by mistake.</p>
+<p>Otherwise, overly open package usage can cause problems for different but related projects. At least building images after management can reduce time waste, duplicate layers, and redundant storage in Harbor.</p>
+<p>By the way, can <code>uv init project --config-file uv.toml</code> render the configuration information in the file into the project's <code>pyproject.toml</code>? I still need to verify it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/balabalabutton">@balabalabutton</a> on 2025-10-24 02:00</div>
+            <div class="timeline-body"><p>here is uv.toml</p>
+<pre><code class="language-toml">constraint-dependencies = [&quot;grpcio&lt;1.65&quot;]
+</code></pre>
+<p>and run:</p>
+<pre><code class="language-shell">uv add &quot;grpcio==1.65&quot; --config-file uv.toml
+Resolved 2 packages in 601ms
+warning: `grpcio==1.65.0` is yanked (reason: &quot;https://github.com/grpc/grpc/issues/37178&quot;)
+Prepared 1 package in 10.71s
+Installed 1 package in 3ms
+ + grpcio==1.65.0
+</code></pre>
+<p>There seems to be no limit to success</p>
+<p>After writing the contents of uv.toml into pyproject.toml, the following error is reported:</p>
+<pre><code class="language-shell">uv add &quot;grpcio==1.66&quot;                      
+warning: Found both a `uv.toml` file and a `[tool.uv]` section in an adjacent `pyproject.toml`. The following fields from `[tool.uv]` will be ignored in favor of the `uv.toml` file:
+- constraint-dependencies
+  × No solution found when resolving dependencies:
+  ╰─▶ Because your project depends on grpcio==1.66 and grpcio&lt;1.65, we can conclude that your project's requirements are
+      unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and
+        syncing.
+
+rm uv.toml
+
+uv add &quot;grpcio==1.66&quot;
+  × No solution found when resolving dependencies:
+  ╰─▶ Because your project depends on grpcio==1.66 and grpcio&lt;1.65, we can conclude that your project's requirements are
+      unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and
+        syncing.
+</code></pre>
+<p><code>uv init project --config-file uv.toml</code> will not append the content to the project's <code>pyproject.toml</code>，It seems that this can only be achieved by manually copying the content into the project after creating it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-18 16:15</div>
+            <div class="timeline-body"><p>We generally recommend that projects use requirement bounds that reflect the versions they support, we don't support loading general constraints as configuration beyond <code>--constraints</code> and constraint-dependencies.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

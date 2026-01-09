@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify checksum in installer script - astral-sh/uv #13074</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Verify checksum in installer script</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13074">#13074</a>
+        opened by <a href="https://github.com/polothy">@polothy</a>
+        on 2025-04-23 19:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/polothy">@polothy</a> on 2025-04-23 19:58</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Was experimenting with the uv installer for CI/CD:</p>
+<pre><code>curl -LsSf https://astral.sh/uv/install.sh | env UV_UNMANAGED_INSTALL=&quot;$HOME/bin&quot; sh
+downloading uv 0.6.16 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /tmp/bin
+  uv
+  uvx
+everything's installed!
+</code></pre>
+<p>Noticed <code>no checksums to verify</code> - I looked at the installer script and it looks like it has everything in there to verify the checksums, it's just missing the checksum values.  The checksums are also on the GH releases page, so it looks like they just need to be injected into the install script on release or downloaded separately from the GH release.  Would be a nice touch for added security.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @polothy on 2025-04-23 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @konstin on 2025-04-24 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kerneljack">@kerneljack</a> on 2025-05-26 21:30</div>
+            <div class="timeline-body"><p>Hello, I hope you don't mind but I've written some code to fix this in <code>uv-installer.sh</code>. It now downloads and verifies the checksums for each architecture.</p>
+<p>However, I can't find the <code>uv-installer.sh</code> file in the <code>astral-sh/uv</code> repository, can you please let me know where it is so I can send a pull request? Thanks.</p>
+<p>Here's some example output:</p>
+<pre><code>$ sh ./uv-installer.sh
+downloading uv 0.7.8 x86_64-unknown-linux-gnu
+downloading checksum for uv 0.7.8 x86_64-unknown-linux-gnu
+verifying checksum sha256 285981409c746508c1fd125f66a1ea654e487bf1e4d9f45371a062338f788adb for /tmp/tmp.VSFY7Lnoji/input.tar.gz
+
+
+$ sh ./uv-installer.sh -v
+downloading uv 0.7.8 x86_64-unknown-linux-gnu
+  from https://github.com/astral-sh/uv/releases/download/0.7.8/uv-x86_64-unknown-linux-gnu.tar.gz
+  to /tmp/tmp.lPkBqXXXeM/input.tar.gz
+downloading checksum for uv 0.7.8 x86_64-unknown-linux-gnu
+  from https://github.com/astral-sh/uv/releases/download/0.7.8/uv-x86_64-unknown-linux-gnu.tar.gz.sha256
+  to /tmp/tmp.lPkBqXXXeM/checksum.tar.gz.sha256
+verifying checksum sha256 285981409c746508c1fd125f66a1ea654e487bf1e4d9f45371a062338f788adb for /tmp/tmp.lPkBqXXXeM/input.tar.gz
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-26 21:34</div>
+            <div class="timeline-body"><p>I don't think we gain a security advantage by downloading a hash hosted next to the file itself, HTTPS is already checking the integrity of the file during download.</p>
+<p>Our installers are created by cargo-dist and the checksums would need to be injected by cargo-dist, but with the installer also being a remote script, the security gain right now would be marginal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kerneljack">@kerneljack</a> on 2025-05-26 21:50</div>
+            <div class="timeline-body"><p>Ah so the better solution would be to inject the checksums using cargo-dist into the script, rather than downloading and verifying like I'm doing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-26 21:53</div>
+            <div class="timeline-body"><p>Yes, though for the aforementioned reason this isn't high priority for us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kerneljack">@kerneljack</a> on 2025-05-26 21:58</div>
+            <div class="timeline-body"><p>ok, thank you. I don't have much experience with cargo-dist at the moment so will bow out of this one for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidrenewhome">@davidrenewhome</a> on 2025-11-12 19:55</div>
+            <div class="timeline-body"><p>+1 to this — we should absolutely add a SHA (or signature) check for the install script (curl -LsSf https://astral.sh/uv/install.sh) so that when someone downloads it we can verify nothing was tampered with. It's just standard security practise</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @Gankra by @konstin on 2025-11-13 10:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aleksanb">@aleksanb</a> on 2025-12-01 13:03</div>
+            <div class="timeline-body"><blockquote>
+<p>+1 to this — we should absolutely add a SHA (or signature) check for the install script (curl -LsSf https://astral.sh/uv/install.sh) so that when someone downloads it we can verify nothing was tampered with. It's just standard security practise</p>
+</blockquote>
+<p>Looking forward to signed SHAs for the same reason. Having our prod infra install uv via <code>curl | bash</code> is quite high risk for any workload.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

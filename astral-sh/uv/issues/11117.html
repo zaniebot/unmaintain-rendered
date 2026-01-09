@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run --with ...` leaves `_uv_ephemeral_overlay.pth` in ephemeral environment - astral-sh/uv #11117</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run --with ...` leaves `_uv_ephemeral_overlay.pth` in ephemeral environment</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11117">#11117</a>
+        opened by <a href="https://github.com/daviesian">@daviesian</a>
+        on 2025-01-30 19:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/daviesian">@daviesian</a> on 2025-01-30 19:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Inside a project, running <code>uv run --with jupyter jupyter lab</code> correctly <a href="https://github.com/astral-sh/uv/blob/7531bb866902aedd3095f8da9ed87a2ae0676d2f/crates/uv/src/commands/project/run.rs#L1003">adds <code>_uv_ephemeral_overlay.pth</code></a> to the ephemeral environment created for <code>jupyter</code>. However, the <code>_uv_ephemeral_overlay.pth</code> file is never cleaned up, so subsequent uses of that cached ephemeral environment will see it too. In most cases this doesn't matter because it will be overwritten, but <code>uv tool run</code> (<code>uvx</code>) will not overwrite it. In this example, running <code>uvx jupyter lab</code> elsewhere on the system matches the same cached environment and therefore incorrectly includes the original project virtual env in <code>sys.path</code>.</p>
+<h2>Example</h2>
+<pre><code class="language-bash">uv init my-project
+cd my-project
+uv run --with jupyter jupyter lab
+
+# Print sys.path inside a Jupyter cell. See that the current project venv is correctly on the path
+# Ctrl-C to quit Jupyter
+
+cd /some-other-folder
+uvx jupyter lab
+
+# Print sys.path inside a Jupyter cell. See that my-project/.venv is incorrectly on the path, 
+# despite the fact that this should be an entirely isolated environment
+
+uv cache clean
+uvx jupyter lab
+
+# Print sys.path inside a Jupyter cell. See that my-project/.venv is gone, because the
+# left-over _uv_ephemeral_overlay.pth is no longer in the ephemeral environment.
+</code></pre>
+<p>This happens with both <code>uvx</code> and <code>uv tool run</code>, and appears to be because <code>uv run --with x</code> and <code>uv tool run x</code> match the same cached ephemeral environment, even though <code>uv run</code> leaves behind the <code>.pth</code> file.</p>
+<p>N.B. This problem is not caused by <a href="https://github.com/astral-sh/uv/pull/7161">the PR that added <code>_uv_ephemeral_overlay.pth</code></a> - the previous implemention using <code>sitecustomize.py</code> had the same problem.</p>
+<hr />
+<p>I <em>think</em> the solution may be as simple as cleaning up <code>_uv_ephemeral_overlay.pth</code> before using <a href="https://github.com/astral-sh/uv/blob/7531bb866902aedd3095f8da9ed87a2ae0676d2f/crates/uv/src/commands/tool/run.rs#L118">the chosen environment for <code>uv tool run</code></a>, but I'm unfamiliar with Rust in general and this codebase in particular, so would be hesitant to open a PR directly.</p>
+<h3>Platform</h3>
+<p>macOS 14 arm64 and Windows 11 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.5.25 (9c07c3fc5 2025-01-28)</p>
+<h3>Python version</h3>
+<p>Python 3.12.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @daviesian on 2025-01-30 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv run --with ...` leaves `_uv_ephemeral_overlay.pth` in ephemeral environment, which is incorrect for subsequent uses of `uv tool run ...`" to "`uv run --with ...` leaves `_uv_ephemeral_overlay.pth` in ephemeral environment" by @daviesian on 2025-01-30 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-30 19:54</div>
+            <div class="timeline-body"><p>Interesting! Thanks for the report</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @zanieb on 2025-01-30 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2025-01-30 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-31 03:49</div>
+            <div class="timeline-body"><p>Hmm... I mean, we can just remove it in <code>uv tool run</code>. But it seems not-completely-safe for us to do so, since another process could simultaneously be starting up the same cached environment, but with the overlay applied. I guess that's <em>already</em> a risk today, though? Like, two commands could simultaneously use the same cached environment, and overwrite one another's <code>uv_ephemeral_overlay.pth</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-31 03:54</div>
+            <div class="timeline-body"><p>I wonder if there's a way for us to provide that <code>.pth</code> file to the interpreter without writing it to the cache. Could we augment the <code>PYTHONPATH</code> to look for it, or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-31 03:57</div>
+            <div class="timeline-body"><p>Hmm, no, not seeing anything like that. I guess we should just clean it up in <code>uv tool run</code> and live with it until it becomes an issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-31 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11141.html">astral-sh/uv#11141</a> on 2025-01-31 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-04 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-04 22:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

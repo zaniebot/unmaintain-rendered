@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking issue CustomDerive - clap-rs/clap #1661</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Tracking issue CustomDerive</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1661">#1661</a>
+        opened by <a href="https://github.com/kbknapp">@kbknapp</a>
+        on 2017-11-12 19:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-11-12 19:52</div>
+            <div class="timeline-body"><p><em>From @kbknapp on July 6, 2015 1:22</em></p>
+<p>Comments have been cleaned up and updated. This thread should be related to general progress towards 1.0 for this crate.</p>
+<h2>To Do</h2>
+<ul>
+<li>[ ] <code>#[derive(FromArgMatches)]</code><ul>
+<li>[x] Implemented</li>
+<li>[ ] Docs</li>
+<li>[ ] Tests</li>
+<li>[ ] Examples</li>
+</ul>
+</li>
+<li>[ ] <code>#[derive(IntoApp)]</code><ul>
+<li>[x] Implemented</li>
+<li>[ ] Docs</li>
+<li>[ ] Tests</li>
+<li>[ ] Examples</li>
+</ul>
+</li>
+<li>[ ] <code>#[derive(ClapApp)]</code> (Automatically does <em>both</em> <code>FromArgMatches</code> and <code>IntoApp</code>)<ul>
+<li>[x] Implemented</li>
+<li>[ ] Docs</li>
+<li>[ ] Tests</li>
+<li>[ ] Examples</li>
+</ul>
+</li>
+<li>[ ] <code>#[derive(ClapSubCommands)]</code><ul>
+<li>[x] Implemented</li>
+<li>[ ] Docs</li>
+<li>[ ] Tests</li>
+<li>[ ] Examples</li>
+</ul>
+</li>
+<li>[ ] <a href="https://github.com/clap-rs/clap/issues/1659"><code>#[derive(ArgEnum)]</code></a><ul>
+<li>[x] Implemented<ul>
+<li>[x] Case Insensitive</li>
+<li>[x] Allows Hyphens (#1662 )</li>
+</ul>
+</li>
+<li>[ ] Docs</li>
+<li>[x] Tests</li>
+<li>[x] Examples</li>
+</ul>
+</li>
+</ul>
+<h3>Reference</h3>
+<h4>Derive FromArgMatches</h4>
+<pre><code class="language-rust">#[derive(FromArgMatches)]
+struct MyApp {
+    verb: bool
+}
+
+fn main() {
+    let m: MyApp = App::new(&quot;test&quot;)
+        .arg_from_usage(&quot;-v, --verbose 'turns on verbose printing'&quot;)
+        .get_matches()
+        .into();
+
+    println!(&quot;Verbose on: {:?}&quot;, m.verb);
+}
+</code></pre>
+<h3>Derive IntoApp</h3>
+<pre><code class="language-rust">/// Does stuff
+#[derive(IntoApp)]
+struct MyApp {
+    /// Turns on verbose printing
+    #[clap(short = 'v', long = &quot;verbose&quot;)]
+    verb: bool
+}
+</code></pre>
+<h3>Derive Subcommands</h3>
+<pre><code class="language-rust">#[derive(ClapSubCommands)]
+pub enum Commands {
+    Test(Test),
+}
+</code></pre>
+<h3>Derive TryFromArgMatches</h3>
+<pre><code class="language-rust">#[derive(TryFromArgMatches)]
+struct MyApp {
+    verb: bool
+}
+
+fn main() {
+    let m: Result&lt;MyApp, clap::Error&gt; = App::new(&quot;test&quot;)
+        .arg_from_usage(&quot;-v, --verbose 'turns on verbose printing'&quot;)
+        .get_matches()
+        .try_into();
+}
+</code></pre>
+<h3>Derive ArgEnum</h3>
+<pre><code class="language-rust">#[derive(ArgEnum, Debug)]
+enum ArgChoice {
+    Foo,
+    Bar,
+    Baz,
+}
+
+fn main() {
+    let matches = App::new(env!(&quot;CARGO_PKG_NAME&quot;))
+            .arg(Arg::with_name(&quot;arg&quot;)
+                .required(true)
+                .takes_value(true)
+                .possible_values(&amp;ArgChoice::variants())
+            ).get_matches();
+    
+    let t = value_t!(matches.value_of(&quot;arg&quot;), ArgChoice)
+        .unwrap_or_else(|e| e.exit());
+
+    println!(&quot;{:?}&quot;, t);
+}
+</code></pre>
+<p><em>Copied from original issue: kbknapp/clap-rs#146</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-11-12 19:52</div>
+            <div class="timeline-body"><p>@kamalmarhubi</p>
+<blockquote>
+<p>I'd love for this to land within the 1.15 cycle!</p>
+</blockquote>
+<p>Absolutely, me too! If we can resolve those outstanding questions above (values in order, ensuring <code>T</code> is bound with <code>Default</code> if not using <code>Option&lt;T&gt;</code>) and ensure the naming conventions of the APIs are inline with each other I don't see why this couldn't happen!</p>
+<p>The subcommand enum not being inlined I'm fine with.</p>
+<p>@Nemo157 and @kamalmarhubi</p>
+<p>I forgot to mention in the last post the example above merges two distinct ideas into one, but I'd also want the ability to do one <em>or</em> the other and not be forced to use both. I haven't dug into the source yet, so if it's already possible ignore this comment 😜</p>
+<p>What I mean is, I view both of these as distinct ideas (also, I'm using <code>clap</code> names in this example, but if it remains in the stomp crate, it'd be <code>stomp</code>):</p>
+<ul>
+<li>Create an <code>App</code> struct from <code>MyApp</code> using the <code>#[clap(short='c', long=&quot;config&quot;)]</code></li>
+<li>Create <code>MyApp</code> struct from <code>ArgMatches</code> using the <code>#[derive(ClapCommand)]</code></li>
+</ul>
+<p>Being able to do these two things separatly would greatly increase adoptability. i.e. &quot;I've already got an <code>App</code>, so now I just write out my <code>MyApp</code> struct and place a <code>#[derive]</code> attribute on there and I'm off to the races.</p>
+<p>Likewise, if for some unknown reason they don't want to use the <code>ArgMatches</code>-&gt;<code>MyApp</code> conversion, but still want to take advantage of the <code>MyApp</code>-&gt;<code>App</code> they could. Although I see this as less beneficial merely a biproduct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-11-12 19:52</div>
+            <div class="timeline-body"><p><em>From @Nemo157 on January 30, 2017 7:24</em></p>
+<p>😃 I would definitely be happy to make this a part of <code>clap</code> proper.</p>
+<blockquote>
+<p>look through the entirity of the code to ensure it matches all edge cases and such</p>
+</blockquote>
+<p>At the moment, definitely not. I was basically using my application and the primary <code>clap</code> example as a feature list for what to implement, so there are many things missing.</p>
+<blockquote>
+<p>Using T instead of Option<T> for requirements could be dangerous when things like requirements get overriden, conditional requirements, etc.</p>
+</blockquote>
+<p>Yeah, again because of the test cases I was using I did not consider that at all. Hopefully, at least for the case where the user both generates the <code>App</code> and the conversion from <code>ArgMatches</code>, it should be possible to detect issues at compile time.</p>
+<blockquote>
+<p>The subcommands portion would be even nicer if the enum could be specified inline</p>
+</blockquote>
+<p>Depends which way you mean, an anonymous enum in the parent command would be cool, but probably not really doable without proper anonymous enum support in Rust. An enum with struct variants definitely should be possible, it would result in some massive generated code blocks, but that shouldn't be too bad, and could be fixed in the future with <a href="https://github.com/rust-lang/rfcs/pull/1450">types for enum variants</a> allowing delegating variant specific parsing.</p>
+<blockquote>
+<p>I forgot to mention in the last post the example above merges two distinct ideas into one, but I'd also want the ability to do one or the other and not be forced to use both.</p>
+</blockquote>
+<p>The trait doesn't allow it, but the macro is basically following two distinct paths for each so would be simple to split the trait for it.</p>
+<p>Also, one thought I had soon after I implemented this was that the macro is doing too much. It should be possible to split a lot of what the macro is doing based on types (which is actually based on type names, so could very easily be broken with type aliases etc.) out to trait implementations. For example something like <code>trait FillArg { fn fill_arg(arg: Arg) -&gt; Arg }</code> (superbad name 😞) for filling out the details derived from the type and something else used during parsing.</p>
+<p>I think I should have some time this week I could spend on this, I can definitely try and do a quick port into the <code>clap</code> codebase and do a bit of documentation on how it currently works and what's missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-11-12 19:53</div>
+            <div class="timeline-body"><p>So the example would go to:</p>
+<pre><code class="language-rust">/// Does awesome things.
+#[derive(ClapApp)]    // Does both IntoApp, and FromArgMatches
+#[clap(name = &quot;MyApp&quot;, version = &quot;1.0&quot;)]
+#[clap(author = &quot;Nemo157 &lt;clap@nemo157.com&gt;&quot;)]
+pub struct MyApp {
+    /// Sets a custom config file
+    #[clap(short = &quot;c&quot;, value_name = &quot;FILE&quot;)]
+    config: Option&lt;String&gt;,
+
+    /// Sets an optional output file
+    #[clap(index = &quot;1&quot;)]
+    output: Option&lt;String&gt;,
+
+    /// Turn debugging information on
+    #[clap(counted, short = &quot;d&quot;, long = &quot;debug&quot;)]
+    debug_level: u64,
+
+    #[clap(subcommand)]
+    subcommand: Option&lt;Commands&gt;,
+}
+
+#[derive(SubCommands)]
+pub enum Commands {
+    Test(Test),
+}
+
+/// does testing things
+#[derive(ClapApp)]
+pub struct Test {
+    /// lists test values
+    #[clap(short = &quot;l&quot;)]
+    list: bool,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/omarabid">@omarabid</a> on 2019-02-23 23:04</div>
+            <div class="timeline-body"><p>@kbknapp Have you stopped work on this? The derive/struct approach is a game changer. I can see a substantial productivity boost from having to define a struct and clap deriving the required parsing for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dylan-DPC-zz">@Dylan-DPC-zz</a> on 2019-02-24 16:40</div>
+            <div class="timeline-body"><p>@omarabid yes Kevin has been busy. It doesn't mean he has stopped working on it, but there are other priority issues to tackle. If you are free, you can send us a PR implementing any one of the above features and we will be happy to review it. Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/omarabid">@omarabid</a> on 2019-02-24 16:42</div>
+            <div class="timeline-body"><p>@Dylan-DPC I can't promise as I just started learning Rust. On the other hand, if I were to start contributing to OS projects it'll definitely be this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dylan-DPC-zz">@Dylan-DPC-zz</a> on 2019-02-24 17:05</div>
+            <div class="timeline-body"><p>@omarabid no issues. we can help you if you are stuck on anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeXitoi">@TeXitoi</a> on 2019-02-24 20:43</div>
+            <div class="timeline-body"><p>@omarabid while waiting for clap_derive to be finished, you can use https://crates.io/crates/structopt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-03 09:24</div>
+            <div class="timeline-body"><p>@CreepySkeleton This is also related to custom traits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @pksunkara on 2020-02-03 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @pksunkara on 2020-02-03 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-02-03 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-03 09:29</div>
+            <div class="timeline-body"><p>Yeah, essentially the same design I've been thinking about 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2020-02-03 09:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeXitoi">@TeXitoi</a> on 2020-02-03 09:33</div>
+            <div class="timeline-body"><p>For the ArgEnum thing, you may also be interested by https://crates.io/crates/strum it lacks almost nothing to be just enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nukesor">@Nukesor</a> on 2020-10-30 17:31</div>
+            <div class="timeline-body"><p>Hey :)</p>
+<p>I'm just in the middle of trying the new Clap v3 derive setup.
+My old cli setup has been built with StructOpt v0.3 and I'm super hyped for Clap v3.</p>
+<p>However while migrating, I stumbled upon a little problem. Everything worked perfectly fine until I tried to use the new derive system in combination with the new shell completion generation functions.</p>
+<p>My current approach is something like this:</p>
+<pre><code>use clap::Clap;
+
+#[derive(Clap, Debug)]
+pub struct Opt {
+    /// Verbose mode (-v, -vv, -vvv)
+    #[clap(short, long, parse(from_occurrences))]
+    pub verbose: u8,
+}
+
+async fn main() -&gt; Result&lt;()&gt; {
+    let opt = Opt::parse(); // No longer works without `Clap`
+    // let opt = Opt::into_app(); // Only works with `IntoApp` derive.
+    //generate_to::&lt;Bash, _, _&gt;(&amp;mut app, &quot;pueue&quot;, &quot;/tmp&quot;.into());
+}
+</code></pre>
+<p><code>generate_to</code> requires an <code>&amp;mut App&lt;'_&gt;</code>.
+It's possible to get an <code>App</code> from <code>Opt</code> with the <code>IntoApp</code> derive, but one cannot derive from <code>Clap</code> and <code>IntoApp</code> at the same time.</p>
+<pre><code>error[E0119]: conflicting implementations of trait `clap::IntoApp` for type `cli::Opt`:
+   --&gt; client/cli.rs:311:10
+    |
+311 | #[derive(Clap, IntoApp, Debug)]
+    |          ^^^^  ------- first implementation here
+    |          |
+    |          conflicting implementation for `cli::Opt`
+    |
+    = note: this error originates in a derive macro (in Nightly builds, run with -Z macro-backtrace for more info)
+</code></pre>
+<p>So here's my questoin:
+What's the best way to get the new struct based declaration and usage, while also being able to generate shell completion files.</p>
+<p>There's probably just something I'm overlooking.</p>
+<p>Thanks in advance :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-30 17:36</div>
+            <div class="timeline-body"><p>You don't need to specify IntoApp derive. Clap derive automatically does that. Just make sure that IntoApp trait is in <code>use</code> for you to use the <code>into_app</code> function</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TilCreator">@TilCreator</a> on 2021-04-09 10:30</div>
+            <div class="timeline-body"><p>I really like the derive stuff, it's great!
+But I found a problem with <code>#[clap(parse(try_from_str)]</code>:</p>
+<pre><code class="language-rust">/*
+Available functions:
+reqwest::Url::try_from(s: &amp;'a str) -&gt; Result&lt;Self, Self::Error&gt;
+reqwest::Url::from_str(input: &amp;str) -&gt; Result&lt;Url, crate::ParseError&gt;
+scraper::Selector::try_from(s: &amp;'i str) -&gt; Result&lt;Self, Self::Error&gt;
+*/
+
+#[derive(Clap, Debug)]
+#[clap(name = env!(&quot;CARGO_PKG_NAME&quot;))]
+struct Args {
+    #[clap(
+        takes_value = true,
+        parse(try_from_str)
+    )]
+    url: Url,
+    #[clap(
+        takes_value = true,
+        parse(try_from_str),
+    )]
+    selector: Selector,
+}    
+</code></pre>
+<pre><code>error[E0277]: the trait bound `Selector: FromStr` is not satisfied
+  --&gt; src/main.rs:30:15
+   |
+   |         parse(try_from_str),
+   |               ^^^^^^^^^^^^ the trait `FromStr` is not implemented for `Selector`
+   |
+   = note: required by `std::str::FromStr::from_str`
+</code></pre>
+<p>Parsing <code>Args::url</code> works great, but <code>Args::selector</code> doesn't find the from function, because clap doesn't seam to search for <code>try_from</code> implementations. Guessing by the name I would expect <code>try_from_str</code> to use <code>try_from(&amp;str)</code>, not <code>from(&amp;str)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-04-09 10:35</div>
+            <div class="timeline-body"><p>Can you please create a separate issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2437.html">clap-rs/clap#2437</a> on 2021-04-09 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2856.html">clap-rs/clap#2856</a> on 2021-10-12 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-12 14:31</div>
+            <div class="timeline-body"><p>We've got examples and tests but are still lacking in docs.  I've split that out into https://github.com/clap-rs/clap/issues/2856</p>
+<p>If there is anything in this that I missed, let's split it out so we can have concrete steps to move forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-10-12 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../sigp/lighthouse/pulls/2754.html">sigp/lighthouse#2754</a> on 2021-10-29 20:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

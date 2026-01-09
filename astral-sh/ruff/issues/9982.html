@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff using 50-100gb Ram - astral-sh/ruff #9982</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff using 50-100gb Ram</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9982">#9982</a>
+        opened by <a href="https://github.com/tomhamiltonstubber">@tomhamiltonstubber</a>
+        on 2024-02-14 11:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tomhamiltonstubber">@tomhamiltonstubber</a> on 2024-02-14 11:27</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hi folks,</p>
+<p><code>ruff</code> has just tried to use 100gb of memory on my machine while running the formatter twice at the same time:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/8955690/45db92eb-7016-4bc1-8312-5e7517542e95" alt="image" /></p>
+<p>I think this is related to #8147 as it was triggered by PyCharm's File Watcher functionality and that seems to be when that happens. This is for a pretty big project, not public so I can't share.</p>
+<p>The command that caused this was <code>ruff format</code>, the File Watcher config is shown here:</p>
+<img width="906" alt="image" src="https://github.com/astral-sh/ruff/assets/8955690/b5c3b2be-8490-4fe1-94af-bf9991cdb315">
+
+<p>My settings looks like:</p>
+<pre><code>[tool.ruff]
+    line-length = 120
+    exclude = [
+        '*/migrations/*',
+        '*_extra_messages.py'
+    ]
+
+[tool.ruff.format]
+    quote-style = 'single'
+
+[tool.ruff.lint]
+    extend-select = ['I']
+    ignore = ['E402']
+
+[tool.ruff.lint.isort]
+    combine-as-imports = true
+</code></pre>
+<p>and I'm using version 0.2.0</p>
+<p>~~For the moment, I'm going to turn off the 'Trigger the watcher on external changes' flag as I presume this causing the issue, but lmk if you need more info.~~</p>
+<p>That didn't work and it's now happening regularly. I've had to disable the File Watcher completely for now, I still can't replicate using the command line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-14 12:33</div>
+            <div class="timeline-body"><p>That's a lot of ram...</p>
+<blockquote>
+<p>I think this is related to https://github.com/astral-sh/ruff/issues/8147 as it was triggered by PyCharm's File Watcher functionality and that seems to be when that happens.</p>
+</blockquote>
+<p>That sounds very likely because there's a bug that causes cache corruption if two processes write to the same cache file at the same time.</p>
+<blockquote>
+<p>That didn't work and it's now happening regularly. I've had to disable the File Watcher completely for now, I still can't replicate using the command line.</p>
+</blockquote>
+<p>Are you saying that this only happens to processes spawned by the file watcher but running the same command over CLI doesn't suffer the same problem? That would be surprising because both the file watcher started and the CLI started ruff should load the same cache.</p>
+<p>Can you try to change your file watcher to pass <code>--no-cache</code> to see if the error persists? You can also try to clean your cache directory (default location is <code>.ruff-cache</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomhamiltonstubber">@tomhamiltonstubber</a> on 2024-02-14 14:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you saying that this only happens to processes spawned by the file watcher but running the same command over CLI doesn't suffer the same problem? That would be surprising because both the file watcher started and the CLI started ruff should load the same cache.</p>
+</blockquote>
+<p>I imagine it's because of the cache corruption as you say. Using the same command in the terminal doesn't cause the issue.</p>
+<blockquote>
+<p>Can you try to change your file watcher to pass --no-cache to see if the error persists? You can also try to clean your cache directory (default location is .ruff-cache)</p>
+</blockquote>
+<p>I'm running the file watcher now with the flag, I'll monitor and report later on the status.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomhamiltonstubber">@tomhamiltonstubber</a> on 2024-02-14 16:50</div>
+            <div class="timeline-body"><p>Okay I can now cause the error with <code>ruff check</code> in the terminal. Caps out at 100gb ram. Running with the <code>--no-cache</code> flag works.</p>
+<p>Once you do a release of the new code I'll check again</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-14 16:56</div>
+            <div class="timeline-body"><p>@tomhamiltonstubber thanks for the update. That's terrifying but glad that it is related to caching. You can try to remove the <code>.ruff-cache</code> directory and use <code>--no-cache</code> in the file watcher only because it should be less likely that you run into the race when using ruff from the CLI.</p>
+<p>Thanks for keeping us posted!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-14 17:01</div>
+            <div class="timeline-body"><p>Yeah my guess is that the cache itself is now in a bad state — I’d suggest removing it and running with no-cache for now if you’re seeing this consistently, but I believe it should be fixed in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-23 20:00</div>
+            <div class="timeline-body"><p>@tomhamiltonstubber we've released a new version that includes the fix. Does this resolve the problem for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-26 11:25</div>
+            <div class="timeline-body"><p>I'm closing this. @tomhamiltonstubber feel free to re-open/comment if you're still experiencing the issue when using the latest ruff release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-26 11:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomhamiltonstubber">@tomhamiltonstubber</a> on 2024-02-26 11:43</div>
+            <div class="timeline-body"><p>@MichaReiser I've been running without the <code>no-cache</code> option for the last couple of days with the new version and haven't had any issues so I think it's been solved. Thanks a lot!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-26 12:41</div>
+            <div class="timeline-body"><p>Removing the <code>-no-cache</code> in the latest version should be okay if the caching was the root cause. But whether caching is enabled or not probably doesn't matter in your use case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MRiabov">@MRiabov</a> on 2025-05-31 17:21</div>
+            <div class="timeline-body"><p>Working on a 16gb RAM cpu-only machine, I've came here to fix my WSL OOM issues. Deleting .ruff-cache folder has solved the OOM issues, seemingly completely.</p>
+<p>Hmm. Could ruff not autodetect too large memory usage? This definitely did not happen with <code>black</code> formatter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-31 17:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Working on a 16gb RAM cpu-only machine, I've came here to fix my WSL OOM issues. Deleting .ruff-cache folder has solved the OOM issues, seemingly completely.</p>
+<p>Hmm. Could ruff not autodetect too large memory usage? This definitely did not happen with <code>black</code> formatter.</p>
+</blockquote>
+<p>Can you please open a new issue and tell us more about what Ruff version you're using and what problem's you're seeing</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

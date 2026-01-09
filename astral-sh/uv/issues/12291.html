@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for `--user` installations in non-root container environments - astral-sh/uv #12291</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for `--user` installations in non-root container environments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12291">#12291</a>
+        opened by <a href="https://github.com/slmg">@slmg</a>
+        on 2025-03-18 16:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/slmg">@slmg</a> on 2025-03-18 16:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h4>Description</h4>
+<p><code>uv</code> assumes that users will always want to operate inside a <code>.venv</code> directory by default, which is generally reasonable. However, in my development setup, this assumption creates friction.</p>
+<p>I am using the VS Code <a href="https://code.visualstudio.com/docs/devcontainers/containers">Dev Container</a> extension, operating inside a Debian-based container (<code>python:bookworm</code>). Following best practices, I <a href="https://www.docker.com/blog/understanding-the-docker-user-instruction/#:~:text=Use%20a%20non%2Droot%20user%20to%20limit%20root%20access">avoid running the container as root</a> and instead created a non-root user (<code>moby</code>) for my local development.</p>
+<p>Since I am already isolated inside a container, using a virtual environment inside it is redundant. I'd like to install packages directly to my user environment (e.g., <code>/home/moby/.local/[bin|lib]</code>), but <code>uv sync</code> will always create a <code>.venv</code> directory if none exists, with no available CLI option to bypass this behavior.</p>
+<p>I noticed that <code>uv pip install</code> recently introduced a <code>--system</code> flag, but this still defaults to <code>/usr/local</code> which requires root, making it unsuitable for non-root container workflows like mine.</p>
+<h4>Requested Feature</h4>
+<p>I’d like to propose the addition of a <code>--user</code> flag for both <code>uv pip</code> and <code>uv sync</code> commands that:</p>
+<ul>
+<li>Skips the automatic <code>.venv</code> creation.</li>
+<li>Installs packages to the standard user-level directory: <code>$HOME/.local/[bin|lib]</code>.</li>
+</ul>
+<p>This would align <code>uv</code> with <code>pip install --user</code> behavior, making it much more flexible for containerized, non-root development environments.</p>
+<h4>Example Dockerfile for context:</h4>
+<pre><code class="language-dockerfile">FROM python:3.12-bookworm
+
+RUN useradd -m moby -u 1000 -s /usr/bin/bash
+USER moby
+WORKDIR /home/moby
+ENV PATH /home/moby/.local/bin:$PATH
+</code></pre>
+<h4>Why this matters</h4>
+<ul>
+<li>In containerized environments where isolation is already guaranteed by the container itself, virtual environments become an extra and sometimes unnecessary layer.</li>
+<li>Running containers as root is not recommended, yet currently <code>uv</code> assumes either root access or <code>.venv</code> usage.</li>
+<li>Having a <code>--user</code> option would streamline workflows for developers working in secure, non-root, containerized setups.</li>
+</ul>
+<h4>Current workaround</h4>
+<p>At the moment, my only option is to avoid <code>uv sync</code> or <code>uv pip install</code>, and manually rely on a traditional, slower, but reliable <code>pip install</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @slmg on 2025-03-18 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-18 17:53</div>
+            <div class="timeline-body"><p>See also https://github.com/astral-sh/uv/issues/12197</p>
+<p>It's <em>very</em> unlikely that we'll add support for a <code>--user</code> flag. There's a great deal of discussion on this in https://github.com/astral-sh/uv/issues/2077</p>
+<p>I understand that this adds complexity to the container use-case — we're still trying to find the best way to solve that — but I think the <code>--user</code> flag comes with additional problems.</p>
+<p>I'd recommend using <code>UV_PROJECT_ENVIRONMENT</code> to set the path to your virtual environment then adding its <code>bin</code> to the front of your <code>PATH</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-03-18 18:00</div>
+            <div class="timeline-body"><p>I'm not strongly invested in whether uv provides <code>--user</code>, but I would strongly discourage it for most use cases, including this one.</p>
+<blockquote>
+<ul>
+<li>In containerized environments where isolation is already guaranteed by the container itself, virtual environments become an extra and sometimes unnecessary layer.</li>
+</ul>
+</blockquote>
+<p>It should be noted that the docker container doesn't provide any isolation from the Python choices the base image makes, which absolutely can cause issues.</p>
+<p>I would suggest reading this blog even if you don't agree with the conclusions: https://hynek.me/articles/docker-virtualenv/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-20 17:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

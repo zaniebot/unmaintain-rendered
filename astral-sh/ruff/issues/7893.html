@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incomplete resolving of subclass chains in `runtime-evaluated-base-classes` - astral-sh/ruff #7893</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incomplete resolving of subclass chains in `runtime-evaluated-base-classes`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7893">#7893</a>
+        opened by <a href="https://github.com/disrupted">@disrupted</a>
+        on 2023-10-10 13:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/disrupted">@disrupted</a> on 2023-10-10 13:01</div>
+            <div class="timeline-body"><p>Extracted from https://github.com/astral-sh/ruff/issues/7866#issuecomment-1752954586</p>
+<p>Ruff doesn't reliably detect the base class (even within the same file).</p>
+<p>given this example</p>
+<pre><code class="language-python">from abc import ABC
+from pydantic import BaseModel
+
+class Model(BaseModel):
+    x: str
+
+
+class Empty(BaseModel):
+    ...
+
+
+class Abstract(Empty, ABC):
+    inner: Model
+</code></pre>
+<p>Ruff evaluates the following classes and their bases (I simply placed some log statements in this function)
+https://github.com/astral-sh/ruff/blob/a1509dfc7c2b16f3762545fc802d49f5f03726e2/crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs#L42</p>
+<pre><code class="language-log">class Model  bases: [Some([&quot;pydantic&quot;, &quot;BaseModel&quot;])]
+class Abstract  bases: [None, Some([&quot;abc&quot;, &quot;ABC&quot;])]
+</code></pre>
+<p>notice the absence of <code>Empty</code> and how <code>Abstract</code> then doesn't get detected as <code>BaseModel</code>.</p>
+<p>Therefore, <code>flake8-type-checking</code> rules often result in false positives as it's unable to correctly resolve the base class.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-10 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8725.html">astral-sh/ruff#8725</a> on 2023-11-16 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-11-16 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8768.html">astral-sh/ruff#8768</a> on 2023-11-19 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-19 14:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

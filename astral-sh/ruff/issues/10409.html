@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARG002 on callbacks - astral-sh/ruff #10409</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ARG002 on callbacks</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10409">#10409</a>
+        opened by <a href="https://github.com/matthiasverstraete">@matthiasverstraete</a>
+        on 2024-03-14 07:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matthiasverstraete">@matthiasverstraete</a> on 2024-03-14 07:40</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I'm not sure if this is the right place to post this question, so please redirect me if necessary.
+Below is a code example:</p>
+<p>some_library.py</p>
+<pre><code class="language-python">def foo(data: List[int], callback: Callable[[str, int], int]) -&gt; None:
+    total = 0
+    for d in data:
+        total += callback(str(d), d)
+</code></pre>
+<p>my_code.py</p>
+<pre><code class="language-python">from some_library import foo
+
+def my_callback(name: str, value: int) -&gt; int:
+    return value * 2
+
+foo([1,2,3,4], my_callback)
+</code></pre>
+<p>In this example, the rule ARG002 is triggered because I'm not using <code>name</code> in my callback. However, I can't remove that argument or mypy will complain that the type doesn't match.</p>
+<p>In this situation, is the only solution to add <code># noqa: ARG002</code>, or is there a proper way to handle this?</p>
+<p>Thanks for your input!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-14 15:43</div>
+            <div class="timeline-body"><p>You could change <code>name: str</code> to <code>_name: str</code>, but that also carries some risk, since it will break for users that pass keyword arguments. In general, yeah, I think a <code># noqa</code> is required here if you're trying to adhere to some informal but common interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-03-14 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-14 20:02</div>
+            <div class="timeline-body"><p>The other thing you could do is make it an abstract class so that there's a formal interface. Then, if you decorate the method with <code>@override</code>, Ruff will correctly detect that the args are required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-14 20:02</div>
+            <div class="timeline-body"><p>Hope that's helpful!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-14 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthiasverstraete">@matthiasverstraete</a> on 2024-03-15 12:59</div>
+            <div class="timeline-body"><p>Unfortunately I have no influence over the informal interface. I'll use the <code># noqa</code>.</p>
+<p>Thanks for the response.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-telegram-bot/python-telegram-bot/pulls/4250.html">python-telegram-bot/python-telegram-bot#4250</a> on 2024-07-13 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pianofab">@pianofab</a> on 2025-09-11 16:43</div>
+            <div class="timeline-body"><p>Pylint handles this automatically by recognizing certain prefixes in the function name (_cb and such), avoiding littering one’s code with noqa statements. Callbacks are extremely common for example in WxPython code. It would be great to handle it just like Pylint.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>is it possible to define a usercustomize hook as part of the uv project? - astral-sh/uv #9638</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>is it possible to define a usercustomize hook as part of the uv project?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9638">#9638</a>
+        opened by <a href="https://github.com/ophiry">@ophiry</a>
+        on 2024-12-04 13:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ophiry">@ophiry</a> on 2024-12-04 13:32</div>
+            <div class="timeline-body"><p>I want to have a python startup hook (usercustomize.py, or some alternative) that runs whenever an interpreter is launched.</p>
+<p>is it possible to define this from a uv pyproject.toml file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-04 16:54</div>
+            <div class="timeline-body"><p>Not right now. What would you use it for?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ophiry">@ophiry</a> on 2024-12-05 07:31</div>
+            <div class="timeline-body"><p>for now it's to setup some global configurations  - mostly can be done using a env file, but some of the values require computation
+another use cases is applying monkey patching</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-12-05 14:49</div>
+            <div class="timeline-body"><p>@ophiry</p>
+<p>Try</p>
+<pre><code>uv pip install sitecustomize-entrypoints
+</code></pre>
+<p>I use site sitecustomize.py on every project.
+I co-developed this package that installs a sitecustomize.py in your venv and
+will run any registered entrypoint upon launch of any python-based executable in your venv.</p>
+<p>see https://sitecustomize-entrypoints.readthedocs.io/en/</p>
+<p>Note: Ubuntu ships with a non-pip manageable sitecustomize.py,
+you 'll need to remove that file.
+The same functionality is provided by this entrypoint:
+https://github.com/libranet/sitecustomize-apport-hook</p>
+<p>my main usecases:</p>
+<ul>
+<li>monkeypatching thirdparty executables</li>
+<li>reading .env-file upon start, https://github.com/libranet/autoread-dotenv</li>
+<li>add the bin-dir to your venv to PATH, without activating the venv beforehand, https://github.com/libranet/autoadd-bindir</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ophiry">@ophiry</a> on 2024-12-05 16:44</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/ophiry">@ophiry</a></p>
+<p>Try</p>
+<pre><code>uv pip install sitecustomize-entrypoints
+</code></pre>
+<p>I use site sitecustomize.py on every project. I co-developed this package that installs a sitecustomize.py in your venv and will run any registered entrypoint upon launch of any python-based executable in your venv.</p>
+<p>see https://sitecustomize-entrypoints.readthedocs.io/en/</p>
+<p>Note: Ubuntu ships with a non-pip manageable sitecustomize.py, you 'll need to remove that file. The same functionality is provided by this entrypoint: https://github.com/libranet/sitecustomize-apport-hook</p>
+<p>my main usecases:</p>
+<ul>
+<li>monkeypatching thirdparty executables</li>
+<li>reading .env-file upon start, https://github.com/libranet/autoread-dotenv</li>
+<li>add the bin-dir to your venv to PATH, without activating the venv beforehand, https://github.com/libranet/autoadd-bindir</li>
+</ul>
+</blockquote>
+<p>interesting - can you provide an example how it's used in uv?
+(the pyproject.toml part - the doc is poetry specific)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-12-05 23:45</div>
+            <div class="timeline-body"><p>create a new project with a package:</p>
+<pre><code>&gt; cd /tmp
+&gt; uv init foo --package
+&gt; cd foo
+</code></pre>
+<p>in the pyproject.toml, add a project-entrypoint for the name &quot;sitecustomize&quot;.
+and give it a path to a function.</p>
+<pre><code>[project.entry-points.&quot;sitecustomize&quot;]
+foo = &quot;foo:main&quot;  # point to main-function in src/foo/__init.py__
+</code></pre>
+<pre><code>&gt; uv sync
+&gt; uv run python
+Hello from foo!
+Python 3.12.6 (main, Sep  9 2024, 22:11:19) [Clang 18.1.8 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;
+
+&gt; .venv/bin/python
+Hello from foo!
+Python 3.12.6 (main, Sep  9 2024, 22:11:19) [Clang 18.1.8 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;
+</code></pre>
+<p>Add another executable:</p>
+<pre><code>&gt; uv add pytest
+
+&gt;  .venv/bin/pytest
+Hello from foo!
+================================================= test session starts ==================================================
+platform linux -- Python 3.12.6, pytest-8.3.4, pluggy-1.5.0
+rootdir: /tmp/foo
+configfile: pyproject.toml
+collected 0 items
+
+================================================ no tests ran in 0.01s =================================================
+</code></pre>
+<p>Add another plugin from another package:</p>
+<pre><code>&gt; uv add autoadd-bindir
+&gt; .venv/bin/python
+Hello from foo!
+Python 3.12.6 (main, Sep  9 2024, 22:11:19) [Clang 18.1.8 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import os
+&gt;&gt;&gt; os.getenv(&quot;PATH&quot;)
+'/tmp/foo/.venv/bin: ...'
+
+</code></pre>
+<pre><code>
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-12-06 00:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-07 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11826.html">astral-sh/uv#11826</a> on 2025-02-27 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/5j9">@5j9</a> on 2025-08-07 12:29</div>
+            <div class="timeline-body"><p>@woutervh The <code>sitecustomize-entrypoints</code> solution won't work if the <code>pyproject.toml</code> doesn't define a <code>[build-system]</code> table, correct? My <code>uv</code>-managed Git repository doesn't have a build system defined, only dependencies. I believe this is why sitecustomize-entrypoints didn't work for me.</p>
+<p>I'm trying to add devtools.debug to <code>__builtins__</code> (as described at https://python-devtools.helpmanual.io/usage/#manual-install), but I haven't found any reasonably easy way to achieve this yet.</p>
+<hr />
+<p>Never mind, I created https://github.com/5j9/devtools-sitecustomize and published it on PyPI. Adding it to my development dependencies solved the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2025-08-14 11:53</div>
+            <div class="timeline-body"><p>@5j9 You can just add it as a dependency.  No build-system needed.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

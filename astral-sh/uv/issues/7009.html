@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix regression in error message for incompatible dependencies in some cases - astral-sh/uv #7009</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix regression in error message for incompatible dependencies in some cases</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7009">#7009</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-09-04 12:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-04 12:21</div>
+            <div class="timeline-body"><p>To reproduce, create a <code>pyproject.toml</code> with these contents:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;datasets &lt; 2.19&quot;,
+    &quot;datasets &gt;= 2.19 ; python_version &gt; '3.10'&quot;
+]
+</code></pre>
+<p>The purpose of this test was, I believe, just to check that conflicting dependencies---where one has a marker---would fail to resolve. In particular, on <code>python_version &gt; '3.10'</code>, the requirements are clearly incompatible. We cannot satisfy both <code>datasets &lt; 2.19</code> and <code>datasets &gt;= 2.19</code>.</p>
+<p>So if we lock it, we expect an error, and we get one:</p>
+<pre><code>$ uv-main lock --exclude-newer '2024-03-25T00:00:00Z'
+Using Python 3.12.1
+  x No solution found when resolving dependencies:
+  `-&gt; Because only datasets&lt;2.19 is available and your project depends on datasets&gt;=2.19, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>To see what the error message used to look like, build uv on commit <code>4a6bea532104d4c34524df4deef7067da1dafd95</code> (which is just before #6268 landed). And re-run <code>uv lock</code>:</p>
+<pre><code>$ uv-4a6bea53 lock --exclude-newer '2024-03-25T00:00:00Z'
+Using Python 3.12.1
+  x No solution found when resolving dependencies:
+  `-&gt; Because your project depends on datasets&lt;2.19 and datasets&gt;=2.19, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>The key difference between these messages is that the latter reports on the fundamental incompatibility between the dependencies, which is arguably a more specific and relatable message. In contrast, the status quo reports that the requirements aren't satisfiable because <code>datasets&gt;=2.19</code> isn't actually available. And given our <code>--exclude-newer</code> above, this is actually true!</p>
+<p>Now if we use <code>2.18</code> instead of <code>2.19</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;datasets &lt; 2.18&quot;,
+    &quot;datasets &gt;= 2.18 ; python_version &gt; '3.10'&quot;
+]
+</code></pre>
+<p>our error message in the status quo changes:</p>
+<pre><code>$ uv-main lock --exclude-newer '2024-03-25T00:00:00Z'
+Using Python 3.12.1
+  x No solution found when resolving dependencies:
+  `-&gt; Because only datasets&lt;=2.18.0 is available and your project depends on datasets&lt;2.18, we can conclude that your project and datasets&gt;=2.18.0 are incompatible.
+      And because your project depends on datasets&gt;=2.18, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>Where as our error message from <code>4a6bea53</code> remains unchanged:</p>
+<pre><code>$ uv-4a6bea53 lock --exclude-newer '2024-03-25T00:00:00Z'
+Using Python 3.12.1
+  x No solution found when resolving dependencies:
+  `-&gt; Because your project depends on datasets&lt;2.18 and datasets&gt;=2.18, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>This shows that the poor error message isn't <em>just</em> because <code>datasets&gt;=2.19</code> isn't available. That is, there is something else going on here.</p>
+<p>Now let's try going back to our original <code>pyproject.toml</code>, but change the <code>requires-python</code> to something else:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.8&quot;
+dependencies = [
+    &quot;datasets &lt; 2.19&quot;,
+    &quot;datasets &gt;= 2.19 ; python_version &gt; '3.10'&quot;
+]
+</code></pre>
+<p>This is still unresolvable for the same reason, but the error messages on both <code>main</code> and <code>4a6bea53</code> change such that they are the same! First, current <code>main</code>:</p>
+<pre><code>$ uv-main lock --exclude-newer '2024-03-25T00:00:00Z'
+Using Python 3.12.1
+  x No solution found when resolving dependencies for split (python_full_version &gt;= '3.11'):
+  `-&gt; Because only datasets{python_full_version &gt;= '3.11'}&lt;2.19 is available and your project depends on datasets{python_full_version &gt;= '3.11'}&gt;=2.19, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>And <code>4a6bea53</code>:</p>
+<pre><code>$ uv-4a6bea53 lock --exclude-newer '2024-03-25T00:00:00Z'
+Using Python 3.12.1
+  x No solution found when resolving dependencies for split (python_full_version &gt;= '3.11'):
+  `-&gt; Because only datasets{python_full_version &gt;= '3.11'}&lt;2.19 is available and your project depends on datasets{python_full_version &gt;= '3.11'}&gt;=2.19, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>Moreover, if we remove the <code>--exclude-newer</code>, then the error messages remain the same, but become even worse (because more versions of <code>datasets &gt;= 2.19</code> are available):</p>
+<pre><code>$ uv-main lock
+Using Python 3.12.1
+  x No solution found when resolving dependencies for split (python_full_version &gt;= '3.11'):
+  `-&gt; Because only the following versions of datasets{python_full_version &gt;= '3.11'} are available:
+          datasets{python_full_version &gt;= '3.11'}&lt;=2.19.0
+          datasets{python_full_version &gt;= '3.11'}==2.19.1
+          datasets{python_full_version &gt;= '3.11'}==2.19.2
+          datasets{python_full_version &gt;= '3.11'}==2.20.0
+          datasets{python_full_version &gt;= '3.11'}==2.21.0
+      and your project depends on datasets&lt;2.19, we can conclude that your project and datasets{python_full_version &gt;= '3.11'}&gt;=2.19.0 are incompatible.
+      And because your project depends on datasets{python_full_version &gt;= '3.11'}&gt;=2.19, we can conclude that your project's requirements are unsatisfiable.
+
+$ uv-4a6bea53 lock
+Using Python 3.12.1
+  x No solution found when resolving dependencies for split (python_full_version &gt;= '3.11'):
+  `-&gt; Because only the following versions of datasets{python_full_version &gt;= '3.11'} are available:
+          datasets{python_full_version &gt;= '3.11'}&lt;=2.19.0
+          datasets{python_full_version &gt;= '3.11'}==2.19.1
+          datasets{python_full_version &gt;= '3.11'}==2.19.2
+          datasets{python_full_version &gt;= '3.11'}==2.20.0
+          datasets{python_full_version &gt;= '3.11'}==2.21.0
+      and your project depends on datasets&lt;2.19, we can conclude that your project and datasets{python_full_version &gt;= '3.11'}&gt;=2.19.0 are incompatible.
+      And because your project depends on datasets{python_full_version &gt;= '3.11'}&gt;=2.19, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>What this suggests to me is that the underlying cause of poorer error messages existed before #6268, but something in #6268 changed things to exacerbate it.</p>
+<p>In debugging this problem, one thing I observed is that, in <code>4a6bea53</code>, the marker on <code>datasets &gt;= 2.19 ; python_version &gt; '3.10'</code> is simplified away, because of <code>requires-python = &quot;&gt;=3.11&quot;</code>, leaving just <code>datasets &lt; 2.19</code> and <code>datasets &gt;= 2.19</code>. Both of these are represented as a <code>PubGrubPackage::Package</code>. But in #6268, part of its purpose was to stop simplifying markers away inside resolution and instead only do it at the &quot;boundaries&quot; of uv (e.g., when serializing a lock file). So that <code>python_version &gt; '3.10'</code> marker (which is equivalent to <code>python_version &gt;= '3.11'</code>) ends up staying there. This in turn means that we have a <code>PubGrubPackage::Package</code> for <code>datasets &lt; 2.19</code> and a <code>PubGrubPackage::Marker</code> for <code>datasets &gt;= 2.19 ; python_version &gt; '3.10'</code>. When these gets fed into PubGrub, they are treated differently than if they were two <code>PubGrubPackage::Package</code> values. And instead of noticing the incompatibility immediately, PubGrub asks for the dependencies of <code>datasets &gt;= 2.19</code>, and this takes it down a different error path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2024-09-04 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-09-04 13:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

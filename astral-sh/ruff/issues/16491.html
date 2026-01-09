@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>collections-named-tuple (PYI024): Potential for an unsafe autofix using `Any` - astral-sh/ruff #16491</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>collections-named-tuple (PYI024): Potential for an unsafe autofix using `Any`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16491">#16491</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2025-03-04 08:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2025-03-04 08:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Reviving #8820 in light of https://github.com/jaraco/skeleton/issues/165</p>
+<p>The original issue didn't mention that an autofix (or editor suggestion) would be possible by typing the attributes as <code>Any</code>. I would of course consider this unsafe as</p>
+<ol>
+<li>It doesn't solve the core issue of being untyped</li>
+<li>There are rules preventing explicit <code>Any</code> that this would conflict with</li>
+<li>Pyright looses on type safety since the type will no longer be <code>Unknown</code></li>
+</ol>
+<p>But, at least as an editor suggestion, it can help mechanically transform the code and get it most of the way there.</p>
+<pre><code class="language-py">from collections import namedtuple
+
+person = namedtuple(&quot;Person&quot;, [&quot;name&quot;, &quot;age&quot;])
+</code></pre>
+<pre><code class="language-py">from typing import Any, NamedTuple
+
+class person(NamedTuple):
+    __name__ = &quot;Person&quot;
+    name: Any  # TODO: Type me !
+    age: Any  # TODO: Type me !
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-04 09:29</div>
+            <div class="timeline-body"><p>I don't know how an editor-only fix would help with the linked issue. It seems that they want an automated fix that they can apply to the entire code base.</p>
+<p>Automatically typing everything as <code>Any</code> also defeats the purpose of the rule: It doesn't increase type safety, but it makes the code more verbose.</p>
+<p>That's why I'm still leaning towards not offering a fix until we have type inference and can <em>guess</em> the correct types (and e.g. not offer a fix if any or all fields infer as <code>Any</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-04 09:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @MichaReiser on 2025-03-04 09:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-03-04 09:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-03-04 09:50</div>
+            <div class="timeline-body"><p>Might be out of scope, but a language server could have a contextual option to refactor from <code>collections.namedtuple</code> to <code>typing.NamedTuple</code>. Maybe I should ask over at https://github.com/microsoft/pylance-release</p>
+<blockquote>
+<p>Automatically typing everything as <code>Any</code> also defeats the purpose of the rule: It doesn't increase type safety, but it makes the code more verbose.</p>
+</blockquote>
+<p>Correct. I'd also have my reservations.
+As I just realized, maybe I'm just not approaching my request correctly. I think what I actually want is this:</p>
+<p><img src="https://github.com/user-attachments/assets/ed530eea-c87a-4b78-94eb-f7bcd7d6452a" alt="Image" /></p>
+<p>ESlint has a concept of &quot;editor only fixes&quot; (aka suggestions), that can never be triggered through cli. It also allows them to display multiple possible fixes for the same issue. But I don't think Ruff does (does it?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-04 09:55</div>
+            <div class="timeline-body"><p>Refactors is something I want but, but unfortunately, it is probably quiet far in the future :( I did a quick search and couldn't find an issue for refactor support. I'd prefer to close this issue in favor of an explicit ask for refactors (which PYI024 could make use of once implemented)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-03-04 10:00</div>
+            <div class="timeline-body"><p>Makes sense to me. This can be used as an example of a useful refactor without providing a full autofix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Avasam on 2025-03-04 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Avasam on 2025-03-04 10:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../microsoft/pylance-release/issues/7009.html">microsoft/pylance-release#7009</a> on 2025-03-04 10:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Detect classes with incompatible `__slots__` being used in multiple inheritance - astral-sh/ruff #14931</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Detect classes with incompatible `__slots__` being used in multiple inheritance</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14931">#14931</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-12-12 11:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-12 11:02</div>
+            <div class="timeline-body"><p>This isn't necessarily a priority for red-knot, but it's something that we'll want to do at some point and it could be easily done now.</p>
+<p>Two classes that both have nonempty <code>__slots__</code> cannot be used in multiple inheritance. We should detect this and emit a diagnostic for it.</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Foo:
+...     __slots__ = (&quot;a&quot;,)
+...     
+&gt;&gt;&gt; class Bar:
+...     __slots__ = (&quot;b&quot;,)
+...     
+&gt;&gt;&gt; class Baz(Foo, Bar): ...
+... 
+Traceback (most recent call last):
+  File &quot;&lt;python-input-2&gt;&quot;, line 1, in &lt;module&gt;
+    class Baz(Foo, Bar): ...
+TypeError: multiple bases have instance lay-out conflict
+</code></pre>
+<p>We'll probably want to check for this as part of this method here: https://github.com/astral-sh/ruff/blob/82faa9bb62e66a562f8a7ad81a645162ca558a08/crates/red_knot_python_semantic/src/types/infer.rs#L510-L520</p>
+<p>Notes on the semantics:</p>
+<h3>(1) A class with no <code>__slots__</code> can be used in multiple inheritance with a class that has <code>__slots__</code></h3>
+<pre><code class="language-pycon">&gt;&gt;&gt; class A: ...
+... 
+&gt;&gt;&gt; class B:
+...     __slots__ = (&quot;a&quot;,)
+...     
+&gt;&gt;&gt; class C(A, B): ...
+... 
+&gt;&gt;&gt; 
+</code></pre>
+<h3>(2) Empty <code>__slots__</code> are fine in combination with multiple inheritance:</h3>
+<pre><code class="language-pycon">&gt;&gt;&gt; class A:
+...     __slots__ = ()
+...     
+&gt;&gt;&gt; class B:
+...     __slots__ = (&quot;a&quot;,)
+...     
+&gt;&gt;&gt; class C(A, B): ...
+... 
+&gt;&gt;&gt; 
+</code></pre>
+<h3>(3) But even two classes with equal <code>__slots__</code> will fail in multiple inheritance if they are both non-empty:</h3>
+<pre><code class="language-pycon">&gt;&gt;&gt; class A:
+...     __slots__ = (&quot;a&quot;,)
+...     
+&gt;&gt;&gt; class B:
+...     __slots__ = (&quot;a&quot;,)
+...     
+&gt;&gt;&gt; class C(A, B): ...
+... 
+Traceback (most recent call last):
+  File &quot;&lt;python-input-11&gt;&quot;, line 1, in &lt;module&gt;
+    class C(A, B): ...
+TypeError: multiple bases have instance lay-out conflict
+</code></pre>
+<h3>(5) And <code>__slots__</code> are inherited by subclasses:</h3>
+<pre><code class="language-pycon">&gt;&gt;&gt; class A:
+...     __slots__ = (&quot;a&quot;,)
+...     
+&gt;&gt;&gt; class B(A): ...
+... 
+&gt;&gt;&gt; class C:
+...     __slots__ = (&quot;c&quot;,)
+...     
+&gt;&gt;&gt; class D(C): ...
+... 
+&gt;&gt;&gt; class E(B, D): ...
+... 
+Traceback (most recent call last):
+  File &quot;&lt;python-input-16&gt;&quot;, line 1, in &lt;module&gt;
+    class E(B, D): ...
+TypeError: multiple bases have instance lay-out conflict
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-12-12 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-14 00:59</div>
+            <div class="timeline-body"><p>Perhaps the case where this comes up most is with builtin/extension types, that aren't implemented in Python and thus don't use <code>__slots__</code> Python API, but do still have a bespoke instance memory layout (rather than just a dictionary of attributes), like a Python class that uses <code>__slots__</code>. E.g. you can't multiple-inherit <code>int</code> and <code>str</code> for this reason.</p>
+<p>But typeshed does not explicitly apply <code>__slots__</code> to types like <code>int</code> or <code>str</code> that effectively do have slots. We could potentially advocate to change this. But in the meantime, fully implementing this feature would also require adding a special case to always consider some known typeshed classes as having slots.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-14 14:22</div>
+            <div class="timeline-body"><p>Yeah, I think there's three distinct issues here:</p>
+<ol>
+<li><p>If two classes both have non-empty <code>__slots__</code> definitions that are &quot;visible&quot; (i.e., we can see the <code>__slots__</code> definitions in the source-code files we treat as the canonical source of information for those classes) to red-knot, and they're used in multiple inheritance, should we emit a diagnostic? I think we clearly should, because we have all the information we require to detect that an exception will definitely be raised at runtime. Lots of libraries and applications use classes with <code>__slots__</code>, so I think we'll catch a lot of possible bugs just by implementing this.</p>
+</li>
+<li><p>Typeshed generally doesn't include <code>__slots__</code> for any classes (even pure-Python) in its stubs. It probably should, as it would give type checkers a lot more information to work with in this domain, allowing them to catch a lot more bugs. This has been discussed previously in https://github.com/python/typeshed/issues/8832.</p>
+</li>
+<li><p>As you say, you get an identical error message at runtime to the <code>__slots__</code> error message if you try to multiple-inherit from various builtin classes such as <code>str</code> or <code>int</code> that CPython considers to be &quot;solid bases&quot;, despite the fact that these classes do not have <code>__slots__</code> definitions (at least, not <code>__slots__</code> definitions that are visible from the Python level):</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Foo(int, str): ...
+... 
+Traceback (most recent call last):
+  File &quot;&lt;python-input-0&gt;&quot;, line 1, in &lt;module&gt;
+    class Foo(int, str): ...
+TypeError: multiple bases have instance lay-out conflict
+&gt;&gt;&gt; hasattr(int, &quot;__slots__&quot;)
+False
+&gt;&gt;&gt; hasattr(str, &quot;__slots__&quot;)
+False
+</code></pre>
+<p>There are various possible ways we could detect this. Typeshed could pretend that they have <code>__slots__</code> definitions even though they don't (at least, not in the same way as pure-Python classes that define <code>__slots__</code>); we could hardcode a list of builtin classes in red-knot that you can't combine in multiple inheritance; or we could work on a new standardised type-system feature that allows us to express when a class is a &quot;solid base&quot; that you can't use in multiple inheritance.</p>
+</li>
+</ol>
+<p>I think these are all quite separate questions; the only one I was attempting to tackle in this issue was question (1).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-23 20:27</div>
+            <div class="timeline-body"><p>Some other problems to consider:</p>
+<ol>
+<li><p>Invalid</p>
+<pre><code class="language-python">class A:
+    __slots__ = 1    # Not iterable
+
+class B:
+    __slots__ = '1'  # Not identifier
+</code></pre>
+</li>
+<li><p>String literal</p>
+<pre><code class="language-python">class A:
+    __slots__ = 'abc'
+
+A().abc = 1  # This is fine
+A().a = 1    # This is not
+</code></pre>
+</li>
+<li><p>Possibly unbound</p>
+<pre><code class="language-python">class A:
+    if ...:
+    	__slots__ = ('a', 'b')
+
+class B:
+    __slots__ = ('c', 'd')
+
+# Might or might not be valid at runtime
+class C(A, B): ...
+</code></pre>
+</li>
+<li><p>Dynamic</p>
+<pre><code class="language-python">t = ('a', 'b') if ... else ()
+
+class A:
+    __slots__ = t  # or `tuple(e for e in t)`
+
+class B:
+    __slots__ = ('c', 'd')
+
+# Might or might not be valid at runtime
+class C(A, B): ...
+</code></pre>
+</li>
+<li><p>Post-hoc modifications</p>
+<pre><code class="language-python">class A:
+    __slots__ = ['a', 'b']
+    __slots__.clear()
+
+class B:
+    __slots__ = ('c', 'd')
+
+# Valid at runtime
+class C(A, B): ...
+</code></pre>
+</li>
+<li><p>Some or all of the above mixed together</p>
+</li>
+<li><p>Some or all of the above mixed together, in an unresolvable MRO</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-23 20:38</div>
+            <div class="timeline-body"><p>Those are great edge cases @InSyncWithFoo! I think for an initial implementation of this check we could easily defer them all however, and only emit the incompatible-slots error for two classes in a bases list if both classes have non-dynamic slots definitions that are definitely bound. We could then open follow-up issues to expand the check and detect issues in more cases. This would make the initial PR easy for us to review and would be in keeping with the principle that we should avoid aim to avoid false positives as much as possible (even if it causes false negatives in some situations) in our initial implementation of red-knot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15129.html">astral-sh/ruff#15129</a> on 2024-12-24 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-12-27 11:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expand `~` to the home directory in the configuration files - astral-sh/uv #16288</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Expand `~` to the home directory in the configuration files</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16288">#16288</a>
+        opened by <a href="https://github.com/leodevian">@leodevian</a>
+        on 2025-10-13 20:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/leodevian">@leodevian</a> on 2025-10-13 20:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Path entries in the configuration file are not resolved, making it hard to write and share standard <code>uv.toml</code> configuration files.</p>
+<p>On Windows, using the following <code>uv.toml</code> to provide user-level configuration would create directories named <code>~</code> in whatever directory uv was called from while it needed its cache.</p>
+<pre><code class="language-toml">cache-dir = &quot;~/.cache/uv&quot;
+</code></pre>
+<p>Expanding <code>~</code> to the home directory would enable to make universal, shareable configuration files.</p>
+<p>Furthermore, I doubt that <code>~</code> is used for anything other than referencing home directories.</p>
+<h3>Example</h3>
+<pre><code class="language-toml">cache-dir = &quot;~/.cache/uv&quot;
+</code></pre>
+<p>This user-level or system-level <code>uv.toml</code> would make uv create its cache in the home directory of the user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @leodevian on 2025-10-13 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Resolve `~` as the home directory in the configuration files" to "Expand `~` to the home directory in the configuration files" by @leodevian on 2025-10-13 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GlowingScrewdriver">@GlowingScrewdriver</a> on 2025-11-06 07:47</div>
+            <div class="timeline-body"><p>I second this, would be really nice to have.</p>
+<blockquote>
+<p>On Windows, ... would create directories named ~ ...</p>
+</blockquote>
+<p>I can confirm that this is the case on Linux too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mobocop">@Mobocop</a> on 2025-12-05 20:55</div>
+            <div class="timeline-body"><p>I came here to report this. However I think it is a bug and not an enhancement. When testing this on Linux (Ubuntu 24.04, uv 0.9.15) and setting the <code>cache-dir</code> in my local uv.toml I have found that uv does use the cache directory specified (e.g. <code>~/.cache/uv</code>), however it also creates an empty folder called <code>~</code> in the current directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mobocop">@Mobocop</a> on 2025-12-05 22:44</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/blob/c269619b1bc9d2db10a76f3af2ece2bf56ef9ba2/crates/uv-cache/src/cli.rs#L43-L48</p>
+<p>I think <code>cache_dir</code> needs to be expanded for tildes, maybe in a similar way to <a href="https://github.com/astral-sh/ruff/blob/ef45c97dab2e1ab8268308a53e6dd452db40b0db/crates/ruff_server/src/logging.rs#L18-L29">how it is done in parts of ruff?</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mobocop">@Mobocop</a> on 2025-12-07 21:25</div>
+            <div class="timeline-body"><p>Having tested this on windows it looks like it's forcing the cache-dir to be in a folder called <code>~</code>, whereas on linux it makes a folder called <code>~</code> but then uses the cache-dir specified. I'll open a PR for my fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17019.html">astral-sh/uv#17019</a> on 2025-12-07 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-08 14:23</div>
+            <div class="timeline-body"><p>Can you expand about why the default cache dir and it's more general configuration options (XDG paths) don't work for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GlowingScrewdriver">@GlowingScrewdriver</a> on 2025-12-08 17:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you expand about why the default cache dir and it's more general configuration options (XDG paths) don't work for you?</p>
+</blockquote>
+<p>So, my situation is a bit wonky 😬 . My <code>~/Desktop/</code>, where I typically keep my working trees, is on a separate disk partition from <code>~/</code>. Since hardlinks cannot work across partitions, I wanted to configure UV to keep its cache under <code>~/Desktop/</code>.</p>
+<p>An alternative setup (apart from hardcoding my home directory) could be to expose some subdirectory of <code>~/Desktop/</code> under <code>~/.cache/uv</code>, via perhaps a bind-mount or a symlink. But that is arguably less elegant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leodevian">@leodevian</a> on 2025-12-09 01:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you expand about why the default cache dir and it's more general configuration options (XDG paths) don't work for you?</p>
+</blockquote>
+<p>I'm maintaining the configuration of uv within my organization and I'm using <code>uv.toml</code> for Windows environments as downloading it and moving it to the standard directory is understandable to all users.</p>
+<p>We cannot disable the maximum path length limitation on Windows machines and I'm just trying to save as many characters as possible...</p>
+<p>To be fair, I was mostly suprised that uv created <code>~</code> directories. I believe that my error can be reproduced by many other people, thus the issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

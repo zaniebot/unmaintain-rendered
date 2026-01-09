@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local version identifiers are not ignored when testing version equality - astral-sh/uv #1855</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Local version identifiers are not ignored when testing version equality</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1855">#1855</a>
+        opened by <a href="https://github.com/SnoopJ">@SnoopJ</a>
+        on 2024-02-22 04:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SnoopJ">@SnoopJ</a> on 2024-02-22 04:34</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Platform: Ubuntu 22.04
+<code>uv</code> version: 0.1.6 (da3a7ec8)</p>
+<p>Spill-over from #1853, while checking that <code>--editable</code> gave the intended behavior on that ticket, I discovered that <code>uv</code> seems to be including local version identifiers of candidates when considering a requirement that has no local version identifier</p>
+<pre><code>$ uv pip install --find-links https://download.pytorch.org/whl/torch_stable.html &quot;torch==2.0.0+cu118&quot; &quot;torchvision==0.15.1+cu118&quot;
+  × No solution found when resolving dependencies:
+  ╰─▶ Because torchvision==0.15.1+cu118 depends on torch==2.0.0 and you require torch==2.0.0+cu118, we can conclude that root==0a0.dev0 and torchvision==0.15.1+cu118
+      are incompatible.
+      And because you require torchvision==0.15.1+cu118, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>The <a href="https://packaging.python.org/en/latest/specifications/version-specifiers/#version-matching">PyPA <code>Version Specifiers</code> standard</a> (and <a href="https://peps.python.org/pep-0440/#version-matching">PEP 440</a> before it) states that:</p>
+<blockquote>
+<p>If the specified version identifier is a public version identifier (no local version label), then the local version label of any candidate versions MUST be ignored when matching versions.</p>
+<p>If the specified version identifier is a local version identifier, then the local version labels of candidate versions MUST be considered when matching versions, with the public version identifier being matched as described above, and the local version label being checked for equivalence using a strict string equality comparison.</p>
+</blockquote>
+<p>My understanding of that passage is that <code>torchvision</code> depends on <code>torch==2.0.0</code> (i.e. it declares its dependency against a public version identifier), so the equality comparison MUST ignore any local version identifier (like <code>+cu118</code>) when considering candidate versions of <code>torch</code>.</p>
+<p>As I understand it, the current behavior of <code>uv</code> would be correct if <code>torchvision</code> declared a dependency on <code>torch==2.0.0+…</code> that had a local segment that was not <em>exactly</em> <code>+cu118</code>, but it's doing the wrong thing for the public version identifier.</p>
+<p>(As an aside, I'm not sure what <code>root==0a0.dev0</code> is about? Perhaps some kind of meta-requirement associated with my entire request? I don't think it's related to the failure here, but I do find it confusing in the report)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 04:49</div>
+            <div class="timeline-body"><p>Thanks! @BurntSushi - do you mind taking a look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 04:49</div>
+            <div class="timeline-body"><p>My first thought was something like:</p>
+<pre><code class="language-diff">--- a/crates/pep440-rs/src/version.rs
++++ b/crates/pep440-rs/src/version.rs
+@@ -564,7 +564,19 @@ impl Version {
+         }
+
+         // release is equal, so compare the other parts
+-        sortable_tuple(self).cmp(&amp;sortable_tuple(other))
++        match sortable_tuple(self).cmp(&amp;sortable_tuple(other)) {
++            Ordering::Less =&gt; return Ordering::Less,
++            Ordering::Equal =&gt; {},
++            Ordering::Greater =&gt; return Ordering::Greater,
++        }
++
++        // post- and pre-releases are equal, so compare the local
++        match (self.local(), other.local()) {
++            ([], []) =&gt; Ordering::Equal,
++            ([], _) =&gt; Ordering::Equal,
++            (_, []) =&gt; Ordering::Equal,
++            (a, b) =&gt; a.cmp(b),
++        }
+     }
+ }
+
+@@ -2203,7 +2215,7 @@ pub(crate) fn compare_release(this: &amp;[u64], other: &amp;[u64]) -&gt; Ordering {
+ /// aN, bN, rcN, &lt;no suffix (final)&gt;, .postN but also, you can have dev/post
+ /// releases on beta releases, so we make a three stage ordering: ({dev: 0, a:
+ /// 1, b: 2, rc: 3, (): 4, post: 5}, &lt;preN&gt;, &lt;postN or None as smallest&gt;, &lt;devN
+-/// or Max as largest&gt;, &lt;local&gt;)
++/// or Max as largest&gt;)
+ ///
+ /// For post, any number is better than none (so None defaults to None&lt;0),
+ /// but for dev, no number is better (so None default to the maximum). For
+@@ -2211,10 +2223,10 @@ pub(crate) fn compare_release(this: &amp;[u64], other: &amp;[u64]) -&gt; Ordering {
+ /// implementation
+ ///
+ /// [pep440-suffix-ordering]: https://peps.python.org/pep-0440/#summary-of-permitted-suffixes-and-relative-ordering
+-fn sortable_tuple(version: &amp;Version) -&gt; (u64, u64, Option&lt;u64&gt;, u64, &amp;[LocalSegment]) {
++fn sortable_tuple(version: &amp;Version) -&gt; (u64, u64, Option&lt;u64&gt;, u64) {
+     match (version.pre(), version.post(), version.dev()) {
+         // dev release
+-        (None, None, Some(n)) =&gt; (0, 0, None, n, version.local()),
++        (None, None, Some(n)) =&gt; (0, 0, None, n),
+         // alpha release
+         (
+             Some(PreRelease {
+@@ -2223,7 +2235,7 @@ fn sortable_tuple(version: &amp;Version) -&gt; (u64, u64, Option&lt;u64&gt;, u64, &amp;[LocalSegm
+             }),
+             post,
+             dev,
+-        ) =&gt; (1, n, post, dev.unwrap_or(u64::MAX), version.local()),
++        ) =&gt; (1, n, post, dev.unwrap_or(u64::MAX)),
+         // beta release
+         (
+             Some(PreRelease {
+@@ -2232,7 +2244,7 @@ fn sortable_tuple(version: &amp;Version) -&gt; (u64, u64, Option&lt;u64&gt;, u64, &amp;[LocalSegm
+             }),
+             post,
+             dev,
+-        ) =&gt; (2, n, post, dev.unwrap_or(u64::MAX), version.local()),
++        ) =&gt; (2, n, post, dev.unwrap_or(u64::MAX)),
+         // alpha release
+         (
+             Some(PreRelease {
+@@ -2241,11 +2253,11 @@ fn sortable_tuple(version: &amp;Version) -&gt; (u64, u64, Option&lt;u64&gt;, u64, &amp;[LocalSegm
+             }),
+             post,
+             dev,
+-        ) =&gt; (3, n, post, dev.unwrap_or(u64::MAX), version.local()),
++        ) =&gt; (3, n, post, dev.unwrap_or(u64::MAX)),
+         // final release
+-        (None, None, None) =&gt; (4, 0, None, 0, version.local()),
++        (None, None, None) =&gt; (4, 0, None, 0),
+         // post release
+-        (None, Some(post), dev) =&gt; (5, 0, Some(post), dev.unwrap_or(u64::MAX), version.local()),
++        (None, Some(post), dev) =&gt; (5, 0, Some(post), dev.unwrap_or(u64::MAX)),
+     }
+ }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-22 04:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 04:51</div>
+            <div class="timeline-body"><p>That seems reasonable but I'm hitting an error in the lazy version map, maybe something to do with equal comparators but different hashes...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-22 04:53</div>
+            <div class="timeline-body"><p>PubGrub requires a &quot;root&quot; package so <code>root</code> is a fake package that requires that the user asks for. I'm confused as it should never appear in errors like this, we usually replace the name. I can look into that part.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimbleby">@dimbleby</a> on 2024-02-22 09:03</div>
+            <div class="timeline-body"><p>Only guessing, but I guess that proposed fix is too symmetrical</p>
+<ul>
+<li><code>==1.2.3</code> should allow <code>1.2.3+local</code></li>
+<li><code>==1.2.3+local</code> should not allow <code>1.2.3</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2024-02-22 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 13:47</div>
+            <div class="timeline-body"><p>One temporary workaround using overrides: https://github.com/astral-sh/uv/issues/1497#issuecomment-1959429864</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1497.html">astral-sh/uv#1497</a> on 2024-02-22 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1871.html">astral-sh/uv#1871</a> on 2024-02-22 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1989.html">astral-sh/uv#1989</a> on 2024-02-26 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2008.html">astral-sh/uv#2008</a> on 2024-02-27 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-27 16:37</div>
+            <div class="timeline-body"><p>OK, so I've been looking into this recently, and after a ~day of yak-shaving to get tests working, I've had a chance to dig in a bit more. I was specifically digging into this in the context of #1497, but I believe that issue and this one are at least connected and likely share the same underlying problem.</p>
+<p>Indeed, as <a href="https://github.com/astral-sh/uv/issues/1855#issuecomment-1958993836">@dimbleby put it</a>:</p>
+<blockquote>
+<p><code>==1.2.3</code> should allow <code>1.2.3+local</code>
+<code>==1.2.3+local</code> should not allow <code>1.2.3</code></p>
+</blockquote>
+<p>Today, the latter is true in <code>uv</code> but the former is not. I believe this is a critical part of this issue that makes it somewhat different from how we deal with pre-releases.</p>
+<p>This is somewhat subtle, because in our PEP 440 crate, we do actually handle this case correctly:</p>
+<p>https://github.com/astral-sh/uv/blob/20253cd04570e3c6e02caf01814a126acf5b0c37/crates/pep440-rs/src/version_specifier.rs#L413-L424</p>
+<p>But in our resolver, that <code>contains</code> method (AFAIK) is not actually used. I'm not sure that it can be. The resolver really only speaks about ranges of versions. It doesn't itself understand (again, AFAIK, I'm not yet an expert on our resolution code) that it's not just a range of versions, but a particular kind of constraint whose interpretation depends on not just on the specific operator used in the constraint, but what the version being tested looks like. That is, the relationship isn't symmetric. I'm not sure if resolution can really deal with that notion. AFAIK, our handling of pre-releases doesn't have this asymmetry problem.</p>
+<p>With all that said, I did try a couple things to see what happens.</p>
+<p>The first thing I tried was to modify candidate selection:</p>
+<p>https://github.com/astral-sh/uv/blob/20253cd04570e3c6e02caf01814a126acf5b0c37/crates/uv-resolver/src/candidate_selector.rs#L169-L176</p>
+<p>I modified it by changing the candidate version to always have its local segment stripped. (This is not fully correct since sometimes we do want to compare the local segments, specifically, when the version constraint itself has a local segment in it. But it does fix #1497.) So that means if we find a candidate with version <code>1.2.3+foo</code>, we will return it as <code>1.2.3</code>. This ended up not working because it introduces two different distributions in resolution with exactly identical version numbers. While our test suite passes, it's largely because we don't have good coverage for local versions. Once I added a few basic tests, it was easy to see failures manifest as deadlocks. This is because I didn't do anything to handle the conflict of two different distributions with identical versions. I'm still not sure how to handle that.</p>
+<p>The second modification I made (which also fixes #1497) was also to candidate selection. In this case however, instead of returning a candidate with the local segment stripped, the candidate is always returned with its actual version, as it is in the status quo. Instead, all I did was change <code>range.contains(version)</code> to <code>range.contains(version.without_local())</code>. That is, our candidate selector becomes more permissive by making <code>==1.2.3</code> match <code>1.2.3+foo</code> while still returning a candidate with its original version, <code>1.2.3+foo</code>, in tact. While this fixes #1497 and passes our existing test suite, some basic extra testing with local versions also reveals this approach to not work either. In this case, I can't fully explain the test failure (it causes resolution to panic) because I don't understand it enough yet, but at a conceptual level, it makes sense to me that it wouldn't work. Namely, by doing this, we are kind of lying to the resolver by returning a candidate that doesn't actually satisfy the range given. (Well, we <em>want</em> it to, but <code>range.contains(version)</code> will return false while <code>range.contains(version.without_local())</code> will return true.) So if something else in resolution relies on the fact that the version we return satisfies the range given, then we will have broken an invariant.</p>
+<p>In discussion with @charliermarsh a couple days ago, he suggested taking an approach similar to pre-releases where we allow local versions of packages <em>only</em> if the version specifier itself also has a local segment. This would mean that something like <code>uv pip install 'torch==2.1.1' --index-url https://download.pytorch.org/whl/cpu</code> would still fail, but @SnoopJ's command in the OP of this issue should succeed since the versions as given to install contain the local segment. We could in theory make this work by keeping track of any pinned dependencies using local versions in the constraint (similar to what we do for pre-releases) and propagate this information to candidate selection. Then in candidate selection, we could permit <em>only</em> that version to pass through candidate selection. But, in order to avoid lying to the caller, we'd need to strip the local segment from the version. I believe this will run into the same problem as my first approach above: this will end up deadlocking (and perhaps hit other issues) because the version of the candidate returned doesn't actually match the version of the distribution for that version.</p>
+<p><em>However</em>, one key thing with @charliermarsh's approach is that because of the existence of the constraint <code>==1.2.3+foo</code>, we know that precisely only one version of <code>1.2.3</code> can be returned by the candidate selector. So at least in theory, there won't be a conflict between two different distributions with the same version number. But the practical issue of the candidate version mismatching the version of the distribution remains. This could possibly be fixed, but we'd still need to be careful to <em>not</em> let <code>1.2.3+foo</code> get into the resolver since it will not match <code>==1.2.3</code> which may exist elsewhere in the dependency requirements (as is, I believe, the case in this issue).</p>
+<p>It <em>almost</em> seems like what we want is some kind of version-wrapper type that permits ignoring local segments for <code>==</code> comparisons. And this version would be returned by candidate selection. But I don't know enough about the resolver to know whether that's a sound approach or not.</p>
+<p>For now, I'm going to clean up my <code>packse</code> tests and get those merged. They will be marked as &quot;unsatisfiable&quot; though, even though we probably want at least some of them to be satisfiable. Otherwise I'm not totally clear on how to proceed here. One more expensive avenue to explore here is how <code>pip</code> deals with these cases since <code>pip</code> does work with these local versions. Although it's not a foregone conclusion that <code>pip</code>'s approach will mix well with the PubGrub style of resolution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2022.html">astral-sh/uv#2022</a> on 2024-02-27 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2038.html">astral-sh/uv#2038</a> on 2024-02-28 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2080.html">astral-sh/uv#2080</a> on 2024-02-29 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @BurntSushi by @BurntSushi on 2024-02-29 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2202.html">astral-sh/uv#2202</a> on 2024-03-05 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2328.html">astral-sh/uv#2328</a> on 2024-03-10 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 21:32</div>
+            <div class="timeline-body"><p>I'm going to pick this back up, wish me luck.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/rye/issues/878.html">astral-sh/rye#878</a> on 2024-03-13 03:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2430.html">astral-sh/uv#2430</a> on 2024-03-13 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2478.html">astral-sh/uv#2478</a> on 2024-03-15 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-16 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-16 14:25</div>
+            <div class="timeline-body"><p>This will be supported in the next release via https://github.com/astral-sh/uv/pull/2430.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3711.html">astral-sh/uv#3711</a> on 2024-05-21 18:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

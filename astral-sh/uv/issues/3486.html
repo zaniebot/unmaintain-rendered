@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to query interpreter information of MUSL standalone distribution - astral-sh/uv #3486</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to query interpreter information of MUSL standalone distribution</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3486">#3486</a>
+        opened by <a href="https://github.com/ofek">@ofek</a>
+        on 2024-05-09 15:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ofek">@ofek</a> on 2024-05-09 15:04</div>
+            <div class="timeline-body"><p>The following illustrates that for some reason the standalone distribution's pip does not consider MUSL wheels and will download the source distribution:</p>
+<pre><code>docker run --rm -d --name builder python:alpine sleep infinity
+docker exec builder ash -c &quot;apk update &amp;&amp; apk add curl&quot;
+docker exec builder curl -LO https://github.com/indygreg/python-build-standalone/releases/download/20240415/cpython-3.12.3+20240415-x86_64_v3-unknown-linux-musl-install_only.tar.gz
+docker exec builder tar xzf cpython-3.12.3+20240415-x86_64_v3-unknown-linux-musl-install_only.tar.gz
+docker exec builder /python/bin/python -m pip install uv
+</code></pre>
+<p>That is probably an issue for that repository but then I had the idea of using UV to install into the distribution as follows:</p>
+<pre><code>docker exec builder pip install uv
+docker exec builder uv pip install --python /python/bin/python uv
+</code></pre>
+<p>but that produces an error:</p>
+<pre><code>error: Querying Python at `/python/bin/python` did not return the expected data: invalid value: integer `-1`, expected u16 with exit status: 0
+--- stdout:
+{&quot;result&quot;: &quot;success&quot;, &quot;markers&quot;: {&quot;implementation_name&quot;: &quot;cpython&quot;, &quot;implementation_version&quot;: &quot;3.12.3&quot;, &quot;os_name&quot;: &quot;posix&quot;, &quot;platform_machine&quot;: &quot;x86_64&quot;, &quot;platform_python_implementation&quot;: &quot;CPython&quot;, &quot;platform_release&quot;: &quot;5.15.153.1-microsoft-standard-WSL2&quot;, &quot;platform_system&quot;: &quot;Linux&quot;, &quot;platform_version&quot;: &quot;#1 SMP Fri Mar 29 23:14:13 UTC 2024&quot;, &quot;python_full_version&quot;: &quot;3.12.3&quot;, &quot;python_version&quot;: &quot;3.12&quot;, &quot;sys_platform&quot;: &quot;linux&quot;}, &quot;base_prefix&quot;: &quot;/python&quot;, &quot;base_exec_prefix&quot;: &quot;/python&quot;, &quot;prefix&quot;: &quot;/python&quot;, &quot;base_executable&quot;: &quot;/python/bin/python&quot;, &quot;sys_executable&quot;: &quot;/python/bin/python&quot;, &quot;stdlib&quot;: &quot;/python/lib/python3.12&quot;, &quot;scheme&quot;: {&quot;platlib&quot;: &quot;/python/lib/python3.12/site-packages&quot;, &quot;purelib&quot;: &quot;/python/lib/python3.12/site-packages&quot;, &quot;include&quot;: &quot;/python/include/python3.12&quot;, &quot;scripts&quot;: &quot;/python/bin&quot;, &quot;data&quot;: &quot;/python&quot;}, &quot;virtualenv&quot;: {&quot;purelib&quot;: &quot;lib/python3.12/site-packages&quot;, &quot;platlib&quot;: &quot;lib/python3.12/site-packages&quot;, &quot;include&quot;: &quot;include/site/python3.12&quot;, &quot;scripts&quot;: &quot;bin&quot;, &quot;data&quot;: &quot;&quot;}, &quot;platform&quot;: {&quot;os&quot;: {&quot;name&quot;: &quot;manylinux&quot;, &quot;major&quot;: -1, &quot;minor&quot;: -1}, &quot;arch&quot;: &quot;x86_64&quot;}, &quot;gil_disabled&quot;: false}
+--- stderr:
+
+---
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-09 15:07</div>
+            <div class="timeline-body"><p>@konstin - can you take a look at this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-09 15:13</div>
+            <div class="timeline-body"><p>Interesting that the OS versions are &quot;major&quot;: -1, &quot;minor&quot;: -1, maybe we just need to allow that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3487.html">astral-sh/uv#3487</a> on 2024-05-09 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-09 15:15</div>
+            <div class="timeline-body"><p>I think (-1, -1) is just a sign that we didn't detect glibc either. The error message is off: https://github.com/astral-sh/uv/pull/3487. But we should be detecting musl, not sure why we aren't? We just call methods in <code>packaging</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/python-build-standalone/issues/260.html">astral-sh/python-build-standalone#260</a> on 2024-05-09 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-05-09 15:23</div>
+            <div class="timeline-body"><p>I opened an issue over there for the first part of this bug: https://github.com/indygreg/python-build-standalone/issues/260</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-09 15:26</div>
+            <div class="timeline-body"><p>Thx.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-05-09 15:42</div>
+            <div class="timeline-body"><p>The error message should be improved so I will be closing this, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ofek on 2024-05-09 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-05-09 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2024-05-09 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-09 17:59</div>
+            <div class="timeline-body"><p>The musl builds are statically linked. This means it's a python without any external deps, but it also means - to my best understanding of how ELF works - that it can't load dynamic libraries. <code>pip debug</code> also only shows <code>linux_x86_64</code> and <code>any</code> as supported tags (no manylinux or musllinux). It afaik doesn't matter whether it's statically linked against glibc or musl, since that information isn't available at runtime.</p>
+<p>We can support statically linked python interpreter, but i'd only do so if there is explicit demand since these are nearly unusable without loading libraries.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect URL suffix when requesting wheel metadata in Simple HTML API - astral-sh/uv #12383</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect URL suffix when requesting wheel metadata in Simple HTML API</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12383">#12383</a>
+        opened by <a href="https://github.com/f3flight">@f3flight</a>
+        on 2025-03-21 23:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/f3flight">@f3flight</a> on 2025-03-21 23:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This may be a harmless bug, but wanted to report just because I noticed. When uv works with a HTML API (as opposed to json), it incorrectly appends wheel sha256 to the metadata URL. I can reproduce this using my org's internal pypi index which doesn't support JSON API.</p>
+<p>The index response looks like this (truncated for brevity, part of url redacted):</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;body&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&quot;https://&lt;internal-storage&gt;/some_package-0.4.9-py3-none-any.whl#sha256=794e49d06747a5c210d3e11ecc99930046348c278f7e53e5b87271962ba366da&quot; data-core-metadata=&quot;sha256=9502b1c067d22065612e6b84a093a5a483a989e468031c5b8f38ec08a94aef92&quot;&gt;some_package-0.4.9-py3-none-any.whl&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/body&gt;
+</code></pre>
+<p>The URL uv uses looks like this:</p>
+<pre><code class="language-shell">UV_INDEX_URL=&lt;redacted&gt; uv pip compile &lt;(echo some_package==0.4.9) -vvv | grep 'whl.metadata'
+DEBUG No cache entry for: https://.../some_package-0.4.9-py3-none-any.whl.metadata#sha256=794e49d06747a5c210d3e11ecc99930046348c278f7e53e5b87271962ba366da
+TRACE Sending fresh GET request for https://.../some_package-0.4.9-py3-none-any.whl.metadata#sha256=794e49d06747a5c210d3e11ecc99930046348c278f7e53e5b87271962ba366da
+TRACE Handling request for https://.../some_package-0.4.9-py3-none-any.whl.metadata#sha256=794e49d06747a5c210d3e11ecc99930046348c278f7e53e5b87271962ba366da
+TRACE Request for https://.../some_package-0.4.9-py3-none-any.whl.metadata#sha256=794e49d06747a5c210d3e11ecc99930046348c278f7e53e5b87271962ba366da is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://.../some_package-0.4.9-py3-none-any.whl.metadata#sha256=794e49d06747a5c210d3e11ecc99930046348c278f7e53e5b87271962ba366da
+TRACE Attempting unauthenticated request for https://.../some_package-0.4.9-py3-none-any.whl.metadata#sha256=794e49d06747a5c210d3e11ecc99930046348c278f7e53e5b87271962ba366da
+TRACE Cached request https://.../some_package-0.4.9-py3-none-any.whl.metadata#sha256=794e49d06747a5c210d3e11ecc99930046348c278f7e53e5b87271962ba366da is storable because its response has a heuristically cacheable status code 200
+</code></pre>
+<p>As you can see, the URL to fetch metadata uses <code>#sha256=...</code> suffix from wheel URL, instead of using the value from <code>data-core-metadata=</code>. In the end everything seems to work ok, but I don't know the internals well enough to say for sure.</p>
+<p>This doesn't happen when using PyPI API, my guess is maybe because pypi api is a JSON API, so a slightly different code path is used, and in that path there's no hash suffix appended to whl.metadata request (based on what I see in the trace output)</p>
+<h3>Platform</h3>
+<p>linux (azure linux 2)</p>
+<h3>Version</h3>
+<p>0.6.9</p>
+<h3>Python version</h3>
+<p>3.12.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @f3flight on 2025-03-21 23:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-22 00:06</div>
+            <div class="timeline-body"><p>Thanks, it makes sense to strip these fragments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-22 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12384.html">astral-sh/uv#12384</a> on 2025-03-22 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-22 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-22 15:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

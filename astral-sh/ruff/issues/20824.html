@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`isort` single-capital-letter name emits unexpected sorting diagnostic - astral-sh/ruff #20824</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`isort` single-capital-letter name emits unexpected sorting diagnostic</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20824">#20824</a>
+        opened by <a href="https://github.com/bzoracler">@bzoracler</a>
+        on 2025-10-12 22:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bzoracler">@bzoracler</a> on 2025-10-12 22:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ruff says that the following is unsorted (see <a href="https://play.ruff.rs/7883baeb-e3fa-46c2-a2b7-92b96f5e8795">playground</a>):</p>
+<pre><code class="language-python">from mod import A, AA, AAA  # Import block is un-sorted or un-formatted (I001) [Ln 1, Col 1]
+# ruff wants this instead: `AA, AAA, A`
+</code></pre>
+<p>However, this is OK (<a href="https://play.ruff.rs/668e35cb-ef75-405f-ab6d-f39bcd307cba">playground</a>):</p>
+<pre><code class="language-python">from mod import a, aa, aaa
+</code></pre>
+<h3>Version</h3>
+<p>0.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @MichaReiser on 2025-10-13 08:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-13 08:50</div>
+            <div class="timeline-body"><p>Yeah, this is surprising. Took me a bit of debugging to understand what's happening.</p>
+<p>isort considers what the import member is. At least, it tries to guess the kind based on the naming schema:</p>
+<ul>
+<li><code>A</code>: Is a class</li>
+<li><code>AA</code> and <code>AAA</code> are constants</li>
+</ul>
+<p>Constants are sorted before classes; that's why you get <code>AA</code>, <code>AAA</code> (both constants), and then <code>A</code>, which is determined to be a class. There could be an argument that <code>A</code> should be considered a constant too, but I think it's just ambiguous and hard to tell by only looking at the name.</p>
+<p>So in that sense, the behavior is expected, but certainly non obvious.</p>
+<p>In your case, is <code>A</code> a constant or a class? You could consider disabling <a href="https://docs.astral.sh/ruff/settings/#lint_isort_order-by-type">order-by-type</a> or adding <code>A</code> to constants or classes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-10-13 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bzoracler">@bzoracler</a> on 2025-10-13 10:10</div>
+            <div class="timeline-body"><p>Thank you for the explanation!</p>
+<p>My real case actually has the names <code>N</code>, <code>NN</code>, and <code>NNNs</code>. These are either classes or type aliases to some kind of integer sequence (and could be made from either <code>: TypeAlias</code> or <code>= TypeAliasType()</code>; choice depends on runtime introspection requirements). The naming scheme indicates the total number of type arguments the class/type expects to receive (and <code>Ns</code> indicates a <code>TypeVarTuple</code> parameter).</p>
+<p>So, semantically they are either types or classes. But I'm guessing the use of <code>: TypeAlias = &lt;string forward alias&gt;</code> could be seen by ruff as a constant (I didn't check this too thoroughly).</p>
+<p>I'm not too concerned about the actual order (even though it looked strange to have <code>AA, AAA, A</code>), but was more concerned that this behaviour is not guaranteed and may change. From your explanation, though, it sounds like the behaviour <em>is</em> guaranteed (or at least has a deliberate implementation behind it), so I'll play around with order-by-type to see if I can tweak to get something sensible in the configuration file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 06:30</div>
+            <div class="timeline-body"><blockquote>
+<p>So, semantically they are either types or classes. But I'm guessing the use of : TypeAlias = <string forward alias> could be seen by ruff as a constant (I didn't check this too thoroughly).</p>
+</blockquote>
+<p>Unfortunately, Ruff isn't able to analyze types across modules and isort only looks at the name to guess what kind a variable is. We're working on multifile analysis which should allow more accurate categorization.</p>
+<blockquote>
+<p>I'm not too concerned about the actual order (even though it looked strange to have AA, AAA, A), but was more concerned that this behaviour is not guaranteed and may change</p>
+</blockquote>
+<p>No, this shouldn't change. You can use <code>order-by-type</code> or add the type vars to https://docs.astral.sh/ruff/settings/#lint_isort_classes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bzoracler on 2025-10-14 11:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

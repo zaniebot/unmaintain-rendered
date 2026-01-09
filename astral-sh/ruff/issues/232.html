@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression: Ignore dot-prefixed hidden files and folders by default - astral-sh/ruff #232</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Regression: Ignore dot-prefixed hidden files and folders by default</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/232">#232</a>
+        opened by <a href="https://github.com/amotl">@amotl</a>
+        on 2022-09-20 14:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/amotl">@amotl</a> on 2022-09-20 14:32</div>
+            <div class="timeline-body"><p>Dear Charlie,</p>
+<p>after upgrading from 0.0.37 to 0.0.40, <code>ruff</code> started including dot-prefixed folders like <code>.tox</code>, <code>.venv</code>, <code>.venv36</code> in my working tree of <a href="https://github.com/jpmens/mqttwarn">mqttwarn</a> into the scan, significantly increasing the overall execution time from ~0.3s to ~5.5s. This is probably coming from the adjustments at #209 and/or #213?</p>
+<p>I think that #174 will be a sweet feature, which will indirectly mitigate the problem, at least for my scenario. However, I still believe that dot-prefixed files and folders should be excluded by default, no matter what. Saying that, I don't know the exact behavior of other similar tools, and whether they provide a separate option to <em>include</em> scanning dot-prefixed files and folders on purpose, or not - I merely wanted to humbly share my immediate reaction about this with you.</p>
+<p>With kind regards,
+Andreas.</p>
+<p>P.S.: After upgrading to ruff 0.0.42, the overall execution time went down to ~2.1s again, but the behavior to include scanning <code>.tox</code> and <code>.venv*</code> folders by default, is still present.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Regression: Ignore dot-prefixed files and folders by default" to "Regression: Ignore dot-prefixed hidden files and folders by default" by @amotl on 2022-09-20 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jackenmen">@Jackenmen</a> on 2022-09-20 14:46</div>
+            <div class="timeline-body"><p>This comes from my request in #176 where you can see the reasoning behind it. There have been a bunch of PRs made to the exclusion logic recently so it's been somewhat broken for a few releases. But this change was technically made in #188.</p>
+<p>I think that improving the default exclusions to be <code>.venv*</code> rather than <code>.venv</code> would be welcome (I personally use <code>.venvs</code> which is uncommon but I've seen people use <code>.venv3x</code> somewhat commonly whenever they need to check something with additional Python version) though unprecedented by other tools (to my knowledge). My opinion on hidden files should probably be clear from #176 so not going to repeat my reasoning from there :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amotl">@amotl</a> on 2022-09-20 15:17</div>
+            <div class="timeline-body"><p>Dear Jakub,</p>
+<p>thank you for taking the time to respond. Apparently, I completely missed your post at #176, apologies. Now everything starts making sense. On top of that, I see that the new <code>DEFAULT_EXCLUDE</code> list was implemented with #188, and that it includes <code>.tox</code>, <code>.venv</code>, and <code>build</code> already. Sweet!</p>
+<p>https://github.com/charliermarsh/ruff/blob/09b926fd59115afc8f47c191b86ad7c47c79889e/src/settings.rs#L54-L76</p>
+<p>Now, I am wondering even more why it does not work correctly on my machine. The corresponding <code>ruff</code> configuration settings are <a href="https://github.com/jpmens/mqttwarn/blob/302adf08762b8f14ba36c2f54b9d8c95f4db03c3/pyproject.toml#L15-L20">mqttwarn/pyproject.toml#L15-L20</a> and the output when running <code>time ruff .</code> on a warm cache is https://gist.github.com/amotl/2c8420cf6ae4970a523fab61696b7fc7, which clearly shows the program is scanning all the hidden folders it should have excluded through its <code>DEFAULT_EXCLUDE</code> list. I am sure I am doing something wrong here?</p>
+<p>With kind regards,
+Andreas.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-20 15:19</div>
+            <div class="timeline-body"><p>Can you try changing <code>exclude</code> to <code>extend-exclude</code> in your <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-20 15:20</div>
+            <div class="timeline-body"><p>(Using <code>exclude</code> will override that default list; using <code>extend-exclude</code> will augment it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amotl">@amotl</a> on 2022-09-20 15:21</div>
+            <div class="timeline-body"><p>Oh sorry. Using <code>extend-exclude</code> works great. Thank you very much, and apologies for missing that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @amotl on 2022-09-20 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-20 15:23</div>
+            <div class="timeline-body"><p>Phew! Is it down to ~0.3s again?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/233.html">astral-sh/ruff#233</a> on 2022-09-20 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amotl">@amotl</a> on 2022-09-20 15:28</div>
+            <div class="timeline-body"><p>Ha ;]. Down to 0.210s / 0.195s / 0.183s again, on three consecutive invocations. With #233, or when manually excluding <code>.venv36</code>, it can go down to 0.095s.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:06 UTC
+    </footer>
+</body>
+</html>

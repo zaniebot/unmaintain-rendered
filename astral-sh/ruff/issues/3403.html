@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: initialize super class with super call - astral-sh/ruff #3403</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: initialize super class with super call</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3403">#3403</a>
+        opened by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a>
+        on 2023-03-08 14:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-03-08 14:35</div>
+            <div class="timeline-body"><p>A common error with Python inheritance is to try to explicitly call base class methods:</p>
+<pre><code class="language-python">from typing import Any
+
+class C:
+    def __init__(self, x: int, **kwargs):
+        super().__init__(**kwargs)
+        self.x = x
+
+
+class D(C):
+    def __init__(self, **kwargs: Any) -&gt; None:
+        C.__init__(self, 1, **kwargs)  # Bad!
+        # super().__init__(x=1, **kwargs)  # Good.
+
+
+class E(C):
+    def __init__(self, **kwargs: Any) -&gt; None:
+        super().__init__(**kwargs)
+        self.y = 2
+
+
+class F(D, E):
+    pass
+
+
+f = F()
+print(f.x, f.y)  # AttributeError: 'F' object has no attribute 'y'
+</code></pre>
+<p>The problem with <code>D</code>'s definition is that <code>E</code> and <code>F</code> can come along and now <code>E</code>'s initializer is not called.</p>
+<p>This is a problem with all methods (not just <code>__init__</code>) although <code>__init__</code> is the most common place this fails.</p>
+<p>In general, I think it should be a Ruff error to call a base class method explicitly rather than through <code>super</code>.  Here's an example of <a href="https://github.com/pandas-dev/pandas/blob/a07cb65459f24446e82354854ff6658f29414c0a/pandas/core/frame.py#L852">this error</a>.</p>
+<p>The same problem would manifest with <code>__enter__</code>, <code>__exit__</code>, or any user-defined method that exhibits cooperative inheritance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-03-08 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-08 17:35</div>
+            <div class="timeline-body"><p>We have UP008, which handles the <em>arguments</em> portion to <code>__super__</code>, but I guess this is different in that we don't catch the <code>C</code> in <code>C.__init__</code>. Is that right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-03-08 17:47</div>
+            <div class="timeline-body"><p>Yeah, seems similar.  The problem here is that you should rarely (if ever) call your superclass by its name: <code>C.__init__(...</code>.  You should instead call it like this <code>super().__init__(...</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-04-10 02:09</div>
+            <div class="timeline-body"><p>I've been upgrading pywin32's legacy code over the past year. I would love an autofix (even if marked unsafe) for the hundreds base class <code>__init__</code> calls here ^^</p>
+<p><img src="https://github.com/user-attachments/assets/e0ae8686-06b7-43c3-8f68-a42361dd035f" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2025-04-10 02:13</div>
+            <div class="timeline-body"><p>@Avasam Wow, that looks painful.  Too bad Ruff hadn't warned that developer before they did that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-04-10 02:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Too bad Ruff hadn't warned that developer before they did that!</p>
+</blockquote>
+<p>What do you mean? Ruff hasn't done anything. I'm +1-ing the feature request to catch this (to prevent regressions) with a real-world example and asking for an autofix at the same time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2025-04-10 02:50</div>
+            <div class="timeline-body"><p>@Avasam Yes, I understand (Thank you).   I just mean too bad Ruff didn't have this feature before someone made that mess for you to clean up 😄</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

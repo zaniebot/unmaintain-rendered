@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failed to detect the operating system version on Rocky Linux 9.3 - astral-sh/uv #1486</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failed to detect the operating system version on Rocky Linux 9.3</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1486">#1486</a>
+        opened by <a href="https://github.com/AtomBaf">@AtomBaf</a>
+        on 2024-02-16 12:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AtomBaf">@AtomBaf</a> on 2024-02-16 12:43</div>
+            <div class="timeline-body"><p>Hi there,</p>
+<p>Doing an <code>uv venv</code> or any of the command will lead to this error:</p>
+<pre><code>× Failed to detect the operating system version: Couldn't parse /bin/ls for detecting the ld version: Invalid magic number: 0x622f7273752f2123
+</code></pre>
+<p>Context:</p>
+<ul>
+<li>Rocky Linux 9.3</li>
+<li>ldd (GNU libc) 2.34</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2024-02-16 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2024-02-16 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-16 14:03</div>
+            <div class="timeline-body"><p>I can reproduce this via the <code>rockylinux:9</code> docker image:</p>
+<pre><code>$ docker run --rm -it --mount type=bind,src=/home/andrew/astral/issues/uv/i1486,dst=/host rockylinux:9 bash
+[root@b6f41d07c55e /]# yum update --assumeyes --quiet
+[..snip..]
+[root@b6f41d07c55e /]# yum install which --assumeyes --quiet
+[..snip..]
+[root@b6f41d07c55e /]# curl -LsSf https://astral.sh/uv/install.sh | sh
+[..snip..]
+[root@b6f41d07c55e /]# . ~/.cargo/env
+[root@b6f41d07c55e /]# uv venv
+  × Failed to detect the operating system version: Couldn't parse /bin/ls for detecting the ld version: Invalid magic number: 0x622f7273752f2123
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-16 14:08</div>
+            <div class="timeline-body"><p>Ah the problem is that <code>ls</code> is not actually a binary:</p>
+<pre><code>$ cat ~/astral/issues/uv/i1486/ls
+#!/usr/bin/coreutils --coreutils-prog-shebang=ls
+</code></pre>
+<p>We assume it is and parse it as an ELF file. This is related to the concern @zanieb brought up in #1433 where everything will fail if parsing <code>ls</code> fails.</p>
+<p>It looks like <code>sh</code> is a true binary though. And I think it kind of has to be?</p>
+<pre><code>$ file ~/astral/issues/uv/i1486/sh
+/home/andrew/astral/issues/uv/i1486/sh: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=7acbb41bf6f1b7d977f1b44675bf3ed213776835, for GNU/Linux 3.2.0, stripped
+</code></pre>
+<p>I'll put up a PR that reverts #1433 and just checks the <code>/bin/sh</code> executable instead of attempting <code>/bin/ls</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1493.html">astral-sh/uv#1493</a> on 2024-02-16 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-02-16 14:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

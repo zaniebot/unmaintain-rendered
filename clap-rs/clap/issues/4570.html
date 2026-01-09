@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nested flatten ignores positional parameters - clap-rs/clap #4570</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Nested flatten ignores positional parameters</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4570">#4570</a>
+        opened by <a href="https://github.com/nyurik">@nyurik</a>
+        on 2022-12-22 04:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nyurik">@nyurik</a> on 2022-12-22 04:25</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.66.0 (69f9c33d7 2022-12-12)</p>
+<h3>Clap Version</h3>
+<p>4.0.30</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, Debug, PartialEq, Default)]
+#[command(about, version)]
+pub struct Args {
+    #[command(flatten)]
+    val1: Option&lt;SubArgs&gt;,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Default)]
+#[command(about, version)]
+pub struct SubArgs {
+    val2: Vec&lt;String&gt;,
+    #[command(flatten)]
+    sub_val2: SubSubArgs,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Default)]
+#[command(about, version)]
+pub struct SubSubArgs {
+    #[arg(short, long)]
+    pub val3: Option&lt;i32&gt;,
+}
+
+fn main() {
+    let args = Args::parse_from([&quot;main&quot;, &quot;bar&quot;]);
+    let expected = Args {
+        val1: Some(SubArgs {
+            val2: vec![&quot;bar&quot;.to_string()],
+            sub_val2: SubSubArgs {
+                val3: None
+            },
+        }),
+    };
+    assert_eq!(args, expected);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>run it</p>
+<h3>Actual Behaviour</h3>
+<p>parse succeeds, but ignores the first positional parameter.</p>
+<h3>Expected Behaviour</h3>
+<p>first positional parameter should be added to the <code>val2</code> Vec.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code>/home/nyurik/.cargo/bin/cargo run --color=always --package tmp --bin tmp
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/tmp`
+[      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name=&quot;tmp&quot;
+[      clap::builder::command] 	Command::_propagate:tmp
+[      clap::builder::command] 	Command::_check_help_and_version:tmp expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --version
+[      clap::builder::command] 	Command::_propagate_global_args:tmp
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:val2
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:val3
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:version
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;bar&quot;)' ([98, 97, 114])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok(&quot;bar&quot;)
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser] 	Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser] 	Parser::resolve_pending: id=&quot;val2&quot;
+[        clap::parser::parser] 	Parser::react action=Append, identifier=Some(Index), source=CommandLine
+[        clap::parser::parser] 	Parser::remove_overrides: id=&quot;val2&quot;
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;val2&quot;, source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;val2&quot;
+[        clap::parser::parser] 	Parser::push_arg_values: [&quot;bar&quot;]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=1
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=val2, pending=0
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1..=18446744073709551615, actual=0
+[        clap::parser::parser] 	Parser::react not enough values passed in, leaving it to the validator to complain
+[        clap::parser::parser] 	Parser::add_defaults
+[        clap::parser::parser] 	Parser::add_defaults:iter:val2:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:val2: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:val3:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:val3: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:help:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:version:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:version: doesn't have default vals
+[     clap::parser::validator] 	Validator::validate
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id=&quot;val2&quot;
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg=&quot;val2&quot;
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_required: required=ChildGraph([])
+[     clap::parser::validator] 	Validator::gather_requires
+[     clap::parser::validator] 	Validator::gather_requires:iter:&quot;val2&quot;
+[     clap::parser::validator] 	Validator::validate_required: is_exclusive_present=false
+[   clap::parser::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[]
+thread 'main' panicked at 'assertion failed: `(left == right)`
+  left: `Args { val1: None }`,
+ right: `Args { val1: Some(SubArgs { val2: [&quot;bar&quot;], sub_val2: SubSubArgs { val3: None } }) }`', src/main.rs:35:5
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/69f9c33d71c871fc16ac445211281c6e7a340943/library/std/src/panicking.rs:575:5
+   1: core::panicking::panic_fmt
+             at /rustc/69f9c33d71c871fc16ac445211281c6e7a340943/library/core/src/panicking.rs:65:14
+   2: core::panicking::assert_failed_inner
+   3: core::panicking::assert_failed
+             at /rustc/69f9c33d71c871fc16ac445211281c6e7a340943/library/core/src/panicking.rs:203:5
+   4: tmp::main
+             at ./src/main.rs:35:5
+   5: core::ops::function::FnOnce::call_once
+             at /rustc/69f9c33d71c871fc16ac445211281c6e7a340943/library/core/src/ops/function.rs:251:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+
+Process finished with exit code 101
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @nyurik on 2022-12-22 04:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-12-22 14:51</div>
+            <div class="timeline-body"><p>This was broken by #4350 because we aren't correctly processing nested groups, so when we do <code>contains_id(&quot;Args&quot;)</code>, it returns false and we don't process any of the arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2022-12-22 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2022-12-22 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-12-22 18:48</div>
+            <div class="timeline-body"><p>So looking at this further, this is specifically when using <code>Option</code> with <code>flatten</code> and only because we haven't implemented nesting of groups.  Because &quot;SubArgs&quot; has a group within it, we just don't bother populating the group.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nyurik">@nyurik</a> on 2022-12-23 22:48</div>
+            <div class="timeline-body"><p>Thanks for the feedback. The biggest issue with this bug is that it silently ignores input, making it harder to even notice it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-02-10 15:25</div>
+            <div class="timeline-body"><p>Huh, for some reason I hadn't linked to this from the tracking issue so when #4697 came along, I linked that.  I'll go ahead and close in favor of #4697 then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-02-10 15:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

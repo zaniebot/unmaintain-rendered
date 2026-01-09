@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>how to run setcap on uv provided python executable - astral-sh/uv #12459</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>how to run setcap on uv provided python executable</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12459">#12459</a>
+        opened by <a href="https://github.com/jsiverskog">@jsiverskog</a>
+        on 2025-03-25 10:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jsiverskog">@jsiverskog</a> on 2025-03-25 10:06</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>we're having some special requirements. we're using the <a href="https://github.com/bnjmnp/pysoem">pysoem</a> library to communicate with ethercat devices. this means that the python executable needs <code>cap_net_raw+ep</code> capability, which can be achieved by running <code>sudo setcap cap_net_raw+ep /path/to/python</code>.</p>
+<p>this works fine with the system python, but when setting it on the <code>uv</code> provided python executable:</p>
+<pre><code>sudo setcap cap_net_raw+ep ~/.local/share/uv/python/cpython-3.11.11-linux-x86_64-gnu/bin/python3.11
+</code></pre>
+<p>i get this when i then try to run python:</p>
+<pre><code>[...]/python3: error while loading shared libraries: $ORIGIN/../lib/libpython3.11.so.1.0: DST not allowed in SUID/SGID programs
+</code></pre>
+<p>i'm not sure how the uv built python differs from the system provided one (that could affect this)?</p>
+<h3>Platform</h3>
+<p>pop!_os 22.04 lts (based on ubuntu 24.04) amd64</p>
+<h3>Version</h3>
+<p>uv 0.6.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @jsiverskog on 2025-03-25 10:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsiverskog">@jsiverskog</a> on 2025-03-25 10:27</div>
+            <div class="timeline-body"><p>if i run this:
+<code>patchelf --replace-needed &quot;\$ORIGIN/../lib/libpython3.11.so.1.0&quot; ~/.local/share/uv/python/cpython-3.11.11-linux-x86_64-gnu/lib/libpython3.11.so.1.0  ~/.local/share/uv/python/cpython-3.11.11-linux-x86_64-gnu/bin/python3.11</code></p>
+<p>it works, so it seems to be related to the relative path. and sure, from a security point of view i can understand why that may be problematic.</p>
+<p>is there a better way to achieve what we need?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsiverskog">@jsiverskog</a> on 2025-03-25 12:25</div>
+            <div class="timeline-body"><p>found this: https://github.com/astral-sh/python-build-standalone/blob/f0abfc9cb1f6a985fc5561cf5435f7f6e8a64e5b/cpython-unix/build-cpython.sh#L684-L697</p>
+<p>i'm not sure what the right way forward is here. perhaps the issue should be moved to the <code>python-build-standalone</code> repository.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsiverskog">@jsiverskog</a> on 2025-04-03 13:51</div>
+            <div class="timeline-body"><p>closing this, opened an issue in python-build-standalone instead: https://github.com/astral-sh/python-build-standalone/issues/576</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jsiverskog on 2025-04-03 13:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breaking behavior change: uv 0.5.29 creates a `/tmp/uv-xcxx.lock`  - astral-sh/uv #11408</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Breaking behavior change: uv 0.5.29 creates a `/tmp/uv-xcxx.lock` </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11408">#11408</a>
+        opened by <a href="https://github.com/zongsizhang">@zongsizhang</a>
+        on 2025-02-10 21:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zongsizhang">@zongsizhang</a> on 2025-02-10 21:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Our Dockerfile</p>
+<pre><code>FROM --platform=linux/amd64 ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+ENV PYTHONUNBUFFERED=true
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Copy our project and run uv sync`
+WORKDIR /app
+COPY . /app/
+RUN uv sync --no-install-workspace --package api
+</code></pre>
+<p>Since today, when we rebuild our image, the UV version is upgraded from <code>0.5.28</code> -&gt; <code>0.5.29</code>
+And we found that it starts to create a file <code>/tmp/uv-xxxx.lock</code> file before we run uv commands under the project.
+While in the image with <code>0.5.28</code>, it doesn't try to create the file before execution.</p>
+<p>Here I attach the digest of the 2 images:</p>
+<ul>
+<li>Image without temp file created: <code>uv:0.5.28-python3.11-bookworm-slim@sha256:2f72c97cc252b5b616380848539546c93de0d40ee4ec8cf0981bdbd63c9db613</code></li>
+<li>Image with temp file created: <code>uv:0.5.29-python3.11-bookworm-slim@sha256:80ac1ba1ccf13317b29a2eb02e4c3a99094efdb6f90ae878f000ade6b101412d</code></li>
+</ul>
+<p>Our Kubernetes container stopped working cause now it requires access to <code>/tmp</code> directory.
+I wonder if this is a new behavior of <code>0.5.29</code>, or this is due to something in the image?</p>
+<h3>Platform</h3>
+<p>Debian GNU/Linux 12 (bookworm)</p>
+<h3>Version</h3>
+<p>0.5.29</p>
+<h3>Python version</h3>
+<p>Python 3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zongsizhang on 2025-02-10 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv 0.5.29 creates a `/tmp/uv-xcxx.lock`" to "Breaking behavior change: uv 0.5.29 creates a `/tmp/uv-xcxx.lock` " by @zongsizhang on 2025-02-10 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 21:45</div>
+            <div class="timeline-body"><p>It's a new behavior in 0.5.29. But why doesn't your container have access to <code>/tmp</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 21:46</div>
+            <div class="timeline-body"><p>Or do you mean that the lockfile is created by one user, but runs in production under another user?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zongsizhang">@zongsizhang</a> on 2025-02-10 21:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Or do you mean that the lockfile is created by one user, but runs in production under another user?</p>
+</blockquote>
+<p>Thanks for replying, it was never required, so we didn't bother to do that. And yes the root user created a lockfile and in the production it run as another user.</p>
+<p>BTW where is this change mentioned? I can't find in the release note or the change logs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-10 21:52</div>
+            <div class="timeline-body"><p>It's https://github.com/astral-sh/uv/pull/11259</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-10 21:53</div>
+            <div class="timeline-body"><p>See also</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/11178</li>
+<li>https://github.com/astral-sh/uv/issues/10773</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zongsizhang">@zongsizhang</a> on 2025-02-10 21:57</div>
+            <div class="timeline-body"><p>Thanks! we'll add access to the <code>/tmp</code> folder then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zongsizhang on 2025-02-10 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 21:59</div>
+            <div class="timeline-body"><p>I think this might &quot;just work&quot; for you in v0.5.30. The problem you're running into (probably) is that the production user can't access the lock because it's created by the root, but in v0.5.30, I've fixed the permissions on it. It's probably worth just seeing if v0.5.30 works for you (which will be out today).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zongsizhang">@zongsizhang</a> on 2025-02-10 22:12</div>
+            <div class="timeline-body"><p>Sounds great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zongsizhang">@zongsizhang</a> on 2025-02-10 22:19</div>
+            <div class="timeline-body"><p>@charliermarsh BTW is there a way we can remove this lock elegantly elegantly?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

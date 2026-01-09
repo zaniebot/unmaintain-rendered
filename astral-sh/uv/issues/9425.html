@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv add onnxruntime` fails to fetch latest version of package compatible with my environment's Python - astral-sh/uv #9425</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv add onnxruntime` fails to fetch latest version of package compatible with my environment's Python</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/9425">#9425</a>
+        opened by <a href="https://github.com/sebastian-correa">@sebastian-correa</a>
+        on 2024-11-25 19:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sebastian-correa">@sebastian-correa</a> on 2024-11-25 19:50</div>
+            <div class="timeline-body"><p>When adding <code>onnxruntime</code> in Python 3.9, <code>uv</code> fails to resolve <code>1.19.2</code> and instead fails. <code>onnxruntime</code> <code>1.20.0</code> dropped support for Python 3.9. Could this be related to <code>onnxruntime</code> as <code>poetry add</code> also &quot;fails&quot; (it installs a wrong version and explodes in the process)?</p>
+<p>To reproduce, do:</p>
+<pre><code class="language-bash">❯ mkdir onnxruntime-test
+❯ cd onnxruntime-test
+❯ uv init --python=3.9
+Initialized project `onnxruntime-test`
+❯ uv add --python=3.9 onnxruntime
+Using CPython 3.9.20
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 11 packages in 16ms
+error: Distribution `onnxruntime==1.20.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+</code></pre>
+<p>Running <code>uv</code> in macOS 15.1 (24B83). <code>uv</code> version is:</p>
+<pre><code class="language-bash">❯ uv --version
+uv 0.5.4 (c62c83c37 2024-11-20)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-25 21:38</div>
+            <div class="timeline-body"><p>I think the problem is that they don't have <code>requires-python = &quot;&gt;=3.9&quot;</code>, so from a metadata perspective, it &quot;looks like&quot; they still support Python 3.9. I could see us backtracking here, though, such that if there's no source distribution, we look for the next version with a matching wheel, if some Python versioning are missing.</p>
+<p>In the meantime, you probably want to do something like:</p>
+<pre><code class="language-toml">[project]
+...
+dependencies = [&quot;onnxruntime&gt;=1.20.1 ; python_version &gt; '3.9'&quot;, &quot;onnxruntime&lt;1.20.1 ; python_version &lt;= '3.9'&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-25 21:40</div>
+            <div class="timeline-body"><p>This is roughly the same as #5182, but for Python version, not platform (which is more tractable).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-11-25 21:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sebastian-correa">@sebastian-correa</a> on 2024-11-26 00:51</div>
+            <div class="timeline-body"><p>Thanks for the reply! I figured it had something to do with this, and I tried to find the spot where they defined compatible Python versions but couldn't.</p>
+<p>Can I help somehow? I don't know a single thing about rust or <code>uv</code>'s inner workings but if I can be of help somehow, please let me know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../google/magika/issues/922.html">google/magika#922</a> on 2025-01-24 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../google/magika/issues/928.html">google/magika#928</a> on 2025-01-24 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../emcie-co/parlant/issues/530.html">emcie-co/parlant#530</a> on 2025-09-02 04:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AbdealiLoKo">@AbdealiLoKo</a> on 2025-10-21 12:15</div>
+            <div class="timeline-body"><p>Came across the same issue ... just wanted to say, <code>pip</code> doesn't seem to have an issue here</p>
+<pre><code>$ uv venv venv --python 3.9 --seed
+$ source venv/bin/activate
+$ python -V
+Python 3.9.23
+$ pip install onnxruntime
+...
+Installing collected packages: mpmath, flatbuffers, sympy, protobuf, packaging, numpy, humanfriendly, coloredlogs, onnxruntime
+Successfully installed coloredlogs-15.0.1 flatbuffers-25.9.23 humanfriendly-10.0 mpmath-1.3.0 numpy-2.0.2 onnxruntime-1.19.2 packaging-25.0 protobuf-6.33.0 sympy-1.14.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../microsoft/onnxruntime/issues/26375.html">microsoft/onnxruntime#26375</a> on 2025-10-21 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-21 12:24</div>
+            <div class="timeline-body"><p>Thanks for raising this upstream!</p>
+<p>A workaround that we since added is setting requires environments (https://docs.astral.sh/uv/concepts/resolution/#required-environments):</p>
+<pre><code class="language-toml">[tool.uv]
+required-environments = [&quot;python_version == '3.9'&quot;]
+</code></pre>
+<p>This workaround asserts that there are wheels for this Python version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../google/magika/pulls/1205.html">google/magika#1205</a> on 2025-10-29 14:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync --no-self - astral-sh/uv #6315</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync --no-self</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6315">#6315</a>
+        opened by <a href="https://github.com/hynek">@hynek</a>
+        on 2024-08-21 10:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hynek">@hynek</a> on 2024-08-21 10:22</div>
+            <div class="timeline-body"><p>Since Docker is what it is and given how well caching in it works, I like to install my applications in two steps.</p>
+<p>First, the dependencies:</p>
+<pre><code class="language-Dockerfile">COPY pyproject.toml /_lock
+COPY pdm.lock /_lock
+
+RUN --mount=type=cache,target=/root/.cache \
+    set -ex \
+    &amp;&amp; cd /_lock \
+    &amp;&amp; pdm use -i /app/bin/python \
+    &amp;&amp; pdm sync --no-self --prod
+</code></pre>
+<p>Note, that the source is not copied; as long as the lock file doesn't change, this layer is cached and this is the layer that takes the longest to build.</p>
+<p>And then the app:</p>
+<pre><code class="language-Dockerfile">COPY . /src
+RUN --mount=type=cache,target=/root/.cache \
+    set -ex \
+    &amp;&amp; uv pip install --python /app/bin/$PY --no-deps /src
+</code></pre>
+<p>Which is Blazing Fast™ already.</p>
+<p>It would be great if something like this were possible with <code>uv sync</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2024-08-21 10:42</div>
+            <div class="timeline-body"><p>I think that's the same request as https://github.com/astral-sh/uv/issues/4028?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-08-21 10:43</div>
+            <div class="timeline-body"><p>Aw yeah sorry, looks like I searched for the wrong terms and they know. :| Looks like it depends from what side one comes and I don't know Poetry's flags. ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @hynek on 2024-08-21 10:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

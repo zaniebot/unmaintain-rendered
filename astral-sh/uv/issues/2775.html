@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV pip compile fails with extra-index-url - astral-sh/uv #2775</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV pip compile fails with extra-index-url</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2775">#2775</a>
+        opened by <a href="https://github.com/RobMcH">@RobMcH</a>
+        on 2024-04-02 13:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RobMcH">@RobMcH</a> on 2024-04-02 13:35</div>
+            <div class="timeline-body"><p>I am trying to use uv pip compile as a drop-in replacement for pip-compile and am running into issues with how extra-index-url is handled. A minimal working example would be the following requirements.in</p>
+<pre><code>networkx==2.5
+torch==2.1.0+cu118
+</code></pre>
+<p>running without extra-index-url will error out as it cannot find torch (as expected):</p>
+<pre><code>uv pip compile --generate-hashes  requirements.in -o requirements.txt
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of torch==2.1.0+cu118 and you require torch==2.1.0+cu118, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>and running with extra-index-url will error out as it seemingly cannot find networkx on the extra-index (it seems not to check the original index?):</p>
+<pre><code>uv pip compile --generate-hashes --extra-index-url &quot;https://download.pytorch.org/whl/cu118&quot; requirements.in -o requirements.txt
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of networkx==2.5 and you require networkx==2.5, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>I am using the latest uv version (0.1.27). This might be related to existing PyTorch issues here, but it seems those are all related to installing PyTorch, rather than creating a <code>requirements.txt</code> using <code>uv pip compile</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-02 13:42</div>
+            <div class="timeline-body"><p>For security purposes, we don’t currently allow packages to be looked up on multiple indexes. You can read more on it here: https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#packages-that-exist-on-multiple-indexes</p>
+<p>In this case my guess is that networkx exists on the PyTorch index, but not at that version, so uv can’t find it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RobMcH">@RobMcH</a> on 2024-04-02 13:53</div>
+            <div class="timeline-body"><p>Thanks! So until uv supports specifying registries for each package individually, torch is essentially incompatible with uv in certain configurations (when one of the other requirements also lives on the torch registry but not all versions are there)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-02 14:00</div>
+            <div class="timeline-body"><p>Yeah. There are a few workarounds: you can use direct URLs for the Torch dependencies, and omit the extra index altogether. Or you should be able to use —find-links instead of an extra index, and that would also work around the issue.</p>
+<p>I’m considering adding an opt-in flag to allow this though. It’s not a technical limitation, but rather a security limitation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-02 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2812.html">astral-sh/uv#2812</a> on 2024-04-03 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2815.html">astral-sh/uv#2815</a> on 2024-04-03 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-03 23:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/korhojoa">@korhojoa</a> on 2024-05-24 07:59</div>
+            <div class="timeline-body"><p>uv.toml doesn't seem to respect/support this:</p>
+<pre><code>venv/bin/python -m uv pip install --verbose --upgrade pip-tools
+error: Failed to parse `uv.toml`
+  Caused by: TOML parse error at line 2, column 18
+  |
+2 | index-strategy = &quot;unsafe-any-match&quot;
+  |                  ^^^^^^^^^^^^^^^^^^
+unknown variant `unsafe-any-match`, expected one of `first-index`, `unsafe-first-match`, `unsafe-best-match`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3819.html">astral-sh/uv#3819</a> on 2024-05-24 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-24 13:25</div>
+            <div class="timeline-body"><p>@korhojoa - you want <code>unsafe-first-match</code> -- <code>unsafe-any-match</code> is a deprecated alias. I will add backwards-compatible support for it though.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

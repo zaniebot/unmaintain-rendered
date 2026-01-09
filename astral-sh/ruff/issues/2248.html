@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401+F811 false positive - astral-sh/ruff #2248</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401+F811 false positive</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2248">#2248</a>
+        opened by <a href="https://github.com/dalcinl">@dalcinl</a>
+        on 2023-01-27 10:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dalcinl">@dalcinl</a> on 2023-01-27 10:36</div>
+            <div class="timeline-body"><h4>Minimal reproducer</h4>
+<pre><code class="language-python">from foo import Foo
+from typing import TypeAlias
+
+class Bar:
+    Foo: TypeAlias = Foo
+    def bar(self) -&gt; Foo: ...
+</code></pre>
+<h4>Output</h4>
+<pre><code>$ ruff stub.pyi 
+stub.pyi:1:17: F401 `foo.Foo` imported but unused
+stub.pyi:5:5: F811 Redefinition of unused `Foo` from line 1
+Found 2 error(s).
+1 potentially fixable with the --fix option.
+</code></pre>
+<p>Ruff version: <code>0.0.227</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-01-27 11:31</div>
+            <div class="timeline-body"><p>Confirmed with <code>0.0.236</code> with a <code>.pyi</code> file.
+Doesn't occur with a <code>.py</code> file unless prepending with <code>from __future__ import annotations</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 13:24</div>
+            <div class="timeline-body"><p>Is this, maybe, the same as #1401?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dalcinl">@dalcinl</a> on 2023-01-27 14:43</div>
+            <div class="timeline-body"><p>I believe it is not exactly the same.
+My reproducer would be equivalent to:</p>
+<pre><code class="language-python">from foo import Foo
+
+class Bar:
+    Foo = Foo
+    def bar(self) -&gt; Foo: ...
+</code></pre>
+<p>and <code>ruff</code> is happy with this code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dalcinl">@dalcinl</a> on 2023-01-29 07:50</div>
+            <div class="timeline-body"><p>This is a small variation to my original reproducer:</p>
+<pre><code class="language-python">from typing import TypeAlias
+class Foo: ...
+
+class Bar:
+    Foo: TypeAlias = Foo
+    def bar(self) -&gt; Foo: ...
+</code></pre>
+<p>This time Ruff is happy with it.</p>
+<ol>
+<li>My original reproducer triggers the warnings.</li>
+<li>Similar code with a locally defined symbol does not.</li>
+<li>Removing the <code>TypeAlias </code> annotation silences the warning.</li>
+<li>Changing the annotation to  <code>Foo: Type = Foo</code> also silences the warning.
+So far this looks like a subtle bug related to visibility and/or the <code>TypeAlias</code> annotation.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-02-03 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 16:14</div>
+            <div class="timeline-body"><p>Yeah this is really tricky.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 16:27</div>
+            <div class="timeline-body"><p>Obligatory link to Tweet: https://twitter.com/charliermarsh/status/1659233087786459139</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 16:29</div>
+            <div class="timeline-body"><p>I believe we need to change the logic in this case to eagerly resolve if the binding is already defined, and otherwise, go through standard deferred resolution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4509.html">astral-sh/ruff#4509</a> on 2023-05-18 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-20 02:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

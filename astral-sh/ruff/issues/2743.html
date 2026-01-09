@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI: --color=auto|no|yes - astral-sh/ruff #2743</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>CLI: --color=auto|no|yes</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2743">#2743</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-02-10 21:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-10 21:27</div>
+            <div class="timeline-body"><p>The CLI should support <code>--color=auto|no|yes</code> where <code>auto</code> detects if the output is redirected into a pipe/file and prevent colorizing output in that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 21:29</div>
+            <div class="timeline-body"><p>We already support this via environment variables which I think is sufficient personally (see #1830).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 21:30</div>
+            <div class="timeline-body"><p>Any reason the env vars wouldn't work for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-10 21:31</div>
+            <div class="timeline-body"><p>env vars are OK. I didn't find them by grepping through the source code as it's probably in a external lib. maybe just document it in README.md</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-10 21:36</div>
+            <div class="timeline-body"><p>ah, and detecting if the stdout filedescriptor is being redirected to a file should disable the color output as well imho. most unix tools do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 21:37</div>
+            <div class="timeline-body"><p>Does the external lib not handle that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-10 21:38</div>
+            <div class="timeline-body"><p>i somehow don't get it working. even <code>NO_COLOR=1</code> prints ANSI escape sequences.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-10 21:39</div>
+            <div class="timeline-body"><p>for <code>--show-source</code> it seems <code>NO_COLOR=1</code> has no effect. but for the regular output it has. That's the bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 21:40</div>
+            <div class="timeline-body"><p>Hmm, it definitely works for me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 21:40</div>
+            <div class="timeline-body"><p>Ahh ok</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 21:40</div>
+            <div class="timeline-body"><p>That makes sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 21:40</div>
+            <div class="timeline-body"><p><code>--show-source</code> goes through a separate mechanism, I'll look into it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 21:52</div>
+            <div class="timeline-body"><p>(Created separate issues for these.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-10 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sarcasm">@Sarcasm</a> on 2023-07-06 12:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Any reason the env vars wouldn't work for you?
+-- https://github.com/astral-sh/ruff/issues/2743#issuecomment-1426368171</p>
+</blockquote>
+<p>Discoverability.</p>
+<p>I wanted to pipe <code>ruff check --show-source</code> to a pager:</p>
+<pre><code>ruff check --show-source src | less -RFX
+</code></pre>
+<p>Seeing the absence of color, the fastest way for me to find it, was to do:</p>
+<pre><code>$ ruff -h
+$ ruff check -h
+$ man ruff
+No manual entry for ruff
+</code></pre>
+<p>So I had to google it, and found this issue.</p>
+<p>If I search directly on the website I find:</p>
+<blockquote>
+<p>How can I disable Ruff's color output?
+-- https://beta.ruff.rs/docs/faq/#how-can-i-disable-ruffs-color-output</p>
+</blockquote>
+<p>I feel like the command line <code>-h</code> is more discoverable.
+The <code>--color=auto|yes|no</code> help documentation could mention the env vars for those who prefer to use that, but I think it's more common in CI or build scripts than for when the user needs it on the command line.</p>
+<p>BTW ruff is great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Infleqtion/client-superstaq/pulls/1242.html">Infleqtion/client-superstaq#1242</a> on 2025-07-02 15:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV_FIND_LINKS does not work as documented - astral-sh/uv #10478</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV_FIND_LINKS does not work as documented</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10478">#10478</a>
+        opened by <a href="https://github.com/foxcroftjn">@foxcroftjn</a>
+        on 2025-01-10 19:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/foxcroftjn">@foxcroftjn</a> on 2025-01-10 19:52</div>
+            <div class="timeline-body"><p>The <a href="https://docs.astral.sh/uv/configuration/environment/#uv_find_links"><code>UV_FIND_LINKS</code></a> environment variable is currently documented as:</p>
+<blockquote>
+<p>Equivalent to the --find-links command-line argument. If set, uv will use this comma-separated list of additional locations to search for packages.</p>
+</blockquote>
+<p>When I run the following:</p>
+<pre><code class="language-bash">export UV_FIND_LINKS='/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/avx2,/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/avx2,/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/generic,/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/generic,/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic'
+uv pip install --verbose --no-index tensorflow-gpu==2.11
+</code></pre>
+<p>I get the error:</p>
+<pre><code>DEBUG uv 0.5.16
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.8.10-linux-x86_64-gnu` at `/home/jfoxcrof/temp/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.8.10 environment at: .venv
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: tensorflow-gpu==2.11
+DEBUG Using request timeout of 30s
+DEBUG Released lock at `/home/jfoxcrof/temp/.venv/.lock`
+error: Failed to read `--find-links` directory: /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/avx2,/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/avx2,/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/generic,/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/generic,/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic
+  Caused by: No such file or directory (os error 2)
+</code></pre>
+<p>After the fix I provide in #10477, the error changes to:</p>
+<pre><code>DEBUG uv 0.5.16+36 (503f9a97a 2025-01-10)
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.8.10-linux-x86_64-gnu` at `/home/jfoxcrof/temp/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.8.10 environment at: .venv
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: tensorflow-gpu==2.11
+DEBUG Using request timeout of 30s
+DEBUG Found 72 packages in `--find-links` entry: file:///cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/avx2
+DEBUG Found 836 packages in `--find-links` entry: file:///cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/avx2
+DEBUG Found 67 packages in `--find-links` entry: file:///cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/generic
+DEBUG Found 1746 packages in `--find-links` entry: file:///cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/generic
+DEBUG Found 11159 packages in `--find-links` entry: file:///cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic
+DEBUG Solving with installed Python version: 3.8.10
+DEBUG Solving with target Python version: &gt;=3.8.10
+DEBUG Adding direct dependency: tensorflow-gpu&gt;=2.11, &lt;2.11+
+DEBUG Searching for a compatible version of tensorflow-gpu (&gt;=2.11, &lt;2.11+)
+DEBUG No compatible version found for: tensorflow-gpu
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of tensorflow-gpu==2.11 and you require tensorflow-gpu==2.11, we can conclude that your requirements are unsatisfiable.
+DEBUG Released lock at `/home/jfoxcrof/temp/.venv/.lock`
+</code></pre>
+<p>The output immediately above is also what I see if I set find-links through pyproject.toml like this:</p>
+<pre><code class="language-toml">[tool.uv.pip]
+find-links = [
+  &quot;/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/avx2&quot;,
+  &quot;/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/avx2&quot;,
+  &quot;/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/generic&quot;,
+  &quot;/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/generic&quot;,
+  &quot;/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic&quot;,
+]
+</code></pre>
+<p>but when I provide each path to separate instances of --find-links like so:</p>
+<pre><code class="language-bash">uv pip install --verbose --no-index --find-links /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/avx2 --find-links /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/avx2 --find-links /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/generic --find-links /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/generic --find-links /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic tensorflow==2.11
+</code></pre>
+<p>I see:</p>
+<pre><code>DEBUG uv 0.5.16
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.8.10-linux-x86_64-gnu` at `/home/jfoxcrof/temp/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.8.10 environment at: .venv
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: tensorflow==2.11
+DEBUG Using request timeout of 30s
+DEBUG Found 72 packages in `--find-links` entry: file:///cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/avx2
+DEBUG Found 836 packages in `--find-links` entry: file:///cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/avx2
+DEBUG Found 67 packages in `--find-links` entry: file:///cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2020/generic
+DEBUG Found 1746 packages in `--find-links` entry: file:///cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo/generic
+DEBUG Found 11159 packages in `--find-links` entry: file:///cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic
+DEBUG Solving with installed Python version: 3.8.10
+DEBUG Solving with target Python version: &gt;=3.8.10
+DEBUG Adding direct dependency: tensorflow&gt;=2.11, &lt;2.11+
+DEBUG Searching for a compatible version of tensorflow (&gt;=2.11, &lt;2.11+)
+DEBUG Selecting: tensorflow==2.11.0+computecanada [compatible] (tensorflow-2.11.0+computecanada-cp38-cp38-linux_x86_64.whl)
+</code></pre>
+<p>and installation proceeds smoothly from there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-10 22:20</div>
+            <div class="timeline-body"><p>Any way you can provide an MRE that I can use to debug this? We have a lot of tests for <code>--find-links</code> so I don't think I'll be able to replicate this trivially.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-01-10 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/foxcroftjn">@foxcroftjn</a> on 2025-01-10 23:53</div>
+            <div class="timeline-body"><p>I haven't tried to reproduce this locally yet. I'll see what I can do next week. I was (and still am) hoping that it should be easy to reproduce locally, since the <a href="https://github.com/SethMMorton/uv/blob/9f59c8e239069b3940fa31250e180ace4e5db604/crates/uv/tests/pip_compile.rs#L4596-L4621">only test case</a> for the <code>UV_FIND_LINKS</code> environment variable that I see contains a single url, not a comma separated list of directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-11 02:42</div>
+            <div class="timeline-body"><p>E.g., this works for me without issue from the root of the repo.</p>
+<pre><code class="language-shell">UV_FIND_LINKS=&quot;../scripts/links,../scripts/packages&quot; uv pip install --no-index validation
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

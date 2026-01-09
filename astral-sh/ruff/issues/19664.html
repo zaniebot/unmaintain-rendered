@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`allowed-unused-imports` doesn't work for top-level modules - astral-sh/ruff #19664</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`allowed-unused-imports` doesn't work for top-level modules</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19664">#19664</a>
+        opened by <a href="https://github.com/zeevro">@zeevro</a>
+        on 2025-07-31 17:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zeevro">@zeevro</a> on 2025-07-31 17:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-console">$ ruff version
+ruff 0.12.7
+
+$ ruff check --isolated --config 'lint.pyflakes.allowed-unused-imports = [&quot;os&quot;]' &lt;(echo 'import os')
+/dev/fd/63:1:8: F401 [*] `os` imported but unused
+  |
+1 | import os
+  |        ^^ F401
+  |
+  = help: Remove unused import: `os`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+
+$ ruff check --isolated --config 'lint.pyflakes.allowed-unused-imports = [&quot;os&quot;]' &lt;(echo 'import os.path')
+/dev/fd/63:1:8: F401 [*] `os.path` imported but unused
+  |
+1 | import os.path
+  |        ^^^^^^^ F401
+  |
+  = help: Remove unused import: `os.path`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+
+$ ruff check --isolated --config 'lint.pyflakes.allowed-unused-imports = [&quot;os.path&quot;]' &lt;(echo 'import os.path')
+All checks passed!
+
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-31 19:12</div>
+            <div class="timeline-body"><p>Wow, thanks for the report! I started trying to bisect this, but I couldn't find any version of Ruff where this worked, despite the examples in the <a href="https://docs.astral.sh/ruff/settings/#lint_pyflakes_allowed-unused-imports">documentation</a>:</p>
+<blockquote>
+<p>Modules in this list are expected to be fully-qualified names (e.g., hvplot.pandas). Any submodule of a given module will also be ignored (e.g., given hvplot, hvplot.pandas will also be ignored).</p>
+</blockquote>
+<p>I only found one test for this setting too, and it only checks the submodule case, which kind of explains the oversight:</p>
+<p>https://github.com/astral-sh/ruff/blob/2617d56014076ab91c6c090090b0851898c3c4be/crates/ruff_linter/src/rules/pyflakes/mod.rs#L363-L371</p>
+<p>I think the issue is that this <code>QualifiedName</code> check doesn't account for the empty segment at the start of a non-dotted path:</p>
+<p>https://github.com/astral-sh/ruff/blob/2617d56014076ab91c6c090090b0851898c3c4be/crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs#L336-L339</p>
+<p>https://github.com/astral-sh/ruff/blob/2617d56014076ab91c6c090090b0851898c3c4be/crates/ruff_python_ast/src/name.rs#L229-L236</p>
+<p>Something like that, at least. I think I've run into that before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-31 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-07-31 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19632.html">astral-sh/ruff#19632</a> on 2025-08-01 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-08-02 01:55</div>
+            <div class="timeline-body"><p>Is the solution not this simple? I'm not sure if I'm missing something major, but based on some testing, this change appears to work for me:</p>
+<pre><code class="language-diff">- let allowed_unused_import = QualifiedName::from_dotted_name(allowed_unused_import);
++ let allowed_unused_import = QualifiedName::user_defined(allowed_unused_import);
+</code></pre>
+<p><em>Found in: <code>ruff_linter/src/rules/pyflakes/rules/unused_import.rs#L337</code></em></p>
+<hr />
+<p>When processing an allowed unused import like <code>&quot;os&quot;</code>, which lacks a dot, the method calls <code>Self::builtin(&quot;os&quot;)</code>. This generates a qualified name with the segments <code>[&quot;&quot;, &quot;os&quot;]</code>.</p>
+<p>However, an actual import statement like <code>import os.path</code> has a qualified name of <code>[&quot;os&quot;, &quot;path&quot;]</code>.</p>
+<p>The resulting comparison fails:</p>
+<ul>
+<li><strong>Import's Qualified Name:</strong> <code>[&quot;os&quot;, &quot;path&quot;]</code></li>
+<li><strong>Allowed Import's Qualified Name:</strong> <code>[&quot;&quot;, &quot;os&quot;]</code></li>
+<li><strong>Result:</strong> <code>[&quot;os&quot;, &quot;path&quot;].starts_with([&quot;&quot;, &quot;os&quot;])</code> returns <code>false</code>.</li>
+</ul>
+<p>By switching to <code>QualifiedName::user_defined(&quot;os&quot;)</code>, the allowed import's qualified name is correctly generated as <code>[&quot;os&quot;]</code>.</p>
+<p>This leads to the correct comparison:</p>
+<ul>
+<li><strong>Import's Qualified Name:</strong> <code>[&quot;os&quot;, &quot;path&quot;]</code></li>
+<li><strong>Allowed Import's Qualified Name:</strong> <code>[&quot;os&quot;]</code></li>
+<li><strong>Result:</strong> <code>[&quot;os&quot;, &quot;path&quot;].starts_with([&quot;os&quot;])</code> now returns <code>true</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-02 08:58</div>
+            <div class="timeline-body"><p>Nice analysis. That's quite possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20115.html">astral-sh/ruff#20115</a> on 2025-08-27 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-28 13:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

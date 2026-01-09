@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't enable pre-releases when `!=` is used with pre-release specifier - astral-sh/uv #6640</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't enable pre-releases when `!=` is used with pre-release specifier</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6640">#6640</a>
+        opened by <a href="https://github.com/Czaki">@Czaki</a>
+        on 2024-08-26 09:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Czaki">@Czaki</a> on 2024-08-26 09:03</div>
+            <div class="timeline-body"><p>In napari project, we use uv to provide constraints files in automatic jobs</p>
+<p>https://github.com/napari/napari/blob/35a99366f2a8ef5bcdbd6e1f874f5ca2a7572582/.github/workflows/upgrade_test_constraints.yml</p>
+<p>In the last run, the output contained bumping zarr to prerelease version</p>
+<p><img src="https://github.com/user-attachments/assets/c6865750-db80-431b-948f-4470e5c8a72b" alt="obraz" /></p>
+<p>even if we specify only lower bound constraint without any prerelease version: https://github.com/napari/napari/blob/35a99366f2a8ef5bcdbd6e1f874f5ca2a7572582/pyproject.toml#L143</p>
+<p>The whole command used for compilation is:</p>
+<pre><code>uv pip compile --python-version 3.12 --output-file napari_repo/resources/constraints/constraints_py3.12.txt napari_repo/pyproject.toml napari_repo/resources/constraints/version_denylist.txt --extra pyqt5 --extra pyqt6 --extra pyside2 --extra pyside6_experimental --extra testing --extra testing_extra --extra optional
+</code></pre>
+<p>Commit showing problem is here <a href="https://github.com/napari/napari/pull/7212/commits/c81b0d029abcf654897e0f94f0ed8cd98b3dcb72">napari/napari@<code>c81b0d0</code> (#7212)</a>
+And problematic line here <a href="https://github.com/napari/napari/pull/7212/commits/c81b0d029abcf654897e0f94f0ed8cd98b3dcb72#diff-9a3fb85151bc0704510dd99c7b9ada03b52f6f0f99a44bb34259af2089e2dc8bL549">napari/napari@<code>c81b0d0</code> (#7212)</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../napari/napari/pulls/7212.html">napari/napari#7212</a> on 2024-08-26 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 12:16</div>
+            <div class="timeline-body"><p>Thanks, we'll take a look!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-26 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-26 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 12:32</div>
+            <div class="timeline-body"><p>So, I think the problem is that <code>zarr!=3.0.0a0</code> is causing uv to think that pre-releases are acceptable for <code>zarr</code>, so it's then picking the newest version of <code>zarr</code>, which is <code>3.0.0a1</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 12:33</div>
+            <div class="timeline-body"><p>If I remove that line from <code>napari_repo/resources/constraints/version_denylist.txt</code>, it works as expected... (Also make sure you remove <code>resources/constraints/constraints_py3.12.txt</code> if it exists, since if <em>that</em> contains a pre-release, we'll continue using that pinned version.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2024-08-26 14:22</div>
+            <div class="timeline-body"><blockquote>
+<p>So, I think the problem is that <code>zarr!=3.0.0a0</code> is causing uv to think that pre-releases are acceptable for <code>zarr</code>, so it's then picking the newest version of <code>zarr</code>, which is <code>3.0.0a1</code>.</p>
+</blockquote>
+<p>oh. We are using this file also in pre-release tests.</p>
+<p>I there, any option to provide constraints, but without allowing to enable pre-release? to have a single source of problematic versions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-26 17:41</div>
+            <div class="timeline-body"><p>Does <code>--prereleases disallow</code> work? The default is <code>if-necessary-or-explicit</code> and these are &quot;explicit&quot; specifiers.</p>
+<p>https://docs.astral.sh/uv/reference/settings/#prerelease</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 17:58</div>
+            <div class="timeline-body"><p>Yeah I think <code>--prerelease disallow</code> (or <code>UV_PRERELEASE</code>, or in your <code>pyproject.toml</code>) would be the recommended solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-08-26 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-08-26 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-08-26 18:44</div>
+            <div class="timeline-body"><blockquote>
+<p>So, I think the problem is that <code>zarr!=3.0.0a0</code> is causing uv to think that pre-releases are acceptable for <code>zarr</code>, so it's then picking the newest version of <code>zarr</code>, which is <code>3.0.0a1</code>.</p>
+</blockquote>
+<p>FYI, the intent of the spec author is that <code>!=</code> should never imply a pre-release.</p>
+<p>I have a PR for packaging to match uv's behavior on <code>&lt;</code> and <code>&gt;</code>, which is part of the spec, but also explicitly test <code>!=</code> to not imply a pre-release: https://github.com/pypa/packaging/pull/794</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 18:45</div>
+            <div class="timeline-body"><p>Interesting, ok, we could change that. What do you think @zanieb? Seems reasonable to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-26 18:46</div>
+            <div class="timeline-body"><p>I think that's reasonable too, but low priority to change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-08-26 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2024-08-26 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-08-26 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv pip compile` result in prerelease version of package " to "Don't enable pre-releases when `!=` is used with pre-release specifier" by @charliermarsh on 2024-08-26 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 18:47</div>
+            <div class="timeline-body"><p>Retitled the issue and added <code>help-wanted</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/packaging/pulls/794.html">pypa/packaging#794</a> on 2024-08-26 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2024-08-27 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../napari/napari/pulls/7217.html">napari/napari#7217</a> on 2024-08-31 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../napari/napari/pulls/7305.html">napari/napari#7305</a> on 2024-09-30 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7974.html">astral-sh/uv#7974</a> on 2024-10-07 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-21 18:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

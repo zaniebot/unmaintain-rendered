@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Re-enable release artifacts for aarch64-unknown-linux-gnu - astral-sh/uv #4122</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Re-enable release artifacts for aarch64-unknown-linux-gnu</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4122">#4122</a>
+        opened by <a href="https://github.com/ofek">@ofek</a>
+        on 2024-06-07 01:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ofek">@ofek</a> on 2024-06-07 01:50</div>
+            <div class="timeline-body"><p>The binary release artifact <code>aarch64-unknown-linux-gnu</code> was unintentionally removed in <a href="https://github.com/astral-sh/uv/pull/3685">this PR</a> or one of the associated revert/revert-revert commits.</p>
+<p>This <a href="https://github.com/ofek/pyapp/issues/139">broke</a> at least PyApp and other scripts/tools that expect LLVM target names to exist as release artifacts (the provided installation scripts cannot be used or are undesirable in some circumstances).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ofek/pyapp/issues/139.html">ofek/pyapp#139</a> on 2024-06-07 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 02:32</div>
+            <div class="timeline-body"><p>This seems like a problem in PyApp? For example, our installer scripts successfully detect that the <code>musl</code> variant exists and uses that when the <code>gnu</code> variant doesn't exist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 02:33</div>
+            <div class="timeline-body"><p>To be clear, the <code>musl</code> variant should work just fine for you, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 02:34</div>
+            <div class="timeline-body"><p>To correct the issue summary: it was removed intentionally, since it wasn't needed anymore. It wasn't a mistake.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-06-07 02:35</div>
+            <div class="timeline-body"><p>Is there a reason to not ship a binary for that target i.e. if MUSL happened to work in other situations like on PowerPC would you also remove those artifacts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 02:38</div>
+            <div class="timeline-body"><p>No reason beyond that there isn't a clear reason to ship it -- we weren't using it anywhere. We don't upload it to PyPI, we don't use it in the installers, the musl variant works everywhere we need it to, so why build-and-upload it? You're welcome to make a case for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-06-07 02:43</div>
+            <div class="timeline-body"><p>I suppose I would like to get confirmation about the binary targets because this sets a precedent. Is it the policy that a binary must only be released as an artifact if it's used in a wheel or one of the installers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 02:53</div>
+            <div class="timeline-body"><p>We don't have a formal policy on it, it's not something we've had to consider before. We didn't think we had a reason to continue publishing the <code>gnu</code> variant once we stopped exposing ways for users to installer it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 03:01</div>
+            <div class="timeline-body"><p>It's not a big deal to re-add it (though I'll \cc @konstin for more opinions). We removed it under the assumption that no one was using it -- so if no one's using it, and it isn't being tested, why publish it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-06-07 03:08</div>
+            <div class="timeline-body"><p>I don't know if this helps but for the final release supporting both artifacts here are the download counts:</p>
+<p><img src="https://github.com/astral-sh/uv/assets/9677399/4dc736c2-7f7e-4be3-aa56-5239ceff59d5" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-07 03:13</div>
+            <div class="timeline-body"><p>I'm not sure that means anything though, e.g. for 0.2.6 the musl build was downloaded &gt;500 times. I think the vast majority of consumers of our GitHub release artifacts are using our installers which used gnu when it existed and happily use musl now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-07 07:45</div>
+            <div class="timeline-body"><p>Sorry for breaking pyapp, i didn't realize there were people depending on the artifacts directly.</p>
+<p>Comparing musl and gnu builds, the gnu build only works on glibc-based systems with at least the minimum gnu version of the build host, while the musl one works on both musl and glibc of all versions; effectively musl builds are a superset in compatibility over gnu builds. With only musl builds we get smaller releases on pypi with less artifacts. The main reason i haven't pushed for removing the gnu build altogether is the churn that would bring to something as badly testable as the release pipeline.</p>
+<p>Is there a reason for you to not always use the musl builds in pyapp?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4129.html">astral-sh/uv#4129</a> on 2024-06-07 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-06-07 13:30</div>
+            <div class="timeline-body"><p>Feel free to close this but just FYI this:</p>
+<blockquote>
+<p>i didn't realize there were people depending on the artifacts directly</p>
+</blockquote>
+<p>is concerning because this is the primary way UV is installed for enterprises/organizations that put emphasis on security. You never use an install script not even at a particular version, you download the artifact directly and verify its hash. This is true of all software I'm not just talking about UV.</p>
+<p>I definitely understand most downloads you see is from the install script but that is mostly from CI. CD systems use the approach I mentioned, at least in my experience 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 14:44</div>
+            <div class="timeline-body"><p>Thanks for your perspective Ofek, we will keep that in mind. (To be clear, the vast majority of our downloads, by three or four orders of magnitude, come from PyPI and related indexes.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-06-07 15:25</div>
+            <div class="timeline-body"><p>Oh I definitely believe that! I was just talking about the standalone binaries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 19:11</div>
+            <div class="timeline-body"><p>@ofek - Do you want the GNU releases to be re-added though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-06-07 19:43</div>
+            <div class="timeline-body"><p>That would be my preference but if that's not what you all want then you can close the issue of course.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-06-08 05:33</div>
+            <div class="timeline-body"><p>By the way, if you didn't want to re-add them, you don't need to rebuild them, you could literally just copy the MUSL release to the GNU names. Or just document that they work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-06-08 13:19</div>
+            <div class="timeline-body"><p>Copying sounds like a fine solution as all we care about is availability of an artifact that matches the default Rust/LLVM target.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4254.html">astral-sh/uv#4254</a> on 2024-06-11 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-11 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-06-12 04:17</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypi/support/issues/4260.html">pypi/support#4260</a> on 2024-06-20 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypi/support/issues/6640.html">pypi/support#6640</a> on 2025-06-12 22:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

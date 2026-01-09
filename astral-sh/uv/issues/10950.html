@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistent C/C++ Extension Build Behavior - astral-sh/uv #10950</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistent C/C++ Extension Build Behavior</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10950">#10950</a>
+        opened by <a href="https://github.com/austin2118ace">@austin2118ace</a>
+        on 2025-01-25 00:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/austin2118ace">@austin2118ace</a> on 2025-01-25 00:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have come across some interesting behavior using uv to build C/C++ extension modules in a package our lab is trying to use.</p>
+<p>For reference, this package is available with only <code>setup.py</code> and I have moved the pertinent fields into a <code>pyproject.toml</code> file. Since the <code>pyproject.toml</code> format does not support building extensions in a non-experimental manner, I have chosen to keep the <code>setup.py</code> alongside it to continue using the legacy build configuration.</p>
+<p>You can find the original repository <a href="https://github.com/j-friedrich/OASIS">here</a> and my slightly updated repository <a href="https://github.com/austin2118ace/OASIS-deconv">here</a>.</p>
+<h2>The Issue</h2>
+<p>There are several ways one can initiate the build of an external C/C++ extension. Traditionally, there are two main ways:</p>
+<ol>
+<li>Manually build the binary using <code>python setup.py build_ext -i</code> and then use <code>pip install .</code></li>
+<li>Use <code>pip install -e .</code> which will automatically invoke the build of the binary</li>
+</ol>
+<p>Both of these commands run as expected, and the module is importable and usable. In an attempt to learn more about uv and its features, I have been experimenting with installing and building this package with uv. When running <code>uv pip install .</code> the behavior is effectively identical to <code>pip install -e .</code> since uv installs package as editable by default. However, I have had some challenges successfully building the package using uv.</p>
+<h3>Successful Commands</h3>
+<ol>
+<li><code>uv sync</code>: Does not invoke the build of the c/c++ extension; however, I believe this is expected behavior as it imitates <code>pip install .</code> which does not invoke building the extension.</li>
+<li><code>uv pip install .</code> :builds and installs the package as expected</li>
+<li><code>uv build --sdist --wheel .</code>: This command behaves exactly as expected. It builds the extension and compiles everything into a wheel. The wheel can then successfully be installed using <code>pip install [path_to_wheel.whl]</code></li>
+</ol>
+<h3>Unsuccessful Command:</h3>
+<p><code>uv build</code>: This is the strange one. After consulting the documentation, I would expect this command to automatically determine the build back-end, create the isolated build environment, install the build dependencies, build the extension, and compile the wheel. However, running this command outright fails. You can see the build output in <a href="https://gist.github.com/austin2118ace/ba69589610dd2010332df4d3d08d10ff">this</a> gist within <code>uv_build.log</code>.
+This output does indicate what the issue is on line 69: <code>ValueError: 'oasis/oasis_methods.pyx' doesn't match any files</code></p>
+<p>So, to me (although I could be wrong) it seems like uv is not properly linking/copying the source file(s) into the temp build environment it creates. I further believe there is some more weirdness if you examine lines <code>7:11 and 21:25</code> where it complains about absolute paths being used when relative paths should be utilized.</p>
+<p>Leading off of this, I attempted to provide an absolute path in <code>setup.py</code> to the <code>.pyx</code> file which also resulted in a failed build due to the absolute path.</p>
+<p>I am curious if there is some inconsistency between how <code>uv build .</code> and <code>uv build --sdist --wheel .</code> are operating. Based on the documentation, I am lead to believe that <code>uv build .</code> should effectively be an alias for <code>uv build --sdist --wheel .</code></p>
+<blockquote>
+<p>By default, if passed a directory, uv build will build a source distribution (&quot;sdist&quot;) from the source directory, and a binary distribution (&quot;wheel&quot;) from the source distribution. <a href="https://docs.astral.sh/uv/reference/cli/#uv-build">uv build</a></p>
+</blockquote>
+<p>I'm curious on your thoughts. I can definitely use some of the successful methods, but wanted to bring what appeared to be an error to your attention. You can find the <code>pyproject.toml</code> and <code>setup.py</code> below.</p>
+<p>Thanks</p>
+<pre><code class="language-TOML">[project]
+name = &quot;oasis-deconv&quot;
+version = &quot;0.2.0&quot;
+description = &quot;Fast algorithm for deconvolution of neural calcium imaging traces&quot;
+authors = [
+    {name=&quot;Johannes Friedrich&quot;, email=&quot;johannes.friedrich@alleninstitute.org&quot;},
+]
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.5, &lt;=3.13&quot;
+dependencies = [
+    'numpy',
+    'scipy',
+    'matplotlib',
+]
+
+[build-system]
+requires = ['setuptools', 'wheel', 'Cython', 'numpy&gt;2']
+build-backend = &quot;setuptools.build_meta&quot;
+
+</code></pre>
+<pre><code class="language-python"># setup.py
+# run with:         python setup.py build_ext -i
+# clean up with:    python setup.py clean --all
+
+import numpy as np
+from setuptools.extension import Extension
+from setuptools import find_packages, setup
+from Cython.Build import cythonize
+
+ext_modules = [Extension(&quot;oasis.oasis_methods&quot;,
+                         sources=[&quot;oasis/oasis_methods.pyx&quot;],
+                         include_dirs=[np.get_include()],
+                         language=&quot;c++&quot;)]
+
+setup(name='oasis.oasis_methods',
+      ext_modules=cythonize(ext_modules,compiler_directives={'cdivision': True}),
+)
+
+
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 5.15.167.4-microsoft-standard-WSL2 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.5.14</p>
+<h3>Python version</h3>
+<p>Python 3.10.16</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @austin2118ace on 2025-01-25 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-25 00:16</div>
+            <div class="timeline-body"><p><code>uv build .</code> is slightly different than <code>uv build --sdist --wheel .</code>. The former builds an sdist, then builds the wheel from the sdist. The latter builds an sdist from source, and then a wheel from source.</p>
+<p>I'd suggest trying the same commands with <a href="https://github.com/pypa/build"><code>pypa/build</code></a> to determine whether it's a problem with uv, or a problem with your package / backend, since that's basically the &quot;canonical&quot; spec. If you see the same behavior with <code>pypa/build</code>, then we can focus on figuring out what's wrong in your build setup. If you see different behavior, we can focus on what's wrong with uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/austin2118ace">@austin2118ace</a> on 2025-01-25 16:30</div>
+            <div class="timeline-body"><blockquote>
+<p>@charliermarsh ...</p>
+</blockquote>
+<p>Hi Charlie, wow thank you for pointing that out; that is quite the subtle difference in wording. Could you give me a very brief tl;dr on the difference or point me out to some docs where the difference is explained?</p>
+<p>I can confirm the behavior of <code>pypa/build</code> is the same as I described above. So I need to spend some time trying to figure out why <code>python -m build | uv build </code> fails whereas <code>python -m build --sdist --wheel | uv build --sdist --wheel</code> works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-25 17:04</div>
+            <div class="timeline-body"><p>Building from a wheel from the source distribution (sdist) instead of from the source tree (the working directory) is best practice because it ensures your sdist can be properly built by consumers. The most notable practical difference is that if files needed for the build are not properly included in the sdist they'll be missing and cause a failure — from a skim of your issue, it seems like you're encountering this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/austin2118ace">@austin2118ace</a> on 2025-01-25 17:44</div>
+            <div class="timeline-body"><blockquote>
+<p>@zanieb @charliermarsh  ...</p>
+</blockquote>
+<p>Yup, that was the problem. I didn't realize the difference between building from the source tree and source distribution and explicitly including the non-python file.</p>
+<p>The solution is to either:</p>
+<ol>
+<li>Include a <code>MANIFEST.in</code> with the line <code>include oasis/*.pyx</code> in the root so <code>setuptools</code> knows to include it in the <code>sdist</code></li>
+<li>Include the following lines in the <code>pyproject.toml</code> to achieve the same end result</li>
+</ol>
+<pre><code class="language-TOML">
+[tool.setuptools.package-data]
+oasis = [&quot;*.pyx&quot;]
+
+</code></pre>
+<p>I have confirmed both work with <code>python -m build</code> and <code>uv build</code>
+Thank you both for the help! Glad to know this wont entail extra work on your end lol.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @austin2118ace on 2025-01-25 17:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

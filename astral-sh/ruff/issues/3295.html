@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid autoremoval of imported pytest fixtures - astral-sh/ruff #3295</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid autoremoval of imported pytest fixtures</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3295">#3295</a>
+        opened by <a href="https://github.com/peterroelants">@peterroelants</a>
+        on 2023-03-01 19:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/peterroelants">@peterroelants</a> on 2023-03-01 19:35</div>
+            <div class="timeline-body"><p>Currently imported pytest fixtures are removed by the ruff autoremoval feature (unused import). After running ruff my tests fail because the fixtures are removed.</p>
+<p>Example</p>
+<pre><code class="language-python">from fixtures import some_fixture # reported as unused and removed
+
+def test_something(some_fixture):
+    assert something
+</code></pre>
+<p>Tested on <code>ruff 0.0.253</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-01 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-03-01 19:57</div>
+            <div class="timeline-body"><p>Why do you import the fixture? It shouldn't be needed generally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterroelants">@peterroelants</a> on 2023-03-01 20:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Why do you import the fixture? It shouldn't be needed generally.</p>
+</blockquote>
+<p>It's not in a conftest.py file, it's in a separate library.
+If I don't import in this case, my tests don't work anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-01 20:04</div>
+            <div class="timeline-body"><p>I'm admittedly not familiar enough with <code>pytest</code> to know what to do here. How does <code>some_fixture</code> end up getting used? Because it has the same name as the function argument?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-03-01 20:05</div>
+            <div class="timeline-body"><blockquote>
+<p>It's not in a conftest.py file, it's in a separate library.
+If I don't import in this case, my tests don't work anymore.</p>
+</blockquote>
+<p>The usual pattern is to use <code>pytest_plugins</code> to enable them:</p>
+<pre><code class="language-python"># conftest.py
+
+pytest_plugins = (&quot;my_library.pytest_plugin&quot;,)
+</code></pre>
+<p>https://docs.pytest.org/en/7.1.x/how-to/plugins.html#requiring-loading-plugins-in-a-test-module-or-conftest-file</p>
+<blockquote>
+<p>I'm admittedly not familiar enough with <code>pytest</code> to know what to do here. How does <code>some_fixture</code> end up getting used? Because it has the same name as the function argument?</p>
+</blockquote>
+<p>Yup. Pytest does dependency injection based on the function name. You can also override the fixture name in the decorator call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterroelants">@peterroelants</a> on 2023-03-01 20:06</div>
+            <div class="timeline-body"><blockquote>
+<p>The usual pattern is to use <code>pytest_plugins</code> to enable them:</p>
+</blockquote>
+<p>I'm using workarounds, e.g. <code>pytest_plugins = []</code> or just asserting that <code>some_fixture</code> is there. But it's still valid code which is turned into non-working code after running ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-03-01 20:31</div>
+            <div class="timeline-body"><p>@edgarrmondragon's suggested solution is not really a workaround, it's preferred way to do it, because importing fixtures might lead to subtle problems. pytest docs recommend against importing fixtures: https://docs.pytest.org/en/7.2.x/how-to/fixtures.html#using-fixtures-from-other-projects</p>
+<p>I understand your concern about ruff breaking code, but since it points to a real problem IMO ruff should not add special code for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterroelants">@peterroelants</a> on 2023-03-01 21:02</div>
+            <div class="timeline-body"><blockquote>
+<p>but since it points to a real problem IMO ruff should not add special code for it.</p>
+</blockquote>
+<p>I've been thinking and I agree. Ruff should not concern it with the intricacies of pytest. Thanks for the discussion and references, I will close the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @peterroelants on 2023-03-01 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4046.html">astral-sh/ruff#4046</a> on 2023-04-20 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2044.html">astral-sh/ruff#2044</a> on 2023-07-05 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emosenkis">@emosenkis</a> on 2023-08-09 18:43</div>
+            <div class="timeline-body"><p>I'm a little confused by this conclusion - pytest's docs only recommend against importing fixtures from <em>other</em> projects. Is there any recommendation against importing fixtures from elsewhere in your own project? Likewise, <code>F811</code> gets triggered anytime a fixture is used in the same file that defines it. AFAIK, this is an accepted pattern for defining fixtures that are not broadly useful outside of a single test module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-09 18:45</div>
+            <div class="timeline-body"><p>I agree this is a common pattern e.g. https://github.com/PrefectHQ/prefect/blob/16f46ca49838cbdb250d113bb149f13ca819302d/tests/conftest.py#L68-L78</p>
+<p>I'm not sure it's feasible for Ruff to address this though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10662.html">astral-sh/ruff#10662</a> on 2024-03-30 00:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mistercrunch">@mistercrunch</a> on 2024-04-23 20:46</div>
+            <div class="timeline-body"><p>I'm fine with the verdict, but wanted to add a note +1 in issues I hit while trying to enable ruff on https://github.com/apache/superset , somehow we've been using this import pattern across the 1700 test modules ...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AntiSol">@AntiSol</a> on 2024-06-14 03:35</div>
+            <div class="timeline-body"><p>I have to say I agree with @emosenkis on this one, the conclusion reached here doesn't make much sense to me at all.</p>
+<p>as @emosenkis points out, the dox linked to only recommend against importing fixtures from other <em>projects</em>, it makes no mention of importing from other modules in the same project. The documentation linked to also mentions only &quot;minor consequences&quot;, not anything severe - to my reading importing from another module is fine.</p>
+<p>Further, in my case adding the fixture in question to conftest rather than leaving it where it is currently defined would cause a circular import - that's why it's defined where it is, e.g:</p>
+<p>conftest.py:</p>
+<pre><code class="language-python">
+...
+
+def some_helper():
+    some_logic_here(thing_defined_in_conftest)
+    something = more_logic(other_thing_defined_in_conftest)
+    return something
+
+</code></pre>
+<p>test_thing.py:</p>
+<pre><code class="language-python">
+from thing import Thing
+from conftest import some_helper
+
+@fixture(scope='function')
+def my_thing() -&gt; Thing:
+    something = some_helper()
+    other_logic_here()
+    return Thing()
+   
+</code></pre>
+<p>test_other_thing.py:</p>
+<pre><code class="language-python">
+from thing import Thing
+from test_thing import my_thing
+
+def test_something(my_thing:Thing)
+    some_logic()
+    do_things_with(my_thing)
+    assert things_about(my_thing)
+</code></pre>
+<p>In this case the <code>some_helper</code> function could be moved out of conftest, but since it uses a bunch of things which are defined in conftest, wherever I move it to would also still need to import conftest (presumably inside the <code>some_helper</code> function, to avoid circular imports, something that's ugly and will <a href="https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file/">trip its own warning</a>). Another option could potentially be to duplicate the fixture in multiple files, a violation of DRY. It seems clear to me that best practice is to import the fixture from the other file where it is defined.</p>
+<p>I think ruff should be addressing this, and as far as I can see it shouldn't be too difficult to do - all you need to do is find the definition for any unused items which are being imported and see if they're wrapped by a pytest @fixture decorator before removing them.</p>
+<p>I intend to continue importing my fixtures from other modules in line with best practice, unless someone can suggest a better/cleaner alternative. I'll have to consider whether to turn off the 'remove unused imports' option until such time as this code-breaking behaviour is changed :cry:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-14 03:50</div>
+            <div class="timeline-body"><p>Hmm. I'm pretty hesitant to re-implement pytest logic in Ruff directly, which is effectively what we'd be doing here. We also don't support doing that kind of lookup across files right now so we couldn't support it even if we wanted to (though we could in the future once we've shipped multi-file analysis and type inference). E.g., in this case, we have no way of knowing that that <code>my_thing</code> is wrapped in a fixture:</p>
+<pre><code class="language-python">from thing import Thing
+from test_thing import my_thing
+
+def test_something(my_thing:Thing)
+    some_logic()
+    do_things_with(my_thing)
+    assert things_about(my_thing)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AntiSol">@AntiSol</a> on 2024-06-14 04:16</div>
+            <div class="timeline-body"><p>Thanks for the quick response :)</p>
+<p>You'd have to go find the definition for <code>my_thing</code> and figure out whether it's wrapped in the fixture decorator. I suppose that could be one of those &quot;harder than it sounds&quot; problems.</p>
+<p>I suppose a less-automagic and less-complicated fix would be to allow me to maintain a list of imports which are allowed to be unused, i.e something like this in pyproject.toml:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+ignore_unused_imports = [
+    'my_thing', # or maybe 'test_thing.my_thing'?
+]
+</code></pre>
+<p>maybe something like <code>f401_ignorelist</code> would be a better name :shrug:</p>
+<p>Something like this would also generalise: i.e it allows fixing this issue for things other than pytest fixtures that have the same problem (I can see it being an issue for anything that uses dependency injection using a similar pattern to pytest), without either littering my code with #noqa's, or turning off F401 altogether (which is what I have reluctantly done).</p>
+<p>and as a bonus I could write a thing to find all my fixtures and add them in here, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanv">@stefanv</a> on 2024-06-21 19:22</div>
+            <div class="timeline-body"><p>Just to re-iterate on the point made above: this takes <em>working</em> code and breaks it. I think Ruff should, as a matter of principle, never do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../a16z/halmos/pulls/354.html">a16z/halmos#354</a> on 2024-08-26 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pelson">@pelson</a> on 2024-10-21 08:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm pretty hesitant to re-implement pytest logic in Ruff directly</p>
+</blockquote>
+<p>I fully understand that! As a data-point, I note that PyCharm must have also re-implemented the logic, as it is able to determine which fixtures are used and which aren't (screenshot to show coloring):</p>
+<p><img src="https://github.com/user-attachments/assets/a43c926c-f2cf-4913-bc13-08086a38e01a" alt="screenshot_of_fixture_code" /></p>
+<p>As already highlighted, the workaround cited from the <code>pytest</code> docs is not apply to local imports (from my reading at least), and furthermore cannot be applied in general if there are fixtures in the test suite of the same name but intended for different sub-package context (for example, I have a fixture called <code>client</code> which is a different type of client depending on which sub-package I am testing). This is because <code>conftest.py</code>'s <code>pytest_plugins</code> option can <em>only</em> be used at the top level (https://docs.pytest.org/en/stable/deprecations.html#pytest-plugins-in-non-top-level-conftest-files).</p>
+<p>A workaround that hasn't been mentioned yet is to re-export the imports to trick <code>ruff</code> into thinking you are declaring the fixture as part of the public interface.</p>
+<p>So:</p>
+<pre><code>from fixtures import some_fixture # reported as unused and removed
+
+def test_something(some_fixture):
+    assert something
+</code></pre>
+<p>Becomes:</p>
+<pre><code>from fixtures import some_fixture as some_fixture  # re-exported to avoid F401
+
+def test_something(some_fixture):
+    assert something
+</code></pre>
+<blockquote>
+<p>Just to re-iterate on the point made above: this takes working code and breaks it. I think Ruff should, as a matter of principle, never do that.</p>
+</blockquote>
+<p>Whilst I appreciate the idea, I find this view to be a bit too extreme - since imports can have side-effects (even though they shouldn't) then you can <em>never</em> consider any import to be a safe fix removal. The same applies for importing in order to expose an interface - in practice <code>ruff</code> has converged on re-exporting as the solution to avoid such &quot;breaking&quot; fixes (or you use <code>__all__</code> (which ruff also understands)), and my impression is that this is good enough in most cases. In other words, the benefit of automatically removing unused imports is worth the cost of having to re-export imports with side-effects, in <em>most cases</em>.</p>
+<p>One option that <code>ruff</code> may be able to do would be to split &quot;mostly safe&quot; from &quot;probably unsafe&quot; fixes. It could do this by identifying the imported target (if it exists) and determining if this target name is used as an argument in any function defined in the file. Having looked at the behaviour of <code>pytest</code> fixtures, I believe this would be consistent with how they work and doesn't require any multi-file analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-poetry/poetry/pulls/9748.html">python-poetry/poetry#9748</a> on 2024-11-01 10:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dynamicalsystem">@dynamicalsystem</a> on 2024-11-07 04:57</div>
+            <div class="timeline-body"><blockquote>
+<p>A workaround that hasn't been mentioned yet is to re-export the imports to trick <code>ruff</code> into thinking you are declaring the fixture as part of the public interface.</p>
+<pre><code class="language-python">from fixtures import some_fixture # reported as unused and removed
+
+def test_something(some_fixture):
+    assert something
+</code></pre>
+<p>Becomes:</p>
+<pre><code class="language-python">from fixtures import some_fixture as some_fixture  # re-exported to avoid F401
+
+def test_something(some_fixture):
+    assert something
+</code></pre>
+</blockquote>
+<p>What would stop Ruff making this a linting rule? Is it able to identify the import as a fixture and apply the export if missing? If so, why can't it ignore F401 if it identifies the import as a fixture?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14539.html">astral-sh/ruff#14539</a> on 2024-11-22 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pelson">@pelson</a> on 2025-01-29 16:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it able to identify the import as a fixture and apply the export if missing?</p>
+</blockquote>
+<p>I think this relates to the point that @charliermarsh was making in https://github.com/astral-sh/ruff/issues/3295#issuecomment-2167159143. Namely, that requires inference to determine that the imported thing is a fixture.</p>
+<p>The workaround I proposed above still feels to me like a bit of a workaround. I wonder if <a href="https://github.com/astral-sh/ruff/issues/3295#issuecomment-2425912707">the heuristic that I suggested</a> might just be good enough to address the majority of cases:</p>
+<blockquote>
+<p>One option that ruff may be able to do would be to split &quot;mostly safe&quot; from &quot;probably unsafe&quot; fixes. It could do this by identifying the imported target (if it exists) and determining if this target name is used as an argument in any function defined in the file.</p>
+</blockquote>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

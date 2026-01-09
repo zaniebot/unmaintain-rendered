@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid showing `Updating...` for no-op Git operations like checkout of immutable references - astral-sh/uv #12746</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid showing `Updating...` for no-op Git operations like checkout of immutable references</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12746">#12746</a>
+        opened by <a href="https://github.com/sbidoul">@sbidoul</a>
+        on 2025-04-08 15:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sbidoul">@sbidoul</a> on 2025-04-08 15:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Assume this requirements.txt:</p>
+<pre><code>pip-test-package @ git+https://github.com/pypa/pip-test-package@5547fa909e83df8bd743d3978d6667497983a4b7
+</code></pre>
+<p><code>uv pip install -r requirements.txt</code> systematically shows <code>Updating https://github.com/pypa/pip-test-package (5547fa909e83df8bd743d3978d6667497983a4b7)</code></p>
+<p>Since this is an immutable commit sha, I expect this to be cached and the git update to be avoided on subsequent invocations.</p>
+<p>I am under the impression that this is a regression (possibly a couple of months old), but I am not sure. If it would help I can try to bisect.</p>
+<h3>Platform</h3>
+<p>linux</p>
+<h3>Version</h3>
+<p>0.6.13</p>
+<h3>Python version</h3>
+<p>3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sbidoul on 2025-04-08 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-08 15:35</div>
+            <div class="timeline-body"><p><code>Updating https://github.com/pypa/pip-test-package (5547fa909e83df8bd743d3978d6667497983a4b7)</code> doesn't meant that it's fetching anything (necessarily). It just means that it's ensuring that the commit is checked out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbidoul">@sbidoul</a> on 2025-04-08 15:49</div>
+            <div class="timeline-body"><p>Yes, it is not rebuilding, but it is reaching to the network, right? My impression is that it did not do that before. And it ~should not~ could avoid it since the commit sha is immutable and cached.</p>
+<p>For a ~550 lines <code>requirements.txt</code> (from a <code>pip freeze</code>)  of which ~150 git refs, with a pre-installed venv and warm cache, <code>uv pip install -r requirements.txt --no-deps</code> runs in 6.8 sec. The same 400 non-git refs install in much less than one second.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbidoul">@sbidoul</a> on 2025-04-08 15:54</div>
+            <div class="timeline-body"><p>It also gives the feeling to be exponentially slower as it progresses through the git requirements. The presence or absence of <code>--no-deps</code> does not influence that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-08 16:13</div>
+            <div class="timeline-body"><p>No, it should not be reaching out to the network. But we can take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @zanieb on 2025-04-08 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-04-08 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @zanieb on 2025-04-08 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 17:09</div>
+            <div class="timeline-body"><pre><code>❯ echo &quot;pip-test-package @ git+https://github.com/pypa/pip-test-package@5547fa909e83df8bd743d3978d6667497983a4b7&quot; | uv pip compile -  
+...
+❯ echo &quot;pip-test-package @ git+https://github.com/pypa/pip-test-package@5547fa909e83df8bd743d3978d6667497983a4b7&quot; | uv pip compile - --offline
+    Updated https://github.com/pypa/pip-test-package (5547fa909e83df8bd743d3978d6667497983a4b7)
+Resolved 1 package in 27ms
+# This file was autogenerated by uv via the following command:
+#    uv pip compile - --offline
+pip-test-package @ git+https://github.com/pypa/pip-test-package@5547fa909e83df8bd743d3978d6667497983a4b7
+</code></pre>
+<p>It doesn't seem like it fetches?</p>
+<pre><code>❯ echo &quot;pip-test-package @ git+https://github.com/pypa/pip-test-package@5547fa909e83df8bd743d3978d6667497983a4b7&quot; | uv pip compile - --offline --no-cache
+   Updating https://github.com/pypa/pip-test-package (5547fa909e83df8bd743d3978d6667497983a4b7)                                                                                                                                 × Failed to download and build `pip-test-package @ git+https://github.com/pypa/pip-test-package@5547fa909e83df8bd743d3978d6667497983a4b7`
+  ├─▶ Git operation failed
+  ├─▶ failed to clone into: /var/folders/6p/k5sd5z7j31b31pq4lhn0l8d80000gn/T/.tmp6bbbma/git-v0/db/298ec4ed5e011efe
+  ├─▶ failed to fetch branch, tag, or commit `5547fa909e83df8bd743d3978d6667497983a4b7`
+  ╰─▶ Remote Git fetches are not allowed because network connectivity is disabled (i.e., with `--offline`)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-08 17:32</div>
+            <div class="timeline-body"><p>(I think we should avoid showing &quot;Updated&quot; in these cases, by the way.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 17:42</div>
+            <div class="timeline-body"><p>Seems kind of annoying, but doable 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> removed by @zanieb on 2025-04-08 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2025-04-08 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv pip install not caching immutable git refs" to "Avoid showing `Updating...` for no-op Git operations like checkout of immutable references" by @zanieb on 2025-04-08 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-04-08 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 17:43</div>
+            <div class="timeline-body"><p>Happy to address the performance concern too, if you can demonstrate it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbidoul">@sbidoul</a> on 2025-04-08 19:58</div>
+            <div class="timeline-body"><p>Ah, I found why it starts fast but then gets slower. Maybe it is not doing git fetches, but it seems it's doing GitHub API calls that are getting rate limited.</p>
+<p>With <code>uv -v pip install -r requirements.txt --no-deps</code> the first tens of git requirements go fast but then I see logs like this:</p>
+<pre><code>DEBUG Transient request failure for: https://api.github.com/repos/acsone/stock-logistics-workflow/commits/de85e5a9c39f02ba7a40bbc4ac42be81b3bfa241
+DEBUG GitHub API request failed for: https://api.github.com/repos/acsone/stock-logistics-workflow/commits/de85e5a9c39f02ba7a40bbc4ac42be81b3bfa241 (429 Too Many Requests)
+DEBUG Fetching source distribution from Git: https://github.com/acsone/stock-logistics-workflow.git
+DEBUG Acquired lock for `https://github.com/acsone/stock-logistics-workflow`
+DEBUG Updating Git source `https://github.com/acsone/stock-logistics-workflow.git`
+   Updating https://github.com/acsone/stock-logistics-workflow.git (de85e5a9c39f02ba7a40bbc4ac42be81b3bfa241)
+    Updated https://github.com/acsone/stock-logistics-workflow.git (de85e5a9c39f02ba7a40bbc4ac42be81b3bfa241)
+DEBUG Released lock at `/tmp/uvcache2/git-v0/locks/c2d863b829adef9c`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 20:05</div>
+            <div class="timeline-body"><p>Oh interesting, we should be skipping that?</p>
+<p>https://github.com/astral-sh/uv/blob/1ff7265e8af5b4db23d18ab4606765f2ad23809e/crates/uv-git/src/git.rs#L747-L784</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 20:06</div>
+            <div class="timeline-body"><p>I feel like @charliermarsh recently touched this in #10803 — not sure if it's relevant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12760.html">astral-sh/uv#12760</a> on 2025-04-08 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12761.html">astral-sh/uv#12761</a> on 2025-04-08 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 20:10</div>
+            <div class="timeline-body"><p>Let's track that bug in</p>
+<ul>
+<li>#12760</li>
+</ul>
+<p>and the general problem of 429s in</p>
+<ul>
+<li>#12761</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13033.html">astral-sh/uv#13033</a> on 2025-04-22 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13748.html">astral-sh/uv#13748</a> on 2025-06-09 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbidoul">@sbidoul</a> on 2025-06-15 10:46</div>
+            <div class="timeline-body"><p>I confirm this is resolved in 0.7.13, via #13748. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sbidoul on 2025-06-15 10:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

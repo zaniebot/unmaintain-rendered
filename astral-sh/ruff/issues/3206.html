@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`isort` need its own line-length configuration - astral-sh/ruff #3206</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`isort` need its own line-length configuration</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3206">#3206</a>
+        opened by <a href="https://github.com/KerberosMorphy">@KerberosMorphy</a>
+        on 2023-02-24 15:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KerberosMorphy">@KerberosMorphy</a> on 2023-02-24 15:04</div>
+            <div class="timeline-body"><p>I remove <code>isort</code> rules in my ruff configuration to use <code>isort</code> directly since it broke my config.</p>
+<p>I use 2 line-length, <code>110</code> for <code>black</code> and <code>79</code> for <code>isort</code>. I found it easier to read my import like that.</p>
+<pre><code class="language-toml">[tool.black]
+line-length = 110
+
+[tool.isort]
+line_length = 79
+</code></pre>
+<p>Based on the documentation, ruff use only a main <code>line-length</code> configuration to govern them all. I would really appreciate the ability to configure <code>line-length</code> per linter as:</p>
+<h3><code>isort</code></h3>
+<p><code>line-length</code></p>
+<p>The line length to use when enforcing <code>I001</code> violations.</p>
+<p><strong>Default value</strong>: Will use the <code>tool.ruff.line-length</code> configuration if not specified</p>
+<p><strong>Type</strong>: <code>int</code></p>
+<p><strong>Example usage</strong>:</p>
+<pre><code class="language-toml">[tool.ruff.isort]
+# Allow lines to be as long as 79 characters.
+line-length = 79
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-25 16:53</div>
+            <div class="timeline-body"><p>This isn't too hard to support, but if others are looking for this behavior, please chime in on the issue or react so we can gauge interest :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-02-25 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2023-03-01 00:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-03-04 04:48</div>
+            <div class="timeline-body"><p>I can try to take this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-04 15:00</div>
+            <div class="timeline-body"><p>I’m still a little torn on whether to include it. It will e.g. add complexity that we’d have to respect in the autoformatter in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-03-04 21:31</div>
+            <div class="timeline-body"><p>Up to you! I haven't looked at the implementation too seriously yet. Where does the complexity lie?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KerberosMorphy">@KerberosMorphy</a> on 2023-03-06 14:09</div>
+            <div class="timeline-body"><blockquote>
+<p>I’m still a little torn on whether to include it. It will e.g. add complexity that we’d have to respect in the autoformatter in the future.</p>
+</blockquote>
+<p>I understand your concern.</p>
+<p>@evanrittenhouse, example of added complexity to a future autoformater would be:</p>
+<ul>
+<li>If import line-length &gt; code line-length:<ul>
+<li>Do we raise a configuration error while parsing user ruff settings?</li>
+<li>Do we apply the shortest one regardless the user settings?</li>
+</ul>
+</li>
+<li>While autoformating:<ul>
+<li>Do we exclude import (including import inside a function) while applying code formatter?</li>
+<li>Do we apply code formatting and do a second pass to adjust import formatting?</li>
+</ul>
+</li>
+</ul>
+<p>I know W505 have it's own configuration for docstring <code>max-doc-length</code> but it don't have autofix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pyvista/pyvista/pulls/4170.html">pyvista/pyvista#4170</a> on 2023-03-22 04:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lachtanek">@lachtanek</a> on 2023-05-02 06:41</div>
+            <div class="timeline-body"><p>I can provide context where this would help: we have a legacy codebase where we've used Flake8 + Isort + Black for a long time now. Due to legacy reasons, we've configured Flake8 to use 120 line length instead of 80 or 88, so over the years the codebase sometimes has lines that long. Now we'd like to replace Flake8 + Isort with Ruff, but in that case we either have to set the line length to 88 (meaning we now have a lot of code to fix or add noqa to all of them - not really great), or set it to 120 (but in that case import autofix will reformat some imports to a single line and Black will reformat them back to multiple).
+We don't really want to increase the Black's line-length (since 120 is pretty long), but sometimes having the option to have longer lines is also useful (this is where B950 would come into play, if it were in Ruff).
+I hope this is useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/allisonkarlitskaya">@allisonkarlitskaya</a> on 2023-05-25 10:41</div>
+            <div class="timeline-body"><p>We also have a similar case: a lot of old code with long lines, but we want new code written to the new standard, and certainly <code>--fix</code> should never exceed the new standard.</p>
+<p>I was going to suggest another approach to this idea which I think would tackle the same use case: have a new toplevel setting called <code>max-line-length</code>, which is more or less specific to <code>E501</code>.  Then you could do:</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 88
+max-line-length = 200
+</code></pre>
+<p>which would cause things like isort's autoformatting to respect the (ideal) chosen length of 88 characters when wrapping, but will prevent E501 from complaining until things get over 200.</p>
+<p>By default, <code>max-line-length</code> would have the same value as <code>line-length</code> (ie: setting <code>line-length</code> would set both) but setting <code>max-line-length</code> on its own would leave <code>line-length</code> with its default value (88).</p>
+<p><em>edit: for now, in our project, we're just going to ignore <code>E501</code> out of hope that the problem doesn't get worse over time, and intent to fix it &quot;some day&quot;.  That's better than having excessively-wide import lines.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5009.html">astral-sh/ruff#5009</a> on 2023-06-10 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-12 16:18</div>
+            <div class="timeline-body"><p>Is it always the case that users are looking for an <code>isort</code> length that's <em>lower</em> than the standard line-length? Is it ever the case that folks want to allow import lines to be <em>longer</em>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sector119">@sector119</a> on 2023-06-13 17:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it always the case that users are looking for an <code>isort</code> length that's <em>lower</em> than the standard line-length? Is it ever the case that folks want to allow import lines to be <em>longer</em>?</p>
+</blockquote>
+<p>we want to allow import lines to be longer than code ones</p>
+<p>because with settings like this</p>
+<p>[tool.ruff.isort]
+force-single-line = true</p>
+<p>we got import lines like those below :(</p>
+<p>from epsilon_xmlrpc.app.services.account import (
+AccountServiceMultipleResultsFound,
+)
+from epsilon_xmlrpc.app.services.account import AccountServiceNoResultFound</p>
+<p>not like
+from epsilon_xmlrpc.app.services.account import AccountServiceMultipleResultsFound
+from epsilon_xmlrpc.app.services.account import AccountServiceNoResultFound</p>
+<p>How to keep those lines like that with black + ruff and line-length = 79 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5196.html">astral-sh/ruff#5196</a> on 2023-06-20 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-06-20 23:17</div>
+            <div class="timeline-body"><p>I would use this feature to ignore line length on imports by setting the value to 999.</p>
+<p><strong>Why do I want this?</strong></p>
+<p>https://github.com/astral-sh/ruff/issues/5196#issue-1764346812</p>
+<blockquote>
+<ol>
+<li>It takes a lot more vertical space than it needs to. The least the better.
+Imports are something we almost never have to even look at. They can be auto imported by the IDE, and unused imports can automatically be removed. Even when I have to manually add an import (almost always <code>from collections.abc</code> because of https://github.com/microsoft/pylance-release/issues/3318, I just type it anywhere and it automatically goes to the top and the file and sorted.</li>
+<li>The &quot;it reduces git conflicts&quot; argument is moot because:
+2.1. When there's a conflict, imports are easily autofixable by just &quot;accepting both&quot;, then running autofixes. Duplicates are automatically merged and unused are removed.
+2.2. Randomly wrapping or unwrapping imports because it just crossed the threshold does not help reduce git conflicts, which anyway are easily autofixable as mentioned previously.</li>
+<li>This just looks silly
+<img src="https://user-images.githubusercontent.com/1350584/246950730-64d04aec-1dea-494d-9d9c-552ced2a2f1d.png" alt="image" />
+<img src="https://user-images.githubusercontent.com/1350584/246950750-224582c0-0b8a-42f3-96c1-2e7b7522a9f0.png" alt="image" /></li>
+</ol>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6190.html">astral-sh/ruff#6190</a> on 2023-07-31 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rafaelclp">@rafaelclp</a> on 2023-08-15 00:18</div>
+            <div class="timeline-body"><p>I found https://github.com/astral-sh/ruff/issues/5196 while trying to migrate from pylint to ruff, but since that was closed as a duplicate to this one, I'm commenting here instead.</p>
+<p>My case is similar to the ones reported above, but I think it's worth adding because my import line literally cannot be broken into multiple lines - it's not just a matter of formatting preference.</p>
+<p>We never really looked at directory/file names, given auto-import solves imports for us. So, it's no surprise we ended up with some really long module paths. I have an import line that is too long and cannot be shortened, like this:</p>
+<pre><code class="language-python">from src.some_package.another_even_deeper_package.a_really_long_module_name_for_whatever_reason import (
+    TheThingWeWantToImport,
+)
+</code></pre>
+<p>Of course, we could add <code># noqa: E501</code>, but I consider this a regression in terms of productivity. While before we never had to care about <code>import</code> lines (due to auto-import creating them, and black+isort formatting and sorting them for us), with ruff we'd hit linter errors and would have to manually add <code># noqa</code> to some of those lines.</p>
+<p>Edit: to clarify, I'd like to keep code line-length at 88. Black will use that 88 to break import lines (with some lines ending up longer when it's not possible to break them further). I'd like ruff to then ignore the line-length check for the import lines. Having a <code>ignore-line-length-for-imports</code> config would be enough for my case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> removed by @charliermarsh on 2023-09-14 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kache">@Kache</a> on 2023-11-10 22:14</div>
+            <div class="timeline-body"><blockquote>
+<p>I would use this feature to ignore line length on imports by setting the value to 999 -- @Avasam</p>
+</blockquote>
+<blockquote>
+<p>Having a ignore-line-length-for-imports config would be enough for my case. -- @rafaelclp</p>
+</blockquote>
+<p>The related <code>isort</code> feature for that is <code>multi_line_output = 7</code>:
+https://pycqa.github.io/isort/docs/configuration/multi_line_output_modes.html#7-noqa</p>
+<p>Which I use for the same reasons and has a corresponding issue: #2600</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../cockpit-project/cockpit/issues/20168.html">cockpit-project/cockpit#20168</a> on 2024-03-13 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../huggingface/diffusers/pulls/7713.html">huggingface/diffusers#7713</a> on 2024-04-18 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../cockpit-project/cockpit/issues/20415.html">cockpit-project/cockpit#20415</a> on 2024-05-02 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11290.html">astral-sh/ruff#11290</a> on 2024-05-05 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-05 13:39</div>
+            <div class="timeline-body"><p>To recap, it's easy to implement this, but we can't really support the following use-case:</p>
+<p>isort line length is greater than global line length, and <code>E501</code> is enabled (we'd still raise &quot;line too long&quot; errors for imports that exceed the global line length). For example, if you want imports to wrap at 120 characters wide, but <code>E501</code> to be raised at 100 characters wide, we would still end up raising <code>E501</code> errors on imports that exceed 100 characters wide.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rwarren">@rwarren</a> on 2024-05-05 13:58</div>
+            <div class="timeline-body"><p>More context on why it would be nice to decouple the linter &quot;line too long&quot; <code>E501</code> threshold from the isort import wrapping setting (<code>line_length</code>)...</p>
+<p>This is for the specific case where <code>E501</code> linter warning length is greater than the isort <code>line_length</code> setting.  The opposite would definitely be a problem.... unless the isort wrap width just went to <code>min(isort.line_length, ruff.line_length)</code> to avoid such problems?</p>
+<p>Some notes;</p>
+<ul>
+<li><code>E501</code> should be there to catch lines deemed too long according to linter warning settings</li>
+<li>auto-formatting is different from linting, and rigidly coupling their settings (through the single global <code>line-length</code> setting) can cause problems</li>
+<li>I wrote up additional use-case rationale in #11290 (which is a duplicate of this one... oops) that I won't repeat here</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../cockpit-project/cockpit/issues/20621.html">cockpit-project/cockpit#20621</a> on 2024-06-27 04:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../OpenCTI-Platform/connectors/issues/3668.html">OpenCTI-Platform/connectors#3668</a> on 2025-03-24 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/21268.html">astral-sh/ruff#21268</a> on 2025-11-05 05:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

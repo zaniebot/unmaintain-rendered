@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv doesn't report crc errors with corrupted packages where pip does - astral-sh/uv #12618</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv doesn't report crc errors with corrupted packages where pip does</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12618">#12618</a>
+        opened by <a href="https://github.com/jabbera">@jabbera</a>
+        on 2025-04-02 03:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jabbera">@jabbera</a> on 2025-04-02 03:17</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Summary: uv pip install is not reporting corrupted packages. This resulted in a segfault trying to run my app. When installing with native pip a CRC failure is reported on install which made the issue extremely clear. I really don't know how long it would have taken for me to figure this out if I wasn't still using pip in my build pipeline.</p>
+<p>First osqp seems to have published a bad wheel (https://files.pythonhosted.org:443/packages/00/04/5959347582ab970e9b922f27585d34f7c794ed01125dac26fb4e7dd80205/osqp-1.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)</p>
+<p><img width="844" alt="Image" src="https://github.com/user-attachments/assets/5eee0751-c2d4-4d78-a0a8-71b68d50be8e" /></p>
+<p>When installing using pip with the following steps on an ubuntu vm:</p>
+<pre><code>python3.11 -m venv .venv
+source .venv/bin/activate
+pip install osqp==1.0.2 --no-cache
+</code></pre>
+<p>you get the following error:</p>
+<pre><code>Installing collected packages: numpy, MarkupSafe, joblib, scipy, jinja2, osqp
+ERROR: Exception:
+Traceback (most recent call last):
+  File &quot;/home/adminmike/.venv/lib/python3.11/site-packages/pip/_internal/cli/base_command.py&quot;, line 180, in exc_logging_wrapper
+    status = run_func(*args)
+             ^^^^^^^^^^^^^^^
+  File &quot;/home/adminmike/.venv/lib/python3.11/site-packages/pip/_internal/cli/req_command.py&quot;, line 245, in wrapper
+    return func(self, options, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/adminmike/.venv/lib/python3.11/site-packages/pip/_internal/commands/install.py&quot;, line 452, in run
+    installed = install_given_reqs(
+                ^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/adminmike/.venv/lib/python3.11/site-packages/pip/_internal/req/__init__.py&quot;, line 72, in install_given_reqs
+    requirement.install(
+  File &quot;/home/adminmike/.venv/lib/python3.11/site-packages/pip/_internal/req/req_install.py&quot;, line 856, in install
+    install_wheel(
+  File &quot;/home/adminmike/.venv/lib/python3.11/site-packages/pip/_internal/operations/install/wheel.py&quot;, line 725, in install_wheel
+    _install_wheel(
+  File &quot;/home/adminmike/.venv/lib/python3.11/site-packages/pip/_internal/operations/install/wheel.py&quot;, line 585, in _install_wheel
+    file.save()
+  File &quot;/home/adminmike/.venv/lib/python3.11/site-packages/pip/_internal/operations/install/wheel.py&quot;, line 384, in save
+    shutil.copyfileobj(f, dest)
+  File &quot;/usr/lib/python3.11/shutil.py&quot;, line 197, in copyfileobj
+    buf = fsrc_read(length)
+          ^^^^^^^^^^^^^^^^^
+  File &quot;/usr/lib/python3.11/zipfile.py&quot;, line 966, in read
+    data = self._read1(n)
+           ^^^^^^^^^^^^^^
+  File &quot;/usr/lib/python3.11/zipfile.py&quot;, line 1056, in _read1
+    self._update_crc(data)
+  File &quot;/usr/lib/python3.11/zipfile.py&quot;, line 984, in _update_crc
+    raise BadZipFile(&quot;Bad CRC-32 for file %r&quot; % self.name)
+zipfile.BadZipFile: Bad CRC-32 for file 'osqp/ext_builtin.cpython-311-x86_64-linux-gnu.so'
+</code></pre>
+<p>When doing the equivalent with uv:</p>
+<pre><code>uv venv --python=3.11
+source .venv/bin/activate
+uv pip install osqp==1.0.2 --reinstall
+</code></pre>
+<p>osqp installs successfully but when running my app I get this obscure runtime error:</p>
+<pre><code>Fatal Python error: Segmentation fault
+
+Current thread 0x00007f319247bc40 (most recent call first):
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 241 in _call_with_frames_removed
+  File &quot;&lt;frozen importlib._bootstrap_external&gt;&quot;, line 1233 in create_module
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 573 in module_from_spec
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 676 in _load_unlocked
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1147 in _find_and_load_unlocked
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1176 in _find_and_load
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1204 in _gcd_import
+  File &quot;/opt/hostedtoolcache/Python/3.11.11/x64/lib/python3.11/importlib/__init__.py&quot;, line 126 in import_module
+  File &quot;/agent/_work/_temp/.tox/test_gurobi/lib/python3.11/site-packages/osqp/interface.py&quot;, line 33 in algebra_available
+  File &quot;/agent/_work/_temp/.tox/test_gurobi/lib/python3.11/site-packages/osqp/interface.py&quot;, line 48 in default_algebra
+  File &quot;/agent/_work/_temp/.tox/test_gurobi/lib/python3.11/site-packages/osqp/interface.py&quot;, line 59 in default_algebra_module
+  File &quot;/agent/_work/_temp/.tox/test_gurobi/lib/python3.11/site-packages/osqp/interface.py&quot;, line 97 in construct_enum
+  File &quot;/agent/_work/_temp/.tox/test_gurobi/lib/python3.11/site-packages/osqp/interface.py&quot;, line 102 in &lt;module&gt;
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 241 in _call_with_frames_removed
+  File &quot;&lt;frozen importlib._bootstrap_external&gt;&quot;, line 940 in exec_module
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 690 in _load_unlocked
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1147 in _find_and_load_unlocked
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1176 in _find_and_load
+  File &quot;/agent/_work/_temp/.tox/test_gurobi/lib/python3.11/site-packages/osqp/__init__.py&quot;, line 4 in &lt;module&gt;
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 241 in _call_with_frames_removed
+  File &quot;&lt;frozen importlib._bootstrap_external&gt;&quot;, line 940 in exec_module
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 690 in _load_unlocked
+</code></pre>
+<h3>Platform</h3>
+<p>ubuntu 24.04</p>
+<h3>Version</h3>
+<p>0.6.11</p>
+<h3>Python version</h3>
+<p>3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jabbera on 2025-04-02 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-02 03:34</div>
+            <div class="timeline-body"><p>That’s surprising, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jabbera">@jabbera</a> on 2025-04-02 04:04</div>
+            <div class="timeline-body"><p>That async zip lib seems like it might be the dodgy bit. Seems like the maintainer might have gotten busy with other things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Qiskit/documentation/pulls/2922.html">Qiskit/documentation#2922</a> on 2025-04-02 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @zanieb on 2025-04-02 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12623.html">astral-sh/uv#12623</a> on 2025-04-02 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-04-02 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-04-06 21:00</div>
+            <div class="timeline-body"><p>With uv==0.6.12 I see we start hitting this somewhere in some build: <code>Bad CRC (got 9da8edae, expected 00000000) for file:</code></p>
+<p>I'll look into it more eventually, but <code>expected 00000000</code> is a little suspicious to me
+(the whl is maybe not fully public)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-04-06 23:03</div>
+            <div class="timeline-body"><p>Should the feature added in https://github.com/astral-sh/uv/pull/12623 be moved to be behind an env var for the time being given its seemingly breaking under some scenarios? e.g. <code>UV_CRC_MODE</code> with enforce, lax values? Defaulting to <code>lax</code> (previous behavior)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-07 00:48</div>
+            <div class="timeline-body"><p>Yeah, I think we should make this opt-in for now. PR welcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12694.html">astral-sh/uv#12694</a> on 2025-04-07 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12706.html">astral-sh/uv#12706</a> on 2025-04-07 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-04-07 03:18</div>
+            <div class="timeline-body"><p>Made a quick fix PR to make it opt-in https://github.com/astral-sh/uv/pull/12706, although just noticed #12694 so feel free to ignore this PR if there's a better short-term solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12722.html">astral-sh/uv#12722</a> on 2025-04-07 17:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

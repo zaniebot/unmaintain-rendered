@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ruff server] bug: LSP server crashes on initialization message - astral-sh/ruff #15901</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ruff server] bug: LSP server crashes on initialization message</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15901">#15901</a>
+        opened by <a href="https://github.com/peske">@peske</a>
+        on 2025-02-03 01:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/peske">@peske</a> on 2025-02-03 01:53</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>I'm working on a LSP client app. When I send initialization message that contains (among other things) the following <strong>client capabilities</strong>:</p>
+<pre><code class="language-json">&quot;capabilities&quot;: {
+    &quot;textDocument&quot;: {
+        &quot;documentSymbol&quot;: {
+            &quot;tagSupport&quot;: {}
+        }
+    }
+}
+</code></pre>
+<p>The server crashes with the following <code>stderr</code> output:</p>
+<pre><code>ruff failed
+
+Cause: invalid type: null, expected a sequence
+</code></pre>
+<p>It turned out that it requires <code>valueSet</code> property to be set, like:</p>
+<pre><code class="language-json">&quot;capabilities&quot;: {
+    &quot;textDocument&quot;: {
+        &quot;documentSymbol&quot;: {
+            &quot;tagSupport&quot;: {
+                &quot;valueSet&quot;: []
+            }
+        }
+    }
+}
+</code></pre>
+<p>This is bad for two reasons:</p>
+<ul>
+<li>It's <strong>not compliant</strong> to LSP standard, which allows <code>valueSet</code> to be <code>null</code>, as you can see at https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#documentSymbolClientCapabilities</li>
+<li>Even if the initialization message is invalid, it <strong>should not</strong> crash the server - instead it should properly respond with <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#responseError"><code>ResponseError</code></a>.</li>
+</ul>
+<pre><code class="language-console">$ ruff --version
+ruff 0.9.3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-03 04:08</div>
+            <div class="timeline-body"><p>Hey, thanks for the report and all the details.</p>
+<blockquote>
+<ul>
+<li>It's <strong>not compliant</strong> to LSP standard, which allows <code>valueSet</code> to be <code>null</code>, as you can see at https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#documentSymbolClientCapabilities</li>
+</ul>
+</blockquote>
+<p>I think it is compliant with the protocol as for the <code>tagSupport</code> object, the <code>valueSet</code> cannot be <code>nil</code>, it's the <code>tagSupport</code> itself that can be <code>nil</code>. So, the following should work:</p>
+<pre><code class="language-json">&quot;capabilities&quot;: {
+    &quot;textDocument&quot;: {
+        &quot;documentSymbol&quot;: {}
+    }
+}
+</code></pre>
+<p>Or, the one that you've provided where <code>valueSet</code> is added with an empty array.</p>
+<blockquote>
+<ul>
+<li>Even if the initialization message is invalid, it <strong>should not</strong> crash the server - instead it should properly respond with <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#responseError"><code>ResponseError</code></a>.</li>
+</ul>
+</blockquote>
+<p>Can you say why this is the case? Can you provide a reference to it if it's specified in the protocol? I can't seem to find anything related to error handling in the initialization request.</p>
+<p>One way to handle this would be to fallback to using the default client capabilities but that might be confusing to the users who might've provided server settings and will note that the behavior is different. Although that could be mitigated by providing a warning notification to the user that the client capabilities were incorrect and the server would use the default capabilities, thus the behavior of the server might not be as expected.</p>
+<p>Happy to hear your thoughts on this. I can look into what other servers does as well but I know for sure that <code>rust-analyzer</code> will also crash as it uses the same crate as us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2025-02-03 04:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-02-03 04:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peske">@peske</a> on 2025-02-03 13:23</div>
+            <div class="timeline-body"><p>About the first part - <code>tagSupport.valueSet</code> cannot be <code>null</code> - you're absolutely right! My mistake.</p>
+<p>About the second part - handling error during initialization - I don't know if <code>initialization</code> request is specifically mentioned for error handling. However, it is a general rule for <code>RequestMessage</code> -&gt; <code>ResponseMessage</code> flow. For this reason <code>ResponseMessage</code> has <code>error</code> property of type <code>ResponseError</code>. Isn't kinda obvious? The property probably wouldn't be there if the server should crash on every <em>bad request</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-03 14:13</div>
+            <div class="timeline-body"><p>I think terminating the server for a malformed initialized message seems reasonable. A more graceful way than panicking would be nice but I don't consider it too much of a priority because clients tend to behave well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-07 10:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potentially false positive for PERF402 with custom iterable objects - astral-sh/ruff #10322</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Potentially false positive for PERF402 with custom iterable objects</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10322">#10322</a>
+        opened by <a href="https://github.com/CoolCat467">@CoolCat467</a>
+        on 2024-03-11 01:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CoolCat467">@CoolCat467</a> on 2024-03-11 01:35</div>
+            <div class="timeline-body"><p>Potentially false positive for rule <code>PERF402</code> with custom iterable objects.</p>
+<p><code>test.py</code></p>
+<pre><code class="language-python3">async def test_nursery_stop_async_iteration() -&gt; None:
+    class it:
+        def __init__(self, count: int) -&gt; None:
+            self.count = count
+            self.val = 0
+
+        async def __anext__(self) -&gt; int:
+            await sleep(0)
+            val = self.val
+            if val &gt;= self.count:
+                raise StopAsyncIteration
+            self.val += 1
+            return val
+
+    class async_zip:
+        def __init__(self, *largs: it) -&gt; None:
+            self.nexts = [obj.__anext__ for obj in largs]
+
+        async def _accumulate(
+            self, f: Callable[[], Awaitable[int]], items: list[int], i: int
+        ) -&gt; None:
+            items[i] = await f()
+
+        def __aiter__(self) -&gt; async_zip:
+            return self
+
+        async def __anext__(self) -&gt; list[int]:
+            nexts = self.nexts
+            items: list[int] = [-1] * len(nexts)
+
+            try:
+                async with _core.open_nursery() as nursery:
+                    for i, f in enumerate(nexts):
+                        nursery.start_soon(self._accumulate, f, items, i)
+            except ExceptionGroup as e:
+                # With strict_exception_groups enabled, users now need to unwrap
+                # StopAsyncIteration and re-raise it.
+                # This would be relatively clean on python3.11+ with except*.
+                # We could also use RaisesGroup, but that's primarily meant as
+                # test infra, not as a runtime tool.
+                if len(e.exceptions) == 1 and isinstance(
+                    e.exceptions[0], StopAsyncIteration
+                ):
+                    raise e.exceptions[0] from None
+                else:  # pragma: no cover
+                    raise AssertionError(&quot;unknown error in _accumulate&quot;) from e
+
+            return items
+
+    result: list[list[int]] = []
+    async for vals in async_zip(it(4), it(2)):
+        result.append(vals)
+    assert result == [[0, 0], [1, 1]]
+</code></pre>
+<pre><code class="language-console">&gt; ruff check test.py --isolated --select PERF402
+test.py:52:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+Found 1 error.
+</code></pre>
+<pre><code class="language-console">&gt; ruff --version
+ruff 0.3.2
+</code></pre>
+<p>This error is unexpected to me, because we are using async iteration over an object that implements a custom iteration handler that as far as I'm aware can't be easily made to use <code>list()</code> or <code>list.copy()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CoolCat467">@CoolCat467</a> on 2024-03-11 02:05</div>
+            <div class="timeline-body"><p>This is fine actually, I just didn't know async list comprehensions existed!</p>
+<pre><code class="language-python3">result: list[list[int]] = [vals async for vals in async_zip(it(4), it(2))]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CoolCat467 on 2024-03-11 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10787.html">astral-sh/ruff#10787</a> on 2024-04-05 09:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

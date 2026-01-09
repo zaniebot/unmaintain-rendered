@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Are doubly-nested packages supported in a workspace? - astral-sh/uv #13298</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Are doubly-nested packages supported in a workspace?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13298">#13298</a>
+        opened by <a href="https://github.com/StefanSmith">@StefanSmith</a>
+        on 2025-05-05 07:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/StefanSmith">@StefanSmith</a> on 2025-05-05 07:38</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Does uv support workspace packages nested inside other (non-root) workspace packages? Note: I'm not asking about nested workspaces. I'm asking about scenarios involving a single workspace.</p>
+<p>For reasons related to code reuse, I want to define the following nested package structure</p>
+<pre><code>(workspace root) &gt; child &gt; grandchild1, grandchild2
+</code></pre>
+<p>From an empty directory, I can issue the following commands:</p>
+<pre><code>uv init --lib --no-readme root
+cd root
+uv init --lib --no-readme child
+cd child
+uv init --lib --no-readme grandchild1
+uv init --lib --no-readme grandchild2
+cd grandchild2
+uv add grandchild1
+</code></pre>
+<p>Everything works up until the last line, which outputs:</p>
+<pre><code>Using CPython 3.12.6
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because grandchild1 was not found in the package registry and your project depends on grandchild1, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<p>Running <code>uv lock --dry-run --verbose</code> from inside <code>grandchild2</code>, the workspace defined in the root package is <strong>not</strong> detected. Instead, the command outputs:</p>
+<pre><code>DEBUG uv 0.7.2 (481d05d8d 2025-04-30)
+DEBUG Project is contained in non-workspace project: `/private/var/folders/h6/n37ms9d553962m47nj3695s40000gp/T/tmp.Vv4Q1KoaRK/root/child`
+DEBUG Found workspace root: `/private/var/folders/h6/n37ms9d553962m47nj3695s40000gp/T/tmp.Vv4Q1KoaRK/root/child/grandchild2`
+DEBUG Adding root workspace member: `/private/var/folders/h6/n37ms9d553962m47nj3695s40000gp/T/tmp.Vv4Q1KoaRK/root/child/grandchild2`
+...
+</code></pre>
+<p>Conversely, if I run <code>uv lock --dry-run --verbose</code> from inside <code>child</code>, the correct workspace is detected and the command outputs:</p>
+<pre><code>DEBUG uv 0.7.2 (481d05d8d 2025-04-30)
+DEBUG Found workspace root: `/private/var/folders/h6/n37ms9d553962m47nj3695s40000gp/T/tmp.Vv4Q1KoaRK/root`
+DEBUG Adding root workspace member: `/private/var/folders/h6/n37ms9d553962m47nj3695s40000gp/T/tmp.Vv4Q1KoaRK/root`
+DEBUG Adding discovered workspace member: `/private/var/folders/h6/n37ms9d553962m47nj3695s40000gp/T/tmp.Vv4Q1KoaRK/root/child`
+DEBUG Adding discovered workspace member: `/private/var/folders/h6/n37ms9d553962m47nj3695s40000gp/T/tmp.Vv4Q1KoaRK/root/child/grandchild1`
+DEBUG Adding discovered workspace member: `/private/var/folders/h6/n37ms9d553962m47nj3695s40000gp/T/tmp.Vv4Q1KoaRK/root/child/grandchild2`
+...
+</code></pre>
+<p>Note that, if run from the root directory, certain commands work as expected. For example, running <code>uv tree</code> from the root directory outputs:</p>
+<pre><code>Resolved 4 packages in 12ms
+root v0.1.0
+grandchild2 v0.1.0
+grandchild1 v0.1.0
+child v0.1.0
+</code></pre>
+<p>And running <code>uv add --package child grandchild1</code> also works:</p>
+<pre><code>Resolved 4 packages in 3ms
+      Built child @ file:///private/var/folders/h6/n37ms9d553962m47nj3695s40000gp/T/tmp.Vv4Q1KoaRK/root/child
+Prepared 1 package in 440ms
+Uninstalled 1 package in 0.67ms
+Installed 2 packages in 13ms
+ ~ child==0.1.0 (from file:///private/var/folders/h6/n37ms9d553962m47nj3695s40000gp/T/tmp.Vv4Q1KoaRK/root/child)
+ + grandchild1==0.1.0 (from file:///private/var/folders/h6/n37ms9d553962m47nj3695s40000gp/T/tmp.Vv4Q1KoaRK/root/child/grandchild1)
+</code></pre>
+<p>On the other hand, running <code>uv add --package grandchild1 child</code> fails with the following output:</p>
+<pre><code>error: Failed to generate package metadata for `grandchild1==0.1.0 @ editable+child/grandchild1`
+  Caused by: Failed to parse entry: `child`
+  Caused by: `child` references a workspace in `tool.uv.sources` (e.g., `child = { workspace = true }`), but is not a workspace member
+</code></pre>
+<p>Should I conclude that, at present, <code>uv</code> only supports packages nested inside the workspace root package but not deeper?</p>
+<h3>Platform</h3>
+<p>macOs 14 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.2 (481d05d8d 2025-04-30)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @StefanSmith on 2025-05-05 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-05-05 09:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-05-05 09:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @konstin on 2025-05-05 09:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-05 09:49</div>
+            <div class="timeline-body"><p>We should fix the behavior here in either direction: Either we allow nested projects by changing how workspace discovery works from grandchildren, or we ban it or enforce that from the root, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/StefanSmith">@StefanSmith</a> on 2025-05-16 10:20</div>
+            <div class="timeline-body"><p>Is there an ETA for deciding which way to go on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-16 10:59</div>
+            <div class="timeline-body"><p>We cannot give an ETAs on this.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

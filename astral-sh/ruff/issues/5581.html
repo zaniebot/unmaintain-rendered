@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive for PERF401 when conditional depends on list being appended - astral-sh/ruff #5581</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive for PERF401 when conditional depends on list being appended</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5581">#5581</a>
+        opened by <a href="https://github.com/dosisod">@dosisod</a>
+        on 2023-07-07 06:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dosisod">@dosisod</a> on 2023-07-07 06:49</div>
+            <div class="timeline-body"><p>The following code cannot be re-written as a comprehension. It's a pretty common idiom (from my experience) to remove duplicates from an array while maintaining the order, keeping the first duplicate.</p>
+<pre><code class="language-python">copy: list[int] = []
+
+for i in [1, 1, 2, 2, 3, 3]:
+    if i not in copy:
+        copy.append(i)
+
+print(copy)  # [1, 2, 3]
+</code></pre>
+<p>Since <code>copy</code> is being appended to, you cannot use it the conditional branch of a comprehension:</p>
+<pre><code class="language-python">copy = [i for i in [1, 1, 2, 2, 3, 3] if i not in copy]  # error, copy is not defined
+</code></pre>
+<p>If <code>i</code> is a hashable type, you could use this instead of a comprehension:</p>
+<pre><code class="language-python">nums = [1, 1, 2, 2, 3, 3]
+copy = list(dict.fromkeys(nums))
+
+print(copy)  # [1, 2, 3]
+</code></pre>
+<p>Though if you're iterating over non-hashable types (which is the case for me), <code>dict.fromkeys()</code> won't work.</p>
+<p>Ruff output from first example:</p>
+<pre><code>$ ruff file.py
+file.py:5:9: PERF401 Use a list comprehension to create a transformed list
+</code></pre>
+<p>Ruff version:</p>
+<pre><code>$ ruff --version
+ruff 0.0.277
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-07-07 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-07 13:58</div>
+            <div class="timeline-body"><p>Hmm, makes sense. We can fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2023-07-08 05:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5603.html">astral-sh/ruff#5603</a> on 2023-07-08 06:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-09 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6210.html">astral-sh/ruff#6210</a> on 2023-07-31 20:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

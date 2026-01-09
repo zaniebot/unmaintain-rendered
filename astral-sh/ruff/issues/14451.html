@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Used --statistics option does hide the rule violations - astral-sh/ruff #14451</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Used --statistics option does hide the rule violations</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14451">#14451</a>
+        opened by <a href="https://github.com/ssbarnea">@ssbarnea</a>
+        on 2024-11-19 13:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2024-11-19 13:26</div>
+            <div class="timeline-body"><p>The fact that <code>ruff check --statistics</code> does disabled the output of effective line violations makes it impossible to us this as an addon option for improved output, especially when using ruff using as a pre-commit hook.</p>
+<p>If that was its initial intention, it was implemented wrongly because it should have being just <code>--output-format=statistics</code> if it replaces the output.</p>
+<p>This could be sorted by ensuring that <code>--statistics</code> does not affect the output format and that is output goes to stderr so it would not break tools that might process the standard output formats, which could be machine parseable.</p>
+<p>Story: As an user, I want to see some stats about found violations, after they are listed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2024-11-20 08:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-20 08:12</div>
+            <div class="timeline-body"><p>I understand your use case. But just writing to stderr is not necessarily a solution because <code>--statistics</code> also impacts other output formats.</p>
+<pre><code>❯ uvx ruff check . --statistics --output-format json &gt; output.json
+
+test on  main [$✘!?] via 🐍 v3.12.7 
+❯ bat output.json
+───────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       │ File: output.json
+───────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   1   │ [
+   2   │   {
+   3   │     &quot;code&quot;: &quot;I001&quot;,
+   4   │     &quot;name&quot;: &quot;unsorted-imports&quot;,
+   5   │     &quot;count&quot;: 6,
+   6   │     &quot;fixable&quot;: true
+   7   │   }
+   8   │ ]
+</code></pre>
+<p>I think the ask here is to make <code>--statistics</code> additive. Ruff should include the statistics in the output in addition to the individual diagnostics. But I'm not 100% sure about that. This requires fleshing out the UX first</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @MichaReiser on 2024-11-20 08:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

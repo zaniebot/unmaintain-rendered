@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support multiple top-level packages in `uv_build` - astral-sh/uv #14943</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support multiple top-level packages in `uv_build`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14943">#14943</a>
+        opened by <a href="https://github.com/johnthagen">@johnthagen</a>
+        on 2025-07-28 16:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/johnthagen">@johnthagen</a> on 2025-07-28 16:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We have been able to move most of our applications from <code>hatchling</code> to <code>uv_build</code> and would like to move the rest, but we are missing one feature: the ability to configure <code>uv_build</code> to install editable installs for multiple top level packages outside of a <code>src</code> directory.</p>
+<p>The is a feature supported by a number of build backends already, which I think signals that it's a much used feature.</p>
+<h3>Hatchling</h3>
+<pre><code class="language-toml">[tool.hatch.build]
+packages = [
+    &quot;extra1&quot;,
+    &quot;extra2&quot;,
+]
+</code></pre>
+<ul>
+<li>https://hatch.pypa.io/latest/config/build/#packages</li>
+</ul>
+<h3>Poetry</h3>
+<pre><code class="language-toml">[tool.poetry]
+packages = [
+    { include = &quot;extra1&quot; },
+    { include = &quot;extra2&quot; },
+]
+</code></pre>
+<ul>
+<li>https://python-poetry.org/docs/pyproject#packages</li>
+</ul>
+<h3>Setuptools</h3>
+<pre><code class="language-py"># setup.py
+
+setup(
+    name=&quot;seabird&quot;,
+    packages=['albatross', 'albatross.beak', 'albatross.wings', 'albatross.tail'],
+    # ...
+)
+</code></pre>
+<h3>Motivation</h3>
+<p>In the use cases I've used and seen, it's less about building multiple packages into a wheel for a <em>library</em> and more about having the build tool install editable installations for multiple top level packages for an <em>application</em> that doesn't follow the <code>src/</code> layout.</p>
+<p>For some applications like FastAPI, Django, etc. it's common not use a <code>src/</code> directory. In these applications, you sometimes want to have multiple top level packages, some of which might contain development-only utilities and such. Having them live in separate paths relative to <code>pyproject.toml</code> is convenient for only <code>COPY</code>ing certain folders into a container image and easily knowing you've excluded others.</p>
+<p>In this scenario, we might still want the standard <code>uv sync</code> to editable install multiple top level &quot;packages&quot; into the virtual environment so the <code>PYTHONPATH</code> all works.</p>
+<p>This is just one use case, I'm sure others have many more given that hatchling, Poetry, and setuptools at least all support this. It provides a lot of flexibility for applications that aren't following the standard <code>src/</code> + 1 package into a wheel format that most libraries on PyPI do.</p>
+<h3>Previous Posts</h3>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/3957#issuecomment-2827475439</li>
+<li>https://github.com/astral-sh/uv/issues/3957#issuecomment-2836831150</li>
+<li>https://github.com/astral-sh/uv/issues/3957#issuecomment-2970497563</li>
+</ul>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @johnthagen on 2025-07-28 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-28 16:37</div>
+            <div class="timeline-body"><p>Isn't this supported and documented at https://docs.astral.sh/uv/concepts/build-backend/#modules ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-28 16:38</div>
+            <div class="timeline-body"><p>(Perhaps I'm missing something)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2025-07-28 17:04</div>
+            <div class="timeline-body"><p>@zanieb So https://docs.astral.sh/uv/concepts/build-backend/#modules is definitely in the right direction, but <code>module-name</code> is singular, right? I think what we're looking for is something like:</p>
+<pre><code class="language-toml">[tool.uv.build-backend]
+module-names = [&quot;FOO&quot;, &quot;BAR&quot;, &quot;BAZ&quot;]
+module-root = &quot;&quot;
+</code></pre>
+<p>Does that make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-28 17:06</div>
+            <div class="timeline-body"><p>We document support for multiple module names in the next section</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-28 17:06</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/pull/14460</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2025-07-28 17:34</div>
+            <div class="timeline-body"><p>Wow, yes I missed that this was added recently! Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @johnthagen on 2025-07-28 17:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>panic when using global arguments + subcommands and calling get_matches_from_safe_borrow() then print_help() - clap-rs/clap #1601</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>panic when using global arguments + subcommands and calling get_matches_from_safe_borrow() then print_help()</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1601">#1601</a>
+        opened by <a href="https://github.com/igozali">@igozali</a>
+        on 2019-11-25 22:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/igozali">@igozali</a> on 2019-11-25 22:42</div>
+            <div class="timeline-body"><!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+<h3>Rust Version</h3>
+<p><code>rustc 1.39.0 (4560ea788 2019-11-04)</code></p>
+<h3>Affected Version of clap</h3>
+<p><code>clap 2.33.0 (registry+https://github.com/rust-lang/crates.io-index)</code></p>
+<h3>Expected Behavior Summary</h3>
+<p>When using the parser with <code>get_matches_from_safe_borrow()</code>, and then using <code>print_help()</code>, it panics. Behavior only shows up when using global arguments and subcommands.</p>
+<h3>Actual Behavior Summary</h3>
+<p>Parser shouldn't panic.</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">use clap::{App, Arg, AppSettings, SubCommand};
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt;{
+    let mut app = App::new(&quot;my-app&quot;)
+        .setting(AppSettings::ArgRequiredElseHelp)
+        .arg(
+            Arg::with_name(&quot;name&quot;)
+                .global(true)
+        )
+        .subcommand(SubCommand::with_name(&quot;sub&quot;));
+    if let Err(e) = app.get_matches_from_safe_borrow(std::env::args()) {
+        println!(&quot;{:?}&quot;, e);
+        app.print_help()?
+    }
+    Ok(())
+}
+</code></pre>
+<h3>Debug output</h3>
+<p>Depend on <code>clap</code> normally:</p>
+<pre><code class="language-toml">[dependencies]
+clap = &quot;*&quot;
+</code></pre>
+<p>Then run it:</p>
+<pre>
+<code>$ RUST_BACKTRACE=1 cargo run -- -e a
+    Finished dev [unoptimized + debuginfo] target(s) in 0.08s
+     Running `target/debug/myapp -e a`
+thread 'main' panicked at 'Non-unique argument name: name is already in use', /Users/user/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.0/src/app/parser.rs:174:9
+stack backtrace:
+   0: backtrace::backtrace::libunwind::trace
+             at /Users/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/backtrace-0.3.37/src/backtrace/libunwind.rs:88
+   1: backtrace::backtrace::trace_unsynchronized
+             at /Users/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/backtrace-0.3.37/src/backtrace/mod.rs:66
+   2: std::sys_common::backtrace::_print_fmt
+             at src/libstd/sys_common/backtrace.rs:76
+   3: <std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display>::fmt
+             at src/libstd/sys_common/backtrace.rs:60
+   4: core::fmt::ArgumentV1::show_usize
+   5: std::io::Write::write_fmt
+             at src/libstd/io/mod.rs:1412
+   6: std::sys_common::backtrace::_print
+             at src/libstd/sys_common/backtrace.rs:64
+   7: std::sys_common::backtrace::print
+             at src/libstd/sys_common/backtrace.rs:49
+   8: std::panicking::default_hook::{{closure}}
+             at src/libstd/panicking.rs:196
+   9: std::panicking::default_hook
+             at src/libstd/panicking.rs:210
+  10: std::panicking::rust_panic_with_hook
+             at src/libstd/panicking.rs:473
+  11: __rust_probestack
+  12: clap::app::parser::Parser::debug_asserts
+  13: clap::app::parser::Parser::implied_settings
+  14: clap::app::parser::Parser::verify_positionals::{{closure}}
+  15: clap::app::App::print_help
+             at /Users/user/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.0/src/app/mod.rs:1162
+  16: myapp::main
+             at src/main.rs:12
+  17: std::rt::lang_start::{{closure}}
+             at /rustc/4560ea788cb760f0a34127156c78e2552949f734/src/libstd/rt.rs:64
+  18: std::rt::lang_start_internal::{{closure}}
+             at src/libstd/rt.rs:49
+  19: std::panicking::try::do_call
+             at src/libstd/panicking.rs:292
+  20: __rust_maybe_catch_panic
+             at src/libpanic_unwind/lib.rs:80
+  21: std::panicking::try
+             at src/libstd/panicking.rs:271
+  22: std::panic::catch_unwind
+             at src/libstd/panic.rs:394
+  23: std::rt::lang_start_internal
+             at src/libstd/rt.rs:48
+  24: std::rt::lang_start
+             at /rustc/4560ea788cb760f0a34127156c78e2552949f734/src/libstd/rt.rs:64
+  25: myapp::main
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+</code>
+</pre>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @CreepySkeleton on 2020-02-01 11:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @CreepySkeleton on 2020-02-01 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: panic</span> added by @CreepySkeleton on 2020-02-01 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @CreepySkeleton on 2020-02-01 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @CreepySkeleton on 2020-02-01 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @CreepySkeleton on 2020-02-01 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1356.html">clap-rs/clap#1356</a> on 2020-02-01 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> removed by @pksunkara on 2020-04-15 06:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2020-04-15 06:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-24 15:13</div>
+            <div class="timeline-body"><p>I was able to reproduce it with 2.33 but not with the <code>master</code>. Neither your example nor multiple <code>.print_help()</code> calls failed, so I'm going to close it as solved in 3.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-04-24 15:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

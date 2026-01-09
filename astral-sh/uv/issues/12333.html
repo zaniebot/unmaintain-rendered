@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments for `pyproject.toml` dependencies get shifted unexpectedly - astral-sh/uv #12333</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Comments for `pyproject.toml` dependencies get shifted unexpectedly</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12333">#12333</a>
+        opened by <a href="https://github.com/christeefy">@christeefy</a>
+        on 2025-03-20 09:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/christeefy">@christeefy</a> on 2025-03-20 09:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi there,</p>
+<p>I encountered an behaviour where comments for <code>pyproject.toml</code> dependencies gets shifted unexpectedly.</p>
+<h2>Minimal Reproducible Example</h2>
+<p>Given an initial <code>pyproject.toml</code> file:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test-uv&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;fastapi&gt;=0.115.11&quot;,
+    &quot;jedi&gt;=0.19.2&quot;, # This is a test comment
+    &quot;typer&gt;=0.15.2&quot;
+]
+</code></pre>
+<p>Upon running <code>uv add pydantic</code> (note how <code>pydantic</code> would be inserted right under <code>jedi</code> and the comment), I expect to get:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test-uv&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;fastapi&gt;=0.115.11&quot;,
+    &quot;jedi&gt;=0.19.2&quot;, # This is a test comment
+    &quot;pydantic&gt;=2.10.6&quot;, 
+    &quot;typer&gt;=0.15.2&quot;
+]
+</code></pre>
+<p>Instead, comment associated with <code>jedi</code> has shifted to the line with <code>pydantic</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test-uv&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;fastapi&gt;=0.115.11&quot;,
+    &quot;jedi&gt;=0.19.2&quot;,  
+    &quot;pydantic&gt;=2.10.6&quot;, # This is a test comment
+    &quot;typer&gt;=0.15.2&quot;
+]
+</code></pre>
+<h2>Notes</h2>
+<p>In my testing, the bug occurs only when:</p>
+<ul>
+<li>the comment is applied on a non-terminal dependency — a dependency that isn't the first or last in the list</li>
+<li>a new dependency is inserted right below the commented one</li>
+</ul>
+<hr />
+<h3>Contributing Back</h3>
+<p><code>uv</code> is an amazing project, and I'd love to contribute back to it.
+I have some Rust experience, but I'm not familiar with the repo structure. If you can so kindly point me to the relevant section/crate in the repo, I'm happy to help resolve this bug 😊</p>
+<h3>Platform</h3>
+<p>Darwin 24.3.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.8 (c1ef48276 2025-03-18)</p>
+<h3>Python version</h3>
+<p>Python 3.12.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @christeefy on 2025-03-20 09:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Comments for `pyproject.toml` dependencies gets shifted unexpectedly" to "Comments for `pyproject.toml` dependencies get shifted unexpectedly" by @christeefy on 2025-03-20 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-20 13:39</div>
+            <div class="timeline-body"><p>Thanks for the nice issue, this does look like a bug in comment handling. I believe the relevant code is in <code>add_dependency</code> in <code>pyproject_mut.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2025-03-20 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12360.html">astral-sh/uv#12360</a> on 2025-03-21 09:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/christeefy">@christeefy</a> on 2025-03-21 12:03</div>
+            <div class="timeline-body"><p>PR is ready for review, please take a look! 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-03-21 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-03-21 14:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

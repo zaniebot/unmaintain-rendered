@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--python-version` isn't respected in pip-compile for tf-models-nightly - astral-sh/uv #883</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--python-version` isn't respected in pip-compile for tf-models-nightly</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/883">#883</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-11 12:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-11 12:11</div>
+            <div class="timeline-body"><p><code>tf-models-nightly&gt;2.14</code> fails on python 3.12 but succeeds on python 3.10.  The <code>--python-version</code> seems to have no effect here.</p>
+<pre><code>$ virtualenv -p 3.12 --clear .venv
+$ cargo run --bin puffin --profile profiling -q -- pip-compile --python-version 3.10 target/tf-models-nightly.txt &gt; /dev/null 2&gt; /dev/null &amp;&amp; echo &quot;success&quot; || echo &quot;failure&quot;
+failure
+$ cargo run --bin puffin --profile profiling -q -- pip-compile --python-version 3.12 target/tf-models-nightly.txt &gt; /dev/null 2&gt; /dev/null &amp;&amp; echo &quot;success&quot; || echo &quot;failure&quot;
+failure
+$ virtualenv -p 3.10 --clear .venv
+$ cargo run --bin puffin --profile profiling -q -- pip-compile --python-version 3.10 target/tf-models-nightly.txt &gt; /dev/null 2&gt; /dev/null &amp;&amp; echo &quot;success&quot; || echo &quot;failure&quot;
+success
+$ cargo run --bin puffin --profile profiling -q -- pip-compile --python-version 3.12  target/tf-models-nightly.txt &gt; /dev/null 2&gt; /dev/null &amp;&amp; echo &quot;success&quot; || echo &quot;failure&quot;
+success
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-01-11 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-11 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-11 14:09</div>
+            <div class="timeline-body"><p>Do you mind debugging this? I can't because <code>tensorflow-text-nightly</code> doesn't ship wheels that are compatible with my platform, and doesn't ship a source distribution, so it can't be resolved on my machine at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-01-11 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-01-11 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-11 14:42</div>
+            <div class="timeline-body"><p>Weird. Once you figure out what's going on lmk and I can try to create a matching scenario.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-11 16:38</div>
+            <div class="timeline-body"><p>The problem is that:</p>
+<ul>
+<li>tensorflow-text-nightly has only wheels, and only wheel for cp310, not cp312</li>
+<li>We check wheels both<ul>
+<li>against the tags of the interpreter, which aren't the tags of the target and</li>
+<li>expect that they match both installed and target versions</li>
+</ul>
+</li>
+<li>All wheels get listed as incompatible in the <code>VersionMap</code> -&gt; <code>PrioritizedDistribution</code></li>
+<li><code>VersionMap::iter</code> -&gt; <code>PrioritizedDistribution::get</code> returns only compatible wheels</li>
+<li>We see 0 compatible wheels and fail</li>
+</ul>
+<p>Imho we need to consider wheels that only match the target python and only the (synthetic) target tags for this to succeed. We can test those scenarios as unit tests in <code>VersionMap</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2024-01-11 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-11 16:40</div>
+            <div class="timeline-body"><p>To be clear, the intended behavior is that we <em>only</em> check against the installed version for source distributions, since we would ultimately need to build them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-11 16:40</div>
+            <div class="timeline-body"><p>I can take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-11 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-11 21:23</div>
+            <div class="timeline-body"><p>@konstin - Which one do you consider the bug - that it failed under <code>-p 3.12</code>, or that it succeeded under <code>-p 3.10</code> with <code>--python-version 3.12</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-11 21:25</div>
+            <div class="timeline-body"><p>It seems like it <em>should</em> fail under <code>-p 3.10</code> with <code>--python-version 3.12</code>. That's what I see as the bug -- that it succeeds, but should fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-11 21:25</div>
+            <div class="timeline-body"><p>@konstin I'm a bit confused by your description since you say &quot;fail&quot; as a conclusion but the bug is that it &quot;succeeds&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-11 22:16</div>
+            <div class="timeline-body"><p><code>pip3.12 install tf-models-nightly</code> fails, while <code>pip3.10 install tf-models-nightly</code> succeeds. I believe that <code>--python-version 3.12</code> should always fail and <code>--python-version 3.10</code> should always succeed, the <code>--python-version</code> should take precedence over the venv. The only case where the underlying venv should make a difference when using <code>--python-version</code> is when we need to build a venv. (I can see different solutions, mine is based on the idea that <code>--python-version</code> defines what we're doing and the underlying venv is incidental, a fallback to build source distributions).</p>
+<p>| venv  | --python-version | current behaviour | expected behaviour |
+|-------|---------------------|-------------------|--------------------|
+| 3.10 | n/a or 3.10        | success           | success            |
+| 3.10 | 3.12               | success           | failure            |
+| 3.12 | 3.10               | failure           | success            |
+| 3.12 | n/a or 3.12        | failure           | failure            |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-11 22:20</div>
+            <div class="timeline-body"><p>Okay, I think I agree with your description. (The thing that was confusing is that your comment above ended with <code>We see 0 compatible wheels and fail</code>, but originally, the issue only included the 3.10 / 3.12 behavior where we currently succeed.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/890.html">astral-sh/uv#890</a> on 2024-01-12 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-12 14:30</div>
+            <div class="timeline-body"><p>We should write a scenario for this? It seems within our capabilities. I still do not fully understand the situation. It'd be nice to have it described in that format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-13 21:27</div>
+            <div class="timeline-body"><p>Let's call Python 3.10 the &quot;installed&quot; environment and Python 3.12 the &quot;target&quot; environment. For each version, we have <em>both</em> a Python version (to match against <code>Requires-Python</code>) and a set of tags (to match against wheels).</p>
+<p>The rules for resolution are as follows...</p>
+<ul>
+<li>For each package, for each version, we try to find the &quot;best candidate&quot; for resolution and installation.</li>
+<li>We first look for a wheel that's compatible with the <em>target</em> environment. (We won't have to build or run this code, so the <em>installed</em> version is irrelevant.)</li>
+<li>If we can't find a compatible wheel, we accept any <em>incompatible</em> wheel as long as there's a source distribution. The source distribution <em>must</em> be compatible with the target environment. (We won't have to build or run this code, so the <em>installed</em> version is irrelevant.)</li>
+<li>If there are no wheels, then the source distribution must be compatible with <em>both</em> the installed and target environments, since we need to build it.</li>
+</ul>
+<p>This is all true for the top-level resolution. When we perform a sub-resolution (when resolving the build dependencies of a source distribution), we should <em>only</em> use the installed environment, and ignore the target environment, since we assume that the dependencies will be the same in both environments once built -- so our goal is &quot;just&quot; to build the distribution, without concern for which build dependencies it uses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-13 21:27</div>
+            <div class="timeline-body"><p>(This is kind of just documentation, I'll likely repeat it in a PR or in-code, I just had to write it out for myself before fixing this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-13 22:53</div>
+            <div class="timeline-body"><p>I think we are capable of writing a scenario for this and I think we definitely should.</p>
+<p>See https://github.com/zanieb/packse/blob/main/scenarios/requires-python.json and https://github.com/zanieb/packse/blob/main/scenarios/wheels.json for the relevant examples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/909.html">astral-sh/uv#909</a> on 2024-01-13 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-13 23:16</div>
+            <div class="timeline-body"><p>How do we pass <code>--python-version</code> to packse scenarios?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-13 23:20</div>
+            <div class="timeline-body"><p>(Agree we should have a test for this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-14 03:12</div>
+            <div class="timeline-body"><p>So... we have a way to set the Python version for the environment but <em>not</em> a separate resolution Python version. I'll add support for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-14 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1011.html">astral-sh/uv#1011</a> on 2024-01-19 22:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

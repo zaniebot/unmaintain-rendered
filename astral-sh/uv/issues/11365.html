@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--no-config  can be misleading - astral-sh/uv #11365</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>--no-config  can be misleading</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11365">#11365</a>
+        opened by <a href="https://github.com/KRRT7">@KRRT7</a>
+        on 2025-02-10 00:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KRRT7">@KRRT7</a> on 2025-02-10 00:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>uv run --no-config --with rich main.py
+error: No <code>project</code> table found in: <code>C:\Users\NuitkaDevOps\Desktop\pyproject.toml</code></p>
+<p>i thought that --no-config would've prevented the project error</p>
+<p>as per the doc:</p>
+<pre><code>      --no-config                                  Avoid discovering configuration files (`pyproject.toml`, `uv.toml`) [env: UV_NO_CONFIG=]
+</code></pre>
+<p>this tells me that it shouldnt even try to find and error after finding the desktop pyproject.toml</p>
+<p>but after some help from @zanieb it appears that this behavior can be true or false depending on the context; perhaps the documentation could be enhanced for this situation.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @KRRT7 on 2025-02-10 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 00:48</div>
+            <div class="timeline-body"><p>You might be looking for <code>--no-project</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KRRT7">@KRRT7</a> on 2025-02-10 01:24</div>
+            <div class="timeline-body"><blockquote>
+<p>You might be looking for <code>--no-project</code>?</p>
+</blockquote>
+<p>I was indeed, zane helped me out in the discord:
+https://discord.com/channels/1039017663004942429/1039017663512449056/1338305769723924592</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @zanieb on 2025-02-10 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2025-02-10 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonas-hagen">@jonas-hagen</a> on 2025-02-25 09:27</div>
+            <div class="timeline-body"><p>I am too puzzled by that:</p>
+<pre><code>[user@host]$ ls -a | cat
+requirements.txt
+.venv  # &lt;-- created by uv venv
+
+[user@host]$ uv pip install -r requirements.txt 
+Audited 8 packages in 27ms
+
+[user@host]$ uv lock --no-config
+error: No `pyproject.toml` found in current directory or any parent directory
+
+[user@host]$ uv lock --no-project
+error: unexpected argument '--no-project' found
+
+  tip: a similar argument exists: '--project'
+
+Usage: uv lock --project &lt;PROJECT&gt;
+
+For more information, try '--help'.
+
+[user@host]$ uv --version
+uv 0.6.3
+</code></pre>
+<p>Is it in the end not possible to create a <code>uv.lock</code> file from just a <code>requirements.txt</code> (which contains a few lines, but no dependencies or versions).</p>
+<p>The discord link is broken, so I do not understand where the <code>--no-project</code> option could be useful in this context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KRRT7">@KRRT7</a> on 2025-02-25 09:29</div>
+            <div class="timeline-body"><p>@jonas-hagen here's a temp invite while the discord link gets fixed: https://discord.gg/jJD58zhQ</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonas-hagen">@jonas-hagen</a> on 2025-02-25 10:06</div>
+            <div class="timeline-body"><p>Thanks, now I can access discord.</p>
+<p>My usecase: I have a bunch of quick and dirty scripts and would like to use uv to manage my environment, because I like the speed and ergonomics. The alternative is a requirements and constraints (or .in and .txt) file and use <code>uv pip</code> like I would use pip. This would work perfectly fine, even tough I am a bit sad to miss out on <code>uv.lock</code>.</p>
+<p>My question basically is: What does the <code>--no-config</code> option actually do?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-26 19:13</div>
+            <div class="timeline-body"><p>It will avoid reading uv settings from <code>pyproject.toml</code> and <code>uv.toml</code> files when you are not in a project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ahundt">@ahundt</a> on 2025-08-08 04:58</div>
+            <div class="timeline-body"><p>no config should stop going up the directory tree, in many environments such as security sandboxes going out of the permitted area crashes uv. UV needs to be robust to being denied access to config files, plus UV_NO_CONFIG=1 works but --no-config does not it still searches for configs. it is necessary and fixing --no-config to be consistent with the env var and robust to being denied access to directories when searching for configs would be very helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-08 14:12</div>
+            <div class="timeline-body"><p>@ahundt please open a new issue for your permission errors.</p>
+<p>Separately, <code>--no-config</code> and <code>UV_NO_CONFIG=1</code> should be exactly equivalent. They're parsed by clap and propagated throughout uv as though they were identical https://github.com/astral-sh/uv/blob/84d57f2ee9bb6f452e3be74c658b2e0096b1dc30/crates/uv-cli/src/lib.rs#L130-L135. Please open a new issue with a clear reproduction of that behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../skypilot-org/skypilot/pulls/7259.html">skypilot-org/skypilot#7259</a> on 2025-09-18 22:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

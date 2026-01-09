@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>different behavior of uv pip install for x86 and aarch64 archs - astral-sh/uv #7657</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>different behavior of uv pip install for x86 and aarch64 archs</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7657">#7657</a>
+        opened by <a href="https://github.com/senysenyseny16">@senysenyseny16</a>
+        on 2024-09-24 12:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/senysenyseny16">@senysenyseny16</a> on 2024-09-24 12:12</div>
+            <div class="timeline-body"><p>Hello, I encountered the following problem:</p>
+<pre><code>x86     | pip install torch==2.1.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu       | ✅
+x86     | pip install torch==2.1.0 --extra-index-url https://download.pytorch.org/whl/cpu           | ✅ --+
+x86     | uv pip install torch==2.1.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu    | ✅   |
+x86     | uv pip install torch==2.1.0 --extra-index-url https://download.pytorch.org/whl/cpu        | ❌   |
+                                                                                                     [intersection]
+aarch64 | pip install torch==2.1.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu       | ❌   |
+aarch64 | pip install torch==2.1.0 --extra-index-url https://download.pytorch.org/whl/cpu           | ✅ --+
+aarch64 | uv pip install torch==2.1.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu    | ❌
+aarch64 | uv pip install torch==2.1.0 --extra-index-url https://download.pytorch.org/whl/cpu        | ✅
+</code></pre>
+<p>With <code>pip</code>, you can use <code>pip install torch==2.1.0 --extra-index-url https://download.pytorch.org/whl/cpu</code> command and it will work on both architectures, but for <code>uv</code>, you'll have to add a condition based on the architecture, which is very inconvenient, especially in the case of automation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @charliermarsh on 2024-09-24 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-24 12:17</div>
+            <div class="timeline-body"><p>It's because the PyTorch index itself is inconsistent. Some of the wheels on that index use <code>+cpu</code>, and others don't, but they're all CPU wheels. I don't see this as something we can solve without redoing local variant supports and I don't anticipate doing that in the near future.</p>
+<p><img src="https://github.com/user-attachments/assets/82385fa5-3960-4c12-85a5-2682e6d525fa" alt="Screenshot 2024-09-23 at 3 26 14 PM" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/senysenyseny16">@senysenyseny16</a> on 2024-09-24 12:21</div>
+            <div class="timeline-body"><p>ok, thanks for the answer, I think I need to ask the Torch team why they did it that way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @senysenyseny16 on 2024-09-24 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-24 12:22</div>
+            <div class="timeline-body"><p>I'm also interested, I really want to improve the Torch experience. I've seen https://github.com/pytorch/pytorch/issues/136275.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

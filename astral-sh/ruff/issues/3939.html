@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow for deselection of all fixable errors when `check`ing - astral-sh/ruff #3939</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow for deselection of all fixable errors when `check`ing</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3939">#3939</a>
+        opened by <a href="https://github.com/thejcannon">@thejcannon</a>
+        on 2023-04-11 20:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thejcannon">@thejcannon</a> on 2023-04-11 20:53</div>
+            <div class="timeline-body"><p>:wave:</p>
+<p>Over in https://www.pantsbuild.org/ we're adding <code>ruff</code> support. Only one nit so far. We separate running tools that fix code from ones that only lint. Since <code>ruff</code> does both, the user will see <code>fix</code>able ruff errors when <code>lint</code>ing AND they'll see our &quot;ruff made changes when trying to fix&quot;.</p>
+<p>So ideally, in <code>lint</code> mode, we turn off the fixable errors. Not a dealbreaker, just a confusing message to our users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-11 21:24</div>
+            <div class="timeline-body"><p>To confirm my understanding: is the desired behavior here such that fixable errors don't appear at all when running <code>ruff check</code>? Or is it that we omit the <code>[*]</code> decoration and the <code>[*] 99 potentially fixable with the --fix option.</code> message?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2023-04-11 21:26</div>
+            <div class="timeline-body"><p>The latter is nice for error messages. The former is (and I almost hesitate to say this, knowing full well this is <em>ruff</em>) for performance and reduces the noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2023-04-11 21:26</div>
+            <div class="timeline-body"><p>... so i guess the former 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pantsbuild/pants/pulls/18716.html">pantsbuild/pants#18716</a> on 2023-04-12 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2023-04-12 01:43</div>
+            <div class="timeline-body"><p>And to give an example, a file containing only <code>f&quot;I'm missing placeholders&quot;</code> leads to:</p>
+<pre><code>20:40:49.88 [ERROR] Completed: Lint with ruff - ruff failed (exit code 1).
+src/python/pants/util/foo.py:1:1: F541 [*] f-string without any placeholders
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+
+
+
+20:40:49.90 [WARN] Completed: Fix with ruff - ruff --fix made changes.
+  src/python/pants/util/foo.py
+
+✕ ruff failed.
+✕ ruff --fix failed.
+
+(One or more fixers failed. Run `pants fix` to fix.)
+</code></pre>
+<p>What your seeing is us:</p>
+<ul>
+<li>running <code>ruff --fix</code> in one process, and noticing the file changed, and therefore warning+failing</li>
+<li>running <code>ruff</code> in another process, and just parroting the stdout/stderr</li>
+</ul>
+<p>(We do the <code>fix</code> thing so that running the <code>fix</code> goal before the <code>lint</code> goal means we can re-use the process cache for the invocation. Makes it speedy for those &quot;other&quot; fixers that aren't as speedy as <code>ruff</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-04-12 04:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pantsbuild/pants/pulls/18739.html">pantsbuild/pants#18739</a> on 2023-04-13 16:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

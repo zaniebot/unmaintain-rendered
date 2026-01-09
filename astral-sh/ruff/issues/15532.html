@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[PYI] Suggest using `typing.IO[bytes]` instead of `io.BytesIO`. - astral-sh/ruff #15532</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[PYI] Suggest using `typing.IO[bytes]` instead of `io.BytesIO`.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15532">#15532</a>
+        opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a>
+        on 2025-01-16 14:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2025-01-16 14:59</div>
+            <div class="timeline-body"><p>When type hinting, particularly in function arguments, using the more flexible abstract class <code>typing.IO[bytes]</code> is often more appropriate than the concrete type <code>io.Bytes</code>.</p>
+<h3>Example</h3>
+<pre><code class="language-python">from tempfile import Tempfile
+import torch  # v2.5.1
+
+with TemporaryFile() as file:
+    model = torch.nn.Linear(3, 3)
+    exported_model = torch.export.export(model, args=(torch.randn(3),))
+    # &quot;BufferedRandom&quot; cannot be assigned to type &quot;str | PathLike[Unknown] | BytesIO&quot;
+    torch.export.save(exported_model, file)  # ❌ typing error!
+</code></pre>
+<p>This works at runtime just fine, but type checkers will complain because <code>BufferedRandom</code>, the type of <code>file</code>, is not a subtype of <code>io.BytesIO</code>. The library should have annotated the method with <code>typing.IO[bytes]</code> instead. I propose the following rule:</p>
+<h3>Rule</h3>
+<ol>
+<li>Suggest replacing <code>io.BytesIO</code> with <code>typing.IO[bytes]</code>/<code>typing.BinaryIO</code> and <code>io.TextIO</code> with <code>typing.IO[str]</code>/<code>typing.TextIO</code> inside <strong>function argument annotations.</strong></li>
+<li>Suggest replacing inside <strong>function return annotations</strong> only if they are methods of an abstract base class or Protocol.</li>
+<li>Prefer <code>typing.IO[str]</code> and <code>typing.IO[bytes]</code> instead of <code>typing.TextIO</code> and <code>typing.BinaryIO</code> except when one of the members<code>buffer</code>, <code>encoding</code>, <code>errors</code>, <code>line_buffering</code>, <code>newlines</code> or <code>__enter__</code> is needed.</li>
+</ol>
+<h3>References</h3>
+<ul>
+<li>https://github.com/python/typing/discussions/829</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-16 15:11</div>
+            <div class="timeline-body"><p>We've had a request for this before at flake8-pyi: see https://github.com/PyCQA/flake8-pyi/issues/463. I think it's a reasonable request; I agree that annotating a parameter with <code>io.BytesIO</code> is almost always a mistake from the user.</p>
+<p>I'd be hesitant to recommend <code>typing.IO[bytes]</code> instead, though. It's a very large ABC, and lots of concrete IO classes are not recognised by type checkers as subtypes of the ABC. You're often better off going with a handrolled protocol that narrowly specifies exactly which IO methods you need.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2025-01-16 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pytorch/pytorch/issues/144976.html">pytorch/pytorch#144976</a> on 2025-01-16 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2025-01-16 18:24</div>
+            <div class="timeline-body"><p>It's unfortunate that the standard library doesn't provide a sensible <code>Protocol</code>, but since type checkers consider <code>io.BytesIO &lt;: IO[bytes]</code> this would allow strictly more arguments.</p>
+<p>So if the library author does not want to introduce an extra Protocol, then <code>typing.IO[bytes]</code> seems like the best bet, and is already widely used: https://github.com/search?q=%22IO%5Bbytes%5D%22+language%3APython&amp;type=code&amp;l=Python</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-16 20:05</div>
+            <div class="timeline-body"><p>I'd be okay with an error message that said something like &quot;Use <code>IO[bytes]</code> or a custom protocol&quot;, I just don't want to make it seem like <code>IO[bytes]</code> is the <em>only</em> option -- because it's often not the best option, even if it's a convenient one :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2025-01-16 20:21</div>
+            <div class="timeline-body"><p>Another aspect of this is what to recommend for branching against <code>IO</code>-like interface. For example, given</p>
+<pre><code class="language-python">def save(name_or_buffer: str | os.PathLike[str] | io.BytesIO, data) -&gt; None:
+    if isinstance(name_or_buffer, io.BytesIO):
+        ...  # use the `.write()` interface
+    else:
+        ....  # initialize some writer for the filename/path
+</code></pre>
+<p>If we recommend the user to use <code>IO[bytes]</code> in the annotation, they will be tempted to replace the <code>io.BytesIO</code> in the <code>isinstance</code> as well, but this is incorrect. At the very least, it should be <code>isinstance(x, IO | io.IOBase)</code>, as many of the buffer classes in the stdlib do not subclass <code>typing.IO</code>. On the other hand, <code>io.BytesIO</code> can be too strict. (like for <code>tempfile.TemporaryFile</code>).</p>
+<p>Of course, using a runtime-checkable protocol is less error-prone in this regard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @dhruvmanila on 2025-01-17 04:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pytorch/pytorch/pulls/144994.html">pytorch/pytorch#144994</a> on 2025-01-17 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../microsoft/yardl/issues/241.html">microsoft/yardl#241</a> on 2025-09-24 14:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

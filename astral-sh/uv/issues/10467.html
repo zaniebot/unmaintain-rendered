@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>git-tag cache-keys not working if there are tags containing slash - astral-sh/uv #10467</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>git-tag cache-keys not working if there are tags containing slash</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10467">#10467</a>
+        opened by <a href="https://github.com/snizovtsev">@snizovtsev</a>
+        on 2025-01-10 11:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/snizovtsev">@snizovtsev</a> on 2025-01-10 11:52</div>
+            <div class="timeline-body"><p>I use slashes in git tags to separate workspace member from version, like:</p>
+<pre><code>$ git tag -l
+py-consul/v1.5.3.post0
+xyz
+</code></pre>
+<p>gives &quot;1.5.3.post0&quot; version to workspace member <code>workspace/py-consul</code>.</p>
+<p>As so, I've each workspace member's <code>pyproject.toml</code> looks like this:</p>
+<pre><code class="language-toml">[project]
+name = &quot;py-consul&quot;
+dynamic = [&quot;version&quot;, &quot;x-run-hook&quot;]
+
+[tool.uv]
+cache-keys = [{ git = { commit = true, tags = true } }, { file = &quot;pyproject.toml&quot; }]
+
+[tool.hatch.version]
+source = &quot;my-plugin&quot;
+</code></pre>
+<p>However I noticed <code>uv</code> won't bump my project version when I add or remove a second tag like <code>xyz</code>. It echos the following error in DEBUG log:</p>
+<pre><code>DEBUG Failed to read the current tags: failed to read from file `my-project/.git/refs/tags/py-consul`: Is a directory (os error 21)
+</code></pre>
+<p>Obviously, <code>uv</code> should be improved to walk entire <code>.git/refs/tags</code> directory instead of reading flat structure as it done now.</p>
+<p>If nobody objects, I want to use this issue as my practice in Rust and plan to work on a fix in a next few days.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snizovtsev">@snizovtsev</a> on 2025-01-10 11:53</div>
+            <div class="timeline-body"><pre><code>$ tree .git/refs/tags
+.git/refs/tags
+├── py-consul
+│   └── v1.5.3.post0
+└── xyz
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-10 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10500.html">astral-sh/uv#10500</a> on 2025-01-11 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-12 02:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

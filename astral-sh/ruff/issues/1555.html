@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pydocstyle plugin should implement match and match_dir options - astral-sh/ruff #1555</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>pydocstyle plugin should implement match and match_dir options</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1555">#1555</a>
+        opened by <a href="https://github.com/marscher">@marscher</a>
+        on 2023-01-02 13:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/marscher">@marscher</a> on 2023-01-02 13:45</div>
+            <div class="timeline-body"><p>Sometimes it's useful to exclude some files and or directories from this plugin, e.g. you want to allow tests to match the rigid docstyle conventions.
+Since I want other linting plugins to be run on the pydocstyle excluded files, Ruffs global exclude does not seem to be the solution.</p>
+<pre><code class="language-toml">[ruff.tool.pydocstyle]
+# convention numpy is currently equivalent to ignoring 'D107', 'D203', 'D212', 'D213', 'D402', 'D413'
+convention = &quot;numpy&quot;
+match = &quot;(?!__)(?!_version)(?!conftest).*\\.py&quot;
+match_dir = &quot;^(?!(tests|tags|asdf)).*&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-02 13:56</div>
+            <div class="timeline-body"><p>You can just configure <code>tool.ruff.per-file-ignores</code> as shown in the README.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marscher">@marscher</a> on 2023-01-02 14:33</div>
+            <div class="timeline-body"><p>right, that would be redundant. Thank you very much for pointing it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @marscher on 2023-01-02 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marscher">@marscher</a> on 2023-01-02 14:37</div>
+            <div class="timeline-body"><p>This does not support regex, right? It'd be tedious to list every file matching my pattern manually repeating the ignored rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-02 15:09</div>
+            <div class="timeline-body"><p>See https://docs.rs/globset/latest/globset/#syntax for the supported syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-02 16:28</div>
+            <div class="timeline-body"><p>It does support regex. Any provided pattern will be checked both against each file/directory base name and full path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marscher">@marscher</a> on 2023-01-02 21:57</div>
+            <div class="timeline-body"><p>Thanks, eventually this should be mentioned in the documentation. I should have taken a look into the output of <code>ruff --show-settings</code>. However the backslashes within my regex get escaped, so this could be why it does not match.</p>
+<p>pyproject.toml:</p>
+<pre><code>[tool.ruff]
+per-file-ignores = {&quot;^(?!(tests|tags|asdf)).*&quot; = [&quot;D&quot;]}
+</code></pre>
+<p>I just wonder, why the matching the beginning of a line is at the end of the source path. Even if this is removed, the regex does not match &quot;/home/marscher/sources/weldx/tests&quot; for instance.</p>
+<p>excerpt of <code>ruff --show-settings</code>:</p>
+<pre><code>    per_file_ignores: [
+        (
+            GlobMatcher {
+                pat: Glob {
+                    glob: &quot;/home/marscher/sources/weldx/^(?!(tests|tags|asdf)).*&quot;,
+                    re: &quot;(?-u)^/home/marscher/sources/weldx/\\^\\(.!\\(tests\\|tags\\|asdf\\)\\)\\..*$&quot;,
+                    opts: GlobOptions {
+                        case_insensitive: false,
+                        literal_separator: false,
+                        backslash_escape: true,
+                    },
+                    tokens: Tokens(
+                        [
+                            Literal(
+                                '/',
+                            ),
+                            Literal(
+                                'h',
+                            ),
+                            Literal(
+                                'o',
+                            ),
+                            Literal(
+                                'm',
+                            ),
+                            Literal(
+                                'e',
+                            ),
+                            Literal(
+                                '/',
+                            ),
+                            Literal(
+                                'm',
+                            ),
+                            Literal(
+                                'a',
+                            ),
+                            Literal(
+                                'r',
+                            ),
+                            Literal(
+                                's',
+                            ),
+                            Literal(
+                                'c',
+                            ),
+                            Literal(
+                                'h',
+                            ),
+                            Literal(
+                                'e',
+                            ),
+                            Literal(
+                                'r',
+                            ),
+                            Literal(
+                                '/',
+                            ),
+                            Literal(
+                                's',
+                            ),
+                            Literal(
+                                'o',
+                            ),
+                            Literal(
+                                'u',
+                            ),
+                            Literal(
+                                'r',
+                            ),
+                            Literal(
+                                'c',
+                            ),
+                            Literal(
+                                'e',
+                            ),
+                            Literal(
+                                's',
+                            ),
+                            Literal(
+                                '/',
+                            ),
+                            Literal(
+                                'w',
+                            ),
+                            Literal(
+                                'e',
+                            ),
+                            Literal(
+                                'l',
+                            ),
+                            Literal(
+                                'd',
+                            ),
+                            Literal(
+                                'x',
+                            ),
+                            Literal(
+                                '/',
+                            ),
+                            Literal(
+                                '^',
+                            ),
+                            Literal(
+                                '(',
+                            ),
+                            Any,
+                            Literal(
+                                '!',
+                            ),
+                            Literal(
+                                '(',
+                            ),
+                            Literal(
+                                't',
+                            ),
+                            Literal(
+                                'e',
+                            ),
+                            Literal(
+                                's',
+                            ),
+                            Literal(
+                                't',
+                            ),
+                            Literal(
+                                's',
+                            ),
+                            Literal(
+                                '|',
+                            ),
+                            Literal(
+                                't',
+                            ),
+                            Literal(
+                                'a',
+                            ),
+                            Literal(
+                                'g',
+                            ),
+                            Literal(
+                                's',
+                            ),
+                            Literal(
+                                '|',
+                            ),
+                            Literal(
+                                'a',
+                            ),
+                            Literal(
+                                's',
+                            ),
+                            Literal(
+                                'd',
+                            ),
+                            Literal(
+                                'f',
+                            ),
+                            Literal(
+                                ')',
+                            ),
+                            Literal(
+                                ')',
+                            ),
+                            Literal(
+                                '.',
+                            ),
+                            ZeroOrMore,
+                        ],
+                    ),
+                },
+                re: (?-u)^/home/marscher/sources/weldx/\^\(.!\(tests\|tags\|asdf\)\)\..*$,
+            },
+            GlobMatcher {
+                pat: Glob {
+                    glob: &quot;^(?!(tests|tags|asdf)).*&quot;,
+                    re: &quot;(?-u)^\\^\\(.!\\(tests\\|tags\\|asdf\\)\\)\\..*$&quot;,
+                    opts: GlobOptions {
+                        case_insensitive: false,
+                        literal_separator: false,
+                        backslash_escape: true,
+                    },
+                    tokens: Tokens(
+                        [
+                            Literal(
+                                '^',
+                            ),
+                            Literal(
+                                '(',
+                            ),
+                            Any,
+                            Literal(
+                                '!',
+                            ),
+                            Literal(
+                                '(',
+                            ),
+                            Literal(
+                                't',
+                            ),
+                            Literal(
+                                'e',
+                            ),
+                            Literal(
+                                's',
+                            ),
+                            Literal(
+                                't',
+                            ),
+                            Literal(
+                                's',
+                            ),
+                            Literal(
+                                '|',
+                            ),
+                            Literal(
+                                't',
+                            ),
+                            Literal(
+                                'a',
+                            ),
+                            Literal(
+                                'g',
+                            ),
+                            Literal(
+                                's',
+                            ),
+                            Literal(
+                                '|',
+                            ),
+                            Literal(
+                                'a',
+                            ),
+                            Literal(
+                                's',
+                            ),
+                            Literal(
+                                'd',
+                            ),
+                            Literal(
+                                'f',
+                            ),
+                            Literal(
+                                ')',
+                            ),
+                            Literal(
+                                ')',
+                            ),
+                            Literal(
+                                '.',
+                            ),
+                            ZeroOrMore,
+                        ],
+                    ),
+                },
+                re: (?-u)^\^\(.!\(tests\|tags\|asdf\)\)\..*$,
+            },
+            {
+                D104,
+                D101,
+                D419,
+                D416,
+                D413,
+                D410,
+                D407,
+                D404,
+                D400,
+                D215,
+                D212,
+                D209,
+                D206,
+                D203,
+                D200,
+                D105,
+                D102,
+                D417,
+                D414,
+                D411,
+                D408,
+                D405,
+                D402,
+                D300,
+                D213,
+                D210,
+                D207,
+                D204,
+                D201,
+                D106,
+                D103,
+                D100,
+                D418,
+                D415,
+                D412,
+                D409,
+                D406,
+                D403,
+                D301,
+                D214,
+                D211,
+                D208,
+                D205,
+                D202,
+                D107,
+            },
+        ),
+    ],
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-02 22:00</div>
+            <div class="timeline-body"><p>The path is appended to the project root, since we normalize all paths to absolute paths internally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marscher">@marscher</a> on 2023-01-03 00:13</div>
+            <div class="timeline-body"><p>Right. But then <code>.*(?!(tests|tags|asdf)).*</code> should match, but does not. The refered Rust documentation is helpful though, as the GlobSet does not support regular expressions at all, but just <code>**</code> to descend into any level of directory and <code>*</code> as a plain wildcard.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

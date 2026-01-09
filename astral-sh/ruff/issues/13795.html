@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linter request: pytest &quot;usefixture&quot; mark should be flagged - astral-sh/ruff #13795</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Linter request: pytest &quot;usefixture&quot; mark should be flagged</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13795">#13795</a>
+        opened by <a href="https://github.com/lengau">@lengau</a>
+        on 2024-10-17 16:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lengau">@lengau</a> on 2024-10-17 16:01</div>
+            <div class="timeline-body"><p>I've seen multiple cases where a test used <code>pytest.mark.usefixture</code> rather than <code>pytest.mark.usefixtures</code> in ways that caused the tests to only sometimes fail (e.g. only on certain platforms). It would be handy to have a linter that changed this.</p>
+<p>E.g. the following code:</p>
+<pre><code class="language-python">@pytest.mark.usefixture(&quot;side_effect_fixture&quot;)
+def test_my_function():
+    assert my_function() == True
+</code></pre>
+<p>could be (probably with an <code>unsafe</code> marker?) converted to:</p>
+<pre><code class="language-python">@pytest.mark.usefixtures(&quot;side_effect_fixture&quot;)
+def test_my_function():
+    assert my_function() == True
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-18 06:43</div>
+            <div class="timeline-body"><p>Do you have a reference to what <code>pytest.mark.usefixture</code>? I was only able to find the documentation for <a href="https://docs.pytest.org/en/7.1.x/reference/reference.html#pytest-mark-usefixtures"><code>pytest.mark.usefixtures</code></a> and it's not clear to me what the difference between the two is (I never used pytest)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/autinerd">@autinerd</a> on 2024-10-19 15:43</div>
+            <div class="timeline-body"><p><code>@pytest.mark.usefixture</code> is almost always a typo and should emit a pytest warning. (but technically, a plugin could register the <code>usefixture</code> mark and do something with it)</p>
+<p>Could you run <code>pytest &lt;path_to_file&gt; --markers</code> to check if <code>usefixture</code> is really a registered marker in your context?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2024-10-19 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-10-30 20:13</div>
+            <div class="timeline-body"><p>Real-world examples:</p>
+<ul>
+<li>https://github.com/apache/superset/blob/master/tests/unit_tests/commands/dataset/test_update.py#L29</li>
+<li>https://github.com/bigchaindb/bigchaindb/blob/master/tests/tendermint/test_lib.py#L348</li>
+</ul>
+<p>Reference issue at the pytest repository: https://github.com/pytest-dev/pytest/issues/3972</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lengau">@lengau</a> on 2024-12-13 00:44</div>
+            <div class="timeline-body"><p>@MichaReiser as @autinerd said, it's almost always a typo. At runtime <code>pytest</code> will by default make an unknown mark warning. However, this popped up for me in a project where (unfortunately) the pytest runs are full of warnings, and it's faster/easier to fix stuff with ruff before tackling all of those warnings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @MichaReiser on 2024-12-13 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-12-13 08:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

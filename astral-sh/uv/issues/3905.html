@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv 0.2 rejects the interpreter, system interpreter not allowed - astral-sh/uv #3905</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv 0.2 rejects the interpreter, system interpreter not allowed</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3905">#3905</a>
+        opened by <a href="https://github.com/morotti">@morotti</a>
+        on 2024-05-29 14:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/morotti">@morotti</a> on 2024-05-29 14:54</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I've upgraded uv and I am finding that it cannot run anymore.
+It's finding the python interpeter but refusing to use it.</p>
+<p>Debug logs:</p>
+<pre><code>[root@f2652ef0cc07 default-venv]# python --version
+Python 3.8.12
+
+[root@f2652ef0cc07 default-venv]# uv --version
+uv 0.2.5
+
+[root@f2652ef0cc07 default-venv]# uv pip install --dry-run mypackage -vvv
+ uv_requirements::specification::from_source source=mypackage
+    0.003133s DEBUG uv_interpreter::discovery Searching for Python interpreter in virtual environments
+    0.003453s DEBUG uv_interpreter::discovery Found CPython 3.8.12 at `/default-venv/bin/python3` (active virtual environment)
+    0.003474s DEBUG uv_interpreter::discovery Ignoring Python interpreter at `/default-venv/bin/python3`: system interpreter not allowed
+error: No Python interpreters found in virtual environments
+
+[root@f2652ef0cc07 default-venv]# echo $PATH
+/default-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+[root@f2652ef0cc07 default-venv]# echo $VIRTUAL_ENV
+/default-venv
+
+[root@f2652ef0cc07 default-venv]# which -a python
+/default-venv/bin/python
+/usr/bin/python
+/bin/python
+
+[root@f2652ef0cc07 default-venv]# which -a python3
+/default-venv/bin/python3
+</code></pre>
+<p>For context, this is running in a centos container. <code>/default-venv</code> is where we put the venv in our containers.</p>
+<p>For reference, we built and package the python interpreter and prepare the venv ourselves. There's a possibility that doesn't match your expectations of a venv.</p>
+<p>looking at the logs:
+uv is finding the venv -&gt; &quot;0.003453s DEBUG uv_interpreter::discovery Found CPython 3.8.12 at <code>/default-venv/bin/python3</code> (active virtual environment)
+but it's just refusing to use it, thinking it's a system interpreter, how come? -&gt; &quot;Ignoring Python interpreter at <code>/default-venv/bin/python3</code>: system interpreter not allowed&quot;
+&quot;</p>
+<p>The only characteristics of a venv as far as I know, and as setup by the official &quot;.../bin/activate&quot; script, is to set the <code>$VIRTUAL_ENV</code> environment variable to the directory of the venv and set <code>$PATH</code> to the &quot;<venv>/bin&quot; directory.
+Both variables are set appropriately as far as I can tell. The venv is legit.
+<code>which -a</code> is highlighting other paths to other python interpreters including the actual system interpreter.</p>
+<p>What does uv think my venv is a not a venv? 🤔</p>
+<p>P.S. I figured I can pass &quot;uv pip install --python $VIRTUAL_ENV/bin/python3&quot; to workaround the issue.</p>
+<p>Regards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-29 14:56</div>
+            <div class="timeline-body"><p>A virtualenv definitionally (at least in pip) is an environment in which <code>sys.prefix != sys.base_prefix</code>. Does your environment have that quality?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/morotti">@morotti</a> on 2024-05-29 15:14</div>
+            <div class="timeline-body"><p>wow that's a really quick reply, thank you</p>
+<p>I am checking and the venv has sys.prefix == sys.base_prefix.
+I think it might be looking more like a build of the interpreter, rather than a separate venv.
+but it's still not the system interpreter.</p>
+<p>Interestingly the definition of pip appears to be different than the definition in the interpreter.
+You can find the official bin/activate script here to activate a venv https://github.com/python/cpython/blob/main/Lib/venv/scripts/common/activate
+It's just setting <code>$VIRTUAL_ENV</code> and <code>$PATH</code>, that is what defines when running in a virtual environment as far as I know.</p>
+<p>I wonder if <code>$VIRTUAL_ENV</code> should be checked instead of or in addition to <code>sys.prefix != sys.base_prefix</code>. 🤔</p>
+<p>I see a few other tickets were people are reporting uv stopped working in containers (in official python containers, github actions, etc...), same issue where it refuses to use the system interpreter, but the interpreter might actually be the system interpreter in the container. It would be worthwhile to check how these are setup and what environment variables they have for comparison.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-29 15:38</div>
+            <div class="timeline-body"><p>Yeah, people used to use <code>$VIRTUAL_ENV</code> to point to an arbitrary Python, but we deprecated that usage -- we now require that it's a formal virtual environment, and suggest <code>--python</code> for folks that are installing into non-virtual Python environments.</p>
+<p>Your case is a bit different, because you do consider this virtual, but it doesn't match the definition we share with pip. I'm not sure how to handle 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-05-29 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-29 20:54</div>
+            <div class="timeline-body"><p>I'm happy to look into further this when I'm back from vacation next week.</p>
+<p>Are you missing the <code>pyvenv.cfg</code> file? I believe this is required by the specification in <a href="https://peps.python.org/pep-0405/#specification">PEP 405</a> and is what results in the differing <code>sys.prefix</code>.</p>
+<p>We may want to be more lenient here, but I think so far we've been seeing usage of <code>VIRTUAL_ENV</code> that is not complaint with the specification and I would generally like to encourage people to follow the standard if feasible. If this turns out to be a significant burden, we can definitely explore relaxing our constraints or proposing updates to the Python standards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/morotti">@morotti</a> on 2024-06-03 14:56</div>
+            <div class="timeline-body"><p>Hello, sorry for delay to get back,</p>
+<p>I've checked and there is no <code>pyvenv.cfg</code> file.
+I think it's not a venv but a fresh build of the interpreter in a specific location. It's not a system interpreter either.
+I can pass the flags to work around the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-04 13:36</div>
+            <div class="timeline-body"><p>No problem I was on vacation until today! :)</p>
+<p>I think there's some difficulty in the language here since, to us, &quot;system&quot; currently means &quot;an interpreter that is not a virtual environment&quot;. I don't think we have a consistent way to identify if the interpreter actually belongs to the system (there's <code>EXTERNALLY-MANAGED</code> markers but those are not widely used yet). The idea is that we do not want to mutate interpreter environments that are not virtual environments without opt-in since that's Python best practice.</p>
+<p>It sounds like using <code>--system</code> or creating a <code>pyvenv.cfg</code> file are your best options right now. I am also thinking that if <code>VIRTUAL_ENV</code> is set to a interpreter that is not a virtual environment we should respect it without opt-in and just display a warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-06-04 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4018.html">astral-sh/uv#4018</a> on 2024-06-04 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-12 13:56</div>
+            <div class="timeline-body"><p>We're still considering #4018 but I think I'll close this there is a clear workaround and furthermore a simple way to properly declare that the environment should be treated as a virtual environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-12 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7907.html">astral-sh/uv#7907</a> on 2024-10-03 21:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

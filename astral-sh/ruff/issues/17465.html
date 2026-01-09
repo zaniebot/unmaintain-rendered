@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] avoid divergent iteration due to unbounded union growth - astral-sh/ruff #17465</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] avoid divergent iteration due to unbounded union growth</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17465">#17465</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-04-18 17:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 17:28</div>
+            <div class="timeline-body"><p>In this code sample (provided by @skshetry in https://github.com/astral-sh/ruff/issues/17457#issuecomment-2815848955), we enter divergent fixpoint iteration and end up panicking with &quot;too many iterations&quot;:</p>
+<pre><code class="language-py">class Klass:
+    def __init__(self) -&gt; None:
+        self.attr = 1
+
+    def copy(self, other: &quot;Klass&quot;):
+        self.attr = other.attr or self.attr
+</code></pre>
+<p>The issue is that we infer a type of <code>Unknown &amp; ~AlwaysFalsy</code>, which we then union with itself on each subsequent iteration, but we fail to simplify this union, so it just grows on each iteration.</p>
+<p>There should be multiple parts to the fix here. One is that we should be able to simplify <code>(Unknown &amp; ~AlwaysFalsy) | (Unknown &amp; ~AlwaysFalsy)</code> to just <code>Unknown &amp; ~AlwaysFalsy</code>.</p>
+<p>The other is that we should have a reliable backstop, since our union and intersection simplification will never be perfect. If any union or intersection grows over a certain size limit, we need to just best-effort reduce it to the nearest enclosing &quot;join&quot; type, or just <code>object</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2025-04-18 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Red Knot Alpha" by @carljm on 2025-04-18 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17457.html">astral-sh/ruff#17457</a> on 2025-04-18 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2025-04-18 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17467.html">astral-sh/ruff#17467</a> on 2025-04-18 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 18:13</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/17467 will fix this case.</p>
+<p>I'm inclined to not add the generalized backstop yet, because it will paper over cases of this and turn them from &quot;panic&quot; to &quot;slow and imprecise but doesn't panic&quot;. The latter is harder to detect and may cause us to miss problems. We probably want it eventually, but I'd rather not have it yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-18 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-18 22:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

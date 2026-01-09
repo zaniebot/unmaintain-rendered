@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore group completely when resolving depencencies. - astral-sh/uv #11104</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore group completely when resolving depencencies.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11104">#11104</a>
+        opened by <a href="https://github.com/fizcris">@fizcris</a>
+        on 2025-01-30 17:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fizcris">@fizcris</a> on 2025-01-30 17:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If we have a <code>project.toml</code> like:</p>
+<pre><code>[project]
+name = &quot;example&quot;
+version = &quot;1.0.0&quot;
+description = &quot;desccription&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;matplotlib&gt;=3.10.0&quot;,
+    &quot;pandas&gt;=2.2.3&quot;,
+]
+
+[dependency-groups]
+internal = [
+    &quot;my-app-1&quot;&gt;=1.0.0&quot;,
+    &quot;my-app-2&quot;&gt;=2.0.0&quot;,
+]
+
+[tool.uv.sources]
+my-app-1 = { index = &quot;internalRepo&quot;}
+my-app-2 = { index = &quot;internalRepo2&quot;}
+
+[[tool.uv.index]]
+name = &quot;internalRepo&quot;
+url = &quot;https://my-internal-repo.com/simple&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;internalRepo2&quot;
+url = &quot;https://my-internal-repo2.com/simple&quot;
+explicit = true
+</code></pre>
+<p>If in the moment we are solving dependencies there is access to the private repositories it will fail and there is no way to exclude the <code>internal</code> group.</p>
+<p>So the following command will fail <code>uv sync --no-group internal</code>. And there is no known way to completely exclude the <code>internal</code> group from dep resolution.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @fizcris on 2025-01-30 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-30 17:31</div>
+            <div class="timeline-body"><p>No, there's no way to exclude a group from the resolution at this time. If you did, it wouldn't be installable. What's the use-case for not having access to the index?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fizcris">@fizcris</a> on 2025-01-30 18:06</div>
+            <div class="timeline-body"><p>That is ok if it is not installable.</p>
+<p>If the index is a private repository and the app can only be installed when there is access to that repository, hence if you only need that library for some parts of the code you would have to install them manually when required.</p>
+<p>The app could partially work without those libraries when it does not have access but is not able to resolve the deps hence renders the uv unusable and needs manual installation of the libraries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-30 18:37</div>
+            <div class="timeline-body"><blockquote>
+<p>hence if you only need that library for some parts of the code you would have to install them manually when required.</p>
+</blockquote>
+<p>How would you install these?</p>
+<p>Why include them in <code>[dependency-groups]</code> if they can't actually be installed?</p>
+<p>Why not generate the lockfile with access to the private index? You can still do partial installs later without access to the index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2025-01-30 21:44</div>
+            <div class="timeline-body"><p>Same as #10201.</p>
+<p>I'm thinking of two possible solutions for this (if we want to support such situations...):</p>
+<p>First, similar to https://github.com/astral-sh/uv/issues/11064 but, instead, destruct <code>uv.lock</code> into per-group files (e.g. <code>internal.uv.lock</code>).</p>
+<p>Second, it could lazy solving dependency for specified indexes:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+my-app-1 = { index = &quot;internalRepo&quot;}
+
+[[tool.uv.index]]
+name = &quot;internalRepo&quot;
+url = &quot;https://my-internal-repo.com/simple&quot;
+explicit = true
+lazy = true
+</code></pre>
+<p>I don't know how much this is possible, via this option, dependencies with lazy indexes are not resolved in lockfile but when actually requested for install (e.g. <code>uv sync --group internal</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fizcris">@fizcris</a> on 2025-01-30 23:07</div>
+            <div class="timeline-body"><p>Well image that you have private machines and public machines, you dont want to be maintaining multiple lockfiles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-31 18:33</div>
+            <div class="timeline-body"><p>I don't understand why you'd need multiple lockfiles. You'd lock on the private machine and it'd be usable everywhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9654.html">astral-sh/uv#9654</a> on 2025-02-09 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11675.html">astral-sh/uv#11675</a> on 2025-02-20 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12309.html">astral-sh/uv#12309</a> on 2025-03-19 08:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eremeevfd">@eremeevfd</a> on 2025-06-30 16:02</div>
+            <div class="timeline-body"><p>We also found ourselves in a similar situation.<br />
+Our case is: we need the libraries from private registry only for testing, but for production build, we don't want to expose credentials for registry and have these dependencies present at all.<br />
+But it's currently impossible to install only non-private dependencies unfortunately. Maybe it's possible to disable resolver at all if it's not needed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-30 16:10</div>
+            <div class="timeline-body"><p>@eremeevfd you can <code>uv sync --frozen</code> and skip performing a resolution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eremeevfd">@eremeevfd</a> on 2025-07-03 14:33</div>
+            <div class="timeline-body"><p>@zanieb Thanks for your advice, just tried it and got this error:</p>
+<pre><code>2025-07-03T14:19:44: #11 [stage-0 5/5] RUN uv sync --frozen --no-cache --compile-bytecode
+2025-07-03T14:19:45: #11 0.890 Downloading cpython-3.11.13-linux-x86_64-gnu (download) (30.1MiB)
+2025-07-03T14:19:46: #11 2.217  Downloading cpython-3.11.13-linux-x86_64-gnu (download)
+2025-07-03T14:19:47: #11 2.412 Using CPython 3.11.13
+2025-07-03T14:19:47: #11 2.412 Creating virtual environment at: /.venv
+2025-07-03T14:19:47: #11 2.491   × Failed to download `private-dependency==3.0.2`
+2025-07-03T14:19:47: #11 2.491   ├─▶ Failed to fetch:
+2025-07-03T14:19:47: #11 2.491   │   `{here was a url to private pypi trying to download private-dependency}`
+2025-07-03T14:19:47: #11 2.491   ╰─▶ HTTP status client error (401 Unauthorized) for url
+2025-07-03T14:19:47: #11 2.491       (...)
+2025-07-03T14:19:47: #11 2.491   help: `private-dependency` (v3.0.2) was included because
+2025-07-03T14:19:47: #11 2.491         `my-current-project` (v0.1.0) depends on
+2025-07-03T14:19:47: #11 2.491         `private-dependency`
+2025-07-03T14:19:48: #11 ERROR: process &quot;/bin/sh -c uv sync --frozen --no-cache --compile-bytecode&quot; did not complete successfully: exit code: 1
+</code></pre>
+<p>however I have a suspicion that it happens because we use <code>pyturbojpeg</code> and this library doesn't have any wheels, so it is being built with <code>setup.py</code> every installation. And when it's trying to be built from scratch it tries to download <code>private-dependency</code>. So maybe it's not a UV issue at all or I should maybe change build-backend.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/auwi-nordic">@auwi-nordic</a> on 2025-10-08 12:51</div>
+            <div class="timeline-body"><p>We have a similar usecase and same issue.. indices that are available during development or testing may not be available when building, e.g. building in a Dockerfile.</p>
+<p>A workaround can be to mount a pre-generated lock file, and using <code>--frozen</code>.
+This worked for me in the first step of a two-step install with <code>--no-install-project</code>,
+but when trying to run <code>uv sync</code> a second time to install the project, uv complains about
+not being able to find uv_build from the private index which it then doesn't have access to.</p>
+<p>One dirty workaround that works OK in docker is to modify pyproject.toml, e.g. disable all the indices
+<code>RUN sed -i 's/tool.uv.index/disabled/g' pyproject.toml</code></p>
+<p>But it would be nice if uv had some better options to work around these issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-08 13:31</div>
+            <div class="timeline-body"><p>@auwi-nordic we shouldn't look for <code>uv_build</code> in an index if the requested version range is compatible with the current <code>uv</code> version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ketozhang">@ketozhang</a> on 2025-12-18 22:55</div>
+            <div class="timeline-body"><p>@zanieb, it looks like you're assuming that if you take the union of dependencies from all groups, they must all be compatible. I do not find that statement in <a href="https://packaging.python.org/en/latest/specifications/dependency-groups/#dependency-groups">the specification</a>.</p>
+<p>Let's expand the use case beyond the above (i.e., dependency-group &amp; private index).</p>
+<p>Here's another use case where you want to migrate between two major version of a doc builder (here I use Jupyter Book). When a user intends to use either group <code>docs-jb1</code> and not <code>docs-jb2</code> (and vice-versa), this fails to be resolved.</p>
+<pre><code class="language-toml">[project]
+name = &quot;myproject&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[dependency-groups]
+docs-jb1 = [
+    &quot;jupyterbook &gt;=1,&lt;2&quot;,
+]
+
+docs-jb2 = [
+    &quot;jupyterbook &gt;=2&quot;,
+]
+</code></pre>
+<pre><code class="language-console">❯ uv sync --group docs-jb1
+  × No solution found when resolving dependencies:
+  ╰─▶ Because myproject:docs-jb2 depends on jupyterbook&gt;=2 and myproject:docs-jb1 depends on jupyterbook&gt;=1,&lt;2, we can conclude that myproject:docs-jb1 and myproject:docs-jb2 are incompatible.
+      And because your project requires myproject:docs-jb1 and myproject:docs-jb2, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<blockquote>
+<p>I don't understand why you'd need multiple lockfiles. You'd lock on the private machine and it'd be usable everywhere?</p>
+</blockquote>
+<p>There are a lot of use case for this for hybrid application &amp; package. You may want to build a lock file per deployed environment which may have slightly differences in constraints (e.g., A/B testing)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-18 22:59</div>
+            <div class="timeline-body"><blockquote>
+<p>it looks like you're assuming that if you take the union of dependencies from all groups, they must all be compatible. I do not find that statement in <a href="https://packaging.python.org/en/latest/specifications/dependency-groups/#dependency-groups">the specification</a>.</p>
+</blockquote>
+<p>There is no specification which defines how dependency resolution should be performed in Python projects. This is a constraint of our resolution and lock approach (some background in https://docs.astral.sh/uv/concepts/resolution/#universal-resolution).</p>
+<p>We do allow the use-case you've just described. You can declare conflicting groups, see https://docs.astral.sh/uv/concepts/resolution/#conflicting-dependencies</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ketozhang">@ketozhang</a> on 2025-12-18 23:24</div>
+            <div class="timeline-body"><p>Okay that's fair. If that's how uv want to define their own lock files.</p>
+<p>I want to bring up pylock.toml is supports lock file that represents a subset of dependency groups:
+https://packaging.python.org/en/latest/specifications/pylock-toml/#dependency-groups</p>
+<p>Here <code>uv pip compile</code> is only supports <code>dependency-groups=[]</code> (i.e., lock file compatible with all groups OR none). Doing more is optional...</p>
+<blockquote>
+<p>Lockers MAY choose to not support writing lock files that support extras and dependency groups (i.e. tools may only support exporting a single-use lock file).</p>
+</blockquote>
+<p>, however I would encourage uv supports this because we really need a tooling support for deploys (which includes this issue's usage)</p>
+<p>A few examples of lockfile sets and purposes:</p>
+<ul>
+<li>A deployment lockfile: ['dev']</li>
+<li>A private server deployment lockfile: ['test', 'prod']</li>
+<li>A doc building lockfile: ['docs-jb1']; ['docs-jb2']</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ketozhang">@ketozhang</a> on 2025-12-18 23:26</div>
+            <div class="timeline-body"><p>Related, but is resolved #8969</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ketozhang">@ketozhang</a> on 2025-12-18 23:39</div>
+            <div class="timeline-body"><p>Sorry I'm mistaken, this is already supported by <code>uv pip sync</code> and <code>uv pip compile</code> variant (just not <code>uv sync</code> and <code>uv lock</code>).</p>
+<pre><code>❯ uv pip compile --group docs-jb1 --format pylock.toml | grep jupyter-book -A 2
+Resolved 93 packages in 29ms
+name = &quot;jupyter-book&quot;
+version = &quot;1.0.4.post1&quot;
+sdist = { url = &quot;https://files.pythonhosted.org/packages/cf/ee/5d10ce5b161764ad44219853f386e98b535cb3879bcb0d7376961a1e3897/jupyter_book-1.0.4.post1.tar.gz&quot;, upload-time = 2025-02-28T14:55:48Z, size = 67412, hashes = { sha256 = &quot;2fe92c49ff74840edc0a86bb034eafdd0f645fca6e48266be367ce4d808b9601&quot; } }
+
+❯ uv pip compile --group docs-jb2 --format pylock.toml | grep jupyter-book -A 2
+Resolved 79 packages in 164ms
+name = &quot;jupyter-book&quot;
+version = &quot;2.1.0&quot;
+sdist = { url = &quot;https://files.pythonhosted.org/packages/9d/ef/618a3080c9c2f76f6d17212b7954db448d7f92da6459450a6acce1e0d596/jupyter_book-2.1.0.tar.gz&quot;, upload-time = 2025-12-05T13:16:57Z, size = 14440795, hashes = { sha256 = &quot;f42b6f264e6e270b07362f4430ef671edccbb1be36cd0872afd231c642a4ba7e&quot; } }
+</code></pre>
+<hr />
+<p>However the <code>dependency-groups</code> field is not written in the lock file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-19 02:29</div>
+            <div class="timeline-body"><p>The <code>dependency-groups</code> field is for allowing consumers of the lock to select a subset of the lockfile to install. We don't support that — it's a single-use lockfile. I believe we're explicitly supposed to leave it as <code>[]</code> in this case, though I understand the specification is a little confusing.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

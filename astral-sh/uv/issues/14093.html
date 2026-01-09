@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>project sources shadow workspace sources, even when disabled by markers - astral-sh/uv #14093</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>project sources shadow workspace sources, even when disabled by markers</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14093">#14093</a>
+        opened by <a href="https://github.com/oconnor663">@oconnor663</a>
+        on 2025-06-16 23:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-16 23:58</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Here's a minimal repro. <code>pyproject.toml</code> at the root of the workspace:</p>
+<pre><code class="language-toml">[tool.uv.workspace]
+members = [&quot;foo&quot;]
+
+[[tool.uv.sources.numpy]]
+path = &quot;/var/tmp/numpy-2.2.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;
+</code></pre>
+<p>And <code>foo/pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [&quot;numpy&quot;]
+
+[[tool.uv.sources.numpy]]
+path = &quot;/var/tmp/numpy-2.2.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;
+marker = &quot;sys_platform == 'foobarbaz'&quot;
+</code></pre>
+<p>So what we have is both a workspace-level and a project-level source for <code>numpy</code>. However, the project-level source is disabled by a <code>marker</code> that will never be true. Here's what I see when I <code>uv sync</code>:</p>
+<pre><code>$ rm -r .venv &amp;&amp; uv sync
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+Resolved 3 packages in 60ms
+Installed 1 package in 11ms
+ + numpy==2.2.0
+</code></pre>
+<p>Contrast that with what I see if I remove the project-level source:</p>
+<pre><code>$ rm -r .venv &amp;&amp; uv sync
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+Resolved 2 packages in 0.65ms
+Installed 1 package in 11ms
+ + numpy==2.2.0 (from file:///var/tmp/numpy-2.2.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+</code></pre>
+<p>In this case the workspace-level source is used. The bug(?) is that it should've been used in both cases. I think the cause is structure of the following <code>if</code> statement:</p>
+<p>https://github.com/astral-sh/uv/blob/cf67d9c633c1545ae5f46a1020182f4cef62ae76/crates/uv-distribution/src/metadata/lowering.rs#L49-L55</p>
+<p>In that code, if there's a project-level source with a matching name, then any workspace-level source is ignored. But this happens before markers are checked.</p>
+<h3>Platform</h3>
+<p>linux</p>
+<h3>Version</h3>
+<p>uv 0.7.13 (62ed17b23 2025-06-12)</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @oconnor663 on 2025-06-16 23:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-17 14:41</div>
+            <div class="timeline-body"><p>@charliermarsh's judgment is that this behavior is plausibly correct, since there's no good use case for mixing sources like this. My first response was that since we allow <em>multiple</em> sources for the same dependency, that didn't seem much different from mixing workspace and project sources. However, now that I've played with this a bit, I've realized that when there are multiple sources we require them to be <em>disjoint</em>, e.g.</p>
+<pre><code>error: Failed to parse: `foo/pyproject.toml`
+  Caused by: TOML parse error at line 9, column 1
+  |
+9 | [[tool.uv.sources.numpy]]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^
+Source markers must be disjoint, but the following markers overlap: `sys_platform == 'foobarbaz'` and `sys_platform == 'foobarbaz'`.
+</code></pre>
+<p>Requiring project level sources to be disjoint from workspace level sources seems silly, so I agree that we should probably just document the current behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14136.html">astral-sh/uv#14136</a> on 2025-06-18 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @oconnor663 on 2025-06-18 22:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

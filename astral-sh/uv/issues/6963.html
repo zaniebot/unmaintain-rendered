@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv.lock gets invalid value when changing pyproject.toml manually - astral-sh/uv #6963</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv.lock gets invalid value when changing pyproject.toml manually</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6963">#6963</a>
+        opened by <a href="https://github.com/Morgadoooo">@Morgadoooo</a>
+        on 2024-09-03 09:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Morgadoooo">@Morgadoooo</a> on 2024-09-03 09:49</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>When using <code>pyproject.toml</code> for managing dependencies, I got a weird behaviour.
+Using <code>python 3.9.16</code> and <code>uv 0.4.2</code>
+My first <code>pyproject.toml</code> is this one</p>
+<pre><code class="language-toml">[project]
+name = &quot;toto&quot;
+version = &quot;1.0.0&quot;
+requires-python = &quot;&gt;=3.8,&lt;3.13&quot;
+dependencies = [
+  &quot;numpy&gt;=1.18.5&quot;,
+  &quot;pandas&gt;=1.1.5&quot;,
+]
+
+....
+</code></pre>
+<p>When i do <code>uv lock</code> everything is fine and I also can do <code>uv sync</code>
+I noticed that for python 3.12 you cannot use numpy &lt;1.26.4, so I decided to update the pyproject.toml manually like this.</p>
+<pre><code class="language-toml">[project]
+name = &quot;toto&quot;
+version = &quot;1.0.0&quot;
+requires-python = &quot;&gt;=3.8,&lt;3.13&quot;
+dependencies = [
+  &quot;numpy&gt;=1.18.5; python_version&lt;'3.12'&quot;,
+  &quot;numpy&gt;1.26.4; python_version=='3.12'&quot;,
+  &quot;pandas&gt;=1.1.5; python_version&lt;'3.12'&quot;,
+  &quot;pandas&gt;=2.1.0; python_version=='3.12'&quot;,
+]
+
+...
+</code></pre>
+<p>But now if I try to do <code>uv lock</code> and then <code>uv sync</code> in python 3.9.16 uv tries to install numpy==2.1.0 which is only available for python &gt;= 3.10</p>
+<p>Deleting the <code>uv.lock</code> and doing again <code>uv lock</code> fixes the issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 12:55</div>
+            <div class="timeline-body"><p>I haven't been able to reproduce this yet:</p>
+<pre><code>❯ uv sync --python 3.9.16
+Using Python 3.9.16
+Creating virtualenv at: .venv
+Resolved 9 packages in 0.62ms
+Prepared 6 packages in 825ms
+Installed 6 packages in 58ms
+ + numpy==1.24.4
+ + pandas==2.0.3
+ + python-dateutil==2.9.0.post0
+ + pytz==2024.1
+ + six==1.16.0
+ + tzdata==2024.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-09-03 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 12:55</div>
+            <div class="timeline-body"><p>Any idea what I could be doing wrong? I just took the first <code>pyproject.toml</code>, ran <code>uv lock</code>, then replaced it with the second, ran <code>uv lock</code>, then ran <code>uv sync --python 3.9.16</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Morgadoooo">@Morgadoooo</a> on 2024-09-03 13:04</div>
+            <div class="timeline-body"><p>Did you do the first <code>uv sync</code> before changing the pyproject ?
+For full context on the steps,</p>
+<pre><code class="language-bash">uv venv -p 3.9
+# python 3.9.16 used here
+uv lock
+uv sync
+
+# I change the pyproject.toml manually
+
+uv lock
+uv sync
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 13:45</div>
+            <div class="timeline-body"><p>It's still looking right to me, hmm:</p>
+<pre><code class="language-console">❯ uv lock -p 3.9.16
+Using Python 3.9.16
+Resolved 7 packages in 8ms
+
+❯ uv sync -p 3.9.16
+Using Python 3.9.16
+Creating virtualenv at: .venv
+Resolved 7 packages in 0.38ms
+Prepared 6 packages in 0.29ms
+Installed 6 packages in 33ms
+ + numpy==1.24.4
+ + pandas==2.0.3
+ + python-dateutil==2.9.0.post0
+ + pytz==2024.1
+ + six==1.16.0
+ + tzdata==2024.1
+
+❯ uv lock -p 3.9.16
+Resolved 9 packages in 4ms
+Updated numpy v1.24.4 -&gt; v1.24.4, v2.1.0
+Updated pandas v2.0.3 -&gt; v2.0.3, v2.2.2
+
+❯ uv sync -p 3.9.16
+Resolved 9 packages in 0.81ms
+Audited 6 packages in 0.02ms
+
+❯ uv pip list
+Package         Version
+--------------- -----------
+numpy           1.24.4
+pandas          2.0.3
+python-dateutil 2.9.0.post0
+pytz            2024.1
+six             1.16.0
+tzdata          2024.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Morgadoooo">@Morgadoooo</a> on 2024-09-03 14:07</div>
+            <div class="timeline-body"><p>Ok so, thanks to you I think I got where the issue came from.</p>
+<p>I had a dependency in my <code>[tool.uv] dev-dependencies</code> that also had deps for numpy and pandas, but this package had his deps like this</p>
+<pre><code class="language-toml">requires-python = &quot;&gt;=3.8&quot;
+dependencies = [
+  &quot;numpy&gt;=1.18.5&quot;,
+  &quot;pandas&gt;=1.1.5&quot;,
+]
+</code></pre>
+<p>if i remove the package from the dev-dependencies there is no problem.</p>
+<p>The package is a private package so I can totally fix it on my own to prevent this issue by changing the deps of the external package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Morgadoooo">@Morgadoooo</a> on 2024-09-03 14:14</div>
+            <div class="timeline-body"><p>For context too, the external package was built using poetry and</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;poetry-core&quot;]
+build-backend = &quot;poetry.core.masonry.api&quot;
+</code></pre>
+<p>I don't know if it's relevant or not just to give more info on the package that was giving the issue here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-03 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 17:31</div>
+            <div class="timeline-body"><p>Interesting... I would still expect it to avoid choosing a version that's incompatible with Python 3.9. Happy to look into it further if you can provide a full reproduction, otherwise I'll close out for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-05 02:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add warning for packages without lower bound with `--resolution=lowest` - astral-sh/uv #2797</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add warning for packages without lower bound with `--resolution=lowest`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2797">#2797</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-04-03 04:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-03 04:34</div>
+            <div class="timeline-body"><p>per https://github.com/astral-sh/uv/issues/1718#issuecomment-1954420636 we should throw a warning in this case since without a lower bound we will take the <em>oldest</em> version of a package which is actually quite unlikely to be compatible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-04-03 04:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-04-03 04:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-04-23 22:30</div>
+            <div class="timeline-body"><p>@zanieb I'd like to try working on this! It's basically my first time in this codebase, so if there's any top-level guidance you can give that would be amazing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-23 23:06</div>
+            <div class="timeline-body"><p>Hi! You've picked kind of a hard one for a first task, I'm not sure how to do this off the top of my head.</p>
+<p>My first thought is to go to the <code>Resolver</code> in <code>crates/uv-resolver/src/resolver/mod.rs</code> and do something like</p>
+<pre><code class="language-rust">        if matches!(
+            self.selector.resolution_strategy(),
+            ResolutionStrategy::Lowest
+        ) {
+            for requirement in self.requirements {
+                if Some(VersionOrUrl::Version(version)) = requirement.version_or_url {
+                    if &lt;the version specifier has no lower bound&gt; {
+                        warn_user_once!(...)
+                    }
+                }
+            }
+        }
+</code></pre>
+<p>There are a few open questions:</p>
+<ul>
+<li>Is this the right place to do this? Should we just write a utility and call it from each CLI command implementation?</li>
+<li>How do we check if there is no lower bound on a version specifier?</li>
+<li>This doesn't account for <code>self.constraints</code> etc. but needs to, as the bound could be introduced there</li>
+</ul>
+<p>Let me know if you want more than that I can look a bit further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-23 23:23</div>
+            <div class="timeline-body"><p>This also only seems sufficient for <code>LowestDirect</code> — since these are the direct dependencies. For <code>Lowest</code>, I'm not sure when we will know that there is no lower bound present. cc @charliermarsh ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-04-25 01:07</div>
+            <div class="timeline-body"><p>Thanks for the guidance @zanieb ! I really appreciate it.</p>
+<blockquote>
+<p>Is this the right place to do this? Should we just write a utility and call it from each CLI command implementation?</p>
+</blockquote>
+<p>I've been playing around to see how feasible this is. The option you suggest of adding it to <code>resolver/mod.rs</code> is pretty straightforward. Moving into a utility function is a little more clean in the sense that it doesn't touch the inner machinery of resolver, however it will be much more complicated since it needs to constrain requirements (again).</p>
+<blockquote>
+<p>How do we check if there is no lower bound on a version specifier?</p>
+</blockquote>
+<p>In my testing, this seems to work</p>
+<pre><code class="language-rust">if *dep_version == (Range::full()) {
+</code></pre>
+<blockquote>
+<p>This doesn't account for self.constraints etc. but needs to, as the bound could be introduced there</p>
+</blockquote>
+<p>One option is to add the warning or utility function <a href="https://github.com/astral-sh/uv/blob/3b6e16bb0ed7b6b4384fc06cf53d4da91e33f1e3/crates/uv-resolver/src/resolver/mod.rs#L822-L830">here</a> and in similar transitive locations. Would this work?</p>
+<p>I'll upload a draft PR to show what I mean.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-04-25 01:11</div>
+            <div class="timeline-body"><p>Here's a draft PR with debug logs where the warning might go: https://github.com/ottaviohartman/uv/pull/2/files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4006.html">astral-sh/uv#4006</a> on 2024-06-04 01:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-06-04 01:47</div>
+            <div class="timeline-body"><p>Opened #4006 , let me know if this is the right track. If not I don't mind closing and handing this task to someone more knowledgeable!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-18 14:33</div>
+            <div class="timeline-body"><p>I think this is closed in https://github.com/astral-sh/uv/pull/5142 now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-07-18 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5178.html">astral-sh/uv#5178</a> on 2024-07-18 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-07-18 14:54</div>
+            <div class="timeline-body"><p>Sorry for being AWOL on this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-18 14:56</div>
+            <div class="timeline-body"><p>No problem, it happens to all of us :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5953.html">astral-sh/uv#5953</a> on 2024-08-09 08:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

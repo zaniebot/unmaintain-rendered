@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline uv sync still requires dev dependencies and attempts PyPI fetches with --frozen --no-index - astral-sh/uv #15519</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Offline uv sync still requires dev dependencies and attempts PyPI fetches with --frozen --no-index</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15519">#15519</a>
+        opened by <a href="https://github.com/JunYanOOO">@JunYanOOO</a>
+        on 2025-08-25 16:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JunYanOOO">@JunYanOOO</a> on 2025-08-25 16:25</div>
+            <div class="timeline-body"><h3>Question</h3>
+<h3>Summary</h3>
+<p>When preparing an offline production install, uv sync appears to (a) include the dev dependency group even though I set [tool.uv].default-groups = [], and (b) with --frozen --no-index --find-links=./wheelhouse, it still attempts to fetch from PyPI instead of resolving only from the local wheelhouse.</p>
+<p><code>pyproject.toml</code></p>
+<pre><code>[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;==3.12.11&quot;
+dependencies = [
+    &quot;flask==3.1.1&quot;,
+    &quot;redis==6.2.0&quot;,
+]
+
+[dependency-groups]
+dev = [
+    &quot;pytest&gt;=8.4.1&quot;,
+]
+
+[tool.uv]
+default-groups = []
+</code></pre>
+<p>For production, I pre-download wheels into ./wheelhouse (including Flask/Redis) and want to exclude all dev deps (e.g., pytest) from the sync.</p>
+<ol>
+<li>Create a project with the pyproject.toml above.</li>
+<li>Download required wheels in ./wheelhouse.
+<code>uvx pip wheel --only-binary=:all: -r requirements.txt -w wheelhouse</code></li>
+<li>In an offline production machine, run:<code>uv sync --no-index --find-links=./wheelhouse</code></li>
+<li>Observe resolution error mentioning pytest from the dev group:</li>
+</ol>
+<pre><code>Using CPython 3.12.11
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because pytest was not found in the provided package locations and test:dev depends on pytest&gt;=8.4.1,
+      we can conclude that test:dev's requirements are unsatisfiable.
+      And because your project requires test:dev, we can conclude that your project's requirements are
+      unsatisfiable.
+</code></pre>
+<ol start="5">
+<li>Now try the frozen, offline installation:
+<code>uv sync --no-index --find-links=./wheelhouse --frozen</code></li>
+<li>It attempts a network fetch from PyPI:</li>
+</ol>
+<pre><code>  × Failed to download `flask==3.1.1`
+  ├─▶ Failed to fetch:
+  │   `https://files.pythonhosted.org/packages/3d/68/9d4508e893976286d2ead7f8f571314af6c2037af34853a30fd769c02e9d/flask-3.1.1-py3-none-any.whl`
+  ├─▶ Request failed after 3 retries
+  ├─▶ error sending request for url
+  │   (https://files.pythonhosted.org/packages/3d/68/9d4508e893976286d2ead7f8f571314af6c2037af34853a30fd769c02e9d/flask-3.1.1-py3-none-any.whl)
+  ├─▶ client error (Connect)
+  ├─▶ dns error
+  ╰─▶ failed to lookup address information: Temporary failure in name resolution
+  help: `flask` (v3.1.1) was included because `test` (v0.1.0) depends on `flask`
+</code></pre>
+<h3>Questions</h3>
+<ol>
+<li>Is disabling default groups via <code>default-groups = []</code> intended to exclude <code>dev</code> by default during uv <code>sync</code>?</li>
+<li>Should <code>--no-index</code> + <code>--find-links</code> be honored during <code>--frozen</code> syncs so that no network access is attempted?</li>
+<li>What is the recommended, fully-offline workflow to sync production deps from a local wheelhouse without including any dev groups?</li>
+</ol>
+<h3>Platform</h3>
+<p>Ubuntu 22.04</p>
+<h3>Version</h3>
+<p>uv 0.8.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @JunYanOOO on 2025-08-25 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-25 16:32</div>
+            <div class="timeline-body"><blockquote>
+<p>Observe resolution error mentioning pytest from the dev group</p>
+</blockquote>
+<p>I think this part makes sense, because generating <code>uv.lock</code> requires that we resolve <em>all</em> dependencies, even those that won't ultimately be included. So to generate or validate a <code>uv.lock</code>, we need to resolve the dev dependencies. To avoid that, you need to use <code>--frozen</code>, which skips lockfile validation.</p>
+<blockquote>
+<p>It attempts a network fetch from PyPI</p>
+</blockquote>
+<p>This part is indeed confusing user behavior but I'm unsure on whether it's correct. <code>--no-index</code> and <code>--frozen</code> should probably be considered an error? Because <code>--no-index</code> would require us to re-resolve the <code>uv.lock</code>, but <code>--frozen</code> tells us to use it as-is. I guess we could arguably show a clearer error like: &quot;The lockfile requires us to fetch from an index, but you told us to use <code>--no-index</code>&quot;. I don't think the use of <code>--no-index --frozen</code> can work though.</p>
+<blockquote>
+<p>What is the recommended, fully-offline workflow to sync production deps from a local wheelhouse without including any dev groups?</p>
+</blockquote>
+<p>I don't know if we have a perfect answer here right now. Typically I think you'd <code>uv sync</code> to populate a cache, then rely on the cache rather than syncing a local wheelhouse.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JunYanOOO">@JunYanOOO</a> on 2025-08-26 03:17</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't know if we have a perfect answer here right now. Typically I think you'd uv sync to populate a cache, then rely on the cache rather than syncing a local wheelhouse.</p>
+</blockquote>
+<p>Just to confirm: are you suggesting that I pre-populate uv’s cache on a development machine (with internet access), then copy that cache to the production host and have production rely on it—rather than syncing from a local wheelhouse—so uv sync can run fully offline (and without the dev group)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/detlefla">@detlefla</a> on 2025-09-10 10:17</div>
+            <div class="timeline-body"><p>I'm running into the same problem. I tried to get the dependencies from <code>uv pip list</code> and/or <code>uv tree</code> and use these to populate the wheelhouse. The platform-irrelevant dependencies aren't listed there but are required by <code>uv add</code>.</p>
+<p>Copying the lockfile to the production machine creates other problems, BTW: <code>uv.lock</code> contains the pathname of the wheelhouse, and this has to be identical on the production machine then. Or I must tweak <code>uv.lock</code> whose format is not a public interface (AFAICT).</p>
+<p>Or could we manipulate the lockfile and remove all irrelevant dependencies? No good feelings about that here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-10 13:29</div>
+            <div class="timeline-body"><p>@detlefla the issue here is about using <code>--no-index</code> with <code>--frozen</code> which you shouldn't do as they're conflicting options (uv should error in the future). Could you open a new issue with more details? (Unless you're doing that same thing)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

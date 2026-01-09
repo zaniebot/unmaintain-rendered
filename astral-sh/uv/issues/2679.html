@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for platform independent lockfile and SHA-pinning - astral-sh/uv #2679</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for platform independent lockfile and SHA-pinning</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2679">#2679</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2024-03-26 23:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-03-26 23:03</div>
+            <div class="timeline-body"><p>re-raising https://github.com/astral-sh/rye/issues/881</p>
+<blockquote>
+<p>Hi there, thank you for the great effort put into this amazing project.</p>
+<p>I'm asking whether you plan in the future (maybe when <code>uv</code> support won't no longer be experimental) to overcome the <a href="https://rye-up.com/guide/sync/#limitations">current limitations</a> in order to being able to:</p>
+<pre><code>* Generate a platform-indipendent lockfile
+
+* Pin the dependency version by SHA. You can already do that with pip-tools (option `--generate-hashes`), but apparently this is not available inside the rye CLI
+
+* Check for outdated dependencies (like you can do with pip: `pip list --outdated`)</code></pre>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/rye/issues/881.html">astral-sh/rye#881</a> on 2024-03-26 23:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../DetachHead/pytest-robotframework/pulls/251.html">DetachHead/pytest-robotframework#251</a> on 2024-03-26 23:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support for platform indipendent lockfile and SHA-pinning" to "Support for platform independent lockfile and SHA-pinning" by @AlexWaygood on 2024-03-26 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-03-26 23:28</div>
+            <div class="timeline-body"><p>Poetry and PDM support this feature, I think that it is essential for managing any kind of project that will be developed/run on different platforms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-27 00:15</div>
+            <div class="timeline-body"><p>Yes, we absolutely plan to support this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-03-27 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/considerate">@considerate</a> on 2024-03-28 19:51</div>
+            <div class="timeline-body"><p>@charliermarsh Are you planning on creating a new format or do you plan to export to <code>poetry.lock</code> or <code>pdm.lock</code>?</p>
+<p>I would personally be very grateful if you would target <code>poetry.lock</code> since this enables interoperability with nix using <a href="https://github.com/nix-community/poetry2nix">poetry2nix</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1870.html">astral-sh/uv#1870</a> on 2024-04-10 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2024-04-10 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2142.html">astral-sh/uv#2142</a> on 2024-04-15 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-04-15 20:12</div>
+            <div class="timeline-body"><p>Right now I am having to generate the dependencies for each environment (windows, linux, mac) on different machines when running <code>uv pip compile</code> and it is time consuming plus very difficult for developers to change any dependency.</p>
+<p>Instead of platform independent lock file, I believe it could be simpler to just allow uv to receive the platform parameters and build the file to the specified platform.</p>
+<p>Something like</p>
+<pre><code>uv pip compile --target windows-x86_64
+uv pip compile --target linux-i686
+up pip compile --target mac-aarch64
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/considerate">@considerate</a> on 2024-04-16 01:00</div>
+            <div class="timeline-body"><p>I think the suggestion by @inoa-jboliveira would be a great intermediate step to getting cross-platform support for lock files. I would like to suggest to using the first two parts of the <a href="https://www.gnu.org/software/autoconf/manual/autoconf-2.68/html_node/Specifying-Target-Triplets.html">target triplet</a> (i.e <code>cpu-vendor</code> rather than the above <code>vendor-cpu</code>).</p>
+<p>That would yield:</p>
+<pre><code>uv pip compile --target x86_64-windows
+uv pip compile --target i686-pc-linux
+up pip compile --target aarch64-darwin
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 01:10</div>
+            <div class="timeline-body"><p>Yeah we've considered / are considering such designs but we're unlikely to implement anything like that until we've made a holistic decision on how we want to handle cross-platform locking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 01:10</div>
+            <div class="timeline-body"><p>For what it's worth, there's extensive discussion around similar ideas here: https://discuss.python.org/t/lock-files-again-but-this-time-w-sdists/46593/1.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 01:20</div>
+            <div class="timeline-body"><p>(I believe we could support a <code>--target</code> thing pretty easily. It turns out that a target triple isn't nearly enough to fully specify a &quot;Python platform&quot; given the markers that Python exposes in dependency resolution, but we would probably pick some &quot;prototypical&quot; set of environment markers based on the triple. The resolution wouldn't be guaranteed to work on all <code>x86_64-linux</code> machines, since e.g. the glibc version could differ, but in reality people are already relying on those kinds of resolutions being portable given that they're locking on one machine and using the files on others.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-04-16 02:12</div>
+            <div class="timeline-body"><p>Not only it should be much simpler to support a target environment (since you kinda do that right now selecting the current environment) but it does not restrict you from later on having multiple targets so files can be portable cross platform.</p>
+<p>In terms of adoption of uv, I believe it is better to provide the functionality and later improve it than to be a blocker for many people. I'm pushing hard to replace all my tooling stack with uv on a large project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbcpollak">@jbcpollak</a> on 2024-04-16 17:33</div>
+            <div class="timeline-body"><p>a <code>--target</code> solution would be a good interim solution for our usecase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 17:33</div>
+            <div class="timeline-body"><p>Yeah I may hack on it when I have some time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paco-sevilla">@paco-sevilla</a> on 2024-04-17 13:07</div>
+            <div class="timeline-body"><p>Hi all!
+FWIW, I wanted to mention that at the company where I work, we use <a href="https://pypi.org/project/pip-compile-cross-platform/">pip-compile-cross-platform</a> to get a single <code>requirements.txt</code> file that works on all platforms.
+It uses <code>poetry</code> in the background, so it's extremely slow...</p>
+<p>It would be <strong>awesome</strong> if <code>uv</code> could generate an output like that (instead of a <code>requirements.txt</code> targeting a single platform).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 03:06</div>
+            <div class="timeline-body"><p>I've prototyped this here: https://github.com/astral-sh/uv/pull/3111</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 02:58</div>
+            <div class="timeline-body"><p>The next version will support <code>--platform</code> on <code>uv pip compile</code>: https://github.com/astral-sh/uv/pull/3111.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 02:58</div>
+            <div class="timeline-body"><p>I'm not going to close this though since the broader task here remains.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-04-19 16:48</div>
+            <div class="timeline-body"><p>@charliermarsh Thank you, looks very nice! Is it going to be released soon?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 17:17</div>
+            <div class="timeline-body"><p>It will probably go out today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-04-21 21:37</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/3111 is awesome and makes getting a &quot;good enough&quot; cross-platform lock file trivial.</p>
+<p>Dinky little example script:</p>
+<pre><code class="language-python">import argparse
+import os
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+from packaging.markers import Marker
+from packaging.requirements import Requirement
+
+
+def parse_requirements_txt(req_file: str) -&gt; list[str]:
+    def strip_comments(s: str) -&gt; str:
+        try:
+            return s[: s.index(&quot;#&quot;)].strip()
+        except ValueError:
+            return s.strip()
+
+    entries = []
+    with open(req_file) as f:
+        for line in f:
+            entry = strip_comments(line)
+            if entry:
+                entries.append(entry)
+    return entries
+
+
+def marker_to_uv(key: str, value: str) -&gt; list[str]:
+    if key == &quot;sys_platform&quot;:
+        if value == &quot;linux&quot;:
+            uv_platform = &quot;linux&quot;
+        elif value == &quot;darwin&quot;:
+            uv_platform = &quot;macos&quot;
+        elif value == &quot;win32&quot;:
+            uv_platform = &quot;windows&quot;
+        else:
+            raise ValueError(f&quot;Unknown sys_platform {value}&quot;)
+        return [&quot;--python-platform&quot;, uv_platform]
+    if key == &quot;python_version&quot;:
+        return [&quot;--python-version&quot;, value]
+    raise ValueError(f&quot;Cannot convert marker {key} to uv input&quot;)
+
+
+Environment = dict[str, str]
+
+
+def env_to_marker(environment: Environment) -&gt; Marker:
+    return Marker(&quot; and &quot;.join(f&quot;({k} == {repr(v)})&quot; for k, v in environment.items()))
+
+
+def cross_environment_lock(src_file: Path, environment_matrix: list[Environment]) -&gt; str:
+    cmd = [&quot;uv&quot;, &quot;pip&quot;, &quot;compile&quot;, &quot;--python&quot;, sys.executable, &quot;--no-header&quot;, &quot;--no-annotate&quot;]
+    with tempfile.TemporaryDirectory() as tmpdir:
+        joined: dict[Requirement, list[Environment]] = {}
+        for i, environment in enumerate(environment_matrix):
+            out_file = os.path.join(tmpdir, src_file.stem + &quot;.&quot; + str(i))
+            env_cmd = cmd + [src_file, &quot;--output-file&quot;, out_file]
+            for key, value in environment.items():
+                env_cmd.extend(marker_to_uv(key, value))
+            subprocess.check_call(env_cmd, stdout=subprocess.DEVNULL)
+
+            for r in parse_requirements_txt(out_file):
+                joined.setdefault(Requirement(r), []).append(environment)
+
+        common = [r for r, envs in joined.items() if len(envs) == len(environment_matrix)]
+        cross_environment = [
+            (r, envs) for r, envs in joined.items() if len(envs) != len(environment_matrix)
+        ]
+        cross_environment.sort(key=lambda r: r[0].name)
+
+        output = [str(r) for r in common]
+        for req, environments in cross_environment:
+            req = Requirement(str(req))  # make a copy
+            joint_marker = Marker(&quot; or &quot;.join(f&quot;({env_to_marker(env)})&quot; for env in environments))
+            if req.marker is None:
+                req.marker = joint_marker
+            else:
+                # Note that uv currently doesn't preserve markers, so this branch is unlikely
+                # https://github.com/astral-sh/uv/issues/1429
+                req.marker._markers = [req.marker._markers, &quot;and&quot;, joint_marker._markers]
+            output.append(str(req))
+
+        return &quot;\n&quot;.join(output)
+
+
+def main() -&gt; None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(&quot;src_file&quot;)
+    parser.add_argument(&quot;--output-file&quot;)
+    args = parser.parse_args()
+
+    output = cross_environment_lock(
+        Path(args.src_file),
+        [
+            {&quot;sys_platform&quot;: &quot;linux&quot;},
+            {&quot;sys_platform&quot;: &quot;darwin&quot;, &quot;python_version&quot;: &quot;3.10&quot;},
+        ],
+    )
+    print(output)
+    if args.output_file:
+        with open(args.output_file, &quot;w&quot;) as f:
+            f.write(output)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-21 21:49</div>
+            <div class="timeline-body"><p>Oh wow, that's cool. So you do multiple resolutions, then merge the <code>requirements.txt</code> and gate the entries from each resolution with a marker for that platform?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-04-21 22:50</div>
+            <div class="timeline-body"><p>Yup, uv's fast enough that resolving multiple times is totally fine.</p>
+<p>Unsolicited thoughts on what I want from a lock file:</p>
+<ol>
+<li>Restrict to a finite set of files
+1a. The finite set of files should be reasonably minimal
+1b. Finite here is defined as fixed / close-ended (should refer to the same set of files tomorrow)</li>
+<li>Installing in the same marker environment always gets me the same result (modulo insane sdists)</li>
+<li>Should be guaranteed to work in marker environments I explicitly ask for</li>
+<li>Has a reasonable chance of generalising to other unknown marker environments
+4a. I get a good error if running installing to some other marker environment but it didn't generalise and the resolution is wrong</li>
+</ol>
+<p>With the above:</p>
+<ul>
+<li>Assuming you extend the script to support hashes, you get 1,1a,1b,2.</li>
+<li>You get 3 for <code>sys_platform</code> and <code>python_version</code> markers (which are the most important two). I guess also maybe <code>platform_machine</code> marker can work</li>
+<li>You get some of 4, but it could be better, especially for <code>python_version</code>. Implementing https://github.com/astral-sh/uv/issues/1429 would also help</li>
+<li>You get errors for 4a in some cases, but it's not perfect</li>
+<li>...which is overall pretty great!</li>
+</ul>
+<p>The best way I see to get 4/4a is you probably want something more like &quot;record the input requirements, use the lock file as a source of constraints, at install time re-resolve the input requirements using the lock file constraints&quot;. uv exposes almost all the building blocks you'd need, I think the only thing missing is a few missing features from constraint files (e.g. interactions between constraints and hashes, express an &quot;or&quot; constraint, lmk if details are useful)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/considerate">@considerate</a> on 2024-04-22 04:23</div>
+            <div class="timeline-body"><p>@hauntsaninja In addition to the above list of nice properties to have in a lock file I'd like to add:</p>
+<ol start="5">
+<li><p>The lock file should store enough information so that no access to any PyPI index needs to be performed to determine where to find the package and which file corresponds to what hash.</p>
+<ul>
+<li>One way of supporting this would be to add URL annotations to the lock file like described in
+#3034</li>
+<li>This is important to guarantee reproducible builds. Without this information, a build now relies on the state of the remote PyPI server at time of building to figure out which hash the final package should resolve to.</li>
+</ul>
+</li>
+<li><p>The lock file should (optionally) be stored in a format that doesn't require specialized parsing to figure out the structure of the lock file</p>
+<ul>
+<li>This would imply defining a format using a commonly available serialization format such as JSON or TOML</li>
+</ul>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3333.html">astral-sh/uv#3333</a> on 2024-05-06 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3672.html">astral-sh/uv#3672</a> on 2024-05-20 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../aspect-build/rules_py/issues/345.html">aspect-build/rules_py#345</a> on 2024-06-03 17:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brettcannon">@brettcannon</a> on 2024-06-12 18:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Unsolicited thoughts on what I want from a lock file:</p>
+<ol>
+<li>Restrict to a finite set of files
+1a. The finite set of files should be reasonably minimal
+1b. Finite here is defined as fixed / close-ended (should refer to the same set of files tomorrow)</li>
+<li>Installing in the same marker environment always gets me the same result (modulo insane sdists)</li>
+<li>Should be guaranteed to work in marker environments I explicitly ask for</li>
+<li>Has a reasonable chance of generalising to other unknown marker environments
+4a. I get a good error if running installing to some other marker environment but it didn't generalise and the resolution is wrong</li>
+</ol>
+</blockquote>
+<p>That should all be supported in the PEP I have coming (just got back from parental leave, but the draft PEP is written and just waiting on me to write a PoC which requires adapting some pre-existing code; the draft was also sent to @charliermarsh on discuss.python.org privately in March). I will be posting to https://discuss.python.org/c/packaging/14 once the PEP is ready.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4331.html">astral-sh/uv#4331</a> on 2024-06-14 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-19 00:40</div>
+            <div class="timeline-body"><p>For those following, https://github.com/astral-sh/uv/issues/3347 is tracking the lock file work in progress.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4447.html">astral-sh/uv#4447</a> on 2024-06-22 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 21:52</div>
+            <div class="timeline-body"><p>In <code>v0.2.16</code>, <code>uv pip compile</code> supports a <code>--universal</code> flag.</p>
+<p>It's conceptually similar to <a href="https://pypi.org/project/pip-compile-cross-platform/"><code>pip-compile-cross-platform</code></a>: we perform a &quot;universal&quot; resolution (like Poetry), then write the output to a <code>requirements.txt</code> with platform marker annotations as necessary -- so the resulting <code>requirements.txt</code> should work on any platform, assuming resolution succeeds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 21:53</div>
+            <div class="timeline-body"><p><code>--universal</code> uses the same resolver that powers our <code>uv lock</code> command (coming soon).</p>
+<p>It's definitely experimental! And part of the thinking here (in addition to shipping something useful in the <code>uv pip compile</code> interface) is that it will make it easier for folks to help us stress test the resolver. Would appreciate any feedback (via new issues).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/rye/issues/1056.html">astral-sh/rye#1056</a> on 2024-06-28 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5835.html">astral-sh/uv#5835</a> on 2024-08-06 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-08-20 19:51</div>
+            <div class="timeline-body"><p>Since uv 0.3.0 stabilized <code>uv lock</code>, should close this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-20 19:56</div>
+            <div class="timeline-body"><p>Yes, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-20 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielgafni">@danielgafni</a> on 2024-08-30 20:25</div>
+            <div class="timeline-body"><p>Hey, just noticed README.md still has this section:</p>
+<blockquote>
+<p>Unlike Poetry and PDM, uv does not yet produce a machine-agnostic lockfile (#2679).</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 20:31</div>
+            <div class="timeline-body"><p>@danielgafni -- Where are you seeing that? Are you looking at an old version perhaps?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielgafni">@danielgafni</a> on 2024-08-30 20:40</div>
+            <div class="timeline-body"><p>Oh damn... I'm on my phone so can't really track it down but this must be the case! 😄 sorry for the false alarm</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

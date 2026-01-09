@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule: check for executable flag in scripts - astral-sh/ruff #20335</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule: check for executable flag in scripts</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20335">#20335</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2025-09-10 15:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2025-09-10 15:18</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When a file doesn't have a <code>.py</code> suffix it's a script (or if it contains a <code>#!</code>-python-hashbang).</p>
+<p>These files should have a <code>+x</code> executable file flag.
+It's a common mistake to add new scripts to git, forgetting the executable rights and then in the best case the CI pipelines fail.</p>
+<p>Therefor it would be nice to have a rule, which detects this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-10 16:19</div>
+            <div class="timeline-body"><p>This sounds like our <a href="https://docs.astral.sh/ruff/rules/#flake8-executable-exe"><code>flake8-executable</code> </a> rules. Do any of those cover your use case?</p>
+<p>I can get EXE001 to fire on this script without the executable bit set, but I had to pass the filename to ruff directly since it won't check files without a Python extension by default:</p>
+<p>filename: <code>try</code></p>
+<pre><code class="language-py">#!/usr/bin/python
+
+print(&quot;Hello world&quot;)
+</code></pre>
+<pre><code class="language-shell">$ chmod -x try
+$ ruff check try --select EXE
+EXE001 Shebang is present but file is not executable
+ --&gt; try:1:1
+  |
+1 | #!/usr/bin/python
+  | ^^^^^^^^^^^^^^^^^
+2 |
+3 | print(&quot;Hello world&quot;)
+  |
+
+Found 1 error.
+</code></pre>
+<p>I think you can use <a href="https://docs.astral.sh/ruff/settings/#include">include</a> to configure files in a script directory to be checked too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-09-10 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-09-10 17:07</div>
+            <div class="timeline-body"><p>hm, you are right. I was missing the hashbang in the file and therefor the check wasn't executed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @spaceone on 2025-09-10 17:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

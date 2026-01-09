@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to Authenticate and Install from AWS CodeArtifact via iPython Magic Commands - astral-sh/uv #14318</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to Authenticate and Install from AWS CodeArtifact via iPython Magic Commands</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14318">#14318</a>
+        opened by <a href="https://github.com/nscipione-sumer">@nscipione-sumer</a>
+        on 2025-06-27 15:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nscipione-sumer">@nscipione-sumer</a> on 2025-06-27 15:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Overview</h1>
+<p>I'm trying to write a tutorial that shows you how to import Python packages from an AWS CodeArtifact repo, and I attempted to write it in a Jupyter Notebook. I copied the same steps I use to run successfully in my terminal, but I suspect that the uv magic command is unable to access the notebook's environment variables.</p>
+<h1>Reproduce: In a Jupyter Notebook</h1>
+<p>Requirements: uv and aws cli</p>
+<h2>Step 1: Setup</h2>
+<pre><code>&lt;VSCode.Cell language=&quot;python&quot;&gt;
+%%bash
+# Must login every 12 hours
+if aws sts get-caller-identity --profile data &gt; /dev/null 2&gt;&amp;1; then
+  echo &quot;Already logged in to AWS SSO (profile: data).&quot;
+else
+  echo &quot;Not logged in. Running 'aws sso login --profile data'...&quot;
+  aws sso login --profile data
+fi
+&lt;/VSCode.Cell&gt;
+</code></pre>
+<pre><code>&lt;VSCode.Cell language=&quot;python&quot;&gt;
+%%bash --out CODEARTIFACT_AUTH_TOKEN
+aws codeartifact get-authorization-token \
+  --domain private-pypi \
+  --domain-owner account-id \
+  --region us-east-1 \
+  --query authorizationToken \
+  --output text \
+  --profile data
+&lt;/VSCode.Cell&gt;
+</code></pre>
+<pre><code>&lt;VSCode.Cell language=&quot;python&quot;&gt;
+%set_env UV_INDEX_PRIVATE_USERNAME=aws
+%set_env UV_INDEX_PRIVATE_PASSWORD=$CODEARTIFACT_AUTH_TOKEN
+!uv add play-speed --group traits
+&lt;/VSCode.Cell&gt;
+</code></pre>
+<h2>Step 2: Add packages</h2>
+<pre><code>&lt;VSCode.Cell language=&quot;python&quot;&gt;
+uv add play-speed --group traits --verbose
+&lt;/VSCode.Cell&gt;
+</code></pre>
+<p>Output snippet:</p>
+<pre><code>DEBUG Reverting changes to `pyproject.toml`
+DEBUG Reverting changes to `uv.lock`
+  × No solution found when resolving dependencies:
+  ╰─▶ Because play-speed was not found in the package registry and
+      player-traits:traits depends on play-speed, we can conclude that
+      player-traits:traits's requirements are unsatisfiable.
+      And because your project requires player-traits:traits, we can conclude
+      that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution,
+        provide the `--frozen` flag to skip locking and syncing.
+DEBUG Released lock at `/Users/nick.scipione/Developer/Work/player-traits/.venv/.lock`
+Note: you may need to restart the kernel to use updated packages.
+</code></pre>
+<h3>Platform</h3>
+<p>Darwin 24.5.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.15 (4ed9c5791 2025-06-25)</p>
+<h3>Python version</h3>
+<p>Python 3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @nscipione-sumer on 2025-06-27 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IllarionovDimitri">@IllarionovDimitri</a> on 2025-08-20 13:39</div>
+            <div class="timeline-body"><p>i have the same issue with uv 0.8.12 on Ubuntu, setting USERNAME and PASSWORD as provided in documentation has no effect. i get 401 Not authorized. But pulling a package from Codeartifact works if i hardcode them in <code>pyproject.toml</code> like &quot;url = https://aws:eyJ2ZXIiOj...@...&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IllarionovDimitri">@IllarionovDimitri</a> on 2025-08-29 08:12</div>
+            <div class="timeline-body"><p>@charliermarsh great job! uv rocks! have you any intent/plans to fix this issue? we're using AWS Codeartifact but i get following error:</p>
+<pre><code class="language-bash">uv sync
+  × No solution found when resolving dependencies:
+  ╰─▶ Because alphaconf was not found in the package registry and your project depends on alphaconf, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: An index URL (https://***-***.d.codeartifact.***.amazonaws.com/pypi/d***/simple/) could not be queried due to a lack of valid authentication credentials (401
+      Unauthorized).
+</code></pre>
+<p>If i hardcode the creds it works. And package is definitely in registry, because i've just published it using <code>uv publish</code> :)</p>
+<p>I assume smth might be wrong with reading
+export UV_INDEX_PRIVATE_REGISTRY_USERNAME=aws
+export UV_INDEX_PRIVATE_REGISTRY_PASSWORD=&quot;$AWS_CODEARTIFACT_TOKEN&quot;</p>
+<p>thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-29 12:06</div>
+            <div class="timeline-body"><p>What does the entry in your <code>pyproject.toml</code> look like?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IllarionovDimitri">@IllarionovDimitri</a> on 2025-08-29 12:18</div>
+            <div class="timeline-body"><p>thanks for quick response! here is my <code>pyproject.toml</code> (i've masked aws account number, but in original version it is fully expanded of course)</p>
+<p>Publishing with</p>
+<pre><code>export UV_PUBLISH_USERNAME=aws
+export UV_PUBLISH_PASSWORD=&quot;$AWS_CODEARTIFACT_TOKEN&quot;
+</code></pre>
+<p>works.</p>
+<p>But pulling back via <code>uv sync</code> and</p>
+<pre><code>export UV_INDEX_CODEARTIFACT_USERNAME=aws
+export UV_INDEX_CODEARTIFACT_PASSWORD=&quot;$AWS_CODEARTIFACT_TOKEN&quot;
+</code></pre>
+<p>does not.</p>
+<pre><code>[project]
+name = &quot;agent-handler&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;alphaconf&quot;,
+]
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.5,&lt;0.9.0&quot;]
+build-backend = &quot;uv_build&quot;
+
+[tool.uv.sources]
+alphaconf = [ {index = &quot;codeartifact&quot;} ]
+
+[[tool.uv.index]]
+name = &quot;codeartifact&quot;
+url = &quot;https://aicore-20*****.d.codeartifact.eu-central-1.amazonaws.com/pypi/aicore-repo/simple/&quot;
+publish-url = &quot;https://aicore-20*****.d.codeartifact.eu-central-1.amazonaws.com/pypi/aicore-repo/&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IllarionovDimitri">@IllarionovDimitri</a> on 2025-08-29 12:33</div>
+            <div class="timeline-body"><p>UPDATE!!!</p>
+<p>following renaming solved the problem. Is <code>CODEARTIFACT</code> reserved keyword?</p>
+<pre><code>export UV_INDEX_CODEART_USERNAME=aws
+export UV_INDEX_CODEART_PASSWORD=&quot;$AWS_CODEARTIFACT_TOKEN&quot;
+</code></pre>
+<pre><code>[project]
+name = &quot;agent-handler&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;alphaconf&quot;,
+]
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.5,&lt;0.9.0&quot;]
+build-backend = &quot;uv_build&quot;
+
+[tool.uv.sources]
+alphaconf = [ {index = &quot;codeart&quot;} ]
+
+[[tool.uv.index]]
+name = &quot;codeart&quot;
+url = &quot;https://aicore-20*****.d.codeartifact.eu-central-1.amazonaws.com/pypi/aicore-repo/simple/&quot;
+publish-url = &quot;https://aicore-20*****.d.codeartifact.eu-central-1.amazonaws.com/pypi/aicore-repo/&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IllarionovDimitri">@IllarionovDimitri</a> on 2025-08-29 13:51</div>
+            <div class="timeline-body"><p>final update: push&amp;pull to/from aws codeartifact works, looks like some reserved words must be avoided (like codeartifact and private_registry). published version of <code>pyproject.toml</code> in my previous comment above solved the problem</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldkv">@ldkv</a> on 2025-09-18 12:05</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I have encountered exactly the same issue where setting the password in environment variable does not work, however setting directly the same value upon executing the command works normally.</p>
+<p>I use AWS Codeartifact, the default username <code>aws</code> is defined in <code>pyproject.toml</code>.</p>
+<pre><code class="language-pyproject.toml">[[tool.uv.index]]
+name = &quot;myrepo&quot;
+username = &quot;aws&quot;
+url = &quot;https://myrepo-***.amazonaws.com/pypi/myrepo-pypi/simple/&quot;
+</code></pre>
+<p>This does not work (401 Unauthorized).</p>
+<pre><code>export UV_INDEX_MYREPO_PASSWORD=foo
+uv sync
+</code></pre>
+<p>This one works.</p>
+<pre><code>export UV_INDEX_MYREPO_PASSWORD=foo
+UV_INDEX_MYREPO_PASSWORD=$UV_INDEX_MYREPO_PASSWORD uv sync
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

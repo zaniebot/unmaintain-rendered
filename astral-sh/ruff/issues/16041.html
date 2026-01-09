@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected relative path handling in native server mode - astral-sh/ruff #16041</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected relative path handling in native server mode</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16041">#16041</a>
+        opened by <a href="https://github.com/richtea">@richtea</a>
+        on 2025-02-07 22:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/richtea">@richtea</a> on 2025-02-07 22:47</div>
+            <div class="timeline-body"><p>[Edit - see <a href="https://github.com/astral-sh/ruff/issues/16041">my comment</a> below for problem description]</p>
+<p>I just had a notification that ruff-lsp is deprecated, so I removed my setting <code>&quot;ruff.nativeServer&quot;: &quot;off&quot;</code>. Now, I don't get any highlighting in Python documents, however when I run <code>poetry run ruff check</code> it lists violations.</p>
+<p>When native server is enabled, I've checked the logs and can't see any obvious suggestions as to why nothing gets highlighted. In the Ruff output window, it displays <code>Server: Start requested.</code> and nothing more. In the Ruff Language Server output window it displays</p>
+<pre><code class="language-text">WARN ruff:main ruff_server::server::api: Received notification $/setTrace which does not have a handler.
+</code></pre>
+<p>multiple times.</p>
+<p>If I switch back to <code>&quot;ruff.nativeServer&quot;: &quot;off&quot;</code> then the highlighting is restored.</p>
+<p>The related settings in <code>settings.json</code> are:</p>
+<pre><code class="language-json">  &quot;[python]&quot;: {
+    &quot;editor.defaultFormatter&quot;: &quot;charliermarsh.ruff&quot;,
+    &quot;editor.codeActionsOnSave&quot;: {
+      &quot;source.fixAll&quot;: &quot;never&quot;,
+      &quot;source.organizeImports&quot;: &quot;never&quot;,
+      &quot;source.organizeImports.ruff&quot;: &quot;always&quot;
+    },
+    &quot;editor.insertSpaces&quot;: true,
+    &quot;editor.formatOnSave&quot;: false,
+    &quot;editor.formatOnPaste&quot;: true,
+    &quot;editor.formatOnType&quot;: false
+  },
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-08 03:31</div>
+            <div class="timeline-body"><p>Do you have any other VS Code settings? For example, any related to <code>ruff.*</code>.</p>
+<p>And, can you try setting the log level to debug as stated <a href="https://github.com/astral-sh/ruff-vscode#troubleshooting">here</a> and provide all the logs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-08 08:00</div>
+            <div class="timeline-body"><p>By highlighting, do you meant syntax highlighting or that ruff doesn't show any warnings or errors in the editor?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/richtea">@richtea</a> on 2025-02-08 10:49</div>
+            <div class="timeline-body"><p>Thanks for the suggestions - having increased the log level I now have an idea what the problem is (see below).</p>
+<blockquote>
+<p>By highlighting, do you meant syntax highlighting or that ruff doesn't show any warnings or errors in the editor?</p>
+</blockquote>
+<p>I mean no warnings or errors (&quot;squiggly underlines&quot;).</p>
+<blockquote>
+<p>Do you have any other VS Code settings? For example, any related to ruff.*.</p>
+</blockquote>
+<p>None to affect this, mainly <code>python.analysis</code> and <code>python.testing</code>.</p>
+<blockquote>
+<p>And, can you try setting the log level to debug</p>
+</blockquote>
+<p>Thanks, I'd found the <code>ruff.trace.server</code> setting but not the <code>ruff.logLevel</code> setting - this one had the messages I needed.</p>
+<h2>The problem</h2>
+<p>I think the difference in behaviour between LSP and native server relates to relative path handling in the <code>exclude</code> setting. I had a relative directory named <code>play</code> configured to exclude, and by coincidence (or perhaps because I play a lot :grinning:) the repo itself lives some levels below a directory also called <code>play</code>.</p>
+<p>Below are some logs, both while running with native server on. Note that the <code>pyproject.toml</code> is in the root repo directory called <code>polebot</code> (full repo is <a href="https://github.com/bwcc-clan/polebot">here</a>).</p>
+<p>The first is with setting <code>exclude = [&quot;play&quot;]</code>:</p>
+<pre><code class="language-text">8848.627385916s DEBUG ThreadId(106) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/[me]/dev/play/bwcc/bwcc-clan/polebot/play
+8848.638075750s DEBUG  ruff:worker:4 ruff_server::resolve: Ignored path via `exclude`: /Users/[me]/dev/play/bwcc/bwcc-clan/polebot/src/utils/log_tools.py
+</code></pre>
+<p>If the setting is <code>exclude = [&quot;./play&quot;]</code> then it behaves as I would expect:</p>
+<pre><code class="language-text">8449.275811916s DEBUG ThreadId(94) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/[me]/dev/play/bwcc/bwcc-clan/polebot/play
+8449.285933083s DEBUG  ruff:worker:3 ruff_server::resolve: Included path via `include`: /Users/[me]/dev/play/bwcc/bwcc-clan/polebot/src/utils/log_tools.py
+</code></pre>
+<h2>Is it a bug?</h2>
+<p>Note that the first <code>play</code> directory in the path is above the <code>pyproject.toml</code> and therefore, by my understanding of the <a href="https://docs.astral.sh/ruff/configuration/#config-file-discovery">docs</a>, should be ignored in the context of relative path handling. The second <code>play</code> directory (in the first log entry in both examples above) is excluded in both cases, as expected because it's below the repo root directory.</p>
+<p>I would argue that this is a bug, for a few reasons:</p>
+<ol>
+<li><p>Any part of a file path that is above the directory containing the config file should be ignored in the context of relative path handling.</p>
+</li>
+<li><p>The current behaviour within the editor is different from the behaviour when running <code>ruff check</code> from the command line.</p>
+</li>
+<li><p>The current behaviour of the native server is different from how it works in the LSP, in this case effectively turning Ruff off for the entire repo.</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ruff not highlighting in native server mode" to "Unexpected relative path handling in native server mode" by @richtea on 2025-02-08 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-08 16:00</div>
+            <div class="timeline-body"><p>Oh nice find. I'm curious, what ruff version are you using?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/richtea">@richtea</a> on 2025-02-08 16:21</div>
+            <div class="timeline-body"><blockquote>
+<p>what ruff version are you using?</p>
+</blockquote>
+<p>0.9.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-08 17:35</div>
+            <div class="timeline-body"><p>Oh, great find. Thank you for debugging. This seems like a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-02-08 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-02-08 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16043.html">astral-sh/ruff#16043</a> on 2025-02-08 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-02-10 04:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-02-10 04:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

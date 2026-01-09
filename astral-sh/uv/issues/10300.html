@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install --system` complaints 'is externally managed' - astral-sh/uv #10300</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install --system` complaints 'is externally managed'</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10300">#10300</a>
+        opened by <a href="https://github.com/dadaphl">@dadaphl</a>
+        on 2025-01-05 00:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dadaphl">@dadaphl</a> on 2025-01-05 00:19</div>
+            <div class="timeline-body"><p>Hello,
+When I try to install a module system wide it tells me that <code>The Python installation  is managed by uv</code>. Which is confusing and seems contradictory to me as I'm specifically using <code>uv</code> to &quot;manage the installation&quot; in the first place.</p>
+<pre><code>➜  ~ uv pip install --system neovim
+Using Python 3.10.16 environment at: .local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu
+error: The interpreter at .local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu is externally managed, and indicates the following:
+
+  This Python installation is managed by uv and should not be modified.
+
+Consider creating a virtual environment with `uv venv`.
+</code></pre>
+<p>I'm not a python dev, just relying on modules. Sorry in advance if my problem is obvious. But also by reading the doc I could not figure out if its a bug or I just don't understand how <code>uv pip</code> is intended to be used.
+For context: I need to install the neovim module 'globally' for neovim have python functionality. So think that creating a virtual environment is not the right thing to do in this context.</p>
+<p>I have installed <code>uv</code> with <code>yay</code> on <code>arch linux</code> and installed <code>python 3.10.16</code>.</p>
+<pre><code>➜  ~ python3 --version
+Python 3.10.16
+➜  ~ python --version
+Python 3.10.16
+➜  ~ which python3
+/home/user/.local/bin/python3
+➜  ~ which python
+/home/user/.local/bin/python
+➜  ~ uv -V
+uv 0.5.14 (9f1ba2b96 2025-01-02)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-05 00:24</div>
+            <div class="timeline-body"><p>Hi! Sorry you ran into this. We can expand that error message a bit to help clarify things</p>
+<p>We don't allow installing into the &quot;environment&quot; of a managed Python installation. We require virtual environments. We only allow installing into other &quot;system&quot; Python environments for backwards compatibility.</p>
+<p>As for your use-case...</p>
+<blockquote>
+<p>For context: I need to install the neovim module 'globally' for neovim have python functionality. So think that creating a virtual environment is not the right thing to do in this context.</p>
+</blockquote>
+<p>How does neovim discover Python? What does the neovim module do? Can you point me to some documentation on the topic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-05 00:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dadaphl">@dadaphl</a> on 2025-01-05 00:51</div>
+            <div class="timeline-body"><p>Wow, thank you for your very fast and helpful answer.  I apologize for my ignorance and I'm grateful you took the time to explain. Now it makes more sense.</p>
+<p>My &quot;neovim problem&quot; does not seem to be specific to <code>uv</code> anymore. But I will post this never the less for others to find it.</p>
+<p>I read deeper into the neovim doc and I &quot;should assign one virtualenv for Nvim and hard-code the interpreter path via <code>python3_host_prog</code> so that the &quot;pynvim&quot; package is not required
+for each virtualenv.&quot;[0]</p>
+<p>To be honest, I'm also fuzzy about how neovim finds python. I assume its just through $PATH. Neovim offers a <code>:checkhealth</code> command which goes through a vast list of things that are <code>misconfiguration</code> if you will.
+Here is what it gives in my case. I will update when I found a solution.</p>
+<pre><code>provider.python: require(&quot;provider.python.health&quot;).check()
+
+Python 3 provider (optional) ~
+- WARNING No Python executable found that can `import neovim`. Using the first available executable for diagnostics.
+- WARNING Could not load Python :
+  /home/user/.local/bin/python3 does not have the &quot;neovim&quot; module.
+  python3.12 not found in search path or not executable.
+  python3.11 not found in search path or not executable.
+  /home/user/.local/bin/python3.10 does not have the &quot;neovim&quot; module.
+  python3.9 not found in search path or not executable.
+  python3.8 not found in search path or not executable.
+  python3.7 not found in search path or not executable.
+  /home/user/.local/bin/python does not have the &quot;neovim&quot; module.
+  - ADVICE:
+    - See :help |provider-python| for more information.
+    - You may disable this provider (and warning) by adding `let g:loaded_python3_provider = 0` to your init.vim
+- Executable: Not found
+
+Python virtualenv ~
+- OK no $VIRTUAL_ENV
+</code></pre>
+<p>[0] https://neovim.io/doc/user/provider.html#python-virtualenv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dadaphl">@dadaphl</a> on 2025-01-05 01:02</div>
+            <div class="timeline-body"><p>I forgot to answer one question</p>
+<blockquote>
+<p>What does the neovim module do?</p>
+</blockquote>
+<p>AFAIK, plugins for neovim can be written in a variety of languages (Lua, JS, Python..). The support for each language (except Lua, it's native to neovim) comes through modules that need to be installed with the respective language's package management system.
+So in my case, I'm using a plugin that seems to be (fully or partially?) written in Python. Thus I'm suppose to <code>pip install neovim</code>.
+I'm also using plugins written in Js, so I had to run <code>npm i -g neovim</code>.</p>
+<p>My &quot;problem&quot; is, that for some unrelated project I have to use a python virtual environment and decided to use <code>uv</code> as it seems to be the most modern approach. And now my editor doesn't work anymore :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-05 01:10</div>
+            <div class="timeline-body"><p>Ah I see, thanks for all the details. That makes sense.</p>
+<p>I think what you want is something like</p>
+<pre><code>❯ uv venv ~/.local/share/neovim/venv
+Using CPython 3.12.8 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
+Creating virtual environment at: /Users/zb/.local/share/neovim/venv
+Activate with: source /Users/zb/.local/share/neovim/venv/bin/activate
+❯ uv pip install neovim -p ~/.local/share/neovim/venv
+Using Python 3.12.8 environment at: /Users/zb/.local/share/neovim/venv
+Resolved 4 packages in 186ms
+   Built neovim==0.3.1
+Prepared 3 packages in 367ms
+Installed 4 packages in 2ms
+ + greenlet==3.1.1
+ + msgpack==1.1.0
+ + neovim==0.3.1
+ + pynvim==0.5.2
+</code></pre>
+<p>Then get the Python binary path and set it as you've described, e.g.:</p>
+<pre><code>❯ echo &quot;let g:python3_host_prog = '$(uv python find ~/.local/share/neovim/venv)'&quot; &gt;&gt; init.vim
+❯ cat init.vim
+let g:python3_host_prog = '/Users/zb/.local/share/neovim/venv/bin/python3'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dadaphl">@dadaphl</a> on 2025-01-06 13:16</div>
+            <div class="timeline-body"><p>Thank you so much. This is actually a working solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dadaphl on 2025-01-06 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/INFCode">@INFCode</a> on 2025-01-09 05:06</div>
+            <div class="timeline-body"><p>I just wanted to add more information about this &quot;is externally managed&quot; error. It occurs because the Python installed by <code>pacman</code> (Arch Linux's package manager) is configured to prevent modifications by tools like <code>pip</code>. This ensures that system Python is managed exclusively by <code>pacman</code>. So this error is unrelated <code>uv</code>, and will appear even when using <code>pip</code>. If you are using <code>pip</code> directly it will actually prompt you to the recommended way to install something globally: run <code>pacman -S python-xyz</code> for installing package xyz.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dadaphl">@dadaphl</a> on 2025-01-09 13:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I just wanted to add more information about this &quot;is externally managed&quot; error. It occurs because the Python installed by <code>pacman</code> (Arch Linux's package manager) is configured to prevent modifications by tools like <code>pip</code>. This ensures that system Python is managed exclusively by <code>pacman</code>. So this error is unrelated <code>uv</code>, and will appear even when using <code>pip</code>. If you are using <code>pip</code> directly it will actually prompt you to the recommended way to install something globally: run <code>pacman -S python-xyz</code> for installing package xyz.</p>
+</blockquote>
+<p>I understand that I can not install packages globally with the python installation that is managed by <code>pacman</code>. I  never intended to do so. For this I installed my global packages with pacman.</p>
+<p>My intention was to use <code>uv</code> to install another python version that is not managed by <code>pacman</code> and install the respective packages into this &quot;default environment&quot; of this <code>uv</code> managed python installation.</p>
+<p>But I think I have the wrong mental model of how python installations, environments and packages work. Like I said, I don't have experience with the python ecosystem.
+I drew conclusions analogous to the node ecosystem where you install different node versions with <code>nvm</code> and each installation has its own &quot;global space&quot;.</p>
+<p>In my mental model it seemed like a bug that I can not use <code>uv</code> to mange a installation managed by uv. In my first post here you can see it said &quot;This Python installation is managed by uv and should not be modified.&quot; when using a uv command.</p>
+<p>I'm still confused. How come <code>pacman</code> still has &quot;external managment&quot; authority over python installation done through <code>uv</code>?</p>
+<p>The whole &quot;problem&quot; originates from the fact that <code>uv</code> creates symlinks for python installations under it's management in <code>$USER/.local/bin</code> that have precedent in my <code>$PATH</code> (not sure why though). There seems to be no legal way to install global packages into this installation nor switch back to the system's python version as the default. <code>uv python pin</code> at least didn't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/INFCode">@INFCode</a> on 2025-01-10 07:35</div>
+            <div class="timeline-body"><p>Oh, I think I misunderstood your case. I thought you were installing packages on the system python managed by <code>pacman</code>. So, all I said above should be unrelated.</p>
+<p>After reading your output again, it seems that <code>uv</code> is externally managing this python environment. It should be set by <a href="https://packaging.python.org/en/latest/specifications/externally-managed-environments/#marking-an-interpreter-as-using-an-external-package-manager">this mechanism</a>, which requires adding a <code>EXTERNALLY-MANAGED</code> file, so this should be intentional (though I also don't know why).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HernandoR">@HernandoR</a> on 2025-02-04 02:01</div>
+            <div class="timeline-body"><blockquote>
+<p>after uv python install 3.10 --default --preview when i want uv pip install jupyter-core --system it throws
+uv python install 3.10 --default --preview 当我想要 uv pip install jupyter-core --system 时，它会抛出</p>
+<p>Using Python 3.10.16 environment at: /usr/local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu
+error: The interpreter at /usr/local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu is externally managed, and indicates the following:</p>
+<p>This Python installation is managed by uv and should not be modified.</p>
+<p>Consider creating a virtual environment with <code>uv venv</code>.
+I'm preparing a docker image, so it is intended to install Jupyter (and it's extensions) system wide
+我正在准备一个 docker 镜像，因此它打算在系统范围内安装 Jupyter（及其扩展）</p>
+</blockquote>
+<p>I think my situation is the same here. How should I write <code>EXTERNALLY-MANAGED</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-04 02:13</div>
+            <div class="timeline-body"><p>You can create a virtual environment and activate it as described in https://docs.astral.sh/uv/guides/integration/docker/#using-the-environment</p>
+<p>Or, you can do <code>--break-system-packages</code> to force the install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15635.html">astral-sh/uv#15635</a> on 2025-09-02 18:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

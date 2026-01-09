@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using uv pip and pip interchangeably - astral-sh/uv #6999</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using uv pip and pip interchangeably</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6999">#6999</a>
+        opened by <a href="https://github.com/timovp">@timovp</a>
+        on 2024-09-04 08:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/timovp">@timovp</a> on 2024-09-04 08:39</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>Not sure if this is intended behaviour, but if so I'd like to understand it better, if not it might be a bug/feature request.
+First of all, uv seems really nice and I'd like to use it. But without sounding like an old man yelling at the clouds, I observed the following, which I'd like to understand better.</p>
+<h3>set up</h3>
+<p>WSL1 Ubuntu 20.04
+python 3.8 regular package repository (shipped by default)
+python 3.11 installed from source
+the pip commands use python3.8/pip3.8</p>
+<h3>steps</h3>
+<ul>
+<li>In an empty folder I installed <code>uv</code> into the global python, 3.8, using <code>pip install uv</code>. This gives me <code>uv</code> version 0.4.4.</li>
+<li><code>uv pip freeze</code>  returns nothing,</li>
+<li><code>pip freeze</code> results in a list of my globally installed packages (don't judge, I promise I create venvs for every project).</li>
+<li>When creating a new venv, with <code>uv venv</code>, I get a <code>.venv</code> folder as expected</li>
+<li>activate it with <code>source .venv/bin/activate</code>.
+Now this is where the advertised drop-in-replacement catches me off-guard:</li>
+<li><code>uv pip freeze</code> again returns nothing</li>
+<li><code>pip freeze</code>  and other regular pip commands, still think there is no venv activated, and thus my global python install.</li>
+</ul>
+<h3>The surprising result</h3>
+<p>Forgetting to use <code>uv</code> in front of my pip commands now, with the uv-<code>.venv</code> activated, does not install that package in the venv, but globally in the python version.
+Now you would not notice this, necessarily, when the python version uv references is the same as your global pip lives in, atleast, that's my suspicion.
+It's a suspicion, because in my case, I don't even get warned that the pip I installed uv with in the first place, uses a different python version then uv will be using, including when creating venv's with <code>uv venv</code>.</p>
+<p>Is this result because I am not all-in enough with the <code>uv</code> usage? Or would this work interchangeably if I would only have one python version, or if my default python is the same as uv likes to use?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jooon">@jooon</a> on 2024-09-04 09:31</div>
+            <div class="timeline-body"><p>I would say that the first empty <code>uv pip freeze</code> is strange, but maybe more undefined? When there is no <code>.venv</code> in the current or any parent directory, and there is no virtualenv activated, there is no environment for uv to check, since uv is not connected to a python environment like pip always is. I installed uv with the standalone installer (so it is in my cargo bin directory), while you installed it in your global python environment. For me, <code>uv pip freeze</code> actually do list the packages of the first <code>python</code> environment in my $PATH. This is consistent with how it behaves inside an activated virtualenv and maybe how it should behave.</p>
+<p>The confusing behavior of <code>pip freeze</code> after activating the virtualenv is &quot;technically correct&quot;, but I agree it is very confusing. Typing <code>pip install</code> etc. is in my spine and I have been bitten by this many times even though I understand why it happens. The reason is that <code>uv venv</code> DOES NOT install <code>pip</code> in its virtualenv, since it is not needed by uv. That however means that <code>pip</code> still comes from your global python3.8 installation.</p>
+<p>This is one reason that people advocate for using <code>python -mpip install</code> instead of <code>pip install</code>. If you try that after activating your virtualenv you will get a correct error message back.</p>
+<pre><code>python: No module named pip
+</code></pre>
+<p>I guess uv could install a fake <code>pip</code> binary in the virtualenv bin directory that will warn people that the pip module is not installed. Not sure if it is a good idea or not. I guess they have also thought about installing a small shim that just calls <code>uv pip</code> with the same arguments, but I am also not sure if that is a good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jooon">@jooon</a> on 2024-09-04 09:45</div>
+            <div class="timeline-body"><p>Ok, I just installed uv in a small docker container without any python. It actually behaves like I thought it would. It checks if there is a virtual environment. If there is not, it checks the system environment. If no system environment, it fails.</p>
+<pre><code># uv pip freeze
+error: No virtual or system environment found
+</code></pre>
+<p>So, for that first empty <code>uv pip freeze</code> you saw, maybe you had typed <code>uv venv</code> before and it had already created a <code>.venv</code> directory, but you didn't notice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timovp">@timovp</a> on 2024-09-04 10:56</div>
+            <div class="timeline-body"><p>Thanks for the reply!</p>
+<blockquote>
+<p>So, for that first empty uv pip freeze you saw, maybe you had typed uv venv before and it had already created a .venv directory, but you didn't notice?</p>
+</blockquote>
+<p>I suspect this. I tried reproducing again, with everything cleaner, since I also found out I had both a uv-stand alone (which was also on another version etc) and uv installed via the pip command.</p>
+<p>So let's assume that was just a slip-up from my end.</p>
+<blockquote>
+<p>there is no environment for uv to check, since uv is not connected to a python environment like pip always is.
+The reason is that uv venv DOES NOT install pip in its virtualenv, since it is not needed by uv. That however means that pip still comes from your global python3.8 installation.</p>
+</blockquote>
+<p>This absolutely fills the gap in my brain! Thanks, I think my questions are answered now 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @timovp on 2024-09-04 10:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

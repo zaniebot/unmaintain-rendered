@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync` does not read `link-mode` from  `$CONFIG_DIR/uv.toml` - astral-sh/uv #10455</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync` does not read `link-mode` from  `$CONFIG_DIR/uv.toml`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10455">#10455</a>
+        opened by <a href="https://github.com/nikvaessen">@nikvaessen</a>
+        on 2025-01-10 03:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nikvaessen">@nikvaessen</a> on 2025-01-10 03:19</div>
+            <div class="timeline-body"><p>My <code>uv.toml</code> at <code>~/.config/uv/uv.toml</code>:</p>
+<pre><code class="language-yaml">cache-dir = &quot;/path/to/network-attached-file-system&quot;
+
+[pip]
+link-mode = &quot;symlink&quot;
+</code></pre>
+<p>When running <code>uv sync</code> and <code>uv sync --link-mode hardlink</code> I get this error:</p>
+<pre><code>warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+</code></pre>
+<p>When running <code>uv sync --link-mode symlink</code> or <code>UV_LINK_MODE=symlink uv sync</code> everything runs as expected.
+Also note that <code>uv add $PACKAGE</code> reads from <code>uv.toml</code> as expected.</p>
+<p>I am running <code>uv 0.5.16</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-10 03:20</div>
+            <div class="timeline-body"><p>Settings under <code>[pip]</code> are only respected in <code>uv pip</code> commands. Remove the <code>[pip]</code> from your <code>uv.toml</code> to have it affect <code>uv sync</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nikvaessen">@nikvaessen</a> on 2025-01-10 03:22</div>
+            <div class="timeline-body"><p>Thanks, that indeed fixes the issue. Would it make sense to update https://docs.astral.sh/uv/reference/settings/#pip_link-mode accordingly? Is there a benefit to including <code>[pip]</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-10 03:35</div>
+            <div class="timeline-body"><p>That's actually intentional. The non-<code>[pip]</code> versions are above: https://docs.astral.sh/uv/reference/settings/#link-mode. We keep the <code>[pip]</code> versions for compatibility -- we can change the non-<code>[pip]</code> versions over time at our discretion, but the <code>[pip]</code> versions are intended to mirror <code>pip</code> itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-10 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-10 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-10 03:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

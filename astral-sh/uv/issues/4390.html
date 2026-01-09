@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run command --flag` is interpreted incorrectly - astral-sh/uv #4390</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run command --flag` is interpreted incorrectly</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4390">#4390</a>
+        opened by <a href="https://github.com/matterhorn103">@matterhorn103</a>
+        on 2024-06-18 17:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matterhorn103">@matterhorn103</a> on 2024-06-18 17:16</div>
+            <div class="timeline-body"><p>Flags passed to commands executed using <code>uv run</code> are being interpreted as flags to <code>uv run</code> rather than to the command itself:</p>
+<p>For example, <code>uv run pytest -h</code> should display the help for pytest, with the same result as running just <code>pytest -h</code>, but it instead displays the same as <code>uv run -h</code>.</p>
+<p>Flags are interpreted correctly as belonging to the command in the following cases:</p>
+<ol>
+<li>They are used after a subcommand</li>
+<li>They are used after a non-flag argument e.g. <code>uv run pytest tests/ -h</code> produces the pytest help</li>
+<li>They are not valid flags for <code>uv run</code> e.g. <code>uv run pytest --setup-only</code> works</li>
+</ol>
+<p>Note that this also prevents the Python interpreter being used in many common ways:
+<code>uv run python3 -h</code>, <code>uv run python3 -v</code>, and <code>uv run python3 -V</code> all do the wrong thing.</p>
+<p>Luckily <code>uv run python3 -m mod</code> does still work for now, as <code>uv run</code> doesn't recognize that flag.</p>
+<p>This was originally with uv 0.2.11 on Linux but is still the behaviour in 0.2.13 and also on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-18 17:47</div>
+            <div class="timeline-body"><p>You should use <code>uv run -- pytest -h</code> instead. <code>--</code> is a standard separator for disambiguating flags for a subsequent command. We could consider some sort of heuristic here, e.g. once we see a command we stop parsing uv flags but I'm not sure what's feasible with Clap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-06-18 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-06-18 17:53</div>
+            <div class="timeline-body"><p>The plan for tools and other features seems quite uv run (or similar) heavy so creating such a heuristic seems like it would pay off?</p>
+<p>Somehow rye run does this correctly (maybe?) and it uses Clap, for example <code>rye run python -l</code> passes -l to python even if it's also a rye run option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-18 18:09</div>
+            <div class="timeline-body"><p>Thanks for the Rye reference, I'll take a look at their implementation too.</p>
+<p>It looks like Cargo does this as well e.g. <code>cargo run install --help</code> doesn't invoke Cargo's help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2024-06-18 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-06-18 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-06-18 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-06-18 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matterhorn103">@matterhorn103</a> on 2024-06-18 18:50</div>
+            <div class="timeline-body"><blockquote>
+<p>You should use <code>uv run -- pytest -h</code> instead. <code>--</code> is a standard separator for disambiguating flags for a subsequent command.</p>
+</blockquote>
+<p>Useful tip, thanks :)</p>
+<blockquote>
+<p>We could consider some sort of heuristic here, e.g. once we see a command we stop parsing uv flags</p>
+</blockquote>
+<p>This is what I understood to be implied by the help for <code>uv run</code>, which indicates that the syntax is <code>uv run [OPTIONS] [TARGET] [ARGS]</code>, whereas I feel like most command line programs that also support options after the arguments tend to write it twice, like <code>program [OPTIONS] [ARGS] [OPTIONS]</code>. Not to say anything by that, just noting how I interpreted it as a naive user!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4404.html">astral-sh/uv#4404</a> on 2024-06-18 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-19 14:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

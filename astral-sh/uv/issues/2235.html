@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI/Github Action Failed to extract archive: /home/runner/.cache/uv/.tmppavima/extracted - astral-sh/uv #2235</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>CI/Github Action Failed to extract archive: /home/runner/.cache/uv/.tmppavima/extracted</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2235">#2235</a>
+        opened by <a href="https://github.com/anilbey">@anilbey</a>
+        on 2024-03-06 09:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/anilbey">@anilbey</a> on 2024-03-06 09:23</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>There is this small error that occurs only in the first CI run. When the CI is run the first time it says failed to extract archive (pointing to the .cache directory).</p>
+<pre><code>  Caused by: Failed to build: bluecellulab @ file:///home/runner/work/BlueCelluLab/BlueCelluLab/.tox/.tmp/package/1/bluecellulab-0.0.1.dev1.tar.gz
+  Caused by: Failed to extract archive: /home/runner/.cache/uv/.tmppavima/extracted
+  Caused by: failed to unpack `/home/runner/.cache/uv/.tmppavima/extracted/bluecellulab-0.0.1.dev1/tests/examples/circuit_sonata_quick_scx_multi_circuit/components/CircuitB/mo`
+  Caused by: failed to unpack `bluecellulab-0.0.1.dev1/tests/examples/circuit_sonata_quick_scx_multi_circuit/components/CircuitB/mo` into `/home/runner/.cache/uv/.tmppavima/extracted/bluecellulab-0.0.1.dev1/tests/examples/circuit_sonata_quick_scx_multi_circuit/components/CircuitB/mo`
+  Caused by: Is a directory (os error 21)
+</code></pre>
+<p>When I restart the CI in the 2nd attempt, it works perfectly fine. This pattern repeats in every CI run. First one fails, the second one succeeds.</p>
+<p>here are the CI logs. The uv version, Python version and the other dependencies are all listed in the logs below.
+https://github.com/BlueBrain/BlueCelluLab/actions/runs/8169106907/job/22332500653</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anilbey">@anilbey</a> on 2024-03-06 09:24</div>
+            <div class="timeline-body"><p>Logs from the successful run (2nd attempt): https://github.com/BlueBrain/BlueCelluLab/actions/runs/8169106907/job/22334002556</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-06 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 13:35</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 17:25</div>
+            <div class="timeline-body"><p>My read of the trace is that for some reason <code>bluecellulab-0.0.1.dev1/tests/examples/circuit_sonata_quick_scx_multi_circuit/components/CircuitB/mo</code> is not marked as a directory in the archive, i.e., the headers don't indicate that it's a directory. Any idea how the source distribution is being built? (Is that path a symlink, or something like that?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anilbey">@anilbey</a> on 2024-03-07 16:51</div>
+            <div class="timeline-body"><p>Oh I see. Those directories contain static files required to run some tests and those are excluded from the package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anilbey">@anilbey</a> on 2024-03-12 09:18</div>
+            <div class="timeline-body"><p>With the newer versions of uv and tox-uv, restarting the workflow does not change the outcome. If the cache fails, the whole workflow fails.</p>
+<p>I rolled back to uv==0.1.14 and tox-uv==1.4.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../BlueBrain/BlueCelluLab/pulls/149.html">BlueBrain/BlueCelluLab#149</a> on 2024-03-13 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-22 04:59</div>
+            <div class="timeline-body"><p>Is there any way you could extract and share the <code>bluecellulab-0.0.1.dev1.tar.gz</code> file from the failing run?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-03-22 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anilbey">@anilbey</a> on 2024-03-25 10:09</div>
+            <div class="timeline-body"><p>Unfortunately I cannot access the data from the github actions. It is not listed in the Artifacts section.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlessandroPomponio">@AlessandroPomponio</a> on 2024-04-19 13:22</div>
+            <div class="timeline-body"><p>I've seen the same thing happen with the latest versions of uv as well. Sometimes it takes multiple restarts for it to work.
+Unfortunately I can't provide the tar archive either :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anilbey">@anilbey</a> on 2024-04-19 14:23</div>
+            <div class="timeline-body"><p>A couple of times it happened in my local as well but at that time I was in the middle of some other task and later I couldn't reproduce it.
+It is a Heisenbug :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-01-30 08:34</div>
+            <div class="timeline-body"><p>not sure if this helps at all but i've noticed this happening much more frequently since updating from uv 0.5.20 to 0.5.24. i've added a step to my CI to upload the relevant files so i'll share that here next time it happens</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-01-30 09:22</div>
+            <div class="timeline-body"><p>ok it happened first try:</p>
+<pre><code>   × Failed to build `/home/runner/work/basedpyright/basedpyright`
+  ├─▶ failed to unpack
+  │   `/home/runner/.cache/uv/sdists-v6/.tmppLstqH/basedpyright-1.26.0/packages/pyright-internal/typeshed-fallback/stubs/aws-xray-sdk/aws_xray_sdk/core`
+  ├─▶ failed to unpack
+  │   `basedpyright-1.26.0/packages/pyright-internal/typeshed-fallback/stubs/aws-xray-sdk/aws_xray_sdk/core`
+  │   into
+  │   `/home/runner/.cache/uv/sdists-v6/.tmppLstqH/basedpyright-1.26.0/packages/pyright-internal/typeshed-fallback/stubs/aws-xray-sdk/aws_xray_sdk/core`
+  ╰─▶ Is a directory (os error 21)
+</code></pre>
+<p><a href="https://github.com/DetachHead/basedpyright/actions/runs/13048414283/job/36404010126?pr=1029">here's the run</a> and <a href="https://github.com/DetachHead/basedpyright/actions/runs/13048414283/artifacts/2509320401">here's the whole uv cache directory</a>, but i couldn't find any of those paths inside it. do they get moved or deleted after the build fails or something? let me know if you need any more info or artifacts and i'll try to provide them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrickhulce">@patrickhulce</a> on 2025-02-03 15:30</div>
+            <div class="timeline-body"><p>I have the same Heisenbug-like behavior here across a few different projects. In case it helps investigate, for me at least it's always on a directory with a git submodule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/felnne">@felnne</a> on 2025-02-04 21:55</div>
+            <div class="timeline-body"><p>I'm also experiencing this nearly constantly. Dropping back to 0.5.19 seems to fix it though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-04 22:33</div>
+            <div class="timeline-body"><p>Interesting -- I will take a look, thanks. (Does the submodule thing apply to anyone else's projects?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-04 22:37</div>
+            <div class="timeline-body"><p>The trace suggests there's... something wrong with the tar file itself that's been built? Like, the <code>basedpyright-1.26.0/packages/pyright-internal/typeshed-fallback/stubs/aws-xray-sdk/aws_xray_sdk/core</code> entry isn't being considered a &quot;directory&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-04 23:48</div>
+            <div class="timeline-body"><p>mines not a submodule. the only thing of note i can think of is that im bundling all the typeshed stubs so theres a lot of files in there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-05 00:01</div>
+            <div class="timeline-body"><p>Could be related? I'm not sure. I'm gonna go through <code>tar-rs</code> and see if we're missing any changes from upstream in our async-oriented fork.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/felnne">@felnne</a> on 2025-02-05 09:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Does the submodule thing apply to anyone else's projects?</p>
+</blockquote>
+<p>Mine isn't either these are the sort of errors I get:</p>
+<pre><code>Building source distribution...
+  × Failed to build `/builds/MAGIC/assets-tracking-service`
+  ├─▶ failed to unpack
+  │   `/builds/MAGIC/assets-tracking-service/.uv-cache/sdists-v7/.tmpl3VH14/assets_tracking_service-0.0.0.post45/.uv-cache/sdists-v7/pypi/arcgis/2.4.0/YNtoI0PDe5rTJdNyzq2A4/src`
+  ├─▶ failed to unpack
+  │   `assets_tracking_service-0.0.0.post45/.uv-cache/sdists-v7/pypi/arcgis/2.4.0/YNtoI0PDe5rTJdNyzq2A4/src`
+  │   into
+  │   `/builds/MAGIC/assets-tracking-service/.uv-cache/sdists-v7/.tmpl3VH14/assets_tracking_service-0.0.0.post45/.uv-cache/sdists-v7/pypi/arcgis/2.4.0/YNtoI0PDe5rTJdNyzq2A4/src`
+  ╰─▶ Is a directory (os error 21)
+</code></pre>
+<p>Most recently I was getting this error consistently which prompted me to rollback to 0.5.19 (I'm not sure if it's exactly the same problem but I assume related):</p>
+<pre><code>$ uv build
+Building source distribution...
+  × Failed to build `/builds/MAGIC/assets-tracking-service`
+  ├─▶ failed to unpack
+  │   `/builds/MAGIC/assets-tracking-service/.uv-cache/sdists-v7/.tmpRCOa4v/assets_tracking_service-0.4.2/.uv-cache/builds-v0/.tmprScxgk/lib/python3.11/site-packages/hatchling/__about__.py`
+  ╰─▶ No such file or directory (os error 2) while canonicalizing
+      /builds/MAGIC/assets-tracking-service/.uv-cache/sdists-v7/.tmpRCOa4v/assets_tracking_service-0.4.2/.uv-cache/builds-v0/.tmprScxgk/lib/python3.11/site-packages/hatchling/assets_tracking_service-0.4.2/.uv-cache/archive-v0/gq0qJxV0iQijn3Zm5EYb6/hatchling/__about__.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-05 13:49</div>
+            <div class="timeline-body"><p>The second trace you referenced there is unrelated. It was fixed in v0.5.28.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-05 16:15</div>
+            <div class="timeline-body"><p>I'm trying to reproduce this: https://github.com/astral-sh/uv/pull/11249</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-02-05 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-05 19:56</div>
+            <div class="timeline-body"><p>@DetachHead -- I've been trying to get this to trigger <a href="https://github.com/astral-sh/uv/actions/runs/13164683476">here</a>, with a modified build that persists everything in the cache. It hasn't failed yet, though. Any ideas on where I could be divering?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-05 23:50</div>
+            <div class="timeline-body"><p>only thing i can think of is the uv version is newer (i'm currently on 0.5.24), i can try bumping uv and see if it still happens. my ci is quite a mess so i'll try to see if i can make a cut down version that reproduces the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 00:00</div>
+            <div class="timeline-body"><p>I'll try bumping down to 0.5.24 for good measure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-08 12:42</div>
+            <div class="timeline-body"><p>confirmed still happening on uv 0.5.29. i made a branch that runs the same thing in a matrix of 10 jobs and removed the steps that make it take half an hour to run https://github.com/DetachHead/basedpyright/actions/runs/13215596833/job/36894495570?pr=1047</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-08 13:17</div>
+            <div class="timeline-body"><p>Great, thank you! I’ll try to patch in my changes and re-run.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-08 19:44</div>
+            <div class="timeline-body"><p>Were you able to trigger this on your first try? I can't get it to fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-09 01:37</div>
+            <div class="timeline-body"><p>that time it failed first try, but i ran it again with <code>fail-fast: false</code> in a matrix of 20 jobs and it looks like it has about a 1 in 10 chance of failing https://github.com/DetachHead/basedpyright/actions/runs/13221110183/job/36906253949?pr=1047</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-09 02:03</div>
+            <div class="timeline-body"><p>Ok I <em>think</em> I was able to reproduce and now have my hands on the failing <code>.tar.gz</code> file...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-09 02:37</div>
+            <div class="timeline-body"><p>Ok, I've confirmed that it's this issue: https://github.com/astral-sh/tokio-tar/pull/1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2025-02-09 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-09 02:37</div>
+            <div class="timeline-body"><p>Attaching the archive that <code>tokio-tar</code> fails to unpack (but <code>tar-rs</code> unpacks without issue): <a href="https://github.com/user-attachments/files/18722926/basedpyright-1.26.0.tar.gz">basedpyright-1.26.0.tar.gz</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/tokio-tar/pulls/1.html">astral-sh/tokio-tar#1</a> on 2025-02-09 02:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-09 03:19</div>
+            <div class="timeline-body"><p>I <em>think</em> I have a fix here: https://github.com/astral-sh/tokio-tar/pull/40. It now successfully unpacks the linked archive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11359.html">astral-sh/uv#11359</a> on 2025-02-09 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-09 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-09 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-09 19:15</div>
+            <div class="timeline-body"><p>Should be fixed in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-10 00:10</div>
+            <div class="timeline-body"><p>thank you! i really appreciate your work narrowing down these difficult to reproduce issues. on any other project bugs like these would never get fixed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 01:10</div>
+            <div class="timeline-body"><p>Thanks for your help! I'm so happy that we were able to fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../DetachHead/basedpyright/pulls/1053.html">DetachHead/basedpyright#1053</a> on 2025-02-10 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrickhulce">@patrickhulce</a> on 2025-02-10 16:28</div>
+            <div class="timeline-body"><blockquote>
+<p>i really appreciate your work narrowing down these difficult to reproduce issues. on any other project bugs like these would never get fixed</p>
+</blockquote>
+<p>Big +1 here. This is what sets uv apart. When colleagues express adoption hesitation about uv being new, this is what I tell them and interactions like this are what make me an evangelist.</p>
+<p>Thanks for all your work! 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thiago-pythonic">@thiago-pythonic</a> on 2025-02-10 18:02</div>
+            <div class="timeline-body"><p>Thanks for the quick action, @charliermarsh!</p>
+<p>Is there a workaround to prevent this from happening while the new release isn't available? This continues to happen even after rolling back to <code>uv</code> 0.5.13.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 18:05</div>
+            <div class="timeline-body"><p>No, but we'll probably release today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thiago-pythonic">@thiago-pythonic</a> on 2025-02-10 18:05</div>
+            <div class="timeline-body"><p>Sounds great! Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

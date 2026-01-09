@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401: Improve message for attempted re-export of symbols in `__init__` files  - astral-sh/ruff #5697</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401: Improve message for attempted re-export of symbols in `__init__` files </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5697">#5697</a>
+        opened by <a href="https://github.com/duckinator">@duckinator</a>
+        on 2023-07-11 23:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/duckinator">@duckinator</a> on 2023-07-11 23:02</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h2>Problem</h2>
+<p>A pattern I frequently use is to have <code>__init__.py</code> re-export <code>__version__</code> from elsewhere, and run the release process whenever that file is modified on the main branch.</p>
+<p>If I have <code>__version__ = '1.2.3'</code> directly in <code>__init__.py</code>, it's fine. If I do <code>from .version import __version__</code>, ruff complains about it being unused.</p>
+<p>The real-world example where I encountered this is <a href="https://github.com/duckinator/bork">duckinator/bork</a>.</p>
+<h2>Code</h2>
+<p>In <code>blah/version.py</code>:</p>
+<pre><code>__version__ = '1.2.3'
+</code></pre>
+<p>In <code>blah/__init__.py</code>:</p>
+<pre><code>from .version import __version__
+</code></pre>
+<h2>Command &amp; Output</h2>
+<p>The testcase consists of nothing but <code>blah/version.py</code>, <code>blah/__init__.py</code>.</p>
+<pre><code class="language-shellsession">puppy@orthrus.fox:~/ruff-testcase$ tree -a
+.
+└── blah
+    ├── __init__.py
+    └── version.py
+
+2 directories, 2 files
+puppy@orthrus.fox:~/ruff-testcase$ python3 -m venv ./venv &amp;&amp; . venv/bin/activate &amp;&amp; pip3 install ruff
+Collecting ruff
+  Using cached ruff-0.0.277-py3-none-freebsd_13_1_RELEASE_p6_amd64.whl
+Installing collected packages: ruff
+Successfully installed ruff-0.0.277
+
+[notice] A new release of pip is available: 23.0.1 -&gt; 23.1.2
+[notice] To update, run: pip install --upgrade pip
+(venv) puppy@orthrus.fox:~/ruff-testcase$ ruff --version
+ruff 0.0.277
+(venv) puppy@orthrus.fox:~/ruff-testcase$ cat blah/__init__.py
+from .version import __version__
+(venv) puppy@orthrus.fox:~/ruff-testcase$ cat blah/version.py
+__version__ = '1.2.3'
+(venv) puppy@orthrus.fox:~/ruff-testcase$ ruff check --isolated --select F401 blah/
+blah/__init__.py:1:22: F401 [*] `.version.__version__` imported but unused
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+(venv) puppy@orthrus.fox:~/ruff-testcase$ 
+</code></pre>
+<h2>Workaround</h2>
+<p>Just slap <code># noqa: F401</code> at the end of the line:</p>
+<pre><code>from .version import __version__  # noqa: F401
+</code></pre>
+<p>I feel like this shouldn't be necessary, though, which is why I opened this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/duckinator">@duckinator</a> on 2023-07-11 23:14</div>
+            <div class="timeline-body"><p>Also, <code>__version__</code> becomes replaced with a bold-text &quot;version&quot; if you use <code>--show-source</code> lol</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/39698/37c539ae-9166-4f0e-b8f2-51b169a5ed08" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-11 23:42</div>
+            <div class="timeline-body"><p>Hm interesting the bold text doesn't happen in general</p>
+<pre><code>example.py:1:1: F821 Undefined name `__test__`
+  |
+1 | __test__
+  | ^^^^^^^^ F821
+  |
+
+Found 1 error.
+</code></pre>
+<p>but I can reproduce with your example.</p>
+<pre><code>example.py:1:22: F401 [*] `.version.__version__` imported but unused
+  |
+1 | from .version import __version__
+  |                      ^^^^^^^^^^^ F401
+  |
+  = help: Remove unused import: `.version.version`
+
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+</code></pre>
+<p>Regarding the original issue, you should &quot;re-export&quot; the name if you want it to be a part of the public interface of your module i.e.</p>
+<pre><code class="language-python">from .version import __version__ as __version__
+</code></pre>
+<p>You can also define it in <code>__all__</code></p>
+<pre><code class="language-python">from .version import __version__
+
+__all__ = ['__version__']
+</code></pre>
+<p>both of these will result in no violation being raised. See the <a href="https://github.com/microsoft/pyright/blob/ada1ea63e8360fe3bd203bff3b0069c34d142817/docs/typed-libraries.md#library-interface">Pyright library interface documentation</a> for details on why that is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/duckinator">@duckinator</a> on 2023-07-11 23:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Hm interesting the bold text doesn't happen in general [...] but I can reproduce with your example.</p>
+</blockquote>
+<p>I wonder if the <code>= help:</code> lines may have more complex formatting enabled that isn't the case for some other things, perhaps?</p>
+<blockquote>
+<p>Regarding the original issue, you should &quot;re-export&quot; the name if you want it to be a part of the public interface of your module i.e.</p>
+</blockquote>
+<p>Thanks for the info. I didn't realize imports were considered private by default, somehow. Do you think it'd make sense -- possibly for <code>__init__.py</code> specifically -- to have a thing explaining <code>as ...</code>/<code>__all__</code>? If not, I think this issue can probably be closed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5699.html">astral-sh/ruff#5699</a> on 2023-07-12 00:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-12 00:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder if the = help: lines may have more complex formatting enabled that isn't the case for some other things, perhaps?</p>
+</blockquote>
+<p>I think you're right I reproduced this with another case. I've opened an issue for that at https://github.com/astral-sh/ruff/issues/5699</p>
+<blockquote>
+<p>Do you think it'd make sense -- possibly for <strong>init</strong>.py specifically -- to have a thing explaining as .../<strong>all</strong>?</p>
+</blockquote>
+<p>That does seem nice in <code>__init__.py</code> files especially! I updated the title, let me know if you think it makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "F401: Ruff complains about top-level re-export of `__version__`" to "F401: Improve message for attempted re-export of symbols in `__init__` files " by @zanieb on 2023-07-12 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5698.html">astral-sh/ruff#5698</a> on 2023-07-12 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2023-07-12 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @zanieb on 2023-07-12 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @zanieb on 2023-07-12 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2023-07-12 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-12 03:13</div>
+            <div class="timeline-body"><p>We actually already support a custom message for these if you enable <a href="https://beta.ruff.rs/docs/settings/#ignore-init-module-imports"><code>ignore-init-module-imports</code></a>, although that setting is a bit strange... Perhaps it should be removed entirely, and we should just <em>always</em> show that custom message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-12 03:17</div>
+            <div class="timeline-body"><p>My vote would be to remove that setting and make it the default (and make the autofix &quot;suggested&quot; rather than &quot;automatic&quot; for <code>__init__.py</code> files, which IIRC is the reason the setting exists in the first place -- to avoid autofixing unused imports in those cases).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-07-15 19:36</div>
+            <div class="timeline-body"><p>I'd like to work on this if it's up for grabs.</p>
+<p>EDIT: https://github.com/astral-sh/ruff/pull/5845</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5845.html">astral-sh/ruff#5845</a> on 2023-07-17 22:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7303.html">astral-sh/ruff#7303</a> on 2023-09-12 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10365.html">astral-sh/ruff#10365</a> on 2024-03-12 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-03-13 17:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[django] New rule: Check that enums do not have a `do_not_call_in_templates` member - astral-sh/ruff #13969</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[django] New rule: Check that enums do not have a `do_not_call_in_templates` member</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13969">#13969</a>
+        opened by <a href="https://github.com/Kakadus">@Kakadus</a>
+        on 2024-10-28 21:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Kakadus">@Kakadus</a> on 2024-10-28 21:17</div>
+            <div class="timeline-body"><p>In django templates, if a template variable is callable, the template system will try calling it. To disable that, one can define a truthy <code>do_not_call_in_templates</code> attribute on the callable <a href="https://docs.djangoproject.com/en/5.1/ref/templates/api/#variables-and-lookups">[ref. django docs]</a>.</p>
+<p>A fallacy might be to do something like the following:</p>
+<pre><code class="language-py">from enum import Enum, auto
+
+
+class AwesomeEnum(Enum):
+    do_not_call_in_templates = True
+
+    CASE_A = auto()
+    CASE_B = auto()
+</code></pre>
+<p>Note that that leads <code>do_not_call_in_templates</code> to be e.g. in <code>__members__</code>, and maps to <code>AwesomeEnum(True)</code>:</p>
+<pre><code class="language-py">&gt;&gt;&gt; AwesomeEnum.__members__
+{'do_not_call_in_templates': &lt;AwesomeEnum.do_not_call_in_templates: True&gt;, 'CASE_A': &lt;AwesomeEnum.CASE_A: 2&gt;, 'CASE_B': &lt;AwesomeEnum.CASE_B: 3&gt;}
+</code></pre>
+<p>Instead, it should either be wrapped in an <code>enum.nonmember</code> or defined in a <code>@property</code>, so that it is not exported as a member of the enum <a href="https://github.com/django/django/blob/555f2412cba4c5844408042e92f3bf9fa5c2392c/django/db/models/enums.py#L81-L90">like django itself does it</a>.</p>
+<p>A correct Enum would be defined like so:</p>
+<pre><code class="language-py">from enum import Enum, auto, nonmember
+
+
+class AwesomeEnum(Enum):
+    do_not_call_in_templates = nonmember(True)
+
+    CASE_A = auto()
+    CASE_B = auto()
+</code></pre>
+<p>or (as there is no <code>nonmember</code> in &lt;3.11):</p>
+<pre><code class="language-py">class AwesomeEnum(Enum):
+    @property
+    def do_not_call_in_templates(self):
+        return True
+
+    CASE_A = auto()
+    CASE_B = auto()
+</code></pre>
+<p>Maybe this is can be implemented as a nice little ruff rule? We just noticed this after having a <code>do_not_call_in_templates</code> member in our enum for nearly 4 years :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-30 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-30 07:51</div>
+            <div class="timeline-body"><p>Thanks for the nice write up. This does make sense to me. The only decision we have to make here is to which extend we want to have django rules in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-10-30 07:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

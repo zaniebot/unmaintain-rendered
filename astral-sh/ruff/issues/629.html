@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undefined name when using `Literal` - astral-sh/ruff #629</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Undefined name when using `Literal`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/629">#629</a>
+        opened by <a href="https://github.com/matteosantama">@matteosantama</a>
+        on 2022-11-07 01:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matteosantama">@matteosantama</a> on 2022-11-07 01:48</div>
+            <div class="timeline-body"><pre><code>❯ ruff --version
+ruff 0.0.104
+</code></pre>
+<p>I am getting <code>F821 Undefined name 'uniform'</code> on this line,</p>
+<pre><code class="language-python">pi: Literal[&quot;uniform&quot;] | torch.Tensor = &quot;uniform&quot;
+</code></pre>
+<p>Perhaps it has to do with the way I am importing <code>Literal</code>,</p>
+<pre><code class="language-python">if sys.version_info &gt;= (3, 8):
+    from typing import Literal
+else:
+    from typing_extensions import Literal
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matteosantama">@matteosantama</a> on 2022-11-07 01:50</div>
+            <div class="timeline-body"><p>When I remove the <code>if/else</code> and import directly <code>from typing import Literal</code> there is no error. But when I instead to import directly with <code>from typing_extensions import Literal</code> the error crops up again.</p>
+<p>So it is related to the usage of <code>typing_extensions</code>, not the <code>if/else</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-07 01:51</div>
+            <div class="timeline-body"><p>Ok cool. Both should work. Let me take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-07 01:53</div>
+            <div class="timeline-body"><p>This file runs for me without error:</p>
+<pre><code class="language-py">import sys
+
+import torch
+
+
+if sys.version_info &gt;= (3, 8):
+    from typing import Literal
+else:
+    from typing_extensions import Literal
+
+pi: Literal[&quot;uniform&quot;] | torch.Tensor = &quot;uniform&quot;
+</code></pre>
+<p>Can you help me tweak it to reproduce?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matteosantama">@matteosantama</a> on 2022-11-07 01:55</div>
+            <div class="timeline-body"><p>Hm ok, let me add a few more things.</p>
+<pre><code class="language-python">from __future__ import annotations
+
+import sys
+from dataclasses import dataclass
+
+import torch
+
+if sys.version_info &gt;= (3, 8):
+    from typing import Literal
+else:
+    from typing_extensions import Literal
+
+
+@dataclass
+class FictitiousPlay:  # &lt;-- in my code, this actually subclasses something
+
+    pi: Literal[&quot;uniform&quot;] | torch.Tensor = &quot;uniform&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-07 01:56</div>
+            <div class="timeline-body"><p>That's perfect, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-07 01:56</div>
+            <div class="timeline-body"><p>(The <code>from __future__ import annotations</code> is necessary to reproduce.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-07 01:56</div>
+            <div class="timeline-body"><p>Will fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/630.html">astral-sh/ruff#630</a> on 2022-11-07 02:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-07 02:03</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-07 02:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-07 02:03</div>
+            <div class="timeline-body"><p>I'll cut another release in a little bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matteosantama">@matteosantama</a> on 2022-11-07 02:09</div>
+            <div class="timeline-body"><p>Man you're speedy! Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/733.html">astral-sh/ruff#733</a> on 2022-11-14 07:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:06 UTC
+    </footer>
+</body>
+</html>

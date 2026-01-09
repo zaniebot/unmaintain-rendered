@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_complete panics if subcomand has bin_name defined - clap-rs/clap #4996</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_complete panics if subcomand has bin_name defined</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4996">#4996</a>
+        opened by <a href="https://github.com/cymruu">@cymruu</a>
+        on 2023-07-05 20:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cymruu">@cymruu</a> on 2023-07-05 20:29</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p><code>rustc 1.72.0-nightly (f20afcc45 2023-07-04)</code></p>
+<h3>Clap Version</h3>
+<p>master (1289534b)</p>
+<h3>Minimal reproducible code</h3>
+<p>Create a file named <code>binary_wrapped.rs</code> in <code>clap/clap_complete/examples/</code></p>
+<pre><code class="language-rust">use clap::Command;
+use clap_complete::{generate, shells::Bash, Generator};
+use std::io;
+
+fn build_cli() -&gt; Command {
+    clap::Command::new(&quot;wrapper&quot;)
+        .bin_name(&quot;wrapper&quot;)
+        .subcommand(
+            clap::Command::new(&quot;cli&quot;)
+                .bin_name(&quot;cli&quot;)
+                .subcommand(clap::Command::new(&quot;test&quot;)),
+        )
+}
+
+fn print_completions&lt;G: Generator&gt;(gen: G, cmd: &amp;mut Command) {
+    generate(gen, cmd, cmd.get_name().to_string(), &amp;mut io::stdout());
+}
+
+fn main() {
+    let mut cmd = build_cli();
+    print_completions(Bash, &amp;mut cmd);
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>In <code>clap/clap_complete</code> run <code>cargo run --example binary_wrapped</code></p>
+<h3>Actual Behaviour</h3>
+<p><code>clap_complete</code> panics</p>
+<pre><code>thread 'main' panicked at 'called `Option::unwrap()` on a `None` value', clap_complete/src/generator/utils.rs:26:39
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p><code>RUST_BACKTRACE=1 cargo run --example binary_wrapped</code> output below</p>
+<details><summary>click to expand</summary>
+
+<pre><code>thread 'main' panicked at 'called `Option::unwrap()` on a `None` value', clap_complete/src/generator/utils.rs:26:39
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/panicking.rs:578:5
+   1: core::panicking::panic_fmt
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/panicking.rs:67:14
+   2: core::panicking::panic
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/panicking.rs:117:5
+   3: core::option::Option&lt;T&gt;::unwrap
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/option.rs:950:21
+   4: clap_complete::generator::utils::find_subcommand_with_path
+             at ./src/generator/utils.rs:26:15
+   5: clap_complete::shells::bash::all_options_for_path
+             at ./src/shells/bash.rs:219:13
+   6: clap_complete::shells::bash::subcommand_details::{{closure}}
+             at ./src/shells/bash.rs:151:23
+   7: core::iter::adapters::map::map_fold::{{closure}}
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/iter/adapters/map.rs:84:28
+   8: core::iter::traits::iterator::Iterator::fold
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/iter/traits/iterator.rs:2482:21
+   9: &lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/iter/adapters/map.rs:124:9
+  10: core::iter::traits::iterator::Iterator::for_each
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/iter/traits/iterator.rs:857:9
+  11: alloc::vec::Vec&lt;T,A&gt;::extend_trusted
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/alloc/src/vec/mod.rs:2844:17
+  12: &lt;alloc::vec::Vec&lt;T,A&gt; as alloc::vec::spec_extend::SpecExtend&lt;T,I&gt;&gt;::spec_extend
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/alloc/src/vec/spec_extend.rs:26:9
+  13: &lt;alloc::vec::Vec&lt;T,A&gt; as core::iter::traits::collect::Extend&lt;T&gt;&gt;::extend
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/alloc/src/vec/mod.rs:2786:9
+  14: clap_complete::shells::bash::subcommand_details
+             at ./src/shells/bash.rs:134:5
+  15: &lt;clap_complete::shells::bash::Bash as clap_complete::generator::Generator&gt;::generate
+             at ./src/shells/bash.rs:68:34
+  16: clap_complete::generator::_generate
+             at ./src/generator/mod.rs:260:5
+  17: clap_complete::generator::generate
+             at ./src/generator/mod.rs:255:5
+  18: binary_wrapped::print_completions
+             at ./examples/binary_wrapped.rs:24:5
+  19: binary_wrapped::main
+             at ./examples/binary_wrapped.rs:29:5
+  20: core::ops::function::FnOnce::call_once
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/ops/function.rs:250:5
+</code></pre>
+</details>
+
+<h3>Expected Behaviour</h3>
+<p>Bash completions should be generated</p>
+<h3>Additional Context</h3>
+<p>I think the issue might be caused by the difference between the <code>all_subcommands</code> and <code>subcommand_details</code> functions.
+The first one contains <a href="https://github.com/clap-rs/clap/blob/cc5761576460838abe39a1570cb0f2ccd7a5e1e8/clap_complete/src/shells/bash.rs#L75">custom implementation</a> of method returning command paths, while the latter uses <a href="https://github.com/clap-rs/clap/blob/cc5761576460838abe39a1570cb0f2ccd7a5e1e8/clap_complete/src/shells/bash.rs#L127">utility method</a> called <code>all_subcommands</code> to generate them.</p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_build: name=&quot;wrapper&quot;
+[clap_builder::builder::command]Command::_propagate:wrapper
+[clap_builder::builder::command]Command::_check_help_and_version:wrapper expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:wrapper
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build: name=&quot;cli&quot;
+[clap_builder::builder::command]Command::_propagate:cli
+[clap_builder::builder::command]Command::_check_help_and_version:cli expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:cli
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build: name=&quot;test&quot;
+[clap_builder::builder::command]Command::_propagate:test
+[clap_builder::builder::command]Command::_check_help_and_version:test expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:test
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build: name=&quot;help&quot;
+[clap_builder::builder::command]Command::_propagate:help
+[clap_builder::builder::command]Command::_check_help_and_version:help expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_propagate_global_args:help
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build: name=&quot;test&quot;
+[clap_builder::builder::command]Command::_propagate:test
+[clap_builder::builder::command]Command::_check_help_and_version:test expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_propagate_global_args:test
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build: name=&quot;help&quot;
+[clap_builder::builder::command]Command::_propagate:help
+[clap_builder::builder::command]Command::_check_help_and_version:help expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_propagate_global_args:help
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build: name=&quot;help&quot;
+[clap_builder::builder::command]Command::_propagate:help
+[clap_builder::builder::command]Command::_check_help_and_version:help expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_propagate_global_args:help
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build: name=&quot;cli&quot;
+[clap_builder::builder::command]Command::_propagate:cli
+[clap_builder::builder::command]Command::_check_help_and_version:cli expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_propagate_global_args:cli
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build: name=&quot;test&quot;
+[clap_builder::builder::command]Command::_propagate:test
+[clap_builder::builder::command]Command::_check_help_and_version:test expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_propagate_global_args:test
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build: name=&quot;help&quot;
+[clap_builder::builder::command]Command::_propagate:help
+[clap_builder::builder::command]Command::_check_help_and_version:help expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_propagate_global_args:help
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build_bin_names
+[clap_builder::builder::command]Command::_build_bin_names:iter: bin_name set...
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting usage_name of cli to &quot;wrapper cli&quot;
+[clap_builder::builder::command]Command::_build_bin_names::iter: Using existing bin_name of cli (Some(&quot;cli&quot;))
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting display_name of cli to &quot;wrapper-cli&quot;
+[clap_builder::builder::command]Command::_build_bin_names
+[clap_builder::builder::command]Command::_build_bin_names:iter: bin_name set...
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting usage_name of test to &quot;cli test&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting bin_name of test to &quot;cli test&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting display_name of test to &quot;wrapper-cli-test&quot;
+[clap_builder::builder::command]Command::_build_bin_names
+[clap_builder::builder::command]Command::_build_bin_names:iter: bin_name set...
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting usage_name of help to &quot;cli help&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting bin_name of help to &quot;cli help&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting display_name of help to &quot;wrapper-cli-help&quot;
+[clap_builder::builder::command]Command::_build_bin_names
+[clap_builder::builder::command]Command::_build_bin_names:iter: bin_name set...
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting usage_name of test to &quot;cli help test&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting bin_name of test to &quot;cli help test&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting display_name of test to &quot;wrapper-cli-help-test&quot;
+[clap_builder::builder::command]Command::_build_bin_names
+[clap_builder::builder::command]Command::_build_bin_names:iter: bin_name set...
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting usage_name of help to &quot;cli help help&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting bin_name of help to &quot;cli help help&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting display_name of help to &quot;wrapper-cli-help-help&quot;
+[clap_builder::builder::command]Command::_build_bin_names
+[clap_builder::builder::command]Command::_build_bin_names:iter: bin_name set...
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting usage_name of help to &quot;wrapper help&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting bin_name of help to &quot;wrapper help&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting display_name of help to &quot;wrapper-help&quot;
+[clap_builder::builder::command]Command::_build_bin_names
+[clap_builder::builder::command]Command::_build_bin_names:iter: bin_name set...
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting usage_name of cli to &quot;wrapper help cli&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting bin_name of cli to &quot;wrapper help cli&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting display_name of cli to &quot;wrapper-help-cli&quot;
+[clap_builder::builder::command]Command::_build_bin_names
+[clap_builder::builder::command]Command::_build_bin_names:iter: bin_name set...
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting usage_name of test to &quot;wrapper help cli test&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting bin_name of test to &quot;wrapper help cli test&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting display_name of test to &quot;wrapper-help-cli-test&quot;
+[clap_builder::builder::command]Command::_build_bin_names
+[clap_builder::builder::command]Command::_build_bin_names:iter: bin_name set...
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting usage_name of help to &quot;wrapper help help&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting bin_name of help to &quot;wrapper help help&quot;
+[clap_builder::builder::command]Command::_build_bin_names:iter: Setting display_name of help to &quot;wrapper-help-help&quot;
+[clap_builder::builder::command]Command::_build_bin_names
+thread 'main' panicked at 'called `Option::unwrap()` on a `None` value', clap_complete/src/generator/utils.rs:26:39
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @cymruu on 2023-07-05 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "clap_complete does panics if subcomand has bin_name defined" to "clap_complete panics if subcomand has bin_name defined" by @cymruu on 2023-07-05 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-21 20:21</div>
+            <div class="timeline-body"><p>Ended up creating a test for this</p>
+<pre><code class="language-rust">
+#[test]
+#[should_panic]
+fn subcommand_has_binname() {
+    use clap::Command;
+    use clap_complete::{generate, shells::Bash};
+
+    fn build_cli() -&gt; Command {
+        clap::Command::new(&quot;wrapper&quot;)
+            .bin_name(&quot;wrapper&quot;)
+            .subcommand(
+                clap::Command::new(&quot;cli&quot;)
+                    .bin_name(&quot;cli&quot;)
+                    .subcommand(clap::Command::new(&quot;test&quot;)),
+            )
+    }
+
+    let mut cmd = build_cli();
+    let mut buffer = Vec::new();
+    let name = cmd.get_name().to_string();
+    generate(Bash, &amp;mut cmd, name, &amp;mut buffer);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2023-07-21 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2023-07-21 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-21 20:22</div>
+            <div class="timeline-body"><p>This is messy.</p>
+<p>The problem is that we use names and bin names interchangeably throughout the code.</p>
+<p>Personally, I would put effort more towards finishing #3166 than fixing this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tauri-apps/tauri/issues/7213.html">tauri-apps/tauri#7213</a> on 2023-08-02 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-10 00:47</div>
+            <div class="timeline-body"><p>As I believe this is resolved with the native completions, I'm going to close this.  If this was incorrect, let us know!</p>
+<p>You can track stabilization at #3166</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-08-10 00:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

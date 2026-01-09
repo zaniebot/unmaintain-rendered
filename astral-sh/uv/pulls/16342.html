@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Add a 5 min default timeout for deadlocks  - astral-sh/uv #16342</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1> Add a 5 min default timeout for deadlocks </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/pull/16342">#16342</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-10-17 11:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-10-17 11:53</div>
+            <div class="timeline-body"><p>When a process is running and another calls <code>uv cache clean</code> or <code>uv cache prune</code> we currently deadlock - sometimes until the CI timeout (https://github.com/astral-sh/setup-uv/issues/588). To avoid this, we add a default 5 min timeout waiting for a lock. 5 min balances allowing in-progress builds to finish, especially with larger native dependencies, while also giving timely errors for deadlocks on (remote) systems.</p>
+<p>Commit 1 is a refactoring.</p>
+<p>This branch also fixes a problem with the logging where acquired and released resources currently mismatch:</p>
+<pre><code>DEBUG Acquired lock for `https://github.com/tqdm/tqdm`
+DEBUG Using existing Git source `https://github.com/tqdm/tqdm`
+DEBUG Released lock at `C:\Users\Konsti\AppData\Local\uv\cache\git-v0\locks\16bb813afef8edd2`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-10-17 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-10-17 13:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-fs/src/locked_file.rs</code>:87 on 2025-10-17 13:33</div>
+            <div class="timeline-body"><p>This should happen rarely and already involves waiting, so we can spawn a thread. I quickly looked into making it generally async but it didn't seem worth the churn.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-21 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-fs/src/locked_file.rs</code>:34 on 2025-10-21 14:21</div>
+            <div class="timeline-body"><p>It'd be nice to have this to our standard environment variable parsing in <code>EnvironmentOptions</code> instead, I don't want to keep adding ad-hoc parsing like this.</p>
+<p>If you want to defer it to reduce churn, that's okay — but we should add it the tracking issue and make sure it's moved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-21 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-fs/src/locked_file.rs</code>:40 on 2025-10-21 14:22</div>
+            <div class="timeline-body"><p>We might want to say &quot;You can set ... to increase the timeout&quot; instead of &quot;Set&quot; which makes it sounds like you <em>should</em> do that as the solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-21 14:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-fs/src/locked_file.rs</code>:87 on 2025-10-21 14:26</div>
+            <div class="timeline-body"><p>Hm, we only have a couple calls to the blocking / sync versions of the lock APIs. I'd be tempted to make them async.</p>
+<p>I wonder if we should move this timeout handling to the API functions so we can <code>run_with_timeout</code> in the blocking / sync versions and just use an async timeout in the async versions? I'm wary of spawning a thread just for a timeout in the async case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/cache_clean.rs</code>:273 on 2025-10-21 14:28</div>
+            <div class="timeline-body"><p>I think this is more complicated than it needs to be. We can just do</p>
+<p>https://github.com/astral-sh/uv/blob/107d4e0ac71540059699b6136b000ba8a616ade2/crates/uv/tests/it/cache_clean.rs#L74</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-21 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14720.html">astral-sh/uv#14720</a> on 2025-10-22 08:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-10-22 08:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-fs/src/locked_file.rs</code>:34 on 2025-10-22 08:40</div>
+            <div class="timeline-body"><p>I've added it to https://github.com/astral-sh/uv/issues/14720, do you want a separate tracking issue?</p>
+<p>I had looked into parsing this centrally but the locks are called in a lot of locations including e.g. a <code>LazyLock</code> in a <code>Default</code> impl (https://github.com/astral-sh/uv/blob/7f38a8ac3bac1c2f53762369d8bdca76bb3a84dd/crates/uv-auth/src/middleware.rs#L79)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-10-22 18:34</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/16342#discussion_r2448565978 is my main remaining caveat.</p>
+<p>We should probably also add a note in https://docs.astral.sh/uv/concepts/cache since that's the main place this will be relevant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-10-22 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-10-22 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-22 18:35</div>
+            <div class="timeline-body"><p>On the timing, I guess I might expect something like 60s rather than 5m? 5m is nice and conservative though, we could reduce it later once we see that 5m doesn't break anything</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-10-27 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/common/mod.rs</code>:1788 on 2025-10-27 12:57</div>
+            <div class="timeline-body"><p>That's a bit more risky change because it assumes tests do not lock or spawn something in the background and then operate on Python versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-27 13:07</div>
+            <div class="timeline-body"><p>I rewrote it entirely async and removed the duplication between sync and async as well as shared and exclusive.</p>
+<blockquote>
+<p>On the timing, I guess I might expect something like 60s rather than 5m? 5m is nice and conservative though, we could reduce it later once we see that 5m doesn't break anything</p>
+</blockquote>
+<p>I can see some (e.g. Rust) build taking &gt;60s, so I'd like to go with a higher timeout.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-10-28 11:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/common/mod.rs</code>:1788 on 2025-10-28 11:07</div>
+            <div class="timeline-body"><p>The alternative is making every integration test async</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2025-11-03 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-03 21:53</div>
+            <div class="timeline-body"><p>I've rebased on top of dropping fs2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16707.html">astral-sh/uv#16707</a> on 2025-11-13 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-12-03 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-12-04 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-12-04 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-04 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Homebrew/homebrew-core/pulls/257541.html">Homebrew/homebrew-core#257541</a> on 2025-12-06 14:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

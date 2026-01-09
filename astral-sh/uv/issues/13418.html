@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv tool install` failing to install due to 'Permission denied' - astral-sh/uv #13418</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv tool install` failing to install due to 'Permission denied'</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13418">#13418</a>
+        opened by <a href="https://github.com/cchristous">@cchristous</a>
+        on 2025-05-13 00:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cchristous">@cchristous</a> on 2025-05-13 00:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi,</p>
+<p>I am seeing a 'Permission denied' error when trying to install a tool using <code>uv tool install</code>:</p>
+<pre><code>+/tmp/script_314.sh:366&gt; brew install uv
+==&gt; Downloading https://ghcr.io/v2/homebrew/core/uv/manifests/0.7.3
+==&gt; Fetching uv
+==&gt; Downloading https://ghcr.io/v2/homebrew/core/uv/blobs/sha256:3d300ee7ebcfa7e0ef7802ddec4fdbf0ac6e023851bad35460ba9f58dc5951d8
+==&gt; Pouring uv--0.7.3.ventura.bottle.tar.gz
+==&gt; Caveats
+zsh completions have been installed to:
+  /usr/local/share/zsh/site-functions
+==&gt; Summary
+🍺  /usr/local/Cellar/uv/0.7.3: 17 files, 37.2MB
+==&gt; Running `brew cleanup uv`...
+Disable this behaviour by setting HOMEBREW_NO_INSTALL_CLEANUP.
+Hide these hints with HOMEBREW_NO_ENV_HINTS (see `man brew`).
+
+
++/tmp/script_314.sh:367&gt; uv tool install &lt;tool&gt; --with-requirements /Users/&lt;user-name&gt;/requirements-ami.txt --python 3.11
+Downloading cpython-3.11.12-macos-x86_64-none (download) (17.5MiB)
+ Downloading cpython-3.11.12-macos-x86_64-none (download)
+error: Permission denied (os error 13) at path &quot;/var/folders/sk/1rps9wzs79zdj9f2wz8m0yf00000gn/T/.tmpjKWSI5&quot;
+Provisioning step had errors: Running the cleanup provisioner, if present...
+</code></pre>
+<p>I run these commands via packer to provision AWS AMIs. This last worked 5 days ago on uv 0.7.2. I've made no other changes to the AMI provisioning since the last success. It is possible that other brew package updates could have caused this issue, but that seems unlikely at this point.</p>
+<h3>Platform</h3>
+<p>macOS 13 ARM64 and AMD64</p>
+<h3>Version</h3>
+<p>0.7.3</p>
+<h3>Python version</h3>
+<p>Python 3.11.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @cchristous on 2025-05-13 00:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-13 06:53</div>
+            <div class="timeline-body"><p>Does it work if you go back to uv 0.7.2, or was this a change in the environment? Are any <code>XDG</code> or <code>UV_</code> variables set, as <code>/var/folders/sk</code> isn't a usual build folder?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-05-13 06:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-05-13 06:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cchristous">@cchristous</a> on 2025-05-13 13:02</div>
+            <div class="timeline-body"><p>I've switched to installing <code>uv</code> via pipx, and I've pinned it to 0.7.2 and the install works properly. I've not set any <code>XDG</code> or <code>UV_</code> variables.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cchristous">@cchristous</a> on 2025-05-13 20:06</div>
+            <div class="timeline-body"><p>I've continued using the pipx install method and unpinned the version, allowing 0.7.3 to be used, and it fails again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-20 13:13</div>
+            <div class="timeline-body"><p>I don't think we changed anything meaningful between those versions. I think this is probably an issue on the host?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cchristous">@cchristous</a> on 2025-05-20 14:58</div>
+            <div class="timeline-body"><p>Well, it consistently works with 0.7.2 and consistently fails with 0.7.3. If there is some debugging data that would be helpful, I am happy to try to collect it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kkjdaniel">@kkjdaniel</a> on 2025-07-16 00:50</div>
+            <div class="timeline-body"><p>I am having this issue as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-16 04:26</div>
+            <div class="timeline-body"><p>@kkjdaniel does this also work for you on 0.7.2 and fail on 0.7.3?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Crypto69">@Crypto69</a> on 2025-07-23 02:01</div>
+            <div class="timeline-body"><p>I get the same issue
+(base) ~ curl -LsSf https://astral.sh/uv/install.sh | sh
+downloading uv 0.8.2 aarch64-apple-darwin
+no checksums to verify
+installing to /Users/xxxx/.local/bin
+uv
+uvx
+everything's installed!
+sh: line 1453: /Users/xxxxxx/.bash_profile: Permission denied
+sh: line 1454: /Users/xxxxxx/.bash_profile: Permission denied
+mkdir: /Users/xxxxxx/.config/fish/conf.d: Permission denied
+ERROR: command failed: mkdir -p /Users/xxxxxx/.config/fish/conf.d
+Same thing when I tried running with sudo</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cchristous">@cchristous</a> on 2025-10-02 18:50</div>
+            <div class="timeline-body"><p>I'd like to report that after I upgraded to macOS 15, this issue no longer occurs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Florin-Birgu">@Florin-Birgu</a> on 2025-10-06 13:28</div>
+            <div class="timeline-body"><p>installing via pip worked for me:
+pip install uv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pbitzer">@pbitzer</a> on 2025-10-16 14:33</div>
+            <div class="timeline-body"><blockquote>
+<p>I get the same issue (base) ~ curl -LsSf https://astral.sh/uv/install.sh | sh downloading uv 0.8.2 aarch64-apple-darwin no checksums to verify installing to /Users/xxxx/.local/bin uv uvx everything's installed! sh: line 1453: /Users/xxxxxx/.bash_profile: Permission denied sh: line 1454: /Users/xxxxxx/.bash_profile: Permission denied mkdir: /Users/xxxxxx/.config/fish/conf.d: Permission denied ERROR: command failed: mkdir -p /Users/xxxxxx/.config/fish/conf.d Same thing when I tried running with sudo</p>
+</blockquote>
+<p>Ditto running MacOS 15.1. Installing via brew works fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-16 20:31</div>
+            <div class="timeline-body"><p>Are the problems you are reporting for installing uv itself, or for running <code>uv tool install</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pbitzer">@pbitzer</a> on 2025-10-16 21:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Are the problems you are reporting for installing uv itself, or for running <code>uv tool install</code>?</p>
+</blockquote>
+<p>Ah, sorry. That output is when I run the curl command to download and install uv: <code>curl -LsSf https://astral.sh/uv/install.sh | sh</code> Using the brew instructions to install works fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-16 21:11</div>
+            <div class="timeline-body"><p>This bug is about a <code>uv tool install</code> problem, could you open a separate issue with logs and other information that could be relevant, such as security software and the permissions on the paths in the error message?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

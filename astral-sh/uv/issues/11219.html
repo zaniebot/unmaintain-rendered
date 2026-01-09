@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project virtual environment creation is not concurrency-safe - astral-sh/uv #11219</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Project virtual environment creation is not concurrency-safe</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11219">#11219</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-02-04 16:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-04 16:28</div>
+            <div class="timeline-body"><p>E.g., this script fails if you run it repeatedly:</p>
+<pre><code class="language-sh">#!/bin/bash
+
+rm -rf uvtest
+mkdir -p uvtest
+cd uvtest
+uv init
+rm -rf uvtest/.venv
+
+run_python() {
+  uv run python -c &quot;print('Hello from process $1')&quot;
+}
+
+for i in {1..5}; do
+  run_python $i &amp;
+done
+
+wait
+# Return to original directory
+cd - &gt; /dev/null
+</code></pre>
+<p>With some combination of:</p>
+<pre><code class="language-shell">❯ ./sync.sh
+Initialized project `uvtest`
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+error: Project virtual environment directory `/Users/crmarsh/workspace/puffin/uvtest/.venv` cannot be used because it is not a valid Python environment (no Python executable was found)
+error: Project virtual environment directory `/Users/crmarsh/workspace/puffin/uvtest/.venv` cannot be used because it is not a valid Python environment (no Python executable was found)
+Using CPython Using CPython 3.13.03.13.0
+
+error: Project virtual environment directory `/Users/crmarsh/workspace/puffin/uvtest/.venv` cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment
+error: Project virtual environment directory `/Users/crmarsh/workspace/puffin/uvtest/.venv` cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment
+Hello from process 4
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-02-04 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-02-04 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-05 03:14</div>
+            <div class="timeline-body"><p>For context... the <code>uv pip</code> interface, we do place an advisory lock on the environment, to avoid concurrent modification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-05 05:55</div>
+            <div class="timeline-body"><p>Presumably part of the problem is that we're attempting to use the environment when it's partially constructed. With <code>uv pip</code>, we can lock the environment with a file inside it. Here, the directory may not exist? and if it's invalid we may delete it anyway. It seems a little annoying to write a lock to the project root directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-05 13:40</div>
+            <div class="timeline-body"><p>There’s no reason that the lock has to be in any specific location. We could put it in the cache even.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-05 14:36</div>
+            <div class="timeline-body"><p>I'll give it some thought. I do think this should work, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-05 15:05</div>
+            <div class="timeline-body"><p>I thought co-location was important for some reason, but.. I can't think of a reason now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-05 15:07</div>
+            <div class="timeline-body"><p>Also somewhat wondering if we can just make <code>virtualenv</code> creation robust to this somehow. I'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11259.html">astral-sh/uv#11259</a> on 2025-02-05 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-05 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-05 20:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv does not seem to install so files of coremltools - astral-sh/uv #11554</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv does not seem to install so files of coremltools</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11554">#11554</a>
+        opened by <a href="https://github.com/twoertwein">@twoertwein</a>
+        on 2025-02-16 14:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/twoertwein">@twoertwein</a> on 2025-02-16 14:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-sh">$ uv init example
+$ cd example
+$ uv python pin 3.11
+$ uv add coremltools
+$ uv run python -c &quot;import coremltools&quot;
+Failed to load _MLModelProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLCPUComputeDeviceProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLGPUComputeDeviceProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLNeuralEngineComputeDeviceProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLModelProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLComputePlanProxy: No module named 'coremltools.libcoremlpython'
+Fail to import BlobReader from libmilstoragepython. No module named 'coremltools.libmilstoragepython'
+Failed to load _MLModelProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLModelAssetProxy: No module named 'coremltools.libcoremlpython'
+</code></pre>
+<p>The uv installation folder of coremltools does not contain the so files (exist in the pip installation)</p>
+<p>uv installation:</p>
+<pre><code>__init__.py	__pycache__	_deps		converters	models		optimize	proto		test		version.py
+</code></pre>
+<p>pip installation:</p>
+<pre><code>__init__.py		_deps			libcoremlpython.so	libmodelpackage.so	optimize		test
+__pycache__		converters		libmilstoragepython.so	models			proto			version.py
+</code></pre>
+<h3>Platform</h3>
+<p>mac M2</p>
+<h3>Version</h3>
+<p>0.5.31</p>
+<h3>Python version</h3>
+<p>3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @twoertwein on 2025-02-16 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-16 15:34</div>
+            <div class="timeline-body"><p>How did you install with <code>pip</code>?</p>
+<pre><code>❯ uv venv
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+❯ uv pip install coremlutils
+  × No solution found when resolving dependencies:
+  ╰─▶ Because coremlutils was not found in the package registry and you require coremlutils, we can conclude that your requirements are unsatisfiable.
+❯ uv pip install coremltools==8.2
+Resolved 11 packages in 312ms
+      Built coremltools==8.2
+Prepared 10 packages in 1.76s
+Installed 11 packages in 57ms
+ + attrs==25.1.0
+ + cattrs==24.1.2
+ + coremltools==8.2
+ + mpmath==1.3.0
+ + numpy==2.2.3
+ + packaging==24.2
+ + protobuf==5.29.3
+ + pyaml==25.1.0
+ + pyyaml==6.0.2
+ + sympy==1.13.3
+ + tqdm==4.67.1
+❯ ls .venv/lib/python3.13/site-packages/coremltools
+__init__.py	_deps		converters	models		optimize	proto		test		version.py
+❯ uv pip install pip
+Resolved 1 package in 96ms
+Prepared 1 package in 193ms
+Installed 1 package in 6ms
+ + pip==25.0.1
+❯ .venv/bin/pip install coremltools==8.2 --force-reinstall
+Collecting coremltools==8.2
+  Downloading coremltools-8.2.tar.gz (1.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.5/1.5 MB 10.3 MB/s eta 0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting numpy&gt;=1.14.5 (from coremltools==8.2)
+  Downloading numpy-2.2.3-cp313-cp313-macosx_14_0_arm64.whl.metadata (62 kB)
+Collecting protobuf&gt;=3.1.0 (from coremltools==8.2)
+  Downloading protobuf-5.29.3-cp38-abi3-macosx_10_9_universal2.whl.metadata (592 bytes)
+Collecting sympy (from coremltools==8.2)
+  Downloading sympy-1.13.3-py3-none-any.whl.metadata (12 kB)
+Collecting tqdm (from coremltools==8.2)
+  Downloading tqdm-4.67.1-py3-none-any.whl.metadata (57 kB)
+Collecting packaging (from coremltools==8.2)
+  Using cached packaging-24.2-py3-none-any.whl.metadata (3.2 kB)
+Collecting attrs&gt;=21.3.0 (from coremltools==8.2)
+  Downloading attrs-25.1.0-py3-none-any.whl.metadata (10 kB)
+Collecting cattrs (from coremltools==8.2)
+  Downloading cattrs-24.1.2-py3-none-any.whl.metadata (8.4 kB)
+Collecting pyaml (from coremltools==8.2)
+  Downloading pyaml-25.1.0-py3-none-any.whl.metadata (12 kB)
+Collecting PyYAML (from pyaml-&gt;coremltools==8.2)
+  Downloading PyYAML-6.0.2-cp313-cp313-macosx_11_0_arm64.whl.metadata (2.1 kB)
+Collecting mpmath&lt;1.4,&gt;=1.1.0 (from sympy-&gt;coremltools==8.2)
+  Downloading mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+Downloading attrs-25.1.0-py3-none-any.whl (63 kB)
+Downloading numpy-2.2.3-cp313-cp313-macosx_14_0_arm64.whl (5.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.1/5.1 MB 41.6 MB/s eta 0:00:00
+Downloading protobuf-5.29.3-cp38-abi3-macosx_10_9_universal2.whl (417 kB)
+Downloading cattrs-24.1.2-py3-none-any.whl (66 kB)
+Using cached packaging-24.2-py3-none-any.whl (65 kB)
+Downloading pyaml-25.1.0-py3-none-any.whl (26 kB)
+Downloading sympy-1.13.3-py3-none-any.whl (6.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 42.4 MB/s eta 0:00:00
+Downloading tqdm-4.67.1-py3-none-any.whl (78 kB)
+Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 536.2/536.2 kB 18.4 MB/s eta 0:00:00
+Using cached PyYAML-6.0.2-cp313-cp313-macosx_11_0_arm64.whl (171 kB)
+Building wheels for collected packages: coremltools
+  Building wheel for coremltools (pyproject.toml) ... done
+  Created wheel for coremltools: filename=coremltools-8.2-py3-none-any.whl size=1917235 sha256=9215c0980a14d0423cc4d62282e13fae87828ad8fc1b7dc7eb58755649044740
+  Stored in directory: /Users/zb/Library/Caches/pip/wheels/13/94/ec/2840f5638896f3cedea11a64987334f9cedffc1be409617244
+Successfully built coremltools
+Installing collected packages: mpmath, tqdm, sympy, PyYAML, protobuf, packaging, numpy, attrs, pyaml, cattrs, coremltools
+  Attempting uninstall: mpmath
+    Found existing installation: mpmath 1.3.0
+    Uninstalling mpmath-1.3.0:
+      Successfully uninstalled mpmath-1.3.0
+  Attempting uninstall: tqdm
+    Found existing installation: tqdm 4.67.1
+    Uninstalling tqdm-4.67.1:
+      Successfully uninstalled tqdm-4.67.1
+  Attempting uninstall: sympy
+    Found existing installation: sympy 1.13.3
+    Uninstalling sympy-1.13.3:
+      Successfully uninstalled sympy-1.13.3
+  Attempting uninstall: PyYAML
+    Found existing installation: PyYAML 6.0.2
+    Uninstalling PyYAML-6.0.2:
+      Successfully uninstalled PyYAML-6.0.2
+  Attempting uninstall: protobuf
+    Found existing installation: protobuf 5.29.3
+    Uninstalling protobuf-5.29.3:
+      Successfully uninstalled protobuf-5.29.3
+  Attempting uninstall: packaging
+    Found existing installation: packaging 24.2
+    Uninstalling packaging-24.2:
+      Successfully uninstalled packaging-24.2
+  Attempting uninstall: numpy
+    Found existing installation: numpy 2.2.3
+    Uninstalling numpy-2.2.3:
+      Successfully uninstalled numpy-2.2.3
+  Attempting uninstall: attrs
+    Found existing installation: attrs 25.1.0
+    Uninstalling attrs-25.1.0:
+      Successfully uninstalled attrs-25.1.0
+  Attempting uninstall: pyaml
+    Found existing installation: pyaml 25.1.0
+    Uninstalling pyaml-25.1.0:
+      Successfully uninstalled pyaml-25.1.0
+  Attempting uninstall: cattrs
+    Found existing installation: cattrs 24.1.2
+    Uninstalling cattrs-24.1.2:
+      Successfully uninstalled cattrs-24.1.2
+  Attempting uninstall: coremltools
+    Found existing installation: coremltools 8.2
+    Uninstalling coremltools-8.2:
+      Successfully uninstalled coremltools-8.2
+Successfully installed PyYAML-6.0.2 attrs-25.1.0 cattrs-24.1.2 coremltools-8.2 mpmath-1.3.0 numpy-2.2.3 packaging-24.2 protobuf-5.29.3 pyaml-25.1.0 sympy-1.13.3 tqdm-4.67.1
+❯ ls .venv/lib/python3.13/site-packages/coremltools
+__init__.py	__pycache__	_deps		converters	models		optimize	proto		test		version.py
+❯ .venv/bin/python -c &quot;import coremltools&quot;
+Failed to load _MLModelProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLCPUComputeDeviceProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLGPUComputeDeviceProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLNeuralEngineComputeDeviceProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLModelProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLComputePlanProxy: No module named 'coremltools.libcoremlpython'
+Fail to import BlobReader from libmilstoragepython. No module named 'coremltools.libmilstoragepython'
+Failed to load _MLModelProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLModelAssetProxy: No module named 'coremltools.libcoremlpython'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twoertwein">@twoertwein</a> on 2025-02-16 15:42</div>
+            <div class="timeline-body"><p>I'm not sure if coremtools supports 3.12/13.</p>
+<pre><code>$ python --version
+Python 3.11.10
+
+$ python -m pip install coremltools
+Collecting coremltools
+  Using cached coremltools-8.2-cp311-none-macosx_11_0_arm64.whl.metadata (2.5 kB)
+Requirement already satisfied: numpy&gt;=1.14.5 in ./miniforge3/lib/python3.11/site-packages (from coremltools) (1.26.4)
+Requirement already satisfied: protobuf&gt;=3.1.0 in ./miniforge3/lib/python3.11/site-packages (from coremltools) (4.25.5)
+Requirement already satisfied: sympy in ./miniforge3/lib/python3.11/site-packages (from coremltools) (1.13.1)
+Requirement already satisfied: tqdm in ./miniforge3/lib/python3.11/site-packages (from coremltools) (4.67.1)
+Requirement already satisfied: packaging in ./miniforge3/lib/python3.11/site-packages (from coremltools) (24.0)
+Requirement already satisfied: attrs&gt;=21.3.0 in ./miniforge3/lib/python3.11/site-packages (from coremltools) (24.2.0)
+Requirement already satisfied: cattrs in ./miniforge3/lib/python3.11/site-packages (from coremltools) (23.2.3)
+Requirement already satisfied: pyaml in ./miniforge3/lib/python3.11/site-packages (from coremltools) (24.7.0)
+Requirement already satisfied: PyYAML in ./miniforge3/lib/python3.11/site-packages (from pyaml-&gt;coremltools) (6.0.2)
+Requirement already satisfied: mpmath&lt;1.4,&gt;=1.1.0 in ./miniforge3/lib/python3.11/site-packages (from sympy-&gt;coremltools) (1.3.0)
+Using cached coremltools-8.2-cp311-none-macosx_11_0_arm64.whl (2.6 MB)
+Installing collected packages: coremltools
+Successfully installed coremltools-8.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-16 15:49</div>
+            <div class="timeline-body"><p>Ah okay I <em>can</em> reproduce this on Python 3.11. Confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-16 16:08</div>
+            <div class="timeline-body"><p>Debugging now...</p>
+<p>These files are requested in a setuptools <code>package_data</code> blurb https://github.com/apple/coremltools/blob/605ac1c7f06c19a09853e1757f7f3379d7d4e9fd/setup.py#L71-L80</p>
+<p>We're installing this wheel https://inspector.pypi.io/project/coremltools/8.2/packages/0b/ac/2431ce0270fcf60a8f68d19475b7406754016dcdac9986b742df16339dca/coremltools-8.2-cp312-none-macosx_11_0_arm64.whl/</p>
+<p>Which does include the <code>.so</code> files.</p>
+<p>They're also present in the RECORD
+https://inspector.pypi.io/project/coremltools/8.2/packages/0b/ac/2431ce0270fcf60a8f68d19475b7406754016dcdac9986b742df16339dca/coremltools-8.2-cp312-none-macosx_11_0_arm64.whl/coremltools-8.2.dist-info/RECORD#line.2</p>
+<p>If we inspect our cache entry for the wheel, the <code>.so</code> files are present!</p>
+<pre><code>❯ ls /Users/zb/.cache/uv/archive-v0/_UMdwU9bOmVY6tYSHemYJ/coremltools
+__init__.py		converters		libmilstoragepython.so	models			proto			version.py
+_deps			libcoremlpython.so	libmodelpackage.so	optimize		test
+</code></pre>
+<p>We call</p>
+<p>https://github.com/astral-sh/uv/blob/35564e189ddcac3b514984bd5ca62c376533f1e0/crates/uv-install-wheel/src/install.rs#L78-L79</p>
+<p>Which logs</p>
+<pre><code>TRACE Extracted 2 files name=PackageName(&quot;coremltools&quot;)
+</code></pre>
+<p>This is surprising at first, but on macOS we can clone whole directories. With some more logs..</p>
+<pre><code>TRACE Cloning /Users/zb/.cache/uv/archive-v0/_UMdwU9bOmVY6tYSHemYJ/coremltools to /Users/zb/workspace/uv/example/.venv/lib/python3.11/site-packages/coremltools
+TRACE Cloning /Users/zb/.cache/uv/archive-v0/_UMdwU9bOmVY6tYSHemYJ/coremltools-8.2.dist-info to /Users/zb/workspace/uv/example/.venv/lib/python3.11/site-packages/coremltools-8.2.dist-info
+</code></pre>
+<p>So... it seems like APFS isn't cloning the <code>.so</code> file correctly?</p>
+<p>To confirm, we can install with the <code>copy</code> link mode and things are working as intended</p>
+<pre><code>❯ uv venv -p 3.11
+Using CPython 3.11.11
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+❯ uv pip install coremltools==8.2 --link-mode copy
+Resolved 11 packages in 17ms
+Installed 11 packages in 177ms
+ + attrs==25.1.0
+ + cattrs==24.1.2
+ + coremltools==8.2
+ + mpmath==1.3.0
+ + numpy==2.2.3
+ + packaging==24.2
+ + protobuf==5.29.3
+ + pyaml==25.1.0
+ + pyyaml==6.0.2
+ + sympy==1.13.3
+ + tqdm==4.67.1
+❯ ls .venv/lib/python3.11/site-packages/coremltools
+__init__.py		converters		libmilstoragepython.so	models			proto			version.py
+_deps			libcoremlpython.so	libmodelpackage.so	optimize		test
+</code></pre>
+<p>As to why APFS does not behave correctly here, I have no clue.</p>
+<p>This does not reproduce with <code>cp</code></p>
+<pre><code>❯ cp -v -Rc /Users/zb/.cache/uv/archive-v0/_UMdwU9bOmVY6tYSHemYJ/coremltools ./coremltools | grep &quot;\.so&quot;
+/Users/zb/.cache/uv/archive-v0/_UMdwU9bOmVY6tYSHemYJ/coremltools/libcoremlpython.so -&gt; ./coremltools/coremltools/libcoremlpython.so
+/Users/zb/.cache/uv/archive-v0/_UMdwU9bOmVY6tYSHemYJ/coremltools/libmodelpackage.so -&gt; ./coremltools/coremltools/libmodelpackage.so
+/Users/zb/.cache/uv/archive-v0/_UMdwU9bOmVY6tYSHemYJ/coremltools/_deps/kmeans1d/_core.cpython-311-darwin.so -&gt; ./coremltools/coremltools/_deps/kmeans1d/_core.cpython-311-darwin.so
+/Users/zb/.cache/uv/archive-v0/_UMdwU9bOmVY6tYSHemYJ/coremltools/libmilstoragepython.so -&gt; ./coremltools/coremltools/libmilstoragepython.so
+❯ ls coremltools
+__init__.py		converters		libcoremlpython.so	libmodelpackage.so	optimize		test
+_deps			coremltools		libmilstoragepython.so	models			proto			version.py
+</code></pre>
+<p>However, I suspect that <code>cp</code> is recursively calling <code>clonefile</code> per file instead of once for the directory since it logs each file.</p>
+<p>The Rust code is very minimal (from <code>reflink-copy</code>)</p>
+<pre><code class="language-rust">pub fn reflink(from: &amp;Path, to: &amp;Path) -&gt; io::Result&lt;()&gt; {
+    let src = cstr(from)?;
+    let dest = cstr(to)?;
+
+    let ret = unsafe { clonefile(src.as_ptr(), dest.as_ptr(), CLONE_NOOWNERCOPY) };
+
+    if ret == -1 {
+        Err(io::Error::last_os_error())
+    } else {
+        Ok(())
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-16 16:32</div>
+            <div class="timeline-body"><p>Okay now I cannot reproduce this?</p>
+<pre><code>❯ uv venv -p 3.11
+Using CPython 3.11.11
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+❯ uv pip install coremltools==8.2 --no-cache
+Resolved 11 packages in 272ms
+Prepared 11 packages in 943ms
+Installed 11 packages in 29ms
+ + attrs==25.1.0
+ + cattrs==24.1.2
+ + coremltools==8.2
+ + mpmath==1.3.0
+ + numpy==2.2.3
+ + packaging==24.2
+ + protobuf==5.29.3
+ + pyaml==25.1.0
+ + pyyaml==6.0.2
+ + sympy==1.13.3
+ + tqdm==4.67.1
+❯ ls .venv/lib/python3.11/site-packages/coremltools
+__init__.py		libcoremlpython.so	models			test
+_deps			libmilstoragepython.so	optimize		version.py
+converters		libmodelpackage.so	proto
+❯ uv venv -p 3.11
+Using CPython 3.11.11
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+❯ uv pip install coremltools==8.2
+Resolved 11 packages in 17ms
+Installed 11 packages in 37ms
+ + attrs==25.1.0
+ + cattrs==24.1.2
+ + coremltools==8.2
+ + mpmath==1.3.0
+ + numpy==2.2.3
+ + packaging==24.2
+ + protobuf==5.29.3
+ + pyaml==25.1.0
+ + pyyaml==6.0.2
+ + sympy==1.13.3
+ + tqdm==4.67.1
+❯ ls .venv/lib/python3.11/site-packages/coremltools
+__init__.py		libcoremlpython.so	models			test
+_deps			libmilstoragepython.so	optimize		version.py
+converters		libmodelpackage.so	proto
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twoertwein">@twoertwein</a> on 2025-02-17 13:50</div>
+            <div class="timeline-body"><p>Thank you for debugging this so thoroughly and for also finding a temporary work around :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-17 14:35</div>
+            <div class="timeline-body"><p>I'm at a loss as to how to fix it since I cannot reproduce it anymore :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twoertwein">@twoertwein</a> on 2025-02-17 16:17</div>
+            <div class="timeline-body"><p>After installing it with <code>--no-cache</code> it works but, I'm able to reprodcue it again after running (all inside the <code>uv venv -p 3.11</code>):</p>
+<pre><code class="language-sh">$ uv pip uninstall coremltools
+Uninstalled 1 package in 175ms
+ - coremltools==8.2
+
+$ uv pip install coremltools          
+Resolved 11 packages in 177ms
+Installed 1 package in 19ms
+ + coremltools==8.2
+
+$ uv run python -c  &quot;import coremltools&quot;
+Torch version 2.6.0 has not been tested with coremltools. You may run into unexpected errors. Torch 2.5.0 is the most recent version that has been tested.
+Failed to load _MLModelProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLCPUComputeDeviceProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLGPUComputeDeviceProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLNeuralEngineComputeDeviceProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLModelProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLComputePlanProxy: No module named 'coremltools.libcoremlpython'
+Fail to import BlobReader from libmilstoragepython. No module named 'coremltools.libmilstoragepython'
+Failed to load _MLModelProxy: No module named 'coremltools.libcoremlpython'
+Failed to load _MLModelAssetProxy: No module named 'coremltools.libcoremlpython'
+Fail to import BlobWriter from libmilstoragepython. No module named 'coremltools.libmilstoragepython'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-17 16:25</div>
+            <div class="timeline-body"><p>In my example, I was creating a new empty environment each time. I can try futzing with it more though.</p>
+<pre><code>❯ uv pip uninstall coremltools
+Uninstalled 1 package in 34ms
+ - coremltools==8.2
+❯ uv pip install coremltools
+Resolved 11 packages in 8ms
+Installed 1 package in 9ms
+ + coremltools==8.2
+❯ ls .venv/lib/python3.11/site-packages/coremltools
+__init__.py		converters		libmilstoragepython.so	models			proto			version.py
+_deps			libcoremlpython.so	libmodelpackage.so	optimize		test
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11579.html">astral-sh/uv#11579</a> on 2025-02-17 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12869.html">astral-sh/uv#12869</a> on 2025-04-14 03:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-06-22 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-06-22 02:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

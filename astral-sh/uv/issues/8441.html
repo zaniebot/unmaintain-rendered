@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trying to use custom gitconfig location, appears to get ignored - astral-sh/uv #8441</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Trying to use custom gitconfig location, appears to get ignored</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/8441">#8441</a>
+        opened by <a href="https://github.com/EdgyMeshx">@EdgyMeshx</a>
+        on 2024-10-22 09:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/EdgyMeshx">@EdgyMeshx</a> on 2024-10-22 09:40</div>
+            <div class="timeline-body"><p>This is a follow on from #8413, I have a custom <code>.gitconfig</code> in a child directory that is picked up if I am editing a repo inside that child directory (effectively allowing me to commit etc under a user other than my default self.)</p>
+<p>This works fine using git normally, but if I configure it to point to a custom <code>.git-credentials</code> file, it appears to go ignored by <code>uv</code>. I think this is somewhat expected behaviour as my custom <code>.gitconfig</code> is only picked up if you are in a subdirectory of the location of that custom config.</p>
+<p>I am assuming that uv is running git from its own location not the <code>cwd</code> and this is causing custom configuration to be ignored. Is there any way to prevent this from happening, or any way this could be addressed (have uv pick up the cwd where it was executed and have that be the context its children commands like git run in?) as a part of uv.</p>
+<p>Example configs
+~/.gitconfig</p>
+<pre><code>[user]
+	email = email@me.com
+	name = Default User
+
+[includeIf &quot;gitdir:~/code/work/**&quot;]
+    path = ~/code/work/.gitconfig
+</code></pre>
+<p>~/code/work/.gitconfig</p>
+<pre><code>[user]
+    email = email@work.com
+    name = Work User
+
+[credential]
+	helper = store --file ~/code/work/.git-credentials
+</code></pre>
+<p>If I move the git credentials to home, uv picks them up just fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 11:10</div>
+            <div class="timeline-body"><p>Hm, this seems challenging. We might need to copy the file into the build context? Or clone in the user's directory then move it into the cache? It's possible we'll need the config for future fetches though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-10-22 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-10-22 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyMeshx">@EdgyMeshx</a> on 2024-10-22 12:15</div>
+            <div class="timeline-body"><p>The issue with copying it is it can be in multiple pieces depending on current location. Currently we only go one repo deep so a single fetch would suffice, but if we ever did nest repos you are right, additional fetches could be needed.</p>
+<p>If there is some way for the cwd to be the context uv runs against, so any file look ups start in the &quot;correct&quot; location and walk the tree upwards, I believe it would solve (at least my version) of the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyMeshx">@EdgyMeshx</a> on 2024-10-22 12:29</div>
+            <div class="timeline-body"><p>Have just tested and gitconfig does not honor relative paths, so the store file should be a full path if it was to be copied.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyMeshx">@EdgyMeshx</a> on 2024-10-22 13:03</div>
+            <div class="timeline-body"><p>To clarify, this isn't just a git-credentials issue, this would impact custom ssh keys in the same way</p>
+<p>having this instead of credential in <code>/code/work/.gitconfig</code> is also lost by uv.</p>
+<pre><code>[core]
+    sshCommand = &quot;ssh -i ~/.ssh/id_work&quot;
+</code></pre>
+<p>have updated issue title</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Trying to use custom git-credentials location, appears to get ignored" to "Trying to use custom gitconfig location, appears to get ignored" by @EdgyMeshx on 2024-10-22 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2024-10-25 08:15</div>
+            <div class="timeline-body"><p>@zanieb not sure if this will assist in a solution for you, but I believe if you can run <code>git config --list</code> in the context of the cwd before switching over to uv location. You could extract the lowest down core.sshcommand and credential.helper settings if provided.</p>
+<p>I'm not sure exactly how you could inject them as <code>git config --local</code> only works in the context of an active git repo.</p>
+<p>Global config appears before included config appears before local config</p>
+<pre><code>user.email=email@me.com
+user.name=Default User
+filter.lfs.clean=git-lfs clean -- %f
+filter.lfs.smudge=git-lfs smudge -- %f
+filter.lfs.process=git-lfs filter-process
+filter.lfs.required=true
+init.defaultbranch=main
+merge.ff=false
+pull.ff=true
+includeif.gitdir:~/code/work/**.path=~/code/work/.gitconfig
+user.email=email@work.com
+user.name=Work User
+core.sshcommand=ssh -i ~/.ssh/id_work
+credential.helper=store --file ~/code/work/.git-credentials
+core.repositoryformatversion=0
+core.filemode=true
+core.bare=false
+core.logallrefupdates=true
+remote.origin.url=git@github.com:org/backend.git
+remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+branch.main.remote=origin
+branch.main.merge=refs/heads/main
+branch.concepts.remote=origin
+branch.concepts.merge=refs/heads/concepts
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

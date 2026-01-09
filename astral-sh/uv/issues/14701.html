@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>conflicts between nested group dependency and extra dependency - astral-sh/uv #14701</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>conflicts between nested group dependency and extra dependency</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14701">#14701</a>
+        opened by <a href="https://github.com/branyang02">@branyang02</a>
+        on 2025-07-18 05:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/branyang02">@branyang02</a> on 2025-07-18 05:04</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Suppose I have a nested group dependency defined as</p>
+<pre><code>[dependency-groups]
+dev = [
+  {include-group = &quot;foo&quot;},
+  {include-group = &quot;bar&quot;},
+  {include-group = &quot;hehe&quot;}
+]
+foo = [...]
+bar = [...]
+hehe = [...]
+</code></pre>
+<p>And suppose I have <code>[project.optional-dependencies]</code>:</p>
+<pre><code>[project.optional-dependencies]
+foo_conflict = [...]
+bar_conflict = [...]
+hehe_conflict = [...]
+</code></pre>
+<p>Do I need to specify conflicts for</p>
+<ul>
+<li><code>foo &lt;-&gt; foo_conflict</code>, <code>bar &lt;-&gt; bar_conflict</code>, <code>hehe &lt;-&gt; hehe_conflict</code>,
+AND</li>
+<li><code>dev &lt;-&gt; foo_conflict</code>, <code>dev &lt;-&gt; bar_conflict</code>, <code>dev &lt;-&gt; hehe_conflict</code>,</li>
+</ul>
+<p>In my local testing it seems to be the case, unless I'm doing something completely wrong.</p>
+<p>Additional question: If I do need to in fact specify all these conflicts, do these extra conflicts cause more time to be resolved?</p>
+<p>Any help is appreciated!</p>
+<h3>Platform</h3>
+<p>Ubuntu</p>
+<h3>Version</h3>
+<p>uv 0.7.20</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @branyang02 on 2025-07-18 05:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-18 09:02</div>
+            <div class="timeline-body"><p>This sounds correct, <code>include-group</code> in this regard works like repeating the (conflicting) dependencies from the included groups.</p>
+<blockquote>
+<p>Additional question: If I do need to in fact specify all these conflicts, do these extra conflicts cause more time to be resolved?</p>
+</blockquote>
+<p>Resolving itself is fast enough that this shouldn't be noticeable. The slow parts (fetching metadata) are shared between the conflicts, and we can reuse most of the resolution between the conflicts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @branyang02 on 2025-07-21 05:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0.9.12 breaks installs from requirements.lock - astral-sh/uv #16856</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>0.9.12 breaks installs from requirements.lock</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16856">#16856</a>
+        opened by <a href="https://github.com/jackdent">@jackdent</a>
+        on 2025-11-26 03:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jackdent">@jackdent</a> on 2025-11-26 03:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We have a GitHub action that runs mypy:</p>
+<pre><code>name: Mypy
+on:
+  # Triggered whenever a commit is added to the main branch
+  push:
+    branches:
+      - main
+  # Triggered whenever a PR is opened or updated
+  pull_request:
+jobs:
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: &quot;3.11&quot;
+          cache: &quot;pip&quot;
+      - name: Install dependencies
+        working-directory: ./src
+        # install everything from lock file, but no nvidia packages, separately install cpu-only torch
+        run: |
+          pip install --no-deps uv -r &lt;( cat requirements.lock | grep torch==) --extra-index-url https://download.pytorch.org/whl/cpu
+          uv pip install --system --no-deps -r &lt;( cat requirements.lock | grep -v nvidia | grep -v torch==)
+      - name: Run mypy
+        run: mypy . --config ./src/pyproject.toml
+</code></pre>
+<p>This started failing earlier today. After freezing to version 0.8.18 (our previous version), the GitHub action now succeeds:</p>
+<pre><code>name: Mypy
+on:
+  # Triggered whenever a commit is added to the main branch
+  push:
+    branches:
+      - main
+  # Triggered whenever a PR is opened or updated
+  pull_request:
+jobs:
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: &quot;3.11&quot;
+          cache: &quot;pip&quot;
+      - name: Install dependencies
+        working-directory: ./src
+        # install everything from lock file, but no nvidia packages, separately install cpu-only torch
+        run: |
+          pip install --no-deps uv==0.8.18 -r &lt;( cat requirements.lock | grep torch==) --extra-index-url https://download.pytorch.org/whl/cpu
+          uv pip install --system --no-deps -r &lt;( cat requirements.lock | grep -v nvidia | grep -v torch==)
+      - name: Run mypy
+        run: mypy . --config ./src/pyproject.toml
+</code></pre>
+<p>The error we observed in the CI logs was: <code>warning: Requirements file </code>/dev/fd/63<code> does not contain any dependencies</code>:</p>
+<pre><code>Run pip install --no-deps uv -r &lt;( cat requirements.lock | grep torch==) --extra-index-url https://download.pytorch.org/whl/cpu
+Looking in indexes: https://pypi.org/simple, https://download.pytorch.org/whl/cpu
+Collecting uv
+  Downloading uv-0.9.12-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (11 kB)
+Collecting torch==2.3.1 (from -r /dev/fd/63 (line 1))
+  Downloading https://download.pytorch.org/whl/cpu/torch-2.3.1%2Bcpu-cp311-cp311-linux_x86_64.whl (190.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 190.4/190.4 MB 84.5 MB/s  0:00:02
+Downloading uv-0.9.12-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (21.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 21.7/21.7 MB 22.7 MB/s  0:00:01
+Installing collected packages: uv, torch
+
+Successfully installed torch-2.3.1+cpu uv-0.9.12
+warning: Requirements file `/dev/fd/63` does not contain any dependencies
+Using Python 3.11.14 environment at: /opt/hostedtoolcache/Python/3.11.14/x64
+Audited in 49ms
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 24.04.3</p>
+<h3>Version</h3>
+<p>uv 0.9.12</p>
+<h3>Python version</h3>
+<p>Python 3.11.14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jackdent on 2025-11-26 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-26 03:25</div>
+            <div class="timeline-body"><p>This is my bad. I will own the fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-11-26 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16857.html">astral-sh/uv#16857</a> on 2025-11-26 03:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-11-26 03:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Yamakaky">@Yamakaky</a> on 2025-11-26 08:55</div>
+            <div class="timeline-body"><p>Thanks  for the quick fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-26 16:33</div>
+            <div class="timeline-body"><p>A fix is out in 0.9.13</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

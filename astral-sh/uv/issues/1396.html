@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flag to allow `uv pip install` to install into specific environments (that do not necessarily contain uv) - astral-sh/uv #1396</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Flag to allow `uv pip install` to install into specific environments (that do not necessarily contain uv)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1396">#1396</a>
+        opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a>
+        on 2024-02-16 00:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-02-16 00:05</div>
+            <div class="timeline-body"><p>It looks like <code>uv</code> already supports this, I just need to lie about <code>VIRTUAL_ENV</code>.</p>
+<p>Looking for something like the equivalent of pip's <code>--prefix</code> or <code>--python</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-02-16 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-02-16 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonNabuurs">@RonNabuurs</a> on 2024-02-16 10:52</div>
+            <div class="timeline-body"><p>I did also encounter this when trying to use uv as a drop in replacement for my pip projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1501.html">astral-sh/uv#1501</a> on 2024-02-16 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1598.html">astral-sh/uv#1598</a> on 2024-02-18 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1625.html">astral-sh/uv#1625</a> on 2024-02-18 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1422.html">astral-sh/uv#1422</a> on 2024-02-18 08:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1623.html">astral-sh/uv#1623</a> on 2024-02-18 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-18 23:13</div>
+            <div class="timeline-body"><p>Definitely agree, this is fundamental to allow a single UV installation to be used as a real standalone binary!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1374.html">astral-sh/uv#1374</a> on 2024-02-18 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-19 00:07</div>
+            <div class="timeline-body"><p>Yes we should support this. Is there a consensus on the name of the flag in other tools?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2024-02-19 00:25</div>
+            <div class="timeline-body"><p>pip has the <code>--require-virtualenv</code> option which makes it behave like uv:</p>
+<pre><code>$ pip install --require-virtualenv attrs
+ERROR: Could not find an activated virtualenv (required).
+</code></pre>
+<p>but <code>--no-require-virtualenv</code> seems too long of a name for an option in uv. And sure the default uv behavior is much saner default!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-02-19 00:55</div>
+            <div class="timeline-body"><p><a href="https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-prefix">pip</a> uses <code>--prefix</code> and <code>--python</code> (I think the difference relates to which Python pip should be run with, which doesn't matter to uv).
+<a href="https://installer.pypa.io/en/stable/cli/installer/">pypa/installer</a> uses <code>--prefix</code>.</p>
+<p>I'm not too familiar with pdm, but the <code>--venv</code> flag several of its command support is a name not a path (which is a good choice for high level workflow tool).</p>
+<p>Meta since I got confused:</p>
+<ul>
+<li>There's maybe some overlap between this issue and https://github.com/astral-sh/uv/issues/1374 and https://github.com/astral-sh/uv/issues/1526 (which are duplicates of each other). In both cases the workaround is to set <code>VIRTUAL_ENV</code> explicitly.</li>
+<li>I view this issue as low priority and just providing a flag that does a very mechanical equivalent of <code>VIRTUAL_ENV=path uv pip install ...</code> via <code>uv pip install --prefix=path ...</code></li>
+<li>The other issues is a flag that a) does something sort of like <code>VIRTUAL_ENV=$(/path/to/base/python -c &quot;import sys; print(sys.prefix)&quot;) uv pip install ...</code> via <code>uv pip install --system ...</code>, b) promises that setting that flag will make things work for a base Python, since it's not clear how intentional it is that setting <code>VIRTUAL_ENV</code> currently lets you point to a base Python. Those issues also maybe need more thinking about how to identify the right base Python, e.g. if you do <code>python -m uv ...</code> should it look at <code>sys.base_prefix</code>?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-19 02:20</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-prefix">pip</a> uses <code>--prefix</code> and <code>--python</code> (I think the difference relates to which Python pip should be run with, which doesn't matter to uv).</p>
+</blockquote>
+<p>A few things:</p>
+<ol>
+<li><p>The <code>--python</code> flag is desirable here because the tool that creates an environment is not necessarily the same program that uses an environment (perhaps in IDE). In this case, there is no knowledge of the base Python that was used and therefore no way to get information about its version, architecture, etc. It's not true to say that pip uses the flag to decide where to run (it's Python so it's already running) but rather it's entirely about information gathering.</p>
+<p>There is no way to avoid invoking the interpreter to get that data until <a href="https://discuss.python.org/t/44572">PEP 739</a> is accepted (and implemented by various tools) and then another of the same kind for virtual environments is accepted (and implemented by various tools).</p>
+</li>
+<li><p>The <code>VIRTUAL_ENV</code> workaround indeed does not work well for base installations because the directory structure is not guaranteed and is often different based on the platform. For example, on Windows installations usually have a <code>python.exe</code> at the root whereas a virtual environment will have that under the <code>Scripts</code> directory. That command doesn't work in the official Python Docker image for instance:</p>
+<pre><code>❯ docker run --rm python:3.12 python -c &quot;import sys; print(sys.prefix)&quot;
+/usr/local
+</code></pre>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1336.html">astral-sh/uv#1336</a> on 2024-02-19 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/hatch/issues/1268.html">pypa/hatch#1268</a> on 2024-02-19 03:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-02-19 04:48</div>
+            <div class="timeline-body"><p>@ofek no, pip will literally run itself in a subprocess using a different interpreter with <code>--python</code>: https://github.com/pypa/pip/blob/ebe491a82a13e6610697b22be00db363fb5ff5e3/src/pip/_internal/cli/main_parser.py#L82</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-19 05:09</div>
+            <div class="timeline-body"><p>Thanks for linking the code, I didn't realize that's how they chose to implement it! My point still stands in that pip is already running and therefore the previous assertion that it needs to know where to run is not true (except for that implementation detail) but its purpose is rather to get details about the interpreter. Other tools like virtualenv, Hatch and Poetry use a script that returns the <a href="https://peps.python.org/pep-0508/#environment-markers">environment</a> of a given interpreter:</p>
+<ul>
+<li>virtualenv: https://github.com/pypa/virtualenv/blob/20.25.0/src/virtualenv/discovery/py_info.py</li>
+<li>Hatch: https://github.com/pypa/hatch/blob/hatch-v1.9.3/src/hatch/utils/env.py#L45-L79</li>
+<li>Poetry: https://github.com/python-poetry/poetry/blob/1.7.1/src/poetry/utils/env/script_strings.py#L30-L98</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-02-19 05:33</div>
+            <div class="timeline-body"><p>Sorry, I'm still a little bit confused about what your ask is. Note that <code>uv</code> does invoke the interpreter it is trying to install into in all cases:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/blob/2586f655bbf650a9797c8f88b6d9066eefe7a3dc/crates/uv-interpreter/src/get_interpreter_info.py#L1</li>
+<li>https://github.com/astral-sh/uv/blob/2586f655bbf650a9797c8f88b6d9066eefe7a3dc/crates/uv-interpreter/src/virtual_env.rs#L31</li>
+</ul>
+<p>This issue really should just be adding a flag that does what the env var already does</p>
+<p>I don't know if uv handles installing into base python on Windows correctly with the <code>VIRTUAL_ENV</code> trick (and that's more a question for #1374). But in the official docker image case you talk about uv does the right thing with the trick, I'm not sure why you say it doesn't work: <code>docker run --rm python:3.12 bash -c 'pip install uv mypy; VIRTUAL_ENV=$(python -c &quot;import sys; print(sys.prefix)&quot;) uv pip freeze' </code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-19 06:02</div>
+            <div class="timeline-body"><ul>
+<li><p>My point is that if we are provided an option for an explicit path then it would be far more rational for that option to be a Python binary which is ultimately invoked rather than a directory that must have a specific structure in order to find the aforementioned binary. The example I gave was a real one in which IDEs act upon paths to interpreters rather than directories per se.</p>
+<p>I didn't know UV already polls the interpreter; that's good! So it looks like just an oversight to be able to control the specific Python interpreter.</p>
+</li>
+<li><p>What I was trying to show earlier was that the <code>VIRTUAL_ENV</code> environment variable is working by happenstance because the default <a href="https://docs.python.org/3/library/sys.html#sys.prefix"><code>sys.prefix</code></a> directory <code>/usr/local</code> happens to have a <code>bin</code> directory which matches the expected Linux virtual environment structure. As you mentioned this doesn't work on Windows and I'm not certain that works for all Linux installations either.</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-02-19 07:39</div>
+            <div class="timeline-body"><p>Okay, I think I see! To summarise:</p>
+<ul>
+<li>Currently, you can do <code>VIRTUAL_ENV=/path/to/prefix uv pip ...</code></li>
+<li>It would be nice if you could instead do <code>uv pip --prefix /path/to/prefix ...</code><ul>
+<li>This would make uv install into a specified virtual environment just a tiny bit nicer, which was my use case when opening this issue.</li>
+<li>Honestly, I don't even mind the env var that much, I think I just ran <code>uv pip install --help</code> and didn't see the pip option that I knew I could use to do this. My intention when opening issue was basically just a discoverability nit :-)</li>
+</ul>
+</li>
+<li>Alternatively, the flag could be <code>uv pip --python-executable /path/to/python ...</code></li>
+<li><code>--python-executable</code> might have an advantage if you wanted this flag to be able to install into base environments, because while uv knows directory structure for venvs, it may not for base environments (see also #1374 / #1526 ). In particular, for base environment on Windows and for Linux distro provided Python (like when python is <code>/usr/bin/python3</code> and dist-packages nonsense is happening or whatever)</li>
+</ul>
+<p>So I guess if I were uv, I'd figure out what/how I want to do 1374 / 1526 and maybe that determines what should happen here. Most of the demand for those issues is probably stuff like &quot;make official python docker image work&quot; or &quot;make homebrew python work&quot;, for which logic equivalent to <code>VIRTUAL_ENV=$(python -c &quot;import sys; print(sys.prefix)&quot;)</code> works fine, modulo the easy to add extra Windows case. I spent some time looking at distro specific sysconfig stuff or framework builds or whatever else and frankly supporting those base environments looks horrible (or at least beyond my amateur interest. Also if PEP 668 is used widely, maybe easy to declare out of scope)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1526.html">astral-sh/uv#1526</a> on 2024-02-19 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1831.html">astral-sh/uv#1831</a> on 2024-02-21 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1632.html">astral-sh/uv#1632</a> on 2024-02-23 00:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wpk-nist-gov">@wpk-nist-gov</a> on 2024-02-23 00:34</div>
+            <div class="timeline-body"><p>I'm hoping a solution to this would solve an edge case I'm running into.    I often have a conda environment with nox that then creates virtualenvs.  This leads to both <code>CONDA_PREFIX</code> and <code>VIRTUAL_ENV</code> variables being set.  With pip, this is easy to work around using <code>path/to/python -m pip</code> to install packages in the correct environment (so #1632, which I think is intimately connected to this issue, would solve this).  But having a flag like <code>--python-executable</code> or <code>--prefix</code> would also solve this, as long as passing such a flag overrides <code>CONDA_PREFIX</code> and <code>VIRTUAL_ENV</code>.   This would hopefully help wntrblm/nox#762 as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-25 02:11</div>
+            <div class="timeline-body"><p>I’m planning to work on this next week. I’ll post here with a concrete proposal once I’ve had time to internalize the comments. (Probably something like a <code>--python</code> flag alongside a <code>--system</code> flag but TBD.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-25 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-25 19:34</div>
+            <div class="timeline-body"><p>As far as I can tell from reading the linked Poetry source, apart from adding the arguments to the CLI etc., the main thing that would need to change to support arbitrary Pythons (outside of a virtual environment) is that we'd need to call <code>sysconfig.get_paths()</code> to get the various environment paths, rather than constructing them ourselves -- since the exact structure can vary for non-virtualenvs. Is there any reason this <em>wouldn't</em> work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-25 19:39</div>
+            <div class="timeline-body"><p>Definitely some things to learn from in the Poetry source: https://github.com/python-poetry/poetry/commit/e8f259a1f341f3f12ebc4822154bbea928ea323c</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../meltano/meltano/issues/8410.html">meltano/meltano#8410</a> on 2024-02-26 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fruch">@fruch</a> on 2024-02-26 23:27</div>
+            <div class="timeline-body"><p>sharing one use case of using <code>--prefix</code> and <code>--root</code>,</p>
+<p>inside a multi stages docker build, one stage is building/collecting all packages and install them into a /build directory
+and other stages just copy the content out of into their /usr/local folder.</p>
+<p>meanwhile I've worked around using those pip flags, by VIRTUAL_ENV=/user/local, and copy all of /user/local between the layers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2000.html">astral-sh/uv#2000</a> on 2024-02-27 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonNabuurs">@RonNabuurs</a> on 2024-02-27 10:01</div>
+            <div class="timeline-body"><blockquote>
+<p>sharing one use case of using <code>--prefix</code> and <code>--root</code>,</p>
+<p>inside a multi stages docker build, one stage is building/collecting all packages and install them into a /build directory and other stages just copy the content out of into their /usr/local folder.</p>
+<p>meanwhile I've worked around using those pip flags, by VIRTUAL_ENV=/user/local, and copy all of /user/local between the layers.</p>
+</blockquote>
+<p>This is the exact use case I also have</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-28 02:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fruch">@fruch</a> on 2024-03-03 08:13</div>
+            <div class="timeline-body"><p>@charliermarsh I don't think the --python solved the equivalent <code>pip install --root</code> case, you want us to open a new issue for that ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/strickvl">@strickvl</a> on 2024-03-03 09:52</div>
+            <div class="timeline-body"><p>@fruch there's also now a new <code>--system</code> flag which handles what you need, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ox0400">@Ox0400</a> on 2024-07-02 03:10</div>
+            <div class="timeline-body"><pre><code>uv pip install --system uv 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrej730">@Andrej730</a> on 2025-11-22 06:51</div>
+            <div class="timeline-body"><p>Came to this looking for <code>--project</code> support for <code>uv pip</code>, which is documented as not supported by <code>uv pip</code>.
+<code>--python</code> works really well for this, though it's a bit more verbose, since required interpreter path instead of just project dir.</p>
+<p><img width="797" height="304" alt="Image" src="https://github.com/user-attachments/assets/6c56685e-e9b6-4b95-aae5-792418790f9c" /></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

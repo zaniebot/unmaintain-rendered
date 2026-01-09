@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF017 Avoid quadratic list summation: consider itertools.chain.from_iterable - astral-sh/ruff #9045</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF017 Avoid quadratic list summation: consider itertools.chain.from_iterable</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9045">#9045</a>
+        opened by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a>
+        on 2023-12-07 11:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2023-12-07 11:16</div>
+            <div class="timeline-body"><p>currently <code>RUF017</code></p>
+<p>takes</p>
+<pre><code class="language-python">mess = [[1], [1,2],[1], [1,2],[1], [1,2]]
+
+tags = sorted(sum([x for x in mess], []))
+</code></pre>
+<p>and turns it into</p>
+<pre><code class="language-python">import functools
+import operator
+mess = [[1], [1,2],[1], [1,2],[1], [1,2]]
+
+tags = sorted(functools.reduce(operator.iadd, [x for x in mess], []))
+</code></pre>
+<p>instead of the more idiomatic</p>
+<pre><code class="language-python">import itertools
+
+mess = [[1], [1,2],[1], [1,2],[1], [1,2]]
+
+tags = sorted(itertools.chain.from_iterable(mess))
+</code></pre>
+<p>based on the applications of the pattern i have seen so far, i would almost always recommend to replace
+the sum with a <code>list(chain.from_iterable(...))</code></p>
+<p>with the additional &quot;optimization&quot; of in-lining list comprehensions and/or generator expressions when applicable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-07 14:09</div>
+            <div class="timeline-body"><p>This makes sense... We could at least do this for cases in which it's directly within a <code>sorted</code> or similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-12-07 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-07 14:22</div>
+            <div class="timeline-body"><p>Interestingly, though, the <code>functools.reduce</code> variant does seem to be quite a bit faster.</p>
+<pre><code class="language-python">import timeit
+
+code1 = &quot;&quot;&quot;
+tags = sorted(itertools.chain.from_iterable(mess))
+&quot;&quot;&quot;
+
+code2 = &quot;&quot;&quot;
+tags = sorted(functools.reduce(operator.iadd, [x for x in mess], []))
+&quot;&quot;&quot;
+
+repeats = 10000
+
+time1 = timeit.timeit(stmt=code1, setup='import itertools\nmess = [[i, i + 1] for i in range(10000)]', number=repeats)
+print(f&quot;{time1} seconds&quot;)
+
+time2 = timeit.timeit(stmt=code2, setup='import itertools\nimport functools\nimport operator\nmess = [[i] for i in range(10000)]', number=repeats)
+print(f&quot;{time2} seconds&quot;)
+</code></pre>
+<p>Yields:</p>
+<pre><code>4.019917957950383 seconds
+2.7585187909426168 seconds
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2023-12-07 14:33</div>
+            <div class="timeline-body"><p>I suspect this relates to different optimization levels of the Code paths</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-12-12 05:09</div>
+            <div class="timeline-body"><p>Here's some more benchmarking from when we added this: https://github.com/astral-sh/ruff/issues/5073#issuecomment-1591836349</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-12-22 15:34</div>
+            <div class="timeline-body"><p>This would be covered under a REFURB/FURB (<a href="https://github.com/dosisod/refurb/blob/master/refurb/checks/itertools/use_chain_from_iterable.py">FURB179</a>) rule when we choose to implement it. https://github.com/astral-sh/ruff/issues/1348</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10088.html">astral-sh/ruff#10088</a> on 2024-02-22 23:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-08-15 23:07</div>
+            <div class="timeline-body"><p>I'd recommend closing this issue, since the functools variant is meaningfully faster: https://github.com/astral-sh/ruff/issues/5073#issuecomment-1591836349</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-15 23:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 23:09</div>
+            <div class="timeline-body"><p>I agree.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

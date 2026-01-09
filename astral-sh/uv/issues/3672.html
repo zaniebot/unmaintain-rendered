@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: lock dependencies that are not relevant to the platform the compile is running on  - astral-sh/uv #3672</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: lock dependencies that are not relevant to the platform the compile is running on </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3672">#3672</a>
+        opened by <a href="https://github.com/rbtcollins">@rbtcollins</a>
+        on 2024-05-20 17:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rbtcollins">@rbtcollins</a> on 2024-05-20 17:03</div>
+            <div class="timeline-body"><p>uv 0.1.44</p>
+<p>With this requirements input file:</p>
+<pre><code class="language-foo.in">jupyterlab==4.2.0
+</code></pre>
+<p>running this command: <code>uv pip compile     --generate-hashes     --no-header     --no-strip-extras     --python-version=3.11.9     -o foo.txt     foo.in</code> on a Linux host generates a <code>foo.txt</code> file that does not contain 'appnope'.</p>
+<p><code>appnope</code> is a platform_system specific dependency of the ipykernel:</p>
+<p>https://github.com/ipython/ipykernel/blob/v6.29.4/pyproject.toml#L33
+<code>'appnope;platform_system==&quot;Darwin&quot;',</code></p>
+<p>We want to lock our requirements, but having contributors run <code>uv pip compile</code> for every distinct platform seems like unnecessary toil. Even if a perfect job isn't possible, doing a usually-good-enough job would be fantastic.</p>
+<p>Concrete proposal:</p>
+<ul>
+<li>when encountering a platform specific conditional dependency, include it, preserving the condition. And for its dependencies, whatever they are, inject the same condition unless an alternative path leads to their unconditional inclusion.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-20 17:07</div>
+            <div class="timeline-body"><p>You can do something like this to build a single requirements file for both platforms: https://github.com/astral-sh/uv/issues/2679#issuecomment-2068208602</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-20 17:08</div>
+            <div class="timeline-body"><p>Unclear if we'll offer something like this in the <code>pip compile</code> API directly. We're already building platform-agnostic resolution support atop lockfiles. Perhaps as part of that we'll offer outputting a requirements file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-05-20 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juledwar">@juledwar</a> on 2024-07-02 02:25</div>
+            <div class="timeline-body"><blockquote>
+<p>You can do something like this to build a single requirements file for both platforms: <a href="https://github.com/astral-sh/uv/issues/2679#issuecomment-2068208602">#2679 (comment)</a></p>
+</blockquote>
+<p>What about allowing the use of multiple <code>--platform</code> flags? Obviously it would need to do environment markers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-02 02:28</div>
+            <div class="timeline-body"><p>By the way: we now support <code>--universal</code> which does this!</p>
+<p>(We may eventually support allowing multiple <code>--python-platform</code> flags as a less general solution.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-02 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-02 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juledwar">@juledwar</a> on 2024-07-02 04:22</div>
+            <div class="timeline-body"><p>I noticed <code>--universal</code> but I don't want <em>everything</em> as it slows down the whole run. I've gone from 1 hour on pip-compile to 5 minutes with UV because of this!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

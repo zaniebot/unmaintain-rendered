@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv build cannot find files specified with relative paths in force-include - astral-sh/uv #12131</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv build cannot find files specified with relative paths in force-include</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12131">#12131</a>
+        opened by <a href="https://github.com/leon1995">@leon1995</a>
+        on 2025-03-12 07:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/leon1995">@leon1995</a> on 2025-03-12 07:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When I specify a relative path in <a href="https://hatch.pypa.io/1.13/config/build/#forced-inclusion"><code>[tool.hatch.build.force-include]</code></a>, because I want to include files that are relative to the python package in the package itself. This may happen when I specify a path source which is contained in the same git repo but I want to include in my package.
+Here is a minimal example using the <code>uv.lock</code> file.</p>
+<pre><code class="language-toml">[tool.hatch.build.force-include]
+&quot;../repo/uv.lock&quot; = &quot;uv.lock&quot;
+</code></pre>
+<p>However, this results in a <code>FileNotFoundError</code>, because the relative path is not resolved using the current working directory but rather the one from uv´s cache</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+  File &quot;C:\Users\&lt;user&gt;\AppData\Local\uv\cache\builds-v0\.tmpUCXVKr\Lib\site-packages\hatchling\build.py&quot;, line 58, in build_wheel
+    return os.path.basename(next(builder.build(directory=wheel_directory, versions=['standard'])))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;C:\Users\&lt;user&gt;\AppData\Local\uv\cache\builds-v0\.tmpUCXVKr\Lib\site-packages\hatchling\builders\plugin\interface.py&quot;, line 155, in build
+    artifact = version_api[version](directory, **build_data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;C:\Users\&lt;user&gt;\AppData\Local\uv\cache\builds-v0\.tmpUCXVKr\Lib\site-packages\hatchling\builders\wheel.py&quot;, line 477, in build_standard
+    for included_file in self.recurse_included_files():
+  File &quot;C:\Users\&lt;user&gt;\AppData\Local\uv\cache\builds-v0\.tmpUCXVKr\Lib\site-packages\hatchling\builders\plugin\interface.py&quot;, line 177, in recurse_included_files
+    yield from self.recurse_forced_files(self.config.get_force_include())
+  File &quot;C:\Users\&lt;user&gt;\AppData\Local\uv\cache\builds-v0\.tmpUCXVKr\Lib\site-packages\hatchling\builders\plugin\interface.py&quot;, line 237, in recurse_forced_files
+    raise FileNotFoundError(msg)
+FileNotFoundError: Forced include not found: C:\Users\&lt;user&gt;\AppData\Local\uv\cache\sdists-v8\.tmpVCcwYy\repo\uv.lock
+  x Failed to build `C:\path\to\repo`
+  |-&gt; The build backend returned an error
+  `-&gt; Call to `hatchling.build.build_wheel` failed (exit code: 1)
+      hint: This usually indicates a problem with the package or the build environment
+</code></pre>
+<p>Using <code>hatch</code> directly it works</p>
+<pre><code>uv pip install hatch
+hatch build
+</code></pre>
+<h3>Platform</h3>
+<p>MSYS_NT-10.0-22621 3.5.4-cbe555e0.x86_64 x86_64 Msys</p>
+<h3>Version</h3>
+<p>uv 0.6.6 (c1a0bb85e 2025-03-12)</p>
+<h3>Python version</h3>
+<p>Python 3.11.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @leon1995 on 2025-03-12 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-12 10:33</div>
+            <div class="timeline-body"><p>In Python, package build can go in one or two steps: For the one step, we go from source directory to wheel. For the two steps, first the source directory is built into a source distribution (<code>.tar.gz</code>), then the source distribution is unpacked into a temporary directory and built into a wheel. That means files from above the <code>pyproject.toml</code> need to be included into the source distribution already, and then used by relative path when building the wheel (which fails in your case).</p>
+<p>Your <code>uv build</code> makes the two step build, which ensures that the built source distribution is valid. You'll probably need to configure the force-includes differently for source dist and wheel, this depends on hatchling's logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-03-12 10:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-03-12 10:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-12 20:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive reports for F821 lint rule - astral-sh/ruff #17386</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive reports for F821 lint rule</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17386">#17386</a>
+        opened by <a href="https://github.com/chenzhekl">@chenzhekl</a>
+        on 2025-04-14 05:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chenzhekl">@chenzhekl</a> on 2025-04-14 05:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When we use Ruff with jaxtyping, Ruff falsely report F821 error for the following type annotation:</p>
+<pre><code class="language-python">import torch
+from jaxtyping import Float, jaxtyped
+from beartype import beartype
+
+@jaxtyped(typechecker=beartype)
+def foo(a: Float[torch.Tensor, &quot;dim&quot;]) -&gt; None:
+    pass
+</code></pre>
+<pre><code>Undefined name `dim` Ruff[F821](https://docs.astral.sh/ruff/rules/undefined-name)
+</code></pre>
+<p>This only happens when the tensor is of 1D.</p>
+<h3>Version</h3>
+<p>ruff 0.11.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-04-14 09:57</div>
+            <div class="timeline-body"><p>This requires type inference/multi-file analysis. Ruff doesn't know that <code>jaxtyping.Float</code> is an alias for <code>typing.Annotated</code>, so <code>dim</code> will be treated as a forward reference.</p>
+<p>The only way to address this in the short term would be to, as @MichaReiser previously suggested, add a new setting that contains a mapping for re-exports, so you can tell ruff that <code>jaxtyping.Float</code> is the same as <code>typing.Annotated</code>. This would be useful in a number of places to address the lack of multi-file analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-04-14 10:04</div>
+            <div class="timeline-body"><p>A (admittedly kind of silly) workaround in the meantime would be to instead write it like this:</p>
+<pre><code class="language-python">import torch
+from jaxtyping import Float, jaxtyped
+from beartype import beartype
+
+dim = &quot;dim&quot;
+
+@jaxtyped(typechecker=beartype)
+def foo(a: Float[torch.Tensor, dim]) -&gt; None:
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-04-14 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @ntBre on 2025-04-14 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-14 12:44</div>
+            <div class="timeline-body"><p>Thanks for the report, and thanks @Daverball for the explanation.</p>
+<p>I found #6014, which at least sounds related, but maybe not closely enough to call this a duplicate since it's for a different <code>typing</code> re-export.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17654.html">astral-sh/ruff#17654</a> on 2025-04-27 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Orionnss">@Orionnss</a> on 2025-05-23 09:43</div>
+            <div class="timeline-body"><p>An awful workaround that seems to work, you can add a whitespace before the name of the dimension as in
+<code>labels: Int[torch.Tensor, &quot; nb_sentences&quot;],</code> and it seems to work.</p>
+<p>If someone is able to explain why this works, I would be very happy :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-05-23 09:47</div>
+            <div class="timeline-body"><blockquote>
+<p>If someone is able to explain why this works, I would be very happy :)</p>
+</blockquote>
+<p>It's possible the annotations parser fails or gets skipped if the annotation starts with a whitespace, although I'd consider that a bug, that should get fixed, it's still a valid expression with the whitespace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-05-23 09:52</div>
+            <div class="timeline-body"><p>Also #9860 is technically related, I only just saw this issue pop up as a duplicate recently. Maybe this issue should be closed in favor of that issue, although to be fair re-exporting heavily special cased type forms like <code>typing.Annotated</code> and <code>typing.Literal</code> under different names is a more general problem that isn't specific to jaxtyping, any library can do that and cause the same problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/knyazer">@knyazer</a> on 2025-06-01 19:58</div>
+            <div class="timeline-body"><p>By the way, this is also an issue (or a very similar issue it seems) in the original pyflakes :) https://github.com/PyCQA/pyflakes/issues/789</p>
+<p>Maybe as a workaround we could split F821 into two rules, F821a and F821, where F821a refers to annotations? So that this rule can be disabled on its own. WDYT?</p>
+<p>Also, another rule that is somewhat related is F722: in jaxtyping, the annotations of kind <code>Float[Array, &quot;&quot;]</code> are common, which triggers this rule, for, I presume, the same reason of using <code>Annotated as</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erlebach">@erlebach</a> on 2025-06-11 14:29</div>
+            <div class="timeline-body"><p>I'd like to know why this issue is so difficult to fix given the level of sophistication of so many other tools.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrick-kidger">@patrick-kidger</a> on 2025-09-12 15:50</div>
+            <div class="timeline-body"><p>Have just come across this. As per the <a href="https://docs.kidger.site/jaxtyping/faq/#flake8-or-ruff-are-throwing-an-error">jaxtyping FAQ</a> then adding a space at the start of the string -- <code>Float[Array, &quot; foo&quot;]</code> -- is my recommended work around. This converts the F821 error into an ignorable F722 error instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9860.html">astral-sh/ruff#9860</a> on 2025-09-12 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../JoernStoehler/msc-math-viterbo/pulls/33.html">JoernStoehler/msc-math-viterbo#33</a> on 2025-10-04 21:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

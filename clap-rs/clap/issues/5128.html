@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clap fails to parse subcommand preceded by vararg  - clap-rs/clap #5128</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clap fails to parse subcommand preceded by vararg </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5128">#5128</a>
+        opened by <a href="https://github.com/Pzixel">@Pzixel</a>
+        on 2023-09-15 14:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Pzixel">@Pzixel</a> on 2023-09-15 14:51</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.72.0-nightly (fe7454bf4 2023-06-19)</p>
+<h3>Clap Version</h3>
+<p>4.4.3</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Parser, Subcommand};
+use clap::ValueEnum;
+
+#[derive(Debug, Clone, Copy, clap::ValueEnum, derive_more::Display, Eq, PartialEq)]
+#[clap(rename_all = &quot;verbatim&quot;)]
+pub enum Flags {
+    Hello,
+    World
+}
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Subcommand)]
+pub enum SubCommand {
+    #[clap(name = &quot;run-once&quot;)]
+    Once,
+    #[clap(name = &quot;run-regular&quot;)]
+    Regular
+}
+
+
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+pub struct Args {
+    // value_variants
+    #[arg(short, long, num_args(0..), default_values_t = Flags::value_variants())]
+    pub flags: Vec&lt;Flags&gt;,
+    #[command(subcommand)]
+    pub subcommand: SubCommand,
+}
+
+fn main() {
+    let args = Args::parse();
+    dbg!(args);
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- --flags Hello World run-once</code></p>
+<h3>Actual Behaviour</h3>
+<pre><code>error: invalid value 'run-once' for '--flags [&lt;FLAGS&gt;...]'
+  [possible values: Hello, World]
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>It should run subcommand <code>Once</code> with flags <code>Hello</code></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code class="language-rust">[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;untitled90&quot;
+[clap_builder::builder::command]Command::_propagate:untitled90
+[clap_builder::builder::command]Command::_check_help_and_version:untitled90 expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --version
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:untitled90
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:flags
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:version
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--flags&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--flags&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--flags [&lt;FLAGS&gt;...]'
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;flags&quot;): Found an arg with value 'None'
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=flags, val=None, has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(0)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::parse_opt_value: More arg vals required...
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg Opt(&quot;flags&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;Hello&quot;'
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=flags, pending=1
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=0..=18446744073709551615, actual=1
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;run-once&quot;'
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=flags, pending=2
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=0..=18446744073709551615, actual=2
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;flags&quot;
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=1
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;flags&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;flags&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;flags&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Args&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;Hello&quot;, &quot;run-once&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=3
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+error: invalid value 'run-once' for '--flags [&lt;FLAGS&gt;...]'
+  [possible values: Hello, World]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @Pzixel on 2023-09-15 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-09-18 13:55</div>
+            <div class="timeline-body"><p>You might want https://docs.rs/clap/latest/clap/struct.Command.html#method.subcommand_precedence_over_arg</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pzixel">@Pzixel</a> on 2023-09-18 14:35</div>
+            <div class="timeline-body"><p>Hmm, it looks like it should help, but I didn't manage to find a usage in attributes. Can you please show an example that resolves the issue? Either I'm doing it wrong or it doesn't resolve this issue:</p>
+<pre><code class="language-rust">#[derive(Debug, Clone, Copy, Eq, PartialEq, Subcommand)]
+pub enum SubCommand {
+    #[clap(name = &quot;run-once&quot;, subcommand_precedence_over_arg = true)]
+    Once,
+    #[clap(name = &quot;run-regular&quot;, subcommand_precedence_over_arg = true)]
+    Regular
+}
+
+error: invalid value 'run-once' for '--flags [&lt;FLAGS&gt;...]'
+  [possible values: Hello, World]
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-09-18 16:05</div>
+            <div class="timeline-body"><p>This is an attribute that would go on the parent command for determining how to parse all subcommands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pzixel">@Pzixel</a> on 2023-09-18 17:37</div>
+            <div class="timeline-body"><p>I see, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Pzixel on 2023-09-18 17:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

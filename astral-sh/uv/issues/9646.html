@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't install torch_scatter wheel from index on OSX - astral-sh/uv #9646</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't install torch_scatter wheel from index on OSX</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9646">#9646</a>
+        opened by <a href="https://github.com/dionhaefner">@dionhaefner</a>
+        on 2024-12-04 19:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dionhaefner">@dionhaefner</a> on 2024-12-04 19:49</div>
+            <div class="timeline-body"><p>It seems impossible to install <code>torch_scatter</code> CPU wheels using <code>uv</code> on OSX. I'm following the <a href="https://pytorch-geometric.readthedocs.io/en/2.5.2/notes/installation.html">official installation instructions</a> which require <code>--find-links</code> to be passed.</p>
+<p><code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;torch&quot;,
+    &quot;torch_scatter&quot;,
+]
+version = &quot;0.1.0&quot;
+
+[tool.uv.sources]
+torch = [{ index = &quot;pytorch-cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; }]
+
+
+[tool.uv]
+find-links = [
+    &quot;https://data.pyg.org/whl/torch-2.5.1+cpu.html&quot;,
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+</code></pre>
+<p>Results in this error:</p>
+<pre><code class="language-bash">$ uv venv
+$ uv sync
+⠙ Resolving dependencies...                                                                          
+warning: Missing version constraint (e.g., a lower bound) for `torch-scatter`
+Resolved 13 packages in 2.52s
+error: Distribution `torch-scatter==2.1.2+pt25cpu @ registry+https://data.pyg.org/whl/torch-2.5.1+cpu.html` can't be installed because it doesn't have a source distribution or wheel for the current platform
+</code></pre>
+<p>It seems that <code>uv</code> is picking up <code>torch-scatter==2.1.2+pt25cpu</code> instead of the (compatible) <code>torch-scatter==2.1.2</code> wheel. pip-based installation works:</p>
+<pre><code class="language-bash">$ uv pip install torch_scatter -f https://data.pyg.org/whl/torch-2.5.1+cpu.html
+# all good
+</code></pre>
+<p>I'm really looking for any <code>pyproject.toml</code> here that doesn't lead to <code>uv sync</code> choking on OSX.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-06 00:33</div>
+            <div class="timeline-body"><p>I think you need to do: <code>&quot;torch_scatter===2.1.2&quot;</code> instead of <code>&quot;torch_scatter&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-12-06 00:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dionhaefner">@dionhaefner</a> on 2024-12-06 09:04</div>
+            <div class="timeline-body"><p>Same outcome:</p>
+<pre><code class="language-bash">error: Distribution `torch-scatter==2.1.2+pt25cpu @ registry+https://data.pyg.org/whl/torch-2.5.1+cpu.html` can't be installed because it doesn't have a source distribution or wheel for the current platform
+</code></pre>
+<p>It looks like <code>uv</code> is treating <code>2.1.2</code> and <code>2.1.2+pt25cpu</code> as the same version and finds the latter first, which fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-17 20:30</div>
+            <div class="timeline-body"><p>There are three equals signs in my version. <code>2.1.2+pt25cpu</code> <em>is</em> a valid version if you request <code>torch_scatter==2.1.2</code> -- that's how the spec works. If you want <code>2.1.2</code> but not <code>2.1.2+pt25cpu</code>, you need <code>torch_scatter===2.1.2</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-17 20:33</div>
+            <div class="timeline-body"><p>(This is a consequence of PyTorch using the spec differently than it was intended, for details on the standards, see https://packaging.python.org/en/latest/specifications/version-specifiers/#local-version-identifiers)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-17 20:35</div>
+            <div class="timeline-body"><p>@zanieb - this would also be fixed by my “incomplete wheels” PR…</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9928.html">astral-sh/uv#9928</a> on 2024-12-17 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-17 21:12</div>
+            <div class="timeline-body"><p>After #9928, this would just be:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;torch&quot;,
+    &quot;torch_scatter&quot;,
+]
+version = &quot;0.1.0&quot;
+
+[tool.uv.sources]
+torch = [{ index = &quot;pytorch-cpu&quot; }]
+
+
+[tool.uv]
+find-links = [
+    &quot;https://data.pyg.org/whl/torch-2.5.1+cpu.html&quot;,
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9711.html">astral-sh/uv#9711</a> on 2024-12-18 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-20 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-20 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-20 19:15</div>
+            <div class="timeline-body"><p>Fixed by https://github.com/astral-sh/uv/pull/10046.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-20 19:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

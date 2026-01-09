@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install and uv pip compile fail while installing packages in container build process - astral-sh/uv #3456</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install and uv pip compile fail while installing packages in container build process</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3456">#3456</a>
+        opened by <a href="https://github.com/benniekiss">@benniekiss</a>
+        on 2024-05-08 12:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/benniekiss">@benniekiss</a> on 2024-05-08 12:27</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>uv version = 0.1.40
+uv platform = Fedora Atomic Linux (Bazzite) within a podman container</p>
+<p>I am using <code>uv</code> to install python dependencies during a container build using podman.
+I am using <code>uv pip compile</code> to generate a requirements.txt from my projects pyproject.toml, and I then install these dependencies using <code>uv pip install -r requirements.txt</code>.</p>
+<p>The requirements.txt includes several ML and AI python libraries, such as transformers, openaiwhisper, and llama-cpp-python, some of which require wheels to be built.</p>
+<p>I've experienced consistent issues in both steps of the install. Either <code>uv pip compile</code> or <code>uv pip install</code> will fail intermittently with the following error:</p>
+<pre><code>Caused by: Failed to fetch wheel: ctranslate2==4.2.1                                                                                                                         
+Caused by: Failed to extract archive                                                                                                                                         
+Caused by: error decoding response body                                                                                                                                      
+Caused by: request or response body error                                                                                                                                    
+Caused by: error reading a body from connection                                                                                                                              
+Caused by: Connection reset by peer (os error 104)  
+</code></pre>
+<p>The specific package of the failure is inconsistent -- the install will fail on an almost random one. I've noticed it often fails on building llama-cpp-python</p>
+<p>I've noticed the problem is exacerbated when using cached layers, such that re-running the build pipeline is more likely to trigger the failure, and simply running <code>podman image prune</code> after a failure and re-running the build increases the likelihood of the package install succeeding.</p>
+<p>I've also noticed that <code>uv pip compile --no-cache</code> and <code>uv pip install --no-cache-dir</code> increase the likelihood of failure. Without the <code>--no-cache</code> and <code>--no-cache-dir</code> flags, the initial build succeeds, however, subsequent builds fail if the <code>uv pip compile</code> or the <code>uv pip install</code> layer has been invalidated</p>
+<p>here is a sample pyproject.toml and Containerfile where multiple build attempts using the following command cause the error:</p>
+<p>pyproject.toml:</p>
+<pre><code>[project]
+name = &quot;build_failure&quot;
+version = &quot;0.1.0&quot;
+description = &quot;a python program that causes a uv pip install failure&quot;
+authors = [
+    { name = &quot;benniekiss&quot; }
+]
+dependencies = [
+    &quot;torch&gt;=2.2.1&quot;,
+    &quot;torchaudio&gt;=2.2.1&quot;,
+    &quot;torchvision&gt;=0.17.1&quot;,
+    &quot;faster-whisper&gt;=1.0.2&quot;,
+    &quot;llama-cpp-python&gt;=0.2.70&quot;,
+    &quot;openai-whisper&gt;=20231117&quot;,
+    &quot;openai&gt;=1.16.2&quot;,
+    &quot;pyannote.audio&gt;=3.1.2&quot;,
+    &quot;transformers&gt;=4.40.2&quot;,
+    &quot;accelerate&gt;=0.30.0&quot;,
+]
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>Containerfile:</p>
+<pre><code>FROM ghcr.io/mamba-org/micromamba:jammy
+
+USER $MAMBA_USER
+
+RUN micromamba create --yes \
+    -n build_failure -c conda-forge \
+    'python&gt;3.12,&lt;3.13' 'uv' 'cxx-compiler' 'cmake' \
+    &amp;&amp; micromamba clean --yes --all -f
+
+ENV ENV_NAME=build_failure
+ARG MAMBA_DOCKERFILE_ACTIVATE=1
+
+COPY --chown=$MAMBA_USER:$MAMBA_USER pyproject.toml /tmp/
+
+RUN uv pip compile pyproject.toml \
+    --quiet --no-cache --no-annotate \
+    -o runtime_requirements.txt
+
+RUN uv pip install --no-cache-dir \
+    -r runtime_requirements.txt
+</code></pre>
+<p>build command:
+<code>podman build --platform linux --format docker -t test_failure .</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-08 23:37</div>
+            <div class="timeline-body"><p>@benniekiss can you add <code>RUST_LOG=uv=trace</code> to your <code>uv</code> commands and attach the uv log output when they fail? Ideally using the latest uv version (0.1.42) as of writting. Thank you!</p>
+<pre><code class="language-dockerfile">RUN RUST_LOG=uv=trace uv pip compile pyproject.toml \
+    --quiet --no-cache --no-annotate \
+    -o runtime_requirements.txt
+
+RUN RUST_LOG=uv=trace uv pip install --no-cache-dir \
+    -r runtime_requirements.txt
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benniekiss">@benniekiss</a> on 2024-05-09 10:45</div>
+            <div class="timeline-body"><p>I ran it with trace, but the console logs are immense, so I'll share some snippets from the end. I can share the full logs if a file upload is alright.</p>
+<p>~~this is also for <code>uv==1.41</code>~~
+~~as of writing, conda-forge has not updated to <code>uv==1.42</code>~~
+EDIT: tested on <code>uv==0.1.42</code>, and the same issue occurs.</p>
+<p>In one of my tests, I received this new error:
+<code>Error: server probably quit: unexpected EOF</code></p>
+<details><summary>Details</summary>
+<p>
+
+<pre><code>TRACE No cache entry exists for /tmp/.tmpN3tiGS/wheels-v1/pypi/fsspec/fsspec-2024.3.1-py3-none-any.http
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/93/6d/66d48b03460768f523da62a57a7e14e5e95fdf339d79e996ce3cecda2cdb/fsspec-2024.3.1-py3-none-any.whl
+TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/93/6d/66d48b03460768f523da62a57a7e14e5e95fdf339d79e996ce3cecda2cdb/fsspec-2024.3.1-py3-none-any.whl
+TRACE Handling request for https://files.pythonhosted.org/packages/93/6d/66d48b03460768f523da62a57a7e14e5e95fdf339d79e996ce3cecda2cdb/fsspec-2024.3.1-py3-none-any.whl
+TRACE Request for https://files.pythonhosted.org/packages/93/6d/66d48b03460768f523da62a57a7e14e5e95fdf339d79e996ce3cecda2cdb/fsspec-2024.3.1-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/93/6d/66d48b03460768f523da62a57a7e14e5e95fdf339d79e996ce3cecda2cdb/fsspec-2024.3.1-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/93/6d/66d48b03460768f523da62a57a7e14e5e95fdf339d79e996ce3cecda2cdb/fsspec-2024.3.1-py3-none-any.whl
+TRACE cached request https://files.pythonhosted.org/packages/93/6d/66d48b03460768f523da62a57a7e14e5e95fdf339d79e996ce3cecda2cdb/fsspec-2024.3.1-py3-none-any.whl is storable because its response has a 'public' cache-control directive
+TRACE cached request https://files.pythonhosted.org/packages/7f/50/9fb3a5c80df6eb6516693270621676980acd6d5a9a7efdbfa273f8d616c7/alembic-1.13.1-py3-none-any.whl is storable because its response has a 'public' cache-control directive
+TRACE cached request https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl is storable because its response has a 'public' cache-control directive
+TRACE No cache entry exists for /tmp/.tmpN3tiGS/wheels-v1/pypi/certifi/certifi-2024.2.2-py3-none-any.http
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/ba/06/a07f096c664aeb9f01624f858c3add0a4e913d6c96257acb4fce61e7de14/certifi-2024.2.2-py3-none-any.whl
+TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/ba/06/a07f096c664aeb9f01624f858c3add0a4e913d6c96257acb4fce61e7de14/certifi-2024.2.2-py3-none-any.whl
+TRACE Handling request for https://files.pythonhosted.org/packages/ba/06/a07f096c664aeb9f01624f858c3add0a4e913d6c96257acb4fce61e7de14/certifi-2024.2.2-py3-none-any.whl
+TRACE Request for https://files.pythonhosted.org/packages/ba/06/a07f096c664aeb9f01624f858c3add0a4e913d6c96257acb4fce61e7de14/certifi-2024.2.2-py3-none-any.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/ba/06/a07f096c664aeb9f01624f858c3add0a4e913d6c96257acb4fce61e7de14/certifi-2024.2.2-py3-none-any.whl
+TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/ba/06/a07f096c664aeb9f01624f858c3add0a4e913d6c96257acb4fce61e7de14/certifi-2024.2.2-py3-none-any.whl
+Error: server probably quit: unexpected EOF
+</code></pre>
+</p>
+</details> 
+
+<p>I also ran the build command a few times, and it failed on a different package each time -- av, llama-cpp-python, torchvision, and scikit-learn. I used <code>podman build --no-cache</code> each time.</p>
+<p>Here is the console output from one of those builds:</p>
+<details><summary>Details</summary>
+<p>
+
+<pre><code>TRACE found candidate for package PackageName(&quot;wheel&quot;) with range Range { segments: [(Unbounded, Unbounded)] } after 1 steps: &quot;0.43.0&quot; version
+TRACE selecting candidate for package setuptools with range Range { segments: [(Included(&quot;40.8.0&quot;), Unbounded)] } with 557 remote versions
+TRACE found candidate for package PackageName(&quot;setuptools&quot;) with range Range { segments: [(Included(&quot;40.8.0&quot;), Unbounded)] } after 1 steps: &quot;69.5.1&quot; version
+DEBUG Installing in setuptools==69.5.1, wheel==0.43.0 in /tmp/.tmp6kkAee/.tmpEwiJ4V/.venv
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;setuptools&quot;), version: &quot;69.5.1&quot;, path: &quot;/tmp/.tmp6kkAee/.tmpEwiJ4V/.venv/lib/python3.12/site-packages/setuptools-69.5.1.dist-info&quot; }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;69.5.1&quot; }]), index: None }
+DEBUG Requirement already installed: setuptools==69.5.1
+DEBUG Must revalidate requirement: wheel
+DEBUG Downloading and building requirement for build: wheel==0.43.0
+DEBUG Installing build requirement: wheel==0.43.0
+DEBUG Calling `setuptools.build_meta:__legacy__.build_wheel(metadata_directory=None)`
+DEBUG Finished building: julius==0.2.7
+DEBUG Finished building: docopt==0.6.2
+DEBUG Building: psutil==5.9.8
+DEBUG Solving with target Python version 3.12.3
+DEBUG Adding direct dependency: setuptools&gt;=43
+DEBUG Adding direct dependency: wheel*
+DEBUG Searching for a compatible version of setuptools (&gt;=43)
+TRACE selecting candidate for package setuptools with range Range { segments: [(Included(&quot;43&quot;), Unbounded)] } with 557 remote versions
+TRACE found candidate for package PackageName(&quot;setuptools&quot;) with range Range { segments: [(Included(&quot;43&quot;), Unbounded)] } after 1 steps: &quot;69.5.1&quot; version
+DEBUG Selecting: setuptools==69.5.1 (setuptools-69.5.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of wheel (*)
+TRACE selecting candidate for package wheel with range Range { segments: [(Unbounded, Unbounded)] } with 75 remote versions
+TRACE found candidate for package PackageName(&quot;wheel&quot;) with range Range { segments: [(Unbounded, Unbounded)] } after 1 steps: &quot;0.43.0&quot; version
+DEBUG Selecting: wheel==0.43.0 (wheel-0.43.0-py3-none-any.whl)
+DEBUG Tried 3 versions: root 1, setuptools 1, wheel 1
+TRACE selecting candidate for package wheel with range Range { segments: [(Unbounded, Unbounded)] } with 75 remote versions
+TRACE found candidate for package PackageName(&quot;wheel&quot;) with range Range { segments: [(Unbounded, Unbounded)] } after 1 steps: &quot;0.43.0&quot; version
+TRACE selecting candidate for package setuptools with range Range { segments: [(Included(&quot;43&quot;), Unbounded)] } with 557 remote versions
+TRACE found candidate for package PackageName(&quot;setuptools&quot;) with range Range { segments: [(Included(&quot;43&quot;), Unbounded)] } after 1 steps: &quot;69.5.1&quot; version
+DEBUG Installing in setuptools==69.5.1, wheel==0.43.0 in /tmp/.tmp6kkAee/.tmpxAlLbm/.venv
+DEBUG Must revalidate requirement: setuptools
+DEBUG Must revalidate requirement: wheel
+DEBUG Downloading and building requirements for build: setuptools==69.5.1, wheel==0.43.0
+DEBUG Installing build requirements: setuptools==69.5.1, wheel==0.43.0
+DEBUG Calling `setuptools.build_meta.get_requires_for_build_wheel()`
+DEBUG Calling `setuptools.build_meta.build_wheel(metadata_directory=None)`
+DEBUG Finished building: psutil==5.9.8
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: av==12.0.0
+  Caused by: Failed to extract archive
+  Caused by: error decoding response body
+  Caused by: request or response body error
+  Caused by: error reading a body from connection
+  Caused by: Connection reset by peer (os error 104)
+Error: building at STEP &quot;RUN RUST_LOG=uv=trace uv pip install -v --no-cache-dir --refresh      -r runtime_requirements.txt&quot;: while running runtime: exit status 2
+</code></pre>
+</p>
+</details> 
+
+<p>Here's another output with a build failure, not just download failure:</p>
+<details><summary>Details</summary>
+<p>
+
+<pre><code>DEBUG Searching for a compatible version of julius (==0.2.7)
+TRACE selecting candidate for package julius with range Range { segments: [(Included(&quot;0.2.7&quot;), Included(&quot;0.2.7&quot;))] } with 11 remote versions
+TRACE found candidate for package PackageName(&quot;julius&quot;) with range Range { segments: [(Included(&quot;0.2.7&quot;), Included(&quot;0.2.7&quot;))] } after 1 steps: &quot;0.2.7&quot; version
+DEBUG Selecting: julius==0.2.7 (julius-0.2.7.tar.gz)
+TRACE Received source distribution metadata for: julius==0.2.7
+DEBUG Adding transitive dependency for julius==0.2.7: torch&gt;=1.7.0
+DEBUG Searching for a compatible version of kiwisolver (==1.4.5)
+TRACE selecting candidate for package kiwisolver with range Range { segments: [(Included(&quot;1.4.5&quot;), Included(&quot;1.4.5&quot;))] } with 17 remote versions
+TRACE found candidate for package PackageName(&quot;kiwisolver&quot;) with range Range { segments: [(Included(&quot;1.4.5&quot;), Included(&quot;1.4.5&quot;))] } after 1 steps: &quot;1.4.5&quot; version
+DEBUG Selecting: kiwisolver==1.4.5 (kiwisolver-1.4.5-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl)
+DEBUG Searching for a compatible version of lazy-loader (==0.4)
+TRACE selecting candidate for package lazy-loader with range Range { segments: [(Included(&quot;0.4&quot;), Included(&quot;0.4&quot;))] } with 9 remote versions
+TRACE found candidate for package PackageName(&quot;lazy-loader&quot;) with range Range { segments: [(Included(&quot;0.4&quot;), Included(&quot;0.4&quot;))] } after 1 steps: &quot;0.4&quot; version
+DEBUG Selecting: lazy-loader==0.4 (lazy_loader-0.4-py3-none-any.whl)
+DEBUG Adding transitive dependency for lazy-loader==0.4: packaging*
+DEBUG Searching for a compatible version of librosa (==0.10.2)
+TRACE selecting candidate for package librosa with range Range { segments: [(Included(&quot;0.10.2&quot;), Included(&quot;0.10.2&quot;))] } with 40 remote versions
+TRACE found candidate for package PackageName(&quot;librosa&quot;) with range Range { segments: [(Included(&quot;0.10.2&quot;), Included(&quot;0.10.2&quot;))] } after 1 steps: &quot;0.10.2&quot; version
+DEBUG Selecting: librosa==0.10.2 (librosa-0.10.2-py3-none-any.whl)
+DEBUG Adding transitive dependency for librosa==0.10.2: audioread&gt;=2.1.9
+DEBUG Adding transitive dependency for librosa==0.10.2: numpy&gt;=1.20.3, &lt;1.22.0 | &gt;1.22.0, &lt;1.22.1 | &gt;1.22.1, &lt;1.22.2 | &gt;1.22.2
+DEBUG Adding transitive dependency for librosa==0.10.2: scipy&gt;=1.2.0
+DEBUG Adding transitive dependency for librosa==0.10.2: scikit-learn&gt;=0.20.0
+DEBUG Adding transitive dependency for librosa==0.10.2: joblib&gt;=0.14
+DEBUG Adding transitive dependency for librosa==0.10.2: decorator&gt;=4.3.0
+DEBUG Adding transitive dependency for librosa==0.10.2: numba&gt;=0.51.0
+DEBUG Adding transitive dependency for librosa==0.10.2: soundfile&gt;=0.12.1
+DEBUG Adding transitive dependency for librosa==0.10.2: pooch&gt;=1.1
+DEBUG Adding transitive dependency for librosa==0.10.2: soxr&gt;=0.3.2
+DEBUG Adding transitive dependency for librosa==0.10.2: typing-extensions&gt;=4.1.1
+DEBUG Adding transitive dependency for librosa==0.10.2: lazy-loader&gt;=0.1
+DEBUG Adding transitive dependency for librosa==0.10.2: msgpack&gt;=1.0
+DEBUG Searching for a compatible version of lightning (==2.2.4)
+TRACE selecting candidate for package lightning with range Range { segments: [(Included(&quot;2.2.4&quot;), Included(&quot;2.2.4&quot;))] } with 58 remote versions
+TRACE found candidate for package PackageName(&quot;lightning&quot;) with range Range { segments: [(Included(&quot;2.2.4&quot;), Included(&quot;2.2.4&quot;))] } after 10 steps: &quot;2.2.4&quot; version
+DEBUG Selecting: lightning==2.2.4 (lightning-2.2.4-py3-none-any.whl)
+DEBUG Adding transitive dependency for lightning==2.2.4: pyyaml&gt;=5.4, &lt;8.0
+DEBUG Adding transitive dependency for lightning==2.2.4: fsspec&gt;=2022.5.0, &lt;2025.0
+DEBUG Adding transitive dependency for lightning==2.2.4: fsspec[http]&gt;=2022.5.0, &lt;2025.0
+DEBUG Adding transitive dependency for lightning==2.2.4: lightning-utilities&gt;=0.8.0, &lt;2.0
+DEBUG Adding transitive dependency for lightning==2.2.4: numpy&gt;=1.17.2, &lt;3.0
+DEBUG Adding transitive dependency for lightning==2.2.4: packaging&gt;=20.0, &lt;25.0
+DEBUG Adding transitive dependency for lightning==2.2.4: torch&gt;=1.13.0, &lt;4.0
+DEBUG Adding transitive dependency for lightning==2.2.4: torchmetrics&gt;=0.7.0, &lt;3.0
+DEBUG Adding transitive dependency for lightning==2.2.4: tqdm&gt;=4.57.0, &lt;6.0
+DEBUG Adding transitive dependency for lightning==2.2.4: typing-extensions&gt;=4.4.0, &lt;6.0
+DEBUG Adding transitive dependency for lightning==2.2.4: pytorch-lightning*
+DEBUG Searching for a compatible version of fsspec[http] (&gt;=2022.5.0, &lt;2025.0)
+TRACE selecting candidate for package fsspec with range Range { segments: [(Included(&quot;2022.5.0&quot;), Excluded(&quot;2025.0&quot;))] } with 79 remote versions
+TRACE found candidate for package PackageName(&quot;fsspec&quot;) with range Range { segments: [(Included(&quot;2022.5.0&quot;), Excluded(&quot;2025.0&quot;))] } after 1 steps: &quot;2024.3.1&quot; version
+DEBUG Selecting: fsspec[http]==2024.3.1 (fsspec-2024.3.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of fsspec[http] (==2024.3.1)
+TRACE selecting candidate for package fsspec with range Range { segments: [(Included(&quot;2024.3.1&quot;), Included(&quot;2024.3.1&quot;))] } with 79 remote versions
+TRACE found candidate for package PackageName(&quot;fsspec&quot;) with range Range { segments: [(Included(&quot;2024.3.1&quot;), Included(&quot;2024.3.1&quot;))] } after 1 steps: &quot;2024.3.1&quot; version
+DEBUG Selecting: fsspec[http]==2024.3.1 (fsspec-2024.3.1-py3-none-any.whl)
+DEBUG Adding transitive dependency for fsspec[http]==2024.3.1: aiohttp&lt;4.0.0a0 | &gt;4.0.0a0, &lt;4.0.0a1 | &gt;4.0.0a1
+DEBUG Searching for a compatible version of lightning-utilities (==0.11.2)
+TRACE selecting candidate for package lightning-utilities with range Range { segments: [(Included(&quot;0.11.2&quot;), Included(&quot;0.11.2&quot;))] } with 17 remote versions
+TRACE found candidate for package PackageName(&quot;lightning-utilities&quot;) with range Range { segments: [(Included(&quot;0.11.2&quot;), Included(&quot;0.11.2&quot;))] } after 1 steps: &quot;0.11.2&quot; version
+DEBUG Selecting: lightning-utilities==0.11.2 (lightning_utilities-0.11.2-py3-none-any.whl)
+DEBUG Adding transitive dependency for lightning-utilities==0.11.2: packaging&gt;=17.1
+DEBUG Adding transitive dependency for lightning-utilities==0.11.2: setuptools*
+DEBUG Adding transitive dependency for lightning-utilities==0.11.2: typing-extensions*
+DEBUG Searching for a compatible version of llama-cpp-python (==0.2.71)
+TRACE selecting candidate for package llama-cpp-python with range Range { segments: [(Included(&quot;0.2.71&quot;), Included(&quot;0.2.71&quot;))] } with 153 remote versions
+TRACE found candidate for package PackageName(&quot;llama-cpp-python&quot;) with range Range { segments: [(Included(&quot;0.2.71&quot;), Included(&quot;0.2.71&quot;))] } after 1 steps: &quot;0.2.71&quot; version
+DEBUG Selecting: llama-cpp-python==0.2.71 (llama_cpp_python-0.2.71.tar.gz)
+DEBUG Prepared metadata for: openai-whisper==20231117
+TRACE Received source distribution metadata for: openai-whisper==20231117
+error: Failed to download and build `llama-cpp-python==0.2.71`
+  Caused by: Failed to extract archive
+  Caused by: failed to unpack `/tmp/.tmpNTDHWT/built-wheels-v3/.tmpy7UReQ/llama_cpp_python-0.2.71/.git/modules/vendor/llama.cpp/objects/pack/pack-95bb5b6ca6e6853a13794eaea7acaf6853907f95.pack`
+  Caused by: failed to unpack `llama_cpp_python-0.2.71/.git/modules/vendor/llama.cpp/objects/pack/pack-95bb5b6ca6e6853a13794eaea7ac` into `/tmp/.tmpNTDHWT/built-wheels-v3/.tmpy7UReQ/llama_cpp_python-0.2.71/.git/modules/vendor/llama.cpp/objects/pack/pack-95bb5b6ca6e6853a13794eaea7acaf6853907f95.pack`
+  Caused by: error decoding response body
+  Caused by: request or response body error
+  Caused by: error reading a body from connection
+  Caused by: Connection reset by peer (os error 104)
+Error: building at STEP &quot;RUN RUST_LOG=uv=trace uv pip install -v --no-cache-dir --refresh      -r runtime_requirements.txt&quot;: while running runtime: exit status 2
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-09 19:08</div>
+            <div class="timeline-body"><p>Do you know if there's anything special about your network, like a proxy or a vpn?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-09 20:01</div>
+            <div class="timeline-body"><p>I don't have a solution nor do I know what exactly is causing your issue. What I noticed when benchmarking <code>uv</code> is that I saw a lot of connection reset by peer errors. I suspect that it's my internet service provider who resets the connections because it thinks I'm doing something malicious because my computer issues a lot of requests to the same host in a very short period of time.</p>
+<p>What helped in my case is to use a VPN (Proton to be precise) to bypass my ISPs throttling. Do you have a VPN that you could connect to?</p>
+<p>We're planning to add an environment variable that would allow you to reduce the number of parallel requests https://github.com/astral-sh/uv/pull/3493. You could try to reduce the number of parallel requests once that PR is shipped.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benniekiss">@benniekiss</a> on 2024-05-09 20:13</div>
+            <div class="timeline-body"><p>I have been able to reproduce the issue on two different machines in two different geographic locations. I've also tested locally with a VPN.</p>
+<p>The Fedora Linux machine is a PC with AMD 7800x3D and the other machine is an Apple M2 Max laptop, where podman is running in a linux VM.</p>
+<p>It's interesting because maybe 2/10 times it will succeed and install, otherwise, it fails--either with a build or download error, and always <code>os error 104</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-05-09 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-09 20:15</div>
+            <div class="timeline-body"><p>Labelling as a bug because we should consider adding retries for <code>Connection reset by peer</code> errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-09 20:16</div>
+            <div class="timeline-body"><p>In both cases you’re running with Podman? Are there any other commonalities? (Very strange, we’ve never seen reports of this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benniekiss">@benniekiss</a> on 2024-05-09 20:19</div>
+            <div class="timeline-body"><blockquote>
+<p>In both cases you’re running with Podman? Are there any other commonalities? (Very strange, we’ve never seen reports of this.)</p>
+</blockquote>
+<p>Yep, both cases are with <code>podman v5.0.2</code>. I connect to the remote PC via tailscale, but I tested the build again with all of my vpns off, and I am getting the same errors locally.</p>
+<p>I'm using the example pyproject.toml and Containerfile each time, on both machines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-09 22:46</div>
+            <div class="timeline-body"><p>I was able to reproduce 1/20~ times, but using <code>docker</code> instead. I've been playing around with rayon, ulimits and throttling my bandwith to see there's some consistent way to reproduce. I did get an failed to unpack error on the one failure. Will keep experimenting.</p>
+<pre><code>error: Failed to download and build `llama-cpp-python==0.2.71`
+  Caused by: Failed to extract archive
+  Caused by: failed to unpack `/tmp/.tmppG2oG4/built-wheels-v3/.tmptTJnWx/llama_cpp_python-0.2.71/vendor/llama.cpp/kompute/docs/images/komputer-godot-4.gif`
+  Caused by: failed to unpack `llama_cpp_python-0.2.71/vendor/llama.cpp/kompute/docs/images/komputer-godot-4.gif` into `/tmp/.tmppG2oG4/built-wheels-v3/.tmptTJnWx/llama_cpp_python-0.2.71/vendor/llama.cpp/kompute/docs/images/komputer-godot-4.gif`
+  Caused by: error decoding response body
+  Caused by: request or response body error
+  Caused by: error reading a body from connection
+  Caused by: Connection reset by peer (os error 104)
+</code></pre>
+<p>(edit: forgot to include trace logs - <a href="https://github.com/astral-sh/uv/files/15269104/uv_trace_logs.txt">uv_trace_logs.txt</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3514.html">astral-sh/uv#3514</a> on 2024-05-10 22:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/polarathene">@polarathene</a> on 2024-05-17 07:48</div>
+            <div class="timeline-body"><blockquote>
+<p>remote PC via tailscale</p>
+</blockquote>
+<p>Does that affect DNS at all?</p>
+<p>While I haven't encountered an issue myself with <code>uv</code>, I recently used some other tools which have encountered issues when run in Docker containers. Turned out to be due to the default DNS layer managed by Docker internally.</p>
+<pre><code class="language-console"># Get an IP address:
+$ docker run --rm -it ghcr.io/natesales/q smtp.gmail.com
+smtp.gmail.com. 2m22s A 64.233.170.108
+smtp.gmail.com. 4m47s AAAA 2404:6800:4003:c1a::6c
+
+# Attempt to do a reverse DNS lookup (silently fails, no response):
+$ docker run --rm -it ghcr.io/natesales/q --verbose --reverse 64.233.170.108
+DEBU[0000] Name: 108.170.233.64.in-addr.arpa.
+DEBU[0000] RR types: [PTR A AAAA NS MX TXT CNAME]
+DEBU[0000] No server specified or Q_DEFAULT_SERVER set, using /etc/resolv.conf
+DEBU[0000] found server [192.168.65.7] from /etc/resolv.conf
+DEBU[0000] Server(s): [192.168.65.7]
+DEBU[0000] Using server 192.168.65.7:53 with transport plain
+DEBU[0000] Using UDP with TCP fallback: 192.168.65.7:53
+
+# Repeat, but use CloudFlare as the DNS service (success):
+$ docker run --rm -it --dns 1.1.1.1 ghcr.io/natesales/q --verbose --reverse 64.233.170.108
+DEBU[0000] Name: 108.170.233.64.in-addr.arpa.
+DEBU[0000] RR types: [CNAME PTR A AAAA NS MX TXT]
+DEBU[0000] No server specified or Q_DEFAULT_SERVER set, using /etc/resolv.conf
+DEBU[0000] found server [1.1.1.1] from /etc/resolv.conf
+DEBU[0000] Server(s): [1.1.1.1]
+DEBU[0000] Using server 1.1.1.1:53 with transport plain
+DEBU[0000] Using UDP with TCP fallback: 1.1.1.1:53
+
+108.170.233.64.in-addr.arpa. 1h PTR sg-in-f108.1e100.net.
+</code></pre>
+<p>I can run <code>dig -x</code> for the equivalent on the Docker host and it resolves no problem (<em>goes through the DNS from the router IIRC</em>), so it appears to be an issue with the CRI networking layer. I'm not sure what Podman does, but it's probably similar to support related networking features?</p>
+<p>I've also encountered other issues like a <code>TXT</code> record for <code>github.com</code> that is multi-part (exceeds the 255 limit) where this internal DNS cannot handle the reply and fails.</p>
+<p>While performing larger queries (<em>resolve a variety of DNS records for a domain, and resolve the CNAME records to get any from those too</em>) can work, there were some stalls and failures. This would still occur when querying <code>1.1.1.1</code>, and I had not tried to reproduce outside of the container to check if it only occurs there.</p>
+<hr />
+<p>Not sure if DNS issues like above could contribute to the failure here, just thought I'd draw attention to a known networking caveat within a container environment.</p>
+<h2>Additional context</h2>
+<p>With Docker the daemon is by default also configured to use the <code>userland-proxy</code>, which IIRC halved the I/O rate vs host connections when I tested, but was minimal overhead when disabled. There's also host mode networking which should skip some other indirections which might help minimize the issue. Additionally the default network a container is assigned with Docker is the legacy bridge, it's slightly different than using custom networks (<em><code>docker network create</code>, which Docker Compose uses by default implicitly, not the legacy bridge</em>).</p>
+<pre><code class="language-console"># NOTE: Doesn't use the host DNS (still the same one the Docker daemon is configured for):
+$ docker run --rm -it --network host ghcr.io/natesales/q --verbose --reverse 64.233.170.108
+DEBU[0000] Name: 108.170.233.64.in-addr.arpa.
+DEBU[0000] RR types: [A AAAA NS MX TXT CNAME PTR]
+DEBU[0000] No server specified or Q_DEFAULT_SERVER set, using /etc/resolv.conf
+DEBU[0000] found server [192.168.65.7] from /etc/resolv.conf
+DEBU[0000] Server(s): [192.168.65.7]
+DEBU[0000] Using server 192.168.65.7:53 with transport plain
+DEBU[0000] Using UDP with TCP fallback: 192.168.65.7:53
+</code></pre>
+<p>For added context, the snippets are run via WSL2 (Ubuntu) on Windows 11 with Docker Desktop (<em>which has <code>192.168.65.0/24</code> configured as it's managed network subnet for containers</em>), and runs Docker within a separate WSL2 distro than the default Ubuntu distro I run the commands from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vikigenius">@vikigenius</a> on 2024-06-11 17:08</div>
+            <div class="timeline-body"><p>I am also facing this issue. I don't use docker or any containers, I get this just on my local machine. Like mentioned above it's not consistent. I got it 1/5 times</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-22 20:34</div>
+            <div class="timeline-body"><p>We've added a lot more retrying, including for the cases described here, so I'm going to close for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-22 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-22 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @konstin on 2024-11-26 11:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add rule to catch `any` and `callable` in typing context - astral-sh/ruff #17224</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>add rule to catch `any` and `callable` in typing context</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17224">#17224</a>
+        opened by <a href="https://github.com/vpoverennov">@vpoverennov</a>
+        on 2025-04-05 20:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vpoverennov">@vpoverennov</a> on 2025-04-05 20:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Here's the code</p>
+<pre><code>def f(x: any):
+    pass
+</code></pre>
+<p>This sometimes happens when switching between typescript and python, or you just don't notice the typo until later because <code>any</code> is a builtin python function (type checkers are slower to run than linters)</p>
+<details>
+<summary>Type Checker results</summary>
+
+<p>Code:</p>
+<pre><code>def f1(x: any):
+    pass
+def f2(x: callable):
+    pass
+def f3(x: dict):
+    pass
+def f4(x: frozenset):
+    pass
+def f5(x: list):
+    pass
+def f6(x: set):
+    pass
+def f7(x: tuple):
+    pass
+def f8(x: type):
+    pass
+</code></pre>
+<p>mypy</p>
+<pre><code>x.py:1: error: Function &quot;builtins.any&quot; is not valid as a type  [valid-type]
+x.py:1: note: Perhaps you meant &quot;typing.Any&quot; instead of &quot;any&quot;?
+x.py:3: error: Function &quot;builtins.callable&quot; is not valid as a type  [valid-type]
+x.py:3: note: Perhaps you meant &quot;typing.Callable&quot; instead of &quot;callable&quot;?
+Found 2 errors in 1 file (checked 1 source file)
+</code></pre>
+<p>pyright</p>
+<pre><code>x.py:1:11 - error: Expected class but received &quot;(iterable: Iterable[object], /) -&gt; bool&quot; (reportGeneralTypeIssues)
+x.py:3:11 - error: Expected class but received &quot;(obj: object, /) -&gt; TypeIs[(...) -&gt; object]&quot; (reportGeneralTypeIssues)
+</code></pre>
+<p>red knot</p>
+<pre><code>Variable of type `Literal[any]` is not allowed in a type expression (lint:invalid-type-form) [Ln 1, Col 11]
+Variable of type `Literal[callable]` is not allowed in a type expression (lint:invalid-type-form) [Ln 3, Col 11]
+</code></pre>
+</details>
+
+<p>But it would be nice to have it caught AND autofixed by ruff</p>
+<p>Here are all name collisions between builtins and <code>typing</code> (lowercased)</p>
+<pre><code>['any', 'callable', 'dict', 'frozenset', 'list', 'set', 'tuple', 'type']
+</code></pre>
+<p>Only those stick out - <code>any</code> and <code>callable</code>, the rest are already valid as the type hints
+The rule would be to flag uses of <code>any</code> and <code>callable</code> as types and convert them to <code>typing.Any</code> and <code>typing.Callable</code> respectively.</p>
+<p>Related rules:
+<a href="https://docs.astral.sh/ruff/rules/non-pep585-annotation/#non-pep585-annotation-up006">non-pep585-annotation (UP006)</a>
+<a href="https://docs.astral.sh/ruff/rules/any-type/#any-type-ann401">any-type (ANN401)</a></p>
+<p>Would be curious to get your thoughts for such a rule, thank you for making the awesome tool</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-04-06 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-04-07 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-07 08:15</div>
+            <div class="timeline-body"><p>I think such a rule makes sense but I'm not sure I want to implement it in Ruff, considering that we already support it in Red Knot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vpoverennov">@vpoverennov</a> on 2025-04-07 12:11</div>
+            <div class="timeline-body"><p>@MichaReiser does (would) red-knot support auto-fixing the code, or would it only be checking it? To me the lack of autofix would be an argument for having the rule in ruff. One use-case for the autofix is to adopt a type checker in a codebase that previously didn't have any and already has code with typos like this like this in place (big volume). And in general having autofix for the problem is more helpful than having the linter/type checker tell you to fix it manually.
+If red-knot does have the option to autofix this then probably doesn't make sense to implement in ruff itself</p>
+<p>Sounds like you don't mind having the rule, if you don't want to invest resources into implementing it I can give it a shot myself</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-07 12:18</div>
+            <div class="timeline-body"><p>There's no auto fixing in the initial release but we should add support for auto fixes later</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../aws-powertools/powertools-lambda-python/issues/6466.html">aws-powertools/powertools-lambda-python#6466</a> on 2025-04-15 13:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

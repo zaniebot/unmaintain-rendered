@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error message for conflicted args outputs conflicting USAGE - clap-rs/clap #1464</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error message for conflicted args outputs conflicting USAGE</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1464">#1464</a>
+        opened by <a href="https://github.com/jojva">@jojva</a>
+        on 2019-05-04 22:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jojva">@jojva</a> on 2019-05-04 22:54</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p><code>rustc 1.34.1 (fc50f328b 2019-04-24)</code></p>
+<h3>Affected Version of clap</h3>
+<p><code>2.33.0</code></p>
+<h3>Bug or Feature Request Summary</h3>
+<p>There are 2 conflicting args: <code>a</code> and <code>b</code>. When both are issued, USAGE outputs the invalid command again.</p>
+<h3>Expected Behavior Summary</h3>
+<pre><code>error: The argument '-b' cannot be used with '-a'
+
+USAGE:
+    clap-fix -a
+    clap-fix -b
+</code></pre>
+<h3>Actual Behavior Summary</h3>
+<pre><code>error: The argument '-b' cannot be used with '-a'
+
+USAGE:
+    clap-fix -a -b
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<p><code>cargo run -- -a -b</code></p>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code>extern crate clap;
+use clap::{Arg, App};
+
+fn main() {
+    App::new(&quot;Conflict USAGE&quot;)
+        .arg(Arg::with_name(&quot;a&quot;)
+           .short(&quot;a&quot;)
+           .conflicts_with(&quot;b&quot;)
+        )
+        .arg(Arg::with_name(&quot;b&quot;)
+            .short(&quot;b&quot;)
+            .conflicts_with(&quot;a&quot;)
+        )
+        .get_matches();
+}
+</code></pre>
+<h3>Debug output</h3>
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+
+<pre><code> Running `target/debug/clap-fix -a -b`</code></pre>
+<p>DEBUG:clap:Parser::propagate_settings: self=Conflict USAGE, g_settings=AppFlags(
+(empty)
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;-a&quot;' ([45, 97])
+DEBUG:clap:Parser::is_new_arg:&quot;-a&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: - found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;-a&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::parse_short_arg: full_arg=&quot;-a&quot;
+DEBUG:clap:Parser::parse_short_arg:iter:a
+DEBUG:clap:Parser::parse_short_arg:iter:a: Found valid flag
+DEBUG:clap:Parser::check_for_help_and_version_char;
+DEBUG:clap:Parser::check_for_help_and_version_char: Checking if -a is help or version...Neither
+DEBUG:clap:Parser::parse_flag;
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=a
+DEBUG:clap:ArgMatcher::inc_occurrence_of: first instance
+DEBUG:clap:Parser::groups_for_arg: name=a
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Parser:get_matches_with: After parse_short_arg Flag
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;-b&quot;' ([45, 98])
+DEBUG:clap:Parser::is_new_arg:&quot;-b&quot;:Flag
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: - found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;-b&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:ArgMatcher::process_arg_overrides:Some(&quot;a&quot;);
+DEBUG:clap:Parser::parse_short_arg: full_arg=&quot;-b&quot;
+DEBUG:clap:Parser::parse_short_arg:iter:b
+DEBUG:clap:Parser::parse_short_arg:iter:b: Found valid flag
+DEBUG:clap:Parser::check_for_help_and_version_char;
+DEBUG:clap:Parser::check_for_help_and_version_char: Checking if -b is help or version...Neither
+DEBUG:clap:Parser::parse_flag;
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=b
+DEBUG:clap:ArgMatcher::inc_occurrence_of: first instance
+DEBUG:clap:Parser::groups_for_arg: name=b
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Parser:get_matches_with: After parse_short_arg Flag
+DEBUG:clap:ArgMatcher::process_arg_overrides:Some(&quot;b&quot;);
+DEBUG:clap:Parser::remove_overrides:[];
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Parser::add_defaults;
+DEBUG:clap:Validator::validate_blacklist;
+DEBUG:clap:Validator::validate_blacklist:iter:a;
+DEBUG:clap:Parser::groups_for_arg: name=a
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Validator::validate_blacklist:iter:b;
+DEBUG:clap:Parser::groups_for_arg: name=b
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Validator::validate_blacklist:iter:b: Checking blacklisted arg
+DEBUG:clap:Validator::validate_blacklist:iter:b: matcher contains it...
+DEBUG:clap:build_err!: name=b
+DEBUG:clap:build_err!: 'Some(&quot;-a&quot;)' conflicts with 'b'
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::smart_usage;
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;a&quot;, &quot;b&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;a&quot;, &quot;b&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::get_required_usage_from:iter:a:
+DEBUG:clap:usage::get_required_usage_from:iter:b:
+DEBUG:clap:build_err!: It was a flag...
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Colorizer::warning;
+DEBUG:clap:Colorizer::warning;
+DEBUG:clap:Colorizer::good;
+error: The argument '-b' cannot be used with '-a'</p>
+<p>USAGE:
+clap-fix -a -b</p>
+</code>
+</pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jojva">@jojva</a> on 2019-05-06 22:17</div>
+            <div class="timeline-body"><p>In fact, after reading the code, this behavior was actually already expected and <strong>almost</strong> tested!</p>
+<p>This test:
+https://github.com/clap-rs/clap/blob/784524f7eb193e35f81082cc69454c8c21b948f7/tests/conflicts.rs#L80-L83</p>
+<p>and this one:
+https://github.com/clap-rs/clap/blob/784524f7eb193e35f81082cc69454c8c21b948f7/tests/conflicts.rs#L85-L88</p>
+<p>are both missing an assert!(...) surrounding the <code>test::compare_output</code>.</p>
+<p>When I added the assert! myself both tests failed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @CreepySkeleton on 2020-02-01 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @CreepySkeleton on 2020-02-01 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @CreepySkeleton on 2020-02-01 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @CreepySkeleton on 2020-02-01 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @CreepySkeleton on 2020-02-01 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @CreepySkeleton on 2020-02-01 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @CreepySkeleton on 2020-02-01 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @CreepySkeleton on 2020-02-01 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/captain-yossarian">@captain-yossarian</a> on 2020-03-12 22:06</div>
+            <div class="timeline-body"><p>@jojva @CreepySkeleton Hi, can take this up?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jojva">@jojva</a> on 2020-03-12 22:12</div>
+            <div class="timeline-body"><p>Hi, on my side I'm not working on it, so go for it! (I feel like the current maintainers have a lot on their plate).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-03-13 00:03</div>
+            <div class="timeline-body"><p>@captain-yossarian Go ahead :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/captain-yossarian">@captain-yossarian</a> on 2020-03-13 18:55</div>
+            <div class="timeline-body"><p>@pksunkara
+Should I start from <a href="https://github.com/clap-rs/clap/blob/v2.33.0/src/app/usage.rs#L166">create_smart_usage</a> method ?
+Is it possible from this level to figure out which arguments are in conflict?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-13 19:15</div>
+            <div class="timeline-body"><p>@captain-yossarian You seem to be working on the <code>2.33</code> branch, but you should be working on <code>master</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/captain-yossarian">@captain-yossarian</a> on 2020-03-13 19:54</div>
+            <div class="timeline-body"><p>@CreepySkeleton Thanks, I thought  since there is <code>beta</code> on master it worth to work on 2.33</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-13 20:04</div>
+            <div class="timeline-body"><p>Fixing this in master will fix the upcoming <code>3.0</code>, it won't affect <code>2.33</code>. We are much more interested in future than in past.</p>
+<p>Well, the code layout in <code>2.33</code> and the upcoming <code>beta</code> is different which means that if someone wants to backport the bugfix to <code>2.33</code>, they would need to implement it from scratch against <code>v2-master</code>. I would accept such a PR, but I won't be putting efforts into it personally (I suspect the other maintainers feel the same).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/captain-yossarian">@captain-yossarian</a> on 2020-03-13 20:45</div>
+            <div class="timeline-body"><p>@CreepySkeleton  Ok, no problem.</p>
+<p>So, on master I receive</p>
+<pre><code>error: The argument '-a' cannot be used with '-b'
+
+USAGE:
+    initial.exe [FLAGS]
+</code></pre>
+<pre><code>USAGE:
+    clap-fix -a
+    clap-fix -b
+</code></pre>
+<p>[updated] Should I implement error message as <a href="https://github.com/clap-rs/clap/issues/1464#issue-440378604">above</a> ?</p>
+<p>Or [FLAGS] is some special keyword and requires some additional logic?
+Sorry, I'm not aware of the project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-03-13 20:51</div>
+            <div class="timeline-body"><p>Put <code>assert!</code> in front of this https://github.com/clap-rs/clap/blob/master/tests/conflicts.rs#L101 and https://github.com/clap-rs/clap/blob/master/tests/conflicts.rs#L111, and you should have tests that will fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1746.html">clap-rs/clap#1746</a> on 2020-03-13 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-03-13 21:55</div>
+            <div class="timeline-body"><p>@CreepySkeleton Did we change something regarding the usage messages? Check the failing tests in the above PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-13 23:25</div>
+            <div class="timeline-body"><p>No, we didn't. And it also haven't been working anyway, the test was not asserted. I think it's simply not implemented.</p>
+<p>@captain-yossarian will going to have to trace where the erroneous message originates from and implement the right message.</p>
+<p>Hey Captain! Feel free to ask for guidance!</p>
+<p>~~There was a joke about a captain who doesn't guide but needs guidance instead here, but it was pretty gross and the censorship deleted it.~~</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/captain-yossarian">@captain-yossarian</a> on 2020-03-14 11:40</div>
+            <div class="timeline-body"><p>@CreepySkeleton Thanks a lot !  :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $10</span> added by @pksunkara on 2020-08-14 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-08-14 15:04</div>
+            <div class="timeline-body"><p>This issue now has bounty of <strong>$10</strong>. More info <a href="https://github.com/clap-rs/clap/wiki/Issue-Bounties">here</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2020-08-14 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2075.html">clap-rs/clap#2075</a> on 2020-08-15 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-08-16 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-08-17 08:21</div>
+            <div class="timeline-body"><p>@tomjw64 Please follow the redeeming procedure linked above to get the bounty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomjw64">@tomjw64</a> on 2020-08-17 19:32</div>
+            <div class="timeline-body"><p>@pksunkara If I forgo the bounty, will it be moved to a different issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-08-17 19:42</div>
+            <div class="timeline-body"><p>Yes, the bounty will stay in the clap org balance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomjw64">@tomjw64</a> on 2020-08-17 21:46</div>
+            <div class="timeline-body"><p>Okay, I will forgo the bounty then. Thanks for your time :smile:</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

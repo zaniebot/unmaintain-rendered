@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow short docstrings in pydoclint - astral-sh/ruff #13086</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow short docstrings in pydoclint</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13086">#13086</a>
+        opened by <a href="https://github.com/valentincalomme">@valentincalomme</a>
+        on 2024-08-24 13:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/valentincalomme">@valentincalomme</a> on 2024-08-24 13:37</div>
+            <div class="timeline-body"><p>As of <code>ruff==0.6.2</code>, <code>pydoclint</code> rules (DOC) doesn't allow any settings. If prioritization is required, I would personally really value having the <code>--skip-checking-short-docstrings</code> setting (see: https://jsh9.github.io/pydoclint/config_options.html)</p>
+<p>This is currently blocking me from using the rule altogether.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-08-24 13:47</div>
+            <div class="timeline-body"><p>Possibly related to #5860</p>
+<p>EDIT: I should probably elaborate. The proposal to restrict docstring diagnostics based on docstring complexity (what you describe) is distinct to what I linked (which is a proposal to limited based on function complexity). However, they face overlapping design challenges, so it might make sense to link them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @dhruvmanila on 2024-08-26 04:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @dhruvmanila on 2024-08-26 04:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13302.html">astral-sh/ruff#13302</a> on 2024-09-10 05:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @AlexWaygood on 2024-09-10 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-10 13:42</div>
+            <div class="timeline-body"><p>@valentincalomme or @augustelalande, would you be able to elaborate a bit more about why this config option is desirable? I don't feel like #13302 gives a great description of what the config option is for right now, but I'm not sure how to improve it as I don't fully feel like I understand why it would be useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/valentincalomme">@valentincalomme</a> on 2024-09-11 09:22</div>
+            <div class="timeline-body"><p>@AlexWaygood for me it is desirable in the very simple scenario where I want to add a &quot;one-liner&quot; docstring, just to explain briefly what my method does. I dont' want pydoclint to complain that I am missing descriptions for the parameters. Actually, a good description is how <code>darglint</code> describes their strictness (https://pypi.org/project/darglint/). They have 3 modes:</p>
+<ul>
+<li>short: One-line descriptions are acceptable; anything more and the docstring will be fully checked.</li>
+<li>long: One-line descriptions and descriptions without arguments/returns/yields/etc. sections will be allowed. Anything more, and the docstring will be fully checked.</li>
+<li>full: (Default) Docstrings will be fully checked.</li>
+</ul>
+<p>Right now, the <code>DOC</code> rules are always set to &quot;full&quot; strictness, which forces all docstrings to include everything (parameters, returns, raises, etc.). I personally like to follow the &quot;if you add it, it needs to be correct, but omitting it is ok&quot; approach for docstrings</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmke8">@tmke8</a> on 2024-09-11 14:02</div>
+            <div class="timeline-body"><p>I, too, always use <code>--skip-checking-short-docstrings</code> for pylint. I'm using type hints for all parameters anyway, so if it's just a simple function, I don't feel the need to document all parameters explicitly with a sentence; all I want is a one-line explanation of what the function does:</p>
+<pre><code class="language-python">def square(x: float) -&gt; float:
+    &quot;&quot;&quot;Square the given number.&quot;&quot;&quot;
+    ...
+</code></pre>
+<p>I mean I guess it is a little weird to tie the requirement to document all parameters to the number of lines in the docstring, but I found this heuristic to work well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmke8">@tmke8</a> on 2024-09-12 13:12</div>
+            <div class="timeline-body"><p>Maybe a better rule would actually be:</p>
+<ul>
+<li>If one <code>:param ...:</code> has been specified, all params and return value and exceptions need to be documented.</li>
+</ul>
+<p>Instead of</p>
+<ul>
+<li>If the docstring has more than one line, all params and return value and exceptions need to be documented.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kemus">@kemus</a> on 2024-10-15 17:25</div>
+            <div class="timeline-body"><p>Hey @AlexWaygood,</p>
+<p>Google's python style guide explicitly allows for one-liner docstrings to <a href="https://google.github.io/styleguide/pyguide.html#383-functions-and-methods">omit the special sections</a> like <code>Args:</code>, <code>Returns:</code>, and <code>Raises:</code>.</p>
+<blockquote>
+<p>Certain aspects of a function should be documented in special sections, listed below. Each section begins with a heading line, which ends with a colon. All sections other than the heading should maintain a hanging indent of two or four spaces (be consistent within a file). <strong>These sections can be omitted in cases where the function’s name and signature are informative enough that it can be aptly described using a one-line docstring.</strong></p>
+</blockquote>
+<p>(Emphasis mine). Huge amounts of google-style python code follows this pattern for simple methods.</p>
+<p>The main purpose is to avoid having to litter your code with meaningless docstrings, for example:</p>
+<pre><code class="language-python">def clamp(value: float, lower_bound: float, upper_bound: float):
+    &quot;&quot;&quot;Clamps a value between lower and upper bounds.&quot;&quot;&quot;
+    return max(min(value, maximum), minimum)
+</code></pre>
+<p>Currently this complains with:</p>
+<blockquote>
+<p><code>return</code> is not documented in docstring Ruff [DOC201]</p>
+</blockquote>
+<p>A workaround right now is to take advantage of the fact that pydoclint's parsing actually seems to work on the short line (which might be a separate bug now that I think about it), and write:</p>
+<pre><code class="language-python">def clamp(value: float, lower_bound: float, upper_bound: float):
+    &quot;&quot;&quot;Returns a value clamped between lower and upper bounds.&quot;&quot;&quot;
+    return max(min(value, maximum), minimum)
+</code></pre>
+<p>But that's overly verbose and not actually helpful for understanding the code.</p>
+<p>The full example:</p>
+<pre><code class="language-python">
+def clamp(value: float, minimum: float, maximum: float) -&gt; float:
+    &quot;&quot;&quot;Clamp a value clamped between a minimum and maximum.
+
+    Args:
+        value: The value to clamp.
+        minimum: The minimum value.
+        maximum: The maximum value.
+
+    Returns:
+        The clamped value.
+    &quot;&quot;&quot;
+    return max(min(value, maximum), minimum)
+</code></pre>
+<p>Is so verbose as to be actively unhelpful for readability.</p>
+<hr />
+<p>Since we support Google's docstrings style, we should not only allow short docstrings in pydoclint, but also enable it by default if the following setting is enabled:</p>
+<pre><code class="language-toml">[tool.ruff.lint.pydocstyle]
+convention = &quot;google&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-13 12:29</div>
+            <div class="timeline-body"><p>I tried running the pydoclint rules on my <a href="https://github.com/AlexWaygood/typeshed-stats">typeshed-stats</a> project while considering whether they were ready to be stabilised for the 0.9 release. I also found that the majority of complaints were for one-line docstrings that I didn't really want to fix, but that most of the complaints regarding my multiline docstrings were helpful. So I think I'm now persuaded that this config option would indeed be useful (and it's a point in its favour that the config option also exists in the upstream tools).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @AlexWaygood on 2025-01-13 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @AlexWaygood on 2025-01-13 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-01-16 22:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-01-16 22:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

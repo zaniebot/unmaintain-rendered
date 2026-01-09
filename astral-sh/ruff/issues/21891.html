@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PERF401 extend suggestion has false negatives and makes code slower - astral-sh/ruff #21891</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PERF401 extend suggestion has false negatives and makes code slower</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21891">#21891</a>
+        opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a>
+        on 2025-12-10 09:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-12-10 09:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Similar in spirit to https://github.com/astral-sh/ruff/issues/21890</p>
+<p>Consider:</p>
+<pre><code class="language-python">import timeit
+
+
+def main1():
+    ret = []
+    for x in range(8):
+        for i in range(x):
+            ret.append(i)
+
+
+def main2():
+    ret = []
+    for x in range(8):
+        ret.extend(range(x))
+
+
+def main3():
+    ret = []
+    for x in range(8):
+        for i in range(x):
+            ret.append(str(i))  # PERF401 only complains about this
+
+
+def main4():
+    ret = []
+    for x in range(8):
+        ret.extend(str(i) for i in range(x))
+
+
+if __name__ == &quot;__main__&quot;:
+    print(timeit.timeit(main1, number=10_000))
+    print(timeit.timeit(main2, number=10_000))
+    print(timeit.timeit(main3, number=10_000))
+    print(timeit.timeit(main4, number=10_000))
+</code></pre>
+<pre><code>λ python rf.py
+0.007337332936003804
+0.0059296670369803905
+0.016938375076279044
+0.036548584001138806
+</code></pre>
+<p>PERF401 wants to turn main3 into main4. This will make this code &gt;2x slower.</p>
+<p>PERF401 should want to turn main1 into main2, but doesn't.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-10 16:21</div>
+            <div class="timeline-body"><p>Thanks! Yeah there have been some other issues with the <code>extend</code> part of the rule too, such as https://github.com/astral-sh/ruff/issues/16315, especially. I wonder if we should consider deprecating that part of the rule.</p>
+<p>I did manage to find at least one case where <code>main4</code> was faster, though, while playing with the <code>range</code> argument at different Python versions. For <code>range(100)</code> and Python 3.7, <code>main4</code> is a bit faster:</p>
+<pre><code class="language-py">import timeit
+
+N = 100
+
+
+def main3():
+    ret = []
+    for x in range(N):
+        for i in range(x):
+            ret.append(str(i))  # PERF401 only complains about this
+
+
+def main4():
+    ret = []
+    for x in range(N):
+        ret.extend(str(i) for i in range(x))
+
+
+if __name__ == &quot;__main__&quot;:
+    print(timeit.timeit(main3, number=10_000))
+    print(timeit.timeit(main4, number=10_000))
+</code></pre>
+<pre><code class="language-shell">❯ uvx python@3.7 try.py
+6.2967048669815995
+5.577588776999619
+</code></pre>
+<p>Anyway, the first case does look like a false negative too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-12-10 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/21890.html">astral-sh/ruff#21890</a> on 2025-12-10 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-11 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2025-12-12 11:47</div>
+            <div class="timeline-body"><p>It looks like the bigger issue here and with #21890 is the lack of support for nested for loops, as except when one can eliminate a generator altogether, a compensation is almost always faster and it removes the need for <code>extend</code>:</p>
+<pre><code class="language-py">import timeit
+
+N = 100
+
+def main1a():
+	ret = []
+	for x in range(N):
+		for i in range(x):
+			ret.append(i)
+
+def main1b():
+	ret = []
+	for x in range(N):
+		# ret.extend(i for i in range(x))
+		ret.extend(range(x))  # &lt;- Fastest without the generator
+
+def main1c():
+	ret = []
+	ret.extend(i for x in range(N) for i in range(x))
+
+def main1d():
+	ret = [i for x in range(N) for i in range(x)]
+
+def main2a():
+	ret = []
+	for x in range(N):
+		for i in range(x):
+			ret.append(str(i))
+
+def main2b():
+	ret = []
+	for x in range(N):
+		ret.extend(str(i) for i in range(x))
+		# ret.extend(map(str, range(x)))  # &lt;- Fastest without the generator
+
+def main2c():
+	ret = []
+	ret.extend(str(i) for x in range(N) for i in range(x))
+
+def main2d():
+	ret = [str(i) for x in range(N) for i in range(x)]
+
+if __name__ == &quot;__main__&quot;:
+	for func in (main1a, main1b, main1c, main1d, main2a, main2b, main2c, main2d):
+		print(func.__name__, timeit.timeit(func, number=10000))
+</code></pre>
+<p>Python 3.12:</p>
+<pre><code>$ python3 try.py
+main1a 1.0905432199999723
+main1b 0.5453963160000512
+main1c 2.4829541990000052
+main1d 0.7715354909999519
+main2a 4.433559850999984
+main2b 4.579727133999995
+main2c 4.705676019000009
+main2d 3.890231156000027
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tishka17">@Tishka17</a> on 2026-01-05 20:04</div>
+            <div class="timeline-body"><pre><code class="language-python">ITEMS = list(range(10000))
+
+def append():
+    a = []
+    for i in ITEMS:
+        if i%2:
+            a.append(i)
+
+def extend():
+    a = []
+    a.extend(i for i in ITEMS if i%2)
+
+
+for foo in [append, extend]:
+    print(foo.__name__, timeit.timeit(foo, number=10000))
+</code></pre>
+<p>My result:</p>
+<pre><code>append 1.3833269339520484
+extend 1.521354956086725
+</code></pre>
+<p>Is it ever extend with generator expression faster that for-loop?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2026-01-05 21:11</div>
+            <div class="timeline-body"><p>I think with current versions of the Python interpreter the for loop should basically always be faster.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

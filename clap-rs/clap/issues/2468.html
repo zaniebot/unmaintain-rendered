@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support non-Unix options (e.g.  find -exec, bash +O shopt, cmd.exe /c, gcc -Wl,) - clap-rs/clap #2468</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support non-Unix options (e.g.  find -exec, bash +O shopt, cmd.exe /c, gcc -Wl,)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/2468">#2468</a>
+        opened by <a href="https://github.com/mkayaalp">@mkayaalp</a>
+        on 2021-05-05 10:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mkayaalp">@mkayaalp</a> on 2021-05-05 10:44</div>
+            <div class="timeline-body"><p>Child Tasks:</p>
+<ul>
+<li>[ ] #3026</li>
+<li>[ ] #1210 (if we generalize it to this case)</li>
+</ul>
+<h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Describe your use case</h3>
+<p>There are many CLIs that do not follow the Unix way of short vs. long options. While it might not be a good idea for new programs to have such an interface, it may be needed for compatibility.</p>
+<h2>Examples</h2>
+<h3>1. Long option with a single hyphen-minus (<code>-</code>) instead of a double hyphen-minus (<code>--</code>)</h3>
+<p>The examples are probably too many to count, as this is very common. From the output of <code>find --help</code>:</p>
+<pre><code>      -ilname PATTERN -iname PATTERN -inum N -iwholename PATTERN -iregex PATTERN
+      -links N -lname PATTERN -mmin N -mtime N -name PATTERN -newer FILE
+</code></pre>
+<p>From the output of <code>gcc --help</code>:</p>
+<pre><code>  -dumpspecs               Display all of the built in spec strings.
+  -dumpversion             Display the version of the compiler.
+  -dumpmachine             Display the compiler's target processor.
+</code></pre>
+<p>From the output of <code>ld --help</code>:</p>
+<pre><code>  -rpath PATH                 Set runtime shared library search path
+  -rpath-link PATH            Set link time shared library search path
+  -shared, -Bshareable        Create a shared library
+  -pie, --pic-executable      Create a position independent executable
+</code></pre>
+<p>From the output of <code>qemu-system-x86_64 --help</code></p>
+<pre><code>-serial dev     redirect the serial port to char device 'dev'
+-parallel dev   redirect the parallel port to char device 'dev'
+-monitor dev    redirect the monitor to char device 'dev'
+</code></pre>
+<h3>2. Long option with a single plus (<code>+</code>) instead of a double hyphen-minus (<code>--</code>)</h3>
+<p>I'm sure there are others, but I can point to the output of <code>Xwayland --help</code> for this:</p>
+<pre><code>+xinerama              Enable XINERAMA extension
+-xinerama              Disable XINERAMA extension
+...
++extension name        Enable extension
+-extension name        Disable extension
+</code></pre>
+<h3>3. Short option with a plus (<code>+</code>) instead of a hyphen-minus (<code>-</code>)</h3>
+<p>In this case it is a short option because it can be combined as <code>+OO opt1 opt2</code>. Although the value needs to be separated with a space: <code>+Oopt1</code> does not work. From <code>man 1 bash</code>:</p>
+<pre><code>       [-+]O [shopt_option]
+                 shopt_option  is  one  of  the  shell options accepted by the
+                 shopt  builtin  (see  SHELL  BUILTIN  COMMANDS  below).    If
+                 shopt_option is present, -O sets the value of that option; +O
+                 unsets it.  If shopt_option is not supplied,  the  names  and
+                 values  of the shell options accepted by shopt are printed on
+                 the standard output.  If the invocation  option  is  +O,  the
+                 output is displayed in a format that may be reused as input.
+</code></pre>
+<h3>4. No space between option and value</h3>
+<p>As in short options, but the option is not a single character, so combining is not possible. From <code>gcc --help</code>:</p>
+<pre><code>  -Wa,&lt;options&gt;            Pass comma-separated &lt;options&gt; on to the assembler.
+  -Wp,&lt;options&gt;            Pass comma-separated &lt;options&gt; on to the preprocessor.
+  -Wl,&lt;options&gt;            Pass comma-separated &lt;options&gt; on to the linker.
+</code></pre>
+<p>(I guess it looks like <code>W</code> is the short option and the first value <code>a</code>/<code>p</code>/<code>l</code> signifies assembler, preprocessor, or linker. But combining such short options would not make sense.)</p>
+<h3>5. Long option with value after equals (<code>=</code>), but without the double hyphen-minus (<code>--</code>)</h3>
+<p>From <code>dd --help</code></p>
+<pre><code>  count=N         copy only N input blocks
+  ibs=BYTES       read up to BYTES bytes at a time (default: 512)
+  if=FILE         read from FILE instead of stdin
+  iflag=FLAGS     read as per the comma separated symbol list
+  obs=BYTES       write BYTES bytes at a time (default: 512)
+  of=FILE         write to FILE instead of stdout
+  oflag=FLAGS     write as per the comma separated symbol list
+</code></pre>
+<h3>6. Windows way: slash (<code>/</code>) instead of double hyphen-minus (<code>--</code>) and colon (<code>:</code>) instead of equals (<code>=</code>)</h3>
+<p>Not very familiar with Windows command line parameters, but from examples it seems only long options, mostly single-letter, are used. They are still &quot;long&quot; options since there is no combining. Option values are separated by a space or a colon (<code>:</code>). Also, <code>/?</code> is the equivalent of <code>-h, --help</code>.</p>
+<pre><code>cmd [/c|/k] [/s] [/q] [/d] [/a|/u] [/t:{&lt;b&gt;&lt;f&gt; | &lt;f&gt;}] [/e:{on | off}] [/f:{on | off}] [/v:{on | off}] [&lt;string&gt;]
+
+icacls &lt;filename&gt; [/grant[:r] &lt;sid&gt;:&lt;perm&gt;[...]] [/deny &lt;sid&gt;:&lt;perm&gt;[...]] [/remove[:g|:d]] &lt;sid&gt;[...]] [/t] [/c] [/l] [/q] [/setintegritylevel &lt;Level&gt;:&lt;policy&gt;[...]]
+
+pathping [/n] [/h &lt;maximumhops&gt;] [/g &lt;hostlist&gt;] [/p &lt;Period&gt;] [/q &lt;numqueries&gt; [/w &lt;timeout&gt;] [/i &lt;IPaddress&gt;] [/4 &lt;IPv4&gt;] [/6 &lt;IPv6&gt;][&lt;targetname&gt;]
+
+winnt32 [/checkupgradeonly] [/cmd: &lt;CommandLine&gt;] [/cmdcons] [/copydir:{i386|ia64}\&lt;FolderName&gt;] [/copysource: &lt;FolderName&gt;] [/debug[&lt;Level&gt;]:[ &lt;FileName&gt;]] [/dudisable] [/duprepare: &lt;pathName&gt;] [/dushare: &lt;pathName&gt;] [/emsport:{com1|com2|usebiossettings|off}] [/emsbaudrate: &lt;BaudRate&gt;] [/m: &lt;FolderName&gt;]  [/makelocalsource] [/noreboot] [/s: &lt;Sourcepath&gt;] [/syspart: &lt;DriveLetter&gt;] [/tempdrive: &lt;DriveLetter&gt;] [/udf: &lt;ID&gt;[,&lt;UDB_File&gt;]] [/unattend[&lt;Num&gt;]:[ &lt;AnswerFile&gt;]]
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>Instead of (or in addition to) specifying short vs. long, maybe we could specify:</p>
+<ul>
+<li>The prefix: <code>&quot;-&quot;</code>, <code>&quot;--&quot;</code>, <code>&quot;/&quot;</code>, <code>&quot;+&quot;</code>, <code>&quot;&quot;</code></li>
+<li>Whether to combine as in short options or not</li>
+<li>Whether to allow, or require, or disallow space between the option name and its value</li>
+<li>The separator between the option name and its value(s): <code>&quot;=&quot;</code>, <code>&quot;:&quot;</code></li>
+</ul>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @mkayaalp on 2021-05-05 10:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @pksunkara on 2021-05-06 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: maybe</span> added by @pksunkara on 2021-05-06 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1210.html">clap-rs/clap#1210</a> on 2021-11-14 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/815.html">clap-rs/clap#815</a> on 2021-11-15 06:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-15 14:47</div>
+            <div class="timeline-body"><p><a href="https://github.com/clap-rs/clap/issues/1210#issuecomment-956656955">My comment</a> in #1210 speaks of a general solution that would cover the wider case than just single hyphens in long arguments.</p>
+<blockquote>
+<p>Whether to allow, or require, or disallow space between the option name and its value</p>
+</blockquote>
+<p>We do have <a href="https://docs.rs/clap/2.33.3/clap/struct.Arg.html#method.require_equals"><code>requires_equals</code></a>, granted that only switches between allow space vs disallow and doesn't cover require space.</p>
+<p>It doesn't allow a different separator value.  We'd need to create a name, add support for it, and deprecate the existing function (since it name references the syntax and not the general semantics).  We'd end up with a pair like <code>use_delimiter</code> and <code>value_delimiter</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3026.html">clap-rs/clap#3026</a> on 2021-11-15 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-15 14:53</div>
+            <div class="timeline-body"><p>I broke the name/value separator part out into a child task</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkayaalp">@mkayaalp</a> on 2021-11-15 20:00</div>
+            <div class="timeline-body"><p>Thank you for looking into this.</p>
+<blockquote>
+<p>We do have <a href="https://docs.rs/clap/2.33.3/clap/struct.Arg.html#method.require_equals"><code>requires_equals</code></a>, granted that only switches between allow space vs disallow and doesn't cover require space.</p>
+</blockquote>
+<p>Since creating this issue, I looked at CLI guidelines of POSIX, GNU, Solaris and realized that handling of space in clap for optional option-arguments is not the Unix way: #3030</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../MarcelRobitaille/last-rs/issues/2.html">MarcelRobitaille/last-rs#2</a> on 2021-11-24 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/185.html">epage/clapng#185</a> on 2021-12-06 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> removed by @epage on 2021-12-13 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> added by @epage on 2021-12-13 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3635.html">clap-rs/clap#3635</a> on 2022-04-15 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Burning1020">@Burning1020</a> on 2022-11-29 12:25</div>
+            <div class="timeline-body"><p>Excuse me, when will we support for the single hyphen feature? Is there any PR working on it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-29 12:41</div>
+            <div class="timeline-body"><p>Work to be done for this:</p>
+<ol>
+<li>~~Implementing <code>clap_lex</code>~~ Done</li>
+<li>Creating a trait for it that is object safe (not started)</li>
+<li>Modify <code>clap::Command</code> so it accepts an alternative <code>clap_lex</code> implementation</li>
+</ol>
+<p>When doing these, we need to balance</p>
+<ul>
+<li>Performance</li>
+<li>Compile time and binary size for the default case</li>
+<li>API compatibility<ul>
+<li>the trait needs to be defined somewhere that has the same API guarantees as <code>clap</code></li>
+<li><code>clap_lex</code> does not yet have those guarantees.  I would rather not have <code>os_str_bytes</code> in the API either</li>
+</ul>
+</li>
+</ul>
+<p>However, this is not a high priority for me but the <a href="https://github.com/clap-rs/clap/issues?q=is%3Aopen+is%3Aissue+milestone%3A4.x">4.x issues</a> are.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../containerd/rust-extensions/issues/120.html">containerd/rust-extensions#120</a> on 2023-02-16 06:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4948.html">clap-rs/clap#4948</a> on 2023-06-05 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../uutils/coreutils/pulls/4950.html">uutils/coreutils#4950</a> on 2023-06-23 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../microsoft/pdblister/issues/5.html">microsoft/pdblister#5</a> on 2023-12-15 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5377.html">clap-rs/clap#5377</a> on 2024-02-26 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../uutils/coreutils/pulls/5966.html">uutils/coreutils#5966</a> on 2024-03-13 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5742.html">clap-rs/clap#5742</a> on 2024-09-20 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6082.html">clap-rs/clap#6082</a> on 2025-08-05 18:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

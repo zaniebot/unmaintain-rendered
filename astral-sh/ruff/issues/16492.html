@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>collections-named-tuple (PYI024): Documented fix is not equivalent - astral-sh/ruff #16492</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>collections-named-tuple (PYI024): Documented fix is not equivalent</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16492">#16492</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2025-03-04 09:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2025-03-04 09:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>From the doc:</p>
+<p><a href="https://docs.astral.sh/ruff/rules/collections-named-tuple/#example">Example</a></p>
+<pre><code class="language-py">from collections import namedtuple
+
+person = namedtuple(&quot;Person&quot;, [&quot;name&quot;, &quot;age&quot;])
+</code></pre>
+<p>Use instead:</p>
+<pre><code class="language-py">from typing import NamedTuple
+
+class Person(NamedTuple):
+    name: str
+    age: int
+</code></pre>
+<p>But that's not equivalent! Since the variable name <code>person</code> differs from the class name <code>Person</code>.</p>
+<p>For this to be equivalent:</p>
+<pre><code class="language-py">from collections import namedtuple
+
+person = namedtuple(&quot;Person&quot;, [&quot;name&quot;, &quot;age&quot;])
+Rect = namedtuple(&quot;Rect&quot;, [&quot;x&quot;, &quot;y&quot;])
+</code></pre>
+<p>This would be used:</p>
+<pre><code class="language-py">from typing import NamedTuple
+
+class person(NamedTuple):
+    __name__ = &quot;Person&quot;
+    name: str
+    age: int
+
+class Rect(NamedTuple):
+    x: int
+    y: int
+</code></pre>
+<p>or</p>
+<pre><code class="language-py">from typing import NamedTuple
+
+class Person(NamedTuple):
+    name: str
+    age: int
+person = Person  # old name
+
+class Rect(NamedTuple):
+    x: int
+    y: int
+</code></pre>
+<p>I wouldn't recommend that usage. But backwards compatibility is important in libraries, where NamedTuples matter more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-04 09:22</div>
+            <div class="timeline-body"><p>It took me a while to understand what the difference is because I thought it was some subtlety with named tuples when all it is is just the naming of the <code>person</code> variable.</p>
+<p>I suggest that we simply change the example in the docs to:</p>
+<pre><code class="language-py">from collections import namedtuple
+
+Person = namedtuple(&quot;Person&quot;, [&quot;name&quot;, &quot;age&quot;])
+</code></pre>
+<p>The rule doesn't have an auto fix and library authors should be aware that changing the casing of an exported variable (if it is exported) is a breaking change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2025-03-04 09:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-03-04 09:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-03-04 09:39</div>
+            <div class="timeline-body"><p>(I'm going to bed but doc changes are easy, no need for rust knowledge and I can do it tomorrow if no one completed it already, I just needed a decision)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-04 09:43</div>
+            <div class="timeline-body"><p>Thank you and thanks for reporting the issue. We could consider adding a snapshot test for this with a comment. Just in case we ever add a fix for this (as you requested in the other issue). This seems easy to overlook</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16884.html">astral-sh/ruff#16884</a> on 2025-03-21 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-20 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-06-21 01:49</div>
+            <div class="timeline-body"><p>I completely forgot about this. Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

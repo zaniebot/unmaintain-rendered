@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv x` as alternative to `uvx` - astral-sh/uv #11646</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv x` as alternative to `uvx`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11646">#11646</a>
+        opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a>
+        on 2025-02-19 22:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-19 22:43</div>
+            <div class="timeline-body"><h2>Proposal</h2>
+<p>uv currently ships two different binaries with each release, <code>uv</code> and <code>uvx</code>. According to the documentation, <code>uvx</code> is an alias for <code>uv tool run</code> and the two commands are exactly equivalent. The <code>uvx</code> binary appears to be implemented as an executable shim.</p>
+<p>I would like to propose that <code>uv x</code> be provided in place of (or in addition to) <code>uvx</code>.</p>
+<h2>Rationale</h2>
+<p>Precedence for this has been set with <code>uv v</code> which is an alias for <code>uv venv</code>.</p>
+<pre><code class="language-console">C:\Users\Chris&gt;uv
+error: 'uv' requires a subcommand but one was not provided
+  [subcommands: run, init, add, remove, sync, lock, export, tree, tool, python, pip, venv, virtualenv, v, build, publish, build-backend, cache, self, clean, version, generate-shell-completion, --generate-shell-completion, help]
+
+Usage: uv [OPTIONS] &lt;COMMAND&gt;
+
+For more information, try '--help'.
+</code></pre>
+<h2>Pros</h2>
+<p>Removal of the shim would simplify the build and installation of uv and marginally reduce the size of the release assets (~150 KB for the x64 Windows archive).</p>
+<h2>Cons</h2>
+<p>A single <kbd>Space</kbd></p>
+<h2>Example</h2>
+<pre><code class="language-console">C:\Users\Chris&gt;uv x
+Provide a command to run with `uv x &lt;command&gt;`.
+
+See `uv x --help` for more information.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @chrisrodrigue on 2025-02-19 22:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 22:58</div>
+            <div class="timeline-body"><p>It seems very unlikely that we would remove the <code>uvx</code> binary as it would be a disruptive breaking change — I don't see a compelling reason. It seems fine to provide <code>uv x</code> as another alias, but it's just more for people to get confused about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-19 23:25</div>
+            <div class="timeline-body"><p>That's a fair point... although I would be surprised if many users have opted for <code>uvx</code> over the more explicit <code>uv tool run</code> in scripted workflows. Users preferring the <code>uvx</code> alias could just add it to their <code>.bashrc</code> or make their own <code>uvx.cmd</code> shim in <code>.local\bin</code></p>
+<p>(Also, the change would only be breaking if the installation script explicitly removed the shim from the previous uv release. The shim should theoretically work forever right?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 23:34</div>
+            <div class="timeline-body"><blockquote>
+<p>I would be surprised if many users have opted for uvx over the more explicit uv tool run in scripted workflows.</p>
+</blockquote>
+<p>I don't think I've seen much evidence of this. I see <code>uvx</code> used pretty widely.</p>
+<blockquote>
+<p>(Also, the change would only be breaking if the installation script explicitly removed the shim from the previous uv release. The shim should theoretically work forever right?)</p>
+</blockquote>
+<p>It'd be breaking for people using uv in ephemeral environments, like CI or containers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 23:37</div>
+            <div class="timeline-body"><p>I feel like I might be doing something wrong, but</p>
+<ul>
+<li>https://github.com/search?q=%22uv+tool+run%22&amp;type=code — 1K files</li>
+<li>https://github.com/search?q=%22uvx+%22&amp;type=code — 21K files</li>
+</ul>
+<p>(Without a trailing space, the second is 4M files with a lot of false positives)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-19 23:52</div>
+            <div class="timeline-body"><p>oof... yeah, this could be a painful change. So much for line 2 of the <a href="https://peps.python.org/pep-0020/#the-zen-of-python">Zen</a>!</p>
+<p>You guys have been very good about not having many breaking changes. I would hate to see an influx of issues and bad PR as a result of something silly like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jromal">@jromal</a> on 2025-02-22 07:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Users preferring the <code>uvx</code> alias could just add it to their <code>.bashrc</code> or make their own <code>uvx.cmd</code> shim in <code>.local\bin</code></p>
+</blockquote>
+<p>Windows exists. And in a professional environment is the most used OS.</p>
+<p>UV is there to make the life of people easier. Not to make them create their own <code>uvx.cmd</code> command. You can create your own command and implement your way of work if you want.</p>
+<p>Your assumptions on how people use <code>uvx</code> give me the impression that you do not use it or have explained someone else, that is not a techie, how to use it.</p>
+<p>Not to mention that I would stop using it if a subcommand called <code>x</code> gets such a preferente treatment. I boycott everything named <code>x</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-22 14:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Your assumptions on how people use uvx give me the impression that you do not use it or have explained someone else, that is not a techie, how to use it.</p>
+</blockquote>
+<p>I explicitly list tools as development dependencies in <code>pyproject.toml</code> and install them in the virtual environment of my project.</p>
+<p><code>uvx</code> seems like an homage to <code>pipx</code> and <code>npx</code>. But I would argue that the intent of <code>uvx</code> is less clear. From the documentation:</p>
+<blockquote>
+<h3><a href="https://docs.astral.sh/uv/guides/tools/#running-tools">Running tools</a></h3>
+<p>The <code>uvx</code> command invokes a tool <strong>without installing it</strong>.</p>
+</blockquote>
+<p>But then just a few lines down, it says</p>
+<blockquote>
+<p><strong>Tools are installed</strong> into temporary, isolated environments when using <code>uvx</code>.</p>
+</blockquote>
+<p>Either a tool is installed or it is not. Which is it?</p>
+<p>Clearly, tools are installed somewhere, but where? Will this abstract location just grow in size forever with tools that I tried out a single time? Why would I want this?</p>
+<p>To me, this seems like a package management anti-pattern. But it is here to stay, since removing it would be a breaking change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jromal">@jromal</a> on 2025-02-23 07:49</div>
+            <div class="timeline-body"><p><code>uvx</code> is mainly for non technical people.</p>
+<p>This will revolutionize how people consume Python programs. It is for &quot;the mass&quot;, not for developers.</p>
+<p>Where packages are installed is clear. And how to handle the cache is clear too. Have a look to the documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-23 15:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Where packages are installed is clear</p>
+</blockquote>
+<p>It isn't. Tools are installed in <code>C:\Users\&lt;username&gt;\AppData\Roaming\uv\tools</code>, but I'm not talking about <code>uv tool install</code>, I'm talking about <code>uvx</code>.</p>
+<p>The documentation clearly says that <code>uvx</code> invokes a tool without installing it. Yet the output of the <code>uvx</code> command clearly signifies that a package was installed. The installation location is <code>C:\Users\&lt;username&gt;\AppData\Local\uv\cache\archive-v0\R5Go42aFFFox0OFmAOrJ_\</code>.</p>
+<pre><code class="language-console">C:\Users\Chris&gt;uvx ruff
+Installed 1 package in 80ms
+</code></pre>
+<p>Files were installed—copied to the file system—which is contrary to what the documentation says. I don't have a problem with it, but other users could see this as a violation of trust.</p>
+<p>I would suggest at least updating the documentation to state that the files are installed to a cache. In-memory execution is a real thing and that isn't what's happening here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zeevro">@zeevro</a> on 2025-02-27 11:00</div>
+            <div class="timeline-body"><p>Even something like <code>uv pip compile &lt;(echo bottle)</code> writes files to the cache. I think it's OK to say nothing is installed if the &quot;installation&quot; is just into the cache, especially since in certain environments (e.g. Dockerfile) the cache directory is often on ephemeral storage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cpontvieux-systra">@cpontvieux-systra</a> on 2025-11-20 10:15</div>
+            <div class="timeline-body"><p>Why not have <code>uvx</code> be a symlink to <code>uv</code> and uv detects that it has been invoked as <code>uvx</code> (args[0]) and so use <code>uv tool run</code> ? It is for instance what busybox is doing, or vim with view/vimdiff/rvim/…</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-20 14:25</div>
+            <div class="timeline-body"><p><code>uvx</code> is basically a symlink, it just needs to work cross-platform.</p>
+<p>I took a look at the documentation to see if we should clarify that <code>uvx</code> installs into a temporary instance and immediately found &gt;3 instances of us saying that's what happens. If someone has a specific spot the language should change, please open a pull request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-20 14:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installation of workspace member's dev dependencies depends on whether the root has a [project] section - astral-sh/uv #11797</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Installation of workspace member's dev dependencies depends on whether the root has a [project] section</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11797">#11797</a>
+        opened by <a href="https://github.com/thorbenk">@thorbenk</a>
+        on 2025-02-26 11:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thorbenk">@thorbenk</a> on 2025-02-26 11:40</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>In my minimal &quot;project with workspace member&quot; setup (https://github.com/thorbenk/uv_workspace_dev_issue , just run <code>./issue.sh</code> to reproduce),
+I have the following:</p>
+<ul>
+<li>a workspace member <code>mypkg</code><ul>
+<li>declares a dev dependency on <code>loguru</code></li>
+</ul>
+</li>
+<li>a root <code>pyproject.toml</code> file</li>
+</ul>
+<p>I want to understand when the development dependency is part of the virtual environment after <code>uv sync</code>.
+Apparently it differs depending on whether the root <code>pyproject.toml</code> declares a project or not.</p>
+<p>If I just have</p>
+<pre><code class="language-toml">[tool.uv.workspace]
+members = [&quot;packages/mypkg&quot;]
+</code></pre>
+<p>the <strong>dev dependency is installed</strong>.</p>
+<p>However, if I have</p>
+<pre><code class="language-toml">[project]
+name = &quot;wsplay_root&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12.6&quot;
+dependencies = [&quot;mypkg&quot;]
+
+[tool.uv.workspace]
+members = [&quot;packages/mypkg&quot;]
+
+[tool.uv.sources]
+mypkg = { workspace = true }
+</code></pre>
+<p>then <strong>the dev dependency ist NOT installed</strong>.</p>
+<p>Is this a bug? Or expected behavior?</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p>uv 0.6.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @thorbenk on 2025-02-26 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thorbenk">@thorbenk</a> on 2025-02-26 12:01</div>
+            <div class="timeline-body"><p>Reading more issues, I've found https://github.com/astral-sh/uv/issues/10934#issuecomment-2630376653 running into a similar question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-27 14:05</div>
+            <div class="timeline-body"><p>Expected because if you omit a <code>[project]</code> table, we install all workspace packages by default, and the dev group is enabled by default; whereas in the second example, you're installing <code>wsplay_root</code>, which depends on <code>mypkg</code>. So dev dependencies would be installed if defined in <code>wsplay_root</code>, but not in <code>mypkg</code>, which is just treated like any other dependency.</p>
+<p>In the first example, think of it as if <code>--all-packages</code> were passed to <code>uv sync</code>.</p>
+<p>As an aside, &quot;projects without a <code>[project]</code> table&quot; are considered legacy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-14 00:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

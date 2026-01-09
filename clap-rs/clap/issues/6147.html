@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text with ANSI escape sequences is incorrectly wrapped - clap-rs/clap #6147</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Text with ANSI escape sequences is incorrectly wrapped</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/6147">#6147</a>
+        opened by <a href="https://github.com/ongardie">@ongardie</a>
+        on 2025-10-10 23:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ongardie">@ongardie</a> on 2025-10-10 23:29</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.90.0</p>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Minimal reproducible code</h3>
+<p>Here are some basic unit tests for <code>StyledStr::wrap()</code>. The <code>wrap_styled</code> test fails both assertions:</p>
+<pre><code class="language-rust">#[cfg(test)]
+ mod tests {
+     use super::*;
+ 
+     #[test]
+     #[cfg(feature = &quot;wrap_help&quot;)]
+     fn wrap_unstyled() {
+         let mut unstyled = StyledStr::from(color_print::cstr!(&quot;12345 12345 12345 12345&quot;));
+         unstyled.wrap(20);
+         assert_eq!(&quot;12345 12345 12345\n12345&quot;, unstyled.to_string());
+     }
+ 
+     #[test]
+     #[cfg(feature = &quot;wrap_help&quot;)]
+     fn wrap_styled() {
+         let mut styled = StyledStr::from(color_print::cstr!(
+             &quot;&lt;bold&gt;12345&lt;/bold&gt; &lt;bold&gt;12345&lt;/bold&gt; &lt;bold&gt;12345&lt;/bold&gt; &lt;bold&gt;12345&lt;/bold&gt;&quot;
+         ));
+         styled.wrap(20);
+         assert_eq!(
+             color_print::cstr!(
+                 &quot;&lt;bold&gt;12345&lt;/bold&gt; &lt;bold&gt;12345&lt;/bold&gt; &lt;bold&gt;12345&lt;/bold&gt;\n&lt;bold&gt;12345&lt;/bold&gt;&quot;
+             ),
+             styled.as_styled_str()
+         );
+         assert_eq!(&quot;12345 12345 12345\n12345&quot;, styled.to_string());
+     }
+ }
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ul>
+<li>Copy these tests into <code>clap_builder/src/builder/styled_str.rs</code>.</li>
+<li>Enable the <code>wrap_help</code> feature.</li>
+<li>Run the tests.</li>
+</ul>
+<h3>Actual Behaviour</h3>
+<p>When I provide <code>after_long_help</code> containing ANSI escape sequences with <code>wrap_text</code> enabled, the wrapping is jagged.</p>
+<h3>Expected Behaviour</h3>
+<p>It should wrap the same as if the ANSI escape sequences weren't there (except the sequences should be preserved).</p>
+<h3>Additional Context</h3>
+<p>It looks like the code that's there intended to handle this, but something is off.</p>
+<p>This could probably use additional unit tests, too, including some that have line breaks in the input.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @ongardie on 2025-10-10 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @ongardie on 2025-10-10 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6149.html">clap-rs/clap#6149</a> on 2025-10-13 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-10-13 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

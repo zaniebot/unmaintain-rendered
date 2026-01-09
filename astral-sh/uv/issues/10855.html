@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv lock --locked reports 'uv.lock needs to be updated' when it doesn't (with workspace members that have multiple self-referential extras) - astral-sh/uv #10855</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv lock --locked reports 'uv.lock needs to be updated' when it doesn't (with workspace members that have multiple self-referential extras)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10855">#10855</a>
+        opened by <a href="https://github.com/palotasb">@palotasb</a>
+        on 2025-01-22 12:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/palotasb">@palotasb</a> on 2025-01-22 12:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>With the following minimal reproducible example, running <code>uv lock</code> does not change the contents of <code>uv.lock</code>. However, running <code>uv lock --locked</code> reports <code>error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provided. To update the lockfile, run `uv lock`.</code> Running <code>uv lock</code> as suggested still does not change the lockfile.</p>
+<p>I would expect the two commands to be consistent, i.e., <code>uv lock --locked</code> not to report that the lockfile needs to be updated when <code>uv lock</code> doesn't update it and indeed it doesn't need any updates.</p>
+<p><code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+version = &quot;0&quot;
+
+[tool.uv.workspace]
+members = [&quot;test2&quot;]
+
+[tool.uv.sources]
+test2 = { workspace = true }
+</code></pre>
+<p><code>test2/pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test2&quot; 
+dynamic = [&quot;version&quot;]
+
+[project.optional-dependencies]
+foo = []
+bar = []
+
+all = [&quot;test2[foo,bar]&quot;]
+</code></pre>
+<p><code>uv.lock</code>:</p>
+<pre><code class="language-toml">version = 1
+requires-python = &quot;&gt;=3.11&quot;
+
+[manifest]
+members = [
+    &quot;test&quot;,
+    &quot;test2&quot;,
+]
+
+[[package]]
+name = &quot;test&quot;
+version = &quot;0&quot;
+source = { virtual = &quot;.&quot; }
+
+[[package]]
+name = &quot;test2&quot;
+source = { virtual = &quot;test2&quot; }
+
+[package.metadata]
+requires-dist = [{ name = &quot;test2&quot;, extras = [&quot;bar&quot;, &quot;foo&quot;], marker = &quot;extra == 'all'&quot;, virtual = &quot;test2&quot; }]
+</code></pre>
+<p>I couldn't reduce this to a smaller example, i.e., removing any of the optional dependencies of <code>test2</code> cause the bug to be not reproduced. Merging the contents of <code>test/pyproject.toml</code> into the root <code>pyproject.toml</code> also cause the bug to disappear.</p>
+<p>I couldn't find an exact duplicate of this bug, but sorry if I missed something.</p>
+<h3>Platform</h3>
+<p>Darwin 23.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.5.21 (Homebrew 2025-01-17)</p>
+<h3>Python version</h3>
+<p>Python 3.11.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @palotasb on 2025-01-22 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-22 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-22 13:51</div>
+            <div class="timeline-body"><p>Have you tried this on the latest version (v0.5.22)? I can't reproduce, and I believe I fixed this already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10856.html">astral-sh/uv#10856</a> on 2025-01-22 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-22 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/palotasb">@palotasb</a> on 2025-01-23 08:36</div>
+            <div class="timeline-body"><p>Yep, fixed, sorry, and thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

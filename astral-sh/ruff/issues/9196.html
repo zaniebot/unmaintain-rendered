@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Linter panic] Fixing TCH003 fails when no `TYPE_CHECKING` block exists and `exempt-modules` is empty - astral-sh/ruff #9196</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Linter panic] Fixing TCH003 fails when no `TYPE_CHECKING` block exists and `exempt-modules` is empty</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9196">#9196</a>
+        opened by <a href="https://github.com/picnixz">@picnixz</a>
+        on 2023-12-19 09:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/picnixz">@picnixz</a> on 2023-12-19 09:57</div>
+            <div class="timeline-body"><p>I'm not sure that it's the place to ask since this bug appears to be caused by <code>[tool.ruff.lint.flake8-type-checking]</code>. Anyway, with the configuration</p>
+<pre><code class="language-toml">[tool.ruff]
+target-version = 'py311'
+ignore = ['all']
+select = ['TCH']
+
+[tool.ruff.lint.flake8-type-checking]
+exempt-modules = []
+</code></pre>
+<p>invoking</p>
+<pre><code class="language-bash">python3.11 -m ruff file.py --fix --unsafe-fixes
+</code></pre>
+<p>on</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import Final
+from collections.abc import Mapping
+
+Const: Final[Mapping] = {}
+</code></pre>
+<p>fails with</p>
+<pre><code class="language-text">panicked at /home/runner/work/ruff/ruff/crates/ruff_text_size/src/range.rs:48:9:
+assertion failed: start.raw &lt;= end.raw
+Backtrace:    0: &lt;unknown&gt;
+   1: &lt;unknown&gt;
+   2: &lt;unknown&gt;
+   3: &lt;unknown&gt;
+   4: &lt;unknown&gt;
+   5: &lt;unknown&gt;
+   6: &lt;unknown&gt;
+   7: &lt;unknown&gt;
+   8: &lt;unknown&gt;
+   9: &lt;unknown&gt;
+  10: &lt;unknown&gt;
+  11: &lt;unknown&gt;
+  12: &lt;unknown&gt;
+  13: &lt;unknown&gt;
+  14: &lt;unknown&gt;
+  15: &lt;unknown&gt;
+  16: __libc_start_main
+             at /usr/src/debug/glibc-2.26-lp152.26.12.1.x86_64/csu/../csu/libc-start.c:308
+  17: &lt;unknown&gt;
+</code></pre>
+<p>But the following succeeds:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import TYPE_CHECKING, Final
+from collections.abc import Mapping
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+Const: Final[Mapping[str, Sequence]] = {}
+</code></pre>
+<p>and gets reformatted as</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import TYPE_CHECKING, Final
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+    from collections.abc import Sequence
+
+Const: Final[Mapping[str, Sequence]] = {}
+</code></pre>
+<p>I think it's because the <code>TYPE_CHECKING</code> block does not exist yet that it's like that. However, if the block is empty and only <code>typing</code> imports exist, it also fails:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import TYPE_CHECKING, Final
+
+if TYPE_CHECKING:
+    pass
+
+Const: Final[float] = 1
+</code></pre>
+<p>Now, if I change</p>
+<pre><code class="language-toml">[tool.ruff.lint.flake8-type-checking]
+exempt-modules = []
+</code></pre>
+<p>to</p>
+<pre><code class="language-toml">[tool.ruff.lint.flake8-type-checking]
+exempt-modules = ['typing']
+</code></pre>
+<p>it works as intended.</p>
+<h3>Environment</h3>
+<pre><code class="language-text">Platform:              linux; (Linux-5.3.18-lp152.106-default-x86_64-with-glibc2.26)
+Python version:        3.11.6 (main, Nov 29 2023, 14:46:32) [GCC 7.5.0])
+Python implementation: CPython
+ruff version:          0.1.8
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Linter panic] Fixing TCH003 when no `TYPE_CHECKING` block exists fails and empty `exempt-modules`" to "[Linter panic] Fixing TCH003 fails when no `TYPE_CHECKING` block exists and `exempt-modules` is empty" by @picnixz on 2023-12-19 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/picnixz">@picnixz</a> on 2023-12-19 10:00</div>
+            <div class="timeline-body"><p>I think it is probably related to #5331 (feel free to close it if you think it's a duplicate)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2023-12-19 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @MichaReiser on 2023-12-19 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9197.html">astral-sh/ruff#9197</a> on 2023-12-19 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-12-19 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9214.html">astral-sh/ruff#9214</a> on 2023-12-20 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-20 16:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

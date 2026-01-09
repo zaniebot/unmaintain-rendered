@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff has unstable results with target-version (normally hidden by caching) - astral-sh/ruff #10267</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff has unstable results with target-version (normally hidden by caching)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10267">#10267</a>
+        opened by <a href="https://github.com/aneeshusa">@aneeshusa</a>
+        on 2024-03-07 07:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aneeshusa">@aneeshusa</a> on 2024-03-07 07:35</div>
+            <div class="timeline-body"><p>I am switching from shed to ruff at $WORK and found what looks like a bug in Ruff's formatter (unstable output);
+normally this appears to be hidden by caching, implying a second bug in the caching logic.
+Here's a minimized repro with <code>target-version</code> and a particular code pattern
+(further minimization ideas I tried broke the repro but some likely exist):</p>
+<pre><code>Python 3.11.6 | packaged by conda-forge | (main, Oct  3 2023, 10:37:07) [Clang 15.0.7 ]
+ruff 0.3.1
+N.B. also tested on {python3.11,python3.12} x {ruff==0.3.0, ruff==0.3.1}
+
+Starting hash of file:
+57be245f1161c2069df7c842b935038e30c0a17aa31c924218aa925566203636  wat.py
+Starting file contents:
+with (
+    open(
+        &quot;/etc/hosts&quot;  # This is an incredibly long comment that has been replaced for sanitization
+    )
+):
+    pass
+
+When reading from the cache (default behavior), stable after first run:
+1 file reformatted
+1acf49d050ef0ac27cb93c028af71a4d8d918a91992dbb497c6da52393d91f98  wat.py
+with open(
+    &quot;/etc/hosts&quot;  # This is an incredibly long comment that has been replaced for sanitization
+):
+    pass
+1 file left unchanged
+1acf49d050ef0ac27cb93c028af71a4d8d918a91992dbb497c6da52393d91f98  wat.py
+1 file left unchanged
+1acf49d050ef0ac27cb93c028af71a4d8d918a91992dbb497c6da52393d91f98  wat.py
+
+If you disable reading from the cache, output flip flops on each run:
+1 file reformatted
+57be245f1161c2069df7c842b935038e30c0a17aa31c924218aa925566203636  wat.py
+1 file reformatted
+1acf49d050ef0ac27cb93c028af71a4d8d918a91992dbb497c6da52393d91f98  wat.py
+1 file reformatted
+57be245f1161c2069df7c842b935038e30c0a17aa31c924218aa925566203636  wat.py
+</code></pre>
+<p>N.B. I have no ruff config settings, and didn't see related issues/PRs but let me know if I missed one!</p>
+<details>
+<summary>Script that produced this output</summary>
+
+<pre><code>#!/usr/bin/env bash
+
+# no errexit
+set -o nounset
+set -o pipefail
+
+tmp_dir=&quot;$(mktemp -d)&quot;
+cleanup() {
+    rm -rf &quot;${tmp_dir}&quot;
+}
+trap cleanup EXIT INT QUIT TERM
+
+
+cd &quot;${tmp_dir}&quot;
+# N.B. does not repro if comment is removed and &quot;/etc/hosts&quot; made very long instead
+cat &gt;./wat.py &lt;&lt;EOF
+with (
+    open(
+        &quot;/etc/hosts&quot;  # This is an incredibly long comment that has been replaced for sanitization
+    )
+):
+    pass
+EOF
+
+python -m venv ./venv
+./venv/bin/pip install --quiet ruff==0.3.1
+./venv/bin/python --version --version
+./venv/bin/ruff --version
+echo 'N.B. also tested on {python3.11,python3.12} x {ruff==0.3.0, ruff==0.3.1}'
+
+echo -e &quot;\nStarting hash of file:&quot;
+sha256sum wat.py
+echo &quot;Starting file contents:&quot;
+cat wat.py
+
+echo -e &quot;\nWhen reading from the cache (default behavior), stable after first run:&quot;
+./venv/bin/ruff format --isolated --target-version py310 wat.py
+sha256sum wat.py
+cat wat.py
+./venv/bin/ruff format --isolated --target-version py310 wat.py
+sha256sum wat.py
+./venv/bin/ruff format --isolated --target-version py310 wat.py
+sha256sum wat.py
+
+echo -e &quot;\nIf you disable reading from the cache, output flip flops on each run:&quot;
+./venv/bin/ruff format --isolated --target-version py310 --no-cache wat.py
+sha256sum wat.py
+./venv/bin/ruff format --isolated --target-version py310 --no-cache wat.py
+sha256sum wat.py
+./venv/bin/ruff format --isolated --target-version py310 --no-cache wat.py
+sha256sum wat.py
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ruff cache causes unstable results" to "Ruff has unstable results with target-version (normally hidden by caching)" by @aneeshusa on 2024-03-07 07:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-03-07 07:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-03-07 07:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-07 07:53</div>
+            <div class="timeline-body"><p>To summarize the report: The problem @aneeshusa is facing is a formatter stability issue when formatting <code>with</code> statements</p>
+<pre><code class="language-python"># Input
+with (
+    open(
+        &quot;/etc/hosts&quot;  # This is an incredibly long comment that has been replaced for sanitization
+    )
+):
+    pass
+
+# Formatted once
+with open(
+    &quot;/etc/hosts&quot;  # This is an incredibly long comment that has been replaced for sanitization
+):
+    pass
+
+# Formatted twice
+with (
+    open(
+        &quot;/etc/hosts&quot;  # This is an incredibly long comment that has been replaced for sanitization
+    )
+):
+    pass
+</code></pre>
+<p><a href="https://play.ruff.rs/3c33dfea-8072-45b4-8f10-89d3e4dbbf99">Playground</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-03-07 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10274.html">astral-sh/ruff#10274</a> on 2024-03-07 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-08 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10302.html">astral-sh/ruff#10302</a> on 2024-03-09 07:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

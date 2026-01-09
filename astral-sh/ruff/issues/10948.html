@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>misleading `E721 Do not compare types, use isinstance()` for bool - astral-sh/ruff #10948</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>misleading `E721 Do not compare types, use isinstance()` for bool</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10948">#10948</a>
+        opened by <a href="https://github.com/Borda">@Borda</a>
+        on 2024-04-15 07:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Borda">@Borda</a> on 2024-04-15 07:51</div>
+            <div class="timeline-body"><p>just crossed <a href="https://github.com/unit8co/darts/pull/2323#discussion_r1565286329">this case</a> where for <code>type(component_wise) is bool</code> ruff suggest generic <code>isinstance(component_wise, bool)</code> which is not the same as this comparison takes int as bool:</p>
+<pre><code class="language-py">&gt;&gt;&gt; isinstance(5, bool)
+True
+&gt;&gt;&gt; type(5) is bool
+False
+</code></pre>
+<p>see why this si happening in https://stackoverflow.com/a/37888668/4521646</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../unit8co/darts/pulls/2323.html">unit8co/darts#2323</a> on 2024-04-15 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-04-15 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mscheifer">@mscheifer</a> on 2024-04-26 20:45</div>
+            <div class="timeline-body"><p>I think your example is backwards. <code>bool</code>s are <code>int</code>s but not the other way around.</p>
+<pre><code class="language-python">&gt;&gt;&gt; isinstance(5, bool)
+False
+&gt;&gt;&gt; isinstance(True, int)
+True
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-30 08:36</div>
+            <div class="timeline-body"><p>Yeah, I think the behavior is correct?</p>
+<pre><code>&gt;&gt;&gt; isinstance(5, bool)
+False
+&gt;&gt;&gt; type(5) is bool
+False
+</code></pre>
+<p>As per the linked stackoverflow question, I think the problem would be when you compare against an <code>int</code> where the behavior is different:</p>
+<pre><code>&gt;&gt;&gt; isinstance(5, int)
+True
+&gt;&gt;&gt; isinstance(True, int)
+True
+&gt;&gt;&gt; type(5) is int
+True
+&gt;&gt;&gt; type(True) is int
+False
+</code></pre>
+<p>Also, this is already resolved in <code>--preview</code>, refer https://github.com/astral-sh/ruff/pull/7905. It should available generally in the next minor bump.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-02 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-02 18:02</div>
+            <div class="timeline-body"><p>Closing based on @dhruvmanila's analysis.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401 false positives when match statements are in the file  - astral-sh/ruff #1989</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401 false positives when match statements are in the file </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1989">#1989</a>
+        opened by <a href="https://github.com/kendangclubhouse">@kendangclubhouse</a>
+        on 2023-01-19 04:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kendangclubhouse">@kendangclubhouse</a> on 2023-01-19 04:33</div>
+            <div class="timeline-body"><p>Im seeing that ruff is not finding F401's in files that have match statements.</p>
+<p>Code snippet</p>
+<pre><code>import datetime
+
+x = 5
+match x:
+    case _:
+        print(&quot;hello&quot;)
+</code></pre>
+<p>You should expect that <code>import datetime</code> should cause a F401 but when runing <code>ruff /path/to/file --select F401</code> nothing is returned.  When I remove the match statement, ruff will return the F401 issue.</p>
+<pre><code>❯ ruff ~ruff_bug.py --select F401
+ruff_bug.py:1:8: F401 `datetime` imported but unused
+  |
+1 | import datetime
+  |        ^^^^^^^^ F401
+  |
+  = help: Remove unused import: `datetime
+</code></pre>
+<p>Im running <code>ruff 0.0.225</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-19 04:49</div>
+            <div class="timeline-body"><p>I believe this is due to our lack of support for <code>match</code> statements. It's the last big language feature that we don't yet support (#282). I <em>assume</em> that if you <code>--select E999</code>, you'll see a syntax error? That's <em>probably</em> blocking the <code>F401</code> from being picked up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-19 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kendangclubhouse">@kendangclubhouse</a> on 2023-01-19 18:10</div>
+            <div class="timeline-body"><p>I find it odd that I cannot ignore the E999. Does E999 have to block all other errors in the file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-19 18:15</div>
+            <div class="timeline-body"><p>The issue is that if we can't parse the code, then we can't get a valid AST, and so we can't enforce a large portion of the rule set. It's a limitation of the parser right now: (1) it can't parse <code>match</code> statements, and (2) it can't recover from errors gracefully. (Even if it could, you would still end up with false positives or negative -- for example, if an import was used only in a <code>match</code> statement, we'd have no way of knowing.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kendangclubhouse">@kendangclubhouse</a> on 2023-01-19 18:25</div>
+            <div class="timeline-body"><p>I see, that make a lot of sense. Thank you so much for explaining. 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 05:47</div>
+            <div class="timeline-body"><p>No prob! I know it’s not a satisfying answer, but hopefully it makes some sense. The real fix here is to get match statements working so that it’s a non-issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-22 00:05</div>
+            <div class="timeline-body"><p>Fixed as of v0.0.250.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is there a way to inspect the temporary environment created? - astral-sh/uv #7890</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Is there a way to inspect the temporary environment created?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7890">#7890</a>
+        opened by <a href="https://github.com/gitgithan">@gitgithan</a>
+        on 2024-10-03 08:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gitgithan">@gitgithan</a> on 2024-10-03 08:27</div>
+            <div class="timeline-body"><p>Previously I reported in #7730 that <code>uv run test_uv/demo.py</code> works unexpectedly but <code>uv run --python 3.10 test_uv/demo.py</code> fails.</p>
+<p>I found a verbose flag in <code>uv run</code> but it only showed the python resolution process, with no information on the temporary environment created or used.</p>
+<p><strong>Are details on the temporary environment created available in any part of the cli?</strong>
+If not could anyone point to the source code where envs are get or created?
+Are they in <code>~/.cache/uv/environments-v1</code>?</p>
+<p>I wish to understand the env creation process triggered by requesting a non-default python like in <code>uv run --python 3.10 test_uv/demo.py</code> to be able to predict what libraries will be available or not.</p>
+<p>For issue #7730, <code>uv run test_uv/demo.py</code> worked not because <code>The first case may have succeeded as uv run will use the .venv in the current directory by default</code> as Charlie suggested.
+I did not have any virtual env in the same directory that contained <code>rich</code>.
+It turns out it was because uv was using the pip associated with the default python.</p>
+<p>Here's how I discovered that:</p>
+<ol>
+<li><code>uv python find</code> --&gt; <code>/usr/bin/python3</code></li>
+<li><code>ll /usr/bin/python3</code> --&gt; <code>/usr/bin/python3 -&gt; python3.8</code></li>
+<li><code>python3.8 -m pip list</code> --&gt; the list contained <code>rich</code> and <code>requests</code></li>
+<li><code>pip3.8 uninstall rich</code> to break <code>uv run test_uv/demo.py</code>, thus proving uv was using environment (<strong>is this considered system level?</strong>) associated with python3.8 and pip3.8</li>
+</ol>
+<hr />
+<p>Alternatively to step 3, <code>python3.8 -m pip show pip</code> , then look at <code>Location: /home/hanqi/.local/lib/python3.8/site-packages</code> to find <code>rich</code> inside</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-03 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-03 11:55</div>
+            <div class="timeline-body"><p>In this case, does the script have a <code># /// script</code> tag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gitgithan">@gitgithan</a> on 2024-10-03 13:12</div>
+            <div class="timeline-body"><p>No <code># /// script</code>, it was the same script as #7730</p>
+<pre><code>import requests
+from rich.pretty import pprint
+import sys
+
+print(sys.version)
+
+import importlib.metadata
+
+rich_version = importlib.metadata.version(&quot;rich&quot;)
+print(&quot;Rich Version: &quot;, rich_version)
+
+resp = requests.get(&quot;https://peps.python.org/api/peps.json&quot;)
+data = resp.json()
+pprint([(k, v[&quot;title&quot;]) for k, v in data.items()][:10])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-03 13:14</div>
+            <div class="timeline-body"><p>If you're in a project (i.e., a directory or parent directory with a <code>pyproject.toml</code>), <code>uv run</code> will by default run in a virtual environment located at <code>.venv</code> (relative to the project root).</p>
+<p>If you're <em>not</em>, it will run in the discovered interpreter (no environment necessary), unless you pass <code>--with</code>, in which case, it will create an ephemeral environment in the cache: https://github.com/astral-sh/uv/blob/005bb235f03c96d00d0231f1e1a4dd4eca0d4c0b/crates/uv/src/commands/project/environment.rs#L19</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-21 21:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

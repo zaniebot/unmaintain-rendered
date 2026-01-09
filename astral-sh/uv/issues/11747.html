@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strange behavior with uv 0.5.24 and OpenSSL 3.2.2 in AlmaLinux 9.5 - astral-sh/uv #11747</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Strange behavior with uv 0.5.24 and OpenSSL 3.2.2 in AlmaLinux 9.5</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11747">#11747</a>
+        opened by <a href="https://github.com/lskbr">@lskbr</a>
+        on 2025-02-24 16:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lskbr">@lskbr</a> on 2025-02-24 16:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi, I spent my day banging my head with this issue :-D May be trivial.</p>
+<p>I have a docker setup that runs fine without custom index urls when run from ADO (Microsoft Azure), but that didn't work when used internally with a custom CA.
+The enterprise network uses a custom certificate authority (with ZScaler), so I'm used to install certificates on Ubuntu (docker files, etc).
+Now, we are moving to build our packages using manylinux docker image that uses AlmaLinux 9.5. I followed the normal procedure to install the custom certificate in AlmaLinux:</p>
+<pre><code># cp CUSTOM.crt /etc/pki/ca-trust/source/anchors/
+# update-ca-trust
+</code></pre>
+<p>The certificate is installed and I can find it in the certificate chain.</p>
+<p>PAT stands for Personal Access Token - it is used for authentication with Azure.
+ENTERPRISE and project are the masked names of my ado repo.</p>
+<p>You need a custom artifact repository URL :-(</p>
+<p>Minimum example:</p>
+<pre><code>$ docker run --rm -t -i quay.io/pypa/manylinux_2_34_x86_64:latest
+[root@ef8d6a7dfb2d /]# openssl version
+OpenSSL 3.2.2 4 Jun 2024 (Library: OpenSSL 3.2.2 4 Jun 2024)
+[root@ef8d6a7dfb2d /]# export UV_NATIVE_TLS=true
+[root@ef8d6a7dfb2d /]# export PAT=PAT
+[root@ef8d6a7dfb2d /]# export UV_EXTRA_INDEX_URL=&quot;https://${PAT}@pkgs.dev.azure.com/ENTERPRISE/_packaging/maths/pypi/simple/  https://${PAT}@pkgs.dev.azure.com/ENTERPRISE/project/_packaging/project/pypi/simple/&quot;
+uv pip install -n --reinstall colorconsole --system --allow-insecure-host *.core.windows.net
+</code></pre>
+<p>uv reports a certificate error (self-signed certificate in the chain). The traces are attached.
+This error is a bit strange. For example, uv manages to connect to ADO pkgs, get the version of the package to install and its download location. It fails when connecting to the redirected server.</p>
+<p>Using wget, I can download the file in the same docker image, so it is not blocked and the custom certificate seems to be working. The same URL with curl does not work, what makes me think it is a difference introduced by OpenSSL 3.2.2.</p>
+<p>uv also works without the UV_EXTRA_INDEX_URL, it installs public packages without any problem. What I think is strange is that it manages to connect to ADO when I use the UV_EXTRA_INDEX_URL, but not to the Microsoft server (*.core.windows.net).</p>
+<p>The allow-insecure-host also does not work with a wild card; I think this is for security purposes, right? The problem with ADO is that they have many servers with different names :-D</p>
+<p><a href="https://github.com/user-attachments/files/18946767/uvlog.txt">uvlog.txt</a></p>
+<h3>Platform</h3>
+<p>Docker image with AlmaLinux 9.5 Manylinux 2.34</p>
+<h3>Version</h3>
+<p>uv 0.5.24</p>
+<h3>Python version</h3>
+<p>Python 3.12, Python 3.11, Python 3.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @lskbr on 2025-02-24 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-02-25 02:02</div>
+            <div class="timeline-body"><p>Does it work in older or newer uv versions?
+Are you including the full certificate chain on your <code>CUSTOM.crt</code> (root cert&amp; intermediaries certs)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lskbr">@lskbr</a> on 2025-02-25 11:00</div>
+            <div class="timeline-body"><p>I think so; it is the same certificate chain I use on Ubuntu 22.04 and 24.04.
+I did more tests this morning to retest the configuration. I checked the certificate regarding requirements of OpenSSL 3.3.2, and it is ok. It uses SHA256, it is 2048 bits.
+uv works fine without the extra indexes. The problem seems to happen when it is redirected from the artifact repository to the download server. It is able to contact the artifact repository, get versions and dependencies. But it fails when trying to download.</p>
+<p>I tested with uv 0.5.4 and 0.6.3.</p>
+<p>I also tested with SSL_CERT_FILE pointing to the PEM, no success.</p>
+<p>wget works fine without any extra configurations. curl works after using the same file as I passed to SSL_CERT_FILE in a --cacert option. So the connection itself is not blocked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lskbr">@lskbr</a> on 2025-02-25 15:36</div>
+            <div class="timeline-body"><p>I found the problem. ManyLinux sets the SSL_CERT_FILE variable to /opt/_internal/certs.pem
+The problem is solved by configuring the PAT + EXTRA_INDEX_URLS and unsettling SSL_CERT_FILE.
+Another solution is to:
+echo local_certificate.pem &gt;&gt; /opt/_internal/certs.pem</p>
+<p>I was blindfolded by my script, paying attention to what I changed before checking the initial state of the docker image.
+I got my error doing a strace in uv and its subprocess. The certificate store was never opened and the /opt/_internal/certs.pem showed up all the time.
+Setting SSL_CERT_FILE to my certificate didn't solve the problem because only my certificate was there, not the other root CAs.</p>
+<p>wget was working because it ignores the SSL_CERT_FILE var.</p>
+<p>Why ManyLinux is important? Because it is used to build binary wheels. So openssl 3.2.2 is also innocent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @lskbr on 2025-02-25 15:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

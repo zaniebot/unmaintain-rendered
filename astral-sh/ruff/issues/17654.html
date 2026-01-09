@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issues using ruff linter and formatters with `jaxtyping` - astral-sh/ruff #17654</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issues using ruff linter and formatters with `jaxtyping`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17654">#17654</a>
+        opened by <a href="https://github.com/Doublonmousse">@Doublonmousse</a>
+        on 2025-04-27 11:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Doublonmousse">@Doublonmousse</a> on 2025-04-27 11:35</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following code</p>
+<pre><code class="language-python">import numpy as np
+from jaxtyping import Float
+from typing import Annotated
+
+
+def main():
+    A: Float[np.ndarray, &quot;n m&quot;] = np.zeros((10, 10))  # noqa: F722
+    x: Float[np.ndarray, &quot;m&quot;] = np.zeros(10)  # noqa: F821
+    print(mul(A, x))
+
+    # no issue with annotated however
+    _: Annotated[int, &quot;n&quot;] = 12
+    _: Annotated[int, &quot;n m&quot;] = 12
+</code></pre>
+<p>Raises lint rules F722 and F821. However, afaik, <code>jaxtyping</code> uses <code>Annotated</code> under the hood and doing the same type of annotation using <code>Annotated</code> instead does not raise the same error.</p>
+<p>The other issue I have is that the ruff formatter does not prevent noqa comments from staying on the same line pre and post formatting the code. Hence a noqa comment won't act on the same part of the code after formatting with ruff. So for example, the following function raises F722 and F821</p>
+<pre><code class="language-py">def mul(A: Float[np.ndarray, &quot;n m&quot;], x:Float[np.ndarray,&quot;m&quot;])-&gt;Float[np.ndarray,&quot;m&quot;]:
+    return A @ x
+</code></pre>
+<p>Then, suppressing the first F722 warning gives</p>
+<pre><code>def mul(A: Float[np.ndarray, &quot;n m&quot;], x:Float[np.ndarray,&quot;m&quot;])-&gt;Float[np.ndarray,&quot;m&quot;]:  # noqa: F722
+    return A @ x
+</code></pre>
+<p>Where the noqa acts on A,x and the return value and then formatting gives</p>
+<pre><code class="language-py">def mul(
+    A: Float[np.ndarray, &quot;n m&quot;], x: Float[np.ndarray, &quot;m&quot;]
+) -&gt; Float[np.ndarray, &quot;m&quot;]:  # noqa: F722
+    return A @ x
+</code></pre>
+<p>raising F722 again because the noqa is on the wrong line (acting on the return value but no more on A nor x). Putting the noqa back to the correct line gives</p>
+<pre><code class="language-py">def mul(
+    A: Float[np.ndarray, &quot;n m&quot;], x: Float[np.ndarray, &quot;m&quot;] # noqa: F722
+) -&gt; Float[np.ndarray, &quot;m&quot;]:  
+    return A @ x
+</code></pre>
+<p>which will format to</p>
+<pre><code class="language-py">def mul(
+    A: Float[np.ndarray, &quot;n m&quot;],
+    x: Float[np.ndarray, &quot;m&quot;],  # noqa: F722
+) -&gt; Float[np.ndarray, &quot;m&quot;]:
+    return A @ x
+</code></pre>
+<p>raising the F722 error again. The end formatted result with warning suppressed (and not changing with a <code>Format document</code>) is</p>
+<pre><code class="language-py">def mul(
+    A: Float[np.ndarray, &quot;n m&quot;],  # noqa: F722
+    x: Float[np.ndarray, &quot;m&quot;],  # noqa: F821
+) -&gt; Float[np.ndarray, &quot;m&quot;]:  # noqa: F821
+    return A @ x
+</code></pre>
+<p>Using ruff 0.11.7, confirmed from vscode's terminal</p>
+<pre><code>2025-04-27 13:22:33.185 [info] Found Ruff 0.11.7 at ...
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-04-27 14:36</div>
+            <div class="timeline-body"><p>This is a duplicate of #17386</p>
+<p>See that issue for a possible solution and a potential workaround that could be used in the meantime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-28 06:24</div>
+            <div class="timeline-body"><p>I'll merge the formatter noqa feedback into https://github.com/astral-sh/ruff/issues/12901 and close this in favor of</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-28 06:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12901.html">astral-sh/ruff#12901</a> on 2025-04-28 06:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

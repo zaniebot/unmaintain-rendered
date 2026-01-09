@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should SIM105 `UseContextlibSuppress` exempt try blocks with unreachable end? - astral-sh/ruff #1947</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should SIM105 `UseContextlibSuppress` exempt try blocks with unreachable end?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1947">#1947</a>
+        opened by <a href="https://github.com/andersk">@andersk</a>
+        on 2023-01-18 04:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/andersk">@andersk</a> on 2023-01-18 04:48</div>
+            <div class="timeline-body"><p>This code violates SIM105 (Use <code>contextlib.suppress(OSError)</code> instead of try-except-pass):</p>
+<pre><code class="language-python">for i in range(1, 100):
+    try:
+        realm.string_id = prefix + str(i)
+        realm.save(update_fields=[&quot;string_id&quot;])
+        break
+    except IntegrityError:
+        pass
+else:
+    raise RuntimeError(f&quot;Unable to find a good string_id for realm {realm}&quot;)
+</code></pre>
+<p>But fixing it would make the code more confusing:</p>
+<pre><code class="language-python">for i in range(1, 100):
+    with contextlib.suppress(IntegrityError):
+        realm.string_id = prefix + str(i)
+        realm.save(update_fields=[&quot;string_id&quot;])
+        break
+else:
+    raise RuntimeError(f&quot;Unable to find a good string_id for realm {realm}&quot;)
+</code></pre>
+<p>because this visually suggests that the <code>for</code> loop “always” <code>break</code>s and it’s not obvious why the <code>else</code> can be reached.</p>
+<p>If a <code>try:</code> block has an unreachable end because all its non-exceptional control flow paths end with a <code>return</code>, <code>raise</code>, <code>break</code>, or <code>continue</code>, should we exempt it from SIM105?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 04:56</div>
+            <div class="timeline-body"><p>Yeah I agree that the fixed version is more confusing. (I kind of feel like this rule always makes code more confusing? Though I've been trying to avoid opining too much on rule usefulness while implementing existing, third-party plugins.) I think this suggestion makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-01-18 05:09</div>
+            <div class="timeline-body"><p>Upstream doesn’t have this restriction, but it has a different one: only <code>try</code> statements with a <a href="https://github.com/MartinThoma/flake8-simplify/blob/0.19.3/flake8_simplify/rules/ast_try.py#L46">single body statement</a> are considered. I think this also makes sense, because it may not be immediately apparent that a “suppressed” exception in the first body statement still short-circuits the second body statement.</p>
+<p>The upstream restriction doesn’t consider whether the single body statement is itself a compound statement, though, and probably should.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 05:17</div>
+            <div class="timeline-body"><p>Oh, yeah, that looks like an oversight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-18 05:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1948.html">astral-sh/ruff#1948</a> on 2023-01-18 05:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-18 05:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8593.html">astral-sh/ruff#8593</a> on 2023-11-10 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../GenericMappingTools/pygmt/pulls/3448.html">GenericMappingTools/pygmt#3448</a> on 2024-09-24 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../GenericMappingTools/pygmt/pulls/3523.html">GenericMappingTools/pygmt#3523</a> on 2024-10-16 08:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

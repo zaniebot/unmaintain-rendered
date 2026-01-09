@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should uv.find_uv_bin() be able to find /usr/bin/uv? - astral-sh/uv #4451</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should uv.find_uv_bin() be able to find /usr/bin/uv?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4451">#4451</a>
+        opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a>
+        on 2024-06-23 15:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-06-23 15:02</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I have almost finished preparing a <code>uv</code> package for Fedora. As written, the <code>uv.find_uv_bin()</code> Python function would not be able to find the executable <code>/usr/bin/uv</code> that this package would provide:</p>
+<ul>
+<li>First it checks https://github.com/astral-sh/uv/blob/2288ff7bf497ed173658d05dcbed815ba1e2b543/python/uv/<strong>init</strong>.py#L13 which evaluates to <code>/usr/local/bin/uv</code>.</li>
+<li>Then it checks https://github.com/astral-sh/uv/blob/2288ff7bf497ed173658d05dcbed815ba1e2b543/python/uv/<strong>init</strong>.py#L26 where <code>user_scheme</code> is <code>&quot;posix_user&quot;</code>, which evaluates to '/home/myusername/.local/bin/uv'.</li>
+<li>Then it checks https://github.com/astral-sh/uv/blob/2288ff7bf497ed173658d05dcbed815ba1e2b543/python/uv/<strong>init</strong>.py#L31-L32 which evaluates to something like  <code>/usr/lib/python3.13/bin/uv</code> or <code>/usr/lib64/python3.13/bin/uv</code>. (I currently get the latter, but since the <code>uv</code> Python library is actually arch-independent when it doesn’t bundle the <code>uv</code> executable, I should probably ensure it’s the former.)</li>
+</ul>
+<hr />
+<p>I should be able to fix this by something like:</p>
+<pre><code class="language-diff">diff --git a/python/uv/__init__.py b/python/uv/__init__.py
+index 781eee4f..f2603785 100644
+--- a/python/uv/__init__.py
++++ b/python/uv/__init__.py
+@@ -10,6 +10,12 @@ def find_uv_bin() -&gt; str:
+ 
+     uv_exe = &quot;uv&quot; + sysconfig.get_config_var(&quot;EXE&quot;)
+ 
++    bindir_path = sysconfig.get_config_var(&quot;BINDIR&quot;)
++    if bindir_path is not None:
++        path = os.path.join(bindir_path, uv_exe)
++        if os.path.isfile(path):
++            return path
++
+     path = os.path.join(sysconfig.get_path(&quot;scripts&quot;), uv_exe)
+     if os.path.isfile(path):
+         return path
+</code></pre>
+<p>or, probably better,</p>
+<pre><code class="language-diff">diff --git a/python/uv/__init__.py b/python/uv/__init__.py
+index 781eee4f..80953b2e 100644
+--- a/python/uv/__init__.py
++++ b/python/uv/__init__.py
+@@ -1,6 +1,7 @@
+ from __future__ import annotations
+ 
+ import os
++import shutil
+ import sys
+ import sysconfig
+ 
+@@ -10,6 +11,10 @@ def find_uv_bin() -&gt; str:
+ 
+     uv_exe = &quot;uv&quot; + sysconfig.get_config_var(&quot;EXE&quot;)
+ 
++    path = shutil.which(uv_exe)
++    if path is not None:
++        return path
++
+     path = os.path.join(sysconfig.get_path(&quot;scripts&quot;), uv_exe)
+     if os.path.isfile(path):
+         return path
+</code></pre>
+<p>Is this a change that you think belongs in <code>uv</code> upstream, or is this something I should carry as a downstream patch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 17:24</div>
+            <div class="timeline-body"><p>Is that binary path exposed anywhere on <code>sysconfig</code> or <code>distutils</code>? I think the goal of this method is to find the Python that's installed in the current environment, so <code>which</code> feels a little too permissive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-06-23 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 17:25</div>
+            <div class="timeline-body"><p>As a separate question: when you install via the package manager, are you installing the Python sources or just the <code>uv</code> binary? (Sort of asking: does this even <em>need</em> to work?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-06-23 18:15</div>
+            <div class="timeline-body"><p>From the <code>uv</code> source RPM, I plan to build a binary RPM (what people actually install) also called <code>uv</code>, which will install <code>/usr/bin/uv</code>, plus ancillary files that should ship with the executable: tab-completion support, basic documentation like <code>README.md</code>, license files, etc..</p>
+<p>Then I plan to have another binary RPM, built from the same source RPM, called <code>python3-uv</code>. This provides the importable Python <code>uv</code> package, i.e. https://github.com/astral-sh/uv/tree/main/python/uv, along with the <code>.dist-info</code> metadata, and which has an exact-version dependency on the <code>uv</code> binary RPM built from the same source RPM. It can therefore rely on “referencing” the system-wide <code>/usr/bin/uv</code>. For RPM package users, this should work as if they had installed the package from PyPI. We <em>do</em> need this to work, because system packages like <a href="https://src.fedoraproject.org/rpms/hatch"><code>hatch</code></a> will be depending on <code>uv</code> via a <a href="https://github.com/pypa/hatch/blob/72e09428a2e6846962413b227534c0eb365a86ed/pyproject.toml#L54">Python dependency</a>. This system <code>python3-uv</code> should <em>always</em> find the system <code>/usr/bin/uv</code> rather than something else in the user’s path, which, come to think of it, is an argument <em>against</em> <code>shutil.which</code> and in favor of <code>sysconfig.get_config_var(&quot;BINDIR&quot;)</code> for our use case. (For similar reasons, we always adjust <code>#!/usr/bin/env python</code> shebangs in RPM-installed Python scripts to <code>#!/usr/bin/python3</code> to ensure they run with the system Python interpreter.)</p>
+<p>If you think that finding <code>/usr/bin/uv</code> is a need that is specific to this kind of distribution packaging, then it’s easy enough to make the adaptation downstream only. However (unless I’m missing something), it does seem a little strange to support finding <code>uv</code> in <code>/usr/local/bin</code> but not in <code>/usr/bin</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-06-23 20:08</div>
+            <div class="timeline-body"><blockquote>
+<p>However (unless I’m missing something), it does seem a little strange to support finding <code>uv</code> in <code>/usr/local/bin</code> but not in <code>/usr/bin</code>.</p>
+</blockquote>
+<p>Looking again at the actual code, I suppose that while https://github.com/astral-sh/uv/blob/2288ff7bf497ed173658d05dcbed815ba1e2b543/python/uv/<strong>init</strong>.py#L13 evaluates to <code>/usr/local/bin/uv</code> in a system-wide installation like this, that’s not the situation you are trying to cover with that case. It’s really intended for <code>/path/to/virtualenv/bin/uv</code>. And furthermore, in the virtualenv case, you presumably <em>don’t</em> want to find <code>/usr/bin/uv</code> (or<code>/usr/local/bin/uv</code>) first.</p>
+<p>So maybe this really is a situation where a downstream-only patch is the right approach to ensure the system Python <code>uv</code> library finds the system <code>uv</code> executable. However, if you think there’s anything to be improved here in the general case, I’m happy to offer a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 20:14</div>
+            <div class="timeline-body"><p>Yeah, I think it's right for this to be a downstream-only patch. Sorry if it causes you any inconvenience but that's where I'm ending up too. (Thanks for walking me through it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-23 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-23 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-06-23 20:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, I think it's right for this to be a downstream-only patch. Sorry if it causes you any inconvenience but that's where I'm ending up too. (Thanks for walking me through it.)</p>
+</blockquote>
+<p>Thanks for talking through it with me. You helped me clarify my reasoning, and I’m now much more confident that the first proposed downstream patch from https://github.com/astral-sh/uv/issues/4451#issue-2368608161 is a good approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4576.html">astral-sh/uv#4576</a> on 2024-06-27 10:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANN001 for unused function argument - astral-sh/ruff #14663</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ANN001 for unused function argument</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14663">#14663</a>
+        opened by <a href="https://github.com/towiat">@towiat</a>
+        on 2024-11-28 21:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/towiat">@towiat</a> on 2024-11-28 21:40</div>
+            <div class="timeline-body"><p>Given the setup</p>
+<pre><code class="language-toml">[tool.ruff]
+select = [
+    &quot;ANN001&quot;, # missing-type-function-argument
+    &quot;ARG001&quot;, # unused-function-argument
+]
+</code></pre>
+<p>and the function</p>
+<pre><code class="language-python">def callback(_unused, foo: str) -&gt; None:
+    print(foo)
+</code></pre>
+<p>ruff (version 0.8.0) does not raise <code>ARG001</code> since the argument name <code>_unused</code> matches the <code>dummy-variable-rgx</code> pattern.</p>
+<p>It does, however, raise <code>ANN001</code> even though a type annotation for an unused argument doesn't make a lot of sense.</p>
+<p>Shouldn't the check for <code>ANN001</code> also take the <code>dummy-variable-rgx</code> pattern into account?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-29 08:24</div>
+            <div class="timeline-body"><p>Thanks for opening this issue. This is an interesting question and we may have to consider this in a more complete example. E.g is <code>callback</code> overriding some method or why is the first argument unused?</p>
+<p>I agree that the type annotation seems rather useless for the <code>callback</code>'s body. However, annotating the parameter type is important to verify that the function is called with the right arguments. So there's value in having the annotation, but only if the signature can't be derived from e.g. a parent method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-29 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/towiat">@towiat</a> on 2024-11-29 12:29</div>
+            <div class="timeline-body"><p>Thanks for looking into this. I'm also not completely sure, but here is some context:</p>
+<p>I ran into this while writing a callback for a click option like this (snippet from the <a href="https://click.palletsprojects.com/en/stable/options/#callbacks-and-eager-options">click documentation</a>):</p>
+<pre><code class="language-python">def print_version(ctx, param, value):
+    if not value or ctx.resilient_parsing:
+        return
+    click.echo('Version 1.0')
+    ctx.exit()
+
+@click.command()
+@click.option('--version', is_flag=True, callback=print_version,
+              expose_value=False, is_eager=True)
+def hello():
+    click.echo('Hello World!')
+</code></pre>
+<p>Note that click calls the callback with positional parameters, so it doesn't care about the names.</p>
+<p>In my use case I only need the <code>value</code> argument which leaves me with the following choices to annotate the callback:</p>
+<pre><code class="language-python">def callback(ctx: click.Context, param: click.Parameter, value: str):    # raises ARG001
+    do_something_with(value)
+
+def callback(_ctx, _param, value: str):                                  # raises ANN001
+    do_something_with(value)
+
+def callback(_ctx: click.Context, _param: click.Parameter, value: str):  # works, but... hmmm
+    do_something_with(value)
+</code></pre>
+<p>Pyright has a <code>reportMissingParameterType</code> check which has an exemption for unused arguments, although it only considers single underscore <code>_</code> arguments as unused. See also <a href="https://github.com/microsoft/pyright/issues/8884#issue-2503435825">this Pyright issue</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mnesarco">@mnesarco</a> on 2024-12-10 03:35</div>
+            <div class="timeline-body"><p>Hello I have the same issue, specially in methods that override parent methods, usually some arguments are unused in subclasses but they need to keep the same signature so I use single underscore prefix to mark as unused, but ANN001 keeps kiking my ass 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-10 07:26</div>
+            <div class="timeline-body"><p>Oh, I just realized that <code>ANN01</code> has <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-annotations_suppress-dummy-args">a setting</a> that disables the ANN rules for dummy variables.</p>
+<pre><code class="language-toml">[tool.ruff.lint.flake8-annotations]
+suppress-dummy-args = true
+</code></pre>
+<p>I think that should solve both your use cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/towiat">@towiat</a> on 2024-12-10 09:23</div>
+            <div class="timeline-body"><p>Huh, this works as described and does indeed solve my issue.</p>
+<p>Since I somehow overlooked this despite studying the documentation (I swear!), would it make sense to mention this setting in the description of the affected rules (just like <code>dummy-variable-rgx</code> is mentioned in the <a href="https://docs.astral.sh/ruff/rules/unused-function-argument/">ARG001</a> documentation)?</p>
+<p>Other than that, this can be closed from my side. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-10 09:47</div>
+            <div class="timeline-body"><p>That's a good call out. Let me add it real quick.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14888.html">astral-sh/ruff#14888</a> on 2024-12-10 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-10 09:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

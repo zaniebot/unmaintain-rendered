@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive for SIM300 (yoda condition)? - astral-sh/ruff #8247</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive for SIM300 (yoda condition)?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8247">#8247</a>
+        opened by <a href="https://github.com/estyrke">@estyrke</a>
+        on 2023-10-26 09:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/estyrke">@estyrke</a> on 2023-10-26 09:01</div>
+            <div class="timeline-body"><p><code>sim300.py</code>:</p>
+<pre><code class="language-python">class Foo:
+    NAME = &quot;Foo&quot;
+
+class Bar:
+    NAME = &quot;Bar&quot;
+
+def check(name: str) -&gt; None:
+    for item in [Foo(), Bar()]:
+        if item.NAME == name:
+            print(item)
+</code></pre>
+<pre><code class="language-shell">$ ruff --version
+ruff 0.0.291
+$ ruff check --isolated --select SIM300 sim300.py
+sim300.py:9:12: SIM300 [*] Yoda conditions are discouraged, use `name == item.NAME` instead
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+</code></pre>
+<p>Applying the suggested fix results in <em>more</em> Yoda-ish order in my opinion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 23:37</div>
+            <div class="timeline-body"><p>I think this is working as intended -- <code>name</code> is the input to the function, so <code>name == item.NAME</code> would be the non-Yoda variant, though it's obviously a bit subjective.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-30 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/estyrke">@estyrke</a> on 2023-10-31 07:04</div>
+            <div class="timeline-body"><p>I would argue that in the loop, <code>item</code> is more variable than <code>name</code>. The rule should use the outermost &quot;object&quot; (item) and not the inner one (NAME) to determine const-ness. I could accept that it is subjective, but then ruff shouldn't complain for any of the orders.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

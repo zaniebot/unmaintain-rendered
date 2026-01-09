@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File paths of ZIP contents are not sanitized - astral-sh/uv #8731</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>File paths of ZIP contents are not sanitized</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8731">#8731</a>
+        opened by <a href="https://github.com/SLeitgeb">@SLeitgeb</a>
+        on 2024-10-31 17:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SLeitgeb">@SLeitgeb</a> on 2024-10-31 17:35</div>
+            <div class="timeline-body"><p>All files from a package WHL are extracted to the path resolved from the current directory. The ZIP file path is not sanitized first (as suggested in the <a href="https://docs.rs/async_zip/latest/async_zip/struct.ZipEntry.html#method.filename">async_zip</a> package), which could lead to directory traversal attacks, e.g. by a malicious package.</p>
+<p>The demo below uses relative filepaths, but this would presumably resolve absolute paths as well (e.g. <code>~/.cache/uv/archive-v0</code> + <code>/etc/passwd</code> → <code>/etc/passwd</code>).</p>
+<p>Tested on Arch Linux with uv 0.4.28, Python 3.10. This should also affect Windows.</p>
+<p>An example of the issue using an empty payload file in a parent directory.</p>
+<pre><code>touch payload
+uv init payload-package
+cd payload-package
+uv build
+cd dist/
+zip payload_package-0.1.0-py3-none-any.whl ../../payload
+cd ../..
+uv init payload-package-importer
+cd payload-package-importer
+uv add ../payload-package/dist/payload_package-0.1.0-py3-none-any.whl
+ls -1 ~/.cache | grep payload
+</code></pre>
+<p>You should observe a <code>payload</code> file created two directories up relative to the directory from which the paths are resolved (should be the <code>$HOME/.config</code> directory).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-31 17:39</div>
+            <div class="timeline-body"><p>Thanks, I'll fix this (though PRs are also welcome).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">security</span> added by @charliermarsh on 2024-10-31 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-31 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8732.html">astral-sh/uv#8732</a> on 2024-10-31 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-10-31 17:56</div>
+            <div class="timeline-body"><p>@SLeitgeb Can you say more about the threat model you're using here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SLeitgeb">@SLeitgeb</a> on 2024-10-31 18:19</div>
+            <div class="timeline-body"><p>The scenario that comes to mind involves a malicious package that would get installed as a user dependency. This package doesn't need to be a direct dependency, it could also be a dependency of another package.</p>
+<p>The WHL archive of the malicious package could be manipulated to include arbitrary files (SSH keys, binaries, etc.) that uv would then extract. Running uv as a privileged user in a production environment could then be quite bad.</p>
+<p>I don't think this scenario is too likely, and the offending packages would be easy to discover, but there could also be other implications I'm not seeing (maybe package sources outside of pypi?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-10-31 18:23</div>
+            <div class="timeline-body"><p>I think you also need to stipulate that you've configured <code>uv</code> to never build anything. If you're building sdists, then in that context, arbitrary code can run.</p>
+<p>But if you're only installing wheels with <code>--no-build</code>, then yeah, you might have the expectation that builds are isolated from doing these kinds of shenanigans.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-31 18:31</div>
+            <div class="timeline-body"><p>Are you sure the example from the summary works? For local wheels, we use the <code>zip</code> crate, not <code>async_zip</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SLeitgeb">@SLeitgeb</a> on 2024-10-31 18:33</div>
+            <div class="timeline-body"><p>@BurntSushi That seems right. I don't think it's a big issue, just something I wanted you to be aware of.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SLeitgeb">@SLeitgeb</a> on 2024-10-31 18:36</div>
+            <div class="timeline-body"><p>@charliermarsh I tested this several times to be sure, once also with the package installed from a local index, with the same results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-31 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-31 19:19</div>
+            <div class="timeline-body"><p>Thanks for catching this @SLeitgeb, appreciate it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

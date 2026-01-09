@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>panic when sync with a related local editable package  - astral-sh/uv #8381</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>panic when sync with a related local editable package </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8381">#8381</a>
+        opened by <a href="https://github.com/idertator">@idertator</a>
+        on 2024-10-20 12:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/idertator">@idertator</a> on 2024-10-20 12:29</div>
+            <div class="timeline-body"><p>To give some context i have two projects (which are not in a workspace) with the following layout:</p>
+<p>📁 backend/
+pyproject.toml
+...
+📁 django-t3/
+pyproject.toml<br />
+...</p>
+<p>In <code>backend/pyproject.toml</code> i have:</p>
+<pre><code class="language-toml">[project]
+name = &quot;t3backend&quot;
+version = &quot;4.0.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+description = &quot;T3 Backend&quot;
+readme = &quot;README.md&quot;
+
+dependencies = [
+    # Django Dependencies
+    &quot;Django&gt;=5.1&quot;,
+    &quot;django-cors-headers&gt;=4.5&quot;,
+    &quot;django-extensions&gt;=3.2&quot;,
+    &quot;django-modeltranslation&gt;=0.19&quot;,
+    &quot;django-ninja&gt;=1.3&quot;,
+    &quot;django-ulid&gt;=0.0&quot;,
+    # External API
+    &quot;djangorestframework&gt;=3.15&quot;,
+    &quot;django-filter&gt;=24.3&quot;,
+    &quot;drf-yasg&gt;=1.21&quot;,
+    &quot;drf-standardized-errors&gt;=0.14&quot;,
+    # External Services Integrations
+    &quot;mailjet_rest&gt;=1.3&quot;,
+    &quot;mandrill&gt;=1.0&quot;,
+    &quot;mailchimp-transactional&gt;=1.0&quot;,
+    &quot;sendgrid&gt;=6.11&quot;,
+    # Data Integrations
+    &quot;elasticsearch&gt;=8.15&quot;,
+    &quot;hiredis&gt;=3.0&quot;,
+    &quot;minio&gt;=7.2&quot;,
+    &quot;psycopg&gt;=3.2&quot;,
+    &quot;psycopg-binary&gt;=3.2&quot;,
+    &quot;psycopg-pool&gt;=3.2&quot;,
+    &quot;redis&gt;=5.1&quot;,
+    # Email Handling
+    &quot;imap_tools&gt;=1.7&quot;,
+    &quot;minify-html&gt;=0.15&quot;,
+    # Datas-Science Research
+    &quot;matplotlib&gt;=3.9&quot;,
+    &quot;numpy&gt;=2.1&quot;,
+    # Tools
+    &quot;ipython&gt;=8.28&quot;,
+    # General Utilities
+    &quot;Authlib&gt;=1.3&quot;,
+    &quot;Jinja2&gt;=3.1&quot;,
+    &quot;Pillow&gt;=11.0&quot;,
+    &quot;Unidecode&gt;=1.3&quot;,
+    &quot;cryptography&gt;=43.0&quot;,
+    &quot;deepdiff&gt;=8.0&quot;,
+    &quot;email-validator&gt;=2.2&quot;,
+    &quot;geopy&gt;=2.4&quot;,
+    # TODO: Check if possible to be replaced by django
+    &quot;lz4&gt;=4.3&quot;,
+    &quot;phonenumbers&gt;=8.13&quot;,
+    &quot;pyexcel&gt;=0.7&quot;,
+    &quot;pyexcel-xlsx&gt;=0.6&quot;,
+    &quot;python-stdnum&gt;=1.20&quot;,
+    &quot;reportlab&gt;=4.2&quot;,
+    &quot;requests&gt;=2.32&quot;,
+    &quot;schwifty&gt;=2024.9&quot;,
+    &quot;shortuuid&gt;=1.0&quot;,
+    &quot;tablib&gt;=3.7&quot;,
+    &quot;tablib[xlsx]&gt;=3.7&quot;,
+    &quot;tqdm&gt;=4.66&quot;,
+    &quot;user-agents&gt;=2.2&quot;,
+    &quot;xxhash&gt;=3.5&quot;,
+    # Sentry
+    &quot;sentry-sdk[django]&gt;=2.17&quot;,
+    # Production
+    &quot;gunicorn&gt;=23.0&quot;,
+    &quot;django-t3&quot;,
+]
+
+[tool.uv]
+environments = [
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;sys_platform == 'linux'&quot;,
+]
+dev-dependencies = [
+    # CI
+    &quot;pre-commit&gt;=4.0&quot;,
+
+    # Development Tools
+    &quot;isort&gt;=5.13&quot;, # TODO: Replace with ruff later
+    &quot;pynvim&gt;=0.5&quot;,
+
+    # Tools
+    &quot;django-zeal&gt;=1.4&quot;,
+
+    # Testing Tools
+    &quot;factory_boy&gt;=3.3&quot;,
+    &quot;polyfactory&gt;=2.17&quot;,
+]
+
+[tool.uv.sources]
+django-t3 = [
+    { path = &quot;../django-t3&quot;, editable = true, marker = &quot;sys_platform == 'darwin'&quot; },
+    { git = &quot;https://***:***@git.topgroups.travel/t3/django-t3.git&quot;, rev = &quot;v1.6.15&quot;, marker = &quot;sys_platform == 'linux'&quot;},
+]
+</code></pre>
+<p>In <code>django-t3/pyproject.toml</code> i have:</p>
+<pre><code class="language-toml">[project]
+name = &quot;django-t3&quot;
+version = &quot;1.6.15&quot;
+description = &quot;Django T3&quot;
+requires-python = &quot;&gt;=3.13&quot;
+readme = &quot;README.md&quot;
+
+dependencies = [
+    &quot;django&quot;,
+    &quot;django-ninja&quot;,
+    &quot;pydantic&quot;,
+    &quot;meilisearch&quot;,
+    &quot;phonenumbers&quot;,
+    &quot;termcolor&quot;,
+    &quot;reportlab&quot;,
+    &quot;deepdiff&quot;
+]
+
+[tool.uv]
+environments = [
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;sys_platform == 'linux'&quot;,
+]
+</code></pre>
+<p>When i run the <code>RUST_BACKTRACE=full uv sync</code> command inside the backend folder i get the following error:</p>
+<pre><code>Resolved 131 packages in 66ms
+thread 'main' panicked at crates/uv-resolver/src/resolution/graph.rs:742:34:
+no entry found for key
+stack backtrace:
+   0:        0x1051e7a50 - __mh_execute_header
+   1:        0x104ef1690 - __mh_execute_header
+   2:        0x1051b431c - __mh_execute_header
+   3:        0x1051eaa88 - __mh_execute_header
+   4:        0x1051ea4d8 - __mh_execute_header
+   5:        0x1051ec1f0 - __mh_execute_header
+   6:        0x1051eb480 - __mh_execute_header
+   7:        0x1051eb3f4 - __mh_execute_header
+   8:        0x1051eb3e8 - __mh_execute_header
+   9:        0x105f99e40 - __mh_execute_header
+  10:        0x105f9a280 - __mh_execute_header
+  11:        0x105d1624c - __mh_execute_header
+  12:        0x104dd8fbc - __mh_execute_header
+  13:        0x104dcffac - __mh_execute_header
+  14:        0x104d58108 - __mh_execute_header
+  15:        0x104d5cb3c - __mh_execute_header
+  16:        0x104e32570 - __mh_execute_header
+  17:        0x105741788 - __mh_execute_header
+  18:        0x1058999cc - __mh_execute_header
+  19:        0x1055a8584 - __mh_execute_header
+  20:        0x105899518 - __mh_execute_header
+</code></pre>
+<p>I have attached also the full output with --verbose flag of the command in <a href="https://github.com/user-attachments/files/17450232/output.txt">output.txt</a></p>
+<p>The <code>uv --version</code> output is:</p>
+<pre><code>uv 0.4.24 (b9cd54913 2024-10-17)
+```
+
+I'm on a M3 MacBookPro and the output of the `uname -a` command is:
+```
+Darwin MacBook-Pro-de-Roberto.local 24.0.0 Darwin Kernel Version 24.0.0: Tue Sep 24 23:37:25 PDT 2024; root:xnu-11215.1.12~1/RELEASE_ARM64_T6030 arm64
+```
+
+With these layout i want to have a local editable version of my django-t3 package and use the one in the git repository in production. I don't know if a doing something wrong, can you guys help me with this?
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-20 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-20 16:43</div>
+            <div class="timeline-body"><p>Thanks! Definitely a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-20 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-20 17:18</div>
+            <div class="timeline-body"><p>I think you can reproduce this as easily as:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+   &quot;anyio @ git+https://github.com/agronholm/anyio@4.6.2 ; sys_platform == 'linux'&quot;,
+   &quot;anyio ; sys_platform == 'darwin'&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8388.html">astral-sh/uv#8388</a> on 2024-10-20 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-20 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-20 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idertator">@idertator</a> on 2024-10-20 20:09</div>
+            <div class="timeline-body"><p>Thanks a lot for the quick response @charliermarsh. You are doing an amazing job!!!!!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

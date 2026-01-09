@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ENH] Let `fmt: skip` apply to compound statements, if they share a line. - astral-sh/ruff #11216</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ENH] Let `fmt: skip` apply to compound statements, if they share a line.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11216">#11216</a>
+        opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a>
+        on 2024-04-30 16:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2024-04-30 16:55</div>
+            <div class="timeline-body"><pre><code class="language-python">if True: x = 0  # fmt: skip
+
+def foo(self, lorem, ipsum, dolor, sit, amet, consectetur, adipiscing, elit, sed, do): ...  # fmt: skip
+</code></pre>
+<p>Gets reformatted to</p>
+<pre><code class="language-python">if True:
+    x = 0  # fmt: skip
+
+def foo(
+    self, lorem, ipsum, dolor, sit, amet, consectetur, adipiscing, elit, sed, do
+): ...  # fmt: skip
+</code></pre>
+<p>Which is because <code>fmt: skip</code> only applies to the preceding <code>statement</code>. However, it would be useful to apply the <code>fmt: skip</code> to the whole <a href="https://docs.python.org/3/reference/compound_stmts.html">compound statement</a> in this context. For instance, when formatting <code>@overload</code> decorated functions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-04-30 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">suppression</span> added by @zanieb on 2024-04-30 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @zanieb on 2024-04-30 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-04-30 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-30 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-01 07:07</div>
+            <div class="timeline-body"><p>Yeah that makes sense to me. I'm not entirely sure how to implement this yet. I see two approaches:</p>
+<ol>
+<li>Add special handling for <code>fmt: skip</code> and <code>fmt: off</code> (and I think <code>yapf:disable</code>) comments in <code>placement.rs</code> that come at the end of a clause header. Instead of associating them with the preceding statement, associate them with the clause header (but only if both are on the same line).</li>
+<li>Pass the comments of the first simple statement to <code>FormatClauseHeader</code> and make the decision there.</li>
+</ol>
+<p>The good news, the unused formatter suppression comment lint rule seems to already accept this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11430.html">astral-sh/ruff#11430</a> on 2024-06-21 23:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13371.html">astral-sh/ruff#13371</a> on 2024-09-16 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13487.html">astral-sh/ruff#13487</a> on 2024-09-23 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bnkc">@bnkc</a> on 2024-09-23 20:42</div>
+            <div class="timeline-body"><p>Hi @MichaReiser I did a first pass on this issue. Not sure if my approach is what we were looking for but I'd be happy to change direction. Let me know 👍 https://github.com/astral-sh/ruff/pull/13487</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17331.html">astral-sh/ruff#17331</a> on 2025-04-10 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexanderHott">@AlexanderHott</a> on 2025-05-19 15:50</div>
+            <div class="timeline-body"><p>Any update on this issue/PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michelkluger">@michelkluger</a> on 2025-05-20 07:07</div>
+            <div class="timeline-body"><p>it is also ignoring this</p>
+<pre><code>    # fmt: off
+    &quot;query, expected&quot;,
+    [
+        (&quot;potato&quot;, {&quot;text&quot;: &quot;potato&quot;, &quot;highlight&quot;: &quot;&lt;b&gt;potato&lt;/b&gt;&quot;, &quot;item_type&quot;: &quot;product&quot;}),
+        (&quot;oxirane&quot;, {&quot;text&quot;: &quot;epichlorohydrin&quot;, &quot;highlight&quot;: &quot;epichlorohydrin&quot;, &quot;item_type&quot;: &quot;product&quot;}),
+        (&quot;7722-76-1&quot;, {&quot;text&quot;: &quot;7722-76-1&quot;, &quot;highlight&quot;: &quot;&lt;b&gt;7722-76-1&lt;/b&gt;&quot;, &quot;item_type&quot;: &quot;cas_number&quot;}),
+        (&quot;potat&quot;, {&quot;text&quot;: &quot;potato&quot;, &quot;highlight&quot;: &quot;&lt;b&gt;potato&lt;/b&gt;&quot;, &quot;item_type&quot;: &quot;product&quot;}),
+        (&quot;potota&quot;, {&quot;text&quot;: &quot;potato&quot;, &quot;highlight&quot;: &quot;&lt;b&gt;potato&lt;/b&gt;&quot;, &quot;item_type&quot;: &quot;product&quot;}),
+        (&quot;totato&quot;, {&quot;text&quot;: &quot;potato&quot;, &quot;highlight&quot;: &quot;&lt;b&gt;potato&lt;/b&gt;&quot;, &quot;item_type&quot;: &quot;product&quot;}),
+    ],
+    ids=[&quot;exact&quot;, &quot;synonym&quot;, &quot;cas&quot;, &quot;typo_missing&quot;, &quot;typo_transposed&quot;, &quot;typo_misplaced&quot;]
+)
+    # fmt: on
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18658.html">astral-sh/ruff#18658</a> on 2025-06-13 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20482.html">astral-sh/ruff#20482</a> on 2025-09-19 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20633.html">astral-sh/ruff#20633</a> on 2025-09-29 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20794.html">astral-sh/ruff#20794</a> on 2025-10-13 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-11-18 18:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

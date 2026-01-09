@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use an existing venv - astral-sh/uv #13470</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use an existing venv</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13470">#13470</a>
+        opened by <a href="https://github.com/Oscaarjs">@Oscaarjs</a>
+        on 2025-05-15 14:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Oscaarjs">@Oscaarjs</a> on 2025-05-15 14:10</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm using CircleCI's self-hosted runners for our CI/CD tests. In order to optimize the speed of the tests I'm in the process of building a custom image that it runs on that has a majority of the dependencies pre-built/installed. My current Dockerfile for this looks something like this:</p>
+<pre><code>FROM nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04
+
+CMD [&quot;/bin/bash&quot;]
+
+RUN apt-get update &amp;&amp; \
+    apt-get install -y \
+        &lt;deps&gt;
+
+COPY --from=ghcr.io/astral-sh/uv:0.7.3 /uv /usr/local/bin/uv
+
+RUN uv python install 3.12.6
+
+ENV UV_LINK_MODE=copy
+
+COPY share/models /share/models
+COPY share/configs /share/configs
+COPY data /share/data
+
+WORKDIR /home/app/project
+
+COPY uv.lock ./
+COPY pyproject.toml ./
+
+RUN uv sync --all-groups --frozen
+</code></pre>
+<p>Due to the fact that CircleCI's &quot;checkout&quot; (git checkout) needs an empty dir I then in my CircleCI config checkout the code at <code>/home/app/project/source</code>. Thus, I now have my &quot;pre-installed&quot; venv at <code>/home/app/project/.venv</code> and my source code (including a <code>uv.lock</code> &amp; <code>pyproject.toml</code>) in <code>/home/app/project/source</code> (also my working dir). Now from this working dir I'd like to be able to run e.g. <code>uv run pytest ...</code> but using the existing venv in <code>/home/app/project/.venv</code>. Is this possible and if so, whats the best way of doing this? Or, am I approaching this in the wrong way overall?</p>
+<p>I've looked at the documentation and tried (without success) both using <code>VIRTUAL_ENV</code>, <code>UV_PROJECT_ENVIRONMENT</code> etc.</p>
+<p>Is there a proper way of achieving this?</p>
+<h3>Platform</h3>
+<p>Ubuntu24.04</p>
+<h3>Version</h3>
+<p>0.7.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @Oscaarjs on 2025-05-15 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-15 14:18</div>
+            <div class="timeline-body"><p>What isn't working about <code>UV_PROJECT_ENVIRONMENT</code>? Otherwise there's also the <code>--active</code> option</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Oscaarjs">@Oscaarjs</a> on 2025-05-16 12:58</div>
+            <div class="timeline-body"><p>After trying again <code>UV_PROJECT_ENVIRONMENT</code> did indeed work perfectly fine. What I had accidently done was to mount an empty directory to <code>/home/app/project/.venv</code> which overwrote the existing venv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Oscaarjs on 2025-05-16 12:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

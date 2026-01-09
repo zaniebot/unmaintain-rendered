@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing FAST003 sometimes - astral-sh/ruff #18009</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Missing FAST003 sometimes</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18009">#18009</a>
+        opened by <a href="https://github.com/cdeil">@cdeil</a>
+        on 2025-05-10 20:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cdeil">@cdeil</a> on 2025-05-10 20:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I noticed that ruff doesn't emit FAST003 in our codebase in places where it should.</p>
+<p>Example:</p>
+<pre><code class="language-python">from fastapi import APIRouter, Depends
+from elsewhere import get_user
+
+router = APIRouter()
+
+@router.get(&quot;/{address_id}/{user_id}&quot;)
+def get_address(
+    address_id: int,
+    current_user: str = Depends(get_user),
+):
+    ...
+</code></pre>
+<p>This should raise the following error:</p>
+<pre><code>FAST003 Parameter `user_id` appears in route path, but not in `get_address` signature
+</code></pre>
+<p>But it currently doesn't:</p>
+<pre><code>% ruff check --select FAST003 example.py 
+All checks passed!
+</code></pre>
+<p>The problem is related to the <code>get_user</code> function dependency. If I define it in the same file then FAST003 is correctly emitted.</p>
+<p>This is weird because the error relating to missing <code>user_id</code> parameter in the signature should not depend on the unrelated parameter <code>current_user</code> or its dependency.</p>
+<p>Could you please make it better and emit FAST003 in this case?</p>
+<h3>Version</h3>
+<p>0.11.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18019.html">astral-sh/ruff#18019</a> on 2025-05-11 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-05-11 20:36</div>
+            <div class="timeline-body"><p>If I understand correctly, the reason the lint is elided here is to avoid something like this (modified from #13657):</p>
+<pre><code class="language-python">from fastapi import FastAPI, Depends
+from typing import Annotated
+from elsewhere import foo
+
+app = FastAPI()
+
+@app.get(&quot;/things/{thing_id}&quot;)
+async def read_thing(other: Annotated[str, Depends(foo)]):
+    return other
+</code></pre>
+<p>where <code>foo</code> is defined in a separate file as:</p>
+<pre><code class="language-python">def foo(thing_id: str):
+    return thing_id
+</code></pre>
+<p>Since Ruff does not perform multi-file analysis, there is no way to know whether or not <code>foo</code> accepted <code>thing_id</code> as a parameter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dylwil3 on 2025-05-11 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2025-05-12 07:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-06-11 07:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-06-11 07:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

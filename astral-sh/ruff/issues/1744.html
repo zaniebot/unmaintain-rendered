@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>typing_extensions.Literal reimport is not &quot;detected&quot; - astral-sh/ruff #1744</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>typing_extensions.Literal reimport is not &quot;detected&quot;</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1744">#1744</a>
+        opened by <a href="https://github.com/ashb">@ashb</a>
+        on 2023-01-09 12:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ashb">@ashb</a> on 2023-01-09 12:47</div>
+            <div class="timeline-body"><p>As part of the Airflow project we have an <code>airflow.typing_compat</code> module that has this in it https://github.com/apache/airflow/blob/71306b31f1842ee2b1eb1cc2980b90f0fb6b11dc/airflow/typing_compat.py#L38-L41:</p>
+<pre><code class="language-python">if sys.version_info &gt;= (3, 9):
+    from typing import Literal
+else:
+    from typing_extensions import Literal
+</code></pre>
+<p>Ruff right now doesn't detect this use of Literal and tries to resolve the value inside it as a type:</p>
+<pre><code class="language-bash">% echo 'from airflow.typing_compat import Literal; from typing import Union; X = Union[Literal[False], Literal[&quot;db&quot;]]' | \
+  ruff - --line-length=999
+-:1:104: F821 Undefined name `db`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-09 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-09 16:16</div>
+            <div class="timeline-body"><p>The problem here is that we don't track imports across modules, so we can't tell (right now) that <code>Literal</code> there is coming from <code>typing</code> or <code>typing_extensions</code>.</p>
+<p>I could see two ways to fix this in the short term:</p>
+<ol>
+<li>I could special-case <code>airflow.typing_compat</code> within Ruff for now. It's easy to do on my end, though obviously a bit awkward :)</li>
+<li>We could add a configuration option to treat a module as a <code>typing</code> re-exporter. The pattern you have here seems somewhat general, so this seems like a reasonable thing to have.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-09 17:01</div>
+            <div class="timeline-body"><p>E.g., would something like this work for Airflow?</p>
+<pre><code class="language-toml">[tool.ruff]
+typing-exports = [&quot;airflow.typing_compat&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2023-01-09 19:09</div>
+            <div class="timeline-body"><blockquote>
+<p>E.g., would something like this work for Airflow?</p>
+<pre><code class="language-toml">[tool.ruff]
+typing-exports = [&quot;airflow.typing_compat&quot;]
+</code></pre>
+</blockquote>
+<p>Yup that would do it for us</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-09 19:21</div>
+            <div class="timeline-body"><p>Cool, I'll ship that for you today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1754.html">astral-sh/ruff#1754</a> on 2023-01-09 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-09 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-10 04:27</div>
+            <div class="timeline-body"><p>Going out in <a href="https://github.com/charliermarsh/ruff/releases/tag/v0.0.217">v0.0.217</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pandas-dev/pandas/pulls/50160.html">pandas-dev/pandas#50160</a> on 2023-01-10 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10146.html">astral-sh/ruff#10146</a> on 2024-03-28 14:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

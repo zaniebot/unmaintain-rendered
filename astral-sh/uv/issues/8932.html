@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pruned versions make specific uv versions unable to compile - astral-sh/uv #8932</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pruned versions make specific uv versions unable to compile</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8932">#8932</a>
+        opened by <a href="https://github.com/Flamefire">@Flamefire</a>
+        on 2024-11-08 11:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Flamefire">@Flamefire</a> on 2024-11-08 11:37</div>
+            <div class="timeline-body"><p>I recently tried to recompile uv 0.2.30 (for testing) which has a dependency on reqwest-middleware and reqwest-retry:<br />
+https://github.com/astral-sh/uv/blob/0.2.30/Cargo.lock#L3123</p>
+<p>However that specific commit does no longer exist/is dangling: https://github.com/astral-sh/reqwest-middleware/commit/21ceec9a5fd2e8d6f71c3ea2999078fecbd13cbe</p>
+<p>It will be removed from GitHub when the reflog expires (about 90 days IIRC)</p>
+<p>Can you please do either of</p>
+<ol>
+<li>avoid removing commits from repositories that are used elsewhere</li>
+<li>tag such commits (e.g. as <code>reqwests-uv-2.x</code>) to avoid them from expiring</li>
+<li>avoid using commits not in some branch that will not be deleted, such as <code>main</code></li>
+</ol>
+<p>Otherwise this creates headaches for maintainers of &quot;build scripts&quot;, e.g. packages for distros, container images or us at EasyBuild (software build software for HPC)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-08 13:41</div>
+            <div class="timeline-body"><p>I don't know what happened there but in general we always tag commits that we use in VCS for this reason. It looks like an oversight by @konstin. We can tag that commit to fix this one up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-08 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-08 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-08 14:39</div>
+            <div class="timeline-body"><p>Is there a way to get Cargo to fail when building this? Or rather, how did you even detect this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-08 14:40</div>
+            <div class="timeline-body"><p>Thanks @konstin (https://github.com/astral-sh/reqwest-middleware/releases/tag/uv-0.2.30).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-08 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Flamefire">@Flamefire</a> on 2024-11-08 14:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a way to get Cargo to fail when building this? Or rather, how did you even detect this?</p>
+</blockquote>
+<p>I would expect cargo to fail unless it has the dependency cached. I.e. deleting <code>$HOME/.cargo</code> or setting <code>$CARGOHOME</code> to some empty folder should make it try to download it and fail. Unless it fetches the specific commit directly, which I guess it does. That will work until the reflog is pruned.</p>
+<p>In our case we detected that after cloning the repo and trying to checkout the commit (in some generic code that vendors crates)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-08 14:56</div>
+            <div class="timeline-body"><p>(I think it worked for me because Konsti had already fixed it, and I didn't realize.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TrueLayer/reqwest-middleware/pulls/198.html">TrueLayer/reqwest-middleware#198</a> on 2024-11-08 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-08 15:18</div>
+            <div class="timeline-body"><p>Upstreamed this to ask for crates.io releases: https://github.com/TrueLayer/reqwest-middleware/pull/198</p>
+<p>I've also tagged the version we're using in uv 0.5.0 in the meantime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../easybuilders/easybuild-framework/pulls/4680.html">easybuilders/easybuild-framework#4680</a> on 2025-04-10 07:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

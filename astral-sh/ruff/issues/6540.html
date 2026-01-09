@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHG004: Potential regression - astral-sh/ruff #6540</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PHG004: Potential regression</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6540">#6540</a>
+        opened by <a href="https://github.com/AA-Turner">@AA-Turner</a>
+        on 2023-08-13 19:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2023-08-13 19:56</div>
+            <div class="timeline-body"><p>Recently on updating Ruff, I started getting <code>PGH004</code> errors for a paragraph comment describing <code>#noqa</code> handling [^1]. I've attached a minimal reproducer below; the errors started appearing in Ruff 0.0.281 and a warning which previously appeared is now absent in Ruff 0.0.284.</p>
+<p>My suggested remedy would be to only match a <code>noqa</code> comment if there are only whitespace tokens between the comment marker and the <code>noqa</code> token.</p>
+<p>A</p>
+<pre><code class="language-python"># A sentence talking about using #noqa in prose.
+# A new sentence talking about using #noqa.
+# A third sentence talking about using #noqa
+</code></pre>
+<pre><code class="language-console">$ pip install &quot;ruff==0.0.280&quot; --quiet
+$ ruff check pgh004.py --isolated --select PGH004
+$ pip install &quot;ruff==0.0.281&quot; --quiet
+$ ruff check pgh004.py --isolated --select PGH004
+warning: Invalid `# noqa` directive on pgh004.py:2: expected `:` followed by a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+pgh004.py:1:34: PGH004 Use specific rule codes when using `noqa`
+pgh004.py:3:40: PGH004 Use specific rule codes when using `noqa`
+Found 2 errors.
+$ pip install &quot;ruff==0.0.284&quot; --quiet
+$ ruff check pgh004.py --isolated --select PGH004
+pgh004.py:1:34: PGH004 Use specific rule codes when using `noqa`
+pgh004.py:3:40: PGH004 Use specific rule codes when using `noqa`
+Found 2 errors.
+</code></pre>
+<p>[^1]: The specific pararaph is:</p>
+<pre><code>        # There is no point in having #noqa on literal blocks because
+        # they cannot contain references.  Recognizing it would just
+        # completely prevent escaping the #noqa.  Outside of literal
+        # blocks, one can always write \#noqa.</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-13 20:38</div>
+            <div class="timeline-body"><blockquote>
+<p>My suggested remedy would be to only match a <code>noqa</code> comment if there are only whitespace tokens between the comment marker and the <code>noqa</code> token.</p>
+</blockquote>
+<p>Do you mind expanding on this suggestion? What would you consider examples where we should and shouldn't match on the token?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2023-08-13 20:41</div>
+            <div class="timeline-body"><p>I suppose I was envisioning something similar to <code>r'(?i)# *noqa:(.*)'</code>, but clearly this would look different in terms of tokens.</p>
+<p>A common occurance is to have both a mypy ignore and a noqa comment on the same line, but I have always seen each prefixed with a <code>'#'</code>.</p>
+<p>A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-13 20:45</div>
+            <div class="timeline-body"><p>I think my suggestion would be to just remove the <code>#</code> prefix from the prose. Does it add much? Making the parser more lax can actually lead to a more confusing experience -- e.g., the user writes <code>#noqa</code>, and it doesn't work, and they're not sure why. (Even if the argument is that they should be inserting a space between in such cases, we may <em>still</em> want to warn them as such.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2023-08-13 20:50</div>
+            <div class="timeline-body"><p>Ruff currently recognises <code>#noqa</code> (sans space) as a noqa comment, as the text above is erroring -- if adding a space were mandatory that'd be fine for me!</p>
+<blockquote>
+<p>Does it add much?</p>
+</blockquote>
+<p>Here, yes, as it is an extremely succinct way to denote explicitly that the relevant code is parsing text exactly of that form.</p>
+<p>Another possibility would be if the comment is after a logical newline with no other token, don't parse it as a noqa comment -- e.g. here the text was in a paragraph, not in-line after an expression/statement/etc.</p>
+<p>A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 18:20</div>
+            <div class="timeline-body"><p>Ah yeah, that <em>was</em> an intentional change, as I don't think it <em>should</em> require a space. <code># type: ignore</code> doesn't require a space, neither does <code># nosec</code>, and I think requiring a space can make for a confusing user experience. Adding that requirement would fix the issue in this <em>specific</em> case in a way that I'd consider coincidental, because it wouldn't really fix the more general problem of wanting to use <code># noqa</code> as a literal in docstring prose.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-08-14 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danieleades">@danieleades</a> on 2023-12-26 20:37</div>
+            <div class="timeline-body"><p>it's a reasonably common convention to surround code examples with backticks, as in-</p>
+<pre><code class="language-python"># A sentence talking about using `#noqa` in prose.
+# A new sentence talking about using `#noqa`.
+# A third sentence talking about using `#noqa`
+</code></pre>
+<p>treating backticks as escape characters is likely to be a fairly significant change in behaviour though, if it's applied across the board</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

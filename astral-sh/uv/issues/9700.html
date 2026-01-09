@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Massive `uv.lock` file - astral-sh/uv #9700</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Massive `uv.lock` file</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9700">#9700</a>
+        opened by <a href="https://github.com/NellyWhads">@NellyWhads</a>
+        on 2024-12-07 00:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NellyWhads">@NellyWhads</a> on 2024-12-07 00:41</div>
+            <div class="timeline-body"><p>Is it safe to clean up duplicate lines in the <code>uv.lock</code> file? Can this be done as part of the <code>lock</code> procedure? In my lock file's resolution-markers section, have lines repeated thousands of times.</p>
+<p>Example:</p>
+<pre><code class="language-toml">resolution-markers = [
+    &quot;python_full_version &lt; '3.9' and platform_machine == 'aarch64' and platform_system == 'Linux'&quot;, # (repeated more than 19,999 times)
+    &quot;platform_system == 'Darwin'&quot;, # (repeated 18,751 times)
+    # ... ad nauseum
+]
+</code></pre>
+<p>This leads to a ~190k-line lock file. Though this is quite a nice bump to my performance metrics at work, DevOps is asking why my python repository is not mostly python code 😅.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 00:42</div>
+            <div class="timeline-body"><p>Just to clarify... it's a single <code>resolution-markers</code> at the top, with those lines repeated infinitely?</p>
+<p>Or you have a bunch of different <code>resolution-markers</code>, like one on each package, with unique entries?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NellyWhads">@NellyWhads</a> on 2024-12-07 00:49</div>
+            <div class="timeline-body"><p>No, this is for the single resolution-markers section at the top of the file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 00:51</div>
+            <div class="timeline-body"><p>Yeah, those should definitely be de-duplicated. Do you have lots of conflicting extras or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 00:51</div>
+            <div class="timeline-body"><p>I think it's the same as https://github.com/astral-sh/uv/issues/9296.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NellyWhads">@NellyWhads</a> on 2024-12-07 00:54</div>
+            <div class="timeline-body"><p>Fair, I'll watch that thread instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @NellyWhads on 2024-12-07 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 00:56</div>
+            <div class="timeline-body"><p>I'm just curious though, do you have a large number of conflicting extras defined?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NellyWhads">@NellyWhads</a> on 2024-12-07 03:06</div>
+            <div class="timeline-body"><p>Nope, it was the same pyproject.toml as #9701. After nuking the lock file and re-creating it's back down to ~3k lines with no repetitions.</p>
+<p>At one point the <code>lock</code> actually brought down my EC2 instance. But restarting and re-locking &quot;just worked&quot;. I unfortunately no longer have the ginormous lock file for reference.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

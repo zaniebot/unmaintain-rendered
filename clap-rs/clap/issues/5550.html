@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve formatting of built-in and custom error messages being appended to each other - clap-rs/clap #5550</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve formatting of built-in and custom error messages being appended to each other</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/5550">#5550</a>
+        opened by <a href="https://github.com/mahor1221">@mahor1221</a>
+        on 2024-06-25 13:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mahor1221">@mahor1221</a> on 2024-06-25 13:34</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5.7</p>
+<h3>Describe your use case</h3>
+<p>I return multi-line errors in some parsers, which causes minor formatting issues when using <code>RichFormatter</code>. For example:</p>
+<pre><code class="language-rust">#[derive(Parser)]
+pub struct Cli {
+    ...
+    #[arg(long, short, value_parser = TransitionScheme::from_str)]
+    #[arg(value_name = &quot;TIME-TIME | DEGREE:DEGREE&quot;)]
+    pub scheme: Option&lt;TransitionScheme&gt;,
+    ...
+}
+</code></pre>
+<p>Current format:</p>
+<pre><code class="language-yaml">$: cargo run -- --scheme asdf:ghjk
+error: invalid value 'asdf:ghjk' for '--scheme &lt;TIME-TIME | DEGREE:DEGREE&gt;': as time ranges:
+- invalid format
+as elevation range:
+- invalid float literal (asdf)
+- invalid float literal (ghjk)
+
+For more information, try '--help'.
+</code></pre>
+<p>Desired format:</p>
+<pre><code class="language-yaml">$: cargo run -- --scheme asdf:ghjk
+error: invalid value 'asdf:asdf' for '--scheme &lt;TIME-TIME | DEGREE:DEGREE&gt;': # a new line is added here
+as time ranges:
+- invalid format
+as elevation range:
+- invalid float literal (asdf)
+- invalid float literal (ghjk)
+
+For more information, try '--help'.
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>Please note that I'm not very familiar with the clap's code base. Should this feature even be added or not?</p>
+<p>A possible solution (but most likely a breaking change) would be to check if the formatted <code>source</code> error is multi-line, and if so, add a newline character to ensure proper formatting.</p>
+<p>Another possible solution would be to make <code>RichFormatter </code> configurable.</p>
+<h3>Alternatives, if applicable</h3>
+<p>I've created a patch for my own use case here.
+https://github.com/clap-rs/clap/compare/v4.5.7...mahor1221:clap:patch?expand=1</p>
+<h3>Additional Context</h3>
+<p>Here is the location of the issue:
+https://github.com/clap-rs/clap/blob/6c6839a454c2cbfc3007e6a2b2a55dd64685771e/clap_builder/src/error/format.rs#L370</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @mahor1221 on 2024-06-25 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2024-06-26 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2024-06-26 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-06-26 15:30</div>
+            <div class="timeline-body"><p>This is a tough situation because it happens to be a problem in your case due to the lack of alignment but in other cases it can be neutral or better the existing way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improve RichFormatter's multi-line error formatting " to "Improve formatting of built-in and custom error messages being appended to each other" by @epage on 2025-08-07 20:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

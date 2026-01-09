@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a proc_macro attribute for the main function similar to how paw does it - clap-rs/clap #3569</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a proc_macro attribute for the main function similar to how paw does it</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3569">#3569</a>
+        opened by <a href="https://github.com/x0f5c3">@x0f5c3</a>
+        on 2022-03-23 15:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/x0f5c3">@x0f5c3</a> on 2022-03-23 15:14</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Describe your use case</h3>
+<p>I was moving my project from StructOpt to Clap and wanted something to replace the paw integration that structopt had, and I thought that moving the whole macro to the Clap source code to avoid pulling in paw would be better than implementing <code>ParseArgs</code> trait that paw uses for every type that implements Parser.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Have clap expose a proc-macro that can be used on the main function to add an argument that implements Parser.</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+struct Command {
+   pub arg: String
+}
+
+#[clap::main]
+fn main(argv: Command) {
+   println!(&quot;{}&quot;, argv.arg)
+}
+</code></pre>
+<p>A prototype of this exists in #3568</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p>The macro will insert every other attr it encounters above the main function and will check for asyncness so it can be put on top of other macros like <code>#[quit::main]</code> or <code>#[tokio::main]</code> and should work without an issue. Also it checks if the function returns a result or nothing and will either put a <code>?</code> at the end of the <code>try_parse()</code> method or <code>.unwrap()</code> if the function returns nothing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @x0f5c3 on 2022-03-23 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-03-23 15:29</div>
+            <div class="timeline-body"><p>FYi I've updated the Issue text to match the template.  Please fill out the use case.  What is the problem you are trying to solve?  Then in the description, please clarify why this macro solves the problem.  Ideally, the Issue title would also focus on the problem.</p>
+<p>In essence, I'm trying to understand why you feel its important for this to exist in clap.</p>
+<p>As for the solution, some things we should consider</p>
+<ul>
+<li>How does this compose with other <code>main</code> macros like for async runtimes?</li>
+<li>How does this compose with <code>main</code> that returns errors?</li>
+<li>What does the path look like for the user updating a prototype to be more complete by having more detailed exit codes?</li>
+<li>How will this fit in if we ever decided to merge in something like <a href="https://github.com/yuhr/fncmd">fncmd</a>?</li>
+<li>How does this compose with &quot;before everything&quot; helpers like human-panic?  Should those always go after parsing or do we need to allow them to happen before somehow?<ul>
+<li>I had also considered setting up colors (e.g. I don't use clap's <code>Auto</code>) but I'd rather focus on improving <code>Auto</code></li>
+</ul>
+</li>
+<li>What is the documentation impact, including tutorial, examples, reference?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-03-23 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-author</span> added by @epage on 2022-03-23 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/x0f5c3">@x0f5c3</a> on 2022-03-27 17:00</div>
+            <div class="timeline-body"><p>Some things I could come up with at this point:</p>
+<ul>
+<li>I added examples on how it can be used along with macros like <code>#[tokio::main]</code></li>
+<li><code>fncmd</code> integration would cause the user to specify the arguments and flags as arguments for the main function, the macro I'm proposing would allow passing one argument to main that implements <code>Parser</code> so it would be a choice for the user, either they specify the arguments in <code>fn main</code> or they create a struct that implements <code>Parser</code> so this way it gives more options to the user without collision</li>
+<li>The documentation changes would be minor because the whole usage consists of creating a struct as you would always and annotating the main function with <code>#[clap::main]</code> which I think is pretty foolproof</li>
+</ul>
+<p>I added answers to other questions to the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-03-28 13:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Describe your use case</p>
+<p>I was moving my project from StructOpt to Clap and wanted something to replace the paw integration that structopt had,</p>
+</blockquote>
+<p>While this does describe the problem you are trying to solve, what I'm looking for is what problem this is solving for users of clap generally.  What problem for a clap user is this solving?  Say for my various programs I maintain, what advantage would I get porting to this macro?  Or for someone writing their first CLI in Rust?</p>
+<blockquote>
+<p>Also it checks if the function returns a result or nothing and will either put a ? at the end of the try_parse() method or .unwrap() if the function returns nothing.</p>
+</blockquote>
+<p>We should probably not be using <code>try_parse</code> and <code>?</code> as the users error might not be compatible, this will lose clap's exit code, and an <code>unwrap</code> would produce the wrong type of output.</p>
+<p>When asking about returning errors, it was more about making sure we don't interfere with the user doing it.  It appears your macro preserves the error type, so as long as we  test it, that should work.</p>
+<blockquote>
+<p>fncmd integration would cause the user to specify the arguments and flags as arguments for the main function, the macro I'm proposing would allow passing one argument to main that implements Parser so it would be a choice for the user, either they specify the arguments in fn main or they create a struct that implements Parser so this way it gives more options to the user without collision</p>
+</blockquote>
+<p>So we would provide two separate categories of function attribute macros that don't interect?  What if a <code>main</code> macro would be useful for fncmd?</p>
+<blockquote>
+<p>The documentation changes would be minor because the whole usage consists of creating a struct as you would always and annotating the main function with #[clap::main] which I think is pretty foolproof</p>
+</blockquote>
+<p>Should we make this attribute the default in tutorials and examples?  How much do we need to document how it composes with other macros or with error handling?  How much and where do we need to talk about life-before-<code>parse</code>, exit codes, customizing <code>parse</code>s behavior, etc?  Before, we exposed a function and people could easily see what that function did.  Now we would be providing an opaque macro that is scarrier to dig into and we need to consider how we would help users with that.</p>
+<hr />
+<p>Questions I didn't see addressed:</p>
+<blockquote>
+<p>What does the path look like for the user updating a prototype to be more complete by having more detailed exit codes?</p>
+<p>How does this compose with &quot;before everything&quot; helpers like human-panic? Should those always go after parsing or do we need to allow them to happen before somehow?</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-04 18:19</div>
+            <div class="timeline-body"><p>Without further details, it is unclear what problem is being solved by this request and how to safely interact with other features or potential features.  I'm going to go ahead and close this out.  We can re-evaluate if/when more details become available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-05-04 18:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

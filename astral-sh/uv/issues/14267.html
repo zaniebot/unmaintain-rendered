@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packages that `pip` can install but `uv pip` cannot install in a conda env - astral-sh/uv #14267</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Packages that `pip` can install but `uv pip` cannot install in a conda env</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14267">#14267</a>
+        opened by <a href="https://github.com/edschofield">@edschofield</a>
+        on 2025-06-26 02:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/edschofield">@edschofield</a> on 2025-06-26 02:30</div>
+            <div class="timeline-body"><p><a href="https://github.com/user-attachments/files/20915431/uv_install_logs.tar.gz">uv_install_logs.tar.gz</a></p>
+<h3>Summary</h3>
+<p><code>uv</code> seems to fail to recognize some macOS Universal wheels when running in a <code>conda</code> environment on Darwin x86_64.</p>
+<p>The following four packages install fine using <code>pip install</code> but fail with compile errors using <code>uv pip install</code> on Darwin x86_64 with a brand-new <code>conda</code> environment:</p>
+<ul>
+<li><code>greenlet</code></li>
+<li><code>pyarrow</code></li>
+<li><code>duckdb</code></li>
+<li><code>tabmat</code></li>
+</ul>
+<p>The first two packages are dependencies for important packages (e.g. for <code>sqlalchemy</code> and <code>pandas</code> with the parquet and feather extras).</p>
+<p>Steps to reproduce:</p>
+<pre><code>conda create -n minimal python=3.12
+conda activate minimal
+uv pip install greenlet    # compile error
+# but this works:
+# pip install greenlet
+</code></pre>
+<p>Using <code>pip</code> finds and installs the wheel (e.g. <code>greenlet-3.2.3-cp312-cp312-macosx_11_0_universal2.whl</code>) when run from the conda environment. Using <code>uv pip</code> finds and installs the wheel when run from a <code>venv</code>, but seems to want to build the packages instead (and fails) when run from a conda environment.</p>
+<p>This only affects these four packages out of ~225 packages specified in a large meta-package <a href="https://pythoncharmers.com">Python Charmers</a> uses for training courses. Manually installing the above four packages with <code>pip install ...</code> allows the remaining packages to install successfully using <code>uv pip</code>.</p>
+<p>Log outputs attached from <code>uv pip install --verbose greenlet</code> and <code>uv pip install --verbose pyarrow</code>.</p>
+<p>Note that I get the same compile errors with <code>uv</code> from a conda environment using either the latest <a href="https://repo.anaconda.com/miniconda/Miniconda3-py313_25.5.1-0-MacOSX-x86_64.sh">Miniconda3</a> or an old Anaconda installation from August 2020.</p>
+<p>It may also be relevant that that some other packages do successfully build from source on the same platform: <code>uv pip install bottleneck</code> and <code>pip install bottleneck</code> both compile and install from source, whether run from a <code>conda</code> environment or a <code>venv</code>.</p>
+<h3>Platform</h3>
+<p>Darwin 24.5.0 x86_64: macOS Sequoia 15.5</p>
+<h3>Version</h3>
+<p>uv 0.7.15 (Homebrew 2025-06-25)</p>
+<h3>Python version</h3>
+<p>Python 3.12</p>
+<p><a href="https://github.com/user-attachments/files/20915437/uv_install_logs.tar.gz">uv_install_logs.tar.gz</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @edschofield on 2025-06-26 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-26 02:40</div>
+            <div class="timeline-body"><p>Does setting <code>MACOSX_DEPLOYMENT_TARGET=11.0</code> resolve the issue? (see https://docs.astral.sh/uv/reference/environment/#macosx_deployment_target)</p>
+<p>The virtual environment install logs show we use a cached distribution, can you share logs with <code>--vv</code> and <code>--no-cache</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edschofield">@edschofield</a> on 2025-06-26 03:20</div>
+            <div class="timeline-body"><p>Thanks for the reply @zanieb .</p>
+<p>Setting <code>MACOSX_DEPLOYMENT_TARGET=11.0</code> makes no difference.</p>
+<p>I've attached the more verbose logs from running <code>uv pip install -vv --no-cache greenlet</code> etc.:</p>
+<p><a href="https://github.com/user-attachments/files/20916040/uv_install_logs_vv.tar.gz">uv_install_logs_vv.tar.gz</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edschofield">@edschofield</a> on 2025-06-26 03:42</div>
+            <div class="timeline-body"><p>Interesting: passing <code>--python-platform macos</code> actually succeeds in installing one of the four packages, <code>greenlet</code>:</p>
+<pre><code># Succeeds:
+uv pip install -vv --no-cache --python-platform macos greenlet
+</code></pre>
+<p>But the other three packages (<code>pyarrow</code>, <code>duckdb</code>, <code>tabmat</code>) still fail to install despite this flag:</p>
+<pre><code># These still fail:
+# uv pip install -vv --no-cache --python-platform macos pyarrow
+# uv pip install -vv --no-cache --python-platform macos duckdb
+# uv pip install -vv --no-cache --python-platform macos tabmat
+</code></pre>
+<p>Output attached:</p>
+<p><a href="https://github.com/user-attachments/files/20916594/uv_install_logs_vv_python_platform_macos.tar.gz">uv_install_logs_vv_python_platform_macos.tar.gz</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-26 03:53</div>
+            <div class="timeline-body"><p>I think all the <code>build/lib.macosx-10.15-x86_64-cpython-312/greenlet</code> logs indicate that the Conda Python install is somehow building for macOS 10.15, which would indeed lead to this behavior, since the greenlet wheels require macOS 11 or later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edschofield">@edschofield</a> on 2025-06-26 04:38</div>
+            <div class="timeline-body"><p>Thanks @charliermarsh. (Thanks too for making <code>uv</code>; it's an amazing tool! Its speed has changed our workflow for training courses at <a href="https://pythoncharmers.com">Python Charmers</a> from needing 20GB Docker images with 200+ packages pre-installed to requiring a far smaller Docker image and a single <code>uv pip install</code> command...)</p>
+<p>Your diagnosis seems correct: adding the <code>--no-build</code> flag actually installs these packages successfully from within the <code>conda</code> environment:</p>
+<pre><code>uv pip install --no-build pyarrow greenlet duckdb tabmat
+</code></pre>
+<p>However, this pulls in non-current versions:</p>
+<pre><code>greenlet                  3.0.1
+pyarrow                   17.0.0
+duckdb                    0.10.3
+tabmat                    4.0.0
+</code></pre>
+<p>i.e. from versions just before the projects stopped releasing wheels for macOS 10.x.</p>
+<p>I've attached the output of this (with the <code>-vv --no-cache</code> flags) too:</p>
+<p><a href="https://github.com/user-attachments/files/20917152/uv_no_build_install_logs.tar.gz">uv_no_build_install_logs.tar.gz</a></p>
+<p>In case it's helpful, I've also attached the output of <code>pip debug --verbose</code>, which shows the list of compatible tags as recognized by <code>pip</code> (again, from within the <code>conda</code> env). This looks normal to me.</p>
+<p><a href="https://github.com/user-attachments/files/20917000/pip_debug_verbose.log">pip_debug_verbose.log</a></p>
+<p>Is there a way to determine the equivalent tags that <code>uv</code> recognizes as compatible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tompropst">@tompropst</a> on 2025-11-21 18:08</div>
+            <div class="timeline-body"><p>Trying to find a related issue to attach https://github.com/juftin/browsr/issues/56 to. In that issue...</p>
+<ul>
+<li><code>uv tool install &quot;browsr[all]&quot;</code> will fail when trying to build <code>pyarrow</code> (system Python is 3.10)</li>
+<li><code>uv tool install -p 3.10 &quot;browsr[all]&quot;</code> succeeds</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

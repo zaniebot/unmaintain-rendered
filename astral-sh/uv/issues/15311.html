@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv attempts to query password-protected private PyPI index even if only optional dependencies require the index - astral-sh/uv #15311</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv attempts to query password-protected private PyPI index even if only optional dependencies require the index</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15311">#15311</a>
+        opened by <a href="https://github.com/ntamas">@ntamas</a>
+        on 2025-08-15 14:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ntamas">@ntamas</a> on 2025-08-15 14:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Our use-case is as follows:</p>
+<ul>
+<li>We have a Python project where almost all the dependencies are available from the public PyPI index</li>
+<li>Some <em>optional</em> dependencies exist only in a <em>private</em>, password-protected PyPI index</li>
+<li>The private index is marked as <code>explicit = true</code>, and all optional dependencies that are to be fetched from this private index have a corresponding entry in <code>[tool.uv.sources]</code></li>
+</ul>
+<p>Our goal is to allow people who check out the project from <code>git</code> to be able to run <code>uv sync</code> and install all the <em>non-optional</em> dependencies even if they do not have access to the private PyPI repository (which contains <em>optional</em>) dependencies only. However, we have found that <code>uv sync</code> attempts to talk to the private repository even if we do not ask for any of the extras, and this fails if the user does not have the credentials for the private PyPI index.</p>
+<p>Minimal repro: run <code>uv init</code> in an empty directory and add the following <code>pyproject.toml</code> file:</p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-dep-repro&quot;
+version = &quot;0.1.0&quot;
+description = &quot;&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;trio &gt;= 0.30.0&quot;
+]
+
+[project.optional-dependencies]
+some_extra = [&quot;some-package-from-private-index&gt;=0.1.0&quot;]
+
+[tool.uv.sources]
+some-package-from-private-index = { index = &quot;collmot&quot; }
+
+[[tool.uv.index]]
+name = &quot;collmot&quot;
+url = &quot;https://pypi.collmot.com/&quot;
+explicit = true
+</code></pre>
+<p>Output of <code>uv sync --verbose</code>:</p>
+<pre><code>DEBUG uv 0.8.10 (7e817bafd 2025-08-13)
+DEBUG Found project root: `/home/tamas/git/uv-dep-repro`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/home/tamas/git/uv-dep-repro`
+DEBUG Reading Python requests from version file at `/home/tamas/git/uv-dep-repro/.python-version`
+DEBUG Using Python request `3.13` from version file at `.python-version`
+DEBUG Checking for Python environment at: `.venv`
+DEBUG The project environment's Python version satisfies the request: `Python 3.13`
+DEBUG Released lock at `/tmp/uv-6cfccf177770ce1c.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: uv-dep-repro @ file:///home/tamas/git/uv-dep-repro
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.13.5
+DEBUG Solving with target Python version: &gt;=3.13
+DEBUG Adding direct dependency: uv-dep-repro[some-extra]*
+DEBUG Searching for a compatible version of uv-dep-repro @ file:///home/tamas/git/uv-dep-repro (*)
+DEBUG Adding direct dependency: uv-dep-repro==0.1.0
+DEBUG Adding direct dependency: uv-dep-repro[some-extra]==0.1.0
+DEBUG Searching for a compatible version of uv-dep-repro @ file:///home/tamas/git/uv-dep-repro (==0.1.0)
+DEBUG Adding direct dependency: trio&gt;=0.30.0
+DEBUG Searching for a compatible version of uv-dep-repro @ file:///home/tamas/git/uv-dep-repro (==0.1.0)
+DEBUG Adding direct dependency: some-package-from-private-index&gt;=0.1.0
+DEBUG Found fresh response for: https://pypi.org/simple/trio/
+DEBUG No cache entry for: https://pypi.org/simple/some-package-from-private-index/
+DEBUG Searching for a compatible version of trio (&gt;=0.30.0)
+DEBUG Selecting: trio==0.30.0 [compatible] (trio-0.30.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/69/8e/3f6dfda475ecd940e786defe6df6c500734e686c9cd0a0f8ef6821e9b2f2/trio-0.30.0-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for trio==0.30.0: attrs&gt;=23.2.0
+DEBUG Adding transitive dependency for trio==0.30.0: cffi{implementation_name != 'pypy' and os_name == 'nt'}&gt;=1.14
+DEBUG Adding transitive dependency for trio==0.30.0: idna*
+DEBUG Adding transitive dependency for trio==0.30.0: outcome*
+DEBUG Adding transitive dependency for trio==0.30.0: sniffio&gt;=1.3.0
+DEBUG Adding transitive dependency for trio==0.30.0: sortedcontainers*
+DEBUG Found fresh response for: https://pypi.org/simple/attrs/
+DEBUG Found fresh response for: https://pypi.org/simple/idna/
+DEBUG Found fresh response for: https://pypi.org/simple/outcome/
+DEBUG Found fresh response for: https://pypi.org/simple/sortedcontainers/
+DEBUG Found fresh response for: https://pypi.org/simple/sniffio/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/77/06/bb80f5f86020c4551da315d78b3ab75e8228f89f0162f2c3a819e407941a/attrs-25.3.0-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/55/8b/5ab7257531a5d830fc8000c476e63c935488d74609b50f9384a643ec0a62/outcome-1.3.0.post0-py2.py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f82b84065f37f3bffeb12413f947f9388e4cac22c4621ce/sortedcontainers-2.4.0-py2.py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/76/c6/c88e154df9c4e1a2a66ccf0005a88dfb2650c1dffb6f5ce603dfbd452ce3/idna-3.10-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://pypi.org/simple/cffi/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl.metadata
+DEBUG No netrc file found
+DEBUG Searching for a compatible version of some-package-from-private-index (&gt;=0.1.0)
+DEBUG No compatible version found for: some-package-from-private-index
+DEBUG Recording unit propagation conflict of some-package-from-private-index from incompatibility of (uv-dep-repro[some-extra])
+DEBUG Searching for a compatible version of uv-dep-repro @ file:///home/tamas/git/uv-dep-repro (&lt;0.1.0 | &gt;0.1.0)
+DEBUG No compatible version found for: uv-dep-repro[some-extra]
+  × No solution found when resolving dependencies:
+  ╰─▶ Because some-package-from-private-index was not found in the package registry and uv-dep-repro[some-extra] depends on some-package-from-private-index&gt;=0.1.0, we can conclude
+      that uv-dep-repro[some-extra]'s requirements are unsatisfiable.
+      And because your project requires uv-dep-repro[some-extra], we can conclude that your project's requirements are unsatisfiable.
+DEBUG Released lock at `/home/tamas/git/uv-dep-repro/.venv/.lock`
+</code></pre>
+<p>My expectation would be that <code>uv</code> should recognize that we were not asking for <code>some_extra</code> so it should not even attempt to query the private repository - or even if it does, it should recognize that none of the dependencies are to be fetched from this repo and it should not fail the <code>uv sync</code> command.</p>
+<p>uv version: 0.8.10
+Python version: 3.13
+Operating system: Linux</p>
+<p>OS and Python version probably does not matter as we have similar reports from people using other OS or Python versions.</p>
+<h3>Platform</h3>
+<p>Linux 6.8.0-71-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.8.10 (7e817bfad 2025-08-13)</p>
+<h3>Python version</h3>
+<p>Python 3.13.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntamas on 2025-08-15 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-15 15:25</div>
+            <div class="timeline-body"><p>I think this is expected. <code>uv sync</code> creates a universal lockfile, which requires resolving all dependencies, even they won't be installed by the &quot;current command&quot;. If you need to install in an environment that won't have full access, we'd typically recommend resolving ahead-of-time, checking in the lockfile, then running <code>uv sync</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DWhettam">@DWhettam</a> on 2025-08-15 15:30</div>
+            <div class="timeline-body"><p>I've just encountered this as well, and I'm wondering if is there a good solution in the case where you have access to the private index without either:
+1 - providing username+pass everytime you run uv sync
+2 - storing secrets in plain text as env variables</p>
+<p>Is there a solution with e.g. keyring that can be used? I've seen some mention of keyring in the docs but it looks like it only works with specific indexes (please correct me if I'm wrong on that). In my case I'm using gitlab package repository as my private index, and couldn't get keyring to work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-15 15:47</div>
+            <div class="timeline-body"><p>You can use keyring with arbitrary indexes, there just needs to be a username attached to the index URL or you need to use <code>authenticate = always</code>. See https://docs.astral.sh/uv/concepts/indexes/#using-credential-providers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DWhettam">@DWhettam</a> on 2025-08-15 16:04</div>
+            <div class="timeline-body"><p>oh great, thanks! I'm trying that now - is there a way to associate the specific keyring secret with the index? Do I need to name it the same thing as the index? I get a 401 error currently. I've tried various combinations of:
+<code>uv run keyring set uv gitlab</code>
+with different naming options.</p>
+<p>I have in my pyproject.toml</p>
+<pre><code>[[tool.uv.index]]
+name = &quot;gitlab&quot;
+url = &quot;https://gitlab.com/api/v4/groups/&lt;group_id&gt;/-/packages/pypi/simple/&quot;
+explicit = false
+authenticate = &quot;always&quot;
+
+</code></pre>
+<p><code>uv add my_package</code> fails with this setup, but works with an env variable set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-15 16:10</div>
+            <div class="timeline-body"><p>Would you mind opening a new issue? This is a separate topic than the current issue is focused on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntamas">@ntamas</a> on 2025-08-15 17:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this is expected. <code>uv sync</code> creates a universal lockfile, which requires resolving all dependencies, even they won't be installed by the &quot;current command&quot;. If you need to install in an environment that won't have full access, we'd typically recommend resolving ahead-of-time, checking in the lockfile, then running <code>uv sync</code>.</p>
+</blockquote>
+<p>This makes sense, and also this is what I see in my simplified example (i.e. committing the lockfile on a machine with credentials and then checking out the project on another machine without credentials seems to work). Something else must be at play because I still see failures with our &quot;real&quot; repository that triggered the issue (and the lockfile is up-to-date, from a machine that has full access to all repos). I'll try to identify what the difference is between our real repo and the minimal repro and post an update here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntamas">@ntamas</a> on 2025-08-15 19:36</div>
+            <div class="timeline-body"><p>Okay, I think that this issue can be closed. Upon closer investigation, it seems like the solution of @charliermarsh works: the lockfile needs all dependencies (even the optional ones), but once the lockfile is committed, users who check out the repository with the lockfile can now run <code>uv sync</code> without issues even if they do not have access to the private repositories. Any changes to <code>pyproject.toml</code> that necessitates the regeneration of the lockfile would fail for them, but I guess we can live with it for the time being.</p>
+<p>Thanks for the speedy responses!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntamas on 2025-08-15 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15344.html">astral-sh/uv#15344</a> on 2025-08-18 08:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

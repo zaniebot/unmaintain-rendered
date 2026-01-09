@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade YAML test - clap-rs/clap #239</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Upgrade YAML test</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/239">#239</a>
+        opened by <a href="https://github.com/Vinatorul">@Vinatorul</a>
+        on 2015-09-08 13:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Vinatorul">@Vinatorul</a> on 2015-09-08 13:11</div>
+            <div class="timeline-body"><p>Now yaml test only check <code>yml</code> parsing, but not the the work in general.
+I think we need to add:</p>
+<ul>
+<li>[ ] flags tests</li>
+<li>[ ] options test</li>
+<li>[ ] positionals test</li>
+<li>[ ] requirement test</li>
+<li>[ ] conflicts test</li>
+<li>[ ] override tess</li>
+<li>[ ] multiple args</li>
+<li>[ ] takes value args</li>
+<li>[ ] min and max values</li>
+<li>[ ] arg group test</li>
+<li>[ ] subcommand test</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @Vinatorul on 2015-09-08 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: tests</span> added by @Vinatorul on 2015-09-08 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @Vinatorul on 2015-09-08 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-08 22:45</div>
+            <div class="timeline-body"><p>Unless I'm not understanding the question/issue, so long as the Yaml parser spits out a valid <code>App</code> it's good. Checking that <code>App</code> is doing what it's supposed to isn't the job of the Yaml tests. Similar to the soon-to-be-new macros. We just need to verify that the Yaml parser is spitting out the intended <code>App</code> struct with all the specific settings we wrote in the <code>.yml</code></p>
+<p>...or maybe I'm misunderstanding :stuck_out_tongue_winking_eye:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vinatorul">@Vinatorul</a> on 2015-09-09 06:26</div>
+            <div class="timeline-body"><p>As I tried to explain the idea of test it macros PR - we can't claim that it work as it assumed.
+We can say - yes, it is doing something, but can't say what it is doing.
+I can agree that integration test is overkill, but we have no unit test for <code>yaml</code> functions. So we cant proove them working well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sru">@sru</a> on 2015-09-09 15:32</div>
+            <div class="timeline-body"><p>We are only testing the validity, not the correctness. Currently, we have no way to tell from tests that parsing YAML will work as intended and not explode on your face.</p>
+<p>I agree with @kbknapp that the YAML tests shouldn't check what <code>App</code> is doing, but I believe that we should check if YAML parsing results in intended <code>App</code>.</p>
+<p>For example:</p>
+<pre><code class="language-rust">// Note: this is an over-simplified unit test example.
+use super::{YamlLoader, App};
+
+#[test]
+fn parse_yaml_author() {
+    let yml = &quot;
+name: claptests
+author: Kevin K. &lt;kbknapp@gmail.com&gt;&quot;;
+
+    let app = App::from_yaml(YamlLoader::load_from_str(yml).unwrap());
+
+    assert_eq!(Some(&quot;Kevin K. &lt;kbknapp@gmail.com&gt;&quot;), app.author);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-09 15:37</div>
+            <div class="timeline-body"><p>Both macro and yaml parsers need to have their testing done by checking that they have performed the expected builder functions against the App. @sru 's <code>assert_eq</code> method should work well.</p>
+<p>For the macro case, I manually verified the generated code - it could still do with a test case; as @Vinatorul pointed out for at least regression testing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vinatorul">@Vinatorul</a> on 2015-09-09 16:57</div>
+            <div class="timeline-body"><p>@sru I told about something like this, but I also think that integration test is overkill.
+We need to test functions like this:
+https://github.com/kbknapp/clap-rs/blob/master/src/args/group.rs#L89
+or this
+https://github.com/kbknapp/clap-rs/blob/master/src/args/arg.rs#L164</p>
+<p>Both false-negative and true-positive cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vinatorul">@Vinatorul</a> on 2015-09-22 18:35</div>
+            <div class="timeline-body"><p>As we can see from #266 #267 #270 #271 these tests are &quot;must have&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P1: urgent</span> added by @Vinatorul on 2015-09-22 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> removed by @Vinatorul on 2015-09-22 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-22 19:43</div>
+            <div class="timeline-body"><p>#270 is by design, so that's not really a bug. But yes, we should update the tests to ensure everything is good to go. ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2016-08-20 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P1: urgent</span> removed by @kbknapp on 2016-08-20 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-01-30 05:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

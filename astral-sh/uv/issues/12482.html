@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` fails when `pip install` and `uv sync` succeed - astral-sh/uv #12482</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` fails when `pip install` and `uv sync` succeed</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12482">#12482</a>
+        opened by <a href="https://github.com/ma-sadeghi">@ma-sadeghi</a>
+        on 2025-03-26 10:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ma-sadeghi">@ma-sadeghi</a> on 2025-03-26 10:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv pip install</code> fails to install the package <a href="https://github.com/ma-sadeghi/poromics"><code>poromics</code></a> when pip install and uv sync succeed.</p>
+<h3>Potential cause</h3>
+<p>Looking at the logs, <code>uv pip install</code> prefers <code>numba==0.53.1</code>, which is not compatible with Python 3.12, whereas the other two approaches tend to prefer the latest <code>numba==0.61.0</code>, which is compatible.</p>
+<h3>How to reproduce</h3>
+<pre><code class="language-shell">mkdir temp
+cd temp
+uv venv --python 3.12
+uv pip install poromics
+</code></pre>
+<p>Outputs:</p>
+<pre><code class="language-python">PS C:\Users\sadegmo\Code\temp&gt; uv pip install poromics
+Resolved 96 packages in 3.32s
+      Built docrep==0.3.2
+  × Failed to build `llvmlite==0.36.0`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit code: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+        File
+      &quot;C:\Users\sadegmo\AppData\Local\uv\cache\builds-v0\.tmpxiAXiB\Lib\site-packages\setuptools\build_meta.py&quot;,
+      line 334, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File
+      &quot;C:\Users\sadegmo\AppData\Local\uv\cache\builds-v0\.tmpxiAXiB\Lib\site-packages\setuptools\build_meta.py&quot;,
+      line 304, in _get_build_requires
+          self.run_setup()
+        File
+      &quot;C:\Users\sadegmo\AppData\Local\uv\cache\builds-v0\.tmpxiAXiB\Lib\site-packages\setuptools\build_meta.py&quot;,
+      line 522, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File
+      &quot;C:\Users\sadegmo\AppData\Local\uv\cache\builds-v0\.tmpxiAXiB\Lib\site-packages\setuptools\build_meta.py&quot;,
+      line 320, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 55, in &lt;module&gt;
+        File &quot;&lt;string&gt;&quot;, line 52, in _guard_py_ver
+      RuntimeError: Cannot install on Python version 3.12.8; only versions &gt;=3.6,&lt;3.10 are supported.
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `llvmlite` (v0.36.0) was included because `poromics` (v0.0.1) depends on `porespy` (v2.4.2) which depends
+        on `numba` (v0.53.1) which depends on `llvmlite`
+PS C:\Users\sadegmo\Code\temp&gt; uv run python                                                                        Python 3.12.8 (main, Dec  6 2024, 18:10:20) [MSC v.1942 64 bit (AMD64)] on win32
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+</code></pre>
+<pre><code class="language-shell">mkdir temp
+cd temp
+uv venv --python 3.12
+uv pip install pip
+.\.venv\Scripts\activate
+pip install poromics
+</code></pre>
+<p>Succeeds.</p>
+<pre><code class="language-shell">git clone https://github.com/ma-sadeghi/poromics
+cd poromics
+uv sync
+</code></pre>
+<p>Also succeeds.</p>
+<h3>Platform</h3>
+<p>Ubuntu 22.04 amd64, Windows 10 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.6.10</p>
+<h3>Python version</h3>
+<p>python 3.12.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ma-sadeghi on 2025-03-26 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv pip install` fails where `pip install` and `uv sync` succeed" to "`uv pip install` fails when `pip install` and `uv sync` succeed" by @ma-sadeghi on 2025-03-26 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-26 12:53</div>
+            <div class="timeline-body"><p>I believe this is the same as https://github.com/astral-sh/uv/issues/12060.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-26 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-26 12:54</div>
+            <div class="timeline-body"><p>In the meantime, you can solve this by adding a constraints file to ensure you get a sufficiently recent <code>numba</code> and <code>llvmlite</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

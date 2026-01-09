@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv ignore proxy exceptions on Windows - astral-sh/uv #11640</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv ignore proxy exceptions on Windows</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11640">#11640</a>
+        opened by <a href="https://github.com/Fizcko">@Fizcko</a>
+        on 2025-02-19 20:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Fizcko">@Fizcko</a> on 2025-02-19 20:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>On Windows, in a corporate device the proxy exceptions defined in the proxy settings are ignored by uv.</p>
+<p>Steps to reproduce</p>
+<ol>
+<li>With proxy <strong>enabled</strong> on OS settings</li>
+</ol>
+<p>Proxy config</p>
+<pre><code>ip: 10.0.10.250
+port: 8080
+exceptions: *.myorg.local
+</code></pre>
+<p>uv config file <code>%APPDATA%\uv\uv.toml</code> to use custom index url:</p>
+<pre><code>[[index]]
+url = &quot;https://artifactory.myorg.local/simple&quot;
+default = true
+</code></pre>
+<p>Run uv command</p>
+<pre><code>&gt; uv add flask
+⠇ test-python==0.1.0                                                                                                                                        error: Failed to fetch: `https://artifactory.myorg.local/simple/flask/`
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://artifactory.myorg.local/simple/flask/)
+  Caused by: client error (Connect)
+  Caused by: proxy authentication required
+&gt;
+</code></pre>
+<p>Same command with verbose</p>
+<pre><code>&gt; $env:RUST_LOG=&quot;uv=trace&quot;
+&gt; uv add flask
+DEBUG uv 0.6.2 (6d3614eec 2025-02-19)
+DEBUG Found project root: `X:\Temp\test_python`
+DEBUG No workspace root found, using project root
+TRACE Checking lock for `X:\Temp\test_python` at `C:\Users\johndoe\AppData\Local\Temp\uv-b254de633360c559.lock`
+DEBUG Acquired lock for `X:\Temp\test_python`
+DEBUG Reading Python requests from version file at `X:\Temp\test_python\.python-version`
+DEBUG Using Python request `3.11` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+TRACE Cached interpreter info for Python 3.11.4, skipping probing: .venv\Scripts\python.exe
+DEBUG The virtual environment's Python version satisfies `3.11`
+DEBUG Released lock at `C:\Users\johndoe\AppData\Local\Temp\uv-b254de633360c559.lock`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: test-python @ file:///X:/Temp/test_python
+DEBUG No workspace root found, using project root
+TRACE Performing lookahead for test-python @ file:///X:/Temp/test_python
+DEBUG Solving with installed Python version: 3.11.4
+DEBUG Solving with target Python version: &gt;=3.11
+TRACE Assigned packages:
+TRACE Chose package for decision: root. remaining choices:
+DEBUG Adding direct dependency: test-python*
+TRACE Assigned packages: root==0a0.dev0
+TRACE Chose package for decision: test-python. remaining choices:
+DEBUG Searching for a compatible version of test-python @ file:///X:/Temp/test_python (*)
+DEBUG Adding direct dependency: flask*
+TRACE Fetching metadata for flask from https://artifactory.myorg.local/simple/flask/
+TRACE Assigned packages: root==0a0.dev0, test-python==0.1.0
+TRACE Chose package for decision: flask. remaining choices:
+TRACE Checking lock for `C:\Users\johndoe\AppData\Local\uv\cache\simple-v15\index\e03af8d8960669e8\flask.lock` at `C:\Users\johndoe\AppData\Local\uv\cache\simple-v15\index\e03af8d8960669e8\flask.lock`
+DEBUG Acquired lock for `C:\Users\johndoe\AppData\Local\uv\cache\simple-v15\index\e03af8d8960669e8\flask.lock`
+TRACE No cache entry exists for C:\Users\johndoe\AppData\Local\uv\cache\simple-v15\index\e03af8d8960669e8\flask.rkyv
+DEBUG No cache entry for: https://artifactory.myorg.local/simple/flask/
+TRACE Sending fresh GET request for https://artifactory.myorg.local/simple/flask/
+TRACE Handling request for https://artifactory.myorg.local/simple/flask/
+TRACE Request for https://artifactory.myorg.local/simple/flask/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://artifactory.myorg.local/simple/flask/
+TRACE Attempting unauthenticated request for https://artifactory.myorg.local/simple/flask/
+DEBUG Transient request failure for https://artifactory.myorg.local/simple/flask/, retrying: error sending request for url (https://artifactory.myorg.local/simple/flask/)
+  Caused by: client error (Connect)
+  Caused by: proxy authentication required
+TRACE Handling request for https://artifactory.myorg.local/simple/flask/
+TRACE Request for https://artifactory.myorg.local/simple/flask/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://artifactory.myorg.local/simple/flask/
+TRACE Attempting unauthenticated request for https://artifactory.myorg.local/simple/flask/
+DEBUG Transient request failure for https://artifactory.myorg.local/simple/flask/, retrying: error sending request for url (https://artifactory.myorg.local/simple/flask/)
+  Caused by: client error (Connect)
+  Caused by: proxy authentication required
+TRACE Handling request for https://artifactory.myorg.local/simple/flask/
+TRACE Request for https://artifactory.myorg.local/simple/flask/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://artifactory.myorg.local/simple/flask/
+TRACE Attempting unauthenticated request for https://artifactory.myorg.local/simple/flask/
+DEBUG Transient request failure for https://artifactory.myorg.local/simple/flask/, retrying: error sending request for url (https://artifactory.myorg.local/simple/flask/)
+  Caused by: client error (Connect)
+  Caused by: proxy authentication required
+TRACE Handling request for https://artifactory.myorg.local/simple/flask/
+TRACE Request for https://artifactory.myorg.local/simple/flask/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://artifactory.myorg.local/simple/flask/
+TRACE Attempting unauthenticated request for https://artifactory.myorg.local/simple/flask/
+DEBUG Transient request failure for https://artifactory.myorg.local/simple/flask/, retrying: error sending request for url (https://artifactory.myorg.local/simple/flask/)
+  Caused by: client error (Connect)
+  Caused by: proxy authentication required
+TRACE Considering retry of error: Error { kind: WrappedReqwestError(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;artifactory.myorg.local&quot;)), port: None, path: &quot;/simple/flask/&quot;, query: None, fragment: None }, WrappedReqwestError(Middleware(Request failed after 3 retries
+
+Caused by:
+    0: error sending request for url (https://artifactory.myorg.local/simple/flask/)
+    1: client error (Connect)
+    2: proxy authentication required))) }
+TRACE Cannot retry error: not an IO error
+DEBUG Released lock at `C:\Users\johndoe\AppData\Local\uv\cache\simple-v15\index\e03af8d8960669e8\flask.lock`
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Removing `uv.lock`
+error: Failed to fetch: `https://artifactory.myorg.local/simple/flask/`
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://artifactory.myorg.local/simple/flask/)
+  Caused by: client error (Connect)
+  Caused by: proxy authentication required
+</code></pre>
+<ol start="2">
+<li>With proxy <strong>disabled</strong> on OS settings</li>
+</ol>
+<pre><code>&gt; uv add flask
+Resolved 9 packages in 213ms
+Prepared 8 packages in 342ms
+░░░░░░░░░░░░░░░░░░░░ [0/8] Installing wheels...                                                                                                             warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 8 packages in 52ms
+ + blinker==1.9.0
+ + click==8.1.8
+ + colorama==0.4.6
+ + flask==3.1.0
+ + itsdangerous==2.2.0
+ + jinja2==3.1.5
+ + markupsafe==3.0.2
+ + werkzeug==3.1.3
+</code></pre>
+<h3>Platform</h3>
+<p>Windows 10 &amp; 11</p>
+<h3>Version</h3>
+<p>uv 0.6.2</p>
+<h3>Python version</h3>
+<p>python 3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Fizcko on 2025-02-19 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 21:11</div>
+            <div class="timeline-body"><p>Thanks for adding more details! I appreciate it.</p>
+<p>How does the proxy configuration work? Where do you do that?</p>
+<p>We don't read proxy setting directly, so we'll need to track support for this upstream in <code>reqwest</code> which implements the network stack we use.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @zanieb on 2025-02-19 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Fizcko">@Fizcko</a> on 2025-02-19 21:25</div>
+            <div class="timeline-body"><p>The proxy settings are directly set into windows</p>
+<p><img src="https://github.com/user-attachments/assets/35f2f4ee-ab5f-48a1-ac70-647d2f5df021" alt="Image" /></p>
+<p><img src="https://github.com/user-attachments/assets/bdc50083-b63c-4ee0-86eb-da3563dc0cee" alt="Image" /></p>
+<p>You can simulate one with <a href="https://www.youngzsoft.net/ccproxy/proxy-server-download.htm">CCProxy</a> software</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Fizcko">@Fizcko</a> on 2025-02-19 21:33</div>
+            <div class="timeline-body"><p>The linux equivalent would be:</p>
+<pre><code>export HTTP_PROXY=&quot;http://10.0.10.250:8080&quot;
+export HTTPS_PROXY=&quot;http://10.0.10.250:8080&quot;
+export NO_PROXY=&quot;*.myorg.local&quot;
+</code></pre>
+<p>But I have not tested under Linux if the behavior was the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 21:35</div>
+            <div class="timeline-body"><p>Thanks again!</p>
+<p>I think this is the same as https://github.com/seanmonstar/reqwest/issues/1444</p>
+<p>Can you confirm that registry key is the relevant place this is stored?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Fizcko">@Fizcko</a> on 2025-02-19 21:41</div>
+            <div class="timeline-body"><p>Yes it is</p>
+<p><img src="https://github.com/user-attachments/assets/54c58073-b336-43b2-838a-37a91c564a38" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../seanmonstar/reqwest/issues/1444.html">seanmonstar/reqwest#1444</a> on 2025-02-19 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 21:47</div>
+            <div class="timeline-body"><p>Thanks! I'll follow-up there and see if we can get this fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rv2931">@rv2931</a> on 2025-03-04 16:02</div>
+            <div class="timeline-body"><p>Hi. I meet this issue too and this ticket confirm it is a bug/lack... It is important to know that proxy configuration is not only http_proxy/https_proxy, but no_proxy too and overall it is really important when you need it
+Hope it will be fixed quite soon
+Thanks to community</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-05 18:55</div>
+            <div class="timeline-body"><p>We're just waiting for the fix to be released upstream.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rv2931">@rv2931</a> on 2025-03-06 10:56</div>
+            <div class="timeline-body"><p>Okay. I was wondering about the impact of these bug, but for the moment blocking problem as I can't test or deploy anything on my deployement server as it can't access to internal ressource of my company (python package from internal gitlab instance) as UV pip try to get them from public internet
+I will try to workaround the problem by installing our internal package via native pip that's work correctly, maybe filling the cache before UV sync and maybe UV will just use the cache ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Fizcko">@Fizcko</a> on 2025-03-06 13:26</div>
+            <div class="timeline-body"><p>A <a href="https://github.com/seanmonstar/reqwest/pull/2559">fix</a> have been push and merged.</p>
+<p>As @zanieb said we are waiting for a new release of <a href="https://github.com/seanmonstar/reqwest/releases">reqwest</a> (above than <code>v0.12.12</code>).</p>
+<p>@rv2931 as workaround (for now) you can use this:</p>
+<pre><code>exceptions: *.myorg.local;*.myneworg.local
+</code></pre>
+<p>Run this in a powershell command with comma separator and without <code>*.</code></p>
+<pre><code>$env:no_proxy=&quot;myorg.local,myneworg.local&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rv2931">@rv2931</a> on 2025-03-06 14:29</div>
+            <div class="timeline-body"><p>Ok but I don't understand your workaround as it is the topic if the bug itself: no_proxy is not managed correctly by uv commands
+So in addition I have the same problem on Linux during docker build based on Ubuntu: 22.04.
+Installation with native pip is ok but not with iv sync &quot;could 'ot resolve&quot; so it is not linked specifically to windows version
+I'm trying a workaround by unsettling http_proxy/https_proxy and using the <code>uv sync --package &lt;mylocal_gitlab_repository&gt;</code> then resetting the proxybbalue after for the other public packages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-06 23:39</div>
+            <div class="timeline-body"><p>@rv2931 sounds like another issue? maybe https://github.com/astral-sh/uv/issues/8450? This issue is specifically about Windows, hence the confusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JimmyMtl">@JimmyMtl</a> on 2025-03-17 13:58</div>
+            <div class="timeline-body"><p>Hi, Reqwest seems to have made a new release that contains the fix, see https://github.com/seanmonstar/reqwest/releases/tag/v0.12.13. And update of the library has been made on uv's side this morning, see https://github.com/astral-sh/uv/commit/fe06f1a7ce69087d30f4a5104cd6c5fbee235dc4.
+I think that the next step is to wait for a new uv release ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-17 13:59</div>
+            <div class="timeline-body"><p>Yeah, we'll probably release today or tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-17 18:45</div>
+            <div class="timeline-body"><p>Closing this since it's merged</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-03-17 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12262.html">astral-sh/uv#12262</a> on 2025-03-18 13:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

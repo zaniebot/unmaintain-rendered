@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFC: Adding Support for Flag Arguments Without Values - clap-rs/clap #5166</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RFC: Adding Support for Flag Arguments Without Values</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5166">#5166</a>
+        opened by <a href="https://github.com/wiseaidev">@wiseaidev</a>
+        on 2023-10-09 17:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wiseaidev">@wiseaidev</a> on 2023-10-09 17:14</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.4.6</p>
+<h3>Describe your use case</h3>
+<h2>Summary</h2>
+<p>This RFC proposes adding support for flag arguments without values in this library. Flag arguments without values would allow users to specify boolean flags without explicitly providing a boolean value (e.g., <code>true</code> or <code>false</code>), making the command-line interface more user-friendly.</p>
+<h2>Motivation</h2>
+<p>Currently, in this library, boolean flag arguments require users to specify a boolean value (<code>true</code> or <code>false</code>). This can be seen as redundant and not user-friendly, especially for flags that are meant to act as simple switches without any associated value. This RFC aims to enhance the user experience by allowing flag arguments to be set to <code>true</code> when they are present and <code>false</code> when they are not explicitly provided by the user.</p>
+<h3>Describe the solution you'd like</h3>
+<h2>Detailed Design</h2>
+<p>To implement this feature, we propose introducing a new attribute for flag arguments called <code>without_value</code>. When this attribute is applied to a flag argument, this library will automatically set the argument's value to <code>true</code> if it is present in the command line arguments and <code>false</code> if it is not present.</p>
+<h3>Syntax</h3>
+<p>The <code>without_value</code> attribute can be applied to a flag argument as follows:</p>
+<pre><code class="language-rust">#[arg(short = 'c', long = &quot;ignore-case&quot;, without_value)]
+ignore_case: bool,
+</code></pre>
+<p>Here, <code>without_value</code> is a new attribute that informs Clap to treat the <code>ignore-case</code> flag as a flag argument without requiring a value.</p>
+<h3>Example</h3>
+<p>Consider the following code snippet using the proposed feature:</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[command(
+    author = &quot;Mahmoud Harmouch&quot;,
+    version = &quot;1.0&quot;,
+    about = &quot;A command-line find and replace utility&quot;,
+    name = &quot;Find and Replace&quot;
+)]
+struct Args {
+    /// Sets the input file to process
+    #[arg(short = 'i', long = &quot;input&quot;)]
+    input: String,
+    /// Sets the pattern to find
+    #[arg(short = 'f', long = &quot;find&quot;)]
+    find: String,
+    /// Sets the replacement text
+    #[arg(short = 'r', long = &quot;replace&quot;)]
+    replace: String,
+    /// Perform a case-insensitive search and replace
+    #[arg(short = 'c', long = &quot;ignore-case&quot;, without_value)]
+    ignore_case: bool,
+}
+
+fn main() {
+    // Access and use the `input`, `find`, `replace`, and `ignore-case` arguments here
+    let args = Args::parse();
+}
+</code></pre>
+<p>With this feature, the following command-line invocation would be valid:</p>
+<pre><code class="language-shell">cargo run -- -i file_name -f hello -r hi -c
+</code></pre>
+<p>Without this RFC, the user would need to specify <code>true</code> explicitly:</p>
+<pre><code class="language-shell">cargo run -- -i file_name -f hello -r hi -c true
+</code></pre>
+<h2>Drawbacks</h2>
+<p>Introducing a new attribute, <code>without_value</code>, may add some complexity to this library codebase. However, the benefit of improving the user experience by allowing more natural flag argument handling outweighs this drawback.</p>
+<h3>Alternatives, if applicable</h3>
+<h2>Alternatives</h2>
+<p>An alternative approach to achieve similar functionality is to rely on convention rather than introducing a new attribute. For instance, this library could automatically consider a flag argument to be <code>true</code> if it is present in the command line arguments and <code>false</code> if it is absent. However, using an explicit attribute provides better clarity and flexibility.</p>
+<h3>Additional Context</h3>
+<h2>Implementation Plan</h2>
+<ol>
+<li>Introduce the <code>without_value</code> attribute in this library's codebase.</li>
+<li>Update the parser to recognize this attribute and handle flag arguments accordingly.</li>
+<li>Ensure that existing functionality remains unchanged for flag arguments with values.</li>
+<li>Add appropriate tests to validate the behavior of flag arguments with and without values.</li>
+<li>Update the documentation to include the new attribute and its usage.</li>
+</ol>
+<h2>Future Considerations</h2>
+<p>This feature can significantly improve the user experience of command-line interfaces built with Clap, especially when dealing with boolean flags. In the future, it may lead to more user-friendly and concise command-line applications. Additionally, this feature aligns with the principle of least astonishment, making the library more intuitive for users.</p>
+<h2>Conclusion</h2>
+<p>The addition of support for flag arguments without values in this library is a valuable enhancement that simplifies the command-line interface for users. It reduces redundancy and improves the user experience when working with boolean flags. This RFC proposes the introduction of the <code>without_value</code> attribute to achieve this functionality, ensuring that existing functionality remains intact while providing more natural flag argument handling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @wiseaidev on 2023-10-09 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-10-09 17:21</div>
+            <div class="timeline-body"><p>I feel I'm missing something as what you are proposing sounds like functionality we already have today, see https://docs.rs/clap/latest/clap/_derive/_tutorial/chapter_2/index.html#flags</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wiseaidev">@wiseaidev</a> on 2023-10-09 17:32</div>
+            <div class="timeline-body"><p>Thanks for the response, @epage! This works, but when making the argument optional:</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[command(
+    author = &quot;Mahmoud Harmouch&quot;,
+    version = &quot;1.0&quot;,
+    about = &quot;A command-line find and replace utility&quot;,
+    name = &quot;Find and Replace&quot;
+)]
+struct Args {
+    /// Sets the input file to process
+    #[arg(short = 'i', long = &quot;input&quot;)]
+    input: String,
+    /// Sets the pattern to find
+    #[arg(short = 'f', long = &quot;find&quot;)]
+    find: String,
+    /// Sets the replacement text
+    #[arg(short = 'r', long = &quot;replace&quot;)]
+    replace: String,
+    /// Perform a case-insensitive search and replace
+    #[arg(short = 'c', long = &quot;ignore-case&quot;)]
+    ignore_case: Option&lt;bool&gt;,
+}
+
+fn main() {
+    // Access and use the `input`, `find`, `replace`, and `ignore-case` arguments here
+    let args = Args::parse();
+}
+</code></pre>
+<p>It returns:</p>
+<pre><code class="language-sh">$ cargo run -- -i file_name -f hello -r hi -c
+
+error: a value is required for '--ignore-case &lt;IGNORE_CASE&gt;' but none was supplied
+  [possible values: true, false]
+</code></pre>
+<p>Is that expected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-10-09 17:41</div>
+            <div class="timeline-body"><p>What is your intention with adding <code>Option</code>?</p>
+<p><code>Option</code> hasn't generally made sense for flags, so we've left it completely for options that take values.  The &quot;magic&quot; type behavior is described at https://docs.rs/clap/latest/clap/_derive/index.html#arg-types.  #4626 is for discussing improving the system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wiseaidev">@wiseaidev</a> on 2023-10-09 17:55</div>
+            <div class="timeline-body"><p>Thanks for your reply; I understand your perspective, and I am going to close this issue in favor of the mentioned discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @wiseaidev on 2023-10-09 17:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

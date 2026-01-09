@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv 0.2.30 breaks editable projects when installed a second or more times due to caching - astral-sh/uv #5543</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv 0.2.30 breaks editable projects when installed a second or more times due to caching</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/5543">#5543</a>
+        opened by <a href="https://github.com/bulletmark">@bulletmark</a>
+        on 2024-07-29 01:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bulletmark">@bulletmark</a> on 2024-07-29 01:50</div>
+            <div class="timeline-body"><p>uv 0.2.30 breaks editable projects due to something relating to the cache. This problem does not occur with uv 0.2.29 and earlier versions. The annotated command steps below best demonstrate the issue:</p>
+<pre><code class="language-sh"># Show uv version and platform
+$ uv --version
+uv 0.2.30
+$ uname -a
+Linux lt 6.10.1-arch1-1 #1 SMP PREEMPT_DYNAMIC Wed, 24 Jul 2024 22:25:43 +0000 x86_64 GNU/Linux
+
+# This problem happens with all my own projects but let's use a generic project to demonstrate the issue
+$ git clone https://github.com/VaasuDevanS/cowsay-python
+Cloning into 'cowsay-python'...
+remote: Enumerating objects: 473, done.
+remote: Counting objects: 100% (192/192), done.
+remote: Compressing objects: 100% (89/89), done.
+remote: Total 473 (delta 108), reused 159 (delta 91), pack-reused 281
+Receiving objects: 100% (473/473), 277.85 KiB | 4.34 MiB/s, done.
+Resolving deltas: 100% (239/239), done.
+
+# Create venv
+$ cd cowsay-python
+$ uv venv
+Using Python 3.12.4 interpreter at: /usr/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+
+# Install this project (1st time)
+$ uv pip install -e .
+Resolved 1 package in 3ms
+   Built cowsay @ file:///home/mark/cowsay-python
+Prepared 1 package in 923ms
+Installed 1 package in 0.60ms
+ + cowsay==6.1 (from file:///home/mark/cowsay-python)
+
+# List the project and see it is correctly shown as editable
+$ uv pip list -v
+DEBUG uv 0.2.30
+DEBUG Searching for Python interpreter in system path
+DEBUG Found `cpython-3.12.4-linux-x86_64-gnu` at `/home/mark/cowsay-python/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.12.4 environment at .venv/bin/python3
+Package Version Editable project location
+------- ------- -------------------------
+cowsay  6.1     /home/mark/cowsay-python
+
+# Remove the venv and create it again.
+$ rm -rf .venv
+$ uv venv
+Using Python 3.12.4 interpreter at: /usr/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+
+# Install this project (2nd time)
+$ uv pip install -e .
+Resolved 1 package in 4ms
+Installed 1 package in 3ms
+ + cowsay==6.1 (from file:///home/mark/cowsay-python)
+
+# List the project and see it is incorrectly not shown as editable
+$ uv pip list -v
+DEBUG uv 0.2.30
+DEBUG Searching for Python interpreter in system path
+DEBUG Found `cpython-3.12.4-linux-x86_64-gnu` at `/home/mark/cowsay-python/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.12.4 environment at .venv/bin/python3
+Package Version
+------- -------
+cowsay  6.1
+
+# Remove the UV cache because it seems related to this bug.
+$ rm -rf ~/.cache/uv
+
+# Remove the venv and create it again.
+$ rm -rf .venv
+$ uv venv
+Using Python 3.12.4 interpreter at: /usr/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+
+# Install this project (3rd time)
+$ uv pip install -e .
+Resolved 1 package in 2ms
+   Built cowsay @ file:///home/mark/cowsay-python
+Prepared 1 package in 835ms
+Installed 1 package in 0.50ms
+ + cowsay==6.1 (from file:///home/mark/cowsay-python)
+
+# List the project and see it is again correctly shown as editable
+$ uv pip list -v
+DEBUG uv 0.2.30
+DEBUG Searching for Python interpreter in system path
+DEBUG Found `cpython-3.12.4-linux-x86_64-gnu` at `/home/mark/cowsay-python/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.12.4 environment at .venv/bin/python3
+Package Version Editable project location
+------- ------- -------------------------
+cowsay  6.1     /home/mark/cowsay-python
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-29 02:22</div>
+            <div class="timeline-body"><p>Interesting, thank you. I think we aren't differentiating between editable and non-editable in the cache. I will fix tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-29 02:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-29 02:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-29 02:23</div>
+            <div class="timeline-body"><p>The code actually looks like it handles this correctly, hmm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-29 02:26</div>
+            <div class="timeline-body"><p>Ok, I see the problem. Sorry about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-29 02:29</div>
+            <div class="timeline-body"><p>I think the contents of <code>site-packages</code> are actually correct, it's just that the <code>direct-url.json</code> is not, so <code>pip list</code> is reporting that the projects aren't editable when they are. Are you seeing some other issue beyond that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bulletmark">@bulletmark</a> on 2024-07-29 02:32</div>
+            <div class="timeline-body"><p>That is correct. It is only the list command reporting that the project is not editable. My <a href="https://github.com/bulletmark/pipxu">installer tool</a> parses <code>list</code> output to determine the editable project dir so this problem is very apparent to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5545.html">astral-sh/uv#5545</a> on 2024-07-29 02:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-29 02:32</div>
+            <div class="timeline-body"><p>Ok thanks. I've fixed it in #5545.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-29 02:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

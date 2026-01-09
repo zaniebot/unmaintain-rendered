@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv doesn't include pyparsing in the requirements installed when installing pipx on python 3.10 on linux - astral-sh/uv #4098</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv doesn't include pyparsing in the requirements installed when installing pipx on python 3.10 on linux</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4098">#4098</a>
+        opened by <a href="https://github.com/arohrbach-nx">@arohrbach-nx</a>
+        on 2024-06-06 14:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/arohrbach-nx">@arohrbach-nx</a> on 2024-06-06 14:17</div>
+            <div class="timeline-body"><p>On Ubuntu 22.04 under WSL 2, I tried to set up a new python 3.10 environment to run a script with pipx, and uv installed a pipx that crashes because one of its dependencies is missing.</p>
+<p>What I did:</p>
+<ol>
+<li>Follow the instructions at https://github.com/pyenv/pyenv/wiki#suggested-build-environment to make sure I have all the build dependencies for python 3.10
+(i.e., I ran</li>
+</ol>
+<pre><code class="language-sh">sudo apt update; sudo apt install build-essential libssl-dev zlib1g-dev \
+libbz2-dev libreadline-dev libsqlite3-dev curl git \
+libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+</code></pre>
+<p>)</p>
+<ol start="2">
+<li>I installed python 3.10 and uv into it</li>
+</ol>
+<pre><code>pyenv install 3.10
+pyenv global 3.10
+pip install uv
+pyenv rehash
+</code></pre>
+<p>pip downloaded <code>uv-0.2.8-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl</code></p>
+<ol start="3">
+<li>I used uv to install pipx: <code>uv pip install --system pipx</code></li>
+<li>pipx didn't work until I ran <code>pip install pipx</code> because it was missing its dependency pyparsing, which pip installed</li>
+</ol>
+<p>Command I invoked, current uv version, and comparsion with pip's output:</p>
+<pre><code>alan@arohrbac3530-ny:~$ uv pip install --system pipx --verbose
+DEBUG Searching for Python interpreter in search path
+DEBUG Found CPython 3.10.14 at `/home/alan/.pyenv/versions/3.10.14/bin/python3` (search path)
+DEBUG Using Python 3.10.14 environment at .pyenv/versions/3.10.14/bin/python3
+DEBUG Acquired lock for `.pyenv/versions/3.10.14`
+DEBUG Requirement satisfied: argcomplete&gt;=1.9.4
+DEBUG Requirement satisfied: click
+DEBUG Requirement satisfied: packaging&gt;=20
+DEBUG Requirement satisfied: pipx
+DEBUG Requirement satisfied: platformdirs&gt;=2.1
+DEBUG Requirement satisfied: tomli ; python_version &lt; '3.11'
+DEBUG Requirement satisfied: userpath!=1.9, &gt;=1.6
+Audited 1 package in 9ms
+alan@arohrbac3530-ny:~$ uv --version
+uv 0.2.8
+alan@arohrbac3530-ny:~$ pip install pipx
+Requirement already satisfied: pipx in ./.pyenv/versions/3.10.14/lib/python3.10/site-packages (1.6.0)
+Requirement already satisfied: userpath!=1.9,&gt;=1.6 in ./.pyenv/versions/3.10.14/lib/python3.10/site-packages (from pipx) (1.9.2)
+Requirement already satisfied: argcomplete&gt;=1.9.4 in ./.pyenv/versions/3.10.14/lib/python3.10/site-packages (from pipx) (3.3.0)
+Requirement already satisfied: platformdirs&gt;=2.1 in ./.local/lib/python3.10/site-packages (from pipx) (2.5.2)
+Requirement already satisfied: packaging&gt;=20 in ./.local/lib/python3.10/site-packages (from pipx) (21.3)
+Requirement already satisfied: tomli in ./.pyenv/versions/3.10.14/lib/python3.10/site-packages (from pipx) (2.0.1)
+Requirement already satisfied: pyparsing!=3.0.5,&gt;=2.0.2 in ./.pyenv/versions/3.10.14/lib/python3.10/site-packages (from packaging&gt;=20-&gt;pipx) (3.1.2)
+Requirement already satisfied: click in ./.pyenv/versions/3.10.14/lib/python3.10/site-packages (from userpath!=1.9,&gt;=1.6-&gt;pipx) (8.1.7)
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-06 16:14</div>
+            <div class="timeline-body"><p>It looks like you have some packages installed in the user directory (presumedly?) and some in the pyenv environment. uv is probably seeing a newer packaging version in the pyenv environment, but pip is seeing the older packaging version in the user environment, and the user environment takes precedence at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-06 16:15</div>
+            <div class="timeline-body"><p>I'm referring to the fact that <code>packaging&gt;=20 in ./.local/lib/python3.10/site-package</code> comes from <code>.local</code> while other dependencies like <code>pipx in ./.pyenv/versions/3.10.14/lib/python3.10/site-packages</code> come from <code>.pyenv</code>. We don't support the user scheme so not sure what to do here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arohrbach-nx">@arohrbach-nx</a> on 2024-06-06 16:33</div>
+            <div class="timeline-body"><p>If I do either</p>
+<pre><code>uv pip uninstall --system $(uv pip freeze)
+uv pip install --system pipx
+</code></pre>
+<p>outside of a venv, or</p>
+<pre><code>uv pip uninstall $(uv pip freeze)
+uv pip install pipx
+</code></pre>
+<p>inside of a venv created with <code>uv venv -p 3.10 venv-pipx-310</code>,
+I get the same set of packages installed by <code>uv</code>:</p>
+<pre><code>Resolved 7 packages in 15ms
+Installed 7 packages in 5ms
+ + argcomplete==3.3.0
+ + click==8.1.7
+ + packaging==24.0
+ + pipx==1.6.0
+ + platformdirs==4.2.2
+ + tomli==2.0.1
+ + userpath==1.9.2
+</code></pre>
+<p>In the venv, this appears to be fine for <code>pipx</code> to run, but out of the venv, <code>pipx</code> crashes trying to import pyparsing.</p>
+<blockquote>
+<p>the user environment takes precedence at runtime.</p>
+</blockquote>
+<p>So I guess <code>pipx</code> not in a venv is crashing because at runtime it decides to try to import from the version of <code>packaging</code> in <code>.local</code> instead of the newer version that <code>uv</code> installed into <code>.pyenv</code> (and the one in .local is older and has an extrra, unsatisfied dependency)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arohrbach-nx">@arohrbach-nx</a> on 2024-06-06 17:10</div>
+            <div class="timeline-body"><p>I guess I don't know what I'd expect <code>uv</code> to be able to do here either, unless it was going to add support for the user scheme.
+Perhaps what I'm missing is a best practice on where to put tools that I want to have globally available on my development machine.</p>
+<p>In some sense, it feels like I really have a pyenv issue, in that a brand new pyenv environment isn't isolated from the user site-packages that will take precedence over anything installed into the pyenv environment's site-packages.
+(Also, it's weird that I ended up with packaging 21.3 in user site-packages but pyparsing 2.4.7 that it depends on must have made into system site-packages for a non-pyenv python 3.10 install, but I guess that's really a pip thing)</p>
+<p>One way or another, I found it surprising that I could run <code>uv pip install --system pipx</code> and get a broken <code>pipx</code> with no warning about it. Maybe <code>uv</code> could check user site-packages for packages that will result in incompatibilities and warn about them (which I guess is only a concern with the <code>--system</code> flag and not if you're using a venv)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @arohrbach-nx on 2024-06-06 17:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

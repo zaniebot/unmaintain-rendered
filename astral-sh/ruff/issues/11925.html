@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feature request: flag duplicated class properties - astral-sh/ruff #11925</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>feature request: flag duplicated class properties</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11925">#11925</a>
+        opened by <a href="https://github.com/newresu">@newresu</a>
+        on 2024-06-18 13:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/newresu">@newresu</a> on 2024-06-18 13:26</div>
+            <div class="timeline-body"><p>I don't think there is a rule flagging this common mistake?</p>
+<pre><code class="language-python">class ThisOne:
+    def __init__(self):
+      self.hello=&quot;hi&quot;
+      self.hello=&quot;bye&quot;   # &lt;-- flag repeated property
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-06-18 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-19 06:23</div>
+            <div class="timeline-body"><p>@AlexWaygood how common is it to reassign self variables in the constructor? Like, is this something that's frowned upon</p>
+<pre><code class="language-python">class Test:
+	def __init__(self, arg):
+		self.name = &quot;hi&quot;
+		if arg:
+			self.name += &quot; more&quot;
+</code></pre>
+<p>Either way, I think Ruff needs a control flow sensitive analysis to avoid too many false positives, or it would flag:</p>
+<pre><code class="language-python">class Test:
+	def __init__(self, arg):
+		if arg:
+			self.message = &quot;hy&quot;
+		else:
+			self.message = &quot;bye&quot;
+		
+</code></pre>
+<p>which should remain valid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-19 08:35</div>
+            <div class="timeline-body"><blockquote>
+<p>@AlexWaygood how common is it to reassign self variables in the constructor? Like, is this something that's frowned upon</p>
+</blockquote>
+<p>It's pretty common. I wouldn't say that that's frowned upon. If we were to accept this, we'd need a way to distinguish between &quot;pointless&quot; assignments that are immediately overriden, like OP's example, and assignments like your example there which seem fine to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/newresu">@newresu</a> on 2024-06-19 14:55</div>
+            <div class="timeline-body"><p>Also is it possible to flag error here:</p>
+<pre><code>class ThisOne:
+    hello: int 
+   def __init__(self):
+      self.hello=&quot;hi&quot; # error, not an int
+</code></pre>
+<p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-19 15:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Also is it possible to flag error here:</p>
+</blockquote>
+<p>This is something that we can flag once we have type checking support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @newresu on 2024-06-25 23:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Derive] Parse fields with context - clap-rs/clap #1645</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Derive] Parse fields with context</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1645">#1645</a>
+        opened by <a href="https://github.com/Ayplow">@Ayplow</a>
+        on 2020-01-26 19:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Ayplow">@Ayplow</a> on 2020-01-26 19:53</div>
+            <div class="timeline-body"><p>Currently, the <code>Clap</code> macro deserializes options with <code>FromStr</code>. While fine for simple use cases, this doesn't provide the parser the context that the option came from, and precludes common patterns that make use of this information.</p>
+<p>The most common is short options; Without knowing whether an value belongs to a long <code>--type</code> or short <code>-t</code> option, we can't know its' correct representation.</p>
+<p>AFAICT this could be solved simply with a new enum, but the design should be given thought.</p>
+<blockquote>
+<p>This raises the question of whether the presence of <code>=</code> should also be part of the context, but I'm not aware of any use case for it</p>
+</blockquote>
+<pre><code class="language-rust">use myclap::*;
+mod myclap {
+  pub enum Opt&lt;'a&gt; {
+    Short(char),
+    Long(&amp;'a str)
+  }
+  use std::fmt;
+  impl fmt::Display for Opt&lt;'_&gt; {
+      fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+          match self {
+              Self::Short(chr) =&gt; write!(f, &quot;{}&quot;, chr),
+              Self::Long(s) =&gt; write!(f, &quot;{}&quot;, s),
+          }
+      }
+  }
+  pub trait FromOpt: Sized {
+    type Err;
+    fn from_opt(opt: Opt) -&gt; Result&lt;Self, Self::Err&gt;;
+  }
+}
+
+enum Type {
+  Frizzy,
+  Floaty
+}
+impl FromOpt for Type {
+  type Err = String;
+  fn from_opt(opt: Opt) -&gt; Result&lt;Self, Self::Err&gt; {
+    match opt {
+      Opt::Long(&quot;frizzy&quot;) | Opt::Short('z') =&gt; Ok(Self::Frizzy),
+      Opt::Long(&quot;floaty&quot;) | Opt::Short('f') =&gt; Ok(Self::Floaty),
+      _ =&gt; Err(format!(&quot;Unrecognised type '{}'&quot;, opt))
+    }
+  }
+}
+#[derive(Clap)]
+struct Opts {
+  #[clap(short, long, parse(from_opt))]
+  like: Type
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-01-30 19:33</div>
+            <div class="timeline-body"><p>@CreepySkeleton, Would like your feedback here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-01-30 23:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Without knowing whether an value belongs to a long --type or short -t option, we can't know its' correct representation.</p>
+</blockquote>
+<p>Could you please elaborate on this? I'm pretty sure it's simply impossible to distinguish between <code>-f</code> and <code>--foo</code> in clap, and I also think there's no need for such a thing. Short options are supposed to be nothing but shortcuts for long options, and if they aren't, they should be <em>different</em> options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-01 10:13</div>
+            <div class="timeline-body"><p>I'm closing this since I really don't think that distinguishing between short and long options is a good idea. Feel free to reopen if you have a concrete use case that absolutely requires it and can't be solved by other means (like creating separate options).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-02-01 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: wont do</span> added by @pksunkara on 2020-02-01 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @pksunkara on 2020-02-01 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @pksunkara on 2020-02-01 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ayplow">@Ayplow</a> on 2020-02-10 05:53</div>
+            <div class="timeline-body"><p>As an example, here's an option from the <code>readelf</code> cli -</p>
+<pre><code>  -w[lLiaprmfFsoRtUuTgAckK] or
+  --debug-dump[=rawline,=decodedline,=info,=abbrev,=pubnames,=aranges,=macro,=frames,
+               =frames-interp,=str,=loc,=Ranges,=pubtypes,
+               =gdb_index,=trace_info,=trace_abbrev,=trace_aranges,
+               =addr,=cu_index,=links,=follow-links]
+</code></pre>
+<p>For the short form of the option, the value also has a 'short' representation. As a user, this seems intuitive - I use short options when I want to quickly use a feature of the CLI, and needing to write out the full value defeats that.</p>
+<p>I think you're right that separate flags would be ideal, but that only leaves us with 26 flags 😄(realistically less, we don't want to use the whole alphabet)</p>
+<p>Today, this could be implemented with clap by ignoring the context and matching the short and long forms. But this <em>is</em> a workaround, and leaves the door open for user error.</p>
+<blockquote>
+<p>It's also worth noting that limiting the <code>-w</code> option to single characters means <code>readelf</code> can use the same 'grouping' mechanism used for flags - <code>-wprmf</code> enables all four modes.</p>
+</blockquote>
+<p>That said, this is quite niche and one could argue that a CLI with so many flags is badly designed. After some thought there also isn't any clear space for it in clap's API, and in hindsight I think it's probably out of scope</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-10 09:53</div>
+            <div class="timeline-body"><p>Hmm.. We can use utf8 for short flags to increase the range. 💭</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ayplow">@Ayplow</a> on 2020-02-10 09:58</div>
+            <div class="timeline-body"><p>Just in case you're not joking, that sounds terrible for UX. You'd either have to copy the scalar or learn its code to manually type into your terminal. Even if we don't care about terminal support, no keyboards have these keys.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-10 10:00</div>
+            <div class="timeline-body"><p>😄</p>
+<p>You can currently use 52 characters for sure for short flags (both uppercase and lowercase).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ayplow">@Ayplow</a> on 2020-02-10 10:03</div>
+            <div class="timeline-body"><p>At best we have 52 characters available - the upper- and lowercase alphabet - but it's important that the flags are memorable, and using the same letter makes that even harder. By breaking up the grouping into meaningful sections, users are given prompts for remembering the tool they want to use</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-10 12:31</div>
+            <div class="timeline-body"><p>@Ayplow If I'm not mistaken (and I very well can be), this design can be easily implemented with only two args:</p>
+<pre><code class="language-rust">use clap::{Arg, App};
+
+fn validate_short(val: String) -&gt; Result&lt;(), String&gt; {
+    let valid = &quot;lLiaprmfFsoR&quot;;
+
+    for ch in val.chars() {
+        if !valid.contains(ch) {
+            return Err(format!(&quot;valid characters are `{}`&quot;, valid))
+        }
+    }
+
+    Ok(())
+}
+
+fn main() {
+    let matches = App::new(&quot;MyApp&quot;)
+    .arg(
+        Arg::with_name(&quot;short-w&quot;)
+            .short(&quot;w&quot;)
+            .takes_value(true)
+            .validator(validate_short)
+    )
+    .arg(
+        Arg::with_name(&quot;long-w&quot;)
+            .long(&quot;debug-dump&quot;)
+            .takes_value(true)
+            .possible_values(&amp;[
+                &quot;rawline&quot;,
+                &quot;decodedline&quot;,
+                &quot;info&quot;,
+                &quot;abbrev&quot;,
+                &quot;pubnames&quot;,
+                &quot;aranges&quot;,
+                &quot;macro&quot;,
+                &quot;frames&quot;,
+                &quot;frames-interp&quot;,
+                &quot;str&quot;,
+                &quot;loc&quot;,
+                &quot;Ranges&quot;,
+            ])
+    )
+    .get_matches();
+
+    println!(&quot;{:?}&quot;, matches);
+}
+</code></pre>
+<p>No need to introduce tons of flags ¯\<em>(ツ)</em>/¯</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Possible overlap between TRY400 and G201 - astral-sh/ruff #4603</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Possible overlap between TRY400 and G201</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4603">#4603</a>
+        opened by <a href="https://github.com/ericbn">@ericbn</a>
+        on 2023-05-23 14:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ericbn">@ericbn</a> on 2023-05-23 14:05</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h4>test.py</h4>
+<p>Minimal code snipped that reproduces the bug:</p>
+<pre><code>import logging
+
+logger = logging.getLogger()
+try:
+    pass
+except Exception:
+    logger.error(&quot;Error&quot;, exc_info=True)
+</code></pre>
+<h4>Ruff output</h4>
+<p>The command I've invoked: <code>ruff --isolated --select G,TRY test.py</code></p>
+<pre><code>test.py:7:5: TRY400 Use `logging.exception` instead of `logging.error`
+test.py:7:12: G201 Logging `.exception(...)` should be used instead of `.error(..., exc_info=True)`
+Found 2 errors.
+</code></pre>
+<p>After changing the test.py file to:</p>
+<pre><code class="language-diff">-    logger.error(&quot;Error&quot;, exc_info=True)
++    logger.error(&quot;Error&quot;)
+</code></pre>
+<p>I get only:</p>
+<pre><code>test.py:7:5: TRY400 Use `logging.exception` instead of `logging.error`
+Found 1 error.
+</code></pre>
+<p>Maybe the broader TRY400 rule is enough, in favor of G201. Not sure what's the rationale for overlapping/duplicate rules in ruff.</p>
+<h4>ruff --version</h4>
+<pre><code>ruff 0.0.269
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-23 17:37</div>
+            <div class="timeline-body"><p>Hm <code>logger.exception</code> has a different meaning than <code>logger.error</code> — <code>logger.error</code> does not include a traceback unless <code>exc_info</code> is set but <code>logger.exception</code> does. I think these rules cover different cases.</p>
+<ul>
+<li><code>G201</code>: If you're going to log a traceback, use <code>.exception</code> instead of <code>.error</code> — this could be an automatic fix because the meaning is retained</li>
+<li><code>TRY400</code>: If you're going to log an error, always log a traceback — this would only be a suggested fix because it changes behavior</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-24 02:07</div>
+            <div class="timeline-body"><p>Thank you for the extremely clear issue, appreciated as always. I think these are <em>slightly</em> different, but what we <em>could</em> do is change <code>TRY400</code> to avoid flagging <code>logger.error</code> calls with <code>exc_info=True</code>, since those will include a traceback anyway as per the intent of the rule. (Then, suggesting the use of <code>logging.exception</code> over <code>exc_info=True</code> would be covered separately by <code>G201</code>.) What do you think, @madkinsz?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-05-24 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-06-02 04:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4797.html">astral-sh/ruff#4797</a> on 2023-06-02 04:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-02 04:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

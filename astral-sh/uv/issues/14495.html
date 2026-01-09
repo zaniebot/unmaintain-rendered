@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to most efficiently use uv in a Gitlab CI environment? - astral-sh/uv #14495</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to most efficiently use uv in a Gitlab CI environment?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14495">#14495</a>
+        opened by <a href="https://github.com/alechouse97">@alechouse97</a>
+        on 2025-07-07 20:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alechouse97">@alechouse97</a> on 2025-07-07 20:41</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I work on a project that is using uv in a Gitlab CI/CD environment. We test across a number of python versions and have a separate stage run for each version. However, the dependency download step for each stage takes longer than the running of the tests themselves, so the full pipeline spends the majority of its time just downloading dependencies.</p>
+<p>I have tried creating a stage that installs the package (on one python version), caches the uv cache directory, and then has all the test stages pull from this cache. This is much faster since the gitlab cache push and pull is faster than downloading all the deps again, but as expected, only the stage that is testing on the same version the cache was populated with can effectively use the cache. All other versions end up downloading other versions of the dependencies.</p>
+<p>What else on the uv side could be done to speed this process up? Some things I have thought of but not tried yet:</p>
+<ul>
+<li>supply the <code>--python-version</code> argument with the lowest supported version to the <code>uv pip install</code> step of the stage that caches the uv cache?</li>
+<li>lock down dependency versions so only one version can be pulled?</li>
+</ul>
+<p>Any help is appreciated!</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @alechouse97 on 2025-07-07 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-07 22:21</div>
+            <div class="timeline-body"><p>Can you not create a separate cache entry for each Python version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-07 22:22</div>
+            <div class="timeline-body"><p>You could use <code>--fork-strategy fewest</code> (see https://docs.astral.sh/uv/concepts/resolution/#multi-version-resolution)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alechouse97">@alechouse97</a> on 2025-07-07 22:54</div>
+            <div class="timeline-body"><blockquote>
+<p>You could use <code>--fork-strategy fewest</code> (see https://docs.astral.sh/uv/concepts/resolution/#multi-version-resolution)</p>
+</blockquote>
+<p>This looks like a promising option, I will give this a try. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alechouse97">@alechouse97</a> on 2025-07-07 22:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you not create a separate cache entry for each Python version?</p>
+</blockquote>
+<p>Yeah I could definitely do this, I'll see how this works too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alechouse97">@alechouse97</a> on 2025-07-08 17:38</div>
+            <div class="timeline-body"><p>For those that come across this later, after playing around with it, this is the best solution I have found. Below is a job that installs the package and runs the tests across multiple python versions. A different cache exists for each python version and <code>pyproject.toml</code>. Importantly, it also checks to see if the uv cache was pulled by gitlab. If so, we set <code>RM_CACHE=1</code>. At the end of the job, if <code>RM_CACHE=1,</code> we remove the uv cache dir. Gitlab will throw a warning, but it will simply skip the caching step! Pulled the cache &quot;checking&quot; from <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/226068#note_2490000160">this discussion</a>.</p>
+<p>Thanks to uv, the actual install of all the packages is incredibly fast!</p>
+<pre><code class="language-yaml">.test-base:
+  stage: test
+  image: ${IMAGE}
+  needs:
+    - job: build-whl
+      artifacts: true
+  cache:
+    policy: pull-push
+    key:
+      files: [&quot;pyproject.toml&quot;]
+      prefix: $PYTHON_VERSION
+    paths: [$UV_CACHE_DIR]
+  variables:
+    GIT_STRATEGY: none
+  before_script:
+    - &gt;
+      if [[ -d $UV_CACHE_DIR ]]; then
+        echo &quot;cache exists, will remove at end of job to avoid re-caching&quot;
+        export RM_CACHE=1;
+      else
+        echo &quot;cache does not exist, so it will be pushed at end of job&quot;
+        export RM_CACHE=0;
+      fi
+  script:
+    - uv pip install artifacts/*.whl --torch-backend=cpu
+    - pytest
+    - &gt;
+      if [[ $RM_CACHE -eq 1 ]]; then
+        echo &quot;removing cache target to avoid re-cache...&quot;
+        rm -rf $UV_CACHE_DIR
+      fi
+
+python-3.9:
+  extends: .test-base
+  variables:
+    PYTHON_VERSION: &quot;3.9&quot;
+
+python-3.10:
+  extends: .test-base
+  variables:
+    PYTHON_VERSION: &quot;3.10&quot;
+
+python-3.11:
+  extends: .test-base
+  variables:
+    PYTHON_VERSION: &quot;3.11&quot;
+
+python-3.12:
+  extends: .test-base
+  variables:
+    PYTHON_VERSION: &quot;3.12&quot;
+
+python-3.13:
+  extends: .test-base
+  variables:
+    PYTHON_VERSION: &quot;3.13&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @alechouse97 on 2025-07-08 17:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

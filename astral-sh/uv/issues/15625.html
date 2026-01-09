@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Please support getting user consent for ruff download in uv format - astral-sh/uv #15625</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Please support getting user consent for ruff download in uv format</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15625">#15625</a>
+        opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a>
+        on 2025-09-02 08:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-09-02 08:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In Fedora, we are generally uncomfortable with programs installing software from outside of Fedora without the user explicitly requesting it. (Programs that are <em>only</em> useful after downloading external code are actually <a href="https://docs.fedoraproject.org/en-US/packaging-guidelines/what-can-be-packaged/#_packages_which_are_not_useful_without_external_code">prohibited in Fedora</a>.)</p>
+<p>In <a href="https://src.fedoraproject.org/rpms/uv">our <code>uv</code> package</a>, these considerations have lead us to ship an <a href="https://src.fedoraproject.org/rpms/uv/blob/3d17b4874d5ecca6b76ddaf2478fcd651451e55f/f/uv.toml"><code>/etc/uv/uv.toml</code></a> that sets <code>python-downloads = &quot;manual&quot;</code> and <code>python-preference = &quot;system&quot;</code> for Fedora-packaged <code>uv</code>. This has worked quite satisfactorily, and it seems to be working well enough for our users.</p>
+<p><strong>From the same perspective, the new experimental <code>uv format</code> command is a bit concerning for distribution packaging, since its default behavior is to download and execute a pre-compiled binary of a particular version of <code>ruff</code>, and since I suspect many users will not be aware that this is what is happening.</strong> I think that the <code>uv format --version=x.y.z</code> case is not too worrisome, because the user is explicitly requesting a particular version of <code>ruff</code> (and we obviously don’t have a variety of system-wide <code>ruff</code> versions to choose from).</p>
+<p>Obviously, it would be best if the <code>ruff</code> for <code>uv format</code> could instead be our own <a href="https://src.fedoraproject.org/rpms/ruff">system <code>ruff</code> package</a>. However, it’s not reasonably possible, or even necessarily desirable, for us to keep our <code>ruff</code> aligned to the version that’s the default for <code>uv format</code> in the version of <code>uv</code> shipped in each branch. Both packages are nontrivial to maintain (considering their large dependency trees) and have different primary downstream maintainers and current downstream update cadences. Tying them together would not only require even more disciplined and coordinated maintenance, but it would also mean both packages had to be blocked on each other’s dependencies. Besides, we may have other reasons to update one package ahead of the other. I don’t think letting <code>uv format</code> control the version of  <code>ruff</code> in Fedora would be successful in the long run.</p>
+<p>I don’t think we would be wise to patch <code>uv</code> to use a the system <code>ruff</code> <em>regardless of version</em>, either: the <code>ruff</code> version guarantee (and therefore the guarantee of stable/predictable default formatting behavior for a particular <code>uv</code> version) is designed into the <code>uv format</code> interface. If Fedora’s <code>uv format</code> produced different formatted code for a particular <code>uv</code> release than a pip-installed copy of the same <code>uv</code> release, or if the results of <code>uv format</code> changed without updating <code>uv</code> because <code>ruff</code> was updated separately, it seems like that would be a big enough divergence from the upstream behavior that it could be an ugly surprise for users.</p>
+<p>What remains, as <a href="https://src.fedoraproject.org/rpms/uv/pull-request/72#comment-280406">suggested</a> by @hroncok, is that perhaps there could be a configuration option in <code>uv.toml</code> to change the behavior such that, when <code>uv format</code> needs to install the default <code>ruff</code> version, it complains something like “uv format needs ruff 1.2.3.4; use uv format --download-ruff to get it” and exits with a nonzero code. What do you think? Is this a viable avenue? Do you have any alternative ideas for how we could ensure that users of Fedora’s <code>uv</code> package don’t end up installing non-Fedora binaries by accident?</p>
+<p>(Mentioning @decathorpe, who may also be interested in this.)</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @musicinmybrain on 2025-09-02 08:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-02 14:10</div>
+            <div class="timeline-body"><p>Thanks for raising this!</p>
+<p>Can you explain a bit how this is different from <code>uvx ruff</code> downloading Ruff? That's an explicit request?</p>
+<p>If we had used a wheel from PyPI instead of the binary from GitHub, would that be different? If <code>uv format</code> took a configurable Python package to use for formatting, e.g., <code>black</code> or <code>ruff</code> and <code>uv format</code> in a project downloaded it, would that be different? How does this differ from other uv operations in a project which implicitly download packages, e.g., <code>uv run</code>?</p>
+<p>(I want to understand how you're thinking about this before proposing a solution)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-02 18:03</div>
+            <div class="timeline-body"><p>Would it be sufficient for <code>uv format</code> to prompt for consent?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-05 13:50</div>
+            <div class="timeline-body"><p>I'm also supportive of just trying to use the system Ruff version that you provide. I think users that <em>really</em> care about stable formatting should be pinning their formatter version. The feature is young and in preview, so I think it's okay if we learn some lessons here and change the approach in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-09-05 15:35</div>
+            <div class="timeline-body"><p>FWIW, like uv provides the option to use the local system Python, I would use and be supportive of uv having an option here for me to tell uv to just use the ruff already on the path and don't try downloading one.</p>
+<p>That would allow me to solve a lot of different use cases (that aren't distro maintainer related) where I don't want uv going out to the Internet, but I can provide a ruff that I have already installed through some other means.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-09-06 07:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for raising this!</p>
+<p>Can you explain a bit how this is different from <code>uvx ruff</code> downloading Ruff? That's an explicit request?</p>
+</blockquote>
+<p>Please take the following as my personal view on the reasonable application of Fedora’s written and unwritten principles, writing as an experienced packager and as the primary maintainer of the <code>uv</code> package in Fedora – no more and no less. I think what I’m going to write would be widely agreed upon among Fedora packagers, but in the end it’s just me writing, and other Fedora contributors might have somewhat different views.</p>
+<p>We want to make it easy for people to use Fedora-packaged versions of software whenever possible, because we believe that distribution maintenance and integration work has value. That doesn’t mean users should be unable to download and run software built elsewhere if they explicitly choose to do so.</p>
+<p>I think that when a user writes <code>uvx ruff</code> or <code>uv pip install ruff</code>, it’s relatively clear that they are naming an arbitrary PyPI project and expecting it to be installed and/or executed from PyPI. This is the core functionality of the respective commands (<code>uvx</code>/<code>uv run</code>, <code>uv pip</code>) and it’s clear from a casual, careless look at their documentation that this is what they do.</p>
+<p>When a user writes <code>uv format</code>, it is not immediately obvious that this is using Ruff, although Ruff is mentioned a couple of times in reading <code>uv format --help</code> , so this information is available. Still, it would be easy for people who are just following an example that uses <code>uv format</code> to think that the formatting functionality is built in to the packaged <code>uv</code>. Some people have already <a href="https://news.ycombinator.com/item?id=44977645#44978500">misread the announcement of <code>uv format</code></a> and thought that <code>uv</code> and <code>ruff</code> were being merged.</p>
+<p>For users who are already using system packaged versions of <code>uv</code> and <code>ruff</code>, it is even less obvious that calling <code>uv format</code> does something different from calling <code>ruff</code> directly. This is where it starts to feel a bit like the download and installation of a pre-compiled <code>ruff</code> is happening “behind the user’s back” – not nefariously so, but still without the user clearly specifying it.</p>
+<blockquote>
+<p>If we had used a wheel from PyPI instead of the binary from GitHub, would that be different?</p>
+</blockquote>
+<p>I don’t think so.</p>
+<blockquote>
+<p>If <code>uv format</code> took a configurable Python package to use for formatting, e.g., <code>black</code> or <code>ruff</code> and <code>uv format</code> in a project downloaded it, would that be different? How does this differ from other uv operations in a project which implicitly download packages, e.g., <code>uv run</code>?</p>
+</blockquote>
+<p>I’m not sure. Maybe somewhat, but maybe not entirely? Choosing from a list of formatters still feels a little different from naming an arbitrary PyPI project as in <code>uv run</code>, and it feels like the documentation of <code>uv run</code> is quite clear that downloading a command or script and its dependencies into a virtual environment is the core purpose of the command.</p>
+<p>I do think that the case where <code>--version</code> is given to  <code>uv format</code> is given is less problematic in terms of user intent, since a reasonable user should probably expect that using an arbitrary exact version of Ruff will mean downloading it from somewhere.</p>
+<blockquote>
+<p>I'm also supportive of just trying to use the system Ruff version that you provide. I think users that really care about stable formatting should be pinning their formatter version. The feature is young and in preview, so I think it's okay if we learn some lessons here and change the approach in the future.</p>
+</blockquote>
+<p>I think allowing us to somehow configure <code>uv format</code> to use the system Ruff by default would be optimal from a Fedora perspective, if this wouldn’t otherwise be too surprising and disruptive to users – and understanding that in general we won’t be able to reliably align the system Ruff to match the default Ruff for <code>uv format</code> upstream. This seems like it would satisfy @notatallshaw’s needs above, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/onerandomusername">@onerandomusername</a> on 2025-09-09 16:08</div>
+            <div class="timeline-body"><blockquote>
+<p><strong>From the same perspective, the new experimental <code>uv format</code> command is a bit concerning for distribution packaging, since its default behavior is to download and execute a pre-compiled binary of a particular version of <code>ruff</code>, and since I suspect many users will not be aware that this is what is happening.</strong> I think that the <code>uv format --version=x.y.z</code> case is not too worrisome, because the user is explicitly requesting a particular version of <code>ruff</code> (and we obviously don’t have a variety of system-wide <code>ruff</code> versions to choose from).</p>
+</blockquote>
+<p>I had no idea that uv format downloads a copy of ruff by default, I thought that it was vendored into uv at this point. Thanks for pointing it out!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-09-10 00:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I think allowing us to somehow configure <code>uv format</code> to use the system Ruff by default would be optimal from a Fedora perspective, if this wouldn’t otherwise be too surprising and disruptive to users – and understanding that in general we won’t be able to reliably align the system Ruff to match the default Ruff for <code>uv format</code> upstream.</p>
+</blockquote>
+<p>If <code>uv format</code> worked this way by default and didn't find a system-installed Ruff, what do you propose <code>uv format</code> to do in that case? I assume the maintainers of uv would want it to then download and install Ruff as it does today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-09-10 06:18</div>
+            <div class="timeline-body"><blockquote>
+<p>If <code>uv format</code> worked this way by default and didn't find a system-installed Ruff, what do you propose <code>uv format</code> to do in that case? I assume the maintainers of uv would want it to then download and install Ruff as it does today.</p>
+</blockquote>
+<p>I assume it would fail with nonzero exit status and prompt the user to either install the necessary system package or run a manual download command, similar to what happens when <a href="https://docs.astral.sh/uv/reference/settings/#python-downloads"><code>python-downloads = &quot;manual&quot;</code></a> / <a href="https://docs.astral.sh/uv/reference/settings/#python-preference"><code>python-preference = &quot;system&quot;</code></a> are set in <code>uv.toml</code> and a needed Python interpreter version is not installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/onerandomusername">@onerandomusername</a> on 2025-09-10 07:34</div>
+            <div class="timeline-body"><p>I made <a href="https://github.com/astral-sh/uv/issues/15760">an issue</a> regarding my thoughts on the format command as it stands now, and I feel like there's a solution that could satisfy both ends of the scale, from respecting the user's download preferences, to plug and play performance.</p>
+<p>Though if uv supported and only downloaded ruff to use if a particular field was set, I think that would solve both problems</p>
+<pre><code class="language-toml">[tool.uv]
+format.requirements = [&quot;ruff==0.11.2&quot;] # pep 440 identifier
+</code></pre>
+<p>This seems like it would solve the concerns from both sides: user has to opt in and version can be changed and provide room for future expansion even if the only package allowed for now is ruff.</p>
+<p>That said, this config line could be included in <code>uv init</code> to begin projects with this feature enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-09-21 06:28</div>
+            <div class="timeline-body"><p>Any progress on considering how and whether this might be implemented? I’ve held off on updating uv past 0.8.11 in Fedora, hoping for a resolution, but at some point I will need to choose a path forward regardless of what happens with <code>uv format</code>. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-21 15:20</div>
+            <div class="timeline-body"><p>I think either</p>
+<ol>
+<li>A build time feature flag which enables a prompt for consent to download</li>
+<li>A configuration option to use a specific Ruff executable</li>
+</ol>
+<p>(1) seems easier and would be nice to have for, e.g., Python downloads, so you don't need to turn those off via the uv configuration file. (2) seems a little tricky when the user requests a different Ruff version — I think there's some additional design work we'd need to do to figure out how to make the experience reasonable.</p>
+<p>I don't have the time to implement either patch right this second, but I'm happy to review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-discord/site/pulls/1566.html">python-discord/site#1566</a> on 2025-10-21 20:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

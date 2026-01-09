@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheel selection does not order by build tag correctly - astral-sh/uv #9673</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wheel selection does not order by build tag correctly</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9673">#9673</a>
+        opened by <a href="https://github.com/jonded94">@jonded94</a>
+        on 2024-12-06 10:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jonded94">@jonded94</a> on 2024-12-06 10:54</div>
+            <div class="timeline-body"><p>Given this <a href="https://github.com/astral-sh/uv/issues/3779">issue</a> I would have assumed that <code>uv</code> is capable to choose the most recent built tag version of a package whenever there are multiple versions of it.</p>
+<p>Atleast with an internal package registry that doesn't seem to work for me. I'm using  Nexus 3.70.3-01 &amp; uv 0.5.6.</p>
+<p><strong>Building two wheels with different build tags</strong></p>
+<p>Given this build command (I built with <a href="https://scikit-build-core.readthedocs.io/en/latest/configuration.html#customizing-the-output-wheel">scitkit-build-core</a>)</p>
+<pre><code>uv build --config-settings=&quot;wheel.build-tag=[number]&quot; --wheel
+</code></pre>
+<p>, I build a wheel with a build tag of either 141 or 148 which just contains a function returning the build tag which I chose when building the wheel:</p>
+<pre><code>__all__ = [&quot;version&quot;]
+
+def version() -&gt; int:
+    return 141  # or 148, respectively
+</code></pre>
+<p><strong>Installing wheel</strong></p>
+<p>Now I create another testproject that depends on the testproject and create a lock file:</p>
+<pre><code>$ uv add --index https://nexus.[...]/repository/pip/simple/ testproj==0.0.1
+$ cat uv.lock
+version = 1
+requires-python = &quot;==3.10.*&quot;
+
+[[package]]
+name = &quot;testproj&quot;
+version = &quot;0.0.1&quot;
+source = { registry = &quot;https://nexus.[...]/repository/pip/simple/&quot; }
+wheels = [
+    { url = &quot;https://nexus.[...]/repository/pip/packages/testproj/0.0.1/testproj-0.0.1-141-cp310-cp310-linux_x86_64.whl&quot;, hash = &quot;...&quot; },
+    { url = &quot;https://nexus.[...]/repository/pip/packages/testproj/0.0.1/testproj-0.0.1-148-cp310-cp310-linux_x86_64.whl&quot;, hash = &quot;...&quot; },
+]
+
+[[package]]
+name = &quot;new-testproj&quot;
+version = &quot;0.1.0&quot;
+source = { virtual = &quot;.&quot; }
+dependencies = [
+    { name = &quot;testproj&quot; },
+]
+
+[package.metadata]
+requires-dist = [{ name = &quot;testproj&quot;, specifier = &quot;==0.0.1&quot; }]
+</code></pre>
+<p>As one can see, the <code>uv.lock</code> file includes both wheels that have different build tags.</p>
+<p><strong>Testing which version was chosen</strong></p>
+<p>Unfortunately though, it seems that <code>uv</code> now always chooses to install the package with the <code>-141</code> build tag:</p>
+<pre><code>$ uv run python -c &quot;import testproj; print(testproj.version())&quot;
+141
+$ grep Build .venv/lib/python3.10/site-packages/testproj-0.0.1.dist-info/WHEEL
+Build: 141
+</code></pre>
+<p>I would have expected that it sorts the build tags alphanumerically and thereby would result in using the <code>-148</code> build tag wheel. This is how <code>poetry</code> works at least, and this blocks us from switching from <code>poetry</code> to <code>uv</code> unfortunately.</p>
+<p>Is this intended behaviour?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-06 11:51</div>
+            <div class="timeline-body"><p>Fairly certain that we handle this correctly in some places since I've fixed it before, but perhaps not in <code>uv.lock</code>? I'll look. We should be sorting by build tag, yes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-06 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-06 12:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-06 12:23</div>
+            <div class="timeline-body"><p>Confirmed bug, I'll fix it now, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9677.html">astral-sh/uv#9677</a> on 2024-12-06 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-06 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-06 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-06 13:24</div>
+            <div class="timeline-body"><p>Some additional test coverage in https://github.com/astral-sh/uv/pull/9680.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

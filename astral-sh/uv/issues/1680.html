@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursive extras not supported when installing a local package with `package-name[extra] @ .` - astral-sh/uv #1680</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Recursive extras not supported when installing a local package with `package-name[extra] @ .`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1680">#1680</a>
+        opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a>
+        on 2024-02-19 05:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2024-02-19 05:08</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<pre><code class="language-console">$ uv --version                                                        
+uv 0.1.5
+</code></pre>
+<p>Consider:</p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-recursive-extras-repro&quot;
+version = &quot;0.1.0&quot;
+dependencies = [
+    &quot;requests&gt;=2.28&quot;,
+]
+optional-dependencies.tests = [
+    &quot;pytest&quot;,
+]
+optional-dependencies.typing = [
+    &quot;uv-recursive-extras-repro[tests]&quot;,
+    &quot;mypy&quot;,
+]
+</code></pre>
+<p>Installing the <code>[tests]</code> extra works as expected:</p>
+<pre><code class="language-console">$ uv pip install 'uv-recursive-extras-repro[tests] @ .' --no-cache
+Resolved 10 packages in 2.66s
+   Built uv-recursive-extras-repro @ file:///Users/edgarramirez/repro/uv-recursive              Downloaded 10 packages in 545ms
+Installed 10 packages in 16ms
+ + certifi==2024.2.2
+ + charset-normalizer==3.3.2
+ + idna==3.6
+ + iniconfig==2.0.0
+ + packaging==23.2
+ + pluggy==1.4.0
+ + pytest==8.0.1
+ + requests==2.31.0
+ + urllib3==2.2.1
+ + uv-recursive-extras-repro==0.1.0 (from file:///Users/edgarramirez/repro/uv-recursive)
+</code></pre>
+<p>But trying to install <code>[typing]</code> fails:</p>
+<pre><code class="language-console">$ uv pip install 'uv-recursive-extras-repro[typing] @ .'               
+  × No solution found when resolving dependencies:
+  ╰─▶ Because uv-recursive-extras-repro[tests] was not found in the
+      package registry and uv-recursive-extras-repro[typing]==0.1.0
+      depends on uv-recursive-extras-repro[tests], we can conclude that
+      uv-recursive-extras-repro[typing]==0.1.0 cannot be used.
+      And because uv-recursive-extras-repro[typing]&lt;0.1.0 |
+      &gt;0.1.0 was not found in the package registry and you require
+      uv-recursive-extras-repro[typing], we can conclude that the
+      requirements are unsatisfiable.
+</code></pre>
+<p>Related:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/313</li>
+<li>https://github.com/astral-sh/uv/issues/1447</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-19 06:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-02-19 06:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-19 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-19 14:45</div>
+            <div class="timeline-body"><p>I can take this one since it's related to some other issues I fixed. Does it work ok with <code>-e</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2024-02-19 19:25</div>
+            <div class="timeline-body"><blockquote>
+<p>I can take this one since it's related to some other issues I fixed. Does it work ok with <code>-e</code>?</p>
+</blockquote>
+<p>Not AFAICT:</p>
+<pre><code class="language-console">$ uv pip install -e 'uv-recursive-extras-repro[typing] @ .'                                                                                                                                                    
+error: Failed to build editables
+  Caused by: Failed to build editable: file:///Users/edgarramirez/repro/uv-recursive/uv-recursive-extras-repro[typing]%20@%20.
+  Caused by: Source distribution not found at: /Users/edgarramirez/repro/uv-recursive/uv-recursive-extras-repro[typing] @ .
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-19 19:54</div>
+            <div class="timeline-body"><p>You'd need to do <code>uv pip install -e '.[typing]'</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2024-02-19 21:03</div>
+            <div class="timeline-body"><blockquote>
+<p>You'd need to do <code>uv pip install -e '.[typing]'</code></p>
+</blockquote>
+<p>Oh yeah, that totally works 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1729.html">astral-sh/uv#1729</a> on 2024-02-20 02:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-20 02:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

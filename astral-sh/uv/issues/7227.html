@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv build` does not include package contents in wheel when the project name is different from the package - astral-sh/uv #7227</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv build` does not include package contents in wheel when the project name is different from the package</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7227">#7227</a>
+        opened by <a href="https://github.com/albireox">@albireox</a>
+        on 2024-09-09 18:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/albireox">@albireox</a> on 2024-09-09 18:25</div>
+            <div class="timeline-body"><p>I have a project with the following relevant (?) <code>pyproject.toml</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;lvm-ln2fill&quot;
+requires-python = &quot;&gt;=3.12,&lt;4&quot;
+
+[tool.uv]
+package = true
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.sdist]
+packages = [&quot;src/ln2fill&quot;]
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/ln2fill&quot;]
+</code></pre>
+<p>The directory structure is</p>
+<pre><code>|
+|— src/
+|—— ln2fill/
+|——— __init__.py
+|——— ...
+|— pyproject.toml
+</code></pre>
+<p>so that the project name (<code>lvm-ln2fill</code>) is different from the package to include <code>src/ln2fill</code>.</p>
+<p>When I do <code>uv build</code> the source file looks fine and has all the files in <code>src/ln2fill</code> but the wheel only contains the metadata and no code files. With the same configuration, if I do <code>uvx hatch build</code> both the source and wheel look fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 18:28</div>
+            <div class="timeline-body"><p>What does <code>python -m build</code> give you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albireox">@albireox</a> on 2024-09-09 19:54</div>
+            <div class="timeline-body"><p>It seems the same happens with <code>python -m build</code>. The source tar file looks fine but the wheel doesn't include any code, so maybe this is an issue with <code>hatch</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albireox">@albireox</a> on 2024-09-09 20:14</div>
+            <div class="timeline-body"><p>For what it's worth. This works with <code>setuptools</code> for both source and wheel.</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;setuptools&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[tool.setuptools.packages.find]
+where = [&quot;src&quot;]
+include = [&quot;ln2fill*&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-16 01:57</div>
+            <div class="timeline-body"><p>Okay, thanks. If you see the same behavior with <code>python -m build</code>, I consider it an issue with <code>hatch</code>, since <code>python -m build</code> is effectively a canonical build frontend. Gonna close out, but happy to answer any questions...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-16 01:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

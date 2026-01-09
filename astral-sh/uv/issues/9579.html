@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve `tool list` output when tool interpreter is missing - astral-sh/uv #9579</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve `tool list` output when tool interpreter is missing</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9579">#9579</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-12-02 15:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-02 15:50</div>
+            <div class="timeline-body"><p>We currently show &quot;Python interpreter not found at <code>...</code>&quot; which is not very helpful, we should provide more context on what's going on.</p>
+<pre><code>❯ uv tool list
+ansible-core v2.17.5
+- ansible
+- ansible-config
+- ansible-connection
+- ansible-console
+- ansible-doc
+- ansible-galaxy
+- ansible-inventory
+- ansible-playbook
+- ansible-pull
+- ansible-test
+- ansible-vault
+Python interpreter not found at `/Users/zb/.local/share/uv/tools/black/bin/python3`
+</code></pre>
+<pre><code>❯ tree /Users/zb/.local/share/uv/tools/black/ -L 3
+/Users/zb/.local/share/uv/tools/black/
+├── CACHEDIR.TAG
+├── bin
+│   ├── activate
+│   ├── activate.bat
+│   ├── activate.csh
+│   ├── activate.fish
+│   ├── activate.nu
+│   ├── activate.ps1
+│   ├── activate_this.py
+│   ├── black
+│   ├── blackd
+│   ├── deactivate.bat
+│   ├── normalizer
+│   ├── pydoc.bat
+│   ├── python -&gt; /Users/zb/.local/share/uv/python/cpython-3.13.0+freethreaded-macos-aarch64-none/bin/python3.13t
+│   ├── python3 -&gt; python
+│   └── python3.13 -&gt; python
+├── lib
+│   └── python3.13t
+│       └── site-packages
+├── pyvenv.cfg
+└── uv-receipt.toml
+
+5 directories, 18 files
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-12-02 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-12-02 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aretrace">@aretrace</a> on 2025-01-04 20:54</div>
+            <div class="timeline-body"><p>😅 what is going on?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-04 22:29</div>
+            <div class="timeline-body"><p>The interpreter in <code>black</code>'s virtual environment is broken. So.. we should report this as a problem with that tool. This is easy to encounter if you upgrade or uninstall interpreters frequently, e.g., my setup is borked:</p>
+<pre><code>❯ uv tool list
+Python interpreter not found at `/Users/zb/.local/share/uv/tools/ansible-core/bin/python3`
+Python interpreter not found at `/Users/zb/.local/share/uv/tools/black/bin/python3`
+fastapi v0.115.6
+- fastapi
+Python interpreter not found at `/Users/zb/.local/share/uv/tools/rooster-blue/bin/python3`
+</code></pre>
+<p>The warning if we're missing a receipt might be helpful in guiding how we should do this?</p>
+<pre><code>❯ rm /Users/zb/.local/share/uv/tools/rooster-blue/uv-receipt.toml
+❯ uv tool list
+Python interpreter not found at `/Users/zb/.local/share/uv/tools/ansible-core/bin/python3`
+Python interpreter not found at `/Users/zb/.local/share/uv/tools/black/bin/python3`
+fastapi v0.115.6
+- fastapi
+warning: Ignoring malformed tool `rooster-blue` (run `uv tool uninstall rooster-blue` to remove)
+</code></pre>
+<p>Perhaps we should hint how to reinstall since we have that information when a receipt is present?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-01-04 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aretrace">@aretrace</a> on 2025-01-06 03:37</div>
+            <div class="timeline-body"><p>I have encountered this issue and was unaware that it might arise from frequently upgrading or uninstalling interpreters (which I often do). Why does this happen?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-06 05:09</div>
+            <div class="timeline-body"><p>If you remove the interpreter, the tool's virtual environment continues to reference it (on Unix, via a symbolic link), but it does not exist and therefore cannot be used.</p>
+<p>We could detect that it's in use and prevent uninstallation, e.g., per https://github.com/astral-sh/uv/issues/4718, but there will always be cases we can't catch (i.e., virtual environments created outside of uv).</p>
+<p>It's on our radar to improve the behavior here, just lots else to do :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aretrace">@aretrace</a> on 2025-01-07 04:23</div>
+            <div class="timeline-body"><p>Ahh yes, tools need to run under some interpreter, I assume they just reference whatever interpreter that happens to be &quot;selected&quot; when the tool installs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10409.html">astral-sh/uv#10409</a> on 2025-01-08 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-09 21:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

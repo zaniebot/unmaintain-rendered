@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>meson-python compiled extensions built twice with `uv sync --no-editable` and dynamic version - astral-sh/uv #10996</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>meson-python compiled extensions built twice with `uv sync --no-editable` and dynamic version</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10996">#10996</a>
+        opened by <a href="https://github.com/lgarrison">@lgarrison</a>
+        on 2025-01-27 18:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lgarrison">@lgarrison</a> on 2025-01-27 18:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv sync --no-editable</code> is building the compiled extensions in my project twice. The conditions to reproduce are a bit specific, it seems to require:</p>
+<ol>
+<li>meson-python build backend,</li>
+<li><code>dynamic = [&quot;version&quot;]</code> in <code>pyproject.toml</code>,</li>
+<li><code>uv sync --no-editable</code>, not <code>uv pip install</code> or <code>pip install</code>.</li>
+</ol>
+<p>The first compilation seems to happen in the metadata phase, under <code>mesonpy.build_editable</code>. Presumably this is related to version resolution? <code>build_editable</code> isn't called in the <code>uv pip</code> version, however. The second compilation happens in <code>mesonpy.build_wheel</code>, which seems normal.</p>
+<p>I did a spot-check of a scikit-build-core project and didn't see a double build, for what it's worth.</p>
+<p>While odd, this bug/behavior isn't causing any real problems, so feel free to treat it as low priority.</p>
+<h2>Logs</h2>
+<p><a href="https://github.com/user-attachments/files/18562971/uv-sync.txt">uv-sync.txt</a>
+<a href="https://github.com/user-attachments/files/18562972/uv-pip.txt">uv-pip.txt</a></p>
+<p>The two <code>ccache cc ...</code> blocks are where the compilations are happening in the sync log.</p>
+<h2>Steps to reproduce</h2>
+<p>Here is a reproducer on a small project. I'm happy to work on making it more minimal if that would be helpful.</p>
+<pre><code>❯ git clone https://github.com/lgarrison/pycorrfunc.git
+❯ cd pycorrfunc
+❯ git checkout c869af8feb936960ef3673aa0974eb332c47fc8a
+❯ uv sync -v --no-editable
+</code></pre>
+<h3>Platform</h3>
+<p>Rocky 8 Linux</p>
+<h3>Version</h3>
+<p>0.5.24</p>
+<h3>Python version</h3>
+<p>3.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @lgarrison on 2025-01-27 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 18:45</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-27 20:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

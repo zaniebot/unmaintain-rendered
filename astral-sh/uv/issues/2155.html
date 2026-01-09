@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print installation path when running `uv pip install` - astral-sh/uv #2155</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Print installation path when running `uv pip install`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2155">#2155</a>
+        opened by <a href="https://github.com/danielhollas">@danielhollas</a>
+        on 2024-03-04 14:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-03-04 14:05</div>
+            <div class="timeline-body"><p>Hey :wave:</p>
+<p>Small feature request: It would be great if <code>uv</code> printed the path where it is installing the packages when running <code>uv pip install</code>. I am currently debugging a weird issue in GHA while using <code>uv pip install --system</code> and it is not clear how to check where uv ends up installing stuff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-04 14:31</div>
+            <div class="timeline-body"><p>Have you tried running with <code>--verbose</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-03-04 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-03-04 23:01</div>
+            <div class="timeline-body"><p>Yeah, indeed running with verbose prints this:</p>
+<pre><code> uv_interpreter::python_query::find_default_python 
+      0.004003s   0ms DEBUG uv_interpreter::python_query Starting interpreter discovery for default Python
+      0.004109s   0ms DEBUG uv_interpreter::interpreter Probing interpreter info for: /opt/hostedtoolcache/Python/3.10.13/x64/bin/python3
+      0.039094s  35ms DEBUG uv_interpreter::interpreter Found Python 3.10.13 for: /opt/hostedtoolcache/Python/3.10.13/x64/bin/python3
+    0.039395s DEBUG uv::commands::pip_install Using Python 3.10.13 environment at /opt/hostedtoolcache/Python/3.10.13/x64/bin/python3
+</code></pre>
+<p>To me, this is not very easy to parse, and even find among the rest of the huge debug output. At least for the <code>--system</code> flag seems like a good info to print by default, especially given the number of issues / corner cases that have been reported (and fixed!) for this particular option. But of course opinions might vary. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-03-05 12:42</div>
+            <div class="timeline-body"><pre><code>it is not clear how to check where uv ends up installing stuff.
+</code></pre>
+<p>I've already been bitten multiple times by this, installing stuff in the wrong venv.
+Because I have 100 venvs on my system,<br />
+and I really dislike activating a venv  (because it's an anti-patteren creating state in that specific shell.)</p>
+<p>with actual pip, it's not really an issue, because you are always using the pip from inside the virtualenv</p>
+<pre><code>&gt; uv pip install pytest
+Resolved 4 packages in 286ms
+Downloaded 1 package in 64ms
+Installed 4 packages in 21ms
+ + iniconfig==2.0.0
+ + pytest==8.0.2
+  ...
+</code></pre>
+<p>A much more userfriendly output would be to include the path somewhere</p>
+<pre><code>&gt; uv pip install pytest
+Resolved 4 packages.                                &lt;- I don't care about how many millisecs it takes,  it's visual pollution
+Downloaded 1 package.                           &lt;- which one?  what if I don't expect to download anything new?
+Installed 4 packages in /tmp/foo/.venv/   &lt;- include path
+  ...
+  + iniconfig==2.0.0
+ + pytest==8.0.2  (dowloaded)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-03-18 22:29</div>
+            <div class="timeline-body"><p>So, I love the new more concise verbose output (-v), however, I will still lobby for <code>uv</code> to print the install location by default. :blush:</p>
+<p>As previous commenter pointed out, it's too easy to make a mistake and not notice it (e.g. forgetting to deactivate the environment, switch to different directory with its own .venv, and then running <code>uv pip install</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-20 04:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 03:07</div>
+            <div class="timeline-body"><p>Considering starting by showing the path if it's not <code>.venv</code> (i.e., a virtualenv in the current working directory).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-26 14:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Considering starting by showing the path if it's not <code>.venv</code> (i.e., a virtualenv in the current working directory).</p>
+</blockquote>
+<p>I think this would be really useful. I was just caught out by <code>uv</code> unexpectedly installing things into my <code>~dev/.venv</code> environment, rather than my <code>~dev/project/env</code> environment, because I didn't have the latter activated, and <code>uv</code> searched up through the directory structure until it found a virtual environment called <code>.venv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2500.html">astral-sh/uv#2500</a> on 2024-04-22 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-04-22 21:44</div>
+            <div class="timeline-body"><p>another separate, but related nicety would be printing out the <code>Location</code> column that <code>pip list --verbose</code> prints:</p>
+<pre><code>$ pip list --verbose
+Package            Version     Location                                                            Installer
+------------------ ----------- ------------------------------------------------------------------- ---------
+asttokens          2.4.1       /Users/chankang/.pyenv/versions/3.12.2/lib/python3.12/site-packages uv
+build              1.2.1       /Users/chankang/.pyenv/versions/3.12.2/lib/python3.12/site-packages uv
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2024-06-19 00:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-06-19 00:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">tracing</span> added by @zanieb on 2024-06-19 00:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2024-07-01 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @zanieb on 2024-07-01 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-01 21:57</div>
+            <div class="timeline-body"><p>I think it'd be reasonable to start with this: https://github.com/astral-sh/uv/issues/2155#issuecomment-2019302112</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielenricocahall">@danielenricocahall</a> on 2024-07-04 16:31</div>
+            <div class="timeline-body"><p>Hi! I wanted to look into this - would it be a matter of updating the line in <code>uv/src/commands/pip/operations.rs</code> to something like:</p>
+<pre><code class="language-rust">        writeln!(
+            printer.stderr(),
+            &quot;{}&quot;,
+            format!(
+                &quot;Installed {} in {} to {}&quot;,
+                format!(&quot;{} package{}&quot;, wheels.len(), s).bold(),
+                elapsed(start.elapsed()),
+                venv.python_executable().display()
+            )
+            .dimmed()
+        )?;
+</code></pre>
+<p>Based on the test results it looks correct (although it looks like we would need to update the snapshots)</p>
+<pre><code>Installed 3 packages in [TIME] to /private/var/folders/7s/q0mx5qbs78bfgpclqx_8tknm0000gn/T/.tmpRu7Vx5/.venv/bin/python3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-04 16:34</div>
+            <div class="timeline-body"><p>We'd want to only display the path if it's not in the working directory which would require some sort of <code>if/else</code>. As a minor note, we use <code>.user_display()</code> for paths. Otherwise that seems like a reasonable place to start. Maybe we should print</p>
+<blockquote>
+<p>Installing to environment at {path}</p>
+</blockquote>
+<p>before this message instead of adding to the end of it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielenricocahall">@danielenricocahall</a> on 2024-07-04 20:15</div>
+            <div class="timeline-body"><p>Sure! I have something like this:</p>
+<pre><code class="language-rust">        let python_executable = venv.python_executable();
+        let venv_dir_canonical = fs::canonicalize(&quot;.venv&quot;).unwrap_or(PathBuf::from(&quot;.venv&quot;));
+        let is_outside_working_directory = !(python_executable.starts_with(&amp;venv_dir_canonical));
+        if is_outside_working_directory {
+            writeln!(
+                printer.stderr(),
+                &quot;{}&quot;,
+                format!(
+                    &quot;Installing to environment at {}&quot;,
+                    python_executable.user_display()
+                )
+            )?;
+        }
+</code></pre>
+<p>I wasn't sure the best way to check for being in <code>.venv</code> so definitely open to suggestions there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4835.html">astral-sh/uv#4835</a> on 2024-07-05 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Aditya-PS-05">@Aditya-PS-05</a> on 2024-09-15 07:21</div>
+            <div class="timeline-body"><p>There are
+1.) deleting packages
+2.) updating packages
+3.) resolving packages
+4.) auditing packages
+5.) installing packages</p>
+<p>Should I print the path in every place or just at installing packages?
+Which will be good practice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Aditya-PS-05">@Aditya-PS-05</a> on 2024-09-15 07:23</div>
+            <div class="timeline-body"><p>I am trying to print the path at every place where some changes in packaging is occuring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7407.html">astral-sh/uv#7407</a> on 2024-09-15 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7422.html">astral-sh/uv#7422</a> on 2024-09-16 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7850.html">astral-sh/uv#7850</a> on 2024-10-01 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-02 14:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

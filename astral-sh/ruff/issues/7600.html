@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`unnecessary-pass` (`PIE790`) only checks for docstrings immediately followed by a `pass` statement - astral-sh/ruff #7600</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`unnecessary-pass` (`PIE790`) only checks for docstrings immediately followed by a `pass` statement</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7600">#7600</a>
+        opened by <a href="https://github.com/tjkuson">@tjkuson</a>
+        on 2023-09-22 15:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-09-22 15:58</div>
+            <div class="timeline-body"><p>Currently, <code>PIE790</code> triggers on</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;A docstring.&quot;&quot;&quot;
+    pass
+</code></pre>
+<p>as expected. However, it does not trigger on</p>
+<pre><code class="language-python">def foo():
+    print(&quot;foo&quot;)
+    pass
+</code></pre>
+<p>or</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;A docstring.&quot;&quot;&quot;
+    print(&quot;foo&quot;)
+    pass
+</code></pre>
+<p>which is unexpected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-22 17:37</div>
+            <div class="timeline-body"><p>I think that's an expected behavior as per the implementation. It's detected only when a docstring is followed by the pass statement. Do you think the <a href="https://docs.astral.sh/ruff/rules/unnecessary-pass/">documentation</a> was unclear regarding this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2023-09-22 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-09-23 09:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you think the <a href="https://docs.astral.sh/ruff/rules/unnecessary-pass/">documentation</a> was unclear regarding this?</p>
+</blockquote>
+<p>Yes. Perhaps it's just me, but I think the documentation suggests that it catches all unnecessary <code>pass</code> statements, with a <code>pass</code> statement immediately following a docstring as <em>one example</em> of an unnecessary <code>pass</code> statement. If this really is intended, then I think the documentation (and the name of the rule) should be altered.</p>
+<p>However, might there be merit to changing the implementation to catch <em>all</em> unnecessary <code>pass</code> statements? It would be more befitting of the current rule name and probably more useful to users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-26 02:14</div>
+            <div class="timeline-body"><blockquote>
+<p>However, might there be merit to changing the implementation to catch <em>all</em> unnecessary <code>pass</code> statements? It would be more befitting of the current rule name and probably more useful to users.</p>
+</blockquote>
+<p>Yeah, I'm thinking in the same direction. I think the rule should be updated to catch all such cases.</p>
+<p>It should be fairly simple to implement this as the function body is just a <code>Vec&lt;Stmt&gt;</code>, so we could just check the length of it. If the number of statements is greater than 1 and the last statement is a <code>Pass</code> statement then we can just remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @dhruvmanila on 2023-09-26 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2023-09-26 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2023-09-26 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-26 23:51</div>
+            <div class="timeline-body"><p>Yeah, I don't mind changing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7697.html">astral-sh/ruff#7697</a> on 2023-09-28 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-29 01:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

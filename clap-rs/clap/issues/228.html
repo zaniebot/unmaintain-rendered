@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Various questions about implementation - clap-rs/clap #228</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Various questions about implementation</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/228">#228</a>
+        opened by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a>
+        on 2015-09-06 14:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-06 14:10</div>
+            <div class="timeline-body"><p>Hey all, just reading through code and wondering why various decisions have been made. Oh and this list is unordered and just whatever thoughts appear while reading the code.</p>
+<ol>
+<li>Why is validator <code>Rc</code>'d? Why not a <code>Box</code>?</li>
+<li>Do <code>App</code> and <code>Arg</code> really need so many lifetimes? Can't they all just be bound to one? Why not just own <code>String</code>s?</li>
+<li>How many methods are there to create an <code>App</code>? Yaml, builder macro #217, usage string, manual builder. Am I missing any?</li>
+<li>Why is there a default subcommand of <code>help</code>? Why not at least be opt-in via settings?</li>
+<li>No FAQ? One very expected question; why not use docopt or getopts?</li>
+<li>Does the <code>Arg</code> need to know what group it is in? Shouldn't the groups be handled outside of the <code>Arg</code>?</li>
+<li><code>blacklist</code> for conflicts? Why not just <code>conflicts</code>?</li>
+<li>Any thoughts for using rustfmt to clean up the formatting of the code? The <code>macros.rs</code> for one looks like it could be cleaned up at least visually.</li>
+</ol>
+<hr />
+<p>That'll do for now, but I'll likely update this issue with more questions as I get deeper into the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2015-09-06 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-06 15:57</div>
+            <div class="timeline-body"><p>@james-darkfox Here's some of the answers, all great questions!</p>
+<blockquote>
+<p>Why is validator Rc'd? Why not a Box?</p>
+</blockquote>
+<p>Originally <code>Box</code> was the idea. But if an <code>Arg</code> is marked as <code>global</code> (meaning it's cloned down the child subcommands). I couldn't find a good solution that would satisfy sane lifetime requirements. <code>Rc</code> was simply the easiest method to accomplish this until I've got some time to revisit it...or someone smarter than me changes it ;)</p>
+<blockquote>
+<p>Do App and Arg really need so many lifetimes? Can't they all just be bound to one? Why not just own Strings?</p>
+</blockquote>
+<p>I wish they didn't. In the early days they were all bound to the <code>'static</code> lifetime. But there times when you want pull a piece of information for an <code>App</code> or <code>Arg</code> at runtime, and therefore can't use <code>'static</code>. There may be a way to specify that lifetimes of those particular settings are <em>at least</em> as long as the <code>App</code> struct itself and cut them down...but I haven't played it lately.</p>
+<p>The reason for not using owned Strings was to try and keep <code>clap</code> competitive in the performance department. 99% of the settings and such use a <code>'static</code> lifetime and don't need to be re-allocated in order to be used.</p>
+<blockquote>
+<p>How many methods are there to create an App? Yaml, builder macro #217, usage string, manual builder. Am I missing any?</p>
+</blockquote>
+<p>To build an <code>App</code> there are two (Yaml, and builder pattern, your macro would make three).</p>
+<p>To build an <code>Arg</code> there are three (Builder, usage string, Yaml, and your macro would make four).</p>
+<blockquote>
+<p>Why is there a default subcommand of help? Why not at least be opt-in via settings?</p>
+</blockquote>
+<p>There is only a default subcommand of <code>help</code> when other subcommands have been defined manually. So it's opt-in(ish), being that you only get a <code>help</code> subcommand if you're actually using subcommands. Also, if the user defined a <code>help</code> subcommand themselves, the auto-generated one wouldn't be added (meaning it's only generated if the user hasn't defined one themselves). So the only missing thing I guess is allowing a user to <em>not</em> have a <code>help</code> subcommand at all. If there are users who want a way to opt-out of <code>help</code> I can look at putting that in, just no one has asked for it.</p>
+<blockquote>
+<p>No FAQ? One very expected question; why not use docopt or getopts?</p>
+</blockquote>
+<p>Adding a FAQ is a great idea! To answer that number one question I'd say it's two-fold:</p>
+<p><strong>Reasons to use clap instead of doctopt or getopt</strong></p>
+<ul>
+<li>You want to implement as little of the CLI experience as possible, i.e. just define your valid args and continue on with your application, yet still get all the nice CLI features users expect.</li>
+<li>You need more performance than docopt provides</li>
+<li>You have complex requirements/conflicts between your various valid args</li>
+<li>You want to use subcommands</li>
+<li>You want some sort of custom validation built into the argument parsing process and not as part of your application (which allows for earlier failures, better error messages, more cohesive experience, etc.)</li>
+</ul>
+<p><strong>Reasons to docopt instead clap</strong>:</p>
+<ul>
+<li>You want automatic serialization of your arguments into Rust types</li>
+<li>You already have a docopt usage string already from another project or language</li>
+<li>You simply like the docopt method better...sometimes it's just personal tastes :)</li>
+</ul>
+<p><strong>Reasons to use getopts instead of clap</strong>:</p>
+<ul>
+<li>You need absolutely as few allocations as possible and don't mind implementing nearly everything yourself</li>
+<li>You want to a portion of the arg parsing process to be very custom (i.e. again, implementing the details yourself)</li>
+</ul>
+<blockquote>
+<p>Does the Arg need to know what group it is in? Shouldn't the groups be handled outside of the Arg?</p>
+</blockquote>
+<p>I agree. I think this part is confusing and will probably be removed at 2.x. The idea though is that the Arg doesn't know what group its in, it's just a shorthand for specifying which group to add this Arg to. I.e. you've already set up a group, but didn't add this Arg to it yet.</p>
+<blockquote>
+<p>blacklist for conflicts? Why not just conflicts?</p>
+</blockquote>
+<p>That's just a legacy name that hasn't been refactored yet since it's internal and not public facing.</p>
+<blockquote>
+<p>Any thoughts for using rustfmt to clean up the formatting of the code? The macros.rs for one looks like it could be cleaned up at least visually</p>
+</blockquote>
+<p>Actually yes! :) I ran <code>rustfmt</code> against it a while back, but seeing all the news about <code>rustfmt</code> I think it's time to give it another run :+1:</p>
+<p><strong>Edit:</strong> This is done as of #232</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/229.html">clap-rs/clap#229</a> on 2015-09-06 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/230.html">clap-rs/clap#230</a> on 2015-09-06 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-06 17:05</div>
+            <div class="timeline-body"><p>Thanks! Answers are all good. One typo however:</p>
+<blockquote>
+<p>&quot;You want automatic automatic serialization of your arguments into Rust types&quot; - Reasons for docopt</p>
+</blockquote>
+<p>I have two possible additions that could make clap even better:</p>
+<ul>
+<li>Interactive CLI. An interactive CLI or prompt, shares the same parsing requirements as command line arguments and if it were as easy as a single macro call to generate such prompt, clap could quickly become a direct goto for developers who need some interactive ability to play with their code. (This would likely need to be feature gated)</li>
+<li>Configurable template <code>trait DisplayApp</code> allowing for consumers to decide their own layout (especially useful for an interactive CLI)</li>
+</ul>
+<hr />
+<p>Really like to see opinions for the above two suggestions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-06 18:19</div>
+            <div class="timeline-body"><p>I like the prompt/interactive cli idea, but yeah I would assume this is be feature gated. If you want to work something up we can see how it fits within the rest of clap!</p>
+<p>For the template trait I'd need to see some examples of what you mean. I think I have an idea, but I could be way off too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-06 23:13</div>
+            <div class="timeline-body"><p>Docopt / posix getopt formats are two examples already featured.</p>
+<p>Another example would be a straight list of subcommands where no arguments are even suitable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-07 20:09</div>
+            <div class="timeline-body"><p>It's somewhat possible to do already, albiet in a slightly more manual but more flexible fashion.</p>
+<p>For example, users can override the usage string do display a more doctopt/getopts style usage string (even multi lined) using <code>.usage()</code>. They can also add additional details after the help message using <code>.after_help()</code>. There is also the option to combine what <code>clap</code> calls Options and Flags into a single &quot;Options&quot; sections (a la docopt/getopts) using <code>AppSettings::UnifiedHelpMessage</code> variants. Finally, the user can just simply override the entire help message if that's what they wish to do.</p>
+<p>Do you mean something beyond changing those aspects, or something else entirely?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-07 20:38</div>
+            <div class="timeline-body"><p>The <a href="https://github.com/kbknapp/clap-rs/wiki/FAQ">wiki page</a> FAQ has been started based on the questions listed here. Once we have some good additions/suggestions, etc. I'll put a link to it in the readme as well as create  <code>FAQ.md</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/235.html">clap-rs/clap#235</a> on 2015-09-07 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-07 22:13</div>
+            <div class="timeline-body"><p>I mean like having a trait that iterates over the object to create the textual structure itself. Then you only need to pass the <code>App</code> through such implementations and you'll get your desired string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-09 09:34</div>
+            <div class="timeline-body"><p>All questions answered. Respective spawned issues created. This issue is tracking nothing anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @WildCryptoFox on 2015-09-09 09:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move environment variable parsing to `EnvironmentOptions` - astral-sh/uv #14720</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move environment variable parsing to `EnvironmentOptions`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14720">#14720</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-07-18 12:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-18 12:56</div>
+            <div class="timeline-body"><p>In https://github.com/astral-sh/uv/pull/14662 I added a new <code>EnvironmentOptions</code> abstraction which allows us to express semantics that Clap cannot and perform up-front parsing of non-CLI environment variables, e.g., https://github.com/astral-sh/uv/pull/14544 and https://github.com/astral-sh/uv/pull/14369.</p>
+<p>We should move other extraneous environment variables to be parsed there and provided through our usual settings structs.</p>
+<p>These changes should be relatively easy. We should probably do it one variable at a time.</p>
+<ul>
+<li>[x] <code>UV_HTTP_RETRIES</code></li>
+<li>[ ] <code>UV_COMPILE_BYTECODE_TIMEOUT</code></li>
+<li>[x] <code>UV_HTTP_TIMEOUT</code></li>
+<li>[x] <code>UV_REQUEST_TIMEOUT</code></li>
+<li>[x] <code>HTTP_TIMEOUT</code></li>
+<li>[ ] <code>UV_RUN_RECURSION_DEPTH</code></li>
+<li>[ ] <code>UV_RUN_MAX_RECURSION_DEPTH</code></li>
+<li>[x] <code>UV_CONCURRENT_DOWNLOADS</code></li>
+<li>[x] <code>UV_CONCURRENT_BUILDS</code></li>
+<li>[x] <code>UV_CONCURRENT_INSTALLS</code></li>
+<li>[x] <code>UV_PYTHON_INSTALL_MIRROR</code></li>
+<li>[x] <code>UV_PYPY_INSTALL_MIRROR</code></li>
+<li>[x] <code>UV_PYTHON_DOWNLOADS_JSON_URL</code></li>
+<li>[x] <code>UV_NO_GITHUB_FAST_PATH</code></li>
+<li>[ ] <code>UV_GITHUB_FAST_PATH_URL</code></li>
+<li>[ ] <code>UV_GIT_LFS</code></li>
+<li>[ ] <code>UV_CUDA_DRIVER_VERSION</code></li>
+<li>[ ] <code>UV_AMD_GPU_ARCHITECTURE</code></li>
+<li>[ ] <code>UV_STACK_SIZE</code></li>
+<li>[x] <code>UV_LOG_CONTEXT</code></li>
+<li>[ ] <code>TRACING_DURATIONS_FILE</code></li>
+<li>[ ] <code>UV_LOCK_TIMEOUT</code> (https://github.com/astral-sh/uv/pull/16342#discussion_r2448547512)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-07-18 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2025-07-18 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-18 12:58</div>
+            <div class="timeline-body"><p>For people that want to help out, it'd be good to search for other variables I should add to the todo list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2025-07-18 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-18 17:53</div>
+            <div class="timeline-body"><p>I pulled a bunch with AI, feel free to say that we shouldn't apply it for a given variable if it doesn't make sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zaloog">@Zaloog</a> on 2025-07-30 16:43</div>
+            <div class="timeline-body"><p>Hi @zanieb may I take this one?</p>
+<p>Just started learning rust (motivated by astrals work in the python field), but this looks like a good issue to start getting more into it.
+I might need some guidance on the way though :)</p>
+<p>Since the boolean parsing is already defined, adding the boolean env vars to <code>EnvironmentOptions</code> should be relative straightforward or?
+What do you mean exactly by <code>one variable at a time</code>?</p>
+<p>Best regards</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-30 16:54</div>
+            <div class="timeline-body"><p>Hey @Zaloog, yeah these should be fairly straight-forward. By &quot;one at a time&quot; I mean start with just (for example) <code>UV_HTTP_RETRIES</code> and make sure we're aligned on the pattern instead of moving <em>all</em> of these variables at once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zaloog">@Zaloog</a> on 2025-07-30 17:59</div>
+            <div class="timeline-body"><p>like that @zanieb?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-30 18:40</div>
+            <div class="timeline-body"><p>You'll then need to propagate it to where it's used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zaloog">@Zaloog</a> on 2025-07-31 15:53</div>
+            <div class="timeline-body"><p>the <code>UV_NO_GITHUB_FAST_PATH</code> env var is used in the <code>uv-git</code> crate <a href="https://github.com/astral-sh/uv/blob/fa24d9a5e20434ea8c142f36d13942a9645b5cdf/crates/uv-git/src/resolver.rs#L76">here</a>,</p>
+<p>Id think that I have to add <code>uv-settings</code> as workspace dependency to <code>uv-git</code> to propagate the EnvironmentsOptions,
+I tried to do that, it fails though due to a circular import.</p>
+<p>Or is there a different approach im not aware of?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 15:59</div>
+            <div class="timeline-body"><p>Can't you propagate the setting without passing the entire settings struct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 16:02</div>
+            <div class="timeline-body"><p>You may have picked a hard setting to start with, because the <code>GitResolver</code> doesn't currently store state so you'll either need to make it hold settings or propagate the setting via invocations to the fast path by exposing it on the <code>BuildContext</code>. I'm not sure which is cleaner without digging deeper! We do stash some settings on <code>GitSource</code> so maybe that's the place to do so?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15001.html">astral-sh/uv#15001</a> on 2025-07-31 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zaloog">@Zaloog</a> on 2025-07-31 17:34</div>
+            <div class="timeline-body"><p>I started with the <code>UV_LOG_CONTEXT</code>, the other two booleans might be more effort like you mentioned above.</p>
+<p>Is the approach on propagating it correct in that case?</p>
+<p>For the <code>int</code>-like environment variables, id take a look on how the parsing is done on some current implementation and then
+implement a function similar to <code>parse_boolish_environment_variable</code> but for integers.</p>
+<p>For the string value ones, I think we could break those down further e.g. in environment variables which expect a pathlike string.</p>
+<p>But id focus on the <code>int</code> ones first if thats ok</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zaloog">@Zaloog</a> on 2025-08-17 12:31</div>
+            <div class="timeline-body"><p>I currently do not have much time to continue working on this one. So if anyone else want to take over, feel free</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrey-berenda">@andrey-berenda</a> on 2025-09-18 14:21</div>
+            <div class="timeline-body"><p>Hi
+I want to start with this issue and I think I will start with <code>UV_REQUEST_TIMEOUT</code> env variable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-18 14:25</div>
+            <div class="timeline-body"><p>Feel free!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15937.html">astral-sh/uv#15937</a> on 2025-09-18 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrey-berenda">@andrey-berenda</a> on 2025-09-18 20:56</div>
+            <div class="timeline-body"><p>I created the PR #15937</p>
+<p>This PR is not small because I need to pass <code>environment</code> to a lot of places
+Next PR will be smaller</p>
+<p>Can anyone take a look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16031.html">astral-sh/uv#16031</a> on 2025-09-25 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrey-berenda">@andrey-berenda</a> on 2025-09-25 20:46</div>
+            <div class="timeline-body"><p>I've opened PR #16031. Could someone take a look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16040.html">astral-sh/uv#16040</a> on 2025-09-26 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrey-berenda">@andrey-berenda</a> on 2025-09-26 13:38</div>
+            <div class="timeline-body"><p>One more PR #16040. This one is for parsing http-timeout</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16109.html">astral-sh/uv#16109</a> on 2025-10-03 02:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16223.html">astral-sh/uv#16223</a> on 2025-10-10 08:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrey-berenda">@andrey-berenda</a> on 2025-10-11 17:35</div>
+            <div class="timeline-body"><p>One more PR https://github.com/astral-sh/uv/pull/16223. This one is for parsing concurrency env variables</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16284.html">astral-sh/uv#16284</a> on 2025-10-13 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrey-berenda">@andrey-berenda</a> on 2025-10-13 17:04</div>
+            <div class="timeline-body"><p>One more PR https://github.com/astral-sh/uv/pull/16284
+But some CI checks failed because of timeout or missing API key
+can anyone help me with this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrey-berenda">@andrey-berenda</a> on 2025-10-18 14:18</div>
+            <div class="timeline-body"><p>I do not know how to fix this
+I just added import <code>reqwest-retry</code> and right now <code>Cargo.toml</code> is not changed
+And right now all tests have passed</p>
+<p>Can anyone take a look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16388.html">astral-sh/uv#16388</a> on 2025-10-21 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16342.html">astral-sh/uv#16342</a> on 2025-10-22 08:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2025-10-22 17:18</div>
+            <div class="timeline-body"><p>I noticed that <code>UV_RUN_RECURSION_DEPTH</code> is on the list, but <code>UV_RUN_MAX_RECURSION_DEPTH</code> is not. Should the latter also be included in the list?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrey-berenda">@andrey-berenda</a> on 2025-10-22 20:22</div>
+            <div class="timeline-body"><p>One more PR
+https://github.com/astral-sh/uv/pull/16388</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pandas vet incorrectly marks `torch` code as breaking the pandas linting rules - astral-sh/ruff #4222</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pandas vet incorrectly marks `torch` code as breaking the pandas linting rules</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4222">#4222</a>
+        opened by <a href="https://github.com/pawel-biernacki-roche">@pawel-biernacki-roche</a>
+        on 2023-05-04 12:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pawel-biernacki-roche">@pawel-biernacki-roche</a> on 2023-05-04 12:11</div>
+            <div class="timeline-body"><p><strong>Issue</strong>:
+Pandas vet incorrectly marks <code>torch</code> code as breaking the pandas linting rules</p>
+<p><strong>Current result</strong>:
+<code>path/to/file.py:61:35: PD002 `inplace=True` should be avoided; it has inconsistent behavior</code></p>
+<p><strong>Expected result</strong>:
+No issues raised</p>
+<p><strong>Torch docs</strong>: https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html</p>
+<p><strong>Minimal code/context</strong>:</p>
+<pre><code class="language-!python">    def __init__(
+        self,
+        &lt;abbreviated&gt;
+    ):
+        super().__init__()
+        &lt;abbreviated&gt;
+        self.relu = torch.nn.ReLU(inplace=True)
+</code></pre>
+<p><strong>Command</strong>:
+<code>ruff path/to/file.py</code></p>
+<p><strong>Settings</strong>:</p>
+<pre><code class="language-!toml">[tool.ruff]
+select = [
+    &quot;B&quot;, # bugbear
+    &quot;C90&quot;, # mccabe
+    &quot;E&quot;, # pycodestyle error
+    &quot;F&quot;, # pyflakes
+    &quot;PD&quot;, # pandas vet
+    &quot;PL&quot;, # pylint
+    &quot;RUF&quot;, # ruff specific
+    &quot;UP&quot;, # pyupgrade
+    &quot;W&quot;, # pycodestyle warning
+]
+ignore = [
+    &quot;B006&quot;, # do not use mutable data structures for argument defaults
+    &quot;B008&quot;, # do not perform function call in argument defaults
+    &quot;E731&quot;, # lambda-assignment
+    &quot;PD901&quot;, # bad variable name
+    &quot;PLR0911&quot;, # too many return statements
+    &quot;PLR0912&quot;, # too many branches
+    &quot;PLR0913&quot;, # too many arguments to function call
+    &quot;PLR0915&quot;, # too many statements
+    &quot;PLR2004&quot;, # magic numbers
+    &quot;PLW2901&quot;, # loop variable overwritten by assignment target
+]
+line-length = 80
+target-version = &quot;py37&quot;
+</code></pre>
+<p><strong>Version</strong>:
+<code>ruff 0.0.257</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-04 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-05-04 14:06</div>
+            <div class="timeline-body"><p>I wonder if/how we could check this given our current state.</p>
+<p>Currently we just check if <a href="https://github.com/charliermarsh/ruff/blob/main/crates/ruff/src/rules/pandas_vet/rules/inplace_argument.rs#L66"><code>inplace</code> is used as a kwarg</a>. To avoid false positives, I think we'd have to store all variables that reference DataFrames/Series and apply that check to methods on those variables only. Given that we don't have type-checking (yet) it may be hard to do that in a way that stays up-to-date with Pandas.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-05 18:10</div>
+            <div class="timeline-body"><p>Could we check if it's a call to a <code>torch</code> function? That will always be a false positive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-05 18:10</div>
+            <div class="timeline-body"><p>I guess, more generally, we could check if it's a call to any imported function that isn't <code>pandas</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-05-06 19:37</div>
+            <div class="timeline-body"><p>Sure! I can pick this up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4337.html">astral-sh/ruff#4337</a> on 2023-05-10 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-05-10 14:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

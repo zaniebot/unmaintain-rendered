@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Help Formatting Papercuts - clap-rs/clap #897</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Custom Help Formatting Papercuts</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/897">#897</a>
+        opened by <a href="https://github.com/mitsuhiko">@mitsuhiko</a>
+        on 2017-03-12 14:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2017-03-12 14:15</div>
+            <div class="timeline-body"><p>This is some ideas that would make the usability of custom help pages significantly better. Currently the problems mostly involve subcommands.</p>
+<h2>Subcommand Name in Help Page</h2>
+<p>Currently if you have a binary like <code>foo-bar</code> and a subcommd named <code>blub-blah</code> the help page always formats the first line as <code>foo-bar-blub-blah</code>. There is no option to make it show up as <code>foo-bar blub-blah</code> which makes a lot more sense for many applications.</p>
+<h2>Longer version of <code>about()</code></h2>
+<p>Currently for the main command one can use <code>about()</code> to inject longer text (somewhat, rewrapping does come up as an issue) however <code>about()</code> is used for subcommands in the listing so that cannot get too large.</p>
+<p>Would it be possible to introduce a new <code>explanation()</code> command that accepts a list of &quot;paragraphs&quot; that are rendered after <code>USAGE</code> but before <code>OPTIONS</code>? Eg:</p>
+<pre><code class="language-rust">App::new(&quot;my-subcommand&quot;)
+    .about(&quot;Does something&quot;)
+    .explanation(&amp;[&quot;paragraph 1 with some text&quot;, &quot;paragraph 2 with some text&quot;])
+</code></pre>
+<p>Each paragraph itself would be rewrapped and a double newline inserted between paragraphs. Embedded newlines within a paragraph would most likely have to be preserved. Not sure if there is already support for this sort of stuff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2017-03-12 14:16</div>
+            <div class="timeline-body"><p>For context: <code>sentry-cli</code> (https://github.com/getsentry/sentry-cli) currently has really bad help pages because it's a massive effort to customize them for each subcommand without replacing the entirety of the help system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-03-12 17:02</div>
+            <div class="timeline-body"><p>I've been contemplating adding something similar to this for args to allow a short version of the help and a longer one. This would probably fit nicely with what you're requesting.</p>
+<p>One question though, why a list of paras instead of a single blob of text which could include its own paras?</p>
+<p>Aside: you could use <a href="https://docs.rs/clap/2.21.0/clap/struct.App.html#method.template"><code>App::template</code></a> in the mean time to accomplish this until I get this exact request implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help pages gen</span> added by @kbknapp on 2017-03-12 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @kbknapp on 2017-03-12 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2017-03-12 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2017-03-12 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2017-03-12 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-03-12 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2017-03-12 17:17</div>
+            <div class="timeline-body"><p>The paragraphs might be unnecessary if the text wrapper is paragraph aware.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-04-05 19:55</div>
+            <div class="timeline-body"><p>This should be closed with v2.23 that was just released</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-04-05 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2017-04-09 16:39</div>
+            <div class="timeline-body"><p>I just saw that you added <code>long_about</code>. Sadly it works nothing like what this ticket suggests. Here is how it works currently:</p>
+<p>If you pass <code>--help</code> the subcommand list shows the long about, if you pass <code>-h</code> it shows the short about. On the subcommand's help page only the short about is shown at all times.</p>
+<p>Instead what I am looking for is that a) <code>-h</code> either does not exist or does the same thing as <code>--help</code> and that the long help is only used on the subcommand's own help page.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-04-09 18:23</div>
+            <div class="timeline-body"><p>@mitsuhiko in that case, if you don't use <code>about</code> and <em>only</em> use <code>long_about</code>, it should do what you're looking for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2017-04-09 18:25</div>
+            <div class="timeline-body"><p>Bit then it shows thevlong help texts in the subcommand list which is what
+I do not want.</p>
+<p>Regards,
+Armin</p>
+<p>On Sun, Apr 9, 2017 at 11:23 Kevin K. <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>@mitsuhiko <a href="https://github.com/mitsuhiko">https://github.com/mitsuhiko</a> in that case, if you don't use
+about and <em>only</em> use long_about, it should do what you'r elooking for.</p>
+<p>—
+You are receiving this because you were mentioned.</p>
+<p>Reply to this email directly, view it on GitHub
+<a href="https://github.com/kbknapp/clap-rs/issues/897#issuecomment-292802866">https://github.com/kbknapp/clap-rs/issues/897#issuecomment-292802866</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAAc5ImhtACbTL2WJ8jZvc7kQ41TxK_bks5ruSIVgaJpZM4MajRk">https://github.com/notifications/unsubscribe-auth/AAAc5ImhtACbTL2WJ8jZvc7kQ41TxK_bks5ruSIVgaJpZM4MajRk</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-04-09 18:34</div>
+            <div class="timeline-body"><p>Ah ok, I misunderstood. Then using templates is probably the best way.</p>
+<pre><code class="language-rust">let TEMPLATE = &quot;\
+\
+{bin} {version}
+{author}
+{about}
+
+USAGE:{usage}
+
+EXPLAINATIONS:
+{after-help}
+
+FLAGS:
+{flags}
+
+OPTIONS:
+{options}
+
+ARGS:
+{positionals}&quot;;
+
+App::new(&quot;my-subcommand&quot;)
+    .about(&quot;Does something&quot;)
+    .template(TEMPLATE)
+    .after_help(&quot;paragraph 1 with some text \n\nparagraph 2 with some text&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @kbknapp on 2017-04-09 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2017-04-09 18:36</div>
+            <div class="timeline-body"><p>That's a massive amount of work though and scales badly with large number
+of subcommands. Also requires to customize the template manually depending
+on the configuration of the command.</p>
+<p>I am aware of that option and I decided against it which is why I opened
+this ticket.</p>
+<p>Regards,
+Armin
+On Sun, Apr 9, 2017 at 11:34 Kevin K. <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>Ah ok, I misunderstood. Then using templates is probably the best way.</p>
+<p>let TEMPLATE = &quot;\{bin} {version}{author}{about}USAGE:{usage}EXPLAINATIONS:{after-help}FLAGS:{flags}&quot;</p>
+<p>OPTIONS:
+{options}</p>
+<p>ARGS:
+{positionals}&quot;;App::new(&quot;my-subcommand&quot;)    .about(&quot;Does something&quot;)    .template(TEMPLATE)    .after_help(&quot;paragraph 1 with some text \n\nparagraph 2 with some text&quot;);</p>
+<p>—
+You are receiving this because you were mentioned.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/kbknapp/clap-rs/issues/897#issuecomment-292803511">https://github.com/kbknapp/clap-rs/issues/897#issuecomment-292803511</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAAc5HIaY2ohRepC_4H9xCImeaosdfuKks5ruSShgaJpZM4MajRk">https://github.com/notifications/unsubscribe-auth/AAAc5HIaY2ohRepC_4H9xCImeaosdfuKks5ruSShgaJpZM4MajRk</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-04-09 18:46</div>
+            <div class="timeline-body"><p>Understood. I've re-opened this issue in order to find a better solution. Thanks for the clear up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/netvl">@netvl</a> on 2017-05-03 19:47</div>
+            <div class="timeline-body"><p>I also encountered this problem. I expected that <code>about</code> and <code>long_about</code> behave like this:</p>
+<ul>
+<li>if one of <code>about</code> or <code>long_about</code> is specified, then it is used for the help message after version/author and for the subcommand description in the parent command;</li>
+<li>if both of them are present, then <code>about</code> is used for the subcommand description and <code>long_about</code> is used for the help message after version/author.</li>
+</ul>
+<p>For example, suppose we have a command <code>program</code> and a subcommand <code>do-something</code>. Then if <code>do-something</code> has both <code>about</code> and <code>long_about</code> configured, then <code>program --help</code> displays the following:</p>
+<pre><code>program 0.1.0
+Program help text here.
+
+USAGE:
+    ....
+
+....
+
+SUBCOMMANDS:
+    do-something    Text of the short about here
+</code></pre>
+<p>and <code>program do-something --help</code> displays the following:</p>
+<pre><code>program-do-something
+Text of the long about here.
+
+Maybe containing multiple paragraphs.
+
+USAGE:
+    ...
+</code></pre>
+<p>Also, if the <code>program</code> itself has both long and short abouts, the long about should be used for the main description text (&quot;Program help text here.&quot; above). I'm not sure whether the short about would be needed for programs then, but if I recall correctly it has also something to do with the completion generation, so it probably remains useful.</p>
+<p>In my opinion, such behavior aligns with the intuition why short and longs about texts are really necessary and how they work, and it also allows one to follow the style of full stops usage, when in short abouts there is no ending dot, while keeping the &quot;narrative&quot; format of the long abouts with proper punctuation.</p>
+<p>Currently, if long about is configured together with the short about, it is also used for the subcommands descriptions, and not used for the main description text, which seems quite counterintuitive to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-05-06 22:45</div>
+            <div class="timeline-body"><p>I think the argument can be made that <code>about</code> should <em>always</em> be used for the subcommand list. If one wanted more details you can view that subcommand's help message (which isn't possible in args, hence the <code>long_help</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.25.0" by @kbknapp on 2017-05-06 22:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "2.25.0" by @kbknapp on 2017-10-12 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-06-10 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1037.html">clap-rs/clap#1037</a> on 2018-06-12 14:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

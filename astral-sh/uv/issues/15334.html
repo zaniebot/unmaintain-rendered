@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python installed via uv doesn't work with tox - astral-sh/uv #15334</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Python installed via uv doesn't work with tox</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15334">#15334</a>
+        opened by <a href="https://github.com/canepan">@canepan</a>
+        on 2025-08-17 22:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/canepan">@canepan</a> on 2025-08-17 22:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Kernel: 6.12.10-76061203-generic</p>
+<p>Repo: https://github.com/canepan/bot</p>
+<p>Commands to reproduce (on a system without Python 3.11):</p>
+<pre><code>uv python install cpython3.11
+uvx tox
+</code></pre>
+<p>Expecting tox to run correctly, but instead the following is shown for py311 (py310 from OS works OK):</p>
+<pre><code>py311: install_deps&gt; python -I -m pip install 'flake8&lt;5.0.0' 'importlib-metadata&lt;5.0' pytest-black 'pytest-cov&lt;6.0' 'pytest-flake8; python_version &lt; &quot;3.12&quot;' pytest-mypy pytest-pudb 'pytest&lt;7' setuptools types-mock
+Could not find platform independent libraries &lt;prefix&gt;
+Could not find platform dependent libraries &lt;exec_prefix&gt;
+Python path configuration:
+  PYTHONHOME = (not set)
+  PYTHONPATH = (not set)
+  program name = '/home/nicola/Documenti/dev/tools/.tox/py311/bin/python'
+  isolated = 1
+  environment = 0
+  user site = 0
+  safe_path = 1
+  import site = 1
+  is in build tree = 0
+  stdlib dir = '/install/lib/python3.11'
+  sys._base_executable = '/home/nicola/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/bin/python3.11'
+  sys.base_prefix = '/install'
+  sys.base_exec_prefix = '/install'
+  sys.platlibdir = 'lib'
+  sys.executable = '/home/nicola/Documenti/dev/tools/.tox/py311/bin/python'
+  sys.prefix = '/install'
+  sys.exec_prefix = '/install'
+  sys.path = [
+    '/install/lib/python311.zip',
+    '/install/lib/python3.11',
+    '/install/lib/python3.11/lib-dynload',
+  ]
+Fatal Python error: init_fs_encoding: failed to get the Python codec of the filesystem encoding
+Python runtime state: core initialized
+ModuleNotFoundError: No module named 'encodings'
+
+Current thread 0x00007df16616d740 (most recent call first):
+  &lt;no Python frame&gt;
+py311: exit 1 (0.02 seconds) /home/nicola/Documenti/dev/tools&gt; python -I -m pip install 'flake8&lt;5.0.0' 'importlib-metadata&lt;5.0' pytest-black 'pytest-cov&lt;6.0' 'pytest-flake8; python_version &lt; &quot;3.12&quot;' pytest-mypy pytest-pudb 'pytest&lt;7' setuptools types-mock pid=2468762
+  py39: SKIP (0.04 seconds)
+  py310: OK (10.06=setup[4.41]+cmd[5.65] seconds)
+  py311: FAIL code 1 (0.02 seconds)
+  evaluation failed :( (10.17 seconds)
+</code></pre>
+<h3>Platform</h3>
+<p>Pop!_OS Linux x86_64 22.04 LTS</p>
+<h3>Version</h3>
+<p>uv 0.8.11</p>
+<h3>Python version</h3>
+<p>Python 3.11.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @canepan on 2025-08-17 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zsol">@zsol</a> on 2025-08-19 16:17</div>
+            <div class="timeline-body"><p>This is typically a sign of the CPython installation being completely broken. Does <code>uv run --no-project -p 3.11 python</code> work? If not, does <code>uv python install cpython3.11 --reinstall</code> help?</p>
+<p>FWIW I can't reproduce the error on a Pop!_OS virtual machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/canepan">@canepan</a> on 2025-08-20 19:51</div>
+            <div class="timeline-body"><p>It works:</p>
+<pre><code>nicola@mobile-fun:~ $ uv run --no-project -p 3.11 python
+Python 3.11.13 (main, Aug 14 2025, 16:25:01) [Clang 20.1.4 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/canepan">@canepan</a> on 2025-08-20 21:19</div>
+            <div class="timeline-body"><p>Something odd (from within the project):</p>
+<pre><code>$ /home/nicola/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/bin/python3.11 -m ensurepip
+error: externally-managed-environment
+
+× This environment is externally managed
+╰─&gt; This Python installation is managed by uv and should not be modified.
+
+</code></pre>
+<p>while:</p>
+<pre><code>$ uv run --no-project -p 3.11 python -m ensurepip
+Looking in links: /tmp/tmpgfmq0lj5
+Processing /tmp/tmpgfmq0lj5/setuptools-65.5.0-py3-none-any.whl
+Processing /tmp/tmpgfmq0lj5/pip-24.0-py3-none-any.whl
+Installing collected packages: setuptools, pip
+Successfully installed pip-24.0 setuptools-65.5.0
+</code></pre>
+<p>This second command uses <code>./.venv/bin/python</code>, and after running the above <code>uvx tox -r</code> works and resolves the issue.
+It looks like the only problem was the missing <code>pip</code> in the local <code>.venv</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15517.html">astral-sh/uv#15517</a> on 2025-08-26 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-26 08:39</div>
+            <div class="timeline-body"><p>The underlying problem is https://github.com/astral-sh/python-build-standalone/issues/380, which tox seems to run into. Does it work if you use https://github.com/tox-dev/tox-uv instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../typeddjango/django-stubs/issues/329.html">typeddjango/django-stubs#329</a> on 2025-09-02 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BeRT2me">@BeRT2me</a> on 2025-09-04 18:37</div>
+            <div class="timeline-body"><p>Can confirm that using <code>tox-uv</code> instead works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/python-build-standalone/issues/801.html">astral-sh/python-build-standalone#801</a> on 2025-09-18 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../NLeSC/python-template/pulls/703.html">NLeSC/python-template#703</a> on 2025-11-23 00:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

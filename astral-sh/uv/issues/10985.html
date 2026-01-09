@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>multiple versions of the same package can be installed in some cases when using conflicting extras - astral-sh/uv #10985</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>multiple versions of the same package can be installed in some cases when using conflicting extras</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10985">#10985</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-01-27 14:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-27 14:05</div>
+            <div class="timeline-body"><blockquote>
+<p>I found the problem by trying to reproduce the problem on a new repo. The problem is with package torchmetrics. When it is in the workspace package/dependency this case exists. I have yet not inspect what can be wrong with that package configuration.</p>
+<p>Minimal example:</p>
+<p>Child:</p>
+<pre><code>[project]
+name = &quot;child-surface&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;torchmetrics&gt;=1.1.0&quot;,
+]
+
+
+[project.optional-dependencies]
+cpu = [
+    &quot;torch==2.4.1&quot;, 
+    &quot;torchvision==0.19.1&quot;
+]
+gpu = [
+    &quot;torch==2.4.1&quot;, 
+    &quot;torchvision==0.19.1&quot;,
+    &quot;nvidia-dali-cuda120==1.30.0&quot;,
+]
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;gpu&quot; },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;gpu&quot; },
+]
+torchvision = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;gpu&quot; },
+]
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+<p>Parent:</p>
+<pre><code>[project]
+name = &quot;parent-surface&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[tool.uv.sources]
+child-surface = [{ workspace = true  },]
+
+[tool.uv.workspace]
+members = [&quot;child-surface&quot;]
+
+
+[project.optional-dependencies]
+cpu = [
+    &quot;child-surface[cpu]&gt;=0.0.1&quot;, 
+]
+gpu = [
+    &quot;child-surface[gpu]&gt;=0.0.1&quot;, 
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;gpu&quot; },
+  ],
+]
+</code></pre>
+<p>Full zipped example with lock file:
+<a href="https://github.com/user-attachments/files/18557374/parent-surface.zip">parent-surface.zip</a></p>
+<hr />
+<p>Edit: Looking at their repo and build system in <a href="https://github.com/Lightning-AI/torchmetrics/blob/master/setup.py#L162">setup.py</a> I see that they define <a href="https://github.com/Lightning-AI/torchmetrics/blob/master/requirements/base.txt#L6C1-L6C22">base requirements</a> which is just <code>torch &gt;=2.0.0, &lt;2.7.0</code></p>
+<p>So uv resolver has installed <code>torch==2.4.1+cu124</code> and then installs <code>torch==2.4.1</code> which is strange having two different versions of the same package</p>
+<p>This behavior changed after introducing this change</p>
+</blockquote>
+<p><em>Originally posted by @mchalecki in <a href="https://github.com/astral-sh/uv/issues/10590#issuecomment-2615516581">#10590</a></em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-01-27 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10590.html">astral-sh/uv#10590</a> on 2025-01-27 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-27 14:11</div>
+            <div class="timeline-body"><p>After creating the above two <code>pyproject.toml</code> files (<code>pyproject.toml</code> and <code>child-surface/pyproject.toml</code>), just run <code>uv sync --extra cpu</code> and I at least get (on Linux):</p>
+<pre><code> + torch==2.4.1
+ + torch==2.4.1+cpu
+</code></pre>
+<p>The same thing happens for <code>uv sync --extra gpu</code>, but you get <code>torch==2.4.1+cu124</code> instead.</p>
+<p>My guess here is that when I relaxed the error checking around unconditional enabling of conflicting extras in #10875, this may have uncovered a new bug in how forks are created and managed for conflicting extras? Not sure. But the relevant lines in the lock file are:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;torchmetrics&quot;
+version = &quot;1.6.1&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+dependencies = [
+    { name = &quot;lightning-utilities&quot; },
+    { name = &quot;numpy&quot; },
+    { name = &quot;packaging&quot; },
+    { name = &quot;torch&quot;, version = &quot;2.4.1&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cpu&quot; }, marker = &quot;(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-13-child-surface-cpu') or (platform_machine != 'aarch64' and extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (platform_machine != 'aarch64' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu') or (sys_platform == 'darwin' and extra == 'extra-13-child-surface-cpu') or (sys_platform != 'linux' and extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (sys_platform != 'linux' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu') or (sys_platform == 'darwin' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu') or (extra != 'extra-13-child-surface-cpu' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu')&quot; },
+    { name = &quot;torch&quot;, version = &quot;2.4.1&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cu124&quot; }, marker = &quot;(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-13-child-surface-gpu') or (platform_machine != 'aarch64' and extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (platform_machine != 'aarch64' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu') or (sys_platform != 'linux' and extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (sys_platform != 'linux' and extra != 'extra-13-child-surface-cpu' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu') or (extra != 'extra-13-child-surface-gpu' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu')&quot; },
+    { name = &quot;torch&quot;, version = &quot;2.4.1&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;(extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (extra != 'extra-13-child-surface-cpu' and extra != 'extra-13-child-surface-gpu')&quot; },
+    { name = &quot;torch&quot;, version = &quot;2.4.1+cpu&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cpu&quot; }, marker = &quot;(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-13-child-surface-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-13-child-surface-cpu') or (sys_platform == 'darwin' and extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (sys_platform == 'linux' and extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (sys_platform == 'darwin' and extra != 'extra-13-child-surface-gpu' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu') or (sys_platform == 'linux' and extra == 'extra-13-child-surface-cpu' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu') or (extra != 'extra-13-child-surface-cpu' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu')&quot; },
+    { name = &quot;torch&quot;, version = &quot;2.4.1+cu124&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cu124&quot; }, marker = &quot;(platform_machine != 'aarch64' and extra == 'extra-13-child-surface-gpu') or (sys_platform != 'linux' and extra == 'extra-13-child-surface-gpu') or (extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu')&quot; },
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/14/c5/8d916585d4d6eb158105c21b28cd4b0ed296d74e499bf8f104368de16619/torchmetrics-1.6.1.tar.gz&quot;, hash = &quot;sha256:a5dc236694b392180949fdd0a0fcf2b57135c8b600e557c725e077eb41e53e64&quot;, size = 540022 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/9d/e1/84066ff60a20dfa63f4d9d8ddc280d5ed323b7f06504dbb51c523b690116/torchmetrics-1.6.1-py3-none-any.whl&quot;, hash = &quot;sha256:c3090aa2341129e994c0a659abb6d4140ae75169a6ebf45bffc16c5cb553b38e&quot;, size = 927305 },
+]
+</code></pre>
+<p>The conflict markers are way too complicated me to digest at a glance here, so I think this one requires a bit more investigation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-27 14:12</div>
+            <div class="timeline-body"><p>And note that the conflicting extras defined in the <em>parent</em> package here are superfluous. If I remove them, the bug remains.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "multiple versions of the same package can be installed in some cases when using conflicting dependencies" to "multiple versions of the same package can be installed in some cases when using conflicting extras" by @BurntSushi on 2025-01-27 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2025-01-27 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11075.html">astral-sh/uv#11075</a> on 2025-01-29 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-01-29 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-01-29 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11133.html">astral-sh/uv#11133</a> on 2025-01-31 13:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

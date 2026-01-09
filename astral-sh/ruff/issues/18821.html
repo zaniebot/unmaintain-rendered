@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOC: `PLW1641`'s documentation should emphasize that implementing `__hash__` for mutable objects is unsound - astral-sh/ruff #18821</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>DOC: `PLW1641`'s documentation should emphasize that implementing `__hash__` for mutable objects is unsound</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18821">#18821</a>
+        opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a>
+        on 2025-06-20 10:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-06-20 10:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The &quot;Why is this bad&quot; reads</p>
+<blockquote>
+<p>A class that implements <code>__eq__</code> but not <code>__hash__</code> will have its hash method implicitly set to None, regardless of if a superclass defines <code>__hash__</code>. This will cause the class to be unhashable, which will in turn cause issues when using instances of the class as keys in a dictionary or <strong>members of a set.</strong></p>
+</blockquote>
+<p>(emphasize mine)
+Meanwhile, <a href="https://docs.python.org/3/reference/datamodel.html#set-types"><code>set</code> is documented as a container for <em>immutable</em> objects</a>.
+Indeed, a hash should never change throughout the lifetime of an object, so it is not sound to support hashing for objects that are intended to be mutable.
+I would expect the rule's documentation to emphasize this important limitation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astropy/astropy/issues/18284.html">astropy/astropy#18284</a> on 2025-06-20 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-06-20 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pagerous">@Pagerous</a> on 2025-08-11 16:35</div>
+            <div class="timeline-body"><p>I'm genuinely surprised someone added this rule which is completely invalid and makes false assumptions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-08-11 16:42</div>
+            <div class="timeline-body"><p>how is it invalid ? what false assumptions are you refering too ? (I'm not saying you're wrong, I'd just like to avoid making <em>assumptions</em> about what you mean :))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pagerous">@Pagerous</a> on 2025-08-11 17:08</div>
+            <div class="timeline-body"><blockquote>
+<p>how is it invalid ? what false assumptions are you refering too ? (I'm not saying you're wrong, I'd just like to avoid making <em>assumptions</em> about what you mean :))</p>
+</blockquote>
+<p>I consider the rule invalid because it enforces users to provide the code they don't need. It's totally OK to have either <code>__hash__</code> or <code>__eq__</code>, or both of them, depending what you need. Maybe it didn't sound like that, but I agreed with what you'd written:</p>
+<blockquote>
+<p>a hash should never change throughout the lifetime of an object, so it is not sound to support hashing for objects that are intended to be mutable</p>
+</blockquote>
+<p>The false assumptions that this rule made are:</p>
+<ul>
+<li>all objects are immutable</li>
+<li>all objects can be hashable</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-08-11 17:18</div>
+            <div class="timeline-body"><blockquote>
+<p>It's totally OK to have either <strong>hash</strong> or <strong>eq</strong>, or both of them, depending what you need.</p>
+</blockquote>
+<p>Well if you're writing a library, you cannot make assumptions about what end users actually need. The way I se it, this lint pushes you in a direction that's never incorrect (provided the nuance I want to add). If you don't need it (for writing anything <em>other</em> than a library), you can simply not enable this rule. Is that so bad ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pagerous">@Pagerous</a> on 2025-08-11 18:24</div>
+            <div class="timeline-body"><blockquote>
+<p>this lint pushes you in a direction that's never incorrect</p>
+</blockquote>
+<p>In my humble opinion, custom hashability  has been always an optional ability of Python objects and pushing anyone towards that direction isn't nice. A class with <code>__eq__</code> and  without <code>__hash__</code> isn't incorrect or non-idiomatic, so what's the point of considering it a linting error? Many people learn how to write code by trial-and-error and if &quot;ruff&quot; says it's incorrect, they'll learn that way. But here it's misleading people. So I do think it's incorrect and may cause YAGNI violations.</p>
+<blockquote>
+<p>If you don't need it (for writing anything other than a library), you can simply not enable this rule.</p>
+</blockquote>
+<p>Disabling the rule makes sense to me when I agree that the rule makes sense and I accept my code doesn't fulfil it for some reason. In case of <code>PLW1641</code> I don't think this way as it depends on the class semantics whether <code>__hash__</code> is needed together with <code>__eq__</code> or not, what can't be validated by the static linter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pvandyken">@pvandyken</a> on 2025-08-13 19:23</div>
+            <div class="timeline-body"><p>The difficulty is that I am not aware of an unambiguous way for a linter to determine if a class is meant to be immutable (other than certain library conventions such as <code>attrs.frozen</code>.) As the rule stands, even with a documentation change, one would still get false positives even in legitimate &quot;library&quot; settings.</p>
+<p>For instance, if one reimplemented <code>set</code> in pure python, one would need to leave <code>__hash__</code> unset (or set explicitely to <code>None</code>, which creates other linting problems if actually attempted.) But because <code>set</code> has an <code>__eq__</code>, this rule would be innappropriately triggered.</p>
+<p>So the OP is correct, but this goes beyond a documentation problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20821.html">astral-sh/ruff#20821</a> on 2025-10-13 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackw">@zackw</a> on 2025-11-05 15:00</div>
+            <div class="timeline-body"><p>Possible heuristics for &quot;this is a mutable class&quot; that could help:</p>
+<ul>
+<li>the class inherits from <code>list</code>, <code>dict</code>, <code>set</code>, <code>collections.OrderedDict</code>, any of the <code>collections.abc.Mutable*</code> protocol classes, or any other stdlib class that implements a mutable container</li>
+<li>the class implements <code>__setitem__</code> or <code>__delitem__</code> [refinement: &quot;and the implementation doesn't unconditionally throw an exception&quot;]</li>
+</ul>
+<p>But I do think that adding text along the lines of</p>
+<blockquote>
+<p>Note that <code>__hash__</code> should only be defined for <em>immutable</em> objects.  If this class is mutable, then you should instead annotate it with <code>__hash__ = None</code>.</p>
+</blockquote>
+<p>would be a solid improvement over what there is now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tishka17">@Tishka17</a> on 2025-11-23 16:21</div>
+            <div class="timeline-body"><p>I believe that this check is just completely wrong. The only case for it to be true is when object is already used in set/dict.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] `type &amp; ~Literal[True] &amp; bool` should simplify to `Never` - astral-sh/ruff #15508</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] `type &amp; ~Literal[True] &amp; bool` should simplify to `Never`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15508">#15508</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-01-15 16:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-15 16:34</div>
+            <div class="timeline-body"><p>...but we currently don't do that.</p>
+<p>We currently do the following simplifications:</p>
+<ol>
+<li><code>type &amp; bool &amp; ~Literal[True]</code> -&gt; <code>Never</code></li>
+<li><code>bool &amp; type &amp; ~Literal[True]</code> -&gt; <code>Never</code></li>
+<li><code>bool &amp; ~Literal[True] &amp; type</code> -&gt; <code>Never</code></li>
+<li><code>~Literal[True] &amp; bool &amp; type</code> -&gt; <code>Never</code></li>
+<li><code>type &amp; ~Literal[True] &amp; bool</code> -&gt; <code>type &amp; bool</code> ‼️</li>
+<li><code>~Literal[True] &amp; type &amp; bool</code> -&gt; <code>type &amp; bool</code> ‼️</li>
+</ol>
+<p>After much puzzling, I figured out that this is what currently happens for each intersection:</p>
+<ol>
+<li><code>type &amp; bool &amp; ~Literal[True]</code> -&gt; <code>(type &amp; bool) &amp; ~Literal[True]</code> -&gt; <code>type &amp; Literal[False]</code> -&gt; <code>Never</code></li>
+<li><code>bool &amp; type &amp; ~Literal[True]</code> -&gt; <code>(bool &amp; type) &amp; ~Literal[True]</code> -&gt; <code>type &amp; Literal[False]</code> -&gt; <code>Never</code></li>
+<li><code>bool &amp; ~Literal[True] &amp; type</code> -&gt; <code>(bool &amp; ~Literal[True]) &amp; type</code> -&gt; <code>Literal[False] &amp; type</code> -&gt; <code>Never</code></li>
+<li><code>~Literal[True] &amp; bool &amp; type</code> -&gt; <code>(~Literal[True] &amp; bool) &amp; type</code> -&gt; <code>Literal[False] &amp; type</code> -&gt; <code>Never</code></li>
+<li><code>type &amp; ~Literal[True] &amp; bool</code> -&gt; <code>(type &amp; ~Literal[True]) &amp; bool</code> -&gt; <code>type &amp; bool</code></li>
+<li><code>~Literal[True] &amp; type &amp; bool</code> -&gt; <code>(~Literal[True] &amp; type) &amp; bool</code> -&gt; <code>type &amp; bool</code></li>
+</ol>
+<p>All the simplifications we're doing look correct to me here (simplifying <code>type &amp; ~Literal[True]</code> to <code>type</code> is accurate given that <code>type</code> and <code>Literal[True]</code> are disjoint types). It's just that we're missing some additional simplifications that turn out not just be desirable, but actually <em>necessary for correctness</em> given the simplifications we already have in place. Namely, <code>type &amp; bool</code> <em>must</em> be recognised as disjoint types, given our simplifications of <code>bool &amp; ~Literal[True]</code> -&gt; <code>Literal[False]</code> and given that we recognise <code>type</code> and <code>Literal[True]</code> as being disjoint.</p>
+<p>We'll naturally recognise <code>bool</code> and <code>type</code> as being disjoint once we flesh out our support for <code>@final</code> instance types, so there's nothing to do here that we weren't going to do anyway. But it's quite interesting!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-01-15 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-01-15 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15516.html">astral-sh/ruff#15516</a> on 2025-01-15 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-15 22:46</div>
+            <div class="timeline-body"><p>Good writeup! This is a consequence of the fact that in some places we have (effectively) hardcoded recognition of <code>bool</code> as final, via the fact that it is a union of <code>Literal[False]</code> and <code>Literal[True]</code>, but we don't yet consistently recognize the implications of its finality. So as you say, once we do, this should fall out correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15539.html">astral-sh/ruff#15539</a> on 2025-01-16 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-16 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-16 23:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

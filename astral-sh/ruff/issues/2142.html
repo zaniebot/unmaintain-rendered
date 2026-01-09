@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF005 - astral-sh/ruff #2142</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF005</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2142">#2142</a>
+        opened by <a href="https://github.com/nstarman">@nstarman</a>
+        on 2023-01-24 21:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nstarman">@nstarman</a> on 2023-01-24 21:05</div>
+            <div class="timeline-body"><p>We're having a lively debate at https://github.com/astropy/astropy/pull/14297 and found that RUF005 may not deliver the advertised speed boost.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-24 21:28</div>
+            <div class="timeline-body"><p>Thanks for bringing to my attention. It's not the first time that we've received some feedback on RUF005 (more <a href="https://github.com/charliermarsh/ruff/issues/2054#issuecomment-1399608369">here</a>). I worry that the rule is too opinionated to be enabled without some form of explicit opt-in.</p>
+<p>One solution here would be to move that check out of <code>RUF</code>, and into some category that's widely advertised as requiring explicit opt-in (like <code>XXX</code>, which I don't like, but just trying to convey the point). Users would be required to turns these rules on individually (so <code>--select XXX</code> wouldn't work, and if we add more rules to <code>XXX</code>, they won't be turned on when you upgrade -- you'd have to opt-in). Part of the tension here is that it's not really Ruff's intent to tell you that you <em>should</em> enable this check, only that it's available. (The <code>RUF</code> rules suffer most here because they haven't been categorized yet, and so users are kind of opting into a grab-bag of checks. If that rule was in <code>SIM</code>, it might be less controversial, since all of the simplifications in <code>SIM</code> are subjective.)</p>
+<p>Another would to remove it entirely (in a backwards-compatible way, with a warning, etc.).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-24 21:35</div>
+            <div class="timeline-body"><p>\cc @LefterisJP</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-24 21:38</div>
+            <div class="timeline-body"><p>I think the other comment I'll make here is that I don't anticipate Ruff continually adding &quot;opinionated&quot; checks. Including that one was, perhaps, a mistake. I'd prefer for Ruff to focus on enforcing correctness. The <code>flake8-simplify</code> checks are kind of borderline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-24 21:43</div>
+            <div class="timeline-body"><p>I'll also \cc @akx who implemented the rule. (Not to call you out or ask you to justify it -- it's ultimately my call as to what gets included and what doesn't -- but just so you have a chance to chime in if you'd like :))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nstarman">@nstarman</a> on 2023-01-24 21:45</div>
+            <div class="timeline-body"><p>Thanks for the quick response! Our hurdle was that we encountered this because we have <code>ALL</code> turned on (given the pace of improvement of Ruff it's easy to miss new rules). Personally, I don't mind opinionated rules, but if these are added, perhaps there should be 2 levels of <code>ALL</code>, including (or not) the opinionated rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-24 21:52</div>
+            <div class="timeline-body"><p>Totally. I empathize with a lot of what's being said in that thread. I definitely don't want the pace of Ruff's development to be creating an experience for users whereby they feel they're in constant churn as new rules are added.</p>
+<p>(This is kind of the risk with <code>ALL</code>. It's also a <em>little</em> bit of a risk with other categories, since we could in theory add new rules to <code>flake8-simplify</code> -- but those categories are bounded by the rules implemented in the originating plugin. We don't add rules to <code>SIM</code> that don't exist in <code>flake8-simplify</code>. So at least there are some guardrails...)</p>
+<p>Another thing that's going to help here is the introduction of autofix levels. So we'll let be able to mark rules by the degree of &quot;safety&quot; / &quot;correctness&quot;, and allow users to turn off autofixes that <em>could</em> be incorrect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2023-01-24 23:08</div>
+            <div class="timeline-body"><p>Yeah @nstarman I agree with the reluctancy to apply it to a codebase as linked by Charlie above here is my comment: https://github.com/charliermarsh/ruff/issues/2054#issuecomment-1399617413</p>
+<p>But find it nice still to see those changes, and play with them one by one when testing a new ruff release and figuring out what to keep and what to ignore in our project's settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2023-01-24 23:29</div>
+            <div class="timeline-body"><p>We probably need to mark rules with more details as discussed in #2054. Such as rule A is mainly for consistency, but may reduce performance. Rule B is a no-brainer, consistency and performance. Rule C is a stylistic choice (would need lots of those rules for customizable auto-formatting direction you wanna go).</p>
+<p>So people can easily check when upgrading instead of running timeit tests or googling. And definitely in that detailed explanation have a description as to the thinking behind the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-01-25 04:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-01-25 07:44</div>
+            <div class="timeline-body"><p>Hey, thanks @charliermarsh for cc'ing me in, and sorry for the added churn in astropy, @nstarman et al :)</p>
+<p>For RUF005, I deliberately worded the message as &quot;consider ...&quot; instead of &quot;do this&quot; because it's a bit case-dependent, and as discussed above, the autofix for it should probably be categorized &quot;non-mandatory&quot;.</p>
+<p>However, looking at diffs like</p>
+<pre><code class="language-diff"> available = tuple(sorted(p.stem for p in _COSMOLOGY_DATA_DIR.glob(&quot;*.ecsv&quot;)))
+-__all__ = [&quot;available&quot;, &quot;default_cosmology&quot;] + list(available)
++__all__ = [&quot;available&quot;, &quot;default_cosmology&quot;]
++__all__ += list(available)
+</code></pre>
+<p>in the linked Astropy PR, that looks like it should be</p>
+<pre><code class="language-diff"> available = tuple(sorted(p.stem for p in _COSMOLOGY_DATA_DIR.glob(&quot;*.ecsv&quot;)))
+-__all__ = [&quot;available&quot;, &quot;default_cosmology&quot;] + list(available)
++__all__ = [&quot;available&quot;, &quot;default_cosmology&quot;, *available]
+</code></pre>
+<p>– one big benefit of splatting like that is avoiding going extra calls to <code>list</code> and <code>tuple</code> – so I feel the &quot;consider&quot; wording is appropriate to try and direct the reader to read the suggestion and surrounding code to see if it could be done better...</p>
+<p>On that note, @charliermarsh, it could be pretty cool if &quot;suggestion&quot; fixes could show the actual fix diff inline in the CLI output 🤔, á la</p>
+<pre><code>RUF005: consider using ...
+  - [&quot;available&quot;, &quot;default_cosmology&quot;] + foo + bar
+  + [&quot;available&quot;, &quot;default_cosmology&quot;, *foo, *bar]
+</code></pre>
+<p><strong>EDIT:</strong> I guess <code>--show-source</code> does that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2102.html">astral-sh/ruff#2102</a> on 2023-01-25 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2257.html">astral-sh/ruff#2257</a> on 2023-01-27 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/janosh">@janosh</a> on 2023-02-21 16:48</div>
+            <div class="timeline-body"><p>Just wanted to add to this discussion that <code>RUF005</code> is a bit too eager atm when it comes to <code>numpy</code> arrays.</p>
+<pre><code>import numpy as np
+
+np.arange(3) + [1,1,1]
+&gt;&gt;&gt; [1, 2, 3]
+</code></pre>
+<p>but <code>RUF005</code> turns this into</p>
+<pre><code class="language-py">[*np.arange(3), 1, 1, 1]
+&gt;&gt;&gt; [0, 1, 2, 1, 1, 1]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../DisnakeDev/disnake/pulls/935.html">DisnakeDev/disnake#935</a> on 2023-02-21 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2023-03-01 23:32</div>
+            <div class="timeline-body"><p>I found another problem with RUF005.</p>
+<p>It converts:</p>
+<pre><code class="language-python">import numpy as np
+
+array = np.array([[1, 2, 3], [4,5,6]])
+
+print(array + [5,4])
+</code></pre>
+<p>into</p>
+<pre><code class="language-python">import numpy as np
+
+array = np.array([[1, 2, 3], [4,5,6]])
+
+print([*array, 5, 4])
+</code></pre>
+<p>Which are not equivalent codes.</p>
+<p>I do not have any idea if it is possible to determine if the first argument is a list or numpy array.</p>
+<p>(if It is required I may move it to a separate Issue).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @charliermarsh on 2023-03-01 23:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-01 23:45</div>
+            <div class="timeline-body"><p>Ah yeah, that's hard to detect right now. I'd recommend turning off the rule entirely if you're using <code>numpy</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-03-02 09:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah yeah, that's hard to detect right now. I'd recommend turning off the rule entirely if you're using <code>numpy</code>.</p>
+</blockquote>
+<p>I wonder if we could be smart about that and disable it for now if the module imports <code>numpy</code>... That's of course not quite bullet-proof. I don't know if there's been discussion about a &quot;confidence&quot;/&quot;severity&quot; system for Ruff (or if that's way extra), but RUF005 could be a low-confidence lint...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-21 21:58</div>
+            <div class="timeline-body"><p>Closing for now as I don't <em>think</em> there's anything actionable here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-21 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mozilla/mozanalysis/pulls/214.html">mozilla/mozanalysis#214</a> on 2024-02-29 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pytorch/pytorch/pulls/148190.html">pytorch/pytorch#148190</a> on 2025-02-28 19:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

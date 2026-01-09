@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter undocumented deviation: ruff recurses into .git folder and can try to format files inside. - astral-sh/ruff #7450</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter undocumented deviation: ruff recurses into .git folder and can try to format files inside.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7450">#7450</a>
+        opened by <a href="https://github.com/m-richards">@m-richards</a>
+        on 2023-09-17 06:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/m-richards">@m-richards</a> on 2023-09-17 06:14</div>
+            <div class="timeline-body"><p>This is a quite an obscure edge case, but is still a behaviour difference with black. I maintain an open source project, and have previously checked out a branch from a contributor which they named <code>th-geodataframe.py</code>. This creates files <code>.git\logs\refs\heads\th-geodataframe.py</code> and <code>.git\refs\heads\th-geoseries.py</code> as part of git's internal data.</p>
+<p>I ran <code>ruff format .</code> in the root of the repository to test out how the formatting compares to black and noticed it generated errors for these files, I guess ruff tries to format these as they are text files with a .py extension I guess.</p>
+<p>I'm not exactly sure what black does here - why it doesn't format these (or if it does, why there are no errors). I suppose it might either blanket ignore .git folders or somehow try to check if a file contains valid python.</p>
+<p>It seems it could be reasonable to never recurse into the .git folder? (or at least folders besides hooks, as one could have python file hooks)</p>
+<p>It also seems fair enough to call this a weird edge case and not do anything special for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2023-09-17 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-09-17 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-17 13:18</div>
+            <div class="timeline-body"><p>Uhh, that shouldn't happen. Any chance you set <a href="https://docs.astral.sh/ruff/settings/#respect-gitignore"><code>respect-gitignore</code></a> to false in your project?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/m-richards">@m-richards</a> on 2023-09-18 12:08</div>
+            <div class="timeline-body"><p>Ah, I managed to cut down to a minimal reproducer - it's because we have exclude set:</p>
+<pre><code class="language-toml">
+[tool.ruff]
+
+exclude = [&quot;doc/*&quot;]
+
+</code></pre>
+<p>And I think we should be using extend-exclude instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-18 12:14</div>
+            <div class="timeline-body"><blockquote>
+<p>And I think we should be using extend-exclude instead?</p>
+</blockquote>
+<p>Yes, using <code>extend-exclude</code> should ignore the <code>.git</code> directory as it's included in the default value for <a href="https://docs.astral.sh/ruff/settings/#exclude"><code>exclude</code></a> option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-18 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-09-25 09:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

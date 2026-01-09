@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid re-sync in `uv run` with dynamic metadata - astral-sh/uv #4946</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid re-sync in `uv run` with dynamic metadata</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4946">#4946</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-07-09 21:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-09 21:57</div>
+            <div class="timeline-body"><p><em>No description provided.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-07-09 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-07-09 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-18 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5206.html">astral-sh/uv#5206</a> on 2024-07-19 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-22 00:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-07-24 19:54</div>
+            <div class="timeline-body"><p>I think in <code>uv 0.2.28</code> it still re-syncs on every <code>uv run</code> invocation.</p>
+<p>Seems like 600ms is spent on resolution every time:</p>
+<pre><code>❯ uv run black
+warning: `uv run` is experimental and may change without warning
+Resolved 38 packages in 610ms
+Audited 6 packages in 0.01ms
+</code></pre>
+<p>Some verbose logs:</p>
+<pre><code>    0.304107s  84ms DEBUG uv_resolver::resolver Split specific environment resolution took 0.082s
+       uv_dispatch::install resolution=&quot;hatch-fancy-pypi-readme==24.1.0, hatch-vcs==0.4.0, hatchling==1.25.0, packaging==24.1, pathspec==0.12.1, pluggy==1.5.0, setuptools==71.1.0, setuptools-scm==8.1.0, trove-classifiers==2024.7.2&quot;, venv=&quot;/Users/ahmedilyas/Library/Caches/uv/builds-v0/.tmp16wlC3&quot;
+          0.307448s   0ms DEBUG uv_dispatch Installing in hatch-fancy-pypi-readme==24.1.0, hatch-vcs==0.4.0, hatchling==1.25.0, packaging==24.1, pathspec==0.12.1, pluggy==1.5.0, setuptools==71.1.0, setuptools-scm==8.1.0, trove-classifiers==2024.7.2 in /Users/ahmedilyas/Library/Caches/uv/builds-v0/.tmp16wlC3
+          0.322034s  14ms DEBUG uv_installer::plan Requirement already cached: hatch-fancy-pypi-readme==24.1.0
+          0.329887s  22ms DEBUG uv_installer::plan Requirement already cached: hatch-vcs==0.4.0
+          0.334509s  27ms DEBUG uv_installer::plan Requirement already cached: hatchling==1.25.0
+          0.339634s  32ms DEBUG uv_installer::plan Requirement already cached: packaging==24.1
+          0.344357s  36ms DEBUG uv_installer::plan Requirement already cached: pathspec==0.12.1
+          0.345665s  38ms DEBUG uv_installer::plan Requirement already cached: pluggy==1.5.0
+          0.354954s  47ms DEBUG uv_installer::plan Requirement already cached: setuptools==71.1.0
+          0.355957s  48ms DEBUG uv_installer::plan Requirement already cached: setuptools-scm==8.1.0
+          0.361379s  53ms DEBUG uv_installer::plan Requirement already cached: trove-classifiers==2024.7.2
+          0.361406s  53ms DEBUG uv_dispatch Installing build requirements: hatch-fancy-pypi-readme==24.1.0, hatch-vcs==0.4.0, hatchling==1.25.0, packaging==24.1, pathspec==0.12.1, pluggy==1.5.0, setuptools==71.1.0, setuptools-scm==8.1.0, trove-classifiers==2024.7.2
+         uv_installer::installer::install num_wheels=9
+ uv_installer::installer::install num_wheels=9
+        0.429133s 235ms DEBUG uv_build Calling `hatchling.build.get_requires_for_build_editable()`
+       uv_build::run_python_script script=&quot;get_requires_for_build_editable&quot;, python_version=3.12.1
+        1.152189s 958ms DEBUG uv_build Installing extra requirements for build backend
+ uv_resolver::resolver::solve
+    1.152336s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.12.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-24 19:57</div>
+            <div class="timeline-body"><p>Can you share any more details about your project? Is there anything else in the verbose logs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-07-24 19:58</div>
+            <div class="timeline-body"><p>This was just using black: https://github.com/psf/black</p>
+<p>But I think the same is true for flask too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-24 20:00</div>
+            <div class="timeline-body"><p>But what's the project itself that you're running the command from?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-24 20:00</div>
+            <div class="timeline-body"><p>Like cloning Black?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-07-24 20:00</div>
+            <div class="timeline-body"><p>Yes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-24 20:02</div>
+            <div class="timeline-body"><p>Ok thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5420.html">astral-sh/uv#5420</a> on 2024-07-24 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-24 20:29</div>
+            <div class="timeline-body"><p>Ok after #5423 it goes down to 23ms for me on Black.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-07-24 20:44</div>
+            <div class="timeline-body"><p>Awesome</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement fixer for PLR0402 - astral-sh/ruff #2199</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement fixer for PLR0402</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2199">#2199</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-01-26 16:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-26 16:49</div>
+            <div class="timeline-body"><p>A fixer for <code>PLR0402</code> would be very nice and probably relatively easy:
+<code>import foo.bar as bar</code>
+→
+<code>from foo import bar</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-01-26 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-31 10:31</div>
+            <div class="timeline-body"><p>a quick workaround python script to achieve it:</p>
+<pre><code>import sys
+import subprocess
+
+lines = [line.split(':') for line in subprocess.check_output(['ruff', '-e', '--select', 'PLR0402', *sys.argv[1:]]).decode().splitlines()]
+lines = [line for line in lines if len(line) == 4]
+for filename, _, _, rest in lines:
+    replacement = rest.split('`')[1]
+    module = replacement.split(' ')[-1]
+    package = replacement.split(' ')[1]
+    subprocess.call(['sed', '-i', f's/import {package}.{module} as {module}/{replacement}/g', filename])
+</code></pre>
+<p>don't forget to execute <code>isort</code> afterwards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2504.html">astral-sh/ruff#2504</a> on 2023-02-02 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-03 04:25</div>
+            <div class="timeline-body"><p>Closed by #2504.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-03 04:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

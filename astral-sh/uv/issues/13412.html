@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter source dependencies by pattern - astral-sh/uv #13412</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Filter source dependencies by pattern</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13412">#13412</a>
+        opened by <a href="https://github.com/jzazo">@jzazo</a>
+        on 2025-05-12 15:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jzazo">@jzazo</a> on 2025-05-12 15:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I would like to be able to specify source dependencies by pattern. For example, when I install <code>torch</code> from index-url like cuda, a lot of <code>nvidia-*</code> dependencies if not explicit are installed from pypi if they exist, or not installed at all if they not exist in pypi.</p>
+<h3>Example</h3>
+<p>At the moment I need to do the following to force the torch dependencies to be installed along pytorch using the index-url (because they may not exist in pypi for the given cuda driver).</p>
+<pre><code>[project]
+name = &quot;example-project-uv&quot;
+version = &quot;0.0.12&quot;
+description = &quot;&quot;
+requires-python = &quot;==3.12.*&quot;
+readme = &quot;README.md&quot;
+dependencies = []
+
+[project.optional-dependencies]
+cuda = [
+    &quot;torch==2.6.0&quot;,
+    &quot;nvidia-cublas-cu12&quot;,
+    &quot;nvidia-cuda-cupti-cu12&quot;,
+    &quot;nvidia-cuda-nvrtc-cu12&quot;,
+    &quot;nvidia-cuda-runtime-cu12&quot;,
+    &quot;nvidia-cudnn-cu12&quot;,
+    &quot;nvidia-cufft-cu12&quot;,
+    &quot;nvidia-cufile-cu12&quot;,
+    &quot;nvidia-curand-cu12&quot;,
+    &quot;nvidia-cusolver-cu12&quot;,
+    &quot;nvidia-cusparse-cu12&quot;,
+    &quot;nvidia-nvjitlink-cu12&quot;,
+    &quot;nvidia-nvtx-cu12&quot;,
+    &quot;triton&quot;,
+]
+
+[tool.uv.sources]
+torch = [{ index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }]
+nvidia-cublas-cu12 = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+nvidia-cuda-cupti-cu12 = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+nvidia-cuda-nvrtc-cu12 = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+nvidia-cuda-runtime-cu12 = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+nvidia-cudnn-cu12 = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+nvidia-cufft-cu12 = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+nvidia-cufile-cu12 = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+nvidia-curand-cu12 = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+nvidia-cusolver-cu12 = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+nvidia-cusparse-cu12 = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+nvidia-nvjitlink-cu12 = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+nvidia-nvtx-cu12 = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+triton = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+
+[[tool.uv.index]]
+name = &quot;torchcuda&quot;
+url = &quot;https://download.pytorch.org/whl/cu126&quot;
+explicit = true
+</code></pre>
+<p>This could be done as follows:</p>
+<pre><code>[project]
+name = &quot;example-project-uv&quot;
+version = &quot;0.0.12&quot;
+description = &quot;&quot;
+requires-python = &quot;==3.12.*&quot;
+readme = &quot;README.md&quot;
+dependencies = []
+
+[project.optional-dependencies]
+cuda = [&quot;torch==2.6.0&quot;]
+
+[tool.uv.sources]
+torch = [{ index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }]
+triton = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+&quot;nvidia-*&quot; = { index = &quot;torchcuda&quot;, extra = &quot;cuda&quot; }
+
+[[tool.uv.index]]
+name = &quot;torchcuda&quot;
+url = &quot;https://download.pytorch.org/whl/cu126&quot;
+explicit = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @jzazo on 2025-05-12 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Filter dependencies by pattern" to "Filter source dependencies by pattern" by @jzazo on 2025-05-12 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jzazo">@jzazo</a> on 2025-06-24 10:41</div>
+            <div class="timeline-body"><p>@charliermarsh apologies for pinging, but given that uv has recently released support for pytorch backend, I think this feature is quite related, and I just wanted to draw attention to get an opinion/advise.</p>
+<p>When we install torch with cuda support from explicit index, are extra dependency packages like the nvidia ones pulled from the given index-url? I think there is an issue when such packages are not available in pypi, for example if the index was for cu126.</p>
+<p>I solved it as above, by writing those packages explicitly. I guess if you specify cu128, this is not a problem because the nvidia packages are published in pypi.</p>
+<p>Let me know if I am missing anything. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-05 12:39</div>
+            <div class="timeline-body"><p>Does it work if you follow the torch integration guide (https://docs.astral.sh/uv/guides/integration/pytorch/)? You shouldn't need to declare something for the <code>nvidia-*</code> package at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jzazo">@jzazo</a> on 2025-09-08 15:03</div>
+            <div class="timeline-body"><p>It does work following the integration guide, but sometimes if you set up an index-url with a specific cuda version, the nvidia packages are not taken from the index-url but from pypi. If pypi does not have compatible packages for that pytorch and cuda version, it won't install them. For example, pypi does not have compatible nvidia-* versions for pytorch 2.70 and index-url &quot;<a href="https://download.pytorch.org/whl/cu126%22.">https://download.pytorch.org/whl/cu126&quot;.</a> It will work if you choose &quot;https://download.pytorch.org/whl/cu128&quot;.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

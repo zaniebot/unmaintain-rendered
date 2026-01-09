@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Updating `uv lock` with win32 dependency in uv.sources under linux fails with &quot;Distribution not found at&quot; - astral-sh/uv #13487</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Updating `uv lock` with win32 dependency in uv.sources under linux fails with &quot;Distribution not found at&quot;</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13487">#13487</a>
+        opened by <a href="https://github.com/Timoses">@Timoses</a>
+        on 2025-05-16 11:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Timoses">@Timoses</a> on 2025-05-16 11:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Using the following <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-tests&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;test ; sys_platform == 'win32'&quot;
+]
+
+
+[tool.uv.sources]
+test = { path = &quot;C:/local/test&quot; , marker = &quot;sys_platform == 'win32'&quot; }
+</code></pre>
+<p>Running <code>uv lock</code> results in</p>
+<pre><code>error: Distribution not found at: file:///opt/code/uv-tests/C:/local/test
+</code></pre>
+<p>The reason why I would like to lock:
+On a build server I would probably want to use <code>uv sync --locked</code>, so that there are no unexpected changes in the environment, correct?</p>
+<p>If so, wouldn't it be important to be able to keep the <code>uv.lock</code> file up-to-date even on another OS system? At least as far as that system can gather information.</p>
+<p>Also: Shouldn't it be possible to have different local dependencies specified for various system platforms (linux, windows)? Then <code>uv lock</code> would never work as it would never find the files for other platforms.</p>
+<h3>Platform</h3>
+<p>Debian 6.1.135-1 (2025-04-25) , Linux 6.1.0-34-amd64 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.4</p>
+<h3>Python version</h3>
+<p>Python 3.11.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Timoses on 2025-05-16 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-16 11:28</div>
+            <div class="timeline-body"><p>This is intentional. See https://github.com/astral-sh/uv/issues/13448 for a similar, recent issue. We always resolve for all platforms, so if you run <code>uv lock</code>, we need to ensure that the lockfile is up-to-date, which requires inspecting the dependencies. You can run, e.g., <code>uv sync --frozen</code> to avoid resolving, if you have an existing lockfile on another platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-05-16 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-05-16 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-05-16 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Timoses">@Timoses</a> on 2025-05-19 08:23</div>
+            <div class="timeline-body"><p>Hm, well this basically disallows using absolute paths since <code>C:/...</code> will never be found on systems other than windows. Unfortunate. But thanks for the answer.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

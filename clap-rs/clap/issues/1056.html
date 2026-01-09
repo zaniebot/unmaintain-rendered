@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>default_value() and multiple(true) interact in surprising ways. - clap-rs/clap #1056</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>default_value() and multiple(true) interact in surprising ways.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1056">#1056</a>
+        opened by <a href="https://github.com/Screwtapello">@Screwtapello</a>
+        on 2017-09-28 07:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Screwtapello">@Screwtapello</a> on 2017-09-28 07:29</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p>rustc 1.20.0 (f3d6973f4 2017-08-27)</p>
+<h3>Affected Version of clap</h3>
+<p>clap 2.26.2</p>
+<h3>Steps to Reproduce the issue</h3>
+<p>I want to write a program that's a little bit like <code>ssh</code>: it does some setup, then runs the rest of the command-line arguments as a new process. If there are no other arguments, it just runs a shell. Looking at the clap documentation, I came up with the following pattern:</p>
+<pre><code class="language-rust">extern crate clap;
+
+fn main() {
+    let matches = clap::App::new(&quot;claptest&quot;)
+        .setting(clap::AppSettings::TrailingVarArg)
+        .arg(clap::Arg::with_name(&quot;command&quot;)
+            .multiple(true)
+            .default_value(&quot;/bin/sh&quot;)
+        )
+        .get_matches();
+
+    let command: Vec&lt;_&gt; = matches.values_of_os(&quot;command&quot;).unwrap().collect();
+
+    println!(&quot;Command to run: {:?}&quot;, command);
+}                                                                               
+</code></pre>
+<p>If I build this and run it with no arguments, I get the default, just as I wanted:</p>
+<pre><code>$ ./target/debug/claptest 
+Command to run: [&quot;/bin/sh&quot;]
+</code></pre>
+<p>If I give it a different command to run, I get the default <em>appended</em> to the command I gave:</p>
+<pre><code>$ ./target/debug/claptest foo bar
+Command to run: [&quot;foo&quot;, &quot;bar&quot;, &quot;/bin/sh&quot;]
+</code></pre>
+<p>If there's an explicit value on the command-line, I'd expect that to <em>replace</em> the default, not <em>extend</em> it:</p>
+<pre><code>$ ./target/debug/claptest foo bar
+Command to run: [&quot;foo&quot;, &quot;bar&quot;]
+</code></pre>
+<h3>Workarounds</h3>
+<p>If I don't use <code>.default_value()</code>, I can manually apply the default later, but of course then it doesn't show up in the <code>--help</code> output with all the other defaults.</p>
+<p><code>.occurrences_of()</code> returns 0 if only the default is present, 1 if there's one explicit argument, etc. I could do something like:</p>
+<pre><code class="language-rust">let command: Vec&lt;_&gt; = if matches.occurrences_of(&quot;command&quot;) &gt; 0 {
+    matches.values_of_os(&quot;command&quot;).unwrap().take(matches.occurrences_of(&quot;command&quot;))
+} else {
+    matches.values_of_os(&quot;command&quot;).unwrap()
+}.collect();
+</code></pre>
+<p>...but man, that's a mouthful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-10-04 03:08</div>
+            <div class="timeline-body"><p>This is a bug, thanks for reporting!</p>
+<p>I'd be willing to mentor someone to fix this, which should be a super quick fix if someone wants an easy PR. Otherwise I can try and knock it out this week once I get a little caught up.</p>
+<p>If anyone is interested, the code to potentially fix this issue <a href="https://github.com/kbknapp/clap-rs/blob/3224e2e1cd4927935f44081c1ca686d95f267790/src/app/parser.rs#L1728-L1790">is here</a>. You'd simply need to ensure there are no values before adding the defaults.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2017-10-04 03:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2017-10-04 03:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2017-10-04 03:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2017-10-04 03:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-10-04 03:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1050.html">clap-rs/clap#1050</a> on 2017-10-04 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-10-04 03:15</div>
+            <div class="timeline-body"><p>Duplicate of #1050</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.27.0" by @kbknapp on 2017-10-12 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../steveklabnik/rustdoc/pulls/197.html">steveklabnik/rustdoc#197</a> on 2017-10-20 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-10-25 01:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

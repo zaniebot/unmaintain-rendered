@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>windows: uv fails to install cffi when venv is using pypy interpreter (pip does succeed on the same) - astral-sh/uv #14239</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>windows: uv fails to install cffi when venv is using pypy interpreter (pip does succeed on the same)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14239">#14239</a>
+        opened by <a href="https://github.com/ssbarnea">@ssbarnea</a>
+        on 2025-06-24 13:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-06-24 13:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>On Windows, when python interpreter is <code>pypy</code>, uv fails to install cffi because it tries to compile it and fails to compile.</p>
+<p>To reproduce:</p>
+<pre><code class="language-command"># Windows command
+&gt; uv venv --python pypy .venv
+&gt; . .venv/Scripts/activate
+&gt; python --version                   
+Python 3.11.11 (0253c85bf5f8, Feb 26 2025, 10:43:25)
+[PyPy 7.3.19 with MSC v.1941 64 bit (AMD64)]
+
+&gt; uv pip install cffi
+Using Python 3.11.11 environment at: .venv-pypy
+Resolved 2 packages in 49ms
+  × Failed to build `cffi==1.17.1`
+  ├─▶ The build backend returned an error                                                                                                                                                
+  ╰─▶ Call to `setuptools.build_meta.build_wheel` failed (exit code: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+        File &quot;C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\build_meta.py&quot;, line 331, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\build_meta.py&quot;, line 301, in _get_build_requires
+          self.run_setup()
+        File &quot;C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\build_meta.py&quot;, line 317, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 126, in &lt;module&gt;
+        File &quot;&lt;string&gt;&quot;, line 105, in uses_msvc
+        File &quot;C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\_distutils\command\config.py&quot;, line 213, in try_compile
+          self._compile(body, headers, include_dirs, lang)
+        File &quot;C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\_distutils\command\config.py&quot;, line 129, in _compile
+          self.compiler.compile([src], include_dirs=include_dirs)
+        File &quot;C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\_distutils\compilers\C\msvc.py&quot;, line 384, in compile
+          self.initialize()
+        File &quot;C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\_distutils\compilers\C\msvc.py&quot;, line 294, in initialize
+          vc_env = _get_vc_env(plat_spec)
+                   ^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;C:\Users\runner\AppData\Local\uv\cache\builds-v0\.tmpANoLh2\Lib\site-packages\setuptools\_distutils\compilers\C\msvc.py&quot;, line 155, in _get_vc_env
+          raise DistutilsPlatformError(
+      distutils.errors.DistutilsPlatformError: Microsoft Visual C++ 14.0 or greater is required. Get it with &quot;Microsoft C++ Build Tools&quot;:
+      https://visualstudio.microsoft.com/visual-cpp-build-tools/
+
+      hint: This usually indicates a problem with the package or the build environment.
+
+&gt; uv pip install pip
+Using Python 3.11.11 environment at: .venv-pypy
+Audited 1 package in 1ms
+
+pip install pip cffi
+Requirement already satisfied: pip in c:\users\runner\code\os\tox-uv\.venv-pypy\lib\site-packages (25.1.1)
+Requirement already satisfied: cffi in c:\users\runner\appdata\roaming\uv\python\pypy-3.11.11-windows-x86_64-none\lib (1.18.0.dev0)
+Requirement already satisfied: pycparser in c:\users\runner\code\os\tox-uv\.venv-pypy\lib\site-packages (from cffi) (2.22)
+</code></pre>
+<p>This does not happen with non-pypy python interpreters. Still, because pip is able to correctly install cffi package, I suspect that the bug is uv specific.</p>
+<h3>Platform</h3>
+<p>win32</p>
+<h3>Version</h3>
+<p>uv 0.7.13 (62ed17b23 2025-06-12)</p>
+<h3>Python version</h3>
+<p>Python 3.11.11 (0253c85bf5f8, Feb 26 2025, 10:43:25) [PyPy 7.3.19 with MSC v.1941 64 bit (AMD64)]</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ssbarnea on 2025-06-24 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tox-dev/tox-uv/issues/193.html">tox-dev/tox-uv#193</a> on 2025-06-24 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tox-dev/tox-uv/pulls/215.html">tox-dev/tox-uv#215</a> on 2025-06-24 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-05 12:55</div>
+            <div class="timeline-body"><p>This is another instance of https://github.com/astral-sh/uv/pull/9849: cffi is shipped with pypy, which uv currently can't detect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-09-05 12:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

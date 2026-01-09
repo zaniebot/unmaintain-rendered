@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`run --script --no-project --no-sync --isolated` still synchronizes the project unless the script contains inline metadata - astral-sh/uv #12954</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`run --script --no-project --no-sync --isolated` still synchronizes the project unless the script contains inline metadata</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12954">#12954</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-04-18 00:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-04-18 00:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Minimal reproducible example:</p>
+<pre><code class="language-shell">$ uv init .
+Initialized project `test` at `/workspaces/test`
+
+$ sed -i &quot;s/\[\]/['bs4']/&quot; pyproject.toml
+
+$ cat &gt;foo.py &lt;&lt;EOF
+import sys; print(sys.executable); import bs4; print(bs4)
+EOF
+
+$ uv run --script foo.py --no-project --no-sync --isolated
+Using CPython 3.12.1 interpreter at: /usr/local/python/current/bin/python3.12
+Creating virtual environment at: .venv
+░░░░░░░░░░░░░░░░░░░░ [0/4] Installing wheels...
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 4 packages in 8ms
+/workspaces/test/.venv/bin/python
+&lt;module 'bs4' from '/workspaces/test/.venv/lib/python3.12/site-packages/bs4/__init__.py'&gt;
+</code></pre>
+<p><code>--no-project</code> should have prevented project discovery, <code>--no-sync</code> prevented environment synchronization and <code>--isolated</code> ensured environment isolation. Yet:</p>
+<ul>
+<li>A virtual environment is created.</li>
+<li>It is then synchronized; the script has access to the installed packages.</li>
+<li>The Python executable in use is that of the newly created environment.</li>
+</ul>
+<p>Adding inline metadata helps:</p>
+<pre><code class="language-shell">$ cat &gt;foo.py &lt;&lt;EOF
+# /// script
+#
+# ///
+
+import sys; print(sys.executable); import bs4; print(bs4)
+EOF
+
+$ uv run --script foo.py --no-project --no-sync --isolated
+/home/codespace/.cache/uv/builds-v0/.tmpqx3yR2/bin/python
+Traceback (most recent call last):
+  File &quot;/workspaces/test/foo.py&quot;, line 5, in &lt;module&gt;
+    import sys; print(sys.executable); import bs4; print(bs4)
+                                       ^^^^^^^^^^
+ModuleNotFoundError: No module named 'bs4'
+</code></pre>
+<h3>Other information</h3>
+<ul>
+<li>Platform: Ubuntu</li>
+<li>uv: 0.6.14</li>
+<li>Python: 3.12</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @InSyncWithFoo on 2025-04-18 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-08 19:34</div>
+            <div class="timeline-body"><p><code>uv run --script foo.py --no-project --no-sync --isolated</code></p>
+<p>Everything following <code>foo.py</code> is considered an option to <code>foo.py</code>. <code>--script</code> is a boolean flag, it doesn't take a positional argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-11-08 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-11-08 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-08 19:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

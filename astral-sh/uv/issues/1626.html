@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keep editable &quot;.&quot; install when locking and syncing - astral-sh/uv #1626</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Keep editable &quot;.&quot; install when locking and syncing</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1626">#1626</a>
+        opened by <a href="https://github.com/PetterS">@PetterS</a>
+        on 2024-02-18 06:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/PetterS">@PetterS</a> on 2024-02-18 06:57</div>
+            <div class="timeline-body"><p>I saw a few other issues tagged with <strong>question</strong>, so I thought it could be OK so a ask one like this.</p>
+<p>I have a codebase with some dependencies and some code. I would like to create a venv where all of that is available.</p>
+<p>So far <code>uv</code> works if I do this:</p>
+<pre><code>uv pip compile pyproject.toml -o requirements.txt
+...
+uv pip sync requirements.txt
+uv pip install -e .
+</code></pre>
+<p>I would like to not have to run the last command after every sync. How can I somehow specify the editable install of the current project in pyproject?</p>
+<ul>
+<li>In poetry, I used a <code>packages</code> key under <code>[tool.poetry]</code> but that is obviously not going to work here.</li>
+<li>Adding <code>&quot;myproject @ .&quot;</code> as a dependency results in a <code>relative path without a working directory: .</code> message from <code>uv</code></li>
+</ul>
+<p>PS the speed of <code>uv</code> looks absolutely fantastic!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-18 08:20</div>
+            <div class="timeline-body"><p>👋 It looks like you're looking for the behavior described in</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/1000</li>
+</ul>
+<p>Let me know if that works for you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-02-18 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PetterS">@PetterS</a> on 2024-02-18 09:54</div>
+            <div class="timeline-body"><p>You mean a dependency like <code>&quot;my-project @ file://.&quot;</code>? That also gives the &quot;relative path without a working directory&quot; error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-18 17:07</div>
+            <div class="timeline-body"><p>Can you share the full output with the <code>-v</code> flag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-18 17:45</div>
+            <div class="timeline-body"><p>It’s possible that we parse pyproject.toml without passing the relative dir down. I can take a look this week to understand what the correct behavior is and whether we’re matching it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 02:23</div>
+            <div class="timeline-body"><p>One option is that you should be able to do <code>my-project @ file://${PROJECT_ROOT}</code>. Do you mind trying that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PetterS">@PetterS</a> on 2024-02-20 18:59</div>
+            <div class="timeline-body"><blockquote>
+<p>my-project @ file://${PROJECT_ROOT}</p>
+</blockquote>
+<p>I then get <code>error: my-project 1 depends on itself</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PetterS">@PetterS</a> on 2024-02-20 19:03</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>my-project @ file://${PROJECT_ROOT}</p>
+</blockquote>
+<p>I then get <code>error: my-project 1 depends on itself</code></p>
+</blockquote>
+<p>Update: that worked when I installed the latest version of <code>uv</code>. Great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-02-20 21:16</div>
+            <div class="timeline-body"><blockquote>
+<p>One option is that you should be able to do <code>my-project @ file://${PROJECT_ROOT}</code>. Do you mind trying that?</p>
+</blockquote>
+<p>Hello! ''my-sub-project @ file://${PROJECT_ROOT}/../relative/path#egg=sub_package'' worked, but only halfway:
+<code>error: Distribution not found at: file:///resolved/path%23egg=sub_package</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/debugger24">@debugger24</a> on 2024-02-22 19:37</div>
+            <div class="timeline-body"><p>Hi, I am trying out something similar, using ${PROJECT_ROOT} does work but when we have chain of libraries, it doesn't compile, it take relative path of my current project directly even of dependent libraries.</p>
+<p>https://stackoverflow.com/questions/78042589/pip-requirements-for-relative-packages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 20:59</div>
+            <div class="timeline-body"><p>I think we intentionally don't allow relative paths in <code>pyproject.toml</code> because it's not part of the PEP standard, and that file needs to follow standards, whereas <code>requirements.txt</code> is <em>not</em> standardized and already does a few things that don't adhere to them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PetterS">@PetterS</a> on 2024-03-23 09:18</div>
+            <div class="timeline-body"><p><code>my-project @ file://${PROJECT_ROOT}</code> does not install <code>my-project</code> as editable in 0.1.24. It makes a copy. In fact, it seems difficult to ever upgrade it without deleting the <code>.venv</code>. <code>pip compile</code> and <code>pip sync</code> does not change anything</p>
+<p>The local project is copied into <code>.venv/lib/python3.10/site-packages</code> and then never changed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-23 12:30</div>
+            <div class="timeline-body"><p>You need to install with -e in order to install as editable. For example, “uv pip install -e .”</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PetterS">@PetterS</a> on 2024-03-23 21:54</div>
+            <div class="timeline-body"><p>Yes, that works. Would be nice to somehow specify that the project itself should be installed editable. But maybe the pyproject syntax does not allow this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/pip/issues/12597.html">pypa/pip#12597</a> on 2024-03-25 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-04 03:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/atomiechen">@atomiechen</a> on 2024-10-04 18:46</div>
+            <div class="timeline-body"><p>I found a way to solve this: by specifying <code>setuptools</code> as the build system, <code>uv sync</code> will make the project editable installed:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;setuptools&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p>I verified that <code>uv.lock</code> is updated with <code>source = { editable = &quot;.&quot; }</code> under your project package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joaoprocopio">@joaoprocopio</a> on 2024-10-08 04:01</div>
+            <div class="timeline-body"><p>thanks @atomiechen!!!!!!!!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9518.html">astral-sh/uv#9518</a> on 2024-11-29 09:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robert-elles">@robert-elles</a> on 2024-12-16 13:51</div>
+            <div class="timeline-body"><p>Leads to errors for me, first i get:
+<code>ValueError: invalid pyproject.toml config: `project`. configuration error: `project` must not contain {'package-mode'} properties</code></p>
+<p>After removing the line <code>package-mode = false</code>, I then get the following error:</p>
+<pre><code>[stderr]
+error: Multiple top-level packages discovered in a flat-layout: ['data', 'logs', 'typings', ...].
+
+To avoid accidental inclusion of unwanted files or directories,
+setuptools will not proceed with this build.
+
+If you are trying to create a single distribution with multiple packages
+on purpose, you should not rely on automatic discovery.
+Instead, consider the following options:
+
+1. set up custom discovery (`find` directive with `include` or `exclude`)
+2. use a `src-layout`
+3. explicitly set `py_modules` or `packages` with a list of names
+
+To find more information, look for &quot;package discovery&quot; on setuptools docs.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MrMegaMango">@MrMegaMango</a> on 2024-12-28 12:05</div>
+            <div class="timeline-body"><p>local module installed by <code>uv add --editable ./pkg</code> doesn't work when running <code>uv run service/server.py</code>. ModuleNotFoundError: No module named 'pkg'</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CorentinJ">@CorentinJ</a> on 2025-01-30 15:15</div>
+            <div class="timeline-body"><blockquote>
+<p>I found a way to solve this: by specifying <code>setuptools</code> as the build system, <code>uv sync</code> will make the project editable installed:</p>
+<p>[build-system]
+requires = [&quot;setuptools&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+I verified that <code>uv.lock</code> is updated with <code>source = { editable = &quot;.&quot; }</code> under your project package.</p>
+</blockquote>
+<p>Oh wow I've been trying for so long to make my repository importable as a package outside of its cwd. I tried many variations of <code>uv add --editable . --dev</code> but it never worked. This was the solution... that was really far from obvious</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-30 16:39</div>
+            <div class="timeline-body"><p>The impact of the build system is covered in the docs: https://docs.astral.sh/uv/concepts/projects/init/.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12856.html">astral-sh/uv#12856</a> on 2025-04-14 01:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

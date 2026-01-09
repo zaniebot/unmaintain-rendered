@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skip `python.exe` with `uv install python --default` - astral-sh/uv #9817</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Skip `python.exe` with `uv install python --default`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/9817">#9817</a>
+        opened by <a href="https://github.com/Vynce">@Vynce</a>
+        on 2024-12-11 17:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Vynce">@Vynce</a> on 2024-12-11 17:19</div>
+            <div class="timeline-body"><p>I love the <code>uv python install --default</code> feature (https://github.com/astral-sh/uv/pull/8650), but it creates a <code>python.exe</code> executable in addition to a <code>python3.exe</code> executable. Unfortunately, we still need <code>python.exe</code> to resolve to a Python 2.7 interpreter for the time being. Would you be willing to add a <code>uv.toml</code> setting or an alternative <code>--default-py3only</code> arg or something that limits the feature to only managing <code>python3.exe</code>. Similar issue on Linux, but I'm specifically looking at the Windows behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-11 17:50</div>
+            <div class="timeline-body"><p>Oof. Hm.. I guess a <code>uv.toml</code> setting is less controversial to me (it seems niche for the CLI), but we don't have Python install settings there yet.</p>
+<p>Would an environment variable be sufficient?</p>
+<blockquote>
+<p>Unfortunately, we still need python.exe to resolve to a Python 2.7 interpreter for the time being.</p>
+</blockquote>
+<p>Would it be feasible to specify the full path to your 2.7 interpreter? Or adjust the <code>PATH</code> in that context?</p>
+<p>Thanks for reporting!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2024-12-11 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vynce">@Vynce</a> on 2024-12-11 21:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Would an environment variable be sufficient?</p>
+</blockquote>
+<p>Yeah, that could work. We could set that globally in our uv installation script (not that different from setting it in the <code>uv.toml</code>). We're already setting the default index url and python-install-mirror in the <code>uv.toml</code>.</p>
+<blockquote>
+<p>Would it be feasible to specify the full path to your 2.7 interpreter? Or adjust the <code>PATH</code> in that context?</p>
+</blockquote>
+<p>Not easily. We need to support a mixed environment where legacy scripts expect <code>python</code> to be Python 2.7. I really want <code>~/.local/bin</code> to be first in the <code>PATH</code> since that's where all the uv goodies live, but a <code>python.exe</code> there will shadow others later in the <code>PATH</code>. Putting Python 2.7 before <code>~/.local/bin</code> on the <code>PATH</code> could work, but introduces other complexities with managing <code>PATH</code> order. Dealing with all this nonsense with Python on Windows is why I'm so excited about uv 😄.</p>
+<p>Also feel free to decide that uv isn't going to go out of its way to support coexistence with Python 2. That'll make me sad because <code>--default</code> is exactly the feature I want to use to manage Python 3 versions going forward, but I can create my own <code>python3.exe</code> symlink that points to the desired uv trampoline executable instead or come up with other workarounds 😊.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-11 21:26</div>
+            <div class="timeline-body"><p>Another question, is there a way you're invoking <code>python.exe</code> for Python 2 that would inform us that we should pass that invocation through to another executable?</p>
+<p>I think some flag here is reasonable, just need to figure out how to express it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vynce">@Vynce</a> on 2024-12-11 21:52</div>
+            <div class="timeline-body"><p>Python 2 is typically invoked via the shebang in the the Python script (e.g. <code>#!/usr/bin/env python</code>) in a Git Bash (aka msys bash) shell on Windows. We do it this way so it works the same on Linux and macOS. There are some shell scripts that explicitly call Python 2 scripts directly, like <code>python myscript.py</code>. Both cases assume that <code>python</code> is on the <code>PATH</code> and resolves to Python 2.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>(uv internal error) Failed to spawn the python child process.: The system cannot find the file specified. - astral-sh/uv #6008</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>(uv internal error) Failed to spawn the python child process.: The system cannot find the file specified.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/6008">#6008</a>
+        opened by <a href="https://github.com/konosubakonoakua">@konosubakonoakua</a>
+        on 2024-08-11 14:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konosubakonoakua">@konosubakonoakua</a> on 2024-08-11 14:44</div>
+            <div class="timeline-body"><pre><code class="language-bash">imp_blm_test on  main [!?⇡] via 🐍 v3.11.9 (imp_blm_test)                                                                                                       
+❯ uv venv --seed -p 3.11 -n .venv                                                                                                                                
+
+imp_blm_test on  main [!?⇡] via 🐍 v3.11.9 (imp_blm_test) 
+❯ . .\.venv\Scripts\activate.ps1
+
+imp_blm_test on  main [!?⇡] via 🐍 v3.11.9 (imp_blm_test) took 9s
+❯ uv --version
+uv 0.2.35 (e097f948c 2024-08-09)
+
+imp_blm_test on  main [!?⇡] via 🐍 v3.11.9 (imp_blm_test) 
+❯ pip
+Received error code: 2
+(uv internal error) Failed to spawn the python child process.: The system cannot find the file specified.
+
+imp_blm_test on  main [!?⇡] via 🐍 v3.11.9 (imp_blm_test) 
+❯ uv run ipython --preview
+warning: `uv run` is experimental and may change without warning
+Received error code: 2
+(uv internal error) Failed to spawn the python child process.: The system cannot find the file specified.
+
+imp_blm_test on  main [!?⇡] via 🐍 v3.11.9 (imp_blm_test) 
+❯ uv pip
+Manage Python packages with a pip-compatible interface
+
+Usage: uv.exe pip [OPTIONS] &lt;COMMAND&gt;
+</code></pre>
+<p>Related to #1779 #1988</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-08-11 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-11 18:54</div>
+            <div class="timeline-body"><p>Unfortunately I have no idea what's happening here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-08-11 19:00</div>
+            <div class="timeline-body"><p>I have been unable to duplicate this issue on my Windows 11 x86-64.
+It works fine without any errors.</p>
+<p>Only <code>uv run ipython --preview</code> has this error</p>
+<pre><code>ipython: error: argument --preview: expected one argument
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-11 20:50</div>
+            <div class="timeline-body"><p>Note: You can't pass the <code>--preview</code> flag to <code>ipython</code>.</p>
+<p><code>uv internal error</code> is coming from the trampoline https://github.com/astral-sh/uv/blob/2cd63f06dc8139adafdabfcbeda1a4250d4c0238/crates/uv-trampoline/src/bounce.rs#L472</p>
+<p>and the error is from https://github.com/astral-sh/uv/blob/2cd63f06dc8139adafdabfcbeda1a4250d4c0238/crates/uv-trampoline/src/bounce.rs#L299-L318</p>
+<p>cc @konstin and @samypr100</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-11 21:16</div>
+            <div class="timeline-body"><p>Interesting, I just tried the above example (with seed) and was unable to replicate on Windows 10 x86-64 both with 0.2.33 and 0.2.35. What does your <code>pyvenv.cfg</code> look like?</p>
+<pre><code>uv run ipython --preview
+warning: `uv run` is experimental and may change without warning
+usage: ipython [-h] [--debug] [--show-config] [--show-config-json] [--quiet] [--init] [--autoindent] [--no-autoindent] [--automagic] [--no-automagic] [--pdb] [--no-pdb] [--pprint] [--no-pprint] [--color-info] [--no-color-info] [--ignore-cwd] [--no-ignore-cwd] [--nosep] [--autoedit-syntax]
+               [--no-autoedit-syntax] [--simple-prompt] [--no-simple-prompt] [--banner] [--no-banner] [--confirm-exit] [--no-confirm-exit] [--term-title] [--no-term-title] [--classic] [--quick] [-i] [--log-level TerminalIPythonApp.log_level] [--profile-dir ProfileDir.location]
+               [--profile TerminalIPythonApp.profile] [--ipython-dir TerminalIPythonApp.ipython_dir] [--config TerminalIPythonApp.extra_config_file] [--autocall TerminalInteractiveShell.autocall] [--colors TerminalInteractiveShell.colors] [--logfile TerminalInteractiveShell.logfile]
+               [--logappend TerminalInteractiveShell.logappend] [-c TerminalIPythonApp.code_to_run] [-m TerminalIPythonApp.module_to_run] [--ext TerminalIPythonApp.extra_extensions] [--gui TerminalIPythonApp.gui] [--pylab [TerminalIPythonApp.pylab]] [--matplotlib [TerminalIPythonApp.matplotlib]]
+               [--cache-size TerminalInteractiveShell.cache_size]
+               [extra_args ...]
+ipython: error: argument --preview: expected one argument
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konosubakonoakua">@konosubakonoakua</a> on 2024-08-12 02:18</div>
+            <div class="timeline-body"><p>@samypr100
+here it is.</p>
+<pre><code class="language-yaml">imp_blm_test\.venv on  main [!?⇡] via 🐍 v3.11.9 (imp_blm_test) 
+❯ cat .\pyvenv.cfg           
+home = C:\Users\me\AppData\Local\Programs\Python\Python311
+implementation = CPython
+uv = 0.2.24
+version_info = 3.11.9
+include-system-site-packages = false
+prompt = imp_blm_test
+</code></pre>
+<p>and here's python I have installed.</p>
+<pre><code class="language-bash">
+imp_blm_test\.venv on  main [!?⇡] via 🐍 v3.11.9 (imp_blm_test) 
+❯ uv python list
+warning: `uv python list` is experimental and may change without warning
+cpython-3.12.4-windows-x86_64-none     C:\Users\me\AppData\Local\Programs\Python\Python312\python.exe
+cpython-3.12.4-windows-x86_64-none     &lt;download available&gt;
+cpython-3.11.9-windows-x86_64-none     C:\Users\me\AppData\Local\Programs\Python\Python311\python.exe
+cpython-3.11.9-windows-x86_64-none     C:\Users\me\AppData\Roaming\uv\data\python\cpython-3.11.9-windows-x86_64-none\python.exe
+cpython-3.10.14-windows-x86_64-none    &lt;download available&gt;
+cpython-3.9.19-windows-x86_64-none     &lt;download available&gt;
+cpython-3.8.19-windows-x86_64-none     C:\Users\me\AppData\Roaming\uv\data\python\cpython-3.8.19-windows-x86_64-none\python.exe
+pypy-3.7.13-windows-x86_64-none        C:\Users\me\AppData\Roaming\uv\data\python\pypy-3.7.13-windows-x86_64-none\python.exe
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joelvaneenwyk">@joelvaneenwyk</a> on 2025-02-22 20:54</div>
+            <div class="timeline-body"><p>I ran into a similar issue with same/similar error of &quot;(uv internal error) Failed to spawn the python child process...&quot; and discovered that it was caused by inadvertently naming my project script &quot;python&quot; in my <code>pyproject.toml</code> e.g.,</p>
+<pre><code class="language-toml">[project.scripts]
+python = &quot;my_project.main&quot;
+</code></pre>
+<p>If you add this package as a dependency, it generates a <code>python.exe</code> that overwrites the &quot;real&quot; one, causing all sorts of chaos. Renaming the script (for example, <code>mytool = &quot;my_project.main&quot;</code>) fixed the problem.</p>
+<p>Not sure what the best solution here is. Clearly user error in my case but an error/warning (did I miss one?) would be worthwhile or maybe not allow 'uv sync' to overwrite managed executables like 'python'?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../stvnksslr/uv-migrator/issues/63.html">stvnksslr/uv-migrator#63</a> on 2025-02-22 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-02-26 04:03</div>
+            <div class="timeline-body"><p>@joelvaneenwyk Can you open a separate issue with your finding?</p>
+<blockquote>
+<p>I ran into a similar issue with same/similar error of &quot;(uv internal error) Failed to spawn the python child process...&quot; and discovered that it was caused by inadvertently naming my project script &quot;python&quot; in my <code>pyproject.toml</code> e.g.,</p>
+<p>[project.scripts]
+python = &quot;my_project.main&quot;
+If you add this package as a dependency, it generates a <code>python.exe</code> that overwrites the &quot;real&quot; one, causing all sorts of chaos. Renaming the script (for example, <code>mytool = &quot;my_project.main&quot;</code>) fixed the problem.</p>
+<p>Not sure what the best solution here is. Clearly user error in my case but an error/warning (did I miss one?) would be worthwhile or maybe not allow 'uv sync' to overwrite managed executables like 'python'?</p>
+</blockquote>
+<p>Arguably we should probably not be generating scripts that clobber the ones needed to run scripts, but I do see the same issue with pip 😆. In linux this manifests a bit differently with the error being instead something like <code>too many levels of symbolic links</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

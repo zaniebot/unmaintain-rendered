@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creating venvs from uv python installtions creates broken venvs - astral-sh/uv #8879</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Creating venvs from uv python installtions creates broken venvs</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/8879">#8879</a>
+        opened by <a href="https://github.com/Olindholm">@Olindholm</a>
+        on 2024-11-07 06:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Olindholm">@Olindholm</a> on 2024-11-07 06:30</div>
+            <div class="timeline-body"><p>I am using uv to control my python version, great stuff. I create a venv using uv <code>uv venv --python ...</code> and uv will install whatever version I requrest. Works great.</p>
+<p>I am also using an internal python package which creates it's own python venv in order to run some commands in isolation. Using regular python this works fine, but when using uv's managed installed pythons it does not work.</p>
+<p>I believe I have identified the problem being that the package creates venvs using copy, rather than symlink. The issue can be replicated the following way.</p>
+<pre><code class="language-sh"># Create a venv with uv managed version
+uv venv --python 3.8
+source .venv/bin/activate
+
+# Create a venv using copy
+python -m venv .venv2 --copies # This command will yield and error:
+Error: Command '['/home/username/.venv2/bin/python', '-Im', 'ensurepip', '--upgrade', '--default-pip']' returned non-zero exit status 127.
+
+# To understand why this failed, let's run that command ourselves
+$ /home/username/.venv2/bin/python -Im ensurepip --upgrade --default-pip # This will also error:
+/home/username/.venv2/bin/python: error while loading shared libraries: /home/username/.venv2/bin/../lib/libpython3.8.so.1.0: cannot open shared object file: No such file or directory
+</code></pre>
+<p>Note: Creating your venv using <code>--symlinks</code> flag instead, works great.</p>
+<p>As I understand it, when creating venvs using copy, <code>python -m venv --copies</code> or <code>import venv; venv.create(symlinks=False)</code>, the python executable is copied, as you'd expect. But uv's python binary is different from regular one, which has links to files which don't get copied. Yielding the venv broken.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-07 09:16</div>
+            <div class="timeline-body"><p>This sounds like another case of https://github.com/indygreg/python-build-standalone/issues/380</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @charliermarsh on 2024-11-07 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-07 13:33</div>
+            <div class="timeline-body"><p><code>uv venv</code> itself doesn't support <code>--copies</code> so in some sense this isn't a uv issue but a python-build-standalone issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-07 13:51</div>
+            <div class="timeline-body"><p>Similar to https://github.com/astral-sh/uv/issues/8821</p>
+<p>Note there's not a clear path to solving this upstream unless we want to patch CPython runtime behavior. I think installers of the distributions may need to patch the sysconfig to fix this as described in #8429</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-07 13:52</div>
+            <div class="timeline-body"><p>Yeah I have no idea how this would work for <code>--copies</code> since we lose all connection to the originating distribution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8953.html">astral-sh/uv#8953</a> on 2024-11-09 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12173.html">astral-sh/uv#12173</a> on 2025-03-14 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-06-10 20:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

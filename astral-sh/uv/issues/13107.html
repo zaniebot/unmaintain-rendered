@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV_SYSTEM_PYTHON and UV_PROJECT_ENVIRONMENT not work for not privileged users in docker (pip install --user mode) - astral-sh/uv #13107</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV_SYSTEM_PYTHON and UV_PROJECT_ENVIRONMENT not work for not privileged users in docker (pip install --user mode)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13107">#13107</a>
+        opened by <a href="https://github.com/moaddib666">@moaddib666</a>
+        on 2025-04-25 12:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/moaddib666">@moaddib666</a> on 2025-04-25 12:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm currently trying to migrate my Docker-based Python setup from pipenv/pip to uv, but I'm running into issues with package installation.</p>
+<p>With pip, when system-level Python is not writable, it automatically falls back to --user installs, placing packages in ~/.local/. Python can still detect and use these packages when run as a user.</p>
+<p>However, uv doesn’t seem to support this fallback. I haven’t found any option to force uv to install packages in user space (~/.local) when system paths are not writable.</p>
+<p>As a result, I either get:</p>
+<p>Permission denied (os error 13) when trying to install to /usr/local/lib/python3.12/site-packages/</p>
+<p>Or errors like:
+&quot;~/.local/lib/...&quot; is not a valid Python environment (no Python executable found)</p>
+<p>This makes it difficult to use uv in non-root Docker setups, where I can’t write to system directories.</p>
+<h3>Platform</h3>
+<p>Alpine, Ubuntu (docker)</p>
+<h3>Version</h3>
+<p>0.6.16</p>
+<h3>Python version</h3>
+<p>Python 3.12.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @moaddib666 on 2025-04-25 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-26 14:03</div>
+            <div class="timeline-body"><p>Unfortunately we don't support <code>--user</code> installs -- that's intentional. If you want to use uv to install into a system in which you don't have write access (even if it's in Docker), you should use a virtual environment. Here are some resources that might be helpful for you:</p>
+<ul>
+<li>https://hynek.me/articles/docker-virtualenv/</li>
+<li>https://hynek.me/articles/docker-uv/</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-04-26 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-04-26 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-04-26 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/moaddib666">@moaddib666</a> on 2025-04-29 08:05</div>
+            <div class="timeline-body"><p>Hi @charliermarsh —</p>
+<p>I totally get the “just use venv” approach, but in Docker we often run one immutable image that act as API or worker or cron depends on the command.</p>
+<p>Adding a venv :</p>
+<ul>
+<li><p>duplicates the Python runtime inside the image</p>
+</li>
+<li><p>forces us to tweak PATH/PYTHONPATH</p>
+</li>
+<li><p>makes on-container debugging harder (everything lives under venv/… instead of the standard tree)</p>
+</li>
+</ul>
+<p>pip’s fallback to ~/.local solves this neatly: the image stays read-only, each UID inside the container can still pip-install tricks for its process, and nothing else needs to change.</p>
+<p>That would let us adopt <code>uv</code> in existing images without a full rebuild around virtual-env layouts.</p>
+<p>Thanks for the pointers &amp; for pushing the tooling forward!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

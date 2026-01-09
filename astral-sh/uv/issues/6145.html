@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reduce repeated information across `File` in a single distribution - astral-sh/uv #6145</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reduce repeated information across `File` in a single distribution</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/6145">#6145</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-16 13:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-16 13:26</div>
+            <div class="timeline-body"><p><code>File</code> looks like this:</p>
+<pre><code class="language-rust">#[derive(
+    Debug, Clone, Hash, Serialize, Deserialize, rkyv::Archive, rkyv::Deserialize, rkyv::Serialize,
+)]
+#[archive(check_bytes)]
+#[archive_attr(derive(Debug))]
+pub struct File {
+    pub dist_info_metadata: bool,
+    pub filename: String,
+    pub hashes: Vec&lt;HashDigest&gt;,
+    pub requires_python: Option&lt;VersionSpecifiers&gt;,
+    pub size: Option&lt;u64&gt;,
+    // N.B. We don't use a chrono DateTime&lt;Utc&gt; here because it's a little
+    // annoying to do so with rkyv. Since we only use this field for doing
+    // comparisons in testing, we just store it as a UTC timestamp in
+    // milliseconds.
+    pub upload_time_utc_ms: Option&lt;i64&gt;,
+    pub url: FileLocation,
+    pub yanked: Option&lt;Yanked&gt;,
+}
+</code></pre>
+<p>IIRC <code>requires_python</code> and <code>yanked</code> are guaranteed to be the same across all files in a single package-version. URL almost always contains a lot of repeated information too, like the host (e.g., for PyPI, it always starts with <code>https://files.pythonhosted.org/packages/</code>).</p>
+<p>I think we should be able to deduplicate a lot of this. It doesn't really matter for compressed data, but we store these with rkyv, so in theory savings should directly translate to improved performance?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-08-16 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-08-16 14:40</div>
+            <div class="timeline-body"><blockquote>
+<p>... <code>yanked</code> are guaranteed to be the same across all files in a single package-version</p>
+</blockquote>
+<p>FYI, definitely not &quot;guaranteed&quot;, the <a href="https://peps.python.org/pep-0592/">yank PEP</a> specifies only that a files are yanked, it mentions nothing about entire releases, e.g.</p>
+<blockquote>
+<p>The presence of a data-yanked attribute SHOULD be interpreted as indicating that the file pointed to by this particular link has been “Yanked”, and should not generally be selected by an installer, except under specific scenarios.</p>
+</blockquote>
+<p>However PyPI has only ever implemented being able to yank entire releases, not individual files. I think though uv has made this assumption in its behaviour of dealing with yank, that yank will always be applied to an entire release.</p>
+<p>But do be aware, currently nothing is stopping PyPI from updating to individual files, nor other indexes from implementing it on a per-file basis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-16 14:45</div>
+            <div class="timeline-body"><p>Thanks, you're right!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-16 14:55</div>
+            <div class="timeline-body"><p><code>Yanked</code> is the least impactful here anyway so we can always leave that as-is. I do think we <em>assume</em> it's the same across distributions though, so might be better even to just encode that assumption for now.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

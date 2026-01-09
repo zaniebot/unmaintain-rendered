@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G rules seems not working with loguru. - astral-sh/ruff #13673</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>G rules seems not working with loguru.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13673">#13673</a>
+        opened by <a href="https://github.com/qiuxiafei">@qiuxiafei</a>
+        on 2024-10-08 01:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qiuxiafei">@qiuxiafei</a> on 2024-10-08 01:21</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>It seems <code>G</code> rules only works with built-in <code>logging</code> module not loguru. Is it by-design or a bug?</p>
+<p>Testing script:</p>
+<pre><code class="language-python">import logging
+from loguru import logger
+
+a = 100
+logger.info(f&quot;Value of a is {a}&quot;)
+logging.info(f&quot;Value of a is {a}&quot;)
+
+logger.warn(&quot;This is a warning&quot;)
+logging.warn(&quot;This is a warning&quot;)
+</code></pre>
+<p>ruff command (executed in empty project directory without config file) : <code>ruff check --select G ./test.py</code>.
+The output:</p>
+<pre><code>  |
+4 | a = 100
+5 | logger.info(f&quot;Value of a is {a}&quot;)
+6 | logging.info(f&quot;Value of a is {a}&quot;)
+  |              ^^^^^^^^^^^^^^^^^^^^ G004
+7 |
+8 | logger.warn(&quot;This is a warning&quot;)
+  |
+
+test.py:9:9: G010 [*] Logging statement uses `warn` instead of `warning`
+  |
+8 | logger.warn(&quot;This is a warning&quot;)
+9 | logging.warn(&quot;This is a warning&quot;)
+  |         ^^^^ G010
+  |
+  = help: Convert to `warning`
+
+Found 2 errors.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>ruff points out all errors on logging module but none of loguru's.</p>
+<p>ruff version: 0.6.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-08 07:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-08 07:36</div>
+            <div class="timeline-body"><p>Yes, this seems intentional.</p>
+<p>Ruff matches the upstream <a href="https://pypi.org/project/flake8-logging-format/"><code>flake8-logging-format</code></a> linter and its documentation states that it is specific to Python's <code>logging</code> module</p>
+<blockquote>
+<p>Python <a href="https://docs.python.org/3/library/logging.html#logging.Logger.debug">logging</a> supports a special extra keyword for passing a dictionary of user-defined attributes to include in a logging event.</p>
+</blockquote>
+<p>Our current focus is on linting vanilla Python code, and we only make an exception for very popular third-party libraries that are considered community standards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @MichaReiser on 2024-10-08 07:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-10-08 07:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-10-13 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16715.html">astral-sh/ruff#16715</a> on 2025-03-13 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19075.html">astral-sh/ruff#19075</a> on 2025-07-01 20:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

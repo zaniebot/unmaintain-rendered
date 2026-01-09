@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM401 should not apply to non-concrete default values - astral-sh/ruff #1809</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM401 should not apply to non-concrete default values</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1809">#1809</a>
+        opened by <a href="https://github.com/thomasdesr">@thomasdesr</a>
+        on 2023-01-12 07:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thomasdesr">@thomasdesr</a> on 2023-01-12 07:16</div>
+            <div class="timeline-body"><p>Thanks again for Ruff ❤️</p>
+<p>As of <code>ruff==0.0.219</code> <code>SIM401</code> seems to be incorrectly applied when the default value is not a constant value.</p>
+<pre><code class="language-python">import asyncio
+
+
+async def some_async_func():
+    await asyncio.sleep(10)
+
+
+async def foo():
+    d = {&quot;key&quot;: &quot;value&quot;}
+    key = &quot;key&quot;
+
+    if key in d:
+        value = d[key]
+    else:
+        value = await some_async_func()
+
+    return value
+</code></pre>
+<p>Believes it can be simplified (&amp; maybe more dangerously will be auto-fixed) to:</p>
+<pre><code class="language-python">import asyncio
+
+
+async def some_async_func():
+    await asyncio.sleep(10)
+
+
+async def foo():
+    d = {&quot;key&quot;: &quot;value&quot;}
+    key = &quot;key&quot;
+
+    value = d.get(key, await some_async_func())
+
+    return value
+
+</code></pre>
+<p>However these two are not interchangeable as <code>some_async_func()</code> may be arbitrarily expensive as demonstrated here by the <code>asyncio.sleep(10)</code></p>
+<p>Note: This is also a bug in upstream flake8-simplify https://github.com/MartinThoma/flake8-simplify/issues/166</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-12 12:12</div>
+            <div class="timeline-body"><p>Ahh, good catch! We can fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-12 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-12 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1825.html">astral-sh/ruff#1825</a> on 2023-01-12 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-12 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thomasdesr">@thomasdesr</a> on 2023-01-12 19:37</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-12 19:38</div>
+            <div class="timeline-body"><p>I went off some heuristics (ignore any expressions containing function calls, awaits, etc.) — let me know if it misses anything going forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thomasdesr">@thomasdesr</a> on 2023-01-13 08:06</div>
+            <div class="timeline-body"><p>They look like sufficient for my code base! Thanks so much :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-01-18 16:36</div>
+            <div class="timeline-body"><p>We should also ignore subscripting, since it might throw <code>KeyError</code>. For example, this fix is wrong:</p>
+<pre><code class="language-diff">-             if &quot;title&quot; in fileinfo: 
+-                 file_name = fileinfo[&quot;title&quot;] 
+-             else: 
+-                 file_name = fileinfo[&quot;name&quot;] 
++             file_name = fileinfo.get(&quot;title&quot;, fileinfo[&quot;name&quot;])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 16:43</div>
+            <div class="timeline-body"><p>Makes sense, I can fix that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1966.html">astral-sh/ruff#1966</a> on 2023-01-18 16:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

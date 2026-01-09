@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TensorRT optional dependency causes problems on MacOs - astral-sh/uv #13942</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>TensorRT optional dependency causes problems on MacOs</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13942">#13942</a>
+        opened by <a href="https://github.com/PawelPeczek-Roboflow">@PawelPeczek-Roboflow</a>
+        on 2025-06-10 11:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/PawelPeczek-Roboflow">@PawelPeczek-Roboflow</a> on 2025-06-10 11:16</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hello team,</p>
+<p>I've encountered issue with adding TensorRT as optional dependency to the project I intent to be multi-platform (and TRT is to be supported only where it is applicable).</p>
+<pre><code>[project]
+name = &quot;XX&quot;
+version = &quot;0.1.0&quot;
+description = &quot;YY&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10,&lt;3.13&quot;
+dependencies = []
+
+[project.optional-dependencies]
+trt10 = [
+  &quot;tensorrt&gt;=10.0.0,&lt;11.0.0; platform_system == 'Linux' or platform_system == 'Windows'&quot;,
+  &quot;tensorrt-cu12&gt;=10.0.0,&lt;11.0.0; platform_system == 'Linux' or platform_system == 'Windows'&quot;
+]
+</code></pre>
+<p><code>uv sync</code> provides the following output:</p>
+<pre><code>❯ uv sync
+  × Failed to build `tensorrt-cu12==10.11.0.33`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+[...]
+      RuntimeError: TensorRT currently only builds wheels for Linux and Windows
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `tensorrt-cu12` (v10.11.0.33) was included because `inference-exp[trt10]` (v0.1.0) depends on
+        `tensorrt&gt;=10.0.0, &lt;11.0.0` (v10.11.0.33) which depends on `tensorrt-cu12==10.11.0.33`
+</code></pre>
+<p>This obviously makes sense when installing the trt on MacOS, but I am wondering if that would be possible to keep TRT dependencies enlisted and still be able to run daily development on macos</p>
+<h3>Platform</h3>
+<p>Darwin 24.5.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.12 (dc3fd4647 2025-06-06)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @PawelPeczek-Roboflow on 2025-06-10 11:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PawelPeczek-Roboflow">@PawelPeczek-Roboflow</a> on 2025-06-10 11:17</div>
+            <div class="timeline-body"><p>I will just mention that <code>tensorrt&gt;=8.0.0,&lt;9.0.0</code> adds as another extras without any issues when marked with <code>platform_system</code> - seems like the auxiliary libs dependent on trt10 cause problem</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-10 11:42</div>
+            <div class="timeline-body"><p>Try:</p>
+<pre><code>[tool.uv]
+environments = [
+  &quot;platform_system == 'Linux' or platform_system == 'Windows'&quot;,
+  &quot;platform_system != 'Linux' and platform_system != 'Windows'&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PawelPeczek-Roboflow">@PawelPeczek-Roboflow</a> on 2025-06-10 12:08</div>
+            <div class="timeline-body"><p>that did not work, but following on this docs: https://docs.astral.sh/uv/concepts/projects/config/#build-isolation</p>
+<p>I concluded that manually providing dependency metadata help to avoid build in situation when it's required to resolve dependencies - the downside is probably locking to specific trt version, right?</p>
+<pre><code>[[tool.uv.dependency-metadata]]
+name = &quot;tensorrt-cu12&quot;
+version = &quot;10.11.0.33&quot;
+requires-dist = [&quot;tensorrt-cu12-bindings&quot;, &quot;tensorrt-cu12-libs&quot;]
+
+[[tool.uv.dependency-metadata]]
+name = &quot;tensorrt-cu12-libs&quot;
+version = &quot;10.11.0.33&quot;
+requires-dist = [&quot;nvidia-cuda-runtime-cu12&quot;]
+
+[[tool.uv.dependency-metadata]]
+name = &quot;nvidia-cuda-runtime-cu12&quot;
+version = &quot;12.8.57&quot;
+
+[[tool.uv.dependency-metadata]]
+name = &quot;tensorrt-cu12-bindings&quot;
+version = &quot;10.11.0.33&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PawelPeczek-Roboflow">@PawelPeczek-Roboflow</a> on 2025-06-10 12:08</div>
+            <div class="timeline-body"><p>those metadata I extracted from <code>uv.lock</code> which resolved on Linux machine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-10 12:55</div>
+            <div class="timeline-body"><p>I believe you can omit the <code>version</code> in those entries if you want the metadata to be applied to <em>all</em> versions of the package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PawelPeczek-Roboflow">@PawelPeczek-Roboflow</a> on 2025-06-10 12:56</div>
+            <div class="timeline-body"><p>cool - thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @PawelPeczek-Roboflow on 2025-06-24 08:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

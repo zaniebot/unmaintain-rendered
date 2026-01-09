@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E402: allow putting an import after conditional import - astral-sh/ruff #151</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>E402: allow putting an import after conditional import</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/151">#151</a>
+        opened by <a href="https://github.com/Jackenmen">@Jackenmen</a>
+        on 2022-09-11 04:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Jackenmen">@Jackenmen</a> on 2022-09-11 04:00</div>
+            <div class="timeline-body"><p>Example reproduction code:</p>
+<pre><code class="language-py">try:
+    import tomllib
+except ModuleNotFoundError:
+    CAN_PARSE_TOML = False
+else:
+    CAN_PARSE_TOML = True
+
+import sys
+
+if CAN_PARSE_TOML:
+    import os
+
+import asyncio
+
+asyncio, os, tomllib, sys  # silences F401 since it's not relevant
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-py">❯ ruff repro.py -v
+[2022-09-11][05:56:11][ruff::pyproject][DEBUG] Found pyproject.toml at: pyproject.toml
+[2022-09-11][05:56:11][ruff][DEBUG] Identified files to lint in: 15.462µs
+[2022-09-11][05:56:11][ruff][DEBUG] Checked files in: 1.800791ms
+repro.py:8:1: E402 Module level import not at top of file
+repro.py:13:1: E402 Module level import not at top of file
+
+Found 2 error(s).
+
+❯ flake8 repro.py -v        
+flake8.checker            MainProcess     84 INFO     Making checkers
+flake8.checker            MainProcess     85 INFO     Checking 1 files
+flake8.main.application   MainProcess     90 INFO     Finished running
+flake8.main.application   MainProcess     90 INFO     Reporting errors
+flake8.main.application   MainProcess     90 INFO     Found a total of 0 violations and reported 0
+</code></pre>
+<p>I believe flake8 allows any code in try and if blocks without causing E402. It might also not be limited to try and if, not sure on that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-11 13:38</div>
+            <div class="timeline-body"><p>Yeah this is supposed to be supported but there must be a bug. Thanks :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-09-11 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/155.html">astral-sh/ruff#155</a> on 2022-09-11 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-09-11 14:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:06 UTC
+    </footer>
+</body>
+</html>

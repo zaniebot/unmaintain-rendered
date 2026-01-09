@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid rule violation when import is used only for type hints (flake8-bandit S404) - astral-sh/ruff #9702</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Invalid rule violation when import is used only for type hints (flake8-bandit S404)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9702">#9702</a>
+        opened by <a href="https://github.com/divaltor">@divaltor</a>
+        on 2024-01-30 13:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/divaltor">@divaltor</a> on 2024-01-30 13:51</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hello, thanks for Ruff again! I noticed that enabling that rule can cause (probably) false-positive violations which I can't say with guarantee they're false-positive, but probably they are</p>
+<p>Of course I can just disable that rule in the configuration file, but may be it should be discussed here about ignoring such cases</p>
+<pre><code class="language-py">from __future__ import annotations
+
+from subprocess import Popen
+
+import ffmpeg
+
+# ffmpeg here is library https://github.com/kkroening/ffmpeg-python
+# Popen here is just type hint
+process: Popen = ffmpeg.run_async(...)
+</code></pre>
+<p>Ruff 0.1.15</p>
+<pre><code class="language-bash">ruff --isolated --preview --select S404 --target-version py312
+
+&gt; S404 `subprocess` module is possibly insecure
+</code></pre>
+<p>Also it violates on such code</p>
+<pre><code class="language-py">from subprocess import TimeoutExpired
+
+import ffmpeg
+
+try:
+     ffmpeg.run(...)
+except TimeoutExpired:
+     ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-30 15:53</div>
+            <div class="timeline-body"><p>Hm this rule just seems way overzealous but there are a bunch of rules in flake8-bandit that just flag imports like this. I think my best recommendation is to turn it off. I know if we should change it unless the upstream does. I think there are other rules that actually cover <em>use</em> of subprocess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2024-01-30 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/divaltor">@divaltor</a> on 2024-01-30 16:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Hm this rule just seems way overzealous but there are a bunch of rules in flake8-bandit that just flag imports like this. I think my best recommendation is to turn it off. I know if we should change it unless the upstream does. I think there are other rules that actually cover <em>use</em> of subprocess.</p>
+</blockquote>
+<p>Thanks for helping, actually I've turned it off, because I didn't find good reason to keep it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-30 16:53</div>
+            <div class="timeline-body"><p>Yeah I'm torn on these. They're <em>really</em> strict, but they're also security-oriented rules, so it feels like it's against the intent to relax them. I'm gonna close for now, though I do empathize with the annoyance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-30 16:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

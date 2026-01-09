@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`F841` (unused-variable) false positives in Jupyter notebooks - astral-sh/ruff #8094</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`F841` (unused-variable) false positives in Jupyter notebooks</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8094">#8094</a>
+        opened by <a href="https://github.com/tdulcet">@tdulcet</a>
+        on 2023-10-20 15:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tdulcet">@tdulcet</a> on 2023-10-20 15:31</div>
+            <div class="timeline-body"><ul>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+<pre><code class="language-jupyter">var = &quot;World&quot;
+!echo &quot;Hello $var&quot;
+</code></pre>
+<p>or</p>
+<pre><code class="language-jupyter">var = &quot;World&quot;
+!echo &quot;{'Hello ' + var}&quot;
+</code></pre>
+<p>(Note that one can put arbitrary Python expressions/code in the above brackets, which is not currently linted.)</p>
+<p>Ruff actual output:</p>
+<pre><code>test.ipynb:cell 1:1:3: F841 Local variable `var` is assigned to but never used
+</code></pre>
+<p>Ruff expected output: None</p>
+<ul>
+<li>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.</li>
+</ul>
+<pre><code>ruff --select F841 --isolated test.ipynb
+</code></pre>
+<ul>
+<li>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).
+None</li>
+<li>The current Ruff version (<code>ruff --version</code>).</li>
+</ul>
+<pre><code>ruff 0.1.1
+</code></pre>
+<p>There is a <a href="https://github.com/tdulcet/Distributed-Computing-Scripts/blob/master/google-colab/GoogleColabGPU.ipynb">public notebook here</a> that currently triggers three of these false positives, if you want some real world examples.</p>
+<p>Possibly related to #5188 and #1079.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-20 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @charliermarsh on 2023-10-20 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-30 02:41</div>
+            <div class="timeline-body"><p>Thanks for opening this issue. Yes, this is the current limitation of linting Notebooks because Ruff considers everything past the IPython escape token (<code>!</code> in this case) as string. The reason being that there's no defined grammar on what can occur in that position and there could be any non-Python syntax as well. This is seen in your first example where bash syntax is being used instead (<code>!echo &quot;Hello $var&quot;</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8354.html">astral-sh/ruff#8354</a> on 2023-10-31 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-31 03:28</div>
+            <div class="timeline-body"><p>Closing in favor of #8354</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-10-31 03:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2024-01-04 09:38</div>
+            <div class="timeline-body"><p>Perhaps this issue should be reopened since #8354 has now been closed, but this bug still exists in Ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2024-01-04 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">notebook</span> added by @dhruvmanila on 2024-02-12 05:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-12 05:48</div>
+            <div class="timeline-body"><p>@tdulcet Can you help me understand the mentioned code? Is it that there can be <em>any</em> valid Python code between the curly braces?</p>
+<pre><code class="language-python">!echo &quot;{&lt;any valid Python code can go here&gt;}&quot;
+</code></pre>
+<p>And, does that need to be wrapped in quotes?</p>
+<pre><code class="language-python">var = &quot;/path/to/foo&quot;
+# Does this need to be wrapped in quotes?
+!ls {var}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-12 05:49</div>
+            <div class="timeline-body"><p>Ok, I just tried this and it seems that it does need to be quoted which makes me wonder if it's treated as format expression with the global scope passed in:</p>
+<pre><code class="language-python">&quot;!ls {var}&quot;.format(globals())
+</code></pre>
+<p>I'll look at the source code later to check this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2024-02-12 10:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it that there can be <em>any</em> valid Python code between the curly braces?</p>
+</blockquote>
+<p>Yes, any valid Python code can be between the braces, except code that contains more braces, so no f-strings or format strings.</p>
+<blockquote>
+<p>And, does that need to be wrapped in quotes?</p>
+</blockquote>
+<p>This specific example does not need to be wrapped in quotes, but in general it does if the variable could contain whitespace or other special characters, to prevent globbing and word splitting by the shell:</p>
+<pre><code class="language-python">var = &quot;/path/to/foo bar&quot; # Variable with whitespace
+# This needs to be wrapped in quotes
+!ls &quot;{var}&quot;
+</code></pre>
+<p>Note that this is obviously not a robust solution against potenchally malicious inputs, where the string contains quote characters itself:</p>
+<pre><code class="language-python">var = '/path/to/foo&quot;; rm -rf /&quot;'
+# Oh no!
+!ls &quot;{var}&quot;
+</code></pre>
+<p>In this case, one would likely need to use <a href="https://docs.python.org/3/library/shlex.html#shlex.quote">shlex.quote</a>:</p>
+<pre><code class="language-python">import shlex
+var = &quot;/path/to/foo; rm -rf /&quot;
+# No quotes needed
+!ls {shlex.quote(var)}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpmckinney">@jpmckinney</a> on 2024-02-27 06:47</div>
+            <div class="timeline-body"><p>The same issue can can <code>ARG001</code> e.g.</p>
+<pre><code>def foo(var=&quot;World&quot;):
+    !echo &quot;Hello $var&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11833.html">astral-sh/ruff#11833</a> on 2024-06-11 11:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

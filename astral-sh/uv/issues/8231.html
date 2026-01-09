@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv errors on virtualenv with non-complaint local version in `.dist-info` - astral-sh/uv #8231</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv errors on virtualenv with non-complaint local version in `.dist-info`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8231">#8231</a>
+        opened by <a href="https://github.com/arrdem">@arrdem</a>
+        on 2024-10-16 00:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/arrdem">@arrdem</a> on 2024-10-16 00:01</div>
+            <div class="timeline-body"><pre><code>(abnormal) ➜  source git:(main) uv --version
+uv 0.4.21 (Homebrew 2024-10-14)
+(abnormal) ➜  source git:(main) venv-sync
+Using Python 3.11.10 environment at /Users/gsirois/venvs/python3.11-2
+error: Failed to read metadata from: `/Users/gsirois/venvs/python3.11-2/lib/python3.11/site-packages/protobuf-4.25.3.post1_abnormal.87071f8fe87.dist-info`
+  Caused by: after parsing `4.25.3.post1`, found `_abnormal.87071f8fe87`, which is not part of a valid version
+</code></pre>
+<p>Per https://packaging.python.org/en/latest/specifications/version-specifiers/#local-version-identifiers it is expected that Python packaging implementations support <code>+</code> symbols in the version number as a &quot;local&quot; part. It appears that during installation at least some versions of <code>pip</code> normalize local version suffixes using <code>_</code> which breaks UV.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 00:07</div>
+            <div class="timeline-body"><p>I don't see anything in the spec suggesting that the <code>+</code> should be replaced there -- that seems like a bug somewhere else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arrdem">@arrdem</a> on 2024-10-16 00:10</div>
+            <div class="timeline-body"><p>Yeah I agree with you on the spec -- trying to find where this is coming from ~in pip~. Edit: Doesn't seem to be pip behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arrdem">@arrdem</a> on 2024-10-16 00:30</div>
+            <div class="timeline-body"><p>This is pretty clearly something that came out of an old <code>python3 -m build</code>... the wheel artifact contains the <code>_</code> part in its <code>.dist-info</code> tree. Question is how.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-10-16 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "UV barfs on virtualenvs containing packages with local version identifiers" to "UV raises error when virtualenv contains non-complaint local version in `.dist-info`" by @charliermarsh on 2024-10-16 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "UV raises error when virtualenv contains non-complaint local version in `.dist-info`" to "uv errors on virtualenv with non-complaint local version in `.dist-info`" by @charliermarsh on 2024-10-16 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arrdem">@arrdem</a> on 2024-10-17 20:22</div>
+            <div class="timeline-body"><p>Okay after some more digging I'm going to say this is on our side and the artifact is bad. Apologies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @arrdem on 2024-10-17 20:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

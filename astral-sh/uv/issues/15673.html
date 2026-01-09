@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question: Is there a `--break-system-packages` equivalent to install in the system environemnt inside a Docker? - astral-sh/uv #15673</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Question: Is there a `--break-system-packages` equivalent to install in the system environemnt inside a Docker?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15673">#15673</a>
+        opened by <a href="https://github.com/turbotimon">@turbotimon</a>
+        on 2025-09-04 07:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/turbotimon">@turbotimon</a> on 2025-09-04 07:56</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm trying to install packages in the system environment in a Docker. According to <a href="https://docs.astral.sh/uv/guides/integration/docker/#installing-a-package">uv in Docker</a>, this can be done with <code>RUN uv pip install --system ruff</code>.</p>
+<p>However, since it is a Debian-based image, I got this error. The restriction comes from <a href="https://peps.python.org/pep-0668/">PEP 668</a>, but I think it should be safe in a docker.</p>
+<pre><code> =&gt; ERROR [6/7] RUN uv pip install --system --no-cache --no-managed-python -r requirements.out                                                                                                      0.1s
+------                                                                                                                                                                                                   
+ &gt; [6/7] RUN uv pip install --system --no-cache --no-managed-python -r requirements.out:
+0.122 Using Python 3.11.2 environment at: /usr
+0.122 error: The interpreter at /usr is externally managed, and indicates the following:
+0.122 
+0.122   To install Python packages system-wide, try apt install
+0.122   python3-xyz, where xyz is the package you are trying to
+0.122   install.
+0.122 
+0.122   If you wish to install a non-Debian-packaged Python package,
+0.122   create a virtual environment using python3 -m venv path/to/venv.
+0.122   Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
+0.122   sure you have python3-full installed.
+0.122 
+0.122   If you wish to install a non-Debian packaged Python application,
+0.122   it may be easiest to use pipx install xyz, which will manage a
+0.122   virtual environment for you. Make sure you have pipx installed.
+0.122 
+0.122   See /usr/share/doc/python3.11/README.venv for more information.
+0.122 
+0.122 Consider creating a virtual environment with `uv venv`.
+------
+</code></pre>
+<p>My dockerfile looks like this:</p>
+<pre><code>FROM codercom/code-server:latest
+
+RUN apt-get update &amp;&amp; \
+    apt-get install -y --no-install-recommends \
+      python3 \
+      python3-pip \
+      python3-venv \
+    &amp;&amp; apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+# install uv globally
+ENV UV_INSTALL_DIR=/usr/local/bin
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+COPY requirements/ /requirements/
+
+WORKDIR /requirements
+
+RUN uv pip install --system --no-cache --no-managed-python -r requirements.out
+</code></pre>
+<p>My current workaround is:</p>
+<ul>
+<li>Either use regular pip with <code>--break-system-packages</code></li>
+<li>Or disable the protection with <code>RUN rm /usr/lib/python3*/EXTERNALLY-MANAGED</code></li>
+</ul>
+<p>I couldn't find a similar <code>--break-system-packages</code> flag for uv? I do not want to have a venv and can not inherit form an official python image (which does not have this restriction).</p>
+<h3>Platform</h3>
+<p>docker, debian</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @turbotimon on 2025-09-04 07:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-04 11:35</div>
+            <div class="timeline-body"><p>I recommend using a docker image such as <code>python:3.11-trixie</code> that does not have this restriction, the generic debian has this restriction in place to note that system packages may also use those site-packages, causing conflicts. We also provide such images (https://docs.astral.sh/uv/guides/integration/docker/#available-images), and there is a variety of similar base images available, or alternatively <code>codercom/code-server</code> may be able to lift this restriction.</p>
+<p>Apart from that, <code>uv pip install --break-system-packages</code> is supported in uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/turbotimon">@turbotimon</a> on 2025-09-05 07:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Apart from that, uv pip install --break-system-packages is supported in uv.</p>
+</blockquote>
+<p>@konstin Apologies, I thought I had checked this, but apparently I only read the &quot;uv in docker&quot; page. But wouldn't you agree that it would make sense to mention this option in the <a href="https://docs.astral.sh/uv/guides/integration/docker/">docker docs</a>? I could do a PR for that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-05 07:16</div>
+            <div class="timeline-body"><p>We don't want to promote <code>--break-system-packages</code>, if an environment is set to externally managed, we should respect that. See PEP 668 for the extended rational and details on the <code>EXTERNALLY-MANAGED</code> marker.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/turbotimon">@turbotimon</a> on 2025-09-05 08:00</div>
+            <div class="timeline-body"><p>@konstin I understand that you don't want to promote it in general, but I'm talking about using it in a Docker which should be perfectly fine. Isn't that flag specifically for environments like CI/CD and therefore docker images?</p>
+<blockquote>
+<p>--break-system-packages is intended for use in continuous integration (CI) environments</p>
+</blockquote>
+<p>In my case, I can not use another base image and have to &quot;break system packages&quot;. However, this is safe as nobody will use <code>apt</code> later. I was expecting this in the <strong>&quot;uv in Docker&quot;</strong> docs, as it explicitly already talks about <a href="https://docs.astral.sh/uv/guides/integration/docker/#installing-a-package">installing in the system environment with <code>--system</code></a>. What's against placing a note there, informing (not promoting) about it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-05 09:06</div>
+            <div class="timeline-body"><p>There are other options, such as using venv in docker (https://hynek.me/articles/docker-virtualenv/), so we don't want to go against the PEP (https://peps.python.org/pep-0668/#guide-users-towards-virtual-environments and https://peps.python.org/pep-0668/#use-cases 5.). While we acknowledge it is something necessary to use this flag, we consider it an escape hatch that should only be used when no other option is possible. We want to encourage best practices with our guides, leaving edge cases to the reference documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-09-06 02:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[F811] Allow importing fixtures - astral-sh/ruff #16602</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[F811] Allow importing fixtures</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16602">#16602</a>
+        opened by <a href="https://github.com/alanhdu">@alanhdu</a>
+        on 2025-03-10 14:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alanhdu">@alanhdu</a> on 2025-03-10 14:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We have some code where we define <code>pytest.fixture</code>s in a centralized place and then import them in our test suite. Something that looks like:</p>
+<pre><code class="language-python">from a import foo
+
+def test_hello(foo) -&gt; None:
+    pass
+</code></pre>
+<p>Unfortunately, <code>ruff check</code> will then fail with:</p>
+<pre><code>test_b.py:1:15: F401 [*] `a.foo` imported but unused
+  |
+1 | from a import foo
+  |               ^^^ F401
+2 |
+3 | def test_hello(foo) -&gt; None:
+  |
+  = help: Remove unused import: `a.foo`
+
+test_b.py:3:16: F811 Redefinition of unused `foo` from line 1
+  |
+1 | from a import foo
+2 |
+3 | def test_hello(foo) -&gt; None:
+  |                ^^^ F811
+4 |     pass
+  |
+  = help: Remove definition: `foo`
+</code></pre>
+<p>Do you know what's going on with the F811 failure? I think the F401 failure is understandable (not sure we want to special-case logic that the fixture is automagically used by pytest, although that would certainly help us out), but I feel like the &quot;redefinition of unused <code>foo</code>&quot; error is weird.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-10 18:31</div>
+            <div class="timeline-body"><p>You can use to https://docs.astral.sh/ruff/settings/#lint_pyflakes_allowed-unused-imports to disable the <code>F401</code> warning. Unfortunately, this doesn't suppress F811 which is mainly what you're looking for. Although I'm not sure if ignoring the imports lited in <code>allowed-unused-imports</code> is in the spirit of <code>F811</code> outside of pytests. Have you considered disabling <code>F811</code> in tests?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-10 18:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feature: Support D417 for __init__ Parameters in numpy class docstrings - astral-sh/ruff #924</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>feature: Support D417 for __init__ Parameters in numpy class docstrings</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/924">#924</a>
+        opened by <a href="https://github.com/tlambert03">@tlambert03</a>
+        on 2022-11-27 17:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tlambert03">@tlambert03</a> on 2022-11-27 17:58</div>
+            <div class="timeline-body"><p>(I think this could technically be called a bug rather than a feature request, but ruff's current behavior is consistent with pydocstyle's, so let's call it a feature request :smile:)</p>
+<p><strong>issue:</strong>  if <code>__init__</code> parameters are documented in the class docstring, they are not caught by D417</p>
+<p>In the <a href="https://numpydoc.readthedocs.io/en/latest/format.html#class-docstring">class docstrings section</a> of the numpy docstring style guide, they state that <code>__init__</code> parameters should actually be documented in the class docstrings:</p>
+<blockquote>
+<h1>Class docstring</h1>
+<p>Use the same sections as outlined above (all except <a href="https://numpydoc.readthedocs.io/en/latest/format.html#returns">Returns</a> &gt; are applicable). The constructor (<code>__init__</code>) should also be documented here, the <a href="https://numpydoc.readthedocs.io/en/latest/format.html#params">Parameters</a> section of the docstring details the constructor’s parameters.</p>
+</blockquote>
+<p>Obviously, this one is trickier:  there's a fair degree of variation out there in source code, with many still using the <code>__init__</code> docstring to document the constructor parameters. The sphinx docstring parser napoleon also supports putting the parameters in <em>either</em> docstring, see <a href="https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html#example-numpy-style-python-docstrings"><code>ExampleClass</code> here</a>, where they say:</p>
+<pre><code>    The __init__ method may be documented in either the class level
+    docstring, or as a docstring on the __init__ method itself.
+
+    Either form is acceptable, but the two should not be mixed. Choose one
+    convention to document the __init__ method and be consistent with it.</code></pre>
+<p>Anyway, not sure how you'd like to handle this one, but thought I'd bring it to your attention.</p>
+<p>thanks again!</p>
+<hr />
+<p><strong>edit</strong>:  here's an example of a class that I would <em>like</em> to throw a D417 error for a missing <code>b</code> argument:</p>
+<pre><code class="language-python">class C:
+    &quot;&quot;&quot;Summary.
+
+    Parameters
+    ----------
+    a : int
+        Description.
+    &quot;&quot;&quot;
+
+    # b is not documented above
+    def __init__(self, a: int, b: str) -&gt; None:
+        ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-27 20:37</div>
+            <div class="timeline-body"><p>Heh, I think it’s fair to call this a bug. Should fix. A little more complex of course since it requires some bookkeeping…</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-11-27 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tlambert03">@tlambert03</a> on 2022-11-27 20:39</div>
+            <div class="timeline-body"><p>what's your gut feeling?  support both <code>__init__</code> and class docstrings like napoleon?  or just look in class docstrings like the spec says?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-27 20:46</div>
+            <div class="timeline-body"><p>My gut is to support either, like napoleon. (Maybe biased since I tend to document the init.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2022-12-31 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pydev-guide/pyrepo-copier/issues/18.html">pydev-guide/pyrepo-copier#18</a> on 2023-10-27 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2024-06-06 11:16</div>
+            <div class="timeline-body"><p>Adding to this, it would be nice to pick up missing attributes in dataclasses/attrs.</p>
+<p>For example</p>
+<pre><code class="language-py">@dataclass
+class Foo:
+    &quot;&quot;&quot;My class.
+
+    Attributes:
+        x: The x attribute.
+    &quot;&quot;&quot;
+
+    x: int
+    y: float
+    _z: bool
+</code></pre>
+<p>And perhaps if the attribute is prefixed with an <code>_</code> then it is optional whether that gets included in the docstring? But I'm not sure if that's a widely accepted practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pyapp-kit/ndv/pulls/80.html">pyapp-kit/ndv#80</a> on 2025-01-09 16:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

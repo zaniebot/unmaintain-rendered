@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exempting certain classes/methods from various things - astral-sh/ruff #12076</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Exempting certain classes/methods from various things</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12076">#12076</a>
+        opened by <a href="https://github.com/benjamin-kirkbride">@benjamin-kirkbride</a>
+        on 2024-06-27 18:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/benjamin-kirkbride">@benjamin-kirkbride</a> on 2024-06-27 18:46</div>
+            <div class="timeline-body"><p>A lot of frameworks provide classes/functions that have a set number of arguments. It is idiomatic and/or required to have them in place even when not used (ARG002), and they often have too many args (PLR0913).</p>
+<p>An example of that from Pyglet:</p>
+<pre><code class="language-python">def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
+    pass
+</code></pre>
+<p>It is common to only need a couple of those arguments, but they all must be there for it to function properly. It is possible to <code>_</code> the args you don't need to get around ARG002, but that is not idiomatic and confuses thing.</p>
+<p>Other examples exist that I don't have immediately on hand, things like Django class based views.</p>
+<p>My proposal is a way to exempt classes (in the case of the init) and method names from these (and possibly other related?) checks.</p>
+<p>Why not just disable those lints altogether? Because I want my own custom functions and methods to be held to a certain standard. Why not disable those checks on the functions where they come up? Because I will end up with dozens or hundreds of noqa comments throughout a medium sized program.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benjamin-kirkbride">@benjamin-kirkbride</a> on 2024-06-27 18:47</div>
+            <div class="timeline-body"><p>matching a regex pattern for this would be awesome, but that may be too much to ask :sweat_smile:</p>
+<p>In Pyglet for instance, exempting <code>on_mouse_*</code> and <code>on_key_*</code> go a huge way towards fixing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2024-06-28 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> removed by @MichaReiser on 2024-06-28 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-06-28 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fschulze">@fschulze</a> on 2024-08-10 15:10</div>
+            <div class="timeline-body"><p>Something along the lines of exceptions for mypy could also be helpful in many cases:</p>
+<pre><code class="language-python">def on_mouse_drag(x, y, dx, dy, buttons, modifiers):  # noqa: ARG002[x,y,buttons,modifiers]
+    pass
+</code></pre>
+<p>The above should complain if <code>dx</code> or <code>dy</code> are unused, but not the others and it should fail if <code>x</code>, <code>y</code>, <code>buttons</code> or <code>modifiers</code> are used. That way one can be very specific and any changes will show up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eddielu">@eddielu</a> on 2024-09-05 02:26</div>
+            <div class="timeline-body"><p>Another example is django (especially DRF) custom views, where we need to keep a pk in the function parameter for DRF to work, but in reality, we use self.get_object() to get the instance. In this case, our code looks really ugly because we have so many # noqa: ARG002 everywhere.</p>
+<pre><code>def clone_lunch(self, request, pk):  # noqa: ARG002
+  instance = self.get_object()
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

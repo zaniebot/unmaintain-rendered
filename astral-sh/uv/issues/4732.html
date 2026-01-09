@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle overlapping and incomplete markers when forking - astral-sh/uv #4732</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handle overlapping and incomplete markers when forking</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4732">#4732</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-07-02 16:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-07-02 16:58</div>
+            <div class="timeline-body"><p>In python, a package can declare conflicting requirements as long as the markers are disjoint, e.g.:</p>
+<pre><code>numpy==2.0.0; python_version &gt;= &quot;3.11&quot;
+numpy==1.26.4; python_version &lt; &quot;3.11&quot;
+</code></pre>
+<p>When we see requirements like that, we split the resolution into one for <code>python_version &gt;= &quot;3.11&quot;</code> and one for <code>python_version &lt; &quot;3.11&quot;</code> and solve each fork individually. This fails when the markers are overlapping or don't cover the entirety of the marker space. For a real-world example, opencv-python 4.10.0.84 used by transformers:</p>
+<pre><code>numpy &gt;=1.13.3 ; python_version &lt; &quot;3.7&quot;
+numpy &gt;=1.21.0 ; python_version &lt;= &quot;3.9&quot; and platform_system == &quot;Darwin&quot; and platform_machine == &quot;arm64&quot;
+numpy &gt;=1.21.2 ; python_version &gt;= &quot;3.10&quot;
+numpy &gt;=1.21.4 ; python_version &gt;= &quot;3.10&quot; and platform_system == &quot;Darwin&quot;
+numpy &gt;=1.23.5 ; python_version &gt;= &quot;3.11&quot;
+numpy &gt;=1.26.0 ; python_version &gt;= &quot;3.12&quot;
+numpy &gt;=1.19.3 ; python_version &gt;= &quot;3.6&quot; and platform_system == &quot;Linux&quot; and platform_machine == &quot;aarch64&quot;
+numpy &gt;=1.17.0 ; python_version &gt;= &quot;3.7&quot;
+numpy &gt;=1.17.3 ; python_version &gt;= &quot;3.8&quot;
+numpy &gt;=1.19.3 ; python_version &gt;= &quot;3.9&quot;
+</code></pre>
+<p>Currently, we solve for the following forks (https://github.com/astral-sh/uv/issues/4687):</p>
+<pre><code>python_version &gt;= '3.12' and platform_machine == 'aarch64' and platform_system == 'Darwin' and platform_system == 'Linux'
+python_version &lt; '3.13' and python_version &gt;= '3.12' and platform_machine == 'aarch64' and platform_system == 'Darwin' and platform_system == 'Linux'
+python_version &gt;= '3.13' and platform_machine == 'aarch64' and platform_system == 'Darwin' and platform_system == 'Linux'
+python_version == '3.9' and platform_machine == 'arm64' and platform_system == 'Darwin'
+</code></pre>
+<p>They are disjoint, but they are also missing a good bit of the marker space for which we never solve.</p>
+<hr />
+<p>Let's give working with markers some math-y foundations, a visualization as mental model and let's look at two examples.</p>
+<p>Lemma: Inflating the requirements by artificially introducing a split. A requirement</p>
+<pre><code>foo
+</code></pre>
+<p>is equivalent to</p>
+<pre><code>foo; X
+foo; not(X)
+</code></pre>
+<p>Similarly,</p>
+<pre><code>foo; Y
+</code></pre>
+<p>is equivalent to</p>
+<pre><code>foo; Y and X
+foo; Y and not(X)
+</code></pre>
+<p>We can extend this to an arbitrary number of arguments, so if Z¹, Z², ..., Z^n are pairwise disjoint and the union over i in 0..n for Z^i is the base set omega, then</p>
+<pre><code>foo; Y
+</code></pre>
+<p>is equivalent to</p>
+<pre><code>foo; Y and Z¹
+foo; Y and Z²
+...
+foo; Y and Z^n
+</code></pre>
+<p>Now assume we have the following set of partially pairwise overlapping (https://github.com/astral-sh/uv/issues/4640), partially pairwise incomplete (https://github.com/astral-sh/uv/issues/4687) markers:</p>
+<pre><code>foo¹&gt;2
+foo²&gt;3; x&gt;=5
+foo³&lt;4; x&lt;7
+</code></pre>
+<p>We can now inflate the requirements by artificially introducing a split:</p>
+<pre><code>foo¹&gt;2; (x&gt;=7)
+foo²&gt;3; x&gt;=5 and (x&gt;=7)
+foo³&lt;4; x&lt;7 and (x&gt;=7)
+
+foo¹&gt;2; (x&lt;7 and x&gt;=5)
+foo²&gt;3; x&gt;=5 and (x&lt;7 and x&gt;=5)
+foo³&lt;4; x&lt;7 and (x&lt;7 and x&gt;=5)
+
+foo¹&gt;2; (x&lt;5)
+foo²&gt;3; x&gt;=5 and (x&lt;5)
+foo³&lt;4; x&lt;7 and (x&lt;5)
+</code></pre>
+<p>We see that each group is disjoint, so we can create three forks. Simplifying and Removing empty markers we get:</p>
+<pre><code># Fork 1
+foo¹&gt;2; x&gt;=7
+foo²&gt;3; x&gt;=7
+
+# Fork 2
+foo¹&gt;2; x&lt;7 and x&gt;=5
+foo²&gt;3; x&lt;7 and x&gt;=5
+foo³&lt;4; x&lt;7 and x&gt;=5
+
+# Fork 3
+foo¹&gt;2; x&lt;5
+foo³&lt;4; x&lt;5
+</code></pre>
+<p>We defined a correct way of splitting these markers.</p>
+<hr />
+<p>Let us switch to another example to develop a model of markers and marker space. Ignoring extras, we can consider the current environment a point in a 10-dimensional marker space defined by PEP 508 (os_name, sys_platform, platform_machine, platform_python_implementation, platform_release, platform_system, platform_version, python_version/python_full_version, implementation_name, implementation_version). The dimensions are of different datatypes and not all points exist (os_name==&quot;posix&quot; and platform_system==&quot;Windows&quot; doesn't make sense). A marker is a slice in that space.</p>
+<p>We can visualize a simpler version of the opencv-python 4.10.0.84 requirements:</p>
+<pre><code>numpy &gt;=1.21.4 ; python_version &gt;= &quot;3.10&quot; and platform_system == &quot;Darwin&quot;
+numpy &gt;=1.21.2 ; python_version &gt;= &quot;3.11&quot;
+numpy &gt;=1.21.0 ; python_version &lt;= &quot;3.9&quot; and platform_system == &quot;Darwin&quot;
+</code></pre>
+<p><img src="https://github.com/astral-sh/uv/assets/6826232/0ce4ef3a-4f8b-4a84-addc-d144f1f7179d" alt="image" /></p>
+<p>There is two ways we can transform these requirements with the diagram:</p>
+<ul>
+<li>Merge overlapping: 1 and 2 are overlapping, so there's a fork 1 or 2. There's a fork 3 and a fork for the remaining space not(1 or 2 or 3)</li>
+<li>Split overlapping: 1 and 2 are overlapping so there's a fork 1 \ 2, 2 \ 1 and 1 and 2 . There's a fork 3 and a fork for the remaining space not(1 or 2 or 3)</li>
+</ul>
+<p><img src="https://github.com/astral-sh/uv/assets/6826232/27d2b2c9-11a9-428c-9bc5-52b8df0ecbb8" alt="image" /></p>
+<p>For splitting overlapping, the options are:</p>
+<ul>
+<li>crosses, <code>python_version &gt;= &quot;3.10&quot; and python_version &lt; &quot;3.11&quot; and platform_system == &quot;Darwin&quot;</code> with <code>numpy &gt;=1.21.4</code></li>
+<li>stripes, <code>python_version &gt;= &quot;3.11&quot; and platform_system == &quot;Darwin&quot;</code> with <code>numpy &gt;=1.21.2</code> and <code>numpy &gt;=1.21.4</code></li>
+<li>dots, <code>python_version &gt;= &quot;3.11&quot; and platform_system != &quot;Darwin&quot;</code> with <code>numpy &gt;=1.21.2</code></li>
+</ul>
+<p>I favor to splitting the overlapping, it's the more general solution, and the one able to handle complex cases like the opencv-python markers (even though we pick a more recent numpy version for them anyway). If we merge overlapping, we need to special case the universal marker (no marker provided) for https://github.com/astral-sh/uv/issues/4640. In either case, we need to implement marker tree negation to support incomplete markers, and proper simplification for negated marker tree to determine if the markers were actually incomplete or did cover the entire markers space, leaving only an empty set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-07-02 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-02 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @konstin on 2024-07-08 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/packse/pulls/200.html">astral-sh/packse#200</a> on 2024-07-09 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4959.html">astral-sh/uv#4959</a> on 2024-07-10 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4992.html">astral-sh/uv#4992</a> on 2024-07-11 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4996.html">astral-sh/uv#4996</a> on 2024-07-11 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5074.html">astral-sh/uv#5074</a> on 2024-07-15 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5163.html">astral-sh/uv#5163</a> on 2024-07-25 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5488.html">astral-sh/uv#5488</a> on 2024-07-26 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5562.html">astral-sh/uv#5562</a> on 2024-07-29 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5733.html">astral-sh/uv#5733</a> on 2024-08-02 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5887.html">astral-sh/uv#5887</a> on 2024-08-07 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-08-13 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-08-13 15:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow nested dependency groups with CLI (`uv add` + `include-group`) - astral-sh/uv #16912</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow nested dependency groups with CLI (`uv add` + `include-group`)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16912">#16912</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2025-12-01 17:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2025-12-01 17:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm trying to achieve the following through CLI:</p>
+<pre><code class="language-toml"># pyproject.toml
+[dependency-groups]
+ruff = [
+    &quot;beslogic-ruff-config&quot;,
+    &quot;ruff&quot;,
+]
+dev = [
+  { include-group = &quot;ruff&quot; },
+]
+[tool.uv.sources]
+beslogic-ruff-config = { git = &quot;https://github.com/Beslogic/Beslogic-Ruff-Config&quot;, rev = &quot;&lt;rev&gt;&quot; }
+</code></pre>
+<p>What I got so far:</p>
+<pre><code class="language-shell">uv add git+https://github.com/Beslogic/Beslogic-Ruff-Config --group ruff --rev &lt;rev&gt;
+uv add ruff --group ruff
+# Something like that
+uv add &quot;{ include-group = 'ruff' }&quot; --dev # also tried with --raw
+</code></pre>
+<p>Which results in:</p>
+<pre><code class="language-shell">error: Failed to parse: `{ include-group = 'ruff' }`
+  Caused by: Expected package name starting with an alphanumeric character, found `{`
+{ include-group = 'ruff' }
+</code></pre>
+<p>I would like to add an <code>include-group</code> entry using the CLI.</p>
+<p>https://docs.astral.sh/uv/concepts/projects/dependencies/#nesting-groups makes no mention of this being possible, hence I'm opening as a feature request.</p>
+<h3>Example</h3>
+<p>Tools that only need to run within a specific context and don't need to pull in the entire dev dependencies can offer a simpler optimized installation method through a few CLI commands (create a dependency group, then add said group to dev)</p>
+<p>(my full real-world example is included in summary)</p>
+<p>I can see this pattern becoming popular once Ruff officially supports extending non-local configurations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @Avasam on 2025-12-01 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 17:42</div>
+            <div class="timeline-body"><p>This is a duplicate of https://github.com/astral-sh/uv/issues/9054 though I think this one is a bit clearer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9054.html">astral-sh/uv#9054</a> on 2025-12-01 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2025-12-01 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2025-12-01 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 17:44</div>
+            <div class="timeline-body"><pre><code>uv add --include-group foo --group bar
+</code></pre>
+<p>is the first thing I can think of?</p>
+<p>Or I guess we could use our invented syntax we use for display, i.e.:</p>
+<pre><code>uv add project:foo --group bar
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-12-01 17:57</div>
+            <div class="timeline-body"><p>IMO <code>--include-group</code> has better discoverability. As a CLI arg it'll naturally come up in --help and it'll be easier to search for in docs.</p>
+<p><code>uv add foo2 --include-group foo --group bar</code> would still work and add both the dependency and include to the group</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 18:00</div>
+            <div class="timeline-body"><p>I'm a little wary of adding more flags though. We do already support group selection e.g., <code>uv pip install --group pyproject.toml:group</code>. And this is how you'd add an extra to a group, e.g., <code>uv add project[foo] --group bar</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

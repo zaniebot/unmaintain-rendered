@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>handle constraints on indirect dependencies - astral-sh/uv #1522</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>handle constraints on indirect dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1522">#1522</a>
+        opened by <a href="https://github.com/raylu">@raylu</a>
+        on 2024-02-16 18:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/raylu">@raylu</a> on 2024-02-16 18:38</div>
+            <div class="timeline-body"><p>if I have this requirements.in</p>
+<pre><code>virtualenv
+</code></pre>
+<p>and this requirements.txt</p>
+<pre><code>distlib==0.3.8
+    # via virtualenv
+filelock==3.8.0
+    # via virtualenv
+platformdirs==2.6.2
+    # via virtualenv
+virtualenv==20.16.5
+</code></pre>
+<p>then <code>pip-compile requirements.in</code> and <code>uv pip compile requirements.in -o requirements.txt</code> do the same thing (no functional changes to the txt file) so everything is great</p>
+<p>if I add this constraints.txt</p>
+<pre><code>filelock==3.8.0
+</code></pre>
+<p>and <code>rm requirements.txt</code>, then <code>pip-compile requirements.in -c constraints.txt</code> produces</p>
+<pre><code>distlib==0.3.8
+    # via virtualenv
+filelock==3.8.0
+    # via
+    #   -c constraints.txt
+    #   virtualenv
+platformdirs==3.11.0
+    # via virtualenv
+virtualenv==20.21.1
+</code></pre>
+<p><code>pip-compile</code> picked the last version of virtualenv that supported the old <code>filelock</code> (<a href="https://github.com/pypa/virtualenv/blob/20.22.0/pyproject.toml#L40">20.22.0 requires <code>filelock&gt;=3.11</code></a>)</p>
+<p>however,</p>
+<pre><code>$ uv pip compile requirements.in -c constraints.txt -v
+[...]
+        0.008705s   3ms DEBUG uv_resolver::resolver Searching for a compatible version of virtualenv (*)
+        0.008872s   4ms DEBUG uv_resolver::resolver Selecting: virtualenv==20.25.0 (virtualenv-20.25.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies package=virtualenv, version=20.25.0
+     uv_resolver::resolver::distributions_wait package_id=virtualenv-20.25.0
+              0.009378s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/83/22/54b1180756d2d6194bcafb7425d437c3034c4bff92129c3e1e633079e2c4/virtualenv-20.25.0-py3-none-any.whl
+error: There are conflicting versions for `filelock`: `filelock&gt;=3.12.2, &lt;4` does not intersect with `filelock==3.8.0`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 18:44</div>
+            <div class="timeline-body"><p>Interesting, thank you for the clear report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-16 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../inventree/InvenTree/pulls/6499.html">inventree/InvenTree#6499</a> on 2024-02-16 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-18 02:15</div>
+            <div class="timeline-body"><p>Ah yeah, ok, I see the issue here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-18 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-18 02:22</div>
+            <div class="timeline-body"><p>Have a fix but needs a few more test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1621.html">astral-sh/uv#1621</a> on 2024-02-18 02:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-02-18 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @zanieb on 2024-02-18 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edwardpeek-crown-public">@edwardpeek-crown-public</a> on 2024-02-19 05:16</div>
+            <div class="timeline-body"><p>Hit this as well in my experimentation if you want another real-world case.  A one-liner repro:</p>
+<pre><code class="language-bash"># Doesn't work
+uv pip compile &lt;(printf '%s\n' 'psycopg[c]&gt;=3') -c &lt;(printf '%s\n' 'psycopg==3.1.13' 'psycopg-c==3.1.13')
+
+# Works
+uv pip compile &lt;(printf '%s\n' 'psycopg[c]&gt;=3') -o &lt;(printf '%s\n' 'psycopg==3.1.13' 'psycopg-c==3.1.13')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-19 21:35</div>
+            <div class="timeline-body"><p>Thank you! I'm hoping to fix it today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1796.html">astral-sh/uv#1796</a> on 2024-02-21 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-22 02:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 05:01</div>
+            <div class="timeline-body"><p>Should be fixed in v0.1.7 (out now).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

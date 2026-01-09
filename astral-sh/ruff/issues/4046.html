@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>importing pytest fixtures raises F401 - astral-sh/ruff #4046</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>importing pytest fixtures raises F401</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4046">#4046</a>
+        opened by <a href="https://github.com/wasim42">@wasim42</a>
+        on 2023-04-20 13:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wasim42">@wasim42</a> on 2023-04-20 13:31</div>
+            <div class="timeline-body"><p>It appears that ruff isn't handling pytest fixtures correctly.</p>
+<p>Consider the following files (adapted from a pytest example):</p>
+<p>fruit.py</p>
+<pre><code>import pytest
+
+
+class Fruit:
+    def __init__(self, name):
+        self.name = name
+
+    def __eq__(self, other):
+        return self.name == other.name
+
+
+@pytest.fixture
+def my_fruit():
+    return Fruit(&quot;apple&quot;)
+
+
+@pytest.fixture
+def fruit_basket(my_fruit):
+    return [Fruit(&quot;banana&quot;), my_fruit]
+</code></pre>
+<p>and test_fruit.py:</p>
+<pre><code>from fruit import (
+    my_fruit,
+    fruit_basket
+)
+
+def test_my_fruit_in_basket(my_fruit, fruit_basket):
+    assert my_fruit in fruit_basket
+</code></pre>
+<p>Running <code>ruff --isolated test_fruit.py</code> I get:</p>
+<pre><code>test_fruit.py:2:5: F401 [*] `fruit.my_fruit` imported but unused
+test_fruit.py:3:5: F401 [*] `fruit.fruit_basket` imported but unused
+test_fruit.py:6:29: F811 Redefinition of unused `my_fruit` from line 2
+test_fruit.py:6:39: F811 Redefinition of unused `fruit_basket` from line 3
+Found 4 errors.
+[*] 2 potentially fixable with the --fix option.
+</code></pre>
+<p>I'm using <code>ruff 0.0.262</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-20 16:53</div>
+            <div class="timeline-body"><p>Thanks for filing. I'll look into this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-20 19:46</div>
+            <div class="timeline-body"><p>I think this has been discussed before, but I’m on my phone and it may be hard to dig up the relevant issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-20 20:48</div>
+            <div class="timeline-body"><p>#3295 pointed me to <a href="https://docs.pytest.org/en/7.2.x/how-to/fixtures.html#using-fixtures-from-other-projects">this</a>. Pytest suggests avoiding importing fixtures in favor of adding them to <code>conftest.py</code>. In that case, I'm personally a bit torn on implementing this - on one hand, it's definitely confusing behavior since the import is in fact used, but on the other it's not recommended to do so.</p>
+<p>I'm almost leaning towards fixing the unused import bug, but maybe implementing a separate rule centered on avoiding fixture imports? FWIW, it seems like <a href="https://github.com/pylint-dev/pylint/issues/3493">Pylint</a> has the same issue as the one mentioned here. The suggested solution is to simply rename the fixture file (<code>fruit.py</code>, in this case) to <code>conftest.py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-21 01:52</div>
+            <div class="timeline-body"><p>Yeah, reading through the discussion, I think I agree with the conclusion that was reached in #3295: since Pytest itself recommends against this pattern, I'd rather not special-case in Ruff. (I'm not even sure how we could special-case it without introducing lots of false negatives. Best-case is that we could avoid <em>autofixing</em> these cases but still flag them.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-21 01:52</div>
+            <div class="timeline-body"><p>I'm going to close, given that conclusion, but always happy to continue the discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-21 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wasim42">@wasim42</a> on 2023-04-21 05:07</div>
+            <div class="timeline-body"><p>Thank you very much for that!  I’m a novice with pytest and this was a case of me using a linter to help me muddle through, and it has 😜</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-04-27 21:38</div>
+            <div class="timeline-body"><p>Today, <code>F401</code> autofixes wiped away my fixture imports a few times.  I can think of several workarounds:</p>
+<ol>
+<li>Use <code>conftest.py</code> (which I am avoiding for reasons beyond this issue's scope)</li>
+<li>Manually insert <code># noqa: F401</code> before invoking <code>ruff</code></li>
+<li>Place <code>F401</code> in <code>unfixable</code> aspect of config</li>
+</ol>
+<p>I went with option 3, marking <code>F401</code> as <code>unfixable</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2044.html">astral-sh/ruff#2044</a> on 2023-07-05 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hgrecco/pint-pandas/issues/193.html">hgrecco/pint-pandas#193</a> on 2023-07-05 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mandiant/capa/issues/1592.html">mandiant/capa#1592</a> on 2023-07-07 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10662.html">astral-sh/ruff#10662</a> on 2024-03-30 00:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../flexcompute/Flow360/pulls/242.html">flexcompute/Flow360#242</a> on 2024-04-17 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../acdh-oeaw/rdfproxy/pulls/21.html">acdh-oeaw/rdfproxy#21</a> on 2024-07-26 20:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

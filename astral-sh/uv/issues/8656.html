@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV and dist-packages problem. - astral-sh/uv #8656</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV and dist-packages problem.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8656">#8656</a>
+        opened by <a href="https://github.com/koodzi">@koodzi</a>
+        on 2024-10-29 11:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/koodzi">@koodzi</a> on 2024-10-29 11:28</div>
+            <div class="timeline-body"><p>I got a problem with <code>uv</code> not seeing system packages.</p>
+<pre><code class="language-Dockerfile">FROM debian
+
+RUN apt update &amp;&amp; apt install -yq python3 curl python3-requests
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/bin/uv
+RUN uv pip install --system requests
+</code></pre>
+<p>Fails with:</p>
+<pre><code>0.371 Using Python 3.11.2 environment at /usr                                                                                                                  
+0.372 error: The interpreter at /usr is externally managed, and indicates the following:      
+</code></pre>
+<p>When I add <code>--prefix /usr</code> or <code>/usr/local</code> uv installs the package, but it seems <code>uv</code> does not see packages in <code>dist-packages</code></p>
+<pre><code class="language-Dockerfile">FROM debian
+
+RUN apt update &amp;&amp; apt install -yq python3 curl python3-requests
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/bin/uv
+RUN python3 -c &quot;import requests; print('&gt;&gt;&gt;&gt;', requests.__version__)&quot;
+RUN uv pip install --system --prefix /usr requests
+RUN python3 -c &quot;import requests; print('&gt;&gt;&gt;&gt;', requests.__version__)&quot;
+
+
+RUN python3 -c &quot;import sys; print('&gt;&gt;&gt;&gt;', sys.prefix, sys.path)&quot;
+</code></pre>
+<p>Output:</p>
+<pre><code>#9 [stage-0 4/7] RUN python3 -c &quot;import requests; print('&gt;&gt;&gt;&gt;', requests.__version__)&quot;
+#9 0.343 &gt;&gt;&gt;&gt; 2.28.1
+#9 DONE 0.4s
+
+#10 [stage-0 5/7] RUN uv pip install --system --prefix /usr requests
+#10 0.378 Using Python 3.11.2 environment at /usr
+#10 6.522 Resolved 5 packages in 6.14s
+#10 6.580 Prepared 5 packages in 56ms
+#10 6.584 Installed 5 packages in 3ms
+#10 6.584  + certifi==2024.8.30
+#10 6.584  + charset-normalizer==3.4.0
+#10 6.584  + idna==3.10
+#10 6.584  + requests==2.32.3
+#10 6.584  + urllib3==2.2.3
+#10 DONE 6.7s
+
+#11 [stage-0 6/7] RUN python3 -c &quot;import requests; print('&gt;&gt;&gt;&gt;', requests.__version__)&quot;
+#11 0.330 &gt;&gt;&gt;&gt; 2.28.1
+#11 DONE 0.4s
+
+#12 [stage-0 7/7] RUN python3 -c &quot;import sys; print('&gt;&gt;&gt;&gt;', sys.prefix, sys.path)&quot;
+#12 0.327 &gt;&gt;&gt;&gt; /usr ['', '/usr/lib/python311.zip', '/usr/lib/python3.11', '/usr/lib/python3.11/lib-dynload', '/usr/local/lib/python3.11/dist-packages', '/usr/lib/python3/dist-packages']
+#12 DONE 0.4s
+</code></pre>
+<p>Do I think correctly that uv should see the requests in the system and use it instead of installing a new one?</p>
+<p>Is there workaround ? Or maybe I miss some package?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-29 12:40</div>
+            <div class="timeline-body"><p>You may want <code>--break-system-packages</code> if you're actually looking to modify an externally-managed Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-29 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/koodzi">@koodzi</a> on 2024-10-29 13:44</div>
+            <div class="timeline-body"><p>That's solved the problem.  Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @koodzi on 2024-10-29 13:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

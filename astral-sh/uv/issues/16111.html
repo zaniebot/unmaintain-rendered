@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super slow resolution when using --extra-index-url for JAX artifacts - astral-sh/uv #16111</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Super slow resolution when using --extra-index-url for JAX artifacts</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16111">#16111</a>
+        opened by <a href="https://github.com/sontungkieu">@sontungkieu</a>
+        on 2025-10-03 07:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sontungkieu">@sontungkieu</a> on 2025-10-03 07:39</div>
+            <div class="timeline-body"><h3>Question</h3>
+<h3>Description</h3>
+<p>I'm migrating an old project to <code>uv</code> for faster dependency setup, but the initial cold resolution takes around 10 minutes. This is significantly slower than expected, especially since <code>uv</code> is designed for speed. The slowdown seems tied to resolving dependencies that require an extra index URL for JAX artifacts.</p>
+<p>Without the extra index URL, resolution fails due to unavailable packages like <code>jax</code> and <code>jaxlib</code>. With it, it works but is painfully slow.</p>
+<h3>Steps to Reproduce</h3>
+<ol>
+<li><p>Create a new directory and set up the following <code>pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;xql-offline&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Project generated from pinned requirements&quot;
+readme = &quot;README.md&quot;
+authors = [{ name = &quot;Your Name&quot; }]
+license = &quot;MIT&quot;
+requires-python = &quot;&gt;=3.8,&lt;3.10&quot;
+
+dependencies = [
+    &quot;numpy &gt;= 1.20.2,&lt;1.24.4&quot;,
+    &quot;scipy &gt;= 1.6.0,&lt;1.11.1&quot;,
+    &quot;absl-py &gt;= 0.12.0&quot;,
+    'gym[mujoco-py] &lt;= 0.24.1',
+    &quot;gdown &gt;= 3.12.2&quot;,
+    &quot;tqdm &gt;= 4.60.0&quot;,
+    &quot;flax &gt;= 0.3.5&quot;,
+    &quot;jax &lt;=0.3.15&quot;,
+    &quot;jaxlib &lt;= 0.3.15&quot;,
+    &quot;ml_collections &gt;= 0.1.0&quot;,
+    &quot;optax &gt;= 0.0.6,&lt;0.1.5&quot;,
+    &quot;tensorboard &lt; 2.15&quot;,
+    &quot;tensorflow-probability == 0.17.0&quot;,
+    &quot;imageio &gt;= 2.9.0&quot;,
+    &quot;imageio-ffmpeg &gt;= 0.4.3&quot;,
+    &quot;d4rl @ git+https://github.com/rail-berkeley/d4rl@master#egg=d4rl&quot;,
+    &quot;wandb&lt;0.19.12&quot;,
+    &quot;tensorboardX&quot;,
+    &quot;cython &lt;3, &gt;=0.29&quot;,  # Pin to fix MuJoCo-py build; &lt;3 avoids noexcept conflict
+    &quot;chex==0.1.5&quot;,
+]
+</code></pre>
+</li>
+<li><p>Run <code>uv sync --extra-index-url https://us-python.pkg.dev/ml-oss-artifacts-published/jax/simple/</code>.</p>
+</li>
+<li><p>Observe the resolution step hanging for ~10 minutes (e.g., &quot;Resolving...&quot; phase).</p>
+</li>
+</ol>
+<h3>Expected Behavior</h3>
+<p>Dependency resolution should be fast (seconds), as advertised for <code>uv</code>.</p>
+<h3>Actual Behavior</h3>
+<p>Cold resolution takes ~10 minutes. Subsequent <code>uv sync</code> runs are faster (cached), but the initial one is a blocker for CI/CD or new setups.</p>
+<h3>Environment</h3>
+<ul>
+<li><code>uv</code> version: 0.8.22</li>
+<li>Python version: 3.11.13</li>
+<li>Architecture: x86_64</li>
+<li><strong>Reproducible on multiple setups:</strong> Personal machine, Kaggle notebooks, Vast.ai instances (USA, China, Norway regions) – all show ~10 min resolution time.</li>
+</ul>
+<h3>Additional Context</h3>
+<ul>
+<li>This project uses older pinned versions of JAX/Flax (from ~2022), which require the Google Cloud artifact repo.</li>
+<li>No <code>uv.lock</code> file present initially (cold resolve).</li>
+<li>Tested across diverse environments (as above) to rule out local network issues, but slowdown persists.</li>
+</ul>
+<h3>Possible Workarounds</h3>
+<ul>
+<li>Pre-generate <code>uv.lock</code> on a faster machine/network.</li>
+<li>But this defeats the purpose of fast setup.</li>
+</ul>
+<p>Happy to provide more logs or test on a minimal repro if needed!</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p>uv 0.8.22</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @sontungkieu on 2025-10-03 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lagamura">@lagamura</a> on 2025-10-28 13:04</div>
+            <div class="timeline-body"><p>I am using the following pattern to install from <code>pypi</code> public packages and fallback to the private index for closed once:</p>
+<pre><code class="language-text">[project]
+dependencies = [
+&quot;numpy&quot;,
+&quot;matplotlib&quot;,
+...
+&quot;&lt;private-package&gt;,
+]
+
+[tool.uv]
+index-strategy = &quot;unsafe-best-match&quot;
+
+[[tool.uv.index]]
+name = &quot;pypi&quot;
+url = &quot;https://pypi.org/simple&quot;
+default = true
+
+[[tool.uv.index]]
+name = &quot;&lt;private-artifactory-name&gt;&quot;
+url = &quot;&lt;private-index-url&gt;&quot;
+</code></pre>
+<p>This should improve your timings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-28 13:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Happy to provide more logs or test on a minimal repro if needed!</p>
+</blockquote>
+<p>Can you share verbose (<code>-v</code>) logs? Those should usually say what's taking a lot of time. Similarly, does it show many builds during resolution? Those usually take a long time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sontungkieu">@sontungkieu</a> on 2025-11-11 08:46</div>
+            <div class="timeline-body"><p>Thanks! I’ve attached verbose logs for both runs.</p>
+<p><strong>Before (slow):</strong></p>
+<pre><code class="language-bash">uv sync -v --extra-index-url https://us-python.pkg.dev/ml-oss-artifacts-published/jax/simple/ \
+  1&gt;uv_out.txt 2&gt;uv_err.txt
+</code></pre>
+<ul>
+<li>Took ~8 minutes to resolve.</li>
+<li>Logs: <a href="https://github.com/user-attachments/files/23474190/uv_err.txt">uv_err.txt</a></li>
+</ul>
+<p><strong>After applying @lagamura’s pattern (fast):</strong></p>
+<pre><code class="language-toml"># pyproject.toml
+[tool.uv]
+index-strategy = &quot;unsafe-best-match&quot;
+
+[tool.uv.sources]
+jax = { index = &quot;jax&quot; }
+jaxlib = { index = &quot;jax&quot; }
+
+
+[[tool.uv.index]]
+name = &quot;pypi&quot;
+url = &quot;https://pypi.org/simple&quot;
+default = true
+
+[[tool.uv.index]]
+name = &quot;jax&quot;
+url = &quot;https://us-python.pkg.dev/ml-oss-artifacts-published/jax/simple/&quot;
+explicit = true
+</code></pre>
+<pre><code class="language-bash">uv sync -v 1&gt;uv_out_fix.txt 2&gt;uv_err_fix.txt
+</code></pre>
+<ul>
+<li>Output includes: <code>Resolved 144 packages in 19.04s</code></li>
+<li>Logs: <a href="https://github.com/user-attachments/files/23475032/uv_err_fix.txt">uv_err_fix.txt</a></li>
+</ul>
+<p>Let me know if you want me to highlight specific parts of the logs (e.g., builds triggered during resolution).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-18 16:18</div>
+            <div class="timeline-body"><p>The problem is that the index does support neither PEP 658 (the modern standard) not range requests (the HTTP-based fallback), which makes it really slow to use for resolutions. uv needs to download and unpack all wheels just to get their metadata, instead of getting the metadata separately from the index.</p>
+<blockquote>
+<p>DEBUG No cache entry for: https://us-python.pkg.dev/ml-oss-artifacts-published/jax/setuptools/setuptools-80.9.0-py3-none-any.whl
+WARN Range requests not supported for setuptools-80.9.0-py3-none-any.whl; streaming wheel</p>
+</blockquote>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

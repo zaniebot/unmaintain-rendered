@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intermittent &quot;channel closed&quot; errors when using `pypiserver` with high levels of concurrency - astral-sh/uv #2134</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Intermittent &quot;channel closed&quot; errors when using `pypiserver` with high levels of concurrency</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2134">#2134</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-03-02 18:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-02 18:15</div>
+            <div class="timeline-body"><p>When testing against a local <a href="https://pypi.org/project/pypiserver/"><code>pypiserver</code></a>, <code>uv</code> errors with</p>
+<pre><code>error: error sending request for url (http://localhost:3141/simple/albatross/): channel closed
+    Caused by: channel closed
+</code></pre>
+<p>This is resolved by limiting parallelism of the test threads. There are no errors in the server logs.</p>
+<p>Looks like this may be an upstream issue:</p>
+<ul>
+<li>https://github.com/seanmonstar/reqwest/issues/1221</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-03-02 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-03-02 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrick-kidger">@patrick-kidger</a> on 2024-05-10 14:53</div>
+            <div class="timeline-body"><p>I'm hitting this error a lot when installing from a local server.</p>
+<blockquote>
+<p>This is resolved by limiting parallelism of the test threads.</p>
+</blockquote>
+<p>What is the appropriate way to limit the number of threads here please? :) I'd be happy to make things a bit slower to resolve this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-11 02:14</div>
+            <div class="timeline-body"><p>Sorry you're hitting it. I kind of think it's a pypiserver bug, I haven't seen this elsehwere.</p>
+<p>For limiting concurrency, see #3493 — we're about to release <code>UV_CONCURRENT_DOWNLOADS</code> for this purpose.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @zanieb on 2024-05-11 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrick-kidger">@patrick-kidger</a> on 2024-05-11 15:07</div>
+            <div class="timeline-body"><p>Ah, thank you! Indeed that seems to resolve things for me.</p>
+<p>For the sake of any future readers: in my case the local server is an implementation I control. For reasons that are a little beyond my ken, switching the implementation from <code>http.server</code> to <code>flask</code> also seems to have resolved this issue (without needing to restrict <code>uv</code>'s concurrency).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-05-11 18:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

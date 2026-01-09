@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv add --script` warns if a venv is active - astral-sh/uv #15956</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv add --script` warns if a venv is active</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15956">#15956</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-09-19 21:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2025-09-19 21:14</div>
+            <div class="timeline-body"><p><code>uv add --script</code> shows a warning that we're not matching the script environment path, but we shouldn't activate that environment, we should <code>uv run</code> the script.</p>
+<pre><code class="language-console">$ uv venv -c -q -p 3.13
+$ . .venv/bin/activate
+$ uv init --script main.py
+Initialized script at `main.py`
+$ uv add --script main.py tqdm
+warning: `VIRTUAL_ENV=.venv` does not match the script environment path `/home/konsti/.cache/uv/environments-v2/main-6ad169614700d74a` and will be ignored; use `--active` to target the active environment instead
+</code></pre>
+<p>We can show a note that the script is isolated from the currently active venv, but that doesn't need to be a warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-09-19 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-20 02:17</div>
+            <div class="timeline-body"><p>I'm not sure if I agree here. This is the same warning we show for a project environment. In both cases, we're not suggesting that people activate an environment, we're indicating that <code>VIRTUAL_ENV</code> is set but will not be mutated (as people have seemed to expect previously).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-09-20 02:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-20 11:53</div>
+            <div class="timeline-body"><p>Should we be showing the path to script environment in the cache here? I know that IDEs will need them as venv for the script, but it doesn't seem like something that has an immediate connection to using <code>--script main.py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-20 17:49</div>
+            <div class="timeline-body"><p>I think it's okay to show the path, though I'm not opposed to hiding it if you think it's confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-23 12:20</div>
+            <div class="timeline-body"><p>I want to specialize the error message for scripts specifically. When I'm working on a project, the warning is usually a good reminder that I've activated the wrong venv, but if I'm working on a script in a project, it's generally fine if the project environment is different than the isolated script environment-</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-23 17:03</div>
+            <div class="timeline-body"><p>It's not warning you that the project environment is different, it's warning you that the activated environment is different. I'm not sure I understand? Could you say what you want the message to be?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-25 10:14</div>
+            <div class="timeline-body"><p>Say I'm in a project, I have the project's venv activated and now I'm writing a script that's isolated from the project itself, say something for deployment or building or code generation:</p>
+<pre><code>(.venv) ~/projects/foo $ uv init --script deploy.py
+Initialized script at `deploy.py`
+(.venv) ~/projects/foo $ uv add --script deploy.py httpx
+warning: `VIRTUAL_ENV=.venv` does not match the script environment path `/home/konsti/.cache/uv/environments-v2/deploy-531da86ca5805d9e` and will be ignored; use `--active` to target the active environment instead
+Updated `deploy.py`
+</code></pre>
+<p>In this case, I don't want to use the project environment, I'm intentionally using a separate script. For this case it's correct and intentional, so I'm surprised we're showing a warning with no option to turn it off when we're usually careful not to show non-actionable warnings (<code>--active</code> is what I don't want here, it breaks the separation why I'm using the script). I'd hide at least <code>/home/konsti/.cache/uv/environments-v2/deploy-531da86ca5805d9e</code> because that's an implementation detail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-25 12:45</div>
+            <div class="timeline-body"><p>Yeah but why are you activating the project environment? How can we know you have a strong enough grasp of our concepts to understand we won't reuse that activated environment for a script? What if it was some arbitrary environment instead?</p>
+<p>The warning can be turned off, e.g., with <code>--no-active</code>, or by deactivating your environment — it's not inactionable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-25 16:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah but why are you activating the project environment? How can we know you have a strong enough grasp of our concepts to understand we won't reuse that activated environment for a script? What if it was some arbitrary environment instead?</p>
+</blockquote>
+<p>Usually it's already activated by the IDE in the IDE terminal, PyCharm does it by default and it seems VS Code and Cursor too. There's also a lot of inertia in people activating the venv to run plain <code>python</code> in it. While I'd like to move more towards <code>uv run</code>, activating the venv is still very common.</p>
+<p>When the active venv and the current project venv are mismatching, usually something has gone wrong, like you <code>cd</code>'d into a different project with the previous venv still active, and now <code>python</code> and <code>uv pip install</code> don't use the venv you'd expect it to use. For PEP 723 scripts, not using the active venv and instead hiding the isolated environment is a feature, and it feels strange that this creates a warning.</p>
+<p>The warning feels inconsistent, as <code>uv add --script deploy.py</code> warns about this, but <code>uv run deploy.py</code> does not, even though both use the same isolated environment:</p>
+<pre><code class="language-console">$ uv add --script deploy.py httpx
+warning: `VIRTUAL_ENV=.venv` does not match the script environment path `/home/konsti/.cache/uv/environments-v2/deploy-531da86ca5805d9e` and will be ignored; use `--active` to target the active environment instead
+Updated `deploy.py`
+</code></pre>
+<pre><code class="language-console">$ uv run deploy.py 
+Hello from deploy.py!
+</code></pre>
+<p>Unlike <code>uv run</code> in a project, which does warn:</p>
+<pre><code class="language-console">$ cd /other/project
+$ . .venv/bin/activate
+$ cd -
+$ uv run python
+warning: `VIRTUAL_ENV=/other/project/.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+Python 3.13.2 (main, Mar 17 2025, 21:02:54) [Clang 20.1.0 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; 
+</code></pre>
+<blockquote>
+<p>The warning can be turned off, e.g., with <code>--no-active</code>, or by deactivating your environment — it's not inactionable.</p>
+</blockquote>
+<p>Usually we have &quot;[...] to disable this warning.&quot; in these messages, e.g. for preview features and , or instructions such as &quot;set <code>extra-index-url</code> in a <code>uv.toml</code> or <code>pyproject.toml</code> file.&quot; or &quot;use <code>--link-mode=copy</code> to suppress this warning.&quot; in the message itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-25 16:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Usually we have &quot;[...] to disable this warning.&quot; in these messages,</p>
+</blockquote>
+<p>That just hasn't happened yet because it's hard to succinctly explain, but feel free to do so...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-25 16:29</div>
+            <div class="timeline-body"><p>We can just remove the warning entirely for scripts and consider adding something again if we get feedback that there's confusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-09-25 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @zanieb on 2025-09-25 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2025-09-25 16:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

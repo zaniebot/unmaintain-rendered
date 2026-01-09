@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run not able to run with asyncio - astral-sh/uv #7715</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run not able to run with asyncio</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7715">#7715</a>
+        opened by <a href="https://github.com/ClementWalter">@ClementWalter</a>
+        on 2024-09-26 16:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ClementWalter">@ClementWalter</a> on 2024-09-26 16:25</div>
+            <div class="timeline-body"><pre><code>uv --version
+uv 0.4.9 (77d278f68 2024-09-10)
+</code></pre>
+<p>Just initializing a new project with <code>uv init</code> with this slightly modified <code>pyproject.toml</code></p>
+<pre><code>[project]
+name = &quot;uv-async&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = []
+
+[project.scripts]
+hello = &quot;hello:main&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;hello.py&quot;]
+</code></pre>
+<p>With the default script it works</p>
+<pre><code>uv run hello
+   Built uv-async @ file:///Users/clementwalter/Documents/uv-async
+Uninstalled 1 package in 0.57ms
+Installed 1 package in 1ms
+Hello from uv-async!
+</code></pre>
+<p>but adding <code>asyncio</code></p>
+<pre><code class="language-python">import asyncio
+
+
+async def main():
+    print(&quot;Hello from uv-async!&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre>
+<p>it raises</p>
+<pre><code class="language-uv">&lt;coroutine object main at 0x1029d1a80&gt;
+sys:1: RuntimeWarning: coroutine 'main' was never awaited
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+</code></pre>
+<p>Running the script regularly with python works as expected</p>
+<pre><code>uv run python hello.py                         
+Hello from uv-async!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-26 16:29</div>
+            <div class="timeline-body"><p>Your entrypoint is defined as</p>
+<pre><code>[project.scripts]
+hello = &quot;hello:main&quot;
+</code></pre>
+<p>So we're calling <code>hello:main</code> not running <code>hello.py</code> and hitting your <code>asycnio.run</code> block</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-26 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ClementWalter">@ClementWalter</a> on 2024-09-26 16:35</div>
+            <div class="timeline-body"><p>thanks so actually doing</p>
+<pre><code>import asyncio
+
+
+async def _main():
+    print(&quot;Hello from uv-async!&quot;)
+
+
+def main():
+    asyncio.run(_main())
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>works for both usages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-26 16:39</div>
+            <div class="timeline-body"><p>Yep! Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-26 16:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

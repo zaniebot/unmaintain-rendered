@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>format: different behavior with black for `hug_parens_with_braces_and_square_brackets` and generators - astral-sh/ruff #11375</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>format: different behavior with black for `hug_parens_with_braces_and_square_brackets` and generators</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11375">#11375</a>
+        opened by <a href="https://github.com/trim21">@trim21</a>
+        on 2024-05-12 06:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/trim21">@trim21</a> on 2024-05-12 06:34</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>I'm using ruff format with <code>--preview</code> enable, and it generate different output in this case.</p>
+<p>ruff:</p>
+<pre><code class="language-python">import shutil
+import asyncio
+
+
+async def main():
+    by_path = {}
+    loop = asyncio.get_event_loop()
+
+    if loop:
+        value = await asyncio.gather(
+            *(
+                loop.run_in_executor(None, lambda pp: (pp, shutil.disk_usage(pp).free), p)
+                for p in by_path
+            )
+        )
+        return value
+
+    return None
+</code></pre>
+<p>black:</p>
+<pre><code class="language-python">import shutil
+import asyncio
+
+
+async def main():
+    by_path = {}
+    loop = asyncio.get_event_loop()
+
+    if loop:
+        value = await asyncio.gather(*(
+            loop.run_in_executor(None, lambda pp: (pp, shutil.disk_usage(pp).free), p)
+            for p in by_path
+        ))
+        return value
+
+    return None
+</code></pre>
+<p>This is not listed in &quot;Known Deviations from Black&quot;, is this unexpected behavoir?</p>
+<p>pyproject.toml</p>
+<pre><code class="language-toml">[tool.black]
+line-length = 100
+target-version = ['py311']
+#future = true
+
+unstable = true
+preview = true
+
+[tool.ruff]
+cache-dir = &quot;.venv/.cache/ruff&quot;
+line-length = 100
+target-version = 'py311'
+
+exclude = ['dist', '.venv']
+
+[tool.ruff.format]
+preview = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2024-05-13 00:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/153957">@153957</a> on 2024-05-13 05:18</div>
+            <div class="timeline-body"><p>I think this is related; https://github.com/psf/black/pull/3964#issuecomment-1783318353
+And this in black is the part which may be missing in ruff: https://github.com/psf/black/pull/3992</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trim21">@trim21</a> on 2024-05-13 06:05</div>
+            <div class="timeline-body"><p>title of this issue is not very accurate and I don't know how black call this feature...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/153957">@153957</a> on 2024-05-13 06:18</div>
+            <div class="timeline-body"><p>I think it is called <code>hug_parens_with_braces_and_square_brackets</code>:
+https://github.com/astral-sh/ruff/discussions/9945#discussioncomment-8439722</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trim21">@trim21</a> on 2024-05-13 06:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it is called <code>hug_parens_with_braces_and_square_brackets</code>: <a href="https://github.com/astral-sh/ruff/discussions/9945#discussioncomment-8439722">#9945 (comment)</a></p>
+</blockquote>
+<p>thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "format: different behavior with black for sole function parameter" to "format: different behavior with black for hug_parens_with_braces_and_square_brackets" by @trim21 on 2024-05-13 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-15 09:26</div>
+            <div class="timeline-body"><p>It seems like we don't consider generator to be huggable:</p>
+<p>https://github.com/astral-sh/ruff/blob/5bde6a08a0b59b00ee3911be4508c72cf31a2cc5/crates/ruff_python_formatter/src/expression/mod.rs#L1126-L1126</p>
+<p>I'm not sure if it's intentional or not but Micha might be able to provide more context on this once he's back from his PTO.</p>
+<p>Although it does seem that a tuple expression is huggable, so I'd say that the generator should probably be as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-05-27 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "format: different behavior with black for hug_parens_with_braces_and_square_brackets" to "format: different behavior with black for `hug_parens_with_braces_and_square_brackets` and generators" by @MichaReiser on 2024-05-27 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-27 09:05</div>
+            <div class="timeline-body"><blockquote>
+<p>This is not listed in &quot;Known Deviations from Black&quot;, is this unexpected behavior?</p>
+</blockquote>
+<p>We don't track differences for preview styles because both Black's and Ruff's preview styles are in flux, making it difficult to track the differences over time.</p>
+<blockquote>
+<p>I'm not sure if it's intentional or not but Micha might be able to provide more context on this once he's back from his PTO.</p>
+</blockquote>
+<p>I don't think this is intentional. The only thing we need to be mindful of is that generator parentheses in call expressions are optional. Meaning, we should only hug if the generator already has parentheses (the logic must be in sync with the parentheses logic in <code>FormatExprGenerator</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13371.html">astral-sh/ruff#13371</a> on 2024-09-20 06:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trim21">@trim21</a> on 2024-11-14 22:08</div>
+            <div class="timeline-body"><p>I encounter a case that ruff didn't format this code, this look similar, is this same issue ?</p>
+<p>(blacked, version 2024)</p>
+<pre><code class="language-python">class TestCompareTestFunctions(unittest.TestCase):
+    def test_read_string_or_entries(self):
+        with self.assertRaises(cmptest.TestError) as assctxt:
+            cmptest.read_string_or_entries(
+                &quot;&quot;&quot;
+
+              2014-01-27 * &quot;UNION MARKET&quot;
+                Liabilities:US:Amex:BlueCash    -22.02 USD
+                Expenses:Food:Grocery
+
+            &quot;&quot;&quot;
+            )
+        self.assertRegex(str(assctxt.exception), &quot;may not use interpolation&quot;)
+</code></pre>
+<p>or this:</p>
+<pre><code class="language-py">class TestCompareTestFunctions(unittest.TestCase):
+    def test_read_string_or_entries(self):
+        with self.assertRaises(cmptest.TestError) as assctxt:
+            cmptest.read_string_or_entries(&quot;&quot;&quot;
+
+              2014-01-27 * &quot;UNION MARKET&quot;
+                Liabilities:US:Amex:BlueCash    -22.02 USD
+                Expenses:Food:Grocery
+
+            &quot;&quot;&quot;)
+        self.assertRegex(str(assctxt.exception), &quot;may not use interpolation&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-15 06:59</div>
+            <div class="timeline-body"><p>@trim21 I suspect your example is https://docs.astral.sh/ruff/formatter/black/#call-expressions-with-a-single-multiline-string-argument although I don't fully understand what's the input</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trim21">@trim21</a> on 2024-11-15 08:46</div>
+            <div class="timeline-body"><blockquote>
+<p>@trim21 I suspect your example is https://docs.astral.sh/ruff/formatter/black/#call-expressions-with-a-single-multiline-string-argument although I don't fully understand what's the input</p>
+</blockquote>
+<p>oh, thanks  i miss this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20482.html">astral-sh/ruff#20482</a> on 2025-09-19 13:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

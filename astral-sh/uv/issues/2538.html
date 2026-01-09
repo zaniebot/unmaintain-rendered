@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;No solution found when resolving dependencies&quot;, but pip installs readily - astral-sh/uv #2538</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;No solution found when resolving dependencies&quot;, but pip installs readily</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2538">#2538</a>
+        opened by <a href="https://github.com/reece">@reece</a>
+        on 2024-03-19 03:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/reece">@reece</a> on 2024-03-19 03:25</div>
+            <div class="timeline-body"><p>Summary: uv pip install fails to install a package that pip installs without issue. The package is an alpha release that I pushed to pypi a few minutes ago.</p>
+<ul>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+<pre><code>$ cd /tmp
+
+$ python3 -m venv venv
+
+$ source venv/bin/activate
+
+$ pip install -U setuptools pip uv
+
+(venv) $ uv pip install --verbose uta-align==0.3.0a5
+DEBUG Found a virtualenv through VIRTUAL_ENV at: /tmp/x/venv
+DEBUG Cached interpreter info for Python 3.11.6, skipping probing: /tmp/x/venv/bin/python
+DEBUG Using Python 3.11.6 environment at /tmp/x/venv/bin/python
+DEBUG Using registry request timeout of 300s
+DEBUG Solving with target Python version 3.11.6
+DEBUG Adding direct dependency: uta-align==0.3.0a5
+DEBUG Found fresh response for: https://pypi.org/simple/uta-align/
+DEBUG Searching for a compatible version of uta-align (==0.3.0a5)
+DEBUG No compatible version found for: uta-align
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of uta-align==0.3.0a5 and you require uta-align==0.3.0a5, we can conclude that the requirements are unsatisfiable.
+
+(venv) $ pip install uta-align==0.3.0a5
+Looking in indexes: https://pypi.shr.myome.info/simple
+Collecting uta-align==0.3.0a5
+  Using cached uta_align-0.3.0a5-cp311-cp311-linux_x86_64.whl
+Collecting coloredlogs~=15.0 (from uta-align==0.3.0a5)
+  Using cached coloredlogs-15.0.1-py2.py3-none-any.whl.metadata (12 kB)
+Collecting pysam~=0.22 (from uta-align==0.3.0a5)
+  Using cached pysam-0.22.0-cp311-cp311-manylinux_2_28_x86_64.whl.metadata (1.5 kB)
+Collecting pyyaml~=6.0 (from uta-align==0.3.0a5)
+  Using cached PyYAML-6.0.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.1 kB)
+Collecting humanfriendly&gt;=9.1 (from coloredlogs~=15.0-&gt;uta-align==0.3.0a5)
+  Using cached humanfriendly-10.0-py2.py3-none-any.whl.metadata (9.2 kB)
+Using cached coloredlogs-15.0.1-py2.py3-none-any.whl (46 kB)
+Using cached pysam-0.22.0-cp311-cp311-manylinux_2_28_x86_64.whl (25.1 MB)
+Using cached PyYAML-6.0.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (757 kB)
+Using cached humanfriendly-10.0-py2.py3-none-any.whl (86 kB)
+Installing collected packages: pyyaml, pysam, humanfriendly, coloredlogs, uta-align
+Successfully installed coloredlogs-15.0.1 humanfriendly-10.0 pysam-0.22.0 pyyaml-6.0.1 uta-align-0.3.0a5
+
+</code></pre>
+<ul>
+<li>The current uv platform &amp; version</li>
+</ul>
+<pre><code>(venv) snafu$ uname -a
+Linux snafu 6.5.0-26-generic #26-Ubuntu SMP PREEMPT_DYNAMIC Tue Mar  5 21:19:28 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+
+(venv) snafu$ uv --version
+uv 0.1.22
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reece">@reece</a> on 2024-03-19 03:27</div>
+            <div class="timeline-body"><p>Well, of course I tried again after creating the issue and it worked immediately. I conclude that uv caches results with a TTL of something like 5-10 minutes. Is that right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-19 03:37</div>
+            <div class="timeline-body"><p>Yep there's a 10 minute cache, I'd recommend using <code>--refresh-package &lt;name&gt;</code> if you're testing something you just published. Some more context at https://github.com/astral-sh/uv/issues/505</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-03-19 03:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reece">@reece</a> on 2024-03-19 03:51</div>
+            <div class="timeline-body"><p>Fabulous. I'm happy with the choice.</p>
+<p>Two comments/suggestions/questions (and I'm happy to help):</p>
+<ol>
+<li><p>&quot;Because there is no version of uta-align==0.3.0a5 and you require uta-align==0.3.0a5, we can conclude that the requirements are unsatisfiable.&quot; seems to assert a stronger condition than is warranted. How about something more like &quot;uta-align==0.3.0a5 could not be satisfied; consider using --refresh to update known versions&quot;. Or, if --refresh was used, then drop the second clause.</p>
+</li>
+<li><p>How about assuming --refresh for non-production releases?</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-19 14:37</div>
+            <div class="timeline-body"><p>(1) &quot;Could not be satisfied&quot; has a bit more of a complex meaning, like &quot;this version exists but its requirements cannot be reconciled with the solution&quot;. I'm pretty hesitant to change the wording there since in most cases the version actually will not exist. We could do something like.. find all the versions that &quot;do not exist&quot; in a resolution tree and check if it exists with caching disabled then add hints or mutate the message in that case. This would slow down display of the error report but we worry less about performance once you're in an error case.</p>
+<p>(2) I worry changing the behavior based on version specifiers, it seems confusing. A simple policy is my preference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yashgorana">@yashgorana</a> on 2024-03-19 16:56</div>
+            <div class="timeline-body"><p>Same when installing torch</p>
+<pre><code>~ # uv version
+uv 0.1.22
+
+~ # uv venv
+Using Python 3.11.8 interpreter at: /usr/bin/python3
+Creating virtualenv at: .venv
+
+~ # uv pip install torch==2.2.0 --index-url https://download.pytorch.org/whl/cpu
+  x No solution found when resolving dependencies:
+  `-&gt; Because torch==2.2.0 is unusable because no wheels are available with a matching Python implementation and you require torch==2.2.0, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>Now the same with pip</p>
+<pre><code>~ # python -m venv pyvenv
+~ # source pyvenv/bin/activate
+(pyvenv) ~ # pip install torch==2.2.0 --index-url https://download.pytorch.org/whl/cpu
+Looking in indexes: https://download.pytorch.org/whl/cpu
+Collecting torch==2.2.0
+  Downloading https://download.pytorch.org/whl/cpu/torch-2.2.0%2Bcpu-cp311-cp311-linux_x86_64.whl (186.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 186.8/186.8 MB 22.9 MB/s eta 0:00:00
+Collecting filelock (from torch==2.2.0)
+  Downloading https://download.pytorch.org/whl/filelock-3.9.0-py3-none-any.whl (9.7 kB)
+Collecting typing-extensions&gt;=4.8.0 (from torch==2.2.0)
+  Downloading https://download.pytorch.org/whl/typing_extensions-4.8.0-py3-none-any.whl (31 kB)
+Collecting sympy (from torch==2.2.0)
+  Downloading https://download.pytorch.org/whl/sympy-1.12-py3-none-any.whl (5.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.7/5.7 MB 32.2 MB/s eta 0:00:00
+...
+</code></pre>
+<p>uv needs to be explicitly provided with <code>uv pip install torch==2.2.0+cpu ...</code> for it to correctly pick up the wheel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 16:56</div>
+            <div class="timeline-body"><p>@yashgorana - I think that's unrelated, and covered in the pip compatibility guide: https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#local-version-identifiers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yashgorana">@yashgorana</a> on 2024-03-19 16:58</div>
+            <div class="timeline-body"><p>Aha - thank you for pointing to the docs!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 17:01</div>
+            <div class="timeline-body"><p>Np. The local version support is relatively new. There's also an open issue here to track improving it further to remove the existing limitations: #2541</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelotduarte">@marcelotduarte</a> on 2024-05-22 22:12</div>
+            <div class="timeline-body"><p>I got the same error, in a different situation, using Linux.
+<code>uv pip install -i https://pypi.anaconda.org/intel/simple numpy</code>
+From the error message, I assume that uv does not recognize manylinux packages when using --index-url.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-22 22:56</div>
+            <div class="timeline-body"><p>uv does recognize manylinux packages when using <code>--index-url</code> and other sources -- we would have much bigger problems if we didn't! Unfortunately I'd need more information to understand the problem, e.g., the output of running with <code>--verbose</code>, your platform, your Python version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelotduarte">@marcelotduarte</a> on 2024-05-22 23:26</div>
+            <div class="timeline-body"><pre><code>lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 22.04.4 LTS
+Release:	22.04
+Codename:	jammy
+</code></pre>
+<pre><code>uv pip install -i https://pypi.anaconda.org/intel/simple numpy --verbose
+INFO Found a virtualenv through VIRTUAL_ENV at: /home/marcelo/.local/venv/cx310tests
+DEBUG Cached interpreter info for Python 3.10.12, skipping probing: /home/marcelo/.local/venv/cx310tests/bin/python
+DEBUG Using Python 3.10.12 environment at /home/marcelo/.local/venv/cx310tests/bin/python
+DEBUG Trying to lock if free: /home/marcelo/.local/venv/cx310tests/.lock
+DEBUG At least one requirement is not satisfied: numpy
+DEBUG Using registry request timeout of 30s
+DEBUG Solving with target Python version 3.10.12
+DEBUG Adding direct dependency: numpy*
+DEBUG Found fresh response for: https://pypi.anaconda.org/intel/simple/numpy/
+DEBUG Searching for a compatible version of numpy (*)
+DEBUG Selecting: numpy==1.26.4 (numpy-1.26.4-1-cp310-cp310-manylinux2014_x86_64.whl)
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/numpy/1.26.4/numpy-1.26.4-1-cp310-cp310-manylinux2014_x86_64.whl
+WARN Range requests not supported for numpy-1.26.4-cp310-cp310-manylinux2014_x86_64.whl; streaming wheel
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/numpy/1.26.4/numpy-1.26.4-1-cp310-cp310-manylinux2014_x86_64.whl
+DEBUG Adding transitive dependency for numpy==1.26.4: mkl-fft*
+DEBUG Adding transitive dependency for numpy==1.26.4: mkl-random*
+DEBUG Adding transitive dependency for numpy==1.26.4: mkl-umath*
+DEBUG Adding transitive dependency for numpy==1.26.4: mkl*
+DEBUG Adding transitive dependency for numpy==1.26.4: tbb4py*
+DEBUG Adding transitive dependency for numpy==1.26.4: mkl-service*
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl-fft/
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl-random/
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl/
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/tbb4py/
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl-service/
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl-umath/
+DEBUG Searching for a compatible version of mkl-fft (*)
+DEBUG Selecting: mkl-fft==1.3.8 (mkl_fft-1.3.8-63-cp310-cp310-manylinux2014_x86_64.whl)
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl-fft/1.3.8/mkl_fft-1.3.8-63-cp310-cp310-manylinux2014_x86_64.whl
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl-random/1.2.4/mkl_random-1.2.4-83-cp310-cp310-manylinux2014_x86_64.whl
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl/2024.1.0/mkl-2024.1.0-py2.py3-none-manylinux1_x86_64.whl
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl-umath/0.1.1/mkl_umath-0.1.1-100-cp310-cp310-manylinux2014_x86_64.whl
+WARN Range requests not supported for mkl_random-1.2.4-cp310-cp310-manylinux2014_x86_64.whl; streaming wheel
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl-random/1.2.4/mkl_random-1.2.4-83-cp310-cp310-manylinux2014_x86_64.whl
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/tbb4py/2021.12.0/tbb4py-2021.12.0-py310-none-manylinux1_x86_64.whl
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl-service/2.4.1/mkl_service-2.4.1-0-cp310-cp310-manylinux2014_x86_64.whl
+WARN Range requests not supported for mkl_umath-0.1.1-cp310-cp310-manylinux2014_x86_64.whl; streaming wheel
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl-umath/0.1.1/mkl_umath-0.1.1-100-cp310-cp310-manylinux2014_x86_64.whl
+WARN Range requests not supported for mkl-2024.1.0-py2.py3-none-manylinux1_x86_64.whl; streaming wheel
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl/2024.1.0/mkl-2024.1.0-py2.py3-none-manylinux1_x86_64.whl
+WARN Range requests not supported for tbb4py-2021.12.0-py310-none-manylinux1_x86_64.whl; streaming wheel
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/tbb4py/2021.12.0/tbb4py-2021.12.0-py310-none-manylinux1_x86_64.whl
+WARN Range requests not supported for mkl_fft-1.3.8-cp310-cp310-manylinux2014_x86_64.whl; streaming wheel
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl-fft/1.3.8/mkl_fft-1.3.8-63-cp310-cp310-manylinux2014_x86_64.whl
+WARN Range requests not supported for mkl_service-2.4.1-cp310-cp310-manylinux2014_x86_64.whl; streaming wheel
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl-service/2.4.1/mkl_service-2.4.1-0-cp310-cp310-manylinux2014_x86_64.whl
+DEBUG Adding transitive dependency for mkl-fft==1.3.8: numpy&gt;=1.24.4, &lt;1.25.0
+DEBUG Adding transitive dependency for mkl-fft==1.3.8: mkl*
+DEBUG Searching for a compatible version of mkl-fft (&lt;1.3.8 | &gt;1.3.8)
+DEBUG Selecting: mkl-fft==1.3.6 (mkl_fft-1.3.6-58-cp310-cp310-manylinux2014_x86_64.whl)
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl-fft/1.3.6/mkl_fft-1.3.6-58-cp310-cp310-manylinux2014_x86_64.whl
+WARN Range requests not supported for mkl_fft-1.3.6-cp310-cp310-manylinux2014_x86_64.whl; streaming wheel
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/mkl-fft/1.3.6/mkl_fft-1.3.6-58-cp310-cp310-manylinux2014_x86_64.whl
+DEBUG Adding transitive dependency for mkl-fft==1.3.6: numpy&gt;=1.24.3, &lt;1.25.0
+DEBUG Adding transitive dependency for mkl-fft==1.3.6: mkl*
+DEBUG Adding transitive dependency for mkl-fft==1.3.6: dpcpp-cpp-rt*
+DEBUG Searching for a compatible version of mkl-fft (&lt;1.3.6 | &gt;1.3.6, &lt;1.3.8 | &gt;1.3.8)
+DEBUG No compatible version found for: mkl-fft
+DEBUG Searching for a compatible version of numpy (&lt;1.26.4 | &gt;1.26.4)
+DEBUG Selecting: numpy==1.24.4 (numpy-1.24.4-1-cp310-cp310-manylinux2014_x86_64.whl)
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/numpy/1.24.4/numpy-1.24.4-1-cp310-cp310-manylinux2014_x86_64.whl
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/dpcpp-cpp-rt/
+WARN Range requests not supported for numpy-1.24.4-cp310-cp310-manylinux2014_x86_64.whl; streaming wheel
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/numpy/1.24.4/numpy-1.24.4-1-cp310-cp310-manylinux2014_x86_64.whl
+DEBUG Adding transitive dependency for numpy==1.24.4: mkl-fft*
+DEBUG Adding transitive dependency for numpy==1.24.4: mkl-random*
+DEBUG Adding transitive dependency for numpy==1.24.4: mkl-umath*
+DEBUG Adding transitive dependency for numpy==1.24.4: mkl*
+DEBUG Adding transitive dependency for numpy==1.24.4: tbb4py*
+DEBUG Adding transitive dependency for numpy==1.24.4: mkl-service*
+DEBUG Searching for a compatible version of mkl-fft (==1.3.6 | ==1.3.8)
+DEBUG Selecting: mkl-fft==1.3.8 (mkl_fft-1.3.8-63-cp310-cp310-manylinux2014_x86_64.whl)
+DEBUG Searching for a compatible version of mkl-random (*)
+DEBUG Selecting: mkl-random==1.2.4 (mkl_random-1.2.4-83-cp310-cp310-manylinux2014_x86_64.whl)
+DEBUG Adding transitive dependency for mkl-random==1.2.4: numpy&gt;=1.24.4, &lt;1.25.0
+DEBUG Adding transitive dependency for mkl-random==1.2.4: mkl*
+DEBUG Searching for a compatible version of mkl-umath (*)
+DEBUG Selecting: mkl-umath==0.1.1 (mkl_umath-0.1.1-100-cp310-cp310-manylinux2014_x86_64.whl)
+DEBUG Adding transitive dependency for mkl-umath==0.1.1: numpy&gt;=1.26.4, &lt;1.27.0
+DEBUG Adding transitive dependency for mkl-umath==0.1.1: mkl*
+DEBUG Adding transitive dependency for mkl-umath==0.1.1: intel-cmplr-lib-rt*
+DEBUG Searching for a compatible version of mkl-umath (&lt;0.1.1 | &gt;0.1.1)
+DEBUG No compatible version found for: mkl-umath
+DEBUG Searching for a compatible version of numpy (&lt;1.24.4 | &gt;1.24.4, &lt;1.26.4 | &gt;1.26.4)
+DEBUG Selecting: numpy==1.24.3 (numpy-1.24.3-1-cp310-cp310-manylinux2014_x86_64.whl)
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/intel-cmplr-lib-rt/
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/numpy/1.24.3/numpy-1.24.3-1-cp310-cp310-manylinux2014_x86_64.whl
+WARN Range requests not supported for numpy-1.24.3-cp310-cp310-manylinux2014_x86_64.whl; streaming wheel
+DEBUG No cache entry for: https://pypi.anaconda.org/intel/simple/numpy/1.24.3/numpy-1.24.3-1-cp310-cp310-manylinux2014_x86_64.whl
+DEBUG Adding transitive dependency for numpy==1.24.3: mkl-fft*
+DEBUG Adding transitive dependency for numpy==1.24.3: mkl-random*
+DEBUG Adding transitive dependency for numpy==1.24.3: mkl-umath*
+DEBUG Adding transitive dependency for numpy==1.24.3: dpcpp-cpp-rt*
+DEBUG Adding transitive dependency for numpy==1.24.3: mkl*
+DEBUG Adding transitive dependency for numpy==1.24.3: tbb4py*
+DEBUG Adding transitive dependency for numpy==1.24.3: mkl-service*
+DEBUG Searching for a compatible version of numpy (&lt;1.24.3 | &gt;1.24.3, &lt;1.24.4 | &gt;1.24.4, &lt;1.26.4 | &gt;1.26.4)
+DEBUG Searching for a compatible version of numpy (&lt;1.22.3 | &gt;1.22.3, &lt;1.24.3 | &gt;1.24.3, &lt;1.24.4 | &gt;1.24.4, &lt;1.26.4 | &gt;1.26.4)
+DEBUG Searching for a compatible version of numpy (&lt;1.21.4 | &gt;1.21.4, &lt;1.22.3 | &gt;1.22.3, &lt;1.24.3 | &gt;1.24.3, &lt;1.24.4 | &gt;1.24.4, &lt;1.26.4 | &gt;1.26.4)
+DEBUG Searching for a compatible version of numpy (&lt;1.21.2 | &gt;1.21.2, &lt;1.21.4 | &gt;1.21.4, &lt;1.22.3 | &gt;1.22.3, &lt;1.24.3 | &gt;1.24.3, &lt;1.24.4 | &gt;1.24.4, &lt;1.26.4 | &gt;1.26.4)
+DEBUG Searching for a compatible version of numpy (&lt;1.20.3 | &gt;1.20.3, &lt;1.21.2 | &gt;1.21.2, &lt;1.21.4 | &gt;1.21.4, &lt;1.22.3 | &gt;1.22.3, &lt;1.24.3 | &gt;1.24.3, &lt;1.24.4 | &gt;1.24.4, &lt;1.26.4 | &gt;1.26.4)
+DEBUG Searching for a compatible version of numpy (&lt;1.20.2 | &gt;1.20.2, &lt;1.20.3 | &gt;1.20.3, &lt;1.21.2 | &gt;1.21.2, &lt;1.21.4 | &gt;1.21.4, &lt;1.22.3 | &gt;1.22.3, &lt;1.24.3 | &gt;1.24.3, &lt;1.24.4 | &gt;1.24.4, &lt;1.26.4 | &gt;1.26.4)
+DEBUG Searching for a compatible version of numpy (&lt;1.20.1 | &gt;1.20.1, &lt;1.20.2 | &gt;1.20.2, &lt;1.20.3 | &gt;1.20.3, &lt;1.21.2 | &gt;1.21.2, &lt;1.21.4 | &gt;1.21.4, &lt;1.22.3 | &gt;1.22.3, &lt;1.24.3 | &gt;1.24.3, &lt;1.24.4 | &gt;1.24.4, &lt;1.26.4 | &gt;1.26.4)
+DEBUG Searching for a compatible version of numpy (&lt;1.20.0 | &gt;1.20.0, &lt;1.20.1 | &gt;1.20.1, &lt;1.20.2 | &gt;1.20.2, &lt;1.20.3 | &gt;1.20.3, &lt;1.21.2 | &gt;1.21.2, &lt;1.21.4 | &gt;1.21.4, &lt;1.22.3 | &gt;1.22.3, &lt;1.24.3 | &gt;1.24.3, &lt;1.24.4 | &gt;1.24.4, &lt;1.26.4 | &gt;1.26.4)
+DEBUG Searching for a compatible version of numpy (&lt;1.19.5 | &gt;1.19.5, &lt;1.20.0 | &gt;1.20.0, &lt;1.20.1 | &gt;1.20.1, &lt;1.20.2 | &gt;1.20.2, &lt;1.20.3 | &gt;1.20.3, &lt;1.21.2 | &gt;1.21.2, &lt;1.21.4 | &gt;1.21.4, &lt;1.22.3 | &gt;1.22.3, &lt;1.24.3 | &gt;1.24.3, &lt;1.24.4 | &gt;1.24.4, &lt;1.26.4 | &gt;1.26.4)
+DEBUG No compatible version found for: numpy
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of numpy are available:
+          numpy==1.19.5
+          numpy==1.20.0
+          numpy==1.20.1
+          numpy==1.20.2
+          numpy==1.20.3
+          numpy==1.21.2
+          numpy==1.21.4
+          numpy==1.22.3
+          numpy==1.24.3
+          numpy==1.24.4
+          numpy==1.26.4
+      and numpy==1.19.5 has no wheels are available with a matching Python ABI, we can conclude that numpy&lt;1.20.0 cannot be used.
+      And because numpy==1.20.0 has no wheels are available with a matching Python ABI, we can conclude that numpy&lt;1.20.1 cannot be used.
+      And because numpy==1.20.1 has no wheels are available with a matching Python ABI and numpy==1.20.2 has no wheels are available with
+      a matching Python ABI, we can conclude that numpy&lt;1.20.3 cannot be used.
+      And because numpy==1.20.3 has no wheels are available with a matching Python ABI and numpy==1.21.2 has no wheels are available with
+      a matching Python ABI, we can conclude that numpy&lt;1.21.4 cannot be used.
+      And because numpy==1.21.4 has no wheels are available with a matching Python ABI and numpy==1.22.3 has no wheels are available with
+      a matching Python ABI, we can conclude that numpy&lt;1.24.3 cannot be used. (1)
+
+      Because only mkl-umath==0.1.1 is available and mkl-umath==0.1.1 depends on numpy&gt;=1.26.4, we can conclude that all versions of
+      mkl-umath depend on numpy&gt;=1.26.4.
+      And because numpy&gt;=1.24.3 depends on mkl-umath, we can conclude that numpy&gt;=1.24.3,&lt;=1.24.4 cannot be used.
+      And because we know from (1) that numpy&lt;1.24.3 cannot be used, we can conclude that numpy&lt;1.26.4 cannot be used. (2)
+
+      Because only the following versions of mkl-fft are available:
+          mkl-fft==1.3.6
+          mkl-fft==1.3.8
+      and mkl-fft==1.3.6 depends on numpy&gt;=1.24.3,&lt;1.25.0, we can conclude that mkl-fft&lt;1.3.8 depends on numpy&gt;=1.24.3,&lt;1.25.0.
+      And because mkl-fft==1.3.8 depends on numpy&gt;=1.24.4,&lt;1.25.0 and numpy==1.26.4 depends on mkl-fft, we can conclude that numpy==1.26.4
+      cannot be used.
+      And because we know from (2) that numpy&lt;1.26.4 cannot be used, we can conclude that all versions of numpy cannot be used.
+      And because you require numpy, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-22 23:42</div>
+            <div class="timeline-body"><p>And you can get this to work with pip?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-22 23:44</div>
+            <div class="timeline-body"><p>A lot of this looks correct to me... You're using Python 3.10, and so the <em>only</em> versions you're allowed to use from that index are 1.24.3, 1.24.4, and 1.26.4, because they don't publish Python 3.10 wheels for any other versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelotduarte">@marcelotduarte</a> on 2024-05-22 23:52</div>
+            <div class="timeline-body"><blockquote>
+<p>And you can get this to work with pip?</p>
+</blockquote>
+<p>Yes. There are wheel of numpy in this URL only works for Python 3.10, and with pip it install correctly.
+Below is an excerpt taken from <a href="https://productionresultssa4.blob.core.windows.net/actions-results/72689d91-5692-410e-96cd-4ed0a70a464e/workflow-job-run-908f5f0e-46fa-59d3-58e5-08784ac67068/logs/job/job-logs.txt?rsct=text%2Fplain&amp;se=2024-05-22T23%3A58%3A23Z&amp;sig=mTAuqC6QK7a7ZQuMh06MIJqnsqH36srRYU0kprfivcU%3D&amp;sp=r&amp;spr=https&amp;sr=b&amp;st=2024-05-22T23%3A48%3A18Z&amp;sv=2021-12-02">here</a>:</p>
+<pre><code>2024-05-22T23:43:57.6456129Z [36;1m  pip install -i https://pypi.anaconda.org/intel/simple numpy[0m
+...
+2024-05-22T23:43:58.3875244Z Looking in indexes: https://pypi.anaconda.org/intel/simple
+2024-05-22T23:43:58.7362316Z Collecting numpy
+2024-05-22T23:43:59.1005954Z   Downloading https://pypi.anaconda.org/intel/simple/numpy/1.26.4/numpy-1.26.4-1-cp310-cp310-manylinux2014_x86_64.whl (6.9 MB)
+2024-05-22T23:43:59.2047043Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.9/6.9 MB 68.0 MB/s eta 0:00:00
+2024-05-22T23:43:59.3131822Z Collecting mkl_fft (from numpy)
+2024-05-22T23:43:59.5575118Z   Downloading https://pypi.anaconda.org/intel/simple/mkl-fft/1.3.8/mkl_fft-1.3.8-70-cp310-cp310-manylinux2014_x86_64.whl (4.1 MB)
+2024-05-22T23:43:59.6612849Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.1/4.1 MB 40.1 MB/s eta 0:00:00
+2024-05-22T23:43:59.7621888Z Collecting mkl_random (from numpy)
+2024-05-22T23:43:59.9797680Z   Downloading https://pypi.anaconda.org/intel/simple/mkl-random/1.2.4/mkl_random-1.2.4-90-cp310-cp310-manylinux2014_x86_64.whl (4.2 MB)
+2024-05-22T23:44:00.2130052Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.2/4.2 MB 18.1 MB/s eta 0:00:00
+2024-05-22T23:44:00.3371021Z Collecting mkl_umath (from numpy)
+2024-05-22T23:44:00.4734499Z   Downloading https://pypi.anaconda.org/intel/simple/mkl-umath/0.1.1/mkl_umath-0.1.1-100-cp310-cp310-manylinux2014_x86_64.whl (166 kB)
+2024-05-22T23:44:00.4800378Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 166.2/166.2 kB 35.6 MB/s eta 0:00:00
+2024-05-22T23:44:00.6635898Z Collecting mkl (from numpy)
+2024-05-22T23:44:00.8930468Z   Downloading https://pypi.anaconda.org/intel/simple/mkl/2024.1.0/mkl-2024.1.0-py2.py3-none-manylinux1_x86_64.whl (202.0 MB)
+2024-05-22T23:44:05.9492750Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 202.0/202.0 MB 14.3 MB/s eta 0:00:00
+2024-05-22T23:44:06.3192224Z Collecting tbb4py (from numpy)
+2024-05-22T23:44:06.4885416Z   Downloading https://pypi.anaconda.org/intel/simple/tbb4py/2021.12.0/tbb4py-2021.12.0-py310-none-manylinux1_x86_64.whl (324 kB)
+2024-05-22T23:44:06.5317914Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 324.5/324.5 kB 7.6 MB/s eta 0:00:00
+2024-05-22T23:44:06.6094997Z Collecting mkl-service (from numpy)
+2024-05-22T23:44:06.7799475Z   Downloading https://pypi.anaconda.org/intel/simple/mkl-service/2.4.1/mkl_service-2.4.1-0-cp310-cp310-manylinux2014_x86_64.whl (75 kB)
+2024-05-22T23:44:06.7847737Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 75.6/75.6 kB 23.5 MB/s eta 0:00:00
+2024-05-22T23:44:08.3345836Z Collecting intel-openmp==2024.* (from mkl-&gt;numpy)
+2024-05-22T23:44:08.5523459Z   Downloading https://pypi.anaconda.org/intel/simple/intel-openmp/2024.1.0/intel_openmp-2024.1.0-py2.py3-none-manylinux1_x86_64.whl (23.7 MB)
+2024-05-22T23:44:08.8075350Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 65.1 MB/s eta 0:00:00
+2024-05-22T23:44:08.9822296Z Collecting tbb==2021.* (from mkl-&gt;numpy)
+2024-05-22T23:44:09.2655745Z   Downloading https://pypi.anaconda.org/intel/simple/tbb/2021.12.0/tbb-2021.12.0-py2.py3-none-manylinux1_x86_64.whl (5.4 MB)
+2024-05-22T23:44:09.3220323Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.4/5.4 MB 98.9 MB/s eta 0:00:00
+2024-05-22T23:44:09.5826547Z Collecting intel-cmplr-lib-rt (from mkl_umath-&gt;numpy)
+2024-05-22T23:44:09.7444666Z   Downloading https://pypi.anaconda.org/intel/simple/intel-cmplr-lib-rt/2024.1.0/intel_cmplr_lib_rt-2024.1.0-py2.py3-none-manylinux1_x86_64.whl (52.4 MB)
+2024-05-22T23:44:10.4123798Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 52.4/52.4 MB 51.7 MB/s eta 0:00:00
+2024-05-22T23:44:10.5537663Z Installing collected packages: tbb, intel-openmp, intel-cmplr-lib-rt, tbb4py, mkl, mkl-service, mkl_umath, mkl_random, mkl_fft, numpy
+2024-05-22T23:44:16.9347703Z Successfully installed intel-cmplr-lib-rt-2024.1.0 intel-openmp-2024.1.0 mkl-2024.1.0 mkl-service-2.4.1 mkl_fft-1.3.8 mkl_random-1.2.4 mkl_umath-0.1.1 numpy-1.26.4 tbb-2021.12.0 tbb4py-2021.12.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 00:04</div>
+            <div class="timeline-body"><p>The problem is that they have multiple wheels for the same version with different metadata on that registry. For <code>mkl_fft==1.3.8</code>, they have two wheels:</p>
+<ul>
+<li><a href="https://pypi.anaconda.org/intel/simple/mkl-fft/1.3.8/mkl_fft-1.3.8-63-cp310-cp310-manylinux2014_x86_64.whl">mkl_fft-1.3.8-63-cp310-cp310-manylinux2014_x86_64.whl</a></li>
+<li><a href="https://pypi.anaconda.org/intel/simple/mkl-fft/1.3.8/mkl_fft-1.3.8-70-cp310-cp310-manylinux2014_x86_64.whl">mkl_fft-1.3.8-70-cp310-cp310-manylinux2014_x86_64.whl</a></li>
+</ul>
+<p>The former requires <code>numpy&gt;=1.24.4,&lt;1.25.0</code>, the latter requires <code>Requires-Dist: numpy&gt;=1.26.4,&lt;1.27.0</code>. So the resolution isn't compatible if you use the former wheel.</p>
+<p>We require metadata to be consistent across wheels. I guess we could try to select the wheel with the higher build number but I'm not sure that's standardized. I'll look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 00:08</div>
+            <div class="timeline-body"><p>It looks like it <em>is</em> standardized so I'll create a separate issue for it: https://peps.python.org/pep-0427/#file-name-convention</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3779.html">astral-sh/uv#3779</a> on 2024-05-23 00:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 00:52</div>
+            <div class="timeline-body"><p>Fixed in https://github.com/astral-sh/uv/pull/3781, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5351.html">astral-sh/uv#5351</a> on 2024-07-23 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-28 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9923.html">astral-sh/uv#9923</a> on 2025-01-01 01:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

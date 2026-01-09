@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Args/Subcommand app settings shouldn't impact what they are flattened into - clap-rs/clap #2894</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Args/Subcommand app settings shouldn't impact what they are flattened into</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2894">#2894</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-10-16 15:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-10-16 15:03</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.55.0 (c8dfcfe04 2021-09-06)</p>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Args, Parser};
+
+#[derive(Parser, PartialEq, Debug)]
+struct Opt {
+    #[clap(flatten)]
+    common: Common,
+}
+
+#[derive(Args, PartialEq, Debug)]
+#[clap(version = &quot;3.0.0&quot;)]
+struct Common {
+    arg: i32,
+}
+
+fn main() {
+    Opt::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- --help</code></p>
+<h3>Actual Behaviour</h3>
+<pre><code>test-clap 3.0.0
+
+USAGE:
+    test-clap &lt;ARG&gt;
+
+ARGS:
+    &lt;ARG&gt;    
+
+OPTIONS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>test-clap 
+
+USAGE:
+    test-clap &lt;ARG&gt;
+
+ARGS:
+    &lt;ARG&gt;    
+
+OPTIONS:
+    -h, --help    Print help information
+</code></pre>
+<h3>Additional Context</h3>
+<p>With the vocabulary we are providing users, we are <code>flatten</code>ing an <code>Args</code>.  This says nothing about flattening an <code>App</code> as well.</p>
+<p>This has also led to a series of bugs like #2527.  We've worked around this by carefully setting the precedence (https://github.com/TeXitoi/structopt/pull/325, #2531 and #2819) which has lead to other bugs like #2785 which required more precedence tweaks (#2882).</p>
+<p>By distinguishing what app settings are tightly associated with flattening (help_heading, the implicit subcommand required else help) and making everything else only apply when creating an App, we can simplify, clarify, and make less brittle these relationships.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @epage on 2021-10-16 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @epage on 2021-10-16 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-16 15:05</div>
+            <div class="timeline-body"><p>Note: we can't just move the app method calls to <code>IntoApp</code> because that will break subcommands because <code>Args</code> and <code>Subcommand</code> are also implicitly sub-parsers in subcommands and we expect them to be able to initialize the subcommand's app settings.</p>
+<p>Options</p>
+<ul>
+<li>Have <code>Args</code> and <code>Subcommand</code> also derive <code>IntoApp</code></li>
+<li>Have users explicitly derive <code>IntoApp</code> when they want to be used as a subcommand</li>
+<li>Split the <code>Args</code> and <code>Subcommand</code> <code>augment_app</code> methods into <code>augment_app</code> and <code>add_args</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2819.html">clap-rs/clap#2819</a> on 2021-10-16 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2882.html">clap-rs/clap#2882</a> on 2021-10-16 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2898.html">clap-rs/clap#2898</a> on 2021-10-16 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: breaking change</span> added by @epage on 2021-10-16 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-02 17:57</div>
+            <div class="timeline-body"><p>In thinking about this, it might make sense for <code>subcommand</code> to pull in some appsettings.  We already implicitly add one we'd need to keep and the user might want to do other related ones like <code>UseLongFormatForHelpSubcommand</code>, <code>InferSubcommands</code>,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2983.html">clap-rs/clap#2983</a> on 2021-11-02 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/223.html">epage/clapng#223</a> on 2021-12-06 22:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/232.html">epage/clapng#232</a> on 2021-12-06 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2021-12-13 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3175.html">clap-rs/clap#3175</a> on 2021-12-14 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-14 18:05</div>
+            <div class="timeline-body"><p>In #2983 I made this comment</p>
+<blockquote>
+<p>Earlier I had commented that #2894 is &quot;This is bigger and riskier.&quot;. As I <a href="https://github.com/clap-rs/clap/issues/2894#issuecomment-957992808">mentioned</a> in #2894, there are some settings that are coupled to a <code>Subcommand</code>s behavior, like <code>UseLongFormatForHelpSubcommand</code>, <code>InferSubcommands</code>, or help heading defaults, where it would make sense to set these on the <code>Subcommand</code> to centralize all of the subcommand policy.</p>
+<p>Similarly, for <code>Args</code>, we have some settings on what is flattened, like <code>help_heading</code>. #1887 is one example of where we might extend that.</p>
+<p>I'm concerned that trying to manage what can and can't be set in a <code>Subcommand</code> or an <code>Args</code> is going to take a decent amount of code, will be brittle as we forget to update this as new app settings become available, and when someone creatively comes up with a new idea, they will be blocked until a new clap release loosens the restrictions (looking at you, <code>clap_derive</code> inferred vs explicit error reporting that we've been slowly loosening)</p>
+<p>So I wonder if we should reject #2894.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> removed by @epage on 2022-02-08 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-02-08 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-08 23:58</div>
+            <div class="timeline-body"><p>After having had time with this in various scenarios, I feel like any solution for this will end up being worse than the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-02-08 23:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

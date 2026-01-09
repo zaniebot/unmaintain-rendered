@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter parenthesizes over-long starred expression in an assignment value which prodcues invalid syntax - astral-sh/ruff #11759</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter parenthesizes over-long starred expression in an assignment value which prodcues invalid syntax</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11759">#11759</a>
+        opened by <a href="https://github.com/jasikpark">@jasikpark</a>
+        on 2024-06-05 19:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jasikpark">@jasikpark</a> on 2024-06-05 19:13</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>I ran <code> cargo fuzz run ruff_formatter_validity fuzz/artifacts/ruff_formatter_validity/minimized-from-31d7210d32c8aaabd0b146d1dbcb10b8c2184286</code> on commit <code>9b2cf569b22855439fa916be6fc417b372074f42</code>.</p>
+<p>Filename:</p>
+<p><code>fuzz/artifacts/ruff_formatter_validity/minimized-from-31d7210d32c8aaabd0b146d1dbcb10b8c2184286</code></p>
+<p>File contents:</p>
+<pre><code>B=*R*VVVVVVVVVRBVVVVVVVVVVVVVVVVVVVVVVVVRBVVVVRBVVVVVVRBVVVVVVVVVVVVVVVVVVVVVVVVVVVRB
+</code></pre>
+<p>The crash was</p>
+<pre><code>Running: fuzz/artifacts/ruff_formatter_validity/minimized-from-31d7210d32c8aaabd0b146d1dbcb10b8c2184286
+thread '&lt;unnamed&gt;' panicked at fuzz_targets/ruff_formatter_validity.rs:65:9:
+formatter introduced a parse error
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>https://github.com/astral-sh/ruff/blob/9b2cf569b22855439fa916be6fc417b372074f42/fuzz/fuzz_targets/ruff_formatter_validity.rs#L65-L68</p>
+<p>i.e. formatting the above code produces lint errors in code that previously did not produce lint errors.</p>
+<p>/cc @MichaReiser</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jasikpark">@jasikpark</a> on 2024-06-05 19:14</div>
+            <div class="timeline-body"><p>Initial code:</p>
+<p>https://play.ruff.rs/a5f646d9-bce1-468c-bce5-c9d8322e7c98</p>
+<p>Formatted once produces lint errors:</p>
+<p>https://play.ruff.rs/6e15deb5-03c3-463c-91c6-57a871a17d5e</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Formatter/Parser bug" to "Bug: lint error caused by formatting" by @jasikpark on 2024-06-05 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jasikpark">@jasikpark</a> on 2024-06-05 19:17</div>
+            <div class="timeline-body"><p>Original AST:</p>
+<pre><code>Module(
+    ModModule {
+        range: 0..85,
+        body: [
+            Assign(
+                StmtAssign {
+                    range: 0..85,
+                    targets: [
+                        Name(
+                            ExprName {
+                                range: 0..1,
+                                id: &quot;B&quot;,
+                                ctx: Store,
+                            },
+                        ),
+                    ],
+                    value: Starred(
+                        ExprStarred {
+                            range: 2..85,
+                            value: BinOp(
+                                ExprBinOp {
+                                    range: 3..85,
+                                    left: Name(
+                                        ExprName {
+                                            range: 3..4,
+                                            id: &quot;R&quot;,
+                                            ctx: Load,
+                                        },
+                                    ),
+                                    op: Mult,
+                                    right: Name(
+                                        ExprName {
+                                            range: 5..85,
+                                            id: &quot;VVVVVVVVVRBVVVVVVVVVVVVVVVVVVVVVVVVRBVVVVRBVVVVVVRBVVVVVVVVVVVVVVVVVVVVVVVVVVVRB&quot;,
+                                            ctx: Load,
+                                        },
+                                    ),
+                                },
+                            ),
+                            ctx: Load,
+                        },
+                    ),
+                },
+            ),
+        ],
+    },
+)
+</code></pre>
+<p>AST after formatting:</p>
+<pre><code>Module(
+    ModModule {
+        range: 0..102,
+        body: [
+            Assign(
+                StmtAssign {
+                    range: 0..101,
+                    targets: [
+                        Name(
+                            ExprName {
+                                range: 0..1,
+                                id: &quot;B&quot;,
+                                ctx: Store,
+                            },
+                        ),
+                    ],
+                    value: Starred(
+                        ExprStarred {
+                            range: 10..99,
+                            value: BinOp(
+                                ExprBinOp {
+                                    range: 11..99,
+                                    left: Name(
+                                        ExprName {
+                                            range: 11..12,
+                                            id: &quot;R&quot;,
+                                            ctx: Load,
+                                        },
+                                    ),
+                                    op: Mult,
+                                    right: Name(
+                                        ExprName {
+                                            range: 19..99,
+                                            id: &quot;VVVVVVVVVRBVVVVVVVVVVVVVVVVVVVVVVVVRBVVVVRBVVVVVVRBVVVVVVVVVVVVVVVVVVVVVVVVVVVRB&quot;,
+                                            ctx: Load,
+                                        },
+                                    ),
+                                },
+                            ),
+                            ctx: Load,
+                        },
+                    ),
+                },
+            ),
+        ],
+    },
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fuzzer</span> added by @zanieb on 2024-06-05 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../psf/black/issues/4376.html">psf/black#4376</a> on 2024-06-06 06:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-06-06 06:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Bug: lint error caused by formatting" to "Formatter parenthesizes over-long starred expression in an assignment value which prodcues invalid syntax" by @MichaReiser on 2024-06-06 06:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-06 06:20</div>
+            <div class="timeline-body"><p>A &quot;simple&quot; fix is to change</p>
+<pre><code class="language-patch">Subject: [PATCH] Track `File` status as input. Implement module resovler and source code as derived queries.
+---
+Index: crates/ruff_python_formatter/src/expression/expr_starred.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff_python_formatter/src/expression/expr_starred.rs b/crates/ruff_python_formatter/src/expression/expr_starred.rs
+--- a/crates/ruff_python_formatter/src/expression/expr_starred.rs	(revision 5a5a588a721731e09eb404466649109ff23739be)
++++ b/crates/ruff_python_formatter/src/expression/expr_starred.rs	(date 1717654257492)
+@@ -31,6 +31,6 @@
+         _parent: AnyNodeRef,
+         _context: &amp;PyFormatContext,
+     ) -&gt; OptionalParentheses {
+-        OptionalParentheses::Multiline
++        OptionalParentheses::Never
+     }
+ }
+</code></pre>
+<p>But I need to validate this in more detail. I also need to go through other places where we parenthesize expressions to ensure starred expressions are valid in that context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-06 06:21</div>
+            <div class="timeline-body"><p>@dhruvmanila pointed out that the original code isn't valid syntax but it isn't a parse time error</p>
+<pre><code>&gt; B=*R*VVVVVVVVVRBVVVVVVVVVVVVVVVVVVVVVVVVRBVVVVRBVVVVVVRBVVVVVVVVVVVVVVVVVVVVVVVVVVVRB
+  File &quot;&lt;stdin&gt;&quot;, line 1
+SyntaxError: can't use starred expression here
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jasikpark">@jasikpark</a> on 2024-06-06 13:35</div>
+            <div class="timeline-body"><p>So it's a case where the issue isn't detectable by the linter without an initial formatting then?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-06 14:05</div>
+            <div class="timeline-body"><p>Yeah, it's a syntax error that isn't detected by the parser because it's a compile time syntax error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jasikpark">@jasikpark</a> on 2024-06-06 14:31</div>
+            <div class="timeline-body"><p><em>should</em> it be detectable, or is this expected for the linter? the ruff_formatter_validity fuzz test may need to be adjusted or at least commented on if it's meant to be allowed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-06 14:34</div>
+            <div class="timeline-body"><p>It's something we may want to detect but isn't something that ruff supports today. It's also an open question if the check should be part of the parser or if it is a deferred linter check</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jasikpark">@jasikpark</a> on 2024-06-06 15:11</div>
+            <div class="timeline-body"><p>So the fuzzer test is running the linter over code, then formatting it, then checking it a second time if the first lint didn't detect any problems. Is the formatter fundamentally changing the code from something incorrect that the linter can't detect to something incorrect the linter can detect? I don't fully understand python operator precedence, and I guess it doesn't matter since it's invalid code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-06 15:28</div>
+            <div class="timeline-body"><blockquote>
+<p>s the formatter fundamentally changing the code from something incorrect that the linter can't detect to something incorrect the linter can detect?</p>
+</blockquote>
+<p>Yes, the formatter makes a change from an error that the ruff linter should detect (but doesn't today) to something that the parser (comes before linting) detects (already today).</p>
+<p>But the code is in both cases invalid, it's just that Ruff doesn't detect one of the two.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jasikpark">@jasikpark</a> on 2024-06-06 15:58</div>
+            <div class="timeline-body"><p>Ah, I see</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-10 08:38</div>
+            <div class="timeline-body"><p>While I think we could do better to prevent formatting this snippet in the first place, there's no actionable fix to the formatter that we could implement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-10 08:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

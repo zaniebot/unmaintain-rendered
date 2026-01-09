@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get raw value of subcommand - clap-rs/clap #695</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Get raw value of subcommand</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/695">#695</a>
+        opened by <a href="https://github.com/Yamakaky">@Yamakaky</a>
+        on 2016-10-19 04:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Yamakaky">@Yamakaky</a> on 2016-10-19 04:26</div>
+            <div class="timeline-body"><p>For example in <code>sub 1 + 1</code>, I would like to get the string <code>&quot;1 + 1&quot;</code> associated with the subcommand <code>sub</code>. <code>ArgSetting::Multiple</code> doesn't seem appropriate since it's more for <code>-v</code>-like arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-19 13:53</div>
+            <div class="timeline-body"><p>Depending on the specific implementation of the subcommand, if all these values are stored in a single positional argument you could use <code>Arg::multiple</code> and then collect the values.</p>
+<p>i.e.</p>
+<pre><code class="language-rust">
+let m = App::new(&quot;test&quot;)
+    .subcommand(SubCommand::with_name(&quot;sub&quot;)
+        .arg(Arg::with_name(&quot;math&quot;)
+            .multiple(true)))
+    .get_matches();
+
+let args = m.subcommand_matches(&quot;sub&quot;)
+    .unwrap()
+    .values_of(&quot;math&quot;)
+    .collect::&lt;Vec&lt;_&gt;&gt;() // Vec&lt;&amp;str&gt;: [&quot;1&quot;, &quot;+&quot;, &quot;1&quot;]
+    .join(&quot; &quot;);
+
+assert_eq!(&amp;*args, &quot;1 + 1&quot;);
+</code></pre>
+<p>Alternatively, if you just want to get truly raw subcommand args (all of them) you can use <a href="http://kbknapp.github.io/clap-rs/clap/enum.AppSettings.html#variant.AllowExternalSubcommands">external subcommands</a> which contain a &quot;special&quot; arg of the subcommand name itself, which contains all the raw values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-10-19 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Yamakaky">@Yamakaky</a> on 2016-10-19 14:51</div>
+            <div class="timeline-body"><p>Seems good, I'll try!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Yamakaky">@Yamakaky</a> on 2016-10-19 20:44</div>
+            <div class="timeline-body"><p>It works, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Yamakaky on 2016-10-19 20:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

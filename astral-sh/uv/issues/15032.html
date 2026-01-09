@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv tool install: &quot;--reinstall&quot; option broken - astral-sh/uv #15032</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv tool install: &quot;--reinstall&quot; option broken</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15032">#15032</a>
+        opened by <a href="https://github.com/hwine">@hwine</a>
+        on 2025-08-02 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hwine">@hwine</a> on 2025-08-02 19:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv tool install --help</code> shows an option <code>--reinstall</code> to reinstall <em>all</em> packages. However, this option requires a single package:</p>
+<pre><code class="language-bash">❯ uv tool install --help | grep -- --reinstall
+      --reinstall                              Reinstall all packages, regardless of whether they're already installed. Implies `--refresh`
+      --reinstall-package &lt;REINSTALL_PACKAGE&gt;  Reinstall a specific package, regardless of whether it's already installed. Implies
+
+❯ uv tool install --reinstall
+error: the following required arguments were not provided:
+  &lt;PACKAGE&gt;
+
+Usage: uv.exe tool install --reinstall &lt;PACKAGE&gt;
+
+For more information, try '--help'.
+</code></pre>
+<p>Use case: trying to &quot;fix&quot; installation after removing the version of python they were installed with. (No warning or error was given during <code>uv python uninstall 3.13.2</code>.)</p>
+<p>See also #14814, which speaks to more of conflicting information about this use case.</p>
+<h3>Platform</h3>
+<p>Windows version: 10.0.26200.5722, arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.4 (e176e1714 2025-07-30)</p>
+<h3>Python version</h3>
+<p>❯ uv python list | grep -v available</p>
+<blockquote>
+<p>cpython-3.13.3-windows-aarch64-none C:\Users\hwine\AppData\Local\Programs\Python\Python313-arm64\python.exe
+cpython-3.10.16-windows-x86_64-none                   C:\Users\hwine\AppData\Roaming\uv\python\cpython-3.10.16-windows-x86_64-none\python.exe</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @hwine on 2025-08-02 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-02 20:00</div>
+            <div class="timeline-body"><p>I think <code>uv.exe tool install --reinstall &lt;PACKAGE&gt;</code> is saying that you need to pass <code>&lt;PACKAGE&gt;</code> to <code>uv tool install</code>. Like <code>uv tool install</code> on its own requires a package as a positional argument (like <code>uv tool install ruff</code>).</p>
+<p>In the context of that CLI copy, &quot;Reinstall all packages&quot; means &quot;Reinstall all the packages that are required for the command&quot;. E.g., <code>uv tool install flask --reinstall</code> would reinstall <code>flask</code> and all of its dependencies, as opposed to <code>uv tool install flask --reinstall-package click</code>, which would only reinstall <code>click</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-08-02 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-08-02 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hwine">@hwine</a> on 2025-08-02 22:27</div>
+            <div class="timeline-body"><blockquote>
+<p>In the context of that CLI copy, &quot;Reinstall all packages&quot; means &quot;Reinstall all the packages that are required for the command&quot;. E.g., <code>uv tool install flask --reinstall</code> would reinstall <code>flask</code> and all of its dependencies, as opposed to <code>uv tool install flask --reinstall-package click</code>, which would only reinstall <code>click</code>.</p>
+</blockquote>
+<p>fair -- I think the documentation (<code>--help</code>) could be improved then, as it sounds like the term &quot;package&quot; has 2 different meanings in the context of this command:</p>
+<ul>
+<li><code>&lt;PACKAGE&gt;</code> as referenced as a required parameter for the <code>install</code> command (&quot;flask&quot; in your example).</li>
+<li><code>package</code> or <code>packages</code> as referenced in the help, which are only valid as part of options (&quot;click&quot; in your example). In many python contexts, these would be more likely to be referenced as &quot;dependencies&quot; or &quot;requirements&quot; of the main <code>&lt;PACKAGE&gt;</code></li>
+</ul>
+<p>I think changing &quot;package&quot; to &quot;dependency&quot; in the help text would be a no-code-change-needed to help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeckennedy">@mikeckennedy</a> on 2025-08-12 01:09</div>
+            <div class="timeline-body"><p>Hi guys. Not sure if piggybacking on this issue is the place for this or creating a new issue.</p>
+<p>Any time I uninstall a Python version that had previously been used install a tool, I can't run or update it. I can run reinstall for that tool. But I'm hoping there is a way to complete reinstall everything on my system. Basically I have this error if I clean out my system. How can I reset all of them and rebind them to the newer Python (say 3.134-&gt;3.13.5 after deleting 3.13.4):</p>
+<p><img width="759" height="310" alt="Image" src="https://github.com/user-attachments/assets/bf52915b-2e4a-4075-a7a8-a5499261e52d" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-12 02:14</div>
+            <div class="timeline-body"><p>@mikeckennedy for that, see https://github.com/astral-sh/uv/pull/12937. You probably want to use our transparent upgrade feature though: https://docs.astral.sh/uv/concepts/python-versions/#upgrading-python-versions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeckennedy">@mikeckennedy</a> on 2025-08-12 16:27</div>
+            <div class="timeline-body"><p>Thanks @zanieb, that is related but not what I want. I don't want to be warned that it will remove the version of Python I'm using (I want that version removed). I want a way when seeing the screenshot above, to just tell uv &quot;let's reinstall these with the latest Python.&quot;</p>
+<p>IIRC, there is <code>uv tool upgrade black --reinstall</code> but no way to say do that for everything I've currently have installed, but with the latest Python now that the older one is gone. There is also no way to say <code>uv tool install TOOL1 TOOL2</code> and have them both installed separately. I have to run separate commands to fix each error shown. This is error prone as I might forget to reinstall something.</p>
+<p>I guess I'll just make a bash script to run <code>uv tool install TOOL1</code>, <code>uv tool install TOOL2</code>, ..., exhaustively until something gets smoothed out here.</p>
+<p>Sorry if I'm missing a feature that already handles this. Thanks again for taking the time to respond.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

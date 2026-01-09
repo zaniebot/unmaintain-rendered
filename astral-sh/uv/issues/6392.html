@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv venv --python &lt;version&gt;` fails when querying managed python interpreter on alpine - astral-sh/uv #6392</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv venv --python &lt;version&gt;` fails when querying managed python interpreter on alpine</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6392">#6392</a>
+        opened by <a href="https://github.com/SamuelMarks">@SamuelMarks</a>
+        on 2024-08-21 23:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SamuelMarks">@SamuelMarks</a> on 2024-08-21 23:33</div>
+            <div class="timeline-body"><p>Saw your release notes and thought - perfect:</p>
+<blockquote>
+<p>uv venv --python <version> will <a href="https://docs.astral.sh/uv/concepts/python-versions/#requesting-a-version">automatically download</a> the Python version if required</p>
+</blockquote>
+<p>So gave it a shot:</p>
+<pre><code class="language-dockerfile">FROM alpine
+
+ARG RYE_VER=&quot;0.39.0&quot;
+ARG UV_VER=&quot;0.3.0&quot;
+ARG VENV_DIR = &quot;/tmp/foo/venvs&quot;
+ARG VENV_NAME = &quot;venv-3-11&quot;
+
+WORKDIR /tmp
+ADD &quot;https://github.com/astral-sh/rye/releases/download/${RYE_VER}/rye-x86_64-linux.gz&quot; .
+ADD &quot;https://github.com/astral-sh/uv/releases/download/${UV_VER}/uv-x86_64-unknown-linux-musl.tar.gz&quot; .
+RUN gzip -vd rye-x86_64-linux.gz &amp;&amp; chmod +x rye-x86_64-linux &amp;&amp; \
+    mv rye-x86_64-linux /usr/local/bin/rye &amp;&amp; \
+    tar xfv uv-x86_64-unknown-linux-musl.tar.gz &amp;&amp; \
+    chmod +x uv-x86_64-unknown-linux-musl/* &amp;&amp; \
+    mv uv-x86_64-unknown-linux-musl/* /usr/local/bin/
+
+RUN uv venv --python &quot;${PYTHON_VERSION}&quot; &quot;${VENV_DIR}/${VENV_NAME}&quot;
+ENTRYPOINT [&quot;${VENV_DIR}/${VENV_NAME}/bin/python&quot;, &quot;--version&quot;]
+</code></pre>
+<p>Error:</p>
+<pre><code>commit: 0.39.0 (bf3ccf818 2024-08-21)
+platform: linux (x86_64)
+self-python: not bootstrapped (target: cpython@3.12)
+symlink support: true
+uv enabled: true
+ × Failed to query Python interpreter at
+│ `/root/.local/share/uv/python/cpython-3.11.9-linux-x86_64-gnu/bin/python3`
+╰─▶ No such file or directory (os error 2)
+</code></pre>
+<p>PS: Would be nice to keep things out of <code>/root</code>, is there a flag to set that directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 23:38</div>
+            <div class="timeline-body"><p>Yeah, you should be able to use <code>UV_PYTHON_INSTALL_DIR</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 23:40</div>
+            <div class="timeline-body"><p>Is <code>PYTHON_VERSION</code> just set to <code>3.11</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SamuelMarks">@SamuelMarks</a> on 2024-08-21 23:43</div>
+            <div class="timeline-body"><p>Sorry yes that is just <code>3.11</code>. It brings in the latest patch from my reading of the docs? - Or do I need to specify patch version also?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 23:47</div>
+            <div class="timeline-body"><p>No <code>3.11</code> is totally fine, it just wasn't in the script so confirming.</p>
+<p>I think we don't yet have proper musl detection (\cc @konstin who knows this best). That script does work for me with dynamically-linked glibc (e.g. <code>FROM ubuntu</code> or similar).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 23:48</div>
+            <div class="timeline-body"><p>I'm very confused by <code>No such file or directory</code>, I get a different error on my machine but I'm emulating on macOS:</p>
+<pre><code>#12 1.436   × Querying Python at
+#12 1.436   │ `/root/.local/share/uv/python/cpython-3.11.9-linux-x86_64-gnu/bin/python3`
+#12 1.436   │ failed with exit status signal: 5 (SIGTRAP)
+#12 1.436   │ --- stdout:
+#12 1.436
+#12 1.436   │ --- stderr:
+#12 1.436   │ rosetta error: failed to open elf at /lib64/ld-linux-x86-64.so.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @charliermarsh on 2024-08-21 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SamuelMarks">@SamuelMarks</a> on 2024-08-21 23:51</div>
+            <div class="timeline-body"><p>Oh right looks like you'll need <code>musl-dev</code>, here's the full replication:</p>
+<pre><code class="language-dockerfile">FROM alpine
+
+ARG RYE_VER=&quot;0.39.0&quot;
+ARG UV_VER=&quot;0.3.0&quot;
+ARG VENV_DIR=&quot;/tmp/foo/venvs&quot;
+ARG VENV_NAME=&quot;venv-3-11&quot;
+ARG PYTHON_VERSION=&quot;3.11&quot;
+ENV UV_PYTHON_INSTALL_DIR=&quot;/tmp/uv&quot;
+
+RUN apk add --no-cache musl-dev
+WORKDIR /tmp
+ADD &quot;https://github.com/astral-sh/rye/releases/download/${RYE_VER}/rye-x86_64-linux.gz&quot; .
+ADD &quot;https://github.com/astral-sh/uv/releases/download/${UV_VER}/uv-x86_64-unknown-linux-musl.tar.gz&quot; .
+RUN gzip -vd rye-x86_64-linux.gz &amp;&amp; chmod +x rye-x86_64-linux &amp;&amp; \
+    mv rye-x86_64-linux /usr/local/bin/rye &amp;&amp; \
+    tar xfv uv-x86_64-unknown-linux-musl.tar.gz &amp;&amp; \
+    chmod +x uv-x86_64-unknown-linux-musl/* &amp;&amp; \
+    mv uv-x86_64-unknown-linux-musl/* /usr/local/bin/
+
+RUN uv venv --python &quot;${PYTHON_VERSION}&quot; &quot;${VENV_DIR}/${VENV_NAME}&quot;
+ENTRYPOINT [&quot;${VENV_DIR}/${VENV_NAME}/bin/python&quot;, &quot;--version&quot;]
+</code></pre>
+<p>Gives:</p>
+<pre><code> &gt; [7/7] RUN uv venv --python &quot;3.11&quot; &quot;/tmp/foo/venvs/venv-3-11&quot;:
+21.69   × Failed to query Python interpreter at
+21.69   │ `/tmp/uv/cpython-3.11.9-linux-x86_64-gnu/bin/python3`
+21.69   ╰─▶ No such file or directory (os error 2)
+------
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 00:07</div>
+            <div class="timeline-body"><p>I've reproduced this — I think it's complaining that GNU Libc is not found (in a very cryptic way)</p>
+<p>https://stackoverflow.com/questions/77418700/python-not-found-in-alpine-image</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 00:09</div>
+            <div class="timeline-body"><p>More context on why we aren't downloading musl distributions (as we should) in https://github.com/astral-sh/uv/pull/4160</p>
+<p>Progress towards that can be tracked in https://github.com/astral-sh/uv/issues/4242</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 00:13</div>
+            <div class="timeline-body"><p>Interestingly if you force a musl download, e.g., with:</p>
+<pre><code>RUN uv venv -v --python &quot;cpython-${PYTHON_VERSION}-linux-x86_64-musl&quot; &quot;${VENV_DIR}/${VENV_NAME}&quot;
+</code></pre>
+<p>We still fail</p>
+<pre><code>2.624   × Can't use Python at
+2.624   │ `/root/.local/share/uv/python/cpython-3.11.9-linux-x86_64-musl/bin/python3`
+2.624   ╰─▶ Could not detect a glibc or a musl libc (while running on Linux)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[0.3.0] `uv venv --python <version>` fails to download python" to "`uv venv --python <version>` fails when querying managed python interpreter on alpine" by @zanieb on 2024-08-22 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-22 10:36</div>
+            <div class="timeline-body"><p><code>cpython-3.11.9-linux-x86_64-musl/bin/python3</code> is statically linked, so we fail to determine an interpreter (such as <code>/lib64/ld-linux-x86-64.so.2</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6595.html">astral-sh/uv#6595</a> on 2024-08-25 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-08-26 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">musl</span> added by @konstin on 2024-08-26 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2024-09-02 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-09-02 18:27</div>
+            <div class="timeline-body"><p>Since we don't have a properly working Python interpreter for musl, we now show a correct error message that you need to install Python using the system tools (e.g. <code>apk add python3</code>). We plan to serve Python downloads for musl in the future; For now you should be getting a correct error message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6890.html">astral-sh/uv#6890</a> on 2024-09-03 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-03 14:21</div>
+            <div class="timeline-body"><p>We no longer provide managed interpreters due to this error. We can track this in #6890 now — but this is an upstream python-build-standalone issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-03 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SamuelMarks">@SamuelMarks</a> on 2024-09-03 22:04</div>
+            <div class="timeline-body"><p>Separately there's always <a href="https://justine.lol/ape.html">αpε</a> to consider… e.g., with <a href="https://github.com/ahgamut/superconfigure">superconfigure</a></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

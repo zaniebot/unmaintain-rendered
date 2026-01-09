@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync` handling third party dependencies in `setup.py` - astral-sh/uv #7722</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync` handling third party dependencies in `setup.py`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7722">#7722</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2024-09-26 18:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-09-26 18:51</div>
+            <div class="timeline-body"><p>I am using <code>uv==0.4.16</code>, and there are two packages that make my life annoying because their <code>setup.py</code> depends on <a href="https://pypi.org/project/torch/"><code>torch</code></a>:</p>
+<ul>
+<li>https://github.com/facebookresearch/xformers/blob/v0.0.28/setup.py#L24-L31 (<a href="https://pypi.org/project/xformers/">PyPI</a>)</li>
+<li>https://github.com/Dao-AILab/flash-attention/blob/v2.6.3/setup.py#L21-L29 (not on PyPI)</li>
+</ul>
+<p>How can <code>uv sync</code> work with this scenario? Currently, it successfully makes a <code>uv.lock</code>, but then fails on <code>uv sync</code>:</p>
+<pre><code>[[package]]
+name = &quot;xformers&quot;
+version = &quot;0.0.28&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+dependencies = [
+    { name = &quot;numpy&quot; },
+    { name = &quot;torch&quot; },
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/be/8e/1b9bc5317a7a26d33af2db63f5db112c0cfe373befe7d5653e1d639db231/xformers-0.0.28.tar.gz&quot;, hash = &quot;sha256:bc74e7033d2675962d4ddc708fc66328b6f6cbe5aedff7491eab98c338623bf2&quot;, size = 7757812 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/d1/a0/bb5a668186f5f77a73043a8ff8b86176c7d3cbed10cbdafcca67237ee432/xformers-0.0.28-cp311-cp311-manylinux_2_28_x86_64.whl&quot;, hash = &quot;sha256:c7c6b1887d6bb71fe26464492b84d6cdbfbfdada5669a4a606c186a384e226f5&quot;, size = 16653563 },
+    { url = &quot;https://files.pythonhosted.org/packages/9b/e4/efead2c5c89cd5766c7c4f5320448c80a51f3a497bbe560b8000e2ebc930/xformers-0.0.28-cp312-cp312-manylinux_2_28_x86_64.whl&quot;, hash = &quot;sha256:9b3a5e6f2e02d6b2bb84a38351dcb181cfdb037451ab8cd57f39c161af33d83b&quot;, size = 16653138 },
+]
+</code></pre>
+<pre><code class="language-none">error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: xformers==0.0.28
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+  File &quot;/Users/user/Library/Caches/uv/builds-v0/.tmpCHWnFA/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 332, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=[])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/user/Library/Caches/uv/builds-v0/.tmpCHWnFA/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 302, in _get_build_requires
+    self.run_setup()
+  File &quot;/Users/user/Library/Caches/uv/builds-v0/.tmpCHWnFA/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 503, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File &quot;/Users/user/Library/Caches/uv/builds-v0/.tmpCHWnFA/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 318, in run_setup
+    exec(code, locals())
+  File &quot;&lt;string&gt;&quot;, line 24, in &lt;module&gt;
+ModuleNotFoundError: No module named 'torch'
+---
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 18:52</div>
+            <div class="timeline-body"><p>There are some tips on that here: https://docs.astral.sh/uv/concepts/projects/#build-isolation. It's still a bit of a pain though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-09-26 18:59</div>
+            <div class="timeline-body"><p>Ah I see, thank you! Yeah so currently installation is a two-step process:</p>
+<ol>
+<li><code>pip install torch</code></li>
+<li><code>pip install xformers</code></li>
+</ol>
+<p>I was sort of hoping <code>uv</code> could somehow convert that to be a one-step process, but it doesn't seem to be the case:</p>
+<ol>
+<li><code>uv sync --extra build</code><ul>
+<li>Note: the extra <code>build= [&quot;torch&quot;]</code></li>
+</ul>
+</li>
+<li><code>uv sync --extra xformers</code><ul>
+<li>Note: relies on <code>no-build-isolation-package = [&quot;xformers&quot;]</code> being in <code>tool.uv</code></li>
+</ul>
+</li>
+</ol>
+<p>Do you think it's a reasonable request to <code>uv</code> to somehow support this use case as a one-step process? In other words, make it less of a special case from an installer's perspective</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-27 12:25</div>
+            <div class="timeline-body"><p>I would like it to be one-step, yeah. It's a reasonable request. It likely won't happen immediately though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vwxyzjn">@vwxyzjn</a> on 2024-12-04 21:59</div>
+            <div class="timeline-body"><p>Hi @charliermarsh just to confirm, the current best approach still requires two commands, right? I needed to run</p>
+<pre><code>uv sync
+uv sync --compile
+</code></pre>
+<p>with</p>
+<pre><code>[project]
+name = &quot;open-instruct&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;numpy&lt;2&quot;,
+    &quot;packaging&gt;=24.2&quot;,
+    &quot;setuptools&gt;=75.6.0&quot;,
+    &quot;torch&gt;=2.5.1&quot;,
+    # &quot;flash-attn&gt;=2.7.0.post2&quot;,
+]
+
+# pytroch related setups
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cu121&quot;, marker = &quot;platform_system != 'Darwin'&quot;},
+]
+[[tool.uv.index]]
+name = &quot;pytorch-cu121&quot;
+url = &quot;https://download.pytorch.org/whl/cu121&quot;
+explicit = true
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+# flash-attn related setups
+[project.optional-dependencies]
+compile = [&quot;flash-attn&gt;=2.7.0.post2&quot;]
+[tool.uv]
+no-build-isolation-package = [&quot;flash-attn&quot;]
+[[tool.uv.dependency-metadata]]
+name = &quot;flash-attn&quot;
+version = &quot;2.7.0.post2&quot;
+requires-dist = [&quot;torch&quot;, &quot;setuptools&quot;]
+</code></pre>
+<p>I am slightly puzzled as I thought the <code>tool.uv.dependency-metadata</code> would make it a one command process, because it already tells uv to wait for <code>torch</code> and <code>setuptools</code> 👀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AyhamSaffar">@AyhamSaffar</a> on 2025-01-08 15:41</div>
+            <div class="timeline-body"><p>I am struggling with the same issue.</p>
+<p>xformers is needed to run any hugging face models in PyTorch, so i would imagine alot of people are getting stuck on this issue.</p>
+<p>I am sure xformers' environment is really poorly configured given it doesn't automatically install when you install the hugging face libraries that depend on it, but supporting these kinds of libraries without any hard-to-find tricks would be amazing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AyhamSaffar">@AyhamSaffar</a> on 2025-01-13 23:05</div>
+            <div class="timeline-body"><p>Also @charliermarsh couldn't get xformers to install using your linked page.</p>
+<p>Setup:</p>
+<pre><code>[project]
+name = &quot;demo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;==3.12.*&quot;
+dependencies = []
+
+[project.optional-dependencies]
+build = [&quot;torch&quot;, &quot;setuptools&quot;]
+compile = [&quot;xformers&quot;]
+
+[tool.uv]
+no-build-isolation-package = [&quot;xformers&quot;]
+
+[[tool.uv.dependency-metadata]]
+name = &quot;xformers&quot;
+version = &quot;0.0.29.post1&quot;
+requires-dist = [&quot;torch&quot;, &quot;setuptools&quot;]
+</code></pre>
+<p>Then running this:</p>
+<pre><code>uv sync --extra build
+uv sync --extra build --extra compile
+</code></pre>
+<p>The following keeps getting raised:</p>
+<blockquote>
+<p>building 'xformers._C' extension
+... UserWarning: Attempted to use ninja as the BuildExtension backend but we could not find ninja.. Falling back to using the slow distutils backend.
+... UserWarning: Error checking compiler version for cl: [WinError 2] The system cannot find the file specified
+error: Microsoft Visual C++ 14.0 or greater is required. Get it with ...</p>
+</blockquote>
+<p>Every time I add more to the pyproject.toml dependencies, a different error comes up with the same final line.</p>
+<p>Is this a UV thing or an xformers thing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 23:27</div>
+            <div class="timeline-body"><p>That would be an xformers thing... Unfortunately they only ship Linux wheels, so you have to build from source.=, and your machine doesn't seem to have the dependencies it needs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AyhamSaffar">@AyhamSaffar</a> on 2025-01-13 23:51</div>
+            <div class="timeline-body"><p>thanks! everything works fine on wsl.  You do not even need the whole no-build-isolation trick.</p>
+<p>I guess the library setup.py is only run when there isn't a dist and wheel / whatever binaries for your platform on PyPI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 00:00</div>
+            <div class="timeline-body"><p>You'll probably want the MS C++ toolchain for other packages as well, https://visualstudio.microsoft.com/visual-cpp-build-tools/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-14 00:00</div>
+            <div class="timeline-body"><p>Yeah that's right. You can see <a href="https://pypi.org/project/xformers/#files">here</a> that they only ship Linux-compatible &quot;wheels&quot;:</p>
+<p><img src="https://github.com/user-attachments/assets/a3d355d6-56e3-4699-acf6-15935da3d54d" alt="Image" /></p>
+<p>So if you're not on Linux, we have to download the source distribution and try to build it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AyhamSaffar">@AyhamSaffar</a> on 2025-01-14 00:04</div>
+            <div class="timeline-body"><p>Cheers @zanieb and @charliermarsh. I appreciate the help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11675.html">astral-sh/uv#11675</a> on 2025-02-20 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../stfc/janus-core/pulls/421.html">stfc/janus-core#421</a> on 2025-03-14 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/muhammad-fiaz">@muhammad-fiaz</a> on 2025-10-30 18:23</div>
+            <div class="timeline-body"><p>is there any good solution for this?? or any example working reference,  for me the main issue is with <code>xformers</code> it always conflict with <code>cuda</code> enabled <code>pytorch</code> when installing with uv <code>pyproject.toml</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-30 18:46</div>
+            <div class="timeline-body"><p>We made this work in one-step now, see https://docs.astral.sh/uv/concepts/projects/config/#augmenting-build-dependencies</p>
+<p>@muhammad-fiaz if you have questions after reading that please open a new issue with details. I don't think this one is specific enough for us to help you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-10-30 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/muhammad-fiaz">@muhammad-fiaz</a> on 2025-10-30 18:59</div>
+            <div class="timeline-body"><p>Hello @zanieb Thanks for replying, i also saw that <a href="https://docs.astral.sh/uv/concepts/projects/config/#augmenting-build-dependencies">docs</a> but it does automate some features specific to <code>pytorch</code> and <code>flash attention</code> but for me the main issue is with <code>xformer</code> usage with uv i am not sure it always conflict with <code>pytorch</code> and installing incorrectly  when ever there is some new cuda so i needed to manually install using <code>pip</code> for each dependencies based dependencies so i have created an #16522 feature request support for multiple automated version for same dependencies</p>
+<p>BTW! i am using uv version (v0.9.6)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

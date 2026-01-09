@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run powershell script fails - astral-sh/uv #9010</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run powershell script fails</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/9010">#9010</a>
+        opened by <a href="https://github.com/jenshnielsen">@jenshnielsen</a>
+        on 2024-11-11 09:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-11-11 09:43</div>
+            <div class="timeline-body"><p>If pyright is installed from npm it will install itself with a cmd and powershell entry point on windows and a shell script on linux.
+When trying to run this script using <code>uv run</code>, to run it in uv's managed .venv on windows, it errors unless the cmd script is supplied or an explicit powershell is prefixed.</p>
+<p>This is inconvenient since it means that the same command cannot be used to typecheck the code using pyright on windows and linux.</p>
+<p>In summary:</p>
+<p>The following does not work on windows:</p>
+<p><code>uv run pyright</code>
+errors with</p>
+<pre><code>error: Failed to spawn: `pyright`
+  Caused by: program not found
+</code></pre>
+<p><code>uv run pyright.ps1</code></p>
+<p>errors with:</p>
+<pre><code>error: Failed to spawn: `pyright.ps1`
+  Caused by: %1 is not a valid Win32 application. (os error 193)
+</code></pre>
+<p>The following works:</p>
+<p>On windows:</p>
+<p><code>uv run pyright.cmd</code></p>
+<p><code>uv run powershell pyright.ps1</code></p>
+<pre><code>.venv\Scripts\activate
+pyright
+</code></pre>
+<p>On linux:</p>
+<p><code>uv run pyright</code></p>
+<ul>
+<li>The command you invoked <code>uv run pyright</code></li>
+<li>The current uv platform. <code>Windows 11</code></li>
+<li>The current uv version: uv 0.5.1</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-11-12 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 17:51</div>
+            <div class="timeline-body"><p>Is this the same as #8770?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-11-12 19:50</div>
+            <div class="timeline-body"><p>@charliermarsh it's probably at least related. I think there are two different issues here.</p>
+<ul>
+<li>uv run does not seem to be able to execute cmd (.cmd) or powershell  (.ps1) scripts when these are called without an extension. If I understand #8770 that issue is essentially about this for cmd scripts.</li>
+<li>When a powershell script is executed by full name using uv run it fails. Looking at the error message that seems to be because the powershell script is executed as if it was a cmd script. I don't think this was reported in #8770</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-11-13 06:08</div>
+            <div class="timeline-body"><p>Did a test with nuitka and I think the problem is indeed the same as part 1 of this problem.</p>
+<pre><code>uv venv nuitka
+uv pip install nuitka
+</code></pre>
+<p>then</p>
+<pre><code>uv run nuitka
+</code></pre>
+<p>fails with</p>
+<pre><code>error: Failed to spawn: `nuitka`
+  Caused by: program not found
+</code></pre>
+<p>but</p>
+<pre><code>uv run nuitka.cmd
+</code></pre>
+<p>works as expected</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-11-13 20:25</div>
+            <div class="timeline-body"><p>The reason for issue number 1 e.g. not being able to call a cmd script without the extension is given here.</p>
+<p>https://doc.rust-lang.org/std/process/struct.Command.html#platform-specific-behavior</p>
+<blockquote>
+<p>Note on Windows: For executable files with the .exe extension, it can be omitted when specifying the program for this Command. However, if the file has a different extension, a filename including the extension needs to be provided, otherwise the file won’t be found.</p>
+</blockquote>
+<p>Unlike powershell / cmd's behaviour <code>std::process::Command</code> will not execute a .cmd or .ps1 script unless the extension is included.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-13 20:40</div>
+            <div class="timeline-body"><p>We can fix the display of these (#9099), but I don't know if <code>uv run foo.ps1</code> should work or if we should require <code>uv run powershell foo.ps1</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-11-15 14:45</div>
+            <div class="timeline-body"><p>From my perspective that would not make a big difference. My main concern is that I have to special case between windows and linux when running commands in CI</p>
+<p>e.g. I tried migrating from creating and activating a venv to using <code>uv run</code>
+Using uv run I will have to execute the script with an extension (And perhaps a shell prefix) whereas on linux I can just execute the script as is. To my knowledge it seems fairly common to ship crossplatform scripts in this way (cmd/ps1 on windows and bash/sh on linux) so I think it would be nice to support for unified crossplatform support. However, I can understand if stripping extensions and introducing shells seems like too much magic (does this need to be done also for other shells and their scripting languages ? )</p>
+<p>For now I was able to work around the specific issue in azure pipelines (I expect this works in github actions too) by doing</p>
+<pre><code>uv run --extra test pwsh -C pyright
+</code></pre>
+<p>E.g. running pyright from a powershell core session inside uv run. This works since Azure pipelines ships with powershell 7 installed on all platforms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-15 14:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Using uv run I will have to execute the script with an extension (And perhaps a shell prefix) whereas on linux I can just execute the script as is. To my knowledge it seems fairly common to ship crossplatform scripts in this way (cmd/ps1 on windows and bash/sh on linux) so I think it would be nice to support for unified crossplatform support.</p>
+</blockquote>
+<p>I think the ideas is that <code>project.scripts</code> should be used for cross-platform scripts since it's the standard, the old behavior seems less common now. I agree cross-platform support is nice though.</p>
+<blockquote>
+<p>However, I can understand if stripping extensions and introducing shells seems like too much magic (does this need to be done also for other shells and their scripting languages ? )</p>
+</blockquote>
+<p>Yeah this is my concern. We don't plan do this for other shells and languages, i.e., <code>uv run foo.sh</code> won't work.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCH003 false positive when typing nested functions - astral-sh/ruff #4020</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>TCH003 false positive when typing nested functions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4020">#4020</a>
+        opened by <a href="https://github.com/VoodaGod">@VoodaGod</a>
+        on 2023-04-19 13:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/VoodaGod">@VoodaGod</a> on 2023-04-19 13:33</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>consider <code>test.py</code></p>
+<pre><code>from collections.abc import Callable, Collection
+
+
+def test():
+    def nested() -&gt; Callable[[Collection[str]], list[str]]:
+        def double_nested(x: Collection[str]) -&gt; list[str]:
+            return list(x)
+
+        return double_nested
+
+    a = nested()
+    return a((&quot;a&quot;, &quot;b&quot;))
+
+
+print(test())
+
+</code></pre>
+<p>outputs</p>
+<pre><code>['a', 'b']
+</code></pre>
+<p>ruff complains:</p>
+<pre><code>test.py:1:29: TCH003 Move standard library import `collections.abc.Callable` into a type-checking block  
+test.py:1:39: TCH003 Move standard library import `collections.abc.Collection` into a type-checking block
+</code></pre>
+<p>appeasing ruff</p>
+<pre><code>from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Collection
+
+
+def test():
+    def nested() -&gt; Callable[[Collection[str]], list[str]]:
+        def double_nested(x: Collection[str]) -&gt; list[str]:
+            return list(x)
+
+        return double_nested
+
+    a = nested()
+    return a((&quot;a&quot;, &quot;b&quot;))
+
+
+print(test())
+
+</code></pre>
+<p>breaks the code:</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;c:\Programs\PCGUserdir\Repos\SmartSensorBus_configurator\tempCodeRunnerFile.py&quot;, line 18, in &lt;module&gt;
+    print(test())
+          ^^^^^^
+  File &quot;c:\Programs\PCGUserdir\Repos\SmartSensorBus_configurator\tempCodeRunnerFile.py&quot;, line 8, in test
+    def nested() -&gt; Callable[[Collection[str]], list[str]]:
+                    ^^^^^^^^
+NameError: name 'Callable' is not defined. Did you mean: 'callable'?
+</code></pre>
+<p>the command i used to invoke ruff: <code>python -m ruff .</code>
+my pyproject.toml ruff settings:</p>
+<pre><code>[tool.ruff]
+line-length = 100
+ignore-init-module-imports = true
+extend-select = [
+	&quot;W&quot;,      # pydocstyle warnings
+	&quot;C90&quot;,    # mccabe complexity
+	&quot;I&quot;,      # import sorting
+	&quot;N&quot;,      # pep8 naming
+	&quot;UP&quot;,     # old syntax/constructs
+	&quot;YTT&quot;,    # old syntax/constructs
+	&quot;B&quot;,      # common sources of bugs
+	&quot;A&quot;,      # shadowing builtins
+	&quot;COM&quot;,    # trailing commas
+	&quot;C4&quot;,     # comprehensions
+	&quot;EXE&quot;,    # shebangs / executable .py files
+	&quot;ISC&quot;,    # implicit string concatenation
+	&quot;PT&quot;,     # pytest
+	&quot;Q&quot;,      # quotes
+	&quot;RET502&quot;, # missing return
+	&quot;RET503&quot;, # missing return
+	&quot;SIM&quot;,    # simplify code
+	&quot;TCH&quot;,    # type checking imports
+	&quot;ARG&quot;,    # unused arguments
+	&quot;PTH&quot;,    # use pathlib
+	&quot;PLE&quot;,    # pylint errors
+]
+ignore = [
+	&quot;E501&quot;,   # let black handle line length
+	&quot;COM812&quot;, # let black handle missing trailing commas
+]
+unfixable = [
+	&quot;F841&quot;, # unused variable
+	&quot;F401&quot;, # unused import
+]
+</code></pre>
+<p>ruff version: <code>ruff 0.0.261</code>
+python version: <code>Python 3.11.2</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-04-19 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-19 16:20</div>
+            <div class="timeline-body"><p>Oh interesting, I thought annotations for functions within functions weren't required to be available at runtime, but I must've misunderstood. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-04-19 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4028.html">astral-sh/ruff#4028</a> on 2023-04-19 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-19 18:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

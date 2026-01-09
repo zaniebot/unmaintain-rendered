@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821 on EncodingWarning on gated code - astral-sh/ruff #13296</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821 on EncodingWarning on gated code</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13296">#13296</a>
+        opened by <a href="https://github.com/jaraco">@jaraco</a>
+        on 2024-09-09 21:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jaraco">@jaraco</a> on 2024-09-09 21:41</div>
+            <div class="timeline-body"><p>As <a href="https://discord.com/channels/1039017663004942429/1070132471699607623/1282814518828990526">reported in discord</a>, related to #13287, recent ruff versions (0.6.4 or so) are failing checks on <a href="https://github.com/jaraco/zipp/blob/5d2fa666ffae2e89a6e4ccbc5ed9b3a5b8d64fc0/tests/test_path.py#L191-L195">EncodingWarnings</a>.</p>
+<pre><code>tests/test_path.py:191:31: F821 Undefined name `EncodingWarning`
+    |
+189 |         assert sys.flags.warn_default_encoding
+190 |         root = zipfile.Path(alpharep)
+191 |         with self.assertWarns(EncodingWarning) as wc:
+    |                               ^^^^^^^^^^^^^^^ F821
+192 |             root.joinpath(&quot;a.txt&quot;).read_text()
+193 |         assert __file__ == wc.filename
+    |
+
+tests/test_path.py:194:31: F821 Undefined name `EncodingWarning`
+    |
+192 |             root.joinpath(&quot;a.txt&quot;).read_text()
+193 |         assert __file__ == wc.filename
+194 |         with self.assertWarns(EncodingWarning) as wc:
+    |                               ^^^^^^^^^^^^^^^ F821
+195 |             root.joinpath(&quot;a.txt&quot;).open(&quot;r&quot;).close()
+196 |         assert __file__ == wc.filename
+    |
+</code></pre>
+<p>This test is <a href="https://github.com/jaraco/zipp/blob/5d2fa666ffae2e89a6e4ccbc5ed9b3a5b8d64fc0/tests/test_path.py#L182-L185">gated on <code>sys.flags.warn_default_encoding</code></a>, so is unreachable on Pythons where <code>EncodingWarning</code> won't be present. The F821 failure occurs even when running ruff under Python 3.12, so it's ruff's multi-python support that's implicated (an ambitious endeavor, to be sure!).</p>
+<p>Given arbitrary sophistication, I'd expect <code>ruff</code> to detect the conditional that blocks this code on unsupported Pythons, infer which Pythons, then only perform the check relevant to those Pythons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-09-10 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-10 17:26</div>
+            <div class="timeline-body"><p>Thanks for opening this.</p>
+<p>The specific example requires type-inference to get right. Even then, it might be fairly difficult for a static analysis to figure that the code only runs in Python 3.12 because the constraint isn't that obvious (it's not an explicit <code>sys.version_info</code> check`):</p>
+<ul>
+<li>It requires understanding the <code>unittest.skipIf</code> decorator</li>
+<li>It requires understanding that <code>EncodingWarning</code> is always defined when <code>sys.warn_default_encoding</code> is defined</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-09-15 16:33</div>
+            <div class="timeline-body"><p>Isn't there a way in Ruff to specify extra globals/builtins ? I can't find it in docs, so I may be misremembering. Something like https://eslint.org/docs/latest/use/configure/language-options#using-configuration-files</p>
+<p>This would also be useful for projects run from special contexts/interpreters (like an application's scripting engine using Python, or a non-CPython implementation with extra builtins, or projects &quot;polluting&quot; the builtins)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-15 17:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Isn't there a way in Ruff to specify extra globals/builtins ?</p>
+</blockquote>
+<p>https://docs.astral.sh/ruff/settings/#builtins ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2024-10-27 20:56</div>
+            <div class="timeline-body"><blockquote>
+<p>The specific example requires type-inference to get right. Even then, it might be fairly difficult for a static analysis to figure that the code only runs in Python 3.12 because the constraint isn't that obvious (it's not an explicit <code>sys.version_info</code> check`):</p>
+</blockquote>
+<p>I notice the same issue in my codebase, where it is very explicit and obvious:</p>
+<pre><code class="language-python">    if os.environ.get('MESON_SHOW_DEPRECATIONS'):
+        # workaround for https://bugs.python.org/issue34624
+        import warnings
+        for typ in [DeprecationWarning, SyntaxWarning, FutureWarning, PendingDeprecationWarning]:
+            warnings.filterwarnings('error', category=typ, module='mesonbuild')
+        warnings.filterwarnings('ignore', message=&quot;.*importlib-resources.*&quot;)
+
+    if sys.version_info &gt;= (3, 10): # and os.environ.get('MESON_RUNNING_IN_PROJECT_TESTS'):
+        # workaround for https://bugs.python.org/issue34624
+        import warnings
+        warnings.filterwarnings('error', category=EncodingWarning, module='mesonbuild')
+        # python 3.11 adds a warning that in 3.15, UTF-8 mode will be default.
+        # This is fantastic news, we'd love that. Less fantastic: this warning is silly,
+        # we *want* these checks to be affected. Plus, the recommended alternative API
+        # would (in addition to warning people when UTF-8 mode removed the problem) also
+        # require using a minimum python version of 3.11 (in which the warning was added)
+        # or add verbose if/else soup.
+        warnings.filterwarnings('ignore', message=&quot;UTF-8 Mode affects .*getpreferredencoding&quot;, category=EncodingWarning)
+</code></pre>
+<pre><code>mesonbuild/mesonmain.py:251:51: F821 Undefined name `EncodingWarning`. Consider specifying `requires-python = &quot;&gt;= 3.10&quot;` or `tool.ruff.target-version = &quot;py310&quot;` in your `pyproject.toml` file.
+mesonbuild/mesonmain.py:258:105: F821 Undefined name `EncodingWarning`. Consider specifying `requires-python = &quot;&gt;= 3.10&quot;` or `tool.ruff.target-version = &quot;py310&quot;` in your `pyproject.toml` file.
+</code></pre>
+<p>The sys.version_info <code>and</code> condition is commented out to demonstrate that the issue is freestanding, although I am of the opinion it shouldn't matter -- when semantic narrowing can be done based on a single condition and that condition appears inside an <code>if ... and</code> then it is always correct to do semantic narrowing there as well. But I recall that some tools fail to do this (mypy) and couldn't recall whether that is the case for ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-28 07:55</div>
+            <div class="timeline-body"><p>@eli-schwartz This is expected.</p>
+<p>Ruff generally doesn't support any form of semantic narrowing. A few exceptions exist (<code>if typing.TYPE_CHECKING</code>) but <code>sys.version_info</code> checks are not. We're working on a new semantic model called red knot that does support sys version (and other) narrowing, which is why this issue is marked as type-inference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15916.html">astral-sh/ruff#15916</a> on 2025-02-03 19:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

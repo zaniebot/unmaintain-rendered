@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>short `-h` conflicts with help rather than overwriting it - clap-rs/clap #3403</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>short `-h` conflicts with help rather than overwriting it</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3403">#3403</a>
+        opened by <a href="https://github.com/steveklabnik">@steveklabnik</a>
+        on 2022-02-04 20:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/steveklabnik">@steveklabnik</a> on 2022-02-04 20:36</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.57.0</p>
+<h3>Clap Version</h3>
+<p>3.0.14</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::IntoApp;
+use clap::Parser;
+
+#[derive(Parser)]
+#[clap(name = &quot;command&quot;)]
+pub struct Args {
+    #[clap(subcommand)]
+    pub cmd: Subcommand,
+}
+
+#[derive(Parser)]
+pub enum Subcommand {
+    #[clap(external_subcommand)]
+    Other(Vec&lt;String&gt;),
+}
+
+#[derive(Parser)]
+#[clap(name = &quot;subcommand&quot;)]
+struct SubArgs {
+    #[clap(short)]
+    hold: bool,
+}
+
+
+fn main() {
+    let mut clap = Args::into_app();
+
+    let subcmd = SubArgs::into_app();
+
+    clap = clap.subcommand(subcmd);
+
+    let _m = clap.get_matches();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code> cargo run -- subcommand -h</code></p>
+<h3>Actual Behaviour</h3>
+<pre><code>C:\Users\steve\tmp\claptest&gt; cargo run -- subcommand -h
+   Compiling claptest v0.1.0 (C:\Users\steve\tmp\claptest)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.55s
+     Running `target\debug\claptest.exe subcommand -h`
+thread 'main' panicked at 'App subcommand: Short option names must be unique for each argument, but '-h' is in use by both 'hold' and 'help'', C:\Users\steve\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-3.0.14\src\build\app\debug_asserts.rs:100:17
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: process didn't exit successfully: `target\debug\claptest.exe subcommand -h` (exit code: 101)
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>C:\Users\steve\tmp\claptest&gt; cargo run -- subcommand -h
+    Finished release [optimized] target(s) in 0.03s
+     Running `target\release\claptest.exe subcommand -h`
+claptest.exe-subcommand
+
+USAGE:
+    claptest.exe subcommand [OPTIONS]
+
+OPTIONS:
+    -h
+    -h, --help    Print help information
+</code></pre>
+<h3>Additional Context</h3>
+<pre><code class="language-toml">[dependencies.clap]
+version = &quot;3.0.14&quot;
+features = [&quot;derive&quot;]
+</code></pre>
+<p>https://github.com/clap-rs/clap/discussions/3400#discussioncomment-2107536</p>
+<p>Because this is a debug assertion that fails, running with <code>--release</code> gives the expected behavior, which is what initially caused this bug to go unnoticed for a while.</p>
+<p>I know that this setup might be <em>slightly</em> weird, this is an app I didn't originally write and there's a comment block:</p>
+<pre><code class="language-rust">    /*
+     * This isn't hugely efficient, but we actually parse our arguments
+     * twice: the first is with our subcommands grafted into our
+     * arguments to get us a unified help and error message in the event
+     * of any parsing value or request for a help message; if that works,
+     * we parse our arguments again but relying on the
+     * external_subcommand to directive to allow our subcommand to do any
+     * parsing on its own.
+     */
+</code></pre>
+<p>I recently ported this app from structopt/clapv2 to clap v3; it's possible that this comment is now irrelevant but I haven't investigated that yet.</p>
+<h3>Debug Output</h3>
+<pre><code class="language-text">     Running `target\debug\claptest.exe subcommand -h`
+[            clap::build::app]  App::_do_parse
+[            clap::build::app]  App::_build
+[            clap::build::app]  App::_propagate:command
+[            clap::build::app]  App::_check_help_and_version
+[            clap::build::app]  App::_check_help_and_version: Removing generated version
+[            clap::build::app]  App::_check_help_and_version: Building help subcommand
+[            clap::build::app]  App::_propagate_global_args:command
+[            clap::build::app]  App::_derive_display_order:command
+[            clap::build::app]  App::_derive_display_order:subcommand
+[            clap::build::app]  App::_derive_display_order:help
+[clap::build::app::debug_asserts]       App::_debug_asserts
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:help
+[clap::build::app::debug_asserts]       App::_verify_positionals
+[         clap::parse::parser]  Parser::get_matches_with
+[         clap::parse::parser]  Parser::get_matches_with: Begin parsing 'RawOsString(&quot;subcommand&quot;)' ([115, 117, 98, 99, 111, 109, 109, 97, 110, 100])
+[         clap::parse::parser]  Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser]  Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser]  Parser::possible_subcommand: arg=RawOsStr(&quot;subcommand&quot;)
+[         clap::parse::parser]  Parser::get_matches_with: sc=Some(&quot;subcommand&quot;)
+[         clap::parse::parser]  Parser::parse_subcommand
+[         clap::output::usage]  Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[         clap::output::usage]  Usage::get_required_usage_from: unrolled_reqs={}
+[         clap::output::usage]  Usage::get_required_usage_from: ret_val=[]
+[            clap::build::app]  App::_build
+[            clap::build::app]  App::_propagate:subcommand
+[            clap::build::app]  App::_check_help_and_version
+[            clap::build::app]  App::_check_help_and_version: Removing generated version
+[            clap::build::app]  App::_propagate_global_args:subcommand
+[            clap::build::app]  App::_derive_display_order:subcommand
+[clap::build::app::debug_asserts]       App::_debug_asserts
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:hold
+thread 'main' panicked at 'App subcommand: Short option names must be unique for each argument, but '-h' is in use by both 'hold' and 'help'', C:\Users\steve\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-3.0.14\src\build\app\debug_asserts.rs:100:17
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: process didn't exit successfully: `target\debug\claptest.exe subcommand -h` (exit code: 101)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @steveklabnik on 2022-02-04 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steveklabnik">@steveklabnik</a> on 2022-02-04 20:45</div>
+            <div class="timeline-body"><details>
+<summary>I was wrong with this comment, click to expand if you want to see how I was wrong.</summary>
+<br>
+My best guess:
+
+<pre><code>[            clap::build::app]  App::_check_help_and_version: Removing generated version
+</code></pre>
+<p>(side note: wow that debug flag is cool!)</p>
+<p>It appears to remove the generated version, but not the generated help.</p>
+<p>https://github.com/clap-rs/clap/blob/7ca872e7bbe6433c7bcb9d0d6fca955a94f46a84/src/build/app/mod.rs#L2915-L2924</p>
+<p>vs</p>
+<p>https://github.com/clap-rs/clap/blob/7ca872e7bbe6433c7bcb9d0d6fca955a94f46a84/src/build/app/mod.rs#L2873-L2881</p>
+<p>by diffing the two, it seems that the difference is version has</p>
+<pre><code>            || (self.version.is_none() &amp;&amp; self.long_version.is_none())
+
+</code></pre>
+<p>but help does not!</p>
+<p>(also: one has <code>self.settings.is_set</code> and the other has <code>self.is_set</code>, though I don't know if that is material.)</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-04 20:48</div>
+            <div class="timeline-body"><p>btw a slightly simpler reproduction case</p>
+<pre><code class="language-rust">use clap::IntoApp;
+use clap::Parser;
+
+#[derive(Parser)]
+#[clap(name = &quot;command&quot;)]
+pub struct Args {
+    #[clap(subcommand)]
+    pub cmd: Subcommand,
+}
+
+#[derive(Parser)]
+pub enum Subcommand {
+    #[clap(external_subcommand)]
+    Other(Vec&lt;String&gt;),
+    Subcommand {
+        #[clap(short)]
+        hold: bool,
+    },
+}
+
+fn main() {
+    let _m = Args::parse();
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-04 20:50</div>
+            <div class="timeline-body"><p>The goal isn't to remove help but to not set the short.  This is the relevant section of code</p>
+<pre><code class="language-rust">            let other_arg_has_short = self.args.args().any(|x| x.short == Some('h'));
+            let help = self
+                .args
+                .args_mut()
+                .find(|x| x.id == Id::help_hash())
+                .expect(INTERNAL_ERROR_MSG);
+
+            if !(help.short.is_some()
+                || other_arg_has_short
+                || self.subcommands.iter().any(|sc| sc.short_flag == Some('h')))
+            {
+                help.short = Some('h');
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2022-02-04 20:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2022-02-04 20:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-04 20:58</div>
+            <div class="timeline-body"><p>We aren't setting <code>help.short</code> here because it was already set when the parent command propagated global arguments to child commands.  This is what let's users change the help text in the parent but not in child commands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-04 21:10</div>
+            <div class="timeline-body"><p>Ok, so I can detect this case and remove <code>help.short</code>.  We have two options</p>
+<ul>
+<li>Remove the built-in short when propagating so the subcommand can add it back in if needed</li>
+<li>When adding the short flag in, change the &quot;is short flag already present&quot; to &quot;is short flag already present by user&quot;.  We don't have perfect information about this but we can get close</li>
+</ul>
+<p>My question is &quot;should we change this?&quot;.  Not from an implementation perspective but a user perspective.  This will only be hit when a child subcommand has a <code>-h</code> flag but nothing else in the command hierarchy does.  So this one subcommand will violate the user's expectations for how the app works.  I expect this would lead to user confusion and would be considered a bug by a developer.  Instead we can assert specifically on this case and tell users to either rename their argument or to override the parent command's help argument so they provide a consistent help experience across the entire app.</p>
+<p>Granted, we don't do anything else in clap to enforce consistency but I think &quot;help&quot; and &quot;version' are a little different in that regard.</p>
+<p>Thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steveklabnik">@steveklabnik</a> on 2022-02-04 21:28</div>
+            <div class="timeline-body"><p>There's also the third option, which is &quot;do nothing but document this in the documentation for short&quot; :)</p>
+<p>To be honest, I have no strong opinions about how clap handles this case; personally, I would never add in a <code>-h</code> because, to me, that means help, which is why:</p>
+<blockquote>
+<p>I expect this would lead to user confusion and would be considered a bug by a developer.</p>
+</blockquote>
+<p>I agree! But also talking to some folks, I think it might be more subtle than that. When discussing this behavior with the rest of the folks involved some people apparently only think of <code>--help</code>, and not <code>-h</code>. So they were surprised that a <code>-h</code> would introduce a conflict in the first place. I am not sure how this plays out in the overall population of developers and users, though. To them, I think the &quot;remove the built-in short when propagating so the subcommand can add it back in if needed&quot; is probably inline with their expectations, given that they wouldn't even realize the short existed.</p>
+<p>A tough choice! I also agree that <code>help</code> and <code>version</code> feel a bit different than other options with regards to consistency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3405.html">clap-rs/clap#3405</a> on 2022-02-05 04:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3425.html">clap-rs/clap#3425</a> on 2022-02-09 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-02-09 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johntconklin">@johntconklin</a> on 2022-03-29 00:50</div>
+            <div class="timeline-body"><p>Sorry, I'm a bit late to this conversation.  I just discovered this issue when updating an CLI at $DAYJOB from clap 2.34.0 to 3.1.6.</p>
+<blockquote>
+<p>So this one subcommand will violate the user's expectations for how the app works. I expect this would lead to user confusion and would be considered a bug by a developer. Instead we can assert specifically on this case and tell users to either rename their argument</p>
+</blockquote>
+<p>This seems a little over-opinionated.  Especially considering existing clap v2 apps where &quot;-h&quot; or &quot;-h foo&quot; mean something else for some of their subcommands; expecting/requiring devs change their app's subcommand's arguments is even more likely to violate their user's expectations.</p>
+<blockquote>
+<p>When discussing this behavior with the rest of the folks involved some people apparently only think of --help, and not -h</p>
+</blockquote>
+<p>This is true in my case.  To address the consistency / confusion issue, I'd be happy with something like a Command::disable_short_help_flag() to disable just '-h'.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/awused">@awused</a> on 2022-04-13 08:55</div>
+            <div class="timeline-body"><p>This change surprised me and broke my code that previously worked with structopt, and which worked for every other subcommand except one which panics at run time. Not a good experience at all, for the developer or user. Many applications, including git, only use --help and not -h, so this does seem like an unnecessary restriction.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

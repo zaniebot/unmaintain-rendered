@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handling prerelease versions in `uv version --bump` - astral-sh/uv #13223</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handling prerelease versions in `uv version --bump`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13223">#13223</a>
+        opened by <a href="https://github.com/tmke8">@tmke8</a>
+        on 2025-04-30 11:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tmke8">@tmke8</a> on 2025-04-30 11:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I see these two use cases, but there might be more:</p>
+<h3>1. Incrementing the number of a prerelease</h3>
+<p>This means going from <code>1.2.3a4</code> to <code>1.2.3a5</code>, for example. I think this can be handled by adding a new allowed value to <code>--bump</code>. For example <code>prerelease-counter</code>: <code>uv version --bump prerelease-counter</code>.</p>
+<h3>2. Adding or removing a prerelease suffix</h3>
+<p>This means going from <code>1.2.3a5</code> to <code>1.2.3</code>, for example. I think this can be handled by a new argument to <code>uv version</code>. For example <code>--set-suffix</code>: <code>uv version --set-suffix none</code>. Allowed values would be <code>dev</code>, <code>alpha</code>, <code>beta</code>, <code>rc</code>, <code>none</code>, <code>post</code>.</p>
+<h3>Example</h3>
+<pre><code>$ uv version --short
+0.4.1.dev0
+$ uv version --bump prerelease-counter
+0.4.1.dev0 =&gt; 0.4.1.dev1
+$ uv version --set-suffix none
+0.4.1.dev1 =&gt; 0.4.1
+$ uv version --bump patch
+0.4.1 =&gt; 0.4.2
+$ uv version --set-suffix alpha
+0.4.2 =&gt; 0.4.2a0
+$ uv version --bump prerelease-counter
+0.4.2a0 =&gt; 0.4.2a1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @tmke8 on 2025-04-30 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-30 11:32</div>
+            <div class="timeline-body"><p>CC @Gankra</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-30 20:12</div>
+            <div class="timeline-body"><p>Worth noting that it's typical to want to bump a version number and set a prerelease at the same time.</p>
+<p>I see the three relevant patterns being:</p>
+<ol>
+<li>1.2.3 =&gt; 2.0.0a1 (bump version and set alpha)</li>
+<li>2.0.0a1 =&gt; 2.0.0a2 (bump alpha)</li>
+<li>2.0.0a1 =&gt; 2.0.0 (clear alpha)</li>
+</ol>
+<p>I propose we can address all 3 cases with the addition on new <code>--bump</code> modes, and supporting multiple <code>--bump</code> arguments.</p>
+<ul>
+<li><code>--bump dev|alpha|beta|rc</code>: increments the relevant prerelease counter, sets it to 1 if it wasn't set (0 feels weird? is that a python idiom?)</li>
+<li><code>--bump stable</code>: clears all prerelease counters</li>
+</ul>
+<p>With this we get the above 3 cases as:</p>
+<ol>
+<li><code>uv version --bump major --bump alpha</code></li>
+<li><code>uv version --bump alpha</code></li>
+<li><code>uv version --bump stable</code></li>
+</ol>
+<p>Note here that it is &quot;wrong&quot; that <code>1.2.3 --bump alpha</code> =&gt; <code>1.2.3a1</code> in that it's actually creating a version less than the original, but I don't think that's actually confusing/problematic, and it Does What You Want. Alternatively you could make <code>1.2.3 --bump alpha</code> an error, requiring it to be paired with <code>--bump major|minor|patch</code> for it to &quot;make sense&quot;. I don't feel like that's necessary though.</p>
+<p>Also I suppose if you wanted to &quot;change alpha3 to beta1&quot; then we could allow that to be done with <code>uv version --bump stable --bump beta</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2025-04-30 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @Gankra on 2025-04-30 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-30 20:14</div>
+            <div class="timeline-body"><p>(I marked this as a good first issue but the cli design should be settled before anyone goes off to implement)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/christeefy">@christeefy</a> on 2025-05-01 01:11</div>
+            <div class="timeline-body"><p>In your proposal, is it correct to that say that the underlying rule when handling suffixes is to treat them as literal components of the version string, rather than interpreting them? (Which is why &quot;change alpha3 to beta1&quot; is <code>uv version --bump stable --bump beta</code> instead of <code>uv version --bump beta</code>?)</p>
+<blockquote>
+<p>Alternatively you could make 1.2.3 --bump alpha an error, requiring it to be paired with --bump major|minor|patch for it to &quot;make sense&quot;. I don't feel like that's necessary though.</p>
+</blockquote>
+<p>Perhaps, at least a warning can be raised when a bump results in an earlier semver? Accidentally releasing a new version as <code>1.2.3a1</code> instead of <code>1.2.4a1</code> is probably not a breaking change, but I think a few folks may be surprised initially by that behaviour until they have given it more thought.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-01 12:37</div>
+            <div class="timeline-body"><blockquote>
+<p>In your proposal, is it correct to that say that the underlying rule when handling suffixes is to treat them as literal components of the version string, rather than interpreting them? (Which is why &quot;change alpha3 to beta1&quot; is uv version --bump stable --bump beta instead of uv version --bump beta?)</p>
+</blockquote>
+<p>I'm not sure I follow, but mostly I was mostly punting on remembering/enforcing the exact versioning relationships between the various suffixes. Having now refreshed my memory, there's at most one of each:</p>
+<ul>
+<li>pre: <code>alpha1</code>, <code>beta1</code>, <code>rc1</code></li>
+<li>dev: <code>dev1</code></li>
+<li>post: <code>post1</code></li>
+<li>local: <code>+asdassd</code></li>
+</ul>
+<p>I can't find the exact text stating this unambiguously, but <code>alpha</code> &lt; <code>beta</code> &lt; <code>rc</code>, yeah? So I suppose <code>--bump beta</code> should be fine clearing <code>alpha1</code>.</p>
+<p>It's a bit less clear to me how dev/post/local should interact here, and those might still be cases where we say &quot;use <code>--bump stable</code> to just purge it all&quot; is the right answer (although post is actually post-stable 😿).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-01 12:39</div>
+            <div class="timeline-body"><p>(I think we can just scope this issue to prereleases and ignore dev/post/local for the most part, but we do need to determine if they should be preserved or clobbered when you bump the prerelease. Starting to convince myself all those can be cleared if you bump prerelease.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../cthoyt/cookiecutter-snekpack/issues/43.html">cthoyt/cookiecutter-snekpack#43</a> on 2025-05-02 11:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oefe">@oefe</a> on 2025-05-04 13:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Note here that it is &quot;wrong&quot; that <code>1.2.3 --bump alpha</code> =&gt; <code>1.2.3a1</code> in that it's actually creating a version less than the original, but I don't think that's actually confusing/problematic, and it Does What You Want. Alternatively you could make <code>1.2.3 --bump alpha</code> an error, requiring it to be paired with <code>--bump major|minor|patch</code> for it to &quot;make sense&quot;. I don't feel like that's necessary though.</p>
+</blockquote>
+<blockquote>
+<p>Perhaps, at least a warning can be raised when a bump results in an earlier semver? Accidentally releasing a new version as 1.2.3a1 instead of 1.2.4a1 is probably not a breaking change, but I think a few folks may be surprised initially by that behaviour until they have given it more thought.</p>
+</blockquote>
+<p>Another option would be to bump to the next possible larger (patch) version in this case (and only in this case), i.e. at <code>1.2.3</code>, <code>--bump alpha</code> would result <code>1.2.4a1</code>.</p>
+<p>That's essentially what <a href="https://python-poetry.org/docs/cli/#version"><code>poetry version prerelease</code></a> does in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2025-05-11 21:13</div>
+            <div class="timeline-body"><p>My 2cents:</p>
+<p>New value for <code>--bump</code>, let's call it <em>next</em> for now, it used to increase least valuable number of current version's channel, i.e <em>patch</em> section for stable channel (<code>1.2.3 -&gt; next -&gt; 1.2.4</code>) and suffix number of pre-release channel (<code>1.0.0a1 -&gt; next -&gt; 1.0.0a2</code>).</p>
+<p>New option <code>--pre-bump</code> which cycles tags:</p>
+<ul>
+<li>1.2.3 -&gt; (<code>--pre-bump</code>) -&gt; 1.2.3a1</li>
+<li>1.2.3 -&gt; (<code>--bump minor --pre-bump</code>) -&gt; 1.3.0a1</li>
+<li>1.2.3a1 -&gt; (<code>--bump next</code>) -&gt; 1.2.0a2</li>
+<li>1.2.3a1 -&gt; (<code>--pre-bump</code>) -&gt; 1.2.0b1</li>
+<li>1.2.3rc6 -&gt; (<code>--pre-bump</code>) -&gt; it can either warn and switch to stable channel (i.e. set version to <code>1.2.3</code>) OR exit with error.</li>
+</ul>
+<p>New option <code>--suffix-bump</code> with values [&lt;list of pre-release values, local, post, dev&gt;]. these values and their order is configurable in <code>tool.uv</code>.</p>
+<ul>
+<li>1.2.3 -&gt; (<code>--suffix-bump b</code>) -&gt; 1.2.3b1</li>
+<li>1.2.3 -&gt; (<code>--bump minor --suffix-bump dev</code>) -&gt; 1.3.0dev1</li>
+<li>1.2.3dev1 -&gt; (<code>--suffix-bump rc</code>) -&gt; 1.3.0rc1</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13578.html">astral-sh/uv#13578</a> on 2025-05-21 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14353.html">astral-sh/uv#14353</a> on 2025-06-29 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-10 13:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] No diagnostic emitted for iterating over objects which might or might not be iterable - astral-sh/ruff #14012</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] No diagnostic emitted for iterating over objects which might or might not be iterable</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14012">#14012</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-10-31 11:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-31 11:23</div>
+            <div class="timeline-body"><p>As spotted by @MichaReiser in https://github.com/astral-sh/ruff/pull/13992#pullrequestreview-2404711897, red-knot does not currently emit diagnostics if you attempt to iterate over an object that might be iterable, but also might not. For example, we should emit diagnostics on all of the following snippets, but currently do not:</p>
+<h3>Union where one element has no <code>__iter__</code> method:</h3>
+<details>
+
+<pre><code class="language-py">class TestIter:
+    def __next__(self) -&gt; int:
+        return 42
+
+class Test:
+    def __iter__(self) -&gt; TestIter:
+        return TestIter()
+
+def coinflip() -&gt; bool:
+    return True
+
+for x in Test() if coinflip() else 42:  # should trigger a diagnostic, we don't currently
+    pass
+</code></pre>
+</details>
+
+<h3>Union type as <em>iterable</em> where one union element has invalid <code>__iter__</code> method</h3>
+<details>
+
+<pre><code class="language-py">class TestIter:
+    def __next__(self) -&gt; int:
+        return 42
+
+class Test:
+    def __iter__(self) -&gt; TestIter:
+        return TestIter()
+
+class Test2:
+    def __iter__(self) -&gt; int:
+        return 42
+
+def coinflip() -&gt; bool:
+    return True
+
+for x in Test() if coinflip() else Test2():  # should trigger a diagnostic, we don't currently
+    pass
+</code></pre>
+</details>
+
+<h3>Union type as <em>iterator</em> where one union element has no <code>__next__</code> method</h3>
+<details>
+
+<pre><code class="language-py">class TestIter:
+    def __next__(self) -&gt; int:
+        return 42
+
+class Test:
+    def __iter__(self) -&gt; TestIter | int:
+        return TestIter()
+
+for x in Test():  # should trigger a diagnostic, we don't currently
+    pass
+</code></pre>
+</details>
+
+<p>These are surprisingly hard to fix with our current architecture! I spent several hours yesterday attempting to fix them, and my conclusion is that while it is <em>possible</em> to fix them with our current design, it's messy and complicated enough that we should pursue some refactors first.</p>
+<p>One of the issues is the design of our <code>CallOutcome</code> enum, which is returned from <code>Type::call</code>. <code>Type::iterate()</code> calls <code>CallOutcome::return_ty</code> to determine what the iterable's <code>__iter__</code> and the iterator's <code>__next__</code> methods return. <code>CallOutcome::return_ty</code> is supposed to help abstract over the fact that the type you're trying to &quot;call&quot; might not be callable (and this includes <code>Type::Unbound</code>): it returns <code>None</code> if this is the case, or <code>Some(ty)</code> if the type you're trying to call is callable. If the type you're trying to call is a union between callable and not-callable types, however, <code>Some(ty)</code> is returned; there's no signal to the caller of <code>CallOutcome::return_ty</code> that the call could fail if the runtime type of the variable is a member of one of the union elements that was not callable.</p>
+<p>https://github.com/astral-sh/ruff/blob/76e4277696e8b34b771d554f8f0d07054d413289/crates/red_knot_python_semantic/src/types.rs#L1424-L1450</p>
+<p>(This is precisely the situation we need to detect in the above snippets. If <code>__iter__</code> might be callable, but also might not, then the variable might be iterable, but also might not, which means that we need to emit a diagnostic saying that the code trying to iterate over the maybe-iterable variable is potentially unsafe.)</p>
+<p>It seemed like calling <code>CallOutcome::return_ty</code> is not the solution to this problem, so I explored other solutions that instead directly pattern matched on the possible variants of <code>CallOutcome</code>. This is possible, but messy and hard. For a start, <code>CallOutcome</code> has a dedicated variant just for <code>reveal_type</code>, which means that if you're matching over the possible variants of <code>CallOutcome</code>, you are forced to explicitly consider whether a type should be revealed by red-knot in cases like these:</p>
+<pre><code class="language-py">from typing_extensions import reveal_type
+
+class Foo:
+    __iter__ = reveal_type
+
+for var in Foo(): ...  # should this... cause us to reveal a type?!
+                       # (`__iter__` is &quot;called&quot; on the iterable as part of the `for` loop!)
+
+class Bar:
+    __next__ = reveal_type
+
+class Baz:
+    def __iter__() -&gt; Bar:
+        return Bar()
+
+for var2 in Baz(): ...  # should this... cause us to reveal a type?!
+                        # (`__next__` is &quot;called&quot; on the iterator as part of the `for` loop!)
+</code></pre>
+<p>I suppose from a purist perspective, this <em>is</em> something we should explicitly consider, but it doesn't... feel like a useful use of my time (and adds extra complexity) to explicitly consider it!</p>
+<p>Another issue with attempting to explicitly match over the possible variants of a <code>CallOutcome</code> instance is that <code>CallOutcome::Union</code> is a recursive variant, meaning you have to write a recursive function just to match over it -- e.g. here's a function I wrote for a partial solution that fixes the first two false-negatives above but not the third one:</p>
+<details>
+<summary>Annoyingly complicated recursive function matching on `CallOutcome` variants</summary>
+
+<pre><code class="language-rs">fn call_dunder_next_on_iterator&lt;'db&gt;(
+    db: &amp;'db dyn Db,
+    dunder_iter_outcome: &amp;CallOutcome&lt;'db&gt;,
+    original_iterable: Type&lt;'db&gt;,
+) -&gt; IterationOutcome&lt;'db&gt; {
+    match dunder_iter_outcome {
+        CallOutcome::Callable {
+            return_ty: iterator_ty,
+        } =&gt; {
+            let dunder_next_method = iterator_ty.to_meta_type(db).member(db, &quot;__next__&quot;);
+
+            dunder_next_method
+                .call(db, &amp;[*iterator_ty])
+                .return_ty(db)
+                .map(|element_ty| {
+                    IterationOutcome::Single(IterationOutcomeInner::Iterable { element_ty })
+                })
+                .unwrap_or(IterationOutcome::Single(
+                    IterationOutcomeInner::NotIterable {
+                        not_iterable_ty: original_iterable,
+                    },
+                ))
+        }
+        CallOutcome::NotCallable { not_callable_ty: _ } =&gt; {
+            IterationOutcome::Single(IterationOutcomeInner::NotIterable {
+                not_iterable_ty: original_iterable,
+            })
+        }
+        CallOutcome::RevealType { .. } =&gt; panic!(&quot;Why??&quot;),
+        CallOutcome::Union {
+            called_ty,
+            outcomes,
+        } =&gt; {
+            let mut iteration_outcomes = vec![];
+            for outcome in outcomes {
+                match call_dunder_next_on_iterator(db, outcome, *called_ty) {
+                    IterationOutcome::Single(outcome) =&gt; iteration_outcomes.push(outcome),
+                    IterationOutcome::Union {
+                        iterable_ty: _,
+                        outcomes,
+                    } =&gt; iteration_outcomes.extend(outcomes),
+                }
+            }
+            IterationOutcome::Union {
+                iterable_ty: original_iterable,
+                outcomes: iteration_outcomes.into_boxed_slice(),
+            }
+        }
+    }
+}
+</code></pre>
+</details>
+
+<p>I think there are ways to avoid making <code>CallOutcome::Union</code> non-recursive, and that we should pursue them.</p>
+<p>All told, I think we should not attempt to fix these bugs for now until we've improved our code structure. A lot of this will look pretty different after @sharkdp's work to remove <code>Type::Unbound</code> in https://github.com/astral-sh/ruff/pull/13980, so I don't plan on looking into this anymore until that's landed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-10-31 11:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-10-31 11:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13992.html">astral-sh/ruff#13992</a> on 2024-10-31 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14016.html">astral-sh/ruff#14016</a> on 2024-10-31 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-31 12:49</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/14016 adds some failing tests with TODO comments to illustrate our current limitations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-31 12:52</div>
+            <div class="timeline-body"><p>See also #13996, for some other issues with <code>CallOutcome</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13980.html">astral-sh/ruff#13980</a> on 2024-10-31 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-31 17:32</div>
+            <div class="timeline-body"><p>I think an alternative approach in cases like this, where the correct handling of a call to a union is complex, is to avoid calling union types altogether, and instead map over the union at a higher level. So wrap up the logic involving calling a dunder in a method, and if we see a union, call that method for every element in the union and fold the results back into a union.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16161.html">astral-sh/ruff#16161</a> on 2025-02-14 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-20 12:50</div>
+            <div class="timeline-body"><p>We now emit diagnostics in all the appropriate places here. There are still some issues, but they deserve their own new issue; this is now out of date. Closing as completed 🥳</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-20 12:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

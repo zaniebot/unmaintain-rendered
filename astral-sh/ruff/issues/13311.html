@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[FR] Add config option to emit pre-0.5 condensed output of `ruff check` - astral-sh/ruff #13311</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[FR] Add config option to emit pre-0.5 condensed output of `ruff check`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13311">#13311</a>
+        opened by <a href="https://github.com/sterliakov">@sterliakov</a>
+        on 2024-09-10 16:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sterliakov">@sterliakov</a> on 2024-09-10 16:50</div>
+            <div class="timeline-body"><p>In 0.5.0 the format of ruff's output became much more verbose. It may be useful in some cases, but I use ruff mostly in pre-commit and will navigate to all these files anyway. I don't want to see the big code snippet and would rather see just code, file+lineno and short description.</p>
+<p>I do not propose reverting the design change, I only would like to have e.g. <code>--condensed</code> flag available.</p>
+<p>This will also make adding <code>ruff</code> to new projects more trivial: I finally went to ask for this feature after trying to survive scrolling through 204 diagnostics.</p>
+<p>Compare the following (keeping in mind that I see 200 such messages).</p>
+<pre><code>rest_framework_simplejwt/views.py:42:47: ARG002 Unused method argument: `kwargs`
+   |
+40 |         )
+41 | 
+42 |     def post(self, request: Request, *args, **kwargs) -&gt; Response:
+   |                                               ^^^^^^ ARG002
+43 |         serializer = self.get_serializer(data=request.data)
+   |
+</code></pre>
+<p>vs</p>
+<pre><code>rest_framework_simplejwt/views.py:42:47: ARG002 Unused method argument: `kwargs`
+</code></pre>
+<p>Keywords: verbose, CLI, output, silent, condensed</p>
+<p>I'm running <code>ruff check some_project/ --select ALL --isolated</code> (for example).</p>
+<p>Ad a workaround, I pretend to be a TTY and <code>grep</code> a bit, obtaining the desired output:</p>
+<pre><code class="language-bash">unbuffer -p ruff check some_project/ --select ALL | grep -v -P '^(\e\[1;38| |\s*$)'
+</code></pre>
+<p>Ruff 0.6.4 (starting from 0.5.0).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-10 17:09</div>
+            <div class="timeline-body"><p>Hi @sterliakov</p>
+<p>That makes sense to me. Does <code>ruff check --output-format=concise</code> work for you (<a href="https://docs.astral.sh/ruff/settings/#output-format">docs</a>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-09-10 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sterliakov">@sterliakov</a> on 2024-09-10 17:17</div>
+            <div class="timeline-body"><p>Sorry, I swear I looked through <code>ruff help format</code> several times... Works
+for me, thanks!</p>
+<p>Aside, can I ask <code>ruff</code> to avoid checking whether its stdout is attached to
+a TTY and keep colorizing the output (e.g. <code>--color=always</code> or
+<code>--force-color</code>)? Would be nice to <code>tail</code>/<code>head</code>/<code>grep</code> its output without
+the <code>unbuffer</code> trick. This is something I expect from any unix CLI tool, to
+be honest - perhaps I'm also just unable to find that in the docs?</p>
+<p>On Tue, Sep 10, 2024, 19:09 Micha Reiser <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p>Hi @sterliakov <a href="https://github.com/sterliakov">https://github.com/sterliakov</a></p>
+<p>That makes sense to me. Does ruff check --output-format=concise work for
+you (docs <a href="https://docs.astral.sh/ruff/settings/#output-format">https://docs.astral.sh/ruff/settings/#output-format</a>)?</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/ruff/issues/13311#issuecomment-2341512090">https://github.com/astral-sh/ruff/issues/13311#issuecomment-2341512090</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AMBQIRD2ATKYZY3BLDPJBHLZV4RVTAVCNFSM6AAAAABN7FVL42VHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDGNBRGUYTEMBZGA">https://github.com/notifications/unsubscribe-auth/AMBQIRD2ATKYZY3BLDPJBHLZV4RVTAVCNFSM6AAAAABN7FVL42VHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDGNBRGUYTEMBZGA</a>
+.
+You are receiving this because you were mentioned.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-10 17:32</div>
+            <div class="timeline-body"><p>There's no CLI flag for this but you can set an environment variable. The documentation for it is a bit hard to find but see Ruff's <a href="https://docs.astral.sh/ruff/faq/#how-can-i-disableforce-ruffs-color-output">FAQ</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sterliakov">@sterliakov</a> on 2024-09-10 20:54</div>
+            <div class="timeline-body"><p>Amazing, thanks, that's it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sterliakov on 2024-09-10 20:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

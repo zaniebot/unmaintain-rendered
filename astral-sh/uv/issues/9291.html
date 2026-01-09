@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run pytest not recognizing the project module - astral-sh/uv #9291</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run pytest not recognizing the project module</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9291">#9291</a>
+        opened by <a href="https://github.com/EdmundsEcho">@EdmundsEcho</a>
+        on 2024-11-20 19:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/EdmundsEcho">@EdmundsEcho</a> on 2024-11-20 19:32</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>My project structure is:</p>
+<pre><code class="language-sh">project_name/module_name/parser.py
+project_name/module_name/__init__.py
+project_name/tests/test_parser.py
+</code></pre>
+<p>The <code>test_parser.py</code> references the module:</p>
+<pre><code class="language-py">from module_name.parser import print_summaries
+</code></pre>
+<p>I can build and run the parser but I cannot seem to get <code>uv run pytest</code> to run without getting a module not found error.</p>
+<p>Apologies for the hyper newby question here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "pytest not recognizing the module" to "uv run pytest not recognizing the project module" by @EdmundsEcho on 2024-11-20 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-20 20:16</div>
+            <div class="timeline-body"><p>You'll probably need to define a <a href="https://docs.astral.sh/uv/concepts/projects/#build-systems">build system</a> so your project is installed in the environment and discoverable by pytest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdmundsEcho">@EdmundsEcho</a> on 2024-11-20 20:27</div>
+            <div class="timeline-body"><p>Thank you for the response. The link was helpful.</p>
+<p>In the meantime, the following gets <code>pytest</code> to run from the project root:</p>
+<pre><code>set -x PYTHONPATH .; uv run pytest
+</code></pre>
+<p>Interestingly, <code>ruff</code> seems to resolve the dependency without the env setting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-11-20 20:31</div>
+            <div class="timeline-body"><p>It's possible that https://docs.pytest.org/en/stable/explanation/goodpractices.html could help here, they have a section for your case: <em>Tests as part of application code</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-11-20 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-20 21:06</div>
+            <div class="timeline-body"><p>I did some more reading here, and your case should work with:</p>
+<pre><code>❯ uv run -m pytest
+</code></pre>
+<p>or</p>
+<pre><code>❯ touch tests/__init__.py
+❯ uv run pytest --pyargs my_module
+</code></pre>
+<p>as described in the pytest documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdmundsEcho">@EdmundsEcho</a> on 2024-11-21 15:57</div>
+            <div class="timeline-body"><p>@zanieb Thank you!!</p>
+<p>What you provided is definitely worth including in the documentation that describes setting up an application with <code>uv</code>.</p>
+<p>Even better, it may be worthwhile to include a init command that includes the file structure for testing <code>hello.py</code> (&quot;It works!&quot;).  This would require having an opinion on the file structure... which is good.  I believe the structure that I set-up is a solid, straightforward norm, but I actually don't care :-)) What I mean by that is that whatever <code>uv</code> chooses to go with, I would go with... I want to build and setup quickly, including tests (just like rust, which includes a unit test in the initialized app).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-21 18:10</div>
+            <div class="timeline-body"><p>The problem is that, in Rust, there's a standardized test runner. In Python, there is not. We'd get complaints if we configured the project with pytest by default, though maybe we should anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdmundsEcho">@EdmundsEcho</a> on 2024-11-21 18:48</div>
+            <div class="timeline-body"><p>@zanieb My take on this is that anyone with a POV has what they need (expertise) to make the change to how they like it.  The goal of <code>uv</code> is to get a person up and running.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/medecau">@medecau</a> on 2024-11-21 21:50</div>
+            <div class="timeline-body"><p>had same issue where <code>pytest</code> couldn't find the package after converting from <code>poetry</code> to <code>uv</code></p>
+<p>fixed by adding this to <code>pyproject.toml</code>:</p>
+<pre><code class="language-python">[build-system]
+requires = ['setuptools']
+build-backend = 'setuptools.build_meta'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/p13rr0m">@p13rr0m</a> on 2024-12-11 20:42</div>
+            <div class="timeline-body"><p>This is a common issue with PyTest itself: https://stackoverflow.com/questions/10253826/path-issue-with-pytest-importerror-no-module-named. I will add two other options.</p>
+<p>You can either solve this by adding the following to your pyproject.toml file:</p>
+<pre><code class="language-toml">[tool.pytest.ini_options]
+addopts = [
+    &quot;--import-mode=importlib&quot;,
+]
+pythonpath = [
+  &quot;.&quot;
+]
+</code></pre>
+<p>Or adding the tests directly to your <code>project_name/module_name</code>. This is the method used in the FastAPI documentation:  https://fastapi.tiangolo.com/tutorial/testing/#testing-file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chamalgomes">@chamalgomes</a> on 2025-04-14 05:24</div>
+            <div class="timeline-body"><p>In a mono repo (uv workspace), adding the above to the root pyproject.toml is definitely the solution. Thanks for the documentation links @p13rr0m.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-15 20:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

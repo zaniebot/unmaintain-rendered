@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUG (?): resolving with lowest-direct resolution and different pins for project vs. dev dependencies - astral-sh/uv #10774</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>BUG (?): resolving with lowest-direct resolution and different pins for project vs. dev dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10774">#10774</a>
+        opened by <a href="https://github.com/znicholls">@znicholls</a>
+        on 2025-01-20 09:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/znicholls">@znicholls</a> on 2025-01-20 09:34</div>
+            <div class="timeline-body"><p>I thought this was related to #10755, but now I don't think it is.</p>
+<p>In short, if you have a dependency that is 'loose' in the project's dependencies but then pinned as a dev dependency, resolving with different strategies doesn't seem to work as expected.</p>
+<p>uv version: uv 0.5.11 (c4d0caaee 2024-12-19) (I just checked and this appears to still happen with uv 0.5.21 (3478c068b 2025-01-17))
+operating system: MacOS M2 chip</p>
+<h2>First example</h2>
+<details><summary>`pyproject.toml`</summary>
+<p>
+
+<pre><code class="language-toml"># pyproject.toml
+[project]
+name = &quot;mwe&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Minimal working example to demonstrate resolving issue&quot;
+authors = [
+    { name = &quot;Zebedee Nicholls&quot;, email = &quot;zebedee.nicholls@climate-energy-college.org&quot; },
+]
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+    &quot;attrs&gt;=22.1.0&quot;,
+]
+
+[dependency-groups]
+docs = [
+    &quot;attrs==24.3.0&quot;,
+]
+</code></pre>
+</p>
+</details> 
+
+<details><summary>Command output</summary>
+<p>
+
+<p>With the <code>--no-dev</code> flag and <code>--resolution lowest-direct</code>, the lowest version of attrs is nonetheless taken from the docs (i.e. dev) dependency group. I would have thought I should get attrs v22.1.0 here.</p>
+<pre><code class="language-sh">$ uv tree --resolution lowest-direct --no-dev
+Using CPython 3.13.1 interpreter at: /opt/homebrew/opt/python@3.13/bin/python3.13
+Resolved 2 packages in 0.68ms
+mwe v0.1.0
+└── attrs v24.3.0  # should be attrs v22.1.0 no?
+</code></pre>
+</p>
+</details> 
+
+<details><summary>Command output with verbose</summary>
+<p>
+
+<pre><code class="language-sh">$ uv tree --resolution lowest-direct --no-dev --verbose
+DEBUG uv 0.5.11 (c4d0caaee 2024-12-19)
+DEBUG Found workspace root: `/Users/znicholls/Desktop/uv-mwe`
+DEBUG Adding current workspace member: `/Users/znicholls/Desktop/uv-mwe`
+DEBUG Using Python request `&gt;=3.9` from `requires-python` metadata
+DEBUG Searching for Python &gt;=3.9 in managed installations or search path
+DEBUG Searching for managed installations at `/Users/znicholls/.local/share/uv/python`
+DEBUG Found `cpython-3.13.1-macos-aarch64-none` at `/opt/homebrew/bin/python3` (search path)
+Using CPython 3.13.1 interpreter at: /opt/homebrew/opt/python@3.13/bin/python3.13
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: mwe @ file:///Users/znicholls/Desktop/uv-mwe
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.13.1
+DEBUG Solving with target Python version: &gt;=3.9
+DEBUG Adding direct dependency: mwe*
+DEBUG Adding direct dependency: mwe:docs*
+DEBUG Searching for a compatible version of mwe @ file:///Users/znicholls/Desktop/uv-mwe (*)
+DEBUG Adding transitive dependency for mwe==0.1.0: mwe:docs==0.1.0
+DEBUG Searching for a compatible version of mwe @ file:///Users/znicholls/Desktop/uv-mwe (*)
+DEBUG Adding transitive dependency for mwe==0.1.0: attrs&gt;=22.1.0
+DEBUG Searching for a compatible version of mwe @ file:///Users/znicholls/Desktop/uv-mwe (==0.1.0)
+DEBUG Adding transitive dependency for mwe==0.1.0: attrs&gt;=24.3.0, &lt;24.3.0+
+DEBUG Found fresh response for: https://pypi.org/simple/attrs/
+DEBUG Searching for a compatible version of attrs (&gt;=24.3.0, &lt;24.3.0+)
+DEBUG Selecting: attrs==24.3.0 [compatible] (attrs-24.3.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/89/aa/ab0f7891a01eeb2d2e338ae8fecbe57fcebea1a24dbb64d45801bfab481d/attrs-24.3.0-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/f2/bc/d817287d1aa01878af07c19505fafd1165cd6a119e9d0821ca1d1c20312d/attrs-22.1.0-py2.py3-none-any.whl.metadata
+DEBUG Tried 2 versions: attrs 1, mwe 1
+DEBUG all marker environments resolution took 0.001s
+Resolved 2 packages in 1ms
+mwe v0.1.0
+└── attrs v24.3.0
+</code></pre>
+</p>
+</details> 
+
+<h2>An even more explicit example</h2>
+<p>Even if I explicitly exclude the docs group, the dependency still affects the output.</p>
+<details><summary>`pyproject.toml`</summary>
+<p>
+
+<pre><code class="language-toml"># pyproject.toml
+[project]
+name = &quot;mwe&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Minimal working example to demonstrate resolving issue&quot;
+authors = [
+    { name = &quot;Zebedee Nicholls&quot;, email = &quot;zebedee.nicholls@climate-energy-college.org&quot; },
+]
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+    &quot;attrs&gt;=22.1.0&quot;,
+]
+
+[dependency-groups]
+docs = [
+    &quot;attrs==24.3.0&quot;,
+]
+</code></pre>
+</p>
+</details> 
+
+<details><summary>Command output</summary>
+<p>
+
+<p>With the <code>--no-group docs</code> flag and <code>--resolution lowest-direct</code>, the lowest version of attrs is nonetheless taken from the docs dependency group. I would have thought I should get attrs v22.1.0 here.</p>
+<pre><code class="language-sh">$ uv tree --resolution lowest-direct --no-group docs
+Using CPython 3.13.1 interpreter at: /opt/homebrew/opt/python@3.13/bin/python3.13
+Resolved 2 packages in 0.44ms
+mwe v0.1.0
+└── attrs v24.3.0
+</code></pre>
+</p>
+</details> 
+
+<details><summary>Command output with verbose</summary>
+<p>
+
+<pre><code class="language-sh">$ uv tree --resolution lowest-direct --no-group docs --verbose
+DEBUG uv 0.5.11 (c4d0caaee 2024-12-19)
+DEBUG Found workspace root: `/Users/znicholls/Desktop/uv-mwe`
+DEBUG Adding current workspace member: `/Users/znicholls/Desktop/uv-mwe`
+DEBUG Using Python request `&gt;=3.9` from `requires-python` metadata
+DEBUG Searching for Python &gt;=3.9 in managed installations or search path
+DEBUG Searching for managed installations at `/Users/znicholls/.local/share/uv/python`
+DEBUG Found `cpython-3.13.1-macos-aarch64-none` at `/opt/homebrew/bin/python3` (search path)
+Using CPython 3.13.1 interpreter at: /opt/homebrew/opt/python@3.13/bin/python3.13
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: mwe @ file:///Users/znicholls/Desktop/uv-mwe
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.13.1
+DEBUG Solving with target Python version: &gt;=3.9
+DEBUG Adding direct dependency: mwe*
+DEBUG Adding direct dependency: mwe:docs*
+DEBUG Searching for a compatible version of mwe @ file:///Users/znicholls/Desktop/uv-mwe (*)
+DEBUG Adding transitive dependency for mwe==0.1.0: mwe:docs==0.1.0
+DEBUG Searching for a compatible version of mwe @ file:///Users/znicholls/Desktop/uv-mwe (*)
+DEBUG Adding transitive dependency for mwe==0.1.0: attrs&gt;=22.1.0
+DEBUG Searching for a compatible version of mwe @ file:///Users/znicholls/Desktop/uv-mwe (==0.1.0)
+DEBUG Adding transitive dependency for mwe==0.1.0: attrs&gt;=24.3.0, &lt;24.3.0+
+DEBUG Found fresh response for: https://pypi.org/simple/attrs/
+DEBUG Searching for a compatible version of attrs (&gt;=24.3.0, &lt;24.3.0+)
+DEBUG Selecting: attrs==24.3.0 [compatible] (attrs-24.3.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/f2/bc/d817287d1aa01878af07c19505fafd1165cd6a119e9d0821ca1d1c20312d/attrs-22.1.0-py2.py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/89/aa/ab0f7891a01eeb2d2e338ae8fecbe57fcebea1a24dbb64d45801bfab481d/attrs-24.3.0-py3-none-any.whl.metadata
+DEBUG Tried 2 versions: attrs 1, mwe 1
+DEBUG all marker environments resolution took 0.001s
+Resolved 2 packages in 1ms
+mwe v0.1.0
+└── attrs v24.3.0
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "BUG: resolving with lowest-direct resolution and different pins for project vs. dev dependencies" to "BUG (?): resolving with lowest-direct resolution and different pins for project vs. dev dependencies" by @znicholls on 2025-01-20 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-20 09:50</div>
+            <div class="timeline-body"><p>uv resolves optional and non-optional dependencies together and saves that to <code>uv.lock</code>, so that sync with or without optional dependencies only adds or removes packages, but doesn't change the versions. This avoids combinatorial explosions with different <code>[dependency-groups]</code> and <code>[optional-dependencies]</code> and gives a concise lockfile. An alternative is <code>uv pip compile</code>. or if you specifically need different versions with different groups and <code>uv.lock</code>, you can try https://docs.astral.sh/uv/reference/settings/#conflicts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-01-20 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @konstin on 2025-01-20 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/znicholls">@znicholls</a> on 2025-01-20 10:21</div>
+            <div class="timeline-body"><p>Ah that is very clever and makes total sense now that I read this. <code>uv pip compile</code> works exactly as expected:</p>
+<pre><code class="language-sh">$ uv pip compile pyproject.toml --resolution lowest-direct
+Resolved 1 package in 1ms
+# This file was autogenerated by uv via the following command:
+#    uv pip compile pyproject.toml --resolution lowest-direct
+attrs==22.1.0
+    # via mwe (pyproject.toml)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/znicholls">@znicholls</a> on 2025-01-20 10:23</div>
+            <div class="timeline-body"><p>Thanks for the quick reply!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-20 14:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

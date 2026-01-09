@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug: `CPY001` sneaking through `ruff check --statistics` - astral-sh/ruff #7805</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug: `CPY001` sneaking through `ruff check --statistics`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7805">#7805</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2023-10-04 07:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-10-04 07:05</div>
+            <div class="timeline-body"><p>With <code>ruff==0.0.292</code>, check the below Python script designed to make a <code>select</code> with no work:</p>
+<pre><code class="language-python">&quot;&quot;&quot;Hack script to output ruff codes for select, using Python 3.8+.&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import collections
+import json
+import shutil
+import string
+import subprocess
+from collections.abc import Collection
+from typing import Any
+
+RUFF_PATH = shutil.which(&quot;ruff&quot;)
+
+
+def decompose_code(code: str) -&gt; tuple[str, int]:
+    &quot;&quot;&quot;Convert a code like ABC123 to a tuple of (&quot;ABC&quot;, 123).&quot;&quot;&quot;
+    code_text = code.rstrip(string.digits)
+    return code_text, int(code[len(code_text) :])
+
+
+def group_code_text(
+    codes: Collection[str],
+    text_using_first_digit: bool = False,
+) -&gt; dict[str, list[int]]:
+    code_text_to_numbers = collections.defaultdict(list)
+    for code in sorted(codes):
+        text, number = decompose_code(code)
+        if text_using_first_digit:
+            text = code[: len(text) + 1]
+            number = int(code[len(text) :])
+        code_text_to_numbers[text].append(number)
+    return code_text_to_numbers
+
+
+def stringify(
+    all_rules: list[dict[str, Any]],
+    statistics_rules: list[dict[str, Any]],
+    autofix_only: bool = True,
+) -&gt; str:
+    &quot;&quot;&quot;Convert `ruff rule` and `ruff check --statistics` outputs to a string.&quot;&quot;&quot;
+    # 1. Compute raw delta
+    all_codes = {
+        blob[&quot;code&quot;]
+        for blob in all_rules
+    }
+    nonpreview_codes = {
+        blob[&quot;code&quot;]
+        for blob in all_rules
+        if not blob[&quot;preview&quot;]
+        if ((autofix_only and &quot;always&quot; in blob[&quot;fix&quot;]) or not autofix_only)
+    }
+    erroring_nonpreview_codes = {
+        blob[&quot;code&quot;]
+        for blob in statistics_rules
+        if blob[&quot;code&quot;] in nonpreview_codes and blob[&quot;count&quot;] &gt; 0
+    }
+    difference = nonpreview_codes - erroring_nonpreview_codes
+
+    # 2. Group on text
+    all_code_text_to_numbers = group_code_text(all_codes)
+    all_code_text_to_fill = {
+        text: max(*(len(str(n)) for n in nums), 3)
+        for text, nums in all_code_text_to_numbers.items()
+    }
+    nonpreview_text_to_numbers = {
+        text: nums
+        for text, nums in group_code_text(nonpreview_codes).items()
+        if nums == all_code_text_to_numbers[text]
+    }
+    for text, nums in group_code_text(codes=difference).items():
+        if nums != nonpreview_text_to_numbers.get(text, []):
+            continue
+        fill_size = all_code_text_to_fill[text]
+        for num in nums:
+            difference.remove(text + str(num).zfill(fill_size))
+        difference.add(text)
+
+    # 3. Group on text + first digit
+    all_code_text_to_numbers = group_code_text(all_codes, text_using_first_digit=True)
+    nonpreview_text_to_numbers = {
+        text: nums
+        for text, nums in group_code_text(
+            nonpreview_codes,
+            text_using_first_digit=True,
+        ).items()
+        if nums == all_code_text_to_numbers[text]
+    }
+    for text, nums in group_code_text(
+        codes={code for code in difference if not code.isalpha()},
+        text_using_first_digit=True,
+    ).items():
+        if nums != nonpreview_text_to_numbers.get(text, []):
+            continue
+        fill_size = all_code_text_to_fill[text[:-1]] - 1
+        for num in nums:
+            difference.remove(text + str(num).zfill(fill_size))
+        difference.add(text)
+
+    # 4. Stringify
+    stringified = '&quot;,\n    &quot;'.join(sorted(difference))
+    return f&quot;&quot;&quot;select = [\n    &quot;{stringified}&quot;,\n]&quot;&quot;&quot;
+
+
+def main() -&gt; None:
+    all_rules = json.loads(
+        subprocess.check_output((RUFF_PATH, &quot;rule&quot;, &quot;--format=json&quot;, &quot;--all&quot;)).decode(),
+    )
+    subprocess.check_call((RUFF_PATH, &quot;check&quot;, &quot;--select=ALL&quot;, &quot;--fix-only&quot;, &quot;.&quot;))
+    out = subprocess.run(
+        (
+            RUFF_PATH,
+            &quot;check&quot;,
+            &quot;--select=ALL&quot;,
+            &quot;--statistics&quot;,
+            &quot;--output-format=json&quot;,
+            &quot;.&quot;,
+        ),
+        capture_output=True,
+    )
+    if out.stderr or out.returncode != 1:
+        raise NotImplementedError(
+            f&quot;Unhandled return code {out.returncode} or stderr {out.stderr.decode()!r}.&quot;
+        )
+    print(stringify(all_rules, statistics_rules=json.loads(out.stdout.decode())))
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>However,<code>CPY001</code> (and multiple others) are somehow sneaking through the <code>ruff check --statistics</code>, because they're not showing up as having errors (e.g. it's neglected in the output).  Any ideas why?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-04 13:25</div>
+            <div class="timeline-body"><p>I think you need to add <code>--preview</code> to the <code>ruff check</code> call?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-10-04 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-10-04 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-10-04 17:04</div>
+            <div class="timeline-body"><p>This was somehow fixed by https://github.com/astral-sh/ruff/pull/7812, so going to close this out</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jamesbraza on 2023-10-04 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../run-llama/llama_index/pulls/7970.html">run-llama/llama_index#7970</a> on 2023-10-04 19:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question: Is there a way to reduce the number of http requests uv makes if everything is already in cache? - astral-sh/uv #15454</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Question: Is there a way to reduce the number of http requests uv makes if everything is already in cache?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15454">#15454</a>
+        opened by <a href="https://github.com/henryborchers">@henryborchers</a>
+        on 2025-08-22 14:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/henryborchers">@henryborchers</a> on 2025-08-22 14:23</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm sorry if there is a better place to ask this question.</p>
+<p>My questions:</p>
+<p>Is there any way to reduce the number of HTTP requests that uv makes (GET and HEAD) when you already have a resolved dependency solution and they are already in the cache?</p>
+<p>I know about the &quot;--offline&quot; flag but that will only work if the packages are already downloaded in the cache. What I really want is for uv to check offline first and only if it can't do it offline, go online and download everything. Is there anything that does that?</p>
+<p>Alternatively, is there anything I can set in my pyproject.toml or with environment variable to let uv know that the dependency resolution is already good and reduce the number of calls to the PyPI server to verify the solution? Just install the solution with the packages already in the cache?</p>
+<p>Here is why I'm interested:</p>
+<p>I'm running a lot of tests on various environments for my Python packages on my CI. Across multiple OS, Linux, MacOS, Windows. Multiple arches x86_64, ARM64. And all supported versions of Python, 3.9-3.13.  That's a lot of permutations. Uv is fast enough to make this sane. Great job!</p>
+<p>However, Nexus now limits the number of http requests for the free tier to 200,000 per day. Which sounds like a lot but I'm hitting that almost every single day when I run my nightly CI tests.</p>
+<p>I use Docker containers for testing everything on CI except for MacOS. When I used Docker as a test environment, I mount Docker volumes to cache $UV_CACHE_DIR across runs. This works great for reducing the number of GET requests my tests have to make to my Nexus PyPi proxy and internal package index. However, even if these test environments have the packages in the local cache, UV still makes a lot of requests to my Nexus instance. I assume to make sure that it has the latest version of the packages and that the solution is still valid.</p>
+<p>I declare my dependencies loosely in my pyproject.toml files in the project.dependencies section and I create a frozen requirements-dev.txt file (created with uv pip compile with the &quot;--universal&quot; and the &quot;--python=lowest version of python supported) flag) with version numbers pinned which I both install into a virtual environment in CI and use as constraint when I'm running tests in tox.</p>
+<p>I've tried using UV_CONSTRAINT to my requirements-dev.txt file to limit the versions to ones already in the cache but it seems like UV still wants to update the package metadata and sends a bunch of HEAD requests. Are there any tricks to reduce this?</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @henryborchers on 2025-08-22 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-08-22 14:34</div>
+            <div class="timeline-body"><p>I think uv could offer at least two user customizations here if their maintainers are interested:</p>
+<ul>
+<li>Disable prefetching metadata</li>
+<li>Allow the user to specify that the local HTTP cache should not be expired by max-age</li>
+</ul>
+<p>I have also had use cases where I would like uv to make less network requests, due to having unreliable network environment, so the less network requests the less chance of an error.</p>
+<p>My current solution has been to do all my uv steps in the docker build step, and make sure those steps are cached by docker itself and therefore uv rarely runs in my CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-22 14:37</div>
+            <div class="timeline-body"><p>The second is, in some sense, already supported, because you can define your own HTTP headers: https://docs.astral.sh/uv/concepts/indexes/#customizing-cache-control-headers. So you could tell uv to cache the Simple API responses from your registry for much longer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-22 14:38</div>
+            <div class="timeline-body"><p>But adding some way to &quot;allow stale&quot; could also be helpful / complementary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-08-22 14:41</div>
+            <div class="timeline-body"><blockquote>
+<p>The second is, in some sense, already supported, because you can define your own HTTP headers: https://docs.astral.sh/uv/concepts/indexes/#customizing-cache-control-headers.</p>
+</blockquote>
+<p>I missed that feature was added, very cool!</p>
+<p>I definitely think OP should check the impact of setting<code>files = &quot;max-age=365000000, immutable&quot;</code> if their internal repo files are immutable (which in my experience is the default setup for internal artifact repositories).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-22 16:23</div>
+            <div class="timeline-body"><p>This is similar to https://github.com/astral-sh/uv/issues/10380</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryborchers">@henryborchers</a> on 2025-08-25 16:34</div>
+            <div class="timeline-body"><p>When I set cache-control with a custom max-age, where is the cache age information stored?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryborchers">@henryborchers</a> on 2025-08-25 16:44</div>
+            <div class="timeline-body"><p>Is the age of api cache determined by the creation date of the .rkyv file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-25 17:16</div>
+            <div class="timeline-body"><blockquote>
+<p>When I set cache-control with a custom max-age, where is the cache age information stored?</p>
+</blockquote>
+<p>IIRC it's sorted in the <code>.http</code> file that we store alongside the response.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryborchers">@henryborchers</a> on 2025-08-25 18:00</div>
+            <div class="timeline-body"><p>I tried running my project in a docker container with:</p>
+<ul>
+<li>Mount a docker volume to hold all in '/tmp'.</li>
+<li>Set UV_CACHE_DIR to '/tmp/uvcache' in my docker images</li>
+<li>Set /etc/uv/uv.toml to have cache-control = { api = &quot;max-age=6000&quot;, files = &quot;max-age=365000000, immutable&quot; } on the image.</li>
+<li>For good measure, set UV_CONFIG_FILE to /etc/uv/uv.toml</li>
+</ul>
+<p>Theoretically, this should, with each time I run the container:</p>
+<ul>
+<li>store all cache files in /tmp/uvcache.</li>
+<li>uv should not have to make external http requests with subsequent runs as long as it's within 100 minutes. Even if I close the container and start up a new one.</li>
+</ul>
+<p>I tried this and while /tmp/uvcache gets filled with cached files, it seems to be ignored when I try it again.</p>
+<p>I feel like I'm missing some important concept.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryborchers">@henryborchers</a> on 2025-09-10 14:22</div>
+            <div class="timeline-body"><p>If I run <code>uv sync</code> with the &quot;<code>--frozen</code>&quot; flag, will uv try to download/update the package metadata if it's already downloaded?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

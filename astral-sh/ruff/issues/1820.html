@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splitting up the `ruff_linter` crate for faster compile times - astral-sh/ruff #1820</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Splitting up the `ruff_linter` crate for faster compile times</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1820">#1820</a>
+        opened by <a href="https://github.com/not-my-profile">@not-my-profile</a>
+        on 2023-01-12 16:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-12 16:13</div>
+            <div class="timeline-body"><p>@squiddy commented on #1547 with:</p>
+<blockquote>
+<p>Slightly related: Any thoughts on splitting up the code into multiple crates? From my limited understanding this is one way to go for faster compiles. Multiple crates can be compiled in parallel. I did some profiling the other day and a release build takes quite some time because everything is one crate currently.</p>
+</blockquote>
+<p>Crates can only be compiled in parallel if they don't depend on each other. Matklad has a <a href="https://matklad.github.io/2021/09/04/fast-rust-builds.html">nice blog post &quot;Fast Rust Builds&quot;</a>.</p>
+<p>I just opened the PR #1816 to split off the CLI into a separate <code>ruff_cli</code> crate, since <code>ruff_cli</code> depends on <code>ruff</code> this doesn't really change the total build time (especially because <code>ruff_cli</code> can be compiled very quickly ... except the bin generation).</p>
+<p><img src="https://user-images.githubusercontent.com/73739153/212118689-c8bd1b16-eb29-4b5f-ba5d-c53325b922f1.png" alt="image" /></p>
+<p><img src="https://user-images.githubusercontent.com/73739153/212109241-4102b2a3-9334-4c0b-9d56-81c82a8f9c1c.png" alt="image" /></p>
+<p>These graph were generated via <code>cargo build --release --timings</code>, see the <a href="https://share.push-f.com/ruff-0.0.219-timing-release.html">timing before the split</a> and the <a href="https://share.push-f.com/ruff-0.0.219-timing-release-post-split.html">timing after the split</a>.</p>
+<p>I think the question is if/how we could further split up the <code>ruff</code> library. Currently the rule implementations depend on <code>ast::Checker</code> and <code>ast::Checker</code> depends on the rule implementations. I am not sure what we can do about that.</p>
+<p>With my PR #1816 <code>cargo build -p ruff</code> for the first time now builds ~100 dependencies fewer than <code>cargo build</code> for the first time (since it doesn't build the CLI), so this might still be neat for people who just want to contribute a lint and test that it works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1547.html">astral-sh/ruff#1547</a> on 2023-01-12 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1816.html">astral-sh/ruff#1816</a> on 2023-01-12 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-12 16:27</div>
+            <div class="timeline-body"><p>I think another benefit of this could be if we want to have certain features not always included for the pip install. For example,  #1628 wants to add spell checking which adds the typos dependency. Since we are adding a dependency and code that will only be used in one place, I feel like this is a great feature to keep in a separate crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-12 16:38</div>
+            <div class="timeline-body"><p>We can easily introduce an optional dependency on <code>typos</code> via a <a href="https://doc.rust-lang.org/cargo/reference/features.html">feature flag</a>. This doesn't require a separate crate and I don't see any benefit to using a separate crate as opposed to a feature flag for something like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-01-12 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 23:48</div>
+            <div class="timeline-body"><p>Dev compile times are really getting to me 😅 Have they regressed at all lately? Perhaps we haven't been tracking closely enough to answer that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-01-21 13:06</div>
+            <div class="timeline-body"><p>One benefit of separate crates is that it avoids re-compiling unchanged code because Rust skips crates where neither its dependencies nor modules have changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-03 21:51</div>
+            <div class="timeline-body"><p>As an initial proposal to tear down, would something like this work?</p>
+<ul>
+<li>One crate per linter (like <code>eradicate</code>).</li>
+<li>A crate for core, linter-agnostic definitions (like <code>Violation</code>, <code>Diagnostic</code>, etc.). This could include a trait to outline the <code>Checker</code> API, which the linter crates could depend on (but not its implementation).</li>
+<li>A crate that depends on all of those, and includes <code>Checker</code> -- so it ties together the linters, and the linter-agnostic definitions.</li>
+<li>A couple one-off crates that can exist as standalone libraries, like the current <code>source</code> crate that contains <code>Generator</code>, <code>Locator</code>, etc.</li>
+<li>(Not sure what to do with <code>Settings</code> and the per-linter settings structs.)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2559.html">astral-sh/ruff#2559</a> on 2023-02-04 00:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-02-04 01:36</div>
+            <div class="timeline-body"><blockquote>
+<p>We can easily introduce an optional dependency on <code>typos</code> via a <a href="https://doc.rust-lang.org/cargo/reference/features.html">feature flag</a>. This doesn't require a separate crate and I don't see any benefit to using a separate crate as opposed to a feature flag for something like that.</p>
+</blockquote>
+<p>This was my first thought. Has anyone started profiling some of these ideas? I don't think splitting ruff into more crates and introducing features are mutually exclusive, and it's probably a much bigger undertaking to do the former.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-04 06:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Dev compile times are really getting to me</p>
+</blockquote>
+<p><code>cargo test -p ruff</code> is much faster than <code>cargo test</code> since it doesn't compile the <code>ruff_cli</code>. We could consider dropping <code>ruff_cli</code> from <code>default-members</code> in <code>Cargo.toml</code> to speed up <code>cargo test</code> when adding rule implementations ... but then <code>cargo run</code> wouldn't work anymore and you'd have to use <code>cargo run -p ruff_cli</code> (and the benefit would only apply when you just run <code>cargo test</code> but not <code>cargo run</code> but I still think it could be worth it).</p>
+<blockquote>
+<p>One crate per linter</p>
+</blockquote>
+<p>I don't think we want to structure our code by linter at all. I think we rather want to group our AST rules by which AST node they target.</p>
+<p>In general I think we should firstly improve the structure of our code within the <code>ruff</code> crate before thinking about how we can split it up.</p>
+<blockquote>
+<p>Has anyone started profiling some of these ideas?</p>
+</blockquote>
+<p>Reducing such dependencies won't do much for our dev compile time since these dependencies only need to be compiled once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-04 13:16</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we rather want to group our AST rules by which AST node they target.</p>
+</blockquote>
+<p>I can think of reasons we wouldn't want to do this, but it feels unproductive to debate it right now. Most important is getting the codebase into a state at which we can start breaking it down :) which requires at least (1) changing the project structure (e.g., #2088 or similar) and (2) disentangling the mutual dependencies between rule implementations and <code>Checker</code> et al, plus other work I'm sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-04 13:19</div>
+            <div class="timeline-body"><p>Will how we build this also determine how we will let people &quot;hook&quot; into ruff and build their own modules into our linter, like flake8 has? Also, once you guys decide on a plan feel free to assign me some refactoring work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-02-22 15:00</div>
+            <div class="timeline-body"><p>One thing that seems somewhat straightforward to achieve is to split out the <code>ast</code>, <code>source_code</code>, <code>cst</code> and <code>docstring</code> modules into a <code>ruff_python_syntax</code> crate (assuming I understood their purpose correctly and it make sense to group them in such crates).</p>
+<h2>Open questions</h2>
+<ul>
+<li><code>source_code</code> depends on <code>vendor</code>: Move <code>vendor</code> to <code>ruff_python_syntax</code> or introduce new <code>ruff_vendor</code> crate?</li>
+<li><code>stylist</code> depends on <code>leading_quote</code> helper -&gt; Move/extract</li>
+<li>A few <code>ast</code> helpers depend on <code>Checker</code>. Move to <code>ruff</code> and/or implement as extenion traits on <code>Checker</code>.</li>
+</ul>
+<p>I've probably overlooked a few dependencies but it seems less hard than others (e.g. extracting settings is.... challenging)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3171.html">astral-sh/ruff#3171</a> on 2023-02-23 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-02 04:54</div>
+            <div class="timeline-body"><p>I am starting to hack on a few of these problems in https://github.com/charliermarsh/ruff/pull/3298, mostly to see what breaks and what problems we run into. (Not ready for review but feedback welcome, etc.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3370.html">astral-sh/ruff#3370</a> on 2023-03-06 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8288.html">astral-sh/ruff#8288</a> on 2023-10-30 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Splitting up the `ruff` crate for faster compile times" to "Splitting up the `ruff_linter` crate for faster compile times" by @konstin on 2023-11-08 10:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

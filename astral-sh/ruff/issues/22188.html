@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAST002 (FastAPI dependency without `Annotated`) could be made even smarter - astral-sh/ruff #22188</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FAST002 (FastAPI dependency without `Annotated`) could be made even smarter</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/22188">#22188</a>
+        opened by <a href="https://github.com/tuttle">@tuttle</a>
+        on 2025-12-25 00:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tuttle">@tuttle</a> on 2025-12-25 00:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>FAST002 autofix rewrites code substantially and is currently pretty smart, indeed saves a lot of work.</p>
+<p>Anyway I see two possible improvements, yet I'm not sure how complicated they would be to implement:</p>
+<h2>1. FAST002 creates too long lines.</h2>
+<p>The autofix generates this:</p>
+<pre><code class="language-python">    query: Annotated[str | None, Query(description=&quot;Optional filtering of websites by registered domain name.&quot;)] = None,
+</code></pre>
+<p>which immediately triggers <strong>E501 Line too long</strong> in the same run.</p>
+<p>This would be great to generate instead if it is possible to do:</p>
+<pre><code class="language-python">    query: Annotated[
+        str | None,
+        Query(description=&quot;Optional filtering of websites by registered domain name.&quot;),
+    ] = None,
+</code></pre>
+<p>with possible wrap of too long strings.</p>
+<h2>2. FAST002 silently skips autofix of badly ordered arguments.</h2>
+<p>In our code we had this endpoint argument as the last one:</p>
+<pre><code class="language-python">    website_ids: str = Query(
+        ...,
+        description=&quot;Comma separated list of website IDs&quot;,
+    ),
+</code></pre>
+<p>It appears to me the FAST002's autofix detects it WOULD create:</p>
+<pre><code class="language-python">    website_ids: Annotated[str, Query(description=&quot;Comma separated list of website IDs&quot;)],
+</code></pre>
+<p>That means, from the Python POV, it <strong>would turn the argument with default value to argument without default value</strong>. But because the argument is placed AFTER other arguments with default value <strong>which is impossible in Python</strong>, the autofix is disabled and the code is left with unconverted arguments that still trigger FAST002.</p>
+<p>Would it be possible to either of these?</p>
+<p>a. Give the ruff user some kind hint to reorder the arguments manually before the autofix is applied.
+b. Reorder the arguments appropriately as part of the autofix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-25 15:14</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>I think the long line is kind of a known issue. We don't really try to produce formatted fixes, expecting the user to run a formatter after any lint fixes. Some day we hope to combine the lint and format steps into one though (https://github.com/astral-sh/ruff/issues/8232).</p>
+<p>I think a hint as to why the fix was not offered is a great idea! We now have the ability to attach sub-diagnostics, so we could add a line like:</p>
+<pre><code>info: Fix was unavailable because ...
+</code></pre>
+<p>to the diagnostic. That might be interesting to explore in other rules too.</p>
+<p>We <em>could</em> also consider reordering the arguments, but that feels like it's going a bit beyond what we usually call an unsafe fix, at least to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-12-25 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-12-25 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tuttle">@tuttle</a> on 2025-12-31 12:00</div>
+            <div class="timeline-body"><p>@ntBre Thank you, Brent.</p>
+<p>It's great you add sub-diag messages!</p>
+<p>The reason I came up with hinting is that I consider FAST002's autofix to be kind of unique in changing the arguments so much.</p>
+<p>Also, the reason for disabling the fix here is so subtle, I suspect many developers simply won't see it.</p>
+<p>Happy New Year.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17203.html">astral-sh/ruff#17203</a> on 2025-12-31 15:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

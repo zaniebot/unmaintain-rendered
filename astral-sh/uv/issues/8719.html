@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv tree in workspaces including packages in dependency groups - astral-sh/uv #8719</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv tree in workspaces including packages in dependency groups</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8719">#8719</a>
+        opened by <a href="https://github.com/jackvreeken">@jackvreeken</a>
+        on 2024-10-31 10:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jackvreeken">@jackvreeken</a> on 2024-10-31 10:55</div>
+            <div class="timeline-body"><p>Running uv version <code>uv 0.4.28 (debe67ffd 2024-10-28)</code></p>
+<p>I have two questions:</p>
+<ul>
+<li>Why do I need an exclude for <code>[&quot;src/*.egg-info&quot;]</code></li>
+<li>Why is <code>uv tree --no-dev</code> including packages of the workspace</li>
+</ul>
+<p>Also generally not quite sure how to structure my project; essentially a AWS CDK project with a bunch of Lambdas that need to be packages (each with only their own dependencies). https://github.com/jackvreeken/uv-export-test/tree/e0af8ba899a58f1ec326796f9fce36355301c5c2</p>
+<p>My goals are to</p>
+<ul>
+<li>Have a single <code>uv sync</code> install all the dependencies, including those required to mock-run the lambdas locally</li>
+<li>Make it easy to export the requirements.txt for a specific lambda (need this format for CDK) Simplified setup of that here:</li>
+</ul>
+<h3>Project structure</h3>
+<pre><code>.
+├── pyproject.toml
+├── src
+│   ├── lambda_a
+│   │   ├── __init__.py
+│   │   ├── handler_a.py
+│   │   └── pyproject.toml
+│   └── lambda_b
+│       ├── __init__.py
+│       ├── handler_b.py
+│       └── pyproject.toml
+└── uv.lock
+</code></pre>
+<h3>root pyproject.toml</h3>
+<p>EDIT: Included the <code>[project]</code> section.</p>
+<pre><code>[project]
+name = &quot;uv-export-test&quot;
+dynamic = [&quot;version&quot;]
+requires-python = &quot;~=3.12&quot;
+
+[dependency-groups]
+dev = [
+    &quot;pre-commit &gt;= 4.0.1&quot;,
+    &quot;lambda-a&quot;,
+    &quot;lambda-b&quot;,
+]
+
+[tool.uv.sources]
+lambda-a = { workspace = true }
+lambda-b = { workspace = true }
+
+[tool.uv.workspace]
+members = [&quot;src/*&quot;]
+exclude = [&quot;src/*.egg-info&quot;]
+</code></pre>
+<h3>The issue</h3>
+<p>This results in <code>uv sync</code> installing all the dependencies, so that's great.
+<code>uv tree --no-dev</code> includes the <code>lambda-a</code> and <code>lambda-b</code> subtrees, which I don't understand. Leaving out the <code>--no-dev</code> option adds the dep tree for <code>pre-commit</code> at the bottom.</p>
+<pre><code>uv-export-test v0.0.0
+├── lambda-a v0.0.0 (group: dev)
+│   ├── boto3 v1.35.52
+│   │   ├── botocore v1.35.52
+│   │   │   ├── jmespath v1.0.1
+│   │   │   ├── python-dateutil v2.9.0.post0
+│   │   │   │   └── six v1.16.0
+│   │   │   └── urllib3 v2.2.3
+│   │   ├── jmespath v1.0.1
+│   │   └── s3transfer v0.10.3
+│   │       └── botocore v1.35.52 (*)
+│   ├── pydantic v2.9.2
+│   │   ├── annotated-types v0.7.0
+│   │   ├── pydantic-core v2.23.4
+│   │   │   └── typing-extensions v4.12.2
+│   │   └── typing-extensions v4.12.2
+│   └── urllib3 v2.2.3
+└── lambda-b v0.0.0 (group: dev)
+    └── boto3 v1.35.52 (*)
+</code></pre>
+<p>Note that without <code>lambda-a</code> and <code>lambda-b</code> in the dev group, the output of <code>uv tree</code> shows <code>lambda-a</code> and <code>lambda-b</code> at the root level, which feels a little confusing.</p>
+<pre><code>lambda-a v0.0.0
+├── boto3 v1.35.52
+...
+lambda-b v0.0.0
+└── boto3 v1.35.52 (*)
+uv-export-test v0.0.0
+└── pre-commit v4.0.1 (group: dev)
+...
+</code></pre>
+<p>Aside from that, I also wonder why I need the <code>exclude = [&quot;src/*.egg-info&quot;]</code>. For some reason a <code>uv_export_test.egg-info</code> folder is made in <code>src/</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-31 12:55</div>
+            <div class="timeline-body"><p>To clarify, is that the entire <code>pyproject.toml</code>? The tree below suggests you have more content in it, like a <code>[project]</code> table.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-31 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jackvreeken">@jackvreeken</a> on 2024-10-31 14:10</div>
+            <div class="timeline-body"><p>Totally right! Also some other sections (<code>tool.ruff</code>), but didn't want to clutter too much. Apparently also deleted the <code>[project]</code> section in the process 🙈</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-31 16:11</div>
+            <div class="timeline-body"><p>I totally missed that you included a repro link. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-31 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-10-31 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-31 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8730.html">astral-sh/uv#8730</a> on 2024-10-31 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-31 17:36</div>
+            <div class="timeline-body"><p>Ok, I've fixed it in https://github.com/astral-sh/uv/pull/8730. Though it's correct to still show <code>lambda-a</code> and <code>lambda-b</code> at the top-level. It's a little confusing, but <code>uv tree</code> shows you the entire workspace. So, in my test case, where <code>project</code> depends on <code>child</code> as a dev dependency, I get the following with <code>--no-dev</code>:</p>
+<pre><code>child v0.1.0
+└── iniconfig v2.0.0
+project v0.1.0
+└── anyio v4.3.0
+    ├── idna v3.6
+    └── sniffio v1.3.1
+</code></pre>
+<p>If you want to see <em>just</em> the tree for project, you need to pass <code>--project project</code> (or <code>--project child</code>, etc.).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-31 20:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

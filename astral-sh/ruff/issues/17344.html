@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff lint --fix` adds superfluous-seeming blank line to start of file when using isort and flake8 rules together - astral-sh/ruff #17344</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff lint --fix` adds superfluous-seeming blank line to start of file when using isort and flake8 rules together</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17344">#17344</a>
+        opened by <a href="https://github.com/relrod">@relrod</a>
+        on 2025-04-11 00:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/relrod">@relrod</a> on 2025-04-11 00:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I tried to search the issues for this, apologies if I missed an existing issue.</p>
+<p>Taking this file as an example:</p>
+<pre><code class="language-python">import somelib
+import logging
+
+
+def foo(a, b):
+    print(somelib)
+</code></pre>
+<p>If I run this with <code>ruff check foo.py --select I,F</code> it correctly points out there are two issues: The imports aren't properly sorted, and <code>logging</code> is ununsed.</p>
+<p>However, if I tell it to try to <code>--fix</code> the issues, it generates this change:</p>
+<pre><code class="language-diff">rick@Ricks-iMac /tmp % ruff check foo.py --select I,F --diff
+--- foo.py
++++ foo.py
+@@ -1,5 +1,5 @@
++
+ import somelib
+-import logging
+
+
+ def foo(a, b):
+
+Would fix 2 errors.
+</code></pre>
+<p>Notice the spurious blank line that gets added above <code>import somelib</code>.</p>
+<p>This doesn't happen if I change <code>logging</code> to something like <code>foo</code>. I <em>think</em> ruff is getting confused about import groups here. It sees <code>logging</code> is an stdlib import and should be in a separate group and it still tries to separate the &quot;groups&quot; even though it removes the unused import.</p>
+<h3>Version</h3>
+<p>ruff 0.11.5 (7186d5e9a 2025-04-10)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/relrod">@relrod</a> on 2025-04-11 00:50</div>
+            <div class="timeline-body"><p>This might be a dupe of #4661 or at least related to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-11 06:35</div>
+            <div class="timeline-body"><p>Thakns for creating this issue and finding #4661. Yes, that issue seems related. I wonder if we could change the priority of <code>isort</code> to always run last, or at least after removing unused imports in here</p>
+<p>https://github.com/astral-sh/ruff/blob/22de00de16da27d47d6e1a657fec4397138d6e40/crates/ruff_linter/src/fix/mod.rs#L133-L162</p>
+<p>because I only observe this bug if both fixes are applied in one run. Applying either fix manually results in the desired outcome.</p>
+<p>https://play.ruff.rs/a721ac48-7343-464f-90cd-aab3cda4715f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @MichaReiser on 2025-04-11 06:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">incompatibility</span> added by @MichaReiser on 2025-04-11 06:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

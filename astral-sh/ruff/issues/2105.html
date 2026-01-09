@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821 on a `Literal` type that isn't directly imported by the current module - astral-sh/ruff #2105</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821 on a `Literal` type that isn't directly imported by the current module</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2105">#2105</a>
+        opened by <a href="https://github.com/joerick">@joerick</a>
+        on 2023-01-23 09:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joerick">@joerick</a> on 2023-01-23 09:54</div>
+            <div class="timeline-body"><p>We're getting a F821 on a Literal type over in https://github.com/pypa/cibuildwheel/pull/1405 . I've isolated this to the following-</p>
+<p>Two files are needed-</p>
+<p><strong>script.py</strong></p>
+<pre><code class="language-python">from __future__ import annotations
+
+from script_typing import Literal
+
+testing_archs: list[Literal[&quot;x86_64&quot;, &quot;arm64&quot;]]
+testing_archs = ['x86_64']
+print(testing_archs)
+</code></pre>
+<p><strong>script_typing.py</strong></p>
+<pre><code class="language-python">import sys
+
+if sys.version_info &lt; (3, 8):
+    from typing_extensions import Literal
+else:
+    from typing import Literal
+</code></pre>
+<p>Here's what happens:</p>
+<pre><code class="language-sh">$ ruff --isolated --fix script.py 
+script.py:5:29: F821 Undefined name `x86_64`
+script.py:5:39: F821 Undefined name `arm64`
+Found 2 error(s).
+</code></pre>
+<p>This happens without any pyproject.toml configuration</p>
+<p>Version: <code>ruff 0.0.230</code>.</p>
+<p><em>p.s. ruff seems pretty incredible! the speed 🤯</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/cibuildwheel/pulls/1405.html">pypa/cibuildwheel#1405</a> on 2023-01-23 10:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-23 13:32</div>
+            <div class="timeline-body"><p>There is an option that should help in this case: https://github.com/charliermarsh/ruff#typing-modules</p>
+<pre><code>[tool.ruff]
+typing-modules = [&quot;cibuildwheel.typing&quot;]
+</code></pre>
+<p>(Which I see you are already using, but is not fixing the issue )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joerick">@joerick</a> on 2023-01-23 13:53</div>
+            <div class="timeline-body"><p>Ah, thanks for pointing that out, I suppose @henryiii found that option before I did!</p>
+<p>Then I think the issue is perhaps the relative import. See this new recreation:</p>
+<ul>
+<li><p>📁 <code>mymodule</code></p>
+<ul>
+<li><p>📄 <code>__init__.py</code></p>
+</li>
+<li><p>📄 <code>script.py</code></p>
+<pre><code class="language-python">from __future__ import annotations
+
+from .script_typing import Literal
+
+testing_archs: list[Literal[&quot;x86_64&quot;, &quot;arm64&quot;]]
+testing_archs = ['x86_64']
+print(testing_archs)
+</code></pre>
+</li>
+<li><p>📄 <code>script_typing.py</code></p>
+<pre><code class="language-python">import sys
+
+if sys.version_info &lt; (3, 8):
+    from typing_extensions import Literal
+else:
+    from typing import Literal
+
+__all__ = ['Literal']
+
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>📄 <code>pyproject.toml</code></p>
+<pre><code class="language-toml">[tool.ruff]
+typing-modules = ['mymodule.script_typing']
+</code></pre>
+</li>
+</ul>
+<pre><code>$ ruff mymodule                     
+mymodule/script.py:5:29: F821 Undefined name `x86_64`
+mymodule/script.py:5:39: F821 Undefined name `arm64`
+Found 2 error(s).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joerick">@joerick</a> on 2023-01-23 13:54</div>
+            <div class="timeline-body"><p>In this version, changing the import in script.py to <code>from mymodule.script_typing import Literal</code> silences the error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-01-23 14:18</div>
+            <div class="timeline-body"><p>Dupe #2005</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joerick">@joerick</a> on 2023-01-23 14:25</div>
+            <div class="timeline-body"><p>Ah, I didn't know enough about typing-modules to realise this was dupe. Apologies!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @joerick on 2023-01-23 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-23 17:41</div>
+            <div class="timeline-body"><p>All good, thanks everyone for helping out here!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

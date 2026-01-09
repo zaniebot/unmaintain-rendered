@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv.lock` source registry when using `--extra-index-url` and HTTP redirects - astral-sh/uv #7153</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv.lock` source registry when using `--extra-index-url` and HTTP redirects</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7153">#7153</a>
+        opened by <a href="https://github.com/gusutabopb">@gusutabopb</a>
+        on 2024-09-07 03:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gusutabopb">@gusutabopb</a> on 2024-09-07 03:01</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<h3>Summary</h3>
+<p>I used <code>uv add</code> with an <code>extra-index-url</code> to add a package that is <strong>not</strong> present in the <code>extra-index-url</code> registry.</p>
+<p>I expected uv to list the URL of the registry where the package actually lives as the &quot;source&quot;.
+However, in case the registry returns HTTP 303 responses, uv lists the <code>extra-index-url</code> (and not the default index = PyPI) as the &quot;source&quot;.</p>
+<p>Is there some reasoning to listing the <code>extra-index-url</code> as &quot;source&quot; when it actually isn't?</p>
+<h3>Details</h3>
+<p>I have an internal index/registry (e.g. <code>registry.loc/simple</code>) at work (running <a href="https://github.com/pypiserver/pypiserver"><code>pypiserver</code></a>), which contains just a few internal packages. It does not contain any packages that are available from PyPI.
+In order for those internal packages to be <code>uv add</code>-able, I have <code>extra-index-url</code> on my <code>uv.toml</code> config.</p>
+<p>However, to my surprise <code>uv.lock</code> lists <strong>all</strong> the dependencies on my projects as coming from this internal registry. That is, the <code>source</code> registry has the following for packages that were actually fetched from PyPI:</p>
+<pre><code>source = { registry = &quot;http://registry.loc/simple&quot; }
+</code></pre>
+<p>Doing some digging, I found out that the registry returns an HTTP 303 response (which is the default behavior of <a href="https://github.com/pypiserver/pypiserver"><code>pypiserver</code></a>),
+But uv doesn't list the redirected URL registry as the &quot;source&quot;. My expectation is that for dependencies/sub-depdendencies fetched from PyPI after a redirect would list PyPI as the &quot;source&quot;:</p>
+<pre><code>source = { registry = &quot;https://pypi.org/simple&quot; }
+</code></pre>
+<h3>Workarounds</h3>
+<ul>
+<li>Remove <code>extra-index-url</code> from <code>uv.toml</code> and use it only when adding an internal package (e.g. <code>my-lib</code>)<ul>
+<li>This is not ideal as any PyPI-only dependencies of <code>my-lib</code> would still have the &quot;wrong&quot; source.</li>
+</ul>
+</li>
+<li>Add the <code>--disable-fallback</code> flag to <code>pypiserver</code> so an HTTP 404 response is returned instead.<ul>
+<li>Results in my expected behavior, but requires control over the registry (which may not be realistic for many uv users)</li>
+</ul>
+</li>
+</ul>
+<h3>Environment</h3>
+<pre><code>&gt; uv --version
+uv 0.4.6 (84f25e8cf 2024-09-05)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gusutabopb">@gusutabopb</a> on 2024-09-07 03:11</div>
+            <div class="timeline-body"><p>For full disclosure, here's a MRE.
+Note that <code>pydantic</code> is not available from http://registry.loc/simple</p>
+<pre><code>uv init
+uv add pydantic --extra-index-url http://registry.loc/simple
+</code></pre>
+<p><code>pyproject.toml</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;pydantic&gt;=2.9.0&quot;,
+]
+</code></pre>
+<p><code>uv.lock</code></p>
+<details>
+<summary>When `registry.loc/simple` redirects (303)</summary>
+
+<pre><code class="language-toml">version = 1
+requires-python = &quot;&gt;=3.12&quot;
+resolution-markers = [
+    &quot;python_full_version &lt; '3.13'&quot;,
+    &quot;python_full_version &gt;= '3.13'&quot;,
+]
+
+[[package]]
+name = &quot;annotated-types&quot;
+version = &quot;0.7.0&quot;
+source = { registry = &quot;http://registry.loc/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/ee/67/531ea369ba64dcff5ec9c3402f9f51bf748cec26dde048a2f973a4eea7f5/annotated_types-0.7.0.tar.gz&quot;, hash = &quot;sha256:aff07c09a53a08bc8cfccb9c85b05f1aa9a2a6f23728d790723543408344ce89&quot;, size = 16081 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl&quot;, hash = &quot;sha256:1f02e8b43a8fbbc3f3e0d4f0f4bfc8131bcb4eebe8849b8e5c773f3a1c582a53&quot;, size = 13643 },
+]
+
+[[package]]
+name = &quot;pydantic&quot;
+version = &quot;2.9.0&quot;
+source = { registry = &quot;http://registry.loc/simple&quot; }
+dependencies = [
+    { name = &quot;annotated-types&quot; },
+    { name = &quot;pydantic-core&quot; },
+    { name = &quot;typing-extensions&quot; },
+    { name = &quot;tzdata&quot; },
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/f6/8f/3b9f7a38caa3fa0bcb3cea7ee9958e89a9a6efc0e6f51fd6096f24cac140/pydantic-2.9.0.tar.gz&quot;, hash = &quot;sha256:c7a8a9fdf7d100afa49647eae340e2d23efa382466a8d177efcd1381e9be5598&quot;, size = 768298 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/54/38/95bdb5dfcebad2c11c88f7aa2d635fe53a0b7405ef39a6850c8bced455d4/pydantic-2.9.0-py3-none-any.whl&quot;, hash = &quot;sha256:f66a7073abd93214a20c5f7b32d56843137a7a2e70d02111f3be287035c45370&quot;, size = 434325 },
+]
+
+[[package]]
+name = &quot;pydantic-core&quot;
+version = &quot;2.23.2&quot;
+source = { registry = &quot;http://registry.loc/simple&quot; }
+dependencies = [
+    { name = &quot;typing-extensions&quot; },
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/5f/03/54e4961dfaed4804fea0ad73e94d337f4ef88a635e73990d6e150b469594/pydantic_core-2.23.2.tar.gz&quot;, hash = &quot;sha256:95d6bf449a1ac81de562d65d180af5d8c19672793c81877a2eda8fde5d08f2fd&quot;, size = 401901 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/8f/54/9c202171aca4a9f6596e1e2a6572ff7d707e2383a40605533c61487714a2/pydantic_core-2.23.2-cp312-cp312-macosx_10_12_x86_64.whl&quot;, hash = &quot;sha256:4c83c64d05ffbbe12d4e8498ab72bdb05bcc1026340a4a597dc647a13c1605ec&quot;, size = 1845364 },
+    { url = &quot;https://files.pythonhosted.org/packages/9e/e3/5c29d8fa6dfabd7809fe623fd17959e1b672410681a8c3811eefa42b8051/pydantic_core-2.23.2-cp312-cp312-macosx_11_0_arm64.whl&quot;, hash = &quot;sha256:6294907eaaccf71c076abdd1c7954e272efa39bb043161b4b8aa1cd76a16ce43&quot;, size = 1784382 },
+    { url = &quot;https://files.pythonhosted.org/packages/79/c3/4b003c9ed0f5f5e559823802ee7a3921de8aa50892bf179535d7695b2e76/pydantic_core-2.23.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl&quot;, hash = &quot;sha256:4a801c5e1e13272e0909c520708122496647d1279d252c9e6e07dac216accc41&quot;, size = 1791189 },
+    { url = &quot;https://files.pythonhosted.org/packages/3f/3b/0c0377c5833093a1758e711387bbe5a5e30511fe9d4afe225be185527aa1/pydantic_core-2.23.2-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl&quot;, hash = &quot;sha256:cc0c316fba3ce72ac3ab7902a888b9dc4979162d320823679da270c2d9ad0cad&quot;, size = 1780431 },
+    { url = &quot;https://files.pythonhosted.org/packages/4a/88/18a541e2f9cbcef4b44b90a2ba98d85e109d91bc7f3b2210d271f66e6d8f/pydantic_core-2.23.2-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl&quot;, hash = &quot;sha256:6b06c5d4e8701ac2ba99a2ef835e4e1b187d41095a9c619c5b185c9068ed2a49&quot;, size = 1976902 },
+    { url = &quot;https://files.pythonhosted.org/packages/e3/bd/6c98ca605130ee51438d812133d04ddb403fb1a8a93490f9a1a7e269a4a7/pydantic_core-2.23.2-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl&quot;, hash = &quot;sha256:82764c0bd697159fe9947ad59b6db6d7329e88505c8f98990eb07e84cc0a5d81&quot;, size = 2638882 },
+    { url = &quot;https://files.pythonhosted.org/packages/ad/fc/6b4f95c64bbeadaa6f84cffb51f469f6fdd61215d97b4ec8d89d027e574b/pydantic_core-2.23.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;, hash = &quot;sha256:2b1a195efd347ede8bcf723e932300292eb13a9d2a3c1f84eb8f37cbbc905b7f&quot;, size = 2111180 },
+    { url = &quot;https://files.pythonhosted.org/packages/95/4c/d4a355237ffa3dae28c2224bea9e09d4af69f346bf7611ebb66d8e930574/pydantic_core-2.23.2-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.whl&quot;, hash = &quot;sha256:b7efb12e5071ad8d5b547487bdad489fbd4a5a35a0fc36a1941517a6ad7f23e0&quot;, size = 1904338 },
+    { url = &quot;https://files.pythonhosted.org/packages/83/d6/9f41db9ab2727a050fdac5e56a9e792260aa29e29affa98b4df8a06fd588/pydantic_core-2.23.2-cp312-cp312-musllinux_1_1_aarch64.whl&quot;, hash = &quot;sha256:5dd0ec5f514ed40e49bf961d49cf1bc2c72e9b50f29a163b2cc9030c6742aa73&quot;, size = 1968729 },
+    { url = &quot;https://files.pythonhosted.org/packages/f8/bd/0e795ea5eaf26a96d9691faae43603e00de3dbec6339e3710652f5feae12/pydantic_core-2.23.2-cp312-cp312-musllinux_1_1_x86_64.whl&quot;, hash = &quot;sha256:820f6ee5c06bc868335e3b6e42d7ef41f50dfb3ea32fbd523ab679d10d8741c0&quot;, size = 2120748 },
+    { url = &quot;https://files.pythonhosted.org/packages/be/7d/48ddf9f084b5de1d47c6bcccfeafe80900ceac975ebdf1fe374fd18654e5/pydantic_core-2.23.2-cp312-none-win32.whl&quot;, hash = &quot;sha256:3713dc093d5048bfaedbba7a8dbc53e74c44a140d45ede020dc347dda18daf3f&quot;, size = 1725557 },
+    { url = &quot;https://files.pythonhosted.org/packages/e1/d7/ef3558714427b385f84e22a224c4641b4869f9031f733e83cea6f0eb0154/pydantic_core-2.23.2-cp312-none-win_amd64.whl&quot;, hash = &quot;sha256:e1895e949f8849bc2757c0dbac28422a04be031204df46a56ab34bcf98507342&quot;, size = 1914466 },
+    { url = &quot;https://files.pythonhosted.org/packages/91/42/085e27e5c32220531bbd966c2888c74a595ac35cd7e52a71d3302d041b71/pydantic_core-2.23.2-cp313-cp313-macosx_10_12_x86_64.whl&quot;, hash = &quot;sha256:da43cbe593e3c87d07108d0ebd73771dc414488f1f91ed2e204b0370b94b37ac&quot;, size = 1845030 },
+    { url = &quot;https://files.pythonhosted.org/packages/05/ac/3faf5fd29b221bb7c0aa4bc3fe1a763fb2d38b08d7b5961daeee96f13a8e/pydantic_core-2.23.2-cp313-cp313-macosx_11_0_arm64.whl&quot;, hash = &quot;sha256:64d094ea1aa97c6ded4748d40886076a931a8bf6f61b6e43e4a1041769c39dd2&quot;, size = 1784493 },
+    { url = &quot;https://files.pythonhosted.org/packages/83/52/cc692fc65098904a6bdb13cc502b590d0597718069a8ffa8bfdea680657c/pydantic_core-2.23.2-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl&quot;, hash = &quot;sha256:084414ffe9a85a52940b49631321d636dadf3576c30259607b75516d131fecd0&quot;, size = 1791193 },
+    { url = &quot;https://files.pythonhosted.org/packages/53/a9/d7be95020bf6a57ada1d5d18172369ad92e9779dccf9a497b22863d77dd8/pydantic_core-2.23.2-cp313-cp313-manylinux_2_17_armv7l.manylinux2014_armv7l.whl&quot;, hash = &quot;sha256:043ef8469f72609c4c3a5e06a07a1f713d53df4d53112c6d49207c0bd3c3bd9b&quot;, size = 1780169 },
+    { url = &quot;https://files.pythonhosted.org/packages/10/42/16bee4df87a315a8ae3962e5c2251612bced849e624f850e811a2e6097da/pydantic_core-2.23.2-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl&quot;, hash = &quot;sha256:3649bd3ae6a8ebea7dc381afb7f3c6db237fc7cebd05c8ac36ca8a4187b03b30&quot;, size = 1976946 },
+    { url = &quot;https://files.pythonhosted.org/packages/f8/04/8be7280cf309c256bd9fa124fbe15f730b9659ee87d89a40b7da14c6818f/pydantic_core-2.23.2-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl&quot;, hash = &quot;sha256:6db09153d8438425e98cdc9a289c5fade04a5d2128faff8f227c459da21b9703&quot;, size = 2638776 },
+    { url = &quot;https://files.pythonhosted.org/packages/24/7b/e102b2073b08b36f78d7336859fe8d09e7483eded849cf12bd3db66f441d/pydantic_core-2.23.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;, hash = &quot;sha256:5668b3173bb0b2e65020b60d83f5910a7224027232c9f5dc05a71a1deac9f960&quot;, size = 2110994 },
+    { url = &quot;https://files.pythonhosted.org/packages/90/29/ba00e3e262597203ae95c5eb81d02ce96afcda26b6960484b376a1e5ac59/pydantic_core-2.23.2-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.whl&quot;, hash = &quot;sha256:1c7b81beaf7c7ebde978377dc53679c6cba0e946426fc7ade54251dfe24a7604&quot;, size = 1904219 },
+    { url = &quot;https://files.pythonhosted.org/packages/4b/ef/3899865e9f2e30b79c1ed9498a71898f33b1ca2a08f3b1619eaee754aa85/pydantic_core-2.23.2-cp313-cp313-musllinux_1_1_aarch64.whl&quot;, hash = &quot;sha256:ae579143826c6f05a361d9546446c432a165ecf1c0b720bbfd81152645cb897d&quot;, size = 1968804 },
+    { url = &quot;https://files.pythonhosted.org/packages/19/e9/69742d9c71d08251184584c2b99d436490c78f7487840e588394b1ce97a9/pydantic_core-2.23.2-cp313-cp313-musllinux_1_1_x86_64.whl&quot;, hash = &quot;sha256:19f1352fe4b248cae22a89268720fc74e83f008057a652894f08fa931e77dced&quot;, size = 2120574 },
+    { url = &quot;https://files.pythonhosted.org/packages/5c/fc/7f89094bf3a645fb5b312b6ae907f3b04b6e0d1e37f6eb4c057276d80703/pydantic_core-2.23.2-cp313-none-win32.whl&quot;, hash = &quot;sha256:e1a79ad49f346aa1a2921f31e8dbbab4d64484823e813a002679eaa46cba39e1&quot;, size = 1725472 },
+    { url = &quot;https://files.pythonhosted.org/packages/43/13/39f4b60884174a95c69e3dd196c77a1757c3857841f2567d240bcbd1cf0f/pydantic_core-2.23.2-cp313-none-win_amd64.whl&quot;, hash = &quot;sha256:582871902e1902b3c8e9b2c347f32a792a07094110c1bca6c2ea89b90150caac&quot;, size = 1914614 },
+]
+
+[[package]]
+name = &quot;typing-extensions&quot;
+version = &quot;4.12.2&quot;
+source = { registry = &quot;http://registry.loc/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/df/db/f35a00659bc03fec321ba8bce9420de607a1d37f8342eee1863174c69557/typing_extensions-4.12.2.tar.gz&quot;, hash = &quot;sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8&quot;, size = 85321 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl&quot;, hash = &quot;sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d&quot;, size = 37438 },
+]
+
+[[package]]
+name = &quot;tzdata&quot;
+version = &quot;2024.1&quot;
+source = { registry = &quot;http://registry.loc/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/74/5b/e025d02cb3b66b7b76093404392d4b44343c69101cc85f4d180dd5784717/tzdata-2024.1.tar.gz&quot;, hash = &quot;sha256:2674120f8d891909751c38abcdfd386ac0a5a1127954fbc332af6b5ceae07efd&quot;, size = 190559 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl&quot;, hash = &quot;sha256:9068bc196136463f5245e51efda838afa15aaeca9903f49050dfa2679db4d252&quot;, size = 345370 },
+]
+
+[[package]]
+name = &quot;uv-test&quot;
+version = &quot;0.1.0&quot;
+source = { virtual = &quot;.&quot; }
+dependencies = [
+    { name = &quot;pydantic&quot; },
+]
+
+[package.metadata]
+requires-dist = [{ name = &quot;pydantic&quot;, specifier = &quot;&gt;=2.9.0&quot; }]
+</code></pre>
+</details>
+
+<details>
+<summary>When `registry.loc/simple` does not redirect (404)</summary>
+
+<pre><code class="language-toml">version = 1
+requires-python = &quot;&gt;=3.12&quot;
+resolution-markers = [
+    &quot;python_full_version &lt; '3.13'&quot;,
+    &quot;python_full_version &gt;= '3.13'&quot;,
+]
+
+[[package]]
+name = &quot;annotated-types&quot;
+version = &quot;0.7.0&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/ee/67/531ea369ba64dcff5ec9c3402f9f51bf748cec26dde048a2f973a4eea7f5/annotated_types-0.7.0.tar.gz&quot;, hash = &quot;sha256:aff07c09a53a08bc8cfccb9c85b05f1aa9a2a6f23728d790723543408344ce89&quot;, size = 16081 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl&quot;, hash = &quot;sha256:1f02e8b43a8fbbc3f3e0d4f0f4bfc8131bcb4eebe8849b8e5c773f3a1c582a53&quot;, size = 13643 },
+]
+
+[[package]]
+name = &quot;pydantic&quot;
+version = &quot;2.9.0&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+dependencies = [
+    { name = &quot;annotated-types&quot; },
+    { name = &quot;pydantic-core&quot; },
+    { name = &quot;typing-extensions&quot; },
+    { name = &quot;tzdata&quot; },
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/f6/8f/3b9f7a38caa3fa0bcb3cea7ee9958e89a9a6efc0e6f51fd6096f24cac140/pydantic-2.9.0.tar.gz&quot;, hash = &quot;sha256:c7a8a9fdf7d100afa49647eae340e2d23efa382466a8d177efcd1381e9be5598&quot;, size = 768298 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/54/38/95bdb5dfcebad2c11c88f7aa2d635fe53a0b7405ef39a6850c8bced455d4/pydantic-2.9.0-py3-none-any.whl&quot;, hash = &quot;sha256:f66a7073abd93214a20c5f7b32d56843137a7a2e70d02111f3be287035c45370&quot;, size = 434325 },
+]
+
+[[package]]
+name = &quot;pydantic-core&quot;
+version = &quot;2.23.2&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+dependencies = [
+    { name = &quot;typing-extensions&quot; },
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/5f/03/54e4961dfaed4804fea0ad73e94d337f4ef88a635e73990d6e150b469594/pydantic_core-2.23.2.tar.gz&quot;, hash = &quot;sha256:95d6bf449a1ac81de562d65d180af5d8c19672793c81877a2eda8fde5d08f2fd&quot;, size = 401901 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/8f/54/9c202171aca4a9f6596e1e2a6572ff7d707e2383a40605533c61487714a2/pydantic_core-2.23.2-cp312-cp312-macosx_10_12_x86_64.whl&quot;, hash = &quot;sha256:4c83c64d05ffbbe12d4e8498ab72bdb05bcc1026340a4a597dc647a13c1605ec&quot;, size = 1845364 },
+    { url = &quot;https://files.pythonhosted.org/packages/9e/e3/5c29d8fa6dfabd7809fe623fd17959e1b672410681a8c3811eefa42b8051/pydantic_core-2.23.2-cp312-cp312-macosx_11_0_arm64.whl&quot;, hash = &quot;sha256:6294907eaaccf71c076abdd1c7954e272efa39bb043161b4b8aa1cd76a16ce43&quot;, size = 1784382 },
+    { url = &quot;https://files.pythonhosted.org/packages/79/c3/4b003c9ed0f5f5e559823802ee7a3921de8aa50892bf179535d7695b2e76/pydantic_core-2.23.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl&quot;, hash = &quot;sha256:4a801c5e1e13272e0909c520708122496647d1279d252c9e6e07dac216accc41&quot;, size = 1791189 },
+    { url = &quot;https://files.pythonhosted.org/packages/3f/3b/0c0377c5833093a1758e711387bbe5a5e30511fe9d4afe225be185527aa1/pydantic_core-2.23.2-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl&quot;, hash = &quot;sha256:cc0c316fba3ce72ac3ab7902a888b9dc4979162d320823679da270c2d9ad0cad&quot;, size = 1780431 },
+    { url = &quot;https://files.pythonhosted.org/packages/4a/88/18a541e2f9cbcef4b44b90a2ba98d85e109d91bc7f3b2210d271f66e6d8f/pydantic_core-2.23.2-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl&quot;, hash = &quot;sha256:6b06c5d4e8701ac2ba99a2ef835e4e1b187d41095a9c619c5b185c9068ed2a49&quot;, size = 1976902 },
+    { url = &quot;https://files.pythonhosted.org/packages/e3/bd/6c98ca605130ee51438d812133d04ddb403fb1a8a93490f9a1a7e269a4a7/pydantic_core-2.23.2-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl&quot;, hash = &quot;sha256:82764c0bd697159fe9947ad59b6db6d7329e88505c8f98990eb07e84cc0a5d81&quot;, size = 2638882 },
+    { url = &quot;https://files.pythonhosted.org/packages/ad/fc/6b4f95c64bbeadaa6f84cffb51f469f6fdd61215d97b4ec8d89d027e574b/pydantic_core-2.23.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;, hash = &quot;sha256:2b1a195efd347ede8bcf723e932300292eb13a9d2a3c1f84eb8f37cbbc905b7f&quot;, size = 2111180 },
+    { url = &quot;https://files.pythonhosted.org/packages/95/4c/d4a355237ffa3dae28c2224bea9e09d4af69f346bf7611ebb66d8e930574/pydantic_core-2.23.2-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.whl&quot;, hash = &quot;sha256:b7efb12e5071ad8d5b547487bdad489fbd4a5a35a0fc36a1941517a6ad7f23e0&quot;, size = 1904338 },
+    { url = &quot;https://files.pythonhosted.org/packages/83/d6/9f41db9ab2727a050fdac5e56a9e792260aa29e29affa98b4df8a06fd588/pydantic_core-2.23.2-cp312-cp312-musllinux_1_1_aarch64.whl&quot;, hash = &quot;sha256:5dd0ec5f514ed40e49bf961d49cf1bc2c72e9b50f29a163b2cc9030c6742aa73&quot;, size = 1968729 },
+    { url = &quot;https://files.pythonhosted.org/packages/f8/bd/0e795ea5eaf26a96d9691faae43603e00de3dbec6339e3710652f5feae12/pydantic_core-2.23.2-cp312-cp312-musllinux_1_1_x86_64.whl&quot;, hash = &quot;sha256:820f6ee5c06bc868335e3b6e42d7ef41f50dfb3ea32fbd523ab679d10d8741c0&quot;, size = 2120748 },
+    { url = &quot;https://files.pythonhosted.org/packages/be/7d/48ddf9f084b5de1d47c6bcccfeafe80900ceac975ebdf1fe374fd18654e5/pydantic_core-2.23.2-cp312-none-win32.whl&quot;, hash = &quot;sha256:3713dc093d5048bfaedbba7a8dbc53e74c44a140d45ede020dc347dda18daf3f&quot;, size = 1725557 },
+    { url = &quot;https://files.pythonhosted.org/packages/e1/d7/ef3558714427b385f84e22a224c4641b4869f9031f733e83cea6f0eb0154/pydantic_core-2.23.2-cp312-none-win_amd64.whl&quot;, hash = &quot;sha256:e1895e949f8849bc2757c0dbac28422a04be031204df46a56ab34bcf98507342&quot;, size = 1914466 },
+    { url = &quot;https://files.pythonhosted.org/packages/91/42/085e27e5c32220531bbd966c2888c74a595ac35cd7e52a71d3302d041b71/pydantic_core-2.23.2-cp313-cp313-macosx_10_12_x86_64.whl&quot;, hash = &quot;sha256:da43cbe593e3c87d07108d0ebd73771dc414488f1f91ed2e204b0370b94b37ac&quot;, size = 1845030 },
+    { url = &quot;https://files.pythonhosted.org/packages/05/ac/3faf5fd29b221bb7c0aa4bc3fe1a763fb2d38b08d7b5961daeee96f13a8e/pydantic_core-2.23.2-cp313-cp313-macosx_11_0_arm64.whl&quot;, hash = &quot;sha256:64d094ea1aa97c6ded4748d40886076a931a8bf6f61b6e43e4a1041769c39dd2&quot;, size = 1784493 },
+    { url = &quot;https://files.pythonhosted.org/packages/83/52/cc692fc65098904a6bdb13cc502b590d0597718069a8ffa8bfdea680657c/pydantic_core-2.23.2-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl&quot;, hash = &quot;sha256:084414ffe9a85a52940b49631321d636dadf3576c30259607b75516d131fecd0&quot;, size = 1791193 },
+    { url = &quot;https://files.pythonhosted.org/packages/53/a9/d7be95020bf6a57ada1d5d18172369ad92e9779dccf9a497b22863d77dd8/pydantic_core-2.23.2-cp313-cp313-manylinux_2_17_armv7l.manylinux2014_armv7l.whl&quot;, hash = &quot;sha256:043ef8469f72609c4c3a5e06a07a1f713d53df4d53112c6d49207c0bd3c3bd9b&quot;, size = 1780169 },
+    { url = &quot;https://files.pythonhosted.org/packages/10/42/16bee4df87a315a8ae3962e5c2251612bced849e624f850e811a2e6097da/pydantic_core-2.23.2-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl&quot;, hash = &quot;sha256:3649bd3ae6a8ebea7dc381afb7f3c6db237fc7cebd05c8ac36ca8a4187b03b30&quot;, size = 1976946 },
+    { url = &quot;https://files.pythonhosted.org/packages/f8/04/8be7280cf309c256bd9fa124fbe15f730b9659ee87d89a40b7da14c6818f/pydantic_core-2.23.2-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl&quot;, hash = &quot;sha256:6db09153d8438425e98cdc9a289c5fade04a5d2128faff8f227c459da21b9703&quot;, size = 2638776 },
+    { url = &quot;https://files.pythonhosted.org/packages/24/7b/e102b2073b08b36f78d7336859fe8d09e7483eded849cf12bd3db66f441d/pydantic_core-2.23.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;, hash = &quot;sha256:5668b3173bb0b2e65020b60d83f5910a7224027232c9f5dc05a71a1deac9f960&quot;, size = 2110994 },
+    { url = &quot;https://files.pythonhosted.org/packages/90/29/ba00e3e262597203ae95c5eb81d02ce96afcda26b6960484b376a1e5ac59/pydantic_core-2.23.2-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.whl&quot;, hash = &quot;sha256:1c7b81beaf7c7ebde978377dc53679c6cba0e946426fc7ade54251dfe24a7604&quot;, size = 1904219 },
+    { url = &quot;https://files.pythonhosted.org/packages/4b/ef/3899865e9f2e30b79c1ed9498a71898f33b1ca2a08f3b1619eaee754aa85/pydantic_core-2.23.2-cp313-cp313-musllinux_1_1_aarch64.whl&quot;, hash = &quot;sha256:ae579143826c6f05a361d9546446c432a165ecf1c0b720bbfd81152645cb897d&quot;, size = 1968804 },
+    { url = &quot;https://files.pythonhosted.org/packages/19/e9/69742d9c71d08251184584c2b99d436490c78f7487840e588394b1ce97a9/pydantic_core-2.23.2-cp313-cp313-musllinux_1_1_x86_64.whl&quot;, hash = &quot;sha256:19f1352fe4b248cae22a89268720fc74e83f008057a652894f08fa931e77dced&quot;, size = 2120574 },
+    { url = &quot;https://files.pythonhosted.org/packages/5c/fc/7f89094bf3a645fb5b312b6ae907f3b04b6e0d1e37f6eb4c057276d80703/pydantic_core-2.23.2-cp313-none-win32.whl&quot;, hash = &quot;sha256:e1a79ad49f346aa1a2921f31e8dbbab4d64484823e813a002679eaa46cba39e1&quot;, size = 1725472 },
+    { url = &quot;https://files.pythonhosted.org/packages/43/13/39f4b60884174a95c69e3dd196c77a1757c3857841f2567d240bcbd1cf0f/pydantic_core-2.23.2-cp313-none-win_amd64.whl&quot;, hash = &quot;sha256:582871902e1902b3c8e9b2c347f32a792a07094110c1bca6c2ea89b90150caac&quot;, size = 1914614 },
+]
+
+[[package]]
+name = &quot;typing-extensions&quot;
+version = &quot;4.12.2&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/df/db/f35a00659bc03fec321ba8bce9420de607a1d37f8342eee1863174c69557/typing_extensions-4.12.2.tar.gz&quot;, hash = &quot;sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8&quot;, size = 85321 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl&quot;, hash = &quot;sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d&quot;, size = 37438 },
+]
+
+[[package]]
+name = &quot;tzdata&quot;
+version = &quot;2024.1&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/74/5b/e025d02cb3b66b7b76093404392d4b44343c69101cc85f4d180dd5784717/tzdata-2024.1.tar.gz&quot;, hash = &quot;sha256:2674120f8d891909751c38abcdfd386ac0a5a1127954fbc332af6b5ceae07efd&quot;, size = 190559 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl&quot;, hash = &quot;sha256:9068bc196136463f5245e51efda838afa15aaeca9903f49050dfa2679db4d252&quot;, size = 345370 },
+]
+
+[[package]]
+name = &quot;uv-test&quot;
+version = &quot;0.1.0&quot;
+source = { virtual = &quot;.&quot; }
+dependencies = [
+    { name = &quot;pydantic&quot; },
+]
+
+[package.metadata]
+requires-dist = [{ name = &quot;pydantic&quot;, specifier = &quot;&gt;=2.9.0&quot; }]
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-09-07 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-07 11:48</div>
+            <div class="timeline-body"><p>I would suggest inverting the order, such that your registry is the <code>index-url</code> and PyPI is the <code>extra-index-url</code>. In that case, we'll look at PyPI first, and only look at your registry for packages that don't exist on PyPI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gusutabopb">@gusutabopb</a> on 2024-09-07 23:23</div>
+            <div class="timeline-body"><p>Unfortunately, swapping out <code>index-url</code> and <code>extra-index-url</code> is not a feasible workaround in my case as the internal registry <strong>must</strong> have higher priority (checked first) as it contains a few packages that have name clashes with PyPI packages (completely different packages which happen to have a name that is already used in PyPI). Currently, the better workaround in my case is adding <code>--disable-fallback</code> to the instance of pypiserver running the internal registry.</p>
+<p>However, my main points here are that the lock contents should:</p>
+<ol>
+<li>Show the URL of the registry the package was <strong>actually</strong> fetched from.</li>
+<li>Not change based on whether a registry returns 303 or 404 when a package is not found.</li>
+<li>Not change based on whether <code>extra-index-url</code> was used or not when adding packages that do not depend on the <code>extra-index-url</code> at all (see the Pydantic example above).</li>
+</ol>
+<p>All points boil down to how HTTP redirects are handled when writing the lock file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 15:04</div>
+            <div class="timeline-body"><p>Honestly I'm not sure that it'd be correct for us to write the redirected URL to the lockfile. We write the correct paths for the actual distribution <em>files</em> of course, but it's true that we found the package by querying the <code>pypiserver</code> URL. It would be strange if users saw registries in the lockfile that weren't included as index URLs at all in their configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gusutabopb">@gusutabopb</a> on 2024-09-09 01:04</div>
+            <div class="timeline-body"><p>Fair enough. I can see how that could be strange in case the redirected registry wasn't the same as <code>index-url</code> (which happens to be my case).</p>
+<p>I guess it could be argued what I considered an uv issue was just a <code>pypiserver</code> misconfiguration.</p>
+<p>Also, this should become less of an issue once https://github.com/astral-sh/uv/issues/171 is implemented.</p>
+<p>Please feel free to close if the current behavior with regards to the different 303/404 handling is considered correct/expected.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add rule for improper use of `NoReturn`  - astral-sh/ruff #9113</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add rule for improper use of `NoReturn` </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9113">#9113</a>
+        opened by <a href="https://github.com/SRv6d">@SRv6d</a>
+        on 2023-12-13 11:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SRv6d">@SRv6d</a> on 2023-12-13 11:59</div>
+            <div class="timeline-body"><p>The <code>NoReturn</code> return type is commonly misunderstood and not very intuitive.</p>
+<p>It should be used for functions that <strong>never</strong> return, either through unconditionally raising an exception,
+or by exiting.</p>
+<p>Yet, I commonly see it misused (and have misused it myself) to annotate functions that may raise or return using a union return value, eg:</p>
+<pre><code class="language-python">def raise_conditionally(raise_exc: bool) -&gt; None | NoReturn:
+    if raise_exc:
+        raise RuntimeError(&quot;raise_exc was true&quot;)
+    return None
+</code></pre>
+<p>Although ideally ruff would ensure the full invariant(no use of <code>NoReturn</code> for functions that might do anything other than raise or exit), I haven't looked into how much work it would be to implement that and simply ensuring no use of union types with <code>NoReturn</code> would go a long way.</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-12-13 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-12-13 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-12-14 06:52</div>
+            <div class="timeline-body"><p>This could fit https://github.com/PyCQA/flake8-pyi (which Ruff re-implements). I have myself introduced this incorrect union once by accident in typeshed (see https://github.com/python/typeshed/pull/10819 )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-12-15 23:24</div>
+            <div class="timeline-body"><p>All Ruff needs to check is that <code>typing.NoReturn</code> (and <code>typing.Never</code>) shouldn’t appear in a union, since that’s redundant: <code>T | NoReturn</code> is exactly equivalent to <code>T</code>.</p>
+<p>Mypy already checks that <code>NoReturn</code> is not misused outside a union for a function that returns, and Ruff can’t do that without type information (since a function that always calls other <code>-&gt; NoReturn</code> functions can be <code>-&gt; NoReturn</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-12-20 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2023-12-20 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-12-20 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-20 17:52</div>
+            <div class="timeline-body"><p>Will add.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9217.html">astral-sh/ruff#9217</a> on 2023-12-20 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-21 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SRv6d">@SRv6d</a> on 2023-12-22 13:04</div>
+            <div class="timeline-body"><p>@charliermarsh Much appreciated!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SRv6d">@SRv6d</a> on 2024-02-16 16:55</div>
+            <div class="timeline-body"><p>@charliermarsh Just FYI, I've just noticed that mypy as well as pylance honor usage of unions containing <code>NoReturn</code> in combination with overloads and will warn about code paths that follow a function call with a conditional <code>NoReturn</code> return value.</p>
+<p>Given the following function:</p>
+<pre><code class="language-python">from typing import Literal, NoReturn, overload
+
+
+@overload
+def raise_conditionally(raise_exc: Literal[False]) -&gt; None:
+    ...
+
+
+@overload
+def raise_conditionally(raise_exc: Literal[True]) -&gt; NoReturn:
+    ...
+
+
+def raise_conditionally(raise_exc: bool) -&gt; None | NoReturn:
+    if raise_exc:
+        raise RuntimeError(&quot;raise_exc was true&quot;)
+    return None
+</code></pre>
+<p>This function is fine:</p>
+<pre><code class="language-python">def is_reachable() -&gt; None:
+    raise_conditionally(False)
+    print(&quot;This line will be executed&quot;)
+</code></pre>
+<p>But in this function the last line will be marked as unreachable:</p>
+<pre><code class="language-python">def is_unreachable() -&gt; None:
+    raise_conditionally(True)
+    print(&quot;This line will not be executed&quot;)
+</code></pre>
+<p>As per my understanding, this usage is incorrect, but still supported by both type checkers. Knowing this, do you want to keep the <code>never-union</code> rules as-is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2024-02-16 18:03</div>
+            <div class="timeline-body"><p>@SRv6d <code>T | NoReturn</code> isn’t incorrect, it’s just redundant, as it’s equivalent to <code>T</code>. You can replace <code>None | NoReturn</code> with <code>None</code> on line 14 (leaving as-is the <code>NoReturn</code> on line 10, which is not in a union), and you’ll get all the same results (<a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;flags=strict%2Cwarn-unreachable&amp;gist=33b75def0e92116f20d099eb42ab83df">mypy playground</a>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SRv6d">@SRv6d</a> on 2024-04-03 14:04</div>
+            <div class="timeline-body"><p>@andersk Thanks for clarifying, I falsely assumed that the return type of the function implementation had to be a union containing all the overloaded return types.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

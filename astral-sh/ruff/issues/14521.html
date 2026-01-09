@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive F821 and F841 for an exception object inside a lambda function - astral-sh/ruff #14521</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive F821 and F841 for an exception object inside a lambda function</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14521">#14521</a>
+        opened by <a href="https://github.com/dqd">@dqd</a>
+        on 2024-11-22 08:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dqd">@dqd</a> on 2024-11-22 08:59</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hello, when I run ruff on this code sample, I get F821 and F841 errors:</p>
+<pre><code>try:
+    raise Exception(&quot;test&quot;)
+except Exception as e:
+    print((lambda: e)())
+</code></pre>
+<p>This is the exact output of the <code>ruff check sample.py</code> command (using the current ruff version, i.e. 0.7.4):</p>
+<pre><code>sample.py:3:21: F841 [*] Local variable `e` is assigned to but never used
+  |
+1 | try:
+2 |     raise Exception(&quot;test&quot;)
+3 | except Exception as e:
+  |                     ^ F841
+4 |     print((lambda: e)())
+  |
+  = help: Remove assignment to unused variable `e`
+
+sample.py:4:20: F821 Undefined name `e`
+  |
+2 |     raise Exception(&quot;test&quot;)
+3 | except Exception as e:
+4 |     print((lambda: e)())
+  |                    ^ F821
+  |
+
+Found 2 errors.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>I believe that this is a false positive, as this code runs fine on cPython 3.9. It prints &quot;test&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2024-11-22 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-22 18:29</div>
+            <div class="timeline-body"><p>Thanks for this! Great detective work because this seems to be truly minimal - the issue really has to do with except handlers.</p>
+<p>Is it possible, @dhruvmanila or maybe @AlexWaygood , that the AST node for except handlers is meant to have an <code>ExprName</code> here instead of just an identifier? Otherwise how will the semantic model know that <code>e</code> is being stored in <code>except Exception as e</code>?</p>
+<p>https://github.com/astral-sh/ruff/blob/e53ac7985daa7722b17e692967c96efe2e053586/crates/ruff_python_ast/src/nodes.rs#L3135-L3142</p>
+<p>Edit: It looks like the semantic model is smarter than me, at least, but something fishy still must be going on... I can try to figure it out, sorry for the ping 😄</p>
+<p>https://github.com/astral-sh/ruff/blob/e53ac7985daa7722b17e692967c96efe2e053586/crates/ruff_linter/src/checkers/ast/mod.rs#L1570-L1590</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2024-11-23 04:09</div>
+            <div class="timeline-body"><p>Although this looks like a false positive, <code>NameError</code> occurs if the function is called outside the exception handler:</p>
+<pre><code class="language-python">try:
+    raise Exception(&quot;test&quot;)
+except Exception as e:
+    f = lambda: print(e)
+
+    f()  # works
+
+
+f()  # throws
+</code></pre>
+<p>throws:</p>
+<pre><code class="language-python">test
+Traceback (most recent call last):
+  File &quot;a.py&quot;, line 9, in &lt;module&gt;
+    f()  # throws
+  File &quot;a.py&quot;, line 4, in &lt;lambda&gt;
+    f = lambda: print(f&quot;{e!r}&quot;)
+NameError: name 'e' is not defined
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-23 07:14</div>
+            <div class="timeline-body"><p>Thanks @harupy, that's an interesting point! It still feels like a false positive to me, though, since <code>e</code> is used in the &quot;local scope&quot; (I use scope loosely here since except clauses are a bit weird). After all - the first call to <code>f</code> works.</p>
+<p>When you leave an <code>except</code> clause, there is an <a href="https://docs.python.org/3/reference/compound_stmts.html#except-clause">implicit deletion of the binding</a> of the exception to the variable in the <code>as</code> clause, which is the cause of the behavior you point out. So you can get the same behavior like this:</p>
+<pre><code class="language-python">def outer():
+    x = 1
+    def inner():
+        print(x)
+    inner()   # fine
+    del x
+    inner()   # throws an error
+</code></pre>
+<p>Since the code</p>
+<pre><code class="language-python">def outer():
+    x = 1
+    def inner():
+        print(x)
+    inner()   # fine
+    del x
+</code></pre>
+<p>works just fine, and the printed &quot;1&quot; on my screen seems like evidence that <code>x</code> was <em>used</em>, I think it's a bug to flag this with either rule.</p>
+<p>And, interestingly enough, this working example fools <code>F821</code> <a href="https://play.ruff.rs/9e24b2a7-2bf9-4f1d-872a-1eccadf9e413">playground link</a> but for some reason does <em>not</em> trigger <code>F841</code>.</p>
+<p>As it happens similar sorts of buggy behavior with these rules have been pointed out in many issues:</p>
+<ul>
+<li>#7733</li>
+<li>#12451</li>
+<li>#9349</li>
+<li>#6242</li>
+</ul>
+<p>Including, as it happens - the same behavior we're talking about here, which I somehow missed:</p>
+<ul>
+<li>#6878
+😂
+So you can see some previous discussion on the topic. I'll close this one in favor of #6878 and we can continue the discussion there. Cheers!</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2024-11-23 07:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

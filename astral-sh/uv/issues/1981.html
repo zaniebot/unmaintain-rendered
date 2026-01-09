@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installation error &quot;Failed to extract source distribution&quot; on Azure Artifacts when using cache, works correctly with `--no-cache` - astral-sh/uv #1981</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Installation error &quot;Failed to extract source distribution&quot; on Azure Artifacts when using cache, works correctly with `--no-cache`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1981">#1981</a>
+        opened by <a href="https://github.com/inigohidalgo">@inigohidalgo</a>
+        on 2024-02-26 11:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/inigohidalgo">@inigohidalgo</a> on 2024-02-26 11:38</div>
+            <div class="timeline-body"><p>EDIT: cannot repro after <code>uv cache clean</code></p>
+<p>Hello,</p>
+<p>I am seeing some strange behavior when trying to pip-install various packages, including <code>anyconfig==0.14.0</code>. https://github.com/ssato/python-anyconfig</p>
+<p>The installation fails when using using a private Azure Artifacts registry when trying to reuse cache, but if I pass the <code>--no-cache</code> flag, it installs correctly.</p>
+<p>The installation also works on previous versions of anyconfig with uv and our internal feed. Here is the summary of all the different &quot;variables&quot; and the result. <code>pip</code> succeeds in all the cases.</p>
+<p>| registry | cache | anyconf version | result |
+| -------- | ----- | --------------- | ------ |
+| pypi     | yes   | 0.14.0          | ✅      |
+| pypi     | no    | 0.14.0          | ✅      |
+| internal | yes   | 0.14.0          | ❌      |
+| internal | no    | 0.14.0          | ✅      |
+| internal | yes   | 0.13.0          | ✅      |
+| internal | no    | 0.13.0          | ✅      |</p>
+<p>I have the full trace log which I can supply, but I don't feel comfortable sharing it openly as I can't fully verify there's no sensitive info contained in the Rust logs. Here is the final lines including the failure:</p>
+<pre><code>              0.179758s  98ms TRACE hyper::client::pool put; add idle connection for (&quot;https&quot;, pyvvsblobprodsu6weus63.blob.core.windows.net)
+              0.179788s  98ms DEBUG hyper::client::pool pooling idle connection for (&quot;https&quot;, pyvvsblobprodsu6weus63.blob.core.windows.net)
+            0.179824s  98ms DEBUG uv_client::cached_client Found modified response for: https://pkgs.dev.azure.com/redacted/_packaging/b94dc4ba-1037-423e-8797-179e29b340a8/pypi/download/anyconfig/0.14/anyconfig-0.14.0.tar.gz#sha256=2cdf54af5dae8e91743ded82c54ed9d8aaefa3a9722f5d45e9b5f74b603e014d
+            0.179835s  98ms TRACE uv_client::httpcache cached request https://pkgs.dev.azure.com/redacted/_packaging/b94dc4ba-1037-423e-8797-179e29b340a8/pypi/download/anyconfig/0.14/anyconfig-0.14.0.tar.gz#sha256=2cdf54af5dae8e91743ded82c54ed9d8aaefa3a9722f5d45e9b5f74b603e014d is not storable because its response has unsupported status code 304
+         uv_client::cached_client::new_cache file=/home/jovyan/.cache/uv/built-wheels-v0/index/11e94138ffcdd103/anyconfig/0.14.0/manifest.msgpack
+         uv_distribution::source::download source_dist=anyconfig==0.14.0
+              0.179895s   0ms DEBUG uv_distribution::source Downloading source distribution: anyconfig==0.14.0
+           uv_distribution::source::download_source_dist filename=&quot;anyconfig-0.14.0.tar.gz&quot;, source_dist=anyconfig==0.14.0
+    0.180447s TRACE hyper::proto::h2::client client::dispatch::Sender dropped
+           h2::proto::connection::poll 
+                0.180469s   0ms TRACE h2::proto::connection connection.state=Open
+             h2::codec::framed_write::FramedWrite::buffer frame=GoAway { error_code: NO_ERROR, last_stream_id: StreamId(0) }
+                  0.180486s   0ms DEBUG h2::codec::framed_write send, frame=GoAway { error_code: NO_ERROR, last_stream_id: StreamId(0) }
+    0.180492s TRACE hyper::proto::h1::dispatch client tx closed
+    0.180523s TRACE hyper::proto::h1::conn State::close_read()
+    0.180528s TRACE hyper::proto::h1::conn State::close_write()
+    0.180532s TRACE hyper::proto::h1::conn flushed({role=client}): State { reading: Closed, writing: Closed, keep_alive: Disabled }
+    0.180539s DEBUG rustls::common_state Sending warning alert CloseNotify
+                  0.180555s   0ms TRACE h2::frame::go_away encoding GO_AWAY; code=NO_ERROR
+                  0.180579s   0ms TRACE h2::codec::framed_write encoded go_away, rem=17
+                0.180597s   0ms DEBUG h2::proto::connection Connection::poll; connection error, error=GoAway(b&quot;&quot;, NO_ERROR, Library)
+                0.180613s   0ms TRACE h2::proto::connection     -&gt; already going away
+    0.180618s TRACE hyper::proto::h1::conn shut down IO complete
+                0.180770s   0ms TRACE h2::proto::connection connection.state=Closing(NO_ERROR, Library)
+                0.180798s   0ms TRACE h2::proto::connection connection closing after flush
+             h2::codec::framed_write::FramedWrite::flush 
+                  0.180829s   0ms TRACE h2::codec::framed_write queued_data_frame=false
+                  0.180886s   0ms TRACE h2::codec::framed_write flushing buffer
+                0.180898s   0ms DEBUG rustls::common_state Sending warning alert CloseNotify
+                0.180941s   0ms TRACE h2::proto::connection connection.state=Closed(NO_ERROR, Library)
+    0.180971s TRACE h2::proto::streams::streams Streams::recv_eof
+ h2::proto::streams::prioritize::clear_pending_capacity 
+error: Failed to download and build: anyconfig==0.14.0
+  Caused by: Failed to extract source distribution
+  Caused by: unexpected end of file
+</code></pre>
+<p>I can also provide the <code>.tar.gz</code>, but from what I can tell, the hashes match the public ones on PyPI.</p>
+<p>One difference between the versions is that I can no longer see the package's dependencies on the artifacts page for it:</p>
+<h2>0.13.0</h2>
+<p><img src="https://github.com/astral-sh/uv/assets/20395965/627a3cfa-35ea-4cc3-8eab-66237fed845d" alt="image" /></p>
+<h2>0.14.0</h2>
+<p><img src="https://github.com/astral-sh/uv/assets/20395965/8d9d613b-aaab-4ed7-9462-b1f79e32f353" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inigohidalgo">@inigohidalgo</a> on 2024-02-26 11:53</div>
+            <div class="timeline-body"><p>Updating OP: <code>uv pip install anyconf==0.14.0 --no-cache works</code></p>
+<p>and with cache is failing on multiple packages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Installation error "Failed to extract source distribution" on Azure Artifacts, works correctly on public pypi" to "Installation error "Failed to extract source distribution" on Azure Artifacts when using cache, works correctly with `--no-cache`" by @inigohidalgo on 2024-02-26 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inigohidalgo">@inigohidalgo</a> on 2024-02-26 18:03</div>
+            <div class="timeline-body"><p>cannot repro after <code>uv cache clean</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @inigohidalgo on 2024-02-26 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-26 18:05</div>
+            <div class="timeline-body"><p>Oh, that's great, thanks for following up!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

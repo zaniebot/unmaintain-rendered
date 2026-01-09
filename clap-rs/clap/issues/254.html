@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow access to `Arg` properties - clap-rs/clap #254</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow access to `Arg` properties</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/254">#254</a>
+        opened by <a href="https://github.com/wackywendell">@wackywendell</a>
+        on 2015-09-13 21:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wackywendell">@wackywendell</a> on 2015-09-13 21:22</div>
+            <div class="timeline-body"><p>When building an <code>Arg</code>, right now one can only do so in a functional style. To be more extensible, it would help to add functions for some of the following functions:</p>
+<pre><code class="language-rust">get_name(&amp;self) -&gt; &amp;str;
+set_name(&amp;self, &amp;str);
+
+get_short(&amp;mut self);
+set_short(&amp;mut self, &amp;str);
+
+get_long(&amp;self) -&gt; &amp;str;
+set_long(&amp;mut self, &amp;str);
+
+get_help(&amp;self) -&gt; &amp;str;
+set_help(&amp;mut self, &amp;str);
+
+get_required(&amp;self) -&gt; &amp;bool;
+set_required(&amp;mut self, &amp;bool);
+</code></pre>
+<p>...and so on. Based on my understanding of the architecture of <code>clap</code>, this should not require any serious modifications to the base architecture: adding getters and setters to <code>Arg</code> looks like it will require minimal modification of <code>Arg</code>, and since <code>App</code> takes ownership of <code>Arg</code> instances as they are added and does not allow them to be modified, this should not require any modification of <code>App</code> whatsoever.</p>
+<p>I request this because I would like to be able to build a TOML parser alongside <code>clap</code> (a la #251), so that the TOML library can allow a user to specify a list of names and types (types for the TOML), use the names to build a <code>Vec</code> of <code>Arg</code> instances, allow the user to add options to the <code>clap</code> library, and extract out the necessary information (e.g. <code>get_help</code> and <code>get_long</code>) to more easily parse the TOML.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-13 22:49</div>
+            <div class="timeline-body"><p>While I'm not totally against adding this, I do wonder if it would either pollute the API namespace (or rather just clutter...pollute is the wrong word), or initially confuse consumers of the library.</p>
+<p>I would lean closer to simply using the struct fields directly to accomplish the same thing without adding a bunch of new methods, also being that I would imagine using <code>clap</code> in the non-functional way would be the exception and not the rule.</p>
+<p>The fields of <code>Arg</code> are already public, they're just hidden from the documentation. Exposing them (in the docs) may be a better route to take.</p>
+<p>Thoughts, opinions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2015-09-13 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: maybe</span> added by @kbknapp on 2015-09-13 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2015-09-13 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2015-09-13 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: tedious</span> added by @kbknapp on 2015-09-13 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add `get` and `set` traits to `Arg`" to "Allow access to `Arg` properties" by @wackywendell on 2015-09-14 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wackywendell">@wackywendell</a> on 2015-09-14 02:02</div>
+            <div class="timeline-body"><p>That sounds like an excellent idea to me; I modified the title of this to match that. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-14 04:10</div>
+            <div class="timeline-body"><p>The functional builder pattern has a MASSIVE advantage. That is, the compiler will fold it down to just defining the built structure. Breaking the builder pattern down like this might loose this property.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">R: conflicts</span> added by @WildCryptoFox on 2015-09-14 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">R: conflicts</span> removed by @WildCryptoFox on 2015-09-14 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-14 04:11</div>
+            <div class="timeline-body"><p>Sorry for the conflicts label. I was trying to add <code>R: needs benches</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wackywendell">@wackywendell</a> on 2015-09-14 14:35</div>
+            <div class="timeline-body"><blockquote>
+<p>The functional builder pattern has a MASSIVE advantage.</p>
+</blockquote>
+<p>That's a very strong statement. Have you tested this? Does it fold it down? Does breaking it prevent folding it down? What effect does this have on memory usage / CPU usage? Is this difference significant in comparison to string parsing, such as is necessary for any CLI and/or <code>from_usage</code>? If this is a &quot;MASSIVE&quot; advantage, what is it MASSIVE relative to?</p>
+<p>I think the amount of advantage it offers probably depends a great deal on what you are trying to achieve. If performance in building the CLI parser is critical, it may be an important advantage; if, however, building the CLI parser is not a particularly critical part of your code, as I know it won't be for my application (parview), then having the flexibility to do things other ways can be a significant advantage. In this particular instance, I imagine even just opening, reading, and parsing a TOML file or two may outclass the CLI parser-builder in terms of resources needed, and the flexibility would be greatly appreciated. Of course, I'm not certain, and I'm not advocating eliminating the builder pattern, simply giving users the flexibility to make their own choice depending on their needs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-14 16:31</div>
+            <div class="timeline-body"><p>Builder pattern -&gt; Constant Folding through LLVM's SROA, which treats components of a struct as individual SSA variables.</p>
+<p>See https://en.wikipedia.org/wiki/Constant_folding and https://en.wikipedia.org/wiki/Static_single_assignment_form</p>
+<p>As I mentioned for needing benchmarks, I'm unsure how fragile this optimization is. Getters possibly before some setters may imply that the default value, or current at the execution point could be required <em>at those points</em>. If all setters are done first, and getters applied after the fact, this should not be an issue.</p>
+<p>When I said MASSIVE, I was referring to for simply being a property of the builder itself. The optimization works by inlining and factoring down to the constants in each variable; defining them once instead of going through what the builder pattern appears with re-declaration of these struct fields.</p>
+<p>I'm not against the idea of getters, just stated that this property needed a mention as getters <em>might</em> influence the setters.</p>
+<hr />
+<p>eddyb on IRC reminded that if the getters are by-ref, it already prevents mutation; so all setters must be first by Rust's borrowck rules already (unless otherwise scoped down to free up for mutation).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: docs</span> added by @kbknapp on 2015-09-17 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-17 22:27</div>
+            <div class="timeline-body"><p>For the time being, let's add some solid docs to the public fields of <code>Arg</code> but with the caveat that this is not intended for normal use.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/259.html">clap-rs/clap#259</a> on 2015-09-19 10:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-21 03:46</div>
+            <div class="timeline-body"><p>@wackywendell Once #261 gets merged, is there something further that needs to be changed in order to accomplish what you're working on, or this issue closed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-21 04:21</div>
+            <div class="timeline-body"><p>@kbknapp #261 only shows the fields in the documentation. They were already public. I think the issue here is enumerating over the already in the <code>App</code> structure. This is not an issue, however, worth the mention that any handling of the <code>Vec&lt;Arg&gt;</code> that needs to occur; should be before it is added into the <code>App</code>. (Untested code follows)</p>
+<pre><code class="language-rust">let args: Vec&lt;Arg&gt; = vec![Arg::with_name(&quot;foo&quot;)..., ...];
+let keys = args.iter().map(|a| a.name).collect();
+App::with_name(&quot;MyApp&quot;).args(args);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wackywendell">@wackywendell</a> on 2015-09-21 11:42</div>
+            <div class="timeline-body"><p>#261 closes this issue.</p>
+<p>@james-darkfox does make a good suggestion for my overall architecture which I have been using, although it leaves things a bit awkward for the users of my library, as they have to do something like <code>config.add(Arg(...).short('...'), other_option)</code>, where <code>other_option</code> is an option for my library. I have not yet looked carefully enough at #259 to understand what impact that will have.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @wackywendell on 2015-09-21 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-21 12:06</div>
+            <div class="timeline-body"><p>@wackywendell My rewrite isn't yet ready. It's essentially a tiny implementation of what clap already is. What is the effect of the <code>other_option</code>? I noticed after referencing this from my rewrite; that you can just map against the <code>Vec&lt;Arg&gt;</code> with the current code; hence the code in my last comment.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

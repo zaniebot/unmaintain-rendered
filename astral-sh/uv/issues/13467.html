@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow glob patterns in `[tool.uv.sources]` to simplify use of dynamic local wheels - astral-sh/uv #13467</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow glob patterns in `[tool.uv.sources]` to simplify use of dynamic local wheels</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13467">#13467</a>
+        opened by <a href="https://github.com/flitzpiepe93">@flitzpiepe93</a>
+        on 2025-05-15 13:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/flitzpiepe93">@flitzpiepe93</a> on 2025-05-15 13:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I'd like to request support for glob patterns (e.g. <code>*.whl</code>) in the <code>[tool.uv.sources]</code> section of <code>pyproject.toml</code>, to simplify development workflows involving dynamically versioned local wheels.</p>
+<h2>Background</h2>
+<p>The <a href="https://github.com/astral-sh/uv/blob/main/docs/docs/spec.md#uvsources">uv documentation</a> describes how local wheel files can be specified like this:</p>
+<pre><code class="language-toml">[project]
+dependencies = [&quot;my-package&quot;]
+
+[tool.uv.sources]
+my-package = { path = &quot;../dist/my_package-0.1.0-py3-none-any.whl&quot; }
+</code></pre>
+<p>This works well when the filename is known and static. However, in some workflows (e.g. using <a href="https://github.com/aws/jsii">jsii</a>), wheel filenames are generated dynamically and include a version or build hash – for example:</p>
+<pre><code>../dist/my_package-1.2.345-py3-none-any.whl
+../dist/my_package-1.2.346-py3-none-any.whl
+</code></pre>
+<p>Keeping the filename in sync with each new build makes testing tedious.</p>
+<h2>Proposal</h2>
+<p>It would be very helpful if <code>uv</code> could support simple glob patterns in the <code>path</code> of <code>[tool.uv.sources]</code>, e.g.:</p>
+<pre><code class="language-toml">[project]
+dependencies = [&quot;my-package&quot;]
+
+[tool.uv.sources]
+my-package = { path = &quot;../dist/my_package-*.whl&quot; }
+</code></pre>
+<p>Expected behavior:</p>
+<ul>
+<li>If the pattern matches <strong>exactly one</strong> file: use it.</li>
+<li>If it matches <strong>multiple files</strong>: optionally pick the latest (e.g., by modification time), or fail with a clear error.</li>
+<li>If it matches <strong>none</strong>: fail with a clear error.</li>
+</ul>
+<h2>Motivation</h2>
+<p>This would simplify local development workflows significantly, especially when wheel versions are managed by external tools or build systems and not easily predictable.</p>
+<h2>Current Workaround</h2>
+<p>A shell glob works with <code>uv pip install</code>:</p>
+<pre><code class="language-bash">uv pip install ../dist/*.whl
+</code></pre>
+<p>But this cannot be expressed in <code>pyproject.toml</code> today, which limits support for fully reproducible local development environments via <code>uv</code>.</p>
+<p>Thanks for your great work on uv!</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @flitzpiepe93 on 2025-05-15 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-15 14:06</div>
+            <div class="timeline-body"><p>This is the use case for flat indexes (https://docs.astral.sh/uv/configuration/indexes/#flat-indexes): You have a directory of wheels, and uv picks the right one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flitzpiepe93">@flitzpiepe93</a> on 2025-05-15 16:15</div>
+            <div class="timeline-body"><p>Thanks for the help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @flitzpiepe93 on 2025-05-15 16:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

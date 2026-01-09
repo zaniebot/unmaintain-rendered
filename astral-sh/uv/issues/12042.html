@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Devops Artifacts authentication with artifacts-keyring not working from within active venv - astral-sh/uv #12042</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Azure Devops Artifacts authentication with artifacts-keyring not working from within active venv</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/12042">#12042</a>
+        opened by <a href="https://github.com/JakobRemmers">@JakobRemmers</a>
+        on 2025-03-07 12:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JakobRemmers">@JakobRemmers</a> on 2025-03-07 12:58</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hey guys,</p>
+<p>first wanna leave my gratitude for this project in general. Stumbled upon <code>uv</code> while randomly <a href="https://www.youtube.com/watch?v=gSKTfG1GXYQ">youtubing</a> around a couple months ago and we are now about to complete migrating all our python repos to it. Such a timesaver!</p>
+<h2>Issue Description</h2>
+<p>As to the issue, my use case is the following:
+I am working on a python repo <strong>depending on other proprietary python repos</strong>, which are in turn <strong>accessed via a private Azure Devops Artifacts</strong> feed.</p>
+<p><code>uv</code> is configured to do so in <code>pyproject.toml</code> like this:</p>
+<pre><code class="language-pyproject.toml">[tool.uv]
+package = true
+keyring-provider = &quot;subprocess&quot;
+
+[[tool.uv.index]]
+name = &quot;&lt;my_feed&gt;&quot;
+url = &quot;https://VssSessionToken@pkgs.dev.azure.com/&lt;company&gt;/_packaging/&lt;my_feed&gt;/pypi/simple/&quot;
+</code></pre>
+<p>As instructed <a href="https://docs.astral.sh/uv/guides/integration/alternative-indexes/#authenticate-with-keyring-and-artifacts-keyring">here</a>,  <code>keyring</code> installed globally with <code>artifacts-keyring</code> plugin like so:</p>
+<pre><code class="language-bash">uv tool install keyring --with artifacts-keyring
+</code></pre>
+<p>This is generally working just fine.</p>
+<p>The problem occurs, when I try to e.g. run <code>uv sync</code> from WITHIN an active virtual environment, that does not have the <code>artifacts-keyring</code> plugin installed.  I then get an issue with authentication:</p>
+<pre><code class="language-text">hint: An index URL (https://pkgs.dev.azure.com/greenventory/_packaging/greenventory_general_feed/pypi/simple/) could not be queried due to a lack of valid authentication credentials (401
+      Unauthorized).
+</code></pre>
+<blockquote>
+<p>see <a href="https://github.com/user-attachments/files/19126637/johannes-uv-bug-verbose-20250307.txt">johannes-uv-bug-verbose-20250307.txt</a> for full verbose log</p>
+</blockquote>
+<p>Now, this can of course be easily fixed by simply deactivating the active virtual environment or not entering it in the first place. The thing is, in many IDEs (<code>VSCode</code> in our case) its common that the local venv is detected and then <strong>automatically activated for every new integrated terminal session</strong>, which is quite useful to be able to run commands like <code>flake8</code> or starting debug sessions, so I dont wanna disable it entirely.</p>
+<p>I also thought this behaviour of the active venv <strong>mattering</strong> was a bit inconsistent with the behaviour from <code>uv venv</code> which, when ran from within an active venv, issues an explicit warning the active venv being ignored.</p>
+<p>Aside from just keeping in mind to deactivate any venv before running any <code>uv</code> commands, one rather obvious solution we found was simply to add <code>artifacts-keyring</code> to the dev dependencies in <code>pyproject.dependency-groups.dev</code>, which works fine.</p>
+<p>So issue is not critical at all.</p>
+<p>What do you guys think? Am I maybe even overlooking something in the recommended workflow?</p>
+<p>Thanks in advance,</p>
+<p>Jakob</p>
+<h3>Platform</h3>
+<p>Ubuntu 24; Linux 6.11.0-17-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.5.16</p>
+<h3>Python version</h3>
+<p>Python 3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @JakobRemmers on 2025-03-07 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2025-03-10 14:01</div>
+            <div class="timeline-body"><p>@JakobRemmers I have run into a similar issue. In my case keyring but not artifacts-keyring was installed into the active environment. This causes the keyring CLI executable from the active environment to be selected over the one from the uv tool. In my case I settled for adding artifacts-keyring as a dependency where I had keyring as a dependency. In my case I only need library functionality of keyring and not the CLI so I would prefer if I could install keyring without the CLI as this would resolve the issue. IMHO the issue is more that the keyring package and python packaging in general does not really make this easy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-10 17:03</div>
+            <div class="timeline-body"><p>cc @konstin who is working on a design for a better keyring integration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GuillaumeLafreniere">@GuillaumeLafreniere</a> on 2025-03-19 23:38</div>
+            <div class="timeline-body"><p>I have run into a similar issue. While working inside a virtual environment, I was unable to authenticate to Azure DevOps using <code>uv</code> built-in tool (<code>uv tool install keyring --with artifacts-keyring</code>) or even using <code>uv</code> to download it (<code>uv pip install artifacts-keyring</code>). However, I was able to make it work if I downloaded the package from outside a virtual environment (with regular old <code>pip</code>), without reinstalling it once inside the virtual environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FreyGeospatial">@FreyGeospatial</a> on 2025-08-20 14:51</div>
+            <div class="timeline-body"><p>I have been encountering a similar issue as well</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

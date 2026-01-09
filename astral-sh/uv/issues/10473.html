@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect dependency resolution with old version of pandas and Python 3.10 - astral-sh/uv #10473</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect dependency resolution with old version of pandas and Python 3.10</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10473">#10473</a>
+        opened by <a href="https://github.com/zoof">@zoof</a>
+        on 2025-01-10 16:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zoof">@zoof</a> on 2025-01-10 16:59</div>
+            <div class="timeline-body"><p>With a new environment, using Python 3.10, <code>uv add pandas==1.5.3 numpy matplotlib scikit-learn openpyxl</code> results in a version of <code>numpy</code> that is incompatible with <code>pandas</code> 1.5.3.  I have not check if this problem holds for other versions of Python.</p>
+<pre><code>cat .python-version
+3.10
+</code></pre>
+<pre><code>cat pyproject.toml 
+[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;matplotlib&gt;=3.10.0&quot;,
+    &quot;numpy&gt;=2.2.1&quot;,
+    &quot;openpyxl&gt;=3.1.5&quot;,
+    &quot;pandas==1.5.3&quot;,
+    &quot;scikit-learn&gt;=1.6.1&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-10 17:11</div>
+            <div class="timeline-body"><p>I don't know that there's anything we can do about this, because I don't think this incompatibility is encoded in the package metadata in any way? At least, as far as I can tell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-10 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-01-10 18:30</div>
+            <div class="timeline-body"><p>Yeah, there is no information from the dependency metadata that could tell you this, it's up to the user to add <code>numpy&lt;2</code> as a requirement or constraint.</p>
+<p>Non-user solutions would either be for some standard, or functionality from PyPI, that easily allows projects to go to older releases and update their metadata.</p>
+<p>Or for a resolver, like uv, to start hard coding well known or high profile incompatabilities into uv, e.g. if <code>pandas&lt;2.2.2</code> then add constraint <code>numpy&lt;2</code> unless the user explicitly overrides it. But I feel that would be an endless whack-a-mole.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mlbiche">@mlbiche</a> on 2025-10-01 12:10</div>
+            <div class="timeline-body"><p>I have just encountered the same issue and indeed, imho, it's a problem on <code>uv</code> side.</p>
+<p>It's pretty straightforward to reproduce. Let's say you have this <em>uv script</em>:</p>
+<pre><code class="language-py"># /// script
+# requires-python = &quot;&gt;=3.9&quot;
+# dependencies = [
+#     &quot;numpy==1.22.4&quot;,
+#     &quot;pandas==2.0.*&quot;,
+# ]
+# ///
+
+print(&quot;Test&quot;)
+</code></pre>
+<p>Running <code>uv run main.py</code> leads to a dependency conflict between <code>pandas</code> and <code>numpy</code>:</p>
+<pre><code>  × No solution found when resolving script dependencies:
+  ╰─▶ Because pandas&gt;=2.0.0,&lt;=2.0.3 depends on numpy&gt;=1.23.2 and only the following versions of pandas are available:
+          pandas&lt;2.0.dev0
+          pandas&gt;=2.0.0
+      we can conclude that pandas==2.0.* depends on numpy&gt;=1.23.2.
+      And because you require numpy==1.22.4 and pandas==2.0.*, we can conclude that your requirements are unsatisfiable.
+
+      hint: `pandas` was requested with a pre-release marker (e.g., pandas&gt;=2.0.dev0,&lt;2.0.0), but pre-releases weren't enabled (try: `--prerelease=allow`)
+</code></pre>
+<p>While, if you check <a href="https://github.com/pandas-dev/pandas/blob/v2.0.3/pyproject.toml"><code>pandas</code> requirements</a>, it states:</p>
+<pre><code class="language-toml">dependencies = [
+  &quot;numpy&gt;=1.20.3; python_version&lt;'3.10'&quot;,
+  &quot;numpy&gt;=1.21.0; python_version&gt;='3.10'&quot;,
+  &quot;numpy&gt;=1.23.2; python_version&gt;='3.11'&quot;,
+]
+</code></pre>
+<p>So, for Python 3.9, it should match <code>numpy&gt;=1.20.3</code> which matches my <em>uv script</em> requirement (being <code>numpy==1.22.4</code>).</p>
+<p>And indeed, installing these two packages with the classic <code>venv</code> and <code>pip</code> install works perfectly:</p>
+<pre><code class="language-sh">$ python -m venv .venv
+[...]
+
+$ . .venv/bin/activate
+[...]
+
+$ pip install numpy==1.22
+Collecting numpy==1.22.4
+  Using cached numpy-1.22.4-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (16.8 MB)
+Installing collected packages: numpy
+Successfully installed numpy-1.22.4
+
+[notice] A new release of pip is available: 23.0.1 -&gt; 25.2
+[notice] To update, run: pip install --upgrade pip
+
+$ pip install &quot;pandas==2.0.*&quot;
+Collecting pandas==2.0.*
+  Using cached pandas-2.0.3-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.4 MB)
+Collecting pytz&gt;=2020.1
+  Using cached pytz-2025.2-py2.py3-none-any.whl (509 kB)
+Collecting tzdata&gt;=2022.1
+  Using cached tzdata-2025.2-py2.py3-none-any.whl (347 kB)
+Requirement already satisfied: numpy&gt;=1.20.3 in ./.venv/lib/python3.9/site-packages (from pandas==2.0.*) (1.22.4)
+Collecting python-dateutil&gt;=2.8.2
+  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Collecting six&gt;=1.5
+  Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Installing collected packages: pytz, tzdata, six, python-dateutil, pandas
+Successfully installed pandas-2.0.3 python-dateutil-2.9.0.post0 pytz-2025.2 six-1.17.0 tzdata-2025.2
+
+[notice] A new release of pip is available: 23.0.1 -&gt; 25.2
+[notice] To update, run: pip install --upgrade pip
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-01 13:49</div>
+            <div class="timeline-body"><p>That script works fine for me:</p>
+<pre><code>❯ uv run --python 3.9 --script foo.py
+Installed 6 packages in 110ms
+Test
+</code></pre>
+<p>My guess is that you're running with some other Python version? You might want to pin to <code>requires-python = &quot;==3.9.*&quot;</code> since your script isn't actually resolvable on later Python versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mlbiche">@mlbiche</a> on 2025-10-01 15:28</div>
+            <div class="timeline-body"><p>Yew! Thanks for your feedback, I was expecting <code>uv</code> to use Python 3.9 but of course it uses the current version as it satisfies the <code>requires-python</code>. Indeed, it's better to pin the version then!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

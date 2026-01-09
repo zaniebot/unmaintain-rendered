@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keeping post parsing validation in clap - clap-rs/clap #4987</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Keeping post parsing validation in clap</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4987">#4987</a>
+        opened by <a href="https://github.com/Easyoakland">@Easyoakland</a>
+        on 2023-06-24 23:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Easyoakland">@Easyoakland</a> on 2023-06-24 23:43</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>clap = &quot;4.3.8&quot;</p>
+<h3>Describe your use case</h3>
+<p>TLDR: Post process validation function that runs with clap's own parsing to support arbitrary invariant validation.</p>
+<p>I have a struct with complex multi-field properties and invariants that should be upheld when finished parsing. An example might looks like:</p>
+<pre><code class="language-rust">#[derive(Debug, Parser)]
+struct Cli {
+    a: usize,
+    b: usize,
+    c: usize,
+}
+</code></pre>
+<p>I would like to be able to validate arbitrary invariants (ex <code>a+b&lt;100</code>) on this struct after it has been fully validated and before returning from parse.</p>
+<p>I see in the docs <a href="https://docs.rs/clap/latest/clap/_derive/_tutorial/index.html#custom-validation">here</a> that you can already perform arbitrary validation after the <code>Parse()</code> call. However, it seems ugly that you have to include this extra parsing logic in the actual program code instead of defining it on the struct itself.
+Its also problematic when integrating the cli with <a href="https://github.com/MichalGniadek/klask">klask</a>. The program runs through to <a href="https://github.com/MichalGniadek/klask/blob/c8e5e41f4e4af8dd81cd77825184f1ac5afd4f2f/src/lib.rs#L313-L317C57">here</a> and should return an error but currently will continue until the user's main and then finally report the invalid args.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Some way of specifying a value parser <code>fn(self)-&gt;Self</code> that runs on the entire parsed struct before leaving clap's own validation logic. So <code>from_arg_matches_mut</code>, <code>try_get_matches_from_mut</code> and the like use this to validate after parsing the whole struct.
+Whatever syntax is used for this it should also work for <code>#[derive(Args)]</code> so <code>subcommand</code>s can also handle their own validated invariants.
+For example the following syntax could be created so the following program never panics in the actual user's main. Instead clap should use the <code>value_parser</code>=<code>Self::post_validate</code>:</p>
+<pre><code class="language-rust">use clap::Parser;
+
+const MAX_VALUE: usize = 100;
+
+#[derive(Clone, Debug, Parser(value_parser=Self::post_validate))]
+struct Cli {
+    a: usize,
+    b: usize,
+    c: usize,
+}
+
+impl Cli {
+    fn post_validate(self) -&gt; Result&lt;Self, String&gt; {
+        if self.a + self.b &gt; MAX_VALUE {
+            Err(format!(
+                &quot;a and b should not add up to more than {MAX_VALUE}&quot;
+            ))
+        } else {
+            Ok(self)
+        }
+    }
+}
+
+fn main() {
+    let opt = Cli::parse();
+    assert!(
+        opt.a + opt.b &lt;= MAX_VALUE,
+        &quot;Clap didn't validate all invariants&quot;
+    );
+    dbg!(opt);
+}
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<ol>
+<li>Its not preferred but acceptable if the function must be free and not an associated to the struct.</li>
+<li>Currently I can only think of accomplishing post parse validation by:</li>
+</ol>
+<pre><code class="language-rust">use clap::{CommandFactory, Parser};
+
+const MAX_VALUE: usize = 100;
+
+#[derive(Clone, Debug, Parser /* (value_parser=Self::post_validate) */)]
+struct Cli {
+    a: usize,
+    b: usize,
+    c: usize,
+}
+
+impl Cli {
+    fn post_validate(self) -&gt; Result&lt;Self, String&gt; {
+        if self.a + self.b &gt; MAX_VALUE {
+            Err(format!(
+                &quot;a and b should not add up to more than {MAX_VALUE}&quot;
+            ))
+        } else {
+            Ok(self)
+        }
+    }
+}
+
+fn handler(error: String) -&gt; ! {
+    let mut cmd = Cli::command();
+    cmd.error(clap::error::ErrorKind::ArgumentConflict, error)
+        .exit()
+}
+
+fn main() {
+    let opt = Cli::parse().post_validate().map_err(handler).unwrap();
+    assert!(
+        opt.a + opt.b &lt;= MAX_VALUE,
+        &quot;Clap didn't validate all invariants&quot;
+    );
+    dbg!(opt);
+}
+
+</code></pre>
+<h3>Additional Context</h3>
+<p>The klask link may show that it only supports clap v3 but several forks that support v4 exist (<a href="https://github.com/Easyoakland/klask">1</a>, <a href="https://github.com/xosxos/klask">2</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @Easyoakland on 2023-06-24 23:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-06-25 00:24</div>
+            <div class="timeline-body"><p>I'm going to close in favor of #3008 though it will be exposed at the lower levels of clap, rather than at the derive levels.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-06-25 00:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-validators</span> added by @epage on 2023-06-25 00:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Easyoakland">@Easyoakland</a> on 2023-06-25 00:52</div>
+            <div class="timeline-body"><p>So is there a better currently supported way of doing this or should I stick to <code>let opt = Cli::parse().post_validate().map_err(handler).unwrap();</code> until #3008 issue is resolved?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-06-25 00:59</div>
+            <div class="timeline-body"><p>Post-parse validation is the current way of doing this</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

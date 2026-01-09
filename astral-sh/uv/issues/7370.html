@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't install nvidia-cublas from a wheel despite a good looking lock - astral-sh/uv #7370</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't install nvidia-cublas from a wheel despite a good looking lock</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7370">#7370</a>
+        opened by <a href="https://github.com/wokalski">@wokalski</a>
+        on 2024-09-13 18:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wokalski">@wokalski</a> on 2024-09-13 18:02</div>
+            <div class="timeline-body"><p>I am trying to install torch using uv. I am developing on the mac and running <code>uv sync</code>[1] during docker build.</p>
+<p>i am getting:</p>
+<pre><code>=&gt; ERROR [5/9] RUN uv sync -v --frozen                                                              1.7s
+------                                                                                                    
+ &gt; [5/9] RUN uv sync -v --frozen:                                                                         
+#0 0.232 &lt;jemalloc&gt;: MADV_DONTNEED does not work (memset will be used instead)                            
+#0 0.232 &lt;jemalloc&gt;: (This is the expected behaviour if you are running under QEMU)                       
+#0 0.380 DEBUG uv 0.4.9                                                                                   
+#0 0.384 DEBUG Found project root: `/app`                                                                 
+#0 0.385 DEBUG No workspace root found, using project root
+#0 0.390 DEBUG Searching for Python ==3.10.* in managed installations or system path
+#0 0.390 DEBUG Searching for managed installations at `/root/.local/share/uv/python`
+#0 1.652 DEBUG Found `cpython-3.10.15-linux-x86_64-musl` at `/usr/local/bin/python3` (search path)
+#0 1.653 Using Python 3.10.15 interpreter at: /usr/local/bin/python3
+#0 1.655 Creating virtualenv at: .venv
+#0 1.693 error: distribution nvidia-cublas-cu11==11.11.3.6 @ registry+https://download.pytorch.org/whl/cu118 can't be installed because it doesn't have a source distribution or wheel for the current platform
+------
+</code></pre>
+<p>Here's my pyproject.toml:</p>
+<pre><code>[project]
+name = &quot;tts&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;==3.10.*&quot;
+dependencies = [
+    &quot;torch==2.4.0+cu118; sys_platform == 'linux' and platform_machine == 'x86_64'&quot;,
+]
+
+[tool.uv]
+environments = [
+  &quot;sys_platform == 'linux'&quot;,
+]
+dev-dependencies = [
+]
+find-links = [
+]
+extra-index-url = [
+    &quot;https://download.pytorch.org/whl/cu118&quot;,
+]
+
+[tool.uv.sources]
+
+[tool.pytest.ini_options]
+</code></pre>
+<p>and here's a relevant snippet from the lock:</p>
+<pre><code>[[package]]
+name = &quot;nvidia-cublas-cu11&quot;
+version = &quot;11.11.3.6&quot;
+source = { registry = &quot;https://download.pytorch.org/whl/cu118&quot; }
+wheels = [
+    { url = &quot;https://download.pytorch.org/whl/cu118/nvidia_cublas_cu11-11.11.3.6-py3-none-manylinux1_x86_64.whl&quot;, hash = &quot;sha256:39fb40e8f486dd8a2ddb8fdeefe1d5b28f5b99df01c87ab3676f057a74a5a6f3&quot; },
+]
+</code></pre>
+<p>which looks good.</p>
+<p>and if you'd like to repro, here's a simple docker file:</p>
+<pre><code>FROM ghcr.io/astral-sh/uv:python3.10-alpine
+
+WORKDIR /app
+
+COPY pyproject.toml uv.lock .
+
+RUN uv sync -v --frozen
+</code></pre>
+<p>I don't understand the error at all and at this point I'm dumbfounded and i don't know what to do.</p>
+<p>[1]: Running <code>uv sync</code> without a lockfile yields the same error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "can't install nvidia-cublas from a wheel despite a good looking lock" to "Can't install nvidia-cublas from a wheel despite a good looking lock" by @wokalski on 2024-09-13 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 18:14</div>
+            <div class="timeline-body"><p>Are you in an Alpine container? It looks like you have a musl Python, but the wheel in the lockfile is for <code>manylinux</code>. Can you try with a non-musl Docker container?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-13 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wokalski">@wokalski</a> on 2024-09-13 19:52</div>
+            <div class="timeline-body"><p>You are 100% right. Rookie mistake.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @wokalski on 2024-09-13 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 19:55</div>
+            <div class="timeline-body"><p>Not at all, I had no idea what musl was not long ago!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

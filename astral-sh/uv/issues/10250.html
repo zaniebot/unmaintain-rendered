@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using `uv`, how can I install a virtualenv with the editable dependencies copied into the virtualenv instead of a .pth file? - astral-sh/uv #10250</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using `uv`, how can I install a virtualenv with the editable dependencies copied into the virtualenv instead of a .pth file?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10250">#10250</a>
+        opened by <a href="https://github.com/vf-jabadia">@vf-jabadia</a>
+        on 2024-12-31 12:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vf-jabadia">@vf-jabadia</a> on 2024-12-31 12:15</div>
+            <div class="timeline-body"><p>My understanding from reading the docs is that <code>uv sync --no-editable</code> should copy the sources of editable dependencies into the <code>.venv</code> site-packages.</p>
+<p>I'm trying to dockerize a project with a multi-stage build like this:</p>
+<pre><code class="language-Dockerfile">FROM python:3.12 AS dependencies
+
+# install uv following https://docs.astral.sh/uv/guides/integration/docker/#installing-uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# install dependencies
+ADD web/pyproject.toml web/uv.lock /app/web/
+ADD shared /app/shared
+WORKDIR /app/web
+RUN uv sync --locked --no-dev --no-cache --no-editable -v  # here is the--no-editable
+RUN ls -la /app/web/.venv/lib/python3.12/site-packages. # here we see the _shared.pth file
+RUN cat /app/web/.venv/lib/python3.12/site-packages/_shared.pth. # it contains /app/shared
+
+FROM python:3.12-slim
+COPY --from=dependencies /app/web /app/web
+
+# ... rest of Dockerfile here ...
+# ... the resulting .venv contains.a `/app/web/.venv/lib/python3.12/site-packages/_shared.pth` instead of the sources ...
+
+</code></pre>
+<p><code>pyproject.toml</code> looks like this:</p>
+<pre><code class="language-toml">[project]
+name = &quot;web&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;celery&gt;=5.4.0&quot;,
+    &quot;django&gt;=5.1.4&quot;,
+    &quot;psycopg&gt;=3.2.3&quot;,
+    &quot;shared&quot;,
+]
+
+[dependency-groups]
+dev = [
+    &quot;flake8&gt;=7.1.1&quot;,
+    &quot;flake8-pyproject&gt;=1.2.3&quot;,
+    &quot;pytest&gt;=8.3.4&quot;,
+    &quot;pytest-django&gt;=4.9.0&quot;,
+]
+
+[tool.uv.sources]
+shared = { path = &quot;../shared&quot;, editable = true }
+</code></pre>
+<p>Is it a bug? Or is it that I'm not understanding the --no-editable behaviour properly?</p>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-31 14:37</div>
+            <div class="timeline-body"><p>Can you create a Git repository that I can clone + a set of commands to run, to reproduce?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-12-31 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vf-jabadia">@vf-jabadia</a> on 2024-12-31 15:50</div>
+            <div class="timeline-body"><p>my mistake, sorry for the inconvenience</p>
+<p>my original <code>Dockerfile</code> read like this:</p>
+<pre><code class="language-Dockerfile">...
+RUN uv sync --locked --no-dev --no-cache --no-editable -v  # here is the--no-editable
+RUN uv add gunicorn
+...
+</code></pre>
+<p>The <code>uv add</code> command was reverting the <code>--no-editable</code> effect. I found it when creating the minimal repo to reproduce.</p>
+<p>Thanks for the quick response and sorry about that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @vf-jabadia on 2024-12-31 15:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

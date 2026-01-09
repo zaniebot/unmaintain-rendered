@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat(derive): derive `clap::Args` for enum types - clap-rs/clap #5700</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat(derive): derive `clap::Args` for enum types</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/pull/5700">#5700</a>
+        opened by <a href="https://github.com/ysndr">@ysndr</a>
+        on 2024-08-25 16:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ysndr">@ysndr</a> on 2024-08-25 16:42</div>
+            <div class="timeline-body"><p>Implement <code>derive(clap::Args)</code> support for enum types, where each variant is a mutually exclusive <code>ArgGroup</code>.
+Relevant discussion and motivation for this PR is in #2621.</p>
+<hr />
+<p>Impl notes:</p>
+<p>At the moment this is a rough initial implementation.</p>
+<ul>
+<li>It only supports <code>Named</code> / struct like enum variants such as this:</li>
+</ul>
+<pre><code class="language-rust">#[derive(clap::Args, Clone, Debug, PartialEq, Eq)]
+enum Source {
+    A {
+        #[arg(short)]
+        a: bool,
+        #[arg(long)]
+        aaa: bool,
+    },
+    B {
+        #[arg(short)]
+        b: bool,
+    },
+}
+</code></pre>
+<ul>
+<li>it has issues with determining a default when neither branch matches explicitly</li>
+<li>it's not fully covered with tests</li>
+<li>parts of it are frankensteined together from the <code>subcommand</code> impl and deriving from structs</li>
+</ul>
+<p>Regardless this is a dear feature to me so i'm looking for some guidance to polish this into completion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ysndr">@ysndr</a> on <code>clap_derive/src/derives/args.rs</code>:94 on 2024-08-25 17:02</div>
+            <div class="timeline-body"><p>Restricting this to named enums only, allows to reuse the struct codegen with little modification.</p>
+<p><code>Unnamed</code> variants, with a single item might somehow dispatch the parsing bits to the contained Type and <em>somehow</em> set the group conflicts using <code>ArgGroup::mut_group</code> on the augment side and ??? on the from arg matches (that might simply forward?).</p>
+<ul>
+<li><code>Unit</code> variants need to be parsed as flags?</li>
+<li>What about <code>enum Something { Variant(String) }</code> would we expect this to parse as 1) a positional, 2) a flag, 3) not at all bc we cant forward to <code>String</code>s implementations?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ysndr">@ysndr</a> on <code>clap_derive/src/derives/args.rs</code>:354 on 2024-08-25 17:04</div>
+            <div class="timeline-body"><p>Not super clean to sqeeze this in here esp, since this is also used by the <code>subcommand</code> deriver, but i tried to avoid rewriting the entire method for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ysndr">@ysndr</a> on <code>clap_derive/src/item.rs</code>:73 on 2024-08-25 17:07</div>
+            <div class="timeline-body"><p>this method is basically a copy of <code>from_subcommand_enum_variant</code>.
+I'm not yet entirely clear if that is sensible since my picture of what <code>Item</code> is is still somewhat blurry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ysndr">@ysndr</a> on <code>flake.nix</code>:1 on 2024-08-25 17:08</div>
+            <div class="timeline-body"><p>don't mind this it just helps me get a rust compiler using nix...
+will be removed before this is ready to go anywhere</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ysndr">@ysndr</a> reviewed on 2024-08-25 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ysndr">@ysndr</a> reviewed on 2024-08-25 17:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ysndr">@ysndr</a> on <code>clap_derive/src/derives/args.rs</code>:142 on 2024-08-25 17:35</div>
+            <div class="timeline-body"><p>i guess this might fail if the current variant is different, should it be possible to &quot;change&quot; variants using <code>update_from_arg_matches_mut</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ysndr">@ysndr</a> reviewed on 2024-08-25 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ysndr">@ysndr</a> on <code>clap_derive/src/derives/args.rs</code>:183 on 2024-08-25 17:39</div>
+            <div class="timeline-body"><p>we actually <em>do</em> get here if neither variant was explcitly constructed.
+In a way that makes sense, if all variants have defaultable arguments, either is a valid candidate. However I cant decide if that's a conflict or resolvable by defining a default varaint for such situations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ysndr">@ysndr</a> on <code>clap_derive/src/derives/args.rs</code>:142 on 2024-08-25 17:49</div>
+            <div class="timeline-body"><p>This should probably be an error, or instead of trying to update we'd attempt to parse all fields of the &quot;other&quot; variant and replace self with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ysndr">@ysndr</a> reviewed on 2024-08-25 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ysndr">@ysndr</a> on <code>clap_derive/src/derives/args.rs</code>:142 on 2024-08-25 17:51</div>
+            <div class="timeline-body"><p>for a slightly more concrete discussion:
+this currently generates:</p>
+<pre><code class="language-rust">fn update_from_arg_matches_mut(
+    &amp;mut self,
+    __clap_arg_matches: &amp;mut clap::ArgMatches,
+) -&gt; ::std::result::Result&lt;(), clap::Error&gt; {
+    #![allow(deprecated)]
+    if __clap_arg_matches.contains_id(&quot;A&quot;) {
+        let Source::A { a, aaa } = self else {
+            unreachable!();
+        };
+        if __clap_arg_matches.contains_id(&quot;a&quot;) {
+            *a = __clap_arg_matches.remove_one::&lt;bool&gt;(&quot;a&quot;).ok_or_else(|| {
+                clap::Error::raw(
+                    clap::error::ErrorKind::MissingRequiredArgument,
+                    concat!(&quot;The following required argument was not provided: &quot;, &quot;a&quot;),
+                )
+            })?
+        }
+        if __clap_arg_matches.contains_id(&quot;aaa&quot;) {
+            *aaa = __clap_arg_matches
+                .remove_one::&lt;bool&gt;(&quot;aaa&quot;)
+                .ok_or_else(|| {
+                    clap::Error::raw(
+                        clap::error::ErrorKind::MissingRequiredArgument,
+                        concat!(&quot;The following required argument was not provided: &quot;, &quot;aaa&quot;),
+                    )
+                })?
+        };
+    }
+    if __clap_arg_matches.contains_id(&quot;B&quot;) {
+        let Source::B { b } = self else {
+            unreachable!();
+        };
+        if __clap_arg_matches.contains_id(&quot;b&quot;) {
+            *b = __clap_arg_matches.remove_one::&lt;bool&gt;(&quot;b&quot;).ok_or_else(|| {
+                clap::Error::raw(
+                    clap::error::ErrorKind::MissingRequiredArgument,
+                    concat!(&quot;The following required argument was not provided: &quot;, &quot;b&quot;),
+                )
+            })?
+        };
+    }
+    ::std::result::Result::Ok(())
+}
+</code></pre>
+<p>for my test enum:</p>
+<pre><code class="language-rust">#[derive(clap::Args, Clone, Debug, PartialEq, Eq)]
+enum Source {
+    A {
+        #[arg(short)]
+        a: bool,
+        #[arg(long)]
+        aaa: bool,
+    },
+    B {
+        #[arg(short)]
+        b: bool,
+    },
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ysndr">@ysndr</a> reviewed on 2024-08-25 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2024-08-26 17:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>tests/derive/groups.rs</code>:292 on 2024-08-26 17:53</div>
+            <div class="timeline-body"><p>When adding a test commit separate from a feature, it
+needs to still pass tests / compile.  I'm assuming this commit does neither.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ysndr">@ysndr</a> reviewed on 2024-08-26 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ysndr">@ysndr</a> on <code>tests/derive/groups.rs</code>:292 on 2024-08-26 17:57</div>
+            <div class="timeline-body"><p>How would i add a test that does compile for a thing that doesn't yet compile, or where the subject of the PR is allowing these constructs to compile in the first place?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2024-08-26 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_derive/src/derives/args.rs</code>:94 on 2024-08-26 18:03</div>
+            <div class="timeline-body"><p>I'm fine with scoping the first PR toNamed variants.  We should have compile error tests for all of the other kinds of variants.</p>
+<p>I could see soon after support single-element tuple variants with <code>#[command(flatten)] Variant(MoreArgs)</code> to avoid the need for <code>Variant { #[command(flatten)] args: MoreArgs }</code>.  I'm assuming supporting specifically that wouldn't be too bad.</p>
+<p>Longer term...</p>
+<p><code>Unit</code> variant should probably be discussed in the issue.  My first guess is to use it as an &quot;else&quot; case.</p>
+<p>For other single-element tuples, I see it working just like a field.  They are positional by default and need <code>#[arg(short, long)]</code> on the variant to change it to something else.  We'd use <code>value_parser!</code> to understand what to do with the type inside of the variant.</p>
+<p>For N-element tuples, we have an issue for supporting those on fields and I'd point to that for variants as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2024-08-26 18:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_derive/src/derives/args.rs</code>:142 on 2024-08-26 18:05</div>
+            <div class="timeline-body"><p>I would look to subcommands for a starting point in designing how to model this.</p>
+<p>I also am really tempted to remove all of the <code>update</code> code...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ysndr">@ysndr</a> reviewed on 2024-08-26 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ysndr">@ysndr</a> on <code>clap_derive/src/derives/args.rs</code>:94 on 2024-08-26 18:09</div>
+            <div class="timeline-body"><p>that all makes sense in my book.
+I'm still getting familiar with <code>Item</code> and the parsing around it where Named variants were just the closest to intuitively scrape together.
+Happy to look into that soon after.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2024-08-26 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_derive/src/derives/args.rs</code>:183 on 2024-08-26 18:10</div>
+            <div class="timeline-body"><p>If the user has an <code>Option&lt;Enum&gt;</code>, we'll check if the group is present and do <code>None</code> if it isn't, so this is only a problem with <code>Enum</code>.  I lean towards hand constructing a clap error like we do if you have <code>#[arg(required = False)] String</code>.  If we make unit variants a fallback (or add a fallback attribute). then users can avoid the error here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_derive/src/derives/args.rs</code>:110 on 2024-08-26 18:12</div>
+            <div class="timeline-body"><p>Why are we collecting and manually specifying conflicts rather than having <code>group.multiple(false)</code>?</p>
+<p>There are bugs in nested group support but we should instead focus on those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_derive/src/derives/args.rs</code>:354 on 2024-08-26 18:13</div>
+            <div class="timeline-body"><p>This goes away if we rely on groups, rather than conflicts</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_derive/src/item.rs</code>:73 on 2024-08-26 18:14</div>
+            <div class="timeline-body"><p><code>Item</code> is a mess.  It is a storage for all of our highlevel attribute information for a single type, field, variant, etc.  We use the same type for all of those and for whichever trait or attribute type is used.</p>
+<p>Making this function fits exactly within the current model</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2024-08-26 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2024-08-26 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>tests/derive/groups.rs</code>:292 on 2024-08-26 18:24</div>
+            <div class="timeline-body"><p>&quot;it depends&quot;</p>
+<p>Let's step back to the goals of why we encourage tests in a commit before the feature</p>
+<ul>
+<li>Help test the tests (when fixing a bug, did the tests actually need to change?)</li>
+<li>Through a commit's diff, making it clear to reviewers and the wider community what the intended behavior is</li>
+</ul>
+<p>All of this is trivial when its a bug fix to help output.  You show the existing behavior in the tests, then change the test when you change the behavior.</p>
+<p>When the behavior doesn't exist yet, your options are</p>
+<ul>
+<li>Just don't do this and have the test added in the commit.</li>
+<li>Capture the feature failing spectacularly</li>
+<li>Find the closest parallel feature and test that</li>
+</ul>
+<p>The ideal is the last but sometimes there isn't always a close enough parallel and it can take the most work.</p>
+<p>As an example of the last, take https://github.com/rust-lang/cargo/pull/14435/commits.  This adds a new feature to Cargo.  Originally, the test commit used the new features which didn't exist and errored out quickly.  The commit that implemented the feature then made them not error.  This was still more helpful than having them in the same commit because I only had to review the test output and not all of the test.  However, I found a parallel feature and suggested it to the contributor.  The tests are now much easier to see what the intended behavior is.</p>
+<p>Thats easy when its all textual output and you aren't dealing with compile errors.  One option is to write the tests with structs, rater than enums.  The commit that adds the feature could also switch the structs to enums, causing some cases to still work while other cases will error.</p>
+<p>That might or might not be worth it.  If that seems like it will be too much or not show enough, feel free to say so, squash the commits, and move on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ysndr">@ysndr</a> reviewed on 2024-08-26 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ysndr">@ysndr</a> on <code>clap_derive/src/derives/args.rs</code>:110 on 2024-08-26 18:39</div>
+            <div class="timeline-body"><p>Ah specify multiple(false) for the &quot;outer&quot; group generated for the enum itself?
+Guess that could work.
+I explicitly stated the conflicts more out of intuition and reading that nested groups are behaving weirdly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ysndr">@ysndr</a> reviewed on 2024-08-26 18:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ysndr">@ysndr</a> on <code>clap_derive/src/item.rs</code>:73 on 2024-08-26 18:40</div>
+            <div class="timeline-body"><p>Good to know, is there any better documentation on <code>Item</code> that I can read up on?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_derive/src/item.rs</code>:73 on 2024-08-26 18:45</div>
+            <div class="timeline-body"><p>Not really.  A lot of this is ad hoc.  It'd be good to clean up at some point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2024-08-26 18:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ysndr">@ysndr</a> reviewed on 2024-08-28 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ysndr">@ysndr</a> on <code>clap_derive/src/derives/args.rs</code>:110 on 2024-08-28 21:32</div>
+            <div class="timeline-body"><p>So to elaborate on &quot;behaving weirdly&quot;, adding a group as an argument of a group doesnt seem to work at all currently</p>
+<p>if i build something like this:</p>
+<pre><code>Command::new()
+	.arg(clap::Arg::new(&quot;a&quot;) ...)
+	.arg(clap::Arg::new(&quot;b&quot;) ...)
+	.group(clap::ArgGroup(&quot;A&quot;).args([&quot;a&quot;])
+	.group(clap::ArgGroup(&quot;B&quot;).args([&quot;b&quot;])
+	.group(clap::ArgGroup(&quot;Outer&quot;).args([&quot;A&quot;, &quot;B&quot;])
+</code></pre>
+<p>i get a runtime error: <code>Command clap: Argument group 'Outer' contains non-existent argument 'A'</code>.
+Before I'm digging into the ArgGroup parser which seems to specifically address <em>args</em> (rather than <em>args or groups</em>), i'm looking to confirm that this is indeed how we would want to specify nested groups to begin with.</p>
+<hr />
+<p>Continue reading here if i haven't gone astray yet.</p>
+<p>From thereon i'm looking at <code>clap_builder::parser::validator::gather_arg_direct_conflicts</code> which would recursively resolve all ancestor chains, and then from the root(s) down check each group whether it is a <code>multiple == false</code> group, and if it is add all args from other branches not on the current path as conflicts; or in pseudocode:</p>
+<pre><code>conflicts(arg_id: &amp;Id, path: Vec&lt;&amp;Id&gt;, conf: &amp;mut Vec&lt;Id&gt;)
+
+parent_id = path[-1] ? arg_id
+for group in groups_for_arg(parnt_id) {
+	
+	for conflict in group.conflicts {
+		if conflict.is_group {
+			for member in members_recursive_ignore_path(path, group) {
+				conf.push(member.id)
+			}
+		} else {
+			conf.push(conflict.id)
+		}
+	}
+
+	if !group.multiple {
+		for member in members_recursive_ignore_path(path, group) {
+			conf.push(member.id)
+		}
+	}
+
+	path = path.clone()
+	path.push(group.id)
+	conflicts(arg_id, path, conf)
+}
+</code></pre>
+<p>that is if the goal is to support arbitrary nesting
+I'm not too happy with the amount of potential duplicates iff groups are densely nested.
+Also keep calling <code>groups_for_arg</code> (or the impl of it) may hold potential for optimization down the road.</p>
+<p>I believe a similar impl is also necessary for <code>require</code>ing with nested groups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2024-08-29 21:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_derive/src/derives/args.rs</code>:110 on 2024-08-29 21:48</div>
+            <div class="timeline-body"><p>Oh wow, I thought we supported that.  There was some case where we had a bug related to <code>ArgGroup</code>s and I thought we had broader support for <code>ArgGroup</code>s than we apparently do (which also means I blocked #4697 on the wrong thing...)</p>
+<p>I would like for this to move forward with groups, rather than conflicts, so we make sure we stabilize the right semantics.  So that means we need nested groups first...</p>
+<p>One approach</p>
+<ul>
+<li>Deprecate <code>ArgGroup::arg</code> and <code>ArgGroup::args</code> and add <code>ArgGroup::member</code> or <code>ArgGroup::child</code></li>
+<li>Update the assertions related to ensuring group members are present</li>
+<li>Add associated tests to make sure nested arg groups work, fixing bugs along the way</li>
+</ul>
+<p>If someone wants to take this on, this should be its own PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ysndr">@ysndr</a> reviewed on 2024-08-29 22:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ysndr">@ysndr</a> on <code>clap_derive/src/derives/args.rs</code>:110 on 2024-08-29 22:21</div>
+            <div class="timeline-body"><p>I'd be up to look into that.
+Do you think my understanding of conflict detection aligns with your intended changes to arggroup?
+If not, how/where could we plan this in more detail than 3 bullet points?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2024-08-30 20:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_derive/src/derives/args.rs</code>:110 on 2024-08-30 20:31</div>
+            <div class="timeline-body"><p>Created #5711.  I don't have more specific guidance at this time.  In general, a child group should behave like a child arg.  I don't more more specific guidance than that at this time.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

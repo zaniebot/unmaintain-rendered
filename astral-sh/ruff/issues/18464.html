@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[New rule] Octal literal for `chmod` mode bits - astral-sh/ruff #18464</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[New rule] Octal literal for `chmod` mode bits</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18464">#18464</a>
+        opened by <a href="https://github.com/opk12">@opk12</a>
+        on 2025-06-04 16:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/opk12">@opk12</a> on 2025-06-04 16:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>pathlib.Path('/file').chmod(444)</code> means something different than what it seems, should be <code>chmod(0o444)</code>.</p>
+<p>Also, <code>chmod</code> of a decimal or hexadecimal literal is most likely unintentional, because it is are hard to read and the standard usage is octal. For example, telling the mode bits from <code>292</code> or <code>0x124</code> is not straightforward.</p>
+<p>A new rule could look for a numeric literal and propose the octal form. There exist <code>stat.S_*</code> constants listed at <a href="https://docs.python.org/3/library/os.html#os.chmod">os.chmod()</a>, but honestly I'm not their fan, as the 3-digit version is cleaner and is standard in the POSIX world.</p>
+<p>I don't have experience with the similar functions, but I guess the rule should also cover them.</p>
+<ul>
+<li><code>pathlib.Path.lchmod()</code></li>
+<li><code>os.chmod()</code></li>
+<li><code>os.fchmod()</code></li>
+<li><code>os.lchmod()</code></li>
+</ul>
+<p>Docs</p>
+<ul>
+<li><a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.chmod">Path.chmod()</a></li>
+<li><a href="https://docs.python.org/3/library/os.html#os.chmod">os.chmod()</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-04 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-04 17:50</div>
+            <div class="timeline-body"><p>This makes sense to me. I think we should probably also allow the <code>stat.* | ...</code> case, but I think it makes sense to warn on other int literals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-05 06:26</div>
+            <div class="timeline-body"><p>https://docs.astral.sh/ruff/rules/bad-file-permissions/ is related. We should ensure the two rules perform the check in the same places</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RazerM">@RazerM</a> on 2025-06-05 23:33</div>
+            <div class="timeline-body"><p>I have a proof of concept of this working and hope to open a PR soon™</p>
+<pre><code>crates\ruff_linter\resources\test\fixtures\ruff\RUF061.py:3:18: RUF061 Non-octal mode, did you mean 0o444?
+  |
+1 | import os
+2 |
+3 | os.chmod(&quot;/foo&quot;, 444)  # Error
+  |                  ^^^ RUF061
+4 | os.chmod(&quot;/foo&quot;, 0o444)  # OK
+  |
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-05 23:37</div>
+            <div class="timeline-body"><p>Awesome, thank you! Just a note if it's not too late already, I think RUF061-063 are all in use by existing PRs (https://github.com/astral-sh/ruff/pull/18233#discussion_r2127241647). We can always  renumber later, but RUF064 should be the next free code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @RazerM by @ntBre on 2025-06-05 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18541.html">astral-sh/ruff#18541</a> on 2025-06-07 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-19 09:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ability to pin to a specific build of python-build-standalone - astral-sh/uv #14263</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ability to pin to a specific build of python-build-standalone</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14263">#14263</a>
+        opened by <a href="https://github.com/notatallshaw">@notatallshaw</a>
+        on 2025-06-25 16:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-06-25 16:07</div>
+            <div class="timeline-body"><p>One reproducibility issue I have with using uv to install Python, when compared to conda, is I can't pin the exact build of Python between uv versions.</p>
+<p>This is a problem because it means if I have a script that creates the Python environment between two different users the Python build they get will be based on the uv version they have installed. And that uv version upgrades are coupled to the python-build-standalone build upgrades.</p>
+<p>I understand there is a design issue here in how uv maps to python-build-standalone releases, but I would be happy with a verbose escape hatch, as I only need to install for one platform I would be fine with manually providing the url and any metadata uv needs about what Python version is I am installing.</p>
+<p>Unless I am missing that some escape hatch already exists?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @notatallshaw on 2025-06-25 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krazyito65">@krazyito65</a> on 2025-12-04 22:11</div>
+            <div class="timeline-body"><p>personally, this would be useful for me. the current solution i have to do is make sure i 'pin' which version of <code>uv</code> i install, but if i don't it uses the latest version of <code>python-build-standalone</code>.</p>
+<p>my usecase is that <code>uv</code> is in a much faster approval process to bring internally into my company since its a simple pip package, but internally hosting <code>python-build-standalone</code> is a much slower, and not as regularly needed occurrence, hence we are usually somewhat behind on which version of <code>python-build-standalone</code> we are using with our internal mirror.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-04 22:39</div>
+            <div class="timeline-body"><p>You can do rudimentary pinning now, see https://github.com/astral-sh/uv/pull/15314</p>
+<p>https://github.com/astral-sh/uv/blob/ed63be5dab467f370b92f9bc0658418780b1a5c7/crates/uv/tests/it/python_install.rs#L3627</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krazyito65">@krazyito65</a> on 2025-12-04 22:41</div>
+            <div class="timeline-body"><p>oh, this is perfect, im going to try it out, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krazyito65">@krazyito65</a> on 2025-12-04 22:52</div>
+            <div class="timeline-body"><pre><code>
+[2025-12-04T22:49:20.825Z] DEBUG Skipping interpreter at `/usr/bin/python3` from search path: does not satisfy request `3.13.9`
+
+[2025-12-04T22:49:20.825Z] DEBUG Skipping download `cpython-3.13.9-linux-x86_64-gnu`: requested build version `20251014` does not match download build version `20251120`
+
+[2025-12-04T22:49:20.825Z] DEBUG Skipping download `cpython-3.13.9-linux-x86_64_v2-gnu`: requested build version `20251014` does not match download build version `20251120`
+
+[2025-12-04T22:49:20.826Z] DEBUG Skipping download `cpython-3.13.9-linux-x86_64_v3-gnu`: requested build version `20251014` does not match download build version `20251120`
+
+[2025-12-04T22:49:20.826Z] DEBUG Skipping download `cpython-3.13.9-linux-x86_64_v4-gnu`: requested build version `20251014` does not match download build version `20251120`
+
+[2025-12-04T22:49:20.826Z] DEBUG Skipping download `cpython-3.13.9-linux-x86_64-gnu`: requested build version `20251014` does not match download build version `20251120`
+
+[2025-12-04T22:49:20.826Z] DEBUG Skipping download `cpython-3.13.9-linux-x86_64_v2-gnu`: requested build version `20251014` does not match download build version `20251120`
+
+[2025-12-04T22:49:20.826Z] DEBUG Skipping download `cpython-3.13.9-linux-x86_64_v3-gnu`: requested build version `20251014` does not match download build version `20251120`
+
+[2025-12-04T22:49:20.826Z] DEBUG Skipping download `cpython-3.13.9-linux-x86_64_v4-gnu`: requested build version `20251014` does not match download build version `20251120`
+
+[2025-12-04T22:49:20.826Z] DEBUG No downloads are available for Python 3.13.9
+</code></pre>
+<p>did i do something wrong?
+i have
+<code>UV_PYTHON_CPYTHON_BUILD = &quot;20251014&quot;</code>
+and
+<code>UV_PYTHON_INSTALL_MIRROR=</code>https://......./python-build-standalone/`</p>
+<p>within that mirror there is a folder marked: 20251014/ and has the binaries within.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-04 22:54</div>
+            <div class="timeline-body"><p>It doesn't work that way, it requires a <code>build</code> field in the download metadata and a <code>BUILD</code> file in the distribution. It's not set up to make it easy to fetch arbitrary specific builds yet though, it's set up to fail if your pinned build doesn't match what's available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krazyito65">@krazyito65</a> on 2025-12-04 23:00</div>
+            <div class="timeline-body"><p>ah i see, i misunderstood, then my previous statement i guess still stands as a feature request, but at least with this you can ensure that people are using the same build</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

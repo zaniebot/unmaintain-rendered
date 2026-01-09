@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forbid credentials in URLs in `pyproject.toml` index definitions - astral-sh/uv #16623</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Forbid credentials in URLs in `pyproject.toml` index definitions</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16623">#16623</a>
+        opened by <a href="https://github.com/woodruffw">@woodruffw</a>
+        on 2025-11-06 21:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-11-06 21:54</div>
+            <div class="timeline-body"><p>Right now, uv allows URLs with credentials in the <code>[[tools.uv.index]]</code> table. For example, this is permitted:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;super-secure&quot;
+url = &quot;https://foo:hunter2@example.com/simple&quot;
+default = true
+</code></pre>
+<p>(Where <code>hunter2</code> is a presumably secret password.)</p>
+<p>This is arguably not super ideal for a few reasons:</p>
+<ol>
+<li>It's a plain text file, and credentials should <em>generally</em> not be in plain text files. The overall status quo is that credentials in plain text files are pretty common (netrc, pypirc, cargo credentials, etc.), so we're not &quot;out of band&quot; here, but it's still not ideal.</li>
+<li>Validation of pyproject.toml files isn't redacted in any way, meaning that a syntax or semantic error in  a user's config could accidentally disclose their credentials to stdout/stderr. This may or may not be a security concern depending on the usage context, but it <em>is</em> inconsistent with efforts we take elsewhere in the codebase to avoid accidental credential display (like <code>DisplaySafeUrl</code>). An example of this can be seen in the snapshots in #16622.</li>
+</ol>
+<p>So, maybe we should forbid these? On the other hand, doing so might be pretty disruptive, especially to users who are using credentials-in-index-urls-in-pyproject in settings where it's less of an issue (e.g. outside of source control). @zanieb points out that we could maybe fine-tune the check here to only fire when we detect that the <code>pyproject.toml</code> is in source control to somewhat mitigate this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @woodruffw on 2025-11-06 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16622.html">astral-sh/uv#16622</a> on 2025-11-06 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13668.html">astral-sh/uv#13668</a> on 2025-11-07 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">security</span> added by @woodruffw on 2025-11-07 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2025-11-11 17:55</div>
+            <div class="timeline-body"><p>Is the username alone also not considered a credential?<br />
+I do put <code>oauth2accesstoken</code> in the index-url, to avoid keyring requesting the username interactively.</p>
+<p>If a password is found,  a big red warning could be shown.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-11-12 15:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Is the username alone also not considered a credential? I do put <code>oauth2accesstoken</code> in the index-url, to avoid keyring requesting the username interactively.</p>
+<p>If a password is found, a big red warning could be shown.</p>
+</blockquote>
+<p>I was referring specifically to passwords since usernames are <em>generally</em> non-sensitive information (although plenty of services violate this, e.g. GitHub historically allowed the username/password in basic authentication to be swapped. Not sure if they still do.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

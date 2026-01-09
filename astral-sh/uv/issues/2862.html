@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect conda environment managed by micromamba - astral-sh/uv #2862</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect conda environment managed by micromamba</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2862">#2862</a>
+        opened by <a href="https://github.com/meridionaljet">@meridionaljet</a>
+        on 2024-04-07 20:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/meridionaljet">@meridionaljet</a> on 2024-04-07 20:27</div>
+            <div class="timeline-body"><p>uv version: 0.1.29</p>
+<p>Micromamba sets <code>MAMBA_ROOT_PREFIX</code> instead of <code>CONDA_PREFIX</code>: https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html#quickstarts</p>
+<p>But <code>uv</code> only looks for <code>CONDA_PREFIX</code>, so errors like this get thrown when using it in environments such as the <code>mambaorg/micromamba</code> image:</p>
+<pre><code>error: Failed to locate a virtualenv or Conda environment (checked: `VIRTUAL_ENV`, `CONDA_PREFIX`, and `.venv`). Run `uv venv` to create a virtualenv.
+</code></pre>
+<p>Obviously this can be worked around by setting <code>CONDA_PREFIX</code> manually in such environments, so this is a minor issue, but figured it would be good to document.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-04-07 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-07 21:32</div>
+            <div class="timeline-body"><p>This makes sense although I'm not sure where we should draw the line on environment variables we check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/meridionaljet">@meridionaljet</a> on 2024-04-07 21:56</div>
+            <div class="timeline-body"><blockquote>
+<p>This makes sense although I'm not sure where we should draw the line on environment variables we check.</p>
+</blockquote>
+<p>Definitely agree there should be a reasonable limit on this. Micromamba / mamba is a pretty popular implementation of conda, though, and if uv users are performance-oriented, they will often be using micromamba as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-07 22:02</div>
+            <div class="timeline-body"><p>Makes sense. What should we do if <code>MAMBA_ROOT_PREFIX</code> and <code>CONDA_PREFIX</code> are both set?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/meridionaljet">@meridionaljet</a> on 2024-04-07 22:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Makes sense. What should we do if <code>MAMBA_ROOT_PREFIX</code> and <code>CONDA_PREFIX</code> are both set?</p>
+</blockquote>
+<p>Maybe just error if they are not equal? You could pick one to default to but I could see that leading to frustrating bugs for users. I'm struggling to think of a correct use-case where both vars are set and intentionally different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-07 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-07 22:21</div>
+            <div class="timeline-body"><p>I just ran <code>micromamba activate</code> and it does seem to set <code>CONDA_PREFIX</code>?</p>
+<pre><code>❯ echo $CONDA_PREFIX
+/Users/crmarsh/micromamba
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/meridionaljet">@meridionaljet</a> on 2024-04-07 22:24</div>
+            <div class="timeline-body"><blockquote>
+<p>I just ran <code>micromamba activate</code> and it does seem to set <code>CONDA_PREFIX</code>?</p>
+<pre><code>❯ echo $CONDA_PREFIX
+/Users/crmarsh/micromamba
+</code></pre>
+</blockquote>
+<p>Funny enough I get the same behavior, which is inconsistent with the <a href="https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html#quickstarts">docs</a>. However, in the <code>mambaorg/micromamba</code> docker image, it is indeed <code>MAMBA_ROOT_PREFIX</code> that is set, which is when I first ran into this issue. I can't immediately explain the inconsistency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-07 22:25</div>
+            <div class="timeline-body"><p>Okay thanks, that's good to know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-08 01:10</div>
+            <div class="timeline-body"><p>Should we open an upstream issue before adding support?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mamba-org/micromamba-docker/issues/458.html">mamba-org/micromamba-docker#458</a> on 2024-04-08 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/meridionaljet">@meridionaljet</a> on 2024-04-08 01:50</div>
+            <div class="timeline-body"><p>Mamba itself may not actually have an issue. Mamba seems to define <code>MAMBA_ROOT_PREFIX</code> as the root prefix of the mamba/conda distribution (e.g., <code>/opt/conda</code>). <code>CONDA_PREFIX</code>, however, points to the directory of the currently active env, e.g. <code>/opt/conda/envs/test</code>. When the base env is activated, such as in the micromamba docker image, <code>MAMBA_ROOT_PREFIX</code> and <code>CONDA_PREFIX</code> would have the same value of <code>/opt/conda</code>.</p>
+<p>The potential issue, then, is that the current version of the <a href="https://github.com/mamba-org/micromamba-docker">Micromamba Docker image</a> doesn't seem to set <code>CONDA_PREFIX</code> even though the base env is activated by default when the image is built.</p>
+<p>If this is indeed unintended behavior and we should always expect <code>CONDA_PREFIX</code> to be defined when an env is active, then perhaps this is entirely an upstream problem.</p>
+<p>I've opened an upstream issue to hopefully gain some clarity: https://github.com/mamba-org/micromamba-docker/issues/458</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-08 02:12</div>
+            <div class="timeline-body"><p>Sounds good, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/meridionaljet">@meridionaljet</a> on 2024-04-09 06:55</div>
+            <div class="timeline-body"><p>Micromamba apparently has particular instructions that are necessary to activate a conda environment during the docker build process. When followed correctly, $CONDA_PREFIX is set as one would expect. There is thus nothing to be done here. I apologize for the wasted time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @meridionaljet on 2024-04-09 06:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

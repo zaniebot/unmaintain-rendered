@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUG: uv pip install gets pre-releases by default (config dependent) - astral-sh/uv #8587</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>BUG: uv pip install gets pre-releases by default (config dependent)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8587">#8587</a>
+        opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a>
+        on 2024-10-26 07:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-10-26 07:56</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>First, here's my current user level (and only) configuration file</p>
+<pre><code>❯ cat $HOME/.config/uv/uv.toml
+python-preference = 'system'
+extra-index-url = [&quot;https://pypi.anaconda.org/scientific-python-nightly-wheels/simple/&quot;]
+</code></pre>
+<p>(I'm including the whole file just in case but I don't expect that <code>python-preference</code> plays a role here).
+For context, https://pypi.anaconda.org/scientific-python-nightly-wheels/simple/ is where fundamental scientific packages like numpy, scipy or pandas upload &quot;nightly&quot; wheels, intended for downstream developers to run tests against bleeding-edge versions without wasting CPU time (and CI complexity) on building them. All wheels up there should be using pre-release version numbers of some sort, so the intent on my side is to go for these wheels when (and <em>only</em> when) I pass <code>--pre</code> to <code>uv pip install</code>.</p>
+<p>Here's what happens if I install e.g. numpy in a blank environment, always ignoring cache and varying whether I use <code>--no-config</code> or not:</p>
+<pre><code class="language-shell">❯ uv venv
+Using CPython 3.13.0 interpreter at: /Users/clm/.pyenv/versions/3.13.0/bin/python
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+
+❯ uv pip install numpy --no-cache --no-config 
+Resolved 1 package in 3.72s
+Prepared 1 package in 5.05s
+Installed 1 package in 17ms
+ + numpy==2.1.2
+
+❯ uv venv
+Using CPython 3.13.0 interpreter at: /Users/clm/.pyenv/versions/3.13.0/bin/python
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+
+❯ uv pip install numpy --no-cache
+Resolved 1 package in 1.94s
+Prepared 1 package in 6.34s
+Installed 1 package in 17ms
+ + numpy==2.2.0.dev0
+</code></pre>
+<p>notice that in the second case, I got a dev version even though I didn't pass <code>--pre</code>. I'm almost sure that's a bug, though there could be something I do not understand about how <code>extra-index-url</code> is supposed to work.</p>
+<p>Here it is again with <code>--verbose</code> (assuming a fresh venv again)</p>
+<pre><code>❯ uv pip install numpy --no-cache --verbose
+DEBUG uv 0.4.27 (Homebrew 2024-10-25)
+DEBUG Searching for default Python interpreter in system path
+DEBUG Found `cpython-3.13.0-macos-aarch64-none` at `/private/tmp/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.13.0 environment at .venv
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: numpy
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.13.0
+DEBUG Solving with target Python version: &gt;=3.13.0
+DEBUG Adding direct dependency: numpy*
+DEBUG No cache entry for: https://pypi.anaconda.org/scientific-python-nightly-wheels/simple/numpy/
+WARN Skipping file for numpy: numpy.org
+DEBUG Searching for a compatible version of numpy (*)
+DEBUG Selecting: numpy==2.2.0.dev0 [compatible] (numpy-2.2.0.dev0-cp313-cp313-macosx_14_0_arm64.whl)
+DEBUG No cache entry for: https://pypi.anaconda.org/scientific-python-nightly-wheels/simple/numpy/2.2.0.dev0/numpy-2.2.0.dev0-cp313-cp313-macosx_14_0_arm64.whl
+WARN Range requests not supported for numpy-2.2.0.dev0-cp313-cp313-macosx_14_0_arm64.whl; streaming wheel
+DEBUG No cache entry for: https://pypi.anaconda.org/scientific-python-nightly-wheels/simple/numpy/2.2.0.dev0/numpy-2.2.0.dev0-cp313-cp313-macosx_14_0_arm64.whl
+DEBUG Tried 1 versions: numpy 1
+DEBUG Split specific environment resolution took 1.386s
+Resolved 1 package in 1.38s
+DEBUG Identified uncached distribution: numpy==2.2.0.dev0
+DEBUG No cache entry for: https://pypi.anaconda.org/scientific-python-nightly-wheels/simple/numpy/2.2.0.dev0/numpy-2.2.0.dev0-cp313-cp313-macosx_14_0_arm64.whl
+Prepared 1 package in 7.33s
+Installed 1 package in 22ms
+ + numpy==2.2.0.dev0
+DEBUG Released lock at `/private/tmp/.venv/.lock`
+</code></pre>
+<p>I note that the current CLI documentation indicates that the corresponding flag is deprecated, though I couldn't figure out how to migrate my configuration file.</p>
+<pre><code>❯ uv pip install --help | grep 'extra-index-url'
+      --extra-index-url &lt;EXTRA_INDEX_URL&gt;          (Deprecated: use `--index` instead) Extra URLs of package indexes to use, in addition to `--index-url` [env: UV_EXTRA_INDEX_URL=]
+</code></pre>
+<p>I'm running uv 0.4.27 on macOS (Apple silicon) in the all the above. Though I noticed this first on version 0.4.26, I never tried this workflow on an earlier version, so I don't know if it's a regression or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-26 16:17</div>
+            <div class="timeline-body"><p>I think what you're encountering is described in https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes and https://docs.astral.sh/uv/pip/compatibility/#pre-release-compatibility</p>
+<p>The package exists on the first index URL (the extra index you provide) so we do not look at additional indexes. Since there are only pre-release versions available, we accept one without the <code>--pre</code> flag. In brief, I think you want to add <a href="https://docs.astral.sh/uv/reference/settings/#index-strategy"><code>index-strategy = unsafe-best-match</code></a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-26 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-10-26 16:47</div>
+            <div class="timeline-body"><p>Oh. I'm almost sure I've been bitten by this before, and this is likely to be the <em>second</em> issue I open about it 🤦🏻‍♂️
+Anyway, adding <code>index-strategy = &quot;unsafe-best-match&quot;</code> indeed gets me the behavior I intended. Thanks a lot !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @neutrinoceros on 2024-10-26 16:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

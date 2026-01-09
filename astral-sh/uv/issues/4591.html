@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pip compile --universal using python version markers - astral-sh/uv #4591</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>pip compile --universal using python version markers</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4591">#4591</a>
+        opened by <a href="https://github.com/bluss">@bluss</a>
+        on 2024-06-27 17:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bluss">@bluss</a> on 2024-06-27 17:49</div>
+            <div class="timeline-body"><p>Python version markers being used in an interesting way by pip compile --universal.</p>
+<p>Bug summary: the emitted markers <code>python_version &gt;= '3.12'</code> etc make the lockfile non-universal. Without -p argument the result depends on which python version uv selects by default.</p>
+<p>uv 0.2.17
+platform: linux (x86_64)</p>
+<pre><code class="language-shell">&gt; echo pandas==2.2.2 | uv pip compile --universal - -p 3.12 --no-header
+Resolved 6 packages in 18ms
+numpy==2.0.0 ; python_version &gt;= '3.12'
+    # via pandas
+pandas==2.2.2
+python-dateutil==2.9.0.post0
+    # via pandas
+pytz==2024.1
+    # via pandas
+six==1.16.0
+    # via python-dateutil
+tzdata==2024.1
+    # via pandas
+</code></pre>
+<pre><code class="language-shell">&gt; echo pandas==2.2.2 | uv pip compile --universal - -p 3.11 --no-header
+Resolved 6 packages in 18ms
+numpy==2.0.0 ; python_version == '3.11'
+    # via pandas
+pandas==2.2.2
+python-dateutil==2.9.0.post0
+    # via pandas
+pytz==2024.1
+    # via pandas
+six==1.16.0
+    # via python-dateutil
+tzdata==2024.1
+    # via pandas
+</code></pre>
+<pre><code class="language-shell">&gt; echo pandas==2.2.2 | uv pip compile --universal - -p 3.10 --no-header
+Resolved 6 packages in 18ms
+numpy==2.0.0 ; python_version &lt; '3.11'
+    # via pandas
+pandas==2.2.2
+python-dateutil==2.9.0.post0
+    # via pandas
+pytz==2024.1
+    # via pandas
+six==1.16.0
+    # via python-dateutil
+tzdata==2024.1
+    # via pandas
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-27 17:51</div>
+            <div class="timeline-body"><p>We need some way to understand the minimum Python version compatibility -- I don't think this is a &quot;bug&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lock</span> added by @zanieb on 2024-06-27 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-06-27 17:54</div>
+            <div class="timeline-body"><p>It looks like a bug because the resolution done for python 3.10 is only valid for python 3.10 (not for higher versions). (The <code>numpy</code> dependency is not pinned for python 3.11, 3.12 - this &quot;works&quot; but there is no lock for that dependency?)</p>
+<pre><code>      --universal
+          Perform a universal resolution, attempting to generate a single `requirements.txt` output
+          file that is compatible with all operating systems, architectures and supported Python
+          versions
+</code></pre>
+<p>The docs suggest that universal can create a lockfile that is valid for more than one python version I think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-06-27 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-27 17:55</div>
+            <div class="timeline-body"><p>Yes, the Python version is meant to be a minimum. Just to clarify, there's no such thing as locking for &quot;all&quot; Python versions due to <code>requires-python</code>. You would need <em>all</em> of your dependencies to support all Python versions in order to produce a resolution -- but that's never true. So we need input on the minimum bound.</p>
+<p>That being said, the marker output here is clearly a bit weird? Like <code>numpy==2.0.0 ; python_version &lt; '3.11'</code> is clearly wrong for <code>-p 3.10</code> -- so I take it back. The intent is that <code>-p 3.10</code> locks for Python &gt;= 3.10, so that's a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-27 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-06-27 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-06-27 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-27 17:56</div>
+            <div class="timeline-body"><p>@charliermarsh I thought you you intentionally had it pin for the current version instead of using it as a lower bound?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-27 17:58</div>
+            <div class="timeline-body"><p>The <em>intent</em> was for it to be a minimum version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4593.html">astral-sh/uv#4593</a> on 2024-06-27 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-27 18:25</div>
+            <div class="timeline-body"><p>Ok this is a one-line change but we need to decide what we want: minimum version or exact version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4597.html">astral-sh/uv#4597</a> on 2024-06-27 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-27 18:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

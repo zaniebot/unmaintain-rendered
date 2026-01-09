@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff sometimes removes raw strings - astral-sh/ruff #4130</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff sometimes removes raw strings</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4130">#4130</a>
+        opened by <a href="https://github.com/m-k-l-s">@m-k-l-s</a>
+        on 2023-04-27 12:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/m-k-l-s">@m-k-l-s</a> on 2023-04-27 12:13</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Ruff (sometimes) turns <code>r&quot;^.:\\Users\\[^\\]*\\Downloads\\.*&quot;</code> into <code>&quot;^.:\\\\Users\\\\[^\\\\]*\\\\Downloads\\\\.*&quot;</code> which I believe is a bug.</p>
+<p>Specifically, this happens (at least) when <code>not (&lt;something_with_a_raw_string&gt;) is None</code> is on the input.</p>
+<pre><code>❯ ruff --version
+ruff 0.0.262
+</code></pre>
+<p>Using no config, all defaults.</p>
+<p>Minimal reasonable reproduction:</p>
+<pre><code>❯ cat fmt_test.py
+import re
+
+# r not removed:
+re.search(r&quot;^.:\\Users\\[^\\]*\\Downloads\\.*&quot;) is not None
+# r removed:
+not (re.search(r&quot;^.:\\Users\\[^\\]*\\Downloads\\.*&quot;) is None)
+
+</code></pre>
+<pre><code>❯ ruff fmt_test.py --diff
+--- fmt_test.py
++++ fmt_test.py
+@@ -3,4 +3,4 @@
+ # r not removed:
+ re.search(r&quot;^.:\\Users\\[^\\]*\\Downloads\\.*&quot;) is not None
+ # r removed:
+-not (re.search(r&quot;^.:\\Users\\[^\\]*\\Downloads\\.*&quot;) is None)
++re.search(&quot;^.:\\\\Users\\\\[^\\\\]*\\\\Downloads\\\\.*&quot;) is not None
+
+Would fix 1 error.
+</code></pre>
+<p>And this is an ultra minimal reproduction:</p>
+<p><code>not r&quot;\\&quot; is None</code> turns into <code>&quot;\\\\&quot; != None</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-27 14:49</div>
+            <div class="timeline-body"><p>👍 (Internal note: this is a limitation of <code>Stylist</code>. Raw strings aren't captured in the AST, so we end up removing them.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-04-27 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/youknowone">@youknowone</a> on 2023-04-28 08:23</div>
+            <div class="timeline-body"><p>Is it <code>Constant</code>? Will preserving raw string kind including <code>r</code> to <code>Constant</code> be helpful?</p>
+<p>https://github.com/RustPython/RustPython/blob/02840593bc56ae416ba2646166628f1712d6cf43/compiler/parser/src/string.rs#L513</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5020.html">astral-sh/ruff#5020</a> on 2023-06-12 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on 2023-06-12 16:14</div>
+            <div class="timeline-body"><p>Of note: the <code>parser_idempotency</code> fuzzer finds this bug, but I haven't been reporting these issues since the idempotency didn't seem to be a strong guarantee.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-07-14 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5755.html">astral-sh/ruff#5755</a> on 2023-07-14 03:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-14 04:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

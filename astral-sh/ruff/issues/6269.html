@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`D200` conflicts with `E501`/`W505`. - astral-sh/ruff #6269</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`D200` conflicts with `E501`/`W505`.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6269">#6269</a>
+        opened by <a href="https://github.com/ngnpope">@ngnpope</a>
+        on 2023-08-02 09:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-08-02 09:35</div>
+            <div class="timeline-body"><p>I have an issue where <code>D200</code> is raised, but after fixing it I get <code>E501</code>/<code>W505</code>.  <code>D200</code> should take into account the quote style, e.g. single or triple quotes, and prefixes, e.g. <code>r</code> for raw strings, and calculate the expected length appropriately, not raising if the fixed version would exceed <code>max-doc-length</code> or <code>max-length</code>.</p>
+<p>Using the following configuration file -- <code>bug.toml</code>:</p>
+<pre><code class="language-toml">select = [&quot;D200&quot;, &quot;E501&quot;, &quot;W505&quot;]
+line-length = 88
+
+[pycodestyle]
+max-doc-length = 88
+</code></pre>
+<p>And the following code -- <code>bug.py</code>:</p>
+<pre><code class="language-python"># Expect nothing for the following docstrings:
+
+def fslsq87():
+    &quot;This is a single line docstring with single quotes padded to 87 characters. XXXXX&quot;
+
+def fslsq88():
+    &quot;This is a single line docstring with single quotes padded to 88 characters. XXXXXX&quot;
+
+def fsltq87():
+    &quot;&quot;&quot;This is a single line docstring with triple quotes padded to 87 characters. X&quot;&quot;&quot;
+
+def fsltq88():
+    &quot;&quot;&quot;This is a single line docstring with triple quotes padded to 88 characters. XX&quot;&quot;&quot;
+
+def fmltq83():
+    &quot;&quot;&quot;
+    This is a multi line docstring with triple quotes padded to 83 characters. XXXX
+    &quot;&quot;&quot;
+
+def fmltq87():
+    &quot;&quot;&quot;
+    This is a multi line docstring with triple quotes padded to 87 characters. XXXXXXXX
+    &quot;&quot;&quot;
+
+def fmltq88():
+    &quot;&quot;&quot;
+    This is a multi line docstring with triple quotes padded to 88 characters. XXXXXXXXX
+    &quot;&quot;&quot;
+
+def frslsq87():
+    r&quot;This is a raw single line docstring with single quotes padded to 87 characters. &quot;
+
+def frslsq88():
+    r&quot;This is a raw single line docstring with single quotes padded to 88 characters. X&quot;
+
+def frsltq87():
+    r&quot;&quot;&quot;This is a raw single line docstring with triple quotes padded to 87 chara...&quot;&quot;&quot;
+
+def frsltq88():
+    r&quot;&quot;&quot;This is a raw single line docstring with triple quotes padded to 88 charac...&quot;&quot;&quot;
+
+def frmltq82():
+    r&quot;&quot;&quot;
+    This is a raw multi line docstring with triple quotes padded to 82 characters.
+    &quot;&quot;&quot;
+
+def frmltq87():
+    r&quot;&quot;&quot;
+    This is a raw multi line docstring with triple quotes padded to 87 characters. XXXX
+    &quot;&quot;&quot;
+
+def frmltq88():
+    r&quot;&quot;&quot;
+    This is a raw multi line docstring with triple quotes padded to 88 characters. XXXXX
+    &quot;&quot;&quot;
+
+# Expect D200 for the following docstrings:
+
+def fmltq82():
+    &quot;&quot;&quot;
+    This is a multi line docstring with triple quotes padded to 82 characters. XXX
+    &quot;&quot;&quot;
+
+def frmltq81():
+    r&quot;&quot;&quot;
+    This is a raw multi line docstring with triple quotes padded to 81 characters
+    &quot;&quot;&quot;
+
+# Expect E501/W505 for the following docstrings:
+
+def fslsq89():
+    &quot;This is a single line docstring with single quotes padded to 89 characters. XXXXXXX&quot;
+
+def fsltq89():
+    &quot;&quot;&quot;This is a single line docstring with triple quotes padded to 89 characters. XXX&quot;&quot;&quot;
+
+def fmltq89():
+    &quot;&quot;&quot;
+    This is a multi line docstring with triple quotes padded to 89 characters. XXXXXXXXXX
+    &quot;&quot;&quot;
+
+def frslsq89():
+    r&quot;This is a raw single line docstring with single quotes padded to 89 characters. XX&quot;
+
+def frsltq89():
+    r&quot;&quot;&quot;This is a raw single line docstring with triple quotes padded to 89 characters&quot;&quot;&quot;
+
+def frmltq89():
+    r&quot;&quot;&quot;
+    This is a raw multi line docstring with triple quotes padded to 89 characters. XXXXXX
+    &quot;&quot;&quot;
+</code></pre>
+<p>I get the following output:</p>
+<pre><code class="language-console">$ ruff --version
+ruff 0.0.282
+
+$ ruff check --config=bug.toml bug.py
+bug.py:16:5: D200 [*] One-line docstring should fit on one line
+bug.py:21:5: D200 [*] One-line docstring should fit on one line
+bug.py:26:5: D200 [*] One-line docstring should fit on one line
+bug.py:43:5: D200 [*] One-line docstring should fit on one line
+bug.py:48:5: D200 [*] One-line docstring should fit on one line
+bug.py:53:5: D200 [*] One-line docstring should fit on one line
+bug.py:60:5: D200 [*] One-line docstring should fit on one line
+bug.py:65:5: D200 [*] One-line docstring should fit on one line
+bug.py:72:89: W505 Doc line too long (89 &gt; 88 characters)
+bug.py:72:89: E501 Line too long (89 &gt; 88 characters)
+bug.py:75:89: W505 Doc line too long (89 &gt; 88 characters)
+bug.py:75:89: E501 Line too long (89 &gt; 88 characters)
+bug.py:78:5: D200 [*] One-line docstring should fit on one line
+bug.py:79:89: W505 Doc line too long (89 &gt; 88 characters)
+bug.py:79:89: E501 Line too long (89 &gt; 88 characters)
+bug.py:83:89: W505 Doc line too long (89 &gt; 88 characters)
+bug.py:83:89: E501 Line too long (89 &gt; 88 characters)
+bug.py:86:89: W505 Doc line too long (89 &gt; 88 characters)
+bug.py:86:89: E501 Line too long (89 &gt; 88 characters)
+bug.py:89:5: D200 [*] One-line docstring should fit on one line
+bug.py:90:89: W505 Doc line too long (89 &gt; 88 characters)
+bug.py:90:89: E501 Line too long (89 &gt; 88 characters)
+Found 22 errors.
+[*] 10 potentially fixable with the --fix option.
+</code></pre>
+<p>I would expect the following output:</p>
+<pre><code class="language-console">$ ruff check --config=bug.toml bug.py
+bug.py:60:5: D200 [*] One-line docstring should fit on one line
+bug.py:65:5: D200 [*] One-line docstring should fit on one line
+bug.py:72:89: W505 Doc line too long (89 &gt; 88 characters)
+bug.py:72:89: E501 Line too long (89 &gt; 88 characters)
+bug.py:75:89: W505 Doc line too long (89 &gt; 88 characters)
+bug.py:75:89: E501 Line too long (89 &gt; 88 characters)
+bug.py:79:89: W505 Doc line too long (89 &gt; 88 characters)
+bug.py:79:89: E501 Line too long (89 &gt; 88 characters)
+bug.py:83:89: W505 Doc line too long (89 &gt; 88 characters)
+bug.py:83:89: E501 Line too long (89 &gt; 88 characters)
+bug.py:86:89: W505 Doc line too long (89 &gt; 88 characters)
+bug.py:86:89: E501 Line too long (89 &gt; 88 characters)
+bug.py:90:89: W505 Doc line too long (89 &gt; 88 characters)
+bug.py:90:89: E501 Line too long (89 &gt; 88 characters)
+Found 14 errors.
+[*] 2 potentially fixable with the --fix option.
+</code></pre>
+<p><em>Note that the same ought to apply at module level too (but where indentation is zero), but as <code>D200</code> only applies to the first string in the module, I'd have had to create lots of tiny files...</em></p>
+<p>Hopefully this above example will provide a good comprehensive test case 😉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-08-16 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2023-08-16 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7414.html">astral-sh/ruff#7414</a> on 2023-09-15 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10272.html">astral-sh/ruff#10272</a> on 2024-03-07 09:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kaelten">@Kaelten</a> on 2025-06-25 02:17</div>
+            <div class="timeline-body"><p>Been hitting this too, I also can't seem to put in a ignore for the line too long bit either, but will try more of that soon.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

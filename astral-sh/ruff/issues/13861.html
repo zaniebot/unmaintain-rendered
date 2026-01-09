@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow empty `tuple()` call with C408 (unnecessary-collection-call) - astral-sh/ruff #13861</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow empty `tuple()` call with C408 (unnecessary-collection-call)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13861">#13861</a>
+        opened by <a href="https://github.com/LordAro">@LordAro</a>
+        on 2024-10-21 14:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LordAro">@LordAro</a> on 2024-10-21 14:38</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>It's totally valid but <code>()</code> is a bit of a strange syntax to actually spawn an empty tuple, especially when it's used within another call. e.g.</p>
+<pre><code class="language-python3">action = core.ClassName(core.ActCon.STUB, tuple())  # noqa: C408
+action = core.ClassName(core.ActCon.STUB, ())
+
+my_list.append(tuple(1, 2, 3))  # perfectly valid C408 warning
+my_list.append((1, 2, 3))
+my_list.append(tuple())  # noqa: C408
+my_list.append(())
+</code></pre>
+<p>I suggest adding a setting to allow empty tuples, but possibly just allowing it generally.</p>
+<p>Ruff version: 0.7.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-10-24 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 08:14</div>
+            <div class="timeline-body"><p>Hi @LordAro</p>
+<p>I'm struggling to understand how your question relates to <code>C409</code> because the rule doesn't trigger for me with the given code example  (see <a href="https://play.ruff.rs/199728fc-7494-435e-8f0d-a8bf894b90db">this playground</a>). However, your example raises <code>C408</code> and the rule recommends using literal syntax over function calls.</p>
+<p>Raising <code>C408</code> for <code>tuple</code> is exactly the intent of the rule. That's why I don't think they should be excluded regardless of their position (see the rule documentation for the motivation). You can disable <code>C408</code> when you prefer the method form.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Allow empty `tuple()` call with C409 (unnecessary-literal-within-tuple-call)" to "Allow empty `tuple()` call with C408 (unnecessary-collection-call)" by @LordAro on 2024-10-24 09:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LordAro">@LordAro</a> on 2024-10-24 09:18</div>
+            <div class="timeline-body"><p>Ah, I screwed up the numbers when constructing this example didn't I? I've updated the original issue</p>
+<p>C408 pertains to all collection types - I'm saying that empty tuples specifically could be a special case because the syntax ( <code>()</code> ) is used for so much else</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LordAro">@LordAro</a> on 2024-10-24 09:25</div>
+            <div class="timeline-body"><p>Although tbh maybe it's more relevant for 1-length tuples, as <code>(foo)</code> isn't a tuple but <code>(foo, )</code> is</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 09:36</div>
+            <div class="timeline-body"><p>Thanks for updating the issue. Glad to hear that we're talking about the same :)</p>
+<p>I agree, <code>()</code> is very unambiguous. I can see how <code>(foo,)</code> is harder to spot. But the rule isn't just about readability:</p>
+<blockquote>
+<p>It's unnecessary to call, e.g., dict() as opposed to using an empty literal ({}). The former is slower because the name dict must be looked up in the global scope in case it has been rebound.</p>
+</blockquote>
+<p>That's why I still think we should keep flagging all tuples, including zero and one element tuples because it applies to them as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 19:37</div>
+            <div class="timeline-body"><p>I think it's reasonable for us to keep this as-is though understand and respect the motivation for thinking otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-09 19:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

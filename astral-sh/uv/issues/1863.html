@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv venv fails to create a venv if the directory if not empty - astral-sh/uv #1863</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv venv fails to create a venv if the directory if not empty</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/1863">#1863</a>
+        opened by <a href="https://github.com/woutervh">@woutervh</a>
+        on 2024-02-22 13:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/woutervh">@woutervh</a> on 2024-02-22 13:04</div>
+            <div class="timeline-body"><p>tested with:</p>
+<ul>
+<li>uv --version 0.1.6</li>
+<li>uv --version 0.1.7</li>
+</ul>
+<pre><code>&gt; mkdir -p /tmp/foo
+&gt; cd /tmp/foo
+&gt; touch makefile
+&gt; uv venv .
+Using Python 3.11.6 interpreter at /opt/tools/pyenv/var/repo/versions/3.11.6/bin/python3
+Creating virtualenv at: .
+uv::venv::creation
+
+  × Failed to create virtualenv
+  ╰─▶ The directory `.` exists, but it's not a virtualenv
+</code></pre>
+<p>The fail-message is trivially correct  and expected in this case, but should not be an error
+th venv-creation would not overwrite any existing files or dirs.</p>
+<p>but no problem with virtualenv:</p>
+<pre><code>&gt; virtualenv .
+created virtual environment CPython3.11.5.final.0-64 in 170ms
+  creator CPython3Posix(dest=/tmp/foo, clear=False, no_vcs_ignore=False, global=False)
+  seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=/opt/tools/virtualenv/var/cache)
+    added seed packages: pip==23.3.2, setuptools==69.0.3, wheel==0.42.0
+  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 13:23</div>
+            <div class="timeline-body"><p>Can you say more about the use-case here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-02-22 14:24</div>
+            <div class="timeline-body"><p>When not developing a python project (where the venv is managed by tools like poetry),
+&quot;.&quot; is probably the most common directory I use when manually creating a venv (usually via makefile/justfile).</p>
+<p>Working on multiple laptops,  and various distributions and different temporary WSL-distros
+and needing to support others, I see myself re-installing the same tools all the time.</p>
+<p>I simplified my workflow to install  (non-system packaged)  tools to &quot;make install&quot;.
+The fact that several of these tools I want to install are python-based is not important.
+The goal is only to make some executables available (using direct symlinks , without shims &amp; without activation)</p>
+<p>I moved away from tools like pipx and pipenv
+and I want to avoid the hidden nature of .venv or .local/share/...</p>
+<p>my tools-repo is public:</p>
+<pre><code>&gt; git clone https://github.com/libranet/libranet-tools/  /opt /tools
+&gt; cd /opt/tools/&lt;application&gt;
+&gt; make install
+
+&gt; cd /opt/tools/nvm
+&gt; make install
+
+&gt; cd /opt/tools/poetry
+&gt; make install
+
+&gt; cd /opt/tools/rye
+&gt; make install
+
+&gt; cd /opt/tools/virtualenv
+&gt; make install
+
+# resulting in
+&gt; /opt/tools/&lt;application/bin&lt;executables&gt;
+</code></pre>
+<p>The needed excutables are then symlinked to /opt/tools/bin  which is the only dir put on $PATH</p>
+<p>Currently most-used uv-based initial workflow is:</p>
+<pre><code>&gt; uv venv foo
+&gt; cd foo
+&gt; ln -s . .venv
+&gt; uv pip install ...
+</code></pre>
+<p>But when foo is a checkout-dir with a makefile, refuses to create the venv, where 'python-m venv' or 'virtualenv' don't object.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2024-02-22 15:12</div>
+            <div class="timeline-body"><p>I encountered this issue as well, with a slightly different use case:</p>
+<p>We use the <a href="https://ninja-build.org/">ninja</a> build system to build C/C++ and also manage Python dependencies via tasks: &quot;Create a venv&quot;, &quot;Install these requirements&quot;, &quot;Editable-install package A&quot;, &quot;Editable-install package B&quot;, &quot;run A tests&quot;, &quot;run B tests&quot;, &quot;Wheel A&quot;, etc.</p>
+<p>Ninja uses file timestamps to determine if a target is up-to-date, so we have &quot;proxy&quot; timestamp files that represent things like &quot;this requirements.txt file was installed&quot; because it's otherwise hard to tell whether it happened by looking at the filesystem. If <code>pip install -r requirements.txt</code> succeeds (as one of many examples), we'll stamp an empty file out.</p>
+<p>We put these timestamp files inside the venv directory, inside a <code>build_timestamps</code> subdirectory. <code>ninja</code> likes to make sure that all of the output directories exist before it does its work, though, so it creates the <code>our_venv/build_timestamps</code> directory, which causes <code>uv venv</code> to then fail. I had to do some silly filesystem scripting to delete it inside the task that runs <code>uv venv</code> so that <code>uv venv</code> would see no venv directory and create it.</p>
+<p>Anyway, it's kind of a niche corner case, but it's also very nice in that if you just want to <code>rm -rf venv</code> the timestamp files vanish with it, and the next invocation of <code>ninja</code> sees that all of the python / venv targets are dirty.</p>
+<p>Maybe something like <code>uv venv --permissive</code> that skips the &quot;directory already exists&quot; check, indicating that &quot;yeah, I hear what you're saying but I know some filesystem things you don't so please go ahead anyway?&quot;</p>
+<p>That would be safer than build-system <code>shutil.rmtree</code> shenanigans... :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1824.html">astral-sh/uv#1824</a> on 2024-02-25 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2548.html">astral-sh/uv#2548</a> on 2024-03-19 19:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

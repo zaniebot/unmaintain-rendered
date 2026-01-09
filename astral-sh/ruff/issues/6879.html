@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't emit `PLW1510` if `returncode` or `stderr` is checked explicitly - astral-sh/ruff #6879</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't emit `PLW1510` if `returncode` or `stderr` is checked explicitly</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6879">#6879</a>
+        opened by <a href="https://github.com/dosisod">@dosisod</a>
+        on 2023-08-25 18:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dosisod">@dosisod</a> on 2023-08-25 18:56</div>
+            <div class="timeline-body"><p><code>PLW1510</code> is meant to detect users not handling the return code of a subprocess, but there are other ways of checking the return code besides the <code>check</code> argument:</p>
+<pre><code class="language-python">import subprocess
+
+process = subprocess.run([&quot;ls&quot;, &quot;nonexistent&quot;])
+
+if process.returncode != 0:
+    print(&quot;Error, file doesn't exist&quot;)
+</code></pre>
+<p>In this case, raising an exception upon failure with <code>check=True</code> is not desired since we're explicitly checking the return code, and <code>check=False</code> would be redundant since we know we're handling the return code ourself.</p>
+<p>Ruff output:</p>
+<pre><code>$ ruff --version
+ruff 0.0.285
+
+$ ruff --select PLW1510 x.py
+x.py:3:11: PLW1510 `subprocess.run` without explicit `check` argument
+Found 1 error.
+</code></pre>
+<p>Expected output: no error.</p>
+<p>While it is easy enough to just silence the errors on a case-by-case basis, it would be nice if Ruff could detect this cases.</p>
+<p>Also, certain programs handle errors in different ways. It might be perfectly valid to check if a program had any errors by checking if anything was printed to <code>stderr</code>:</p>
+<pre><code class="language-python">process = subprocess.run([&quot;some_command&quot;], stderr=PIPE)
+
+if process.stderr:
+    print(&quot;Error occurred&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-08-25 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-08-25 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-25 21:42</div>
+            <div class="timeline-body"><p>My only hesitation is that it may be difficult for us to detect these reliably.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

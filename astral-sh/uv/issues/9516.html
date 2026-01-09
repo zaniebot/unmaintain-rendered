@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adding Git repo at subdirectory that points to source in same repo does not work - astral-sh/uv #9516</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Adding Git repo at subdirectory that points to source in same repo does not work</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9516">#9516</a>
+        opened by <a href="https://github.com/Lauszus">@Lauszus</a>
+        on 2024-11-29 09:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Lauszus">@Lauszus</a> on 2024-11-29 09:01</div>
+            <div class="timeline-body"><p>I have a mono repo with two Python packages:</p>
+<pre><code>.
+├── package1
+│   ├── pyproject.toml
+│   ├── README.md
+│   ├── src
+│   │   └── package1
+│   │       └── __init__.py
+│   └── uv.lock
+├── package2
+│   ├── pyproject.toml
+│   ├── README.md
+│   ├── src
+│   │   └── package2
+│   │       └── __init__.py
+│   └── uv.lock
+└── README.md
+</code></pre>
+<p><code>package2</code> has <code>package1</code> as a dependency:</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;package1&quot;,
+]
+
+[tool.uv.sources]
+package1 = { path = &quot;../package1&quot; }
+</code></pre>
+<p>Now create an application that has <code>package2</code> as a dependency:</p>
+<pre><code class="language-bash">mkdir uv-bug
+cd uv-bug
+uv init
+uv add &quot;package2 @ git+https://git@github.com/Lauszus/uv-test.git@main#egg=package2&amp;subdirectory=package2&quot;
+</code></pre>
+<p>This will create a dependency that looks like this:</p>
+<pre><code class="language-bash">dependencies = [
+    &quot;package2&quot;,
+]
+
+[tool.uv.sources]
+package2 = { git = &quot;https://github.com/Lauszus/uv-test.git&quot;, subdirectory = &quot;package2&quot;, rev = &quot;main&quot; }
+</code></pre>
+<p>The <code>uv.lock</code> entry for <code>package2</code> looks fine, as it is pointing to the Git repo:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;package2&quot;
+version = &quot;0.1.0&quot;
+source = { git = &quot;https://github.com/Lauszus/uv-test.git?subdirectory=package2&amp;rev=main#36276098fbaacadf88275f492a457c51c9dffe66&quot; }
+dependencies = [
+    { name = &quot;package1&quot; },
+]
+</code></pre>
+<p>But the <code>source</code> entry for <code>package1</code> is pointing to the local cache:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;package1&quot;
+version = &quot;0.1.0&quot;
+source = { directory = &quot;../.cache/uv/git-v0/checkouts/64fbda8353baefb8/3627609/package1&quot; }
+</code></pre>
+<p>This means that the CI can not run <code>uv sync</code> it and will fail with something like:</p>
+<pre><code class="language-bash">Using CPython 3.13.0
+Creating virtual environment at: .venv
+Resolved 3 packages in 0.64ms
+error: Failed to determine installation plan
+  Caused by: Distribution not found at: file:///home/runner/work/uv-bug/.cache/uv/git-v0/checkouts/08056d894a84e676/0ff3eff/package1
+Error: Process completed with exit code 2.
+</code></pre>
+<p>Verbose outputs:</p>
+<pre><code class="language-bash">DEBUG uv 0.5.5
+DEBUG Found project root: `/home/runner/work/uv-bug/uv-bug`
+DEBUG No workspace root found, using project root
+DEBUG Reading Python requests from version file at `/home/runner/work/uv-bug/uv-bug/.python-version`
+DEBUG Using Python request `3.13` from version file at `.python-version`
+DEBUG Searching for Python 3.13 in managed installations or search path
+DEBUG Searching for managed installations at `/home/runner/.local/share/uv/python`
+DEBUG Found `cpython-3.10.12-linux-x86_64-gnu` at `/usr/bin/python3` (search path)
+DEBUG Skipping interpreter at `/usr/bin/python3` from search path: does not satisfy request `3.13`
+DEBUG Found `cpython-3.10.12-linux-x86_64-gnu` at `/usr/bin/python` (search path)
+DEBUG Skipping interpreter at `/usr/bin/python` from search path: does not satisfy request `3.13`
+DEBUG Found `cpython-3.10.12-linux-x86_64-gnu` at `/bin/python3` (search path)
+DEBUG Skipping interpreter at `/bin/python3` from search path: does not satisfy request `3.13`
+DEBUG Found `cpython-3.10.12-linux-x86_64-gnu` at `/bin/python` (search path)
+DEBUG Skipping interpreter at `/bin/python` from search path: does not satisfy request `3.13`
+DEBUG Requested Python not found, checking for available download...
+DEBUG Acquired lock for `/home/runner/.local/share/uv/python`
+DEBUG Using request timeout of 30s
+INFO Fetching requested Python...
+DEBUG Downloading https://github.com/indygreg/python-build-standalone/releases/download/20241016/cpython-3.13.0%2B20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz to temporary location: /home/runner/.local/share/uv/python/.cache/.tmpR2lh12
+DEBUG Extracting cpython-3.13.0%2B20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+DEBUG Moving /home/runner/.local/share/uv/python/.cache/.tmpR2lh12/python to /home/runner/.local/share/uv/python/cpython-3.13.0-linux-x86_64-gnu
+DEBUG Released lock at `/home/runner/.local/share/uv/python/.lock`
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: uv-bug @ file:///home/runner/work/uv-bug/uv-bug
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 3 packages in 0.86ms
+DEBUG Using request timeout of 30s
+DEBUG Identified uncached distribution: package2 @ git+ssh://git@github.com/Lauszus/uv-test.git@0ff3eff109f3eaf816164217b6acf6183b6ac4bc#subdirectory=package2
+error: Failed to determine installation plan
+  Caused by: Distribution not found at: file:///home/runner/work/uv-bug/.cache/uv/git-v0/checkouts/08056d894a84e676/0ff3eff/package1
+Error: Process completed with exit code 2.
+</code></pre>
+<p>I would expect that it should look something like this:</p>
+<pre><code class="language-toml">source = { git = &quot;https://github.com/Lauszus/uv-test.git?subdirectory=package1&amp;rev=main#36276098fbaacadf88275f492a457c51c9dffe66&quot; }
+</code></pre>
+<p>In fact manually changing <code>uv.lock</code> to that makes it work!</p>
+<p>A minimal example can be found at:</p>
+<ul>
+<li>https://github.com/Lauszus/uv-test</li>
+<li>https://github.com/Lauszus/uv-bug</li>
+</ul>
+<p>Link to the failing CI run with the unmodified <code>uv.lock</code>: https://github.com/Lauszus/uv-bug/actions/runs/12084665895/job/33700321974</p>
+<p>Link to successful CI with manually modified <code>uv.lock</code>: https://github.com/Lauszus/uv-bug/actions/runs/12084725612/job/33700499893</p>
+<p>Diff between the two runs: https://github.com/Lauszus/uv-bug/commit/b67f534deca86a794b6726071589a5a07d80a210</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-29 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 16:55</div>
+            <div class="timeline-body"><p>My guess is that this is solved by https://github.com/astral-sh/uv/pull/9388 and is equivalent to https://github.com/astral-sh/uv/issues/8887?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-11-29 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lauszus">@Lauszus</a> on 2024-12-01 17:00</div>
+            <div class="timeline-body"><blockquote>
+<p>My guess is that this is solved by <a href="https://github.com/astral-sh/uv/pull/9388">#9388</a> and is equivalent to <a href="https://github.com/astral-sh/uv/issues/8887">#8887</a>?</p>
+</blockquote>
+<p>Yes looks like it. I can test and verify it once #9388 is merged and in a release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-03 03:26</div>
+            <div class="timeline-body"><p>It turns out this is a separate bug, but I'll fix it. Thanks for the clear repro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9594.html">astral-sh/uv#9594</a> on 2024-12-03 03:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9595.html">astral-sh/uv#9595</a> on 2024-12-03 04:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-03 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-03 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lauszus">@Lauszus</a> on 2024-12-03 09:23</div>
+            <div class="timeline-body"><blockquote>
+<p>It turns out this is a separate bug, but I'll fix it. Thanks for the clear repro.</p>
+</blockquote>
+<p>Thanks for the quick fix and thanks for uv. It's awesome! :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

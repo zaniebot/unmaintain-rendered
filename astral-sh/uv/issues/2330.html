@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip uninstall uv` does not remove the uv script from a venv - astral-sh/uv #2330</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip uninstall uv` does not remove the uv script from a venv</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2330">#2330</a>
+        opened by <a href="https://github.com/layday">@layday</a>
+        on 2024-03-10 09:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/layday">@layday</a> on 2024-03-10 09:15</div>
+            <div class="timeline-body"><pre><code>$ uv pip install uv
+Resolved 1 package in 26ms
+Installed 1 package in 11ms
+ + uv==0.1.16
+$ python -c 'import uv'
+$ which uv
+/Users/dimitris/code/python-packaging/build/venv/bin/uv
+$ uv pip uninstall uv
+Uninstalled 1 package in 557ms
+ - uv==0.1.16
+$ python -c 'import uv'
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'uv'
+[1]$ which uv
+/Users/dimitris/code/python-packaging/build/venv/bin/uv
+$ uv --version
+uv 0.1.16 (9f1452cb7 2024-03-07)
+$ uname
+Darwin
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 12:27</div>
+            <div class="timeline-body"><p>How is which uv resolving to the version in your virtualenv? You use uv in the first line, but then the subsequent invocations hit the version in your virtualenv without activating it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/layday">@layday</a> on 2024-03-10 12:34</div>
+            <div class="timeline-body"><p>The venv is loaded on <code>$PATH</code>. The first invocation is using an outer uv from pipx.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/layday">@layday</a> on 2024-03-10 12:48</div>
+            <div class="timeline-body"><p>This doesn't happen if uv is installed with pip:</p>
+<pre><code>$ pip install uv
+Collecting uv
+  Obtaining dependency information for uv from https://files.pythonhosted.org/packages/23/bd/3b9903bfe592d56e3f69aa3f4aea05c3ccae7dc0c485d288efac54201aac/uv-0.1.16-py3-none-macosx_10_12_x86_64.whl.metadata
+  Using cached uv-0.1.16-py3-none-macosx_10_12_x86_64.whl.metadata (20 kB)
+Using cached uv-0.1.16-py3-none-macosx_10_12_x86_64.whl (9.9 MB)
+Installing collected packages: uv
+Successfully installed uv-0.1.16
+
+[notice] A new release of pip is available: 23.2.1 -&gt; 24.0
+[notice] To update, run: pip install --upgrade pip
+$ cat venv/lib/python3.12/site-packages/uv-0.1.16.dist-info/RECORD
+../../../bin/uv,sha256=Z70VmXLN-6IZ7SX3CeSNyxB0cMW4f-Gmx_pCt5zm2gk,24062288
+uv-0.1.16.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+uv-0.1.16.dist-info/METADATA,sha256=lJtEXoPUCoaPaOmvua6SfL9ZLtnrNpycmhY9_ukSVGk,20860
+uv-0.1.16.dist-info/RECORD,,
+uv-0.1.16.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+uv-0.1.16.dist-info/WHEEL,sha256=XZs7YqiZZBVwjUJFDH_4SF9SM8QS2rSqm6iPIRrU0Oc,103
+uv-0.1.16.dist-info/license_files/LICENSE-APACHE,sha256=QwcOLU5TJoTeUhuIXzhdCEEDDvorGiC6-3YTOl4TecE,11356
+uv-0.1.16.dist-info/license_files/LICENSE-MIT,sha256=F5Z0Cpu8QWyblXwXhrSo0b9WmYXQxd1LwLjVLJZwbiI,1077
+uv/__init__.py,sha256=zlgkDW2Sj6yTQT9qLPSSoQfVbPPwFT7edvToFy0xUK8,806
+uv/__main__.py,sha256=LlzA8yRVILsEFDn5drFaTiopWuZ1K-_lnb2DK4P81qw,927
+uv/__pycache__/__init__.cpython-312.pyc,,
+uv/__pycache__/__main__.cpython-312.pyc,,
+uv/py.typed,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+$ uv --verbose pip uninstall uv
+    0.000276s DEBUG uv_client::registry_client Using registry request timeout of 300s
+ uv::requirements::from_source source=uv
+    0.366555s DEBUG uv_interpreter::python_environment Found a virtualenv through VIRTUAL_ENV at: /Users/dimitris/code/python-packaging/build/venv
+    0.366933s DEBUG uv_interpreter::interpreter Cached interpreter info for Python 3.12.1, skipping probing: /Users/dimitris/code/python-packaging/build/venv/bin/python
+    0.366976s DEBUG uv::commands::pip_uninstall Using Python 3.12.1 environment at /Users/dimitris/code/python-packaging/build/venv/bin/python
+    0.370778s DEBUG uv::commands::pip_uninstall Uninstalled uv (13 files, 4 directories)
+Uninstalled 1 package in 370ms
+ - uv==0.1.16
+$ uv pip install uv
+Resolved 1 package in 2ms
+Installed 1 package in 12ms
+ + uv==0.1.16
+$ cat venv/lib/python3.12/site-packages/uv-0.1.16.dist-info/RECORD
+/Users/dimitris/code/python-packaging/build/venv/bin/uv,sha256=bkGzI3Chbexd_nreYkHHjVyq-FS8BkdywctL1ZRs6_Y,46890608
+uv-0.1.16.dist-info/INSTALLER,sha256=5hhM4Q4mYTT9z6QB6PGpUAW81PGNFrYrdXMj4oM_6ak,2
+uv-0.1.16.dist-info/INSTALLER,sha256=5seyjfYzlik3jO5wuNTen-ixJCoE5KfxUnhni_eb_Oc,16
+uv-0.1.16.dist-info/METADATA,sha256=lJtEXoPUCoaPaOmvua6SfL9ZLtnrNpycmhY9_ukSVGk,20860
+uv-0.1.16.dist-info/RECORD,,
+uv-0.1.16.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+uv-0.1.16.dist-info/WHEEL,sha256=UKfJlVeDYE_8s37Vzf6MLY2dQV893BQmlKJY1DZ8Qbk,145
+uv-0.1.16.dist-info/license_files/LICENSE-APACHE,sha256=QwcOLU5TJoTeUhuIXzhdCEEDDvorGiC6-3YTOl4TecE,11356
+uv-0.1.16.dist-info/license_files/LICENSE-MIT,sha256=F5Z0Cpu8QWyblXwXhrSo0b9WmYXQxd1LwLjVLJZwbiI,1077
+uv/__init__.py,sha256=zlgkDW2Sj6yTQT9qLPSSoQfVbPPwFT7edvToFy0xUK8,806
+uv/__main__.py,sha256=LlzA8yRVILsEFDn5drFaTiopWuZ1K-_lnb2DK4P81qw,927
+uv/py.typed,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+$ uv --verbose pip uninstall uv
+    0.000455s DEBUG uv_client::registry_client Using registry request timeout of 300s
+ uv::requirements::from_source source=uv
+    0.367006s DEBUG uv_interpreter::python_environment Found a virtualenv through VIRTUAL_ENV at: /Users/dimitris/code/python-packaging/build/venv
+    0.367281s DEBUG uv_interpreter::interpreter Cached interpreter info for Python 3.12.1, skipping probing: /Users/dimitris/code/python-packaging/build/venv/bin/python
+    0.367316s DEBUG uv::commands::pip_uninstall Using Python 3.12.1 environment at /Users/dimitris/code/python-packaging/build/venv/bin/python
+    0.372060s DEBUG uv::commands::pip_uninstall Uninstalled uv (10 files, 3 directories)
+Uninstalled 1 package in 371ms
+ - uv==0.1.16
+</code></pre>
+<p>Comparing the RECORD written by pip vs uv's:</p>
+<pre><code class="language-diff">diff --git a/pip.diff b/uv.diff
+index ece3d6a..2d5861c 100644
+--- a/pip.diff
++++ b/uv.diff
+@@ -1,13 +1,12 @@
+-../../../bin/uv,sha256=Z70VmXLN-6IZ7SX3CeSNyxB0cMW4f-Gmx_pCt5zm2gk,24062288
+-uv-0.1.16.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
++/Users/dimitris/code/python-packaging/build/venv/bin/uv,sha256=bkGzI3Chbexd_nreYkHHjVyq-FS8BkdywctL1ZRs6_Y,46890608
++uv-0.1.16.dist-info/INSTALLER,sha256=5hhM4Q4mYTT9z6QB6PGpUAW81PGNFrYrdXMj4oM_6ak,2
++uv-0.1.16.dist-info/INSTALLER,sha256=5seyjfYzlik3jO5wuNTen-ixJCoE5KfxUnhni_eb_Oc,16
+ uv-0.1.16.dist-info/METADATA,sha256=lJtEXoPUCoaPaOmvua6SfL9ZLtnrNpycmhY9_ukSVGk,20860
+ uv-0.1.16.dist-info/RECORD,,
+ uv-0.1.16.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+-uv-0.1.16.dist-info/WHEEL,sha256=XZs7YqiZZBVwjUJFDH_4SF9SM8QS2rSqm6iPIRrU0Oc,103
++uv-0.1.16.dist-info/WHEEL,sha256=UKfJlVeDYE_8s37Vzf6MLY2dQV893BQmlKJY1DZ8Qbk,145
+ uv-0.1.16.dist-info/license_files/LICENSE-APACHE,sha256=QwcOLU5TJoTeUhuIXzhdCEEDDvorGiC6-3YTOl4TecE,11356
+ uv-0.1.16.dist-info/license_files/LICENSE-MIT,sha256=F5Z0Cpu8QWyblXwXhrSo0b9WmYXQxd1LwLjVLJZwbiI,1077
+ uv/__init__.py,sha256=zlgkDW2Sj6yTQT9qLPSSoQfVbPPwFT7edvToFy0xUK8,806
+ uv/__main__.py,sha256=LlzA8yRVILsEFDn5drFaTiopWuZ1K-_lnb2DK4P81qw,927
+-uv/__pycache__/__init__.cpython-312.pyc,,
+-uv/__pycache__/__main__.cpython-312.pyc,,
+ uv/py.typed,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+</code></pre>
+<p>The two notable differences appear to be that the script path is absolute for uv and that it has a duplicate INSTALLER record (though obviously only one file on disk).  The shasums are different because pip installs the x64 wheel whereas uv opts for universal2.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 12:53</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 12:59</div>
+            <div class="timeline-body"><p>Found the duplicate INSTALLER, just an oversight. I need to figure out how we could end up with an absolute path there. I don’t think it happens <em>in general</em> because we have a debug assert that the path is relative… I’ll look into it today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 13:04</div>
+            <div class="timeline-body"><p>I have one idea for how it happens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-10 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 13:04</div>
+            <div class="timeline-body"><p>Also, I think we should be preferring the x86 wheels, right? That seems wrong too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 13:41</div>
+            <div class="timeline-body"><p>Struggling to see how this would happen. Would you mind running https://github.com/astral-sh/uv/blob/6dcd00e0315c0b4ef743d7609c517b90fa607962/crates/uv-interpreter/src/get_interpreter_info.py#L4 in your interpreter within the virtualenv and sharing the results?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/layday">@layday</a> on 2024-03-10 13:48</div>
+            <div class="timeline-body"><pre><code class="language-json">{
+  &quot;markers&quot;: {
+    &quot;implementation_name&quot;: &quot;cpython&quot;,
+    &quot;implementation_version&quot;: &quot;3.12.1&quot;,
+    &quot;os_name&quot;: &quot;posix&quot;,
+    &quot;platform_machine&quot;: &quot;x86_64&quot;,
+    &quot;platform_python_implementation&quot;: &quot;CPython&quot;,
+    &quot;platform_release&quot;: &quot;21.6.0&quot;,
+    &quot;platform_system&quot;: &quot;Darwin&quot;,
+    &quot;platform_version&quot;: &quot;Darwin Kernel Version 21.6.0: Mon Feb 19 20:24:34 PST 2024; root:xnu-8020.240.18.707.4~1/RELEASE_X86_64&quot;,
+    &quot;python_full_version&quot;: &quot;3.12.1&quot;,
+    &quot;python_version&quot;: &quot;3.12&quot;,
+    &quot;sys_platform&quot;: &quot;darwin&quot;
+  },
+  &quot;base_prefix&quot;: &quot;/nix/store/g7gr0av2rkj57fqaklimdp769alxcfg1-python3-3.12.1&quot;,
+  &quot;base_exec_prefix&quot;: &quot;/nix/store/g7gr0av2rkj57fqaklimdp769alxcfg1-python3-3.12.1&quot;,
+  &quot;prefix&quot;: &quot;/Users/dimitris/code/python-packaging/build/venv&quot;,
+  &quot;base_executable&quot;: &quot;/nix/store/g7gr0av2rkj57fqaklimdp769alxcfg1-python3-3.12.1/bin/python3.12&quot;,
+  &quot;sys_executable&quot;: &quot;/Users/dimitris/code/python-packaging/build/venv/bin/python&quot;,
+  &quot;stdlib&quot;: &quot;/nix/store/g7gr0av2rkj57fqaklimdp769alxcfg1-python3-3.12.1/lib/python3.12&quot;,
+  &quot;scheme&quot;: {
+    &quot;platlib&quot;: &quot;/Users/dimitris/code/python-packaging/build/venv/lib/python3.12/site-packages&quot;,
+    &quot;purelib&quot;: &quot;/Users/dimitris/code/python-packaging/build/venv/lib/python3.12/site-packages&quot;,
+    &quot;include&quot;: &quot;/Users/dimitris/code/python-packaging/build/venv/include/site/python3.12&quot;,
+    &quot;scripts&quot;: &quot;/Users/dimitris/code/python-packaging/build/venv/bin&quot;,
+    &quot;data&quot;: &quot;/Users/dimitris/code/python-packaging/build/venv&quot;
+  },
+  &quot;virtualenv&quot;: {
+    &quot;purelib&quot;: &quot;lib/python3.12/site-packages&quot;,
+    &quot;platlib&quot;: &quot;lib/python3.12/site-packages&quot;,
+    &quot;include&quot;: &quot;include/site/python3.12&quot;,
+    &quot;scripts&quot;: &quot;bin&quot;,
+    &quot;data&quot;: &quot;&quot;
+  }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 13:57</div>
+            <div class="timeline-body"><p>Oh the x86 vs. universal might be a Nix thing. This has been reported before on Nix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/layday">@layday</a> on 2024-03-10 14:02</div>
+            <div class="timeline-body"><p>I'm not sure if https://github.com/astral-sh/uv/issues/1952 is related - I haven't installed uv with nix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 14:05</div>
+            <div class="timeline-body"><p>I don't think it would matter how you install uv. The issue is what we query from the running environment and the Python interpreter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 14:07</div>
+            <div class="timeline-body"><p>I have absolutely no clue how an absolute path is ending up in there though. If both <code>scheme.scripts</code> and <code>scheme.platlib</code> are absolute, I don't see how it could happen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-10 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-03-10 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/layday">@layday</a> on 2024-03-10 18:41</div>
+            <div class="timeline-body"><p>Is there anything I can do to help, keeping in mind that I know next to nothing about Rust? 😛</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 18:48</div>
+            <div class="timeline-body"><p>If I put up a branch, is there any chance you'd be willing to check it out, <code>cargo build</code>, and run with some debug logging?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/layday">@layday</a> on 2024-03-10 18:56</div>
+            <div class="timeline-body"><p>Sure!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 19:00</div>
+            <div class="timeline-body"><p>Ok let me make sure I cover everything that might be useful :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/layday">@layday</a> on 2024-03-10 22:07</div>
+            <div class="timeline-body"><p>FWIW I'm able to repro this with scripts from other packages.  For non-script data files, the path is kept relative.  Unsure if this is of any help, but if I'm reading the code in https://github.com/astral-sh/uv/blob/cd484d5d9b3192ddb63ba4d1cde4bdcd20bac086/crates/install-wheel-rs/src/wheel.rs#L398 correctly, then it doesn't matter what the <code>sysconfig</code> paths are - the bin directory path is hardcoded per plat.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 22:36</div>
+            <div class="timeline-body"><p>Oh sorry, I think I was only looking at entrypoints, and not files in <code>data</code>. Let me revisit...</p>
+<p>(BTW, I think the version you linked is stale. That line doesn't exist on <code>main</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 22:39</div>
+            <div class="timeline-body"><p>Okay I think I can reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 22:40</div>
+            <div class="timeline-body"><p>Now just trying to figure out why I couldn't reproduce this earlier. Maybe I made a mistake earlier. Anyway I can fix this now! Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2348.html">astral-sh/uv#2348</a> on 2024-03-10 22:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 22:56</div>
+            <div class="timeline-body"><p>Fixed in the next release, thank you and sorry for the confusion, I think my earlier debugging led me astray but pointing to that codepath was helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-10 23:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

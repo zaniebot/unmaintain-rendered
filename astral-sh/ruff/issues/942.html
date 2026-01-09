@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821 triggers when using non-ASCII characters - astral-sh/ruff #942</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821 triggers when using non-ASCII characters</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/942">#942</a>
+        opened by <a href="https://github.com/trag1c">@trag1c</a>
+        on 2022-11-28 14:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/trag1c">@trag1c</a> on 2022-11-28 14:51</div>
+            <div class="timeline-body"><pre><code class="language-py">from time import time_ns
+
+def time_µs() -&gt; int:
+	return time_ns() // 1000
+
+def main() -&gt; None:
+	print(time_µs())
+
+if __name__ == &quot;__main__&quot;:
+	main()
+</code></pre>
+<pre><code>test.py:7:9: F821 Undefined name `time_μs`
+</code></pre>
+<p>(it's obviously fine with a name like <code>time_us</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-11-28 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-28 14:53</div>
+            <div class="timeline-body"><p>Fascinating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 01:14</div>
+            <div class="timeline-body"><p>Oddly I'm not seeing this error when running on my machine 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trag1c">@trag1c</a> on 2022-11-30 01:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Oddly I'm not seeing this error when running on my machine 🤔</p>
+</blockquote>
+<p>Do you need any more details?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 01:22</div>
+            <div class="timeline-body"><p>Could it make a difference if you uploaded the exact file, rather than pasting the snippet?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trag1c">@trag1c</a> on 2022-11-30 01:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Could it make a difference if you uploaded the exact file, rather than pasting the snippet?</p>
+</blockquote>
+<p>Unfortunately, I don't have the exact file anymore. I didn't actually run this snippet until now, and oddly it also seems to work for me in this case.</p>
+<p>It complains about it in this example though:</p>
+<pre><code class="language-py">def time_µs():
+    ...
+
+def main():
+    time_μs()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 01:30</div>
+            <div class="timeline-body"><p>Oh cool, that repros for me too. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 02:20</div>
+            <div class="timeline-body"><p>Really don't understand this one.</p>
+<p>It seems to work fine if you indent with tabs, but not with spaces?</p>
+<pre><code class="language-py">def time_µs() -&gt; int:
+	...
+
+def main() -&gt; None:
+	time_µs()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 02:21</div>
+            <div class="timeline-body"><p>Wait, no, that's wrong -- the tabs are irrelevant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 02:24</div>
+            <div class="timeline-body"><p>I think there's something strange in how the <code>time_µs</code> is written in the first example. Notice that my editor doesn't like it either:</p>
+<p><img src="https://user-images.githubusercontent.com/1309177/204692220-6cf5b20d-42ca-4339-aca5-cf23bf76f7d1.png" alt="Screen Shot 2022-11-29 at 9 23 43 PM" /></p>
+<p><img src="https://user-images.githubusercontent.com/1309177/204692224-03640094-2396-4546-8d97-a89c55bd8480.png" alt="Screen Shot 2022-11-29 at 9 23 40 PM" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 02:29</div>
+            <div class="timeline-body"><p>Yeah, I think these are actually using different characters? In <code>foo.py</code> above, the first representation of <code>time_us</code> uses:</p>
+<pre><code>116
+105
+109
+101
+95
+194
+181
+115
+</code></pre>
+<p>The second uses:</p>
+<pre><code>116
+105
+109
+101
+95
+206
+188
+115
+</code></pre>
+<p>The difference is <code>[206, 188]</code> vs. <code>[194, 181]</code>, which I guess represent slightly different characters?</p>
+<pre><code>string_utf8_lossy: μ
+string_utf8_lossy: µ
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 02:30</div>
+            <div class="timeline-body"><p>So, I think this is <em>correct</em>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-30 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 02:32</div>
+            <div class="timeline-body"><p>Sigh, yes, the former (<code>[206, 188]</code>) is <a href="https://www.compart.com/en/unicode/U+03BC">Greek Small Letter Mu</a>, while the latter ([<code>194, 181]</code>) is <a href="https://www.compart.com/en/unicode/U+00B5">Micro Sign</a>. You can see that the UTF-8 Encoding hex digits match up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trag1c">@trag1c</a> on 2022-11-30 02:34</div>
+            <div class="timeline-body"><p>Sorry for wasting your time, looks like it's VSCode that treats these two as the same character, e.g. when highlighting or using autocompletion (that's probably when it inserted a different character? 🤨).</p>
+<p>Anyways great project! ❤️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 02:36</div>
+            <div class="timeline-body"><p>Haha no, all good, I was totally stumped! I learned a bit about debugging this stuff anyway.</p>
+<p>Thank you for the kind words :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ekzhang">@ekzhang</a> on 2022-11-30 06:08</div>
+            <div class="timeline-body"><p>(Off-topic) By the way, Rust has a <a href="https://doc.rust-lang.org/rustc/lints/listing/warn-by-default.html#confusable-idents">built-in lint</a> for this, just tried compiling the code in this <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=a7ea09c6779f9f7c522e98b68df209db">playground</a>.</p>
+<img width="719" alt="image" src="https://user-images.githubusercontent.com/7550632/204720397-9f56cb20-8dc9-4e05-996d-d198ee22ea36.png">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5003.html">astral-sh/ruff#5003</a> on 2023-06-10 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/covracer">@covracer</a> on 2024-03-29 23:08</div>
+            <div class="timeline-body"><p>Hopefully https://github.com/astral-sh/ruff/pull/4430 will help prevent micro/mu mixups</p>
+<p>I was also surprised by <a href="https://peps.python.org/pep-3131/">PEP 3131</a> edge cases.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

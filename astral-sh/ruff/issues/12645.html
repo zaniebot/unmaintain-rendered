@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red knot test unix::symlinked_module_search_path fails locally - astral-sh/ruff #12645</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Red knot test unix::symlinked_module_search_path fails locally</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12645">#12645</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2024-08-02 21:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-02 21:27</div>
+            <div class="timeline-body"><p>One of the tests for red knot fails locally for me - MBP running Sonoma 14.5. Can anyone help me debug this? I assume it's not reproducible for the maintainers otherwise the tests would not be passing... Apologies in advance if I've done something silly.</p>
+<p>Steps taken:</p>
+<ol>
+<li>Pull down <code>main</code>.</li>
+<li>Run <code>RUST_BACKTRACE=1 cargo test</code></li>
+</ol>
+<p>I get a failure for <code>unix::symlink_target_outside_watched_paths</code>.</p>
+<details>
+    <summary>Backtrace level 1 here</summary>
+
+<blockquote>
+<p>running 0 tests</p>
+<p>test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s</p>
+<p>running 20 tests
+test move_file_to_trash ... ok
+test move_file_to_workspace ... ok
+test add_search_path ... ok
+test hard_links_in_workspace ... ok
+test directory_moved_to_workspace ... ok
+test hard_links_to_target_outside_workspace ... ok
+test changed_file ... ok
+test unix::symlink_target_outside_watched_paths ... ignored, FSEvents doesn't emit change events for symlinked directories outside of the watched paths.
+test directory_moved_to_trash ... ok
+test deleted_file ... ok
+test new_file ... ok
+test new_ignored_file ... ok
+test directory_renamed ... ok
+test directory_deleted ... ok
+test remove_search_path ... ok
+test rename_file ... ok
+test unix::changed_metadata ... ok
+test unix::symlink_inside_workspace ... ok
+test search_path ... ok
+test unix::symlinked_module_search_path ... FAILED</p>
+<p>failures:</p>
+<p>---- unix::symlinked_module_search_path stdout ----
+thread 'unix::symlinked_module_search_path' panicked at crates/red_knot/tests/file_watching.rs:49:14:
+Expected watch changes but observed none.
+stack backtrace:
+0: rust_begin_unwind
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:652:5
+1: core::panicking::panic_fmt
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/panicking.rs:72:14
+2: core::panicking::panic_display
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/panicking.rs:262:5
+3: core::option::expect_failed
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/option.rs:1995:5
+4: core::option::Option<T>::expect
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/option.rs:898:21
+5: file_watching::TestCase::stop_watch
+at ./tests/file_watching.rs:48:9
+6: file_watching::unix::symlinked_module_search_path
+at ./tests/file_watching.rs:1210:23
+7: file_watching::unix::symlinked_module_search_path::{{closure}}
+at ./tests/file_watching.rs:1150:42
+8: core::ops::function::FnOnce::call_once
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/ops/function.rs:250:5
+9: core::ops::function::FnOnce::call_once
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/ops/function.rs:250:5
+note: Some details are omitted, run with <code>RUST_BACKTRACE=full</code> for a verbose backtrace.</p>
+<p>failures:
+unix::symlinked_module_search_path</p>
+<p>test result: FAILED. 18 passed; 1 failed; 1 ignored; 0 measured; 0 filtered out; finished in 10.24s</p>
+</details>
+<details>
+   <summary>Full backtrace here</summary>
+
+</blockquote>
+<blockquote>
+<p>running 0 tests</p>
+<p>test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s</p>
+<p>running 20 tests
+test deleted_file ... ok
+test hard_links_to_target_outside_workspace ... ok
+test add_search_path ... ok
+test changed_file ... ok
+test hard_links_in_workspace ... ok
+test directory_moved_to_workspace ... ok
+test directory_renamed ... ok
+test unix::symlink_target_outside_watched_paths ... ignored, FSEvents doesn't emit change events for symlinked directories outside of the watched paths.
+test directory_deleted ... ok
+test rename_file ... ok
+test new_ignored_file ... ok
+test move_file_to_workspace ... ok
+test new_file ... ok
+test move_file_to_trash ... ok
+test directory_moved_to_trash ... ok
+test remove_search_path ... ok
+test unix::symlink_inside_workspace ... ok
+test unix::changed_metadata ... ok
+test search_path ... ok
+test unix::symlinked_module_search_path ... FAILED</p>
+<p>failures:</p>
+<p>---- unix::symlinked_module_search_path stdout ----
+thread 'unix::symlinked_module_search_path' panicked at crates/red_knot/tests/file_watching.rs:49:14:
+Expected watch changes but observed none.
+stack backtrace:
+0:        0x100854edc - std::backtrace_rs::backtrace::libunwind::trace::h6196ef3b0a4e77ef
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/../../backtrace/src/backtrace/libunwind.rs:116:5
+1:        0x100854edc - std::backtrace_rs::backtrace::trace_unsynchronized::hac375eab426f00dd
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/../../backtrace/src/backtrace/mod.rs:66:5
+2:        0x100854edc - std::sys_common::backtrace::<em>print_fmt::h2a4f1f15852b7d46
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/sys_common/backtrace.rs:68:5
+3:        0x100854edc - &lt;std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display&gt;::fmt::h205eab4daa59a56a
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/sys_common/backtrace.rs:44:22
+4:        0x100873004 - core::fmt::rt::Argument::fmt::h391b30ab7a26d7be
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/fmt/rt.rs:165:63
+5:        0x100873004 - core::fmt::write::ha28d0fbf1a1eeba9
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/fmt/mod.rs:1168:21
+6:        0x100851a18 - std::io::Write::write_fmt::hdb161f22835a409d
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/io/mod.rs:1835:15
+7:        0x100854d34 - std::sys_common::backtrace::_print::hfe43851cb14e36df
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/sys_common/backtrace.rs:47:5
+8:        0x100854d34 - std::sys_common::backtrace::print::hb748761a345859f9
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/sys_common/backtrace.rs:34:9
+9:        0x100856358 - std::panicking::default_hook::{{closure}}::h6cb9ca91838de054
+10:        0x100855f6c - std::panicking::default_hook::h83345dc5126de57b
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:295:9
+11:        0x1002b3e20 - &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::Fn<Args>&gt;::call::h85507dacc99e5a3f
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/alloc/src/boxed.rs:2077:9
+12:        0x1002b3e20 - test::test_main::{{closure}}::hcc5ce573e6a37758
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/test/src/lib.rs:137:21
+13:        0x100856c2c - &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::Fn<Args>&gt;::call::h31310631bda73223
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/alloc/src/boxed.rs:2077:9
+14:        0x100856c2c - std::panicking::rust_panic_with_hook::h9305dc63490c537b
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:799:13
+15:        0x100856640 - std::panicking::begin_panic_handler::{{closure}}::h0d6c6c01f5801c1a
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:664:13
+16:        0x100855360 - std::sys_common::backtrace::__rust_end_short_backtrace::h2ace9f7ada66a76a
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/sys_common/backtrace.rs:171:18
+17:        0x1008563b0 - rust_begin_unwind
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:652:5
+18:        0x1008a4ff4 - core::panicking::panic_fmt::hf3031f82c202a80d
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/panicking.rs:72:14
+19:        0x1008a4fc8 - core::panicking::panic_display::h7da8db29ac24753f
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/panicking.rs:262:5
+20:        0x1008a4fc8 - core::option::expect_failed::hadb2936a80a68c9a
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/option.rs:1995:5
+21:        0x100257e5c - core::option::Option<T>::expect::h4c0708994c2aebf8
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/option.rs:898:21
+22:        0x100249344 - file_watching::TestCase::stop_watch::hbb551b3e9d6f1b65
+at /Users/dmbp/Documents/dev/contrib/ruff/crates/red_knot/tests/file_watching.rs:48:9
+23:        0x1002701ec - file_watching::unix::symlinked_module_search_path::hc717146df6c92744
+at /Users/dmbp/Documents/dev/contrib/ruff/crates/red_knot/tests/file_watching.rs:1210:23
+24:        0x1002802e4 - file_watching::unix::symlinked_module_search_path::{{closure}}::hce6a9bbdce7e82e1
+at /Users/dmbp/Documents/dev/contrib/ruff/crates/red_knot/tests/file_watching.rs:1150:42
+25:        0x100274bac - core::ops::function::FnOnce::call_once::h965249ecfe5650cd
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/ops/function.rs:250:5
+26:        0x1002b7adc - core::ops::function::FnOnce::call_once::h6288de1275a81f7e
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/ops/function.rs:250:5
+27:        0x1002b7adc - test::__rust_begin_short_backtrace::h2a106babef6b70ed
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/test/src/lib.rs:625:18
+28:        0x1002b7418 - test::run_test_in_process::{{closure}}::hcf2705e41b3d0d01
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/test/src/lib.rs:648:60
+29:        0x1002b7418 - &lt;core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce&lt;()&gt;&gt;::call_once::had2dc500529c8ec1
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/panic/unwind_safe.rs:272:9
+30:        0x1002b7418 - std::panicking::try::do_call::h55845621067c8dc2
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:559:40
+31:        0x1002b7418 - std::panicking::try::h40ce094ada304bf3
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:523:19
+32:        0x1002b7418 - std::panic::catch_unwind::h8d4bb94e8f7797ec
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panic.rs:149:14
+33:        0x1002b7418 - test::run_test_in_process::hb7392a758f6c858a
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/test/src/lib.rs:648:27
+34:        0x1002b7418 - test::run_test::{{closure}}::h0b3dae94fb1e3623
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/test/src/lib.rs:569:43
+35:        0x100289998 - test::run_test::{{closure}}::h349b61f0e92bb544
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/test/src/lib.rs:599:41
+36:        0x100289998 - std::sys_common::backtrace::__rust_begin_short_backtrace::h255ef5cb8f07346b
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/sys_common/backtrace.rs:155:18
+37:        0x10028db6c - std::thread::Builder::spawn_unchecked</em>::{{closure}}::{{closure}}::h9d83ff3086d2a361
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/thread/mod.rs:542:17
+38:        0x10028db6c - &lt;core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce&lt;()&gt;&gt;::call_once::hfbc6f1752590fbce
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/panic/unwind_safe.rs:272:9
+39:        0x10028db6c - std::panicking::try::do_call::h39bf94ad14a8e34a
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:559:40
+40:        0x10028db6c - std::panicking::try::h8605b5055f4f5eba
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:523:19
+41:        0x10028db6c - std::panic::catch_unwind::he873874fb889dc4a
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panic.rs:149:14
+42:        0x10028db6c - std::thread::Builder::spawn_unchecked_::{{closure}}::h5cd58b11a9c427ba
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/thread/mod.rs:541:30
+43:        0x10028db6c - core::ops::function::FnOnce::call_once{{vtable.shim}}::h02bb5b23eebe928d
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/ops/function.rs:250:5
+44:        0x10085bcb0 - &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::FnOnce<Args>&gt;::call_once::h602281de57923cf1
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/alloc/src/boxed.rs:2063:9
+45:        0x10085bcb0 - &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::FnOnce<Args>&gt;::call_once::hd3a85b6b9254c879
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/alloc/src/boxed.rs:2063:9
+46:        0x10085bcb0 - std::sys::pal::unix::thread::Thread::new::thread_start::h9e081ad7dac4e4c5
+at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/sys/pal/unix/thread.rs:108:17
+47:        0x184552f94 - __pthread_joiner_wake</p>
+<p>failures:
+unix::symlinked_module_search_path</p>
+<p>test result: FAILED. 18 passed; 1 failed; 1 ignored; 0 measured; 0 filtered out; finished in 10.32s</p>
+</blockquote>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-08-02 21:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @charliermarsh on 2024-08-02 21:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-02 21:51</div>
+            <div class="timeline-body"><p>I think there's just a lot of nuance to these tests across different systems. Doubt you did anything wrong!</p>
+<p>\cc @MichaReiser</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-02 22:02</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/12634 is up to fix this! Sorry for the bother, we'll have it sorted soon</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-02 22:43</div>
+            <div class="timeline-body"><p>No problem at all - thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-03 07:15</div>
+            <div class="timeline-body"><p>Yes sorry for the inconvenience and thanks for raising it.</p>
+<p>Those tests are driving me crazy. I very much hope that my last PR finally gets them into a non-flaky state where they pass on (all?) platforms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12634.html">astral-sh/ruff#12634</a> on 2024-08-03 07:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-03 07:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

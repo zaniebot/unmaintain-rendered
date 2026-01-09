@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cannot use multiple(true) option before subcommand - clap-rs/clap #1288</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>cannot use multiple(true) option before subcommand</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1288">#1288</a>
+        opened by <a href="https://github.com/lazyuser">@lazyuser</a>
+        on 2018-06-07 10:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lazyuser">@lazyuser</a> on 2018-06-07 10:51</div>
+            <div class="timeline-body"><!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+<h3>Rust Version</h3>
+<p>rustc 1.26.0 (a77568041 2018-05-07)</p>
+<h3>Affected Version of clap</h3>
+<p>clap 2.31.2</p>
+<h3>Expected Behavior Summary</h3>
+<p>output:</p>
+<pre><code>1: [1]
+1: subcmd
+2: [1]
+2: subcmd
+</code></pre>
+<h3>Actual Behavior Summary</h3>
+<p>output:</p>
+<pre><code>1: [1]
+1: subcmd
+thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: Error { message: &quot;\u{1b}[1;31merror:\u{1b}[0m Invalid value: The argument \'subcmd\' isn\'t a valid value&quot;, kind: ValueValidation, info: None }', libcore/result.rs:945:5
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<p>run the code below</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">#[macro_use]
+extern crate clap;
+use clap::{App, Arg, SubCommand};
+
+fn main() {
+    let arg1 = Arg::with_name(&quot;foo&quot;)
+            .short(&quot;f&quot;)
+            .long(&quot;foo&quot;)
+            .value_name(&quot;FOO_VALUE&quot;)
+            .takes_value(true)
+            .required(true);
+    let arg2 = arg1.clone().multiple(true);  // NB
+
+    let cmdline = vec![&quot;app&quot;, &quot;-f&quot;, &quot;1&quot;, &quot;subcmd&quot;];
+    
+    let matches1 = App::new(&quot;app&quot;).arg(arg1)  // NB arg1
+        .subcommand(SubCommand::with_name(&quot;subcmd&quot;))
+        .get_matches_from(&amp;cmdline);
+    let matches2 = App::new(&quot;app&quot;).arg(arg2)  // NB arg2
+        .subcommand(SubCommand::with_name(&quot;subcmd&quot;))
+        .get_matches_from(&amp;cmdline);
+
+    // ok
+    let foos = values_t!(matches1.values_of(&quot;foo&quot;), i32).unwrap();
+    println!(&quot;1: {:?}&quot;, foos);
+    if let Some(_) = matches1.subcommand_matches(&quot;subcmd&quot;) {
+        println!(&quot;1: subcmd&quot;);
+    }
+    
+    // bang
+    let foos = values_t!(matches2.values_of(&quot;foo&quot;), i32).unwrap();
+    println!(&quot;2: {:?}&quot;, foos);
+    if let Some(_) = matches1.subcommand_matches(&quot;subcmd&quot;) {
+        println!(&quot;2: subcmd&quot;);
+    }
+}
+</code></pre>
+<h3>Debug output</h3>
+<p><a href="https://github.com/kbknapp/clap-rs/files/2080063/debug.txt">debug.txt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-07 18:13</div>
+            <div class="timeline-body"><p>Thanks for filing this and for all the details :smile:</p>
+<p>While this sounds like a cut and dry bug, &quot;If a value matches a subcommand exactly, it's a subcommand!&quot; it's not quite that simple. There have been multiple instances where a value can match a subcommand name exactly. So clap uses the policy, &quot;if the argument <em>can</em> be a value, it probably <em>is</em> a value.&quot;</p>
+<p>The fix is to limit the number of values <em>per occurrence</em> of the argument which accepts multiple values. This is normally a better design.</p>
+<p>i.e.</p>
+<pre><code>$ app -f 1 -f 1 subcmd
+    # Good
+$ app -f 1 1 subcmd
+    # Not allowed
+</code></pre>
+<p>The way to do this is to set <code>Arg::number_of_values(1)</code> <em>and</em> <code>Arg::multiple(true)</code>.</p>
+<p>I'm going to close this as by design, however I'm also open to discussion on the matter :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-06-07 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2018-06-07 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lazyuser">@lazyuser</a> on 2018-06-10 12:38</div>
+            <div class="timeline-body"><p>Thanks for the explanation. Indeed it works fine with number_of_values(1). Maybe you should mention number_of_values(1) in a docs for Arg::multiple().</p>
+<p>If you're interested, I've had a strange clap behavior while trying to workaround the issue by myself. I tried to add &quot;--&quot; before the subcommand:</p>
+<pre><code class="language-rust">let cmdline = vec![&quot;app&quot;, &quot;-f&quot;, &quot;1&quot;, &quot;--&quot;, &quot;subcmd&quot;];
+</code></pre>
+<p>and got the funny-looking error:</p>
+<pre><code>error: The subcommand 'subcmd' wasn't recognized
+        Did you mean 'subcmd'?
+</code></pre>
+<p>P.S. Also, I've just noticed I've had a typo in a reference to another issue. Removed it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

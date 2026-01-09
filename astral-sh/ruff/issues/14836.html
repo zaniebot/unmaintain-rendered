@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`I001` should not be triggered for one new line after imports - astral-sh/ruff #14836</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`I001` should not be triggered for one new line after imports</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14836">#14836</a>
+        opened by <a href="https://github.com/samuelcolvin">@samuelcolvin</a>
+        on 2024-12-08 13:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2024-12-08 13:34</div>
+            <div class="timeline-body"><p>Background: see https://github.com/pydantic/pytest-examples/issues/46, in <a href="https://github.com/pydantic/pytest-examples">pytest-examples</a> we want to allow one new line between functions to keep examples short.</p>
+<p>This works well in general, but breaks when you have a function directly after imports where IMHO ruff <code>I001</code> is overreaching in complaining about &quot;un-sorted or un-formatted&quot; because there's one blank line, not two.</p>
+<p>(We use black for formatting as it's faster than ruff running as a separate subprocess (side note, would be great if you could release <code>ruff</code> as a Python library so we can use it embeded), and ruff for linting.)</p>
+<p>I don't think the error <code>Import block is un-sorted or un-formatted</code> makes sense for this code:</p>
+<pre><code class="language-py">from typing import Union
+
+from pydantic_ai import RunContext, Tool
+from pydantic_ai.tools import ToolDefinition
+
+async def only_if_42(
+    ctx: RunContext[int], tool_def: ToolDefinition
+) -&gt; Union[ToolDefinition, None]:
+    if ctx.deps == 42:
+        return tool_def
+
+def hitchhiker(ctx: RunContext[int], answer: str) -&gt; str:
+    return f'{ctx.deps} {answer}'
+
+hitchhiker = Tool(hitchhiker, prepare=only_if_42)
+</code></pre>
+<p>There should be a new <code>I003</code> code for &quot;expected two blank line after imports&quot;, which I could then switch off.</p>
+<hr />
+<p>Related, the font you use in your docs make capital <code>I</code> very hard to read:</p>
+<p><img src="https://github.com/user-attachments/assets/47bd8263-ca9b-46bd-9dff-51899dc6fb7b" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-08 13:43</div>
+            <div class="timeline-body"><p>You can use the <code>isort.lines-after-imports = 1</code> if you always one exactly one blank line after imports. The default <code>-1</code> uses 1 or 2 empty lines, depending on what comes after the import, which is in line with black/ruff (are you using black's preview style that it doesn't insert two empty lines after the import)?</p>
+<blockquote>
+<p>(We use black for formatting as it's faster than ruff running as a separate subprocess (side note, would be great if you could release ruff as a Python library so we can use it embeded), and ruff for linting.)</p>
+</blockquote>
+<p>See https://github.com/astral-sh/ruff/issues/659</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-12-08 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @AlexWaygood on 2024-12-08 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2024-12-08 17:56</div>
+            <div class="timeline-body"><p><code>isort.lines-after-imports</code> is helpful, thank you.</p>
+<p>But on balance I do think this should be a new error code too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-08 18:57</div>
+            <div class="timeline-body"><blockquote>
+<p>But on balance I do think this should be a new error code too.</p>
+</blockquote>
+<p>Possibly, but I'd prefer keeping it as is for now to match the upstream isort. We should revisit (and possibly even remove) isort as a whole.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-08 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-08 19:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd prefer keeping it as is for now to match the upstream isort</p>
+</blockquote>
+<p>I'm not disputing that lots of users find it confusing that isort is implemented as a lint check rather than part of the formatter, but FWIW, I don't think the upstream isort tool has any error codes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-08 20:07</div>
+            <div class="timeline-body"><blockquote>
+<p>'m not disputing that lots of users find it confusing that isort is implemented as a lint check rather than part of the formatter</p>
+</blockquote>
+<p>Totally agree and yes, the upstream isort has no error codes. But I understand that the idea is that <code>ISC001</code> matches upstream (it's how you enable isort today)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2024-12-12 19:25</div>
+            <div class="timeline-body"><p>FWIW I suspect ruff's usage is much greater than isort's ever was, so the name <code>isort</code> is a historical curiosity that means nothing to most users.</p>
+<p>I think this should be re-opened.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[B039] False-positive on mutable default when ContextVar has immutable type - astral-sh/ruff #20696</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[B039] False-positive on mutable default when ContextVar has immutable type</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20696">#20696</a>
+        opened by <a href="https://github.com/brandonchinn178">@brandonchinn178</a>
+        on 2025-10-04 06:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/brandonchinn178">@brandonchinn178</a> on 2025-10-04 06:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following code fails linting:</p>
+<pre><code class="language-python">FOO: ContextVar[Sequence[str]] = ContextVar(&quot;foo&quot;, default=[])
+</code></pre>
+<p>But this should be safe because call-sites cannot mutate it since it's a <code>Sequence</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-06 13:32</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>I'm not totally sure if we should consider this a false positive. Not being able to append to the <code>Sequence</code> seems like an invariant that only a type-checker could enforce, and at runtime it still seems possible to mutate the shared copy:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from contextvars import ContextVar
+&gt;&gt;&gt; from collections.abc import Sequence
+&gt;&gt;&gt; FOO: ContextVar[Sequence[str]] = ContextVar(&quot;foo&quot;, default=[])
+&gt;&gt;&gt;
+&gt;&gt;&gt; FOO.get()
+[]
+&gt;&gt;&gt; FOO.get().append(1)
+&gt;&gt;&gt; FOO.get()
+[1]
+&gt;&gt;&gt;
+</code></pre>
+<p>But I'm certainly open to other opinions!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-10-06 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brandonchinn178">@brandonchinn178</a> on 2025-10-06 14:54</div>
+            <div class="timeline-body"><p>But isn't that always true? For example, ruff allows the following with B006:</p>
+<pre><code class="language-py">def foo (x: Sequence[int] = [])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-06 14:57</div>
+            <div class="timeline-body"><p>Oh you're right. We already have an <code>is_immutable_annotation</code> that covers <code>Sequence</code> and that we use in B006. Maybe we should be using that here as well.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

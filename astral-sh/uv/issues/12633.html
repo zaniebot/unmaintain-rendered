@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV editable local dependencies are not importable via python - astral-sh/uv #12633</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV editable local dependencies are not importable via python</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12633">#12633</a>
+        opened by <a href="https://github.com/risky-rickman">@risky-rickman</a>
+        on 2025-04-02 17:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/risky-rickman">@risky-rickman</a> on 2025-04-02 17:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When i run the following commands in zsh i would expect to be able to import my lib package while running the python interpreter in my project .venv., however i get an importError.   Perhaps i am doing something wrong.  Because of this, i am unable to use UV to support python monorepos.</p>
+<pre><code>mkdir projects
+mkdir shared
+cd projects
+uv init project
+cd ../shared
+uv init lib
+cd ../projects
+cd project
+ uv add --editable ../../shared/lib
+uv sync
+source .venv/bin/activate
+python
+import lib 
+</code></pre>
+<h3>Platform</h3>
+<p>MacOS Version 15.2 (24C101), Apple M2 Pro</p>
+<h3>Version</h3>
+<p>uv 0.6.11</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @risky-rickman on 2025-04-02 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-02 17:45</div>
+            <div class="timeline-body"><p>Try adding the <code>--lib</code> flag to your <code>uv init</code> invocations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/risky-rickman">@risky-rickman</a> on 2025-04-02 18:03</div>
+            <div class="timeline-body"><p>ah, that solved it!  Thank you so much!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @risky-rickman on 2025-04-02 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-02 18:07</div>
+            <div class="timeline-body"><p>No problem. We plan to make to enable that setting (or something like it) by default in the future to avoid this problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/risky-rickman">@risky-rickman</a> on 2025-04-02 18:24</div>
+            <div class="timeline-body"><p>It appears that using the --lib flag forces me to have src/project under projects/project, and I can't modify this as the dependencies are (secretly, not declaratively in the pyproject.toml) linked this way.</p>
+<p>I feel like this is going to make managing a monorepo really cumbersome.  Shouldn't i be able to simply declare a folder to be used as a package?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-02 18:29</div>
+            <div class="timeline-body"><p>I don't fully understand the layout of your project, but yes, what you're describing should be possible. You just need to configure the build backend for each of those packages (e.g., <code>hatchling</code>) to point to that directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/risky-rickman">@risky-rickman</a> on 2025-04-02 18:32</div>
+            <div class="timeline-body"><p>alright, sounds like i just need to get more educated then.  I'll do some research.  Thanks for your help Charlie!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/risky-rickman">@risky-rickman</a> on 2025-04-02 23:09</div>
+            <div class="timeline-body"><p>I'm almost finished with my setup, but it doesn't appear that the --lib option is configurable in the pyproject.toml.  This makes it impossible for me to use an existing pyproject.toml to create a usable environment with 'uv sync'.  Is this something I also need to configure via hatch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-03 01:15</div>
+            <div class="timeline-body"><p><code>--lib</code> just creates a project layout. It's not a persistent setting. You should be able to have a usable environment with an existing <code>pyproject.toml</code>. Perhaps you can use the output of <code>uv init --lib</code> as an example? If your goal is still to have a flat structure (i.e., no <code>src/</code> directory), then yeah — you need to configure your build backend (hatchling, I presume).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

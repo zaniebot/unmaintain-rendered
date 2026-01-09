@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>non-pep585-annotation rule throws incorrectly for Type on Python &lt;3.9 - astral-sh/ruff #13783</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>non-pep585-annotation rule throws incorrectly for Type on Python &lt;3.9</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13783">#13783</a>
+        opened by <a href="https://github.com/Stealthii">@Stealthii</a>
+        on 2024-10-16 20:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Stealthii">@Stealthii</a> on 2024-10-16 20:30</div>
+            <div class="timeline-body"><p>Related: #10290, #2981, #12256</p>
+<p>PEP 585 allows usages like <code>list[X]</code> to be used in type annotations and type aliases. In Python 3.7 and 3.8 this syntax can be used in type annotations if paired with <code>from __future__ import annotations</code>. However, support for <code>type[X]</code> was only added in Python 3.9 (see <a href="https://docs.python.org/3/library/typing.html#typing.Type">typing.Type</a> documentation).</p>
+<p>Ruff 0.6.9 (and earlier) incorrectly raises an UP006 (non-pep585-annotation) against uses of <code>typing.Type</code> in typehints when Python Version is set to &lt; 3.9:</p>
+<pre><code>❯ ruff check --config &quot;target-version='py38'&quot; --select UP
+src/example.py:137:26: UP006 Use `type` instead of `Type` for type annotation
+    |
+136 |     @classmethod
+137 |     def from_string(cls: Type[Bytes], string: str) -&gt; Bytes:
+    |                          ^^^^ UP006
+138 |         &quot;&quot;&quot;Convert a string to an int of bytes.&quot;&quot;&quot;
+139 |         return cls(HumanBytes.convert(string))
+    |
+    = help: Replace with `type`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-10-16 21:37</div>
+            <div class="timeline-body"><p>Hi @Stealthii,</p>
+<p>The rule is guarded against &lt;= Python 3.8 unless <code>from __future__ import annotations</code> is imported. Support for <code>type</code> is added in 3.9, but can be enabled by importing annotations just as for <code>list</code>, <code>tuple</code>, <code>set</code>.</p>
+<p>You can verify that this works:</p>
+<pre><code class="language-python">from __future__ import annotations
+from functools import partial
+
+def func(a: type[object]):
+    return a
+
+
+print(func(partial))
+</code></pre>
+<pre><code class="language-shell">uv run --python 3.8 pep585.py
+</code></pre>
+<p>prints</p>
+<pre><code class="language-text">&lt;class 'functools.partial'&gt;
+</code></pre>
+<p>Whereas without the import a type error is produced:</p>
+<pre><code class="language-text">    def func(a: type[object]):
+TypeError: 'type' object is not subscriptable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Stealthii">@Stealthii</a> on 2024-10-16 21:44</div>
+            <div class="timeline-body"><p>@sbrugman flip you're right. Disregard this report as invalid - I incorrectly reported this against an instance that did have future annotations enabled, when investigating a mixed library. Also mis-diagnosed based on an <a href="https://stackoverflow.com/a/46092347">SO answer</a> that was not using future annotations in its example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Stealthii on 2024-10-16 21:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

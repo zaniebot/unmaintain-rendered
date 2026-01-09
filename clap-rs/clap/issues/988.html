@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is it possible to support arg specifiers? - clap-rs/clap #988</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Is it possible to support arg specifiers?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/988">#988</a>
+        opened by <a href="https://github.com/lu-zero">@lu-zero</a>
+        on 2017-06-13 08:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lu-zero">@lu-zero</a> on 2017-06-13 08:58</div>
+            <div class="timeline-body"><p>I'm trying to write a cli tool that is compatible with <code>avconv</code>.</p>
+<p>The syntax peculiarity is to have specifiers <code>:</code>-separated</p>
+<pre><code>-c
+-c:v
+-c:v:1
+</code></pre>
+<p>would all map to <code>codec</code>, applying to all, only the <code>video</code> streams or only to the <code>video</code> stream with index <code>1</code>.</p>
+<p>I'm not sure if there is a way in clap to mimic this or how hard and/or acceptable to extend clap to support this kind of pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-06-16 15:46</div>
+            <div class="timeline-body"><p>~~That's not directly possible in clap, due to being pretty niche. However, a small variation <em>is</em> possible in clap.~~</p>
+<pre><code>-c
+-c=v
+-c=v:1
+</code></pre>
+<p>This is possible by simply using <a href="https://docs.rs/clap/2.24.2/clap/struct.Arg.html#method.value_delimiter"><code>Arg::value_delimiter(&quot;:&quot;)</code></a>.</p>
+<p>By default this would also automatically work:</p>
+<pre><code>-c
+-c v
+-c v:1
+</code></pre>
+<p>If that's not desired, you can also set <a href="https://docs.rs/clap/2.24.2/clap/struct.Arg.html#method.require_equals"><code>Arg::require_equals</code></a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2017-06-16 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lu-zero">@lu-zero</a> on 2017-06-16 16:28</div>
+            <div class="timeline-body"><p>I was investigating it to have a compatibility mode with existing scripts, so I'd really enjoy to have that as-is.</p>
+<p>I know that's a fringe syntax and I'm enjoy clap so much I could probably just drop the idea of having a compatibility mode and just use an already supported syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-06-16 20:33</div>
+            <div class="timeline-body"><p>Actually I'm mistaken...it does work! I'd completely forgotten about this syntax:</p>
+<pre><code>kevin@spawn: ~/Projects/codecs 
+➜ cat src/main.rs
+extern crate clap;
+
+use clap::{App, Arg};
+
+fn main() {
+    let m = App::new(&quot;codecs&quot;)
+        .arg(Arg::from_usage(&quot;-c [opts] 'Some additional options for codec'&quot;)
+            .min_values(0))
+        .get_matches();
+    
+    println!(&quot;raw -c: {:?}&quot;, m.value_of(&quot;c&quot;));
+    println!(&quot;-c options: {}&quot;, m.value_of(&quot;c&quot;)
+                                .unwrap_or(&quot;None&quot;)
+                                .trim_left_matches(&quot;:&quot;)
+                                .split(&quot;:&quot;)
+                                .collect::&lt;Vec&lt;_&gt;&gt;()
+                                .join(&quot;, &quot;));
+}
+
+kevin@spawn: ~/Projects/codecs
+➜ ./target/debug/codecs -c
+raw -c: None
+-c options: None
+
+kevin@spawn: ~/Projects/codecs 
+➜ ./target/debug/codecs -c:v
+raw -c: Some(&quot;:v&quot;)
+-c options: v
+
+kevin@spawn: ~/Projects/codecs 
+➜ ./target/debug/codecs -c:v:1
+raw -c: Some(&quot;:v:1&quot;)
+-c options: v, 1
+</code></pre>
+<p>Note, that you'll have to handle the splitting of <code>&quot;:&quot;</code> and what those mean in user code...but Rust makes that super easy with matching and such.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lu-zero">@lu-zero</a> on 2017-06-16 20:39</div>
+            <div class="timeline-body"><p>Amazing! Thank you a lot! I'll experiment with it during the weekend :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-06-20 03:00</div>
+            <div class="timeline-body"><p>I'm going to close this issue, feel free to re-open if a problem arises 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-06-20 03:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

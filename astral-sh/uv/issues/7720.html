@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to get `dev-dependencies` in a few different `uv` repos at once - astral-sh/uv #7720</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to get `dev-dependencies` in a few different `uv` repos at once</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7720">#7720</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2024-09-26 18:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-09-26 18:41</div>
+            <div class="timeline-body"><p>We have a few repos that center on <code>uv</code> (with <code>dev-dependencies</code>). I have a teammate who uses one virtual environment for all projects, and he wants to install:</p>
+<ul>
+<li>All repos editably</li>
+<li>All repos' <code>dev-dependencies</code></li>
+</ul>
+<p>Doing something like:</p>
+<pre><code class="language-bash">python -m venv .venv &amp;&amp; source .venv/bin/activate &amp;&amp; pip install uv
+cd repo_a
+uv sync
+cd ../repo_b
+uv sync
+</code></pre>
+<p>Doesn't work because <code>uv sync</code> doesn't seem to respect the parent folder's <code>venv</code>.</p>
+<p>This is a total question, but how can <code>uv</code> support this use case of multiple editable installs with separate <code>dev-dependencies</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-26 18:49</div>
+            <div class="timeline-body"><p>You could set <a href="https://docs.astral.sh/uv/concepts/projects/#configuring-project-packaging"><code>UV_PROJECT_ENVIRONMENT</code></a> and use <code>uv sync --inexact</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-09-26 19:04</div>
+            <div class="timeline-body"><p>Okay thank you, that gets me <em>much</em> closer, but still not quite there:</p>
+<pre><code class="language-bash">python -m venv .venv &amp;&amp; source .venv/bin/activate &amp;&amp; pip install uv
+cd repo_a
+UV_PROJECT_ENVIRONMENT=../.venv uv sync --inexact
+cd ../repo_b_that_depends_on_repo_a
+UV_PROJECT_ENVIRONMENT=../.venv uv sync --inexact
+</code></pre>
+<p>The issue is the second <code>uv sync</code> of <code>repo_b_that_depends_on_repo_a</code> will uninstall the editable install of <code>repo_a</code> for a non-editable install.</p>
+<p>Is there some way to have the second <code>uv sync</code> not clobber the editable install of <code>repo_a</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-26 19:35</div>
+            <div class="timeline-body"><p>Of course :) <code>--no-install-package repo_a</code> in the second invocation should work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-09-26 19:59</div>
+            <div class="timeline-body"><p>Ah why am I bad at reading <code>--help</code>, I promise I was looking for some arg like that. Thank you again, closing this out</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jamesbraza on 2024-09-26 19:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

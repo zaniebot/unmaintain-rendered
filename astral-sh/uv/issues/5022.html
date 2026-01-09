@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;uv --preview lock&quot; does not read uv.toml or pyproject.toml settings - astral-sh/uv #5022</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;uv --preview lock&quot; does not read uv.toml or pyproject.toml settings</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/5022">#5022</a>
+        opened by <a href="https://github.com/dsully">@dsully</a>
+        on 2024-07-12 19:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dsully">@dsully</a> on 2024-07-12 19:44</div>
+            <div class="timeline-body"><p>The <code>uv --preview lock</code> command does not find/respect settings in either a <code>pyproject.toml</code> or a <code>uv.toml</code> file, and thus resolution fails for internal Pypi repositories:</p>
+<pre><code class="language-toml">[pip]
+extra-index-url = [
+  &quot;https://artifactory/artifactory/api/pypi/pypi-internal/simple&quot;,
+  &quot;https://artifactory/artifactory/api/pypi/pypi-external/simple&quot;,
+]
+index-url = &quot;https://server/pypi/simple&quot;
+</code></pre>
+<p>Or in <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.uv.pip]
+extra-index-url = [
+  &quot;https://artifactory/artifactory/api/pypi/pypi-internal/simple&quot;,
+  &quot;https://artifactory/artifactory/api/pypi/pypi-external/simple&quot;,
+]
+index-url = &quot;https://server/pypi/simple&quot;
+</code></pre>
+<pre><code class="language-shell">$ uv --preview lock --show-settings
+...
+LockSettings {
+    python: None,
+    refresh: None(
+        Timestamp(
+            SystemTime {
+                tv_sec: 1720813419,
+                tv_nsec: 61301000,
+            },
+        ),
+    ),
+    settings: ResolverSettings {
+        index_locations: IndexLocations {
+            index: None,
+            extra_index: [],
+            flat_index: [],
+            no_index: false,
+        },
+        index_strategy: FirstIndex,
+        keyring_provider: Disabled,
+        resolution: Highest,
+        prerelease: IfNecessaryOrExplicit,
+        config_setting: ConfigSettings(
+            {},
+        ),
+        exclude_newer: None,
+        link_mode: Clone,
+        upgrade: None,
+        build_options: BuildOptions {
+            no_binary: None,
+            no_build: None,
+        },
+    },
+}
+</code></pre>
+<p>Passing <code>--index-url</code> and <code>--extra-index-url</code> on the command line <em>does</em> work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-12 19:47</div>
+            <div class="timeline-body"><p>Hi! We don't read the <code>tool.uv.pip</code> settings outside the <code>uv pip</code> CLI — instead use the top-level <code>tool.uv</code> options that correspond to their pip-specific counterparts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-07-12 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsully">@dsully</a> on 2024-07-12 20:00</div>
+            <div class="timeline-body"><p>That doesn't appear to work with <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.uv]     ■ Additional properties are not allowed ('extra-index-url', 'index-url' were unexpected)
+extra-index-url =
+</code></pre>
+<p>And emits a schema validation error.</p>
+<p>In <code>uv.toml</code> if I remove any section wrapper and just have the raw key/value assignments, that works, but emits the same schema validation error.</p>
+<p>Will <code>uv pip</code> inherit these settings? Otherwise there will need to be duplication.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-12 20:36</div>
+            <div class="timeline-body"><p>Both of the following work for me?</p>
+<pre><code class="language-toml">[tool.uv]
+index-url = &quot;https://test.pypi.org/simple&quot;
+extra-index-url = [&quot;https://test.pypi.org/simple&quot;]
+</code></pre>
+<p>Are you on the latest version?</p>
+<p>Yeah <code>uv pip</code> will inherit these settings. If you set them in <code>[tool.uv.pip]</code> that will take precedence over the top-level one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsully">@dsully</a> on 2024-07-12 21:00</div>
+            <div class="timeline-body"><p>Yes - <code>uv 0.2.24 (527b711bc 2024-07-10)</code></p>
+<p>I think I found the issue. If there is an empty or commented out <code>uv.toml</code> then the values in <code>pyproject.toml</code> won't be read.</p>
+<p>There's also the need to update the schema JSON file as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 21:18</div>
+            <div class="timeline-body"><p>Do you mean, the JSON Schema on SchemaStore? Definitely need to update that.</p>
+<p>We should probably warn if you have both a <code>uv.toml</code> and a <code>pyproject.toml</code> with a <code>[tool.uv]</code> table in the same directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-07-12 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-07-12 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsully">@dsully</a> on 2024-07-12 21:23</div>
+            <div class="timeline-body"><p>Yes - the JSON Schema on SchemaStore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 21:24</div>
+            <div class="timeline-body"><p>https://github.com/SchemaStore/schemastore/pull/3919</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 21:25</div>
+            <div class="timeline-body"><p>I'll use this issue to track adding a warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-12 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5025.html">astral-sh/uv#5025</a> on 2024-07-12 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-12 21:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-12 21:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

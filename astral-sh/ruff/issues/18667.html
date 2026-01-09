@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter adds extra carriage return to multiline f-string debug replacements - astral-sh/ruff #18667</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter adds extra carriage return to multiline f-string debug replacements</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18667">#18667</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-06-13 19:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-13 19:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I noticed this while messing around on the playground, but it looks like formatting adds an extra <code>\r</code> to multiline f-string debug replacements. In combination with another software/editor that normalizes <code>\r</code> to <code>\r\n</code>, this causes the file to grow on every formatting.</p>
+<p>The code I've been using to test this is</p>
+<pre><code class="language-py">f&quot;{
+1=
+}&quot;
+</code></pre>
+<p>Where the line endings are <code>\r\n</code></p>
+<p>One example of this is on the playground. If you keep copying the output to the input, it keeps growing.
+<a href="https://play.ruff.rs/5ed0391a-3252-4d29-bd01-c3a20ac44839">first step</a>
+<a href="https://play.ruff.rs/5b073bce-059e-4e2c-b6a5-9446823aa285">second step</a>
+<a href="https://play.ruff.rs/488d1abc-0031-45ff-b82c-78a87970a28e">third step</a></p>
+<p>Another example is inside VSCode, if you have line endings set to <code>CRLF</code>. After file modification and save inside VSC it normalizes the newlines, so by running <code>ruff format</code> -&gt; do a edit like adding a <code>1</code> to the end of the file and save in VSC -&gt; run <code>ruff format</code> -&gt; repeat, the code grows every time.</p>
+<p>I also made a powershell script to demonstrate this, where it replaces <code>\r</code> with <code>\r\n</code> to show the growth. (I tried to make a bash script, but I'm both not familiar enough with bash and it feels like every built in tool/command nukes/normalizes newlines).</p>
+<details>
+
+<summary> PS script </summary>
+
+<pre><code class="language-ps">Set-Content &quot;issue.py&quot; -Value &quot;f`&quot;{`r`n1=`r`n}`&quot;&quot;
+echo &quot;issue.py content&quot;
+Get-Content issue.py -Raw | ForEach-Object { $_ -replace &quot;\n&quot;, &quot;\n&quot;} | ForEach-Object { $_ -replace &quot;\r&quot;, &quot;\r&quot;}
+echo &quot;Running ruff format&quot;
+uvx ruff format issue.py
+echo &quot;issue.py content&quot;
+Get-Content issue.py -Raw | ForEach-Object { $_ -replace &quot;\n&quot;, &quot;\n&quot;} | ForEach-Object { $_ -replace &quot;\r&quot;, &quot;\r&quot;}
+echo &quot;Newline normalization&quot;
+$edited = Get-Content issue.py -Raw | ForEach-Object { $_ -replace &quot;\r(?!\n)&quot;, &quot;`r`n&quot; }
+Set-Content &quot;issue.py&quot; $edited
+echo &quot;issue.py content&quot;
+Get-Content issue.py -Raw | ForEach-Object { $_ -replace &quot;\n&quot;, &quot;\n&quot;} | ForEach-Object { $_ -replace &quot;\r&quot;, &quot;\r&quot;}
+echo &quot;Running ruff format&quot;
+uvx ruff format issue.py
+echo &quot;issue.py content&quot;
+Get-Content issue.py -Raw | ForEach-Object { $_ -replace &quot;\n&quot;, &quot;\n&quot;} | ForEach-Object { $_ -replace &quot;\r&quot;, &quot;\r&quot;}
+echo &quot;Newline normalization&quot;
+$edited = Get-Content issue.py -Raw | ForEach-Object { $_ -replace &quot;\r(?!\n)&quot;, &quot;`r`n&quot; }
+Set-Content &quot;issue.py&quot; $edited
+echo &quot;issue.py content&quot;
+Get-Content issue.py -Raw | ForEach-Object { $_ -replace &quot;\n&quot;, &quot;\n&quot;} | ForEach-Object { $_ -replace &quot;\r&quot;, &quot;\r&quot;}
+</code></pre>
+</details>
+
+<p>Output of script:</p>
+<pre><code>PS &gt; ./issue.ps1
+issue.py content
+f&quot;{\r\n1=\r\n}&quot;\r\n
+Running ruff format
+1 file reformatted
+issue.py content
+f&quot;{\r\r\n1=\r\r\n}&quot;\r\n
+Newline normalization
+issue.py content
+f&quot;{\r\n\r\n1=\r\n\r\n}&quot;\r\n\r\n
+Running ruff format
+1 file reformatted
+issue.py content
+f&quot;{\r\r\n\r\r\n1=\r\r\n\r\r\n}&quot;\r\n
+Newline normalization
+issue.py content
+f&quot;{\r\n\r\n\r\n\r\n1=\r\n\r\n\r\n\r\n}&quot;\r\n\r\n
+</code></pre>
+<p>This only seems to happen when the f-string has a debug expression.</p>
+<p>This also happens with t-strings</p>
+<h3>Version</h3>
+<p>ruff 0.11.13 (5faf72a4d 2025-06-05) + playground</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-13 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-06-13 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-13 20:24</div>
+            <div class="timeline-body"><p>Interesting. I think I can reproduce this in the playground even without CRLF (though I'm not 100% sure which line ending is present). I can't seem to reproduce it in a Linux shell either, but I can definitely reproduce in VS Code by continuously hitting Ctrl+Shift+I to format:</p>
+<p><img src="https://github.com/user-attachments/assets/44b2304e-6875-45df-a926-a9a93c47bbc6" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-13 21:27</div>
+            <div class="timeline-body"><p>I think the playground normalizes both input and output to CRLF, so it wouldn't matter what you paste in. Editing my PS script it looks like it breaks with either CRLF or CR, but not just LF.</p>
+<p>LF line endings start:</p>
+<pre><code>PS &gt; ./issue.ps1
+issue.py content
+f&quot;{\n1=\n}&quot;\r\n
+Running ruff format
+1 file reformatted
+issue.py content
+f&quot;{\n1=\n}&quot;\n
+Newline normalization
+issue.py content
+f&quot;{\n1=\n}&quot;\n\r\n
+Running ruff format
+1 file reformatted
+issue.py content
+f&quot;{\n1=\n}&quot;\n
+Newline normalization
+issue.py content
+f&quot;{\n1=\n}&quot;\n\r\n
+</code></pre>
+<p>CR line endings start:</p>
+<pre><code>PS &gt; ./issue.ps1
+issue.py content
+f&quot;{\r1=\r}&quot;\r\n
+Running ruff format
+1 file reformatted
+issue.py content
+f&quot;{\r1=\r}&quot;\r
+Newline normalization
+issue.py content
+f&quot;{\r\n1=\r\n}&quot;\r\n\r\n
+Running ruff format
+1 file reformatted
+issue.py content
+f&quot;{\r\r\n1=\r\r\n}&quot;\r\n
+Newline normalization
+issue.py content
+f&quot;{\r\n\r\n1=\r\n\r\n}&quot;\r\n\r\n
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-06-13 21:40</div>
+            <div class="timeline-body"><p>I wonder if this is the relevant code? Debug text is formatted &quot;verbatim&quot;:</p>
+<p>https://github.com/astral-sh/ruff/blob/89d915a1e34144051815dfcbe60ec2cdeb29909e/crates/ruff_python_formatter/src/verbatim.rs#L873-L893</p>
+<p>and:</p>
+<p>https://github.com/astral-sh/ruff/blob/89d915a1e34144051815dfcbe60ec2cdeb29909e/crates/ruff_formatter/src/format_element.rs#L198-L224</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-06-13 22:16</div>
+            <div class="timeline-body"><p>Ok I think I see what's happening?</p>
+<p>The formatter writes the debug text &quot;verbatim&quot; by doing the following:</p>
+<ol>
+<li>Write text that appears between the <code>'{'</code> and the expression node.</li>
+<li>Write the expression node &quot;verbatim&quot; - which includes normalizing newlines.</li>
+<li>Write the text that appears after the expression node and the <code>'}'</code>.</li>
+</ol>
+<p>https://github.com/astral-sh/ruff/blob/89d915a1e34144051815dfcbe60ec2cdeb29909e/crates/ruff_python_formatter/src/other/interpolated_string_element.rs#L178-L185</p>
+<p>In particular, any normalization is omitted for the leading and trailing whitespace.</p>
+<p>Separately: I'm confused why we normalize given that we also have a <code>line-ending</code> option? Shouldn't we be using that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-14 05:15</div>
+            <div class="timeline-body"><p>Pasting the example into Python gives us:</p>
+<pre><code>&gt;&gt;&gt; f&quot;{
+...
+... 1=
+...
+... }&quot;
+'\n\n1=\n\n1'
+</code></pre>
+<p>That means, normalizing the newlines is okay from a semantic point of view.</p>
+<p>The formatter actually panics in debug builds with:</p>
+<pre><code>panicked at crates/ruff_formatter/src/builders.rs:405:5:
+The content '
+' contains an unsupported '\r' line terminator character but text must only use line feeds '\n' as line separator. Use '\n' instead of '\r' and '\r\n' to insert a line break in 
+</code></pre>
+<blockquote>
+<p>Separately: I'm confused why we normalize given that we also have a line-ending option? Shouldn't we be using that?</p>
+</blockquote>
+<p>The formatter works in two stages:</p>
+<ol>
+<li>Generate IR</li>
+<li>Print the IR to a string</li>
+</ol>
+<p>The 1. step is responsible for normalizing all newlines in text to <code>\n</code> because the step 2. doesn't support <code>\r\n</code> or <code>\r</code> to simplify many hot code paths. Step 2 is responsible for replacing all <code>\n</code> with the configured line ending.</p>
+<p>Step 1 only rarely needs to normalize line endings because it uses the <code>soft_line_break</code> or <code>hard_line_break</code> IR elements most of the time. It's really just in multiline text elements where the normalization is required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2025-06-14 05:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18673.html">astral-sh/ruff#18673</a> on 2025-06-14 05:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-14 05:54</div>
+            <div class="timeline-body"><p>From what I've seen, Python basically always normalizes newlines unless you call internal methods, which lets you get odd looking results like this</p>
+<pre><code class="language-py">print(eval('ord(&quot;&quot;&quot;\r\n&quot;&quot;&quot;)')) # outputs 10 instead of error
+print(eval('ord(&quot;&quot;&quot;\r&quot;&quot;&quot;)')) # outputs 10 instead of 13
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-15 05:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync` fails when interpreter is not named `python[3]` - astral-sh/uv #4709</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync` fails when interpreter is not named `python[3]`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4709">#4709</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-07-01 21:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-01 21:19</div>
+            <div class="timeline-body"><p>See discussion in https://github.com/astral-sh/uv/issues/4277</p>
+<p>Instead of only searching for, e.g., <code>python3.12</code> executables when Python 3.12 is requested (and not during the default search), we should use <code>which_re</code> (or a manually implemented <code>which</code>) to find all possible Python executables then filter them to meet the version request (if necessary).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-07-01 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-07-01 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4277.html">astral-sh/uv#4277</a> on 2024-07-01 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-01 21:21</div>
+            <div class="timeline-body"><p>See <code>python_executables_from_search_path</code> for the current implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4958.html">astral-sh/uv#4958</a> on 2024-07-10 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Search for all Python executable names" to "`uv sync` fails when interpreter is not named `python[3]`" by @konstin on 2024-07-10 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @konstin on 2024-07-10 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-07-10 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-10 14:35</div>
+            <div class="timeline-body"><p>The current behaviour is a problem when using pyenv: When using <code>uv sync</code>, uv fails to find a python interpreter even if it exists if the default <code>python</code>/<code>python3</code> are incompatible.</p>
+<p>For example with both <code>requires-python = &quot;==3.10.*&quot;</code> <code>requires-python = &quot;&gt;=3.10&quot;</code>, where the default <code>python</code>/<code>python3</code> are any other version, say 3.9:</p>
+<p>This fails:</p>
+<pre><code>uv sync --python-preference only-system
+</code></pre>
+<p>This passes:</p>
+<pre><code>uv sync --python-preference only-system -p 3.10
+</code></pre>
+<p>uv should find the python 3.10 interpreter in either case.</p>
+<h2>Reproduction</h2>
+<pre><code class="language-Dockerfile">FROM ubuntu
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update
+RUN apt install -yy build-essential libssl-dev zlib1g-dev \
+    libbz2-dev libreadline-dev libsqlite3-dev curl git \
+    libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+RUN curl https://pyenv.run | bash
+ENV PATH=&quot;/root/.pyenv/bin:$PATH&quot;
+RUN CONFIGURE_OPTS=&quot;--enable-optimizations&quot; pyenv install 3.8.12 3.8.18
+RUN CONFIGURE_OPTS=&quot;--enable-optimizations&quot; pyenv install 3.9.18
+RUN CONFIGURE_OPTS=&quot;--enable-optimizations&quot; pyenv install 3.10.13
+RUN CONFIGURE_OPTS=&quot;--enable-optimizations&quot; pyenv install 3.11.7
+RUN CONFIGURE_OPTS=&quot;--enable-optimizations&quot; pyenv install 3.12.1
+RUN pyenv global 3.8.12 3.8.18 3.9.18 3.10.13 3.11.7 3.12.1
+# https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv
+RUN echo 'export PYENV_ROOT=&quot;$HOME/.pyenv&quot;' &gt;&gt; ~/.bashrc \
+    &amp;&amp; echo 'command -v pyenv &gt;/dev/null || export PATH=&quot;$PYENV_ROOT/bin:$PATH&quot;' &gt;&gt; ~/.bashrc \
+    &amp;&amp; echo 'eval &quot;$(pyenv init -)&quot;' &gt;&gt; ~/.bashrc
+</code></pre>
+<p>Create a dummy pyproject.toml, any <code>requires-python</code> that mismatches the default active python will do:</p>
+<pre><code class="language-toml">[project]
+name = &quot;a&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;==3.10.*&quot;
+dependencies = [&quot;tqdm&quot;]
+</code></pre>
+<p>Compile uv:</p>
+<pre><code>cargo build --release --target x86_64-unknown-linux-musl
+</code></pre>
+<p>Start the docker container, mount the uv dir to <code>/io</code> and run commands with</p>
+<pre><code>/io/target/x86_64-unknown-linux-musl/release/uv sync
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 02:36</div>
+            <div class="timeline-body"><p>I think this needs an owner. @konstin?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-07-17 07:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-17 07:24</div>
+            <div class="timeline-body"><p>Will do</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5148.html">astral-sh/uv#5148</a> on 2024-07-17 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-07-18 15:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't run ruff when installed with pip target dir option - astral-sh/ruff #11246</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't run ruff when installed with pip target dir option</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11246">#11246</a>
+        opened by <a href="https://github.com/nunoh">@nunoh</a>
+        on 2024-05-02 11:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nunoh">@nunoh</a> on 2024-05-02 11:45</div>
+            <div class="timeline-body"><p>Can't run ruff when installed with pip <a href="https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-t">target dir option</a> <code>pip install ruff -t lib</code></p>
+<p>MRE</p>
+<pre><code class="language-bash">pip install -t ruff lib
+PYTHONPATH=lib python -m ruff --help
+</code></pre>
+<p>breaks with</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
+  File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
+  File &quot;xxxxxxxxxxxxxx/lib/ruff/__main__.py&quot;, line 32, in &lt;module&gt;
+    ruff = os.fsdecode(find_ruff_bin())
+                       ^^^^^^^^^^^^^^^
+  File &quot;xxxxxxxxxxxxxx/lib/ruff/__main__.py&quot;, line 28, in find_ruff_bin
+    raise FileNotFoundError(path)
+FileNotFoundError: /xxxxx/.local/bin/ruff
+</code></pre>
+<p>Versions:</p>
+<ul>
+<li>ruff: 0.4.2</li>
+<li>pip:  23.2.1</li>
+<li>python: 3.11.7</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-02 14:27</div>
+            <div class="timeline-body"><p>This is really a problem with and limitation of <code>--target</code>, not Ruff. <code>--target</code> isn't intended to install binaries, and binaries installed with target often may not work (e.g., any Python scripts will have the current interpreter encoded in the shebang, but <code>--target</code> is designed for zipapp-like use cases whereby you relocate the directory, and none of those shebangs will be correct in those cases). I suggest either <em>not</em> using target, or invoking the Ruff binary directly. There's just no way for <code>python -m ruff</code> to know where to look when installed with <code>--target</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-05-02 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nunoh">@nunoh</a> on 2024-05-02 15:09</div>
+            <div class="timeline-body"><p>I tried the same MRE with different libraries without an issue, but now with your explanation I understand why it doesn't work for ruff. I just defaulted to invoking the binary directly rather. Thank you for taking the time to provide the info and congrats on such a great tool! Cheers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-05-02 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../businho/pytest-ruff/issues/21.html">businho/pytest-ruff#21</a> on 2024-05-16 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-05-16 13:57</div>
+            <div class="timeline-body"><p>I have this issue also, and it affects Python environments created by <a href="https://github.com/jaraco/pip-run">pip-run</a>. <code>pip-run</code> uses <code>pip install --target</code> for its simplicity and ability to compose with other environments.</p>
+<pre><code> @ pip-run ruff -- -m ruff
+Traceback (most recent call last):
+  File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
+  File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
+  File &quot;/var/folders/f2/2plv6q2n7l932m2x004jlw340000gn/T/pip-run-jj5jhwxq/ruff/__main__.py&quot;, line 32, in &lt;module&gt;
+    ruff = os.fsdecode(find_ruff_bin())
+                       ^^^^^^^^^^^^^^^
+  File &quot;/var/folders/f2/2plv6q2n7l932m2x004jlw340000gn/T/pip-run-jj5jhwxq/ruff/__main__.py&quot;, line 28, in find_ruff_bin
+    raise FileNotFoundError(path)
+FileNotFoundError: /Users/jaraco/Library/Python/3.12/bin/ruff
+</code></pre>
+<p>In any case, shouldn't <code>find_ruff_binary</code> fail if it cannot reliably locate the binary? Before I re-write pytest-ruff not to use <code>ruff.find_ruff_binary</code>, would you consider some alternative approaches?</p>
+<ul>
+<li>Add support for <code>--target</code> installs by searching in a <code>bin</code> directory in the package root where <code>ruff</code> is installed (works even on Windows).</li>
+<li>Check that the &quot;found&quot; binary exists and if not, fall back to a PATH search (i.e. <code>shutil.which('ruff')</code>). Such a search would not find the binary in the <code>target</code> unless the user had also added the <code>bin</code> directory to the PATH.</li>
+<li>~~Simply error when the &quot;found&quot; binary doesn't exist.~~</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-05-16 14:57</div>
+            <div class="timeline-body"><p>I see now that ruff does actually raise a <code>FileNotFoundError</code> if the &quot;found&quot; binary isn't present. I missed that nuance when looking at <code>pytest-ruff</code>.</p>
+<p>I would have expected/hoped that <code>pip-run ruff -- !ruff</code> (binary invocation) would have worked, because it would bypass the Python shim, ~~but it does not~~:</p>
+<pre><code> draft @ pip-run ruff -- !ruff
+/opt/homebrew/Cellar/python@3.12/3.12.3/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/jaraco/draft/ruff': [Errno 2] No such file or directory
+</code></pre>
+<p>~~That may just be a bug in pip-run, though, where it may not be resolving the <code>ruff</code> binary in the PATH.~~</p>
+<p>Edit: I was holding it wrong. In my shell, the <code>!</code> needs to be escaped, whereafter the binary invocation does work as expected:</p>
+<pre><code> ~ @ pip-run ruff -- '!ruff' --version
+ruff 0.4.4
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11450.html">astral-sh/ruff#11450</a> on 2024-05-16 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kserhii">@kserhii</a> on 2024-08-15 11:26</div>
+            <div class="timeline-body"><p>I also caught <code>FileNotFoundError</code>, but in my case it was related to the usage of <code>ruff</code> in docker container.</p>
+<p>In Dockerfile I am installing requirements under root user and then switching to another user.
+In that case <code>ruff</code> binary is placed in <code>/usr/local/bin</code>, while <code>find_ruff_bin</code> gives me <code>/home/user/.local/bin</code> folder.
+The quick fix is to add environment variable <code>PYTHONUSERBASE=/usr/local</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

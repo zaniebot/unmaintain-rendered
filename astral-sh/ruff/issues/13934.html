@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCH auto-quoting is invalid for strings containing quotation marks  - astral-sh/ruff #13934</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>TCH auto-quoting is invalid for strings containing quotation marks </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13934">#13934</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2024-10-25 22:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-10-25 22:18</div>
+            <div class="timeline-body"><p>The automated fixes for TCH001, TCH002, and TCH003 do not correctly handle string literals containing quotation marks. In the following example, running Ruff introduces an invalid type annotation, which mypy reports.</p>
+<pre><code class="language-console">$ ruff --version
+ruff 0.7.1
+
+$ cat tch.py
+from collections.abc import Sequence
+from typing import Literal
+def f(x: Sequence[Literal[&quot;'&quot;]]) -&gt; None:
+    pass
+
+$ mypy tch.py
+Success: no issues found in 1 source file
+
+$ ruff check --isolated --config 'lint.flake8-type-checking.quote-annotations = true' --select TCH tch.py --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat tch.py
+from typing import Literal, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+def f(x: &quot;Sequence[Literal[''']]&quot;) -&gt; None:
+    pass
+
+$ mypy tch.py
+tch.py:5: error: Invalid type comment or annotation  [valid-type]
+Found 1 error in 1 file (checked 1 source file)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-10-26 07:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-10-26 07:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-26 08:01</div>
+            <div class="timeline-body"><p>As with other string related fixes, we could consider disabling the fix if the string contains nested quotes. Ideally we would be somewhat clever about it to only disable it when running the fix creates invalid syntax because the use of <code>Literal[&quot;Test&quot;]</code> is common</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-28 07:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Ideally we would be somewhat clever about it to only disable it when running the fix creates invalid syntax because the use of <code>Literal[&quot;Test&quot;]</code> is common</p>
+</blockquote>
+<p>I'm not sure what do you mean here because we do fix this correctly by flipping the quotes but we don't consider nested quotes inside another existing string literal (https://play.ruff.rs/fc94efc6-2ccf-4b20-b053-f810a7d06c2f). I think we should avoid generating the fix for this case.</p>
+<p>cc @Glyphack if you're interested</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-28 07:51</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure what do you mean here because we do fix this correctly by flipping the quotes but we don't consider nested quotes inside another existing string literal (<a href="https://play.ruff.rs/fc94efc6-2ccf-4b20-b053-f810a7d06c2f">play.ruff.rs/fc94efc6-2ccf-4b20-b053-f810a7d06c2f</a>).</p>
+</blockquote>
+<p>That's what I mean. We can't just naively test if the annotation contains any quotes. Instead, we have to search for nested quotes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2024-10-28 08:10</div>
+            <div class="timeline-body"><p>Thanks I like to spend some time on this. I think the simplest fix would be to check if the StringLiteral contains any quotes inside and don't apply the fix or check if the inner quotes will be a problem and then don't apply the fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-10-28 16:56</div>
+            <div class="timeline-body"><p>Other characters to beware of are backslashes and newlines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14132.html">astral-sh/ruff#14132</a> on 2024-11-06 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14285.html">astral-sh/ruff#14285</a> on 2024-11-11 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-11-15 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-11-15 11:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

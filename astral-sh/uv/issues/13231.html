@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add the possibility of including local libraries - astral-sh/uv #13231</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add the possibility of including local libraries</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13231">#13231</a>
+        opened by <a href="https://github.com/XavierCLL">@XavierCLL</a>
+        on 2025-04-30 14:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/XavierCLL">@XavierCLL</a> on 2025-04-30 14:24</div>
+            <div class="timeline-body"><h2>Context</h2>
+<p>For my Python tests, I need to include local Python libraries that are not installable packages (e.g., not available on PyPI or as wheels). Specifically, I’m developing some QGIS plugins, and I need to import the QGIS Python API, which is located at /usr/lib/python3.13/site-packages/qgis in the local QGIS installation. Since there's no official QGIS package available on PyPI, I cannot install it via pip, so I need to include as a local library.</p>
+<h2>In Poetry</h2>
+<p>I can do easily in Poetry like (works perfectly):</p>
+<pre><code class="language-toml">packages = [
+    { include = &quot;qgis&quot;, from = &quot;/usr/lib/python3.13/site-packages&quot; },
+]
+</code></pre>
+<h2>In UV</h2>
+<p>I tried to do that in UV with (I hope UV works like this):</p>
+<pre><code class="language-toml">dependencies = [&quot;qgis&quot;]
+
+[tool.uv.sources]
+qgis = { path = &quot;/usr/lib/python3.13/site-packages/qgis&quot;}
+</code></pre>
+<p>But UV expects a wheel, project or setup.py file, UV doesn't understand that it's a local Python library:</p>
+<pre><code class="language-bash">  × Failed to build `qgis @ file:///usr/lib/python3.13/site-packages/qgis`
+  ╰─▶ /usr/lib/python3.13/site-packages/qgis does not appear to be a Python project, as neither `pyproject.toml` nor `setup.py` are present in the directory
+</code></pre>
+<p>After reading the docs and doing some testing, I think there is no, right now, a way to do that in UV. This is an essential feature in my case to migrate to UV.</p>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @XavierCLL on 2025-04-30 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-30 14:26</div>
+            <div class="timeline-body"><p>Where is the qgis source? How was it installed into <code>site-packages</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/XavierCLL">@XavierCLL</a> on 2025-04-30 14:31</div>
+            <div class="timeline-body"><p>It is always inside the package installation, e.g. for Archlinux https://archlinux.org/packages/extra/x86_64/qgis/ (Package Contents) or in Ubuntu https://packages.ubuntu.com/oracular/amd64/python3-qgis/filelist</p>
+<p>But you can never find it independ as a pypi or wheel file it is always together with the software (I guess that happens for more apps not just with Qgis)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-30 17:52</div>
+            <div class="timeline-body"><p>Interesting, thanks. Even in the source, this isn't a package:</p>
+<pre><code>❯ wget https://qgis.org/downloads/qgis-3.42.1.tar.bz2
+❯ tar -xvf qgis-3.42.1.tar.bz2
+./python/PyQt6/core/additions/projectdirtyblocker.py
+❯ cd qgis-3.42.1
+❯ ls python
+3d			PyQt6			console			ext-libs		processing		server			user.py
+CMakeLists.txt		__init__.py		core			gui			pyplugin_installer	sipify.yaml		utils.py
+PyQt	
+</code></pre>
+<p>Instead, they use CMake to install things manually.</p>
+<p>I'm not sure if we'll support this, but it is a fair use-case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/XavierCLL">@XavierCLL</a> on 2025-04-30 21:02</div>
+            <div class="timeline-body"><p>Yeah there are some binaries (.so, .dll) in that Qgis python lib, therefore, it is not completed from source code, it needs to be compiled or installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2025-05-04 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LoyVanBeek">@LoyVanBeek</a> on 2025-10-13 12:33</div>
+            <div class="timeline-body"><p>I think I have a similar case, where I'm building something with https://fields2cover.github.io/source/installation.html.
+This builds a Python package (with SWIG, into and a <code>.so</code> file) into the <code>dist-packages</code>. Is there any way to at least declare such a dependency?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

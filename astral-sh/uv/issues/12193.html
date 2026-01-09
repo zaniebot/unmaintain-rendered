@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letting `#!/usr/bin/env -S uv run` script find its project even if run from outside the project - astral-sh/uv #12193</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Letting `#!/usr/bin/env -S uv run` script find its project even if run from outside the project</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/12193">#12193</a>
+        opened by <a href="https://github.com/andersk">@andersk</a>
+        on 2025-03-15 19:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/andersk">@andersk</a> on 2025-03-15 19:54</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have a script <code>script.py</code> with package requirements listed in <code>pyproject.toml</code> and <code>uv.lock</code>. A <code>#!/usr/bin/env -S uv run</code> shebang line works well for this workflow:</p>
+<pre><code class="language-console">$ git clone https://github.com/some/project
+# cd project
+$ ./script.py
+</code></pre>
+<p>But I want to enable this workflow:</p>
+<pre><code class="language-console">$ git clone https://github.com/some/project
+$ project/script.py
+</code></pre>
+<p>Unfortunately, <code>uv run</code> locates the project configuration from the process’s current working directory, not from the location of the script. Similarly, if I provide a relative path to options like <code>--directory</code>, <code>--project</code>, and <code>--config-file</code>, they’re parsed relative to the process’s current working directory. This can’t work if the current working directory is outside the project, and we don’t know in advance what path the project is checked out to.</p>
+<p>I could use PEP 723 metadata and <code>script.py.lock</code>, but then I need to maintain separate lock files and get separate ephemeral virtual environments for all of these scripts in my project.</p>
+<p>Am I missing another good strategy? I think my preferred resolution would be to fix <code>uv run</code> to locate the project from the location of the script, and parse relative path options relative to the location of the script.</p>
+<h3>Example</h3>
+<p>In the <a href="https://github.com/zulip/zulip">Zulip server</a>, we currently achieve this using <code>#!/usr/bin/env python3</code> and a <a href="https://github.com/zulip/zulip/blob/main/scripts/lib/setup_path.py">horrendous function</a> that locates and invokes <code>.venv/bin/activate_this.py</code>. But that has a number of drawbacks and won’t work at all if we want to use an uv-managed Python with a different version than the system Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @andersk on 2025-03-15 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-15 20:08</div>
+            <div class="timeline-body"><p>I think this can be achieved with</p>
+<pre><code>#!/bin/sh
+'''exec' uv run --script --project &quot;$(dirname -- &quot;$(realpath -- &quot;$0&quot;)&quot;)&quot; &quot;$0&quot; &quot;$@&quot;
+' '''
+import sys
+
+print(f'hello world from {sys.executable}')
+</code></pre>
+<p>I think both resolving relative to the script's directory and relative to the working directory are reasonable. I'm hesitant to change the default behavior. We <em>could</em> consider adding a flag, but let's see how the above example works for people (this is roughly what we use for &quot;relocatable&quot; virtual environment entrypoints)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2025-03-16 01:47</div>
+            <div class="timeline-body"><p>I’m not at all excited about having to teach new contributors how to correctly write shell/Python polyglots, or about editors misdetecting the language, linters warning about the “unused” code, formatters breaking it with reformatting, etc.</p>
+<p>A new flag would allow solving the problem. But I couldn’t come up with use case where one might prefer the old behavior; if you wanted a script’s environment to depend on the process working directory, why would it be using an <code>uv</code> shebang?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12303.html">astral-sh/uv#12303</a> on 2025-03-19 01:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11302.html">astral-sh/uv#11302</a> on 2025-03-23 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karnigen">@karnigen</a> on 2025-03-25 22:48</div>
+            <div class="timeline-body"><p>I haven't seen such a <em>sophisticated trick</em> in a long time; it's exactly how it should work.
+On the other hand, it would probably be more practical if <code>uv</code> used a switch to switch the project according to the script's path, like:</p>
+<p><code>#!/usr/bin/env -S uv run -r</code></p>
+<p>where <code>-r</code> would mean 'resolve project dir from script'.</p>
+<p>It would also be worthwhile to create an independent script that would resolve <code>--project</code> for <code>uv</code> and/or detect other managers (poetry, etc.) and appropriately call the script, for example, like the <code>uvr</code> script.</p>
+<pre><code>#!/usr/bin/env python
+import os, sys
+script = os.path.realpath(sys.argv[1])
+scriptDir = os.path.dirname(script)
+os.execlp('uv', 'uv', 'run', '--project', scriptDir, script, *sys.argv[2:])
+</code></pre>
+<p>To use <code>uvr</code>, ensure it's on your <code>PATH</code> and add a <em>shebang</em> to your script.
+<code>#!/usr/bin/env uvr</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 17:41</div>
+            <div class="timeline-body"><p>Changing the <code>uv run</code> behavior can be tracked in https://github.com/astral-sh/uv/issues/11302</p>
+<p>Here, we'll continue to focus on discussion of shebang-specific behaviors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gregglind">@gregglind</a> on 2025-07-08 16:45</div>
+            <div class="timeline-body"><p>The proposed shebang exec solution is pretty fragile and hard to grok.  I am sure I also got some spacing wrong in the copied line!</p>
+<p>When I am using uv as a shebang, I want to it resolve a project to incorporate my personal code and libraries.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

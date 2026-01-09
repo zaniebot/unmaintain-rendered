@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` with Nexus give &quot;Missing 'Content-Type&quot;` error  - astral-sh/uv #1754</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` with Nexus give &quot;Missing 'Content-Type&quot;` error </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1754">#1754</a>
+        opened by <a href="https://github.com/kendallbailey">@kendallbailey</a>
+        on 2024-02-20 14:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kendallbailey">@kendallbailey</a> on 2024-02-20 14:36</div>
+            <div class="timeline-body"><p>uv version is 0.1.5 on Ubuntu 20.04, python 3.10</p>
+<p>With UV_INDEX_URL pointing to a private Sonatype Nexus service acting as a pypi proxy:</p>
+<pre><code>$ uv pip install gcsfs
+error: Missing `Content-Type` header for https://****:****@nexus.example.com/repository/pypi-group/simple/gcsfs/
+</code></pre>
+<p>Hitting the above URL with <code>curl -v</code> shows a content type header of <code>&quot;text/html; charset=UTF-8&quot;</code> is returned</p>
+<pre><code>$ curl -o x -v https://******:******@nexus.example.com/repository/pypi-group/simple/gcsfs/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying x.x.x.x:443...
+* TCP_NODELAY set
+* Connected to nexus.example.com (x.x.x.x) port 443 (#0)
+&lt;snip&gt;
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+} [5 bytes data]
+* Server auth using Basic with user '*****'
+* Using Stream ID: 1 (easy handle 0x55a8e6d03680)
+} [5 bytes data]
+&gt; GET /repository/pypi-group/simple/gcsfs/ HTTP/2
+&gt; Host: nexus.example.com
+&gt; authorization: Basic ****************** 
+&gt; user-agent: curl/7.68.0
+&gt; accept: */*
+&gt; 
+&lt;snip&gt;
+&lt; HTTP/2 200 
+&lt; content-type: text/html; charset=UTF-8
+&lt; content-length: 24690
+&lt; date: Tue, 20 Feb 2024 14:11:26 GMT
+&lt; server: Nexus/3.48.0-01 (OSS)
+&lt; x-content-type-options: nosniff
+&lt; content-security-policy: sandbox allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-top-navigation
+&lt; x-xss-protection: 1; mode=block
+&lt; last-modified: Tue, 20 Feb 2024 13:59:16 GMT
+&lt; 
+{ [16048 bytes data]
+100 24690  100 24690    0     0  84554      0 --:--:-- --:--:-- --:--:-- 84845
+* Connection #0 to host nexus.example.com left intact
+</code></pre>
+<p>Last week I tested <code>uv</code> v0.1.2 in the same environment and it rejected md5 hashes, but <code>pandas</code> was one package that had no issue. Now with v0.1.5 <code>pandas</code> and many others have the <code>Content-Type</code> issue but there are still some packages that will install via Nexus, such as <code>aiohttp</code>. I can't detect any difference in the HTTP responses from Nexus between the packages that work and those that don't. All have Content-Type of &quot;text/html; charset=UTF-8&quot;. Comparing against <code>http://pypi.org/simple/&lt;package&gt;/</code>, it appears pypi sets the Content-Type header to &quot;text/html&quot; (no charset specified).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 14:44</div>
+            <div class="timeline-body"><p>Thanks, will take a look! That error is thrown when no header is present at all -- it's not from parsing the content type -- so not immediately sure what's up on first glance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-20 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kendallbailey">@kendallbailey</a> on 2024-02-20 22:28</div>
+            <div class="timeline-body"><p>Update:
+I tried <code>uv -v pip install gcsfs</code> and it talked about revalidating the cache before again hitting the <code>Content-Type</code> error. So I deleted the cache entirely, <code>rm -rf ~/.cache/uv</code>. Then it was able to install <code>gcsfs</code> without error. It now works to install my application package with 251 dependencies. Seems like <code>uv</code> v0.1.5 was having a problem caused by the cache created by v0.1.2.</p>
+<p>Since deleting the cache I haven't been able to reproduce the <code>Content-Type</code> error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kendallbailey">@kendallbailey</a> on 2024-02-20 23:06</div>
+            <div class="timeline-body"><p>output from <code>uv -v</code></p>
+<pre><code>$ uv -v pip install nvidia-curand-cu12
+ uv::requirements::from_source source=nvidia-curand-cu12
+    0.001079s DEBUG uv_interpreter::virtual_env Found a virtualenv through VIRTUAL_ENV at: /home/kbailey/venvs/py310/dmnet-test
+    0.001240s DEBUG uv_interpreter::interpreter Using cached markers for: /home/kbailey/venvs/py310/dmnet-test/bin/python
+    0.001254s DEBUG uv::commands::pip_install Using Python 3.10.13 environment at /home/kbailey/venvs/py310/dmnet-test/bin/python
+ uv_client::flat_index::from_entries 
+ uv_resolver::resolver::solve 
+      0.005638s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.10.13
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.005729s   0ms DEBUG uv_resolver::resolver Adding direct dependency: nvidia-curand-cu12*
+   uv_resolver::resolver::choose_version package=nvidia-curand-cu12
+     uv_resolver::resolver::package_wait package_name=nvidia-curand-cu12
+ uv_resolver::resolver::process_request request=Versions nvidia-curand-cu12
+   uv_client::registry_client::simple_api package=nvidia-curand-cu12
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/home/kbailey/.cache/uv/simple-v1/ede79a3b4249d4c4/nvidia-curand-cu12.rkyv
+ uv_resolver::resolver::process_request request=Prefetch nvidia-curand-cu12 *
+          0.006496s   0ms DEBUG uv_client::cached_client Found stale response for: https://nexus.example.com/repository/pypi-group/simple/nvidia-curand-cu12/
+          0.006518s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://nexus.example.com/repository/pypi-group/simple/nvidia-curand-cu12/
+       uv_client::cached_client::revalidation_request url=&quot;https://nexus.example.com/repository/pypi-group/simple/nvidia-curand-cu12/&quot;
+          0.179262s 173ms DEBUG uv_client::cached_client Found modified response for: https://nexus.example.com/repository/pypi-group/simple/nvidia-curand-cu12/
+       uv_client::cached_client::new_cache file=/home/kbailey/.cache/uv/simple-v1/ede79a3b4249d4c4/nvidia-curand-cu12.rkyv
+       uv_client::registry_client::parse_simple_api package=nvidia-curand-cu12
+error: Missing `Content-Type` header for https://****:****@nexus.example.com/repository/pypi-group/simple/nvidia-curand-cu12/
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 23:13</div>
+            <div class="timeline-body"><p>@kendallbailey -- I deleted your first comment as I believe it unintentionally included sensitive credentials.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kendallbailey">@kendallbailey</a> on 2024-02-22 15:32</div>
+            <div class="timeline-body"><p>Testing with <code>uv</code> 0.1.7 has a new behavior. With 0.1.5, so long as the cache is deleted, <code>uv pip install</code> works in all my tests. Now with <code>uv</code> 0.1.7, even with an empty cache it will fail but with an HTTP 401 error rather than a <code>Content-Type</code> missing error.</p>
+<p>With <code>uv</code> 0.1.7:</p>
+<pre><code>$ /bin/rm -rf ~/.cache/uv &amp;&amp; uv pip install project-meta==1.0
+error: Failed to download: project-meta==1.0
+  Caused by: HTTP status client error (401 Unauthorized) for url (https://nexus.example.com/repository/pypi-group/packages/project-meta/1.0/project_meta-1.0-py3-none-any.whl#sha256=7eca5b23b722a6c5f912e8061d9bf15179be36ea5abf8c0d51ae2724e789dc88)
+</code></pre>
+<p>Same thing with <code>uv</code> 0.1.5:</p>
+<pre><code>$ /bin/rm -rf ~/.cache/uv &amp;&amp; uv pip install project-meta==1.0
+Resolved 48 packages in 59.61s
+Downloaded 1 package in 38ms
+Installed 1 package in 1ms
+ + project-meta==1.0
+</code></pre>
+<p><code>UV_INDEX_URL</code> was set the same in both cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Djailla">@Djailla</a> on 2024-02-25 20:41</div>
+            <div class="timeline-body"><p>Hello, I have the same exact behavior with a Nexus pypi proxy in my company.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Djailla">@Djailla</a> on 2024-02-25 20:47</div>
+            <div class="timeline-body"><p>It works using <code>--no-cache</code> but <code>uv</code> loose a lot of value :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1978.html">astral-sh/uv#1978</a> on 2024-02-26 04:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Djailla">@Djailla</a> on 2024-02-26 22:12</div>
+            <div class="timeline-body"><p>You can close this issue, thanks @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-26 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kendallbailey">@kendallbailey</a> on 2024-02-26 22:57</div>
+            <div class="timeline-body"><p>I still see the issue arise in uv 0.1.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2024-02-26 23:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-26 23:02</div>
+            <div class="timeline-body"><p>Something very specific to Nexus so we’ll have to set up a repo to have any chance of debugging it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-28 05:09</div>
+            <div class="timeline-body"><p>I set up a Nexus repo myself but unfortunately everything is working fine locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mbrulatout">@mbrulatout</a> on 2024-02-28 18:19</div>
+            <div class="timeline-body"><p>If that helps ...
+I have the issue too with a Nexus repo, latest uv version.
+<code>--no-cache</code> fixes the issue (but is slower).
+<code>curl</code> shows that a <code>Content-Type</code> header is provided</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">registry</span> added by @zanieb on 2024-02-28 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kendallbailey">@kendallbailey</a> on 2024-03-04 15:21</div>
+            <div class="timeline-body"><p>I'm starting to suspect <code>uv</code> is dropping the credentials from the index URL when doing a &quot;revalidation_request&quot;.  All of the URLs being logged lack the credentials but the error message includes them. If I <code>curl</code> the URL in the verbose output the response indeed has no <code>content-type</code> header, but also has a 401 response code. If I <code>curl</code> the URL in the error message, then the response has a 200 response code and includes a <code>content-type</code> header.  @charliermarsh, when setting up Nexus did you configure it to require authentication?</p>
+<p>tail end of <code>uv</code> verbose output:</p>
+<pre><code> uv_client::cached_client::from_path_sync path=&quot;/home/kbailey/.cache/uv/simple-v3/ede79a3b4249d4c4/setuptools.rkyv&quot;
+              0.044396s   1ms DEBUG uv_client::cached_client Found stale response for: https://nexus.example.com/repository/pypi-group/simple/setuptools/
+              0.044423s   1ms DEBUG uv_client::cached_client Sending revalidation request for: https://nexus.example.com/repository/pypi-group/simple/setuptools/
+           uv_client::cached_client::revalidation_request url=&quot;https://nexus.example.com/repository/pypi-group/simple/setuptools/&quot;
+              0.538425s 495ms DEBUG uv_client::cached_client Found modified response for: https://nexus.example.com/repository/pypi-group/simple/setuptools/
+           uv_client::cached_client::new_cache file=/home/kbailey/.cache/uv/simple-v3/ede79a3b4249d4c4/setuptools.rkyv
+           uv_client::registry_client::parse_simple_api package=setuptools
+error: Failed to build editables
+  Caused by: Failed to build editable: file:///home/kbailey/work/example-uv
+  Caused by: Failed to install requirements from build-system.requires (resolve)
+  Caused by: No solution found when resolving: setuptools &gt;=61.0
+  Caused by: Missing `Content-Type` header for https://nexus_user:nexus_password@nexus.example.com/repository/pypi-group/simple/setuptools/
+</code></pre>
+<p>I replaced the real credentials with <code>nexus_user:nexus_password</code> above</p>
+<p>I've seen 401 errors in other contexts. By the way, I managed to use <code>rust-gdb</code> to set a breakpoint where the <code>Content-Type</code> error is triggered but didn't have success debugging beyond that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-04 15:27</div>
+            <div class="timeline-body"><p>This could be right, will take a look at this hypothesis, although I'm surprised that it hasn't affected other kinds of indexes. Thanks @kendallbailey.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-04 15:55</div>
+            <div class="timeline-body"><p>I don't think we could be receiving a 401, because we call <code>error_for_status</code> on all of these routes. IIUC, typically the authentication gets moved from the URL into the headers, which is why it's not present in the verbose output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kendallbailey">@kendallbailey</a> on 2024-03-04 20:33</div>
+            <div class="timeline-body"><p>Setting a breakpoint <a href="https://github.com/astral-sh/uv/blob/93f56094766c29dd646b1f48ff481a4c908d2b8c/crates/uv-client/src/registry_client.rs#L272">here</a> I can see that the HTTP response that triggers the <code>Content-Type</code> error has a 304 status.</p>
+<pre><code>(gdb) p response.res.head.status
+$3 = http::status::StatusCode (core::num::nonzero::NonZeroU16 (304))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/171.html">astral-sh/uv#171</a> on 2024-03-05 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 19:47</div>
+            <div class="timeline-body"><p>Any idea what Sonatype Nexus version you're on?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-05 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 20:09</div>
+            <div class="timeline-body"><p>I'm able to <em>sort of</em> reproduce it by forcing some error paths manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 20:14</div>
+            <div class="timeline-body"><p>If I put up a branch with some additional logic and logging, would anyone here be able to test against their Nexus repos?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2218.html">astral-sh/uv#2218</a> on 2024-03-05 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 20:25</div>
+            <div class="timeline-body"><p>Anyway, draft PR is here: https://github.com/astral-sh/uv/pull/2218</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 21:01</div>
+            <div class="timeline-body"><p>If someone can run against that branch with <code>RUST_LOG=trace cargo run pip install --verbose ...</code> that would be much appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kendallbailey">@kendallbailey</a> on 2024-03-06 19:41</div>
+            <div class="timeline-body"><p>Thank you for working on this issue. The Nexus version I'm using is OSS 3.48.0-01. I ran the PR branch on a project with many dependencies and it didn't fail. The trace output is huge. I did some other experiments, all succeeded where the stable <code>uv</code> hit the <code>Content-Type</code> error. Is there something you'd like me to extract from the trace output?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 19:42</div>
+            <div class="timeline-body"><p>Thanks! I'm mostly interested in lines that start with:</p>
+<ul>
+<li><code>new_policy:</code></li>
+<li><code>self.response:</code></li>
+<li><code>is modified because status</code></li>
+<li><code>not modified because</code></li>
+</ul>
+<p>If you could send me one grouping of those, it would help us understand why we're not respecting the server's 304. (Although I think the fix I have in there is still correct; it'll just be slower for Nexus, and I'd like to get caching working.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kendallbailey">@kendallbailey</a> on 2024-03-06 20:10</div>
+            <div class="timeline-body"><p>I didn't find the last two text. Here's one block with the first two when installing pandas.</p>
+<pre><code>          0.634125s 565ms DEBUG uv_client::httpcache checking if cached response is modified
+          0.634190s 565ms DEBUG uv_client::httpcache new_policy: CachePolicy { config: CacheConfig { shared: false, heuristic_percent: 10 }, request: Request { uri: &quot;https://nexus.example.com/repository/pypi-group/simple/pandas/&quot;, method: Get, headers: RequestHeaders { cc: CacheControl { max_age_seconds: None, no_cache: false, no_store: false, no_transform: false, max_stale_seconds: None, min_fresh_seconds: None, only_if_cached: false, must_revalidate: false, must_understand: false, private: false, proxy_revalidate: false, public: false, s_maxage_seconds: None, immutable: false }, authorization: true }, unix_timestamp: 1709753888 }, response: Response { status: 304, headers: ResponseHeaders { cc: CacheControl { max_age_seconds: None, no_cache: false, no_store: false, no_transform: false, max_stale_seconds: None, min_fresh_seconds: None, only_if_cached: false, must_revalidate: false, must_understand: false, private: false, proxy_revalidate: false, public: false, s_maxage_seconds: None, immutable: false }, age_seconds: None, date_unix_timestamp: Some(1709753888), expires_unix_timestamp: None, last_modified_unix_timestamp: None, etag: None }, unix_timestamp: 1709753888 }, vary: Vary { fields: [] } }
+          0.634281s 565ms DEBUG uv_client::httpcache self.response: ArchivedResponse { status: 200, headers: ArchivedResponseHeaders { cc: ArchivedCacheControl { max_age_seconds: None, no_cache: false, no_store: false, no_transform: false, max_stale_seconds: None, min_fresh_seconds: None, only_if_cached: false, must_revalidate: false, must_understand: false, private: false, proxy_revalidate: false, public: false, s_maxage_seconds: None, immutable: false }, age_seconds: None, date_unix_timestamp: Some(1709675539), expires_unix_timestamp: None, last_modified_unix_timestamp: Some(1709511660), etag: None }, unix_timestamp: 1709675540 }
+          0.634343s 565ms DEBUG uv_client::cached_client Found modified response for: https://nexus.example.com/repository/pypi-group/simple/pandas/
+          0.634460s 565ms TRACE uv_client::httpcache cached request https://nexus.example.com/repository/pypi-group/simple/pandas/ is not storable because its response has unsupported status code 304
+          0.634555s 565ms DEBUG uv_client::cached_client Server returned invalid 304 for: https://nexus.example.com/repository/pypi-group/simple/pandas/
+       uv_client::cached_client::fresh_request url=&quot;https://nexus.example.com/repository/pypi-group/simple/pandas/&quot;
+            0.635080s   0ms TRACE uv_client::cached_client Sending fresh GET request for https://nexus.example.com/repository/pypi-group/simple/pandas/
+            0.635290s   0ms TRACE hyper::client::pool take? (&quot;https&quot;, nexus.example.com): expiration = Some(90s)
+            0.635346s   0ms DEBUG hyper::client::pool reuse idle connection for (&quot;https&quot;, nexus.example.com)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 20:12</div>
+            <div class="timeline-body"><p>That's great, thanks! We'll look into it. I appreciate your help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Djailla">@Djailla</a> on 2024-03-06 20:51</div>
+            <div class="timeline-body"><p>Awesome, will test it as soon it is released !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 21:09</div>
+            <div class="timeline-body"><p>Okay, so it looks like we're failing to use the cache because:</p>
+<ul>
+<li><code>new_policy.response.headers.last_modified_unix_timestamp</code> is <code>None</code>...</li>
+<li>But <code>self.response.headers.last_modified_unix_timestamp</code> is <code>Some(1709511660)</code>.</li>
+</ul>
+<p>So the server isn't returning a <code>last_modified_unix_timestamp</code>. My read is that technically we're not supposed to use the cached value here, based on https://www.rfc-editor.org/rfc/rfc9111.html#section-4.3.4?</p>
+<p>\cc @BurntSushi</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 21:11</div>
+            <div class="timeline-body"><p>@BurntSushi - Is it possible there's something we're <em>not</em> sending up with our request, that's causing the server <em>not</em> to send its last-modified timestamp?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-06 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 23:21</div>
+            <div class="timeline-body"><p>I merged the fallback behavior, which should allow using Nexus with only a slight performance hit. (This only affects fetching metadata, which isn't that expensive anyway.) I'll open a separate issue to understand the root cause for Nexus (i.e., why it's not returning a <code>Last-Modified</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2253.html">astral-sh/uv#2253</a> on 2024-03-06 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../simple-repository/simple-repository-server/issues/6.html">simple-repository/simple-repository-server#6</a> on 2024-05-26 00:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

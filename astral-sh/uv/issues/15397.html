@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unideal error message on recursive dependency groups (depending on command) - astral-sh/uv #15397</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unideal error message on recursive dependency groups (depending on command)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15397">#15397</a>
+        opened by <a href="https://github.com/henryiii">@henryiii</a>
+        on 2025-08-20 21:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/henryiii">@henryiii</a> on 2025-08-20 21:15</div>
+            <div class="timeline-body"><p>Not sure if this is exactly a bug, per se, just an error message that's not really helpful.</p>
+<p>I noticed that <code>uv pip install --system -e.[schema] --group test</code> produced an unhelpful error:</p>
+<pre><code>error: Failed to read dependency groups from: /home/runner/work/uhi/uhi/pyproject.toml
+Project `uhi` has malformed dependency groups
+</code></pre>
+<p>But when I tried <code>uv run pytest</code> locally, I got a far more helpful error:</p>
+<pre><code>error: Project `uhi` has malformed dependency groups
+  Caused by: Detected a cycle in `dependency-groups`: `dev` -&gt; `test` -&gt; `dev`
+</code></pre>
+<p>That was my mistake, I copy-pasted and forgot to change &quot;test&quot; into &quot;test-core&quot;, so test depended on itself. (I think the message should have been <code>`dev` -&gt; `test` -&gt; `test`</code>, but at least it was better)</p>
+<p>My pyproject.toml has this in dependency-groups:</p>
+<pre><code class="language-toml">test = [
+  { include-group = &quot;test&quot; },
+  &quot;h5py; platform_python_implementation == 'CPython'&quot;,  # Doesn't support free-threaded Python currently
+]
+dev = [{ include-group = &quot;test&quot; }]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-20 23:02</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<p>cc @Gankra maybe this will be obvious to you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2025-08-20 23:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-22 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15453.html">astral-sh/uv#15453</a> on 2025-08-22 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-08-22 14:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

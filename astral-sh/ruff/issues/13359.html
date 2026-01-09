@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTZ007 - arguably a false positive - astral-sh/ruff #13359</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>DTZ007 - arguably a false positive</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13359">#13359</a>
+        opened by <a href="https://github.com/rbubley">@rbubley</a>
+        on 2024-09-15 22:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rbubley">@rbubley</a> on 2024-09-15 22:26</div>
+            <div class="timeline-body"><p>A not uncommon pattern to parse a date string to a Python date uses similar code to the below. Times/time-zones shouldn't matter.</p>
+<pre><code>Ruff: DTZ007 Naive datetime constructed using `datetime.datetime.strptime()` without %z
+  |
+1 |         # Parse the date parameter
+2 |         try:
+3 |             input_date = datetime.strptime(date, &quot;%Y-%m-%d&quot;).date()
+  |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ DTZ007
+4 |         except ValueError:
+5 |             print(&quot;Invalid date format. Use YYYY-MM-DD.&quot;)
+  |
+    = help: Call `.replace(tzinfo=&lt;timezone&gt;)` or `.astimezone()` to convert to an aware datetime
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-16 08:45</div>
+            <div class="timeline-body"><p>To summarize your request: It is about detecting the specific usage of <code>datetime.strptime</code> where the pattern is <code>%Y-%m-%d</code>) which is followed by a call to <code>date()</code>.</p>
+<p>I'm not a datetime expert, but I think this pattern, indeed, doesn't require time zone information. The main challenge I see is that detecting this usage consistently without surprises requires quiet involved analysis. E.g what about:</p>
+<pre><code class="language-python">input = datetime.strptime(date, &quot;%Y-%m-%d&quot;)
+input_date = input.date()
+</code></pre>
+<p>What if there are multiple statements in-between? That's why I think using a <code>noqa</code> comment in this situation is probably fine.</p>
+<p>To me, using <code>DateTime.strptime</code> over <code>date.fromisoformat</code> would express the intent more clearly. What's your reason for preferring <code>strptime</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-09-16 08:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-09-16 08:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rbubley">@rbubley</a> on 2024-09-16 12:25</div>
+            <div class="timeline-body"><p>I think you are right. I had forgotten about <code>date.fromisoformat</code>.</p>
+<p>(Although if the dates were in a different, non-ISO format, e.g. <code>%d/%m/%Y</code>, it's a bit more marginal).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-16 13:04</div>
+            <div class="timeline-body"><blockquote>
+<p>(Although if the dates were in a different, non-ISO format, e.g. %d/%m/%Y, it's a bit more marginal).</p>
+</blockquote>
+<p>That's fair. I think adding a <code>noqa</code> in this situation is reasonable. We may be able to do better once we have type inference and can guarantee that the value returned by <code>datetime.strptime</code> isn't used anywhere else other than for calling <code>.date</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/axxeny">@axxeny</a> on 2025-03-25 08:19</div>
+            <div class="timeline-body"><p>I think it would be great to at least cover the case where <code>strptime</code> is immediately followed by <code>.date</code>. To me that looks similar to what was done in https://github.com/astral-sh/ruff/issues/1296 .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21344.html">astral-sh/ruff#21344</a> on 2025-11-08 20:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

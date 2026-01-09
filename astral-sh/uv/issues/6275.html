@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to convert requirements.txt to  `tool.uv.sources` ? - astral-sh/uv #6275</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to convert requirements.txt to  `tool.uv.sources` ?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6275">#6275</a>
+        opened by <a href="https://github.com/sbidoul">@sbidoul</a>
+        on 2024-08-20 21:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sbidoul">@sbidoul</a> on 2024-08-20 21:02</div>
+            <div class="timeline-body"><p>With pip I use constraints files containing a bunch of git URLs to achieve the equivalent of <code>tool.uv.sources</code>.</p>
+<p>Is there a convenient way to convert such a requirements file to a <code>tool.uv.sources</code> section?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-20 21:19</div>
+            <div class="timeline-body"><p>Well, we should support this with <code>uv add -r requirements.txt</code> but that doesn't propagate <code>tool.uv.sources</code> like it should — we'll fix that and document it.</p>
+<p>e.g.</p>
+<pre><code>
+❯ uv init
+Initialized project `example`
+❯ echo &quot;uv-public-pypackage @ git+https://github.com/astral-test/uv-public-pypackage&quot; &gt; requirements.txt
+❯ uv add -r requirements.txt
+Using Python 3.12.1
+Creating virtualenv at: .venv
+ Updated https://github.com/astral-test/uv-public-pypackage (b270df1)
+Resolved 9 packages in 673ms
+Building example @ file:///Users/zb/workspace/example
+Building example @ file:///Users/zb/workspace/example
+Building example @ file:///Users/zb/workspace/example
+Building example @ file:///Users/zb/workspace/example
+   Built uv-public-pypackage @ git+https://github.com/astral-test/uv-public-pypackage@b270df1a2fb5d012294e9aaf05e7e0bab1e6a389[1merror: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: example @ file:///Users/zb/workspace/example
+  Caused by: Build backend failed to build wheel through `build_editable()` with exit status: 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-08-20 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6276.html">astral-sh/uv#6276</a> on 2024-08-20 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-20 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6287.html">astral-sh/uv#6287</a> on 2024-08-21 00:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-21 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-21 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2024-08-21 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 16:28</div>
+            <div class="timeline-body"><p>Needs documentation still.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yehoshuadimarsky">@yehoshuadimarsky</a> on 2024-08-23 04:41</div>
+            <div class="timeline-body"><p>Just an idea, can we instead add a new flag <code>-c/--constraint</code> to <code>uv add</code>, so that you can pass in constraint files directly? Instead of needing to add them to a <code>requirements.txt</code>.</p>
+<p>My specific use case is using Apache Airflow which only supports <code>pip</code> (not Poetry etc) because it basically <strong>requires</strong> constraint files, see https://github.com/apache/airflow/blob/main/README.md#installing-from-pypi</p>
+<p>That way, I can do (copying from their example):</p>
+<pre><code>uv add 'apache-airflow==2.10.0' \
+ --constraint &quot;https://raw.githubusercontent.com/apache/airflow/constraints-2.10.0/constraints-3.8.txt&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yehoshuadimarsky">@yehoshuadimarsky</a> on 2024-08-23 04:42</div>
+            <div class="timeline-body"><p>Or, thinking aloud, more broadly are there any other flags that exist in <code>uv pip install</code> that can be also added to <code>uv add</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-23 13:12</div>
+            <div class="timeline-body"><p>@yehoshuadimarsky can you please open a dedicated issue for that request?</p>
+<p>You need to add that constraint file to <code>tool.uv.constraint_dependencies</code>? It needs to be tracked in the project. <code>uv add --constraint</code> could perhaps do that for you, but it's going to apply to all of your dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yehoshuadimarsky">@yehoshuadimarsky</a> on 2024-08-23 14:04</div>
+            <div class="timeline-body"><p>@zanieb sure, created https://github.com/astral-sh/uv/issues/6518</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6518.html">astral-sh/uv#6518</a> on 2024-08-23 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helderco">@helderco</a> on 2024-09-11 13:13</div>
+            <div class="timeline-body"><p>The problem with <code>uv add -r requirements.txt</code> is it adds all of those dependencies to <code>project.dependencies</code>.</p>
+<p>If a <code>requirements.txt</code> file is used for pinning transient dependencies, how do you migrate to <code>uv.lock</code>?</p>
+<p>Basically need this, without saving any constraints to <code>pyproject.toml</code> or anything, just the one time migration and keep the same pinned versions:</p>
+<pre><code>uv lock --constraints requirements.txt
+rm requirements.txt
+</code></pre>
+<p>Doesn't have to be <code>--constraints</code> of course, since that may mean I'd want to save them in <code>pyproject.toml</code> or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-11 13:14</div>
+            <div class="timeline-body"><p>The typically workaround (which isn't very nice) is:</p>
+<ul>
+<li>Add all the constraints to <code>tool.uv.constraint-dependencies</code>.</li>
+<li>Run <code>uv lock</code>.</li>
+<li>Remove the constraints from <code>tool.uv.constraint-dependencies</code>.</li>
+</ul>
+<p>uv will then avoid upgrading past the pinned versions in the future by default.</p>
+<p>\cc @zanieb since we've discussed this in-person before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helderco">@helderco</a> on 2024-09-11 13:26</div>
+            <div class="timeline-body"><p>Thanks for the tip, but do you plan on handling this automatically? Just considering what to put in our docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dagger/dagger/pulls/8311.html">dagger/dagger#8311</a> on 2024-09-13 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/prrao87">@prrao87</a> on 2024-11-27 20:12</div>
+            <div class="timeline-body"><p>This still isn't documented, but is a great feature! Found this via stackoverflow.</p>
+<p>Something like this:</p>
+<h3>Generating <code>pyproject.toml</code> from <code>requirements.txt</code></h3>
+<pre><code class="language-bash">uv add -r requirements.txt
+</code></pre>
+<p>cc @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shanmuga-priyan314">@shanmuga-priyan314</a> on 2025-01-09 05:26</div>
+            <div class="timeline-body"><p>@prrao87
+This is not working anymore. I am getting the following error after running the command you mentioned</p>
+<pre><code>error: No `pyproject.toml` found in current directory or any parent directory
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/prrao87">@prrao87</a> on 2025-01-09 13:05</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/prrao87">@prrao87</a> This is not working anymore. I am getting the following error after running the command you mentioned</p>
+<pre><code>error: No `pyproject.toml` found in current directory or any parent directory
+</code></pre>
+</blockquote>
+<p>@shanmuga-priyan314
+You also need to initialize the uv project by running the command <code>uv init</code> first. That'll create an empty <code>pyproject.toml</code> in the directory. Then the add command should work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10924.html">astral-sh/uv#10924</a> on 2025-01-24 01:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Burnaviour">@Burnaviour</a> on 2025-02-11 07:46</div>
+            <div class="timeline-body"><p>how i can generate requirement.txt file  when i generate my requirement file is empty using uv pip freeze &gt; requiment.txt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-12 14:18</div>
+            <div class="timeline-body"><p>@Burnaviour that is off topic. Please see #9452.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shipping-man">@shipping-man</a> on 2025-04-10 14:44</div>
+            <div class="timeline-body"><p>Another vote to include this in the official documentation. This is necessary as useful for anyone migrating from the default virtualenv and pip tools</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-10 16:34</div>
+            <div class="timeline-body"><p>See #12382</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bepri">@bepri</a> on 2025-12-18 22:15</div>
+            <div class="timeline-body"><p>Can this be closed now that #12382 is merged? I just stumbled on this while trying to solve the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-12-18 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17183.html">astral-sh/uv#17183</a> on 2025-12-18 22:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

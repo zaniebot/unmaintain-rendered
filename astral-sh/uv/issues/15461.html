@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto backend selection for JAX (parity with --torch-backend=auto) - astral-sh/uv #15461</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Auto backend selection for JAX (parity with --torch-backend=auto)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15461">#15461</a>
+        opened by <a href="https://github.com/nkiyohara">@nkiyohara</a>
+        on 2025-08-22 18:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nkiyohara">@nkiyohara</a> on 2025-08-22 18:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi Astral team, thanks for the amazing work on uv!</p>
+<h2>Motivation</h2>
+<p>uv’s PyTorch integration supports automatic backend selection via <code>--torch-backend=auto</code> and <code>UV_TORCH_BACKEND</code>, which transparently installs the appropriate wheels (CPU / CUDA / ROCm / XPU) and switches to the correct PyTorch index. This has been a game-changer for reproducible installs across heterogeneous machines.</p>
+<ul>
+<li>Docs: <a href="https://docs.astral.sh/uv/guides/integration/pytorch/">Using uv with PyTorch</a></li>
+<li>CLI flag reference: <a href="https://docs.astral.sh/uv/reference/cli/#torch-backend"><code>--torch-backend</code></a></li>
+<li>Env var: <code>UV_TORCH_BACKEND</code></li>
+</ul>
+<p>The JAX community is growing quickly, and many projects need to “do the right thing” depending on user hardware (CPU vs NVIDIA CUDA). Today this requires manually choosing extras like <code>jax[cuda12]</code> or <code>jax[cuda12-local]</code>, which is error-prone for non-experts and complicates distribution.</p>
+<h2>Proposal</h2>
+<p>Provide an auto backend selection for JAX, analogous to PyTorch:</p>
+<ul>
+<li><p><strong>CLI</strong></p>
+<pre><code class="language-bash">uv pip install &quot;jax&quot; --jax-backend=auto
+uv add jax --jax-backend=auto
+</code></pre>
+</li>
+<li><p><strong>Config</strong></p>
+<pre><code class="language-toml">[tool.uv.pip]
+jax-backend = &quot;auto&quot;   # cpu | cuda12 | cuda12-local | auto
+</code></pre>
+</li>
+<li><p><strong>Env var</strong></p>
+<pre><code class="language-bash">UV_JAX_BACKEND=auto
+</code></pre>
+</li>
+</ul>
+<h2>Expected behavior</h2>
+<ul>
+<li>Inspect the environment (e.g., presence of NVIDIA drivers / <code>libcuda</code>, compatible CUDA runtime) and select the appropriate JAX variant.</li>
+<li>If compatible CUDA is available → install <code>jax[cuda12]</code> (or <code>jax[cuda12-local]</code>) according to JAX’s release mapping; otherwise fall back to CPU.</li>
+<li>Ensure reproducibility: the resolved variant should be captured in <code>uv.lock</code> with index/marker annotations similar to PyTorch.</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li>JAX release notes indicate current CUDA baseline (e.g., CUDA 12.8) and extras naming conventions (recently <code>cuda12_local</code> → <code>cuda12-local</code>). This variability reinforces the need for an “auto” path that stays aligned with upstream.</li>
+</ul>
+<p>Thanks for considering JAX parity with the fantastic PyTorch integration!</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @nkiyohara on 2025-08-22 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on 2025-08-22 19:15</div>
+            <div class="timeline-body"><p>Should we have a more generic env var/config to control this bevavior instead? To me, it seems that adding an env var per package does not scale well. Just my opinion, I don't know if this would grow to many more packages (maybe not)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nkiyohara">@nkiyohara</a> on 2025-08-26 10:45</div>
+            <div class="timeline-body"><p>Thanks, that’s a good point. I also feel like having one env var per package doesn’t really scale.</p>
+<p>Maybe we could think about a <strong>generic backend knob</strong> (with per-package overrides) + some kind of small “resolver” registry inside uv, so detection logic lives in one place?</p>
+<h3>1. Generic knobs (with overrides)</h3>
+<ul>
+<li><p><strong>Env</strong></p>
+<ul>
+<li><code>UV_BACKENDS_DEFAULT=auto|cpu|prefer-gpu|require-gpu</code></li>
+<li>Overrides like:<ul>
+<li><code>UV_BACKEND_JAX=auto|cpu|cuda12|cuda12-local</code></li>
+<li><code>UV_BACKEND_TORCH=auto|cpu|cuda|rocm|xpu</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>CLI</strong></p>
+<ul>
+<li><code>uv add jax --backend auto</code> (just uses the generic policy)</li>
+<li>Scoped form like: <code>--backend jax=auto torch=auto</code></li>
+</ul>
+</li>
+<li><p><strong>pyproject</strong></p>
+<pre><code class="language-toml">[tool.uv.backends]
+default = &quot;prefer-gpu&quot;
+jax = &quot;auto&quot;
+torch = &quot;auto&quot;
+</code></pre>
+</li>
+</ul>
+<p>This way UX stays consistent and we don’t end up with a zoo of env vars. The old <code>--torch-backend</code> flag could just stay around as an alias.</p>
+<h3>2. Resolver registry</h3>
+<ul>
+<li><p>uv exposes some “backend resolver” interface:<br />
+input = (package name, detected env like cuda/driver/rocm/cpu)<br />
+output = (exact requirement, index url, extras etc)</p>
+</li>
+<li><p>uv ships resolvers for torch and jax, more can be added later.</p>
+</li>
+<li><p>Detection logic (nvml, libcuda, <code>nvidia-smi</code>) reused so we don’t duplicate.</p>
+</li>
+</ul>
+<h3>3. Repro / locking</h3>
+<ul>
+<li>Whatever decision the resolver makes is written into <code>uv.lock</code> (extras + index markers).</li>
+<li>If detection is fuzzy, just fall back to CPU and warn.</li>
+</ul>
+<hr />
+<p>That feels like it keeps things tidy + flexible, and would avoid one-off hacks for each ML framework.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-08-26 15:19</div>
+            <div class="timeline-body"><blockquote>
+<p>some kind of small “resolver” registry inside uv,</p>
+</blockquote>
+<p>Btw, for those not aware, this is being discussed as a standard:</p>
+<p>https://wheelnext.dev/proposals/pepxxx_wheel_variant_support/</p>
+<p>https://discuss.python.org/t/wheelnext-wheel-variants-an-update-and-a-request-for-feedback/102383</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Race Condition with `uv sync` `git clean` and custom build steps (like setuptools-scm) - astral-sh/uv #16467</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Race Condition with `uv sync` `git clean` and custom build steps (like setuptools-scm)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16467">#16467</a>
+        opened by <a href="https://github.com/schlamar">@schlamar</a>
+        on 2025-10-27 08:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/schlamar">@schlamar</a> on 2025-10-27 08:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This is somehow related to #15224 but quite a different issue.</p>
+<p>When using custom build steps (like generating a version file with setuptools-scm) the caching from uv is too aggressive for editable installs if you clean up the project directory (for example with <code>git clean -fxd</code>).</p>
+<p>Attached a minimal example. Steps to reproduce.</p>
+<pre><code>git init
+git add .
+git commit -m &quot;init&quot;
+uv sync
+# activate venv &amp; .\.venv\Scripts\Activate.ps1
+pytest
+git clean -fxd
+uv sync
+pytest 
+</code></pre>
+<p>In the second <code>uv sync</code> call the setuptools-scm build does not trigger and and the _version.py file is missing.</p>
+<p><a href="https://github.com/user-attachments/files/23159885/min.zip">min.zip</a></p>
+<h3>Platform</h3>
+<p>Windows 11</p>
+<h3>Version</h3>
+<p>uv 0.9.5 (d5f39331a 2025-10-21)</p>
+<h3>Python version</h3>
+<p>Python 3.13.6</p>
+<h3>Workaround</h3>
+<pre><code>git clean -fxd
+uv sync --no-cache
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @schlamar on 2025-10-27 08:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-27 18:31</div>
+            <div class="timeline-body"><p><code>git clean -fxd</code> and editable installs with generated files don't really interact well, I don't really have a great idea for this case.</p>
+<p>A more performant workaround is:</p>
+<pre><code>uv sync --reinstall-package &lt;library&gt;
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

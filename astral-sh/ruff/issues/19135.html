@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLC3002: false positive - astral-sh/ruff #19135</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLC3002: false positive</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19135">#19135</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2025-07-04 00:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2025-07-04 00:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-python">import re
+
+
+class language:
+    choices = [ 
+        ('', ''),
+        ('af_ZA', 'Afrikaans/South Africa'),
+        ('af_ZA.UTF-8', 'Afrikaans/South Africa(UTF-8)'),
+        ('sq_AL', 'Albanian/Albania'),
+    ] 
+
+
+class languageCode:
+    _re = re.compile(r'^[a-z][a-z]_[A-Z][A-Z]$')
+    choices = (lambda m: [kv for kv in language.choices if m(kv[0])])(_re.match)  # noqa: PLC3002
+</code></pre>
+<p>contains <code>PLC3002</code> (last line) while it cannot be written as suggested:</p>
+<pre><code class="language-python">class languageCode:
+    _re = re.compile(r'^[a-z][a-z]_[A-Z][A-Z]$')
+    choices = [kv for kv in language.choices if _re.match(kv[0])]
+</code></pre>
+<p>→ causes <code>F821: Undefined name '_re'</code></p>
+<h3>Version</h3>
+<p>ruff 0.11.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-04 00:45</div>
+            <div class="timeline-body"><p>Here's a much simpler example: https://play.ruff.rs/aa033d95-2050-4e59-9fa9-27438634a87f</p>
+<pre><code class="language-py">class A:
+    x = 1
+    y = [_ for _ in [1] if x]  # F821
+    y = (lambda test:[_ for _ in [1] if test])(x)  # PLC3002
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-04 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-07-04 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-04 13:03</div>
+            <div class="timeline-body"><p>Wow, another scoping quirk in classes. So <code>x</code> is in scope for the call, but not in the comprehension?</p>
+<p>It looks like it's also not in scope for the comprehension target, but it works in the iterator:</p>
+<pre><code class="language-py">class C:
+    x = 1
+    y = [2 for _ in [x]]  # Okay
+    z = [x for _ in [1]]  # Error
+</code></pre>
+<p>This almost feels like a CPython bug, but maybe it's intentional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-04 14:19</div>
+            <div class="timeline-body"><p>It looks like it's intentional. I asked in the python discord, and ZeroIntensity pointed me to <a href="https://peps.python.org/pep-0709/"><code>PEP709</code></a>. Apparently comprehensions used to operate like functions &lt; 3.12, and that &quot;isolation of scope&quot; was kept even after they got inlined, so it's like expecting this to work</p>
+<pre><code class="language-py">class A:
+    x = 1
+    def foo():
+        print(x)
+    foo()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-04 17:25</div>
+            <div class="timeline-body"><p>Nice, thanks for asking! There's even an example of this in the <a href="https://docs.python.org/3/reference/executionmodel.html#resolution-of-names">docs</a>. And I guess the reason this example works:</p>
+<pre><code class="language-py">class C:
+    x = 1
+    y = [2 for _ in [x]]  # Okay
+</code></pre>
+<p>is given <a href="https://docs.python.org/3/reference/expressions.html#displays-for-lists-sets-and-dictionaries">here</a>:</p>
+<blockquote>
+<p>However, aside from the iterable expression in the leftmost for clause, the comprehension is executed in a separate implicitly nested scope.</p>
+</blockquote>
+<p>So it's all working as intended, just a bit surprising, at least to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeleppane">@mikeleppane</a> on 2025-08-06 14:23</div>
+            <div class="timeline-body"><p>I will take a look at this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @mikeleppane by @ntBre on 2025-08-06 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19801.html">astral-sh/ruff#19801</a> on 2025-08-07 11:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

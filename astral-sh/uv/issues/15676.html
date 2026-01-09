@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrong behavior of `--only-group` and `--extra` - astral-sh/uv #15676</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wrong behavior of `--only-group` and `--extra`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15676">#15676</a>
+        opened by <a href="https://github.com/j-adamczyk">@j-adamczyk</a>
+        on 2025-09-04 12:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/j-adamczyk">@j-adamczyk</a> on 2025-09-04 12:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have a pretty standard <code>pyproject.toml</code> file:</p>
+<pre><code>[project]
+name = &quot;project-name&quot;
+version = &quot;1.0.0&quot;
+description = &quot;&quot;
+authors = [{ name = &quot;ML team&quot; }]
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12,&lt;3.13&quot;
+
+dependencies = []
+
+# select a CPU or GPU variant of PyTorch
+pytorch_variant = {train_model = &quot;pytorch-gpu&quot;, inference = &quot;pytorch-cpu&quot;}
+
+[dependency-groups]
+dev = [
+    &quot;jupyter&quot;,
+    &quot;pre-commit&quot;,
+    &quot;ruff&quot;
+]
+
+training = [
+    &quot;accelerate==1.*&quot;,
+    &quot;boto3==1.*&quot;,
+    &quot;pillow==11.*&quot;,
+    &quot;pydantic-settings==2.*&quot;,
+    &quot;scikit-learn==1.7.*&quot;,
+    &quot;tqdm&quot;,
+    &quot;transformers==4.56.*&quot;,
+]
+
+jenkins = [
+    &quot;boto3==1.*&quot;,
+    &quot;pyyaml&quot;,
+    &quot;sagemaker==2.*&quot;
+]
+
+inference = [
+    &quot;fastapi==0.116.*&quot;,
+    &quot;opentelemetry-api==1.36.*&quot;,
+    &quot;opentelemetry-exporter-otlp==1.36.*&quot;,
+    &quot;opentelemetry-instrumentation-fastapi&quot;,
+    &quot;opentelemetry-sdk==1.36.*&quot;,
+    &quot;pandas==2.*&quot;,
+    &quot;pillow==11.*&quot;,
+    &quot;pydantic-settings==2.*&quot;,
+    &quot;scikit-learn==1.7.*&quot;,
+    &quot;sentry-sdk[fastapi]==2.*&quot;,
+    &quot;transformers==4.56.*&quot;,
+    &quot;uvicorn==0.35.*&quot;,
+]
+
+[project.optional-dependencies]
+pytorch-cpu = [&quot;torch==2.8.0&quot;]
+pytorch-gpu = [&quot;torch==2.8.0&quot;]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;pytorch-cpu&quot; },
+    { extra = &quot;pytorch-gpu&quot; }
+  ]
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;pytorch-cpu&quot; },
+  { index = &quot;pytorch-gpu&quot;, extra = &quot;pytorch-gpu&quot; }
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-gpu&quot;
+url = &quot;https://download.pytorch.org/whl/cu126&quot;  # sync with PyTorch version
+explicit = true
+</code></pre>
+<p>When I run <code>uv sync --only-group inference --extra pytorch-cpu</code>, my environment does not contain PyTorch at all, and extra is ignored. Result of <code>uv pip list</code> is:</p>
+<pre><code>annotated-types                          0.7.0
+anyio                                    4.10.0
+asgiref                                  3.9.1
+certifi                                  2025.8.3
+charset-normalizer                       3.4.3
+click                                    8.2.1
+fastapi                                  0.116.1
+filelock                                 3.19.1
+fsspec                                   2025.9.0
+googleapis-common-protos                 1.70.0
+grpcio                                   1.74.0
+h11                                      0.16.0
+hf-xet                                   1.1.9
+huggingface-hub                          0.34.4
+idna                                     3.10
+importlib-metadata                       6.11.0
+joblib                                   1.5.2
+numpy                                    1.26.4
+opentelemetry-api                        1.36.0
+opentelemetry-exporter-otlp              1.36.0
+opentelemetry-exporter-otlp-proto-common 1.36.0
+opentelemetry-exporter-otlp-proto-grpc   1.36.0
+opentelemetry-exporter-otlp-proto-http   1.36.0
+opentelemetry-instrumentation            0.57b0
+opentelemetry-instrumentation-asgi       0.57b0
+opentelemetry-instrumentation-fastapi    0.57b0
+opentelemetry-proto                      1.36.0
+opentelemetry-sdk                        1.36.0
+opentelemetry-semantic-conventions       0.57b0
+opentelemetry-util-http                  0.57b0
+packaging                                24.2
+pandas                                   2.3.2
+pillow                                   11.3.0
+protobuf                                 6.31.1
+pydantic                                 2.11.7
+pydantic-core                            2.33.2
+pydantic-settings                        2.10.1
+python-dateutil                          2.9.0.post0
+python-dotenv                            1.1.1
+pytz                                     2025.2
+pyyaml                                   6.0.2
+regex                                    2025.9.1
+requests                                 2.32.5
+safetensors                              0.6.2
+scikit-learn                             1.7.1
+scipy                                    1.16.1
+sentry-sdk                               2.36.0
+six                                      1.17.0
+sniffio                                  1.3.1
+starlette                                0.47.3
+threadpoolctl                            3.6.0
+tokenizers                               0.22.0
+tqdm                                     4.67.1
+transformers                             4.56.0
+typing-extensions                        4.15.0
+typing-inspection                        0.4.1
+tzdata                                   2025.2
+urllib3                                  2.5.0
+uvicorn                                  0.35.0
+wrapt                                    1.17.3
+zipp                                     3.23.0
+</code></pre>
+<p>Meanwhile, <code>uv sync --no-default-groups --group inference --extra pytorch-cpu</code> is behaving properly:</p>
+<pre><code>annotated-types                          0.7.0
+anyio                                    4.10.0
+asgiref                                  3.9.1
+certifi                                  2025.8.3
+charset-normalizer                       3.4.3
+click                                    8.2.1
+fastapi                                  0.116.1
+filelock                                 3.19.1
+fsspec                                   2025.9.0
+googleapis-common-protos                 1.70.0
+grpcio                                   1.74.0
+h11                                      0.16.0
+hf-xet                                   1.1.9
+huggingface-hub                          0.34.4
+idna                                     3.10
+importlib-metadata                       6.11.0
+jinja2                                   3.1.6
+joblib                                   1.5.2
+markupsafe                               3.0.2
+mpmath                                   1.3.0
+networkx                                 3.5
+numpy                                    1.26.4
+opentelemetry-api                        1.36.0
+opentelemetry-exporter-otlp              1.36.0
+opentelemetry-exporter-otlp-proto-common 1.36.0
+opentelemetry-exporter-otlp-proto-grpc   1.36.0
+opentelemetry-exporter-otlp-proto-http   1.36.0
+opentelemetry-instrumentation            0.57b0
+opentelemetry-instrumentation-asgi       0.57b0
+opentelemetry-instrumentation-fastapi    0.57b0
+opentelemetry-proto                      1.36.0
+opentelemetry-sdk                        1.36.0
+opentelemetry-semantic-conventions       0.57b0
+opentelemetry-util-http                  0.57b0
+packaging                                24.2
+pandas                                   2.3.2
+pillow                                   11.3.0
+protobuf                                 6.31.1
+pydantic                                 2.11.7
+pydantic-core                            2.33.2
+pydantic-settings                        2.10.1
+python-dateutil                          2.9.0.post0
+python-dotenv                            1.1.1
+pytz                                     2025.2
+pyyaml                                   6.0.2
+regex                                    2025.9.1
+requests                                 2.32.5
+safetensors                              0.6.2
+scikit-learn                             1.7.1
+scipy                                    1.16.1
+sentry-sdk                               2.36.0
+setuptools                               80.9.0
+six                                      1.17.0
+sniffio                                  1.3.1
+starlette                                0.47.3
+sympy                                    1.14.0
+threadpoolctl                            3.6.0
+tokenizers                               0.22.0
+torch                                    2.8.0+cpu
+tqdm                                     4.67.1
+transformers                             4.56.0
+typing-extensions                        4.15.0
+typing-inspection                        0.4.1
+tzdata                                   2025.2
+urllib3                                  2.5.0
+uvicorn                                  0.35.0
+wrapt                                    1.17.3
+zipp                                     3.23.0
+</code></pre>
+<p>This is a bug, because when I explicitly specify an extra, it should override the <code>--only-group</code>. Those are two different things anyway (dependency groups vs optional dependencies).</p>
+<h3>Platform</h3>
+<p>Ubuntu 25.04</p>
+<h3>Version</h3>
+<p>0.8.15</p>
+<h3>Python version</h3>
+<p>3.12.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @j-adamczyk on 2025-09-04 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-04 12:25</div>
+            <div class="timeline-body"><p>Hm, <code>--only-group</code> excludes the project, hence no extras can be selected. I think you want <code>--no-default-groups --group inference --extra pytorch-cpu</code>?</p>
+<p>I think we should probably error if <code>--only-group</code> and <code>--extra</code> are provided.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j-adamczyk">@j-adamczyk</a> on 2025-09-04 13:11</div>
+            <div class="timeline-body"><p>@zanieb yeah, I figured that out after 3 full days of working on this. I absolutely expect specyfing <code>--extra pytorch-cpu</code> to work even if <code>--only-group inference</code> is specified. Since that means &quot;I want just this dependency group, and this optional dependency&quot;. Currently, dependency groups are mixed with optional dependencies in this resolution, even if I explicitly specify that <code>--extra</code>.</p>
+<p>Error + informative message pointing to <code>--no-default-groups</code> + other arguments would be definitely helpful, but I still find this behavior very counterintuitive.</p>
+<p>This is extremely hard to find with PyTorch+transformers here, since actually if you try to run it, it throws an error that <code>libcublas</code> and other CUDA libraries are note present. This is due to complex dependencies between transformers and PyTorch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-06 02:37</div>
+            <div class="timeline-body"><p>Yeah, I think this probably shouldn't be allowed. Extras are always additive (so they require the project itself to be installed too). Dependency groups are allowed to be installed without installing the project, and that was an intentional part of the standard design.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2025-09-06 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-09-09 15:49</div>
+            <div class="timeline-body"><p>Hii @charliermarsh &amp; @zanieb  , Can I work on this ?</p>
+<p>Thank you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15788.html">astral-sh/uv#15788</a> on 2025-09-11 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-09-11 15:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caching does not work when using an extra index - astral-sh/uv #14121</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Caching does not work when using an extra index</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14121">#14121</a>
+        opened by <a href="https://github.com/pschmutz">@pschmutz</a>
+        on 2025-06-17 23:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pschmutz">@pschmutz</a> on 2025-06-17 23:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have the following <code>pyproject.toml</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;==3.10.*&quot;
+dependencies = []
+
+[[tool.uv.index]]
+url = &quot;https://pypi.nvidia.com&quot;
+
+</code></pre>
+<p>If I then execute</p>
+<pre><code class="language-bash">uv add nvidia-nvjitlink-cu12
+uv remove nvidia-nvjitlink-cu12
+uv add nvidia-nvjitlink-cu12
+</code></pre>
+<p>The package is downloaded twice. I would expect that it is found in the cache and not downloaded. Please note that this happens with several other packages as well, I just picked a smaller one to reproduce this. I originally found this when installing</p>
+<pre><code class="language-bash">uv add 'isaacsim[all,extscache]==4.5.0'
+</code></pre>
+<p>I attached the verbose output of the commands listed above.</p>
+<p><a href="https://github.com/user-attachments/files/20785422/uv_output.txt">uv_output.txt</a></p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04</p>
+<h3>Version</h3>
+<p>uv 0.7.13</p>
+<h3>Python version</h3>
+<p>Python 3.10.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @pschmutz on 2025-06-17 23:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-06-17 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-17 23:27</div>
+            <div class="timeline-body"><p>Lemme take a look...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-18 00:01</div>
+            <div class="timeline-body"><p>Ah okay, it's because they have a Cache-Control header on the wheels:</p>
+<pre><code>cache-control: max-age=0, no-cache, no-store
+</code></pre>
+<p>So we don't cache them.</p>
+<p>There's an open issue to allow users to override this (#10444) which could solve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pschmutz">@pschmutz</a> on 2025-06-18 00:05</div>
+            <div class="timeline-body"><p>Thanks for the quick feedback! I'll follow the open issue you mentioned</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-06-20 20:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

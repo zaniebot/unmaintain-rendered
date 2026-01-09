@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv init --python-preference only-managed installs system python - astral-sh/uv #10766</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv init --python-preference only-managed installs system python</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10766">#10766</a>
+        opened by <a href="https://github.com/hyperknot">@hyperknot</a>
+        on 2025-01-20 01:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hyperknot">@hyperknot</a> on 2025-01-20 01:33</div>
+            <div class="timeline-body"><p>version</p>
+<pre><code>uv version
+uv 0.5.21 (3478c068b 2025-01-17)
+</code></pre>
+<p>If I run:</p>
+<pre><code>rm -r *
+uv init --python 3.13 --python-preference only-managed
+uv sync
+</code></pre>
+<p>I expect it to only use only-managed python files, like if I manually run <code>uv venv</code> with this switch.</p>
+<p>What is happening instead is this output:</p>
+<pre><code>Using CPython 3.13.1 interpreter at: /opt/homebrew/opt/python@3.13/bin/python3.13
+Creating virtual environment at: .venv
+Resolved 1 package in 13ms
+Audited in 0.28ms
+</code></pre>
+<p>As you can see it's using the brew installed system python.</p>
+<hr />
+<p>What works is calling <code>uv sync --python-preference only-managed</code>.</p>
+<p>So the bug is that <code>init</code> is not creating the necessary lines in <code>pyproject.toml</code> which would instruct the <code>sync</code> command to use only-managed environments.</p>
+<p>I believe this should be added to <code>pyproject.toml</code></p>
+<pre><code>[tool.uv]
+python-preference = &quot;only-managed&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-20 02:14</div>
+            <div class="timeline-body"><p>Yeah, we don't persist the python preference during <code>uv init</code> — this flag is only accepted for that command because it's &quot;global&quot;. We definitely could persist it, though I'm not entirely sure we should (there is not a precedence for this right now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-01-20 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2025-01-20 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hyperknot">@hyperknot</a> on 2025-01-20 02:24</div>
+            <div class="timeline-body"><p>I mean, isn't the whole point of this section</p>
+<pre><code>[tool.uv]
+python-preference = &quot;only-managed&quot;
+</code></pre>
+<p>to store this setting on a project level, before running sync? I'm just surprised that the cli parameter is there and the pyproject setting is there, it's just not being used.</p>
+<p>So what do you recommend for this use case? Specify Python version in init and specify only-managed at sync time?</p>
+<pre><code>uv init --python 3.13
+uv sync --python-preference only-managed
+</code></pre>
+<p>What if someone runs this sync once and later on, just runs <code>uv sync</code> without this long parameter? Wouldn't it result in a possibly broken environment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-20 03:28</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm just surprised that the cli parameter is there and the pyproject setting is there, it's just not being used.</p>
+</blockquote>
+<p>As I said, it's a global option so it's available on every command regardless of whether it is used. It is used in <code>uv init</code> to find your default interpreter, i.e., when determining the version to use in the project. It's an open question if it should be persisted.</p>
+<blockquote>
+<p>isn't the whole point of this section...</p>
+</blockquote>
+<p>The main point of that setting is to be used at a user-level, not a project level as ideally it shouldn't matter per-project which interpreter distribution is used. Is there a reason you want to configure this per-project? Is it just for local use or are you intending to enforce using uv-managed interpreters for other developers?</p>
+<blockquote>
+<p>What if someone runs this sync once and later on, just runs uv sync without this long parameter? Wouldn't it result in a possibly broken environment?</p>
+</blockquote>
+<p>It wouldn't break the environment per-say, but it could re-create it. I'm actually not sure if we will invalidate an existing environment with that option yet though — there are some open problems around this (e.g., #5144).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-20 03:30</div>
+            <div class="timeline-body"><p>I would recommend just explicitly creating the environment with your preference</p>
+<pre><code>uv init ...
+uv venv --python-preference only-managed
+uv sync
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 03:39</div>
+            <div class="timeline-body"><p>@zanieb -- Not sure that it should, but I guess this would also be solved (in this specific case) by <code>uv init</code> creating a virtual environment. Is that true?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hyperknot">@hyperknot</a> on 2025-01-20 03:43</div>
+            <div class="timeline-body"><p>So my previous workflow was exactly that, using <code>uv venv</code>. I'm trying to migrate from venv to sync, as I've read here that is the recommended workflow.</p>
+<p>So yes, this is basically exactly what I want:</p>
+<pre><code>uv init --python 3.13
+uv venv --python-preference only-managed
+uv sync
+</code></pre>
+<p>It's just not very elegant with 3 commands. I also agree that this shouldn't be a repo level settings, it should be something local to the user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 03:44</div>
+            <div class="timeline-body"><p>You should be able to put that in your user-level <code>uv.toml</code>: https://docs.astral.sh/uv/configuration/files/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-20 03:48</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/zanieb">@zanieb</a> -- Not sure that it should, but I guess this would also be solved (in this specific case) by <code>uv init</code> creating a virtual environment. Is that true?</p>
+</blockquote>
+<p>I believe that is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hyperknot">@hyperknot</a> on 2025-01-20 04:06</div>
+            <div class="timeline-body"><p>In that case, it'd still make a lot of sense to supply this at init time and have init create the venv.</p>
+<p>Basically merge these two:</p>
+<pre><code>uv init --python 3.13
+uv venv --python-preference only-managed
+</code></pre>
+<p>into one command</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danra">@danra</a> on 2025-04-21 20:03</div>
+            <div class="timeline-body"><p>Similar to others in the thread, I was surprised that <code>uv init</code> didn't persist the <code>managed-python</code> preference.</p>
+<blockquote>
+<p>Is there a reason you want to configure this per-project? Is it just for local use or are you intending to enforce using uv-managed interpreters for other developers?</p>
+</blockquote>
+<p>The latter, for consistency of results.</p>
+<p>One issue we'd actually encountered was a crash which only reproduced for some of our developers when linking to the Python dylib (on macs). The crash turned out to be due to https://github.com/astral-sh/uv/issues/10598 (our binary was failing to find Python at runtime due to the Python dylib's install name being faulty). It then turned out the crash occurred when the Python 3.13.1 selected by uv was a managed one, which was the case on those macOS machines which did not have 3.13.1 installed as their system Python.</p>
+<p>One more potential issue (but that I don't recall if we'd seen in practice) is that when doing floating-point calculations it's desirable to get the same exact results (when running on the same architecture), which I guess could not be the case due to different Python build configurations (peeking at my system vs. uv-managed Python 3.13.1, <code>pyconfig.h</code> does have some differences, as could be expected).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

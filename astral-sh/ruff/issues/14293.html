@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore comment and formatting preserving source code generator - astral-sh/ruff #14293</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Explore comment and formatting preserving source code generator</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14293">#14293</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-11-12 10:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-12 10:09</div>
+            <div class="timeline-body"><p>Explore if it's possible to preserve most comments and the source formatting in <code>Generator</code>. See <a href="https://github.com/benjamn/recast#source-maps"><code>recast</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">core</span> added by @MichaReiser on 2024-11-12 10:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @MichaReiser on 2024-11-12 10:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-21 20:53</div>
+            <div class="timeline-body"><p>A few additional notes:</p>
+<p>One concept I found useful from Roslyn (c# and VB compiler) is the idea of leading and trailing trivia. Every token has leading and trailing trivia and the rules for what's leading and trailing are. The following is from <a href="https://biomejs.dev/internals/architecture/">biomejs' documentation</a></p>
+<ul>
+<li>Every trivia up to the token/keyword (including line breaks) will be the leading trivia;</li>
+<li>Everything until the next linebreak (but not including it) will be the trailing trivia;</li>
+</ul>
+<pre><code class="language-js">const a = &quot;foo&quot;; // comment 1
+// comment 2
+const b = &quot;bar&quot;;
+</code></pre>
+<p>The parts in <code>[]</code> is the trivia where the first <code>[]</code> is the leading trivia and the second <code>[]</code> is the trailing trivia.</p>
+<pre><code>0: JS_MODULE@0..55
+    ...
+      1: SEMICOLON@15..27 &quot;;&quot; [] [Whitespace(&quot; &quot;), Comments(&quot;// comment 1&quot;)]
+    1: JS_VARIABLE_STATEMENT@27..55
+        ...
+        1: CONST_KW@27..45 &quot;const&quot; [Newline(&quot;\n&quot;), Comments(&quot;// comment 2&quot;), Newline(&quot;\n&quot;)] [Whitespace(&quot; &quot;)]
+  3: EOF@55..55 &quot;&quot; [] []
+</code></pre>
+<p>What's nice about this approach is that if you move the <code>const</code> keyword (or the variable statement) is that it also moves the relevant comments. The same is true for when you move the <code>;</code> (or <code>a</code>s declaration).</p>
+<p>This <a href="https://www.researchgate.net/profile/Guoqiang-Li-22/publication/282833288_Constructing_format-preserving_printing_from_syntax-directed_definitions/links/5730f61408ae08415e6a835d/Constructing-format-preserving-printing-from-syntax-directed-definitions.pdf?origin=publication_detail&amp;_tp=eyJjb250ZXh0Ijp7ImZpcnN0UGFnZSI6InB1YmxpY2F0aW9uIiwicGFnZSI6InB1YmxpY2F0aW9uRG93bmxvYWQiLCJwcmV2aW91c1BhZ2UiOiJwdWJsaWNhdGlvbiJ9fQ">paper</a> and also <a href="https://eelcovisser.org/publications/2011/JongeV11.pdf">this paper</a> might be worth reading. The papers also reference many other papers that could be worth checking out</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-28 20:42</div>
+            <div class="timeline-body"><p>@dcreager do you know any relevant research in this area?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17683.html">astral-sh/ruff#17683</a> on 2025-04-28 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-26 16:34</div>
+            <div class="timeline-body"><p>Exploration from @dylwil3 https://github.com/astral-sh/ruff/pull/14886</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-27 13:52</div>
+            <div class="timeline-body"><blockquote>
+<p>do you know any relevant research in this area?</p>
+</blockquote>
+<p>Whoops, sorry I missed this!</p>
+<p>The de Jonge paper is a good one, and there's also <a href="https://dl.acm.org/doi/abs/10.1145/1449814.1449817">Sommerlad et al</a> that describes how the Eclipse implementation works. (de Jonge mentions Eclipse in related work but only cites the documentation, not the earlier paper.)</p>
+<p>The proposed data-oriented AST representation (https://github.com/astral-sh/ruff/issues/15657) could also help here, as a way to store your suggested CST trivia alongside the existing AST structure.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PERF402 slightly incorrect fix suggestion - astral-sh/ruff #8070</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PERF402 slightly incorrect fix suggestion</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8070">#8070</a>
+        opened by <a href="https://github.com/Skylion007">@Skylion007</a>
+        on 2023-10-19 17:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-10-19 17:27</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<pre><code>a = []
+for i in range(10):
+    for j in range(100):
+        a.append(j)
+</code></pre>
+<p>ruff version 0.1.0</p>
+<p>This rule outputs
+<code>test-perf.py:4:9: PERF402 Use `list` or `list.copy` to create a copy of a list</code>
+Which while correct in that something should be done here, it really should be calling .extend() not the list or list.copy() constructor. Doing</p>
+<pre><code>a = []
+for i in range(10):
+    a = list(range(100))
+</code></pre>
+<p>would yield an invalid result.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-20 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-10-25 12:43</div>
+            <div class="timeline-body"><p>Do we want to specify that this is only really relevant for nested if-loops? Or do we also want to suggest it for single loops like in the default example in our docs and <a href="https://github.com/tonybaloney/perflint#w8402--use-a-list-copy-instead-of-a-for-loop-use-list-copy">upstream implementation</a>.</p>
+<p>Right now PERF402 docs describe converting from:</p>
+<pre><code class="language-python">/// original = list(range(10000))
+/// filtered = []
+/// for i in original:
+///     filtered.append(i)
+</code></pre>
+<p>to</p>
+<pre><code class="language-python">/// original = list(range(10000))
+/// filtered = list(original)
+</code></pre>
+<p>([NIT] that filtered name is kind of misleading too here)
+Do we want this to become:</p>
+<pre><code class="language-python">/// original = list(range(10000))
+/// filtered = [].extend(original)
+</code></pre>
+<p>?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

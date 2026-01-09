@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement PEP 604 rewrites for `isinstance` and `issubclass` checks - astral-sh/ruff #2923</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement PEP 604 rewrites for `isinstance` and `issubclass` checks</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2923">#2923</a>
+        opened by <a href="https://github.com/michaeloliverx">@michaeloliverx</a>
+        on 2023-02-15 14:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/michaeloliverx">@michaeloliverx</a> on 2023-02-15 14:41</div>
+            <div class="timeline-body"><p>PEP 604 introduced simplified syntax for union types e.g. <code>var: str | int</code> for which we already have support for in #369. It also allows this syntax to be used <a href="https://peps.python.org/pep-0604/#isinstance-and-issubclass">inside <code>isinstance</code> and <code>issubclass</code> checks</a>, it would be great if these could be autofixed too!</p>
+<pre><code class="language-python"># before
+isinstance(&quot;&quot;, (int, str))
+# after
+isinstance(&quot;&quot;, int | str)
+
+
+# before
+issubclass(bool, (int, float))
+# after
+issubclass(bool, int | float)
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-02-15 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-02-15 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-02-15 15:03</div>
+            <div class="timeline-body"><p>Not that it affects the usefulness of such a rule, but note that <code>|</code> is slower:</p>
+<pre><code>$ python -m timeit 'isinstance(&quot;&quot;, (int, str))'
+2000000 loops, best of 5: 103 nsec per loop
+
+$ python -m timeit 'isinstance(&quot;&quot;, int | str)'
+1000000 loops, best of 5: 217 nsec per loop
+</code></pre>
+<p>This is on Python 3.10, might be faster on newer versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michaeloliverx">@michaeloliverx</a> on 2023-02-15 15:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Not that it affects the usefulness of such a rule, but note that <code>|</code> is slower:</p>
+<pre><code>$ python -m timeit 'isinstance(&quot;&quot;, (int, str))'
+2000000 loops, best of 5: 103 nsec per loop
+
+$ python -m timeit 'isinstance(&quot;&quot;, int | str)'
+1000000 loops, best of 5: 217 nsec per loop
+</code></pre>
+<p>This is on Python 3.10, might be faster on newer versions.</p>
+</blockquote>
+<p>Interesting! Definitely worth putting a note beside the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wbolster">@wbolster</a> on 2023-02-15 16:56</div>
+            <div class="timeline-body"><p>python 3.11 has optimizations related to exactly this; see https://github.com/python/cpython/issues/91603</p>
+<p>on python 3.10:</p>
+<pre><code class="language-shell">$ a='isinstance(&quot;&quot;, (int, str))'
+$ b='isinstance(&quot;&quot;, int | str)'
+$ python3.10 -m timeit &quot;$a&quot;; python3.10 -m timeit &quot;$b&quot;
+5000000 loops, best of 5: 48.6 nsec per loop
+2000000 loops, best of 5: 108 nsec per loop
+</code></pre>
+<p>python 3.11 is significantly faster in both cases, and the difference between the two approaches has shrunk:</p>
+<pre><code class="language-shell">$ python3.11 -m timeit &quot;$a&quot;; python3.11 -m timeit &quot;$b&quot;
+5000000 loops, best of 5: 40.6 nsec per loop
+5000000 loops, best of 5: 63.2 nsec per loop
+</code></pre>
+<p>note that <code>isinstance()</code> checks (which in simple cases boil down to a pointer comparison in cpython) are very unlikely to dominate any real-world workloads.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2023-02-27 23:02</div>
+            <div class="timeline-body"><p>Can I take a look at this one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-27 23:09</div>
+            <div class="timeline-body"><p>Sure! We can probably make it part of <code>UP007</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-02-28 15:38</div>
+            <div class="timeline-body"><p>@charliermarsh I'd be in favor of separating it out into it's on rule code as one could imagine stylistically a user preferring this syntax, but not like replacing Union with <code>|</code> and vice versa.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-28 17:13</div>
+            <div class="timeline-body"><p>@Skylion007 - I'm a little torn because that rule is intended to capture PEP 604 adoption / usage, and this behavior <em>is</em> explicitly part of <a href="https://peps.python.org/pep-0604/#isinstance-and-issubclass">PEP 604</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2023-02-28 18:32</div>
+            <div class="timeline-body"><p>It's been a while since I contributed last, so I don't remember everything. How would this interact with SIM101 rewriting <code>isinstance(a, int) or isinstance(a, float)</code> to <code>isinstance(a, (int, float))</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-28 18:33</div>
+            <div class="timeline-body"><p>It's okay to &quot;ignore&quot; that, since if both rules are enabled, we'd end up correcting <code>isinstance(a, (int, float))</code> to <code>isinstance(a, int | float)</code> in a second pass (we fix iteratively until there are no more fixable rules).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3280.html">astral-sh/ruff#3280</a> on 2023-02-28 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2023-02-28 19:57</div>
+            <div class="timeline-body"><p>I have a first draft, but not sure about code architecture: it doesn't to fit in the same function / ast level</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-03 22:14</div>
+            <div class="timeline-body"><p>This was added in https://github.com/charliermarsh/ruff/pull/3280.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-03 22:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../home-assistant/core/pulls/89273.html">home-assistant/core#89273</a> on 2023-03-07 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pyodide/pyodide/pulls/3650.html">pyodide/pyodide#3650</a> on 2023-03-11 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pymodbus-dev/pymodbus/issues/1477.html">pymodbus-dev/pymodbus#1477</a> on 2023-04-10 02:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7871.html">astral-sh/ruff#7871</a> on 2023-10-09 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../home-assistant/core/issues/123850.html">home-assistant/core#123850</a> on 2024-08-14 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13051.html">astral-sh/ruff#13051</a> on 2024-08-22 09:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New lint rule to prevent mis-nesting `contextlib.ExitStack` - astral-sh/ruff #18225</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>New lint rule to prevent mis-nesting `contextlib.ExitStack`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18225">#18225</a>
+        opened by <a href="https://github.com/Zac-HD">@Zac-HD</a>
+        on 2025-05-20 16:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Zac-HD">@Zac-HD</a> on 2025-05-20 16:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I really like context managers: they make resource and lifetime management easy, and the <code>with</code> and <code>async with</code> statements ensure that their entries and exits form a last-in, first-out stack structure.</p>
+<p>Unfortunately, <code>contextlib.ExitStack</code> makes it easy to accidentally violate this structure, because context managers are entered by calling <code>stack.enter_context(cm)</code>, and exited at the close of the <code>with ExitStack() as stack:</code> block.  If you call the <code>.enter_context()</code> method <em>after</em> entering (but before exiting) another context manager, they won't be correctly nested.  For example:</p>
+<pre><code class="language-python">from contextlib import ExitStack, contextmanager
+
+@contextmanager
+def ctx(tag):
+    print(f&quot;entering ctx {tag}&quot;)
+    yield
+    print(f&quot; exiting ctx {tag}&quot;)
+
+with (
+    ExitStack() as stack,
+    ctx(1),  # entering ctx 1
+):
+    stack.enter_context(ctx(2))  # entering ctx 2
+    with ctx(3):  # entering ctx 3
+        stack.enter_context(ctx(4))  # entering ctx 4
+    # exiting ctx 3
+# exiting ctx 1
+# exiting ctx 4
+# exiting ctx 2
+</code></pre>
+<p>In this example we'd <em>want</em> to exit 4, 3, 2, 1 in the reverse order of entry, and that's not at all what we see.</p>
+<p>Having <em>multiple</em> ExitStacks is a recipe for trouble: you must never push something onto stack1 after opening stack2.</p>
+<pre><code class="language-python">with ExitStack() as stack1, ExitStack() as stack2:
+    # No use of stack1 can ever be valid in this context!
+    # Emit a lint warning on any use of stack1.enter_context.
+</code></pre>
+<p>The <code>.push()</code>, <code>.close()</code>, and <code>.pop_all()</code> methods also offer some very sharp edges, but are used very rarely, and so I haven't seen code which would benefit from a lint rule (and the rule would have to be <em>rather</em> complicated for them, too).  All of the discussion above applies equally to <code>AsyncExitStack</code> and its' <code>.enter_async_context(acm)</code> method, which has identical semantics for the purpose of this discussion.</p>
+<details>
+<summary>test cases for the linter</summary>
+
+<p>Note that this file only tests <code>ExitStack</code>; <code>AyncExitStack</code> is identical but should test both <code>astack.enter_context()</code> and <code>await astack.enter_async_context()</code>.</p>
+<pre><code class="language-python">from contextlib import ExitStack, contextmanager
+
+@contextmanager
+def resource(name):
+    print(f&quot;Opening {name}&quot;)
+    yield
+    print(f&quot;Closing {name}&quot;)
+
+
+# Basic error case: Using enter_context after entering another context manager
+def test_basic_error():
+    with ExitStack() as stack:
+        stack.enter_context(resource(&quot;A&quot;))
+        with resource(&quot;B&quot;):
+            stack.enter_context(resource(&quot;C&quot;))  # ERROR
+        # OK to enter another context after &quot;B&quot; has closed though
+        stack.enter_context(resource(&quot;D&quot;))
+
+
+# Error case: Using one ExitStack after opening another
+def test_multiple_stacks_error():
+    with ExitStack() as stack1:
+        stack1.enter_context(resource(&quot;A&quot;))
+        with ExitStack() as stack2:
+            stack2.enter_context(resource(&quot;B&quot;))
+            stack1.enter_context(resource(&quot;C&quot;))  # ERROR
+
+
+# Error case: ExitStack opened before another context, multi-element `with`
+def test_interleaved_stacks_error():
+    with (
+        ExitStack() as stack1,
+        resource(&quot;A&quot;),
+    ):
+        # might want to error above, resource-A makes stack1 unuseable.
+        stack1.enter_context(resource(&quot;B&quot;))  # ERROR
+
+
+# Error case: Multiple ExitStacks interleaved
+def test_interleaved_stacks_error():
+    with ExitStack() as stack1, ExitStack() as stack2:
+        stack1.enter_context(resource(&quot;A&quot;))  # ERROR
+        stack2.enter_context(resource(&quot;B&quot;))
+        stack1.enter_context(resource(&quot;C&quot;))  # ERROR
+
+
+# Correct usage: Separate, non-interleaved ExitStacks
+def test_separate_stacks():
+    with ExitStack() as stack1:
+        stack1.enter_context(resource(&quot;A&quot;))
+        stack1.enter_context(resource(&quot;B&quot;))
+
+    with ExitStack() as stack2:
+        stack2.enter_context(resource(&quot;C&quot;))
+        stack2.enter_context(resource(&quot;D&quot;))
+
+
+# Error case: Using enter_context after close() on the same stack
+def test_after_close_error():
+    stack = ExitStack()
+    stack.enter_context(resource(&quot;A&quot;))
+    stack.close()
+    stack.enter_context(resource(&quot;B&quot;))  # ERROR
+
+
+# Error case: Interleaved contexts still problematic despite later close()
+def test_interleaved_with_close_error():
+    with ExitStack() as stack1:
+        stack1.enter_context(resource(&quot;A&quot;))
+
+        with resource(&quot;B&quot;):
+            stack1.enter_context(resource(&quot;C&quot;))  # ERROR
+            stack1.close()
+
+
+# Correct usage: Using one stack after properly closing another
+def test_after_properly_closed():
+    stack1 = ExitStack()
+    stack1.enter_context(resource(&quot;A&quot;))
+    stack1.close()
+
+    stack2 = ExitStack()
+    stack2.enter_context(resource(&quot;B&quot;))
+    stack2.close()
+
+
+# Correct usage: Making multiple ExitStacks safe with close()
+def test_close_before_next_stack():
+    with ExitStack() as stack1:
+        stack1.enter_context(resource(&quot;A&quot;))
+        stack1.close()
+
+        with ExitStack() as stack2:
+            stack2.enter_context(resource(&quot;B&quot;))
+
+    # It's even OK if you close after `with`, iff before enter_context
+    with ExitStack() as stack3:
+        stack3.enter_context(resource(&quot;C&quot;))
+        with ExitStack() as stack4:
+            stack3.close()  # makes the next line safe
+            stack4.enter_context(resource(&quot;D&quot;))
+
+# Correct usage: Close one context before entering another with a new stack
+def test_new_stack_after_close():
+    stack = ExitStack()
+    stack.enter_context(resource(&quot;A&quot;))
+    stack.enter_context(resource(&quot;B&quot;))
+    stack.close()
+
+    stack = ExitStack()  # Need a new stack object after closing
+    stack.enter_context(resource(&quot;C&quot;))
+    stack.close()
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-05-20 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-05-20 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-20 20:36</div>
+            <div class="timeline-body"><p>Thanks for the suggestion and the test cases! This sounds like a pretty reasonable rule to me, just adding <code>needs-decision</code> in case anyone else wants to weigh in :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-trio/trio/issues/3298.html">python-trio/trio#3298</a> on 2025-07-22 21:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

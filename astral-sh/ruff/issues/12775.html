@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff does not clean up unused import if it has same name like object attribute - astral-sh/ruff #12775</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff does not clean up unused import if it has same name like object attribute</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12775">#12775</a>
+        opened by <a href="https://github.com/ondrej-ivanko">@ondrej-ivanko</a>
+        on 2024-08-09 08:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ondrej-ivanko">@ondrej-ivanko</a> on 2024-08-09 08:07</div>
+            <div class="timeline-body"><p>Keywords: #F401, #imports</p>
+<p>command:
+using ruff as lsp in helix running <code>Space - a</code> - to autofix code (F401 issue is selected)
+There are ocassions when ruff does not even register unused imports but it's probably helix related as the options for import fix is not offered in autofix window when using <code>Space - a</code></p>
+<p>snippet:</p>
+<pre><code>from sqlalchemy import text   # this is not considered unused import by ruff
+
+def f():
+     resp = request.get(&quot;www.google.com&quot;)
+     resp.text   # accessing attribute of request reponse, not sqlalchemy text confuses ruff
+
+</code></pre>
+<h3>settings(global):</h3>
+<pre><code>line-length = 99
+preview = true
+output-format = &quot;full&quot;
+show-fixes = true
+unsafe-fixes = true
+
+[format]
+# Enable auto-formatting of code examples in docstrings. Markdown,
+# reStructuredText code/literal blocks and doctests are all supported.
+#
+# This is currently disabled by default, but it is planned for this
+# to be opt-out in the future.docstring-code-format = false
+docstring-code-format = true
+
+[lint]
+select = [&quot;ALL&quot;]
+ignore = [&quot;ANN102&quot;, &quot;ANN101&quot;, &quot;FA100&quot;, &quot;FA102&quot;, &quot;PT006&quot;, &quot;PT007&quot;, &quot;D100&quot;, &quot;D101&quot;, &quot;D202&quot;, &quot;D415&quot;, &quot;DOC201&quot;, &quot;CPY001&quot;, &quot;FA100&quot;, &quot;S101&quot;, &quot;PERF203&quot;]
+
+[lint.flake8-tidy-imports]
+# Disallow ..+ relative imports.
+ban-relative-imports = &quot;parents&quot;
+
+[lint.flake8-annotations]
+suppress-none-returning = true
+
+[lint.flake8-pytest-style]
+fixture-parentheses = false
+
+[lint.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[lint.pycodestyle]
+max-line-length = 99
+max-doc-length = 99
+
+[lint.pydocstyle]
+# Use Google-style docstrings.
+convention = &quot;google&quot;
+</code></pre>
+<h3>settings(project):</h3>
+<pre><code>extend = &quot;pyproject.toml&quot;
+target-version = &quot;py39&quot;
+src = [&quot;backend&quot;]
+
+[lint]
+logger-objects = [&quot;libs.observation.otel_logger&quot;, &quot;libs.observation.basic_logger&quot;]
+
+[lint.isort]
+force-wrap-aliases = true
+combine-as-imports = true
+lines-after-imports = 1
+sections = { varistar = [&quot;utils&quot;, &quot;app&quot;, &quot;api&quot;, &quot;settings&quot;, &quot;libs&quot;, &quot;tests&quot;]}
+section-order = [&quot;future&quot;, &quot;standard-library&quot;, &quot;first-party&quot;, &quot;third-party&quot;, &quot;local-folder&quot;, &quot;varistar&quot;]
+
+[lint.flake8-bugbear]
+# Allow default arguments like, e.g., `data: List[str] = fastapi.Query(None)`.
+extend-immutable-calls = [&quot;fastapi.Depends&quot;, &quot;fastapi.Query&quot;, &quot;fastapi.Path&quot;]
+
+[lint.flake8-import-conventions.extend-aliases]
+# Declare a custom alias
+&quot;geopandas&quot; = &quot;gpd&quot;
+
+[lint.flake8-tidy-imports]
+# Disallow ..+ relative imports.
+ban-relative-imports = &quot;parents&quot;
+
+[lint.flake8-annotations]
+suppress-none-returning = true
+
+[lint.flake8-pytest-style]
+fixture-parentheses = false
+
+[lint.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[lint.pycodestyle]
+max-line-length = 99
+max-doc-length = 99
+
+[lint.pydocstyle]
+# Use Google-style docstrings.
+convention = &quot;google&quot;
+</code></pre>
+<h3>relevant pyproject.toml sections:</h3>
+<pre><code>...
+[tool.flake8]
+max-line-length = 99
+exclude = [&quot;.git&quot;, &quot;.venv&quot;, &quot;__pycache__&quot;, &quot;data&quot;, &quot;scripts&quot;]
+ignore = [
+        &quot;E501&quot;, # TODO fix code and remove this exception
+        &quot;W503&quot;, # conflicts with black
+        &quot;W605&quot;,
+]
+...
+[tool.ruff]
+line-length = 99
+</code></pre>
+<h3>helix config:</h3>
+<pre><code>[language-server.ruff.config.settings]
+line-length = 99
+preview = true
+output-format = &quot;full&quot;
+show-fixes = true
+unsafe-fixes = true
+
+[language-server.ruff]
+command = &quot;ruff&quot;
+args = [&quot;server&quot;, &quot;--preview&quot;]
+
+[[language]]
+name = &quot;python&quot;
+roots = [&quot;pyproject.toml&quot;, &quot;setup.py&quot;, &quot;Poetry.lock&quot;, &quot;.git&quot;]
+language-servers = [
+  { name = &quot;ruff&quot; },
+  { name = &quot;pyright&quot; },
+  # { name = &quot;basedpyright&quot; },
+  { name = &quot;spellcheck-lsp-server&quot; }
+]
+auto-format = false
+formatter = { command = &quot;ruff&quot;, args = [&quot;format&quot;] }
+rulers = [99, 99]   # soft warp / hard wrap
+diagnostic-severity = &quot;hint&quot;
+text-width = 99
+</code></pre>
+<p>ruff -V == 0.5.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-09 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-09 13:16</div>
+            <div class="timeline-body"><p>Unfortunately I can't reproduce this: https://play.ruff.rs/ad3442b0-75f9-4269-9519-c27b9b7fb108</p>
+<p>Are you seeing it consistently? Happy to take a look if we can get a consistent reproduction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-08-09 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ondrej-ivanko">@ondrej-ivanko</a> on 2024-08-09 17:11</div>
+            <div class="timeline-body"><p>Honestly, I can't reproduce it. It seems ruff is working now in this case. I think it was probably an issue during run in helix. I couldn't find anything in helix logs. When it tried to reproduced this scenario, ruff behaved correctly. I'm closing this. Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ondrej-ivanko on 2024-08-09 17:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

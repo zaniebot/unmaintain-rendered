@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>stability/performance: better tuning of concurrent downloads/installs - astral-sh/uv #10570</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>stability/performance: better tuning of concurrent downloads/installs</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10570">#10570</a>
+        opened by <a href="https://github.com/morotti">@morotti</a>
+        on 2025-01-13 16:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/morotti">@morotti</a> on 2025-01-13 16:07</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I've having another play with uv. I've noticed some suboptimal settings that make it unstable at times.</p>
+<p><strong>download:</strong> the default is 50 concurrent downloads https://docs.astral.sh/uv/reference/settings/#concurrent-downloads
+it's too much. it's getting connection errors at times, when going to internal mirrors.
+it probably drops too for people who have broadband with only a few Mbps or kbps.
+people reported the issue before and added retries, though the root is likely to be making too many concurrent requests. https://github.com/astral-sh/uv/issues/3514</p>
+<p><strong>Can I suggest to reduce the download concurrency to 20 by default?</strong>
+It should address issues with timeouts/disconnections.
+It doesn't reduce performance, it's a percent or two faster in my experience.
+(I note that 20 is still a high value, users might get disconnections for example if they run against a pypi mirror with limited CPU).</p>
+<p>As a nice side effect, shells are around 80 characters * 24 lines by default. You can now see all the 20 lines of output :D</p>
+<p><strong>install:</strong> the default is number of cores. https://docs.astral.sh/uv/reference/settings/#concurrent-installs
+this is not a safe value since the average computer now has 128 or 256 cores (well, the average server 😉 )</p>
+<p>Optimal settings will vary depending on the type of storage and block size. It's more difficult to optimize but 100+ is vastly counterproductive on all types of devices.
+I believe uv has small block sizes and most python files are 1-100 kB. With small I/O like that, you have to make dozens of concurrent operation to utilize the hardware effectively.
+<strong>Can I suggest to cap concurrent installs to <code>min(cpu_count, 32)</code> as a safe and optimal value for most storage?</strong></p>
+<p>I see a couple percent faster installation and 10% less sys time (kernel time) with that on my 128 cores machine.</p>
+<p>Cheers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "stability/performance: better tuning of concurrent downloads/install" to "stability/performance: better tuning of concurrent downloads/installs" by @morotti on 2025-01-13 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 16:28</div>
+            <div class="timeline-body"><p>These seem like reasonable changes (especially the CPU change), though I'd like to benchmark them on my own machine for another datapoint. (My own setup is probably not representative of the &quot;average&quot; but still useful.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2025-01-13 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-14 08:41</div>
+            <div class="timeline-body"><p>Can you share timing number how different configurations perform on your machine? For example with <code>uv pip compile --universal scripts/requirements/airflow.in</code>, <code>uv pip install --universal scripts/requirements/airflow.in</code> or <code>uv pip compile scripts/requirements/jupyter.in</code>. We need to tune these values on real world data, so numbers from different setups help with picking the right defaults.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-01-14 12:21</div>
+            <div class="timeline-body"><blockquote>
+<p>For example with <code>uv pip compile --universal scripts/requirements/airflow.in</code></p>
+</blockquote>
+<p>I suspect the issue people have on slow or unreliable Internet connections is more likely to trigger when downloading multiple large wheels, not collecting metadata.</p>
+<p>As downloading a single wheel on it's own can take several minutes the chance of a failure can be much higher than a download that takes a couple of seconds, and are increased if downloading the wheel becomes slower, which would happen if the processes kicks of downloading 30+ other wheels.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-14 20:13</div>
+            <div class="timeline-body"><p>The plan here is to make a script to test different configurations, have different users run that on a variety of machines and internet connections and tweak the configuration from that data.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

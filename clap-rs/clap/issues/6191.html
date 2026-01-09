@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bazel rules_rust clippy aspect fails when clippy::allow_attributes_without_reason rule set to forbid - clap-rs/clap #6191</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bazel rules_rust clippy aspect fails when clippy::allow_attributes_without_reason rule set to forbid</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/6191">#6191</a>
+        opened by <a href="https://github.com/George-Hulme">@George-Hulme</a>
+        on 2025-12-02 15:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/George-Hulme">@George-Hulme</a> on 2025-12-02 15:14</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.91.1 (ed61e7d7e 2025-11-07)</p>
+<h3>Clap Version</h3>
+<p>4.5.53</p>
+<h3>Minimal reproducible code</h3>
+<p>The bazel aspect, @rules_rust//rust:defs.bzl%rust_clippy_aspect, fails to build when <code>#[derive(clap::Parser)]</code> is used on a struct in our repository. This is due to us setting <code>clippy::allow_attributes_without_reason</code> and <code>clippy::unwrap_used</code> to &quot;forbid&quot; to help ensure all allow cases are documented properly and to help ensure all results / options are handled properly.</p>
+<p>The root cause appears to be the <code>#[allow(clippy::restriction)]</code> annotation in <code>clap_derive</code> (See: <a href="https://github.com/clap-rs/clap/blob/53a69215e481c237bff5599f93bbcc7bdc6218c5/clap_derive/src/derives/into_app.rs#L40">here</a>).
+There are many allowed lint groups here which I imagine will cause similar issues with many other lint groups and rules. Perhaps we should hide these behind a feature and use <code>cfg_attr</code> to add them.</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Setup a bazel <code>rust_binary</code> target using <code>rules_rust</code>. Set the following in &quot;.bazelrc&quot;:</p>
+<pre><code>build --aspects=@rules_rust//rust:defs.bzl%rust_clippy_aspect
+build:clippy --output_groups=clippy_checks
+build --@rules_rust//rust/settings:clippy_flags=-Fclippy::allow_attributes_without_reason
+</code></pre>
+<p>In the rust project source, derive <code>clap::Parser</code> for a struct.
+Finally, run <code>bazel build --config=clippy //...</code> and observe error.</p>
+<h3>Actual Behaviour</h3>
+<p><code>bazel build --config=clippy //...</code> fails with:</p>
+<pre><code>error[E0453]: allow(clippy::restriction) incompatible with previous forbid
+ --&gt; service/src/main.rs:4:10
+  |
+4 | #[derive(Parser)]
+  |          ^^^^^^ overruled by previous forbid
+  |
+  = note: `forbid` lint level was set on command line
+  = note: this error originates in the derive macro `Parser` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 1 previous error
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p><code>bazel build --config=clippy //...</code> builds successfully.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @George-Hulme on 2025-12-02 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @George-Hulme on 2025-12-02 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-12-02 15:32</div>
+            <div class="timeline-body"><p>Is there a reason you are doing <code>forbid</code>, rather than <code>deny</code>?</p>
+<p>The use of <code>forbid</code> generally doesn't compose well with macros that can't always generate pristine code (especially under every clippy lint option that may exist).</p>
+<p>In this particular case, <code>reason</code> I believe would require an MSRV bump.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2025-12-02 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/George-Hulme">@George-Hulme</a> on 2025-12-02 15:54</div>
+            <div class="timeline-body"><p>The reason we use forbid is to ensure that these can't be overridden within our internal packages.
+Adding a reason here wouldn't fix the issue. The root cause is that the derive always adds the <code>allow(clippy::restrictions)</code> attribute which includes the lint rules we have forbidden.
+Using <code>#[cfg_attr(feature = &quot;...&quot;, allow(...))]</code> and enabling said feature by default would allow us, and others, to opt-out of adding these allow attributes and manage which rules we allow ourselves, without affecting the majority of users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-12-02 15:58</div>
+            <div class="timeline-body"><p>Features have a cost and we're not going to add a feature for controlling our lints</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/George-Hulme">@George-Hulme</a> on 2025-12-02 18:54</div>
+            <div class="timeline-body"><p>I suppose the workaround of not using <code>clap::Parser</code> and saying that it's forbid-incompatible for these lints will have to do. We have worked around it by deriving the command structure manually</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-12-02 19:04</div>
+            <div class="timeline-body"><p>As I'm not seeing a good path forward for accommodating bazel's choice to forbid some lints, I'm going to go ahead and close this.  If people can come up with an acceptable path forward in the future, we can re-evaluate then</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-12-02 19:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

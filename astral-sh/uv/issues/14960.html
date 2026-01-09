@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poor performance / excessive stale responses when running `uv pip compile` in subprocess - astral-sh/uv #14960</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Poor performance / excessive stale responses when running `uv pip compile` in subprocess</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14960">#14960</a>
+        opened by <a href="https://github.com/brendan-morin">@brendan-morin</a>
+        on 2025-07-29 20:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2025-07-29 20:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi, I'm running into a bit of a weird issue where <code>uv pip compile</code> is lightning fast when run in a normal terminal, but really slow when run in a subprocess. While many deps are internal (so I can't share an exact repro), I do not think this is related to specific dependencies.</p>
+<p>The command:</p>
+<pre><code>uv pip compile --universal --python-version 3.10 --overrides overrides.txt --output-file requirements.txt --group mygroup --constraints constraints.txt --verbose pyproject.toml 
+</code></pre>
+<p>When running in a normal terminal (last few logs):</p>
+<pre><code>DEBUG split `python_full_version == '3.10.*'` resolution took 0.007s
+INFO Solved your requirements for 3 environments
+DEBUG Distinct solution for split (python_full_version &gt;= '3.12') with 122 packages
+DEBUG Distinct solution for split (python_full_version == '3.11.*') with 122 packages
+DEBUG Distinct solution for split (python_full_version == '3.10.*') with 124 packages
+Resolved 128 packages in 39ms
+
+</code></pre>
+<p>And when running the same command in a subprocess <code>subprocess.run(args=cmd, capture_output=True, text=True, check=True)</code>:</p>
+<pre><code>DEBUG split `python_full_version == '3.10.*'` resolution took 0.528s
+INFO Solved your requirements for 3 environments
+DEBUG Distinct solution for split (python_full_version &gt;= '3.12') with 122 packages
+DEBUG Distinct solution for split (python_full_version == '3.11.*') with 122 packages
+DEBUG Distinct solution for split (python_full_version == '3.10.*') with 124 packages
+Resolved 128 packages in 7.94s
+</code></pre>
+<p>I see a lot of these logs in the subprocess version that are not present in the normal terminal version</p>
+<pre><code>DEBUG Found stale response for: https://internal.example.com/api/pypi/something.whl
+DEBUG Sending revalidation request for: https://internal.example.com/api/pypi/something.whl
+DEBUG Found not-modified response for: https://internal.example.com/api/pypi/something.whl
+</code></pre>
+<p>There's a lot of logs, but just searching the output I see 200+ mentions of &quot;stale&quot; in the subprocess version and none in the normal terminal one. I have also confirmed both are using the same cache dir.</p>
+<p>Any idea on things I could try to speed up the subprocess runs? This can occasionally take as long as 40+ seconds.</p>
+<h3>Platform</h3>
+<p>Darwin 24.5.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.3 (Homebrew 2025-07-24)</p>
+<h3>Python version</h3>
+<p>3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @brendan-morin on 2025-07-29 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-29 22:04</div>
+            <div class="timeline-body"><p>I can't imagine a reason there'd be a difference here. Can you demonstrate the difference with a dummy set of requirements?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2025-07-29 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2025-07-29 22:21</div>
+            <div class="timeline-body"><p>Yeah this is pretty consistent for me and straightforward to reproduce. Let's say this <code>example.py</code>:</p>
+<pre><code>import subprocess
+
+if __name__ == '__main__':
+    r = subprocess.run(
+        args=[
+            &quot;uv&quot;,
+            &quot;pip&quot;,
+            &quot;compile&quot;,
+            &quot;--native-tls&quot;,
+            &quot;--upgrade&quot;,
+            &quot;--universal&quot;,
+            &quot;--python-version&quot;,
+            &quot;3.10&quot;,
+            &quot;--output-file&quot;,
+            &quot;requirements.txt&quot;,
+            &quot;requirements.in&quot;,
+        ],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    print(r.stdout)
+    print(r.stderr)
+</code></pre>
+<p>and this <code>requirements.in</code>:</p>
+<pre><code>astor&gt;=0.8.1
+boto3&gt;=1.36.3
+click&gt;=8.1.7
+geopy&gt;=2.4.1
+h3-pyspark&gt;=1.2.6
+h3&lt;4.0.0
+mercantile&gt;=1.2.1
+networkx&gt;=3.4.2
+numpy&gt;=1.23
+packaging&gt;=24.2
+pandas&gt;=1.0.0
+phonenumbers&gt;=8.13.53
+pyarrow&gt;=19.0.0
+pydantic&gt;=2.0.0
+pyproj&gt;=3.7.0
+</code></pre>
+<p>Timings for 5 back-to-back runs with a warm cache....</p>
+<ol>
+<li>Using <code> uv run example.py</code></li>
+</ol>
+<pre><code>Resolved 32 packages in 1.08s
+Resolved 32 packages in 837ms
+Resolved 32 packages in 3.91s
+Resolved 32 packages in 5.54s
+Resolved 32 packages in 727ms
+</code></pre>
+<ol start="2">
+<li>Using <code>uv pip compile --universal --python-version 3.10 --output-file requirements.txt requirements.in</code> (from the top of the previously generated <code>requirements.txt</code>):</li>
+</ol>
+<pre><code>Resolved 32 packages in 12ms
+Resolved 32 packages in 11ms
+Resolved 32 packages in 13ms
+Resolved 32 packages in 11ms
+Resolved 32 packages in 12ms
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2025-07-29 22:25</div>
+            <div class="timeline-body"><p>Oh man... it is the <code>--upgrade</code> flag. It wasn't being output to the <code>requirements.txt</code>. Adding that to the command seems to explain this. I don't know if I'd call it a bug not being there either since I can see why it's not, but it is a little footgun in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-29 22:41</div>
+            <div class="timeline-body"><p>Ah that makes more sense. Yeah I don't know if that should be emitted. Does <code>pip-compile</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-29 22:42</div>
+            <div class="timeline-body"><p>I believe it's intentionally omitted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-01 16:49</div>
+            <div class="timeline-body"><p>Confirming that <code>pip-tools</code> strips <code>--upgrade</code>, and I think that's the right behavior here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-08-01 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-01 16:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

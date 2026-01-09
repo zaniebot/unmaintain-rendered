@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run --with=pdbpp does not modify pdb as expected - astral-sh/uv #8883</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run --with=pdbpp does not modify pdb as expected</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8883">#8883</a>
+        opened by <a href="https://github.com/adamtheturtle">@adamtheturtle</a>
+        on 2024-11-07 08:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2024-11-07 08:35</div>
+            <div class="timeline-body"><p><a href="https://github.com/pdbpp/pdbpp"><code>pdbpp</code></a> is a replacement for <code>pdb</code> which is automatically used when it is installed and a <a href="https://docs.python.org/3/library/pdb.html"><code>pdb</code></a> breakpoint is set.</p>
+<p>Create a Python file with a breakpoint:</p>
+<pre><code class="language-python"># example.py
+
+breakpoint()
+</code></pre>
+<p>Run this (with <code>echo &quot;c&quot;</code> to exit the breakpoint) with <code>pdbpp</code>:</p>
+<pre><code class="language-sh">$ echo &quot;c&quot; | uv run --with=pdbpp example.py
+--Return--
+&gt; /Users/adam/Desktop/uv-example/example.py(2)&lt;module&gt;()-&gt;None
+-&gt; breakpoint()
+(Pdb) ⏎ 
+</code></pre>
+<p>We can see <code>(Pdb)</code> on the last line, which tells us that <code>pdbpp</code> is not being used.</p>
+<p>To demonstrate what I expect, install <code>pdbpp</code> and then run the script:</p>
+<pre><code class="language-sh">$ uv pip install pdbpp
+Resolved 6 packages in 15ms
+Installed 1 package in 2ms
+ + pdbpp==0.10.3
+$ echo &quot;c&quot; | uv run example.py
+--Return--
+[0] &gt; /Users/adam/Desktop/uv-example/example.py(2)&lt;module&gt;()-&gt;None
+-&gt; breakpoint()
+(Pdb++) ⏎    
+</code></pre>
+<p>We can see <code>(Pdb++)</code> on the last line, which tells us that <code>pdbpp</code> is being used.</p>
+<pre><code>uv 0.4.30 (Homebrew 2024-11-05)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-07 09:13</div>
+            <div class="timeline-body"><p>This is probably because pdbpp uses a <code>.pth</code> file, CC @zanieb.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-07 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-07 20:29</div>
+            <div class="timeline-body"><p>Interesting. Yeah it'd be good to support this, we'll probably need to dig into our virtual environment layering to fix it though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jgehrcke">@jgehrcke</a> on 2024-11-09 14:24</div>
+            <div class="timeline-body"><p>@adamtheturtle :turtle: exploring the pdb uv fun :heart: long time no see -- Hello!</p>
+<p>(sorry for being offtopic here -- but this is too romantic to not say anything)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2025-06-08 10:17</div>
+            <div class="timeline-body"><p>I believe this is not an issue anymore! 🎉</p>
+<pre><code>~/tmp/8883 via 🐍 v3.13.4
+❯ ls
+ example.py
+~/tmp/8883 via 🐍 v3.13.4 took 3s
+❯ cat example.py
+import pdb; pdb.set_trace()  # breakpoint() works too
+
+~/tmp/8883 via 🐍 v3.13.4
+❯ uv run example.py
+&gt; /Users/hynek/tmp/8883/example.py(1)&lt;module&gt;()
+-&gt; import pdb; pdb.set_trace()
+(Pdb) c
+
+~/tmp/8883 via 🐍 v3.13.4
+❯ uv run --with pdbpp example.py
+[0] &gt; /Users/hynek/tmp/8883/example.py(1)&lt;module&gt;()
+
+1  -&gt; import pdb; pdb.set_trace()
+(Pdb++) c
+
+~/tmp/8883 via 🐍 v3.13.4
+</code></pre>
+<p>For Google: not to be confused with #13327 where running <code>uv run --with pdbpp pytest</code> doesn't work (but <code>uv run --with pdbpp -m pytest</code> does).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2025-06-08 11:44</div>
+            <div class="timeline-body"><p>Thanks @hynek , closing my biggest <code>uv</code> bugbear!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @adamtheturtle on 2025-06-08 11:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

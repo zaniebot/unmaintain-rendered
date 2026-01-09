@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[derive] Exclusive can not be used with required - clap-rs/clap #4462</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[derive] Exclusive can not be used with required</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4462">#4462</a>
+        opened by <a href="https://github.com/fmorency">@fmorency</a>
+        on 2022-11-07 16:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fmorency">@fmorency</a> on 2022-11-07 16:17</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.65.0 (897e37553 2022-11-02)</p>
+<h3>Clap Version</h3>
+<p>4.0.20</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+use std::path::PathBuf;
+
+#[derive(Parser)]
+struct Opts {
+    #[arg(long, action, exclusive = true)]
+    list_stuff: bool,
+
+    #[arg(long, required = true)]
+    input: PathBuf,
+}
+
+fn main() {
+    let Opts { input, list_stuff } = Opts::parse();
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- --list-stuff</code></p>
+<h3>Actual Behaviour</h3>
+<pre><code>error: The following required argument was not provided: input
+
+Usage: clap_exclusive [OPTIONS] --input &lt;INPUT&gt;
+
+For more information try '--help'
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The program should run without error.</p>
+<h3>Additional Context</h3>
+<p>Relates #3595</p>
+<p>The Builder behaves correctly</p>
+<pre><code class="language-rust">use clap::{Arg, Command};
+
+fn main() {
+    let matches = Command::new(&quot;bug&quot;)
+        .arg(
+            Arg::new(&quot;list-stuff&quot;)
+                .long(&quot;list-stuff&quot;)
+                .action(clap::ArgAction::SetTrue)
+                .exclusive(true),
+        )
+        .arg(Arg::new(&quot;input&quot;).required(true))
+        .get_matches();
+
+    if let Some(&amp;list_stuff) = matches.get_one::&lt;bool&gt;(&quot;list-stuff&quot;) {
+        if list_stuff {
+            println!(&quot;Stuff!&quot;);
+        }
+    }
+}
+</code></pre>
+<h3>Debug Output</h3>
+<pre><code>[      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name=&quot;clap_exclusive&quot;
+[      clap::builder::command] 	Command::_propagate:clap_exclusive
+[      clap::builder::command] 	Command::_check_help_and_version:clap_exclusive expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_propagate_global_args:clap_exclusive
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:list_stuff
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:input
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--list-stuff&quot;)' ([45, 45, 108, 105, 115, 116, 45, 115, 116, 117, 102, 102])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok(&quot;--list-stuff&quot;)
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::parse_long_arg
+[        clap::parser::parser] 	Parser::parse_long_arg: Does it contain '='...
+[        clap::parser::parser] 	Parser::parse_long_arg: Found valid arg or flag '--list-stuff'
+[        clap::parser::parser] 	Parser::parse_long_arg(&quot;list-stuff&quot;): Presence validated
+[        clap::parser::parser] 	Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[        clap::parser::parser] 	Parser::react: has default_missing_vals
+[        clap::parser::parser] 	Parser::remove_overrides: id=&quot;list_stuff&quot;
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;list_stuff&quot;, source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;list_stuff&quot;
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;Opts&quot;, source=CommandLine
+[        clap::parser::parser] 	Parser::push_arg_values: [&quot;true&quot;]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=1
+[        clap::parser::parser] 	Parser::get_matches_with: After parse_long_arg ValuesDone
+[        clap::parser::parser] 	Parser::add_defaults
+[        clap::parser::parser] 	Parser::add_defaults:iter:list_stuff:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:list_stuff: has default vals
+[        clap::parser::parser] 	Parser::add_default_value:iter:list_stuff: was used
+[        clap::parser::parser] 	Parser::add_defaults:iter:input:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:input: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:help:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[     clap::parser::validator] 	Validator::validate
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id=&quot;list_stuff&quot;
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg=&quot;list_stuff&quot;
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;list_stuff&quot;
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=&quot;list_stuff&quot;, conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=&quot;Opts&quot;, conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_required: required=ChildGraph([Child { id: &quot;input&quot;, children: [] }])
+[     clap::parser::validator] 	Validator::gather_requires
+[     clap::parser::validator] 	Validator::gather_requires:iter:&quot;list_stuff&quot;
+[     clap::parser::validator] 	Validator::gather_requires:iter:&quot;Opts&quot;
+[     clap::parser::validator] 	Validator::gather_requires:iter:&quot;Opts&quot;:group
+[     clap::parser::validator] 	Validator::validate_required: is_exclusive_present=true
+[     clap::parser::validator] 	Validator::validate_required:iter:aog=&quot;input&quot;
+[     clap::parser::validator] 	Validator::validate_required:iter: This is an arg
+[   clap::parser::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[]
+[      clap::builder::command] 	Command::_build: name=&quot;clap_exclusive&quot;
+[      clap::builder::command] 	Command::_propagate:clap_exclusive
+[      clap::builder::command] 	Command::_check_help_and_version:clap_exclusive expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_propagate_global_args:clap_exclusive
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:list_stuff
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:input
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[      clap::builder::command] 	Command::_build: name=&quot;clap_exclusive&quot;
+[      clap::builder::command] 	Command::_build: already built
+[         clap::output::usage] 	Usage::create_usage_with_title
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage] 	Usage::needs_options_tag
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=list_stuff
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;list_stuff&quot;
+[         clap::output::usage] 	Usage::needs_options_tag:iter:iter: grp_s=&quot;Opts&quot;
+[         clap::output::usage] 	Usage::needs_options_tag:iter: [OPTIONS] required
+[         clap::output::usage] 	Usage::get_args: incls=[]
+[         clap::output::usage] 	Usage::get_args: unrolled_reqs=[&quot;input&quot;]
+[         clap::output::usage] 	Usage::get_args: ret_val=[StyledStr { pieces: [(Some(Literal), &quot;--&quot;), (Some(Literal), &quot;input&quot;), (Some(Placeholder), &quot; &quot;), (Some(Placeholder), &quot;&lt;INPUT&gt;&quot;)] }]
+[         clap::output::usage] 	Usage::create_help_usage: usage=clap_exclusive [OPTIONS] --input &lt;INPUT&gt;
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @fmorency on 2022-11-07 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fmorency">@fmorency</a> on 2022-11-07 16:24</div>
+            <div class="timeline-body"><p>This issue is also present in clap <code>3.2.23</code>.</p>
+<pre><code class="language-rust">use clap::Parser;
+use std::path::PathBuf;
+
+#[derive(Parser)]
+struct Opts {
+    #[clap(long, action, exclusive = true)]
+    list_stuff: bool,
+
+    #[clap(long, required = true)]
+    input: PathBuf,
+}
+
+fn main() {
+    let Opts { input, list_stuff } = Opts::parse();
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-07 16:43</div>
+            <div class="timeline-body"><p>When the derive is populating your struct, it has nothing to put in <code>input</code>, so it reports an error about a required argument not being present (not that <code>required = true</code> is implicit for non-Option fields).</p>
+<p>So you need to mark the field with <code>Option</code></p>
+<pre><code class="language-rust">use clap::Parser;
+use std::path::PathBuf;
+
+#[derive(Parser)]
+struct Opts {
+    #[arg(long, action, exclusive = true)]
+    list_stuff: bool,
+
+    #[arg(long, required = true)]
+    input: Option&lt;PathBuf&gt;,
+}
+
+fn main() {
+    let Opts { input, list_stuff } = Opts::parse();
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fmorency">@fmorency</a> on 2022-11-07 16:54</div>
+            <div class="timeline-body"><p>Thanks, @epage that makes sense. I wonder if the error message could be more explicit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-07 18:57</div>
+            <div class="timeline-body"><p>We can't catch these errors at compile time, so we have to leave them to runtime.  These errors can only be hit when fully exercising all of an application (e.g. testing every subcommand).</p>
+<p>In most cases it will be because of a programming error but not in all, so we can't just panic or show an internal error, which is why we show the closest relevant user-facing error.</p>
+<p>I wish I knew of a better way of helping people zero in on this as this is a fairly common problem</p>
+<p>Some others that I found from a quick search</p>
+<ul>
+<li>#4427</li>
+</ul>
+<p>(I know there are more; just not finding them atm)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fmorency">@fmorency</a> on 2022-11-07 21:50</div>
+            <div class="timeline-body"><p>Thank you for your insight, @epage; this is very useful. I am closing this issue now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @fmorency on 2022-11-07 21:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

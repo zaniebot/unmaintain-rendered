@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Having two unnamed arguments and making the first optional - clap-rs/clap #636</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Having two unnamed arguments and making the first optional</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/636">#636</a>
+        opened by <a href="https://github.com/TomasHubelbauer">@TomasHubelbauer</a>
+        on 2016-08-27 19:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TomasHubelbauer">@TomasHubelbauer</a> on 2016-08-27 19:49</div>
+            <div class="timeline-body"><p>Forgive me if Issues are not meant for questions, neither the contributing guidelines nor the ReadMe say so, so please allow me to ask a question here. I'd like to make <code>clap</code> parse the following:</p>
+<ul>
+<li><code>todo TEST &quot;Test things&quot;</code> means <code>CODE</code> is <em>TEST</em>, <code>TEXT</code> is <em>Test things</em>.</li>
+<li><code>todo &quot;Test things&quot;</code> means <code>CODE</code> is not set, <code>TEXT</code> is <em>Test things</em>.</li>
+<li><code>todo TEST &quot;Test things&quot; -m</code> means <code>CODE</code> is <em>TEST</em>, <code>TEXT</code> is <em>Test things</em>, <code>marked</code> is <code>true</code>.
+I've looked over the examples but am having trouble with making the first argument optional.</li>
+</ul>
+<pre><code>fn main() {
+    let matches = App::new(&quot;todo&quot;).version(&quot;1.0&quot;).author(&quot;Tomas Hubelbauer&quot;).about(&quot;&quot;)
+        .arg(Arg::with_name(&quot;code&quot;).required(false).index(1))
+        .arg(Arg::with_name(&quot;text&quot;).index(2))
+        .get_matches();
+    println!(&quot;Hello, world!&quot;);
+    println!(&quot;Code: {} Text: {}&quot;, matches.value_of(&quot;code&quot;).unwrap_or(&quot;NO-CODE&quot;), matches.value_of(&quot;text&quot;).unwrap_or(&quot;NO-TEXT&quot;));
+}
+// cargo run -- hello
+// Code: hello Text: NO-TEXT // Should be Code: NO-CODE Text: hello
+// cargo run -- hello world
+// Code: hello Text: world // Is OK.
+</code></pre>
+<pre><code>fn main() {
+    let matches = App::new(&quot;todo&quot;).version(&quot;1.0&quot;).author(&quot;Tomas Hubelbauer&quot;).about(&quot;&quot;)
+        .arg(Arg::with_name(&quot;code&quot;).required(false).index(2))
+        .arg(Arg::with_name(&quot;text&quot;).index(1))
+        .get_matches();
+    println!(&quot;Hello, world!&quot;);
+    println!(&quot;Code: {} Text: {}&quot;, matches.value_of(&quot;code&quot;).unwrap_or(&quot;NO-CODE&quot;), matches.value_of(&quot;text&quot;).unwrap_or(&quot;NO-TEXT&quot;));
+}
+// cargo run -- hello
+// Code: NO-CODE Text: hello // Very cool!
+// cargo run -- hello world
+// Code: world Text: hello // Oh noes, should be Code: hello Text: world
+</code></pre>
+<p>Is there a way to do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-08-27 21:25</div>
+            <div class="timeline-body"><p>Issues are fine for questions :smile:</p>
+<p>Currently you can't exactly do that, but depending on your actual use case there may be a way to make it work. The reason I say you can't exactly do that, is that unnamed arguments are purely index based, clap doesn't know which value is which, simply first come first served.</p>
+<p>But in order to prevent an XY problem, could you tell me a little about the actual use case and what you're trying to model? There may be a better way, or something that <code>clap</code> does support in a slightly different manner.</p>
+<p>Thanks for taking the time to do the detailed write up! :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-08-27 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TomasHubelbauer">@TomasHubelbauer</a> on 2016-08-28 07:48</div>
+            <div class="timeline-body"><p>Oh I can definitely make this work simply by making TEXT the first unnamed argument and CODE the second, optional one. This is what the second code snippet does. I'm fine with that, too, it's not a big deal to have the arguments reverted, but the reason I wanted them to be the way I initially described is that it feels more ergonomic for my use case.</p>
+<p>I'm new to Rust and I'm trying to create an app for managing todo files (I use them for projects I work alone at because I dislike having issues be out-of-the-band, unversioned in relation to the source code) and I'd like to be able to create a todo just by invoking <code>todo &quot;Have a nice day&quot;</code> - this would make a todo titled &quot;Have a nice day&quot;. Since I also intend to offer capabilities for attaching files to todoes I figured it would be nice to be able to set explicit code for todos so one can refer to them without grepping. If not provided, it would be either sequential number rising or first letters of the title words combined or something like that. Being able to do <code>todo FixNav &quot;Fix the second menu link style - icon and add menu links for ToS and privacy policy&quot;</code> feels nicer than <code>todo &quot;Fix the second menu link style - icon and add menu links for ToS and privacy policy&quot; FixNav</code>. There's not much more to it. :)</p>
+<p>I'm closing the issue for now. I believe code-wise this could be changed when no <code>multiple</code> arguments are present. You could probably be able to detect the case I'm describing. But it's super niche, so it's not really necessary. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @TomasHubelbauer on 2016-08-28 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-10-30 18:12</div>
+            <div class="timeline-body"><p>I'd like this feature as well, and in my case I can't just reorder the arguments.  Could you please reopen this?</p>
+<p>My use case: I'm adding subcommands to git-series similar to &quot;cp&quot; and &quot;mv&quot;, which take &quot;source&quot; and &quot;dest&quot; positional arguments in that order; they need to come in that order to follow well-established convention (cp source dest).  I also need to make &quot;source&quot; optional, because it has a default (the current series).  So, I'd like to make source optional and dest mandatory.  In this case, if clap sees one positional argument, it should go in dest, but two positional arguments should go in source and dest.</p>
+<p>Does that seem reasonable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TomasHubelbauer">@TomasHubelbauer</a> on 2016-10-30 18:47</div>
+            <div class="timeline-body"><p>Reopening for @joshtriplett.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @TomasHubelbauer on 2016-10-30 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-11-02 02:58</div>
+            <div class="timeline-body"><p>@joshtriplett with the new 2.17.0 allowing things like <code>mv &lt;files&gt;... &lt;target&gt;</code> does that help this issue, or is it something different?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-10 05:15</div>
+            <div class="timeline-body"><p>@joshtriplett I could special case this if there are only two positional arguments, but my worry is what if there are 3, or 4? It's also hard to determine at that point if the user input the the first arg correctly, but accidently left off the second, but then clap interprets it differnetly.</p>
+<pre><code>$ prog current_series
+</code></pre>
+<p>Gets interpretted as <code>src=current_series(default), dest=current_series</code></p>
+<p>Which may not be a huge deal in your case, but imagine a hypothetical <code>mv</code></p>
+<pre><code>$ mv src
+</code></pre>
+<p>Gets interpretted as <code>src=(somedefault file/folder), dest=src</code> which could be catostrophic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-12-12 00:44</div>
+            <div class="timeline-body"><p>@kbknapp The version from 2.17 almost works, but I don't want to allow multiple arguments (or display it as <code>...</code>).  Could you also allow an optional second-to-last positional argument, which would have the same effect (0-or-1 and 0-or-more seem equivalent here in terms of unambiguous parsing)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-03 16:19</div>
+            <div class="timeline-body"><p>Since there's now a form of look-ahead for the <code>&lt;src&gt;... &lt;dest&gt;</code>  type positionals, I'd imagine it'd also work for <code>[src] &lt;dest&gt;</code>, but I'm unsure how to inform clap of such.</p>
+<p>@joshtriplett and @TomasHubelbauer in both cases is the second positional always required? If that's the case I could implement this, because saying, &quot;the final positional is required, but the one prior is <em>not</em>&quot; is the information clap needs to special case. Otherwise I'd have to add something like an <code>Arg::secondary_index</code> which would be more difficult to explain/document without a decent round of bike-shedding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2017-01-03 22:03</div>
+            <div class="timeline-body"><p>@kbknapp Yes, the case I have always requires the second positional argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.20.0" by @kbknapp on 2017-01-04 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-04 03:10</div>
+            <div class="timeline-body"><p>I have this implemented and it's working. I have one final issue to implement, then I'll put out 2.20 on crates.io</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2017-01-06 01:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

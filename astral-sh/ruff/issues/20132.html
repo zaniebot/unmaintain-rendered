@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pylint rule expression-not-assigned no triggered on list comprehension W0106 (B018) - astral-sh/ruff #20132</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pylint rule expression-not-assigned no triggered on list comprehension W0106 (B018)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20132">#20132</a>
+        opened by <a href="https://github.com/kaddkaka">@kaddkaka</a>
+        on 2025-08-28 12:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-08-28 12:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Pylint W0106 is triggered on each line of this code:</p>
+<pre><code class="language-py">[x + 1 for x in range(10)]
+[1 for _ in range(2)]
+[x in range(5) if x &gt; 3 else 0 for x in range(10)]
+</code></pre>
+<p>But ruffs corresponding rule <code>B018</code> is not triggered on either.</p>
+<h3>Version</h3>
+<p>ruff 0.11.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-08-28 12:09</div>
+            <div class="timeline-body"><pre><code class="language-py">[100]
+</code></pre>
+<p>triggers:</p>
+<ul>
+<li>pylint <code>W0104</code> &quot;pointless-statement&quot;</li>
+<li>ruff <code>B018</code> &quot;Found useless expresion&quot;</li>
+</ul>
+<p>Is <code>B018</code> an alias of W0104, W0106, or both?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-28 15:29</div>
+            <div class="timeline-body"><p>It looks like these are getting caught by the <code>contains_effect</code> check in B018, which marks all comprehensions, among other expressions, as possibly containing side effects:</p>
+<p>https://github.com/astral-sh/ruff/blob/9930c94c0971487cb3f1ab9bbc7230acac717aec/crates/ruff_linter/src/rules/flake8_bugbear/rules/useless_expression.rs#L98-L99</p>
+<p>https://github.com/astral-sh/ruff/blob/9930c94c0971487cb3f1ab9bbc7230acac717aec/crates/ruff_python_ast/src/helpers.rs#L114-L121</p>
+<p>so this looks like an intentional decision to err on the side of false negatives to me. There was some discussion of alternatives in https://github.com/astral-sh/ruff/pull/3455, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-08-28 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-09-15 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-09-15 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-09-15 13:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

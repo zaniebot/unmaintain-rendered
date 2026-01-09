@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Rule: Disallow uncaught and unchecked exceptions - astral-sh/ruff #10844</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>New Rule: Disallow uncaught and unchecked exceptions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10844">#10844</a>
+        opened by <a href="https://github.com/Starz0r">@Starz0r</a>
+        on 2024-04-09 03:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Starz0r">@Starz0r</a> on 2024-04-09 03:16</div>
+            <div class="timeline-body"><p>Typically, if I'm writing a Python program, I want to be sure to handle or at least catch many exceptions. A program like so should not pass without warnings:</p>
+<pre><code class="language-py">import sys
+
+
+def foo():
+	raise Exception(&quot;do not call foo()!&quot;)
+
+
+def main() -&gt; int:
+	foo()
+	return 0
+
+
+if __name__ == &quot;__main__&quot;:
+	sys.exit(main())
+</code></pre>
+<p>This can be easy if the functions or methods you're pulling from are in the local source directory. However, it gets a bit more tricky when it's not, and without going into where the source files for the library is located, and inspecting it manually you may not know. Since this library likely parses the library source tree, <code>ruff</code> likely knows this information. Thus, it can notify us when the function we are calling into has an exception that we are not handling.</p>
+<pre><code class="language-py">import sys
+
+from some_library import foo
+
+
+def main() -&gt; int:
+	foo()
+	return 0
+
+
+if __name__ == &quot;__main__&quot;:
+	sys.exit(main())
+</code></pre>
+<p>In both cases, neither of the functions are wrapped in a try block, as so to make it easier for the program to fail at runtime. By adding this as a rule, <code>ruff</code> can notify the programmer that they are calling a function that can explicitly raise an exception, and signal that something should be done about it (or disable the rule for that line). As of now, calling <code>ruff check .\src\main.py --isolated</code> on the file passes all checks. I think this would be a very beneficial addition for those writing Python.</p>
+<p>Main Inspiration: https://github.com/kisielk/errcheck</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> added by @MichaReiser on 2024-04-09 07:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-09 07:01</div>
+            <div class="timeline-body"><p>Note: This requires multifile and control flow anlaysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-04-10 04:36</div>
+            <div class="timeline-body"><p>This idea is the main motivation for the desire to annotate exceptions.  The latter idea has been discussed many times on the python-discuss boards, and I think it would be worth going over the discussion.</p>
+<p>In general, exceptions are intended to propagate up the stack, so they shouldn't necessarily be handled by the caller.  Also, as noted, there's no way to figure out which exceptions might be raised.  And there are plenty of exceptions that can be raised even if they're not annoted or explicitly raised anywhere (I think there's an out-of-memory, and some kind of user-break, etc.).  Of course, not every function call should handle these.</p>
+<p>I'm not saying that this a bad idea, but I think you should go over the discussions on discuss, and hash out how you would want this to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Starz0r">@Starz0r</a> on 2024-04-14 01:05</div>
+            <div class="timeline-body"><p>Preface: Regardless of what discussions going on, I'd still like to see this implemented in some form or fashion, simply as a hold-over until we can get a proper idea of how exceptions should be communicated to the caller. I wouldn't mind if it was a non-default or even behind an experimental flag, or even a temporary one. I would just like to check these in general, as they're important and there is currently no visible way to have insight into what can be thrown except for documentation (if there is any, and if it's properly documented!). Something as simple as just telling me what exceptions can be thrown from a function or method would be helpful. Anything is better than nothing right now.</p>
+<blockquote>
+<p>In general, exceptions are intended to propagate up the stack, so they shouldn't necessarily be handled by the caller.</p>
+</blockquote>
+<p>In cases where they're supposed to propagate up the stack, you could re-raise them.</p>
+<pre><code class="language-py">def foo():
+	try:
+		write(...) as f:
+			pass
+	except IOError as e:
+			raise e
+</code></pre>
+<p>Although I will concede, littering this around in library code would make it harder to read and is just doing the job the normal exception handler would have done already. I don't have a great way to solve this, but in the interim be handled by not having that lint enabled for that file or annotating the function/line with <code>noqa</code>.</p>
+<blockquote>
+<p>Also, as noted, there's no way to figure out which exceptions might be raised. And there are plenty of exceptions that can be raised even if they're not annoted or explicitly raised anywhere (I think there's an out-of-memory, and some kind of user-break, etc.). Of course, not every function call should handle these.</p>
+</blockquote>
+<p>In code where this is the case, the programmer might know ahead of the time, but regardless, this is out of scope for the rule anyway (Perhaps I should re-title the issue with “explicit” exceptions). Any place where an exception is explicitly raised from the caller should be able to be handled, so out-of-memory exceptions as the result of a Python runtime heuristic (or system heuristic), would not apply here. Same with any other similar issues like bad/malformed syntax or divide by zero (although divide by zero is already handled by other lints).</p>
+<blockquote>
+<p>I'm not saying that this a bad idea, but I think you should go over the discussions on discuss, and hash out how you would want this to work.</p>
+</blockquote>
+<p>Sure. I don't mind discussing this a little more if needed. Just for reference, did you mean the general <code>python-discuss</code> boards, or the GitHub Discussions page for ruff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-04-14 07:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Something as simple as just telling me what exceptions can be thrown from a function or method would be helpful.</p>
+</blockquote>
+<p>That's not &quot;simple&quot;.</p>
+<blockquote>
+<p>Although I will concede, littering this around in library code would make it harder to read and is just doing the job the normal exception handler would have done already.</p>
+</blockquote>
+<p>Exactly.  I don't think this is a good idea.</p>
+<blockquote>
+<p>Any place where an exception is explicitly raised from the caller should be able to be handled,</p>
+</blockquote>
+<p>I don't think that's true.  Where did you get this idea?</p>
+<blockquote>
+<p>Sure. I don't mind discussing this a little more if needed. Just for reference, did you mean…</p>
+</blockquote>
+<p><a href="https://discuss.python.org/c/ideas/6">These ones.</a>  Please read <a href="https://discuss.python.org/t/extend-type-hints-to-cover-exceptions/23788">this</a> and <a href="https://discuss.python.org/t/pep-484-when-will-we-have-syntax-for-exceptions/26936">this</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Starz0r">@Starz0r</a> on 2024-04-14 09:32</div>
+            <div class="timeline-body"><p>It's been awhile since I've been around the “<a href="https://www.artima.com/articles/the-trouble-with-checked-exceptions">Checked Exceptions</a>” discourse, since I've totally forgotten about it. Didn't really realize at the time of writing what I was asking for, so, sorry for that. I think what I should do is reduce the scope of the issue so it's less controversial. What I'd actually need is just a diagnostic or report that tells me what a function raises and hasn't caught on its own. But as I understand it, this might actually be a little out of scope for the project, as I'm now realizing. However, if I'm wrong, feel free to re-open this, but I think I know in what direction I need to be heading now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Starz0r on 2024-04-14 09:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-10-24 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-24 14:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

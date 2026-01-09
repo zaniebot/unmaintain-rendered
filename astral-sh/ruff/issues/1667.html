@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error fixes are logged without indicating file names - astral-sh/ruff #1667</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error fixes are logged without indicating file names</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1667">#1667</a>
+        opened by <a href="https://github.com/devend711">@devend711</a>
+        on 2023-01-05 18:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/devend711">@devend711</a> on 2023-01-05 18:25</div>
+            <div class="timeline-body"><p>Example output from running <code>ruff</code> via a git pre-commit hook:</p>
+<pre><code>ruff.....................................................................Failed
+- hook id: ruff
+- files were modified by this hook
+
+Found 1 error(s) (1 fixed, 0 remaining).
+</code></pre>
+<p>Locally, it's possible to do something like <code>git status</code> to see which files were changed as a result of the hook. But when these hooks are run in a CI run for example, seeing the file names in ruff's output would be useful</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-05 18:48</div>
+            <div class="timeline-body"><p>Is there any way to enable this in pre-commit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-06 23:16</div>
+            <div class="timeline-body"><p>Oh, I guess this has nothing to do with pre-commit, since we don't actually log the names of fixed files. I wonder if we should.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-01-06 23:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-06 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1701.html">astral-sh/ruff#1701</a> on 2023-01-07 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-07 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/telamonian">@telamonian</a> on 2024-08-29 23:39</div>
+            <div class="timeline-body"><p>@charliermarsh I'm still having this same problem. When I run eg <code>git commit -a</code> I see:</p>
+<pre><code>ruff.....................................................................Failed
+- hook id: ruff
+- files were modified by this hook
+
+Found 1 error (1 fixed, 0 remaining).
+
+ruff-format..............................................................Failed
+- hook id: ruff-format
+- files were modified by this hook
+
+1 file reformatted, 1 file left unchanged
+</code></pre>
+<p>Especially when you try and commit with <code>git commit -a</code>, there's currently no way to see what files changed or what the changes actually were. Am I missing something, like how to apply the existing fix you linked above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-30 08:17</div>
+            <div class="timeline-body"><p>@telamonian Can you try using the <code>--show-fixes</code> flag with the pre-commit hook? It'll show you the files (and rules) that were fixed:</p>
+<pre><code>Fixed 4 errors:
+- src/lsp.py:
+    3 × F401 (unused-import)
+    1 × COM812 (missing-trailing-comma)
+
+Found 8 errors (4 fixed, 4 remaining).
+</code></pre>
+<p>So, I think the following should give you what you want:</p>
+<pre><code class="language-yaml">- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.6.3
+  hooks:
+    - id: ruff
+      args: [ --show-fixes ]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/telamonian">@telamonian</a> on 2025-03-18 04:37</div>
+            <div class="timeline-body"><p>@dhruvmanila Hey, sorry I never noticed that you actually responded to my original post. Your suggestion of using <code>--show-fixes</code> solves part of my problem, but not all of it. I do now see the fixes caused by the <code>ruff</code> hook, but then any fixes made by the <code>ruff-format</code> hook are still hidden:</p>
+<pre><code>$ git commit -a
+ruff.....................................................................Passed
+ruff-format..............................................................Failed
+- hook id: ruff-format
+- files were modified by this hook
+
+2 files reformatted, 1 file left unchanged
+</code></pre>
+<p>Is there an equivalent of <code>show-fixes</code> for the <code>ruff format</code> command? I did already try just passing <code>show-fixes</code>, but it is not recognized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-18 05:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there an equivalent of <code>show-fixes</code> for the <code>ruff format</code> command? I did already try just passing <code>show-fixes</code>, but it is not recognized.</p>
+</blockquote>
+<p>There's no equivalent to &quot;format AND show diff&quot; on the formatter side but you can do either of those i.e., use <code>--diff</code> to get the diff between original and formatter source but that wouldn't change the file content on disk. https://github.com/astral-sh/ruff/issues/8191 seems related.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/telamonian">@telamonian</a> on 2025-03-19 04:15</div>
+            <div class="timeline-body"><p>@dhruvmanila Yeah, I already figured out that I can run the <code>ruff-format</code> hook twice, the first time with the <code>--diff</code> arg. That <em>sort</em> of gets me what I wanted. but it's less than ideal, and would certainly be confusing for anyone else working on a project.</p>
+<p>I don't think #8191 quite covers it either. I guess I'd want something like:</p>
+<pre><code>ruff format --diff-and-format
+</code></pre>
+<p>that would both print the diff and then also format the relevant files, instead of just printing the diff and exiting the program without making changes like <code>--diff</code> does. At the very least the formatter should print the names of any files changes, not just <code>x files reformatted, y files left unchanged</code>.</p>
+<p>Thanks for bring up #8191, btw. Getting to learn about https://github.com/evilmartians/lefthook made me a bit happy. I've been waiting for someone to come up with a pre-commit alternative for some time now</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

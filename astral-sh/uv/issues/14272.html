@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staging mode for uv lock preserving (binary) wheels - astral-sh/uv #14272</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Staging mode for uv lock preserving (binary) wheels</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14272">#14272</a>
+        opened by <a href="https://github.com/detlefla">@detlefla</a>
+        on 2025-06-26 12:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/detlefla">@detlefla</a> on 2025-06-26 12:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Problem: I want to install an app with a bunch of requirements on a server that is connected to the internet but has no development tools (C / C++ / Rust compilers, dev libraries etc.) installed. The primary reason for this is the server's security policy (that should make exploits harder); there could be other conceivable reasons though.</p>
+<p>Maybe I'm overlooking something (too) obvious, but the “best” solution I can think of is</p>
+<ul>
+<li>install the app in a staging environment</li>
+<li>install original pip there</li>
+<li>read uv.lock and identify all binary packages</li>
+<li>create wheels for these packages with <code>pip wheel -w wheels PACKAGE</code></li>
+<li>rsync the wheels dir to the production server</li>
+<li>manipulate uv.lock pointing the package source to the wheels dir and copy this lockfile to the server</li>
+<li><code>uv sync --frozen</code> on the server, pulling any Python-only wheels from PyPI and all binary wheels from the local dir</li>
+</ul>
+<p>Which is error-prone and not very comfortable. (A direct <code>pip wheel -r …</code> can't read uv's lockfile and might choose the wrong dependencies.)</p>
+<p>Therefore I suggest a “staging mode” for <code>uv lock</code> that would copy all installed wheels (which normally wouldn't be kept anywhere) – or just binary wheels – to a given output directory and write the relative path to this directory as package source into the lockfile which could be used for uv-syncing on a (dumb) server.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @detlefla on 2025-06-26 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/detlefla">@detlefla</a> on 2025-07-03 21:36</div>
+            <div class="timeline-body"><p>I found out that for step 4, the generation of wheels, pip is not needed, it could actually be done by uv if you download the sdist archive (from the location found in uv.lock) and apply <code>uv build --python PYVER --wheel PKG-VERSION.tar.gz</code>.</p>
+<p>This is a nice feature of uv which is not too obvious from the docs.</p>
+<p>It doesn't make the whole process <em>much</em> easier, though. But probably faster.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../LabAutomationAndScreening/copier-cloud-courier-infrastructure/pulls/10.html">LabAutomationAndScreening/copier-cloud-courier-infrastructure#10</a> on 2025-08-02 20:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

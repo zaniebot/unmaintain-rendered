@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV silently ignores sources field inside user and system-level configuration, instead of erroring - astral-sh/uv #12753</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV silently ignores sources field inside user and system-level configuration, instead of erroring</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12753">#12753</a>
+        opened by <a href="https://github.com/orishamir">@orishamir</a>
+        on 2025-04-08 17:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/orishamir">@orishamir</a> on 2025-04-08 17:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Having <code>[sources]</code> field inside <code>uv.toml</code> of the <strong>project</strong> yields an error, as expected:</p>
+<pre><code>error: Failed to parse: `uv.toml`. The `sources` field is not allowed in a `uv.toml` file. `sources` is only applicable in the context of a project, and should be placed in a `pyproject.toml` file instead
+</code></pre>
+<p>But if I have <code>[sources]</code> inside a user-level or system-level configuration (e.g., ~/.config/uv/uv.toml and /etc/uv/uv.toml), then uv runs but quietly ignores the sources field.</p>
+<p>This resulted in a significant headache, as I could not figure out what was happening - UV could not find my packages, and my <code>[sources]</code> got ignored.</p>
+<p>I suggest erroring at both the project-level and user/system-level configuration, to improve visibility and error messages (or a better suggestion).</p>
+<p>Thanks in advance, and thanks for everything you are doing - UV has been a lifesaver!</p>
+<h2>Reproduce</h2>
+<pre><code class="language-dockerfile">FROM python:3.12-slim-bookworm
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+WORKDIR /app
+
+RUN uv init
+
+COPY &lt;&lt;EOF /etc/uv/uv.toml
+[sources]
+doesntmatter = { index = &quot;doesnt_matter&quot;}
+EOF
+
+CMD [&quot;uv&quot;, &quot;sync&quot;]
+</code></pre>
+<p>This does not error, and executes successfully, but ignores <code>[sources]</code></p>
+<pre><code>Using CPython 3.12.9 interpreter at: /usr/local/bin/python3.12
+Creating virtual environment at: .venv
+Resolved 1 package in 16ms
+Audited in 0.32ms
+</code></pre>
+<p>Although the following does indeed error:</p>
+<pre><code class="language-dockerfile">FROM python:3.12-slim-bookworm
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+WORKDIR /app
+
+COPY &lt;&lt;EOF uv.toml
+[sources]
+doesntmatter = { index = &quot;doesnt_matter&quot;}
+EOF
+
+CMD [&quot;uv&quot;, &quot;sync&quot;]
+</code></pre>
+<pre><code>error: Failed to parse: `uv.toml`. The `sources` field is not allowed in a `uv.toml` file. `sources` is only applicable in the context of a project, and should be placed in a `pyproject.toml` file instead.
+</code></pre>
+<p>Related: <a href="https://github.com/astral-sh/uv/issues/6772">#6772</a></p>
+<h3>Platform</h3>
+<p>Debian GNU/Linux 12 (bookworm)</p>
+<h3>Version</h3>
+<p>0.6.13</p>
+<h3>Python version</h3>
+<p>3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @orishamir on 2025-04-08 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-04-08 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12757.html">astral-sh/uv#12757</a> on 2025-04-08 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-04-08 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-04-08 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13493.html">astral-sh/uv#13493</a> on 2025-05-16 14:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validate required_version before validating rules - astral-sh/ruff #19922</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Validate required_version before validating rules</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19922">#19922</a>
+        opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a>
+        on 2025-08-15 00:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-08-15 00:25</div>
+            <div class="timeline-body"><p>If you have both a <code>required-version</code> and a new rule enabled in your ruff config, but try to run with an older version of ruff, you get something like:</p>
+<pre><code>ruff failed
+  Cause: Failed to parse /.../pyproject.toml
+  Cause: TOML parse error at line 23, column 5
+   |
+23 |     &quot;RUF102&quot;,
+   |     ^^^^^^^^
+Unknown rule selector: `RUF102`
+</code></pre>
+<p>It would be better if you got e.g.:</p>
+<pre><code>ruff failed
+  Cause: Required version `&gt;=0.12.8` does not match the running version `0.9.10`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Validate required_version in config" to "Validate required_version before rest of config " by @hauntsaninja on 2025-08-15 00:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Validate required_version before rest of config " to "Validate required_version before validating rules" by @hauntsaninja on 2025-08-15 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2025-08-15 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-15 06:35</div>
+            <div class="timeline-body"><p>That makes sense.</p>
+<p>I don't think this will be too hard to fix and may even fix a few other issues along the way (e.g warning about unknown ignored rules rather than just failing). We need to use a weaker type for rule references during deserialization and validate the rules only when resolving the settings, similar to our approach in ty.</p>
+<p>Fixing this for all new settings is a bit more cumbersome but would probably also be possible by adding an <code>extra_keys</code> hash map to every deserialized struct. But that might be a bit cumbersome and fixing this only for rules probably covers the most common use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-09-10 21:24</div>
+            <div class="timeline-body"><p>Relevant to the recent Ruff 0.13 update. Writing the following in my shared config:</p>
+<pre><code class="language-toml">required-version = &quot;&gt;=0.13.0&quot;
+
+[lint]
+future-annotations = true
+</code></pre>
+<p>Results in this error on older Ruff versions:</p>
+<pre><code>ruff failed
+  Cause: Failed to load configuration `...\ruff.toml`
+  Cause: Failed to parse ...\ruff.toml
+  Cause: TOML parse error at line 17, column 1
+   |
+17 | future-annotations = true
+   | ^^^^^^^^^^^^^^^^^^
+unknown field `future-annotations`, expected one of &lt;...&gt;
+</code></pre>
+<p>instead of telling me to install Ruff 0.13</p>
+<p>Of course this can't be fixed retroactively, so the sooner it gets in, probably the better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jaraco/skeleton/pulls/185.html">jaraco/skeleton#185</a> on 2025-10-31 18:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

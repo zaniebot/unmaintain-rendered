@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync fails while uv venv + uv pip install succeeds - astral-sh/uv #11926</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync fails while uv venv + uv pip install succeeds</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11926">#11926</a>
+        opened by <a href="https://github.com/kohlrabi">@kohlrabi</a>
+        on 2025-03-03 15:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kohlrabi">@kohlrabi</a> on 2025-03-03 15:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I reduced the problem to the following MRE. I have a <code>pyproject.toml</code> with the following content:</p>
+<pre><code>[project]
+name = &quot;myproject&quot;
+version = &quot;1.0.0&quot;
+dependencies = [
+    &quot;jupyter&quot;,
+]
+requires-python = &quot;&gt;=3.12&quot;
+</code></pre>
+<p>When trying to setup or update the environment of the project using <code>uv sync</code>, I get the following error:</p>
+<pre><code>error: Failed to fetch: `https://&lt;ourpypirepo&gt;/packages/packages/26/7e/71f604d8cea1b58f82ba3590290b66da1e72d840aeb37e0d5f7291bd30db/tornado-6.4.2-cp38-abi3-macosx_10_9_universal2.whl#sha256=e828cce1123e9e44ae2a50a9de3055497ab1d0aeb440c5ac23064d9e44880da1`
+  Caused by: HTTP status client error (404 Not Found) for url (https://&lt;ourpypirepo&gt;/packages/packages/26/7e/71f604d8cea1b58f82ba3590290b66da1e72d840aeb37e0d5f7291bd30db/tornado-6.4.2-cp38-abi3-macosx_10_9_universal2.whl#sha256=e828cce1123e9e44ae2a50a9de3055497ab1d0aeb440c5ac23064d9e44880da1)
+</code></pre>
+<p>Apparently uv sync tries to fetch <code>tornado</code> for macosx as a dependency of <code>jupyter</code>, even though I am on Debian 12 Linux x86_64.</p>
+<p>But I can get a working venv by using</p>
+<pre><code>uv venv
+. .venv/bin/activate
+uv pip install -r pyproject.toml
+</code></pre>
+<p>Why does <code>uv sync</code> fail like that in this case?</p>
+<p><code>uv python list</code> gives the following result:</p>
+<pre><code>cpython-3.13.0+freethreaded-linux-x86_64-gnu    /home/myuser/python/python-3.13.0-ft/bin/python3.13t
+cpython-3.13.0+freethreaded-linux-x86_64-gnu    /home/myuser/python/python-3.13.0-ft/bin/python3.13
+cpython-3.13.0+freethreaded-linux-x86_64-gnu    /home/myuser/python/python-3.13.0-ft/bin/python3 -&gt; python3.13
+cpython-3.13.0-linux-x86_64-gnu                 /home/myuser/python/python-3.13.0/bin/python3.13
+cpython-3.13.0-linux-x86_64-gnu                 /home/myuser/python/python-3.13.0/bin/python3 -&gt; python3.13
+cpython-3.12.7-linux-x86_64-gnu                 /home/myuser/python/python-3.12.7/bin/python3.12
+cpython-3.12.7-linux-x86_64-gnu                 /home/myuser/python/python-3.12.7/bin/python3 -&gt; python3.12
+cpython-3.11.10-linux-x86_64-gnu                /home/myuser/python/python-3.11.10/bin/python3.11
+cpython-3.11.10-linux-x86_64-gnu                /home/myuser/python/python-3.11.10/bin/python3 -&gt; python3.11
+cpython-3.11.2-linux-x86_64-gnu                 /usr/bin/python3.11
+cpython-3.11.2-linux-x86_64-gnu                 /usr/bin/python3 -&gt; python3.11
+cpython-3.11.2-linux-x86_64-gnu                 /bin/python3.11
+cpython-3.11.2-linux-x86_64-gnu                 /bin/python3 -&gt; python3.11
+pypy-3.9.16-linux-x86_64-gnu                    /usr/bin/pypy3 -&gt; pypy3.9
+pypy-3.9.16-linux-x86_64-gnu                    /bin/pypy3 -&gt; pypy3.9
+</code></pre>
+<h3>Platform</h3>
+<p>Debian 12 x86_64</p>
+<h3>Version</h3>
+<p>0.6.3</p>
+<h3>Python version</h3>
+<p>3.12, 3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @kohlrabi on 2025-03-03 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kohlrabi">@kohlrabi</a> on 2025-03-07 15:37</div>
+            <div class="timeline-body"><p>I noticed by looking at the verbose output that the order in which packets are installed is different between sync and pip install:</p>
+<p>For sync:</p>
+<pre><code>$ grep &quot;Adding transitive dependency for jupyter==&quot; sync.log
+DEBUG Adding transitive dependency for jupyter==1.1.1: ipykernel*
+DEBUG Adding transitive dependency for jupyter==1.1.1: ipywidgets*
+DEBUG Adding transitive dependency for jupyter==1.1.1: jupyter-console*
+DEBUG Adding transitive dependency for jupyter==1.1.1: jupyterlab*
+DEBUG Adding transitive dependency for jupyter==1.1.1: nbconvert*
+DEBUG Adding transitive dependency for jupyter==1.1.1: notebook*
+</code></pre>
+<p>Also it shows:</p>
+<pre><code>DEBUG Adding transitive dependency for ipykernel==6.29.5: appnope{sys_platform == 'darwin'}*
+</code></pre>
+<p>For pip install:</p>
+<pre><code>$ grep &quot;Adding transitive dependency for jupyter==&quot; pip.log
+DEBUG Adding transitive dependency for jupyter==1.1.1: notebook*
+DEBUG Adding transitive dependency for jupyter==1.1.1: jupyter-console*
+DEBUG Adding transitive dependency for jupyter==1.1.1: nbconvert*
+DEBUG Adding transitive dependency for jupyter==1.1.1: ipykernel*
+DEBUG Adding transitive dependency for jupyter==1.1.1: ipywidgets*
+DEBUG Adding transitive dependency for jupyter==1.1.1: jupyterlab*
+</code></pre>
+<p>pip install does not erroneously resolve darwin as the target platform.</p>
+<p>So in case of &quot;uv sync&quot; the dependencies are sorted. In case of &quot;uv sync&quot; pip tries to install &quot;ipykernel&quot; first (and fails), while in case of &quot;pip install&quot; pip tries to install &quot;notebook&quot; first.</p>
+<p>I am not fluent enough in either rust or the codebase to quickly find the location where the dependencies are being sorted. My guess is that the lock-file mechanism (which is not used for pip install?) also sorts the dependencies passed to the pip process. Is this a problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-10 22:44</div>
+            <div class="timeline-body"><p><code>uv sync</code> picks a wheel a platform-independent fashion, so that you get the same resolution no matter where you run it, and uses that wheel to get the metadata and dependency information for a version of a package. In this case, it tries to read that information from the macOS wheel; It assumes that all wheels listed in the index are available to read.</p>
+<p><code>uv pip install</code> behaves different because it only resolves for the current platforms, ignoring all wheels and dependencies for other platforms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kohlrabi">@kohlrabi</a> on 2025-03-11 11:40</div>
+            <div class="timeline-body"><p>@konstin Thank you for the explanation. Can I somehow workaround that behaviour?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-11 11:55</div>
+            <div class="timeline-body"><p>If you only need linux, you can try https://docs.astral.sh/uv/concepts/resolution/#limited-resolution-environments, otherwise you need to check with the registry why it outputs wheels in the API that cannot be accessed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kohlrabi">@kohlrabi</a> on 2025-03-11 13:46</div>
+            <div class="timeline-body"><p>The first solution does not work. I will check with the registry admin to see what can be done, we are using an on-premise Artifactory PyPI mirror. Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-06-22 02:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

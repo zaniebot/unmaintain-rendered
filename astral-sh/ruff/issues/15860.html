@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401 raised when type is used in Generic - astral-sh/ruff #15860</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401 raised when type is used in Generic</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15860">#15860</a>
+        opened by <a href="https://github.com/vovchic17">@vovchic17</a>
+        on 2025-01-31 20:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vovchic17">@vovchic17</a> on 2025-01-31 20:58</div>
+            <div class="timeline-body"><h3>Description</h3>
+<h2>Ruff version</h2>
+<pre><code>ruff 0.9.4 (854ab0307 2025-01-30)
+</code></pre>
+<h2>Code snippet</h2>
+<pre><code class="language-python">from typing import TYPE_CHECKING, Generic, TypeVar
+if TYPE_CHECKING:
+    from asyncio.queues import Queue  # &lt;- F401 raised here
+
+T = TypeVar(&quot;T&quot;)
+
+class Example(Generic[T]): ...
+
+class Derived(Example[&quot;Queue&quot;]): ...
+</code></pre>
+<h2><code>ruff.toml</code> config</h2>
+<pre><code class="language-toml">lint.select = [&quot;F401&quot;, &quot;TC004&quot;]
+</code></pre>
+<h2>Command I invoked</h2>
+<pre><code class="language-bash">$ ruff check
+</code></pre>
+<h2>Command output</h2>
+<pre><code>main.py:3:32: F401 [*] `asyncio.queues.Queue` imported but unused
+  |
+1 | from typing import TYPE_CHECKING, Generic, TypeVar
+2 | if TYPE_CHECKING:
+3 |     from asyncio.queues import Queue  # &lt;- F401 raised here
+  |                                ^^^^^ F401
+4 |
+5 | T = TypeVar(&quot;T&quot;)
+  |
+  = help: Remove unused import: `asyncio.queues.Queue`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-01-31 22:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-31 22:16</div>
+            <div class="timeline-body"><p>Thanks for the report! This looks closely related to #15812, so possibly it can be fixed in a similar way by visiting subscripts in base classes as type expressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-31 23:00</div>
+            <div class="timeline-body"><p>Without type inference it's going to be difficult to significantly improve the accuracy, since there's no way to tell if a subscript is a generic subscript without knowing the type that's being subscripted (and whether or not that type derives from <code>Generic</code> or <code>Protocol</code>). Ruff already employs some heuristics by at least recognizing all the standard library generic types, so the most common cases should be covered.</p>
+<p>Special casing base class expressions seems relatively safe though, as far as additional heuristics beyond deeper type inference/analysis go. But I'm also not fully convinced that this comes up often enough to actually warrant a special case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-01 17:05</div>
+            <div class="timeline-body"><p>Thanks for the report! Closing as a duplicate of https://github.com/astral-sh/ruff/issues/9298, however. See https://github.com/astral-sh/ruff/issues/9298#issuecomment-1871157183 for a suggested fix :-)</p>
+<p>@ntBre is correct that visiting subscripts in base classes as type expressions rather than value expressions would &quot;fix&quot; this, but unfortunately it wouldn't be correct to do so -- some examples are given in https://github.com/astral-sh/ruff/issues/9298#issuecomment-1871157183 for why.</p>
+<p>See also https://github.com/astral-sh/ruff/issues/13181, https://github.com/astral-sh/ruff/issues/15560, https://github.com/astral-sh/ruff/issues/12780 and https://github.com/astral-sh/ruff/issues/4654</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-01 17:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

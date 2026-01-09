@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recent `uv` dependency resolution installs older version of package - astral-sh/uv #3143</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Recent `uv` dependency resolution installs older version of package</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3143">#3143</a>
+        opened by <a href="https://github.com/pjbull">@pjbull</a>
+        on 2024-04-19 17:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pjbull">@pjbull</a> on 2024-04-19 17:47</div>
+            <div class="timeline-body"><p>Our CI process that uses uv fails because dependency resolution now selects a much older version of <code>boto3</code> and <code>botocore</code>.</p>
+<p>Seems related to #3127, but it's still not doing the right thing in 0.1.34.</p>
+<h2>Repro:</h2>
+<pre><code>git clone https://github.com/drivendataorg/zamba
+cd zamba
+uv pip install -e &quot;.[tests]&quot;
+</code></pre>
+<h2>Result:</h2>
+<p>Installs ancient versions of boto:</p>
+<pre><code> + boto3==1.7.84
+ + botocore==1.10.84
+</code></pre>
+<h2>Expected:</h2>
+<p>Recent boto, e.g., <code>boto3==1.34.84</code> and <code>botocore==1.34.84</code>. (This is what pip does).</p>
+<hr />
+<p>For completeness, here are the logs from our CI, which you can <a href="https://github.com/drivendataorg/zamba/actions/runs/8756285665/job/24032719807">see in full here</a>.</p>
+<pre><code>installing uv...
+done! ✨ 🌟 ✨
+  installed package uv 0.1.34, installed using Python 3.10.12
+  These apps are now globally available
+    - uv
+
+...
+
+Run uv pip install -e .[tests]
+Built 1 editable in 271ms
+Resolved 125 packages in 56.85s
+warning: The package `typer==0.12.3` does not have an extra named `all`.
+Downloaded 100 packages in 20.03s
+Installed 125 packages in 288ms
+ + absl-py==2.1.0
+ + aiohttp==3.9.5
+ + aiosignal==1.3.1
+ + appdirs==1.4.4
+ + async-timeout==4.0.3
+ + attrs==[23](https://github.com/drivendataorg/zamba/actions/runs/8756285665/job/24032719807#step:7:24).2.0
+ + av==12.0.0
+ + boto3==1.7.84
+ + botocore==1.10.84
+
+...
+
+</code></pre>
+<p>And here are the <a href="https://github.com/drivendataorg/zamba/actions/runs/8677163381/job/23792460498">previous scheduled run</a> we have with <code>uv==0.1.31</code> boto3 and botocore resolved to correct (recent) versions.</p>
+<pre><code>installing uv...
+done! ✨ 🌟 ✨
+  installed package uv 0.1.31, installed using Python 3.10.12
+  These apps are now globally available
+    - uv
+
+...
+
+Run uv pip install -e .[tests]
+Built 1 editable in 515ms
+Resolved 124 packages in 1m 52s
+warning: The package `typer==0.12.3` does not have an extra named `all`.
+Downloaded 99 packages in 23.67s
+Installed 124 packages in 297ms
+ + absl-py==2.1.0
+ + aiohttp==3.9.4
+ + aiosignal==1.3.1
+ + appdirs==1.4.4
+ + async-timeout==4.0.3
+ + attrs==[23](https://github.com/drivendataorg/zamba/actions/runs/8677163381/job/23792460498#step:7:24).2.0
+ + av==12.0.0
+ + boto3==1.34.84
+ + botocore==1.34.84
+
+ ...
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../drivendataorg/zamba/issues/315.html">drivendataorg/zamba#315</a> on 2024-04-19 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 18:27</div>
+            <div class="timeline-body"><p>I'm a little bit mixed on this because the updated resolution is &quot;equally&quot; valid -- some packages resolved to newer versions, e.g., the newer resolution was able to upgrade to <code>urllib3==2.2.1</code> instead of <code>urllib3==1.26.18</code>, but at the cost of having to use older boto versions.</p>
+<p>To <em>ensure</em> that you receive newer boto versions, I think you should be specifying lower bounds on them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 18:28</div>
+            <div class="timeline-body"><p>I'll see if I can understand why the resolution changed. It may not actually be a bug though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pjbull">@pjbull</a> on 2024-04-19 19:02</div>
+            <div class="timeline-body"><p>I think that <code>botocore</code> is a transitive dependency from <code>cloudpathlib</code> (which we also happen to maintain), and we recently added a floor for <code>boto</code> dependencies there that will be released shortly.</p>
+<p>That said, this still feels like <code>uv</code> used to do the expected thing and <code>pip</code> still does, so there may be a bug there.</p>
+<p>FWIW, though I don't see a hard requirement listed in the codebase, the version of botocore that gets picked up doesn't even list any non-EOL'd Python versions for support: https://github.com/boto/botocore/blob/1.10.84/setup.py#L72-L81</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 19:15</div>
+            <div class="timeline-body"><p>Yeah, I think the previous resolution was more &quot;intuitive&quot;, I'm mostly just pointing out that they're both arguably &quot;correct&quot;. (The new resolution would only be incorrect if it didn't contain <em>any</em> upgraded versions.) May be able to get back to that state, I have to play around with the heuristics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pjbull">@pjbull</a> on 2024-04-19 19:26</div>
+            <div class="timeline-body"><p>Sounds good. This may be some pathological case for the heuristics since the dependency tree for this application gets pretty gross.</p>
+<p>FWIW, switching to <code>uv</code> has saved us ~5-10 minutes per CI run, which has been awesome. Thanks for that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-19 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 21:57</div>
+            <div class="timeline-body"><p>So I just ran <code>cargo run pip install -e &quot;.[tests]&quot;</code> in Zamba and got <code>boto3==1.34.88</code> and <code>botocore==1.34.88</code>. I'm wondering if something changed in the dependency tree between the creation of the issue and now? Trying to repro...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pjbull">@pjbull</a> on 2024-04-19 22:45</div>
+            <div class="timeline-body"><p>Yep, sorry. Just added a <code>botocore</code> pin as a workaround. You can checkout at commit <code>a3e4feee6ea5a90f37ed9ede90341fb345d39096</code> and it should repro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-04-19 23:04</div>
+            <div class="timeline-body"><p>I can not reproduce what you're seeing, I tried on Python 3.10, Linux, using that checkout, and trying to exclude anything newer than the last few hours:</p>
+<pre><code>$ git checkout a3e4feee6ea5a90f37ed9ede90341fb345d39096
+HEAD is now at a3e4fee Experimental image support (#314)
+$ uv pip install --dry-run --upgrade --reinstall --exclude-newer 2024-04-19T12:00:00Z -e  &quot;.[tests]&quot;
+...
+ + boto3==1.34.87
+ + botocore==1.34.87
+...
+</code></pre>
+<p>Btw, pip's resolver also gets into these situations where it picks a much older version of a package the user would prefer not to have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 23:10</div>
+            <div class="timeline-body"><p>Ok, now I was able to reproduce by passing <code>--python-version 3.8</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 23:10</div>
+            <div class="timeline-body"><p>(But on Python 3.11 I don't see the behavior even as of <code>a3e4feee6ea5a90f37ed9ede90341fb345d39096</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-04-19 23:10</div>
+            <div class="timeline-body"><p>Ah, I can reproduce now, but on Python 3.8 (which going through the CI logs I notice). I'm going to try and see if I can figure out what pip does here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 23:12</div>
+            <div class="timeline-body"><p>I think I know the cause, but not the details of why / how. pip has a better heuristic for &quot;package depth&quot;, whereas we're preferring constrained packages over unconstrained packages regardless of the depth.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3148.html">astral-sh/uv#3148</a> on 2024-04-19 23:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-04-19 23:19</div>
+            <div class="timeline-body"><blockquote>
+<p>pip has a better heuristic for &quot;package depth&quot;,</p>
+</blockquote>
+<p>btw, this sometimes helps pip resolution and sometimes hurts it, I don't have a good intuition or evidence if it is a net benefit. Though, it seems here it probably helps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-19 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michealroberts">@michealroberts</a> on 2025-04-09 18:08</div>
+            <div class="timeline-body"><p>I'm not sure if this is related to my issue, but I am still seeing this issue as of today -&gt; a minor version of 0.8.0 is available, but uv insists on installing 0.7.0 ...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michealroberts">@michealroberts</a> on 2025-04-09 18:09</div>
+            <div class="timeline-body"><p><img width="930" alt="Image" src="https://github.com/user-attachments/assets/25c793b6-28f6-46b2-9a55-814a418364dd" /></p>
+<p><img width="290" alt="Image" src="https://github.com/user-attachments/assets/9831b49e-5fa6-4723-9c6b-d492cb129d2b" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michealroberts">@michealroberts</a> on 2025-04-09 18:11</div>
+            <div class="timeline-body"><p>If anyone also experiences this behaviour, the workaround is to clear out the uv cache:</p>
+<pre><code>uv cache clean
+</code></pre>
+<p>or specifically for a package, e.g.,:</p>
+<pre><code>uv cache clean numpy
+</code></pre>
+<p><img width="608" alt="Image" src="https://github.com/user-attachments/assets/43d6f38a-9ba9-4c2e-8520-3038fc45ed66" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterschmidt85">@peterschmidt85</a> on 2025-05-11 18:53</div>
+            <div class="timeline-body"><p>I have the same issue with Python 3.9.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-05-11 19:43</div>
+            <div class="timeline-body"><blockquote>
+<p>I have the same issue with Python 3.9.</p>
+</blockquote>
+<p>Please open a new issue with a reproducible example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13389.html">astral-sh/uv#13389</a> on 2025-05-11 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../haddocking/powerfit/pulls/68.html">haddocking/powerfit#68</a> on 2025-09-16 06:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

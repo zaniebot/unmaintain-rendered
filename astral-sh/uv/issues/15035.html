@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync --python-platform` does not update environment when switching to a lower GLIBC-bound platform - astral-sh/uv #15035</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync --python-platform` does not update environment when switching to a lower GLIBC-bound platform</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15035">#15035</a>
+        opened by <a href="https://github.com/ido123net">@ido123net</a>
+        on 2025-08-02 23:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ido123net">@ido123net</a> on 2025-08-02 23:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using uv sync with the new --python-platform flag to target a lower GLIBC version (e.g. manylinux_2_17), the environment is not updated if it was previously created with a higher GLIBC-bound platform (e.g. manylinux_2_28). This results in runtime errors due to incompatible native binaries remaining in the environment.</p>
+<p>Steps to Reproduce (on system with GLIBC &lt; 2.28  e.g., Ubuntu 18.04):</p>
+<pre><code class="language-bash"># Setup a demo project
+$ uv init demo &amp;&amp; cd demo
+
+# Add cryptography (will resolve and install for system default or manylinux_2_28)
+$ uv add cryptography
+
+# Confirm it fails due to GLIBC_2.28 requirement
+$ echo &quot;from cryptography.hazmat.bindings._rust import openssl&quot; &gt; main.py
+$ uv run main.py
+# Traceback:
+# ImportError: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.28' not found ...
+
+# Now sync with a lower GLIBC platform
+$ uv sync --python-platform x86_64-manylinux_2_17
+
+# Try again still fails with same error
+$ uv run main.py
+# ImportError: ... version `GLIBC_2.28' not found ...
+</code></pre>
+<h3>Expected Behavior:</h3>
+<p>Running <code>uv sync --python-platform x86_64-manylinux_2_17</code> should re-resolve and reinstall packages so that native wheels compatible with manylinux_2_17 (and GLIBC &lt; 2.28) are used. Instead, it leaves the environment unchanged.</p>
+<h3>Actual Behavior:</h3>
+<p>The environment remains as-is, and uv does not detect the need to downgrade the platform-specific binaries, causing continued import/runtime failures.</p>
+<p>Related Issues:</p>
+<ul>
+<li>#14273</li>
+<li>#14320</li>
+<li>#11120 (opened by me as well)</li>
+</ul>
+<p>I understand this is an edge case, but supporting this behavior would be very helpful, especially in environments where the same project directory is accessed from multiple platforms via NFS or similar setups. Ensuring uv sync fully respects the --python-platform flag, even when downgrading, would make uv far more reliable and predictable in such cross-platform workflows.</p>
+<h3>Platform</h3>
+<p>Linux</p>
+<h3>Version</h3>
+<p>uv 0.8.4</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ido123net on 2025-08-02 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2025-08-04 13:00</div>
+            <div class="timeline-body"><p>The same happens if you switch platform completely (for example from windows to linux). uv does not reinstall the required wheels for the new platform.</p>
+<p>Example output from a project with SQLAlchemy dependency:</p>
+<pre><code>&gt; uv sync --no-editable --no-dev --python 3.10 --python-platform linux
+...
+ + greenlet==3.2.3
+ + pyasn1==0.6.1
+ + rsa==4.9.1
+ + sqlalchemy==2.0.42
+ + typing-extensions==4.14.1
+
+&gt; uv sync --no-editable --no-dev --python 3.10 --python-platform windows --dry-run
+...
+Would make no changes
+&gt; uv sync --no-editable --no-dev --python 3.10 --python-platform windows
+...
+Audited 7 packages in 0.34ms
+</code></pre>
+<p>Actual behavior: sqlalchemy with Windows extensions modules (pyd) is still installed.
+Expected behavior: uv reinstalls sqlalchemy with Linux extension modules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-04 13:23</div>
+            <div class="timeline-body"><p>I'm a little unsure if we should support this. We certainly could (as in, it's not technically infeasible).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ido123net">@ido123net</a> on 2025-08-04 13:42</div>
+            <div class="timeline-body"><p>I will be happy to give it a shot.</p>
+<p>If it is ok from your side. @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-04 18:00</div>
+            <div class="timeline-body"><p>Please feel free if you'd like to try. I think you need to read the <code>WHEEL</code> file from the installed packages and compare the wheel tag to the current platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-24 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15483.html">astral-sh/uv#15483</a> on 2025-08-24 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15484.html">astral-sh/uv#15484</a> on 2025-08-24 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15486.html">astral-sh/uv#15486</a> on 2025-08-24 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-24 21:05</div>
+            <div class="timeline-body"><p>I have this working at https://github.com/astral-sh/uv/pull/15484.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-08-25 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ido123net">@ido123net</a> on 2025-08-29 05:44</div>
+            <div class="timeline-body"><p>Thank you so much!!</p>
+<p>I had a bit of time to work on it, but I only managed to set up a working development environment for testing.</p>
+<p>I definitely couldn’t have reached your implementation on my own.</p>
+<p>This will help my workflow a ton 😄</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

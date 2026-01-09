@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv can't install lzma wheel created in Python - astral-sh/uv #13310</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv can't install lzma wheel created in Python</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13310">#13310</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-05-06 08:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2025-05-06 08:33</div>
+            <div class="timeline-body"><blockquote>
+<p>I made a wheel using LZMA compression format with this script. pip can install it, but unfortunately, I’m getting an error from uv saying “stream/file format not recognized.”</p>
+<p><code>make-lzma-wheel.py</code></p>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.13&quot;
+# dependencies = [
+#     &quot;wheel&quot;,
+# ]
+# ///
+from zipfile import ZIP_LZMA
+
+from wheel.wheelfile import WheelFile
+
+with WheelFile(&quot;fakepkg-0.0.1-py3-none-any.whl&quot;, &quot;w&quot;, compression=ZIP_LZMA) as zf:
+    zf.writestr(&quot;fakepkg/__init__.py&quot;, b'print(&quot;hello world&quot;)')
+    zf.writestr(
+        &quot;fakepkg-0.0.1.dist-info/METADATA&quot;,
+        &quot;&quot;&quot;\
+Metadata-Version: 2.4
+Name: fakepkg
+Version: 0.0.1
+Summary: fakepkg
+Requires-Python: &gt;=3.8
+
+fakepkg is a fake package for testing purposes.
+&quot;&quot;&quot;,
+    )
+    zf.writestr(
+        &quot;fakepkg-0.0.1.dist-info/WHEEL&quot;,
+        &quot;&quot;&quot;\
+Wheel-Version: 1.0
+Generator: fakepkg
+Root-Is-Purelib: false
+&quot;&quot;&quot;.encode(),
+    )
+
+print(&quot;Created fakepkg-0.0.1-py3-none-any.whl&quot;)
+</code></pre>
+<p>pip can install this wheel:</p>
+<pre><code class="language-console">$ uv venv --seed
+$ .venv/bin/pip install fakepkg-0.0.1-py3-none-any.whl
+Processing ./fakepkg-0.0.1-py3-none-any.whl
+Installing collected packages: fakepkg
+Successfully installed fakepkg-0.0.1
+$ .venv/bin/python -c 'import fakepkg'
+hello world
+</code></pre>
+<p><code>uv add</code> or <code>uv pip install</code> fails:</p>
+<pre><code class="language-console">$ cargo run -- pip install fakepkg-0.0.1-py3-none-any.whl
+  × Failed to read `fakepkg @ file:///private/tmp/hello/fakepkg-0.0.1-py3-none-any.whl`
+  ├─▶ Failed to read metadata: `/private/tmp/hello/fakepkg-0.0.1-py3-none-any.whl`
+  ├─▶ Failed to read from zip file
+  ├─▶ an upstream reader returned an error: stream/file format not recognized
+  ╰─▶ stream/file format not recognized
+
+$ cargo run -- --version
+uv 0.7.2+24 (3218e364a 2025-05-05)
+</code></pre>
+</blockquote>
+<p><em>Originally posted by @j178 in <a href="https://github.com/astral-sh/uv/issues/13192#issuecomment-2853682298">#13192</a></em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-05-06 08:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-06 08:34</div>
+            <div class="timeline-body"><p>The last error here, &quot;stream/file format not recognized&quot;, comes from lzma-sys. The zip crate recognizes the lzma encoding and tries to unpack it, but it seems there's some format incompatibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13192.html">astral-sh/uv#13192</a> on 2025-05-06 08:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

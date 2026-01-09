@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support multiple positionals with fixed sizes - clap-rs/clap #5464</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support multiple positionals with fixed sizes</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/5464">#5464</a>
+        opened by <a href="https://github.com/superstator">@superstator</a>
+        on 2024-04-18 14:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/superstator">@superstator</a> on 2024-04-18 14:56</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5.4</p>
+<h3>Describe your use case</h3>
+<p>I want to build a CLI in Rust, using <code>clap</code>, which can accept some number of positional arguments with a set number of values each, and a final argument accepting whatever positional values were left over. For example, <code>./app a b c</code> with a positional argument accepting 2 values, and a positional argument accepting leftovers, would assign <code>a b</code> to the first arg, and <code>c</code> to the second. I'm able to do this with a positional argument that accepts a single value:</p>
+<pre><code class="language-rust">        let cmd = Command::new(&quot;main&quot;)
+            .arg(Arg::new(&quot;ONE&quot;).action(ArgAction::Set).num_args(1))
+            .arg(Arg::new(&quot;TWO&quot;).action(ArgAction::Append));
+
+        let matches = cmd.get_matches_from(&amp;[&quot;bin&quot;,&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]);
+
+        assert_eq!(matches.get_many::&lt;String&gt;(&quot;ONE&quot;).unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), &amp;[&quot;a&quot;]);
+        assert_eq!(matches.get_many::&lt;String&gt;(&quot;TWO&quot;).unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), &amp;[&quot;b&quot;,&quot;c&quot;]);
+</code></pre>
+<p>But if I try to have the first arg accept two values like this:</p>
+<pre><code class="language-rust">        let cmd = Command::new(&quot;main&quot;)
+            .arg(Arg::new(&quot;ONE&quot;).action(ArgAction::Set).num_args(2))
+            .arg(Arg::new(&quot;TWO&quot;).action(ArgAction::Append));
+
+        let matches = cmd.get_matches_from(&amp;[&quot;bin&quot;,&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]);
+
+        assert_eq!(matches.get_many::&lt;String&gt;(&quot;ONE&quot;).unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), &amp;[&quot;a&quot;,&quot;b&quot;]);
+        assert_eq!(matches.get_many::&lt;String&gt;(&quot;TWO&quot;).unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), &amp;[&quot;c&quot;]);
+</code></pre>
+<p>I get the error <code>Positional argument [TWO]... *must* have required(true) or last(true) set because a prior positional argument ([ONE] [ONE]) has num_args(1..)</code>. If I make argument <code>TWO</code> required, I just get a different error, and if I make them both required the last argument is always attached to <code>TWO</code>, making it impossible to accept something like <code>./app a b</code> or <code>./app a b c d</code> and still have <code>ONE</code> capture the first two values.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Allow for one or more positional arguments that capture a fixed number of items, plus a &quot;final&quot; positional that can capture <code>0..</code> items.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @superstator on 2024-04-18 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2024-04-18 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2024-04-18 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-04-18 16:23</div>
+            <div class="timeline-body"><p>This was spun out of #5463.</p>
+<blockquote>
+<p>If I dig into it a little would you be open to a PR?</p>
+</blockquote>
+<p>Yes, we are</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uvx` and `uv tool run` should exec into new process - astral-sh/uv #14123</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uvx` and `uv tool run` should exec into new process</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14123">#14123</a>
+        opened by <a href="https://github.com/iwinux">@iwinux</a>
+        on 2025-06-18 02:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/iwinux">@iwinux</a> on 2025-06-18 02:40</div>
+            <div class="timeline-body"><h2>Current Behavior</h2>
+<ol>
+<li>start <code>ipython</code> via <code>uvx ipython</code></li>
+<li><code>pgrep -fal ipython</code> shows 2 processes:<pre><code>1315 /usr/local/bin/uv tool uvx ipython
+1316 /Users/limbo/.cache/uv/archive-v0/wcpt9UP5KQFF4PXopI6ut/bin/python /Users/limbo/.cache/uv/archive-v0/wcpt9UP5KQFF4PXopI6ut/bin/ipython
+</code></pre>
+</li>
+<li><code>pstree -p 1315</code> shows that PID 1315 is the parent process:<pre><code>-+= 00001 root /sbin/launchd
+\-+= 29881 limbo -fish
+    \-+= 01315 limbo /usr/local/bin/uv tool uvx ipython
+    \--- 01316 limbo /Users/limbo/.cache/uv/archive-v0/wcpt9UP5KQFF4PXopI6ut/bin/python /Users/limbo/.cache/uv/archive-v0/wcpt9UP5KQFF4PXopI6ut/bin/ipython  
+</code></pre>
+</li>
+</ol>
+<h2>Expected</h2>
+<p>In dev shells it's no big difference, but when starting service daemons (systemd / launchd / etc.), we would expect the actual program to become the &quot;root&quot; process, without <code>uv</code> staying in the middle. Usually this is done by doing <code>exec</code> instead of starting a subprocess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @iwinux on 2025-06-18 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-18 02:53</div>
+            <div class="timeline-body"><p>This is a duplicate of https://github.com/astral-sh/uv/issues/3095</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2025-06-18 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-18 02:54</div>
+            <div class="timeline-body"><p>Are you having any concrete problems with the process tree setup?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iwinux">@iwinux</a> on 2025-06-18 03:07</div>
+            <div class="timeline-body"><p>Currently not yet. But indirect process handling raises concerns due to past bad experiences (from other tools). I would consider avoiding <code>uvx</code> in systemd unit / <code>Dockerfile</code> if this is difficult to fix at the uv side.</p>
+<p>Feel free to close this in favor of #3095 :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-18 11:53</div>
+            <div class="timeline-body"><p>We forward signals to the child which has covered most problems we know about. Feel free to let us know if you encounter weird behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-06-18 11:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

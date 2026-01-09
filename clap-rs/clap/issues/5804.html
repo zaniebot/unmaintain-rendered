@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combining `ArgAction::Count` and `TypedValueParser::map` doesn't seem to work. - clap-rs/clap #5804</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Combining `ArgAction::Count` and `TypedValueParser::map` doesn't seem to work.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/5804">#5804</a>
+        opened by <a href="https://github.com/mkrasnitski">@mkrasnitski</a>
+        on 2024-11-02 07:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mkrasnitski">@mkrasnitski</a> on 2024-11-02 07:45</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.82.0 (f6e511eec 2024-10-15)</p>
+<h3>Clap Version</h3>
+<p>4.5.19</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{ArgAction, Parser};
+use clap::builder::TypedValueParser;
+
+#[derive(Parser)]
+struct Config {
+    #[clap(
+        short = 'c',
+        action = ArgAction::Count, 
+        value_parser = clap::value_parser!(u8).map(CleanLevel::from_val)
+    )]
+    clean: Option&lt;CleanLevel&gt;
+}
+
+#[derive(Clone)]
+enum CleanLevel {
+    Untracked,
+    All,
+}
+
+impl CleanLevel {
+    fn from_val(val: u8) -&gt; Option&lt;Self&gt; {
+        match val {
+            0 =&gt; None,
+            1 =&gt; Some(CleanLevel::Untracked),
+            2.. =&gt; Some(CleanLevel::All),
+        }
+    }
+}
+
+fn main() {
+    let config = Config::parse();
+    let _ = config.clean;
+}
+</code></pre>
+<p>playground: https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=ba6ae5eae9e9514d276dc40d5479cf5e</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<h3>Actual Behaviour</h3>
+<p>At runtime, clap panics with the following message:</p>
+<pre><code>thread 'main' panicked at /playground/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.19/src/builder/debug_asserts.rs:696:9:
+assertion `left == right` failed: Argument `clean`'s selected action Count contradicts `value_parser` (ValueParser::other(core::option::Option&lt;playground::CleanLevel&gt;))
+  left: u8
+ right: core::option::Option&lt;playground::CleanLevel&gt;
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>I would expect that the value parser is called to produce a <code>u8</code> and then <code>CleanLevel::from_val</code> is called on the parsed value to map to an <code>Option&lt;CleanLevel&gt;</code>. It seems the sequence of events in parsing is somehow wrong, or maybe I'm misunderstanding how <code>MapValueParser</code> works.</p>
+<h3>Additional Context</h3>
+<p>The alternative solution is to make use of an intermediate struct and a method on that struct, like so:</p>
+<pre><code class="language-rust">use clap::{ArgAction, Args, Parser};
+
+#[derive(Parser)]
+struct Config {
+    #[clap(flatten)]
+    clean: Clean,
+}
+
+#[derive(Args, Clone)]
+struct Clean {
+    #[clap(short = 'c', action = ArgAction::Count)]
+    count: u8
+}
+
+impl Clean {
+    fn level(&amp;self) -&gt; Option&lt;CleanLevel&gt; {
+        match self.count {
+            0 =&gt; None,
+            1 =&gt; Some(CleanLevel::Untracked),
+            2.. =&gt; Some(CleanLevel::All),
+        }
+    }
+}
+
+enum CleanLevel {
+    Untracked,
+    All,
+}
+
+fn main() {
+    let config = Config::parse();
+    let _ = config.clean.level();
+}
+</code></pre>
+<p>However, this introduces extra clutter and indirection. It would be great to avoid using an intermediate representation.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @mkrasnitski on 2024-11-02 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-11-04 15:35</div>
+            <div class="timeline-body"><p>When you pass <code>clap::value_parser!(u8).map(CleanLevel::from_val</code> to clap, you are passing in an adapter from an <code>OsStr</code> to a <code>CleanLevel</code>.  The intermediate <code>u8</code> is transient and never shared with clap and  clap doesn't know how to increment <code>CleanLevel</code>.</p>
+<p>For this to work, we'd need to do one of the following</p>
+<ul>
+<li>Have a derive-specific adapter (we had this with clap v3 and that was what value_parser was working to replace)</li>
+<li>We build into the concept of our value parser the ability to increment, with it erroring by default.  However, this is a fairly specialized operation and doesn't scale to other needs</li>
+<li>We allow value parsers to mutate the collection the value gets stored into, either appending or incrementing as needed.  This would be a major re-work and would require some very careful <code>dyn</code> trait design to allow all of the interactions to play  out.</li>
+</ul>
+<p>As for workarounds...</p>
+<p>We take the &quot;intermediate&quot; struct approach in https://docs.rs/clap-verbosity-flag/latest/clap_verbosity_flag/</p>
+<p>The conversion can also be a helper method on <code>Config</code> which I do for other types of data in my CLIs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkrasnitski">@mkrasnitski</a> on 2024-11-04 17:52</div>
+            <div class="timeline-body"><blockquote>
+<p>The intermediate <code>u8</code> is transient and never shared with clap and clap doesn't know how to increment <code>CleanLevel</code>.</p>
+</blockquote>
+<p>This seems solvable by introducing a trait called something like <code>Counter</code>, with an <code>increment</code> method, like you mentioned. In the case of <code>CleanLevel</code>, the state machine implements a kind of saturating addition, and auto-implementing this functionality would be hard via <code>#[derive(Counter)]</code>, but a manual implementation would work fine. Default implementations for integers and potentially one for <code>Option&lt;T&gt;</code> (<code>0 =&gt; None</code>) would work well IMO.</p>
+<blockquote>
+<p>However, this is a fairly specialized operation and doesn't scale to other needs</p>
+</blockquote>
+<p>Could you elaborate on this point? Yes, likely this new trait would be closely coupled to <code>ArgAction::Count</code>, but that could be made clear with a good name. Arguably this is a relatively simple generalization to make to allow using arbitrary types as counters, enabling better state machines while staying pretty self-contained.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-11-04 18:01</div>
+            <div class="timeline-body"><blockquote>
+<p>This seems solvable by introducing a trait called something like Counter, with an increment method, like you mentioned. In the case of CleanLevel, the state machine implements a kind of saturating addition, and auto-implementing this functionality would be hard via #[derive(Counter)], but a manual implementation would work fine. Default implementations for integers and potentially one for Option<T> (0 =&gt; None) would work well IMO.</p>
+</blockquote>
+<p>We are effectively operating on a <code>Box&lt;Any&gt;</code> for the intermediate state due to the dynamic nature of clap.  We can't easily access a trait like <code>Counter</code>.</p>
+<blockquote>
+<p>Could you elaborate on this point? Yes, likely this new trait would be closely coupled to ArgAction::Count, but that could be made clear with a good name. Arguably this is a relatively simple generalization to make to allow using arbitrary types as counters, enabling better state machines while staying pretty self-contained.</p>
+</blockquote>
+<p>I was specifically referring to baking in the information for this behavior in <code>ValueParser</code> which is what has knowledge of the concrete type.  This is unrelated to a &quot;new trait&quot; solution.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

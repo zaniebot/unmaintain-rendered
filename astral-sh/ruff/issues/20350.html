@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PERF401 rule confusion - astral-sh/ruff #20350</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PERF401 rule confusion</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20350">#20350</a>
+        opened by <a href="https://github.com/minusf">@minusf</a>
+        on 2025-09-11 14:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/minusf">@minusf</a> on 2025-09-11 14:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I might be confused, but it seems to me that the <code>PERF401</code> rule gives misleading advice in certain valid use cases, for example while generating a <code>select</code> widget in django (a list of tuples):</p>
+<pre><code class="language-py">select_choices = [(&quot;&quot;, &quot;--- Empty ---&quot;)]
+
+for user in users:
+    if some_condition:
+        select_choices.append((user[&quot;this&quot;], user[&quot;that&quot;]))
+        # Use `list.extend` to create a transformed list (PERF401)
+</code></pre>
+<p>https://docs.astral.sh/ruff/rules/manual-list-comprehension/ says:</p>
+<blockquote>
+<p>If you're appending to an existing list, use the extend method instead:</p>
+</blockquote>
+<p>But this is not universal advice is it?  <code>extend</code> flattens, while <code>append</code> does not. If ruff only looks at the argument of <code>append</code> and sees an iterable, it does not mean automatically that <code>extend</code> can be used...</p>
+<p>I ran the original <code>perflint</code> on this code and it is still advising to replace the whole <code>for</code> loop. Maybe the check is simplistic, or the code really should be rewritten in another way, but the for loop appends to an already existing list with actual values in it... Seems like a false positive to me...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "PERF401" to "PERF401 rule confusion" by @minusf on 2025-09-11 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-11 16:09</div>
+            <div class="timeline-body"><p>If you enable <code>--preview</code> mode and apply the suggested fix (<a href="https://play.ruff.rs/b3d8433b-ee26-4d07-8c20-301dda6b9a83">playground</a>), you'll see that the code Ruff fixes this example to is this:</p>
+<pre><code class="language-py">select_choices = [(&quot;&quot;, &quot;--- Empty ---&quot;)]
+
+select_choices.extend((user[&quot;this&quot;], user[&quot;that&quot;]) for user in users if some_condition)
+</code></pre>
+<p>So it does replace the whole <code>for</code> loop with code that should be equivalent. I think that corresponds to the second <code>use instead</code> example from the rule docs too.</p>
+<p>I can see how the short diagnostic message is misleading, but the rule isn't trying to say &quot;switch from <code>append</code> to <code>extend</code>,&quot; it means to apply the whole rule transformation, resulting in a generator argument to <code>extend</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-09-11 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/minusf">@minusf</a> on 2025-09-11 17:09</div>
+            <div class="timeline-body"><p>Thank you for the explanaiton, I could have tried the proposed fix to make the suggestion clearer for myself.</p>
+<p>Is there a &quot;cutoff&quot; point where this suggestion is dropped, for example when the generator expression would become really &quot;ugly&quot; and difficult to read (e.g. the condition gets long and/or the item object to extend/append gets also very long)? Or is it always generators for the win, no matter what? 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/minusf">@minusf</a> on 2025-09-11 17:18</div>
+            <div class="timeline-body"><p>Actually I have found some of my own code where the generator tip, even the extend tip instead of append does not show up anymore. It just needs enough variables 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-11 18:18</div>
+            <div class="timeline-body"><p>Ah interesting, I would have said &quot;no&quot; there's no cutoff 😆 so now I'm curious where it stopped. The rule as a whole only applies to simple <code>for</code> loops with either a single non-<code>if</code> statement or a single <code>if</code> with a single nested statement (among other restrictions), so you may have hit one of those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-09-15 14:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

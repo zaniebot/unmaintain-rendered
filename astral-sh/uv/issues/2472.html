@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIRTUAL_ENV not respected - astral-sh/uv #2472</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>VIRTUAL_ENV not respected</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2472">#2472</a>
+        opened by <a href="https://github.com/PrinceJunkie">@PrinceJunkie</a>
+        on 2024-03-15 11:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/PrinceJunkie">@PrinceJunkie</a> on 2024-03-15 11:12</div>
+            <div class="timeline-body"><p>I'm using uv primarily in a devcontainer where I don't have root rights and I don't want a .venv folder in the project folder.
+Therefore I've set VIRTUAL_ENV to /home/dev/.local and everything should be installed there but right now it throws a Permission denied with a path which is not VIRTUAL_ENV.</p>
+<p>I was using this exact setup before and it was working fine. Unfortunately I don't know the version in which it worked. It seems like VIRTUAL_ENV is not respected anymore.</p>
+<p>Here's my devcontainer docker file:
+Dockerfile:</p>
+<pre><code class="language-dockerfile">ARG PYTHON_VERSION=&quot;3.12&quot;
+
+FROM mcr.microsoft.com/vscode/devcontainers/python:${PYTHON_VERSION}-bullseye
+ENV VIRTUAL_ENV=/home/dev/.local \
+    PYTHONUNBUFFERED=1 \
+    DEBIAN_FRONTEND=noninteractive
+
+RUN pip install --upgrade pip \
+    &amp;&amp; rm /usr/bin/python3 &amp;&amp; ln -s /usr/local/bin/python /usr/bin/python \
+    &amp;&amp; usermod -l dev -d /home/dev -m vscode \
+    &amp;&amp; sed -i 's/vscode/dev/' /etc/sudoers.d/vscode \
+    &amp;&amp; mv /etc/sudoers.d/vscode /etc/sudoers.d/dev \
+    # Install uv as dev user
+    &amp;&amp; wget https://astral.sh/uv/install.sh &amp;&amp; chmod 755 install.sh &amp;&amp; sudo -H -u dev /install.sh &amp;&amp; rm /install.sh
+</code></pre>
+<p>and here's what I'm running in the postCreateCommand (basically executing this as the dev user in a shell)</p>
+<pre><code class="language-bash">PYTHON_VERSION=$(python3 -c &quot;import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')&quot;)
+mkdir -p $HOME/.local/bin
+mkdir -p $HOME/.local/lib/$PYTHON_VERSION/site-packages
+ln -s /usr/local/bin/python $HOME/.local/bin/python
+uv pip install -r requirements-dev.txt
+</code></pre>
+<p>Here's the output while trying to e.g. install pytest:</p>
+<pre><code class="language-bash">dev ➜ /project $ echo $VIRTUAL_ENV    
+/home/dev/.local
+dev ➜ /project $ uv pip install pytest --verbose
+DEBUG Found a virtualenv through VIRTUAL_ENV at: /home/dev/.local
+DEBUG Cached interpreter info for Python 3.12.2, skipping probing: /home/dev/.local/bin/python
+DEBUG Using Python 3.12.2 environment at /home/dev/.local/bin/python
+DEBUG Using registry request timeout of 300s
+DEBUG Solving with target Python version 3.12.2
+DEBUG Adding direct dependency: pytest*
+DEBUG Found fresh response for: https://pypi.org/simple/pytest/
+DEBUG Searching for a compatible version of pytest (*)
+DEBUG Selecting: pytest==8.1.1 (pytest-8.1.1-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/4d/7e/c79cecfdb6aa85c6c2e3cf63afc56d0f165f24f5c66c03c695c4d9b84756/pytest-8.1.1-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency: iniconfig*
+DEBUG Adding transitive dependency: packaging*
+DEBUG Adding transitive dependency: pluggy&gt;=1.4, &lt;2.0
+DEBUG Found fresh response for: https://pypi.org/simple/iniconfig/
+DEBUG Found fresh response for: https://pypi.org/simple/pluggy/
+DEBUG Found fresh response for: https://pypi.org/simple/packaging/
+DEBUG Searching for a compatible version of iniconfig (*)
+DEBUG Selecting: iniconfig==2.0.0 (iniconfig-2.0.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/a5/5b/0cc789b59e8cc1bf288b38111d002d8c5917123194d45b29dcdac64723cc/pluggy-1.4.0-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/49/df/1fceb2f8900f8639e278b056416d49134fb8d84c5942ffaa01ad34782422/packaging-24.0-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of packaging (*)
+DEBUG Selecting: packaging==24.0 (packaging-24.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of pluggy (&gt;=1.4, &lt;2.0)
+DEBUG Selecting: pluggy==1.4.0 (pluggy-1.4.0-py3-none-any.whl)
+Resolved 4 packages in 6ms
+DEBUG Requirement already cached: iniconfig==2.0.0
+DEBUG Requirement already cached: packaging==24.0
+DEBUG Requirement already cached: pluggy==1.4.0
+DEBUG Requirement already cached: pytest==8.1.1
+DEBUG Unnecessary package: gitpython==3.1.41
+DEBUG Unnecessary package: gitdb==4.0.11
+DEBUG Preserving seed package: setuptools==69.0.3
+DEBUG Unnecessary package: smmap==5.0.1
+DEBUG Preserving seed package: pip==24.0
+DEBUG Preserving seed package: wheel==0.42.0
+error: Failed to install: iniconfig-2.0.0-py3-none-any.whl (iniconfig==2.0.0)
+  Caused by: failed to create directory `/usr/local/lib/python3.12/site-packages/iniconfig`
+  Caused by: Permission denied (os error 13)
+</code></pre>
+<ul>
+<li>The current uv platform.
+Devcontainer: mcr.microsoft.com/vscode/devcontainers/python:3.12-bullseye on Apple Silicon</li>
+<li>The current uv version (<code>uv --version</code>).
+uv 0.1.20</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helderco">@helderco</a> on 2024-03-15 11:37</div>
+            <div class="timeline-body"><p>To properly setup a virtual environment you need to update PATH as well:</p>
+<pre><code class="language-Dockerfile">ENV VIRTUAL_ENV=/home/dev/.local
+ENV PATH=$VIRTUAL_ENV/bin:$PATH
+</code></pre>
+<p>Curious why you do this:</p>
+<pre><code>PYTHON_VERSION=$(python3 -c &quot;import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')&quot;)
+mkdir -p $HOME/.local/bin
+mkdir -p $HOME/.local/lib/$PYTHON_VERSION/site-packages
+ln -s /usr/local/bin/python $HOME/.local/bin/python
+</code></pre>
+<p>Can just create the venv with:</p>
+<pre><code>uv venv $VIRTUAL_ENV
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PrinceJunkie">@PrinceJunkie</a> on 2024-03-15 11:46</div>
+            <div class="timeline-body"><p>Setting PATH didn't change anything.</p>
+<p>If you don't have a python file under the VIRTUAL_ENV/bin path it fails:</p>
+<pre><code>error: failed to canonicalize path `/home/dev/.local/bin/python`
+  Caused by: No such file or directory (os error 2)
+</code></pre>
+<p>Didn't think about using uv venv, thanks for that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helderco">@helderco</a> on 2024-03-15 11:51</div>
+            <div class="timeline-body"><blockquote>
+<p>If you don't have a python file under the VIRTUAL_ENV/bin path it fails:</p>
+</blockquote>
+<p>Depends on what you do between that and creating it:</p>
+<pre><code class="language-console">$ docker run --rm -it python:3.11-slim bash
+# pip install uv
+# export VIRTUAL_ENV=$HOME/.local/dev
+# export PATH=$VIRTUAL_ENV/bin:$PATH
+# uv venv $VIRTUAL_ENV
+Using Python 3.11.8 interpreter at: /usr/local/bin/python3
+Creating virtualenv at: /root/.local/dev
+# uv pip install typer-cli
+Resolved 5 packages in 811ms
+Downloaded 5 packages in 215ms
+Installed 5 packages in 5ms
+ + click==8.1.7
+ + colorama==0.4.6
+ + shellingham==1.4.0
+ + typer==0.7.0
+ + typer-cli==0.0.13
+# which typer
+/root/.local/dev/bin/typer
+</code></pre>
+<p>Can also set VIRTUAL_ENV, create it, then update PATH if there's stuff that needs to be in between.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PrinceJunkie">@PrinceJunkie</a> on 2024-03-15 12:01</div>
+            <div class="timeline-body"><p><code>uv venv $VIRTUAL_ENV</code> already creates the python file there, that's why its working in your example I guess.</p>
+<p>Also I rely also on pip for my workflow. Using uv venv breaks somehow pip:</p>
+<pre><code class="language-bash">dev ➜ /eventbridge (chore/refactoring_v2) $ uv venv $VIRTUAL_ENV 
+Using Python 3.12.2 interpreter at: /usr/local/bin/python3
+Creating virtualenv at: /home/dev/.local
+Activate with: source /home/dev/.local/bin/activate
+dev ➜ /eventbridge (chore/refactoring_v2) $ python3.12 -m pip
+/home/dev/.local/bin/python3.12: No module named pip
+</code></pre>
+<p>but doing it with the above method works fine.</p>
+<p>I'm using <a href="https://github.com/serverless/serverless-python-requirements">serverless-python-requirements</a> which does the above call of pip in this format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helderco">@helderco</a> on 2024-03-15 13:13</div>
+            <div class="timeline-body"><p>If you need pip you can <code>--seed</code> the venv:</p>
+<pre><code class="language-console"># uv venv --seed $VIRTUAL_ENV
+Using Python 3.11.8 interpreter at: /usr/local/bin/python3
+Creating virtualenv at: /root/.local/dev
+ + pip==24.0
+ + setuptools==69.2.0
+ + wheel==0.43.0
+# pip --version
+pip 24.0 from /root/.local/dev/lib/python3.11/site-packages/pip (python 3.11)
+</code></pre>
+<p>Same result with <code>python -m pip --version</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-15 13:36</div>
+            <div class="timeline-body"><p>Yeah, I'd suggest using <code>uv venv --seed</code> and running within a virtual environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-03-15 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PrinceJunkie">@PrinceJunkie</a> on 2024-03-16 14:15</div>
+            <div class="timeline-body"><p>Thanks, that worked but I don't know why. Could someone of you explain it to me why using <code>uv venv --seed </code>doesn't end in a permission denied error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-16 14:23</div>
+            <div class="timeline-body"><p>Likely because if you run <code>pip</code> outside of the virtualenv, or without <code>--seed</code>, that will be the system <code>pip</code>, and so you'll get an error when you try to <code>pip install</code>. If you use <code>--seed</code>, then we'll include a version of <code>pip</code> in the virtualenv, so once you activate it, that <code>pip install</code> will install into the virtual environment, which avoids any permission denied issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-16 14:24</div>
+            <div class="timeline-body"><p>(We don't include <code>pip</code> in the virtualenv by default (and hence require <code>--seed</code>) because in most cases you shouldn't need it if you're already using <code>uv</code>. It's supported, of course, via <code>--seed</code>, but not the default.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-16 14:26</div>
+            <div class="timeline-body"><p>(Gonna close but happy to answer any more questions!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-16 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PrinceJunkie">@PrinceJunkie</a> on 2024-03-16 14:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Likely because if you run <code>pip</code> outside of the virtualenv, or without <code>--seed</code>, that will be the system <code>pip</code>, and so you'll get an error when you try to <code>pip install</code>. If you use <code>--seed</code>, then we'll include a version of <code>pip</code> in the virtualenv, so once you activate it, that <code>pip install</code> will install into the virtual environment, which avoids any permission denied issues.</p>
+</blockquote>
+<p>Yeah but I was getting the problem while using <code>uv pip install pytest</code> or did I miss sth. obvious?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-16 14:57</div>
+            <div class="timeline-body"><p>Ah yeah. I think the issue there is that you were using <code>VIRTUAL_ENV</code> to point to <code>/home/dev/.local</code>. But that's not quite the same as installing into a virtual environment, even one rooted at <code>/home/dev/.local</code>, since when uv asks the Python interpreter for the &quot;correct install path&quot;, it will tell it to use a system path that will then yield a permission error.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

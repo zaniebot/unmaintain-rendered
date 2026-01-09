@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>workspace can't find it's own package when using __main__.py - astral-sh/uv #12118</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>workspace can't find it's own package when using __main__.py</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12118">#12118</a>
+        opened by <a href="https://github.com/andersfylling">@andersfylling</a>
+        on 2025-03-11 16:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/andersfylling">@andersfylling</a> on 2025-03-11 16:46</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hello, I'm sure this is a misunderstanding on my part, but whenever I try to run a <strong>main</strong>.py file within a workspace that imports its own package I get a &quot;is not a package&quot; error.</p>
+<p>command:</p>
+<pre><code>uv run printer/src/printer &quot;me&quot;     
+                         
+Traceback (most recent call last):
+  File &quot;/home/anders/.local/share/mise/installs/python/3.10.16/lib/python3.10/runpy.py&quot;, line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File &quot;/home/anders/.local/share/mise/installs/python/3.10.16/lib/python3.10/runpy.py&quot;, line 86, in _run_code
+    exec(code, run_globals)
+  File &quot;/home/anders/dev/uvmain/printer/src/printer/__main__.py&quot;, line 2, in &lt;module&gt;
+    from printer.printer import hello
+ModuleNotFoundError: No module named 'printer.printer'; 'printer' is not a package
+</code></pre>
+<p>I created the workspace by doing (ish):</p>
+<pre><code>mkdir printtest &amp;&amp; cd printtest
+uv init
+uv init --lib printer
+uv add ./printer
+</code></pre>
+<p>layout:</p>
+<pre><code>.
+├── README.md
+├── main.py
+├── printer
+│   ├── README.md
+│   ├── pyproject.toml
+│   └── src
+│       └── printer
+│           ├── __init__.py
+│           ├── __main__.py
+│           ├── __pycache__
+│           │   ├── __init__.cpython-310.pyc
+│           │   ├── __main__.cpython-310.pyc
+│           │   └── printer.cpython-310.pyc
+│           ├── printer.py
+│           └── py.typed
+├── pyproject.toml
+└── uv.lock
+</code></pre>
+<p><code>pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;uvmain&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+  &quot;printer&quot;,
+]
+
+[tool.uv.workspace]
+members = [&quot;printer&quot;]
+
+[tool.uv.sources]
+printer = { workspace = true }
+</code></pre>
+<p><code>printer/pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;printer&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;andersfylling&quot;, email = &quot;email@email.com&quot; }
+]
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = []
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p><code>printer/src/printer/hello.py</code>:</p>
+<pre><code>def hello(value: str) -&gt; str:
+    return f&quot;Hello {value} from printer!&quot;
+</code></pre>
+<p><code>printer/src/printer/__main__.py</code>:</p>
+<pre><code>import sys
+from printer.printer import hello
+
+if __name__ == &quot;__main__&quot;:
+    hello(sys.argv[1])
+</code></pre>
+<p>I quite like the idea of having a <code>__main__.py</code> with CLI logic to help onboard a new user, as it allows them interact with the package logic. Is there something obvious I'm doing wrong?</p>
+<h3>Platform</h3>
+<p>Linux 6.13.5-arch1-1 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.6.4 (04db70662 2025-03-03)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @andersfylling on 2025-03-11 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-12 09:57</div>
+            <div class="timeline-body"><p>You need to use <code>uv run -m printer</code>, otherwise <code>import printer</code> will load <code>printer/src/printer/printer.py</code> (the file next to the one you're running) instead of the full module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersfylling">@andersfylling</a> on 2025-03-13 08:54</div>
+            <div class="timeline-body"><p>Yes, that solves it. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @andersfylling on 2025-03-13 08:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

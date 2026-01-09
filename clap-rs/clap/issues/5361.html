@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi valued flags break collapsing short flags - clap-rs/clap #5361</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Multi valued flags break collapsing short flags</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5361">#5361</a>
+        opened by <a href="https://github.com/BenWiederhake">@BenWiederhake</a>
+        on 2024-02-17 12:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BenWiederhake">@BenWiederhake</a> on 2024-02-17 12:40</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.76.0 (07dca489a 2024-02-04)</p>
+<h3>Clap Version</h3>
+<p>4.5.1</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Arg, ArgAction, Command};
+pub fn make_command() -&gt; Command {
+    Command::new(&quot;ouch&quot;)
+        .arg(Arg::new(&quot;echo&quot;).short('e').num_args(0..))
+        .arg(Arg::new(&quot;zero-terminated&quot;).short('z').action(ArgAction::SetTrue))
+}
+fn main() {
+    let testcases = [
+        // -e intentionally takes zero..many arguments:
+        (&quot;ouch -e&quot;, (vec![], false)),
+        (&quot;ouch -e asdf&quot;, (vec![&quot;asdf&quot;], false)),
+        (&quot;ouch -e foo bar&quot;, (vec![&quot;foo&quot;, &quot;bar&quot;], false)),
+        // When -e and -z are passed separately, it works well:
+        (&quot;ouch -e -z&quot;, (vec![], true)),
+        (&quot;ouch -e asdf -z&quot;, (vec![&quot;asdf&quot;], true)),
+        (&quot;ouch -e foo bar -z&quot;, (vec![&quot;foo&quot;, &quot;bar&quot;], true)),
+        (&quot;ouch -z -e&quot;, (vec![], true)),
+        (&quot;ouch -z -e asdf&quot;, (vec![&quot;asdf&quot;], true)),
+        (&quot;ouch -z -e foo bar&quot;, (vec![&quot;foo&quot;, &quot;bar&quot;], true)),
+        // When -z goes first, there's no issue either:
+        (&quot;ouch -ze&quot;, (vec![], true)),
+        (&quot;ouch -ze asdf&quot;, (vec![&quot;asdf&quot;], true)),
+        (&quot;ouch -ze foo bar&quot;, (vec![&quot;foo&quot;, &quot;bar&quot;], true)),
+        // When they are passed together, all hell breaks loose:
+        (&quot;ouch -ez&quot;, (vec![], true)),
+        (&quot;ouch -ez asdf&quot;, (vec![&quot;asdf&quot;], true)),
+        (&quot;ouch -ez foo bar&quot;, (vec![&quot;foo&quot;, &quot;bar&quot;], true)),
+    ];
+    for case in testcases {
+        let (inputline, expected_result) = case;
+        println!(&quot;input: {inputline}&quot;);
+        match make_command().try_get_matches_from(inputline.split_whitespace()) {
+            Ok(result) =&gt; {
+                let echo_args: Vec&lt;String&gt; = result.get_many::&lt;String&gt;(&quot;echo&quot;).unwrap().map(String::from).collect();
+                let actual_result = (echo_args, result.get_flag(&quot;zero-terminated&quot;));
+                println!(&quot;  expected: {expected_result:?}&quot;);
+                println!(&quot;  actual:   {actual_result:?}&quot;);
+                if expected_result.0 != actual_result.0 || expected_result.1 != actual_result.1 {
+                    println!(&quot;  FAIL! &lt;========&quot;);
+                } else {
+                    println!(&quot;  GOOD&quot;);
+                }
+            }
+            Err(err) =&gt; {
+                println!(&quot;Parsing failed?! {err:?}&quot;);
+            }
+        }
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>The above code demonstrates several test cases. Among them is the problematic case <code>-ez foo bar</code>, where <code>z</code> is supposed to be interpreted as the noarg flag <code>--zero-terminated</code>. Note that behavior like this is sometimes desirable, e.g. when emulating GNU shuf:</p>
+<pre><code class="language-console">$ gnushuf -ez foo bar baz | hd
+00000000  62 61 72 00 66 6f 6f 00  62 61 7a 00              |bar.foo.baz.|
+0000000c
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>Clap interprets the <code>z</code> in <code>-ez foo bar</code> as the sole argument to <code>-e</code>, as if there was a call to <code>value_delimiter</code>. clap then errors, and refuses to understand the <code>foo bar</code> part of the command.</p>
+<h3>Expected Behaviour</h3>
+<p>Clap should (provide a switch to enable a mode in order to) prefer short-arg expansion over argument-taking. In other words, I want <code>-ez foo bar</code> to be interpreted as the two separate concepts <code>--echo foo bar</code> and <code>--zero-terminated</code>.</p>
+<h3>Additional Context</h3>
+<p>I understand that this might be considered a breaking change. I can see at least two ways to go about this:</p>
+<ol>
+<li>Make it opt-in on the <code>Command</code>-level, i.e. <code>Command::single_dash_is_always_train_of_short_args(true)</code> or something like that, so that <em>all</em> agglomerations of short flags are switched here.</li>
+<li>Make it opt-in on the <code>Arg</code>-level, i.e. <code>Arg::permit_direct_short_arg(false)</code> or something like that, so that <code>-eARG</code> is not even considered.</li>
+</ol>
+<p>I admit that this may not be a &quot;bug&quot; in the &quot;crash&quot; sense, but it's definitely an incompatibility of existing features.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+<h3>Similar but <em>different</em> issues:</h3>
+<ul>
+<li>#1125: This bug does not involve required arguments</li>
+<li>#5115: This bug does not involve positional arguments</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @BenWiederhake on 2024-02-17 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2024-02-19 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2024-02-19 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-02-19 18:53</div>
+            <div class="timeline-body"><p><code>-ez foo bar</code> takes the <code>z</code> as the argument and assumes that an attached value and unattached values are not mixed, and stops parsing <code>-e</code>.</p>
+<p>Without other context, this feels niche enough that it wouldn't make sense to move forward on.  As a user, I would be confused to see <code>-ez foo bar</code> and for that to be parsed the same as <code>-ze foo bar</code>.  This would be complicated to implement, deferring the evaluation of short arguments while processing other arguments, which comes at the cost of binary size and compile times for all users who don't want this behavior.  This would also has a cost in contributing to API bloat.  Every new knob we add makes it harder to find every other knob that exists, including what we just added.  The more we add, the less likely people will use any of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../uutils/coreutils/issues/4254.html">uutils/coreutils#4254</a> on 2024-02-19 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BenWiederhake">@BenWiederhake</a> on 2024-02-20 01:40</div>
+            <div class="timeline-body"><p>Turns out, I wanted a boolean flag all along, and clap easily supports it. Sorry for the noise, and thanks for the quick response!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BenWiederhake on 2024-02-20 01:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

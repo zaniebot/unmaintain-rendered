@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>files are modified in place potentially causing issues with hardlinks - astral-sh/ruff #16003</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>files are modified in place potentially causing issues with hardlinks</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16003">#16003</a>
+        opened by <a href="https://github.com/jjhelmus">@jjhelmus</a>
+        on 2025-02-06 21:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jjhelmus">@jjhelmus</a> on 2025-02-06 21:50</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>Ruff seems to modify files in place. When the file being modified is a hardlink all other instances will also be modified. Technically the contents of the inode is modified and the hardlinks refer to this inode. This can cause issues when hardlinks are used as a caching mechanism.</p>
+<p>As an example:</p>
+<pre><code>❯ ruff --version
+ruff 0.3.5
+❯ cat one.py
+def hello( ):
+        print(   &quot;Hello World!&quot;)
+❯ ln one.py two.py  # create a hardlink
+❯ cp one.py three.py  # create a copy
+❯ ruff format one.py --isolated
+1 file reformatted
+❯ diff one.py two.py  # the hardlink was also modified
+❯ diff one.py three.py  # but the copy is not
+1,2c1,2
+&lt; def hello():
+&lt;     print(&quot;Hello World!&quot;)
+---
+&gt; def hello( ):
+&gt;         print(   &quot;Hello World!&quot;)
+</code></pre>
+<p>An alternative approach is to unlink the file, breaking the hardlink, before writing the modified content.</p>
+<p>The specific use where this causes issue was when I ran ruff on a conda environment. This resulted in modification of the associated files in the package cache (conda hardlinks files into environments when possible) thus corrupting it.</p>
+<p>A similar issue existed in<code>pip</code> prior to the 18.0 release, see the discussion in pypa/pip#5405 and conda/conda#6861.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 22:04</div>
+            <div class="timeline-body"><p>Sorry, but why are you formatting the conda environment?</p>
+<p>It seems correct for Ruff to respect hardlinks. It sounds like you're expecting copy-on-write semantics which should be implemented at the file system layer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 22:07</div>
+            <div class="timeline-body"><p>I think this is a bit different than <code>pip</code>, which is installing new files into an environment and accordingly should not modify existing files in place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jjhelmus">@jjhelmus</a> on 2025-02-06 22:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Sorry, but why are you formatting the conda environment?</p>
+</blockquote>
+<p>It was an accident, the environment was in the working directory and the glob was broad :smile:.</p>
+<blockquote>
+<p>It seems correct for Ruff to respect hardlinks. It sounds like you're expecting copy-on-write semantics which should be implemented at the file system layer.</p>
+</blockquote>
+<p>I can respect this as expect behavior, it just confused me for a bit. I'd have no complaints if you want to close this as a won't fix or similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jjhelmus">@jjhelmus</a> on 2025-02-06 22:18</div>
+            <div class="timeline-body"><p>Thinking about this more, modification in place is absolutely the right behavior. Manually formatting the file with most any editor would do the same thing. Sorry for the noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jjhelmus on 2025-02-06 22:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 23:14</div>
+            <div class="timeline-body"><blockquote>
+<p>It was an accident</p>
+</blockquote>
+<p>Ah okay haha that makes more sense.</p>
+<blockquote>
+<p>Thinking about this more, modification in place is absolutely the right behavior. Manually formatting the file with most any editor would do the same thing. Sorry for the noise.</p>
+</blockquote>
+<p>Thanks! And no problem.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

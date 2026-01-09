@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fields in flattened optional structs are treated as required - clap-rs/clap #5292</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fields in flattened optional structs are treated as required</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5292">#5292</a>
+        opened by <a href="https://github.com/akonradi-signal">@akonradi-signal</a>
+        on 2024-01-08 20:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/akonradi-signal">@akonradi-signal</a> on 2024-01-08 20:20</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.75.0</p>
+<h3>Clap Version</h3>
+<p>4.4.14</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Args, Parser};
+
+#[derive(Debug, Parser)]
+struct Cli {
+    /// Arguments for main command
+    #[command(flatten)]
+    first: Option&lt;FirstGroup&gt;,
+    
+    #[command(flatten)]
+    second: Option&lt;SecondGroup&gt;,
+}
+
+#[derive(Debug, Args)]
+struct FirstGroup {
+    #[arg(long)]
+    first_a: bool,
+    #[arg(long)]
+    first_b: String,
+}
+
+#[derive(Debug, Args)]
+struct SecondGroup {
+    #[arg(long)]
+    second_c: i32,
+    #[arg(long)]
+    second_d: bool
+}
+
+fn main() {
+    Cli::parse_from([&quot;playground&quot;]);
+}
+</code></pre>
+<p>(<a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=e82b6ad3dca30b44f9370189d14bb3b9">playground link</a>)</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<h3>Actual Behaviour</h3>
+<p>The program fails with</p>
+<pre><code>error: the following required arguments were not provided:
+  --first-b &lt;FIRST_B&gt;
+  --second-c &lt;SECOND_C&gt;
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The program should succeed since all of the flags are (transitively) declared as optional.</p>
+<h3>Additional Context</h3>
+<p>This might be the same issue as the discussion at https://github.com/clap-rs/clap/discussions/4954</p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;clap-test&quot;
+[clap_builder::builder::command]Command::_propagate:clap-test
+[clap_builder::builder::command]Command::_check_help_and_version:clap-test expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap-test
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:first_a
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:first_b
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:second_c
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:second_d
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:first_a:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:first_a: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:first_a: wasn't used
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;first_a&quot;, source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;false&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::add_defaults:iter:first_b:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:first_b: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:second_c:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:second_c: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:second_d:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:second_d: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:second_d: wasn't used
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;second_d&quot;, source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;false&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([Child { id: &quot;first_b&quot;, children: [] }, Child { id: &quot;second_c&quot;, children: [] }])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::validator]Validator::validate_required:iter:aog=&quot;first_b&quot;
+[clap_builder::parser::validator]Validator::validate_required:iter: This is an arg
+[clap_builder::parser::validator]Validator::is_missing_required_ok: first_b
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;first_b&quot;
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;first_b&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;first_b&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;first_b&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;FirstGroup&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;FirstGroup&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required:iter: Missing &quot;first_b&quot;
+[clap_builder::parser::validator]Validator::validate_required:iter:aog=&quot;second_c&quot;
+[clap_builder::parser::validator]Validator::validate_required:iter: This is an arg
+[clap_builder::parser::validator]Validator::is_missing_required_ok: second_c
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;second_c&quot;
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;second_c&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;second_c&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;second_c&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;SecondGroup&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;SecondGroup&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required:iter: Missing &quot;second_c&quot;
+[clap_builder::parser::validator]Validator::missing_required_error; incl=[&quot;first_b&quot;, &quot;second_c&quot;]
+[clap_builder::parser::validator]Validator::missing_required_error: reqs=ChildGraph([Child { id: &quot;first_b&quot;, children: [] }, Child { id: &quot;second_c&quot;, children: [] }])
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[&quot;first_b&quot;, &quot;second_c&quot;], matcher=true, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[&quot;first_b&quot;, &quot;second_c&quot;]
+[ clap_builder::output::usage]Usage::get_required_usage_from:iter:&quot;first_b&quot; arg is_present=false
+[ clap_builder::output::usage]Usage::get_required_usage_from:iter:&quot;second_c&quot; arg is_present=false
+[ clap_builder::output::usage]Usage::get_required_usage_from:iter:&quot;first_b&quot; arg is_present=false
+[ clap_builder::output::usage]Usage::get_required_usage_from:iter:&quot;second_c&quot; arg is_present=false
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[StyledStr(&quot;\u{1b}[1m--first-b\u{1b}[0m &lt;FIRST_B&gt;&quot;), StyledStr(&quot;\u{1b}[1m--second-c\u{1b}[0m &lt;SECOND_C&gt;&quot;)]
+[clap_builder::parser::validator]Validator::missing_required_error: req_args=[
+    &quot;--first-b &lt;FIRST_B&gt;&quot;,
+    &quot;--second-c &lt;SECOND_C&gt;&quot;,
+]
+[ clap_builder::output::usage]Usage::create_usage_with_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::create_smart_usage
+[ clap_builder::output::usage]Usage::write_arg_usage; incl_reqs=true
+[ clap_builder::output::usage]Usage::write_args: incls=[&quot;first_b&quot;, &quot;second_c&quot;]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=[&quot;first_b&quot;, &quot;second_c&quot;]
+[ clap_builder::output::usage]Usage::create_usage_with_title: usage=Usage: playground --first-b &lt;FIRST_B&gt; --second-c &lt;SECOND_C&gt;
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+error: the following required arguments were not provided:
+  --first-b &lt;FIRST_B&gt;
+  --second-c &lt;SECOND_C&gt;
+
+Usage: playground --first-b &lt;FIRST_B&gt; --second-c &lt;SECOND_C&gt;
+
+For more information, try '--help'.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @akonradi-signal on 2024-01-08 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-01-08 21:27</div>
+            <div class="timeline-body"><p>This looks like a duplicate of #5092 so closing in favor of that.  If there is a reason for us to re-evaluate this, let us know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-01-08 21:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

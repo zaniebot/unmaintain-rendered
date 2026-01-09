@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to install `scikit-image==0.19.3` - astral-sh/uv #1813</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to install `scikit-image==0.19.3`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1813">#1813</a>
+        opened by <a href="https://github.com/pngwn">@pngwn</a>
+        on 2024-02-21 14:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pngwn">@pngwn</a> on 2024-02-21 14:45</div>
+            <div class="timeline-body"><p>When i try to install <code>scikit-image==0.19.3</code> (<code>uv pip install scikit-image==0.19.3</code>) i get the following error (truncated version) after a very very long time (probably around a minute or two).</p>
+<pre><code>error: Failed to download distributions
+  Caused by: Failed to fetch wheel: scikit-image==0.19.3
+  Caused by: Failed to build: scikit-image==0.19.3
+  Caused by: Build backend failed to build wheel through `build_wheel()`:
+</code></pre>
+<p>Full logs are very long so I have put them here: https://app.warp.dev/block/aP3dM9N3p6kVKSj5bqOijF</p>
+<p>The second time i run it, it fails much more quickly but with the same output.</p>
+<p>Platform: macOS
+Version: 0.1.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../gradio-app/gradio/pulls/7457.html">gradio-app/gradio#7457</a> on 2024-02-21 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rth">@rth</a> on 2024-02-21 16:19</div>
+            <div class="timeline-body"><p>The relevant error message from that log may be,</p>
+<pre><code>clang: error: unsupported option '-fopenmp'
+</code></pre>
+<p>It's a fairly old scikit-image release, are you sure you are able to rebuild it with pip for Python 3.11, and it's not taking a wheel that was built with pip some time ago from cache?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pngwn">@pngwn</a> on 2024-02-21 16:44</div>
+            <div class="timeline-body"><p>I <em>think</em> so, I ran with:</p>
+<pre><code class="language-bash">install scikit-image==0.19.3 --force-reinstall --no-cache-dir
+</code></pre>
+<p>But the pip cache is a mystery to me, so it could still be picking it up from somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rth">@rth</a> on 2024-02-21 17:30</div>
+            <div class="timeline-body"><p>Yes, I can reproduce this error on Mac M1 with Python 3.11. Works with pip but not with uv in a new venv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-21 19:52</div>
+            <div class="timeline-body"><p>I reproduced this on my M1 Mac as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-21 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">installer</span> added by @zanieb on 2024-02-21 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 05:12</div>
+            <div class="timeline-body"><p>@zanieb - Can you see if this was fixed in v0.1.7?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 20:56</div>
+            <div class="timeline-body"><p>Can anyone confirm that this is still an issue? Something we can repro?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pngwn">@pngwn</a> on 2024-03-08 21:02</div>
+            <div class="timeline-body"><p>I'll retest with the latest version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 21:09</div>
+            <div class="timeline-body"><p>Good news! I was able to reproduce by downgrading to Python 3.11, while <code>python -m pip</code> succeeded after a long build process in both cases. Will look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 21:11</div>
+            <div class="timeline-body"><p>Not immediately clear what could be going wrong, my guess is we're not propagating an environment variable or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-08 21:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 21:34</div>
+            <div class="timeline-body"><p>Assigning to myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 02:29</div>
+            <div class="timeline-body"><p>Ohhh the build doesn't actually fail, we just can't find the distribution filename because it's not at the end of the stdout...</p>
+<pre><code>...
+scikit_image-0.19.3-cp311-cp311-macosx_14_0_arm64.whl
+INFO:
+########### EXT COMPILER OPTIMIZATION ###########
+INFO: Platform      :
+  Architecture: aarch64
+  Compiler    : clang
+
+CPU baseline  :
+  Requested   : 'min'
+  Enabled     : NEON NEON_FP16 NEON_VFPV4 ASIMD
+  Flags       : none
+  Extra checks: none
+
+CPU dispatch  :
+  Requested   : 'max -xop -fma4'
+  Enabled     : ASIMDHP ASIMDDP ASIMDFHM
+  Generated   : none
+INFO: CCompilerOpt.cache_flush[864] : write cache to path -&gt; /private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/.tmp5ZPIbv/built-wheels-v0/pypi/scikit-image/0.19.3/hLW_f7wWeGDOPRlSazQXw/scikit-image-0.19.3.tar.gz/build/temp.macosx-12.6-arm64-3.11/ccompiler_opt_cache_ext.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2314.html">astral-sh/uv#2314</a> on 2024-03-09 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 03:19</div>
+            <div class="timeline-body"><p>Fixed in https://github.com/astral-sh/uv/pull/2314.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-09 11:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

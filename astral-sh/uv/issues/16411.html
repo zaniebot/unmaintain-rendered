@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`python -m venv` does not work with uv-managed Python installations - astral-sh/uv #16411</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`python -m venv` does not work with uv-managed Python installations</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16411">#16411</a>
+        opened by <a href="https://github.com/notable-equivalent">@notable-equivalent</a>
+        on 2025-10-22 15:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/notable-equivalent">@notable-equivalent</a> on 2025-10-22 15:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Attempting to use a Python executable installed by <code>uv</code> to create a virtual environment in the standard Python way using <code>python -m venv</code> fails.</p>
+<p>(I specifically ran into this because I've been working with projects that have their own complex environment setup scripts that create and manage their own Python virtual environments, and when running these with a <code>uv</code>-installed Python binary (which I'm using because it's the easiest way to get newer Python versions on Ubuntu 20.04 now that deadsnakes isn't supporting it anymore), those scripts fail. But the actual minimal steps to reproduce are simple).</p>
+<p>Steps to reproduce:</p>
+<pre><code class="language-bash">$ uv python install 3.14
+
+$ python3.14 -m venv /tmp/test-venv1
+Error: Command '['/tmp/test-venv1/bin/python3.14', '-m', 'ensurepip', '--upgrade', '--default-pip']' returned non-zero exit status 1.
+</code></pre>
+<p>Running the mentioned command to see what went wrong:</p>
+<pre><code>$ /tmp/test-venv1/bin/python3.14 -m ensurepip --upgrade --default-pip
+Could not find platform independent libraries &lt;prefix&gt;
+Could not find platform dependent libraries &lt;exec_prefix&gt;
+Fatal Python error: Failed to import encodings module
+Python runtime state: core initialized
+ModuleNotFoundError: No module named 'encodings'
+
+Current thread 0x0000784757682740 [python3.14] (most recent call first):
+  &lt;no Python frame&gt;
+</code></pre>
+<p>I get the same error trying to do most anything with the python executable in this venv, such as .</p>
+<p>The culprit seems to be the <code>home</code> setting in <code>pyvenv.cfg</code>:</p>
+<pre><code>$ cat /tmp/test-venv1/pyvenv.cfg 
+home = /home/myname/.local/bin
+include-system-site-packages = false
+version = 3.14.0
+executable = /home/myname/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/bin/python3.14
+command = /home/myname/.local/bin/python3.14 -m venv /tmp/test-venv
+</code></pre>
+<p>If I instead create the virtual environment with the python executable directly instead of using the <code>python3.14</code> symlink, then there's no error, and the <code>home</code> setting is different:</p>
+<pre><code>$ which python3.14
+/home/myname/.local/bin/python3.14
+
+$ realpath /home/myname/.local/bin/python3.14
+/home/myname/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/bin/python3.14
+
+$ /home/myname/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/bin/python3.14 -m venv /tmp/test-venv2
+
+$ cat /tmp/test-venv2/pyvenv.cfg 
+home = /home/myname/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/bin
+include-system-site-packages = false
+version = 3.14.0
+executable = /home/myname/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/bin/python3.14
+command = /home/myname/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/bin/python3.14 -m venv /tmp/test-venv2
+</code></pre>
+<p>Editing the <code>home</code> setting in <code>test-venv1</code> to be the same as in <code>test-venv2</code> results in that executable working as well (e.g. <code>/tmp/test-venv1/bin/python3.14 -i</code> works).</p>
+<h3>Platform</h3>
+<p>Ubuntu 20.04 (Linux 6.6.87.2-microsoft-standard-WSL2 x86_64 GNU/Linux)</p>
+<h3>Version</h3>
+<p>uv 0.9.5</p>
+<h3>Python version</h3>
+<p>Python 3.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @notable-equivalent on 2025-10-22 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notable-equivalent">@notable-equivalent</a> on 2025-10-22 15:53</div>
+            <div class="timeline-body"><p>A workaround is to modify Python's <code>venv</code> package to resolve the path to its executable before using that to calculate the home directory. This is done by replacing the line <code>executable = sys._base_executable</code> with <code>executable = os.path.realpath(sys._base_executable)</code> in the <code>venv</code> module's <code>__init__.py</code> file (editing <a href="https://github.com/python/cpython/blob/01b52ea5c03ed83dbf44369b75f3b158c14dd912/Lib/venv/__init__.py#L160">this line</a>):</p>
+<pre><code>uv run --python 3.14 --managed-python python -c 'from pathlib import Path; import venv; p = Path(venv.__file__); p.write_text(p.read_text().replace(&quot;executable = sys._base_executable&quot;, &quot;executable = os.path.realpath(sys._base_executable)&quot;, 1))'
+</code></pre>
+<p>But I'm not sure what other implications this has since I don't have a full understanding of how the <code>home</code> setting is used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-22 17:53</div>
+            <div class="timeline-body"><p>This is a duplicate of multiple other reports.</p>
+<p>We're working on a fix here, but there are various underlying problems, some of which are upstream CPython bugs.</p>
+<p>The comment at https://github.com/astral-sh/python-build-standalone/issues/381#issuecomment-2628405086 is a good overview.</p>
+<p>See also</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/12173</li>
+<li>https://github.com/astral-sh/python-build-standalone/issues/380</li>
+<li>https://github.com/astral-sh/python-build-standalone/issues/381</li>
+<li>https://github.com/astral-sh/uv/issues/8821</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-10-22 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2025-10-22 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-10-22 18:02</div>
+            <div class="timeline-body"><p>There are a couple of related bugs here. The one you're running into is more astral-sh/python-build-standalone#380 than astral-sh-python/build-standalone#381.</p>
+<p>Another workaround for this bug: instead of resolving the symlink yourself, using uv to invoke Python e.g. <code>uv run --python 3.14 python -m venv</code> (or just <code>uvx python3.14 -m venv</code>) will also skip the symlink. Not sure if that's helpful in the context that you're running Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../SkyLabsAI/workspace/issues/4.html">SkyLabsAI/workspace#4</a> on 2025-10-22 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notable-equivalent">@notable-equivalent</a> on 2025-10-23 02:19</div>
+            <div class="timeline-body"><p>I found 381 but it didn't seem like exactly the same issue, but I didn't see 380, and indeed this seems to be exactly the same issue as 380. Happy for this to be closed as a dupe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sergiocallegari">@sergiocallegari</a> on 2025-10-25 07:16</div>
+            <div class="timeline-body"><p>I do not know if this is related, but I am experiencing the following. If I do <code>python -m venv --without-pip TEST</code>, where python is a managed python version, this <em>seems</em> to succeed. However:</p>
+<pre><code>cd TEST
+. bin/activate
+</code></pre>
+<p>then gives me a broken interpreter:</p>
+<pre><code>python
+Could not find platform independent libraries &lt;prefix&gt;
+Could not find platform dependent libraries &lt;exec_prefix&gt;
+Fatal Python error: Failed to import encodings module
+Python runtime state: core initialized
+ModuleNotFoundError: No module named 'encodings'
+
+Current thread 0x00007f31d7921780 (most recent call first):
+  &lt;no Python frame&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-10-31 01:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

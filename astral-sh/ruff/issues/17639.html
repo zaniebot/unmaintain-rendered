@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identifying incomplete input errors - astral-sh/ruff #17639</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Identifying incomplete input errors</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17639">#17639</a>
+        opened by <a href="https://github.com/aneeshdurg">@aneeshdurg</a>
+        on 2025-04-26 04:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aneeshdurg">@aneeshdurg</a> on 2025-04-26 04:45</div>
+            <div class="timeline-body"><p>This is a feature request to allow Ruff's parser to indicate when an error might be due to incomplete input. This would allow for projects using Ruff as a python parser to identify cases where future input might make the input valid (e.g. in a REPL).</p>
+<p>I think in order to do this, it would likely be necessary to add an extra parameter to the <code>OtherError</code> error types with a boolean indicating if the error could be resolved by more input - I think in most cases the other error types can simply be matched to check if future input could make the code valid, but it's possible that some other types could use an additional boolean parameter as well.</p>
+<p>I'm not sure if there's a better way to raise a feature request like this - if there is, please let me know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aneeshdurg">@aneeshdurg</a> on 2025-04-26 04:46</div>
+            <div class="timeline-body"><p>I'm interested in working on the implementation if this is something that others agree is a worthwhile addition to the project!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-04-26 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-04-26 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-04-26 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-26 09:44</div>
+            <div class="timeline-body"><p>Can you provide some more information on how this feature would be used and how it would work?</p>
+<p>I'm asking because all syntax errors can be fixed by &quot;more input&quot; where more input either requires inserting or deleting some characters.</p>
+<p>This feature would probably also require awareness of the current cursor position because that's where it's most likely that the user will continue to make changes.</p>
+<p>My last question is: What's preventing you from implementing this logic outside of ruff parser?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aneeshdurg">@aneeshdurg</a> on 2025-04-26 13:36</div>
+            <div class="timeline-body"><p>The usecase is building a REPL using ruff as the parser, so &quot;more input&quot; in this case refers only to adding characters. In terms of how it would work, I think it should be relatively straightforward to audit existing places where errors are returned and check if the error was emitted because it hit the end of the token stream while parsing (i.e. Future tokens could have prevented the error)</p>
+<p>As far as detecting this outside of ruff goes, there's a couple scenarios where determining if the error is recoverable is difficult. One is for triple quoted strings without closing quotes which emits the same error as a single quoted string. Determining the type of string that is unclosed requires reimplementing parts of the parser, as it potentially requires scanning the entire input again (of course this is easily resolvable by introducing a more specific error type, like the errors that fstringerror already has).
+In the case of OtherError it's even harder to analyze outside of ruff since it seems like OtherError is used in a few different ways, and while some are recoverable (e.g. No block after a function/class decl) it's less clear if others are. It's possible to check the error string and then retain an external mapping from error messages to errors that might be recoverable depending on some analysis, but that seems less stable than providing this information from ruff which is already available.</p>
+<p>Fwiw, cpython's parser has a similar feature in that SyntaxErrors is further subclassed so that errors that could be resolved by more input are easily identified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-26 14:43</div>
+            <div class="timeline-body"><blockquote>
+<p>The usecase is building a REPL using ruff as the parser, so &quot;more input&quot; in this case refers only to adding characters. In terms of how it would work, I think it should be relatively straightforward to audit existing places where errors are returned and check if the error was emitted because it hit the end of the token stream while parsing (i.e. Future tokens could have prevented the error)</p>
+</blockquote>
+<p>Would that be limited to the end of the input or anywhere in the program? Can you make a specific example with a syntax error and how the REPL would respond in that case</p>
+<blockquote>
+<p>As far as detecting this outside of ruff goes, there's a couple scenarios where determining if the error is recoverable is difficult. One is for triple quoted strings without closing quotes which emits the same error as a single quoted string. Determining the type of string that is unclosed requires reimplementing parts of the parser, as it potentially requires scanning the entire input again (of course this is easily resolvable by introducing a more specific error type, like the errors that fstringerror already has).
+In the case of OtherError it's even harder to analyze outside of ruff since it seems like OtherError is used in a few different ways, and while some are recoverable (e.g. No block after a function/class decl) it's less clear if others are. It's possible to check the error string and then retain an external mapping from error messages to errors that might be recoverable depending on some analysis, but that seems less stable than providing this information from ruff which is already available.</p>
+</blockquote>
+<p>The string node preserves the quote style. You can also look at the token stream to retrieve the quote style.</p>
+<blockquote>
+<p>Fwiw, cpython's parser has a similar feature in that SyntaxErrors is further subclassed so that errors that could be resolved by more input are easily identified.</p>
+</blockquote>
+<p>Do you have a reference or link for how that's represented and implemented</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aneeshdurg">@aneeshdurg</a> on 2025-04-27 01:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you have a reference or link for how that's represented and implemented</p>
+</blockquote>
+<p>Here's a usage in cpython of <code>_IncompleteInputError</code> - this is how python's <code>code.InteractiveConsole</code> runs code and knows to wait for more input for multi-line expressions: https://github.com/python/cpython/blob/4f18916c5c28321f363e85ee7ef3ee29bbf79d8e/Lib/codeop.py#L69. (and here's where it gets raised - https://github.com/python/cpython/blob/4f18916c5c28321f363e85ee7ef3ee29bbf79d8e/Parser/pegen.c#L948)</p>
+<p>An example would be something like parsing <code>(1+\n</code> which is incomplete, but if the next line of text was <code>2)</code>, it would be a valid python expression. Similarly, things like <code>def f():</code>, <code>class Foo:</code>,<code>&quot;&quot;&quot;</code> , or <code>&quot;\</code> all would emit something that is an instance of <code>_IncompleteInputError</code> when run through cpython's AST compiler. I could explore looking at the TokenStream, but I think there's just a lot of potential cases, and it seems like it would be much cleaner if that information could just be propagated from <code>ruff</code> itself, since this is something that can be known during parsing.</p>
+<p>Aside from my own usecases, I've also seen from my recent effort to contribute to it, that RustPython could be a consumer of a similar API - https://github.com/RustPython/RustPython/pull/5743</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aneeshdurg">@aneeshdurg</a> on 2025-04-27 01:47</div>
+            <div class="timeline-body"><p>Actually, I thought about it a bit, and it's not needed in any case except for <code>OtherError</code> since for all other errors you can check the type and location (though it would be nice if there was a distinction between <code>UnclosedStringError</code> and <code>UnclosedTripleQuotedStringError</code> - there is for f-strings, but not regular strings). But for <code>OtherError</code>, it's less clear if it's sufficient to just check location. I'm hesitant to rely on the message within <code>OtherError</code> since that doesn't seem to be a part of the stable API so I still think it's worthwhile to have an additional parameter on <code>OtherError</code> to identify errors that could be resolved by appending input.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-27 09:50</div>
+            <div class="timeline-body"><p>What we could consider is to remove <code>OtherError</code> and instead use a dedicated error code for each parse error. That should then allow to implement a public method indicating if &quot;more tokens&quot; would fix the error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @MichaReiser on 2025-04-27 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-04-27 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2025-04-27 09:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

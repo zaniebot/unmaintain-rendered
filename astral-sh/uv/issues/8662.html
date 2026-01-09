@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tests are timing out locally - astral-sh/uv #8662</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Tests are timing out locally</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8662">#8662</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-10-29 15:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-10-29 15:15</div>
+            <div class="timeline-body"><p>On my machine, <code>cargo nextest run --cargo-profile fast-build --failure-output immediate-final --no-fail-fast</code> is timing out regularly. I assume that's because we added tests that do a lot more downloading.</p>
+<pre><code>     Summary [ 144.656s] 1842 tests run: 1833 passed (35 slow), 9 timed out, 4 skipped
+     TIMEOUT [  90.013s] uv::it pip_tree::depth
+
+--- STDOUT:              uv::it pip_tree::depth ---
+
+running 1 test
+test pip_tree::depth has been running for over 60 seconds
+
+     TIMEOUT [  90.012s] uv::it pip_tree::invert
+
+--- STDOUT:              uv::it pip_tree::invert ---
+
+running 1 test
+test pip_tree::invert has been running for over 60 seconds
+
+     TIMEOUT [  90.012s] uv::it pip_tree::nested_dependencies
+
+--- STDOUT:              uv::it pip_tree::nested_dependencies ---
+
+running 1 test
+test pip_tree::nested_dependencies has been running for over 60 seconds
+
+     TIMEOUT [  90.011s] uv::it pip_tree::package_flag
+
+--- STDOUT:              uv::it pip_tree::package_flag ---
+
+running 1 test
+test pip_tree::package_flag has been running for over 60 seconds
+
+     TIMEOUT [  90.012s] uv::it pip_tree::prune
+
+--- STDOUT:              uv::it pip_tree::prune ---
+
+running 1 test
+test pip_tree::prune has been running for over 60 seconds
+
+     TIMEOUT [  90.012s] uv::it pip_tree::reverse
+
+--- STDOUT:              uv::it pip_tree::reverse ---
+
+running 1 test
+test pip_tree::reverse has been running for over 60 seconds
+
+     TIMEOUT [  90.011s] uv::it pip_tree::show_version_specifiers_with_invert
+
+--- STDOUT:              uv::it pip_tree::show_version_specifiers_with_invert ---
+
+running 1 test
+test pip_tree::show_version_specifiers_with_invert has been running for over 60 seconds
+
+     TIMEOUT [  90.012s] uv::it pip_tree::show_version_specifiers_with_package
+
+--- STDOUT:              uv::it pip_tree::show_version_specifiers_with_package ---
+
+running 1 test
+test pip_tree::show_version_specifiers_with_package has been running for over 60 seconds
+
+     TIMEOUT [  90.010s] uv::it python_install::python_install_freethreaded
+
+--- STDOUT:              uv::it python_install::python_install_freethreaded ---
+
+running 1 test
+test python_install::python_install_freethreaded has been running for over 60 seconds
+
+error: test run failed
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2024-10-29 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-29 15:34</div>
+            <div class="timeline-body"><p>Wow &gt;60s? Is your internet super slow? (not a dig, just wondering — the freethreaded test takes &lt;10s on my machine)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-29 15:36</div>
+            <div class="timeline-body"><p>I think we should get rid of scikit-learn in those <code>pip_tree</code> tests. They're slow for me too. I'll change them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-29 16:10</div>
+            <div class="timeline-body"><p>Related #878</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-29 22:02</div>
+            <div class="timeline-body"><p>The <code>pip_tree</code> tests should be &quot;fixed&quot; now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-29 22:10</div>
+            <div class="timeline-body"><p>We could ignore the free-threaded test by default if it's a problem. (Until we add some cached mirroring for the tests). I don't understand your local tests being slower than CI though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-03 15:46</div>
+            <div class="timeline-body"><p>The tests aren't timing out anymore, the install freethreaded test are very heavy though, it would be great if we could mock them (or cache the binary and use a mock server for the tests)</p>
+<pre><code>        PASS [  45.068s] uv::it python_install::python_install
+        PASS [  48.313s] uv::it python_install::python_install_preview
+        PASS [  55.449s] uv::it python_install::python_install_freethreaded
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-11-03 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-04 12:31</div>
+            <div class="timeline-body"><p>Yes that's an explicit goal tracked in https://github.com/astral-sh/uv/issues/5939</p>
+<p>Unfortunately we need the test coverage immediately.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

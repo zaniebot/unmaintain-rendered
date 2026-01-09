@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing check and fix for pep 484 implicit optional - astral-sh/ruff #1983</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Missing check and fix for pep 484 implicit optional</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1983">#1983</a>
+        opened by <a href="https://github.com/rytilahti">@rytilahti</a>
+        on 2023-01-18 23:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rytilahti">@rytilahti</a> on 2023-01-18 23:47</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+<p>Recent mypy versions have started to warn about implicit optionals on function signatures, which has been prohibited by pep 484 since https://github.com/python/peps/pull/689.
+It would be great if ruff would spot and fix this automatically for you, considering how easy it is to forget to do this while coding.</p>
+<p>Minimal code example:</p>
+<pre><code>def implicit_optional(optional: str = None) -&gt; None:
+    pass
+</code></pre>
+<p><code>mypy</code> output:</p>
+<pre><code>test.py:1: error: Incompatible default for argument &quot;optional&quot; (default has type &quot;None&quot;, argument has type &quot;str&quot;)  [assignment]
+test.py:1: note: PEP 484 prohibits implicit Optional. Accordingly, mypy has changed its default to no_implicit_optional=True
+test.py:1: note: Use https://github.com/hauntsaninja/no_implicit_optional to automatically upgrade your codebase
+</code></pre>
+<p>The fix for python3.10 and newer would be modifying the definition to be:</p>
+<pre><code>def implicit_optional(optional: str | None = None) -&gt; None:
+    pass
+</code></pre>
+<p>On the implementation side, I think this would belong to flake8-annotations but as it isn't checking for this, I'm wondering what would be the correct place to implement this?</p>
+<p>For older Python versions the fix would require either <code>from __future__ import annotations</code> or <code>from typing import Optional</code> and using <code>optional: Optional[str]</code>, both of which might be too invasive for automated fixing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 23:51</div>
+            <div class="timeline-body"><p>Yeah I'd love to do this. I want to add a couple autofixes for typing-related stuff and this is a good candidate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-01-18 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing</span> added by @charliermarsh on 2023-01-18 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-23 04:44</div>
+            <div class="timeline-body"><p>I think this is a good rule to add along with the auto-fix ability. Should this be added under the <code>RUF</code> or <code>ANN</code> category? I'm leaning towards <code>RUF</code>. I can take this on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-02 06:44</div>
+            <div class="timeline-body"><p>I've started working on this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4831.html">astral-sh/ruff#4831</a> on 2023-06-03 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2023-06-10 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-12 18:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

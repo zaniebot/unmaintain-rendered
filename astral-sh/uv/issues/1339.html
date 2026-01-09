@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`pip install --trusted-host` support - astral-sh/uv #1339</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`pip install --trusted-host` support</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1339">#1339</a>
+        opened by <a href="https://github.com/stefanvanburen">@stefanvanburen</a>
+        on 2024-02-15 21:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stefanvanburen">@stefanvanburen</a> on 2024-02-15 21:00</div>
+            <div class="timeline-body"><p><code>pip install</code> has the <code>trusted-host</code> flag:</p>
+<pre><code>--trusted-host &lt;hostname&gt;   Mark this host or host:port pair as trusted, even though it does not have valid or any HTTPS.
+</code></pre>
+<p>Seems like a nice-to-have for <code>uv pip install</code> to also support this flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-15 21:43</div>
+            <div class="timeline-body"><p>Hi! Thanks for your feedback. Could you explain why this is valuable to you? Not saying we shouldn't have it, just want to learn more about use-cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-02-15 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanvanburen">@stefanvanburen</a> on 2024-02-15 21:51</div>
+            <div class="timeline-body"><p>Of course! I work on developing a <a href="https://buf.build/docs/bsr/generated-sdks/python">PyPI-compatible repository</a> that I'll occasionally run locally either without https or using self-signed certificates, in which case I need to supply the <code>--trusted-host</code> flag for the domain with our self-signed certs 😄. I'd also imagine that other users might occasionally need this for installing from internal PyPI mirrors, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-15 22:01</div>
+            <div class="timeline-body"><p>Sweet thanks! We ran into something like this in https://github.com/astral-sh/uv/pull/609 / https://github.com/astral-sh/uv/pull/615</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/atmartinezsf">@atmartinezsf</a> on 2024-02-15 23:21</div>
+            <div class="timeline-body"><p>This is a need I have to use with an internal mirror/index. I would love to see this implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edwardpeek-crown-public">@edwardpeek-crown-public</a> on 2024-02-15 23:38</div>
+            <div class="timeline-body"><p>This is perhaps tangential to this exact issue, but we'd like to see better support for <em>secure</em> connections to registries with custom CAs too.</p>
+<p>Right now we see <code>error trying to connect: invalid peer certificate: UnknownIssuer</code> errors connecting to a organisation pypi mirror with a custom CA installed to the system cert store. pip provides the ability to set <code>global.cert='/etc/ssl/certs/ca-certificates.crt'</code> for this use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-15 23:45</div>
+            <div class="timeline-body"><p>Thanks @edwardpeek-crown ! I think we'll need to expose something like we explored in https://github.com/astral-sh/uv/pull/615</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/atmartinezsf">@atmartinezsf</a> on 2024-02-15 23:45</div>
+            <div class="timeline-body"><p>The method @edwardpeek-crown pointed to is the way we usually implement our local config, but trusted host would work for us. I would be happy to see either implementation to allow the use of an internal mirror/registry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mickael-mounier">@mickael-mounier</a> on 2024-02-16 06:26</div>
+            <div class="timeline-body"><p>Hello, I have a similar need here. We're using an internal devpi repo with a certificate signed by an internal root CA. Those are trusted by my workstation's Windows certificate store but I'm still getting an <code>invalid peer certificate: UnknownIssuer</code> error. Uv is currently unuseable for us without a way to trust a host or provide some kind of certificate store.</p>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1474.html">astral-sh/uv#1474</a> on 2024-02-16 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1535.html">astral-sh/uv#1535</a> on 2024-02-16 20:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2024-02-16 21:03</div>
+            <div class="timeline-body"><p>Coming from #1535 where I originally had a request for both <code>PIP_INDEX_URL</code> and <code>PIP_TRUSTED_HOST</code>.
+Looks like setting the index via an environment variable is supported via <code>UV_INDEX_URL</code>.</p>
+<p>So, related to this request for <code>--trusted-host</code>, it'd be great to also have it configurable via an environment variable - maybe <code>UV_TRUSTED_HOST</code> which in my case I want to leverage with an non-https urls for the index e.g. <code>UV_TRUSTED_HOST='127.0.0.1'</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1700.html">astral-sh/uv#1700</a> on 2024-02-19 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1842.html">astral-sh/uv#1842</a> on 2024-02-22 00:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @zanieb on 2024-02-28 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edwardpeek-crown-public">@edwardpeek-crown-public</a> on 2024-03-04 21:26</div>
+            <div class="timeline-body"><p>Linking #1474 which solved a similar use case for us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DesmondChoy">@DesmondChoy</a> on 2024-03-26 09:35</div>
+            <div class="timeline-body"><p>+1 for uv to support <code>trusted-host</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IbarraSamuel">@IbarraSamuel</a> on 2024-03-29 00:56</div>
+            <div class="timeline-body"><p>+1. Waiting for this feature so we can use uv as the default in my work team.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sovaa">@sovaa</a> on 2024-03-29 04:19</div>
+            <div class="timeline-body"><p>+1. Seems like a superb tool, but we can't use it in our team without trusted-host support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-29 04:19</div>
+            <div class="timeline-body"><p>Please don't comment with +1s, just upvote the original post. We'd like to keep the issue focused on substantive discussion and updates on implementation for all those subscribed.</p>
+<p>The next step here is a prototype of how we would accomplish this, i.e. <code>reqwest</code> supports allowing invalid certificates (https://github.com/seanmonstar/reqwest/issues/182#issuecomment-469997565) but I'm not sure how we can do that per host or request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-29 04:23</div>
+            <div class="timeline-body"><p>I'd also like to see examples of tools other than <code>pip</code> that expose a flag to allow invalid certificates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sovaa">@sovaa</a> on 2024-03-29 06:59</div>
+            <div class="timeline-body"><p>E.g. Docker has a similar feature called <code>--insecure-registry=http://...</code> when pulling images.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carlosjourdan">@carlosjourdan</a> on 2024-03-29 22:56</div>
+            <div class="timeline-body"><p>--insecure-skip-tls-verify on kubectl</p>
+<p>On Fri, Mar 29, 2024, 01:23 Zanie Blue <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p>I'd also like to see examples of tools other than pip that expose a flag
+to allow invalid certificates.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/1339#issuecomment-2026624846">https://github.com/astral-sh/uv/issues/1339#issuecomment-2026624846</a>, or
+unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AEF5Z5E444MOIYQMYFWB5PDY2TUDVAVCNFSM6AAAAABDK6NKISVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDAMRWGYZDIOBUGY">https://github.com/notifications/unsubscribe-auth/AEF5Z5E444MOIYQMYFWB5PDY2TUDVAVCNFSM6AAAAABDK6NKISVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDAMRWGYZDIOBUGY</a>
+.
+You are receiving this because you are subscribed to this thread.Message
+ID: <em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carlosjourdan">@carlosjourdan</a> on 2024-03-30 01:47</div>
+            <div class="timeline-body"><p>Hashicorp vault apparently also supports this with the environment variable <a href="https://developer.hashicorp.com/vault/docs/commands#vault_skip_verify">VAULT_SKIP_VERIFY</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jasonwmcswain">@jasonwmcswain</a> on 2024-04-02 16:00</div>
+            <div class="timeline-body"><p>Where I work, there is an internal Pypi mirror which is also used to uploading our internal pypi packages.  Unfortunately, IT has configured these hosts with &quot;HTTP&quot;, so I have been providing both of the following args to our pip install commands. &quot;--trusted-host&quot; and &quot;--extra-index-url&quot;.</p>
+<p>Please add support for both, so that I can onboard to &quot;uv&quot;.  we are already using ruff, and it is blazing fast.   I am very excited to use uv as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carlosjourdan">@carlosjourdan</a> on 2024-04-02 16:48</div>
+            <div class="timeline-body"><p>I believe that with http, if you remove the trusted-host and keep the
+extra-index-url, things should work fine. For me, the problem only arises
+on https with self signed certificates, which is common behind a corporate
+firewall.</p>
+<p>On Tue, Apr 2, 2024, 13:01 Jason <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p>Where I work, there is an internal Pypi mirror which is also used to
+uploading our internal pypi packages. Unfortunately, IT has configured
+these hosts with &quot;HTTP&quot;, so I have been providing both of the following
+args to our pip install commands. &quot;--trusted-host&quot; and &quot;--extra-index-url&quot;.</p>
+<p>Please add support for both, so that I can onboard to &quot;uv&quot;. we are already
+using ruff, and it is blazing fast. I am very excited to use uv as well.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/1339#issuecomment-2032451860">https://github.com/astral-sh/uv/issues/1339#issuecomment-2032451860</a>, or
+unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AEF5Z5C6XONT44KWK7IN3SLY3LI45AVCNFSM6AAAAABDK6NKISVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDAMZSGQ2TCOBWGA">https://github.com/notifications/unsubscribe-auth/AEF5Z5C6XONT44KWK7IN3SLY3LI45AVCNFSM6AAAAABDK6NKISVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDAMZSGQ2TCOBWGA</a>
+.
+You are receiving this because you are subscribed to this thread.Message
+ID: <em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2817.html">astral-sh/uv#2817</a> on 2024-04-04 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2851.html">astral-sh/uv#2851</a> on 2024-04-06 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-04-09 14:50</div>
+            <div class="timeline-body"><blockquote>
+<p>but I'm not sure how we can do that per host or request.</p>
+</blockquote>
+<p>You can check if the host is the same passed via <code>--trusted-host</code> and add the flag to reqwest. Also it is important to be explicit here instead of a catch-all command line argument to allow any certificate. It should be per host</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-09 14:52</div>
+            <div class="timeline-body"><p>@inoa-jboliveira is there an API to do so per request? We use a shared client for all of the requests we make.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-04-09 15:19</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<p>From a quick search, I believe you can create a <code>impl ServerCertVerifier for CustomCertVerifier</code> where you check for a list of allowed hosts from the command line and skip the validation of TLS certificate at that moment</p>
+<pre><code>let mut client_config = ClientConfig::builder()
+    .with_custom_certificate_verifier(Arc::new(CustomCertVerifier {
+        allowed_hosts: vec![&quot;foo.com&quot;.into(), &quot;bar.com&quot;.into()],
+    }))
+
+let client = Client::builder()
+    .use_preconfigured_tls(client_config)
+    .build()?;</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bashirmindee">@bashirmindee</a> on 2024-04-23 13:25</div>
+            <div class="timeline-body"><p>I am trying to use uv in a github workflow, and I am getting an error:</p>
+<pre><code>urllib.error.HTTPError: HTTP Error 403: SSL is required
+</code></pre>
+<p>seems to be related to this Issue.
+It seems that I need to use --trusted-host to solve my problem according to this <a href="https://stackoverflow.com/questions/25981703/pip-install-fails-with-connection-error-ssl-certificate-verify-failed-certi">stackoverflow response</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brks-rssll">@brks-rssll</a> on 2024-05-23 06:17</div>
+            <div class="timeline-body"><p>What is the current best workaround?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-05-23 11:10</div>
+            <div class="timeline-body"><blockquote>
+<p>What is the current best workaround?</p>
+</blockquote>
+<p>To still use pip instead of uv. Sadly this is the major blocker for us</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-23 13:04</div>
+            <div class="timeline-body"><p>I'd accept a pull request adding this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-05-23 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SoundDesignerToBe">@SoundDesignerToBe</a> on 2024-05-29 13:41</div>
+            <div class="timeline-body"><p>+1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fkapsahili">@fkapsahili</a> on 2024-06-20 13:45</div>
+            <div class="timeline-body"><p>Unfortunately, I also need this feature - I'll try to add this in a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aldmbmtl">@aldmbmtl</a> on 2024-07-01 05:24</div>
+            <div class="timeline-body"><p>This is also currently a blocking feature that we need at our company. We LOVE uv and use it for a ton of our docker builds, but we have private devpi servers that we launch for testing on CI and uv won't install from them sadly.</p>
+<p>I would happily submit a PR, but I don't know rust :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fkapsahili">@fkapsahili</a> on 2024-07-02 13:36</div>
+            <div class="timeline-body"><blockquote>
+<p>This is also currently a blocking feature that we need at our company. We LOVE uv and use it for a ton of our docker builds, but we have private devpi servers that we launch for testing on CI and uv won't install from them sadly.</p>
+<p>I would happily submit a PR, but I don't know rust :(</p>
+</blockquote>
+<p>I'm working on it currently, but it might take another week before I can submit a reviewable PR because it's more effort than I originally thought, and I only have a bit of experience with Rust, but I'm trying my best 🙂.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-02 14:25</div>
+            <div class="timeline-body"><p>@fkapsahili Feel free to put up a draft early if you need help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4534.html">astral-sh/uv#4534</a> on 2024-07-02 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4944.html">astral-sh/uv#4944</a> on 2024-07-09 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4734.html">astral-sh/uv#4734</a> on 2024-07-15 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jreivilo">@jreivilo</a> on 2024-07-17 07:28</div>
+            <div class="timeline-body"><blockquote>
+<p>This is also currently a blocking feature that we need at our company. We LOVE uv and use it for a ton of our docker builds, but we have private devpi servers that we launch for testing on CI and uv won't install from them sadly.</p>
+<p>I would happily submit a PR, but I don't know rust :(</p>
+</blockquote>
+<p>Have you tried setting the environment variable <code>UV_NATIVE_TLS</code> to <code>true</code> in your Docker files?
+It worked for me :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/svart">@svart</a> on 2024-08-02 05:47</div>
+            <div class="timeline-body"><p>If you have root certificates for your registry installed in your system the workaround could be putting next lines in your <code>~/.config/uv/uv.toml</code></p>
+<pre><code class="language-toml">native-tls = true
+
+[pip]
+index-url = &quot;REGISTRY PATH&quot;
+</code></pre>
+<p>After this all commands work well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/rye/issues/1313.html">astral-sh/rye#1313</a> on 2024-08-05 07:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zmeir">@zmeir</a> on 2024-08-19 10:35</div>
+            <div class="timeline-body"><p>+1</p>
+<p>This would make it much easier to migrate existing build pipelines that currently use <code>pip install</code> to instead use <code>uv pip install</code> without any changes to the requirements files being installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/appleparan">@appleparan</a> on 2024-08-20 12:37</div>
+            <div class="timeline-body"><p>If the your CA isn't working even you generated CA by command like `update-ca-certificates', please check <a href="https://github.com/astral-sh/uv/issues/5448">this issue</a> and try adjusting the permissions.</p>
+<p>I resolved the certificate issue that persisted even after setting <code>UV_NATIVE_TLS=1</code> by running the following commands:</p>
+<pre><code>sudo chmod og=r /usr/local/share/ca-certificates/YOUR_CERTIFICATE.crt
+</code></pre>
+<p>then</p>
+<pre><code>UV_NO_CACHE=1 UV_NATIVE_TLS=1 uv install ...
+UV_NO_CACHE=1 UV_NATIVE_TLS=1 rye sync
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hbjydev">@hbjydev</a> on 2024-08-21 12:39</div>
+            <div class="timeline-body"><p>Hi hi all,</p>
+<p>I could do with having this feature. I run a personal PyPI repo on my network but didn't want to bother with setting up TLS for it, so I need to pass <code>--trusted-host</code> to <code>pip</code> in order to make it work. This basically blocks me from trying out <code>uv</code> currently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaby">@gaby</a> on 2024-08-22 11:52</div>
+            <div class="timeline-body"><p>@charliermarsh @zanieb Does the astral team have an ETA for this? It's a huge blocker for the adoption of <code>uv</code> in offline, enterprise and CI environments. The PR https://github.com/astral-sh/uv/pull/4944 would had solved this but was closed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 15:32</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/4944 was not an acceptable solution, unfortunately. If someone is willing to investigate the solution described in the discussion there, we'll review it. Otherwise, we'll get to this when we can — we have a lot on our plate.</p>
+<p>We generally don't provide ETAs for features. Please just 👍  the OP if you want this feature, don't ping everyone following the thread asking for an update.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6591.html">astral-sh/uv#6591</a> on 2024-08-24 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-24 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-24 21:51</div>
+            <div class="timeline-body"><p>PR open here: https://github.com/astral-sh/uv/pull/6591.</p>
+<p>Anyone able to test this, or have advice on how to test this on macOS? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-24 22:58</div>
+            <div class="timeline-body"><p>(Figured out a test workflow + found a few things to fix before merging.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaby">@gaby</a> on 2024-08-25 00:20</div>
+            <div class="timeline-body"><p>@charliermarsh The tests are only running against <code>macos-latest-xlarge</code> which is now ARM based (Apple M1). Here https://github.com/astral-sh/uv/blob/main/.github/workflows/ci.yml#L190</p>
+<p>If you also want to test against x86 based MacOS, you have to have to use a different image. Ideally as another Test Workflow.. See runner images docs here: https://github.com/actions/runner-images?tab=readme-ov-file#available-images</p>
+<p>These are x86 with MacOS-14: <code>macos-latest-large or macos-14-large</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 14:55</div>
+            <div class="timeline-body"><p>One clarification for anyone that's been waiting on this: IIUC, this isn't necessary for <code>http://</code> URLs. Unlike pip, uv doesn't warn when you use an <code>http://</code> URL as an index, so <code>--trusted-host</code> would have no effect on <code>http://</code> URLs in uv. This is only applicable to <code>https://</code> URLs, e.g., with a self-signed certificate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-27 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-27 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/rye/issues/1130.html">astral-sh/rye#1130</a> on 2024-08-30 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zyantist">@Zyantist</a> on 2024-09-27 07:24</div>
+            <div class="timeline-body"><p>While the new changes work fine if I use a uv.toml, I keep getting errors locally as well as in CI docker containers, when I run something like:</p>
+<pre><code class="language-shell">- &gt;
+  uv pip install 
+  --allow-insecure-host=&quot;${LOCAL_NETWORK_IP}&quot; 
+  --extra-index-url=&quot;https://__token__:${some_token}@${LOCAL_NETWORK_IP}/api/v4/.../package1_ID/.../simple&quot;
+  --extra-index-url=&quot;https://__token__:${some_token}@${LOCAL_NETWORK_IP}/api/v4/.../package2_ID/.../simple&quot;
+  package1 package2
+</code></pre>
+<p>I get this chain of errors:</p>
+<pre><code class="language-shell">error: Failed to download  `somepackage==someversion`
+    Caused by: Failed to unzip wheel:  somepackage.whl
+    Caused by: an upstream reader returned an error: io error occurred: HTTP status client error (404 Not Found) for url (the wheel url and a sha appended)
+    Caused by: io error occurred: HTTP status client error (404 Not Found) for url (the wheel url and a sha appended)
+  Caused by: HTTP status client error (404 Not Found) for url (the wheel url and a sha appended)
+</code></pre>
+<p>This does not happen if I install them one by one with only one extra index url provided at a time.
+However, I want to be able to install a wheel that has dependencies pointing to wheels that require different extra index urls. It works fine with a local uv.toml file.</p>
+<p>Is the syntax when using multiple extra-index-url's in the command line different than when I do the same with vanilla pip or is this a bug resp. not yet a feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zmeir">@zmeir</a> on 2024-09-27 07:47</div>
+            <div class="timeline-body"><p>@Zyantist did you try <code>--index-strategy=unsafe-best-match</code>?</p>
+<p>https://docs.astral.sh/uv/reference/settings/#index-strategy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zyantist">@Zyantist</a> on 2024-09-27 08:07</div>
+            <div class="timeline-body"><p>@zmeir Thank you very much! That works like a charm, at least locally where I just tried. I will test it in CI, too and report if issues occur.</p>
+<p>Update 1:  First attempt in CI failed. There I installed a wheel with multiple extra index urls and I used the --pre flag and the --system flag  as I do not require a venv in a docker container. I will post more information later, when I figured out what the breaking difference is between my local attempt and in CI</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zyantist">@Zyantist</a> on 2024-10-11 19:00</div>
+            <div class="timeline-body"><p>Sorry for the delayed update. I took some hours today to test whatever could be tested. I finally was able to conclude the difference were the tokens I used.</p>
+<p>The reason my attempt on CI failed is that I use project-individual access tokens there, whereas I use a private token locally.</p>
+<p>Today I tried to use the access tokens locally and all attempts at installation fail except when I use an individual access token in a single extra index url of a package that does not depend on other private packages that also require extra index url.
+Not-working example: install package A, that depends (per pyproject.toml) on project B and I provide two extra index urls with their individual tokens to install package A:  it fails.</p>
+<p>If I use my private token in both extra index urls, it works.</p>
+<p>My private token has at lot more privileges than my access tokens. However, pip can work with these individual tokens, in CI and locally.</p>
+<p>For some reason, uv seems to either require tokens with more access rights (in complex situations) or it cannot handle multiple tokens in one installation command.</p>
+<p>Maybe this example extract of a toml helps to describe my situation:</p>
+<pre><code class="language-toml"># pyproject.toml of my-project-A
+...
+[project]
+...
+dependencies = [
+    &quot;public-project&quot;, 
+    &quot;my-project-B&quot;
+]
+
+[project.optional-dependencies]
+frontend = [
+    &quot;tkinter&quot;,
+   &quot;my-project-B[frontend]&quot;,  # nested tag, different token and different url
+]
+test = [
+    &quot;my-project-A[frontend]&quot;,   # recursive nested tag
+    &quot;pytest&quot;, 
+]
+</code></pre>
+<p>This is what my setups look like but even a simpler one without the optional-dependencies fails to work with uv and individual tokens/urls.</p>
+<p>Are you aware of this different behaviour?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10366.html">astral-sh/uv#10366</a> on 2025-01-07 14:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

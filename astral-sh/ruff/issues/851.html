@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mccabe implementation differs from flake8 - astral-sh/ruff #851</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>mccabe implementation differs from flake8</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/851">#851</a>
+        opened by <a href="https://github.com/kalekseev">@kalekseev</a>
+        on 2022-11-21 13:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kalekseev">@kalekseev</a> on 2022-11-21 13:22</div>
+            <div class="timeline-body"><p>ruff reports complexity - 11 while flake8 - 9, cc @edgarrmondragon</p>
+<pre><code>✦ ❯ flake8 --version
+5.0.4 (flake8-bugbear: 22.10.27, flake8-no-pep420: 2.3.0, mccabe: 0.7.0, pep8-naming: 0.13.2, pycodestyle: 2.9.1, pyflakes: 2.5.0)
+CPython 3.10.5 on Darwin
+
+✦ ❯ ruff --version
+ruff 0.0.132
+
+✦ ❯ cat a.py
+class Command:
+    def handle(self, *args, **options):
+        if args:
+            return
+
+        class ServiceProvider:
+            def a(self):
+                pass
+
+            def b(self, data):
+                if not args:
+                    pass
+
+        class Logger:
+            def c(*args, **kwargs):
+                pass
+
+            def error(self, message):
+                pass
+
+            def info(self, message):
+                pass
+
+            def exception(self):
+                pass
+
+        return ServiceProvider(Logger())
+
+
+✦ ❯ flake8 a.py
+a.py:2:5: C901 'Command.handle' is too complex (9)
+
+✦ ❯ ruff --select C a.py
+Found 1 error(s).
+a.py:2:5: C901 `handle` is too complex (11)
+</code></pre>
+<p>BTW flake8 error message also includes class name</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-11-21 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-21 15:25</div>
+            <div class="timeline-body"><p>Is it that class definitions don't count towards complexity?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-21 15:26</div>
+            <div class="timeline-body"><p>Yeah, this also reports 9, so I'm guessing that's the distinction:</p>
+<pre><code class="language-py">def handle(self, *args, **options):
+    if args:
+        return
+    
+    def a(self):
+        pass
+
+    def b(self, data):
+        if not args:
+            pass
+
+    def c(*args, **kwargs):
+        pass
+
+    def error(self, message):
+        pass
+
+    def info(self, message):
+        pass
+
+    def exception(self):
+        pass
+
+    return ServiceProvider(Logger())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-21 15:27</div>
+            <div class="timeline-body"><p>Maybe because they don't define new / distinct forks in the code vis-a-vis the methods within them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-11-21 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/857.html">astral-sh/ruff#857</a> on 2022-11-21 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-21 18:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

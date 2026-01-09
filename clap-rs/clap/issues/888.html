@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should be possible to make help show `--` before TrailingVarArg enabled arg - clap-rs/clap #888</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should be possible to make help show `--` before TrailingVarArg enabled arg</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/888">#888</a>
+        opened by <a href="https://github.com/nagisa">@nagisa</a>
+        on 2017-03-06 15:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nagisa">@nagisa</a> on 2017-03-06 15:54</div>
+            <div class="timeline-body"><p>When <code>TrailingVarArg</code> option is enabled, I feel like it should be possible to make <code>help</code> show the <code>--</code> before this trailing argument:</p>
+<p>i.e.</p>
+<pre><code>USAGE:
+    cargo-fuzz run &lt;TARGET&gt; -- &lt;ARGS&gt;...
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    &lt;TARGET&gt;     
+    &lt;ARGS&gt;...    
+</code></pre>
+<p>or</p>
+<pre><code>USAGE:
+    cargo-fuzz run &lt;TARGET&gt; [--] [&lt;ARGS&gt;...]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    &lt;TARGET&gt;     
+    &lt;ARGS&gt;...    
+</code></pre>
+<p>and not</p>
+<pre><code>USAGE:
+    cargo-fuzz run &lt;TARGET&gt; [ARGS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    &lt;TARGET&gt;     
+    &lt;ARGS&gt;...    
+</code></pre>
+<p>it shows currently. Code <a href="https://github.com/rust-fuzz/cargo-fuzz/blob/7dac8f6bbec277a62c45b15f41a64f867566efda/src/main.rs#L31">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-03-09 22:45</div>
+            <div class="timeline-body"><p>The <code>TrailingVarArg</code> effectively disables the <code>--</code>, and just makes the final positional argument <em>act</em> like <code>--</code> was passed.</p>
+<p>A hack to make the help generation add the <code>--</code> is to add a single hidden option which accepts multiple values.</p>
+<pre><code class="language-rust">arg(Arg::with_name(&quot;_foo&quot;).long(&quot;_foo&quot;).takes_value(true).multiple(true).hidden(true))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-03-09 22:48</div>
+            <div class="timeline-body"><p>Also, if the usage string is simple, and you don't have many other args (like the example you gave), you could also just <a href="https://docs.rs/clap/2.20.5/clap/struct.App.html#method.usage">add it manually</a>:</p>
+<pre><code class="language-rust">app.usage(&quot;cargo-fuzz run &lt;TARGET&gt; [--] [ARGS]...&quot;)
+</code></pre>
+<p>The only thing you lose from this is the &quot;context aware&quot; usage strings that happen on error messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2017-03-09 22:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-03-10 01:48</div>
+            <div class="timeline-body"><p>@nagisa I took a look at your link, and two things I noticed</p>
+<ul>
+<li>The <code>&quot;dummy&quot;</code> arg can actually be dealt with like this:</li>
+</ul>
+<pre><code class="language-rust">let app = App::new(&quot;cargo-fuzz&quot;)
+    // Here we lie to clap, saying our binary is actually &quot;cargo&quot; so that our help
+    // messages and usage strings are all set correctly
+    .bin_name(&quot;cargo&quot;)
+    // Now we add our &quot;fuzz&quot; subcommand
+    .subcommand(SubCommand::with_name(&quot;fuzz&quot;)
+        .version(option_env!(&quot;CARGO_PKG_VERSION&quot;).unwrap_or(&quot;0.0.0&quot;))
+        .about(option_env!(&quot;CARGO_PKG_DESCRIPTION&quot;).unwrap_or(&quot;&quot;))
+        .setting(AppSettings::SubcommandRequiredElseHelp)
+        .setting(AppSettings::GlobalVersion)
+        .subcommand(SubCommand::with_name(&quot;init&quot;).about(&quot;Initialize the fuzz folder&quot;))
+        .subcommand(SubCommand::with_name(&quot;run&quot;).about(&quot;Run the fuzz target in fuzz/fuzzers&quot;)
+            .setting(AppSettings::TrailingVarArg)
+            .arg(Arg::with_name(&quot;TARGET&quot;).required(true)
+                 .help(&quot;name of the fuzz target&quot;))
+            .arg(Arg::with_name(&quot;ARGS&quot;).multiple(true)
+                 .help(&quot;additional libFuzzer arguments passed to the binary&quot;))
+        )
+        .subcommand(SubCommand::with_name(&quot;add&quot;).about(&quot;Add a new fuzz target&quot;)
+                    .arg(Arg::with_name(&quot;TARGET&quot;).required(true)))
+        .subcommand(SubCommand::with_name(&quot;list&quot;).about(&quot;List all fuzz targets&quot;))
+    )
+    .get_matches();
+</code></pre>
+<ul>
+<li>The <code>TrailingVarArg</code> isn't really required based off the args you've got. Since it looks like you're using it simply to allow accepting values that may/may not start with a hyphen, I'd suggest using <a href="https://docs.rs/clap/2.20.5/clap/struct.Arg.html#method.allow_hyphen_values"><code>Arg::allow_hyphen_values</code></a> on the <code>ARGS</code> argument instead.</li>
+</ul>
+<p>If you like the usage string with <code>[--]</code> then I'd suggest using the &quot;hidden option&quot; hack. This works because clap inserts the <code>[--]</code> when it detects that there could be an ambiguity between what to parse, and thus hints at using <code>--</code>. Having an option which accepts an unknown number of values <em>and</em> a positional argument that accepts multiple values is such an ambiguity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nagisa">@nagisa</a> on 2017-03-10 07:41</div>
+            <div class="timeline-body"><p>Re dummy I want the binary to work as <code>cargo fuzz ...</code> as well as when invoked as <code>cargo-fuzz</code> (e.g. via <code>cargo run</code>). I do not think the proposed subcommand dance handles that.</p>
+<p>I'll investigate allow_hyphen_values tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nagisa">@nagisa</a> on 2017-03-10 16:27</div>
+            <div class="timeline-body"><p>So I tried <code>allow_hyphen_values</code> and it seems to not have the effect I want.</p>
+<p>In examples, this is what I changed my <code>run</code> subcommand to:</p>
+<pre><code>        SubCommand::with_name(&quot;run&quot;).about(&quot;Run the fuzz target in fuzz/fuzzers&quot;)
+            .arg(Arg::with_name(&quot;TARGET&quot;).required(true)
+                 .help(&quot;name of the fuzz target&quot;))
+            .arg(Arg::with_name(&quot;ARGS&quot;).multiple(true).allow_hyphen_values(true)
+                 .help(&quot;additional libFuzzer arguments passed to the binary&quot;))
+</code></pre>
+<p>Alas, running the help still shows:</p>
+<pre><code>USAGE:
+    cargo-fuzz run &lt;TARGET&gt; [ARGS]
+</code></pre>
+<p>I also still need the leading <code>--</code> for something like this work (works just fine without <code>allow_hyphen_values</code> or the setting anyway):</p>
+<pre><code>./target/release/cargo-fuzz run target -- -whoops -oi=hey
+</code></pre>
+<hr />
+<blockquote>
+<p>If you like the usage string with [--] then I'd suggest using the &quot;hidden option&quot; hack.</p>
+</blockquote>
+<p>What is this hack? I tried various ways to construct the <code>DUMMY</code> argument in the following case in attempt to get <code>[--]</code> show up:</p>
+<pre><code>        SubCommand::with_name(&quot;run&quot;).about(&quot;Run the fuzz target in fuzz/fuzzers&quot;)
+            .arg(Arg::with_name(&quot;TARGET&quot;).required(true)
+                 .help(&quot;name of the fuzz target&quot;))
+            .arg(Arg::with_name(&quot;DUMMY&quot;))
+            .arg(Arg::with_name(&quot;ARGS&quot;).multiple(true).allow_hyphen_values(true)
+                 .help(&quot;additional libFuzzer arguments passed to the binary&quot;))
+</code></pre>
+<p>However, not only <code>[--]</code> does not show up (I tried various combinations of <code>multiple</code>, <code>required</code>, <code>hidden</code> and <code>long</code>, <code>short</code>). In fact I couldn’t make <code>DUMMY</code> argument itself to appear in the <code>USAGE</code>:</p>
+<pre><code>USAGE:
+    cargo-fuzz run [FLAGS] &lt;TARGET&gt; [ARGS]
+</code></pre>
+<hr />
+<p>Is it even possible to construct something like the following with clap?</p>
+<pre><code>cargo-fuzz [fuzz] run &lt;TARGET&gt; [&lt;CORPUS&gt;] [-- &lt;ARGS&gt;...]
+</code></pre>
+<p>(note the non-optional <code>--</code> if any <ARGS> need to be parsed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-03-10 19:00</div>
+            <div class="timeline-body"><blockquote>
+<p>What is this hack? I tried various ways to construct the DUMMY argument in the following case in attempt to get [--] show up</p>
+</blockquote>
+<p>Hmm, actually it looks like this doesn't work like I'd thought if you're adding <code>CORPUS</code> :confused:</p>
+<blockquote>
+<p>Is it even possible to construct something like the following with clap?</p>
+</blockquote>
+<p>Aaaah OK now I see exactly what you're trying to do. I was misunderstanding, apologies! That'd be a very easy addition, though. Once I get home tonight I'll wrap it up into #893 and get it out with 2.21.0.</p>
+<p>With this change the usage string will look like this:</p>
+<p><code>cargo-fuzz [fuzz] run &lt;TARGET&gt; [CORPUS] [-- &lt;ARGS&gt;...]</code></p>
+<p>Once I make these changes, the change to your code will be you can remove the <code>TrailingVarArg</code> (since it won't be necessary in this case), and mark <code>ARGS</code> as <code>allow_hyphen_values(true).last(true)</code> (<code>last(true)</code> is the part I'm adding tonight)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-03-10 22:59</div>
+            <div class="timeline-body"><p>Alright, I have this basically implemented and ready for a PR. I just need to finish the final test case tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2017-03-10 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: positional args</span> added by @kbknapp on 2017-03-10 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: usage strings</span> added by @kbknapp on 2017-03-10 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2017-03-10 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2017-03-10 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2017-03-10 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2017-03-10 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-03-10 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by @kbknapp on 2017-03-10 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.21.0" by @kbknapp on 2017-03-10 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-03-11 05:21</div>
+            <div class="timeline-body"><p>This is implemented in #893. Once that merges I'll put out v2.21.0 on crates.io.</p>
+<p>It'll now be possible to implement:</p>
+<p><code>cargo-fuzz [fuzz] run &lt;TARGET&gt; [CORPUS] [-- &lt;ARGS&gt;...]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nagisa">@nagisa</a> on 2017-03-11 08:51</div>
+            <div class="timeline-body"><p>Awesome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2017-03-11 18:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

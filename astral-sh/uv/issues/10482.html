@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv build only spit out wheel file containing metadata but no code - astral-sh/uv #10482</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv build only spit out wheel file containing metadata but no code</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10482">#10482</a>
+        opened by <a href="https://github.com/tmatup">@tmatup</a>
+        on 2025-01-10 22:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tmatup">@tmatup</a> on 2025-01-10 22:41</div>
+            <div class="timeline-body"><p><code>uv build</code> command is generating a very small wheel file, which is only including essential metadata and minimal code. what could be missing?</p>
+<p>the following is the conten of the <code>pyproject.toml</code> file</p>
+<pre><code>[project]
+name = &quot;my-project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;My Project&quot;
+authors = []
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11,&lt;3.12&quot;
+packages = [
+    { include = &quot;root/my_project&quot; }
+]dependencies = [
+    # FROZEN DEPENDENCIES - FOR PRODUCTION
+    ... 
+    # UPDATEABLE DEPENDENCIES - FOR TESTS, EVALATION
+    ...
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;root/my_project&quot;]
+
+[tool.uv]
+package = false # force the project package (gpt-tasks) not to be built and installed into the project environment
+</code></pre>
+<p>then I do <code>uv build</code> under the <code>root/my_project</code> folder where the pyproject.toml is sitting,</p>
+<pre><code>:~/myrepro/root/my_project$ uv build
+Building source distribution...
+Building wheel from source distribution...
+Successfully built dist/my_project-0.1.0.tar.gz
+Successfully built dist/my_project-0.1.0-py3-none-any.whl
+:~/myrepro/root/my_project$ ls -la dist/
+total 17008
+drwxrwxr-x  2 tao tao     4096 Jan 10 14:34 .
+drwxrwxr-x 12 tao tao     4096 Jan 10 14:24 ..
+-rw-rw-r--  1 tao tao        1 Jan 10 14:24 .gitignore
+-rw-r--r--  1 tao tao     2023 Jan 10 14:34 my_project-0.1.0-py3-none-any.whl
+-rw-r--r--  1 tao tao 17398499 Jan 10 14:34 my_project-0.1.0.tar.gz
+</code></pre>
+<p>as you can see, the wheel is pretty small, unzipping it showed that it only contains 3 files - METADATA, RECORD and WHEEL, but none of the code under the root/my_project folder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-10 23:27</div>
+            <div class="timeline-body"><p>Looks like you're configuring hatch to find packages in <code>root/myproject</code> but you're building the wheel from <code>root/myproject</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-10 23:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

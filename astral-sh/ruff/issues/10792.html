@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I001 doesn't sort values as expected. - astral-sh/ruff #10792</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>I001 doesn't sort values as expected.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10792">#10792</a>
+        opened by <a href="https://github.com/emmceemoore">@emmceemoore</a>
+        on 2024-04-05 18:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/emmceemoore">@emmceemoore</a> on 2024-04-05 18:17</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<blockquote>
+<ul>
+<li>List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+e.g. &quot;RUF001&quot;, &quot;unused variable&quot;, &quot;Jupyter notebook&quot;</li>
+</ul>
+</blockquote>
+<ul>
+<li>&quot;I001&quot;, &quot;case sensitive&quot;, etc.</li>
+</ul>
+<blockquote>
+<ul>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+</blockquote>
+<pre><code class="language-python"># before.py
+
+from django.db import (
+    models,
+    OperationalError,
+    transaction,
+)
+
+
+def foo():
+    print(f&quot;{models}, {OperationalError}, {transaction}&quot;)
+</code></pre>
+<blockquote>
+<ul>
+<li>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.</li>
+</ul>
+</blockquote>
+<pre><code class="language-sh">$ ruff check --isolated --select I001 before.py
+before.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>I ran <code>ruff check --fix before.py</code> to generate <code>after.py</code> (did some file copying).</p>
+<pre><code class="language-sh">$ ruff check --isolated --select I001 after.py
+All checks passed!
+</code></pre>
+<p>Here's the diff (<code>before.py</code> vs <code>after.py</code>) of those two files to show what <code>ruff</code> &quot;fixed&quot;:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/484429/bfb2773f-6859-4f92-9e65-c2676c23b8a1" alt="image" /></p>
+<p>:point_right: I would expect for &quot;m&quot; (ASCII: 109) to come before &quot;O&quot; (ASCII: 79) alphabetically even though their ASCII values sort differently.</p>
+<blockquote>
+<ul>
+<li>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).</li>
+</ul>
+</blockquote>
+<p>These don't seem to be applicable. I <em>did</em> try explicitly setting the <a href="https://docs.astral.sh/ruff/settings/#lint_isort_case-sensitive">default value</a> and that didn't seem to work either.</p>
+<blockquote>
+<ul>
+<li>The current Ruff version (<code>ruff --version</code>).</li>
+</ul>
+</blockquote>
+<pre><code class="language-sh">$ ruff --version
+ruff 0.3.5
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-05 18:26</div>
+            <div class="timeline-body"><p>Hi! By default, I001 sorts things by casing, then alphabetically after that:</p>
+<ul>
+<li>SCREAMING_SNAKE_CASE names (conventionally used for global constants) come first</li>
+<li>CamelCase names (conventionally used for classes) come second</li>
+<li>Anything else comes last</li>
+</ul>
+<p>Within each casing category, everything is sorted alphabetically. If you don't want things sorted by casing first, you can set <a href="https://docs.astral.sh/ruff/settings/#lint_isort_order-by-type"><code>isort.order-by-type</code></a> to <code>false</code>. I.e., if you're using a <code>ruff.toml</code> file for your configuration:</p>
+<pre><code class="language-toml">[lint.isort]
+order-by-type = false
+</code></pre>
+<p>Or if you're using a <code>pyproject.toml</code> file for your configuration:</p>
+<pre><code class="language-toml">[tool.ruff.lint.isort]
+order-by-type = false
+</code></pre>
+<p>Or if you're just running Ruff from the command line:</p>
+<pre><code>$ ruff --config &quot;lint.isort.order-by-type = false&quot;
+</code></pre>
+<p>Hope that helps! We could probably document it better the default way in which this rule sorts imports :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emmceemoore">@emmceemoore</a> on 2024-04-05 18:29</div>
+            <div class="timeline-body"><p>Thanks for the pointer on using <code>order-by-type</code>! That does what I need. :grin:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @emmceemoore on 2024-04-05 18:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

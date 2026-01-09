@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLW0120 (else clause on loop without a break statement) incorrectly flagged - astral-sh/ruff #1136</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLW0120 (else clause on loop without a break statement) incorrectly flagged</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1136">#1136</a>
+        opened by <a href="https://github.com/eddyg">@eddyg</a>
+        on 2022-12-08 02:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eddyg">@eddyg</a> on 2022-12-08 02:12</div>
+            <div class="timeline-body"><pre><code class="language-shell">❯ ruff --version
+ruff 0.0.169
+</code></pre>
+<p>Trying to understand why PLW0120 <em>(&quot;Else clause on loop without a break statement, remove the else and de-indent all the code inside it&quot;)</em> is being raised.</p>
+<p>Here's a simple example which causes PLW0120, even though it <em>does</em> have a <code>break</code>:</p>
+<pre><code class="language-python">for page in range(1, 10):
+    if page &lt; 5:
+        print(page)
+    else:
+        print(&quot;error&quot;)
+        break
+else:
+    print(&quot;OK&quot;)
+</code></pre>
+<p>When the <code>break</code> is moved inside the <code>if</code>, PLW0120 goes away.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eddyg">@eddyg</a> on 2022-12-08 02:30</div>
+            <div class="timeline-body"><p>Also noticed it improperly flags code like this (which doesn't have any <code>break</code>s) as well:</p>
+<pre><code class="language-python">def demo(end):
+    for page in range(1, end):
+        if page &lt; 6:
+            print(page)
+        else:
+            print(&quot;OK&quot;)
+            return
+    else:
+        print(&quot;error&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-08 03:59</div>
+            <div class="timeline-body"><p>It's <em>probably</em> just missing the nested detection somehow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-08 03:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-08 03:59</div>
+            <div class="timeline-body"><p>(But, definitely looks like a bug.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-08 15:20</div>
+            <div class="timeline-body"><p>(Will take a look at this today.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-12-08 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1143.html">astral-sh/ruff#1143</a> on 2022-12-08 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-08 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-08 16:54</div>
+            <div class="timeline-body"><p>Fixed in #1143.</p>
+<p>I think the second example you included is actually correct (or, at least, consistent with Pylint), since if the loop exits early with a <code>return</code>, you'll never hit the <code>else</code> block code anyway -- so, IIUC, it's identical to removing the <code>else</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eddyg">@eddyg</a> on 2022-12-08 17:07</div>
+            <div class="timeline-body"><p>Thanks for being so responsive! 🎉</p>
+<p>And thanks for pointing out my second example is bogus... I was playing around with the minimal example I came up with to illustrate the issue and didn't think to verify with Pylint. 😬</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

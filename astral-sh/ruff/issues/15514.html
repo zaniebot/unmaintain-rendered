@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff format` output breaks certain f-strings in 0.9 - astral-sh/ruff #15514</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff format` output breaks certain f-strings in 0.9</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15514">#15514</a>
+        opened by <a href="https://github.com/markjm">@markjm</a>
+        on 2025-01-15 20:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/markjm">@markjm</a> on 2025-01-15 20:52</div>
+            <div class="timeline-body"><p>Consider the file:</p>
+<pre><code class="language-test.py">params = {}
+string = &quot;this is my string with &quot; f'&quot;{params.get(&quot;mine&quot;)}&quot;'
+</code></pre>
+<p>ruff format in 0.9.1 replaces this to</p>
+<pre><code>ruff format test.py --diff
+--- test.py
++++ test.py
+@@ -1,2 +1,2 @@
+ params = {}
+-string = &quot;this is my string with &quot; f'&quot;{params.get(&quot;mine&quot;)}&quot;'
+\ No newline at end of file
++string = f&quot;this is my string with \&quot;{params.get(&quot;mine&quot;)}\&quot;&quot;
+
+1 file would be reformatted
+</code></pre>
+<p>This is not valid python due to nested f-string using the same quote character (at least, its not valid before py3.12</p>
+<pre><code>python -m compileall test.py
+Compiling 'test.py'...
+***   File &quot;test.py&quot;, line 2
+    string = f&quot;this is my string with \&quot;{params.get(&quot;mine&quot;)}\&quot;&quot;
+                                                     ^
+SyntaxError: invalid syntax
+</code></pre>
+<p>It is a very uncommon case and simple enough to just fix up myself, but figured id bug report to make yall aware.</p>
+<p>Thanks for the great project!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-01-15 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-01-15 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-15 21:36</div>
+            <div class="timeline-body"><p>I'm able to reproduce this but only when using <code>quote-style = &quot;preserve&quot;</code>. Using either <code>single</code> or <code>double</code> works fine (<a href="https://play.ruff.rs/239e5642-ea82-4432-9260-f9f807d73fc4">playground</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2025-01-15 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/markjm">@markjm</a> on 2025-01-15 21:48</div>
+            <div class="timeline-body"><p>Sorry, forgot to include my config!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-15 21:53</div>
+            <div class="timeline-body"><p>No worries. The issue contained enough details that I could figure it out myself. Thanks for reporting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15524.html">astral-sh/ruff#15524</a> on 2025-01-16 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-16 11:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

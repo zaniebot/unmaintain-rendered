@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install -r requirements.txt` flakiness with `datashader` and `llvmlite` packages - astral-sh/uv #11636</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install -r requirements.txt` flakiness with `datashader` and `llvmlite` packages</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11636">#11636</a>
+        opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a>
+        on 2025-02-19 20:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-19 20:01</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This <a href="https://github.com/user-attachments/files/18874573/requirements.txt">requirements.txt</a> lists all packages in the <a href="https://github.com/winpython/winpython">WinPython</a> distribution, which is an open source alternative to Anaconda for the Windows platform.</p>
+<p>There was some flakiness when I attempted to install these packages into a venv (<a href="https://github.com/user-attachments/files/18874860/pyvenv.txt">pyvenv.cfg</a>) using the <code>uv pip install -r requirements.txt</code> command.</p>
+<p>I am reporting the errors that I saw here if they would be helpful to make <code>uv pip install</code> more robust. If the errors can't be duplicated and/or fixed then feel free to close this issue!</p>
+<h3>1st attempt</h3>
+<pre><code>(WinPython) C:\Users\Chris\OneDrive\Downloads\Winpython64-3.13.2.0slimb3\WPy64-31320b3&gt;uv pip install -r requirements.txt
+  × No solution found when resolving dependencies:
+  ╰─▶ Because datashader==0.16.3 has an invalid package format and you require datashader==0.16.3, we can conclude
+      that your requirements are unsatisfiable.
+
+      hint: The structure of `datashader` (v0.16.3) was invalid:
+        Failed to read from zip file
+</code></pre>
+<h3>2nd attempt</h3>
+<pre><code>(WinPython) C:\Users\Chris\OneDrive\Downloads\Winpython64-3.13.2.0slimb3\WPy64-31320b3&gt;uv pip install -r requirements.txt
+  × No solution found when resolving dependencies:
+  ╰─▶ Because llvmlite==0.44.0 has an invalid package format and you require llvmlite==0.44.0, we can conclude that
+      your requirements are unsatisfiable.
+
+      hint: The structure of `llvmlite` (v0.44.0) was invalid:
+        Failed to read from zip file
+</code></pre>
+<h3>3rd attempt</h3>
+<p>Retrying the command a third time seemed to work and installed all 495 packages from <code>requirements.txt</code> into the venv.</p>
+<h3>Additional observations</h3>
+<p>The latest version of <code>pip</code> was also installed into the venv (for a total of 496 packages), even though pip was <strong>not</strong> listed in <code>requirements.txt</code> or present inside the venv as a seed package. Is this behavior correct?</p>
+<h3>Possibly related issues</h3>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/6281</li>
+<li>https://github.com/astral-sh/uv/issues/8157</li>
+<li>https://github.com/astral-sh/uv/issues/9413</li>
+<li>https://github.com/astral-sh/uv/issues/9898</li>
+</ul>
+<h3>Platform</h3>
+<p>Windows 11 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.6.1</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @chrisrodrigue on 2025-02-19 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv pip install -r requirements.txt` flakiness with `datashader` and `llvmlite`" to "`uv pip install -r requirements.txt` flakiness with `datashader` and `llvmlite` packages" by @chrisrodrigue on 2025-02-19 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-20 09:13</div>
+            <div class="timeline-body"><p>Are you using PyPI or an alternative index?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-20 10:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you using PyPI or an alternative index?</p>
+</blockquote>
+<p>Nexus PyPI proxy.</p>
+<p>Want me to try clearing the cache and re-running with <code>-v</code> or <code>-vv</code> to see if I can get some more helpful data?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-20 11:31</div>
+            <div class="timeline-body"><p>This error looks like a problem where we are not applying our retry strategy to the async zip reader.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @konstin on 2025-02-20 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/grafke">@grafke</a> on 2025-03-31 15:38</div>
+            <div class="timeline-body"><p>I'm having the same issue on a private Nexus Pypi index. <code>uv -v pip install --config-file=my_uv.toml -r my_requirements.txt</code> is randomly failing but works on retry (sometimes, again random, it takes a few retries).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13737.html">astral-sh/uv#13737</a> on 2025-05-30 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matt-dies-tenet3">@matt-dies-tenet3</a> on 2025-07-23 16:16</div>
+            <div class="timeline-body"><p>While using a Nexus PyPI proxy as the default index, we've had multiple occurrences of this issue (7 known + verified occurrences in the last 5 days) as well.</p>
+<p>Possibly unrelated, but we've had similar issues with broken pipes that are also typically fixed by retries:</p>
+<pre><code>error: Failed to fetch: `https://&lt;internal_index&gt;/simple/botocore/`                      
+  Caused by: request or response body error
+  Caused by: error reading a body from connection
+  Caused by: stream closed because of a broken pipe    
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-07-31 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15056.html">astral-sh/uv#15056</a> on 2025-08-04 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-19 13:54</div>
+            <div class="timeline-body"><p>@matt-dies-tenet3 Can you share verbose logs, or a redacted excerpt of the verbose logs, from a failing run? In verbose mode, uv should show more information about if it did retry or why it didn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthewkdies">@matthewkdies</a> on 2025-08-20 16:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you share verbose logs, or a redacted excerpt of the verbose logs, from a failing run?</p>
+</blockquote>
+<p>Unfortunately, I cannot. We never ended up using the verbose flag to check out the logs as we instead implemented a temporary workaround.</p>
+<p>Fortunately, we were able to resolve the issue by tweaking some networking settings around the internally hosted Nexus Repository Manager. We were previously using Virtual Servers, but switched to Virtual IPs and traditional port forwards. Since switching, we've not had any of the above-mentioned issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mamoru0916">@mamoru0916</a> on 2025-08-20 17:53</div>
+            <div class="timeline-body"><p>We are seeing similar issue in our pipeline as well. Package failing with this error seems to be random.
+UV Version=0.8.8</p>
+<pre><code>WARN mysql-connector-python==9.0.0 has an invalid package format: Failed to read from zip file
+   × No solution found when resolving dependencies:
+   ╰─▶ Because matplotlib==3.9.2 has an invalid package format and
+       common==0.0.0 depends on matplotlib==3.9.2, we can conclude that
+       common==0.0.0 cannot be used.
+       And because only common==0.0.0 is available and you require
+       canary-common, we can conclude that your requirements are unsatisfiable.
+ 
+       hint: The structure of `matplotlib` (v3.9.2) was invalid:
+         Failed to read from zip file
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-08-21 08:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mamoru0916">@mamoru0916</a> on 2025-08-21 20:10</div>
+            <div class="timeline-body"><p>In our case, we haven't found anything to workaround this yet. What else information I can provide? The error message I posted earlier is from a verbose if I'm not mistaken.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-22 08:09</div>
+            <div class="timeline-body"><p>Running uv with <code>-v</code> or <code>-vv</code> should show logs about the network requests and errors. Having those logs (as <a href="https://gist.github.com/">gist</a>) or information if any specific warning or error are shown for the failing runs help with debugging this problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mamoru0916">@mamoru0916</a> on 2025-08-27 20:30</div>
+            <div class="timeline-body"><p>Here is the full log.</p>
+<p><a href="https://github.com/user-attachments/files/22013464/build.log">build.log</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15626.html">astral-sh/uv#15626</a> on 2025-09-02 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-02 11:51</div>
+            <div class="timeline-body"><p>It's not clear to me yet what the underlying network error is (so we can catch and retry it), we're trying to improve the error message in #15626.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mamoru0916">@mamoru0916</a> on 2025-09-11 23:01</div>
+            <div class="timeline-body"><p>We found the problem was caused by multiple internal Nexus mirrors contains different URLs for the same packages. uv.lock has the URL and once the package installer is trying to download and install package from a different URL the installation causes failure.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

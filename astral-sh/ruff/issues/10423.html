@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM300: fix and check are not aligned - astral-sh/ruff #10423</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM300: fix and check are not aligned</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10423">#10423</a>
+        opened by <a href="https://github.com/Borda">@Borda</a>
+        on 2024-03-15 16:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Borda">@Borda</a> on 2024-03-15 16:24</div>
+            <div class="timeline-body"><p>using the latest <code>0.3.2</code> together with precommit</p>
+<pre><code class="language-yaml">  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.3.2
+    hooks:
+      - id: ruff
+        args: [&quot;--fix&quot;]
+      - id: ruff-format
+      - id: ruff
+        args: [&quot;--preview&quot;]
+</code></pre>
+<p>and the code</p>
+<pre><code class="language-py">def test_cloud_compute_binding():
+    cloud_compute.ENABLE_MULTIPLE_WORKS_IN_NON_DEFAULT_CONTAINER = True
+
+    assert cloud_compute._CLOUD_COMPUTE_STORE == {}
+    flow = FlowCC()
+    assert len(cloud_compute._CLOUD_COMPUTE_STORE) == 2
+</code></pre>
+<p>fixed by the first run is not accepted by the last check</p>
+<pre><code>ruff.....................................................................Failed
+- hook id: ruff
+- files were modified by this hook
+
+Found 1 error (1 fixed, 0 remaining).
+
+ruff-format..............................................................Passed
+ruff.....................................................................Failed
+- hook id: ruff
+- exit code: 1
+
+tests/tests_app/core/test_lightning_app.py:1119:12: SIM300 [*] Yoda conditions are discouraged, use `cloud_compute._CLOUD_COMPUTE_STORE == {}` instead
+     |
+1117 |     cloud_compute.ENABLE_MULTIPLE_WORKS_IN_NON_DEFAULT_CONTAINER = True
+1118 | 
+1119 |     assert {} == cloud_compute._CLOUD_COMPUTE_STORE
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ SIM300
+1120 |     flow = FlowCC()
+1121 |     assert len(cloud_compute._CLOUD_COMPUTE_STORE) == 2
+     |
+     = help: Replace Yoda condition with `cloud_compute._CLOUD_COMPUTE_STORE == {}`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Lightning-AI/pytorch-lightning/pulls/19638.html">Lightning-AI/pytorch-lightning#19638</a> on 2024-03-15 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-15 16:45</div>
+            <div class="timeline-body"><p>It looks like you're using <code>--preview</code> in one invocation but not the other, so this may be expected. Can you try using <code>--preview</code> in both?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Borda">@Borda</a> on 2024-03-15 17:13</div>
+            <div class="timeline-body"><p>Ok, I was aware of preview for formatting to apply some future staff, but though that preview for check is just rich/verbose...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Borda on 2024-03-15 17:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

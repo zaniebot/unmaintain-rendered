@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provide system-level configuration files - astral-sh/uv #6742</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Provide system-level configuration files</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6742">#6742</a>
+        opened by <a href="https://github.com/pradyunsg">@pradyunsg</a>
+        on 2024-08-28 10:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-08-28 10:32</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<h2>What</h2>
+<p>This is an ask for a <a href="https://pip.pypa.io/en/stable/topics/configuration/#location">&quot;Global&quot; layer of configuration</a> to be provided, living in <a href="https://tldp.org/LDP/Linux-Filesystem-Hierarchy/html/etc.html"><code>/etc</code></a>. Unlike pip, I think uv should have only one file under that hierarchy.</p>
+<h2>Why</h2>
+<p>This would enable system administrators of shared machines to configure uv to use the correct <a href="https://docs.astral.sh/uv/reference/settings/#index-url">index-url</a> and <a href="https://docs.astral.sh/uv/reference/settings/#link-mode">link-mode</a> without needing to affect the runtime shell environments used by developers.</p>
+<p>My specific use case is for being able to configure the index-url to point to the internal index on shared machines, which helps reduce workflow friction for newcomers which in turn reduces the number of users using workarounds to hit the &quot;wrong&quot; package indexes.</p>
+<p>For context, this is the current configuration I've got for pip with the URLs redacted:</p>
+<pre><code class="language-ini">$ cat /etc/pip.conf
+[global]
+index-url = https://[internal-url]/simple
+require-virtualenv = true
+
+[search]
+index = https://[internal-url]/search
+</code></pre>
+<h2>How</h2>
+<p>uv already has logic for handling merging of project-level and user-level configuration. This would add another layer to that configuration merging -- with the preference order being project overrides user (current) which in turn overrides global.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-08-28 10:34</div>
+            <div class="timeline-body"><p><em>sigh</em> That's malware.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff/issues/13138.html">astral-sh/ruff#13138</a> on 2024-08-28 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-08-28 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 12:54</div>
+            <div class="timeline-body"><p>This makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 14:59</div>
+            <div class="timeline-body"><p>Is there an obvious home for this, e.g., following XDG?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-08-29 09:49</div>
+            <div class="timeline-body"><p>I think a top-level file (<code>/etc/uv.toml</code>) would be fine. I think pip inherits the XDG support from appdirs (now platformdirs) and I am not fully familiar with the &quot;Why&quot; on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-08-29 09:54</div>
+            <div class="timeline-body"><p>Actually... I take that back. Looking at what platformdirs does today... XDG is an obvious home for this.</p>
+<p>https://github.com/platformdirs/platformdirs/blob/4.2.2/src/platformdirs/unix.py#L79-L83</p>
+<p>So... the location would be <code>/etc/xdg/uv/uv.toml</code> and involve respecting the relevant XDG env var if set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-29 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-08-29 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6349.html">astral-sh/uv#6349</a> on 2024-09-02 10:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7354.html">astral-sh/uv#7354</a> on 2024-09-13 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pelson">@pelson</a> on 2024-09-13 10:02</div>
+            <div class="timeline-body"><p>I honestly believe that system-level configuration is an anti-pattern (but common!), and if I were prioritising I would say that executable-level configuration is actually more useful for shared machines.</p>
+<p>To clarify my meaning:</p>
+<p><strong>executable-level</strong> / <strong>prefix</strong> config is config that lives in the prefix root of the executable being run. So if I have my <code>uv</code> installed in <code>/opt/bin/uv</code>, I would want <code>uv</code> to look for config in <code>/opt</code> (I don't really care where, given what @pradyunsg proposed, <code>/opt/xdg/uv/uv.toml</code> is fine).</p>
+<p>By extension, if I have my uv in <code>/home/user/my-own-environment/bin/uv</code>, then the config would come from <code>/home/user/my-own-environment/xdg/uv/uv.toml</code>.</p>
+<p>My rationale for making the opening statement (&quot;executable-level configuration is actually more useful for shared machines&quot;) is that if a sys admin is providing <code>uv</code> then they should absolutely be able to configure that <code>uv</code> (project and user levels don't let them do that). However, if a sys admin isn't providing <code>uv</code>, then what interest do they actually have in configuring <code>uv</code> for you? Are they sure that the config that they specify is actually valid for the <em>arbitrary</em> <code>uv</code> version that I am going to install?</p>
+<p>On the contrary, if a sys admin wants to provide multiple versions of <code>uv</code> (e.g. to aid migration to a newer version), they have the ability to configure each individually and adapt the config to the specific version. This would be handy for example if there are config options that aren't valid in one version that are in another.</p>
+<p>As a final remark, if <code>uv</code> isn't found in a <code>bin</code> directory, it isn't being managed (and probably was downloaded directly into a homespace), then no <code>prefix-level</code> config should be taken.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-09-26 15:13</div>
+            <div class="timeline-body"><p>Hi folks! Is there anything I can do to help move this forward? Would a PR adding support be the best way forward here or are there any higher level concerns around implementing this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 16:14</div>
+            <div class="timeline-body"><p>I think I'm fine with this (\cc @zanieb in case you disagree), in which case a PR adding support would be the best path forward!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-30 17:29</div>
+            <div class="timeline-body"><p>I can also do it @pradyunsg if you haven't started on it yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-30 18:32</div>
+            <div class="timeline-body"><p>I'm fine with this if we have a clear standard we can follow regarding the location.</p>
+<p>I don't really know what to do about toggling this behavior based on where the uv binary is. That seems quite complicated, though I share your concerns about the configuration not being valid for your version. Are we going to have a separate way to opt-out of this? e.g. <code>--no-system-config</code> and <code>system-config = false</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7851.html">astral-sh/uv#7851</a> on 2024-10-01 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaby">@gaby</a> on 2024-10-17 13:23</div>
+            <div class="timeline-body"><p>This should be the same way pip does it. I manage a fleet of systems and we configure all of then by creating an <code>/etc/pip.conf</code> file. When ansible runs to install python apps, it just works by using that, no extra config needed. Users don't have sudo access.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-17 13:30</div>
+            <div class="timeline-body"><p>Are you objecting to something specific? We have an open PR (#7851) that supports <code>/etc/uv/uv.toml</code> in that way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaby">@gaby</a> on 2024-10-17 13:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you objecting to something specific? We have an open PR (#7851) that supports <code>/etc/uv/uv.toml</code> in that way.</p>
+</blockquote>
+<p>Yeah I just literally saw the PR. It does solve this problem 💪 That would allow for easy configuration via <code>ansible</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-10-22 14:59</div>
+            <div class="timeline-body"><p>Given that #7851 has landed, I guess we should close this out? Or do the maintainers wanna wait until they've cut a release with this. 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 15:03</div>
+            <div class="timeline-body"><p>Yes thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-22 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-22 15:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

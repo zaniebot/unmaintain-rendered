@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sort By Length Doesn't really sort by length - astral-sh/ruff #14136</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Sort By Length Doesn't really sort by length</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14136">#14136</a>
+        opened by <a href="https://github.com/scarere">@scarere</a>
+        on 2024-11-06 15:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/scarere">@scarere</a> on 2024-11-06 15:59</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Not sure if this issue should be raised with isort or ruff, but since ruff is what I'm using raising it here. With the following ruff.toml file</p>
+<pre><code class="language-toml">fix = true
+extend-select = [&quot;I&quot;]
+extend-safe-fixes = [&quot;I&quot;]
+
+# Add NOTE to default task tags
+task-tags = [&quot;TODO&quot;, &quot;FIXME&quot;, &quot;XXX&quot;, &quot;NOTE&quot;]
+
+[lint.pycodestyle]
+# Ignore overlong comments if they start with a task tag
+ignore-overlong-task-comments = true
+
+[lint.isort]
+length-sort = true
+</code></pre>
+<p>ruff sorts my imports as follows</p>
+<pre><code class="language-python">import os
+import contextlib
+from typing import List, Tuple
+from logging import INFO
+from os.path import join, isdir
+from pathlib import Path
+
+import yaml
+import torch
+import nnunetv2
+from tqdm import tqdm
+from nnunetv2.paths import nnUNet_raw
+from flwr.common.logger import log
+from nnunetv2.ensembling.ensemble import ensemble_folders
+from nnunetv2.utilities.find_class_by_name import recursive_find_python_class
+from nnunetv2.inference.predict_from_raw_data import nnUNetPredictor
+from nnunetv2.utilities.plans_handling.plans_handler import PlansManager
+from nnunetv2.utilities.label_handling.label_handling import (
+    determine_num_input_channels,
+)
+</code></pre>
+<p>It is sorting the <code>import x</code> imports seperately from the <code>from x import y</code> imports. Additionally, within the <code>from</code> imports, it is sorting based only on the line length of the module, not the entire line length. I tried <code>setting force-sort-within-sections=true</code> but this seems to override the length-sort and sort alphabetically as seen below.</p>
+<pre><code class="language-python">import os
+from typing import List, Tuple
+from logging import INFO
+from os.path import join, isdir
+from pathlib import Path
+import contextlib
+
+from tqdm import tqdm
+import yaml
+import torch
+import nnunetv2
+from nnunetv2.paths import nnUNet_raw
+from flwr.common.logger import log
+from nnunetv2.ensembling.ensemble import ensemble_folders
+from nnunetv2.utilities.find_class_by_name import recursive_find_python_class
+from nnunetv2.inference.predict_from_raw_data import nnUNetPredictor
+from nnunetv2.utilities.plans_handling.plans_handler import PlansManager
+from nnunetv2.utilities.label_handling.label_handling import (
+    determine_num_input_channels,
+)
+</code></pre>
+<p>My expected output for <code>length-sort=true</code> and <code>force-sort-within-sections=true</code> would be</p>
+<pre><code class="language-python">import os
+import contextlib
+from logging import INFO
+from pathlib import Path
+from typing import List, Tuple
+from os.path import join, isdir
+
+import yaml
+import torch
+import nnunetv2
+from tqdm import tqdm
+from flwr.common.logger import log
+from nnunetv2.paths import nnUNet_raw
+from nnunetv2.ensembling.ensemble import ensemble_folders
+from nnunetv2.utilities.label_handling.label_handling import (
+    determine_num_input_channels,
+)
+from nnunetv2.inference.predict_from_raw_data import nnUNetPredictor
+from nnunetv2.utilities.plans_handling.plans_handler import PlansManager
+from nnunetv2.utilities.find_class_by_name import recursive_find_python_class
+</code></pre>
+<p>To take this one step further, my actual ideal sort order would support some 'overriding rules' such as keeping imports from the same package together, and having imports that span multiple lines at the bottom. I don't know how complicated this would be to implement but it would be great if we could have sorting rules and order them based on priority. Something such as:</p>
+<pre><code class="language-python">import os
+import contextlib
+from logging import INFO
+from pathlib import Path
+from typing import List, Tuple
+from os.path import join, isdir
+
+import yaml
+import torch
+import nnunetv2
+from tqdm import tqdm
+from flwr.common.logger import log
+from nnunetv2.paths import nnUNet_raw
+from nnunetv2.ensembling.ensemble import ensemble_folders
+from nnunetv2.inference.predict_from_raw_data import nnUNetPredictor
+from nnunetv2.utilities.plans_handling.plans_handler import PlansManager
+from nnunetv2.utilities.find_class_by_name import recursive_find_python_class
+from nnunetv2.utilities.label_handling.label_handling import (
+    determine_num_input_channels,
+)
+</code></pre>
+<p>I could create a custom section for all the nnunet imports to keep them grouped together, but the other problems remain. Is there a way for me to get the expected or desired behaviour, if not would this be a hard feature to add?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @AlexWaygood on 2024-11-06 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-06 17:48</div>
+            <div class="timeline-body"><p>This seems to match isort's behavior, so I'd prefer not to change it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-08 03:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PyCQA/isort/issues/2304.html">PyCQA/isort#2304</a> on 2024-11-20 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9870.html">astral-sh/ruff#9870</a> on 2025-12-05 19:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provide `pip` -&gt; `uv pip` alias in virtual environments - astral-sh/uv #1331</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Provide `pip` -&gt; `uv pip` alias in virtual environments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1331">#1331</a>
+        opened by <a href="https://github.com/vitalik">@vitalik</a>
+        on 2024-02-15 20:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vitalik">@vitalik</a> on 2024-02-15 20:22</div>
+            <div class="timeline-body"><p>mabye when uv creates virtualenv it should also create &quot;symlink&quot; for pip to <code>uv pip</code> ?</p>
+<pre><code>$ uv venv
+...
+
+$ uv pip install ...
+...
+
+$ source .venv/bin/activate
+...
+
+$ pip freeze
+uv==0.1.0
+
+# ^ this is a bit unexpected  &lt;---
+
+$ uv pip freeze
+annotated-types==0.6.0
+asgiref==3.7.2
+certifi==2024.2.2
+charset-normalizer==3.3.2
+django==5.0.2
+django-ninja==1.1.0
+idna==3.6
+pydantic==2.6.1
+pydantic-core==2.16.2
+requests==2.31.0
+sqlparse==0.4.4
+typing-extensions==4.9.0
+urllib3==2.2.0
+</code></pre>
+<pre><code>$ which pip
+/Users/vitaliy/.pyenv/shims/pip #  global (unexpected)
+
+$ which python
+/private/tmp/test/.venv/bin/python # from venv (good)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-15 20:24</div>
+            <div class="timeline-body"><p>Hi! That's kind of a fun idea! I'm a little hesitant to step on the <code>pip</code> namespace <em>automatically</em>, but maybe there's something here.</p>
+<p>You can seed <code>pip</code> if you want with <code>uv venv --seed</code> but of course we think <code>uv pip</code> is better to use :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-02-15 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "pip freeze" to "Provide `pip` -> `uv pip` alias in virtual environments" by @zanieb on 2024-02-15 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vitalik">@vitalik</a> on 2024-02-15 20:28</div>
+            <div class="timeline-body"><p>but this is what default <code>python -m venv</code> does - it creates a bin/pip which looks like this:</p>
+<pre><code>#!/path/to/your/.venv/bin/python
+# -*- coding: utf-8 -*-
+import re
+import sys
+from pip._internal.cli.main import main
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(main())
+</code></pre>
+<p>while uv does not do that - so now if I accidentally run &quot;pip install something&quot; it will be installed globally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-15 20:31</div>
+            <div class="timeline-body"><p>Yeah I that's fair — I think #1330 may address a small part of that concern but I like your idea too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-02-15 21:17</div>
+            <div class="timeline-body"><p>(Pip maintainer here) I'd be strongly against this because <code>pip</code> and <code>uv pip</code> have different command sets and behaviours. It would be far too easy to end up with users reporting issues with pip when they are actually using <code>uv pip</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vitalik">@vitalik</a> on 2024-02-15 21:33</div>
+            <div class="timeline-body"><p>@pfmoore @zanieb ok... so maybe <code>--seed</code> should be enabled by default ?</p>
+<p>I think it would be the most annoying thing - activating venv and then installing stuff to global with global pip</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jgauth">@jgauth</a> on 2024-02-15 22:57</div>
+            <div class="timeline-body"><p>+1 that the default behavior is quite confusing/unexpected:</p>
+<pre><code class="language-bash">$ uv venv -p 3.11
+
+Using Python 3.11.8 interpreter at /opt/Python3.11.8/bin/python3.11
+Creating virtualenv at: .venv
+
+$ uv pip freeze
+# no output -- good, no packages have been installed to this venv
+
+$ source .venv/bin/activate
+
+$ pip freeze
+# outputs all the packages installed on my system installation, even with venv active
+annotated-types==0.6.0
+ansible-base==2.10.8
+...
+
+$ which pip
+/home/jgauthier/.local/bin/pip
+# venv doesn't change what `pip` I'm using
+</code></pre>
+<p>compared to what I was expecting, based on how <code>python3 -m venv</code> works:</p>
+<pre><code>$ python3.11 -m venv .venv
+
+$ source .venv/bin/activate
+
+
+$ pip freeze
+# no output (no packages installed)
+
+$ which pip
+/home/jgauthier/.local/bin/pip
+# venv _does_ change what `pip` I'm using
+</code></pre>
+<p><code>--seed</code> does fix this, but not having it default seems likely to lead to confusion, and possibly even people installing packages to the system, when they think they're installing to the venv e.g.:</p>
+<pre><code>$ uv venv -p 3.11
+Using Python 3.11.8 interpreter at /opt/Python3.11.8/bin/python3.11
+Creating virtualenv at: .venv
+
+$ source .venv/bin/activate
+
+$ pip install redis
+# oh no, this installed to system packages
+</code></pre>
+<p>This ^ could be quite destructive if you're unlucky / not careful</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-02-15 22:59</div>
+            <div class="timeline-body"><p>IMHO uv should be symlink into the virtualenv, and operate automatically in that virtualenv</p>
+<p>now, I'm stuck if you don't activate  the venv  (whould should be optional):</p>
+<pre><code>&gt; uv venv foo
+&gt; cd foo
+
+# this currently fails
+&gt; uv pip install pytest
+    error: Failed to locate a virtualenv or Conda environment (checked: `VIRTUAL_ENV`, `CONDA_PREFIX`, and `.venv`). Run `uv venv` to create a virtualenv.
+
+# hopefully this works in the future
+&gt; bin/uv pip install pytest
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-02-15 23:11</div>
+            <div class="timeline-body"><p>Maybe the correct approach is to not call the <code>uv</code> subcommand <code>uv pip</code> in the first place? Then the possibility of confusing the two is substantially reduced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MithicSpirit">@MithicSpirit</a> on 2024-02-15 23:46</div>
+            <div class="timeline-body"><blockquote>
+<p>while uv does not do that - so now if I accidentally run &quot;pip install something&quot; it will be installed globally</p>
+</blockquote>
+<p>I recommend using <code>alias pip='python -m pip'</code> globally (i.e., in your shell's rc file) so that it always uses the pip module from the current python environment (and fails if one does not exist).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-02-15 23:58</div>
+            <div class="timeline-body"><p>There's also the <a href="https://pip.pypa.io/en/stable/installation/#standalone-zip-application">zipapp distribution of pip</a> which will get executed by the active Python environment.</p>
+<p>The reality here, though, is that pip is designed to be installed in every environment. That's a historical consequence of a number of things, and it's not ideal, but it's really hard to change. And there's never been any real incentive to do so, as there's never been any viable alternative to pip until now. Simply by <em>being</em> an alternative to pip, <code>uv</code> is going to need to address some of the consequences of disrupting the status quo, where it's expected that you can always run an installer via <code>subprocess.run([sys.executable, &quot;-m&quot;, &quot;pip&quot;, ...])</code>, or <code>/path/to/env/python -m pip</code>. The problem is wider than simply adding a <code>pip</code> shim that runs <code>uv</code>.</p>
+<p>There's a discussion at https://discuss.python.org/t/pip-plans-to-introduce-an-alternative-zipapp-deployment-method/17431 which adds some context to all of this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 00:28</div>
+            <div class="timeline-body"><p>There are some <a href="https://discuss.python.org/t/uv-another-rust-tool-written-to-replace-pip/46039/10">very fair concerns</a> about this idea. I think we are unlikely to do it; solving this is going to require more discussion and consideration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HarlanHeilman">@HarlanHeilman</a> on 2024-02-16 04:02</div>
+            <div class="timeline-body"><p>Perhaps a solution would be a <code>uv init</code> that works similarly to the zoxide init https://github.com/ajeetdsouza/zoxide (If you are unfamiliar, it allows you to map over the cd command). This way the user can choose &quot;at their own risk&quot; to map over pip and venv with uv's implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-02-16 08:57</div>
+            <div class="timeline-body"><p>I’m not sure why there is any need to overwrite the pip command at all. In spite of the current name, <code>uv pip</code> and <code>pip</code> are completely separate and independent commands/tools. I don’t think we want <code>uv pip</code> to be constrained to follow pip’s interface, for example - it already has some options pip doesn’t have, and omits some pip functionality that it may never want to add.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-02-16 11:37</div>
+            <div class="timeline-body"><p>maybe rename &quot;uv pip&quot; to &quot;uv rip&quot;  :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-02-16 12:03</div>
+            <div class="timeline-body"><p>All the good names <a href="https://prefix.dev/blog/introducing_rip">are taken</a>, aren't they? :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/layday">@layday</a> on 2024-02-16 14:21</div>
+            <div class="timeline-body"><p>Uh, <code>uv pipish</code>? It's pip...ish 🤯</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1657.html">astral-sh/uv#1657</a> on 2024-02-18 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-18 17:25</div>
+            <div class="timeline-body"><p>I do not think we're going to do this.</p>
+<p>See instead:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/1632</li>
+<li>https://github.com/astral-sh/uv/issues/1657</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-18 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6593.html">astral-sh/uv#6593</a> on 2024-08-25 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7534.html">astral-sh/uv#7534</a> on 2024-09-19 09:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10949.html">astral-sh/uv#10949</a> on 2025-01-25 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9452.html">astral-sh/uv#9452</a> on 2025-01-25 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11550.html">astral-sh/uv#11550</a> on 2025-02-16 05:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12335.html">astral-sh/uv#12335</a> on 2025-03-20 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12604.html">astral-sh/uv#12604</a> on 2025-04-01 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 17:55</div>
+            <div class="timeline-body"><p>I've opened another tracking issue for this concept (with some context on our understanding of the experience here): https://github.com/astral-sh/uv/issues/12604</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

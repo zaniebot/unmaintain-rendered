@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Possibly incorrect generated usage grammar - clap-rs/clap #89</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Possibly incorrect generated usage grammar</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/89">#89</a>
+        opened by <a href="https://github.com/Byron">@Byron</a>
+        on 2015-04-30 07:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Byron">@Byron</a> on 2015-04-30 07:00</div>
+            <div class="timeline-body"><p>When specifying an argument like this:</p>
+<pre><code class="language-Rust">Arg::with_name(&quot;url&quot;)
+    .long(&quot;scope&quot;)
+    .help(&quot;Specify the authentication a method should be executed in. Each scope requires the user to grant this application permission to use it.If unset, it defaults to the shortest scope url for a particular method.&quot;)
+    .multiple(true)
+    .takes_value(true))
+</code></pre>
+<p>The auto-generated grammar shows up like this <code>--scope &lt;url&gt;...</code>:</p>
+<pre><code class="language-bash">groupsmigration1 0.2.0
+Sebastian Thiel &lt;byronimo@gmail.com&gt;
+Groups Migration Api.
+
+USAGE:
+    groupsmigration1 [FLAGS] [OPTIONS] [SUBCOMMANDS]
+
+FLAGS:
+        --debug         Output all server communication to standard error. `tx` and `rx` are placed into the same stream.
+        --debug-auth    Output all communication related to authentication to standard error. `tx` and `rx` are placed into the same stream.
+    -h, --help          Prints help information
+    -v, --version       Prints version information
+
+OPTIONS:
+        --config-dir &lt;folder&gt;    A directory into which we will store our persistent data. Defaults to a user-writable directory that we will create during the first invocation.[default: ~/.google-service-cli
+        --scopes &lt;url&gt;...        Specify the authentication a method should be executed in. Each scope requires the user to grant this application permission to use it.If unset, it defaults to the shortest scope url for a particular method.
+
+SUBCOMMANDS:
+    archive
+    help       Prints this message
+
+All documentation details can be found at http://byron.github.io/google-apis-rs/google_groupsmigration1_cli
+</code></pre>
+<p>This grammar was used similarly by <code>docopt</code>, but meant you could call it like <code>program --scope url1 url2</code>. However, with <code>clap</code> it only works if the flag is repeated: <code>program --scope url1 --scope url2</code> which should be resulting in a different grammar, more along the lines of <code>[--scope &lt;url&gt;]...</code>.</p>
+<p>I believe this inconsistency should be reviewed, either docopt has an issue there, or clap :).</p>
+<h2>Side note</h2>
+<p>In any case, it would be great if the expected number of arguments could be <code>+</code> (<em>one or more</em>) as I also have the case where I specify <code>-r &lt;value&gt;...</code>, which previously allowed me to make calls like <code>-r v1 v2 v3 v4</code>, which is very convenient. With <code>clap</code>, I will now have to write <code>-r v1 -r v2 -r v3 -r v4</code>, resulting in much more noise.
+This one might be related to #88, which requests a fixed amount of arguments. When thinking about python's <code>argparse</code> module, I remember that they have the notion of <code>num_args</code>, which is either <code>+</code>, <code>*</code> or an explicit number. Implementing it this way would probably be a breaking change as <code>takes_value(true|false)</code> would be more like <code>takes_value(Values::ZeroOrMore|Values::OneOrMore|Values::Exactly(5)|Values::None)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-04-30 13:13</div>
+            <div class="timeline-body"><p>Yeah, I think this is kind of related to #88. The way I plan on addressing this issue is to allow <code>-r &lt;value&gt; &lt;value&gt; &lt;value&gt; [...]</code> which would be short-hand for <code>-r &lt;value&gt; -r &lt;value&gt; -r &lt;value&gt;</code> and the usage string would still parse as <code>-r &lt;value&gt;...</code></p>
+<p>Then more specifically for #88, I'm working on a say similiar to how to how you stated <code>OneOrMore|Exactly</code> perhaps with names, in which case the usage string would parse <code>[-r &lt;val1&gt; &lt;val2&gt;]</code> etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @kbknapp on 2015-04-30 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Byron">@Byron</a> on 2015-04-30 14:42</div>
+            <div class="timeline-body"><p>Even better ! I am looking forward to trying it. Once that feature is implemented, along with better 'requires' error messages, the command-line parsing capabilities of all 78 google service CLIs have officially arrived.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-04-30 23:40</div>
+            <div class="timeline-body"><p>This should be good with #91</p>
+<p>You'll now be able to use the shorthand <code>-r value value value</code> as sugar for <code>-r value -r value -r value</code>, no configuration change needed. Now for your particular use case, you can also add names to the values, so that in the help/usage strings show something like <code>-r &lt;file&gt; &lt;mode&gt; &lt;etc&gt;</code>. As detailed in the docs,  the names are cosmetic only for the help/usage/error messages. They are still accessed via the <code>.values_of(&quot;arg&quot;)</code>, but they are stored in order, so for the example above, the first value is <code>file</code>, the second value is <code>mode</code>, etc.</p>
+<p>The one other thing this PR includes is a <code>min_values()</code>, <code>max_values()</code>, and <code>number_of_values()</code> to specify the min, max, and exact number of &quot;values&quot; required to satisfy an argument. Let me know if you find any issues, as this is a rather large change and although all my tests pass, it's always possible to miss something!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2015-04-30 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/88.html">clap-rs/clap#88</a> on 2015-05-01 02:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

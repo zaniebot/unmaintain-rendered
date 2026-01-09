@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline mode confusion - astral-sh/uv #4728</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Offline mode confusion</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/4728">#4728</a>
+        opened by <a href="https://github.com/minusf">@minusf</a>
+        on 2024-07-02 12:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/minusf">@minusf</a> on 2024-07-02 12:49</div>
+            <div class="timeline-body"><p>Here I go again trying to use <code>uv</code> as poor man's devpi offline replacement.</p>
+<p>Some confusions about this were cleared up in an issue before (https://github.com/astral-sh/uv/issues/3468)</p>
+<p>Everything is working as explained there, however it doesn't seem to work for private packages (not on pypi).</p>
+<p>Consider the following case (first I download our private package, but it could come from extra index url as well):</p>
+<pre><code>$ uv pip install /path/to/private_package-0.1.whl  # ends up in uv cache
+$ uv pip install all_the_rest_from_pypi
+</code></pre>
+<p>when blowing away this <code>venv</code> and trying to recreate it offline, <code>private_package.whl</code> is not picked up from the cache (<code>~/Library/Caches/uv/wheels-v1/url/...</code>):</p>
+<pre><code>$ uv pip install private_package==0.1
+  × No solution found when resolving dependencies:
+  ╰─▶ Because private_package was not found in the package registry and you require private_package==0.1, we can conclude that the requirements are unsatisfiable.
+
+$ uv --offline pip install private_package==0.1
+  × No solution found when resolving dependencies:
+  ╰─▶ Because private_package was not found in the cache and you require private_package==0.1, we can conclude that the requirements are unsatisfiable.
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+      hint: Packages were unavailable because the network was disabled
+</code></pre>
+<p>My happy path expectation was that once I add <code>private_package-0.1.whl</code> to an existing <code>venv</code>, it will be cached forever and I don't need to setup an extra index url and/or keep the private packages offline manually in some folder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ewianda">@ewianda</a> on 2024-11-06 15:11</div>
+            <div class="timeline-body"><p>Slightly related to this is that if run <code>uv pip compile</code> repeatedly with no change to the <code>requirements.in</code> , it doesn't utilize the cache</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-06 15:34</div>
+            <div class="timeline-body"><p>It seems likely that we are attempting to check the index for available package versions and your private index does not allow caching?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-06 15:34</div>
+            <div class="timeline-body"><p>Can you provide verbose logs with <code>-v</code>? Using a minimal <code>requirements.in</code> would be nice. Be sure to redact any credentials.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ewianda">@ewianda</a> on 2024-11-06 17:47</div>
+            <div class="timeline-body"><blockquote>
+<p>your private index does not allow caching?z</p>
+</blockquote>
+<p>I think this is the part that confuses me. I would have thought that the caching depends on the file being present in <code>~/.cache/uv</code> possibly by using the sha256 or something similar and not on the pypi index.</p>
+<p>I am using Google Artifact registry which doesn't support index cache</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-06 17:50</div>
+            <div class="timeline-body"><p>We cache HTTP responses from the index — if they do not allow caching we cannot use those to see what packages are available.</p>
+<p>You'll need to provide more information as requested above for me to know if this is relevant here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ewianda">@ewianda</a> on 2024-11-06 19:21</div>
+            <div class="timeline-body"><p><a href="https://github.com/user-attachments/files/17651967/re_install.txt">re_install.txt</a>
+<a href="https://github.com/user-attachments/files/17651968/clean_install.txt">clean_install.txt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-06 19:27</div>
+            <div class="timeline-body"><p>Sorry it looks like those both succeed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ewianda">@ewianda</a> on 2024-11-06 19:43</div>
+            <div class="timeline-body"><p>My bad. I think I might have hijacked this issue; I was pointing out that since the private index doesn't use the local file as a cache, It takes as long to reinstall even with no change to the requirements.</p>
+<p>If I pass <code>--offline</code>, I get the same error as OP</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-06 19:59</div>
+            <div class="timeline-body"><p>There it looks like there are two problems:</p>
+<pre><code>           uv_client::cached_client::read_and_parse_cache file=/home/ewianda/.cache/uv/wheels-v2/index/5b6580228aafb78d/cowsay/cowsay-6.1-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path=&quot;/home/ewianda/.cache/uv/wheels-v2/index/5b6580228aafb78d/cowsay/cowsay-6.1-py3-none-any.msgpack&quot;
+            0.718341s   0ms DEBUG uv_client::cached_client Found stale response for: https://us-python.pkg.dev/b6i-cicd/benchpython/cowsay/cowsay-6.1-py3-none-any.whl#sha256=274b1e6fc1b966d53976333eb90ac94cb07a450a700b455af9fbdf882244b30a
+            0.718379s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://us-python.pkg.dev/b6i-cicd/benchpython/cowsay/cowsay-6.1-py3-none-any.whl#sha256=274b1e6fc1b966d53976333eb90ac94cb07a450a700b455af9fbdf882244b30a
+           uv_client::cached_client::revalidation_request url=&quot;https://us-python.pkg.dev/b6i-cicd/benchpython/cowsay/cowsay-6.1-py3-none-any.whl#sha256=274b1e6fc1b966d53976333eb90ac94cb07a450a700b455af9fbdf882244b30a&quot;
+            1.034380s 316ms DEBUG uv_client::cached_client Found modified response for: https://us-python.pkg.dev/b6i-cicd/benchpython/cowsay/cowsay-6.1-py3-none-any.whl#sha256=274b1e6fc1b966d53976333eb90ac94cb07a450a700b455af9fbdf882244b30a
+           uv_client::cached_client::new_cache file=/home/ewianda/.cache/uv/wheels-v2/index/5b6580228aafb78d/cowsay/cowsay-6.1-py3-none-any.msgpack
+           uv_client::registry_client::read_metadata_range_request wheel=cowsay-6.1-py3-none-any.whl
+        1.034478s 316ms WARN uv_client::registry_client Range requests not supported for cowsay-6.1-py3-none-any.whl; streaming wheel
+</code></pre>
+<p>&quot;Found stale response for&quot; indicates that the cached HTTP response is outdated, i.e., we have exceeded the cache time and must check again.</p>
+<p>&quot;read_metadata_range_request wheel=cowsay-6.1-py3-none-any.whl&quot; indicates that the index does not support a metadata endpoint and we must read the wheel to determine the package's requirements. I believe we can install from cached wheels, but not read metadata from them.</p>
+<p>As a bonus problem, &quot;Range requests not supported&quot; indicates the registry does not support range requests so we must stream the whole wheel to determine the packge's requirements.</p>
+<p>I believe the solution to this would be to use a proper <code>uv.lock</code> file where we can pin to specific download URLs and avoid having to read metadata from the index.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

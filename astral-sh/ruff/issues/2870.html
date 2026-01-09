@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive TCH002 check - astral-sh/ruff #2870</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive TCH002 check</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2870">#2870</a>
+        opened by <a href="https://github.com/Olegt0rr">@Olegt0rr</a>
+        on 2023-02-13 21:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Olegt0rr">@Olegt0rr</a> on 2023-02-13 21:23</div>
+            <div class="timeline-body"><p>Since I import <code>cast</code> and use it in the code - <code>TCH002</code> rule stop working...</p>
+<h2>Wrong behaviour (with casting)</h2>
+<pre><code class="language-python">from typing import cast
+
+from aiogram.types import Message, User
+
+
+async def handle_start(message: Message) -&gt; None:
+    &quot;&quot;&quot;Handle /start command.&quot;&quot;&quot;
+    user = cast(User, message.from_user)
+    await message.answer(f&quot;Hi, {user.full_name}&quot;)
+
+</code></pre>
+<p>There's no <code>TCH002</code> error about <code>Message</code></p>
+<h2>Right behaviour (without casting)</h2>
+<pre><code class="language-python">from aiogram.types import Message
+
+
+async def handle_start(message: Message) -&gt; None:
+    &quot;&quot;&quot;Handle /start command.&quot;&quot;&quot;
+    user = message.from_user
+    await message.answer(f&quot;Hi, {user.full_name}&quot;)
+
+</code></pre>
+<p>TCH002 Move third-party import <code>aiogram.types.Message</code> into a type-checking block</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-13 21:29</div>
+            <div class="timeline-body"><p>I think that is correct:</p>
+<pre><code class="language-python">from typing import TYPE_CHECKING, cast
+
+
+if TYPE_CHECKING:
+        from aiogram.types import Message, User
+
+
+def handle_start(message: &quot;Message&quot;) -&gt; None:
+    &quot;&quot;&quot;Handle /start command.&quot;&quot;&quot;
+    user = cast(User, message.from_user)
+    message.answer(f&quot;Hi, {user.full_name}&quot;)
+
+
+handle_start(type('foo', (object,), {'answer:': lambda m: print(m)}))
+</code></pre>
+<pre><code>$ python3 foo.py
+Traceback (most recent call last):
+  File &quot;foo.py&quot;, line 14, in &lt;module&gt;
+    handle_start(type('foo', (object,), {'answer:': lambda m: print(m)}))
+  File &quot;foo.py&quot;, line 10, in handle_start
+    user = cast(User, message.from_user)
+NameError: name 'User' is not defined
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Olegt0rr">@Olegt0rr</a> on 2023-02-13 21:31</div>
+            <div class="timeline-body"><p>You forgot to quote it...</p>
+<p>try this:</p>
+<pre><code class="language-python">from typing import TYPE_CHECKING, cast
+from aiogram.types import User
+
+if TYPE_CHECKING:
+    from aiogram.types import Message
+
+
+def handle_start(message: &quot;Message&quot;) -&gt; None:
+    &quot;&quot;&quot;Handle /start command.&quot;&quot;&quot;
+    user = cast(User, message.from_user)
+    message.answer(f&quot;Hi, {user.full_name}&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-13 21:37</div>
+            <div class="timeline-body"><p>alright, only <code>Message</code> should be in the <code>TYPE_CHECKING</code> block.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Olegt0rr">@Olegt0rr</a> on 2023-02-13 21:38</div>
+            <div class="timeline-body"><p>So in my first message in <code>Wrong behaviour</code> section there's no TCH002 error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-13 21:39</div>
+            <div class="timeline-body"><p>@Olegt0rr - This is because we have &quot;strict mode&quot; disabled by default. So if you import multiple members from a module, and at least one of them is required at runtime, we don't flag the others.</p>
+<p>You can change this behavior like:</p>
+<pre><code class="language-toml">[tool.ruff.flake8-type-checking]
+strict = true
+</code></pre>
+<p>Which gives you:</p>
+<pre><code>foo.py:3:27: TCH002 Move third-party import `aiogram.types.Message` into a type-checking block
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-13 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Olegt0rr">@Olegt0rr</a> on 2023-02-13 21:41</div>
+            <div class="timeline-body"><p>@charliermarsh, thanks for the explanation!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-13 21:43</div>
+            <div class="timeline-body"><p>@Olegt0rr - No prob! Let me know if you run into issues with it. The reasoning, IIRC, is that if you're <em>already</em> importing <code>aiogram.types</code> to get <code>User</code>, it's no more expensive to import <code>Message</code> too at runtime, so it's often not considered worthwhile to enforce.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

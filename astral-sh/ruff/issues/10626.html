@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff.toml parse error - unknown field &quot;lint&quot; - astral-sh/ruff #10626</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff.toml parse error - unknown field &quot;lint&quot;</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10626">#10626</a>
+        opened by <a href="https://github.com/leitcode">@leitcode</a>
+        on 2024-03-27 11:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/leitcode">@leitcode</a> on 2024-03-27 11:24</div>
+            <div class="timeline-body"><p>I have the following ruffl.toml file:</p>
+<pre><code>[lint]
+ignore = [&quot;E501&quot;, &quot;E402&quot;]
+</code></pre>
+<p>I keep getting the error:</p>
+<pre><code>Ruff: Lint failed (ruff failed
+  Cause: Failed to parse `c:\&lt;PathToProject&gt;\ruff.toml`: TOML parse error at line 1, column 2
+  |
+1 | [lint]
+  |  ^^^^
+unknown field `lint`, expected one of `allowed-confusables`, `builtins`, `cache-dir`, `dummy-variable-rgx`, `exclude`, `extend`, `extend-exclude`, `extend-include`, `extend-ignore`, `extend-select`, `extend-fixable`, `extend-unfixable`, `external`, `fix`, `fix-only`, `fixable`, `output-format`, `force-exclude`, `ignore`, `ignore-init-module-imports`, `include`, `line-length`, `tab-size`, `logger-objects`, `required-version`, `respect-gitignore`, `select`, `show-source`, `show-fixes`, `src`, `namespace-packages`, `target-version`, `preview`, `task-tags`, `typing-modules`, `unfixable`, `flake8-annotations`, `flake8-bandit`, `flake8-bugbear`, `flake8-builtins`, `flake8-comprehensions`, `flake8-copyright`, `flake8-errmsg`, `flake8-quotes`, `flake8-self`, `flake8-tidy-imports`, `flake8-type-checking`, `flake8-gettext`, `flake8-implicit-str-concat`, `flake8-import-conventions`, `flake8-pytest-style`, `flake8-unused-arguments`, `isort`, `mccabe`, `pep8-naming`, `pycodestyle`, `pydocstyle`, `pyflakes`, `pylint`, `pyupgrade`, `format`, `per-file-ignores`, `extend-per-file-ignores`
+
+)
+</code></pre>
+<p>I am using VSCode with the Ruff extension (v2024.16.0, shipping with ruff 0.3.1).</p>
+<p>According to the documentation (https://docs.astral.sh/ruff/configuration/) the <code>ruff.toml</code> file seems correct, any idea why the <code>lint</code> field is not supported?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-27 11:46</div>
+            <div class="timeline-body"><p>That looks correct to me. I wonder if the extension picks up some older ruff version from your global path or your venv.</p>
+<p>Would you mind sharing the output of: <em>Show output channels:...</em>, Select <em>ruff</em>. It should be something like</p>
+<pre><code>2024-03-27 12:42:00.995 [info] Name: Ruff
+2024-03-27 12:42:00.995 [info] Module: ruff
+2024-03-27 12:42:00.995 [info] Python extension loading
+2024-03-27 12:42:00.995 [info] Waiting for interpreter from python extension.
+2024-03-27 12:42:00.995 [info] Python extension loaded
+2024-03-27 12:42:00.995 [info] Server run command: /home/micha/.pyenv/versions/3.13-dev/bin/python /home/micha/.vscode/extensions/charliermarsh.ruff-2024.16.0-linux-x64/bundled/tool/server.py
+2024-03-27 12:42:00.995 [info] Server: Start requested.
+2024-03-27 12:42:00.995 [info] [Trace - 12:42:00 PM] Sending request 'initialize - (0)'.
+...
+...
+2024-03-27 12:42:01.972 [info] Running Ruff with: /home/micha/astral/ruff/target/debug/ruff ['check', '--force-exclude', '--no-cache', '--no-fix', '--quiet', '--output-format', 'json', '-', '--stdin-filename', '/home/micha/astral/isort/isort/core.py']
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leitcode">@leitcode</a> on 2024-03-27 12:38</div>
+            <div class="timeline-body"><p>Thanks, that was the issue.
+The extension picked up some old ruff installation which was installed as python package.</p>
+<pre><code>...
+Found ruff 0.0.291 at C:\Users\&lt;User&gt;\AppData\Roaming\Python\Python311\Scripts\ruff.EXE
+...
+</code></pre>
+<p><code>ruff.toml</code> is now parsed successfully after updating via <code>pip install ruff -U</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-27 12:40</div>
+            <div class="timeline-body"><p>I'm glad to hear that. One improvement to our VS code extension could be showing the Ruff version in the toolbar (similar to Python) to ease debugging. CC: @snowsignal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-03-27 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-03-27 19:11</div>
+            <div class="timeline-body"><p>@MichaReiser I like that idea! I'll open an issue for it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

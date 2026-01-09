@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM108 suggests to convert TYPE_CHECKING block - astral-sh/ruff #8071</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM108 suggests to convert TYPE_CHECKING block</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8071">#8071</a>
+        opened by <a href="https://github.com/mrcljx">@mrcljx</a>
+        on 2023-10-19 18:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mrcljx">@mrcljx</a> on 2023-10-19 18:08</div>
+            <div class="timeline-body"><p>When using type checkers like Mypy, it's sometimes necessary to give them different code to inspect. This is done via <code>if TYPE_CHECKING</code> blocks, e.g.</p>
+<pre><code>from typing import TYPE_CHECKING
+import functools
+
+def _retry(callback, count: int) -&gt; None:
+  pass
+
+if TYPE_CHECKING:
+  retry = _retry
+else:
+  retry = functools.partial(_retry, count=3)
+</code></pre>
+<p>The rule SIM108 will emit (or <code>--unsafe-fixes</code>):</p>
+<pre><code>example.py:7:1: SIM108 Use ternary operator `retry = _retry if TYPE_CHECKING else functools.partial(_retry, count=3)` instead of `if`-`else`-block
+</code></pre>
+<p>In that case, type checkers like Mypy would not enable their special handling of <code>if TYPE_CHECKING</code> though, inferring the type of <code>retry</code> as a union type between the two expressions.</p>
+<p>The SIM108 rule should ignore this case.</p>
+<ul>
+<li><code>ruff --isolated --select SIM108 example.py</code></li>
+<li>Version: 0.1.0</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-19 18:09</div>
+            <div class="timeline-body"><p>Yeah this is definitely wrong -- thanks for reporting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-19 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-10-19 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8072.html">astral-sh/ruff#8072</a> on 2023-10-19 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-19 23:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

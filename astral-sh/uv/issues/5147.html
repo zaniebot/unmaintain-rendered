@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feature: support `--link-mode=symlink` - astral-sh/uv #5147</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>feature: support `--link-mode=symlink`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/5147">#5147</a>
+        opened by <a href="https://github.com/hutch3232">@hutch3232</a>
+        on 2024-07-17 15:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hutch3232">@hutch3232</a> on 2024-07-17 15:43</div>
+            <div class="timeline-body"><p>Currently <code>--link-mode</code> supports <code>copy</code>, <code>hardlink</code>, and <code>clone</code>. I have my <code>UV_CACHE_DIR</code> set to a mounted drive which prevents hardlinks and cloning (&quot;invalid cross-device link&quot;). Symlinks would work, however. This could really increase performance for my situation, rather than copying over a bunch of files. When I work in R, I use <code>renv</code> which uses symlinks to a central cache successfully in the proposed way: https://github.com/rstudio/renv.</p>
+<p>More details about the specific use-case:
+I work in ephemeral docker containers. My workflow is generally to start by running <code>uv pip sync requirements.txt</code> which currently is triggering a copy for each package. I mount a persistent drive to my container so that my <code>uv</code> cache persists from session to session. Also worth noting that some collaborators mount the same drive and use the same cache, so that we benefit from each others' install time. Hopefully that isn't too risky, but it has worked well so far and works great in the aforementioned <code>renv</code> package in R.</p>
+<p>Related issue:
+https://github.com/astral-sh/uv/issues/2103</p>
+<p>Thanks for making this amazing project!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 15:44</div>
+            <div class="timeline-body"><p>I don't mind supporting this, I was kinda waiting for it to be requested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-07-17 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2024-07-17 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2024-07-17 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 16:06</div>
+            <div class="timeline-body"><p>Should be straightforward-ish if anyone wants to submit a PR -- it'd basically be copying the hardlink code, but changing the operation we use at the end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielenricocahall">@danielenricocahall</a> on 2024-07-19 01:20</div>
+            <div class="timeline-body"><p>Hi @charliermarsh! Would it be a matter of swapping <code>fs::hard_link</code> for <code>std::os::unix::fs::symlink</code> (after adding a <code>Symlink</code> value to the enum and mapping it to a new callable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-19 01:26</div>
+            <div class="timeline-body"><p>@danielenricocahall - Yeah that sounds roughly correct to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-19 01:27</div>
+            <div class="timeline-body"><p>We'll also need <code>std::os::windows::fs::symlink_file</code> or similar on Windows which will probably fail for most people due to how symlink permissions work on Windows, but that's fine, they just shouldn't opt-in to this mode if they haven't enabled symlinks :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5208.html">astral-sh/uv#5208</a> on 2024-07-19 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-19 12:41</div>
+            <div class="timeline-body"><p>Closed by https://github.com/astral-sh/uv/pull/5208. Thanks @danielenricocahall!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-19 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helderco">@helderco</a> on 2024-07-20 02:34</div>
+            <div class="timeline-body"><p>I was about to ask for this for the same reasons and just found out it’s been released already! 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/skshetry">@skshetry</a> on 2024-07-20 05:05</div>
+            <div class="timeline-body"><p>I wonder if <code>uv</code> can symlink packages directly instead of per-file (similar to <code>virtualenv --symlink-app-data</code>), which could make it much faster than hardlink/clone.</p>
+<p>On macOS, you can also clone a directory, but I see that <code>uv</code> already does just that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-20 11:06</div>
+            <div class="timeline-body"><p>That’s a good idea. We should probably symlink at the directory level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5244.html">astral-sh/uv#5244</a> on 2024-07-20 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-20 11:15</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/issues/5244</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frainfreeze">@frainfreeze</a> on 2025-09-19 19:24</div>
+            <div class="timeline-body"><p>are there docs for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hutch3232">@hutch3232</a> on 2025-09-19 19:33</div>
+            <div class="timeline-body"><p>https://docs.astral.sh/uv/reference/settings/#link-mode</p>
+<p>The docs mention and I'll emphasize that the devs (with good reasons) discourage using symlinks.</p>
+<p>Anecdotally they've worked tremendously well for me. I've been using them every work day since this feature was released.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: Support pinning named indexes specified in user-level configuration (uv.toml) - astral-sh/uv #9440</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: Support pinning named indexes specified in user-level configuration (uv.toml)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/9440">#9440</a>
+        opened by <a href="https://github.com/freinold">@freinold</a>
+        on 2024-11-26 12:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/freinold">@freinold</a> on 2024-11-26 12:20</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<h2>Current state</h2>
+<p>Current documentation states the following:</p>
+<blockquote>
+<p>Named indexes referenced via tool.uv.sources must be defined within the project's pyproject.toml file; indexes provided via the command-line, environment variables, or user-level configuration will not be recognized.</p>
+</blockquote>
+<p>See Docs: https://docs.astral.sh/uv/configuration/indexes/#pinning-a-package-to-an-index
+Source: https://github.com/astral-sh/uv/blob/f886d080948ec72e97404a159a1a384d58918c50/docs/configuration/indexes.md?plain=1#L104</p>
+<h2>Our problem with this</h2>
+<p>We are running a company wide package proxy (JFrog Artifactory) for all Python Packages.
+This proxy provides 2 mirrors: PyPI and Pytorch CPU Wheels.
+Each user has their own auth token for Artifactory which is baked into the index-url.
+We tried to specify the following uv.toml to be able to always download <code>torch</code> from the Pytorch Mirror:</p>
+<pre><code class="language-ini">native-tls = true
+index-strategy = &quot;unsafe-best-match&quot;
+
+[[index]]
+name = &quot;pytorch&quot;
+url = &quot;https://USER:TOKEN@artifactory.example.com/artifactory/api/pypi/pypi-pytorch-remote/simple&quot;
+explicit = true
+
+[[index]]
+url = &quot;https://https://USER:TOKEN@artifactory.example.com/artifactory/api/pypi/pypi-repos/simple&quot;
+default = true
+
+[sources]
+torch = { index = &quot;pytorch&quot; }
+</code></pre>
+<p>This currently does not work like mentioned above.</p>
+<h2>Proposal</h2>
+<p>In our case, it is not possible for us to specify the indexes inside the pyproject.toml, which would be shared between colleagues and for some projects is even open-source.</p>
+<p>Due to this, uv should support specifying named indexes in the user-level configuration file <code>uv.toml</code> as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Feature request: Support pinning named indexes specified in user configuration (uv.toml)" to "Feature request: Support pinning named indexes specified in user-level configuration (uv.toml)" by @freinold on 2024-11-26 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-11-27 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10436.html">astral-sh/uv#10436</a> on 2025-01-09 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/uglybug">@uglybug</a> on 2025-05-19 15:49</div>
+            <div class="timeline-body"><p>This would be useful for us too. Like the OP, we use Artifactory and it would make our CI much cleaner if we could set this in <code>uv.toml</code> for the CI user and in our CDE base image - taking some of the mental load off manual documentation around setting this up per-project.
+The feature as it exists is extremely useful for reducing the risk of name clash or supply chain injection, and this change would just make it a little easier to standardise across all our projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-11-03 15:42</div>
+            <div class="timeline-body"><p>Another benefit of this would be the ability to set caching headers for a named index at the user-level. As I understand it, there is no way to set custom cache control headers using the command line, only through a config like</p>
+<pre><code>[[tool.uv.index]]
+name = &quot;private-index&quot;
+url = &quot;https://pkgs.dev.azure.com/&lt;ORG&gt;/&lt;PROJECT&gt;/_packaging/&lt;FEED&gt;/pypi/simple/&quot;
+cache-control = { api = &quot;max-age=600&quot;, files = &quot;max-age=365000000, immutable&quot; }
+</code></pre>
+<p>See https://docs.astral.sh/uv/concepts/indexes/#customizing-cache-control-headers</p>
+<p>And as you cannot specify an <code>[[index]]</code> like this in <code>~/.config/uv/uv.toml</code>, It's currently not possible to get caching to work with, for example, a private Azure Artifacts index using <code>uv tool run</code>:</p>
+<pre><code>uv tool run --index &quot;https://VssSessionToken@pkgs.dev.azure.com/&lt;ORG&gt;/&lt;PROJECT&gt;/_packaging/&lt;FEED&gt;/pypi/simple/&quot; foo
+</code></pre>
+<p>See related issue:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/10359</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/freinold">@freinold</a> on 2025-11-03 16:11</div>
+            <div class="timeline-body"><p>@charliermarsh
+Is this still up for decision?</p>
+<p>As uv is adopted by more corporations and enterprises, the usage of private indexes will increase.
+Even if you provide <a href="https://astral.sh/pyx">pyx</a> as a first-class citizen and want to promote it, the support for other widely distributed solutions like Artifactory should still be there IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Phirefly9">@Phirefly9</a> on 2025-12-02 17:43</div>
+            <div class="timeline-body"><p>@charliermarsh
+This would also be useful for my team where we need to change the index a package is pulled from once we enter an air gapped environment.</p>
+<p>changing the uv.toml does not require any changes to the pyproject.toml, while currently we would have to change the pyproject and relock</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration command/guide? - astral-sh/uv #9737</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Migration command/guide?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/9737">#9737</a>
+        opened by <a href="https://github.com/samuelcolvin">@samuelcolvin</a>
+        on 2024-12-09 10:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2024-12-09 10:53</div>
+            <div class="timeline-body"><p>Is there any command or migration guide for converting an existing project to using uv?</p>
+<p><code>uv init</code> doesn't work, and I'm a bit unclear on the steps required.</p>
+<p>(I maintain too many packages, I'm excited about <code>uv</code> making that maintenance easier, not looking forward to the overhead of migration)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2024-12-09 12:06</div>
+            <div class="timeline-body"><p>from https://github.com/samuelcolvin/rtoml/pull/85 it seems like the process is:</p>
+<ul>
+<li>create a <code>.python-version</code> file if you don't want to use 3.13 by default</li>
+<li>start adding dev dependencies <code>uv add --dev ...</code></li>
+</ul>
+<p>That's kind of all, then you need to update all the places you used your old build system, but no command could help with that.</p>
+<p>I think a short section in the docs is all that's needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @AlexWaygood on 2024-12-09 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-09 18:49</div>
+            <div class="timeline-body"><p>Docs work is tracked in https://github.com/astral-sh/uv/issues/5200</p>
+<p>There was a proposed change adding <code>uv add -r pyproject.toml</code> support but it never got finished due to concerns about expectations around what would be copied.. can't find it right now. Perhaps https://github.com/astral-sh/uv/commit/9fec29d152f25680008c3201e0a7c4330fb6a863</p>
+<p>There's also https://github.com/astral-sh/uv/pull/6374 which is similar.</p>
+<p>I'd like <code>uv init</code> to &quot;work&quot; with an existing <code>pyproject.toml</code>, but I'm not sure what the behaviors should be yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> removed by @zanieb on 2024-12-09 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-12-09 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rbavery">@rbavery</a> on 2024-12-12 22:12</div>
+            <div class="timeline-body"><p>I've been following the steps here for three projects and they have worked well. I also make changes to make uv's integration with pytorch sources work.</p>
+<pre><code>torchgpu = [
+    &quot;torch==2.5.1+cu121&quot;,
+    &quot;torchvision==0.20.1+cu121&quot;,
+]
+
+[[tool.poetry.source]]
+name = &quot;pytorch-gpu&quot;
+url = &quot;https://download.pytorch.org/whl/cu121&quot;
+verify_ssl = true
+</code></pre>
+<p>becomes</p>
+<pre><code>torchgpu = [
+    &quot;torch==2.5.1&quot;,
+    &quot;torchvision==0.20.1&quot;,
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu121&quot;
+url = &quot;https://download.pytorch.org/whl/cu121&quot;
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cu121&quot;, marker = &quot;platform_system != 'Darwin'&quot;},
+]
+torchvision = [
+  { index = &quot;pytorch-cu121&quot;, marker = &quot;platform_system != 'Darwin'&quot;},
+]
+
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

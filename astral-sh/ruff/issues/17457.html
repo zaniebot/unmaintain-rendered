@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] dependency graph cycle panic during member lookup - astral-sh/ruff #17457</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] dependency graph cycle panic during member lookup</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17457">#17457</a>
+        opened by <a href="https://github.com/skshetry">@skshetry</a>
+        on 2025-04-18 04:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/skshetry">@skshetry</a> on 2025-04-18 04:15</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Running <code>red_knot check dvc</code> on <a href="https://github.com/iterative/dvc">dvc</a> codebase triggers the following error:</p>
+<pre><code class="language-console">thread '&lt;unnamed&gt;' panicked at /Users/user/.local/share/cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:167:25:
+dependency graph cycle querying member_lookup_with_policy_(Id(19c42)); set cycle_fn/cycle_initial to fixpoint iterate
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread '&lt;unnamed&gt;' panicked at /Users/user/.local/share/cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:167:25:
+dependency graph cycle querying member_lookup_with_policy_(Id(2a96b)); set cycle_fn/cycle_initial to fixpoint iterate
+Rayon: detected unexpected panic; aborting
+</code></pre>
+<details><summary>Full traceback</summary>
+<p>
+
+<pre><code class="language-console">thread '&lt;unnamed&gt;' panicked at /Users/user/.local/share/cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:167:25:
+dependency graph cycle querying member_lookup_with_policy_(Id(149ac)); set cycle_fn/cycle_initial to fixpoint iterate
+stack backtrace:
+   0:        0x10d850d0c - &lt;std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display&gt;::fmt::h17237c63d1a69dcb
+   1:        0x10d0cdcf3 - core::fmt::write::h30aaf9daa2b08429
+   2:        0x10d84cae2 - std::io::Write::write_fmt::hb170de60ea76b27f
+   3:        0x10d850b62 - std::sys::backtrace::BacktraceLock::print::h987b7f42d6b8a667
+   4:        0x10d851b3d - std::panicking::default_hook::{{closure}}::h054f8024970871a1
+   5:        0x10d8519ca - std::panicking::default_hook::h6b7909227071dd78
+   6:        0x10d8527e9 - std::panicking::rust_panic_with_hook::hc6bfd990e349125f
+   7:        0x10d852398 - std::panicking::begin_panic_handler::{{closure}}::hc31bc6dc768176f9
+   8:        0x10d8511c9 - std::sys::backtrace::__rust_end_short_backtrace::hef21f4a0cd77e47f
+   9:        0x10d851fdc - _rust_begin_unwind
+  10:        0x10d90abaf - core::panicking::panic_fmt::h7b5799c67973413f
+  11:        0x10d2fd537 - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::refresh_memo::h3be05dd0ce4cdec4
+  12:        0x10d3170ac - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch::hb2c6c7976676529d
+  13:        0x10d494f02 - salsa::attach::Attached::attach::h9a712f936f66fba3
+  14:        0x10d4178fb - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_attribute_load::h53b2560f2966b253
+  15:        0x10d413a76 - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_expression_impl::ha2c6ad132c6e2295
+  16:        0x10d420c82 - red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish::h3f45554e9df93f2c
+  17:        0x10d42bc91 - &lt;red_knot_python_semantic::types::infer::infer_expression_types::Configuration_ as salsa::function::Configuration&gt;::execute::h29ddda4b33edabeb
+  18:        0x10d318751 - salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute::h110c8320bc6bdc9e
+  19:        0x10d307d77 - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::refresh_memo::h9e8218eb99a15bf8
+  20:        0x10d315cec - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch::h2bddc8520999fadf
+  21:        0x10d42c1ad - &lt;red_knot_python_semantic::types::infer::infer_expression_type::Configuration_ as salsa::function::Configuration&gt;::execute::ha9228377e666474a
+  22:        0x10d31b0f9 - salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute::h1d8113cf9a53e4df
+  23:        0x10d2f6ba7 - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::refresh_memo::h1a9c0d2745fe7e02
+  24:        0x10d31748c - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch::hd01996e51adcf2a6
+  25:        0x10d49284f - salsa::attach::Attached::attach::h04562d4423a9493e
+  26:        0x10d3ca594 - std::thread::local::LocalKey&lt;T&gt;::with::hfe0142ad820f789d
+  27:        0x10d4ef525 - red_knot_python_semantic::types::class::ClassLiteralType::implicit_instance_attribute::h57e00f065253ad11
+  28:        0x10d4ee477 - red_knot_python_semantic::types::class::ClassLiteralType::instance_member::h6b1e53e08b28b851
+  29:        0x10d4e990c - red_knot_python_semantic::types::class::ClassType::instance_member::hd1dc3acae93bf0f6
+  30:        0x10d50cc10 - red_knot_python_semantic::types::Type::instance_member::hfdfa03a043548806
+  31:        0x10d51fee5 - &lt;red_knot_python_semantic::types::Type as red_knot_python_semantic::types::Type::member_lookup_with_policy::InnerTrait_&gt;::member_lookup_with_policy_::h52e546c368b50131
+  32:        0x10d353b75 - salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute::hee6f47b2cd568d20
+  33:        0x10d2fcff1 - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::refresh_memo::h3be05dd0ce4cdec4
+  34:        0x10d3170ac - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch::hb2c6c7976676529d
+  35:        0x10d494f02 - salsa::attach::Attached::attach::h9a712f936f66fba3
+  36:        0x10d4178fb - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_attribute_load::h53b2560f2966b253
+  37:        0x10d413a76 - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_expression_impl::ha2c6ad132c6e2295
+  38:        0x10d417a20 - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_unary_expression::h8c900e24684ba552
+  39:        0x10d4132ba - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_expression_impl::ha2c6ad132c6e2295
+  40:        0x10d3b8dee - core::iter::adapters::map::map_fold::{{closure}}::he78be4770d4cc745
+  41:        0x10d3b6388 - &lt;itertools::with_position::WithPosition&lt;I&gt; as core::iter::traits::iterator::Iterator&gt;::fold::h134e5ad008d0c015
+  42:        0x10d413429 - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_expression_impl::ha2c6ad132c6e2295
+  43:        0x10d420c82 - red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish::h3f45554e9df93f2c
+  44:        0x10d42bc91 - &lt;red_knot_python_semantic::types::infer::infer_expression_types::Configuration_ as salsa::function::Configuration&gt;::execute::h29ddda4b33edabeb
+  45:        0x10d318751 - salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute::h110c8320bc6bdc9e
+  46:        0x10d307d77 - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::refresh_memo::h9e8218eb99a15bf8
+  47:        0x10d315cec - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch::h2bddc8520999fadf
+  48:        0x10d412a4d - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_standalone_expression::h786c68a95ee3f02f
+  49:        0x10d409cf6 - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_body::h6a8403fac5bfe817
+  50:        0x10d421efb - red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish::h3f45554e9df93f2c
+  51:        0x10d429ee2 - &lt;red_knot_python_semantic::types::infer::infer_scope_types::Configuration_ as salsa::function::Configuration&gt;::execute::h52478205543d7c00
+  52:        0x10d3400d1 - salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute::ha1171462925cf3c0
+  53:        0x10d310bb7 - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::refresh_memo::he370e9ba7863d181
+  54:        0x10d315e4c - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch::h348c53b6dec439e6
+  55:        0x10d505310 - &lt;red_knot_python_semantic::types::check_types::Configuration_ as salsa::function::Configuration&gt;::execute::h8a2f72d10d2f81b7
+  56:        0x10d342a3f - salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute::ha9553f055a702ffe
+  57:        0x10d2fb4a1 - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::refresh_memo::h30e7f09e52fcd9cc
+  58:        0x10d3168ec - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch::h9db73d19aa8a703a
+  59:        0x10d5048bf - red_knot_python_semantic::types::check_types::h75017eb85728acde
+  60:        0x10d2657ae - red_knot_project::check_file_impl::h62f17068d527e9b1
+  61:        0x10d27313a - &lt;rayon_core::job::HeapJob&lt;BODY&gt; as rayon_core::job::Job&gt;::execute::hab819adbfae49a69
+  62:        0x10d9192bf - rayon_core::registry::WorkerThread::wait_until_cold::hba1258861fea3e1d
+  63:        0x10d1a7724 - rayon_core::registry::ThreadBuilder::run::hace3d225f81c1b7b
+  64:        0x10d1ad642 - std::sys::backtrace::__rust_begin_short_backtrace::h68655ef3b16b3ef0
+  65:        0x10d1aa922 - core::ops::function::FnOnce::call_once{{vtable.shim}}::h81da77f08d9e747f
+  66:        0x10d854fcb - std::sys::pal::unix::thread::Thread::new::thread_start::h55e4d2e18c10096d
+  67:     0x7ff81ad86df1 - __pthread_start
+
+thread '&lt;unnamed&gt;' panicked at /Users/user/.local/share/cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:167:25:
+dependency graph cycle querying member_lookup_with_policy_(Id(18782)); set cycle_fn/cycle_initial to fixpoint iterate
+stack backtrace:
+   0:        0x10d850d0c - &lt;std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display&gt;::fmt::h17237c63d1a69dcb
+   1:        0x10d0cdcf3 - core::fmt::write::h30aaf9daa2b08429
+   2:        0x10d84cae2 - std::io::Write::write_fmt::hb170de60ea76b27f
+   3:        0x10d850b62 - std::sys::backtrace::BacktraceLock::print::h987b7f42d6b8a667
+   4:        0x10d851b3d - std::panicking::default_hook::{{closure}}::h054f8024970871a1
+   5:        0x10d8519ca - std::panicking::default_hook::h6b7909227071dd78
+   6:        0x10d8527e9 - std::panicking::rust_panic_with_hook::hc6bfd990e349125f
+   7:        0x10d852398 - std::panicking::begin_panic_handler::{{closure}}::hc31bc6dc768176f9
+   8:        0x10d8511c9 - std::sys::backtrace::__rust_end_short_backtrace::hef21f4a0cd77e47f
+   9:        0x10d851fdc - _rust_begin_unwind
+  10:        0x10d90abaf - core::panicking::panic_fmt::h7b5799c67973413f
+  11:        0x10d2fd537 - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::refresh_memo::h3be05dd0ce4cdec4
+  12:        0x10d3170ac - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch::hb2c6c7976676529d
+  13:        0x10d494f02 - salsa::attach::Attached::attach::h9a712f936f66fba3
+  14:        0x10d4178fb - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_attribute_load::h53b2560f2966b253
+  15:        0x10d413a76 - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_expression_impl::ha2c6ad132c6e2295
+  16:        0x10d420c82 - red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish::h3f45554e9df93f2c
+  17:        0x10d42bc91 - &lt;red_knot_python_semantic::types::infer::infer_expression_types::Configuration_ as salsa::function::Configuration&gt;::execute::h29ddda4b33edabeb
+  18:        0x10d318751 - salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute::h110c8320bc6bdc9e
+  19:        0x10d307d77 - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::refresh_memo::h9e8218eb99a15bf8
+  20:        0x10d315cec - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch::h2bddc8520999fadf
+  21:        0x10d42c1ad - &lt;red_knot_python_semantic::types::infer::infer_expression_type::Configuration_ as salsa::function::Configuration&gt;::execute::ha9228377e666474a
+  22:        0x10d31b0f9 - salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute::h1d8113cf9a53e4df
+  23:        0x10d2f6ba7 - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::refresh_memo::h1a9c0d2745fe7e02
+  24:        0x10d31748c - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch::hd01996e51adcf2a6
+  25:        0x10d49284f - salsa::attach::Attached::attach::h04562d4423a9493e
+  26:        0x10d3ca594 - std::thread::local::LocalKey&lt;T&gt;::with::hfe0142ad820f789d
+  27:        0x10d4ef525 - red_knot_python_semantic::types::class::ClassLiteralType::implicit_instance_attribute::h57e00f065253ad11
+  28:        0x10d4ee477 - red_knot_python_semantic::types::class::ClassLiteralType::instance_member::h6b1e53e08b28b851
+  29:        0x10d4e990c - red_knot_python_semantic::types::class::ClassType::instance_member::hd1dc3acae93bf0f6
+  30:        0x10d50cc10 - red_knot_python_semantic::types::Type::instance_member::hfdfa03a043548806
+  31:        0x10d51fee5 - &lt;red_knot_python_semantic::types::Type as red_knot_python_semantic::types::Type::member_lookup_with_policy::InnerTrait_&gt;::member_lookup_with_policy_::h52e546c368b50131
+  32:        0x10d353b75 - salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute::hee6f47b2cd568d20
+  33:        0x10d2fcff1 - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::refresh_memo::h3be05dd0ce4cdec4
+  34:        0x10d3170ac - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch::hb2c6c7976676529d
+  35:        0x10d494f02 - salsa::attach::Attached::attach::h9a712f936f66fba3
+  36:        0x10d4178fb - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_attribute_load::h53b2560f2966b253
+  37:        0x10d413a76 - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_expression_impl::ha2c6ad132c6e2295
+  38:        0x10d413514 - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_expression_impl::ha2c6ad132c6e2295
+  39:        0x10d420c82 - red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish::h3f45554e9df93f2c
+  40:        0x10d42bc91 - &lt;red_knot_python_semantic::types::infer::infer_expression_types::Configuration_ as salsa::function::Configuration&gt;::execute::h29ddda4b33edabeb
+  41:        0x10d318751 - salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute::h110c8320bc6bdc9e
+  42:        0x10d307d77 - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::refresh_memo::h9e8218eb99a15bf8
+  43:        0x10d315cec - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch::h2bddc8520999fadf
+  44:        0x10d412a4d - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_standalone_expression::h786c68a95ee3f02f
+  45:        0x10d409cf6 - red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_body::h6a8403fac5bfe817
+  46:        0x10d421efb - red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish::h3f45554e9df93f2c
+  47:        0x10d429ee2 - &lt;red_knot_python_semantic::types::infer::infer_scope_types::Configuration_ as salsa::function::Configuration&gt;::execute::h52478205543d7c00
+  48:        0x10d3400d1 - salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute::ha1171462925cf3c0
+  49:        0x10d310bb7 - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::refresh_memo::he370e9ba7863d181
+  50:        0x10d315e4c - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch::h348c53b6dec439e6
+  51:        0x10d505310 - &lt;red_knot_python_semantic::types::check_types::Configuration_ as salsa::function::Configuration&gt;::execute::h8a2f72d10d2f81b7
+  52:        0x10d342a3f - salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute::ha9553f055a702ffe
+  53:        0x10d2fb4a1 - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::refresh_memo::h30e7f09e52fcd9cc
+  54:        0x10d3168ec - salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch::h9db73d19aa8a703a
+  55:        0x10d5048bf - red_knot_python_semantic::types::check_types::h75017eb85728acde
+  56:        0x10d2657ae - red_knot_project::check_file_impl::h62f17068d527e9b1
+  57:        0x10d27313a - &lt;rayon_core::job::HeapJob&lt;BODY&gt; as rayon_core::job::Job&gt;::execute::hab819adbfae49a69
+  58:        0x10d9192bf - rayon_core::registry::WorkerThread::wait_until_cold::hba1258861fea3e1d
+  59:        0x10d1a7724 - rayon_core::registry::ThreadBuilder::run::hace3d225f81c1b7b
+  60:        0x10d1ad642 - std::sys::backtrace::__rust_begin_short_backtrace::h68655ef3b16b3ef0
+  61:        0x10d1aa922 - core::ops::function::FnOnce::call_once{{vtable.shim}}::h81da77f08d9e747f
+  62:        0x10d854fcb - std::sys::pal::unix::thread::Thread::new::thread_start::h55e4d2e18c10096d
+  63:     0x7ff81ad86df1 - __pthread_start
+Rayon: detected unexpected panic; aborting
+
+</code></pre>
+</p>
+</details> 
+
+<p>I was able to reduce it to the following minimal example.</p>
+<p><strong>Reproduction Steps:</strong></p>
+<ol>
+<li><p>Create <code>main.py</code> with the following contents:</p>
+<pre><code class="language-python">from module import Klass
+
+Klass().attr
+</code></pre>
+</li>
+<li><p>Create <code>module.py</code> with the following contents:</p>
+<pre><code class="language-python">class Klass:
+    def __init__(self):
+        self.attr = 1
+
+    def copy(self, other: &quot;Klass&quot;):
+        self.attr = other.attr
+</code></pre>
+</li>
+<li><p>Run with <code>red_knot check main.py</code></p>
+</li>
+</ol>
+<p>Note that this also happens if I change <code>main.py</code> to the following content.</p>
+<pre><code class="language-python">from module import Klass
+
+def get_attr(obj: Klass) -&gt; int:
+    return obj.attr
+</code></pre>
+<p>I believe both are related issues.</p>
+<p>Here's a link to a git repo if that's easier: https://gist.github.com/skshetry/7f5946e6e8a66e4cce185c454a02a431.</p>
+<p>I did search for similar issues, but I could not find it.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2025-04-18 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2025-04-18 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Red Knot Alpha" by @carljm on 2025-04-18 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-04-18 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-18 10:43</div>
+            <div class="timeline-body"><p>Thank you very much for the minimised repro — it's extremely helpful!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 15:24</div>
+            <div class="timeline-body"><p>This looks to me like a case where fixpoint iteration is probably the right answer (and will give the right answer).</p>
+<p>I guess the alternative would be some kind of heuristic to avoid considering the <code>self.attr = other.attr</code> assignment when inferring implicit attribute types for <code>Klass</code>, but I don't see an obvious way to implement that heuristic, considering the RHS could be an arbitrarily complex and nested expression, and still eventually involve a dependency on an attribute of <code>Klass</code>. (That dependency could even occur in some other class; there could be multiple classes involved in a similar cycle to this one, where each one has an assignment to a <code>self</code> attribute that depends on an attribute of another class, in a cycle.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17464.html">astral-sh/ruff#17464</a> on 2025-04-18 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/skshetry">@skshetry</a> on 2025-04-18 16:59</div>
+            <div class="timeline-body"><p>Since you mentioned type inference for implicit attributes, I was running into another similar-looking issue.</p>
+<p>If I change <code>module.py</code> to the following:</p>
+<pre><code class="language-python">class Klass:
+    def __init__(self) -&gt; None:
+        self.attr = 1
+
+    def copy(self, other: &quot;Klass&quot;):
+        self.attr = other.attr or self.attr
+</code></pre>
+<p>and, run <code>red_knot check module.py</code>, I get a <code>too many cycle iterations</code> error:</p>
+<pre><code class="language-python">thread '&lt;unnamed&gt;' panicked at /Users/user/.local/share/cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/execute.rs:124:25:
+infer_expression_types(Id(1802)): execute: too many cycle iterations
+</code></pre>
+<p>Do you think this is related, or should I open a separate issue? Let me know what you prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 17:11</div>
+            <div class="timeline-body"><p>Aha, thanks! I saw that one in an ecosystem project but hadn't gotten to it to track it down yet -- thank you for the minimal repro! It's a related but separate issue, so a separate issue for it would be great. (I'm also happy to create the issue, either way.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-18 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-18 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 17:20</div>
+            <div class="timeline-body"><p>I've already done some further analysis to provide in the issue, so I'll go ahead and file it -- thank you for providing the repro!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17465.html">astral-sh/ruff#17465</a> on 2025-04-18 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 17:28</div>
+            <div class="timeline-body"><p>Filed https://github.com/astral-sh/ruff/issues/17465</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

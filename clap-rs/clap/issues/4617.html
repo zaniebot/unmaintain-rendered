@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>try_update_from returns an Error MissingRequiredArgument for argument with existing values - clap-rs/clap #4617</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>try_update_from returns an Error MissingRequiredArgument for argument with existing values</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4617">#4617</a>
+        opened by <a href="https://github.com/nh13">@nh13</a>
+        on 2023-01-09 22:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nh13">@nh13</a> on 2023-01-09 22:36</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.66.0</p>
+<h3>Clap Version</h3>
+<p>4.0.32</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, Debug, Clone)]
+#[clap(name = &quot;tool&quot;, version = &quot;0.0.1&quot;, about=&quot;short&quot;, long_about=&quot;long&quot;, term_width=0)]
+
+pub struct Opts {
+  #[clap(long, short='f', required=true)]
+  pub foo: usize,
+  #[clap(long, short='b', required=true)]
+  pub bar: usize,
+}
+
+pub fn main() {
+  let mut opts = Opts {
+      foo: 0,
+      bar: 1,
+  };
+  println!(&quot;initial opts: {:?}&quot;, opts);
+  
+  let argv = vec![&quot;tool&quot;, &quot;--bar&quot;, &quot;2&quot;];
+  
+  match opts.try_update_from(argv.into_iter()) {
+      Ok(()) =&gt; println!(&quot;OK: {:?}&quot;, opts),
+      Err(err) =&gt; println!(&quot;ERR: {:?}&quot;, err)
+  }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Please see: https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=43678edf67d7e39b179c141c55d2036d</p>
+<h3>Actual Behaviour</h3>
+<p><code>try_update_from</code> returns an error of kind <code>MissingRequiredArgument</code></p>
+<h3>Expected Behaviour</h3>
+<p><code>try_update_from</code> should succeed as <code>foo</code> already set in <code>opt</code></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @nh13 on 2023-01-09 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-09 22:53</div>
+            <div class="timeline-body"><p>In <code>update_from</code>, we skip applying our implicit <code>required = true</code> but we are not overriding the users explicit <code>required = true</code> which we should</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2023-01-09 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2023-01-09 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4618.html">clap-rs/clap#4618</a> on 2023-01-10 03:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-01-10 03:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Singular-Genomics/singular-demux/pulls/33.html">Singular-Genomics/singular-demux#33</a> on 2023-01-10 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4974.html">clap-rs/clap#4974</a> on 2023-06-19 17:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

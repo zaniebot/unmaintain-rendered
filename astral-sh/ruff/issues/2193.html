@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCH rules are stricter than flake8-type-checking, but not necessarily better - astral-sh/ruff #2193</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>TCH rules are stricter than flake8-type-checking, but not necessarily better</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2193">#2193</a>
+        opened by <a href="https://github.com/GabDug">@GabDug</a>
+        on 2023-01-26 13:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/GabDug">@GabDug</a> on 2023-01-26 13:58</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+<p>TCH rules currently produce much more warnings than flake8-type-checking, but may be less relevant.</p>
+<p>Consider this snippet:</p>
+<pre><code class="language-python">from pkg import A,B
+
+def test(value: A):
+   return B()
+</code></pre>
+<p>With ruff, you'll get a warning. However, the flake8 plugin will not trigger: adding one of the two imports in the TYPE_CHECKING block would not prevent the module from being imported at runtime, at the extra cost of 3 more lines and splitted imports.</p>
+<p>The same applies to TCH003: import from <code>typing</code> don't benefit much, as we already import it for <code>TYPE_CHECKING</code></p>
+<pre><code class="language-python">from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+   ...
+
+a: Any = &quot;str&quot;
+</code></pre>
+<p>I feel like the having flake8 way would be beneficial, either by default or with an option flag.</p>
+<p>Anyway, thanks to all the ruff contributors, this is an incredible tool!</p>
+<p>Tested on ruff 0.0.235</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GabDug">@GabDug</a> on 2023-01-26 14:05</div>
+            <div class="timeline-body"><p>I'm realising my comment may not be very clear:</p>
+<p>TLDR: TCH warnings for types imported outside of TYPE_CHECKING should probably be ignored (by default or opt-in) if there is another import from the same module that is required out of type checking, as it's more verbose with no changes to imported modules at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 14:08</div>
+            <div class="timeline-body"><p>I agree with this! Would be a good change. It may not've come up with the existing flake8-type-checking test suite (which I ported over :))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-26 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 14:08</div>
+            <div class="timeline-body"><p>Gonna call this a bug since it's a clear deviation from &quot;upstream&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GabDug">@GabDug</a> on 2023-01-26 14:21</div>
+            <div class="timeline-body"><p>@charliermarsh it's indeed a bug, as it is different from the plugin default configuration.</p>
+<p>However, it looks like there are options to change these behaviours in the original plugin:
+https://github.com/snok/flake8-type-checking#strict</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-26 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 14:50</div>
+            <div class="timeline-body"><p>Part of #2195, but I'll leave this open too. I'll do <code>strict</code> first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2221.html">astral-sh/ruff#2221</a> on 2023-01-26 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-26 21:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

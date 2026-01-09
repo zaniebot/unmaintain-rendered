@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error with Powershell tab completion script - clap-rs/clap #931</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error with Powershell tab completion script</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/931">#931</a>
+        opened by <a href="https://github.com/elirnm">@elirnm</a>
+        on 2017-04-11 19:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/elirnm">@elirnm</a> on 2017-04-11 19:53</div>
+            <div class="timeline-body"><p>Reposted from https://github.com/BurntSushi/ripgrep/issues/445</p>
+<hr />
+<p>Attempting to import the _rg.ps1 tab completion script into Powershell throws an exception:</p>
+<pre><code>At C:\PathTools\_rg.ps1:10 char:41
++                 switch ($_.ToString()) {
++                                         ~
+Missing condition in switch statement clause.
+    + CategoryInfo          : ParserError: (:) [], ParseException
+    + FullyQualifiedErrorId : MissingSwitchConditionExpression
+</code></pre>
+<p>There's an empty switch statement there that seems like the cause.</p>
+<p>$PSVersionTable:</p>
+<pre><code>Name                           Value
+----                           -----
+PSVersion                      5.1.14409.1005
+PSEdition                      Desktop
+PSCompatibleVersions           {1.0, 2.0, 3.0, 4.0...}
+BuildVersion                   10.0.14409.1005
+CLRVersion                     4.0.30319.42000
+WSManStackVersion              3.0
+PSRemotingProtocolVersion      2.3
+SerializationVersion           1.1.0.1
+
+</code></pre>
+<p>This is with ripgrep version 0.5.1</p>
+<p>Here's the ps1 file.</p>
+<pre><code class="language-powershell">@('rg', './rg', 'rg.exe', '.\rg', '.\rg.exe', './rg.exe') | %{
+    Register-ArgumentCompleter -Native -CommandName $_ -ScriptBlock {
+        param($wordToComplete, $commandAst, $cursorPosition)
+
+        $command = '_rg'
+        $commandAst.CommandElements |
+            Select-Object -Skip 1 |
+            %{
+                switch ($_.ToString()) {
+
+                }
+            }
+
+        $completions = @()
+
+        switch ($command) {
+
+            '_ripgrep' {
+                $completions = @('-a', '-c', '-F', '-i', '-n', '-N', '-q', '-u', '-v', '-w', '-l', '-H', '-L', '-0', '-o', '-p', '-s', '-S', '-h', '-V', '-e', '-E', '-g', '-t', '-T', '-A', '-B', '-C', '-f', '-m', '-r', '-j', '-M', '--files', '--type-list', '--text', '--count', '--fixed-strings', '--ignore-case', '--line-number', '--no-line-number', '--quiet', '--unrestricted', '--invert-match', '--word-regexp', '--column', '--debug', '--files-with-matches', '--files-without-match', '--with-filename', '--no-filename', '--heading', '--no-heading', '--hidden', '--follow', '--mmap', '--no-messages', '--no-mmap', '--no-ignore', '--no-ignore-parent', '--no-ignore-vcs', '--null', '--only-matching', '--pretty', '--case-sensitive', '--smart-case', '--sort-files', '--vimgrep', '--help', '--version', '--regexp', '--color', '--colors', '--encoding', '--glob', '--type', '--type-not', '--after-context', '--before-context', '--context', '--context-separator', '--file', '--ignore-file', '--max-count', '--max-filesize', '--maxdepth', '--path-separator', '--replace', '--threads', '--max-columns', '--type-add', '--type-clear')
+            }
+
+        }
+
+        $completions |
+            ?{ $_ -like &quot;$wordToComplete*&quot; } |
+            Sort-Object |
+            %{ New-Object System.Management.Automation.CompletionResult $_, $_, 'ParameterValue', $_ }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-04-18 00:59</div>
+            <div class="timeline-body"><p>Thanks for reporting! This is because ripgrep has no subcommands. I think simply adding a default will fix this. If someone wants an easy first PR this is one!</p>
+<p>So adding <a href="https://github.com/kbknapp/clap-rs/blob/3f44dd4b91d15ec9287eb236e2d3a2fd068afad1/src/completions/powershell.rs#L44-L46">a line here</a>:</p>
+<pre><code> default { }
+</code></pre>
+<p>or <code>default { break }</code> if PowerShell doesn't support empty braces (can't remember).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: completion gen</span> added by @kbknapp on 2017-04-18 01:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2017-04-18 01:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> added by @kbknapp on 2017-04-18 01:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P1: urgent</span> added by @kbknapp on 2017-04-18 01:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2017-04-18 01:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-04-18 01:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elirnm">@elirnm</a> on 2017-04-18 04:43</div>
+            <div class="timeline-body"><p>Hmm, adding <code>default { }</code> into the script makes it load without throwing exceptions, but I still don't get any tab completion functionality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-04-18 16:43</div>
+            <div class="timeline-body"><p>Ok, I did some testing and it looks like it's a double issue.</p>
+<ul>
+<li>Adding <code>default { break }</code> works but the second bug prevents the completions...</li>
+<li>it's using the <code>App</code> name (<code>ripgrep</code>) and not the binary name (<code>rg</code>) which is <a href="https://github.com/kbknapp/clap-rs/blob/3f44dd4b91d15ec9287eb236e2d3a2fd068afad1/src/completions/powershell.rs#L74">a bug here</a> (should be using <code>bin_name</code> not <code>name</code>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-04-18 16:45</div>
+            <div class="timeline-body"><p>Here's the excerpt of the generated script using the name, when it should be using the bin name:</p>
+<pre><code>switch ($command) {
+    '_ripgrep' {
+        $completions = @('-a', '-c', '-F', '-i', '-n', '-N', '-q', '-u', '-v', '-w', '-l', '-H', '-L', '-0', '-o', '-p', '-s', '-S', '-h', '-V', '-e', '-E', '-g', '-t', '-T', '-A', '-B', '-C', '-f', '-m', '-r', '-j', '-M', '--files', '--type-list', '--text', '--count', '--fixed-strings', '--ignore-case', '--line-number', '--no-line-number', '--quiet', '--unrestricted', '--invert-match', '--word-regexp', '--column', '--debug', '--files-with-matches', '--files-without-match', '--with-filename', '--no-filename', '--heading', '--no-heading', '--hidden', '--follow', '--mmap', '--no-messages', '--no-mmap', '--no-ignore', '--no-ignore-parent', '--no-ignore-vcs', '--null', '--only-matching', '--pretty', '--case-sensitive', '--smart-case', '--sort-files', '--vimgrep', '--help', '--version', '--regexp', '--color', '--colors', '--encoding', '--glob', '--type', '--type-not', '--after-context', '--before-context', '--context', '--context-separator', '--dfa-size-limit', '--file', '--ignore-file', '--max-count', '--max-filesize', '--maxdepth', '--path-separator', '--replace', '--regex-size-limit', '--threads', '--max-columns', '--type-add', '--type-clear')
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2017-04-19 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-04-19 12:36</div>
+            <div class="timeline-body"><p>Fixed in 2.23.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../BurntSushi/ripgrep/pulls/472.html">BurntSushi/ripgrep#472</a> on 2017-05-04 04:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../7BIndustries/sliderule-cli/issues/36.html">7BIndustries/sliderule-cli#36</a> on 2019-02-06 11:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

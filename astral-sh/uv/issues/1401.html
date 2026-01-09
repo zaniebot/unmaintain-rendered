@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv pip list` - astral-sh/uv #1401</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `uv pip list`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1401">#1401</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-02-16 00:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 00:21</div>
+            <div class="timeline-body"><p>This is a really helpful command :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-02-16 00:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-02-16 00:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthewfeickert">@matthewfeickert</a> on 2024-02-16 04:04</div>
+            <div class="timeline-body"><p>Yes please! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 04:06</div>
+            <div class="timeline-body"><p>Wow I'm so used to <code>pip freeze</code>, no idea why!</p>
+<p>Is it important we follow the exact same format? Do people read this programmatically?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tarliton">@Tarliton</a> on 2024-02-16 04:23</div>
+            <div class="timeline-body"><p>Maybe this can help?
+https://github.com/pypa/pip/pull/752</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthewfeickert">@matthewfeickert</a> on 2024-02-16 04:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it important we follow the exact same format? Do people read this programmatically?</p>
+</blockquote>
+<p>Hm, good question. Problably not required to have the <em>exact</em> same output, but I think plenty of people are doing <code>grep</code>/<code>awk</code>/<code>sed</code> stuff on the output of <code>pip list</code> (I know I am).</p>
+<p>@charliermarsh as to why <code>pip list</code> when <code>pip freeze</code> exists, I would say the spacing choices are more (quickly) human readable and having the two column structure allows for parsing of <em>package</em> (not version) easier.</p>
+<pre><code class="language-console">$ docker run --rm -ti python:3.12 /bin/bash
+root@4106918bf8c2:/# python -m venv venv &amp;&amp; . venv/bin/activate
+(venv) root@4106918bf8c2:/# python -m pip --quiet install awkward
+(venv) root@4106918bf8c2:/# python -m pip list
+Package     Version
+----------- --------
+awkward     2.6.1
+awkward-cpp 29
+fsspec      2024.2.0
+numpy       1.26.4
+packaging   23.2
+pip         24.0
+(venv) root@4106918bf8c2:/# python -m pip freeze
+awkward==2.6.1
+awkward-cpp==29
+fsspec==2024.2.0
+numpy==1.26.4
+packaging==23.2
+(venv) root@4106918bf8c2:/#
+</code></pre>
+<p>For me, <code>pip list</code> is the goto and as an example of how I use it also programatically, here's how I clean up my virtual environment so that I can have clean installs when I'm updaing my GPU support enabled JAX environment</p>
+<pre><code class="language-bash">#!/bin/bash
+
+python -m pip list | grep 'jax\|nvidia\|ml-dtypes' | awk '{print $1}' | xargs python -m pip uninstall --yes
+python -m pip list
+
+JAX_VERSION=0.4.24
+
+# CUDA_VERSION=11
+CUDA_VERSION=12
+
+CUDA_DISTRIBUTION=&quot;pip&quot;
+# CUDA_DISTRIBUTION=&quot;local&quot;
+
+python -m pip install --upgrade &quot;jax[cuda${CUDA_VERSION}_${CUDA_DISTRIBUTION}]==${JAX_VERSION}&quot; --find-links https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+
+python -m pip list | grep jax
+
+echo &quot;&quot;
+python jax_detect_GPU.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 05:02</div>
+            <div class="timeline-body"><p>Funny, I didn't know we had a <code>freeze</code> command 😶‍🌫️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ismail">@ismail</a> on 2024-02-16 07:45</div>
+            <div class="timeline-body"><p><code>pip list --outdated</code> is also a useful feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1550.html">astral-sh/uv#1550</a> on 2024-02-17 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-02-17 05:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1594.html">astral-sh/uv#1594</a> on 2024-02-17 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jab">@jab</a> on 2024-02-17 15:56</div>
+            <div class="timeline-body"><p>pip list also shows editable install locations (if any) as compared to pip freeze.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1662.html">astral-sh/uv#1662</a> on 2024-02-18 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2024-02-19 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1741.html">astral-sh/uv#1741</a> on 2024-02-20 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2024-02-26 02:08</div>
+            <div class="timeline-body"><p>There is also the <code>--format</code> option you might want to support.</p>
+<blockquote>
+<p>--format &lt;list_format&gt;      Select the output format among: columns
+(default), freeze, or json. The 'freeze' format
+cannot be used with the --outdated option.</p>
+</blockquote>
+<p>Then you could do <code>uv pip list --format=freeze</code>. The <code>json</code> format could be good for people who read this programmatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-26 04:38</div>
+            <div class="timeline-body"><p>Is <code>--format=freeze</code> different than <code>pip freeze</code>?</p>
+<p>This was added in https://github.com/astral-sh/uv/pull/1662 so I'm going to close this now. We can track output formats in a new issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-26 04:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-02-26 11:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Is <code>--format=freeze</code> different than <code>pip freeze</code>?</p>
+</blockquote>
+<pre><code class="language-shell">(uvtest) C:\Users\User\Desktop\uvtest&gt; python -m pip list --format freeze
+pip==24.0
+setuptools==68.0.0
+uvtest==0.1.0
+wheel==0.42.0
+
+(uvtest) C:\Users\User\Desktop\uvtest&gt; python -m pip freeze
+# Editable Git install with no remote (uvtest==0.1.0)
+-e c:\users\user\desktop\uvtest
+</code></pre>
+<p>Yes, they are different, but I'd like to <code>pip list --format freeze</code> supersede <code>pip freeze</code>. tracked in #1970.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1985.html">astral-sh/uv#1985</a> on 2024-02-26 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2150.html">astral-sh/uv#2150</a> on 2024-03-04 11:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

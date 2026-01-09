@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C0103/`invalid-name`/N815/N806: Allow specifying valid identifier patterns (e.g. as regular expressions) - astral-sh/ruff #7660</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>C0103/`invalid-name`/N815/N806: Allow specifying valid identifier patterns (e.g. as regular expressions)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7660">#7660</a>
+        opened by <a href="https://github.com/richardebeling">@richardebeling</a>
+        on 2023-09-25 20:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/richardebeling">@richardebeling</a> on 2023-09-25 20:52</div>
+            <div class="timeline-body"><p>For it's <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/invalid-name.html"><code>invalid-name</code>/C0103 rule</a>, pylint allows <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/invalid-name.html#custom-regular-expressions">freely configuring what a legal name for an identifier is using regular expressions</a>.</p>
+<p>In particular, for a project, I'd like certain identifiers to use CapWords/PascalCase. (In case the actual use case is relevant: In django, sometimes <a href="https://docs.djangoproject.com/en/4.2/topics/forms/formsets/#formsets">&quot;Formset&quot; classes are created by factory-methods</a>, and we want to use CapWords naming for them to match the official documentation)</p>
+<p>In #970, pylint's <code>invalid-name</code> is checked as &quot;done&quot; and references N815. For me, the following code triggers N806 and I do not find any configuration option that would allow the CamelCase variable. <a href="https://docs.astral.sh/ruff/rules/non-lowercase-variable-in-function/">The docs on N806</a> only list a <a href="https://docs.astral.sh/ruff/settings/#pep8-naming-ignore-names"><code>pep8-naming.ignore-names</code></a> option, which in turn doesn't seem to support regular expressions.</p>
+<pre><code>from some_module import get_some_class
+
+def test():
+    my_var = 123
+    MyVarSpecial = get_some_class()
+</code></pre>
+<pre><code>$ ruff --version        
+ruff 0.0.291
+$ ruff check --isolated --select=N test.py
+test.py:5:5: N806 Variable `MyVarSpecial` in function should be lowercase
+Found 1 error.
+</code></pre>
+<p>where I can do this with pylint:</p>
+<pre><code>$ pylint --disable=all --enable=C0103 test.py      
+************* Module test
+test.py:5:4: C0103: Variable name &quot;MyVarSpecial&quot; doesn't conform to snake_case naming style (invalid-name)
+
+------------------------------------------------------------------
+Your code has been rated at 7.50/10 (previous run: 0.00/10, +7.50)
+
+$ pylint --disable=all --enable=C0103 --variable-rgx=&quot;(^[a-z0-9_]+$)|(^[A-Za-z]+Special$)&quot; test.py 
+
+-------------------------------------------------------------------
+Your code has been rated at 10.00/10 (previous run: 7.50/10, +2.50)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-26 01:52</div>
+            <div class="timeline-body"><p>Hey, the option <code>ignore-names</code> supports <a href="https://docs.rs/globset/latest/globset/#syntax">glob patterns</a> (not regular expressions though). I think the documentation needs to be updated to be more clear on that. Also, I would suggest to use the <code>extend-ignore-names</code> to keep the default ones as it is. I hope this helps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @dhruvmanila on 2023-09-26 01:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-09-27 04:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7674.html">astral-sh/ruff#7674</a> on 2023-09-27 04:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-27 04:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/niklasmohrin">@niklasmohrin</a> on 2023-10-02 20:43</div>
+            <div class="timeline-body"><p>Hey, thanks for your work on ruff!</p>
+<p>(Disclaimer, @richardebeling and I both work on the project mentioned in the initial comment)</p>
+<p>I feel that globs are not really a satisfying solution in this case. Although #2787 initially asked for glob support, the arguments for it were &quot;only fixed strings currently supported&quot; and &quot;want to allow <code>assert*</code>&quot;, both of which would not only be fixed by regex too, but regex would also make an arguably better fix: For <code>assert*</code>, you would probably want something like <code>assert[A-Z][A-Za-z]*</code> to not only allow camel case naming, but also forbid snake case naming for these assert functions.</p>
+<p>In general, globs are really meant for matching file paths and their only advantage over regex is the <code>**</code> feature - other than that, regex appears to be superior in every aspect. So I would suggest to reconsider the decision for ruff to use globs as <code>IdentifierPattern</code> in favor of replacing them with regexes.</p>
+<hr />
+<p>We thought about this for some time and also wanted to bring another point up: Maybe the current architecture of the <code>pep8-naming</code> folder in the source code is not the best fit for ruff. As we perceive it, pep8-naming is a checker for pep8 in particular, while ruff is growing to be a full-fledged configurable linter. Therefore, ruff itself shouldn't really care <em>what kind of naming scheme</em> it is enforcing, it's role is just to enforce it. Ruff can even keep a preference towards the pep8 scheme by designing the default configuration to match it.</p>
+<p>A symptom of this &quot;problem&quot; is that the current file structure,</p>
+<pre><code class="language-plain">camelcase_imported_as_acronym.rs
+camelcase_imported_as_constant.rs
+camelcase_imported_as_lowercase.rs
+constant_imported_as_non_constant.rs
+dunder_function_name.rs
+error_suffix_on_exception_name.rs
+invalid_argument_name.rs
+invalid_class_name.rs
+invalid_first_argument_name_for_class_method.rs
+invalid_first_argument_name_for_method.rs
+invalid_function_name.rs
+invalid_module_name.rs
+lowercase_imported_as_non_lowercase.rs
+mixed_case_variable_in_class_scope.rs
+mixed_case_variable_in_global_scope.rs
+non_lowercase_variable_in_function.rs
+</code></pre>
+<p>already encodes too specialized knowledge of pep8 standards and makes it difficult to introduce features like &quot;check that it matches a regex&quot; (Currently, I think there isn't really a way to enforce that, for example, no snake case <code>assert_something</code> functions are defined, because we can only add ignores, but not tighten the check for not-ignored names). We both think that the current mental model by pylint &quot;check if variable names are valid&quot;, &quot;check if class names are valid&quot; is more appropriate and easier to work with than &quot;check that variables are lowercase&quot;.</p>
+<p>I would really like to hear your thoughts on this :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10629.html">astral-sh/ruff#10629</a> on 2024-03-27 15:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

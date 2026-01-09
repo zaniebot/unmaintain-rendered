@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should my team's project structure work as a uv workspace? - astral-sh/uv #11344</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should my team's project structure work as a uv workspace?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11344">#11344</a>
+        opened by <a href="https://github.com/omer54463">@omer54463</a>
+        on 2025-02-08 23:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/omer54463">@omer54463</a> on 2025-02-08 23:20</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>My team uses a certain project structure:</p>
+<ol>
+<li>The code is divided into python packages (each with its own pyproject.toml) inside a source directory.</li>
+<li>The (pytest) tests are their own module, just like pytest likes it.</li>
+</ol>
+<p>Currently, we have a PowerShell installation script that installs all those packages in editable mode, and that's the way we work.</p>
+<pre><code class="language-yaml">- source:
+  - package_1:
+    - pyproject.toml
+    - package_1:
+      - __init__.py
+      - py.typed
+      - ...
+  - package_2:
+    - pyproject.toml
+    - package_2:
+      - __init__.py
+      - py.typed
+      - ...
+- test:
+  - __init__.py
+  - conftest.py
+  - unit:
+    - __init__.py
+    - test_something.py
+    - ...
+</code></pre>
+<p>I created an <a href="https://github.com/omer54463/example">example</a> of the same structure, and added my <a href="https://github.com/omer54463/example/tree/refactor/uv">attempt</a> at converting it into a uv workspace.</p>
+<p>I encountered two problems:</p>
+<ol>
+<li>I can't install development dependencies. <code>uv pip install .[dev]</code> fails with &quot;Failed to parse metadata from built wheel&quot;.</li>
+<li>I am not sure if there's an automatic way I can tell uv to install all my workspace packages.</li>
+</ol>
+<p>Any help would be much appreciated. uv is awesome and incredibly fast, and I would love to use it!</p>
+<h3>Platform</h3>
+<p>Windows 11 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.5.29 (ca73c4754 2025-02-05)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @omer54463 on 2025-02-08 23:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @omer54463 on 2025-02-08 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @omer54463 on 2025-02-08 23:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-10 12:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I can't install development dependencies. uv pip install .[dev] fails with &quot;Failed to parse metadata from built wheel&quot;.</p>
+</blockquote>
+<p>Your root pyproject.toml doesn't belong to a package, so <code>uv pip install .</code> falls back to a bogus setuptools build, I opened https://github.com/astral-sh/uv/issues/11382 to show a better error message here.</p>
+<p>In your example, are you looking for the dev group instead of the dev extra?</p>
+<blockquote>
+<p>I am not sure if there's an automatic way I can tell uv to install all my workspace packages.</p>
+</blockquote>
+<p>You can do that with <code>uv sync --all-packages</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11394.html">astral-sh/uv#11394</a> on 2025-02-10 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/omer54463">@omer54463</a> on 2025-02-10 22:23</div>
+            <div class="timeline-body"><p>Thanks @konstin!</p>
+<p>I'm pretty sure I want the dev group, since I want development dependencies there. According to the <a href="https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-tables">documentation</a>:</p>
+<ul>
+<li><a href="https://docs.astral.sh/uv/concepts/projects/dependencies/#project-dependencies">project.dependencies</a>: Published dependencies.</li>
+<li><a href="https://docs.astral.sh/uv/concepts/projects/dependencies/#optional-dependencies">project.optional-dependencies</a>: Published optional dependencies, or &quot;extras&quot;.</li>
+<li><a href="https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-groups">dependency-groups</a>: <strong><em>Local dependencies for development.</em></strong></li>
+<li><a href="https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-sources">tool.uv.sources</a>: Alternative sources for dependencies during development.</li>
+</ul>
+<p>Those are global to the workspace, where would you put those instead of that workspace-level pyproject.toml (which cannot be installed)?</p>
+<p>Also, about that <code>sync</code> thing, I just tried it out, and it doesn't seem like it installed my packages:</p>
+<pre><code>&gt; uv sync --all-packages
+&gt; uv pip list
+Package           Version
+----------------- -------
+colorama          0.4.6
+iniconfig         2.0.0
+mypy              1.15.0
+mypy-extensions   1.0.0
+packaging         24.2
+pluggy            1.5.0
+pytest            8.3.4
+ruff              0.9.5
+typing-extensions 4.12.2
+</code></pre>
+<p>As you can see, no editable (or otherwise) installations <code>calculator</code> and <code>calculator-backend</code>.
+Am I missing something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-11 13:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Those are global to the workspace, where would you put those instead of that workspace-level pyproject.toml (which cannot be installed)?</p>
+</blockquote>
+<p>Placing dependency groups in the root is also what I'd recommend here. Dependency groups are subtly different from the other dependency kinds, as you can have <code>[dependency-groups]</code> without a <code>[project]</code> table, and you can install groups without installing (or building) any project. The project root <code>pyproject.toml</code> in your example looks correct for the structure you're trying to achieve.</p>
+<blockquote>
+<p>As you can see, no editable (or otherwise) installations calculator and calculator-backend.
+Am I missing something?</p>
+</blockquote>
+<p>That's somewhat unintuitive: The packages aren't synced since they don't declare a <code>[build-system]</code>, so uv assumed they can't be build. Adding a build system entry, such as uv's default, will make the packages be installed with <code>uv sync --all-packages</code>:</p>
+<pre><code>[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>(You can of course use any build backend, not just hatchling)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/omer54463">@omer54463</a> on 2025-02-14 20:08</div>
+            <div class="timeline-body"><p>This worked for me!
+I have one more question - I want to enforce a minimal version of <code>mypy</code>.
+Is there a way to control the version of a tool installed by <code>uvx</code> in the workspace level?
+Otherwise, I'd have to resort to installing the tools like my example currently does and use <code>uv run mypy .</code> (or have a lame setup script that does <code>uv tool install mypy==1.14.0</code> and use <code>uvx mypy .</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/omer54463">@omer54463</a> on 2025-02-14 20:54</div>
+            <div class="timeline-body"><p>Actually, nvm. <code>mypy</code> and <code>ruff</code> won't work well anyway in a monorepo when they aren't running in a <code>venv</code> that has those packages installed (I imagine you'd get something along the lines of &quot;what the hell is this package my-local-dependency&quot; from either of them).
+Thanks @konstin!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @omer54463 on 2025-02-14 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11514.html">astral-sh/uv#11514</a> on 2025-02-17 14:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

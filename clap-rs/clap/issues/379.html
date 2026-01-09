@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot get help output for optional ARGS with dependencies to print as [DEPENDENCY [DEPENDENT]] - clap-rs/clap #379</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot get help output for optional ARGS with dependencies to print as [DEPENDENCY [DEPENDENT]]</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/379">#379</a>
+        opened by <a href="https://github.com/kamalmarhubi">@kamalmarhubi</a>
+        on 2016-01-12 16:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kamalmarhubi">@kamalmarhubi</a> on 2016-01-12 16:32</div>
+            <div class="timeline-body"><p>I'm creating a program that can take a command and its arguments as arguments. I'd like the usage to show up as</p>
+<pre><code>USAGE:
+    clap-optional-args-help [FLAGS] [COMMAND [ARG...]]
+</code></pre>
+<p>I've set  up the dependency with <code>requires</code>, and have tried both with and without <code>TrailingVarArg</code> (<a href="https://github.com/kamalmarhubi/clap-optional-args-help/blob/master/src/main.rs">example source</a>), but cannot change the output from:</p>
+<pre><code>clap-optional-args-help 
+
+USAGE:
+    clap-optional-args-help [FLAGS] [--] [ARGS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    COMMAND    Command to run
+    ARG...     Arguments for COMMAND
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Cannot get help for optional ARGS with dependencies as [DEPENDENCY [DEPENDENT]]" to "Cannot get help output for optional ARGS with dependencies to print as [DEPENDENCY [DEPENDENT]]" by @kamalmarhubi on 2016-01-12 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-01-13 07:28</div>
+            <div class="timeline-body"><p>There's two things you could do in that case.</p>
+<ol>
+<li>Use a custom usage string. But this has some downsides, namely that's the <em>only</em> usage string that will be displayed on error, i.e. if you supply a custom usage string <code>clap</code> won't generate context sensitive usage strings based on what the user was trying to do on error. If this isn't something you care about, a custom usage string will solve the issue:</li>
+</ol>
+<pre><code class="language-rust">App::new(&quot;clap-optional-args-help&quot;)
+    .usage(&quot;clap-optional-args-help [COMMAND [ARG...]]&quot;)
+    .setting(TrailingVarArg)
+    .arg(Arg::with_name(&quot;COMMAND&quot;).help(&quot;Command to run&quot;).index(1))
+    .arg(Arg::with_name(&quot;ARG&quot;)
+        .help(&quot;Arguments for COMMAND&quot;)
+        .multiple(true)
+        .requires(&quot;COMMAND&quot;)
+        .index(2))
+</code></pre>
+<ol>
+<li>Use a required <code>COMMAND</code> argument (this will show it's dependencies).</li>
+</ol>
+<p>Also note, even with it as you have written, if the user ran <code>clap-optional-args-help cmd</code> (i.e. no args) they'll get an error about missing <code>ARG</code>, and the usage string will show <code>clap-optional-args-help [COMMAND] [ARG]...</code> (this is the context aware usage strings I was talking about)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-01-13 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2016-02-14 11:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

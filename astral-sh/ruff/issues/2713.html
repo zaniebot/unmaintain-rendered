@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support suggesting different fixes for one violation - astral-sh/ruff #2713</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support suggesting different fixes for one violation</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2713">#2713</a>
+        opened by <a href="https://github.com/not-my-profile">@not-my-profile</a>
+        on 2023-02-10 06:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-10 06:30</div>
+            <div class="timeline-body"><p>Some violations can be fixed in different ways. The Language Server Protocol supports multiple code actions for one location, so it would be nice if ruff could also suggest multiple autofixes for one violation.</p>
+<p>Examples:</p>
+<ul>
+<li><code>try: ...; except ...: pass</code> -&gt; flake8-simplify suggests using <a href="https://docs.python.org/3/library/contextlib.html#contextlib.suppress"><code>contextlib.suppress</code></a> instead, whereas flake8-bandit suggests logging the exception</li>
+</ul>
+<p>Can you think of other examples?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2714.html">astral-sh/ruff#2714</a> on 2023-02-10 06:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-02-10 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-10 15:11</div>
+            <div class="timeline-body"><p>It seems that we could add categories/tags related to autofixing?</p>
+<ul>
+<li><p><code>@safe</code>: Fixes that can be safely applied in 100% of cases.</p>
+</li>
+<li><p><code>@unsafe</code>: Fixes that may produce unexpected results and need manual checking.</p>
+</li>
+<li><p><code>@unfixable</code>: Violations cannot be fixed automatically. <em>(Always require manual intervention.)</em></p>
+</li>
+<li><p><code>@opinionated</code>: Fixes that may not be the best solution to fixing the violation.</p>
+<p>So, using the case in the description above, we could automatically fix to use <code>contextlib.suppress(...)</code>, but we couldn't automatically fix to add logging as we wouldn't be able to provide the context for the log message. In many cases it's better to make sure that logging is not required and wasn't merely forgotten during development.</p>
+<p>I'm not sure if it would ever make sense to have multiple ways of fixing the same issue? How would that be configured? This example is a good case of an automatic vs a manual alternative. Could we ever have more than one automatic fix?</p>
+</li>
+</ul>
+<p>Maybe a fix tagged as <code>@unsafe</code> and <code>@opinionated</code> would require both tags to be enabled to be used (or explicitly enabled by the rule name). That way there may be <code>@safe</code> or <code>@unsafe</code> fixes that are <code>@opinionated</code>. <em>(Obviously the first three defined above are mutually exclusive.)</em></p>
+<p>Was also wondering whether we want to have a tag that implies &quot;sometimes&quot; to capture issues like that raised for <code>SIM108</code> in #2621 where the autofix is not available in 100% of cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-10 15:24</div>
+            <div class="timeline-body"><p>Yes such a categorization is indeed a good idea, we already have #1997 for tracking that :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-02-10 20:25</div>
+            <div class="timeline-body"><p>Pandas-vet has one rule where multiple fixes are possible: <code>.ix</code> is deprecated; use more explicit <code>.loc</code> or <code>.iloc</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-02-17 06:55</div>
+            <div class="timeline-body"><p>Another example:</p>
+<p>B905 zip-without-explicit-strict has two possible autofixes (<code>strict=True</code> and <code>strict=False</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-02-18 16:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Pandas-vet has one rule where multiple fixes are possible: <code>.ix</code> is deprecated; use more explicit <code>.loc</code> or <code>.iloc</code></p>
+</blockquote>
+<blockquote>
+<p>B905 zip-without-explicit-strict has two possible autofixes (<code>strict=True</code> and <code>strict=False</code>)</p>
+</blockquote>
+<p>These auto-fixes could be configured in settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-02-18 16:29</div>
+            <div class="timeline-body"><p>It depends. In most cases the autofix is constant per repository (in which case the autofix can be configured on repo level). We can also imagine to review on a case-by-case basis to be able to decide (something like <a href="https://github.com/charliermarsh/autobot"><code>autobot review</code></a> would be nice).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-18 20:48</div>
+            <div class="timeline-body"><p>Autobot reference in Ruff?? First time!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rapidsai/cudf/pulls/19584.html">rapidsai/cudf#19584</a> on 2025-08-04 20:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

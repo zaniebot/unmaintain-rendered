@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyUpgrade rule UP007 should be disabled on older Pythons - astral-sh/ruff #16922</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PyUpgrade rule UP007 should be disabled on older Pythons</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16922">#16922</a>
+        opened by <a href="https://github.com/cameron-simpson">@cameron-simpson</a>
+        on 2025-03-22 22:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cameron-simpson">@cameron-simpson</a> on 2025-03-22 22:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm not sure when general X|Y types became allowed, but in Python 3.8 <code>int|str</code> and similar elicits a <code>TypeError</code>. I've got my <code>.ruff.toml</code> <code>target-version</code> set to <code>&quot;py38&quot;</code> and that should disable this rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cameron-simpson">@cameron-simpson</a> on 2025-03-22 22:51</div>
+            <div class="timeline-body"><p>I suspect that I'm suggesting: PyUpgrade rules shouldn't suggest upgrades beyond the <code>target-version</code> if one is set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../lusoul232/docs/issues/1.html">lusoul232/docs#1</a> on 2025-03-22 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-23 03:21</div>
+            <div class="timeline-body"><blockquote>
+<p>PyUpgrade rules shouldn't suggest upgrades beyond the <code>target-version</code> if one is set.</p>
+</blockquote>
+<p>This is already the case:</p>
+<pre><code class="language-shell">$ ruff check --isolated --select UP007 --target-version py39 -
+from typing import Union
+a: Union[str, int]
+All checks passed!
+</code></pre>
+<pre><code class="language-shell">$ ruff check --isolated --select UP007 --target-version py310 -
+from typing import Union
+a: Union[str, int]
+-:2:4: UP007 [*] Use `X | Y` for type annotations
+  |
+1 | from typing import Union
+2 | a: Union[str, int]
+  |    ^^^^^^^^^^^^^^^ UP007
+  |
+  = help: Convert to `X | Y`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>What do your configurations and code look like? Please provide a minimal reproducible example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-03-23 07:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2025-03-23 08:43</div>
+            <div class="timeline-body"><p>From the UP007 docs:</p>
+<blockquote>
+<p>This rule is enabled when targeting Python 3.10 or later (see: <a href="https://docs.astral.sh/ruff/settings/#target-version"><code>target-version</code></a>). By default, it's <em>also</em> enabled for earlier Python versions if <code>from __future__ import annotations</code> is present, as <code>__future__</code> annotations are not evaluated at runtime. If your code relies on runtime type annotations (either directly or via a library like Pydantic), you can disable this behavior for Python versions prior to 3.10 by setting <a href="https://docs.astral.sh/ruff/settings/#lint_pyupgrade_keep-runtime-typing"><code>lint.pyupgrade.keep-runtime-typing</code></a> to <code>true</code>.</p>
+</blockquote>
+<p>I suspect the answer to this ticket is &quot;you are seeing expected behavior, but it's a config problem&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-27 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cameron-simpson">@cameron-simpson</a> on 2025-03-29 01:27</div>
+            <div class="timeline-body"><p>@MichaReiser sorry, I've been busy elsewhere.</p>
+<p>You're right, it was misconfiguration. My <code>.ruff.toml</code> was correct, but overridden by my lint script which had <code>--target-version=py313</code> buried in its incantation (for a different piece of code).</p>
+<p>I've verified that hand running <code>ruff check</code> directly without that option honours the <code>.ruff.toml</code> setting.</p>
+<p>Sorry to have troubled you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-29 02:07</div>
+            <div class="timeline-body"><p>No worries. I'm glad you figured it out</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

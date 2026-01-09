@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Some rules should be disabled for typing protocols - astral-sh/ruff #4887</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Some rules should be disabled for typing protocols</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4887">#4887</a>
+        opened by <a href="https://github.com/gaborbernat">@gaborbernat</a>
+        on 2023-06-06 01:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2023-06-06 01:17</div>
+            <div class="timeline-body"><p>I can think of ANN101 and D102:</p>
+<p>Given:</p>
+<pre><code class="language-python">class Message(Protocol):
+    &quot;&quot;&quot;Message on the event queue.&quot;&quot;&quot;
+
+    @property
+    def message_id(self) -&gt; str:
+        ...
+
+    def delete(self) -&gt; None:
+        ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-06-06 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-06 14:31</div>
+            <div class="timeline-body"><p>Not necessarily disagreeing, but could you expand on the reasoning for omitting ANN101 and D102 here vs. in other classes? (E.g., I almost think ANN101 and ANN102 should be removed altogether.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2023-06-06 15:07</div>
+            <div class="timeline-body"><p>I'm happy to remove ANN101. As for D102 on a second think I can see both sides. On one hand protocols tend to be glue code, so less important to have docstrings, on other side might not be bad to have documentation for those methods 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-07-10 01:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tlambert03">@tlambert03</a> on 2025-04-29 17:19</div>
+            <div class="timeline-body"><p>here's a slightly interesting conflict between ruff and pyright:</p>
+<p>ruff dislikes this:</p>
+<pre><code class="language-python">    @property
+    def message_id(self) -&gt; str: ...
+</code></pre>
+<p><code>Missing docstring in public method Ruff(D102)</code></p>
+<p>whereas  pyright dislikes this:</p>
+<pre><code class="language-python">    @property
+    def message_id(self) -&gt; str:
+        &quot;&quot;&quot;Return the message ID.&quot;&quot;&quot;
+</code></pre>
+<p><code>Function with declared return type &quot;str&quot; must return value on all code paths   &quot;None&quot; is not assignable to &quot;str&quot; Pylance(reportReturnType)</code></p>
+<p>meaning we essentially ~<em>must</em> now add an unnecessary <code>raise NotImplementedError</code> in order to satisfy both, or ignore one of them.~  <em>(edit ... silly me:  the ellipses suggested below is better)</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-29 17:22</div>
+            <div class="timeline-body"><p>Pyright is happier if you include the <code>...</code> along with the docstring:</p>
+<pre><code class="language-py">    @property
+    def message_id(self) -&gt; str:
+        &quot;&quot;&quot;Return the message ID.&quot;&quot;&quot;
+        ...
+</code></pre>
+<p>I guess the rationale here is that the <code>...</code> makes it explicit that you are intentionally omitting the implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tlambert03">@tlambert03</a> on 2025-04-29 17:24</div>
+            <div class="timeline-body"><p>oh how silly of me 🤦‍♂️ ... yes of course.  much better than the raise</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

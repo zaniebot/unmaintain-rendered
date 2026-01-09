@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF052: Don't flag assignments to private function arguments - astral-sh/ruff #14968</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF052: Don't flag assignments to private function arguments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14968">#14968</a>
+        opened by <a href="https://github.com/aiudirog">@aiudirog</a>
+        on 2024-12-14 06:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aiudirog">@aiudirog</a> on 2024-12-14 06:36</div>
+            <div class="timeline-body"><p>This is a follow up to #14796: attempting to assign a private function parameter still gets flagged in Ruff v0.8.3 (<a href="https://play.ruff.rs/e233076b-9184-492f-aa36-94306356bf12">playground</a>)</p>
+<p>My primary use case for private parameters is when I need to track what I've seen when recursing through a potentially circular graph:</p>
+<pre><code class="language-python">class Node:
+
+    connected: list[Node]
+
+    def recurse(self, *, _seen: set[Node] | None = None):
+        if _seen is None:
+            _seen = set()  # Local dummy variable `_seen` is accessed (RUF052)
+        elif self in _seen:
+            return
+        _seen.add(self)
+        for other in self.connected:
+            other.recurse(_seen=_seen)
+</code></pre>
+<p>In most cases, I wouldn't want the caller to have to seed the <code>_seen</code> param or even know that it exists, as imo, that's just an implementation detail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2024-12-14 07:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-12-14 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @AlexWaygood on 2024-12-14 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2024-12-14 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-14 18:51</div>
+            <div class="timeline-body"><p>Incidentally, in this example the rule is <em>not</em> complaining about the binding for the function parameter, but rather about the rebinding in the if-statement. So I think we need to add some logic that skips if the offending binding is a re-binding of a private parameter declaration.</p>
+<p>Unrelated - would it be more helpful if the diagnostic pointed to the problematic <em>use</em> rather than the <em>binding</em>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aiudirog">@aiudirog</a> on 2024-12-14 19:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Incidentally, in this example the rule is <em>not</em> complaining about the binding for the function parameter, but rather about the rebinding in the if-statement. So I think we need to add some logic that skips if the offending binding is a re-binding of a private parameter declaration.</p>
+</blockquote>
+<p>Yeah on 0.8.2 the rule flagged both the function definition and the reassignment in the body separately, so that seems like the appropriate solution.</p>
+<blockquote>
+<p>Unrelated - would it be more helpful if the diagnostic pointed to the problematic <em>use</em> rather than the <em>binding</em>?</p>
+</blockquote>
+<p>That might just flip it to error on <code>_seen.add(self)</code> and, if there's a lot of usages in the same function, could output a lot of messages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../inducer/pytential/pulls/252.html">inducer/pytential#252</a> on 2024-12-15 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15376.html">astral-sh/ruff#15376</a> on 2025-01-09 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-01-10 09:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff detects problems in CI, but not locally - astral-sh/ruff #21647</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff detects problems in CI, but not locally</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21647">#21647</a>
+        opened by <a href="https://github.com/vadimkantorov">@vadimkantorov</a>
+        on 2025-11-26 21:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-11-26 21:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In one occasion, I observed that <code>rm .ruff_cache</code> reverts local behavior to match GitHub CI's pre-commit behavior.</p>
+<p>But now it's back and dropping the cache does not fix it anymore. I observed this problem with isort rule. It's as if the offending file is not actually checked locally.</p>
+<p>I also could not find a verbose mode which would explain which files ruff actually checked/formatted under which rules</p>
+<h3>Version</h3>
+<p>ruff 0.14.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-26 21:50</div>
+            <div class="timeline-body"><p>Is there a chance that there's a directory with the same name as one of your dependencies on one machine and not the other? See this comment from earlier today: https://github.com/astral-sh/ruff/issues/21638#issuecomment-3580583306. It also mentions the <code>-v</code> flag to activate verbose logging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-11-26 21:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-11-28 02:17</div>
+            <div class="timeline-body"><p>I'll try the verbose output next time it happens. Last time I tried, I think it was not even detailing if it ran isort at all and how exactly it touched the cache. Is there some strictly <code>--no-cache</code> option to fully disable any caching?</p>
+<p>Also strangely, the local ruff kept reverting back the import order for me. So to satisfy the CI ruff I had to keep the local ruff unhappy. Extremely confusing :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-11-28 21:04</div>
+            <div class="timeline-body"><p>@ntBre It seems you're right.</p>
+<p>My colleague @nkkarpov suggested a plausible explanation:</p>
+<p><code>wandb</code> python package creates a local folder named also <code>wandb</code> for storing its temporary files which confuses ruff.</p>
+<p>I think isort should not change behavior based on existence of local folders - at least not by default.</p>
+<p>And in verbose mode ruff should certainly print any of these decisions taken, and all cache access events as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../wandb/wandb/issues/10997.html">wandb/wandb#10997</a> on 2025-11-28 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-28 21:25</div>
+            <div class="timeline-body"><p>Yes, wandb is a known problem maker, see https://github.com/astral-sh/ruff/issues/10519#issuecomment-3164059570. We might add special casing for wandb specifically.</p>
+<blockquote>
+<p>I think isort should not change behavior based on existence of local folders - at least not by default.</p>
+</blockquote>
+<p>The way isort detects whether something is first or third-party is solely based on the precense of folders and files. Even empty folders can be namespace packages in Python, making this tricky.</p>
+<blockquote>
+<p>And in verbose mode ruff should certainly print any of these decisions taken, and all cache access events as well.</p>
+</blockquote>
+<p>Ruff does print the decision making when using <code>ruff check -v</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-11-28 22:18</div>
+            <div class="timeline-body"><p>At least please add a config option to suppress this behavior (dependence of sorting on existence of local folders). It can clearly make hard-to-debug troubles. And import order isn' t that important in many cases (but isort is still enabled in many places). Or maybe please  introduce <code>isort-ignoring-local-folders</code> or sth similar</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-11-28 22:20</div>
+            <div class="timeline-body"><p>I can easily imagine someone stumbling on this for some other package or folder name... It's a very confusing thing to debug...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-28 22:20</div>
+            <div class="timeline-body"><p>How would we suppress this? How would we detect if something is a first-party import other than by looking at the presence of files on-disk?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-10 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-12-10 21:52</div>
+            <div class="timeline-body"><p>Another idea: make ruff print in non-verbose mode if it treats some packages as local and as third-party (and especially so if it proposes to reorder imports). Like so one can at least compare ruff logs and find out that local run has a different printout than CI run and have a pointer to the explanation...</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A004 Preview Mode ExceptionGroup import in pre-3.11 - astral-sh/ruff #13037</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>A004 Preview Mode ExceptionGroup import in pre-3.11</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13037">#13037</a>
+        opened by <a href="https://github.com/CoolCat467">@CoolCat467</a>
+        on 2024-08-21 18:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CoolCat467">@CoolCat467</a> on 2024-08-21 18:50</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Getting <code>A004 Import BaseExceptionGroup is shadowing a Python builtin</code> and <code>ExceptionGroup</code> errors raised in this case:</p>
+<pre><code class="language-python">if sys.version_info &lt; (3, 11):
+    from exceptiongroup import BaseExceptionGroup, ExceptionGroup
+</code></pre>
+<p>I would argue that this should not be the case. <code>BaseExceptionGroup</code> and <code>ExceptionGroup</code> do not exist in python versions prior to 3.11, and using the <code>exceptiongroup</code> package is commonly used for backwards compatibility.</p>
+<p>Using ruff preview mode v0.6.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-22 07:50</div>
+            <div class="timeline-body"><p>This makes sense to me, but we should only allow the use of <code>BaseExceptionGroup</code> and <code>ExceptionGroup</code> when inside a <code>sys.version_info &lt; (3.11)</code> branch. I'm not sure if we have the necessary infrastructure today. wdyt @AlexWaygood ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-08-22 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-22 15:37</div>
+            <div class="timeline-body"><p>I'm quite hesistant to add the infrastructure to Ruff to support detecting which <code>sys.version_info</code> branch we're in. Generalised <code>sys.version_info</code> parsing would be tricky (though we'll have to implement it for red-knot to comply with PEP 484), and I'm not sure it's actually needed in this case. For this case, I think we could fix the issue by making the <code>is_python_builtin()</code> function smarter:</p>
+<ul>
+<li>The rule calls <code>shadows_builtin()</code> <a href="https://github.com/astral-sh/ruff/blob/2edd32aa31446c81c245beb1230de26220a7d7e8/crates/ruff_linter/src/rules/flake8_builtins/rules/builtin_import_shadowing.rs#L37-L41">here</a>.</li>
+<li><code>shadows_builtin()</code> calls <code>is_python_builtin()</code> <a href="https://github.com/astral-sh/ruff/blob/2edd32aa31446c81c245beb1230de26220a7d7e8/crates/ruff_linter/src/rules/flake8_builtins/helpers.rs#L9">here</a></li>
+<li><code>is_python_builtin()</code> is defined <a href="https://github.com/astral-sh/ruff/blob/2edd32aa31446c81c245beb1230de26220a7d7e8/crates/ruff_python_stdlib/src/builtins.rs#L192">here</a>. Unlike other <a href="https://github.com/astral-sh/ruff/blob/2edd32aa31446c81c245beb1230de26220a7d7e8/crates/ruff_python_stdlib/src/sys/known_stdlib.rs#L3-L585">similar functions</a> in the <code>ruff_python_stdlib</code> crate, it assumes that all Python builtins have always been Python builtins; it doesn't take account of the fact that some builtins were added in newer Python versions. If we added a <code>minor_version</code> parameter, similar to <code>ruff_python_stdlib::sys::is_builtin_module</code> or <code>ruff_python_stdlib::sys::is_known_standard_library</code>, then we could take account of the <code>--target-version</code> the user has provided when deciding whether something is a Python builtin or not. Since @CoolCat467 clearly supports running Python &lt;3.11 on their code, they'll probably be running Ruff with <code>--target-version py310</code> or lower.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CoolCat467">@CoolCat467</a> on 2024-08-22 18:59</div>
+            <div class="timeline-body"><p>I think that using <code>--target-version</code> is a good solution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @MichaReiser on 2024-08-22 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dhruvmanila on 2024-08-23 04:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-30 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13172.html">astral-sh/ruff#13172</a> on 2024-08-30 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-01 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-01 17:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

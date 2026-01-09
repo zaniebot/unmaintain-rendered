@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;Unnecessary variable assignment before `return`&quot; is too eager - astral-sh/ruff #1233</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;Unnecessary variable assignment before `return`&quot; is too eager</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1233">#1233</a>
+        opened by <a href="https://github.com/DanCardin">@DanCardin</a>
+        on 2022-12-14 03:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DanCardin">@DanCardin</a> on 2022-12-14 03:55</div>
+            <div class="timeline-body"><p>Some minimal example:</p>
+<pre><code class="language-python">def foo():
+    bar = 4
+    x()
+    return bar
+</code></pre>
+<p><code>x()</code> arbitrary function call can have side-effects. This is a dirt simple example, but it's not hard to imagine sequences of statements which would mutate <code>bar</code>'s value between the assignment and the return, even if there aren't direct references to <code>bar</code> itself (which seems to be the current heuristic).</p>
+<p>Thus, it seems to me to be too eager to flag this, so long as there are potentially side-effectful operations between the assignment and the <code>return</code>. and given that most operations can be side-effectful, really i guess this just means, I'm suggesting it should mostly be checking for sequential statements like so:</p>
+<pre><code>x = 4
+return x
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-15 00:39</div>
+            <div class="timeline-body"><p>I'm torn on this! Almost any statement can be side-effectful -- even something like <code>a = b + c</code> could actually involve operator overloading under-the-hood and thus make use of <code>bar</code>. So, I guess the suggestion is that we make this check much more conservative, and only flag when there are no expressions between the assignment and the return?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2022-12-15 00:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-16 04:14</div>
+            <div class="timeline-body"><p>Closing for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-16 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanCardin">@DanCardin</a> on 2022-12-16 17:23</div>
+            <div class="timeline-body"><p>That was the suggestion yes. I can't decide i agree with myself</p>
+<p>Something like:</p>
+<pre><code>def bad(a={&quot;a&quot;: 1}):
+    a['a'] += 1
+    return a
+
+def foo():
+    bar = bad()
+    bad()
+    return bar
+</code></pre>
+<p>you can't really reorder the statements without changing the behavior.</p>
+<p>And while this example seems contrived, the real code that triggered this was SQLAlchemy models being &quot;hydrated&quot; through some associated function call equivalent to <code>bad</code>, without referencing the equivalent of <code>bar</code>.</p>
+<p>With that being said, this is perhaps edge-casey enough that one just puts a noqa on it and calls it a day (which is what i did).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1290.html">astral-sh/ruff#1290</a> on 2022-12-19 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1294.html">astral-sh/ruff#1294</a> on 2022-12-20 00:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-20 00:48</div>
+            <div class="timeline-body"><p>@DanCardin - FYI, I ended up changing this in https://github.com/charliermarsh/ruff/pull/1294 since it got filed again, which I took as a sign that it was too aggressive :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

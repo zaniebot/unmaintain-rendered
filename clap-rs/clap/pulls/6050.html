@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix: Require validation not bypassed by mutually exclusive groups - clap-rs/clap #6050</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix: Require validation not bypassed by mutually exclusive groups</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/pull/6050">#6050</a>
+        opened by <a href="https://github.com/12yanogden">@12yanogden</a>
+        on 2025-06-27 12:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/12yanogden">@12yanogden</a> on 2025-06-27 12:54</div>
+            <div class="timeline-body"><!--
+Thanks for helping out!
+
+Please link the appropriate issue from your PR.
+
+If you don't have an issue, we'd recommend starting with one first so the PR can focus on the
+implementation (unless its an obvious bug or documentation fix that will have
+little conversation).
+-->
+
+<h2>Problem</h2>
+<p><a href="https://github.com/clap-rs/clap/issues/4707">Fixes #4707</a></p>
+<p>Previously, arguments required via <code>requires</code> could be bypassed when they conflicted with other present arguments in mutually exclusive groups.</p>
+<h3>Example Issue:</h3>
+<pre><code class="language-rust">#[derive(Parser)]
+#[clap(group = ArgGroup::new(&quot;command&quot;).multiple(false))]
+struct Args {
+    #[clap(long, group = &quot;command&quot;)]
+    read: bool,
+    
+    #[clap(long, group = &quot;command&quot;)]  
+    write: bool,
+    
+    #[clap(long, requires = &quot;read&quot;)]
+    show_hex: bool,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-07-03 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_builder/src/parser/validator.rs</code>:354 on 2025-07-03 16:04</div>
+            <div class="timeline-body"><p>While this might fix the immediate problem, I'm worried that this is too brittle and we can change things in other code and not realize this needs to be update as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-07-03 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>tests/builder/issue_4707.rs</code>:1 on 2025-07-03 16:07</div>
+            <div class="timeline-body"><p>Note that #4520 is the core issue and it hasn't been accepted yet, requiring further analysis for correctness and whether this would constitute a breaking change.</p>
+<p>For future contributions, please keep in mind</p>
+<ul>
+<li>We prefer to resolve issues before moving on to PRs</li>
+<li>Commits should be atomic, including tests passing</li>
+<li>We do ask for tests to be added in commits before the behavior changes but that is to show the existing behavior</li>
+<li>derive tests should go in the derive testsuite, not the builder one</li>
+<li>tests should be grouped by and named for their functionality, not issue numbers</li>
+</ul>
+<p>See also https://github.com/clap-rs/clap/blob/master/CONTRIBUTING.md</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/12yanogden">@12yanogden</a> reviewed on 2025-07-03 16:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/12yanogden">@12yanogden</a> on <code>tests/builder/issue_4707.rs</code>:1 on 2025-07-03 16:26</div>
+            <div class="timeline-body"><p>So wait, is 4707 not a workable issue? I have to wait until 4520 is resolved?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-07-03 16:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>tests/builder/issue_4707.rs</code>:1 on 2025-07-03 16:34</div>
+            <div class="timeline-body"><p>They are the same concept (how should <code>requires</code> interact with conflicts) and that question needs to be addressed before either moves forward.  Rather than split <em>that</em> conversation between two related issues, I recommend we centralize it on #4520.  That doesn't mean that #4520 needs to be implemented first.  In fact, its likely that a fix for one will fix the other or be just a one or two line change.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

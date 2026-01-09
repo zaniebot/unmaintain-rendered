@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression: uv fails to detect nixpkgs provided python as a valid system-managed interpreter when it's installed with libraries - astral-sh/uv #11529</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Regression: uv fails to detect nixpkgs provided python as a valid system-managed interpreter when it's installed with libraries</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11529">#11529</a>
+        opened by <a href="https://github.com/iniw">@iniw</a>
+        on 2025-02-15 02:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/iniw">@iniw</a> on 2025-02-15 02:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>As of version <code>0.5.31</code>, the latest available on <code>nixpkgs-unstable</code>, uv fails to recognize a nixpkgs installation of python as a valid system-managed interpreter when it's installed with libraries through the <code>python3.withPackages</code> function. This differs from version <code>0.4.30</code>, the the latest on the <code>24.11</code> channel, which does recognize it.</p>
+<p>I've made a small repo showcasing the issue: https://github.com/iniw/uv-test</p>
+<p>When pointing the <code>nixpkgs</code> input to <code>nixos-24.11</code>:</p>
+<pre><code>$ uv --version
+uv 0.4.30
+
+$ uv python list
+cpython-3.13.0+freethreaded-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.12.8-linux-x86_64-gnu                 /nix/store/kjgslpdqchx1sm7a5h9xibi5rrqcqfnl-python3-3.12.8/bin/python3.12
+cpython-3.12.8-linux-x86_64-gnu                 /nix/store/kjgslpdqchx1sm7a5h9xibi5rrqcqfnl-python3-3.12.8/bin/python3 -&gt; python3.12
+cpython-3.12.8-linux-x86_64-gnu                 /nix/store/kjgslpdqchx1sm7a5h9xibi5rrqcqfnl-python3-3.12.8/bin/python -&gt; python3.12
+cpython-3.12.7-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.11.10-linux-x86_64-gnu                &lt;download available&gt;
+cpython-3.10.15-linux-x86_64-gnu                &lt;download available&gt;
+cpython-3.9.20-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.8.20-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.7.9-linux-x86_64-gnu                  &lt;download available&gt;
+pypy-3.10.14-linux-x86_64-gnu                   &lt;download available&gt;
+pypy-3.9.19-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.8.16-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.7.13-linux-x86_64-gnu                    &lt;download available&gt;
+
+$ uv run hello.py
+&lt;module 'pandas' from '/nix/store/ba806nl273d15nj30bbrqrj57nv80zq4-python3-3.12.8-env/lib/python3.12/site-packages/pandas/__init__.py'&gt;
+</code></pre>
+<p>When pointing it to <code>unstable</code>:</p>
+<pre><code>$ uv --version
+uv 0.5.31
+
+$ uv python list
+cpython-3.14.0a5+freethreaded-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.14.0a5-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.13.2+freethreaded-linux-x86_64-gnu      &lt;download available&gt;
+cpython-3.13.2-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.12.9-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.11.11-linux-x86_64-gnu                  &lt;download available&gt;
+cpython-3.10.16-linux-x86_64-gnu                  &lt;download available&gt;
+cpython-3.9.21-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.8.20-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.7.9-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.11.11-linux-x86_64-gnu                     &lt;download available&gt;
+pypy-3.10.19-linux-x86_64-gnu                     &lt;download available&gt;
+pypy-3.9.19-linux-x86_64-gnu                      &lt;download available&gt;
+pypy-3.8.16-linux-x86_64-gnu                      &lt;download available&gt;
+pypy-3.7.13-linux-x86_64-gnu                      &lt;download available&gt;
+
+$ uv run hello.py
+error: No interpreter found for Python 3.12 in search path
+</code></pre>
+<p>This is a problem because compiled libraries, like <code>pandas</code>, <em>must</em> be installed directly by the nix environment since the pre-built binaries dynamically link to libc, making them unfit for NixOS. Read more about this <a href="https://wiki.nixos.org/wiki/Python#Running_compiled_libraries">here</a>.</p>
+<p>I assume that the issue is that the python binary, when using libraries, is a virtual environment, which uv then detects and rejects on the basis that a &quot;global&quot; python interpreter shouldn't be a venv. This was probably done for valid reasons, but it's a shame that it severely limits uv's support for NixOS.</p>
+<h3>Platform</h3>
+<p>NixOS (Linux 6.6.76 x86_64 GNU/Linux)</p>
+<h3>Version</h3>
+<p>0.5.31/0.4.30</p>
+<h3>Python version</h3>
+<p>3.12.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @iniw on 2025-02-15 02:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-02-15 03:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-15 03:45</div>
+            <div class="timeline-body"><p>If you share verbose (<code>-v</code>) or trace (<code>RUST_LOG=uv=trace</code>) logs it should be apparent why we're skipping the interpreter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-15 03:46</div>
+            <div class="timeline-body"><p>(Thank you for the well-written issue!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iniw">@iniw</a> on 2025-02-15 21:25</div>
+            <div class="timeline-body"><blockquote>
+<p>If you share verbose (<code>-v</code>) or trace (<code>RUST_LOG=uv=trace</code>) logs it should be apparent why we're skipping the interpreter.</p>
+</blockquote>
+<pre><code class="language-lua">$ uv venv --verbose
+DEBUG uv 0.5.31
+DEBUG Found project root: `/home/sol/oss/uv-test`
+DEBUG No workspace root found, using project root
+DEBUG Reading Python requests from version file at `/home/sol/oss/uv-test/.python-version`
+DEBUG Using Python request `3.12` from version file at `.python-version`
+DEBUG Searching for Python 3.12 in search path
+DEBUG Found `cpython-3.12.8-linux-x86_64-gnu` at `/nix/store/y3lw7d6xw2s8nsjggbl8f0zwmd0wrgj2-python3-3.12.8-env/bin/python3.12` (first executable in the search path)
+DEBUG Ignoring Python interpreter at `/nix/store/y3lw7d6xw2s8nsjggbl8f0zwmd0wrgj2-python3-3.12.8-env/bin/python3.12`: system interpreter required
+DEBUG Found `cpython-3.12.8-linux-x86_64-gnu` at `/nix/store/y3lw7d6xw2s8nsjggbl8f0zwmd0wrgj2-python3-3.12.8-env/bin/python3` (search path)
+DEBUG Ignoring Python interpreter at `/nix/store/y3lw7d6xw2s8nsjggbl8f0zwmd0wrgj2-python3-3.12.8-env/bin/python3.12`: system interpreter required
+DEBUG Found `cpython-3.12.8-linux-x86_64-gnu` at `/nix/store/y3lw7d6xw2s8nsjggbl8f0zwmd0wrgj2-python3-3.12.8-env/bin/python` (search path)
+DEBUG Ignoring Python interpreter at `/nix/store/y3lw7d6xw2s8nsjggbl8f0zwmd0wrgj2-python3-3.12.8-env/bin/python3.12`: system interpreter required
+  × No interpreter found for Python 3.12 in search path
+
+$ uv run --verbose hello.py
+DEBUG uv 0.5.31
+DEBUG Found project root: `/home/sol/oss/uv-test`
+DEBUG No workspace root found, using project root
+DEBUG Discovered project `uv-test` at: /home/sol/oss/uv-test
+DEBUG Acquired lock for `/home/sol/oss/uv-test`
+DEBUG Reading Python requests from version file at `/home/sol/oss/uv-test/.python-version`
+DEBUG Using Python request `3.12` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+DEBUG Searching for Python 3.12 in search path
+DEBUG Found `cpython-3.12.8-linux-x86_64-gnu` at `/nix/store/y3lw7d6xw2s8nsjggbl8f0zwmd0wrgj2-python3-3.12.8-env/bin/python3.12` (first executable in the search path)
+DEBUG Ignoring Python interpreter at `/nix/store/y3lw7d6xw2s8nsjggbl8f0zwmd0wrgj2-python3-3.12.8-env/bin/python3.12`: system interpreter required
+DEBUG Found `cpython-3.12.8-linux-x86_64-gnu` at `/nix/store/y3lw7d6xw2s8nsjggbl8f0zwmd0wrgj2-python3-3.12.8-env/bin/python3` (search path)
+DEBUG Ignoring Python interpreter at `/nix/store/y3lw7d6xw2s8nsjggbl8f0zwmd0wrgj2-python3-3.12.8-env/bin/python3.12`: system interpreter required
+DEBUG Found `cpython-3.12.8-linux-x86_64-gnu` at `/nix/store/y3lw7d6xw2s8nsjggbl8f0zwmd0wrgj2-python3-3.12.8-env/bin/python` (search path)
+DEBUG Ignoring Python interpreter at `/nix/store/y3lw7d6xw2s8nsjggbl8f0zwmd0wrgj2-python3-3.12.8-env/bin/python3.12`: system interpreter required
+DEBUG Released lock at `/tmp/uv-9565ebfd5be59662.lock`
+error: No interpreter found for Python 3.12 in search path
+</code></pre>
+<p>Hope this helps! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-15 21:35</div>
+            <div class="timeline-body"><p>Looks like your theory was correct</p>
+<p>https://github.com/astral-sh/uv/blob/81966c43dceaa22eb25a6c103897e9abf8002ac4/crates/uv-python/src/discovery.rs#L666-L680</p>
+<p>https://github.com/astral-sh/uv/blob/81966c43dceaa22eb25a6c103897e9abf8002ac4/crates/uv-python/src/discovery.rs#L709-L715</p>
+<p>https://github.com/astral-sh/uv/blob/ddbc6e3150f33d2ce92a80a59bb0f81b6b753604/crates/uv-python/src/interpreter.rs#L246-L252</p>
+<p>Is there a way we can tell that these Nix environments are special?</p>
+<p>What does <code>python -c &quot;import sys; print(sys.base_prefix)&quot;</code> show?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iniw">@iniw</a> on 2025-02-15 21:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a way we can tell that these Nix environments are special?</p>
+</blockquote>
+<p>Hard to say. A perhaps decent heuristic would be to check the <code>/nix/store</code> prefix on the python path. The exact prefix can be retrieved with the <code>$NIX_STORE</code> env variable, which is available when you enter a build environment (e.g: a devshell).</p>
+<p>The maintainers for the nixpkgs distribution of python are better qualified to answer that question. Don't really know the best way to get in contact with them, perhaps could open an issue on nixpkg's github.</p>
+<blockquote>
+<p>What does <code>python -c &quot;import sys; print(sys.base_prefix)&quot;</code> show?</p>
+</blockquote>
+<pre><code>$ python -c &quot;import sys; print(sys.base_prefix)&quot;
+/nix/store/0l539chjmcq5kdd43j6dgdjky4sjl7hl-python3-3.12.8
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-18 22:54</div>
+            <div class="timeline-body"><p>As a note, this is ~a duplicate of https://github.com/astral-sh/uv/issues/4450 which may have some pertinent discussion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iniw">@iniw</a> on 2025-02-18 23:07</div>
+            <div class="timeline-body"><blockquote>
+<p>As a note, this is ~a duplicate of <a href="https://github.com/astral-sh/uv/issues/4450">#4450</a> which may have some pertinent discussion</p>
+</blockquote>
+<p>Thanks for linking this! I wasn't aware of the <code>UV_PYTHON</code> env var. Setting it makes everything work appropriately :).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @iniw on 2025-02-18 23:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iniw">@iniw</a> on 2025-02-19 01:26</div>
+            <div class="timeline-body"><p>For reference, if anyone bumps into this issue, here's a devshell that allows you to mix nix-managed and uv-managed libraries:</p>
+<pre><code class="language-nix">{
+  inputs = {
+    nixpkgs.url = &quot;github:NixOS/nixpkgs/nixpkgs-unstable&quot;;
+    flake-utils.url = &quot;github:numtide/flake-utils&quot;;
+  };
+
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+        python = pkgs.python3;
+        pythonEnv = python.withPackages (p: [
+          # Here goes all the libraries that can't be managed by uv because of dynamic linking issues
+          # or that you just want to be managed by nix for one reason or another
+          p.pandas
+        ]);
+      in
+      {
+        devShells.default =
+          with pkgs;
+          mkShell {
+            packages = [
+              uv
+              python
+              pythonEnv
+            ];
+
+            shellHook = ''
+              export UV_PYTHON_PREFERENCE=&quot;only-system&quot;;
+              export UV_PYTHON=${python}
+            '';
+          };
+      }
+    );
+}
+</code></pre>
+<p>You can even do <code>uv add pandas</code> just to add it to the lockfile, which is great for working in projects with non-nix users :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4450.html">astral-sh/uv#4450</a> on 2025-02-19 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10711.html">astral-sh/uv#10711</a> on 2025-03-13 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1495.html">astral-sh/uv#1495</a> on 2025-03-16 02:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

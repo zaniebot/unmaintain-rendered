@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aws codeartifact works in v0.7.12 but not v0.7.13 - astral-sh/uv #14034</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>aws codeartifact works in v0.7.12 but not v0.7.13</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14034">#14034</a>
+        opened by <a href="https://github.com/kurt-rhee">@kurt-rhee</a>
+        on 2025-06-13 18:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kurt-rhee">@kurt-rhee</a> on 2025-06-13 18:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following bash script works in <code>0.7.12</code> but fails in <code>0.7.13</code></p>
+<p>update_core.sh</p>
+<pre><code>export AWS_CODEARTIFACT_TOKEN=&quot;$(
+    aws codeartifact get-authorization-token \
+    --domain proximal-code-artifact-domain \
+    --domain-owner 016997484973 \
+    --query authorizationToken \
+    --output text
+)&quot;
+
+if [ -z &quot;$AWS_CODEARTIFACT_TOKEN&quot; ]; then
+    echo &quot;AWS CodeArtifact Token is empty&quot;
+    exit 1
+fi
+
+LATEST_VERSION=$(aws codeartifact list-package-versions \
+    --package core \
+    --domain proximal-code-artifact-domain \
+    --domain-owner 016997484973 \
+    --repository proximal-hub \
+    --sort-by PUBLISHED_TIME \
+    --format pypi \
+    --output text \
+    --query 'versions[0].version' \
+    )
+
+
+export UV_INDEX_PROXIMAL_USERNAME=aws
+export UV_INDEX_PROXIMAL_PASSWORD=&quot;$AWS_CODEARTIFACT_TOKEN&quot;
+
+uv add &quot;core==$LATEST_VERSION&quot; --index proximal
+
+</code></pre>
+<p>pyproject.toml</p>
+<pre><code>[[tool.uv.index]]
+name = &quot;proximal&quot;
+url = &quot;https://proximal-code-artifact-domain-016997484973.d.codeartifact.us-east-2.amazonaws.com/pypi/proximal-hub/simple/&quot;
+explicit = true
+
+[tool.uv.sources]
+core = { index = &quot;proximal&quot; }
+</code></pre>
+<p>error message in v0.7.13</p>
+<pre><code>(api) kurt@Mac api %  ./_scripts/update_core.sh
+error: Directory not found for index: file:///Users/kurt/Programs/api/proximal
+</code></pre>
+<h3>Platform</h3>
+<p>Darwin 24.5.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.12 (dc3fd4647 2025-06-06)</p>
+<h3>Python version</h3>
+<p>Python 3.12.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @kurt-rhee on 2025-06-13 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-13 18:07</div>
+            <div class="timeline-body"><p>Using <code>uv add --index &lt;name&gt;</code> isn't supported, see</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/13974</li>
+<li>#13874</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-13 18:08</div>
+            <div class="timeline-body"><p>(the fact that <code>uv add</code> accepted <code>--index &lt;name&gt;</code> previously was a bug — sorry the fix broke your script though!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-06-13 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-06-13 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kurt-rhee">@kurt-rhee</a> on 2025-06-13 18:38</div>
+            <div class="timeline-body"><p>Got it!  Thanks for the links they were helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kurt-rhee on 2025-06-13 18:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

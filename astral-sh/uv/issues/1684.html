@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip sync` doesn't remove some package folders - astral-sh/uv #1684</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip sync` doesn't remove some package folders</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1684">#1684</a>
+        opened by <a href="https://github.com/jfcherng">@jfcherng</a>
+        on 2024-02-19 10:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jfcherng">@jfcherng</a> on 2024-02-19 10:24</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<h2>Description</h2>
+<p><code>uv pip sync</code> doesn't remove some package folders. Maybe it's due to <code>-</code>/<code>_</code> in package name.</p>
+<h2>Reproducer</h2>
+<h3><code>more.txt</code></h3>
+<pre><code>pandas==2.2.0
+pandas-stubs==2.2.0.240218
+</code></pre>
+<h3><code>less.txt</code></h3>
+<pre><code>pandas==2.2.0
+</code></pre>
+<ol>
+<li><p><code>$ uv v</code></p>
+</li>
+<li><p><code>$ uv pip sync more.txt</code></p>
+</li>
+<li><p><code>ls</code> packages</p>
+<pre><code>$ ls -al .venv/lib/python3.12/site-packages/
+total 12
+drwxr-xr-x 1 jfcherng soc  230 Feb 19 18:20 .
+drwxr-xr-x 1 jfcherng soc   26 Feb 19 18:19 ..
+drwxr-xr-x 1 jfcherng soc  310 Feb 19 18:20 pandas
+drwxr-xr-x 1 jfcherng soc  120 Feb 19 18:20 pandas-2.2.0.dist-info
+drwxr-xr-x 1 jfcherng soc    0 Feb 19 18:20 pandas.libs
+drwxr-xr-x 1 jfcherng soc  228 Feb 19 18:20 pandas-stubs
+drwxr-xr-x 1 jfcherng soc   88 Feb 19 18:20 pandas_stubs-2.2.0.240218.dist-info
+-rw-r--r-- 1 jfcherng soc   18 Feb 19 18:19 _virtualenv.pth
+-rw-r--r-- 1 jfcherng soc 4375 Feb 19 18:19 _virtualenv.py
+</code></pre>
+<p>Not sure whether it's important but notice that in package name <code>pandas-stubs</code> uses <code>-</code> and <code>pandas_stubs-2.2.0.240218.dist-info</code> uses <code>_</code>.</p>
+</li>
+<li><p><code>$ uv pip sync less.txt</code></p>
+<p>The package <code>pandas-stubs</code> should be removed.</p>
+</li>
+<li><p><code>ls</code> packages</p>
+<pre><code>$ ls -al .venv/lib/python3.12/site-packages/
+total 12
+drwxr-xr-x 1 jfcherng soc  206 Feb 19 18:22 .
+drwxr-xr-x 1 jfcherng soc   26 Feb 19 18:19 ..
+drwxr-xr-x 1 jfcherng soc  310 Feb 19 18:20 pandas
+drwxr-xr-x 1 jfcherng soc  120 Feb 19 18:20 pandas-2.2.0.dist-info
+drwxr-xr-x 1 jfcherng soc    0 Feb 19 18:20 pandas.libs
+drwxr-xr-x 1 jfcherng soc    0 Feb 19 18:22 pandas_stubs-2.2.0.240218.dist-info      &lt;--- still there
+-rw-r--r-- 1 jfcherng soc   18 Feb 19 18:19 _virtualenv.pth
+-rw-r--r-- 1 jfcherng soc 4375 Feb 19 18:19 _virtualenv.py
+</code></pre>
+<p><code>pandas_stubs-2.2.0.240218.dist-info</code> is still there. P.s. it's an empty folder.</p>
+</li>
+<li><p>Now, <code>$ uv pip sync more.txt</code> does nothing because <code>uv</code> seems to consider <code>pandas-stubs</code> has been installed.</p>
+</li>
+<li><p>Now, <code>$ uv pip sync less.txt</code> will fail because <code>.venv/lib/python3.12/site-packages/pandas_stubs-2.2.0.240218.dist-info/RECORD</code> is not found.</p>
+</li>
+</ol>
+<h2>Env</h2>
+<ul>
+<li><code>uv --version</code>: uv 0.1.5</li>
+<li>uv platform: Linux x86_64</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jfcherng">@jfcherng</a> on 2024-02-19 10:37</div>
+            <div class="timeline-body"><p>Oops... It turns out that this is because I am using Network File System. I can't reproduce this on a local disk. Not sure whether there is an easy fix in <code>uv</code> side.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jfcherng on 2024-02-19 10:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

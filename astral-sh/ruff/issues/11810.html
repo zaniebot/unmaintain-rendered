@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`FURB140` (reimplemented-starmap) does not handle multiple uses of the loop variable - astral-sh/ruff #11810</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`FURB140` (reimplemented-starmap) does not handle multiple uses of the loop variable</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11810">#11810</a>
+        opened by <a href="https://github.com/tdulcet">@tdulcet</a>
+        on 2024-06-09 14:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tdulcet">@tdulcet</a> on 2024-06-09 14:04</div>
+            <div class="timeline-body"><p>Input code:</p>
+<pre><code class="language-py">def output_table(rows):
+    amax = max(len(row) for row in rows)
+    for row in rows:
+        row.extend(&quot;&quot; for _ in range(amax - len(row)))
+    lens = [max(strcol(v) for v in col) for col in zip(*rows)]
+    print(
+        &quot;\n&quot;.join(
+            &quot;  &quot;.join(
+                &quot;{{{0}:&lt;{1}}}&quot;.format(i, alen - (strcol(v) - len(v)))
+                for i, (alen, v) in enumerate(zip(lens, row))      # &lt;&lt; use 1 of `row`
+            ).format(*row)                                         # &lt;&lt; use 2 of `row`
+            for row in rows
+        )
+    )
+</code></pre>
+<p>Command: <code>ruff check --isolated --select FURB140 --preview --fix example.py</code>
+Resulting code after autofix:</p>
+<pre><code class="language-py">from itertools import starmap
+# ...
+def output_table(rows):
+   amax = max(len(row) for row in rows)
+   for row in rows:
+       row.extend(&quot;&quot; for _ in range(amax - len(row)))
+   lens = [max(strcol(v) for v in col) for col in zip(*rows)]
+   print(
+       &quot;\n&quot;.join(
+           starmap(
+               &quot;  &quot;.join(
+                   &quot;{{{0}:&lt;{1}}}&quot;.format(i, alen - (strcol(v) - len(v)))
+                   for i, (alen, v) in enumerate(zip(lens, row))     # &lt;&lt; `row` is no longer defined here
+               ).format,
+               rows,
+           )
+       )
+   )
+</code></pre>
+<p>Note how the original generator comprehension had two uses use of the <code>row</code> loop variable, but the autofix only replaces one of them with the <code>starmap</code>, which breaks the code.</p>
+<p>Ruff version: <code>ruff 0.4.8</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-06-09 23:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-09 23:43</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11830.html">astral-sh/ruff#11830</a> on 2024-06-10 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-10 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-10 21:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

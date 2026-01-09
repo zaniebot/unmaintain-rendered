@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import of annotations from __future__ incorrectly enables use of | inplace of Optional - astral-sh/ruff #10232</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Import of annotations from __future__ incorrectly enables use of | inplace of Optional</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10232">#10232</a>
+        opened by <a href="https://github.com/daveisfera">@daveisfera</a>
+        on 2024-03-04 23:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/daveisfera">@daveisfera</a> on 2024-03-04 23:53</div>
+            <div class="timeline-body"><p>Here's the incorrect output:</p>
+<pre><code>test.py:6:21: UP007 Use `X | Y` for type annotations
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>Here's the minimal code to demonstrate the issue:</p>
+<pre><code>from __future__ import annotations
+
+from typing import Optional
+
+
+def test(n: int) -&gt; Optional[int]:
+    if n &lt;= 0:
+        return None
+
+    return n
+</code></pre>
+<p>Here's the minimal command I can use to reproduce this:</p>
+<pre><code>ruff check --target-version py39 --select U test.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 00:03</div>
+            <div class="timeline-body"><p>Sorry, do you mind clarifying what the problem is in the above example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daveisfera">@daveisfera</a> on 2024-03-05 00:26</div>
+            <div class="timeline-body"><p>The use of <code>|</code> in typing isn't supported until Python 3.10 (see <a href="https://peps.python.org/pep-0604/">PEP 604</a>) but adding <code>from __future__ import annotations</code> incorrectly enables that even though <code>target-version</code> is set to 3.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 00:30</div>
+            <div class="timeline-body"><p>It's generally fine to use <code>|</code> prior to Python 3.10 with <code>from __future__ import annotations</code>, as long as it's not used in a location that would be evaluated at runtime (e.g., <code>x = Optional[int]</code> as opposed to <code>x: Optional[int]</code>). But you can set <code>keep-runtime-typing = true</code> to disable this: https://docs.astral.sh/ruff/settings/#lint_pyupgrade_keep-runtime-typing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 00:54</div>
+            <div class="timeline-body"><p>Hopefully that setting solves the problem for you, but LMK if not!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-05 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daveisfera">@daveisfera</a> on 2024-03-05 04:59</div>
+            <div class="timeline-body"><p><a href="https://peps.python.org/pep-0563/">PEP 563</a> defines that as delaying the evaluation of typing and I don't believe it's been extended to have a meaning beyond that
+But aside from the technical details, that means that a file that has that <code>import</code> removed or code that's moved copied to a file without it would then be invalid code that would need to be moved back to the pre-3.10 style and that feels wrong/broken to me, but you're the one maintaining the code, so I'll trust your call</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

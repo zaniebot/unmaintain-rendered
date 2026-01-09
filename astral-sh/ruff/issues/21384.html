@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request: Adjust Rule &quot;superfluous-else-return (RET505)&quot; - astral-sh/ruff #21384</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Request: Adjust Rule &quot;superfluous-else-return (RET505)&quot;</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21384">#21384</a>
+        opened by <a href="https://github.com/asilvester-nw">@asilvester-nw</a>
+        on 2025-11-11 15:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/asilvester-nw">@asilvester-nw</a> on 2025-11-11 15:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>With the following code snippet, I get this (RET505) linter error on the first &quot;elif&quot;. Based off the ruff documentation, this should only apply on an else block that had a return inside of it.</p>
+<pre><code>if request.mode == &quot;search&quot;:
+   return &quot;search&quot;
+elif request.mode == &quot;agent&quot;:
+    return &quot;agent&quot;
+elif request.mode == &quot;analyst&quot;:
+    return &quot;analyst&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-11 16:17</div>
+            <div class="timeline-body"><p>I think it makes sense for the rule to apply to both <code>else</code> and <code>elif</code>. This is also inline with the upstream linter:</p>
+<pre><code class="language-console"># uvx --with flake8-return flake8 - --select R505 &lt;&lt;EOF
+def foo():
+    if request.mode == &quot;search&quot;:
+       return &quot;search&quot;
+    elif request.mode == &quot;agent&quot;:
+        return &quot;agent&quot;
+    elif request.mode == &quot;analyst&quot;:
+        return &quot;analyst&quot;
+EOF
+stdin:2:5: R505 unnecessary elif after return statement.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-11-11 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/asilvester-nw">@asilvester-nw</a> on 2025-11-11 16:41</div>
+            <div class="timeline-body"><p>Doing some more reading on this, I can see the argument for this. I was thinking about this from the manner of &quot;only one of these conditions should trigger&quot;, so keeping them in the same if-elif-else code block follows that logic intuitively.</p>
+<p>Two questions:</p>
+<ol>
+<li>Right now, the auto-fix just changes the first <code>elif</code> to and <code>if</code> but I believe it should be applied to both <code>elif</code>.</li>
+<li>If an <code>else</code> statement is added, should we expect the rule to apply?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-11 16:45</div>
+            <div class="timeline-body"><p>If you run Ruff in the CLI, both <code>elif</code> branches are fixed:</p>
+<pre><code class="language-diff">&gt; ruff check --select RET505 --diff
+--- try.py
++++ try.py
+@@ -1,7 +1,7 @@
+ def foo():
+     if request.mode == &quot;search&quot;:
+        return &quot;search&quot;
+-    elif request.mode == &quot;agent&quot;:
++    if request.mode == &quot;agent&quot;:
+         return &quot;agent&quot;
+-    elif request.mode == &quot;analyst&quot;:
++    if request.mode == &quot;analyst&quot;:
+         return &quot;analyst&quot;
+
+Would fix 2 errors.
+</code></pre>
+<p>And an additional else is also fixed:</p>
+<pre><code class="language-diff"> &gt; ruff check --select RET505 --diff
+--- try.py
++++ try.py
+@@ -1,9 +1,8 @@
+ def foo():
+     if request.mode == &quot;search&quot;:
+        return &quot;search&quot;
+-    elif request.mode == &quot;agent&quot;:
++    if request.mode == &quot;agent&quot;:
+         return &quot;agent&quot;
+-    elif request.mode == &quot;analyst&quot;:
++    if request.mode == &quot;analyst&quot;:
+         return &quot;analyst&quot;
+-    else:
+-        return None
++    return None
+
+Would fix 3 errors.
+</code></pre>
+<p>Is that what you had in mind?</p>
+<p>If you like the if-elif sequence in this case, you can always use a <code>noqa</code> comment to suppress the rule locally :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/asilvester-nw">@asilvester-nw</a> on 2025-11-12 18:11</div>
+            <div class="timeline-body"><p>Yes, this is what I had in mind. I did realize that I was unable to produce this exactly because I have try and except statements in the last two <code>elif</code> blocks but the <code>if</code> block only contained a return statement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @asilvester-nw on 2025-11-12 18:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

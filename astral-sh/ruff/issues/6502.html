@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support PEP 701: Syntactic formalization of f-strings - astral-sh/ruff #6502</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support PEP 701: Syntactic formalization of f-strings</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6502">#6502</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-08-11 13:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-11 13:40</div>
+            <div class="timeline-body"><p><a href="https://peps.python.org/pep-0701">PEP 701</a> formalizes the grammar for f-strings. This will require updates to both the lexer and parser while keeping the AST representation the same.</p>
+<ul>
+<li><p>Update the lexer to emit the new tokens (<code>FSTRING_START</code>, <code>FSTRING_MIDDLE</code>, <code>FSTRING_END</code>). This means that <code>f&quot;foo {bar}&quot;</code> wouldn't be emitted as a single <code>String</code> token but rather something like:</p>
+<pre><code>FSTRING_START('f&quot;')
+FSTRING_MIDDLE(&quot;foo &quot;)
+LBRACE
+NAME(&quot;bar&quot;)
+RBRACE
+FSTRING_END('f&quot;')
+</code></pre>
+</li>
+<li><p>Update the parser to account for any grammar changes required to recognize these tokens and parse it into an equivalent AST nodes. There are few things to note here:</p>
+<ul>
+<li>We can remove the f-string parsing done in the string parser (<code>string.rs</code>)</li>
+<li>Debug expressions (<code>f&quot;foo {bar = }&quot;</code>) preserves whitespaces using the <a href="https://github.com/astral-sh/ruff/blob/f2939c678bf79d3c1061caaa638e51bead48b9d9/crates/ruff_python_ast/src/nodes.rs#L833"><code>debug_text</code> field</a>. Newlines needs to be preserved as well.</li>
+<li>Implicit string concatenation</li>
+<li><code>SimpleTokenizer</code> changes</li>
+</ul>
+</li>
+</ul>
+<p>The goal is to complete this ~in the current iteration (August)~ before the official release of Python 3.12.</p>
+<h2>Tasks</h2>
+<ul>
+<li>[x] #7042</li>
+<li>[x] #7043</li>
+<li>[x] #6363</li>
+<li>[x] #7299</li>
+<li>[x] #7517</li>
+</ul>
+<h2>Reference implementation:</h2>
+<ul>
+<li>CPython: <a href="https://github.com/python/cpython/blob/23a6db98f21cba3af69a921f01613bd5f602bf6d/Parser/tokenizer.c">Tokenizer</a></li>
+<li>LibCST: <a href="https://github.com/Instagram/LibCST/blob/9eab2f037fa3680e0627d23038457b65dbb4078f/native/libcst/src/tokenizer/core/mod.rs">Tokenizer</a> | <a href="https://github.com/Instagram/LibCST/blob/9eab2f037fa3680e0627d23038457b65dbb4078f/native/libcst/src/parser/grammar.rs#L1399-L1432">Parser</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">core</span> added by @dhruvmanila on 2023-08-11 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2023-08-11 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2023-08-11 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6591.html">astral-sh/ruff#6591</a> on 2023-08-15 06:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python312</span> added by @zanieb on 2023-08-24 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add support for PEP 701: Syntactic formalization of f-strings" to "Support PEP 701: Syntactic formalization of f-strings" by @dhruvmanila on 2023-09-01 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-14 01:59</div>
+            <div class="timeline-body"><p>The way the PRs will be merged is as follows:</p>
+<ol>
+<li>All changes will be made in separate pull request for separation in logic and code reviews</li>
+<li>All the pull requests will be merged in a new branch <code>dhruv/pep-701</code></li>
+<li>A final pull request will be opened from <code>dhruv/pep-701</code> to <code>main</code> once changes are done.</li>
+<li>Merge 🥳</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-09-29 02:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11099.html">astral-sh/ruff#11099</a> on 2024-04-23 06:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

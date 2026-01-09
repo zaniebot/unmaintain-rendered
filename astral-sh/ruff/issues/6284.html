@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: Add coverage for comments in lambda star parameters - astral-sh/ruff #6284</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: Add coverage for comments in lambda star parameters</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6284">#6284</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-08-02 19:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-02 19:29</div>
+            <div class="timeline-body"><p>You can insert a comment between the star and the parameter. We'll probably want test coverage for cases like this:</p>
+<pre><code class="language-python">(
+    lambda
+    *
+    # test
+    x: print(x)
+)
+</code></pre>
+<p><em>Originally posted by @zanieb in https://github.com/astral-sh/ruff/pull/6257#discussion_r1281363287</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @zanieb on 2023-08-02 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 19:42</div>
+            <div class="timeline-body"><p>FWIW Black doesn't even seem to parse this: https://black.vercel.app/?version=main&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4ACbAGFdAD2IimZxl1N_WhQxSjX4pwCOC0bXqrOAPC2j0OSxmS2NWKjL0LiLowfwOGkTU-08OZBXl1DPvepYNHPFHLbR7GY_K3EzsmF5YZkQnDBTvd0fNZ4DD5c_mNDl7STR-bXwiQAAAAAA872hMcs31FsAAX2cAQAAALZno9ixxGf7AgAAAAAEWVo=</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-02 20:24</div>
+            <div class="timeline-body"><p>It executes with CPython though! I'd say this is low priority.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 20:25</div>
+            <div class="timeline-body"><p>Oh yeah I agree that it's valid! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2023-08-03 06:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-08-03 11:33</div>
+            <div class="timeline-body"><p>Adding the example, current formatter implementation makes:</p>
+<pre><code class="language-python">(
+    lambda # comment
+    *x: print(x)
+)
+</code></pre>
+<p>of it. Played around with placement of comment around the expression and it appears to fairly consistently format to that. It looks alright to me. Considering Black does not parse this and therefore we can't copy their result, are we happy with this formatting? If so, I can open a small PR with some added fixtures and leave actual formatting untouched.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-03 14:55</div>
+            <div class="timeline-body"><p>@qdegraaf that looks good to me — is it consistent with what we do for function definitions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-08-03 20:46</div>
+            <div class="timeline-body"><p>@zanieb looking at a somewhat similar function definition:</p>
+<pre><code class="language-python">def varg_with_leading_comments(
+    a,
+    b,
+    # comment
+    *args,
+):
+    ...
+</code></pre>
+<p>which becomes</p>
+<pre><code class="language-python">def varg_with_leading_comments(
+    a, b,
+    # comment
+    *args
+): ...
+</code></pre>
+<p>and looking at a couple more examples in the function_def snapshot it looks like they are comparable.</p>
+<p>They are consistent in ensuring a line break after the comma, but a little different with <code>lambda</code> allowing a leading comment to the <code>*foo</code> to be on the same line and the function def only allowing this when there's a comma between a given arg and the comment. (Judging from a quick scan of the snapshot e.g.:</p>
+<pre><code class="language-python">def f35(
+    # keyword only comment, leading
+    *,  # keyword only comment, trailing
+    c,
+):
+    pass
+</code></pre>
+<p>I can open a PR with the test cases and if any tweaks are preferred they can be made and discussed there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6318.html">astral-sh/ruff#6318</a> on 2023-08-03 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-08-03 20:59</div>
+            <div class="timeline-body"><p>@zanieb PR is open. Found an interesting case that does not pass current tests yet:</p>
+<pre><code class="language-python">(
+    lambda
+    # comment 1
+    *
+    # comment 2
+    x:
+    # comment 3
+    x
+)
+</code></pre>
+<p>When formatted once becomes:</p>
+<pre><code class="language-python">(
+     lambda # comment 1
+     # comment 2
+     *x: # comment 3
+     x
+)
+</code></pre>
+<p>And when formatted again moves the last comment again:</p>
+<pre><code class="language-python"> (
+     lambda # comment 1
+     # comment 2
+     *x: x  # comment 3
+ )
+</code></pre>
+<p>I can have a look tomorrow if I can figure out why and fix it. In the meantime, additional cases are in the PR but if someone sees a quick fix feel free to open another PR with the required changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-04 00:16</div>
+            <div class="timeline-body"><p>For what it's worth, Black will not move this comment</p>
+<pre><code class="language-python">def foo(
+    *
+    # comment
+    args,
+):
+    pass
+</code></pre>
+<p>We format it as</p>
+<pre><code class="language-python">def foo(
+    # comment
+    *args,
+):
+    pass
+</code></pre>
+<p>We'll need to decide if we want to deviate from Black intentionally here. I think lambdas should probably be treated the same as functions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-04 05:55</div>
+            <div class="timeline-body"><p>The deviation looks reasonable to me. I'm not aware of a good reason why you should have a comment between the <code>*</code> and the argument name.</p>
+<p>We should feel confident to move comments if we think they improve formatting. Ultimately, it is the job of a formatter to make your code look good, as opposed to making the fewest possible changes to your code (our formatter would work very differently if that's the goal). I believe the reason why Black is more conservative around moving comments is because they don't have an infrastructure that supports this well (but their approach has the benefit that they can keep comments closer to where they were initially placed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-08-07 14:32</div>
+            <div class="timeline-body"><p>It actually looks like Black does parse this sometimes, and when it does, moves all the comments out of the body and param:</p>
+<p>https://black.vercel.app/?version=main&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4ACvAGNdAD2IimZxl1N_WhQxSjX4pwCOC0bXpy9CkwkC7iHczyWxADRF-q4ga7QXfhtJq4VEU5ZvaS_iV0a7TnPwpkbVOmHyXDXSLm91HFafcjSRH6yxz3IR-zB59GRNdryW7smhGh85AAAA9R0yDc1uYQ0AAX-wAQAAALgEWpGxxGf7AgAAAAAEWVo=</p>
+<p>Do we want to copy this behaviour for the cases Black does not parse?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-07 17:19</div>
+            <div class="timeline-body"><p>I think we can do better than Black in this case. The comments lose all context if moved outside of the expression. @MichaReiser is more of an authority here, however.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-07 17:25</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we can do better than Black in this case. The comments lose all context if moved outside of the expression. @MichaReiser is more of an authority here, however.</p>
+</blockquote>
+<p>Do you have an example on what you mean by moving the comments out?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-08-07 19:46</div>
+            <div class="timeline-body"><p>The Black playground turns</p>
+<pre><code class="language-python">(
+    lambda # comment 1
+    * # comment 2
+    x: # comment 3
+    x
+)
+</code></pre>
+<p>into</p>
+<pre><code class="language-python">(lambda *x: x)  # comment 1  # comment 2  # comment 3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-08 08:42</div>
+            <div class="timeline-body"><p>Thanks. I agree, moving the comments out removes the context from them and can be problematic if one of the comments is a noqa comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Alpha" by @MichaReiser on 2023-08-16 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Formatter: Alpha" by @MichaReiser on 2023-08-22 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-08-22 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-08 09:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

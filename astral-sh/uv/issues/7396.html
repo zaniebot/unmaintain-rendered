@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run a file without .py extension - astral-sh/uv #7396</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Run a file without .py extension</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7396">#7396</a>
+        opened by <a href="https://github.com/sequoiayoav">@sequoiayoav</a>
+        on 2024-09-14 17:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sequoiayoav">@sequoiayoav</a> on 2024-09-14 17:12</div>
+            <div class="timeline-body"><p>if I make this file and name it <code>example.py</code></p>
+<pre><code class="language-py">#!/usr/bin/env uv run --quiet
+
+# /// script
+# dependencies = [
+#     &quot;requests&quot;,
+# ]
+# ///
+
+from requests import get
+
+resp = get(&quot;https://example.com&quot;)
+print(resp)
+</code></pre>
+<pre><code class="language-sh">chmod +x example.py
+</code></pre>
+<p>running <code>example.py</code> in my shell just works,
+But if I rename the file to just <code>example</code> and try to run it, uv doesn't recognize it as a python file.
+this isn't a bug, just want some help on this. (or recommendations)
+thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 18:54</div>
+            <div class="timeline-body"><p>Does <code>uv run python ./example</code> work as expected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-14 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbernhagen">@kbernhagen</a> on 2024-09-14 19:35</div>
+            <div class="timeline-body"><p>Possible workaround:</p>
+<pre><code>#!/usr/bin/env uv run -q --no-project --python 3.12 --with requests
+</code></pre>
+<p>It would be nice if <code>uv run</code> had option <code>--script</code> that did not need to have an explicit path to the script.</p>
+<p>I am using an alias as a workaround in <code>.zshrc</code>:</p>
+<pre><code>alias fahctl='uv run -q --no-project --python 3.12 --with websocket-client fahctl'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbernhagen">@kbernhagen</a> on 2024-09-14 19:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Does <code>uv run python ./example</code> work as expected?</p>
+</blockquote>
+<p>Does not work for me</p>
+<pre><code class="language-sh">% uv run python /usr/local/bin/fahctl 
+Missing python3-websocket library
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbernhagen">@kbernhagen</a> on 2024-09-14 19:51</div>
+            <div class="timeline-body"><p>The best thing would probably be for python3 itself to understand PEP 723.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 19:59</div>
+            <div class="timeline-body"><p>We may want an explicit <code>--script</code> option to treat a path as PEP 723 script without sniffing the extension.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-15 21:33</div>
+            <div class="timeline-body"><p>Seems reasonable to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sequoiayoav">@sequoiayoav</a> on 2024-09-17 19:01</div>
+            <div class="timeline-body"><p>Sounds like the perfect solution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2024-09-17 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-09-17 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-09-17 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6375.html">astral-sh/uv#6375</a> on 2024-09-17 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/slavos1">@slavos1</a> on 2024-09-22 18:41</div>
+            <div class="timeline-body"><p>First off, thanks for uv.</p>
+<p>Came across this issue too and on Ubuntu it not only &quot;does not work&quot;, it calls itself recursively. 😨</p>
+<p>Example:</p>
+<pre><code class="language-python">#!/usr/bin/env -S uv run
+import sys
+print(f'sys.executable={sys.executable}')
+</code></pre>
+<p>When I name this file <code>test-uv.py</code>, make it <code>chmod +x</code>, then <code>./test-uv.py</code> works normally.</p>
+<p>However, when I name this file <code>test-uv</code>, make it <code>chmod +x</code>, then <code>./test-uv</code> never finishes as it spawns itself recursively -- you can see it from this <code>while true; do ps -e ...|grep uv -w; sleep .1; done</code>:</p>
+<pre><code class="language-shell">1110162 1110156 uv run ./test-uv
+1110168 1110162 uv run ./test-uv
+1110174 1110168 uv run ./test-uv
+1110180 1110174 uv run ./test-uv
+1110186 1110180 uv run ./test-uv
+1110192 1110186 uv run ./test-uv
+1110198 1110192 uv run ./test-uv
+1110204 1110198 uv run ./test-uv
+1110210 1110204 uv run ./test-uv
+</code></pre>
+<p>I used <code>uv</code> version <code>0.4.15</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7739.html">astral-sh/uv#7739</a> on 2024-09-27 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-11 09:53</div>
+            <div class="timeline-body"><p><code>--script</code> now exists to power this use-case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-11 09:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9483.html">astral-sh/uv#9483</a> on 2024-11-27 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../scipy/scipy-stubs/pulls/259.html">scipy/scipy-stubs#259</a> on 2024-12-05 00:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

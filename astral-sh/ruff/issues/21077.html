@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>After F821 (Undefined name) for &quot;Literal&quot;, fix for PYI020 (QuotedAnnotationInStub) is undesirable - astral-sh/ruff #21077</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>After F821 (Undefined name) for &quot;Literal&quot;, fix for PYI020 (QuotedAnnotationInStub) is undesirable</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21077">#21077</a>
+        opened by <a href="https://github.com/pajod">@pajod</a>
+        on 2025-10-26 00:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pajod">@pajod</a> on 2025-10-26 00:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When combined with some other formatting fix, this one is still consistent .. but hardly ever helpful:</p>
+<pre><code class="language-diff">ruff check --diff --no-fix --fix --isolated --stdin-filename=&quot;r.pyi&quot; --select=PYI020,F821 -- &lt;&lt;&lt;'v: Literal[&quot;return&quot;, &quot;0o7&quot;, &quot;0*3&quot;, &quot;int&quot;, &quot;foo&quot;]'
+--- r.pyi
++++ r.pyi
+@@ -1 +1 @@
+-v: Literal[&quot;return&quot;, &quot;0o7&quot;, &quot;0*3&quot;, &quot;int&quot;, &quot;foo&quot;]
++v: Literal[&quot;return&quot;, 0o7, 0*3, int, foo]
+
+Would fix 4 errors.
+</code></pre>
+<p>NB: Selected F821 only to showcase what is going on. Nothing special about that, just happens to match one case where PYI020 cannot be positively confirmed to be safe to apply.</p>
+<ul>
+<li>#11378</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/typeshed/pulls/14921.html">python/typeshed#14921</a> on 2025-10-26 00:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-27 14:09</div>
+            <div class="timeline-body"><p>Is the undesirable part that <code>&quot;return&quot;</code> is still quoted? I also tried this without selecting F821, and I think I got the same result, but I might be missing something there. I'm assuming that <code>return</code> is skipped since it's a keyword. If you omit <code>--diff</code> and <code>--fix</code>, you can see that diagnostics are only emitted for the other entries:</p>
+<pre><code>&gt; ruff check --preview --no-fix --isolated --stdin-filename=&quot;r.pyi&quot; --select=PYI020 - &lt;&lt;&lt;'v: Literal[&quot;return&quot;, &quot;0o7&quot;, &quot;0*3&quot;, &quot;int&quot;, &quot;foo&quot;]'
+PYI020 [*] Quoted annotations should not be included in stubs
+ --&gt; r.pyi:1:22
+  |
+1 | v: Literal[&quot;return&quot;, &quot;0o7&quot;, &quot;0*3&quot;, &quot;int&quot;, &quot;foo&quot;]
+  |                      ^^^^^
+  |
+help: Remove quotes
+  - v: Literal[&quot;return&quot;, &quot;0o7&quot;, &quot;0*3&quot;, &quot;int&quot;, &quot;foo&quot;]
+1 + v: Literal[&quot;return&quot;, 0o7, &quot;0*3&quot;, &quot;int&quot;, &quot;foo&quot;]
+
+PYI020 [*] Quoted annotations should not be included in stubs
+ --&gt; r.pyi:1:29
+  |
+1 | v: Literal[&quot;return&quot;, &quot;0o7&quot;, &quot;0*3&quot;, &quot;int&quot;, &quot;foo&quot;]
+  |                             ^^^^^
+  |
+help: Remove quotes
+  - v: Literal[&quot;return&quot;, &quot;0o7&quot;, &quot;0*3&quot;, &quot;int&quot;, &quot;foo&quot;]
+1 + v: Literal[&quot;return&quot;, &quot;0o7&quot;, 0*3, &quot;int&quot;, &quot;foo&quot;]
+
+PYI020 [*] Quoted annotations should not be included in stubs
+ --&gt; r.pyi:1:36
+  |
+1 | v: Literal[&quot;return&quot;, &quot;0o7&quot;, &quot;0*3&quot;, &quot;int&quot;, &quot;foo&quot;]
+  |                                    ^^^^^
+  |
+help: Remove quotes
+  - v: Literal[&quot;return&quot;, &quot;0o7&quot;, &quot;0*3&quot;, &quot;int&quot;, &quot;foo&quot;]
+1 + v: Literal[&quot;return&quot;, &quot;0o7&quot;, &quot;0*3&quot;, int, &quot;foo&quot;]
+
+PYI020 [*] Quoted annotations should not be included in stubs
+ --&gt; r.pyi:1:43
+  |
+1 | v: Literal[&quot;return&quot;, &quot;0o7&quot;, &quot;0*3&quot;, &quot;int&quot;, &quot;foo&quot;]
+  |                                           ^^^^^
+  |
+help: Remove quotes
+  - v: Literal[&quot;return&quot;, &quot;0o7&quot;, &quot;0*3&quot;, &quot;int&quot;, &quot;foo&quot;]
+1 + v: Literal[&quot;return&quot;, &quot;0o7&quot;, &quot;0*3&quot;, &quot;int&quot;, foo]
+
+Found 4 errors.
+[*] 4 fixable with the `--fix` option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-10-27 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pajod">@pajod</a> on 2025-10-27 18:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Quoted annotations should not be included in stubs</p>
+</blockquote>
+<p>Slightly exaggerated verbosity for the edge case:</p>
+<blockquote>
+<p>Quoted annotations should not be included in stubs, except when expressing string literals, such as with typing.Literal. I know that I have no way of determining if this <code>Literal</code> thing is <code>typing.Literal</code>, but lets assume the common case: it is not. I tested my assumption on the first element and unambiguously failed. So <strong>this fix is not safe here</strong>, probably because my assumption about what kind of subscript I am dealing with was incorrect. I could stop here, but where is the fun in that? I am going to try the same &quot;fix&quot; on all the other occurrences and their sub-elements. Possibly, some of them are going to produce valid syntax, yet change meaning in less obvious ways. There is never a bad day for users to learn about the <code>--show-traceback</code> option in mypy!</p>
+</blockquote>
+<p>Suggested extra output, conditional on simple identifier name matching (whether actual behavior is changed or not):</p>
+<pre><code>hint: Did you mean: `typing.Literal` here?
+ --&gt; a.pyi:1:4
+1 | v: Literal[3e+9999, &quot;0o8&quot;, int, &quot;int&quot; &quot;&quot;, .0^.0]
+  |    ^^^^^^^
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21102.html">astral-sh/ruff#21102</a> on 2025-10-27 19:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAST003 doesn't work on subclasses of FastAPI or APIRouter - astral-sh/ruff #14179</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FAST003 doesn't work on subclasses of FastAPI or APIRouter</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14179">#14179</a>
+        opened by <a href="https://github.com/fraser-langton">@fraser-langton</a>
+        on 2024-11-07 23:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fraser-langton">@fraser-langton</a> on 2024-11-07 23:11</div>
+            <div class="timeline-body"><p>We use custom classes for our app and router objects, wondering if it was possible for that to be picked up?</p>
+<pre><code class="language-python">from fastapi import APIRouter, FastAPI
+
+
+class CustomAPI(FastAPI): ...
+
+
+class CustomRouter(APIRouter): ...
+
+
+app = CustomAPI()
+router = CustomRouter()
+
+
+@app.get(&quot;/things_1/{thing_id}&quot;)
+async def read_thing_1(query: str): ...
+
+
+@router.get(&quot;/things_2/{thing_id}&quot;)
+async def read_thing_2(query: str): ...
+</code></pre>
+<p>currently <code>ruff check .</code> yields no errors - if I change to using the base classes it throws an error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-08 08:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-11-08 08:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-08 08:22</div>
+            <div class="timeline-body"><p>Hi @fraser-langton</p>
+<p>Ruff's current capabilities to reason about class inheritance is very limited and ad hoc. It doesn't work at all if the types are defined in different modules. We're working on a new analysis backend that will support this long-term but it's still far out.</p>
+<p>Short term, we could consider introducing a setting (or multiple) similar to <a href="https://docs.astral.sh/ruff/settings/#lint_logger-objects"><code>logger-objects</code></a> that lists all custom fast api base classes. Note, the setting should be plugin-specific and not in the global <code>lint</code> section.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fraser-langton">@fraser-langton</a> on 2024-11-08 08:33</div>
+            <div class="timeline-body"><p>@MichaReiser makes complete sense, thanks for the advice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @fraser-langton on 2024-11-13 21:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

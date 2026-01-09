@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D301 autofix doubles escaped backslashes - astral-sh/ruff #12391</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>D301 autofix doubles escaped backslashes</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12391">#12391</a>
+        opened by <a href="https://github.com/kbattocchi">@kbattocchi</a>
+        on 2024-07-18 19:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kbattocchi">@kbattocchi</a> on 2024-07-18 19:33</div>
+            <div class="timeline-body"><p><a href="https://docs.astral.sh/ruff/rules/escape-sequence-in-docstring/">D301</a> states that docstrings with literal backslashes should use raw (<code>r&quot;&quot;&quot;</code>) strings.  So something like</p>
+<pre><code>def f():
+    &quot;&quot;&quot;This docstring has a backslash \\ in it&quot;&quot;&quot;
+    pass</code></pre>
+<p>should (perhaps, see below for more thoughts) instead be written as</p>
+<pre><code>def f():
+    r&quot;&quot;&quot;This docstring has a backslash \ in it&quot;&quot;&quot;
+    pass</code></pre>
+<p>However, the autofix for this issue just adds the <code>r</code> modifier to the existing string, so the fix results in</p>
+<pre><code>def f():
+    r&quot;&quot;&quot;This docstring has a backslash \\ in it&quot;&quot;&quot;
+    pass</code></pre>
+<p>which now has two actual backslashes.  For some escape sequences this is probably the right thing to do (e.g. <code>C:\venv</code> in a docstring probably intends a backslash before <code>v</code> rather than a vertical tab before <code>e</code>) and so ignoring the escape sequence and just treating the backslash as if it were literal during the fix makes sense.  However, I'd argue that for escaped backslashes it's less likely that the user really wanted them doubled up.</p>
+<p>Personally, I think that it would make sense to make an exception to D301 for escaped backslashes anyway (like there is for line continuations and escaped unicode characters).  Otherwise, if you need both unicode characters and backslashes in the same string, then you need to include the unicode character inline in a raw string rather than use the unicode escape because the backslash isn't allowed to be escaped.  But if the rule is going to apply, having the fix deduplicate the backslashes in this case would be nice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2024-07-18 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @charliermarsh on 2024-07-18 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-18 22:45</div>
+            <div class="timeline-body"><p>That seems reasonable, though not certain what the &quot;general rule&quot; would be.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

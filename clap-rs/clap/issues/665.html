@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arg_from_usage(): required values not being enforced when followed by another option - clap-rs/clap #665</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>arg_from_usage(): required values not being enforced when followed by another option</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/665">#665</a>
+        opened by <a href="https://github.com/ajdlinux">@ajdlinux</a>
+        on 2016-09-16 10:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ajdlinux">@ajdlinux</a> on 2016-09-16 10:15</div>
+            <div class="timeline-body"><p>I've got a SubCommand defined with a few options that have required values:</p>
+<pre><code>SubCommand::with_name(&quot;format&quot;)
+    .about(&quot;Prepare patch series for email&quot;)
+    .arg_from_usage(&quot;--in-reply-to [Message-Id] 'Make the first mail a reply to the specified Message-Id'&quot;)
+    .arg_from_usage(&quot;--no-from 'Don't include in-body \&quot;From:\&quot; headers when formatting patches authored by others'&quot;)
+    .arg_from_usage(&quot;-v, --reroll-count=[N] 'Mark the patch series as PATCH vN'&quot;)
+    .arg_from_usage(&quot;--stdout 'Write patches to stdout rather than files'&quot;)
+    .arg_from_usage(&quot;--subject-prefix [Subject-Prefix] 'Use [Subject-Prefix] instead of the standard [PATCH] prefix'&quot;),
+</code></pre>
+<p>If I use either the <code>--subject-prefix</code> or <code>-v</code> options alone, without specifying a value, it complains:</p>
+<pre><code>ajd@ajd:~/code/skiboot$ /home/ajd/code/git-series/target/debug/git-series format --subject-prefix 
+error: The argument '--subject-prefix &lt;Subject-Prefix&gt;' requires a value but none was supplied
+...
+ajd@ajd:~/code/skiboot$ /home/ajd/code/git-series/target/debug/git-series format -v
+error: The argument '--reroll-count &lt;N&gt;' requires a value but none was supplied
+...
+</code></pre>
+<p>But if I use <code>--subject-prefix</code> followed by <code>-v 2</code>, it gives me an empty value for <code>--subject-prefix</code>:</p>
+<pre><code>ajd@ajd:~/code/skiboot$ /home/ajd/code/git-series/target/debug/git-series format --subject-prefix -v 2
+v2-0000-cover-letter.patch
+v2-0001-hw-phb3-add-OPAL-call-to-get-current-PHB-CAPI-state.patch
+...
+</code></pre>
+<p>And vice versa:</p>
+<pre><code>ajd@ajd:~/code/skiboot$ /home/ajd/code/git-series/target/debug/git-series format -v --subject-prefix banana
+0000-cover-letter.patch
+0001-hw-phb3-add-OPAL-call-to-get-current-PHB-CAPI-state.patch
+...
+</code></pre>
+<p>This is shown in both 2.10.0 and 2.12.1.</p>
+<p>(Apologies for the poor nature of this report, I'm in the middle of yak shaving so I may well have missed something here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Required values not being enforced when followed by another option" to "arg_from_usage(): required values not being enforced when followed by another option" by @ajdlinux on 2016-09-16 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-09-16 21:21</div>
+            <div class="timeline-body"><p>Thanks for filing this report, this looks like a bug and I'll start investigating it! There may be a way to force what you're looking for by using the <code>Arg::from_usage</code> instead of <code>App::arg_from_usage</code>, because that allows you setting additional properties like, <code>Arg::number_of_values</code> or other such settings.</p>
+<p>Also, a side note not related to this issue, if you have multiple <code>from_usage</code> args to declare which <em>don't</em> require any of the additional <code>Arg</code> methods you can use <code>App::args_from_usage</code> to save some typing:</p>
+<pre><code class="language-rust">.args_from_usage(&quot;
+        --in-reply-to [Message-Id] 'Make the first mail a reply to the specified Message-Id'
+        --no-from 'Don't include in-body \&quot;From:\&quot; headers when formatting patches authored by others'
+    -v, --reroll-count=[N] 'Mark the patch series as PATCH vN'
+        --stdout 'Write patches to stdout rather than files'
+        --subject-prefix [Subject-Prefix] 'Use [Subject-Prefix] instead of the standard [PATCH] prefix'&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2016-09-16 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2016-09-16 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2016-09-16 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2016-09-16 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-09-16 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.12.2" by @kbknapp on 2016-09-16 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-09-16 21:35</div>
+            <div class="timeline-body"><p>@ajdlinux I'm not able to reproduce this. Can you post a link to the file where this happening, it may be related to another setting or something that you're using.</p>
+<p><a href="https://gist.github.com/kbknapp/f60653971d9b3a34886e9c77051d8907">This is what I used to test</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ajdlinux">@ajdlinux</a> on 2016-09-17 14:31</div>
+            <div class="timeline-body"><p>Branch: https://github.com/ajdlinux/git-series/tree/format-subject-prefix
+File: https://github.com/ajdlinux/git-series/blob/format-subject-prefix/src/main.rs</p>
+<p>I'm not very familiar with this codebase (forked it just to add a single new option) so there might be something in there I'm missing. Will look into it shortly when I've got a bit more time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.17.0" by @kbknapp on 2016-10-24 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "2.12.2" by @kbknapp on 2016-10-24 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.20.0" by @kbknapp on 2016-12-27 04:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "2.17.0" by @kbknapp on 2016-12-27 04:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-30 21:06</div>
+            <div class="timeline-body"><p>@ajdlinux sorry it's take so long! I've been doing a lot of traveling and then the holidays came around. I'm finally able to reproduce this, and it's next up on the fix list! I'll let you know what I find.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P1: urgent</span> added by @kbknapp on 2016-12-30 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> removed by @kbknapp on 2016-12-30 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-30 21:27</div>
+            <div class="timeline-body"><p>This is fixed in #796</p>
+<p>One thing to note is that you should add <code>Arg::empty_values(false)</code> to <code>--subject-prefix</code> because by default clap allows empty values unless you specificy a minimum number of values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-12-30 23:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ajdlinux">@ajdlinux</a> on 2016-12-31 00:47</div>
+            <div class="timeline-body"><p>Thanks @kbknapp, apologies for not following this up, I'd forgotten about this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1105.html">clap-rs/clap#1105</a> on 2017-11-13 04:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

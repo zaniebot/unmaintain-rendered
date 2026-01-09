@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv ignores custom URL in [tool.uv.sources] when marker is used - astral-sh/uv #15159</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv ignores custom URL in [tool.uv.sources] when marker is used</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15159">#15159</a>
+        opened by <a href="https://github.com/peacefulotter">@peacefulotter</a>
+        on 2025-08-08 08:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/peacefulotter">@peacefulotter</a> on 2025-08-08 08:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi,</p>
+<p>I’m using uv to manage dependencies defined in pyproject.toml. I have an optional dependency pointing to a private package, which is only accessible via a direct URL to a .tar.gz archive:</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+mygroup = [
+  &quot;private-package&quot;
+]
+
+[tool.uv.sources]
+private-package = { url = &quot;https://private-domain.com/private-package.tar.gz&quot; }
+</code></pre>
+<p>However, in my GitLab CI pipeline running on Linux, the package fails to resolve because it cannot access the private URL. To work around this, I tried scoping the package source to Windows only:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+private-package = { url = &quot;https://private-domain.com/private-package.tar.gz&quot;, marker = &quot;sys_platform == 'windows'&quot; }
+</code></pre>
+<p>But with this change, even on Windows, uv fails with:</p>
+<pre><code>error: Failed to fetch: https://pypi.org/simple/private-package/
+...
+Caused by: Unknown Host
+</code></pre>
+<p>It seems like uv is ignoring the custom url when a marker is present, and instead falls back to trying to fetch the package from PyPI.</p>
+<h3>Platform</h3>
+<p>Windows [version 10.0.19045.6093]</p>
+<h3>Version</h3>
+<p>uv 0.8.6 (329a6b446 2025-08-07)</p>
+<h3>Python version</h3>
+<p>3.10.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @peacefulotter on 2025-08-08 08:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-08 09:19</div>
+            <div class="timeline-body"><p>This is expected. Commands like <code>uv sync</code> and <code>uv run</code> need to resolve for <em>all</em> environments at once to create a <code>uv.lock</code> file. So even if the package isn't going to be installed, uv still needs to be able to access it to create and verify the lockfile. You can run with <code>--frozen</code> to install from an existing lockfile without attempting to resolve.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-08-08 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-08-08 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-08 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peacefulotter">@peacefulotter</a> on 2025-08-08 10:03</div>
+            <div class="timeline-body"><p>So currently, my only workaround would be:</p>
+<ol>
+<li>Comment out the private package dependency</li>
+<li>Run uv sync</li>
+<li>Uncomment the private package dependency</li>
+<li>Run uv sync --frozen</li>
+</ol>
+<p>This is far from ideal since we’d have to repeat this process every time a new dependency is added or modified.</p>
+<p>From looking at related issues and based on my own experience with how uv sync behaves, I believe there should be a way to opt out of resolving specific dependencies during sync.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-08 10:47</div>
+            <div class="timeline-body"><p>I'm not sure you need to do any of that. Are you re-creating your lockfile <em>during CI</em> on the GitLab machine? Typically, you'd check in your lockfile, and you'd want it to be usable in all supported environments by all users, so it <em>has</em> to include the Windows dependencies. Then you could just run <code>uv sync --frozen</code> in CI instead of <code>uv sync</code>, and uv would never attempt to fetch that wheel.</p>
+<p>If you never want to include Windows in the lockfile, you could set https://docs.astral.sh/uv/reference/settings/#environments:</p>
+<pre><code class="language-toml">[tool.uv]
+environments = [&quot;sys_platform != 'win32'&quot;]
+</code></pre>
+<p>But at that point, why include the dependency at all? The point is: if you want to use a lockfile, it needs to support all of your supported environments. But there's no reason that you should need to run <code>uv sync</code> without <code>--frozen</code> in GitLab in your setup, at least as far as I can tell.</p>
+<p>(As a heads up, <code>sys_platform == 'windows'</code> is incorrect, it should be <code>win32</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peacefulotter">@peacefulotter</a> on 2025-08-08 10:51</div>
+            <div class="timeline-body"><p>Thank you for all your help!</p>
+<p>Since I'm generating the lockfile locally, using --frozen in the CI pipeline should indeed solve my problem !</p>
+<p>Also, thanks for pointing out my mistake with win32</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @peacefulotter on 2025-08-08 10:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

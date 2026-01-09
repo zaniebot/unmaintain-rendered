@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clap mangles multiline help text - clap-rs/clap #617</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clap mangles multiline help text</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/617">#617</a>
+        opened by <a href="https://github.com/vks">@vks</a>
+        on 2016-08-12 10:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vks">@vks</a> on 2016-08-12 10:22</div>
+            <div class="timeline-body"><p>Consider this example:</p>
+<pre><code class="language-rust">extern crate clap;
+
+use clap::*;
+
+static TYPE_HELP: &amp;'static str =
+&quot;x, max, maximum   20 characters, contains symbols.{n}\
+l, long           Copy-friendly, 14 characters, contains symbols.{n}\
+m, med, medium    Copy-friendly, 8 characters, contains symbols.{n}\
+b, basic          8 characters, no symbols.{n}\
+s, short          Copy-friendly, 4 characters, no symbols.{n}\
+i, pin            4 numbers.{n}\
+n, name           9 letter name.{n}\
+p, phrase         20 character sentence.&quot;;
+
+fn main() {
+    let matches = App::new(&quot;&quot;)
+        .arg(Arg::with_name(&quot;type&quot;)
+             .help(TYPE_HELP)
+             .next_line_help(true))
+        .get_matches();
+}
+</code></pre>
+<p>The following help will be printed:</p>
+<pre><code>        x, max, maximum   20 characters, contains symbols.
+        l, long          
+        Copy-friendly, 14 characters, contains symbols.
+        m, med, medium    Copy-friendly,
+        8 characters, contains symbols.
+        b, basic          8 characters, no symbols.
+        s,
+        short          Copy-friendly, 4 characters, no symbols.
+        i, pin            4
+        numbers.
+        n, name           9 letter name.
+        p, phrase         20 character
+        sentence.
+</code></pre>
+<p>It seems like clap randomly inserts newlines. Increasing the terminal size does not change anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-08-20 22:11</div>
+            <div class="timeline-body"><p>For your case, I believe using the default <code>\n</code> will work. As the the <code>{n}</code> is only used when you want to be able to re-align long help text, but that's not what you're doing. Try:</p>
+<pre><code>static TYPE_HELP: &amp;'static str =
+&quot;x, max, maximum   20 characters, contains symbols.\n\
+l, long           Copy-friendly, 14 characters, contains symbols.\n\
+m, med, medium    Copy-friendly, 8 characters, contains symbols.\n\
+b, basic          8 characters, no symbols.\n\
+s, short          Copy-friendly, 4 characters, no symbols.\n\
+i, pin            4 numbers.\n\
+n, name           9 letter name.\n\
+p, phrase         20 character sentence.&quot;;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-08-20 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: completion gen</span> added by @kbknapp on 2016-08-20 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: completion gen</span> removed by @kbknapp on 2016-08-20 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vks">@vks</a> on 2016-08-21 20:40</div>
+            <div class="timeline-body"><p>This looks a bit better, however there are still strange newlines:</p>
+<pre><code>        x, max, maximum   20 characters, contains symbols.
+l, long           Copy-friendly, 14 characters, contains symbols.
+m, med,
+        medium    Copy-friendly, 8 characters, contains symbols.
+b, basic          8 characters, no symbols.
+s, short         
+        Copy-friendly, 4 characters, no symbols.
+i, pin            4 numbers.
+n, name           9 letter name.
+p, phrase         20
+        character sentence.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-08-26 15:27</div>
+            <div class="timeline-body"><p>I think this is a product of the 120 default term width. Try setting <code>set_term_width(0)</code> on your <code>App</code> instance and see if that fixes it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vks">@vks</a> on 2016-08-29 07:44</div>
+            <div class="timeline-body"><p>I get an 'attempt to subtract with overflow' panic at <code>clap-2.10.2/src/app/help.rs:446</code> if I do that.</p>
+<p>How can it be related to the default term width? The lines are much shorter than that. Does clap ignore <code>\n</code> when breaking lines?</p>
+<p><em>Edit:</em> Updating to clap 2.11 fixes the panic and does indeed work. (However, some of the autogenerated text is too long.) The line wraps still don't make sense to me if the term width is not set to 0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-09-05 17:44</div>
+            <div class="timeline-body"><p>@vks can you post what it looks like when not set to 0? If there are hard newlines in the help text, clap counts those simply as bytes, and not as newlines which restart the count until the next wrap. This can cause  there to be two newlines, the hard one and the one that clap counts and inserts at.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vks">@vks</a> on 2016-09-06 21:33</div>
+            <div class="timeline-body"><p>@kbknapp Now with the new clap version and default term width I'm getting</p>
+<pre><code>            x, max, maximum   20
+            characters, contains symbols.
+            l, long           Copy-friendly,
+            14 characters, contains symbols.
+            m, med, medium   
+            Copy-friendly, 8 characters, contains symbols.
+            b, basic       
+              8 characters, no symbols.
+            s, short          Copy-friendly, 4
+            characters, no symbols.
+            i, pin            4 numbers.
+            n, name
+                      9 letter name.
+            p, phrase         20 character sentence.
+</code></pre>
+<p>with <code>{n}\</code> and</p>
+<pre><code>x, max, maximum   20 characters,
+            contains symbols.
+l, long           Copy-friendly, 14 characters,
+            contains symbols.
+m, med, medium    Copy-friendly, 8 characters,
+            contains symbols.
+b, basic          8 characters, no symbols.
+s,
+            short          Copy-friendly, 4 characters, no symbols.
+i, pin   
+                    4 numbers.
+n, name           9 letter name.
+p, phrase     
+               20 character sentence.
+</code></pre>
+<p>with <code>\n\</code>.</p>
+<blockquote>
+<p>If there are hard newlines in the help text, clap counts those simply as bytes, and not as newlines which restart the count until the next wrap.</p>
+</blockquote>
+<p>Why can't clap just look for newlines and treat them accordingly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-09-06 22:46</div>
+            <div class="timeline-body"><p>@vks when I run the example you posted and add <code>set_term_width(0)</code> this what I see:</p>
+<pre><code>kevin@karch: ~/Projects/fake-rs 
+➜ ./target/debug/fake-rs -h                                     ✓ [git: master]
+
+
+USAGE:
+    fake-rs [type]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    &lt;type&gt;
+            x, max, maximum   20 characters, contains symbols.
+            l, long           Copy-friendly, 14 characters, contains symbols.
+            m, med, medium    Copy-friendly, 8 characters, contains symbols.
+            b, basic          8 characters, no symbols.
+            s, short          Copy-friendly, 4 characters, no symbols.
+            i, pin            4 numbers.
+            n, name           9 letter name.
+            p, phrase         20 character sentence.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-09-06 22:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Why can't clap just look for newlines and treat them accordingly?</p>
+</blockquote>
+<p>They get printed accordingly, but <code>clap</code> doesn't reset the count until it <em>inserts</em> the next newline. This <em>may</em> be possible to add, but I haven't tried it yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vks">@vks</a> on 2016-09-06 23:00</div>
+            <div class="timeline-body"><p>@kbknapp Setting the term width to 0 works for me as well, as mentioned in my previous comment. This is a possible workaround, but you lose wrapping. You can just limit the help text to 80 characters and it should look fine on most terminal sizes. However, you have no control over wrapping for example the list of allowed values, which is generated by clap. You can disable its generation and create the list manually though.</p>
+<p>Only the automatic wrapping of multiline help text is completely broken for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-09-06 23:23</div>
+            <div class="timeline-body"><p>@vks I understand. I'm working the issue as we speak, since this is also an issue for <code>rustup</code> :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-09-07 01:47</div>
+            <div class="timeline-body"><p>@vks Ok, so I've got it to where upon having enough space (i.e. term width is big enough) it will simply ignore the new lines:</p>
+<pre><code>USAGE:
+    fake-rs [type]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    &lt;type&gt;
+            x, max, maximum   20 characters, contains symbols.
+            l, long           Copy-friendly, 14 characters, contains symbols.
+            m, med, medium    Copy-friendly, 8 characters, contains symbols.
+            b, basic          8 characters, no symbols.
+            s, short          Copy-friendly, 4 characters, no symbols.
+            i, pin            4 numbers.
+            n, name           9 letter name.
+            p, phrase         20 character sentence.
+</code></pre>
+<p>But if the term width is smaller, it will wrap.</p>
+<pre><code>USAGE:
+    fake-rs [type]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    &lt;type&gt;
+            x, max, maximum   20 characters, contains symbols.
+            l, long           Copy-friendly, 14 characters, contains
+            symbols.
+            m, med, medium    Copy-friendly, 8 characters, 
+            contains symbols.
+            b, basic          8 characters, no symbols.
+            s, short          Copy-friendly, 4 characters, no symbols.
+            i, pin            4 numbers.
+            n, name           9 letter name.
+            p, phrase         20 character sentence.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2016-09-07 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @kbknapp on 2016-09-07 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2016-09-07 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2016-09-07 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-09-07 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by @kbknapp on 2016-09-07 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.11.3" by @kbknapp on 2016-09-07 01:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vks">@vks</a> on 2016-09-07 10:39</div>
+            <div class="timeline-body"><p>@kbknapp Looks great! This is exactly what I was imagining.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-09-07 12:42</div>
+            <div class="timeline-body"><p>Just put in the PR, see #650</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-09-07 12:43</div>
+            <div class="timeline-body"><p>Note, this also removes the requirement to use <code>{n}</code> to insert a newline, you can use <code>\n</code> now. Although for backwards compatibility the <code>{n}</code> still works fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/rustup/issues/657.html">rust-lang/rustup#657</a> on 2016-09-07 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-09-07 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vks">@vks</a> on 2016-09-07 16:32</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mgeisler/textwrap/issues/28.html">mgeisler/textwrap#28</a> on 2017-01-29 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/845.html">clap-rs/clap#845</a> on 2017-02-08 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mgeisler/textwrap/pulls/48.html">mgeisler/textwrap#48</a> on 2017-05-18 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/163.html">TeXitoi/structopt#163</a> on 2019-01-24 21:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

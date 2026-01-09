@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help messages reflect conflicting options - clap-rs/clap #5995</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Help messages reflect conflicting options</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/5995">#5995</a>
+        opened by <a href="https://github.com/XingHuang35">@XingHuang35</a>
+        on 2025-05-09 10:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/XingHuang35">@XingHuang35</a> on 2025-05-09 10:40</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4</p>
+<h3>Describe your use case</h3>
+<p>in the struct definition, we have this:</p>
+<pre><code>/// Optional host IPs
+#[clap(long, conflicts_with_all = &amp;[&quot;config_file&quot;, &quot;scan&quot;, &quot;skip_host_discovery&quot;])]
+    ips: Vec&lt;String&gt;,
+
+///Path to configuration file.
+#[clap(short, long, global = true, visible_alias = &quot;config&quot;, env = &quot;CONFIG_FILE_PATH&quot;, default_value = &quot;/etc/config/configfile.toml&quot;)]
+    pub config_file: Option&lt;String&gt;,
+</code></pre>
+<p>We have the following help message,</p>
+<pre><code>--ips
+     Optional host IPs
+
+--config-file &lt;CONFIG_FILE&gt;
+     Path to configuration file
+      
+     [env: CONFIG_FILE_PATH=]
+     [default: /etc/config/configfile.toml]
+     [aliases: config]
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>We'd like have help messages like this:</p>
+<pre><code>--ips
+     Optional host IPs
+     [conflict: &quot;config_file&quot;, &quot;scan&quot;, &quot;skip_host_discovery&quot;]
+
+--config-file &lt;CONFIG_FILE&gt;
+     Path to configuration file
+      
+     [env: CONFIG_FILE_PATH=]
+     [default: /etc/config/configfile.toml]
+     [aliases: config]
+     [conflict: &quot;ips&quot;]
+</code></pre>
+<p>Then the user would konw that &quot;--ips&quot; conflicts with &quot;--config-file&quot; when the user checks the help message, otherwise the user would encounter &quot;--ips&quot; conflicts with &quot;--config-file&quot; when executing the command.</p>
+<p>I will soon create a PR for this.</p>
+<h3>Alternatives, if applicable</h3>
+<p>N.A</p>
+<h3>Additional Context</h3>
+<p>N.A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @XingHuang35 on 2025-05-09 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Help messages reflect conflicting options" to "Help messages reflect conflicting options(to continue)" by @XingHuang35 on 2025-05-09 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Help messages reflect conflicting options(to continue)" to "Help messages reflect conflicting options" by @XingHuang35 on 2025-05-09 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/XingHuang35">@XingHuang35</a> on 2025-05-09 14:18</div>
+            <div class="timeline-body"><p>I will soon create a PR for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-05-09 14:25</div>
+            <div class="timeline-body"><p>Note that our <a href="https://github.com/clap-rs/clap/blob/master/CONTRIBUTING.md#where-to-start">contributing docs</a> encourage waiting on a PR until a design is resolved to keep the problem/solution discussion focused on issues which are less ephemeral and avoid wasting time on an implementation on a solution that may not be selected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2025-05-09 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2025-05-09 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-05-09 14:30</div>
+            <div class="timeline-body"><p>We show conflicts in usage as them being <code>|</code>ed but that will only show up for</p>
+<ul>
+<li>Positionals</li>
+<li>Required arguments</li>
+<li>Error messages when the user has specified one of them</li>
+</ul>
+<p>Overall, I have mixed feelings about our auto-generated <code>[]</code> sections and I am hesitant to add more.</p>
+<p>#5459 asks for aliases to be rendered in a different wa.</p>
+<p>#5392 asks to add another <code>[]</code> which is related to #4812 which asks for something in the example argument.</p>
+<p>While this doesn't work everywhere, the solution I tend to take in my applications is to represent this in a <code>help_heading</code>.  Resolving #4589 would likely improve that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> removed by @epage on 2025-05-09 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2025-05-09 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/XingHuang35">@XingHuang35</a> on 2025-05-12 02:39</div>
+            <div class="timeline-body"><blockquote>
+<p>While this doesn't work everywhere, the solution I tend to take in my applications is to represent this in a <code>help_heading</code>. Resolving <a href="https://github.com/clap-rs/clap/issues/4589">#4589</a> would likely improve that.</p>
+</blockquote>
+<p>Thanks Ed very much, if the <code>help_heading</code> of &quot;Options&quot; can express some options are conflicting with each other, I think it would be OK, like:</p>
+<pre><code>Options:
+   &quot;--ips&quot; conflicts with &quot;--config_file&quot;, &quot;--scan&quot;, &quot;--skip_host_discovery&quot;
+
+    --ips
+         Optional host IPs
+    
+    --config-file &lt;CONFIG_FILE&gt;
+         Path to configuration file
+          
+         [env: CONFIG_FILE_PATH=]
+         [default: /etc/config/configfile.toml]
+         [aliases: config]
+</code></pre>
+<p>But when there are several options conflicting, the help_heading could be a little long, such as</p>
+<pre><code>&quot;--ips&quot; conflicts with &quot;config_file&quot;, &quot;scan&quot;, &quot;skip_host_discovery&quot;
+&quot;--config_file&quot; conflicts with &quot;--json&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-05-23 14:46</div>
+            <div class="timeline-body"><p>I was more so thinking that the help heading description could say that the arguments under this heading are all mutually exclusive, rather than anything auto-generated.  Granted, that means you are tied to your help headings and your conflicts which might not always be ideal.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

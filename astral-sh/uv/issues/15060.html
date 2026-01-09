@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`platform_machine` environment marker not handled correctly - astral-sh/uv #15060</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`platform_machine` environment marker not handled correctly</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15060">#15060</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2025-08-04 14:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ghost">@ghost</a> on 2025-08-04 14:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It looks like uv interprets the <code>platform_machine</code> as bitness of the Python interpreter, however this should not be the case according the specification. <code>platform_machine</code> means the platform of the OS.</p>
+<p>For example this is explained in the <a href="https://peps.python.org/pep-0780/#motivation">PEP 780 draft</a>:</p>
+<blockquote>
+<p>Another important ABI feature that is not yet covered by environment markers is the bitness of the interpreter. In most cases, the sys_platform or platform_system markers are enough, because there is only a single bitness in use per platform. This is not the case on Windows however: both 32-bit and 64-bit Python interpreters are widely used on x86-64 Windows</p>
+</blockquote>
+<p>So running a Python 32bit interpreter on 64bit Windows actually returns &quot;AMD64&quot; as platform:</p>
+<pre><code>&gt; py -3-32 -c &quot;import platform;print(platform.machine())&quot;
+AMD64
+</code></pre>
+<p>Simple example how uv is handling this marker wrong:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+version = &quot;1.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [&quot;sqlalchemy&gt;=2,&lt;3&quot;]
+
+
+[tool.uv]
+environments = [
+    &quot;sys_platform == 'win32' and platform_machine == 'AMD64' and implementation_name == 'cpython'&quot;,
+]
+</code></pre>
+<p>Running <code>uv lock</code> should include the win32 wheels in this case and running <code>uv sync --python cpython-3.11-windows-x86-none</code> should install the wheels with Python extensions modules included. However the actual behavior is that the win32 wheels are missing in the lock files and the pyd files are missing in the virtual environment.</p>
+<p>This is probably wrong on Linux, too.</p>
+<p>With</p>
+<pre><code>[tool.uv]
+environments = [
+    &quot;implementation_name == 'cpython' and sys_platform == 'linux' and platform_machine == 'x86_64'&quot;,
+]
+</code></pre>
+<p>you get wheels for greenlet for ppc64le, s390x and x86_64 in the lock file. I would expect that first two should not be in the lock file.</p>
+<h3>Platform</h3>
+<p>Windows 11 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.8.4 (e176e1714 2025-07-30)</p>
+<h3>Python version</h3>
+<p>Python 3.11.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ghost on 2025-08-04 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-05 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-05 11:08</div>
+            <div class="timeline-body"><blockquote>
+<p>you get wheels for greenlet for ppc64le, s390x and x86_64 in the lock file. I would expect that first two should not be in the lock file.</p>
+</blockquote>
+<p>(I'm not sure that's related. We just don't implement filters for those architectures right now. Wheel filtering is considered an optimization, in that it's acceptable (though not optimal) to include &quot;too many&quot; wheels. Filtering out necessary wheels should be considered a bug, though.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TomFryersMidsummer">@TomFryersMidsummer</a> on 2025-08-11 09:59</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>you get wheels for greenlet for ppc64le, s390x and x86_64 in the lock file. I would expect that first two should not be in the lock file.</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>(I'm not sure that's related. We just don't implement filters for those architectures right now. Wheel filtering is considered an optimization, in that it's acceptable (though not optimal) to include &quot;too many&quot; wheels. Filtering out necessary wheels should be considered a bug, though.)</p>
+</blockquote>
+<p>This would be a nice thing to address nonetheless: our Python code only runs on a few of our servers, so we specify <code>environments = [&quot;platform_machine == 'x86_64' and sys_platform == 'linux'&quot;]</code>. It's a bit unfortunate that 22 % of our <code>uv.lock</code> (and about half our most recent <code>uv sync -U</code> diff) is wheels for platforms we'll almost certainly never use.</p>
+<p>Would it be worth me creating a separate issue for this bit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NiuBlibing">@NiuBlibing</a> on 2025-08-25 03:36</div>
+            <div class="timeline-body"><p>It confuses me. I'm adding vllm nightly version on x86 platform, but it shows that it depends on s390x.</p>
+<pre><code>[test@manjaro vllm-nightly]$ uv add vllm[flashinfer,audio,video,runai]  --index https://wheels.vllm.ai/nightly --prerelease=allow
+  × No solution found when resolving dependencies:
+  ╰─▶ Because outlines==0.1.11 depends on outlines-core==0.1.26 and vllm==0.10.1rc2.dev195+ga71e4765c depends on outlines{platform_machine == 's390x'}==0.1.11, we can conclude
+      that vllm==0.10.1rc2.dev195+ga71e4765c and outlines-core{platform_machine != 's390x'}==0.2.10 are incompatible.
+      And because vllm==0.10.1rc2.dev195+ga71e4765c depends on outlines-core{platform_machine != 's390x'}==0.2.10, we can conclude that vllm==0.10.1rc2.dev195+ga71e4765c
+      cannot be used.
+      And because only vllm[audio]==0.10.1rc2.dev195+ga71e4765c is available and your project depends on vllm[audio], we can conclude that your project's requirements are
+      unsatisfiable.
+
+      hint: `vllm` was found on https://wheels.vllm.ai/nightly, but not at the requested version (all of:
+          vllm&lt;0.10.1rc2.dev195+ga71e4765c
+          vllm&gt;0.10.1rc2.dev195+ga71e4765c
+      ). A compatible version may be available on a subsequent index (e.g., https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple). By default, uv will only consider versions
+      that are published on the first index that contains a given package, to avoid dependency confusion attacks. If all indexes are equally trusted, use `--index-strategy
+      unsafe-best-match` to consider all versions from all indexes, regardless of the order in which they were defined.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+[test@manjaro vllm-nightly]$ uname
+Linux
+[test@manjaro vllm-nightly]$ uname -a
+Linux manjaro 6.16.0-5-MANJARO #1 SMP PREEMPT_DYNAMIC Thu, 07 Aug 2025 04:47:37 +0000 x86_64 GNU/Linux
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-25 08:41</div>
+            <div class="timeline-body"><p>@NiuBlibing You're issue sounds different and it looks like it's due to universal resolution (you can set <code>tool.uv.environments</code>), please open a new issue if the problem persists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16576.html">astral-sh/uv#16576</a> on 2025-11-04 23:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17313.html">astral-sh/uv#17313</a> on 2026-01-03 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/collinanderson">@collinanderson</a> on 2026-01-03 22:10</div>
+            <div class="timeline-body"><p>I think I created+closed a duplicate issue (#17313) of this.</p>
+<p>A simple example is having <code>ruff</code> as a dependency, which adds 9+ useless long wheel lines to the <code>uv.lock</code> file.</p>
+<p>Simple reproduction (or use <code>tool.uv.environments</code>):
+<code>uv add &quot;ruff; sys_platform == 'linux' and platform_machine == 'x86_64'&quot;</code>
+(see #17313 for <code>uv.lock</code> output)</p>
+<blockquote>
+<p>We just don't implement filters for those architectures right now. Wheel filtering is considered an optimization, in that it's acceptable (though not optimal) to include &quot;too many&quot; wheels.</p>
+</blockquote>
+<p>It's annoying because it generates a lot of useless noise in the diff every time ruff updates (often!).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overriding --help produces a different message than the default - clap-rs/clap #536</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Overriding --help produces a different message than the default</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/536">#536</a>
+        opened by <a href="https://github.com/brianp">@brianp</a>
+        on 2016-06-23 16:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/brianp">@brianp</a> on 2016-06-23 16:51</div>
+            <div class="timeline-body"><p>When overriding the <code>help</code> flag using <code>long(&quot;help&quot;)</code>, the auto-generated help output is different from the default.</p>
+<p>Differences include:</p>
+<ul>
+<li>The app <code>bin_name</code> in the usage example</li>
+<li>No <code>version</code> flag is displayed</li>
+</ul>
+<hr />
+<p><strong>Example app, with expected default output:</strong></p>
+<pre><code class="language-rust">fn main() {
+    let app = App::new(&quot;test&quot;).get_matches();
+}
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-bash">$ cargo run -- --help
+     Running `target/debug/clapapp --help`
+test
+
+USAGE:
+    clapapp [FLAGS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+</code></pre>
+<hr />
+<p><strong>Example app overriding help, and different output:</strong></p>
+<pre><code class="language-rust">fn main() {
+    let app = App::new(&quot;test&quot;)
+                  .arg(Arg::with_name(&quot;help&quot;)
+                       .short(&quot;h&quot;)
+                       .long(&quot;help&quot;)
+                       .help(&quot;Prints help information&quot;)
+                       .takes_value(false));
+
+    let matches = &amp;app.clone().get_matches();
+
+    if matches.is_present(&quot;help&quot;) {
+        let _ = &amp;app.print_help();
+        println!(&quot;\n&quot;);
+    };
+}
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-bash">$ cargo run -- --help
+     Running `target/debug/clapapp --help`
+test
+
+USAGE:
+    test [FLAGS]
+
+FLAGS:
+    -h, --help    Prints help information
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.7.0" by @kbknapp on 2016-06-23 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2016-06-23 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2016-06-23 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @kbknapp on 2016-06-23 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-06-23 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-06-23 18:54</div>
+            <div class="timeline-body"><p>I'm on mobile so I can't give a good link at the moment, but if you look at line 460 of <code>src/app/parser.rs</code> you'll see a call to <code>build_help_and_version</code> which never gets called when <code>print_help</code> is called.</p>
+<p>Simply inserting that call will fix it, but also have the side effect that it's called twice on a normal run. So we either need to find a way to not call it twice, minimize the runtime impact if it is called twice, or something to the like.</p>
+<p>Something that might help is use the <code>Parser::is_set</code> methods to check the internal AppSettings for things like <code>NeedsLongHelp</code> (or Version) instead of iterating all flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/533.html">clap-rs/clap#533</a> on 2016-06-24 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-06-24 05:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

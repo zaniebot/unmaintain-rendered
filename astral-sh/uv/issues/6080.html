@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-CLI usage of uv? (From existing Rust code, or possibly from Python) - astral-sh/uv #6080</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Non-CLI usage of uv? (From existing Rust code, or possibly from Python)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6080">#6080</a>
+        opened by <a href="https://github.com/twardoch">@twardoch</a>
+        on 2024-08-14 10:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/twardoch">@twardoch</a> on 2024-08-14 10:56</div>
+            <div class="timeline-body"><p>Is there a way to use &quot;uv&quot; not via CLI, but to build and use it &quot;programmatically&quot; (like a library)?</p>
+<p>I mean from existing Rust code, or possibly from Python (akin to micropip in Pyodide, or the undocumented usage of the &quot;pip&quot; package from within running Python code).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../MeVisLab/pythonqt/issues/231.html">MeVisLab/pythonqt#231</a> on 2024-08-14 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Magic-wei">@Magic-wei</a> on 2024-08-14 12:26</div>
+            <div class="timeline-body"><p>Are you trying to make a GUI for uv? I guess you can just wrap CLI commands in python code like this:</p>
+<pre><code class="language-python">import os
+
+result = os.system(&quot;uv pip install xxx&quot;)
+print(result) # return 0 if no error
+
+# or
+result = os.popen(&quot;uv pip install xxx&quot;)
+print(result.read())  # get all stdout
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-14 14:41</div>
+            <div class="timeline-body"><p>Previously, we've noted that our Rust APIs are not stable enough for external usage https://github.com/astral-sh/uv/issues/2133 and that we would not add Python bindings https://github.com/astral-sh/uv/issues/2794</p>
+<p>However, we did make it possible to invoke uv from Rust https://github.com/astral-sh/uv/pull/4642 — but major caveats apply, i.e., we expect we have full control over the process and that uv is not invoked more than once per process. In most cases, you're probably better off creating a subprocess and using the CLI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-14 14:43</div>
+            <div class="timeline-body"><p>You can, of course, use any of our crates as git-dependencies in a Rust project just know there is no expectation of stability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twardoch">@twardoch</a> on 2024-08-14 14:56</div>
+            <div class="timeline-body"><p>I'm working on a Qt5 C++ app that embeds the Python interpreter using https://github.com/MeVisLab/pythonqt and exposes the Qt C++ internals to Python this way. That solution doesn't really have a standalone CPython executable (Python.exe or so), so running pip from within the Qt app (in order to install additional packages to the Python environment) was complicated. Because the &quot;pip&quot; command line tool was doing &quot;PythonExe -m pip&quot; and that PythonExe is non-existent.</p>
+<p>&quot;uv&quot; has its own executable which doesn't rely on the Python interpreter, so indeed from within the app's Python I can already do</p>
+<pre><code class="language-python">import uv
+import subprocess
+subprocess.run([uv.find_uv_bin(), &quot;pip&quot;, &quot;install&quot;...])
+</code></pre>
+<p>and it kind of works. But I'm wondering if there's a way that I can compile the uv code as a lib and then use something like https://github.com/KDAB/cxx-qt to call the specific uv functionality directly from the Qt C++ code.</p>
+<p>Of course I can always bundle the &quot;uv&quot; executable for the right platform and from Qt C++ call</p>
+<pre><code class="language-cpp">
+#include &lt;QProcess&gt;
+#include &lt;QString&gt;
+#include &lt;QByteArray&gt;
+#include &lt;QDebug&gt;
+
+void runSubprocess() {
+    QProcess process;
+    process.setProgram(&quot;uv.exe&quot;);
+    process.setArguments(QStringList() &lt;&lt; &quot;arg1&quot; &lt;&lt; &quot;arg2&quot;);
+
+    // Capture both stdout and stderr
+    process.setProcessChannelMode(QProcess::SeparateChannels);
+
+    process.start();
+    if (!process.waitForStarted()) {
+        qDebug() &lt;&lt; &quot;Failed to start the process&quot;;
+        return;
+    }
+
+    if (!process.waitForFinished()) {
+        qDebug() &lt;&lt; &quot;Process timed out&quot;;
+        return;
+    }
+
+    // Capture stdout
+    QByteArray stdoutData = process.readAllStandardOutput();
+    QString stdoutStr = QString::fromLocal8Bit(stdoutData);
+
+    // Capture stderr
+    QByteArray stderrData = process.readAllStandardError();
+    QString stderrStr = QString::fromLocal8Bit(stderrData);
+
+    qDebug() &lt;&lt; &quot;stdout:&quot; &lt;&lt; stdoutStr;
+    qDebug() &lt;&lt; &quot;stderr:&quot; &lt;&lt; stderrStr;
+}
+
+</code></pre>
+<p>but I wonder if there's a better way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twardoch">@twardoch</a> on 2024-08-14 15:00</div>
+            <div class="timeline-body"><p>Ok, so what I gather is that it's not advised to try use the uv &quot;API&quot; but instead just the CLI. That's good enough — it's still better than what we had to do before (wrestle with importlib &amp; the private pip API).</p>
+<p>The fact that the &quot;uv&quot; CLI. app is self-sufficient (and unproblematic license-wise) is already helpful :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-14 15:05</div>
+            <div class="timeline-body"><p>Yeah basically it's safe to use <em>some</em> of uv's internal APIs, but the <code>uv</code> crate which defines the functionality of the CLI is not safe to invoke unless you are going to do it <em>once</em> and cede control of the process. We just haven't designed for it to be used as a library because it increases scope so much. The CLI itself will be much more stable than calling into Rust and hopefully the overhead is minimal compared to the actual package operations.</p>
+<p>Thanks for sharing your use-case!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-14 15:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

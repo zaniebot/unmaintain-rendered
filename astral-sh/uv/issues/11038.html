@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failure to `uv pip install vllm==0.7.0` on macOS - astral-sh/uv #11038</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failure to `uv pip install vllm==0.7.0` on macOS</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11038">#11038</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2025-01-28 20:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2025-01-28 20:18</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Running this command fails:</p>
+<pre><code class="language-bash">uv cache clean
+uv pip install vllm==0.7.0
+</code></pre>
+<p>With this message:</p>
+<pre><code class="language-none">Resolved 113 packages in 1.28s
+  × Failed to download and build `vllm==0.7.0`
+  ╰─▶ Package metadata version `0.7.0+cpu` does not match given version `0.7.0`
+</code></pre>
+<p>Any chance we can get <code>+cpu</code> autoresolving to work for latest <code>vllm</code>?</p>
+<h3>Platform</h3>
+<p>Darwin 24.1.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.5.24 (42fae925c 2025-01-23)</p>
+<h3>Python version</h3>
+<p>3.12.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jamesbraza on 2025-01-28 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-28 20:21</div>
+            <div class="timeline-body"><p>This is a real bug in the package. The wheel filename and the metadata contained inside the wheel are not consistent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2025-01-28 20:31</div>
+            <div class="timeline-body"><p>Okay, feel free to close this out then if there's nothing <code>uv</code> can do, I can open an issue in <code>vLLM</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-28 20:32</div>
+            <div class="timeline-body"><p>Oh, this is the most recent version? Hmm, bummer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-28 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vllm-project/vllm/issues/12525.html">vllm-project/vllm#12525</a> on 2025-01-28 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-28 20:48</div>
+            <div class="timeline-body"><p>We could ignore the discrepancy, I just don't know what will break. There will definitely be some wonky behavior though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Qubitium">@Qubitium</a> on 2025-02-10 08:29</div>
+            <div class="timeline-body"><p>@charliermarsh At <a href="https://github.com/ModelCloud/GPTQModel/issues/1238">GPTQModel</a> We are trying to fix this uv compat issue where a pre-compiled wheel (dowloaded) would not work as uv complains correctly or incorrectly about name mistmatch.</p>
+<p>Can you tell let us exactly how <code>uv</code> is using metadata in setup.py to do name mismatch checking? Or basically what internal pkg meta field <code>uv</code> uses from wheel and setup.py to reach this mismatch error. Thanks!</p>
+<pre><code>uv pip install -v gptqmodel --no-build-isolation
+</code></pre>
+<pre><code>Building gptqmodel==1.8.1
+DEBUG Building: gptqmodel==1.8.1
+DEBUG Proceeding without build isolation
+DEBUG Calling setuptools.build_meta:__legacy__.build_wheel(&quot;/nfs/scistore19/alistgrp/dkuznede/.cache/uv/builds-v0/.tmpmWmvcU&quot;, {}, None)
+DEBUG conda_cuda_include_dir /nfs/scistore19/alistgrp/dkuznede/openr1/lib/python3.11/site-packages/nvidia/cuda_runtime/include
+DEBUG appending conda cuda include dir /nfs/scistore19/alistgrp/dkuznede/openr1/lib/python3.11/site-packages/nvidia/cuda_runtime/include
+DEBUG running bdist_wheel
+DEBUG Guessing wheel URL: https://github.com/ModelCloud/GPTQModel/releases/download/v1.8.1/gptqmodel-1.8.1+cu124torch2.5-cp311-cp311-linux_x86_64.whl
+DEBUG wheel name=gptqmodel-1.8.1+cu124torch2.5-cp311-cp311-linux_x86_64.whl
+DEBUG Raw wheel path /nfs/scistore19/alistgrp/dkuznede/.cache/uv/builds-v0/.tmpmWmvcU/.tmp-nluo6lz5/gptqmodel-1.8.1+cu124torch2.5-cp311-cp311-linux_x86_64.whl
+DEBUG Released lock at /nfs/scistore19/alistgrp/dkuznede/.cache/uv/sdists-v7/pypi/gptqmodel/1.8.1/.lock
+  × Failed to download and build gptqmodel==1.8.1
+  ╰─▶ Package metadata version 1.8.1+cu124torch2.5 does not match given version 1.8.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 18:31</div>
+            <div class="timeline-body"><p>@Qubitium -- I believe this is comparing the version reported by the registry (the &quot;given version&quot;) against the version in the <code>.dist-info/METADATA</code> file within the built wheel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Qubitium">@Qubitium</a> on 2025-02-11 04:03</div>
+            <div class="timeline-body"><p>@charliermarsh Yes. But who is wrong here. I am confused.</p>
+<p>Logic:</p>
+<ol>
+<li>in <code>setup.py</code> we generate a version based on env, cuda, torch etc, and check github reledases to see if there a hosted, pre-compiled, wheel.</li>
+<li>if yes, download and install the wheel instead of gating nvcc compilation which make take 10 minutes +</li>
+</ol>
+<p>UV complains the that following <code>metadata</code> doesn't match for https://github.com/ModelCloud/GPTQModel/releases/download/v1.8.1/gptqmodel-1.8.1+cu121torch2.5-cp310-cp310-linux_x86_64.whl</p>
+<pre><code>Metadata-Version: 2.2
+Name: gptqmodel
+Version: 1.8.1+cu121torch2.5
+</code></pre>
+<pre><code> × Failed to download and build gptqmodel==1.8.1
+  ╰─▶ Package metadata version 1.8.1+cu124torch2.5 does not match given version 1.8.1
+</code></pre>
+<p>UV is just comparing <code>1.8.1</code> to <code>1.8.1+cu121torch2.5</code> which returns <code>False</code> but <code>1.8.1+cu121torch2.5</code> is valid according to native pip setuptools?</p>
+<p>The bug only happens for wheel that is jit/auto-downloaded from the network via <code>setup.py</code>. If you use uv to installt he wheel fie directly it has no error since it doesn't do version check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 13:05</div>
+            <div class="timeline-body"><p>I think it’s comparing the expected version of the source distribution (from the file name, or from the registry) against the version of the built wheel. Can you share more on your setup? How is the dependency configured? Are you installing via direct URL? Or is this package hosted on a registry?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CSY-ModelCloud">@CSY-ModelCloud</a> on 2025-02-11 14:40</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<p>https://github.com/ModelCloud/GPTQModel/blob/fd2bbec204ac7e5e5ea1070c4adc4575da98d4f8/setup.py#L283</p>
+<p>Iin setup.py, we have a CachedWheelsCommand class. It will try to get current version's prebuit whl from github release.</p>
+<p>If downloaded, it will return this wheel file to wheel api, so user won't need to wait 10 minutes to build.</p>
+<p>here's the case:</p>
+<p><code>uv pip install gptqmodel</code>  actually will try to install latest version, it's <code>uv pip install gptqmodel==1.8.1</code></p>
+<p>but in a whl's meta, its version is version+tag, like 1.8.1+cu121torch2.5</p>
+<p>so, when uv compares version 1.8.1+cu121torch2.5 is not 1.8.1, it returns false</p>
+<p>but pip itself won't treat it as a false</p>
+<p>we wan't to know why uv &amp; pip has different result or what to do to fix for uv like add api in setup.py</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 15:57</div>
+            <div class="timeline-body"><p>Yeah, the issue is that the the <code>setup.py</code> reports that the version is <code>gptqmodel_version</code>. But when you &quot;build&quot; it, it then returns a wheel with a different version (e.g., <code>1.8.1+cu121torch2.5</code>). Those aren't the same version, so we throw an error. Imagine if <code>gptqmodel_version</code> were, like <code>1.0</code>, and then you built an returned a wheel with version <code>2.0</code>. It would be correct to fail in that case. It's the same thing here: <code>1.8.1</code> and <code>1.8.1+cu121torch2.5</code> are not the same version. We could change it such that we allow this incompatibility, but it would need to be an intentional change on our end. (I don't know if pip's lack of error is intentional, I'd have to check.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 16:01</div>
+            <div class="timeline-body"><p>I will review pip's behavior and determine whether we should make a change here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11429.html">astral-sh/uv#11429</a> on 2025-02-11 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-11 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-11 22:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

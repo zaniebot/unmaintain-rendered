@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run breaks typer - astral-sh/uv #15946</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run breaks typer</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15946">#15946</a>
+        opened by <a href="https://github.com/acmiyaguchi">@acmiyaguchi</a>
+        on 2025-09-19 11:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/acmiyaguchi">@acmiyaguchi</a> on 2025-09-19 11:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.10&quot;
+# dependencies = [
+#   &quot;typer==0.17.4&quot;,
+# ]
+# ///
+import typer
+from typing_extensions import Annotated
+
+
+def main(name: str, lastname: Annotated[str, typer.Option()]):
+    print(f&quot;Hello {name} {lastname}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    print(typer.__version__)
+    typer.run(main)
+</code></pre>
+<p>This script from the typer documentation is broken (https://typer.tiangolo.com/tutorial/options/name/). It should spit an error that are missing arguments.</p>
+<pre><code>❯ python test-typer.py
+0.17.4
+Usage: test-typer.py [OPTIONS] NAME
+Try 'test-typer.py --help' for help.
+╭─ Error ─────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Missing argument 'NAME'.                                                                                    │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+</code></pre>
+<p>Instead it fills in Nones</p>
+<pre><code>❯ uv --version
+uv 0.8.18 (c4c47814a 2025-09-17)
+
+❯ uv run test-typer.py
+0.17.4
+Hello None None
+</code></pre>
+<p>I suspect this is a uv problem, but I'm not 100% certain.</p>
+<h3>Platform</h3>
+<p>Darwin 24.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.18 (c4c47814a 2025-09-17)</p>
+<h3>Python version</h3>
+<p>Python 3.10.18</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @acmiyaguchi on 2025-09-19 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-19 12:52</div>
+            <div class="timeline-body"><p>Hm.. I can reproduce</p>
+<pre><code>❯ uvx --with typer==0.17.4 python example.py
+Installed 8 packages in 32ms
+0.17.4
+Hello None None
+❯ uv run example.py
+Installed 8 packages in 11ms
+0.17.4
+Hello None None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-19 12:53</div>
+            <div class="timeline-body"><p>Except I cannot reproduce the &quot;Missing argument&quot; behavior</p>
+<pre><code>❯ uv venv
+Using CPython 3.14.0rc2 interpreter at: /Users/zb/.local/bin/python3.14
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+
+❯ uv pip install typer==0.17.4
+Resolved 8 packages in 2ms
+Installed 8 packages in 12ms
+ + click==8.3.0
+ + markdown-it-py==4.0.0
+ + mdurl==0.1.2
+ + pygments==2.19.2
+ + rich==14.1.0
+ + shellingham==1.5.4
+ + typer==0.17.4
+ + typing-extensions==4.15.0
+
+❯ source .venv/bin/activate
+❯ python example.py
+0.17.4
+Hello None None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acmiyaguchi">@acmiyaguchi</a> on 2025-09-19 12:58</div>
+            <div class="timeline-body"><p>Thanks for reproducing this for me. I didn't actually make a fresh virtual environment to test this (and relied on an existing one that worked for some reason). I've confirmed that I do get the same error as you, so I'll go ahead and file an issue with typer instead. Will leave this open until I've confirmed things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acmiyaguchi">@acmiyaguchi</a> on 2025-09-19 13:01</div>
+            <div class="timeline-body"><p>After digging into the discussions (and not issues) in the typer repo, I see the problem here: https://github.com/fastapi/typer/discussions/1334</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @acmiyaguchi on 2025-09-19 13:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support or document localization of messages and flags - clap-rs/clap #380</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support or document localization of messages and flags</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/380">#380</a>
+        opened by <a href="https://github.com/kamalmarhubi">@kamalmarhubi</a>
+        on 2016-01-12 16:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kamalmarhubi">@kamalmarhubi</a> on 2016-01-12 16:57</div>
+            <div class="timeline-body"><p>Make it easy for developers to support translations of their projects.</p>
+<hr />
+<p>Current steps:</p>
+<ul>
+<li>Run <code>cargo add clap -F string</code></li>
+<li>If using derive API<ul>
+<li>Replace field names being used as value names via <code>#[arg(value_name = ...)]</code></li>
+</ul>
+</li>
+<li>If using subcommands:<ul>
+<li>Replace <code>Commands:</code> header with a localized value via <code>Command::subcommand_help_heading</code></li>
+<li>Replace <code>&lt;COMMAND&gt;</code> value name with a localized value via <code>Command::subcommand_value_name</code></li>
+</ul>
+</li>
+<li>Replace <code>Arguments</code> and <code>Options:</code> headers with localized values via <code>Command::next_help_heading</code> and/or <code>Arg::help_heading</code></li>
+<li>Disable the built-in flags (<code>Command::disable_help_flag(false)</code> and <code>Command::disable_version_flag(false)</code>) and provide your own versions (with <code>ArgAction::Help</code>, <code>ArgAction::Version</code>) with localized <code>Arg::help</code></li>
+<li>Replace hard coded strings in help template (e.g. <code>Usage</code>) with a localized version via <code>Command::help_template</code><ul>
+<li>Requires styling <code>Usage</code> manually</li>
+</ul>
+</li>
+<li>Remove hard coded <code>[]</code> messages with <a href="https://docs.rs/clap/latest/clap/struct.Arg.html#method.hide_default_value">Arg::hide_default_value</a>, <a href="https://docs.rs/clap/latest/clap/struct.Arg.html#method.hide_possible_values">Arg::hide_possible_values</a>, <a href="https://docs.rs/clap/latest/clap/struct.Arg.html#method.hide_env">Arg::hide_env</a></li>
+<li>Fork <code>clap::error::RichFormatter</code>, replacing any hard coded strings with localized values.  Use <code>Error::apply</code> to swap the formatter (e.g. use <code>Parser::try_parse</code> to get the error, call <code>apply</code>, and then <code>err.exit()</code>)</li>
+<li>Replace in usages the collapsed optional named arguments placeholder <code>[OPTIONS]</code> by providing a custom usage with <code>Command::override_usage</code></li>
+</ul>
+<p>Unresolved:</p>
+<ul>
+<li>Getting the suggestion to run <code>--help</code> in errors, see #5409</li>
+<li>Manually writing usage and losing out on the adaptive usage in errors</li>
+<li><code>[aliases]</code>, <code>[possible values]</code>, <code>[default]</code>, <code>[env]</code>, and <code>Possible values:</code> in help</li>
+</ul>
+<p>Past examples:</p>
+<ul>
+<li>str4d/rage#442</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/259.html">clap-rs/clap#259</a> on 2016-01-12 17:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2016-01-13 07:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2016-01-13 07:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2016-01-13 07:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-01-13 07:10</div>
+            <div class="timeline-body"><p>This is something I'm interested in doing, but it will take some thought on how to best go about this. I'm putting it on the issue tracker, but let's get some discussion going on ways about this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-01-25 15:05</div>
+            <div class="timeline-body"><p>@kamalmarhubi I was thinking about this today, and would the YAML feature allow this? I.e. I'm thinking having a differente yaml file for each translation, and depending on which language/translation is compiled via features, you pick a different yaml file.</p>
+<p>Example:</p>
+<pre><code class="language-toml"># Cargo.toml
+
+[features]
+default = [&quot;en_US&quot;]
+en_US = []
+es_ES = []
+</code></pre>
+<pre><code class="language-yaml"># en_US.yml
+name: My Application
+version: 1.0
+about: An example using many languages
+author: Kevin K. &lt;kbknapp@gmail.com&gt;
+args:
+    - opt:
+        help: an example option
+        short: o
+        long: option
+        multiple: true
+        takes_value: true
+    - pos:
+        help: example positional with possible values
+        index: 1
+        possible_values:
+            - fast
+            - slow
+</code></pre>
+<pre><code class="language-yaml"># es_ES.yml
+name: Mi Aplicacion
+version: 1.0
+about: Un ejamlo util muy idiomas
+author: Kevin K. &lt;kbknapp@gmail.com&gt;
+args:
+    - opt:
+        help: un ejamplo de un opcion
+        short: o
+        long: opcion
+        multiple: true
+        takes_value: true
+    - pos:
+        help: un ejamplo de un posicion con valores posible
+        index: 1
+        possible_values:
+            - rapido
+            - lento
+</code></pre>
+<pre><code class="language-rust">// main.rs
+#[cfg(feature = &quot;en_US&quot;)]
+const TRANSLATION: &amp;'static str = &quot;en_US.yml&quot;;
+
+#[cfg(feature = &quot;es_ES&quot;]
+const TRANSLATION: &amp;'static str = &quot;es_ES.yml&quot;;
+
+fn main() {
+    let yml = load_yaml!(TRANSLATION);
+    let m = App::from_yaml(yml).get_matches();
+}
+</code></pre>
+<p>Then depending on if you compile with <code>--features en_US</code> or <code>--features es_ES</code> it will set the translation. Does this work for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kamalmarhubi">@kamalmarhubi</a> on 2016-02-02 22:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Then depending on if you compile with --features en_US or --features es_ES it will set the translation. Does this work for you?</p>
+</blockquote>
+<p>It's not me I'm thinking about, just something a user-facing system should allow for. :-)</p>
+<p>And as for the solution, it would be much better to allow the user's locale settings to dictate the language in help. Requiring users to compile the tool with their language is non-ideal. Hooking into <a href="https://www.gnu.org/software/gettext/">gettext</a> or <a href="http://l20n.org/">l20n</a> would be a nice approach, as there's tooling for people to work on translations, and they can live outside of the binary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kamalmarhubi">@kamalmarhubi</a> on 2016-02-02 22:16</div>
+            <div class="timeline-body"><p>Though I guess there's a question of whether the options should be translated, or just the help... which comes up in your example. Thanks for that by the way, concrete is always good to look at!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-06-23 21:38</div>
+            <div class="timeline-body"><p>I've never seen a program that translates long option names; those are API, much like the names of functions in a library.  Translating the help is a great idea, though.</p>
+<p>I'd definitely agree with hooking into gettext, to work with the massive amount of translation infrastructure and tooling built around that, rather than creating a new translation format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoodie">@hoodie</a> on 2017-02-06 11:54</div>
+            <div class="timeline-body"><p>I am currently trying to localize my app using <a href="https://github.com/lise-henry/crowbook-intl/">crowbook-intl</a> which is pretty nice. Unfortunately, the fact that <code>AppMeta</code> etc don't want to own the description strings makes it extremely hard to use dynamic strings in <code>.about()</code> and <code>.help()</code> methods. Do you have an idea to work around that? Could the next implementation perhaps own these strings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-02-06 20:07</div>
+            <div class="timeline-body"><p>@hoodie the strings only need to live as long as the App instance, so long as the localized strings are owned somewhere it shouldn't be an issue.</p>
+<p>Can you paste some code that's giving issues and I can either see if there's a workaround or consider fixes if appropriate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoodie">@hoodie</a> on 2017-02-25 15:18</div>
+            <div class="timeline-body"><p>infact you are right, it's just a bit  tricky dealing with the lifetime constraints. I built so that app is immediately passed to a closure now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vhakulinen/gnvim/issues/119.html">vhakulinen/gnvim#119</a> on 2019-10-27 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-04 07:47</div>
+            <div class="timeline-body"><p>This would also include localization of clap strings such <code>Usage</code>, <code>Flags</code>, etc..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1665.html">clap-rs/clap#1665</a> on 2020-02-04 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alerque">@alerque</a> on 2020-05-01 20:35</div>
+            <div class="timeline-body"><p>I've come <em>very</em> close to achieving a localized CLI interface using Clap &amp; <a href="https://projectfluent.org/">Fluent</a>. However there are a couple points that are a bit hackish and could use some first class support.</p>
+<p>The main ugly bit about my solution is I have to parse args twice. I have a <code>-l</code>/<code>--language</code> parameter that can override any detected locale (not appropriate for most CLIs, useful for my case because my CLI generated other resources that have to be localized and uses that flag. In order to get any help messages localized to match I have to pre-parse to scrape out the language, then re-parse with Clap to get everything else.</p>
+<p>The most useful improvement I can see would be for the <em>derive</em> variant of Clap (formerly StructOpt), where the documentation strings are relied on. Adding top level support for a macro that would call a function to get strings rather than using the doc strings would allow both pretty <em>and</em> functional setup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-05-01 21:00</div>
+            <div class="timeline-body"><p>@alerque See #1880 and if something like that would fit your use case if we implement it.</p>
+<blockquote>
+<p>The most useful improvement I can see would be for the derive variant of Clap (formerly StructOpt), where the documentation strings are relied on. Adding top level support for a macro that would call a function to get strings rather than using the doc strings would allow both pretty and functional setup.</p>
+</blockquote>
+<p>This might be useful outside of i18n context. I'm imagining a <code>help_with(Fn)</code>. However, a few non-trivial questions would be need to be ironed out to make it general enough for inclusion:</p>
+<ul>
+<li>Should the <code>Fn</code> accept a context? I.e. an <code>ArgMatches</code>, <code>Id</code>, or a <code>String</code> perhaps? No context makes it easier to implement, but then means consumers are relying on out of band global state to make decisions.</li>
+<li>Would this be <code>App</code> level (applied to all <code>Arg</code>s), or <code>Arg</code> level?</li>
+<li>Should the <code>short</code>/<code>long</code> help be different, or the same <code>Fn</code> (kinda goes back to the Context question above).</li>
+</ul>
+<p>I personally think it might be a little too much to bite off on by the 3.0 release, but there isn't any reasons we couldn't address it post 3.0 as a feature to add if everything can be fleshed out and the complexity/maint burden isn't too high.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alerque">@alerque</a> on 2020-05-01 21:23</div>
+            <div class="timeline-body"><p>@kbknapp</p>
+<ol>
+<li><p>I'm not sure my understanding of Rust is developed enough to meaningfully address this question. I think the answer is having a context would introduce many more possibilities, but it would be useful even without — but I'm still struggling with Rust's variable lifetimes (I'm about 4 days in teaching myself through a pet project that I'm RIIR).</p>
+<p>Note that for my usage I've had to move the <code>#[derive(Clap)] struct Cli {}</code> and all related definitions out of the top level scope and into my <code>fn main()</code>. This is so that I can do a a few early initialization things like make a guess at the locale and pre-parse some arguments¹ before I can properly setup and run using Clap.</p>
+</li>
+<li><p>Arg probably. Of course you have to set it on the app too (<code>#[clap(about = &quot;&lt;my value&gt;&quot;)]</code> needs to be set), but there might be reasons to use different functions or otherwise customize how an argument setup. An App level default callback function with Arg level customization would be my preference.</p>
+</li>
+<li><p>I'm of the opinion that the <em>short</em>/<em>long</em> options should be fixed because scripting with a program that changes it's API based on locale is a nightmare, only the descriptive about, help, etc would change in my implementation. I know there are people that feel like option names should be localized too, but it wouldn't suit my use case.</p>
+</li>
+</ol>
+<p>No worries about the 3.0 release, I want to see that go out the door with the baked in derive stuff sooner rather than later. But of course I'd love to see a follow up with the tooling for localized interfaces.</p>
+<p>¹ <sub>Thanks for the link to #1880, that is <em>exactly</em> what I've needed and was hacking up by hand and messing with lighter weight argp parsing crates to handle a first pass to extract things needed for a full instantiation with Clap.</sub></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-05-01 21:29</div>
+            <div class="timeline-body"><p>@alerque no worres, I should have been more clear. I wasn't posing those questions for you to have to answer. They were more abstract thoughts, primarily for the other maintainers of clap :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1880.html">clap-rs/clap#1880</a> on 2020-05-05 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../projectfluent/fluent-rs/issues/107.html">projectfluent/fluent-rs#107</a> on 2020-11-11 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alerque">@alerque</a> on 2021-07-29 14:38</div>
+            <div class="timeline-body"><p>The recent <a href="https://github.com/rust-lang/rust/releases/tag/1.54.0">Rust 1.54.0 release</a> includes a bit I think might have a huge impact on how hard this is to implement:</p>
+<blockquote>
+<p>You can now use macros for values in built-in attribute macros.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/luojia65">@luojia65</a> on 2021-11-25 09:23</div>
+            <div class="timeline-body"><p>Is it possible to read and use current operating system's working locale settings (languages, money unit, etc.) in clap generated help messages? For example, on given operating system, users use <code>--help</code> and it shows help messages in current locale. Clap can provide a default way to define locales in command line, or remains to users to define them. It would be more nice if this can be implemented, as users in different culture could use the clap based applications more freely.
+In this way we should (maybe) provide a way to write localized strings by locale setting input. Clap only provided as-is, it does not parse the locale setting string, but provide them to user to choose which locale page clap should use.
+There would be two ways to implement them:</p>
+<ol>
+<li>Use localization index in current clap help messages, and translate them using another table. For example, the desctiption of clap app may be <code>myapp.ui.description</code>, but there is another table to translate <code>myapp.ui.description</code> and <code>en_US</code> into 'My Awesome App!'.</li>
+<li>Use a page based locale strings. There could be multiple ways to achieve this, but it requires large scale of code reformat to clap project.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/63.html">epage/clapng#63</a> on 2021-12-06 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> removed by @epage on 2021-12-09 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: medium</span> removed by @epage on 2021-12-09 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2021-12-09 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2021-12-09 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-21 18:11</div>
+            <div class="timeline-body"><p>In discussing this with someone on reddit, I think users can get something working, even if it isn't streamlined yet</p>
+<ol>
+<li>Replace <code>Commands:</code> header with a localized value via <code>Command::subcommand_help_heading</code></li>
+<li>Replace <code>&lt;COMMAND&gt;</code> value name with a localized value via <code>Command::subcommand_value_name</code></li>
+<li>Replace <code>Arguments</code> and <code>Options:</code> headers with localized values via <code>Command::next_help_heading</code> and/or <code>Arg::help_heading</code></li>
+<li>Disable the built-in flags (<code>Command::disable_help_flag(false)</code> and <code>Command::disable_version_flag(false)</code>) and provide your own versions with localized <code>Arg::help</code></li>
+<li>If the help template has any hard coded strings, replace them with a localized version via <code>Command::help_template</code></li>
+<li>Fork <code>clap::error::RichFormatter</code>, replacing any hard coded strings with localized values.  Use <code>Error::apply</code> to swap the formatter (e.g. use <code>Parser::try_parse</code> to get the error, call <code>apply</code>, and then <code>err.exit()</code>)</li>
+</ol>
+<p>Would some users be willing to experiment with this within their applications and report on the results and what can be changed / improved?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saona-raimundo">@saona-raimundo</a> on 2023-04-10 16:23</div>
+            <div class="timeline-body"><p>I just tried it in one of my small projects and everything worked well :)</p>
+<p>I was happy when I found that, on top of the listed methods for <code>Command</code>, there are special action variants <code>ArgAction::Help</code> and <code>ArgAction::Version</code>. This came in handy so I did not have to code the functionality of these flags again.</p>
+<p>In my case, I had to include the <code>string</code> feature of <code>clap</code>, because I got <code>String</code>s out of fluent.
+It was not hard to find, but it would be useful to have in mind when writing docs about this use case.</p>
+<p>If I get to do more experiments, I will comment on them.</p>
+<p>One thing that clap does well and I ended up doing by hand is formatting the (localized) help message.
+Hinting at some resources on command-line templating would be great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mleduque">@mleduque</a> on 2023-08-27 14:33</div>
+            <div class="timeline-body"><p>Hi, I really want to have the help strings of my program translated, and this seems to be the issue about it.
+Though it seems clap doesn't support it, I gather from the comments there is a workaround (possibly with heavy work?), but I feel the solution is <em>alluded to</em>, not explained and I can't manage to assemble the pieces.
+Is there and example or howto?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-08-28 14:07</div>
+            <div class="timeline-body"><p>@mleduque As my comment alludes to, I've never tried this out and don't have good use cases for trying it out and am looking for someone to pioneer this.  I did update my comment with some more explicit steps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mleduque">@mleduque</a> on 2023-08-28 14:40</div>
+            <div class="timeline-body"><p>I've read your comment once again but I don't find where to start from.
+I've got a #[derive(Parser)] struct where do I go from there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-08-28 14:48</div>
+            <div class="timeline-body"><p>It sounds like some more basic information is needed and this issue is not a good place for us to have that conversation.  I will also say that this isn't my focus area at this time and I'm only able to provide limited support.</p>
+<p>The one thing I will point out is that all builder methods are exposed as attributes in the derive (see <a href="https://docs.rs/clap/latest/clap/_derive/index.html#terminology">reference</a>).  So you can take <code>Command::disable_help_flag</code> and use it like <code>#[command(disable_help_flag = false)]</code>.  Similar for each of the other steps (except 6 but I already described that).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mleduque">@mleduque</a> on 2023-09-06 14:38</div>
+            <div class="timeline-body"><p>The use case it, well, the most classic there is :</p>
+<blockquote>
+<p>Use the LANG/LC_ALL/LANGUAGE environment variable to chosose at runtime which help message you will show</p>
+</blockquote>
+<p>Which is probably a minimum for any CLI program.
+I'll try this and see if I can do something with the info above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../str4d/rage/issues/437.html">str4d/rage#437</a> on 2024-01-07 05:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/str4d">@str4d</a> on 2024-01-08 05:40</div>
+            <div class="timeline-body"><p>@epage wrote:</p>
+<blockquote>
+<p>Would some users be willing to experiment with this within their applications and report on the results and what can be changed / improved?</p>
+</blockquote>
+<p>I have experimented with this in https://github.com/str4d/rage/pull/442, and successfully localized my usage and help text! See https://github.com/str4d/rage/pull/442/commits/b3de9b9c998842b96ce4425878b093dce5620846 specifically for the localization changes (relative to what I was able to do previously before using <code>clap</code>, which was only localizing the <code>after_help</code> text).</p>
+<p>The first issue I ran into was that passing localized <code>String</code>s into the various fields that take <code>Str</code> didn't report very helpful error messages in <code>derive</code> mode. I had to manually look at the documentation for <code>Str</code> to figure out that I needed to enable the <code>string</code> feature flag.</p>
+<blockquote>
+<ol>
+<li>Replace <code>Commands:</code> header with a localized value via <code>Command::subcommand_help_heading</code></li>
+</ol>
+</blockquote>
+<p>I didn't test this, as my app doesn't use subcommands.</p>
+<blockquote>
+<ol start="2">
+<li>Replace <code>&lt;COMMAND&gt;</code> value name with a localized value via <code>Command::subcommand_value_name</code></li>
+</ol>
+</blockquote>
+<p>I didn't test this, as my app doesn't use subcommands. However I did use <code>Arg::value_name</code> to localize the positional and flag value names.</p>
+<blockquote>
+<ol start="3">
+<li>Replace <code>Arguments</code> and <code>Options:</code> headers with localized values via <code>Command::next_help_heading</code> and/or <code>Arg::help_heading</code></li>
+</ol>
+</blockquote>
+<p>This was a little confusing to get working: just setting <code>Command::next_help_heading</code> will cause it to merge <code>Arguments</code> and <code>Options</code> together. To avoid this, I set <code>Command::next_help_heading</code> to the localized <code>Options</code> (as there were more of these), and then set <code>Arg::help_heading</code> on every positional argument.</p>
+<blockquote>
+<ol start="4">
+<li>Disable the built-in flags (<code>Command::disable_help_flag(false)</code> and <code>Command::disable_version_flag(false)</code>) and provide your own versions with localized <code>Arg::help</code></li>
+</ol>
+</blockquote>
+<p>This was somewhat confusing, as the <code>derive</code> syntax to get replacements working required them to use the argument type <code>Option&lt;bool&gt;</code> in order to get past the &quot;required flag&quot; checker.</p>
+<blockquote>
+<ol start="5">
+<li>If the help template has any hard coded strings, replace them with a localized version via <code>Command::help_template</code></li>
+</ol>
+</blockquote>
+<p>The help template hard-codes the &quot;Usage&quot; string inside the <code>{usage-heading}</code> tag:
+https://github.com/clap-rs/clap/blob/2ab48b295c2463ce8c141a9868095b811ccf3b99/clap_builder/src/output/help_template.rs#L199-L206</p>
+<p>I copied in the contents of <code>DEFAULT_TEMPLATE</code> so I could replace that tag with a manual localized implementation, but to emulate <code>{usage-heading}</code> correctly I needed to duplicate the command style inside the formatter (which meant I had to figure out what style my app was using - <code>Styles::default()</code> - and enable the <code>unstable-styles</code> feature flag).</p>
+<blockquote>
+<ol start="6">
+<li>Fork <code>clap::error::RichFormatter</code>, replacing any hard coded strings with localized values.  Use <code>Error::apply</code> to swap the formatter (e.g. use <code>Parser::try_parse</code> to get the error, call <code>apply</code>, and then <code>err.exit()</code>)</li>
+</ol>
+</blockquote>
+<p>I have not yet tested this, but I was already doing something similar for my own app's errors (for invalid flag combinations etc) prior to using <code>clap</code>, so I might look into this at some point (either forking <code>clap::error::RichFormatter</code> to replace my logic, or integrating <code>clap</code>'s errors into my logic).</p>
+<hr />
+<p>The only other hard-coded string I noticed was the <code>OPTIONS</code> name used in the auto-generated usage string:
+https://github.com/clap-rs/clap/blob/2ab48b295c2463ce8c141a9868095b811ccf3b99/clap_builder/src/output/usage.rs#L173-L180</p>
+<p>This can be localized with <code>Command::override_usage</code>, but doing so disables the &quot;context-aware&quot; usage strings. I already needed to do this for one of the CLI apps (as I want to show two usage variants), but the other two would benefit from some way to alter this string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-01-08 17:16</div>
+            <div class="timeline-body"><p>Thanks for the detailed report!</p>
+<p>It seems the biggest issue is <code>OPTIONS</code> at this point.  The thing I'm trying to weigh is the cost to everyone else for a localization change.</p>
+<p>Options</p>
+<ul>
+<li>Add a setting in <code>Command</code></li>
+<li>Use the in-work plugin system for a setting on <code>Command</code> so people using it aren't expected except in <code>usage.rs</code> code</li>
+<li>Have localization use custom usage generators some time after #5236</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Serein-ly">@Serein-ly</a> on 2024-03-22 06:11</div>
+            <div class="timeline-body"><p>Hello, could you please tell me what the current demand for localization is? Can clap support it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-03-22 11:52</div>
+            <div class="timeline-body"><p>@bin-ly I've updated the issue post with the current localization instructions based on the work of str4d</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rnestler/reboot-arch-btw/pulls/175.html">rnestler/reboot-arch-btw#175</a> on 2024-04-02 10:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5445.html">clap-rs/clap#5445</a> on 2024-04-09 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mrtryhard/qt-ts-tools/issues/73.html">mrtryhard/qt-ts-tools#73</a> on 2024-06-17 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../topgrade-rs/topgrade/pulls/807.html">topgrade-rs/topgrade#807</a> on 2024-06-25 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../topgrade-rs/topgrade/issues/859.html">topgrade-rs/topgrade#859</a> on 2024-07-10 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../iceyee/rust_format/issues/3.html">iceyee/rust_format#3</a> on 2024-09-21 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5853.html">clap-rs/clap#5853</a> on 2024-12-22 05:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/toadslop">@toadslop</a> on 2024-12-22 06:22</div>
+            <div class="timeline-body"><p>Hey all, I made a draft PR of an approach to enabling internationlization clap: https://github.com/clap-rs/clap/pull/5853</p>
+<p>Take a look and let me know what you think. It's just a minimal example to demonstrate the approach, but if it looks good I'd be happy to put in some time to polish it up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-12-24 02:28</div>
+            <div class="timeline-body"><p>From #5852</p>
+<blockquote>
+<p>While I recommend moving the conversation to the mentioned issue, I'll at least say I hesitate in making a bespoke localization framework like I was about a bespoke terminal styling API.</p>
+</blockquote>
+<p>As shown in this issue, we are most of the way there to allowing people to override existing strings inside of clap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alerque">@alerque</a> on 2024-12-25 11:51</div>
+            <div class="timeline-body"><p>Yes, lets <em>please</em> not move towards a besoke YAML key/value based localization system. It is easy to get off the ground that way but in will quickly become a problem for projects wanting to do a better job or with more complex needs. Good localization is hard even for relatively simple cases, and there is good tooling out there for it.</p>
+<p>This should be refactored to use Fluent (or possibly one of the Fluent based systems that allow generating static localizations), or just provide an interface that people can bring their own localization framework). Any project localizing their CLI args probably also has other localization needs and probably already has Fluent assets or some other framework that can be leveraged for this purpose.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../sharkdp/hexyl/issues/223.html">sharkdp/hexyl#223</a> on 2025-02-10 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sylvestre">@sylvestre</a> on 2025-05-23 08:17</div>
+            <div class="timeline-body"><p>I’m interested in helping to finish this (for the Rust coreutils).</p>
+<blockquote>
+<p>This should be refactored to use Fluent (or possibly one of the Fluent based systems that allow generating static
+localizations), or just provide an interface that people can bring their own localization framework).</p>
+</blockquote>
+<p>@alerque  If I implement the translation mechanism for clap with fluent in a decent way, will you be ok to merge the change? thanks ! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../cnsino/dtrack/issues/10.html">cnsino/dtrack#10</a> on 2025-06-04 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6035.html">clap-rs/clap#6035</a> on 2025-06-13 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sylvestre">@sylvestre</a> on 2025-06-14 12:51</div>
+            <div class="timeline-body"><p>I made a poc for this here https://github.com/clap-rs/clap/pull/6035</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-06-16 14:43</div>
+            <div class="timeline-body"><p>I do not feel comfortable pulling <code>fluent</code> into our stable API.  So far, we've provided ways for the caller to customize our strings, using the localization framework of their choice.  We still have some gaps but I would need a strong justification for us to instead have built-in support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sylvestre">@sylvestre</a> on 2025-06-16 14:53</div>
+            <div class="timeline-body"><p>@epage my goal was to avoid duplicating the translation work for all clap users.
+(I do understand your concern about fluent - note that it is behind a feature).</p>
+<p>I could not find the doc or examples for &quot; we've provided ways for the caller to customize our strings&quot;. Would you have a pointer for this?
+I can go this way for my needs (Rust/coreutils and other uutils projects).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-06-16 14:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I could not find the doc or examples for &quot; we've provided ways for the caller to customize our strings&quot;. Would you have a pointer for this?
+I can go this way for my needs (Rust/coreutils and other uutils projects).</p>
+</blockquote>
+<p>Currently its documented in an edit to this issue, so see https://github.com/clap-rs/clap/issues/380#issue-126223707</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sylvestre">@sylvestre</a> on 2025-06-16 15:00</div>
+            <div class="timeline-body"><p>oh,  thanks.
+i ignored comment #0 thinking that it was (almost) a decade old and therefor outdated. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eatradish">@eatradish</a> on 2025-08-24 09:38</div>
+            <div class="timeline-body"><p>I've found that 1-5 can all be done easily, but point 6:</p>
+<blockquote>
+<p>Fork clap::error::RichFormatter, replacing any hard coded strings with localized values. Use Error::apply to swap the formatter (e.g. use Parser::try_parse to get the error, call apply, and then err.exit())</p>
+</blockquote>
+<p>I tried to copy only the <code>RichFormatter</code> logic into my project, I found the problem with <code>StyledStr</code>, where <code>push_str</code> is private, and the logic <code>error.inner.styles</code> is private and can't be called.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eatradish">@eatradish</a> on 2025-08-24 16:25</div>
+            <div class="timeline-body"><p>Also, I found some strings left out of it that were not customised, such as aliases, env, default, ...</p>
+<p>Should methods be added in this way to make them customisable? (e.g. aliases):</p>
+<p>In <code>clap-builder/src/builder/command</code> :</p>
+<pre><code class="language-rust">    /// Sets the aliases heading used for subcommands when printing usage and help.
+    ///
+    /// By default, this is &quot;COMMAND&quot;.
+    ///
+    /// See also [`Command::subcommand_help_heading`]
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// # use clap_builder as clap;
+    /// # use clap::{Command, Arg};
+    /// Command::new(&quot;myprog&quot;)
+    ///     .subcommand(Command::new(&quot;sub1&quot;))
+    ///     .subcommand_aliases_heading(&quot;qaq&quot;)
+    ///     .print_help()
+    /// # ;
+    /// ```
+    ///
+    /// will produce
+    ///
+    /// ```text
+    /// myprog
+    ///
+    /// Usage: myprog [COMMAND]
+    ///
+    /// Commands:
+    ///     help    Print this message or the help of the given subcommand(s)
+    ///     sub1    [qaq: sub2]
+    ///
+    /// Options:
+    ///     -h, --help       Print help
+    ///     -V, --version    Print version
+    /// ```
+    #[must_use]
+    pub fn subcommand_aliases_heading(mut self, heading: impl IntoResettable&lt;Str&gt;) -&gt; Self {
+        self.aliases_heading = heading.into_resettable().into_option();
+        self
+    }
+
+// ...
+
+/// Returns the aliases heading for subcommands.
+#[inline]
+pub fn get_subcommand_aliases_heading(&amp;self) -&gt; Option&lt;&amp;str&gt; {
+    self.aliases_heading.as_deref()
+}
+</code></pre>
+<p>In <code>clap-builder/src/output/help_template.rs</code> line 1007:</p>
+<pre><code class="language-rust">            spec_vals.push(format!(
+                &quot;[{}: {all_als}]&quot;,
+                a.get_subcommand_aliases_heading().unwrap_or(&quot;aliases&quot;)
+            ));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sylvestre">@sylvestre</a> on 2025-08-24 17:02</div>
+            <div class="timeline-body"><p>https://github.com/uutils/coreutils/blob/main/src/uucore/src/lib/mods/clap_localization.rs</p>
+<p>Here is how I did it for the coreutils. It wasn't trivial!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6111.html">clap-rs/clap#6111</a> on 2025-08-25 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eatradish">@eatradish</a> on 2025-08-28 07:54</div>
+            <div class="timeline-body"><p>Hi, Maybe you'd be interested in this crate: https://github.com/eatradish/clap-i18n-richformatter:</p>
+<p>For https://github.com/AOSC-Dev/oma/pull/532:</p>
+<p><img width="2484" height="1256" alt="Image" src="https://github.com/user-attachments/assets/d52556e5-5a50-477e-9bd6-f9f3bede695c" /></p>
+<p>But there are still some strings that are untranslatable, for example (because it does not fall within the scope of <code>RichFormatter</code>):</p>
+<p><img width="1440" height="380" alt="Image" src="https://github.com/user-attachments/assets/5e0065dd-5fa8-407d-9410-3c50a51570ff" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-28 13:51</div>
+            <div class="timeline-body"><p>@eatradish feel free to post a PR linking to that package from our <code>src/lib.rs</code> doc comment like other integration packages we call out!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-09-08 15:24</div>
+            <div class="timeline-body"><p>@eatradish I see you posted #6122.  We need to keep in mind that that would apply to the following strings:</p>
+<ul>
+<li><code>[default: ]</code></li>
+<li><code>[aliases: ]</code></li>
+<li><code>[env: ]</code></li>
+<li><code>[possible values: ]</code></li>
+<li><code>Possible values:</code></li>
+</ul>
+<p>My ideal solution would be #2914.  While I'm leaning towards that being my next priority when I come back around to focusing on clap.</p>
+<p>#5156 may be a bit closer but that only helps for some of them and we likely don't have good options for the others to get rid of <code>[context:]</code> sections completely.</p>
+<p>RE #6122, some things I'm not thrilled with</p>
+<ul>
+<li>having arbitrary string replacement functions (help headings are a more general feature)</li>
+<li>having to have two different ones for possible values</li>
+</ul>
+<p>but since I'm not ready for #2914 yet (and no one has stepped up to it), we may have to live with something in that direction as a compromise.  Ideally, it would be a global setting on the top-level <code>Command</code> and possibly use our new-ish plugin system.  However, there may be implementation hurdles that get in the way.  A solution should cover all of the cases.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

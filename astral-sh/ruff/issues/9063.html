@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E712 fix results in unsafe behavior - astral-sh/ruff #9063</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>E712 fix results in unsafe behavior</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9063">#9063</a>
+        opened by <a href="https://github.com/DavidSlayback">@DavidSlayback</a>
+        on 2023-12-08 23:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DavidSlayback">@DavidSlayback</a> on 2023-12-08 23:54</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>If Ruff is allowed to check for and fix E712 errors, this can result in unexpected behavior with things like pandas DataFrames. Example:</p>
+<pre><code class="language-python">mask = (df[&quot;bool_col&quot;] == True) &amp; (df[&quot;other_col&quot;].isna())
+# If we add noqa, we're ok
+mask = (df[&quot;bool_col&quot;] == True) &amp; (df[&quot;other_col&quot;].isna())  &amp; (df[&quot;other_col&quot;].isna()) # noqa: E712
+# But if we let ruff fix as part of a pre-commit...
+# ruff check . --fix
+mask = (df[&quot;bool_col&quot;] is True) &amp; (df[&quot;other_col&quot;].isna()) 
+</code></pre>
+<p>The original behavior produces a mask for each operand and combines them. The &quot;fix&quot; makes the first operand always return False, which means the whole mask is False.</p>
+<p><strong>Ruff version</strong>: v0.1.6</p>
+<p>I think the desired behavior would be to either consider the fix unsafe or to favor removing <code>== True</code> and <code>!= True</code>, but the latter might be difficult (because the correct equivalent to != in Pandas is <code>~df</code>, not <code>!df</code> or <code>not df</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-09 00:49</div>
+            <div class="timeline-body"><p>Please see https://github.com/astral-sh/ruff/issues/4560</p>
+<p>This fix should already be marked as unsafe and not applied unless you've opted into unsafe fixes e.g.</p>
+<pre><code>❯ ruff check example.py --isolated --no-cache --select E712 --fix
+example.py:1:27: E712 Comparison to `True` should be `cond is True` or `if cond:`
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+❯ ruff check example.py --isolated --no-cache --select E712 --fix --unsafe-fixes
+Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-12-09 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DavidSlayback">@DavidSlayback</a> on 2023-12-09 11:12</div>
+            <div class="timeline-body"><p>Hmm...sorry about that, I'll have to figure out how the auto fix got triggered, our pre-commit doesn't specify <code>--unsafe-fixes</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-09 12:44</div>
+            <div class="timeline-body"><p>Hmm, could you have unsafe-fixes = true set in your pyproject.toml or ruff.toml file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DavidSlayback">@DavidSlayback</a> on 2023-12-11 15:19</div>
+            <div class="timeline-body"><p>No <code>ruff.toml</code>, <code>pyproject.toml</code> doesn't specify anything about the fixes, and <code>.pre-commit-config.yaml</code> section is:</p>
+<pre><code class="language-yaml">  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.1.6
+    hooks:
+      - id: ruff
+        name: &quot;Lint and fix code using Ruff&quot;
+        args: [ --fix, --exit-non-zero-on-fix ]
+        stages: [commit]
+</code></pre>
+<p>Going to assume maybe someone triggered it manually to get it to stop complaining</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9095.html">astral-sh/ruff#9095</a> on 2023-12-11 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-11 21:43</div>
+            <div class="timeline-body"><p>@DavidSlayback https://github.com/astral-sh/ruff/pull/9095 will be in our next release so you can disable unsafe fixes entirely to hide that complaint :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

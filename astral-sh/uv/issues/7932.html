@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legacy Windows Server (2008) - astral-sh/uv #7932</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Legacy Windows Server (2008)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7932">#7932</a>
+        opened by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a>
+        on 2024-10-04 17:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-10-04 17:33</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I have a legacy client using Windows server 2008 and a couple on windows server 2012. Both are discontinued by Microsoft and I understand if there are no plans to even support them.</p>
+<p><strong>Up to uv version 0.1.39 it works as intended on these systems</strong>, but on v 0.1.40 it starts failing with bcrypt</p>
+<p><img src="https://github.com/user-attachments/assets/067d30aa-91d9-447f-bcae-108920e47574" alt="uv-0 1 40" /></p>
+<p>On version 0.4.7 and later the error seems more critical with 0xc0000005 as the only info</p>
+<p><img src="https://github.com/user-attachments/assets/e77628b2-6bc1-4c8a-a9e5-35372b17715a" alt="uv-0 4 7" /></p>
+<p>If it is simple enough, would be possible to have it running again?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-12-27 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickolay">@nickolay</a> on 2025-01-08 18:37</div>
+            <div class="timeline-body"><p>About ProcessPrng, per https://github.com/rustdesk/rustdesk/discussions/7503 it's a rust issue https://github.com/rust-lang/rust/pull/121337 ; you have to compile for Windows 7 / 2008 as a separate target...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2025-01-08 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-08 18:43</div>
+            <div class="timeline-body"><p>This isn't something we'll prioritize, but if it's not invasive to get it working and someone wants to do so — that's fine.</p>
+<p>You may need to build from source as described by @nickolay</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2025-01-08 20:01</div>
+            <div class="timeline-body"><p>Just as consideration, today Windows 7 <a href="https://gs.statcounter.com/os-version-market-share/windows/desktop/worldwide">has 2.4% market share</a> being the 3rd most used version of windows. I think it is still a relevant platform due to driver support for legacy hardware.</p>
+<p>I see uv does upgrade rust toolchain very often, but I don't know if you use features from latest version as soon as they are available. It might be the case to hold off until a new feature is needed.</p>
+<p>For Windows 7/2008, Rust 1.75 is the last working
+For Windows 8/2012, Rust 1.76 is the one</p>
+<p>I am not recommending you to go back to these versions if using new features already, but it would be interesting to reconsider any drop in support before upgrading rust version. Maybe some push back to rust-lang because these changes does not benefit people writing Rust software.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-08 20:41</div>
+            <div class="timeline-body"><p>We are using new features on the latest version of Rust — though we may be able to avoid it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickolay">@nickolay</a> on 2025-03-26 01:49</div>
+            <div class="timeline-body"><p>For the reference, I was able to build a version that runs on 2008R2 like this:</p>
+<pre><code>$ rustup toolchain install nightly
+$ rustup component add rust-src --toolchain nightly-x86_64-pc-windows-msvc
+
+# add to (uv_git_workdir)/.cargo/config.toml:
+[target.x86_64-win7-windows-msvc]
+rustflags = [
+  &quot;-L&quot;, &quot;C:/Users/Nickolay/scoop/persist/rustup/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows_x86_64_msvc-0.48.5/lib/&quot;,
+]
+
+$ cargo +nightly build -Z build-std --target=&quot;x86_64-win7-windows-msvc&quot;  # --release
+</code></pre>
+<p>(<code>cargo 1.87.0-nightly (307cbfda3 2025-03-20)</code> building from e4c98e976f36f6f1e1d5eff2874cb984a78b28e5)</p>
+<p>uvx-produced executables run with &quot;Segmentation fault&quot;, but that's a different issue — basic uv commands (with python pre-installed) work fine.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

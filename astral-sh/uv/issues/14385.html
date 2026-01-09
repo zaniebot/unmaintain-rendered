@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaves lock file in tmp when installing zip file - astral-sh/uv #14385</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Leaves lock file in tmp when installing zip file</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14385">#14385</a>
+        opened by <a href="https://github.com/nijel">@nijel</a>
+        on 2025-07-01 05:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nijel">@nijel</a> on 2025-07-01 05:58</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When installing a remote zip file, the <code>uv</code> leaves lock file in <code>/tmp</code> after run:</p>
+<pre><code class="language-console">(tools) root@0221c9e7ed4c:/# ls -la /tmp/
+total 8
+drwxrwxrwt 1 root root 4096 Jul  1 07:53 .
+drwxr-xr-x 1 root root 4096 Jul  1 07:44 ..
+(tools) root@0221c9e7ed4c:/# uv pip install https://github.com/nijel/supervisor-stdout/archive/c909c1a1ddabaf679dc2eaecb3b8f5ad6bef467a.zip 
+Using Python 3.13.3 environment at: /opt/tools
+Resolved 1 package in 1.27s
+      Built supervisor-stdout @ https://github.com/nijel/supervisor-stdout/archive/c909c1a1ddabaf679dc2eaecb3b8f5ad6bef467a.zip
+Prepared 1 package in 669ms
+Installed 1 package in 1ms
+ + supervisor-stdout==0.1.1 (from https://github.com/nijel/supervisor-stdout/archive/c909c1a1ddabaf679dc2eaecb3b8f5ad6bef467a.zip)
+(tools) root@0221c9e7ed4c:/# ls -la /tmp/
+total 8
+drwxrwxrwt 1 root root 4096 Jul  1 07:54 .
+drwxr-xr-x 1 root root 4096 Jul  1 07:44 ..
+-rwxrwxrwx 1 root root    0 Jul  1 07:54 uv-setuptools-8c2cb3e75405ff4e.lock
+</code></pre>
+<p>This started to happen with uv 0.7.16, 0.7.15 did not behave like this.</p>
+<p>Originally found in a Docker build:</p>
+<p>https://github.com/WeblateOrg/docker-base/blob/cc25a4d0a961f434827e1cf96931be411a7e04b8/Dockerfile</p>
+<h3>Platform</h3>
+<p>Ubuntu 25.04</p>
+<h3>Version</h3>
+<p>0.7.17</p>
+<h3>Python version</h3>
+<p>Python 3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @nijel on 2025-07-01 05:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-01 13:06</div>
+            <div class="timeline-body"><p>We added more file locks for concurrency safety. There's no safe way to delete the file locks, so they remain in the directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-07-01 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-07-01 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-01 13:07</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/issues/10773</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2025-07-01 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-01 16:23</div>
+            <div class="timeline-body"><p>@zanieb it might be worth resurrecting part of https://github.com/astral-sh/uv/pull/14225 to put these tempfile locks under a shared directory? What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-01 16:45</div>
+            <div class="timeline-body"><p>It seems fine to expose configuration for that (and open an issue to track the idea), but I don't think it really solves the complaint here as you'd still need a tmpfs in Docker.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-02 01:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

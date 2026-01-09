@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERA001 false positives on CODE_INDICATORS - astral-sh/ruff #18461</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ERA001 false positives on CODE_INDICATORS</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18461">#18461</a>
+        opened by <a href="https://github.com/SXHRYU">@SXHRYU</a>
+        on 2025-06-04 13:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SXHRYU">@SXHRYU</a> on 2025-06-04 13:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If the comment or comment line consists of one word derived from &quot;return&quot;/&quot;break&quot;/&quot;continue&quot;/&quot;import&quot; (i.e. <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/eradicate/detection.rs#L10-L15">CODE_INDICATORS</a>) it is considered valid python code.</p>
+<p>Examples:</p>
+<pre><code class="language-python"># returnable  noqa: ERA001
+# imports  noqa: ERA001
+# breaking  noqa: ERA001
+</code></pre>
+<p>It can also be detrimental if it triggers on normal comment that contains function name on a new line:</p>
+<pre><code class="language-python"># this is a long comment explaining a bug that happens when calling
+# on_return  noqa: ERA001
+# (^ this can be a valid function name)
+</code></pre>
+<p>Perhaps it's viable to wrap <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/eradicate/detection.rs#L79C1-L81C6"><code>if !CODE_INDICATORS.is_match(line)</code></a> to some less-greedy function?</p>
+<h3>Version</h3>
+<p>0.11.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-04 18:05</div>
+            <div class="timeline-body"><p>My somewhat naive idea would just be to use a <code>Regex</code> instead of an <code>AhoCorasick</code> for the keywords and throw <code>\b</code> on the ends.</p>
+<p>It does look like the current implementation is consistent with the <a href="https://github.com/PyCQA/eradicate/blob/7ac47683e79ebdb8a86c8f66a24a6a8ced2ea028/eradicate.py#L89-L93">upstream version</a>, but it would make sense to me to check for an exact match instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-04 18:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

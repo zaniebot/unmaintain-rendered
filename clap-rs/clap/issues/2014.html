@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generating auto completion for zsh-prezto does not work with Deno project - clap-rs/clap #2014</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Generating auto completion for zsh-prezto does not work with Deno project</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2014">#2014</a>
+        opened by <a href="https://github.com/muuvmuuv">@muuvmuuv</a>
+        on 2020-07-14 16:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/muuvmuuv">@muuvmuuv</a> on 2020-07-14 16:22</div>
+            <div class="timeline-body"><h3>Make sure you completed the following tasks</h3>
+<ul>
+<li>[x] Searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] Searched the closes issues</li>
+</ul>
+<h3>Code</h3>
+<p>Ref: https://github.com/denoland/deno/issues/6309</p>
+<pre><code class="language-zsh">_deno() {
+    typeset -A opt_args
+    typeset -a _arguments_options
+    local ret=1
+
+    if is-at-least 5.2; then
+        _arguments_options=(-s -S -C)
+    else
+        _arguments_options=(-s -C) # line 12
+    fi
+
+    local context curcontext=&quot;$curcontext&quot; state line
+    _arguments &quot;${_arguments_options[@]}&quot; \
+#....
+</code></pre>
+<h3>Steps to reproduce the issue</h3>
+<ol>
+<li>Install deno</li>
+<li>Run <code>deno completions zsh &gt; /Users/marvinheilemann/.zprezto/modules/deno/init.zsh</code></li>
+<li>Print <code>_deno:12: command not found: _arguments</code></li>
+</ol>
+<h3>Version</h3>
+<ul>
+<li><strong>Rust</strong>: Output of <code>rustc -V</code></li>
+<li><strong>Clap</strong>: 2.33.1</li>
+</ul>
+<h3>Actual Behavior Summary</h3>
+<p>I am getting an error</p>
+<h3>Expected Behavior Summary</h3>
+<p>I think <em>this</em> should happen instead.</p>
+<h3>Additional context</h3>
+<p>I am not familiar with Rust</p>
+<h3>Debug output</h3>
+<p>Compile clap with <code>debug</code> feature:</p>
+<pre><code class="language-toml">[dependencies]
+clap = { version = &quot;*&quot;, features = [&quot;debug&quot;] }
+</code></pre>
+<p>The output may be very long, so feel free to link to a gist or attach a text file</p>
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+
+<p>Paste Debug Output Here</p>
+</code>
+</pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @muuvmuuv on 2020-07-14 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-07-14 18:01</div>
+            <div class="timeline-body"><p>This is an issue with zsh version IIRC. Please paste your zsh version. Also can you please try with clap master branch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: generator</span> added by @pksunkara on 2020-07-14 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/muuvmuuv">@muuvmuuv</a> on 2020-07-14 18:16</div>
+            <div class="timeline-body"><p>I am running the default apple zsh: zsh 5.7.1 (x86_64-apple-darwin19.0)</p>
+<p>Sorry but I am not familiar with Rust :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-08-11 01:09</div>
+            <div class="timeline-body"><p>@intgr Do you think you can take a look at this please?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/intgr">@intgr</a> on 2020-08-11 14:20</div>
+            <div class="timeline-body"><p>Sure, will take a look later (feel free to ping me if I forget).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/intgr">@intgr</a> on 2020-08-12 18:32</div>
+            <div class="timeline-body"><p>The issue here is that zsh is very picky about how it discovers those completion files. You have to place it with file name <code>_deno</code> into some directory in the <code>$fpath</code> variable, usually <code>/usr/local/share/zsh/site-functions</code>. Unfortunately there are no user-local paths by default.</p>
+<p>As a one-liner:</p>
+<pre><code class="language-sh">deno completions zsh |sudo tee /usr/local/share/zsh/site-functions/_deno
+</code></pre>
+<p>After that you can run <code>compinit</code> in your zsh shell and <code>deno &lt;TAB&gt;</code> should automagically work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-08-12 20:49</div>
+            <div class="timeline-body"><p>@intgr Thank you a lot!</p>
+<p>@muuvmuuv Could you please check if the proper path and filename solves the problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/muuvmuuv">@muuvmuuv</a> on 2020-08-13 15:16</div>
+            <div class="timeline-body"><p>@intgr this does not work for me:</p>
+<pre><code>~/Downloads                                                                                                 at 17:12:43
+❯ echo $fpath
+/Users/marvinheilemann/.zprezto/modules/prompt/functions /Users/marvinheilemann/.zprezto/modules/git/functions /Users/marvinheilemann/.zprezto/modules/completion/external/src /Users/marvinheilemann/.zprezto/modules/helper/functions /Users/marvinheilemann/.zprezto/modules/utility/functions /Users/marvinheilemann/.zprezto/modules/node/functions /usr/local/share/zsh/site-functions /usr/share/zsh/site-functions /usr/share/zsh/5.7.1/functions
+
+~/Downloads                                                                                                 at 17:12:45
+❯ deno completions zsh |sudo tee /usr/local/share/zsh/site-functions/_deno
+[1]  + 26538 done                    deno completions zsh |
+       26539 suspended (tty output)  sudo tee /usr/local/share/zsh/site-functions/_deno
+
+~/Downloads                                                                                      ✘ 0|TTOU  at 17:13:15
+❯ compinit
+
+~/Downloads                                                                                                at 17:13:20
+❯ deno Make_Gale/
+ -- file --
+Make_Gale/         Make_Gale.zip      nested-RCE-Tree_/  test/
+</code></pre>
+<p>From my expectation it should anyway be added like any other zprezto module in <code>$fpath</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/intgr">@intgr</a> on 2020-08-13 17:01</div>
+            <div class="timeline-body"><blockquote>
+<pre><code>❯ deno completions zsh |sudo tee /usr/local/share/zsh/site-functions/_deno
+[1]  + 26538 done                    deno completions zsh |
+       26539 suspended (tty output)  sudo tee /usr/local/share/zsh/site-functions/_deno
+</code></pre>
+</blockquote>
+<p>Did that command complete successfully? sudo should ask you for your password.</p>
+<p>You should have the file <code>/usr/local/share/zsh/site-functions/_deno</code> in the end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/muuvmuuv">@muuvmuuv</a> on 2020-08-13 17:05</div>
+            <div class="timeline-body"><p>Ahh. <code>|sudo</code> → <code>| sudo</code> :D It worked!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2020-08-14 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jonringer/nix-template/issues/16.html">jonringer/nix-template#16</a> on 2021-07-18 19:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

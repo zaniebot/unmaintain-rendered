@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why does `uv sync` with `--no-editable` care if a `README.md` is around? - astral-sh/uv #16185</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Why does `uv sync` with `--no-editable` care if a `README.md` is around?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16185">#16185</a>
+        opened by <a href="https://github.com/omgMath">@omgMath</a>
+        on 2025-10-08 12:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/omgMath">@omgMath</a> on 2025-10-08 12:39</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi. I encountered the following behavior, which I found weird. Found this when trying a <code>Docker</code> image with only minimal amount of files, which did not include the <code>README.md</code>. The error I get is</p>
+<pre><code>  × Failed to build `foo @ file:///home/me/tmp/apps/foo`
+  ╰─▶ failed to open file `/home/me/tmp/apps/foo/README.md`: No such file or directory (os error 2)
+</code></pre>
+<p>The following should reproduce the error:</p>
+<pre><code class="language-bash">uv init
+uv init --package --app apps/foo
+uv add --package foo httpx 
+uv sync --package foo
+rm apps/foo/README.md
+uv sync --package foo --no-editable
+</code></pre>
+<p>Is there a reason <code>uv</code> cares about the README in this case? Sure, I get that it is referenced by default in the <code>pyproject.toml</code>s, but from my point of view it shouldn't be required to <code>sync</code>?</p>
+<p>Removing <code>readme = &quot;README.md&quot;</code> is a workaround.</p>
+<h3>Platform</h3>
+<p>Debian GNU/Linux 12 (bookworm) on WSL</p>
+<h3>Version</h3>
+<p>uv 0.9.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @omgMath on 2025-10-08 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-08 12:49</div>
+            <div class="timeline-body"><p>Are you looking for <code>--no-install-project</code>? <code>--no-editable</code> does a regular wheel build, which needs all files of the package, which includes the Readme. Without this file, the built wheel would have a mismatch between what was declared as required in <code>pyproject.toml</code> and what is in the final wheel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/omgMath">@omgMath</a> on 2025-10-08 13:31</div>
+            <div class="timeline-body"><p>I see. Thanks for the explanation.</p>
+<p>I used <code>--no-editable</code> because of what I found in <a href="https://docs.astral.sh/uv/guides/integration/docker/#non-editable-installs">the docs</a>. That sounded like it would add the local workspace files into the <code>venv</code> so that it the source code could be removed again from the <code>Docker</code> image.</p>
+<p>Trying <code>--no-install-project</code> in my setup seems to work, but if I'm honest, I don't fully understand what it does from reading the <a href="https://docs.astral.sh/uv/reference/cli/#uv-sync--no-install-project">docs</a>.</p>
+<p>Did I get this right? Assume <code>foo</code> depends on <code>lib</code>, located in the workspace. Then <code>uv sync --package foo --no-install-project</code> adds the dependency <code>lib</code> to the <code>venv</code>, so <code>lib</code> can be used without needing a reference to the actual code anymore?</p>
+<p>&quot;If used improperly, these flags can result in a broken environment since a package can be missing its dependencies.&quot; from <a href="https://docs.astral.sh/uv/concepts/projects/sync/#partial-installations">here</a> sounded a bit scary to use it without fully understanding what it does...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-16 19:42</div>
+            <div class="timeline-body"><p>Package installation is binary: You can either install a package fully (having its Readme) or not at all. uv has the <code>--no-install-*</code> options for caching in Docker: You install only dependencies for a cacheable layers, while the project, which changes every time, gets its own layer near the end of the dockerfile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @omgMath on 2025-10-17 04:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

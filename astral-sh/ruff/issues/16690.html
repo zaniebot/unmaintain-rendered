@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider adding a fix for `pytest-raises-ambiguous-pattern` (`RUF043`) - astral-sh/ruff #16690</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider adding a fix for `pytest-raises-ambiguous-pattern` (`RUF043`)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16690">#16690</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-03-12 19:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-12 19:00</div>
+            <div class="timeline-body"><p>It's certainly a more noisy rule and it's unfortunate we can't provide an auto fix (because Ruff can't know what the desired behavior is). But I think it's fine to stabilize</p>
+<p>Unless we want to add a heuristic for the auto fix. E.g.:</p>
+<ul>
+<li>A string ending with <code>.</code> is probably a sentence -&gt; escape it</li>
+<li>A string with a sequence of metacharacters (e.g. <code>.*</code> or <code>.+</code>) is probably a regex -&gt; make it raw. We can limit it to only support some specific patterns.</li>
+</ul>
+<p>The first fix would have to be unsafe because it does change the program's semantics. The second one could be safe but I think it's still best to make user explicitly opt-in. We could document the heuristics in the rule and having a fix could reduce the churn for users.</p>
+<p>I'd postpone the promotion to stable if the suggested fix does sound reasonable (CC: @AlexWaygood)</p>
+<p><em>Originally posted by @MichaReiser in https://github.com/astral-sh/ruff/pull/16657#pullrequestreview-2677569437</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-03-12 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-17 16:39</div>
+            <div class="timeline-body"><p>We discussed when implementing the rule originally whether it should have an autofix or not and concluded &quot;no&quot; because adding backslash escapes may often be unwelcome (users will often prefer to make it a raw string), but it would probably be hard for Ruff to determine whether a raw string or an escape would be preferred. https://github.com/astral-sh/ruff/pull/14966#issuecomment-2543194280</p>
+<p>I also don't <em>love</em> the idea of adding so many heuristics to an autofix; I think it'll be harder for users to understand without reading the docs (and I doubt people go and read the docs until a rule goes and does something that they don't expect).</p>
+<p>So I'd be inclined to leave the rule as it is and stabilise it. That said, I don't have a strong opinion; happy to defer to you and @MichaReiser if you think users would find an unsafe fix helpful here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-18 06:48</div>
+            <div class="timeline-body"><p>I don't feel strongly either and I agree that it can be confusing why the rule only suggests some fixes. However, considering how common the <em>sentence ending with a dot</em> is, providing a fix at least for that still seems useful to me.</p>
+<blockquote>
+<p>(users will often prefer to make it a raw string), but it would probably be hard for Ruff to determine whether a raw string or an escape would be preferred. https://github.com/astral-sh/ruff/pull/14966#issuecomment-2543194280</p>
+</blockquote>
+<p>I would keep it simple and always suggest <code>re.escape</code> because it works for all characters and the entire string was probably not meant to be a regex. However, I can see how this comes down to personal preferences.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2025-06-29 10:00</div>
+            <div class="timeline-body"><p>This rule mixes the concepts of <a href="https://docs.python.org/3/howto/regex.html#matching-characters">regex metacharacters</a> (<code>.</code> <code>^</code> <code>$</code> <code>*</code> <code>+</code> <code>?</code> <code>{</code> <code>}</code> <code>[</code> <code>]</code> <code>\</code> <code>|</code> <code>(</code> <code>)</code>) and <a href="https://docs.python.org/3/reference/lexical_analysis.html#escape-sequences">escape sequences</a> (<code>\</code>). I find this confusing.</p>
+<p>In the documentation, example <code>match=&quot;A full sentence.&quot;</code> should be changed to <code>(&quot;A full sentence\\.&quot;)</code> in most cases, shouldn't it? I don't see how switching to a raw string helps in any way.</p>
+<pre><code>&gt;&gt;&gt; &quot;A full sentence.&quot;
+'A full sentence.'
+&gt;&gt;&gt; 
+&gt;&gt;&gt; r&quot;A full sentence.&quot;
+'A full sentence.'
+&gt;&gt;&gt; 
+&gt;&gt;&gt; &quot;A full sentence\\.&quot;
+'A full sentence\\.'
+&gt;&gt;&gt; 
+&gt;&gt;&gt; re.escape(&quot;A full sentence.&quot;)
+'A\\ full\\ sentence\\.'
+&gt;&gt;&gt; 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-30 13:01</div>
+            <div class="timeline-body"><p>If I remember correctly, the raw string was one of our heuristics for something intentionally being a regex. So you're right that it doesn't change the result, but we were using it as a sign of intent. That could be made more clear in the documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2025-06-30 16:18</div>
+            <div class="timeline-body"><p>Exactly, I understand it's a convention and a sign of intent. But it's probably a bad idea to add a (safe) fix for a mere sign of intent, especially if the fix changes <code>&quot;A full sentence.&quot;</code> into <code>r&quot;A full sentence.&quot;</code>, which is usually not the intent, instead of <code>re.escape(&quot;A full sentence.&quot;)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-30 17:52</div>
+            <div class="timeline-body"><p>Oh yes, sorry! I forgot the context of the rest of this thread. I think we're on the same page.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20253.html">astral-sh/ruff#20253</a> on 2025-09-04 20:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`.action(ArgAction::Help)` and `ArgAction::Version` bypass `exclusive(true)` - clap-rs/clap #4046</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`.action(ArgAction::Help)` and `ArgAction::Version` bypass `exclusive(true)`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4046">#4046</a>
+        opened by <a href="https://github.com/jarkonik">@jarkonik</a>
+        on 2022-08-09 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jarkonik">@jarkonik</a> on 2022-08-09 16:03</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.62.1 (e092d0b6b 2022-07-16)</p>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{error::ErrorKind, Arg, ArgAction, Command};
+
+fn main() {
+    let result = Command::new(&quot;flag_conflict&quot;)
+        .version(&quot;5.0.0&quot;)
+        .arg(
+            Arg::new(&quot;myhelp&quot;)
+                .action(ArgAction::Help)
+                .long(&quot;myhelp&quot;)
+                .exclusive(true),
+        )
+        .arg(
+            Arg::new(&quot;myversion&quot;)
+                .action(ArgAction::Version)
+                .long(&quot;myversion&quot;),
+        )
+        .try_get_matches_from(vec![&quot;test&quot;, &quot;--myhelp&quot;, &quot;--myversion&quot;]);
+    assert_eq!(result.err().unwrap().kind(), ErrorKind::ArgumentConflict);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run</p>
+<h3>Actual Behaviour</h3>
+<p>When using <code>.action(ArgAction::Help)</code> or <code>.action(ArgAction::Version)</code> and setting <code>.exclusive(true)</code> on one of them and when input contains both flags the returned error is <code>DisplayError</code> or <code>DisplayVersion</code>.</p>
+<h3>Expected Behaviour</h3>
+<p>When using <code>.action(ArgAction::Help)</code> or <code>.action(ArgAction::Version)</code> and setting <code>.exclusive(true)</code> on one of them and when input contains both flags it seems intuitive for the error to be <code>ArgumentConflict</code></p>
+<h3>Additional Context</h3>
+<p>Would enable implementing <code>false</code> and <code>true</code> coreutils commands (https://github.com/uutils/coreutils/pull/3784) using <code>ArgAction::Version</code> and <code>ArgAction::Help</code></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @jarkonik on 2022-08-09 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`.action(ArgAction::Help)` and `ArgAction::Version` bypass " to "`.action(ArgAction::Help)` and `ArgAction::Version` bypass `exclusive(true)`" by @jarkonik on 2022-08-09 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4047.html">clap-rs/clap#4047</a> on 2022-08-09 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-09 16:14</div>
+            <div class="timeline-body"><p>It looks like you are taking manually implemented help and version flags and switching them to actions.</p>
+<p>Could you expand on why those flags need to be exclusive?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tertsdiepraam">@tertsdiepraam</a> on 2022-08-15 08:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you expand on why those flags need to be exclusive?</p>
+</blockquote>
+<p>It's a weird behaviour of the GNU true and false utils. So a command like this</p>
+<pre><code>true --version
+</code></pre>
+<p>would show the version, but</p>
+<pre><code>true --version anotherarg
+</code></pre>
+<p>wouldn't. I believe the rationale is to maintain as much compatibility as possible with versions of the <code>true</code> and <code>false</code> commands that ignore all their arguments (like FreeBSD and built-ins of Bash).</p>
+<p>We can work around this, but it was surprising to see the option being ignored when the <code>ArgAction</code> changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-15 13:45</div>
+            <div class="timeline-body"><blockquote>
+<p>We can work around this, but it was surprising to see the option being ignored when the ArgAction changed.</p>
+</blockquote>
+<p>ArgActions are specified in the documentation  for how to react when evaluating an argument, as in they are immediately processed.  An important aspect of this is that we want to make actions pluggable and would like toe avoid special casing as that is something the user can't replicate.</p>
+<blockquote>
+<p>It's a weird behaviour of the GNU true and false utils.</p>
+</blockquote>
+<p><code>exclusive(true)</code> will cause an error which is the opposite of what you want here.  To implement the GNU behavior, you would need to check if any other arg exists and ignore version/help if it does.</p>
+<p>Considering the defined behavior of ArgAction, what seems like a relatively small use case (not even the described use case can rely on what is being requested, still small if it did), and the fact that its possible to workaround it, I'm going to go ahead and close this as part of our effort to limit the scope of clap to help keep binary sizes and compile times down</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-08-15 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2022-08-15 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-08-15 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tertsdiepraam">@tertsdiepraam</a> on 2022-08-15 16:25</div>
+            <div class="timeline-body"><p>Alright, we will work around it by checking the number of arguments. ArgAction being processed immediately seems counterintuitive, but I can see how it makes sense for counting etc.. Thank you!</p>
+<p>I think the linked PR can then also be closed. @jarkonik Thank you for putting in the effort to implement this!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B905 incorrectly raised on older python versions - astral-sh/ruff #6418</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>B905 incorrectly raised on older python versions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6418">#6418</a>
+        opened by <a href="https://github.com/danielpatrickdotdev">@danielpatrickdotdev</a>
+        on 2023-08-08 08:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danielpatrickdotdev">@danielpatrickdotdev</a> on 2023-08-08 08:39</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>In versions of python prior to 3.10, B905 &quot;<code>zip()</code> without an explicit <code>strict=</code> parameter&quot; shouldn't be raised. The parameter was not available in versions 3.9 and lower.</p>
+<p>ruff version: <code>0.0.282</code>
+command: <code>ruff check .</code>
+minimal config: <code>select = [&quot;B&quot;]</code>
+code example:</p>
+<pre><code class="language-python">for n, c in zip([0, 1, 2], [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;]):
+    print(n, c)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-08 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-08 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-08 18:53</div>
+            <div class="timeline-body"><p>I believe we have this gated correctly. Are you setting a <a href="https://beta.ruff.rs/docs/settings/#target-version"><code>target-version</code></a>, or do you have a <code>requires-python</code> in your project?</p>
+<p>Example: <code>cargo run -p ruff_cli -- check foo.py --select B905 --target-version py38 --isolated</code> yields no errors on the above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2023-08-08 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2023-08-08 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-08-08 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-08 20:54</div>
+            <div class="timeline-body"><p>(Closing as &quot;working as intended&quot;, but happy to follow-up if you're still seeing issues when specifying a minimum supported version. We also changed 3.8 to the default minimum version in the latest release, which may resolve this for you.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-08 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielpatrickdotdev">@danielpatrickdotdev</a> on 2023-08-10 16:13</div>
+            <div class="timeline-body"><p>Thank you for pointing me in the right direction to resolve this one!</p>
+<p>I wouldn't have thought to try setting target-version as it's documented as &quot;The minimum Python version to target&quot;. This application targets specifically 3.8 and no higher at present, and the issue with B905 is it's only relevant to <em>higher</em> versions than 3.9.</p>
+<p>I'm curious whether there is (or will be in future) any way for ruff to detect the python version without hardcoding it? We'll now be defining it in three places in three different formats - once for pyenv, once for poetry, and now also for ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-10 16:27</div>
+            <div class="timeline-body"><p>@danielpatrickdotdev we'll infer <code>target-version</code> from <code>requires-python</code> in a <code>pyproject.toml</code> which is a standard central place to specify such things.</p>
+<p>We can improve the documentation for <code>target-version</code> though (https://github.com/astral-sh/ruff/pull/6482)</p>
+<blockquote>
+<p>I'm curious whether there is (or will be in future) any way for ruff to detect the python version without hardcoding it?</p>
+</blockquote>
+<p>I'm pretty interested in this but it increases the likelihood of different Ruff results for people working on a shared project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielpatrickdotdev">@danielpatrickdotdev</a> on 2023-08-10 17:04</div>
+            <div class="timeline-body"><p>Oh, using requires-python would be perfect!</p>
+<p>I've just tried this but it's still raising on B905</p>
+<pre><code class="language-toml">[project]
+requires-python = &quot;&gt;=3.8.1,&lt;3.9&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-10 17:10</div>
+            <div class="timeline-body"><p>There are some caveats described in https://beta.ruff.rs/docs/settings/#target-version — are you using a <code>ruff.toml</code> file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielpatrickdotdev">@danielpatrickdotdev</a> on 2023-08-10 17:17</div>
+            <div class="timeline-body"><p>Riiight that makes sense. Yeah, we try to keep all our configs separate as we optimise pre-commit to only run when config files or files under lint/test have changed. For example, ruff only runs when ruff.toml or python code has changed. Thinking about it, we should probably run ruff when pyproject.toml changes too, but if we keep ruff/black/isort/etc config out of there, that'll change less often.</p>
+<p>Looks like we might have to think about abandoning that approach!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

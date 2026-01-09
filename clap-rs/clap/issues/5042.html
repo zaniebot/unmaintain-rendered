@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use flags as subcommands (like `tar`) - clap-rs/clap #5042</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use flags as subcommands (like `tar`)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5042">#5042</a>
+        opened by <a href="https://github.com/nickeb96">@nickeb96</a>
+        on 2023-07-23 15:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nickeb96">@nickeb96</a> on 2023-07-23 15:47</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.3.19</p>
+<h3>Describe your use case</h3>
+<p>I'd like to be able to build commands where there are multiple, mutually exclusive usages.  A good example of this is the <code>tar</code> command.</p>
+<p>From the man page:</p>
+<pre><code>tar {-c} [options] [files | directories]
+tar {-r} -f archive-file [options] [files | directories]
+tar {-t | -x} [options] [patterns]
+</code></pre>
+<p>The flags <code>-c</code>, <code>-r</code>, <code>-t</code>, <code>-x</code> change how the rest of the arguments are parsed.  This would be easy to accomplish with clap if those flags were instead subcommands, but I haven't found a good way of doing it with flags.</p>
+<h3>Describe the solution you'd like</h3>
+<p>One potential solution would be to allow the presence of a flag to act as a subcommand.</p>
+<p>Another solution would be to have a usage enum that could look something like:</p>
+<pre><code class="language-rust">#[derive(Debug, clap::Usage)]
+pub enum TarUsage {
+    #[usage(short_present = 'c')]
+    Create(CreateArgs),
+    #[usage(short_present = 'x')]
+    Extract(ExtractArgs),
+    #[usage(short_present = 't')]
+    List(ListArgs),
+}
+</code></pre>
+<p>It would dispatch parsing of the remaining arguments to a different parser based on the presence of a flag.  The usage annotation could be expanded to set a default usage, or handle more complex conditions.</p>
+<h3>Alternatives, if applicable</h3>
+<p>The solution I'm using now is to just have every argument for all variants in one struct and put them all in <code>Option&lt;&gt;</code>s.</p>
+<p>A downside of this approach is that any code using the that struct has <code>.unwrap()</code>s everywhere.  It also requires writing a bunch of annotation rules describing when an argument is required or forbidden based on the presence of a flag.</p>
+<p>I also need to use <code>#[command(override_usage = ...)</code> because the default usage string will be wrong.</p>
+<p>I feel like this is a common type of command and the only approach I've found is not very good.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @nickeb96 on 2023-07-23 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-24 15:06</div>
+            <div class="timeline-body"><p>We have <a href="https://docs.rs/clap/latest/clap/_derive/_cookbook/pacman/index.html">subcommand long flags</a>.  Though that example hasn't been translated into the derive API, builder methods can be used as derive attributes (<a href="https://docs.rs/clap/latest/clap/_derive/index.html#terminology">reference</a>).</p>
+<p>The one potential downside is that the subcommand names will remain visible (thought we had an issue for this but can't find it).  A workaround is to use a <code>help_template</code> and not show the subcommands.  #1334 would be useful though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-24 15:07</div>
+            <div class="timeline-body"><p>Alternatively, if you are willing to dispatch the positional arguments yourself, you could represent <code>{ -c | -r | { -t | -x } }</code> as an <code>ArgGroup</code> and then have their respective flags <code>requires</code> the one from the arg group.  This will fall flat if there is a flag that needs to be used differently depending on the &quot;mode&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickeb96">@nickeb96</a> on 2023-07-30 01:34</div>
+            <div class="timeline-body"><p>Thanks, using <code>#[command(short_flag = '...', long_flag = &quot;...&quot;)]</code> on subcommand enum variants solved my initial problem.</p>
+<p>I was also wondering if it's possible to have a default subcommand that will be chosen when a subcommand flag isn't present.</p>
+<p>I'd also like be able to disable the non-flag version of a subcommand so they don't conflict with positional arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-30 01:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I was also wondering if it's possible to have a default subcommand that will be chosen when a subcommand flag isn't present.</p>
+</blockquote>
+<p>Check out our <a href="https://docs.rs/clap/latest/clap/_derive/_cookbook/git_derive/index.html"><code>git</code> example</a> as <code>git stash</code> defaults to <code>git stash push</code>.</p>
+<blockquote>
+<p>I'd also like be able to disable the non-flag version of a subcommand so they don't conflict with positional arguments.</p>
+</blockquote>
+<p>I know this has come up before but not finding a relevant issue.  Feel free to create one.</p>
+<p>Since the original answer is handled, I'm going to go ahead and close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-07-30 01:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

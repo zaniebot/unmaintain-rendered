@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401 false positive (imported but unused) - astral-sh/ruff #2044</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401 false positive (imported but unused)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2044">#2044</a>
+        opened by <a href="https://github.com/dllu">@dllu</a>
+        on 2023-01-20 23:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dllu">@dllu</a> on 2023-01-20 23:07</div>
+            <div class="timeline-body"><pre><code class="language-python">from functools import reduce
+
+import click
+
+if click.confirm(&quot;do you want to disable reduce?&quot;, default=False):
+
+    def reduce(f, d):  # noqa: F811
+        return d
+
+
+print(reduce(lambda x, y: x + y, [1, 2, 3, 4, 5]))
+</code></pre>
+<p>It is supposed to work like this:</p>
+<pre><code>snippets » python w0611.py
+do you want to disable reduce? [y/N]:
+15
+snippets » python w0611.py
+do you want to disable reduce? [y/N]: y
+[1, 2, 3, 4, 5]
+</code></pre>
+<p>Here is what ruff outputs:</p>
+<pre><code>&gt; ruff w0611.py
+w0611.py:1:23: F401 `functools.reduce` imported but unused
+Found 1 error(s).
+1 potentially fixable with the --fix option.
+</code></pre>
+<p>If we apply the fix, then the code no longer works if the user presses &quot;N&quot; to not disable reduce.</p>
+<pre><code>&gt; ruff --version
+ruff 0.0.224
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-20 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alonme">@alonme</a> on 2023-01-21 16:08</div>
+            <div class="timeline-body"><p>a simpler example without external dependencies</p>
+<pre><code>from math import sqrt
+
+if True:
+    def sqrt(f):
+        print(f)
+
+print(sqrt(5))
+</code></pre>
+<p>Regarding this specific issue:</p>
+<p><code>pyflakes</code> outputs</p>
+<pre><code>redefinition of unused 'sqrt' from line 1
+</code></pre>
+<p><code>pylint</code> outputs</p>
+<pre><code>E0102: function already defined line 1 (function-redefined)
+</code></pre>
+<p><code>ruff</code> outputs</p>
+<pre><code>F401 `math.sqrt` imported but unused
+F811 Redefinition of unused `sqrt` from line 1
+</code></pre>
+<p>It does make sense to only output F811 in this case (ignoring if the conditional is <code>True</code> or <code>False</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 16:16</div>
+            <div class="timeline-body"><p>Yeah -- this was an intentional deviation from Flake8, since it avoids a lot of false negatives, but perhaps the tradeoff here is wrong given that autofixing false positives is more dangerous.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 16:16</div>
+            <div class="timeline-body"><p>I'll likely change this today, to avoid these issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 16:29</div>
+            <div class="timeline-body"><p>Just to prove that this behavior isn't totally without merit, Ruff will flag this as unused (and remove it), unlike Flake8:</p>
+<pre><code class="language-py">import os
+
+def os():
+    pass
+</code></pre>
+<p>But, I agree that it's probably wrong to do that right now given the false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alonme">@alonme</a> on 2023-01-21 16:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Just to prove that this behavior isn't totally without merit, Ruff will flag this as unused (and remove it), unlike Flake8:</p>
+<pre><code class="language-python">import os
+
+def os():
+    pass
+</code></pre>
+<p>But, I agree that it's probably wrong to do that right now given the false positives.</p>
+</blockquote>
+<p>just for completeness -
+pylint will raise both <code>function-redefined</code> and <code>unused-import</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 16:45</div>
+            <div class="timeline-body"><p>👍 That makes sense. Pylint does more static analysis than we do right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 16:50</div>
+            <div class="timeline-body"><p>The relevant PR that introduced this behavior is: https://github.com/charliermarsh/ruff/pull/1173.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2065.html">astral-sh/ruff#2065</a> on 2023-01-21 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-21 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3477.html">astral-sh/ruff#3477</a> on 2023-03-13 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaelTiemannOSC">@MichaelTiemannOSC</a> on 2023-07-05 21:35</div>
+            <div class="timeline-body"><p>I came here with a problem in this file: https://github.com/MichaelTiemannOSC/pint-pandas/blob/ducks-unlimited/pint_pandas/testsuite/test_pandas_extensiontests.py</p>
+<p>The problem is line 24.  <code>as_frame</code> is a fixture I want to import.  Later in my code (line 498) I seclare as_frame as a parameter, which is how I used the fixture imported above.  I don't understand why this one example is the only thing across all my sources that trigger the problem, but it's blocking my CI/CD right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-05 21:47</div>
+            <div class="timeline-body"><p>Is this a pytest fixture issue? Similar to https://github.com/astral-sh/ruff/issues/3295 and https://github.com/astral-sh/ruff/issues/4046?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaelTiemannOSC">@MichaelTiemannOSC</a> on 2023-07-05 23:02</div>
+            <div class="timeline-body"><p>Yes, #4046 especially.  Note: I'm not a maintainer of the project I'm contributing to, nor do I control the CI/CD.  I'm just caught in the crossfire between how the developers factored the pytest code, what ruff thinks is OK or not, and when, if ever, the CI/CD will tell the maintainers they should bother looking at my code.  I'm surprised that I cannot manually override this somehow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-05 23:08</div>
+            <div class="timeline-body"><p>I think the error you're seeing is on line 498, not line 24:</p>
+<pre><code>foo.py:498:31: F811 Redefinition of unused `as_frame` from line 24
+</code></pre>
+<p>Flake8 gives the same result. You should be able to add a <code># noqa: F811</code> to line 498, or just rename that parameter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaelTiemannOSC">@MichaelTiemannOSC</a> on 2023-07-05 23:11</div>
+            <div class="timeline-body"><p>Silly me!  I didn't put the F811 where it belonged.  Now fixed...  Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9418.html">astral-sh/ruff#9418</a> on 2024-01-07 01:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

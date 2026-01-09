@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`requires` is bypassed when other items from a mutually-exclusive `group` are present - clap-rs/clap #4707</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`requires` is bypassed when other items from a mutually-exclusive `group` are present</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/4707">#4707</a>
+        opened by <a href="https://github.com/mkeeter">@mkeeter</a>
+        on 2023-02-13 16:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mkeeter">@mkeeter</a> on 2023-02-13 16:49</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.65.0 (897e37553 2022-11-02)</p>
+<h3>Clap Version</h3>
+<p>4.1.4</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{ArgGroup, Parser};
+
+#[derive(Parser, Debug)]
+#[clap(group = ArgGroup::new(&quot;command&quot;).multiple(false))]
+struct Args {
+    #[clap(long, group = &quot;command&quot;)]
+    read: bool,
+
+    #[clap(long, group = &quot;command&quot;)]
+    write: bool,
+
+    #[clap(long, requires = &quot;read&quot;)]
+    show_hex: bool,
+}
+
+fn main() {
+    let args = Args::parse();
+    println!(&quot;{args:?}&quot;);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo run -- --write --show-hex
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>This command runs without an error.  This is surprising, because <code>--show-hex</code> is annotated with <code>requires = &quot;read&quot;</code>, and we did not provide the <code>--read</code> argument.</p>
+<h3>Expected Behaviour</h3>
+<p>Clap should print an error indicating that the required argument <code>--read</code> is not present, e.g.</p>
+<pre><code>error: the following required arguments were not provided:
+  --read
+
+Usage: clap-test --read --show-hex
+
+For more information, try '--help'.
+</code></pre>
+<h3>Additional Context</h3>
+<p>If I remove either <code>read</code> or <code>write</code> from the command group, then everything behaves as expected.  This suggests to me that Clap is accepting any member of the command group, instead of the one specifically named in the <code>requires</code> annotation.</p>
+<h3>Debug Output</h3>
+<pre><code class="language-console">➜  clap-test git:(master) ✗ cargo run -- --write --show-hex
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/clap-test --write --show-hex`
+[      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name=&quot;clap-test&quot;
+[      clap::builder::command] 	Command::_propagate:clap-test
+[      clap::builder::command] 	Command::_check_help_and_version:clap-test expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_propagate_global_args:clap-test
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:read
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:write
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:show_hex
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--write&quot;)' ([45, 45, 119, 114, 105, 116, 101])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok(&quot;--write&quot;)
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::parse_long_arg
+[        clap::parser::parser] 	Parser::parse_long_arg: Does it contain '='...
+[        clap::parser::parser] 	Parser::parse_long_arg: Found valid arg or flag '--write'
+[        clap::parser::parser] 	Parser::parse_long_arg(&quot;write&quot;): Presence validated
+[        clap::parser::parser] 	Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[        clap::parser::parser] 	Parser::react: has default_missing_vals
+[        clap::parser::parser] 	Parser::remove_overrides: id=&quot;write&quot;
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;write&quot;, source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;write&quot;
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;Args&quot;, source=CommandLine
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;command&quot;, source=CommandLine
+[        clap::parser::parser] 	Parser::push_arg_values: [&quot;true&quot;]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=1
+[        clap::parser::parser] 	Parser::get_matches_with: After parse_long_arg ValuesDone
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--show-hex&quot;)' ([45, 45, 115, 104, 111, 119, 45, 104, 101, 120])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok(&quot;--show-hex&quot;)
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::parse_long_arg
+[        clap::parser::parser] 	Parser::parse_long_arg: Does it contain '='...
+[        clap::parser::parser] 	Parser::parse_long_arg: Found valid arg or flag '--show-hex'
+[        clap::parser::parser] 	Parser::parse_long_arg(&quot;show-hex&quot;): Presence validated
+[        clap::parser::parser] 	Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[        clap::parser::parser] 	Parser::react: has default_missing_vals
+[        clap::parser::parser] 	Parser::remove_overrides: id=&quot;show_hex&quot;
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;show_hex&quot;, source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;show_hex&quot;
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;Args&quot;, source=CommandLine
+[        clap::parser::parser] 	Parser::push_arg_values: [&quot;true&quot;]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=2
+[        clap::parser::parser] 	Parser::get_matches_with: After parse_long_arg ValuesDone
+[        clap::parser::parser] 	Parser::add_defaults
+[        clap::parser::parser] 	Parser::add_defaults:iter:read:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:read: has default vals
+[        clap::parser::parser] 	Parser::add_default_value:iter:read: wasn't used
+[        clap::parser::parser] 	Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;read&quot;, source=DefaultValue
+[        clap::parser::parser] 	Parser::push_arg_values: [&quot;false&quot;]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=3
+[        clap::parser::parser] 	Parser::add_defaults:iter:write:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:write: has default vals
+[        clap::parser::parser] 	Parser::add_default_value:iter:write: was used
+[        clap::parser::parser] 	Parser::add_defaults:iter:show_hex:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:show_hex: has default vals
+[        clap::parser::parser] 	Parser::add_default_value:iter:show_hex: was used
+[        clap::parser::parser] 	Parser::add_defaults:iter:help:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[     clap::parser::validator] 	Validator::validate
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;write&quot;
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=&quot;write&quot;, conflicts=[&quot;read&quot;]
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=&quot;Args&quot;, conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=&quot;command&quot;, conflicts=[]
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;show_hex&quot;
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=&quot;show_hex&quot;, conflicts=[]
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:&quot;write&quot;
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:&quot;Args&quot;
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:&quot;command&quot;
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:&quot;show_hex&quot;
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id=&quot;write&quot;
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg=&quot;write&quot;
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id=&quot;show_hex&quot;
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg=&quot;show_hex&quot;
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_required: required=ChildGraph([])
+[     clap::parser::validator] 	Validator::gather_requires
+[     clap::parser::validator] 	Validator::gather_requires:iter:&quot;write&quot;
+[     clap::parser::validator] 	Validator::gather_requires:iter:&quot;Args&quot;
+[     clap::parser::validator] 	Validator::gather_requires:iter:&quot;Args&quot;:group
+[     clap::parser::validator] 	Validator::gather_requires:iter:&quot;command&quot;
+[     clap::parser::validator] 	Validator::gather_requires:iter:&quot;command&quot;:group
+[     clap::parser::validator] 	Validator::gather_requires:iter:&quot;show_hex&quot;
+[     clap::parser::validator] 	Validator::validate_required: is_exclusive_present=false
+[     clap::parser::validator] 	Validator::validate_required:iter:aog=&quot;read&quot;
+[     clap::parser::validator] 	Validator::validate_required:iter: This is an arg
+[     clap::parser::validator] 	Validator::is_missing_required_ok: read
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg=&quot;read&quot;
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;read&quot;
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=&quot;read&quot;, conflicts=[&quot;write&quot;]
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[&quot;write&quot;, &quot;write&quot;]
+[     clap::parser::validator] 	Validator::is_missing_required_ok: true (self)
+[   clap::parser::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[]
+Args { read: false, write: true, show_hex: true }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @mkeeter on 2023-02-13 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-02-13 17:07</div>
+            <div class="timeline-body"><p>I think this is a duplicate of #4520.  If not, let us know in what way it is different and we can re-open</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-02-13 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkeeter">@mkeeter</a> on 2023-02-13 18:19</div>
+            <div class="timeline-body"><p>Hmmm, I had found that issue when searching, but I'm not sure if it's the same thing.</p>
+<p>#4520 is triggered when you use <code>requires</code> and <code>conflicts_with</code> together; this issue is when you use <code>requires</code> and <code>group</code> together.</p>
+<p>It may be that it's the same issue under the hood, but I don't know enough about Clap internals to say for sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @epage on 2023-02-13 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-02-13 18:58</div>
+            <div class="timeline-body"><p>They are both forms of conflicts but I've re-opened this for the sake of making sure we have tests for both use cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2023-02-13 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> removed by @epage on 2023-02-13 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-validators</span> added by @epage on 2023-02-13 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TD-Sky">@TD-Sky</a> on 2023-07-21 15:18</div>
+            <div class="timeline-body"><p>Same problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`requires` will accept any item from a `group`" to "`requires` is bypassed when other items from a mutually-exclusive `group` are present" by @epage on 2023-07-21 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5041.html">clap-rs/clap#5041</a> on 2023-07-22 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xophmeister">@Xophmeister</a> on 2023-08-17 13:05</div>
+            <div class="timeline-body"><p>I had the same problem, but I was able to sort-of solve it by lifting the branch that admits options into its own struct. Something like this:</p>
+<pre><code class="language-rust">use clap::{ArgGroup, Args, Parser};
+
+#[derive(Args, Debug)]
+struct Foo {
+    #[arg(long)]
+    foo: String,
+
+    #[arg(long, requires = &quot;foo&quot;)]
+    quux: Option&lt;String&gt;,
+}
+
+#[derive(Debug, Parser)]
+#[command(group = ArgGroup::new(&quot;mx&quot;)
+    .multiple(false)
+    .required(true)
+    .args(&amp;[&quot;foo&quot;, &quot;bar&quot;])
+)]
+struct Cli {
+    #[command(flatten)]
+    foo_w_option: Option&lt;Foo&gt;,
+
+    #[arg(long)]
+    bar: Option&lt;String&gt;,
+}
+
+fn main() {
+    let args = Cli::parse();
+    println!(&quot;{args:?}&quot;);
+}
+</code></pre>
+<p>I say &quot;sort-of&quot; solve it because, while the parser correctly forbids the <code>--bar X --quux Y</code> case, the error message is not very clear:</p>
+<pre><code>error: The following required argument was not provided: foo
+
+Usage: clap-mx-group-w-option [OPTIONS] &lt;--foo &lt;FOO&gt;|--bar &lt;BAR&gt;&gt;
+
+For more information, try '--help'.
+</code></pre>
+<p>This is actually OK -- although I would expect to see <code>&lt;--foo &lt;FOO&gt; [--quux &lt;QUUX&gt;]|--bar &lt;BAR&gt;&gt;</code> -- but in my actual use-case, I'm using subcommands and including positional arguments in the mutual exclusivity group. This reverts the usage text to the top-level, rather than the subcommand's usage text. (I don't know if that's worth an issue in its own right...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5910.html">clap-rs/clap#5910</a> on 2025-02-17 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6050.html">clap-rs/clap#6050</a> on 2025-06-27 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-blocked</span> added by @epage on 2025-07-03 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-07-03 16:07</div>
+            <div class="timeline-body"><p>To make the situation more clear, I've marked this issue as blocked as we need to resolve the analysis in #4520 first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../coconut-svsm/svsm/pulls/879.html">coconut-svsm/svsm#879</a> on 2025-11-20 15:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

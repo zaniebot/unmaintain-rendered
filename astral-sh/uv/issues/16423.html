@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make importlib.metadata.packages_distributions work with uv build backend - astral-sh/uv #16423</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make importlib.metadata.packages_distributions work with uv build backend</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16423">#16423</a>
+        opened by <a href="https://github.com/bunny-therapist">@bunny-therapist</a>
+        on 2025-10-23 15:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bunny-therapist">@bunny-therapist</a> on 2025-10-23 15:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<ul>
+<li>uv 0.9.5</li>
+<li>Ubuntu 24.04.3 LTS</li>
+</ul>
+<p>Minimum reproducible example at https://github.com/bunny-therapist/uv-top-level-issue</p>
+<ul>
+<li>In that repo, simply run <code>uv run demonstrate.py</code>. It will raise an AssertionError.</li>
+<li>If you modify pyproject.toml so the build backend is instead setuptools, <code>uv run demonstrate.py</code> now works.</li>
+</ul>
+<p>The function <code>importlib.metadata.packages_distributions</code> (or alternatively, the one in the backport <code>importlib_metadata</code> that I used instead to have more up-to-date code and proper versioning of the failing code) produces a mapping of distribution package names to lists of python packages/modules.</p>
+<p>The logic that it uses to find packages seems to not work for uv. I request that it does, since my understanding is that the function in question is the recommended way to find the distribution package a certain module belongs to.</p>
+<p>I originally thought this a bug, but https://docs.python.org/3/library/importlib.metadata.html#package-distributions says <em>&quot;Some editable installs, do not supply top-level names, and thus this function is not reliable with such installs.&quot;</em> so I think this is more appropriately labeled a feature request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @bunny-therapist on 2025-10-23 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bunny-therapist">@bunny-therapist</a> on 2025-10-24 08:16</div>
+            <div class="timeline-body"><p>I have verified that <code>importlib.metadata.packages_distributions</code> works for a built package. It does not work for an <em>editable</em> install, nor with <code>uv sync --no-editable</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/importlib_metadata/issues/526.html">python/importlib_metadata#526</a> on 2025-10-24 08:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @konstin on 2025-10-24 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @konstin on 2025-10-24 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-24 08:32</div>
+            <div class="timeline-body"><p><code>importlib.metadata.packages_distributions</code> reads a file called <code>top_level.txt</code>. This file is only written by setuptools, afaik as a historical artifact from eggs, the format used before wheels. It is not part of any PEP, https://packaging.python.org/ or otherwise widely used. Other build backends don't seem to implement this non-standard file either, I've checked hatchling, pdm and flit. The documentation is misleading in that the function isn't expected to work with editable installs at all, except for setuptools. I've raised this with the <code>importlib[._]metadata</code> maintainers to update the documentation: https://github.com/python/importlib_metadata/issues/526</p>
+<p>https://github.com/python/cpython/blob/161b3064efdafd2008378a88a8009897df1b58d2/Lib/importlib/metadata/<strong>init</strong>.py#L1122-L1123</p>
+<p>https://github.com/python/importlib_metadata/blob/95ecf2aa573a68d4624506f801ca70992a337f41/importlib_metadata/<strong>init</strong>.py#L1133-L1134</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">build-backend</span> added by @konstin on 2025-10-24 08:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bunny-therapist">@bunny-therapist</a> on 2025-10-24 09:15</div>
+            <div class="timeline-body"><p>Yeah, that was also my impression. I see <code>importlib[._]metadata</code> also has some <code>_top_level_inferred</code> logic but that also fails. It also looks like that logic was updated over the years to deal with different build-backends, and that it was never reliable due to the lack of a proper PEP. I was not aware of PEP 794, really good news! Thank you.</p>
+<p>Would you be able to say somewhat confidently that <code>importlib[._]metadata.packages_distributions</code> in its current form can be expected to reliably work for all <em>non-editable</em> installs of packages built with the uv build-backend?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-24 09:26</div>
+            <div class="timeline-body"><p>AFAIK <code>_top_level_inferred</code> reads <code>RECORD</code>, and non-editable installs generally have a correct <code>RECORD</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bunny-therapist">@bunny-therapist</a> on 2025-10-24 09:32</div>
+            <div class="timeline-body"><p>Ok great. Thank you. I see PEP 794 is accepted - I assume it requires implementation in uv? Is that planned? (I searched issues/PRs/branches but found nothing.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-24 11:12</div>
+            <div class="timeline-body"><p>Yep, let's track this here: https://github.com/astral-sh/uv/issues/16435</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

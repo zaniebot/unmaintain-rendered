@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flag dicts as config/data container - astral-sh/ruff #5153</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Flag dicts as config/data container</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5153">#5153</a>
+        opened by <a href="https://github.com/jankatins">@jankatins</a>
+        on 2023-06-16 22:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jankatins">@jankatins</a> on 2023-06-16 22:50</div>
+            <div class="timeline-body"><p>In a lot of cases, using dicts as &quot;config&quot; or &quot;data&quot; is an anti-pattern, as it doesn't allow for type inference and it pushes fallback handling to the user and not the declarer of the data structure. With config/data dicts I mean pattern like this:</p>
+<pre><code class="language-python">d = {
+&quot;key1&quot;: &quot;something&quot;,
+&quot;key2&quot;: some_var, 
+}
+
+func(d) # bad, should be func(key1=&quot;something&quot;, key2=some_var) or taking a dataclass/... as input 
+whatever = d[&quot;key2&quot;].get(&quot;another_key&quot;, {})
+</code></pre>
+<p>I identify such &quot;config/data&quot; dicts by:</p>
+<ul>
+<li>Keys are strings</li>
+<li>Lookups via static keys, not via computed keys or iterations</li>
+<li>A lot of the time: dicts of dicts: <code>{&quot;a&quot;: {&quot;B&quot;: {&quot;c&quot;: var,...},...},...}</code></li>
+<li>(A lot of (duplicated) validation on the user side: <code>dict.get(&quot;key&quot;, fallback)</code> -&gt; usually missing and so buggy)</li>
+</ul>
+<p>Better alternatives:</p>
+<ul>
+<li>Use a dataclass / pydantic class / TypedDict class as that allows both validating the keys and the type of the values</li>
+<li>Define fallbacks during class declarations</li>
+<li>Make each value dict it's own class so that it's a composed object, not a nested dict</li>
+<li>If you call a func: add typed arguments (with defaults, if needed/possible)</li>
+</ul>
+<p>It would be nice if ruff could flag such cases and suggest better alternatives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-06-17 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-06-17 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-21 01:17</div>
+            <div class="timeline-body"><p>Gonna close for now as I think this will be hard to rigorously define and enforce without better type inference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-21 01:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

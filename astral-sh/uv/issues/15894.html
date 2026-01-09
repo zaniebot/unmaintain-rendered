@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`override-dependencies` ignores optional-dependency extra - astral-sh/uv #15894</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`override-dependencies` ignores optional-dependency extra</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15894">#15894</a>
+        opened by <a href="https://github.com/habichta">@habichta</a>
+        on 2025-09-16 15:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/habichta">@habichta</a> on 2025-09-16 15:41</div>
+            <div class="timeline-body"><h3>Question</h3>
+<h2>Setup</h2>
+<p>We use a nested dependency structure where a project imports packages from PyPI but also our local packages from a <code>deps</code> folder (see minimal working example in this <a href="https://github.com/habichta/uv-issue">GitHub Repo</a>).</p>
+<p>Essentially there is a project (root) that implements some service, which requires the dependencies (<code>package-1</code>,  <code>package-2</code>) defined in <code>pyproject.toml</code> as path sources.</p>
+<p>Note:</p>
+<ul>
+<li>that <code>package-2</code> itself requires <code>package-1</code> as a dependency (via its <code>deps</code> folder).</li>
+<li>we use <code>optional-dependencies</code> to share  dev dependencies as well when using <code>--extra dev</code></li>
+<li>package-1 and package-2 use the <code>uv_build</code> build-backend.</li>
+<li>In the actual Repo, the path sources are Git submodules (should not be relevant here)</li>
+</ul>
+<p>This is the relevant dependency tree for our local path sources:</p>
+<pre><code>service project -&gt; package-1,package-2
+package-2 -&gt; package-1
+package-1
+</code></pre>
+<p>In order for this to work, I had to define the following in the <code>pyproject.toml</code> of the service</p>
+<pre><code>[tool.uv]
+override-dependencies = [&quot;package-1 @ ${PROJECT_ROOT}/deps/package_1&quot;]
+</code></pre>
+<p>otherwise I get this error when executing <code>uv lock</code>, because it finds multiple &quot;URLs&quot; for the same package:</p>
+<pre><code>Failed to resolve dependencies for `package-2` (v0.1.0)
+Requirements contain conflicting URLs for package `package-1` in all marker environments:
+      - file:///..../uv-issues/deps/package_1 (editable)
+      - file:///..../uv-issues/deps/package_2/deps/package_1 (editable)
+  help: `package-2` (v0.1.0) was included because `uv-issues` (v0.1.0) depends on `package-2`
+</code></pre>
+<h2>Issue / Question</h2>
+<p>Adding an override mostly works, we can enforce the source from which <code>package-1</code> should be installed to resolve the above mentioned error. There is a subtle issue though. When i try to execute <code> uv sync --extra dev</code> it installs all dev dependencies, apart from the ones defined in <code>package-1</code> (see verbose log below), which in this example would be <code>black</code> as defined in the <code>optional-dependecies</code> of <code>package-1</code>.</p>
+<p>The problem seems to be, that <code>override-dependencies</code> ignores any extra dependencies. E.g., <code>project-2[dev]</code> works, but <code>project-1[dev]</code> is ignored because of the override.</p>
+<p>I assume this is by design. However, is there a way to make this kind of structure work with uv? For us, it is important that we can keep this nested structure and  <code>editable</code> installs. One avenue I followed was using workspaces (TBH: I may have made mistakes there, so it might still be a viable option).
+I also noticed that the <code>override-dependencies</code> seems to be only necessary for the <code>uv_build</code> backend, not for <code>setuptools</code> which does not seem to perform the transitive resolution of path sources. Using <code>setuptools</code> has different issues related to editable installs. However, we are not bound to the <code>uv_build</code> backend.</p>
+<p>I found some related issues. However, not with the exact same problem.</p>
+<h3>Reproduce with the minimal example</h3>
+<ul>
+<li>Clone the repo linked above</li>
+<li><code>uv sync</code> to install non dev dependencies -&gt; works as expected</li>
+<li><code>uv sync --extra dev</code> -&gt; additionally installs all dev dependencies apart from those defined in <code>package-1</code> (not expected)</li>
+</ul>
+<hr />
+<p>Verbose log for <code>uv sync --verbose --extra dev</code> after executing <code>uv sync</code> (black is not installed, only <code>pytest</code> defined in <code>package-2</code>)</p>
+<pre><code>DEBUG uv 0.8.17
+DEBUG Found project root: `/.../uv-issues`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/.../uv-issues`
+DEBUG Reading Python requests from version file at `/.../uv-issues/.python-version`
+DEBUG Using Python request `3.11` from version file at `.python-version`
+DEBUG Checking for Python environment at: `.venv`
+DEBUG The project environment's Python version satisfies the request: `Python 3.11`
+DEBUG Released lock at `/tmp/uv-53fa90ffc760f899.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: uv-issues @ file:///.../uv-issues
+DEBUG No workspace root found, using project root
+DEBUG Found static `pyproject.toml` for: package-1 @ file:///.../uv-issues/deps/package_1
+DEBUG Project is contained in non-workspace project: `/.../uv-issues`
+DEBUG No workspace root found, using project root
+DEBUG Found static `pyproject.toml` for: package-2 @ file:///.../uv-issues/deps/package_2
+DEBUG Project is contained in non-workspace project: `/.../repos/personal/uv-issues`
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 16 packages in 1ms
+DEBUG Using request timeout of 30s
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1758033246, tv_nsec: 669191892 })), None, None, {}, {&quot;src&quot;: Some(Timestamp(Timestamp(SystemTime { tv_sec: 1758032363, tv_nsec: 682883741 })))}
+DEBUG Requirement already installed: package-1==0.1.0 (from file:///.../uv-issues/deps/package_1)
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1758032266, tv_nsec: 433159694 })), None, None, {}, {&quot;src&quot;: Some(Timestamp(Timestamp(SystemTime { tv_sec: 1758032428, tv_nsec: 546251751 })))}
+DEBUG Requirement already installed: package-2==0.1.0 (from file:///.../uv-issues/deps/package_2)
+DEBUG Requirement already installed: responses==0.25.8
+DEBUG Registry requirement already cached: pytest==8.4.2
+DEBUG Requirement already installed: pyyaml==6.0.2
+DEBUG Requirement already installed: requests==2.32.5
+DEBUG Requirement already installed: urllib3==2.5.0
+DEBUG Registry requirement already cached: iniconfig==2.1.0
+DEBUG Registry requirement already cached: packaging==25.0
+DEBUG Registry requirement already cached: pluggy==1.6.0
+DEBUG Registry requirement already cached: pygments==2.19.2
+DEBUG Requirement already installed: certifi==2025.8.3
+DEBUG Requirement already installed: charset-normalizer==3.4.3
+DEBUG Requirement already installed: idna==3.10
+Installed 5 packages in 11ms
+ + iniconfig==2.1.0
+ + packaging==25.0
+ + pluggy==1.6.0
+ + pygments==2.19.2
+ + pytest==8.4.2
+DEBUG Released lock at `/.../uv-issues/.venv/.lock`
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 24.04.2 LTS</p>
+<h3>Version</h3>
+<p>uv 0.8.17</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @habichta on 2025-09-16 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`override-dependencies` ignores dependency extra" to "`override-dependencies` ignores optional-dependency extra" by @habichta on 2025-09-16 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @habichta on 2025-10-06 11:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

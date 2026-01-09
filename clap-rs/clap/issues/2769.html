@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deriving for generic structs - clap-rs/clap #2769</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Deriving for generic structs</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2769">#2769</a>
+        opened by <a href="https://github.com/kuviman">@kuviman</a>
+        on 2021-09-15 07:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kuviman">@kuviman</a> on 2021-09-15 07:27</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.4</p>
+<h3>Describe your use case</h3>
+<p>I would like to have a library with most common cli arguments, and then allow the main crate to specify additional, like:</p>
+<pre><code>#[derive(Clap)]
+struct GenericArgs&lt;T: Clap&gt; {
+    #[clap(long)]
+    something_generic: Option&lt;String&gt;,
+    #[clap(flatten)]
+    app_args: T,
+}
+</code></pre>
+<p>The derive macro currently does not support generic structs though</p>
+<h3>Describe the solution you'd like</h3>
+<p>The easiest solution and one that works for me would be inserting just generic args as they were in the definition into the implementation.</p>
+<p>As you see, I have put <code>T: Clap</code> trait bound in the struct definition since it will be needed in the implementation.</p>
+<h3>Alternatives, if applicable</h3>
+<p>Other possibility is adding those trait bounds in the implementation, so that they are not needed in struct definition. Although this would probably not work for my usecase as I'm actually not using <code>T</code> directly, and instead use <code>&lt;T as my::GenericAppTrait&gt;::Args</code> that implements <code>Clap</code>, so putting a bound on <code>T</code> would not work</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kuviman on 2021-09-15 07:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @pksunkara on 2021-09-18 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-09-18 16:27</div>
+            <div class="timeline-body"><p>Note: Structopt did some work towards this after we forked it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2809.html">clap-rs/clap#2809</a> on 2021-10-11 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-11 19:16</div>
+            <div class="timeline-body"><p>Structopt issue: https://github.com/TeXitoi/structopt/issues/128
+Structopt PR: https://github.com/TeXitoi/structopt/pull/483</p>
+<p>Unlike a lot of the <a href="https://github.com/clap-rs/clap/issues/2809">other ports from structopt</a>. this one needs a major re-work.  Structopt only has 1 trait, so they can just tack that one trait bound on everything.  We have several traits and have to select trait bounds according to a generic parameters usage.</p>
+<p>I recommend we follow the approach of <a href="https://serde.rs/attr-bound.html">serde</a></p>
+<ul>
+<li>By default infer trait bounds from the fields that use them<ul>
+<li>e.g. <code>#[clap(flatten)] foo: T</code> would add a <code>T: Args</code> bound while <code>#[clap(subcommand)] foo: T</code> would add a <code>T: Subcommand</code> bound</li>
+</ul>
+</li>
+<li>Add a <code>bounds</code> attribute for overriding inferred bounds</li>
+</ul>
+<p>These can be split into two different PRs with the highest priority probably on the inferring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../cucumber-rs/cucumber/issues/134.html">cucumber-rs/cucumber#134</a> on 2021-10-19 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3023.html">clap-rs/clap#3023</a> on 2021-11-14 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kuviman">@kuviman</a> on 2021-11-14 10:09</div>
+            <div class="timeline-body"><p>@epage</p>
+<p>I believe there is a major difference between serde and clap in terms of how inferring bounds should work</p>
+<p>Let's say we have a struct</p>
+<pre><code class="language-rust">struct Foo&lt;T&gt; {
+    inner: Inner&lt;T&gt;,
+}
+</code></pre>
+<p>In case of serde a trait bound <code>T: Serialize</code> is being inserted because <code>T</code> is contained in <code>Inner&lt;T&gt;</code>.
+They do it because most likely there is <code>impl&lt;T: Serialize&gt; Serialize for Inner&lt;T&gt;</code></p>
+<p>But, in case of clap, I am not so sure that this is the most likely implementation. And, like in your example, we should probably insert <code>Inner&lt;T&gt;: Subcommand</code> instead of <code>T: Subcommand</code>. If we do otherwise, we can add incorrect bound. Because maybe there is actually an <code>impl&lt;T: Args&gt; Subcommand for Inner&lt;T&gt;</code>.</p>
+<p>Another thing is that types implementing serde do happen to still be useful when trait bounds are not met. You cannot serialize them, but you can do something.</p>
+<p>In case of types made for command line argument parsing, I believe their primary and only usecase is parsing command line arguments. We probably want to know if the trait is implemented properly as soon as possible, and that is when the type is defined. We want the type to implement <code>Args</code>/<code>Parser</code>/<code>Subcommand</code> not only sometimes, but always.</p>
+<p>So, to me it makes more sense to put bounds on the type directly.</p>
+<p>That being said, I have implemented basic generic support (just copy-pasting type's bounds to the impl) in #3023
+Looks like structopt folks did the same</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-15 15:12</div>
+            <div class="timeline-body"><blockquote>
+<p>We have several traits and have to select trait bounds according to a generic parameters usage.</p>
+</blockquote>
+<p>I wish I could remember what I ran into with my port of the structopt work.  I see that structopt adds a trait, <code>StructOptInternal</code>, but that isn't relevant to us.  The closest relevant situation is <code>FromArgMatches</code>.  Maybe I forgot <code>FromArgMatches</code> was a supetrait for <code>Args</code> / <code>Subcommand</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3032.html">clap-rs/clap#3032</a> on 2021-11-16 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2021-11-16 16:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

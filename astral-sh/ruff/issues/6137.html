@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff.flake8-type-checking` Does not work with `FastAPI` - astral-sh/ruff #6137</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff.flake8-type-checking` Does not work with `FastAPI`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6137">#6137</a>
+        opened by <a href="https://github.com/Tomperez98">@Tomperez98</a>
+        on 2023-07-27 23:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Tomperez98">@Tomperez98</a> on 2023-07-27 23:42</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h2>Context</h2>
+<p>Command: <code>ruff --fix-only src</code></p>
+<pre><code class="language-toml">[tool.ruff.flake8-type-checking]
+runtime-evaluated-base-classes = [
+    &quot;pydantic.BaseModel&quot;,
+    &quot;mashumaro.mixins.orjson.DataClassORJSONMixin&quot;,
+    &quot;fastapi.responses.Response&quot;,
+]
+runtime-evaluated-decorators = [&quot;fastapi.APIRouter.get&quot;, &quot;router.get&quot;]
+</code></pre>
+<p>Ruff version: <code>ruff 0.0.278</code></p>
+<pre><code class="language-python3">if TYPE_CHECKING:
+    import uuid
+
+@router.get(path=&quot;/{user_id}&quot;)
+async def get_user(user_id: uuid.UUID) -&gt; Response:
+    ...
+</code></pre>
+<h2>Error message</h2>
+<pre><code class="language-bash">pydantic.errors.PydanticUndefinedAnnotation: name 'uuid' is not defined
+</code></pre>
+<h2>Expected behavior</h2>
+<pre><code class="language-python3">import uuid
+</code></pre>
+<p>should be moved out from the <code>TYPE_CHECKING</code> block since is used by fastapi at runtime. I don't know how to configure ruff to fix thin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-28 00:27</div>
+            <div class="timeline-body"><p>Is <code>router</code> imported from another file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-07-28 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tomperez98">@Tomperez98</a> on 2023-07-28 16:12</div>
+            <div class="timeline-body"><pre><code class="language-python3">from fastapi import APIRouter
+
+if TYPE_CHECKING:
+    import uuid
+
+router = APIRouter()
+
+@router.get(path=&quot;/{user_id}&quot;)
+async def get_user(user_id: uuid.UUID) -&gt; Response:
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tomperez98">@Tomperez98</a> on 2023-07-28 16:12</div>
+            <div class="timeline-body"><p>@charliermarsh Sorry, I wasn't clear. But it's defined within the same file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> removed by @zanieb on 2023-07-28 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-04 02:29</div>
+            <div class="timeline-body"><p>The best we can support right now is: put your router in a separate file (e.g., assume it's called <code>routers.py</code>), then import it where you use it, like:</p>
+<pre><code class="language-python">from routers import router
+
+if TYPE_CHECKING:
+    import uuid
+
+@router.get(path=&quot;/{user_id}&quot;)
+async def get_user(user_id: uuid.UUID) -&gt; Response:
+    ...
+</code></pre>
+<p>Then, you can mark it as runtime-required with:</p>
+<pre><code class="language-toml">[tool.ruff.flake8-type-checking]
+runtime-evaluated-decorators = [&quot;routers.router.get&quot;]
+</code></pre>
+<p>In short, the paths included the configuration file need to be paths to imported symbols, rather than just plain names. It's a known limitation (https://github.com/astral-sh/ruff/issues/5486) right now that the symbol has to be defined in another file and imported in order to match, but it goes beyond this issue I think. Hopefully this is somewhat helpful though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-04 02:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9312.html">astral-sh/ruff#9312</a> on 2023-12-29 18:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>coverage testing under uv markedly slower than in traditional venv - astral-sh/uv #17041</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>coverage testing under uv markedly slower than in traditional venv</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/17041">#17041</a>
+        opened by <a href="https://github.com/jepler">@jepler</a>
+        on 2025-12-09 02:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jepler">@jepler</a> on 2025-12-09 02:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In a particular project &amp; configuration, <code>uv run</code> takes over 4.5x as long to run specific tests as <code>venv</code>+<code>pip</code>. Subprocesses &amp; the <code>sys.monitoring</code> interface are implicated.</p>
+<p>Steps to reproduce:</p>
+<ol>
+<li><code>git clone https://codeberg.org/jepler/wwvbpy.git</code></li>
+<li><code>cd wwvbpy</code></li>
+<li><code>git checkout 97bb1601e8ea9e246df698547f8c845156ddb1e6</code></li>
+<li><code>docker run --rm -it -v=.:/work -w /work python:3.14-trixie bash</code></li>
+<li>Run the following shell script in docker:<pre><code class="language-python">coverage=coverage==7.11.2
+core=sysmon
+
+rm -rf .venv
+echo &quot;venv+pip: coveragepy $coverage core $core&quot;
+python3.14 -m venv .venv
+.venv/bin/python -m pip install -q $coverage 
+.venv/bin/python -m pip install -q .
+env PYTHONPATH=src COVERAGE_CORE=$core .venv/bin/python -m coverage run -m unittest discover -s test 2&gt;&amp;1 | grep 'Ran'
+rm -rf .venv
+
+echo &quot;uv run: coveragepy $coverage core $core&quot;
+env PYTHONPATH=src COVERAGE_CORE=$core uv run --python=3.14 --reinstall --refresh --no-cache --with $coverage python -m coverage run -m unittest discover -s test 2&gt;&amp;1 | grep 'Ran'
+rm -rf .venv
+</code></pre>
+</li>
+</ol>
+<p>Typical result on my laptop:</p>
+<pre><code>venv+pip: coveragepy coverage==7.11.2 core sysmon
+Ran 43 tests in 2.758s
+uv run: coveragepy coverage==7.11.2 core sysmon
+Ran 43 tests in 8.724s
+</code></pre>
+<p>Using <code>unittest ... --durations 10</code> and removing the grep it can be seen that the tests in <code>testcli</code> have most greatly increased in runtime. Locally, test_gen takes 0.949s with <code>venv</code>+<code>pip</code> and 4.413s with <code>uv</code>, over 4x as long. On the other hand, the 10th slowest test was <code>test_onset</code>, and took 0.092s and 0.099s under each environment, essentially unchanged.</p>
+<p>Notable things:</p>
+<ul>
+<li>This performance difference mostly or entirely disappears if the <code>ctrace</code> core of coveragepy is used instead</li>
+<li>Likewise if coverage testing is not used at all</li>
+<li>The tests that become much slower all create subprocesses of sys.executable. coveragepy ensures coverage runs in the sub-program through a .pth file.</li>
+<li>Some change in coverage between 7.11.0 and 7.11.2 made the performance penalty become much larger. This is being discussed at https://github.com/coveragepy/coveragepy/issues/2082#issuecomment-3627450249 but at this point I don't think the exact relevant change is known.</li>
+</ul>
+<h3>Platform</h3>
+<p>Linux 6.12.57+deb13-amd64 x86_64 GNU/Linux (debian trixie) using podman for containers</p>
+<h3>Version</h3>
+<p>uv 0.9.16 (installed with <code>pip install uv</code>)</p>
+<h3>Python version</h3>
+<p>Python 3.14.1 (container image python:3.14-trixie)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jepler on 2025-12-09 02:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../coveragepy/coveragepy/issues/2082.html">coveragepy/coveragepy#2082</a> on 2025-12-09 02:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-10 13:43</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @zanieb on 2025-12-10 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @konstin on 2025-12-10 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-10 13:53</div>
+            <div class="timeline-body"><p>The problem is related to the temporary environment uv creates. If it uses the current venv, it's fast:</p>
+<ul>
+<li>fast (uv see the installed coverage and doesn't create a layered venv): <code>uv venv -c -p 3.14 &amp;&amp; uv pip install $coverage &amp;&amp; uv run --with $coverage -v python -m coverage run -m unittest discover -s test</code></li>
+<li>slow: <code>uv venv -c -p 3.14 &amp;&amp; run --with $coverage -v python -m coverage run -m unittest discover -s test</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jepler">@jepler</a> on 2025-12-11 18:21</div>
+            <div class="timeline-body"><p>OK so I actually <em>looked</em> at the coverage output.</p>
+<p>In the &quot;uv slow&quot; case, coverage gathers data on files within <code>.venv/lib/python3.14/site-packages/</code> while in the &quot;uv fast&quot; case it does not.</p>
+<p>This is likely because coverage is using a heuristic that excludes items under <code>platlib</code>, but when the uv environment is layered this does not include the site-packages that are in the base venv.</p>
+<p>Typical sysconfig in a layered venv:</p>
+<pre><code class="language-python">&gt;&gt;&gt; import sysconfig
+&gt;&gt;&gt; for x in sysconfig.get_path_names(): print(f&quot;{x:&lt;20} {sysconfig.get_path(x)}&quot;)
+... 
+stdlib               /usr/local/lib/python3.14
+platstdlib           /root/.cache/uv/builds-v0/.tmp1R7Z57/lib/python3.14
+purelib              /root/.cache/uv/builds-v0/.tmp1R7Z57/lib/python3.14/site-packages
+platlib              /root/.cache/uv/builds-v0/.tmp1R7Z57/lib/python3.14/site-packages
+include              /usr/local/include/python3.14
+scripts              /root/.cache/uv/builds-v0/.tmp1R7Z57/bin
+data                 /root/.cache/uv/builds-v0/.tmp1R7Z57
+</code></pre>
+<pre><code># coverage report output, fast case, running test subset (*oops actually from traditional venv)
+Name                    Stmts   Miss Branch BrPart  Cover
+---------------------------------------------------------
+src/wwvb/__init__.py      562    106    188     41    75%
+src/wwvb/decode.py         50      3     28      6    88%
+src/wwvb/dut1table.py      17      0      4      0   100%
+src/wwvb/gen.py            49      0     16      0   100%
+src/wwvb/iersdata.py       15      0      0      0   100%
+src/wwvb/tz.py              3      0      0      0   100%
+test/testcli.py            64      4      0      0    94%
+---------------------------------------------------------
+TOTAL                     760    113    236     47    80%
+</code></pre>
+<pre><code># partial coverage report output, slow case, running test subset
+Name                                                              Stmts   Miss Branch BrPart  Cover
+---------------------------------------------------------------------------------------------------
+.venv/lib/python3.14/site-packages/click/__init__.py                 83     19      8      0    70%
+.venv/lib/python3.14/site-packages/click/_compat.py                 317    215     86      7    27%
+.venv/lib/python3.14/site-packages/click/_textwrap.py                33     24      8      0    22%
+.venv/lib/python3.14/site-packages/click/_utils.py                   16      1      0      0    94%
+...
+src/wwvb/tz.py                                                        3      0      0      0   100%
+test/testcli.py                                                      64      4      0      0    94%
+---------------------------------------------------------------------------------------------------
+TOTAL                                                              7397   4033   2726    347    39%
+</code></pre>
+<p>so coverage during the &quot;run&quot; phase has done a lot of extra work on 30 files in each subprocess, adding a lot of runtime.</p>
+<p>This perhaps means it's not a uv bug, though it certainly still feels like a uv gotcha.
+Is there a different/better heuristic that coveragepy should be using to exclude the files from uv layers? This is how coverage describes what it intends its default measurement set to be:</p>
+<blockquote>
+<p>When running your code, the coverage run command will by default measure all code, unless it is part of the Python standard library.</p>
+</blockquote>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

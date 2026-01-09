@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E712: auto-fix disagrees with suggested fix in output for equality comparisons to bools - astral-sh/ruff #17014</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>E712: auto-fix disagrees with suggested fix in output for equality comparisons to bools</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17014">#17014</a>
+        opened by <a href="https://github.com/The-Compiler">@The-Compiler</a>
+        on 2025-03-27 17:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/The-Compiler">@The-Compiler</a> on 2025-03-27 17:01</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>With <a href="https://play.ruff.rs/21a84874-6424-4d74-9ee1-12d4fc7ddd04">(playground)</a>:</p>
+<pre><code class="language-python">flag = True
+
+if flag == True:
+    pass
+
+if flag == False:
+    pass
+</code></pre>
+<p>running <code>ruff check</code> suggests:</p>
+<pre><code class="language-console">$ ruff check --unsafe-fixes ruff_demo.py
+ruff_demo.py:3:4: E712 [*] Avoid equality comparisons to `True`; use `if flag:` for truth checks
+  [...]
+  = help: Replace with `flag`
+
+ruff_demo.py:6:4: E712 [*] Avoid equality comparisons to `False`; use `if not flag:` for false checks
+  [...]
+  = help: Replace with `not flag`
+</code></pre>
+<p>but <code>ruff check --fix --unsafe-fixes</code> results in a different result than what the output suggests, and code that is still unidiomatic:</p>
+<pre><code class="language-python">flag = True
+
+if flag is True:
+    pass
+
+if flag is False:
+    pass
+</code></pre>
+<p>while I would have expected</p>
+<pre><code class="language-python">flag = True
+
+if flag:
+    pass
+
+if not flag:
+    pass
+</code></pre>
+<p>instead. Of course those aren't equivalent in all cases if <code>flag</code> wasn't a bool, but the fix is already unsafe anyways, so it might as well end up with the more idiomatic result if manual review is required.</p>
+<p>Somewhat related:</p>
+<ul>
+<li>#4560</li>
+</ul>
+<p>but once such type-specific fixing exists, the behavior could be improved accordingly:</p>
+<pre><code class="language-python">optional_flag: bool | None = False
+if optional_flag == False: ...  # --&gt;
+if optional_flag is False: ...
+
+flag: bool = False
+if flag == False:  ...  # --&gt;
+if not flag: ...
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.2 (4773878ee 2025-03-21)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-03-27 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/knavdeep152002">@knavdeep152002</a> on 2025-03-31 11:00</div>
+            <div class="timeline-body"><p>I want to take this up, but I have a few doubts about it.</p>
+<p>Is the equality comparison to bool only fixed to a single operation like <code>flag==True</code>, <code>flag==False</code> or can it be something like <code>flag==True &lt; 5</code>(weird but possible)?</p>
+<p>The second expression is also valid, but if we convert it to flag &lt; 5 it's not the right equivalent to the prior rather flag is True &lt; 5 might make sense.</p>
+<p>So should the fix be supported to a single operator case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17090.html">astral-sh/ruff#17090</a> on 2025-03-31 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-23 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-23 15:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

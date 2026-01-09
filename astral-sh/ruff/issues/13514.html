@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] don't include Unknown in the type for a conditionally-defined import - astral-sh/ruff #13514</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] don't include Unknown in the type for a conditionally-defined import</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13514">#13514</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-09-25 19:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2024-09-25 19:11</div>
+            <div class="timeline-body"><p>If <code>lib.py</code> has:</p>
+<pre><code>if flag:
+    x: int = 1
+</code></pre>
+<p>and <code>main.py</code> has <code>from lib import x</code>, currently we infer the imported type of <code>x</code> as <code>Unknown | int</code>, with the <code>Unknown</code> coming from the &quot;not bound&quot; path. But this is silly; if the name is not bound, you'll get an error, but you won't get some random type. We should just infer the type of the import as <code>int</code> in this case (and possibly emit an &quot;import may not be defined&quot; diagnostic, but that's separate from this issue).</p>
+<p>In other words, the unbound case should become <code>Never</code> (because if the name doesn't exist your code will stop running with an error), which will then disappear when unioned with the other path; it shouldn't become <code>Unknown</code>.</p>
+<p>Both mypy and pyright also infer simply <code>int</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2024-09-25 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-09-25 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] don't include Unknown as a type for a conditionally-defined import" to "[red-knot] don't include Unknown in the type for a conditionally-defined import" by @carljm on 2024-09-25 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Slyces">@Slyces</a> on 2024-09-28 21:17</div>
+            <div class="timeline-body"><p>I started to check out this issue, and I noticed the following inferences</p>
+<pre><code class="language-python">if flag:
+    x: int = 1        # Unknown | int
+    y = 1             # Unbound | Literal[1]
+</code></pre>
+<p>I had some questions:</p>
+<ul>
+<li>Is this difference in behaviour expected (given that <code>Literal[1]</code> is a specialisation of <code>int</code>, it probably shouldn't impact the <code>Unknown/Unbound</code> behaviour?)</li>
+<li>To fix the current issue, do we need to address both (<code>x</code> -&gt; <code>int</code> and <code>y</code> -&gt; <code>Literal[1]</code>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13563.html">astral-sh/ruff#13563</a> on 2024-09-30 03:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-30 20:43</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>Is this difference in behaviour expected</li>
+</ul>
+</blockquote>
+<p>Yes and no -- it was expected but really neither of those types should show up in the public type (and <code>Unbound</code> really shouldn't be a type at all, it should be separate metadata about a particular use of a name), so it's not desired :)</p>
+<blockquote>
+<ul>
+<li>do we need to address both (<code>x</code> -&gt; <code>int</code> and <code>y</code> -&gt; <code>Literal[1]</code>)</li>
+</ul>
+</blockquote>
+<p>Yes, we should; sorry, that wasn't clear in my issue description.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-10-16 20:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff server`: Unable to edit new, untitled files in VS Code - astral-sh/ruff #11510</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff server`: Unable to edit new, untitled files in VS Code</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11510">#11510</a>
+        opened by <a href="https://github.com/T-256">@T-256</a>
+        on 2024-05-23 10:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/T-256">@T-256</a> on 2024-05-23 10:51</div>
+            <div class="timeline-body"><p>VSCode Repro: <code>Ctrl+Win+Alt+N</code> -&gt; select <code>Python File</code></p>
+<p>Output:</p>
+<blockquote>
+<pre><code>2024-05-23 13:52:40.699 [info] Name: Ruff
+2024-05-23 13:52:40.700 [info] Module: ruff
+2024-05-23 13:52:40.700 [info] Python extension loading
+2024-05-23 13:52:40.700 [info] Waiting for interpreter from python extension.
+2024-05-23 13:52:40.700 [info] Python extension loaded
+2024-05-23 13:52:40.700 [info] Server run command: c:\Users\User\Desktop\test\.venv\Scripts\python.exe c:\Users\User\.vscode\extensions\charliermarsh.ruff-2024.22.0-win32-x64\bundled\tool\ruff_server.py server --preview
+2024-05-23 13:52:40.700 [info] Server: Start requested.
+2024-05-23 13:52:41.180 [info] [Trace - 1:52:41 PM] Received request 'client/registerCapability - (1)'.
+2024-05-23 13:52:41.180 [info] [Trace - 1:52:41 PM] Sending response 'client/registerCapability - (1)'. Processing request took 0ms
+2024-05-23 13:52:41.180 [info]    0.139395s INFO ruff_server::server Configuration file watcher successfully registered
+
+2024-05-23 13:52:41.736 [info]    0.695387s WARN ruff_server::server::api Received notification $/setTrace which does not have a handler.
+
+2024-05-23 13:52:41.770 [info]    0.729158s ERROR ruff_server::server::api An error occurred while running notebookDocument/didOpen: expected notebook URI untitled:Untitled-1.ipynb?jupyter-notebook to be a valid file path
+
+2024-05-23 13:52:41.802 [info]    0.757168s WARN ruff_server::server::api Received notification $/setTrace which does not have a handler.
+
+2024-05-23 13:52:43.029 [info]    1.956011s WARN ruff_server::server::api Received notification $/setTrace which does not have a handler.
+
+2024-05-23 13:52:43.361 [info]    2.319372s WARN ruff_server::server::api Received notification $/setTrace which does not have a handler.
+
+2024-05-23 13:52:43.698 [info]    2.657468s WARN ruff_server::server::api Received notification $/setTrace which does not have a handler.
+</code></pre>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-05-23 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2024-05-23 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @snowsignal by @snowsignal on 2024-05-23 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`ruff server`: Error on Untitled document" to "`ruff server`: Unable to edit new, untitled files in VS Code" by @snowsignal on 2024-05-23 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-05-23 15:11</div>
+            <div class="timeline-body"><p>Thank you for opening this issue! I've made a small change to the issue title if that's okay with you 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-05-24 22:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Thank you for opening this issue! I've made a small change to the issue title if that's okay with you 🙂</p>
+</blockquote>
+<p>Not only on editing Untitled-files but also, on opening them:</p>
+<pre><code>2024-05-23 13:55:32.141 [info]  171.100002s ERROR ruff_server::server::api An error occurred while running textDocument/didOpen: expected document URI untitled:Untitled-2 to be a valid file path
+</code></pre>
+<p>From what I understand, We could avoid using <code>to_file_path</code> method of <code>lsp_types::Url</code> to solve the problem for non-existent files on disk, so then no need <code>PathBuf</code>.
+https://github.com/astral-sh/ruff/blob/33fd50027cb24e407746da339bdf2461df194d96/crates/ruff_server/src/edit.rs#L36-L41</p>
+<p>Unified <code>lsp_types::Url</code> expected at there, then all other urls with non-<code>file:</code> scheme would be handled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-05-25 00:08</div>
+            <div class="timeline-body"><p>Right, at the moment the code assumes that text document URIs point to valid file paths. We'll have to rework how documents are indexed to fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-05-27 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11588.html">astral-sh/ruff#11588</a> on 2024-05-29 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-05-31 06:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

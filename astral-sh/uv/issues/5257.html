@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ctrl-C to to uv run is not handled by the child process - astral-sh/uv #5257</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ctrl-C to to uv run is not handled by the child process</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/5257">#5257</a>
+        opened by <a href="https://github.com/bluss">@bluss</a>
+        on 2024-07-21 14:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bluss">@bluss</a> on 2024-07-21 14:01</div>
+            <div class="timeline-body"><p>uv 0.2.27
+platform: linux (x86_64)</p>
+<p>Jupyterlab wants to handle Ctrl-C but it doesn't get a chance to do it when started from uv run.</p>
+<p>Steps to reproduce</p>
+<ol>
+<li>uv init jptest</li>
+<li>cd jptest</li>
+<li>uv run --with jupyterlab jupyter-lab</li>
+<li>Wait 3 seconds</li>
+<li>Ctrl-C</li>
+</ol>
+<p>Jupyterlab prints something like this</p>
+<pre><code>Shut down this Jupyter server (y/[n])? [W 2024-07-21 15:57:14.911 LabApp] Could not determine jupyterlab build status without nodejs
+[I 2024-07-21 15:57:19.915 ServerApp] No answer for 5s:
+[I 2024-07-21 15:57:19.915 ServerApp] resuming operation...
+</code></pre>
+<p>No input reaches jupyterlab after the Ctrl-C, so it doesn't get an answer to its y/[n] question.</p>
+<p>Depending on circumstances jupyterlab is either continuing to run or shutting down in the background. <code>uv run</code> seems to terminate itself and leave its child process running.</p>
+<p>Both jupyterlab and uv run receive the signal? In the Expected behaviour, jupyterlab should handle this signal alone (and it does so using the prompt in the output)?</p>
+<p>I think a good solution to this would also solve the ipykernel launch problem mentioned in #3095.</p>
+<p><code>rye run</code> handles this one as expected. <code>pdm run</code> doesn't let jupyter-lab handle the signal but at least jupyter-lab is not left running detached.</p>
+<p>Wish would be that it works the same way as if the user is running <code>.venv/bin/jupyter-lab</code>, if that's possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ctrl-C to to uv run is not reaching the process" to "Ctrl-C to to uv run is not handled by the child process" by @bluss on 2024-07-21 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-07-21 14:31</div>
+            <div class="timeline-body"><p>Also worth experimenting with just the Python REPL the same way. Less dependencies, similar problem.</p>
+<p>Compare how this one handles Ctrl-C:</p>
+<blockquote>
+<p>uv run python</p>
+</blockquote>
+<p>compared with:</p>
+<blockquote>
+<p>python</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-07-21 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5333.html">astral-sh/uv#5333</a> on 2024-07-23 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5395.html">astral-sh/uv#5395</a> on 2024-07-24 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-24 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3095.html">astral-sh/uv#3095</a> on 2024-07-24 18:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Github action installation differs from local - astral-sh/uv #13550</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Github action installation differs from local</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13550">#13550</a>
+        opened by <a href="https://github.com/atinary-bvollmer">@atinary-bvollmer</a>
+        on 2025-05-20 08:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/atinary-bvollmer">@atinary-bvollmer</a> on 2025-05-20 08:00</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hey,</p>
+<p>thanks for doing such a great job with uv/ruff/ty. I'm currently struggling with an issue that I have even trouble to explain fully. I will do my best to give a good description here. Please don't hesitate to ask for more information.</p>
+<p>We are currently working on a python monorepo that has <code>libraries</code> and <code>projects</code>. The monorepo is inside a <code>backend</code> folder. The setup follows roughly this <a href="https://github.com/carderne/postmodern-mono">architecture</a>. So far locally all works fine. The problem is that when I want to add a Github action our typing system (currently based on <code>basedpyright</code>) fails in the action whereas it would work well locally. After some investigation we could pin it down to how we installed the packages before running <code>basedpyright</code>.</p>
+<p>Locally we would install the project with <code>uv sync --all-packages</code> and then run the typing with <code>uv run basedpyright</code> from the <code>backend</code> root with the following setting:</p>
+<pre><code>[tool.basedpyright]
+include = [&quot;libraries/**&quot;, &quot;projects/**&quot;]
+
+exclude = [
+    &quot;**/__pycache__/**&quot;,
+    &quot;**/.venv/**&quot;,
+    &quot;**/migrations/**&quot;,
+]
+extraPaths = [&quot;projects/django_server/apps&quot;]
+verboseOutput = true
+
+typeCheckingMode = &quot;strict&quot;
+
+reportIncompatibleVariableOverride = &quot;none&quot;
+</code></pre>
+<p>while the github action is this:</p>
+<pre><code>name: 'Code Quality'
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+jobs:
+  code_changes:
+    name: &quot;Identify changes in sub-directories&quot;
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+    
+    steps:
+    - uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        filters: |
+          backend:
+            - 'backend/**'
+
+  code_quality_backend:
+    name: &quot;Code Quality Checks Backend&quot;
+    needs: code_changes
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    if: ${{ needs.code_changes.outputs.backend == 'true' }}
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Run Ruff
+      uses: astral-sh/ruff-action@v3
+      with:
+        version: &quot;0.11.9&quot;
+    - run: ruff check --output-format=github .
+    - run: ruff format --check --diff .
+
+    - name: Install uv and run pyright
+      uses: astral-sh/setup-uv@v6
+      with:
+        version: &quot;0.6.17&quot;
+        working-directory: ./backend
+        enable-cache: false
+    - run: uv sync --all-extras --locked --all-packages
+    - run: uv run basedpyright
+
+</code></pre>
+<p>The problem is that when using <code>--all-packages</code> it would fail <em>sometimes</em> with some types missing. I cannot explain to myself why <em>sometimes</em> though.</p>
+<p>Further we noticed that when running the sync with <code>--package=django-server</code> it would work but only if I remove the <code>libraries/**</code> from the include of <code>basedpyright</code>. But not because of typing errors in a library but in a project which are unrelated to any library.</p>
+<p>My guess would be that somehow the workspace setup is not correct or wrongly applied in the action and thus leads to a problematic package installation.</p>
+<p>The root <code>pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;backend&quot;
+version = &quot;0.0.1&quot;
+description = &quot;xxx&quot;
+readme = &quot;README.md&quot;
+dependencies = []
+
+[tool.uv.workspace]
+members = [&quot;libraries/*&quot;, &quot;projects/*&quot;]
+
+[dependency-groups]
+dev = [
+    &quot;basedpyright&gt;=1.29.1&quot;,
+    &quot;pre-commit&gt;=4.2.0&quot;,
+    &quot;pytest &gt;= 8.3.4&quot;,
+    &quot;ruff &gt;= 0.11.9&quot;,
+]
+
+
+[tool.ruff]
+line-length = 120
+target-version = &quot;py312&quot;
+
+[tool.ruff.format]
+...
+
+[tool.basedpyright]
+include = [&quot;projects/**&quot;]
+
+exclude = [
+    &quot;**/__pycache__/**&quot;,
+    &quot;**/.venv/**&quot;,
+    &quot;**/migrations/**&quot;,
+]
+extraPaths = [&quot;projects/django_server/apps&quot;]
+verboseOutput = true
+
+typeCheckingMode = &quot;strict&quot;
+
+reportIncompatibleVariableOverride = &quot;none&quot;
+</code></pre>
+<p>The project toml (renamed to django_server):</p>
+<pre><code>[project]
+name = &quot;django_server&quot;
+version = &quot;0.0.1&quot;
+description = &quot;xxxx&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;django&gt;=5.2&quot;,
+    &quot;django-filter&gt;=25.1&quot;,
+    &quot;djangorestframework&gt;=3.16.0&quot;,
+    &quot;logging_library&quot;,
+    &quot;python-decouple&gt;=3.8&quot;,
+    &quot;django-unfold&gt;=0.57.0&quot;,
+]
+
+[tool.uv.sources]
+logging_library = { workspace = true }
+
+[dependency-groups]
+dev = [
+    &quot;drf-spectacular&gt;=0.28.0&quot;,
+    &quot;django-filter-stubs&gt;=0.1.3&quot;,
+    &quot;django-types&gt;=0.20.0&quot;,
+    &quot;djangorestframework-types&gt;=0.9.0&quot;,
+    &quot;django-stubs&gt;=5.2.0&quot;,
+    &quot;djangorestframework-stubs&gt;=3.16.0&quot;,
+    &quot;factory-boy&gt;=3.3.3&quot;,
+    &quot;faker&gt;=37.1.0&quot;,
+    &quot;basedpyright&gt;0&quot;,
+    &quot;pytest&gt;0&quot;,
+    &quot;pytest-django&gt;=4.11.1&quot;,
+    &quot;pytest-factoryboy&gt;=2.7.0&quot;,
+    &quot;ruff&gt;0&quot;,
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = &quot;config.settings.test&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;config&quot;, &quot;apps&quot;]
+</code></pre>
+<h3>Platform</h3>
+<p>macos and ubuntu</p>
+<h3>Version</h3>
+<p>0.6.17</p>
+<h3>Python version</h3>
+<p>python 3.12.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @atinary-bvollmer on 2025-05-20 08:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-05-20 11:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-05-20 11:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-20 11:00</div>
+            <div class="timeline-body"><p>You're installing two packages, django-stubs and django-types, that both provide the <code>django-stubs</code> module. I assume you're getting clashes between the two, whichever is installed first (https://github.com/astral-sh/uv/pull/13437)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13437.html">astral-sh/uv#13437</a> on 2025-05-20 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/atinary-bvollmer">@atinary-bvollmer</a> on 2025-05-21 06:25</div>
+            <div class="timeline-body"><p>Thanks for looking into this. I've investigated a bit more and you are right. Installing the django-stubs second after the django-types breaks the ci while installing it the afterway works. In the end I realized I could remove the django-stubs package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @atinary-bvollmer on 2025-05-21 06:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15357.html">astral-sh/uv#15357</a> on 2025-08-18 16:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

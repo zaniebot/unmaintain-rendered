@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B023 potential false positive (with shadowed variable names) - astral-sh/ruff #4090</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>B023 potential false positive (with shadowed variable names)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4090">#4090</a>
+        opened by <a href="https://github.com/XN137">@XN137</a>
+        on 2023-04-25 08:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/XN137">@XN137</a> on 2023-04-25 08:33</div>
+            <div class="timeline-body"><p>python code:</p>
+<pre><code>lambdas = []
+for val in range(3):
+    lambdas.append(lambda val=val: print(val))
+
+for lam in lambdas:
+    lam()
+
+funcs = []
+for val in range(3):
+    def make_func(val):
+        def tmp():
+            return print(val)
+
+        return tmp
+
+
+    funcs.append(make_func(val))
+
+for func in funcs:
+    func()
+
+funcs = []
+for val in range(3):
+    def make_func(val=val):
+        def tmp():
+            return print(val)
+
+        return tmp
+
+
+    funcs.append(make_func())
+
+for func in funcs:
+    func()
+</code></pre>
+<p>outputs:</p>
+<pre><code>0
+1
+2
+0
+1
+2
+0
+1
+2
+</code></pre>
+<p>but ruff <code>0.0.263</code> reports B023 violations for the <code>make_func</code> variants (because the <code>val</code> variable is shadowed):</p>
+<pre><code>falsepositive.py:
+  12:26 B023 Function definition does not bind loop variable `val`
+
+  26:26 B023 Function definition does not bind loop variable `val`
+</code></pre>
+<p>note that the last <code>make_func</code> variant might be a common pattern in python codebases, see https://stackoverflow.com/a/3431699</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-04-25 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-26 00:18</div>
+            <div class="timeline-body"><p>Agree, does look like a bug. We probably don't have proper scope tracking there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4111.html">astral-sh/ruff#4111</a> on 2023-04-26 04:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-04-26 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/XN137">@XN137</a> on 2023-05-02 08:32</div>
+            <div class="timeline-body"><p>just to confirm: after upgrading to <code>0.0.264</code> we could enable <code>B023</code> across our codebase without violations, thanks a lot for the quick fix!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

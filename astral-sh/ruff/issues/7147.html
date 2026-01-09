@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>autofix for UP035 - astral-sh/ruff #7147</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>autofix for UP035</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7147">#7147</a>
+        opened by <a href="https://github.com/Olegt0rr">@Olegt0rr</a>
+        on 2023-09-05 11:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Olegt0rr">@Olegt0rr</a> on 2023-09-05 11:15</div>
+            <div class="timeline-body"><p>Source:</p>
+<pre><code class="language-python">from typing import Dict, List
+
+
+def get_values(some_dict: Dict) -&gt; List:
+    return list(some_dict.values())
+</code></pre>
+<p>Command:</p>
+<pre><code>ruff check --select UP draft.py --fix
+</code></pre>
+<p>Fact result:</p>
+<pre><code class="language-python">from typing import Dict, List
+
+
+def get_values(some_dict: dict) -&gt; list:
+    return list(some_dict.values())
+</code></pre>
+<p>+</p>
+<pre><code>draft.py:1:1: UP035 `typing.Dict` is deprecated, use `dict` instead
+draft.py:1:1: UP035 `typing.List` is deprecated, use `list` instead
+</code></pre>
+<p>Expected result:</p>
+<pre><code class="language-python">def get_values(some_dict: dict) -&gt; list:
+    return list(some_dict.values())
+
+</code></pre>
+<p>it seems we should just remove import string if there's no usage</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-05 11:25</div>
+            <div class="timeline-body"><p>This is generally by design: we tend to treat edits as only concerning their own violation. In this case, we'd expect the <code>typing</code> imports to be removed by the <code>unused-import</code> rule, so if you run the above snippet with <code>--select UP035 --select F401</code>, we <em>will</em> generate the expected result seamlessly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2023-09-05 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Olegt0rr">@Olegt0rr</a> on 2023-09-06 07:23</div>
+            <div class="timeline-body"><p>Why it's bad to remove <code>Dict</code> import for just replaced <code>Dict</code> with <code>dict</code>?
+It seems single UP035 should be able to solve problem without any additional rules.</p>
+<p>imho</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-06 12:55</div>
+            <div class="timeline-body"><p>I agree that it would probably be nice to remove them (though <em>arguably</em> unexpected), but it's more a design choice on our side: by keeping each rule's autofix focused on just the diagnostic it enforces, and running diagnostics repeatedly (i.e., if you run with <code>--select UP --select F</code>, we'll first remove the <code>Dict</code> usages, and then in a second iteration, remove the <code>Dict</code> imports), it really simplifies the number of concerns that each rule needs to have. I think this is unlikely to change in the near future, though perhaps we'll end up special-casing unused imports at some point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-06 12:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

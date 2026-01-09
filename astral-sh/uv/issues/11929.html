@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrading tools adds an identical entry to the `index` list in uv-receipt.toml - astral-sh/uv #11929</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Upgrading tools adds an identical entry to the `index` list in uv-receipt.toml</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11929">#11929</a>
+        opened by <a href="https://github.com/nbaju1">@nbaju1</a>
+        on 2025-03-03 17:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nbaju1">@nbaju1</a> on 2025-03-03 17:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Upgrading libraries installed with <code>uv tool install &lt;library&gt;</code> keeps adding new and identical elements to the <code>index</code> list under <code>[tool.options]</code> in the corresponding uv-receipt.toml file. We use a private index, not PyPI.</p>
+<p>Steps to reproduce:</p>
+<ol>
+<li>Run <code>uv tool install ruff@0.9.1</code>.</li>
+<li>Modify the created uv-receipt.toml file changing the specifier to <code>==0.9.2</code></li>
+<li>Run <code>uv tool upgrade ruff</code></li>
+<li>Repeat 2. and 3., incrementing the version.</li>
+</ol>
+<p>Resulting uv-receipt.toml file (the urls are all identical):</p>
+<pre><code class="language-toml">...
+[tool.options]
+index = [
+    { url = &quot;https://&lt;username&gt;:&lt;token&gt;@&lt;private index&gt;&quot;, explicit = false, default = true },
+    { url = &quot;https://&lt;username&gt;:&lt;token&gt;@&lt;private index&gt;&quot;, explicit = false, default = true },
+    { url = &quot;https://&lt;username&gt;:&lt;token&gt;@&lt;private index&gt;&quot;, explicit = false, default = true },
+]
+</code></pre>
+<p>Is this behavior intended? If so, why?</p>
+<h3>Platform</h3>
+<p>Windows 11 x64</p>
+<h3>Version</h3>
+<p>0.6.3</p>
+<h3>Python version</h3>
+<p>3.12.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @nbaju1 on 2025-03-03 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-04 02:00</div>
+            <div class="timeline-body"><p>Na, this looks like a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-04 03:01</div>
+            <div class="timeline-body"><p>The issue is that we combine the existing receipt configuration with any user-provided configuration. So if we read the index from the filesystem, we then combine that with the index that's already present in the receipt.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-05 02:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-05 03:00</div>
+            <div class="timeline-body"><p>Hmm. I do not know how to solve this. I mean, we can dedupe in this case, but not every setting is amenable to de-duping like this. We don't really have a way to combine the receipt with the &quot;new&quot; settings without causing some amount of deduplication. (Another example would be <code>--config-settings</code> where you can provide multiple values for a given key which get collected as lists... If we combine the existing receipt with the filesystem settings, we'll concatenate the lists, but we can't dedupe them -- it might be <em>meaningful</em> that we have multiple repeated values.)</p>
+<p>Alternatives would be...</p>
+<ul>
+<li>Ignore all settings and just use the receipt when upgrading.</li>
+<li>Ignore the receipt and just rely on the user-provided setting.</li>
+<li>Just deduplicate and live with the cases in which we might write duplicate settings here (<code>--config-settings</code> might be the only case in practice).</li>
+</ul>
+<p>\cc @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-05 05:00</div>
+            <div class="timeline-body"><p>I think passing settings on upgrade implies a replacement of the existing settings. I would ignore the existing receipt value of a particular setting if provided on upgrade. Does that make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-05 13:43</div>
+            <div class="timeline-body"><p>Yeah though it gets a little tricky with the index URL options, since <code>--index</code>, <code>--index-url</code>, and <code>--extra-index-url</code> are technically all distinct settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-05 18:48</div>
+            <div class="timeline-body"><p>Yeah that's a bit awkward, but probably fine to just replace them all in this context?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

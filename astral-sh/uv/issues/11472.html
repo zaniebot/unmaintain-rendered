@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `.venv` selection for `uv run --script` - astral-sh/uv #11472</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow `.venv` selection for `uv run --script`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11472">#11472</a>
+        opened by <a href="https://github.com/Quasar6X">@Quasar6X</a>
+        on 2025-02-13 09:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Quasar6X">@Quasar6X</a> on 2025-02-13 09:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Currently when running scripts <code>uv</code> sets up an ephemeral environment with the requested dependencies. AFAIK this is means that <code>--script</code> implies <code>--isolated</code>. Unfortunatley <code>--active</code> doesn't use the activated environment in this case. This behaviour has two drawbacks.</p>
+<ol>
+<li><code>uv</code> needs to set up a new venv and sync deps after every run</li>
+<li>IDE tools which depend on packages being on the <code>PYTHONPATH</code> cannot work inside a workspace with just scripts. This is also true for <code>uv tool run</code> if the tool uses <code>PYTHONPATH</code>.</li>
+</ol>
+<p>Example:</p>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.13&quot;
+# dependencies = [
+#   &quot;rich~=13.9.4&quot;,
+# ]
+#
+# [tool.mypy]
+# strict = true
+# ///
+
+from rich import print
+
+if __name__ == &quot;__main__&quot;:
+    print(&quot;[italic red]Hello[/italic red] World!&quot;)
+</code></pre>
+<pre><code class="language-console">$ uv run test.py
+Installed 4 packages in 7ms
+Hello World!
+</code></pre>
+<pre><code class="language-console">$ uv tool run mypy test.py
+test.py:11: error: Cannot find implementation or library stub for module named &quot;rich&quot;  [import-not-found]
+test.py:11: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+Found 1 error in 1 file (checked 1 source file)
+</code></pre>
+<p>I propose two solutions:</p>
+<ol>
+<li>Make <code>uv</code> respect <code>--active</code> even when the <code>--script</code> option is specified.</li>
+<li>Add a new option like <code>--use-workspace-env</code> (I know I'm terrible at naming things) to force <code>uv</code> into using  the <code>.venv</code> in the workspace or create a new one if it doesn't exist yet.</li>
+</ol>
+<p>I think that the second solution is better, because the first one requires the user to effectively run <code>uv venv &amp;&amp; source .venv/bin/activate</code> before running the script for the first time.</p>
+<p>I'm open to implementing any of the behaviors, if it is something that you see beneficial.</p>
+<h3>Example</h3>
+<p>When running <code>test.py</code> possibly containing inline script metadata or using any of the <code>--with*</code> options, then running <code>uv run --use-workspace-env</code> the workspace <code>.venv</code> would be used or a new one would be created.</p>
+<pre><code class="language-console">$ eza -aT -L1
+.
+└── test.py
+
+$ uv run test.py
+Installed 4 packages in 7ms
+Hello World!
+
+$ eza -aT -L1
+.
+├── .venv
+└── test.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @Quasar6X on 2025-02-13 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2025-02-13 10:10</div>
+            <div class="timeline-body"><p>Related to:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/8064#issuecomment-2543820128</li>
+<li>https://github.com/astral-sh/uv/issues/6542</li>
+</ul>
+<p>then, in this case, you could use something like:  <code>uvx --with-script test.py mypy test.py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2025-02-13 10:14</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>Make <code>uv</code> respect <code>--active</code> even when the <code>--script</code> option is specified.</li>
+</ul>
+</blockquote>
+<p>There is an open PR for that: https://github.com/astral-sh/uv/pull/11433</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-13 14:46</div>
+            <div class="timeline-body"><blockquote>
+<p>uv needs to set up a new venv and sync deps after every run
+IDE tools which depend on packages being on the PYTHONPATH cannot work inside a workspace with just scripts. This is also true for uv tool run if the tool uses PYTHONPATH.</p>
+</blockquote>
+<p>We now support <code>uv sync --script</code> which uses a stable path within the cache -- you can configure your editor to point to that environment. It doesn't setup a new venv or sync deps after every run. (This also wasn't true before -- we resolved the dependencies then re-used a cached environment as long as the dependencies were unchanged -- but it's not super relevant.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Quasar6X">@Quasar6X</a> on 2025-02-13 15:04</div>
+            <div class="timeline-body"><p>@charliermarsh Thanks for the heads up. That's cool but I consider that more of a workaround rather than an actual solution, becuase setting some arcane cache directory in my editor config feels wrong to me.</p>
+<p>I think #11433 will solve my problems. AFAIU <code>uv sync --script</code> creates a stable path per script but my usecase involves a monorepo of PEP 723 scripts, so I need them to share a single environment. Of course I need to make sure their dependencies align but that's my concern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-13 15:08</div>
+            <div class="timeline-body"><p>Candidly, using a shared virtual environment across your scripts is sort of in conflict with the inherent design and intent of scripts -- scripts are intended to be isolated, and syncing multiple scripts in sequence against a single environment could easily lead to an environment that doesn't work for <em>some</em> of the scripts. It's great if <code>--active</code> works for you! But I doubt we'll build features around that intended workflow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Quasar6X">@Quasar6X</a> on 2025-02-14 06:51</div>
+            <div class="timeline-body"><p>Yeah, I completley understand your take, this is a very niche and error prone use case indeed. I'm closing this issue as completed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Quasar6X on 2025-02-14 06:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

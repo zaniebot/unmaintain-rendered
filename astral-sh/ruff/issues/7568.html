@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow disabling sub-config required-versions - astral-sh/ruff #7568</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow disabling sub-config required-versions</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7568">#7568</a>
+        opened by <a href="https://github.com/xmo-odoo">@xmo-odoo</a>
+        on 2023-09-21 11:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/xmo-odoo">@xmo-odoo</a> on 2023-09-21 11:16</div>
+            <div class="timeline-body"><p>From what I understand, ruff currently aborts as soon as it finds a <code>required-version</code> mismatch.</p>
+<p>This is an issue when e.g. using / submodule-ing multiple repositories with incompatible required-version, as running ruff now requires <code>--ignore</code> or <code>-c</code>, and the sub-configurations will otherwise be ignored.</p>
+<p>Possible improvements (compatible with one another):</p>
+<ul>
+<li>allow disabling required-version on the CLI</li>
+<li>allow a configuration higher up to ignore the sub-configurations' required-version</li>
+<li>only skip (and warn about) directories where an incompatible <code>required-version</code> is specified, instead of aborting the run entirely</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-22 03:53</div>
+            <div class="timeline-body"><p>I believe your description of current behavior is correct. I'm a little torn on what to change here, if anything -- the current behavior is kind of working as intended, since if you have a submodule with a different required version that the current version, it <em>should</em> error? I'm hesitant to change it to a warning. I'm most open to the idea of allowing a CLI override for <code>required-version</code>.</p>
+<p>I'm wondering, though -- could you not add your submodules to an <code>extend-ignore</code> field in the <code>pyproject.toml</code> of the parent project? Wouldn't that be easier than having to pass <code>--no-required-version</code> on the CLI every time?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-09-22 03:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-09-22 03:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xmo-odoo">@xmo-odoo</a> on 2023-09-22 05:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe your description of current behavior is correct. I'm a little torn on what to change here, if anything -- the current behavior is kind of working as intended, since if you have a submodule with a different required version that the current version, it <em>should</em> error? I'm hesitant to change it to a warning. I'm most open to the idea of allowing a CLI override for <code>required-version</code>.</p>
+</blockquote>
+<p>I'm sure it makes sense on CI and thus as default behaviour I guess, but it's an issue when trying to run ruff locally for informational or convenience purpose, especially if the projects being mixed and matched are more or less independent e.g. plugins systems or the like. Modifying the source file can be done if directly vendoring (copying), but it's a risk when using something like submodules and makes updates of the vendored code more complicated (best case scenario the update causes a conflict which has to be resolved, worst the change is lost and has to be re-discovered and reimplemented again).</p>
+<blockquote>
+<p>I'm wondering, though -- could you not add your submodules to an <code>extend-ignore</code> field in the <code>pyproject.toml</code> of the parent project? Wouldn't that be easier than having to pass <code>--no-required-version</code> on the CLI every time?</p>
+</blockquote>
+<p>I'm not sure I understand the idea, doesn't extend-ignore take rules? And wouldn't the sub-pyproject.toml still be there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2023-12-07 12:10</div>
+            <div class="timeline-body"><p>In fact I would like to propose allowing <code>required-version</code> to work like in other tools where is working more like <code>min-version</code> required. At least it would fail only if it finds that the version used is older.</p>
+<p>Current feasure is incompatible with pre-commit hook of ruff, as when doing auto-update of ruff, the value from the config will get in conflict.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

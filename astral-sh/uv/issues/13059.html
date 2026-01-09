@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorization to azure private registry by environment variable doesn't work - astral-sh/uv #13059</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Authorization to azure private registry by environment variable doesn't work</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13059">#13059</a>
+        opened by <a href="https://github.com/krasnikau-andrei">@krasnikau-andrei</a>
+        on 2025-04-22 18:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/krasnikau-andrei">@krasnikau-andrei</a> on 2025-04-22 18:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I set variables like this</p>
+<pre><code>export UV_INDEX_PROJECTX_PYTHON_USERNAME=org-name2
+export UV_INDEX_PROJECTX_PYTHON_PASSWORD=&lt;PAT for org-name2&gt;
+
+export UV_INDEX_PROJECTY_PYTHON_USERNAME=org-name2
+export UV_INDEX_PROJECTY_PYTHON_PASSWORD=&lt;PAT for org-name2&gt;
+
+export UV_INDEX_PROJECTZ_PYTHON_USERNAME=org-name1
+export UV_INDEX_PROJECTZ_PYTHON_PASSWORD=&lt;PAT for org-name1&gt;
+</code></pre>
+<p>my pyproject.toml contains</p>
+<pre><code class="language-toml">...
+
+[[tool.uv.index]]
+name = &quot;projectx-python&quot;
+url = &quot;https://pkgs.dev.azure.com/org-name2/ProjectX/_packaging/projectx-python/pypi/simple/&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;projecty-python&quot;
+url = &quot;https://pkgs.dev.azure.com/org-name2/ProjectY/_packaging/projecty_python/pypi/simple/&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;projectz-python&quot;
+url = &quot;https://pkgs.dev.azure.com/org-name1/ProjectZ/_packaging/projectz-python/pypi/simple/&quot;
+explicit = true
+
+...
+</code></pre>
+<p>If I do <code>uv sync -vvv</code> I get</p>
+<pre><code class="language-log">TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE flushing buffer
+TRACE drop_stream_ref; stream=Stream { id: StreamId(21), state: State { inner: Closed(EndStream) }, is_counted: false, ref_count: 2, next_pending_send: None, is_pending_send: false, send_flow: FlowControl { window_size: Window(8388608), available: Window(0) }, requested_send_capacity: 0, buffered_send_data: 0, send_task: None, pending_send: Deque { indices: None }, next_pending_send_capacity: None, is_pending_send_capacity: false, send_capacity_inc: false, next_open: None, is_pending_open: false, is_pending_push: false, next_pending_accept: None, is_pending_accept: false, recv_flow: FlowControl { window_size: Window(2097152), available: Window(2097152) }, in_flight_recv_data: 0, next_window_update: None, is_pending_window_update: false, reset_at: None, next_reset_expire: None, pending_recv: Deque { indices: Some(Indices { head: 25, tail: 25 }) }, is_recv: true, recv_task: None, push_task: None, pending_push_promises: Queue { indices: None, _p: PhantomData&lt;h2::proto::streams::stream::NextAccept&gt; }, content_length: Remaining(0) }
+TRACE transition_after; stream=StreamId(21); state=State { inner: Closed(EndStream) }; is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=0
+TRACE drop_stream_ref; stream=Stream { id: StreamId(19), state: State { inner: Closed(EndStream) }, is_counted: false, ref_count: 1, next_pending_send: None, is_pending_send: false, send_flow: FlowControl { window_size: Window(8388608), available: Window(0) }, requested_send_capacity: 0, buffered_send_data: 0, send_task: None, pending_send: Deque { indices: None }, next_pending_send_capacity: None, is_pending_send_capacity: false, send_capacity_inc: false, next_open: None, is_pending_open: false, is_pending_push: false, next_pending_accept: None, is_pending_accept: false, recv_flow: FlowControl { window_size: Window(2096809), available: Window(2096809) }, in_flight_recv_data: 343, next_window_update: None, is_pending_window_update: false, reset_at: None, next_reset_expire: None, pending_recv: Deque { indices: None }, is_recv: false, recv_task: None, push_task: None, pending_push_promises: Queue { indices: None, _p: PhantomData&lt;h2::proto::streams::stream::NextAccept&gt; }, content_length: Remaining(0) }
+TRACE auto-release closed stream (StreamId(19)) capacity: 343
+TRACE release_connection_capacity; size=343, connection in_flight_data=343
+TRACE transition_after; stream=StreamId(19); state=State { inner: Closed(EndStream) }; is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=0
+TRACE drop_stream_ref; stream=Stream { id: StreamId(21), state: State { inner: Closed(EndStream) }, is_counted: false, ref_count: 1, next_pending_send: None, is_pending_send: false, send_flow: FlowControl { window_size: Window(8388608), available: Window(0) }, requested_send_capacity: 0, buffered_send_data: 0, send_task: None, pending_send: Deque { indices: None }, next_pending_send_capacity: None, is_pending_send_capacity: false, send_capacity_inc: false, next_open: None, is_pending_open: false, is_pending_push: false, next_pending_accept: None, is_pending_accept: false, recv_flow: FlowControl { window_size: Window(2097152), available: Window(2097152) }, in_flight_recv_data: 0, next_window_update: None, is_pending_window_update: false, reset_at: None, next_reset_expire: None, pending_recv: Deque { indices: None }, is_recv: false, recv_task: None, push_task: None, pending_push_promises: Queue { indices: None, _p: PhantomData&lt;h2::proto::streams::stream::NextAccept&gt; }, content_length: Remaining(0) }
+TRACE transition_after; stream=StreamId(21); state=State { inner: Closed(EndStream) }; is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=0
+TRACE Considering retry of error: Error { kind: WrappedReqwestError(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pkgs.dev.azure.com&quot;)), port: None, path: &quot;/org-name2/.../_packaging/.../pypi/download/.../.../...-...-py3-none-any.whl&quot;, query: None, fragment: None }, WrappedReqwestError(Reqwest(reqwest::Error { kind: Status(401), url: &quot;https://pkgs.dev.azure.com/org-name2/.../_packaging/.../pypi/download/.../.../...-...-py3-none-any.whl&quot; }))) }
+TRACE Cannot retry error: not an IO error
+DEBUG Released lock at `C:\Users\User_Name\AppData\Local\uv\cache\wheels-v5\index\9b9bef920e2ef195\...\...-...-py3-none-any.lock`
+TRACE Streams::recv_eof
+TRACE Streams::recv_eof
+error: Failed to fetch: `https://pkgs.dev.azure.com/org-name2/.../_packaging/.../pypi/download/.../.../...-...-py3-none-any.whl`
+  Caused by: HTTP status client error (401 Unauthorized) for url (https://pkgs.dev.azure.com/org-name2/.../_packaging/.../pypi/download/.../.../...-...-py3-none-any.whl)
+</code></pre>
+<p>I know that PAT is valid because this line works fine</p>
+<pre><code class="language-bash">uv pip install --index-url https://org-name:&lt;PAT for org-name1&gt;@pkgs.dev.azure.com/org-name1/ProjectZ/_packaging/projectz-python/pypi/simple/ projectz-package
+</code></pre>
+<p>Also, if I put purposefully incorrect PATs I will get a different error.</p>
+<pre><code class="language-log">... depends on projectz-package==...
+  projectz-package not found in the package registry
+  × No solution found when resolving dependencies:
+  ╰─▶ Because projectz-package was not found in the package registry and your
+      project depends on projectz-package==..., we can conclude that
+      your project's requirements are unsatisfiable.
+
+      hint: An index URL
+      (https://pkgs.dev.azure.com/org-name1/ProjectZ/_packaging/projectz-python/pypi/simple/)
+      could not be queried due to a lack of valid authentication credentials
+      (401 Unauthorized).
+
+      hint: An index URL
+      (https://pkgs.dev.azure.com/org-name2/ProjectY/_packaging/projecty_python/pypi/simple/)
+      could not be queried due to a lack of valid authentication credentials
+      (401 Unauthorized).
+
+      hint: An index URL
+      (https://pkgs.dev.azure.com/org-name2/ProjectX/_packaging/projectx-python/pypi/simple/)
+      could not be queried due to a lack of valid authentication credentials
+      (401 Unauthorized).
+TRACE Streams::recv_eof
+</code></pre>
+<h3>Platform</h3>
+<p>Windows 11</p>
+<h3>Version</h3>
+<p>uv 0.6.14 (a4cec56dc 2025-04-09)</p>
+<h3>Python version</h3>
+<p>can't execute <code>uv run python --version</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @krasnikau-andrei on 2025-04-22 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krasnikau-andrei">@krasnikau-andrei</a> on 2025-04-22 18:48</div>
+            <div class="timeline-body"><p>Same issue even when I use</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;repository1&quot;
+url = &quot;https://repo1:&lt;PAT1&gt;@pkgs.dev.azure.com/repo1/Project1/_packaging/some-other-repo/pypi/simple/&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;repository2&quot;
+url = &quot;https://repo2:&lt;PAT2&gt;@pkgs.dev.azure.com/repo2/Project2/_packaging/some-repo/pypi/simple/&quot;
+explicit = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-04-23 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-23 10:39</div>
+            <div class="timeline-body"><p>Thanks for the detailed report! This is related to the fix on #12717 (part of the upcoming <code>0.7.0</code> release), but it looks like that fix won't address your specific problem. I am currently working on an improvement to #12717 that will handle cases like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-23 15:18</div>
+            <div class="timeline-body"><p>The problem here is that Azure is returning file URLs with UUIDs in place of the human-readable <code>&lt;PROJECT&gt;</code> and <code>&lt;FEED&gt;</code> values in the Azure index URL: <code>https://pkgs.dev.azure.com/&lt;ORG&gt;/&lt;PROJECT&gt;/_packaging/&lt;FEED&gt;/pypi/simple/</code>. This is only an issue when you are using Azure indexes from separate organizations where realm-level caching isn't enough to cover more than one.</p>
+<p>As a workaround for now, you can update your configured index URLs to include the UUIDs. Those are the UUIDs you see in the URL in the error message.</p>
+<p>You could also use this rough command using <code>httpie</code> and <code>jq</code> to get the UUIDs for your projects and feeds (fill in the value for <code>&lt;ORG&gt;</code> and make sure the <code>$PAT</code> env var is set in the command):</p>
+<pre><code>http -a :$PAT https://feeds.dev.azure.com/&lt;ORG&gt;/_apis/packaging/feeds?api-version=7.1-preview.1 | jq -r '
+  .value
+  | group_by(.project.id)[]
+  | .[0] as $p
+  | &quot;PROJECT: \($p.project.name) -- \($p.project.id)&quot;
+  , (map(&quot;  FEED: \(.name) -- \(.id)&quot;))
+'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13044.html">astral-sh/uv#13044</a> on 2025-04-23 15:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

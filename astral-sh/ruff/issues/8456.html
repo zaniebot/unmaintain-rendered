@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff not working with fixing imports force-single-line=true - astral-sh/ruff #8456</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff not working with fixing imports force-single-line=true</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8456">#8456</a>
+        opened by <a href="https://github.com/SanketDG">@SanketDG</a>
+        on 2023-11-03 02:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SanketDG">@SanketDG</a> on 2023-11-03 02:54</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p><code>test.py</code></p>
+<pre><code class="language-python">from tests.helpers.db import (
+    setup_db,
+    setup_db2,
+)
+
+setup_db()
+setup_db2()
+</code></pre>
+<p><code>pyproject.toml</code></p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 120
+exclude = [&quot;entrypoint.py&quot;]
+
+[tool.ruff.isort]
+force-single-line = true
+
+[tool.ruff.format]
+quote-style = &quot;double&quot;
+indent-style = &quot;space&quot;
+skip-magic-trailing-comma = false
+line-ending = &quot;auto&quot;
+</code></pre>
+<p><code>ruff check</code> or <code>ruff format</code> does not output anything.
+Also tried <code> ruff check test.py --isolated --fix</code></p>
+<pre><code>ruff --version                                  
+ruff 0.1.3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-03 03:04</div>
+            <div class="timeline-body"><p>I'm unable to reproduce this -- if you try it in the playground, <code>ruff check</code> works as expected: https://play.ruff.rs/c56a6c61-188a-4606-9b69-85fcd129acb3. So it may be an issue with your configuration. Are you sure your configuration is being applied to the file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-11-03 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-03 16:34</div>
+            <div class="timeline-body"><p>I'm going to close as I think this is working as intended and so doesn't seem to be a <em>bug</em>, but if you have any follow-ups I'm happy to help work through here in the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-03 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ishefi">@ishefi</a> on 2023-12-26 11:11</div>
+            <div class="timeline-body"><p>happens to me as well -- my <code>pyproject.toml</code> has the following section:</p>
+<pre><code>[tool.ruff.lint.isort]
+force-single-line = true
+</code></pre>
+<p>Could it be that the issue is with reading configurations from <code>pyproject.toml</code>?</p>
+<p>ruff version 0.1.9</p>
+<p>EDIT: it works after I added the following to <code>pyproject.toml</code>:</p>
+<pre><code>[tool.ruff]
+select = [&quot;F&quot;, &quot;I&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/skhaz">@skhaz</a> on 2024-11-18 17:19</div>
+            <div class="timeline-body"><p>I am now getting</p>
+<blockquote>
+<p>The top-level linter settings are deprecated in favour of their counterparts in the <code>lint</code> section. Please update the following options in <code>pyproject.toml</code>:</p>
+<ul>
+<li>'select' -&gt; 'lint.select'</li>
+</ul>
+</blockquote>
+<p>When I add</p>
+<pre><code>[tool.ruff]
+select = [&quot;F&quot;, &quot;I&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-18 17:22</div>
+            <div class="timeline-body"><p>@skhaz can you try</p>
+<pre><code>[tool.ruff.lint]
+select = [&quot;F&quot;, &quot;I&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/skhaz">@skhaz</a> on 2024-11-18 18:08</div>
+            <div class="timeline-body"><p>Perfect, thank you so much!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

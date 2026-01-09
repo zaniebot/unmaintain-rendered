@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPY001 should not replace `np.bool` by `bool` (at least in type hints) - astral-sh/ruff #11093</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>NPY001 should not replace `np.bool` by `bool` (at least in type hints)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11093">#11093</a>
+        opened by <a href="https://github.com/bersbersbers">@bersbersbers</a>
+        on 2024-04-22 20:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2024-04-22 20:32</div>
+            <div class="timeline-body"><p><code>bug.py</code></p>
+<pre><code class="language-python">import numpy as np
+import numpy.typing as npt
+
+bad1: npt.NDArray[np.bool_] = np.array([True])
+good: npt.NDArray[np.bool] = np.array([True])
+bad2: npt.NDArray[bool] = np.array([True])
+</code></pre>
+<p>For <code>mypy</code> v1.9.0, only <code>np.bool</code> is acceptable:</p>
+<pre><code>bug.py:4: error: Name &quot;np.bool_&quot; is not defined  [name-defined]
+bug.py:6: error: Type argument &quot;bool&quot; of &quot;NDArray&quot; must be a subtype of &quot;generic&quot;  [type-var]
+bug.py:6: note: See https://mypy.rtfd.io/en/stable/_refs.html#code-type-var for more info
+Found 2 errors in 1 file (checked 1 source file)
+</code></pre>
+<p>However, <code>NPY001</code> does not like that solution:</p>
+<pre><code>ruff check --isolated --select NPY001 bug.py
+</code></pre>
+<pre><code>bug.py:5:19: NPY001 [*] Type alias `np.bool` is deprecated, replace with builtin type
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p><code>--fix</code> gives</p>
+<pre><code class="language-python">import numpy as np
+import numpy.typing as npt
+
+bad1: npt.NDArray[np.bool_] = np.array([True])
+good: npt.NDArray[bool] = np.array([True])
+bad2: npt.NDArray[bool] = np.array([True])
+</code></pre>
+<p>Keywords: numpy 2, deprecation, bool, bool_</p>
+<p>ruff 0.4.1
+mypy 1.9.0
+numpy 2.0.0rc1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2024-04-22 20:38</div>
+            <div class="timeline-body"><p>See also https://github.com/numpy/numpy/pull/25080</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-22 23:49</div>
+            <div class="timeline-body"><p>Is this considered &quot;recommended&quot; by NumPy, or is it a bug or limitation in the type definitions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-22 23:49</div>
+            <div class="timeline-body"><p>\cc @mtsokol if you know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @charliermarsh on 2024-04-22 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2024-04-23 04:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this considered &quot;recommended&quot; by NumPy</p>
+</blockquote>
+<p>This. See https://numpy.org/devdocs/release/2.0.0-notes.html#changes, 5th bullet in &quot;Changes&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmke8">@tmke8</a> on 2024-04-30 14:45</div>
+            <div class="timeline-body"><p>So, it seems <code>np.bool</code> used to be an alias for built-in <code>bool</code> while <code>np.bool_</code> was a separate type. The <code>np.bool</code> alias was then deprecated in numpy 1.20, which is what NPY001 is about. But then numpy 2.0 renamed <code>np.bool_</code> to <code>np.bool</code> (while keeping <code>np.bool_</code> as an alias for the new <code>np.bool</code> for backwards compatibility with numpy 1.x), so now the depreciation from numpy 1.20 conflicts with the new recommended name in numpy 2.0 for <code>np.bool_</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2024-06-03 16:22</div>
+            <div class="timeline-body"><p>fyi, numpy 2 will not be released until June 16 (https://github.com/numpy/numpy/issues/24300#issuecomment-2125643448).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtsokol">@mtsokol</a> on 2024-06-04 08:44</div>
+            <div class="timeline-body"><p>Right, I'll adjust the NPY001 to NumPy 2.0 changes to avoid a conflict with the NPY201 rule (namely <code>np.bool</code> was restored and points to NumPy's bool instead of a bool builtin, and <code>np.long</code> is back and points to C's <code>long</code> and <code>unsigned long</code> instead of a int builtin).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11735.html">astral-sh/ruff#11735</a> on 2024-06-04 09:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtsokol">@mtsokol</a> on 2024-06-04 09:33</div>
+            <div class="timeline-body"><p>I opened a PR for it: https://github.com/astral-sh/ruff/pull/11735</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtsokol">@mtsokol</a> on 2024-06-04 09:36</div>
+            <div class="timeline-body"><p>@bersbersbers FYI we noticed that the new <code>np.bool_</code> alias is missing a typing stub so we readded it (https://github.com/numpy/numpy/pull/26210). If you upgrade to <code>2.0.0rc2</code> mypy shouldn't complain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtsokol">@mtsokol</a> on 2024-06-06 06:28</div>
+            <div class="timeline-body"><p>I think we can close it as resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2024-06-06 06:31</div>
+            <div class="timeline-body"><p>Yes, verified 0.4.8. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bersbersbers on 2024-06-06 06:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

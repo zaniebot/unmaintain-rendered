@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM300 fix swaps operands with side effects - astral-sh/ruff #14761</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM300 fix swaps operands with side effects</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14761">#14761</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2024-12-03 18:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-12-03 18:43</div>
+            <div class="timeline-body"><p>The fix for <a href="https://docs.astral.sh/ruff/rules/yoda-conditions/"><code>yoda-conditions</code> (SIM300)</a> changes the program’s behavior in Ruff 0.8.1 when the two operands have side effects. The fix should be suppressed or marked unsafe when that happens.</p>
+<p>This can happen when the first operand is a non-empty dictionary display, which is always marked as probably constant regardless of its contents.</p>
+<pre><code class="language-console">$ cat sim300_1.py
+{&quot;&quot;: print(1)} == print(2)
+
+$ python sim300_1.py
+1
+2
+
+$ ruff check --isolated --select SIM300 sim300_1.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat sim300_1.py
+print(2) == {&quot;&quot;: print(1)}
+
+$ python sim300_1.py
+2
+1
+</code></pre>
+<p>It can also happen when the first operand is an all-caps attribute.</p>
+<pre><code class="language-console">$ cat sim300_2.py
+class C:
+    def __getattr__(self, name):
+        print(name)
+        return name
+C().A == print('B')
+
+$ python sim300_2.py
+A
+B
+
+$ ruff check --isolated --select SIM300 sim300_2.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat sim300_2.py
+class C:
+    def __getattr__(self, name):
+        print(name)
+        return name
+print('B') == C().A
+
+$ python sim300_2.py
+B
+A
+</code></pre>
+<p>There might be other cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2024-12-04 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2024-12-04 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-06 02:55</div>
+            <div class="timeline-body"><p>This is so ridiculous but you are of course right lol.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15164.html">astral-sh/ruff#15164</a> on 2024-12-28 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-30 10:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

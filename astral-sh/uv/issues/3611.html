@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>universal-lock: clean up lock file format - astral-sh/uv #3611</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>universal-lock: clean up lock file format</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3611">#3611</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-05-15 16:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-15 16:43</div>
+            <div class="timeline-body"><p>In #3314, an initial version of a universal lock file format was added. It came with a lot of TODOs in the code and some uncertainties with the data model. Before we declare the lock file ready to use by users, we should take another pass over it and smooth things out. Here is a non-exhaustive list of things:</p>
+<ul>
+<li>[x] #4924</li>
+<li>[x] There are some redundancies in the current format where we repeat information. For example, if we have a path dependency to a wheel, the path is encoded in the source (part of the distribution's ID) and then again in a <code>wheel</code> table. The same happens for sdists I believe. I think we would ideally not have <code>wheel</code> or <code>sdist</code> tables for distributions that have a <code>path</code> or <code>directory</code> or <code>git</code> source. I think the rule should be that an <code>sdist</code> and <code>wheel</code> table are only present if it's <em>possible</em> for more than one of them to exist. I think that only happens with registry dependencies.</li>
+<li>[x] Don't store absolute paths for path dependencies (https://github.com/astral-sh/uv/issues/3506)</li>
+<li>[x] The actual TOML serialization format is a bit bulky right now. I think it uses table arrays a bit too much. I'd love to, for example, squash wheels down into an inline table or an array of strings.</li>
+<li>[x] Consider indenting <code>[distribution.dependencies]</code> to make the file easier to scan.</li>
+<li>[x] Improve the formatting of source, specifically paths, e.g. we currently have <code>source = &quot;editable+.&quot;</code> which looks bad.</li>
+<li>[x] The git source could use an audit and a potential refactor. We need to decide on how we want to encode the various git information (revision, tag, branch, sub-directory, URL).</li>
+<li>[x] We should be able to drop the <code>source</code> (and possibly also <code>version</code>) from a <code>distribution.dependency</code> entry when there is only one distribution with that package name.</li>
+<li>[x] Explore whether merge conflicts are created in basic cases. For example, if two different PRs add different dependencies and one gets merged, does the other PR wind up with conflicts that must be merged by hand?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @BurntSushi on 2024-05-15 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3347.html">astral-sh/uv#3347</a> on 2024-05-15 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-18 13:48</div>
+            <div class="timeline-body"><p>Another piece here: we currently lose the file size (reported by the registry), which is used in downloading to facilitate prioritization (i.e., we start larger downloads earlier).</p>
+<p>(Done in #3652.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3652.html">astral-sh/uv#3652</a> on 2024-05-18 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3909.html">astral-sh/uv#3909</a> on 2024-05-29 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4205.html">astral-sh/uv#4205</a> on 2024-06-11 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4513.html">astral-sh/uv#4513</a> on 2024-06-25 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4528.html">astral-sh/uv#4528</a> on 2024-06-25 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4581.html">astral-sh/uv#4581</a> on 2024-06-27 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-27 13:23</div>
+            <div class="timeline-body"><p>For testing whether conflicts happen with independent updates to the lock file, I did something like this. To start:</p>
+<pre><code>$ cat &gt; pyproject.toml &lt;&lt;EOF
+[project]
+name = 'project'
+version = '0.1.0'
+requires-python = '&gt;=3.12'
+dependencies = [
+  'anyio&lt;4.4',
+  'click',
+  'Flask&lt;3.0.3',
+]
+EOF
+$ uv lock
+</code></pre>
+<p>Then I made two branches from this point: one where I changed <code>anyio&lt;4.4</code> to <code>anyio&lt;5</code> and re-locked, and another where I changed <code>Flask&lt;3.0.3</code> to <code>Flask&lt;4</code> and re-locked. In both cases, the lock file is updated to new versions of packages. I then went back to <code>master</code> and tried to merge each of the branches, one after the other (in both orders). The result is that they both merge cleanly.</p>
+<p>I then tried this same example with Poetry. Starting with:</p>
+<pre><code>$ cat &gt; pyproject.toml &lt;&lt;EOF
+[tool.poetry]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;&quot;
+authors = [&quot;someone&quot;]
+
+[tool.poetry.dependencies]
+python = &quot;^3.12&quot;
+anyio = &quot;&lt;4.4&quot;
+click = &quot;*&quot;
+Flask = &quot;&lt;3.0.3&quot;
+
+[build-system]
+requires = [&quot;poetry-core&quot;]
+build-backend = &quot;poetry.core.masonry.api&quot;
+$ poetry lock
+</code></pre>
+<p>I then repeated the same process as above: creating two different branches from master, updating <code>anyio</code> in one and <code>Flask</code> in another and then re-locking. I then went back to master and tried to merge the anyio update branch, which worked, but then trying to merge the Flask update branch results in a merge conflict:</p>
+<pre><code>$ git merge --no-ff ag/update-flask
+Auto-merging poetry.lock
+CONFLICT (content): Merge conflict in poetry.lock
+Auto-merging pyproject.toml
+Recorded preimage for 'poetry.lock'
+Automatic merge failed; fix conflicts and then commit the result.
+
+$ git diff
+diff --cc poetry.lock
+index d5a5b19,acd9943..0000000
+--- a/poetry.lock
++++ b/poetry.lock
+@@@ -217,4 -217,4 +217,8 @@@ watchdog = [&quot;watchdog (&gt;=2.3)&quot;
+  [metadata]
+  lock-version = &quot;2.0&quot;
+  python-versions = &quot;^3.12&quot;
+++&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+ +content-hash = &quot;a84aedf401179b44c4e263992f3be48a231859fbe39edb2d8e315db13cc7f2ce&quot;
+++=======
++ content-hash = &quot;5ebe45498202bf09fe0279c1096870f7f6e766ff0b09cd255f80d4aa31f723a4&quot;
+++&gt;&gt;&gt;&gt;&gt;&gt;&gt; ag/update-flask
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbidoul">@sbidoul</a> on 2024-07-13 14:11</div>
+            <div class="timeline-body"><p>Hi, do you have any plan regarding locking of build dependencies (build-system.requires) for sdists and source trees ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-13 16:46</div>
+            <div class="timeline-body"><p>Not currently, but it would be a natural thing for us to support... It's somewhat expensive because it means we have to download the source distribution for all packages regardless of whether we can extract the metadata from a wheel alone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbidoul">@sbidoul</a> on 2024-07-13 17:48</div>
+            <div class="timeline-body"><p>And will there be a mean for the sync/install command to abort if it has to download a build dependency that is not locked?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-15 10:56</div>
+            <div class="timeline-body"><p>@sbidoul Could you add a separate issue with some background on the motivation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 23:03</div>
+            <div class="timeline-body"><p>All the issues above have been crossed off. Lets close this out for now and we can track new issues separately as they come up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-17 23:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5190.html">astral-sh/uv#5190</a> on 2024-07-18 15:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valid python files, that fails to parse in ruff - astral-sh/ruff #7632</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Valid python files, that fails to parse in ruff</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7632">#7632</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2023-09-24 18:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2023-09-24 18:18</div>
+            <div class="timeline-body"><p>Ruff 0.0.291
+Cpython 3.11.4</p>
+<p>Tested with</p>
+<pre><code>ruff format . --check
+</code></pre>
+<p>and cpython part</p>
+<pre><code>python -m compileall .
+</code></pre>
+<p><a href="https://github.com/astral-sh/ruff/files/12709323/RuffBroken.zip">RuffBroken.zip</a></p>
+<p>Example of file</p>
+<pre><code>from ..const import d#ta_source_const
+
+def validate_incming_payload(baseballdc_request):
+
+    requested_data_source_trimmed = baseballdc_request['data_source'].strip().upper()
+
+    if(requested_data_source_trimmed not in data_source_const.DATA_SOURCE_LIST):
+        raise ValueError(generate_data_source_error_message(baseballdc_request))
+
+def generate_data_source_error_message(baseballdc_request): 
+
+    requested_data_source = baseballdc_request['data_source']
+    valid_data_sources = data_source_cons.DATA_SOURCE_LIST
+
+    error_message_text = 'Value error in the incoming request payload:'
+    data_sourcÛ_error_text = f'The data source requested (&quot;{requested_data_source}&quot;) was not valid.'
+    valid_data_source_text = f'The current list of valid datasources to choose from for basblldc is: {valid_data_sources}'
+
+    return f'{error_message_text}\n\n{data_source_erro%_text}\{valid_data_source_text}\n';
+</code></pre>
+<p>error</p>
+<pre><code>error: Failed to format 48_IDX_0_RAND_14765242697460627399.py: source contains syntax errors: ParseError { error: Lexical(FStringError(SingleRbrace)), offset: 908, source_path: &quot;&lt;filename&gt;&quot; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-09-24 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @charliermarsh on 2023-09-24 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-25 04:38</div>
+            <div class="timeline-body"><p>The following files contains f-string errors which will be fixed by #7376. I've verified that those files are parsed without any errors on that branch:</p>
+<ul>
+<li><code>335_IDX_0_RAND_13905148532772824398.py</code></li>
+<li><code>48_IDX_0_RAND_14765242697460627399.py</code></li>
+<li><code>586_IDX_0_RAND_36061242038301280.py</code></li>
+<li><code>855_IDX_0_RAND_15689123331827052431.py</code></li>
+</ul>
+<p>Other files contains identifier starting with unicode character which we're unable to identify which then produces a syntax error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qarmin">@qarmin</a> on 2023-09-29 07:02</div>
+            <div class="timeline-body"><p>Looks that #7376 introduced regression, and now some valid python files shows errors:</p>
+<pre><code>error: Failed to format 549_IDX_0_RAND_5726799750657298695.py: source contains syntax errors: LexicalError { error: FStringError(UnterminatedString), location: 3282 }
+error: Failed to format 230_IDX_0_RAND_14394415519784108053.py: source contains syntax errors: ParseError { error: UnrecognizedToken(For, None), offset: 1799, source_path: &quot;&lt;filename&gt;&quot; }
+</code></pre>
+<p><a href="https://github.com/astral-sh/ruff/files/12761815/RuffBroken.zip">RuffBroken.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-29 08:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Looks that #7376 introduced regression, and now some valid python files shows errors:</p>
+<pre><code>error: Failed to format 549_IDX_0_RAND_5726799750657298695.py: source contains syntax errors: LexicalError { error: FStringError(UnterminatedString), location: 3282 }
+error: Failed to format 230_IDX_0_RAND_14394415519784108053.py: source contains syntax errors: ParseError { error: UnrecognizedToken(For, None), offset: 1799, source_path: &quot;&lt;filename&gt;&quot; }
+</code></pre>
+<p><a href="https://github.com/astral-sh/ruff/files/12761815/RuffBroken.zip">RuffBroken.zip</a></p>
+</blockquote>
+<p>CC: @dhruvmanila</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-30 17:15</div>
+            <div class="timeline-body"><p>@dhruvmanila - We should probably try to fix these regressions before the next release. I can also help out if needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-30 18:31</div>
+            <div class="timeline-body"><p><code>230_IDX_0_RAND_14394415519784108053.py</code>: This fails on 3.12.0rc3 as well because the generator is missing the parentheses. I'm surprised that it parses on 3.11. Maybe it's because the parentheses were added manually? Atleast in our case we did the expression parsing by adding the surrounding parentheses manually. So,</p>
+<pre><code class="language-diff">- f&quot;', '.join({ckt.name for ckt in self._ckts_with_errors})&quot;
++ f&quot;', '.join({(ckt.name for ckt in self._ckts_with_errors)})&quot;
+</code></pre>
+<p>It fails in the same way the below code fails:</p>
+<pre><code class="language-python">foo = ckt.name for ckt in self._ckts_with_errors
+</code></pre>
+<hr />
+<p><code>549_IDX_0_RAND_5726799750657298695.py</code>: This is failing because of Windows newline. A minimal repro:</p>
+<pre><code class="language-python">f'text \\r\n
+more text'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7722.html">astral-sh/ruff#7722</a> on 2023-09-30 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-10-01 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7731.html">astral-sh/ruff#7731</a> on 2023-10-01 02:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

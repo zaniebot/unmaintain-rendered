@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SubCommand suggests FLAGS that are not valid - clap-rs/clap #803</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SubCommand suggests FLAGS that are not valid</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/803">#803</a>
+        opened by <a href="https://github.com/phrohdoh">@phrohdoh</a>
+        on 2017-01-03 02:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/phrohdoh">@phrohdoh</a> on 2017-01-03 02:26</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<ul>
+<li><code>rustc 1.16.0-nightly (4ecc85beb 2016-12-28)</code></li>
+</ul>
+<h3>Affected Version of clap</h3>
+<ul>
+<li><code>2.19.3</code></li>
+</ul>
+<h3>Expected Behavior Summary</h3>
+<p>FLAGS section should:</p>
+<ol>
+<li>Not be present if no flags are available</li>
+<li>Not show flags that are not available for said subcommand</li>
+</ol>
+<h3>Actual Behavior Summary</h3>
+<p>FLAGS section includes <code>-h/--help</code> and <code>-V/--version</code>.</p>
+<h3>Steps to Reproduce the issue</h3>
+<pre><code>tmba:sentinel-cli thill $ ./target/debug/sentinel-cli help init
+sentinel-cli-init 0.1.0
+Taryn Hill &lt;taryn@phrohdoh.com&gt;
+Initialize a new Sentinel project in the given directory
+
+USAGE:
+    sentinel-cli init [&lt;path&gt;]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    &lt;path&gt;    Defaults to the current directory
+</code></pre>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">    let matches = App::new(&quot;sentinel-cli&quot;)
+        .version(&quot;0.1.0&quot;)
+        .author(&quot;Taryn Hill &lt;taryn@phrohdoh.com&gt;&quot;)
+        .about(&quot;CLI for Sentinel -- git hooks that guard you from yourself&quot;)
+        .setting(AppSettings::SubcommandRequiredElseHelp)
+        .subcommand(SubCommand::with_name(&quot;init&quot;)
+            .about(&quot;Initialize a new Sentinel project in the given directory&quot;)
+            .version(&quot;0.1.0&quot;)
+            .author(&quot;Taryn Hill &lt;taryn@phrohdoh.com&gt;&quot;)
+            .arg(Arg::with_name(&quot;path&quot;)
+                .value_name(&quot;path&quot;)
+                .help(&quot;Defaults to the current directory&quot;)
+                .index(1)))
+        .get_matches();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-03 03:40</div>
+            <div class="timeline-body"><p><code>--help</code> and <code>--version</code> <em>are</em> available for the subcommand though.</p>
+<pre><code>$ sentinel-cli init --version
+sentinel-cli-init 0.1.0
+</code></pre>
+<p>This is because some people will develop subcomands as either external applicaitons/plugins (like <code>cargo</code>) or wish to have their subcommands have their own versions independant of the parent. If you'd like to develop the entire application (subcommands and all) with a single version number, I'd suggest using <a href="https://docs.rs/clap/2.19.3/clap/enum.AppSettings.html#variant.GlobalVersion"><code>AppSettings:GlobalVersion</code></a>.</p>
+<p>Also note the following are identical in terms of functionality:</p>
+<pre><code>$ sentinel-cli help init
+[..snip..]
+
+$ sentinel-cli init -h 
+[..snip..]
+
+$ sentinel-cli init --help
+[..snip..]
+</code></pre>
+<p>One major difference is if <code>init</code> had it's own subcommands (for example <code>foo</code>), you could also do:</p>
+<pre><code>$ sentinel-cli help init foo
+[ foo's help]
+
+$ sentinel-cli init help
+[ init's help]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2017-01-03 03:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-03 03:55</div>
+            <div class="timeline-body"><p>I forgot to mention, if you don't want them available, you simply hide help:</p>
+<pre><code class="language-rust">let app = App::new(&quot;sentinel-cli&quot;)
+    .subcommand(SubCommand::with_name(&quot;init&quot;)
+        .arg(Arg::with_name(&quot;help&quot;)
+            .long(&quot;help&quot;)
+            .hidden(true)));
+</code></pre>
+<p>And version can be disabled entirely, either globally (all child subcommands) with <a href="https://docs.rs/clap/2.19.3/clap/enum.AppSettings.html#variant.VersionlessSubcommands"><code>AppSettings::VersionlessSubcommands</code></a> or just for specific subcommands with <a href="https://docs.rs/clap/2.19.3/clap/enum.AppSettings.html#variant.DisableVersion"><code>AppSettings::DisableVersion</code></a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phrohdoh">@phrohdoh</a> on 2017-01-03 17:02</div>
+            <div class="timeline-body"><p>I swear this did not work last night but it is working just as you described this time around.
+Thank you for the detailed response!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @phrohdoh on 2017-01-03 17:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP040 fixes introduce a syntax error - astral-sh/ruff #16023</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP040 fixes introduce a syntax error</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16023">#16023</a>
+        opened by <a href="https://github.com/genevieve-me">@genevieve-me</a>
+        on 2025-02-07 15:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/genevieve-me">@genevieve-me</a> on 2025-02-07 15:31</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>I recently upgraded a project to python 3.12 (declared in <code>pyproject.toml</code>'s <code>requires-python</code>) and ran <code>ruff check --fix  --unsafe-fixes</code> on the codebase, but got an error with un-applied fixes related to <code>TypeAlias</code>es.</p>
+<p>Edit: forgot to include, the ruff version is <code>ruff 0.9.5</code>.</p>
+<p>I isolated the problem to the following example <code>foo.py</code>:</p>
+<pre><code>&quot;&quot;&quot;Reuseable type objects.&quot;&quot;&quot;
+
+import asyncio
+from collections.abc import AsyncIterable, Coroutine, Iterable
+from typing import Any, TypeAlias
+
+AnyTask: TypeAlias = asyncio.Task[object]
+Awaitables: TypeAlias = (
+    AsyncIterable[Coroutine[None, None, Any]]
+    | Iterable[Coroutine[None, None, Any]]
+    | AsyncIterable[AnyTask]
+    | Iterable[AnyTask]
+)
+</code></pre>
+<p>Running <code>ruff check --fix  --unsafe-fixes foo.py</code> returns</p>
+<pre><code>error: Fix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in Ruff. If you could open an issue at: [snip] ...quoting the contents of `src/utils/foo.py`, the rule codes UP040, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+</code></pre>
+<p>The pyproject.toml settings are</p>
+<pre><code>[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+# snipped
+requires-python = &quot;&gt;=3.12&quot;
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = [&quot;ALL&quot;, &quot;D213&quot;]
+ignore = [&quot;D203&quot;, &quot;D212&quot;, &quot;COM812&quot;]
+
+[tool.ruff.lint.pydocstyle]
+convention = &quot;google&quot;
+</code></pre>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-07 15:58</div>
+            <div class="timeline-body"><p>The value was deparenthesized when it shouldn't have been:</p>
+<pre><code class="language-python"># Before
+Awaitables: TypeAlias = (
+    AsyncIterable[Coroutine[None, None, Any]]
+    | Iterable[Coroutine[None, None, Any]]
+    | AsyncIterable[AnyTask]
+    | Iterable[AnyTask]
+)
+
+# After
+type Awaitables = AsyncIterable[Coroutine[None, None, Any]]
+    | Iterable[Coroutine[None, None, Any]]
+    | AsyncIterable[AnyTask]
+    | Iterable[AnyTask]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-02-07 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-02-07 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16026.html">astral-sh/ruff#16026</a> on 2025-02-07 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-02-07 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-07 17:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

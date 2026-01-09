@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>use `default_value_t` with `ArgEnum` without manually implementing `Display` - clap-rs/clap #3185</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>use `default_value_t` with `ArgEnum` without manually implementing `Display`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3185">#3185</a>
+        opened by <a href="https://github.com/danieleades">@danieleades</a>
+        on 2021-12-16 10:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danieleades">@danieleades</a> on 2021-12-16 10:12</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Describe your use case</h3>
+<p>deriving argenums with default values is currently a little clumsy, since you have to manually implement <code>Display</code>, and you need to manually ensure that the <code>Display</code> implementation is aligned with the derived <code>ArgEnum</code> implementation</p>
+<p>for example</p>
+<pre><code class="language-rust">#[derive(Debug, Parser)]
+pub struct List {
+
+    #[clap(long, arg_enum, default_value_t]
+    variant: Variant
+}
+
+#[derive(Debug, Clone, Copy, ArgEnum)]
+enum Variant {
+    ObjectA,
+    ObjectB
+}
+
+impl std::fmt::Display for Variant {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        let s = match self {
+            Self::ObjectA =&gt; &quot;object-a&quot;, // or is it &quot;object_a&quot;?
+            Self::ObjectB =&gt; &quot;object-b&quot;,
+        };
+        write!(f, &quot;{}&quot;, s)
+    }
+}
+</code></pre>
+<p>what i'd <em>like</em> is to omit the manual <code>Display</code> implementation</p>
+<h3>Describe the solution you'd like</h3>
+<p><code>#[derive(ArgEnum)]</code> should generate a <code>Display</code> implementation which is consistent with the input values that it accepts</p>
+<h3>Alternatives, if applicable</h3>
+<ul>
+<li><code>clap</code> provide a <code>Display</code> derive that is implemented in terms of <code>ArgEnum</code></li>
+<li>Specialize <code>default_value_t</code> support for <code>ArgEnum</code></li>
+</ul>
+<h3>Additional Context</h3>
+<p>one possible edge case is that the derived <code>Display</code> implementation could conflict with another <code>Display</code> implementation (in which case <code>default_value_t</code> shouldn't be used anyway!)</p>
+<p>therefore the generated <code>Display</code> implementation could have a flag to opt in or out (i would vote for making it opt out)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @danieleades on 2021-12-16 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "#[derive(ArgEnum) should add a `ToString` implementation" to "Simplify deriving of `Display` for `ArgEnum` to be used as `default_value_t`" by @epage on 2021-12-16 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2021-12-16 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2021-12-16 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-16 14:29</div>
+            <div class="timeline-body"><p>Your <code>Display</code> can be simplified to</p>
+<pre><code class="language-rust">    impl std::fmt::Display for ArgChoice {
+        fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; Result&lt;(), std::fmt::Error&gt; {
+            std::fmt::Display::fmt(self.to_possible_value().unwrap().get_name(), f)
+        }
+    }
+</code></pre>
+<p>At one point, we had an example of this but it looks like we dropped it as we iterated on it and only a <a href="https://github.com/clap-rs/clap/blob/master/tests/derive/arg_enum.rs">test</a> remains.</p>
+<p>I've added to the issue another alternative, we provide our own derive for <code>Display</code> that provided the above code snippet.  This makes the behavior opt-in and we can provide the appropriate cautions (will <code>panic</code> on skipped fields).</p>
+<p>The main question I have it how do we then expose this.  Is this top-level in the crate?  Should we have this in a module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danieleades">@danieleades</a> on 2021-12-16 14:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Your <code>Display</code> can be simplified to</p>
+<pre><code class="language-rust">    impl std::fmt::Display for ArgChoice {
+        fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; Result&lt;(), std::fmt::Error&gt; {
+            std::fmt::Display::fmt(self.to_possible_value().unwrap().get_name(), f)
+        }
+    }
+</code></pre>
+<p>At one point, we had an example of this but it looks like we dropped it as we iterated on it and only a <a href="https://github.com/clap-rs/clap/blob/master/tests/derive/arg_enum.rs">test</a> remains.</p>
+<p>I've added to the issue another alternative, we provide our own derive for <code>Display</code> that provided the above code snippet. This makes the behavior opt-in and we can provide the appropriate cautions (will <code>panic</code> on skipped fields).</p>
+<p>The main question I have it how do we then expose this. Is this top-level in the crate? Should we have this in a module?</p>
+</blockquote>
+<p>ah good to know.</p>
+<p>makes me think that <code>default_value_t</code> on an <code>arg_enum</code> shouldn't require <code>Display</code> at all, it should just call <code>ArgEnum::to_possible_value</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danieleades">@danieleades</a> on 2021-12-16 14:47</div>
+            <div class="timeline-body"><p>maybe we should update the name of this issue again? It's not really about making it easier to derive <code>Display</code>, it's about not having to manually implement <code>Display</code>. That could <em>either</em> be by deriving it, or by not needing it at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Simplify deriving of `Display` for `ArgEnum` to be used as `default_value_t`" to "Simplify using `default_value_t` with `ArgE" by @epage on 2021-12-16 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Simplify using `default_value_t` with `ArgE" to "Simplify using `default_value_t` with `ArgEnum`" by @epage on 2021-12-16 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Simplify using `default_value_t` with `ArgEnum`" to "use `default_value_t` with `ArgEnum` without manually implementing `Display`" by @danieleades on 2021-12-16 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-16 14:48</div>
+            <div class="timeline-body"><blockquote>
+<p>makes me think that <code>default_value_t</code> on an <code>arg_enum</code> shouldn't require <code>Display</code> at all, it should just call <code>ArgEnum::to_possible_value</code></p>
+</blockquote>
+<p>That seems like the simplest, low-design route.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-16 14:56</div>
+            <div class="timeline-body"><p>Hmm, the main annoyance is our current implementation.  In one pass we parse the attributes and turn them into method calls but checking for <code>arg_enum</code> when generating the default requires knowledge of all of the attributes which we don't have when generating the method call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danieleades">@danieleades</a> on 2021-12-16 15:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, the main annoyance is our current implementation. In one pass we parse the attributes and turn them into method calls but checking for <code>arg_enum</code> when generating the default requires knowledge of all of the attributes which we don't have when generating the method call.</p>
+</blockquote>
+<p>have you got a link to the relevant code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3188.html">clap-rs/clap#3188</a> on 2021-12-16 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-16 15:12</div>
+            <div class="timeline-body"><p>See https://github.com/clap-rs/clap/pull/3188</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-16 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesmcm">@jamesmcm</a> on 2022-02-12 13:50</div>
+            <div class="timeline-body"><p>Why was the automatic Display implementation dropped btw? This was useful with StructOpt and the arg_enum! macro previously.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-13 02:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Why was the automatic Display implementation dropped btw? This was useful with StructOpt and the arg_enum! macro previously.</p>
+</blockquote>
+<p>While I wasn't around for that decision, I agree with not providing an <code>impl Dsplay</code>:</p>
+<ul>
+<li>Its clearer when it does exactly what you tell it to do (derive the <code>ArgEnum</code> trait) rather than doing more</li>
+<li>It composes better with whatever else the user might be doing</li>
+</ul>
+<p>As shown earlier, its relatively easy to still derive <code>Display</code> (and <code>FromStr</code>).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

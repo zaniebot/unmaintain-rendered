@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To be able to protect environments for scripts that remain on the system - astral-sh/uv #12104</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>To be able to protect environments for scripts that remain on the system</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12104">#12104</a>
+        opened by <a href="https://github.com/andrewcrook">@andrewcrook</a>
+        on 2025-03-10 19:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/andrewcrook">@andrewcrook</a> on 2025-03-10 19:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h3>The Basic Idea</h3>
+<p>To be able to protect environments for scripts that remain on the system.</p>
+<p>Being able to run Python scripts and have them automatically install dependencies is extremely useful.  However,  when cleaning/pruning the uv cache, whilst it is able to preserve environments and dependences for projects, it will remove all environments for those scripts.</p>
+<p>While the environment would be recreated upon next run, commonly used scripts would continually recreate environments after each clean or prune.</p>
+<p>I propose a method to preserve script environments for scripts that remain on the system.</p>
+<h3>Example</h3>
+<h3>How would this work?</h3>
+<p>I suggest an argument <code>--env-protect</code> that will add data to the environment so it can be matched back to its script. So when cleaning or pruning the cache.  Any cached script environments that have an existing script on the system can be protected from removal. Cached  environments without this data will be processed as normal. This means when a script is removed from system the next clean/prune will remove its environment.</p>
+<h4>runing script</h4>
+<ul>
+<li>Add an optional  argument example <code>--env-protect</code> to hash bang
+<code>#!/usr/bin/env -S uv run --env-protect</code>
+when used the following happens ...</li>
+<li>Create environment and install the dependencies as normal</li>
+<li>if <code>--env-protect</code>  was used. Create new file or data added to existing file which has the absolute path of the script that the environment belongs to.
+<code>/.cache/uv/environments-v2/script-523ad544b121cf7a/ </code></li>
+<li>run script</li>
+</ul>
+<h4>pruning/cleaning the cache</h4>
+<ul>
+<li><p>scan cached environments for the aforementioned path of a script
+-  if found, search for the script at path
+-- if script is found, skip.
+-- else the script is not found , continue as normal which will remove the environment.
+- if the scripts environment doesn’t have the scripts path continue as normal which will remove the environment.</p>
+</li>
+<li><p>All functionality for projects would remain the same.</p>
+</li>
+</ul>
+<p><strong>There is one small issue which isn't too much of an issue to be honest.</strong></p>
+<p>If a script is moved or renamed the environment would be removed, however, it would be recreated when next run.</p>
+<p>Out of interest, the only way I can think to solve both of these would be to store a script file's inode or equivalent. Example.</p>
+<pre><code> &gt; ls -li
+256166048 .rwxr-xr-x 206 andrew 10 Mar 15:44 test.py
+ &gt; find . -inum 256166048 -exec echo &quot;{}&quot; \;
+./test.py
+&gt; mkdir test
+&gt; mv test.py test/
+&gt; find . -inum 256166048 -exec echo &quot;{}&quot; \;
+./test/test.py
+&gt; mv test/test.py test/test2.py
+&gt; find . -inum 256166048 -exec echo &quot;{}&quot; \;
+./test/test2.py
+</code></pre>
+<p>Not sure if this works for all file systems and I presume Windows NTFS uses an equivalent method and has tools.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @andrewcrook on 2025-03-10 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-10 19:35</div>
+            <div class="timeline-body"><p>I worry about adding more complexity here. It sounds like we just shouldn't remove environments for scripts on <code>uv cache prune</code>. I think <code>uv cache clean</code> should probably continue to do so.</p>
+<p>Why do you need the environment to be retained in general? Are you frequently using <code>uv cache clean</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-10 19:35</div>
+            <div class="timeline-body"><p>cc @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrewcrook">@andrewcrook</a> on 2025-03-10 19:50</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<blockquote>
+<p>I worry about adding more complexity here.</p>
+</blockquote>
+<p>yeah I get that and you're right it does add an uncomfortable amount of complexity</p>
+<blockquote>
+<p>retained in general?</p>
+</blockquote>
+<p>system scripts, automation and tools created</p>
+<blockquote>
+<p>Are you frequently using uv cache clean?</p>
+</blockquote>
+<p>I do use python a lot, and a lot for build scripts. I am always aware of package managers that can build up a huge stores overtime of what should be temporary. Most packet managers have a way to prune, clean or &quot;garbage collect&quot;.</p>
+<blockquote>
+<p>It sounds like we just shouldn't remove environments for scripts on uv cache prune. I think uv cache clean should probably continue to do so.</p>
+</blockquote>
+<p>May be don't remove them but add option to clean just scripts or an option to keep them.
+Would be useful to be able to list those environments so maybe can remove such environments by name as well?</p>
+<p>Just running past some ideas</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-10 19:55</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>retained in general?</p>
+</blockquote>
+<p>system scripts, automation and tools created</p>
+</blockquote>
+<p>Does this mean you're calling into the environment directly? Are you not using <code>uv run</code> to interface with the scripts? Is the overhead of recreating the environment large in your use-case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrewcrook">@andrewcrook</a> on 2025-03-10 20:02</div>
+            <div class="timeline-body"><p>For my tools I just have a directory of python scripts on path  of all different complexities.
+I plan to use uv run but as a hashbang and use the new python pep for adding metadata.
+I am thinking of moving everything over to this and let uv manage it because I don't really want to manage packages for pipx or venvs.</p>
+<pre><code>#!/usr/bin/env -S uv run
+
+# /// script
+# dependencies = [
+#   &quot;colorama&quot;,
+# ]
+# ///
+
+
+from colorama import init, Fore, Style
+
+init(autoreset=True)
+
+print(f&quot;d: {Fore.GREEN}This is a test {Style.RESET_ALL}”)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrewcrook">@andrewcrook</a> on 2025-03-11 19:12</div>
+            <div class="timeline-body"><p>@zanieb  I wonder if you could please help me how is the script environment directory name generated?
+obviously it uses the filename is that a hash, if so,  what of and what encoding?</p>
+<pre><code>~/.cache/uv/environments-v2/
+drwxr-xr-x - andrew 10 Mar 17:14 test-523ad544b121cf7a
+</code></pre>
+<p>If I knew that, I could build a wrapper to do what I wanted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-11 19:53</div>
+            <div class="timeline-body"><p>The hash is generated as below</p>
+<p>https://github.com/astral-sh/uv/blob/e843433b07db08bdabd64b4cfe822e57b3a31154/crates/uv/src/commands/project/mod.rs#L580</p>
+<p>https://github.com/astral-sh/uv/blob/fb35875f24d923280aced423ecbe6a693d2d87ee/crates/uv-cache-key/src/digest.rs#L7-L19</p>
+<p>What would the wrapper look like?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrewcrook">@andrewcrook</a> on 2025-03-12 13:21</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<blockquote>
+<p>What would the wrapper look like?</p>
+</blockquote>
+<p>Not sure yet probably a script that will be called from a function in a shell's rc script. A script that will pass most things straight  through to uv but allow me to override or add a few arguments calling some sort of script that interacts with UV.
+Most likely Python to start with, if I can recreate the code you kindly gave me into Python unfortunately I am not familiar with Rust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-12 19:38</div>
+            <div class="timeline-body"><p>I still don't quite understand why you need to determine the script directory path?</p>
+<p>You can use <code>uv sync --script &lt;path&gt; --dry-run</code> though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-12 19:40</div>
+            <div class="timeline-body"><p>Have you considered using <code>--active</code> to control the path yourself?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrewcrook">@andrewcrook</a> on 2025-03-12 22:35</div>
+            <div class="timeline-body"><p>@zanieb  @charliermarsh</p>
+<p>I need to look into all the UV arguments I am still new to using it. But thank you both I think I have enough to start looking into producing something over the weekend</p>
+<blockquote>
+<p>I still don't quite understand why you need to determine the script directory path?</p>
+</blockquote>
+<p>I dont think I do now</p>
+<blockquote>
+<p>Have you considered using --active to control the path yourself?</p>
+</blockquote>
+<p>This looks like what I want</p>
+<p>Thanks both</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @andrewcrook on 2025-03-12 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-12 22:45</div>
+            <div class="timeline-body"><p>Thanks for following up!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

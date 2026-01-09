@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bug: explicit-preview-rules enables rule from ALL - astral-sh/ruff #9536</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>bug: explicit-preview-rules enables rule from ALL</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9536">#9536</a>
+        opened by <a href="https://github.com/nstarman">@nstarman</a>
+        on 2024-01-15 18:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nstarman">@nstarman</a> on 2024-01-15 18:54</div>
+            <div class="timeline-body"><p>In https://github.com/astropy/astropy/pull/15889 I tried turning on <code>preview</code> mode with <code>explicit-preview-rules</code>. From https://docs.astral.sh/ruff/preview/#selecting-single-preview-rules I would expect that running <code>ruff lint</code> (really <code>pre-commit run ruff -a</code>) shouldn't do anything since no rules are explicitly selected (we use <code>select = [&quot;ALL&quot;]</code>). However ruff finds and fixes <code>SIM910</code>.
+Is this a bug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-15 18:56</div>
+            <div class="timeline-body"><p>It does sound like a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-15 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-15 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-15 20:06</div>
+            <div class="timeline-body"><p>Ahh I see... That rule <em>isn't</em> in preview, but we changed the behavior of the rule such that in preview, it flags cases like:</p>
+<pre><code class="language-python">ages = {&quot;Tom&quot;: 23, &quot;Maria&quot;: 23, &quot;Dog&quot;: 11}
+age = ages.get(&quot;Cat&quot;, None)
+</code></pre>
+<p>Whereas in stable, it will only flag <code>.get</code> calls on literals, like:</p>
+<pre><code class="language-python">{&quot;Tom&quot;: 23, &quot;Maria&quot;: 23, &quot;Dog&quot;: 11}.get(&quot;Cat&quot;, None)
+</code></pre>
+<p>I think this behavior is correct (you're enabling the rule, and <code>--preview</code> is modifying its behavior) albeit a bit unclear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-15 20:06</div>
+            <div class="timeline-body"><p>\cc @zanieb for visibility, if you're interested</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-01-15 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-01-15 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-15 21:02</div>
+            <div class="timeline-body"><p>We should probably document preview behaviors better per rule, but I think this is fair expected behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-15 21:04</div>
+            <div class="timeline-body"><p>Yeah. It actually <em>is</em> mentioned in the <a href="https://docs.astral.sh/ruff/rules/dict-get-with-none-default/">rule documentation</a>, but perhaps it should be in a <code>## Preview</code> section.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-15 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nstarman">@nstarman</a> on 2024-01-15 21:30</div>
+            <div class="timeline-body"><p>Would it be better if when <code>explicit-preview-rules</code> is on that even <em>existing</em> rules like SIM910 would need to be explicitly selected to turn on their preview mode?</p>
+<p>IMO <em>preview</em> option is for things still in development (otherwise it would just be released?), so it would be nice to have granular control over the previews even for <em>existing</em> rules.</p>
+<p>SIM910 preview is on</p>
+<pre><code>[tool.ruff.lint]
+preview = true
+select = [SIM910]
+</code></pre>
+<p>SIM910 preview is on</p>
+<pre><code>[tool.ruff.lint]
+preview = true
+explicit-preview-rules = true
+select = [SIM910]
+</code></pre>
+<p>SIM910 is on, it's preview is OFF</p>
+<pre><code>[tool.ruff.lint]
+preview = true
+explicit-preview-rules = true
+select = [SIM]
+</code></pre>
+<p>SIM910 is on, it's preview is OFF</p>
+<pre><code>[tool.ruff.lint]
+preview = true
+explicit-preview-rules = true
+select = [ALL]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-15 22:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Would it be better if when explicit-preview-rules is on that even existing rules like SIM910 would need to be explicitly selected to turn on their preview mode?</p>
+</blockquote>
+<p><em>Maybe</em> but it adds a lot of complexity and it sounds just as confusing.</p>
+<blockquote>
+<p>preview option is for things still in development (otherwise it would just be released?), so it would be nice to have granular control over the previews even for existing rules.</p>
+</blockquote>
+<p>Preview is for things that we want to get feedback on before we stabilize to reduce the number of changes that users in our stable track need to deal with. It's explicitly <em>not</em> intended for things still in development and it is explicitly designed to be a relatively <em>global</em> toggle to minimize the overhead of maintenance for us.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

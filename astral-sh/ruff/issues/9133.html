@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect lint in 0.1.8? RUF006 Store a reference to the return value of `asyncio.create_task` - astral-sh/ruff #9133</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect lint in 0.1.8? RUF006 Store a reference to the return value of `asyncio.create_task`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9133">#9133</a>
+        opened by <a href="https://github.com/danking">@danking</a>
+        on 2023-12-14 17:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danking">@danking</a> on 2023-12-14 17:09</div>
+            <div class="timeline-body"><p>Hey there! A huge thank you for building ruff. It's been an invaluable tool for us over at https://github.com/hail-is/hail .</p>
+<p>Am I being incredibly dense or should this rule not trigger on this code?</p>
+<pre><code class="language-bash">cat &gt;pyproject.toml &lt;&lt;'EOF'
+[tool.ruff]
+select = [&quot;F&quot;, &quot;E&quot;, &quot;W&quot;, &quot;I&quot;, &quot;PL&quot;, &quot;RUF&quot;]
+EOF
+
+cat &gt;foo.py &lt;&lt;'EOF'
+import asyncio
+
+x = asyncio.create_task(asyncio.sleep(1))
+EOF
+ruff --version
+python3 --version
+python3 -m pip show ruff
+which ruff
+which python3
+ruff foo.py
+</code></pre>
+<pre><code>ruff 0.1.8
+Python 3.10.9
+Name: ruff
+Version: 0.1.8
+Summary: An extremely fast Python linter and code formatter, written in Rust.
+Home-page: https://docs.astral.sh/ruff
+Author: Charlie Marsh &lt;charlie.r.marsh@gmail.com&gt;
+Author-email: &quot;Astral Software Inc.&quot; &lt;hey@astral.sh&gt;
+License: MIT
+Location: /Users/dking/miniconda3/lib/python3.10/site-packages
+Requires: 
+Required-by: 
+/Users/dking/miniconda3/bin/ruff
+/Users/dking/miniconda3/bin/python3
+foo.py:3:5: RUF006 Store a reference to the return value of `asyncio.create_task`
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Incorrect lint? RUF006 Store a reference to the return value of `asyncio.create_task`" to "Incorrect lint in 0.1.8? RUF006 Store a reference to the return value of `asyncio.create_task`" by @danking on 2023-12-14 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-14 17:34</div>
+            <div class="timeline-body"><p>Thanks for the kind words!</p>
+<p>You're right, we need to consider the control flow in this case. Marking as a bug, sorry for the disruption.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-14 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-15 01:05</div>
+            <div class="timeline-body"><p>Do you have a real-world example from <code>hail</code> or another project where this triggered in a manner like the above? It's just hard to reason about the &quot;correct&quot; behavior so looking for help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danking">@danking</a> on 2023-12-15 03:05</div>
+            <div class="timeline-body"><p>Ah, heh, I oversimplified 😉 . The exact code in question is <a href="https://github.com/hail-is/hail/blob/main/hail/python/hailtop/aiotools/fs/copier.py#L504-L530">this</a>.</p>
+<p>The code is a bit opaque and could probably be written better but I think I see the issue. Ruff cannot prove that we always <code>asyncio.wait</code> or <code>await</code> the task because of a correlated if. To simplify, the following code always awaits the task but ruff can't prove that to itself. It even fails if the second if is <code>if x:</code>.</p>
+<pre><code class="language-python3">import asyncio
+
+async def foo(x: bool):
+    if x:
+        t = asyncio.create_task(asyncio.sleep(1))
+    else:
+        t = None
+    try:
+        await asyncio.sleep(1)  # in reality: do some concurrent work
+    finally:
+        if t:
+            await t
+
+</code></pre>
+<p>OK! So, I now do not believe this is a bug in ruff. It's just inherent to ruff's incompleteness.</p>
+<p>I <em>do</em> think there is a bug in the error message. Can we change it to:</p>
+<pre><code>RUF006 Cannot prove result of `asyncio.create_task` is awaited in all program traces.
+</code></pre>
+<p>That message would've given me enough clew to solve this on my own without bothering you :).</p>
+<p>If you like the message: https://github.com/astral-sh/ruff/pull/9144; but I realize it violates the imperative phrasing you prefer in these messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9144.html">astral-sh/ruff#9144</a> on 2023-12-15 03:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danking">@danking</a> on 2023-12-15 03:30</div>
+            <div class="timeline-body"><p>Hmm. Getting sucked into your codebase a bit! It seems like this is not the intention of <code>bindings.is_used()</code>, right? That ought to return true (i.e. references is non-empty) because the <em>binding</em> is, syntactically, referenced.</p>
+<p>I can imagine a more sophisticated notion of &quot;usage&quot; that ties an allocation site to a use-site , but that doesn't seem to be the intention of Binding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-15 03:48</div>
+            <div class="timeline-body"><p>Thanks for the thorough follow-up :)</p>
+<p>Ahh I see. So, it works if you remove the <code>else</code>: https://play.ruff.rs/00a2d9af-223c-4934-8be5-02860e66898e. The issue is that we don't do any sophisticated branch analysis yet, so when we see <code>t = None</code>, it shadows the <code>t = asyncio.create_task(asyncio.sleep(1))</code> binding, and so the <code>t = asyncio.create_task(asyncio.sleep(1))</code> binding appears to have no usages. We can solve this by looking ahead to see if any <em>shadowed</em> bindings are used, since those are very likely to be fine usages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danking">@danking</a> on 2023-12-15 05:12</div>
+            <div class="timeline-body"><p>Interesting! Hmm. I’ve not studied Python semantics closely but my instinct is that assignment in both branches of an if isn’t shadowing a la:</p>
+<pre><code>x = asyncio.create_task(…)
+x = 5
+</code></pre>
+<p>I think of assignment in an if as suggesting that a “binding” can have multiple definition sites just as it can have multiple references. If you accept that, then this lint rule needs to evaluate: if at least one definition site is a task, does there exist at least one reference.</p>
+<p>That seems to me different from the above example. I can imagine a very similar lint that ensures objects with a close method have their close method called. I can definitely imagine myself inadvertently shadowing it in the manner above and wanting that to be linted!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-15 05:14</div>
+            <div class="timeline-body"><p>That's correct -- it's not <em>actually</em> shadowing, but our semantic model doesn't take branching into account in a meaningful way, so it treats the code <em>as if</em> the <code>else</code> is shadowing the assignment in the <code>if</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hail-is/hail/pulls/14093.html">hail-is/hail#14093</a> on 2023-12-19 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-12-20 12:57</div>
+            <div class="timeline-body"><p>Same false positive (I assume) with the following code:</p>
+<pre><code class="language-py">if some_condition:
+    task = asyncio.create_task(coro)
+else:
+    task = asyncio.create_task(another_coro)
+</code></pre>
+<p>Workaround on my side:</p>
+<pre><code class="language-py">
+if not some_condition:
+    coro = another_coro
+
+task = asyncio.create_task(coro)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-12-20 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9215.html">astral-sh/ruff#9215</a> on 2023-12-20 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-20 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-20 17:12</div>
+            <div class="timeline-body"><p>Both of these cases should be fixed in the next release.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

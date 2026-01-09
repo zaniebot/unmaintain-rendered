@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`per-file-ignores` paths from `extend` are relative to the extended configuration file - astral-sh/ruff #8795</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`per-file-ignores` paths from `extend` are relative to the extended configuration file</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8795">#8795</a>
+        opened by <a href="https://github.com/bwildenborg">@bwildenborg</a>
+        on 2023-11-20 19:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bwildenborg">@bwildenborg</a> on 2023-11-20 19:29</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>I am running Ruff 0.1.4 and trying to extend from a set of common ruff settings in a ruff.toml file.
+The complete ruff.toml looks like:</p>
+<pre><code>preview = true
+explicit-preview-rules = true
+
+# Enables
+select = [
+    &quot;E&quot;,      # pycodestyle
+    &quot;W&quot;,      # pycodestyle
+    &quot;F&quot;,      # Pyflakes
+    &quot;I&quot;,      # isort
+    &quot;N&quot;,      # pep8-naming
+    &quot;D&quot;,      # pydocstyle
+    &quot;UP&quot;,     # pyupgade
+    &quot;ANN&quot;,    # flake8-annotations
+    &quot;BLE&quot;,    # flake8-blind-except
+    &quot;FBT&quot;,    # flake8-boolean-trap
+    &quot;B&quot;,      # flake8-bugbear
+    &quot;A&quot;,      # flake8-builtins
+    &quot;C4&quot;,     # flake8-comprehensions
+    &quot;FA&quot;,     # flake8-future-annotations
+    &quot;ISC&quot;,    # flake8-implicit-str-concat
+    &quot;G&quot;,      # flake8-logging-format
+    &quot;PIE&quot;,    # flake8-pie
+    &quot;T20&quot;,    # flake8-print
+    &quot;PYI&quot;,    # flake8-pyi
+    &quot;RSE&quot;,    # flake8-raise
+    &quot;RET&quot;,    # flake8-return
+    &quot;SLF&quot;,    # flake8-self
+    &quot;SIM&quot;,    # flake8-simplify
+    &quot;TID&quot;,    # flake8-tidy-imports
+    &quot;ARG&quot;,    # flake8-unused-arguments
+    &quot;FIX&quot;,    # flake8-fixme
+    &quot;ERA&quot;,    # eradicate
+    &quot;PL&quot;,     # Pylint
+    &quot;TRY&quot;,    # tryceratops
+    &quot;PERF&quot;,   # perflint
+    &quot;RUF&quot;,    # Ruff specific
+    &quot;CPY&quot;,    # flake8-copyright
+    &quot;CPY001&quot;, # must be explicitly enabled, still in development - checks for copyright header
+]
+
+# Ignores
+ignore = [
+    &quot;ANN101&quot;,  # Don't require type annotations for self.
+    &quot;ANN102&quot;,  # Don't require type annotations for cls.
+    &quot;ANN401&quot;,  # Any is allowed.
+    &quot;D418&quot;,    # overload-with-docstring; Overloads should have docstrings when they alter the API/functionality.
+    &quot;FIX002&quot;,  # Allow TODO tags but no others.
+    &quot;TRY003&quot;,  # Makes no sense for builtin exceptions.
+    &quot;RSE102&quot;,  # This is a stylistic choice, but the check doesn't verify the item being raised is an object preventing a function from returning an error to raise.
+    &quot;PERF203&quot;, # No try...except in for loop - No clear action to take when this is flagged.
+    &quot;RUF013&quot;,  # This is a very basic check prone to false positives, let pyright handle it
+    &quot;E203&quot;,    # Whitespace before ':' - Don't lint for style beyond what black cares about.
+    &quot;PLR0904&quot;, # Too many public methods
+    &quot;PLR0911&quot;, # Too many return statements
+    &quot;PLR0912&quot;, # Too many branches
+    &quot;PLR0913&quot;, # Too many args
+    &quot;PLR0915&quot;, # Too many statements
+    &quot;PLR6301&quot;, # no-self-use - Switching to static has functionality considerations and may not be appropriate.
+    &quot;PLR2004&quot;, # Magic value used in comparison
+    &quot;FBT003&quot;, # Boolean positional value in function call - this flags an issue twice and forces per use suppression.
+    &quot;SIM108&quot;, # Use ternary; this can be good, but the check is overzealous and suggests changes that involve line breaks.
+    &quot;SIM117&quot;, # Use single with; like SIM108 this can be good, but it isn't appropriate in all contexts and could easily result in line breaks.
+    &quot;A003&quot;, # Class attribute shadowing builtin; doesn't matter for classes.
+    &quot;PIE790&quot;, # Unnecessary &quot;...&quot; literal; conflicts with pyright for protocols. Removing ... pyright expects a return statement.
+    # The settings below are suggested to be disabled when formatting with Ruff.
+    &quot;W191&quot;, # tab indentation; conflicts with formatting.
+    &quot;E111&quot;, # indentation with with invalid multiple; conflicts with formatting.
+    &quot;E114&quot;, # indentation with invalid comment; conflicts with formatting.
+    &quot;E117&quot;, # over indented; conflicts with formatting.
+    &quot;D206&quot;, # indent with spaces; conflicts with formatting.
+    &quot;D300&quot;, # triple single quotes; conflicts with formatting.
+    &quot;Q000&quot;, # bad quotes inline string; conflicts with formatting.
+    &quot;Q001&quot;, # bad quotes multiline string; conflicts with formatting.
+    &quot;Q002&quot;, # bad quotes docstring; conflicts with formatting.
+    &quot;Q003&quot;, # avoidable escpaped quote; conflicts with formatting.
+    &quot;COM812&quot;, # missing trailing comma; conflicts with formatting.
+    &quot;COM819&quot;, # prohibited trailing comma; conflicts with formatting.
+    &quot;ISC001&quot;, # single line implicit string concatenation; conflicts with formatting.
+    &quot;ISC002&quot;, # multi line implicit string concatenation; conflicts with formatting.
+]
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = [&quot;ALL&quot;]
+
+unfixable = [
+    &quot;PIE794&quot;, # duplicate class field name - the fix is to delete one entry, which is unlikely to be the correct fix.
+]
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    &quot;.bzr&quot;,
+    &quot;.direnv&quot;,
+    &quot;.eggs&quot;,
+    &quot;.git&quot;,
+    &quot;.git-rewrite&quot;,
+    &quot;.hg&quot;,
+    &quot;.mypy_cache&quot;,
+    &quot;.nox&quot;,
+    &quot;.pants.d&quot;,
+    &quot;.pytype&quot;,
+    &quot;.ruff_cache&quot;,
+    &quot;.svn&quot;,
+    &quot;.tox&quot;,
+    &quot;.venv&quot;,
+    &quot;__pypackages__&quot;,
+    &quot;_build&quot;,
+    &quot;buck-out&quot;,
+    &quot;build&quot;,
+    &quot;dist&quot;,
+    &quot;node_modules&quot;,
+    &quot;venv&quot;,
+]
+
+line-length = 132
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = &quot;^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$&quot;
+
+[per-file-ignores]
+&quot;tests/**/*.py&quot; = [
+    &quot;B018&quot;,    # B018 - Found useless expression - necessary for testing exceptions are raised.
+    &quot;D100&quot;,    # D100 - Module dostrings not required in test files.
+    &quot;D104&quot;,    # D104 - Package dostrings not required in test files.
+    &quot;ARG&quot;,     # ARG - Unused args are common in tests with mock patches and mock functions.
+]
+
+[pydocstyle]
+# Use Google-style docstrings.
+convention = &quot;google&quot;
+
+[isort]
+# Settings for google standard.
+force-single-line = true
+force-sort-within-sections = true
+single-line-exclusions = [
+    &quot;typing&quot;,
+    &quot;collections.abc&quot;,
+    &quot;typing_extensions&quot;,
+]
+order-by-type = false
+
+[flake8-annotations]
+# Allow return annotations to be omitted for __init__ methods.
+mypy-init-return = true
+
+[flake8-tidy-imports]
+# Disallow all relative imports.
+ban-relative-imports = &quot;all&quot;
+
+[flake8-unused-arguments]
+ignore-variadic-names = true
+</code></pre>
+<p>In here I am trying to disable a couple of checks for test files.
+The pyrpoject.toml looks like:</p>
+<pre><code>[tool.ruff]
+extend = &quot;./extern/ruff.toml&quot;
+
+# Allow imports relative to the &quot;src&quot; and &quot;tests&quot; directories.
+src = [&quot;src&quot;, &quot;tests&quot;]
+
+extend-select = [
+    &quot;PT&quot;, # flake8-pytest
+]
+
+[tool.ruff.extend-per-file-ignores]
+&quot;tests/**/*.py&quot; = [
+    &quot;PT019&quot;,   # pytest-fixture-without-paramvalue - Flags fixtures that don't return values
+]
+</code></pre>
+<p>This is successfully suppressing the PT019 check, but the other per-file-ignore checks are still getting flagged (such as D100).
+If I remove the extend-per-file-ignores from the pyproject.toml, the PT019 start getting flagged in addition to the per-file-ignores from ruff.toml
+As far as I can tell, none of the per-file-ignores from ruff.toml are getting passed through.
+I've also tried switching ruff.toml's per-file-ignores to be extend-per-file-ignores (and removing those from my pyproject.toml), but those weren't honored either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-20 20:39</div>
+            <div class="timeline-body"><p>Hm... I tested this with a simple structure:</p>
+<p><strong>pyproject.toml</strong></p>
+<pre><code class="language-toml">[tool.ruff]
+per-file-ignores = {&quot;foo.py&quot; = [&quot;RUF001&quot;]}
+</code></pre>
+<p><strong>nested/pyproject.toml</strong></p>
+<pre><code class="language-toml">[tool.ruff]
+extend = &quot;../pyproject.toml&quot;
+extend-per-file-ignores = {&quot;foo.py&quot; = [&quot;RUF002&quot;]}
+</code></pre>
+<p><strong>nested/foo.py</strong></p>
+<pre><code class="language-python">print(&quot;Ηello, world!&quot;)  # &quot;Η&quot; is the Greek eta (`U+0397`).
+
+
+def foo():
+    &quot;&quot;&quot;A lovely docstring (with a `U+FF09` parenthesis）.&quot;&quot;&quot;
+</code></pre>
+<p><strong>from nested/</strong></p>
+<pre><code class="language-shell">ruff check . --select RUF001,RUF002
+</code></pre>
+<p>and could not reproduce your issue, both RUF001 and RUF002 are suppressed. If I copy <code>foo.py</code> to <code>bar.py</code> the errors are raised there as expected.</p>
+<p>Could you try to create a minimal reproducible example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-20 20:44</div>
+            <div class="timeline-body"><p>Actually, if I move <code>foo.py</code> into a subdirectory and use <code>subdir/foo.py</code> as my per-file-ignore this fails as you've described.</p>
+<p>I believe the issue here is that the paths are relevant to the pyproject file they are defined in. So.. your imported pyproject file is defining per-file-ignores relative to its directory which do not match the files you are checking elsewhere. I'm not sure this should be changed.</p>
+<p>The bigger question here is then: Should extending a config file (via <code>extend = ...</code>) make the settings pulled from it relative to the new config file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bwildenborg">@bwildenborg</a> on 2023-11-20 20:52</div>
+            <div class="timeline-body"><p>Sure enough, setting the mask in my <code>ruff.toml</code> to <code>../tests/**/*.py</code> results in the ignores being honored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-21 01:35</div>
+            <div class="timeline-body"><blockquote>
+<p>The bigger question here is then: Should extending a config file (via extend = ...) make the settings pulled from it relative to the new config file?</p>
+</blockquote>
+<p>Both choices can be problematic in different contexts. Using the <em>extended</em> file's directory as the base makes it useless if the extended file is, e.g., a global file that's shared between many projects (like in <code>~/ruff.toml</code>) -- but in that case, relative paths seem unusual? Using the directory of the file with the <code>extend</code> in it causes issues when you're extending a configuration in a parent directory from the project, as above.</p>
+<p>The former seems a lot more common to me, so I’d say our current behavior is preferable to making any changes here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-11-21 01:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-11-21 01:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-21 01:57</div>
+            <div class="timeline-body"><p>(The other thing to note is that we match against both the absolute file path and its basename. So the “foo.py” exclusion works in Zanie’s example regardless of whether it’s defined in the parent or child configuration file — since it’ll match any file with the basename “foo.py”. The relative pathing stuff only applies to patterns that match multiple segments.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bwildenborg">@bwildenborg</a> on 2023-11-21 14:59</div>
+            <div class="timeline-body"><p>For what it's worth, the only way I could fully ignore a setting in both test files and in their accompanying <code>__init__.py</code> was to split my checks into two parts:</p>
+<pre><code>[per-file-ignores]
+&quot;**/test_*.py&quot; = [
+    &quot;B018&quot;,    # B018 - Found useless expression - necessary for testing exceptions are raised.
+    &quot;D100&quot;,    # D100 - Module docstrings not required in test files.
+    &quot;ARG&quot;,     # ARG - Unused args are common in tests with mock patches and mock functions.
+]
+&quot;../**/test_*/__init__.py&quot; = [
+    &quot;D104&quot;,    # D104 - Package docstrings not required in test packages.
+]
+</code></pre>
+<p>The only pattern for the <code>__init__.py </code> part that worked for me was to make it relative.
+I had tried variations on <code>**/test_*/__init__.py</code> that weren't relative, but I couldn't get any to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8845.html">astral-sh/ruff#8845</a> on 2023-11-27 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "per-file-ignores not coming in from extend" to "`per-file-ignores` paths from `extend` are relative to the extended configuration file" by @zanieb on 2023-11-27 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fpuga">@fpuga</a> on 2023-12-25 11:56</div>
+            <div class="timeline-body"><p>I'm using a similar structure</p>
+<pre><code>my_project
+| pyproject.toml
+| back/
+  | tests/
+| config
+  | pyproject.toml  
+</code></pre>
+<p>where</p>
+<p><strong>pyproject.toml</strong></p>
+<pre><code class="language-toml"># configurations personalized for this project 
+
+[tool.ruff]
+extend=&quot;./config/pyproject.toml&quot;
+line-length = 200
+</code></pre>
+<p><strong>config/pyproject.toml</strong></p>
+<pre><code class="language-toml"># common configurations for &quot;all&quot; projects of the team
+
+[tool.ruff]
+extend=&quot;./config/pyproject.toml&quot;
+line-length = 88
+
+[tool.ruff.per-file-ignores]
+&quot;/**/tests/*&quot; = [&quot;S101&quot;]
+</code></pre>
+<p>Playing with <code>--show-settings</code> I found that whitout a leading slash <code>&quot;**/tests/*&quot;</code> the paths are relative to the config file where are defined.</p>
+<pre><code>per_file_ignores: [
+              (
+                  GlobMatcher {
+                      pat: Glob {
+                          glob: &quot;/var/development/myproject/myproject/config/**/tests/*&quot;,
+                          re: &quot;(?-u)^/var/development/myproject/myproject/config(?:/|/.*/)tests/.*$&quot;,
+                          opts: GlobOptions {
+                              case_insensitive: false,
+                              literal_separator: false,
+                              backslash_escape: true,
+                              empty_alternates: false,
+                          },
+</code></pre>
+<p>But with a leading slash <code>/**/tests/*</code> it works as desired</p>
+<pre><code>per_file_ignores: [
+              (
+                  GlobMatcher {
+                      pat: Glob {
+                          glob: &quot;/**/tests/*&quot;,
+                          re: &quot;(?-u)^(?:/|/.*/)tests/.*$&quot;,
+                          opts: GlobOptions {
+                              case_insensitive: false,
+                              literal_separator: false,
+                              backslash_escape: true,
+                              empty_alternates: false,
+                          },
+
+</code></pre>
+<p>`</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../AntonioMrtz/SpotifyElectron/pulls/142.html">AntonioMrtz/SpotifyElectron#142</a> on 2024-06-07 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../AntonioMrtz/SpotifyElectron/issues/136.html">AntonioMrtz/SpotifyElectron#136</a> on 2024-06-07 12:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ewu63">@ewu63</a> on 2025-08-22 22:12</div>
+            <div class="timeline-body"><p>Just ran into this issue so bumping it lightly. I have a global global config file located at <code>~/.config/ruff/ruff.toml</code>, and within a repo there is a specific <code>ruff.toml</code> that overrides some config</p>
+<pre><code>extend = &quot;~/.config/ruff/ruff.toml&quot;
+&lt;extra-config-here&gt;
+</code></pre>
+<p>Based on the docs</p>
+<blockquote>
+<p>any relative paths in that configuration file (like <code>exclude</code> globs or <code>src</code> paths) are resolved relative to the <em>current working directory</em>.</p>
+</blockquote>
+<p>I had expected my globs in the <code>per-file-ignores</code> section of my global config file to be respected relative to CWD when I import it via the <code>extend</code> flag, but that was not the case. When I run <code>ruff check</code> I get errors which were specifically ignored from the global config. However, if I run <code>ruff check</code> with the <code>--config-file ruff.toml</code> pointing to the <em>local</em> config file, then the global paths become relative for some reason, even though <em>both invocations use the same local <code>ruff.toml</code> file</em>, and I no longer get any errors.</p>
+<p>I think the expected behaviour from me would be for there to be no difference between the two invocations, and both times the globs in the <code>per-file-ignores</code> should be matched relative to the CWD.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20090.html">astral-sh/ruff#20090</a> on 2025-08-25 23:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

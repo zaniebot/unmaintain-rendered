@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff format out of place? - astral-sh/ruff #9720</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff format out of place?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9720">#9720</a>
+        opened by <a href="https://github.com/suo">@suo</a>
+        on 2024-01-30 20:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/suo">@suo</a> on 2024-01-30 20:48</div>
+            <div class="timeline-body"><p>The default behavior of <code>ruff format</code> is to do an in-place rewrite of the provided files. If you pass source code in via stdin, ruff will output the formatted source to stdout.</p>
+<p>It would be great to have an option where we can pass multiple files into <code>ruff format</code>, and get a structured response back with formatted sources for each of the files, somewhat analogous to <code>ruff --output-format=json &lt;files&gt;</code>.</p>
+<p>This would be helpful for a project like ours (PyTorch) which calls out to ruff programmatically from various tools.</p>
+<p>Happy to contribute this if folks are okay with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-30 20:52</div>
+            <div class="timeline-body"><p>Thanks for the issue and offer to contribute :)</p>
+<p>We're thinking about rewriting our LSP in Rust so it can be in <code>ruff</code> directly. I wonder if that would help with your use case? I think it'd provide an API like what you're looking for.</p>
+<p>I'm not sure if different output formats make sense in the <code>ruff format</code> CLI. Curious what @MichaReiser thinks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @zanieb on 2024-01-30 20:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2024-01-31 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-31 07:42</div>
+            <div class="timeline-body"><p>It's funny. I've just been talking with @charliermarsh about this because it would be nice if range formatting could return only the portion of the code that needs replacing together with the range that must be replaced rather than the entire file.</p>
+<p>We concluded that it would be nice to have but will no longer be necessary once we've rewritten our LSP in Rust because it can then call the internal API directly. I also think that promoting the LSP as a programmatic Ruff API (until we have a Python API) has benefits:</p>
+<ul>
+<li>It keeps the CLI API smaller and removes the need to maintain two programmatic APIs</li>
+<li>The LSP is well-tested because it is used in IDEs</li>
+<li>The LSP is a server, Ruff can cache state between calls, potentially making it faster than spawning the CLI for each file</li>
+<li>There's an official specification (we don't need to come up with good APIs)</li>
+</ul>
+<p>The main downside is that using it is more involved. For example, to format a file:</p>
+<ul>
+<li>Start the LSP process</li>
+<li>Send the initialize request</li>
+<li>Send the open file request</li>
+<li>Send the format request</li>
+<li>Send the close file request (optional, but you may want Ruff to release some memory every now and then)</li>
+<li>Send the shutdown request</li>
+<li>Wait for the process to end</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-23 21:34</div>
+            <div class="timeline-body"><p>I'll close this in favor of https://github.com/astral-sh/ruff/issues/659, which asks for a Ruff API (not just formatting).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-23 21:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

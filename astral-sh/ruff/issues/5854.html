@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extend `UP032` (`f-string`) to support auto-fixing multi-line triple-quoted strings - astral-sh/ruff #5854</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Extend `UP032` (`f-string`) to support auto-fixing multi-line triple-quoted strings</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5854">#5854</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2023-07-18 05:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/harupy">@harupy</a> on 2023-07-18 05:22</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>UP032 currently ignores multi-lines strings:</p>
+<p>https://github.com/astral-sh/ruff/blob/a4e5e3205fce46f00456d7a7b015bd1140a7abe8/crates/ruff/src/rules/pyupgrade/rules/f_strings.rs#L328-L331</p>
+<h2>Examples</h2>
+<pre><code class="language-python"># Ignored
+a = (
+  &quot;{}&quot;
+  &quot;{}&quot;.format(1, 2)
+)
+
+# Ignored
+a = &quot;&quot;&quot;
+{}
+&quot;&quot;&quot;.format(1)
+
+# Not ignored
+a = &quot;{}&quot;.format(1)
+</code></pre>
+<p>Is it possible to support auto-fixing the second case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-18 05:23</div>
+            <div class="timeline-body"><p>I'm testing the following change:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff/src/rules/pyupgrade/rules/f_strings.rs b/crates/ruff/src/rules/pyupgrade/rules/f_strings.rs
+index 494274b3a..8f6b69892 100644
+--- a/crates/ruff/src/rules/pyupgrade/rules/f_strings.rs
++++ b/crates/ruff/src/rules/pyupgrade/rules/f_strings.rs
+@@ -325,8 +325,12 @@ pub(crate) fn f_strings(
+         return;
+     }
+ 
+-    // Avoid refactoring multi-line strings.
+-    if checker.locator.contains_line_break(template.range()) {
++    // Avoid refactoring implicitly-concatenated strings.
++    // if checker.locator.contains_line_break(template.range()) {
++    //     return;
++    // }
++    let contents = checker.locator.slice(template.range());
++    if is_implicit_concatenation(contents) {
+         return;
+     }
+ 
+@@ -338,7 +342,13 @@ pub(crate) fn f_strings(
+ 
+     // Avoid refactors that exceed the line length limit.
+     let col_offset = template.start() - checker.locator.line_start(template.start());
+-    if col_offset.to_usize() + contents.len() &gt; line_length.get() {
++    // if col_offset.to_usize() + contents.len() &gt; line_length.get() {
++    //     return;
++    // }
++    if contents
++        .split('\n')
++        .any(|line| col_offset.to_usize() + line.len() &gt; line_length.get())
++    {
+         return;
+     }
+</code></pre>
+<p>Two changes:</p>
+<ul>
+<li>Ignore implicitly-concatenated strings, not <strong>all</strong> multi-line strings.</li>
+<li>Check the length of <strong>each line</strong> in the new contents, not the length of the entire new contents.</li>
+</ul>
+<h2>Result</h2>
+<p>(Built ruff with the change above, and ran it in https://github.com/mlflow/mlflow)</p>
+<p>https://github.com/harupy/mlflow/commit/70eb98c8e1ac08ca2f1f196634e60a6a1c9471b0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Extend `UP032` (`f-string`) to support fix multi-line triple-quoted strings" to "Extend `UP032` (`f-string`) to support auto-fixing multi-line triple-quoted strings" by @harupy on 2023-07-18 05:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-18 09:14</div>
+            <div class="timeline-body"><p>I'm happy to file a PR if this proposal makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-18 13:57</div>
+            <div class="timeline-body"><p>Thanks for the issue and patch! It looks reasonable to me, I'd be curious to see the ecosystem report from a pull request :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @zanieb on 2023-07-18 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5862.html">astral-sh/ruff#5862</a> on 2023-07-18 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-18 14:36</div>
+            <div class="timeline-body"><p>@zanieb Thanks for the comment, filed #5862 :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-07-18 16:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

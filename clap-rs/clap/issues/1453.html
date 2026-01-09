@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Feature Request] default value from function (or closure) - clap-rs/clap #1453</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Feature Request] default value from function (or closure)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1453">#1453</a>
+        opened by <a href="https://github.com/pbzweihander">@pbzweihander</a>
+        on 2019-04-11 02:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pbzweihander">@pbzweihander</a> on 2019-04-11 02:36</div>
+            <div class="timeline-body"><p>It would be great if I can make default values from functions, not literals.</p>
+<p>For example, if I want to get some options from args, but if not exists, I want to fallback to environment variables, and if not exists either, I want to panic. Like this:</p>
+<pre><code class="language-rust">Arg::with_name(&quot;some-arg&quot;).default_from(|| {
+    std::env::var(&quot;SOME_ARG&quot;).expect(&quot;Some arg is not found neither opt nor envvar&quot;)
+));
+</code></pre>
+<p>If this is possible, I can make the 'environment variable part' lazily evaluated!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ananthp">@ananthp</a> on 2019-05-02 13:23</div>
+            <div class="timeline-body"><p>I thought it's already possible to generate a value from a function and use it as default value for an argument:</p>
+<pre><code>Arg::with_name(&quot;path&quot;)
+    .default_value(generate_default_path())
+</code></pre>
+<p>The problem is:</p>
+<ul>
+<li><code>generate_default_path()</code> dynamically constructs a value. It has to return <code>String</code>, not <code>&amp;str</code>, but <code>default_value()</code> expects <code>&amp;str</code></li>
+<li><code>.default_value(&amp;generate_default_path())</code> has a lifetime issue. The borrowed value will expire by the time <code>get_matches()</code> returns the value. So, the parsed arguments can not be used.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frol">@frol</a> on 2019-05-13 17:50</div>
+            <div class="timeline-body"><p>Another problem of <code>.default_value(generate_default_path())</code> is laziness, i.e. <code>generate_default_path()</code> will be executed even if the value was provided.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @CreepySkeleton on 2020-02-01 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: postponed</span> added by @CreepySkeleton on 2020-02-01 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-01 14:38</div>
+            <div class="timeline-body"><p>Does anybody really need this? I doubt this calculations can ever be complex.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frol">@frol</a> on 2020-02-01 14:59</div>
+            <div class="timeline-body"><p>@CreepySkeleton The calculations could be non-complex, but they may involve some remote resource fetching or file reading, which you would prefer to avoid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @CreepySkeleton on 2020-02-01 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-01 19:27</div>
+            <div class="timeline-body"><p>I think this can be done with the hook feature that was described in https://github.com/clap-rs/clap/issues/1634#issuecomment-575885740. Do you guys agree?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-02 02:43</div>
+            <div class="timeline-body"><p>Yes, indeed. Closing in favor of https://github.com/clap-rs/clap/issues/1634#issuecomment-575885740</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-02-02 02:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Chris-Sahyouni">@Chris-Sahyouni</a> on 2024-07-20 15:12</div>
+            <div class="timeline-body"><p>Is it possible to achieve this using the Derive API? For example in my case I have an id arg that I want to default to a random hex string if it is not provided at runtime. Is it possible to do something like:
+<code>#[arg(default_value = |&lt;function logic&gt;|]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yuezk">@yuezk</a> on 2025-01-20 03:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it possible to achieve this using the Derive API? For example in my case I have an id arg that I want to default to a random hex string if it is not provided at runtime. Is it possible to do something like:
+<code>#[arg(default_value = |&lt;function logic&gt;|]</code></p>
+</blockquote>
+<p>Derive API also supports it, see https://github.com/clap-rs/clap/issues/1777#issuecomment-2059027180</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

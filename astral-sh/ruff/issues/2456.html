@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT009 changes `assertFalse()` into `assert … is False` - astral-sh/ruff #2456</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PT009 changes `assertFalse()` into `assert … is False`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2456">#2456</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-02-01 22:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-01 22:10</div>
+            <div class="timeline-body"><pre><code class="language-sh">$ cat foo.py
+import unittest
+
+
+class TestFoo(unittest.TestCase):
+
+    def test_foo(self):
+        self.assertFalse(None)
+
+
+unittest.main()
+$ ruff --select PT009 --fix foo.py
+Found 1 error (1 fixed, 0 remaining).
+$ cat foo.py
+import unittest
+
+
+class TestFoo(unittest.TestCase):
+
+    def test_foo(self):
+        assert None is False
+
+
+unittest.main()
+$ python3 foo.py
+F
+======================================================================
+FAIL: test_foo (__main__.TestFoo)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File &quot;foo.py&quot;, line 7, in test_foo
+    assert None is False
+AssertionError
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (failures=1)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 23:10</div>
+            <div class="timeline-body"><p>Is this incorrect? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-02-01 23:20</div>
+            <div class="timeline-body"><p>I guess <code>assertFalse</code> is really checking for <em>falsy</em> values. Maybe the right fix should be</p>
+<pre><code class="language-diff">-         self.assertFalse(None)
++         not None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-02 10:07</div>
+            <div class="timeline-body"><p>https://github.com/python/cpython/blob/main/Lib/unittest/case.py#L705-L709
+I'll do a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2476.html">astral-sh/ruff#2476</a> on 2023-02-02 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-02 16:24</div>
+            <div class="timeline-body"><p>Fixed by #2476.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-02 16:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

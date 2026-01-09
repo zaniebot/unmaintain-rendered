@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable package overrides for 'tool install' - astral-sh/uv #9517</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enable package overrides for 'tool install'</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9517">#9517</a>
+        opened by <a href="https://github.com/restlessronin">@restlessronin</a>
+        on 2024-11-29 09:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/restlessronin">@restlessronin</a> on 2024-11-29 09:17</div>
+            <div class="timeline-body"><p>I have a CLI app that is currently being built by poetry (https://pypi.org/project/llm-context/). 'pipx' is used to install it. There are no dependency issues at either build or resolution times. And the package runs fine.</p>
+<p>I want to be able to do a 'uv tool install' for this package.</p>
+<p>There are no problems when I build using 'uv'. When I try to install, I get</p>
+<pre><code> uv tool install &quot;llm-context @ .&quot;
+  × No solution found when resolving dependencies:
+  ╰─▶ Because tree-sitter-languages==1.10.2 has no wheels with a matching Python ABI tag
+      and llm-context==0.1.1 depends on tree-sitter-languages==1.10.2, we can conclude that
+      llm-context==0.1.1 cannot be used.
+      And because only llm-context==0.1.1 is available and you require llm-context, we can
+      conclude that your requirements are unsatisfiable.
+</code></pre>
+<p>Since I know it is currently running without apparent problems with the pipx install, I would like to force the override. Ideally I would do this at build time, rather than at install time.</p>
+<p>I found this https://github.com/astral-sh/uv/pull/631 which seems to do what I want (although it's at install time), but this is for pip-install. Apparently the equivalent is not set up for tool install?</p>
+<p>I'm wondering if there are plans to enable this for tools as well. As I said it's ideally something that goes into the metadata at build time, so that uv knows to override the dependency at install time.</p>
+<p>Great project! Thanks for all the work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 16:56</div>
+            <div class="timeline-body"><p>Hmm yeah, we probably need to accept <code>--with-overrides</code> or <code>--with-constraints</code> or something like that here. \cc @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-11-29 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/restlessronin">@restlessronin</a> on 2024-11-29 17:07</div>
+            <div class="timeline-body"><p>Great.</p>
+<p>'uv pip install&quot; appears to work with project metadata, i.e. if I build with</p>
+<pre><code>[tool.uv]
+override-dependencies = [
+  &quot;tree-sitter-languages==1.10.2&quot;
+]
+</code></pre>
+<p>in the 'pyproject.toml' file, I don't seem to need to specify overrides at install time. That would be the ideal solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 17:09</div>
+            <div class="timeline-body"><p><code>uv tool</code> intentionally doesn't read project configuration, though, since it's a &quot;global&quot; command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/restlessronin">@restlessronin</a> on 2024-11-29 17:17</div>
+            <div class="timeline-body"><p>ah. i thought the project metadata (including the override-dependencies) might be getting baked into the package at build time, and available to 'uv' at install time. i guess that's not what's happening here? I'm not very familiar with python packaging so I'm ignorant of the details.</p>
+<p>That would seem to indicate that there would be no way to do <code>uvx &lt;package-name / script-name&gt;</code> on a new machine and have it just work (since my package has this resolution issue). That's a shame. Seeing that work at speed with a python package was quite magical.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 17:31</div>
+            <div class="timeline-body"><p>Ah yeah, that metadata isn't available at <code>uv tool install</code> time if the package is coming from PyPI. It's not included in the distribution, since that piece is all standardized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 17:32</div>
+            <div class="timeline-body"><p>I'm confused though, how / why does your package work if it has this problem? Why does <code>pipx</code> let you install it...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/restlessronin">@restlessronin</a> on 2024-11-29 17:36</div>
+            <div class="timeline-body"><p>I'm afraid I don't know enough about python installation to answer that question. I don't get any warnings from pipx install, and the package functionality works fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 17:40</div>
+            <div class="timeline-body"><p>My guess is that you're using different Python versions -- <code>tree-sitter-languages</code> doesn't have wheels for Python 3.13, but I'm guessing that's what you're using by default, whereas pipx is using some other, older Python version. What does <code> uv tool install --python 3.12 &quot;llm-context @ .&quot;</code> give you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/restlessronin">@restlessronin</a> on 2024-11-30 05:35</div>
+            <div class="timeline-body"><p>Yup. That worked. Thanks! 🙏🏾</p>
+<p>I had already set &quot;.python-version&quot; to 3.12 to see if that was the issue, but I guess tool install doesn't look at the project settings.</p>
+<p>Now if there were a way to run 'uvx' directly with the CLI scripts within the package, that would be my ideal scenario. But this is already really good.</p>
+<p>Once again, thanks. Keep up the amazing work!</p>
+<p>UPDATE:</p>
+<p>I tried</p>
+<pre><code>requires-python = &quot;&gt;=3.10,&lt;3.13&quot;
+</code></pre>
+<p>To see if 'uv tool install' would solve correctly with the modified python version constraint, but it didn't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9547.html">astral-sh/uv#9547</a> on 2024-12-01 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-01 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-03 01:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

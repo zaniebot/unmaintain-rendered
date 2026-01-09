@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_man should respect the configured display order for args and subcommands - clap-rs/clap #6072</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_man should respect the configured display order for args and subcommands</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/pull/6072">#6072</a>
+        opened by <a href="https://github.com/ericgumba">@ericgumba</a>
+        on 2025-07-19 07:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ericgumba">@ericgumba</a> on 2025-07-19 07:09</div>
+            <div class="timeline-body"><p>In https://github.com/clap-rs/clap/issues/3362 we have an issue where when we configure an arg via .display_order(int),
+and then generate a manpage, the synposis and options will render
+the order the args were provided to the App rather than the order they were configured</p>
+<p>e.g</p>
+<p>Command::new(name)
+arg(Arg::new(&quot;few&quot;).short('b').display_order(2))
+arg(Arg::new(&quot;bar&quot;).short('a').display_order(1))</p>
+<p>will show</p>
+<p>...
+SYNOPSIS
+<name> [-b] [-a] ...</p>
+<p>...
+OPTIONS
+-b
+-a</p>
+<p>instead of</p>
+<p>...
+SYNOPSIS
+<name> [-a] [-b] ...</p>
+<p>...
+OPTIONS
+-a
+-b</p>
+<p>and so on. This fix adds sorting in the synopsis and options functions
+responsible for generating the corresponding synopsis and options sections
+of the manpage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pksunkara">@pksunkara</a> approved on 2025-07-19 18:17</div>
+            <div class="timeline-body"><p>I don't see any issue here. Unless @epage wants to do this with shell completions too in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_mangen/tests/testsuite/common.rs</code>:1 on 2025-07-21 17:30</div>
+            <div class="timeline-body"><blockquote>
+<p>clap_man should respect the configured display order for args and subcommands</p>
+</blockquote>
+<p>The title and the issue mention subcommands but they don't seem to be included in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-07-21 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_mangen/src/render.rs</code>:38 on 2025-07-21 17:31</div>
+            <div class="timeline-body"><p>Should we be using the same sort keys as help?</p>
+<p>https://github.com/clap-rs/clap/blob/4c039309b614ee4523c67a243afc38af11860de9/clap_builder/src/output/help_template.rs#L1063-L1088</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_mangen/tests/testsuite/common.rs</code>:360 on 2025-07-21 17:32</div>
+            <div class="timeline-body"><p>Do we have sort order tests within <code>tests/builder</code>?  If so, seems like we should use that for easier comparison and to help catch things we might miss.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-07-21 17:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ericgumba">@ericgumba</a> reviewed on 2025-07-24 12:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ericgumba">@ericgumba</a> on <code>clap_mangen/tests/testsuite/common.rs</code>:360 on 2025-07-24 12:47</div>
+            <div class="timeline-body"><p>After searching/grepping through <code>tests/builder</code> the only thing I found was in <code>derive_order.rs</code>. I did add more thorough test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ericgumba">@ericgumba</a> on <code>clap_mangen/src/render.rs</code>:38 on 2025-07-24 12:47</div>
+            <div class="timeline-body"><p>Thanks for the tip, I reused the same sort keys for both options and subcommands found in help_template.rs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ericgumba">@ericgumba</a> reviewed on 2025-07-24 12:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ericgumba">@ericgumba</a> reviewed on 2025-07-24 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ericgumba">@ericgumba</a> on <code>clap_mangen/tests/testsuite/common.rs</code>:1 on 2025-07-24 12:48</div>
+            <div class="timeline-body"><p>Thank you for taking the time to review @epage . Also thanks for the catch, I added sorting in subcommands and tested both default order and custom configured ordering.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_mangen/src/render.rs</code>:38 on 2025-07-29 00:25</div>
+            <div class="timeline-body"><p>There a reason that the usage isn't using the key?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-07-29 00:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-07-29 00:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_mangen/src/render.rs</code>:38 on 2025-07-29 00:25</div>
+            <div class="timeline-body"><p>Whoops, looking at the wrong commit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-07-29 00:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_mangen/src/render.rs</code>:4 on 2025-07-29 00:31</div>
+            <div class="timeline-body"><p>This should be at the bottom of the file, not the top, so people start with the entry points that matter and dig into details as needed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-07-29 00:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_mangen/src/render.rs</code>:4 on 2025-07-29 00:31</div>
+            <div class="timeline-body"><p>This doesn't look like it needs to be <code>pub(crate)</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

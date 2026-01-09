@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff ignores &quot;quote-style = 'single'&quot; - astral-sh/ruff #12003</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff ignores &quot;quote-style = 'single'&quot;</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12003">#12003</a>
+        opened by <a href="https://github.com/jackdesert">@jackdesert</a>
+        on 2024-06-24 04:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jackdesert">@jackdesert</a> on 2024-06-24 04:06</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Ruff wants to use double quotes even though pyproject.toml specifies single quotes.</p>
+<p>Keywords: single, single quote, quote style</p>
+<p>Code snippet:</p>
+<pre><code class="language-python">print('single')
+print(&quot;double&quot;)
+</code></pre>
+<p>Command:</p>
+<pre><code>ruff check --config pyproject.toml sample.py</code></pre>
+<p>Output:</p>
+<pre><code class="language-bash">sample.py:1:1: D100 Missing docstring in public module
+sample.py:1:7: Q000 [*] Single quotes found but double quotes preferred
+Found 2 errors.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>Expected Output:</p>
+<pre><code class="language-bash">sample.py:1:1: D100 Missing docstring in public module
+sample.py:2:7: Q000 [*] Double quotes found but single quotes preferred
+Found 2 errors.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>Version:</p>
+<pre><code>ruff 0.4.10</code></pre>
+<p>pyproject.toml:</p>
+<pre><code class="language-toml">[tool.ruff]
+
+target-version = 'py311'
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    '.bzr',
+    '.direnv',
+    '.eggs',
+    '.git',
+    '.hg',
+    '.mypy_cache',
+    '.nox',
+    '.pants.d',
+    '.ruff_cache',
+    '.svn',
+    '.tox',
+    '.venv',
+    '__pypackages__',
+    '_build',
+    'buck-out',
+    'build',
+    'dist',
+    'node_modules',
+    'venv',
+    'env',
+]
+
+# Same as Black.
+line-length = 88
+
+[tool.ruff.lint]
+
+# Enable All rules.
+# We may not want all rules, but this is a good starting point for you to
+# see the full capabilities of ruff
+select = ['ALL']
+
+unfixable = []
+
+per-file-ignores = {}
+
+# Putting an entry in `ignore` will ignore all errors that start with that string.
+# For example, adding `T` will ignore all errors beginning with `T`,
+# whereas adding `T20` will only ignore the `T20` error
+# (and probably any errors that start with `T20`)
+ignore = ['INP001', # implicit-namespace-package
+          'T20',    # flake8-print (warns when there are print statements)
+
+          # One of either D212 or D213 must be disabled.
+          # (I prefer disabling D212 (Multi-line docstring summary should start at the first line)
+          #  because I like text inside a docstring
+          #  to start the line below the three ''')
+          #'D213', # See https://github.com/charliermarsh/ruff/issues/2281
+          'D212', # See https://github.com/charliermarsh/ruff/issues/2281
+          # One of D203 and D200 must be disabled.
+          # No strong preference here.
+          # One expects a blank line before a class docstring
+          #'D203', # See https://github.com/charliermarsh/ruff/issues/2281
+          'D211', # See https://github.com/charliermarsh/ruff/issues/2281
+
+
+          'D200', # Allow multiline docstring even when it could fit on one line
+
+          'C408', # Allow instantiating dictionary as dict(key=value)
+          'G004', # Logging statement uses f-string
+          'E501', # Line too long
+          'ANN101', # Don't require self to be annotated.
+          'PTH', # allow os.path
+          'PLR0913', # allow too many arguments
+          'COM812', # may cause issues with ruff format
+          'ISC001', # may cause issues with ruff format
+
+]
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = '^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$'
+
+# In order for a particular class to be fixable with `ruff [file] --fix`,
+# the class must be in `fixable`.
+fixable = ['A', 'B', 'C', 'D', 'E', 'F', 'Q']
+
+# I like the google docstyle
+# See https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
+# and http://google.github.io/styleguide/pyguide.html
+# https://gist.github.com/redlotus/3bc387c2591e3e908c9b63b97b11d24e
+[tool.ruff.lint.pydocstyle]
+convention = 'google'  # Or 'numpy', or 'pep257'
+
+
+[tool.ruff.lint.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10
+
+# Configure single quotes
+[tool.ruff.format]
+quote-style = 'single'
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-24 04:23</div>
+            <div class="timeline-body"><p>Hi! The configuration setting you're checking is for <code>ruff format</code> — <code>ruff check</code> only runs the linter right now (see #8232 for more on that). If you run <code>ruff format</code>, your desired quote style should be enforced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-06-24 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12015.html">astral-sh/ruff#12015</a> on 2024-06-24 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-26 01:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

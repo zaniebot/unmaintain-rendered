@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FR: re-enforce distinction between download time and build time - astral-sh/uv #4011</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FR: re-enforce distinction between download time and build time</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4011">#4011</a>
+        opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a>
+        on 2024-06-04 07:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-06-04 07:55</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Hi, thanks for this wonderful tool !
+I noticed that when building packages from source, either locally or from downloaded tarballs, reports build time is bundled in download time, which is somewhat misleading. I think it'd be more correct (and informative) to show time spent building sources separately, especially because it's usually much longer than resolution/download/install and that uv is not actually doing the heavy lifting there.
+To illustrate what I mean, here's what happens if I run <code>uv pip install yt --no-binary yt</code> in a fresh env</p>
+<pre><code>Resolved 39 packages in 690ms
+   Built yt==4.3.1
+Downloaded 1 package in 33.49s
+Installed 39 packages in 220ms
+...
+</code></pre>
+<p>almost all the time is spent waiting for compilers and linkers (~33s), but it's still included in &quot;downloaded&quot;.</p>
+<p>Another aspect of this is the message you see as the package is being built (downloading itself takes a couple seconds at most)
+<img src="https://github.com/astral-sh/uv/assets/14075922/45654536-f122-4b33-8a7b-a7251f0e4ae8" alt="Screenshot 2024-06-04 at 09 49 56" /></p>
+<p>Furthermore, if I instead clone https://github/yt-project/yt.git and install locally (<code>uv pip install -e .</code>), I <em>still</em> see build time being included in &quot;download&quot; time, which in this context seems plain wrong</p>
+<pre><code>Resolved 47 packages in 389ms
+   Built yt @ file:///Users/clm/dev/yt-project/yt
+Downloaded 10 packages in 25.44s
+Installed 47 packages in 153ms
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-06-04 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">tracing</span> added by @zanieb on 2024-06-04 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-04 18:27</div>
+            <div class="timeline-body"><p>Thanks for the clear report! This sounds incorrect, though I'm uncertain how easy it will be to fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-04 18:34</div>
+            <div class="timeline-body"><p>It isn’t really “possible” to fix this because we don’t download-then-build in discrete phases. We download and build in parallel across all packages. So while some packages are being downloaded, others are being built.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-06-04 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-04 18:35</div>
+            <div class="timeline-body"><p>We can use a more generic term, but conceptually we can’t report separate phases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-04 19:00</div>
+            <div class="timeline-body"><p>Yeah the concurrent pipelining was my concern regarding feasibility. We could track the separate total times but I don't know we'd report it in a coherent way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-06-05 12:40</div>
+            <div class="timeline-body"><p>Thanks for clarifying that the built/download phase is conccurent, this wasn't obvious to me.
+Since I'm having trouble coming up with a more generic term, how about something like this ?</p>
+<pre><code>Downloaded/built 10 packages in 25.44s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-06-05 12:42</div>
+            <div class="timeline-body"><p>I'm thinking it could also be nice to report how long each package took to build</p>
+<pre><code>   Built yt==4.3.1 in xxx s 
+</code></pre>
+<p>Although that might make it confusing since all other reported times are wall times, but this one would be CPU time (I think ?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4391.html">astral-sh/uv#4391</a> on 2024-06-18 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4394.html">astral-sh/uv#4394</a> on 2024-06-18 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-18 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-18 18:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questions about dependency annotation in `pyproject.toml` - astral-sh/uv #5767</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Questions about dependency annotation in `pyproject.toml`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/5767">#5767</a>
+        opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a>
+        on 2024-08-04 20:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-04 20:51</div>
+            <div class="timeline-body"><p>Hello all,</p>
+<p>I've been browsing the documentation/issues and I'm having trouble finding examples on annotating dependencies in <code>pyproject.toml</code>.</p>
+<p>My current use case is to be able to install an editable local dependency, such as another python project nested in my project as a submodule.</p>
+<p>I would also like to support users who don't like to use submodules and would rather install my project directly from a git URL with their package manager, with the option to install it as editable so that they can get the entire project and make local modifications if necessary.</p>
+<p>The reason it is important to have an editable installation is so that my entire project gets pulled into <code>.venv\src\myproject</code>, including my non-Python API (<code>.venv\src\myproject\api</code>). Otherwise, my project is installed to <code>site-packages</code> and only includes my project's source  (<code>myproject\src\myproject\</code>) and not other components that developers may need, such as API or docs.</p>
+<p>See below for my comments/questions.</p>
+<pre><code class="language-toml">[project]
+dependencies = [
+    &quot;some_dependency&quot;
+    # Where would the editable option go?
+    # How should versions be annotated for local or git dependencies?
+    # Would the below entries work?
+    # &quot;some_dependency @ ssh://git@gitlab.mycompany.com/project/some_dependency.git&quot;
+    # &quot;some_dependency @ ./some_dependency/&quot;
+]
+
+# Is this section even needed if the URL/path is already in the dependency list using the dep @ url notation?
+[tool.uv.sources]
+# Submodule approach
+some_dependency = { path = &quot;./some_dependency/&quot;}
+# Package manager approach
+some_dependency = { git = &quot;ssh://git@gitlab.mycompany.com/project/some_dependency.git&quot;}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-05 12:21</div>
+            <div class="timeline-body"><p>Can workspaces be pulled in from a remote source?</p>
+<pre><code class="language-toml">[project]
+dependencies = [
+    &quot;some_dependency &gt;=0.1.0,&lt;1&quot;
+]
+
+[tool.uv.sources]
+some_dependency = { workspace = true }
+
+[tool.uv.workspace]
+include = [
+  &quot;packages/some_dependency @ ssh://git@gitlab.mycompany.com/project/some_dependency.git&quot;
+]
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

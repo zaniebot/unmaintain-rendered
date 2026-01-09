@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTH101, PTH104, PTH105, and PTH121 ignore extra arguments - astral-sh/ruff #20134</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PTH101, PTH104, PTH105, and PTH121 ignore extra arguments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20134">#20134</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-08-28 12:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-08-28 12:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fixes for <a href="https://docs.astral.sh/ruff/rules/os-chmod/"><code>os-chmod</code> (PTH101)</a>, <a href="https://docs.astral.sh/ruff/rules/os-rename/"><code>os-rename</code> (PTH104)</a>, <a href="https://docs.astral.sh/ruff/rules/os-replace/"><code>os-replace</code> (PTH105)</a>, and <a href="https://docs.astral.sh/ruff/rules/os-path-samefile/"><code>os-path-samefile</code> (PTH121)</a> do not check for extra arguments. This can change a program’s behavior. The fix for PTH101 should preserve the <code>follow_symlinks</code> argument if specified. All four fixes should be suppressed when the arguments don’t match the signature. <a href="https://play.ruff.rs/cea45bb6-0a5e-45ac-b24b-b07a5b82f4bf">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;pth1.py &lt;&lt;'# EOF'
+import os
+
+# PTH101
+os.close(os.open(&quot;pth1_file&quot;, os.O_CREAT | os.O_WRONLY, 0o640))
+try: os.unlink(&quot;pth1_link&quot;)
+except FileNotFoundError: pass
+os.symlink(&quot;pth1_file&quot;, &quot;pth1_link&quot;)
+os.chmod(&quot;pth1_link&quot;, 0o600, follow_symlinks=False)
+print(oct(os.stat(&quot;pth1_file&quot;).st_mode))
+print(oct(os.lstat(&quot;pth1_link&quot;).st_mode))
+
+# PTH101
+try: os.chmod(&quot;pth1_file&quot;, 0o700, None, True, 1, *[1], **{&quot;x&quot;: 1}, foo=1)
+except TypeError as e: print(e)
+
+# PTH104
+try: os.rename(&quot;pth1_file&quot;, &quot;pth1_file1&quot;, None, None, 1, *[1], **{&quot;x&quot;: 1}, foo=1)
+except TypeError as e: print(e)
+
+# PTH105
+try: os.replace(&quot;pth1_file1&quot;, &quot;pth1_file&quot;, None, None, 1, *[1], **{&quot;x&quot;: 1}, foo=1)
+except TypeError as e: print(e)
+
+# PTH121
+try: os.path.samefile(&quot;pth1_file&quot;, &quot;pth1_link&quot;, 1, *[1], **{&quot;x&quot;: 1}, foo=1)
+except TypeError as e: print(e)
+
+os.unlink(&quot;pth1_file&quot;)
+os.unlink(&quot;pth1_link&quot;)
+# EOF
+
+$ python pth1.py
+0o100640
+0o120600
+chmod() takes at most 4 arguments (8 given)
+rename() takes at most 4 arguments (8 given)
+replace() takes at most 4 arguments (8 given)
+samefile() got an unexpected keyword argument 'x'
+
+$ ruff --isolated check pth1.py --select PTH101,PTH104,PTH105,PTH121 --preview --fix
+Found 5 errors (5 fixed, 0 remaining).
+
+$ python pth1.py
+0o100600
+0o120755
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.10 (c68ff8d90 2025-08-21)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-28 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-08-28 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-08-28 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20143.html">astral-sh/ruff#20143</a> on 2025-08-28 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20144.html">astral-sh/ruff#20144</a> on 2025-08-28 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-18 14:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

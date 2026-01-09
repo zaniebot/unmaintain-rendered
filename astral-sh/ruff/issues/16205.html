@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff analyze graph - empty results - astral-sh/ruff #16205</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff analyze graph - empty results</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16205">#16205</a>
+        opened by <a href="https://github.com/vinnybod">@vinnybod</a>
+        on 2025-02-17 06:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vinnybod">@vinnybod</a> on 2025-02-17 06:37</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>I created a new project with <code>uv init</code> and added python files that contain imports of each other. The <code>ruff analyze graph</code> command is finding the source files but each one has empty results. I feel like I must to be missing something obvious.</p>
+<pre><code>➜  ruff-graph uv run ruff --version
+ruff 0.9.6
+</code></pre>
+<pre><code>➜  ruff-graph uv run ruff analyze graph --preview --isolated
+{
+  &quot;__init__.py&quot;: [],
+  &quot;main.py&quot;: [],
+  &quot;src/__init__.py&quot;: [],
+  &quot;src/hello.py&quot;: [],
+  &quot;src/lib_a.py&quot;: [],
+  &quot;src/lib_b.py&quot;: [],
+  &quot;src/lib_c.py&quot;: []
+}
+</code></pre>
+<p>Minimal Example (Branch <code>ruff-graph</code>, subdirectory <code>ruff-graph</code>): https://github.com/vinnybod/blog-examples/tree/ruff-graph/ruff-graph
+pyproject.toml: https://github.com/vinnybod/blog-examples/blob/ruff-graph/ruff-graph/pyproject.toml</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">analyze</span> added by @AlexWaygood on 2025-02-17 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-17 08:21</div>
+            <div class="timeline-body"><p>Thanks for the repro.</p>
+<p>The output of Ruff graph seems correct to me:</p>
+<ul>
+<li><p>I tried running your program but even Python fails to resolve the imports when you e.g. change the import in <code>main.py</code> from <code>import src.lib_c as lib_c</code> to <code>import src.lib_a as lib_c</code> (note taht we now import the file <code>lib_a</code> instead of <code>c</code>.</p>
+<pre><code>uv run --with requests main.py
+  Traceback (most recent call last):
+    File &quot;/Users/micha/astral/blog-examples/ruff-graph/main.py&quot;, line 1, in &lt;module&gt;
+      import src.lib_a as lib_c
+    File &quot;/Users/micha/astral/blog-examples/ruff-graph/src/lib_a.py&quot;, line 1, in &lt;module&gt;
+      import lib_b
+  ModuleNotFoundError: No module named 'lib_b'
+</code></pre>
+<p>To fix this, you have to change the imports in <code>lib_a</code> to either use absolute imports or relative imports</p>
+<ul>
+<li><code>import lib_b</code> -&gt; <code>import src.lib_b</code></li>
+<li><code>import lib_b</code> -&gt; <code>from . import lib_b</code></li>
+<li>Changing the imports in <code>lib_a</code> to use relative imports, e.g.</li>
+</ul>
+</li>
+<li><p>You have to delete the <code>__init__.py</code> in the <code>ruff_graph</code> directory because main isn't a python package on its own. I do think this is a bug because ruff silently ignores the directories specified in the ``src` directory. But I'm interested in @charliermarsh's opinion on that</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-02-17 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vinnybod">@vinnybod</a> on 2025-02-17 16:33</div>
+            <div class="timeline-body"><p>@MichaReiser thanks for the quick response! I switched the example to use absolute imports and removed the <code>__init__.py</code> from the top-level. The output now looks correct.</p>
+<pre><code>➜  ruff-graph git:(ruff-graph) ✗ uv run ruff analyze graph --preview --isolated
+{
+  &quot;main.py&quot;: [
+    &quot;src/lib_c.py&quot;
+  ],
+  &quot;src/__init__.py&quot;: [],
+  &quot;src/hello.py&quot;: [],
+  &quot;src/lib_a.py&quot;: [
+    &quot;src/lib_b.py&quot;,
+    &quot;src/lib_c.py&quot;
+  ],
+  &quot;src/lib_b.py&quot;: [],
+  &quot;src/lib_c.py&quot;: []
+}
+</code></pre>
+<p>Additional question. <strong>Is it possible yet to have <code>ruff analyze graph</code> output the use of 3rd party deps?</strong>
+https://github.com/astral-sh/ruff/issues/13431 seems related.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-17 17:03</div>
+            <div class="timeline-body"><p>Glad to hear that.</p>
+<blockquote>
+<p>Is it possible yet to have ruff analyze graph output the use of 3rd party deps?</p>
+</blockquote>
+<p>No, this isn't currently possible and yes, the linked issue is related.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @vinnybod on 2025-02-17 17:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

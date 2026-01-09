@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False negative with useless-expression on strings - astral-sh/ruff #11292</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False negative with useless-expression on strings</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11292">#11292</a>
+        opened by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a>
+        on 2024-05-05 19:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-05-05 19:39</div>
+            <div class="timeline-body"><p>For some reason useless-expression is not triggered by loose strings.  Should these be caught?  If comments are intended, then Ruff could suggest converting them comments?</p>
+<pre><code class="language-python">class X:
+    &quot;&quot;&quot;Some docstring.&quot;&quot;&quot;
+
+
+def f() -&gt; None:
+    &quot;&quot;&quot;Some docstring.&quot;&quot;&quot;
+    [123]  # noqa: B018
+    &quot;Some loose string.&quot;  # Should be B018.
+
+
+x = 1
+&quot;&quot;&quot;Some editors consider this a variable docstring, but it doesn't affect any __doc__ and
+ordinary comments are ubiquitous.&quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-05 22:34</div>
+            <div class="timeline-body"><p>The intention here is to avoid flagging docstrings, but I think we need to make it more targeted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-05-05 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-05-05 22:40</div>
+            <div class="timeline-body"><p>Yeah, that's what I figured.  I tried to illustrate some reasonable uses of strings.  I'm not sure how you feel about the &quot;variable docstring&quot;, which some editors recognize.  As far as I know, they're rarely used and not really a Python concept.  They look pretty weird in code:</p>
+<pre><code class="language-python">length: int  # The length of the object.
+width: int  # The width of the object.
+</code></pre>
+<p>versus</p>
+<pre><code class="language-python">length: int
+&quot;The length of the object.&quot;
+width: int
+&quot;The width of the object.&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-05 23:09</div>
+            <div class="timeline-body"><p>Yeah, I think we <em>do</em> need to ignore attribute docstrings. They're not standardized, but they're popular enough that I think it'd be a net-negative to flag them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-06 06:50</div>
+            <div class="timeline-body"><p>I think this can be fixed because our docstring detection is quite accurate now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11302.html">astral-sh/ruff#11302</a> on 2024-05-06 06:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-03 08:53</div>
+            <div class="timeline-body"><p>It seems that updating <code>B018</code> seems to raise a lot of diagnostics in the ecosystem checks. What about implementing the <a href="https://pylint.pycqa.org/en/latest/user_guide/messages/warning/pointless-string-statement.html"><code>PLW0105</code></a> rule from Pylint instead of updating <code>B018</code>? This will also match <code>flake8-bugbear</code> behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-06-03 09:14</div>
+            <div class="timeline-body"><p>Please don't use the same documentation as PLW0105: strings are not reasonable documentation in Python, and I don't think the linter should suggest that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/estyrke">@estyrke</a> on 2024-07-02 08:56</div>
+            <div class="timeline-body"><p>If B018 is to be modified, consider the special case of useless string expression after a string assignment. This is rather nasty and hard to detect for a human (the correct code should have parentheses to make this a multi line implicit string concatenation):</p>
+<pre><code class="language-python">    def __str__(self) -&gt; str:
+        string = f&quot;AnalysisConfig(ID: {self.uuid},&quot;
+        f&quot;BackendURL: {self.backend_url},&quot;
+        f&quot;AnnotationTypes: {self.annotation_types})&quot;
+        return string
+</code></pre>
+<p>For that matter, any case with an f-string is probably always an error, since it would be pointless to use those for comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-07-02 10:30</div>
+            <div class="timeline-body"><p>Maybe Ruff should flag &quot;attribute docstrings&quot; using a separate rule to convert them to annotated annotations?</p>
+<pre><code class="language-python">x: int
+&quot;blah&quot;
+</code></pre>
+<p>becomes</p>
+<pre><code class="language-python">x: Annotated[int, &quot;blah&quot;]
+</code></pre>
+<p>This is more consistent with modern Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7942.html">astral-sh/ruff#7942</a> on 2024-11-07 23:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

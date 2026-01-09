@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT010 should be updated for pytest 8.4.0 - astral-sh/ruff #18653</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PT010 should be updated for pytest 8.4.0</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18653">#18653</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-06-12 20:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-06-12 20:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The documentation for <a href="https://docs.astral.sh/ruff/rules/pytest-raises-without-exception/"><code>pytest-raises-without-exception</code> (PT010)</a> says:</p>
+<blockquote>
+<p><code>pytest.raises</code> expects to receive an expected exception as its first argument. If omitted, the <code>pytest.raises</code> call will fail at runtime.</p>
+</blockquote>
+<p>As of pytest 8.4.0 (released June 2, 2025) it is also sufficient to pass the keyword argument <code>match</code> or <code>check</code>. The rule should recognize those arguments too.</p>
+<pre><code class="language-console">$ cat &gt;pt010.py &lt;&lt;'# EOF'
+import pytest
+with pytest.raises(match=r&quot;!+&quot;):
+    raise RuntimeError(&quot;!!!&quot;)
+with pytest.raises(check=lambda _e: True):
+    raise RuntimeError(&quot;...&quot;)
+# EOF
+
+$ python pt010.py; echo $?
+0
+
+$ ruff --isolated check pt010.py --select PT010 --output-format concise -q
+pt010.py:2:6: PT010 Set the expected exception in `pytest.raises()`
+pt010.py:4:6: PT010 Set the expected exception in `pytest.raises()`
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.13 (5faf72a4d 2025-06-05)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-06-12 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-12 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-06-12 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-12 22:43</div>
+            <div class="timeline-body"><p>Nice, thanks! That's quite a recent version, so we should probably address both older and newer versions in the docs.</p>
+<p>I'm not quite sure what to do about the rule itself since I don't think we can check the actual version of a package. I guess I would lean toward just always allowing calls with <code>match</code> or <code>check</code> arguments too. It looks like <code>check</code> is also new in 8.4.0, so I guess <code>match</code> is the only ambiguous one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mahiro72">@mahiro72</a> on 2025-12-12 11:53</div>
+            <div class="timeline-body"><p>Hi @ntBre , I'd like to work on this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @mahiro72 by @ntBre on 2025-12-12 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21964.html">astral-sh/ruff#21964</a> on 2025-12-13 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-18 15:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shebang lines in scripts use absolute paths that break with docker volume mounts - astral-sh/uv #13350</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Shebang lines in scripts use absolute paths that break with docker volume mounts</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13350">#13350</a>
+        opened by <a href="https://github.com/luukvhoudt">@luukvhoudt</a>
+        on 2025-05-08 17:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/luukvhoudt">@luukvhoudt</a> on 2025-05-08 17:14</div>
+            <div class="timeline-body"><p>When using uv to manage Python dependencies, console scripts installed in <code>.venv/bin</code> have shebang lines set to absolute paths, such as <code>#!/path/to/project/.venv/bin/python</code>. This works correctly on the host machine. However, when mounting the project directory (including <code>.venv</code>) into a Docker container or when moving the project directory, these shebang paths become invalid because they reference to a python binary that doesn't exists in the new context.</p>
+<p>For example:</p>
+<ul>
+<li>On the host, my project is at <code>/home/user/my-project</code>, and a console script in <code>/home/user/my-project/.venv/bin/somecommand</code> has the shebang <code>#!/home/user/my-project/.venv/bin/python</code>.</li>
+<li>I run a Docker container with a volume mount: <code>docker run -v /home/user/my-project:/app image_name</code>.</li>
+<li>Inside the container, executing <code>/app/.venv/bin/somecommand</code> fails because the shebang <code>#!/home/user/my-project/.venv/bin/python</code> points to a non-existent path. The correct path in the container is <code>/app/.venv/bin/python</code>.</li>
+</ul>
+<p>This issue complicates development workflows where mounting the project directory is necessary for live code changes without rebuilding the Docker image. Including <code>.venv</code> in the mount is common but leads to these path mismatches.</p>
+<p><strong>Is there a way to configure uv to use a different shebang format, such as <code>/usr/bin/env python</code>, or to support relative paths? Alternatively, is there a planned feature to handle Docker volume mounts where the <code>.venv</code> directory is included?</strong></p>
+<p><strong>Steps to Reproduce:</strong></p>
+<ol>
+<li><p>Create a Python project with uv and install a dependency with a console script (e.g., <code>uvicorn</code>).</p>
+</li>
+<li><p>Run <code>uv sync</code> on the host to create and populate the <code>.venv</code> directory.</p>
+</li>
+<li><p>Run a Docker container with a volume mount that includes the project directory and <code>.venv</code>, e.g.:</p>
+<pre><code class="language-bash">docker run -v /home/user/my-project:/app image_name
+</code></pre>
+</li>
+<li><p>Inside the container, run the console script:</p>
+<pre><code class="language-bash">/app/.venv/bin/somecommand
+</code></pre>
+</li>
+<li><p>Observe the error:</p>
+<pre><code>exec /app/.venv/bin/somecommand: no such file or directory
+</code></pre>
+<p>This occurs because the shebang references the host's path, which is invalid in the container.</p>
+</li>
+</ol>
+<p><strong>Expected Behavior:</strong></p>
+<ul>
+<li>Console scripts should execute correctly inside the container using the mounted <code>.venv</code> directory.</li>
+</ul>
+<p><strong>Actual Behavior:</strong></p>
+<ul>
+<li>Console scripts fail to execute because the shebang points to a path that does not exist in the container's filesystem.</li>
+</ul>
+<p><strong>Additional Information:</strong></p>
+<ul>
+<li>Using <code>uv venv</code> and <code>uv sync</code> during the Docker build process is not always feasible for projects requiring specific development workflows or multi-stage builds.</li>
+<li>This issue is distinct from #11048, which relates to Heroku's build system, but it shares similarities regarding path resolution between different environments.</li>
+</ul>
+<p><strong>Environment Details:</strong></p>
+<ul>
+<li>uv version: 0.6.16</li>
+<li>Docker version: 28.1.1, build 4eba377</li>
+<li>Operating System: Ubuntu 24.04.2 LTS</li>
+<li>Python version: 3.13</li>
+</ul>
+<p><strong>Suggested Solution:</strong></p>
+<ul>
+<li>Add a configuration option in uv to set shebang lines to <code>/usr/bin/env python</code> for console scripts, assuming <code>.venv/bin</code> is in the PATH.</li>
+<li>Alternatively, explore a mechanism to detect containerized environments and adjust shebang paths accordingly.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-08 17:19</div>
+            <div class="timeline-body"><p>I would strongly recommend not mounting the virtual environment into your container (e.g., as discussed at https://docs.astral.sh/uv/guides/integration/docker/#developing-in-a-container) — we don't support that and I don't think we will.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-05-13 03:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

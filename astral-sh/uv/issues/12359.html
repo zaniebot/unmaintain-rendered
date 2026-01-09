@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retrying in case of a broken pipe - astral-sh/uv #12359</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Retrying in case of a broken pipe</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12359">#12359</a>
+        opened by <a href="https://github.com/potiuk">@potiuk</a>
+        on 2025-03-21 09:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/potiuk">@potiuk</a> on 2025-03-21 09:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Recently in our CI we started to experience somewhat frequent failures due to <code>broken pipe</code>  errors when pulling big artifacts from PyPI. Particularly <code>pyspark==3.5.5</code> which is 320  MB to pull: https://pypi.org/project/pyspark/#files</p>
+<p>While this is of course a problem of the infrastructure (either PyPI or GH actions), it should be relatively easy (I guess) to introduce a retry mechanism in case of broken pipe - which is very likely transient error.</p>
+<h3>Example</h3>
+<p>https://github.com/apache/airflow/actions/runs/13987630354/job/39165182511?pr=47798#step:11:5191</p>
+<pre><code class="language-bash">Running command: uv pip install --no-sources -e '.[all-core]' ./airflow-core ./task-sdk --reinstall apache-airflow-providers-airbyte==5.0.1 apache-airflow-providers-alibaba==3.0.1 apache-airflow-providers-amazon==9.4.0 apache-airflow-providers-apache-beam==6.0.3 apache-airflow-providers-apache-cassandra==3.7.1 apache-airflow-providers-apache-drill==3.0.1 
+  apache-airflow-providers-apache-druid==4.1.0 apache-airflow-providers-apache-flink==1.6.1 apache-airflow-providers-apache-hdfs==4.7.1 apache-airflow-providers-apache-hive==9.0.3 apache-airflow-providers-apache-iceberg==1.2.1 apache-airflow-providers-apache-impala==1.6.1 apache-airflow-providers-apache-kafka==1.7.0 apache-airflow-providers-apache-kylin==3.8.1 
+  apache-airflow-providers-apache-livy==4.2.1 apache-airflow-providers-apache-pig==4.6.1 apache-airflow-providers-apache-pinot==4.7.0 apache-airflow-providers-apache-spark==5.0.1 apache-airflow-providers-apprise==2.0.1 apache-airflow-providers-arangodb==2.7.3 apache-airflow-providers-asana==2.9.1 apache-airflow-providers-atlassian-jira==3.0.1 apache-airflow-providers-celery==3.10.3 
+  apache-airflow-providers-cloudant==4.1.1 apache-airflow-providers-cncf-kubernetes==10.3.1 apache-airflow-providers-cohere==1.4.3 apache-airflow-providers-common-compat==1.5.1 apache-airflow-providers-common-io==1.5.1 apache-airflow-providers-common-sql==1.24.0 apache-airflow-providers-databricks==7.2.1 apache-airflow-providers-datadog==3.8.3 apache-airflow-providers-dbt-cloud==4.2.1 
+  apache-airflow-providers-dingding==3.7.3 apache-airflow-providers-discord==3.9.3 apache-airflow-providers-docker==4.2.1 apache-airflow-providers-elasticsearch==6.2.1 apache-airflow-providers-exasol==4.7.3 apache-airflow-providers-facebook==3.7.1 apache-airflow-providers-ftp==3.12.3 apache-airflow-providers-github==2.8.3 apache-airflow-providers-google==14.0.0 apache-airflow-providers-grpc==3.7.3 
+  apache-airflow-providers-hashicorp==4.1.0 apache-airflow-providers-http==5.2.1 apache-airflow-providers-imap==3.8.3 apache-airflow-providers-influxdb==2.8.3 apache-airflow-providers-jdbc==5.0.1 apache-airflow-providers-jenkins==4.0.3 apache-airflow-providers-microsoft-azure==12.2.1 apache-airflow-providers-microsoft-mssql==4.2.1 apache-airflow-providers-microsoft-psrp==3.0.1 
+  apache-airflow-providers-microsoft-winrm==3.9.1 apache-airflow-providers-mongo==5.0.2 apache-airflow-providers-mysql==6.2.0 apache-airflow-providers-neo4j==3.8.2 apache-airflow-providers-odbc==4.9.1 apache-airflow-providers-openai==1.5.2 apache-airflow-providers-openfaas==3.7.1 apache-airflow-providers-openlineage==2.1.1 apache-airflow-providers-opensearch==1.6.2 
+  apache-airflow-providers-opsgenie==5.8.2 apache-airflow-providers-oracle==4.0.2 apache-airflow-providers-pagerduty==4.0.2 apache-airflow-providers-papermill==3.9.2 apache-airflow-providers-pgvector==1.4.1 apache-airflow-providers-pinecone==2.2.2 apache-airflow-providers-postgres==6.1.1 apache-airflow-providers-presto==5.8.2 apache-airflow-providers-qdrant==1.3.2 
+  apache-airflow-providers-redis==4.0.2 apache-airflow-providers-salesforce==5.10.1 apache-airflow-providers-samba==4.9.2 apache-airflow-providers-segment==3.7.2 apache-airflow-providers-sendgrid==4.0.1 apache-airflow-providers-sftp==5.1.1 apache-airflow-providers-singularity==3.7.1 apache-airflow-providers-slack==9.0.2 apache-airflow-providers-smtp==2.0.1 apache-airflow-providers-snowflake==6.1.1 
+  apache-airflow-providers-sqlite==4.0.1 apache-airflow-providers-ssh==4.0.1 apache-airflow-providers-standard==0.1.1 apache-airflow-providers-tableau==5.0.2 apache-airflow-providers-telegram==4.7.2 apache-airflow-providers-teradata==3.0.2 apache-airflow-providers-trino==6.1.0 apache-airflow-providers-vertica==4.0.1 apache-airflow-providers-weaviate==3.0.2 apache-airflow-providers-yandex==4.0.2 
+  apache-airflow-providers-ydb==2.1.1 apache-airflow-providers-zendesk==4.9.1 --resolution highest
+  Using Python 3.12.9 environment at: /usr/local
+     Building apache-airflow @ file:///opt/airflow
+        Built apache-airflow @ file:///opt/airflow
+    × Failed to download and build `pyspark==3.5.5`
+    ├─▶ Failed to extract archive
+    ├─▶ failed to unpack
+    │   `/root/.cache/uv/sdists-v9/.tmpK4m8P8/pyspark-3.5.5/deps/jars/hadoop-client-runtime-3.3.4.jar`
+    ├─▶ failed to unpack
+    │   `pyspark-3.5.5/deps/jars/hadoop-client-runtime-3.3.4.jar` into
+    │   `/root/.cache/uv/sdists-v9/.tmpK4m8P8/pyspark-3.5.5/deps/jars/hadoop-client-runtime-3.3.4.jar`
+    ├─▶ error decoding response body
+    ├─▶ request or response body error
+    ├─▶ error reading a body from connection
+    ╰─▶ stream closed because of a broken pipe
+    help: `pyspark` (v3.5.5) was included because
+          `apache-airflow-providers-apache-spark` (v5.0.1) depends on
+          `pyspark&gt;=3.1.3`
+  Traceback (most recent call last):
+  File &quot;/opt/airflow/scripts/in_container/run_generate_constraints.py&quot;, line 531, in &lt;module&gt;
+    generate_constraints()
+  File &quot;/usr/local/lib/python3.12/site-packages/click/core.py&quot;, line 1161, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.12/site-packages/rich_click/rich_command.py&quot;, line 166, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.12/site-packages/click/core.py&quot;, line 1443, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.12/site-packages/click/core.py&quot;, line 788, in invoke
+    return __callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/opt/airflow/scripts/in_container/run_generate_constraints.py&quot;, line 517, in generate_constraints
+    generate_constraints_pypi_providers(config_params)
+  File &quot;/opt/airflow/scripts/in_container/run_generate_constraints.py&quot;, line 396, in generate_constraints_pypi_providers
+    run_command(
+  File &quot;/opt/airflow/scripts/in_container/in_container_utils.py&quot;, line 54, in run_command
+    result = subprocess.run(cmd, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.12/subprocess.py&quot;, line 573, in run
+    raise CalledProcessError(retcode, process.args,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @potiuk on 2025-03-21 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-22 00:31</div>
+            <div class="timeline-body"><p>Hmm, we should <em>already</em> be retrying here. I guess the logs in your CI run don't include our own <code>--verbose</code> logging so there's no way to tell if it kicked in here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-03-22 07:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, we should <em>already</em> be retrying here. I guess the logs in your CI run don't include our own <code>--verbose</code> logging so there's no way to tell if it kicked in here.</p>
+</blockquote>
+<p>Maybe adding a retry count information when it finally fails will be able to pin-down the problem better:</p>
+<pre><code>We tried x times but finally gave up.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 17:12</div>
+            <div class="timeline-body"><p>I think we do that generally but the special-case retries for streamed downloads doesn't.</p>
+<p>I think we could add that in https://github.com/astral-sh/uv/blob/a1a4d820d54607613bceb4973789b67c8c1c1232/crates/uv-client/src/cached_client.rs#L600 somehow?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12602.html">astral-sh/uv#12602</a> on 2025-04-01 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-04-03 11:40</div>
+            <div class="timeline-body"><p>I think there is a bit more to the issue than just showing the retry. Let me explain a bit more context, maybe it will allow to find a better remedy or implement some workarounds.</p>
+<p>I have just sped up the tests of Airflow to run &quot;slices&quot; of tests with lower-resolution tests and it seems that the issue started happening more frequently, and my guess it might have something to do with an &quot;aggressiveness&quot; of <code>uv</code> downloads, triggering errors on the PyPI side when too many requests for the same, big files to download are run nearly in parallel..</p>
+<p>We have more than 90+ providers in Airlfow and we run a set of tests (massively parallel in GitHub actions) where for each provider we run <code>uv sync --resolution lowest</code> - to make sure that our provider's lower-bound dependencies are good. As mentioned - the https://github.com/apache/airflow/pull/48696 split our 90+ sequentially (in up to 4 separate containers per runnr) parallell test runs of  essentially <code>uv sync --resolution lowest-direct &amp;&amp; uv run pytest</code>. The <code>uv sync</code> in each of those runs takes a lot of time - because each provider has it's own set of dependencies, and often it means that the lowest dependencies there have to be downloaded and built, because essentially only the &quot;highest&quot; dependencies are already in the cache/installed in the image. So caching can't help with speed-ups here too much.</p>
+<p>The PR above added further split - the whole list of 90+ providers is split into 5 slices, and they are run in paralllel. Additionally, those jobs are multiplied by a number of Python versions (3.9 - 3.12 currently) - so we have essentially 20 parallel jobs like that each of them with 4 containers doing essentially <code>uv sync</code> on some providers of airlfow at the same time on 20 different machines. I <strong>think</strong> that is what triggers the issue, as it seem to start happening more frequently when I run it. Sometimes even it happen in bursts - i.e. multiple jobs running on separate Github runners get affected about the same time.</p>
+<p>You can see it for example here (if you look at all the jobs - they all failed, and all of them failing on trying to retrieve <code>pyspark</code> or <code>pydruid</code>: https://github.com/apache/airflow/actions/runs/14232431820/job/39885872511</p>
+<p>Example failure:</p>
+<pre><code class="language-python">   × Failed to download and build `pyspark==3.1.3`
+    ├─▶ Failed to extract archive
+    ├─▶ failed to unpack
+    │   `/root/.cache/uv/sdists-v9/.tmp916EEe/pyspark-3.1.3/deps/jars/derby-10.12.1.1.jar`
+    ├─▶ failed to unpack `pyspark-3.1.3/deps/jars/derby-10.12.1.1.jar` into
+    │   `/root/.cache/uv/sdists-v9/.tmp916EEe/pyspark-3.1.3/deps/jars/derby-10.12.1.1.jar`
+    ├─▶ error decoding response body
+    ├─▶ request or response body error
+    ├─▶ error reading a body from connection
+    ╰─▶ stream closed because of a broken pipe
+    help: `pyspark` (v3.1.3) was included because `apache-airflow[all]`
+          (v3.0.0.dev0) depends on `apache-airflow-providers-apache-spark`
+          (v5.1.1) which depends on `pyspark&gt;=3.1.3`
+</code></pre>
+<p>So the question is - can we somehow increase the retry time, get more exponential back-off kick-in in those cases or maybe get some less &quot;aggressive&quot; behaviour in those specific jobs ?</p>
+<p>I understand it's not likely <code>uv</code> fault - it just tries to do things as fast as possible (which is the whole point of <code>uv</code> :)) - but also we need to recognize the fact that maybe some scenarios like that can hammer pypi and fastly in front of it a bit &quot;too&quot; hard, and maybe there should be a way to tune it down (or maybe there already is?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-03 13:15</div>
+            <div class="timeline-body"><blockquote>
+<p>I think there is a bit more to the issue than just showing the retry. Let me explain a bit more context, maybe it will allow to find a better remedy or implement some workarounds.</p>
+</blockquote>
+<p>Of course, we just want to show the retry properly so we can easily tell if we're retrying as we should. I moved that to another issue https://github.com/astral-sh/uv/issues/12602</p>
+<p>You could lower <code>UV_CONCURRENT_DOWNLOADS</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @zanieb on 2025-04-03 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-04-03 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-04-03 14:38</div>
+            <div class="timeline-body"><p>I am trying something else - we figured that we can change our CI to actually bind same volume as ~/.cache that will be shared both - between parallel containers running uv sync <strong>and</strong> subsequent runs of tests on the same machine for the sequential part.</p>
+<p>I just merged PR for that https://github.com/apache/airflow/pull/48740 and I hope it might mitigate the issue (credits to @ashb on suggesting the approach).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-04-03 18:18</div>
+            <div class="timeline-body"><p>Quick feedback. Mounting a folder to <code>/root/.cache</code> and sharing it among all the jobs 80 (eventually) or so containers running per machine helped . This might be a non-issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12676.html">astral-sh/uv#12676</a> on 2025-04-04 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-04-04 17:13</div>
+            <div class="timeline-body"><p>That definitely works better now when we mounted host directory as a <code>~/.cache</code>  - I proposed to update the docs to mention the case in #12676 - so that others can discover it more easily, but other than that it can be closed (the #12602 is still nice to have anyway though)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-04-05 08:31</div>
+            <div class="timeline-body"><p>FYI.. We had ONE case I know of that happened since.. So the problem is not entirely fixed but it is at least 1-2 order of magnitude less frequent now:</p>
+<p>https://github.com/apache/airflow/actions/runs/14277256505/job/40022307363#step:6:1552</p>
+<pre><code>  Check if provider atlassian.jira is excluded in {'3.9': ['cloudant']}
+  Provider atlassian.jira is not excluded.
+  Ignoring existing lockfile due to change in resolution mode: `highest` vs. `lowest-direct`
+  warning: The direct dependency `types-protobuf` is unpinned. Consider setting a lower bound when using `--resolution lowest` to avoid using outdated versions.
+    × Failed to download and build `pyspark==3.1.3`
+    ├─▶ Failed to extract archive
+    ├─▶ failed to unpack
+    │   `/root/.cache/uv/sdists-v9/.tmp9iiJYH/pyspark-3.1.3/deps/jars/hk2-utils-2.6.1.jar`
+    ├─▶ failed to unpack `pyspark-3.1.3/deps/jars/hk2-utils-2.6.1.jar` into
+    │   `/root/.cache/uv/sdists-v9/.tmp9iiJYH/pyspark-3.1.3/deps/jars/hk2-utils-2.6.1.jar`
+    ├─▶ error decoding response body
+    ├─▶ request or response body error
+    ├─▶ error reading a body from connection
+    ╰─▶ stream closed because of a broken pipe
+    help: `pyspark` (v3.1.3) was included because `apache-airflow[all]`
+          (v3.0.0.dev0) depends on `apache-airflow-providers-apache-spark`
+          (v5.1.1) which depends on `pyspark&gt;=3.1.3`
+  Test failed with 1. Dumping logs
+  Wait 10 seconds for logs to find their way to stderr.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/larruda">@larruda</a> on 2025-04-28 21:13</div>
+            <div class="timeline-body"><p>so this is why my installation is taking so long!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dagster-io/dagster/pulls/29725.html">dagster-io/dagster#29725</a> on 2025-05-01 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-05-03 22:56</div>
+            <div class="timeline-body"><p>We are still getting that one occassionally in our CI  - for example here:</p>
+<p>https://github.com/apache/airflow/actions/runs/14813939634/job/41592225387#step:6:1105</p>
+<p>Is it possible to get some extra informatioln about the number of retries and maybe even control it ?</p>
+<pre><code class="language-python">  Forcing dependencies to lowest versions for Airflow.
+  
+  Ignoring existing lockfile due to change in resolution mode: `highest` vs. `lowest-direct`
+    × Failed to download and build `pydruid==0.4.1`
+    ├─▶ Failed to extract archive: pydruid==0.4.1
+    ├─▶ failed to unpack
+    │   `/root/.cache/uv/sdists-v9/.tmp08tfKH/pydruid-0.4.1/env/lib/python2.7/site-packages/virtualenv.py`
+    ├─▶ failed to unpack
+    │   `pydruid-0.4.1/env/lib/python2.7/site-packages/virtualenv.py` into
+    │   `/root/.cache/uv/sdists-v9/.tmp08tfKH/pydruid-0.4.1/env/lib/python2.7/site-packages/virtualenv.py`
+    ├─▶ error decoding response body
+    ├─▶ request or response body error
+    ├─▶ error reading a body from connection
+    ╰─▶ stream closed because of a broken pipe
+    help: `pydruid` (v0.4.1) was included because `apache-airflow[all]` (v3.1.0)
+          depends on `apache-airflow-providers-apache-druid` (v4.1.1) which
+          depends on `pydruid&gt;=0.4.1`
+  Test failed with 1. Dumping logs
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-03 23:06</div>
+            <div class="timeline-body"><p>Re extra information, we log all errors we retry when <code>-v</code> or more specifically <code>RUST_LOG=uv_client=debug</code> is set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13281.html">astral-sh/uv#13281</a> on 2025-05-03 23:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-03 23:35</div>
+            <div class="timeline-body"><p>I can't reproduce this locally, but I gave it a try at #13281.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-05-05 14:24</div>
+            <div class="timeline-body"><blockquote>
+<p>├─▶ failed to unpack
+│   <code>/root/.cache/uv/sdists-v9/.tmp08tfKH/pydruid-0.4.1/env/lib/python2.7/site-packages/virtualenv.py</code>
+├─▶ failed to unpack
+│   <code>pydruid-0.4.1/env/lib/python2.7/site-packages/virtualenv.py</code> into
+│   <code>/root/.cache/uv/sdists-v9/.tmp08tfKH/pydruid-0.4.1/env/lib/python2.7/site-packages/virtualenv.py</code>
+├─▶ error decoding response body</p>
+</blockquote>
+<p>Python 2.7? 🤨</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-05-05 14:32</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>├─▶ failed to unpack
+│   <code>/root/.cache/uv/sdists-v9/.tmp08tfKH/pydruid-0.4.1/env/lib/python2.7/site-packages/virtualenv.py</code>
+├─▶ failed to unpack
+│   <code>pydruid-0.4.1/env/lib/python2.7/site-packages/virtualenv.py</code> into
+│   <code>/root/.cache/uv/sdists-v9/.tmp08tfKH/pydruid-0.4.1/env/lib/python2.7/site-packages/virtualenv.py</code>
+├─▶ error decoding response body</p>
+</blockquote>
+<p>Python 2.7? 🤨</p>
+</blockquote>
+<p>OH GOD.... Yeah... You are completely right.... So it seems it is actually trying to build installl a VERY OLD PyDruid. (2018)... We seem to have still a few of those very old lower-bindings that we can bump.</p>
+<p>Thanks @notatallshaw For that 💡</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-05-05 14:38</div>
+            <div class="timeline-body"><p>https://github.com/apache/airflow/pull/50205</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-05-05 14:38</div>
+            <div class="timeline-body"><p>I think we can close that one :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-05-21 17:23</div>
+            <div class="timeline-body"><p>Actually I have another theory why it happens now. Will open a separate issue not to confuse the thread.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @potiuk on 2025-05-21 17:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

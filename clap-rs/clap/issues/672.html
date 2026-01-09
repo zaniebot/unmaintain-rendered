@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How does one print help or usage when no arguments supplied? - clap-rs/clap #672</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How does one print help or usage when no arguments supplied?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/672">#672</a>
+        opened by <a href="https://github.com/lunemec">@lunemec</a>
+        on 2016-09-29 13:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lunemec">@lunemec</a> on 2016-09-29 13:50</div>
+            <div class="timeline-body"><p>Hello,
+I haven't found this in any of the examples, nor going through the documentation. I would like to get some usage string or the help when someone invokes the program without arguments.</p>
+<p>If you set the argument to be required, I'd like the program to print the help instead of the error message. Is this possible?</p>
+<p>Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nabijaczleweli">@nabijaczleweli</a> on 2016-09-29 17:06</div>
+            <div class="timeline-body"><p>Make at least one of the arguments required or see <code>AppSettings</code> for more options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lunemec">@lunemec</a> on 2016-09-30 05:49</div>
+            <div class="timeline-body"><p>Hmm, yes, that works, but it prints the error message that at least more arguments is required, se --help for more info. I meant to print help when no arguments are supplied.</p>
+<p>Lets say you have a App with several subcommands, but none of them are required. They are just operating mode switches, and if user just runs the program, you want to print the help message with all the subcommands listed. I don't think this is possible now, or is it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lunemec">@lunemec</a> on 2016-09-30 05:54</div>
+            <div class="timeline-body"><p>Oh: ArgRequiredElseHelp that should do it. Thanks for pointing me in the right direction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @lunemec on 2016-09-30 05:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-04 16:58</div>
+            <div class="timeline-body"><p>@nabijaczleweli thanks :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2018-03-14 21:43</div>
+            <div class="timeline-body"><p>how to print it programatically?</p>
+<p>UPDATE:
+<code>app.print_help();</code> and <code>app.print_long_help();</code></p>
+<p>from docs:</p>
+<ul>
+<li><a href="https://docs.rs/clap/2.31.1/clap/struct.App.html#method.print_help">print_help</a></li>
+<li><a href="https://docs.rs/clap/2.31.1/clap/struct.App.html#method.print_long_help">print_long_help</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-03-14 22:42</div>
+            <div class="timeline-body"><p>There is also <code>App::write_help</code> to use a custom <code>Write</code> object instead of just stdout.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hubro">@Hubro</a> on 2022-06-18 01:08</div>
+            <div class="timeline-body"><p>How do I do this when using the derive API? How do I find a reference to the app?</p>
+<p>For example:</p>
+<pre><code class="language-rust">#[derive(Debug, Parser)]
+struct Args {
+    #[clap(value_parser)]
+    pattern: Option&lt;String&gt;,
+
+    /// The path to a log file to parse
+    #[clap(short, long, value_parser = file_exists)]
+    logfile: Option&lt;String&gt;,
+}
+</code></pre>
+<p>I have a pretty ugly workaround going at the moment...</p>
+<pre><code class="language-rust">// No arguments given and STDIN is a TTY, just print help and exit
+if atty::is(atty::Stream::Stdin) {
+    let _ = Exec::cmd(std::env::args().next().unwrap())
+        .arg(&quot;--help&quot;)
+        .join();
+    return;
+}
+</code></pre>
+<p>In my case, the user can provide one of:</p>
+<ul>
+<li>A positional argument</li>
+<li>An option</li>
+<li>Pipe STDIN</li>
+</ul>
+<p>If the user does none of these, I want to print the help message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-18 01:30</div>
+            <div class="timeline-body"><p>Try</p>
+<pre><code class="language-rust">use clap::CommandFactory;
+let mut cmd = Args::command();
+cmd.print_help();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hubro">@Hubro</a> on 2022-06-18 11:20</div>
+            <div class="timeline-body"><p>@epage That did it! I found this extremely hard to look up in the documentation, perhaps because of all the derive magic... :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-18 17:32</div>
+            <div class="timeline-body"><p>One type of derive magic I try to avoid is generating code that is unrelated to the specified traits.  We push that a little bit by deriving some super traits.  So if you look at the definition of <code>Parser</code>, you'll see that <code>CommandFactory</code> also has to be implemented.</p>
+<p>We also call it out in the <a href="https://github.com/clap-rs/clap/tree/master/examples/derive_ref#tips">tips of the derive reference</a>.  Still easy to miss.</p>
+<p>btw we recommend having a test that calls <code>Command::debug_assert</code>, see https://github.com/clap-rs/clap/blob/master/examples/tutorial_derive/05_01_assert.rs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NaokiM03">@NaokiM03</a> on 2023-03-08 17:20</div>
+            <div class="timeline-body"><p>I came here from a web search.</p>
+<p>I noticed that I can use <code>arg_required_else_help</code> even for derive macro.</p>
+<pre><code>// clap = { version = &quot;4.1.8&quot;, features = [&quot;derive&quot;] }
+
+#[derive(Debug, Parser)]
+#[command(arg_required_else_help(true))]
+struct Args {
+    // ...
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ismet55555">@ismet55555</a> on 2023-08-13 21:43</div>
+            <div class="timeline-body"><blockquote>
+<p>I came here from a web search.</p>
+<p>I noticed that I can use <code>arg_required_else_help</code> even for derive macro.</p>
+<pre><code>// clap = { version = &quot;4.1.8&quot;, features = [&quot;derive&quot;] }
+
+#[derive(Debug, Parser)]
+#[command(arg_required_else_help(true))]
+struct Args {
+    // ...
+}
+</code></pre>
+</blockquote>
+<p>Thank you! This worked for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chibby0ne">@chibby0ne</a> on 2025-03-20 01:04</div>
+            <div class="timeline-body"><p>More generally you can use any method name for any of the <code>Command</code>, <code>Arg</code>, <code>PossibleValue</code> and other structs as a derive attributes as seen here: https://docs.rs/clap/latest/clap/_derive/index.html#terminology.</p>
+<p>The specific attributes for <code>Command</code> are explained a bit better here: https://docs.rs/clap/latest/clap/_derive/index.html#command-attributes. The example actually mentions how <code>#[command(arg_required_else_help(true))]</code> translates to <code>cmd.arg_required_else_help(true)</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

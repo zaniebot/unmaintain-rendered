@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV not using overrides from build-system within pyproject.toml - astral-sh/uv #16492</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV not using overrides from build-system within pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16492">#16492</a>
+        opened by <a href="https://github.com/almmechanics">@almmechanics</a>
+        on 2025-10-29 10:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/almmechanics">@almmechanics</a> on 2025-10-29 10:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>With legacy <code>pip</code> based pyprojects, it has been necessary to pin the versions of the tooling  <code>setuptools</code> and <code>setuptools-scm</code> due to breaking changes within those packages breaking our own projects</p>
+<p>Our projects can be built with both <code>pip</code> and <code>uv</code> depending on the configuration, and not all have been migrated to <code>uv</code> tooling. This has been done by adding the following to the <code>pyproject.toml</code></p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;setuptools==80.9.0&quot;, &quot;setuptools-scm==8.3.1&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p>with a standard pip install  this will ensure the required version of <code>setuptools</code> and <code>setuptools-scm</code> are installed.</p>
+<p>However, with the <code>uv pip install</code> this is ignored and <code>setuputils-65.5.0</code> is installed (from the uv's own requirements) but no warning is given that these settings have been ignored.</p>
+<p>To make this compatible for both <code>uv</code> and <code>pip</code> we have to add the required version of <code>setuputils</code> into the <code>dependencies</code> section too.</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;setuptools==80.9.0&quot;,
+]
+</code></pre>
+<p>It would be great if <code>uv</code> would reflect the backwards compatibility for the <code>build-system</code> requirements instead of having to make the <code>pip</code> forwards compatible for <code>uv</code>. Additionally, having the same modules/version in the same file twice has the potential for creating compatibility issues in the future.</p>
+<h3>Platform</h3>
+<p>Windows 11 x64</p>
+<h3>Version</h3>
+<p>uv 0.9.5 (d5f39331a 2025-10-21)</p>
+<h3>Python version</h3>
+<p>Python 3.10.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @almmechanics on 2025-10-29 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-10-29 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-10-29 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-29 11:36</div>
+            <div class="timeline-body"><p>uv does use the the versions in <code>build-system.requires</code>, but only for the isolated build environment, not for the runtime environment; usually setuptools isn't required for the runtime, and from Python 3.12 it's not included by default anymore. I'm surprised you're seeing different results with pip, which also default to build isolation in recent versions, are you setting any specific pip options?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

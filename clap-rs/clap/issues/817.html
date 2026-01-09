@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suggestion: Allow arguments to be differently typed - clap-rs/clap #817</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Suggestion: Allow arguments to be differently typed</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/817">#817</a>
+        opened by <a href="https://github.com/darnir">@darnir</a>
+        on 2017-01-17 23:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/darnir">@darnir</a> on 2017-01-17 23:38</div>
+            <div class="timeline-body"><p>Currently all arguments are always <code>stringly typed</code>. However, in some cases, it makes sense for the argument parser to return data of a different type. For example, my use case is this:</p>
+<p>The user passes an XML file name as a parameter. While parsing the arguments, I would like to validate if the file exists, is readable and has the expected schema. I would also like to parse the file at this point, extract the relevant data and store it in a <code>struct</code>. Hence, when the application calls <code>matches.get_value(arg)</code>, it returns the struct for the application to use. This allows keeping some of the logic separate and not polluting the actual program with such sanity checking logic.</p>
+<p>Unfortunately I do not have a suggestion on the API or how it can be designed. I am only starting to learn Rust and came across this is a feature that I would like in my application code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-18 00:23</div>
+            <div class="timeline-body"><blockquote>
+<p>This allows keeping some of the logic separate and not polluting the actual program with such sanity checking logic.</p>
+</blockquote>
+<p>Well, you have to write that logic somewhere. :-) If you want to keep it separate, you can use any of Rust's abstraction facilities to tuck that logic away. For example:</p>
+<pre><code class="language-rust">struct ArgMatches&lt;'a&gt;(clap::ArgMatches&lt;'a&gt;);
+
+impl&lt;'a&gt; ArgMatches&lt;'a&gt; {
+    fn get_xml_struct(&amp;self) -&gt; Result&lt;XMLStruct, Error&gt; {
+        let file_path = self.0.value_of(&quot;xml-file&quot;).unwrap();
+        ...
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-18 01:08</div>
+            <div class="timeline-body"><p>This has been on my mind since back in #146. <a href="https://docs.rs/clap/2.20.0/clap/macro.value_t.html">There are some macros</a> for doing this, but it's still a less than ideal solution. Aside, this is something that @BurntSushi's library <a href="https://github.com/docopt/docopt.rs">docopt</a> does really well and he's being super modest by not saying anything :wink:</p>
+<p>The biggest issue with doing this is the intermediate step of <code>ArgMatches</code> where you have to store something, which is currently <code>OsStrings</code>. In order to get a typed value out it'll have to be something that implements a <code>FromStr</code> or similar trait and would either give back a trait object or do the conversion (which is what the <code>value_t!</code> macros do).</p>
+<p>What I'd like to implement, and have been passivly waiting on macros 1.1, is a <code>#[derive(Args)]</code> (or similar) which converts the <code>ArgMatches</code> to some typed <code>Args</code> struct.</p>
+<pre><code class="language-rust">struct Args {
+    file_path: Option&lt;XMLStruct&gt;
+}
+</code></pre>
+<p>The one downside is you'd still have <code>Option&lt;T&gt;</code>s becasue even with required arguments, there's still scenarios where they may not be used (due to certain settings, overrides, etc.). But it's still better than what we have today. Of course, it'd be possible to do today with some other macro (vice a derive derective), but I'd <em>really</em> like to keep the consumer API simple-ish and only require them to add derive attribute, nothing else.</p>
+<p>@BurntSushi's way is great too, and some also do a <code>From&lt;ArgMatches&gt;</code> impl</p>
+<pre><code class="language-rust">struct Args {
+    file_path: XMLStruct
+}
+
+impl&lt;'a&gt; From&lt;ArgMatches&lt;'a&gt;&gt; for Args {
+    fn from(m: ArgMatches) -&gt; Self {
+        let file_path = m.value_of(&quot;xml-file&quot;).unwrap();
+        // ...
+        Args { files_path: file_path }
+    }
+}
+</code></pre>
+<p>Which is essentially the same thing, but allows you to do</p>
+<pre><code class="language-rust">let args: Args = App::new(&quot;&quot;) 
+    // stuff
+    .get_matches()
+    .into();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2017-01-18 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quodlibetor">@quodlibetor</a> on 2017-01-18 03:06</div>
+            <div class="timeline-body"><blockquote>
+<p>The one downside is you'd still have Option<T>s becasue even with required arguments, there's still scenarios where they may not be used (due to certain settings, overrides, etc.).</p>
+</blockquote>
+<p>What is a situation where a combination of overrides and settings overrules <code>requires</code>? This seems like someone doing a poor job defining <code>requires</code>, but I admit I don't have the best imagination.</p>
+<p>It would be really nice if <code>derive(Args)</code> resulted in a <code>init() -&gt; Result&lt;ArgStruct, clap::Error&gt;</code> method that meant that it's possible to have really-genuinely-required parameters in at least some positions.</p>
+<p>This might require a combination of defaults, &quot;requires&quot;, and matching subcommands to (optional) embedded structs instead of flattening everything into a single namespace, but it feels in principle doable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/818.html">clap-rs/clap#818</a> on 2017-01-18 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-30 04:47</div>
+            <div class="timeline-body"><p>@quodlibetor I apologize I missed your comment.</p>
+<blockquote>
+<p>What is a situation where a combination of overrides and settings overrules requires? This seems like someone doing a poor job defining requires, but I admit I don't have the best imagination.</p>
+</blockquote>
+<p>When requirements are overriden by subcommands or other arguments, and conditional requirements. This probably doesn't come up often and could probably be avoided by some CLI redesign, but still it could happen. The primary way I can think of to avoid this is make it clear that &quot;required&quot; args if overriden, etc. must implement <code>Default</code> and therefore have at least a default value (Rust default, not clap default).</p>
+<p>Plus there are things like some CLIs where the subcommand is required, and others it's not. There are also CLIs where the use of a subcommand negates any args of the partent, to include required args.</p>
+<blockquote>
+<p>It would be really nice if derive(Args) resulted in a init() -&gt; Result&lt;ArgStruct, clap::Error&gt; method that meant that it's possible to have really-genuinely-required parameters in at least some positions.</p>
+</blockquote>
+<p>I also think there should be two different conversion, one that can fail (returning a <code>Result</code>) and one that can't. Similar to <code>From</code> and <code>TryFrom</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-30 04:50</div>
+            <div class="timeline-body"><p>I'm going to close this issue as it's covered by two other open issues</p>
+<ul>
+<li>Using enums as arg keys (#459)</li>
+<li>Serialize matches into a struct (#146)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-01-30 04:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

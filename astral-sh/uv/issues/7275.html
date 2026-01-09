@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv does not recognize __main__.py? - astral-sh/uv #7275</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv does not recognize __main__.py?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7275">#7275</a>
+        opened by <a href="https://github.com/seppzer0">@seppzer0</a>
+        on 2024-09-10 20:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/seppzer0">@seppzer0</a> on 2024-09-10 20:33</div>
+            <div class="timeline-body"><p>I have a Python project that I run directly from source. Dependencies are stored within a uv-managed .venv in the project directory.</p>
+<p>When I attempt to launch it as I normally would with <code>PYTHONPATH=$(pwd) python3 builder/</code> via my system installation, I get an error:</p>
+<pre><code class="language-txt">$ PYTHONPATH=$(pwd) uv run ./builder
+error: Failed to spawn: `./builder`
+  Caused by: Access is denied. (os error 5)
+</code></pre>
+<p>However, if I just add the <code>__main__.py</code> in my command:</p>
+<pre><code class="language-txt">$ PYTHONPATH=$(pwd) uv run ./builder/__main__.py 
+usage: __main__.py [-h] [--clean] {kernel,assets,bundle} ...
+
+A custom builder for the zero kernel.
+
+positional arguments:
+  {kernel,assets,bundle}
+    kernel              build the kernel
+    assets              collect assets
+    bundle              build the kernel + collect assets
+
+options:
+  -h, --help            show this help message and exit
+  --clean               clean the root directory
+</code></pre>
+<p>..it runs successfully.</p>
+<p>Would this be an intended behaviour or is this a bug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-10 21:30</div>
+            <div class="timeline-body"><p>Does <code>uv run python ./builder</code> work as expected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/seppzer0">@seppzer0</a> on 2024-09-10 21:41</div>
+            <div class="timeline-body"><p>Interestingly, it does. I don't understand the difference yet, but adding <code>python</code> works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-10 22:23</div>
+            <div class="timeline-body"><p>In the error case, we've attempted to run a directory as though it were an executable. In the latter, you've invoked Python to run the module.</p>
+<p>We should probably special case directories with <code>__main__.py</code> though (and support what you attempted to do)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-09-10 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7281.html">astral-sh/uv#7281</a> on 2024-09-11 05:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-11 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghpqans">@ghpqans</a> on 2025-09-30 11:24</div>
+            <div class="timeline-body"><p>Same problem here. Feels uncomfortable to enter sth like <code>uv run src/projectname/__main__.py</code> . Script section in <code>pyproject.toml</code> also does not support <code>__main.py__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-30 11:25</div>
+            <div class="timeline-body"><p>@ghpqans This issue has been solved, please open a new issue following #9452.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16764.html">astral-sh/uv#16764</a> on 2025-12-03 17:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

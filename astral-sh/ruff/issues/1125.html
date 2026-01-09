@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autofix F541 (f-string without any placeholders)? - astral-sh/ruff #1125</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Autofix F541 (f-string without any placeholders)?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1125">#1125</a>
+        opened by <a href="https://github.com/keul">@keul</a>
+        on 2022-12-07 16:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/keul">@keul</a> on 2022-12-07 16:01</div>
+            <div class="timeline-body"><p>I think that a string like:</p>
+<pre><code class="language-python">f&quot;%H:%M&quot;
+</code></pre>
+<p>Which reports:</p>
+<pre><code>F541 f-string without any placeholders
+</code></pre>
+<p>Can be automatically fixed by the <code>--fix</code> option without any side effect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2022-12-07 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-12-09 11:46</div>
+            <div class="timeline-body"><p>@charliermarsh Can I work on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-09 15:14</div>
+            <div class="timeline-body"><p>@harupy - Of course, go for it!</p>
+<p>It might be easiest to go through LibCST since there are a lot of cases to handle and f-strings are kind of an oddity (by the time you get the AST, the parser has already combined some of the substrings).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @harupy by @charliermarsh on 2022-12-09 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-12-10 01:00</div>
+            <div class="timeline-body"><p>@charliermarsh Just removing <code>f</code> doesn't work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-12-10 01:26</div>
+            <div class="timeline-body"><p>I see, just removing the top <code>f</code> doesn't work in this case:</p>
+<pre><code class="language-python">x = (
+    f&quot;a&quot;
+    f&quot;b&quot;
+    &quot;c&quot;
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-10 01:33</div>
+            <div class="timeline-body"><p>Yeah exactly. Implicit string concatenations get transformed by the parser. (If any segment has an f prefix, the whole thing becomes a JoinedStr; but consecutive non-f segments get collapsed.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @charliermarsh on 2022-12-31 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2022-12-31 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/niccolomineo">@niccolomineo</a> on 2023-01-01 19:23</div>
+            <div class="timeline-body"><p>Hi there, I am getting this false positive:</p>
+<pre><code>f&quot;{myfunc():.1f}&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-01 19:41</div>
+            <div class="timeline-body"><p>@niccolomineo - This was fixed in v0.0.205! Let me know if you continue to see it but I just tested it myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/niccolomineo">@niccolomineo</a> on 2023-01-01 19:45</div>
+            <div class="timeline-body"><p>@charliermarsh the problem seems to be with VSCode's Ruff, actually.</p>
+<p>Anyways, thank you for the ground you're covering with this module, it's nothing short of amazing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-01 21:27</div>
+            <div class="timeline-body"><p>Yeah the bundled version might have that error. I can cut a new pre-release today! (And thank you, that means a lot, truly!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-01 22:40</div>
+            <div class="timeline-body"><p>I cut a new pre-release. If you switch to the Ruff extension pre-release, you should get stuff v0.0.206 by default!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-01-02 03:35</div>
+            <div class="timeline-body"><p>@charliermarsh I'm implementing autofix for F541 and want to hear your thoughts on this approach. Let's say we have an implicitly-concatenated string that contains both f-strings and plain strings:</p>
+<pre><code class="language-python">(
+  f&quot;&quot;
+  &quot;&quot;
+  rf&quot;&quot;
+)
+</code></pre>
+<p>We can locate each f-string token and f-prefix position using RustPython's tokenizer. Once we locate them, we can raise F541 on <strong>each token</strong>. To fix them, we can apply <code>Fix::deletion</code> on each f-prefix position. Here's a demo:</p>
+<p>https://user-images.githubusercontent.com/17039389/210193377-b1426cd1-8f9f-42af-b25b-a5cea5ab5bd3.mov</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marscher">@marscher</a> on 2023-01-02 09:48</div>
+            <div class="timeline-body"><p>good job! Thank you! :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-01-02 10:08</div>
+            <div class="timeline-body"><p>We can extend the approach above to find useless f-strings in an implicitly-concatenated <code>JoinedStr</code> containing <code>FormattedValue</code>s.</p>
+<pre><code class="language-python">(
+  f&quot;abc&quot;  # &lt;- we want to locate this
+  f&quot;{x}&quot;
+)
+</code></pre>
+<ol>
+<li>Tokenize the string into tokens.</li>
+<li>The ones that don't contain <code>FormattedValue</code> are useless f-strings.</li>
+</ol>
+<p>However, this may lead to bad performance because we need to tokenize all f-strings.</p>
+<p>https://user-images.githubusercontent.com/17039389/210224488-433faa3e-8b6e-4d3d-842b-7e1df8cfcf4c.mov</p>
+<p>Code: https://github.com/harupy/ruff/commit/f33539d5cabbb23cbaa211fdf363270ba5fa5544</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-02 18:33</div>
+            <div class="timeline-body"><p>@harupy - I think these approaches make sense! Maybe we start by only enforcing this in the first case? So that we don't have to tokenize every f-string (only those that don't contain any placeholders)?</p>
+<p><em>Arguably</em>, this is actually desirable:</p>
+<pre><code class="language-py">(
+  f&quot;abc&quot;
+  f&quot;{x}&quot;
+)
+</code></pre>
+<p>Since with this version, you have different indentation levels for each string, you have to keep track of which parts have a prefix and which don't, etc.:</p>
+<pre><code class="language-py">(
+  &quot;abc&quot;
+  f&quot;{x}&quot;
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1577.html">astral-sh/ruff#1577</a> on 2023-01-03 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-03 03:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

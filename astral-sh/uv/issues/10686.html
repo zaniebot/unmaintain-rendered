@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pip-compatiblity: PIP_CONSTRAINT and PIP_CONSTRAINTS are not used, only UV_CONSTRAINT is used - astral-sh/uv #10686</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>pip-compatiblity: PIP_CONSTRAINT and PIP_CONSTRAINTS are not used, only UV_CONSTRAINT is used</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10686">#10686</a>
+        opened by <a href="https://github.com/ssbarnea">@ssbarnea</a>
+        on 2025-01-16 17:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-01-16 17:13</div>
+            <div class="timeline-body"><p>I found the hard way after migrating from pip to uv on few projects that my lock files are no longer working, just because <code>uv pip</code> command seems to ignore presence of <code>PIP_CONSTRAINT</code> or <code>PIP_CONSTRAINTS</code> file and thus failed to lock the dependencies during install.</p>
+<p>I tried defining <code>UV_CONSTRAINT</code> and it worked as expected. This is a divergence from the claimed API compatibility. Sadly the documentation page from https://docs.astral.sh/uv/pip/compatibility/#build-constraints does mention the constraints only on build constraints, not also on install.</p>
+<p>I do believe that the desirable fix here is to look for environment variables in this order:</p>
+<ol>
+<li>UV_CONSTRAINT</li>
+<li>PIP_CONSTRAINTS</li>
+<li>PIP_CONSTRAINT (quile uncommon name but apparently supported by pip)</li>
+</ol>
+<h2>Example</h2>
+<pre><code>❯ UV_CONSTRAINT=.config/constraints.txt uv pip install .[docs] --dry-run
+Using Python 3.13.1 environment at: .tox/docs
+Resolved 75 packages in 17ms
+Would download 1 package
+Would uninstall 2 packages
+Would install 2 packages
+ - ansible-compat==25.0.1.dev0 (from file:///Users/ssbarnea/code/a/ansible-compat/.tox/.tmp/package/22/ansible_compat-25.0.1.dev0-0.editable-py3-none-any.whl)
+ + ansible-compat @ file:///Users/ssbarnea/code/a/ansible-compat
+ - mkdocs-autorefs==1.3.0
+ + mkdocs-autorefs==1.2.0
+</code></pre>
+<pre><code>❯ PIP_CONSTRAINT=.config/constraints.txt uv pip install .[docs] --dry-run
+Using Python 3.13.1 environment at: .tox/docs
+Resolved 75 packages in 15ms
+Would download 1 package
+Would uninstall 1 package
+Would install 1 package
+ - ansible-compat==25.0.1.dev0 (from file:///Users/ssbarnea/code/a/ansible-compat/.tox/.tmp/package/22/ansible_compat-25.0.1.dev0-0.editable-py3-none-any.whl)
+ + ansible-compat @ file:///Users/ssbarnea/code/a/ansible-compat
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-16 17:16</div>
+            <div class="timeline-body"><p>We don’t respect pip environment variables anywhere, as a rule. The full list of environment variables that affect uv is enumerated here: https://docs.astral.sh/uv/configuration/environment/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ansible/ansible-compat/pulls/446.html">ansible/ansible-compat#446</a> on 2025-01-16 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tox-dev/tox-uv/pulls/154.html">tox-dev/tox-uv#154</a> on 2025-01-16 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-01-16 22:49</div>
+            <div class="timeline-body"><p>@charliermarsh Maybe it would worth displaying a warning if PIP_CONSTRAINT(S) is found as defined, mentioning the uv will not use it. This could save a good number of hours to those trying to migrate or use both.</p>
+<p>As someone that defined these in his user profile, I do face few surprises...</p>
+<pre><code>pip='python3 -m uv pip'
+pip3='python3 -m uv pip'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ansible/molecule/pulls/4367.html">ansible/molecule#4367</a> on 2025-01-20 16:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

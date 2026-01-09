@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add an option to warn about each undefined name only once - astral-sh/ruff #10247</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add an option to warn about each undefined name only once</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10247">#10247</a>
+        opened by <a href="https://github.com/Beliavsky">@Beliavsky</a>
+        on 2024-03-06 14:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Beliavsky">@Beliavsky</a> on 2024-03-06 14:50</div>
+            <div class="timeline-body"><p>Sometimes I refactor by copying some lines from a source file to a function in a new source file and then
+use ruff to find undefined names, which should either be function arguments or module imports. If variable
+<code>foo</code> is used in many lines before being set, ruff will give an error message</p>
+<p><code>func.py:2:35: F821 Undefined name foo</code></p>
+<p>for each such line. It would be nice to see this error message only the first time <code>foo</code> is encountered, since fixing the error will cause the other error messages involving <code>foo</code> to also go away.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-06 14:59</div>
+            <div class="timeline-body"><p>Hi @Beliavsky, Thanks for reporting this issue. I understand the motivation for this request, but it seems difficult for Ruff to know which variables it is safe to omit the warnings for. We want to avoid new <em>undefined name</em> warnings popping up after making changes (fixing one issue should not result in more issues that you weren't aware of before).</p>
+<p>Given:</p>
+<pre><code class="language-python">bar = 5
+print(foo)
+
+if foo:
+	print(foo + bar)
+
+def inner():
+	print(foo - bar)
+
+foo + 2
+</code></pre>
+<p>Now, the obvious fix is to define <code>foo</code> at the top of the module. That would fix all errors:</p>
+<pre><code class="language-python">foo = 10
+bar = 5
+print(foo)
+
+if foo:
+	print(foo + bar)
+
+def inner():
+	print(foo - bar)
+
+foo + 2
+</code></pre>
+<p>However, you could define <code>foo</code> in other places where it only resolves some of the warnings:</p>
+<pre><code class="language-python"># In the function
+bar = 5
+print(foo)
+
+if foo:
+	print(foo + bar)
+
+def inner():
+	foo = 40
+	print(foo - bar)
+
+foo + 2
+
+# In the if branch
+bar = 5
+print(foo)
+
+if foo:
+	foo = 10
+	print(foo + bar)
+
+def inner():
+	print(foo - bar)
+
+foo + 2
+
+# After the first use
+bar = 5
+print(foo)
+
+foo = 10
+
+if foo:
+	print(foo + bar)
+
+def inner():
+	print(foo - bar)
+
+foo + 2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-03-11 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @zanieb on 2024-03-11 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2024-03-11 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-03-11 17:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

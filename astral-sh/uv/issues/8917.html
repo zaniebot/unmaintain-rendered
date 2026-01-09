@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv install 0.5.0 sh: line 1027: _force_install_dir: unbound variable - astral-sh/uv #8917</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv install 0.5.0 sh: line 1027: _force_install_dir: unbound variable</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8917">#8917</a>
+        opened by <a href="https://github.com/fraser-langton">@fraser-langton</a>
+        on 2024-11-08 05:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fraser-langton">@fraser-langton</a> on 2024-11-08 05:19</div>
+            <div class="timeline-body"><p>Quite bizarre, the same install just started failing, without any changes, and it looks like it's the same version</p>
+<p>before (30 mins ago)</p>
+<pre><code class="language-shell">downloading uv 0.5.0 x86_64-unknown-linux-musl-static
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+3.8s
+</code></pre>
+<p>now</p>
+<pre><code class="language-shell">downloading uv 0.5.0 x86_64-unknown-linux-musl-static
+
+sh: line 1027: _force_install_dir: unbound variable
+</code></pre>
+<p>Edit:
+seems to be a widespread issue with a later release of the 0.5.0 install.sh - because the release itself was about 6 hours ago, but only started seeing this an hour ago and I had a working version of 0.5.0 at some point 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8919.html">astral-sh/uv#8919</a> on 2024-11-08 05:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GitHK">@GitHK</a> on 2024-11-08 05:28</div>
+            <div class="timeline-body"><p>I'm also seeing this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fraser-langton">@fraser-langton</a> on 2024-11-08 05:28</div>
+            <div class="timeline-body"><p><code>curl --proto '=https' --tlsv1.2 -LsSf https://github.com/astral-sh/uv/releases/download/0.4.30/uv-installer.sh | sh</code> works, but downgrading also has breaking changes to PATH 🥺</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-08 05:38</div>
+            <div class="timeline-body"><p>Thanks for the report! Looks like this broke while patching a <code>uv self update</code> bug. I'll have a fix up quickly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChillarAnand">@ChillarAnand</a> on 2024-11-08 05:41</div>
+            <div class="timeline-body"><p>Inside docker file, I have updated the PATH as temporary workaround.</p>
+<pre><code>RUN curl --proto '=https' --tlsv1.2 -LsSf https://github.com/astral-sh/uv/releases/download/0.4.30/uv-installer.sh | sh &amp;&amp; \
+    /root/.cargo/bin/uv python install ${PYTHON_VERSION} &amp;&amp; \
+    /root/.cargo/bin/uv venv /opt/venv --python ${PYTHON_VERSION}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-08 05:42</div>
+            <div class="timeline-body"><p>It should be fixed now. Let me know if not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fraser-langton">@fraser-langton</a> on 2024-11-08 05:45</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>@zanieb I was about to share my hacky fix <code>curl -LsSf https://astral.sh/uv/install.sh | sed 's/^_force_install_dir=&quot;$_force_install_dir&quot;/_force_install_dir=&quot;${_force_install_dir:-}&quot;/' | sh</code> 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChillarAnand">@ChillarAnand</a> on 2024-11-08 05:48</div>
+            <div class="timeline-body"><p>@zanieb It is working now. Thanks for quick fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-08 05:49</div>
+            <div class="timeline-body"><p>Thanks for the reports! Sorry about the disruption.</p>
+<p>Caused by a previous patch attempting to fix https://github.com/axodotdev/axoupdater/issues/210</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-11-08 05:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GitHK">@GitHK</a> on 2024-11-08 05:50</div>
+            <div class="timeline-body"><p>@zanieb something looks wired <code>~/.cargo/bin/uv</code> is no longer found after the fix, while it used to work in the previous version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fraser-langton">@fraser-langton</a> on 2024-11-08 05:52</div>
+            <div class="timeline-body"><p>@GitHK</p>
+<blockquote>
+<p>@zanieb something looks wired <code>~/.cargo/bin/uv</code> is no longer found after the fix, while it used to work in the previous version</p>
+</blockquote>
+<p>I believe that is intentional https://github.com/astral-sh/uv/releases/tag/0.5.0</p>
+<blockquote>
+<p>Previously, uv's installer used $CARGO_HOME or ~/.cargo/bin for its target install directory. It's been a longstanding complaint that uv uses this directory, as there's no relationship to Cargo. Now, uv will be installed into $XDG_BIN_HOME, $XDG_DATA_HOME/../bin, or ~/.local/bin (in that order). Note that $UV_INSTALL_DIR can always be used to override the target directory.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-08 05:54</div>
+            <div class="timeline-body"><p><code>uv self update</code> will preserve a previous install location, but new installs will use the new one 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8928.html">astral-sh/uv#8928</a> on 2024-11-08 11:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

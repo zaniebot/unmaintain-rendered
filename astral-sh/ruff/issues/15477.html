@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New check: variable defined away from use - astral-sh/ruff #15477</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>New check: variable defined away from use</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15477">#15477</a>
+        opened by <a href="https://github.com/nickdrozd">@nickdrozd</a>
+        on 2025-01-14 19:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2025-01-14 19:10</div>
+            <div class="timeline-body"><p>Sometimes a variable is defined away from its first use. If an early return comes between the definition and the use, then the definition is wasteful.</p>
+<p>For example, this:</p>
+<pre><code class="language-python">def f():
+    val = get_val()
+
+    if condition():
+        return
+
+    do_something(val)
+</code></pre>
+<p>Should be changed to this:</p>
+<pre><code class="language-python">def f():
+    if condition():
+        return
+
+    val = get_val()
+
+    do_something(val)
+</code></pre>
+<p>Also applies to continues, etc:</p>
+<pre><code class="language-python">def f():
+   for item in get_list():
+       val = get_val(item)
+
+       if condition(item):
+           continue
+
+       do_something(val)
+</code></pre>
+<p>Might be autofixable, but definitely unsafe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-01-14 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @dylwil3 on 2025-01-14 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> removed by @dylwil3 on 2025-01-14 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @dylwil3 on 2025-01-14 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-14 19:55</div>
+            <div class="timeline-body"><p>This is an interesting idea for a rule! it will probably require better control flow analysis than is currently available, so it may have to wait a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-14 20:16</div>
+            <div class="timeline-body"><p>The other challenge that I see is that it has to know if the called method has any side effects or moving it isn't safe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2025-01-15 15:13</div>
+            <div class="timeline-body"><p>Could put check behind new flag <code>--experimental</code> or <code>--aggressive</code>, something like that. Some kind of extra opt-in.</p>
+<p>I would be interested to see the results of this run against primer or whatever. I think this problem might turn out to be pretty common. False positives due to side effects would also interesting to see.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2025-01-29 18:17</div>
+            <div class="timeline-body"><p>Somewhat related to https://github.com/astral-sh/ruff/issues/10108.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

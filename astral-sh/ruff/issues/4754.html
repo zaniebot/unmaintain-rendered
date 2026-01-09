@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writing lint output to file - astral-sh/ruff #4754</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Writing lint output to file</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4754">#4754</a>
+        opened by <a href="https://github.com/TalAmuyal">@TalAmuyal</a>
+        on 2023-05-31 13:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TalAmuyal">@TalAmuyal</a> on 2023-05-31 13:37</div>
+            <div class="timeline-body"><p><strong>TL;DR:</strong> I couldn't find how to tell Ruff to write the report to file.</p>
+<p><strong>Examples:</strong></p>
+<ul>
+<li><code>bandit</code> -&gt; <code>--output=reports/report.txt</code></li>
+<li><code>flake8</code> -&gt; <code>--output-file=reports/report.txt</code></li>
+<li><code>pylint</code> -&gt; <code>--output-format=text:reports/report.txt</code></li>
+</ul>
+<p><strong>Motivation:</strong></p>
+<p>I'm using Ruff with <a href="https://www.pantsbuild.org/docs/python-linters-and-formatters">Pants</a>.
+Pants parallelises Ruff's run for monorepos.
+In general, it runs linters in a sandbox, collects their reports and puts them in <code>dist/[linter]/...</code> which can then be used by Jenkins to display the results to the user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 15:22</div>
+            <div class="timeline-body"><p>Naive question, but what's the difference between an <code>--output-file</code> argument and <code>ruff &gt; report.txt</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-05-31 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-05-31 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TalAmuyal">@TalAmuyal</a> on 2023-05-31 15:28</div>
+            <div class="timeline-body"><p>The issue with that is it requires to add a shell (e.g bash) between <code>ruff</code> and the process that invokes it.</p>
+<p>Currently, I'm running Pants which runs Ruff, rather than running a Bash script or Make that then runs Ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TalAmuyal">@TalAmuyal</a> on 2023-05-31 15:48</div>
+            <div class="timeline-body"><p>To be clear, I really appreciate your work and the fast response, and I submit this as a question or a feature-request.
+If the above is perceived as offensive in any way, please know that it is unintentional and that I'm extremely grateful and do not take this work or your time for granted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 18:28</div>
+            <div class="timeline-body"><p>No worries at all, I appreciate the kind words, and I didn't take it as offensive in any way -- it's a super reasonable request! I just wanted to understand the context to make sure I could probably evaluate whether it's a worth supporting as a new CLI option. It does seem reasonable to me -- any reactions, @MichaReiser?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-05-31 19:01</div>
+            <div class="timeline-body"><p>Related</p>
+<ul>
+<li>#995</li>
+<li>#2388</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TalAmuyal">@TalAmuyal</a> on 2023-06-01 15:24</div>
+            <div class="timeline-body"><p>In <code>pants.toml</code>, the following needs to be added for Pylint:</p>
+<pre><code class="language-toml"># pants.toml
+
+[pylint]
+args = [&quot;--output-format=text:reports/report.txt&quot;]
+</code></pre>
+<p>Then, Pants adds <code>--output-format=text:reports/report.txt</code> as an argument to Pylint when it is executed.
+After Pylint completes its execution, Pants collects the files under <code>reports/</code> (only <code>report.txt</code> in this example) and puts them in <code>dist/pylint/</code> (or under <code>dist/flake8/</code> etc.).</p>
+<p>I imagine that for Ruff it will be something like:</p>
+<pre><code class="language-toml"># pants.toml
+
+[ruff]
+args = [&quot;--format=junit&quot;, &quot;--report-path=reports/report.xml&quot;]
+</code></pre>
+<p>Does this answer your question?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TalAmuyal">@TalAmuyal</a> on 2023-06-01 15:48</div>
+            <div class="timeline-body"><p>Should I close this issue and sum it up in https://github.com/charliermarsh/ruff/issues/995?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-05 07:08</div>
+            <div class="timeline-body"><p>Seems reasonable. <code>rustc</code> provides the <code>-o</code> option</p>
+<blockquote>
+<p>-o FILENAME         Write output to <filename></p>
+</blockquote>
+<p>ESLint:</p>
+<pre><code>Output:
+  -o, --output-file path::String  Specify file to write report to
+  -f, --format String             Use a specific output format - default: stylish
+  --color, --no-color             Force enabling/disabling of color
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-06-05 19:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-06 14:07</div>
+            <div class="timeline-body"><p>Yes, I think <code>-o</code>/<code>--output-file</code> flags are reasonable. I can take this up.</p>
+<p>Some observations about what <code>eslint</code> does in various scenarios:</p>
+<ol>
+<li><code>eslint --fix --format=junit --output-file=eslint.out .</code> - This will write the fixed content back to the original files and remaining diagnostics will be written to the output file in the specified format.</li>
+<li><code>eslint --fix-dry-run --format=junit --output-file=eslint.out .</code> - The dry run doesn't produce any output so the only output is the remaining diagnostics <em>if</em> the fixes were applied.</li>
+<li><code>eslint --format=stylish --output-file=eslint.out .</code> - This will write the stylish output in the file which includes the <a href="https://en.wikipedia.org/wiki/ANSI_escape_code">ASCII escape sequences</a> as well.</li>
+</ol>
+<p>Eslint won't output anything if the <code>--output-file</code> option is provided.</p>
+<p>For Ruff, I think we should default to <code>NO_COLOR=1</code> in case we're writing the output to a file avoid creating confusion when that file is viewed/parsed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @charliermarsh on 2023-06-06 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4950.html">astral-sh/ruff#4950</a> on 2023-06-08 04:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-06-20 16:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

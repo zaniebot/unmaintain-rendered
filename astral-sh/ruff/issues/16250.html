@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `# noqa: SIM103` on last return - astral-sh/ruff #16250</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow `# noqa: SIM103` on last return</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16250">#16250</a>
+        opened by <a href="https://github.com/JKE-be">@JKE-be</a>
+        on 2025-02-19 11:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JKE-be">@JKE-be</a> on 2025-02-19 11:37</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p><strong>searched</strong>: SIM103 Ignore</p>
+<p><strong>snippet</strong>:</p>
+<pre><code class="language-py">def func(a, b):
+    if a == 0:
+        return False
+
+    a = a + b / a
+    if a != 1:
+        return False
+
+    a = a * b
+    if a &gt; 1:
+        return False
+
+    return True  # noqa SIM103
+</code></pre>
+<p><strong>Command</strong>: <code>ruff check /tmp/ruff.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>/tmp/ruff.py:10:5: SIM103 Return the negated condition directly
+   |
+ 9 |       a = a * b
+10 | /     if a &gt; 1:
+11 | |         return False
+12 | |
+13 | |     return True  # noqa SIM103
+   | |_______________^ SIM103
+   |
+   = help: Inline condition
+</code></pre>
+<p><strong>version</strong>: ruff 0.9.6</p>
+<p><strong>config</strong>:</p>
+<pre><code class="language-py">fix = false
+show-fixes = true
+line-length = 120
+output-format = &quot;full&quot;
+target-version = &quot;py38&quot;
+
+[lint]
+ignore = [
+    &quot;E501&quot;,
+    &quot;E731&quot;,
+    &quot;RUF012&quot;,   # mutable-class-default
+]
+select = [
+    &quot;B&quot;,   # flake8-bugbear
+    &quot;E&quot;,   # pycodestyle
+    &quot;F&quot;,   # Pyflakes
+    &quot;G&quot;,   # flake8-logging-format
+    &quot;ISC&quot;, # flake8-implicit-str-concat
+    &quot;PERF&quot;,# perflint
+    &quot;RUF&quot;, # ruff specific rules
+    &quot;SIM&quot;, # flake8-simplify
+    &quot;W&quot;,   # pycodestyle
+]
+</code></pre>
+<p><strong>Expected</strong> (Nice to have feature)</p>
+<p>Allow ignoring <code>SIM103</code> without requiring the <code># noqa</code> comment on the last <code>if</code> statement itself. The goal is to enable other developers to add another <code>if</code> after the last one without modifying the previous condition.</p>
+<p>This is why I don’t want to refactor the last condition as suggested by Ruff. It’s a special case, but I don’t want to ignore <code>SIM103</code> for the entire file or all files, as I still find it useful in 99% of cases.</p>
+<p>Currently, I need to add <code># noqa</code> on the last <code>ìf</code> to get <code>All checks passed!</code></p>
+<pre><code class="language-diff">def func(a, b):
+    if a == 0:
+        return False
+
+    a = a + b / a
+    if a != 1:
+        return False
+
+    a = a * b
+-   if a &gt; 1:  # noqa SIM103 
++   if a &gt; 1:
+        return False
+
+-   return True
++   return True  # noqa SIM103 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "allow noqa SIM103 on last return" to "Allow `# noqa SIM103` on last return" by @JKE-be on 2025-02-19 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-19 12:25</div>
+            <div class="timeline-body"><p>Irrelevant, but the comment should have a colon: <code># noqa: SIM103</code>. See also <a href="https://docs.astral.sh/ruff/rules/blanket-noqa/"><code>PGH004</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Allow `# noqa SIM103` on last return" to "Allow `# noqa: SIM103` on last return" by @JKE-be on 2025-02-19 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-02-19 18:16</div>
+            <div class="timeline-body"><p>This is an interesting case, thank you!</p>
+<p>As far as I can tell this would require some fairly substantial changes to how error suppression currently works for multi-line diagnostic ranges. Note that, in your example, that final return statement <em>is</em> part of the diagnostic range, it's just that in general the in-line suppression comment is supposed to be on the first line of a diagnostic.</p>
+<p>So I think supporting this may require some design discussion to understand whether it should be done and what the ramifications might be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">suppression</span> added by @dylwil3 on 2025-02-19 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @dylwil3 on 2025-02-19 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @dylwil3 on 2025-02-19 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-19 18:23</div>
+            <div class="timeline-body"><p>Ha, @dylwil3 I was just about to write the same.</p>
+<p>Red Knot implements your desired behavior (see https://github.com/astral-sh/ruff/pull/15046#issuecomment-2555032954) but I'd prefer to keep the behavior of <code>noqa</code> consistent with flake8. I'd have to check what behavior flake8 uses. Either way, this is a rather significant change.</p>
+<p>There are some trade offs involved with matching both the start and end of the range (see red knot PR) and the main mitigation is to strictly use error codes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brandonchinn178">@brandonchinn178</a> on 2025-07-11 05:29</div>
+            <div class="timeline-body"><p>Not sure how easy it would be to detect, but I would actually argue that this should <em>not</em> be a violation of SIM103. The spirit of SIM103 is to replace simple if checks with a boolean expression, but fall through boolean checks is a very common idiom that should be allowed</p>
+<pre><code class="language-python"># GOOD - easy to read and extend
+def check(s: str) -&gt; bool:
+    if s.startswith(&quot;/&quot;):
+        return True
+
+    if s.endswith(&quot;/&quot;):
+        return False
+
+    # TODO: more guards will be added in the future
+
+    return True
+
+# BAD - difficult to read or extend
+def check(s: str) -&gt; bool:
+    return s.startswith(&quot;/&quot;) or not s.endswith(&quot;/&quot;)
+</code></pre>
+<p>The original ask would be a decent mitigation for this, but IMO a better resolution would be to exclude these situations, if possible.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider conditionally applying rule PLR6201 - astral-sh/ruff #8758</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider conditionally applying rule PLR6201</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8758">#8758</a>
+        opened by <a href="https://github.com/ofek">@ofek</a>
+        on 2023-11-18 20:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ofek">@ofek</a> on 2023-11-18 20:37</div>
+            <div class="timeline-body"><p>When the sequences are small, the cost of instantiation of a set in fact negatively impacts performance:</p>
+<pre><code>❯ python -m timeit &quot;{0, '0', 9, '9', 8, '8', 7, '7', 6, '6'}&quot;
+2000000 loops, best of 5: 105 nsec per loop
+❯ python -m timeit &quot;[0, '0', 9, '9', 8, '8', 7, '7', 6, '6']&quot;
+5000000 loops, best of 5: 43.6 nsec per loop
+❯ python -m timeit &quot;(0, '0', 9, '9', 8, '8', 7, '7', 6, '6')&quot;
+50000000 loops, best of 5: 8.45 nsec per loop
+❯ python -m timeit -s &quot;seq = {0, '0', 9, '9', 8, '8', 7, '7', 6, '6'}&quot; &quot;0 in seq&quot;
+10000000 loops, best of 5: 20.6 nsec per loop
+❯ python -m timeit -s &quot;seq = [0, '0', 9, '9', 8, '8', 7, '7', 6, '6']&quot; &quot;0 in seq&quot;
+20000000 loops, best of 5: 17.9 nsec per loop
+❯ python -m timeit -s &quot;seq = (0, '0', 9, '9', 8, '8', 7, '7', 6, '6')&quot; &quot;0 in seq&quot;
+20000000 loops, best of 5: 17.5 nsec per loop
+❯ python -m timeit -s &quot;seq = {0, '0', 9, '9', 8, '8', 7, '7', 6, '6'}&quot; &quot;6 in seq&quot;
+10000000 loops, best of 5: 19.8 nsec per loop
+❯ python -m timeit -s &quot;seq = [0, '0', 9, '9', 8, '8', 7, '7', 6, '6']&quot; &quot;6 in seq&quot;
+5000000 loops, best of 5: 85.5 nsec per loop
+❯ python -m timeit -s &quot;seq = (0, '0', 9, '9', 8, '8', 7, '7', 6, '6')&quot; &quot;6 in seq&quot;
+5000000 loops, best of 5: 90.1 nsec per loop
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-11-18 23:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/hatch/pulls/1045.html">pypa/hatch#1045</a> on 2023-11-19 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2023-11-20 12:12</div>
+            <div class="timeline-body"><p>There are optimizations here that are not accounted for in your benchmarks. See <a href="https://docs.python.org/3/whatsnew/3.2.html#optimizations">What’s New In Python 3.2</a> for example. Also see #8322 and https://github.com/pylint-dev/pylint/issues/4776.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2023-11-20 13:34</div>
+            <div class="timeline-body"><p>Yup, with these, the <code>x in {...}</code> pattern wins out against list and tuple literals unless it’s the first element:</p>
+<pre><code class="language-console">$ python -m timeit '0 in {0, &quot;0&quot;, 9, &quot;9&quot;, 8, &quot;8&quot;, 7, &quot;7&quot;, 6, &quot;6&quot;}'
+20000000 loops, best of 5: 13.6 nsec per loop
+$ python -m timeit '0 in [0, &quot;0&quot;, 9, &quot;9&quot;, 8, &quot;8&quot;, 7, &quot;7&quot;, 6, &quot;6&quot;]'
+20000000 loops, best of 5: 11.5 nsec per loop
+$ python -m timeit '0 in (0, &quot;0&quot;, 9, &quot;9&quot;, 8, &quot;8&quot;, 7, &quot;7&quot;, 6, &quot;6&quot;)'
+20000000 loops, best of 5: 11.4 nsec per loop
+$ python -m timeit '6 in {0, &quot;0&quot;, 9, &quot;9&quot;, 8, &quot;8&quot;, 7, &quot;7&quot;, 6, &quot;6&quot;}'
+20000000 loops, best of 5: 12.9 nsec per loop
+$ python -m timeit '6 in [0, &quot;0&quot;, 9, &quot;9&quot;, 8, &quot;8&quot;, 7, &quot;7&quot;, 6, &quot;6&quot;]'
+5000000 loops, best of 5: 52.3 nsec per loop
+$ python -m timeit '6 in (0, &quot;0&quot;, 9, &quot;9&quot;, 8, &quot;8&quot;, 7, &quot;7&quot;, 6, &quot;6&quot;)'
+5000000 loops, best of 5: 56.5 nsec per loop
+</code></pre>
+<p>The manual version is maybe even a tiny bit faster, but this is noise level.</p>
+<pre><code class="language-console">$ python -m timeit -s 'seq = {0, &quot;0&quot;, 9, &quot;9&quot;, 8, &quot;8&quot;, 7, &quot;7&quot;, 6, &quot;6&quot;}' '0 in seq'
+20000000 loops, best of 5: 12.5 nsec per loop
+$ python -m timeit -s 'seq = [0, &quot;0&quot;, 9, &quot;9&quot;, 8, &quot;8&quot;, 7, &quot;7&quot;, 6, &quot;6&quot;]' '0 in seq'
+20000000 loops, best of 5: 11.2 nsec per loop
+$ python -m timeit -s 'seq = (0, &quot;0&quot;, 9, &quot;9&quot;, 8, &quot;8&quot;, 7, &quot;7&quot;, 6, &quot;6&quot;)' '0 in seq'
+20000000 loops, best of 5: 10.5 nsec per loop
+$ python -m timeit -s 'seq = {0, &quot;0&quot;, 9, &quot;9&quot;, 8, &quot;8&quot;, 7, &quot;7&quot;, 6, &quot;6&quot;}' '6 in seq'
+20000000 loops, best of 5: 15.3 nsec per loop
+$ python -m timeit -s 'seq = [0, &quot;0&quot;, 9, &quot;9&quot;, 8, &quot;8&quot;, 7, &quot;7&quot;, 6, &quot;6&quot;]' '6 in seq'
+5000000 loops, best of 5: 53.8 nsec per loop
+$ python -m timeit -s 'seq = (0, &quot;0&quot;, 9, &quot;9&quot;, 8, &quot;8&quot;, 7, &quot;7&quot;, 6, &quot;6&quot;)' '6 in seq'
+5000000 loops, best of 5: 49.6 nsec per loop
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oprypin">@oprypin</a> on 2023-11-20 13:38</div>
+            <div class="timeline-body"><p>@flying-sheep Thanks! Could you also please run an equivalent benchmark for a 3-item collection? 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2023-11-20 13:42</div>
+            <div class="timeline-body"><p>Microoptimizations like this are rarely indicative of real life performance. I’m simply pointing out that the optimization mentioned by @tdulcet is indeed applied, so using a inline set literal is preferable, as it’s equivalent to creating a frozenset ahead of time.</p>
+<p>But sure, here you go. Finding the 3rd item in a sequence is slower than finding it in a set, only finding the first item in a sequence is very very slightly faster than finding that item in a set.</p>
+<p>So <code>if x in {...}</code> is best. Ruff does it right.</p>
+<hr />
+<p>Peephole optimized:</p>
+<pre><code class="language-console">$ python -m timeit '0 in {0, &quot;0&quot;, 9}'
+20000000 loops, best of 5: 13.7 nsec per loop
+$ python -m timeit '0 in [0, &quot;0&quot;, 9]'
+20000000 loops, best of 5: 11.4 nsec per loop
+$ python -m timeit '0 in (0, &quot;0&quot;, 9)'
+20000000 loops, best of 5: 11.3 nsec per loop
+$ python -m timeit '9 in {0, &quot;0&quot;, 9}'
+20000000 loops, best of 5: 12.8 nsec per loop
+$ python -m timeit '9 in [0, &quot;0&quot;, 9]'
+10000000 loops, best of 5: 21.4 nsec per loop
+$ python -m timeit '9 in (0, &quot;0&quot;, 9)'
+10000000 loops, best of 5: 21.5 nsec per loop
+</code></pre>
+<p>… has the same performance as manually optimized:</p>
+<pre><code class="language-console">$ python -m timeit -s 'seq = {0, &quot;0&quot;, 9}' '0 in seq'
+20000000 loops, best of 5: 12.7 nsec per loop
+$ python -m timeit -s 'seq = [0, &quot;0&quot;, 9]' '0 in seq'
+20000000 loops, best of 5: 11.3 nsec per loop
+$ python -m timeit -s 'seq = (0, &quot;0&quot;, 9)' '0 in seq'
+20000000 loops, best of 5: 10.5 nsec per loop
+$ python -m timeit -s 'seq = {0, &quot;0&quot;, 9}' '9 in seq'
+20000000 loops, best of 5: 12.2 nsec per loop
+$ python -m timeit -s 'seq = [0, &quot;0&quot;, 9]' '9 in seq'
+10000000 loops, best of 5: 21.7 nsec per loop
+$ python -m timeit -s 'seq = (0, &quot;0&quot;, 9)' '9 in seq'
+20000000 loops, best of 5: 20 nsec per loop
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-20 15:31</div>
+            <div class="timeline-body"><p>Thanks for the details @flying-sheep</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-11-20 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9604.html">astral-sh/ruff#9604</a> on 2024-01-22 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12051.html">astral-sh/ruff#12051</a> on 2024-06-27 09:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashrub-holvi">@ashrub-holvi</a> on 2024-10-24 09:05</div>
+            <div class="timeline-body"><p>Would be nice to add link to this ticket to docs as many people trying to benchmark it:</p>
+<pre><code>diff --git a/crates/ruff_linter/src/rules/pylint/rules/literal_membership.rs b/crates/ruff_linter/src/rules/pylint/rules/literal_membership.rs
+index 7d0031ab0..0339c032c 100644
+--- a/crates/ruff_linter/src/rules/pylint/rules/literal_membership.rs
++++ b/crates/ruff_linter/src/rules/pylint/rules/literal_membership.rs
+@@ -31,6 +31,7 @@ use crate::checkers::ast::Checker;
+ ///
+ /// ## References
+ /// - [What’s New In Python 3.2](https://docs.python.org/3/whatsnew/3.2.html#optimizations)
++/// - [How to benchmark it properly](https://github.com/astral-sh/ruff/issues/8758)
+ #[violation]
+ pub struct LiteralMembership;
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

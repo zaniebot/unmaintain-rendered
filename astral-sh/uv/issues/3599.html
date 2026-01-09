@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incompatible cached wheels may continue to be used after upgrade - astral-sh/uv #3599</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incompatible cached wheels may continue to be used after upgrade</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/3599">#3599</a>
+        opened by <a href="https://github.com/wimglenn">@wimglenn</a>
+        on 2024-05-15 02:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wimglenn">@wimglenn</a> on 2024-05-15 02:56</div>
+            <div class="timeline-body"><p>I saw an issue installing pydantic on macOS where it uv would use an incompatible wheel for pydantic_core (with cp312-cp312-macosx_10_12_x86_64 tag) resulting in this error message:</p>
+<pre><code>$ .venv/bin/python3 -c 'import pydantic_core'
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/.../.venv/lib/python3.12/site-packages/pydantic_core/__init__.py&quot;, line 6, in &lt;module&gt;
+    from ._pydantic_core import (
+ImportError: dlopen(/.../.venv/lib/python3.12/site-packages/pydantic_core/_pydantic_core.cpython-312-darwin.so, 0x0002): tried: '/.../.venv/lib/python3.12/site-packages/pydantic_core/_pydantic_core.cpython-312-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64')), '/System/Volumes/Preboot/Cryptexes/OS/.../.venv/lib/python3.12/site-packages/pydantic_core/_pydantic_core.cpython-312-darwin.so' (no such file), '/.../.venv/lib/python3.12/site-packages/pydantic_core/_pydantic_core.cpython-312-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64'))
+</code></pre>
+<p>pip would select a different one (with cp312-cp312-macosx_11_0_arm64 tag) which worked.</p>
+<p>I had recently upgraded to <code>uv 0.1.44 (d417daad7 2024-05-14)</code>, and a <code>uv cache clean</code> fixed the issue - on reinstall it used a compatible wheel.</p>
+<p>Are the UV caches keyed off the uv version at all? Perhaps the uv installation should self-invalidate caches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-15 02:59</div>
+            <div class="timeline-body"><p>Unfortunately it's hard to help here without more information and a reliable reproduction. We intentionally don't key the cache on uv version -- instead, each of the buckets has its own version that we bump whenever the schema changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-15 03:02</div>
+            <div class="timeline-body"><p>Do you have any idea how that wheel ended up in the cache in the first place? Either way we shouldn't be re-using it unless it appears to be compatible with the current environment. Any reproduction welcome! Otherwise I may have to close.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2024-05-15 03:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wimglenn">@wimglenn</a> on 2024-05-15 04:29</div>
+            <div class="timeline-body"><p>I think I can reproduce it by creating an alternate install using brew - do these installations share files at all?</p>
+<pre><code>$ ~/.cargo/bin/uv --version
+uv 0.1.44 (d417daad7 2024-05-14)
+$ arch -x86_64 brew install -q uv
+==&gt; Fetching dependencies for uv: libssh2 and libgit2
+==&gt; Fetching libssh2
+==&gt; Fetching libgit2
+==&gt; Fetching uv
+==&gt; Installing dependencies for uv: libssh2 and libgit2
+==&gt; Installing uv dependency: libssh2
+🍺  /usr/local/Cellar/libssh2/1.11.0_1: 198 files, 1.1MB
+==&gt; Installing uv dependency: libgit2
+🍺  /usr/local/Cellar/libgit2/1.7.2: 105 files, 4.5MB
+==&gt; Installing uv
+==&gt; Caveats
+zsh completions have been installed to:
+  /usr/local/share/zsh/site-functions
+==&gt; Summary
+🍺  /usr/local/Cellar/uv/0.1.44: 13 files, 28.4MB
+==&gt; Running `brew cleanup uv`...
+Disable this behaviour by setting HOMEBREW_NO_INSTALL_CLEANUP.
+Hide these hints with HOMEBREW_NO_ENV_HINTS (see `man brew`).
+==&gt; Caveats
+==&gt; uv
+zsh completions have been installed to:
+  /usr/local/share/zsh/site-functions
+$ ~/.cargo/bin/uv --version
+uv 0.1.44 (d417daad7 2024-05-14)
+$ /usr/local/Cellar/uv/0.1.44/bin/uv --version                                  
+uv 0.1.44
+$ ~/.cargo/bin/uv venv     
+Using Python 3.12.3 interpreter at: /usr/local/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+$ /usr/local/Cellar/uv/0.1.44/bin/uv pip install pydantic-core --force-reinstall
+Resolved 2 packages in 315ms
+Downloaded 2 packages in 211ms
+Installed 2 packages in 10ms
+ + pydantic-core==2.18.2
+ + typing-extensions==4.11.0
+$ tail -1 .venv/lib/python3.12/site-packages/pydantic_core-2.18.2.dist-info/WHEEL
+Tag: cp312-cp312-macosx_10_12_x86_64
+$ .venv/bin/python -c 'import pydantic_core; print(pydantic_core.__file__)'
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/private/tmp/u/.venv/lib/python3.12/site-packages/pydantic_core/__init__.py&quot;, line 6, in &lt;module&gt;
+    from ._pydantic_core import (
+ImportError: dlopen(/private/tmp/u/.venv/lib/python3.12/site-packages/pydantic_core/_pydantic_core.cpython-312-darwin.so, 0x0002): tried: '/private/tmp/u/.venv/lib/python3.12/site-packages/pydantic_core/_pydantic_core.cpython-312-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64')), '/System/Volumes/Preboot/Cryptexes/OS/private/tmp/u/.venv/lib/python3.12/site-packages/pydantic_core/_pydantic_core.cpython-312-darwin.so' (no such file), '/private/tmp/u/.venv/lib/python3.12/site-packages/pydantic_core/_pydantic_core.cpython-312-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64'))
+$ ~/.cargo/bin/uv pip install pydantic-core --force-reinstall                               
+Resolved 2 packages in 8ms
+Installed 2 packages in 1ms
+ - pydantic-core==2.18.2
+ + pydantic-core==2.18.2
+ - typing-extensions==4.11.0
+ + typing-extensions==4.11.0
+$ tail -1 .venv/lib/python3.12/site-packages/pydantic_core-2.18.2.dist-info/WHEEL
+Tag: cp312-cp312-macosx_10_12_x86_64
+$ ~/.cargo/bin/uv cache clean &amp;&amp; ~/.cargo/bin/uv pip install pydantic-core --force-reinstall
+Clearing cache at: /Users/wim/Library/Caches/uv
+Removed 28 files (10.5MiB)
+Resolved 2 packages in 245ms
+Downloaded 2 packages in 277ms
+Installed 2 packages in 3ms
+ - pydantic-core==2.18.2
+ + pydantic-core==2.18.2
+ - typing-extensions==4.11.0
+ + typing-extensions==4.11.0
+$ tail -1 .venv/lib/python3.12/site-packages/pydantic_core-2.18.2.dist-info/WHEEL
+Tag: cp312-cp312-macosx_11_0_arm64
+$ .venv/bin/python -c 'import pydantic_core; print(pydantic_core.__file__)'
+/private/tmp/u/.venv/lib/python3.12/site-packages/pydantic_core/__init__.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-15 04:40</div>
+            <div class="timeline-body"><p>Think I need to look at this with fresh eyes in the morning... I might be interested to see the output of the first <code>/usr/local/Cellar/uv/0.1.44/bin/uv pip install pydantic-core --force-reinstall</code> with the <code>--verbose</code> flag though. I'm not really sure why the <code>cp312-cp312-macosx_10_12_x86_64</code> is being considered as compatible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-15 04:43</div>
+            <div class="timeline-body"><p>The core problem AFAICT is that for some reason <code>cp312-cp312-macosx_10_12_x86_64</code> is being considered compatible with your system, which is presumedly an ARM mac?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-15 04:44</div>
+            <div class="timeline-body"><p>It would be one thing if you created the venv with <code>/usr/local/Cellar/uv/0.1.44/bin/uv</code>, which seems to be an x86 Python, but you're creating the venv with <code>~/.cargo/bin/uv</code> right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wimglenn">@wimglenn</a> on 2024-05-15 04:59</div>
+            <div class="timeline-body"><p>Yeah, it's a MacBook Air (Apple M1).
+Right. Here's some more verbosity:</p>
+<pre><code>$ rm -rf .venv
+$ ~/.cargo/bin/uv venv
+Using Python 3.12.3 interpreter at: /usr/local/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+$ ~/.cargo/bin/uv cache clean
+Clearing cache at: /Users/wim/Library/Caches/uv
+Removed 29 files (10.5MiB)
+$ /usr/local/Cellar/uv/0.1.44/bin/uv pip install pydantic-core --force-reinstall -vv
+ uv_requirements::specification::from_source source=pydantic-core
+    0.002866s DEBUG uv_interpreter::virtualenv Found a virtualenv named .venv at: /private/tmp/u/.venv
+    0.003150s DEBUG uv_interpreter::interpreter Probing interpreter info for: /private/tmp/u/.venv/bin/python
+    0.067560s DEBUG uv_interpreter::interpreter Found Python 3.12.3 for: /private/tmp/u/.venv/bin/python
+    0.068221s DEBUG uv::commands::pip::install Using Python 3.12.3 environment at .venv/bin/python
+    0.068311s DEBUG uv_fs Trying to lock if free: .venv/.lock
+ uv_client::linehaul::linehaul 
+    0.070875s DEBUG uv_client::base_client Using registry request timeout of 30s
+ uv_resolver::flat_index::from_entries 
+ uv_resolver::resolver::solve 
+      0.073008s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.12.3
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.073901s   0ms DEBUG uv_resolver::resolver Adding direct dependency: pydantic-core*
+   uv_resolver::resolver::choose_version package=pydantic-core
+     uv_resolver::resolver::package_wait package_name=pydantic-core
+ uv_resolver::resolver::process_request request=Versions pydantic-core
+   uv_client::registry_client::simple_api package=pydantic-core
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/Users/wim/Library/Caches/uv/simple-v7/pypi/pydantic-core.rkyv
+ uv_client::cached_client::from_path_sync path=&quot;/Users/wim/Library/Caches/uv/simple-v7/pypi/pydantic-core.rkyv&quot;
+ uv_resolver::resolver::process_request request=Prefetch pydantic-core *
+          0.076620s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/pydantic-core/
+       uv_client::cached_client::fresh_request url=&quot;https://pypi.org/simple/pydantic-core/&quot;
+       uv_client::cached_client::new_cache file=/Users/wim/Library/Caches/uv/simple-v7/pypi/pydantic-core.rkyv
+       uv_client::registry_client::parse_simple_api package=pydantic-core
+   uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=pydantic-core==2.18.2
+     uv_client::registry_client::wheel_metadata built_dist=pydantic-core==2.18.2
+       uv_client::cached_client::get_serde 
+         uv_client::cached_client::get_cacheable 
+           uv_client::cached_client::read_and_parse_cache file=/Users/wim/Library/Caches/uv/wheels-v1/pypi/pydantic-core/pydantic_core-2.18.2-cp312-cp312-macosx_10_12_x86_64.msgpack
+ uv_client::cached_client::from_path_sync path=&quot;/Users/wim/Library/Caches/uv/wheels-v1/pypi/pydantic-core/pydantic_core-2.18.2-cp312-cp312-macosx_10_12_x86_64.msgpack&quot;
+        0.269505s 194ms DEBUG uv_resolver::resolver Searching for a compatible version of pydantic-core (*)
+        0.269612s 194ms DEBUG uv_resolver::resolver Selecting: pydantic-core==2.18.2 (pydantic_core-2.18.2-cp312-cp312-macosx_10_12_x86_64.whl)
+   uv_resolver::resolver::get_dependencies package=pydantic-core, version=2.18.2
+     uv_resolver::resolver::distributions_wait version_id=pydantic-core-2.18.2
+              0.270407s   1ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/15/b1/e6edfe46402a5b415fc3de86aa64fb10009b323907f8d513175bfb839aa9/pydantic_core-2.18.2-cp312-cp312-macosx_10_12_x86_64.whl.metadata
+           uv_client::cached_client::fresh_request url=&quot;https://files.pythonhosted.org/packages/15/b1/e6edfe46402a5b415fc3de86aa64fb10009b323907f8d513175bfb839aa9/pydantic_core-2.18.2-cp312-cp312-macosx_10_12_x86_64.whl.metadata&quot;
+           uv_client::cached_client::new_cache file=/Users/wim/Library/Caches/uv/wheels-v1/pypi/pydantic-core/pydantic_core-2.18.2-cp312-cp312-macosx_10_12_x86_64.msgpack
+           uv_client::registry_client::parse_metadata21 
+        0.341417s  71ms DEBUG uv_resolver::resolver Adding transitive dependency for pydantic-core==2.18.2: typing-extensions&gt;=4.6.0, &lt;4.7.0 | &gt;4.7.0
+   uv_resolver::resolver::choose_version package=typing-extensions
+     uv_resolver::resolver::package_wait package_name=typing-extensions
+ uv_resolver::resolver::process_request request=Versions typing-extensions
+   uv_client::registry_client::simple_api package=typing-extensions
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/Users/wim/Library/Caches/uv/simple-v7/pypi/typing-extensions.rkyv
+ uv_resolver::resolver::process_request request=Prefetch typing-extensions &gt;=4.6.0, &lt;4.7.0 | &gt;4.7.0
+ uv_client::cached_client::from_path_sync path=&quot;/Users/wim/Library/Caches/uv/simple-v7/pypi/typing-extensions.rkyv&quot;
+          0.341832s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/typing-extensions/
+       uv_client::cached_client::fresh_request url=&quot;https://pypi.org/simple/typing-extensions/&quot;
+       uv_client::cached_client::new_cache file=/Users/wim/Library/Caches/uv/simple-v7/pypi/typing-extensions.rkyv
+       uv_client::registry_client::parse_simple_api package=typing-extensions
+   uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=typing-extensions==4.11.0
+     uv_client::registry_client::wheel_metadata built_dist=typing-extensions==4.11.0
+       uv_client::cached_client::get_serde 
+         uv_client::cached_client::get_cacheable 
+           uv_client::cached_client::read_and_parse_cache file=/Users/wim/Library/Caches/uv/wheels-v1/pypi/typing-extensions/typing_extensions-4.11.0-py3-none-any.msgpack
+        0.361175s  19ms DEBUG uv_resolver::resolver Searching for a compatible version of typing-extensions (&gt;=4.6.0, &lt;4.7.0 | &gt;4.7.0)
+        0.361188s  19ms DEBUG uv_resolver::resolver Selecting: typing-extensions==4.11.0 (typing_extensions-4.11.0-py3-none-any.whl)
+ uv_client::cached_client::from_path_sync path=&quot;/Users/wim/Library/Caches/uv/wheels-v1/pypi/typing-extensions/typing_extensions-4.11.0-py3-none-any.msgpack&quot;
+   uv_resolver::resolver::get_dependencies package=typing-extensions, version=4.11.0
+     uv_resolver::resolver::distributions_wait version_id=typing-extensions-4.11.0
+              0.361284s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/01/f3/936e209267d6ef7510322191003885de524fc48d1b43269810cd589ceaf5/typing_extensions-4.11.0-py3-none-any.whl.metadata
+           uv_client::cached_client::fresh_request url=&quot;https://files.pythonhosted.org/packages/01/f3/936e209267d6ef7510322191003885de524fc48d1b43269810cd589ceaf5/typing_extensions-4.11.0-py3-none-any.whl.metadata&quot;
+           uv_client::cached_client::new_cache file=/Users/wim/Library/Caches/uv/wheels-v1/pypi/typing-extensions/typing_extensions-4.11.0-py3-none-any.msgpack
+           uv_client::registry_client::parse_metadata21 
+      0.379275s 306ms DEBUG uv_resolver::resolver::batch_prefetch Tried 3 versions: pydantic-core 1, root 1, typing-extensions 1
+Resolved 2 packages in 308ms
+    0.380907s DEBUG uv_installer::plan Identified uncached requirement: pydantic-core==2.18.2
+    0.381434s DEBUG uv_installer::plan Identified uncached requirement: typing-extensions==4.11.0
+ uv_installer::downloader::download total=2
+   uv_installer::downloader::get_wheel name=pydantic-core==2.18.2, size=Some(1857389), url=&quot;https://files.pythonhosted.org/packages/15/b1/e6edfe46402a5b415fc3de86aa64fb10009b323907f8d513175bfb839aa9/pydantic_core-2.18.2-cp312-cp312-macosx_10_12_x86_64.whl&quot;
+     uv_distribution::distribution_database::get_or_build_wheel dist=pydantic-core==2.18.2
+       uv_client::cached_client::get_serde 
+         uv_client::cached_client::get_cacheable 
+           uv_client::cached_client::read_and_parse_cache file=/Users/wim/Library/Caches/uv/wheels-v1/pypi/pydantic-core/pydantic_core-2.18.2-cp312-cp312-macosx_10_12_x86_64.http
+ uv_client::cached_client::from_path_sync path=&quot;/Users/wim/Library/Caches/uv/wheels-v1/pypi/pydantic-core/pydantic_core-2.18.2-cp312-cp312-macosx_10_12_x86_64.http&quot;
+   uv_installer::downloader::get_wheel name=typing-extensions==4.11.0, size=Some(34698), url=&quot;https://files.pythonhosted.org/packages/01/f3/936e209267d6ef7510322191003885de524fc48d1b43269810cd589ceaf5/typing_extensions-4.11.0-py3-none-any.whl&quot;
+     uv_distribution::distribution_database::get_or_build_wheel dist=typing-extensions==4.11.0
+       uv_client::cached_client::get_serde 
+         uv_client::cached_client::get_cacheable 
+           uv_client::cached_client::read_and_parse_cache file=/Users/wim/Library/Caches/uv/wheels-v1/pypi/typing-extensions/typing_extensions-4.11.0-py3-none-any.http
+ uv_client::cached_client::from_path_sync path=&quot;/Users/wim/Library/Caches/uv/wheels-v1/pypi/typing-extensions/typing_extensions-4.11.0-py3-none-any.http&quot;
+              0.385101s   1ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/15/b1/e6edfe46402a5b415fc3de86aa64fb10009b323907f8d513175bfb839aa9/pydantic_core-2.18.2-cp312-cp312-macosx_10_12_x86_64.whl
+           uv_client::cached_client::fresh_request url=&quot;https://files.pythonhosted.org/packages/15/b1/e6edfe46402a5b415fc3de86aa64fb10009b323907f8d513175bfb839aa9/pydantic_core-2.18.2-cp312-cp312-macosx_10_12_x86_64.whl&quot;
+              0.385193s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/01/f3/936e209267d6ef7510322191003885de524fc48d1b43269810cd589ceaf5/typing_extensions-4.11.0-py3-none-any.whl
+           uv_client::cached_client::fresh_request url=&quot;https://files.pythonhosted.org/packages/01/f3/936e209267d6ef7510322191003885de524fc48d1b43269810cd589ceaf5/typing_extensions-4.11.0-py3-none-any.whl&quot;
+           uv_client::cached_client::new_cache file=/Users/wim/Library/Caches/uv/wheels-v1/pypi/pydantic-core/pydantic_core-2.18.2-cp312-cp312-macosx_10_12_x86_64.http
+           uv_distribution::distribution_database::wheel wheel=pydantic-core==2.18.2
+           uv_client::cached_client::new_cache file=/Users/wim/Library/Caches/uv/wheels-v1/pypi/typing-extensions/typing_extensions-4.11.0-py3-none-any.http
+           uv_distribution::distribution_database::wheel wheel=typing-extensions==4.11.0
+Downloaded 2 packages in 251ms
+ uv_installer::installer::install num_wheels=2
+Installed 2 packages in 9ms
+ + pydantic-core==2.18.2
+ + typing-extensions==4.11.0
+$ tail -1 .venv/lib/python3.12/site-packages/pydantic_core-2.18.2.dist-info/WHEEL
+Tag: cp312-cp312-macosx_10_12_x86_64
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-15 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-15 14:46</div>
+            <div class="timeline-body"><p>I haven't been able to reproduce this yet. I installed an x86 Python and repeated the process above. I agree that something strange is happening above. In <code>/usr/local/bin/python3</code>, can you run: <code>import platform; platform.mac_ver()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wimglenn">@wimglenn</a> on 2024-05-16 02:04</div>
+            <div class="timeline-body"><pre><code>$ /usr/local/bin/python3 -c 'import platform; print(platform.mac_ver())'
+('14.4.1', ('', '', ''), 'arm64')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wimglenn">@wimglenn</a> on 2024-05-25 02:00</div>
+            <div class="timeline-body"><p>I've updated macOS and it shows <code>('14.5', ('', '', ''), 'arm64')</code> now.
+I still see this issue - today it was uv pip selecting <code>black-24.4.2-cp312-cp312-macosx_10_9_x86_64.whl</code> when py pip collected <code>black-24.4.2-cp312-cp312-macosx_11_0_arm64.whl</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-25 02:42</div>
+            <div class="timeline-body"><p>Unfortunately I was never able to reproduce this even after installing both an x86 and an ARM Python side-by-side on my machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erensahins">@erensahins</a> on 2024-06-27 09:19</div>
+            <div class="timeline-body"><p>I am experiencing the same error regarding installing pydantic on MacOS M1 chip:</p>
+<p><code>uv pip install pydantic==2.7.4</code></p>
+<pre><code>ImportError: dlopen(.../.venv/lib/python3.11/site-packages/pydantic_core/_pydantic_core.cpython-311-darwin.so, 0x0002): tried: '../.venv/lib/python3.11/site-packages/pydantic_core/_pydantic_core.cpython-311-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64')), 
+'/System/Volumes/Preboot/Cryptexes/OS/Users/&lt;username&gt;/&lt;projectname&gt;/.venv/lib/python3.11/site-packages/pydantic_core/_pydantic_core.cpython-311-darwin.so' (no such file), '.../.venv/lib/python3.11/site-packages/pydantic_core/_pydantic_core.cpython-311-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64'))
+</code></pre>
+<p>However, pip directly selects the correct architecture and installs properly.</p>
+<p>my mac platform version:</p>
+<p><code>('13.5.1', ('', '', ''), 'arm64')</code></p>
+<p>Uninstalling pydantic and cleaning uv cache does not resolve the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JuR-0">@JuR-0</a> on 2025-06-27 15:28</div>
+            <div class="timeline-body"><p>@erensahins @wimglenn did you fix your issue? I encountered the same problem today</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/P-Muench">@P-Muench</a> on 2025-10-07 15:42</div>
+            <div class="timeline-body"><p>@erensahins @wimglenn I had the same issue bugging me for a while. Turns out I had an x86_64 version of homebrew installed on my Mac (running with Rosetta 2) which must have installed an x86_64 version of uv. After reinstalling homebrew  and uv (both as arm versions) the error went away.</p>
+<p>You can verify which version of homebrew you are running via</p>
+<p><code>brew config</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv tool update --all` fails if a provided `extra-index-url` is not joinable  - astral-sh/uv #8555</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv tool update --all` fails if a provided `extra-index-url` is not joinable </h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/8555">#8555</a>
+        opened by <a href="https://github.com/frague59">@frague59</a>
+        on 2024-10-25 06:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/frague59">@frague59</a> on 2024-10-25 06:18</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I've defined <code>extra-index-url</code> with a private repository, only accessible on my company local network or through a VPN.</p>
+<p><code>$ cat uv.toml</code></p>
+<pre><code class="language-toml">index-strategy = &quot;unsafe-best-match&quot;
+allow-insecure-host = [&quot;gitlab.example.com&quot;]  # My company gitlab repository, with a self-signed cert
+extra-index-url = [
+    &quot;https://pypi.org/simple&quot;,
+    &quot;http://gitlab.example.com/api/v4/projects/117/packages/pypi/simple/&quot;,
+]
+</code></pre>
+<p>I've installed  a mix of 'public' tool (<code>ruff</code>, <code>pre-commit</code>, <code>ansible-core</code>...) and some custom scripts installed from this private repository.</p>
+<p>When at home, without connecting the VPN,  if  I run :</p>
+<pre><code class="language-sh">$ uv tool update --all
+⠼ Resolving dependencies...                                                     Failed to upgrade `ansible-core`: Could not connect, are you offline?
+...
+</code></pre>
+<p>The update fails for all packages, including the &quot;public&quot; ones.</p>
+<p>When I activate the VPN connection, the update is applied.</p>
+<p>It would be nice too have a more specific message about the unreachable repository, or that the &quot;public&quot; ones to be updated without caring about the down VPN.</p>
+<p>Thanks for this great tool !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2024-10-31 00:12</div>
+            <div class="timeline-body"><p>Just curious, can you do this one at a time with <code>uv tool update &lt;package&gt;</code>? Does this only happen with <code>--all</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-31 00:49</div>
+            <div class="timeline-body"><p>What's in the tool receipt for the failing package? e.g. <code>cat $(uv tool dir)/ansible-core/uv-receipt.toml</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frague59">@frague59</a> on 2024-11-01 09:38</div>
+            <div class="timeline-body"><pre><code class="language-toml">[tool]
+requirements = [
+    { name = &quot;ansible-core&quot; },
+    { name = &quot;mysqlclient&quot; },
+]
+entrypoints = [
+    { name = &quot;ansible&quot;, install-path = &quot;/home/fguerin/.local/bin/ansible&quot; },
+    { name = &quot;ansible-config&quot;, install-path = &quot;/home/fguerin/.local/bin/ansible-config&quot; },
+    { name = &quot;ansible-connection&quot;, install-path = &quot;/home/fguerin/.local/bin/ansible-connection&quot; },
+    { name = &quot;ansible-console&quot;, install-path = &quot;/home/fguerin/.local/bin/ansible-console&quot; },
+    { name = &quot;ansible-doc&quot;, install-path = &quot;/home/fguerin/.local/bin/ansible-doc&quot; },
+    { name = &quot;ansible-galaxy&quot;, install-path = &quot;/home/fguerin/.local/bin/ansible-galaxy&quot; },
+    { name = &quot;ansible-inventory&quot;, install-path = &quot;/home/fguerin/.local/bin/ansible-inventory&quot; },
+    { name = &quot;ansible-playbook&quot;, install-path = &quot;/home/fguerin/.local/bin/ansible-playbook&quot; },
+    { name = &quot;ansible-pull&quot;, install-path = &quot;/home/fguerin/.local/bin/ansible-pull&quot; },
+    { name = &quot;ansible-test&quot;, install-path = &quot;/home/fguerin/.local/bin/ansible-test&quot; },
+    { name = &quot;ansible-vault&quot;, install-path = &quot;/home/fguerin/.local/bin/ansible-vault&quot; },
+]
+
+[tool.options]
+extra-index-url = [&quot;https://pypi.org/simple&quot;, &quot;http://gitlab.example.com/api/v4/projects/117/packages/pypi/simple/&quot;, &quot;https://pypi.org/simple&quot;, &quot;http://gitlab.example.com/api/v4/projects/117/packages/pypi/simple/&quot;]
+index-strategy = &quot;unsafe-best-match&quot;
+allow-insecure-host = [&quot;gitlab.example.com&quot;, &quot;gitlab.example.com&quot;]
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frague59">@frague59</a> on 2024-11-01 09:41</div>
+            <div class="timeline-body"><p>I've noted I've the same issue when I try to create a new venv with the <code>--seed</code> param - the setuptools / wheel / pip packages cannot be downloaded from the pypi repository, failing with the same message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-01 13:28</div>
+            <div class="timeline-body"><p>👍 thanks okay I follow now.</p>
+<p>So.. we should at least say what we could not connect to / display the full error from the failure.</p>
+<p>It seems makes sense to allow indexes to be offline entirely, but probably not by default? I'm not sure how to specify that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8753.html">astral-sh/uv#8753</a> on 2024-11-01 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11176.html">astral-sh/uv#11176</a> on 2025-02-03 06:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

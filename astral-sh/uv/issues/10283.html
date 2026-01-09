@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolve order unclear (maybe bug) with multiple conflicting groups - astral-sh/uv #10283</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Resolve order unclear (maybe bug) with multiple conflicting groups</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10283">#10283</a>
+        opened by <a href="https://github.com/TheMrCodes">@TheMrCodes</a>
+        on 2025-01-03 11:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TheMrCodes">@TheMrCodes</a> on 2025-01-03 11:36</div>
+            <div class="timeline-body"><h2>Goal</h2>
+<p>A deep learning project that should use the same code with multiple hardware dependent library dependencies.
+Only one group of dependencies should be present at one point in time. Examples for groups are CPU only, CUDA 12 dependencies or Intel XPU Libraries.</p>
+<h2>Approach</h2>
+<p>My approach was to model the dependencies as groups called cpu, cuda124, cpu-intel &amp; gpu-intel and only install one group of dependencies for one device at a time using the sync command f.E.: <code>uv sync --only-group cpu</code></p>
+<h2>Issue</h2>
+<p>The sync command whats to install the 'intel-extension-for-pytorch==2.5.10+xpu' dependency when run. This should only be installed when using the 'gpu-intel' group.</p>
+<blockquote>
+<p><strong>Personal Note:</strong>
+Maybe I misunderstood the concept of dependency groups but if so, how could I achieve my goal using uv's features?
+Thx for your help beforehand!</p>
+</blockquote>
+<hr />
+<p>PyProject File:</p>
+<pre><code class="language-pyproject.toml">[project]
+name = &quot;experiments&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;TheMrCodes&quot; }
+]
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;accelerate&gt;=1.2.1&quot;,
+    &quot;datasets&gt;=2.14.4&quot;,
+    &quot;evaluate&gt;=0.4.3&quot;,
+    &quot;ipykernel&gt;=6.29.5&quot;,
+    &quot;ipywidgets&gt;=8.1.5&quot;,
+    &quot;scikit-learn&gt;=1.6.0&quot;,
+    &quot;setuptools&gt;=75.6.0&quot;,
+    &quot;tensorboard&gt;=2.18.0&quot;,
+    &quot;tqdm&gt;=4.67.1&quot;,
+    &quot;transformers&gt;=4.47.1&quot;,
+    &quot;ujson&gt;=5.10.0&quot;,
+]
+
+[project.scripts]
+ma-ttc-project = &quot;experiments:main&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv]
+default-groups = [&quot;cpu&quot;]
+conflicts = [ [
+    { group = &quot;cpu&quot; },
+    { group = &quot;cuda124&quot; },
+    { group = &quot;cpu-intel&quot; },
+    { group = &quot;gpu-intel&quot; },
+] ]
+
+[dependency-groups]
+cpu = [
+    &quot;torch==2.5.0&quot;,
+    &quot;torchvision==0.20.0&quot;,
+]
+cuda124 = [
+    &quot;torch==2.5.0&quot;,
+    &quot;torchvision==0.20.0&quot;,
+]
+cpu-intel = [
+    &quot;intel-extension-for-pytorch==2.5.0&quot;,
+    &quot;oneccl-bind-pt==2.5.0&quot;,
+    &quot;torch==2.5.0&quot;,
+    &quot;torchvision==0.20.0&quot;,
+]
+gpu-intel = [
+    &quot;intel-extension-for-pytorch==2.5.10+xpu&quot;,
+    &quot;oneccl-bind-pt==2.5.0+xpu&quot;,
+    &quot;torch==2.5.1+cxx11.abi&quot;,
+    &quot;torchvision==0.20.1+cxx11.abi&quot;,
+]
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;torch-cpu&quot;, group = &quot;cpu&quot; },
+    { index = &quot;torch-cpu&quot;, group = &quot;cpu-intel&quot; },
+    { index = &quot;torch-intel-gpu&quot;, group = &quot;gpu-intel&quot; },
+    { index = &quot;torch-cuda124&quot;, group = &quot;cuda124&quot; },
+]
+torchvision = [
+    { index = &quot;torch-cpu&quot;, group = &quot;cpu&quot; },
+    { index = &quot;torch-cpu&quot;, group = &quot;cpu-intel&quot; },
+    { index = &quot;torch-intel-gpu&quot;, group = &quot;gpu-intel&quot; },
+    { index = &quot;torch-cuda124&quot;, group = &quot;cuda124&quot; },
+]
+intel-extension-for-pytorch = [
+    { index = &quot;torch-intel-gpu&quot;, group = &quot;gpu-intel&quot; },
+]
+oneccl-bind-pt = [
+    { index = &quot;torch-intel-cpu&quot;, group = &quot;cpu-intel&quot; },
+    { index = &quot;torch-intel-gpu&quot;, group = &quot;gpu-intel&quot; },
+]
+
+
+[[tool.uv.index]]
+name = &quot;torch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;torch-cuda124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;torch-intel-cpu&quot;
+url = &quot;https://pytorch-extension.intel.com/release-whl/stable/cpu/cn/&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;torch-intel-gpu&quot;
+url = &quot;https://pytorch-extension.intel.com/release-whl/stable/xpu/cn/&quot;
+explicit = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-03 17:25</div>
+            <div class="timeline-body"><p>What's the exact error that you're seeing? Can you include the output?</p>
+<p>One thing to note is that <code>intel-extension-for-pytorch</code> still has to be downloaded when <em>locking</em> the project, because we lock for all groups. So <code>uv sync --only-group cpu</code> may still show some output for <code>intel-extension-for-pytorch</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-03 17:26</div>
+            <div class="timeline-body"><p>E.g., this works fine for me:</p>
+<pre><code>❯ uv sync --only-group cpu --python 3.11
+Using CPython 3.11.10
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 155 packages in 0.91ms
+Prepared 7 packages in 2.43s
+Installed 12 packages in 244ms
+ + filelock==3.16.1
+ + fsspec==2024.9.0
+ + jinja2==3.1.5
+ + markupsafe==3.0.2
+ + mpmath==1.3.0
+ + networkx==3.4.2
+ + numpy==2.2.1
+ + pillow==11.1.0
+ + sympy==1.13.1
+ + torch==2.5.0
+ + torchvision==0.20.0
+ + typing-extensions==4.12.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-03 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-01-03 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheMrCodes">@TheMrCodes</a> on 2025-01-05 11:06</div>
+            <div class="timeline-body"><p>Ok then this is mostly a misunderstanding on my end not a uv problem.</p>
+<h3>For my Understanding</h3>
+<p>The <code>uv sync</code> not only updates the virtual environment (installing dependencies into the venv), but also always updates the lock with pyproject files
+-&gt; wich means updating the lock file requires knowing the hash of all packages
+-&gt; uv always downloads all packages to check the hash, on every <code>sync</code> and <code>run</code> not only on <code>add</code> and <code>lock</code>
+Is this right? My goal was to not always wast time and GBs on package downloads every time I setup the project on a new VM.</p>
+<p>But this would mean I can not do that in my development environment, only in production using the --frozen flag and then this also means when running my script I always have to call <code>uv run --frozen --group cuda124 src/mytrainingscript.py</code> es it would install all dependencies.</p>
+<h3>Questions</h3>
+<p>Why is this default behaviour?</p>
+<p>With my intuition from other package managers:</p>
+<ul>
+<li><code>sync</code> should update the venv (like <code>pip install -r requirements.txt</code>)</li>
+<li><code>run</code> should only run files in the given venv with the preselected setting (like python version)</li>
+<li><code>lock</code> and <code>update --all</code> should regenerate the whole lock file with the constraints in pyproject.toml</li>
+<li><code>add &lt;package&gt;</code> and <code>update &lt;package&gt;</code> should only touch the lock entries effected by the changes made to the installed or updates package and there dependencies</li>
+</ul>
+<p>This is in my eyes a bad default behavior when working in a team because every feature commit then updates the lock file which leads to merge conflicts.</p>
+<p>Love the ease of use and performance that uv provides so I would like to continue using it,
+would therefor be great if this could be configured in the project settings or as a environment variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-05 19:58</div>
+            <div class="timeline-body"><p>Yes, <code>uv sync</code> will ensure that the lockfile is up-to-date, unless you run with <code>--frozen</code>. This is wholly intentional. When you have an existing <code>uv.lock</code> file, it will only be updated if your dependencies change. We do not do a full re-resolution or change any of the dependencies, unless your own dependencies have changed. As such, <code>uv sync</code> typically does not update the lockfile -- it just checks if it's up-to-date.</p>
+<blockquote>
+<p>uv always downloads all packages to check the hash, on every sync and run not only on add and lock</p>
+</blockquote>
+<p>We validate the hash when you run <code>sync</code> -- we validate that the hash in the lockfile matches the hash of the <em>actual</em> file. This is actually the only meaningful time to validate hashes. We have to make sure that the hashes provided by the registry line up with what we expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-05 19:59</div>
+            <div class="timeline-body"><p>To put it succinctly: <code>uv sync</code> will ensure that the lockfile is up-to-date. This is typically a ~no-op -- it just requires cross-referencing your own dependencies with the lockfile. But it is very much intentional that <code>uv sync</code> and <code>uv run</code> ensure that your environment is correct by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-05 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheMrCodes">@TheMrCodes</a> on 2025-01-05 20:05</div>
+            <div class="timeline-body"><p>Thank you for clarifying the philosophy behind that design decision.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

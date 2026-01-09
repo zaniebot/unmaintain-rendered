@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[feature-request] Require first-party imports to target highest exporting non-ancestor module - astral-sh/ruff #1107</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[feature-request] Require first-party imports to target highest exporting non-ancestor module</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1107">#1107</a>
+        opened by <a href="https://github.com/smackesey">@smackesey</a>
+        on 2022-12-06 12:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-06 12:23</div>
+            <div class="timeline-body"><p>A symbol can be defined in one module and re-exported from several others. When importing a symbol from an external typed library, the convention is to import from as close to the root as possible. This is how popular auto-import resolution tools work (see my very similar post in <a href="https://github.com/microsoft/pylance-release/discussions/3050#discussioncomment-3197660">this pylance discussion</a>:</p>
+<blockquote>
+<p>If the same name is exported from multiple modules, the auto-import logic in pyright and pylance prefer the shortest module path. Only the shortest path is listed in the completion list, and the longer paths are de-duped.</p>
+</blockquote>
+<p>In large projects, sometimes you have big submodules that you want to provide an &quot;internal public&quot; interface for-- e.g. if you have a large submodule <code>project.foo</code>, you might want project-internal code to import only from <code>project.foo</code> itself, rather than <code>project.foo.*</code> submodules.</p>
+<p>I'd like to suggest that <code>ruff</code> offer a rule that enforces this by requiring internal imports resolve to the shortest module that exposes a symbol. So:</p>
+<pre><code>### project/foo/__init__.py
+# redundant alias is necessary to expose `BAR` as public for `project.foo`
+from .bar import BAR as BAR
+
+### project/foo/bar.py
+BAR = &quot;BAR&quot;
+
+### project/baz.py
+from project.foo.bar import BAR   # ERROR: should import from project.foo instead
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[feature-request] Require first-party imports to target highest exporting sibling-or-lower exporting module" to "[feature-request] Require first-party imports to target highest exporting non-ancestor module" by @smackesey on 2022-12-06 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-09 04:50</div>
+            <div class="timeline-body"><p>Yeah this makes sense. It would also force us to support cross-module checks (since we'd need to build a mapping from module to exported symbols), which would be a good thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2022-12-09 04:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/167.html">astral-sh/ruff#167</a> on 2022-12-09 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8581.html">astral-sh/ruff#8581</a> on 2023-11-09 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chbndrhnns">@chbndrhnns</a> on 2023-11-09 17:07</div>
+            <div class="timeline-body"><p>I sometimes see modules prefixed with an underscore being treated as private. Here is an example how this could work:</p>
+<pre><code class="language-py"># ./client.py
+from .myp._private import Member
+from .myp._private import OtherMember
+
+assert Member
+
+# ./myp/__init__.py
+__all__ = [&quot;Member&quot;]
+
+from ._private import Member
+
+# ./myp/_private.py
+class Member: ...
+
+class OtherMember: ...
+</code></pre>
+<p>Ruff could turn this into:</p>
+<pre><code class="language-py"># ./client.py
+from .myp import Member
+from .myp._private import OtherMember
+
+assert Member
+
+# ./myp/__init__.py
+__all__ = [&quot;Member&quot;]
+
+from ._private import Member
+
+# ./myp/_private.py
+class Member: ...
+
+class OtherMember: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-12-04 22:26</div>
+            <div class="timeline-body"><p>Just wondering whether this is now easily doable with all the changes in the last year to ruff. Would be a nice QOL improvement for us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6001.html">astral-sh/ruff#6001</a> on 2023-12-11 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19559.html">astral-sh/ruff#19559</a> on 2025-07-25 19:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

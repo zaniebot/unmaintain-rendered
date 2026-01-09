@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COM818 with ruff format fixes the error too harshly - astral-sh/ruff #14427</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>COM818 with ruff format fixes the error too harshly</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14427">#14427</a>
+        opened by <a href="https://github.com/neikow">@neikow</a>
+        on 2024-11-18 09:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neikow">@neikow</a> on 2024-11-18 09:53</div>
+            <div class="timeline-body"><p>Hi ! Thanks for providing us with such a great tool !</p>
+<p>When the rule COM818 is turned on and we run the formatter, it will wrap the trailing comma with paranthesis so when we run the linter again, the error will be corrected although it was probably a mistake to begin with.</p>
+<p><a href="https://play.ruff.rs/3d855131-5721-4bae-9a93-fb5522dd5637">Playground URL</a></p>
+<p>I think it would be better to prevent the formatter to run on these types of issues when this particular rule is selected as it can lead to hard to spot errors.</p>
+<ul>
+<li>Commands: ruff format / ruff lint</li>
+<li>Version: v0.7.4</li>
+<li>Relevant settings:</li>
+</ul>
+<pre><code>{
+  &quot;lint&quot;:
+    &quot;select&quot;: [
+       &quot;COM818&quot;
+    ]
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-18 10:12</div>
+            <div class="timeline-body"><p>As note for myself:</p>
+<p>The input is</p>
+<pre><code class="language-py">test = {&quot;ere&quot;: &quot;&quot;},
+</code></pre>
+<p>which gets formatted to</p>
+<pre><code class="language-py">test = ({&quot;ere&quot;: &quot;&quot;},)
+</code></pre>
+<p>Which is no longer flagged by <code>COM818</code>.</p>
+<p>Can you tell me more about your workflow? Our general recommendation is to run the linter (and apply fixes) first, then run the formatter.  That the formatter wraps bare tuples in parentheses was also a deliberate decision to make them more visible in, e.g., the editor's case. It also helped to identify many unwanted bare tuples in existing code bases, e.g., Django. But I don't think we ever received feedback on this. So thanks for reporting this specific case where I can see that it can lead to missed possibly-bare tuples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">incompatibility</span> added by @MichaReiser on 2024-11-18 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neikow">@neikow</a> on 2024-11-19 09:19</div>
+            <div class="timeline-body"><p>We run ruff via pre-commit with the lint phase before the formatting phase.</p>
+<ol>
+<li>When we try to commit the first time, it fails because of a lint error and because the formatter made somme changes.</li>
+<li>Usually developer think it was only the formatting that made the hook fail (and might not see the lint error) so they stage files and try to commit again and it pass this time (because de lint error is no longer present)</li>
+</ol>
+<p>Arguably the developer should inspect more precisely the output of the first try but in more normal cases, the lint error would still be present after the second try and therefore will not be missed.</p>
+<p>We thought about adding a hook for only the COM818 rule which would fail fast but it would increase the runtime of the hooks.
+Furthermore, marking ruff lint as fail_fast would mean we would need to commit three times at least:</p>
+<ul>
+<li>once for the linting</li>
+<li>once for the formatting</li>
+<li>accepted commit</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2025-02-12 20:41</div>
+            <div class="timeline-body"><p>I have the same problem. When I <code>⌘ s</code> on a file containing <code>x = 2,</code> in VSCode, parentheses are incorrectly added around <code>2,</code>, which is not what I want. The correct code is <code>x=2</code>. This happens even if I add <code>COM818</code> to <code>unsafe-fixes</code> - that seems it's due to the formatter above.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use action/cache in GitHub Actions docs - astral-sh/uv #6292</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use action/cache in GitHub Actions docs</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6292">#6292</a>
+        opened by <a href="https://github.com/simonw">@simonw</a>
+        on 2024-08-21 00:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/simonw">@simonw</a> on 2024-08-21 00:54</div>
+            <div class="timeline-body"><p>These docs currently suggest: https://docs.astral.sh/uv/guides/integration/github/</p>
+<pre><code class="language-yaml">    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up uv
+        # Install a specific uv version using the installer
+        run: curl -LsSf https://astral.sh/uv/0.3.0/install.sh | sh
+</code></pre>
+<p>I’m not a fan of that pattern without caching - it feels wasteful to download from outside the GitHub network on every run, plus an <code>astral.sh</code> outage would break my builds.</p>
+<p>It would be nice if this example used <code>action/cache</code> to avoid duplicate downloads where possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/simonw">@simonw</a> on 2024-08-21 00:56</div>
+            <div class="timeline-body"><p>Alternatively this recipe could use this URL instead:</p>
+<p>https://github.com/astral-sh/uv/releases/download/0.3.0/uv-installer.sh</p>
+<p>Which would at least keep all network traffic within GitHub.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @charliermarsh on 2024-08-21 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-08-21 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @charliermarsh on 2024-08-21 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> removed by @zanieb on 2024-08-21 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 03:05</div>
+            <div class="timeline-body"><p>I think we'll probably provide a <code>setup-uv</code> action in the future that manages installation, presumably that could handle caching. I'm pretty hesitant to complicate the integration guide here, but am willing to consider using <code>action/cache</code> in a subsequent example if you want to share how you would do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/simonw">@simonw</a> on 2024-08-21 03:24</div>
+            <div class="timeline-body"><p><code>setup-uv</code> action would be fantastic - or even getting <code>uv</code> into the default runner, but that's GitHub's call.</p>
+<p>I messed around with caching a bit and <a href="https://github.com/simonw/playing-with-actions-single/blob/09040ddd30c0a85d03d4d4c472def0a32a23fef6/.github/workflows/uv.yaml">got this to work</a>:</p>
+<pre><code class="language-yaml">name: uv example
+
+on:
+  workflow_dispatch:
+
+jobs:
+  uv-example:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - id: cache-cargo-bin
+      uses: actions/cache@v4
+      with:
+        path: ~/.cargo/bin
+        key: ${{ runner.os }}-cargo-bin
+    - id: cache-uv-python
+      uses: actions/cache@v4
+      with:
+        path: ~/.local/share/uv
+        key: ${{ runner.os }}-uv-python
+    - name: Install uv
+      if: steps.cache-cargo-bin.outputs.cache-hit != 'true'
+      run: |
+        curl -LsSf https://astral.sh/uv/0.3.0/install.sh | sh
+    - name: Run uv
+      run: |
+        python -c 'import sys; print(&quot;Before:&quot;, sys.version)'
+        uv python install
+        uv run python -c 'import sys; print(sys.version)'
+</code></pre>
+<p>The second time I ran that the output looked like this, showing the cache working:</p>
+<p><img src="https://github.com/user-attachments/assets/bc52e100-3e8a-4799-bfa7-1c0f7e66aafc" alt="CleanShot 2024-08-20 at 20 22 53@2x" /></p>
+<p>There may be ways to make this shorter and tighter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/skshetry">@skshetry</a> on 2024-08-21 03:49</div>
+            <div class="timeline-body"><p>I have been using https://github.com/hynek/setup-cached-uv, and it's been working well for me. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 12:33</div>
+            <div class="timeline-body"><p>Note that <code>setup-cached-uv</code> is different in that it persists the uv cache to GitHub.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/simonw">@simonw</a> on 2024-08-21 14:52</div>
+            <div class="timeline-body"><p>An official Astral version of that reusable Action would be really neat. My interest is primarily in avoiding hitting external network resources for repeat runs of my CI builds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-08-21 17:23</div>
+            <div class="timeline-body"><blockquote>
+<p>I’m not a fan of that pattern without caching - it feels wasteful to download from outside the GitHub network on every run, plus an astral.sh outage would break my builds.</p>
+</blockquote>
+<p>Given Github Actions track record I'd honestly be more wary of github cache outage in this case. :-D</p>
+<p>But more seriously, I am curious if measured any speed difference between these approaches?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 18:29</div>
+            <div class="timeline-body"><p>uv seems to download and install in <a href="https://github.com/astral-sh/packse/actions/runs/10316016498/job/28557350216">~1 second</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-05 00:30</div>
+            <div class="timeline-body"><p>Resolved by #7056</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-05 00:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

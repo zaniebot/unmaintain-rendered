@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best way to achieve &quot;cascading dependencies&quot; that are all resolved together - astral-sh/uv #11751</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Best way to achieve &quot;cascading dependencies&quot; that are all resolved together</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11751">#11751</a>
+        opened by <a href="https://github.com/matthawkins90">@matthawkins90</a>
+        on 2025-02-24 18:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matthawkins90">@matthawkins90</a> on 2025-02-24 18:22</div>
+            <div class="timeline-body"><h3>Question</h3>
+<h1>Goal</h1>
+<p>I'm trying to create three different <code>requirements.txt</code> files (or <code>uv.lock</code> files, it doesn't matter to me) that are designed for different app environments with minimal dependencies.</p>
+<p>For example:</p>
+<ul>
+<li><code>prod-requirements.txt</code> &lt;-- The minimal requirements to function in prod</li>
+<li><code>train-requirements.txt</code> &lt;-- Add a few additional requirements for training a ML model</li>
+<li><code>dev-requirements.txt</code> &lt;-- Add a few more requirements that are only installed in a dev environment.</li>
+</ul>
+<p>The key feature I want is that the environments should all be &quot;cascading&quot; from each other, so that <code>prod</code> has the minimum requirements, <code>train</code> inherits all the same requirements from <code>prod</code> and adds a few more, and <code>dev</code> inherits all the requirements from <code>train</code> and adds a few more.</p>
+<p>The most important aspect of this is that all of these separate requirements (or lock) files use all the same versions for their shared dependencies.  As in, the resolver should find the versions that can resolve for all requirements together.</p>
+<h1>Example</h1>
+<p>This is an example of how I had it prior to using <code>uv</code>:</p>
+<p><code>prod-requirements.in</code>:</p>
+<ul>
+<li>(a private library that requires boto3)</li>
+<li>pydantic</li>
+<li>xgboost</li>
+</ul>
+<p><code>train-requirements.in</code>:</p>
+<ul>
+<li>pandas</li>
+<li>pytest</li>
+<li>scikit-learn</li>
+</ul>
+<p><code>dev-requirements.in</code>:</p>
+<ul>
+<li>jupyterlab</li>
+<li>plotly</li>
+<li>pre-commit</li>
+</ul>
+<p>And then to ensure that the requirements were correctly cascading from one to the next, I'd run these in order (using a makefile):</p>
+<pre><code class="language-sh">pip-compile --no-emit-index-url --output-file prod-requirements.txt prod-requirements.in --resolver=backtracking
+pip-compile --no-emit-index-url --output-file train-requirements.txt prod-requirements.txt train-requirements.in --resolver=backtracking
+pip-compile --no-emit-index-url --output-file dev-requirements.txt train-requirements.txt dev-requirements.in --resolver=backtracking
+</code></pre>
+<p>This way, <code>train-requirements.txt</code> uses both <code>prod-requirements.txt</code> and <code>train-requirements.in</code> as inputs, and so on.</p>
+<p>And then on a dev device, you'd just run <code>pip-sync dev-requirements.txt</code>.</p>
+<p>For different Docker environments, you'd do something like:</p>
+<pre><code>COPY prod-requirements.txt .
+RUN pip install --no-cache-dir -r prod-requirements.txt
+</code></pre>
+<h1>Attempting to get this to work with uv</h1>
+<p>I tried a few different methods, but eventually it seemed like putting everything into <code>project.optional-dependencies</code> was the move.</p>
+<pre><code>[project]
+name = &quot;example&quot;
+
+[project.optional-dependencies]
+prod = [
+    &quot;(a private library that requires boto3)&quot;,
+    &quot;pydantic&quot;,
+    &quot;xgboost&quot;,
+]
+train = [
+    &quot;example[prod]&quot;, # include all prod dependencies
+    &quot;pandas&quot;,
+    &quot;pytest&quot;,
+    &quot;scikit-learn&quot;,
+]
+dev = [
+    &quot;example[train]&quot;, # include all train dependencies
+    &quot;jupyterlab&quot;,
+    &quot;plotly&quot;,
+    &quot;pre-commit&quot;,
+]
+</code></pre>
+<p>Then running:</p>
+<pre><code class="language-sh">uv pip compile --no-emit-index-url --no-strip-extras --extra=prod pyproject.toml --output-file prod-requirements.txt
+uv pip compile --no-emit-index-url --no-strip-extras --extra=train pyproject.toml --output-file train-requirements.txt
+uv pip compile --no-emit-index-url --no-strip-extras --extra=dev pyproject.toml --output-file dev-requirements.txt
+</code></pre>
+<p>followed by <code>uv pip sync dev-requirements.txt</code></p>
+<h1>The problem</h1>
+<p>Using the <code>uv</code> commands above and checking dependency versions across all the different requirements textfiles, I noticed that:</p>
+<ul>
+<li>prod-requirements.txt uses <code>boto3==1.36.23</code></li>
+<li>train-requirements.txt uses <code>boto3==1.36.3</code></li>
+<li>dev-requirements.txt uses <code>boto3==1.36.3</code></li>
+</ul>
+<p>Essentially, I can't force a guarantee that they'll all be using the same versions of their dependencies as each other.</p>
+<p>Is there a better method I should be using to achieve my goals, or did I find a bug in the resolver?</p>
+<h3>Platform</h3>
+<p>Darwin 24.3.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.2 (Homebrew 2025-02-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @matthawkins90 on 2025-02-24 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2025-02-24 18:50</div>
+            <div class="timeline-body"><p>This is a simplified version of how I do this using your example:</p>
+<pre><code>cat prod-requirements.in train-requirements.in dev-requirements.in | uv pip compile - -o full-constraints.txt --upgrade
+cat prod-requirements.in | uv pip compile - -c full-constraints.txt -o prod-requirements.txt
+cat prod-requirements.txt train-requirements.in | uv pip compile - -c full-constraints.txt -o train-requirements.txt
+cat prod-requirements.txt train-requirements.txt dev-requirements.in  | uv pip compile - -c full-constraints.txt -o dev-requirements.txt
+</code></pre>
+<p>The main point is you first generate a file that fully resolves all your requirements, and then use that as a constraints file for all your subsets of requirements. As long as you adhere to that principle you can use this same approach in a number of different and flexible ways.</p>
+<p>But there may be some better way by creating a lock file and exporting some subset of it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthawkins90">@matthawkins90</a> on 2025-02-24 20:36</div>
+            <div class="timeline-body"><p>That method works great for me! Thank you. I didn't realize there was a <code>-c</code> / <code>--constraint</code> arg.</p>
+<p>Would still be curious if anyone has suggestions for doing this with the <code>uv.lock</code> format instead of requirements.txt files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-24 20:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Would still be curious if anyone has suggestions for doing this with the uv.lock format instead of requirements.txt files.</p>
+</blockquote>
+<p>Does it not work with <code>uv lock</code> and <code>uv sync</code>? Your project declaration looks reasonable and we already attempt to find stable versions across optional dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthawkins90">@matthawkins90</a> on 2025-02-24 20:44</div>
+            <div class="timeline-body"><p><code>uv lock</code> doesn't allow me to specify cascading dependencies, right?  Can I have more than one lockfile where one lockfile uses another lockfile as a constraint?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-24 20:46</div>
+            <div class="timeline-body"><p>Why do they need to &quot;cascade&quot;? We'll only use the relevant subset of lockfile at install time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthawkins90">@matthawkins90</a> on 2025-02-24 20:49</div>
+            <div class="timeline-body"><p>how would I <code>uv sync</code> only the <code>prod</code> requirements in one environment, and then <code>uv sync</code> only the <code>prod + train</code> requirements in another environment, ensuring that the <code>prod</code> requirements are identical between each of those environments?</p>
+<p>(using a uv.lock file, not the separate {prod,train}-requirements.txt files)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-24 20:54</div>
+            <div class="timeline-body"><pre><code>uv sync --extra prod
+uv sync --extra train
+uv sync --extra dev
+</code></pre>
+<p>If you need multiple environments, set <code>UV_PROJECT_ENVIRONMENT=&lt;name&gt;</code> before each command.</p>
+<p>We resolve extras together by default, so unless they are <em>explicitly</em> declared as conflicting (https://docs.astral.sh/uv/concepts/projects/config/#conflicting-dependencies) the versions will match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthawkins90">@matthawkins90</a> on 2025-02-24 21:23</div>
+            <div class="timeline-body"><p>That's excellent, thank you very much!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-24 21:35</div>
+            <div class="timeline-body"><p>No problem :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-24 21:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

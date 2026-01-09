@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip compile` ignores private index credentials if `pyproject.toml` is not in the current directory - astral-sh/uv #15362</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip compile` ignores private index credentials if `pyproject.toml` is not in the current directory</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15362">#15362</a>
+        opened by <a href="https://github.com/ketozhang">@ketozhang</a>
+        on 2025-08-18 21:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ketozhang">@ketozhang</a> on 2025-08-18 21:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>My colleague (@sarmen-t) and I encountered that by following https://docs.astral.sh/uv/concepts/indexes/#providing-credentials-directly for injecting index credentials, <code>uv pip compile $SRC_FILE</code> fails to use credentials if $SRC_FILE is not exactly <code>pyproject.toml</code> (i.e., pyproject.toml cannot live in a subdirectory of CWD).</p>
+<p>Here's a MWE (index url is faked)</p>
+<pre><code class="language-toml">[project]
+name = &quot;projectA&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = ['internal-package']
+
+[tool.uv.sources]
+internal-package = { index = &quot;internal-proxy&quot; }
+
+[[tool.uv.index]]
+name = &quot;internal-proxy&quot;
+url = &quot;http://internal-proxy.example.com/simple/&quot;
+explicit = true
+</code></pre>
+<p>Contents of a multi-projects directory:</p>
+<pre><code class="language-console">$ ls
+projectA  projectB  README.md
+$ ls projectA
+src  pyproject.toml
+</code></pre>
+<p>Fail case:</p>
+<p><code>--no-cache</code> is added to force auth &amp; downloading from remote index.</p>
+<pre><code class="language-console">$ export UV_INDEX_INTERNAL_PROXY_USERNAME=public
+$ export UV_INDEX_INTERNAL_PROXY_PASSWORD=koala
+$ uv pip compile --format pylock.toml --no-cache projectA/pyproject.toml
+error: Failed to fetch: `http://internal-proxy.example.com/packages/internal-package-3.3.1-py2.py3-none-any.whl`
+  Caused by: HTTP status client error (401 Unauthorized) for url (http://internal-proxy.example.com/packages/internal-package-3.3.1-py2.py3-none-any.whl)
+</code></pre>
+<p>Successful alternatives:</p>
+<pre><code class="language-console">$ cd projectA
+$ uv pip compile --format pylock.toml --no-cache pyproject.toml
+</code></pre>
+<pre><code class="language-console">$ uv pip compile --format pylock.toml --no-cache --project projectA/ projectA/pyproject.toml
+</code></pre>
+<p>We can see from the last successful alternative that the issue is due to <code>--project</code> option which default to the CWD and is independent from <code>$SRC_FILE</code>. The error makes sense, but it is surprising that <code>uv pip compile</code> does not read the uv metadata table from the $SRC_FILE to obtain index metadata then subsequently its index credentials.</p>
+<h3>Platform</h3>
+<p>Darwin 24.6.0 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.8.11 (Homebrew 2025-08-14)</p>
+<h3>Python version</h3>
+<p>Python 3.12.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ketozhang on 2025-08-18 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv pip compile` ignores private index credentials depending on current working directory" to "`uv pip compile` ignores private index credentials if `pyproject.toml` is not in the current directory" by @ketozhang on 2025-08-27 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-09-14 02:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15844.html">astral-sh/uv#15844</a> on 2025-09-15 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-09-15 13:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

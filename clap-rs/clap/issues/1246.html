@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>textwrap is confused by ColoredHelp - clap-rs/clap #1246</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>textwrap is confused by ColoredHelp</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1246">#1246</a>
+        opened by <a href="https://github.com/vincentdephily">@vincentdephily</a>
+        on 2018-04-13 09:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vincentdephily">@vincentdephily</a> on 2018-04-13 09:25</div>
+            <div class="timeline-body"><p>This presumably depends on #836</p>
+<h3>Rust Version</h3>
+<p>1.25.0</p>
+<h3>Affected Version of clap</h3>
+<p>2.31.2</p>
+<h3>Expected Behavior Summary</h3>
+<p>Displaying colored help should use the available <code>term_width</code>.</p>
+<pre><code>    -f &lt;foo&gt;                        Many colored values make this obvious [default: a]  [possible values: a, b, c, d, e,
+                                    f, g, h, i, j]
+</code></pre>
+<h3>Actual Behavior Summary</h3>
+<p>The escape sequences make the <code>String</code> look long to the text wrapper, but not to the user, and the newline arrive long before the visible <code>term_width</code>.</p>
+<pre><code>    -f &lt;foo&gt;                        Many colored values make this obvious [default: a]  [possible values:
+                                    a, b, c, d, e, f, g, h,
+                                    i, j]
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<p>Take this App definition and run it either normally (colored) or piped to <code>cat</code> (non-colored).</p>
+<pre><code class="language-rust">    let args = app_from_crate!()
+        .global_setting(AppSettings::ColoredHelp)
+        .arg(Arg::with_name(&quot;foo&quot;)
+             .help(&quot;Many colored values make this obvious&quot;)
+             .short(&quot;f&quot;)
+             .takes_value(true) 
+             .possible_values(&amp;[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;h&quot;,&quot;i&quot;,&quot;j&quot;])
+             .default_value(&quot;a&quot;))
+     .get_matches();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-05-22 18:25</div>
+            <div class="timeline-body"><p>Sorry for the long wait, I've been out with my day job.</p>
+<p>I looks like the unprinted color codes are what's confusing it.</p>
+<p>@mgeisler this looks like it might be on your end :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: upstream crate / dep</span> added by @kbknapp on 2018-05-22 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mgeisler/textwrap/issues/140.html">mgeisler/textwrap#140</a> on 2018-05-22 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgeisler">@mgeisler</a> on 2018-05-22 19:26</div>
+            <div class="timeline-body"><p>Hi guys, yeah, that is something textwrap should be able to handle better! Thanks for the great bug report, I've added an issue for it in my tracker: mgeisler/textwrap#140.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-04-09 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @pksunkara by @pksunkara on 2020-04-11 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: blocking on external</span> added by @pksunkara on 2020-04-11 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @pksunkara on 2020-04-11 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-04-11 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @pksunkara on 2020-04-11 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @pksunkara by @pksunkara on 2020-04-11 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-04-14 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-14 22:06</div>
+            <div class="timeline-body"><p>This is fixed in #1824 because I removed the colors for arg metadata. Re-adding them back will be addressed in #1456. And that should address this properly. Keeping this open until then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @pksunkara on 2020-04-14 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: upstream crate / dep</span> removed by @pksunkara on 2020-04-14 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: colorizing</span> added by @pksunkara on 2020-04-15 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mgeisler/textwrap/pulls/179.html">mgeisler/textwrap#179</a> on 2020-04-15 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-30 13:07</div>
+            <div class="timeline-body"><p>The linked <code>textwrap</code> issue has been closed, so this is <em>probably</em> fixed. We would need to check again nonetheless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-06-30 23:08</div>
+            <div class="timeline-body"><p>I removed the colors from being sent to textwrap. That still doesn't solve this issue because we are now not coloring the possible/default values. Let's keep this open until that is fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: blocking on external</span> removed by @pksunkara on 2021-05-26 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/93.html">epage/clapng#93</a> on 2021-12-06 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: colorizing</span> removed by @epage on 2021-12-08 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @epage on 2021-12-08 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-08 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 18:21</div>
+            <div class="timeline-body"><p>So it sounds like we've implemented a hack (remove coloring) and textwrap has a permanent fix even if we undo the hack.</p>
+<p>@pksunkara what would be the reason for keeping this open?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-10 02:16</div>
+            <div class="timeline-body"><p>I think I wanted this open to give more context for #1456.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-12-10 02:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

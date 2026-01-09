@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Periodic compatibility issues with `uv` crates and `reqwest` crate - astral-sh/uv #7689</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Periodic compatibility issues with `uv` crates and `reqwest` crate</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7689">#7689</a>
+        opened by <a href="https://github.com/fyusifov">@fyusifov</a>
+        on 2024-09-25 17:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fyusifov">@fyusifov</a> on 2024-09-25 17:49</div>
+            <div class="timeline-body"><p>I am using <code>uv</code> crates to resolve dependencies from <code>pyproject.toml</code> programatically and I am periodically having issues with compatibility between <code>reqwest</code> and <code>uv</code> creates.  Last time when I had similar issue, it was recommended to pin to some commit and it worked. Now I am having different compatibility issue:</p>
+<p>These are my dependencies:</p>
+<pre><code class="language-toml">[package]
+name = &quot;uv-dep-testing&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies]
+#reqwest = { version = &quot;0.12&quot;, features = [&quot;json&quot;, &quot;rustls-tls&quot;] }
+tokio = { version = &quot;1.38&quot;, features = [&quot;full&quot;] }
+
+requirements-txt = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+uv-client = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+pep508_rs = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+pypi-types = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+uv-python = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+uv-cache = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+uv-installer = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+distribution-types = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+uv-requirements = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+uv-configuration = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+uv-types = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+uv-resolver = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+uv-distribution = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+uv-build = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+uv-dispatch = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+platform-tags = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+uv-git = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+install-wheel-rs = { git = &quot;https://github.com/astral-sh/uv.git&quot;,  rev = &quot;615dda0e944f1daa65bbb8ee2f9d87a1fc914911&quot; }
+
+[patch.crates-io]
+reqwest-middleware = { git = &quot;https://github.com/astral-sh/reqwest-middleware&quot;, rev = &quot;21ceec9a5fd2e8d6f71c3ea2999078fecbd13cbe&quot;}
+reqwest-retry = { git = &quot;https://github.com/astral-sh/reqwest-middleware&quot;, rev = &quot;21ceec9a5fd2e8d6f71c3ea2999078fecbd13cbe&quot;}
+</code></pre>
+<p>And this is some test code that I am using to resolve dependencies and exploring in general parsing/resolving dependencies with <code>uv</code> programatically:</p>
+<pre><code class="language-rust">use std::path::PathBuf;
+
+use tokio;
+
+use uv_cache::Cache;
+use uv_client::{BaseClientBuilder, RegistryClientBuilder};
+use uv_python::{EnvironmentPreference, PythonEnvironment, PythonInstallation, PythonPreference, PythonRequest};
+use uv_requirements::{RequirementsSource, RequirementsSpecification, SourceTreeResolver};
+use uv_configuration::{BuildOptions, ExtrasSpecification, PreviewMode, NoBinary, NoBuild, IndexStrategy, SetupPyStrategy, ConfigSettings, SourceStrategy, Concurrency};
+use uv_types::{HashStrategy, BuildContext, InFlight, BuildIsolation, EmptyInstalledPackages};
+use uv_resolver::{InMemoryIndex, FlatIndex, Resolver, Manifest, OptionsBuilder, PythonRequirement, ResolverMarkers};
+use uv_distribution::DistributionDatabase;
+use uv_dispatch::BuildDispatch;
+use platform_tags::Tags;
+use uv_git::GitResolver;
+use install_wheel_rs::linker::LinkMode;
+use pep508_rs::MarkerTree;
+use distribution_types::IndexLocations;
+
+
+#[tokio::main]
+async fn main() {
+    let filename = PathBuf::from(&quot;./pyproject.toml&quot;);
+    let reqs = RequirementsSource::from_requirements_file(filename);
+
+    let base_client = BaseClientBuilder::new().native_tls(true);
+    let requirement_specifications = RequirementsSpecification::from_source(&amp;reqs, &amp;base_client).await.unwrap();
+    let in_memory_index = InMemoryIndex::default();
+    let cache = Cache::temp().unwrap();
+    let registry_client = RegistryClientBuilder::new(cache.clone()).build();
+
+    let python_installation = PythonInstallation::find(
+        &amp;PythonRequest::Any,
+        EnvironmentPreference::Any,
+        PythonPreference::System,
+        &amp;cache,
+    ).unwrap();
+
+    let platform = python_installation.interpreter().platform();
+    let python_version = python_installation.interpreter().implementation_tuple();
+    let implementation_name = python_installation.interpreter().implementation_name();
+    let python_environment = PythonEnvironment::from_installation(python_installation.clone());
+    let interpreter = python_environment.interpreter();
+    let index_locations = IndexLocations::default();
+    let hasher = HashStrategy::None;
+    let build_options = BuildOptions::new(NoBinary::None, NoBuild::None);
+    let tags = Tags::from_env(platform, python_version, implementation_name, python_version, true).unwrap();
+
+    let flat_index = {
+        let client = uv_client::FlatIndexClient::new(&amp;registry_client, &amp;cache);
+        let entries = client.fetch(index_locations.flat_index()).await.unwrap();
+        FlatIndex::from_entries(entries, Some(&amp;tags), &amp;hasher, &amp;build_options)
+    };
+
+    let git_resolver = GitResolver::default();
+    let in_flight = InFlight::default();
+    let index_strategy = IndexStrategy::default();
+    let setup_py_strategy = SetupPyStrategy::default();
+    let config_settings = ConfigSettings::default();
+    let build_isolation = BuildIsolation::default();
+    let link_mode = LinkMode::default();
+    let source_strategy = SourceStrategy::default();
+    let concurrency = Concurrency::default();
+    let preview_mode = PreviewMode::default();
+
+    let dispatch = BuildDispatch::new(
+        &amp;registry_client,
+        &amp;cache,
+        &amp;requirement_specifications.constraints,
+        interpreter,
+        &amp;index_locations,
+        &amp;flat_index,
+        &amp;in_memory_index,
+        &amp;git_resolver,
+        &amp;in_flight,
+        index_strategy,
+        setup_py_strategy,
+        &amp;config_settings,
+        build_isolation,
+        link_mode,
+        &amp;build_options,
+        None,
+        source_strategy,
+        concurrency,
+        preview_mode,
+    );
+
+    let db = DistributionDatabase::new(&amp;registry_client, &amp;dispatch, 5, PreviewMode::Enabled);
+    let src_tree_resolver = SourceTreeResolver::new(requirement_specifications.source_trees, &amp;ExtrasSpecification::None, &amp;HashStrategy::None, &amp;in_memory_index, db);
+
+    let resolve_result = src_tree_resolver.resolve().await.unwrap();
+
+    let manifest = Manifest::simple(resolve_result[0].clone().requirements);
+    let options = OptionsBuilder::new().build();
+    let python_requirement = PythonRequirement::from_interpreter(interpreter);
+    let markers = ResolverMarkers::Fork(MarkerTree::default());
+    // let markers = ResolverMarkers::universal(vec![]);
+    let installed_packages = EmptyInstalledPackages;
+    let db_2 = DistributionDatabase::new(&amp;registry_client, &amp;dispatch, 5, PreviewMode::Enabled);
+
+    let resolver = Resolver::new(
+        manifest,
+        options,
+        &amp;python_requirement,
+        markers,
+        None,
+        &amp;flat_index,
+        &amp;in_memory_index,
+        &amp;hasher,
+        &amp;dispatch,
+        installed_packages,
+        db_2,
+    );
+
+    let resolver_result = resolver.unwrap().resolve().await.unwrap();
+
+    println!(&quot;{:?}&quot;, resolver_result)
+}
+</code></pre>
+<p>If I run this code all works as expected, but if I uncomment <code>reqwest = { version = &quot;0.12&quot;, features = [&quot;json&quot;, &quot;rustls-tls&quot;] }</code> line in <code>Cargo.toml</code> above then I receive this error message:</p>
+<pre><code class="language-shell">➜  uv-dep-testing git:(master) ✗ cargo run
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.82s
+     Running `target/debug/uv-dep-testing`
+thread 'main' panicked at src/main.rs:115:61:
+called `Result::unwrap()` on an `Err` value: Client(Error { kind: WrappedReqwestError(WrappedReqwestError(Middleware(Request failed after 3 retries
+
+Caused by:
+    0: error sending request for url (https://pypi.org/simple/jinja2/)
+    1: client error (Connect)
+    2: The certificate was not trusted.))) })
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>Could you please have a look into this compatibility issue and help me to find a stable way to to build these dependencies</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-25 17:59</div>
+            <div class="timeline-body"><p>Have you tries using the same dependency specification on <code>reqwest</code> as uv itself uses?</p>
+<p>https://github.com/astral-sh/uv/blob/f5601e261015cf18d8ea69688e4c99a0e634963a/Cargo.toml#L131</p>
+<p>It looks like there's something with TLS going on here based on your error, and your TLS features are different than what uv itself enables.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fyusifov">@fyusifov</a> on 2024-09-25 18:26</div>
+            <div class="timeline-body"><p>Thanks @BurntSushi for prompt response. I have changed my <code>reqwest</code> dependency to be one to one like in <code>uv</code>:</p>
+<pre><code class="language-toml">reqwest = { version = &quot;0.12.7&quot;, default-features = false, features = [&quot;json&quot;, &quot;gzip&quot;, &quot;stream&quot;, &quot;rustls-tls&quot;, &quot;rustls-tls-native-roots&quot;, &quot;socks&quot;, &quot;multipart&quot;] }
+</code></pre>
+<p>and indeed it fixed this issue.</p>
+<p>Could you please also let me know is there any way also remove dependency on some specific commits? This is what was recommended to do on this issue: #6185</p>
+<p>And last question/favour will be is there any documentation on how internal parsing and dependency resolution of <code>uv</code> work. I am mostly getting needed info from source code analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Periodic compatibility issues with `uv` creates and `reqwest` crate" to "Periodic compatibility issues with `uv` crates and `reqwest` crate" by @fyusifov on 2024-09-25 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-25 18:53</div>
+            <div class="timeline-body"><p>Using uv as a Rust library isn't really a well supported thing, and I don't think we have plans to make it well supported. The recommended way to use uv is by subprocess. So to that end, pinning to a specific commit seems pretty reasonable.</p>
+<p>As far as docs at the source code level go, what you see is what you get. You can run something like <code>cargo doc --all-features --document-private-items --workspace</code>, but I'd say our source code docs can be hit or miss.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-09-25 18:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

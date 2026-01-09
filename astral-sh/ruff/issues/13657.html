@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAST003 doesn't detect params used in injected dependencies - astral-sh/ruff #13657</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FAST003 doesn't detect params used in injected dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13657">#13657</a>
+        opened by <a href="https://github.com/cbornet">@cbornet</a>
+        on 2024-10-07 10:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cbornet">@cbornet</a> on 2024-10-07 10:27</div>
+            <div class="timeline-body"><p>It seems that it would be possible for FAST003 to detect params used in injected dependencies.</p>
+<ul>
+<li>List of keywords you searched for before creating this issue: <code>FAST003</code></li>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+<pre><code class="language-python">from fastapi import FastAPI, Depends
+from typing import Annotated
+
+app = FastAPI()
+
+def foo(thing_id: str):
+    return thing_id
+
+@app.get(&quot;/things/{thing_id}&quot;)
+async def read_thing(other: Annotated[str, Depends(foo)]):
+    return other
+</code></pre>
+<ul>
+<li>The command you invoked</li>
+</ul>
+<pre><code class="language-sh">ruff check --select &quot;FAST&quot; --preview bar.py --isolated
+bar.py:9:19: FAST003 Parameter `thing_id` appears in route path, but not in `read_thing` signature
+   |
+ 7 |     return thing_id
+ 8 |
+ 9 | @app.get(&quot;/things/{thing_id}&quot;)
+   |                   ^^^^^^^^^^ FAST003
+10 | async def read_thing(other: Annotated[str, Depends(foo)]):
+11 |     return other
+   |
+   = help: Add `thing_id` to function signature
+</code></pre>
+<ul>
+<li>The current Ruff version (<code>ruff --version</code>)</li>
+</ul>
+<pre><code class="language-sh">ruff --version
+ruff 0.6.9
+</code></pre>
+<p>I would expect FAST003 to not be triggered in the snippet since <code>thing_id</code> is used in injected <code>foo</code> callable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-10-07 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-07 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-10-07 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-08 08:21</div>
+            <div class="timeline-body"><p>That makes sense, thanks. An easy fix could be to skip the rule when we see a <code>Depends</code> annotation. A somewhat more elaborated fix would be to resolve the <code>Depends</code>'s target and try to see if it has any parameter with the given name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-01-08 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15364.html">astral-sh/ruff#15364</a> on 2025-01-09 03:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-13 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18009.html">astral-sh/ruff#18009</a> on 2025-05-11 20:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

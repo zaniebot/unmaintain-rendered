@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panic with positional arguments in subcommands - clap-rs/clap #592</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Panic with positional arguments in subcommands</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/592">#592</a>
+        opened by <a href="https://github.com/guiniol">@guiniol</a>
+        on 2016-07-23 15:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/guiniol">@guiniol</a> on 2016-07-23 15:50</div>
+            <div class="timeline-body"><p>Positional arguments in subcommands make the program panic.
+This can be reproduced by modifying the first example in the README to move <code>INPUT</code> to be a positional argument of the <code>test</code> subcommand.
+This is the result:</p>
+<pre><code>$ RUST_BACKTRACE=1 cargo run -- test input
+     Running `target/debug/testclap test input`
+Value for config: default.conf
+thread '&lt;main&gt;' panicked at 'called `Option::unwrap()` on a `None` value', src/libcore/option.rs:325
+stack backtrace:
+   1:     0x55949c6eb31f - std::sys::backtrace::tracing::imp::write::h3800f45f421043b8
+   2:     0x55949c6edf7b - std::panicking::default_hook::_$u7b$$u7b$closure$u7d$$u7d$::h0ef6c8db532f55dc
+   3:     0x55949c6edc03 - std::panicking::default_hook::hf3839060ccbb8764
+   4:     0x55949c6e2ddd - std::panicking::rust_panic_with_hook::h5dd7da6bb3d06020
+   5:     0x55949c6ee1c1 - std::panicking::begin_panic::h9bf160aee246b9f6
+   6:     0x55949c6e3b1a - std::panicking::begin_panic_fmt::haf08a9a70a097ee1
+   7:     0x55949c6ee15e - rust_begin_unwind
+   8:     0x55949c7240cf - core::panicking::panic_fmt::h93df64e7370b5253
+   9:     0x55949c7243a8 - core::panicking::panic::h9d5bd65bbb401959
+  10:     0x55949c5f1a29 - _&lt;std..option..Option&lt;T&gt;&gt;::unwrap::hf0b1faac3ace462e
+                        at src/libcore/macros.rs:21
+  11:     0x55949c5e5a4a - testclap::main::hc2d6f4100c835050
+                        at src/main.rs:43
+  12:     0x55949c6ed848 - std::panicking::try::call::hbbf4746cba890ca7
+  13:     0x55949c6f5c2b - __rust_try
+  14:     0x55949c6f5bce - __rust_maybe_catch_panic
+  15:     0x55949c6ed2ee - std::rt::lang_start::hbcefdc316c2fbd45
+  16:     0x55949c5f1ee9 - main
+  17:     0x7fd9d8e02740 - __libc_start_main
+  18:     0x55949c5e5188 - _start
+  19:                0x0 - &lt;unknown&gt;
+error: Process didn't exit successfully: `target/debug/testclap test input` (exit code: 101)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/581.html">clap-rs/clap#581</a> on 2016-07-23 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-07-23 17:31</div>
+            <div class="timeline-body"><p>Interesting, I'm looking into this. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2016-07-23 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2016-07-23 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2016-07-23 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @kbknapp on 2016-07-23 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-07-23 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @kbknapp by @kbknapp on 2016-07-23 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/guiniol">@guiniol</a> on 2016-07-31 16:49</div>
+            <div class="timeline-body"><p>Good to know ^^
+If I can help with anything, just let me know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/guiniol">@guiniol</a> on 2016-08-07 18:13</div>
+            <div class="timeline-body"><p>Hello again!</p>
+<p>Since I cannot get this to work, I figured I would replace the subcommands with flags. However, each of the subcommand requires a positional argument. I wanted to have the positional arguments conflict with each other, but they cannot have the same index. What can I do?</p>
+<p>Here is what I would like to do:</p>
+<pre><code>$ ./app --command1 arg-command1
+$ ./app --command2 arg-command2
+</code></pre>
+<p>with <code>arg-command1</code> requiring <code>command1</code> and conflicting with <code>arg-command2</code> (because flags cannot be required).
+Is there any way this would work with clap?</p>
+<p>Cheers,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/guiniol">@guiniol</a> on 2016-08-07 19:34</div>
+            <div class="timeline-body"><p>For future (temporary) reference, I ended up defining a arggroup with <code>command1</code> and <code>command2</code> and used a generic name instead of <code>arg-command1</code> and <code>arg-command2</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P1: urgent</span> added by @kbknapp on 2016-08-20 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> removed by @kbknapp on 2016-08-20 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.10.1" by @kbknapp on 2016-08-20 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-08-20 22:37</div>
+            <div class="timeline-body"><p>@guiniol I'm finally back from my travels! Could you give some more details on this error? If you could post the definition of the args, and the input that's making it panic I can reproduce easier and get this fixed.</p>
+<p>I'm not able to reproduce this error, which makes me think it's possibly in the way the way the values of the args are being obtained, not the way the args themselves are being defined. So if you could link to your code that uses it I'd appreciate it!</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "2.10.1" by @kbknapp on 2016-08-20 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/guiniol">@guiniol</a> on 2016-08-21 10:05</div>
+            <div class="timeline-body"><p>Indeed, it was bit trickier to reproduce than what I thought. The problem seems to be with:</p>
+<pre><code>match matches.subcommand_name() {
+</code></pre>
+<p>I attached a minimal panicking example. The working example is the one in the main README.
+<a href="https://github.com/kbknapp/clap-rs/files/428783/mwe.zip">mwe.zip</a></p>
+<p>Additionally, it seems that <code>matches.is_present(&quot;debug&quot;)</code> returns false even if <code>-d</code> is set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-08-21 19:42</div>
+            <div class="timeline-body"><p>The lines of code should read like this, to work correctly</p>
+<pre><code class="language-rust">    match matches.subcommand() {
+        (&quot;test&quot;, Some(sub_matches)) =&gt; {
+            // Same as original...
+
+            println!(&quot;Using input file: {}&quot;, sub_matches.value_of(&quot;INPUT&quot;).unwrap());
+        },
+        _ =&gt; println!(&quot;Error&quot;),
+    }
+</code></pre>
+<p>Notice the <code>sub_matches</code> this is because subcommands have their own matches struct so that you can have multiple subcommands using the same arguments names without them all being clobbered by each other.</p>
+<p>Edit: I noticed it's not in the readme that way, phew! :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: docs</span> added by @kbknapp on 2016-08-21 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> removed by @kbknapp on 2016-08-21 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> removed by @kbknapp on 2016-08-21 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-08-21 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: docs</span> removed by @kbknapp on 2016-08-21 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P1: urgent</span> removed by @kbknapp on 2016-08-21 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> removed by @kbknapp on 2016-08-21 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> removed by @kbknapp on 2016-08-21 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/guiniol">@guiniol</a> on 2016-08-24 14:15</div>
+            <div class="timeline-body"><p>Thank you very much. That solved it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @guiniol on 2016-08-24 14:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

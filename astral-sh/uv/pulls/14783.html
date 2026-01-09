@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In pylock.toml export, include dependencies (name, marker and version) - astral-sh/uv #14783</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>In pylock.toml export, include dependencies (name, marker and version)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/pull/14783">#14783</a>
+        opened by <a href="https://github.com/pimdh">@pimdh</a>
+        on 2025-07-21 09:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/pimdh">@pimdh</a> on 2025-07-21 09:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>In the code for export a lock file to <code>pylock.toml</code>, I added the <code>[[packages.dependencies]]</code> field (https://packaging.python.org/en/latest/specifications/pylock-toml/#packages-dependencies). The goal of this change is to utilize <code>uv</code> to generate lockfiles for use with Pants and PEX (see https://github.com/pantsbuild/pants/issues/22201).</p>
+<p>Fixes #13032.</p>
+<p>Details:</p>
+<ul>
+<li>Because this dependency field is not fully specified, I only include the package's name and version (EDIT: and marker), which seems sufficient for integrating the resulting files with Pants and Pex.</li>
+<li>I didn't add the dependencies to <code>from_resolution</code>, because I don't need it, and because it wasn't immediately clear to me how the edges and nodes in the resolution graph would have to be filtered.</li>
+<li>I filter the dependencies based on those selected by <code>ExportableRequirements::from_lock</code> for inclusion in the lockfile.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>I've updated the tests to include the dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pantsbuild/pants/pulls/22518.html">pantsbuild/pants#22518</a> on 2025-07-21 09:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2025-07-21 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pimdh">@pimdh</a> on 2025-07-21 10:02</div>
+            <div class="timeline-body"><p>I see where the tests are now. Fixing them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pimdh">@pimdh</a> on 2025-07-21 12:10</div>
+            <div class="timeline-body"><p>I've added the dependencies to the tests, and fixed the linting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pex-tool/pex/issues/2834.html">pex-tool/pex#2834</a> on 2025-07-21 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-22 19:12</div>
+            <div class="timeline-body"><p>Thanks @pimdh. We technically might be required to add (e.g.) the VCS annotations and such here... I need to review the spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13032.html">astral-sh/uv#13032</a> on 2025-07-23 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsirois">@jsirois</a> on 2025-07-23 21:03</div>
+            <div class="timeline-body"><p>FWIW, I think name and version is not enough to cover all uv.locks. My analysis here: https://github.com/astral-sh/uv/issues/13032#issuecomment-3110161811</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pimdh">@pimdh</a> on 2025-08-20 21:50</div>
+            <div class="timeline-body"><p>Hi! Is there anything I can do to help get this PR merged?</p>
+<p>I'm happy to do any of the following:</p>
+<ul>
+<li>keep the PR as is, so that dependencies are listed as (name, version)</li>
+<li>add any of the other <code>PylockTomlPackage</code> fields to the dependencies</li>
+<li>programmatically find a minimum subset of fields of <code>PylockTomlPackage</code> so that the dependency uniquely selects one of the packages. For example by picking some order in the fields, then iteratively decide to include it if it different among the candidates, and terminating when it uniquely picks a package.</li>
+</ul>
+<p>Please let me know which solution you prefer.</p>
+<p>For the use-case I am interested in - generating lockfiles for the Pants build system with UV for my monorepo - the first option seems to currently suffice. Although I do understand, as @jsirois states, that this doesn't lead to unique identification in all cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "In pylock.toml export, include dependencies (name and version)" to "In pylock.toml export, include dependencies (name, marker and version)" by @pimdh on 2025-08-25 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pimdh">@pimdh</a> on 2025-08-25 14:52</div>
+            <div class="timeline-body"><p>Following the point by @jsirois, and my own experience that (name, version) does not guarantee that each dependency uniquely identifies a package, I've added the <code>marker</code> to the each dependency. This seems to successfully allow matching of dependencies with packages. The resulting <code>pylock.toml</code> files appear compatible with PEX.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pex-tool/pex/issues/2885.html">pex-tool/pex#2885</a> on 2025-08-25 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15521.html">astral-sh/uv#15521</a> on 2025-08-25 23:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dannytodd">@dannytodd</a> on 2025-12-09 17:40</div>
+            <div class="timeline-body"><p>+1 for this. This would allow much easier integration of uv's locking mechanism into existing tooling.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

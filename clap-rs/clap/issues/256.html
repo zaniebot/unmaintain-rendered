@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setting or function to prohibit process termination - clap-rs/clap #256</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Setting or function to prohibit process termination</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/256">#256</a>
+        opened by <a href="https://github.com/Drakulix">@Drakulix</a>
+        on 2015-09-17 20:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Drakulix">@Drakulix</a> on 2015-09-17 20:37</div>
+            <div class="timeline-body"><p>I would like to use clap's easy syntax for different stages in my program then just command line argument parsing. E.g. to parse remote commands with arguments read from sockets. I can already utilize clap using get_matches_from. But even get_matches_from_safe terminates my program when --help or --version gets passed to. I would like to have either an even safer _safe method or an app-setting, that completely blocks any terminate inside the clap crate and some kind of indication, if parsing did succeed or it should have terminated.</p>
+<p>Would that be possible?</p>
+<p>Best regards,
+Drakulix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-17 22:30</div>
+            <div class="timeline-body"><p>This is possible, we'll have to look at the best naming and such in order to implement. The work-around is simple, but somewhat hacky at the moment.</p>
+<p>Simply define your own <code>--help</code> and <code>--version</code> flags as part of your valid arguments. If you provide a flag with the long of <code>help</code> or <code>version</code> then <code>clap</code> will not auto-generate those and leave the implementation up to you (i.e. you decide whether to terminate or not, and what should be done).</p>
+<p>The same applies to subcommands with the name of <code>help</code>.</p>
+<p>Hope this answers your question. We'll update this issue as decisions are made and discussed about adding a &quot;safer&quot; safe :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2015-09-17 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2015-09-17 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2015-09-17 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2015-09-17 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2015-09-17 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2015-09-17 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Feature Request] setting or function to prohibit process termination" to "Setting or function to prohibit process termination" by @kbknapp on 2015-09-17 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> removed by @kbknapp on 2015-09-17 22:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Drakulix">@Drakulix</a> on 2015-09-17 22:50</div>
+            <div class="timeline-body"><p>Thanks for looking into this. That workaround will probably be enough for the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-17 22:54</div>
+            <div class="timeline-body"><p>One other thing to note (although I haven't  tested it) is <em>also</em> setting the <code>help</code> and <code>version</code> flags to hidden (if you'd rather not see them, or they aren't applicable to your program).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sru">@sru</a> on 2015-09-18 00:37</div>
+            <div class="timeline-body"><p>How about having an option for default help or version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-18 00:46</div>
+            <div class="timeline-body"><p>Or the opposite of having an option to disable default help and version?
+Since I'd assume most would want it.</p>
+<p>On Thu, Sep 17, 2015, 8:37 PM SungRim Huh notifications@github.com wrote:</p>
+<blockquote>
+<p>How about having an option for default help or version?</p>
+<p>—
+Reply to this email directly or view it on GitHub
+https://github.com/kbknapp/clap-rs/issues/256#issuecomment-141296225.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sru">@sru</a> on 2015-09-18 13:23</div>
+            <div class="timeline-body"><p>That works too. I took a brief look at the <code>app/app.rs</code> file, but I couldn't find where the code is adding the help and version, and where the code is terminating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-18 14:00</div>
+            <div class="timeline-body"><p>@sru Also a brief look at the same file. Grep style.</p>
+<h2>Instances of 'exit' in src/app.rs</h2>
+<ul>
+<li>https://github.com/kbknapp/clap-rs/blob/master/src/app/app.rs#L1949 &lt;&lt; &quot;get_matches_from&quot;</li>
+<li>https://github.com/kbknapp/clap-rs/blob/master/src/app/app.rs#L2324</li>
+<li>https://github.com/kbknapp/clap-rs/blob/master/src/app/app.rs#L2753</li>
+<li>https://github.com/kbknapp/clap-rs/blob/master/src/app/app.rs#L2761</li>
+<li>https://github.com/kbknapp/clap-rs/blob/master/src/app/app.rs#L2783</li>
+<li>https://github.com/kbknapp/clap-rs/blob/master/src/app/app.rs#L2795</li>
+</ul>
+<pre><code>~kbknapp/clap-rs $ grep -in exit src/app/app.rs                                                                                                                                               
+346:    /// Allows specifying that if no subcommand is present at runtime, error and exit gracefully
+505:    /// Specifies that the help text sould be displayed (and then exit gracefully), if no
+630:    /// exiting
+659:    /// Specifies that the help text sould be displayed (and then exit gracefully), if no
+669:    /// still be displayed and exit. If this is *not* the desired result, consider using
+1146:    /// failure (graceful exit).
+1210:    /// failure (graceful exit).
+1842:    // Prints the version to the user and exits if quit=true
+1949:                process::exit(1);
+2324:                            process::exit(0);
+2575:                    e.exit();
+2753:                process::exit(0);
+2761:                process::exit(0);
+2783:            process::exit(0);
+2795:            process::exit(0);
+</code></pre>
+<h2>Source of help and version</h2>
+<ul>
+<li>https://github.com/kbknapp/clap-rs/blob/master/src/app/app.rs#L2747 &quot;check_for_help_and_version&quot; and callees.</li>
+</ul>
+<hr />
+<p>The help and version do not appear to be added to the App. Instead, just assumed in the runtime.</p>
+<hr />
+<p>Spelling mistakes detected at 505, 659. :wink: Also. Wow this file is large :ghost:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sru">@sru</a> on 2015-09-19 01:54</div>
+            <div class="timeline-body"><p>@james-darkfox Wow. I didn't think of using <code>grep</code>. I should try to actually use these things.</p>
+<p>@kbknapp I have several other ideas as well concerning the general process termination (not the help and version specific).</p>
+<p>Just like the title of this issue, we could have a setting to prohibit process termination and wrap every <code>process::exit(...)</code> with <code>if</code>s.</p>
+<p>I am a bit wary with the <code>process::exit()</code> because the <a href="https://doc.rust-lang.org/std/process/fn.exit.html">documentation</a> says:</p>
+<blockquote>
+<p>Note that because this function never returns, and that it terminates the process, no destructors on the current stack or any other thread's stack will be run.</p>
+</blockquote>
+<p>So, another idea is that let the user handle the error entirely. In this case, we could delegate the error message to <code>ClapError</code> or add helper methods in <code>ClapError</code> to simulate same functionality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-19 03:50</div>
+            <div class="timeline-body"><p>@sru I also vote towards <code>ClapError</code>. +1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/259.html">clap-rs/clap#259</a> on 2015-09-19 10:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Drakulix">@Drakulix</a> on 2015-09-20 21:48</div>
+            <div class="timeline-body"><p>I also vote for ClapError. I do not need to disable the help and version flags and returning a ClapError instead of Process-Termination is just what I need to handle that special case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-20 23:06</div>
+            <div class="timeline-body"><p>We could move it to <code>ClapError</code>, the only downside I see is if the user uses <code>ClapError::exit()</code> it will get printed to <code>stderr</code>. Perhaps using a private bool <code>ClapError::is_fatal()</code> to determine if it shoudl go to stderr or stdout similiar to what I've seen in some of BurntSushi's projects?</p>
+<p>Thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sru">@sru</a> on 2015-09-21 01:19</div>
+            <div class="timeline-body"><p>@kbknapp Is there an example in <code>clap</code> on non-fatal errors?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-21 01:41</div>
+            <div class="timeline-body"><p><code>is_fatal()</code> is from the BurntSushi examples, we'd probably adopt it to something like <code>use_stderr()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sru">@sru</a> on 2015-09-21 06:37</div>
+            <div class="timeline-body"><p>@kbknapp I meant to say how does clap determine if the error should go to stderr or stdout. Or is it like user chooses where the error output should go?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-21 06:48</div>
+            <div class="timeline-body"><p>@sru One fatal context I've noticed is <code>SubcommandRequiredElseHelp</code>. I'm pretty sure the usage here goes to stderr. However <code>fake --help</code> should go to stdout.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-21 22:59</div>
+            <div class="timeline-body"><p>@james-darkfox yep that's the intention I had.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "1.4.4" by @kbknapp on 2015-09-30 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "1.4.5" by @kbknapp on 2015-10-03 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "1.4.4" by @kbknapp on 2015-10-03 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "1.4.6" by @kbknapp on 2015-10-06 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "1.4.5" by @kbknapp on 2015-10-06 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-10-28 13:59</div>
+            <div class="timeline-body"><p>@Drakulix sorry this has taken literally forever - #326 implements this. See the PR for details :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @kbknapp by @kbknapp on 2015-10-28 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Drakulix">@Drakulix</a> on 2015-10-28 17:31</div>
+            <div class="timeline-body"><p>Thanks. This is exactly the behavior I expected at first, when using the safe-function. Hopefully this will  be also more intuitive and useful to other users as well. Looking forward to the actual merge!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2015-10-29 07:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduce source preference for conflicting dependencies - astral-sh/uv #14068</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Introduce source preference for conflicting dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14068">#14068</a>
+        opened by <a href="https://github.com/j-adamczyk">@j-adamczyk</a>
+        on 2025-06-16 07:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/j-adamczyk">@j-adamczyk</a> on 2025-06-16 07:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When declaring conflicts for multiple optional groups, I want to be able to select the order of preference. If then I want to install 2 groups with conflicting dependency, <code>uv</code> will select and install one that is more preferred. Adding an option to CLI for <code>--all-extras</code> to specify this would also be ok.</p>
+<p>Use case is ML with PyTorch. I have multiple groups, e.g. <code>preprocessing</code>, <code>training</code>, <code>inference</code>. Only <code>training</code> uses GPU, all others use CPU. They need to be separated to enable building separate Docker containers. For development, I need to install everything locally, but with GPU. Currently, I have to specify separate options. With a lot of groups, this gets pretty inconvenient.</p>
+<p>With current <code>uv</code> state, I have two options. First, push all PyTorch to separate optional group and install it separately. With many groups, this results in PyTorch far from the actual dependency group, making <code>pyproject.toml</code> hard to read. Also, I have to pass <code>--extra</code> to each group, and need to somehow specify what group uses what version, e.g. search with regex for &quot;train&quot; in dependency group name, which is really not intuitive nor readable. Second option is to use <code>extra</code> markers, e.g. specify dependency as `&quot;torch==2.2.*; extra == 'pytorch-cpu'&quot;, add source, index, conflicts etc. as <a href="https://docs.astral.sh/uv/guides/integration/pytorch/">in uv docs</a>. Here, the problem is that I can't install all dependency groups at the same time, as PyTorch has conflict between groups.</p>
+<p>I basically want to translate the Poetry workflow from https://github.com/python-poetry/poetry/issues/6409#issuecomment-1911735833. My Poetry <code>pyproject.toml</code> is:</p>
+<pre><code>[tool.poetry.group.train_model.dependencies]
+torch = {version = &quot;2.2.*&quot;, source = &quot;pytorch-gpu&quot;, markers = &quot;extra!='pytorch-cpu'&quot;}
+
+[tool.poetry.group.inference.dependencies]
+torch = {version = &quot;2.2.*&quot;, source = &quot;pytorch-cpu&quot;, markers = &quot;extra=='pytorch-cpu'&quot;}
+
+[tool.poetry.extras]
+pytorch-cpu = []
+
+[[tool.poetry.source]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+priority = &quot;explicit&quot;
+
+[[tool.poetry.source]]
+name = &quot;pytorch-gpu&quot;
+url = &quot;https://download.pytorch.org/whl/cu121&quot;
+priority = &quot;explicit&quot;
+</code></pre>
+<p>In Poetry, when I do <code>poetry sync</code>, it will prefer CPU version. However, if I only install <code>train_model</code> group, it will pick up the GPU source.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @j-adamczyk on 2025-06-16 07:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-27 13:27</div>
+            <div class="timeline-body"><p>What about the following example from the docs:</p>
+<pre><code class="language-toml">[project]
+name = &quot;debug&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12.0&quot;
+dependencies = [
+  &quot;torch&gt;=2.7.0&quot;,
+  &quot;torchvision&gt;=0.22.0&quot;,
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, marker = &quot;sys_platform != 'linux'&quot; },
+  { index = &quot;pytorch-cu128&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+]
+torchvision = [
+  { index = &quot;pytorch-cpu&quot;, marker = &quot;sys_platform != 'linux'&quot; },
+  { index = &quot;pytorch-cu128&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu128&quot;
+url = &quot;https://download.pytorch.org/whl/cu128&quot;
+explicit = true
+</code></pre>
+<p>Additionally, you can include one extra in another extra:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+
+[project.optional-dependencies]
+a = [&quot;numpy&quot;]
+b = [&quot;scipy&quot;, &quot;foo[a]&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j-adamczyk">@j-adamczyk</a> on 2025-06-28 12:17</div>
+            <div class="timeline-body"><p>@konstin this won't work, as my marker is not an OS. All my machines run Linux, but either with CPU or GPU.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-28 12:50</div>
+            <div class="timeline-body"><p>Am I right that this is the same as the optional dependencies example in the <a href="https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies">docs</a>, except that you want the CPU group to be used by default?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j-adamczyk">@j-adamczyk</a> on 2025-06-28 12:58</div>
+            <div class="timeline-body"><p>Similar, but not exactly the same. Coming to the <a href="https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-environment-markers">docs example</a>, I basically want:</p>
+<ol>
+<li><code>uv sync</code> - installs all packages from all groups, including GPU PyTorch (note that one group may have CPU, and another GPU PyTorch)</li>
+<li>Install a particular group - installs a PyTorch version defined for that specific group</li>
+</ol>
+<p>The first point is the main motivation for this issue. My Poetry setup did exactly this - specify PyTorch type (CPU vs GPU) for each group, but can also install all groups at once, with preference for whatever is defined in <code>[tool.poetry.extras]</code>. Since I use all the groups for development, but separate groups for building Docker containers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-28 13:09</div>
+            <div class="timeline-body"><p>Semantically, though, it isn't possible to &quot;install all groups at once&quot; if the groups include conflicting versions of PyTorch. Like, you cannot satisfy both the <code>train_model</code> and  <code>inference</code> groups at once -- if you install the GPU version, then <code>inference</code> is actually <em>not</em> satisfied, you're using some other mix of your dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j-adamczyk">@j-adamczyk</a> on 2025-06-28 13:26</div>
+            <div class="timeline-body"><p>Yes, that is technically true, I admit. Still, I know about those conflicts, and I explicitly want to select one version over the other in case of installing all groups, like I do in Poetry.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

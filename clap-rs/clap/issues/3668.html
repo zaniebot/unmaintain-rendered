@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`no_binary_name(true)` not reflected in help output of subcommand - clap-rs/clap #3668</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`no_binary_name(true)` not reflected in help output of subcommand</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3668">#3668</a>
+        opened by <a href="https://github.com/RustyJoeM">@RustyJoeM</a>
+        on 2022-04-30 07:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RustyJoeM">@RustyJoeM</a> on 2022-04-30 07:56</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.60.0 (7737e0b5c 2022-04-04)</p>
+<h3>Clap Version</h3>
+<p>3.1.12</p>
+<h3>Minimal reproducible code</h3>
+<p>CLAP is used inside of running app in &quot;demon&quot; mode using the <code>rustyline</code> crate.
+(<code>rustyline=&quot;9&quot;</code> for <code>Cargo.toml</code>)</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[clap(no_binary_name(true))]
+pub struct Args {
+    #[clap(subcommand)]
+    pub command: Command,
+}
+
+#[derive(clap::Subcommand, Debug)]
+pub enum Command {
+    Hello { address: std::net::IpAddr },
+}
+
+fn main() {
+    let mut rl = rustyline::Editor::&lt;()&gt;::new();
+    loop {
+        match rl.readline(&quot;&gt;&gt; &quot;) {
+            Ok(line) =&gt; match Args::try_parse_from(line.split_whitespace()) {
+                Ok(args) =&gt; {
+                    dbg!(&amp;args);
+                }
+                Err(err) =&gt; {
+                    println!(&quot;{}&quot;, err.to_string().trim());
+                }
+            },
+            Err(err) =&gt; {
+                println!(&quot;{}&quot;, err);
+                break;
+            }
+        }
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ul>
+<li>run the above minimal program</li>
+<li>issue <code>help hello</code> command in running REPL</li>
+</ul>
+<h3>Actual Behaviour</h3>
+<p>When above app is executed, and <code>help hello</code> command is issued:</p>
+<pre><code>     Running `target\debug\repro.exe`
+&gt;&gt; help hello
+repro-hello
+greeting
+
+USAGE:
+    repro hello &lt;ADDRESS&gt;
+
+ARGS:
+    &lt;ADDRESS&gt;
+
+OPTIONS:
+    -h, --help    Print help information
+&gt;&gt;
+</code></pre>
+<h3>Expected Behaviour</h3>
+<ul>
+<li>there should be no &quot;repro-hello&quot; in heading of help output</li>
+<li>there should be no &quot;repro&quot; binary name in generated USAGE - line that shows how to runn the &quot;hello&quot; command</li>
+</ul>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @RustyJoeM on 2022-04-30 07:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2022-04-30 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2022-04-30 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-04-30 14:40</div>
+            <div class="timeline-body"><p>This came out of the conversation in https://github.com/clap-rs/clap/discussions/3664</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RustyJoeM">@RustyJoeM</a> on 2022-04-30 17:27</div>
+            <div class="timeline-body"><p>just a side note/small extension, this is also valid and behaving in same manner (possibly incorrect?) for an error reported on subcommand typo:</p>
+<pre><code>error: The subcommand 'hell' wasn't recognized
+
+        Did you mean 'help' or 'hello'?
+
+If you believe you received this message in error, try re-running with 'repro -- hell'
+
+USAGE:
+    repro &lt;SUBCOMMAND&gt;
+
+For more information try help
+</code></pre>
+<p>The &quot;if you believe...&quot; line possibly does not apply to demon mode of CLAP -&gt; when running without program name?
+Plus <code>USAGE</code> section contains binary name, possibly generated by same/similar code that is done for original &quot;help hello&quot; case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-02 09:24</div>
+            <div class="timeline-body"><p>I'm starting to wonder if we should leave <code>no_binary_name</code> to just change how we parse arguments but instead polish up https://github.com/clap-rs/clap/issues/2861 for use for repls.  We should also look to provide a repl example.</p>
+<p><code>no_binary_name</code> is just that and you could be handling arguments at the top-level while <code>multicall</code> more indicates that the very first argument should be a subcommand and we can better organize behavior around that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3675.html">clap-rs/clap#3675</a> on 2022-05-02 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-02 11:24</div>
+            <div class="timeline-body"><p>Starting an example for REPLs so we can more easily evaluate what might need to be done.  See #3675</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-02 18:20</div>
+            <div class="timeline-body"><p>Could you provide feedback on</p>
+<ul>
+<li><a href="https://github.com/clap-rs/clap/blob/master/examples/repl.rs">the new repl example</a></li>
+<li><a href="https://github.com/clap-rs/clap/issues/2861#issuecomment-1115212559">the last piece to figure out for stablization</a>, I think</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RustyJoeM">@RustyJoeM</a> on 2022-05-03 17:43</div>
+            <div class="timeline-body"><p>Imho new REPL example is good &amp; simple enough to follow quickly. It seems to give expected output on <code>help subcommand</code>.
+(minus the issue metnioned by you in &quot;stabilization&quot; link above with unrecognized subcommand entered &amp; empty <code>&lt;APPLET&gt;</code> help message...)</p>
+<p>Small enhancement might be extra example variant for clap <code>derive</code>-oriented users.</p>
+<p>I will try to switch my current codebase to multicall (thus doing a bit more testing in larger codebase) after resolving my currently completely unrelated <code>-&gt; Box&lt;dyn GenericTrait&gt;</code> beginner problems. :)</p>
+<p>From my point of view as &quot;author&quot; of issue, feel free to close/resolve as needed, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-03 18:06</div>
+            <div class="timeline-body"><blockquote>
+<p>(minus the issue metnioned by you in &quot;stabilization&quot; link above with unrecognized subcommand entered &amp; empty <code>&lt;APPLET&gt;</code> help message...)</p>
+</blockquote>
+<p>Could you post what your concerns are in that issue so we can continue the discussion there?  Even if its exactly what I said, I'd like it coming from your use case in your words.  I was considering stablizing it as-is :).</p>
+<blockquote>
+<p>Small enhancement might be extra example variant for clap derive-oriented users.</p>
+</blockquote>
+<p>Ideally, all of our examples are for both derive and builder but the minimum bar is builder because its more explicit so the builder users have the context they need while it should also be adaptable by derive users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-05-03 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RustyJoeM">@RustyJoeM</a> on 2022-05-03 18:23</div>
+            <div class="timeline-body"><p>Hopefully this comment wont reopen the issue, if so, apologies and please re-close :)</p>
+<p>Scratch/nevermind that comment of mine, it's just small divergence of my quick expectation and actual architecture of help segments.</p>
+<p>What i meant was this output in REPL example:</p>
+<pre><code>$ fwfwef
+error: The subcommand 'fwfwef' wasn't recognized
+
+USAGE:
+    &lt;APPLET&gt;
+
+For more information try help
+</code></pre>
+<p>Here i sort of expected subcommands directly visible as part of USAGE, but following the actual instructions of last line output provides all the info needed:</p>
+<pre><code>$ help
+APPLETS:
+    help    Print this message or the help of the given subcommand(s)
+    ping    Get a response
+    quit    Quit the REPL
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-03 18:26</div>
+            <div class="timeline-body"><p>Yes, there are multiple strategies for what to do on an error and that is something I plan to include in the doc comment for <code>multicall</code> is explaining the different strategies and how to accomplish them, including showing all the applets when the current one isn't understood.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

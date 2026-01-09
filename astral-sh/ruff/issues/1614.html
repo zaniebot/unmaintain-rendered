@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>banned-api not banning module import - astral-sh/ruff #1614</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>banned-api not banning module import</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1614">#1614</a>
+        opened by <a href="https://github.com/sbdchd">@sbdchd</a>
+        on 2023-01-04 02:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sbdchd">@sbdchd</a> on 2023-01-04 02:01</div>
+            <div class="timeline-body"><p>with the config:</p>
+<pre><code class="language-toml">[tool.ruff.flake8-tidy-imports]
+# Disallow all relative imports.
+ban-relative-imports = &quot;all&quot;
+[tool.ruff.flake8-tidy-imports.banned-api]
+&quot;httpx&quot;.msg = &quot;Use kodiak.http&quot;
+</code></pre>
+<p>the following code isn't banned</p>
+<pre><code class="language-python">from httpx import (
+    AsyncClient,
+    HTTPError,
+    HTTPStatusError,
+    Request,
+    Response,
+)
+from httpx._config import DEFAULT_TIMEOUT_CONFIG
+from httpx._types import TimeoutTypes
+</code></pre>
+<p>rel: https://github.com/charliermarsh/ruff/issues/1422#issuecomment-1370397812</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 02:20</div>
+            <div class="timeline-body"><p>You need to <code>select = [&quot;TID251&quot;]</code> to enable the check:</p>
+<pre><code>❯ cargo run foo/bar.py -n --select TID
+    Finished dev [unoptimized + debuginfo] target(s) in 0.14s
+     Running `target/debug/ruff foo/bar.py -n --select TID`
+foo/bar.py:1:1: TID251 `httpx` is banned: Use kodiak.http
+foo/bar.py:8:1: TID251 `httpx` is banned: Use kodiak.http
+foo/bar.py:9:1: TID251 `httpx` is banned: Use kodiak.http
+</code></pre>
+<p>Let me know if you continue to see this behavior!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-04 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbdchd">@sbdchd</a> on 2023-01-04 02:31</div>
+            <div class="timeline-body"><p>Oh whoops! Thank you it works perfectly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 02:43</div>
+            <div class="timeline-body"><p>So happy to hear it :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

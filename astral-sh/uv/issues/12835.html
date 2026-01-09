@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>'uv add' fails while 'uv pip install' works for dlt[postgres] - astral-sh/uv #12835</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>'uv add' fails while 'uv pip install' works for dlt[postgres]</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12835">#12835</a>
+        opened by <a href="https://github.com/trin94">@trin94</a>
+        on 2025-04-11 12:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/trin94">@trin94</a> on 2025-04-11 12:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hey,</p>
+<p>I'm currently in the process of migrating some of my projects from <code>poetry</code> to <code>uv</code>. With one in particular, I am having trouble with.</p>
+<p>When using</p>
+<pre><code class="language-console">❯ uv add dlt[postgres]==1.3.0
+</code></pre>
+<p>it tries to build some of the dependencies. But when I use</p>
+<pre><code class="language-console">❯ uv pip install dlt[postgres]==1.3.0
+</code></pre>
+<p>or</p>
+<pre><code class="language-console">❯ poetry add dlt[postgres]==1.3.0
+</code></pre>
+<p>it just works.</p>
+<h2>Not Working: Logs with uv add ; uv version 0.6.14</h2>
+<pre><code class="language-console">PycharmProjects/troubleshooting/uv-2
+❯ uv init --python 3.12
+Initialized project `uv-2`
+
+uv-2 on  main [?] is 📦 v0.1.0 via 🐍 v3.13.2
+❯ uv add dlt[postgres]==1.3.0
+Using CPython 3.12.9 interpreter at: /usr/bin/python3.12
+Creating virtual environment at: .venv
+  × Failed to build `psycopg2cffi==2.9.0`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.prepare_metadata_for_build_wheel` failed (exit status: 1)
+
+      [stderr]
+      /home/elias/.cache/uv/builds-v0/.tmpqcb1gF/lib64/python3.12/site-packages/setuptools/_distutils/dist.py:289:
+      UserWarning: Unknown distribution option: 'test_suite'
+        warnings.warn(msg)
+      Error: pg_config executable not found.
+      Please add the directory containing pg_config to the PATH.
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip
+        locking and syncing.
+</code></pre>
+<p>Of course, one solution would just be to add missing <code>pg_config</code> binary to the path and continue from there but this is definitely not something I expected.</p>
+<h2>Working</h2>
+<details>
+
+<summary><b>Working:</b> Logs with Poetry (poetry version 1.8.3)</summary>
+
+<pre><code class="language-console">PycharmProjects/troubleshooting/poetry-2
+❯ poetry init
+
+This command will guide you through creating your pyproject.toml config.
+
+Package name [poetry-2]:
+Version [0.1.0]:
+Description []:
+Author [..., n to skip]:  n
+License []:
+Compatible Python versions [^3.13]:  &gt;=3.12,&lt;3.13
+
+Would you like to define your main dependencies interactively? (yes/no) [yes] n
+Would you like to define your development dependencies interactively? (yes/no) [yes] n
+Generated file
+
+[tool.poetry]
+name = &quot;poetry-2&quot;
+version = &quot;0.1.0&quot;
+description = &quot;&quot;
+authors = [&quot;Your Name &lt;you@example.com&gt;&quot;]
+readme = &quot;README.md&quot;
+
+[tool.poetry.dependencies]
+python = &quot;&gt;=3.12,&lt;3.13&quot;
+
+
+[build-system]
+requires = [&quot;poetry-core&quot;]
+build-backend = &quot;poetry.core.masonry.api&quot;
+
+
+Do you confirm generation? (yes/no) [yes]
+
+PycharmProjects/troubleshooting/poetry-2 is 📦 v0.1.0 via 🐍 v3.13.2 took 7s
+❯ poetry add dlt[postgres]==1.3.0
+The currently activated Python version 3.13.2 is not supported by the project (&gt;=3.12,&lt;3.13).
+Trying to find and use a compatible version.
+Using python3.12 (3.12.9)
+Creating virtualenv poetry-2 in /home/elias/PycharmProjects/troubleshooting/poetry-2/.venv
+
+Updating dependencies
+Resolving dependencies... (1.1s)
+
+Package operations: 38 installs, 0 updates, 0 removals
+
+  - Installing setuptools (78.1.0)
+  - Installing six (1.17.0)
+  - Installing smmap (5.0.2)
+  - Installing gitdb (4.0.12)
+  - Installing charset-normalizer (3.4.1)
+  - Installing certifi (2025.1.31)
+  - Installing idna (3.10)
+  - Installing packaging (24.2)
+  - Installing ply (3.11)
+  - Installing python-dateutil (2.9.0.post0)
+  - Installing types-setuptools (78.1.0.20250329)
+  - Installing tzdata (2025.2)
+  - Installing urllib3 (2.4.0)
+  - Installing wheel (0.45.1)
+  - Installing gitpython (3.1.44)
+  - Installing astunparse (1.6.3)
+  - Installing hexbytes (1.3.0)
+  - Installing giturlparse (0.12.0)
+  - Installing orjson (3.10.16)
+  - Installing makefun (1.15.6)
+  - Installing pathvalidate (3.2.3)
+  - Installing fsspec (2025.3.2)
+  - Installing pendulum (3.0.0)
+  - Installing jsonpath-ng (1.7.0)
+  - Installing click (8.1.8)
+  - Installing pluggy (1.5.0)
+  - Installing humanize (4.12.2)
+  - Installing psycopg2-binary (2.9.10)
+  - Installing pytz (2025.2)
+  - Installing pyyaml (6.0.2)
+  - Installing requests (2.32.3)
+  - Installing requirements-parser (0.11.0)
+  - Installing semver (3.0.4)
+  - Installing simplejson (3.20.1)
+  - Installing tenacity (9.1.2)
+  - Installing tomlkit (0.13.2)
+  - Installing typing-extensions (4.13.2)
+  - Installing dlt (1.3.0)
+
+Writing lock file
+</code></pre>
+</details>
+
+<details>
+
+<summary><b>Working:</b> Logs with uv pip install (uv version 0.6.14)</summary>
+
+<pre><code class="language-console">PycharmProjects/troubleshooting/uv-3
+❯ uv init --python 3.12
+Initialized project `uv-3`
+
+uv-3 on  main [?] is 📦 v0.1.0 via 🐍 v3.13.2
+❯ uv venv
+Using CPython 3.12.9 interpreter at: /usr/bin/python3.12
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+
+uv-3 on  main [?] is 📦 v0.1.0 via 🐍 v3.13.2
+❯ uv pip install dlt[postgres]==1.3.0
+Resolved 39 packages in 83ms
+Installed 39 packages in 73ms
+ + astunparse==1.6.3
+ + certifi==2025.1.31
+ + charset-normalizer==3.4.1
+ + click==8.1.8
+ + dlt==1.3.0
+ + fsspec==2025.3.2
+ + gitdb==4.0.12
+ + gitpython==3.1.44
+ + giturlparse==0.12.0
+ + hexbytes==1.3.0
+ + humanize==4.12.2
+ + idna==3.10
+ + jsonpath-ng==1.7.0
+ + makefun==1.15.6
+ + orjson==3.10.16
+ + packaging==24.2
+ + pathvalidate==3.2.3
+ + pendulum==3.0.0
+ + pluggy==1.5.0
+ + ply==3.11
+ + psycopg2-binary==2.9.10
+ + python-dateutil==2.9.0.post0
+ + pytz==2025.2
+ + pyyaml==6.0.2
+ + requests==2.32.3
+ + requirements-parser==0.11.0
+ + semver==3.0.4
+ + setuptools==78.1.0
+ + simplejson==3.20.1
+ + six==1.17.0
+ + smmap==5.0.2
+ + tenacity==9.1.2
+ + time-machine==2.16.0
+ + tomlkit==0.13.2
+ + types-setuptools==78.1.0.20250329
+ + typing-extensions==4.13.2
+ + tzdata==2025.2
+ + urllib3==2.4.0
+ + wheel==0.45.1
+</code></pre>
+</details>
+
+<p>Let me know, if you guys need more information.</p>
+<p>Best
+Elias</p>
+<h3>Platform</h3>
+<p>Linux 6.13.9-200.fc41.x86_64 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.6.14</p>
+<h3>Python version</h3>
+<p>Python 3.12.9,Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @trin94 on 2025-04-11 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ampaulo">@ampaulo</a> on 2025-05-23 10:37</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>If it may help someone, I've encountered this problem as well and installing the package <code>libpq-dev</code> solved the issue on my system:</p>
+<p>OS version: <strong>Ubuntu 24.04.2 LTS</strong>
+Python version: <strong>3.12.9</strong>
+dlt version: <strong>1.11.0</strong></p>
+<p><code>sudo apt install libpq-dev</code></p>
+<p><code>uv add dlt[postgres]&gt;=1.11.0</code></p>
+<p>Paulo,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-26 13:57</div>
+            <div class="timeline-body"><p><code>psycopg2cffi</code> is required for PyPy only. If you don't need PyPy, you can define <code>tool.uv.environments</code> to exclude exclude PyPy  (https://docs.astral.sh/uv/reference/settings/#environments):</p>
+<pre><code class="language-toml">[tool.uv]
+environments = [
+  &quot;platform_python_implementation != 'PyPy'&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-05-26 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-05-26 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trin94">@trin94</a> on 2025-05-27 19:01</div>
+            <div class="timeline-body"><p>@konstin Yep, that makes a lot of sense. Did not know that since I've only used CPython up until now. That solves it for me. Thank you! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-05-27 19:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

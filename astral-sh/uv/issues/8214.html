@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Projects - astral-sh/uv #8214</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Private Projects</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/8214">#8214</a>
+        opened by <a href="https://github.com/johnthagen">@johnthagen</a>
+        on 2024-10-15 12:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/johnthagen">@johnthagen</a> on 2024-10-15 12:59</div>
+            <div class="timeline-body"><p>Is it possible to mark a uv project as <code>private</code> such that <code>uv publish</code> is completely disabled? For private code this is a desirable feature.</p>
+<p>Something like:</p>
+<pre><code class="language-toml">[tool.uv]
+private = true
+</code></pre>
+<p>NPM has a similar <code>&quot;private&quot;: true</code>:</p>
+<ul>
+<li>https://docs.npmjs.com/cli/v10/configuring-npm/package-json#private</li>
+</ul>
+<blockquote>
+<p>If you set <code>&quot;private&quot;: true</code> in your package.json, then npm will refuse to publish it.</p>
+<p>This is a way to prevent accidental publication of private repositories.</p>
+</blockquote>
+<p>In Cargo, this is controlled by the <a href="https://doc.rust-lang.org/cargo/reference/manifest.html#the-publish-field"><code>publish</code> flag</a>.</p>
+<blockquote>
+<p>To prevent a package from being published to a registry (like crates.io) by mistake, for instance to keep a package private in a company, you can omit the <a href="https://doc.rust-lang.org/cargo/reference/manifest.html#the-version-field">version</a> field. If you’d like to be more explicit, you can disable publishing:</p>
+</blockquote>
+<pre><code class="language-toml">[package]
+# ...
+publish = false
+</code></pre>
+<p>For some additional motivation, see a similar feature request for Poetry</p>
+<ul>
+<li>https://github.com/python-poetry/poetry/issues/1537</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../johnthagen/python-blueprint/issues/238.html">johnthagen/python-blueprint#238</a> on 2024-10-15 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-15 14:05</div>
+            <div class="timeline-body"><p>This exists already as a <code>Private :: Do Not Upload</code> <a href="https://pypi.org/classifiers/">classifier</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-15 14:06</div>
+            <div class="timeline-body"><p>This is mentioned over in https://github.com/python-poetry/poetry/issues/1537#issuecomment-1154642727 — we might want to include a private mode that avoids attempting to upload to the registry at all.</p>
+<p>cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-10-15 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-10-15 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2024-10-15 14:27</div>
+            <div class="timeline-body"><p>@zanieb Yeah, I personally feel like the <code>Private :: Do Not Upload</code> classifier is not 100% ideal and having something built in at the package manager level like NPM or Cargo would be more reliable (and also probably easier to teach).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-15 14:47</div>
+            <div class="timeline-body"><p>I'd love to support something like <code>tool.uv.private = true</code>. The only blocker for this is that currently, <code>uv publish</code> is independent of <code>pyproject.toml</code>: We will upload the files you hand <code>uv publish</code> and if you hand it a wheel, there's no <code>pyproject.toml</code> anymore. We also aren't allowed to set <code>&quot;Private :: Do Not Upload&quot;</code> for you when <code>tool.uv.private = true</code> is set, since we have to respect <code>project.classifiers</code>.</p>
+<p>For now, we should start hinting users towards the <code>Private :: Do Not Upload</code> classifier in the docs. It's not the most elegant solution, but it's a reliable way to prevent accidental publishing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-19 18:24</div>
+            <div class="timeline-body"><blockquote>
+<p>The only blocker for this is that currently, uv publish is independent of pyproject.toml: We will upload the files you hand uv publish and if you hand it a wheel, there's no pyproject.toml anymore.</p>
+</blockquote>
+<p>I understand that in some contexts we may not know where the wheels come from, but I feel like we should still be able to read project metadata and configuration when publishing artifacts for builds in a project. This seems like a fairly important base capability for <code>uv publish</code>.</p>
+<blockquote>
+<p>We also aren't allowed to set &quot;Private :: Do Not Upload&quot; for you when tool.uv.private = true is set, since we have to respect project.classifiers.</p>
+</blockquote>
+<p>How &quot;not allowed&quot; is this? Couldn't we append this when building the wheel and source dists?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mahyarmirrashed">@mahyarmirrashed</a> on 2024-10-19 18:33</div>
+            <div class="timeline-body"><p>I agree with @zanieb on this. It's fairly important to protect users against shooting themselves in the foot when they accidentally attempt to publish something that is marked as private.
+As a user, I can provide the following perspective/expected workflow.</p>
+<ol>
+<li>If a project is created with <code>uv init</code>, add the <code>private = true</code> by default. The vast majority of projects are not public. Being proactive here brings less harm than the contrary;</li>
+<li>If a project has the &quot;Private :: Do Not Upload&quot; classifier, warn the user that it must be removed in order to continue with publishing;</li>
+<li>If a project is marked with <code>private = true</code> and the &quot;Private :: Do Not Upload&quot; classifier <strong>is not</strong> specified, warn the user that they should add it, link to https://pypi.org/classifiers/, and do not publish;</li>
+<li>If a project is marked with <code>private = true</code> and the &quot;Private :: Do Not Upload&quot; classifier <strong>is</strong> specified, warn the user that it is set and therefore, do not publish.</li>
+</ol>
+<p>This respects the apparent rule of not setting the classifier automatically while still protecting the user as much as possible. I strongly encourage not adding any <code>--override</code> parameters either. Those usually are a bad idea for users that blindly use them without understanding the consequences and reasons for their errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-19 20:44</div>
+            <div class="timeline-body"><p>There's two options to implementing private project: METADATA and pyproject.toml.</p>
+<h2>Metadata</h2>
+<p>One option is going through the METADATA file and making sure <code>&quot;Private :: Do Not Upload&quot;</code> ends up in the source dist and wheel.</p>
+<p>The non-uv solution is adding <code>classifiers = [&quot;Private :: Do Not Upload&quot;]</code> to your pyproject.toml:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo-internal&quot;
+version = &quot;0.1.0&quot;
+classifiers = [&quot;Private :: Do Not Upload&quot;]
+</code></pre>
+<p>This prevents publishing to PyPI.</p>
+<p>(There is a separate question that alternative registries such as GitLab have options to host packages both as public and private, but I'm skipping over that here.)</p>
+<blockquote>
+<p>How &quot;not allowed&quot; is this? Couldn't we append this when building the wheel and source dists?</p>
+</blockquote>
+<p>PEP 621 is unambiguous that we must not append to static parts of <code>[project]</code> when building the wheel and source dists, this is required for the ability to read <code>pyproject.toml</code> without a build. There is an escape hatch that requires explicitly declaring specifiers as dynamic, we set the actual classifier on build depending on the value of <code>tool.uv.private</code>, i.e., if we see <code>tool.uv.private = true</code> we transform the metadata on build as if we had <code>classifiers = [&quot;Private :: Do Not Upload&quot;]</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo-internal&quot;
+version = &quot;0.1.0&quot;
+dynamic = [&quot;classifier&quot;]
+
+[tool.uv]
+private = true
+</code></pre>
+<p>Through <code>dynamic</code>, we are allowed to emit the following as METADATA:</p>
+<pre><code class="language-text">Metadata-Version: 2.3
+Name: foo-internal
+Version: 0.1.0
+Version: Private :: Do Not Upload
+</code></pre>
+<p>I prefer <code>classifiers = [&quot;Private :: Do Not Upload&quot;]</code> over the above for being self-documenting and more concise.</p>
+<h2>pyproject.toml</h2>
+<p>The other option is requiring pyproject.toml to be present.</p>
+<p>To check for <code>tool.uv.private</code>, we need to require the pyproject.toml of the (forbidden to be) published packages to be present for <em>all</em> <code>uv publish</code> invocations, for workspace packages this means having all workspace pyproject.toml. If we were to only check if the respective pyproject.toml is present, we would risk ignoring a <code>tool.uv.private</code>.</p>
+<p>The other, bigger downside is that this will be ignored when using a standard workflow such as <code>python -m build &amp;&amp; twine upload dist/*</code>: Twine, <code>@pypa/gh-action-pypi-publish</code> and other tools will publish this package to pypi with no regards to custom uv configuration, while the classifier protects no matter the tooling mix.</p>
+<p>There are other advantages too for requiring pyproject.toml for publish, e.g., reading configuration from it. In the current trade-off, that doesn't tip the scales for me towards switching to a poetry-like <code>uv publish</code>, given that the currently implemented solution is a universally supported self-documenting one-liner:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo-internal&quot;
+version = &quot;0.1.0&quot;
+classifiers = [&quot;Private :: Do Not Upload&quot;]
+</code></pre>
+<p>I agree that cargo and npm have a clearly better state, and would favor the addition of <code>project.publish</code> or <code>project.private</code> to the pyproject.toml spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2024-10-20 00:24</div>
+            <div class="timeline-body"><blockquote>
+<p>The other option is requiring pyproject.toml to be present.</p>
+</blockquote>
+<p>Is there a third option where <em>if</em> pyproject.toml is present, then <code>uv publish</code> inspects it and if <code>private = true</code>  is there, it prevents publishing? So normal <code>uv</code> projects will respect it, but if you're using <code>uv publish</code> without a pyproject.toml, then it's back on you to set the classifiers and it works more like twine?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-20 14:09</div>
+            <div class="timeline-body"><p>Yeah I agree, I don't think we need to <em>require</em> it. We could always add a flag that requires we can find it; for people that are concerned about accidentally ignoring their configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7839.html">astral-sh/uv#7839</a> on 2024-11-03 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8783.html">astral-sh/uv#8783</a> on 2024-11-03 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @konstin on 2024-11-03 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @konstin on 2024-11-03 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @konstin on 2024-11-03 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2024-11-05 23:49</div>
+            <div class="timeline-body"><p>I know packaging tool authors are generally against putting UX details into PEPs, but maybe this is a case where it would make sense to propose an optional <code>private = true</code> flag in the <code>project</code> table that fails the build if <code>classifiers = [&quot;Private :: Do Not Upload&quot;]</code> is missing from the classifier list? (@konstin considered a flag above, but in the context of reading it at publication time, rather than using it as a build time cross check on the classifier list)</p>
+<p>That way as long as the project developers are running their CI builds with a version that respects the flag, publication tools will still see the classifier in the metadata.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2024-11-06 12:18</div>
+            <div class="timeline-body"><blockquote>
+<p>an optional private = true flag in the project table that fails the build if classifiers = [&quot;Private :: Do Not Upload&quot;] is missing from the classifier list?</p>
+</blockquote>
+<p>That is an interesting idea. The downsides I see to this are:</p>
+<ul>
+<li>Simplicity for the user. Now we need to teach users that ideally they need to state their intention that a project is private <em>twice</em></li>
+<li>The <code>&quot;Private :: Do Not Upload&quot;</code> still seems like a non-ideal solution in the first place because it's only <em>after</em> your code is shipped through an HTTPS connection over the network somewhere that <em>then</em> it's blocked from being saved. I get that this is a bit pedantic, but in the presence of SSL proxies, etc it's possible that your code is revealed <em>somewhere</em><ul>
+<li>You then also need to trust that whatever package repository you have configured (since it could be something other than PyPI like Artifactory - again in the very slim edge case) has properly implemented <code>&quot;Private :: Do Not Upload&quot;</code> and rejects it.</li>
+</ul>
+</li>
+<li>What I like about <code>private = true</code> is that (just like NPM and Cargo) it can prevent <em>any</em> transmission of the code from package managers that understand it</li>
+</ul>
+<p>But I do like the overall idea of proposing that <code>private = true</code> be in a real PEP eventually. That could resolve some of the concerns that &quot;well Twine will upload the <code>.whl</code> anyway&quot;. As Twine, Poetry, etc could also be updated to look for this common field in the current directory (or, bikeshedding, could look upwards for a <code>project.toml</code> in upper directories too) and then all refuse to upload.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2024-11-07 07:07</div>
+            <div class="timeline-body"><blockquote>
+<p>What I like about private = true is that (just like NPM and Cargo) it can prevent any transmission of the code from package managers that understand it</p>
+</blockquote>
+<p>Yeah, that's one of the two main advantages I see in defining <code>project.private</code> formally. The other advantage is this:</p>
+<blockquote>
+<p>That could resolve some of the concerns that &quot;well Twine will upload the .whl anyway&quot;.</p>
+</blockquote>
+<p>If the invalid classifier is explicitly present in the metadata, even old versions of Twine (or other tools) won't <em>successfully</em> upload the package.</p>
+<p>So even though people (or their dev tools) would need to express &quot;this is private&quot; twice, they'd be doing it for a specific backwards compatibility reason. (and if <code>uv init</code> accepted a <code>--private</code> flag, the dev themselves would still only be marking the package as private once)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-12-22 13:25</div>
+            <div class="timeline-body"><p>Use-case here!</p>
+<p>I maintain private versions of my open-source projects (sponsorware strategy). In the past, I accidentally uploaded a private version to PyPI, which I then deleted when I noticed the mistake on pepy.tech (a few weeks later IIRC 😱).</p>
+<p>I recently learned about <code>Private :: Do Not Upload</code> (classifiers starting with <code>Private ::</code>, really), and wondered if I could use it to prevent future accidents.</p>
+<p>The thing is: although the private versions of my open-source projects must not end up on PyPI, my users must be able to publish them to their own private registries. I myself upload these private packages to a locally-served <code>pypiserver</code> instance.</p>
+<p>The official docs (packaging guide, PEP 301) do not mention whether <code>Private ::</code> is a PyPI thing only, or if other registries should or should not (must or must not) support it.</p>
+<p>Given my use-case above, I hope <em>they explicitly don't support it</em>, but cannot confirm that (<a href="https://github.com/astral-sh/uv/issues/10092">maybe you can?</a>).</p>
+<p>So, in my case, I think a <code>project.private = true</code> value in <code>pyproject.toml</code> would be ideal:</p>
+<ul>
+<li>it prevents me from accidentally publishing a private project to PyPI from my own machine</li>
+<li>it doesn't add the <code>Private ::</code> classifier to my artifacts, which could prevent upload on alternate/private registries</li>
+<li>and therefore lets users (including myself) upload built sdists and wheels to alternate/private registries</li>
+<li>...even with <code>uv publish &lt;artifact&gt;</code>, since at that point, uv won't be able to see pyproject.toml, only built artifacts (unless it searches for it in the sdist: don't do that 😅!)</li>
+</ul>
+<p>I realize <code>project.private</code> would need a PEP update, so it might take time, or never happen. It would also mean existing tools like Twine would have to start taking that into consideration, maybe (depending on how it is specified), something they could be against. In the meantime <code>tool.uv.private = true</code> would work too, given I use <code>uv publish</code> exclusively (I'm not, but I could).</p>
+<p>Obviously, none of this would actually prevent someone from publishing the built artifacts to a <em>public registry other than PyPI</em>, or sharing the private code via other means, but this is another story 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10092.html">astral-sh/uv#10092</a> on 2024-12-22 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10204.html">astral-sh/uv#10204</a> on 2024-12-27 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../johnthagen/python-blueprint/issues/95.html">johnthagen/python-blueprint#95</a> on 2025-03-21 18:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

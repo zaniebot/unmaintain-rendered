@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv should skip parsing non-platform dependencies or sources - astral-sh/uv #12331</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv should skip parsing non-platform dependencies or sources</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12331">#12331</a>
+        opened by <a href="https://github.com/pplmx">@pplmx</a>
+        on 2025-03-20 08:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pplmx">@pplmx</a> on 2025-03-20 08:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have a <code>pyproject.toml</code> where I configure platform-specific dependencies and source settings as follows:</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;megatron-core ; sys_platform == 'linux'&quot;,
+]
+
+[tool.uv.sources]
+megatron-core = { git = &quot;https://github.com/NVIDIA/Megatron-LM&quot;, marker = &quot;sys_platform == 'linux'&quot; }
+</code></pre>
+<p>On Linux, everything works fine. However, on Windows, running <code>uv sync</code> throws the following error:</p>
+<pre><code class="language-log">uv sync
+  × Failed to build `megatron-core @ git+https://github.com/NVIDIA/Megatron-LM`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit code: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        ...
+      FileNotFoundError: [WinError 3] The system cannot find the path specified.
+
+      hint: This usually indicates a problem with the package or the build environment.
+</code></pre>
+<h3>Steps to Reproduce</h3>
+<pre><code class="language-bash"># run the following commands on Windows
+mkdir example
+uv init -p 3.12
+# copy the above pyproject.toml to this project
+uv sync
+</code></pre>
+<h3>Expected Behavior</h3>
+<p>On non-target platforms (e.g., Windows), uv should skip parsing dependencies or sources that have platform-specific markers, thereby avoiding build errors.</p>
+<h3>FYI</h3>
+<pre><code class="language-txt">uv 0.6.8
+Python 3.12.9
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @pplmx on 2025-03-20 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-20 13:43</div>
+            <div class="timeline-body"><p><code>uv sync</code> performs a universal resolution (see the <a href="https://docs.astral.sh/uv/concepts/resolution/#universal-resolution">docs</a>), so we need to resolve metadata for <code>megatron-core</code> even if it won't ultimately be installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @charliermarsh on 2025-03-20 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-03-20 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-03-21 02:03</div>
+            <div class="timeline-body"><p>Since <code>Megatron-LM</code> does not support Windows, we use an alternative solution on Windows. In this case, how should the <code>pyproject.toml</code> be configured to work properly on Windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-21 04:06</div>
+            <div class="timeline-body"><p>Normally I would recommend adding a <code>[[tool.uv.dependency-metadata]]</code> for <code>Megatron-LM</code> so that the resolver has static metadata available and doesn't need to build the project: https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata. That looks difficult for <code>Megatron-LM</code> since they use dynamic metadata and it seems to vary quite a bit? Your best bet might be to lock on Linux, then use <code>--frozen</code> when installing on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-03-21 05:23</div>
+            <div class="timeline-body"><p>Thank you, @charliermarsh. Here's what I've tried:</p>
+<ol>
+<li>Generated <code>uv.lock</code> on Linux using the provided <code>pyproject.toml</code>.</li>
+<li>Copied <code>uv.lock</code> to Windows.</li>
+<li>Ran <code>uv sync</code> on Windows—this step worked as expected.</li>
+<li>Installed a package (e.g., <code>numpy</code>) on Windows with <code>uv add numpy --frozen</code> and received no error output.</li>
+<li>However, when I ran <code>uv tree</code> or <code>uv pip list</code>, no packages were listed.</li>
+</ol>
+<p>Could you please help me understand why the package isn’t showing up?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-21 05:32</div>
+            <div class="timeline-body"><p>Can you explain what you mean by &quot;no packages were listed&quot;, and/or provide me with exact steps I can take to reproduce?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-03-21 05:55</div>
+            <div class="timeline-body"><h2>Steps to Reproduce</h2>
+<pre><code class="language-bash"># On Linux
+mkdir example; cd example
+uv init -p 3.12
+uv add &quot;git+https://github.com/NVIDIA/Megatron-LM; sys_platform == 'linux'&quot;
+# show current packages
+uv tree -d2
+
+# On Windows
+mkdir example; cd example
+uv init -p 3.12
+# copy the above pyproject.toml and uv.lock generated on Linux to replace here
+uv sync
+uv tree -d2
+uv add numpy --frozen
+uv tree -d2 # This will throw error
+uv tree -d2 --frozen # output: example v0.1.0
+uv pip list # output nothing
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-21 13:38</div>
+            <div class="timeline-body"><p><code>uv add --frozen</code> won't update the lockfile with your new dependency (and <code>uv tree --frozen</code> similarly will not update the lockfile). You need to add your dependencies up-front on the Linux machine (to workaround this specific problem).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-03-22 06:43</div>
+            <div class="timeline-body"><p>Thank you, @zanieb.
+I understand the process now. For this case, to use <code>numpy</code> on Windows, I need to run <code>uv add numpy</code> on Linux first to generate the <code>uv.lock</code> file, and then execute <code>uv sync --frozen</code> on Windows using that lock file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-03-22 06:46</div>
+            <div class="timeline-body"><p>Personally, <a href="https://github.com/astral-sh/uv/issues/12331#top">uv should skip parsing non-platform dependencies or sources</a> is a valid requirement :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 17:16</div>
+            <div class="timeline-body"><p>I don't think we'll do that. The point of uv's lockfile is that it's platform independent and the problem is rather that this package is not following best practices for declaring metadata.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-01 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-04-03 01:54</div>
+            <div class="timeline-body"><p>Thank you for your assistance.
+I'm not entirely sure what the best practices are for declaring metadata. Could you please provide some guidance?
+Additionally, how should a Linux-only package declare the correct metadata?
+Once I have this information, I'll be happy to open an issue on Megatron-LM to further discuss the topic.
+Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-03 02:11</div>
+            <div class="timeline-body"><p>The problem is that we need build the package to determine its metadata, but the package can only be built on Linux. Metadata can be declared statically, so the build does not need to happen. Or, they can build wheels for supported platforms, in which the resolved metadata can be stored.</p>
+<p>For background, see</p>
+<ul>
+<li>https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-project-metadata-the-project-table</li>
+<li>https://peps.python.org/pep-0621/</li>
+</ul>
+<p>The project is using a <code>pyproject.toml</code>, but specifically defines critical core metadata fields as dynamic: https://github.com/NVIDIA/Megatron-LM/blob/cbc89b322c454a2de46edcbd1fc708669aeafd59/pyproject.toml#L11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-04-03 03:13</div>
+            <div class="timeline-body"><p>Thank you for the detailed explanation and the reference links.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mfordiani-cosmohc">@mfordiani-cosmohc</a> on 2025-09-12 12:32</div>
+            <div class="timeline-body"><p>@zanieb @charliermarsh</p>
+<p>I'm having a similar problem that imho provides a coherent use case for some kind of platform-specific exclusion of optional dependencies:</p>
+<ol>
+<li>I have a Python project that should be able to run on dev machines (amd64) and on NVIDIA Jetson (aarch64)</li>
+<li>Since there is no publicly available <code>tensorrt</code> wheel for Tegra / aarch64, I can only use the pre-installed <code>tensorrt</code> Python library inside the NVIDIA <code>l4t-tensorrt</code> containers</li>
+<li>So I define <code>tensorrt</code> as an <strong>OPTIONAL</strong> dependency group to be used only during development, trying to keep the version as close as possibile to what is found in the NVIDIA container</li>
+</ol>
+<pre><code class="language-toml">[project.optional-dependencies]
+tensorrt = [
+    &quot;tensorrt-cu12==10.8.0.43&quot;,
+    &quot;tensorrt-cu12-bindings==10.8.0.43&quot;,
+    &quot;tensorrt-cu12-libs==10.8.0.43&quot;,
+]
+polygraphy = [
+    &quot;polygraphy&gt;=0.49.24&quot;,
+]
+torch = [
+    &quot;torch&gt;=2.7.1&quot;,
+    &quot;torchaudio&gt;=2.7.1&quot;,
+    &quot;torchvision&gt;=0.22.1&quot;,
+]
+</code></pre>
+<ol start="4">
+<li>And I add a <code>[tool.uv.sources]</code> block to specify the allowed platforms for <code>tensorrt</code> and relevant index</li>
+</ol>
+<pre><code class="language-toml">[tool.uv.sources]
+tensorrt = [
+    { index='nvidia', marker = &quot; platform_machine == 'amd64' &quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;nvidia&quot;
+url = &quot;https://pypi.nvidia.com/&quot;
+explicit = true
+</code></pre>
+<p>Now, what prevents uv from understanding that it shouldn't look for a compatible <code>tensorrt</code> on an <code>aarch64</code> platform when I run <code>uv sync --extra torch</code>? I am JUST asking for <code>torch</code>, not anything else.</p>
+<p>This behavior defeats the main point of using uv for a similar project, as I cannot sync the project with the extras I need, and then use <code>uv export</code> to generate a pinned <code>requirements.txt</code> to use in CI, which is my usual workflow.</p>
+<pre><code>RuntimeError: TensorRT does not currently build wheels for Tegra systems
+
+...
+
+help: `tensorrt-cu12` (v10.8.0.43) was included because `aab[tensorrt]` (v2025.1) depends on `tensorrt-cu12==10.8.0.43`
+</code></pre>
+<p>Can we revisit this issue at least for optional dependencies?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-12 13:13</div>
+            <div class="timeline-body"><p>You should generate the lockfile on a platform where this package is available, then you'll be able to use it on other machines.</p>
+<p>Alternatively, you can declare static metadata for the package https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mfordiani-cosmohc">@mfordiani-cosmohc</a> on 2025-09-12 13:46</div>
+            <div class="timeline-body"><p>thanks for the workaround @zanieb</p>
+<p>In case I went with the static metadata approach, is there any way to find what I should put into <code>requires-dist</code> for a given package? Should I look into a <code>uv.lock</code> built where the package is available?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-12 13:51</div>
+            <div class="timeline-body"><p>You could look at a <code>uv.lock</code>, or the <code>METADATA</code> file in an installation of the package, e.g.:</p>
+<pre><code>❯ uv init --package example
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+❯ cd example
+❯ uv add anyio
+Using CPython 3.14.0rc2 interpreter at: /Users/zb/.local/bin/python3.14
+Creating virtual environment at: .venv
+Resolved 4 packages in 82ms
+      Built example @ file:///Users/zb/workspace/uv/example
+Prepared 1 package in 5ms
+Installed 4 packages in 3ms
+ + anyio==4.10.0
+ + example==0.1.0 (from file:///Users/zb/workspace/uv/example)
+ + idna==3.10
+ + sniffio==1.3.1
+❯ uv sync
+Resolved 4 packages in 2ms
+Audited 4 packages in 0.51ms
+❯ cat .venv/lib/python3.14/site-packages/anyio-4.10.0.dist-info/METADATA
+Metadata-Version: 2.4
+Name: anyio
+Version: 4.10.0
+Summary: High-level concurrency and networking framework on top of asyncio or Trio
+Author-email: Alex Grönholm &lt;alex.gronholm@nextday.fi&gt;
+License-Expression: MIT
+Project-URL: Documentation, https://anyio.readthedocs.io/en/latest/
+Project-URL: Changelog, https://anyio.readthedocs.io/en/stable/versionhistory.html
+Project-URL: Source code, https://github.com/agronholm/anyio
+Project-URL: Issue tracker, https://github.com/agronholm/anyio/issues
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Framework :: AnyIO
+Classifier: Typing :: Typed
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Requires-Python: &gt;=3.9
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Requires-Dist: exceptiongroup&gt;=1.0.2; python_version &lt; &quot;3.11&quot;
+Requires-Dist: idna&gt;=2.8
+Requires-Dist: sniffio&gt;=1.1
+Requires-Dist: typing_extensions&gt;=4.5; python_version &lt; &quot;3.13&quot;
+Provides-Extra: trio
+Requires-Dist: trio&gt;=0.26.1; extra == &quot;trio&quot;
+</code></pre>
+<p>or, the <code>METADATA</code> file from the wheel, e.g.:</p>
+<pre><code>❯ uv build
+Building source distribution (uv build backend)...
+Building wheel from source distribution (uv build backend)...
+Successfully built dist/example-0.1.0.tar.gz
+Successfully built dist/example-0.1.0-py3-none-any.whl
+❯ unzip dist/example-0.1.0-py3-none-any.whl
+Archive:  dist/example-0.1.0-py3-none-any.whl
+   creating: example/
+  inflating: example/__init__.py     
+   creating: example-0.1.0.dist-info/
+  inflating: example-0.1.0.dist-info/WHEEL  
+  inflating: example-0.1.0.dist-info/entry_points.txt  
+  inflating: example-0.1.0.dist-info/METADATA  
+  inflating: example-0.1.0.dist-info/RECORD  
+❯ cat example-0.1.0.dist-info/METADATA
+Metadata-Version: 2.3
+Name: example
+Version: 0.1.0
+Summary: Add your description here
+Author: Zanie Blue
+Author-email: Zanie Blue &lt;contact@zanie.dev&gt;
+Requires-Dist: anyio&gt;=4.10.0
+Requires-Python: &gt;=3.14.0
+Description-Content-Type: text/markdown
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

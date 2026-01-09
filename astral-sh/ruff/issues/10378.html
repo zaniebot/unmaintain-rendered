@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to upload ruff==0.3.2 to Azure Artifacts because it doesn't support Metadata-Version=2.3 - astral-sh/ruff #10378</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to upload ruff==0.3.2 to Azure Artifacts because it doesn't support Metadata-Version=2.3</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10378">#10378</a>
+        opened by <a href="https://github.com/olivierlefloch">@olivierlefloch</a>
+        on 2024-03-13 06:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/olivierlefloch">@olivierlefloch</a> on 2024-03-13 06:21</div>
+            <div class="timeline-body"><p>When attempting to upload <code>ruff==0.3.2</code> to Azure Artifacts, I get the following error:</p>
+<pre><code>Uploading ruff-0.3.2-py3-none-musllinux_1_2_x86_64.whl
+INFO     Response from                                                          
+         https://pkgs.dev.azure.com/ORGNAME/_packaging/REPONAME/pypi/upload:    
+         400 Bad Request - Metadata version '2.3' is unsupported. Supported     
+         versions are: 1.0,1.1,1.2,2.0,2.1. (DevOps Activity ID:                
+         27498FFA-3436-49CE-B4F4-27A5F86057FE)                                  
+INFO     {&quot;$id&quot;:&quot;1&quot;,&quot;innerException&quot;:null,&quot;message&quot;:&quot;Metadata version '2.3' is  
+         unsupported. Supported versions are:                                   
+         1.0,1.1,1.2,2.0,2.1.&quot;,&quot;typeName&quot;:&quot;Microsoft.VisualStudio.Services.Packa
+         ging.Shared.WebApi.Exceptions.InvalidPackageException,                 
+         Microsoft.VisualStudio.Services.Packaging.Shared.WebApi&quot;,&quot;typeKey&quot;:&quot;Inv
+         alidPackageException&quot;,&quot;errorCode&quot;:0,&quot;eventId&quot;:3000}                    
+ERROR    HTTPError: 400 Bad Request from                                        
+         https://pkgs.dev.azure.com/ORGNAME/_packaging/REPONAME/pypi/upload     
+         Bad Request - Metadata version '2.3' is unsupported. Supported versions
+         are: 1.0,1.1,1.2,2.0,2.1. (DevOps Activity ID:                         
+         27498FFA-3436-49CE-B4F4-27A5F86057FE)                                  
+</code></pre>
+<p>The error is, in practice, on Azure Artifacts' side, as they are not, it would seem, compliant with the spirit of the Python packaging spec:</p>
+<p>https://packaging.python.org/en/latest/specifications/core-metadata/#metadata-version</p>
+<blockquote>
+<p>Automated tools consuming metadata SHOULD warn if metadata_version is greater than the highest version they support, and MUST fail if metadata_version has a greater major version than the highest version they support (as described in the Version specifier specification, the major version is the value before the first dot).</p>
+</blockquote>
+<p>However, I wonder if it might be possible to resolve the issue on the <code>ruff</code> side. An initial exploration of the codebase / recent commits did not clearly indicate what has caused this difference in the built wheels. Based on the diff between the <code>METADATA</code> files between versions <code>0.3.1</code> and <code>0.3.2</code>:</p>
+<pre><code>--- .../ruff-0.3.1-py3-none-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2/ruff-0.3.1.dist-info/METADATA	2024-03-06 22:41:54
++++ .../ruff-0.3.2-py3-none-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2/ruff-0.3.2.dist-info/METADATA	2024-03-09 00:49:26
+@@ -1,6 +1,6 @@
+-Metadata-Version: 2.1
++Metadata-Version: 2.3
+ Name: ruff
+-Version: 0.3.1
++Version: 0.3.2
+ Classifier: Development Status :: 5 - Production/Stable
+ Classifier: Environment :: Console
+ Classifier: Intended Audience :: Developers
+@@ -179,7 +179,7 @@
+ ```yaml
+ - repo: https://github.com/astral-sh/ruff-pre-commit
+   # Ruff version.
+-  rev: v0.3.1
++  rev: v0.3.2
+   hooks:
+     # Run the linter.
+     - id: ruff
+</code></pre>
+<p>it seems the set of fields being used hasn't changed, which suggests, following the spec, that it should be possible to downgrade to <code>Metadata-Version: 2.1</code>:</p>
+<blockquote>
+<p>For broader compatibility, build tools MAY choose to produce distribution metadata using the lowest metadata version that includes all of the needed fields.</p>
+</blockquote>
+<p>Based on the absence of other changes, I assume some difference in the build pipeline is the underlying cause of this change.</p>
+<p>I've also reported this issue to Azure Artifacts: https://developercommunity.visualstudio.com/t/Uploading-ruff032-to-Azure-Repos-for/10614507</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/uv/issues/2414.html">astral-sh/uv#2414</a> on 2024-03-13 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-13 14:37</div>
+            <div class="timeline-body"><p>Interesting. I think this is going to cause them a lot of problems pretty quickly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PyO3/maturin/issues/1993.html">PyO3/maturin#1993</a> on 2024-03-14 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olivierlefloch">@olivierlefloch</a> on 2024-03-14 16:38</div>
+            <div class="timeline-body"><p>After further investigation, it seems <code>maturin</code> recently updated the value they use for <code>Metadata-Version</code> https://github.com/PyO3/maturin/issues/1993</p>
+<p>I agree this is likely going to be a significant problem on the Azure Artifacts side of things, and other than perhaps pinning <code>maturin</code> in <code>ruff</code>'s build pipeline to ensure such changes don't occur unexpectedly, I don't think this is actually an issue that could/should be fixed within <code>ruff</code>'s codebase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-18 16:45</div>
+            <div class="timeline-body"><p>Thanks for reporting this in maturin and on the Microsoft platform. Let's see if this gets resolved upstream.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 16:46</div>
+            <div class="timeline-body"><p>I wrote this in uv:</p>
+<blockquote>
+<p>We could pin back to Maturin 0.14.0 or whichever it was that preceded Metadata 2.2 (and Metadata 2.3), but Metadata 2.2 and 2.3 are actually good, and soon Poetry and Hatch and others will build source distributions with Metadata 2.2 by default.</p>
+</blockquote>
+<blockquote>
+<p>I'm gonna say for now that we won't roll this back, but if it continues to be a problem for an extended period of time let me know and we can reconsider.</p>
+</blockquote>
+<p>I'd vote to close here too, since I think it would be suboptimal to roll this back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-29 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-29 19:58</div>
+            <div class="timeline-body"><p>Closing this for the same reason as in uv.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

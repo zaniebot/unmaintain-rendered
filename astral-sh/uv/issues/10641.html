@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error referencing local package: Failed to parse metadata from built wheel, relative path without a working directory - astral-sh/uv #10641</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error referencing local package: Failed to parse metadata from built wheel, relative path without a working directory</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10641">#10641</a>
+        opened by <a href="https://github.com/ejstembler">@ejstembler</a>
+        on 2025-01-15 20:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ejstembler">@ejstembler</a> on 2025-01-15 20:14</div>
+            <div class="timeline-body"><p>I have a local package which needs to be referenced.  For example, in pip it looks like this:</p>
+<p>requirements.txt</p>
+<pre><code>./deps/mypackage-1.0.94-py3-none-any.whl
+</code></pre>
+<p>For uv, I have it in pyproject.toml as:</p>
+<pre><code>dependencies = [
+# Local wheel file:
+  &quot;mypackage @ file://./deps/mypackage-1.0.94-py3-none-any.whl&quot;
+]
+</code></pre>
+<p>However, running <code>uv sync</code> results in this error:</p>
+<pre><code class="language-console">error: Failed to build: `my-project @ file:///Users/me/Projects/my-project`
+  Caused by: Failed to parse metadata from built wheel
+  Caused by: relative path without a working directory: ./deps/mypackage-1.0.94-py3-none-any.whl
+mypackage@ file://./deps/mypackage-1.0.94-py3-none-any.whl
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</code></pre>
+<p>I've tried changing the reference to a few variations, none worked:</p>
+<ul>
+<li><code>&quot;mypackage @ ./deps/mypackage-1.0.94-py3-none-any.whl&quot;</code></li>
+<li><code>&quot;mypackage @ ./deps/mypackage-1.0.94-py3-none-any.whl&quot;</code></li>
+<li><code>&quot;mypackage @ myproject/deps/mypackage-1.0.94-py3-none-any.whl&quot;</code></li>
+</ul>
+<p>I don't want to hard-code an absolute path since it will differ between local development and deployment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-15 20:33</div>
+            <div class="timeline-body"><p>I don't think relative paths are allowed there per the specification https://github.com/pypa/setuptools/discussions/2951</p>
+<p>It sounds like you're looking for https://docs.astral.sh/uv/concepts/projects/dependencies/#path</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-15 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ejstembler">@ejstembler</a> on 2025-01-15 20:40</div>
+            <div class="timeline-body"><p><code>uv add ./deps/mypackage-1.0.94-py3-none-any.whl</code> worked.  Thanks @zanieb !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ejstembler on 2025-01-15 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vikramcee">@vikramcee</a> on 2025-02-07 18:19</div>
+            <div class="timeline-body"><p>I believe relative paths are allowed with <code>pip</code> as OP specified above. Is there a way to enable <code>uv</code> to allow relative paths as follows:</p>
+<p><code>package @ file:relative/path/to/proj</code></p>
+<p>The above works with pip but throws an error when <code>sync</code>ing with <code>uv</code>. The purpose of this feature would be to allow a single <code>pyproject.toml</code> to be interoperable with <code>uv</code> and <code>pip</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-08 01:37</div>
+            <div class="timeline-body"><p>@vikramcee Do you have a working example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vikramcee">@vikramcee</a> on 2025-02-11 18:44</div>
+            <div class="timeline-body"><p>@zanieb apologies for the delay in getting back to you but yes, I have a minimal working example. The following <code>pyproject.toml</code> worked for me with <code>pip install -e &quot;.[dev]&quot;</code> but not with <code>uv sync --all-extras</code>:</p>
+<pre><code>[project]
+name = &quot;test_repo&quot;
+version = &quot;0.0.1&quot;
+description = &quot;A test repo&quot;
+
+requires-python = &quot;&gt;=3.9,&lt;3.13&quot;
+dependencies = [
+    &quot;numpy&quot;,
+    &quot;scipy&quot;
+]
+
+[project.optional-dependencies]
+dev = [
+    &quot;pytest&quot;,
+    &quot;tqdm @ file:shared/tqdm&quot;
+]
+
+[build-system]
+requires = [&quot;setuptools&gt;=61&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p>I received the following error with <code>uv</code>:</p>
+<pre><code>  × Failed to build `test-repo @ file:///{my working directory}`
+  ├─▶ Failed to parse metadata from built wheel
+  ╰─▶ relative path without a working directory: shared/tqdm
+      tqdm@ file:shared/tqdm ; extra == &quot;dev&quot;
+            ^^^^^^^^^^^^^^^^
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-12 14:05</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2025-02-12 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/scotthaleen">@scotthaleen</a> on 2025-04-26 18:07</div>
+            <div class="timeline-body"><p>I was running into the same issue <code>relative path without a working directory:</code> I was attempting to define a relative package in a script like this</p>
+<pre><code class="language-python"># /// script
+# dependencies = [
+#   &quot;foo @ file://./foo-0.tar.gz&quot;,
+#   &quot;rich&quot;,
+# ]
+# ///
+</code></pre>
+<p>I had missed this https://github.com/astral-sh/uv/issues/10641#issuecomment-2593878620</p>
+<p>the <code>[tool.uv.sources]</code> does works for anyone else trying to figure this out for a script</p>
+<pre><code class="language-python"># /// script
+# dependencies = [
+#   &quot;foo&quot;,
+#   &quot;rich&quot;,
+# ]
+# [tool.uv.sources]
+# foo = { path = &quot;foo.tar.gz&quot; }
+# ///
+
+import foo
+from rich.pretty import pprint
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ArthurFerreiraRodrigues">@ArthurFerreiraRodrigues</a> on 2025-11-22 19:31</div>
+            <div class="timeline-body"><p>This one above solved. Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-28 08:27</div>
+            <div class="timeline-body"><p>If you have multiple local wheels, consider using a <a href="https://docs.astral.sh/uv/concepts/indexes/#flat-indexes">flat index</a>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

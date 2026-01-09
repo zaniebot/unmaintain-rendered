@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyCharm inspections - astral-sh/ruff #3040</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PyCharm inspections</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3040">#3040</a>
+        opened by <a href="https://github.com/matthewlloyd">@matthewlloyd</a>
+        on 2023-02-19 19:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matthewlloyd">@matthewlloyd</a> on 2023-02-19 19:06</div>
+            <div class="timeline-body"><p>(Opening a new issue to continue the discussion from #2972 which will be closed by https://github.com/charliermarsh/ruff/pull/3022)</p>
+<p>I went through all the PyCharm inspections, filtered those I deemed implementable in a non-type-aware linter, and categorized them by whether they have Ruff or PyLint counterparts, mostly by running Ruff and PyLint directly on the examples provided in the PyCharm Settings panel.</p>
+<p>There were five left over, which might merit consideration for inclusion as RUF rules.</p>
+<h3>PyCharm inspections not currently covered by Ruff or PyLint</h3>
+<ul>
+<li>Class-specific decorator is used outside the class (@classmethod or @staticmethod)<pre><code class="language-python">@staticmethod
+def a(): pass
+</code></pre>
+</li>
+<li>Incorrect property definition (e.g. getter that does not return or yield a value)<pre><code class="language-python">class A:
+    @property
+    def field(): pass
+</code></pre>
+</li>
+<li>Invalid definition of 'typing.NamedTuple' (field with default followed by one or more fields without)<pre><code class="language-python">import typing
+
+class FullName(typing.NamedTuple):
+    first: str
+    last: str = &quot;&quot;
+    middle: str
+</code></pre>
+</li>
+<li>Non-optimal list declaration<pre><code class="language-python">l = [1]
+l.append(2)
+</code></pre>
+</li>
+<li>Shadowing names from outer scopes<pre><code class="language-python">def outer(p):
+  def inner(p):
+      pass
+</code></pre>
+</li>
+</ul>
+<h3>Covered by Ruff or PyLint</h3>
+<ul>
+<li>Assignments to 'for' loop or 'with' statement parameter (see above)<ul>
+<li>PLW2901 redefined-loop-name</li>
+</ul>
+</li>
+<li>Assignment can be replaced with augmented assignment (a = a + b becomes a += b; arguably less useful)<ul>
+<li>PLR6104 consider-using-augmented-assign</li>
+</ul>
+</li>
+<li>Dictionary contains duplicate keys ({'a': 1, 'a': 2})<ul>
+<li>PLW0109 duplicate-key</li>
+</ul>
+</li>
+<li>First argument of the method is reassigned (e.g. reassignment to self)<ul>
+<li>PLW0642 self-cls-assignment</li>
+</ul>
+</li>
+<li><strong>init</strong> method that returns a value<ul>
+<li>PLE101 return-in-init</li>
+</ul>
+</li>
+<li>Method is not declared static (but does not use self)<ul>
+<li>PLR6301 no-self-use</li>
+<li>PLW0211 bad-staticmethod-argument (not quite the same thing)</li>
+</ul>
+</li>
+<li>Missed call to '<strong>init</strong>' of the super class<ul>
+<li>PLW0231 super-init-not-called</li>
+</ul>
+</li>
+<li>Redeclared names without usages (def x(): pass, followed later by x = 2, no uses in between)<ul>
+<li>F811</li>
+</ul>
+</li>
+<li>Redundant boolean variable check (if b == True)<ul>
+<li>PLC0121 singleton-comparison</li>
+</ul>
+</li>
+<li>Redundant parentheses<ul>
+<li>UP034</li>
+</ul>
+</li>
+<li>Statement has no effect (e.g. comprises solely a variable name)<ul>
+<li>PLW0104 pointless-statement</li>
+<li>also B018 as above</li>
+</ul>
+</li>
+<li>Too complex chained comparisons ((x &gt;= 0 and x &lt;= 1) becomes (0 &lt;= x &lt;= 1)).<ul>
+<li>PLR1716 chained-comparison</li>
+</ul>
+</li>
+<li>Unnecessary backslash - backslashes in places where line continuation is implicit inside (), [], and {}.<ul>
+<li>PyLint does not detect this, but pycodestyle has E502: &quot;The backslash is redundant between brackets&quot; (not yet implemented in Ruff)</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/970.html">astral-sh/ruff#970</a> on 2023-02-19 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3022.html">astral-sh/ruff#3022</a> on 2023-02-19 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-19 19:28</div>
+            <div class="timeline-body"><p>Thank you for this, super thorough and much appreciated!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">plugin</span> added by @charliermarsh on 2023-02-19 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pkulev">@pkulev</a> on 2024-01-17 15:14</div>
+            <div class="timeline-body"><p>I'm looking forward to see those checks in ruff!
+I'll expand here some moments regarding F811 and similar check in pycharm.</p>
+<p>In the following example all redeclarations were highlighted by pycharm, but ruff alerts only on imports and function/class definitions. Variable redeclaration without usage passes the check.</p>
+<pre><code class="language-python">import os
+import sys
+import os  # ruff alerts F811
+
+def foo():
+    pass
+
+def foo():  # ruff alerts F811
+    pass
+
+class Foo:
+    pass
+
+class Foo:  # ruff alerts F811
+    pass
+
+class Bar:
+    x = 10
+    x = 20  # No alert
+
+BAR = &quot;bar&quot;
+BAR = &quot;baz&quot;  # No alert
+</code></pre>
+<p>It would be great to enable checking for variables too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6903.html">astral-sh/ruff#6903</a> on 2024-11-18 22:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15903.html">astral-sh/ruff#15903</a> on 2025-02-03 06:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-02-23 13:56</div>
+            <div class="timeline-body"><p>Copied from #16324 :</p>
+<p>PyCharm catches this:</p>
+<pre><code class="language-py">class Foo:
+    def define_attr(self):
+        self.x = 5
+</code></pre>
+<p>by complaining that:</p>
+<blockquote>
+<p>Instance attribute x defined outside __init__</p>
+</blockquote>
+<p>Would be a nice Ruff rule!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16324.html">astral-sh/ruff#16324</a> on 2025-02-23 13:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

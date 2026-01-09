@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow specifying tool.uv.default-groups only used by workspace members - astral-sh/uv #14377</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow specifying tool.uv.default-groups only used by workspace members</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14377">#14377</a>
+        opened by <a href="https://github.com/genevieve-me">@genevieve-me</a>
+        on 2025-06-30 21:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/genevieve-me">@genevieve-me</a> on 2025-06-30 21:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We have a UV workspace which contains a library and some non-package projects which use that library. By non-package project I mean things like Flask apps which don't have a build backend and don't define <code>dependencies</code> in pyproject.toml.</p>
+<p>For these apps we use we are now using <code>dependency-groups</code> to declare their dependencies, and use UV's excellent guide on building containers to package them. There doesn't seem to be a standard name for this use case, so their <code>pyproject.toml</code> uses the group name <code>main</code>, like so:</p>
+<pre><code class="language-toml">[project]
+name = &quot;something&quot;
+version = &quot;2.3.4&quot;
+requires-python = &quot;&gt;=3.12&quot;
+
+[dependency-groups]
+main = [&quot;sth-lib&quot;]
+</code></pre>
+<p>And the workspace pyproject.toml (which I believe is pretty standard) looks like:</p>
+<pre><code class="language-toml">[project]
+name = &quot;internal-workspace&quot;
+version = &quot;1.2.3&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+license = &quot;LicenseRef-Proprietary&quot;
+
+[tool.uv.sources]
+something = { workspace = true }
+sth-lib = { workspace = true }
+
+[tool.uv.workspace]
+members = [&quot;apps/something&quot;, &quot;libs/sth-lib&quot;]
+</code></pre>
+<p>When using <code>uv</code> to prepare the virtual environment for one of these apps, we use a command like <code>uv sync --package something --group main</code>, which works well.</p>
+<p>For local development, however, we want to install all main dependencies, but without using <code>--all-groups</code>. We wanted to add <code>main</code> to <code>tool.uv.default-groups</code> for this reason and avoid passing <code>--group main</code> to all our commands:</p>
+<pre><code class="language-toml">[tool.uv] # in the workspace pyproject.toml
+default-groups = [&quot;dev&quot;, &quot;main&quot;]
+</code></pre>
+<p>However, this causes uv to fail with: <code>error: Default group </code>main<code>(from</code>tool.uv.default-groups<code>) is not defined in the project's </code>dependency-groups<code> table</code>.</p>
+<p>This is kind of surprising, because <code>--group main</code> did not require that group to be defined for the workspace root, only for some (not all) workspace members. Would it be possible to remove the requirement for <code>default-groups</code> to be defined at the top level?</p>
+<h3>Example</h3>
+<p>A better experience for enabling certain dependency-groups by default in uv workspaces; please see above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @genevieve-me on 2025-06-30 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/genevieve-me">@genevieve-me</a> on 2025-06-30 21:34</div>
+            <div class="timeline-body"><p>I should note that there is a pretty simple workaround of just defining an empty <code>main</code> under <code>[dependency-groups]</code> in the workspace <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[dependency-groups]
+dev = [ &quot;ruff~=0.12.1&quot; ]
+main = []
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-30 21:34</div>
+            <div class="timeline-body"><p>Related https://github.com/astral-sh/uv/issues/14005</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2025-06-30 21:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-30 21:34</div>
+            <div class="timeline-body"><p>Thanks for the well written issue!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

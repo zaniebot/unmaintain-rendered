@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add check for undefined global variable - astral-sh/ruff #17431</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add check for undefined global variable</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17431">#17431</a>
+        opened by <a href="https://github.com/nickdrozd">@nickdrozd</a>
+        on 2025-04-16 18:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2025-04-16 18:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Python has some strange behavior with <code>global</code>. Consider:</p>
+<pre><code class="language-python">def f() -&gt; None:
+    global x
+    x = 5
+
+f()
+
+print(x)
+</code></pre>
+<p>This looks like it should raise an error, but it runs fine.</p>
+<p>Ruff doesn't flag this behavior, but I think it should, because it is probably indicative of an error. For example, say I am renaming a global variable:</p>
+<pre><code class="language-python">X = 4  # change name from x to X
+
+def f() -&gt; None:
+    global x
+    x = 5
+</code></pre>
+<p>Now <code>f</code> refers to <code>x</code> var while actual global var <code>X</code> is unaffected. Very bad!</p>
+<p>Pylint flags this as <code>global-variable-undefined</code>. Mypy objects too. Ruff says nothing, so it cannot be relied upon for global var refactoring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-16 18:35</div>
+            <div class="timeline-body"><p>I think I actually just ran into the cause of this yesterday in #17411. We currently add a binding to the global scope if we encounter a <code>global</code> statement before the variable has actually been defined. This makes us consistent with Python in weird cases like your first example (and one of our <a href="https://github.com/astral-sh/ruff/blob/1a79722ee0fb160f8929612508d5ee88b7838d09/crates/ruff_linter/resources/test/fixtures/pyflakes/F821_6.py"><code>F821</code> test cases</a> ), but I think it will also make it difficult to detect this case without some changes to our semantic model.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-04-16 18:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

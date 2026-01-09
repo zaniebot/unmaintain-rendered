@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can cache prune remove unpacked source trees? - astral-sh/uv #7394</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can cache prune remove unpacked source trees?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7394">#7394</a>
+        opened by <a href="https://github.com/bluss">@bluss</a>
+        on 2024-09-14 14:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bluss">@bluss</a> on 2024-09-14 14:41</div>
+            <div class="timeline-body"><p>Building wheels from source leaves unpacked source trees after the build, such as this for cython:</p>
+<p><code>~/.cache/uv/built-wheels-v3/pypi/cython/3.0.11/4c57QS8T3uI0oPlqtRE1W/cython-3.0.11.tar.gz</code></p>
+<p>In this case it's 127 MB after build, 85 MB of which are in the ./build/ subtree with build artifacts.
+If these files are not necessary after the .whl is produced and cached, can the build tree be removed? For example by uv cache prune.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 14:45</div>
+            <div class="timeline-body"><p>Hmm... We do need them in case we have to re-build the wheel. For example, if you then try to install <code>cython</code> on a different Python version, we would need to rebuild (since the <code>cython</code> wheels are Python-minor-version specific, like
+<code>Cython-3.0.11-cp39-cp39-win32.whl</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @charliermarsh on 2024-09-14 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 14:45</div>
+            <div class="timeline-body"><p>Perhaps we could add a setting for this, though...? Or make it part of <code>uv cache prune --ci</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-16 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-16 21:31</div>
+            <div class="timeline-body"><p>I think we should remove these in <code>uv cache prune --ci</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-09-16 22:04</div>
+            <div class="timeline-body"><p>Ok I understand now, they are downloaded and unpacked where they are, and the build happens in the tree. It sounds good to remove them at least in some mode of pruning. I realize the process for building wheels don't leave a lot of control for how to handle details of the build (cleaning the tree after build -- removing build intermediates -- and before reusing the unpacked source for another build?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7446.html">astral-sh/uv#7446</a> on 2024-09-16 23:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-16 23:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

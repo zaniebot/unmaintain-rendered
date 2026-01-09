@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a new `configurationPreference` value `filesystemOnly` - astral-sh/ruff #16209</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a new `configurationPreference` value `filesystemOnly`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16209">#16209</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-02-17 11:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-17 11:01</div>
+            <div class="timeline-body"><h3>Description</h3>
+<blockquote>
+<p>Thanks for implementing the <a href="https://docs.astral.sh/ruff/editors/settings/#configurationpreference">ruff.configurationPreference</a> setting. I wanted to raise one behavior that I found confusing:</p>
+<p>If some ruff settings are not set in the <code>.toml</code> file, the extension will use preferences from the editor, not the default values. I assume this is what &quot;takes priority&quot; mean?</p>
+<p>This results in undesirable behaviors, including inconsistencies in linting and formatting. For example, if line length is not defined in the <code>.toml</code> file but defined in <code>settings.json</code>, running <code>ruff format</code> in the terminal will apply the default of 88 while vscode's format will apply the <code>settings.json</code> length.</p>
+<p>Maybe there is an easy workaround I missed? If not, would it be possible to have a &quot;filesystemOnly&quot; option that would use the editor's preferences only when no <code>.toml</code> is present? Alternatively, could we have &quot;hard&quot; vs &quot;soft&quot; priorities for both &quot;editorFirst&quot; and &quot;filesystemFirst&quot;?</p>
+<p>Thanks in advance</p>
+</blockquote>
+<p><em>Originally posted by @VictorGillioz in <a href="https://github.com/astral-sh/ruff-vscode/issues/425#issuecomment-2624785894">#425</a></em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-02-17 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-vscode/issues/425.html">astral-sh/ruff-vscode#425</a> on 2025-02-17 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-17 11:04</div>
+            <div class="timeline-body"><p>We'd need to be careful around versioning as this would be added in Ruff and the VS Code extension but if there's a mismatch between the version the extension shouldn't error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16258.html">astral-sh/ruff#16258</a> on 2025-02-19 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2025-02-19 19:47</div>
+            <div class="timeline-body"><blockquote>
+<p>This results in undesirable behaviors, including inconsistencies in linting and formatting. For example, if line length is not defined in the <code>.toml</code> file but defined in <code>settings.json</code>, running <code>ruff format</code> in the terminal will apply the default of 88 while vscode's format will apply the <code>settings.json</code> length.</p>
+<p>Maybe there is an easy workaround I missed?</p>
+</blockquote>
+<p>I think it is editor-related feature and already could be handled by VSCode: reset modified settings per workspace/folder.</p>
+<p>Also, IMO, <a href="https://docs.astral.sh/ruff/editors/settings/#configurationpreference">ruff.configurationPreference</a> setting could have only two varients: <code>editor</code> and <code>filesystem</code>. Use separated settings <code>fileystemDiscover</code> with default of <code>true</code> and set to <code>false</code> for apply <code>editorOnly</code> behavior.</p>
+<p>Since the <em>preference</em> word points to selecting one among others, I think it makes more sense to NOT having <code>First</code> suffix in its varients.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-20 05:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it is editor-related feature and already could be handled by VSCode: reset modified settings per workspace/folder.</p>
+</blockquote>
+<p>Can you say more about this? What's &quot;VSCode: reset modified settings&quot;?</p>
+<p>I think the user still wants to keep the settings but not use it, it does seem counterintuitive to still keep them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @dhruvmanila on 2025-02-20 05:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @dhruvmanila on 2025-02-20 05:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-20 07:56</div>
+            <div class="timeline-body"><p>Reading the issue description. I don't think <code>filesystemOnly</code> would do what I'd expect. I'd expect that <code>filesystemOnly</code> would disregard the editor settings completely even if no configuration exists for the current project. But that's not what's proposed. The proposed behavior is to use the file system configuration if it exists, then fall back to the editor one (but never merge the configurations).</p>
+<p>I do agree with @T-256 that I don't think a <code>filesystemOnly</code> as I understood makes sense. In that case, users should unset their editor settings.</p>
+<p>Maybe it's just a naming issue, but I get the impression that <code>configuration precedence</code> is trying to do too much.</p>
+<ol>
+<li>It specifies in which precedence options from the discovered configurations should be merged</li>
+<li>It configures which configurations should be discovered/respected</li>
+</ol>
+<p>That makes me wonder if we should have a dedicated settings instead.</p>
+<p>A related option -- that I'm surprised it has never come up before -- is whether Ruff should run on projects that don't have a project configuration. I don't think we have to solve this here, but maybe something to keep in mind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-20 10:18</div>
+            <div class="timeline-body"><p>@MichaReiser Currently <code>editorOnly</code> means &quot;discard any configurations found in <code>.toml</code> files&quot;. <code>filesystemOnly</code>, if added, must work similarly to preserve consistency. These two have quite unfortunate names, sure, but the ship has sailed.</p>
+<p>Instead, a fifth option with the meaning &quot;use <code>.toml</code> files if found, fall back to editor otherwise&quot; should be added (tentatively named <code>filesystemFallingBackToEditor</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-20 10:45</div>
+            <div class="timeline-body"><blockquote>
+<p>These two have quite unfortunate names, sure, but the ship has sailed.</p>
+</blockquote>
+<p>I still see an opportunity to error correct. We have to support <code>editorOnly</code> for the near future.</p>
+<p>Either way, I don't think a <code>filesystemOnly</code> setting makes sense. Users should unset their editor settings in that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @dhruvmanila on 2025-02-20 10:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-20 10:48</div>
+            <div class="timeline-body"><p>(I'm going to mark this as &quot;needs-decision&quot; as after talking with Micha I agree that we can improve here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2025-02-20 21:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the user still wants to keep the settings but not use it, it does seem counterintuitive to still keep them.</p>
+</blockquote>
+<p>You can keep them as <em>User</em> settings and overriding them to default values in <em>Workspace</em> settings.
+Your workflow should become like these:</p>
+<ul>
+<li><p><em>User Settings</em>:</p>
+<pre><code class="language-jsonc">{
+  &quot;ruff.configurationPreference&quot;: &quot;filesystemFirst&quot;,
+  &quot;ruff.lint.extendSelect&quot;: [
+      &quot;RUF013&quot;,  // implicit-optional (RUF013)
+  ],
+}
+</code></pre>
+</li>
+<li><p><em>Workspace Settings</em> - Where you want apply configs from FileSystem only and all editor settings to be ignored:</p>
+<pre><code class="language-jsonc">{
+  // seetings in this file would be merge to `User Settings`
+  &quot;ruff.lint.extendSelect&quot;: [],  // reset modified settings of `User Settings`,
+                                 // So, now it seems there is no configuration set on editor side for ruff server.
+}
+</code></pre>
+<p>Then only filesystem configs are respected.</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-03 07:09</div>
+            <div class="timeline-body"><blockquote>
+<p>You can keep them as <em>User</em> settings and overriding them to default values in <em>Workspace</em> settings.</p>
+</blockquote>
+<p>That's a good suggestion, thanks. @VictorGillioz does this help your use-case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VictorGillioz">@VictorGillioz</a> on 2025-04-04 14:39</div>
+            <div class="timeline-body"><p>Hi @dhruvmanila, overriding all my ruff User settings in each Workspace where I define a .toml file should work, but kind of goes against the benefits of having ruff User settings in the first place imo (e.g. if I add a new User setting, I then have to go through all my workspaces to override it). In that case I might prefer not having default settings at all and creating a .toml file each time instead.</p>
+<p>I also think it makes the overriding even more tricky between User settings, Workspace settings, and filesystem.</p>
+<p>Having the option of defaults settings but ignoring them when a .toml is present would really be valuable in my opinion, but I'll work around it if it's too much overhead. And thanks for the suggestions!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

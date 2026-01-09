@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dependencies not installed for `python &lt;= 3.11` after changing `requires-python` - astral-sh/uv #7618</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Dependencies not installed for `python &lt;= 3.11` after changing `requires-python`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7618">#7618</a>
+        opened by <a href="https://github.com/blueraft">@blueraft</a>
+        on 2024-09-22 10:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/blueraft">@blueraft</a> on 2024-09-22 10:43</div>
+            <div class="timeline-body"><p>This came up originally in the discord, but here's an MRE for this issue.</p>
+<pre><code class="language-toml">[project]
+name = &quot;mre&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;beautifulsoup4&gt;=4.12.3&quot;,
+    &quot;httpx&gt;=0.27.2&quot;,
+    &quot;lxml&gt;=5.3.0&quot;,
+    &quot;pydantic&gt;=2.9.2&quot;,
+    &quot;strenum&gt;=0.4.15 ; python_full_version &lt; '3.11'&quot;,
+    &quot;torf&gt;=4.2.7&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>Running <code>uv sync</code> and <code>uv tree</code> gives the expected results here.</p>
+<pre><code class="language-console">❯ uv sync
+Using Python 3.12.1
+Creating virtual environment at: .venv
+Resolved 17 packages in 14ms
+Installed 17 packages in 16ms
+ + annotated-types==0.7.0
+ + anyio==4.6.0
+ + beautifulsoup4==4.12.3
+ + certifi==2024.8.30
+ + flatbencode==0.2.1
+ + h11==0.14.0
+ + httpcore==1.0.5
+ + httpx==0.27.2
+ + idna==3.10
+ + lxml==5.3.0
+ + mre==0.1.0 (from file:///Users/ahmedilyas/temp/mre)
+ + pydantic==2.9.2
+ + pydantic-core==2.23.4
+ + sniffio==1.3.1
+ + soupsieve==2.6
+ + torf==4.2.7
+ + typing-extensions==4.12.2
+❯ uv tree
+Resolved 17 packages in 0.32ms
+mre v0.1.0
+├── beautifulsoup4 v4.12.3
+│   └── soupsieve v2.6
+├── httpx v0.27.2
+│   ├── anyio v4.6.0
+│   │   ├── idna v3.10
+│   │   └── sniffio v1.3.1
+│   ├── certifi v2024.8.30
+│   ├── httpcore v1.0.5
+│   │   ├── certifi v2024.8.30
+│   │   └── h11 v0.14.0
+│   ├── idna v3.10
+│   └── sniffio v1.3.1
+├── lxml v5.3.0
+├── pydantic v2.9.2
+│   ├── annotated-types v0.7.0
+│   ├── pydantic-core v2.23.4
+│   │   └── typing-extensions v4.12.2
+│   └── typing-extensions v4.12.2
+└── torf v4.2.7
+    └── flatbencode v0.2.1
+</code></pre>
+<p>But if I change the <code>requires-python &gt;= 3.10</code>, <code>uv sync</code> doesn't install any of the dependencies for python &lt;= 3.11.</p>
+<pre><code class="language-toml">[project]
+name = &quot;mre&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;beautifulsoup4&gt;=4.12.3&quot;,
+    &quot;httpx&gt;=0.27.2&quot;,
+    &quot;lxml&gt;=5.3.0&quot;,
+    &quot;pydantic&gt;=2.9.2&quot;,
+    &quot;strenum&gt;=0.4.15 ; python_full_version &lt; '3.11'&quot;,
+    &quot;torf&gt;=4.2.7&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<pre><code class="language-console">❯ uv sync -p 3.10
+Using Python 3.10.14
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 17 packages in 37ms
+   Built mre @ file:///Users/ahmedilyas/temp/mre
+Prepared 1 package in 222ms
+Installed 1 package in 0.82ms
+ + mre==0.1.0 (from file:///Users/ahmedilyas/temp/mre)
+❯ uv tree
+Resolved 17 packages in 0.47ms
+mre v0.1.0
+</code></pre>
+<pre><code class="language-diff">diff --git a/pyproject.toml b/pyproject.toml
+index 256c85f..ca65138 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -3,7 +3,7 @@ name = &quot;mre&quot;
+ version = &quot;0.1.0&quot;
+ description = &quot;Add your description here&quot;
+ readme = &quot;README.md&quot;
+-requires-python = &quot;&gt;=3.12&quot;
++requires-python = &quot;&gt;=3.10&quot;
+ dependencies = [
+     &quot;beautifulsoup4&gt;=4.12.3&quot;,
+     &quot;httpx&gt;=0.27.2&quot;,
+diff --git a/uv.lock b/uv.lock
+index 9ec331f..683ae0f 100644
+--- a/uv.lock
++++ b/uv.lock
+@@ -1,7 +1,7 @@
+ version = 1
+-requires-python = &quot;&gt;=3.12&quot;
++requires-python = &quot;&gt;=3.10&quot;
+ resolution-markers = [
+-    &quot;python_full_version &lt; '3.13'&quot;,
++    &quot;python_full_version == '3.12.*'&quot;,
+     &quot;python_full_version &gt;= '3.13'&quot;,
+ ]
+</code></pre>
+<p>This gets fixed by deleting the lock file and re-locking, so I'm assuming it's a bug there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-22 13:54</div>
+            <div class="timeline-body"><p>Thanks, will take a look!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-22 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-22 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7624.html">astral-sh/uv#7624</a> on 2024-09-22 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-22 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-22 17:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

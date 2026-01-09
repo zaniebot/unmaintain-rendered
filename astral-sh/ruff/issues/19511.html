@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C420 false positive when the assignment mutates a pre-existing object - astral-sh/ruff #19511</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>C420 false positive when the assignment mutates a pre-existing object</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19511">#19511</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-07-23 15:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-07-23 15:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/unnecessary-dict-comprehension-for-iterable/"><code>unnecessary-dict-comprehension-for-iterable</code> (C420)</a> has a false positive when the assignment target includes an attribute reference, subscription, or slicing. The assignment has a side effect beyond the comprehension so the comprehension is not unnecessary. Example:</p>
+<pre><code class="language-console">$ cat &gt;c420.py &lt;&lt;'# EOF'
+class C: a = None
+{C.a: None for C.a in &quot;abc&quot;}
+print(C.a)
+
+x = [None]
+{x[0]: None for x[0] in &quot;abc&quot;}
+print(x)
+
+class C(list):
+    def __getitem__(self, index, /):
+        item = super().__getitem__(index)
+        if isinstance(index, slice): item = tuple(item)
+        return item
+x = C()
+{x[:0]: None for x[:0] in &quot;abc&quot;}
+print(x)
+# EOF
+
+$ python c420.py
+c
+['c']
+['c', 'b', 'a']
+
+$ ruff --isolated check c420.py --select C420 --preview --fix
+Found 3 errors (3 fixed, 0 remaining).
+
+$ python c420.py
+None
+[None]
+[]
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.4 (ee2759b36 2025-07-17)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-23 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-07-23 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19513.html">astral-sh/ruff#19513</a> on 2025-07-23 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-08 19:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

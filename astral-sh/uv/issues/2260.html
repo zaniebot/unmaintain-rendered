@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UnknownIssuer in docker image run from nox - astral-sh/uv #2260</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UnknownIssuer in docker image run from nox</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2260">#2260</a>
+        opened by <a href="https://github.com/marvin8">@marvin8</a>
+        on 2024-03-07 02:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/marvin8">@marvin8</a> on 2024-03-07 02:43</div>
+            <div class="timeline-body"><p>I have a docker image with the latest supported versions of Python and the latest version of <a href="https://github.com/wntrblm/nox/releases/tag/2024.03.02">Nox</a> for my CI environment.</p>
+<p>I am attempting to use <code>uv</code> to speed up my CI.</p>
+<p>Unfortunately <code>uv</code> returns an error about <code>UnknownIssuer</code> when trying to install dependencies.</p>
+<p>Here is the <a href="https://ci.codeberg.org/repos/12828/pipeline/39/5">output of my CI run</a></p>
+<p>For reference the docker image was built using the below dockerfile:</p>
+<pre><code>from debian:12-slim as builder
+
+RUN apt-get --assume-yes update
+RUN apt-get --assume-yes upgrade
+RUN apt-get --assume-yes install git make build-essential libssl-dev zlib1g-dev \
+       libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+       libncurses5-dev libncursesw5-dev xz-utils tk-dev ca-certificates librust-rustls-native-certs-dev
+
+WORKDIR /
+RUN curl https://www.python.org/ftp/python/3.12.2/Python-3.12.2.tgz -o Python-3.12.2.tgz
+RUN tar xfz Python-3.12.2.tgz
+WORKDIR /Python-3.12.2
+RUN ./configure --enable-optimizations --with-ensurepip=install
+RUN make
+RUN make altinstall
+
+WORKDIR /
+RUN curl https://www.python.org/ftp/python/3.11.8/Python-3.11.8.tgz -o Python-3.11.8.tgz
+RUN tar xfz Python-3.11.8.tgz
+WORKDIR /Python-3.11.8
+RUN ./configure --enable-optimizations --with-ensurepip=install
+RUN make
+RUN make altinstall
+
+WORKDIR /
+RUN curl https://www.python.org/ftp/python/3.10.13/Python-3.10.13.tgz -o Python-3.10.13.tgz
+RUN tar xfz Python-3.10.13.tgz
+WORKDIR Python-3.10.13
+RUN ./configure --enable-optimizations --with-ensurepip=install
+RUN make
+RUN make altinstall
+
+WORKDIR /
+RUN curl https://www.python.org/ftp/python/3.9.18/Python-3.9.18.tgz -o Python-3.9.18.tgz
+RUN tar xfz Python-3.9.18.tgz
+WORKDIR Python-3.9.18
+RUN ./configure --enable-optimizations --with-ensurepip=install
+RUN make
+RUN make altinstall
+
+WORKDIR /
+RUN curl https://www.python.org/ftp/python/3.8.18/Python-3.8.18.tgz -o Python-3.8.18.tgz
+RUN tar xfz Python-3.8.18.tgz
+WORKDIR Python-3.8.18
+RUN ./configure --enable-optimizations --with-ensurepip=install
+RUN make
+RUN make altinstall
+
+
+from debian:12-slim
+RUN uname -a
+
+RUN apt-get --assume-yes update
+RUN apt-get --assume-yes install libssl3 libsqlite3-0
+
+COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder /usr/local/lib /usr/local/lib
+
+RUN python3.8 --version
+RUN python3.9 --version
+RUN python3.10 --version
+RUN python3.11 --version
+RUN python3.12 --version
+
+RUN python3.11 -m pip install nox[uv]
+
+RUN nox --version
+</code></pre>
+<p>I am looking for any ideas why UV returns an <code>UknownIssuer</code> error where as pip works without any issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-07 03:48</div>
+            <div class="timeline-body"><p>I'm not sure, but it sounds like something's wrong with your image's certificates. <code>pip</code> doesn't use the system truststore by default but we do (#1512).</p>
+<p>Similar issue in https://github.com/astral-sh/uv/issues/1819 but they were using custom certificates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-03-07 03:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marvin8">@marvin8</a> on 2024-03-07 03:59</div>
+            <div class="timeline-body"><p>Thanks... reading through #1512 it feels that maybe using debian-slim as a starting point for my image may not be the best. I'll experiment a bit and will report back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-07 04:10</div>
+            <div class="timeline-body"><p>Thanks! Happy to help if I can but usually these aren't related to <code>uv</code> itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marvin8">@marvin8</a> on 2024-03-07 04:14</div>
+            <div class="timeline-body"><blockquote>
+<p>usually these aren't related to <code>uv</code> itself.</p>
+</blockquote>
+<p>Yeah... fully appreciate that. I was more looking for hints on where to look next.</p>
+<p>Anyway, thanks for your help and insight. (I wasn't aware that pip doesn't use the system trust store. With that info I realize now, that having pip work is <strong>no</strong> indication that my system trust store is in good shape :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-07 04:16</div>
+            <div class="timeline-body"><p>You can check if <code>pip</code> works with your system trust store: https://pip.pypa.io/en/stable/topics/https-certificates/#using-system-certificate-stores</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marvin8">@marvin8</a> on 2024-03-07 20:29</div>
+            <div class="timeline-body"><p>I have re-worked my docker image file to be based on Alpine (instead of debian) and this error has disappeared. So it seems that the the <a href="https://github.com/astral-sh/uv/pull/1512#issuecomment-1948875134">comment</a> in #1512 was spot on.</p>
+<p>Thanks for your help. Closing this now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @marvin8 on 2024-03-07 20:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

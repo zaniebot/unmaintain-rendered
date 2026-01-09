@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empty &quot;Usage: &quot; section appears even with usage feature flag disabled - clap-rs/clap #4586</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Empty &quot;Usage: &quot; section appears even with usage feature flag disabled</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4586">#4586</a>
+        opened by <a href="https://github.com/mgunyho">@mgunyho</a>
+        on 2022-12-29 16:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mgunyho">@mgunyho</a> on 2022-12-29 16:12</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.64.0 (a55dd71d5 2022-09-19)</p>
+<h3>Clap Version</h3>
+<p>4.0.32</p>
+<h3>Minimal reproducible code</h3>
+<p><code>main.rs</code>:</p>
+<pre><code class="language-rust">fn main() {
+    clap::Command::new(&quot;test&quot;)
+        .get_matches();
+}
+</code></pre>
+<p><code>Cargo.toml</code>:</p>
+<pre><code class="language-toml">[package]
+name = &quot;clap-empty-usage&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies.clap]
+version = &quot;4&quot;
+default-features = false
+features = [&quot;help&quot;, &quot;std&quot;]
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-shell">cargo run -- --help
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>The program prints</p>
+<pre><code>Usage: 
+
+Options:
+  -h, --help  Print help information
+</code></pre>
+<p>(Note the trailing space after <code>Usage: </code>)</p>
+<h3>Expected Behaviour</h3>
+<p>With the <code>usage</code> feature-flag disabled, I would have expected no <code>Usage: </code> line, just</p>
+<pre><code>Options:
+  -h, --help  Print help information
+</code></pre>
+<h3>Additional Context</h3>
+<p>I suppose the <code>Usage: </code> line shouldn't be there at all if the feature flag is missing, right? Especially the trailing space made me suspect it's a bug.</p>
+<p>I noticed this when migrating from clap to v4 from v3 in my app (which has <code>default-features = false</code>). I actually wanted the usage line, but I hadn't added the <code>usage</code> feature flag (I was reading the migration guide <a href="https://github.com/clap-rs/clap/releases/tag/v4.0.0-rc.1">here</a>, which didn't include instructions to update the feature flags).</p>
+<h3>Debug Output</h3>
+<pre><code>[      clap::builder::command]  Command::_do_parse
+[      clap::builder::command]  Command::_build: name=&quot;test&quot;
+[      clap::builder::command]  Command::_propagate:test
+[      clap::builder::command]  Command::_check_help_and_version:test expand_help_tree=false
+[      clap::builder::command]  Command::long_help_exists
+[      clap::builder::command]  Command::_check_help_and_version: Building default --help
+[      clap::builder::command]  Command::_propagate_global_args:test
+[clap::builder::debug_asserts]  Command::_debug_asserts
+[clap::builder::debug_asserts]  Arg::_debug_asserts:help
+[clap::builder::debug_asserts]  Command::_verify_positionals
+[        clap::parser::parser]  Parser::get_matches_with
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--help&quot;)' ([45, 45, 104, 101, 108, 112])
+[        clap::parser::parser]  Parser::possible_subcommand: arg=Ok(&quot;--help&quot;)
+[        clap::parser::parser]  Parser::get_matches_with: sc=None
+[        clap::parser::parser]  Parser::parse_long_arg
+[        clap::parser::parser]  Parser::parse_long_arg: Does it contain '='...
+[        clap::parser::parser]  Parser::parse_long_arg: Found valid arg or flag '--help'
+[        clap::parser::parser]  Parser::parse_long_arg(&quot;help&quot;): Presence validated
+[        clap::parser::parser]  Parser::react action=Help, identifier=Some(Long), source=CommandLine
+[        clap::parser::parser]  Help: use_long=true
+[      clap::builder::command]  Command::long_help_exists: false
+[      clap::builder::command]  Command::write_help_err: test, use_long=false
+[      clap::builder::command]  Command::long_help_exists: false
+[          clap::output::help]  write_help
+[ clap::output::help_template]  HelpTemplate::new cmd=test, use_long=false
+[ clap::output::help_template]  should_show_arg: use_long=false, arg=help
+[ clap::output::help_template]  HelpTemplate::write_templated_help
+[ clap::output::help_template]  HelpTemplate::write_before_help
+[         clap::output::usage]  Usage::create_usage_no_title
+[ clap::output::help_template]  HelpTemplate::write_all_args
+[ clap::output::help_template]  should_show_arg: use_long=false, arg=help
+[ clap::output::help_template]  HelpTemplate::write_args Options
+[ clap::output::help_template]  should_show_arg: use_long=false, arg=help
+[ clap::output::help_template]  HelpTemplate::write_args: arg=&quot;help&quot; longest=6
+[ clap::output::help_template]  should_show_arg: use_long=false, arg=help
+[ clap::output::help_template]  HelpTemplate::spec_vals: a=--help
+[ clap::output::help_template]  HelpTemplate::spec_vals: a=--help
+[ clap::output::help_template]  HelpTemplate::short
+[ clap::output::help_template]  HelpTemplate::long
+[ clap::output::help_template]  HelpTemplate::align_to_about: arg=help, next_line_help=false, longest=6
+[ clap::output::help_template]  HelpTemplate::align_to_about: positional=false arg_len=6, spaces=2
+[ clap::output::help_template]  HelpTemplate::help
+[ clap::output::help_template]  HelpTemplate::help: help_width=14, spaces=22, avail=86
+[ clap::output::help_template]  HelpTemplate::write_after_help
+[      clap::builder::command]  Command::color: Color setting...
+[      clap::builder::command]  Command::color: Color setting...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @mgunyho on 2022-12-29 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2022-12-29 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-12-29 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-12-29 16:54</div>
+            <div class="timeline-body"><p>We do not expect to address this.  When disabling the usage feature, the user will need to either manually override the usage or change the help template.  This is an advanced enough of a scenario that the cost (including binary size) is not justifiable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-12-29 16:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement ssort - astral-sh/ruff #3946</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement ssort</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3946">#3946</a>
+        opened by <a href="https://github.com/JackAshwell11">@JackAshwell11</a>
+        on 2023-04-12 10:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JackAshwell11">@JackAshwell11</a> on 2023-04-12 10:37</div>
+            <div class="timeline-body"><p>Since Ruff already implements <a href="https://beta.ruff.rs/docs/rules/#isort-i">isort</a>, it would be nice to see <a href="https://github.com/bwhmather/ssort">ssort</a> implemented as well.</p>
+<p>This plugin automatically reorders the contents of a python file so that statements are placed after the things they depend making navigation easier within the file. For example (from the ssort GitHub page):
+Before:</p>
+<pre><code class="language-py">from module import BaseClass
+
+def function():
+    return _dependency()
+
+def _decorator(fn):
+    return fn
+
+@_decorator
+def _dependency():
+    return Class()
+
+class Class(BaseClass):
+    def public_method(self):
+        return self
+
+    def __init__(self):
+        pass
+</code></pre>
+<p>After:</p>
+<pre><code class="language-py">from module import BaseClass
+
+class Class(BaseClass):
+    def __init__(self):
+        pass
+
+    def public_method(self):
+        return self
+
+    def _decorator(fn):
+        return fn
+
+@_decorator
+def _dependency():
+    return Class()
+
+def function():
+    return _dependency()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-12 10:40</div>
+            <div class="timeline-body"><p>Does ssort solve a similar problem to the newspaper rule #2436 (except that it fixes it automatically)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JackAshwell11">@JackAshwell11</a> on 2023-04-12 10:50</div>
+            <div class="timeline-body"><p>I haven't heard of <code>flake8-newspaper-style</code> before, but based on what I can gather, it seems so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g-as">@g-as</a> on 2023-04-12 11:50</div>
+            <div class="timeline-body"><p>It seems that they do solve a similar problem but with opposite solutions.</p>
+<p><code>ssort</code> does bottom-up while <code>flake8-newspaper-style</code> does top-down.</p>
+<p>https://github.com/bwhmather/ssort#frequently-asked-questions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JackAshwell11">@JackAshwell11</a> on 2023-04-12 11:54</div>
+            <div class="timeline-body"><p>There is an active <a href="https://github.com/bwhmather/ssort/issues/18">issue</a> in <code>ssort</code> asking for more sorting options. This could be part of <code>tool.ruff.ssort.sorting-order</code>. Although, I'm not sure if top-down is the correct order for a scripting language such as Python since lookups happen immediately as described <a href="https://github.com/bwhmather/ssort#why-does-ssort-sort-bottom-up-rather-than-top-down">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">plugin</span> added by @charliermarsh on 2023-04-13 03:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-05-11 13:38</div>
+            <div class="timeline-body"><p>I would add that ssort conflicts with the <a href="https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/#model-style">Django documentation</a> and the <a href="https://beta.ruff.rs/docs/rules/django-unordered-body-content-in-model/"><code>DJ012</code></a> rule. If ssort were to be implemented in ruff, I would love it if there were a sorting option to cohere with the Django standards (beyond just top-down vs bottom-up).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JackAshwell11">@JackAshwell11</a> on 2023-05-11 13:43</div>
+            <div class="timeline-body"><blockquote>
+<p>I would add that ssort conflicts with the <a href="https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/#model-style">Django documentation</a> and the <a href="https://beta.ruff.rs/docs/rules/django-unordered-body-content-in-model/"><code>DJ012</code></a> rule. If ssort were to be implemented in ruff, I would love it if there were a sorting option to cohere with the Django standards (beyond just top-down vs bottom-up).</p>
+</blockquote>
+<p>There are some issues on <code>ssort</code>'s GitHub page asking for options to change the sorting order. So that could work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JackAshwell11">@JackAshwell11</a> on 2023-05-11 20:05</div>
+            <div class="timeline-body"><p>I would like to have a go at implementing this, not sure how successful I'll be, but I can try. Just would like to finish my exams first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JackAshwell11">@JackAshwell11</a> on 2023-05-18 19:56</div>
+            <div class="timeline-body"><p>So after looking and understanding ssort's implementation, it definitely looks like it would be better to just re-write it entirely from the ground up. I'm gonna work on some other rules so I can get a bit more practice with Ruff's codebase first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jgberry">@jgberry</a> on 2023-06-09 02:32</div>
+            <div class="timeline-body"><p>Hey @Aspect1103! I'm a ssort collaborator and have recently really taken an interest in ruff. I think there's a lot of promise here, specifically from a performance perspective. We spent considerable effort optimizing ssort's performance, but pure python can only take you so far. I could easily see a pure rust implementation having orders of magnitude better performance! Let me know if I can help out in any way!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JackAshwell11">@JackAshwell11</a> on 2023-06-09 06:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Hey @Aspect1103! I'm a ssort collaborator and have recently really taken an interest in ruff. I think there's a lot of promise here, specifically from a performance perspective. We spent considerable effort optimizing ssort's performance, but pure python can only take you so far. I could easily see a pure rust implementation having orders of magnitude better performance! Let me know if I can help out in any way!</p>
+</blockquote>
+<p>Hi, I haven't yet had a go with making some Ruff plugins, so you could take this one on if you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5221.html">astral-sh/ruff#5221</a> on 2023-06-20 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5271.html">astral-sh/ruff#5271</a> on 2023-06-21 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-07-10 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bwhmather/ssort/issues/102.html">bwhmather/ssort#102</a> on 2023-12-21 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10261.html">astral-sh/ruff#10261</a> on 2024-03-11 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2425.html">astral-sh/ruff#2425</a> on 2024-03-11 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jag-k">@jag-k</a> on 2024-11-26 15:27</div>
+            <div class="timeline-body"><p>Hey, any update here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-27 07:32</div>
+            <div class="timeline-body"><p>@jag-k No updates yet. We're happy to accept any contributions here, there was an attempt previously (https://github.com/astral-sh/ruff/pull/5271) which can be used as a reference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jag-k">@jag-k</a> on 2024-11-27 09:00</div>
+            <div class="timeline-body"><blockquote>
+<p>@jag-k No updates yet. We're happy to accept any contributions here, there was an attempt previously (https://github.com/astral-sh/ruff/pull/5271) which can be used as a reference.</p>
+</blockquote>
+<p>Ohh.. well, I think I need to start learning Rust for it..))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sanmai-NL">@sanmai-NL</a> on 2024-12-02 14:45</div>
+            <div class="timeline-body"><p>See also: https://github.com/astral-sh/ruff/issues/8232</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8232.html">astral-sh/ruff#8232</a> on 2024-12-02 14:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

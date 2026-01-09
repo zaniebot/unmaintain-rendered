@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv not installing `.so` files on macOS - astral-sh/uv #12869</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv not installing `.so` files on macOS</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12869">#12869</a>
+        opened by <a href="https://github.com/CalaW">@CalaW</a>
+        on 2025-04-14 03:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CalaW">@CalaW</a> on 2025-04-14 03:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Similar to #11554</p>
+<h2>uv</h2>
+<pre><code class="language-shell">uv add opencamlib@git+https://github.com/calaw/opencamlib --branch pybind11 --no-cache &amp;&gt; install_log
+</code></pre>
+<p>The library cannot be imported:</p>
+<pre><code class="language-shell">❯ python3
+Python 3.13.3 (main, Apr  8 2025, 13:54:08) [Clang 16.0.0 (clang-1600.0.26.6)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; from opencamlib import ocl
+Traceback (most recent call last):
+  File &quot;&lt;python-input-0&gt;&quot;, line 1, in &lt;module&gt;
+    from opencamlib import ocl
+ModuleNotFoundError: No module named 'opencamlib'
+</code></pre>
+<p>And there's no .so file.</p>
+<pre><code class="language-shell">❯ ll .venv/lib/python3.13/site-packages/opencamlib/
+Octal Size Date Modified Git  Name
+0644    19 04-14 11:05    -I   __init__.py
+0644   28k 04-14 11:05    -I   camvtk.py
+0644  736k 04-14 11:05    -I   libomp.dylib
+0644  1.4k 04-14 11:05    -I   procmemory.py
+0644  2.4k 04-14 11:05    -I   pyocl.py
+0644   10k 04-14 11:05    -I   STLTools.py
+</code></pre>
+<h2>pip</h2>
+<p>Create a venv then</p>
+<pre><code class="language-shell">pip install git+https://github.com/calaw/opencamlib@pybind11 --use-pep517 --no-cache
+</code></pre>
+<pre><code class="language-shell">❯ python3
+Python 3.13.3 (main, Apr  8 2025, 13:54:08) [Clang 16.0.0 (clang-1600.0.26.6)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; from opencamlib import ocl
+&gt;&gt;&gt; print(ocl.Point(1,2,3))
+(1, 2, 3)
+</code></pre>
+<pre><code class="language-shell">❯ ll .venv/lib/python3.13/site-packages/opencamlib/
+Octal Size Date Modified  Name
+0755     - 04-14 11:10     __pycache__
+0644    19 04-14 11:10     __init__.py
+0644   28k 04-14 11:10     camvtk.py
+0644  736k 04-14 11:10     libomp.dylib
+0755  710k 04-14 11:10     ocl.cpython-313-darwin.so
+0644  1.4k 04-14 11:10     procmemory.py
+0644  2.4k 04-14 11:10     pyocl.py
+0644   10k 04-14 11:10     STLTools.py
+</code></pre>
+<h3>Platform</h3>
+<p>macOS 15.3.2 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.14 (Homebrew 2025-04-09)</p>
+<h3>Python version</h3>
+<p>Python 3.13.3 and 3.12.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @CalaW on 2025-04-14 03:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CalaW">@CalaW</a> on 2025-04-14 03:35</div>
+            <div class="timeline-body"><details>
+<summary>uv_install_log</summary>
+
+<pre><code>DEBUG uv 0.6.14 (Homebrew 2025-04-09)
+DEBUG Found project root: `/Users/calaw/Documents/Program/playground/uv_Playground`
+DEBUG No workspace root found, using project root
+TRACE Checking lock for `/Users/calaw/Documents/Program/playground/uv_Playground` at `/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/uv-488ff8351a38c20c.lock`
+DEBUG Acquired lock for `/Users/calaw/Documents/Program/playground/uv_Playground`
+DEBUG Reading Python requests from version file at `/Users/calaw/Documents/Program/playground/uv_Playground/.python-version`
+DEBUG Using Python request `3.13` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+TRACE Querying interpreter executable at /Users/calaw/Documents/Program/playground/uv_Playground/.venv/bin/python3
+DEBUG The virtual environment's Python version satisfies `3.13`
+DEBUG Released lock at `/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/uv-488ff8351a38c20c.lock`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: uv-playground @ file:///Users/calaw/Documents/Program/playground/uv_Playground
+DEBUG No workspace root found, using project root
+TRACE Performing lookahead for uv-playground @ file:///Users/calaw/Documents/Program/playground/uv_Playground
+TRACE Performing lookahead for opencamlib @ git+https://github.com/calaw/opencamlib@pybind11
+DEBUG Attempting GitHub fast path for: opencamlib @ git+https://github.com/calaw/opencamlib@pybind11
+DEBUG Querying GitHub for commit at: https://api.github.com/repos/calaw/opencamlib/commits/pybind11
+TRACE Handling request for https://api.github.com/repos/calaw/opencamlib/commits/pybind11 with authentication policy auto
+TRACE Request for https://api.github.com/repos/calaw/opencamlib/commits/pybind11 is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://api.github.com/repos/calaw/opencamlib/commits/pybind11
+TRACE Attempting unauthenticated request for https://api.github.com/repos/calaw/opencamlib/commits/pybind11
+TRACE checkout waiting for idle connection: (&quot;https&quot;, api.github.com)
+DEBUG starting new connection: https://api.github.com/   
+
+&lt;DELETED SOME IRRELEVANT LOGS&gt;
+
+DEBUG Installing build requirements: pathspec==0.12.1, packaging==24.2, pybind11==2.13.6, scikit-build-core==0.11.1
+TRACE Extracting file name=PackageName(&quot;pathspec&quot;)
+TRACE Extracting file name=PackageName(&quot;packaging&quot;)
+TRACE Extracting file name=PackageName(&quot;pybind11&quot;)
+TRACE Extracting file name=PackageName(&quot;scikit-build-core&quot;)
+TRACE Cloning /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/archive-v0/v7Sbrj6b0xShRZYXR3ZX9/packaging to /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/packaging
+TRACE Cloning /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/archive-v0/r_oeSNLkWDqwj2DCVvHgv/pathspec to /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pathspec
+TRACE Cloning /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/archive-v0/P00f50_vj4qDllEmighBH/pybind11-2.13.6.dist-info to /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11-2.13.6.dist-info
+TRACE Cloning /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/archive-v0/EqYdBvQR3yf2lHTvb2N2J/scikit_build_core to /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/scikit_build_core
+TRACE Cloning /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/archive-v0/v7Sbrj6b0xShRZYXR3ZX9/packaging-24.2.dist-info to /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/packaging-24.2.dist-info
+TRACE Cloning /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/archive-v0/r_oeSNLkWDqwj2DCVvHgv/pathspec-0.12.1.dist-info to /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pathspec-0.12.1.dist-info
+TRACE Extracted 2 files name=PackageName(&quot;packaging&quot;)
+TRACE Cloning /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/archive-v0/P00f50_vj4qDllEmighBH/pybind11 to /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11
+TRACE No entrypoints name=PackageName(&quot;packaging&quot;)
+TRACE No data name=PackageName(&quot;packaging&quot;)
+TRACE Writing installer metadata name=PackageName(&quot;packaging&quot;)
+TRACE Cloning /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/archive-v0/EqYdBvQR3yf2lHTvb2N2J/scikit_build_core-0.11.1.dist-info to /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/scikit_build_core-0.11.1.dist-info
+TRACE Extracted 2 files name=PackageName(&quot;pathspec&quot;)
+TRACE No entrypoints name=PackageName(&quot;pathspec&quot;)
+TRACE No data name=PackageName(&quot;pathspec&quot;)
+TRACE Writing installer metadata name=PackageName(&quot;pathspec&quot;)
+TRACE Extracted 2 files name=PackageName(&quot;pybind11&quot;)
+TRACE Extracted 2 files name=PackageName(&quot;scikit-build-core&quot;)
+TRACE Writing record name=PackageName(&quot;packaging&quot;)
+TRACE No entrypoints name=PackageName(&quot;scikit-build-core&quot;)
+TRACE No data name=PackageName(&quot;scikit-build-core&quot;)
+TRACE Writing installer metadata name=PackageName(&quot;scikit-build-core&quot;)
+TRACE Writing record name=PackageName(&quot;pathspec&quot;)
+TRACE Writing record name=PackageName(&quot;scikit-build-core&quot;)
+TRACE Writing entrypoints name=PackageName(&quot;pybind11&quot;)
+TRACE No data name=PackageName(&quot;pybind11&quot;)
+TRACE Writing installer metadata name=PackageName(&quot;pybind11&quot;)
+TRACE Writing record name=PackageName(&quot;pybind11&quot;)
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `scikit_build_core.build.get_requires_for_build_wheel()`
+DEBUG WARNING: Use build.verbose instead of cmake.verbose for scikit-build-core &gt;= 0.10
+DEBUG No workspace root found, using project root
+DEBUG Calling `scikit_build_core.build.build_wheel(&quot;/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmp4hqPez&quot;, {}, None)`
+DEBUG WARNING: Use build.verbose instead of cmake.verbose for scikit-build-core &gt;= 0.10
+DEBUG 2025-04-14 11:04:56,469 - scikit_build_core - INFO - RUN: /opt/homebrew/bin/cmake -E capabilities
+DEBUG 2025-04-14 11:04:56,475 - scikit_build_core - INFO - CMake version: 4.0.1
+DEBUG *** scikit-build-core 0.11.1 using CMake 4.0.1 (wheel)
+DEBUG 2025-04-14 11:04:56,478 - scikit_build_core - DEBUG - MACOSX_DEPLOYMENT_TARGET not set, using 15.0
+DEBUG 2025-04-14 11:04:56,478 - scikit_build_core - INFO - Build directory: /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build
+DEBUG *** Configuring CMake...
+DEBUG 2025-04-14 11:04:56,480 - scikit_build_core - DEBUG - cmake.modules: []
+DEBUG 2025-04-14 11:04:56,481 - scikit_build_core - DEBUG - cmake.prefix: []
+DEBUG 2025-04-14 11:04:56,481 - scikit_build_core - DEBUG - cmake.root: {}
+DEBUG 2025-04-14 11:04:56,481 - scikit_build_core - DEBUG - SITE_PACKAGES: /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages
+DEBUG 2025-04-14 11:04:56,487 - scikit_build_core - DEBUG - Default generator: Ninja
+DEBUG 2025-04-14 11:04:56,487 - scikit_build_core - INFO - RUN: /opt/homebrew/bin/ninja --version
+DEBUG 2025-04-14 11:04:56,489 - scikit_build_core - INFO - Ninja version: 1.12.1
+DEBUG 2025-04-14 11:04:56,489 - scikit_build_core - DEBUG - CMAKE_GENERATOR: Using ninja: /opt/homebrew/bin/ninja
+DEBUG 2025-04-14 11:04:56,490 - scikit_build_core - DEBUG - libdir/(ld)library: /opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/lib/libpython3.13.a is not a real file!
+DEBUG 2025-04-14 11:04:56,490 - scikit_build_core - DEBUG - /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/CMakeInit.txt:
+DEBUG   set(SKBUILD [===[2]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(SKBUILD_CORE_VERSION [===[0.11.1]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(SKBUILD_PROJECT_NAME [===[opencamlib]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(SKBUILD_PROJECT_VERSION [===[2022.12.18]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(SKBUILD_PROJECT_VERSION_FULL [===[2022.12.18]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(PYTHON_EXECUTABLE [===[/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/bin/python]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(PYTHON_INCLUDE_DIR [===[/opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/include/python3.13]===] CACHE PATH &quot;&quot; FORCE)
+DEBUG   set(PYTHON_LIBRARY [===[/opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/Python]===] CACHE PATH &quot;&quot; FORCE)
+DEBUG   set(Python_EXECUTABLE [===[/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/bin/python]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(Python_ROOT_DIR [===[/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(Python_INCLUDE_DIR [===[/opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/include/python3.13]===] CACHE PATH &quot;&quot; FORCE)
+DEBUG   set(Python_FIND_REGISTRY [===[NEVER]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(Python3_EXECUTABLE [===[/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/bin/python]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(Python3_ROOT_DIR [===[/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(Python3_INCLUDE_DIR [===[/opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/include/python3.13]===] CACHE PATH &quot;&quot; FORCE)
+DEBUG   set(Python3_FIND_REGISTRY [===[NEVER]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(SKBUILD_SOABI [===[cpython-313-darwin]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(SKBUILD_SABI_COMPONENT [===[]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(SKBUILD_SABI_VERSION [===[]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(SKBUILD_PLATLIB_DIR [===[/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/wheel/platlib]===] CACHE PATH &quot;&quot; FORCE)
+DEBUG   set(SKBUILD_DATA_DIR [===[/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/wheel/data]===] CACHE PATH &quot;&quot; FORCE)
+DEBUG   set(SKBUILD_HEADERS_DIR [===[/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/wheel/headers]===] CACHE PATH &quot;&quot; FORCE)
+DEBUG   set(SKBUILD_SCRIPTS_DIR [===[/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/wheel/scripts]===] CACHE PATH &quot;&quot; FORCE)
+DEBUG   set(SKBUILD_NULL_DIR [===[/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/wheel/null]===] CACHE PATH &quot;&quot; FORCE)
+DEBUG   set(SKBUILD_METADATA_DIR [===[/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/wheel/metadata]===] CACHE PATH &quot;&quot; FORCE)
+DEBUG   set(SKBUILD_STATE [===[wheel]===] CACHE STRING &quot;&quot; FORCE)
+DEBUG   set(CMAKE_PREFIX_PATH [===[/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages]===] CACHE PATH &quot;&quot; FORCE)
+DEBUG   set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE &quot;BOTH&quot; CACHE PATH &quot;&quot;)
+DEBUG 2025-04-14 11:04:56,490 - scikit_build_core - DEBUG - RUNENV:
+DEBUG   CC='clang'
+DEBUG   CLICOLOR_FORCE='1'
+DEBUG   CMAKE_GENERATOR='Ninja'
+DEBUG   COLORTERM='truecolor'
+DEBUG   COMMAND_MODE='unix2003'
+DEBUG   CXX='clang++'
+DEBUG   DOCKER_CONFIG='/Users/calaw/.config/docker'
+DEBUG   EDITOR='nvim'
+DEBUG   FZF_CTRL_T_COMMAND='fd --type file --color=always --hidden --exclude .git'
+DEBUG   FZF_DEFAULT_COMMAND='fd --type file --color=always --hidden --exclude .git'
+DEBUG   FZF_DEFAULT_OPTS='--ansi'
+DEBUG   GHOSTTY_BIN_DIR='/Applications/Ghostty.app/Contents/MacOS'
+DEBUG   GHOSTTY_RESOURCES_DIR='/Applications/Ghostty.app/Contents/Resources/ghostty'
+DEBUG   GHOSTTY_SHELL_INTEGRATION_NO_SUDO='1'
+DEBUG   HOME='/Users/calaw'
+DEBUG   HOMEBREW_API_DOMAIN='https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api'
+DEBUG   HOMEBREW_BOTTLE_DOMAIN='https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles'
+DEBUG   HOMEBREW_BREW_GIT_REMOTE='https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git'
+DEBUG   HOMEBREW_CORE_GIT_REMOTE='https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git'
+DEBUG   HOMEBREW_PIP_INDEX_URL='https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple'
+DEBUG   LANG='en_US.UTF-8'
+DEBUG   LOGNAME='calaw'
+DEBUG   LaunchInstanceID='FF0D2441-1879-4E2B-82D9-96951F67D29D'
+DEBUG   MANPAGER=&quot;sh -c 'col -bx | bat -l man -p'&quot;
+DEBUG   MANPATH='/usr/share/man:/usr/local/share/man:/Library/TeX/Distributions/.DefaultTeX/Contents/Man::/Applications/Ghostty.app/Contents/Resources/ghostty/../man'
+DEBUG   PATH='/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/bin:/Users/calaw/.local/bin:/opt/homebrew/sbin:/opt/homebrew/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/Applications/VMware Fusion.app/Contents/Public:/Library/TeX/texbin:/Applications/Ghostty.app/Contents/MacOS'
+DEBUG   PWD='/Users/calaw/Documents/Program/playground/uv_Playground'
+DEBUG   PYTHONIOENCODING='utf-8:backslashreplace'
+DEBUG   SECURITYSESSIONID='186ab'
+DEBUG   SHELL='fish'
+DEBUG   SHLVL='1'
+DEBUG   SSH_AUTH_SOCK='/private/tmp/com.apple.launchd.Tit9jOF0Ah/Listeners'
+DEBUG   STARSHIP_SESSION_KEY='5242270331002488'
+DEBUG   STARSHIP_SHELL='fish'
+DEBUG   TERM='xterm-ghostty'
+DEBUG   TERMINFO='/Applications/Ghostty.app/Contents/Resources/terminfo'
+DEBUG   TERM_PROGRAM='ghostty'
+DEBUG   TERM_PROGRAM_VERSION='1.1.3'
+DEBUG   TMPDIR='/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/'
+DEBUG   USER='calaw'
+DEBUG   UV='/opt/homebrew/bin/uv'
+DEBUG   VIRTUAL_ENV='/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41'
+DEBUG   XDG_CACHE_HOME='/Users/calaw/.cache'
+DEBUG   XDG_CONFIG_HOME='/Users/calaw/.config'
+DEBUG   XDG_DATA_DIRS='/usr/local/share:/usr/share:/Applications/Ghostty.app/Contents/Resources/ghostty/..'
+DEBUG   XDG_DATA_HOME='/Users/calaw/.local/share'
+DEBUG   XDG_STATE_HOME='/Users/calaw/.local/state'
+DEBUG   XPC_FLAGS='0x0'
+DEBUG   XPC_SERVICE_NAME='0'
+DEBUG   __CFBundleIdentifier='com.mitchellh.ghostty'
+DEBUG   __CF_USER_TEXT_ENCODING='0x1F5:0x19:0x34'
+DEBUG   all_proxy='socks5://127.0.0.1:6153'
+DEBUG   http_proxy='http://127.0.0.1:6152'
+DEBUG   https_proxy='http://127.0.0.1:6152'
+DEBUG 2025-04-14 11:04:56,490 - scikit_build_core - INFO - RUN: /opt/homebrew/bin/cmake -S. -B/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build -DCMAKE_BUILD_TYPE:STRING=Release -C/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/CMakeInit.txt -DCMAKE_INSTALL_PREFIX=/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/wheel/platlib -DCMAKE_MAKE_PROGRAM=/opt/homebrew/bin/ninja -DBUILD_PY_LIB=ON -DBoost_ADDITIONAL_VERSIONS=1.87.0;1.86.0;1.85.0;1.84.0;1.83.0;1.82.0;1.81.0;1.80.0;1.79.0;1.78.0;1.77.0;1.76.0;1.75.0;1.74.0;1.73.0;1.72.0;1.71.0;1.70.0 -DBUILD_DOC=OFF
+DEBUG loading initial cache file /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/CMakeInit.txt
+DEBUG -- The CXX compiler identification is AppleClang 17.0.0.17000013
+DEBUG -- Detecting CXX compiler ABI info
+DEBUG -- Detecting CXX compiler ABI info - done
+DEBUG -- Check for working CXX compiler: /usr/bin/clang++ - skipped
+DEBUG -- Detecting CXX compile features
+DEBUG -- Detecting CXX compile features - done
+DEBUG --  Note: will NOT build pure c++ library
+DEBUG --  Note: will NOT build node.js library
+DEBUG --  Note: will NOT build emscripten library
+DEBUG --  Note: will NOT build ocl documentation
+DEBUG -- setting gcc options: -Wall  -Wno-deprecated -pedantic-errors
+DEBUG CMake Warning (dev) at src/CMakeLists.txt:134 (find_package):
+DEBUG   Policy CMP0167 is not set: The FindBoost module is removed.  Run &quot;cmake
+DEBUG   --help-policy CMP0167&quot; for policy details.  Use the cmake_policy command to
+DEBUG   set the policy and suppress this warning.
+DEBUG 
+DEBUG This warning is for project developers.  Use -Wno-dev to suppress it.
+DEBUG 
+DEBUG -- Found Boost 1.88.0 at /opt/homebrew/lib/cmake/Boost-1.88.0
+DEBUG --   Requested configuration: QUIET REQUIRED
+DEBUG -- BoostConfig: find_package(boost_headers 1.88.0 EXACT CONFIG REQUIRED QUIET HINTS /opt/homebrew/lib/cmake)
+DEBUG -- Found boost_headers 1.88.0 at /opt/homebrew/lib/cmake/boost_headers-1.88.0
+DEBUG -- Found Boost: /opt/homebrew/lib/cmake/Boost-1.88.0/BoostConfig.cmake (found version &quot;1.88.0&quot;)
+DEBUG -- Found OpenMP_CXX: -Xclang -fopenmp (found version &quot;5.1&quot;)
+DEBUG -- Found OpenMP: TRUE (found version &quot;5.1&quot;)
+DEBUG -- found OpenMP, compiling with flags: -Xclang -fopenmp
+DEBUG -- Found Git: /opt/homebrew/bin/git (found version &quot;2.49.0&quot;)
+DEBUG -- version_string.cmake git set GIT_COMMIT_ID: 2023.01.11-31-gf683608
+DEBUG -- OpenCAMLib version: 2023.2023.11.2023.31
+DEBUG --  configuring src/cutters
+DEBUG --  configuring src/geo
+DEBUG --  configuring src/algo
+DEBUG --  configuring src/dropcutter
+DEBUG --  configuring src/common
+DEBUG -- Found Python3: /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/bin/python (found version &quot;3.13.3&quot;) found components: Interpreter Development.Module
+DEBUG -- Found Python: 3.13.3
+DEBUG -- Python libraries: 
+DEBUG -- Python executable: /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/bin/python
+DEBUG -- Python (arch-dependant) module destination: /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages
+DEBUG -- Found pybind11: /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11/include (found version &quot;2.13.6&quot;)
+DEBUG -- type:
+DEBUG --  'make' for a normal build
+DEBUG --  'make -j8' to build faster (if you have many cpus)
+DEBUG --  'make install' to install
+DEBUG --  'make package' to build a binary deb-packate
+DEBUG --  'make spackage' to build debian source-packages
+DEBUG --  'make test' to run the tests
+DEBUG -- Configuring done (1.2s)
+DEBUG -- Generating done (0.0s)
+DEBUG CMake Warning:
+DEBUG   Manually-specified variables were not used by the project:
+DEBUG 
+DEBUG     Boost_ADDITIONAL_VERSIONS
+DEBUG 
+DEBUG 
+DEBUG -- Build files have been written to: /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build
+DEBUG *** Building project with Ninja...
+DEBUG 2025-04-14 11:04:57,662 - scikit_build_core - DEBUG - RUNENV - changes since last run only:
+DEBUG   
+DEBUG 2025-04-14 11:04:57,663 - scikit_build_core - INFO - RUN: /opt/homebrew/bin/cmake --build /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build -v
+DEBUG Change Dir: '/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build'
+DEBUG 
+DEBUG Run Build Command(s): /opt/homebrew/bin/ninja -v
+DEBUG [1/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/geo/CMakeFiles/ocl_geo.dir/arc.cpp.o -MF src/geo/CMakeFiles/ocl_geo.dir/arc.cpp.o.d -o src/geo/CMakeFiles/ocl_geo.dir/arc.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo/arc.cpp
+DEBUG [2/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/cutters/CMakeFiles/ocl_cutters.dir/ellipseposition.cpp.o -MF src/cutters/CMakeFiles/ocl_cutters.dir/ellipseposition.cpp.o.d -o src/cutters/CMakeFiles/ocl_cutters.dir/ellipseposition.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters/ellipseposition.cpp
+DEBUG [3/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/geo/CMakeFiles/ocl_geo.dir/bbox.cpp.o -MF src/geo/CMakeFiles/ocl_geo.dir/bbox.cpp.o.d -o src/geo/CMakeFiles/ocl_geo.dir/bbox.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo/bbox.cpp
+DEBUG [4/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/geo/CMakeFiles/ocl_geo.dir/ccpoint.cpp.o -MF src/geo/CMakeFiles/ocl_geo.dir/ccpoint.cpp.o.d -o src/geo/CMakeFiles/ocl_geo.dir/ccpoint.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo/ccpoint.cpp
+DEBUG [5/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/geo/CMakeFiles/ocl_geo.dir/clpoint.cpp.o -MF src/geo/CMakeFiles/ocl_geo.dir/clpoint.cpp.o.d -o src/geo/CMakeFiles/ocl_geo.dir/clpoint.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo/clpoint.cpp
+DEBUG [6/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/geo/CMakeFiles/ocl_geo.dir/line.cpp.o -MF src/geo/CMakeFiles/ocl_geo.dir/line.cpp.o.d -o src/geo/CMakeFiles/ocl_geo.dir/line.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo/line.cpp
+DEBUG [7/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/cutters/CMakeFiles/ocl_cutters.dir/millingcutter.cpp.o -MF src/cutters/CMakeFiles/ocl_cutters.dir/millingcutter.cpp.o.d -o src/cutters/CMakeFiles/ocl_cutters.dir/millingcutter.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters/millingcutter.cpp
+DEBUG [8/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/cutters/CMakeFiles/ocl_cutters.dir/ballcutter.cpp.o -MF src/cutters/CMakeFiles/ocl_cutters.dir/ballcutter.cpp.o.d -o src/cutters/CMakeFiles/ocl_cutters.dir/ballcutter.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters/ballcutter.cpp
+DEBUG [9/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/cutters/CMakeFiles/ocl_cutters.dir/ellipse.cpp.o -MF src/cutters/CMakeFiles/ocl_cutters.dir/ellipse.cpp.o.d -o src/cutters/CMakeFiles/ocl_cutters.dir/ellipse.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters/ellipse.cpp
+DEBUG [10/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/cutters/CMakeFiles/ocl_cutters.dir/conecutter.cpp.o -MF src/cutters/CMakeFiles/ocl_cutters.dir/conecutter.cpp.o.d -o src/cutters/CMakeFiles/ocl_cutters.dir/conecutter.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters/conecutter.cpp
+DEBUG [11/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/cutters/CMakeFiles/ocl_cutters.dir/bullcutter.cpp.o -MF src/cutters/CMakeFiles/ocl_cutters.dir/bullcutter.cpp.o.d -o src/cutters/CMakeFiles/ocl_cutters.dir/bullcutter.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters/bullcutter.cpp
+DEBUG [12/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/cutters/CMakeFiles/ocl_cutters.dir/cylcutter.cpp.o -MF src/cutters/CMakeFiles/ocl_cutters.dir/cylcutter.cpp.o.d -o src/cutters/CMakeFiles/ocl_cutters.dir/cylcutter.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters/cylcutter.cpp
+DEBUG [13/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/geo/CMakeFiles/ocl_geo.dir/path.cpp.o -MF src/geo/CMakeFiles/ocl_geo.dir/path.cpp.o.d -o src/geo/CMakeFiles/ocl_geo.dir/path.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo/path.cpp
+DEBUG [14/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/cutters/CMakeFiles/ocl_cutters.dir/compositecutter.cpp.o -MF src/cutters/CMakeFiles/ocl_cutters.dir/compositecutter.cpp.o.d -o src/cutters/CMakeFiles/ocl_cutters.dir/compositecutter.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters/compositecutter.cpp
+DEBUG [15/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/geo/CMakeFiles/ocl_geo.dir/stlreader.cpp.o -MF src/geo/CMakeFiles/ocl_geo.dir/stlreader.cpp.o.d -o src/geo/CMakeFiles/ocl_geo.dir/stlreader.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo/stlreader.cpp
+DEBUG [16/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/geo/CMakeFiles/ocl_geo.dir/point.cpp.o -MF src/geo/CMakeFiles/ocl_geo.dir/point.cpp.o.d -o src/geo/CMakeFiles/ocl_geo.dir/point.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo/point.cpp
+DEBUG [17/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/geo/CMakeFiles/ocl_geo.dir/stlsurf.cpp.o -MF src/geo/CMakeFiles/ocl_geo.dir/stlsurf.cpp.o.d -o src/geo/CMakeFiles/ocl_geo.dir/stlsurf.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo/stlsurf.cpp
+DEBUG [18/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/geo/CMakeFiles/ocl_geo.dir/triangle.cpp.o -MF src/geo/CMakeFiles/ocl_geo.dir/triangle.cpp.o.d -o src/geo/CMakeFiles/ocl_geo.dir/triangle.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo/triangle.cpp
+DEBUG [19/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/algo/CMakeFiles/ocl_algo.dir/interval.cpp.o -MF src/algo/CMakeFiles/ocl_algo.dir/interval.cpp.o.d -o src/algo/CMakeFiles/ocl_algo.dir/interval.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo/interval.cpp
+DEBUG [20/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/algo/CMakeFiles/ocl_algo.dir/fiberpushcutter.cpp.o -MF src/algo/CMakeFiles/ocl_algo.dir/fiberpushcutter.cpp.o.d -o src/algo/CMakeFiles/ocl_algo.dir/fiberpushcutter.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo/fiberpushcutter.cpp
+DEBUG [21/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/algo/CMakeFiles/ocl_algo.dir/fiber.cpp.o -MF src/algo/CMakeFiles/ocl_algo.dir/fiber.cpp.o.d -o src/algo/CMakeFiles/ocl_algo.dir/fiber.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo/fiber.cpp
+DEBUG [22/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/algo/CMakeFiles/ocl_algo.dir/batchpushcutter.cpp.o -MF src/algo/CMakeFiles/ocl_algo.dir/batchpushcutter.cpp.o.d -o src/algo/CMakeFiles/ocl_algo.dir/batchpushcutter.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo/batchpushcutter.cpp
+DEBUG [23/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/common/CMakeFiles/ocl_common.dir/numeric.cpp.o -MF src/common/CMakeFiles/ocl_common.dir/numeric.cpp.o.d -o src/common/CMakeFiles/ocl_common.dir/numeric.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common/numeric.cpp
+DEBUG [24/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/algo/CMakeFiles/ocl_algo.dir/adaptivewaterline.cpp.o -MF src/algo/CMakeFiles/ocl_algo.dir/adaptivewaterline.cpp.o.d -o src/algo/CMakeFiles/ocl_algo.dir/adaptivewaterline.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo/adaptivewaterline.cpp
+DEBUG [25/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/algo/CMakeFiles/ocl_algo.dir/waterline.cpp.o -MF src/algo/CMakeFiles/ocl_algo.dir/waterline.cpp.o.d -o src/algo/CMakeFiles/ocl_algo.dir/waterline.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo/waterline.cpp
+DEBUG [26/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/algo/CMakeFiles/ocl_algo.dir/simple_weave.cpp.o -MF src/algo/CMakeFiles/ocl_algo.dir/simple_weave.cpp.o.d -o src/algo/CMakeFiles/ocl_algo.dir/simple_weave.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo/simple_weave.cpp
+DEBUG [27/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/algo/CMakeFiles/ocl_algo.dir/weave.cpp.o -MF src/algo/CMakeFiles/ocl_algo.dir/weave.cpp.o.d -o src/algo/CMakeFiles/ocl_algo.dir/weave.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo/weave.cpp
+DEBUG [28/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/dropcutter/CMakeFiles/ocl_dropcutter.dir/batchdropcutter.cpp.o -MF src/dropcutter/CMakeFiles/ocl_dropcutter.dir/batchdropcutter.cpp.o.d -o src/dropcutter/CMakeFiles/ocl_dropcutter.dir/batchdropcutter.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter/batchdropcutter.cpp
+DEBUG [29/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/algo/CMakeFiles/ocl_algo.dir/smart_weave.cpp.o -MF src/algo/CMakeFiles/ocl_algo.dir/smart_weave.cpp.o.d -o src/algo/CMakeFiles/ocl_algo.dir/smart_weave.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo/smart_weave.cpp
+DEBUG [30/44] : &amp;&amp; /opt/homebrew/bin/cmake -E rm -f libocl_cutters.a &amp;&amp; &quot;/usr/bin/ar&quot; qc libocl_cutters.a  src/cutters/CMakeFiles/ocl_cutters.dir/ballcutter.cpp.o src/cutters/CMakeFiles/ocl_cutters.dir/bullcutter.cpp.o src/cutters/CMakeFiles/ocl_cutters.dir/compositecutter.cpp.o src/cutters/CMakeFiles/ocl_cutters.dir/conecutter.cpp.o src/cutters/CMakeFiles/ocl_cutters.dir/millingcutter.cpp.o src/cutters/CMakeFiles/ocl_cutters.dir/cylcutter.cpp.o src/cutters/CMakeFiles/ocl_cutters.dir/ellipse.cpp.o src/cutters/CMakeFiles/ocl_cutters.dir/ellipseposition.cpp.o &amp;&amp; &quot;/usr/bin/ranlib&quot; libocl_cutters.a &amp;&amp; /opt/homebrew/bin/cmake -E touch libocl_cutters.a &amp;&amp; :
+DEBUG [31/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/dropcutter/CMakeFiles/ocl_dropcutter.dir/pointdropcutter.cpp.o -MF src/dropcutter/CMakeFiles/ocl_dropcutter.dir/pointdropcutter.cpp.o.d -o src/dropcutter/CMakeFiles/ocl_dropcutter.dir/pointdropcutter.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter/pointdropcutter.cpp
+DEBUG [32/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/common/CMakeFiles/ocl_common.dir/lineclfilter.cpp.o -MF src/common/CMakeFiles/ocl_common.dir/lineclfilter.cpp.o.d -o src/common/CMakeFiles/ocl_common.dir/lineclfilter.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common/lineclfilter.cpp
+DEBUG [33/44] : &amp;&amp; /opt/homebrew/bin/cmake -E rm -f libocl_geo.a &amp;&amp; &quot;/usr/bin/ar&quot; qc libocl_geo.a  src/geo/CMakeFiles/ocl_geo.dir/arc.cpp.o src/geo/CMakeFiles/ocl_geo.dir/bbox.cpp.o src/geo/CMakeFiles/ocl_geo.dir/ccpoint.cpp.o src/geo/CMakeFiles/ocl_geo.dir/clpoint.cpp.o src/geo/CMakeFiles/ocl_geo.dir/line.cpp.o src/geo/CMakeFiles/ocl_geo.dir/path.cpp.o src/geo/CMakeFiles/ocl_geo.dir/point.cpp.o src/geo/CMakeFiles/ocl_geo.dir/stlreader.cpp.o src/geo/CMakeFiles/ocl_geo.dir/stlsurf.cpp.o src/geo/CMakeFiles/ocl_geo.dir/triangle.cpp.o &amp;&amp; &quot;/usr/bin/ranlib&quot; libocl_geo.a &amp;&amp; /opt/homebrew/bin/cmake -E touch libocl_geo.a &amp;&amp; :
+DEBUG [34/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/dropcutter/CMakeFiles/ocl_dropcutter.dir/pathdropcutter.cpp.o -MF src/dropcutter/CMakeFiles/ocl_dropcutter.dir/pathdropcutter.cpp.o.d -o src/dropcutter/CMakeFiles/ocl_dropcutter.dir/pathdropcutter.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter/pathdropcutter.cpp
+DEBUG [35/44] : &amp;&amp; /opt/homebrew/bin/cmake -E rm -f libocl_common.a &amp;&amp; &quot;/usr/bin/ar&quot; qc libocl_common.a  src/common/CMakeFiles/ocl_common.dir/numeric.cpp.o src/common/CMakeFiles/ocl_common.dir/lineclfilter.cpp.o &amp;&amp; &quot;/usr/bin/ranlib&quot; libocl_common.a &amp;&amp; /opt/homebrew/bin/cmake -E touch libocl_common.a &amp;&amp; :
+DEBUG [36/44] : &amp;&amp; /opt/homebrew/bin/cmake -E rm -f libocl_algo.a &amp;&amp; &quot;/usr/bin/ar&quot; qc libocl_algo.a  src/algo/CMakeFiles/ocl_algo.dir/batchpushcutter.cpp.o src/algo/CMakeFiles/ocl_algo.dir/fiberpushcutter.cpp.o src/algo/CMakeFiles/ocl_algo.dir/interval.cpp.o src/algo/CMakeFiles/ocl_algo.dir/fiber.cpp.o src/algo/CMakeFiles/ocl_algo.dir/waterline.cpp.o src/algo/CMakeFiles/ocl_algo.dir/adaptivewaterline.cpp.o src/algo/CMakeFiles/ocl_algo.dir/weave.cpp.o src/algo/CMakeFiles/ocl_algo.dir/simple_weave.cpp.o src/algo/CMakeFiles/ocl_algo.dir/smart_weave.cpp.o &amp;&amp; &quot;/usr/bin/ranlib&quot; libocl_algo.a &amp;&amp; /opt/homebrew/bin/cmake -E touch libocl_algo.a &amp;&amp; :
+DEBUG [37/44] /usr/bin/clang++  -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64   -Wall -Wno-deprecated -pedantic-errors -fPIC -MD -MT src/dropcutter/CMakeFiles/ocl_dropcutter.dir/adaptivepathdropcutter.cpp.o -MF src/dropcutter/CMakeFiles/ocl_dropcutter.dir/adaptivepathdropcutter.cpp.o.d -o src/dropcutter/CMakeFiles/ocl_dropcutter.dir/adaptivepathdropcutter.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter/adaptivepathdropcutter.cpp
+DEBUG [38/44] : &amp;&amp; /opt/homebrew/bin/cmake -E rm -f libocl_dropcutter.a &amp;&amp; &quot;/usr/bin/ar&quot; qc libocl_dropcutter.a  src/dropcutter/CMakeFiles/ocl_dropcutter.dir/batchdropcutter.cpp.o src/dropcutter/CMakeFiles/ocl_dropcutter.dir/pointdropcutter.cpp.o src/dropcutter/CMakeFiles/ocl_dropcutter.dir/pathdropcutter.cpp.o src/dropcutter/CMakeFiles/ocl_dropcutter.dir/adaptivepathdropcutter.cpp.o &amp;&amp; &quot;/usr/bin/ranlib&quot; libocl_dropcutter.a &amp;&amp; /opt/homebrew/bin/cmake -E touch libocl_dropcutter.a &amp;&amp; :
+DEBUG [39/44] /usr/bin/clang++ -Docl_EXPORTS -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -isystem /opt/homebrew/opt/libomp/include -isystem /opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/include/python3.13 -isystem /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11/include -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64 -fPIC -fvisibility=hidden   -Wall -Wno-deprecated -pedantic-errors -Xclang -fopenmp -MD -MT src/CMakeFiles/ocl.dir/pythonlib/ocl.cpp.o -MF src/CMakeFiles/ocl.dir/pythonlib/ocl.cpp.o.d -o src/CMakeFiles/ocl.dir/pythonlib/ocl.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/pythonlib/ocl.cpp
+DEBUG [40/44] /usr/bin/clang++ -Docl_EXPORTS -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -isystem /opt/homebrew/opt/libomp/include -isystem /opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/include/python3.13 -isystem /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11/include -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64 -fPIC -fvisibility=hidden   -Wall -Wno-deprecated -pedantic-errors -Xclang -fopenmp -MD -MT src/CMakeFiles/ocl.dir/pythonlib/ocl_cutters.cpp.o -MF src/CMakeFiles/ocl.dir/pythonlib/ocl_cutters.cpp.o.d -o src/CMakeFiles/ocl.dir/pythonlib/ocl_cutters.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/pythonlib/ocl_cutters.cpp
+DEBUG [41/44] /usr/bin/clang++ -Docl_EXPORTS -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -isystem /opt/homebrew/opt/libomp/include -isystem /opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/include/python3.13 -isystem /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11/include -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64 -fPIC -fvisibility=hidden   -Wall -Wno-deprecated -pedantic-errors -Xclang -fopenmp -MD -MT src/CMakeFiles/ocl.dir/pythonlib/ocl_dropcutter.cpp.o -MF src/CMakeFiles/ocl.dir/pythonlib/ocl_dropcutter.cpp.o.d -o src/CMakeFiles/ocl.dir/pythonlib/ocl_dropcutter.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/pythonlib/ocl_dropcutter.cpp
+DEBUG [42/44] /usr/bin/clang++ -Docl_EXPORTS -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -isystem /opt/homebrew/opt/libomp/include -isystem /opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/include/python3.13 -isystem /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11/include -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64 -fPIC -fvisibility=hidden   -Wall -Wno-deprecated -pedantic-errors -Xclang -fopenmp -MD -MT src/CMakeFiles/ocl.dir/pythonlib/ocl_geometry.cpp.o -MF src/CMakeFiles/ocl.dir/pythonlib/ocl_geometry.cpp.o.d -o src/CMakeFiles/ocl.dir/pythonlib/ocl_geometry.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/pythonlib/ocl_geometry.cpp
+DEBUG In file included from /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/pythonlib/ocl_geometry.cpp:21:
+DEBUG In file included from /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11/include/pybind11/operators.h:12:
+DEBUG In file included from /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:12:
+DEBUG In file included from /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11/include/pybind11/detail/class.h:12:
+DEBUG In file included from /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11/include/pybind11/attr.h:13:
+DEBUG In file included from /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11/include/pybind11/detail/common.h:317:
+DEBUG In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/forward_list:1562:
+DEBUG In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/algorithm:1842:
+DEBUG In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/for_each.h:16:
+DEBUG In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__ranges/movable_box.h:21:
+DEBUG In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/optional:1294:
+DEBUG In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:944:
+DEBUG In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/inout_ptr.h:16:
+DEBUG In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:32:
+DEBUG /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:81:5: warning: delete called on non-final 'ocl::Ellipse' that has virtual functions but non-virtual destructor [-Wdelete-non-abstract-non-virtual-dtor]
+DEBUG    81 |     delete __ptr;
+DEBUG       |     ^
+DEBUG /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:293:7: note: in instantiation of member function 'std::default_delete&lt;ocl::Ellipse&gt;::operator()' requested here
+DEBUG   293 |       __ptr_.second()(__tmp);
+DEBUG       |       ^
+DEBUG /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:262:71: note: in instantiation of member function 'std::unique_ptr&lt;ocl::Ellipse&gt;::reset' requested here
+DEBUG   262 |   _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX23 ~unique_ptr() { reset(); }
+DEBUG       |                                                                       ^
+DEBUG /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1926:40: note: in instantiation of member function 'std::unique_ptr&lt;ocl::Ellipse&gt;::~unique_ptr' requested here
+DEBUG  1926 |             v_h.holder&lt;holder_type&gt;().~holder_type();
+DEBUG       |                                        ^
+DEBUG /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1585:26: note: in instantiation of member function 'pybind11::class_&lt;ocl::Ellipse&gt;::dealloc' requested here
+DEBUG  1585 |         record.dealloc = dealloc;
+DEBUG       |                          ^
+DEBUG /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/pythonlib/ocl_geometry.cpp:146:5: note: in instantiation of function template specialization 'pybind11::class_&lt;ocl::Ellipse&gt;::class_&lt;&gt;' requested here
+DEBUG   146 |     py::class_&lt;Ellipse&gt;(m, &quot;Ellipse&quot;)
+DEBUG       |     ^
+DEBUG 1 warning generated.
+DEBUG [43/44] /usr/bin/clang++ -Docl_EXPORTS -I/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src -I/opt/homebrew/include -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/cutters -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/geo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/algo -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/dropcutter -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/common -I/private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src -isystem /opt/homebrew/opt/libomp/include -isystem /opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/include/python3.13 -isystem /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/pybind11/include -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64 -fPIC -fvisibility=hidden   -Wall -Wno-deprecated -pedantic-errors -Xclang -fopenmp -MD -MT src/CMakeFiles/ocl.dir/pythonlib/ocl_algo.cpp.o -MF src/CMakeFiles/ocl.dir/pythonlib/ocl_algo.cpp.o.d -o src/CMakeFiles/ocl.dir/pythonlib/ocl_algo.cpp.o -c /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/git-v0/checkouts/39cf43267f99443a/f683608/src/pythonlib/ocl_algo.cpp
+DEBUG [44/44] : &amp;&amp; /usr/bin/clang++ -Xclang -fopenmp -O3 -DNDEBUG -flto=thin -arch arm64 -bundle -Wl,-headerpad_max_install_names -Xlinker -undefined -Xlinker dynamic_lookup -o ocl.cpython-313-darwin.so src/CMakeFiles/ocl.dir/pythonlib/ocl_cutters.cpp.o src/CMakeFiles/ocl.dir/pythonlib/ocl_geometry.cpp.o src/CMakeFiles/ocl.dir/pythonlib/ocl_algo.cpp.o src/CMakeFiles/ocl.dir/pythonlib/ocl_dropcutter.cpp.o src/CMakeFiles/ocl.dir/pythonlib/ocl.cpp.o  libocl_common.a  libocl_dropcutter.a  libocl_cutters.a  libocl_geo.a  libocl_algo.a  /opt/homebrew/opt/libomp/lib/libomp.dylib &amp;&amp; cd /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src &amp;&amp; /usr/bin/strip -x /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/ocl.cpython-313-darwin.so &amp;&amp; cd /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/src &amp;&amp; /usr/bin/install_name_tool -change `otool -L /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/ocl.cpython-313-darwin.so | grep libomp | cut -d ' ' -f1 | xargs echo` @rpath/libomp.dylib /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build/ocl.cpython-313-darwin.so
+DEBUG 
+DEBUG *** Installing project into wheel...
+DEBUG 2025-04-14 11:05:06,266 - scikit_build_core - DEBUG - RUNENV - changes since last run only:
+DEBUG   
+DEBUG 2025-04-14 11:05:06,267 - scikit_build_core - INFO - RUN: /opt/homebrew/bin/cmake --install /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/build --prefix /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/wheel/platlib --strip
+DEBUG -- Install configuration: &quot;Release&quot;
+DEBUG -- Installing: /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/builds-v0/.tmpzcXM41/lib/python3.13/site-packages/opencamlib/ocl.cpython-313-darwin.so
+DEBUG -- Installing: /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpcfi53v8_/wheel/platlib/opencamlib/libomp.dylib
+DEBUG *** Making wheel...
+DEBUG *** Created opencamlib-2022.12.18-cp313-cp313-macosx_15_0_arm64.whl
+DEBUG Finished building: opencamlib @ git+https://github.com/calaw/opencamlib@f683608b2d1fa46733cfc01cdd7bf168c34fdf2c
+      Built opencamlib @ git+https://github.com/calaw/opencamlib@f683608b2d1fa46733cfc01cdd7bf168c34fdf2c
+DEBUG Released lock at `/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/sdists-v9/git/2233652600f9df4a/f683608b2d1fa467/.lock`
+Prepared 1 package in 17.52s
+TRACE Extracting file name=PackageName(&quot;opencamlib&quot;)
+TRACE Cloning /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/archive-v0/ejmiGwJlgxOr_ljRGFzFU/opencamlib to /Users/calaw/Documents/Program/playground/uv_Playground/.venv/lib/python3.13/site-packages/opencamlib
+TRACE Cloning /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmpygUJBd/archive-v0/ejmiGwJlgxOr_ljRGFzFU/opencamlib-2022.12.18.dist-info to /Users/calaw/Documents/Program/playground/uv_Playground/.venv/lib/python3.13/site-packages/opencamlib-2022.12.18.dist-info
+TRACE Extracted 2 files name=PackageName(&quot;opencamlib&quot;)
+TRACE No entrypoints name=PackageName(&quot;opencamlib&quot;)
+TRACE No data name=PackageName(&quot;opencamlib&quot;)
+TRACE Writing installer metadata name=PackageName(&quot;opencamlib&quot;)
+TRACE Writing record name=PackageName(&quot;opencamlib&quot;)
+Installed 1 package in 1ms
+ + opencamlib==2022.12.18 (from git+https://github.com/calaw/opencamlib@f683608b2d1fa46733cfc01cdd7bf168c34fdf2c)
+TRACE Streams::recv_eof
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CalaW">@CalaW</a> on 2025-04-14 03:45</div>
+            <div class="timeline-body"><p>However, unlike #11554, the .so file is still missing even with copy link mode.</p>
+<pre><code>❯ uv add opencamlib@git+https://github.com/calaw/opencamlib --branch pybind11 -vvv --link-mode copy --no-cache &amp;&gt; install_log
+
+❯ ll .venv/lib/python3.13/site-packages/opencamlib/
+Octal Size Date Modified Git  Name
+0644    19 04-14 11:41    -I   __init__.py
+0644   28k 04-14 11:41    -I   camvtk.py
+0644  736k 04-14 11:41    -I   libomp.dylib
+0644  1.4k 04-14 11:41    -I   procmemory.py
+0644  2.4k 04-14 11:41    -I   pyocl.py
+0644   10k 04-14 11:41    -I   STLTools.py
+</code></pre>
+<details>
+<summary>install_log</summary>
+
+<pre><code>DEBUG *** Installing project into wheel...
+DEBUG 2025-04-14 11:41:57,169 - scikit_build_core - DEBUG - RUNENV - changes since last run only:
+DEBUG   
+DEBUG 2025-04-14 11:41:57,169 - scikit_build_core - INFO - RUN: /opt/homebrew/bin/cmake --install /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpoee0vtlc/build --prefix /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpoee0vtlc/wheel/platlib --strip
+DEBUG -- Install configuration: &quot;Release&quot;
+DEBUG -- Installing: /private/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmp4iAfRx/builds-v0/.tmpUzUVIy/lib/python3.13/site-packages/opencamlib/ocl.cpython-313-darwin.so
+DEBUG -- Installing: /var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/tmpoee0vtlc/wheel/platlib/opencamlib/libomp.dylib
+DEBUG *** Making wheel...
+DEBUG *** Created opencamlib-2022.12.18-cp313-cp313-macosx_15_0_arm64.whl
+DEBUG Finished building: opencamlib @ git+https://github.com/calaw/opencamlib@f683608b2d1fa46733cfc01cdd7bf168c34fdf2c
+      Built opencamlib @ git+https://github.com/calaw/opencamlib@f683608b2d1fa46733cfc01cdd7bf168c34fdf2c
+DEBUG Released lock at `/var/folders/zz/z82kw6596vv7vkxgcl3py3p00000gn/T/.tmp4iAfRx/sdists-v9/git/2233652600f9df4a/f683608b2d1fa467/.lock`
+Prepared 1 package in 18.42s
+TRACE Extracting file name=PackageName(&quot;opencamlib&quot;)
+TRACE Extracted 10 files name=PackageName(&quot;opencamlib&quot;)
+TRACE No entrypoints name=PackageName(&quot;opencamlib&quot;)
+TRACE No data name=PackageName(&quot;opencamlib&quot;)
+TRACE Writing installer metadata name=PackageName(&quot;opencamlib&quot;)
+TRACE Writing record name=PackageName(&quot;opencamlib&quot;)
+Installed 1 package in 2ms
+ + opencamlib==2022.12.18 (from git+https://github.com/calaw/opencamlib@f683608b2d1fa46733cfc01cdd7bf168c34fdf2c)
+TRACE Streams::recv_eof
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CalaW">@CalaW</a> on 2025-04-14 06:21</div>
+            <div class="timeline-body"><p>Solved this problem by fixing cmake install path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CalaW on 2025-04-14 06:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-14 12:26</div>
+            <div class="timeline-body"><p>Thank you for following up!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

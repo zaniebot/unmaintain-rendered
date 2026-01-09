@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF012 warns for pydantic.v1.main.BaseModel - astral-sh/ruff #21953</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF012 warns for pydantic.v1.main.BaseModel</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21953">#21953</a>
+        opened by <a href="https://github.com/justin-snyder-slgg">@justin-snyder-slgg</a>
+        on 2025-12-12 17:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/justin-snyder-slgg">@justin-snyder-slgg</a> on 2025-12-12 17:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The folks at Pydantic somewhat recently added an alternate migration path which allows you to use v1 from v2.</p>
+<p>Ruff does not correctly identify this case as a valid exception to RUF012</p>
+<p>Example:</p>
+<pre><code class="language-python">from pydantic.v1.main import BaseModel
+
+class Foo(BaseModel):
+    bar: list[str] = ['baz']  # &lt;- triggers RUF012
+</code></pre>
+<p>Fix:</p>
+<pre><code class="language-python">from pydantic.v1 import BaseModel  # removing the .main here works
+
+class Foo(BaseModel):
+    bar: list[str] = ['baz']  # &lt;- triggers RUF012
+</code></pre>
+<p>Perhaps it would be a good idea to add a setting to mark exceptions to this rule...</p>
+<p>Or maybe there's another rule I should activate to force the simpler import since pyright is still really bad at prioritizing the right import paths (often suggesting indirect imports through third party libraries or subpackages even when stuff is exposed from the top level module of a library)</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "RUF012 warns for pydantic.v1.BaseModel" to "RUF012 warns for pydantic.v1.main.BaseModel" by @justin-snyder-slgg on 2025-12-12 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-12 18:13</div>
+            <div class="timeline-body"><p>Hmm, yeah I'm surprised we don't expose a setting for this. I thought <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-bugbear_extend-immutable-calls">extend-immutable-calls</a> would apply here, but we pass an empty list of additional calls here instead of reusing the bugbear setting in the shared helper:</p>
+<p>https://github.com/astral-sh/ruff/blob/6216e66ed6d41a497395d22330029d721e122aa1/crates/ruff_linter/src/rules/ruff/rules/mutable_class_default.rs#L121</p>
+<p>Instead we use this helper with several different pydantic exceptions:</p>
+<p>https://github.com/astral-sh/ruff/blob/6216e66ed6d41a497395d22330029d721e122aa1/crates/ruff_linter/src/rules/ruff/helpers.rs#L210-L219</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-12-12 18:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

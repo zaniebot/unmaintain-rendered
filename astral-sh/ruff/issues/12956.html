@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using Ruff on an Online Python Playground, `CompileError: WebAssembly.instantiate(): expected magic word 00 61 73 6d, found 3c 21 64 6f @+0` - astral-sh/ruff #12956</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using Ruff on an Online Python Playground, `CompileError: WebAssembly.instantiate(): expected magic word 00 61 73 6d, found 3c 21 64 6f @+0`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12956">#12956</a>
+        opened by <a href="https://github.com/jymchng">@jymchng</a>
+        on 2024-08-17 16:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jymchng">@jymchng</a> on 2024-08-17 16:42</div>
+            <div class="timeline-body"><p>I have a not-yet-announced <a href="https://shiny-chebakia-638038.netlify.app/">Python Playground</a>.</p>
+<p>Within it, I plan to have the [Format] button formatting the <code>main.py</code> codes shown on the Left Panel.</p>
+<p><code>vite.config.js</code></p>
+<pre><code>// `ruffFormatPluginVite` attempts to copy the both files into the browser's assets.
+const ruffFormatPluginVite = {
+  name: &quot;vite-plugin-ruff&quot;,
+  generateBundle: async () =&gt; {
+    const ruffSourceDir = &quot;node_modules/@astral-sh/ruff-wasm-web&quot;;
+    const assetsDir = &quot;dist/assets&quot;;
+    const files = [
+      &quot;ruff_wasm.js&quot;,
+      &quot;ruff_wasm_bg.wasm&quot;,
+    ];
+    for (const file of files) {
+      await copyFile(join(ruffSourceDir, file), join(assetsDir, file));
+    }
+  },
+}
+
+export default defineConfig({
+  optimizeDeps: { exclude: [&quot;@astral-sh&quot;] },
+  plugins: [vue(), WindiCSS(), ruffFormatPluginVite], // pyodidePluginVite],
+  define: {
+    __API_URL__: JSON.stringify(apiURL),
+    __PY_VER__: JSON.stringify(pyVer),
+    __COMMIT__: JSON.stringify(commit),
+  },
+});
+</code></pre>
+<p><code>ruff.format.js</code></p>
+<pre><code>import init, { Workspace } from &quot;@astral-sh/ruff-wasm-web&quot;;
+
+await init();
+
+export const workspace = new Workspace({
+    'line-length': 88,
+    'indent-width': 4,
+    format: {
+        'indent-style': 'space',
+        'quote-style': 'double',
+    },
+    lint: {
+        select: [
+            'E4',
+            'E7',
+            'E9',
+            'F'
+        ],
+    },
+});
+</code></pre>
+<p>Here I simply follow the example <a href="https://www.npmjs.com/package/@astral-sh/ruff-wasm-web">here</a> and export the <code>workspace</code>.</p>
+<p><code>Run.vue</code></p>
+<pre><code>function formatCode() {
+  // const errorMsg = &quot;\`Format\` functionality is not yet implemented!&quot;;
+  // toast.error(errorMsg);
+  console.log(&quot;Format action triggered&quot;);
+  store.files[&quot;main.py&quot;] = workspace.format(store.files[&quot;main.py&quot;])
+  const formattedMessage = `Codes have been formatted!`;
+  toast.success(formattedMessage);
+}
+</code></pre>
+<p>Here in <code>Run.vue</code>, <code>store.files[&quot;main.py&quot;]</code> is the Python source codes and it is formatted by <code>workspace</code> and assigned back to <code>store.files[&quot;main.py&quot;]</code>.</p>
+<p>This is the error I got when executing the <code>npm run dev</code>.</p>
+<pre><code>ruff.format.js:3 `WebAssembly.instantiateStreaming` failed because your server does not serve wasm with `application/wasm` MIME type. Falling back to `WebAssembly.instantiate` which is slower. Original error:
+ TypeError: Failed to execute 'compile' on 'WebAssembly': Incorrect response MIME type. Expected 'application/wasm'.
+__wbg_load @ @astral-sh_ruff-wasm-web.js?v=99fcae90:432
+await in __wbg_load
+__wbg_init @ @astral-sh_ruff-wasm-web.js?v=99fcae90:768
+await in __wbg_init
+(anonymous) @ ruff.format.js:3
+Show 2 more frames
+Show lessUnderstand this warning
+:5173/#ewB9AA==:1 Uncaught CompileError: WebAssembly.instantiate(): expected magic word 00 61 73 6d, found 3c 21 64 6f @+0
+</code></pre>
+<p>Any idea what's going on?</p>
+<p>Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-08-18 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-18 07:51</div>
+            <div class="timeline-body"><p>This looks neat!</p>
+<p>Hmm, not sure. I would try to fix</p>
+<blockquote>
+<p>TypeError: Failed to execute 'compile' on 'WebAssembly': Incorrect response MIME type. Expected 'application/wasm'.</p>
+</blockquote>
+<p>first by double checking what mime type your server returns for the WASM file. I somewhat suspect that the WASM file might be missing and that your server returns a HTML error page.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jymchng">@jymchng</a> on 2024-08-18 08:02</div>
+            <div class="timeline-body"><p>Thank you for your prompt reply.</p>
+<pre><code>// `ruffFormatPluginVite` attempts to copy the both files into the browser's assets.
+const ruffFormatPluginVite = {
+  name: &quot;vite-plugin-ruff&quot;,
+  generateBundle: async () =&gt; {
+    const ruffSourceDir = &quot;node_modules/@astral-sh/ruff-wasm-web&quot;;
+    const assetsDir = &quot;dist/assets&quot;;
+    const files = [
+      &quot;ruff_wasm.js&quot;,
+      &quot;ruff_wasm_bg.wasm&quot;,
+    ];
+    for (const file of files) {
+      await copyFile(join(ruffSourceDir, file), join(assetsDir, file));
+    }
+  },
+}
+
+export default defineConfig({
+  optimizeDeps: { exclude: [&quot;@astral-sh&quot;] },
+  plugins: [vue(), WindiCSS(), ruffFormatPluginVite], // pyodidePluginVite],
+  define: {
+    __API_URL__: JSON.stringify(apiURL),
+    __PY_VER__: JSON.stringify(pyVer),
+    __COMMIT__: JSON.stringify(commit),
+  },
+});
+</code></pre>
+<p>I actually copied this from <code>pyodide</code> and that is how they taught me on how to get the <code>.wasm</code> binary and <code>.js</code> shim to be copied into <code>dist/assets</code> and be made available at runtime within the console.</p>
+<p>When I investigate the Sources tab of Chrome, I do realize that they are actually not copied over.</p>
+<p>Perhaps, is there a working example, aside from the Ruff playground, to illustrate how one can deploy the Ruff wasm on the frontend?</p>
+<p>Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-18 08:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Perhaps, is there a working example, aside from the Ruff playground, to illustrate how one can deploy the Ruff wasm on the frontend?</p>
+</blockquote>
+<p>Not that I'm aware of. I would expect vite to automatically pick up the dependencies when importing the wasm package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jymchng">@jymchng</a> on 2024-08-18 08:21</div>
+            <div class="timeline-body"><p>Yeah I saw the wasm-build command actually calls wasm-pack and dump the built artefacts directly into <code>src</code>. I guess I shall try the same later. Will update here on how it goes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-09 12:02</div>
+            <div class="timeline-body"><p>Let me know if you're still facing any issues. I close this for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-09-09 12:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

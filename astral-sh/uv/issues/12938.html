@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>installing from git repos containing LFS is unstable/unreliable - astral-sh/uv #12938</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>installing from git repos containing LFS is unstable/unreliable</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12938">#12938</a>
+        opened by <a href="https://github.com/thesofakillers">@thesofakillers</a>
+        on 2025-04-17 10:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thesofakillers">@thesofakillers</a> on 2025-04-17 10:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Possibly duplicate of #3312, but i am still experiencing this issue. Steps to reproduce on an ubuntu 20.04 instance:</p>
+<ol>
+<li><p>install and/or update <code>uv</code></p>
+<pre><code class="language-bash">curl -LsSf https://astral.sh/uv/install.sh | sh
+</code></pre>
+<p>or</p>
+<pre><code class="language-bash">uv self update
+</code></pre>
+</li>
+<li><p>update git; install git-lfs</p>
+<pre><code>sudo apt-get update &amp;&amp; sudo apt-get upgrade git &amp;&amp; sudo apt-get install git-lfs
+</code></pre>
+</li>
+<li><p>Make a mock repository and init uv</p>
+<pre><code>mkdir temp
+cd temp
+uv init
+uv python pin 3.11
+</code></pre>
+</li>
+<li><p>try installing a repo containing LFS files:</p>
+<pre><code>uv add &quot;nanoeval@git+https://github.com/openai/preparedness.git#subdirectory=project/nanoeval&quot;
+</code></pre>
+<p>This will output the following error</p>
+<pre><code>× Failed to download and build nanoeval @ git+https://github.com/openai/preparedness.git#subdirectory=project/nanoeval`
+  ├─▶ Git operation failed
+  ╰─▶ process didn't exit successfully: /bin/git reset --hard 4d645d6321c3dc23fd479a4541a5d847c148c855 (exit status: 128)
+      --- stderr
+      Downloading project/paperbench/data/judge_eval/all-in-one/0/submission.tar (223 MB)
+      Error downloading object: project/paperbench/data/judge_eval/all-in-one/0/submission.tar (01bfb15): Smudge error: Error downloading project/paperbench/data/judge_eval/all-in-one/0/submission.tar
+      (01bfb15f258d7543cc4d5aba7f664ce9e97bef9e71f73fccffaa561b7640a78f): error transferring &quot;01bfb15f258d7543cc4d5aba7f664ce9e97bef9e71f73fccffaa561b7640a78f&quot;: [0] remote missing object
+      01bfb15f258d7543cc4d5aba7f664ce9e97bef9e71f73fccffaa561b7640a78f
+
+      Errors logged to '/home/giulio/.cache/uv/git-v0/checkouts/c01a08338a792961/4d645d6/.git/lfs/logs/20250417T100326.47810998.log'.
+      Use git lfs logs last to view the log.
+      error: external filter 'git-lfs filter-process' failed
+      fatal: project/paperbench/data/judge_eval/all-in-one/0/submission.tar: smudge filter lfs failed
+
+  help: If you want to add the package regardless of the failed resolution, provide the --frozen flag to skip locking and syncing.
+</code></pre>
+<p>That remote object is definitely not missing, you can see it <a href="https://github.com/openai/preparedness/blob/main/project/paperbench/data/judge_eval/all-in-one/0/submission.tar">here</a></p>
+</li>
+<li><p>Note that <code>uv pip install</code> also does not work</p>
+<pre><code>uv pip install &quot;nanoeval@git+https://github.com/openai/preparedness.git#subdirectory=project/nanoeval&quot;
+</code></pre>
+<p>Gives the same output as above</p>
+</li>
+<li><p>Note that using <code>UV_GIT_LFS=1</code> does not work:</p>
+<pre><code>UV_GIT_LFS=1 uv add &quot;nanoeval@git+https://github.com/openai/preparedness.git#subdirectory=project/nanoeval&quot;
+</code></pre>
+<p>gives the same output as above</p>
+</li>
+<li><p>Note that vanilla pip install works fine:</p>
+<pre><code class="language-bash">uv add pip
+.venv/bin/python -m pip install nanoeval@git+https://github.com/openai/preparedness.git#subdirectory=project/nanoeval
+uv run python -c &quot;import nanoeval&quot;
+</code></pre>
+</li>
+</ol>
+<p>I've ran into this issue across a number of different machines such as my personal macbook (where it has somehow disappeared), my colleague's macbook (still broken) and the GitHub actions CI VM (where the <code>UV_GIT_LFS</code> seemed to have fixed it), plus this ubuntu VM where i am reproducing it (cant seem to fix it). Basically, behaviour seems unstable.</p>
+<h3>Platform</h3>
+<p>Linux 5.15.0-1086-azure x86_64 GNU/Linux; Ubuntu 20.04.6 LTS</p>
+<h3>Version</h3>
+<p>0.6.14</p>
+<h3>Python version</h3>
+<p>3.11.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @thesofakillers on 2025-04-17 10:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3312.html">astral-sh/uv#3312</a> on 2025-04-17 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-18 16:39</div>
+            <div class="timeline-body"><p>Setting <code>UV_GIT_LFS</code> is required, so the cases where it's not working without that are expected.</p>
+<p>Can you please share verbose logs for the failing machine? e.g,</p>
+<pre><code>UV_GIT_LFS=1 uv add -vv &quot;nanoeval@git+https://github.com/openai/preparedness.git#subdirectory=project/nanoeval&quot;
+</code></pre>
+<p>I'd recommend comparing those to the machine where it succeeds.</p>
+<p>What version of <code>git-lfs</code> do you have?</p>
+<pre><code>git-lfs --version
+</code></pre>
+<p>Does it differ across the relevant machines?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thesofakillers">@thesofakillers</a> on 2025-04-18 16:56</div>
+            <div class="timeline-body"><p>Sure! here's the verbose mode</p>
+<pre><code class="language-stdout">DEBUG uv 0.6.14
+DEBUG Found project root: `/home/giulio/temp`
+DEBUG No workspace root found, using project root
+TRACE Checking lock for `/home/giulio/temp` at `/tmp/uv-0009dfd04bd90ae3.lock`
+DEBUG Acquired lock for `/home/giulio/temp`
+DEBUG Reading Python requests from version file at `/home/giulio/temp/.python-version`
+DEBUG Using Python request `3.11` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+TRACE Cached interpreter info for Python 3.11.12, skipping probing: .venv/bin/python3
+DEBUG The virtual environment's Python version satisfies `3.11`
+DEBUG Released lock at `/tmp/uv-0009dfd04bd90ae3.lock`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: temp @ file:///home/giulio/temp
+DEBUG No workspace root found, using project root
+TRACE Performing lookahead for temp @ file:///home/giulio/temp
+TRACE Performing lookahead for nanoeval @ git+https://github.com/openai/preparedness.git#subdirectory=project/nanoeval
+
+DEBUG Attempting GitHub fast path for: nanoeval @ git+https://github.com/openai/preparedness.git#subdirectory=project/nanoeval
+DEBUG Querying GitHub for commit at: https://api.github.com/repos/openai/preparedness/commits/HEAD
+TRACE Handling request for https://api.github.com/repos/openai/preparedness/commits/HEAD with authentication policy auto
+TRACE Request for https://api.github.com/repos/openai/preparedness/commits/HEAD is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://api.github.com/repos/openai/preparedness/commits/HEAD
+TRACE Attempting unauthenticated request for https://api.github.com/repos/openai/preparedness/commits/HEAD
+DEBUG Fetching source distribution from Git: https://github.com/openai/preparedness.git
+TRACE Checking lock for `https://github.com/openai/preparedness` at `/home/giulio/.cache/uv/git-v0/locks/c01a08338a792961`
+DEBUG Acquired lock for `https://github.com/openai/preparedness`
+DEBUG Using existing Git source `https://github.com/openai/preparedness.git`
+DEBUG Reset /home/giulio/.cache/uv/git-v0/checkouts/c01a08338a792961/4d645d6 to 4d645d6321c3dc23fd479a4541a5d847c148c855
+DEBUG Released lock at `/home/giulio/.cache/uv/git-v0/locks/c01a08338a792961`
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Removing `uv.lock`
+  × Failed to download and build `nanoeval @ git+https://github.com/openai/preparedness.git#subdirectory=project/nanoeval`
+  ├─▶ Git operation failed
+  ╰─▶ process didn't exit successfully: `/bin/git reset --hard 4d645d6321c3dc23fd479a4541a5d847c148c855` (exit status: 128)
+      --- stderr
+      Downloading project/paperbench/data/judge_eval/all-in-one/0/submission.tar (223 MB)
+      Error downloading object: project/paperbench/data/judge_eval/all-in-one/0/submission.tar (01bfb15): Smudge error: Error downloading project/paperbench/data/judge_eval/all-in-one/0/submission.tar
+      (01bfb15f258d7543cc4d5aba7f664ce9e97bef9e71f73fccffaa561b7640a78f): error transferring &quot;01bfb15f258d7543cc4d5aba7f664ce9e97bef9e71f73fccffaa561b7640a78f&quot;: [0] remote missing object
+      01bfb15f258d7543cc4d5aba7f664ce9e97bef9e71f73fccffaa561b7640a78f
+
+      Errors logged to '/home/giulio/.cache/uv/git-v0/checkouts/c01a08338a792961/4d645d6/.git/lfs/logs/20250418T164459.003111481.log'.
+      Use `git lfs logs last` to view the log.
+      error: external filter 'git-lfs filter-process' failed
+      fatal: project/paperbench/data/judge_eval/all-in-one/0/submission.tar: smudge filter lfs failed
+
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<p>I don't immediately see what's going wrong with this extra logging</p>
+<p>and here's the lfs version:</p>
+<pre><code>git-lfs/3.6.1 (GitHub; linux amd64; go 1.23.3)
+</code></pre>
+<p>Note that I had just updated/installed it with <code>apt-get</code>. This is the same version of git lfs i have on my mac where it seems to be working. I think the only difference with my mac is that lfs is built with go 1.23.4 rather than 1.23.3.</p>
+<p>That said, shouldn't the behaviour match roughly what the behaviour of <code>pip</code> is? as mentioned, vanilla <code>pip</code> just works, and I dont have to set an environment variable</p>
+<hr />
+<p>I'm curious if the reproduction steps don't reproduce the issue on your end? I was able to reproduce it on 4 separate machines</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thesofakillers">@thesofakillers</a> on 2025-04-18 17:35</div>
+            <div class="timeline-body"><p>I should add that the installation seems to work fine on my mac <em>without</em> the <code>UV_GIT_LFS</code> flag, somehow. I don't have anything different in my <code>~/.gitconfig</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-18 20:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Im curious if the reproduction steps don't reproduce the issue on your end? I was able to reproduce it on 4 separate machines</p>
+</blockquote>
+<p>No, I cannot reproduce it.</p>
+<p>It looks like that repository is cached? Could you try with <code>--no-cache</code> or <code>uv cache clean</code>?</p>
+<p>Do you <em>need</em> the LFS files? You might be able to <code>export GIT_LFS_SKIP_SMUDGE=1</code> to ignore them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thesofakillers">@thesofakillers</a> on 2025-04-18 20:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you try with --no-cache or uv cache clean?</p>
+</blockquote>
+<p>Ahhh, cleaning the cache sorted it!
+Im guessing the the initial install without the <code>UV_GIT_LFS</code> cached behaviour we did not want.</p>
+<blockquote>
+<p>Do you need the LFS files? You might be able to export GIT_LFS_SKIP_SMUDGE=1 to ignore them.</p>
+</blockquote>
+<p>I dont <em>need</em> the LFS files, but I was hoping to make setup instructions straightforward for my users.
+I'll just instruct them to do <code>UV_GIT_LFS=1 uv sync</code> now and instruct them to clean their cache if they forget the first time.</p>
+<hr />
+<p>Closing this issue now, though I wonder if <code>UV_GIT_LFS=1</code> should be the default, so opt-out rather than opt-in? It does not seem like this issue appears with vanilla pip, and maybe it makes sense to keep behaviour more consistent with that experience.</p>
+<p>Likewise i wonder if <code>uv</code> should avoid caching failed commands</p>
+<p>these are just user suggestions tho! feel free to ignore. And thanks a lot for the help</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @thesofakillers on 2025-04-18 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-18 21:03</div>
+            <div class="timeline-body"><p>The reason it's opt-in is at https://github.com/astral-sh/uv/pull/10335#issuecomment-2585798883</p>
+<p>Glad it's working!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12975.html">astral-sh/uv#12975</a> on 2025-04-18 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thesofakillers">@thesofakillers</a> on 2025-04-18 21:58</div>
+            <div class="timeline-body"><blockquote>
+<p>The reason it's opt-in is at https://github.com/astral-sh/uv/pull/10335#issuecomment-2585798883</p>
+<blockquote>
+<p>With this change LFS objects in a given revision will always be downloaded if the user has Git LFS installed, which may not always be desired behavior.</p>
+</blockquote>
+</blockquote>
+<p>Hm, doesn't this also apply to regular old pip? In which case the canonical approach is to just use the <code>GIT_LFS_SKIP_SMUDGE=1</code> when users dont want to pull LFS files.</p>
+<p>I guess I'm questioning the reason to introduce a new environment variable and invert the default behaviour when this is already supported natively with <code>GIT_LFS_SKIP_SMUDGE=1</code></p>
+<p>I suppose you actively want to &quot;fix&quot; behaviour you disagree with regular pip, fair enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15419.html">astral-sh/uv#15419</a> on 2025-08-21 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/coezbek">@coezbek</a> on 2025-10-09 06:34</div>
+            <div class="timeline-body"><p>One additional point to this ticket: Skipping smudging should be something which is configurable for specific git repositories in the pyproject.toml. Because it might be necessary to have smudging for some projects but LFS might be broken for others. I had a repo for instance which was out of LFS bandwidth and wouldn't smudge anymore, but another where a necessary file needed downloaded.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

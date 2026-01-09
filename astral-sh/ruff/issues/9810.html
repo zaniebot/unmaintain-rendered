@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should `PYI041` consider `bool` to be redundant with `int`? - astral-sh/ruff #9810</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should `PYI041` consider `bool` to be redundant with `int`?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9810">#9810</a>
+        opened by <a href="https://github.com/tylerlaprade">@tylerlaprade</a>
+        on 2024-02-03 20:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2024-02-03 20:12</div>
+            <div class="timeline-body"><p>Currently, this rule only flags <code>int | float</code> unions as redundant. Coming from other languages, I didn't even realize <code>int</code> was a subtype of <code>float</code>, but I learned about it because of this rule. However, I found a bug in my code where I was converting <code>False</code> to <code>0.0</code> - this was because in Python, <code>bool</code> is actually an <code>int</code>. I found that the tests for this rule very explicitly consider <code>int | bool</code> to not be a violation, however this would have prevented me from writing the bug as I did.</p>
+<img width="375" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/903c7a95-fcca-40a4-8818-aec5b0488f04">
+
+<p>The <code>bool</code> to <code>int</code> relation is in some ways stronger than <code>int</code> to <code>float</code> since <code>isinstance()</code> only recognizes the former:
+<img src="https://github.com/astral-sh/ruff/assets/5475199/f9d68a24-1e62-456d-b9e6-3343d993c429" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-05 00:33</div>
+            <div class="timeline-body"><p>@AlexWaygood - I defer to you on this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-02-05 00:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-02-05 00:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-05 05:42</div>
+            <div class="timeline-body"><p>I don't think this makes sense to me, they seem more distinct than <code>int</code> / <code>float</code> regardless of the <code>isinstance</code> behavior. I'm curious to hear more opinions though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2024-02-05 13:39</div>
+            <div class="timeline-body"><p>To me, they're very different in <em>intended</em> usage, but surprisingly related in <em>actual</em> effect, which threw me off, especially since the rule warned about the other scenario and not this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maxyz">@maxyz</a> on 2024-03-15 10:12</div>
+            <div class="timeline-body"><p>I just stumbled into this rule, and I think the rule is wrong.</p>
+<p>The PEP mentioned in the rule documentation ( <a href="https://peps.python.org/pep-3141/">PEP 3141</a> ) is talking about the numbers ABCs, these are, numbers.Complex, numbers.Real and numbers.Integral.</p>
+<p>float is a particular class that implements numbers.Real, int is a particular class that implements. But they don't have a relationship between them.</p>
+<p>Afaik, the numerical hierarchy defined in the pep-3141 can be seen/tested using:</p>
+<pre><code>import numbers
+
+i = 1
+f = 1.0
+
+isinstance(i, int) # True
+isinstance(i, float) # False
+
+isinstance(f, int) # False
+isinstance(f, float) # True
+
+isinstance(i, numbers.Complex) # True
+isinstance(i, numbers.Real) # True
+isinstance(i, numbers.Integral) # True
+
+isinstance(f, numbers.Complex) # True
+isinstance(f, numbers.Real) # True
+isinstance(f, numbers.Integral) # False
+</code></pre>
+<p>Am I missing something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-15 10:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I just stumbled into this rule, and I think the rule is wrong.</p>
+<p>The PEP mentioned in the rule documentation ( <a href="https://peps.python.org/pep-3141/">PEP 3141</a> ) is talking about the numbers ABCs, these are, numbers.Complex, numbers.Real and numbers.Integral.</p>
+</blockquote>
+<p>The rule isn't wrong @maxyz, but you're right that it's quite misleading for the docs to mention PEP 3141. The rule is premised on the fact that type checkers do not support PEP 3141 (and never will) -- the ABCs introduced by that PEP are wholly incompatible with Python's static-typing system and impossible to annotate in a desirable way in typeshed.</p>
+<p>For more, see:</p>
+<ul>
+<li>https://stackoverflow.com/questions/69334475/how-to-hint-at-number-types-i-e-subclasses-of-number-not-numbers-themselv/69383462#69383462</li>
+<li>https://github.com/python/mypy/issues/3186</li>
+<li>https://discuss.python.org/t/numeric-generics-where-do-we-go-from-pep-3141-and-present-day-mypy/17155</li>
+<li>https://github.com/python/typeshed/pull/11353</li>
+<li>https://github.com/python/typeshed/pull/11375</li>
+</ul>
+<p>The &quot;numeric tower&quot; that the docs should be linking to is this one here: https://peps.python.org/pep-0484/#the-numeric-tower. (If you think this situation is confusing, you're not alone :)</p>
+<p>I'll make a docs PR to improve this situation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10422.html">astral-sh/ruff#10422</a> on 2024-03-18 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-08 09:55</div>
+            <div class="timeline-body"><p>@AlexWaygood can we close this issue now that you improved the docs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15343.html">astral-sh/ruff#15343</a> on 2025-01-08 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-08 10:35</div>
+            <div class="timeline-body"><p>I never addressed @tylerlaprade's original question here!</p>
+<p>This rule is specifically targeting the very special case that the typing spec carves out for <code>int</code>, <code>float</code> and <code>complex</code> in Python's typing system. Namely, <code>int</code> is not a subtype of <code>float</code> and <code>float</code> is not a subtype of <code>complex</code> (because <code>int</code> is not a subclass of <code>float</code> at runtime, and <code>float</code> is not a subclass of <code>complex</code>). But because the duck-type compatibility between the different classes is so strong, type checkers have a special case for these types such that when a user annotates something as <code>float</code>, <code>int</code>s should also be allwoed for that symbol. For more details, see the in-depth discussion we recently had at https://github.com/astral-sh/ruff/issues/14932.</p>
+<p>So we could summarise the <code>int</code>/<code>float</code>/<code>complex</code> special case as &quot;even though they're not subclasses of each other at runtime, they should be treated as if they are in type annotations&quot;. The <code>int</code>/<code>bool</code> situation is sort-of the opposite of this, though. <code>bool</code> <em>is</em> a subclass of <code>int</code>, but this is often seen as a wart in the language that would be implemented differently if it were being designed from scratch in 2025. Even though <code>bool</code> is a subclass and subtype of <code>int</code>, many people would prefer to leave the union <code>int | bool</code> in their annotations, as <code>bool</code> <em>means</em> something quite different to <code>int</code> to a human reader.</p>
+<p>Another reason why we shouldn't extend the rule to <code>bool</code>/<code>int</code> is because it's hard to say where we should draw the line. There are lots of classes in Python that you might not realise are subclasses of each other; there are lots of opportunities for people to accidentally write redundant unions in type annotations. For example, some beginners in the language aren't aware that <code>types.NoneType</code> (the type of <code>None</code>) is a subclass of <code>object</code>, and therefore that <code>object | None</code> is a redundant union, since <code>None</code> is a subtype of <code>object</code>. Detecting redundant unions exhaustively without sophisticated type inference is impossible; but if we keep the rule narrowly targeted towards the <code>int</code>/<code>float</code>/<code>complex</code> special case, it's easy to see where the line should be drawn.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-08 10:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19909.html">astral-sh/ruff#19909</a> on 2025-08-14 07:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

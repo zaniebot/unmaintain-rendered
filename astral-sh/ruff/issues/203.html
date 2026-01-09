@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`directory/*` doesn't work as an exclude pattern - astral-sh/ruff #203</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`directory/*` doesn't work as an exclude pattern</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/203">#203</a>
+        opened by <a href="https://github.com/Jackenmen">@Jackenmen</a>
+        on 2022-09-15 15:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Jackenmen">@Jackenmen</a> on 2022-09-15 15:58</div>
+            <div class="timeline-body"><p>I tested out the current main branch and the exclusion globs seem somewhat broken.
+For example, with either of these configurations:</p>
+<pre><code>[tool.ruff]
+extend-exclude = [
+    &quot;directory/*&quot;,
+]
+</code></pre>
+<pre><code>[tool.ruff]
+extend-exclude = [
+    &quot;directory/file.py&quot;,
+]
+</code></pre>
+<p>Running <code>ruff .</code> doesn't end up with ruff excluding <code>directory/file.py</code>.</p>
+<p><code>isort</code> with <code>skip_glob</code> set to the same list as ruff's <code>extend-exclude</code> works fine (which I'm mentioning because you said in the PR that you wanted to mimic isort's behavior here).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/202.html">astral-sh/ruff#202</a> on 2022-09-15 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-15 16:08</div>
+            <div class="timeline-body"><p>I think with the current strategy, this needs to be <code>&quot;directory&quot;</code> or <code>&quot;file.py&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-15 16:10</div>
+            <div class="timeline-body"><p>I ended up mirroring the Flake8 behavior which is a bit different than isort.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jackenmen">@Jackenmen</a> on 2022-09-15 16:13</div>
+            <div class="timeline-body"><p>Hmm, not being able to match against the whole path (<code>directory/file.py</code>) seems a bit too limiting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-15 16:17</div>
+            <div class="timeline-body"><p>Yeah, that's fixable, can do...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-15 16:18</div>
+            <div class="timeline-body"><p><code>directory/file.py</code> is actually supposed to work (it works in Flake8 IIUC), I just haven't implemented it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-09-15 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Release 0.1.0" by @charliermarsh on 2022-09-15 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jackenmen">@Jackenmen</a> on 2022-09-15 16:28</div>
+            <div class="timeline-body"><p>After testing, both the patterns I listed in the issue description work with flake8.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-09-15 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/209.html">astral-sh/ruff#209</a> on 2022-09-16 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-09-16 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-16 01:42</div>
+            <div class="timeline-body"><p>Okay, you should now be able to do:</p>
+<ul>
+<li><code>directory</code> (to match any directory named <code>directory</code>)</li>
+<li><code>./directory/file.py</code> (to match that file specifically)</li>
+</ul>
+<p>Unlike other tools, I'm explicitly requiring that relative paths are written with the relative prefix (<code>./</code>). Otherwise, the path will effectively only be matched against the <code>basename</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amotl">@amotl</a> on 2022-09-16 08:10</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>thanks for this improvement. However, with <code>ruff 0.0.37</code>, this syntax worked:</p>
+<pre><code class="language-toml">exclude = [
+  &quot;tests/etc/functions_bad.py&quot;
+]
+</code></pre>
+<p>Now, with <code>ruff 0.0.39</code>, I would have to write</p>
+<pre><code class="language-toml">exclude = [
+  &quot;./tests/etc/functions_bad.py&quot;
+]
+</code></pre>
+<p>Is this correct? It actually just croaked at [1]. Maybe it can be made a bit more lenient?</p>
+<p>With kind regards,
+Andreas.</p>
+<p>[1] https://github.com/jpmens/mqttwarn/actions/runs/3066290569</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amotl">@amotl</a> on 2022-09-16 08:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this correct? It actually just croaked at [1]. Maybe it can be made a bit more lenient?</p>
+</blockquote>
+<p>Oh I see:</p>
+<blockquote>
+<p>Unlike other tools, I'm explicitly requiring that relative paths are written with the relative prefix (<code>./</code>). Otherwise, the path will effectively only be matched against the basename.</p>
+</blockquote>
+<p>Adjusted with https://github.com/jpmens/mqttwarn/commit/fad50af912e.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/210.html">astral-sh/ruff#210</a> on 2022-09-16 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-16 09:02</div>
+            <div class="timeline-body"><p>Yeah I think this could be better -- I'll try it here: #211.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/234.html">astral-sh/ruff#234</a> on 2022-09-20 16:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:06 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule `PYI019` should not flag metaclass methods - astral-sh/ruff #16127</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule `PYI019` should not flag metaclass methods</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16127">#16127</a>
+        opened by <a href="https://github.com/Geo5">@Geo5</a>
+        on 2025-02-12 21:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Geo5">@Geo5</a> on 2025-02-12 21:54</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>This code which includes a metaclass and passes <code>mypy</code> without errors:</p>
+<pre><code class="language-python">from typing import TypeVar
+
+F = TypeVar(&quot;F&quot;)
+
+
+class FooMeta(type):
+    def bar(cls: F) -&gt; F:
+        return cls
+</code></pre>
+<p>is fixed to:</p>
+<pre><code class="language-bash">ruff check --isolated --select PYI --preview --fix --diff
+</code></pre>
+<pre><code class="language-diff">--- test.py
++++ test.py
+@@ -1,8 +1,9 @@
+ from typing import TypeVar
++from typing_extensions import Self
+ 
+ F = TypeVar(&quot;F&quot;)
+ 
+ 
+ class FooMeta(type):
+-    def bar(cls: F) -&gt; F:
++    def bar(cls) -&gt; Self:
+         return cls
+
+Would fix 1 error.
+</code></pre>
+<p>Which <code>mypy</code> does not like:</p>
+<pre><code class="language-bash">$ mypy --strict test.py 
+test.py:8: error: Self type cannot be used in a metaclass  [misc]
+Found 1 error in 1 file (checked 1 source file)
+</code></pre>
+<hr />
+<pre><code class="language-bash">$ python --version
+Python 3.11.10
+$ ruff --version
+ruff 0.9.6
+$ mypy --version
+mypy 1.15.0 (compiled: yes)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-12 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-02-12 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Geo5">@Geo5</a> on 2025-02-12 22:02</div>
+            <div class="timeline-body"><p>When reading further i am actually not sure if this is a bug in ruff or in mypy itself, because they seem to have almost this exact example in their documentation:
+https://mypy.readthedocs.io/en/stable/metaclasses.html
+Which also gives the same error for me.
+Should i file a bug report on their side?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Geo5">@Geo5</a> on 2025-02-12 22:05</div>
+            <div class="timeline-body"><p>See also https://github.com/astral-sh/ruff/issues/8353 for a similar case where the relevant PEP is linked: https://peps.python.org/pep-0673/#valid-locations-for-self
+Seems like the fix is indeed incorrect and the mypy docs example seems to be incorrect aswell</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-12 22:12</div>
+            <div class="timeline-body"><p>Thanks for the report and the for the additional links! I agree that it looks like a bug in ruff based on the PEP.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Geo5">@Geo5</a> on 2025-02-12 22:23</div>
+            <div class="timeline-body"><p>(I also created an issue for the mypy documentation linked above https://github.com/python/mypy/issues/18668)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-12 22:44</div>
+            <div class="timeline-body"><p>Yup, this is a bug here -- thanks for the report @Geo5! For some reason we check whether the class is a metaclass for PYI034 before issuing a diagnostic:</p>
+<p>https://github.com/astral-sh/ruff/blob/f8093b65ea88eb11a0d0f4ffdbf7c6f007043238/crates/ruff_linter/src/rules/flake8_pyi/rules/non_self_return_type.rs#L133-L136</p>
+<p>but not for PYI019.</p>
+<p>Should be easy to fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> removed by @AlexWaygood on 2025-02-12 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2025-02-12 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-02-12 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Rule `PYI019` incorrect autofix for metaclasses" to "Rule `PYI019` should not flag metaclass methods" by @AlexWaygood on 2025-02-12 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vladNed">@vladNed</a> on 2025-02-13 15:13</div>
+            <div class="timeline-body"><p>is this issue still unassigned ? I would like to give it a go</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-13 15:17</div>
+            <div class="timeline-body"><p>@vladNed go for it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @vladNed by @AlexWaygood on 2025-02-13 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16141.html">astral-sh/ruff#16141</a> on 2025-02-13 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-13 18:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

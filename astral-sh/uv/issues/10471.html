@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ModuleNotFoundError: No module named 'pkg_resources'` when adding google-cloud-storage - astral-sh/uv #10471</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ModuleNotFoundError: No module named 'pkg_resources'` when adding google-cloud-storage</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10471">#10471</a>
+        opened by <a href="https://github.com/marc-at-brightnight">@marc-at-brightnight</a>
+        on 2025-01-10 14:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/marc-at-brightnight">@marc-at-brightnight</a> on 2025-01-10 14:45</div>
+            <div class="timeline-body"><p>We are trying to switch from poetry to uv. We are getting some import errors after migrating dependencies, specifically for google-cloud-storage.</p>
+<p><code>ModuleNotFoundError: No module named 'pkg_resources'</code></p>
+<p>With poetry, running the command below works. With uv, it does not.</p>
+<pre><code>❯ ls venv/lib/python3.11/site-packages/ | grep pkg_resources  # poetry
+pkg_resources
+
+❯ ls .venv/lib/python3.11/site-packages/ | grep pkg_resources # uv
+</code></pre>
+<p>I recreated this issue with a small repo: https://github.com/marc-at-brightnight/uv_test</p>
+<p>Would appreciate any help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-10 14:54</div>
+            <div class="timeline-body"><p><code>pkg_resources</code> is provided by <code>setuptools</code>. <code>setuptools</code> is part of the &quot;seed&quot; packages up until Python 3.11 (Python 3.12+ does install pip as seed package with <code>python -m venv</code>). Poetry installs those by default, while uv doesn't. In uv, you can get the seed packages with <code>uv venv --seed</code> (or by installing <code>uv pip install setuptools</code>).</p>
+<p>fwiw <code>pkg_resources</code> is deprecated, so it is recommended packages migrate to the std <code>importlib</code> instead (https://setuptools.pypa.io/en/latest/pkg_resources.html).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-10 14:54</div>
+            <div class="timeline-body"><p>The Python 3.12 changelog entry</p>
+<blockquote>
+<p><a href="https://github.com/python/cpython/issues/95299">gh-95299</a>: Do not pre-install setuptools in virtual environments created with <a href="https://docs.python.org/3/library/venv.html#module-venv">venv</a>. This means that distutils, setuptools, pkg_resources, and easy_install will no longer available by default; to access these run pip install setuptools in the <a href="https://docs.python.org/3/library/venv.html#venv-explanation">activated</a> virtual environment.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-10 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marc-at-brightnight">@marc-at-brightnight</a> on 2025-01-10 18:39</div>
+            <div class="timeline-body"><p>Thanks for the clarification, this is good to know. I found upgrading <code>google-cloud-storage</code> to v2 fixed the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @marc-at-brightnight on 2025-01-10 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2025-01-11 13:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Poetry installs those by default, while uv doesn't</p>
+</blockquote>
+<p>As of Poetry 2.0.0 (released last week), Poetry no longer installs setuptools in the venvs it creates either:
+https://github.com/python-poetry/poetry/pull/9331</p>
+<p>(So all of the Python 3.12+ stdlib <code>venv</code> module, uv and Poetry are now consistent in that regard. If a package needs to use <code>pkg_resources</code> it must add an explicit dependency on it, or ideally move away from <code>pkg_resources</code>.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

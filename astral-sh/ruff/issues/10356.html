@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FBT003: Ignore by default django.db.models.Value - astral-sh/ruff #10356</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FBT003: Ignore by default django.db.models.Value</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10356">#10356</a>
+        opened by <a href="https://github.com/9128305">@9128305</a>
+        on 2024-03-12 10:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/9128305">@9128305</a> on 2024-03-12 10:03</div>
+            <div class="timeline-body"><p>Hi, there is a common usage of <code>Value(False)</code> | <code>Value(True)</code>  in <a href="https://docs.djangoproject.com/en/5.0/ref/models/expressions/#value-expressions">Django</a> projects. Ruff does not provide any configuration to extend the FBT003 default whitelist. So my request would be 1) Ignore <code>Value</code> by default like https://github.com/astral-sh/ruff/issues/6711 2) settings to extend FBT003 whitelist.</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<pre><code class="language-python">from django.db.models import Case, Q, Value, When
+...
+qs.annotate(
+    is_foo_or_bar=Case(
+        When(Q(is_foo=True) | Q(is_bar=True)),
+        then=Value(True),  # noqa: FBT003
+    ),
+    default=Value(False),  # noqa: FBT003
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2024-03-12 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2024-03-12 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 14:27</div>
+            <div class="timeline-body"><p>An allow-list for this rule does seems reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10485.html">astral-sh/ruff#10485</a> on 2024-03-20 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10531.html">astral-sh/ruff#10531</a> on 2024-03-23 00:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2024-03-26 09:52</div>
+            <div class="timeline-body"><p>@9128305 It should be possible to use <code>then=True</code> and <code>default=False</code> directly without wrapping with <code>Value()</code>, and that goes for most basic types, not just booleans. The exception is where strings are used, as <code>then=&quot;string&quot;</code> would be interpreted as <code>then=F(&quot;string&quot;)</code>, i.e. a column name, and so <code>then=Value(&quot;string&quot;)</code> is required explicitly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-30 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-30 00:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No solution found when resolving dependencies for split (python_full_version == '3.9.*') - astral-sh/uv #14556</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>No solution found when resolving dependencies for split (python_full_version == '3.9.*')</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14556">#14556</a>
+        opened by <a href="https://github.com/xidianwang412">@xidianwang412</a>
+        on 2025-07-11 03:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/xidianwang412">@xidianwang412</a> on 2025-07-11 03:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>执行：uv add &quot;mcp[cli]&quot;
+输出：
+No solution found when resolving dependencies for split (python_full_version == '3.9.*'):
+╰─▶ Because the requested Python version (&gt;=3.9) does not satisfy Python&gt;=3.10 and your project depends on mcp[cli], we can conclude that your project's requirements are
+unsatisfiable.</p>
+<pre><code>  hint: While the active Python version is 3.10, the resolution failed for other Python versions supported by your project. Consider limiting your project's supported
+  Python versions using `requires-python`.</code></pre>
+<p>help: If you want to add the package regardless of the failed resolution, provide the <code>--frozen</code> flag to skip locking and syncing.</p>
+<p>前置操作：
+conda activate python=3.10.18虚拟环境
+在此环境下依次执行
+un init projectxxx
+uv venv --python 3.10
+source .venv/bin/activate</p>
+<h3>Platform</h3>
+<p>macos</p>
+<h3>Version</h3>
+<p>uv 0.7.20 (251420396 2025-07-09)</p>
+<h3>Python version</h3>
+<p>python 3.10.18</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @xidianwang412 on 2025-07-11 03:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-12 12:04</div>
+            <div class="timeline-body"><p>Do you have <code>requires-python = &quot;&gt;=3.9&quot;</code> in your <code>pyproject.toml</code>? You need at least <code>requires-python = &quot;&gt;=3.10&quot;</code>. The error message is telling you that <code>mcp[cli]</code> doesn't support Python 3.9, so uv can't resolve for that version, and you need to raise the minimum supported version in your project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-07-12 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-07-12 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-12 12:06</div>
+            <div class="timeline-body"><p>This is the error message I get:</p>
+<pre><code>  × No solution found when resolving dependencies for split (python_full_version == '3.9.*'):
+  ╰─▶ Because the requested Python version (&gt;=3.9) does not satisfy Python&gt;=3.10 and your project depends on mcp[cli],
+      we can conclude that your project's requirements are unsatisfiable.
+
+      hint: While the active Python version is 3.13, the resolution failed for other Python versions supported by your
+      project. Consider limiting your project's supported Python versions using `requires-python`.
+</code></pre>
+<p>I feel like we should try to improve the error message to make clear that <code>mcp[cli]</code> needs <code>Python&gt;=3.10</code>. (\cc @zanieb)</p>
+<p>Edit: although confusingly, the error message in this other issue https://github.com/astral-sh/uv/issues/14549 does include &quot;{dependency} depends on Python&quot;, maybe it's getting simplified out somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-12 12:14</div>
+            <div class="timeline-body"><pre><code>Resolver derivation tree before reduction
+term root==0a0.dev0
+  root==0a0.dev0 depends on projectxxx*
+  term projectxxx*
+    term projectxxx==0.1.0
+      projectxxx==0.1.0 depends on mcp[cli]*
+      term mcp[cli]*
+        no versions of Python&gt;=3.10
+        no versions of mcp[cli]&lt;0.9.1 | &gt;0.9.1, &lt;1.0.0 | &gt;1.0.0, &lt;1.1.0 | &gt;1.1.0, &lt;1.1.1 | &gt;1.1.1, &lt;1.1.2 | &gt;1.1.2, &lt;1.1.3 | &gt;1.1.3, &lt;1.2.0 | &gt;1.2.0, &lt;1.2.1 | &gt;1.2.1, &lt;1.3.0 | &gt;1.3.0, &lt;1.4.0 | &gt;1.4.0, &lt;1.4.1 | &gt;1.4.1, &lt;1.5.0 | &gt;1.5.0, &lt;1.6.0 | &gt;1.6.0, &lt;1.7.0 | &gt;1.7.0, &lt;1.7.1 | &gt;1.7.1, &lt;1.8.0 | &gt;1.8.0, &lt;1.8.1 | &gt;1.8.1, &lt;1.9.0 | &gt;1.9.0, &lt;1.9.1 | &gt;1.9.1, &lt;1.9.2 | &gt;1.9.2, &lt;1.9.3 | &gt;1.9.3, &lt;1.9.4 | &gt;1.9.4, &lt;1.10.0 | &gt;1.10.0, &lt;1.10.1 | &gt;1.10.1, &lt;1.11.0 | &gt;1.11.0
+    no versions of projectxxx&lt;0.1.0 | &gt;0.1.0
+Resolver derivation tree after reduction
+term projectxxx==0.1.0
+  projectxxx==0.1.0 depends on mcp[cli]*
+  no versions of Python&gt;=3.10
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

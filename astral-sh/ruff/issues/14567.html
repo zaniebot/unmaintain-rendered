@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixes for PYI061 and RUF020 can generate `None | None` - astral-sh/ruff #14567</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fixes for PYI061 and RUF020 can generate `None | None`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14567">#14567</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2024-11-24 22:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-11-24 22:32</div>
+            <div class="timeline-body"><p>The fixes for <a href="https://docs.astral.sh/ruff/rules/redundant-none-literal/"><code>redundant-none-literal</code> (PYI061)</a> and <a href="https://docs.astral.sh/ruff/rules/never-union/"><code>never-union</code> (RUF020)</a> in Ruff 0.8.0 can generate <code>None | None</code>, which raises an error at runtime.</p>
+<p>PYI061 example:</p>
+<pre><code class="language-console">$ cat pyi061.py
+from typing import Literal
+x: Literal[None] | None
+
+$ ruff check --isolated --preview --select PYI061 pyi061.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat pyi061.py
+from typing import Literal
+x: None | None
+
+$ python pyi061.py 
+Traceback (most recent call last):
+  File &quot;pyi061.py&quot;, line 2, in &lt;module&gt;
+    x: None | None
+       ~~~~~^~~~~~
+TypeError: unsupported operand type(s) for |: 'NoneType' and 'NoneType'
+</code></pre>
+<p>RUF020 example:</p>
+<pre><code class="language-console">$ cat ruf020.py
+from typing import Never
+x: None | Never | None
+
+$ ruff check --isolated --select RUF020 ruf020.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat ruf020.py
+from typing import Never
+x: None | None
+
+$ python ruf020.py
+Traceback (most recent call last):
+  File &quot;ruf020.py&quot;, line 2, in &lt;module&gt;
+    x: None | None
+       ~~~~~^~~~~~
+TypeError: unsupported operand type(s) for |: 'NoneType' and 'NoneType'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-24 22:44</div>
+            <div class="timeline-body"><p>Hah, great catch (as ever). For reference, the CPython issue where it's debated whether we should change this behaviour at runtime in Python is https://github.com/python/cpython/issues/107271.</p>
+<p>Regardless of whether we change it in a future version of CPython, however, this is clearly a bug in ruff, since the code does not raise an exception prior to the autofix but does afterwards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-11-24 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-11-24 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-11-24 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-25 08:04</div>
+            <div class="timeline-body"><p>CC: @sbrugman (there's no expectation that you fix the issue, I just thought that you might be interested knowing about it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-25 13:17</div>
+            <div class="timeline-body"><p>Nice catch. I'll look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-25 13:20</div>
+            <div class="timeline-body"><p>The frustrating thing here is that if you have <a href="https://docs.astral.sh/ruff/rules/duplicate-union-member/">PYI016</a> also enabled, then this isn't an issue. But of course we can't mandate that users select rules in tandem like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-25 13:35</div>
+            <div class="timeline-body"><p>I'm exploring to fix this in a single go: if the parent union already contains the <code>None</code> literal, then we can change the edit to <code>range_deletion</code> instead of <code>range_replacement</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14583.html">astral-sh/ruff#14583</a> on 2024-11-25 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14589.html">astral-sh/ruff#14589</a> on 2024-11-25 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-25 17:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

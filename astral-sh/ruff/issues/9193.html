@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff check . --fix` incorrectly fixes `from urllib import request` - astral-sh/ruff #9193</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff check . --fix` incorrectly fixes `from urllib import request`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9193">#9193</a>
+        opened by <a href="https://github.com/discentem">@discentem</a>
+        on 2023-12-18 20:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/discentem">@discentem</a> on 2023-12-18 20:15</div>
+            <div class="timeline-body"><p>Please let me know if you need any further information. This is my first time submitting an issue and using Ruff!</p>
+<h2>Description of issue:</h2>
+<p>Ruff detects that</p>
+<pre><code>`urllib.request` imported but unused
+</code></pre>
+<p>but it is being used by</p>
+<pre><code>urllib.request.Request
+</code></pre>
+<p>According to my research technically this is user error.</p>
+<pre><code>from urllib import request
+</code></pre>
+<p>should be</p>
+<pre><code>import urllib.request
+</code></pre>
+<p><strong>tl:dr</strong></p>
+<p>but I'm wondering: should Ruff be able to detect this situation and either (a) ignore <code>--fix</code> if Ruff is actually unable to fix without breaking or (b) perform the fix correctly?</p>
+<h3>A minimal code snippet that reproduces the bug.</h3>
+<pre><code class="language-python">discentem@laptop ruff_testing % python3 thing.py 
+&lt;urllib.request.Request object at 0x1027e2490&gt;
+discentem@laptop ruff_testing % cat thing.py 
+import urllib
+from urllib import request
+
+print(urllib.request.Request(&quot;https://google.com&quot;))
+discentem@laptop ruff_testing % ruff check .
+thing.py:2:20: F401 [*] `urllib.request` imported but unused
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+discentem@laptop ruff_testing % ruff check . --fix
+Found 1 error (1 fixed, 0 remaining).
+discentem@laptop ruff_testing % cat thing.py      
+import urllib
+
+print(urllib.request.Request(&quot;https://google.com&quot;))
+discentem@laptop ruff_testing % python3 thing.py 
+Traceback (most recent call last):
+  File &quot;/Users/discentem/ruff_testing/thing.py&quot;, line 3, in &lt;module&gt;
+    print(urllib.request.Request(&quot;https://google.com&quot;))
+          ^^^^^^^^^^^^^^
+AttributeError: module 'urllib' has no attribute 'request'
+</code></pre>
+<h3>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.</h3>
+<p><code>ruff check . --fix</code></p>
+<h3>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).</h3>
+<p>n/a, there is no pyproject.toml in this minimal example</p>
+<h3>The current Ruff version (<code>ruff --version</code>).</h3>
+<pre><code>ruff 0.1.5
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-18 22:04</div>
+            <div class="timeline-body"><p>Submodule imports (like <code>import urllib.request</code>) are pretty tricky! They <em>tend</em> to work, but there are a few exceptions (like you're seeing here) that can only be determined via knowledge of the underlying module design (IIUC). For example, this works fine:</p>
+<pre><code class="language-python">&gt;&gt;&gt; import os
+&gt;&gt;&gt; os.path.expanduser
+&lt;function expanduser at 0x101007490&gt;
+</code></pre>
+<p>If you <em>just</em> use <code>import urllib.request</code>, you should be fine. But we should consider special-casing <code>urllib</code> and other standard-library modules that use this unusual approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/discentem">@discentem</a> on 2023-12-18 22:53</div>
+            <div class="timeline-body"><p>Thanks for the quick reply! Feel free to close if you want to consider this PEBKAC but if it's tenable for Ruff to handle this special-case for urllib and other stdlib modules that'd be great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-02 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2024-01-16 04:00</div>
+            <div class="timeline-body"><p>I'm not sure I understand what's tricky or an unusual approach here?</p>
+<pre><code>import urllib
+from urllib import request
+
+urllib.request.Request
+</code></pre>
+<p>The issue here is that unlike os.path, you do have to load both <code>sys.modules['urllib']</code> and <code>sys.modules['urllib.request']</code> separately -- the former won't automatically import the latter.</p>
+<p>Using <code>from urllib import request</code> both adds the second sys.modules entry, adding &quot;request&quot; as a property of the &quot;urllib&quot; module, and binds the &quot;request&quot; name -- which is genuinely unused.</p>
+<p>Any package with a submodule or subpackage will do this, it's not an urllib thing.</p>
+<p>You can automatically detect the overall pattern (<code>import a; from a import b; a.b.c()</code>) by assuming that <code>a.b.c</code> has a &quot;probably&quot; dependency on <code>a.b</code>, making it unsafe to remove the import:</p>
+<ul>
+<li><code>a.b</code> <em>could</em> be a submodule</li>
+<li>or it <em>could</em> be a class where <code>a.b.c</code> is a class staticmethod</li>
+</ul>
+<p>and in the former case the import can and should be rewritten to <code>import a.b</code> and in the latter case rewriting the import would be a fatal error (and deleting it is fine).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10674.html">astral-sh/ruff#10674</a> on 2024-03-30 23:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

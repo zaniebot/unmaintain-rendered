@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`arg_invalid_show_help(bool)` option - clap-rs/clap #4218</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`arg_invalid_show_help(bool)` option</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4218">#4218</a>
+        opened by <a href="https://github.com/ozgunozerk">@ozgunozerk</a>
+        on 2022-09-15 14:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ozgunozerk">@ozgunozerk</a> on 2022-09-15 14:47</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.2.21</p>
+<h3>Describe your use case</h3>
+<p>In case of supplying an invalid <code>subcommand</code>, <code>help</code> should be displayed with a default message.</p>
+<p>See for example:
+input: <code>myApp invalidCommand</code>
+output:</p>
+<pre><code>myApp: 'invalidCommand' is not a valid command
+*help is displayed here*
+</code></pre>
+<p>In order to achieve this, I have to use <code>try_get_matches</code>, and apply some error handling on the <code>Result</code>, which adds unnecessary complexity to my code, and makes it uglier.</p>
+<p>This problem is very similar to <em>having or not having the <code>arg_required_else_help</code> feature.</em>
+Since we have that, I expected to have this one as well, and spent a good amount of time searching this feature on docs, and in here.</p>
+<h3>Describe the solution you'd like</h3>
+<p>a similar feature is present for the absence of subcommands -&gt; <code>.arg_required_else_help(true)</code>
+so, there can be something like <code>arg_invalid_show_help(bool)</code> as well imho. Would be handy for many developers.</p>
+<p>In my case, the custom code I needed to write for this made the code uglier, and I think it should be fairly easy the implement this feature.
+In fact, I can volunteer for implementing it if you guys are busy with other things :)</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @ozgunozerk on 2022-09-15 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-15 15:07</div>
+            <div class="timeline-body"><p>Since the Issue doesn't include a &quot;current&quot; case,</p>
+<pre><code class="language-rust">#!/usr/bin/env -S rust-script --debug
+
+//! ```cargo
+//! [dependencies]
+//! clap = { version = &quot;3.2.21&quot;, features = [] }
+//! ```
+
+fn main() {
+    let cmd = clap::Command::new(&quot;myprog&quot;)
+        .subcommand_required(true)
+        .arg_required_else_help(true)
+        .subcommand(clap::Command::new(&quot;foo&quot;))
+        .subcommand(clap::Command::new(&quot;bar&quot;).alias(&quot;foo&quot;));
+    cmd.get_matches();
+}
+</code></pre>
+<pre><code class="language-console">$ ./clap-4218.rs hello
+error: The subcommand 'hello' wasn't recognized
+
+        Did you mean 'help'?
+
+If you believe you received this message in error, try re-running with 'clap-4218_00274e25ccd5548e0be0e496 -- hello'
+
+USAGE:
+    clap-4218_00274e25ccd5548e0be0e496 &lt;SUBCOMMAND&gt;
+
+For more information try --help
+</code></pre>
+<p>but you also get</p>
+<pre><code class="language-console">$ ./clap-4218.rs kljkljkljkljkl
+error: Found argument 'kljkljkljkljkl' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    clap-4218_00274e25ccd5548e0be0e496 &lt;SUBCOMMAND&gt;
+
+For more information try --help
+</code></pre>
+<p>If you update the code to</p>
+<pre><code class="language-rust">#!/usr/bin/env -S rust-script --debug
+
+//! ```cargo
+//! [dependencies]
+//! clap = { version = &quot;3.2.21&quot;, features = [] }
+//! ```
+
+fn main() {
+    let cmd = clap::Command::new(&quot;myprog&quot;)
+        .subcommand_required(true)
+        .arg_required_else_help(true)
+        .disable_help_flag(true)
+        .disable_version_flag(true)
+        .subcommand(clap::Command::new(&quot;foo&quot;))
+        .subcommand(clap::Command::new(&quot;bar&quot;).alias(&quot;foo&quot;));
+    cmd.get_matches();
+}
+</code></pre>
+<p>you now get</p>
+<pre><code class="language-console">$ ./clap-4218.rs kljkljkljkljkl
+error: The subcommand 'kljkljkljkljkl' wasn't recognized
+
+USAGE:
+    clap-4218_00274e25ccd5548e0be0e496 &lt;SUBCOMMAND&gt;
+
+For more information try help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-15 15:12</div>
+            <div class="timeline-body"><p>It sounds like there are two parts to this</p>
+<ol>
+<li>&quot;Don't show &quot;argument not found&quot; errors for subcommands when flags are present, especially built-in flags.  We should update that check to only care about if positionals are present.</li>
+<li>Show help along with the error message (which is blocked on the first part)</li>
+</ol>
+<blockquote>
+<p>help should be displayed with a default message.</p>
+</blockquote>
+<p>I feel like this statements could use more elaboration, especially in a lot of case where showing the help will obscure the error message to the length of output.</p>
+<p>I could see including the list of available subcommands in the help output.  That could still be long for a bulleted list.  We could treat it like possible values and instead do a comma-separated list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-15 15:14</div>
+            <div class="timeline-body"><p>Forgot to add, the reason I'm digging more into that assertion is because</p>
+<ol>
+<li>We are trying to be more intentional about what knobs we add to help with https://github.com/clap-rs/clap/issues/1365 and https://github.com/clap-rs/clap/issues/2037</li>
+<li>We want to offer a polished experienced out of the box so we should consider if something is good enough to be a default or to be unconditionally on</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4219.html">clap-rs/clap#4219</a> on 2022-09-15 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ozgunozerk">@ozgunozerk</a> on 2022-09-15 17:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I feel like this statements could use more elaboration, especially in a lot of case where showing the help will obscure the error message to the length of output.</p>
+</blockquote>
+<p>Totally understandable and I had the same hesitation. If that is the case, following the <code>git</code> way can be helpful.</p>
+<pre><code>$ git kjkjkjkl                                                             
+git: 'kjkjkjkl' is not a git command. See 'git --help'.
+</code></pre>
+<p>I'm okay with this one as well. This is probably as clean as it can be.</p>
+<p>On top of that, appending the error texts (related to unknown/invalid arguments) with <code>See 'appName --help'</code> should not increase the size of the binary, and can be default. I can't imagine a use case where this is not preferred.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4220.html">clap-rs/clap#4220</a> on 2022-09-15 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-15 21:26</div>
+            <div class="timeline-body"><p>We already suggest checking the help but its after the usage and when its suggesting the <code>help</code> subcommand, it isn't as obvious, so I have a PR to quote it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ozgunozerk">@ozgunozerk</a> on 2022-09-16 06:18</div>
+            <div class="timeline-body"><p>Alright, thank you very much for the fast responses and actions.
+This is better for me. I still think there is room for some improvement in here, but it satisfies me as it is. Feel free to keep this issue closed/open :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-16 12:24</div>
+            <div class="timeline-body"><blockquote>
+<p>I still think there is room for some improvement in here</p>
+</blockquote>
+<p>Feedback is always welcome!  As I said, we are aiming to make programs feel polished / high quality out the gate.  We recently, did a push on <a href="https://github.com/clap-rs/clap/issues/4132">help output</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-09-16 12:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

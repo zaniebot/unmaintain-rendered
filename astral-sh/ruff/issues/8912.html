@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistent removal of trailing comma in single-argument functions - astral-sh/ruff #8912</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistent removal of trailing comma in single-argument functions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8912">#8912</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-11-29 21:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-29 21:26</div>
+            <div class="timeline-body"><p>See: https://play.ruff.rs/96810c27-3971-44af-8eb5-5b5ebae1668e. We remove the trailing comma in the first case, but not in the second, when the trailing comment is present.</p>
+<p>Note that this only happens with <code>&quot;skip-magic-trailing-comma&quot;: true</code>. If you set <code>&quot;skip-magic-trailing-comma&quot;: false</code> in the example above, we consistently insert the trailing comma.</p>
+<p>Originally reported here: https://github.com/astral-sh/ruff/issues/1200#issuecomment-1832718967.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-29 21:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-11-29 21:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2023-11-29 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-30 02:21</div>
+            <div class="timeline-body"><p>Another way to look at it: https://play.ruff.rs/5bf54dc0-235e-4cee-9902-90eff0a19150</p>
+<p>Here, we don't insert a trailing comma, when we <em>should</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-30 02:24</div>
+            <div class="timeline-body"><p>This seems tricky to fix because we need to know if the <em>parent</em> group breaks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-30 02:34</div>
+            <div class="timeline-body"><blockquote>
+<p>This seems tricky to fix because we need to know if the <em>parent</em> group breaks.</p>
+</blockquote>
+<p>Can you explain in detail or share some IR. You might be able to assign a group id to the parent group and use <code>if_group_breaks(parent_group_id)</code></p>
+<p>This is how it is implemented in biome</p>
+<p>The array creates a group:</p>
+<p>https://github.com/MichaReiser/biome/blob/59acbfd1e6458b13b5b44d4c5c33ead6a428435e/crates/biome_js_formatter/src/js/expressions/array_expression.rs#L45-L48</p>
+<p>and we use it when formatting the trailing separator here</p>
+<p>https://github.com/MichaReiser/biome/blob/59acbfd1e6458b13b5b44d4c5c33ead6a428435e/crates/biome_js_formatter/src/js/lists/array_element_list.rs#L42-L44</p>
+<p>which ultimately resolves here</p>
+<p>https://github.com/MichaReiser/biome/blob/63e4c40051ec15563cc586890c1c350b8c7b948e/crates/biome_formatter/src/separated.rs#L80-L82</p>
+<p>But it depends on how the groups are structured in detail. But I thought it might help</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-30 04:19</div>
+            <div class="timeline-body"><p>This could also be solved by associating the comments with the arguments. Because it would allow you to move the comment out of the inner group.</p>
+<p>~~Using the parent group seems incorrect to me (which, breaks as well because the child group is breaking) because we want to have a trailing comma for~~</p>
+<pre><code class="language-python">func(
+	a, b, c,
+): pass
+``
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-30 04:20</div>
+            <div class="timeline-body"><p>I don't think the comment is relevant. This, for example, needs a trailing comma:</p>
+<pre><code class="language-python">def _example_function_xxxxxxx(
+    variable: Optional[List[str]]
+) -&gt; List[example.ExampleConfig]:
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-30 04:22</div>
+            <div class="timeline-body"><p>Hmm, but only if it is a single argument function. Could we avoid the inner group if the function only has a single argument? It seems unnecessary to emit two groups in that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-30 04:23</div>
+            <div class="timeline-body"><p>Maybe? I can try.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-11-30 04:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8921.html">astral-sh/ruff#8921</a> on 2023-11-30 04:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-01 02:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

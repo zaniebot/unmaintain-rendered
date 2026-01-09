@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue with new `PYI034` autofix when first param is annotated - astral-sh/ruff #14421</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issue with new `PYI034` autofix when first param is annotated</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14421">#14421</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2024-11-18 03:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2024-11-18 03:14</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+
+
+
+
+-->
+
+<p>Thanks @InSyncWithFoo for adding an autofix in https://github.com/astral-sh/ruff/pull/14217 .</p>
+<ul>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+<p>I did notice an issue that I think should be possible to handle. This case:</p>
+<pre><code class="language-py">class Container(tuple):
+    def __new__(cls: Type[Container], *args, **kwargs) -&gt; Container: ...
+</code></pre>
+<p>gets autofixed to</p>
+<pre><code class="language-py">class Container(tuple):
+    def __new__(cls: Type[Container], *args, **kwargs) -&gt; Self: ...
+</code></pre>
+<p>Which causes type error:</p>
+<pre><code>error: &quot;Self&quot; cannot be used in a function with a `self` or `cls` parameter that has a type annotation other than &quot;Self&quot; (reportGeneralTypeIssues)
+</code></pre>
+<p>I think it should be:</p>
+<pre><code class="language-py">class Container(tuple):
+    def __new__(cls, *args, **kwargs) -&gt; Self: ...
+</code></pre>
+<ul>
+<li>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.</li>
+</ul>
+<p><code>ruff check --select=PYI034 --fix --preview --unsafe-fixes --isolated</code></p>
+<ul>
+<li>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).</li>
+</ul>
+<p>None</p>
+<ul>
+<li>The current Ruff version (<code>ruff --version</code>).</li>
+</ul>
+<p>ruff 0.7.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-18 03:39</div>
+            <div class="timeline-body"><p>Admittedly, the fix is unsafe here (and, indeed, it was marked as such), but I'm not sure if this falls within the scope of <code>PYI034</code>. I would say it is closer to <a href="https://docs.astral.sh/ruff/rules/custom-type-var-return-type/"><code>PYI019</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-11-18 04:00</div>
+            <div class="timeline-body"><p>I don't think this falls under PYI019, there are no typevar used here.</p>
+<p>Ruff probably doesn't need to try and fix code like <code>def __new__(cls: Type[Container], *args, **kwargs) -&gt; Self: ...</code> when it's encountered in the wild, as it's invalid to begin with. So I'm not asking for a rule to fix it here, <em>but</em> it shouldn't produce it either if possible.</p>
+<p>The autofix is indeed unsafe, as there are cases where you wouldn't want to use <code>Self</code>. But assuming this is not one of those cases, it's correct to attempt an autofix here, the current implementation just doesn't yet handle it.</p>
+<hr />
+<p>However (and if) this case ends up being handled, both known reasons for this fix to be unsafe could be documented.</p>
+<ol>
+<li>Intentionally returning a specific class from <code>__new__</code></li>
+<li>May introduce type issues, for instance if the <code>self</code>/<code>cls</code> param is annotated)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-11-18 04:06</div>
+            <div class="timeline-body"><p>Maybe Ruff <em>should</em> have a rule to disallow (and remove) non-typevar annotations on <code>self</code>/<code>cls</code>? 🤔
+That'd solve the issue and this issue could be closed with only documenting the fix safety.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-18 07:06</div>
+            <div class="timeline-body"><p>@InSyncWithFoo If I recall, then https://github.com/astral-sh/ruff/pull/14238 handles type annotations in <code>self</code>/<code>cls</code> positions correctly. Any concerns with detecting type annotation for <code>self</code>/<code>cls</code> that can't be replaced with <code>Self</code> and bailing out of the fix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-11-18 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2024-11-18 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-18 08:28</div>
+            <div class="timeline-body"><p>I think it would only be safe to remove the annotation (not just replace) when:</p>
+<ul>
+<li><code>self</code> is annotated with <code>Container</code> and <code>cls</code> with <code>type[Container]</code>.</li>
+<li><code>Container</code> is <em>not</em> generic.</li>
+</ul>
+<p>Consider this contrived example:</p>
+<pre><code class="language-python"># Before
+class Container[T]:
+    def __init__(self, v: T, /) -&gt; None: ...
+    def map(self: Container, mapper: Callable, /) -&gt; Container: ...
+#                 ^^^^^^^^^     `Container[Any]`     ^^^^^^^^^
+
+# After
+class Container[T]:
+    def __init__(self, v: T, /) -&gt; None: ...
+    def map(self, mapper: Callable, /) -&gt; Self: ...
+#                          `Container[T]` ^^^^
+</code></pre>
+<pre><code class="language-python">c = Container(0)  # Container[int]
+
+# Before
+reveal_type(c.map(lambda _: ''))  # Container[Any]
+# After
+reveal_type(c.map(lambda _: ''))  # Container[int]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14801.html">astral-sh/ruff#14801</a> on 2024-12-06 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-12-09 14:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

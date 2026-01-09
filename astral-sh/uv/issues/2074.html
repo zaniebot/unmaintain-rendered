@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editable package install fails after a previous uninstall - astral-sh/uv #2074</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Editable package install fails after a previous uninstall</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2074">#2074</a>
+        opened by <a href="https://github.com/amirhosseindavoody">@amirhosseindavoody</a>
+        on 2024-02-29 07:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/amirhosseindavoody">@amirhosseindavoody</a> on 2024-02-29 07:35</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Steps to reproduce</p>
+<ul>
+<li>Activate a conda environment.</li>
+<li>Install a local package that I have using <code>uv pip install -e .</code></li>
+<li>Uninstall the local package using <code>uv pip uninstall -e .</code></li>
+<li>Install the local package again using <code>uv pip install -e .</code></li>
+</ul>
+<p>I get the following error:</p>
+<pre><code>error: Cannot uninstall package; RECORD file not found at: path/to/site-packages/mylib-0.1.dist-info/RECORD
+</code></pre>
+<p>If I manually remove <code>path/to/site-packages/mylib-0.1.dist-info</code> directory, then I am able to install my local package again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-29 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-29 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 14:39</div>
+            <div class="timeline-body"><p>Thanks! Probably my bug from the most recent release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 15:19</div>
+            <div class="timeline-body"><p>Do you get this consistently? I wasn't able to reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-02-29 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amirhosseindavoody">@amirhosseindavoody</a> on 2024-02-29 17:56</div>
+            <div class="timeline-body"><p>I tried this with a fresh environment and the same error happened.</p>
+<p>Some more details about my environment setup</p>
+<ul>
+<li>I am using <code>pixi</code> as the package manager.</li>
+<li>Then I install <code>uv</code> for my specific environment using <code>pixi add uv</code></li>
+<li>Then I use <code>pixi shell</code> to activate the environment.</li>
+<li>Now I run the <code>uv pip install -e \path\to\my\local\package</code></li>
+<li>The local package is using pyproject.toml for setup. Something similar to <a href="https://github.com/nedbat/pkgsample/blob/main/pyproject.toml">this</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 18:01</div>
+            <div class="timeline-body"><p>Thanks, will try again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 18:12</div>
+            <div class="timeline-body"><p>This still worked for me even when running through pixi. Is there anything else you can share about your OS, etc.?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amirhosseindavoody">@amirhosseindavoody</a> on 2024-02-29 19:01</div>
+            <div class="timeline-body"><p>My OS is Suse 12.</p>
+<p>I don't know what else might help.</p>
+<p>If this is not reproducible we can close this and others will open something if it happens again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 20:50</div>
+            <div class="timeline-body"><p>I believe it's a real problem if you're seeing it consistently. I just need to find a way to repro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iwane-pl">@iwane-pl</a> on 2024-03-01 07:22</div>
+            <div class="timeline-body"><p>We've run on the same error when installing <code>lxml</code>, for example. The procedure was</p>
+<pre><code>PS C:\Users\me&gt; C:\Python3.12\python.exe -m venv venv  
+PS C:\Users\me&gt; .\venv\Scripts\activate.ps1                                                                                    
+(venv) PS C:\Users\me&gt; uv pip install lxml==5.1.0                                                                              
+Resolved 1 package in 4ms                                                                                                       
+Installed 1 package in 50ms                                                                                                     
+ + lxml==5.1.0                                                                                                                  
+(venv) PS C:\Users\me&gt; uv pip install lxml==4.9.3                                                                              
+Resolved 1 package in 4ms                                                                                                       
+Installed 1 package in 51ms                                                                                                     
+ - lxml==5.1.0                                                                                                                  
+ + lxml==4.9.3                                                                                                                  
+(venv) PS C:\Users\me&gt; uv pip install lxml==5.1.0                                                                              
+Resolved 1 package in 4ms                                                                                                       
+error: Cannot uninstall package; RECORD file not found at: C:\Users\me\venv\Lib\site-packages\lxml-5.1.0.dist-info\RECORD 
+</code></pre>
+<p>OS info:</p>
+<pre><code># Windows Server 2016
+&gt; (Get-CimInstance Win32_OperatingSystem).version
+10.0.14393    
+&gt; python --version                                                                                        
+Python 3.12.2
+&gt; uv --version                                                                                            
+uv 0.1.12 (f68b2d1d5 2024-02-28)
+</code></pre>
+<p>Don't ask why we install it that way :) (hint: multiple requirement files in sequence)
+Didn't happen on Linux, though.</p>
+<p>EDIT: Still present on 0.1.13, despite #2091</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-01 10:40</div>
+            <div class="timeline-body"><p>I tried on my windows desktop but i can't reproduce it there</p>
+<pre><code>PS C:\Users\Konsti\projects\uv&gt; python.exe -m venv venv 
+PS C:\Users\Konsti\projects\uv&gt; .\venv\Scripts\activate.ps1            
+(venv) PS C:\Users\Konsti\projects\uv&gt; powershell -c &quot;irm https://astral.sh/uv/install.ps1 | iex&quot;
+Downloading uv 0.1.13 (x86_64-pc-windows-msvc)
+Installing to C:\Users\Konsti\.cargo\bin
+  uv.exe
+Everything's installed!
+(venv) PS C:\Users\Konsti\projects\uv&gt; uv --version
+uv 0.1.13 (9ce5170e6 2024-02-29)
+(venv) PS C:\Users\Konsti\projects\uv&gt;  uv pip install lxml==5.1.0                                 
+
+Resolved 1 package in 228ms
+Downloaded 1 package in 366ms
+Installed 1 package in 65ms
+ + lxml==5.1.0
+(venv) PS C:\Users\Konsti\projects\uv&gt; uv pip install lxml==4.9.3                         
+Resolved 1 package in 170ms
+Downloaded 1 package in 473ms
+Installed 1 package in 59ms
+ - lxml==5.1.0
+ + lxml==4.9.3
+(venv) PS C:\Users\Konsti\projects\uv&gt; uv pip install lxml==5.1.0                 
+Resolved 1 package in 2ms
+Installed 1 package in 68ms
+ - lxml==4.9.3
+ + lxml==5.1.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iwane-pl">@iwane-pl</a> on 2024-03-01 12:02</div>
+            <div class="timeline-body"><p>:thinking:
+I tried on other Windows versions too. Same <code>uv</code> (0.1.13) and Python (3.12.2).</p>
+<pre><code># Win10
+
+PS C:\Users\me&gt; (Get-CimInstance Win32_OperatingSystem).version
+10.0.19045
+PS C:\Users\me&gt; C:\Python3.12\python.exe -m venv venv
+PS C:\Users\me&gt; .\venv\Scripts\activate.ps1
+(venv) PS C:\Users\me&gt; uv pip install lxml==5.1.0
+Resolved 1 package in 84ms
+Downloaded 1 package in 150ms
+Installed 1 package in 82ms
+ + lxml==5.1.0
+(venv) PS C:\Users\me&gt; uv pip install lxml==4.9.3
+Resolved 1 package in 47ms
+Downloaded 1 package in 156ms
+Installed 1 package in 107ms
+ - lxml==5.1.0
+ + lxml==4.9.3
+(venv) PS C:\Users\me&gt; uv pip install lxml==5.1.0 
+Resolved 1 package in 6ms
+Installed 1 package in 75ms
+ - lxml==4.9.3
+ + lxml==5.1.0
+
+
+# WinServer2019
+
+PS C:\Users\me&gt; (Get-CimInstance Win32_OperatingSystem).version
+10.0.17763
+PS C:\Users\me&gt; C:\Python3.12\python.exe -m venv venv
+PS C:\Users\me&gt; .\venv\Scripts\activate.ps1
+(venv) PS C:\Users\me&gt; uv pip install lxml==5.1.0
+Resolved 1 package in 84ms
+Downloaded 1 package in 199ms
+Installed 1 package in 66ms
+ + lxml==5.1.0
+(venv) PS C:\Users\me&gt; uv pip install lxml==4.9.3
+Resolved 1 package in 33ms
+Downloaded 1 package in 224ms
+Installed 1 package in 68ms
+ - lxml==5.1.0
+ + lxml==4.9.3
+(venv) PS C:\Users\me&gt; uv pip install lxml==5.1.0
+Resolved 1 package in 7ms
+error: Cannot uninstall package; RECORD file not found at: C:\Users\me\venv\Lib\site-packages\lxml-5.1.0.dist-info\RECORD 
+
+# WinServer2022
+
+PS C:\Users\me&gt; (Get-CimInstance Win32_OperatingSystem).version
+10.0.20348
+PS C:\Users\me&gt; C:\Python3.12\python.exe -m venv venv  
+PS C:\Users\me&gt; .\venv\Scripts\activate.ps1
+(venv) PS C:\Users\me&gt; uv pip install lxml==5.1.0
+Resolved 1 package in 187ms
+Downloaded 1 package in 158ms
+Installed 1 package in 88ms
+ + lxml==5.1.0
+(venv) PS C:\Users\me&gt; uv pip install lxml==4.9.3
+Resolved 1 package in 35ms
+Downloaded 1 package in 142ms
+Installed 1 package in 87ms
+ - lxml==5.1.0
+ + lxml==4.9.3
+(venv) PS C:\Users\me&gt; uv pip install lxml==5.1.0
+Resolved 1 package in 21ms
+Installed 1 package in 110ms
+ - lxml==4.9.3
+ + lxml==5.1.0
+
+</code></pre>
+<p>It seems like it reproduces on older Windows versions. Updated Win10 and WinServer2022 seem unaffected, while WinServer2016 and 2019 fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2024-03-06 18:00</div>
+            <div class="timeline-body"><p>As @iwane-pl noticed, this happens on Windows 2016 and 2019 but not on Windows 10 and 2022.
+The difference is that after an uninstall an empty directory is left befind. E.g. if you have <code>lxml==5.1.0</code> installed and you downgrade to <code>lxml==4.9.3</code> then <code>site-packages</code> will have</p>
+<pre><code>venv\Lib\site-packages\lxml-4.9.3.dist-info
+venv\Lib\site-packages\lxml-5.1.0.dist-info
+</code></pre>
+<p>Where 5.1.0 dir will be empty and hence the error</p>
+<pre><code>error: Cannot uninstall package; RECORD file not found at: venv\Lib\site-packages\lxml-5.1.0.dist-info\RECORD
+</code></pre>
+<p>Curiously enough it happens only on selected Windows versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 18:02</div>
+            <div class="timeline-body"><p>My guess is that this is due to delayed file deletion...? E.g., we delete a file, then test if a directory is empty, and delete the directory if so; but I believe there can be temporary inconsistencies, such that when you delete a file, it may still &quot;exist&quot; for some period of time, or something like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2024-03-06 18:14</div>
+            <div class="timeline-body"><p>It's 100% reproducible, so I'd say it's not a race. Could try Process Monitor tomorrow to see what's happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 18:23</div>
+            <div class="timeline-body"><p>Yeah what I'm describing could still be consistent with it being 100% reproducible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 18:24</div>
+            <div class="timeline-body"><p>I don't have a system to test this on, so the best I can do is try a refactor and ask someone here to test it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 03:22</div>
+            <div class="timeline-body"><p>Good news, I'm able to reproduce this on Windows 2019 in GitHub Actions! https://github.com/astral-sh/uv/pull/2259</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2259.html">astral-sh/uv#2259</a> on 2024-03-07 04:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 04:35</div>
+            <div class="timeline-body"><p>Ok, I believe this is fixed by https://github.com/astral-sh/uv/pull/2259. If you're able to reproduce after the next release, please let me know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-07 04:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

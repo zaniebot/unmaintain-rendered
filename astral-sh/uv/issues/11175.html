@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>option to specify a project root directory to be added to the python path - astral-sh/uv #11175</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>option to specify a project root directory to be added to the python path</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11175">#11175</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2025-02-03 04:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-03 04:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>my project is not intended to be built as a wheel or published, but i would like to be able to import other modules like so:</p>
+<pre><code>.
+├── foo/
+│   ├── __init__.py
+│   └── a.py
+└── bar/
+    ├── __init__.py
+    └── b.py
+</code></pre>
+<pre><code class="language-py"># ./bar/b.py
+from foo import a
+</code></pre>
+<p>however this is not possible unless i add and configure a build backend, which adds a lot of complexity to my project for functionality i don't actually need.</p>
+<p>all i want is to be able to add the project root directory to the python path. it would be nice if uv had an option to do this</p>
+<h3>Example</h3>
+<p>maybe something like this</p>
+<pre><code class="language-toml"># pyproject.toml
+[tool.uv]
+python-paths = [&quot;.&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @DetachHead on 2025-02-03 04:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tpgillam">@tpgillam</a> on 2025-02-03 10:24</div>
+            <div class="timeline-body"><p>Another similar use for this would be for 'development' modules that live alongside a package that is built in a standard way.</p>
+<p>For some internal packages we have a structure like:</p>
+<pre><code>pyproject.toml
+src/
+   moo/
+      __init__.py
+      stuff.py
+laboratory/
+   __init__.py
+   common/
+      ...
+   stuff/
+      ...
+tests/
+   __init__.py
+   ...
+</code></pre>
+<p>The code under <code>src/moo</code> is a module that we treat in a fairly standard way, and is depended upon by other internal packages, should have a build-backend, etc. etc.</p>
+<p>But <code>laboratory</code> is intended to be a module too; but one that is only available when locally developing a package. (It contains a combination of extended documentation / prototyping of new algorithms / records of computational experiments.) The main point is that it has internal dependencies, and we write <code>import laboratory.common....</code> from within other places in <code>laboratory</code>.</p>
+<p>Having the ability to specify an additional <code>python-path-extends</code> or similar field could be a neat solution to this I think. (Especially if it worked nicely with workspaces, and only modified the python path with the context from the active project -- when we have two modules, each with their own 'laboratory' modules, we want to make sure only the one on the currently-in-use project is active)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-03 16:59</div>
+            <div class="timeline-body"><p>As reference, pycharm supports this as a default option:</p>
+<p><img src="https://github.com/user-attachments/assets/d5cdaa07-d8d3-4c4e-a6d5-6672e2215aa1" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjpauly">@mjpauly</a> on 2025-02-06 02:01</div>
+            <div class="timeline-body"><p>If you add</p>
+<pre><code>[tool.uv]
+package = true
+</code></pre>
+<p>to your <code>pyproject.toml</code> and run <code>uv sync</code>, then uv will install a minimal package to your environment that simply points to the modules at the root of your repository by their file path, making them importable without building them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-06 02:30</div>
+            <div class="timeline-body"><p>that just means use a build backend. specifying <code>package = true</code> without specifying a build system makes it default to using setuptools (<a href="https://docs.astral.sh/uv/concepts/projects/config/#build-systems">this behavior is mentioned in the docs here</a>).</p>
+<p>in my case, setuptools refuses to build my project because there are multiple top-level packages which means i have to figure out how to configure it to build a package that i don't even want to build in the first place, which is what i'm trying to avoid</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjpauly">@mjpauly</a> on 2025-02-06 02:54</div>
+            <div class="timeline-body"><p>What's the error? Seems to handle multiple top-level packages fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-06 03:34</div>
+            <div class="timeline-body"><pre><code>&gt; uv sync
+Resolved 150 packages in 26ms
+  × Failed to build `project @ file:///C:/project`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_editable` failed (exit code: 1)
+
+      [stderr]
+      error: Multiple top-level packages discovered in a flat-layout: ['foo', 'bar'].
+
+      To avoid accidental inclusion of unwanted files or directories,
+      setuptools will not proceed with this build.
+
+      If you are trying to create a single distribution with multiple packages
+      on purpose, you should not rely on automatic discovery.
+      Instead, consider the following options:
+
+      1. set up custom discovery (`find` directive with `include` or `exclude`)
+      2. use a `src-layout`
+      3. explicitly set `py_modules` or `packages` with a list of names
+
+      To find more information, look for &quot;package discovery&quot; on setuptools docs.
+
+      hint: This usually indicates a problem with the package or the build environment.
+</code></pre>
+<p>relying on setuptools doesn't sound like a good idea especially since it's got <code>__legacy__</code> in the name. for now as a workaround i'm just using uv's work-in-progress build backend (#8779) with an empty package matching the name of the project.</p>
+<p>honestly now that i'm using uv i don't want to have to touch any of these legacy tools ever again. they are just too painful to deal with</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjpauly">@mjpauly</a> on 2025-02-06 05:01</div>
+            <div class="timeline-body"><p>Ah yeah you're right it doesn't work with multiple top-level packages out of the box. This seems to work:</p>
+<pre><code>[tool.uv]
+package = true
+
+[tool.setuptools]
+packages = [&quot;foo&quot;, &quot;bar&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trim21">@trim21</a> on 2025-03-12 16:44</div>
+            <div class="timeline-body"><p>This is easy to workaround <code>echo $(pwd) &gt; .venv/lib/python3.10/site-packages/_project.pth</code>, but I hope uv can have such option to avoid the trouble.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oelhammouchi">@oelhammouchi</a> on 2025-04-14 10:16</div>
+            <div class="timeline-body"><p>We're experiencing a problem which seems related to this: there seems to be no way of including a top-level module outside of the <code>src</code>  tree in a (editable) install. In our case, we have a Flask app configured with a <code>config.py</code>:</p>
+<pre><code>├── config.py
+├── pyproject.toml
+├── README.md
+├── app
+├── settings.toml
+└── uv.lock
+</code></pre>
+<p>Inside the app, we import settings with</p>
+<pre><code class="language-python">from config import settings
+</code></pre>
+<p>This used to work fine with Poetry, but with uv we get <code>ModuleNotFoundError: No module named 'config'</code>. It would be really useful if this could be solved somehow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rmnppt">@rmnppt</a> on 2025-08-16 07:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah yeah you're right it doesn't work with multiple top-level packages out of the box. This seems to work:</p>
+<pre><code>[tool.uv]
+package = true
+
+[tool.setuptools]
+packages = [&quot;foo&quot;, &quot;bar&quot;]
+</code></pre>
+</blockquote>
+<p>This worked for me, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kerrickstaley">@kerrickstaley</a> on 2025-12-13 05:13</div>
+            <div class="timeline-body"><p>Is there a solution that allows importing .py files from the top-level like @oelhammouchi asked about? I'm also running into this.</p>
+<p>@trim21 's solution of <code>echo $(pwd) &gt; .venv/lib/python3.13/site-packages/_project.pth</code> works but doesn't feel like something I can check-in to Git (it hardcodes the Python version). Running <code>PYTHONPATH=&quot;$(git rev-parse --show-toplevel)&quot; uv ...</code> also works but is ugly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-15 17:14</div>
+            <div class="timeline-body"><p>Note that the <code>[tool.setuptools]</code> solution relies on configuring a build backend implicitly, though the PEP 517 legacy fallback. I recommend configuring a build backend explicitly (it's 3 lines for the <code>[build-system]</code> table), and configuring it to include the modules you want to import. Both hatchling and uv-build can be configured to include multiple top-level modules.</p>
+<blockquote>
+<p>But <code>laboratory</code> is intended to be a module too; but one that is only available when locally developing a package. (It contains a combination of extended documentation / prototyping of new algorithms / records of computational experiments.) The main point is that it has internal dependencies, and we write <code>import laboratory.common....</code> from within other places in <code>laboratory</code>.</p>
+</blockquote>
+<p>The best way to achieve this is to move <code>laboratory</code> a directory down and give it it's own minimal <code>pyproject.toml</code>. I generally recommend trying to build a native python package structure with a <code>pyproject.toml</code> and one top level module name. It's more boilerplate than having the project root in <code>sys.path</code>, but it avoids some common problems later and it's better accessible to tools and IDEs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2026-01-02 09:11</div>
+            <div class="timeline-body"><p>looks like i can use uv's build backend and specify no module names:</p>
+<pre><code class="language-toml"># pyproject.toml
+
+[tool.uv.build-backend]
+module-root = &quot;.&quot;
+module-name = []
+</code></pre>
+<p>this is pretty much exactly what i need, since i don't want to have to maintain a separate list of top-level module names in my project since it never gets built as a wheel.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

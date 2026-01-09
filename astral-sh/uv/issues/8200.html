@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>regression: uv build silently produces empty wheels with hatchling if .gitignore is missing - astral-sh/uv #8200</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>regression: uv build silently produces empty wheels with hatchling if .gitignore is missing</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8200">#8200</a>
+        opened by <a href="https://github.com/jinnatar">@jinnatar</a>
+        on 2024-10-15 08:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jinnatar">@jinnatar</a> on 2024-10-15 08:04</div>
+            <div class="timeline-body"><h3>Summary:</h3>
+<p>Newer versions of uv build &quot;empty&quot; wheels under the following conditions with <code>hatchling.build</code> when depending on hatch default logic of finding the sources at <code>src/$project/__init__.py</code>.</p>
+<ul>
+<li>Last version where it works: <code>0.4.17</code></li>
+<li>First version that fails: <code>0.4.18</code></li>
+<li>The trigger seems to be whether the project root has a file <code>.gitignore</code> or not, where it being missing triggers this issue!</li>
+</ul>
+<p>Minimal pyproject.toml:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+name = &quot;demo&quot;
+version = &quot;0.1.1&quot;
+description = &quot;&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = []
+
+[project.scripts]
+demo = 'demo:run'
+</code></pre>
+<p>Source contents is only one file at <code>src/demo/__init__.py</code>:</p>
+<pre><code class="language-python">def run():
+    print(&quot;Running like the wind!&quot;)
+</code></pre>
+<p>Dockerfile for repro:</p>
+<pre><code class="language-docker"># Fails with 0.4.18
+FROM ghcr.io/astral-sh/uv:0.4.18-python3.12-alpine AS builder
+# Succeeds with 0.4.17
+#FROM ghcr.io/astral-sh/uv:0.4.17-python3.12-alpine AS builder
+
+RUN mkdir /build
+WORKDIR /build
+
+COPY pyproject.toml uv.lock ./
+COPY src ./src
+RUN uv build
+
+CMD [&quot;unzip&quot;, &quot;-l&quot;, &quot;dist/demo-0.1.1-py3-none-any.whl&quot;]
+</code></pre>
+<p>Expected output:</p>
+<pre><code>Archive:  dist/demo-0.1.1-py3-none-any.whl
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+       47  02-02-2020 00:00   demo/__init__.py
+       72  02-02-2020 00:00   demo-0.1.1.dist-info/METADATA
+       87  02-02-2020 00:00   demo-0.1.1.dist-info/WHEEL
+       34  02-02-2020 00:00   demo-0.1.1.dist-info/entry_points.txt
+      358  02-02-2020 00:00   demo-0.1.1.dist-info/RECORD 
+ --------                     -------                  
+      598                     5 files
+</code></pre>
+<p>With newer versions instead we get:</p>
+<pre><code>Archive:  dist/demo-0.1.1-py3-none-any.whl
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+       72  02-02-2020 00:00   demo-0.1.1.dist-info/METADATA
+       87  02-02-2020 00:00   demo-0.1.1.dist-info/WHEEL
+       34  02-02-2020 00:00   demo-0.1.1.dist-info/entry_points.txt
+      287  02-02-2020 00:00   demo-0.1.1.dist-info/RECORD
+ --------                     -------
+      480                     4 files
+</code></pre>
+<ul>
+<li>The key diff is that the <code>demo</code> package itself is missing, we only get the dist-info, which while technically a valid wheel, doesn't do anything useful either.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jinnatar">@jinnatar</a> on 2024-10-15 08:15</div>
+            <div class="timeline-body"><p>What's confusing here is that in my local dev env, <code>uv build</code> with <code>0.4.21</code> produces a valid wheel with src contents. So not sure what bit in the Docker env minimalism makes it trip.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jinnatar">@jinnatar</a> on 2024-10-15 08:36</div>
+            <div class="timeline-body"><p>No one will believe me, BUT, the presence of a <code>.gitignore</code> file in the build context, even if empty, makes it work. If it's not there, as it's not in my minimal Dockerfile, it fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "regression: uv build silently produces empty wheels with hatchling" to "regression: uv build silently produces empty wheels with hatchling if .gitignore is missing" by @jinnatar on 2024-10-15 08:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jinnatar">@jinnatar</a> on 2024-10-15 08:48</div>
+            <div class="timeline-body"><p>No useful verbose logging diff between the failing and working builds:</p>
+<pre><code class="language-diff">32d31
+&lt; DEBUG Found fresh response for: https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl.metadata
+33a33
+&gt; DEBUG Found fresh response for: https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl.metadata
+41c41
+&lt; DEBUG Installing in hatchling==1.25.0, packaging==24.1, pathspec==0.12.1, pluggy==1.5.0, trove-classifiers==2024.10.13 in /home/user/.cache/uv/builds-v0/.tmpnuqDDO
+---
+&gt; DEBUG Installing in hatchling==1.25.0, packaging==24.1, pathspec==0.12.1, pluggy==1.5.0, trove-classifiers==2024.10.13 in /home/user/.cache/uv/builds-v0/.tmpE02Jyf
+50c50
+&lt; DEBUG Calling `hatchling.build.build_sdist(&quot;/vol/home/src/uv-repro.git/dist/.tmpigoeaQ&quot;, {})`
+---
+&gt; DEBUG Calling `hatchling.build.build_sdist(&quot;/vol/home/src/uv-repro.git/dist/.tmpmpoSRe&quot;, {})`
+72,73c72,73
+&lt; DEBUG Split specific environment resolution took 0.000s
+&lt; DEBUG Installing in hatchling==1.25.0, packaging==24.1, pathspec==0.12.1, pluggy==1.5.0, trove-classifiers==2024.10.13 in /home/user/.cache/uv/builds-v0/.tmpsS489a
+---
+&gt; DEBUG Split specific environment resolution took 0.001s
+&gt; DEBUG Installing in hatchling==1.25.0, packaging==24.1, pathspec==0.12.1, pluggy==1.5.0, trove-classifiers==2024.10.13 in /home/user/.cache/uv/builds-v0/.tmptTLjxm
+82c82
+&lt; DEBUG Calling `hatchling.build.build_wheel(&quot;/vol/home/src/uv-repro.git/dist/.tmpUJojVo&quot;, {}, None)`
+---
+&gt; DEBUG Calling `hatchling.build.build_wheel(&quot;/vol/home/src/uv-repro.git/dist/.tmp3We1rG&quot;, {}, None)`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jinnatar">@jinnatar</a> on 2024-10-15 08:52</div>
+            <div class="timeline-body"><p>My best guess is, it's something to do with https://github.com/astral-sh/uv/pull/7835 @konstin does this make any sense to you as the source of the regression?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 13:50</div>
+            <div class="timeline-body"><p>Thanks @jinnatar -- we're taking a look!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 13:50</div>
+            <div class="timeline-body"><p>(@konstin has been debugging to try and understand why hatchling is behaving this way.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-15 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @charliermarsh on 2024-10-15 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-15 14:07</div>
+            <div class="timeline-body"><p>Related https://github.com/pypa/hatch/issues/1273</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jinnatar">@jinnatar</a> on 2024-10-15 14:20</div>
+            <div class="timeline-body"><p>Tried a <code>uvx hatch build</code> with and without a project level <code>.gitignore</code>, the issue doesn't repro there. So possible <code>hatch</code> does some workarounding that invoking <code>hatchling</code> directly does not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8220.html">astral-sh/uv#8220</a> on 2024-10-15 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @konstin on 2024-10-15 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-15 14:48</div>
+            <div class="timeline-body"><p>I've added a fix and an explanation in #8220, it's a chain of circumstances adding together.</p>
+<p>Thanks for the great write-up and reproducer, they were very helpful for debugging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-15 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10066.html">astral-sh/uv#10066</a> on 2024-12-20 20:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

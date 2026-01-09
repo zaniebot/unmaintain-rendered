@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Infer precise types for `len()` calls - astral-sh/ruff #14598</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Infer precise types for `len()` calls</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14598">#14598</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2024-11-26 04:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-26 04:51</div>
+            <div class="timeline-body"><p>Sometimes, it is useful to know the precise length of a type:</p>
+<pre><code class="language-python">reveal_type(len((0, 1, 2)))  # revealed: Literal[3]
+</code></pre>
+<p>This might help with narrowing:</p>
+<pre><code class="language-python">a: tuple[Literal[1], int] | tuple[Literal[2], str, str]
+
+if len(a) == 2:
+	reveal_type(a[0])  # revealed: Literal[1]
+</code></pre>
+<p>Current behaviour of <a href="https://mypy-play.net/?mypy=latest&amp;python=3.13&amp;gist=012c5dba20655618e8b42b119c151143">Mypy</a> and <a href="https://pyright-play.net/?pyrightVersion=1.1.389&amp;pythonVersion=3.14&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAySMApiAIYA2AsAFB10AmJwUwAFOQFywCuClEgG0ipCpSEBGALoAaTChjSoAHz4DhoslSEAmOVADOMEPOMhpASigBaAHxQAcmBQkudKJ8ytBKTtYBeAKhdd1ovCKgQEgA3EioAfXgEEk4hAAYrTwBiKAhEOAiAhy1xKWkPSKrqmtyEOBAkNAALfGLCYm0JGUrPXqhKSShg339%2B6LjE5NTB62rc-Pqih1QYfpqNqrqGptbhlcUGcK8kVnZKXSguEZI-cktA4ND1rwn4yiTEGd05nLyC5YKNbHTagiLbRotNolTplfQvTxvKZfNKZOYLAFedqlHQ9EFgsEQ3bQjpiXHyeG0IA">Pyright</a>:</p>
+<pre><code class="language-python">def f(a: tuple[Literal[1], int] | tuple[Literal[2], str, str]) -&gt; None:
+    if len(a) == 2:
+        reveal_type(a[0])  # mypy    =&gt; Literal[1]
+                           # pyright =&gt; Literal[1]
+    
+    l1 = len(a)
+    reveal_type(l1)        # mypy    =&gt; int
+                           # pyright =&gt; int
+
+    if (l2 := len(a)) == 2:
+        reveal_type(l2)    # mypy    =&gt; int
+                           # pyright =&gt; Literal[2]
+        reveal_type(a[0])  # mypy    =&gt; Literal[1]
+                           # pyright =&gt; Literal[1, 2]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14599.html">astral-sh/ruff#14599</a> on 2024-11-26 04:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-11-26 06:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-12-04 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-12-04 19:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXE004 fix can activate an encoding declaration - astral-sh/ruff #15581</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>EXE004 fix can activate an encoding declaration</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15581">#15581</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-01-19 00:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-01-19 00:35</div>
+            <div class="timeline-body"><p>The fix for <a href="https://docs.astral.sh/ruff/rules/shebang-leading-whitespace/"><code>shebang-leading-whitespace</code> (EXE004)</a> in Ruff 0.9.2 removes the white space before the shebang. If that white space contains a newline and the line after the shebang contains an encoding declaration, the fix moves the encoding declaration up to the second line, where it has an effect and can change the program’s behavior.</p>
+<pre><code class="language-console">$ printf '\n#!/usr/bin/env python\n#coding=latin-1\nprint(&quot;\xc3\xa5&quot;)\n' &gt;exe004_1.py
+
+$ python exe004_1.py
+å
+
+$ ruff --isolated check --fix --select EXE004 exe004_1.py
+Found 1 error (1 fixed, 0 remaining).
+
+$ python exe004_1.py
+Ã¥
+</code></pre>
+<p>The intended behavior is unclear for a script like this (if the original behavior was intended, the fix should move the shebang before the blank lines instead of deleting the blank lines; otherwise, the current fix is correct) but at least the fix should not be marked safe.</p>
+<p>A similar behavior change occurs when the leading white space contains two newlines and the shebang line contains an encoding declaration.</p>
+<pre><code class="language-console">$ printf '\n\n#!/usr/bin/env -Spython3.12\\coding=latin-1\nprint(&quot;\xc3\xa5&quot;)\n' &gt;exe004_2.py
+
+$ python exe004_2.py
+å
+
+$ ruff --isolated check --fix --select EXE004 exe004_2.py
+Found 1 error (1 fixed, 0 remaining).
+
+$ python exe004_2.py
+Ã¥
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-01-19 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-19 09:58</div>
+            <div class="timeline-body"><p>Not marking it as safe seems reasonable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dhruvmanila on 2025-01-20 06:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

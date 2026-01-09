@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buggy interplay between `--python`, `--python-version` and dependency with Python upper bound in `pip compile` - astral-sh/uv #6859</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Buggy interplay between `--python`, `--python-version` and dependency with Python upper bound in `pip compile`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6859">#6859</a>
+        opened by <a href="https://github.com/BarrensZeppelin">@BarrensZeppelin</a>
+        on 2024-08-30 10:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BarrensZeppelin">@BarrensZeppelin</a> on 2024-08-30 10:59</div>
+            <div class="timeline-body"><p>I use uv@0.4.0 to <code>pip compile</code> the dependency specifier <code>scipy==1.9.0</code>.
+<code>scipy==1.9.0</code> has a Python version requirement of <code>&gt;=3.8,&lt;3.12</code>.</p>
+<p>The command I'm running is
+<code>echo &quot;scipy==1.9.0&quot; | uv pip compile --python X.Y --python-version X.Y [--universal] -</code></p>
+<p>When the command fails, the error message is always:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because the current Python version (3.12.5) does not satisfy Python&gt;=3.8,&lt;3.12 and scipy==1.9.0 depends on Python&gt;=3.8,&lt;3.12, we can
+      conclude that scipy==1.9.0 cannot be used.
+      And because you require scipy==1.9.0, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+<p>I've compiled a table of results with different combinations of <code>--python</code> and <code>--python-version</code> arguments + <code>--universal</code> mode.</p>
+<p>| --python | --python-version | --universal | Success | Expected |
+|----------|------------------|-------------|---------|----------|
+| 3.12     | 3.12             | X           | X       | ✓        |
+| 3.12     | 3.11             | X           | X       | X        |
+| 3.12     | 3.10             | X           | ✓       | ✓        |
+| 3.11     | 3.12             | X           | X       | ✓        |
+| 3.11     | 3.11             | X           | ✓       | ✓        |
+| 3.12     | 3.12             | ✓           | X       | ✓        |
+| 3.12     | 3.11             | ✓           | X       | X        |
+| 3.12     | 3.10             | ✓           | ✓       | ✓        |
+| 3.11     | 3.12             | ✓           | ✓       | ?        |
+| 3.11     | 3.11             | ✓           | ✓       | ✓        |</p>
+<p>There are two failures that definitely look unexpected to me.
+I'm not certain whether <code>--python 3.11 --python-version 3.12 --universal</code> is expected to succeed.
+Also, I had the impression that python version upper bounds were ignored (in <code>--universal</code> mode?), so maybe some of the cases I marked as expected failures are actually unexpected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 13:00</div>
+            <div class="timeline-body"><p>I believe that Python version upper-bounds being ignored is true in <code>uv lock</code> but not yet in <code>uv pip compile</code>, for somewhat historical reasons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BarrensZeppelin">@BarrensZeppelin</a> on 2024-08-30 13:07</div>
+            <div class="timeline-body"><p>Alright. It would be useful (for me) to have that behaviour in <code>uv pip compile</code> (possibly behind a flag?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 13:10</div>
+            <div class="timeline-body"><p>I think we just need to change it. There's an open issue somewhere... I may be able to do it today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 13:23</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/issues/5045</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BarrensZeppelin">@BarrensZeppelin</a> on 2024-08-30 13:25</div>
+            <div class="timeline-body"><p>Right. I actually found that issue earlier, but found (and was confused by the fact) that the universal resolver also fails to resolve the dependency tree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 14:37</div>
+            <div class="timeline-body"><p>I think this actually might be a separate problem, which is that we're refusing <em>source</em> distributions based on the upper-bound because we assume we can't build them. I don't think we should be doing that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-30 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-30 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6882.html">astral-sh/uv#6882</a> on 2024-08-30 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 18:36</div>
+            <div class="timeline-body"><p>Ok, I've confirmed this works in https://github.com/astral-sh/uv/pull/6882:</p>
+<pre><code># This file was autogenerated by uv via the following command:
+#    uv pip compile --python 3.12 --python-version 3.12 --universal -
+numpy==1.24.4
+    # via scipy
+scipy==1.9.0
+</code></pre>
+<p>I don't think it will ship today, but in the next few days.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BarrensZeppelin">@BarrensZeppelin</a> on 2024-08-30 19:10</div>
+            <div class="timeline-body"><p>Very nice! 🥳</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-02 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-02 18:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

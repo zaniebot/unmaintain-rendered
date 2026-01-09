@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>new rule - detect unnecessary instance/class methods - astral-sh/ruff #6582</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>new rule - detect unnecessary instance/class methods</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6582">#6582</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2023-08-15 03:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-08-15 03:34</div>
+            <div class="timeline-body"><pre><code class="language-py">class Foo:
+    def foo(self): # unnecessary instance method, the method does not access the `self` argument
+        pass
+
+    @classmethod
+    def bar(cls): # unnecessary class method, the method does not access the `cls` argument
+        pass
+</code></pre>
+<p>the rule could suggest making them static methods or functions outside of the class</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-15 21:56</div>
+            <div class="timeline-body"><p>This sounds good to me — there aren't any prior implementations of this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-08-16 03:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-16 03:52</div>
+            <div class="timeline-body"><p>My only concern is that we may get a lot of false positives for methods that are intended to be overridden by subclasses but aren't abstract, but I haven't thought about it deeply.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-16 04:00</div>
+            <div class="timeline-body"><p>We could add an exclusion for methods that raise a <code>NotImplementedError</code> or have an empty body e.g. <code>pass</code> or <code>...</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-16 04:02</div>
+            <div class="timeline-body"><p>Yeah, I'd be interested to see the false positive rate. I realized that we actually have the instance method version open as https://github.com/astral-sh/ruff/pull/6574 (recent PR).</p>
+<p>Separately, I was curious, so I confirmed that Mypy does not allow this:</p>
+<pre><code class="language-python">class Foo:
+    @staticmethod
+    def foo() -&gt; None:
+        pass
+
+class Bar(Foo):
+    def foo(self) -&gt; None:
+        print(1)
+
+Bar().foo()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6574.html">astral-sh/ruff#6574</a> on 2023-08-17 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-08-19 06:56</div>
+            <div class="timeline-body"><p>lol i had no idea this was covered by #970 because <a href="https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/no-self-use.html"><code>no-self-use</code> doesn't work unless you enable its plugin</a></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Double-store assertions when encountering invalid syntax - astral-sh/ruff #14313</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Double-store assertions when encountering invalid syntax</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14313">#14313</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-13 10:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-13 10:57</div>
+            <div class="timeline-body"><p>During type inference on some invalid syntax examples, we encounter situations where the exact same expression appears in multiple places inside the AST. The smallest example I could find is this:</p>
+<pre><code class="language-py">for
+</code></pre>
+<p>When parsing it, we get the following AST. Note that the same <code>Name(…)</code> expression (same range) appears both as <code>target</code> and as <code>iter</code> field on <code>StmtFor</code>, once with <code>Store</code> context, once with <code>Invalid</code> context:</p>
+<pre><code>Module(
+    ModModule {
+        range: 0..3,
+        body: [
+            For(
+                StmtFor {
+                    range: 0..3,
+                    is_async: false,
+                    target: Name(
+                        ExprName {
+                            range: 3..3,
+                            id: Name(&quot;&quot;),
+                            ctx: Store,
+                        },
+                    ),
+                    iter: Name(
+                        ExprName {
+                            range: 3..3,
+                            id: Name(&quot;&quot;),
+                            ctx: Invalid,
+                        },
+                    ),
+                    body: [],
+                    orelse: [],
+                },
+            ),
+        ],
+    },
+)
+</code></pre>
+<p>This leads to a subsequent failing double-store assertion in <code>store_expression_type</code> because we infer types for both the <code>target</code> and the <code>iter</code> expressions:</p>
+<p>https://github.com/astral-sh/ruff/blob/f789b12705048a4f75cddeceb843fd4afbe783f1/crates/red_knot_python_semantic/src/types/infer.rs#L2176-L2184</p>
+<p>I'm not sure how to fix this.</p>
+<p>Skipping storage when encountering expressions with <code>Invalid</code> context would work for this example, but there are other cases (<code>:x=</code>) where such an invalid expression is not &quot;backed up&quot; by a second valid expression.</p>
+<p>Ignoring double-storage for <code>Invalid</code> expressions is also not an option, since in this example here, we run inference on <code>iter</code> first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2024-11-13 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-13 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-13 11:06</div>
+            <div class="timeline-body"><p>Hmm, this is interesting. We could consider using the ptr address instead of <code>Range</code> + <code>Kind</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-13 11:54</div>
+            <div class="timeline-body"><p>A similar example is</p>
+<pre><code class="language-py">x if $z
+</code></pre>
+<p>Mentioning it here because it leads to a slightly different panic (<em>Calling <code>self.infer_expression</code> on a standalone-expression is not allowed…</em>). But the underlying issue is the same, I believe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14317.html">astral-sh/ruff#14317</a> on 2024-11-13 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2024-11-13 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-11-13 13:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

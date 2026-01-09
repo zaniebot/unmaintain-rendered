@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confusion about adding new dependencies using uv add - astral-sh/uv #8921</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Confusion about adding new dependencies using uv add</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8921">#8921</a>
+        opened by <a href="https://github.com/TonyYanOnFire">@TonyYanOnFire</a>
+        on 2024-11-08 06:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TonyYanOnFire">@TonyYanOnFire</a> on 2024-11-08 06:13</div>
+            <div class="timeline-body"><p>Hello. I'm new to uv and trying to incorporate it into my existing project.</p>
+<p>I executed the following command and got an error:</p>
+<pre><code>$uv add rdrobust==1.2.1
+× No solution found when resolving dependencies for split (python_full_version &gt;= '3.8' and python_full_version &lt; '3.10'):
+╰─▶ Because rdrobust==1.2.1 depends on scikit-learn&gt;=1.2.0 and your project depends on rdrobust==1.2.1, we can conclude that your project depends on scikit-learn&gt;=1.2.0.
+And because your project depends on scikit-learn==1.0.2, we can conclude that your project's requirements are unsatisfiable.
+help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<p>I understand the reason for the error. What I am confused about is: I set <code>resolution = &quot;lowest-direct&quot;</code>. In such a situation that &quot;the current foo dependency version is too low to meet the new bar dependency conditions&quot;, I expected that uv would Update the foo dependency to the minimum necessary version and update the lock file. Am I misunderstanding <code>uv add</code>? Or what should be the best practice for uv in this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-08 13:45</div>
+            <div class="timeline-body"><p><code>uv add</code> won't modify any of the <em>existing</em> constraints in the <code>pyproject.toml</code>, and it will respect the constraint you provided. So if you already have <code>scikit-learn==1.0.2</code> in your project, and you <code>uv add rdrobust==1.2.1</code>, which requires <code>scikit-learn&gt;=1.2.0</code>, there's no way for us to resolve the dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-08 13:45</div>
+            <div class="timeline-body"><p>A difference would be if you did like... <code>uv add rdrobust&gt;=1 --resolution lowest-direct</code>. Then we'd try to find the <em>lowest</em> version of <code>rdrobust</code> that's greater than or equal to version 1, and still satisfies the rest of the requirements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-08 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-08 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-11 15:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

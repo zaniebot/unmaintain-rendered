@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New `--fork-strategy` option to prioritize the latest version for each Python implementation - astral-sh/uv #14588</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>New `--fork-strategy` option to prioritize the latest version for each Python implementation</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14588">#14588</a>
+        opened by <a href="https://github.com/vivodi">@vivodi</a>
+        on 2025-07-13 16:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vivodi">@vivodi</a> on 2025-07-13 16:25</div>
+            <div class="timeline-body"><p><strong>Summary</strong></p>
+<p>This is a feature request to introduce a new option to the <code>--fork-strategy</code> setting. This new option would prioritize selecting the latest possible version of a package for each distinct Python implementation (e.g., CPython, PyPy) being targeted. Crucially, it would not attempt to unify on an older version, even if a newer version of a dependency drops support for one of the implementations.</p>
+<p>I suggest a name like <strong><code>latest-per-implementation</code></strong> or <strong><code>latest-per-interpreter</code></strong> for this new option.</p>
+<p><strong>Motivation</strong></p>
+<p>The current <code>--fork-strategy</code> options, <code>requires-python</code> and <code>fewest</code>, are designed to produce concise and unified lock files. They work well in many cases but can lead to suboptimal resolutions for projects that support multiple Python implementations and must contend with a dependency ecosystem where support can change between versions.</p>
+<p>A common scenario is when a dependency releases a new version that drops support for a specific interpreter, like PyPy.</p>
+<ul>
+<li><strong><code>fewest</code></strong> will strongly prefer an older, common version that works for both CPython and PyPy, as this minimizes the number of distinct package versions.</li>
+<li><strong><code>requires-python</code></strong> also aims to minimize the number of selected versions across platforms. It may therefore &quot;pin&quot; the CPython environment to the older version to match the version required by PyPy, preventing CPython users from receiving the latest updates.</li>
+</ul>
+<p>This forces a project to either drop support for an interpreter or hold back updates for all interpreters, which is not ideal.</p>
+<p><strong>Proposed Solution</strong></p>
+<p>I propose the addition of a new fork strategy: <code>--fork-strategy=latest-per-implementation</code>.</p>
+<p>When this strategy is active, the resolver would behave as follows: For each package and for each distinct Python implementation (e.g., CPython 3.10, PyPy 3.10), select the <em>absolute latest version</em> of the package that is compatible with that specific implementation.</p>
+<p>This ensures that no implementation is held back by the compatibility constraints of another.</p>
+<p><strong>Example Use Case</strong></p>
+<p>Consider a dependency named <code>fast-parser</code>:</p>
+<ul>
+<li><code>fast-parser==2.0</code> is compatible with both CPython and PyPy.</li>
+<li>The author releases <code>fast-parser==2.1</code>, which now uses a C-API feature exclusive to CPython, thus dropping support for PyPy.</li>
+</ul>
+<p>A project needs to generate a lock file that supports both CPython and PyPy.</p>
+<ul>
+<li><p>With the current strategies (<code>fewest</code> or <code>requires-python</code>), the resolver is likely to select <strong><code>fast-parser==2.0</code> for both CPython and PyPy</strong>. It does this because <code>2.0</code> is the latest version that satisfies all targets and avoids creating a fork in the lock file. The CPython environment misses out on the <code>2.1</code> update.</p>
+</li>
+<li><p>With the proposed <strong><code>latest-per-implementation</code></strong> strategy, the resolver would select:</p>
+<ul>
+<li><strong><code>fast-parser==2.1</code> for CPython</strong> (as it's the latest compatible version for that interpreter).</li>
+<li><strong><code>fast-parser==2.0</code> for PyPy</strong> (as it's the latest compatible version for that interpreter).</li>
+</ul>
+</li>
+</ul>
+<p>This resolution is superior because it allows the project to deliver the most recent version of <code>fast-parser</code> to its CPython users while gracefully maintaining support for PyPy with the last known compatible version.</p>
+<p>This feature would provide essential control for maintainers of libraries and applications that value broad compatibility across the Python ecosystem without compromising on providing the latest updates to users.</p>
+<p>Thank you for your consideration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @vivodi on 2025-07-13 16:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

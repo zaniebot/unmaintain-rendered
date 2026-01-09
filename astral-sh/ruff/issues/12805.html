@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`try-except-in-loop (PERF203)` possibly false-positives with `continue`/`pass` in `except` block - astral-sh/ruff #12805</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`try-except-in-loop (PERF203)` possibly false-positives with `continue`/`pass` in `except` block</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12805">#12805</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2024-08-11 21:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2024-08-11 21:03</div>
+            <div class="timeline-body"><ul>
+<li><p>List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+try-except, continue, pass, PERF203, try-except-in-loop</p>
+</li>
+<li><p>A minimal code snippet that reproduces the bug.
+Here's a few examples taken directly from setuptools. I don't see a better way of writing them, nor does the doc at make any mention of such cases. Where the iteration must complete and ignore certain errors https://docs.astral.sh/ruff/rules/try-except-in-loop/</p>
+</li>
+</ul>
+<pre><code class="language-py">def test_process_template_line_invalid(self):
+    # invalid lines
+    file_list = FileList()
+    for action in (
+        'include',
+        'exclude',
+        'global-include',
+        'global-exclude',
+        'recursive-include',
+        'recursive-exclude',
+        'graft',
+        'prune',
+        'blarg',
+    ):
+        try:
+            file_list.process_template_line(action)
+        except DistutilsTemplateError:  # raises PERF203
+            pass
+        except Exception:
+            assert False, &quot;Incorrect error thrown&quot;
+        else:
+            assert False, &quot;Should have thrown an error&quot;
+
+###
+
+def filesys_decode(path):
+    &quot;&quot;&quot;
+    Ensure that the given path is decoded,
+    ``None`` when no expected encoding works
+    &quot;&quot;&quot;
+
+    if isinstance(path, str):
+        return path
+
+    fs_enc = sys.getfilesystemencoding() or 'utf-8'
+    candidates = fs_enc, 'utf-8'
+
+    for enc in candidates:
+        try:
+            return path.decode(enc)
+        except UnicodeDecodeError:  # raises PERF203
+            continue
+
+    return None
+
+###
+
+def process_index(self, url, page):
+    &quot;&quot;&quot;Process the contents of a PyPI page&quot;&quot;&quot;
+
+    # process an index page into the package-page index
+    for match in HREF.finditer(page):
+        try:
+            self._scan(urllib.parse.urljoin(url, htmldecode(match.group(1))))
+        except ValueError:  # raises PERF203
+            pass
+    ...
+</code></pre>
+<ul>
+<li><p>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.
+ruff check . --isolated --preview --select=PERF203</p>
+</li>
+<li><p>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).
+N/A</p>
+</li>
+<li><p>The current Ruff version (<code>ruff --version</code>).
+ruff 0.5.7</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/setuptools/pulls/4556.html">pypa/setuptools#4556</a> on 2024-08-11 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-14 08:41</div>
+            <div class="timeline-body"><p><a href="https://play.ruff.rs/ef9da7e2-20b4-4f6d-b1c9-33ceac3db00d">Playground</a></p>
+<p>The first example with <code>pass</code> other exceptions that get captured seems difficult to detect because it also requires evaluating that the <code>except</code> branches never return.</p>
+<p>It does seem reasonable to not flag the rule for <code>try</code> statements where all <code>except</code> clauses unconditionally use <code>continue</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-08-14 08:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-08-14 08:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-08-14 08:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-14 10:45</div>
+            <div class="timeline-body"><p>I'm not sure I understand why this is a false positive. The premise of this rule is that raising and catching an exception is often surprisingly expensive in Python. If you have a <code>try</code>/<code>except</code> clause in a tight loop, you can often speedup your code by refactoring your code to use &quot;Look Before You Leap&quot; (LBYL) idioms inside the loop instead of <code>try</code>/<code>except</code> clauses. For example, a change like this <em>can</em> speedup your code a lot (depending on the precise circumstances), which is often surprising to Python developers because it's often seen as less idiomatic:</p>
+<pre><code class="language-diff">for x in whatever:
+-    try:
+-        val = mapping[x]
+-    except KeyError:
+-        continue
++    if x in mapping:
++        val = mapping[x]
++    else:
++        continue
+</code></pre>
+<p>While I think the rule is useful in some situations, I personally would never enable this rule in CI, since this kind of micro-optimisation will only make a difference in very hot loops, and refactoring code to use LBYL idioms instead of exception-catching idioms is often easier said than done. I would almost definitely not enable it on my tests, since micro-optimising performance in tests is a much lower priority than having tests that are easy to read and provide good coverage for my code.</p>
+<p>But I think the rule is working as intended.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @AlexWaygood on 2024-08-14 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-08-16 15:51</div>
+            <div class="timeline-body"><p>@AlexWaygood It's a false-positive when there's no better way than using try-catch.</p>
+<p>The example you gave (a classic check for KeyError, AttributeError, etc.) is a great example I didn't immediatly think of. And a reason why my false-positives probably can't be avoided with heuristics.
+I think such an example should probably be added to the doc as another way to avoid try-except in loops where possible. (Doc only references the LBYL idiom)</p>
+<p>Sidenote: my first example isn't great as it's better served by <code>pytest.raises</code> anyway. Per-file-ignore could also be used to ignore <code>PERF203</code> in tests if need be.</p>
+<hr />
+<p>The reasons you mentioned that you wouldn't turn this rule on in CI is also why I use warning/info levels in other linters (pyright, ESLint): bring the dev's attention to a code smell/potential issue, but don't fail tests for it.
+And one of the reasons I'm in support of configuring a &quot;warning&quot; level for rules in Ruff https://github.com/astral-sh/ruff/issues/1256</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-16 16:14</div>
+            <div class="timeline-body"><blockquote>
+<p>@AlexWaygood It's a false-positive when there's no better way than using try-catch.</p>
+</blockquote>
+<p>Right, sometimes it's impractical or silly to refactor the code to use LBYL idioms. But the rule is still working as designed, in that it's accurately identifying a place where an exception might be repeatedly raised and caught inside a loop, which <em>could</em> lead to a performance bottleneck. That's the purpose of the rule, so from that perspective it's not really a false positive.</p>
+<blockquote>
+<p>think such an example should probably be added to the doc as another way to avoid try-except in loops where possible. (Doc only references the LBYL idiom)</p>
+</blockquote>
+<p>Oh, good point -- the docs do indeed seem to be quite lacking here. Fancy making a PR? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12947.html">astral-sh/ruff#12947</a> on 2024-08-17 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-17 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/typeshed/pulls/13312.html">python/typeshed#13312</a> on 2024-12-26 23:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

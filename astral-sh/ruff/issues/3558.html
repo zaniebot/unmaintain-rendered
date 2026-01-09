@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff breaking randomly on CI with pre-commit - astral-sh/ruff #3558</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff breaking randomly on CI with pre-commit</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3558">#3558</a>
+        opened by <a href="https://github.com/mounirmesselmeni">@mounirmesselmeni</a>
+        on 2023-03-16 13:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mounirmesselmeni">@mounirmesselmeni</a> on 2023-03-16 13:11</div>
+            <div class="timeline-body"><p>Running ruff in CI is recently is sometime failing with this error:</p>
+<pre><code>/lib/ld-linux-aarch64.so.1: No such file or directory
+</code></pre>
+<p>Ruff version:</p>
+<pre><code class="language-yaml">  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    # Ruff version.
+    rev: &quot;v0.0.256&quot;
+    hooks:
+      - id: ruff
+</code></pre>
+<p>Configuration</p>
+<pre><code class="language-toml">[tool.ruff]
+# Docs: https://beta.ruff.rs/docs/
+# Rules: https://beta.ruff.rs/docs/rules/
+select = [&quot;F&quot;, &quot;E&quot;, &quot;B&quot;, &quot;C4&quot;, &quot;EXE&quot;, &quot;ISC&quot;, &quot;ICN&quot;, &quot;INP&quot;, &quot;PIE&quot;, &quot;SIM&quot;, &quot;W&quot;, &quot;T20&quot;, &quot;UP&quot;, &quot;T10&quot;, &quot;G&quot;, &quot;DJ001&quot;, &quot;DJ008&quot;, &quot;C90&quot;, &quot;ERA&quot;]
+# Later on might be useful C/C90 (Compexity), ERA (Found commented-out code), FBT
+ignore = [&quot;B008&quot;, &quot;SIM102&quot;]
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = [&quot;F&quot;, &quot;E&quot;, &quot;B&quot;, &quot;C4&quot;, &quot;EXE&quot;, &quot;ISC&quot;, &quot;ICN&quot;, &quot;INP&quot;, &quot;PIE&quot;, &quot;SIM&quot;, &quot;W&quot;, &quot;T20&quot;, &quot;UP&quot;]
+unfixable = []
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    &quot;.git&quot;,
+    &quot;.mypy_cache&quot;,
+    &quot;.pre-commit-cache&quot;,
+    &quot;.ruff_cache&quot;,
+    &quot;.tox&quot;,
+    &quot;.venv&quot;,
+    &quot;venv&quot;,
+    &quot;docs&quot;,
+    &quot;__pycache&quot;,
+    &quot;**/migrations/*&quot;,
+]
+
+# Same as Black.
+line-length = 120
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = &quot;^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$&quot;
+
+# Assume Python 3.10.
+target-version = &quot;py310&quot;
+
+[tool.ruff.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10
+
+[tool.ruff.per-file-ignores]
+&quot;**/management/commands/*.py&quot; = [&quot;T20&quot;]
+</code></pre>
+<p>Issue happened on another project running python 3.11</p>
+<p>I can't reproduce the issue locally, but maybe you have some idea about the cause.</p>
+<p>If helping, I'm using Gitlab CI and caching of pre-commit files.</p>
+<pre><code>PRE_COMMIT_HOME: &quot;.cache/.pre-commit-cache/&quot;
+</code></pre>
+<pre><code class="language-yaml">cache:
+    key: $CI_PROJECT_NAME-precommit-cache-v1
+    paths:
+      - .cache/.pre-commit-cache/
+</code></pre>
+<p>If I clear the cache and re-run the job then it's fixed, maybe I'm missing something here to cache the file /lib/ld-linux-aarch64.so.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-03-16 15:11</div>
+            <div class="timeline-body"><p>could you add some more information on the ci setup, specifically what target and platform are you running on? from the <code>/lib/ld-linux-aarch64.so.1</code> it looks like it's some error with picking the right binary for the right platform</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-03-16 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mounirmesselmeni">@mounirmesselmeni</a> on 2023-03-16 15:54</div>
+            <div class="timeline-body"><p>Good point, nothing special as I'm using the shared gitlab runners, so no tags or target is set in the job.</p>
+<pre><code class="language-yaml">python-precommit:
+  extends: .base-job
+  image:
+    name: &quot;$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA&quot;
+    entrypoint: [&quot;&quot;]
+  stage: test
+  variables:
+    PRE_COMMIT_HOME: &quot;.cache/.pre-commit-cache/&quot;
+  script:
+    # fix git dubious ownership caused by gitlab runner helper fetching the repo as root
+    # while we run as non-root with app user
+    - git config --global --add safe.directory $CI_PROJECT_DIR
+    # Make sure all pre-commit checks are passing
+    - pre-commit run --all
+  rules:
+    - exists:
+        - &quot;.pre-commit-config.yaml&quot;
+  interruptible: true
+  cache:
+    key: $CI_PROJECT_NAME-precommit-cache-v1
+    paths:
+      - .cache/.pre-commit-cache/
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mounirmesselmeni">@mounirmesselmeni</a> on 2023-03-16 15:56</div>
+            <div class="timeline-body"><p>One try could be to somehow include the architecture into the caching key. I'm not aware of gitlab offering shared linux arm runners out of the box. But if you think that's the issue (I will investigate that) then it's not a Ruff issue.
+I will update the issue as soon as I get more details</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-03-16 16:00</div>
+            <div class="timeline-body"><p>are you running your test on x86 or aarch64 and is QEMU involved in any way?</p>
+<p>either way, i think including the platform in the cache key would be good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mounirmesselmeni">@mounirmesselmeni</a> on 2023-03-16 16:02</div>
+            <div class="timeline-body"><p>A successful one was running on zxwgkjAP
+The next one failed using the cache on XxUrkriX</p>
+<p>Both runners seems to have the same setup</p>
+<img width="470" alt="image" src="https://user-images.githubusercontent.com/1055731/225679716-1e06d2bc-ccea-4d8c-acc0-c64c90d9035c.png">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mounirmesselmeni">@mounirmesselmeni</a> on 2023-03-16 16:04</div>
+            <div class="timeline-body"><p>I will try to include <code>CI_RUNNER_EXECUTABLE_ARCH</code> in the cache. Thank you for the feedback 🤞</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mounirmesselmeni on 2023-03-16 16:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

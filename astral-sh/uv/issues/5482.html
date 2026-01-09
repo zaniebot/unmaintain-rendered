@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>investigate &quot;remaining universe&quot; fork and marker construction - astral-sh/uv #5482</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>investigate &quot;remaining universe&quot; fork and marker construction</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/5482">#5482</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-07-26 14:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-26 14:14</div>
+            <div class="timeline-body"><p>In PR #5163, @konstin <a href="https://github.com/astral-sh/uv/pull/5163#discussion_r1691703519">brought up a concern</a> that the way I was creating the &quot;remaining universe&quot; fork in the case of incomplete markers was either not correct or, perhaps, was doing more than what was needed. I spent some time trying to come up with a packse scenario that demonstrated why it was needed. My first attempt was this:</p>
+<pre><code class="language-toml">name = &quot;fork-remaining-universe-partitioning&quot;
+
+[resolver_options]
+universal = true
+
+[expected]
+satisfiable = true
+
+[root]
+requires = [
+  &quot;a&gt;=2 ; sys_platform == 'windows'&quot;,
+  &quot;a&lt;2 ; sys_platform == 'illumos'&quot;,
+]
+
+[packages.z.versions.&quot;1.0.0&quot;]
+[packages.a.versions.&quot;1.0.0&quot;]
+requires = [
+  &quot;b&gt;=2 ; os_name == 'linux'&quot;,
+  &quot;b&lt;2 ; os_name == 'darwin'&quot;,
+  &quot;z ; sys_platform == 'windows'&quot;,
+]
+[packages.a.versions.&quot;2.0.0&quot;]
+[packages.b.versions.&quot;1.0.0&quot;]
+[packages.b.versions.&quot;2.0.0&quot;]
+</code></pre>
+<p>But as @konstin points out, it doesn't actually exercise the code path in question. I was wrong to think about this in terms of &quot;parent&quot; forks, since those are handled at a different point in the code. So I tried to provoke a scenario where the &quot;remaining universe&quot; fork <em>needed</em> to be constructed by starting from the existing forks, rather than creating its own. I <em>think</em> this requires a double sibling split, but I'm not sure. This is where I stopped:</p>
+<pre><code>name = &quot;fork-remaining-universe-partitioning2&quot;
+
+[resolver_options]
+universal = true
+
+[expected]
+satisfiable = true
+
+[root]
+requires = [
+  &quot;a&gt;=2 ; sys_platform == 'windows'&quot;,
+  &quot;a&lt;2 ; sys_platform == 'illumos'&quot;,
+  &quot;b&gt;=2 ; os_name == 'linux'&quot;,
+  &quot;b&lt;2 ; os_name == 'darwin'&quot;,
+  &quot;y ; sys_platform == 'foo'&quot;,
+  &quot;z ; os_name == 'bar'&quot;,
+]
+
+[packages.a.versions.&quot;1.0.0&quot;]
+[packages.a.versions.&quot;2.0.0&quot;]
+[packages.b.versions.&quot;1.0.0&quot;]
+[packages.b.versions.&quot;2.0.0&quot;]
+[packages.y.versions.&quot;1.0.0&quot;]
+[packages.z.versions.&quot;1.0.0&quot;]
+</code></pre>
+<p>For now, we decided to move forward with #5163 in its current state since it fixes known bugs and doesn't introduce any <em>known</em> regressions. But this is something we should circle back to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @BurntSushi on 2024-07-26 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5163.html">astral-sh/uv#5163</a> on 2024-07-26 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-26 14:21</div>
+            <div class="timeline-body"><p>Also, I think that my next step here would be to try @konstin's suggestion in the linked PR and see if it can be knocked down.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-16 17:30</div>
+            <div class="timeline-body"><p>I think this is no longer relevant with #5887 merged. Namely, while we are still dealing with incomplete markers, we are doing it more systematically in a way that deals with overlapping markers as well. So this should be fixed (if it was an issue before).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-08-16 17:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

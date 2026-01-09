@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv venv's activate command cannot work on MSYS2 - astral-sh/uv #4984</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv venv's activate command cannot work on MSYS2</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4984">#4984</a>
+        opened by <a href="https://github.com/pplmx">@pplmx</a>
+        on 2024-07-11 01:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pplmx">@pplmx</a> on 2024-07-11 01:42</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<h2>Steps to Reproduce</h2>
+<p>At MSYS2, run the following command:</p>
+<pre><code class="language-bash">❯ uv venv
+Using Python 3.12.4 interpreter at: C:\Users\xxx\AppData\Local\Programs\Python\Python312\python.exe
+Creating virtualenv at: .venv
+Activate with: source .venv\Scripts\activate
+❯ source .venv\Scripts\activate
+source: no such file or directory: .venvScriptsactivate
+
+</code></pre>
+<h2>Suggested Fix</h2>
+<p>Use the correct path to activate the virtual environment:</p>
+<pre><code class="language-bash">source .venv/Scripts/activate
+
+</code></pre>
+<h2>Environment Details</h2>
+<pre><code class="language-bash">cat /etc/os-release
+NAME=MSYS2
+ID=msys2
+PRETTY_NAME=&quot;MSYS2&quot;
+ID_LIKE=&quot;cygwin arch&quot;
+HOME_URL=&quot;https://www.msys2.org&quot;
+BUG_REPORT_URL=&quot;https://github.com/msys2/MSYS2-packages/issues&quot;
+
+uv version
+uv 0.2.24 (527b711bc 2024-07-10)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-11 04:08</div>
+            <div class="timeline-body"><p>Thanks! Looks like we need to display a posix style path here, it should be relatively easy to fix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-07-11 04:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2024-07-11 04:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-11 04:18</div>
+            <div class="timeline-body"><p>Considering something like</p>
+<pre><code class="language-diff">diff --git a/crates/uv/src/commands/venv.rs b/crates/uv/src/commands/venv.rs
+index cb906898..7e669ead 100644
+--- a/crates/uv/src/commands/venv.rs
++++ b/crates/uv/src/commands/venv.rs
+@@ -312,7 +312,7 @@ async fn venv_impl(
+ /// Quote a path, if necessary, for safe use in a POSIX-compatible shell command.
+ fn shlex_posix(executable: impl AsRef&lt;Path&gt;) -&gt; String {
+     // Convert to a display path.
+-    let executable = executable.as_ref().user_display().to_string();
++    let executable = executable.as_ref().portable_display().to_string();
+ 
+     // Like Python's `shlex.quote`:
+     // &gt; Use single quotes, and put single quotes into double quotes
+</code></pre>
+<p>but I'm a little confused that <code>portable_display()</code> only uses portable slashes for relative paths? We might need another helper method that always uses the portable path? We'll want to add some tests if we can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2024-07-11 05:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks! Looks like we need to display a posix style path here, it should be relatively easy to fix?</p>
+</blockquote>
+<p>Yes, if msys2 is found, directly printing a POSIX-style path is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MathiasAugustesen">@MathiasAugustesen</a> on 2024-08-20 18:24</div>
+            <div class="timeline-body"><p>Is this one still up for grabs? If so I'd like to take a stab at it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-20 18:27</div>
+            <div class="timeline-body"><p>I think I might have fixed this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-20 18:27</div>
+            <div class="timeline-body"><p>Yeah, https://github.com/astral-sh/uv/pull/5956 — sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-20 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MathiasAugustesen">@MathiasAugustesen</a> on 2024-08-20 18:29</div>
+            <div class="timeline-body"><p>No problem, I'll look around for something else to tackle</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

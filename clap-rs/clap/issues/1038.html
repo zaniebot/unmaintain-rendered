@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue passing short option as last  - clap-rs/clap #1038</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issue passing short option as last </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1038">#1038</a>
+        opened by <a href="https://github.com/snowe2010">@snowe2010</a>
+        on 2017-08-25 13:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/snowe2010">@snowe2010</a> on 2017-08-25 13:46</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p><code>rustc 1.21.0-nightly (469a6f9bd 2017-08-22)</code></p>
+<h3>Affected Version of clap</h3>
+<pre><code>&gt; grep clap Cargo.lock 
+ &quot;clap 2.26.0 (registry+https://github.com/rust-lang/crates.io-index)&quot;,
+name = &quot;clap&quot;
+&quot;checksum clap 2.26.0 (registry+https://github.com/rust-lang/crates.io-index)&quot; = &quot;2267a8fdd4dce6956ba6649e130f62fb279026e5e84b92aa939ac8f85ce3f9f0&quot;
+</code></pre>
+<p>but this was also happening on 2.21 as I tested on that before upgrading</p>
+<h3>Expected Behavior Summary</h3>
+<pre><code>cargo run start -- -g -i -s --blah
+    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
+     Running `target/debug/pt start -g -i -s --blah`
+works here....✔
+</code></pre>
+<h3>Actual Behavior Summary</h3>
+<pre><code>   Compiling clap v2.26.0
+   Compiling pt v0.2.2 (file:///Users/tylerthrailkill/Dropbox/rustup/cli)
+    Finished dev [unoptimized + debuginfo] target(s) in 31.36 secs
+     Running `target/debug/pt start -g -i -s -b`
+error: Found argument '-b' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    pt start --flag1 &lt;BRANCH&gt; --flag2 &lt;BRANCH&gt; --flag3 &lt;BRANCH&gt;
+
+For more information try --help
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<p>pass multiple short options</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<h4>examples/test.rs</h4>
+<pre><code>#[macro_use]
+extern crate clap;
+
+#[cfg(feature = &quot;yaml&quot;)]
+fn main() {
+    use clap::App;
+
+    let yml = load_yaml!(&quot;test.yml&quot;);
+    let m = App::from_yaml(yml).get_matches();
+
+    match m.subcommand() {
+        (&quot;subcmd&quot;, Some(matches)) =&gt; println!(&quot;did it&quot;),
+	_ =&gt; panic!(&quot;couldn't find that subcommand&quot;)
+    }
+    
+    if let Some(mode) = m.value_of(&quot;flag&quot;) {
+        println!(&quot;here&quot;);
+    } else {
+        println!(&quot;--flag &lt;BRANCH&gt; wasn't used...&quot;);
+    }
+}
+
+#[cfg(not(feature = &quot;yaml&quot;))]
+fn main() {
+    println!(&quot;YAML feature is disabled.&quot;);
+    println!(&quot;Pass --features yaml to cargo when trying this example.&quot;);
+}
+</code></pre>
+<h4>examples/test.yml</h4>
+<pre><code>name: Example showing failure
+version: &quot;0.0.1&quot;
+author: Tyler B. Thrailkill &lt;tyler.b.thrailkill@gmail.com&gt;
+about: Example showing failure
+subcommands:
+  - start:
+      about: &quot;example showing failure&quot;
+      version: &quot;0.0.1&quot;
+      author: Tyler B. Thrailkill &lt;tyler.b.thrailkill@gmail.com&gt;
+      args:
+        - flag1:
+            short: s
+            long: flag1
+            takes_value: true
+            value_name: BRANCH
+            min_values: 0
+            max_values: 1
+            default_value: develop
+            help: |
+              runs flag1 with an optional branch
+        - flag2:
+            short: g
+            long: flag2
+            takes_value: true
+            value_name: BRANCH
+            max_values: 1
+            min_values: 0
+            default_value: develop
+            help: |
+              runs flag2 with an optional branch
+        - flag3:
+            short: i
+            long: flag3
+            takes_value: true
+            value_name: BRANCH
+            max_values: 1
+            min_values: 0
+            default_value: develop
+            help: |
+              runs flag3 with an optional branch
+        - flag4:
+            short: w
+            long: flag4
+            takes_value: true
+            value_name: BRANCH
+            max_values: 1
+            min_values: 0
+            default_value: develop
+            help: |
+              runs flag4 with an optional branch
+</code></pre>
+<h3>Debug output</h3>
+<p>https://gist.github.com/snowe2010/71b09a435d24533a69a5337b1a150f91</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-08-26 20:27</div>
+            <div class="timeline-body"><p>I'm not seeing where you defined <code>-b</code> anywhere? Are you saying you'd like to be able to use <code>-b</code> as a value? If so, try <code>Arg::allow_hyphen_values(true)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2017-08-26 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowe2010">@snowe2010</a> on 2017-08-27 21:50</div>
+            <div class="timeline-body"><p><img src="https://media.giphy.com/media/gnJgBlPgHtcnS/giphy.gif" alt="facepalm" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowe2010 on 2017-08-27 21:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrong Python path reported in uv python list - astral-sh/uv #6515</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wrong Python path reported in uv python list</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6515">#6515</a>
+        opened by <a href="https://github.com/adaamz">@adaamz</a>
+        on 2024-08-23 14:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adaamz">@adaamz</a> on 2024-08-23 14:01</div>
+            <div class="timeline-body"><p>Hi,
+I think I misunderstand <code>uv python list</code> command or it returns something I wouldn't expect 🤔</p>
+<pre><code class="language-dockerfile">FROM python:3.9.19-slim-bookworm
+RUN python3 -m venv /opt/venv
+RUN uv pip install ruff
+</code></pre>
+<p>This fails on <code>error: No virtual environment found</code>
+but when I add <code>/opt/venv</code> to <code>$PATH</code></p>
+<pre><code class="language-dockerfile">FROM python:3.9.19-slim-bookworm
+RUN python3 -m venv /opt/venv
+ENV PATH=&quot;/opt/venv/bin:$PATH&quot;
+RUN uv pip install ruff
+</code></pre>
+<p>then this passes and it is OK I guess.
+But the small issue is that <code>uv python list --only-installed</code> reports the same thing in both cases (with and without <code>$PATH</code> replaced)</p>
+<p>from the Docker container:</p>
+<pre><code>root@7d4f7b1a5615:/# echo $PATH
+/usr/local/bin/
+root@7d4f7b1a5615:/# uv python list --only-installed
+cpython-3.9.19-linux-x86_64-gnu    usr/local/bin/python3.9
+cpython-3.9.19-linux-x86_64-gnu    usr/local/bin/python3 -&gt; python3.9
+cpython-3.9.19-linux-x86_64-gnu    usr/local/bin/python -&gt; python3
+
+root@7d4f7b1a5615:/# export PATH=/opt/venv/bin:$PATH
+root@7d4f7b1a5615:/# echo $PATH
+/opt/venv/bin:/usr/local/bin/
+root@7d4f7b1a5615:/# uv python list --only-installed
+cpython-3.9.19-linux-x86_64-gnu    usr/local/bin/python3.9
+cpython-3.9.19-linux-x86_64-gnu    usr/local/bin/python3 -&gt; python3.9
+cpython-3.9.19-linux-x86_64-gnu    usr/local/bin/python -&gt; python3
+</code></pre>
+<p>I would expect <code>/opt/venv/bin/python3</code> here... or do I miss/understand something?</p>
+<p><code>which</code> returns <code>/opt/venv/bin/python3</code> correctly</p>
+<pre><code>root@7d4f7b1a5615:/# /usr/bin/which python3
+/opt/venv/bin/python3
+root@7d4f7b1a5615:/# /usr/bin/which python3.9
+/opt/venv/bin/python3.9
+</code></pre>
+<p>uv 0.3.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2024-08-23 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-23 14:10</div>
+            <div class="timeline-body"><p>Hi! We exclude virtual environments from <code>uv python list</code> https://github.com/astral-sh/uv/blob/04e3e7ce65b9ea1b5f42442e8f2f47ca8e80d445/crates/uv/src/commands/python/list.rs#L74</p>
+<p>We can document this. Is the a particular reason you want or need to see it there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-08-23 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-23 14:11</div>
+            <div class="timeline-body"><p><code>uv pip install</code> by default recognizes virtual environments called <code>.venv</code>. For other names, you need to either activate the virtual environment, or pass it with <code>-p /opt/venv/bin/python</code>.</p>
+<p>We don't recommend adding virtual environment pythons to <code>PATH</code>, this can lead to confusing behavior. I think <code>uv python list</code> does not show it since it's not a system interpreter, but a effectively a link to a system interpreter.</p>
+<p>Since you are in docker, you may be interested in the <code>--system</code> flag that tells <code>uv pip</code> to install into the global python installation of the docker container instead of a virtual environment. (Which is fine to do in docker, unlike on your host system where there may be other projects and system dependencies, too)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adaamz">@adaamz</a> on 2024-08-23 14:16</div>
+            <div class="timeline-body"><p>@zanieb I would like to know what Python is uv using (where it will install the packages).</p>
+<p>@konstin Did I misunderstood this info as well?</p>
+<pre><code class="language-dockerfile"># Place entry points in the environment at the front of the path
+ENV PATH=&quot;/opt/venv/bin:$PATH&quot;
+</code></pre>
+<p>https://docs.astral.sh/uv/guides/integration/docker/#installing-a-package 👀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-23 14:19</div>
+            <div class="timeline-body"><p>I think we should add support for showing the interpreter that we'll use in <code>uv python find</code> (which ignores virtual environment interpreters as well, right now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-23 14:19</div>
+            <div class="timeline-body"><p>Sorry, <code>VIRTUAL_ENV</code> and <code>PATH</code> is correct as activation in docker (it's emulating what <code>. .venv/bin/activate</code> does), i got confused because the <code>VIRTUAL_ENV</code> part was missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-23 14:51</div>
+            <div class="timeline-body"><p>Adding support for this in https://github.com/astral-sh/uv/pull/6521</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6521.html">astral-sh/uv#6521</a> on 2024-08-23 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-23 21:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issues with uv init when working with production/staging environments - astral-sh/uv #10232</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issues with uv init when working with production/staging environments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10232">#10232</a>
+        opened by <a href="https://github.com/elieobeid7">@elieobeid7</a>
+        on 2024-12-30 07:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/elieobeid7">@elieobeid7</a> on 2024-12-30 07:05</div>
+            <div class="timeline-body"><p>I have an existing project that uses pip and virtual env in a folder called <code>foo bar</code>. I want to migrate from pip to uv.</p>
+<p>If I do <code>uv init</code>, I get this error</p>
+<pre><code>error: Not a valid package or extra name: &quot;foo bar&quot;. 
+Names must start and end with a letter or digit 
+and may only contain -, _, ., and alphanumeric characters.
+</code></pre>
+<p>On the surface, you'd say oh what's the fuss about? Just change the folder name already, except it's not so simple, you see on my PC sure, I can call it whatever you like, if you like dua-lipa, I'll call the project dua-lipa.</p>
+<p>But on the server, I have two folders, a <code>foo bar staging</code> that uses the staging git branch, and a <code>foo bar prod</code> that uses the master git branch. and I have a whole CI/CD system and bash script to manage deployment.</p>
+<p>If uv is going to complain about the folder name and take the folder name into consideration, we're off to a very bad start, it means I have to maintain two different dependencies files just because the name is different in staging and production and I have to fix git merges and ignore stuff from being merged, and I don't even know how to do all that on my local PC.</p>
+<p>You see, on my  PC, I have only 1 folder, I can switch between staging and prod at will, whereas on the server I have two folders. So let's assume on my PC, I'm working on master branch and the package name matches the folder name, this will break when I switch to the staging branch, because it has a different package name that corresponds to the staging folder on the server.</p>
+<p>I wish there is an option to just use uv as a package manager like pip or npm or PHP composer, and not a project manager that considers itself responsible for the entire folder as a project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jromal">@jromal</a> on 2024-12-30 14:43</div>
+            <div class="timeline-body"><p>Why would you do <code>uv init</code> in production? I would imagine <code>uv sync</code> or at least <code>uv add</code> and have the code and folders managed by a version management tool (git). I am not a professional programmer, and therefore I simplified too much but I see <code>uv init</code> only done once before the first commit. Then git manages the content.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elieobeid7">@elieobeid7</a> on 2024-12-30 17:31</div>
+            <div class="timeline-body"><p>@jromal I'm new to uv but it is my understanding that <code>uv init</code> creates the virtualenv used  by uv to manage dependencies, therefore I do the <code>uv init</code> to create the virtualenv needed to store the dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-30 17:33</div>
+            <div class="timeline-body"><p>I think you're mixing up <code>uv init</code> with <code>uv venv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-12-30 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elieobeid7">@elieobeid7</a> on 2024-12-30 18:35</div>
+            <div class="timeline-body"><p>@charliermarsh I can't just run <code>uv venv</code> without <code>uv init</code> first, I get this error when I try to install a package via <code>uv add</code></p>
+<pre><code>error: No `pyproject.toml` found in current directory or any parent directory
+</code></pre>
+<p>And <code>pyproject.toml</code> contains the project name that <code>uv init</code> complains about.</p>
+<p>Should I create the <code>pyproject.toml</code> manually and use any random project name? Would that work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jromal">@jromal</a> on 2024-12-30 21:33</div>
+            <div class="timeline-body"><p>I think you are a bit confused.</p>
+<p><code>uv init</code> it is for project initialization. For creating a new project. But you have already a project that you deploy already.</p>
+<p>I have changed a couple of projects from pip to uv in this way.</p>
+<ul>
+<li>Create a &quot;pythonproject.toml&quot;, either manually or any other form (like <code>uv init</code>)</li>
+<li>Preferably a &quot;.python version&quot; file too.</li>
+<li>Add the requirements to pythonproject file, manually or with <code>uv add</code>.</li>
+<li>On the deployment pipeline, install &quot;uv&quot; and call <code>uv sync</code> instead of all pip commands.</li>
+</ul>
+<p>This is how, a hobby programmer, does it. There are other ways to do it, like using <code>uv add</code> or <code>uv pip install</code>, but in my opinion, <code>uv sync</code> is the best option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-30 21:55</div>
+            <div class="timeline-body"><p>It sounds like perhaps <code>uv init</code> should normalize the working directory name when attempting to construct a project name? However, it sounds like that's not what you want.</p>
+<blockquote>
+<p>I wish there is an option to just use uv as a package manager like pip or npm or PHP composer, and not a project manager that considers itself responsible for the entire folder as a project.</p>
+</blockquote>
+<p>There is — <code>uv pip</code>. The top-level uv commands are generally for project management. <code>uv add</code> requires a <code>pyproject.toml</code>. The overview at https://docs.astral.sh/uv/getting-started/features/ may be helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10245.html">astral-sh/uv#10245</a> on 2024-12-30 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elieobeid7">@elieobeid7</a> on 2024-12-31 07:48</div>
+            <div class="timeline-body"><p>@zanieb you're saying that <code>uv init</code> should normalize the working directory, yes that seems like a good solution, npm and composer do that already, so it's been tested in production and that works</p>
+<p><code>uv pip</code> seems interesting, why use it instead of pip? what's the selling point? the speed of package installation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elieobeid7">@elieobeid7</a> on 2024-12-31 07:55</div>
+            <div class="timeline-body"><p>@jromal you're saying that <code>uv init</code> is not needed, but again you're not answering the main question here, I'm not familiar with how <code>uv</code> works under the hood</p>
+<p>there's the issue that <code>pyproject.toml</code> requires a project name for it to work. ok fine I can create that manually, but then if I have a parent folder called <code>staging</code> and another parent folder called <code>production</code>, they're the same project mind you, just a staging version and a production version. Should the <code>pyproject.toml</code> project name match the parent folder name? if that's the case then it's a problem because one would get merge conflicts when merging production and staging, one would have to git ignore the <code>pyproject.toml</code> during merges and update it manually, that's very inconvenient.</p>
+<p>On the other hand if the project name in <code>pyproject.toml</code> is meaningless for <code>uv</code> and it's just there for the sake of being there, much like npm or composer, doesn't affect anything, then sure I could create the <code>pyproject.toml</code> manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jromal">@jromal</a> on 2024-12-31 12:38</div>
+            <div class="timeline-body"><p>As I said, I am just a regular user trying to help. @zanieb and @charliermarsh are part of the UV team.</p>
+<p><code>uv</code> has the concept of workspaces, where you can decide if those folders should be part of the same folder. Check the docu.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-31 15:22</div>
+            <div class="timeline-body"><blockquote>
+<p>there's the issue that pyproject.toml requires a project name for it to work. ok fine I can create that manually, but then if I have a parent folder called staging and another parent folder called production, they're the same project mind you, just a staging version and a production version. Should the pyproject.toml project name match the parent folder name? if that's the case then it's a problem because one would get merge conflicts when merging production and staging, one would have to git ignore the pyproject.toml during merges and update it manually, that's very inconvenient.</p>
+</blockquote>
+<p>I don't fully understand the setup you're describing (the same project, duplicated under two different folders?), but no, the project name doesn't have to match the parent folder name. We do that by default, but <code>uv init</code> accepts a <code>--name</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elieobeid7">@elieobeid7</a> on 2024-12-31 16:36</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<blockquote>
+<p>I don't fully understand the setup you're describing (the same project, duplicated under two different folders?),</p>
+</blockquote>
+<p>Let's take this example, so let's say you host astral.sh on an ec2 instance, it uses fast API behind NGINX. and the main git branch is <code>master</code>, and the folder containing the git project is called <code>astral</code></p>
+<p>Now let's say you want to redesign it, what would you do in that case? you'd create a git branch called <code>staging</code>, but you also need to host this branch on the server, because the designers need to see it and work on it.</p>
+<p>You would clone the same repo on the server again inside a folder called <code>dev.astral</code> and then you checkout the <code>staging</code> git branch. and set nginx to serve it under the subdomain <code>dev.astral.sh</code></p>
+<p>What just happened? On your PC, you have one git folder, containing a master branch and a staging branch, but on your server you have 2 folders, you cloned the same repo twice, once for astral.sh and once for dev.astral.sh</p>
+<p>This is the usecase I'm working with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jromal">@jromal</a> on 2024-12-31 17:56</div>
+            <div class="timeline-body"><p>What would you do with your virtual environments not using uv?</p>
+<p>Do the same with uv.</p>
+<p>If you checkout for a branch you work on that branch. This includes <code>pyproject.toml</code>. Git will have the right development state. When you change branch you do <code>uv sync</code> to refresh the virtual environment, that is excluded on <code>.gitognore</code>.</p>
+<p>Or you work in two completely separated folders like they would be two projects. And each folder has all project files.</p>
+<p>Why don't you try it? It is very simple.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-31 21:33</div>
+            <div class="timeline-body"><p>It sounds like you should either</p>
+<ol>
+<li><code>uv init</code> and commit the <code>pyproject.toml</code> to both your production and staging branches, then proceed as normal with <code>uv sync</code></li>
+</ol>
+<p>or</p>
+<ol start="2">
+<li>Use <code>uv pip</code> (or plain <code>pip</code>, if you don't want to use uv) with your existing setup.</li>
+</ol>
+<p>The benefits of using <code>uv pip</code> over pip are roughly:</p>
+<ul>
+<li>Can be installed outside the environment</li>
+<li>Better resolver error messages</li>
+<li>Better performance</li>
+<li>More advanced features</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elieobeid7">@elieobeid7</a> on 2025-01-01 11:02</div>
+            <div class="timeline-body"><blockquote>
+<p>What would you do with your virtual environments not using uv?</p>
+</blockquote>
+<p>I use pip and <code>requirements.txt</code>, not <code>pyproject.toml</code>, since <code>requirements.txt</code> is just a text file that store dependencies without any project name and whatnot, I don't have all those problems discussed here.</p>
+<hr />
+<p>Ok will try the suggestions mentioned by @zanieb and @jromal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-01 12:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I use pip and requirements.txt, not not pyproject.toml, since requirements.txt is just a text file that store dependencies without any project name and whatnot, I don't have all those problems discussed here.</p>
+</blockquote>
+<p>Got it. Whatever you do here, you can do with <code>uv pip</code> instead of <code>pip</code>. Alternatively, you can use <code>uv init</code> and <code>uv sync</code> -- there is <em>no</em> requirement that the directory name matches the project name, and it's not enforced on the CLI or anything like that. (I'm going to close this for now as I don't see anything actionable here for us.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-01 12:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PROJECT_ROOT` in `requirements` uses the working directory - astral-sh/uv #3271</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`PROJECT_ROOT` in `requirements` uses the working directory</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/3271">#3271</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2024-04-25 20:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-04-25 20:34</div>
+            <div class="timeline-body"><p>I have a <code>setuptools.build_meta</code> backend monorepo with a <code>pyproject.toml</code> package named <code>packagename</code> in a subfolder. I specify its dependency in a <code>requirements.txt</code> at the repo root: <code>package-name @ file://${PROJECT_ROOT}/packagename</code></p>
+<p>In <code>/Users/user/code/repo-root</code>, running <code>uv pip install --no-cache .</code> works fine.</p>
+<p>Moving up one directory to <code>/Users/user/code</code> and running <code>uv pip install --no-cache ./repo</code> fails:</p>
+<pre><code class="language-none">error: Distribution not found at: file:///Users/user/code/packagename
+</code></pre>
+<p>Can we somehow know <code>PROJECT_ROOT</code> should be <code>./repo</code>, instead of <code>./</code> in this case?</p>
+<hr />
+<p>I am using <code>uv 0.1.38 (0b23caa18 2024-04-24)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 23:27</div>
+            <div class="timeline-body"><p>Hmm, right now <code>PROJECT_ROOT</code> is just the current working directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 23:32</div>
+            <div class="timeline-body"><p>Slightly tempted to set it to the directory of the containing file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-04-25 23:37</div>
+            <div class="timeline-body"><p>Lol give in to your temptations 😈 🔥 🚀 🦾 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-25 23:39</div>
+            <div class="timeline-body"><p>Is that &quot;breaking&quot; ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 23:41</div>
+            <div class="timeline-body"><p>I'd consider it breaking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-25 23:41</div>
+            <div class="timeline-body"><p>Would we support <code>$PWD</code> too or whatever?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 23:42</div>
+            <div class="timeline-body"><p>I believe we already do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 23:42</div>
+            <div class="timeline-body"><p>We support any env var, and then <code>PROJECT_ROOT</code> is special on top of those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 23:43</div>
+            <div class="timeline-body"><p>Using the directory that contains the file definitely seems right for <code>pyproject.toml</code>. I could see it being less convenient for requirements.txt in some rare cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-26 01:53</div>
+            <div class="timeline-body"><p>Yeah the latter seems more problematic, e.g. <code>requirements/dev.txt</code> — but it seems quite correct for <code>pyproject.toml</code>.</p>
+<p>I wonder if we should scan for <code>git</code> boundaries for <code>requirements.txt</code>...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 02:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah the latter seems more problematic, e.g. requirements/dev.txt — but it seems quite correct for pyproject.toml.</p>
+</blockquote>
+<p>Yeah. Is it even that bad though? It just means you need to make the path relative to the file rather than the root directory. But it would still work consistently regardless of where you invoked uv from, unlike the current implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-26 02:16</div>
+            <div class="timeline-body"><p>I'm curious if anyone else will weigh in, but yeah having it work consistently seems like an improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-04-26 17:19</div>
+            <div class="timeline-body"><p>Maybe <code>PACKAGE_ROOT</code> can have a fallback (or a configuration option <code>--package-root-is-not-cwd</code>) to maintain compatibility:</p>
+<ol>
+<li>Looks in target directory (in this case, <code>./repo</code>)</li>
+<li>Falls back on current working directory</li>
+</ol>
+<p>That being said, imo the most straightforward/intuitive route is to support two environment variables:</p>
+<pre><code class="language-none"># Uses input uv command to resolve to ./repo/foo
+file://${PROJECT_ROOT}/foo
+
+# Always resolves to ./foo
+file://${CURRENT_DIRECTORY}/foo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-27 12:19</div>
+            <div class="timeline-body"><p>For <code>${CURRENT_DIRECTORY}</code> you can likely already do <code>${PWD}</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-04-27 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.3.0" by @charliermarsh on 2024-06-01 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-01 16:58</div>
+            <div class="timeline-body"><p>We'll ship this in v0.3.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.3.0" by @zanieb on 2024-11-25 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.6.0" by @zanieb on 2024-11-25 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.6.0" by @zanieb on 2025-02-15 02:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.7.0" by @zanieb on 2025-02-15 02:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ShapelessCat">@ShapelessCat</a> on 2025-03-14 15:27</div>
+            <div class="timeline-body"><p>@jamesbraza In the title of this issue and in one of your comment, you used the <code>PACKAGE_ROOT</code>, not <code>PROJECT_ROOT</code>. Are those typos or because of some historical reason?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2025-03-14 17:09</div>
+            <div class="timeline-body"><p>I believe I used <code>PACKAGE_ROOT</code> and <code>PROJECT_ROOT</code> interchangeably in <a href="https://github.com/astral-sh/uv/issues/3271#issuecomment-2079785370">this comment</a>, both to refer to a path to the repo root containing the <code>pyproject.toml</code>.</p>
+<p>I think <code>PROJECT_ROOT</code> makes more sense than <code>PACKAGE_ROOT</code>, given <a href="https://docs.astral.sh/uv/concepts/projects/workspaces/#workspace-sources">workspaces</a> can have 2+ packages. Really <code>PROJECT_ROOT</code> is the path to the repo root</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ShapelessCat">@ShapelessCat</a> on 2025-03-17 13:52</div>
+            <div class="timeline-body"><p>Hi, @charliermarsh, I noticed the 'needs-decision' label is still applied. Does this indicate that a final plan for this issue hasn’t been determined? I ask this because I can see this issue has been moved from one milestone to the next milestone several times. I just encountered the same <code>PROJECT_ROOT</code> issue in my project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12973.html">astral-sh/uv#12973</a> on 2025-04-21 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Bug (?): `PACKAGE_ROOT` not working one level up" to "`PROJECT_ROOT` in `requirements` uses the working directory" by @zanieb on 2025-04-30 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @zanieb on 2025-04-30 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2025-04-30 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13239.html">astral-sh/uv#13239</a> on 2025-04-30 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.7.0" by @zanieb on 2025-04-30 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.8.0" by @zanieb on 2025-04-30 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.8.0" by @zanieb on 2025-06-20 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.9.0" by @zanieb on 2025-06-20 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/m1cr0man">@m1cr0man</a> on 2025-07-10 12:35</div>
+            <div class="timeline-body"><p>Hi there. I just ran into this myself. I fully expected <code>PROJECT_ROOT</code> to refer to the directory containing the pyproject.toml. This is particularly problematic when using <code>uv run --script</code> in a shebang. If I call the script with the shebang from a working directory other than the project root (example <code>../myscript.py</code>), I get a <code>Distribution not found</code> error on the requirements utilising <code>PROJECT_ROOT</code> as the path is incorrect.</p>
+<p>I understand there are concerns about this being a breaking change, but there is no workaround in this scenario. I cannot use <code>uv run --script</code> in shebangs and resolve the project root without introducing my own environment variable which I really do not want to do. With the behaviour corrected, any configurations relying on the old behaviour can simply switch to <code>${PWD}</code> as pointed out in previous comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-10 13:39</div>
+            <div class="timeline-body"><p>We'll need to drive https://github.com/astral-sh/uv/issues/13239 to consensus in order to reach a solution here, unfortunately. The pip compatibility issue is a major concern, on top of this being a breaking change for our existing users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/m1cr0man">@m1cr0man</a> on 2025-07-18 21:43</div>
+            <div class="timeline-body"><p>I see. Are you looking for user feedback in that issue or is it more a matter for maintainers? I'm personally happy with what you have proposed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pebble-dev/pebble-firmware/pulls/255.html">pebble-dev/pebble-firmware#255</a> on 2025-08-01 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.9.0" by @zanieb on 2025-10-12 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.10.0" by @zanieb on 2025-10-12 21:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

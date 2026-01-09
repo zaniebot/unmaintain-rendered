@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixes between E302 and I001 disagree - astral-sh/ruff #20853</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fixes between E302 and I001 disagree</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20853">#20853</a>
+        opened by <a href="https://github.com/mcdigman">@mcdigman</a>
+        on 2025-10-14 00:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mcdigman">@mcdigman</a> on 2025-10-14 00:41</div>
+            <div class="timeline-body"><p><a href="https://github.com/user-attachments/files/22894619/ruff_test_failure.py">ruff_test_failure.py</a></p>
+<p>Ruff got stuck in an infinite loop and asked me to file a bug report. I made a minimum working example, attached. It appears to be caused by exactly the sequence:</p>
+<ol>
+<li>An import</li>
+<li>A blank line</li>
+<li>2 (or more) comments</li>
+<li>A blank line</li>
+<li>Another comment</li>
+<li>A function definition.</li>
+</ol>
+<p>Here is how it was ran (it does <em>not</em> fail if I run <code>ruff check</code> directly):</p>
+<pre><code>$ pre-commit run --all
+Trim Trailing Whitespace.................................................Passed
+Fix End of Files.........................................................Passed
+Check Yaml...............................................................Passed
+Check for added large files..............................................Passed
+Check for case conflicts.................................................Passed
+Check docstring is first.................................................Passed
+Check JSON...........................................(no files to check)Skipped
+Check Toml...............................................................Passed
+Check Xml............................................(no files to check)Skipped
+Check python ast.........................................................Passed
+Check for broken symlinks............................(no files to check)Skipped
+Check vcs permalinks.....................................................Passed
+Debug Statements (Python)................................................Passed
+Detect AWS Credentials...................................................Passed
+Detect Private Key.......................................................Passed
+Mixed line ending........................................................Passed
+Pretty format JSON...................................(no files to check)Skipped
+Fix requirements.txt.................................(no files to check)Skipped
+pyupgrade................................................................Passed
+ssort....................................................................Passed
+ruff.....................................................................Failed
+- hook id: ruff
+- exit code: 1
+
+error: Failed to converge after 100 iterations.
+
+This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BInfinite%20loop%5D
+
+...quoting the contents of `tests/ruff_test_failure.py`, the rule codes E302, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+tests/ruff_test_failure.py:10:1: E302 Expected 2 blank lines, found 1
+   |
+ 9 | # scaling on (Nf, Nt, dt, mult) in the second configuration
+10 | @pytest.mark.skip
+   | ^ E302
+11 | def test_ruff_fails() -&gt; None:
+12 |     &quot;&quot;&quot;A test case that causes ruff to have an infinite loop&quot;&quot;&quot;
+   |
+   = help: Add missing blank line(s)
+
+Found 101 errors (100 fixed, 1 remaining).
+[*] 1 fixable with the `--fix` option.
+
+mypy.....................................................................Passed
+</code></pre>
+<p>Ruff version from .pre-commit-config.yaml:</p>
+<pre><code># See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v3.2.0
+  hooks:
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
+  - id: check-yaml
+  - id: check-added-large-files
+  - id: check-case-conflict
+  - id: check-docstring-first
+  - id: check-json
+  - id: check-toml
+  - id: check-xml
+  - id: check-ast
+  - id: check-symlinks
+  - id: check-vcs-permalinks
+  - id: debug-statements
+  - id: detect-aws-credentials
+    args: [--allow-missing-credentials]
+  - id: detect-private-key
+  - id: mixed-line-ending
+  - id: pretty-format-json
+    args: [--autofix]
+  - id: requirements-txt-fixer
+
+- repo: https://github.com/asottile/pyupgrade
+  rev: v3.19.1
+  hooks:
+  - id: pyupgrade
+    args: [--keep-percent-format]
+
+- repo: https://github.com/bwhmather/ssort
+  rev: 0.14.0
+  hooks:
+  - id: ssort
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.11.8
+  hooks:
+  - id: ruff
+    args: [--preview, --fix]
+
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v1.16.0
+  hooks:
+  - id: mypy
+    args: [--ignore-missing-imports]
+</code></pre>
+<p>pyproject.toml:</p>
+<pre><code>[project]
+name = &quot;GalacticStochastic&quot;
+version = &quot;0.0.1&quot;
+description = &quot;Tool for getting galactic stochastic background for a given galaxy&quot;
+readme = &quot;README.md&quot;
+authors = [
+  { name=&quot;Matthew C. Digman&quot;, email=&quot;matthew.digman@vanderbilt.edu&quot; }
+]
+license = { file = &quot;LICENSE&quot; }
+dependencies = [
+    &quot;numpy&quot;,
+    &quot;scipy&quot;,
+    &quot;numba&quot;,
+    &quot;pytest&quot;,
+    &quot;h5py&quot;
+]
+requires-python = &quot;&gt;=3.7&quot;
+
+[build-system]
+requires = [&quot;setuptools&gt;=61.0&quot;, &quot;wheel&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p>ruff.toml:</p>
+<pre><code># Exclude a variety of commonly ignored directories.
+exclude = [
+    &quot;.bzr&quot;,
+    &quot;.direnv&quot;,
+    &quot;.eggs&quot;,
+    &quot;.git&quot;,
+    &quot;.git-rewrite&quot;,
+    &quot;.hg&quot;,
+    &quot;.ipynb_checkpoints&quot;,
+    &quot;.mypy_cache&quot;,
+    &quot;.nox&quot;,
+    &quot;.pants.d&quot;,
+    &quot;.pyenv&quot;,
+    &quot;.pytest_cache&quot;,
+    &quot;.pytype&quot;,
+    &quot;.ruff_cache&quot;,
+    &quot;.svn&quot;,
+    &quot;.tox&quot;,
+    &quot;.venv&quot;,
+    &quot;.vscode&quot;,
+    &quot;__pypackages__&quot;,
+    &quot;_build&quot;,
+    &quot;buck-out&quot;,
+    &quot;build&quot;,
+    &quot;dist&quot;,
+    &quot;node_modules&quot;,
+    &quot;site-packages&quot;,
+    &quot;venv&quot;,
+]
+
+line-length = 500
+indent-width = 4
+
+# Assume Python 3.9
+target-version = &quot;py39&quot;
+
+[lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`) codes by default.
+# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
+# McCabe complexity (`C901`) by default.
+select = [&quot;E&quot;, &quot;F&quot;, &quot;W&quot;, &quot;PERF&quot;, &quot;FLY&quot;, &quot;TC&quot;, &quot;C4&quot;, &quot;DTZ&quot;, &quot;T10&quot;, &quot;DJ&quot;, &quot;EM&quot;, &quot;FA&quot;, &quot;INT&quot;, &quot;ISC&quot;, &quot;ICN&quot;, &quot;LOG&quot;, &quot;G&quot;, &quot;INP&quot;, &quot;PIE&quot;, &quot;RSE&quot;, &quot;SLOT&quot;, &quot;TID&quot;, &quot;ARG&quot;, &quot;PTH&quot;, &quot;I&quot;, &quot;W&quot;, &quot;D210&quot;, &quot;D403&quot;, &quot;D202&quot;, &quot;D209&quot;, &quot;PGH&quot;, &quot;PLC&quot;, &quot;PLE&quot;, &quot;PLW&quot;, &quot;FURB&quot;, &quot;RUF&quot;, &quot;TRY&quot;, &quot;A&quot;, &quot;B&quot;, &quot;BLE&quot;, &quot;ASYNC&quot;, &quot;YTT&quot;, &quot;FAST&quot;, &quot;AIR&quot;, &quot;S&quot;, &quot;PT&quot;, &quot;SIM&quot;, &quot;PD&quot;, &quot;Q&quot;, &quot;SLF&quot;, &quot;FBT&quot;, &quot;RET&quot;, &quot;COM&quot;, &quot;NPY&quot;, &quot;ANN&quot;]
+ignore = [&quot;S101&quot;, &quot;SIM108&quot;, &quot;DOC202&quot;]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = [&quot;ALL&quot;]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = &quot;^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$&quot;
+
+[lint.flake8-quotes]
+inline-quotes=&quot;single&quot;
+
+[lint.flake8-copyright]
+author = &quot;Matthew C. Digman&quot;
+min-file-size = 1024
+
+[lint.per-file-ignores]
+&quot;tests/*&quot; = [&quot;C90&quot;, &quot;FBT&quot;, &quot;PLR&quot;]
+&quot;speed_tests/*&quot; = [&quot;C90&quot;, &quot;FBT&quot;, &quot;ANN&quot;, &quot;PLR&quot;]
+
+[lint.pydocstyle]
+convention = &quot;numpy&quot;
+
+
+[format]
+# use single quotes for strings.
+quote-style = &quot;single&quot;
+
+# indent with spaces, rather than tabs.
+indent-style = &quot;space&quot;
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = &quot;auto&quot;
+
+# Enable auto-formatting of code examples in docstrings. Markdown,
+# reStructuredText code/literal blocks and doctests are all supported.
+#
+# This is currently disabled by default, but it is planned for this
+# to be opt-out in the future.
+docstring-code-format = false
+
+# Set the line length limit used when formatting code snippets in
+# docstrings.
+#
+# This only has an effect when the `docstring-code-format` setting is
+# enabled.
+docstring-code-line-length = &quot;dynamic&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-10-14 06:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 06:46</div>
+            <div class="timeline-body"><p>Thank you for the detailed report!</p>
+<p>The shared example is</p>
+<pre><code class="language-py">&quot;&quot;&quot;Test that ruff fails&quot;&quot;&quot;
+
+
+import pytest
+
+# whatever
+# whatever 2
+
+# whatever 3
+@pytest.mark.skip
+def test_ruff_fails() -&gt; None:
+    &quot;&quot;&quot;A test case that causes ruff to have an infinite loop&quot;&quot;&quot;
+    return
+</code></pre>
+<p>E302 reports a missing empty line between <code># whatever 2</code> and <code>@pytest.mark.skip</code></p>
+<p>The fix adds an extra blank line between <code>import pytest</code> and <code># whatever</code>, so that the resulting file looks like this:</p>
+<pre><code class="language-diff">  &quot;&quot;&quot;Test that ruff fails&quot;&quot;&quot;
+  
+  
+  import pytest
++ 
+
+  # whatever
+  # whatever 2
+  
+  # whatever 3
+  @pytest.mark.skip
+  def test_ruff_fails() -&gt; None:
+      &quot;&quot;&quot;A test case that causes ruff to have an infinite loop&quot;&quot;&quot;
+      return
+</code></pre>
+<p>But isort doesn't like that and removes the blank line again :)</p>
+<p>The formatter formats the input file to</p>
+<pre><code class="language-diff">  &quot;&quot;&quot;Test that ruff fails&quot;&quot;&quot;
+  
+  
+  import pytest
+
+  # whatever
+  # whatever 2
+
++   
+  # whatever 3
+  @pytest.mark.skip
+  def test_ruff_fails() -&gt; None:
+      &quot;&quot;&quot;A test case that causes ruff to have an infinite loop&quot;&quot;&quot;
+      return
+</code></pre>
+<p>We should update <code>E302</code>'s fix to also insert the blank line there</p>
+<p>https://play.ruff.rs/2c41c0c0-2ce5-4237-a607-fb01b401ab4f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Infinite loop]" to "Fixes between E302 and I001 disagree" by @MichaReiser on 2025-10-14 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-10-14 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 07:23</div>
+            <div class="timeline-body"><p>I think this is the same one as https://github.com/astral-sh/ruff/issues/12611</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-14 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12611.html">astral-sh/ruff#12611</a> on 2025-10-14 07:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclude option ignored when directly calling dir/file - astral-sh/ruff #1339</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Exclude option ignored when directly calling dir/file</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1339">#1339</a>
+        opened by <a href="https://github.com/jhossbach">@jhossbach</a>
+        on 2022-12-22 16:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jhossbach">@jhossbach</a> on 2022-12-22 16:55</div>
+            <div class="timeline-body"><p>MWE:</p>
+<pre><code class="language-toml">[tool.ruff]
+exclude = [ &quot;blah&quot; ]
+</code></pre>
+<p><code>blah/test.py</code>:</p>
+<pre><code class="language-python">import os
+</code></pre>
+<p>Running ruff on <code>.</code> returns nothing, but running <code>ruff ./blah</code> or <code>ruff ./blah/test.py</code> will return the diagnostics (F401) even if blah was excluded. Is this intentional?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhossbach">@jhossbach</a> on 2022-12-22 17:14</div>
+            <div class="timeline-body"><p>*To be more precise: I think this is unwanted because it will mess with parsing the file via stdin and then giving the <code>stdin-filename</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-22 17:15</div>
+            <div class="timeline-body"><p>Yeah it's intentional. There's a <code>--force-exclude</code> flag you can provide on the command-line or in <code>pyproject.toml</code> to disable this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-22 17:16</div>
+            <div class="timeline-body"><p>This is how Black behaves and I think it's pretty reasonable -- if you pass a file directly, we should lint it even if it's marked as an exclusion, since in most cases that's intentional behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-22 17:16</div>
+            <div class="timeline-body"><p>But in some settings, it makes sense to turn that off (for example, with <code>pre-commit</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-22 17:19</div>
+            <div class="timeline-body"><p>(And, similarly, it might make sense to always pass that flag in the LSP context.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhossbach">@jhossbach</a> on 2022-12-22 17:19</div>
+            <div class="timeline-body"><p>In that case I will keep this behavior in <code>python-lsp-ruff</code> rather than unintuitively changing it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jhossbach on 2022-12-22 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-22 17:20</div>
+            <div class="timeline-body"><p>I'll probably change <code>ruff-lsp</code> to always pass that flag, it seems confusing in the context of an IDE.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhossbach">@jhossbach</a> on 2022-12-22 17:32</div>
+            <div class="timeline-body"><p>I guess you're right, it would also require to add that option to the LSP configuration which should be redundant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhossbach">@jhossbach</a> on 2022-12-22 18:17</div>
+            <div class="timeline-body"><p>Sorry to chime in again, but I am still confused about the <code>--force-exclude</code>, <code>--exclude</code> and the <code>--stdin-filename</code> option.
+Imagine the following structure</p>
+<pre><code>.
+├── pyproject.toml
+└── subdir
+    ├── file1.py
+    └── file2.py
+
+</code></pre>
+<p>where the <code>pyproject.toml</code> contains</p>
+<pre><code class="language-toml">[tool.ruff]
+exclude = [ &quot;subdir&quot; ]
+</code></pre>
+<p>and <code>file1.py</code> and <code>file2.py</code> contain</p>
+<pre><code class="language-python">import os
+</code></pre>
+<p>It makes sense that <code>ruff .</code> returns nothing while <code>ruff subdir</code> returns the diagnostics for <code>file1.py</code> and <code>file2.py</code>, and we can also supress these messages by using <code>ruff --force-exclude subdir</code>.
+What is confusing to me is why <code>ruff --force-exclude subdir/file1.py</code> returns diagnostics <strong>even with</strong> <code>force-exclude</code> enabled.
+As soon as I change the pyproject.toml file to <code>exclude = [ &quot;subdir/*&quot; ]</code>, running <code>ruff --force-exclude subdir/file1.py</code> shows no diagnostics again.</p>
+<p>Also, the exclude (and force exclude) is still ignored when running <strong>either</strong></p>
+<pre><code class="language-shell">cat subdir/file1.py | ruff --stdin-filename subdir/file1.py -
+cat subdir/file1.py | ruff --stdin-filename subdir/file1.py --force-exclude -
+</code></pre>
+<p>My ruff version is v0.0.191.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @jhossbach on 2022-12-22 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-22 18:38</div>
+            <div class="timeline-body"><p>Need to try out the <code>ruff --force-exclude subdir/file1.py</code> case to understand what’s going on there, but I think you’re probably right that we’re not respecting exclusions at all when running via stdin (which I misstated above). We need to make code changes to support that, most likely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-22 18:42</div>
+            <div class="timeline-body"><p>(And no need to apologize, sorry for misleading you above regarding stdin!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-22 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-12-22 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-22 19:51</div>
+            <div class="timeline-body"><p>The <code>ruff --force-exclude subdir/file1.py</code> issue is just sort of a quirk of how the pattern-matching works. If you provide <code>subdir</code> as the exclude, then we exclude any file or directory that ends in <code>subdir</code>. If you provide <code>subdir</code> as the folder to check on the command-line, then we exclude it due to that match and avoid recursing into it. If you provide <code>subdir/file1.py</code>, we never actually check <code>subdir</code>, just <code>file1.py</code> and <code>subdir/file1.py</code>, which is why <code>subdir/*</code> actually <em>does</em> work.</p>
+<p>I think this can be improved, but need to consider what the right fix is...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhossbach">@jhossbach</a> on 2022-12-22 20:06</div>
+            <div class="timeline-body"><p>How about a gitignore-like style? It would mean that <code>foo/</code> would exclude a dir and everything beneath, while <code>foo/*</code> would match everything directly beneath (so <code>foo/bar/test.py</code>) would not be excluded (of course we can relax this part).
+<code>subdir/file1.py</code> would match this file and this file only, while <code>file1.py</code> would match <code>file1.py</code> only in the first directory, while <code>**file1.py</code> matches <code>file1.py</code> in every directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-22 20:09</div>
+            <div class="timeline-body"><p>I accidentally pushed it directly but the fix is (hopefully) in https://github.com/charliermarsh/ruff/commit/451047c30ddcac143f3d5f9958e0c8bcd5744a9c. The idea is that if you pass <code>subdir/file.py</code>, and <code>force-exclude</code> is set, we actually need to ensure that it's not in an excluded directly -- so we just do that pass before walking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhossbach">@jhossbach</a> on 2022-12-22 21:32</div>
+            <div class="timeline-body"><p>Seems to work :+1: I'll open up a new issue for the extension to when passing the file through stdin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1342.html">astral-sh/ruff#1342</a> on 2022-12-22 21:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-22 21:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

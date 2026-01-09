@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_generate with derive use - clap-rs/clap #2939</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_generate with derive use</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2939">#2939</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2021-10-24 19:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ghost">@ghost</a> on 2021-10-24 19:28</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.5</p>
+<h3>Where?</h3>
+<p>https://docs.rs/clap_generate/3.0.0-beta.5/clap_generate/</p>
+<h3>What's wrong?</h3>
+<p>docs only show using :App but coming from structopt am using derive[] instead. how to use generate completions with this pattern instead?</p>
+<h3>How to fix?</h3>
+<p>maybe expand docs with other example or add disclaimer if only work with one pattern not other</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: docs</span> added by @ghost on 2021-10-24 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-25 13:26</div>
+            <div class="timeline-body"><p>This will look something like:</p>
+<pre><code class="language-rust">use clap::{App, ValueHint, Partser, IntoApp};
+use clap_generate::{generate, Generator, Shell};
+use std::io;
+
+#[derive(Parser, Debug)]
+struct Cli {
+    file: Option&lt;std::path::PathBuf&gt;,
+    #[clap(long, arg_enum)]
+    generate: Option&lt;Shell&gt;,
+}
+
+fn print_completions&lt;G: Generator&gt;(gen: G, app: &amp;mut App) {
+    generate(gen, app, app.get_name().to_string(), &amp;mut io::stdout());
+}
+
+fn main() {
+    let cli = Cli::parse();
+
+    if let Some(generator) = cli.generate {
+        let mut app = Cli::into_app();
+        eprintln!(&quot;Generating completion file for {}...&quot;, generator);
+        print_completions(generator, &amp;mut app);
+    }
+}
+</code></pre>
+<p>The key is the <code>IntoApp</code> trait.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @epage on 2021-10-25 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-26 13:38</div>
+            <div class="timeline-body"><p>I forgot, we do have an example, but its in the <code>clap_derive</code> crate: https://github.com/clap-rs/clap/blob/master/clap_derive/examples/value_hints_derive.rs</p>
+<p>I wonder if we should move that over to <code>clap_generate</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2948.html">clap-rs/clap#2948</a> on 2021-10-26 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2021-10-26 21:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`without_extras` is slow for lerobot - astral-sh/uv #10430</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`without_extras` is slow for lerobot</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10430">#10430</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-01-09 14:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2025-01-09 14:32</div>
+            <div class="timeline-body"><p>Given <a href="https://gist.github.com/konstin/e9fea6019497159554a77188e212eae6">this pyproject.toml</a>, we spend ~38% of resolver thread time in <code>without_extras</code></p>
+<p><img src="https://github.com/user-attachments/assets/5de4e6ce-235d-451f-814d-7edb66ba2170" alt="Image" /></p>
+<p>Hot code paths:</p>
+<p>https://github.com/astral-sh/uv/blob/0d57d298e68999be63fd0183fd0723686a6ec32a/crates/uv-resolver/src/candidate_selector.rs#L181-L185</p>
+<p>https://github.com/astral-sh/uv/blob/bec8468183c7cc1697ad1d34a5eb6087ec5c8a90/crates/uv-pep508/src/marker/tree.rs#L1143</p>
+<p>Profiling command, on ubuntu 24.04:</p>
+<pre><code>cargo build --profile profiling
+rm -f uv.lock
+samply record --rate 20000 target/profiling/uv lock -p 3.12
+</code></pre>
+<p>We should improve the performance for lerobot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2025-01-09 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-09 14:42</div>
+            <div class="timeline-body"><p>One simplistic idea is to create a PEP 508 marker once and <a href="https://github.com/astral-sh/uv/blob/15ec830beab1aa7f7adc13b125e8e2122fa78343/crates/uv-resolver/src/universal_marker.rs#L22">store it on <code>UniversalMarker</code></a>. Then the <code>pep508</code> method can just return it instead of creating it.</p>
+<p>I think the main challenge there is just making sure it gets updated as appropriate since a <code>UniversalMarker</code> has <code>&amp;mut</code> methods.</p>
+<p>This strategy is predicated on the idea that marker mutation is much rarer than calling <code>m.pep508()</code>. I think that's probably true, but I'm not certain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-09 14:45</div>
+            <div class="timeline-body"><p>(It might also be a good time to get rid of the <code>&amp;mut</code> methods on all of the marker types completely and just double down on its <code>Copy</code> impl.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-09 14:52</div>
+            <div class="timeline-body"><p>We can maybe also optimize the <em>caller</em> here? It looks like we call <code>marker.pep508()</code> twice for each package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10438.html">astral-sh/uv#10438</a> on 2025-01-09 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2025-01-09 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10453.html">astral-sh/uv#10453</a> on 2025-01-10 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10472.html">astral-sh/uv#10472</a> on 2025-01-10 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-01-10 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-01-10 16:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>remove dynamic linking to `liblzma` from pip binary  - astral-sh/uv #5572</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>remove dynamic linking to `liblzma` from pip binary </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/5572">#5572</a>
+        opened by <a href="https://github.com/universalmind303">@universalmind303</a>
+        on 2024-07-29 20:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/universalmind303">@universalmind303</a> on 2024-07-29 20:34</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>If i install <code>uv</code> through pip, it dynamically links to <code>/usr/local/opt/xz/lib/liblzma.5.dylib</code></p>
+<pre><code class="language-sh"># create an empty virtual env
+~/Development/uv-dynlink ❯ virtualenv .venv
+created virtual environment CPython3.12.4.final.0-64 in 381ms
+  creator CPython3macOsBrew(dest=/Users/corygrinstead/Development/uv-dynlink/.venv, clear=False, no_vcs_ignore=False, global=False)
+  seeder FromAppData(download=False, pip=bundle, via=copy, app_data_dir=/Users/me/Library/Application Support/virtualenv)
+    added seed packages: pip==24.1.2
+  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+# activate virtual env (source .venv/bin/activate)
+~/Development/uv-dynlink ❯ overlay use .venv/bin/activate.nu
+# install uv
+(.venv) ~/Development/uv-dynlink ❯ pip install uv
+(.venv) ~/Development/uv-dynlink ❯ which uv
+╭───┬─────────┬──────────────────────────────────────────────┬──────────╮
+│ # │ command │                        path                  │   type   │
+├───┼─────────┼──────────────────────────────────────────────┼──────────┤
+│ 0 │ uv      │ /Users/me/Development/example/.venv/bin/uv   │ external │
+╰───┴─────────┴──────────────────────────────────────────────┴──────────╯
+(.venv) ~/Development/uv-dynlink ❯ python3 --version
+Python 3.12.4
+(.venv) ~/Development/uv-dynlink ❯ python --version
+Python 3.12.4
+(.venv) ~/Development/uv-dynlink ❯ pip install uv
+Collecting uv
+  Using cached uv-0.2.31-py3-none-macosx_10_12_x86_64.whl.metadata (35 kB)
+Using cached uv-0.2.31-py3-none-macosx_10_12_x86_64.whl (11.6 MB)
+Installing collected packages: uv
+Successfully installed uv-0.2.31
+
+[notice] A new release of pip is available: 24.1.2 -&gt; 24.2
+[notice] To update, run: pip install --upgrade pip
+(.venv) ~/Development/uv-dynlink ❯ overlay use .venv/bin/activate.nu
+(.venv) ~/Development/uv-dynlink ❯ which uv | get path | otool -L ...$in | grep 'liblzma'
+        /usr/local/opt/xz/lib/liblzma.5.dylib (compatibility version 12.0.0, current version 12.2.0)
+</code></pre>
+<p>However, if I build it from source, it does not</p>
+<pre><code class="language-sh">&gt; cargo run python install
+&gt; otool -L ./target/debug/uv | grep 'liblzma' 
+# empty 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "remove dynamic linking to `liblzma` pip binary " to "remove dynamic linking to `liblzma` from pip binary " by @universalmind303 on 2024-07-29 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rhenzel">@rhenzel</a> on 2024-07-29 21:16</div>
+            <div class="timeline-body"><p>Running into a related issue with <code>curl -LsSf https://astral.sh/uv/install.sh | sh </code> install on Apple Silicon macOS.<br />
+When running <code>uv pip install ...</code>, I get:</p>
+<pre><code>downloading uv 0.2.31 aarch64-apple-darwin
+...
+dyld[1134]: Library not loaded: /opt/homebrew/opt/xz/lib/liblzma.5.dylib
+  Referenced from: &lt;297928D5-54B8-3A44-B1B4-41CE488775BD&gt; .cargo/bin/uv
+  Reason: tried: '/opt/homebrew/opt/xz/lib/liblzma.5.dylib' (no such file), '/System/Cryptexes/OS/opt/homebrew/opt/xz/lib/liblzma.5.dylib' (no such file), '/opt/homebrew/opt/xz/lib/liblzma.5.dylib' (no such file)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-29 21:30</div>
+            <div class="timeline-body"><p>Interesting, thanks for reporting. I believe we can statically link it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5577.html">astral-sh/uv#5577</a> on 2024-07-29 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-29 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-29 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../axodotdev/cargo-dist/issues/1249.html">axodotdev/cargo-dist#1249</a> on 2024-07-30 08:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-07-30 22:26</div>
+            <div class="timeline-body"><p>Just can across this upgrading <code>uv</code> today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 22:27</div>
+            <div class="timeline-body"><p>Apologize, going to release shortly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-07-30 22:29</div>
+            <div class="timeline-body"><p>No worries! Part of being on the edge :) Thanks for making uv awesome.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

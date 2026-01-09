@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive PLE0302 with special methods as properties. - astral-sh/ruff #15572</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive PLE0302 with special methods as properties.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15572">#15572</a>
+        opened by <a href="https://github.com/mikeshardmind">@mikeshardmind</a>
+        on 2025-01-18 19:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-01-18 19:34</div>
+            <div class="timeline-body"><p>Example code that works at runtime and which type checkers do understand</p>
+<p>Code sample in <a href="https://pyright-play.net/?code=GYJw9gtgBAxmA28CmMAuBLMA7AzgOgEMAjGKdCABzBFSgEEcBPLGAcSSyRANWoBoo7Tt14gBAYQKJiyCdTABXDJwBQoSFFSMK6LAHMylarTpZGK8lRqxsMBSBAdUeYEvtIcUAp5jAVKrQokegBRADkAFRCAJSgAXihJaSJkAG1UgF05cCVdJFTTRgFC4qYWIS4eagKzKAAfKDDsJAzWgO1guhCADQBJCPjEqXgZfNTA-IAhbyQQgA8YJAoMbAz6xuaBaZxZhaWVrHWmzgEwIgArFFQsxPlczhqi%2BjMBIjAENpUYEZxPOnEIt1UgBNDIALhUUChUAAJkhgFAAPqI3ToVDIgAUO3gwAEejB9DKbA4lVEIJuwAJvjwADE3I5UscWgBKKAAWgAfBtOBDoXyoNjgHgDAk9JD%2BVDBS5Bn5xVDvMxSHCEciCE4uJjBazOYTFRURNVQbyJVBHKh7IcpWK5V4ibD4UjEWq5mjMTa%2BYK%2BO7oUgFoiJgSJqltrtFstMFg1g0mV6TVBfTBEQA3KQKJAEkPzMMHI6bb1Q1DcRZEAgwADWBLOlzQseh2q5bwQxol6ARCeTqeC6E8WDAtCZzbjAqQOJceB26IT%2BwjGPbKfgaeZ-jjBAA7gQ0cPR3pCN8wDsMUu42aLVAaVIdv4VAqWPaVQQMWg5gT-oDHhl61B4N3UO-BzfSFXNEAAtYFQOZbVgQc%2BRPEBDlSJNbUVKBgGoKBEN0WAMhtWD4Ow-xvm8Tx5hQJQkAAdW4CgghAQdlUdVF0URLER1xJEYBfAEgUKD9oOhKVEVIBJBOXaF6NVddXWYrV2S5fUqhAR5iheL8f3fcF81NJBzTgqAMUYdARxhFDwGgJ0WNHQTmTwCSNyYw8lxtAABChwBorQbXEp11RATVWOZPioVwrchUEmzvKwVANURG1nNcsB3PMPkvOdKSLOAALNOCgSYHC1KmNE%2BU7Xo4BtJgYDmnSz9ClzHlNIAqAgNQUDBUg-FNL5BrUJAdCpDIQ52qHE1gvnLLtNPJkgA">pyright playground</a></p>
+<pre><code class="language-python">from collections.abc import AsyncGenerator, Generator, Callable, Coroutine
+from typing import Any
+import concurrent.futures as cf
+
+type AENTER = Callable[[], Coroutine[Any, Any, AsyncGenerator[Any | None]]]
+type AEXIT = Callable[[type[BaseException] | None, BaseException | None, object], Coroutine[Any, Any, bool]]
+
+class ACTX[Y]:
+    def __init__(self, g: AsyncGenerator[Y], f: cf.Future[None]) -&gt; None:
+        self.g = g
+        self.f = f
+
+    async def __aenter__(self) -&gt; AsyncGenerator[Y]:
+        return self.g
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: object,
+    ) -&gt; bool:
+        if exc_value is not None:
+            self.f.set_exception(exc_value)
+
+        await self.g.aclose()
+        return False
+
+
+async def _a(ctx: ACTX[Any]) -&gt; list[Any]:
+    async with ctx as c:
+        return [v async for v in c]
+    return []
+
+
+class ExecuteWrapper:
+    def __init__(self, _c: ACTX[Any]):
+        self._c = _c
+
+    def __await__(self) -&gt; Generator[Any, Any, list[Any]]:
+        return (yield from _a(self._c).__await__())
+
+    @property
+    def __aenter__(self):
+        return self._c.__aenter__
+    
+    @property
+    def __aexit__(self):
+        return self._c.__aexit__
+
+    async def fetchone(self) -&gt; Any | None:
+        async with self as g:
+            async for val in g:
+                return val
+        return None
+</code></pre>
+<p>Rewriting <code>ExecuteWrapper</code> as:</p>
+<pre><code class="language-py">from operator import attrgetter
+
+class ExecuteWrapper:
+    def __init__(self, _c: ACTX[Any]):
+        self._c = _c
+
+    def __await__(self) -&gt; Generator[Any, Any, list[Any]]:
+        return (yield from _a(self._c).__await__())
+
+    __aenter__: AENTER = property(attrgetter(&quot;_c.__aenter__&quot;))  # pyright: ignore[reportAssignmentType]
+    __aexit__: AEXIT = property(attrgetter(&quot;_c.__aexit__&quot;))  # pyright: ignore[reportAssignmentType]
+
+    async def fetchone(self) -&gt; Any | None:
+        async with self as g:
+            async for val in g:
+                return val
+        return None
+</code></pre>
+<p>for contrast has better runtime behavior (slightly, anyhow), but unfortunately, properties are not generic in the type system, so this ends up not type-checked, though ruff has no issue with this definition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-01-18 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-01-18 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-18 22:34</div>
+            <div class="timeline-body"><p>I think it seems reasonable to skip the check when there's a property decorator (or maybe <em>any</em> decorator).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15582.html">astral-sh/ruff#15582</a> on 2025-01-19 01:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-19 18:40</div>
+            <div class="timeline-body"><p>I assume I'm lacking understanding. Can <code>ExecuteWrapper</code> not use methods for this?</p>
+<pre><code class="language-python">    async def __aenter__(self):
+        return await self._c.__aenter__()
+
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        return await self._c.__aexit__(exc_type, exc_value, traceback)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-19 20:22</div>
+            <div class="timeline-body"><p>@charliermarsh That would require duplicating type hints for the parameters. The return type might not be necessary (Pyright can infer that flawlessly), but the same cannot be said about parameter types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-01-19 20:40</div>
+            <div class="timeline-body"><p>Using properties here has multiple benefits, from better automatic type inference to better runtime behavior. With using methods, this would be multiple awaits for a simple wrapper or require <code>self._c.__aexit__(exc_type, exc_value, traceback).__await__()</code> which is  harder for human reviewer to reason about. Perhaps that's not the strongest argument given the existing use of similar there to define <code>__await__</code> in this particular case, but in general I try to avoid writing simple coroutines that only await other coroutines with pass-through.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-01-24 19:25</div>
+            <div class="timeline-body"><p>This might be better to hold off on for now, there are enough static analysis tools that are getting subtle things wrong about dunder methods as descriptors beyond what is visible here that it may still be beneficial to nudge people to slightly different solutions even at a small runtime or legibility cost to ensure their tooling has the expected benefits.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

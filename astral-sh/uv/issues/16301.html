@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: Add option to ignore missing/unavailable indexes - astral-sh/uv #16301</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: Add option to ignore missing/unavailable indexes</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16301">#16301</a>
+        opened by <a href="https://github.com/rabyj">@rabyj</a>
+        on 2025-10-14 19:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rabyj">@rabyj</a> on 2025-10-14 19:01</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Currently, <code>uv pip install</code> fails when an index defined in <code>pyproject.toml</code> is unavailable, producing errors like:</p>
+<pre><code>error: Failed to read `--find-links` directory: /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic
+  Caused by: No such file or directory (os error 2)
+</code></pre>
+<p><strong>Requested feature:</strong>
+Add an option to treat missing indexes as warnings rather than errors, allowing uv to continue dependency resolution using the remaining available indexes.</p>
+<p><strong>Use case:</strong>
+I want to configure a local wheelhouse as the primary index using <code>index-strategy = &quot;unsafe-first-match&quot;</code> in <code>pyproject.toml</code>. When the local wheelhouse is available, uv should search it first. When it's unavailable (e.g., on developer machines without the mounted path), uv should gracefully skip it and fall back to subsequent indexes (like PyPI) instead of failing.</p>
+<p>This would enable portable configurations that work across different environments without requiring environment-specific <code>pyproject.toml</code> files.</p>
+<h3>Example</h3>
+<p><strong>Example usage:</strong></p>
+<p><strong>Current behavior (fails):</strong></p>
+<pre><code class="language-toml"># pyproject.toml
+[tool.uv]
+index-strategy = &quot;unsafe-first-match&quot;
+
+[[tool.uv.index]]
+url = &quot;/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic&quot;
+name = &quot;local-wheelhouse&quot;
+
+[[tool.uv.index]]
+url = &quot;https://pypi.org/simple&quot;
+name = &quot;pypi&quot;
+</code></pre>
+<pre><code class="language-bash">$ uv pip install numpy
+error: Failed to read `--find-links` directory: /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic
+  Caused by: No such file or directory (os error 2)
+# Installation fails completely
+</code></pre>
+<p><strong>Desired behavior (with new option):</strong></p>
+<pre><code class="language-toml"># pyproject.toml - same config with new option
+[tool.uv]
+index-strategy = &quot;unsafe-first-match&quot;
+ignore-missing-indexes = true  # or similar flag name
+</code></pre>
+<pre><code class="language-bash">$ uv pip install numpy
+warning: Index 'local-wheelhouse' is unavailable: /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic (os error 2)
+Resolved 1 package in 245ms
+Installed 1 package in 12ms
+ + numpy==1.26.4
+# Installation succeeds using PyPI fallback
+</code></pre>
+<p>This allows the same <code>pyproject.toml</code> to work seamlessly on both cluster environments (where CVMFS is mounted) and local development machines (where it isn't).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @rabyj on 2025-10-14 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add option to ignore missing/unavailable indexes" to "Feature request: Add option to ignore missing/unavailable indexes" by @rabyj on 2025-12-15 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16242.html">astral-sh/uv#16242</a> on 2025-12-15 18:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

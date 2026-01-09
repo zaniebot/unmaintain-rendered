@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hitting ulimit with huge workspace - astral-sh/uv #11296</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Hitting ulimit with huge workspace</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11296">#11296</a>
+        opened by <a href="https://github.com/potiuk">@potiuk</a>
+        on 2025-02-06 20:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/potiuk">@potiuk</a> on 2025-02-06 20:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When running uv sync with huge workspace (90+ subprojects) uv fails with &quot;too many open files&quot; when the default ulimit for number of opened file descriptors per process is used (256 is the default on MacOS).</p>
+<p><img width="892" alt="Image" src="https://github.com/user-attachments/assets/16927ece-0665-47b5-b008-bfa339c01123" /></p>
+<p>Setting <code>ulimit -n 2048</code> fixes the problem, however it would be great if uv respects the limit that is set per process and does not open more files than it can.</p>
+<p>How to reproduce:</p>
+<ol>
+<li>Checkout https://github.com/apache/airflow</li>
+<li>Run <code>uv sync</code></li>
+</ol>
+<h3>Platform</h3>
+<p>MacOS</p>
+<h3>Version</h3>
+<p>uv 0.5.25 (9c07c3fc5 2025-01-28)</p>
+<h3>Python version</h3>
+<p>Python 3.11.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @potiuk on 2025-02-06 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 20:47</div>
+            <div class="timeline-body"><p>macOS has a really small default ulimit, I'm hesitant to significantly change our behavior to account for that — but if it's feasible I agree it makes sense as a better experience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-02-06 20:47</div>
+            <div class="timeline-body"><p>BTW. <code>workspace</code> feature works great for us. We are about to complete the migration of all 90+ providers to separate sub-projects in our workspace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-02-06 20:50</div>
+            <div class="timeline-body"><p>I am updating our docs to include it, byt yeah it would be great to account for that. Another option could be to catch this error and ask the user to run <code>ulimit -n 2048</code> or smth.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 20:54</div>
+            <div class="timeline-body"><p>I think we'd need to use something like https://docs.rs/sysctl/latest/sysctl/ to retrieve this programatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-02-06 21:01</div>
+            <div class="timeline-body"><p>Yep. Sounds about right :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 21:03</div>
+            <div class="timeline-body"><p>cc @konstin perhaps this is covered by some existing concurrency limit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-06 21:10</div>
+            <div class="timeline-body"><p>We currently don't have a limit for this, especially if things like launching a subprocess count as an open file. If it was only <code>File</code> files, we could let's say patch <code>fs_err</code>, but like this it requires more auditing. It would be interesting to see the list of open files at the point of the error. Maybe there is a specific function that is currently holding to many files open that we could trim down without threading through real limit everywhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 21:11</div>
+            <div class="timeline-body"><p>I am wondering if most of the open files are <code>python</code> build subprocesses? I agree, it would be very nice to see the open files to make an informed decision here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 21:12</div>
+            <div class="timeline-body"><p>Isn't workspace discovery also sort of exponential? Like for each member, we have to discover all members? :)</p>
+<p>(I might be wrong, I can't remember, there are some TODOs around caching discovery.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-02-06 21:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Isn't workspace discovery also sort of exponential? Like for each member, we have to discover all members? :)</p>
+</blockquote>
+<p>Hopefully not.. We are not fully done yet :P -&gt; but with Airflow you can likely test the limits, it's likely one of the largest workspaces you can get :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-06 21:38</div>
+            <div class="timeline-body"><p>Airflow is already my favorite big benchmarking case, lovely to see such large scale adoption of workspaces, too.</p>
+<p>I just tried <code>uv sync</code> on airflow ea07814a72a46f7aa34553b65ab5cb929d3b27a5 on linux with uv 0.5.29, I got an error though:</p>
+<pre><code>$ uv sync
+error: Failed to parse `uv.lock`
+  Caused by: TOML parse error at line 9, column 1
+  |
+9 | [[distribution]]
+  | ^^^^^^^^^^^^^^^^
+missing field `source`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-02-06 21:41</div>
+            <div class="timeline-body"><p>I think it's something in your lock :) . We currently do not commit <code>uv.lock</code> :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-06 21:47</div>
+            <div class="timeline-body"><p>oops, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-03-06 17:57</div>
+            <div class="timeline-body"><p>We would really love to have it fixed  soon :). From our slack:</p>
+<p><img src="https://github.com/user-attachments/assets/3b72c4ec-d7cf-4616-b8e5-1ac6c9e6c1d2" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-03-06 17:58</div>
+            <div class="timeline-body"><p>That really breakes the nice &quot;first time experience&quot; for <code>uv</code> for Airflow :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-06 18:07</div>
+            <div class="timeline-body"><p>At the very least, can we catch this error and hint how to fix it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-03-06 18:40</div>
+            <div class="timeline-body"><blockquote>
+<p>At the very least, can we catch this error and hint how to fix it?</p>
+</blockquote>
+<p>That would work too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-06 18:43</div>
+            <div class="timeline-body"><p>Seems vaguely hard because this can presumably happen on most file system operations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-03-06 18:53</div>
+            <div class="timeline-body"><p>I think (at least in our case)  really the problem is when workspace is used for multiple (local) packages - this is where we really experience it. I am not sure internally why it is triggered only for this case - maybe other operations are using multiple processes for building - but in this case it seems that single process opens a lot of files at the same time</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Hiiting ulimit with huge workspace" to "Hiting ulimit with huge workspace" by @potiuk on 2025-03-06 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Hiting ulimit with huge workspace" to "Hitting ulimit with huge workspace" by @potiuk on 2025-03-06 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/omkar-foss">@omkar-foss</a> on 2025-03-06 20:03</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we'd need to use something like https://docs.rs/sysctl/latest/sysctl/ to retrieve this programatically.</p>
+</blockquote>
+<p>uv seems to be using nix already (to get <a href="https://github.com/astral-sh/uv/blob/main/crates/uv/src/commands/run.rs#L42-L43">process group id here</a>), perhaps using nix's <a href="https://docs.rs/nix/latest/nix/sys/resource/fn.getrlimit.html">getrlimit</a>/<a href="https://docs.rs/nix/latest/nix/sys/resource/fn.setrlimit.html">setrlimit</a> could also be explored?</p>
+<blockquote>
+<p>At the very least, can we catch this error and hint how to fix it?</p>
+</blockquote>
+<p>Yes a hint would be nice, and I guess could be shown to user even without uv erroring out - if on start uv can determine a &quot;large&quot; workspace by counting number of members (or something similar) and compare it to the soft limit from getrlimit, then show a hint or warning accordingly.</p>
+<p>Just thinking out loud above, hope this helps in some way :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-07 13:06</div>
+            <div class="timeline-body"><p>FWIW I just tried <code>rm -rf .venv &amp;&amp; ulimit -n 256 &amp;&amp; uv sync</code> on linux and it didn't trigger the error, it seems this is mac-specific problem and needs to be debugged on a mac.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-03-07 16:42</div>
+            <div class="timeline-body"><p>I think <code>ulimit</code> with <code>&amp;&amp;</code>  might not work - your <code>uv sync</code> shell interpreter is different than the one that had ulimit changed.</p>
+<p>I can esily repro it on my linux if I do it as separate step</p>
+<pre><code>[jarek:~/code/airflow] patch-1+ 6s ± rm -rf .venv 
+[jarek:~/code/airflow] patch-1+ 4s ± git checkout main 
+Switched to branch 'main'
+Your branch is up to date with 'apache/main'.
+θ61° [jarek:~/code/airflow] main+ ± ulimit -n 256
+θ61° [jarek:~/code/airflow] main+ ± uv sync
+Using CPython 3.12.7
+Creating virtual environment at: .venv
+Resolved 791 packages in 16.73s
+  × Failed to build `apache-airflow-providers-github @ file:///home/jarek/code/airflow/providers/github`
+  ├─▶ Failed to run `/home/jarek/.cache/uv/builds-v0/.tmpOb7Tky/bin/python`
+  ╰─▶ Too many open files (os error 24)
+  help: `apache-airflow-providers-github` was included because `apache-airflow:dev` depends on `apache-airflow-providers-github`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-07 18:18</div>
+            <div class="timeline-body"><p>Odd, tried those exact instructions and couldn't reproduce, some <code>taskset</code> attempts for less cores also didn't help (though maybe someone else on the team can reproduce).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-03-08 17:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Odd, tried those exact instructions and couldn't reproduce, some <code>taskset</code> attempts for less cores also didn't help (though maybe someone else on the team can reproduce).</p>
+</blockquote>
+<p>It could be because architecture/OS - i use Mint 23.1, and it's likely that more packages need building on my machine than on yours. Maybe decrease the limits to 50 or so ..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sananand007">@sananand007</a> on 2025-05-20 12:46</div>
+            <div class="timeline-body"><p>We are Also migrating a large <code>python</code> internal package mono repo to <code>uv</code> and we hit this issue. It would be great if we can <code>catch</code> and show what to do for this error to the user, for better <code>user experience</code></p>
+<p>Everything is on <code>macOS</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sananand007">@sananand007</a> on 2025-05-20 12:50</div>
+            <div class="timeline-body"><blockquote>
+<p>BTW. <code>workspace</code> feature works great for us. We are about to complete the migration of all 90+ providers to separate sub-projects in our workspace.</p>
+</blockquote>
+<p>Hi @potiuk We are also doing the same  for our <code>mono</code> repo, which houses a large number of Internal Python packages (we do not release but change and test). Would you mind sharing your <code>steps</code> and the structure of the <code>main</code> <code>pyproject.toml</code> file on how you structure for your repository.</p>
+<ul>
+<li>Also I see you say you do not <code>commit</code> the <code>uv.lock</code> , how does that work ? It is just like <code>poetry.lock</code> or <code>npm_lock.json</code> and they are all committed to the repository ?</li>
+</ul>
+<p>thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../fastapi-practices/fastapi_best_architecture/pulls/908.html">fastapi-practices/fastapi_best_architecture#908</a> on 2025-11-21 13:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

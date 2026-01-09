@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>new rule - fstring syntax in non-fstring - astral-sh/ruff #8151</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>new rule - fstring syntax in non-fstring</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8151">#8151</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2023-10-24 02:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-10-24 02:54</div>
+            <div class="timeline-body"><pre><code class="language-py">asdf = 1
+&quot;value is {asdf}&quot; # the user probably meant to make this an f string
+</code></pre>
+<p>to avoid false positives, it should only complain when the expression inside the <code>{}</code> refers to an existing variable. that way, most usages of the <code>format</code> function won't trigger false positives:</p>
+<pre><code class="language-py">x = &quot;{foo}&quot; # no error because `foo` variable does not exist
+x.format(foo=&quot;bar&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-25 05:23</div>
+            <div class="timeline-body"><p>Interesting! Although not sure how to reliably detect this. One way could be to pass the string as a f-string to the parser and check if there are any <code>ExprFormattedValue</code> node in it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-10-30 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-10-30 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 23:37</div>
+            <div class="timeline-body"><p>I'm worried about false positives on this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-10-31 01:09</div>
+            <div class="timeline-body"><p>i feel like they would be rare as long as it only complains when the expression inside the <code>{}</code> refers to an existing variable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-31 01:18</div>
+            <div class="timeline-body"><p>I would find this useful. Coming from Rust and JavaScript, I wrote <code>&quot;{value}&quot;</code> too many times to then notice my debug print statements are completely useless. So I went back and added the <code>f</code> in front of my strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-31 01:35</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm worried about false positives on this one.</p>
+</blockquote>
+<p>Can you give an example where there would be false positives? Maybe we could only highlight when the node within <code>{...}</code> is an identifier and skip everything else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-31 01:40</div>
+            <div class="timeline-body"><p>My common use false positive</p>
+<pre><code class="language-python">x = &quot;{foo}&quot;
+x.format(foo=&quot;bar&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-10-31 02:52</div>
+            <div class="timeline-body"><p>@zanieb in that case it shouldn't trigger a false positive if the rule works how i suggested in https://github.com/astral-sh/ruff/issues/8151#issuecomment-1786278064, because there's no variable in scope called <code>foo</code>.</p>
+<p>imo the <code>format</code> method should only be used instead of f-strings in cases where the variables being formatted are not in scope. i've updated the OP to clarify this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-31 03:04</div>
+            <div class="timeline-body"><p>I agree requiring the variables to be in scope is a reasonable heuristic for avoiding false positives. I'm not sure I can come up with a common one that meets that requirement.</p>
+<p>I found https://github.com/PrefectHQ/prefect/blob/f654a1b23eb5662afb5b8bfd08c9c86668e817ee/tests/agent/test_agent_queue_selection.py#L36 but that probably ought to be an f-string anyway. We can probably hint something else when <code>format</code> is being called instead of using a f-string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-31 03:35</div>
+            <div class="timeline-body"><p>We could just skip if the said string is part of a large <code>.format</code> call or <code>%</code> operator.</p>
+<p>I think then we could support this as:</p>
+<ol>
+<li>Skip if this string contains <code>{</code> / <code>}</code></li>
+<li>Skip if it's part of <code>.format</code> call or <code>%</code> operator</li>
+<li>Parse the string with the <code>f</code> prefix</li>
+<li>Visit each <code>ExprFormattedValue</code> node. If there are none, return</li>
+<li>Create a diagnostic message only if <em>all</em> of the expression inside the formatted node is
+a. An identifier
+b. It's defined in the scope</li>
+</ol>
+<p>What do you think? @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterjc">@peterjc</a> on 2023-11-01 15:40</div>
+            <div class="timeline-body"><p>I'd welcome this. Cross reference https://github.com/peterjc/flake8-sfs/issues/5</p>
+<p>See also the opposite request, f-strings without any variables in them - briefly implemented as flake8-pie's PIE782 code but withdrawn due to false positives. Cross reference https://github.com/peterjc/flake8-sfs/issues/3 and https://github.com/sbdchd/flake8-pie/issues/24</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-02 04:23</div>
+            <div class="timeline-body"><blockquote>
+<p>See also the opposite request, f-strings without any variables in them</p>
+</blockquote>
+<p>We do support this - https://docs.astral.sh/ruff/rules/f-string-missing-placeholders/ :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-12-27 21:58</div>
+            <div class="timeline-body"><p>pyanalyze supports this check: https://github.com/quora/pyanalyze/blob/647c64e8c9b4eaa81a5309d8e76e72bafe61d687/pyanalyze/name_check_visitor.py#L3096</p>
+<p>Here are the heuristics it uses to avoid false positives:</p>
+<ul>
+<li>At least one name is used in the expression and all names used inside the expression are bound</li>
+<li>The string literal is not immediately <code>.format()</code>-ed</li>
+<li>It's not standalone expression (i.e. doesn't look like a docstring)</li>
+<li>It's not in a call that passes kwargs corresponding to all names (to avoid false positives with interpolation functions that work like <code>.format</code>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2023-12-31 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-12-31 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-31 12:42</div>
+            <div class="timeline-body"><p>I'm supportive of adding this with the above heuristics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9638.html">astral-sh/ruff#9638</a> on 2024-01-24 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-01-24 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @snowsignal by @snowsignal on 2024-01-29 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9728.html">astral-sh/ruff#9728</a> on 2024-01-31 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-02-03 00:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

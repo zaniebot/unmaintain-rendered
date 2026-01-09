@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Setting To No Longer Force Lock Files to have 777 Permissions in Linux - astral-sh/uv #16769</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add Setting To No Longer Force Lock Files to have 777 Permissions in Linux</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16769">#16769</a>
+        opened by <a href="https://github.com/delvecccims">@delvecccims</a>
+        on 2025-11-18 16:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/delvecccims">@delvecccims</a> on 2025-11-18 16:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>During a scan of our Linux servers, there were some lock files that were flagged for having World Writable permissions in the temporary directory. It looks like this was changed in February as part of https://github.com/astral-sh/uv/pull/11328.</p>
+<p>There was a question about the security concerns from this change in https://github.com/astral-sh/uv/issues/12665, but there hasn't been a comment yet regarding it. Would it be possible to have a setting that can be enabled to ignore this change so that umask can set the permissions appropriately so that these lock files are no longer flagged in our scans for having World Writable permissions?</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @delvecccims on 2025-11-18 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-18 17:31</div>
+            <div class="timeline-body"><p>This sounds like a false positive in the security scanner. We use files to coordinate between different processes, which often run with different permissions, e.g. from different containers that mount the same volume. These files are empty and uv doesn't read from them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/skikd636">@skikd636</a> on 2025-11-25 13:39</div>
+            <div class="timeline-body"><p>This is a security issue and in my book a security violation.</p>
+<p>A text file like a lock file should NEVER have 777 permissions.  The most permissions a lock file should have would be 644.  Why would you want anyone to be able to change a lock file or worse execute it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-26 15:48</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/pull/16845 for taking away the executable bit, and thoughts on 666 vs 644 permissions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcwatson">@dcwatson</a> on 2025-12-01 19:41</div>
+            <div class="timeline-body"><p>My understanding is that locking a file (via <code>flock</code>, which Rust's <code>try_lock</code> and friends <a href="https://doc.rust-lang.org/stable/std/fs/struct.File.html#platform-specific-behavior-3">currently use</a>) doesn't require write permissions (beyond being able to create the file if it doesn't exist, which shouldn't be a problem for temp files). From https://linux.die.net/man/2/flock:</p>
+<blockquote>
+<p>A shared or exclusive lock can be placed on a file regardless of the mode in which the file was opened.</p>
+</blockquote>
+<p>So 644 should still allow anyone to acquire exclusive locks. Does <code>uv</code> ever clean these manually, or does it leave that to the OS?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 20:19</div>
+            <div class="timeline-body"><p>Thanks for the reference!</p>
+<p>We don't remove lock files manually, no (some previous discussion in https://github.com/astral-sh/uv/issues/10773). We do remove temporary directories we create on drop though.</p>
+<p>I'm down to use 644 if someone verifies it doesn't regress.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcwatson">@dcwatson</a> on 2025-12-02 13:45</div>
+            <div class="timeline-body"><p>Using the Dockerfile from the original issue (#11324), slightly modified to show debug logs, the uid, and contents of /tmp:</p>
+<pre><code class="language-Dockerfile">FROM python:3.13
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+WORKDIR /src
+
+RUN uv init &amp;&amp; \
+    uv add pytest &amp;&amp; \
+    chmod 644 /tmp/uv-*.lock &amp;&amp; \
+    useradd --user-group --create-home --uid 1000 team
+
+USER team
+
+RUN id -u &amp;&amp; \
+    uv run -v pytest -h &amp;&amp; \
+    ls -la /tmp
+</code></pre>
+<p>Running <code>docker build --no-cache --progress=plain .</code>, there is a warning about not being able to open the file:</p>
+<pre><code>#10 0.084 WARN Failed to acquire project environment lock: failed to open file `/tmp/uv-a307630218d6a300.lock`: Permission denied (os error 13)
+</code></pre>
+<p>But I suspect that this is because it's trying to open the file as writable, not an error with acquiring a lock?</p>
+<p>https://github.com/astral-sh/uv/blob/main/crates/uv-fs/src/lib.rs#L822</p>
+<p>It's also tricky to &quot;test&quot; because this is just a warning now, uv doesn't fail if it can't get the lock. I'm not super comfortable with Rust, but I'm happy to test changes or take a stab at a PR. Seems like if uv doesn't need to write anything to the lock file, it shouldn't try to open it as writeable. That plus a 644 mode seems like it would be ideal.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

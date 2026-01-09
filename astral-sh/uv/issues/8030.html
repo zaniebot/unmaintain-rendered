@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug: `uv publish` missing `METADATA` file - astral-sh/uv #8030</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug: `uv publish` missing `METADATA` file</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8030">#8030</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2024-10-09 01:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-10-09 01:28</div>
+            <div class="timeline-body"><p>I am using <code>uv==0.4.20</code> and just migrated a publish GitHub Action in a repo using <a href="https://docs.astral.sh/uv/concepts/workspaces/#workspace-layouts">this workspace layout</a> for several packages to <code>uv publish</code>.</p>
+<pre><code class="language-diff">    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - run: uv sync
+      - name: Build a binary wheel and a source tarball
+        run: |
+          uv build --sdist --wheel --out-dir dist/ .
+          uv build --sdist --wheel --out-dir dist/ packages/bird-feeder
+          uv build --sdist --wheel --out-dir dist/ packages/seeds
+---      - uses: pypa/gh-action-pypi-publish@release/v1
+---        with:
+---          password: ${{ secrets.PYPI_API_TOKEN }}
++++      - run: uv publish
++++        env:
++++          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+</code></pre>
+<p>Before, publish worked correctly, but with <code>uv publish</code> I am getting:</p>
+<pre><code class="language-none">warning: `uv publish` is experimental and may change without warning
+Publishing 6 files https://upload.pypi.org/legacy/
+Uploading seeds-0.7.6-py3-none-any.whl (5.0KiB)
+error: Failed to publish `dist/seeds-0.7.6-py3-none-any.whl` to https://upload.pypi.org/legacy/
+  Caused by: Upload failed with status code 400 Bad Request. Server says: 400 Wheel 'seeds-0.7.6-py3-none-any.whl' does not contain the required METADATA file: seeds-0.7.6.dist-info/METADATA
+</code></pre>
+<p>Any idea what's going on here? I think this is a <code>uv publish</code> bug given my change was an atomic change, and I was previously using <code>uv build</code> successfully</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Future-House/aviary/pulls/66.html">Future-House/aviary#66</a> on 2024-10-09 01:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @charliermarsh on 2024-10-09 09:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-09 13:02</div>
+            <div class="timeline-body"><p>What build backend are you using, and could you share more details about your project and your setup? Additionally, <code>seeds-0.7.6-py3-none-any.whl</code> is a zip file, could you look inside and check what <code>seeds-0.7.6.dist-info</code> in there contains?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2024-10-09 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-10-09 19:11</div>
+            <div class="timeline-body"><p>Since I just got the same issue, here's a project: https://github.com/Avasam/typed-D3DShot/tree/24954b8122448926b9afddc1c245796b5e9165a0
+And here's the wheel file from <code>uv build</code>: <a href="https://github.com/user-attachments/files/17317480/typed_D3DShot-1.0.0-py3-none-any.whl.zip">typed_D3DShot-1.0.0-py3-none-any.whl.zip</a>
+FWIW, dist-info does contain this metadata file (I added the .txt extention to upload to GitHub:
+<a href="https://github.com/user-attachments/files/17317489/METADATA.txt">METADATA</a></p>
+<p>~~A PyPI issue maybe ? Since I doubt <code>uv publish</code> touches the wheel file's content.~~</p>
+<p>Backend: setuptools
+uv version: uv 0.4.20 (0e1b25a53 2024-10-08)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-10-09 19:40</div>
+            <div class="timeline-body"><p>Thanks stackoverflow https://stackoverflow.com/a/76757413
+It's case sensitive. So <code>uv build</code> issue when naming the folder in the wheel file</p>
+<p>I renamed the dist-info folder and it worked. I kept the <code>.whl</code> itself with capital letters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-10-10 03:43</div>
+            <div class="timeline-body"><p>I just took a closer look, and in my case it's seemingly a confusion with <code>.</code> vs <code>_</code> in the package name. In my attempts earlier in this issue to remove my repo's specifics, I also clouded the issue.</p>
+<p>The package name is <a href="https://pypi.org/project/aviary.gsm8k/"><code>aviary.gsm8k</code></a>, and in the <code>uv publish</code> logs:</p>
+<pre><code class="language-none">Uploading aviary_gsm8k-0.7.6-py3-none-any.whl (5.0KiB)
+error: Failed to publish `dist/aviary.gsm8k-0.7.6-py3-none-any.whl` to https://upload.pypi.org/legacy/
+  Caused by: Upload failed with status code 400 Bad Request. Server says: 400 Wheel 'aviary_gsm8k-0.7.6-py3-none-any.whl' does not contain the required METADATA file: aviary_gsm8k-0.7.6.dist-info/METADATA
+</code></pre>
+<p>We see the issue is a mixup with <code>aviary.gsm8k</code> and <code>aviary_gsm8k</code>. Running <code>ls dist</code>:</p>
+<pre><code class="language-none">.gitignore
+aviary.gsm8k-0.7.6-py3-none-any.whl
+aviary_gsm8k-0.7.6.tar.gz
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2024-10-15 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/setuptools/issues/3777.html">pypa/setuptools#3777</a> on 2024-10-15 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8203.html">astral-sh/uv#8203</a> on 2024-10-15 09:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8204.html">astral-sh/uv#8204</a> on 2024-10-15 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-15 09:02</div>
+            <div class="timeline-body"><p>The problem here is that the wheel filename is invalid: All <code>.</code> and <code>-</code> need to replaced with <code>_</code>, so the valid name would be <code>aviary_gsm8k-0.7.6-py3-none-any.whl</code> (https://packaging.python.org/en/latest/specifications/binary-distribution-format/#escaping-and-unicode). This is a setuptools bug: https://github.com/pypa/setuptools/issues/3777.</p>
+<p>We're doing two things about this, one is adding a warning for invalid filenames (#8203), the other is adding a workaround specifically for setuptools (#8204), so this wheel can be uploaded, as it can with twine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-10-15 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @konstin on 2024-10-15 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-10-15 12:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-10-15 15:37</div>
+            <div class="timeline-body"><p>Oh thank you @konstin, nice! Just seeking one point of clarification on your above comment, for my understanding:</p>
+<blockquote>
+<p><code>.</code> and <code>-</code> need to replaced with <code>_</code>, so the valid name would be <code>aviary.gsm8k-0.7.6-py3-none-any.whl</code></p>
+</blockquote>
+<p>Did you mean to say <code>aviary_gsm8k-0.7.6-py3-none-any.whl</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-15 15:37</div>
+            <div class="timeline-body"><p>yes, sorry</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7839.html">astral-sh/uv#7839</a> on 2024-11-03 18:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

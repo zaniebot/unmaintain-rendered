@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Rule: Prefer list comprehension over generator comprehensions to create tuples - astral-sh/ruff #11839</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>New Rule: Prefer list comprehension over generator comprehensions to create tuples</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11839">#11839</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2024-06-11 17:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2024-06-11 17:32</div>
+            <div class="timeline-body"><p>I was recently working on some bits of codes where most of my data had to be &quot;readonly&quot; (so I'm using immutable types like frozen dataclasses, frozensets, tuples, etc.) but also using plenty of comprehensions. Which made me wonder, since there's no &quot;tuple comprehension&quot; in Python, how I should be writing this code. I did a bit of performance testing, and here's the results:</p>
+<pre><code class="language-py">import sys
+from timeit import timeit
+
+print(sys.version)
+big_list = [&quot;*&quot;] * 99
+
+def foo(value: str): return value
+
+def test_list_comprehension():
+    return [foo(value) for value in big_list]
+
+def test_tuple_from_list_comprehension():
+    return tuple([foo(value) for value in big_list])
+
+def test_tuple_from_generator_comprehension():
+    return tuple(foo(value) for value in big_list)
+
+def test_unpack_generator_comprehension():
+    return (*(foo(value) for value in big_list),)
+
+print(
+    &quot;test_list_comprehension&quot;,
+    timeit(test_list_comprehension),
+)
+print(
+    &quot;test_tuple_from_list_comprehension&quot;,
+    timeit(test_tuple_from_list_comprehension),
+)
+print(
+    &quot;test_tuple_from_generator_comprehension&quot;,
+    timeit(test_tuple_from_generator_comprehension),
+)
+print(
+    &quot;test_unpack_generator_comprehension&quot;,
+    timeit(test_unpack_generator_comprehension),
+)
+</code></pre>
+<pre><code>3.9.13 (tags/v3.9.13:6de2ca5, May 17 2022, 16:36:42) [MSC v.1929 64 bit (AMD64)]
+test_list_comprehension 6.4194597
+test_tuple_from_list_comprehension 6.9672235
+test_tuple_from_generator_comprehension 8.996260200000002
+test_unpack_generator_comprehension 11.207814599999999
+</code></pre>
+<pre><code>3.12.0 (tags/v3.12.0:0fb18b0, Oct  2 2023, 13:03:39) [MSC v.1935 64 bit (AMD64)]
+test_list_comprehension 5.656617900000128
+test_tuple_from_list_comprehension 6.026029500000277
+test_tuple_from_generator_comprehension 9.207803900000272
+test_unpack_generator_comprehension 10.375420500000018
+</code></pre>
+<p>Unsurprisingly, the difference is even greater in 3.12 with inline list comprehension.</p>
+<p>Because of the <code>tuple</code>, the generator is immediately iterated, so you get no benefit from its &quot;lazyness&quot;. This is probably true for other stdlib collections that don't have a comprehension syntax, tuple is just the only one I can think of atm.</p>
+<p>For this reason, I'm asking for a performance rule with an autofix that transforms code like this:</p>
+<pre><code class="language-py">tuple(a for a in b)
+</code></pre>
+<p>into</p>
+<pre><code class="language-py">tuple([a for a in b])
+</code></pre>
+<p>Which, unless I'm missing something, is free performance whilst staying readable and pythonic.</p>
+<p>It seems this would fit well in the <code>flake8-comprehensions</code> or <code>refurb</code> family of rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "New Rule: Prefer list comprehension over generators to create tuples" to "New Rule: Prefer list comprehension over generator comprehensions to create tuples" by @Avasam on 2024-06-11 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-06-12 02:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2024-06-12 09:42</div>
+            <div class="timeline-body"><p>Using your script, I see less of a difference on Linux with CPython:</p>
+<pre><code>3.12.3 (main, Apr 10 2024, 05:33:47) [GCC 13.2.0]
+test_list_comprehension 3.4234498779999853
+test_tuple_from_list_comprehension 3.7473174160000156
+test_tuple_from_generator_comprehension 4.684340659999975
+test_unpack_generator_comprehension 4.938177772000017
+</code></pre>
+<pre><code>3.10.12 (main, Jun 11 2023, 05:26:28) [GCC 11.4.0]
+test_list_comprehension 5.881427110000001
+test_tuple_from_list_comprehension 6.184221321999999
+test_tuple_from_generator_comprehension 6.949574859000002
+test_unpack_generator_comprehension 7.213964431000001
+</code></pre>
+<pre><code>3.8.10 (default, May 26 2023, 14:05:08)
+[GCC 9.4.0]
+test_list_comprehension 5.159386299999994
+test_tuple_from_list_comprehension 5.68906659999999
+test_tuple_from_generator_comprehension 6.2835374
+test_unpack_generator_comprehension 6.521585700000003
+</code></pre>
+<pre><code>3.6.9 (default, Dec  8 2021, 21:08:43)
+[GCC 8.4.0]
+test_list_comprehension 5.325352799999997
+test_tuple_from_list_comprehension 5.670514699999998
+test_tuple_from_generator_comprehension 6.860152300000003
+test_unpack_generator_comprehension 7.0944126999999995
+</code></pre>
+<pre><code>2.7.17 (default, Feb 27 2021, 15:10:58)
+[GCC 7.5.0]
+('test_list_comprehension', 5.888335943222046)
+('test_tuple_from_list_comprehension', 6.135804891586304)
+('test_tuple_from_generator_comprehension', 6.965441942214966)
+</code></pre>
+<p>But much more of a difference with PyPy:</p>
+<pre><code>3.9.18 (7.3.15+dfsg-1build3, Apr 01 2024, 03:12:48)
+[PyPy 7.3.15 with GCC 13.2.0]
+test_list_comprehension 0.2822986920000403
+test_tuple_from_list_comprehension 0.40187594900010026
+test_tuple_from_generator_comprehension 0.9802658359999441
+test_unpack_generator_comprehension 1.0730282659999375
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ivanychev">@ivanychev</a> on 2024-06-26 00:54</div>
+            <div class="timeline-body"><p>I think tuple-from-list comprehension approach will lead to to 2x higher peak memory consumption, won't it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12754.html">astral-sh/ruff#12754</a> on 2024-08-12 05:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12912.html">astral-sh/ruff#12912</a> on 2024-08-17 23:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/setuptools/pulls/4386.html">pypa/setuptools#4386</a> on 2024-12-31 00:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2025-01-01 23:40</div>
+            <div class="timeline-body"><p>It may be faster, but I think it's less legible since it introduces a useless list comprehension.  I think it would be better to post this on discuss to see the if core developers can make comprehension creation faster.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2025-01-01 23:48</div>
+            <div class="timeline-body"><p>Also, I came here to post a related issue, but probably the discussion belongs here since it's close enough:</p>
+<pre><code class="language-python">In [1]: %timeit x = [1, *[2 for _ in range(10)]]
+156 ns ± 3.32 ns per loop (mean ± std. dev. of 7 runs, 10,000,000 loops each)
+
+In [2]: %timeit x = [1, *(2 for _ in range(10))]
+337 ns ± 9.72 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
+</code></pre>
+<p>Ruff doesn't seem to have an opinion on whether an unpacked nested iterable should be written as a list or generator.  I think Ruff should have an opinion, and from a legibility standpoint, I prefer generators even though they are slower.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/opk12">@opk12</a> on 2025-07-12 13:01</div>
+            <div class="timeline-body"><p>Seems CPython 3.14 is going to optimize <code>tuple()</code> with generator https://github.com/python/cpython/pull/131737</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

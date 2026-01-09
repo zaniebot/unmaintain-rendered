@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff format` doesn't sort imports, leaves file unchanged - astral-sh/ruff #8926</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff format` doesn't sort imports, leaves file unchanged</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8926">#8926</a>
+        opened by <a href="https://github.com/alexei">@alexei</a>
+        on 2023-11-30 15:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alexei">@alexei</a> on 2023-11-30 15:36</div>
+            <div class="timeline-body"><p>I'm looking into using ruff (0.1.6 on Python 3.12) for formatting and... it doesn't appear to be doing anything, at least in terms of replicating <code>isort</code> behaviour.</p>
+<h3>Input</h3>
+<pre><code class="language-python">from _common import foo
+import dataclasses as dc
+import psycopg
+from typing import Any
+import hashlib
+from foo.bar import baz
+from functools import partial
+from time import monotonic
+from enum import Enum, auto
+from uuid import UUID
+</code></pre>
+<h3>Command</h3>
+<pre><code>$ python -m ruff format -v ./test_ruff.py
+[2023-11-30][15:29:28][ruff_cli::resolve][DEBUG] Using Ruff default settings
+[2023-11-30][15:29:28][ruff_cli::commands::format][DEBUG] format_path; path=.../test_ruff.py
+[2023-11-30][15:29:28][tracing::span][DEBUG] Printer::print;
+[2023-11-30][15:29:28][ruff_cli::commands::format][DEBUG] Formatted 1 files in 191.92µs
+1 file left unchanged
+</code></pre>
+<h3>Expected result</h3>
+<pre><code class="language-python">import dataclasses as dc
+from enum import Enum, auto
+from functools import partial
+import hashlib
+from time import monotonic
+from typing import Any
+from uuid import UUID
+
+import psycopg
+
+from _common import foo
+from foo.bar import baz
+</code></pre>
+<p>Or something like that.</p>
+<h3>Actual result</h3>
+<p>The file is unchanged.</p>
+<hr />
+<p>What am I missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-30 15:54</div>
+            <div class="timeline-body"><p>In Ruff, import sorting and re-categorization is part of the linter, not the formatter. The formatter will re-<em>format</em> imports, but it won't rearrange or regroup them, because the formatter maintains the invariant that it doesn't modify the program's AST (i.e., its semantics and behavior).</p>
+<p>To get isort-like behavior, you'd want to run <code>ruff check --fix</code> with <code>--select I</code> or adding <code>extend-select = [&quot;I&quot;]</code> to your <code>pyproject.toml</code> or <code>ruff.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-30 15:55</div>
+            <div class="timeline-body"><p>See also https://github.com/astral-sh/ruff/issues/8087, https://github.com/astral-sh/ruff/issues/8612, and https://github.com/astral-sh/ruff/issues/8367</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-11-30 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2023-11-30 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexei">@alexei</a> on 2023-11-30 16:06</div>
+            <div class="timeline-body"><p>Got it, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nvimtools/none-ls.nvim/pulls/41.html">nvimtools/none-ls.nvim#41</a> on 2023-12-07 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../microsoft/LightGBM/pulls/6317.html">microsoft/LightGBM#6317</a> on 2024-02-16 06:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hubro">@Hubro</a> on 2024-02-27 14:13</div>
+            <div class="timeline-body"><p>While the rationale makes complete sense, this does make it pretty awkward and unintuitive to sort import statements as part of auto-formatting in editor configs and such. Would it be a possibility to add a shortcut for this as a flag to <code>ruff format</code>, just as a UX improvement?</p>
+<pre><code>--sort-imports
+    Sort imports after formatting, equivalent to running `ruff check --fix --select I`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexei">@alexei</a> on 2024-02-27 16:10</div>
+            <div class="timeline-body"><p>I agree it sounds technically correct, but a little awkward from a practical standpoint. When I need to format the code, I use a script that runs:</p>
+<pre><code class="language-shell">ruff check . --select I --fix
+ruff format .
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../adafruit/cookiecutter-adafruit-circuitpython/pulls/236.html">adafruit/cookiecutter-adafruit-circuitpython#236</a> on 2024-03-05 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../NixOS/nixpkgs/issues/296222.html">NixOS/nixpkgs#296222</a> on 2024-03-15 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vllm-project/vllm/pulls/3495.html">vllm-project/vllm#3495</a> on 2024-03-19 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../databio/bbconf/pulls/45.html">databio/bbconf#45</a> on 2024-03-28 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../i-dot-ai/consult/pulls/61.html">i-dot-ai/consult#61</a> on 2024-04-02 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Backblaze/boardwalk/pulls/68.html">Backblaze/boardwalk#68</a> on 2024-04-03 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ruslaniv">@ruslaniv</a> on 2024-04-08 09:08</div>
+            <div class="timeline-body"><blockquote>
+<p>To get isort-like behavior, you'd want to run <code>ruff check --fix</code> with <code>--select I</code> or adding <code>extend-select = [&quot;I&quot;]</code> to your <code>pyproject.toml</code> or <code>ruff.toml</code>.</p>
+</blockquote>
+<p>I have added</p>
+<pre><code class="language-python">[tool.ruff.lint]
+extend-select = [&quot;I&quot;]
+</code></pre>
+<p>to <code>pyproject toml</code>, so now when running</p>
+<pre><code class="language-shell">ruff check --fix config.py
+</code></pre>
+<p>I get</p>
+<pre><code class="language-shell">config.py:37:1: E402 Module level import not at top of file
+Found 1 error.
+</code></pre>
+<p>but nothing gets resorted in the file.
+How do I tell ruff to actually physically resort the imports in the file just like iSort does</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexei">@alexei</a> on 2024-04-08 09:14</div>
+            <div class="timeline-body"><p>@ruslaniv have you tried select instead of extend-select?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ruslaniv">@ruslaniv</a> on 2024-04-08 09:19</div>
+            <div class="timeline-body"><p>Yes, just tried it</p>
+<pre><code class="language-python">[tool.ruff.lint]
+select = [&quot;I&quot;]
+</code></pre>
+<p>and in this case it's not even picking up the error:</p>
+<pre><code class="language-shell">ruff check --fix config.py           
+All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-08 09:27</div>
+            <div class="timeline-body"><p>@ruslaniv please consider creating a new issue, ideally with minimal repro.</p>
+<p>Can you try running <code>ruff check config.py --show-settings</code> to see what rules are selected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gboeer">@gboeer</a> on 2024-04-11 14:24</div>
+            <div class="timeline-body"><p><strong>EDIT:</strong> In my case, I just forgot to commit the <code>pyproject.toml</code> after having added the ruff settings (e.g. to do import sorting).  After committing the <code>pyproject.toml</code> the subsequent linting/sorting errors get caught and reformatted as expected in my pre-commit.</p>
+<p>I can add a similar observation to this. Having a simple file like:</p>
+<pre><code class="language-py">from pathlib import Path
+import os
+
+print(Path(os.getcwd()))
+</code></pre>
+<p>and a pyproject.toml entry:</p>
+<pre><code>[tool.ruff.lint]
+select = [&quot;I&quot;]
+</code></pre>
+<p>The cli command behaves as expected:</p>
+<pre><code class="language-bash">ruff check temp.py
+temp.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>And will correctly fix the import statement when I add <code>--fix</code></p>
+<p>However, in my pre-commit hook the file will not be fixed but accepted as is (with the wrongly ordered inputs).</p>
+<p>My pre-commit is configured as:</p>
+<pre><code class="language-yml">- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.3.5
+  hooks:
+    # Run the linter.
+    - id: ruff
+      args: [ --fix ]
+    # Run the formatter.
+    - id: ruff-format
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-11 14:46</div>
+            <div class="timeline-body"><p>@gboeer - This sounds similar to https://github.com/astral-sh/ruff-pre-commit/issues/64 -- perhaps chime in there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-pre-commit/issues/64.html">astral-sh/ruff-pre-commit#64</a> on 2024-04-12 08:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../posit-dev/great-tables/pulls/315.html">posit-dev/great-tables#315</a> on 2024-04-29 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zhou13">@zhou13</a> on 2024-06-19 19:06</div>
+            <div class="timeline-body"><p>This issue causes some inconvenience using the sorting functionality:</p>
+<ul>
+<li>It is intuitive to think <code>ruff format</code> will help you reorder (i.e., format) the import, rather than using <code>ruff check --fix</code>;</li>
+<li>While it might be not true, but I would imagine that <code>ruff check --fix</code> might be somehow dangerous and thus hesitant to run it too often. However, sorting the import should be saf enough to run on every file save in IDE.</li>
+<li>This makes isort function from ruff lsp-server awkward to use in many IDEs:<ul>
+<li>Normally, IDE has an option like <code>format_on_save</code> using LSP, so it is very easy to run <code>ruff format</code> in your IDE;</li>
+<li>To sort the import, one needs to run a code action. This takes more keystrokes, and it is much harder to configure to run it with <code>format_on_save</code> in general.</li>
+</ul>
+</li>
+</ul>
+<p>I do understand that currently import sorting and re-categorization is implemented as the linter, not the formatter, which might make sense in terms of the function group. But as a user, I think the software UI ergonomics is more important here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../boriel-basic/zxbasic/pulls/736.html">boriel-basic/zxbasic#736</a> on 2024-06-24 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Infleqtion/client-superstaq/pulls/1016.html">Infleqtion/client-superstaq#1016</a> on 2024-08-08 02:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ccao-data/data-architecture/issues/581.html">ccao-data/data-architecture#581</a> on 2024-09-05 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jazzband/djangorestframework-simplejwt/pulls/856.html">jazzband/djangorestframework-simplejwt#856</a> on 2025-01-13 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ll-nick">@ll-nick</a> on 2025-07-13 19:36</div>
+            <div class="timeline-body"><p>For neovim, I solved this issue by calling both <code>vim.lsp.buf.format</code> and the <code>source.organizeImports</code> in the <code>BufPreWrite</code> autocommand.</p>
+<pre><code>function(client, bufnr)
+    local augroup = vim.api.nvim_create_augroup(&quot;LspFormatting&quot;, {})
+    if client.supports_method(&quot;textDocument/formatting&quot;) then
+      vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+      vim.api.nvim_create_autocmd(&quot;BufWritePre&quot;, {
+        group = augroup,
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.format({
+            async = false,
+          })
+
+          -- Ruff proved import organization via the linter rather than the formatter.
+          -- Call the corresponding code action here to get auto sort on save behavior analogous to e.g. clang-format.
+          -- See https://github.com/astral-sh/ruff/issues/8926 for reference
+          if client.name == &quot;ruff&quot; then
+            vim.lsp.buf.code_action({
+              context = { only = { &quot;source.organizeImports&quot; } },
+              apply = true,
+              buffer = bufnr,
+            })
+          end
+        end,
+      })
+    end
+end
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../stavely-io/stavely-hq/pulls/143.html">stavely-io/stavely-hq#143</a> on 2025-07-15 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../NVIDIA-NeMo/Skills/pulls/740.html">NVIDIA-NeMo/Skills#740</a> on 2025-08-28 19:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

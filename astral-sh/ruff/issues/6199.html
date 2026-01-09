@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[feature request]: custom lint rule for unittest mock.side_effect - astral-sh/ruff #6199</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[feature request]: custom lint rule for unittest mock.side_effect</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6199">#6199</a>
+        opened by <a href="https://github.com/upstartjohnvandivier">@upstartjohnvandivier</a>
+        on 2023-07-31 15:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/upstartjohnvandivier">@upstartjohnvandivier</a> on 2023-07-31 15:16</div>
+            <div class="timeline-body"><p>as a developer, I would like ruff to lint two improper uses of .side_effect, so that I can avoid hard-to-troubleshoot issues in writing unit tests and I can improve readility and test performance:</p>
+<ol>
+<li>side_effect arrays with a length less than two</li>
+<li>side_effect arrays where each element is the same value</li>
+</ol>
+<p>eg:</p>
+<pre><code class="language-python"># error
+foo.side_effect = [bar]
+foo.side_effect = [bar, bar]
+
+# prefer to above
+foo.return_value = bar
+
+# okay usage
+foo.side_effect = [bar, baz]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "custom lint rule for unittest mock.side_effect" to "[feature request]: custom lint rule for unittest mock.side_effect" by @upstartjohnvandivier on 2023-07-31 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pytest-dev/pytest/issues/11267.html">pytest-dev/pytest#11267</a> on 2023-07-31 23:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/upstartjohnvandivier">@upstartjohnvandivier</a> on 2023-08-03 15:04</div>
+            <div class="timeline-body"><p>possibly a separate rule: If the side_effect is set to a function that returns a constant, that's also non-preferred to return_value</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-08-03 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-03 23:54</div>
+            <div class="timeline-body"><p>Can you refresh my memory, what's the problem with these usages?</p>
+<pre><code class="language-python"># error
+foo.side_effect = [bar]
+foo.side_effect = [bar, bar]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-08-03 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/upstartjohnvandivier">@upstartjohnvandivier</a> on 2023-08-04 14:23</div>
+            <div class="timeline-body"><p>this usage is intent breaking and unintuitive; if you set a mock to return a value, that is not a side effect and it is a use case for <code>.return_value</code></p>
+<p>further, when we do return values with side_effect, it is intended to provide <a href="https://docs.python.org/3/library/unittest.mock.html#the-mock-class">different values for different calls</a>. For example, side_effect can be set to a function that returns conditional on the arguments it receives. Setting it to a constant, or a function that returns a constant, or an array with equal values; those are all antipatterns</p>
+<p>at least, many developers see it this way :) I'm not advocating whether this rule is enabled by default. just that it exists. otherwise I will end up making a custom linter which isn't ideal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-04 14:43</div>
+            <div class="timeline-body"><p>What happens if you set a single return value side-effect and call the function multiple times?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/upstartjohnvandivier">@upstartjohnvandivier</a> on 2023-08-04 14:50</div>
+            <div class="timeline-body"><blockquote>
+<p>a single return value side-effect</p>
+</blockquote>
+<p>for an ordinary value like the int 3, this is simply illegal. you will get <code>TypeError: 'int' object is not an iterator</code></p>
+<p>then, the special value behavior depends on its type. Above we discuss problems with a mock value.</p>
+<p>the normal case of a non-functional assignment would be a list, and the side_effect would return the ith value at the ith call. So it kind of extends <code>.return_value</code> by maintaining its internal call_count and returning at that index</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pytest-dev/pytest-mock/issues/376.html">pytest-dev/pytest-mock#376</a> on 2023-08-04 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/upstartjohnvandivier">@upstartjohnvandivier</a> on 2023-08-04 14:59</div>
+            <div class="timeline-body"><p>I just added a feature request to pytest-mock to similar effect: It would outright fail a spec on improper usage rather than catching it at linting time. I would eagerly point out two benefits of adding this to ruff invariant to whether they accept the feature request:</p>
+<ol>
+<li>The actual projects where I use ruff and pytest don't currently include pytest-mock. I would have to add an additional dep if ruff doesn't support this.</li>
+<li>Ruff is many times faster than running the unit test suite. So, for rapid developer feedback it would be nice to have this rule whether or not the test will later fail.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/upstartjohnvandivier">@upstartjohnvandivier</a> on 2023-08-04 15:51</div>
+            <div class="timeline-body"><p>Python language proposal created at https://discuss.python.org/t/feat-unittest-mock-side-effect-fails-on-improper-usage/31003</p>
+<p>Support is welcome</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-04 17:21</div>
+            <div class="timeline-body"><p>I meant</p>
+<pre><code class="language-python">from unittest.mock import MagicMock
+
+foo = MagicMock()
+
+foo.side_effect = [1]
+
+print(foo())
+print(foo())
+</code></pre>
+<p>which will throw a stop iteration error on the second call. The meaning <em>changes</em> when you use <code>return_value = x</code> instead of <code>side_effect = [x]</code> in that the mock can be called more times now without error. For this reason, I'd be hesitant to automatically change this declaration although it may be reasonable to suggest the change still.</p>
+<p>Additionally, side-effects have different meanings for exception types, e.g.</p>
+<pre><code class="language-python">from unittest.mock import MagicMock
+
+foo = MagicMock()
+foo.return_value = ValueError()
+foo()  # Does not raise
+
+
+bar = MagicMock()
+bar.side_effect = [ValueError()]
+bar()  # Raises
+</code></pre>
+<p>I'm curious to see where the discussion goes upstream.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/upstartjohnvandivier">@upstartjohnvandivier</a> on 2023-08-04 19:33</div>
+            <div class="timeline-body"><blockquote>
+<p>The meaning changes when you use return_value</p>
+</blockquote>
+<p>Yes, the StopIteration error is one of the hard to troubleshoot test issues that I referred to. I've never seen it actually intended. It generally represents a mis-implemented test in the codebases that I work in, rather than an expected effect of the method under test.</p>
+<p>One of the benefits of this ruff lint rule would be early detection of such cases, without the need to run a full test suite. However, this ruff rule would also prevent other issues beyond that.</p>
+<blockquote>
+<p>Additionally, side-effects have different meanings for exception</p>
+</blockquote>
+<p>Yes. This is the main and proper use case for .side_effect, not a special additional consideration. This feature request would allow this use, not flag it. Those cases using exceptions are proper side effects: <code>z = bar()</code> wouldn't return a <code>ValueError</code> as you wrote it. It would throw the error as a side effect. z wouldn't be assigned a value of <code>ValueError</code>.</p>
+<p>Further, <code>bar.side_effect = [ValueError(), ValueError(), ValueError()]</code> would be extremely weird. I've never seen a need for that. tests will generally error on the first invocation. Even if such code were written, I think the developer intent would probably be like &quot;I call foo three times and always get a value error&quot; not &quot;I call foo four times and get three value errors then a stop iteration error&quot;. For the expected intent, <code>bar.side_effect = ValueError()</code> is more readable, intuitive, less prone to unexpected errors, etc</p>
+<p>I think <code>bar.side_effect = ValueError()</code> is generally preferred to <code>bar.side_effect = [ValueError()]</code>, so I think the length check lgtm, but if we want to apply a special exception for a list of errors I would still consider that better than the state without any lint rule. Did that make sense?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

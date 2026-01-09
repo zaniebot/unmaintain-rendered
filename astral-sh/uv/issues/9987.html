@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>packaged installed with uv are noticeably smaller than when installing with pip - astral-sh/uv #9987</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>packaged installed with uv are noticeably smaller than when installing with pip</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9987">#9987</a>
+        opened by <a href="https://github.com/streamnsight">@streamnsight</a>
+        on 2024-12-18 00:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/streamnsight">@streamnsight</a> on 2024-12-18 00:50</div>
+            <div class="timeline-body"><p>Packaged installed with uv are noticeably smaller than when installing with pip</p>
+<p>Trying to understand why and what's the difference here. Don't package all comes from pypi anyway? Why would it be so different?
+I'm looking at 30% to 50% size difference.</p>
+<p>examples:
+pandas: 53MB with uv, 65MB with pip
+cryptography 13MB with uv, 20MB with pip
+oci: 189MB with uv, 363MB with pip</p>
+<p>any insight?
+Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-12-18 02:21</div>
+            <div class="timeline-body"><p>Can you explain how you are seeing these size differences?</p>
+<p>One big difference is that pip caches the wheels (the zipped up package) and installs the packages into each environment, whereas uv installs the packages intoo a shared location and by default hardlinks from the environment to the shared location and doesn't cache the wheels.</p>
+<p>So uv has space savings in two ways, no wheel cache, duplicate installs refer to one location. However if you've only installed once and you've cleared the cache, they should be about the same size.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-18 02:50</div>
+            <div class="timeline-body"><p>It could also be bytecode? https://docs.astral.sh/uv/pip/compatibility/#bytecode-compilation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-12-18 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-12-18 03:21</div>
+            <div class="timeline-body"><p>Yes, that would also make a difference, I did I recently bring this up on pip side to ask if compiling bytecode should be defaulted to off and the conclusion was it should remain defaulted to on: https://github.com/pypa/pip/issues/12920.</p>
+<p>And FWIW in all my production build environments I do end up setting <code>UV_COMPILE_BYTECODE=1</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/streamnsight">@streamnsight</a> on 2024-12-18 05:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you explain how you are seeing these size differences?</p>
+</blockquote>
+<p>I am building docker images with the code, so I am looking to see how I can make images smaller.</p>
+<p>I've been using
+<code>du -sh &lt;site-packages/package_name&gt;</code> to check the size.
+especially I was trying to reduce my footprint and see what packages are really large, and that's how I noticed the difference.</p>
+<p>Indeed, when I install with the <code>UV_COMPILE_BYTECODE=1</code> flag, it takes significantly longer and the size jumps back up to the size with pip. :-/</p>
+<p>So, flag OFF sounds like a good idea for size and speed, but not good for service boot time, esp. since a docker image would always start from a fresh file layer.</p>
+<p>That's unfortunate as that kind of defeats the purpose of <code>uv</code> for me (speed), while size was an added benefit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @streamnsight on 2024-12-18 05:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule B006 cause autofix error - astral-sh/ruff #7155</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule B006 cause autofix error</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7155">#7155</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2023-09-05 14:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2023-09-05 14:41</div>
+            <div class="timeline-body"><p>Ruff 0.0.287 (latest changes from main branch)</p>
+<pre><code>ruff  *.py --select B006 --no-cache --fix
+</code></pre>
+<p>file content(at least simple cpython script shows that this is valid python file):</p>
+<pre><code>def readLinkagesByLineFile(linkages_file, 
+                           column_mapping={
+                           }):    
+    &quot;&quot;&quot;
+    &quot;&quot;&quot;                           
+</code></pre>
+<p>error</p>
+<pre><code>/home/rafal/test/tmp_folder/861_IDX_0_RAND_97224242746230905011214.py:2:43: B006 Do not use mutable data structures for argument defaults
+Found 1 error.
+
+error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BAutofix%20error%5D
+
+...quoting the contents of `/home/rafal/test/tmp_folder/861_IDX_0_RAND_97224242746230905011214.py`, the rule codes B006, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+</code></pre>
+<p><a href="https://github.com/astral-sh/ruff/files/12524933/python_compressed.zip">python_compressed.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-09-05 14:50</div>
+            <div class="timeline-body"><p>This occurs if there is not a newline at the end of a file after a docstring followed by some whitespace</p>
+<pre><code>error: Autofix introduced a syntax error in `example.py` with rule codes B006: invalid syntax. Got unexpected token ':' at byte offset 145
+---
+def readLinkagesByLineFile(linkages_file, 
+                           column_mapping=None):    
+    &quot;&quot;&quot;
+    &quot;&quot;&quot;         if column_mapping is None:
+        column_mapping = {}
+
+---
+</code></pre>
+<p>due to logic at https://github.com/astral-sh/ruff/blob/37d244d17833de852d7c7f34fdb65f90fed79878/crates/ruff/src/rules/flake8_bugbear/rules/mutable_argument_default.rs#L178-L184</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7160.html">astral-sh/ruff#7160</a> on 2023-09-05 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-09-05 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

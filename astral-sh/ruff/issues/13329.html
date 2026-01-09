@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[BUG] `ruff` does not correctly lint positional only arguments - astral-sh/ruff #13329</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[BUG] `ruff` does not correctly lint positional only arguments</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13329">#13329</a>
+        opened by <a href="https://github.com/yarnabrina">@yarnabrina</a>
+        on 2024-09-11 20:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yarnabrina">@yarnabrina</a> on 2024-09-11 20:11</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Consider the following snippet:</p>
+<pre><code class="language-python"># contents of ruff_bug_report.py
+def add(x: int, y: int, /) -&gt; int:
+    return x + y
+
+
+z = add(x=1, y=1)
+
+</code></pre>
+<p>This code fails because of positional only arguments.</p>
+<pre><code class="language-zsh">❯ python ruff_bug_report.py
+Traceback (most recent call last):
+  File &quot;/home/anirban/sktime-fork/ruff_bug_report.py&quot;, line 5, in &lt;module&gt;
+    z = add(x=1, y=1)
+TypeError: add() got some positional-only arguments passed as keyword arguments: 'x, y'
+</code></pre>
+<p>However, <code>ruff</code> check passes.</p>
+<pre><code class="language-zsh">❯ ruff check ruff_bug_report.py
+All checks passed!
+</code></pre>
+<p>This check is part of <code>pylint</code>, ref. <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/error/positional-only-arguments-expected.html">E3102</a>.</p>
+<p>I am using <code>ruff==0.6.4</code>, and observed this on multiple python versions (<code>3.10</code>, <code>3.11</code>) on different operating systems (<code>macOS</code>, <code>Windows</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-09-11 20:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> added by @MichaReiser on 2024-09-11 20:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-11 20:42</div>
+            <div class="timeline-body"><p>Thanks for opening this issue.</p>
+<p>I quickly checked, and Ruff doesn't yet implement the rule mentioned. This is most likely because it would require multifile analysis, or the rule would only flag calls to functions defined in the same file, which isn't that useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yarnabrina">@yarnabrina</a> on 2024-09-11 21:13</div>
+            <div class="timeline-body"><p>Oh, I wasn't aware of lack of multi file analysis. Do you mean that if I incorrectly use a function/class/etc. defuned in module A in a different module B, as of now ruff is unable to flag those cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-12 01:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, I wasn't aware of lack of multi file analysis. Do you mean that if I incorrectly use a function/class/etc. defuned in module A in a different module B, as of now ruff is unable to flag those cases?</p>
+</blockquote>
+<p>That's correct. Ruff can't resolve functions across files. That's also the reason why many rules that require that kind of information aren't implemented today. We're working towards supporting this but it will take some more time until it becomes available in ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-10-24 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-24 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19062.html">astral-sh/ruff#19062</a> on 2025-07-01 01:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

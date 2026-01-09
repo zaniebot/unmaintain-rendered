@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A001 misses some attributes referenced within the class scope - astral-sh/ruff #20179</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>A001 misses some attributes referenced within the class scope</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20179">#20179</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-08-31 18:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-08-31 18:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/"><code>builtin-variable-shadowing</code> (A001)</a> ignores some bindings in class scope which it checks in other scopes. <a href="https://play.ruff.rs/1ab5858c-b390-4f6a-9f89-0b98ef1cf5d9">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;a001.py &lt;&lt;'# EOF'
+class C:
+    for id in [1]: pass
+    def f1(self, x=id): return x
+
+    (id := 2)
+    def f2(self, x=id): return x
+
+    from contextlib import nullcontext
+    with nullcontext() as id: pass
+    def f3(self, x=id): return x
+
+c = C()
+print(c.f1(), c.f2(), c.f3())
+# EOF
+
+$ python a001.py
+1 2 None
+
+$ ruff --isolated check a001.py --select A001
+All checks passed!
+
+$ flake8 --select A a001.py
+a001.py:2:5: A001 variable &quot;id&quot; is shadowing a Python builtin
+a001.py:5:6: A001 variable &quot;id&quot; is shadowing a Python builtin
+a001.py:9:5: A001 variable &quot;id&quot; is shadowing a Python builtin
+</code></pre>
+<p>It might make more sense to report these for <a href="https://docs.astral.sh/ruff/rules/builtin-attribute-shadowing/"><code>builtin-attribute-shadowing</code> (A003)</a>, but A001 is how the upstream plugin categorizes them. Either way, they are false negatives.</p>
+<h3>Version</h3>
+<p>ruff 0.12.11 (c2bc15bc1 2025-08-28)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-09-01 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-09-01 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20178.html">astral-sh/ruff#20178</a> on 2025-09-01 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rrhodes">@rrhodes</a> on 2025-11-08 20:15</div>
+            <div class="timeline-body"><p>Hi @dscorbett, which version of Flake8 were you using for the example provided? I tried repeating your steps with <code>flake8</code> on <code>7.3.0</code> and didn't receive any of the output shared (i.e. the <code>variable &quot;id&quot; is shadowing a Python builtin</code> statements).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-11-08 20:31</div>
+            <div class="timeline-body"><p>This is with Flake8 version 7.3.0 and <a href="https://github.com/gforcada/flake8-builtins">flake8-builtins</a> version 3.1.0.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

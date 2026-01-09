@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync not installing dependencies from workspace members - astral-sh/uv #13664</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync not installing dependencies from workspace members</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13664">#13664</a>
+        opened by <a href="https://github.com/ImadYIdrissi">@ImadYIdrissi</a>
+        on 2025-05-26 18:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ImadYIdrissi">@ImadYIdrissi</a> on 2025-05-26 18:17</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>uv sync not installing dependencies from workspace members</h1>
+<h2>Problem</h2>
+<p>When using <code>uv sync</code> in a workspace, dependencies from member packages are not being installed, even though they are listed in the workspace configuration.</p>
+<h2>Environment</h2>
+<ul>
+<li>uv version: 0.6.16</li>
+<li>Python version: 3.12</li>
+<li>OS: Linux 5.15.167.4-microsoft-standard-WSL2</li>
+</ul>
+<h2>Reproduction</h2>
+<ol>
+<li><p>Create a minimal workspace structure:</p>
+<pre><code class="language-tree">custom-data-forge/
+├── pyproject.toml
+└── packages/
+    ├── engine-core/
+    │   ├── pyproject.toml
+    │   └── src/
+    │       └── engine_core/
+    │           └── __init__.py
+    ├── orchestrator/
+    │   ├── pyproject.toml
+    │   └── src/
+    │       └── orchestrator/
+    │           └── __init__.py
+    └── dbt-forge/
+        ├── pyproject.toml
+        └── src/
+            └── dbt_forge/
+                └── __init__.py
+</code></pre>
+</li>
+<li><p>Configure the workspace in root <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;custom-data-forge&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;pandas&quot;,&quot;numpy&quot;]
+
+[tool.uv.workspace]
+members = [
+    &quot;packages/engine-core&quot;,
+    &quot;packages/orchestrator&quot;,
+    &quot;packages/dbt-forge&quot;,
+]
+</code></pre>
+</li>
+<li><p>Add dependencies to subpackages:</p>
+<pre><code class="language-toml"># packages/engine-core/pyproject.toml
+
+[project]
+name = &quot;engine-core&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+
+[tool.uv]
+package = true
+
+# packages/orchestrator/pyproject.toml
+
+[project]
+name = &quot;orchestrator&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;engine-core&quot;, &quot;apache-airflow&quot;]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv]
+package = true
+
+# packages/dbt-forge/pyproject.toml
+
+[project]
+name = &quot;dbt_forge&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;dbt-core&quot;, &quot;dbt-clickhouse&quot;]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv]
+package = true
+</code></pre>
+</li>
+<li><p>Run the following commands:</p>
+<pre><code class="language-bash"># Create and activate virtual environment
+uv venv .venv
+source .venv/bin/activate
+
+# Try to install dependencies
+uv sync -v
+</code></pre>
+</li>
+</ol>
+<h2>Expected Behavior</h2>
+<p><code>uv sync</code> should install dependencies from all workspace members, including subpackages.</p>
+<h2>Actual Behavior</h2>
+<p>Only dependencies from the root <code>pyproject.toml</code> are installed. Dependencies from subpackages are ignored.</p>
+<details>
+<summary>Verbose output from uv sync</summary>
+
+<pre><code>$ uv sync -v
+Resolved 5 packages in 91ms
+Prepared 5 packages in 957ms
+Installed 5 packages in 5ms
+ + pandas==2.2.3
+ + numpy==2.2.6
+ + python-dateutil==2.9.0.post0
+ + pytz==2025.2
+ + tzdata==2025.2
+</code></pre>
+</details>
+
+<h2>Workaround</h2>
+<p>The dependencies can be installed by explicitly installing each package in editable mode:</p>
+<pre><code class="language-bash">uv pip install -e packages/engine-core -e packages/orchestrator -e packages/dbt-forge
+</code></pre>
+<details>
+<summary>Verbose output from workaround</summary>
+
+<pre><code>$ uv pip install -e packages/engine-core -e packages/orchestrator -e packages/dbt-forge -v
+Resolved 157 packages in 352ms
+      Built engine-core @ file:///home/iyid/workspaces/Axialys/axialytics-data-forge/packages/engine-core
+      Built orchestrator @ file:///home/iyid/workspaces/Axialys/axialytics-data-forge/packages/orchestrator
+      Built dbt-forge @ file:///home/iyid/workspaces/Axialys/axialytics-data-forge/packages/dbt-forge
+Prepared 90 packages in 1.76s
+Installed 141 packages in 103ms
+ + dbt-core==1.9.4
+ + dbt-clickhouse==1.9.1
+ + apache-airflow==3.0.0
+ ... (additional packages)
+</code></pre>
+</details>
+
+<h2>Questions</h2>
+<ol>
+<li>Is this the expected behavior for <code>uv sync</code>?</li>
+<li>If so, what's the recommended way to install dependencies from workspace members?</li>
+<li>If not, is this a bug in how <code>uv sync</code> handles workspace dependencies?</li>
+</ol>
+<h2>Additional Context</h2>
+<p>I've searched the documentation and existing issues but haven't found any mention of this behavior. The workaround of using <code>uv pip install -e</code> works, but it would be more convenient if <code>uv sync</code> handled workspace dependencies automatically.</p>
+<h3>Platform</h3>
+<p>Linux 5.15.167.4-microsoft-standard-WSL2 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv version: 0.6.16</p>
+<h3>Python version</h3>
+<p>Python version: 3.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ImadYIdrissi on 2025-05-26 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-26 19:23</div>
+            <div class="timeline-body"><p>You need to list your members as dependencies, like:</p>
+<pre><code class="language-toml">[project]
+name = &quot;custom-data-forge&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;pandas&quot;,&quot;numpy&quot;,&quot;engine-core&quot;,&quot;orchestrator&quot;,&quot;dbt-forge&quot;]
+
+[tool.uv.workspace]
+members = [
+    &quot;packages/engine-core&quot;,
+    &quot;packages/orchestrator&quot;,
+    &quot;packages/dbt-forge&quot;,
+]
+</code></pre>
+<p>The root package is a workspace member, just like any of the others; and like the others, not all members have to depend on all other members. So you need to tell uv which members depend on which members. The root workspace is no different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-05-26 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-05-26 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ImadYIdrissi">@ImadYIdrissi</a> on 2025-05-26 19:35</div>
+            <div class="timeline-body"><p>Thank you for your solution ! I'll include the workspace members in my root pyproject.toml as dependencies.</p>
+<p>However, I have a follow-up question:</p>
+<ul>
+<li>I found that running uv sync --all-packages installs all dependencies from all workspace members, even if they’re not listed as dependencies in the root. Is using uv sync --all-packages a recommended approach for monorepos, or are there any downsides compared to explicitly listing the members as dependencies in the root project?</li>
+</ul>
+<p>Thanks again for your help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ImadYIdrissi">@ImadYIdrissi</a> on 2025-05-26 20:13</div>
+            <div class="timeline-body"><blockquote>
+<p>You need to list your members as dependencies, like:</p>
+<p>[project]
+name = &quot;custom-data-forge&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;pandas&quot;,&quot;numpy&quot;,&quot;engine-core&quot;,&quot;orchestrator&quot;,&quot;dbt-forge&quot;]</p>
+<p>[tool.uv.workspace]
+members = [
+&quot;packages/engine-core&quot;,
+&quot;packages/orchestrator&quot;,
+&quot;packages/dbt-forge&quot;,
+]
+The root package is a workspace member, just like any of the others; and like the others, not all members have to depend on all other members. So you need to tell uv which members depend on which members. The root workspace is no different.</p>
+</blockquote>
+<p>Your solution works, but it also needs an extra block to map local package names to workspace members :</p>
+<pre><code class="language-toml">...
+dependencies = [&quot;engine-core&quot;, &quot;orchestrator&quot;, &quot;dbt-forge&quot;, &quot;tabulate&quot;]
+
+[tool.uv.workspace]
+# Workspace members (local packages)
+members = [
+    &quot;packages/engine-core&quot;,
+    &quot;packages/orchestrator&quot;,
+    &quot;packages/dbt-forge&quot;,
+]
+
+# &lt;---------- This right here
+[tool.uv.sources]
+# Map local package names to workspace members
+engine-core = { workspace = true }
+orchestrator = { workspace = true }
+dbt-forge = { workspace = true }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ImadYIdrissi on 2025-05-27 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13749.html">astral-sh/uv#13749</a> on 2025-05-31 06:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RafalSkolasinski">@RafalSkolasinski</a> on 2025-08-27 22:00</div>
+            <div class="timeline-body"><blockquote>
+<p>The root package is a workspace member, just like any of the others; and like the others, not all members have to depend on all other members. So you need to tell uv which members depend on which members. The root workspace is no different.</p>
+</blockquote>
+<blockquote>
+<p>I found that running uv sync --all-packages installs all dependencies from all workspace members, even if they’re not listed as dependencies in the root. Is using uv sync --all-packages a recommended approach for monorepos, or are there any downsides compared to explicitly listing the members as dependencies in the root project?</p>
+</blockquote>
+<p>I was just confused by the same. Would be great if these were mentioned on https://docs.astral.sh/uv/concepts/projects/workspaces/</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

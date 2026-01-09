@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special case pip entrypoint names - astral-sh/uv #1593</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Special case pip entrypoint names</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1593">#1593</a>
+        opened by <a href="https://github.com/woutervh">@woutervh</a>
+        on 2024-02-17 14:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/woutervh">@woutervh</a> on 2024-02-17 14:28</div>
+            <div class="timeline-body"><p>on Alma Linux 9.2,  using uv 0.1.3
+python3.x  all installed via pyenv</p>
+<pre><code> &gt; venv foo -p 3.8 --seed
+  Using Python 3.8.18 interpreter at /opt/tools/pyenv/var/repo/versions/3.8.18/bin/python3.8
+  Creating virtualenv at: foo
+   + setuptools==69.1.0
+   + pip==24.0
+   + wheel==0.42.0
+
+&gt; ls -al foo/bin
+    activate*  
+    pip  
+    pip3  
+    pip3.10      &lt;-- should be pip3.8
+    python  
+    python3   
+    python3.8 
+</code></pre>
+<p>the pip / pip3 / pip3.10 are all identical and correct,
+so it's just an incorrect filename.</p>
+<p>all other versions also create a pip3.10:</p>
+<pre><code> &gt; venv foo -p 3.9 --seed
+ &gt; venv foo -p 3.11 --seed
+ &gt; venv foo -p 3.12 --seed
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-17 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-17 16:44</div>
+            <div class="timeline-body"><p>Thanks for the report! No idea why this would be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-02-17 17:06</div>
+            <div class="timeline-body"><p>Isn't that <code>-p</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-02-17 18:24</div>
+            <div class="timeline-body"><p>@henryiii , Yes,  corrected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "venv foo p 3.8 --seed  generates a pip3.10 executable" to "venv foo -p 3.8 --seed  generates a pip3.10 executable" by @woutervh on 2024-02-17 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">virtualenv</span> added by @zanieb on 2024-02-18 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 02:54</div>
+            <div class="timeline-body"><p>My guess is that it's a caching issue. We cache interpreter metadata using the ctime, to avoid having to run the Python interpreter on every invocation (which is expensive, in a relative sense). Perhaps the ctime isn't changing here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 02:55</div>
+            <div class="timeline-body"><p>Err wait, sorry -- so it creates a file named <code>pip3.10</code>, but <code>pip3.10</code> is actually <code>pip3.8</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-02-20 17:04</div>
+            <div class="timeline-body"><p>There is no version info in the pip-entrypoint.</p>
+<pre><code>&gt; cat pip | pip3 | pip3.10
+
+#!/tmp/foo/bin/python
+# -*- coding: utf-8 -*-
+import re
+import sys
+from pip._internal.cli.main import main
+if __name__ == &quot;__main__&quot;:
+    sys.argv[0] = re.sub(r&quot;(-script\.pyw|\.exe)?$&quot;, &quot;&quot;, sys.argv[0])
+    sys.exit(main())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-20 18:11</div>
+            <div class="timeline-body"><p>pip has an entrypoint pip3.10 in its wheel: https://files.pythonhosted.org/packages/8a/6a/19e9fe04fca059ccf770861c7d5721ab4c2aebc539889e97c7977528a53b/pip-24.0-py3-none-any.whl. I think you're supposed to special case pip entrypoints (https://github.com/pypa/pip/pull/11547)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-20 18:56</div>
+            <div class="timeline-body"><p>The pip discord pointed me to https://github.com/pypa/pip/blob/3898741e29b7279e7bffe044ecfbe20f6a438b1e/src/pip/_internal/operations/install/wheel.py#L283, we should special case pip.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "venv foo -p 3.8 --seed  generates a pip3.10 executable" to "Special case pip entrypoint names" by @konstin on 2024-02-20 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-02-20 18:56</div>
+            <div class="timeline-body"><p>Better link imo: https://inspector.pypi.io/project/pip/24.0/packages/8a/6a/19e9fe04fca059ccf770861c7d5721ab4c2aebc539889e97c7977528a53b/pip-24.0-py3-none-any.whl/pip-24.0.dist-info/entry_points.txt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 18:57</div>
+            <div class="timeline-body"><p>@konstin - Do you mind taking this one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-02-20 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1783.html">astral-sh/uv#1783</a> on 2024-02-20 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/packaging.python.org/issues/1505.html">pypa/packaging.python.org#1505</a> on 2024-02-21 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1918.html">astral-sh/uv#1918</a> on 2024-02-23 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-02-23 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-23 22:50</div>
+            <div class="timeline-body"><p>Reopening because the upstream fix breaks my workaround: https://github.com/pypa/pip/pull/12536</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @konstin on 2024-02-23 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1982.html">astral-sh/uv#1982</a> on 2024-02-26 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-03-01 09:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

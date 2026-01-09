@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv venv` is broken on `macos-latest` github CI runner - astral-sh/uv #2450</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv venv` is broken on `macos-latest` github CI runner</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2450">#2450</a>
+        opened by <a href="https://github.com/yashgorana">@yashgorana</a>
+        on 2024-03-14 06:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yashgorana">@yashgorana</a> on 2024-03-14 06:33</div>
+            <div class="timeline-body"><p>Just creating the virtual env triggers an error from uv version 0.1.19. From the JSON dump, it seems like uv is incorrectly determining the platform arch to be i386.</p>
+<pre><code>bash-3.2$ sw_vers
+ProductName:    macOS
+ProductVersion: 12.7.3
+BuildVersion:   21H1015
+
+bash-3.2$ uname -a
+Darwin Mac-1710396159726.local 21.6.0 Darwin Kernel Version 21.6.0: Sun Dec 17 22:55:27 PST 2023; root:xnu-8020.240.18.706.2~1/RELEASE_X86_64 x86_64
+
+bash-3.2$ uv --version
+uv 0.1.20 (ea8fc8280 2024-03-13)
+
+bash-3.2$ uv venv
+  × Querying Python at `/Users/runner/hostedtoolcache/Python/3.12.2/x64/bin/python3` did not return the expected data: unknown variant `i386`, expected one of `aarch64`,
+  │ `armv7l`, `powerpc64le`, `powerpc64`, `x86`, `x86_64`, `s390x` with exit status: 0
+  │ --- stdout:
+  │ {&quot;result&quot;: &quot;success&quot;, &quot;markers&quot;: {&quot;implementation_name&quot;: &quot;cpython&quot;, &quot;implementation_version&quot;: &quot;3.12.2&quot;, &quot;os_name&quot;: &quot;posix&quot;, &quot;platform_machine&quot;: &quot;x86_64&quot;,
+  │ &quot;platform_python_implementation&quot;: &quot;CPython&quot;, &quot;platform_release&quot;: &quot;21.6.0&quot;, &quot;platform_system&quot;: &quot;Darwin&quot;, &quot;platform_version&quot;: &quot;Darwin Kernel Version 21.6.0:
+  │ Sun Dec 17 22:55:27 PST 2023; root:xnu-8020.240.18.706.2~1/RELEASE_X86_64&quot;, &quot;python_full_version&quot;: &quot;3.12.2&quot;, &quot;python_version&quot;: &quot;3.12&quot;, &quot;sys_platform&quot;:
+  │ &quot;darwin&quot;}, &quot;base_prefix&quot;: &quot;/Library/Frameworks/Python.framework/Versions/3.12&quot;, &quot;base_exec_prefix&quot;: &quot;/Library/Frameworks/Python.framework/Versions/3.12&quot;,
+  │ &quot;prefix&quot;: &quot;/Library/Frameworks/Python.framework/Versions/3.12&quot;, &quot;base_executable&quot;: &quot;/Library/Frameworks/Python.framework/Versions/3.12/bin/python3.12&quot;,
+  │ &quot;sys_executable&quot;: &quot;/Library/Frameworks/Python.framework/Versions/3.12/bin/python3&quot;, &quot;stdlib&quot;: &quot;/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12&quot;,
+  │ &quot;scheme&quot;: {&quot;platlib&quot;: &quot;/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages&quot;, &quot;purelib&quot;:
+  │ &quot;/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages&quot;, &quot;include&quot;: &quot;/Library/Frameworks/Python.framework/Versions/3.12/include/python3.12&quot;,
+  │ &quot;scripts&quot;: &quot;/Library/Frameworks/Python.framework/Versions/3.12/bin&quot;, &quot;data&quot;: &quot;/Library/Frameworks/Python.framework/Versions/3.12&quot;}, &quot;virtualenv&quot;: {&quot;purelib&quot;:
+  │ &quot;lib/python3.12/site-packages&quot;, &quot;platlib&quot;: &quot;lib/python3.12/site-packages&quot;, &quot;include&quot;: &quot;include/site/python3.12&quot;, &quot;scripts&quot;: &quot;bin&quot;, &quot;data&quot;: &quot;&quot;}, &quot;platform&quot;: {&quot;os&quot;:
+  │ {&quot;name&quot;: &quot;macos&quot;, &quot;major&quot;: 12, &quot;minor&quot;: 7}, &quot;arch&quot;: &quot;i386&quot;}}
+  │ --- stderr:
+
+  │ ---
+</code></pre>
+<p>Works fine when uv is reverted to 0.1.18</p>
+<pre><code>bash-3.2$ pip install --upgrade uv==0.1.18 &gt; /dev/null
+
+bash-3.2$ uv --version
+uv 0.1.18 (43dc9c87a 2024-03-13)
+
+bash-3.2$ uv venv
+Using Python 3.12.2 interpreter at: /Library/Frameworks/Python.framework/Versions/3.12/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+</code></pre>
+<p>Bug probably is due to this PR - https://github.com/astral-sh/uv/pull/2381</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">macos</span> added by @AlexWaygood on 2024-03-14 07:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-14 07:31</div>
+            <div class="timeline-body"><p>I'm also seeing this in CI for typeshed-stats: https://github.com/AlexWaygood/typeshed-stats/actions/runs/8273839124/job/22638277336 (https://github.com/AlexWaygood/typeshed-stats/issues/204)</p>
+<p>And for typeshed: https://github.com/python/typeshed/issues/11594#issuecomment-1996257396</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">virtualenv</span> added by @AlexWaygood on 2024-03-14 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/typeshed/pulls/11598.html">python/typeshed#11598</a> on 2024-03-14 10:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../AlexWaygood/typeshed-stats/issues/204.html">AlexWaygood/typeshed-stats#204</a> on 2024-03-14 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mxstack/mxmake/pulls/33.html">mxstack/mxmake#33</a> on 2024-03-14 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jensens">@jensens</a> on 2024-03-14 11:07</div>
+            <div class="timeline-body"><p>This fails when uv 0.1.20 is used in Github Actions with <code>macos-latest</code> runners. My configuration is:</p>
+<pre><code>jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+        - &quot;3.8&quot;
+        - &quot;3.9&quot;
+        - &quot;3.10&quot;
+        - &quot;3.11&quot;
+        - &quot;3.12&quot;
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+...
+</code></pre>
+<p>The only failing combinations (with above mentioned error) are</p>
+<ul>
+<li>&quot;3.11&quot; with &quot;macos-latest&quot;</li>
+<li>&quot;3.12&quot; with &quot;macos-latest&quot;</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tom-engineering">@tom-engineering</a> on 2024-03-14 11:32</div>
+            <div class="timeline-body"><p>I think this is also preventing the version of <code>uv</code> from updating in Homebrew: https://github.com/Homebrew/homebrew-core/actions/runs/8276916341/job/22646364312</p>
+<pre><code>Full test uv output
+  /usr/local/Homebrew/Library/Homebrew/vendor/bundle/ruby/3.1.0/bin/bundle clean
+  ==&gt; Testing uv
+  ==&gt; /usr/local/Cellar/uv/0.1.20/bin/uv pip compile -q requirements.in
+  error: Querying Python at `/usr/bin/python3` did not return the expected data: unknown variant `i386`, expected one of `aarch64`, `armv7l`, `powerpc64le`, `powerpc64`, `x86`, `x86_64`, `s390x` with exit status: 0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2454.html">astral-sh/uv#2454</a> on 2024-03-14 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-03-14 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zenml-io/zenml/pulls/2529.html">zenml-io/zenml#2529</a> on 2024-03-14 14:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

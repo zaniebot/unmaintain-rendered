@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adding documentation for handling LSP import error when using packages from workspaces - astral-sh/uv #9471</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Adding documentation for handling LSP import error when using packages from workspaces</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/9471">#9471</a>
+        opened by <a href="https://github.com/mohit2152sharma">@mohit2152sharma</a>
+        on 2024-11-27 15:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mohit2152sharma">@mohit2152sharma</a> on 2024-11-27 15:10</div>
+            <div class="timeline-body"><p>Consider the following directory structure, in this example, I have a <code>llm</code> package in the workspace.</p>
+<pre><code>.
+├── README.md
+├── hello.py
+├── packages
+│   ├── llm
+│   │   ├── README.md
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       └── llm
+│   │           └── __init__.py
+├── pyproject.toml
+├── src
+│   └── saral_backend
+│       ├── main.py
+│       ├── routes
+│       │   ├── __init__.py
+│       │   └── notes
+│       │       ├── __init__.py
+│       │       ├── models.py
+│       │       └── route.py
+├── tests
+└── uv.lock
+</code></pre>
+<p>When I try to import this package in my <code>src/saral_backend/main.py</code> I get the <code>reportMissingImports</code> Error from <code>basedpyright</code> (or other LSPs). This error is correct as the package <code>llm</code> is not yet installed and once I install the package in the same virtual environment the error goes away.
+It would be nice to have this documented along the lines of &quot;packages in the workspace needs to be installed in the same virtual environment for the LSPs to correctly resolve them&quot;.</p>
+<p>Also I couldn't find any mention of installing local packages. Currently what I do is <code>cd</code> into the package directory and run <code>uv run</code> (without any argument), this seems to build the package and install it but it also generates a message <code>&quot;Provide a command or script .....&quot;</code>. Not sure if using <code>uv run</code> is the right way to install local packages in the virtual environment.</p>
+<p>(I can take a stab at the documentation, if you can point me in the right direction)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-27 15:15</div>
+            <div class="timeline-body"><p>Have you configured a <a href="https://docs.astral.sh/uv/concepts/projects/config/#build-systems">build system</a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-11-27 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mohit2152sharma">@mohit2152sharma</a> on 2024-11-27 19:05</div>
+            <div class="timeline-body"><p>yes, using the <code>hatchling</code> build system. I think this gets added automatically when I do <code>uv init --package</code></p>
+<p>Following is my main <code>pyproject.toml</code> (in the root directory)</p>
+<pre><code class="language-toml">[project]
+name = &quot;saral-backend&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;asyncpg&gt;=0.30.0&quot;,
+    &quot;fastapi[standard]&gt;=0.115.5&quot;,
+    &quot;psycopg2&gt;=2.9.10&quot;,
+    &quot;pydantic[email]&gt;=2.10.2&quot;,
+    &quot;sqlmodel&gt;=0.0.22&quot;,
+    &quot;uvicorn&gt;=0.32.1&quot;,
+]
+
+[project.scripts]
+app = &quot;saral_backend.main:main&quot;
+
+[dependency-groups]
+dev = [
+    &quot;pytest&gt;=8.3.3&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages=[&quot;src/saral_backend&quot;]
+
+[tool.uv.workspace]
+members = [&quot;packages/saral-utils&quot;, &quot;packages/llm&quot;]
+
+</code></pre>
+<p>And this is my toml file from <code>llm</code> package</p>
+<pre><code class="language-toml">[project]
+name = &quot;llm&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;mohit sharma&quot;, email = &quot;mohitlakshya@gmail.com&quot; }
+]
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = []
+
+[project.scripts]
+llm = &quot;llm:main&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-27 19:10</div>
+            <div class="timeline-body"><p>I don't think hatchling will use the <code>packages</code> directory by default, so maybe you need</p>
+<pre><code>[tool.hatch.build.targets.wheel]
+sources = [&quot;src&quot;, &quot;packages&quot;]
+</code></pre>
+<p>I'm not really sure on the specifics of how to configure hatchling's editable installations though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mohit2152sharma">@mohit2152sharma</a> on 2024-11-28 08:09</div>
+            <div class="timeline-body"><p>Thanks @zanieb , I tried your suggestion, but it didn't help. I made the changes to main <code>pyproject.toml</code>  (file in the root directory). I get the following error, when I attempt to build my main package.</p>
+<pre><code>ValueError: Unable to determine which files to ship inside the wheel using the following heuristics: https://hatch.pypa.io/latest/plugins/builder/wheel/#default-file-selection
+
+The most likely cause of this is that there is no directory that matches the name of your project (saral_backend).
+
+At least one file selection option must be defined in the `tool.hatch.build.targets.wheel` table, see: https://hatch.pypa.io/latest/config/build/
+
+As an example, if you intend to ship a directory named `foo` that resides within a `src` directory located at the root of your project, you can define the following:
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/foo&quot;]
+error: Build backend failed to build wheel through `build_wheel` (exit status: 1)
+</code></pre>
+<p>Then I tried with the suggestions suggested by error message, I used the full path as in:</p>
+<pre><code class="language-toml">[tool.hatch.build.targets.wheel]
+# packages=[&quot;src/saral_backend&quot;]
+# sources = [&quot;src&quot;, &quot;packages&quot;]
+packages = [&quot;src/saral_backend&quot;, &quot;packages/llm/src/llm&quot;, &quot;packages/saral-utils/src/saral_utils&quot;]
+</code></pre>
+<p>With this I am able to build my main package. I can see that the entire <code>packages</code> directory is included in the tar file (in the <code>dist</code> folder). However, when I do <code>uv pip list</code> to see the packages installed in the virtual environment, I don't see the two packages in the list. When I do <code>uv run --all-packages</code>, it installs all the packages in virtual environment from the workspaces.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

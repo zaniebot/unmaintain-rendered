@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve parsing and formatting inside  after_help - clap-rs/clap #6087</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve parsing and formatting inside  after_help</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/6087">#6087</a>
+        opened by <a href="https://github.com/Agent-Hellboy">@Agent-Hellboy</a>
+        on 2025-08-04 07:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Agent-Hellboy">@Agent-Hellboy</a> on 2025-08-04 07:51</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Describe your use case</h3>
+<p>Hi , I am coming from https://github.com/uutils/coreutils/issues/8362
+clap_mangen is outputting after_help content as plain text, causing list items to appear inline instead of properly formatted.
+https://github.com/clap-rs/clap/blob/583ba4ad9a4aea71e5b852b142715acaeaaaa050/clap_mangen/src/render.rs#L248C15-L248C25</p>
+<h3>Describe the solution you'd like</h3>
+<p>Fix suggestions to discuss</p>
+<ul>
+<li>Parse list items (lines starting with - )</li>
+<li>Extract options and descriptions</li>
+<li>Use proper roff formatting (.TP, .B, .I)</li>
+</ul>
+<p>I will add a PR.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @Agent-Hellboy on 2025-08-04 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6088.html">clap-rs/clap#6088</a> on 2025-08-04 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-04 14:42</div>
+            <div class="timeline-body"><p>@pksunkara at https://github.com/clap-rs/clap/pull/6088#issuecomment-3150968893</p>
+<blockquote>
+<p>@epage I don't have much context here, but we specifically say that the help text is not markdown, right? IIRC, I had some discussions about this back in the days. Can you please let me know if something changed?</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-04 14:43</div>
+            <div class="timeline-body"><p>Correct, we do not specify the output is markdown.</p>
+<p>What we are missing is turning of ANSI escape codes into ROFF.  I'm playing around with it but its showing some limitations in <code>roff</code> and <code>anstyle-roff</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-man</span> added by @epage on 2025-08-04 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2025-08-04 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Agent-Hellboy">@Agent-Hellboy</a> on 2025-08-04 14:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Correct, we do not specify the output is markdown.</p>
+<p>What we are missing is turning of ANSI escape codes into ROFF. I'm playing around with it but its showing some limitations in <code>roff</code> and <code>anstyle-roff</code>.</p>
+</blockquote>
+<p>could you please explain it in details with some context? and how it's related to the current issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2025-08-04 15:11</div>
+            <div class="timeline-body"><blockquote>
+<p>What we are missing is turning of ANSI escape codes into ROFF.</p>
+</blockquote>
+<p>I am not sure if ROFF has special syntax for display lists. But if it does:</p>
+<p>If we implement #5900, Doc comments written in markdown with lists -&gt; ANSI just prints indented list -&gt; ROFF needs to parse it again. In this scenario, isn't it better to pass direct markdown from docstring to generators?</p>
+<hr />
+<p>Without that decision and implementing #5900 first, I am not sure this issue can be resolved since we don't want to have any custom syntax support for help strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-04 15:34</div>
+            <div class="timeline-body"><blockquote>
+<p>could you please explain it in details with some context? and how it's related to the current issue.</p>
+</blockquote>
+<p>While ANSI escape codes can't help with bulleted lists, they can help with other forms of formatting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-04 15:35</div>
+            <div class="timeline-body"><p>Not mentioned in this thread is that #6088 replaced blank lines with <code>.PP</code>.  We do that for <code>long_about</code> but none of our other user-provided text.  It likely deserves an issue on its own.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../uutils/coreutils/pulls/9005.html">uutils/coreutils#9005</a> on 2025-10-26 17:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonartype Nexus - Unauthorized when using PyPi Proxy - astral-sh/uv #3122</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Sonartype Nexus - Unauthorized when using PyPi Proxy</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3122">#3122</a>
+        opened by <a href="https://github.com/alelavml3">@alelavml3</a>
+        on 2024-04-18 14:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alelavml3">@alelavml3</a> on 2024-04-18 14:02</div>
+            <div class="timeline-body"><p>Hi, with <code>v0.1.33</code>  release we are facing an authentication problems. We use a private <code>Sonatype Nexus</code> repository server which uses a private PyPi Repo to store our company private Python packages.
+The command for compiling and install are the following:</p>
+<pre><code class="language-bash">export PYPI_INDEX_URL=https://$(NEXUS_USER):$(NEXUS_PWD)@$(NEXUS_SERVER_URL)
+uv pip compile pyproject.toml -o requirements.txt --index-url $(PYPI_INDEX_URL)
+uv pip sync requirements.txt --index-url $(PYPI_INDEX_URL)
+</code></pre>
+<p>The error we get is during <code>uv pip sync</code>:</p>
+<pre><code>error: Failed to download distributions
+  Caused by: Failed to fetch wheel: google-cloud-pubsub==2.21.0
+  Caused by: HTTP status client error (401 Unauthorized) for url (&lt;NEXUS_SERVER_URL&gt;/packages/google-cloud-pubsub/2.21.0/google_cloud_pubsub-2.21.0-py2.py3-none-any.whl#sha256=fabd19e08faa1f70081b0e5ea003a3c031a1d2c1b798cf1be5ded2dbf1d1dbef)
+</code></pre>
+<p>here the package is <code>google-cloud-pubsub</code> but it happens with any random package.</p>
+<p>How can we fix this issue with this new version? For now, we are using v0.1.32 and everything works.</p>
+<p>Thank you in advance for your answers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Sonar" to "Sonartype Nexus - Unauthorized when using PyPi Proxy" by @alelavml3 on 2024-04-18 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-18 15:16</div>
+            <div class="timeline-body"><p>Hi! Sorry about that, this looks like a bug.</p>
+<p>Can you provide logs with <code>RUST_LOG=trace uv pip install -v ...</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-04-18 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">registry</span> added by @zanieb on 2024-04-18 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-04-18 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alelavml3">@alelavml3</a> on 2024-04-18 15:33</div>
+            <div class="timeline-body"><p>pyproject.toml</p>
+<pre><code class="language-toml">[project]
+name = &quot;my-project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;my description&quot;
+authors = [ {name = &quot;My Name&quot;, email = &quot;myemail@example.com&quot;}, ]
+requires-python = &quot;&gt;= 3.8&quot;
+dependencies = [
+    &quot;matplotlib==3.7.4&quot;,
+    &quot;ruff&quot;
+]
+
+[project.optional-dependencies]
+build = [&quot;twine&quot;, &quot;build&quot;]
+
+[build-system]
+requires = [&quot;setuptools &gt;= 61.0&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p>The output of command <code>RUST_LOG=trace uv pip sync requirements.txt --index-url https://nexus.internal/repository/pypi-group/simple --cache-dir .uv_cache --verbose</code> is uploaded here because it is too long:
+https://paste.ec/paste/8pAMIGZV#+p-t45+mOpgwb4QaRm9R08tenqqcbrDNzXXUR0NLw9M</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3123.html">astral-sh/uv#3123</a> on 2024-04-18 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3124.html">astral-sh/uv#3124</a> on 2024-04-18 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3130.html">astral-sh/uv#3130</a> on 2024-04-18 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alelavml3">@alelavml3</a> on 2024-04-19 06:07</div>
+            <div class="timeline-body"><p>I tried the <code>v0.1.34</code> and it works. Thank you for the quick response!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @alelavml3 on 2024-04-19 06:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-19 15:12</div>
+            <div class="timeline-body"><p>Great to hear! Thanks for checking back in.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

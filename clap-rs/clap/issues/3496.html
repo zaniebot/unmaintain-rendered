@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>derive: default to parse_os_str for OsString or PathBuf types - clap-rs/clap #3496</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>derive: default to parse_os_str for OsString or PathBuf types</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3496">#3496</a>
+        opened by <a href="https://github.com/joshtriplett">@joshtriplett</a>
+        on 2022-02-22 07:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2022-02-22 07:08</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.1.1</p>
+<h3>Describe your use case</h3>
+<p>Most CLI applications should handle any path the user provides, not just UTF-8 paths. I'd like to make that easier to do by default when using <code>derive</code>, without having to remember to change the parse function.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Currently, according to the documentation, parsing non-UTF-8 paths requires using <code>parse(from_os_str)</code>.</p>
+<p>I'd love to see this become the default if deriving an argument with a field type of <code>PathBuf</code> or <code>OsString</code>, to automatically do the right thing with paths.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @joshtriplett on 2022-02-22 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-02-22 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2022-02-22 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.2" by @epage on 2022-02-22 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-22 15:22</div>
+            <div class="timeline-body"><p>Huh, I know I had considered this at one point but I can't find an issue for it.  I do wonder / hope for #2683 to help with this class of problem in the long term.</p>
+<p>I know one odd thing is for us to define how we detect these types since we just get the textual name (iirc).  For example, for external subcommands, we only support <code>String</code> and <code>OsString</code>, so users have to do <code>use std::ffi::OsString</code> (ie we don't support <code>ffi::OsString</code>, <code>std::ffi::OsString</code>, <code>::std::ffi::OsString</code>, or any kind of <code>use</code> defined alias).</p>
+<p>As for when to do this, an awkward thing is we haven't fully defined what our compatibility story is because users might set attributes assuming what attributes we set or make direct calls on a generated <code>Command</code> or <code>ArgMatches</code>.  I'm leaning towards this being considered a &quot;minor incompatibility&quot; of the level of MSRV change and leaving it to a minor release, as compared to major or patch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2022-02-22 22:23</div>
+            <div class="timeline-body"><p>@epage One approach that might be viable on a clap 4 timeframe would be to do <em>all</em> conversions by way of bytes, and then conversions to String can check for UTF-8, while conversions to OsString or PathBuf or similar wouldn't. (On a comparable timeframe, we <em>might</em> manage to make OsString's use of bytes transparent in the standard library.) I'm also hoping such a change would make it easy to handle <code>BString</code>.</p>
+<p>Meanwhile, in the short term, it seems vaguely reasonable to have the automatic behavior work the same way you're currently handling <code>Vec</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../smithy-lang/smithy-rs/pulls/1293.html">smithy-lang/smithy-rs#1293</a> on 2022-04-11 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-04-29 13:34</div>
+            <div class="timeline-body"><p>Just realized, changing any of this in the short term might be considered a breaking change since we would be implicitly setting <code>allow_invalid_utf8</code> which if someone directly accesses the field via <code>ArgMatches</code>, will now panic.</p>
+<p>Something we've not fully defined is our expectations for the derive: how much can people expect from the behavior of the derive when they do not use it in a self-contained way (pairing the generated <code>Arg</code>s with <code>FromArgMatches</code>).  At the moment, we do not allow people deriving them independently at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.2" by @epage on 2022-04-29 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.0" by @epage on 2022-04-29 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3732.html">clap-rs/clap#3732</a> on 2022-05-17 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3734.html">clap-rs/clap#3734</a> on 2022-05-18 00:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3742.html">clap-rs/clap#3742</a> on 2022-05-23 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-05-23 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3792.html">clap-rs/clap#3792</a> on 2022-06-06 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../cbeck88/conf-rs/issues/13.html">cbeck88/conf-rs#13</a> on 2024-10-14 01:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

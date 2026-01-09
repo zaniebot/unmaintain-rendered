@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RET503 doesn't respect NoReturn - astral-sh/ruff #5474</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RET503 doesn't respect NoReturn</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5474">#5474</a>
+        opened by <a href="https://github.com/hynek">@hynek</a>
+        on 2023-07-03 11:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hynek">@hynek</a> on 2023-07-03 11:19</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Given the following code:</p>
+<pre><code class="language-python">import sys
+from typing import NoReturn
+
+def nr() -&gt; NoReturn:
+    sys.exit()
+
+
+def f(x: int) -&gt; int | None:
+    if x == 5:
+        return 5
+    nr()
+
+</code></pre>
+<p>Results in this:</p>
+<pre><code class="language-console">$ pipx run --no-cache ruff --version
+ruff 0.0.275
+$ pipx run ruff t.py --isolated --select=RET503
+t.py:11:5: RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+</code></pre>
+<p>Ruff will complain and add a <code>return None</code> behind the <code>nr()</code> line. This might look a bit silly, but it's kinda common e.g. in web apps when there's a helper function that just raises an exception. Given Mypy understands NoReturn, this leads to an error ping pong.</p>
+<p>Cheers and thanks for the quick fixes of my previous bugs. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NMertsch">@NMertsch</a> on 2023-07-03 12:53</div>
+            <div class="timeline-body"><p>Shouldn't the return type of <code>f</code> be <code>int | NoReturn</code>? It is impossible for this function to return <code>None</code>. (Not sure if ruff would handle that in a better way, though)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2023-07-03 13:06</div>
+            <div class="timeline-body"><p>My real example is a shared Union that defines what a web view can return. Basically Flask's ResponseValue with some extras.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-07-03 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @charliermarsh on 2023-07-03 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-03 23:58</div>
+            <div class="timeline-body"><p>I know we should really support either, but in your case, is the annotation defined in your own code, or from a third-party module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2023-07-04 05:19</div>
+            <div class="timeline-body"><p>I'm not 100% sure what you're actually asking, because kinda both. :) It's defined in an external package to the application but that package is our own.</p>
+<p>But also to NMertsch's point, I've made the example too complicated because I've misread the error message. This already triggers it:</p>
+<pre><code class="language-python">import sys
+from typing import NoReturn
+
+def nr() -&gt; NoReturn:
+    sys.exit()
+
+
+def f(x: int) -&gt; int:
+    if x == 5:
+        return 5
+    nr()
+</code></pre>
+<p>My real code looks roughly like this:</p>
+<pre><code class="language-python">@bp.delete(&quot;/hosts/&lt;name&gt;/relationships/groups/&lt;group&gt;&quot;)
+def delete_host_rel_group(name: str, group: str) -&gt; RenderableResult:
+    if svc.delete_group_host(get_uow(), group=group, host=name):
+        return APIResult({}, status=204)
+
+    resource_not_found(  # noqa: RET503
+        &quot;Host/Group relationship&quot;, f&quot;{name}/{group}&quot;
+    )
+</code></pre>
+<p>With</p>
+<pre><code class="language-python">Renderable = Union[dict[str, Any], list, int, str, bool]
+
+
+@runtime_checkable
+class RenderableResult(Protocol):
+    status: int
+    content_location: str | None
+
+    def render(self) -&gt; Renderable:
+        ...
+</code></pre>
+<p>defined in a separate package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flaeppe">@flaeppe</a> on 2023-09-15 08:22</div>
+            <div class="timeline-body"><p>Another example triggering this is <a href="https://mypy.readthedocs.io/en/stable/literal_types.html#id3">exhaustiveness checking</a>. Consider the following program</p>
+<pre><code class="language-python">import enum
+from typing import NoReturn
+
+
+class MyEnum(str, enum.Enum):
+    A = &quot;A&quot;
+    B = &quot;B&quot;
+    C = &quot;C&quot;
+
+
+def exhausted(value: NoReturn) -&gt; NoReturn:
+    raise RuntimeError(&quot;Exhausted&quot;)
+
+
+def do_something(value: MyEnum) -&gt; str:
+    if value is MyEnum.A:
+        return &quot;first&quot;
+    elif value is MyEnum.B:
+        return &quot;second&quot;
+    elif value is MyEnum.C:
+        return &quot;third&quot;
+    exhausted(value)
+</code></pre>
+<p>Which renders the following diff by <code>RET503</code></p>
+<pre><code class="language-diff">def do_something(value: MyEnum) -&gt; str:
+    if value is MyEnum.A:
+        return &quot;first&quot;
+    elif value is MyEnum.B:
+        return &quot;second&quot;
+    elif value is MyEnum.C:
+        return &quot;third&quot;
+    exhausted(value)
++   return None
+</code></pre>
+<p>Which in turn yields a mypy error:</p>
+<pre><code>file.py:23: error: Statement is unreachable  [unreachable]
+        return None
+        ^~~~~~~~~~~
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9636.html">astral-sh/ruff#9636</a> on 2024-01-24 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-24 17:15</div>
+            <div class="timeline-body"><p>We now respect <code>NoReturn</code> annotations in the next release, but it will only work for functions defined in the same file (so I'm not closing this).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harahu">@harahu</a> on 2024-10-22 14:25</div>
+            <div class="timeline-body"><blockquote>
+<p>We now respect <code>NoReturn</code> annotations in the next release, but it will only work for functions defined in the same file (so I'm not closing this).</p>
+</blockquote>
+<p>Perhaps worth labling this issue as <code>multifile-analysis</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-13 01:27</div>
+            <div class="timeline-body"><p>I found another couple of cases where the <code>NoReturn</code> isn't respected:
+A method that is <code>NoReturn</code> is completely ignored both inside other methods and outside the class
+<code>classmethod</code>/<code>staticmethod</code>s that are <code>NoReturn</code> are ignored inside other class methods, but not outside the class, unless the class is gotten via <code>__class__</code>
+<a href="https://play.ruff.rs/1882bdf2-40b8-47f2-bf18-cfd29c9a4041">playground link</a></p>
+<details>
+<summary> The code </summary>
+
+<pre><code class="language-py">from typing import NoReturn
+
+
+class UsesNR:
+    def method_nr(self) -&gt; NoReturn:
+        raise Exception
+
+    @classmethod
+    def class_nr(cls) -&gt; NoReturn:
+        raise Exception
+
+    @staticmethod
+    def static_nr() -&gt; NoReturn:
+        raise Exception
+
+    def uses_method_nr(self, x: int) -&gt; int:
+        if x == 5:
+            return x
+        self.method_nr()  # RET503 error
+
+    def uses_class_nr(self, x: int) -&gt; int:
+        if x == 5:
+            return x
+        UsesNR.class_nr()  # RET503 error
+
+    def uses_static_nr(self, x: int) -&gt; int:
+        if x == 5:
+            return x
+        UsesNR.static_nr()  # RET503 error
+
+def outside_class_uses_method_nr(uses_nr: UsesNR, x: int) -&gt; int:
+    if x == 5:
+        return x
+    uses_nr.method_nr()  # RET503 error
+
+def outside_class_uses_class_nr(x: int) -&gt; int:
+    if x == 5:
+        return x
+    UsesNR.method_nr()  # No error
+
+def outside_class_uses_static_nr(t: UsesNR, x: int) -&gt; int:
+    if x == 5:
+        return x
+    UsesNR.static_nr()  # No error
+
+def outside_class_uses_class_nr_via_dunder_class(uses_nr: UsesNR, x: int) -&gt; int:
+    if x == 5:
+        return x
+    uses_nr.__class__.method_nr()  # RET503 error
+
+def outside_class_uses_static_nr_via_dunder_class(uses_nr: UsesNR, x: int) -&gt; int:
+    if x == 5:
+        return x
+    uses_nr.__class__.static_nr()  # RET503 error
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18656.html">astral-sh/ruff#18656</a> on 2025-06-13 02:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

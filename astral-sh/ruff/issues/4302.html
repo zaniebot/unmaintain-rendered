@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use self-documenting f-strings where possible - astral-sh/ruff #4302</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use self-documenting f-strings where possible</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4302">#4302</a>
+        opened by <a href="https://github.com/janosh">@janosh</a>
+        on 2023-05-09 04:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/janosh">@janosh</a> on 2023-05-09 04:04</div>
+            <div class="timeline-body"><p>Could maybe be added to <code>flake8-simplify</code>.</p>
+<pre><code class="language-py">my_var = 42_000
+
+# bad (if target=py3.8+)
+f&quot;my_var={my_var}&quot;
+f&quot;my_var = {my_var}&quot;
+f&quot;my_var = {my_var:,}&quot;
+
+# good
+f&quot;{my_var=}&quot;
+f&quot;{my_var = }&quot;
+f&quot;{my_var = :,}&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-05-09 08:14</div>
+            <div class="timeline-body"><p>This would be nice, and would help make those who don't know this feature aware of it 🙂</p>
+<p>The only snag is that f-strings are not part of the formal grammar until Python 3.12 - see <a href="https://peps.python.org/pep-0701/">PEP 701</a> - so they're tricky to do much with right now.</p>
+<p>Other test cases to include for unbalanced spacing:</p>
+<pre><code class="language-python"># bad (if target=py3.8+)
+f&quot;my_var= {my_var}&quot;
+f&quot;my_var ={my_var}&quot;
+
+# good
+f&quot;{my_var= }&quot;
+f&quot;{my_var =}&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-05-09 10:07</div>
+            <div class="timeline-body"><p>I think this is a <code>RUF</code> rule or <code>FLY</code> (recently introduced in #4196, see https://github.com/ikamensh/flynt) rule, but sounds like a good idea :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-05-09 10:24</div>
+            <div class="timeline-body"><p>Ah, this is made difficult by the fact that ruffpython-ast apparently already parses <code>f&quot;{my_var=}&quot;</code> as</p>
+<pre><code>[
+  Located { range: 119..131, custom: (), node: Constant { value: Str(&quot;my_var=&quot;), kind: None } },
+  Located { range: 119..131, custom: (), node: FormattedValue {
+    value: Located { range: 122..128, custom: (), node: Name { id: &quot;my_var&quot;, ctx: Load } },
+    conversion: 114,
+    format_spec: None
+  }}
+]
+</code></pre>
+<p>so it's not easy to distinguish between already correctly formed expressions and those that need changing 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-05-09 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/janosh">@janosh</a> on 2023-05-09 13:36</div>
+            <div class="timeline-body"><p>Tbh I'm out of my depth on AST and grammar. At the risk of going against orthodoxy and sounding low-status, if the grammar doesn't formalize f-strings below 3.12, maybe a regex can help distinguish true positives? 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-10 14:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah, this is made difficult by the fact that ruffpython-ast apparently already parses <code>f&quot;{my_var=}&quot;</code> as</p>
+<pre><code>[
+  Located { range: 119..131, custom: (), node: Constant { value: Str(&quot;my_var=&quot;), kind: None } },
+  Located { range: 119..131, custom: (), node: FormattedValue {
+    value: Located { range: 122..128, custom: (), node: Name { id: &quot;my_var&quot;, ctx: Load } },
+    conversion: 114,
+    format_spec: None
+  }}
+]
+</code></pre>
+<p>so it's not easy to distinguish between already correctly formed expressions and those that need changing thinking</p>
+</blockquote>
+<p>The two nodes differ in that the second has <code>conversion</code>  set to <code>b'r'</code>. I don't know why <code>conversion</code> is an <code>usize</code> instead the <code>ConversionFlags</code> that RustPython uses internally or just the char (@youknowone do you know why?). But I think it could allow us to tell the two formats apart.</p>
+<p>https://github.com/charliermarsh/RustPython/blob/50b8570bc262098b84dac86092133d3ee26caf23/compiler/core/src/bytecode.rs#L328-L342</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/youknowone">@youknowone</a> on 2023-05-10 16:00</div>
+            <div class="timeline-body"><p><a href="https://github.com/python/cpython/blob/v3.11.2/Parser/Python.asdl#L78">Python.asdl</a> refers it as <code>int</code> and RustPython naively convert it to actual int. We didn't care about it that much because we were the sole ast user, but that need to be enhanced now.
+There are 7 int values and 2 refers bool and another one is conversion.
+I recently changes bool values to actual bool and going to work on conversion too.
+It will be <code>ConversionFlag</code> or  <code>Option&lt;ConversionFlag&gt;</code>. I didn't investigate enough which one is more correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/youknowone">@youknowone</a> on 2023-05-10 16:02</div>
+            <div class="timeline-body"><p>About this or not, please feel free to suggest anything I can make ast better.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV sync does not work from workspace root - astral-sh/uv #4541</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV sync does not work from workspace root</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4541">#4541</a>
+        opened by <a href="https://github.com/mjclarke94">@mjclarke94</a>
+        on 2024-06-26 10:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mjclarke94">@mjclarke94</a> on 2024-06-26 10:02</div>
+            <div class="timeline-body"><p><code>uv sync</code> bails out early if it sees there is no <code>[project]</code> table in <code>pyproject.toml</code>, but currently the absence of this table is used to imply that this is the workspace root.</p>
+<pre><code>&gt;&gt; uv sync
+warning: `uv sync` is experimental and may change without warning.
+error: No `project` table found in: `/Users/matt/dev/sync_issue/pyproject.toml`
+</code></pre>
+<p>May be resolved by/need to be considered as part of #4025</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-26 11:56</div>
+            <div class="timeline-body"><p>Could you describe the structure of your project in more detail and ideally attach your <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2024-06-26 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjclarke94">@mjclarke94</a> on 2024-06-26 16:15</div>
+            <div class="timeline-body"><p>Sure :) Here's a MRE</p>
+<pre><code>&gt;&gt; eza --tree
+.
+├── modules
+│  ├── module_a
+│  │  ├── a.py
+│  │  └── pyproject.toml
+│  └── module_b
+│     ├── b.py
+│     └── pyproject.toml
+└── pyproject.toml
+</code></pre>
+<pre><code>&gt;&gt; bat pyproject.toml
+───────┬────────────────────────────────────────────────────────────────
+       │ File: pyproject.toml
+───────┼────────────────────────────────────────────────────────────────
+   1   │ [tool.uv.workspace]
+   2   │ members = [&quot;modules/module_a&quot;, &quot;modules/module_b&quot;]
+───────┴────────────────────────────────────────────────────────────────
+</code></pre>
+<pre><code>&gt;&gt; bat modules/module_a/pyproject.toml
+───────┬────────────────────────────────────────────────────────────────
+       │ File: modules/module_a/pyproject.toml
+───────┼────────────────────────────────────────────────────────────────
+   1   │ [project]
+   2   │ name = &quot;module_a&quot;
+   3   │ version = &quot;0.0.1&quot;
+───────┴────────────────────────────────────────────────────────────────
+</code></pre>
+<pre><code>&gt;&gt; bat modules/module_b/pyproject.toml
+───────┬────────────────────────────────────────────────────────────────
+       │ File: modules/module_b/pyproject.toml
+───────┼────────────────────────────────────────────────────────────────
+   1   │ [project]
+   2   │ name = &quot;module_b&quot;
+   3   │ version = &quot;0.0.1&quot;
+───────┴────────────────────────────────────────────────────────────────
+</code></pre>
+<pre><code>&gt;&gt; uv sync
+warning: `uv sync` is experimental and may change without warning.
+error: No `project` table found in: `/Users/matt/dev/elysia/workspace_test/pyproject.toml`
+
+&gt;&gt; cd modules/module_a/; uv add module-b
+warning: `uv add` is experimental and may change without warning.
+warning: No `requires-python` field found in the workspace. Defaulting to `&gt;=3.12`.
+error: Failed to download and build: `module-a @ file:///Users/matt/dev/workspace_test/modules/module_a`
+  Caused by: Failed to parse entry for: `module-b`
+  Caused by: Package is not included as workspace package in `tool.uv.workspace`
+</code></pre>
+<p>The error message in the final command makes me think I might not have this set up properly! (Same error with <code>module_b</code> and <code>module-b</code> as a sanity check)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 16:20</div>
+            <div class="timeline-body"><p>These look like real errors to me, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 16:23</div>
+            <div class="timeline-body"><p>The <code>uv sync</code> error I can replicate in <code>./scripts/workspaces/albatross-virtual-workspace</code>.</p>
+<p>The <code>uv add</code> error I can replicate by running <code>cargo run add seeds --preview</code> in <code>./scripts/workspaces/albatross-virtual-workspace/packages/albatross</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2024-06-26 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-06-26 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-06-26 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-26 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 16:29</div>
+            <div class="timeline-body"><p>For the latter, I guess we currently require that you mark the dependency as a workspace package, e.g., in <code>module_a/pyproject.toml</code>, you'd need to add:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+module-b = { workspace = true }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 16:31</div>
+            <div class="timeline-body"><p>Oh, ok, you need to do: <code>uv add module-b --workspace</code>. Not sure if we should just make the error better, or make this automatic. \cc @ibraheemdev</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 16:31</div>
+            <div class="timeline-body"><p>It looks like Cargo infers that it's a workspace dep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4552.html">astral-sh/uv#4552</a> on 2024-06-26 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 16:39</div>
+            <div class="timeline-body"><p>We'll track <code>uv add</code> here: https://github.com/astral-sh/uv/issues/4552.</p>
+<p>I'll use this issue to track the <code>uv sync</code> behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4555.html">astral-sh/uv#4555</a> on 2024-06-26 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4636.html">astral-sh/uv#4636</a> on 2024-06-28 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-29 16:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document behavior and support around python version - astral-sh/ruff #593</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Document behavior and support around python version</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/593">#593</a>
+        opened by <a href="https://github.com/vikigenius">@vikigenius</a>
+        on 2022-11-05 00:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vikigenius">@vikigenius</a> on 2022-11-05 00:07</div>
+            <div class="timeline-body"><p>Looking at the README it is not exactly clear how <code>ruff</code> supports different python versions.</p>
+<p>I saw the <code>target_version</code> option that talks about minimum supported python. But how low can we go? Does it support python 2 ?</p>
+<p>Additionally is it supported to run ruff using <code>python -m ruff</code> to ensure that the correct version of ruff is run in the presence of global installations and multiple virtual environments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2022-11-05 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vikigenius">@vikigenius</a> on 2022-11-07 19:07</div>
+            <div class="timeline-body"><p>@charliermarsh upon further testing I have learned that ruff does not actually support calling it as a module</p>
+<p>For eg: <code>python -m flake8 &lt;src&gt;</code> works but <code>python -m ruff &lt;src&gt;</code> would complain about <code>no module named ruff</code></p>
+<p>Do you plan on supporting <code>python -m ruff</code> usage? I can create a separate issue for that.</p>
+<p>All it needs is for there to actually be a <code>ruff</code> module that is the main entry point. For example flake8 has a top level <code>flake8</code> package and the following file https://github.com/PyCQA/flake8/blob/main/src/flake8/<strong>main</strong>.py that allows <code>python -m flake8</code> usage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vikigenius">@vikigenius</a> on 2022-11-08 05:36</div>
+            <div class="timeline-body"><p>Actually never mind I just realized that ruff is installed as just an <code>executable</code> and not a python module, thus there is no way to support <code>python -m</code>, still the concerns about python version etc. hold and should be documented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-08 14:30</div>
+            <div class="timeline-body"><p>Sorry for the delay here. Yeah, right now we're just shipping the binary and not an actual Python module. We could change this! It's totally possible for us to ship a Python module (in fact, I want to ship a Python API for the Ruff API too), it just adds a bit of complication so I've been putting it off.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-08 14:30</div>
+            <div class="timeline-body"><p>Let's create a separate issue for <code>python -m ruff</code>, and use this for documenting target version support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/658.html">astral-sh/ruff#658</a> on 2022-11-08 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/659.html">astral-sh/ruff#659</a> on 2022-11-08 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Document behavior and support around python version and python -m option" to "Document behavior and support around python version" by @charliermarsh on 2022-11-08 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-11-09 05:45</div>
+            <div class="timeline-body"><blockquote>
+<p>it just adds a bit of complication so I've been putting it off.</p>
+</blockquote>
+<p>Could you please elaborate on that? I've done some reading and doing #658 and #659 seems doable, maturin doesn't yet support building one wheel with both a binary and a library:</p>
+<p>https://github.com/PyO3/maturin/issues/368</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2022-11-09 09:03</div>
+            <div class="timeline-body"><p>You don't need to ship both a binary and a library to support <code>python -m ruff</code>, you can add a <code>__main__.py</code> and <code>execv</code> the ruff executable.</p>
+<p>For example, https://github.com/PyO3/maturin/blob/main/maturin/<strong>main</strong>.py</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-09 14:47</div>
+            <div class="timeline-body"><p>@squiddy - Interesting, I think I'd just assumed it was possible to build a single wheel for both a binary and a library. That's good to know. It seems from the issue that it may be possible to do at some point? I believe Maturin now supports shipping multiple <em>binaries</em> in the same wheel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-09 14:49</div>
+            <div class="timeline-body"><p>@messense - Naive question, but in that scheme, can users still execute the Ruff executable directly? Or does invocation always go through Python?</p>
+<p>In other words: would <code>ruff</code> still work, or would users <em>have</em> to use <code>python -m ruff</code>? If the former, would calling <code>ruff</code> start a Python interpreter to call through to the Ruff executable? Or would it call the executable directly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2022-11-09 14:54</div>
+            <div class="timeline-body"><p><code>ruff</code> still works as long as Python <code>scripts</code> directory is in <code>PATH</code>, it's same as current setup, no Python interpreter is involved when invoking <code>ruff</code> directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tekumara">@tekumara</a> on 2022-11-21 00:38</div>
+            <div class="timeline-body"><p>IIUC <code>target_version</code> is mostly used by the pyupgrade checks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/934.html">astral-sh/ruff#934</a> on 2022-11-28 04:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-28 04:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-lsp/python-lsp-ruff/pulls/13.html">python-lsp/python-lsp-ruff#13</a> on 2023-02-04 16:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:06 UTC
+    </footer>
+</body>
+</html>

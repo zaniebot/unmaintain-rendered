@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to handle platform variants like cuda in workspaces - astral-sh/uv #7045</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to handle platform variants like cuda in workspaces</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7045">#7045</a>
+        opened by <a href="https://github.com/PhilipVinc">@PhilipVinc</a>
+        on 2024-09-04 20:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on 2024-09-04 20:31</div>
+            <div class="timeline-body"><p>Hi. I'm evaluating the use of uv, which looks amazing, for some of our data science needs.</p>
+<p>We have a monorepo that we use for all our projects, which depends on <code>jax</code>.
+I would like to migrate it to an uv workspace.</p>
+<p>However the way we currently use it is that on our personal machines (Mac) we simply depend on jax, while when running on HPC computers we want to depend on <code>jax[cuda]</code>.
+I'm not sure how to handle this on uv's side. Adding <code>jax[cuda]</code> makes the project unresolvable on Mac.
+But simply adding <code>jax</code> is not enough on the other machines.</p>
+<p>(To further complicate the situation, we sometimes run it on some AMD machines where we would like to depend on custom wheels from <code>https://github.com/ROCm/jax/releases/download/rocm-jaxlib-v0.4.30/jaxlib-0.4.30+rocm611-cp310-cp310-manylinux2014_x86_64.whl</code>, but we can set this aside for now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 23:31</div>
+            <div class="timeline-body"><p>Hi!</p>
+<blockquote>
+<p>Adding <code>jax[cuda]</code> makes the project unresolvable on Mac.</p>
+</blockquote>
+<p>Do you mean: there's no valid resolution, or that it can't be resolved on a Mac machine, i.e., the project can't be built?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-04 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plainerman">@plainerman</a> on 2024-10-04 21:58</div>
+            <div class="timeline-body"><p>I would like to chip in here because this is something I (and a lot of other data scientists/researchers) need. As @PhilipVinc already said, a typical use case is to install the jax cuda version (or pytorch cuda version or whatever) if cuda is available on the system, otherwise one wants to install the CPU version (usually a different package). This behavior is different whether you are on an x86 machine or Mac, so I would like to outline here what happens when you try to add the dependencies.</p>
+<p>If you do uv add 'jax[cuda]' on:</p>
+<ol>
+<li><p>An x86 system with cuda supported. Everything works fine and the package is installed.</p>
+</li>
+<li><p>On an x86 system with no cuda installed. It installs the jax cuda package just fine but all operations are executed on CPU. This is in principle okay, but the jax[cuda] package is quite large. So the best solution would be to install jax instead of jax[cuda].</p>
+</li>
+<li><p>On an apple silicon mac, the following happens:</p>
+</li>
+</ol>
+<pre><code>error: distribution jax-cuda12-plugin==0.4.34 @ registry+https://pypi.org/simple can't be installed because it doesn't have a source distribution or wheel for the current platform
+</code></pre>
+<p>Meaning that the jax developers have not published a cuda wheel for mac (only jax). Which makes sense because cuda does not work on mac.</p>
+<hr />
+<p>Meaning it behaves differently depending on the system. What one could do (but feels hacky) is to run <code>nvcc --version</code> and see if this returns 0. If cuda is installed, this program is installed with it.</p>
+<p>I am not sure how one would include this check into the dependencies and there are for sure better ways to do this. But I am just not familiar enough with uv or python packaging in general. Any solution or workaround would be much appreciated.</p>
+<p>If there is anything I can run or help with, please let me know. I am eager to find a solution (even if it is hacky for now)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plainerman">@plainerman</a> on 2024-10-08 11:54</div>
+            <div class="timeline-body"><p>A very rudimentary version would be to have the following dependencies based on <a href="https://peps.python.org/pep-0508/">PEP508</a></p>
+<pre><code class="language-toml">dependencies = [
+    &quot;jax; platform_system == 'Darwin'&quot;,
+    &quot;jax[cuda]; platform_system != 'Darwin'&quot;,
+]
+</code></pre>
+<p>But this does not check if cuda is installed and available. So if you are not developing on a Mac, this does not add anything.</p>
+<p>Being able to run a command like <code>nvcc --version</code> could solve this problem. Any different ideas or suggestions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-10-21 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aschleck">@aschleck</a> on 2025-02-07 19:33</div>
+            <div class="timeline-body"><p>Another related usecase: on Linux TPU machines we want <code>jax[tpu]</code> (which we sniff using <code>ps ax | grep '[t]pu.googleapis.com'</code>) whereas for the remainder of Linux machines we want <code>jax[cuda]</code>. I don't see any good way to deal with this at the moment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mstarodub">@mstarodub</a> on 2025-06-30 18:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Another related usecase: on Linux TPU machines we want <code>jax[tpu]</code> (which we sniff using <code>ps ax | grep '[t]pu.googleapis.com'</code>) whereas for the remainder of Linux machines we want <code>jax[cuda]</code>. I don't see any good way to deal with this at the moment</p>
+</blockquote>
+<p>maybe something like <code>&quot;jax[tpu]; sys_platform != 'darwin' and 'gcp' in platform_release&quot;</code>?
+need something to identify the gcp machine from uname -a:
+https://packaging.python.org/en/latest/specifications/dependency-specifiers/#environment-markers</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

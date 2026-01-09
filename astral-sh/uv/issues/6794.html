@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade dependencies in `pyproject.toml` (`uv upgrade`) - astral-sh/uv #6794</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Upgrade dependencies in `pyproject.toml` (`uv upgrade`)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/6794">#6794</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2024-08-29 06:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-08-29 06:28</div>
+            <div class="timeline-body"><h1>this will update the version pins in the pyproject.toml file</h1>
+<p>prior art:</p>
+<ul>
+<li>deno: https://deno.com/blog/v2.2#dependency-management</li>
+<li>poetry: https://github.com/MousaZeidBaker/poetry-plugin-up</li>
+<li>npm: https://docs.npmjs.com/cli/v10/commands/npm-update<ul>
+<li>npm-check-updates: https://www.npmjs.com/package/npm-check-updates</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-py">&gt; uv upgrade
+upgraded 10 dependencies in 0.001 seconds 🚀
+</code></pre>
+<p>why? when i want to update all the dependencies in a project, it can be tedious to manually search for and update each and every dependency. additionally, for application projects (not libraries), i like to be able to squizz the pyproject file for an easy overview of which dependencies are actually installed, not just some possible range</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanscain">@nathanscain</a> on 2024-08-29 12:50</div>
+            <div class="timeline-body"><p>Does <code>uv sync</code> cover this use case?</p>
+<p>Also, I'm pretty sure dependencies will also be updated during every <code>uv run</code> call by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bjorhn">@bjorhn</a> on 2024-08-29 12:53</div>
+            <div class="timeline-body"><p>I don't think uv sync can bump the pinned versions of every dependency to the latest available version, which I believe is what the issue creator is asking about. uv sync just downloads modules that match the pin, it doesn't change the pin.</p>
+<p>This topic always ends up being confusing, people have different definitions of what it means to update or upgrade a dependency. 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanscain">@nathanscain</a> on 2024-08-29 12:59</div>
+            <div class="timeline-body"><p>Ahh, yes <code>uv sync</code> updates the environments but not the install specs.</p>
+<p>Would it be recommended to not pin exact dependencies in the <code>pyproject.toml</code> - instead to use the lock file for tracking that?</p>
+<p><code>pyproject.toml</code> should track compatibility and <code>uv.lock</code> should track exact versions for deployments/reproducibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bjorhn">@bjorhn</a> on 2024-08-29 13:04</div>
+            <div class="timeline-body"><p>I suspect a lot of teams have a similar workflow to my team, which most project tooling has poor support for.</p>
+<p>In the pre-Dependabot days, once a month or so we'd open up the project file on one screen and pypi on the other, then manually bump all the versions to the latest we could find. Then we'd install everything, read release notes, check what broke, and perhaps go back a version or two for some of the dependencies (which is why unpinning all the deps wouldn't work). After that we'd generate a new lock file.</p>
+<p>Having an upgrade command would remove the manual labor of having to look up all the versions and editing the file for each individual dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mazyod">@Mazyod</a> on 2024-08-29 15:22</div>
+            <div class="timeline-body"><p>Poetry has a nice workflow by using <code>poetry show --outdated</code> rather than opening PyPI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2024-08-29 15:57</div>
+            <div class="timeline-body"><p><code>uv upgrade-interactive</code> would also be great, like yarn (v1):</p>
+<img width="748" alt="Screenshot 2024-08-29 at 18 57 22" src="https://github.com/user-attachments/assets/3022b134-8249-4560-98a6-c89e6a477dcc">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pythonweb2">@pythonweb2</a> on 2024-08-29 16:20</div>
+            <div class="timeline-body"><p>Use <code>uv sync -U</code> to update packages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pythonweb2">@pythonweb2</a> on 2024-08-29 16:20</div>
+            <div class="timeline-body"><p>Although I will note that it would be nice to be able to see which packages are outdated, similar to <code>pip list --outdated</code> or the <code>poetry show --outdated</code> command which does the same thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2024-08-30 05:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Although I will note that it would be nice to be able to see which packages are outdated,</p>
+</blockquote>
+<p>That's tracked in #2150.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7019.html">astral-sh/uv#7019</a> on 2024-09-04 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8585.html">astral-sh/uv#8585</a> on 2024-10-26 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../johnthagen/python-blueprint/issues/238.html">johnthagen/python-blueprint#238</a> on 2024-10-28 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2024-10-28 18:32</div>
+            <div class="timeline-body"><p>Like @KotlinIsland said, especially for <em>applications</em> it's really nice to be able to browse narrow ranges of your <em>top</em> level dependencies within <code>pyproject.toml</code> and have a tool automatically bump them for you so you don't have to go to PyPI and look at each top level dependency to see what the latest version is.</p>
+<p>It's also important to be able to skip dependencies that the user has pinned to a specific version in <code>pyproject.toml</code> so that if you know you can't upgrade past a version, you can pin it in <code>pyproject.toml</code> until the issue is resolved upstream.</p>
+<p>The old <code>poetryup</code> plugin had a <code>--skip-exact</code> flag for this</p>
+<ul>
+<li>https://github.com/MousaZeidBaker/poetryup?tab=readme-ov-file#usage</li>
+</ul>
+<p>For more prior art, see <code>npm-check-updates</code></p>
+<ul>
+<li>https://www.npmjs.com/package/npm-check-updates</li>
+</ul>
+<p>It has a nice output UI:</p>
+<p><img src="https://github.com/user-attachments/assets/1ede6cb0-20d9-472f-967e-a5a78f6c5868" alt="image" /></p>
+<p>(Long) discussion from the same feature requested in Poetry</p>
+<ul>
+<li>https://github.com/python-poetry/poetry/issues/461</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krishan-patel001">@krishan-patel001</a> on 2024-11-01 15:17</div>
+            <div class="timeline-body"><p>I agree this would be a really helpful feature, especially useful in PRs for tracking version increments. Its a lot easier to see these in pyproject.toml than a lock file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daeh">@daeh</a> on 2024-11-18 00:21</div>
+            <div class="timeline-body"><p>I'm also a big fan of yarn's <code>yarn upgrade-interactive</code> for interactively updating dependency versions in <code>package.json</code> and would love to see similar <code>uv</code> functionality for updating dependency versions in <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zanieb/uv/issues/6.html">zanieb/uv#6</a> on 2024-11-26 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9452.html">astral-sh/uv#9452</a> on 2024-11-26 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "(🎁) add an `upgrade` command" to "Add a command to "upgrade" dependency constraints in the `pyproject.toml`" by @zanieb on 2024-11-26 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1419.html">astral-sh/uv#1419</a> on 2024-12-05 03:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yhoiseth">@yhoiseth</a> on 2024-12-05 11:08</div>
+            <div class="timeline-body"><p>I use <a href="https://gist.github.com/yhoiseth/c80c1e44a7036307e424fce616eed25e">this tiny script</a>. Works like a charm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6781.html">astral-sh/uv#6781</a> on 2024-12-09 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add a command to "upgrade" dependency constraints in the `pyproject.toml`" to "(🎁) Add a command to "upgrade" dependency constraints in the `pyproject.toml`" by @KotlinIsland on 2024-12-11 00:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6692.html">astral-sh/uv#6692</a> on 2024-12-23 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wgordon17">@wgordon17</a> on 2024-12-24 15:37</div>
+            <div class="timeline-body"><p>Is this intended to handle the following use case?</p>
+<pre><code>dependencies = [
+    &quot;httpx==0.27&quot;,
+]
+</code></pre>
+<p><code>uv upgrade</code></p>
+<pre><code>dependencies = [
+    &quot;httpx==0.28&quot;,
+]
+</code></pre>
+<p>(where <code>0.28.1</code> is the <em>latest</em> version of <code>httpx</code> as listed in <code>uv tree --outdated</code>)</p>
+<p>Would it require something like <code>uv upgrade --outdated [&lt;package&gt;]</code> or <code>uv upgrade --override [&lt;package&gt;]</code> or similar?</p>
+<p>Currently, even an ugly hack like</p>
+<p><code>uv tree --outdated -d1 | grep &quot;latest&quot; | sed -E 's/.*── ([^ ]*) .*latest: v(.*)\)/\1==\2/' | xargs -I {} uv lock --upgrade-package {}</code></p>
+<p>isn't working, because <code>uv lock --upgrade-packages</code> still attempts to satisfy the existing constraints. And the <code>uv remove</code>/<code>uv add</code> workaround doesn't address handling different dependency groups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yhoiseth">@yhoiseth</a> on 2024-12-25 14:48</div>
+            <div class="timeline-body"><p>@wgordon17</p>
+<blockquote>
+<p>[The] <code>uv remove</code>/<code>uv add</code> workaround doesn't address handling different dependency groups.</p>
+</blockquote>
+<p>You might be interested in @KotlinIsland’s <a href="https://gist.github.com/yhoiseth/c80c1e44a7036307e424fce616eed25e?permalink_comment_id=5335497#gistcomment-5335497">improved version</a>, as this should handle dependency groups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JakubDotPy">@JakubDotPy</a> on 2025-01-06 21:31</div>
+            <div class="timeline-body"><p>Would this count as using uv?</p>
+<p><code>uvx pdm update --unconstrained</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wgordon17">@wgordon17</a> on 2025-01-09 21:23</div>
+            <div class="timeline-body"><p>🤔 Does <code>--unconstrained</code> then write the difference back to <code>pyproject.toml</code>, i.e., the updated packages? Or is <code>pyproject.toml</code> now lagging behind?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Goldziher">@Goldziher</a> on 2025-01-10 05:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Would this count as using uv?</p>
+<p><code>uvx pdm update --unconstrained</code></p>
+</blockquote>
+<p>PDM is excruciatingly slow...</p>
+<p>The current work around with a script that uses UV to remove and readd deps is many times faster</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucebert">@lucebert</a> on 2025-01-23 19:14</div>
+            <div class="timeline-body"><p>+1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11027.html">astral-sh/uv#11027</a> on 2025-01-28 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11300.html">astral-sh/uv#11300</a> on 2025-02-06 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kedvall">@kedvall</a> on 2025-02-13 11:24</div>
+            <div class="timeline-body"><p>Any update on this feature request? We also used to rely on the poetry up plugin which worked well.</p>
+<p>This is really useful for top-level dependencies, we typically care about specific versions of these packages and it's very helpful to be able to bump this without having to manually go check if there's an update available for a given package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-13 15:40</div>
+            <div class="timeline-body"><p>Please don't ask for updates (see #9452) — we definitely post updates if we have them.</p>
+<p>We haven't started working on this. It's obviously high impact / priority, but so are lots of other things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zundertj">@zundertj</a> on 2025-02-16 13:56</div>
+            <div class="timeline-body"><p>The script posted above has been useful to me, but it does ignore pins and bounds, on purpose, whereas I was looking for something where I could selectively not upgrade using the existing <code>pyproject.toml</code> syntax (like the poetryup <code>--skip-exact</code> argument). I.e. specify dependency versions with <code>&gt;=</code> by default, and add pins or upper bounds if needed, whilst the tool handles bumping the minimum versions on <code>&gt;=</code>. So I coded up a small tool for the time being to do this, in case anyone finds it useful, you can find it here:  https://github.com/zundertj/uv-bump</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wikiped">@wikiped</a> on 2025-02-17 00:17</div>
+            <div class="timeline-body"><p>@wgordon17</p>
+<blockquote>
+<p>🤔 Does <code>--unconstrained</code> then write the difference back to <code>pyproject.toml</code>, i.e., the updated packages? Or is <code>pyproject.toml</code> now lagging behind?</p>
+</blockquote>
+<p><code>pyproject.toml</code> is updated (overwritten) with the latest resolved versions of the pinned packages.</p>
+<p><code>pdm update -h</code> for <code>--unconstrained</code>:</p>
+<blockquote>
+<p>-u, --unconstrained   Ignore the version constraints in pyproject.toml and overwrite with new ones from the resolution result</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11679.html">astral-sh/uv#11679</a> on 2025-02-23 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sanmai-NL">@sanmai-NL</a> on 2025-02-26 11:45</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<blockquote>
+<p>Please don't ask for updates (see <a href="https://github.com/astral-sh/uv/issues/9452">#9452</a>) — we definitely post updates if we have them.</p>
+<p>We haven't started working on this. It's obviously high impact / priority, but so are lots of other things.</p>
+</blockquote>
+<p>One could also say that this feature were better handled by an external tool, like <a href="https://docs.renovatebot.com/python/">Renovate</a>. That tool can update dependencies more broadly, and in more advanced ways. Work on the end of uv towards a universal lockfile or other such changes is more fruitful that crafting a CLI for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/softinio">@softinio</a> on 2025-02-26 17:40</div>
+            <div class="timeline-body"><p>As a stop gap do people just use the lock file for PR reviews of dependency changes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zundertj">@zundertj</a> on 2025-03-01 08:12</div>
+            <div class="timeline-body"><p>If you specify all your (direct) dependencies in <code>pyproject.toml</code> using pins (i.e. <code>==</code>), then the lock file can only change if someone has run <code>uv sync --upgrade</code> as, by default, <code>uv sync</code> will not upgrade if the current lock file satisfies the requirements in <code>pyproject.toml</code>. And it would only be dependencies of dependencies. If a PR comes in and updates a pinned version, then only that package version will change. So you would not need to review the lock file for your direct dependencies, the <code>pyproject.toml</code> is sufficient.</p>
+<p>On the other hand, if you have not all versions pinned in <code>pyproject.toml</code>, all bets are off basically. You may get upgrades and/or downgrades, and the lock file is the place where you can see what is happening on the PR. Unfortunately, because of the contents, it is not a an easy to read summary of &quot;package A moved from version Y to Z, package B got removed, package C was added with version X&quot;.</p>
+<p>I dont think it is too bad right now when it comes to reviewing PR's though, keeping <code>pyproject.toml</code> up to date is the more painful part.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-03-02 04:18</div>
+            <div class="timeline-body"><blockquote>
+<p>For more prior art, see <code>npm-check-updates</code></p>
+<pre><code>* https://www.npmjs.com/package/npm-check-updates</code></pre>
+</blockquote>
+<p>I'm a fan of <a href="https://www.npmjs.com/package/npm-check-updates">npm-check-updates</a> personally, especially because you can filter via <code>-t</code> for <code>major</code>, <code>minor</code>, and <code>patch</code> changes at direct and transitive layers and bump at the semver tiers which for application development is quite nice. I originally opened https://github.com/astral-sh/uv/issues/2745 with the desire of one day having semver filtering in uv for this kind of purpose.</p>
+<p>For poetry, I've used a combination of <code>poetry show --outdated</code> with <code>-T</code> to filter for direct dependencies. I've also used <a href="https://pypi.org/project/pip-check-updates/">pip-check-updates</a> in the past with <code>poetry export</code> and <code>uv</code>, but nothing quite like the ergonomics of ncu exists to my knowledge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11973.html">astral-sh/uv#11973</a> on 2025-03-05 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11509.html">astral-sh/uv#11509</a> on 2025-03-10 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12190.html">astral-sh/uv#12190</a> on 2025-03-17 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kedvall">@kedvall</a> on 2025-03-17 22:05</div>
+            <div class="timeline-body"><p>Hi guys, as a temporary solution I've wrote a small program to sync the minimum versions of top-level dependencies.
+Please note that since it's intended to be a temporary solution it's not very robust or feature-rich and there's a few known issues I haven't had time to solve.</p>
+<p>Anyways, hope it might be helpful! Feel free to check it out: https://github.com/kedvall/pysync.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/domWalters">@domWalters</a> on 2025-03-21 15:42</div>
+            <div class="timeline-body"><blockquote>
+<p>I suspect a lot of teams have a similar workflow to my team, which most project tooling has poor support for.</p>
+<p>In the pre-Dependabot days, once a month or so we'd open up the project file on one screen and pypi on the other, then manually bump all the versions to the latest we could find. Then we'd install everything, read release notes, check what broke, and perhaps go back a version or two for some of the dependencies (which is why unpinning all the deps wouldn't work). After that we'd generate a new lock file.</p>
+<p>Having an upgrade command would remove the manual labor of having to look up all the versions and editing the file for each individual dependency.</p>
+</blockquote>
+<p>For anyone using <code>nvim</code>, there is a completer that might speed up this process called <a href="https://github.com/vrslev/cmp-pypi"><code>cmp-pypi</code></a> which will autocomplete available versions of a package read from the PyPi index.</p>
+<p>Basically just <code>curl</code>s the index for the package and pulls out the available versions.</p>
+<p>I recently improved it by adding the ability to search the optional dependencies.</p>
+<p>Note: It doesn't currently sort into version order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Goldziher">@Goldziher</a> on 2025-03-21 15:53</div>
+            <div class="timeline-body"><p>So, I used a variation of the script discussed above for this. But now I am working inside a monorepo with multiple UV modules, and writing a script for this has become increasingly complex.</p>
+<p>I think this has to be a part of the built-in uv command, and I frankly don't see why this should be complex - it's rather smallish.</p>
+<p>The question is, is there interest and willingness from the uv maintainers? If there is, I or someone else can contribute to this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../johnthagen/python-blueprint/issues/95.html">johnthagen/python-blueprint#95</a> on 2025-03-21 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12349.html">astral-sh/uv#12349</a> on 2025-03-22 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aretrace">@aretrace</a> on 2025-03-25 02:47</div>
+            <div class="timeline-body"><p>Interested in this as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6783.html">astral-sh/uv#6783</a> on 2025-04-09 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12789.html">astral-sh/uv#12789</a> on 2025-04-09 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vrslev/cmp-pypi/issues/5.html">vrslev/cmp-pypi#5</a> on 2025-04-13 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdamsma">@tdamsma</a> on 2025-04-15 09:48</div>
+            <div class="timeline-body"><p>I bit gross, but this bash command works for me. It removes and then adds all dependencies</p>
+<pre><code class="language-bash">deps=$(sed -n '/^\s*dependencies\s*=\s*\[/,/^\s*]/p' pyproject.toml | \
+  grep -vE '^\s*dependencies\s*=\s*\[|^\s*\]' | \
+  sed -E 's/[&quot;,]//g' | \
+  sed -E 's/[&lt;&gt;=!~].*//' | \
+  grep -vE '^\s*$' | \
+  xargs)
+
+bash -c &quot;uv remove $deps &amp;&amp; uv add $deps&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reneleonhardt">@reneleonhardt</a> on 2025-04-15 10:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I bit gross, but this bash command works for me. It removes and then adds all dependencies</p>
+</blockquote>
+<p>Nice! Now optional dependencies would be good (every line is a list) 😅
+https://github.com/pipecat-ai/pipecat/blob/main/pyproject.toml#L41</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "(🎁) Add a command to "upgrade" dependency constraints in the `pyproject.toml`" to "Add a command to upgrade dependencies in `pyproject.toml`" by @konstin on 2025-04-30 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-04-30 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2025-04-30 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9084.html">astral-sh/uv#9084</a> on 2025-05-03 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add a command to upgrade dependencies in `pyproject.toml`" to "Upgrade dependencies in `pyproject.toml` (`uv upgrade`)" by @konstin on 2025-05-04 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trevorstr">@trevorstr</a> on 2025-05-07 12:10</div>
+            <div class="timeline-body"><p>I just tried to manually change a dependency version in <code>pyproject.toml</code> and then executed <code>uv run</code>, and it still used the old package version.</p>
+<p>I updated <code>browser-use</code> to include the version specifier, whereas previously it didn't.</p>
+<pre><code>dependencies = [
+    &quot;boto3&gt;=1.37.36&quot;,
+    &quot;browser-use==0.1.45&quot;,
+    &quot;watchtower&gt;=3.4.0&quot;,
+]
+</code></pre>
+<p>After running <code>uv run &lt;script&gt;</code>, I checked the <code>./lib/python3.13/site-packages</code> directory, and the new package version was not in there.</p>
+<p>It's kind of deceiving (unintentionally) for <code>uv</code> to simply ignore the updated version specifier, and continue using the old version, when the developer has explicitly updated <code>pyproject.toml</code>.</p>
+<p>That is my use case for needing the <code>upgrade</code> sub-command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Goldziher">@Goldziher</a> on 2025-05-07 13:00</div>
+            <div class="timeline-body"><p>the uv-bump solution above works pretty well. Perhpas it can be published?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reneleonhardt">@reneleonhardt</a> on 2025-05-07 14:25</div>
+            <div class="timeline-body"><blockquote>
+<p>After running <code>uv run &lt;script&gt;</code>, I checked the <code>./lib/python3.13/site-packages</code> directory, and the new package version was not in there.</p>
+</blockquote>
+<p>Do you mean:</p>
+<ul>
+<li>uv.lock contained browser-use==old.version.x (&lt;0.1.45)</li>
+<li>pyproject.toml changed from &quot;browser-use&quot; to &quot;browser-use==0.1.45&quot; (manual update)</li>
+<li>uv run didn't change uv.lock to browser-use==0.1.45</li>
+<li>[Please don't use the latest version, then you will see better if your constraint has been respected. For example <code>0.1.44</code>]</li>
+</ul>
+<p>I don't think uv run changes the lockfile, did you call <code>uv lock --check</code> and <code>uv lock --upgrade-package browser-use</code>?
+https://docs.astral.sh/uv/reference/cli/#uv-lock--upgrade-package</p>
+<p>There should be no other &quot;output&quot; files laying around (only pyproject.toml and uv.lock).
+My problem was that when requirements.txt existed while I was exporting it (overwriting the whole file), uv wouldn't update minor versions even if they were allowed by constraints.</p>
+<p>And pay attention to the log output, other dependencies can influence the outcome (preventing updates).
+So in your case a single dependency browser-use would be best 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lauszus">@Lauszus</a> on 2025-05-08 20:59</div>
+            <div class="timeline-body"><p>Here is a shell script for upgrading all dependencies:</p>
+<pre><code class="language-bash">#!/bin/bash -e
+
+# Allow to specify a directory as the first argument
+dir=.
+if [ $# -gt 0 ]; then
+  dir=$1
+fi
+
+# Sync the current project
+uv --directory &quot;$dir&quot; sync --refresh --locked
+
+# Get all the outdated dependencies
+outdated=&quot;$(uv --directory &quot;$dir&quot; pip list --outdated --format json | jq -r '.[] | {name,version,latest_version} | join(&quot; &quot;)')&quot;
+
+# Iterate over all of them
+upgraded=false
+while IFS= read -r line; do
+    [ -z &quot;$line&quot; ] &amp;&amp; continue
+    IFS=' ' read -r name version latest_version &lt;&lt;&lt; &quot;$line&quot;
+    # Check if they are actually present in pyproject.toml or a dependency of a dependency
+    if grep -q &quot;$name&quot; &quot;$dir/pyproject.toml&quot;; then
+        echo &quot;Upgrading $name $version -&gt; $latest_version&quot;
+        sed -i -E &quot;s/$name( ?[~=&gt;]?[&gt;=] ?)$version/$name\1$latest_version/&quot; &quot;$dir/pyproject.toml&quot;
+        upgraded=true
+    fi
+done &lt;&lt;&lt; &quot;$outdated&quot;
+
+# Re-lock the project if a dependency was upgraded
+if $upgraded; then
+    uv --directory &quot;$dir&quot; lock
+fi
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssteinerx">@ssteinerx</a> on 2025-05-09 04:40</div>
+            <div class="timeline-body"><p>@Lauszus -- great idea, but unfortunately, it misses what is, I would think, a pretty common case.</p>
+<p>If the <em>installed</em> version is the latest (because the version spec in <code>pyproject.toml</code> allows it), then <code>uv pip list --outdated</code> won't pick it up since the latest version <em>is</em> in the <code>.venv</code>.</p>
+<p>For example, if  <code>&quot;pydantic&gt;=2.8.0&quot;</code>, is in <code>pyproject.toml</code>, then <code>uv sync --refresh</code> will upgrade to <code>&quot;pydantic=2.11.4&quot;</code> in the <code>.venv</code>.</p>
+<p><code>uv pip list --outdated</code>  won't pick it up because the <code>.venv</code> <em>has</em> the latest version and, so, nothing will happen.</p>
+<p>@tdamsma's script above will replace the old version <em>spec</em> with the new in this case (by removing, then reinstalling), but that might not always be right, either.</p>
+<p>I think the only reasonable way to really do this is to snag all the version specs out of pyproject.toml, snag them from a refreshed <code>.venv</code>, compare, then ask the user what they want to do (or have a config for this behaviour).</p>
+<p>Also, there are some ambiguities around how to update the spec e.g. do you use <code>&gt;=</code> just because that's what was there before, or do you restrict it to <code>=</code> to make sure the update check is more obvious/accurate/narrower in the future?</p>
+<p>Regardless, I don't know about you, but I sure wouldn't want to do that in a bash script ;-).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lauszus">@Lauszus</a> on 2025-05-09 08:38</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/Lauszus">@Lauszus</a> -- great idea, but unfortunately, it misses what is, I would think, a pretty common case.</p>
+<p>If the <em>installed</em> version is the latest (because the version spec in <code>pyproject.toml</code> allows it), then <code>uv pip list --outdated</code> won't pick it up since the latest version <em>is</em> in the <code>.venv</code>.</p>
+<p>For example, if <code>&quot;pydantic&gt;=2.8.0&quot;</code>, is in <code>pyproject.toml</code>, then <code>uv sync --refresh</code> will upgrade to <code>&quot;pydantic=2.11.4&quot;</code> in the <code>.venv</code>.</p>
+<p><code>uv pip list --outdated</code> won't pick it up because the <code>.venv</code> <em>has</em> the latest version and, so, nothing will happen.</p>
+<p><a href="https://github.com/tdamsma">@tdamsma</a>'s script above will replace the old version <em>spec</em> with the new in this case (by removing, then reinstalling), but that might not always be right, either.</p>
+<p>I think the only reasonable way to really do this is to snag all the version specs out of pyproject.toml, snag them from a refreshed <code>.venv</code>, compare, then ask the user what they want to do (or have a config for this behaviour).</p>
+<p>Also, there are some ambiguities around how to update the spec e.g. do you use <code>&gt;=</code> just because that's what was there before, or do you restrict it to <code>=</code> to make sure the update check is more obvious/accurate/narrower in the future?</p>
+<p>Regardless, I don't know about you, but I sure wouldn't want to do that in a bash script ;-).</p>
+</blockquote>
+<p>Ahh I see your point. It won't work for <code>&gt;=</code> or <code>&gt;</code>. I don't use that for my application, so it's not a problem in my case.</p>
+<p>This was just a quick script I did to get it working for me since Dependabot keeps breaking, so wanted to share it in case somebody else might find it useful :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zundertj">@zundertj</a> on 2025-05-10 06:15</div>
+            <div class="timeline-body"><blockquote>
+<p>the uv-bump solution above works pretty well. Perhpas it can be published?</p>
+</blockquote>
+<p>I have published it here: https://pypi.org/project/uv-bump/.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zundertj">@zundertj</a> on 2025-05-10 07:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the only reasonable way to really do this is to snag all the version specs out of pyproject.toml, snag them from a refreshed <code>.venv</code>, compare, then ask the user what they want to do (or have a config for this behaviour).</p>
+<p>Also, there are some ambiguities around how to update the spec e.g. do you use <code>&gt;=</code> just because that's what was there before, or do you restrict it to <code>=</code> to make sure the update check is more obvious/accurate/narrower in the future?</p>
+</blockquote>
+<p>This is why in uv-bump I decided to define dependencies with <code>&gt;=</code> and let the UV resolver do its thing. If you want to pin, you can define a dependency version with <code>==</code> instead, and it will pin as intended. Same for holding off a major version upgrade, you can just say <code>plotly&gt;=5.1.0,&lt;6</code> with the normal syntax and version 6 wont be installed. The versions on <code>&gt;=</code> in the <code>pyproject.toml</code> will still be updated, i.e. the whole purpose is to upgrade and not allow falling back to older versions in the future, so it is still possible to see which version is actually used, it is just slightly less pleasant on the eyes than <code>==</code>. In return, it does completely remove the ambiguity on upgrading and does not require a separate interface where you need to ask the user what to do for each dependency, i.e. does <code>==</code> mean &quot;please upgrade&quot; or does <code>==</code> mean &quot;please pin on this version&quot; for each dependency in the context of an &quot;upgrade&quot; command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sterliakov">@sterliakov</a> on 2025-05-15 20:34</div>
+            <div class="timeline-body"><p>I'd appreciate a workflow similar to <code>pnpm update -i -L</code>: <strong>i</strong>nteractive, ignoring version constraints. That's extremely helpful when you have to deal with a pyproject.toml with arbitrary constraints: you can just compare &quot;current&quot; vs &quot;latest&quot; for every package and pick packages you're going to update now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BrodaNoel">@BrodaNoel</a> on 2025-05-18 01:27</div>
+            <div class="timeline-body"><p>Guys... Instead of creating external dependencies for this, please send a PR on this project!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sakalys">@sakalys</a> on 2025-05-22 08:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Use <code>uv sync -U</code> to update packages</p>
+</blockquote>
+<p>What's wrong with this approach?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matdibu">@matdibu</a> on 2025-05-22 08:49</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Use <code>uv sync -U</code> to update packages</p>
+</blockquote>
+<p>What's wrong with this approach?</p>
+</blockquote>
+<p>it will only update <code>uv.lock</code>, not the constraints in <code>pyproject.toml</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PrefectHQ/prefect/issues/17850.html">PrefectHQ/prefect#17850</a> on 2025-05-22 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13613.html">astral-sh/uv#13613</a> on 2025-05-23 08:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13632.html">astral-sh/uv#13632</a> on 2025-05-26 10:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/richardkmichael">@richardkmichael</a> on 2025-06-09 19:05</div>
+            <div class="timeline-body"><p>I would find it convenient if:</p>
+<ul>
+<li><p><code>uv</code> commands with <code>--upgrade</code> (<code>sync</code>, <code>lock</code>, <code>tree</code>)  could update the lower-bounded spec in <code>pyproject.toml</code> -- to keep the proj file authoritative (for anyone not using <code>uv</code>) and for clarity when reading it</p>
+</li>
+<li><p><code>uv</code>commands with <code>--outdated</code> indicated the highest version permitted by the <code>project.toml</code> spec -- reminds me if the spec itself needs updating, since <code>uv sync --upgrade</code> does nothing, but is <em>silent</em> once the package is at the upper-bound of the spec despite the package being out-of-date</p>
+</li>
+</ul>
+<p>e.g.,</p>
+<p><code>pyproject.toml</code>:</p>
+<pre><code>dependencies = [
+  &quot;fastmcp&gt;=2.5.1,&lt;2.7.0&quot;
+]
+</code></pre>
+<pre><code># Here, edit pyproject.toml to &quot;fastmcp&gt;=2.6.1,&lt;2.7.0&quot;
+$ uv sync --upgrade
+Resolved 43 packages in 295ms
+Prepared 11 packages in 111ms
+Uninstalled 7 packages in 24ms
+Installed 11 packages in 13ms
+ - fastmcp==2.5.2
+ + fastmcp==2.6.1
+
+$ uv tree --outdated --depth 1
+Resolved 43 packages in 1ms
+mcp-toolbox v0.1.0
+├── fastmcp v2.6.1 (latest: v2.7.1)   # Here, also indicate the spec prohibits the latest version
+
+# Here, notify if latest versions are spec prohibited
+$ uv sync --upgrade
+Resolved 43 packages in 246ms
+Audited 42 packages in 0.22ms
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13934.html">astral-sh/uv#13934</a> on 2025-06-09 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reneleonhardt">@reneleonhardt</a> on 2025-06-09 20:40</div>
+            <div class="timeline-body"><p>If someone wants to test my example implementation: #13934</p>
+<pre><code>uv upgrade --dry-run --recursive --filter=prod,dev,optional,groups --allow=1,2,3,4 # (major, minor, patch, build number)
+</code></pre>
+<p><img width="997" alt="Image" src="https://github.com/user-attachments/assets/5c3643ea-e23c-45f6-9970-53a359e81e9e" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eruvanos">@eruvanos</a> on 2025-06-13 08:04</div>
+            <div class="timeline-body"><p>I just found this, the idea to use the <code>uv.lock</code> to identify the updated versions seems like a good idea in our setup, but we also do not have constraints, which provide upper bounds.
+https://gist.github.com/yamanahlawat/270a120dd1981010a9336b871f80a39b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reneleonhardt">@reneleonhardt</a> on 2025-06-13 11:25</div>
+            <div class="timeline-body"><blockquote>
+<p>I just found this, the idea to use the <code>uv.lock</code> to identify the updated versions seems like a good idea in our setup, but we also do not have constraints, which provide upper bounds. https://gist.github.com/yamanahlawat/270a120dd1981010a9336b871f80a39b</p>
+</blockquote>
+<p>That's no upgrade assuming uv.lock has been updated from the same pyproject.toml constraints the last time.
+But it could &quot;upgrade&quot; lower bounds if it would have been designed that way, i.e. <code>&gt;1</code> becomes <code>&gt;2</code> if uv.lock contains 2.3.4.
+If you want to try upgrading you could checkout my example implementation #13934.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../aws/aws-codebuild-docker-images/issues/779.html">aws/aws-codebuild-docker-images#779</a> on 2025-06-13 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jbsinger-jpg/issue_tracker/issues/2.html">jbsinger-jpg/issue_tracker#2</a> on 2025-07-12 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dependabot/dependabot-core/issues/12788.html">dependabot/dependabot-core#12788</a> on 2025-08-07 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2025-08-08 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15383.html">astral-sh/uv#15383</a> on 2025-08-19 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15632.html">astral-sh/uv#15632</a> on 2025-09-05 12:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7515.html">astral-sh/uv#7515</a> on 2025-10-17 00:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../equinor/dataorc/pulls/30.html">equinor/dataorc#30</a> on 2025-11-04 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/m-walters">@m-walters</a> on 2025-11-10 09:50</div>
+            <div class="timeline-body"><p>Bumping this.
+Another use case: Returning to an old project (or any project in general) and you want to upgrade the project and then have these versions reflected in the <code>pyproject</code>. Of course, this should probably by default only operate on <code>&gt;</code> and <code>&gt;=</code> packages.</p>
+<p>It's fine if this is two commands, where e.g. the lock is upgraded, but then we need a command that updates the <code>pyproject</code> from the lock.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vdboor">@vdboor</a> on 2025-11-11 09:12</div>
+            <div class="timeline-body"><p>Another prior art in Python:</p>
+<ul>
+<li>https://github.com/alanhamlett/pip-update-requirements (pur)</li>
+<li>https://pypi.org/project/uppd/ (works for <code>pyproject.toml</code>!)</li>
+</ul>
+<pre><code>$ pur -r requirements.txt
+Updated flask: 0.9 -&gt; 1.0.2
+Updated sqlalchemy: 0.9.10 -&gt; 1.2.8
+Updated alembic: 0.8.4 -&gt; 0.9.9
+All requirements up-to-date.
+</code></pre>
+<p>It is really useful to be able to upgrade the base dependency list. Otherwise it becomes out of date with the actual required versions that <code>uv.lock</code> has. When my project requires new base versions, I want <code>pyproject.toml</code> to reflect that.</p>
+<p><code>pur</code> also has a simple but effective solution to respect major/minor releases:</p>
+<pre><code>pur -r requirements.txt --patch=Django</code></pre>
+<p>That does upgrade Django, but only to new patch versions (e.g. 5.0.9 -&gt; 5.0.14 instead of upgrading to 5.1 / 6.0)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../janusheide/uppd/issues/33.html">janusheide/uppd#33</a> on 2025-11-11 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Quidge">@Quidge</a> on 2025-11-11 13:47</div>
+            <div class="timeline-body"><p>I've been subscribed to this issue for quite a while because I want it. But in the interim I've been using this slash command prompt with Claude Code to pretty good success once per week (for ~2 months now). I've set this up as a slash command (as <code>/dep-upgrade</code>). So I can pop in a CC session, run <code>/dep-upgrade</code>, wait a few minutes, and come back to my dependencies 'bumped' with the pyproject.toml file updated.</p>
+<p>A deterministic way to do most of this would be swell, but this has been working quite well in the interim (added bonus that it handles my pre-commit deps too).</p>
+<pre><code>---
+description: Upgrade dependencies in lock file and pyproject.toml
+allowed-tools: Read, Grep, Edit, Bash(uv sync:*), Bash(uv pip list), Bash(uv run pre-commit autoupdate), Bash(just format), Bash(just test-all)
+---
+
+1. Run `uv sync --upgrade --all-groups` to upgrade all dependencies
+2. Find all dependencies explicitly mentioned in the pyproject.toml file. Use `uv pip list` to show the packages that
+   are now installed.
+3. Update the minimum version constraints in pyproject.toml to match the exact versions from the `uv pip list` output
+   (e.g., change `&gt;=2,&lt;3` to `&gt;=2.4.0,&lt;3` if lockfile shows 2.4.0). If versions already match, skip to next step.
+4. Run `uv sync --all-groups` again to ensure the updated constraints work (skip if no changes were made)
+5. Run `uv run pre-commit autoupdate` to upgrade pre-commit hook versions
+6. Update pinned versions in pyproject.toml to match .pre-commit-config.yaml (ruff and sqlfluff must be kept in sync
+   between both files). If versions already match, skip to next step.
+7. Run `uv sync --all-groups` again to install the updated pinned versions (skip if no changes were made)
+8. Run `just format` and fix any formatting issues (run again if files were modified)
+9. Run `just test-all` to verify all tests still pass
+
+Important notes:
+
+- Pinned versions (with `==` like ruff and sqlfluff) must be kept in sync between pyproject.toml and
+  .pre-commit-config.yaml - update both files when pre-commit autoupdate changes them
+- Preserve all comments in pyproject.toml
+- Unless explicitly noted, DO NOT upgrade to pre-release or alpha versions. Upgrade only to stable versions.
+
+Files included in context:
+
+- @pyproject.toml
+- @.pre-commit-config.yaml
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomaszbk">@tomaszbk</a> on 2025-11-11 15:18</div>
+            <div class="timeline-body"><p>Most private application projects don’t need dependency ranges. In production, we always use the exact versions specified in uv.lock, so having different lower bounds in pyproject.toml just adds confusion: it makes us dig into uv.lock to find out what’s actually installed. It would be much clearer if the versions matched directly.</p>
+<p>Looking forward to seeing this addressed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelhwilliams">@samuelhwilliams</a> on 2025-11-24 08:34</div>
+            <div class="timeline-body"><p>Definitely continues to confuse me/catch me out that this isn't supported in <code>uv</code> yet 🙇</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timziebart">@timziebart</a> on 2025-11-25 14:33</div>
+            <div class="timeline-body"><p>Just came here looking for that exact feature. I would definitely love to have it, so it could make my life a lot easier :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/y2kbugger">@y2kbugger</a> on 2025-12-05 18:32</div>
+            <div class="timeline-body"><p>Friendly reminder that <code>uv pip list --outdated</code> gets you halfway there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alirex">@Alirex</a> on 2025-12-08 03:05</div>
+            <div class="timeline-body"><p>I created app <code>uv-upgrade</code> (in Python, with uv).</p>
+<p>https://github.com/Alirex/uv_upgrade</p>
+<p>It is created mainly as proof-of-concept for personal usage.</p>
+<p>But it can be useful for someone else.</p>
+<p>Now it supports:</p>
+<ul>
+<li><code>&gt;=</code> constraints (others are skipped)</li>
+<li>main <code>dependencies</code></li>
+<li><code>dependency-groups</code></li>
+<li>styles preserving (comments in TOML)</li>
+<li>auto-rollback (if <code>uv lock</code> after changing <code>pyproject.toml</code> have errors)</li>
+</ul>
+<p>It uses some actions from <code>uv</code> via subprocess.</p>
+<p>Extra information in readme.</p>
+<p>After installation (with uv) it can be run as simple as <code>uv-upgrade</code> in any directory with <code>pyproject.toml</code>.</p>
+<p>If you have any suggestions or issues, please create them in the GitHub repository.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zundertj/uv-bump/issues/7.html">zundertj/uv-bump#7</a> on 2025-12-10 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alirex">@Alirex</a> on 2025-12-10 12:33</div>
+            <div class="timeline-body"><p>I added some extra features.</p>
+<p>Also, I find out other similar implementations.</p>
+<p>Anyway, I put my solution to PyPI: https://pypi.org/project/uv-upx/</p>
+<p>I made a comparison with other solutions.</p>
+<p>My implementation now supports workspaces (1 <code>uv.lock</code>, many <code>pyproject.toml</code>) (in some way).
+Also, it automatically fixes &quot;no version&quot; dependencies.
+And have some extra features.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17113.html">astral-sh/uv#17113</a> on 2025-12-13 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17029.html">astral-sh/uv#17029</a> on 2025-12-13 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/calliecameron">@calliecameron</a> on 2025-12-19 17:08</div>
+            <div class="timeline-body"><p>I have a different implementation that always uses pinned packages, e.g. for an application - it would be useful if this was supported too.</p>
+<p>https://github.com/calliecameron/copier-template/blob/main/.template_files/uv_update_deps_internal.py</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alirex">@Alirex</a> on 2025-12-20 22:17</div>
+            <div class="timeline-body"><p>@calliecameron can you provide more details? Maybe some concrete example?</p>
+<p>I see that the provided implementation is reinstalling the dependencies from the root pyproject. So, comments relations can be lost.</p>
+<p>Maybe this tool will be enough for you: https://pypi.org/project/uv-upx/ (command <code>uv-upgrade</code>)</p>
+<p>It also preserves comments. Like here</p>
+<pre><code class="language-toml">dependencies = [
+    # Better classes and data validation
+    &quot;pydantic&gt;=2.12.5&quot;,
+    # TOML parser and writer with preserved formatting
+    &quot;tomlkit&gt;=0.13.3&quot;,
+    # CLI app framework
+    &quot;typer&gt;=0.20.0&quot;,
+]
+</code></pre>
+<p>And have some extra features.
+That, I hope, will be implemented in <code>uv upgrade</code> from <code>uv</code> :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/calliecameron">@calliecameron</a> on 2025-12-21 07:39</div>
+            <div class="timeline-body"><p>@Alirex for applications rather than libraries, I pin all my dependencies with <code>==</code>, and want them all to be updated with the new version also pinned with <code>==</code> - e.g. from <code>foo==0.1.0</code> to <code>foo==0.2.0</code>.</p>
+<p>Some earlier commenters seem to want this behaviour too. My implementation is specific to this use case, and shows how you can do this by combining a few existing UV commands - it doesn't try to be a general tool like uv-upx does (and is currently tied to my copier template rather than being a separate tool).</p>
+<p>I was just pointing out it would be useful for whatever eventually gets implemented in UV to support this use case, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2025-12-21 13:00</div>
+            <div class="timeline-body"><blockquote>
+<p>for applications rather than libraries, I pin all my dependencies with <code>==</code></p>
+</blockquote>
+<p>One issue with always using exact pinning in <code>pyproject.toml</code> is that then you can't distinguish between &quot;here's the version I use, update it&quot; and &quot;here's the version I use, <em>don't</em> update it, because I know newer versions are broken&quot;. Work with enough dependencies long enough and you are likely to run into this problem.</p>
+<p>That is part of the motivation on my comment earlier</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/6794#issuecomment-2442335752</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/y2kbugger">@y2kbugger</a> on 2025-12-21 14:01</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/Alirex">@Alirex</a> for applications rather than libraries, I pin all my dependencies with <code>==</code>, and want them all to be updated with the new version also pinned with <code>==</code> - e.g. from <code>foo==0.1.0</code> to <code>foo==0.2.0</code>.</p>
+<p>Some earlier commenters seem to want this behaviour too. My implementation is specific to this use case, and shows how you can do this by combining a few existing UV commands - it doesn't try to be a general tool like uv-upx does (and is currently tied to my copier template rather than being a separate tool).</p>
+<p>I was just pointing out it would be useful for whatever eventually gets implemented in UV to support this use case, too.</p>
+</blockquote>
+<p>Isn't that what the lock file is for?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bjorhn">@bjorhn</a> on 2025-12-21 14:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Isn't that what the lock file is for?</p>
+</blockquote>
+<p>No, for a lot of people the lock file is primarily for subdependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alirex">@Alirex</a> on 2025-12-21 23:02</div>
+            <div class="timeline-body"><p>@calliecameron @johnthagen</p>
+<p>https://pypi.org/project/uv-upx/ upgraded.</p>
+<p>New features:</p>
+<hr />
+<h3>Upgrade <code>equal</code>/<code>pinned</code> dependencies</h3>
+<p>Honestly, I think it's insecure to upgrade pinned dependencies automatically.
+Because they must be pinned for a reason.</p>
+<p>For applications that require strict control of dependencies, maybe better to use <code>frozen</code> mode of <code>uv sync</code>.</p>
+<p>But for someone it can be useful to upgrade pinned dependencies automatically.</p>
+<p>And we can do it.</p>
+<pre><code class="language-shell">uv-upgrade --profile with_pinned
+</code></pre>
+<p>It handles only <code>equal</code> (<code>==</code>) and NOT <code>strictly equal</code> (<code>===</code>) operators.</p>
+<p>So, even in this mode, it won't change <code>bla===2.0.0</code>.</p>
+<p>Under the hood it:</p>
+<ul>
+<li>collect all top-level dependencies information</li>
+<li>changes <code>==</code> version constraints to <code>&gt;=</code></li>
+<li>runs the standard upgrade process by <code>uv</code></li>
+<li>upgrade <code>pyproject.toml</code> files accordingly with returning <code>==</code> constraints back</li>
+</ul>
+<p>Note: more <code>upgrade</code> profiles can be added later. Or/and custom verbose <code>features</code> options.</p>
+<p>Note: Can be combined with <code>--interactive</code> mode.</p>
+<h3>Interactive mode</h3>
+<p>You can run the tool in interactive mode.</p>
+<p>You must <code>Accept</code> or <code>Reject</code> each proposed change.</p>
+<pre><code class="language-shell">uv-upgrade --interactive
+</code></pre>
+<p>Demo example:</p>
+<p><img width="582" height="562" alt="Image" src="https://github.com/user-attachments/assets/ab03fdca-155c-4399-8553-b3efbe254e53" /></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

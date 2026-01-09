@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP028 for multiple loops does not work - astral-sh/ruff #13266</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP028 for multiple loops does not work</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13266">#13266</a>
+        opened by <a href="https://github.com/spaceby">@spaceby</a>
+        on 2024-09-06 10:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceby">@spaceby</a> on 2024-09-06 10:35</div>
+            <div class="timeline-body"><p>UP028 does not work when there are multiple yield loops in a function</p>
+<p>Code example:</p>
+<pre><code class="language-python">def text_not_ok():
+    a = [1, 2, 3]
+    for photo in a:
+        yield photo
+    for photo in a:
+        yield photo
+</code></pre>
+<p>https://play.ruff.rs/b9748aaf-8e8c-45cd-8138-20f41013b979</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-07 12:44</div>
+            <div class="timeline-body"><p>I think this is because of this logic here: https://github.com/astral-sh/ruff/blob/c3bcd5c8422b79bd5cbc874a98f70cdb92e8d445/crates/ruff_linter/src/rules/pyupgrade/rules/yield_in_for_loop.rs#L98-L112</p>
+<p>I.e., Ruff believes that some of the variables bound by the first loop might be referenced in the second loop, so it comes to the conclusion that it won't necessarily be safe to rewrite them as <code>yield from</code> statements. If you change the second loop to use different variable names, it flags both loops with <code>UP028</code>: https://play.ruff.rs/50ee023e-60f4-4a77-a870-3378a6c68b72</p>
+<p>It would be possible to improve Ruff's behaviour here, I think, but it might add some complexity to our implementation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-09-07 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceby">@spaceby</a> on 2024-09-17 09:37</div>
+            <div class="timeline-body"><p>Then you need to improve ruff's behavior
+Or add another rule that tracks repeating loops
+Or add a warning about this behavior to the documentation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-09-24 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13504.html">astral-sh/ruff#13504</a> on 2024-09-24 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-25 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-25 15:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

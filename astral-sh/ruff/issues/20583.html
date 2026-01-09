@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF065 should not apply to the combination of `%r` and `repr` - astral-sh/ruff #20583</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF065 should not apply to the combination of `%r` and `repr`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20583">#20583</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-09-25 18:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-09-25 18:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/logging-eager-conversion/"><code>logging-eager-conversion</code> (RUF065)</a> applies when a value is doubly converted with <code>%r</code> and <code>repr</code>. It should only apply to single conversions. <a href="https://play.ruff.rs/d6f8b38f-8d0e-4554-b377-10c2403082b9">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;ruf065.py &lt;&lt;'# EOF'
+import logging
+logging.warning(&quot;%r&quot;, repr(&quot;1\n2&quot;))
+# EOF
+
+$ python3.14 ruf065.py
+WARNING:root:&quot;'1\\n2'&quot;
+
+$ ruff --isolated check ruf065.py --select RUF065 --preview --output-format concise -q
+ruf065.py:2:23: RUF065 Unnecessary `repr()` conversion when formatting with `%r`
+</code></pre>
+<p>Removing <code>repr</code>, as the rule suggests, changes the program’s behavior:</p>
+<pre><code class="language-console">$ cat &gt;ruf065_fixed.py &lt;&lt;'# EOF'
+import logging
+logging.warning(&quot;%r&quot;, &quot;1\n2&quot;)
+# EOF
+
+$ python3.14 ruf065_fixed.py
+WARNING:root:'1\n2'
+</code></pre>
+<p>The combinations that are currently supported and that would be appropriate to support (not that it’s required, but you might want to) are:</p>
+<p>| Code | Function | Currently supported | Appropriate to support | Replacement code |
+| --- | --- | --- | --- | --- |
+| <code>%s</code> | <code>str</code> | ✅ Yes | ✅ Yes | <code>%s</code> |
+| <code>%r</code> | <code>repr</code> | ✅ Yes | ❌ No | N/A |
+| <code>%s</code> | <code>repr</code> | ❌ No | ✅ Yes | <code>%r</code> |
+| <code>%s</code> | <code>ascii</code> | ❌ No | ✅ Yes | <code>%a</code> |
+| <code>%s</code> | <code>oct</code> | ❌ No | ✅ Yes | <code>%#o</code> |
+| <code>%s</code> | <code>hex</code> | ❌ No | ✅ Yes | <code>%#x</code> |</p>
+<h3>Version</h3>
+<p>ruff 0.13.2 (b0bdf0334 2025-09-25)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 19:24</div>
+            <div class="timeline-body"><p>Ah thanks for the clarification and for the table! I guess I only tested simpler <code>repr</code> calls when I suggested handling it in addition to <code>str</code>. I think it would make sense to support all of the appropriate fixes from the table and remove the <code>repr</code>-<code>%r</code> support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-09-25 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-09-25 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-09-25 20:32</div>
+            <div class="timeline-body"><p>The combinations of <code>%r</code> with <code>repr</code> and <code>%a</code> with <code>ascii</code> are probably mistakes, so it could still be useful to warn about them. That could be a new rule, because RUF065 is about redundant conversions, not duplicate conversions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20600.html">astral-sh/ruff#20600</a> on 2025-09-27 04:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-09-27 05:01</div>
+            <div class="timeline-body"><p>I've opened a PR that addresses the main issue.</p>
+<p>We can either:</p>
+<ul>
+<li>Add these additional combinations to my current PR (if you'd like them all handled together).</li>
+<li>Open a separate tracking issue for these additional improvements (if you prefer to keep the scope focused).</li>
+</ul>
+<p>Let me know what you think is preferable!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-30 19:53</div>
+            <div class="timeline-body"><p>Thanks @danparizher! I commented this on the PR too, but I think it made sense to split off the immediate bug fix for <code>%r</code> + <code>repr</code>. The remaining part of this issue is expanding the rule to handle the other appropriate cases. Feel free to follow up on that if you're interested!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20657.html">astral-sh/ruff#20657</a> on 2025-10-01 00:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-29 21:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

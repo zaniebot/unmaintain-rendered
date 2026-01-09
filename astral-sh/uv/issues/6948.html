@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` under certain circumstances generates long paths (`\\?\`) on Windows under Python 3.13t when it does not do so under other Python versions - astral-sh/uv #6948</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` under certain circumstances generates long paths (`\\?\`) on Windows under Python 3.13t when it does not do so under other Python versions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6948">#6948</a>
+        opened by <a href="https://github.com/burgholzer">@burgholzer</a>
+        on 2024-09-02 21:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/burgholzer">@burgholzer</a> on 2024-09-02 21:20</div>
+            <div class="timeline-body"><p>When run under free-threading Python 3.13 on Windows, <code>uv</code> under certain circumstances emits long paths (prefixed with <code>\\?\</code>) which seem to trip up certain compilers (such as MSCV).
+A lot more context is available in https://github.com/pypa/cibuildwheel/issues/1975</p>
+<p>This issue is limited to Python 3.13t. It does not happen on any regular Python version (including 3.13).
+It is also purely limited to Windows and works on all other operating systems.
+CI runs in https://github.com/pypa/cibuildwheel/issues/1975 have also shown that this is limited to <code>uv</code> (as early as <code>0.2.35</code>, but also tested just now with <code>0.4.2</code>) and does not happen when using plain old <code>pip</code>.</p>
+<p>An example of a 3.13t run producing a long path can e.g. be found here: https://github.com/cda-tum/mqt-qcec/actions/runs/10634832174/job/29568141103?pr=432#step:7:1526 (look at the <code>PYTHON_EXECUTABLE</code>, <code>Python_ROOT_DIR</code> and the related variants in the log)
+It's a bit harder to show the output for a successful run as up until #6903 was merged, <code>uv</code> swallows the build system output.</p>
+<p>It also seems to be a combination of a couple of specific things that lead to <code>uv</code> emitting long paths here.
+The CI for our dependency project (https://github.com/cda-tum/mqt-core/tree/shared-libs) succeeds without problems on 3.13t: https://github.com/cda-tum/mqt-core/actions/runs/10634400958/job/29481632914#step:8:5742
+Only once the depending project (https://github.com/cda-tum/mqt-qcec/tree/use-mqt-core-package) declares the git dependency on mqt-core in its build time requirements, the issues start to come up when trying to build <code>mqt-qcec</code>.</p>
+<p>Maybe the root cause somewhat has to do with the double build isolation going on here as the <code>mqt-qcec</code> build is built in an isolated environment, but then the <code>mqt-core</code> git dependency is being built in another isolated environment (supposedly spawned from the first isolated env).</p>
+<p>A way to reproduce the failures and see the long paths (adapted from https://github.com/cda-tum/mqt-qcec/blob/a15710a4faec2ccd62f28d6575800a8632a6ec2a/.github/workflows/cd.yml#L88-L107C14):</p>
+<pre><code class="language-powershell">git clone https://github.com/cda-tum/mqt-qcec
+cd mqt-qcec
+git switch use-mqt-core-package
+nuget.exe install python-freethreaded -Version 3.13.0-rc1 -FallbackSource https://api.nuget.org/v3/index.json -OutputDirectory '&lt;wherever you want this&gt;'
+uv venv --python &quot;&lt;wherever you want this&gt;\python-freethreaded.3.13.0-rc1\tools\python.exe&quot;
+uv pip install -vvv .
+</code></pre>
+<p>Sorry that I couldn't get the example any smaller or more isolated. I really tried but could not fabricate a simpler scenario that triggers the issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/cibuildwheel/issues/1975.html">pypa/cibuildwheel#1975</a> on 2024-09-02 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 21:46</div>
+            <div class="timeline-body"><p>Thanks! Am I correct that this call is ultimately failing?</p>
+<pre><code>DEBUG Calling `scikit_build_core.build.build_wheel(&quot;\\\\?\\C:\\Users\\runneradmin\\AppData\\Local\\uv\\cache\\built-wheels-v3\\git\\c4f0338be623b94c\\e17ea8269bf6b83a\\.tmpiVR21p&quot;, {}, None)`
+</code></pre>
+<p>I think we should avoid introducing these in that context. I'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 21:49</div>
+            <div class="timeline-body"><p>I admittedly have no idea why this would affect the free-threaded Pythons, but not Python 3.13 without free-threading.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6949.html">astral-sh/uv#6949</a> on 2024-09-02 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/burgholzer">@burgholzer</a> on 2024-09-02 22:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks! Am I correct that this call is ultimately failing?</p>
+<pre><code>DEBUG Calling `scikit_build_core.build.build_wheel(&quot;\\\\?\\C:\\Users\\runneradmin\\AppData\\Local\\uv\\cache\\built-wheels-v3\\git\\c4f0338be623b94c\\e17ea8269bf6b83a\\.tmpiVR21p&quot;, {}, None)`
+</code></pre>
+<p>I think we should avoid introducing these in that context. I'll take a look.</p>
+</blockquote>
+<p>Yeah. At least that's what I read from the logs. Everything after that in https://github.com/cda-tum/mqt-qcec/actions/runs/10634832174/job/29568141103?pr=432#step:7:1526 is the error output.</p>
+<p>Just saw that <code>0.4.3</code> was released. So I should be able to get you a &quot;successful&quot; build log on a different Python version as well now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/burgholzer">@burgholzer</a> on 2024-09-02 22:32</div>
+            <div class="timeline-body"><p>Alright, new runs with <code>0.4.3</code> here: https://github.com/cda-tum/mqt-qcec/actions/runs/10673641135?pr=432</p>
+<p>Specifically, compare:</p>
+<ul>
+<li>Successfully running <code>uv</code> on Python 3.12 (<code>uv venv --python 3.12</code>): https://github.com/cda-tum/mqt-qcec/actions/runs/10673641135/job/29582964862?pr=432</li>
+<li>Successfully running <code>uv</code> on Python 3.13 (from nuget): https://github.com/cda-tum/mqt-qcec/actions/runs/10673641135/job/29582965007?pr=432</li>
+<li>Unsuccessfully running <code>uv</code> on Python 3.13t (from nuget): https://github.com/cda-tum/mqt-qcec/actions/runs/10673641135/job/29582965255?pr=432</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 23:19</div>
+            <div class="timeline-body"><p>I got a different failure here: https://github.com/astral-sh/uv/actions/runs/10673961604/job/29583752151?pr=6949. Does that look... correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/burgholzer">@burgholzer</a> on 2024-09-02 23:39</div>
+            <div class="timeline-body"><p>At least it seems to be able to build the mqt-core build time dependency as well as the mqt-qcec package itself in that log.
+It seems to me that it then fails when trying to install numpy from source (which is a regular install dependency of mqt-qcec). That seems to be a known issue on the numpy side according to their tracking issue for 3.13t support (https://github.com/numpy/numpy/issues/26157)</p>
+<p>I believe if you install with <code>--no-deps</code> the install of mqt-qcec should succeed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 23:56</div>
+            <div class="timeline-body"><p>Ok cool that actually worked. (A subsequent test failed, unrelated.) I'll merge that change and link it to this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 00:31</div>
+            <div class="timeline-body"><p>Should be fixed in the next release via https://github.com/astral-sh/uv/pull/6949.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-03 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-03 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-03 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-09-03 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/burgholzer">@burgholzer</a> on 2024-09-03 04:31</div>
+            <div class="timeline-body"><p>Nice 🎉 thanks for looking into this so quickly! Love what you and your team are building! 🚀</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

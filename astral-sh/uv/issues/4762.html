@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install --all-extras .` fail to locate `pyproject.toml` - astral-sh/uv #4762</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install --all-extras .` fail to locate `pyproject.toml`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4762">#4762</a>
+        opened by <a href="https://github.com/kdeldycke">@kdeldycke</a>
+        on 2024-07-03 10:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2024-07-03 10:03</div>
+            <div class="timeline-body"><p>Using the latest version of <code>uv</code>:</p>
+<pre><code class="language-shell-session">$ uv --version
+uv 0.2.21 (ebfe6d8fc 2024-07-03)
+</code></pre>
+<p>When I try to install in my local venv all extras, I get the following error:</p>
+<pre><code class="language-shell-session">$ uv pip install --all-extras .
+error: Requesting extras requires a `pyproject.toml`, `setup.cfg`, or `setup.py` file.
+</code></pre>
+<p>Still, <a href="https://github.com/kdeldycke/mail-deduplicate/blob/main/pyproject.toml">I have a <code>pyproject.toml</code> at the root</a>, so I expect <code>uv</code> to use it:</p>
+<pre><code class="language-shell-session">$ ls -lah ./pyproject.toml
+Permissions Size User Date Modified    Name
+.rw-r--r--  4.5k kde  2024-07-03 10:16  ./pyproject.toml
+</code></pre>
+<p>This can be reproduced from scratch with my project with the following commands:</p>
+<pre><code class="language-shell-session">$ cd ~
+$ git clone https://github.com/kdeldycke/mail-deduplicate
+$ cd mail-deduplicate
+$ uv venv
+$ source .venv/bin/activate
+$ uv pip install --all-extras .
+</code></pre>
+<p>This seems to be a follow up of #260.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-03 11:21</div>
+            <div class="timeline-body"><p>That API requires that you pass the pyproject.toml directly on the command line, rather than the path to the source tree — since if you’re doing the latter, there’s already standardized syntax for it (putting the extras in brackets).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2024-07-03 12:03</div>
+            <div class="timeline-body"><blockquote>
+<p>That API requires that you pass the pyproject.toml directly on the command line, rather than the path to the source tree — since if you’re doing the latter, there’s already standardized syntax for it (putting the extras in brackets).</p>
+</blockquote>
+<p>So there is no way to tell <code>uv</code> to install all extras, whatever their numbers or IDs?</p>
+<p>I tried different ways like:</p>
+<pre><code class="language-shell-session">$ uv pip install &quot;.[*]&quot;
+error: Failed to parse: `.[*]`
+  Caused by: Expected an alphanumeric character starting the extra name, found '*'
+.[*]
+  ^
+</code></pre>
+<pre><code class="language-shell-session">$ uv pip install &quot;.[all]&quot;
+Resolved 23 packages in 1.13s
+   Built meta-package-manager @ file:///Users/kde/meta-package-manager
+Prepared 1 package in 797ms
+Uninstalled 1 package in 0.93ms
+Installed 1 package in 2ms
+ - meta-package-manager==5.17.0 (from file:///Users/kde/meta-package-manager)
+ + meta-package-manager==5.17.0 (from file:///Users/kde/meta-package-manager)
+warning: The package `meta-package-manager @ file:///Users/kde/meta-package-manager` does not have an extra named `all`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-07-03 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-03 22:36</div>
+            <div class="timeline-body"><p>The typical thing would be to define an extra called <code>all</code> in your package, and recursively reference the others, like:</p>
+<pre><code class="language-toml">[project]
+name = &quot;black&quot;
+
+[project.optional-dependencies]
+colorama = [&quot;colorama&gt;=0.4.3&quot;]
+uvloop = [&quot;uvloop&gt;=0.15.2&quot;]
+all = [
+  &quot;black[d]&quot;,
+  &quot;black[uvloop]&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2024-07-05 06:18</div>
+            <div class="timeline-body"><p>Oh ok I see. Thanks @charliermarsh for the hint. Now I get it. The <code>all</code> keyword is more like a convention than a technical feature. And so I'm pretty sure that this is not specified or enforced in any PEP XXX.</p>
+<p>Given the diversity of packages I'm likely to stumble upon, and because I'm <a href="https://github.com/kdeldycke/workflows/">trying to implement the most generic reusable workflows</a>, I prefer the safety of the <code>--all-extras</code> parameter.</p>
+<p>So for example, my strategy to implement <a href="https://github.com/kdeldycke/workflows/blob/495fb192b43dd54c91fe31c294576df6877612d8/.github/workflows/lint.yaml#L83-L113">a generic <code>mypy</code> type checking job</a>, consist in running the following command to get all dependencies installed, including the optional ones from the various <a href="https://github.com/python/typeshed"><code>typeshed</code></a> packages:</p>
+<pre><code class="language-shell-session">$ uv pip install --all-extras ${{ needs.project-metadata.outputs.uv_requirement_params }}
+</code></pre>
+<p>Where <code>needs.project-metadata.outputs.uv_requirement_params</code> is a variable produce by my <code>gha-utils</code> CLI:</p>
+<pre><code class="language-shell-session">$ pipx install gha-utils
+$ gha-utils metadata
+(...)
+uv_requirement_params=--requirement pyproject.toml --requirement requirements.txt --requirement requirements/yamllint.txt --requirement requirements/mypy.txt --requirement requirements/format-python.txt --requirement requirements/build.txt --requirement requirements/nuitka.txt --requirement requirements/mdformat.txt --requirement requirements/pipdeptree.txt --requirement requirements/uv.txt --requirement requirements/changelog.txt --requirement requirements/gha-utils.txt
+</code></pre>
+<p>It's quite convoluted, but it works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-21 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8416.html">astral-sh/uv#8416</a> on 2024-10-21 21:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/pip/issues/12963.html">pypa/pip#12963</a> on 2024-10-26 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../langflow-ai/langflow/pulls/6732.html">langflow-ai/langflow#6732</a> on 2025-02-21 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../oraios/serena/issues/9.html">oraios/serena#9</a> on 2025-04-04 00:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

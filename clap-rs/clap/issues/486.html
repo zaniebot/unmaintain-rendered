@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provide a common fail mechanism - clap-rs/clap #486</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Provide a common fail mechanism</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/486">#486</a>
+        opened by <a href="https://github.com/hgrecco">@hgrecco</a>
+        on 2016-04-18 00:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hgrecco">@hgrecco</a> on 2016-04-18 00:20</div>
+            <div class="timeline-body"><p>While contributing <code>cut</code> to redox's coreutils, I came across the <code>OptionExt</code> trait of <a href="https://github.com/redox-os/libextra/blob/master/src/option.rs#L9">libextra</a>. It is really nice as it provides a consistent way to exit a program when a problem occurs. Being clap a command line argument parser, I think it could be very useful if it provides such trait (and its implementation).</p>
+<p>If there is consensus that this is a desired feature, I think we can discuss a few things regarding the implementation. For example, I think it might be a good idea to have a function that accepts the exit code. Additionally I think that there should be a function that defaults to stderr.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-04-18 04:19</div>
+            <div class="timeline-body"><p>Currently we have a <a href="https://github.com/kbknapp/clap-rs/blob/fdbd12e83069386234d3ead0d7d8e70fb09b3551/src/errors.rs#L337-354">naive implementation</a>.</p>
+<p>I'm open to extended this to be a better implementation! I do, however, want to maintain a either a degree of separation between what should be handled by the argument parser, and what should be handled in user code (i.e. currently users can use <code>std::process::exit</code> and do whatever they want). Not to say we can't support adding those features <code>clap</code> but it just wouldn't be the default (or the default would at least be something 99.9% of users would do/need).</p>
+<p>Ideas?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2016-04-18 04:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-04-18 04:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: errors</span> added by @kbknapp on 2016-04-18 04:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hgrecco">@hgrecco</a> on 2016-04-19 01:04</div>
+            <div class="timeline-body"><p>I think that providing a way to terminate a command line program is a good idea. It might not belong in clap, though. I am open for discussions.</p>
+<p>Currently clap contains a way to handle argument parsing related errors. I think this works really well, and should not be touched nor expanded (Except maybe provide a way to select which error code to use on exit and internalization of the error message, but that is a different story)</p>
+<p>What I am proposing here is an Trait extending <code>Option</code> and <code>Result</code> that will give clap users a way to exit a program easily. Imagine that the trait is called <code>OptionExt</code> and contains just a <code>unwrap_or_exit</code> method that takes an error message. This will be a program that uses hyper to download something from the web and then saves it to a file.</p>
+<pre><code class="language-rust">extern crate clap;
+extern crate hyper;
+
+use std::io::{Read, Write};
+use std::fs::File;
+
+use clap::{Arg, App, SubCommand, OptionExt };
+use hyper::*;
+
+fn main() {
+    /// clap stuff resulting in matches
+
+    let url = matches.value_of(&quot;url&quot;).unwrap()
+
+    let client = Client::new();
+    let mut res = client.get(url).send().unwrap_or_exit(&quot;Could not send request.&quot;);
+
+    let mut buffer = Vec::new();
+    res.read_to_end(&amp;mut buffer).unwrap_or_exit(&quot;Could not read response.&quot;);
+
+    let filename = matches.value_of(&quot;filename&quot;).unwrap()
+    file = File::create(filename).unwrap_or_exit(&quot;Could not create output file.&quot;);
+    file.write_all(&amp;buffer).unwrap_or_exit(&quot;Could not write to output file.&quot;);
+}
+</code></pre>
+<p>This might not seem like a big win but it saves quite a lot of code. More importantly keeps the code clean and focused.</p>
+<p>You might argue that the error message is too concise and that the exact reason of the error is not given. That is true, but I think there is a way to provide this as well.</p>
+<p>As I said, I am open for discussions and I might also implement this outside clap and see if it fits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-03 01:55</div>
+            <div class="timeline-body"><p>Ah ok, yeah I can see the utility in this, especially in providing consistent error messages. Let me think on a way to best expose or do this. I think providing an extension to <code>Option</code> and <code>Result</code> is fine since users would have to manually import those traits to use. Perhaps also a macro or function which allows users to print an error message in the same style that <code>clap</code> does for consistency with an optional error code.</p>
+<p>Granted I think these are all easy things to add manually, i.e. not in <code>clap</code> but I also don't see the harm in including them. Especially for things like, only providing colored output when <code>clap</code> is compiled with colors, etc. All of that would be handled automatically behind the scenes with the user doing nothing more than proving a <code>str</code> for the message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2016-05-03 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2016-05-03 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2016-05-03 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vks">@vks</a> on 2016-08-30 15:08</div>
+            <div class="timeline-body"><blockquote>
+<p>All of that would be handled automatically behind the scenes with the user doing nothing more than proving a str for the message.</p>
+</blockquote>
+<p>Note that this can be achieved with #641 and <code>Error::exit</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vks">@vks</a> on 2016-09-06 22:15</div>
+            <div class="timeline-body"><p>@hgrecco As of version 2.11.2, your suggestion can be implemented by users of clap:</p>
+<pre><code class="language-rust">trait UnwrapOrExit&lt;T&gt;
+    where Self: Sized
+{
+    fn unwrap_or_else&lt;F&gt;(self, f: F) -&gt; T
+        where F: FnOnce() -&gt; T;
+
+    fn unwrap_or_exit(self, message: &amp;str) -&gt; T {
+        let err = clap::Error::with_description(message, clap::ErrorKind::InvalidValue);
+        // Ther ErrorKind does not really matter, because we are only interested in exiting and
+        // creating a nice error message in case of failure.
+        self.unwrap_or_else(|| err.exit())
+    }
+}
+
+impl&lt;T&gt; UnwrapOrExit&lt;T&gt; for Option&lt;T&gt; {
+    fn unwrap_or_else&lt;F&gt;(self, f: F) -&gt; T
+        where F: FnOnce() -&gt; T
+    {
+        self.unwrap_or_else(f)
+    }
+}
+
+impl&lt;T, E&gt; UnwrapOrExit&lt;T&gt; for Result&lt;T, E&gt; {
+    fn unwrap_or_else&lt;F&gt;(self, f: F) -&gt; T
+        where F: FnOnce() -&gt; T
+    {
+        self.unwrap_or_else(|_| f())
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-01-30 04:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

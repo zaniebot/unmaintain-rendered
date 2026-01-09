@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initial `uv add --script` produces invalid result with existing metadata section - astral-sh/uv #12499</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Initial `uv add --script` produces invalid result with existing metadata section</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12499">#12499</a>
+        opened by <a href="https://github.com/merlinz01">@merlinz01</a>
+        on 2025-03-26 23:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/merlinz01">@merlinz01</a> on 2025-03-26 23:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When running <code>uv add --script &lt;script&gt; &lt;package&gt;</code> on a script which has an existing non-<code>script</code> metadata section and doesn't have the <code>script</code> section, uv fails to put a blank line between the sections, resulting in an unintuitive error when running the script or adding more dependencies.</p>
+<p>MRE:</p>
+<pre><code class="language-bash">$ cat myscript.py
+# /// nonstandardsection
+# Hello,
+# World!
+# ///
+
+print('Hello, world')
+
+$ uv run --script myscript.py 
+Hello, world
+$ uv add --script myscript.py requests
+Updated `myscript.py`
+$ cat myscript.py 
+# /// script
+# requires-python = &quot;&gt;=3.13&quot;
+# dependencies = [
+#     &quot;requests&quot;,
+# ]
+# ///
+# /// nonstandardsection
+# Hello,
+# World!
+# ///
+
+print('Hello, world')
+
+$ uv run --script myscript.py 
+error: TOML parse error at line 5, column 1
+  |
+5 | ///
+  | ^
+invalid key
+$ uv add --script myscript.py fastapi
+error: TOML parse error at line 5, column 1
+  |
+5 | ///
+  | ^
+invalid key
+$ nano myscript.py # add a blank line between the sections
+$ cat myscript.py 
+# /// script
+# requires-python = &quot;&gt;=3.13&quot;
+# dependencies = [
+#     &quot;requests&quot;,
+# ]
+# ///
+
+# /// nonstandardsection
+# Hello,
+# World!
+# ///
+
+print('Hello, world')
+
+$ uv run --script myscript.py 
+Installed 5 packages in 6ms
+Hello, world
+</code></pre>
+<p>Possibly related: #6366</p>
+<h3>Platform</h3>
+<p>Linux Mint 22.1</p>
+<h3>Version</h3>
+<p>uv 0.6.9</p>
+<h3>Python version</h3>
+<p>Python 3.13.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @merlinz01 on 2025-03-26 23:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/merlinz01">@merlinz01</a> on 2025-03-26 23:35</div>
+            <div class="timeline-body"><p>Looking at the source code, maybe add another newline here https://github.com/j178/uv/blob/e0f81f0d4a904d8c743e776d9f8c9ef5b96f769c/crates/uv-scripts/src/lib.rs#L533-L553
+and some logic here https://github.com/j178/uv/blob/e0f81f0d4a904d8c743e776d9f8c9ef5b96f769c/crates/uv-scripts/src/lib.rs#L430</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/merlinz01">@merlinz01</a> on 2025-03-26 23:36</div>
+            <div class="timeline-body"><p>It only does this when the nonstandard section is the first line in the file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/merlinz01">@merlinz01</a> on 2025-03-26 23:40</div>
+            <div class="timeline-body"><p>More accurately, it does this when the first non-shebang line in the file is a valid metadata section line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12501.html">astral-sh/uv#12501</a> on 2025-03-27 01:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-27 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-27 21:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

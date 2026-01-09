@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A `__new__` method should be considered a staticmethod, not a classmethod. - astral-sh/ruff #13154</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>A `__new__` method should be considered a staticmethod, not a classmethod.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13154">#13154</a>
+        opened by <a href="https://github.com/cake-monotone">@cake-monotone</a>
+        on 2024-08-29 18:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-08-29 18:40</div>
+            <div class="timeline-body"><p>This is a subtle tweak: The <code>__new__</code> method is currently causing classmethod warnings (e.g., ARG003). However, it should actually be causing staticmethod warnings (e.g., ARG004).</p>
+<p>https://play.ruff.rs/204c57b4-a35e-48d5-8f92-ca2e109dd2cd</p>
+<pre><code class="language-python">class A:
+    def __new__(cls, unused_static_method_arguments):
+        return 42
+
+
+A.__new__(A, 1)  # It works!!  If __new__ is treated as a class method, it should be `A.__new__(1)`
+</code></pre>
+<p>NOTE: According to the official Python documentation, the <code>__new__</code> method is a staticmethod that takes the class itself (cls) as its first argument.</p>
+<h3>Reference</h3>
+<blockquote>
+<p>Called to create a new instance of class cls. <a href="https://docs.python.org/3/reference/datamodel.html#object.__new__"><code>__new__</code>()</a> is a static method (special-cased so you need not declare it as such) that takes the class of which an instance was requested as its first argument.</p>
+</blockquote>
+<p>https://docs.python.org/3/reference/datamodel.html#object.<strong>new</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-30 11:02</div>
+            <div class="timeline-body"><p>Thanks for opening the issue! There's some pretty interesting questions here.</p>
+<p><code>__new__</code> defies normal classification. On the one hand, you're absolutely correct -- <code>__new__</code> is a static method at runtime, not a classmethod, and this is true whether or not it's explicitly decorated with <code>@staticmethod</code>. On the other hand, it <em>behaves</em> much more like a classmethod than a staticmethod because of how heavily it's special-cased by the interpreter. In your example here, it's true that the <code>cls</code> argument is strictly-speaking unused, and so perhaps it would be strictly-speaking correct to emit two <code>ARG004</code> diagnostics on the <code>__new__</code> method there. But in practice, the vast majority of the time <code>__new__</code> is called implicitly rather than explicitly -- and in those situations, you <em>do</em> need to have at least one <code>__new__</code> parameter, even if it's unused, or instantiating your class isn't going to work. In that sense, it's much more like a classmethod than a staticmethod:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class A:
+...     def __new__():
+...         return object.__new__(A)
+... 
+&gt;&gt;&gt; A()
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+TypeError: A.__new__() takes 0 positional arguments but 1 was given
+</code></pre>
+<p>Regardless of whether we think ARG003 or ARG004 should apply to <code>__new__</code> methods, though, we should definitely fix the discrepancy here in the following snippet. <code>A</code> and <code>B</code> have identical semantics at runtime, but one <code>ARG003</code> diagnostic is emitted for <code>A</code>, while two <code>ARG004</code> diagnostics are emitted for <code>B</code>:</p>
+<pre><code class="language-py">class A:
+    def __new__(cls, unused):
+        return 42
+
+
+class B:
+    @staticmethod
+    def __new__(cls, unused):
+        return 42
+</code></pre>
+<p>https://play.ruff.rs/57d4f602-c444-4b54-9f68-fe21215582b4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-08-30 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-08-30 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-30 12:04</div>
+            <div class="timeline-body"><p>Hmm, I'm not sure what the right answer here is:</p>
+<ul>
+<li>I think whether a <code>__new__</code> method is explicitly decorated with <code>@staticmethod</code> or not, it should probably have the same error code for the diagnostic, because it will have the same runtime semantics</li>
+<li>I think even though a <code>__new__</code> method is technically a staticmethod at runtime, it behaves more like a classmethod, so it makes sense to apply &quot;classmethod rules&quot; when considering whether it's necessary for the method to have at least one argument or not. That implies that we should apply <code>ARG003</code> to <code>__new__</code> methods, even if they're decorated with <code>@staticmethod</code></li>
+<li>But the message emitted by <code>ARG003</code> is &quot;Unused class method argument&quot;, and I think it could be really confusing for users if that message is emitted on a method explicitly decorated with <code>@staticmethod</code></li>
+</ul>
+<pre><code class="language-py">class A:
+    def __new__(cls, unused):
+        return 42
+
+
+class B:
+    @staticmethod
+    def __new__(cls, unused):
+        return 42
+</code></pre>
+<p>@carljm can I ping you for a second opinion? I wonder if <code>__new__</code> methods should just be their own rule entirely. It seems like we already have quite different rule classifications to the original <code>flake8-unused-arguments</code> flake8 plugin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @AlexWaygood by @AlexWaygood on 2024-08-30 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-30 20:47</div>
+            <div class="timeline-body"><p>I think we should treat <code>__new__</code> as a static method, and the error code and message should not reference classmethods; referencing a classmethod when <code>__new__</code> is not a classmethod is just too confusing/wrong (regardless of whether there is an explicit <code>@staticmethod</code> decorator on it or not.)</p>
+<p>I could go either way on whether we should complain about an unused first argument on <code>__new__</code>. On the one hand, it's probably a mistake to have an unused first argument, even though the first argument is required. On the other hand, that logic would also suggest that the classmethod rule should also still complain about unused first argument, too -- it's generally a mistake to have a classmethod that doesn't use the first argument, it should be a staticmethod instead.</p>
+<p>If we prefer not to ever emit ARG003 or ARG004 for an argument that is required to be present, I don't see any problem with using the ARG004 error code for <code>__new__</code>, but also excluding the first argument from it as a special case. I think that even though that makes <code>__new__</code> handling somewhat unique, it's much better than emitting any code mentioning classmethods for <code>__new__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-09-03 01:32</div>
+            <div class="timeline-body"><p>I also agree with carljm's opinion.</p>
+<p>For the first time, like AlexWaygood, I thought this issue was quite subtle.</p>
+<p>https://github.com/astral-sh/ruff/blob/3463683632b0af2457f4449f7daef77d5527cd9c/crates/ruff_python_semantic/src/analyze/function_type.rs#L28-L37</p>
+<p>However, <code>__new__</code> is internally being treated as a classmethod. Considering that new rules applied to staticmethods might not be applied to <code>__new__</code> in the future, I think <code>__new__</code> should be treated as a staticmethod.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "A `__new__` method should be considered a 'static method', not a 'class method'." to "A `__new__` method should be considered a staticmethod, not a classmethod." by @cake-monotone on 2024-09-03 01:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13305.html">astral-sh/ruff#13305</a> on 2024-09-10 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-02-16 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-02-16 20:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

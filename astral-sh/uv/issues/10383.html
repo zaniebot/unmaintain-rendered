@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip-compile upgrade dependencies from tool.uv.sources even without the --upgrade flag - astral-sh/uv #10383</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip-compile upgrade dependencies from tool.uv.sources even without the --upgrade flag</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10383">#10383</a>
+        opened by <a href="https://github.com/Corentin-Bravo">@Corentin-Bravo</a>
+        on 2025-01-08 08:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Corentin-Bravo">@Corentin-Bravo</a> on 2025-01-08 08:25</div>
+            <div class="timeline-body"><ul>
+<li>Version of uv : 0.5.15</li>
+<li>OS: Ubuntu 22.04.4 LTS</li>
+<li>Command ran: <code>uv pip compile pyproject.toml --no-emit-index-url --python-platform=linux --output-file=requirements.txt</code></li>
+<li>(reduced and curated) Content of my pyproject.toml:</li>
+</ul>
+<pre><code>dependencies = [
+  &quot;myPrivateLibrary_1~=84.0,&gt;=84.0.1&quot;,
+  &quot;myPrivateLibrary_2~=6.3,&gt;=6.3.3&quot;,
+]
+[[tool.uv.index]]
+name = &quot;myIndex&quot;
+url = &quot;myIndexUrl&quot;
+
+[tool.uv.sources]
+myPrivateLibrary_1 = {index = &quot;myIndex&quot;}
+myPrivateLibrary_2 = {index = &quot;myIndex&quot;}
+</code></pre>
+<ul>
+<li>Original content of my requirements.txt:</li>
+</ul>
+<pre><code>myPrivateLibrary_2==6.4.1
+    # via myProject (pyproject.toml)
+myPrivateLibrary_1==84.0.0
+    # via myProject (pyproject.toml)
+</code></pre>
+<ul>
+<li>Expected content of my requirements.txt after running the command:</li>
+</ul>
+<pre><code>myPrivateLibrary_2==6.4.1
+    # via myProject (pyproject.toml)
+myPrivateLibrary_1==84.0.1
+    # via myProject (pyproject.toml)
+</code></pre>
+<ul>
+<li>Actual content  of my requirements.txt after running the command:</li>
+</ul>
+<pre><code>myPrivateLibrary_2==6.5.0
+    # via myProject (pyproject.toml)
+myPrivateLibrary_1==84.0.1
+    # via myProject (pyproject.toml)
+</code></pre>
+<p>Note that removing the <code>tool.uv.sources</code> part of the pyproject.toml and running the same command produce the expected behaviour.</p>
+<p>It seems as though I ran with the <code>--upgrade-package</code> flag on all packages in tool.uv.sources, which does not seem to be documented, intended or logical from an end user point of view.</p>
+<p>If the observed behaviour is intended for your side, is there a way to circumvent it (other than removing the <code>tool.uv.sources</code> block, as I want to make use of the &quot;explicit&quot; index feature) ? Could you document this behaviour, or point me towards the relevant documentation if it exists ?</p>
+<p>Thank you in advance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv pip-compile upgrade dependencies from extra-index even without the --upgrade flag" to "uv pip-compile upgrade dependencies from tool.uv.sources even without the --upgrade flag" by @Corentin-Bravo on 2025-01-08 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 02:44</div>
+            <div class="timeline-body"><p>Thanks. Can you put together a minimal Git repo that I can clone to reproduce this? I need to make sure that it's reproducible and that I take the exact same steps as you've done here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-01-13 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Corentin-Bravo">@Corentin-Bravo</a> on 2025-01-16 14:07</div>
+            <div class="timeline-body"><p>Sure,
+I believe that's as minimal as it gets:  https://github.com/Corentin-Bravo/mre</p>
+<p>Note that I used the public PyPi as index in this MRE to make it easier to run.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-16 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2025-01-16 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-16 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-16 15:34</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10690.html">astral-sh/uv#10690</a> on 2025-01-16 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-16 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10782.html">astral-sh/uv#10782</a> on 2025-01-20 17:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

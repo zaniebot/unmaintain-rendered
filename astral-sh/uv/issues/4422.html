@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow dependency name overriding or elimination - astral-sh/uv #4422</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow dependency name overriding or elimination</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/4422">#4422</a>
+        opened by <a href="https://github.com/leorochael">@leorochael</a>
+        on 2024-06-20 11:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/leorochael">@leorochael</a> on 2024-06-20 11:27</div>
+            <div class="timeline-body"><p>While <code>uv</code> now has overrides, and issue #2686 is suggesting being able to declare certain overrides as pertaining to a specific dependency, I have an additional suggestion/request.</p>
+<p>I would like to be able to override a package dependency with a package that has a different name.</p>
+<p>As a concrete case, the <a href="https://pypi.org/project/FuelSDK/">FuelSDK</a> package <a href="https://github.com/salesforce-marketingcloud/FuelSDK-Python/blob/master/setup.py#L20">depends</a> on <code>suds-jurko</code>, but has been tested to work with it's fork/successor project <a href="https://github.com/suds-community/suds"><code>suds-community</code></a>, a.k.a. just <a href="https://pypi.org/project/suds/"><code>suds</code></a> these days.</p>
+<p>(Yes, the project has come full circle, with the fork of the fork officially taking over the original name).</p>
+<p>A possibility that comes to mind would be a special syntax for the <code>-o overrides.txt</code> file like:</p>
+<pre><code class="language-plain">suds-jurko=&gt;suds&gt;=1.1,&lt;2.0
+</code></pre>
+<p>Or perhaps:</p>
+<pre><code class="language-plains">suds-jurko:suds&gt;=1.1,&lt;2.0
+</code></pre>
+<p>Considering the long history of python packages that fork and continue the work of orphaned packages (e.g. PIL/Pillow), this could be a nice complement to the overrides functionality of uv.</p>
+<p>Perhaps it could even be used to remove a dependency completely, e.g.:</p>
+<ul>
+<li><code>suds-jurko=&gt;!</code></li>
+<li><code>suds-jurko=&gt;</code></li>
+<li><code>suds-jurko:!</code></li>
+<li><code>suds-jurko:</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leorochael">@leorochael</a> on 2024-06-20 11:54</div>
+            <div class="timeline-body"><p>Thinking about this some more, just the functionality of blocking a dependency from being installed already offers a way to do this kind of override.</p>
+<p>That is, I could add to my <code>requirements.in</code>:</p>
+<pre><code>Fuel-SDK
+suds&gt;=1.1,&lt;2.0
+</code></pre>
+<p>Then to my <code>overrides</code> one of the options for deleting a removing a dependency I mentioned previously, or perhaps just a special version. e.g one of:</p>
+<ul>
+<li><code>suds-jurko==skip</code></li>
+<li><code>suds-jurko==none</code></li>
+<li><code>suds-jurko==</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-06-20 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-20 17:08</div>
+            <div class="timeline-body"><p>Interesting idea! Makes some sense, though I'm also not quite sure how it should be expressed and if it's feasible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-06-20 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Allow package name overriding" to "Allow dependency name overriding or elimination" by @leorochael on 2024-06-21 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leorochael">@leorochael</a> on 2024-06-21 12:21</div>
+            <div class="timeline-body"><p>Another option to express dependency elision is to use the URI version specifier to mean: install this package from nowhere.</p>
+<ul>
+<li><code>suds-jurko@skip:</code></li>
+<li><code>suds-jurko@about:blank</code></li>
+</ul>
+<p>The last one was suggested to me by github copilot:</p>
+<blockquote>
+<p>To explicitly reference nothing or create a URI that signifies an absence of a resource, you can use the <code>about:blank</code> URI. This URI leads to an empty document in web browsers and is often used to represent a null or non-existent resource in contexts where a URI is required but there is no actual resource to point to.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leorochael">@leorochael</a> on 2024-06-21 12:29</div>
+            <div class="timeline-body"><p>And since URIs effectively allow namespacing on schemes, and the definition of the interpretation of schemes is up to whoever introduces them, we could perhaps use schemes to implement the package replacement, e.g:</p>
+<ul>
+<li><code>suds-jurko@replacement:suds&gt;=1.1,&lt;2.0</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leorochael">@leorochael</a> on 2024-06-21 14:00</div>
+            <div class="timeline-body"><p>Or, if we want to follow examples of other tools which use prefixed schemes, like <code>git+</code>, we could namespace the scheme with <code>uv+</code>, like:</p>
+<ul>
+<li><code>suds-jurko@uv+skip:</code></li>
+<li><code>suds-jurko@uv+replacement:suds&gt;=1.1,&lt;2.0</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leorochael">@leorochael</a> on 2024-06-21 15:55</div>
+            <div class="timeline-body"><p>Note that <code>--no-emit-package/--unsafe-package suds-jurko</code> doesn't help here, because <code>suds-jurko</code> is broken at package building, so resolution still fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leorochael">@leorochael</a> on 2024-06-21 16:09</div>
+            <div class="timeline-body"><p>An alternative that would help me would be to just ignore the sub-dependencies of a package on a per-package basis.</p>
+<p>That is, instead of having an elision or renaming on my overrides file, I would like to add something like this in my <code>requirements.in</code>:</p>
+<pre><code># FuelSDK has broken sub-dependencies:
+--no-deps-for FuelSDK
+FuelSDK
+# Corrected FuelSDK dependencies manually added here:
+pyjwt &gt;= 1.5.3
+requests &gt;= 2.18.4
+suds &gt;= 1.1.2
+</code></pre>
+<p>For reference, such an option has been under discussion for a while in pypa/pip#9948</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 15:44</div>
+            <div class="timeline-body"><p>This seems like a reasonable use-case to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-07-24 23:14</div>
+            <div class="timeline-body"><p>I think this would be very useful! At work, we have systems like this for first party packages, but not third party packages. It would make some things less painful if this were the case and unblock some other future use cases.</p>
+<p>A related lower priority feature request would be the ability to override edges, not just nodes. E.g., if I know one package is overpinning a dependency in a way that I know is safe to override, I might still want to resolve older or error if something else pins it.</p>
+<p>I don't have strong opinions on syntax. =&gt; is a good suggestion, but could be typo-ed. Maybe using <code>@@</code> as a separator? lhs is the thing to be overriden, rhs is empty or PEP 508</p>
+<pre><code>node&gt;=2
+node @@ node&gt;=2  # same as above
+node @@ node_nextgen&gt;=2  # replace node with node_nextgen
+node @@  # eliminate node (and don't resolve its deps)
+node -&gt; dep @@ dep&gt;=2  # override node's dependency on dep
+</code></pre>
+<p>If syntax is controversial, another option is to switch to TOML or something, especially if uv has plans to use such a format somewhere else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-27 15:45</div>
+            <div class="timeline-body"><p>I realized that this actually is possible today... You can use a never-truthy marker. For example, to remove <code>typing-extensions</code>, use an <code>overrides.txt</code> like:</p>
+<pre><code>typing-extensions ; sys_platform == 'never'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-27 15:45</div>
+            <div class="timeline-body"><p>(This works because with overrides, we just replace <em>all</em> requirements of <code>typing-extensions</code> with whatever is in the overrides file.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leorochael">@leorochael</a> on 2024-07-29 09:13</div>
+            <div class="timeline-body"><blockquote>
+<p>(This works because with overrides, we just replace <em>all</em> requirements of <code>typing-extensions</code> with whatever is in the overrides file.)</p>
+</blockquote>
+<p>I'm surprised this works, because I'd expect it would result in the resolution being unsolvable...</p>
+<p>And I'm slightly suspicious of relying on it and it being just accidental behaviour that might be &quot;fixed&quot; in the future...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-29 14:41</div>
+            <div class="timeline-body"><p>@leorochael -- Can you say more about why you would expect that to be unsolvable? I would actually consider it a bug if the resolver failed there, rather than the other way around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leorochael">@leorochael</a> on 2024-07-29 15:33</div>
+            <div class="timeline-body"><p>I might be reading it wrong, but for me an overrides file containing:</p>
+<ul>
+<li><code>typing-extensions ; sys_platform == 'never'</code></li>
+</ul>
+<p>Mean:</p>
+<ul>
+<li>Only consider this <code>typing-extensions</code> version: the one that cannot be installed on your platform, because your platform is not <code>never</code>.</li>
+</ul>
+<p>And if there are packages depending on <code>typing-extensions</code>, in my mind that would mean their dependencies would be unsolvable because of that.</p>
+<p>To me, declaring a constraints override on an uninstallable package is different than declaring a constraints override on a package we're pretending is already installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leorochael">@leorochael</a> on 2024-07-29 15:37</div>
+            <div class="timeline-body"><p>Ah, but I see where my logic is failing.</p>
+<p>The constraints override doesn't say: &quot;depend on this uninstallable package&quot;.</p>
+<p>It's saying: &quot;when depending on <code>typing-extensions</code>, only do that if the platform is <code>never</code>&quot;, which never happens.</p>
+<p>So, yeah, as long as we add a test for that and document it, then yes, that would already be supported.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-07-29 20:21</div>
+            <div class="timeline-body"><p>Oh, neat trick!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4028.html">astral-sh/uv#4028</a> on 2024-08-22 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7214.html">astral-sh/uv#7214</a> on 2024-09-09 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7442.html">astral-sh/uv#7442</a> on 2024-09-16 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7157.html">astral-sh/uv#7157</a> on 2024-09-20 05:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8682.html">astral-sh/uv#8682</a> on 2024-10-29 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9073.html">astral-sh/uv#9073</a> on 2024-11-12 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9174.html">astral-sh/uv#9174</a> on 2024-11-18 01:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9614.html">astral-sh/uv#9614</a> on 2024-12-03 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9713.html">astral-sh/uv#9713</a> on 2024-12-08 03:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10281.html">astral-sh/uv#10281</a> on 2025-01-03 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11012.html">astral-sh/uv#11012</a> on 2025-01-29 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-02-03 00:23</div>
+            <div class="timeline-body"><blockquote>
+<p>I realized that this actually is possible today... You can use a never-truthy marker. For example, to remove <code>typing-extensions</code>, use an <code>overrides.txt</code> like:</p>
+<pre><code>typing-extensions ; sys_platform == 'never'
+</code></pre>
+</blockquote>
+<p>Neat! However it's giving warnings in recent uv versions:
+<code>warning: Missing version constraint (e.g., a lower bound) for typing-extensions</code></p>
+<p>I'd expect a &quot;dependency elimination&quot; to not warn about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-03 00:50</div>
+            <div class="timeline-body"><p>Yeah that seems incorrect. I wouldn't expect overrides to throw that warning at all (even if they're not an &quot;elimination&quot;) cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmm1">@tmm1</a> on 2025-02-06 04:15</div>
+            <div class="timeline-body"><p>Is there a way to override the version of a transitive dependency, instead of removing it?</p>
+<p>For example, if I have a venv with pytorch-nightly installed, then want to add <code>vllm</code>, it fails because that project has a <code>torch == 2.5.1</code> requirement listed.</p>
+<pre><code>❯ uv add vllm==0.7.1 
+  × No solution found when resolving dependencies:
+  ╰─▶ Because vllm==0.7.1 depends on torchvision==0.20.1 and testproject depends on torchvision==0.22.0.dev20250124+cu126, we can conclude that testproject and vllm==0.7.1 are incompatible.
+      And because testproject depends on vllm==0.7.1 and your project requires testproject, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-02-06 04:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a way to override the version of a transitive dependency, instead of removing it?</p>
+</blockquote>
+<p>That's the whole purpose of dependency overrides:</p>
+<p>https://docs.astral.sh/uv/reference/settings/#override-dependencies
+https://docs.astral.sh/uv/pip/compile/#overriding-dependency-versions
+https://docs.astral.sh/uv/concepts/resolution/#dependency-overrides</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-02-06 05:57</div>
+            <div class="timeline-body"><p>Btw, these days I actually find using uv's <code>dependency-metadata</code> to lie about the dependencies of my dependencies works better for me than overrides in most cases: https://docs.astral.sh/uv/reference/settings/#dependency-metadata</p>
+<p>This is because it's narrower (i.e. override edges vs nodes as discussed in https://github.com/astral-sh/uv/issues/4422#issuecomment-2249044193 ). It's another very nice uv trick that flies under the radar a little :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidblom603">@davidblom603</a> on 2025-02-06 15:30</div>
+            <div class="timeline-body"><p>A use case where you need this functionality is when a package depends on opencv.
+I guess to confuse everyone, there are 4 opencv packages:</p>
+<ul>
+<li>opencv-python</li>
+<li>opencv-contrib-python</li>
+<li>opencv-python-headless</li>
+<li>opencv-contrib-python-headless</li>
+</ul>
+<p>And they are conflicting, so you can only install one package without running into import errors at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/t-kalinowski">@t-kalinowski</a> on 2025-03-31 13:35</div>
+            <div class="timeline-body"><p>Is there a way to override a dependency with <code>uv run</code>? Setting <code>UV_OVERRIDE</code> or <code>UV_CONSTRAINT</code> doesn’t seem to work for me.</p>
+<p>Here’s the issue I’m running into:</p>
+<p>I’m using both PyTorch and TensorFlow (with tensorflow-text). I want PyTorch to be GPU-capable and TensorFlow to run on CPU only. To do that, I explicitly declare <code>tensorflow-cpu</code>. However, <code>tensorflow-text</code> pulls in <code>tensorflow</code>, so I end up with both <code>tensorflow</code> and <code>tensorflow-cpu</code> being installed.</p>
+<p>When running with <code>uv run</code>, this leads to a race condition where it's unpredictable which version of TensorFlow gets used.</p>
+<p>Ideally, I’d like to tell <code>uv</code>: please don’t install <code>tensorflow</code>; treat <code>tensorflow-cpu</code> as satisfying the requirement from <code>tensorflow-text</code>.</p>
+<p>This solution would ideally be accessible via <code>uv run</code> command line arguments, because that’s the mechanism that <a href="https://posit.co/blog/reticulate-1-41/">reticulate</a> uses to resolve ephemeral venvs.</p>
+<p>E.g., something like</p>
+<pre><code class="language-bash">uv run --no-project --no-cache --python 3.11.11 \
+  --with tensorflow-cpu \
+  --with tensorflow-text \
+  --with 'tensorflow; from=tensorflow-cpu' \
+-- python -c 'import tensorflow as tf; tf.config.list_physical_devices()' 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tensorflow/text/issues/1393.html">tensorflow/text#1393</a> on 2025-03-31 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12616.html">astral-sh/uv#12616</a> on 2025-04-02 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carolynsoo">@carolynsoo</a> on 2025-04-03 20:43</div>
+            <div class="timeline-body"><blockquote>
+<p>A use case where you need this functionality is when a package depends on opencv.</p>
+</blockquote>
+<p>So this is exactly my current issue with uv.. I want only <code>opencv-python-headless</code> (on some machines that don't have <code>libGL.so</code>), but I depend on wheels that include <code>opencv-python</code>.</p>
+<p>In root pyproject.toml I've set <code>sys_platform == 'never'&quot;</code> for <code>opencv-python</code> in <code>override-dependencies</code>, but there are still files in various packages (each package has its own <code>pyproject.toml</code>, where I tried adding <code>opencv-python-headless</code>) that still complain <code>ModuleNotFoundError: No module named 'cv2'</code>. Am I missing a step?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13175.html">astral-sh/uv#13175</a> on 2025-04-28 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/collinanderson">@collinanderson</a> on 2025-05-15 16:11</div>
+            <div class="timeline-body"><p>I'm finding that even with the <code>sys_platform == 'never'</code> trick, uv still downloads's the package metadata, and the package still ends up with a version number the <code>uv.lock</code> file, and therefore would still get dependabot notifications for the dependency. (In my case <code>nodeenv</code> when installing <code>pyright[nodejs]</code>) Would be nice to have some sort of dependency exclusion list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-15 16:13</div>
+            <div class="timeline-body"><p>Please provide a complete reproduction — hard to help without more details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/collinanderson">@collinanderson</a> on 2025-05-15 16:27</div>
+            <div class="timeline-body"><p>Steps to reproduce (uv 0.7.3):</p>
+<pre><code>uv init tmp
+cd tmp
+echo -e &quot;[tool.uv]\n override-dependencies = [ \&quot;nodeenv ; sys_platform == 'never'\&quot; ]&quot; &gt;&gt; pyproject.toml
+uv add 'pyright[nodejs]'
+grep -1 nodeenv uv.lock
+</code></pre>
+<p>It includes a <code>[[package]]</code> entry in <code>uv.lock</code> with a version number that can go stale. Ideally it would be nice to not include the <code>[[package]]</code> entry at all, or somehow have null <code>version</code>, <code>source</code>, <code>sdist</code>, <code>wheels</code>, etc.</p>
+<pre><code>[[package]]
+name = &quot;nodeenv&quot;
+version = &quot;1.9.1&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/43/16/fc88b08840de0e0a72a2f9d8c6bae36be573e475a6326ae854bcc549fc45/nodeenv-1.9.1.tar.gz&quot;, hash = &quot;sha256:6ec12890a2dab7946721edbfbcd91f3319c6ccc9aec47be7c7e6b7011ee6645f&quot;, size = 47437, upload-time = &quot;2024-06-04T18:44:11.171Z&quot; }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/d2/1d/1b658dbd2b9fa9c4c9f32accbfc0205d532c8c6194dc0f2a4c0428e7128a/nodeenv-1.9.1-py2.py3-none-any.whl&quot;, hash = &quot;sha256:ba11c9782d29c27c70ffbdda2d7415098754709be8a7056d79a737cd901155c9&quot;, size = 22314, upload-time = &quot;2024-06-04T18:44:08.352Z&quot; },
+]
+</code></pre>
+<p>Also, less important, but I noticed if you set the <code>nodeenv</code> to an old version, <code>uv</code> still downloads it and tries to build it (I assume to gather metadata), which also ideally should also be avoided. Would be nice to have a way to skip it completely without caring about version.</p>
+<pre><code>uv init tmp
+cd tmp
+echo -e &quot;[tool.uv]\n override-dependencies = [ \&quot;nodeenv==1 ; sys_platform == 'never'\&quot; ]&quot; &gt;&gt; pyproject.toml
+uv add 'pyright[nodejs]'
+</code></pre>
+<details>
+<summary>Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)</summary>
+
+<pre><code>  × Failed to build `nodeenv==1.0.0`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+          requires = get_requires_for_build({})
+        File &quot;/home/collin/.cache/uv/builds-v0/.tmppwsTyc/lib/python3.13/site-packages/setuptools/build_meta.py&quot;, line 331, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/collin/.cache/uv/builds-v0/.tmppwsTyc/lib/python3.13/site-packages/setuptools/build_meta.py&quot;, line 301, in _get_build_requires
+          self.run_setup()
+          ~~~~~~~~~~~~~~^^
+        File &quot;/home/collin/.cache/uv/builds-v0/.tmppwsTyc/lib/python3.13/site-packages/setuptools/build_meta.py&quot;, line 512, in run_setup
+          super().run_setup(setup_script=setup_script)
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/collin/.cache/uv/builds-v0/.tmppwsTyc/lib/python3.13/site-packages/setuptools/build_meta.py&quot;, line 317, in run_setup
+          exec(code, locals())
+          ~~~~^^^^^^^^^^^^^^^^
+        File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+        File &quot;/home/collin/.cache/uv/sdists-v9/pypi/nodeenv/1.0.0/HfllLLqg_MJfEoVZ1fq8n/src/nodeenv.py&quot;, line 24, in &lt;module&gt;
+          import pipes
+      ModuleNotFoundError: No module named 'pipes'
+
+      hint: This usually indicates a problem with the package or the build environment.
+ help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+</details>
+
+<p>Update: If the version in <code>uv.lock</code> is stale, running <code>uv lock --upgrade --dry-run</code> reports that the lock file needs to be updated. <code>uv sync --upgrade --check</code> however says <code>Would make no changes</code>, because the update wouldn't be synced, though it does say in grey text: <code>Would update lockfile at: uv.lock</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rstudio/keras3/issues/1511.html">rstudio/keras3#1511</a> on 2025-06-10 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14030.html">astral-sh/uv#14030</a> on 2025-06-13 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2025-08-22 14:12</div>
+            <div class="timeline-body"><p>The &quot;use overrides to prevent installation&quot; use case came up again recently in https://github.com/astral-sh/uv/issues/2500#issuecomment-3200409272 (as a way to instruct <code>uv</code> to skip installing packages available elsewhere on <code>sys.path</code> into the environment currently being updated)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2686.html">astral-sh/uv#2686</a> on 2025-08-27 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15566.html">astral-sh/uv#15566</a> on 2025-08-28 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15813.html">astral-sh/uv#15813</a> on 2025-09-12 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13435.html">astral-sh/uv#13435</a> on 2025-09-16 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LTMeyer">@LTMeyer</a> on 2025-09-24 15:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Btw, these days I actually find using uv's <code>dependency-metadata</code> to lie about the dependencies of my dependencies works better for me than overrides in most cases: https://docs.astral.sh/uv/reference/settings/#dependency-metadata</p>
+<p>This is because it's narrower (i.e. override edges vs nodes as discussed in <a href="https://github.com/astral-sh/uv/issues/4422#issuecomment-2249044193">#4422 (comment)</a> ). It's another very nice uv trick that flies under the radar a little :-)</p>
+</blockquote>
+<p>Would you have an example @hauntsaninja?</p>
+<p>I was following <a href="https://docs.astral.sh/uv/reference/settings/#dependency-metadata">dependency-metadata documentation</a>. I added the following to my <code>pyproject.toml</code> assuming it will override dependencies for <code>&lt;a-dependency-package&gt;</code> (whereas <code>override-dependencies</code> overrides for all dependency packages as far as I understood).</p>
+<pre><code class="language-toml">[tool.uv]
+dependency-metadata = [
+    { name = &quot;&lt;a-dependency-package&gt;&quot;, requires-dist = [&quot;&lt;b-package&gt;&gt;=2&quot;]},
+]
+</code></pre>
+<p>However, when installing through <code>uv sync --all-extras --all-groups --dev</code> I get an older <code>&lt;b-package&gt;</code> version installed, the one that is listed as dependency for the dependency package. I would expect to have <code>&lt;b-package&gt;</code> version 2 or more being installed. What did I miss?</p>
+<p>Note that the dependency on <code>&lt;a-dependency-package&gt;</code> is defined as a development dependency (within a group https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-groups) instead of an optional dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-23 13:21</div>
+            <div class="timeline-body"><p>A reference can be PDM (https://pdm-project.org/latest/usage/config/#exclude-specific-packages-and-their-dependencies-from-the-lock-file):</p>
+<blockquote>
+<p>Sometimes you don't even want to include certain packages in the
+locked file because you are sure they won't be used by any code. In this
+case, you can completely skip them and their dependencies during
+dependency resolution:</p>
+<pre><code class="language-toml">[tool.pdm.resolution]
+excludes = [&quot;requests&quot;]
+</code></pre>
+<p>With this config, <code>requests</code> will not be locked in the lockfile, and its dependencies such as <code>urllib3</code> and <code>idna</code>
+will also not show up in the resolution result, if not depended on by
+other packages. The installer will not be able to pick them up either.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-31 14:18</div>
+            <div class="timeline-body"><p>We just added support for excluding dependencies entirely by name: https://github.com/astral-sh/uv/pull/16528 (available in the next release)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected behavior with `Vec&lt;_&gt;` argument types for positionals and options - clap-rs/clap #4655</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected behavior with `Vec&lt;_&gt;` argument types for positionals and options</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4655">#4655</a>
+        opened by <a href="https://github.com/lucatrv">@lucatrv</a>
+        on 2023-01-22 15:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lucatrv">@lucatrv</a> on 2023-01-22 15:14</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.66.1</p>
+<h3>Clap Version</h3>
+<p>4.1.1</p>
+<h3>Minimal reproducible code</h3>
+<p>Positional:</p>
+<pre><code class="language-rust">#[derive(Debug, Parser)]
+struct Args {
+    positional: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let args = Args::parse();
+    dbg!(args);
+}
+</code></pre>
+<p>Option:</p>
+<pre><code class="language-rust">#[derive(Debug, Parser)]
+struct Args {
+    #[arg(long)]
+    option: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let args = Args::parse();
+    dbg!(args);
+}
+</code></pre>
+<p>Option with fix:</p>
+<pre><code class="language-rust">#[derive(Debug, Parser)]
+struct Args {
+    #[arg(long, num_args = 0..)]
+    option: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let args = Args::parse();
+    dbg!(args);
+}
+</code></pre>
+<p>Positional and option:</p>
+<pre><code class="language-rust">#[derive(Debug, Parser)]
+struct Args {
+    positional: Vec&lt;String&gt;,
+    #[arg(long)]
+    option: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let args = Args::parse();
+    dbg!(args);
+}
+</code></pre>
+<p>Positional and option with fix:</p>
+<pre><code class="language-rust">#[derive(Debug, Parser)]
+struct Args {
+    positional: Vec&lt;String&gt;,
+    #[arg(long, num_args = 0..)]
+    option: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let args = Args::parse();
+    dbg!(args);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Positional:
+<code>cargo run --  a b c</code></p>
+<p>Option:
+<code>cargo run -- --option a b c</code></p>
+<p>Option with fix:
+<code>cargo run --  --option a b c</code></p>
+<p>Positional and option:
+<code>cargo run --  a b c --option d e f</code></p>
+<p>Positional and option with fix:
+<code>cargo run --  a b c --option d e f</code></p>
+<h3>Actual Behaviour</h3>
+<p>Positional:</p>
+<pre><code>args = Args {
+    positional: [
+        &quot;a&quot;,
+        &quot;b&quot;,
+        &quot;c&quot;,
+    ],
+}
+</code></pre>
+<p>Option:</p>
+<pre><code>error: unexpected argument 'b' found
+</code></pre>
+<p>Option with fix:</p>
+<pre><code>args = Args {
+    option: [
+        &quot;a&quot;,
+        &quot;b&quot;,
+        &quot;c&quot;,
+    ],
+}
+</code></pre>
+<p>Positional and option:</p>
+<pre><code>args = Args {
+    positional: [
+        &quot;a&quot;,
+        &quot;b&quot;,
+        &quot;c&quot;,
+        &quot;e&quot;,
+        &quot;f&quot;,
+    ],
+    option: [
+        &quot;d&quot;,
+    ],
+}
+</code></pre>
+<p>Positional and option with fix:</p>
+<pre><code>args = Args {
+    positional: [
+        &quot;a&quot;,
+        &quot;b&quot;,
+        &quot;c&quot;,
+    ],
+    option: [
+        &quot;d&quot;,
+        &quot;e&quot;,
+        &quot;f&quot;,
+    ],
+}
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Positional:</p>
+<pre><code>args = Args {
+    positional: [
+        &quot;a&quot;,
+        &quot;b&quot;,
+        &quot;c&quot;,
+    ],
+}
+</code></pre>
+<p>Option:</p>
+<pre><code>args = Args {
+    option: [
+        &quot;a&quot;,
+        &quot;b&quot;,
+        &quot;c&quot;,
+    ],
+}
+</code></pre>
+<p>Option with fix:</p>
+<pre><code>args = Args {
+    option: [
+        &quot;a&quot;,
+        &quot;b&quot;,
+        &quot;c&quot;,
+    ],
+}
+</code></pre>
+<p>Positional and option:</p>
+<pre><code>args = Args {
+    positional: [
+        &quot;a&quot;,
+        &quot;b&quot;,
+        &quot;c&quot;,
+    ],
+    option: [
+        &quot;d&quot;,
+        &quot;e&quot;,
+        &quot;f&quot;,
+    ],
+}
+</code></pre>
+<p>Positional and option with fix:</p>
+<pre><code>args = Args {
+    positional: [
+        &quot;a&quot;,
+        &quot;b&quot;,
+        &quot;c&quot;,
+    ],
+    option: [
+        &quot;d&quot;,
+        &quot;e&quot;,
+        &quot;f&quot;,
+    ],
+}
+</code></pre>
+<h3>Additional Context</h3>
+<p>As shown by the sample code above, when a positional argument is defined with <code>Vec&lt;_&gt;</code> type, <code>num_args(0..)</code> is implied as expected. However when an option argument is defined with the same type, <code>num_args(0..)</code> is not implied, so it needs to be added manually to achieve the same behavior (see code above &quot;with fix&quot;). This leads to unexpected behavior in particular when using both positional and option arguments. IMHO <code>num_args(0..)</code> should be implied for both positional and option arguments.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @lucatrv on 2023-01-22 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-23 14:45</div>
+            <div class="timeline-body"><p>So if I'm understanding correctly, you are wanting <code>Vec</code> for options to accept multiple values per flag?</p>
+<p>That was the old structopt behavior and we intentionally switched in #2993 as</p>
+<ul>
+<li><code>ArgAction::Append</code> is the more commonly expected command-line behavior, next followed by also setting <code>value_delimiter</code></li>
+<li><code>num_args(0..)</code> is not without problems <a href="https://docs.rs/clap/latest/clap/builder/struct.Arg.html#method.num_args">which we warn about in the docs</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucatrv">@lucatrv</a> on 2023-01-24 13:27</div>
+            <div class="timeline-body"><p>Thanks for your answer, your <a href="https://github.com/clap-rs/clap/pull/2993">reference</a> helped me better understand. However what I find confusing is that <code>Vec&lt;_&gt;</code> leads to different default behaviors for positional and option arguments. This <a href="https://docs.rs/clap/latest/clap/_derive/index.html#arg-types">table</a> seems valid only for option arguments, for which <code>action(ArgAction::Append)</code> is implied, while it does not seem valid for positional arguments, for which <code>num_args(0..)</code> is actually implied.
+In my opinion the same behavior for positional or option arguments (both with <code>num_args(0..)</code> implied) would have been the most straightforward solution, but I now understand why it was decided to differentiate. If this is wanted by design, and I'm in agreement after all, IMHO this different behavior should be better documented.
+For instance, a new column could be added to this <a href="https://docs.rs/clap/latest/clap/_derive/index.html#arg-types">table</a> to explain what is implied for positional arguments. Moreover it would help to add a note explaining how to change the behavior of option arguments from the default one using multiple occurrences (<code>action(ArgAction::Append)</code>) to use value delimiter (<code>value_delimiter = ','</code>), or to achieve the same default behavior of positional arguments (<code>num_args(0..)</code>). For the latter case, a warning could explained why it is not considered the default behavior for option arguments and why it is not advised (referring to <a href="https://docs.rs/clap/latest/clap/builder/struct.Arg.html#method.num_args">this one</a>).
+IMHO this would clarify much better this matter to new users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-31 22:08</div>
+            <div class="timeline-body"><blockquote>
+<p>For instance, a new column could be added to this <a href="https://docs.rs/clap/latest/clap/_derive/index.html#arg-types">table</a> to explain what is implied for positional arguments.</p>
+</blockquote>
+<p>The reason I didn't go into more nuance in the table is that <code>Append</code> implies the desired behavior for both.  The more we complicate the table, the harder it will be for people to use.</p>
+<blockquote>
+<p>Moreover it would help to add a note explaining how to change the behavior of option arguments from the default one using multiple occurrences (action(ArgAction::Append)) to use value delimiter (value_delimiter = ','), or to achieve the same default behavior of positional arguments (num_args(0..)</p>
+</blockquote>
+<p>The derive reference is exclusive to what is unique in the derive.  See https://github.com/clap-rs/clap/discussions/4090 for more details and further discussion on how to handle that problem.</p>
+<p>As for what cases to cover in other forms of documentation (cookbook, tutorials), the challenge is finding the right subset to cover and rely on the builder reference for the rest or else it becomes unmanageable.</p>
+<p>As I feel everything from this is expected behavior, I'm closing this out.  We can continue the discussion if you want which can always lead to either this specific issue being re-opened or new issues being created.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-01-31 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Arcitec">@Arcitec</a> on 2023-04-24 00:56</div>
+            <div class="timeline-body"><p>@epage I want to thank both of you for this discussion. I stumbled on it as I was looking for a way to collect all positional arguments regardless of where they appear in the argument list.</p>
+<p>I agree that named arguments should default to exactly 1 value, the way CLAP works by default now. I'd be very confused if a sudden <code>a b --option something d e</code> swallowed the <code>d e</code> afterwards by default!</p>
+<p>I think CLAP works perfectly already. The &quot;positional and option&quot; (without &quot;fix&quot;) in the list above makes the most sense and I am glad to see it's the default behavior. Thank you @lucatrv for the code demo that showed how to set that up.</p>
+<p>Just for reference, that's the following code:</p>
+<pre><code class="language-rust">#[derive(Debug, Parser)]
+struct Args {
+    positional: Vec&lt;String&gt;,
+    #[arg(long)]
+    option: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let args = Args::parse();
+    dbg!(args);
+}
+</code></pre>
+<p>Command line: <code>a b c --option d e f</code></p>
+<p>Result:</p>
+<pre><code>args = Args {
+    positional: [
+        &quot;a&quot;,
+        &quot;b&quot;,
+        &quot;c&quot;,
+        &quot;e&quot;,
+        &quot;f&quot;,
+    ],
+    option: [
+        &quot;d&quot;,
+    ],
+}
+</code></pre>
+<p>It's perfect. But I am also glad to know that it's possible to override the capturing via the <code>num_args</code> parameter. :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

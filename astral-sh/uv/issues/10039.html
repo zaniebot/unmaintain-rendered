@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression in uv 5.10 installing from directory/git package with pyproject.toml - astral-sh/uv #10039</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Regression in uv 5.10 installing from directory/git package with pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10039">#10039</a>
+        opened by <a href="https://github.com/peterroelants">@peterroelants</a>
+        on 2024-12-19 18:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/peterroelants">@peterroelants</a> on 2024-12-19 18:18</div>
+            <div class="timeline-body"><p><code>uv pip install</code> a directory with a <code>pyproject.toml</code> fails with uv version 0.5.10 (and works with <code>uv&lt;0.5.10</code>)</p>
+<pre><code>❯ uv pip install &lt;package-name&gt; @ git+ssh://git@&lt;package_github_url&gt;
+Using Python 3.11.11 environment at: ~/miniforge3/envs/uv_test
+ Updated ssh://git@&lt;package_github_url&gt; (abcdefg)
+  × Failed to download and build `&lt;package-name&gt; @
+  │ git+ssh://git@&lt;package_github_url&gt;`
+  ├─▶ Failed to parse: `/home/peter/.cache/uv/git-v0/checkouts/asduhasdf/abcdefg/pyproject.toml`
+  ╰─▶ TOML parse error at line 1, column 1
+        |
+      1 | [project]
+        | ^^^^^^^^^
+      `pyproject.toml` is using the `[project]` table, but the required `project.version` field is neither set nor present in the `project.dynamic` list
+</code></pre>
+<p><code>pyproject.toml</code> looks like:</p>
+<pre><code class="language-toml">[project]
+name = &quot;&lt;package-name&gt;&quot;
+description = &quot;Package discription&quot;
+version = &quot;0.0.1&quot;
+readme = &quot;README.md&quot;
+license = {text = &quot;Proprietary/Confidential&quot;}
+classifiers = [
+    &quot;Programming Language :: Python :: 3&quot;,
+]
+requires-python = &quot;&gt;=3.9&quot;
+dynamic = [
+  &quot;dependencies&quot;,
+]
+
+[build-system]
+requires = [&quot;setuptools&gt;=67&quot;, &quot;wheel&quot;, &quot;pip&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[tool.setuptools.dynamic]
+dependencies = {file = [&quot;env/requirements.txt&quot;]}
+
+[tool.setuptools.packages.find]
+where = [&quot;./src&quot;]
+
+[project.urls]
+source = &quot;&lt;package_github_url&gt;&quot;
+</code></pre>
+<p>I can successfully install the package with <code>uv-0.5.9</code> using <code>uv pip install &lt;package-name&gt; @ git+ssh://git@&lt;package_github_url&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-19 18:22</div>
+            <div class="timeline-body"><p>Please provide a Git repo that I can clone to reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-12-19 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterroelants">@peterroelants</a> on 2024-12-20 08:26</div>
+            <div class="timeline-body"><p>I'm sorry for not providing an MRE initially, I was having the issue with a private repo that I couldn't share.</p>
+<p>However, I've been able to replicate it in the meantime at https://github.com/peterroelants/test_uv_pyproject_toml . The issue is a bit more complicated as I originally thought, more details are in the <a href="https://github.com/peterroelants/test_uv_pyproject_toml/blob/main/README.md">README of that repo</a></p>
+<p>You can test it running:</p>
+<pre><code>uv pip install &quot;test-uv-pyproject-toml @ git+ssh://git@github.com/peterroelants/test_uv_pyproject_toml.git#subdirectory=projects/subproject&quot;
+</code></pre>
+<p>Using <code>uv=0.5.10</code>.</p>
+<p>I'm not sure if it's an actual issue, but is definitely a regression (works with uv 0.5.9) and the behavior differs from pip, which also works fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @peterroelants on 2024-12-20 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @peterroelants on 2024-12-20 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mckinsey/vizro/pulls/934.html">mckinsey/vizro#934</a> on 2024-12-24 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jcreinhold">@jcreinhold</a> on 2024-12-27 15:47</div>
+            <div class="timeline-body"><p>I'm also getting this error on <code>uv==0.5.13</code> when trying to editable install a company repo with a <code>pyproject.toml</code> that uses a dynamic version. <code>uv==0.5.9</code> works fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jcreinhold">@jcreinhold</a> on 2024-12-27 16:21</div>
+            <div class="timeline-body"><p>My best guess is there's something incorrect with the logic <a href="https://github.com/astral-sh/uv/blob/0bc33e87b8a58ae8bcff87c0ea76b37dd98324ea/crates/uv-workspace/src/pyproject.rs#L247">here</a>. It's not immediately obvious what the problem is, but this was added in 0.5.10.</p>
+<p>I can take a look later and submit a PR, FWIW.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jcreinhold">@jcreinhold</a> on 2024-12-27 17:37</div>
+            <div class="timeline-body"><p>Nevermind. The error was related to this change, but it was really because I have a <code>pyproject.toml</code> without a version at the root level (which is where the command was run) and I was installing a package in a subdirectory. It seems that the root <code>pyproject.toml</code> was parsed, even though it wasn't a dependency of the subdirectory, and that raised the error. I added a version to the root <code>pyproject.toml</code> and that solved the issue.</p>
+<p>The error was a bit misleading. I suppose specifying the path of the problematic <code>pyproject.toml</code> in the error message would have helped me solve this problem much more quickly. Not sure if this edge case needs to be handled though.</p>
+<p>I debugged this by setting <code>RUST_LOG=trace</code>, FWIW, @peterroelants. Perhaps that'd also be useful in your situation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jcreinhold">@jcreinhold</a> on 2024-12-27 17:55</div>
+            <div class="timeline-body"><p>Actually @peterroelants it looks like your test project replicates exactly the issue I described above. If you put in a version into the root <code>pyproject.toml</code>, I believe you'll be able to use <code>uv&gt;=0.5.10</code>.</p>
+<p>I suppose I need to read more about how to actually use <code>uv</code> with a repository structured like that. In the repo causing a problem for me, the root <code>pyproject.toml</code> is for, e.g., <code>ruff</code> linting settings and some settings for the <code>uv</code> index URLs. But the repo has several completely independent projects underneath it (with their own <code>pyproject.toml</code>). The independent projects don't try to install the root repo or anything strange like that.</p>
+<p>Is there some <code>uv</code> setting I should set in the root <code>pyproject.toml</code> to handle this situation properly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-17 03:07</div>
+            <div class="timeline-body"><p>I think the behavior here is right... If you have a <code>pyproject.toml</code> with a <code>[project]</code> table, it must have a version (or the version must be marked as dynamic). You can see the specification here: https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-project-metadata-the-project-table. It's not uv-specific -- it's defined in the standards.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

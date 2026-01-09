@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idiomatic Windows paths - astral-sh/uv #7008</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Idiomatic Windows paths</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7008">#7008</a>
+        opened by <a href="https://github.com/2-5">@2-5</a>
+        on 2024-09-04 12:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/2-5">@2-5</a> on 2024-09-04 12:06</div>
+            <div class="timeline-body"><p>The paths used by <code>uv</code> on Windows are not very idiomatic.</p>
+<p>Clean install:</p>
+<pre><code class="language-shell">irm https://astral.sh/uv/install.ps1 | iex
+uv tool install ruff
+</code></pre>
+<p>Outcome:</p>
+<pre><code>uv.exe      C:\Users\USER\.cargo\bin
+uv cache    C:\Users\USER\AppData\Local\uv\cache
+ruff venv   C:\Users\USER\AppData\Roaming\uv\tools\ruff
+ruff.exe    C:\Users\USER\.local\bin\ruff.exe
+
+# not actually installed
+uv.toml     C:\Users\USER\AppData\Roaming\uv\uv.toml
+</code></pre>
+<p><code>~/.cargo/bin</code> is not ideal, but I guess that ship has sailed since it's the Rust default.</p>
+<p>I think the tools venvs dir should be moved from <code>AppData\Roaming (%APPDATA%)</code> to <code>AppData\Local (%LOCALAPPDATA%)</code>. You're not supposed to store binaries in the <code>AppData\Roaming</code> directory, it's more of a <code>.config</code> kind of directory. Also, the tool venv from <code>AppData\Roaming</code> will use the uv cache from <code>AppData\Local</code>, this will break in a corporate setup, where the <code>AppData\Roaming</code> can &quot;roam&quot; (a sort of a network share) - you'll login into a new machine with your domain user, the <code>AppData\Roaming</code> will be copied/mounted there, but there will be no corresponding <code>uv</code> cache in the <code>AppData\Local</code> directory.</p>
+<p>The <code>~/.local/bin</code> choice is terrible on Windows, it pollutes the home directory. I think it should also go in the <code>AppData\Local</code> directory.</p>
+<p>My proposal for the paths:</p>
+<pre><code>uv.exe      C:\Users\USER\.cargo\bin
+uv cache    C:\Users\USER\AppData\Local\uv\cache
+ruff venv   C:\Users\USER\AppData\Local\uv\tools\ruff
+ruff.exe    C:\Users\USER\AppData\Local\uv\bin\ruff.exe
+
+uv.toml     C:\Users\USER\AppData\Roaming\uv\uv.toml
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/2-5">@2-5</a> on 2024-09-04 12:12</div>
+            <div class="timeline-body"><p>Maybe @zooba could comment on this as an authoritative figure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zooba">@zooba</a> on 2024-09-04 12:37</div>
+            <div class="timeline-body"><p>Recent versions of Windows have made it so dot-prefixed directories are no longer actively hostile, so the <code>.cargo</code> and <code>.local</code> are now just messy, rather than anti-user.</p>
+<p>Your understanding of how <code>AppData\Local</code> and <code>AppData\Roaming</code> are meant to work is accurate. What goes on within those (provided you follow it with a unique company/program name) is up to the project. But it is fair to assume that <code>Roaming</code> may be copied onto another machine, and so anything that is specific to the current machine (e.g. file paths) either shouldn't go in there or should be safe for transfer.</p>
+<p>With Dev Drive growing in use, you'll also definitely want a way to permanently relocate caches into a new location. Global environment variables (like pip) are fine, but perhaps you'll have a better idea (such as setting up a cache on the same drive as the install target). There's no solid convention for where to put files on a Dev Drive yet, but I'd say it's probably fine to claim <code>D:\.uv</code>. (For reference, <a href="https://devblogs.microsoft.com/visualstudio/devdrive/">intro to Dev Drive</a>[^1] and <a href="https://github.com/python/cpython/blob/main/Modules/posixmodule.c#L4835">checking if it's a Dev Drive</a>).</p>
+<p>[^1]: Wondering why the graph has a Django benchmark and not pip? The perf gain for package installation on a Dev Drive was so big it would've looked like we were lying 😉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @AlexWaygood on 2024-09-04 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/2-5">@2-5</a> on 2024-09-04 12:54</div>
+            <div class="timeline-body"><blockquote>
+<p>setting up a cache on the same drive as the install target</p>
+</blockquote>
+<p>That's what I did, consolidated all programming tools caches (including <code>uv</code>) into one directory on the Dev Drive.</p>
+<pre><code>GOCACHE=D:\Cache\go\build
+GOPATH=D:\Cache\go
+NPM_CONFIG_CACHE=D:\Cache\npm
+NUGET_PACKAGES=D:\Cache\nuget
+PIP_CACHE_DIR=D:\Cache\pip
+PYLINTHOME=D:\Cache\pylint
+UV_CACHE_DIR=D:\Cache\uv\cache
+UV_TOOL_BIN_DIR=D:\Cache\uv\bin
+UV_TOOL_DIR=D:\Cache\uv\tool
+VCPKG_DEFAULT_BINARY_CACHE=D:\Cache\vcpkg
+YARN_GLOBAL_FOLDER=D:\Cache\yarn
+</code></pre>
+<p>Maybe Dev Drive could provide a <code>%DevDrive%</code> env var (like <code>%SystemDrive%</code>) and all tools could use that if it's set, although there is the question of what happens if you have multiple such drives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 13:34</div>
+            <div class="timeline-body"><blockquote>
+<p>The ~/.local/bin choice is terrible on Windows, it pollutes the home directory</p>
+</blockquote>
+<p>This is what pipx does, which is why we're using it.</p>
+<p>Regarding Roaming, yeah that seems problematic. It was intentional to place this data in Roaming, but if it's not colocated with the cache it sounds like a problem since we link files? We also don't special-case whether or not the Python interpreter comes from the system (which would require Local) or is managed (which would be co-located in Roaming). It seems like we should move it all to Local, though it's a bummer it won't be accessible via a network share.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @zanieb on 2024-09-04 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 13:34</div>
+            <div class="timeline-body"><p>We can probably change the directory without it being breaking, but we'll need to be careful when changing these.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zooba">@zooba</a> on 2024-09-04 13:40</div>
+            <div class="timeline-body"><blockquote>
+<p>We also don't special-case whether or not the Python interpreter comes from the system (which would require Local) or is managed (which would be co-located in Roaming). It seems like we should move it all to Local, though it's a bummer it won't be accessible via a network share.</p>
+</blockquote>
+<p>When we were adding the same kind of thing to Visual Studio, we basically had a &quot;roaming&quot; identifier that mapped to a &quot;local&quot; path, so if you moved machine you'd have the same identifier but the correct path (and of course for anything we auto-detected we controlled the identifier, so knew it was stable). But that may be overkill here, compared to just detecting each time.</p>
+<blockquote>
+<p>Maybe Dev Drive could provide a <code>%DevDrive%</code> env var (like <code>%SystemDrive%</code>) and all tools could use that if it's set, although there is the question of what happens if you have multiple such drives.</p>
+</blockquote>
+<p>At the OS level, that question makes the whole idea prohibitive. So the recommendation is to check each drive (or more likely, the relevant drive for whatever your context is) to see whether it's a better cache/temp location than <code>%UserProfile%</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielniccoli">@danielniccoli</a> on 2025-03-13 14:49</div>
+            <div class="timeline-body"><blockquote>
+<p>My proposal for the paths:</p>
+<pre><code>uv.exe      C:\Users\USER\.cargo\bin
+uv cache    C:\Users\USER\AppData\Local\uv\cache
+ruff venv   C:\Users\USER\AppData\Local\uv\tools\ruff
+ruff.exe    C:\Users\USER\AppData\Local\uv\bin\ruff.exe
+
+uv.toml     C:\Users\USER\AppData\Roaming\uv\uv.toml
+</code></pre>
+</blockquote>
+<p>I partially disagree with these proposed paths. While I appreciate the effort to adopt a more idiomatic folder structure for Windows—which, unfortunately, is often overlooked—some of these paths do not actually follow Windows conventions. Specifically, when creating files or folders directly in <code>%USERPROFILE</code>. See</p>
+<blockquote>
+<p>Applications should not create files or folders [in the user's profile folder]; they should put their data under the locations referred to by <a href="https://learn.microsoft.com/en-us/dotnet/api/system.environment.specialfolder?view=net-6.0#system-environment-specialfolder-applicationdata">ApplicationData</a>.</p>
+</blockquote>
+<p>Source: https://learn.microsoft.com/en-us/dotnet/api/system.environment.specialfolder?view=net-6.0</p>
+<p>Windows provides a dedicated folder for user-installed programs: <a href="https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid"><code>FOLDERID_UserProgramFiles</code></a>. Based on this, I propose the following structure:</p>
+<ul>
+<li>Install <code>uv</code> inside <code>%LOCALAPPDATA%\Programs\uv\</code>.</li>
+<li>Store cache and other volatile files within <code>%LOCALAPPDATA%\uv\</code>, if <code>%TEMP%</code> may not be the better choice.</li>
+<li>Place binaries installed via <code>uv</code> either:<ul>
+<li>Directly in <code>%LOCALAPPDATA%\Programs\uv\</code>, alongside <code>uv.exe</code>.</li>
+<li>Or in a separate folder: <code>%LOCALAPPDATA%\Programs\uv\scripts</code>, similar to how Python installs scripts in <code>%LOCALAPPDATA%\Python\Python312\Scripts</code>.</li>
+</ul>
+</li>
+<li>Place uv-specific config files in %APPDATA%\uv` so they can roam (as you suggested).</li>
+</ul>
+<p>This structure would align better with Windows guidelines while keeping things organized.</p>
+<blockquote>
+<p>This (~/.local/bin) is what pipx does, which is why we're using it.</p>
+</blockquote>
+<p>@zanieb  One should not take the bad habits of others as an example.</p>
+<blockquote>
+<p>It seems like we should move it all to Local, though it's a bummer it won't be accessible via a network share.</p>
+</blockquote>
+<p>@zanieb What do you mean by &quot;accessible via a network share&quot;? The roaming profile is not accessed on-demand, but synced to the client on logon. And programs are not supposed to roam. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13307.html">astral-sh/uv#13307</a> on 2025-05-06 00:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/refack">@refack</a> on 2025-06-18 21:11</div>
+            <div class="timeline-body"><p><img src="https://github.com/user-attachments/assets/836e503a-7e77-4d28-a344-d52f19b55631" alt="Image" />
+This ☝</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-06-20 13:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

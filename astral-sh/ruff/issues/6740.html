@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP007: Flags code even when python version is less than 3.10 - astral-sh/ruff #6740</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP007: Flags code even when python version is less than 3.10</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6740">#6740</a>
+        opened by <a href="https://github.com/bgianfo">@bgianfo</a>
+        on 2023-08-21 20:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bgianfo">@bgianfo</a> on 2023-08-21 20:56</div>
+            <div class="timeline-body"><p>The documentation for <code>UP007</code> points to <a href="https://peps.python.org/pep-0604/">PEP 604</a>, which claims it targets python 3.10.</p>
+<p>The ruff rule seems to currently run even if you are targeting python 3.9, is this a bug? I can't seem to determine if the PEP 604 syntax was backported to py39 or not?</p>
+<p>Current Ruff Version: 0.0.285</p>
+<pre><code class="language-toml">[tool.ruff]
+# Support Python 3.9+.
+target-version = &quot;py39&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bgianfo">@bgianfo</a> on 2023-08-21 21:32</div>
+            <div class="timeline-body"><p>It seems like <code>https://beta.ruff.rs/docs/settings/#pyupgrade-keep-runtime-typing</code> is the thing that controls the behavior here? Maybe that should be listed in the <code>UP007</code> rule docs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-21 21:55</div>
+            <div class="timeline-body"><p>Yeah, if you have <code>from __future__ import annotations</code> in your file, then we will rewrite those annotations on pre-Python 3.10 versions, unless you have <code>keep-runtime-typing</code> set. I'll make sure that setting is referenced in those docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2023-08-21 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6746.html">astral-sh/ruff#6746</a> on 2023-08-21 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-22 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vfazio">@vfazio</a> on 2024-09-18 11:59</div>
+            <div class="timeline-body"><p>I'm still seeing this behavior for type stub files.</p>
+<pre><code>(venv) vfazio@vfazio4 /mnt/development/libgpiod/bindings/python $ ruff -V
+ruff 0.6.4
+
+(venv) vfazio@vfazio4 /mnt/development/libgpiod/bindings/python $ tail pyproject.toml 
+
+[build-system]
+requires = [&quot;setuptools&quot;, &quot;wheel&quot;, &quot;packaging&quot;]
+
+[project.optional-dependencies]
+dev = [&quot;mypy&quot;, &quot;ruff&quot;]
+
+[tool.ruff.lint.pyupgrade]
+# Preserve types, even if a file imports `from __future__ import annotations`.
+keep-runtime-typing = true
+(venv) vfazio@vfazio4 /mnt/development/libgpiod/bindings/python $ ruff check --target-version=py39 --select &quot;UP007&quot; gpiod
+gpiod/_ext.pyi:35:44: UP007 Use `X | Y` for type annotations
+   |
+33 |     def set_values(self, values: dict[int, Value]) -&gt; None: ...
+34 |     def reconfigure_lines(self, line_cfg: LineConfig) -&gt; None: ...
+35 |     def read_edge_events(self, max_events: Optional[int]) -&gt; list[EdgeEvent]: ...
+   |                                            ^^^^^^^^^^^^^ UP007
+36 |     @property
+37 |     def chip_name(self) -&gt; str: ...
+   |
+   = help: Convert to `X | Y`
+
+gpiod/_ext.pyi:53:19: UP007 Use `X | Y` for type annotations
+   |
+51 |         self,
+52 |         line_cfg: LineConfig,
+53 |         consumer: Optional[str],
+   |                   ^^^^^^^^^^^^^ UP007
+54 |         event_buffer_size: Optional[int],
+55 |     ) -&gt; Request: ...
+   |
+   = help: Convert to `X | Y`
+
+gpiod/_ext.pyi:54:28: UP007 Use `X | Y` for type annotations
+   |
+52 |         line_cfg: LineConfig,
+53 |         consumer: Optional[str],
+54 |         event_buffer_size: Optional[int],
+   |                            ^^^^^^^^^^^^^ UP007
+55 |     ) -&gt; Request: ...
+56 |     def read_info_event(self) -&gt; InfoEvent: ...
+   |
+   = help: Convert to `X | Y`
+
+Found 3 errors.
+No fixes available (3 hidden fixes can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/calumy">@calumy</a> on 2024-09-18 12:14</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm still seeing this behavior for type stub files.</p>
+</blockquote>
+<p>I believe this is intended behaviour as stub files are not used at run time, so can make use of new typing features: https://docs.astral.sh/ruff/settings/#target-version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vfazio">@vfazio</a> on 2024-09-18 14:27</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I'm still seeing this behavior for type stub files.</p>
+</blockquote>
+<p>I believe this is intended behaviour as stub files are not used at run time, so can make use of new typing features: https://docs.astral.sh/ruff/settings/#target-version</p>
+</blockquote>
+<p>@calumy Thanks for the reply</p>
+<p>It's a little strange because the ruff behavior deviates from pyupgrade. In this instance, pyupgrade does <em>not</em> morph the pyi stubs when run with <code>--py39-plus</code>.</p>
+<p>Despite the caveat that's called out in that link, when typing a library, it seems ideal to maintain consistency across the entire codebase and not mix syntax. In this case, we have public python interfaces that self annotate and use Union/Optional syntax since our minimal version is 3.9, but we have a C extension which requires the stub to type properly and is thus being told to use 3.10+ style syntax.</p>
+<p>We can't change the Python interface syntax without the 3.9 interpreter blowing up.</p>
+<p>I can exclude the stub file from UP007 checks, but I think there should be a preference for consistency within a codebase.</p>
+<p>I realize i necroposted on this issue, so my apologies. This may warrant a new issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../whittle-org/whittle/issues/223.html">whittle-org/whittle#223</a> on 2025-01-17 10:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

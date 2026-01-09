@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redundant message when running sync with invalid dependencies and optional dependencies - astral-sh/uv #10062</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Redundant message when running sync with invalid dependencies and optional dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10062">#10062</a>
+        opened by <a href="https://github.com/mirober">@mirober</a>
+        on 2024-12-20 17:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mirober">@mirober</a> on 2024-12-20 17:17</div>
+            <div class="timeline-body"><p>UV version: 0.5.9</p>
+<p>Repro pyproject.toml:</p>
+<pre><code>[project]
+name = &quot;my-project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;....&quot;
+requires-python = &quot;&gt;=3.10&quot;
+readme = &quot;README.md&quot;
+dependencies = [
+    &quot;pydantic&gt;=7&quot;,
+]
+
+[project.optional-dependencies]
+dev = [
+    &quot;ruff&gt;=0.6&quot;,
+]
+</code></pre>
+<p>pydantic only has up to version 2, so this should fail, and it does, but it fails with the following message:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because only pydantic&lt;=2.10.4 is available and your project depends on pydantic&gt;=7, we can conclude that your project's requirements are unsatisfiable.
+      And because your project requires my-project[dev], we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>The second sentence here seems redundant and reads oddly.</p>
+<p>Removing the optional dependencies removes the redundant line:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because only pydantic&lt;=2.10.4 is available and your project depends on pydantic&gt;=7, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>I would consider also removing 'we can conclude that' - seems unnecessary.</p>
+<p>This is the biggest issue I have found in 2 days of converting projects to use UV, so great job and thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-12-20 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-12-20 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-20 17:28</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Glad you're enjoying the tool :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-20 17:40</div>
+            <div class="timeline-body"><p>For my own reference, the derivation tree is</p>
+<pre><code>Resolver derivation tree before reduction
+term root==0a0.dev0
+  root==0a0.dev0 depends on my-project[dev]*
+  term my-project[dev]*
+    term my-project==0.1.0
+      my-project==0.1.0 depends on pydantic&gt;=7
+      no versions of pydantic&gt;=7
+    no versions of my-project[dev]&lt;0.1.0 | &gt;0.1.0
+Resolver derivation tree after reduction
+term root==0a0.dev0
+  root==0a0.dev0 depends on my-project[dev]*
+  term my-project==0.1.0
+    my-project==0.1.0 depends on pydantic&gt;=7
+    no versions of pydantic&gt;=7
+</code></pre>
+<p>The clause <code>root==0a0.dev0 depends on my-project[dev]*</code> is useless and wrong? It's possible there's a bug in the resolver here.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

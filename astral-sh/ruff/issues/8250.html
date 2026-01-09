@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reference to `runtime-evaluated-base-classes` in the same file don't work - astral-sh/ruff #8250</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reference to `runtime-evaluated-base-classes` in the same file don't work</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8250">#8250</a>
+        opened by <a href="https://github.com/iurisilvio">@iurisilvio</a>
+        on 2023-10-26 12:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/iurisilvio">@iurisilvio</a> on 2023-10-26 12:03</div>
+            <div class="timeline-body"><p>For some reason, <code>semantic.resolve_call_path(map_subscript(base))</code> resolves to <code>None</code> when the reference is in the same file.</p>
+<p>https://github.com/astral-sh/ruff/blob/f5e850745cc9bcaeb308a3a139b4e86db58096aa/crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs#L43-L44</p>
+<ul>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+<p>In this example, <code>example1.MyBaseClass</code> is a runtime evaluated base class.</p>
+<h3>example1.py</h3>
+<p>This triggers <code>TCH003</code> for <code>Sequence</code>.</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from collections.abc import Sequence  # TCH003
+
+
+class MyBaseClass:
+    pass
+
+
+class Foo(MyBaseClass):
+    foo: Sequence
+</code></pre>
+<h3>example2.py</h3>
+<p>This is <code>TCH</code> compliant.</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from collections.abc import Sequence
+
+from example1 import MyBaseClass
+
+
+class Foo(MyBaseClass):
+    foo: Sequence
+</code></pre>
+<ul>
+<li>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.</li>
+</ul>
+<p><code>ruff --select TCH example1.py example2.py</code></p>
+<ul>
+<li>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).</li>
+</ul>
+<pre><code>[tool.ruff.flake8-type-checking]
+runtime-evaluated-base-classes = [
+  &quot;example1.MyBaseClass&quot;,
+]
+</code></pre>
+<ul>
+<li>The current Ruff version (<code>ruff --version</code>).</li>
+</ul>
+<p>Main branch, currently 0.1.1.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-26 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 15:17</div>
+            <div class="timeline-body"><p>Thanks! Similar to (or the same as) https://github.com/astral-sh/ruff/issues/5486.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 15:17</div>
+            <div class="timeline-body"><p>I really appreciate that you dug into the code :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-10-27 03:31</div>
+            <div class="timeline-body"><p>Feel free to assign this to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @evanrittenhouse by @MichaReiser on 2023-10-27 04:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8504.html">astral-sh/ruff#8504</a> on 2023-11-06 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8572.html">astral-sh/ruff#8572</a> on 2023-11-09 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-09 03:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

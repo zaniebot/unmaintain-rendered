@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to manage dependencies when multiple git source package depends on another ? - astral-sh/uv #14258</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to manage dependencies when multiple git source package depends on another ?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14258">#14258</a>
+        opened by <a href="https://github.com/patacoing">@patacoing</a>
+        on 2025-06-25 10:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/patacoing">@patacoing</a> on 2025-06-25 10:27</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hello everyone,</p>
+<p>I'm currently building a lot of python packages (let's call them <code>Xs</code>) using uv that will be hosted on github under private repos. Every python package depends on another self-made python package hosted on github (let's call it <code>P</code>).</p>
+<p>In <code>pyproject.toml</code> files I've set up dependencies using git sources.</p>
+<p>I have another python repository which depends on <code>Xs</code> and on <code>P</code> (this one will use all <code>Xs</code> packages and uses <code>P</code> for type hinting).</p>
+<p>Here's an example :</p>
+<p>example of one <code>X</code>'s pyproject.toml</p>
+<pre><code class="language-toml">[tool.uv.sources]
+connectors-toolkit = { git = &quot;ssh://git@github.com/patacoing/example-shared-package.git&quot;,  tag = &quot;0.3.1&quot; }
+</code></pre>
+<p>Repository's pyproject.toml</p>
+<pre><code class="language-toml">[tool.uv.sources]
+connectors-toolkit = { git = &quot;ssh://git@github.com/patacoing/example-shared-package.git&quot;,  tag = &quot;0.3.1&quot; }
+</code></pre>
+<p>I think that in order to use that repository, every version of the the <code>P</code> package must be the same in every <code>X</code>package , doesn't it ?</p>
+<p>And this is annoying because it means that if I want to make modifications on <code>P</code>, I cannot simply upgrade its version in one of <code>X</code> packages, instead I have to upgrade the version of <code>P</code> in all <code>Xs</code> packages and in the repository as well to be able to use it (or simply being able to run <code>uv sync</code>).</p>
+<p>Is there any workaround to this ? The best thing would be that different versions of <code>P</code> could coexist within the environment of the repository.
+Would the usage of a private pypi server provide me the ability to specify a 'minimal' version and would solve the problems ?</p>
+<p>In case of different versions of <code>P</code> used in the repository and any of <code>Xs</code> packages, I run into :</p>
+<pre><code>error: Requirements contain conflicting URLs for package `example-shared-package` in split `python_full_version &gt;= '3.13'`:
+- git+ssh://git@github.com/patacoing/example-shared-package.git@0.3.1
+- git+ssh://git@github.com/patacoing/example-shared-package.git@chore/new-feature-branch
+</code></pre>
+<p>After running <code>uv sync</code>.</p>
+<p>From the code above, my repository depends on <code>example-shared-package@chore/new-feature-branch</code> while <code>Xs</code> packages depends on <code>example-shared-package@0.3.1</code></p>
+<h3>Platform</h3>
+<p>Darwin 24.5.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.13 (62ed17b23 2025-06-12)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @patacoing on 2025-06-25 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patacoing">@patacoing</a> on 2025-06-25 13:04</div>
+            <div class="timeline-body"><p>Well I just saw https://docs.astral.sh/uv/concepts/resolution/#dependency-overrides and managed to fix my problem using  dependency overriding. I had to update my repository's pyproject.toml.</p>
+<p>It can now depends on the latest version of the common package</p>
+<pre><code class="language-toml">[tool.uv.sources]
+example-shared-package = { git = &quot;ssh://git@github.com/oversoc/example-shared-package.git&quot;, branch = &quot;chore/case-insensitive-enum&quot; }
+package-depending-on-example-shared-package = { git = &quot;ssh://git@github.com/oversoc/package-depending-on-example-shared-package.git&quot; , branch = &quot;main&quot; }
+
+[tool.uv]
+override-dependencies = [
+    &quot;connectors-toolkit @ git+ssh://git@github.com/oversoc/example-shared-package.git@chore/case-insensitive-enum&quot;
+]
+</code></pre>
+<p>While the <code>package-depending-on-example-shared-package</code> package depends on version <code>0.3.1</code> for example</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @patacoing on 2025-06-25 13:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

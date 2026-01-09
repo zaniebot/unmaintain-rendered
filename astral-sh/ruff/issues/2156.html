@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B007 may break code - astral-sh/ruff #2156</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>B007 may break code</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2156">#2156</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-01-25 14:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-25 14:58</div>
+            <div class="timeline-body"><pre><code>$ cat foo.py
+FMT = '{foo} {bar}'
+for foo, bar in [(1, 2)]:
+    if foo:
+        print(FMT.format(**locals()))
+$ ruff --select B007 --fix foo.py
+Found 1 error(s) (1 fixed, 0 remaining).
+$ cat foo.py
+FMT = '{foo} {bar}'
+for foo, _bar in [(1, 2)]:
+    if foo:
+        print(FMT.format(**locals()))
+$ python3 foo.py
+Traceback (most recent call last):
+  File &quot;foo.py&quot;, line 4, in &lt;module&gt;
+    print(FMT.format(**locals()))
+KeyError: 'bar'
+</code></pre>
+<p>I don't know what to do with this. Maybe just ignore it / WONTFIX.
+What could be possible to mark some fixers as safe/unsafe for side-effects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-25 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 15:18</div>
+            <div class="timeline-body"><p>In this case, we should probably detect the use of <code>locals</code> and avoid flagging B007 at all. So I think I consider this a bug...</p>
+<p>But separately: we are working on marking fixes as safe and unsafe, and allowing users to set their desired fix level.</p>
+<p>You can also turn off autofix for B007 or any set of rules by adding this to your <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.ruff]
+unfixable = [&quot;B007&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2161.html">astral-sh/ruff#2161</a> on 2023-01-25 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-25 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2397.html">astral-sh/ruff#2397</a> on 2023-01-31 14:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

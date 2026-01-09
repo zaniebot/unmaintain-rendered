@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a dedicated documentation section on StructOpt migration - clap-rs/clap #3422</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Create a dedicated documentation section on StructOpt migration</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3422">#3422</a>
+        opened by <a href="https://github.com/nyurik">@nyurik</a>
+        on 2022-02-08 20:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nyurik">@nyurik</a> on 2022-02-08 20:34</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.0.14</p>
+<h3>Describe your use case</h3>
+<p>Clap has great documentation, but for those migrating from structopt it might be a bit challenging to find all the relevant bits between FAQ, Release notes, and other sources.  I have looked at them, including discussions, and they tend to have many unrelated v2-&gt;v3 and other details. Release notes tend to get burred over time, especially when not linked directly. Structopt users will always have an unchanged version of structopt (as it is no longer updated) that needs to be migrated. Thanks!</p>
+<h3>Describe the solution you'd like</h3>
+<p>Please add a dedicated structopt section to the documentation page that succinctly gives minimum required steps to migrate latest structopt usage to clap v3 (or whatever the latest would be).</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @nyurik on 2022-02-08 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-08 21:17</div>
+            <div class="timeline-body"><p>Leaving aside the release notes being buried over time, what were you finding lacking in our <a href="https://github.com/clap-rs/clap/blob/master/CHANGELOG.md#migrating">migration guide</a>?</p>
+<ul>
+<li>You mentioned v2-&gt;v3 migration but that is necessary because you have to do them together</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nyurik">@nyurik</a> on 2022-02-08 21:59</div>
+            <div class="timeline-body"><p>@epage I understand that clap migrated v2-&gt;v3 and as part of that migration introduced structopt-like functionality (yay!!). My point is that many users who use structopt would not be aware of this migration due to never using clap directly.  I just did a (small) migration, and would have found the following information useful. This is by no means complete guide, but I have had to research some of them in several places, so might be useful to others, perhaps as a two column table.</p>
+<h1>StructOpt Migration Guide</h1>
+<ul>
+<li>In <code>Cargo.toml</code>, replace <code>structopt = &quot;0.3.26&quot;</code> dependency with <code>clap = { version = &quot;3.0.14&quot;, features = [&quot;derive&quot;] }</code></li>
+<li>Replace <code>use structopt::StructOpt;</code> with <code>use clap::Parser as StructOpt;</code>, or replace all <code>#[derive(StructOpt)]</code> usages with <code>#[derive(Parser)]</code></li>
+<li>[Optional] Replace <code>#[structopt(...)]</code> with <code>#[clap(...)]</code>  (TBD: I have no idea why both still work, and if its intentional)</li>
+<li>Replace <code>Opt::from_args()</code> with <code>Opt::parse()</code>, where <code>Opt</code> is the top level options struct.</li>
+<li>Remove <code>arg_enum! { enum { ... } }</code> wrapper, replacing it with <code>#[derive(ArgEnum)] enum { ... }</code>. At the enum usage in a struct, remove <code>possible_values</code> and <code>case_insensitive</code> <code>structopt</code> params, and use <code>#[clap(arg_enum)]</code> instead.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-08 23:23</div>
+            <div class="timeline-body"><blockquote>
+<p>My point is that many users who use structopt would not be aware of this migration due to never using clap directly.</p>
+</blockquote>
+<p>Yes, aside from the question on where it should live or how to discover it, I was trying to understand what you found lacking in our existing migration guide because you alluded to several problems with it.</p>
+<blockquote>
+<p>(TBD: I have no idea why both still work, and if its intentional)</p>
+</blockquote>
+<p>We tried to favor deprecations over hard breaking changes:</p>
+<ul>
+<li><code>StructOpt</code> is an alias for <code>Parser</code></li>
+<li><ul>
+<li><code>#[structopt]</code> maps to <code>#[clap]</code></li>
+</ul>
+</li>
+<li><code>Parser</code> also includes <code>from_args</code>.</li>
+<li><code>arg_enum!</code> still exists</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/pulls/524.html">TeXitoi/structopt#524</a> on 2022-02-08 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-08 23:41</div>
+            <div class="timeline-body"><p>I have added a link to our migration guide to our FAQ and have opened a PR to add a link from structopt's README.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nyurik">@nyurik</a> on 2022-02-09 00:19</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>My point is that many users who use structopt would not be aware of this migration due to never using clap directly.</p>
+</blockquote>
+<p>Yes, aside from the question on where it should live or how to discover it, I was trying to understand what you found lacking in our existing migration guide because you alluded to several problems with it.</p>
+</blockquote>
+<p>I think my biggest concern with it is that it is in the release notes vs readme, and so it won't be maintained as an ongoing documentation in a single location. Clap will certainly change with time, but people may decided to migrate from their existing well-working StructOpts at any time, possibly in some future when release notes won't be as up to date.</p>
+<blockquote>
+<blockquote>
+<p>(TBD: I have no idea why both still work, and if its intentional)</p>
+</blockquote>
+<p>We tried to favor deprecations over hard breaking changes:</p>
+<ul>
+<li><code>StructOpt</code> is an alias for <code>Parser</code></li>
+<li><ul>
+<li><code>#[structopt]</code> maps to <code>#[clap]</code></li>
+</ul>
+</li>
+<li><code>Parser</code> also includes <code>from_args</code>.</li>
+<li><code>arg_enum!</code> still exists</li>
+</ul>
+</blockquote>
+<p>My IDE shows deprecations as crossed-out, so I changed them right away and thought it would be a good idea to include them in the migration guide. I think migration should be done towards the non-deprecated features so as not to revisit them again soon.</p>
+<p>Once again, thanks for all the hard work, absolutely love the project, just trying to help newcomers get started quicker :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-09 00:37</div>
+            <div class="timeline-body"><blockquote>
+<p>I think my biggest concern with it is that it is in the release notes vs readme, and so it won't be maintained as an ongoing documentation in a single location. Clap will certainly change with time, but people may decided to migrate from their existing well-working StructOpts at any time, possibly in some future when release notes won't be as up to date.</p>
+</blockquote>
+<p>I was thinking about this and I think it shouldn't be a living document.  As we diverge further from clap2, the worse it will be both for the user and for us to document.  We also then have to decide at what point in the long tail we cut people off and stop updating it.  Instead, I think its best for people to migrate to clap v3 first and then to any future version.</p>
+<blockquote>
+<p>My IDE shows deprecations as crossed-out, so I changed them right away and thought it would be a good idea to include them in the migration guide. I think migration should be done towards the non-deprecated features so as not to revisit them again soon.</p>
+</blockquote>
+<p>It was a very intentional choice to leave deprecations to the end and more as a foot note.  There are a lot of subtle behavior changes and we wanted the user to focus on those and not all of the mechanical changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-09 15:29</div>
+            <div class="timeline-body"><p>As we have a dedicated migration guide, written to accomplish specific goals, and it is now more discoverable, I'm going to go ahead and close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-02-09 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmitris">@dmitris</a> on 2023-01-30 13:16</div>
+            <div class="timeline-body"><p>to note the &quot;structopt migration guide&quot; link on https://docs.rs/clap/4.1.4/clap/_faq/index.html#how-does-clap-compare-to-structopt pointing to https://docs.rs/clap/4.1.4/clap/CHANGELOG.md#migrate-structopt is bad/stale (&quot;The requested resource does not exist&quot;).  Do you know the current location, by any chance? /cc @epage</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-30 13:43</div>
+            <div class="timeline-body"><p>See https://github.com/clap-rs/clap/blob/v3-master/CHANGELOG.md#migrating</p>
+<p>Looks like we link to it from structopt's <a href="https://github.com/TeXitoi/structopt/issues/525">pinned issue</a> and the <a href="https://github.com/TeXitoi/structopt">README</a> but not <a href="https://docs.rs/structopt/latest/structopt/">docs.rs</a>.  That would be a worthwhile improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Croug">@Croug</a> on 2024-01-04 18:59</div>
+            <div class="timeline-body"><p>I wanted to mention that https://docs.rs/clap/latest/clap/_faq/index.html#how-does-clap-compare-to-structopt still gives bad resource when trying to click on the link to the migration guide, I believe this should be resolved as the faq is always in the first couple links when trying to find information around migrating from structopt to clap derive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-01-04 19:12</div>
+            <div class="timeline-body"><p>... wow they clearly said the link was bad and I somehow overlooked that.  The link should be fixed in 4.4.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Croug">@Croug</a> on 2024-01-04 19:14</div>
+            <div class="timeline-body"><p>Happens to the best of us 😂, thanks for the quick response!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RReverser">@RReverser</a> on 2024-01-22 00:12</div>
+            <div class="timeline-body"><p>FWIW the &quot;Documentation parity&quot; link on https://docs.rs/clap/latest/clap/_faq/index.html#how-does-clap-compare-to-structopt is still broken.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-01-22 14:50</div>
+            <div class="timeline-body"><p>Missed that one.  Not as needed anymore, so I removed it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using uv on HPC Clusters - astral-sh/uv #7642</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using uv on HPC Clusters</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7642">#7642</a>
+        opened by <a href="https://github.com/PhilipVinc">@PhilipVinc</a>
+        on 2024-09-23 15:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on 2024-09-23 15:44</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>As I really like uv, I've recently started testing it on the academic HPC clusters I regularly use, and would like to share some issues that I found, that makes working with uv harder.
+I understand those might seem somewhat exotic, but I would still like to share them because I feel that handling to some extent those issues is necessary to use uv reliably in this setting.</p>
+<h2>Issue 1: <code>venv</code> location</h2>
+<p>In case you're not familiar with those environments, a pecularity of HPC systems that caused problems is the following:</p>
+<ul>
+<li>HPC clusters generally have 2+ filesystems, <code>$WORK</code> and <code>$SCRATCH</code>, where WORK is subject to various forms of quota restrictions on the file size and # of inodes (files and directories) that can be stored, while <code>$SCRATCH</code> is a system where files untouched for 30 days are automatically deleted, much faster and without any restrictions on the number of files created.<ul>
+<li>In general admins are happy to increase file size quotas on WORK, but not inode quota.</li>
+<li>A python environment with jax already consumes ~10% of the inode quota per user on some HPC clusters.</li>
+</ul>
+</li>
+</ul>
+<p>Normally, we work inside the <code>$WORK</code> directory, so <code>uv</code> will naturally create a <code>.venv</code> directory in there, eating up all my precious inode quota. Moreover, I normally define <code>XDG_CACHE_HOME=$SCRATCH/.cache</code> so uv complaints that he cannot simlink things to the vent because those are different filesystems.</p>
+<p>To work around this issue, I declare manually a per-project <code>UV_PROJECT_ENVIRONMENT</code> inside of $SCRATCH, so that the environment will be created there. This is great, because it won't eat up my quota and even if it's deleted after 30 days, I don't care, because uv can naturally regenerate it if needed.</p>
+<pre><code class="language-python"># Get the current path and remove $work
+current_path=$(pwd)
+relative_path=${current_path#$DIR}
+relative_path=${relative_path#/}
+# Replace all slashes with underscores to create a single dirname
+normalized_path=$(echo &quot;$relative_path&quot; | tr '/' '_')
+export UV_PROJECT_ENVIRONMENT=&quot;${SCRATCH}/uv-venvs/${normalized_path}&quot;
+</code></pre>
+<p>However I have to export this variable every time from the correct path.
+I would love it if it was possible to set a single global environment variable like <code>UV_USE_VENV_DEPOT=$SCRATCH/.cache/uv-venvs/</code> and uv would automatically use some logic like the one above to keep all <code>.venv</code> in there.</p>
+<p>I understand that I can manually declare <code>UV_PROJECT_ENVIRONMENT</code> every time I change project, but that is error prone and goes against the idea that uv always makes sure I am running with the 'correct' virtual environment, automatically managed for me.</p>
+<h2>Issue 2:  multiple architectures</h2>
+<p>Another peculiarity of HPC systems is that the user might use different modules. A common issue is that an user wants to use in two different settings two different versions of MPI, which can be 'loaded' by running <code>module load mpich/v1</code> or <code>module load mpich/v2</code>.</p>
+<p>When installing some packages with binary dependencies, such as <code>mpi4py</code>, uv will aggressively cache the compiled wheel. However the wheel will differ depending on the version of mpi I have loaded, which <code>ùv</code> does not know about.</p>
+<p>The simplest thing that would make it easier to work with is  if there was a way to specify in the <code>pyproject.toml</code> that the compiled wheels of a package should not be cached.
+A nicer (albeit more complex and I'm not sure if it's worth it) thing would be to provide some env variable or bash command to be checked when looking into the cache.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-23 16:03</div>
+            <div class="timeline-body"><p>Related</p>
+<ul>
+<li>#1495</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-24 17:14</div>
+            <div class="timeline-body"><p>Regarding the second point, you could set <a href="https://docs.astral.sh/uv/reference/settings/#pip_reinstall-package">reinstall-package</a> in your <code>pyproject.toml</code> and we'll refresh the cached version of that package. I wonder if we need <code>--no-cache-package &lt;name&gt;</code> or <code>--no-cache-binary</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7357.html">astral-sh/uv#7357</a> on 2024-10-09 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11420.html">astral-sh/uv#11420</a> on 2025-02-11 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14462.html">astral-sh/uv#14462</a> on 2025-07-04 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-11-07 23:55</div>
+            <div class="timeline-body"><p>@PhilipVinc Did you ever find a good solution for this? I have a semi-solution for myself where I use Bash's prompt_function to figure out which project I'm in and set UV_PROJECT_ENVIRONMENT based on this, but I'm not sure how I can have this working well for all users. The distinction between slow project file storage that's global and fast local scratch storage is the key issue for us.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Linter panic] “for-loop target binding must exist” for PERF403 - astral-sh/ruff #19005</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Linter panic] “for-loop target binding must exist” for PERF403</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19005">#19005</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-06-27 23:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-06-27 23:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/manual-dict-comprehension/"><code>manual-dict-comprehension</code> (PERF403)</a> panics when an assignment target of the <code>for</code> loop is an attribute reference or a subscription.</p>
+<p><a href="https://play.ruff.rs/1cc4aba6-43d2-47eb-8cf4-4371648b882b">Playground</a></p>
+<pre><code class="language-console">$ cat &gt;perf403.py &lt;&lt;'# EOF'
+for a.b in ():
+    c[d] = e
+# EOF
+
+$ RUST_BACKTRACE=1 ruff --isolated check perf403.py --select PERF403   
+error: Panicked while linting perf403.py: This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs:470:18:
+for-loop target binding must exist
+Backtrace:    0: __mh_execute_header
+   1: __mh_execute_header
+   2: __mh_execute_header
+   3: __mh_execute_header
+   4: __mh_execute_header
+   5: __mh_execute_header
+   6: __mh_execute_header
+   7: __mh_execute_header
+   8: __mh_execute_header
+   9: __mh_execute_header
+  10: __mh_execute_header
+  11: __mh_execute_header
+  12: __mh_execute_header
+  13: __mh_execute_header
+  14: __mh_execute_header
+  15: __mh_execute_header
+  16: __mh_execute_header
+  17: __mh_execute_header
+  18: __mh_execute_header
+  19: __mh_execute_header
+  20: __mh_execute_header
+  21: __mh_execute_header
+  22: __mh_execute_header
+  23: __mh_execute_header
+  24: __mh_execute_header
+  25: __mh_execute_header
+
+
+All checks passed!
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.1 (32c54189c 2025-06-26)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-28 02:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-06-28 02:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-06-28 02:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-28 02:49</div>
+            <div class="timeline-body"><p>This used to be a <code>debug_assert!</code> but got changed to an <code>expect</code> call in #18866:</p>
+<p>https://github.com/astral-sh/ruff/blob/90cb0d3a7b0d1b9528854dad64dd17330bfd5f36/crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs#L465-L470</p>
+<p>I think we'll need to drop the assertion entirely and just put it back to a <code>let-else</code> that returns <code>true</code> if <code>None</code> (because <code>true</code> will short-circuit the rule).</p>
+<p>Also, I think this even panics before it gets to a fix. The playground showed an error as soon as I selected the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19042.html">astral-sh/ruff#19042</a> on 2025-06-30 07:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-30 14:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

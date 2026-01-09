@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False-positive between `ERA001` and `RUF100` - astral-sh/ruff #9551</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False-positive between `ERA001` and `RUF100`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9551">#9551</a>
+        opened by <a href="https://github.com/flbraun">@flbraun</a>
+        on 2024-01-16 14:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/flbraun">@flbraun</a> on 2024-01-16 14:11</div>
+            <div class="timeline-body"><p>ruff 0.1.13</p>
+<p>Take this piece of code:</p>
+<pre><code class="language-python">response = '...'  # imagine requests.get(...) here
+# response.json() example:
+# {
+#   'foo': 1,
+#   'bar': 2,
+#   'baz': 3,
+# }
+bar = response.json()['bar']
+</code></pre>
+<p><code>ruff check --select ERA001 --select RUF100</code> rightfully complains about commented-out code:</p>
+<pre><code>test.py:3:1: ERA001 Found commented-out code
+test.py:4:1: ERA001 Found commented-out code
+test.py:5:1: ERA001 Found commented-out code
+test.py:6:1: ERA001 Found commented-out code
+test.py:7:1: ERA001 Found commented-out code
+Found 5 errors.
+</code></pre>
+<p>Then add noqa directives for ERA001, because we actually want to keep the comment:</p>
+<pre><code class="language-python">response = '...'  # imagine requests.get(...) here
+# response.json() example:
+# {                 # noqa: ERA001
+#   'foo': 1,       # noqa: ERA001
+#   'bar': 2,       # noqa: ERA001
+#   'baz': 3,       # noqa: ERA001
+# }                 # noqa: ERA001
+bar = response.json()['bar']
+</code></pre>
+<p><code>ruff check --select ERA001 --select RUF100</code> then complains about unused noqa directives, although they are definitely required to fully satisfy ERA001:</p>
+<pre><code>test.py:3:21: RUF100 [*] Unused `noqa` directive (unused: `ERA001`)
+test.py:7:21: RUF100 [*] Unused `noqa` directive (unused: `ERA001`)
+Found 2 errors.
+</code></pre>
+<p>Removing the supposedly unused noqa directives causes <code>ruff check --select ERA001 --select RUF100</code> to complain about ERA001 again:</p>
+<pre><code class="language-python">response = '...'  # imagine requests.get(...) here
+# response.json() example:
+# {
+#   'foo': 1,       # noqa: ERA001
+#   'bar': 2,       # noqa: ERA001
+#   'baz': 3,       # noqa: ERA001
+# }
+bar = response.json()['bar']
+</code></pre>
+<pre><code>test.py:3:21: RUF100 [*] Unused `noqa` directive (unused: `ERA001`)
+test.py:7:21: RUF100 [*] Unused `noqa` directive (unused: `ERA001`)
+Found 2 errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-16 19:39</div>
+            <div class="timeline-body"><p>Ah yeah this is tricky. The presence of the <code># noqa</code> comments is causing Ruff <em>not</em> to consider those lines as commented-out code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-16 19:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-16 19:40</div>
+            <div class="timeline-body"><p>Thanks for the clear write-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2024-11-10 03:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @dylwil3 on 2024-11-10 03:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/buhtz">@buhtz</a> on 2025-05-05 19:44</div>
+            <div class="timeline-body"><p>I do observe similliar behavior with <code># noqa: E402</code> and <code>RUF100</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

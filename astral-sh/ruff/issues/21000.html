@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff suggests invalid code when fixing UP032 - astral-sh/ruff #21000</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff suggests invalid code when fixing UP032</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21000">#21000</a>
+        opened by <a href="https://github.com/dima179-fuse">@dima179-fuse</a>
+        on 2025-10-20 16:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dima179-fuse">@dima179-fuse</a> on 2025-10-20 16:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider the following code:</p>
+<pre><code class="language-python">if __name__ == &quot;__main__&quot;:
+    number = 0
+    string = &quot;{}&quot;.format(number := number + 1)
+    print(string)
+</code></pre>
+<p>It executes successfully and prints <code>1</code>.</p>
+<p>When I run ruff, it returns</p>
+<pre><code>bad_ruff.py:3:14: UP032 [*] Use f-string instead of `format` call
+  |
+1 | if __name__ == &quot;__main__&quot;:
+2 |     number = 0
+3 |     string = &quot;{}&quot;.format(number := number + 1)
+  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ UP032
+4 |     print(string)
+  |
+  = help: Convert to f-string
+</code></pre>
+<p>When I run <code>ruff check --fix bad_ruff.py</code>, the resulting code is invalid and results in <code>ValueError</code>:</p>
+<pre><code class="language-python">if __name__ == &quot;__main__&quot;:
+    number = 0
+    string = f&quot;{number := number + 1}&quot;
+    print(string)
+
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.13 (5faf72a4d 2025-06-05)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dima179-fuse">@dima179-fuse</a> on 2025-10-20 16:50</div>
+            <div class="timeline-body"><p>Checked and the issue also happens on <code>ruff 0.14.1 (2bffef596 2025-10-16)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-20 17:44</div>
+            <div class="timeline-body"><p>Thanks for the report! Looks like we can't just insert the assignment expression straight into the f-string. Parenthesizing it should be enough to fix the error:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; number = 0
+&gt;&gt;&gt; f&quot;{number := number + 1}&quot;
+Traceback (most recent call last):
+  File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;module&gt;
+    f&quot;{number := number + 1}&quot;
+      ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Invalid format specifier '= number + 1' for object of type 'int'
+&gt;&gt;&gt; f&quot;{(number := number + 1)}&quot;
+'1'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-20 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-10-20 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21003.html">astral-sh/ruff#21003</a> on 2025-10-20 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-10-20 23:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

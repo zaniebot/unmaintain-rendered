@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local dependencies cannot specify its optional dependency - astral-sh/uv #2026</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Local dependencies cannot specify its optional dependency</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2026">#2026</a>
+        opened by <a href="https://github.com/Andrew-Chen-Wang">@Andrew-Chen-Wang</a>
+        on 2024-02-27 22:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Andrew-Chen-Wang">@Andrew-Chen-Wang</a> on 2024-02-27 22:20</div>
+            <div class="timeline-body"><p>(Feature request): I have a pyproject.toml specifying:</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;models @ file:///${PROJECT_ROOT}/projects/backend/libs/models&quot;
+]
+</code></pre>
+<p>but I'd like to specify:</p>
+<pre><code>dependencies = [
+    &quot;models[all] @ file:///${PROJECT_ROOT}/projects/backend/libs/models&quot;
+]
+</code></pre>
+<p>Where models is defined as</p>
+<pre><code>[project]
+name = &quot;models&quot;
+version = &quot;0.0.1&quot;
+description = &quot;Relational database tables&quot;
+dependencies = [
+    &quot;sqlalchemy==2.0.27&quot;,
+]
+
+[project.optional-dependencies]
+dev = [
+    &quot;pytest&quot;
+]
+all = [&quot;models[dev]&quot;]
+</code></pre>
+<p>I think in a requirements.txt file, I'm able to specify:</p>
+<pre><code>file:///home/you/src/foo#egg=foo[bar,baz]
+</code></pre>
+<p>I tried adding that directly to requirements.txt and then run <code>uv pip install</code> but not working:</p>
+<pre><code>error: Failed to build editables
+  Caused by: Failed to build editable: file:///Users/andrew/projects/backend/libs/models%23egg=models
+  Caused by: Source distribution not found at: /Users/andrew/projects/backend/libs/models#egg=models
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-27 22:46</div>
+            <div class="timeline-body"><p>Hey sorry -- just trying to follow the request. Did <code>uv pip install -r requirements.txt</code> fail, with <code>requirements.txt</code> being:</p>
+<pre><code>models[all] @ file:///${PROJECT_ROOT}/projects/backend/libs/models
+</code></pre>
+<p>If not, what should we be doing to reproduce the error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-02-27 22:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrew-Chen-Wang">@Andrew-Chen-Wang</a> on 2024-02-27 23:40</div>
+            <div class="timeline-body"><p>Apologies for being unclear. I'm directly writing in my requirements.txt</p>
+<pre><code># The following packages were excluded from the output:
+# models
+# background
+# web
+# tasks
+
+-e file:///${PROJECT_ROOT}/projects/backend/libs/models
+-e file:///${PROJECT_ROOT}/projects/backend/libs/background
+-e file:///${PROJECT_ROOT}/projects/backend/services/web
+-e file:///${PROJECT_ROOT}/projects/tools/tasks
+</code></pre>
+<p>where the comments were written by uv but the <code>-e</code> lines were written as part of a task runner.</p>
+<p>I want to be able to do:</p>
+<pre><code>-e file:///${PROJECT_ROOT}/projects/backend/libs/models#egg=models[all]
+</code></pre>
+<p>But this doesn't work and based on the readme doesn't sound like it will be supported. I want to be able to install optinal dependencies of local packages, but I'm not sure how to do that today with uv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrew-Chen-Wang">@Andrew-Chen-Wang</a> on 2024-02-27 23:46</div>
+            <div class="timeline-body"><p>I think in retrospect, I'm kind of confusing my goal with this issue. What I really want is a compiled requirements.txt that incorporates optional dependencies for local packages. I want to be able to have in my pyproject.toml:</p>
+<pre><code>dependencies = [
+    &quot;models[all] @ file:///${PROJECT_ROOT}/projects/backend/libs/models&quot;
+]
+</code></pre>
+<p>But this isn't supported yet, only third party packages can do this like uvicorn[standard]</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-28 00:05</div>
+            <div class="timeline-body"><p>Hmm, I thought this was supported though. For example, you can <code>uv pip install -r requirements.txt</code> given this file in the root of the uv repo:</p>
+<pre><code>black[dev] @ ./scripts/editable-installs/black_editable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrew-Chen-Wang">@Andrew-Chen-Wang</a> on 2024-02-28 01:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, I thought this was supported though. For example, you can uv pip install -r requirements.txt given this file in the root of the uv repo:
+black[dev] @ ./scripts/editable-installs/black_editable</p>
+</blockquote>
+<p>Having difficulty doing that in a subfolder like this (note the <code>-e</code> for editable if that makes a difference):</p>
+<pre><code>(.venv) andrew@Andrew changelog % uv pip install -r bin/requirements/requirements-dev.txt
+error: Failed to build editables
+  Caused by: Failed to build editable: file:///Users/andrew/Work/Code/projects/changelog/changelog/models[all]%20@%20file:/Users/andrew/Work/Code/projects/changelog/changelog/projects/backend/libs/models
+</code></pre>
+<p>Requirements file:</p>
+<pre><code>-e models[all] @ file:///${PROJECT_ROOT}/projects/backend/libs/models
+</code></pre>
+<hr />
+<p>For my true request, I'm looking to ensure all my monorepo's local package's dependencies are pinned to one version. For instance, let's say I have &quot;pytest&quot; pinned in a bunch of my local package's pyproject.toml's optional dependencies. I want to make sure they're all on my version specified in requirements.txt</p>
+<p>But in pyproject.toml, I can't specify something like this:</p>
+<pre><code>dependencies = [
+    &quot;models[all] @ file:///${PROJECT_ROOT}/projects/backend/libs/models&quot;
+]
+</code></pre>
+<p>such that my requirements.txt file can output</p>
+<pre><code>pytest==1.0.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-28 01:57</div>
+            <div class="timeline-body"><p>I believe you want <code>uv pip install -e &quot;./scripts/editable-installs/black_editable[dev]&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrew-Chen-Wang">@Andrew-Chen-Wang</a> on 2024-02-28 02:13</div>
+            <div class="timeline-body"><p>Ah I feel very stupid; this is an amazing package. Thank you so much!</p>
+<p>root level pyproject.toml:</p>
+<pre><code>dependencies = [
+    &quot;tasks[all] @ file:///${PROJECT_ROOT}/projects/tools/tasks&quot;
+]
+</code></pre>
+<p>includes all dependencies. my tasks pyproject.toml:</p>
+<pre><code>[project]
+name = &quot;tasks&quot;
+version = &quot;0.0.1&quot;
+description = &quot;Task directory for running commands more easily&quot;
+dependencies = [
+     &quot;click==8.1.7&quot;
+]
+
+[project.scripts]
+inv = &quot;tasks.tasks:main&quot;
+
+[tool.setuptools.packages.find]
+include = [&quot;tasks*&quot;]  # package names should match these glob patterns ([&quot;*&quot;] by default)
+exclude = [&quot;tasks.tests*&quot;]  # exclude packages matching these glob patterns (empty by default)
+
+[project.optional-dependencies]
+dev = [&quot;pytest&quot;, &quot;pytest-asyncio]
+all = [&quot;tasks[dev]&quot;]
+</code></pre>
+<p>and my resulting requirements.txt (including a post-process command that I ran in my task runner to append the final -e so that future users can just run <code>uv pip install requirements.txt</code>):</p>
+<pre><code>pytest==version
+pytest-asyncio==version
+-e file:///${PROJECT_ROOT}/projects/backend/tools/tasks
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Andrew-Chen-Wang on 2024-02-28 02:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-28 02:16</div>
+            <div class="timeline-body"><p>Not at all, I didn't know this syntax either until I had to implement it!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

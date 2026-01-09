@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add rule to encourage using type aliases (generalize PYI026) - astral-sh/ruff #8704</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add rule to encourage using type aliases (generalize PYI026)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8704">#8704</a>
+        opened by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a>
+        on 2023-11-15 22:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-11-15 22:02</div>
+            <div class="timeline-body"><p>The following code has no errors, but it should use type aliases to indicate that <code>x</code> will not be used programmatically:</p>
+<pre><code class="language-python">x = int
+
+def f(y: x) -&gt; x:
+    return y
+</code></pre>
+<p>This is because of the many benefits of type aliases, which are described in <a href="https://peps.python.org/pep-0613/">PEP 613</a>.</p>
+<p>If the <a href="https://peps.python.org/pep-0613/">target version</a> &lt; 3.10, then suggest</p>
+<pre><code class="language-python">from typing_extensions import TypeAlias
+x: TypeAlias = int
+
+def f(y: x) -&gt; x:
+    return y
+</code></pre>
+<p>for 3.10 &lt;= version &lt; 3.12, suggest:</p>
+<pre><code class="language-python">from typing import TypeAlias
+x: TypeAlias = int
+
+def f(y: x) -&gt; x:
+    return y
+</code></pre>
+<p>and for version &gt;= 3.12 suggest:</p>
+<pre><code class="language-python">type x = int
+
+def f(y: x) -&gt; x:
+    return y
+</code></pre>
+<p>as per <a href="https://peps.python.org/pep-0695/#generic-type-alias">PEP 695 generic type aliases</a>.</p>
+<hr />
+<p>There is already a rule <a href="https://docs.astral.sh/ruff/rules/type-alias-without-annotation/">PYI026</a> that does this for <code>pyi</code> files.  This proposal is for all source files.</p>
+<hr />
+<p>If you are using <code>x</code> both programmatically and as an annotation, then in my opinion, you should have a separate generic type alias for the annotation.  While not all uses of programmatic use of type annotations are problematic, there are many pitfalls.  For example,</p>
+<pre><code class="language-python">t = int
+
+x = t(0)
+def f(y: t) -&gt; t: return y
+</code></pre>
+<p>only seems okay.  But this has problems.  What if <code>t</code> is switched with another annotation like <code>np.ndarray</code> or <code>int | float</code> or <code>numbers.Real</code>?  It woudl be better to have</p>
+<pre><code class="language-python">type t_annotation = int
+t_constructor: Callable[[int | float], t_annotation] = int
+
+x = t_constructor(0)
+def f(y: t_annotation) -&gt; t_annotation: return y
+</code></pre>
+<p>Yes, it's more wordy, but it</p>
+<ul>
+<li>has all the benefits of type aliases described in the PEP,</li>
+<li>is less fragile if things change,</li>
+<li>it makes it clear to the reader how <code>t_constructor</code> and <code>t_annotation</code> will be used, and</li>
+<li>you can annotate the constructor.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add rule to encourage using type aliases" to "Add rule to encourage using type aliases (generalize PYI026)" by @NeilGirdhar on 2023-11-15 23:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-11-15 23:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chadrik">@chadrik</a> on 2024-09-18 21:36</div>
+            <div class="timeline-body"><p>I'm also interested in this.  I found it confusing when I enabled the &quot;PYI&quot; rule set, that some of the rules ran on my .py files and <code>PYI026</code> did not.   I noticed that <a href="https://docs.astral.sh/ruff/rules/non-pep604-annotation/"><code>UP007</code></a>, which upgrades <code>Union[X, Y]</code> to <code>X | Y</code>, will only run on type aliases that are explicitly annotated with <code>TypeAlias</code>.  So I want to use <code>PYI026</code> to ensure <code>UP007</code> runs successfully (also, I think explicitly adding <code>TypeAlias</code> is valuable on its own), and I don't want this limited to .py files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chadrik">@chadrik</a> on 2024-09-18 21:37</div>
+            <div class="timeline-body"><p>I'm happy to try my hand a a pull request if there's no dissent on the usefulness of this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-19 07:11</div>
+            <div class="timeline-body"><p>@carljm any thoughts on the addition of said rule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-19 17:33</div>
+            <div class="timeline-body"><p>In principle it seems like a fine idea, but I think there are a lot of question marks about how it should actually work that haven't been discussed here. It's definitely not a simple matter of extending the existing implementation of PYI026 to non-stub files, too.</p>
+<p>The implementation of PYI026 is pretty simple. It doesn't look at context or uses of the variable at all, it just purely looks at the RHS to decide if it &quot;looks like&quot; maybe a type. It can get away with this because it only runs on stub files, where un-annotated assignments are pretty rare, and really the only use for them is for typevars or type aliases. So for instance it will assume that literally any subscript expression on the RHS is a generic type. But this is certainly not a valid assumption outside of a stub file.</p>
+<p>It's not at all clear to me in a non-stub file how you reliably decide if a name is intended as a type alias. Is the rule something like &quot;used in an annotation expression, not used in any value expression&quot;?</p>
+<p>The second half of that rule can't be definitively established for a top-level name, since it might be exported and used in another module.</p>
+<p>Or do we not care if it's used in a value expression? If it's used in an annotation expression, we consider it a type alias, and then the rule is basically saying you should separate the value use from the annotation use, as @NeilGirdhar suggests in the OP? In that case we can't have an autofix for the rule, as it would break the value-expression uses, without further changes to the code.</p>
+<p>Overall I'm not opposed to this, but I think we need a precise proposal for how it would decide which assignments to fire on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @MichaReiser on 2024-09-20 08:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16701.html">astral-sh/ruff#16701</a> on 2025-03-13 11:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

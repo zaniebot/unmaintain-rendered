@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D418 edge case: renaming arguments in `overload` - astral-sh/ruff #11643</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>D418 edge case: renaming arguments in `overload`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11643">#11643</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2024-05-31 17:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-05-31 17:44</div>
+            <div class="timeline-body"><p>With <code>ruff==0.4.6</code>, <a href="https://docs.astral.sh/ruff/rules/overload-with-docstring/">D418</a> will get thrown when there is a docstring in a <code>@overload</code>'d signature. This makes sense in the most common case where there's some type variation but no argument renames.</p>
+<p>However, imagine the argument names themselves change too, like in the below (inspired by the first snippet in https://peps.python.org/pep-0484/#function-method-overloading):</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import overload
+
+
+class Foo:
+    @overload
+    def __getitem__(self, i: int) -&gt; int:
+        &quot;&quot;&quot;
+        Do something with an index.
+
+        Args:
+            i: Index.
+            
+        Returns:
+            Some integer.
+        &quot;&quot;&quot;
+
+    @overload
+    def __getitem__(self, s: slice) -&gt; Foo:
+        &quot;&quot;&quot;
+        Do something with a slice.
+
+        Args:
+            s: Slice.
+
+        Returns:
+            Some object.
+        &quot;&quot;&quot;
+
+    def __getitem__(self, *args, **kwargs):
+        &quot;&quot;&quot;Do something.&quot;&quot;&quot;
+</code></pre>
+<p>Currently, Ruff will trigger <code>D418</code> on the overloads, saying functions with <code>@overload</code> shouldn't contain a docstring.</p>
+<p>However, I think that <code>D418</code> should not be triggered, because the argument names themselves change, and this it's impossible to construct a proper docstring in final implementation of the method.</p>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2024-05-31 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-31 17:46</div>
+            <div class="timeline-body"><p>That's interesting... My first reaction is that I agree with you but interested to see what others think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-05-31 18:02</div>
+            <div class="timeline-body"><p>I am wondering if per-<code>overload</code> docstrings give IDEs room to render different docstrings when different arguments are specified in a hover-over menu</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alicederyn">@alicederyn</a> on 2024-12-09 11:26</div>
+            <div class="timeline-body"><p>VS Code shows per-overload docstrings. I think this check should probably be removed 🙏</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

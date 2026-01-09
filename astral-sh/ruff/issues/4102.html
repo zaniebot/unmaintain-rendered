@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B905 not being raised for same iterable in `zip` - astral-sh/ruff #4102</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>B905 not being raised for same iterable in `zip`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4102">#4102</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2023-04-25 21:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-04-25 21:28</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>With <code>flake8==6.0.0</code>, <code>flake8-bugbear==23.3.23</code>, <code>ruff==0.0.263</code>:</p>
+<pre><code class="language-bash">&gt; flake8 a.py
+&gt; ruff --select=B905 a.py
+a.py:2:21: B905 `zip()` without an explicit `strict=` parameter
+Found 1 error.
+</code></pre>
+<pre><code class="language-python">some_list = [1, 2, 3]
+for first_second in zip(some_list, some_list[1:]):
+    print(first_second)
+</code></pre>
+<p>I know the right move overall is <code>itertools.pairwise</code>.</p>
+<p>However, in isolation, I think <code>B905</code> should not be triggered here.  It should know that the default <code>strict=False</code> is the right move here.</p>
+<p>Aside: <code>ruff</code> triggers here while <code>flake8</code> does not.  Not sure why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-29 12:56</div>
+            <div class="timeline-body"><p>I can look into this. If there's a divergence between ruff and flake8, I'd consider it a bug</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-29 19:01</div>
+            <div class="timeline-body"><p>Isn't B905 complaining about <em>explicit</em> stricts though? Just thinking that if the rule expects an explicit strict, it probably should trigger regardless of the keyword argument's default value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-29 19:07</div>
+            <div class="timeline-body"><p>Hmm, yeah, I think the current behavior is reasonable. Note that <code>flake8-bugbear</code> <em>does</em> behave the same way, but you have to explicitly enable it, since it's an error code that starts with <code>9</code> (as in, <code>B905</code>), a behavior that Ruff doesn't match:</p>
+<pre><code class="language-shell">❯ flake8 foo.py --select B905
+foo.py:2:21: B905 `zip()` without an explicit `strict=` parameter
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-29 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-04-30 02:09</div>
+            <div class="timeline-body"><p>Oh dang, didn't know that <code>flake8-bugbear</code> has default-disabled codes.  Sorry for that.</p>
+<p>I guess I made this issue because, if one listens to the message and without paying attention and marks <code>strict=True</code>, it will result in a <code>ValueError</code>at runtime:</p>
+<pre><code class="language-python">some_list = [1, 2, 3]
+for first_second in zip(some_list, some_list[1:], strict=True):
+    pass
+
+# Leads to ValueError: zip() argument 2 is shorter than argument 1
+</code></pre>
+<p>To ameliorate this, it requires making a special case to only suggest <code>strict=False</code>, so I can see arguments for just leaving this false-positive-ish message around.</p>
+<p>Of course, the right action is to use <code>itertools.pairwise</code> (via <code>RUF007</code>, <code>pairwise-over-zipped</code>).  Just posting for posterity, cheers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaxwagner">@jaxwagner</a> on 2023-12-11 23:14</div>
+            <div class="timeline-body"><p>Hi! I'm having an issue where rule B905 is not raising where I think it should be. I can get B905 to flag in the playground, but not via my ruff.toml config file.</p>
+<p>here's an example where I think it should flag and it isnt with my config:
+<code>pairs = zip(self._points[:-1], self._points[1:])</code></p>
+<p>and here is my config, where B905 is not disabled:</p>
+<pre><code>[lint]
+extend-select = [&quot;I&quot;, &quot;W&quot;, &quot;B&quot;]
+ignore = [&quot;B904&quot;, &quot;B019&quot;, &quot;B008&quot;, &quot;B015&quot;, &quot;B007&quot;, &quot;B011&quot;, &quot;B012&quot;, &quot;B010&quot;, &quot;B006&quot;, &quot;B024&quot;]
+</code></pre>
+<p>is there something else I need to do to enable it? many other bugbear rules are working as expected, so I'm not sure why B905 is not. thanks so much for any help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-11 23:17</div>
+            <div class="timeline-body"><p>You may need to set your minimum-supported Python version to Python 3.10. Do you have something like this in your config?</p>
+<pre><code class="language-toml">target-version = &quot;py310&quot;
+</code></pre>
+<p>Alternatively, if you set a <code>requires-python</code> in your <code>pyproject.toml</code>, Ruff will respect that too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaxwagner">@jaxwagner</a> on 2023-12-11 23:29</div>
+            <div class="timeline-body"><p>thanks so much @charliermarsh! really appreciate it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16541.html">astral-sh/ruff#16541</a> on 2025-03-06 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17531.html">astral-sh/ruff#17531</a> on 2025-04-21 22:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

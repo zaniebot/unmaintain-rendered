@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distinguish between F821 &quot;undefined name&quot; for undefined variables VS undefined string types - astral-sh/ruff #8700</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Distinguish between F821 &quot;undefined name&quot; for undefined variables VS undefined string types</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8700">#8700</a>
+        opened by <a href="https://github.com/BenQuigley">@BenQuigley</a>
+        on 2023-11-15 17:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BenQuigley">@BenQuigley</a> on 2023-11-15 17:55</div>
+            <div class="timeline-body"><p>I'm running into a similar issue as https://github.com/astral-sh/ruff/issues/7175 and I see that the user who raised the issue and maintainers ended up agreeing that ruff should complain about, e.g. <code>def foo(bar: &quot;Bar&quot;)</code> if <code>Bar</code> is not defined as a type. That makes sense to me, but my team and I would disable that particular error from ruff (which is error <code>F821</code>). We use Python type annotations mostly the same way we use code comments; that is, we view them as helpful but we don't programmatically check them, a system that works well for us.</p>
+<p>The problem is that running ruff with <code>ignore=[F821]</code> against our code base would also disable checking for undefined variables, which are important to check for.</p>
+<p>Example script:</p>
+<pre><code class="language-python">def document_function(doc: &quot;Document&quot;):  # type annotation crimes, but valid python
+    pass
+
+Document  # NameError!!
+</code></pre>
+<p>ruff output:</p>
+<pre><code class="language-shell">ruff test.py
+test.py:1:24: F821 Undefined name `Foo`
+test.py:4:1: F821 Undefined name `Foo`
+Found 2 errors.
+</code></pre>
+<p>I would like to be able to update my <code>pyproject.toml</code> to ignore the undefined type annotation, but not the programming error in line 4; so I would like to request for the &quot;undefined forward type annotation&quot; error to be broken out into a distinct error code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-01-10 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2024-01-10 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BenQuigley">@BenQuigley</a> on 2024-02-19 15:37</div>
+            <div class="timeline-body"><p>Updated the example to make a little more sense :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zayenzl">@zayenzl</a> on 2024-06-17 10:45</div>
+            <div class="timeline-body"><p>I've seen this same problem, and I think it would be <em>very</em> valuable to separate these two very different cases. Especially as <a href="https://peps.python.org/pep-0484/#forward-references">PEP 484</a> explicitly says that strings can be used for forward references</p>
+<blockquote>
+<p>When a type hint contains names that have not been defined yet, that definition may be expressed as a string literal, to be resolved later.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HWiese1980">@HWiese1980</a> on 2025-02-12 07:40</div>
+            <div class="timeline-body"><p>Yeah, forward referencing is a common means to mitigate circular imports and valid Python. Ruff should consider this and allow it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AntiSol">@AntiSol</a> on 2025-05-13 03:56</div>
+            <div class="timeline-body"><p>It's not just circular imports, there are also other perfectly valid cases where a type might not be resolvable - that's precisely why we have the ability to place them in strings as a forward reference.</p>
+<p>For example, it can also be an efficiency thing - e.g I don't actually need to import all of numpy, slowing down my program's startup, just so that my configuration class can specify that a particular value is a numpy array.</p>
+<p>Instead I should be able to use a forward reference to signify that the type isn't resolveable - the intended use of forward references - and have ruff respect that.</p>
+<p>This should absolutely be split out into a separate rule. I am currently in a situation where my options are:</p>
+<ol>
+<li>Remove typing information from a couple of vars, making them harder to comprehend for everybody</li>
+<li>Import numpy for a script that does not need it, slowing down script startup.</li>
+<li>Disable F821, losing the advantages that rule brings when it's not spitting out false positives</li>
+</ol>
+<p>The <em>entire point</em> of forward referencing is that I'm saying to the interpreter &quot;you won't be able to resolve this name yet, so don't try&quot;. For ruff to then complain that it can't resolve that name is incorrect and broken on a very fundamental level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../21cmfast/21cmFAST/pulls/532.html">21cmfast/21cmFAST#532</a> on 2025-07-19 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikedh">@mikedh</a> on 2025-10-25 21:12</div>
+            <div class="timeline-body"><p>Thanks @BenQuigley  for raising this again with the further detail! I still have not found a good way to add type hints without adding circular imports everywhere, and I really think that forward references should be supported in more cases. Imports in Python are often expensive, and adding imports &quot;just for the hint&quot; seems to me to be the tail wagging the dog.</p>
+<p>I guess what I think the best behavior would be here is: &quot;fully defined forward references are always allowed, i.e. <code>&quot;trimesh.Trimesh&quot;</code> or <code>&quot;scipy.spatial.cKDTree&quot;</code> can be used anywhere regardless of import status. I've just been disabling the checks, i.e. <code>&quot;trimesh.Trimesh&quot;:  # type: ignore[name-defined]</code> but would love a better solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10451.html">astral-sh/ruff#10451</a> on 2025-12-01 17:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

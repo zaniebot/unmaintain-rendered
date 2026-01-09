@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error compiling langchain with pytorch CPU index URL - astral-sh/uv #2377</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error compiling langchain with pytorch CPU index URL</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2377">#2377</a>
+        opened by <a href="https://github.com/silb-saxobank">@silb-saxobank</a>
+        on 2024-03-12 07:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/silb-saxobank">@silb-saxobank</a> on 2024-03-12 07:09</div>
+            <div class="timeline-body"><p>Compiling langchain with the pytorch CPU index URL gives an error:</p>
+<pre><code>thread 'main' panicked at crates/uv-resolver/src/resolution.rs:230:50:
+no entry found for key
+</code></pre>
+<p>MWE:</p>
+<pre><code class="language-bash">echo langchain &gt; requirements.txt &amp;&amp; RUST_BACKTRACE=full uv pip compile --verbose -o requirements.out requirements.txt --extra-index-url &quot;https://download.pytorch.org/whl/cpu&quot;
+</code></pre>
+<p>This only (?) seems to occur with this index-url, not with any other random index-url I tested.
+If I use <code>pip-tools</code> it seems to work fine.</p>
+<p>Running in WSL2 with uv 0.1.17</p>
+<p>Am I missing something obvious here?
+Of course, in this MWE I can remove the extra-index-url, but in my original requirements I also need pytorch-cpu and still get this error.</p>
+<p>Thanks in advance for the help, and thanks for creating this really cool tool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silb-saxobank">@silb-saxobank</a> on 2024-03-12 07:11</div>
+            <div class="timeline-body"><p>Could be related to #1248 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silb-saxobank">@silb-saxobank</a> on 2024-03-12 08:31</div>
+            <div class="timeline-body"><p>I'm also getting an issue when trying to compile a specific version of the requests library with the extra index URL:</p>
+<pre><code class="language-bash">echo requests==2.31.0 &gt; requirements.txt &amp;&amp; RUST_BACKTRACE=full uv pip compile --verbose -o requirements.out requirements.txt --extra-index-url &quot;https://download.pytorch.org/whl/cpu&quot;
+</code></pre>
+<p>which outputs:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of requests==2.31.0 and you require requests==2.31.0, we can conclude that the
+      requirements are unsatisfiable.
+</code></pre>
+<p>And if I remove the extra index URL it works fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-12 12:55</div>
+            <div class="timeline-body"><p>Langchain has been fixed in https://github.com/astral-sh/uv/pull/2360, could you try running from main if that fixes your problem, too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 14:57</div>
+            <div class="timeline-body"><p>I suspect the <code>requests</code> issue is that <code>requests</code> exists on https://download.pytorch.org/whl/cpu, but not at that version. We stop at the first index that contains the dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-13 14:32</div>
+            <div class="timeline-body"><p>Closing in favor of some other issues. The <code>no entry found for key</code> is fixed in the latest release. The &quot;<code>requests</code> not found&quot; is discussed in detail here: https://github.com/astral-sh/uv/issues/171.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-13 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-13 14:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

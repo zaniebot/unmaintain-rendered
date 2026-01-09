@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clap attempts to parse values as arguments when they begin with a `-` and are quoted - clap-rs/clap #2656</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clap attempts to parse values as arguments when they begin with a `-` and are quoted</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2656">#2656</a>
+        opened by <a href="https://github.com/alpha-tango-kilo">@alpha-tango-kilo</a>
+        on 2021-08-02 15:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alpha-tango-kilo">@alpha-tango-kilo</a> on 2021-08-02 15:51</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.54.0 (a178d0322 2021-07-26)</p>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.2</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    let app =
+        App::new(env!(&quot;CARGO_PKG_NAME&quot;)).arg(Arg::new(&quot;year_range&quot;).short('y').takes_value(true));
+	let _matches = app
+            .try_get_matches()
+            .expect(&quot;Parses successfully&quot;);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- -y &quot;-2021&quot;</code></p>
+<h3>Actual Behaviour</h3>
+<p>The above example panics. In the real world, you get the following error</p>
+<pre><code>error: Found argument '-2' which wasn't expected, or isn't valid in this context
+
+If you tried to supply `-2` as a PATTERN use `-- -2`
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>I think this should run without error giving <code>&quot;-2021&quot;</code> as the value of <code>year_range</code></p>
+<p>Interestingly, this works when you do:</p>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    let app =
+        App::new(env!(&quot;CARGO_PKG_NAME&quot;)).arg(Arg::new(&quot;year_range&quot;).short('y').takes_value(true));
+	let _matches = app
+            .try_get_matches_from(vec![env!(&quot;CARGO_PKG_NAME&quot;), &quot;-y&quot;, &quot;\&quot;-2021\&quot;&quot;])
+            .expect(&quot;Parses successfully&quot;);
+}
+</code></pre>
+<h3>Additional Context</h3>
+<p>I'm trying to accept ranges of years that can be open ended e.g. &quot;2021&quot;, &quot;2019-2021&quot;, &quot;-2021&quot; (up to 2021), &quot;2019-&quot; (from 2019)</p>
+<h3>Debug Output</h3>
+<pre><code>$ cargo run -- -y &quot;-2021&quot;
+   Compiling clap_derive v3.0.0-beta.2
+   Compiling clap v3.0.0-beta.2
+   Compiling clap-bug v0.1.0 (D:\Documents\Git Projects\clap-bug)
+    Finished dev [unoptimized + debuginfo] target(s) in 6.68s
+     Running `target\debug\clap-bug.exe -y -2021`
+[            clap::build::app]  App::_do_parse
+[            clap::build::app]  App::_build
+[            clap::build::app]  App::_propagate:clap-bug
+[            clap::build::app]  App::_derive_display_order:clap-bug
+[            clap::build::app]  App::_create_help_and_version
+[            clap::build::app]  App::_create_help_and_version: Building --help
+[            clap::build::app]  App::_create_help_and_version: Building --version
+[clap::build::app::debug_asserts]       App::_debug_asserts
+[            clap::build::arg]  Arg::_debug_asserts:year_range
+[            clap::build::arg]  Arg::_debug_asserts:help
+[            clap::build::arg]  Arg::_debug_asserts:version
+[         clap::parse::parser]  Parser::get_matches_with
+[         clap::parse::parser]  Parser::_build
+[         clap::parse::parser]  Parser::_verify_positionals
+[         clap::parse::parser]  Parser::get_matches_with: Begin parsing '&quot;-y&quot;' ([45, 121])
+[         clap::parse::parser]  Parser::is_new_arg: &quot;-y&quot;:NotFound
+[         clap::parse::parser]  Parser::is_new_arg: arg_allows_tac=false
+[         clap::parse::parser]  Parser::is_new_arg: - found
+[         clap::parse::parser]  Parser::is_new_arg: starts_new_arg=true
+[         clap::parse::parser]  Parser::possible_subcommand: arg=&quot;-y&quot;
+[         clap::parse::parser]  Parser::get_matches_with: possible_sc=false, sc=None
+[         clap::parse::parser]  Parser::parse_short_arg: full_arg=&quot;-y&quot;
+[         clap::parse::parser]  Parser::parse_short_arg:iter:y
+[         clap::parse::parser]  Parser::parse_short_arg:iter:y: Found valid opt or flag
+[          clap::util::argstr]  ArgSplit::next: self=ArgSplit { sep: [121, 0, 0, 0], sep_len: 1, val: [121], pos: 0 }
+[         clap::parse::parser]  Parser::parse_short_arg:iter:y: i=1, arg_os=&quot;y&quot;
+[         clap::parse::parser]  Parser::parse_opt; opt=year_range, val=None
+[         clap::parse::parser]  Parser::parse_opt; opt.settings=ArgFlags(TAKES_VAL)
+[         clap::parse::parser]  Parser::parse_opt; Checking for val...
+[         clap::parse::parser]  None
+[    clap::parse::arg_matcher]  ArgMatcher::inc_occurrence_of: arg=year_range
+[    clap::parse::arg_matcher]  ArgMatcher::inc_occurrence_of: first instance
+[            clap::build::app]  App::groups_for_arg: id=year_range
+[         clap::parse::parser]  Parser::parse_opt: More arg vals required...
+[         clap::parse::parser]  Parser::get_matches_with: After parse_short_arg Opt(year_range)
+[         clap::parse::parser]  Parser::maybe_inc_pos_counter: arg = year_range
+[         clap::parse::parser]  Parser::maybe_inc_pos_counter: is it positional?
+[         clap::parse::parser]  No
+[            clap::build::app]  App::groups_for_arg: id=year_range
+[         clap::parse::parser]  Parser::get_matches_with: Begin parsing '&quot;-2021&quot;' ([45, 50, 48, 50, 49])
+[         clap::parse::parser]  Parser::is_new_arg: &quot;-2021&quot;:Opt(year_range)
+[         clap::parse::parser]  Parser::is_new_arg: arg_allows_tac=false
+[         clap::parse::parser]  Parser::is_new_arg: - found
+[         clap::parse::parser]  Parser::is_new_arg: starts_new_arg=true
+[         clap::parse::parser]  Parser::parse_short_arg: full_arg=&quot;-2021&quot;
+[         clap::parse::parser]  Parser::parse_short_arg:iter:2
+[         clap::output::usage]  Usage::create_usage_with_title
+[         clap::output::usage]  Usage::create_usage_no_title
+[         clap::output::usage]  Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage]  Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage]  Usage::get_required_usage_from: unrolled_reqs=[]
+[         clap::output::usage]  Usage::get_required_usage_from: ret_val=[]
+[         clap::output::usage]  Usage::needs_flags_tag
+[         clap::output::usage]  Usage::needs_flags_tag:iter: f=help
+[         clap::output::usage]  Usage::needs_flags_tag:iter: f=version
+[         clap::output::usage]  Usage::needs_flags_tag: [FLAGS] not required
+[         clap::output::usage]  Usage::create_help_usage: usage=clap-bug.exe [OPTIONS]
+[            clap::build::app]  App::color: Color setting...
+[            clap::build::app]  Auto
+thread 'main' panicked at 'Parses successfully: Error { message: Colorizer { use_stderr: true, color_when: Auto, pieces: [(&quot;error:&quot;, Some(Red)), (&quot; &quot;, None), (&quot;Found argument '&quot;, None), (&quot;-2&quot;, Some(Yellow)), (&quot;' which wasn't expected, or isn't valid in this context&quot;, None), (&quot;\n\nIf you tried to supply `-2` as a PATTERN use `-- -2`&quot;, None), (&quot;\n\n&quot;, None), (&quot;USAGE:\n    clap-bug.exe [OPTIONS]&quot;, None), (&quot;\n\nFor more information try &quot;, None), (&quot;--help&quot;, Some(Green)), (&quot;\n&quot;, None)] }, kind: UnknownArgument, info: [&quot;-2&quot;] }', src\main.rs:11:10
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: process didn't exit successfully: `target\debug\clap-bug.exe -y -2021` (exit code: 101)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @alpha-tango-kilo on 2021-08-02 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-08-02 15:55</div>
+            <div class="timeline-body"><p>Have you tried <a href="https://docs.rs/clap/2.33.3/clap/enum.AppSettings.html#variant.AllowLeadingHyphen"><code>AllowLeadingHyphen</code></a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Locked by @clap-rs on 2021-08-02 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-08-02 15:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` fails when using #egg reference  - astral-sh/uv #2602</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` fails when using #egg reference </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2602">#2602</a>
+        opened by <a href="https://github.com/mrmattwright">@mrmattwright</a>
+        on 2024-03-22 00:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mrmattwright">@mrmattwright</a> on 2024-03-22 00:34</div>
+            <div class="timeline-body"><pre><code>uv --version
+uv 0.1.5
+</code></pre>
+<p>When pointing at a private Pypi server that has links to a git reference uv fails where pip does not.</p>
+<p>This works:</p>
+<pre><code>pip install model-copilot-core==0.1.2 --extra-index-url https://ORG.github.io/pypi/
+</code></pre>
+<p>This fails:</p>
+<pre><code>uv pip install model-copilot-core==0.1.2 --extra-index-url https://ORG.github.io/pypi/ -v
+</code></pre>
+<p>with</p>
+<pre><code>error: Received some unexpected HTML from https://ORG.github.io/pypi/model-copilot-core/
+  Caused by: Unsupported hash algorithm (expected `sha256`) on: egg=model-copilot-core-0.1.1
+</code></pre>
+<p>The reason I think for this is that uv is expecting there to be a hash (either md5 or sha256), and if there isn't that's a failure case, whereas pip handles this.</p>
+<p>The HTML fragment in question (from the Pypi server) is</p>
+<pre><code>&lt;div id=&quot;0.1.2&quot; onclick=&quot;load_readme('0.1.2', scroll_to_div=true);&quot;&gt;
+   &lt;a href=&quot;git+https://github.com/ORG/model-copilot-core@0.1.2#egg=model-copilot-core-0.1.2&quot;&gt;
+   0.1.2
+&lt;/a&gt;
+</code></pre>
+<p>I had a look into the code at  https://github.com/astral-sh/uv/blob/main/crates/uv-client/src/html.rs#L147 and I think there is an assumption here that <code>fragment</code> will be the hashtype and hash ie; <code>sha256=...</code>.</p>
+<p>I'm not entirely sure what would need to change to support installing in the way pip does this.</p>
+<p>As a side note what I am doing is trying to have a minimal private Pypi server which is hosted on GH Pages that points to binaries in a GH release. So if there is any advice on the format of the URL in question, I am in control of that and can change it. I'll put that in a comment on this issue to keep that seperate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv pip install fails when using #egg reference " to "`uv pip install` fails when using #egg reference " by @mrmattwright on 2024-03-22 00:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-22 00:42</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#legacy-features</p>
+<pre><code>uv does not support features that are considered legacy or deprecated in pip. For example, uv does not support .egg-style distributions.
+</code></pre>
+<p>As a note pip also <a href="https://github.com/pypa/pip/issues/12330">plans</a> to remove support for eggs too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-22 04:10</div>
+            <div class="timeline-body"><p>We don't support eggs or <code>#egg</code> references. We should be able to install <code>git+https://github.com/ORG/model-copilot-core@0.1.2</code> though without the trailing fragment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fmagin">@fmagin</a> on 2024-03-22 07:27</div>
+            <div class="timeline-body"><p>I have stumbled on a case where I am actually required to add a <code>#egg</code> reference, otherwise a build fails:</p>
+<p>This works and successfully installs all the packages based on the commit:</p>
+<pre><code>  uv pip install --prerelease=allow --no-build-isolation --upgrade \
+   ailment@&quot;git+https://github.com/angr/ailment.git@98dbad4285456f27a55198c227aedb14bcdf1007#egg=ailment&quot;\
+   archinfo@&quot;git+https://github.com/angr/archinfo.git@ffe2770156c54856b40cee4ea810721910d861bb#egg=archinfo&quot;\
+   pyvex@&quot;git+https://github.com/angr/pyvex.git@eb087cc88d0660c2fdb09edbb907e0bd66bbc6da#egg=pyvex&quot;\
+   claripy@&quot;git+https://github.com/angr/claripy.git@75095fe46f1ab99fd3dc3670ee82ae13282b0166#egg=claripy&quot;\
+   cle@&quot;git+https://github.com/angr/cle.git@c39f0a4c51c0e5cc32ad14e1497761fb00ad470a#egg=cle&quot;\
+   angr@&quot;git+https://github.com/fmagin/angr.git@abf07e0d7b727296e134c29da6cb24a30e7b91cb#egg=angr&quot;
+</code></pre>
+<p>This does not:</p>
+<pre><code>  uv pip install --prerelease=allow --no-build-isolation --upgrade \
+   ailment@&quot;git+https://github.com/angr/ailment.git@98dbad4285456f27a55198c227aedb14bcdf1007&quot;\
+   archinfo@&quot;git+https://github.com/angr/archinfo.git@ffe2770156c54856b40cee4ea810721910d861bb&quot;\
+   pyvex@&quot;git+https://github.com/angr/pyvex.git@eb087cc88d0660c2fdb09edbb907e0bd66bbc6da&quot;\
+   claripy@&quot;git+https://github.com/angr/claripy.git@75095fe46f1ab99fd3dc3670ee82ae13282b0166&quot;\
+   cle@&quot;git+https://github.com/angr/cle.git@c39f0a4c51c0e5cc32ad14e1497761fb00ad470a&quot;\
+   angr@&quot;git+https://github.com/fmagin/angr.git@abf07e0d7b727296e134c29da6cb24a30e7b91cb&quot;
+</code></pre>
+<p>and fails with:</p>
+<pre><code>Resolved 45 packages in 16ms
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: angr @ git+https://github.com/fmagin/angr.git@abf07e0d7b727296e134c29da6cb24a30e7b91cb
+  Caused by: Failed to build: angr @ git+https://github.com/fmagin/angr.git@abf07e0d7b727296e134c29da6cb24a30e7b91cb
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit status: 1
+--- stdout:
+running bdist_wheel
+running build
+Building angr_native
+--- stderr:
+&lt;string&gt;:12: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+error: You must install pyvex before building angr
+---
+</code></pre>
+<p>The specific source of this error is from the <a href="https://github.com/angr/angr/blob/a895283f96fe1090a8c6415185a53170d9dd9c17/setup.py#L25-L29"><code>setup.py</code> of angr</a></p>
+<p>How does adding the <code>#egg</code> reference make a difference if you claim to not support it? It seems to cause some discernible difference during the install of packages.
+uv version is 0.1.23</p>
+<p>EDIT: The issue also appears with the <code>#egg</code> if I delete <code>.cache/uv</code> before, so I'm assuming this is a more general problem, that you can accidentally work around in a way that involves the cache, but the exact cache lookup does depend on the <code>#egg</code> reference? Not sure if this would be considered a bug or not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-22 14:28</div>
+            <div class="timeline-body"><p>I can take a look, although... In order for that build to work, you <em>need</em> to install <code>pyvex</code> before <code>angr</code>, because you're running with <code>--no-build-isolation</code> and <code>angr</code> depends on <code>pyvex</code> as a build dependency. I don't know why it works in the first example, it shouldn't necessarily work in either case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-22 20:15</div>
+            <div class="timeline-body"><p>I think it's just random that it worked for you in one case versus the other:</p>
+<pre><code>❯ cargo run pip install --prerelease=allow --no-build-isolation --upgrade \
+   ailment@&quot;git+https://github.com/angr/ailment.git@98dbad4285456f27a55198c227aedb14bcdf1007#egg=ailment&quot;\
+   archinfo@&quot;git+https://github.com/angr/archinfo.git@ffe2770156c54856b40cee4ea810721910d861bb#egg=archinfo&quot;\
+   pyvex@&quot;git+https://github.com/angr/pyvex.git@eb087cc88d0660c2fdb09edbb907e0bd66bbc6da#egg=pyvex&quot;\
+   claripy@&quot;git+https://github.com/angr/claripy.git@75095fe46f1ab99fd3dc3670ee82ae13282b0166#egg=claripy&quot;\
+   cle@&quot;git+https://github.com/angr/cle.git@c39f0a4c51c0e5cc32ad14e1497761fb00ad470a#egg=cle&quot;\
+   angr@&quot;git+https://github.com/fmagin/angr.git@abf07e0d7b727296e134c29da6cb24a30e7b91cb#egg=angr&quot;
+   Compiling uv v0.1.24 (/Users/crmarsh/workspace/puffin/crates/uv)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.90s
+     Running `target/debug/uv pip install --prerelease=allow --no-build-isolation --upgrade 'ailment@git+https://github.com/angr/ailment.git@98dbad4285456f27a55198c227aedb14bcdf1007#egg=ailment' 'archinfo@git+https://github.com/angr/archinfo.git@ffe2770156c54856b40cee4ea810721910d861bb#egg=archinfo' 'pyvex@git+https://github.com/angr/pyvex.git@eb087cc88d0660c2fdb09edbb907e0bd66bbc6da#egg=pyvex' 'claripy@git+https://github.com/angr/claripy.git@75095fe46f1ab99fd3dc3670ee82ae13282b0166#egg=claripy' 'cle@git+https://github.com/angr/cle.git@c39f0a4c51c0e5cc32ad14e1497761fb00ad470a#egg=cle' 'angr@git+https://github.com/fmagin/angr.git@abf07e0d7b727296e134c29da6cb24a30e7b91cb#egg=angr'`
+Resolved 45 packages in 2.12s
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: angr @ git+https://github.com/fmagin/angr.git@abf07e0d7b727296e134c29da6cb24a30e7b91cb#egg=angr
+  Caused by: Failed to build: angr @ git+https://github.com/fmagin/angr.git@abf07e0d7b727296e134c29da6cb24a30e7b91cb#egg=angr
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit status: 1
+--- stdout:
+running bdist_wheel
+running build
+Building angr_native
+--- stderr:
+&lt;string&gt;:12: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+error: You must install pyvex before building angr
+---
+</code></pre>
+<p>You need to install <code>pyvex</code> first, then run the rest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-03-22 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mrmattwright-mt">@mrmattwright-mt</a> on 2024-03-24 08:07</div>
+            <div class="timeline-body"><p>@charliermarsh thanks - not supporting <code>#egg</code> refs makes sense - I did not see that in the docs. 🙏 @hmc-cs-mdrissi</p>
+<p>if you remove the egg reference both pip and uv fail with similar messaging.</p>
+<pre><code>ERROR: Could not find a version that satisfies the requirement model-copilot-core==0.1.2 (from versions: none)
+ERROR: No matching distribution found for model-copilot-core==0.1.2
+</code></pre>
+<p>Which I think is because</p>
+<blockquote>
+<p>For sdists located via an index, the filename is parsed for the name and project version (this is in theory slightly less reliable than using the egg_info command, but avoids downloading and processing unnecessary numbers of files).</p>
+<p>Any URL may use the #egg=name syntax (see <a href="https://pip.pypa.io/en/stable/topics/vcs-support/">VCS Support</a>) to explicitly state the project name.</p>
+</blockquote>
+<p>via https://pip.pypa.io/en/stable/cli/pip_install/#working-out-the-name-and-version</p>
+<p>but I will have a good read of the spec and report back. Another option would be to link directly to the <code>.zip</code> or <code>tar.gz</code> but GH release links for private repos redirect to a temporary link so you end up with a 404. 😞</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-28 00:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astariul/github-hosted-pypi/issues/84.html">astariul/github-hosted-pypi#84</a> on 2025-02-08 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11339.html">astral-sh/uv#11339</a> on 2025-02-08 11:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astariul/github-hosted-pypi/issues/87.html">astariul/github-hosted-pypi#87</a> on 2025-02-08 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../symforce-org/symforce/issues/425.html">symforce-org/symforce#425</a> on 2025-02-24 19:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[parser] Multiline strings do not have CR/CRLF line endings normalized to LF - astral-sh/ruff #17040</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[parser] Multiline strings do not have CR/CRLF line endings normalized to LF</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17040">#17040</a>
+        opened by <a href="https://github.com/coolreader18">@coolreader18</a>
+        on 2025-03-28 17:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/coolreader18">@coolreader18</a> on 2025-03-28 17:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We caught this in RustPython in CPython's regression tests when switching to ruff's parser. Python behavior:</p>
+<pre><code class="language-sh">$ python -c $'print(repr(&quot;&quot;&quot;\r\n&quot;&quot;&quot;))' 
+'\n'
+$ python -c $'print(repr(b&quot;&quot;&quot;\r\n&quot;&quot;&quot;))'
+b'\n'
+$ python -c $'print(repr(r&quot;&quot;&quot;\r\n&quot;&quot;&quot;))'
+'\n'
+$ python -c $'print(repr(&quot;&quot;&quot;\r&quot;&quot;&quot;))' 
+'\n'
+$ python -c $'print(repr(b&quot;&quot;&quot;\r&quot;&quot;&quot;))'
+b'\n'
+$ python -c $'print(repr(r&quot;&quot;&quot;\r&quot;&quot;&quot;))'
+'\n'
+</code></pre>
+<p>(the <code>$</code> means that the shell is expanding the escapes, not python)</p>
+<p>A repro for ruff is that these tests I wrote to verify the issue fail (or, the second one fails):</p>
+<pre><code class="language-rust">    fn string_parser_multiline_eol(eol: &amp;str) {
+        let source = format!(r#&quot;&quot;&quot;&quot;abc{eol}def&quot;&quot;&quot;&quot;#);
+        let suite = parse_suite(&amp;source).unwrap();
+        let str_val = suite[0]
+            .as_expr_stmt()
+            .unwrap()
+            .value
+            .as_string_literal_expr()
+            .unwrap()
+            .as_single_part_string()
+            .unwrap()
+            .as_str();
+        assert_eq!(str_val, &quot;abc\ndef&quot;);
+    }
+
+    #[test]
+    fn string_parser_multiline_unix_eol() {
+        string_parser_multiline_eol(&quot;\n&quot;);
+    }
+
+    #[test]
+    fn string_parser_multiline_windows_eol() {
+        string_parser_multiline_eol(&quot;\r\n&quot;);
+    }
+</code></pre>
+<p>Not sure whether it would make more sense to fix this in the lexer or the string parser; I found #5976, which seems to imply that this used to be handled in the lexer, but I feel like the string parser may make more sense.</p>
+<h3>Version</h3>
+<p>master</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/coolreader18">@coolreader18</a> on 2025-03-28 17:19</div>
+            <div class="timeline-body"><p>(our current workaround for rustpython is to just call <code>.replace(&quot;\r\n&quot;, &quot;\n&quot;)</code> before handing it to the parser, which does seems to work perfectly, but I thought this might be something ruff would want to handle)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-28 17:21</div>
+            <div class="timeline-body"><p>Hmm, I think it's intentional that we don't normalize these, since we want to preserve them when modifying user code (unlike in an interpreter, where you want to evaluate them down to whatever CPython would produce).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-28 17:50</div>
+            <div class="timeline-body"><p>We were very excited when we saw that RustPython now uses Ruff's parser!</p>
+<p>I quickly checked what Python's AST module does and it doesn't normalize the new lines:</p>
+<pre><code>Module(
+   body=[
+      Expr(
+         value=Call(
+            func=Name(id='print', ctx=Load()),
+            args=[
+               Call(
+                  func=Name(id='repr', ctx=Load()),
+                  args=[
+                     Constant(value='\r\n')],
+                  keywords=[])],
+            keywords=[]))],
+   type_ignores=[])
+</code></pre>
+<p>This suggests that Python normalizes the new lines during the compile phase and isn't something we should change in Ruff's parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-28 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2025-03-28 17:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

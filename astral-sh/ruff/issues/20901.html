@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider using `Diagnostic`s for semantic syntax errors - astral-sh/ruff #20901</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider using `Diagnostic`s for semantic syntax errors</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20901">#20901</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-10-15 17:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-15 17:47</div>
+            <div class="timeline-body"><p>While reviewing #20682 today, I  wanted to suggest emitting a diagnostic about alternate <code>match</code> patterns binding different variables just like rustc does:</p>
+<pre><code>error[E0408]: variable `a` is not bound in all patterns
+ --&gt; src/main.rs:4:5
+  |
+4 |     [] | [a, b, c] | [d, e, f]=&gt; {}
+  |     ^^    -          ^^^^^^^^^ pattern doesn't bind `a`
+  |     |     |
+  |     |     variable not in all patterns
+  |     pattern doesn't bind `a`
+</code></pre>
+<p>However, we don't have direct access to the <code>Diagnostic</code> in the <code>SemanticSyntaxChecker</code>. Instead, we can currently only <code>report_semantic_error</code> to the parent visitor. I don't think we can simply replace <code>report_semantic_error</code> with <code>report_diagnostic</code>, for example, because Ruff's implementation of <code>report_semantic_error</code> needs to convert some semantic errors into rule violations, unlike ty's implementation.</p>
+<p>Another wrinkle is that Ruff and ty use a different helper function to convert errors into diagnostics, <a href="https://github.com/astral-sh/ruff/blob/583ac216c447436db942d6257b60e8d875e9584c/crates/ruff_linter/src/message/mod.rs#L36"><code>create_syntax_error_diagnostic</code></a> vs <a href="https://github.com/astral-sh/ruff/blob/583ac216c447436db942d6257b60e8d875e9584c/crates/ruff_db/src/diagnostic/mod.rs#L90"><code>Diagnostic::invalid_syntax</code></a>. The main difference is where the error message ends up:</p>
+<pre><code>&gt; ruff check try.py
+invalid-syntax: name capture `x` makes remaining patterns unreachable
+ --&gt; try.py:2:10
+  |
+1 | match 42:
+2 |     case x: ...
+  |          ^
+3 |     case y: ...
+  |
+
+Found 1 error.
+&gt; uvx ty check try.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                                                 error[invalid-syntax]
+ --&gt; try.py:2:10
+  |
+1 | match 42:
+2 |     case x: ...
+  |          ^ name capture `x` makes remaining patterns unreachable
+3 |     case y: ...
+  |
+
+Found 1 diagnostic
+</code></pre>
+<p>This is a bit of a separate issue, and I kind of think we should standardize on the Ruff version anyway.</p>
+<p>But regardless, it seems useful to get access directly to a <code>Diagnostic</code> for semantic syntax errors and possibly for other types of syntax errors too so that we can take advantage of the new functionality instead of converting the various simplified representations into diagnostics later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @ntBre on 2025-10-15 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-10-15 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-15 18:01</div>
+            <div class="timeline-body"><p>Another challenge is that ruff_db depends on ruff_python_parser. So we'd have to remove that dependency first (by moving parsed_module to ruff_python_parser, although we sort of don't want salsa in the parser crate)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-15 18:08</div>
+            <div class="timeline-body"><p>Oh right, I forgot about that part. I think we could possibly disentangle the diagnostic part from ruff_db, maybe moving it into the ruff_diagnostic crate now that ruff_diagnostics is mostly empty? The <code>File</code> type looks like the trickiest part of that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20903.html">astral-sh/ruff#20903</a> on 2025-10-15 18:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>(🐞) `uv remove` deletes comments - astral-sh/uv #9856</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>(🐞) `uv remove` deletes comments</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/9856">#9856</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2024-12-13 00:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-12-13 00:11</div>
+            <div class="timeline-body"><pre><code class="language-toml">[project]
+name = &quot;python-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+dependencies = [
+    # should be in alphabetical order
+    &quot;basedmypy[faster-cache]&gt;=2.8.1&quot;, # this is a comment
+    &quot;basedpyright&gt;=1.18.2,&lt;2.0.0&quot;,
+]
+</code></pre>
+<pre><code>&gt; uv remove basedmypy
+</code></pre>
+<pre><code class="language-toml">[project]
+name = &quot;python-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+dependencies = [ # this is a comment
+    &quot;basedpyright&gt;=1.18.2,&lt;2.0.0&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-13 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-15 02:23</div>
+            <div class="timeline-body"><p>I think this is arguably correct... The comment is associated with the dependency. In some cases it would probably be equally strange <em>not</em> to remove it? Like what if the comment described <code>basedmypy</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-12-15 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-12-15 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-12-21 23:28</div>
+            <div class="timeline-body"><p>&quot;The comment is associated with the dependency&quot;</p>
+<p>This assumption holds for inline comments, but holds 50% for non-inline comments.
+I'm OK with removing the inline comments, but I would dislike it that non-inline commens are removed,
+preceding or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 00:35</div>
+            <div class="timeline-body"><p>It seems reasonable to err on the side of preserving comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2024-12-22 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-22 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 17:03</div>
+            <div class="timeline-body"><p>I suspect we <em>should</em> remove the comments if we're removing the last dependency in the list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-12-23 13:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I suspect we should remove the comments if we're removing the last dependency in the list.
+agreed</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GeorgeFischhof">@GeorgeFischhof</a> on 2025-04-09 09:48</div>
+            <div class="timeline-body"><p>Hi I am a QA engineer, and I use a template-like pyproject.toml and have several lists with several commented out elements. Depending on what I have to test, I uncomment the appropriate dependency.</p>
+<p>Also sometimes add the commented out dependency before uninstalling it in order to have it in the toml file. (for next time)</p>
+<p>I had to revert the toml file to get back my comments. ...</p>
+<p>There are as many kind of human behavior why they add some comment ...</p>
+<p>So I think uv should not remove comments from the toml file. Right now uv remove command does not &quot;do one thing well&quot; (remove package, and its sub-dependencies and remove the registry of that).
+It does one expected thing, and one unexpected.</p>
+<p>BR,
+George</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kiran-4444">@kiran-4444</a> on 2025-04-10 21:01</div>
+            <div class="timeline-body"><p>I'd like to take this up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13966.html">astral-sh/uv#13966</a> on 2025-06-11 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14200.html">astral-sh/uv#14200</a> on 2025-06-22 19:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

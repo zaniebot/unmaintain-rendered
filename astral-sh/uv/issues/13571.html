@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install --group` fails when used with a subfolder - astral-sh/uv #13571</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install --group` fails when used with a subfolder</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13571">#13571</a>
+        opened by <a href="https://github.com/Artalus">@Artalus</a>
+        on 2025-05-21 11:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Artalus">@Artalus</a> on 2025-05-21 11:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Was demonstrating <code>dependency-groups</code> to a colleague, and got a bit confused.
+<code>uv pip install ./subdir</code> works fine - yet if you do <code>uv pip install ./subdir --group x</code>, it fails with <code>error: File not found: pyproject.toml</code>.
+If I do <code>cd ./subdir</code> and then <code>uv pip install . --group x</code>, it works as expected. Same if <code>-e .</code> is used instead of <code>.</code>, and even if I use just <code>uv pip install --group x</code>
+<code>uv pip install --help</code> suggests that I probably misunderstood something, as it indicates that  <em>either</em> <code>PACKAGE</code> <em>or</em> <code>--group &lt;GROUP&gt;</code> should be used:</p>
+<pre><code>Usage: uv pip install [OPTIONS] &lt;PACKAGE|--requirements &lt;REQUIREMENTS&gt;|--editable &lt;EDITABLE&gt;|--group &lt;GROUP&gt;&gt;
+Arguments:
+  [PACKAGE]...  Install all listed packages
+Options:
+      --group &lt;GROUP&gt;                          Install the specified dependency group from a `pyproject.toml`
+</code></pre>
+<p>Given the novelty of PEP-735 and the engaging discussion on supporting it in pip, I am a bit unsure whether it's actually a bug, or if I should do more reading to understand the intention behind the PEP and/or this feature.</p>
+<hr />
+<p>Full MRE:</p>
+<pre><code>[artalus@idpad uv]$ uv --version
+uv 0.7.6
+
+[artalus@idpad uv]$ uv venv
+Using CPython 3.13.2 interpreter at: /usr/bin/python
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+
+[artalus@idpad uv]$ uv init ./foo
+Initialized project `foo` at `/tmp/uv/foo`
+
+[artalus@idpad uv]$ echo -e '\n[dependency-groups]\ndev=[&quot;mypy&quot;]' &gt;&gt; foo/pyproject.toml
+
+[artalus@idpad uv]$ uv pip install -e ./foo
+...
+ + foo==0.1.0 (from file:///tmp/uv/foo)
+
+[artalus@idpad uv]$ uv pip install -e ./foo --group dev
+error: File not found: `pyproject.toml`
+
+[artalus@idpad uv]$ cd foo
+
+[artalus@idpad foo]$ uv pip install -e . --group dev
+Using Python 3.13.2 environment at: /tmp/uv/.venv
+...
+ ~ foo==0.1.0 (from file:///tmp/uv/foo)
+ + mypy==1.15.0
+ + mypy-extensions==1.1.0
+ + typing-extensions==4.13.2
+</code></pre>
+<h3>Platform</h3>
+<p>MacOS, Windows, Manjaro Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.6</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Artalus on 2025-05-21 11:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-21 11:58</div>
+            <div class="timeline-body"><p>\cc @Gankra</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-21 12:24</div>
+            <div class="timeline-body"><p>This is unfortunately the behaviour that <code>pip</code> itself implements: the full syntax is <code>--group path:groupname</code>, and when <code>path:</code> is omitted it's implicitly <code>./pyproject.toml</code>. This is because pip does not want to be project aware. Also the <code>--group</code> flags are essentially completely independent directives to grab a dependency-group from that file, similar to passing paths to multiple requirements.txt files. So the fact that you passed <code>./subdir</code> doesn't really change anything (on the other hand <code>uv pip install --directory ./subdir . --group x</code> would do what you want).</p>
+<p>We intentionally opted to be compatible with this behaviour even though it's not really great for ux and we have better info to do a nicer thing. We really need to give a better diagnostic though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Artalus">@Artalus</a> on 2025-05-21 12:27</div>
+            <div class="timeline-body"><p>Doing some follow-up reading on #11686, and Gankra correctly predicted this exact ticket 😁</p>
+<blockquote>
+<p>case (e) below may get complaints from people who aren't well-versed in dependency-groups-as-they-pertain-to-wheels.
+--8&lt;--
+d) <code>uv pip install mypackage --group path/to/pyproject.toml:mygroup</code> much like multiple instances of <code>--group</code> the two requests here are essentially completely independent: pleases install <code>mypackage</code>, and please also install <code>path/to/pyproject.toml:mygroup</code>.</p>
+<p>e) <code>uv pip install mypackage --group mygroup</code> is exactly the same, but this is where it becomes possible for someone to be a little confused, as you might think <code>mygroup</code> is supposed to refer to <code>mypackage</code> in some way (it can't). But no, it's sourcing <code>pyproject.toml:mygroup</code> from the current working directory.</p>
+</blockquote>
+<p>I suppose we got even extra confused, since <code>--editable</code> (which I used in MRE as well as in the original talk with my colleague) is not a flag but <em>also</em> takes a parameter; <code> -e, --editable &lt;EDITABLE&gt;  Install the editable package based on the provided local file path</code>. So I completely mis-parsed the original expression of <code>uv pip install -e ./foo --group dev</code> 😅</p>
+<p>And since the current behavior is intentional (if maybe not satisfying for every party involved), I'd myself settle on just a better diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @Gankra on 2025-05-21 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @Gankra on 2025-05-21 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2025-05-21 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14482.html">astral-sh/uv#14482</a> on 2025-07-07 09:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

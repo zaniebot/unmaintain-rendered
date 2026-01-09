@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Possible false positives for RUF019 - astral-sh/ruff #14011</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Possible false positives for RUF019</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14011">#14011</a>
+        opened by <a href="https://github.com/LordAro">@LordAro</a>
+        on 2024-10-31 09:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LordAro">@LordAro</a> on 2024-10-31 09:27</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>RUF019 can raise false positives if a class defines <code>__contains__</code> and <code>__getitem__</code> but not <code>get</code>. Alternatively, a class may implement <code>get</code> but do something entirely different with it.</p>
+<p>(Yes, this is extremely contrived)</p>
+<pre><code class="language-py">class Foo:
+    def __contains__(self, a):
+        return True
+
+    def __getitem__(self, a):
+        return 7
+
+
+class Foo2(Foo):
+    def get(self):
+        return &quot;something completely different&quot;
+
+
+f = Foo()
+if &quot;&quot; in f and f[&quot;&quot;]:
+    pass
+</code></pre>
+<p>I suspect you'd be unlikely to be able to do anything about this until red_knot is done, but maybe worth documenting in the meantime? Even then might not even be able to do anything about it for the <code>Foo2</code> case.</p>
+<p>Ruff: 0.7.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-31 09:31</div>
+            <div class="timeline-body"><p>Thanks for reporting this issue.</p>
+<p>We should be able to do better with red knot because I understand from the rule description that it should only apply to dictionaries and not arbitrary other types. However, Ruff currently lacks a mechanism to detect dictionaries (it has one, but it has a too high false-negative rate).  Red Knot should make this trivial because it allows us to precisely answer whether <code>f</code> is a dictionary or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-31 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-10-31 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LordAro">@LordAro</a> on 2024-10-31 09:55</div>
+            <div class="timeline-body"><p>Looked into it a bit deeper, and the first example isn't nearly as contrived as first thought. Second one is a bit more contrived but maybe introducing different behaviour is worse than introducing a crash..</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

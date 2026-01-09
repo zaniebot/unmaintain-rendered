@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provide tk installation with libXft support in Python installations - astral-sh/uv #7848</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Provide tk installation with libXft support in Python installations</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7848">#7848</a>
+        opened by <a href="https://github.com/FCamborda">@FCamborda</a>
+        on 2024-10-01 16:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/FCamborda">@FCamborda</a> on 2024-10-01 16:25</div>
+            <div class="timeline-body"><p>We're trying to use customtkinter (which depends on tkinter, already delivered with the uv Python installation). As seen in this issue, we export the necessary env. variables to get tkinter to work (https://github.com/astral-sh/uv/issues/7036)</p>
+<pre><code class="language-shell">uv python install 3.9
+uv venv testenv --python 3.9
+BASE_PATH=&quot;$(dirname $(dirname $(readlink $(which python))))&quot;
+export TK_LIBRARY=&quot;$BASE_PATH/lib/tk8.6&quot;
+export TCL_LIBRARY=&quot;$BASE_PATH/lib/tcl8.6&quot;
+uv pip install customtkinter
+python
+</code></pre>
+<p>Then call the following code (taken from https://customtkinter.tomschimansky.com)</p>
+<pre><code class="language-python">import customtkinter
+
+def button_callback():
+    print(&quot;button clicked&quot;)
+
+app = customtkinter.CTk()
+app.geometry(&quot;400x150&quot;)
+
+button = customtkinter.CTkButton(app, text=&quot;my button&quot;, command=button_callback)
+button.pack(padx=20, pady=20)
+
+app.mainloop()
+</code></pre>
+<p>The rendering is then quite ugly.  Apparently this is a known issue when tk is built without libXft support:
+https://github.com/TomSchimansky/CustomTkinter/issues/2596</p>
+<p>Could you confirm that this is the case when installing Python in uv? If so, is there a way to include this to make rendering more pleasent to the eyes?</p>
+<p>We are using uv 0.4.9 in native Ubuntu 22.04.4 LTS</p>
+<p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/learncodingforweb">@learncodingforweb</a> on 2024-12-28 15:38</div>
+            <div class="timeline-body"><p>I am also facing same problem running on ubuntu 24.04LTS with different version (other than system python version) install using uv python install</p>
+<pre><code>uname -a
+Linux embedded 6.8.0-51-generic #52-Ubuntu SMP PREEMPT_DYNAMIC Thu Dec  5 13:09:44 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux``
+
+system has python version 
+</code></pre>
+<p>python --version
+Python 3.12.3
+which python
+/usr/bin/python```</p>
+<p>for which tkinter is working fine.</p>
+<p>But i install python other than system version. than uv is not able to find tkinter and getting error
+<strong>This probably means that Tcl wasn't installed properly.</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-28 17:48</div>
+            <div class="timeline-body"><p>@learncodingforweb this sounds like a separate issue. Please see #9452 / open a new issue including the output.. Make sure you're on the latest version of uv and reinstall your managed Python version with <code>uv python install &lt;version&gt; --reinstall</code> to ensure you have the latest patches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/learncodingforweb">@learncodingforweb</a> on 2024-12-29 12:54</div>
+            <div class="timeline-body"><p>i already have latest version.</p>
+<pre><code>uv --version
+uv 0.5.13
+</code></pre>
+<p>I even tried</p>
+<pre><code>uv python uninstall 3.13
+uv python install 3.13
+</code></pre>
+<p>Still not working</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-29 16:16</div>
+            <div class="timeline-body"><p>@learncodingforweb again, please open a new issue including a reproduction and output as described in #9452. It's bad form to hijack another issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/python-build-standalone/issues/740.html">astral-sh/python-build-standalone#740</a> on 2025-08-08 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-08-08 18:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you confirm that this is the case when installing Python in uv?</p>
+</blockquote>
+<p>Yes, it is the case that our managed Python installs are built without Xft. I guess we ought to do that. I opened astral-sh/python-build-standalone#740, not sure when I'll get to it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.14 deferred evaluation of annotations - astral-sh/ruff #15100</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>3.14 deferred evaluation of annotations</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15100">#15100</a>
+        opened by <a href="https://github.com/nickdrozd">@nickdrozd</a>
+        on 2024-12-22 20:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2024-12-22 20:11</div>
+            <div class="timeline-body"><p>In 3.14, type annotations are not evaluated eagerly.</p>
+<p>https://docs.python.org/3.14/whatsnew/3.14.html#whatsnew314-pep649</p>
+<p>So this snippet runs fine:</p>
+<pre><code class="language-python">class X:
+    x: X
+</code></pre>
+<p>Ruff flags the field annotation as an undefined name. It is undefined in 3.13 and earlier, but in 3.14 this is a false positive. Earlier versions require <code>from __future__ import annotations</code> to make this work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python314</span> added by @dhruvmanila on 2024-12-23 04:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-12-23 04:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-23 04:57</div>
+            <div class="timeline-body"><p>Thanks for the issue.</p>
+<p>The following are the affected rules that should be updated (not a complete list):</p>
+<ul>
+<li>https://docs.astral.sh/ruff/rules/#flake8-future-annotations-fa</li>
+<li>https://docs.astral.sh/ruff/rules/unnecessary-future-import/</li>
+</ul>
+<p>As per the <a href="https://peps.python.org/pep-0745/">release schedule of 3.14</a>, the first beta is scheduled in around 5 months so I'd wait for a while until making any changes for 3.14.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-23 09:03</div>
+            <div class="timeline-body"><p>Most importantly we will need to update the checker walking of the AST, so the semantic model contains correct state. Everywhere that currently checks for the presence of <code>from __future__ import annotations</code> to defer visiting a type expression, will need to also check for a Python version of &gt;= 3.14.</p>
+<p>That being said, as far as I know, there's not a 1:1 equivalence in semantics between the deferral strategy for PEP 649 and PEP 563, so we may need to do some things subtly different, to properly model the runtime semantics. Since there are some things that are safe with PEP 563, that aren't safe with PEP 649. Which is also the reason why <code>from __future__ import annotations</code> doesn't go away in 3.14 and still has the same semantics as it did before (i.e. you will get string forward references in <code>__annotations__</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2024-12-27 20:38</div>
+            <div class="timeline-body"><p>Some discussion here: https://github.com/nedbat/coveragepy/issues/1908</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15506.html">astral-sh/ruff#15506</a> on 2025-01-15 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2025-03-04 22:00</div>
+            <div class="timeline-body"><p>Besides undefined name, this also raises false positives for TC004.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-03-04 22:20</div>
+            <div class="timeline-body"><p>Any rule that relies on the semantic runtime context of the expression will yield incorrect results, this also includes TC001-003 , TC010 and UP037 just to name some other ones I can think of immediately. Ultimately it's not really all that helpful to enumerate the affected rules here, beyond documenting which false positives/negatives are currently expected with 3.14, since this is a shortcoming of the semantic model, not the implementation of the individual rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tatsh">@Tatsh</a> on 2025-04-17 13:44</div>
+            <div class="timeline-body"><p>I would love to have a rule and fix that says to add <code>from __future__ import annotations</code> to the file (and it would be great if the checker checks that it actually makes a difference), and then an upgrade rule/fix when we're on 3.14+ to remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-04-17 14:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I would love to have a rule and fix that says to add <code>from __future__ import annotations</code> to the file (and it would be great if the checker checks that it actually makes a difference), and then an upgrade rule/fix when we're on 3.14+ to remove it.</p>
+</blockquote>
+<p>You can already force an import with <a href="https://docs.astral.sh/ruff/rules/missing-required-import/">missing-required-import</a>:</p>
+<pre><code class="language-toml">[tool.ruff.lint.isort]
+required-imports = [&quot;from __future__ import annotations&quot;]
+</code></pre>
+<p>And the opposite case could potentially be covered by <a href="https://docs.astral.sh/ruff/rules/unnecessary-future-import/">unecessary-future-import</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-04-17 17:57</div>
+            <div class="timeline-body"><p>Below is a patch to the semantic model that does what @Daverball suggests and simply treats Python version 3.14 as if there was an implicit <code>from __future__ import annotations</code> everywhere.</p>
+<p>I think the question is whether this is correct enough for our semantic purposes. For a specific example, consider the following:</p>
+<pre><code class="language-python">from annotationlib import get_annotations, Format
+
+
+class X:
+    def to_y(self) -&gt; Y:
+        return Y()
+
+
+print(get_annotations(X.to_y, format=Format.VALUE))
+
+
+class Y: ...
+</code></pre>
+<p>This raises a <code>NameError</code> at runtime for any Python version, including Python 3.14 - though for Python 3.14 the traceback is different because the exception is thrown while evaluating <code>get_annotations</code> and not before. On the other hand, if we choose a different <code>Format</code> or if we prepend with <code>from __future__ import annotations</code>, then we don't get a <code>NameError</code>. The patch below does not emit <code>F821</code> when <code>target-version = py314</code>.</p>
+<p>I think this is correct behavior, and should be thought of as roughly equivalent to the following:</p>
+<pre><code class="language-python">from inspect import get_annotations
+
+
+class X:
+    def to_y(self) -&gt; Y:
+        return Y()
+
+
+print(get_annotations(X.to_y, eval_str=True))
+
+
+class Y: ...
+</code></pre>
+<p>Does that sound right to you @Daverball ?</p>
+<details>
+<summary>Semantic model patch</summary>
+
+<pre><code class="language-diff">diff --git c/crates/ruff_linter/src/checkers/ast/annotation.rs w/crates/ruff_linter/src/checkers/ast/annotation.rs
+index 86d1ba50f..f545ba27e 100644
+--- c/crates/ruff_linter/src/checkers/ast/annotation.rs
++++ w/crates/ruff_linter/src/checkers/ast/annotation.rs
+@@ -1,4 +1,4 @@
+-use ruff_python_ast::StmtFunctionDef;
++use ruff_python_ast::{PythonVersion, StmtFunctionDef};
+ use ruff_python_semantic::{ScopeKind, SemanticModel};
+ 
+ use crate::rules::flake8_type_checking;
+@@ -29,7 +29,11 @@ pub(super) enum AnnotationContext {
+ impl AnnotationContext {
+     /// Determine the [`AnnotationContext`] for an annotation based on the current scope of the
+     /// semantic model.
+-    pub(super) fn from_model(semantic: &amp;SemanticModel, settings: &amp;LinterSettings) -&gt; Self {
++    pub(super) fn from_model(
++        semantic: &amp;SemanticModel,
++        settings: &amp;LinterSettings,
++        version: PythonVersion,
++    ) -&gt; Self {
+         // If the annotation is in a class scope (e.g., an annotated assignment for a
+         // class field) or a function scope, and that class or function is marked as
+         // runtime-required, treat the annotation as runtime-required.
+@@ -59,7 +63,7 @@ impl AnnotationContext {
+         // If `__future__` annotations are enabled or it's a stub file,
+         // then annotations are never evaluated at runtime,
+         // so we can treat them as typing-only.
+-        if semantic.future_annotations_or_stub() {
++        if semantic.future_annotations_or_stub() || version.defers_annotations() {
+             return Self::TypingOnly;
+         }
+ 
+@@ -81,6 +85,7 @@ impl AnnotationContext {
+         function_def: &amp;StmtFunctionDef,
+         semantic: &amp;SemanticModel,
+         settings: &amp;LinterSettings,
++        version: PythonVersion,
+     ) -&gt; Self {
+         if flake8_type_checking::helpers::runtime_required_function(
+             function_def,
+@@ -88,7 +93,7 @@ impl AnnotationContext {
+             semantic,
+         ) {
+             Self::RuntimeRequired
+-        } else if semantic.future_annotations_or_stub() {
++        } else if semantic.future_annotations_or_stub() || version.defers_annotations() {
+             Self::TypingOnly
+         } else {
+             Self::RuntimeEvaluated
+diff --git c/crates/ruff_linter/src/checkers/ast/mod.rs w/crates/ruff_linter/src/checkers/ast/mod.rs
+index ebff12438..56f8ad296 100644
+--- c/crates/ruff_linter/src/checkers/ast/mod.rs
++++ w/crates/ruff_linter/src/checkers/ast/mod.rs
+@@ -982,8 +982,12 @@ impl&lt;'a&gt; Visitor&lt;'a&gt; for Checker&lt;'a&gt; {
+ 
+                 // Function annotations are always evaluated at runtime, unless future annotations
+                 // are enabled.
+-                let annotation =
+-                    AnnotationContext::from_function(function_def, &amp;self.semantic, self.settings);
++                let annotation = AnnotationContext::from_function(
++                    function_def,
++                    &amp;self.semantic,
++                    self.settings,
++                    self.target_version(),
++                );
+ 
+                 // The first parameter may be a single dispatch.
+                 let singledispatch =
+@@ -1180,7 +1184,11 @@ impl&lt;'a&gt; Visitor&lt;'a&gt; for Checker&lt;'a&gt; {
+                 value,
+                 ..
+             }) =&gt; {
+-                match AnnotationContext::from_model(&amp;self.semantic, self.settings) {
++                match AnnotationContext::from_model(
++                    &amp;self.semantic,
++                    self.settings,
++                    self.target_version(),
++                ) {
+                     AnnotationContext::RuntimeRequired =&gt; {
+                         self.visit_runtime_required_annotation(annotation);
+                     }
+@@ -1335,7 +1343,7 @@ impl&lt;'a&gt; Visitor&lt;'a&gt; for Checker&lt;'a&gt; {
+             // we can't defer again, or we'll infinitely recurse!
+             &amp;&amp; !self.semantic.in_deferred_type_definition()
+             &amp;&amp; self.semantic.in_type_definition()
+-            &amp;&amp; self.semantic.future_annotations_or_stub()
++            &amp;&amp; (self.semantic.future_annotations_or_stub()||self.target_version.defers_annotations())
+             &amp;&amp; (self.semantic.in_annotation() || self.source_type.is_stub())
+         {
+             if let Expr::StringLiteral(string_literal) = expr {
+@@ -2537,7 +2545,8 @@ impl&lt;'a&gt; Checker&lt;'a&gt; {
+                 // if they are annotations in a module where `from __future__ import
+                 // annotations` is active, or they are type definitions in a stub file.
+                 debug_assert!(
+-                    self.semantic.future_annotations_or_stub()
++                    (self.semantic.future_annotations_or_stub()
++                        || self.target_version.defers_annotations())
+                         &amp;&amp; (self.source_type.is_stub() || self.semantic.in_annotation())
+                 );
+ 
+diff --git c/crates/ruff_linter/src/settings/types.rs w/crates/ruff_linter/src/settings/types.rs
+index 7087d9856..9a6fd859e 100644
+--- c/crates/ruff_linter/src/settings/types.rs
++++ w/crates/ruff_linter/src/settings/types.rs
+@@ -34,6 +34,7 @@ pub enum PythonVersion {
+     Py311,
+     Py312,
+     Py313,
++    Py314,
+ }
+ 
+ impl Default for PythonVersion {
+@@ -55,6 +56,7 @@ impl TryFrom&lt;ast::PythonVersion&gt; for PythonVersion {
+             ast::PythonVersion::PY311 =&gt; Ok(Self::Py311),
+             ast::PythonVersion::PY312 =&gt; Ok(Self::Py312),
+             ast::PythonVersion::PY313 =&gt; Ok(Self::Py313),
++            ast::PythonVersion::PY314 =&gt; Ok(Self::Py314),
+             _ =&gt; Err(format!(&quot;unrecognized python version {value}&quot;)),
+         }
+     }
+@@ -84,6 +86,7 @@ impl PythonVersion {
+             Self::Py311 =&gt; (3, 11),
+             Self::Py312 =&gt; (3, 12),
+             Self::Py313 =&gt; (3, 13),
++            Self::Py314 =&gt; (3, 14),
+         }
+     }
+ }
+diff --git c/crates/ruff_python_ast/src/python_version.rs w/crates/ruff_python_ast/src/python_version.rs
+index e5d1406de..5445e3265 100644
+--- c/crates/ruff_python_ast/src/python_version.rs
++++ w/crates/ruff_python_ast/src/python_version.rs
+@@ -30,6 +30,10 @@ impl PythonVersion {
+         major: 3,
+         minor: 13,
+     };
++    pub const PY314: PythonVersion = PythonVersion {
++        major: 3,
++        minor: 14,
++    };
+ 
+     pub fn iter() -&gt; impl Iterator&lt;Item = PythonVersion&gt; {
+         [
+@@ -40,6 +44,7 @@ impl PythonVersion {
+             PythonVersion::PY311,
+             PythonVersion::PY312,
+             PythonVersion::PY313,
++            PythonVersion::PY314,
+         ]
+         .into_iter()
+     }
+@@ -50,7 +55,7 @@ impl PythonVersion {
+     }
+ 
+     pub const fn latest() -&gt; Self {
+-        Self::PY313
++        Self::PY314
+     }
+ 
+     pub const fn as_tuple(self) -&gt; (u8, u8) {
+@@ -67,6 +72,10 @@ impl PythonVersion {
+     pub fn supports_pep_701(self) -&gt; bool {
+         self &gt;= Self::PY312
+     }
++
++    pub fn defers_annotations(self) -&gt; bool {
++        self &gt;= Self::PY314
++    }
+ }
+ 
+ impl Default for PythonVersion {
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-04-17 20:16</div>
+            <div class="timeline-body"><p>That seems right to me, but I haven't looked at the implementation details of PEP 695 to know whether or not there are any important edge cases we would want to encode into the semantic model in some way.</p>
+<p>Either way this seems like a good start. Although I think it would be better if we added a semantic flag to encode this property, rather than having to pass around the version, so we can have a single method on the semantic model to tell us whether or not our annotations are deferred, i.e. have a <code>future_or_deferred_annotations_or_stub</code> take the place of <code>future_annotations_or_stub</code>, since in most cases we probably want to check both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17658.html">astral-sh/ruff#17658</a> on 2025-04-27 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-05-05 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2025-05-09 17:41</div>
+            <div class="timeline-body"><p>I am really itching to cut <code>from __future__ import annotations</code> from my code. So I was excited to try out this change with 0.11.9. But sadly it only partially works. Running into two problems.</p>
+<p>First, some annotations are still getting eagerly evaluated:</p>
+<pre><code class="language-python">Xs: list[X] = []  # false positive F821 Undefined name `X`
+
+x: X              # false positive F821 Undefined name `X`
+
+x = X()           # true positive F821 Undefined name `X`
+
+class Y:
+    x: X          # false positive F821 Undefined name `X`
+
+class X:
+    x: X          # false positive F821 Undefined name `X`
+</code></pre>
+<p>Second, false positives for <code>runtime-import-in-type-checking-block (TC004)</code>:</p>
+<pre><code class="language-python">from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable  # false positive TC004
+
+def f() -&gt; Iterable[int]:
+    return [1, 2, 3]
+</code></pre>
+<p>Mypy has no problem with any of this (aside from the true positive).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-05-09 17:48</div>
+            <div class="timeline-body"><p>@nickdrozd I cannot reproduce this:</p>
+<pre><code class="language-console">❯ cat ex.py
+Xs: list[X] = []  # false positive F821 Undefined name `X`
+
+x: X  # false positive F821 Undefined name `X`
+
+x = X()  # true positive F821 Undefined name `X`
+
+
+class Y:
+    x: X  # false positive F821 Undefined name `X`
+
+
+class X:
+    x: X  # false positive F821 Undefined name `X`
+
+❯ cat ex2.py
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable  # false positive TC004
+
+
+def f() -&gt; Iterable[int]:
+    return [1, 2, 3]
+
+❯ ruff check --no-cache --isolated --target-version py314 --preview --select F ex.py
+ex.py:5:5: F821 Undefined name `X`
+  |
+3 | x: X  # false positive F821 Undefined name `X`
+4 |
+5 | x = X()  # true positive F821 Undefined name `X`
+  |     ^ F821
+  |
+
+Found 1 error.
+❯ ruff check --no-cache --isolated --target-version py314 --preview --select TC ex2.py
+All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2025-05-09 17:53</div>
+            <div class="timeline-body"><p>Whoops! Forgot to update <code>target-version</code>. Everything seems to work. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ty/issues/712.html">astral-sh/ty#712</a> on 2025-06-26 16:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

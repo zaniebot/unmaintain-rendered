@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--no-install-workspace` needs the pyproject.toml of each workspace member to be present - astral-sh/uv #6685</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--no-install-workspace` needs the pyproject.toml of each workspace member to be present</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6685">#6685</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-08-27 12:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-08-27 12:54</div>
+            <div class="timeline-body"><p><code>uv sync --no-dev --no-install-workspace --locked</code> doesn't work when only the root <code>pyproject.toml</code> and <code>uv.lock</code> are present. We should allow installing the entire workspace with <code>--no-install-workspace --locked</code> when only the top level <code>uv.lock</code> is present.</p>
+<p>Reproducer failing:</p>
+<pre><code class="language-dockerfile">FROM ubuntu AS builder
+
+RUN mkdir /app
+WORKDIR /app
+ENV UV_PYTHON_INSTALL_DIR=/app/python
+
+COPY --from=ghcr.io/astral-sh/uv /uv /bin/uv
+
+# Install the dependencies
+ADD pyproject.toml uv.lock /app/
+RUN uv sync --no-dev --no-install-workspace --locked
+
+# Install the project itself
+ADD src /app/src
+ADD packages /app/packages
+RUN uv sync --no-dev --locked
+</code></pre>
+<p>Passing:</p>
+<pre><code class="language-dockerfile">FROM ubuntu AS builder
+
+RUN mkdir /app
+WORKDIR /app
+ENV UV_PYTHON_INSTALL_DIR=/app/python
+
+COPY --from=ghcr.io/astral-sh/uv /uv /bin/uv
+
+# Install the dependencies
+ADD pyproject.toml uv.lock /app/
+ADD packages/bird-feeder/pyproject.toml /app/packages/bird-feeder/pyproject.toml
+ADD packages/seeds/pyproject.toml /app/packages/seeds/pyproject.toml
+RUN uv sync --no-dev --no-install-workspace --locked
+
+# Install the project itself
+ADD src /app/src
+ADD packages /app/packages
+RUN uv sync --no-dev --locked
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-27 12:56</div>
+            <div class="timeline-body"><p>The same in spirit as #6573 though makes sense to keep separate; it might be separately fixable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-27 12:59</div>
+            <div class="timeline-body"><p>Will probably fix them in one go but i wanted to document the test case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-27 19:38</div>
+            <div class="timeline-body"><p>I <em>think</em> this one is easier to fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-27 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6722.html">astral-sh/uv#6722</a> on 2024-08-27 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-28 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6737.html">astral-sh/uv#6737</a> on 2024-08-28 02:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-28 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-28 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AnkitSiva">@AnkitSiva</a> on 2025-05-07 18:46</div>
+            <div class="timeline-body"><p>I'm still running into this issue. I have a minimal reproducible setup <a href="https://github.com/AnkitSiva/uv_minimal_repro">here</a>. I think you may have fixed the <code>--frozen</code> but not the <code>--locked</code> case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-07 18:48</div>
+            <div class="timeline-body"><p>Locked requires all the members to be present. Locked requires that we validate the lockfile, which requires a resolution, which requires the member pyproject.toml files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AnkitSiva">@AnkitSiva</a> on 2025-05-07 18:50</div>
+            <div class="timeline-body"><p>Gotcha, thanks for the blazing fast reply!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leonardocustodio">@leonardocustodio</a> on 2025-07-22 16:44</div>
+            <div class="timeline-body"><p>In that case, this guide should be reviewed: https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers</p>
+<blockquote>
+<p>If you're using a <a href="https://docs.astral.sh/uv/concepts/projects/workspaces/">workspace</a>, then use the --no-install-workspace flag which excludes the project and any workspace members.</p>
+</blockquote>
+<p>It gives the impression that you should use <code>--no-install-workspace</code> and it will work out of the box, even if it is being suggested to use <code>--lock</code> just above</p>
+<p>Though I also get the error without the <code>--lock</code>, maybe there is some other issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-22 16:46</div>
+            <div class="timeline-body"><p>I believe we only fixed this for <code>--frozen</code>. I don't think we should or even can fix it for <code>--locked</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leonardocustodio">@leonardocustodio</a> on 2025-07-22 16:46</div>
+            <div class="timeline-body"><p>I mean without it it gives the same error, I suppose it defaults to <code>--locked</code> if you don't specify? I think just adding that in the highlight, which needs to be used with frozen, would be sufficient.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

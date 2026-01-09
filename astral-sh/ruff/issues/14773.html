@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ban urllib.parse.urljoin (security issue and confusing name) - astral-sh/ruff #14773</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ban urllib.parse.urljoin (security issue and confusing name)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14773">#14773</a>
+        opened by <a href="https://github.com/ashrub-holvi">@ashrub-holvi</a>
+        on 2024-12-04 15:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ashrub-holvi">@ashrub-holvi</a> on 2024-12-04 15:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Warning Because an absolute URL may be passed as the url parameter, it is generally not secure to use urljoin with an attacker-controlled url. For example in, urljoin(&quot;https://website.com/users/&quot;, username), if username can contain an absolute URL, the result of urljoin will be the absolute URL.</p>
+</blockquote>
+<ol>
+<li><a href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urljoin">Docs</a> says:</li>
+</ol>
+<p>Hi, idea for the rule - ban <code>urllib.parse.urljoin</code>, there are two issue with it:
+2. Behaviour is far away from what you might expect from <code>join</code> function (for example base on <code>join</code> method for strings), it's some merging/overlaying/mixing of two urls, see also <a href="https://stackoverflow.com/questions/10893374/python-confusions-with-urljoin">here</a>.</p>
+<pre><code>&gt;&gt;&gt; from urllib.parse import urljoin
+&gt;&gt;&gt; urljoin(&quot;https://astral.sh/&quot;, &quot;https://hackme.co&quot;)
+'https://hackme.co'
+</code></pre>
+<p>I guess it's easy to ban it by</p>
+<pre><code>[lint.flake8-tidy-imports.banned-api]
+&quot;urllib.parse.urljoin&quot;.msg = &quot;Use yarl's URL&quot;
+</code></pre>
+<p>but same time you need to get know somehow about the issue, it's hidden by the function name, so, perhaps good to have a rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashrub-holvi">@ashrub-holvi</a> on 2024-12-04 18:17</div>
+            <div class="timeline-body"><p>Another option might be - forbid to use it directly, without proper alias like <code>merge_urls</code> which will make it more clear.
+Same thing I want to have for <code>random</code> - if it always would be used as <code>preudorandom</code> (same for functions - <code>preudorand</code> etc) it will be difficult to use it in any crypto/security code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-12-05 01:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @AlexWaygood on 2024-12-05 01:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashrub-holvi">@ashrub-holvi</a> on 2024-12-06 07:16</div>
+            <div class="timeline-body"><p>Looking to <a href="https://stackoverflow.com/a/10893427">this answer</a> the right name would be something like</p>
+<pre><code>get_url_after_click(current_url, link)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andreymal">@andreymal</a> on 2024-12-06 11:03</div>
+            <div class="timeline-body"><blockquote>
+<p>(for example base on <code>join</code> method for strings)</p>
+</blockquote>
+<p>Compare with <code>os.path.join</code> instead, and you'll notice this is expected behavior:</p>
+<pre><code>&gt;&gt;&gt; from os.path import join
+&gt;&gt;&gt; join(r'C:\astral\sh', r'D:\hackme\co') 
+'D:\\hackme\\co'
+&gt;&gt;&gt; join(r'C:\some\more', r'\thing')  
+'C:\\thing'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashrub-holvi">@ashrub-holvi</a> on 2024-12-09 07:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Compare with <code>os.path.join</code> instead, and you'll notice this is expected behaviour:</p>
+</blockquote>
+<p>I don't think it's expected for functions named &quot;join&quot;, both are consistently confusing and should be banned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashrub-holvi">@ashrub-holvi</a> on 2024-12-09 09:22</div>
+            <div class="timeline-body"><p><code>os.path.join</code> sort of banned by <a href="https://docs.astral.sh/ruff/rules/os-path-join/">this rule</a>, of course <code>pathlib</code> has same behaviour, but at least it's not named &quot;join&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andreymal">@andreymal</a> on 2024-12-09 09:33</div>
+            <div class="timeline-body"><p><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.joinpath">Path.joinpath</a> ¯\_(ツ)_/¯</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashrub-holvi">@ashrub-holvi</a> on 2024-12-09 09:39</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.joinpath">Path.joinpath</a> ¯_(ツ)_/¯</p>
+</blockquote>
+<p>I mean main usage is <code>/</code>, not method call</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashrub-holvi">@ashrub-holvi</a> on 2024-12-09 16:22</div>
+            <div class="timeline-body"><p>and I hope for <code>pathlib</code> it can be solved by creating more strict subclass of Path which will fail if second arg is absolute, like yarl.URL does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2024-12-09 19:54</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.joinpath">Path.joinpath</a> ¯_(ツ)_/¯</p>
+</blockquote>
+<p>... does not do the right thing here 😄 See what happens to slashes...</p>
+<pre><code>&gt;&gt;&gt; pathlib.Path(&quot;https://astral.sh/&quot;).joinpath(&quot;https://hackme.co&quot;)
+WindowsPath('https:/astral.sh/https:/hackme.co')
+&gt;&gt;&gt; pathlib.PurePath(&quot;https://astral.sh/&quot;).joinpath(&quot;https://hackme.co&quot;)
+PureWindowsPath('https:/astral.sh/https:/hackme.co')
+&gt;&gt;&gt; pathlib.PurePosixPath(&quot;https://astral.sh/&quot;).joinpath(&quot;https://hackme.co&quot;)
+PurePosixPath('https:/astral.sh/https:/hackme.co')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andreymal">@andreymal</a> on 2024-12-09 22:20</div>
+            <div class="timeline-body"><p>@akx this is absolutely the right thing at least for posix paths (source: <a href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_271">POSIX.1-2017 / Base Definitions / 3.271 Pathname</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2024-12-10 06:36</div>
+            <div class="timeline-body"><p>Absolutely! Sorry, I was thinking you meant <code>Path()</code> could be the right thing to use for joining URLs. Never mind me...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../aio-libs/yarl/issues/2.html">aio-libs/yarl#2</a> on 2024-12-18 09:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

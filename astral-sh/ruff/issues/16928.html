@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] detect implicit instance attributes in a generic method - astral-sh/ruff #16928</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] detect implicit instance attributes in a generic method</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16928">#16928</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-03-23 20:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-03-23 20:51</div>
+            <div class="timeline-body"><pre><code class="language-py">class C:
+    def f(self):
+        self.x: int = 1
+    
+    def g[T](self, t: T) -&gt; T:
+        self.y: str = &quot;foo&quot;
+        return t
+
+reveal_type(C().x)  # correctly reveals `int`
+reveal_type(C().y)  # should reveal `str`, but instead errors with `unresolved-attribute`
+</code></pre>
+<p>Generic functions have an additional type-params scope in between the outer scope and the function body scope. <code>SemanticIndexBuilder::is_method_of_class</code> fails to account for this, so we fail to record attribute assignments that occur in a generic method.</p>
+<p>Relatedly, we now have &quot;is this function a method of a class&quot; logic separately both in <code>SemanticIndexBuilder::is_method_of_class</code> and in <code>TypeInferenceBuilder::infer_function_body</code> (as part of detecting whether a function is a method of a protocol). It may be worth seeing if we can unify that logic to a single location (maybe a method on <code>Scope</code>?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-03-23 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2025-03-23 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16900.html">astral-sh/ruff#16900</a> on 2025-03-23 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Red Knot Alpha" by @carljm on 2025-03-27 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-05-01 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17769.html">astral-sh/ruff#17769</a> on 2025-05-01 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-02 08:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

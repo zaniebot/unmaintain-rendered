@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>known-third-party not respected when the project root (local folder) contains a subfolder with the same name as a declared import - astral-sh/ruff #15098</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>known-third-party not respected when the project root (local folder) contains a subfolder with the same name as a declared import</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15098">#15098</a>
+        opened by <a href="https://github.com/Dev-iL">@Dev-iL</a>
+        on 2024-12-22 15:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Dev-iL">@Dev-iL</a> on 2024-12-22 15:57</div>
+            <div class="timeline-body"><h2>Background</h2>
+<p>I have a project with the following structure:</p>
+<pre><code class="language-none">📂 my_project
+┣━━ 📂 airflow    &lt;- possibly an implicit namespace package, see note at the end
+┃   ┗━━ 📂 dags
+┃       ┣━━ 🐍 __init__.py
+┃       ┣━━ 🐍 dag_1.py
+┃       ┣━━ ...
+┃       ┗━━ 🐍 dag_n.py
+┣━━ 📂 src
+┃   ┗━━ 📂 my_lib
+┃       ┣━━ 🐍 __init__.py
+┃       ┗━━ ...
+┗━━ 📄 pyproject.toml
+</code></pre>
+<p>In my <code>pyproject.toml</code> I have the following sections related to import sorting:</p>
+<pre><code class="language-toml">[tool.ruff.lint.isort]
+known-third-party = [&quot;airflow&quot;]
+section-order = [&quot;future&quot;, &quot;standard-library&quot;, &quot;third-party&quot;, &quot;company-libs&quot;, &quot;first-party&quot;, &quot;local-folder&quot;]
+
+[tool.ruff.lint.isort.sections]
+company-libs = [&quot;my_other_lib&quot;]
+</code></pre>
+<h2>Observed behavior</h2>
+<p>Whenever I have imports of the form</p>
+<pre><code class="language-python">from airflow import DAG  # This refers to the 3rd-party library; I never import from the top-level `airflow` folder
+
+from my_other_lib import foo
+</code></pre>
+<p>Ruff issues an <a href="https://docs.astral.sh/ruff/rules/unsorted-imports/">I001</a> and rearranges them to</p>
+<pre><code class="language-python">from my_other_lib import foo
+
+from airflow import DAG
+</code></pre>
+<h2>Expected behavior</h2>
+<p>The imports should remain unchanged, per the <code>pyproject.toml</code> configurations.</p>
+<h2>Additional notes</h2>
+<ul>
+<li>isort handles this as expected.</li>
+<li>Deleting <code>my_project/airflow/dags/__init__.py</code> stops this behavior from happening.</li>
+<li>I might have oversimplified the example for sharing. If the issue is unreproducible - I'll revise the post.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-24 05:51</div>
+            <div class="timeline-body"><p>Thanks for providing all the details.</p>
+<p>I tried to reproduce this using the project structure but unable to do so. Can you provide some additional details?</p>
+<ul>
+<li>Which file should I put the source code? Should it be in <code>airflow/dags/dag_1.py</code>?</li>
+<li>How are you running <code>ruff</code>? Are you using the CLI or the editor? If it's the CLI, what's the command that you used for invocation?</li>
+<li>Why does the import say <code>my_other_lib</code> but the tree mentions <code>my_lib</code>? Is that expected or a typo?</li>
+<li>Can you provide the Ruff version used here?</li>
+</ul>
+<p>Currently, I've the following structure:</p>
+<pre><code>.
+├── airflow
+│   └── dags
+│       ├── __init__.py
+│       └── dag_1.py
+├── pyproject.toml
+└── src
+    └── my_lib
+        └── __init__.py
+</code></pre>
+<p>With the same config in <code>pyproject.toml</code> and the source code in <code>airflow/dags/dag_1.py</code>, I run <code>ruff check --select=I .</code> from the project root with <code>ruff 0.8.4</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @dhruvmanila on 2024-12-24 05:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dev-iL">@Dev-iL</a> on 2024-12-24 06:06</div>
+            <div class="timeline-body"><p>@dhruvmanila Thank you for your comment. I will provide a zipped MRE in a few hours. Re your questions:</p>
+<ol>
+<li>The source code should be under my_lib.</li>
+<li>Editor integrations (pycharm + vscode) are causing this for sure, I'm not sure about the precommit hook, probably yes.</li>
+<li>Note the pyproject.toml - my_other_lib is defined there as an example that should end up underneath third-party.</li>
+<li>It happens for as long as remember, including in 0.8.4.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dev-iL">@Dev-iL</a> on 2024-12-24 08:24</div>
+            <div class="timeline-body"><p>While trying to create the MRE, I narrowed the issue down. Turns out it's related to a difference between the <strong>PyCharm Ruff plugin</strong> and Ruff itself, as discussed <a href="https://github.com/koxudaxi/ruff-pycharm-plugin/issues/422">here</a>. Here's what it looks like:</p>
+<p><img src="https://github.com/user-attachments/assets/21ec59b1-6ac5-40f7-a4ef-1c9327bb28f8" alt="Image" /></p>
+<p>Closing since this doesn't seem to be a Ruff issue. Thanks again, and sorry about the false alarm!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Dev-iL on 2024-12-24 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-24 08:37</div>
+            <div class="timeline-body"><p>No worries, thank you for taking some additional time to try to reproduce it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @dhruvmanila on 2024-12-24 08:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplify marker edges by tracking conflict reachability on nodes - astral-sh/uv #15101</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Simplify marker edges by tracking conflict reachability on nodes</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15101">#15101</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-08-06 09:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2025-08-06 09:07</div>
+            <div class="timeline-body"><p>Currently, we track conflict inferences in <code>simplify_conflict_markers</code> independently of the markers, and we don't track conflict markers in reachability. This limits our power in simplifying edges. Instead, we should compute the reachability for each node including the conflict markers that need to be accessed to reach a node, than simplify each edge using the reachability marker.</p>
+<p>Additionally, we should remove all parts of markers not captured by conflicts more effectively. For example, we currently see <code>(extra == 'extra-3-pkg-x1' and extra == 'extra-3-pkg-x2')</code> markers in the lockfile, even though <code>x1</code> and <code>x2</code> conflict. The current imbibe function does not seem to remove those. One approach is to remove them using the DNF, but we should avoid the transformation to DNF. In the DNF, we can remove any clause where two (positive) variables refer to two extra which conflict.</p>
+<p><strong>Example</strong></p>
+<pre><code class="language-toml">[project]
+name = &quot;debug&quot;
+version = &quot;0.0.1&quot;
+requires-python = &quot;==3.12.*&quot;
+
+[project.optional-dependencies]
+a = [
+  &quot;python-dateutil==2.8.0&quot;,
+]
+b = [
+  &quot;python-dateutil==2.8.1; platform_machine != 'inapplicable'&quot;,
+  &quot;python-dateutil==2.8.0; platform_machine == 'inapplicable'&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;a&quot; },
+    { extra = &quot;b&quot; },
+  ],
+]
+</code></pre>
+<pre><code class="language-toml">[[package]]
+name = &quot;python-dateutil&quot;
+version = &quot;2.8.0&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+resolution-markers = [
+    &quot;platform_machine == 'inapplicable' and extra != 'extra-5-debug-a' and extra == 'extra-5-debug-b'&quot;,
+    &quot;extra == 'extra-5-debug-a' and extra != 'extra-5-debug-b'&quot;,
+]
+dependencies = [
+    { name = &quot;six&quot;, marker = &quot;(platform_machine == 'inapplicable' and extra == 'extra-5-debug-b') or extra == 'extra-5-debug-a'&quot; },
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/ad/99/5b2e99737edeb28c71bcbec5b5dda19d0d9ef3ca3e92e3e925e7c0bb364c/python-dateutil-2.8.0.tar.gz&quot;, hash = &quot;sha256:c89805f6f4d64db21ed966fda138f8a5ed7a4fdbc1a8ee329ce1b74e3c74da9e&quot;, size = 327134, upload-time = &quot;2019-02-05T14:12:37.493Z&quot; }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/41/17/c62faccbfbd163c7f57f3844689e3a78bae1f403648a6afb1d0866d87fbb/python_dateutil-2.8.0-py2.py3-none-any.whl&quot;, hash = &quot;sha256:7e6584c74aeed623791615e26efd690f29817a27c73085b78e4bad02493df2fb&quot;, size = 226803, upload-time = &quot;2019-02-05T14:12:35.322Z&quot; },
+]
+</code></pre>
+<p>The <code>six</code> marker is exactly the reachability of python-dateutil 2.8.0, we should be able to elide it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-08-06 09:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15041.html">astral-sh/uv#15041</a> on 2025-08-06 09:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

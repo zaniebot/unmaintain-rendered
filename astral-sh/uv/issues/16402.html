@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private index authentication fails for `uv sync` - astral-sh/uv #16402</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Private index authentication fails for `uv sync`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16402">#16402</a>
+        opened by <a href="https://github.com/lachiewalker">@lachiewalker</a>
+        on 2025-10-22 00:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lachiewalker">@lachiewalker</a> on 2025-10-22 00:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv sync</code> fails to authenticate to my private index (Gitlab).</p>
+<p>After updating <code>uv</code> a few days ago and running <code>uv auth login [gitlab-domain] --token [token]</code> I was able to <code>uv sync</code> without issue. Today, I could not get sync to work at all. Interestingly, the very first alternative strategy I tried, <code>uv pip install --index https://[gitlab-domain]/api/v4/groups/XX/-/packages/pypi/simple sandbox</code>, worked without issue. However, this is not ideal for my workflow and I wanted to be able to <code>sync</code> from my pyproject.toml so I tried the following:</p>
+<ul>
+<li><code>uv auth logout [gitlab-domain]</code> &amp;&amp; logging back in</li>
+<li>Cycling my gitlab PAT and running the above to update uv auth</li>
+<li>Creating an entirely new PAT with all scopes enabled and the above to update uv auth</li>
+<li>deleting the uv credentials file and logging in again to recreate it</li>
+<li>restarting my shell</li>
+<li>using VSCode integrated vs Ubuntu native terminal</li>
+<li>Providing the name of my token as --username and my token as password with <code>uv auth login [domain] --username ... --password ...</code></li>
+<li>Providing my gitlab username as --username in the above approach</li>
+<li>Uninstalling and reinstalling uv</li>
+</ul>
+<p>The only approach other than <code>uv pip install --index</code> which worked was setting <code>UV_INDEX_GITLAB_USERNAME=__token__</code> and <code>UV_INDEX_GITLAB_PASSWORD=[token]</code> and re-running uv sync.</p>
+<p>My <code>.toml</code> looks like this:</p>
+<pre><code>dependencies = [
+    ...
+    &quot;sandbox&gt;=0.1.0&quot;,
+    ...
+]
+
+[[tool.uv.index]]
+name = &quot;gitlab&quot;
+url = &quot;https://[gitlab-domain]/api/v4/groups/XXX/-/packages/pypi/simple&quot;
+explicit = true
+authenticate = &quot;always&quot;
+
+[tool.uv.sources]
+sandbox = { index = &quot;gitlab&quot; }
+</code></pre>
+<p>And uv throws this error:</p>
+<pre><code>× No solution found when resolving dependencies:
+  ╰─▶ Because sandbox was not found in the package registry and your project depends on sandbox&gt;=0.1.0, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: An index URL (https://[gitlab-domain]/api/v4/groups/XXX/-/packages/pypi/simple) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).
+</code></pre>
+<p>The above error indicating that no package could be found at the index is false; running <code>uv sync -vv</code> makes it clear that uv never actually authenticates to the index to list the packages available there.</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04.3 amd64</p>
+<h3>Version</h3>
+<p>0.9.5</p>
+<h3>Python version</h3>
+<p>Python 3.12.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @lachiewalker on 2025-10-22 00:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jzazo">@jzazo</a> on 2025-10-23 19:04</div>
+            <div class="timeline-body"><p>I see similar behaviour as well with private index url. My solution is to delete the virtual folder and re-sync:</p>
+<pre><code>rm -rf .venv
+uv sync
+</code></pre>
+<p>It would be nice that <code>uv sync</code> worked without needing to delete the virtual env folder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-28 23:48</div>
+            <div class="timeline-body"><p>Are you able to share the (redacted) <code>--verbose</code> logs from this run?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jzazo">@jzazo</a> on 2025-10-29 09:21</div>
+            <div class="timeline-body"><p>Is this helpful?</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;/home/******/repos/******/.venv/bin/keyring&quot;, line 10, in &lt;module&gt;
+    sys.exit(main())
+             ^^^^^^
+  File &quot;/home/******/repos/******/.venv/lib/python3.12/site-packages/keyring/cli.py&quot;, line 216, in main
+    return cli.run(argv)
+           ^^^^^^^^^^^^^
+  File &quot;/home/******/repos/******/.venv/lib/python3.12/site-packages/keyring/cli.py&quot;, line 120, in run
+    return method()
+           ^^^^^^^^
+  File &quot;/home/******/repos/******/.venv/lib/python3.12/site-packages/keyring/cli.py&quot;, line 129, in do_get
+    credential = getattr(self, f'_get_{self.get_mode}')()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/******/repos/******/.venv/lib/python3.12/site-packages/keyring/cli.py&quot;, line 145, in _get_password
+    password = get_password(self.service, self.username)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/******/repos/******/.venv/lib/python3.12/site-packages/keyring/core.py&quot;, line 63, in get_password
+    return get_keyring().get_password(service_name, username)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/******/repos/******/.venv/lib/python3.12/site-packages/keyring/backends/fail.py&quot;, line 28, in get_password
+    raise NoKeyringError(msg)
+keyring.errors.NoKeyringError: No recommended backend was available. Install a recommended 3rd party backend package; or, install the keyrings.alt package if you want to use the non-recommended backends. See https://pypi.org/project/keyring for details.
+DEBUG Indexes search failed because of status code failure: 401 Unauthorized
+DEBUG Searching for a compatible version of *** (*)
+DEBUG No compatible version found for: ***
+DEBUG Recording unit propagation conflict of ** from incompatibility of (******)
+DEBUG Searching for a compatible version of aml @ file:///home/******/repos/******/packages/aml (*)
+DEBUG Searching for a compatible version of cli @ file:///home/******/repos/******/packages/cli (*)
+DEBUG Searching for a compatible version of context @ file:///home/******/repos/******/packages/context (*)
+DEBUG Searching for a compatible version of ddm @ file:///home/******/repos/****** (&lt;0.0.0 | &gt;0.0.0)
+DEBUG No compatible version found for: ddm
+  × No solution found when resolving dependencies for split (markers: python_full_version &gt;= '3.12' and
+  │ python_full_version &lt; '4.0' and sys_platform == 'linux'; included: ******[cuda]; excluded: ******[cpu]):
+  ╰─▶ Because ****** was not found in the package registry and ****** depends on ******, we can conclude that ******'s
+      requirements are unsatisfiable.
+      And because your workspace requires ******, we can conclude that your workspace's requirements are unsatisfiable.
+
+      hint: An index URL
+      (https://******.pkgs.visualstudio.com/_packaging/*****-****-****-*****-********/pypi/simple/)
+      could not be queried due to a lack of valid authentication credentials (401 Unauthorized).
+DEBUG Released lock at `/home/******/repos/******/.venv/.lock`
+DEBUG Released lock at `/home/******/.cache/uv/.lock`
+</code></pre>
+<p>Note that I have keyring with artifacts-keyring installed (<code>uv tool install keyring --with artifacts-keyring</code>), and if I run <code>rm -rf .venv</code> and <code>uv sync</code>, I am asked to authenticate and uv installs everything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jekel">@jekel</a> on 2025-12-04 18:38</div>
+            <div class="timeline-body"><p>I have same issue with python 3.12 anv uv 0.9.15
+auth does not work with private repositories via https, but works via http
+it does not matter how it is done via .netrc or uv auth login...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jzazo">@jzazo</a> on 2025-12-04 21:37</div>
+            <div class="timeline-body"><p>I believe I found the source of my issue. One of the packages I was installing in my environment had a dependency on keyring, so when I run <code>uv sync</code> empty, it was using the global keyring, installed via <code>uv tool install</code>, with proper plugin. When the environment was built and I called <code>uv sync</code> a second time, it used the local version without the plugin, and failed. I always solved the issue by deleting <code>.venv</code>.</p>
+<p>I solved it by removing my dependency on keyring. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-16 12:12</div>
+            <div class="timeline-body"><p>@lachiewalker Can you still reproduce this problem?</p>
+<p>@jekel Please provide more details, such as your specific setup, the commands you ran, and - if possible - verbose logs. If the problem is different from the original report, please open a new issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-12-16 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-12-16 12:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

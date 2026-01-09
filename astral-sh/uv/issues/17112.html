@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot use pylock.toml https link - astral-sh/uv #17112</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot use pylock.toml https link</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/17112">#17112</a>
+        opened by <a href="https://github.com/paugier">@paugier</a>
+        on 2025-12-12 20:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/paugier">@paugier</a> on 2025-12-12 20:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It's possible to use links towards requirements.txt files. For example</p>
+<pre><code class="language-sh">uv pip install -r https://raw.githubusercontent.com/serge-sans-paille/pythran/refs/heads/master/requirements.txt
+</code></pre>
+<p>works fine.</p>
+<p>However, it does not work for pylock.toml:</p>
+<pre><code class="language-sh">$ uv pip install -r https://foss.heptapod.net/fluiddyn/install-locked-env/-/raw/branch/default/envs/env-pdm-pylock/pylock.toml
+error: File not found: `https://foss.heptapod.net/fluiddyn/install-locked-env/-/raw/branch/default/envs/env-pdm-pylock/pylock.toml`
+</code></pre>
+<p>Related to https://github.com/astral-sh/uv/issues/15942#issuecomment-3647167383</p>
+<p>See also https://discuss.python.org/t/new-project-cli-install-locked-env-what-about-security/105270/8</p>
+<h3>Platform</h3>
+<p>Linux</p>
+<h3>Version</h3>
+<p>0.9.17</p>
+<h3>Python version</h3>
+<p>3.14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @paugier on 2025-12-12 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-12 23:40</div>
+            <div class="timeline-body"><p>Hmm, does <code>pip install -r &lt;link to pylock&gt;</code> work? I would expect that to not work either, since <code>-r</code> implies a requirements file, not a <code>pylock.toml</code> file.</p>
+<p>I tried this locally with <code>simple.http</code> and got the kind of parse error I'd expect:</p>
+<pre><code>% uv run python -m pip install -r http://localhost:8080/pylock.toml
+ERROR: Invalid requirement: 'lock-version = &quot;1.0&quot;': Expected end or semicolon (after name and no valid version specifier)
+    lock-version = &quot;1.0&quot;
+                 ^ (from line 3 of http://localhost:8080/pylock.toml)
+Hint: = is not a valid operator. Did you mean == ?
+</code></pre>
+<p>Given that, I'm not sure it makes sense for uv to support installing from pylock.toml files in the pip compatibility layer in a manner that pip itself doesn't support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-12-12 23:55</div>
+            <div class="timeline-body"><p><code>uv pip install -r</code> already supports installing a <code>pylock.toml</code> file: https://docs.astral.sh/uv/reference/cli/#uv-pip-install--requirements</p>
+<p><code>uv pip install</code> supports lots of semantics pip doesn't support and may choose different semantics when it does support it, e.g. https://github.com/pypa/pip/pull/13052 and https://github.com/pypa/pip/pull/13625</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-13 00:04</div>
+            <div class="timeline-body"><p>Oh huh, shows my own ignorance of uv's features 😅</p>
+<p>Yeah, given that <code>requirements.txt * (file, URL)</code> works and <code>pylock.toml * (file,)</code> works, it probably makes sense to complete the matrix and allow installation from URLs for <code>pylock.toml</code> too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-12-13 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17119.html">astral-sh/uv#17119</a> on 2025-12-13 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-17 00:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

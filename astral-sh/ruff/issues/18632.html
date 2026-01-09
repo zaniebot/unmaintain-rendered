@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatting produces invalid code on 3.13.4 - astral-sh/ruff #18632</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatting produces invalid code on 3.13.4</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18632">#18632</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-06-11 19:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-11 19:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>With the release of 3.13.4, https://github.com/python/cpython/issues/129958 was fixed, which now makes formatting produce invalid code on 3.13.4
+<a href="https://play.ruff.rs/442b84a5-9df9-40fd-90ec-aa29d29cdef0">playground link</a>
+Input:</p>
+<pre><code class="language-py">f&quot;{
+11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111:}&quot;
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-py">f&quot;{
+    11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111:
+}&quot;
+</code></pre>
+<p>The input is valid code on 3.13.4, the output is not</p>
+<pre><code>$ uv run --python 3.13.4 python -c $'f&quot;{\n11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111:}&quot;'
+
+$ uv run --python 3.13.4 python -c $'f&quot;{\n    11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111:\n}&quot;'
+  File &quot;&lt;string&gt;&quot;, line 2
+    1111111111111111111111111111111111111111111111111111111111111111111111111111
+1111111111111:
+
+              ^
+SyntaxError: f-string: newlines are not allowed in format specifiers for single
+quoted f-strings
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-06-11 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @ntBre on 2025-06-11 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-11 20:30</div>
+            <div class="timeline-body"><p>It looks like the PR linked in that issue modifed the CPython <a href="https://github.com/python/cpython/pull/130063/files#diff-4903ddce642a378ef03f37f72332cf1f5acb5bb0c6247669145fc3d8ea7cd43e">lexer</a>, so we may need to update that as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-11 20:30</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python314</span> added by @AlexWaygood on 2025-06-11 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-11 20:43</div>
+            <div class="timeline-body"><p>(@AlexWaygood I think the label should be <code>python313</code> instead of <code>python314</code>, since the affected version is 3.13.4 (Yes it's confusing, I also typed <code>3.14</code> on accident a bunch while writing the issue))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-11 20:45</div>
+            <div class="timeline-body"><p>Oh wow, sorry, I misread!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python313</span> added by @AlexWaygood on 2025-06-11 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-12 05:42</div>
+            <div class="timeline-body"><p>Hmm, it's unfortunate that this changes in a patch release.</p>
+<p>But yes. We'll have to update the formatter. We may want to wait with updating the parser until the formatter is rolled out so that the formatter can fix incorrectly formatted code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-12 05:54</div>
+            <div class="timeline-body"><p>I'm still trying to understand the extend of the bug here. Reading through https://github.com/python/cpython/issues/110259 it seems that format strings followed by a newline are fine.</p>
+<p>But it seems that https://github.com/python/cpython/issues/129958 now goes further and disallows any format spec that's followed by a newline, even if, what comes after, is only whitespace. I think this is very unfortunate for formatters. I can understand the motivation in https://github.com/python/cpython/issues/110259 but the motivation for disallowing any newline followed only by whitespace isn't clear to me. It seems an unnecessary restriction IMO.</p>
+<p>Either way. It seems we can no longer split f-string parts with format specifiers 🤷</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-12 15:06</div>
+            <div class="timeline-body"><p>At least the change itself makes sense to me, since as I understand it the allowing newlines was causing the lexer to reset to normal mode in the format spec, which causes issues down the line. It also behaves very strangely, ie using</p>
+<pre><code class="language-py">class A:
+    def __format__(self, *args):
+        print(args)
+        return str(self)
+</code></pre>
+<p>Under 3.12 this</p>
+<pre><code class="language-py">f&quot;{A(): }&quot;
+</code></pre>
+<p>outputs <code>(' ',)</code>
+while this</p>
+<pre><code class="language-py">f&quot;{A():
+ }&quot;
+</code></pre>
+<p>outputs <code>('',)</code></p>
+<p>The argument also makes a sort of sense to me, since the format spec is basically just a string without quotes that gets passed to <code>__format__</code>, so the logic being used is that the unquoted string acts like the string it's in, and since single quoted strings can't have newlines then their format specs can't either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-13 15:38</div>
+            <div class="timeline-body"><p>This might be easier to fix than expected. It seems we have already implemented the same behavior for triple quoted strings. We just need to apply it not to all strings</p>
+<p>https://github.com/astral-sh/ruff/blob/c9dff5c7d5bcab2a83f1c3b4a1a80af230ece541/crates/ruff_python_formatter/src/other/interpolated_string_element.rs#L98-L119</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-13 16:53</div>
+            <div class="timeline-body"><p>And we probably need to revert https://github.com/astral-sh/ruff/pull/7787</p>
+<p>What I understand so far is that it's fine for a format-spec to contain line breaks inside of interpolated elements. It's just not allowed inside of string elements</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2025-06-13 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-13 22:44</div>
+            <div class="timeline-body"><p>After some messing around, I was able to come up with <a href="https://play.ruff.rs/661480dc-1cd6-41a9-9014-87e92c503196">this</a></p>
+<pre><code class="language-py">rf&quot;{1:\
+\}&quot;
+</code></pre>
+<p>formats to</p>
+<pre><code class="language-py">rf&quot;{
+    1:\
+\
+}&quot;
+</code></pre>
+<p>So even without the changes in 3.13.4 it was still technically possible to have behavior change as a result of the reformatting</p>
+<pre><code class="language-py">&gt;&gt;&gt; rf&quot;{1:\
+... \}&quot;
+Traceback (most recent call last):
+  File &quot;&lt;python-input-5&gt;&quot;, line 1, in &lt;module&gt;
+    rf&quot;{1:\
+       ^^^^
+    \}&quot;
+    ^^
+ValueError: Unknown format code '\' for object of type 'int'
+&gt;&gt;&gt; rf&quot;{
+...     1:\
+... \
+... }&quot;
+'1'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18672.html">astral-sh/ruff#18672</a> on 2025-06-14 23:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18704.html">astral-sh/ruff#18704</a> on 2025-06-16 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18708.html">astral-sh/ruff#18708</a> on 2025-06-16 14:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-17 05:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

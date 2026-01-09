@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`F841` ignores redefinitions of local assignments - astral-sh/ruff #6704</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`F841` ignores redefinitions of local assignments</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6704">#6704</a>
+        opened by <a href="https://github.com/mertcangokgoz">@mertcangokgoz</a>
+        on 2023-08-20 14:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mertcangokgoz">@mertcangokgoz</a> on 2023-08-20 14:06</div>
+            <div class="timeline-body"><p>While developing complex code in Django, I realised that F841 was not working properly.</p>
+<p>I am leaving a small code example. under normal conditions flake8 says that the &quot;teams&quot; in this code are not used, but I do not encounter any warning in ruff.</p>
+<p>Or even if it detects it, it shows the last one found, it must show all three</p>
+<pre><code class="language-python">def test():
+    if user.amin_user:
+        teams = user.teams.all()
+        if user.teams.filter(name=&quot;admin&quot;).exists():
+            print(&quot;admin&quot;)
+        else:
+            print(&quot;not admin&quot;)
+
+    if user.related_user:
+        teams = user.teams.all()
+        if user.teams.filter(name=&quot;related&quot;).exists():
+            print(&quot;related&quot;)
+        else:
+            print(&quot;not related&quot;)
+
+    if user.test_user:
+        teams = user.teams.all()
+        if user.teams.filter(name=&quot;test&quot;).exists():
+            print(&quot;test&quot;)
+        else:
+            print(&quot;tests&quot;)
+
+    if user.related_user:
+        teams = user.teams.all()
+        if user.teams.filter(name=&quot;related&quot;).exists():
+            print(&quot;related&quot;)
+        else:
+            print(&quot;not related&quot;)
+</code></pre>
+<p>Ruff version: 0.0.285</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-20 14:15</div>
+            <div class="timeline-body"><p>I see the same output here for Ruff and Flake8.</p>
+<p>Ruff:</p>
+<pre><code>❯ ruff check foo.py -n --select F841 --isolated
+foo.py:24:9: F841 [*] Local variable `teams` is assigned to but never used
+</code></pre>
+<p>Flake8:</p>
+<pre><code>❯ flake8 foo.py --select F841
+foo.py:24:9: F841 local variable 'teams' is assigned to but never used
+</code></pre>
+<p>What am I missing here? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-08-20 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mertcangokgoz">@mertcangokgoz</a> on 2023-08-20 14:27</div>
+            <div class="timeline-body"><p>Sorry, my example is wrong, the trouble starts exactly as follows.</p>
+<pre><code>def test():
+    if user.admin_user:
+        teams = user.teams.all()
+        if user.teams.filter(name=&quot;admin&quot;).exists():
+            print(&quot;admin&quot;)
+        else:
+            print(&quot;not admin&quot;)
+
+    if user.related_user:
+        if user.teams.filter(name=&quot;related&quot;).exists():
+            print(&quot;related&quot;)
+        else:
+            print(&quot;not related&quot;)
+
+    if user.test_user:
+        if user.teams.filter(name=&quot;test&quot;).exists():
+            print(&quot;test&quot;)
+        else:
+            print(&quot;tests&quot;)
+
+    if user.related_user:
+        if user.teams.filter(name=&quot;related&quot;).exists():
+            print(&quot;related&quot;)
+        else:
+            print(&quot;not related&quot;)
+
+    if user.org_user:
+        teams = user.teams.all()
+        if teams.filter(booking=True).exists():
+            return self.filter(models.Q(booking__isnull=False))
+        return self.filter()
+
+    return self.none()
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-20 14:32</div>
+            <div class="timeline-body"><p>Thanks, though I still don't see F841 errors for Ruff or Flake8 with that code:</p>
+<pre><code>❯ flake8 foo.py --select F841
+❯ ruff check foo.py -n --select F841
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mertcangokgoz">@mertcangokgoz</a> on 2023-08-20 14:34</div>
+            <div class="timeline-body"><p>Yes, but normally you should see it, because the teams in line 3 have never been used :S</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-20 17:28</div>
+            <div class="timeline-body"><p>There are a bunch of Pyflakes issues about this like https://github.com/PyCQA/pyflakes/issues/498 or the parent issue https://github.com/PyCQA/pyflakes/issues/715. It's not trivial because we need to handle cases like:</p>
+<pre><code class="language-python">a = 1
+if ...:
+  a = 2
+print(a)
+</code></pre>
+<p>Or, above:</p>
+<pre><code class="language-python">def test():
+    if user.admin_user:
+        teams = user.teams.all()
+        if user.teams.filter(name=&quot;admin&quot;).exists():
+            print(&quot;admin&quot;)
+        else:
+            print(&quot;not admin&quot;)
+
+    if user.org_user:
+        # Redefined `teams`, unused.
+        teams = user.teams.all()
+
+    # But it _might_ be used here.
+    if teams.filter(booking=True).exists():
+        return self.filter(models.Q(booking__isnull=False))
+
+    return self.filter()
+</code></pre>
+<p>Undecided on whether to keep this open as it does have parity with Pyflakes and this kind of branch analysis is probably a bigger project beyond this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-20 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-08-20 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> removed by @charliermarsh on 2023-08-20 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`F841` Not working properly" to "`F841` ignores redefinitions of local assignments" by @charliermarsh on 2023-08-20 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mertcangokgoz">@mertcangokgoz</a> on 2023-08-20 18:41</div>
+            <div class="timeline-body"><p>It makes it very difficult for us to find the definitions that the developer overlooked in the ci/cd process. Thank you for the information and tagging. &lt;3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-18 08:15</div>
+            <div class="timeline-body"><p>I think Ruff should support this but it requires a branch sensitive analysis which Ruff doesn't support today</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14355.html">astral-sh/ruff#14355</a> on 2024-11-18 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16232.html">astral-sh/ruff#16232</a> on 2025-02-18 22:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../microsoft/pyright/issues/10102.html">microsoft/pyright#10102</a> on 2025-03-17 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18485.html">astral-sh/ruff#18485</a> on 2025-06-05 21:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

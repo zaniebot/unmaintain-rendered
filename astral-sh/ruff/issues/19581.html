@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF033 fix changes the default expression’s indentation - astral-sh/ruff #19581</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF033 fix changes the default expression’s indentation</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19581">#19581</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-07-28 02:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-07-28 02:00</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When the fix for <a href="https://docs.astral.sh/ruff/rules/post-init-default/"><code>post-init-default</code> (RUF033)</a> moves and reindents the expression for a parameter’s default, it changes line-initial white space within a string literal, which changes the program’s behavior. <a href="https://play.ruff.rs/c5f9e029-9779-4d41-b6a7-e681f76b5a1e">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;ruf033.py &lt;&lt;'# EOF'
+from dataclasses import dataclass
+@dataclass
+class C:
+    def __post_init__(self, x: int = &quot;&quot;&quot;
+    &quot;&quot;&quot;) -&gt; None:
+        self.x = x
+print(len(C().x))
+# EOF
+
+$ python ruf033.py
+5
+
+$ ruff --isolated check ruf033.py --select RUF033 --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat ruf033.py
+from dataclasses import dataclass, InitVar
+@dataclass
+class C:
+    x: InitVar[int] = &quot;&quot;&quot;
+        &quot;&quot;&quot;
+    def __post_init__(self, x: int) -&gt; None:
+        self.x = x
+print(len(C().x))
+
+$ python ruf033.py
+9
+</code></pre>
+<p>In general, even when it doesn’t change the program’s behavior, the fix’s indentation is stylistically poor. The new indentation should be the same relative to the indentation of the first line of the new <code>InitVar</code> attribute as the old indentation was to the indentation of the first line of the old <code>__post_init__</code> parameter. For example, <a href="https://play.ruff.rs/f2d963b0-5987-4e55-8753-790b3f01e893">this</a>:</p>
+<pre><code class="language-python">from dataclasses import dataclass
+@dataclass
+class C:
+    def __post_init__(self, x: tuple[int, ...] = (
+        1,
+        2,
+    )) -&gt; None:
+        self.x = x
+</code></pre>
+<p>becomes:</p>
+<pre><code class="language-python">from dataclasses import dataclass, InitVar
+@dataclass
+class C:
+    x: InitVar[tuple[int, ...]] = (
+            1,
+            2,
+        )
+    def __post_init__(self, x: tuple[int, ...]) -&gt; None:
+        self.x = x
+</code></pre>
+<p>but should become:</p>
+<pre><code class="language-python">from dataclasses import dataclass, InitVar
+@dataclass
+class C:
+    x: InitVar[tuple[int, ...]] = (
+        1,
+        2,
+    )
+    def __post_init__(self, x: tuple[int, ...]) -&gt; None:
+        self.x = x
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.5 (d13228ab8 2025-07-24)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-28 09:43</div>
+            <div class="timeline-body"><p>Thank you</p>
+<blockquote>
+<p>In general, even when it doesn’t change the program’s behavior, the fix’s indentation is stylistically poor. The new indentation should be the same relative to the indentation of the first line of the new InitVar attribute as the old indentation was to the indentation of the first line of the old <strong>post_init</strong> parameter</p>
+</blockquote>
+<p>For anyone picking this up. Stylistically &quot;nice&quot; fixes is a nice to have and not a strict requirement for ruff's fixes. We try to create reasonable looking code but we sometimes decide not to do so to reduce the fix complexity. I don't know whether fixing this here is easy and even required to address the underlying issue but I'd be fine with a PR that only fixes the semantic difference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-07-28 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-07-28 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-07-28 12:05</div>
+            <div class="timeline-body"><p>Replacing the rule’s use of <code>textwrap::indent</code> with something that only indents the first line, not all the lines, should fix both the correctness issue and the style issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19647.html">astral-sh/ruff#19647</a> on 2025-07-30 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-27 19:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

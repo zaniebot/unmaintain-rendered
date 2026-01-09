@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff (and flake8) doesn't report a situation where a variable _may_ be  unbound - astral-sh/ruff #2493</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff (and flake8) doesn't report a situation where a variable _may_ be  unbound</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2493">#2493</a>
+        opened by <a href="https://github.com/DMRobertson">@DMRobertson</a>
+        on 2023-02-02 19:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DMRobertson">@DMRobertson</a> on 2023-02-02 19:51</div>
+            <div class="timeline-body"><p>Consider the following snippet:</p>
+<pre><code class="language-python">from random import random
+
+
+def coin_toss():
+    return random.randint(0, 2)
+
+
+def maybe_runtime_error():
+    if coin_toss():
+        x = []
+
+    # runtime error if coin_toss returned False, but not detected by the linter
+    x = list(x)
+    print(x)
+
+
+def runtime_error():
+    # always a runtime error, detected by linter
+    y = list(y)
+    print(y)
+</code></pre>
+<p>There are two problems with this snippet.</p>
+<ol>
+<li>In <code>maybe_runtime_error</code>, the name <code>x</code> may not be bound to a variable when we come to evaluate <code>list(x)</code>. This means we might get a runtime UnboundLocalError.</li>
+<li>In <code>runtime_error</code>, the name <code>y</code> is never bound to a variable when we come to evaluate <code>list(y)</code>. We'll always get a runtime UnboundLocalError when calling this function.</li>
+</ol>
+<p>Problem (2) is spotted by ruff, but problem (1) is not.</p>
+<pre><code>$ ruff --isolated temp.py
+temp.py:19:14: F821 Undefined name `y`
+Found 1 error.
+</code></pre>
+<p>I was a little surprised by this! But flake8 has the same output:</p>
+<pre><code>$ flake8 --version &amp;&amp; flake8 temp.py
+6.0.0 (mccabe: 0.7.0, pycodestyle: 2.10.0, pyflakes: 3.0.1) CPython 3.10.9 on Linux
+temp.py:19:14: F821 undefined name 'y'
+</code></pre>
+<p>I'm not sure if it's fair game for ruff to spot the problem with <code>x</code>---perhaps that's more the remit of a typechecker like mypy. (Though mypy didn't warn about this either when I tried it!) It'd be great if it was feasible to spot this at lint-time.</p>
+<details>
+<summary>Configuration</summary>
+
+<pre><code class="language-toml">[tool.ruff]
+line-length = 88
+
+# See https://github.com/charliermarsh/ruff/#pycodestyle
+# for error codes. The ones we ignore are:
+#  E731: do not assign a lambda expression, use a def
+#  E501: Line too long (black enforces this for us)
+#
+# flake8-bugbear compatible checks. Its error codes are described at
+# https://github.com/charliermarsh/ruff/#flake8-bugbear
+#  B019: Use of functools.lru_cache or functools.cache on methods can lead to memory leaks
+#  B023: Functions defined inside a loop must not use variables redefined in the loop
+#  B024: Abstract base class with no abstract method.
+ignore = [
+    &quot;B019&quot;,
+    &quot;B023&quot;,
+    &quot;B024&quot;,
+    &quot;E501&quot;,
+    &quot;E731&quot;,
+]
+select = [
+    # pycodestyle checks.
+    &quot;E&quot;,
+    &quot;W&quot;,
+    # pyflakes checks.
+    &quot;F&quot;,
+    # flake8-bugbear checks.
+    &quot;B0&quot;,
+    # flake8-comprehensions checks.
+    &quot;C4&quot;,
+]
+</code></pre>
+<p>And as for the version:</p>
+<pre><code>$ ruff --version
+ruff 0.0.240
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../matrix-org/synapse/pulls/14971.html">matrix-org/synapse#14971</a> on 2023-02-02 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-02 21:53</div>
+            <div class="timeline-body"><p>Appreciate the clear issue! Right now, (1) is outside of our capabilities -- although I'm surprised that Mypy doesn't flag this... Pyright <em>does</em>:</p>
+<pre><code>❯ pyright foo.py
+/Users/crmarsh/workspace/ruff/foo.py
+  /Users/crmarsh/workspace/ruff/foo.py:13:14 - error: &quot;x&quot; is possibly unbound (reportUnboundVariable)
+1 error, 0 warnings, 0 informations
+Completed in 0.467sec
+</code></pre>
+<p>We could <em>potentially</em> include some kind of &quot;possibly unbound&quot; code for those cases. I'd have to think on it 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DMRobertson">@DMRobertson</a> on 2023-02-02 22:16</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm surprised that Mypy doesn't flag this</p>
+</blockquote>
+<p>And me! For cross-referencing, it seems like the relevant issues are</p>
+<ul>
+<li>https://github.com/python/mypy/issues/686</li>
+<li>https://github.com/python/mypy/issues/2400</li>
+<li>https://github.com/python/mypy/issues/4019</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-03 18:15</div>
+            <div class="timeline-body"><p>I'm gonna close for now just because it's not super actionable. I'd like Ruff to be able to handle cases like this eventually, but it'd be a fairly big project and probably outside of the scope of a bug fix. Hope that intent is clear. I appreciate the issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-03 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frankdilo">@frankdilo</a> on 2023-09-25 10:53</div>
+            <div class="timeline-body"><p>just wanted to drop in and say that I would find this <strong>extremely</strong> useful</p>
+<p>it's really easy in long Python functions and code blocks when refactoring and moving variables inside nested conditionals or inline functions to nest a variable used somewhere else and only discover at runtime via a Sentry notification days later</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../opsmill/infrahub/issues/1389.html">opsmill/infrahub#1389</a> on 2023-11-10 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sascharo">@sascharo</a> on 2024-09-16 04:43</div>
+            <div class="timeline-body"><p>Is this still unsupported?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clemente0731">@clemente0731</a> on 2024-10-09 08:14</div>
+            <div class="timeline-body"><p>STILL ~
+Ruff cannot detect the problem of <strong>&quot;referenced before assignment&quot;</strong> and shows all passes. In an if-else scenario, for example, a variable is declared in the else block, but it is not declared in the if block. Then, this corresponding variable is used again in a subsequent inevitable path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Garrett-R">@Garrett-R</a> on 2024-10-30 05:17</div>
+            <div class="timeline-body"><p>Note: this is the subject of this issue: https://github.com/astral-sh/ruff/issues/6902</p>
+<blockquote>
+<p>STILL ~</p>
+</blockquote>
+<p>It sounds like a pretty tough one, but I'm sure Ruff maintainers would welcome a PR for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14821.html">astral-sh/ruff#14821</a> on 2024-12-06 16:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

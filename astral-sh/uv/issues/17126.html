@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv publish` fails on 308 Permanent Redirect - astral-sh/uv #17126</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv publish` fails on 308 Permanent Redirect</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/17126">#17126</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-12-13 15:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-13 15:35</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>e.g.</p>
+<pre><code>error: Failed to publish `dist/ruff-0.1.0-py3-none-any.whl` to https://test.pypi.org/legacy
+  Caused by: Upload failed with status code 308 Permanent Redirect. Server says: 308 An upload was attempted to /legacy but the expected upload URL is /legacy/ (with a trailing slash)
+</code></pre>
+<p>Should we just follow the redirect here?</p>
+<h3>Platform</h3>
+<p>macOS</p>
+<h3>Version</h3>
+<p>0.915</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-12-13 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-12-13 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-12-13 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dijor0310">@dijor0310</a> on 2025-12-14 20:38</div>
+            <div class="timeline-body"><p>Hey! I'd be happy to give this a try if no one else has started yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-14 20:59</div>
+            <div class="timeline-body"><p>The problem is that after a POST request, getting a redirect means we should send a GET request (https://en.wikipedia.org/wiki/Post/Redirect/Get). If we do that, we get a 200 OK on the GET request to the correct endpoint, without having actually upload the distribution (<code>curl -v https://test.pypi.org/legacy/</code> shows a 200 OK).</p>
+<p>https://github.com/astral-sh/uv/blob/7ad441a0bdca9d02e2e7199364e12e0ace9c6f19/crates/uv-publish/src/lib.rs#L1078-L1087</p>
+<p>This is notably specified for 301, 302 and 303, while 307 and 308 may be retried. The publish code isn't compatible with <code>RedirectClientWithMiddleware</code> as the request isn't cloneable, the uv publish code currently just doesn't retry after redirect.</p>
+<p>https://github.com/seanmonstar/reqwest/blob/9edbd2e00b9b752e851cac0374f7aa1034beca85/tests/redirect.rs#L8-L128</p>
+<p>@woodruffw may know more about the security implications of those retry behaviors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17130.html">astral-sh/uv#17130</a> on 2025-12-14 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-15 01:44</div>
+            <div class="timeline-body"><p>There are two separate things here, right?</p>
+<ol>
+<li><p>If the index returns an HTTP 308 for the user-specified upload URL, we should probably follow that direct unconditionally and retry the POST. I can't think of a security risk with that, separately from the &quot;normal&quot; security risk with redirects where the origin either does an insecure downgrade or redirects to a malicious different origin. I guess we should probably make sure reqwest doesn't do HTTPS-&gt;HTTP redirect downgrades by default 😅</p>
+</li>
+<li><p>More generally, I think we should probably <em>always</em> retry POST requests that fail, regardless of any intermediating redirects. To do that we might need to stop depending on reqwest's own redirect-handling logic, since the P/R/G pattern is more relevant for user agents (= browsers) than machine-to-machine requests.</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-15 14:27</div>
+            <div class="timeline-body"><p>Regarding (1) I think it'd be fine to check if we're on the same realm and just error if not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-15 15:20</div>
+            <div class="timeline-body"><p>Is that security item? I could otherwise imagine a registry redirecting let's say from <code>registry.company.com</code> to <code>upload.company.com</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-15 15:21</div>
+            <div class="timeline-body"><p>I'd consider it a security item, yeah. If someone redirects to a new realm it seems fine to fail and have the user update the URL if they want it to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-12-15 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-12-15 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-12-15 15:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

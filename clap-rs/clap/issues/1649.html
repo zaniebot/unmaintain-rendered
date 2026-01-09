@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow boolean literals as values for flags - clap-rs/clap #1649</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow boolean literals as values for flags</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1649">#1649</a>
+        opened by <a href="https://github.com/emilk">@emilk</a>
+        on 2020-01-31 11:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/emilk">@emilk</a> on 2020-01-31 11:04</div>
+            <div class="timeline-body"><p>The behavior of <code>--flag=false</code> setting the flag to the value <code>true</code> has caused problems for me many times. The problem is that boolean arguments are treated differently than arguments of other types.</p>
+<p>As an example, say you have a few arguments to your program being called from someplace like so:</p>
+<p><code>my_app --name=${name} --age=${age} --alive=${alive}</code></p>
+<p>The first two will work as expected, but the third will be a bug with no error or warning message. This special case for the boolean type is very annoying. I would advocate a more orthogonal design.</p>
+<p>Here is my suggestion for how to parse boolean flags:</p>
+<p>| Argument       | Flag value            |
+| -------------- | --------------------- |
+| empty | <code>false</code> |
+| <code>--flag</code>       | <code>true</code>                |
+| <code>--flag=true</code>  | <code>true</code>                |
+| <code>--flag=false</code> | <code>false</code>               |
+| <code>--flag=other</code> | Helpful error message |</p>
+<p>The problem with this comes when considering how to treat other potential ways to express boolean, e.g. <code>0/1</code>, <code>no/yes</code>, <code>False/True</code>. We could add these as well to the above table, or stick to the Rust convention (<code>true/false</code>). Either way would work for me.</p>
+<p>In summary: the principle of least surprise suggests that if <code>--int=42</code> should work the same as <code>--bool=false</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeXitoi">@TeXitoi</a> on 2020-01-31 12:35</div>
+            <div class="timeline-body"><p>https://github.com/TeXitoi/structopt/issues/212#issuecomment-561093886</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-01 14:27</div>
+            <div class="timeline-body"><p>@emilk Could you please provide an exact snippet of code you're having the problem with? Along with expected/actual behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @pksunkara on 2020-02-01 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @pksunkara on 2020-02-01 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "--flag=false" to "Allow boolean literals as values for flags" by @pksunkara on 2020-02-01 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-01 19:34</div>
+            <div class="timeline-body"><p>Possible solution is to have a setting which allows flags to also allow boolean literals as values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-02-01 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> removed by @CreepySkeleton on 2020-07-07 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by @CreepySkeleton on 2020-07-07 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: flags</span> added by @CreepySkeleton on 2020-07-07 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: validators</span> added by @CreepySkeleton on 2020-07-07 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: maybe</span> added by @CreepySkeleton on 2020-07-07 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colemickens">@colemickens</a> on 2020-07-20 08:30</div>
+            <div class="timeline-body"><p>If there's a workaround someone could share, that would be great (I was wondering if maybe it's possible with the builder, or a custom parser? It seems like structopt has a way, but I can't find such functionality in clap at first glance).</p>
+<p>To elaborate on justification for this bug... It <em>is</em> more than just surprising behavior. From what I can tell, it actively prevents certain designs. For example, I have a flag that <em>really</em> should be on by default (<code>--create-users</code>) and I don't want a <code>--dont-create-users</code> flag, I really want the user to have to say <code>--create-users=false</code> if they are expert enough to opt-out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-07-20 19:00</div>
+            <div class="timeline-body"><p>You couldn't find this functionality because it doesn't exist.</p>
+<p>The key is that flags do not take value in clap, period. Flags that take value are called options. Options can be either present (possibly with a number of values following) or not. There's no notion of &quot;if this option has one value and the value equals <code>false</code> then pretend that the option wasn't present&quot;.</p>
+<p><code>structopt</code> can do it because it applies postprocessing - conversion - to the values, and what you observe is result of the conversion. It doesn't change the fact that the option was actually present. You can simulate it with</p>
+<pre><code class="language-rust">// create an option with optional value
+Arg::new(&quot;pseudo-flag&quot;)
+    .possible_values(&amp;[&quot;true&quot;, &quot;false&quot;])
+    .long(&quot;foo&quot;)
+    .min_values(0)
+    .max_values(1)
+    
+/// ...
+
+let setting = app.value_of(&quot;pseudo-flag&quot;) != Some(&quot;false&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colemickens">@colemickens</a> on 2020-07-22 05:35</div>
+            <div class="timeline-body"><p>Thank you for the detailed explanation @CreepySkeleton, I hadn't quite understood the important distinction between &quot;options&quot; and &quot;flags&quot;. It turns out, this also works, since I prefer explicit boolean options over &quot;flags&quot; -- https://github.com/clap-rs/clap/blob/dd5e6b23131f16ef8b090a8482f1b97c6a693498/clap_derive/examples/true_or_false.rs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimo414">@dimo414</a> on 2021-02-05 07:17</div>
+            <div class="timeline-body"><p>#815 is related and might eliminate the need for boolean literals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2539.html">clap-rs/clap#2539</a> on 2021-07-21 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2619.html">clap-rs/clap#2619</a> on 2021-07-24 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-07-31 09:11</div>
+            <div class="timeline-body"><p>I don't think clap needs to do something for this specific behaviour, you can get this behaviour by using <code>default_missing_value</code> and parsing later.</p>
+<p>Here is the demo:
+https://github.com/clap-rs/clap/pull/2649/files#diff-cf9f91bfd0a1de87f6e066071af5d05182179587e65ec540ed4cfba30ec1709bR113</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-08-01 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rami3l">@rami3l</a> on 2021-08-01 20:56</div>
+            <div class="timeline-body"><p>@pksunkara Sorry, I changed my PR #2619 description to close another issue other than this, but I didn't reword the commit. Would you mind reopening this one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @pksunkara on 2021-08-01 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-02 15:50</div>
+            <div class="timeline-body"><p>Now that #2619 is merged, we have an example for how to use clap's existing API for accomplishing the request in this Issue (taken taken from a previous comment).</p>
+<p>Is this sufficient for resolving the need here or is there still interest in there being some baked in way of getting this behavior (possibly controllable with a <code>ArgSetting</code> / <code>AppSetting</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rami3l">@rami3l</a> on 2021-08-02 16:47</div>
+            <div class="timeline-body"><p>@epage In the end, no new examples has been added to the examples folder, so this remains to be a problem.</p>
+<p>The thing that I'm considering now is that, for env vars it seems that we almost certainly have to include a string-literal-to-bool mechanism (which I'm currently working on) to replace the presence check, since it's quite a common practice.</p>
+<p>Later on, if that's included, in my opinion it's better to do the same with flag literals for the sake of consistency. Of course, it would be better if this behavior is optional, and controlled by a new settings item.</p>
+<p>Thus, the previously mentioned methods should only be considered as a workaround to satisfy some very specific needs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-08-02 16:51</div>
+            <div class="timeline-body"><blockquote>
+<p>@epage In the end, no new examples has been added to the examples folder, so this remains to be a problem.</p>
+<p>The thing that I'm considering now is that, for env vars it seems that we almost certainly have to include a string-literal-to-bool mechanism (which I'm currently working on) to replace the presence check, since it's quite a common practice.</p>
+<p>Later on, if that's included, in my opinion it's better to do the same with flag literals for the sake of consistency. Of course, it would be better if this behavior is optional, and controlled by a new settings item.</p>
+</blockquote>
+<p>Please check https://github.com/clap-rs/clap/blob/286fda0b4a243e19d73a254d2dc17c794f4320e5/tests/default_missing_vals.rs#L113-L141</p>
+<p>I don't think it's necessary to do this in clap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rami3l">@rami3l</a> on 2021-08-02 17:14</div>
+            <div class="timeline-body"><p>@ldm0 Thanks for your reference. Surely, I can see that this task can already be handled by the <code>clap</code> API with some handwritten validation functions.</p>
+<p>I personally accept your solution, but the question that I really want to ask, is what level of API <code>clap</code> wants to provide for its users.</p>
+<p>I wonder what a new user might guess about this library, and how we can guide them to get the solution that they want. That's all I care about. I chose a battery-included, opinionated approach, but you have the right to disagree, and as long as we keep being user-friendly, I'm satisfied with that outcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-02 17:59</div>
+            <div class="timeline-body"><p>Sorry, missed that and hadn't caught up with your comment in #2539.</p>
+<p>Personally, I see args and envs as separate entities that have their own context from a combination of history and user expectations.  We should be consistent within their context rather than forcing a consistency between things users generally have treated differently.</p>
+<p>env vars have historically been C-like in using 0/1 or present/not-present.  More recently I feel like I've seen <code>true</code>/<code>false</code> used.  Hence the need for a <code>str2bool</code>.</p>
+<p>For arguments, I've generally seen one of</p>
+<ul>
+<li>Present / not-present</li>
+<li><code>--present</code>, <code>--no-present</code></li>
+<li><code>--name &lt;enumeration&gt;</code> with some being <code>yes</code>/<code>no</code>, <code>true</code>/<code>false</code>, <code>always</code>/<code>never</code></li>
+</ul>
+<p>Only in rare circumstances (<code>--color</code>) do I see any of these mixed.  I've also not seen an argument parsing library that has baked in support (default or not) for mixing these without going custom (like the suggested workarounds)</p>
+<p>As I've mentioned before, variable number of arguments has been brittle enough that clap warns about it.  We can instead require an equals but I'm concerned about user confusion when some arguments need an <code>=</code> while others do not.</p>
+<p>This issue and several others have been contributing a sense in me that we might want to re-think clap's API.  Clap's development has been fairly generous in supporting everyone's use cases but the API is designed such that to do so, means it all has to be baked into clap, creating a large API surface and making it harder to get the behavior you need.  After 3.0, I'm interested in exploring ways to allow people to customize the behavior of clap so that clap can be all things to all people without having to support all things out of the box.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rami3l">@rami3l</a> on 2021-08-02 17:59</div>
+            <div class="timeline-body"><p>@ldm0 So at least <strong>something</strong> should be added to the examples, whether it's the demo of a new feature or appropriate use of existing features. Since this is a decision that must be made carefully, it's always nice to have a discussion.</p>
+<p>@epage Yeah, I also have the impression that the <code>clap</code> codebase is lacking appropriate reorganization. In this sense, I agree that we should make less stuff baked-in. It's always nice to have some good defaults though, even as an external extension.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-02 18:29</div>
+            <div class="timeline-body"><blockquote>
+<p>It's always nice to have some good defaults though, even as an external extension.</p>
+</blockquote>
+<p>Fully agree.  Having better support for extending clap does not mean we leave it all in the users hands to build it themself.  That slipper slopes lead to there being no clap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2664.html">clap-rs/clap#2664</a> on 2021-08-05 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nrdxp">@nrdxp</a> on 2021-11-18 19:21</div>
+            <div class="timeline-body"><p>should this not be closed now that #2664 is merged?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hasezoey">@hasezoey</a> on 2021-11-18 19:36</div>
+            <div class="timeline-body"><blockquote>
+<p>should this not be closed now that #2264 is merged?</p>
+</blockquote>
+<p>from what i can tell, #2264 is a issue, not a PR and does not look related - do you mean #2664?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nrdxp">@nrdxp</a> on 2021-11-18 19:53</div>
+            <div class="timeline-body"><p>yes, was a typo sorry about that :sweat_smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-11-18 20:51</div>
+            <div class="timeline-body"><p>No, that PR only deals with environment variables while this issue is also about converting option values into boolean. With our new direction regarding plugin based architecture post v3, this is a prime candidate for being made a plugin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/133.html">epage/clapng#133</a> on 2021-12-06 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: validators</span> removed by @epage on 2021-12-08 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: flags</span> removed by @epage on 2021-12-08 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2021-12-08 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-09 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-13 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bernardoaraujor">@bernardoaraujor</a> on 2022-06-15 14:57</div>
+            <div class="timeline-body"><p>the solution I found for this issue was to start using <code>flag: Option&lt;bool&gt;</code> instead of just <code>flag: bool</code>
+that way, <code>--flag=false</code> gets the expected outcome and avoids confusion on the user's mind</p>
+<p>downside is that I can't derive <code>default_value</code> (<code>error: default_value is meaningless for Option </code>), so this workaround is also necessary:</p>
+<pre><code>let flag = match args.flag {
+    Some(f) =&gt; f,
+    None =&gt; false, // default
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-15 15:46</div>
+            <div class="timeline-body"><p>With clap 3.2, you can now override the bool behavior with <code>#[clap(action = ArgAction::Set)]</code>.</p>
+<p>For example, from our test suite:</p>
+<pre><code class="language-rust">#[test]
+fn override_implicit_action() {
+    #[derive(Parser, PartialEq, Debug)]
+    struct Opt {
+        #[clap(long, action = clap::ArgAction::Set)]
+        arg: bool,
+    }
+
+    assert_eq!(
+        Opt { arg: false },
+        Opt::try_parse_from(&amp;[&quot;test&quot;, &quot;--arg&quot;, &quot;false&quot;]).unwrap()
+    );
+
+    assert_eq!(
+        Opt { arg: true },
+        Opt::try_parse_from(&amp;[&quot;test&quot;, &quot;--arg&quot;, &quot;true&quot;]).unwrap()
+    );
+}
+</code></pre>
+<p>If you had concerns with the rough upgrade to clap 3.2, the deprecations are now off by default, see clap-rs/clap#3830 for details.  When you do start working through the deprecations as part of upgrading to 4.0, we've also improved the warnings for derive users.  See clap-rs/clap#3832 for examples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3837.html">clap-rs/clap#3837</a> on 2022-06-15 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-06-15 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Azure/azure-sdk-for-rust/pulls/993.html">Azure/azure-sdk-for-rust#993</a> on 2022-08-09 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../n0-computer/beetle/issues/156.html">n0-computer/beetle#156</a> on 2022-10-10 10:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbtobar">@jbtobar</a> on 2022-10-20 23:20</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-rust">action = clap::ArgAction::Set
+</code></pre>
+</blockquote>
+<p>this example is incredibly useful. Should probably be better documented. I just spent too long digging through issues, documentation, debugging, etc to achieve the pretty basic <code>--something=false</code> functionality on the <code>Parser</code> macro.</p>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../SeaQL/sea-orm/pulls/1420.html">SeaQL/sea-orm#1420</a> on 2023-01-28 04:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../googlefonts/fontc/pulls/225.html">googlefonts/fontc#225</a> on 2023-03-30 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../samply/focus/pulls/20.html">samply/focus#20</a> on 2023-05-20 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../static-web-server/static-web-server/issues/209.html">static-web-server/static-web-server#209</a> on 2023-05-29 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../GlareDB/glaredb/pulls/1767.html">GlareDB/glaredb#1767</a> on 2023-09-25 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gibfahn">@gibfahn</a> on 2023-12-01 13:55</div>
+            <div class="timeline-body"><p>I'm a bit confused by the resolution to this issue. I'm looking for something like the original post:</p>
+<blockquote>
+<p>| Argument  |	Flag value |
+| --- | --- |
+| empty |	<code>false</code> |
+| <code>--flag</code> |	<code>true</code>|
+|<code>--flag=true</code>	|<code>true</code>|
+|<code>--flag=false</code>	|<code>false</code>|
+|<code>--flag=other</code>	|Helpful error message|</p>
+</blockquote>
+<p>Where the user can provide nothing (defaulting to <code>true</code>), or <code>--flag=true</code> or <code>--flag=false</code>, or not provide the flag at all (defaulting to either <code>true</code> or <code>false</code>), and the output is a <code>bool</code>. Anything else should error.</p>
+<p>I can get this to work with <code>Option&lt;bool&gt;</code>:</p>
+<pre><code class="language-rust">    #[clap(
+        long,
+        default_missing_value = &quot;true&quot;,
+        require_equals = true,
+        num_args(0..=1),
+    )]
+    pub(crate) flag: Option&lt;bool&gt;,
+</code></pre>
+<p>but I can't seem to work out how to get this to work with a plain <code>bool</code>, e.g.:</p>
+<pre><code class="language-rust">    #[clap(
+        long,
+        default_missing_value(&quot;true&quot;),
+        default_value(&quot;false&quot;),
+        num_args(0..=1),
+        require_equals(true),
+    )]
+    pub(crate) flag: bool,
+</code></pre>
+<p>This fails with:</p>
+<pre><code>assertion `left == right` failed: Argument augment: mismatch between `num_args` (0..=1) and `takes_value`
+  left: true
+ right: false
+</code></pre>
+<p>Seems like there isn't a way to say &quot;require equals or assume no argument passed&quot;.</p>
+<hr />
+<p><strong><em>EDIT:</em></strong>  actually if you do this:</p>
+<pre><code class="language-rust">    #[clap(
+        long,
+        default_missing_value(&quot;true&quot;),
+        default_value(&quot;true&quot;),
+        num_args(0..=1),
+        require_equals(true),
+    )]
+    pub(crate) flag: Option&lt;bool&gt;,
+</code></pre>
+<p>then you get the default behaviour I'm looking for, so the <code>flag</code> value will never be <code>None</code>, but rather <code>Some(true)</code> if not set. It's a bit odd to have a non-optional option, but it works well enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-12-01 14:49</div>
+            <div class="timeline-body"><p>Try</p>
+<pre><code class="language-rust">    #[clap(
+        long,
+        default_missing_value(&quot;true&quot;),
+        default_value(&quot;true&quot;),
+        num_args(0..=1),
+        require_equals(true),
+        action = ArgAction::Set,
+    )]
+    pub(crate) flag: bool,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gibfahn">@gibfahn</a> on 2023-12-01 20:42</div>
+            <div class="timeline-body"><p>Ahh that works, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JasonkayZK">@JasonkayZK</a> on 2023-12-02 11:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Try</p>
+<pre><code class="language-rust">    #[clap(
+        long,
+        default_missing_value(&quot;true&quot;),
+        default_value(&quot;true&quot;),
+        num_args(0..=1),
+        require_equals(true),
+        action = ArgAction::Set,
+    )]
+    pub(crate) flag: bool,
+</code></pre>
+</blockquote>
+<p>Thanks, this works for me. 👍</p>
+<p>And if you want default to be <code>false</code>, try this:</p>
+<pre><code class="language-rust">    #[clap(
+        long,
+        default_missing_value(&quot;true&quot;),
+        default_value(&quot;false&quot;),
+        num_args(0..=1),
+        require_equals(true),
+        action = ArgAction::Set,
+    )]
+    pub(crate) flag: bool,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nrempel/sleek/pulls/48.html">nrempel/sleek#48</a> on 2024-01-20 03:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ctron">@ctron</a> on 2024-06-03 06:50</div>
+            <div class="timeline-body"><p>Is there a way to get this without <code>require_equals</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hasezoey">@hasezoey</a> on 2024-06-03 10:46</div>
+            <div class="timeline-body"><p>The following works for me for the variations below:</p>
+<pre><code class="language-rust">#[derive(Parser, Debug)]
+pub struct CLI {
+  #[arg(
+        long = &quot;test&quot;,
+        action = ArgAction::Set,
+        default_value_t = true,
+        // somehow clap has this option not properly supported in derive, so it needs to be a string
+        default_missing_value = &quot;true&quot;,
+        num_args = 0..=1,
+        require_equals = false,
+    )]
+    pub test: bool,
+}
+</code></pre>
+<pre><code class="language-sh">$ binary
+test: true
+$ binary --test
+test: true
+$ binary --test=false
+test: false
+# the following would not be possible with `require_equals = true`
+$ binary --test false
+test: false
+$ binary --test true
+test: true
+</code></pre>
+<p>clap 4.5.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ctron">@ctron</a> on 2024-06-03 11:15</div>
+            <div class="timeline-body"><p>Thanks for the pointer. I got it working the way I wanted it with:</p>
+<pre><code class="language-rust">#[arg(long, default_missing_value=&quot;true&quot;, num_args=0..=1)]
+pub offline: Option&lt;bool&gt;,
+</code></pre>
+<p>Which results in:</p>
+<p>| Args | Value |
+| ---- | ---- |
+| | <code>None</code> |
+| <code>--offline</code>  | <code>Some(true)</code> |
+| <code>--offline</code>, <code>true</code> | <code>Some(true)</code> |
+| <code>--offline</code>, <code>false</code> | <code>Some(false)</code> |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../futureversecom/trn-seed/pulls/852.html">futureversecom/trn-seed#852</a> on 2024-06-17 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../succinctlabs/sp1/pulls/1431.html">succinctlabs/sp1#1431</a> on 2024-08-29 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ceramicnetwork/rust-ceramic/pulls/562.html">ceramicnetwork/rust-ceramic#562</a> on 2024-10-21 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../MystenLabs/sui/pulls/20783.html">MystenLabs/sui#20783</a> on 2025-01-05 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../SeaQL/sea-orm/pulls/2509.html">SeaQL/sea-orm#2509</a> on 2025-02-23 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../prefix-dev/pixi/issues/4466.html">prefix-dev/pixi#4466</a> on 2025-08-30 05:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

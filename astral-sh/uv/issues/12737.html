@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv appears to be picking the wrong version of python for project's documentation build - astral-sh/uv #12737</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv appears to be picking the wrong version of python for project's documentation build</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12737">#12737</a>
+        opened by <a href="https://github.com/cjw296">@cjw296</a>
+        on 2025-04-08 08:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cjw296">@cjw296</a> on 2025-04-08 08:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm trying to get<a href="https://github.com/cjw296/pytest-sqlalchemy/pull/1"> Read the Docs going for a uv-based project</a>.</p>
+<ul>
+<li>The <a href="https://github.com/cjw296/pytest-sqlalchemy/blob/4c8a36d517dd3e78e8c2920389faa8ccdab63046/.python-version"><code>.python-version</code></a> is 3.13.</li>
+<li>The Python version <a href="https://github.com/cjw296/pytest-sqlalchemy/blob/4c8a36d517dd3e78e8c2920389faa8ccdab63046/.readthedocs.yaml#L6">RTD is configured to use</a> is 3.13.</li>
+<li>The project <a href="https://github.com/cjw296/pytest-sqlalchemy/blob/4c8a36d517dd3e78e8c2920389faa8ccdab63046/pyproject.toml#L10">supports Python 3.9 and above</a>, but I only want to build the docs with 3.13, this is so I can use the latest Sphinx release rather than the latest Sphinx release that supported python 3.9</li>
+</ul>
+<p>Unfortunately, <code>uv sync --group docs</code> <a href="https://app.readthedocs.org/projects/pytest-sqlalchemy/builds/27781703/">blows up</a> complaining that Sphinx 8.1 can't be use with Python 3.9:</p>
+<pre><code>uv sync --group docs 0s Exit: 1
+--
+1 | Using CPython 3.13.0 interpreter at: /home/docs/.asdf/installs/python/3.13.0/bin/python3.13
+2 | Creating virtual environment at: .venv
+3 | × No solution found when resolving dependencies for split
+4 | │ (python_full_version == '3.9.*'):
+5 | ╰─▶ Because the requested Python version (&gt;=3.9) does not satisfy
+6 | Python&gt;=3.10 and sphinx==8.1.3 depends on Python&gt;=3.10, we can conclude
+7 | that sphinx==8.1.3 cannot be used.
+8 | And because only the following versions of sphinx are available:
+9 | sphinx&lt;=8.1.3
+10 | sphinx==8.2.0
+11 | sphinx==8.2.1
+12 | sphinx==8.2.2
+13 | sphinx==8.2.3
+14 | sphinx==8.3.0
+15 | we can conclude that sphinx&gt;=8.1.3,&lt;8.2.0 cannot be used. (1)
+16 |  
+17 | Because the requested Python version (&gt;=3.9) does not satisfy
+18 | Python&gt;=3.11 and sphinx&gt;=8.2.0,&lt;=8.2.3 depends on Python&gt;=3.11, we can
+19 | conclude that sphinx&gt;=8.2.0,&lt;=8.2.3 cannot be used.
+20 | And because we know from (1) that sphinx&gt;=8.1.3,&lt;8.2.0 cannot be used,
+21 | we can conclude that sphinx&gt;=8.1.3,&lt;8.3.0 cannot be used.
+22 | And because sphinx==8.3.0 was yanked (reason: Bad release), we can
+23 | conclude that sphinx&gt;=8.1.3 cannot be used.
+24 | And because pytest-sqlalchemy:docs depends on sphinx&gt;=8.1.3 and your
+25 | project requires pytest-sqlalchemy:docs, we can conclude that your
+26 | project's requirements are unsatisfiable.
+
+uv sync --group docs  
+Using CPython 3.[1](https://app.readthedocs.org/projects/pytest-sqlalchemy/builds/27781703/#266808655--1)3.0 interpreter at: /home/docs/.asdf/installs/python/3.13.0/bin/python3.13
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies for split
+  │ (python_full_version == '3.9.*'):
+  ╰─▶ Because the requested Python version (&gt;=3.9) does not satisfy
+      Python&gt;=3.10 and sphinx==8.1.3 depends on Python&gt;=3.10, we can conclude
+      that sphinx==8.1.3 cannot be used.
+      And because only the following versions of sphinx are available:
+          sphinx&lt;=8.1.3
+          sphinx==8.[2](https://app.readthedocs.org/projects/pytest-sqlalchemy/builds/27781703/#266808655--2).0
+          sphinx==8.2.1
+          sphinx==8.2.2
+          sphinx==8.2.[3](https://app.readthedocs.org/projects/pytest-sqlalchemy/builds/27781703/#266808655--3)
+          sphinx==8.3.0
+      we can conclude that sphinx&gt;=8.1.3,&lt;8.2.0 cannot be used. (1)
+      Because the requested Python version (&gt;=3.9) does not satisfy
+      Python&gt;=3.11 and sphinx&gt;=8.2.0,&lt;=8.2.3 depends on Python&gt;=3.11, we can
+      conclude that sphinx&gt;=[8](https://app.readthedocs.org/projects/pytest-sqlalchemy/builds/27781703/#266808655--8).2.0,&lt;=8.2.3 cannot be used.
+      And because we know from (1) that sphinx&gt;=8.1.3,&lt;8.2.0 cannot be used,
+      we can conclude that sphinx&gt;=8.1.3,&lt;8.3.0 cannot be used.
+      And because sphinx==8.3.0 was yanked (reason: Bad release), we can
+      conclude that sphinx&gt;=8.1.3 cannot be used.
+      And because pytest-sqlalchemy:docs depends on sphinx&gt;=8.1.3 and your
+      project requires pytest-sqlalchemy:docs, we can conclude that your
+      project's requirements are unsatisfiable.
+</code></pre>
+<p>Why is that? Is this a uv bug or am I doing something wrong? What can I do to get this to work?</p>
+<h3>Platform</h3>
+<p>ubuntu-24.04</p>
+<h3>Version</h3>
+<p>0.6.13</p>
+<h3>Python version</h3>
+<p>should be 3.13 ;-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @cjw296 on 2025-04-08 08:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cjw296">@cjw296</a> on 2025-04-08 08:09</div>
+            <div class="timeline-body"><p>Al curious about why <a href="https://github.com/cjw296/pytest-sqlalchemy/actions/runs/14328141331/job/40157712811?pr=1"><code>uv sync --dev --resolution highest</code></a> also appears to be attempting to install sphinx even though sphinx <a href="https://github.com/cjw296/pytest-sqlalchemy/blob/4c8a36d517dd3e78e8c2920389faa8ccdab63046/pyproject.toml#L35-L38">only appears in the &quot;docs&quot; group</a>.</p>
+<p>I'm guessing the docs on <a href="https://docs.astral.sh/uv/concepts/projects/config/#conflicting-dependencies">conflicting dependency groups</a> are relevant here, but there doesn't appear to be anything there for catering for groups that have different Python version requirements?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 17:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Al curious about why <a href="https://github.com/cjw296/pytest-sqlalchemy/actions/runs/14328141331/job/40157712811?pr=1">uv sync --dev --resolution highest</a> also appears to be attempting to install sphinx even though sphinx <a href="https://github.com/cjw296/pytest-sqlalchemy/blob/4c8a36d517dd3e78e8c2920389faa8ccdab63046/pyproject.toml#L35-L38">only appears in the &quot;docs&quot; group</a>.</p>
+</blockquote>
+<p>We aren't installing it, we're performing a resolution that includes all groups before installing. We always resolve the entire project at once, regardless of the subset that will be installed.</p>
+<p>The fix for your use-case is https://github.com/astral-sh/uv/issues/11606 — you can see some similar issues linked there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-04-08 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-04-08 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cjw296">@cjw296</a> on 2025-04-08 19:46</div>
+            <div class="timeline-body"><p>Yep, this looks like a dupe of #11606</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @cjw296 on 2025-04-08 19:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

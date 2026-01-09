@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821: False positive with Pydantic's `BaseModel.model_fields` - astral-sh/ruff #16527</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821: False positive with Pydantic's `BaseModel.model_fields`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16527">#16527</a>
+        opened by <a href="https://github.com/yury-fedotov">@yury-fedotov</a>
+        on 2025-03-06 00:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yury-fedotov">@yury-fedotov</a> on 2025-03-06 00:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h2>MRE</h2>
+<pre><code class="language-python">from typing import Annotated
+
+from pydantic import BaseModel, Field
+
+
+class User(BaseModel):
+    name: Annotated[str, Field(min_length=1)]
+    age: Annotated[int, Field(ge=0)]
+
+
+class PartialUser(BaseModel):
+    name: User.model_fields[&quot;name&quot;].annotation
+</code></pre>
+<h2>Current behavior</h2>
+<p>Lint error on the last line:</p>
+<pre><code>F821 Undefined name `name`
+</code></pre>
+<h2>Expected behavior</h2>
+<p>Treat &quot;name&quot; as a string and do not complain that it's an undefined variable.</p>
+<h3>Version</h3>
+<p>0.7.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-06 08:05</div>
+            <div class="timeline-body"><p>@carljm can you help me out on this whether Ruff's interpretation of <code>&quot;name&quot;</code> in <code>User.model_fields[&quot;name&quot;]</code> as a name and not a string literal is correct here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-03-06 08:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-06 08:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-06 09:26</div>
+            <div class="timeline-body"><p>I'd say that the interpretation is correct here because it's a string annotation but this seems like a special case similar to how <code>Literal[&quot;foo&quot;]</code> is (<code>&quot;foo&quot;</code> is a string literal and not a string annotation).</p>
+<p>If this is the recommended way to do this, we might have to special case <code>User.model_fields</code> similar to <code>typing.Literal</code>. For now, assuming that this pattern is to avoid having same annotations multiple times, you could define a type alias and use that in both places if that works with Pydantic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-03-06 12:44</div>
+            <div class="timeline-body"><p><code>User.model_fields[&quot;name&quot;].annotation</code> is not a valid type expression. While this would do the right thing at runtime, any static type checker would complain about that annotation.</p>
+<p>With type inference we could detect that <code>User.model_fields[&quot;name&quot;]</code> is not a generic subscript, and thus <code>name</code> is not a forward reference. We could be more conservative and only treat known generic subscripts in type expressions as type expressions, but that would probably lead to too many false positives/negatives in the more common cases.</p>
+<p>So I'd say this works as intended. If you want to reuse the same annotation use a type alias or use inheritance to reuse the field (i.e. derive <code>User</code> from <code>PartialUser</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yury-fedotov">@yury-fedotov</a> on 2025-03-06 14:52</div>
+            <div class="timeline-body"><p>I agree, thank you very much for explanations!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @yury-fedotov on 2025-03-06 14:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`flake8-type-checking`: enforce combining imports from inside and outside a `TYPE_CHECKING` block (reverse of `strict`) - astral-sh/ruff #21921</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`flake8-type-checking`: enforce combining imports from inside and outside a `TYPE_CHECKING` block (reverse of `strict`)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21921">#21921</a>
+        opened by <a href="https://github.com/GideonBear">@GideonBear</a>
+        on 2025-12-11 16:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/GideonBear">@GideonBear</a> on 2025-12-11 16:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using <code>tool.ruff.lint.flake8-type-checking.strict = false</code> (the default), ruff will not split up imports into a <code>TYPE_CHECKING</code> block:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+from m import A, B
+
+a = A()
+b: B
+</code></pre>
+<pre><code class="language-console">$ \cat pyproject.toml
+tool.ruff.lint.flake8-type-checking.strict = false
+$ ruff check main.py --select TC
+All checks passed!
+$ nano pyproject.toml 
+$ \cat pyproject.toml
+tool.ruff.lint.flake8-type-checking.strict = true
+$ ruff check main.py --select TC
+TC002 Move third-party import `m.B` into a type-checking block
+etc.
+</code></pre>
+<p><code>strict = true</code> is great for consistency. However when using <code>strict = false</code>, there is no way to enforce having these imports combined, making it impossible to enforce consistency.</p>
+<p>Current behavior:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from m import A
+
+if TYPE_CHECKING:
+    from m import B
+
+a = A()
+b: B
+</code></pre>
+<pre><code class="language-console">$ ruff check main.py --select TC
+All checks passed!
+</code></pre>
+<p>Desired behavior: suggest combining the imports (to what it was in the first example).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GideonBear">@GideonBear</a> on 2025-12-11 16:16</div>
+            <div class="timeline-body"><p>Soft ping to @Daverball, thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-11 17:15</div>
+            <div class="timeline-body"><p>If I understand correctly, this is a duplicate of https://github.com/astral-sh/ruff/issues/19548.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-12-11 17:56</div>
+            <div class="timeline-body"><p>Looks like a duplicate to me as well. Overall I don't dislike the idea, but it definitely can't be a boolean setting at this point. We don't want to cause arguably unnecessary churn in either direction, unless people specifically opt into it for aesthetics/consistency. So it would have to be a three-stage setting, either you prefer imports staying together, you prefer all the typing only imports staying in type checking blocks, even if it means splitting up imports or you have no preference and ruff  will only nag you when there's a tangible benefit to moving the import beyond aesthetics/consistency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GideonBear">@GideonBear</a> on 2025-12-11 17:58</div>
+            <div class="timeline-body"><blockquote>
+<p>If I understand correctly, this is a duplicate of <a href="https://github.com/astral-sh/ruff/issues/19548">#19548</a>.</p>
+</blockquote>
+<p>It is, looks like I missed that. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @GideonBear on 2025-12-11 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GideonBear">@GideonBear</a> on 2025-12-11 17:58</div>
+            <div class="timeline-body"><p>(accidentally closed as completed, meant to close as duplicate)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19548.html">astral-sh/ruff#19548</a> on 2025-12-11 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivodi">@vivodi</a> on 2025-12-11 18:23</div>
+            <div class="timeline-body"><blockquote>
+<p>(accidentally closed as completed, meant to close as duplicate)</p>
+</blockquote>
+<p>You can still reopen and close it as duplicate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @GideonBear on 2025-12-11 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GideonBear">@GideonBear</a> on 2025-12-11 18:25</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>(accidentally closed as completed, meant to close as duplicate)</p>
+</blockquote>
+<p>You can still reopen and close it as duplicate.</p>
+</blockquote>
+<p>Huh, the button <em>was</em> greyed-out for me, I assumed I didn't have permission to do that. Thx</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

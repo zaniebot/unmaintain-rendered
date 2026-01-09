@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModuleNotFoundError: No module named 'mymodule' from jupyter notebook  - astral-sh/uv #8891</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ModuleNotFoundError: No module named 'mymodule' from jupyter notebook </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8891">#8891</a>
+        opened by <a href="https://github.com/AlexAtCCRI">@AlexAtCCRI</a>
+        on 2024-11-07 16:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexAtCCRI">@AlexAtCCRI</a> on 2024-11-07 16:39</div>
+            <div class="timeline-body"><p><strong>context</strong>: i have a project called <code>mymodule</code>  that i am using <code>uv</code> to manage. i would like to use <code>mymodule</code>'s   venv to test out some notebooks that make use of <code>mymodule</code> (but the notebooks live in a different repo).</p>
+<p>i can import the module from within the venv,
+<code>uv run  --all-extras --with jupyter -- python -c 'import mymodule'</code>
+works. but,  i can not import the module from within a notebook (run from a jupyter server within mymodules venv)</p>
+<p><code>uv run  --all-extras --with jupyter   jupyter-lab ~/path/to/notebooks/</code></p>
+<p>then create notebook, add cell with  <code>import mymodule</code>
+fails with <code>ModuleNotFoundError</code></p>
+<ul>
+<li>on linux</li>
+<li>uv 0.4.30</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-11-08 10:27</div>
+            <div class="timeline-body"><p>From the report, it's not clear where <code>mymodule</code> is located and why it is expected to be able to import it. Is it a module in the source tree, or is it installed in a virtual environment?</p>
+<p>One thing you might keep an eye on - run <code>import sys; print(sys.path)</code> in the notebook and inspect the paths, and also run <code>import os; os.getcwd()</code>; the empty string entry in sys.path will point to the current directory.</p>
+<p>Jupyter executes notebooks with the current directory == the notebook's directory. That could be the explanation - notebooks will find and import modules in the same folder as themselves because of the <code>''</code> entry in <code>sys.path</code>  which corresponds to the current directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexAtCCRI">@AlexAtCCRI</a> on 2024-11-08 13:29</div>
+            <div class="timeline-body"><p>thanks for the reply! i have updated the issue to give more context, and description. please let me know if i did not clarify sufficiently for your help. much appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-09 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexAtCCRI">@AlexAtCCRI</a> on 2024-11-11 11:55</div>
+            <div class="timeline-body"><p>some more context.
+<code>mymodule</code> is a python package. i would like to use  <code>uv</code>'s  venv to build/install  <code>mymodule</code>  and run some test notebooks, which live somewhere outside of <code>mymodule</code>.</p>
+<p>previously i would make a venv,  install <code>mymodule</code> in editable mode, and then install a whole jupyter stack in the venv,  and run the notebooks.  i was hoping i could do this faster/ligher/more reproducably with <code>uv</code> venv.</p>
+<p>please let me know if this still doesnt make sense?  thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-11-11 16:16</div>
+            <div class="timeline-body"><p>I have tried this, and I can't reproduce it, importing a library module from the current project works.</p>
+<p>I have the following suggestion as the next thing to test, it would be to run this:</p>
+<p><code>uv run  --all-extras --with jupyter -- python -I -c 'import mymodule'</code></p>
+<p><code>-I</code> for isolated would demonstrate that mymodule is really installed in the virtual environment. If that fails, it is relevant for the issue.  (When I try this command executes without problem.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexAtCCRI">@AlexAtCCRI</a> on 2024-11-11 17:36</div>
+            <div class="timeline-body"><p>so here is what i got,</p>
+<pre><code>uv run  --all-extras --with jupyter -- python -I -c 'import mymodule'
+Installed 96 packages in 61ms
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'mymodule'
+</code></pre>
+<p>but after inspecting the build whl, i found the problem was me. the module was not being packaged correctly (all the submodules were at the root of the dist, so the 'real'  package was not importable. !  (i was updating an existing build to pyproject.toml AND updating to <code>uv</code> so i confounded the two)</p>
+<p>i had to add</p>
+<pre><code>[tool.setuptools]
+packages = ['mymodule']
+</code></pre>
+<p>in case anyone else makes this mistake.  totally my fault. your suggestions work now.  thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexAtCCRI on 2024-11-11 17:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

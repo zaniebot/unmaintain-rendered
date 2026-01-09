@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`unstable-dynamic` completion for fish shell invalid when binary path has a space - clap-rs/clap #6196</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`unstable-dynamic` completion for fish shell invalid when binary path has a space</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/6196">#6196</a>
+        opened by <a href="https://github.com/devjgm">@devjgm</a>
+        on 2025-12-16 15:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/devjgm">@devjgm</a> on 2025-12-16 15:25</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.91.0 (f8297e351 2025-10-28)</p>
+<h3>Clap Version</h3>
+<p>4.5.53</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::CommandFactory;
+
+#[derive(clap::Parser, Debug)]
+struct Args;
+
+fn main() {
+    clap_complete::env::CompleteEnv::with_factory(|| Args::command()).complete();
+    // Nothing
+}
+</code></pre>
+<pre><code class="language-toml">[package]
+name = &quot;clap-complete-bug&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2024&quot;
+
+[dependencies]
+clap = { version = &quot;4.5.53&quot;, features = [&quot;derive&quot;] }
+clap_complete = { version = &quot;4.5.61&quot;, features = [&quot;unstable-dynamic&quot;] }
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ul>
+<li>Build a project with the code above. <code>cargo build</code></li>
+<li>Run the binary with <code>COMPLETE=fish ./target/debug/clap-complete-bug</code>. So far, THIS IS OK</li>
+</ul>
+<pre><code class="language-console">❯ COMPLETE=fish ./target/debug/clap-complete-bug
+complete --keep-order --exclusive --command clap-complete-bug --arguments &quot;(COMPLETE=fish &quot;'/Users/greg/clap-complete-bug/./target/debug/clap-complete-bug'&quot; -- (commandline --current-process --tokenize --cut-at-cursor) (commandline --current-token))&quot;
+</code></pre>
+<h1>The bug</h1>
+<ul>
+<li>Use a symlink to add a space in the path to the binary</li>
+</ul>
+<pre><code class="language-console">ln -s ./target/debug/clap-complete-bug &quot;with space&quot;
+</code></pre>
+<ul>
+<li>Now run the binary with <code>COMPLETE=fish</code> using the path with a space</li>
+</ul>
+<pre><code class="language-console">❯ COMPLETE=fish ./with\ space 
+complete --keep-order --exclusive --command clap-complete-bug --arguments &quot;(COMPLETE=fish &quot;''/Users/greg/clap-complete-bug/./with space''&quot; -- (commandline --current-process --tokenize --cut-at-cursor) (commandline --current-token))&quot;
+</code></pre>
+<ul>
+<li>Notice how the generated path has too many quotes around the path. Fish is unable to run the command:</li>
+</ul>
+<pre><code class="language-console">❯ complete --keep-order --exclusive --command clap-complete-bug --arguments &quot;(COMPLETE=fish &quot;''/Users/greg/clap-complete-bug/./with space''&quot; -- (commandline --current-process --tokenize --cut-at-cursor) (commandline -
+-current-token))&quot;
+complete: too many arguments
+
+(Type 'help complete' for related documentation)
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p><code>COMPLETE=fish  /path with a space/my-binary</code> produces invalid <code>fish</code> syntax due to invalid quoting around the path with a space.</p>
+<h3>Expected Behaviour</h3>
+<p>I expect the produced paths to be quoted correctly with or without spaces.</p>
+<h3>Additional Context</h3>
+<p>This will be a somewhat common issue because on macOS, paths like <code>Library/Application Support</code> have spaces, and binaries in those directories will not be able to use dynamic clap completions.</p>
+<p>Note: If you're open to it, I'd be willing to send a PR.</p>
+<h3>Debug Output</h3>
+<pre><code>❯ COMPLETE=fish ./with\ space
+[clap_builder::builder::command]Command::_build: name=&quot;clap-complete-bug&quot;
+[clap_builder::builder::command]Command::_propagate:clap-complete-bug
+[clap_builder::builder::command]Command::_check_help_and_version:clap-complete-bug expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap-complete-bug
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build_bin_names
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+complete --keep-order --exclusive --command clap-complete-bug --arguments &quot;(COMPLETE=fish &quot;''/Users/greg/clap-complete-bug/./with space''&quot; -- (commandline --current-process --tokenize --cut-at-cursor) (commandline --current-token))&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @devjgm on 2025-12-16 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @devjgm on 2025-12-16 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2025-12-16 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> removed by @epage on 2025-12-16 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2025-12-16 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-12-16 16:30</div>
+            <div class="timeline-body"><p>Help would be appreciated!</p>
+<p>We should probably have a shell integration test for this.  If we don't already have a test for this, it would be good to mirror the test over to the other shells as this is this is a common corner case across shells, though you aren't responsible for fixing the other shells.</p>
+<p>We've found it helpful to split PRs up to be as small as possible while still being atomic (i.e. no dead code, tests pass in all commits).  Particularly, we've found it helpful to have tests added in their own commit, showing the current behavior (the bug), then the fix commit would update the tests to show the new behavior.  The diff of the tests between these commits then helps highlight how the behavior changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/devjgm">@devjgm</a> on 2025-12-17 00:53</div>
+            <div class="timeline-body"><p>I'm pretty sure the fix is simply</p>
+<pre><code class="language-diff">diff --git a/clap_complete/src/env/shells.rs b/clap_complete/src/env/shells.rs
+index 526c8e8b88..1ee0d091fb 100644
+--- a/clap_complete/src/env/shells.rs
++++ b/clap_complete/src/env/shells.rs
+@@ -224,7 +224,7 @@
+ 
+         writeln!(
+             buf,
+-            r#&quot;complete --keep-order --exclusive --command {bin} --arguments &quot;({var}=fish &quot;'{completer}'&quot; -- (commandline --current-process --tokenize --cut-at-cursor) (commandline --current-token))&quot;&quot;#
++            r#&quot;complete --keep-order --exclusive --command {bin} --arguments &quot;({var}=fish {completer} -- (commandline --current-process --tokenize --cut-at-cursor) (commandline --current-token))&quot;&quot;#
+         )
+     }
+     fn write_complete(
+</code></pre>
+<p>... because the <code>completer</code> comes from <code>shlex::try_quote()</code> and should have the necessary quoting already. The original issue was caused by <code>&quot;'{completer}'&quot;</code>, because when <code>{completer}</code> itself expands to a single-quoted string, its single quotes will close the format string's single quotes and leave the resulting command unquoted, e.g., <code>&quot;''/path with a space''&quot;</code></p>
+<p>I informally tested this in the repo (and in my main code base) with ad-hoc invocations like:</p>
+<p>No space, unquoted, works.</p>
+<pre><code class="language-console">❯ COMPLETE=fish cargo run --example &quot;dynamic&quot; -F unstable-dynamic
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.24s
+     Running `/Users/greg/github/devjgm/clap/target/debug/examples/dynamic`
+complete --keep-order --exclusive --command dynamic --arguments &quot;(COMPLETE=fish /Users/greg/github/devjgm/clap/target/debug/examples/dynamic -- (commandline --current-process --tokenize --cut-at-cursor) (commandline --current-token))&quot;
+</code></pre>
+<p>With space, quoted, works.</p>
+<pre><code class="language-console">❯ ln -s ../target/debug/examples/dynamic &quot;dynamic with a space&quot;
+❯ COMPLETE=fish ./dynamic\ with\ a\ space
+complete --keep-order --exclusive --command dynamic --arguments &quot;(COMPLETE=fish '/Users/greg/github/devjgm/clap/clap_complete/./dynamic with a space' -- (commandline --current-process --tokenize --cut-at-cursor) (commandline --current-token))&quot;
+</code></pre>
+<p>....</p>
+<p>So I think the fix is not too bad, but I haven't figured out how to tweak the test infra to cover the case of a space somewhere in the command's path. Any pointers here would be appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-12-17 00:58</div>
+            <div class="timeline-body"><p>We already have a test for spaces.
+https://github.com/clap-rs/clap/blob/1a6c0de0d761482a6e2c6e6705a4d9fa0668e842/clap_complete/tests/testsuite/fish.rs#L299</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/devjgm">@devjgm</a> on 2025-12-17 01:25</div>
+            <div class="timeline-body"><p>Thank  you. But AFAICT, that's not testing for spaces in the <em>command's path</em>. I don't see any tests covering that currently. The completions invoke the command like <code>COMPLETE=fish /path/to/foo</code>, but it should also work if there's a space in the path, like <code>COMPLETE=fish '/path/with a space/foo'</code>. It's this latter case that breaks today due to the format string mentioned above like <code>&quot;'{completer}'&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-12-17 20:16</div>
+            <div class="timeline-body"><p>Eh, let's skip a test for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6197.html">clap-rs/clap#6197</a> on 2025-12-17 20:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/devjgm">@devjgm</a> on 2025-12-17 20:43</div>
+            <div class="timeline-body"><p>PTAL at this PR: https://github.com/clap-rs/clap/pull/6197 It adds a unit test, not an integration test, but I think it demonstrates the <em>current</em> behavior.</p>
+<p>Happy to make changes if I'm heading in the wrong direction here. Thanks for your help so far.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6198.html">clap-rs/clap#6198</a> on 2025-12-18 01:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-12-18 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/devjgm">@devjgm</a> on 2025-12-18 14:28</div>
+            <div class="timeline-body"><p>Thanks for the guidance on this fix and the quick release, @epage 👍</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

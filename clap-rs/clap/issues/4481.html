@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>value_parser that should return Vec&lt;u8&gt; panics with Mismatch between definition and access of `Payload`. Could not downcast to u8, need to downcast to alloc::vec::Vec&lt;u8&gt; - clap-rs/clap #4481</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>value_parser that should return Vec&lt;u8&gt; panics with Mismatch between definition and access of `Payload`. Could not downcast to u8, need to downcast to alloc::vec::Vec&lt;u8&gt;</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4481">#4481</a>
+        opened by <a href="https://github.com/vslynko">@vslynko</a>
+        on 2022-11-14 19:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vslynko">@vslynko</a> on 2022-11-14 19:52</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.64.0 (a55dd71d5 2022-09-19)</p>
+<h3>Clap Version</h3>
+<p>clap = { version = &quot;4.0.23&quot;, features = [&quot;derive&quot;] }</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+fn parse_hex_values(s: &amp;str) -&gt; Result&lt;Vec&lt;u8&gt;, hex::FromHexError&gt; {
+    hex::decode(s.trim_start_matches(&quot;0x&quot;))
+}
+
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+pub struct Cli {
+    #[arg(name = &quot;Payload&quot;, value_parser(parse_hex_values))]
+    payload: Vec&lt;u8&gt;,
+}
+
+fn main() {
+    println!(&quot;Hello, world!&quot;);
+    let _args = Cli::parse();
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- 0x11</code></p>
+<p>cargo.Toml should also contain hex = &quot;0.4.3&quot; dependency</p>
+<h3>Actual Behaviour</h3>
+<p>Main thread panics with
+<code>thread 'main' panicked at 'Mismatch between definition and access of </code>Payload<code>. Could not downcast to u8, need to downcast to alloc::vec::Vec&lt;u8&gt;</code></p>
+<pre><code class="language-stacktrace">~\source\clap_bug on master  ● λ cargo run -- 0x11
+   Compiling adler v1.0.2
+   Compiling gimli v0.26.2
+   Compiling cfg-if v1.0.0
+   Compiling rustc-demangle v0.1.21
+   Compiling memchr v2.5.0
+   Compiling libc v0.2.137
+   Compiling miniz_oxide v0.5.4
+   Compiling object v0.29.0                                                                                   
+   Compiling addr2line v0.17.0
+   Compiling backtrace v0.3.66
+   Compiling clap v4.0.24
+   Compiling clap_bug v0.1.0 (C:\Users\vadim\source\clap_bug)
+    Finished dev [unoptimized + debuginfo] target(s) in 5.74s
+     Running `target\debug\clap_bug.exe 0x11`
+Hello, world!
+[      clap::builder::command]  Command::_do_parse
+[      clap::builder::command]  Command::_build: name=&quot;clap_bug&quot;
+[      clap::builder::command]  Command::_propagate:clap_bug
+[      clap::builder::command]  Command::_check_help_and_version:clap_bug expand_help_tree=false
+[      clap::builder::command]  Command::long_help_exists
+[      clap::builder::command]  Command::_check_help_and_version: Building default --help
+[      clap::builder::command]  Command::_check_help_and_version: Building default --version
+[      clap::builder::command]  Command::_propagate_global_args:clap_bug
+[clap::builder::debug_asserts]  Command::_debug_asserts
+[clap::builder::debug_asserts]  Arg::_debug_asserts:Payload
+[clap::builder::debug_asserts]  Arg::_debug_asserts:help
+[clap::builder::debug_asserts]  Arg::_debug_asserts:version
+[clap::builder::debug_asserts]  Command::_verify_positionals
+[        clap::parser::parser]  Parser::get_matches_with
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;0x11&quot;)' ([48, 120, 49, 49])
+[        clap::parser::parser]  Parser::possible_subcommand: arg=Ok(&quot;0x11&quot;)
+[        clap::parser::parser]  Parser::get_matches_with: sc=None
+[        clap::parser::parser]  Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser]  Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser]  Parser::resolve_pending: id=&quot;Payload&quot;
+[        clap::parser::parser]  Parser::react action=Append, identifier=Some(Index), source=CommandLine       
+[        clap::parser::parser]  Parser::remove_overrides: id=&quot;Payload&quot;
+[   clap::parser::arg_matcher]  ArgMatcher::start_custom_arg: id=&quot;Payload&quot;, source=CommandLine
+[      clap::builder::command]  Command::groups_for_arg: id=&quot;Payload&quot;
+[   clap::parser::arg_matcher]  ArgMatcher::start_custom_arg: id=&quot;Cli&quot;, source=CommandLine
+[        clap::parser::parser]  Parser::push_arg_values: [&quot;0x11&quot;]
+[        clap::parser::parser]  Parser::add_single_val_to_arg: cur_idx:=1
+[   clap::parser::arg_matcher]  ArgMatcher::needs_more_vals: o=Payload, pending=0
+[   clap::parser::arg_matcher]  ArgMatcher::needs_more_vals: expected=1..=18446744073709551615, actual=0      
+[        clap::parser::parser]  Parser::react not enough values passed in, leaving it to the validator to complain
+[        clap::parser::parser]  Parser::add_defaults
+[        clap::parser::parser]  Parser::add_defaults:iter:Payload:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:Payload: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:help:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:help: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:version:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:version: doesn't have default vals
+[     clap::parser::validator]  Validator::validate
+[     clap::parser::validator]  Validator::validate_conflicts
+[     clap::parser::validator]  Validator::validate_exclusive
+[     clap::parser::validator]  Validator::validate_conflicts::iter: id=&quot;Payload&quot;
+[     clap::parser::validator]  Conflicts::gather_conflicts: arg=&quot;Payload&quot;
+[      clap::builder::command]  Command::groups_for_arg: id=&quot;Payload&quot;
+[     clap::parser::validator]  Conflicts::gather_direct_conflicts id=&quot;Payload&quot;, conflicts=[]
+[     clap::parser::validator]  Conflicts::gather_direct_conflicts id=&quot;Cli&quot;, conflicts=[]
+[     clap::parser::validator]  Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator]  Validator::validate_required: required=ChildGraph([])
+[     clap::parser::validator]  Validator::gather_requires
+[     clap::parser::validator]  Validator::gather_requires:iter:&quot;Payload&quot;
+[     clap::parser::validator]  Validator::gather_requires:iter:&quot;Cli&quot;
+[     clap::parser::validator]  Validator::gather_requires:iter:&quot;Cli&quot;:group
+[     clap::parser::validator]  Validator::validate_required: is_exclusive_present=false
+[   clap::parser::arg_matcher]  ArgMatcher::get_global_values: global_arg_vec=[]
+thread 'main' panicked at 'Mismatch between definition and access of `Payload`. Could not downcast to u8, need to downcast to alloc::vec::Vec&lt;u8&gt;
+', src\main.rs:11:14
+stack backtrace:
+   0: std::panicking::begin_panic_handler
+             at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library\std\src\panicking.rs:584
+   1: core::panicking::panic_fmt
+             at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library\core\src\panicking.rs:142
+   2: enum$&lt;clap::parser::error::MatchesError, 1, 18446744073709551615, Downcast&gt;::unwrap&lt;enum$&lt;core::option::Option&lt;clap::parser::matches::arg_matches::Values&lt;u8&gt; &gt;, 1, 18446744073709551615, Some&gt; &gt;
+             at C:\Users\vadim\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-4.0.24\src\parser\error.rs:30
+   3: clap::parser::matches::arg_matches::ArgMatches::remove_many&lt;u8&gt;
+             at C:\Users\vadim\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-4.0.24\src\parser\matches\arg_matches.rs:338
+   4: clap_bug::impl$2::from_arg_matches_mut
+             at .\src\main.rs:7
+   5: clap::derive::Parser::parse&lt;clap_bug::Cli&gt;
+             at C:\Users\vadim\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-4.0.24\src\derive.rs:83   
+   6: clap_bug::main
+             at .\src\main.rs:16
+   7: core::ops::function::FnOnce::call_once&lt;void (*)(),tuple$&lt;&gt; &gt;
+             at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52\library\core\src\ops\function.rs:248
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+error: process didn't exit successfully: `target\debug\clap_bug.exe 0x11` (exit code: 101)
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The result of <code>parse_hex_values</code> should be assigned to payload field.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code class="language-log">~\source\clap_bug on master  ● λ cargo run -- 0x11
+   Compiling adler v1.0.2
+   Compiling gimli v0.26.2
+   Compiling cfg-if v1.0.0
+   Compiling rustc-demangle v0.1.21
+   Compiling memchr v2.5.0
+   Compiling libc v0.2.137
+   Compiling miniz_oxide v0.5.4
+   Compiling object v0.29.0                                                                                   
+   Compiling addr2line v0.17.0
+   Compiling backtrace v0.3.66
+   Compiling clap v4.0.24
+   Compiling clap_bug v0.1.0 (C:\Users\vadim\source\clap_bug)
+    Finished dev [unoptimized + debuginfo] target(s) in 5.74s
+     Running `target\debug\clap_bug.exe 0x11`
+Hello, world!
+[      clap::builder::command]  Command::_do_parse
+[      clap::builder::command]  Command::_build: name=&quot;clap_bug&quot;
+[      clap::builder::command]  Command::_propagate:clap_bug
+[      clap::builder::command]  Command::_check_help_and_version:clap_bug expand_help_tree=false
+[      clap::builder::command]  Command::long_help_exists
+[      clap::builder::command]  Command::_check_help_and_version: Building default --help
+[      clap::builder::command]  Command::_check_help_and_version: Building default --version
+[      clap::builder::command]  Command::_propagate_global_args:clap_bug
+[clap::builder::debug_asserts]  Command::_debug_asserts
+[clap::builder::debug_asserts]  Arg::_debug_asserts:Payload
+[clap::builder::debug_asserts]  Arg::_debug_asserts:help
+[clap::builder::debug_asserts]  Arg::_debug_asserts:version
+[clap::builder::debug_asserts]  Command::_verify_positionals
+[        clap::parser::parser]  Parser::get_matches_with
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;0x11&quot;)' ([48, 120, 49, 49])
+[        clap::parser::parser]  Parser::possible_subcommand: arg=Ok(&quot;0x11&quot;)
+[        clap::parser::parser]  Parser::get_matches_with: sc=None
+[        clap::parser::parser]  Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser]  Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser]  Parser::resolve_pending: id=&quot;Payload&quot;
+[        clap::parser::parser]  Parser::react action=Append, identifier=Some(Index), source=CommandLine       
+[        clap::parser::parser]  Parser::remove_overrides: id=&quot;Payload&quot;
+[   clap::parser::arg_matcher]  ArgMatcher::start_custom_arg: id=&quot;Payload&quot;, source=CommandLine
+[      clap::builder::command]  Command::groups_for_arg: id=&quot;Payload&quot;
+[   clap::parser::arg_matcher]  ArgMatcher::start_custom_arg: id=&quot;Cli&quot;, source=CommandLine
+[        clap::parser::parser]  Parser::push_arg_values: [&quot;0x11&quot;]
+[        clap::parser::parser]  Parser::add_single_val_to_arg: cur_idx:=1
+[   clap::parser::arg_matcher]  ArgMatcher::needs_more_vals: o=Payload, pending=0
+[   clap::parser::arg_matcher]  ArgMatcher::needs_more_vals: expected=1..=18446744073709551615, actual=0      
+[        clap::parser::parser]  Parser::react not enough values passed in, leaving it to the validator to complain
+[        clap::parser::parser]  Parser::add_defaults
+[        clap::parser::parser]  Parser::add_defaults:iter:Payload:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:Payload: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:help:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:help: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:version:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:version: doesn't have default vals
+[     clap::parser::validator]  Validator::validate
+[     clap::parser::validator]  Validator::validate_conflicts
+[     clap::parser::validator]  Validator::validate_exclusive
+[     clap::parser::validator]  Validator::validate_conflicts::iter: id=&quot;Payload&quot;
+[     clap::parser::validator]  Conflicts::gather_conflicts: arg=&quot;Payload&quot;
+[      clap::builder::command]  Command::groups_for_arg: id=&quot;Payload&quot;
+[     clap::parser::validator]  Conflicts::gather_direct_conflicts id=&quot;Payload&quot;, conflicts=[]
+[     clap::parser::validator]  Conflicts::gather_direct_conflicts id=&quot;Cli&quot;, conflicts=[]
+[     clap::parser::validator]  Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator]  Validator::validate_required: required=ChildGraph([])
+[     clap::parser::validator]  Validator::gather_requires
+[     clap::parser::validator]  Validator::gather_requires:iter:&quot;Payload&quot;
+[     clap::parser::validator]  Validator::gather_requires:iter:&quot;Cli&quot;
+[     clap::parser::validator]  Validator::gather_requires:iter:&quot;Cli&quot;:group
+[     clap::parser::validator]  Validator::validate_required: is_exclusive_present=false
+[   clap::parser::arg_matcher]  ArgMatcher::get_global_values: global_arg_vec=[]
+thread 'main' panicked at 'Mismatch between definition and access of `Payload`. Could not downcast to u8, need to downcast to alloc::vec::Vec&lt;u8&gt;
+', src\main.rs:11:14
+stack backtrace:
+   0: std::panicking::begin_panic_handler
+             at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library\std\src\panicking.rs:584
+   1: core::panicking::panic_fmt
+             at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52/library\core\src\panicking.rs:142
+   2: enum$&lt;clap::parser::error::MatchesError, 1, 18446744073709551615, Downcast&gt;::unwrap&lt;enum$&lt;core::option::Option&lt;clap::parser::matches::arg_matches::Values&lt;u8&gt; &gt;, 1, 18446744073709551615, Some&gt; &gt;
+             at C:\Users\vadim\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-4.0.24\src\parser\error.rs:30
+   3: clap::parser::matches::arg_matches::ArgMatches::remove_many&lt;u8&gt;
+             at C:\Users\vadim\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-4.0.24\src\parser\matches\arg_matches.rs:338
+   4: clap_bug::impl$2::from_arg_matches_mut
+             at .\src\main.rs:7
+   5: clap::derive::Parser::parse&lt;clap_bug::Cli&gt;
+             at C:\Users\vadim\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-4.0.24\src\derive.rs:83   
+   6: clap_bug::main
+             at .\src\main.rs:16
+   7: core::ops::function::FnOnce::call_once&lt;void (*)(),tuple$&lt;&gt; &gt;
+             at /rustc/a55dd71d5fb0ec5a6a3a9e8c27b2127ba491ce52\library\core\src\ops\function.rs:248
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+error: process didn't exit successfully: `target\debug\clap_bug.exe 0x11` (exit code: 101)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @vslynko on 2022-11-14 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-14 22:10</div>
+            <div class="timeline-body"><p>clap determines what to do based on the wrapping type, in this case <code>Vec</code>.  There isn't a way to opt-out and there isn't a guaranteed way for us to take the value parsers output type into account.</p>
+<p>To work around this, you can fully qualify the type, like <code>std::vec::Vec&lt;u8&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-11-14 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0x676e67">@0x676e67</a> on 2022-12-04 12:53</div>
+            <div class="timeline-body"><blockquote>
+<p>I also encountered the same problem, specifying std::vec::Vec type to solve
+<img width="1006" alt="image" src="https://user-images.githubusercontent.com/51810656/205491531-ec2e2e09-9c6e-4a83-a6b1-a0fd9a2f5849.png"></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fritzrehde">@fritzrehde</a> on 2023-01-28 22:07</div>
+            <div class="timeline-body"><p>I am having this issue as well. I get the following rust panic:</p>
+<pre><code>thread 'main' panicked at 'Mismatch between definition and access of `keybindings`. Could not downcast to TypeId { t: 8482930911198856167 }, need to downcast to TypeId { t: 12752778543207947612 }
+', /home/fritz/.cargo/registry/src/.../clap-4.0.32/src/parser/error.rs:30:9
+</code></pre>
+<p>I have the following code snippet from my derived struct:</p>
+<pre><code>	/// Comma-seperated list of keybindings in the format KEY:OP[+OP]*[,KEY:OP[+OP]*]*
+	#[arg(short = 'b', long = &quot;bind&quot;, value_name = &quot;KEYBINDINGS&quot;, value_delimiter = ',', value_parser = keybindings::parse_str)]
+	keybindings: Option&lt;Vec&lt;(String, Vec&lt;String&gt;)&gt;&gt;,
+</code></pre>
+<p>This previously worked when <code>Option&lt;Vec&lt;(String, Vec&lt;String&gt;)&gt;&gt;</code> was just <code>Vec&lt;(String, Vec&lt;String&gt;)&gt;</code>. I assumed adding an option would just work out of the box. The behaviour I expected: if I don't specify the <code>---bind</code> option keybindings will be none, otherwise it will be some of a vector delimited by value_delimiter and parsed by value_parser. Am I wrong in my assumption that this works?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fritzrehde">@fritzrehde</a> on 2023-01-29 16:42</div>
+            <div class="timeline-body"><p>Here's some extra debug output running in the project instead of the binary:</p>
+<pre><code>thread 'main' panicked at 'Mismatch between definition and access of `keybindings`. Could not downcast to alloc::vec::Vec&lt;(alloc::string::String, alloc::vec::Vec&lt;alloc::string::String&gt;)&gt;, need to downcast to (alloc::string::String, alloc::vec::Vec&lt;alloc::string::String&gt;)
+', src/config/mod.rs:195:18
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/69f9c33d71c871fc16ac445211281c6e7a340943/library/std/src/panicking.rs:575:5
+   1: core::panicking::panic_fmt
+             at /rustc/69f9c33d71c871fc16ac445211281c6e7a340943/library/core/src/panicking.rs:65:14
+   2: clap::parser::error::MatchesError::unwrap
+             at /home/fritz/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.1.4/src/parser/error.rs:30:9
+   3: clap::parser::matches::arg_matches::ArgMatches::remove_one
+             at /home/fritz/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.1.4/src/parser/matches/arg_matches.rs:390:9
+   4: &lt;watchbind::config::ClapConfig as clap::derive::FromArgMatches&gt;::from_arg_matches_mut
+             at ./src/config/mod.rs:148:10
+   5: clap::derive::Parser::parse
+             at /home/fritz/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.1.4/src/derive.rs:83:19
+   6: watchbind::config::Config::parse
+             at ./src/config/mod.rs:24:13
+   7: watchbind::main
+             at ./src/main.rs:9:12
+   8: core::ops::function::FnOnce::call_once
+             at /rustc/69f9c33d71c871fc16ac445211281c6e7a340943/library/core/src/ops/function.rs:251:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-30 13:55</div>
+            <div class="timeline-body"><p>btw I lost track of this being the issue for improving customizing the type, so we now have #4626 which has more information in that direction, so closing in favor of that issue.</p>
+<p>@fritzrehde as your case is more of a support issue (helping debug), could you start a discussion and, at minimum, include the signature for <code>keybindings::parse_str</code>.  If you could include a full reproduction case, that'd be even better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-01-30 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../becheran/mlc/issues/81.html">becheran/mlc#81</a> on 2023-11-07 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zcash/zcash-devtool/pulls/79.html">zcash/zcash-devtool#79</a> on 2025-02-05 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steveviuv">@steveviuv</a> on 2025-09-26 05:59</div>
+            <div class="timeline-body"><p>you can use type keyword to define your class, it's work for me.  e.g.:</p>
+<pre><code>type WrappedInput = Vec&lt;u8&gt;;
+
+#[derive(Debug, Parser)]
+pub struct TextSignOpts {
+    #[arg(short, long, value_parser = parse_input, default_value = &quot;-&quot;)]
+    pub sec_key: WrappedInput,
+
+    #[arg(short, long, value_parser = parse_input, default_value = &quot;-&quot;)]
+    pub input: WrappedInput,
+
+    #[arg(long, default_value_t = TextSignFormat::Blake3, value_parser = parse_format::&lt;TextSignFormat&gt;)]
+    pub format: TextSignFormat,
+}
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

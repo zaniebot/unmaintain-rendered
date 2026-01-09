@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTH fixes should be unsafe when they change return types in compound statements - astral-sh/ruff #21794</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PTH fixes should be unsafe when they change return types in compound statements</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21794">#21794</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-12-04 16:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-12-04 16:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fixes for <a href="https://docs.astral.sh/ruff/rules/os-rename/"><code>os-rename</code> (PTH104)</a>, <a href="https://docs.astral.sh/ruff/rules/os-replace/"><code>os-replace</code> (PTH105)</a>, <a href="https://docs.astral.sh/ruff/rules/os-getcwd/"><code>os-getcwd</code> (PTH109)</a>, and <a href="https://docs.astral.sh/ruff/rules/os-readlink/"><code>os-readlink</code> (PTH115)</a> should be marked unsafe when their values are used in non-expression statements like <code>if</code> and <code>for</code>. Currently, <a href="https://github.com/astral-sh/ruff/blob/0.14.8/crates/ruff_linter/src/rules/flake8_use_pathlib/helpers.rs#L213"><code>is_top_level_expression_call</code></a> only checks for a parent expression, not for a parent statement. <a href="https://play.ruff.rs/6463bd14-0365-4f69-ba97-eac387b01dde">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;pth1.py &lt;&lt;'# EOF'
+import os
+import sys
+
+if os.rename(&quot;pth1.py&quot;, &quot;pth1.py.bak&quot;):
+    print(&quot;rename: truthy&quot;)
+else:
+    print(&quot;rename: falsey&quot;)
+
+if os.replace(&quot;pth1.py.bak&quot;, &quot;pth1.py&quot;):
+    print(&quot;replace: truthy&quot;)
+else:
+    print(&quot;replace: falsey&quot;)
+
+try:
+    for _ in os.getcwd():
+        print(&quot;getcwd: iterable&quot;)
+        break
+except TypeError as e:
+    print(&quot;getcwd: not iterable&quot;)
+try:
+    for _ in os.getcwdb():
+        print(&quot;getcwdb: iterable&quot;)
+        break
+except TypeError as e:
+    print(&quot;getcwdb: not iterable&quot;)
+
+try:
+    for _ in os.readlink(sys.executable):
+        print(&quot;readlink: iterable&quot;)
+        break
+except TypeError as e:
+    print(&quot;readlink: not iterable&quot;)
+# EOF
+
+$ python pth1.py
+rename: falsey
+replace: falsey
+getcwd: iterable
+getcwdb: iterable
+readlink: iterable
+
+$ ruff --isolated check pth1.py --select PTH104,PTH105,PTH109,PTH115 --preview --fix
+Found 5 errors (5 fixed, 0 remaining).
+
+$ python pth1.py
+rename: truthy
+replace: truthy
+getcwd: not iterable
+getcwdb: not iterable
+readlink: not iterable
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.14.8 (9d4f1c6ae 2025-12-04)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-12-04 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-12-04 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/22009.html">astral-sh/ruff#22009</a> on 2025-12-16 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-17 17:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

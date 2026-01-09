@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive for F812 with ``nonlocal`` - astral-sh/ruff #7676</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive for F812 with ``nonlocal``</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7676">#7676</a>
+        opened by <a href="https://github.com/DanielNoord">@DanielNoord</a>
+        on 2023-09-27 13:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DanielNoord">@DanielNoord</a> on 2023-09-27 13:27</div>
+            <div class="timeline-body"><p>Couldn't find a previous issue for this.</p>
+<p>The following code:</p>
+<pre><code class="language-python">def outer_func():
+    variable: int
+
+    def func():
+        nonlocal variable
+        variable = 1
+
+    func()
+    assert variable == 1
+
+
+outer_func()
+</code></pre>
+<p>This executes just fine but <code>ruff</code> has an issue with it:</p>
+<pre><code class="language-console">❯ ruff check --select=F821 test.py
+test.py:9:12: F821 Undefined name `variable`
+  |
+8 |     func()
+9 |     assert variable == 1
+  |            ^^^^^^^^ F821
+  |
+
+Found 1 error.
+</code></pre>
+<p>Not that this code works because of <code>outer_func</code>. If <code>variable</code> was defined at module level the code fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-27 13:50</div>
+            <div class="timeline-body"><p>Thanks for filing. This is tough to get right in the general case since you need to reason about the complete flow of the program...</p>
+<p>It looks like Pyright <em>also</em> flags this as unbound.</p>
+<p>Mypy doesn't, but it's also too permissive in that it allows <em>this</em>:</p>
+<pre><code class="language-python">def outer_func() -&gt; None:
+    variable: int
+
+    assert variable == 1
+
+
+outer_func()
+</code></pre>
+<p>I'm tempted to close as <code>wontfix</code> since it seems rare and hard to get right. Alternatively, we could do what we do for globals and add a binding for <code>variable</code> as soon as we see the <code>nonlocal</code>, which would be closer to Mypy's behavior (and so have some false negatives instead of false positives).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-09-27 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielNoord">@DanielNoord</a> on 2023-09-27 14:12</div>
+            <div class="timeline-body"><p><code>pylint</code> also accepts this while raising on the variant where <code>variable</code> is defined outside of <code>outer_func</code> as well as raise <code>used-before-assignment</code> on the example you gave.
+<em>Although as <code>pylint</code> maintainer I'm obviously biased :smile:</em></p>
+<p>At work we're trying to put as much of our checks in <code>ruff</code> instead of <code>pylint</code> and we had to put quite a bit of ignores for this false positive. We use this pattern in testing code to test some obscure behaviour and I would never use it in production code as I don't think it is a good pattern. That said it is valid Python and I think preferring false negatives over false positives is usually better?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-09-27 14:16</div>
+            <div class="timeline-body"><p>I've used a similar pattern for testing as well, but I think I usually initialize the variable as <code>None</code> instead of just annotating it. It seems like that would generally lead to clearer error messages if things don't work as intended in your inner function.</p>
+<p>I do agree a false negative seems a little better than a false positive.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add rule “too many positional arguments in function definition” - astral-sh/ruff #8946</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add rule “too many positional arguments in function definition”</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8946">#8946</a>
+        opened by <a href="https://github.com/flying-sheep">@flying-sheep</a>
+        on 2023-12-01 10:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2023-12-01 10:32</div>
+            <div class="timeline-body"><p>Since https://github.com/astral-sh/ruff/pull/4329, PLR0913 is useless to us. We need a rule that doesn’t restrict the number of total arguments, but the number of non-keyword-only arguments. See also https://github.com/pylint-dev/pylint/issues/9099</p>
+<p>I’m happy to do a PR, but I don’t know how I should go about the rule identifier: Should I go for a new RUFF rule, or is there a way I can reserve a new code like e.g. PLR0914 in Pylint for this even if I don’t plan to make a PR for Pylint?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-12-02 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-04 05:17</div>
+            <div class="timeline-body"><p>I'm totally fine to add a rule for this, though ideally it'd be added to Pylint so that we can use the same identifier... Or perhaps @Pierre-Sassoulas, if there's interest from the Pylint side, could reserve an identifier for it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a> on 2023-12-04 09:34</div>
+            <div class="timeline-body"><p>We can definitely create the msgid / symbol before someone implement it. <code>too-many-positional</code> seems appropriate, and the next available value for the msgid would be <code>R0917</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pylint-dev/pylint/pulls/9278.html">pylint-dev/pylint#9278</a> on 2023-12-04 09:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8995.html">astral-sh/ruff#8995</a> on 2023-12-04 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-04 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pylint-dev/pylint/pulls/9842.html">pylint-dev/pylint#9842</a> on 2024-07-31 10:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/buhtz">@buhtz</a> on 2024-10-25 11:31</div>
+            <div class="timeline-body"><p>The pylint docu pointed me into this issue.
+I am sure this issue is not the right place to ask for full explanation. But maybe some of you know a blog post or technical article describing the topic.
+The pylint docu about too-many-positional-arguments is not detailed enough. I don't get it.
+But I also don't like to &quot;ignore&quot; pylint. I am assuming there is a good reason behind this rule. I just try to understand it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2024-10-25 11:40</div>
+            <div class="timeline-body"><p>It’s pretty simple: Good APIs don’t have many positional parameters.</p>
+<p>Most functions take 1–2 “main objects” to operate on and a few parameters that modify how they operate, e.g. <code>zip(a: Iterable, b: Iterable, *, strict: bool)</code>. Then these main objects should be able to be specified as positional parameters and the rest as keyword-only.</p>
+<p>There are few exceptions where 4 or more positional parameters make sense, e.g. <code>rgba(1.0, 0.5, 0.3, 1.0)</code> is a very well known conventional order of 4 floats/bytes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/buhtz">@buhtz</a> on 2024-10-25 11:43</div>
+            <div class="timeline-body"><blockquote>
+<p>It’s pretty simple: Good APIs don’t have many positional parameters.</p>
+</blockquote>
+<p>But what is the difference compared to <code>too-many-arguments</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2024-10-25 11:48</div>
+            <div class="timeline-body"><p>positional vs total arguments. you can configure:</p>
+<ul>
+<li>maximum number of positional arguments: 3</li>
+<li>maximum number of arguments: 6</li>
+</ul>
+<p>Then this would be legal:</p>
+<pre><code class="language-py">def (a, b, c, *, x, y, z): ...
+</code></pre>
+<p>and this wouldn‘t (because while it has &lt;=6 arguments, it has &gt;3 positional ones)</p>
+<pre><code class="language-py">def (a, b, c, x, y, z): ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/buhtz">@buhtz</a> on 2024-10-25 12:01</div>
+            <div class="timeline-body"><p>I played a bit around in my REPL.</p>
+<pre><code class="language-python">def foobar(a, b, c, *, x, y, z): ...
+</code></pre>
+<p>Do I get this correct? The <code>*</code> is not a 7th argument to allow 7 or more arguments.
+It is just a marker forcing the caller to give names to the 4th, 5th and 6th argument when calling that function?</p>
+<p>In other words the &quot;error&quot; <code>too-many-positional-arguments</code> means that there are to many arguments in the function signature that can be called/givin <strong>without</strong> a name?</p>
+<p><strong>EDIT</strong>:
+So when I use the <code>*</code> in the beginning like this:</p>
+<pre><code>def foobar(*, a, b, c, d):</code></pre>
+<p>This would force the caller to give every argument a name when calling the function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2024-10-25 12:06</div>
+            <div class="timeline-body"><p>Exactly: https://docs.python.org/3/tutorial/controlflow.html#special-parameters</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/buhtz">@buhtz</a> on 2024-10-25 12:08</div>
+            <div class="timeline-body"><p>Thank you very much with contributing to my current and future FOSS projects with teaching me such an essential Python feature. Was new to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2024-10-25 12:11</div>
+            <div class="timeline-body"><p>Always happy to do so!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a> on 2024-10-25 12:38</div>
+            <div class="timeline-body"><p>@buhtz did you read pylint's<a href="https://pylint.readthedocs.io/en/v3.3.1/user_guide/messages/refactor/too-many-positional-arguments.html"> 3.3.1's doc </a>or the <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/too-many-positional-arguments.html">latest </a>? And what helped you understand the concept so we can put it in the doc ? Sorry for not removing the link to this issue, it was relevant at a time when the pylint check was not implemented yet, but not anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/buhtz">@buhtz</a> on 2024-10-25 12:46</div>
+            <div class="timeline-body"><p>Not sure which version it was. But for myself I would say both versions you linked to wouldn't have helped me much. But he problem is more on my site not on yours.</p>
+<p>I think I lacked of basic (?) python concepts. I am not sure if a pylint-rule-docu should be responsible to explain them. But I would say a link to the <a href="https://docs.python.org/3/tutorial/controlflow.html#special-parameters">Python doc about special parameters</a> would be helpful. And what also would help is to extend the example code. Maybe you can add to the &quot;correct code&quot; section something like this making the effect of <code>*</code> more obvious:</p>
+<pre><code>def foobar(pos_arg, *, key_arg):
+   pass
+
+# TypeError: foobar() takes 1 positional argument but 2 were given
+foobar(1, 2)
+
+# OK
+foobar(1, key_arg=2)
+</code></pre>
+<p>To my experience, as someone reading all the free python learning material and working with Python for nearly 20 years on a hobby level, that &quot;special parameters&quot; are unknown to some of the beginners or hobby Python users. No one reads the full python docu, of course. ;) I do assume that you have to study computer science or book a payed python course to learn things like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Transport-for-the-North/caf.toolkit/pulls/150.html">Transport-for-the-North/caf.toolkit#150</a> on 2024-10-28 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pylint-dev/pylint/pulls/10049.html">pylint-dev/pylint#10049</a> on 2024-10-28 20:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv venv --seed` doesn't seem to be installing `setuptools` for pypy - astral-sh/uv #1488</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv venv --seed` doesn't seem to be installing `setuptools` for pypy</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1488">#1488</a>
+        opened by <a href="https://github.com/bendoerry">@bendoerry</a>
+        on 2024-02-16 13:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bendoerry">@bendoerry</a> on 2024-02-16 13:00</div>
+            <div class="timeline-body"><p>Not sure whether title is &quot;correct&quot; here, but it presents that way.</p>
+<p>Alembic is illustrative here, I've also had this occur with <code>psycogreen</code>, <code>psycopg2cffi</code>, <code>flask-migrate</code>, <code>docopt</code> (this is a non-exhaustive list)</p>
+<p>With CPython (using rye to ensure same python version)</p>
+<pre><code class="language-console">&gt; uv venv --python &lt;HOME&gt;/.rye/py/cpython@3.9.16/install/bin/python3 --seed
+Using Python 3.9.16 interpreter at &lt;HOME&gt;/.rye/py/cpython@3.9.16/install/bin/python3.9
+Creating virtualenv at: .venv
+ + setuptools==69.1.0
+ + pip==24.0
+ + wheel==0.42.0
+
+&gt; source .venv/bin/activate
+&gt; python3 --version
+Python 3.9.16
+
+&gt; uv pip install alembic==1.0.11
+Resolved 9 packages in 12ms
+Installed 9 packages in 8ms
+ + alembic==1.0.11
+ + greenlet==3.0.3
+ + mako==1.3.2
+ + markupsafe==2.1.5
+ + python-dateutil==2.8.2
+ + python-editor==1.0.4
+ + six==1.16.0
+ + sqlalchemy==2.0.27
+ + typing-extensions==4.9.0
+</code></pre>
+<p>With PyPy (This also occurs with system PyPy, not just rye managed)</p>
+<pre><code class="language-console">&gt; uv venv --python &lt;HOME&gt;/.rye/py/pypy@3.9.16/bin/python3 --seed
+Using Python 3.9.16 interpreter at &lt;HOME&gt;/.rye/py/pypy@3.9.16/bin/pypy3.9
+Creating virtualenv at: .venv
+ + setuptools==69.1.0
+ + pip==24.0
+ + wheel==0.42.0
+
+&gt; source .venv/bin/activate
+&gt; python3 --version
+Python 3.9.16 (feeb267ead3e6771d3f2f49b83e1894839f64fb7, Dec 29 2022, 14:23:21)
+[PyPy 7.3.11 with GCC 10.2.1 20210130 (Red Hat 10.2.1-11)]
+
+&gt; uv pip install alembic==1.0.11
+Resolved 9 packages in 11ms
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: greenlet==3.0.3
+  Caused by: Failed to build: greenlet==3.0.3
+  Caused by: Build backend failed to determine extra requires with `build_wheel()`:
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 4, in &lt;module&gt;
+ModuleNotFoundError: No module named 'setuptools'
+---
+
+&gt; # Next one included since error is slightly different
+&gt; uv pip install alembic==1.0.11 --index-url &lt;index with prebuilt pypy wheels&gt;
+error: Failed to download and build: alembic==1.0.11
+  Caused by: Failed to build: alembic==1.0.11
+  Caused by: Build backend failed to determine metadata through `prepare_metadata_for_build_wheel`:
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 4, in &lt;module&gt;
+ModuleNotFoundError: No module named 'setuptools'
+---
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-16 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">virtualenv</span> added by @zanieb on 2024-02-18 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2024-02-19 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tox-dev/tox-uv/issues/15.html">tox-dev/tox-uv#15</a> on 2024-02-20 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2024-02-20 22:32</div>
+            <div class="timeline-body"><p>I think this is a general issue with build requirements in PyPy. See also https://github.com/tox-dev/tox-uv/issues/15.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../edgarrmondragon/citric/pulls/1098.html">edgarrmondragon/citric#1098</a> on 2024-02-21 06:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">pypy</span> added by @konstin on 2024-02-21 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1849.html">astral-sh/uv#1849</a> on 2024-02-22 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2094.html">astral-sh/uv#2094</a> on 2024-02-29 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-29 21:02</div>
+            <div class="timeline-body"><p>With https://github.com/astral-sh/uv/pull/2094 merged, I was able to run your original set of steps successfully. Could you try again when the next release is out? (Or build from <code>main</code> if you want to try earlier.) If it still doesn't work, it might help to share a bit more about your environment. Linux? macOS? And show the output of <code>RUST_LOG=trace uv pip install -v ...</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 21:15</div>
+            <div class="timeline-body"><p>This actually might be fixed... Let's see.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bendoerry">@bendoerry</a> on 2024-03-01 17:42</div>
+            <div class="timeline-body"><p>So this does seem to work for us now, we're able to install all our dependencies on PyPy and so far our tests seem to pass (haven't had time to run the full test suite though).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 17:44</div>
+            <div class="timeline-body"><p>Okay cool -- closing for now but if you run into other PyPy issues, please file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-01 17:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

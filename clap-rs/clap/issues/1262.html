@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Positional arguments don't work with cargo plugins - clap-rs/clap #1262</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Positional arguments don't work with cargo plugins</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1262">#1262</a>
+        opened by <a href="https://github.com/AdamNiederer">@AdamNiederer</a>
+        on 2018-04-27 23:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AdamNiederer">@AdamNiederer</a> on 2018-04-27 23:24</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p><code>rustc 1.27.0-nightly (056f589fb 2018-04-07)</code></p>
+<h3>Affected Version of clap</h3>
+<p><code>clap 2.31.2</code></p>
+<h3>Expected Behavior Summary</h3>
+<p>The following example works perfectly; I expect invoking this program via <code>cargo disassemble main</code> to work in the same way.</p>
+<pre><code class="language-shell">$ ~/.cargo/bin/cargo-disassemble main
+</code></pre>
+<h3>Actual Behavior Summary</h3>
+<pre><code class="language-shell">$ cargo disassemble main
+error: Found argument 'main' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    cargo-disassemble [FLAGS] [OPTIONS] [function]
+
+For more information try --help
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<pre><code class="language-shell">$ cargo install cargo-disassemble
+$ cargo disassemble main # fails
+$ ~/.cargo/bin/cargo-disassemble main # succeeds
+</code></pre>
+<p>Options and Flags work, but Args do not.</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<p>https://github.com/AdamNiederer/cargo-disassemble/blob/master/src/main.rs#L52
+https://github.com/AdamNiederer/cargo-disassemble/blob/master/src/main.rs#L55</p>
+<h3>Debug output</h3>
+<p>(Used via structopt)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-05 02:02</div>
+            <div class="timeline-body"><p>I'm going to close this and ping @TeXitoi (structopt author), because I'm not actually 100% sure how cargo subcommands are constructed using structopt short of using the structopt <code>raw(...)</code> methods.</p>
+<p>Here's you do it with vanilla clap:</p>
+<pre><code class="language-rust">App::new(&quot;cargo-disassemble&quot;)
+    .bin_name(&quot;cargo&quot;)
+    .setting(AppSettings::SubcommandRequiredElseHelp)
+    .subcommand(SubCommand::with_name(&quot;disassemble&quot;)
+        // add args
+    );
+</code></pre>
+<p>And then it's called <code>$ cargo disassemble &lt;args&gt;...</code> or <code>$ cargo-disassemble disassemble &lt;args&gt;...</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-06-05 02:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeXitoi">@TeXitoi</a> on 2018-06-05 12:23</div>
+            <div class="timeline-body"><p>A good example: https://github.com/sunng87/cargo-release/blob/master/src/main.rs#L312-L374</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeXitoi">@TeXitoi</a> on 2018-06-05 12:36</div>
+            <div class="timeline-body"><p>Direct translation of @kbknapp example:</p>
+<pre><code class="language-rust">#[macro_use]
+extern crate structopt;
+
+use structopt::StructOpt;
+
+#[derive(StructOpt, Debug)]
+struct Options {
+    #[structopt(help = &quot;The name of the function to be decompiled&quot;)]
+    function: Option&lt;String&gt;,
+    // ...
+}
+
+#[derive(StructOpt, Debug)]
+#[structopt(
+    name = &quot;cargo-disassemble&quot;,
+    bin_name = &quot;cargo&quot;,
+    about = &quot;Easy disassembly of Rust code.&quot;
+)]
+enum Cargo {
+    #[structopt(name = &quot;disassemble&quot;)]
+    Disassemble(Options)
+}
+
+fn main() {
+    let Cargo::Disassemble(opt) = Cargo::from_args();
+    println!(&quot;{:?}&quot;, opt);
+}
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

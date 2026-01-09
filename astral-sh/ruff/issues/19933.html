@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance lint for missed CONTAINS_OP LOAD_CONST optimization - astral-sh/ruff #19933</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Performance lint for missed CONTAINS_OP LOAD_CONST optimization</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19933">#19933</a>
+        opened by <a href="https://github.com/Zaczero">@Zaczero</a>
+        on 2025-08-16 08:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Zaczero">@Zaczero</a> on 2025-08-16 08:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I've recently found out that some people are unaware that <strong>CONTAINS_OP</strong>'s <strong>LOAD_CONST</strong> optimization applies only to containers with trivial values. As long as the RHS is non-trivial, Python will not apply <strong>LOAD_CONST</strong> optimization and will build the container each time we do <strong>CONTAINS_OP</strong>. This is a <em>major performance bottlneck</em> that many people may accidentally stumble upon. I think there's great potential in having a new rule that checks for this kind of inefficiency.</p>
+<p>I prepared an example that hopefully explains my idea and labels which cases should be considered for a warning:
+https://godbolt.org/z/radT91rdn</p>
+<p>For example, <code>0 in {'foo': 1, 'bar': 2}</code> is much more efficient in the form of <code>0 == 'foo' or 0 == 'bar'</code>, so manual iteration. An alternative would be to declare a variable for computing RHS once but that may not always be feasible.</p>
+<p>There is one potential issue: in the original code, all of the RHS is run, which can cause some side effects. After rewriting it to a sequence of <code>or...or</code> operations, Python may not run all the cases, potentially changing runtime behavior. Although I think such code would be of very poor quality in the first place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-08-18 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-08-18 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-18 15:41</div>
+            <div class="timeline-body"><p>Thanks for the suggestion! This is cool, and I didn't know godbolt had a Python option.</p>
+<p>One thing that concerns me about making this a lint rule is that it seems very dependent upon CPython implementation details that might vary between CPython versions and especially other implementations of Python.</p>
+<p>This also seems partially covered by two of our other rules:</p>
+<ul>
+<li><a href="https://docs.astral.sh/ruff/rules/literal-membership/#literal-membership-plr6201">literal-membership (PLR6201)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/single-item-membership-test/#single-item-membership-test-furb171">single-item-membership-test (FURB171)</a></li>
+</ul>
+<p>but not the dict case in your example, as far as I can tell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zaczero">@Zaczero</a> on 2025-08-18 17:20</div>
+            <div class="timeline-body"><blockquote>
+<p>This also seems partially covered by two of our other rules</p>
+</blockquote>
+<p>Not quite, my issue concerns the set/list being constructed from scratch whenever it's being tested. Some people are unaware that this LOAD_CONST optimization only applies to Python trivial values and when such optimization is missed, there's a significant performance degradation.</p>
+<hr />
+<blockquote>
+<p>One thing that concerns me about making this a lint rule is that it seems very dependent upon CPython implementation details that might vary between CPython versions and especially other implementations of Python.</p>
+</blockquote>
+<p>Given that this rule should only be applied to cases that hurt performance (bad cases), the only false-positive I can think of is if there exists a Python version/implementation that can optimize sets/collections with potential creation-time side-effects (or be smarter about it: e.g., understand that <code>'foo'.lower()</code> is side-effect-free).</p>
+<p>PyPy 3.11 has the same behavior as CPython:
+https://godbolt.org/z/sf3xs5aa7</p>
+<details>
+<summary>Cython Pure Python Mode would result in false positives (it is actually smarter):</summary>
+
+<p><img height="400" alt="Screenshot from Cython Pure Python Mode HTML annotations" src="https://github.com/user-attachments/assets/d5b2e381-da6f-49eb-981a-7a32216ba3fa" /></p>
+</details>
+
+<p>I have run AI research on the topic (https://claude.ai/public/artifacts/3d2baeed-0ad0-4db1-9042-a819ff24425f) and here are the key findings:</p>
+<ul>
+<li>LOAD_CONST optimization here is mostly unchanged since Python 3.7, <a href="https://docs.astral.sh/ruff/faq/#what-versions-of-python-does-ruff-support">the same as Ruff support</a></li>
+<li>Other implementations are unlikely to provide false positives here</li>
+</ul>
+<p>For cases of Python versions/implementations that do not support the LOAD_CONST optimization, the rule will still be beneficial for spotting performance issues. It would only miss warnings on good cases that would suffer from the same problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21116.html">astral-sh/ruff#21116</a> on 2025-10-28 22:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

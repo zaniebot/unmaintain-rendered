@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync behavior (related to uv remove) - astral-sh/uv #9973</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync behavior (related to uv remove)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9973">#9973</a>
+        opened by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a>
+        on 2024-12-17 14:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-12-17 14:35</div>
+            <div class="timeline-body"><p>Hi everyone,
+This might be expected behavior, but it is slightly inconvenient on the rare occasions I use <code>uv remove</code>. I in fact would like to learn more about the internal mechanism here (skip to end for TLDR).</p>
+<p>I have been using <code>uv sync --all-groups</code> for a while and it works great, but when doing <code>uv remove</code> it will force a different kind of sync than the other commands and remove all groups and extras:</p>
+<pre><code>$ uv sync --all-groups
+Resolved 8 packages in 1ms
+Audited 7 packages in 0.02ms
+
+$ cat pyproject.toml
+[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;requests&gt;=2.32.3&quot;,
+]
+
+[dependency-groups]
+build = [
+    &quot;pip&quot;
+]
+dev = [
+    &quot;ruff&gt;=0.8.3&quot;,
+]
+
+$ uv add urllib3
+Resolved 8 packages in 15ms
+Audited 5 packages in 0.06ms
+
+$ uv remove urllib3
+Resolved 8 packages in 19ms
+Uninstalled 1 package in 32ms
+ - pip==24.3.1
+</code></pre>
+<p>pip was removed unexpectedly!</p>
+<p>My considerations:</p>
+<ul>
+<li>uv could remember how that particular installation as synced.</li>
+<li>I don't know how most commands perform a kind of soft sync where it is only additive and this issue isn't more apparent.</li>
+<li>I like the soft sync whenever I am playing with new libs via <code>uv pip install</code>. Lately I moved into <code>uv run --with foo -- foo</code> for these experiments but it is nice to not remove packages unless a hard sync is required</li>
+<li>It does not seem to me that <code>uv remove</code> would require a hard sync but it may have been the simplest way</li>
+<li>If a hard sync must be performed I wish it to be just like my previous (or configured) sync command.</li>
+</ul>
+<p>Are there any docs on these &quot;hard&quot; vs &quot;soft&quot; syncs as I described above and what to expect from each command?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-12-17 14:36</div>
+            <div class="timeline-body"><p>I just found out: When using extras (i.e. <code>uv sync --all-extras --all-groups</code>)  uv will NOT uninstall the extras after a <code>uv remove thing</code> !?</p>
+<p>So is there a 3rd kind of sync? Or the removal of the group above is really a bug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-17 15:04</div>
+            <div class="timeline-body"><p>I believe this is a dupe of #9012. The sync after <code>uv remove</code> is confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-17 15:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

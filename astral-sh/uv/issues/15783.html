@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuring uv to source Python from conda - astral-sh/uv #15783</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Configuring uv to source Python from conda</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15783">#15783</a>
+        opened by <a href="https://github.com/thomasaarholt">@thomasaarholt</a>
+        on 2025-09-11 07:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thomasaarholt">@thomasaarholt</a> on 2025-09-11 07:26</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Due to compliance reasons, at my work (Microsoft) we have to get our python binaries from conda. We'd really like to use the uv project functionality, however, so I am wondering if it is possible to point uv at several conda environments so that those python versions are used.</p>
+<p>This is what I have tried:</p>
+<p>I notice that if I call <code>uv python list</code>, the returned list begins with:</p>
+<pre><code class="language-bash">❯ uv python list
+cpython-3.14.0rc2-windows-x86_64-none                 &lt;download available&gt;
+cpython-3.14.0rc2+freethreaded-windows-x86_64-none    &lt;download available&gt;
+cpython-3.13.7-windows-x86_64-none                    &lt;download available&gt;
+cpython-3.13.7+freethreaded-windows-x86_64-none       &lt;download available&gt;
+cpython-3.13.5-windows-x86_64-none                    AppData\Local\miniconda3\python.exe      # &lt;------ Note this one
+cpython-3.12.11-windows-x86_64-none                   &lt;download available&gt;
+cpython-3.12.9-windows-x86_64-none                    AppData\Roaming\uv\python\cpython-3.12.9-windows-x86_64-none\python.exe
+cpython-3.11.13-windows-x86_64-none                   &lt;download available&gt;
+&lt;snip&gt;
+</code></pre>
+<p>Our users (this is a data science monorepo with several projects) need to have one version each of Python 3.10-3.13 available.</p>
+<p>The base conda environment, which happened to use python 3.13, is installed at <code>C:\Users\thaarholt\AppData\Local\miniconda3\python.exe</code>.
+I can use the command <code>conda create --name &lt;NAME&gt; python=3.11</code> to create a new additional python environment, at 3.11, which will be created at <code>C:\Users\thaarholt\AppData\Local\miniconda3\envs\&lt;NAME&gt;</code>. That folder contains amongst other files, a <code>python.exe</code>.</p>
+<p>I thought to point the env variable <code>UV_PYTHON_INSTALL_DIR</code> at the <code>...\envs</code> folder together with <code>--no-managed-python</code>, and hoped that that would be enough:</p>
+<pre><code class="language-powershell">❯ $env:UV_PYTHON_INSTALL_DIR = &quot;C:\Users\thaarholt\AppData\Local\miniconda3\envs&quot;
+❯ uv python dir
+C:\Users\thaarholt\AppData\Local\miniconda3\envs
+</code></pre>
+<p>But when I look for the python versions that are available, 3.11 is not found. Yet the base environment still is, oddly.</p>
+<pre><code>❯ uv python list
+&lt;snip&gt;
+cpython-3.13.5-windows-x86_64-none                    C:\Users\thaarholt\AppData\Local\miniconda3\python.exe   # &lt;------ Why is this one still found?
+cpython-3.12.11-windows-x86_64-none                   &lt;download available&gt;
+cpython-3.11.13-windows-x86_64-none                   &lt;download available&gt;      # &lt;------ Still no python 3.11 found!
+&lt;snip&gt;
+</code></pre>
+<p>And then just to be sure, when I try to make a new environment, the 3.11 version is not found:</p>
+<pre><code class="language-powershell">❯ uv venv --no-managed-python --python 311
+error: No interpreter found for Python 3.11 in registry or search path
+
+hint: A managed Python download is available for Python 3.11, but the Python preference is set to 'only system'
+</code></pre>
+<p>Am I using this variable wrong? Does anyone have any advice?</p>
+<h3>Platform</h3>
+<p>Windows 11 x86_65</p>
+<h3>Version</h3>
+<p>uv 0.8.17 (10960bc13 2025-09-10)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @thomasaarholt on 2025-09-11 07:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-11 07:41</div>
+            <div class="timeline-body"><p><code>UV_PYTHON_INSTALL_DIR</code> is for uv's own managed Pythons, to change the download location, it doesn't find other Python in that location.</p>
+<p>To make the conda Pythons available to uv, the easiest way is to make each one available in <code>PATH</code>. uv searches in <code>PATH</code>, and if the requested version is available there, it uses it instead of trying a download a managed Python; it will treat conda Python like system installations.</p>
+<p>Conda is very different from the environment we usually use, with conda having a separate activation mechanism, a different package and its own index format (https://github.com/astral-sh/uv/issues/1703).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../KyleKing/textract-py3/pulls/16.html">KyleKing/textract-py3#16</a> on 2025-11-20 04:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

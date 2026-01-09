@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule UP007 suggests to substitute type hints with Union with a pipe | even with Python 3.9 - astral-sh/ruff #19748</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule UP007 suggests to substitute type hints with Union with a pipe | even with Python 3.9</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19748">#19748</a>
+        opened by <a href="https://github.com/JumboBear">@JumboBear</a>
+        on 2025-08-04 18:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JumboBear">@JumboBear</a> on 2025-08-04 18:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I found that in my code there was a potential part that Ruff would suggest to fix regarding the usage of type hints. The fix would substitute a type hint using Union with the new pipe operator even if the Python target version is still 3.9 and not 3.10 as <a href="https://peps.python.org/pep-0604/">PEP 604</a> would allow. I suspect the rule that is affected is the UP007 but I am not sure.</p>
+<p>The following command list should explain everything by itself anyway.</p>
+<pre><code># work on an empty directory
+cd $(mktemp -d)
+
+# ensure Python 3.9 is actually used inside a venv
+python3.9 -m venv .venv
+
+. ./.venv/bin/activate
+
+python --version
+Python 3.9.23
+
+# install Ruff
+pip install ruff
+
+ruff --version
+ruff 0.12.7
+
+# verify the minimal configuration that will show the rule
+cat ~/.config/ruff/ruff.toml
+# Assume Python 3.9
+target-version = &quot;py39&quot;
+
+lint.select = [&quot;ALL&quot;]
+lint.ignore = [&quot;D&quot;, &quot;T201&quot;]
+
+# show the source
+cat test.py 
+from typing import Union
+
+
+def foo_bar() -&gt; Union[str, int]:
+    print(&quot;foo&quot;)
+    return &quot;bar&quot;
+
+def main() -&gt; None:
+    print(foo_bar())
+
+if __name__ == &quot;__main__&quot;:
+    main()
+
+# check it actually works as intended
+python test.py 
+foo
+bar
+
+ruff check .
+test.py:4:18: FA100 Add `from __future__ import annotations` to simplify `typing.Union`
+  |
+4 | def foo_bar() -&gt; Union[str, int]:
+  |                  ^^^^^ FA100
+5 |     print(&quot;foo&quot;)
+6 |     return &quot;bar&quot;
+  |
+  = help: Add `from __future__ import annotations`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+
+ruff check --fix --diff --unsafe-fixes .
+--- test.py
++++ test.py
+@@ -1,7 +1,7 @@
+-from typing import Union
++from __future__ import annotations
+ 
+ 
+-def foo_bar() -&gt; Union[str, int]:
++def foo_bar() -&gt; str | int:
+     print(&quot;foo&quot;)
+     return &quot;bar&quot;
+ 
+
+Would fix 5 errors.
+</code></pre>
+<p>This is the <a href="https://play.ruff.rs/7789df0c-3ba2-4293-b4cc-cf1b965b60df">playground</a> with the same code.</p>
+<h3>Version</h3>
+<p>ruff 0.12.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-04 19:18</div>
+            <div class="timeline-body"><p>By selecting <code>ALL</code>, you also have <a href="https://docs.astral.sh/ruff/rules/future-rewritable-type-annotation/#future-rewritable-type-annotation-fa100">future-rewritable-type-annotation (FA100)</a> selected. This allows Ruff to add the <code>from __future__ import annotations</code> import to the top of the file:</p>
+<pre><code class="language-diff">-from typing import Union
++from __future__ import annotations
+</code></pre>
+<p>which in turn allows the union to be rewritten. So I think this is working as intended. You can see this from the <code>ruff check</code> invocation, which only flags FA100. But after fixing that, UP007 can be fixed as well.</p>
+<p>With the <code>__future__</code> import, this code should be fine on Python 3.9:</p>
+<pre><code class="language-pycon">Python 3.9.21 (main, Feb 12 2025, 14:50:43)
+[Clang 19.1.6 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; def foo() -&gt; str | int: ...
+...
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+TypeError: unsupported operand type(s) for |: 'type' and 'type'
+&gt;&gt;&gt; from __future__ import annotations
+&gt;&gt;&gt; def foo() -&gt; str | int: ...
+...
+&gt;&gt;&gt;
+</code></pre>
+<p>You can ignore <code>FA100</code> or use the <a href="https://docs.astral.sh/ruff/settings/#lint_pyupgrade_keep-runtime-typing">keep-runtime-typing</a> setting mentioned in the <a href="https://docs.astral.sh/ruff/rules/non-pep604-annotation-union/#options">docs</a> to suppress this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-08-04 19:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

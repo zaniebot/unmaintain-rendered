@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[question/request] processing stdin? - astral-sh/ruff #1823</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[question/request] processing stdin?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1823">#1823</a>
+        opened by <a href="https://github.com/FrancescElies">@FrancescElies</a>
+        on 2023-01-12 17:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/FrancescElies">@FrancescElies</a> on 2023-01-12 17:28</div>
+            <div class="timeline-body"><p>With other tools like black one can pass a file via stdin <code>cat myfile.py | black -</code> and it will be formatted.</p>
+<p>Could ruff do something similar <code>cat myfile.py | ruff -</code>, or does ruff need to know the path of the file?</p>
+<p>This could be helpful in the case where an editor would pass the contents of a buffer via stdin and get those contents ruffed.</p>
+<p>Thanks in advance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-12 17:34</div>
+            <div class="timeline-body"><p>Yeah this exists!</p>
+<pre><code>❯ cat setup.py| ruff -
+-:1:8: F401 `os` imported but unused
+Found 1 error(s).
+1 potentially fixable with the --fix option.
+ruff on  autofix-flake8-quotes:main [$!⇡] is 📦 v0.0.219 via 🐍 v3.11.0 via 🦀 v1.68.0-nightly
+❯ cat setup.py| ruff - --stdin-filename=setup.py
+setup.py:1:8: F401 `os` imported but unused
+Found 1 error(s).
+1 potentially fixable with the --fix option
+❯ cat setup.py| ruff - --stdin-filename=setup.py --fix
+import sys
+
+from setuptools import setup
+
+sys.stderr.write(
+    &quot;&quot;&quot;
+===============================
+Unsupported installation method
+===============================
+ruff no longer supports installation with `python setup.py install`.
+Please use `python -m pip install .` instead.
+&quot;&quot;&quot;
+)
+sys.exit(1)
+
+
+# The below code will never execute, however GitHub is particularly
+# picky about where it finds Python packaging metadata.
+# See: https://github.com/github/feedback/discussions/6456
+#
+# To be removed once GitHub catches up.
+
+setup(name=&quot;ruff&quot;, install_requires=[])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-12 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-12 17:42</div>
+            <div class="timeline-body"><p>(So broadly speaking: we output the errors, unless you pass <code>--fix</code>, in which case we pass you the fixed contents.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FrancescElies">@FrancescElies</a> on 2023-01-13 05:29</div>
+            <div class="timeline-body"><p>aha, ok thanks adding <code>--fix</code> flag does the trick 🎊 <code>cat setup.py | ruff - --fix</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

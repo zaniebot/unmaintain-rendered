@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] mdtest output improvements - astral-sh/ruff #13875</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] mdtest output improvements</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13875">#13875</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-10-22 07:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-22 07:45</div>
+            <div class="timeline-body"><p>Some ideas on how we could improve the mdtest output:</p>
+<h2>Remove redundant test name</h2>
+<p>The test name, e.g. <code>imports/errors</code> is now rendered in at least 3 places:</p>
+<pre><code>failures:
+
+---- mdtest__import_errors stdout ----
+
+/import/errors.md - Unresolved Imports - Unresolved import from statement
+
+    /import/errors.md:16 unmatched assertion: revealed: Unknown2
+    /import/errors.md:16 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+
+--------------------------------------------------
+
+thread 'mdtest__import_errors' panicked at crates/red_knot_test/src/lib.rs:61:5:
+Some tests failed.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<ol>
+<li><code>mdtest_import_errors stdout</code> (<code>cargo test</code>)</li>
+<li>The error header: <code>/import/errors.md - Unresolved Imports - Unresolved import from statement</code> (mdtest)</li>
+<li>The cargo test error message: <code>thread 'mdtest__import_errors' panicked at crates/red_knot_test/src/lib.rs:61:5:</code></li>
+</ol>
+<p>It's even worse when using <code>nextest</code></p>
+<pre><code>--- STDOUT:              red_knot_python_semantic::mdtest mdtest__import_errors ---
+
+running 1 test
+
+/import/errors.md - Unresolved Imports - Unresolved import from statement
+
+    /import/errors.md:16 unmatched assertion: revealed: Unknown2
+    /import/errors.md:16 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+
+--------------------------------------------------
+
+test mdtest__import_errors ... FAILED
+
+failures:
+
+failures:
+    mdtest__import_errors
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 67 filtered out; finished in 0.16s
+
+
+--- STDERR:              red_knot_python_semantic::mdtest mdtest__import_errors ---
+thread 'mdtest__import_errors' panicked at crates/red_knot_test/src/lib.rs:61:5:
+Some tests failed.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>I suggest that we change the <code>mdtest</code> header to just show the test-name, excluding the markdown file:</p>
+<pre><code>
+failures:
+
+---- mdtest__import_errors stdout ----
+
+Unresolved Imports - Unresolved import from statement
+
+    /import/errors.md:16 unmatched assertion: revealed: Unknown2
+    /import/errors.md:16 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+
+--------------------------------------------------
+
+thread 'mdtest__import_errors' panicked at crates/red_knot_test/src/lib.rs:61:5:
+Some tests failed.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<h2>File paths not clickable</h2>
+<p>The <code>errors.md:16</code> file paths aren't clickable for me because the paths' aren't relative to the workspace root. We should make the paths relative to the workspace root (and render them as relative and not absolute paths)</p>
+<h2>Reduce indentation</h2>
+<p>I find the indentation of the inner errors distracting. I don't think we need it considering that we use blank lines and a bold title to group files.</p>
+<pre><code>
+failures:
+
+---- mdtest__import_errors stdout ----
+
+Unresolved Imports - Unresolved import from statement
+
+/import/errors.md:16 unmatched assertion: revealed: Unknown2
+/import/errors.md:16 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+
+Unresolved Imports2 - Unresolved import from statement2
+
+/import/errors.md:16 unmatched assertion: revealed: Unknown2
+/import/errors.md:16 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+
+--------------------------------------------------
+
+thread 'mdtest__import_errors' panicked at crates/red_knot_test/src/lib.rs:61:5:
+Some tests failed.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-10-22 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-10-22 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-23 19:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Remove redundant test name</p>
+</blockquote>
+<p>Definitely.</p>
+<blockquote>
+<p>File paths not clickable</p>
+</blockquote>
+<p>Huh, they're clickable for me in VSCode. But I definitely don't object to this change.</p>
+<blockquote>
+<p>Reduce indentation</p>
+<p>I find the indentation of the inner errors distracting. I don't think we need it considering that we use blank lines and a bold title to group files.</p>
+</blockquote>
+<p>One thing about this is that I do think the indentation makes the output more readable when long errors &quot;spill over&quot; onto multiple lines. Here's one output as it is now:</p>
+<details>
+<summary>Screenshot</summary>
+
+<p><img src="https://github.com/user-attachments/assets/955d4106-d584-41e2-a7fc-77eb3064138c" alt="image" /></p>
+</details>
+
+<p>And here it is without the indentation:</p>
+<details>
+<summary>Screenshot</summary>
+
+<p><img src="https://github.com/user-attachments/assets/19dceeb6-43c4-4cfe-891b-43103f11ae27" alt="image" /></p>
+</details>
+
+<details>
+
+<summary>Diff to produce the errors used for screenshots</summary>
+
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/resources/mdtest/exception/control_flow.md b/crates/red_knot_python_semantic/resources/mdtest/exception/control_flow.md
+index f7cf500d0..fec12a7b8 100644
+--- a/crates/red_knot_python_semantic/resources/mdtest/exception/control_flow.md
++++ b/crates/red_knot_python_semantic/resources/mdtest/exception/control_flow.md
+@@ -92,15 +92,15 @@ def could_raise_returns_str() -&gt; str:
+ x = 1
+ 
+ try:
+-    reveal_type(x)  # revealed: Literal[1]
++    reveal_type(x)
+     x = could_raise_returns_str()
+-    reveal_type(x)  # revealed: str
++    reveal_type(x)  # revealed: int
+ except TypeError:
+     reveal_type(x)  # revealed: Literal[1] | str
+     x = 2
+-    reveal_type(x)  # revealed: Literal[2]
++    reveal_type(x)
+ 
+-reveal_type(x)  # revealed: str | Literal[2]
++reveal_type(x)  # revealed: str
+ ```
+ 
+ ## Multiple `except` branches
+</code></pre>
+</details>
+
+<p>I agree in most cases the indentation feels unnecessary though. Ideally I feel like I'd like the <em>second</em> line of the &quot;spillover&quot; for very long error messages to be indented, rather than the first line. Not sure how tricky that would be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2024-10-23 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 06:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Ideally I feel like I'd like the second line of the &quot;spillover&quot; for very long error messages to be indented, rather than the first line. Not sure how tricky that would be.</p>
+</blockquote>
+<p>It depends. If we would want to indent after every newline, then this <code>Formatter</code> adapter might be useful
+<a href="https://github.com/astral-sh/ruff/blob/e7b49694a795e3347ffc6f499245dfcbbb4b28ed/crates/ruff_linter/src/message/grouped.rs#L173-L202">Than</a></p>
+<p>But that's not what we need here because there's no newline. The line wraps because your terminal doesn't have enough space to render the entire line. A trivial solution could be chunk messages into 60 char long parts and render them by part. I think the long-term solution is that we build a proper diagnostic system that supports showing rich content. It helps reducing the need for long messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14213.html">astral-sh/ruff#14213</a> on 2024-11-08 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-12 12:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

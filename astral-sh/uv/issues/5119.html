@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv lock should redact username and password from  source - astral-sh/uv #5119</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv lock should redact username and password from  source</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/5119">#5119</a>
+        opened by <a href="https://github.com/ewianda">@ewianda</a>
+        on 2024-07-16 18:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ewianda">@ewianda</a> on 2024-07-16 18:10</div>
+            <div class="timeline-body"><p>eg</p>
+<pre><code> 
+ [[distribution]]
+ name = &quot;absl-py&quot;
+ version = &quot;2.0.0&quot;
+source = { registry = &quot;https://username:secrete-token@private-registry/registry/pypi/simple/&quot; }
+</code></pre>
+<p>to</p>
+<pre><code>[[distribution]]
+ name = &quot;absl-py&quot;
+ version = &quot;2.0.0&quot;
+source = { registry = &quot;https://private-registry/registry/pypi/simple/&quot; }
+
+similar to 
+
+https://github.com/astral-sh/uv/issues/3106
+</code></pre>
+<p><strong>uv --version</strong>
+uv 0.2.24</p>
+<p>similar https://github.com/astral-sh/uv/issues/3106</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-16 18:19</div>
+            <div class="timeline-body"><p>Also related https://github.com/astral-sh/uv/issues/1714</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-07-16 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-07-16 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 01:19</div>
+            <div class="timeline-body"><p>Not sure what to do here -- do we really want to strip the credentials entirely? If so, how would users install from the lockfile?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ewianda">@ewianda</a> on 2024-07-17 03:09</div>
+            <div class="timeline-body"><p>Won't redefining the index url with the authorization in cli or environment variable work?. I see two issues</p>
+<ol>
+<li>Keeping the username and password means the lock file cannot be checked into version control.</li>
+<li>For Google artifact registry for example, the password is user specific authorization token that expires</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-17 17:42</div>
+            <div class="timeline-body"><p>How are the credentials being provided in the first place here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 23:05</div>
+            <div class="timeline-body"><p>Should we just omit username and password entirely then from the lockfile, in all cases? AFAICT that's the only option available to us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ewianda">@ewianda</a> on 2024-07-18 01:03</div>
+            <div class="timeline-body"><blockquote>
+<p>How are the credentials being provided in the first place here?</p>
+</blockquote>
+<p>UV_INDEX_URL=https://oauth2accesstoken:${ARTIFACT_REGISTRY_TOKEN}@us-python.pkg.dev/private/private/simple/</p>
+<p>or cli  <code>--index-url</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-18 03:49</div>
+            <div class="timeline-body"><p>I presume the environment variable is being resolved by your shell then? e.g. the first case in</p>
+<pre><code>❯ export VAR='SECRET'
+❯ echo &quot;$VAR&quot;
+SECRET
+❯ echo '$VAR'
+$VAR
+</code></pre>
+<p>If so, we don't know anything about the use of an environment variable and cannot use it to template the URL. I guess we might need to encourage setting the index URL with <code>'</code> so it's preserved and we resolve it to a value ourselves?</p>
+<p>Ideally we'd <em>at least</em> retain the username. However, sometimes it's ambiguous if we should use something in the username position as a password.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-19 17:21</div>
+            <div class="timeline-body"><p>If we drop the credentials from the lockfile itself, then re-run with the index URL provided as above, do we properly propagate them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-19 17:32</div>
+            <div class="timeline-body"><p>I don't think we do any environment variable propagation today, we'd need to add that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-30 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-31 01:02</div>
+            <div class="timeline-body"><blockquote>
+<p>How are the credentials being provided in the first place here?</p>
+</blockquote>
+<p>We use <code>uv.toml</code> for this same purpose. We largely regard the choice of registry as a centrally-mandated choice -- in fact, given a choice, I would actively want to disregard a reference to an unapproved registry, and always force downloads to go through our internal mirrors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-02 19:04</div>
+            <div class="timeline-body"><p>I think environment variable parsing/propagation from <code>pyproject.toml</code> would be important to hide secrets in both the repo and CI/CD.</p>
+<p>For example, I expected this to work:</p>
+<pre><code>[tool.uv.pip]
+native-tls = true
+index-url = &quot;https://${PYPI_USERNAME}:${PYPI_PASSWORD}@mycompany.com/repository/pypi-proxy/simple/&quot;
+</code></pre>
+<p>I expected <code>uv</code> to only pull from the configured <code>index-url</code> and not fall back to default pypi, for security purposes (to prevent typosquatting/malicious package replacements upstream).</p>
+<p>In GitLab, project variables can be used as environment variables in the CI/CD pipeline. Below is a GitLab job template that installs <code>uv</code> and the project dependencies into an alpine-python container that already has <code>pip</code> (which is then extended for all python-related jobs in the pipeline).</p>
+<pre><code class="language-yaml">.job-template:
+  image: python:3.12-alpine
+  rules:
+    - if: $CI_PIPELINE_SOURCE == &quot;merge_request_event&quot;
+    - if: $CI_COMMIT_BRANCH &amp;&amp; $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_PIPELINE_SOURCE == &quot;push&quot;
+  variables:
+    PIP_CACHE_DIR: &quot;$CI_PROJECT_DIR/.cache/pip&quot;
+    UV_CACHE_DIR: &quot;$CI_PROJECT_DIR/.cache/uv&quot;
+  cache:
+    key:
+      files:
+        - uv.lock
+    paths:
+      - .cache/pip
+      - .cache/uv
+      - .venv
+    policy: pull
+    - pip config set global.cert /my_company.pem
+    - pip config set global.index-url &quot;https://${PYPI_USERNAME}:${PYPI_PASSWORD}@mycompany.com/repository/pypi-proxy/simple/&quot;
+    - pip install uv
+    - uv sync
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-02 19:26</div>
+            <div class="timeline-body"><p>@chrisrodrigue -- I think that's actually intended to work, I'm somewhat surprised that it doesn't. But isn't it more common for those env vars to be expanded automatically by the shell, such that the value written to the pip config <em>does</em> include the raw credentials?</p>
+<p>In other words: I believe that <code>pip config set global.index-url &quot;https://${PYPI_USERNAME}:${PYPI_PASSWORD}@mycompany.com/repository/pypi-proxy/simple/&quot;</code> does <em>not</em> write <code>https://${PYPI_USERNAME}:${PYPI_PASSWORD}@mycompany.com/repository/pypi-proxy/simple/</code> to the config file -- it writes the expanded form.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-02 19:26</div>
+            <div class="timeline-body"><pre><code class="language-toml">[tool.uv.pip]
+index-url = &quot;https://${PYPI_USERNAME}:${PYPI_PASSWORD}@mycompany.com/repository/pypi-proxy/simple/&quot;
+</code></pre>
+<p>This will not fall back to PyPI, but it's only used at all in the <code>uv pip</code> interface. If you want the index URL to apply to <em>all</em> uv commands, omit the <code>pip</code>:</p>
+<pre><code>[tool.uv]
+index-url = &quot;https://${PYPI_USERNAME}:${PYPI_PASSWORD}@mycompany.com/repository/pypi-proxy/simple/&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-02 19:32</div>
+            <div class="timeline-body"><p>I added https://github.com/astral-sh/uv/issues/5734.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-02 20:06</div>
+            <div class="timeline-body"><blockquote>
+<p>@chrisrodrigue -- I think that's actually intended to work, I'm somewhat surprised that it doesn't. But isn't it more common for those env vars to be expanded automatically by the shell, such that the value written to the pip config <em>does</em> include the raw credentials?</p>
+</blockquote>
+<p>Yes they are expanded, and the value written to the pip config shows the raw credentials. I don't <em>think</em> this is a security issue since the pipeline container is ephemeral.</p>
+<p>GitLab has a feature that masks the expanded variables from job logs... I assume GitHub supports a similar feature?</p>
+<p><img src="https://github.com/user-attachments/assets/25a8ce7e-a7d5-4401-96f4-09b00865ff18" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-02 20:19</div>
+            <div class="timeline-body"><p>But I don't think the masking extends to other files/artifacts such as the <code>uv.lock</code>.</p>
+<p>I think some solutions would be for the <code>uv.lock</code> to either</p>
+<p>(1) Completely strip the username/password fields</p>
+<p>from</p>
+<pre><code class="language-toml">source = { registry = &quot;https://actual_username:actual_password@mycompany.com/repository/pypi-proxy/simple/&quot; }
+</code></pre>
+<p>to</p>
+<pre><code class="language-toml">source = { registry = &quot;https://mycompany.com/repository/pypi-proxy/simple/&quot; }
+</code></pre>
+<p>or</p>
+<p>(2) retain the environment variable name without expansion, which could provide more useful context to a user attempting to debug or reproduce the environment</p>
+<pre><code class="language-toml">source = { registry = &quot;https://${PYPI_USERNAME}:${PYPI_PASSWORD}@mycompany.com/repository/pypi-proxy/simple/&quot; }
+</code></pre>
+<p>A happy medium could be to allow user-configurability a la <code>uv lock | sync --expand-variables</code> and default to not expanding variables to protect potential secrets from being exposed in plaintext. This would prevent secrets from being committed to a git repository in the <code>uv.lock</code> file unless explicitly opted in for applicable commands.</p>
+<pre><code class="language-toml">[tool.uv.options]
+sync = [&quot;--expand-variables&quot;]
+lock = [&quot;--expand-variables&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-03 00:14</div>
+            <div class="timeline-body"><p>The Hatch project has a slightly more verbose but powerful syntax for annotating <a href="https://hatch.pypa.io/latest/config/context/#paths">paths</a> and <a href="https://hatch.pypa.io/latest/config/context/#environment-variables">environment variables</a> in config:</p>
+<p>Paths (<code>{root | home}</code>) support several modifiers (<code>{uri | real | parent}</code>):</p>
+<pre><code class="language-toml">[tool.hatch.envs.test]
+dependencies = [
+    &quot;example-project @ {root:parent:parent:uri}/example-project&quot;,
+]
+</code></pre>
+<p>Environment variables support setting default values if they are not set, e.g. <code>{env:PATH:DEFAULT}</code>)</p>
+<pre><code class="language-toml">[tool.hatch.envs.test.scripts]
+display = &quot;echo {env:FOO:{env:BAR:{home}}}&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5734.html">astral-sh/uv#5734</a> on 2024-08-03 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-08-03 23:03</div>
+            <div class="timeline-body"><p>I think (1) should be the default behaviour -- it is secure by default, and makes no assumptions as to the way the credentials were fed in (env var interpolation by shell, env var interpolation by uv, <code>uv.toml</code>, CLI arg, ...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-03 23:05</div>
+            <div class="timeline-body"><p>@paveldikov -- I tend to agree. Though we need to make sure that we're able to reconnect the credentials appropriately at install time...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-03 23:28</div>
+            <div class="timeline-body"><p>I'll be giving this some thought this week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4893.html">astral-sh/uv#4893</a> on 2024-08-05 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5803.html">astral-sh/uv#5803</a> on 2024-08-05 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-06 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-06 02:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

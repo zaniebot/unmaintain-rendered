@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider dropping candidates that have parse errors for resolution instead of failing the installation - astral-sh/uv #2821</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider dropping candidates that have parse errors for resolution instead of failing the installation</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2821">#2821</a>
+        opened by <a href="https://github.com/potiuk">@potiuk</a>
+        on 2024-04-04 18:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/potiuk">@potiuk</a> on 2024-04-04 18:02</div>
+            <div class="timeline-body"><p>I have  really weird issue with latest uv (0.1.28) and I <em>think</em> there is an issue with how errors is parsing candidate metadata might cause the whole build to fail.</p>
+<p>In some cases of <code>uv pip install</code> - some old releases of some transitive dependencies with broken metadata <strong>might</strong> cause the whole installation to fail - even if there are other candidates that are perfectly fine.</p>
+<p>This one is pretty similar to one which I opened in the past and closed (#2411) - but this time, I <strong>think</strong> the way how uv fails is a bit too &quot;panicky&quot;.</p>
+<p>One of the steps of our CI is building PROD images and while doing it in release branch, we are buding the released airflow from sources to wheel and install it with 'PROD' image extras - which will pull provider packages and a number of transitive dependencies from <code>PyPI</code>.</p>
+<p>The command to run is:</p>
+<pre><code>uv pip install 'apache-airflow[aiobotocore,amazon,async,celery,cncf-kubernetes,common-io,docker,elasticsearch,ftp,google,google-auth,graphviz,grpc,hashicorp,http,ldap,microsoft-azure,mysql,odbc,openlineage,pandas,postgres,redis,sendgrid,sftp,slack,snowflake,ssh,statsd,uv,virtualenv] @ file:///docker-context-files/apache_airflow-2.9.0-py3-none-any.whl'
+</code></pre>
+<p>This nicely work for Python 3.8 - 3.10 and 3.12, but for Python 3.11 (and only for Python 3.11) it fails with this error:</p>
+<pre><code>#64 6.287 error: Failed to download: google-cloud-bigquery==1.28.2
+  #64 6.287   Caused by: Couldn't parse metadata of google_cloud_bigquery-1.28.2-py2.py3-none-any.whl from https://files.pythonhosted.org/packages/ce/af/89ccb3dd70a86516cb408dd7b7484d2fdd073bdce6405f722f75e6058e66/google_cloud_bigquery-1.28.2-py2.py3-none-any.whl.metadata
+  #64 6.287   Caused by: after parsing 2.0, found &quot;de&quot; after it, which is not part of a valid version
+  #64 6.287 pyarrow (&lt;2.0de,&gt;=1.0.0) ; (python_version &gt;= &quot;3.5&quot;) and extra == 'all'
+  #64 6.287          ^^^^^^
+</code></pre>
+<p>Of course - it's obvious what the problem is with the <code>google-cloud-bigquery</code> package - but this is a REALLLY old version of the package (4 years) and it's not the one that the installation should resolve to. All the previous resolutions correctly resolved it to google-cloud-bigquery==3.20.1  - which is latest version released on 1st of April (not an April's fool joke). But the PROD image installation somehow fails the whole <code>uv pip install</code> fails - because of that wrong metadata, in package version that should not even be considered.</p>
+<p>I am attempting to battle this in two ways:</p>
+<ol>
+<li>add a more direct dependency to the future provider (and lower-bind it) https://github.com/apache/airflow/pull/38753</li>
+<li>switch back to <code>pip</code> for &quot;Release&quot; PROD builds when we do PROD image building using <code>pip</code> rather than locally build providers (which we use in <code>main</code> : https://github.com/apache/airflow/pull/38749 and https://github.com/apache/airflow/pull/38752</li>
+</ol>
+<p>I  am not sure if 1. will help, 2. should help for sure - (and for now we anyhow use <code>pip</code> to install airflow in &quot;real&quot; PROD image - so that is going to stay likely (release branches should be as close to &quot;production&quot; releases as possible) - but it would be cool to investigate and see why such a metadata issue in an old version that is not really even going to be used is causing the whole installation to fail.  It does not seem too robust if someone could release (or have released in the past) an old, broken version of the package that would break new installation for new versions of the same package (being transitive dependency)</p>
+<p>Link to show thee failure (logs will disappear in 30 days or so) : https://github.com/apache/airflow/actions/runs/8555464849/job/23446007205#step:10:3693 - and you can see that it's only Python 3.11 that fails (which is even stranger).</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-04 18:08</div>
+            <div class="timeline-body"><p>Thanks for all the details! I'm not sure why we're backtracking so far here, but you can see some more information about the general problem at https://github.com/astral-sh/uv/issues/1398</p>
+<p>Reasonable lower bounds are definitely a good solution to help a resolver in a situation like this.</p>
+<p>I'm not sure about dropping the candidates vs failing — cc @konstin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 18:11</div>
+            <div class="timeline-body"><p>This looks similar to https://github.com/astral-sh/uv/issues/1800.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 18:11</div>
+            <div class="timeline-body"><p>I think we should be skipping invalid candidates...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 18:12</div>
+            <div class="timeline-body"><p>We do this in some cases already though. I'm trying to remember when.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-04-04 18:13</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we should be skipping invalid candidates...</p>
+</blockquote>
+<p>Yeah. Sounds about right :) . They are invalid and won't be installed anyway, so we might very safely reject them :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 18:13</div>
+            <div class="timeline-body"><p>Ah okay, we skip when parsing the simple metadata responses, since those can contain invalid <code>Requires-Python</code> markers. We should similarly skip-and-warn for distributions with invalid metadata.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-04-04 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1560.html">astral-sh/uv#1560</a> on 2024-04-04 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-05 04:24</div>
+            <div class="timeline-body"><p>I can do this tomorrow as a fun thing, it seems interesting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/airflow/pulls/38753.html">apache/airflow#38753</a> on 2024-04-05 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-05 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2834.html">astral-sh/uv#2834</a> on 2024-04-05 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-05 22:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic completion for Nushell - clap-rs/clap #5840</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Dynamic completion for Nushell</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/5840">#5840</a>
+        opened by <a href="https://github.com/chklauser">@chklauser</a>
+        on 2024-12-11 23:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chklauser">@chklauser</a> on 2024-12-11 23:23</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Describe your use case</h3>
+<p>Bash, zsh, fish, etc. have very cool support for dynamic completion. Dynamic completion is a huge boost to the usability of a tool.</p>
+<p>The <code>clap_complete_nushell</code> crate doesn't support dynamic completion yet. While the &quot;external&quot; completion story in Nushell is still a bit shaky, it's nonetheless possible for Nushell to get completions from external programs. We just need to implement it.</p>
+<h3>Describe the solution you'd like</h3>
+<p>The <code>source &lt;(COMPLETE=nushell some-clap-binary --)</code> pattern fundamentally won't work in Nushell. Nushell requires all code to be statically available in the file system <em>before</em> configuration gets loaded. This makes it a bit tricky to make installation of the dynamic completion support both convenient <em>and</em> &quot;auto-updating&quot; (in case a new version of a clap-based CLI gets installed).</p>
+<p>Additionally, and unlike every other shell that we support, Nushell only supports a single, globally registered &quot;external completer&quot;. For users, who want to have more than one external completer, the suggestion is to have a &quot;meta-completer&quot; that looks at the command line (first arg, which is the binary name) and dispatches the completion request to an appropriate completer.</p>
+<p>A solution could look like this:
+(1) The user asks the clap-based CLI tool to generate a &quot;completion generator&quot; source file</p>
+<pre><code class="language-nushell">COMPLETE=nushell some-clap-tool -- | save --raw ~/.config/nushell/generate-some-clap-tool-completions.nu
+</code></pre>
+<p>This &quot;completion generator&quot; needs to be as stable and minimal as possible. It could look something like this:</p>
+<pre><code class="language-nushell">COMPLETE=nushell COMPLETE_nu=module some-clap-tool -- | save --raw ($env.NU_LIB_DIRS.0 | path join some-clap-tool-completer.nu)
+</code></pre>
+<p>Each time <code>env.nu</code> is loaded, this writes an updated version of the <em>actual</em> completion hook. The additional <code>COMPLETE_nu=module</code> environment variable signals that the clap-based tool should generate the completion hook and not the &quot;completion generator&quot; file.</p>
+<p>(2) The user (manually) includes this source file in their <strong>env.nu</strong></p>
+<pre><code class="language-nushell"># env.nu
+source ./generate-some-clap-tool-completions.nu
+</code></pre>
+<p>(3) The user (manually) uses the regularly re-generated module in their <strong>config.nu</strong></p>
+<pre><code class="language-nushell"># config.nu
+use some-clap-tool-completer
+# and then EITHER
+some-clap-tool-completer install
+# OR
+$env.config.completions.external.completer = { |spans| 
+  if (some-clap-tool-completer handles $spans) {
+    some-clap-tool-completer complete $spans
+  } else {
+    # other completers that the user wants to dispatch to
+  }
+}
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p><strong>Autoload Directories</strong>
+A hidden feature of Nushell. It will be officially documented in version 0.101. Files in those autoload directories get loaded <em>after</em> <code>config.nu</code>. They sound like a good target for completions <em>except</em> for the issue that there can only be one global completer. If we just plonk the clap-generated file into an autoload directory, we take away the user's control over how external completion works in their shell.</p>
+<p>There are some <a href="https://www.nushell.sh/blog/2024-12-04-configuration_preview.html">upcoming changes to Nushell configuration</a>.</p>
+<h3>Additional Context</h3>
+<p>Nushell docs</p>
+<ul>
+<li><a href="https://www.nushell.sh/book/custom_completions.html#external-completions">External Completions</a></li>
+<li><a href="https://www.nushell.sh/cookbook/external_completers.html#multiple-completer">Suggestion for the case of multiple completers</a></li>
+<li><a href="https://www.nushell.sh/book/configuration.html#nushell-configuration-with-env-nu-and-config-nu">Configuration (env.nu vs config.nu)</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @chklauser on 2024-12-11 23:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5841.html">clap-rs/clap#5841</a> on 2024-12-11 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2024-12-12 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3166.html">clap-rs/clap#3166</a> on 2024-12-12 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-12-12 19:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Nushell requires all code to be statically available in the file system before configuration gets loaded. This makes it a bit tricky to make installation of the dynamic completion support both convenient and &quot;auto-updating&quot; (in case a new version of a clap-based CLI gets installed).</p>
+</blockquote>
+<p>In https://github.com/clap-rs/clap/issues/5668#issuecomment-2457934682  there is discussion of lazy loading.  Unsure if that would be sufficient for nushell.</p>
+<blockquote>
+<p>Additionally, and unlike every other shell that we support, Nushell only supports a single, globally registered &quot;external completer&quot;. For users, who want to have more than one external completer, the suggestion is to have a &quot;meta-completer&quot; that looks at the command line (first arg, which is the binary name) and dispatches the completion request to an appropriate completer.</p>
+</blockquote>
+<p>Ouch, this sounds like a big limitation.</p>
+<p>If I'm understanding correctly, we basically require users to hook us into their hand-written meta-completer?  Not too ideal.  Is there any talk about fixing this so custom completers can better coordinate and have a good out-of-the-box experience?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hofer-Julian">@Hofer-Julian</a> on 2024-12-26 14:27</div>
+            <div class="timeline-body"><p>Thanks for looking into this @chklauser!</p>
+<p>In your PR you added <code>install</code>, which</p>
+<blockquote>
+<p>`globally registers a completer that falls back to whatever completer was previously installed if handles rejects completing a command line.</p>
+</blockquote>
+<p>I think that is a good way of working around nushell's current limitations.</p>
+<blockquote>
+<p>There are some <a href="https://www.nushell.sh/blog/2024-12-04-configuration_preview.html">upcoming changes to Nushell configuration</a>.</p>
+</blockquote>
+<p>Also, this is nowadays released. Users now only have things in their config that they explicitly changed, without all the defaults as it was before.</p>
+<blockquote>
+<p>Autoload Directories
+A hidden feature of Nushell. It will be officially documented in version 0.10</p>
+</blockquote>
+<p>This is now official documented: https://www.nushell.sh/book/configuration.html#configuration-overview
+Looking at the docs <code>($nu.data-dir)/vendor/autoloads</code> would be a good place to add an autoloading script: https://www.nushell.sh/book/configuration.html#startup-variables</p>
+<p>Personally, I think it's fine if the first iteration of dynamic completion support for nushell cannot conveniently auto-update.</p>
+<p>Ideally, one only needs to run a command like this to set up completions or to update them:</p>
+<pre><code class="language-nushell">COMPLETE=nushell some-clap-tool -- | save --raw `($nu.data-dir)/vendor/autoloads/generate-some-clap-tool-completions.nu
+</code></pre>
+<p>That script would set up the completion as well as wrap existing completers similar to how <code>install</code> in https://github.com/clap-rs/clap/pull/5841 works</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chklauser">@chklauser</a> on 2024-12-27 14:33</div>
+            <div class="timeline-body"><p>There is a trade off here. Nushell differentiates between &quot;modules&quot; and &quot;scripts&quot;. That means a file either exports definitions (when used together with <code>use</code>) <em>or</em> it executes code (when <code>source</code>ed). The autoloads directory is the latter kind. If this is the only script we generate, we can essentially <em>only</em> offer the &quot;install&quot; version (not the &quot;handles&quot; + &quot;complete&quot; version). We cannot generate a file that can be used as a module and a script at the same time.</p>
+<p>Users who would like to write their own meta-completer will not be able to use the script we generate directly. That's probably not the end of the world, though. Because nushell and clap both understand JSON, the integration is probably very stable.</p>
+<p>The <a href="https://github.com/carapace-sh/carapace-bin/blob/9b919426388978591e5dd9815ad30ddd8180edce/cmd/carapace/cmd/lazyinit/nushell.go#L35">carapace-bin completer</a> makes the same trade off. With one (IMO weird) difference: their completer only installs itself <em>if there is no existing completer installed</em>. I think, as a user, I would prefer the chaining approach in #5841.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hofer-Julian">@Hofer-Julian</a> on 2024-12-27 16:13</div>
+            <div class="timeline-body"><blockquote>
+<p>The <a href="https://github.com/carapace-sh/carapace-bin/blob/9b919426388978591e5dd9815ad30ddd8180edce/cmd/carapace/cmd/lazyinit/nushell.go#L35">carapace-bin completer</a> makes the same trade off. With one (IMO weird) difference: their completer only installs itself if there is no existing completer installed. I think, as a user, I would prefer the chaining approach in https://github.com/clap-rs/clap/pull/5841.</p>
+</blockquote>
+<p>Agreed, I was considering linking to carapace's approach in my reply, but its behaviour doesn't make too much sense IMO.</p>
+<p>@epage is there anything else you'd like to discuss before moving on to the actual implementation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-12-30 17:05</div>
+            <div class="timeline-body"><p>Could you clarify for me how a user who has two binaries using this feature would register both of them?</p>
+<p>Also, should we block on lazy loading (#5668)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hofer-Julian">@Hofer-Julian</a> on 2024-12-30 17:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you clarify for me how a user who has two binaries using this feature would register both of them?</p>
+</blockquote>
+<p>You mean two different applications, right?
+That should just work, since the first one wraps the original completer, and the second one wraps that again. If the binary name matches, the completer will be used, if not the next one will be tried and so on.</p>
+<blockquote>
+<p>Also, should we block on lazy loading (#5668)?</p>
+</blockquote>
+<p>As useful as that would be, I don't see a reason to block on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @chklauser on 2025-01-05 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @chklauser on 2025-01-05 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chklauser">@chklauser</a> on 2025-01-05 09:51</div>
+            <div class="timeline-body"><p>One more idea from the nushell discord: combine <a href="https://www.nushell.sh/book/custom_completions.html">custom completers (for a single external command decl)</a> with <a href="https://www.nushell.sh/book/custom_commands.html#rest-parameters">rest parameters</a></p>
+<pre><code>def &quot;nu-complete foo&quot; [ctx: string, pos: int] { }
+def foo [...rest: any@&quot;nu-complete foo&quot;] { }
+</code></pre>
+<p>I initially discounted custom completions because I didn't want nushell to handle the completion of <code>--args</code> since clap has more detailed knowledge about what is permitted in a particular command line. But if we can let the clap completer handle the entire command line, that's not an issue.</p>
+<p>Custom completions on an external command has the advantage that we don't mess with globally installed external completers.</p>
+<p>I have not tested it though. This approach is not documented explicitly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chklauser">@chklauser</a> on 2025-01-05 09:55</div>
+            <div class="timeline-body"><p>Note for the implementation: we need to check that we handle <code>some pipeline | some-clap-tool arg1</code> correctly. Nushell includes the <code>|</code> as a first argument. I suppose some tools might exhibit different behavior as part of a pipeline and thus be interested in this distinction. For clap, we just need to filter that out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hofer-Julian">@Hofer-Julian</a> on 2025-01-05 10:17</div>
+            <div class="timeline-body"><blockquote>
+<p>One more idea from the nushell discord: combine <a href="https://www.nushell.sh/book/custom_completions.html">custom completers (for a single external command decl)</a> with <a href="https://www.nushell.sh/book/custom_commands.html#rest-parameters">rest parameters</a></p>
+</blockquote>
+<p>Oh, that is interesting. This approach would indeed be pretty clean, assuming that it works as expected</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chklauser">@chklauser</a> on 2025-01-07 22:53</div>
+            <div class="timeline-body"><p>(@Hofer-Julian if you are itching to tackle this issue, please feel free. I won't find time in the next couple of weeks myself)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hofer-Julian">@Hofer-Julian</a> on 2025-01-07 23:19</div>
+            <div class="timeline-body"><blockquote>
+<p>(@Hofer-Julian if you are itching to tackle this issue, please feel free. I won't find time in the next couple of weeks myself)</p>
+</blockquote>
+<p>Thanks for the notice!
+Might give it a go this weekend.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hofer-Julian">@Hofer-Julian</a> on 2025-01-07 23:20</div>
+            <div class="timeline-body"><p>@chklauser could you please link your jj fork where you implemented dynamic completions for nushell?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chklauser">@chklauser</a> on 2025-01-08 14:55</div>
+            <div class="timeline-body"><p>@Hofer-Julian that would be https://github.com/jj-vcs/jj/compare/main...chklauser:jj:push-rppypvvytuqv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nushell/nushell/issues/14806.html">nushell/nushell#14806</a> on 2025-01-11 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hofer-Julian">@Hofer-Julian</a> on 2025-01-11 18:33</div>
+            <div class="timeline-body"><blockquote>
+<p>One more idea from the nushell discord: combine <a href="https://www.nushell.sh/book/custom_completions.html">custom completers (for a single external command decl)</a> with <a href="https://www.nushell.sh/book/custom_commands.html#rest-parameters">rest parameters</a></p>
+<pre><code>def &quot;nu-complete foo&quot; [ctx: string, pos: int] { }
+def foo [...rest: any@&quot;nu-complete foo&quot;] { }
+</code></pre>
+</blockquote>
+<p>I've tried out this approach, but <code>nushell</code> needs to adapt to allow this workflow, I've opened an issue for that: https://github.com/nushell/nushell/issues/14806</p>
+<p>For now, I consider the implementation in https://github.com/clap-rs/clap/pull/5841 as the best solution.
+I tested it locally and everything works fine.
+Also, the usage is the same as with the non-dynamic completions: people add the generation of the completion in <code>env.nu</code> and call it then in <code>config.nu</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-01-13 17:13</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Could you clarify for me how a user who has two binaries using this feature would register both of them?</p>
+</blockquote>
+<p>You mean two different applications, right? That should just work, since the first one wraps the original completer, and the second one wraps that again. If the binary name matches, the completer will be used, if not the next one will be tried and so on.</p>
+</blockquote>
+<p>I'm referring to the following from the Issue</p>
+<blockquote>
+<p>Additionally, and unlike every other shell that we support, Nushell only supports a single, globally registered &quot;external completer&quot;. For users, who want to have more than one external completer, the suggestion is to have a &quot;meta-completer&quot; that looks at the command line (first arg, which is the binary name) and dispatches the completion request to an appropriate completer.</p>
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<p>Also, should we block on lazy loading (#5668)?</p>
+</blockquote>
+<p>As useful as that would be, I don't see a reason to block on it.</p>
+</blockquote>
+<p>I'm referring to the following from the Issue</p>
+<blockquote>
+<p>The source &lt;(COMPLETE=nushell some-clap-binary --) pattern fundamentally won't work in Nushell. Nushell requires all code to be statically available in the file system before configuration gets loaded. This makes it a bit tricky to make installation of the dynamic completion support both convenient and &quot;auto-updating&quot; (in case a new version of a clap-based CLI gets installed).</p>
+</blockquote>
+<p>Auto-updating is a hard requirement imo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chklauser">@chklauser</a> on 2025-01-13 18:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Auto-updating is a hard requirement imo.</p>
+</blockquote>
+<p>Shouldn't that be the responsibility of the distribution/packager? I understand that auto update is convenient for tools that are <code>cargo install</code>ed but that distribution method should be the exception, not the norm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hofer-Julian">@Hofer-Julian</a> on 2025-01-13 18:17</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Auto-updating is a hard requirement imo.</p>
+</blockquote>
+<p>Shouldn't that be the responsibility of the distribution/packager? I understand that auto update is convenient for tools that are <code>cargo install</code>ed but that distribution method should be the exception, not the norm.</p>
+</blockquote>
+<p>I tend to agree, but I think it's not that relevant for this discussion. Auto-updating will work exactly the same as it did with static completions. 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-01-13 18:22</div>
+            <div class="timeline-body"><p>That is a discussion for #5668.  Unless the direction of that is changed, auto-updating is a requirement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hofer-Julian">@Hofer-Julian</a> on 2025-01-15 16:17</div>
+            <div class="timeline-body"><blockquote>
+<p>auto-updating is a requirement</p>
+</blockquote>
+<p>@epage I will try my best to summarize the situation, in order to make sure we talk about the same thing.</p>
+<p>What I mean when I talk about auto-updating of nushell completions with clap-complete as is (no dynamic completions), is the following:
+With <code>rattler-build</code> it works like this:</p>
+<p>Add the following <code>env.nu</code>:</p>
+<pre><code class="language-nushell">mkdir ~/.cache/rattler-build
+rattler-build completion --shell nushell | save -f ~/.cache/rattler-build/completions.nu
+</code></pre>
+<p>Add the following to <code>config.nu</code></p>
+<pre><code class="language-nushell">use ~/.cache/rattler-build/completions.nu *
+</code></pre>
+<p>During shell start, <code>env.nu</code> will be called first and generates the completions, then <code>config.nu</code> is called and imports them.
+The split is necessary since nushell needs all included code available during parsing time. I assume that's what @chklauser meant with:</p>
+<blockquote>
+<p>The source &lt;(COMPLETE=nushell some-clap-binary --) pattern fundamentally won't work in Nushell. Nushell requires all code to be statically available in the file system before configuration gets loaded.</p>
+</blockquote>
+<p>The result is the same as with other shells: if you update your CLI programs, your completions will also be updated automatically.</p>
+<p>Now back to dynamic completions and https://github.com/clap-rs/clap/pull/5841:</p>
+<p>That will work exactly the same. You generate completions in <code>env.nu</code> and import them in <code>config.nu</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chklauser">@chklauser</a> on 2025-10-12 07:51</div>
+            <div class="timeline-body"><p>I have updated the implementation in the PR to do auto-updating. It still requires more machinery than other shells, but from the user's perspective, it's fairly transparent. I have had a variant of this active for months and the overhead of updating the completions every time a shell is started was not noticable.</p>
+<p>Here is what installing completions for jj looks like in my fork:</p>
+<p>The user must run this</p>
+<pre><code class="language-nushell">COMPLETE=nushell jj | save --append --raw $nu.env-path
+</code></pre>
+<p>(or manually insert the generated code into their env.nu)</p>
+<p>This appends the following snippet in <code>env.nu</code>:</p>
+<pre><code class="language-nushell"># Refresh completer integration for jj (must be in env.nu)
+do {
+  # Search for existing script to avoid duplicates in case autoload dirs change
+  let completer_script_name = 'jj-completer.nu'
+  let autoload_dir = $nu.user-autoload-dirs
+    | where { path join $completer_script_name | path exists }
+    | get 0 --optional
+    | default ($nu.user-autoload-dirs | get 0 --optional)
+  mkdir $autoload_dir
+
+  let completer_path = ($autoload_dir | path join $completer_script_name)
+  COMPLETE=nushell _COMPLETE__mode=integration ^r#'/home/chris/.cargo/bin/jj'# | save --raw --force $completer_path
+}
+</code></pre>
+<p>Because we are using autoload directories, the user doesn't need to modify their <code>config.nu</code>.</p>
+<p>The auto-loaded-script looks like this:</p>
+<pre><code class="language-nushell">
+# Determines whether the completer for jj is supposed to handle the command line
+def handles [
+    spans: list # The spans that were passed to the external completer closure
+]: nothing -&gt; bool {
+    ($spans | get --optional 0) == r#'jj'#
+}
+
+# Performs the completion for jj
+def complete [
+    spans: list # The spans that were passed to the external completer closure
+]: nothing -&gt; list {
+    COMPLETE=nushell ^r#'/home/chris/.cargo/bin/jj'# -- ...$spans | from json
+}
+
+# Installs this module as an external completer for jj globally.
+#
+# For commands other jj, it will fall back to whatever external completer
+# was defined previously (if any).
+$env.config = $env.config
+  | upsert completions.external.enable true
+  | upsert completions.external.completer { |original_config|
+      let previous_completer = $original_config
+        | get --optional completions.external.completer
+        | default { |spans| null }
+      { |spans|
+        if (handles $spans) {
+            complete $spans
+        } else {
+            do $previous_completer $spans
+        }
+      }
+  }
+</code></pre>
+<p>(more or less the same code as before but now intended to be sourced/loaded directly as opposed to as a module).</p>
+<h3>Notes</h3>
+<ol>
+<li>The <code>mkdir $autoload_dir</code> is necessary because the default autoload directory on a fresh nushell installation won't exist</li>
+<li>I feel the check for an existing version of the <code>xxx-completer.nu</code> script is important because having multiple copies loaded (and the wrong one auto-updated) would be a disaster. The user can configure multiple autoload directories and/or change the order of autoload directories at any time.</li>
+<li>Whether it's smart to write the full path to the CLI binary into env.nu, I don't know. I figured users might intentionally have a different PATH in interactive vs non-interactive mode (and env.nu is always sourced). Opinions?</li>
+<li>The auto-update snippet (part that goes into <code>env.nu</code>) should be fairly stable as long as completions can be installed from auto-loaded scripts.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hofer-Julian">@Hofer-Julian</a> on 2025-10-15 15:23</div>
+            <div class="timeline-body"><p>@chklauser nushell just added support for command-wide completion handlers. I think it makes sense to start using that in your PR. Do you agree?</p>
+<p>https://www.nushell.sh/blog/2025-10-15-nushell_v0_108_0.html#command-wide-completion-handler-16765-toc</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chklauser">@chklauser</a> on 2025-10-15 15:49</div>
+            <div class="timeline-body"><p>I'd say so,yes. With command-wide completion handlers, the  completions are scoped to just the jj command. Question is if this changes anything about the solution as a whole.</p>
+<p>Like: if the integration becomes a simple enough &quot;one-liner&quot;, then maybe auto-updating won't be necessary?</p>
+<pre><code class="language-nushell"># using the tool `jj` as an example (UNTESTED)
+def jj-completer [spans: list&lt;string&gt;] {
+    COMPLETE=nushell ^jj ...$spans
+}
+@complete jj-completer
+def --wrapped jj [...args] {
+  ^jj ...$args
+}
+</code></pre>
+<p><em>Theoretically</em>, it should never be necessary to change this incantation. Everything else is either handled by nushell or the completion integration in Clap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hofer-Julian">@Hofer-Julian</a> on 2025-10-15 15:53</div>
+            <div class="timeline-body"><p>Yeah, agreed.</p>
+<p>Let me know if you can need help with progressing this. With the latest nushell release it should be doable to get this into a mergable state</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chklauser">@chklauser</a> on 2025-10-20 21:52</div>
+            <div class="timeline-body"><p>PR is updated. Works fine 👍</p>
+<pre><code class="language-nushell"># Performs the completion for jj
+def jj-completer [
+    spans: list&lt;string&gt; # The spans that were passed to the external completer closure
+]: nothing -&gt; list {
+    COMPLETE=nushell ^r#'/home/chris/.cargo/bin/jj'# -- ...$spans | from json
+}
+
+@complete jj-completer
+def --wrapped jj [...args] {
+  ^r#'/home/chris/.cargo/bin/jj'# ...$args
+}
+</code></pre>
+<p>The auto-update bit feels pretty silly now (it's more complex than the actual integration).</p>
+<p>Tests are still an open topic. I've looked into the existing setup a bit. It doesn't seem straightforward. At least not using <code>completest</code>. Unless I'm misinterpreting things, that library is built against a pretty old version of nushell (0.80-something). It seems to work by pretending that the user writes code that loads each completer as a module (I think?). That doesn't feel representative of how nushell works/works today.</p>
+<p>If we drop the whole auto-update thing, then it becomes more realistic again (because then, the user would <em>actually</em> load the completer file as a module), but if we keep the auto-update, then we either get completest updated or ignore it entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hofer-Julian">@Hofer-Julian</a> on 2025-10-21 09:01</div>
+            <div class="timeline-body"><blockquote>
+<p>The auto-update bit feels pretty silly now (it's more complex than the actual integration).</p>
+</blockquote>
+<p>What does auto-update even do now? Isn't everything dynamic then in the binary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chklauser">@chklauser</a> on 2025-10-23 13:33</div>
+            <div class="timeline-body"><p>It writes the actual registration snippet</p>
+<pre><code># Performs the completion for jj
+def jj-completer [
+    spans: list&lt;string&gt; # The spans that were passed to the external completer closure
+]: nothing -&gt; list {
+    COMPLETE=nushell ^r#'/home/chris/.cargo/bin/jj'# -- ...$spans | from json
+}
+
+@complete jj-completer
+def --wrapped jj [...args] {
+  ^r#'/home/chris/.cargo/bin/jj'# ...$args
+}
+</code></pre>
+<p>The other shells will source the registration snippet straight from the binary. We cannot do that without the auto-update part. My gut feeling is, that because nushell's way of registering external completers for commands is so straightforward/standardized, we don't need the auto-update part. I'm confident that user's won't have to change this registration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hofer-Julian">@Hofer-Julian</a> on 2025-10-23 13:37</div>
+            <div class="timeline-body"><p>Thanks for the explanation.</p>
+<blockquote>
+<p>My gut feeling is, that because nushell's way of registering external completers for commands is so straightforward/standardized, we don't need the auto-update part. I'm confident that user's won't have to change this registration.</p>
+</blockquote>
+<p>I agree that, that there's no need for the auto-update part then.</p>
+<p>Maybe you could remove it and then ping @epage again for a review?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-10-24 00:39</div>
+            <div class="timeline-body"><blockquote>
+<p>The other shells will source the registration snippet straight from the binary. We cannot do that without the auto-update part. My gut feeling is, that because nushell's way of registering external completers for commands is so straightforward/standardized, we don't need the auto-update part. I'm confident that user's won't have to change this registration.</p>
+</blockquote>
+<p>I think I'm missing something here as to why the shell matters.  Auto-updating is a concern because the interface between the completer and the binary is not stable.  Update the application and the completer may be broken.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../typst/typst/issues/7447.html">typst/typst#7447</a> on 2025-11-24 08:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FBT003 triggered on dict  - astral-sh/ruff #893</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FBT003 triggered on dict </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/893">#893</a>
+        opened by <a href="https://github.com/obi-081">@obi-081</a>
+        on 2022-11-23 14:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/obi-081">@obi-081</a> on 2022-11-23 14:20</div>
+            <div class="timeline-body"><p>Hi !
+I found four false positives for the rule FBT003 on dict objects.
+get, pop, setdefault and fromkeys take a default argument that is not declared positional but is in fact.</p>
+<p>https://docs.python.org/2/library/stdtypes.html#dict.get
+https://docs.python.org/2/library/stdtypes.html#dict.pop
+https://docs.python.org/2/library/stdtypes.html#dict.setdefault
+https://docs.python.org/2/library/stdtypes.html#dict.fromkeys</p>
+<p>Here's the demo (FTB must be activated off course)
+`</p>
+<blockquote>
+<p>ruff --version
+ruff 0.0.135</p>
+</blockquote>
+<blockquote>
+<p>ruff dict.py
+Found 4 error(s).
+dict.py:4:17: FBT003 Boolean positional value in function call
+dict.py:5:24: FBT003 Boolean positional value in function call
+dict.py:6:17: FBT003 Boolean positional value in function call
+dict.py:7:27: FBT003 Boolean positional value in function call</p>
+</blockquote>
+<blockquote>
+<p>cat dict.py
+&quot;&quot;&quot;
+FBT003 Boolean positional value on dict
+&quot;&quot;&quot;
+{}.get(&quot;hello&quot;, False)
+{}.setdefault(&quot;hello&quot;, True)
+{}.pop(&quot;hello&quot;, False)
+dict.fromkeys((&quot;world&quot;,), True)
+`</p>
+</blockquote>
+<p>Thank you for this amazing tool ! 🥇</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-11-23 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-23 14:50</div>
+            <div class="timeline-body"><p>Oh interesting! Thank you. \cc @pwoolvett</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pwoolvett">@pwoolvett</a> on 2022-11-23 15:36</div>
+            <div class="timeline-body"><h1>problem</h1>
+<ol>
+<li>It is a <a href="https://youtu.be/CnRkXO_a5mI?t=90">boolean trap</a> !</li>
+<li>Those links are from python2!
+The problem is (python3.8 at least, probably earlier) the signature of the method in fact <a href="https://peps.python.org/pep-0570/#recap">enforces positional only</a>! :</li>
+</ol>
+<pre><code class="language-python">&gt;&gt;&gt; help(dict.get)
+Help on method_descriptor:
+
+get(self, key, default=None, /)  # here, the / at the end
+    Return the value for key if key is in the dictionary, else default.
+</code></pre>
+<ol start="3">
+<li>Normally you would do <code>{}.get(&quot;non_existent key&quot;, default=4)</code>, but the new signature wont allow it given (2) above</li>
+</ol>
+<h1>workaround</h1>
+<p>temporarily you'll have to</p>
+<ul>
+<li>turn off FBT003 :mask:</li>
+<li>replace on a case be case bases, eg <code>{}.get(None) or False</code> :nauseated_face:</li>
+<li>add <code># noqa: FBT003</code> to every one of those calls :vomiting_face:</li>
+<li>define function wrappers for those methods and add noqas there :nauseated_face:</li>
+</ul>
+<h1>solution</h1>
+<p>No sane person would start adding noqas to every <code>dict.get</code>, in a bigger codebase, so we have to solve it somehow. My suggestion would be:</p>
+<ol>
+<li>Define a cst whitelist. Either explicitly (as issues arise, manually growing it) or with stdlib methods (how would we capture those?)</li>
+<li>Update the signature <a href="https://github.com/charliermarsh/ruff/blob/bd08fc359d06b624283c8be801056b228f83447f/src/flake8_boolean_trap/plugins.rs#L63">here</a> to receive information upper on the cst, not just the args: I think adding either <code>expr</code> or <code>func</code> (or both) should be enough.</li>
+<li>Forward required ast spec <a href="https://github.com/charliermarsh/ruff/blob/77e0be346474decc6bca583b1466974e27780db8/src/check_ast.rs">here</a></li>
+<li>Add extra conditional <a href="https://github.com/charliermarsh/ruff/blob/bd08fc359d06b624283c8be801056b228f83447f/src/flake8_boolean_trap/plugins.rs#L65">here</a> to skip whitelist based on <code>expr</code> and/or <code>func</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/943.html">astral-sh/ruff#943</a> on 2022-11-28 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-28 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arthurazs">@arthurazs</a> on 2022-12-01 22:21</div>
+            <div class="timeline-body"><pre><code class="language-python">dict_frame = {&quot;trip&quot;: []}
+dict_frame[&quot;trip&quot;].append(False)
+</code></pre>
+<p>This triggers <code>FBT003 Boolean positional value in function call</code>.</p>
+<p>Is this the intended behaviour? If it is, how am I to avoid this boolean trap?</p>
+<hr />
+<p>Edit</p>
+<p>The same happens for</p>
+<pre><code class="language-python">trip = []
+trip.append(False)
+</code></pre>
+<pre><code class="language-bash">$ ruff --version
+ruff 0.0.150
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

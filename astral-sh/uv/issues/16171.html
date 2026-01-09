@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Any way to detect the venv/interpreter used by `uv run --script my_script.py` (to enable IDE linting) - astral-sh/uv #16171</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Any way to detect the venv/interpreter used by `uv run --script my_script.py` (to enable IDE linting)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16171">#16171</a>
+        opened by <a href="https://github.com/aaronsteers">@aaronsteers</a>
+        on 2025-10-08 01:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aaronsteers">@aaronsteers</a> on 2025-10-08 01:51</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm using uv and portable uv-executed scripts, as I recently wrote about here: <a href="https://dev.to/aaronsteers/the-modern-ways-to-not-install-python-1e85">The Modern Ways to (not) Install Python and Virtual Environments - DEV Community</a></p>
+<p>Now, I'd like to give myself and my team a way to maintain uv scripts with the help of IDE linting. I think this is possible if I locate the uv-managed venv. Is there a way to locate this path? (With the understanding that the path may be ephemeral, changing without notice?)</p>
+<h3>Platform</h3>
+<p>Darwin 25.0.0 x86_64</p>
+<h3>Version</h3>
+<p>uv-self 0.6.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @aaronsteers on 2025-10-08 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-08 04:14</div>
+            <div class="timeline-body"><p>You can do something like</p>
+<pre><code>❯ uv sync --script example.py
+Creating script environment at: /Users/zb/.cache/uv/environments-v2/example-7a04b142bfbd2723
+Resolved in 8ms
+Audited in 0.38ms
+❯ uv python find --script example.py
+/Users/zb/.cache/uv/environments-v2/example-7a04b142bfbd2723/bin/python3
+</code></pre>
+<p>or</p>
+<pre><code>❯ uv sync --dry-run --script example.py --output-format json --quiet | jq -r .sync.environment.path
+/Users/zb/.cache/uv/environments-v2/example-7a04b142bfbd2723
+</code></pre>
+<p>The path is stable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aaronsteers">@aaronsteers</a> on 2025-10-08 23:39</div>
+            <div class="timeline-body"><p>@zanieb - Thanks very much for your reply. I really like the simplicity of the <code>uv python find</code> syntax, but it doesn't work correctly in my trials. Instead, it prints a uv-managed python path that does not have hash parts. (Perhaps it is resolving the symlink?)</p>
+<pre><code>aj:repos aj.steers$ uv python find --script=airbyte/poe-tasks/get_connector_matrix.py
+/Users/aj.steers/.local/share/uv/python/cpython-3.12.0-macos-aarch64-none/bin/python3.12
+</code></pre>
+<p>The second option does work, although a bit more verbose and clunky if typing by hand.</p>
+<p>This version (with or without <code>--dry-run</code>) seems to be a balance of sane-to-type while also not an insane amount of output:</p>
+<pre><code>aj:repos aj.steers$ uv sync --script airbyte/poe-tasks/get_connector_matrix.py | grep &quot;environment&quot;
+Using script environment at: /Users/aj.steers/.cache/uv/environments-v2/get-connector-matrix-1bd340654832c662
+Resolved 13 packages in 2ms
+Audited 13 packages in 0.26ms
+</code></pre>
+<p>Any ideas on whether <code>uv python find</code> could be updated to not traverse symlinks (if that's indeed what is happening), and/or have a another option to use that command with the --script arg to locate the script's venv?</p>
+<p>Totally okay either way - I'm unblocked now, and I see that <code>sync</code> operations print it by default, which is handy for what I'm hoping to train team members on.</p>
+<p>Much thanks!
+AJ</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aaronsteers">@aaronsteers</a> on 2025-10-08 23:43</div>
+            <div class="timeline-body"><p>For documentation purposes:</p>
+<p>Confirmed that appending <code>/bin/python</code> to the end of the discovered path, and then passing that to VS Code as its interpreter works beautifully to get linting working. 💎 ✨ 💎 ✨</p>
+<p>Screenshot or it didn't happen 😄</p>
+<blockquote>
+<p><img width="868" height="531" alt="Image" src="https://github.com/user-attachments/assets/091421d6-8576-4886-8084-efb9c8dcb91b" /></p>
+</blockquote>
+<p>Note the intellisense for the <code>typer</code> library works correctly, despite being a third party library that is only used in that script's venv.</p>
+<p>Note also in the bottom status bar the text &quot;<code>3.12 (get_connector_matrix.py)</code>&quot; indicating the found Python version, as well as the helpful indicator of the venv corresponding to my script. 🎉</p>
+<p>I'll leave this issue open for replies to my inquiries in my prior comment - but feel free to close/resolve after replying. Thanks!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-09 00:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Instead, it prints a uv-managed python path that does not have hash parts. (Perhaps it is resolving the symlink?)</p>
+</blockquote>
+<p>Did you run <code>uv sync --script ...</code> first?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

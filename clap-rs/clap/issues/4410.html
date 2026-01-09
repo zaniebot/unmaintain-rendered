@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated man pages claim that flag options take values - clap-rs/clap #4410</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Generated man pages claim that flag options take values</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4410">#4410</a>
+        opened by <a href="https://github.com/bgilbert">@bgilbert</a>
+        on 2022-10-20 19:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bgilbert">@bgilbert</a> on 2022-10-20 19:55</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.64.0 (Fedora 1.64.0-1.fc36)</p>
+<h3>Clap Version</h3>
+<p>4.0.17, clap_mangen 0.2.3</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{CommandFactory, Parser};
+
+#[derive(Parser)]
+/// Command to do things
+pub struct Cmd {
+    /// Do thing
+    #[clap(long)]
+    thing: bool,
+}
+
+fn main() {
+    Cmd::parse();
+    clap_mangen::Man::new(Cmd::command())
+        .render(&amp;mut std::io::stdout())
+        .unwrap();
+}
+</code></pre>
+<p>Cargo.toml:</p>
+<pre><code class="language-toml">[package]
+name = &quot;clap-man&quot;
+version = &quot;0.0.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies]
+clap = { version = &quot;4&quot;, features = [&quot;derive&quot;] }
+clap_mangen = &quot;0.2&quot;
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo run | man -l -
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>The option description for <code>--thing</code> claims that it takes an argument and that that argument defaults to false:</p>
+<pre><code>clap-man(1)                 General Commands Manual                clap-man(1)
+
+NAME
+       clap-man - Command to do things
+
+SYNOPSIS
+       clap-man [--thing] [-h|--help]
+
+DESCRIPTION
+       Command to do things
+
+OPTIONS
+       --thing=THING [default: false]
+              Do thing
+
+       -h, --help
+              Print help information
+
+                                   clap-man                        clap-man(1)
+</code></pre>
+<p>Of course, it doesn't:</p>
+<pre><code class="language-console">$ cargo run -- --thing=true
+    Finished dev [unoptimized + debuginfo] target(s) in 0.04s
+     Running `target/debug/clap-man --thing=true`
+error: The value 'true' was provided to '--thing' but it wasn't expecting any more values
+
+Usage: clap-man --thing
+
+For more information try '--help'
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The man page lists the option without any argument, as it did in clap 3.2 / clap_mangen 0.1:</p>
+<pre><code>clap-man(1)                 General Commands Manual                clap-man(1)
+
+NAME
+       clap-man - Command to do things
+
+SYNOPSIS
+       clap-man [--thing] [-h|--help]
+
+DESCRIPTION
+       Command to do things
+
+OPTIONS
+       --thing
+              Do thing
+
+       -h, --help
+              Print help information
+
+                                   clap-man                        clap-man(1)
+</code></pre>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @bgilbert on 2022-10-20 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../coreos/coreos-installer/pulls/1021.html">coreos/coreos-installer#1021</a> on 2022-10-21 05:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2022-10-21 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-man</span> added by @epage on 2022-10-21 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4432.html">clap-rs/clap#4432</a> on 2022-10-30 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-10-31 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-31 11:54</div>
+            <div class="timeline-body"><p>Thanks!  This is now available in v0.2.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bgilbert">@bgilbert</a> on 2022-10-31 19:29</div>
+            <div class="timeline-body"><p>Looks like it's half-fixed.  I now get:</p>
+<pre><code>clap-man(1)                 General Commands Manual                clap-man(1)
+
+NAME
+       clap-man - Command to do things
+
+SYNOPSIS
+       clap-man [--thing] [-h|--help]
+
+DESCRIPTION
+       Command to do things
+
+OPTIONS
+       --thing=THING
+              Do thing
+
+       -h, --help
+              Print help information
+
+                                   clap-man                        clap-man(1)
+</code></pre>
+<p><code>[default: false]</code> is gone but <code>--thing=THING</code> is still there, and the parser doesn't actually accept that syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4443.html">clap-rs/clap#4443</a> on 2022-11-02 18:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

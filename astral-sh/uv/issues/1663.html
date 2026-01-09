@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider adding `build` to the &quot;seed&quot; packages - astral-sh/uv #1663</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider adding `build` to the &quot;seed&quot; packages</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1663">#1663</a>
+        opened by <a href="https://github.com/charlesnicholson">@charlesnicholson</a>
+        on 2024-02-18 18:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2024-02-18 18:08</div>
+            <div class="timeline-body"><p><code>uv venv --seed</code> installs + upgrades <code>setuptools</code>, <code>pip</code>, and <code>wheel</code>, which implies that its purpose is to facilitate distribution package creation. The recent distribution-packaging overhaul over the past few years in the Python world makes <code>build</code> also a critical package. Would you consider adding it to the <code>--seed</code> set?</p>
+<p>https://packaging.python.org/en/latest/tutorials/packaging-projects/#generating-distribution-archives</p>
+<img width="850" alt="Screenshot 2024-02-18 at 1 08 07 PM" src="https://github.com/astral-sh/uv/assets/3010295/c2b70524-e778-493c-9163-3d06c1486d5f">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-18 20:36</div>
+            <div class="timeline-body"><p>Thanks for the feedback!</p>
+<p>Is there another virtual environment tool that does this? Are there issues for this in <code>venv</code>, <code>virtualenv</code>, or other tools? Generally we'd like to come to decisions like this with a broad consensus in the community.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">virtualenv</span> added by @zanieb on 2024-02-18 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2024-02-18 22:44</div>
+            <div class="timeline-body"><p><code>venv</code> doesn't appear to even install <code>wheel</code>, but I guess <code>venv</code> is kinda bare-bones (and so very slow).</p>
+<img width="426" alt="Screenshot 2024-02-18 at 5 29 58 PM" src="https://github.com/astral-sh/uv/assets/3010295/043ecd7d-b79b-44e8-9f07-6a387f807d76">
+
+<p><code>virtualenv</code> appears to only seed some combination of <code>setuptools</code>, <code>wheel</code>, and <code>pip</code>: https://virtualenv.pypa.io/en/latest/user_guide.html#seeders</p>
+<img width="845" alt="Screenshot 2024-02-18 at 5 31 57 PM" src="https://github.com/astral-sh/uv/assets/3010295/f55a59a1-8733-4d4e-99bb-8bae3c7dce6e">
+
+<p>Your point about consensus makes total sense, and <code>uv</code> is fast enough that immediately following a seeded venv creation with <code>uv pip install build</code> is fine for us. I just figured I'd flag it since it seems like <code>build</code> is becoming the de-facto build front-end, and the official Python packaging docs are recommending it.</p>
+<p>Thanks for reading!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2024-02-18 22:58</div>
+            <div class="timeline-body"><p>Generally in a perfect world <code>build</code> would never end up in a virtualenv. I went down this path a few times with <code>rye</code> already and the way it works there is that if you invoke <code>rye build</code> it deals with <code>build</code> in a completely isolated environment. This is from what I can tell also the way other systems already approach this.</p>
+<p>For <code>uv</code> it's in a weird spot right now. Medium term it probably would make sense to have a <code>uv build</code> command that triggers the build process, but that might conflict with longer term goals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2024-02-19 00:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Generally in a perfect world build would never end up in a virtualenv.</p>
+</blockquote>
+<p>In our build (mixed C, C++, Python, firmware, host tools, etc) we use the built-in vanilla <code>venv</code> package to create an isolated virtual environment so that the programmer's host OS and developer-specific setup is irrelevant and doesn't influence the build or cause build divergences. We manually bootstrap the <code>setuptools</code>, <code>wheel</code>, <code>pip</code>, and <code>build</code> packages into that virtual environment, and then our build system has targets for editable package installations, wheel builds / distribution packages, tools that require venv installations (nanopb), etc.</p>
+<p>I'm curious what you mean about <code>build</code> never needing to end up in a venv! Do you mean that <code>build</code> should be invoked from the host OS directly, or that Python's build solutions should just be better about isolation in general, or do you mean something else that I'm not understanding yet?</p>
+<p>Our (initial) use case for <code>uv</code> is to just have faster-but-still-compatible versions of <code>venv</code> and <code>pip install</code> and shave 30+ seconds off of our build. We also like not diverging too far from the slow-but-well-trodden path of standard Python techniques. From your comment, though, it sounds like maybe you're describing a different use case, where <code>uv</code> ends up fully replacing <code>pip</code>, and how that could behave in the future?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pybamm-team/PyBaMM/issues/3825.html">pybamm-team/PyBaMM#3825</a> on 2024-02-19 06:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kvelicka">@kvelicka</a> on 2024-02-19 08:27</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm curious what you mean about build never needing to end up in a venv! Do you mean that build should be invoked from the host OS directly, or that Python's build solutions should just be better about isolation in general, or do you mean something else that I'm not understanding yet?</p>
+</blockquote>
+<p><code>build</code> builds stuff by creating a temporary virtualenv, downloading all the build dependencies there and using that to produce the actual artefacts</p>
+<p>This means that <code>build</code> doesn't <em>need</em> virtualenv but (IMO) that doesn't mean that it can't/shouldn't be installed in a virtualenv anyway - personally I don't think I'd trust any non-first-party package to be installed directly into my system Python, <code>build</code> included.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-02-19 16:07</div>
+            <div class="timeline-body"><p>(build maintainer here) I think <code>uv</code> should gain a <code>build</code> subcommand (I might even help work on that in the near future) - see https://github.com/astral-sh/uv/issues/1510. The producedure is well documented by PEPs and anyone can implement it, including <code>uv</code> (technically, it already has it, it mostly just needs a CLI). The primary purpose of <code>--seed</code> was originally to make a &quot;minimal <em>working</em> environment&quot;; that was <code>setuptools</code>, <code>wheel</code>, and <code>pip</code>. Nowadays, setuptools and wheel aren't needed anymore, so those are no longer included (for backward compat reasons, only on 3.12+). That leaves only pip, and that's not needed if you use <code>uv</code>'s (or <code>pip</code>'s) targeting feature.</p>
+<p>I don't think <code>build</code> is ever intended to be part of a minimal working environment. It's only useful if you need to build wheels or SDists and not everyone needs to do that.</p>
+<blockquote>
+<p>build builds stuff by creating a temporary virtualenv --- personally I don't think I'd trust any non-first-party package</p>
+</blockquote>
+<p>By the way, pip/uv do this too, and all three allow you turn this off by turning off build isolation. And build is just as much or as little of a third-party tool as pip or virtualenv is, all of them are PyPA projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-31 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6895.html">astral-sh/uv#6895</a> on 2024-08-31 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-04 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-04 15:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

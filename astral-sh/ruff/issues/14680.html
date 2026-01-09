@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Expand `unnecessary-regular-expression` with `re.compile` (RUF055) - astral-sh/ruff #14680</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[`ruff`] Expand `unnecessary-regular-expression` with `re.compile` (RUF055)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14680">#14680</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2024-11-29 15:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-29 15:14</div>
+            <div class="timeline-body"><p>Often users use <a href="https://docs.python.org/3/library/re.html#re.compile"><code>re.compile</code></a> to compile a regex pattern. The returned regular expression object can be then used for the methods already caught by this rule. This is more efficient when the same pattern is reused.</p>
+<p>Detecting these cases can be done with the same logic as in RUF055. Providing a fix involves more work, as the compiled pattern can be dynamically passed. Having the detection without the fix is already valuable. Alternatively, this could be a separate rule.</p>
+<pre><code class="language-python"> re.compile(r&quot;^tinyint&quot;, re.IGNORECASE)
+</code></pre>
+<p>without regex:</p>
+<pre><code class="language-python">def tinyint(s: str) -&gt; bool:
+    return s.lower().startswith(&quot;tinyint&quot;)
+</code></pre>
+<p>Examples:</p>
+<ul>
+<li>https://github.com/apache/superset/blob/master/superset/db_engine_specs/starrocks.py#L102</li>
+<li>https://github.com/home-assistant/core/blob/dev/pylint/plugins/hass_imports.py#L25</li>
+</ul>
+<p>cc: @ntBre</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-11-29 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-29 16:34</div>
+            <div class="timeline-body"><p>I'm not sure if I fully understand the proposal. Is it to detect any usage of <code> re.compile(r&quot;^tinyint&quot;, re.IGNORECASE)</code> or only usages in boolean positions?</p>
+<p>I'm asking because I'm not sure if the regex patterns can easily be replaced in the examples you linked because the compiled expressions are passed to some generic testing function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2024-11-29 17:13</div>
+            <div class="timeline-body"><p>Hmm, I thought this sounded straightforward at first (just catch <code>re.compile</code> with a literal non-meta-character pattern), but I think you really have to know where it's used to see if this is a problem. If any of the <code>Match</code> APIs are used, for example, the results will still be different from any plain <code>str</code> version.</p>
+<p>For example, this could trigger the rule:</p>
+<pre><code class="language-python">pat = re.compile(&quot;xyz&quot;)
+if pat.match(s):
+    pass
+</code></pre>
+<p>but we'd want something like this not to:</p>
+<pre><code class="language-python">pat = re.compile(&quot;xyz&quot;)
+m = pat.match(s)
+# use m ...
+</code></pre>
+<p>Basically I think we'd need to extend #14679 to resolve string literals through a <code>re.compile</code> call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-29 17:28</div>
+            <div class="timeline-body"><p>Indeed, the examples above are not as clear.</p>
+<p>A true positive example that would be great to be able to catch: https://github.com/great-expectations/great_expectations/blob/develop/ci/checks/check_only_name_tag_snippets.py#L48</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-29 17:56</div>
+            <div class="timeline-body"><blockquote>
+<p>A true positive example that would be great to be able to catch: <a href="https://github.com/great-expectations/great_expectations/blob/develop/ci/checks/check_only_name_tag_snippets.py#L48">great-expectations/great_expectations@<code>develop</code>/ci/checks/check_only_name_tag_snippets.py#L48</a></p>
+</blockquote>
+<p>I would say even that is not entirely clear-cut: because it's a global variable, it could be read from another module, and you don't know how that other module might use the <code>re.Pattern</code> object</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-29 19:28</div>
+            <div class="timeline-body"><p>Good point. Even though this example should use string operations instead of regexes, we can't be sure without analysing the other files.
+An example where the compiled regex is in the function scope:
+https://github.com/mit-biomimetics/Cheetah-Software/blob/master/scripts/lcm-log2smat/python/lcmlog2smat/scan_for_lcmtypes.py#L12</p>
+<p>Some obvious cases:</p>
+<p>https://github.com/EmpireProject/Empire/blob/master/data/agent/agent.py#L927
+https://github.com/johnlane/abcde/blob/master/examples/abcde.py#L96</p>
+<p>After looking at more examples, I'm inclined to think that a dedicated rule with warning severity (#1256) that only considers the <code>re.compile</code> with a literal non-meta-character pattern would better suit this proposal, rather than extending RUF055.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14691.html">astral-sh/ruff#14691</a> on 2024-11-30 16:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Only print help for subsubcommand when global settings subcommandneededelsehelp - clap-rs/clap #2513</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1> Only print help for subsubcommand when global settings subcommandneededelsehelp</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2513">#2513</a>
+        opened by <a href="https://github.com/ZenithalHourlyRate">@ZenithalHourlyRate</a>
+        on 2021-06-01 08:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ZenithalHourlyRate">@ZenithalHourlyRate</a> on 2021-06-01 08:03</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.52.1 (9bc8c42bb 2021-05-09)</p>
+<h3>Clap Version</h3>
+<p>2.33.3</p>
+<h3>Minimal reproducible code</h3>
+<p>main.rs</p>
+<pre><code class="language-rust">#[macro_use]
+extern crate clap;
+use clap::{App, ArgMatches};
+
+fn genkey(matches: &amp;ArgMatches) {
+    match matches.subcommand() {
+        (&quot;b&quot;, _) =&gt; {
+            println!(&quot;Reached here&quot;);
+        },
+        _ =&gt; unimplemented!(),
+    }
+}
+
+fn main() {
+    let yaml = load_yaml!(&quot;cli.yml&quot;);
+    let matches = App::from(yaml)
+        .get_matches();
+
+    match matches.subcommand() {
+        (&quot;a&quot;, Some(matches)) =&gt; genkey(matches),
+        _ =&gt; unreachable!(),
+    }
+}
+</code></pre>
+<p>cli.yml</p>
+<pre><code class="language-yaml">name: foo
+global_settings:
+    - subcommandrequiredelsehelp
+subcommands:
+  - a:
+      about: First layer subcommand
+      subcommands:
+        - b:
+              about: Second layer subcommand
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-console">$ cargo r -- a b
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>$ cargo r -- a b
+   Finished dev [unoptimized + debuginfo] target(s) in 0.00s
+     Running `/home/zenithal/T/test/target/debug/foo a b`
+foo-a-b
+Second layer subcommand
+
+USAGE:
+    foo a b
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>$ cargo r -- a b
+   Compiling foo v0.1.0 (/home/zenithal/T/test)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.37s
+     Running `/home/zenithal/T/test/target/debug/foo a b`
+Reached here
+</code></pre>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code>DEBUG:clap:Parser::add_subcommand: term_w=None, name=b
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=a
+DEBUG:clap:Parser::propagate_settings: self=foo, g_settings=AppFlags(
+    SC_REQUIRED_ELSE_HELP,
+)
+DEBUG:clap:Parser::propagate_settings: sc=a, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO,
+), g_settings=AppFlags(
+    (empty),
+)
+DEBUG:clap:Parser::propagate_settings: self=a, g_settings=AppFlags(
+    SC_REQUIRED_ELSE_HELP,
+)
+DEBUG:clap:Parser::propagate_settings: sc=b, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO,
+), g_settings=AppFlags(
+    (empty),
+)
+DEBUG:clap:Parser::propagate_settings: self=b, g_settings=AppFlags(
+    SC_REQUIRED_ELSE_HELP,
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::create_help_and_version: Building help
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;a&quot;' ([97])
+DEBUG:clap:Parser::is_new_arg:&quot;a&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;a&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=true, sc=Some(&quot;a&quot;)
+DEBUG:clap:Parser::parse_subcommand;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:Parser::parse_subcommand: About to parse sc=a
+DEBUG:clap:Parser::parse_subcommand: sc settings=AppFlags(
+    SC_REQUIRED_ELSE_HELP | NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO,
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::create_help_and_version: Building help
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;b&quot;' ([98])
+DEBUG:clap:Parser::is_new_arg:&quot;b&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;b&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=true, sc=Some(&quot;b&quot;)
+DEBUG:clap:Parser::parse_subcommand;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:Parser::parse_subcommand: About to parse sc=b
+DEBUG:clap:Parser::parse_subcommand: sc settings=AppFlags(
+    SC_REQUIRED_ELSE_HELP | NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO,
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: SubcommandRequiredElseHelp=true
+DEBUG:clap:Help::write_parser_help;
+DEBUG:clap:Help::write_parser_help;
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Help::new;
+DEBUG:clap:Help::write_help;
+DEBUG:clap:Help::write_default_help;
+DEBUG:clap:Help::write_bin_name;
+DEBUG:clap:Help::write_version;
+DEBUG:clap:Help::write_default_help: writing about
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=foo a b
+DEBUG:clap:Help::write_all_args;
+DEBUG:clap:Help::write_args;
+DEBUG:clap:Help::write_args: Current Longest...2
+DEBUG:clap:Help::write_args: New Longest...6
+DEBUG:clap:Help::write_args: Current Longest...6
+DEBUG:clap:Help::write_args: New Longest...9
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Help::long;
+DEBUG:clap:Help::val: arg=--help
+DEBUG:clap:Help::spec_vals: a=--help
+DEBUG:clap:Help::val: Has switch...Yes
+DEBUG:clap:Help::val: force_next_line...false
+DEBUG:clap:Help::val: nlh...false
+DEBUG:clap:Help::val: taken...21
+DEBUG:clap:Help::val: help_width &gt; (width - taken)...23 &gt; (120 - 21)
+DEBUG:clap:Help::val: longest...9
+DEBUG:clap:Help::val: next_line...No
+DEBUG:clap:write_spaces!: num=7
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Help::long;
+DEBUG:clap:Help::val: arg=--version
+DEBUG:clap:Help::spec_vals: a=--version
+DEBUG:clap:Help::val: Has switch...Yes
+DEBUG:clap:Help::val: force_next_line...false
+DEBUG:clap:Help::val: nlh...false
+DEBUG:clap:Help::val: taken...21
+DEBUG:clap:Help::val: help_width &gt; (width - taken)...26 &gt; (120 - 21)
+DEBUG:clap:Help::val: longest...9
+DEBUG:clap:Help::val: next_line...No
+DEBUG:clap:write_spaces!: num=4
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @ZenithalHourlyRate on 2021-06-01 08:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $5</span> added by @pksunkara on 2021-06-01 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @pksunkara on 2021-06-01 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> added by @pksunkara on 2021-06-01 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @pksunkara on 2021-06-01 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/189.html">epage/clapng#189</a> on 2021-12-06 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> removed by @epage on 2021-12-08 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-13 16:46</div>
+            <div class="timeline-body"><p>Is the bug here that we are requiring a subcommand at a level that has no subcommands and the proposed fix would be to ignore <code>subcommandrequiredelsehelp</code> when there aren't subcommands?</p>
+<p>clap is doing exactly what it was told.  I'm a bit cautious of it trying out out guess the user.  Personally, I would only recommend using <code>subcommandrequiredelsehelp</code> as a setting as its coupled to the behavior of each <code>App</code> level.   In #1184, I do bring up the idea of allowing a more specific config to override the global.  However, if we go forward with #2717, my expectation is we'd hard code which settings are layered and which are not and, as I expect this to be coupled to the <code>App</code> level, I had assumed we would not layer this setting and remove the idea of it being &quot;global&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> removed by @epage on 2021-12-13 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $5</span> removed by @epage on 2021-12-13 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-author</span> added by @epage on 2021-12-13 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3270.html">clap-rs/clap#3270</a> on 2022-01-10 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/heroin-moose">@heroin-moose</a> on 2022-01-10 15:07</div>
+            <div class="timeline-body"><p>It seems that I'm not the only one who expected clap to behave otherwise, so my 2cents. The documentation says:</p>
+<blockquote>
+<p>Display help if no subcommands are present at runtime and exit gracefully (i.e. an empty run such as $ myprog).</p>
+</blockquote>
+<p>While technically clap behaves exactly as it was told, IMO it's still a bit counter-intuitive. Most of the time if I have the following command structure:</p>
+<pre><code>foo
+    bar
+        show
+        add
+    baz
+        sub-baz
+            add
+            show
+...
+</code></pre>
+<p>I want exactly the same behavior for all subcommands: if it has subcommands but no further arguments, exit with help. This makes it easier for people who in a hurry just type <code>foo baz sub-baz</code> and get the help without the need to consult a manual page. However, it's natural to expect that commands without subcommands should not fail, because why should they? The command invocation is pretty clear and there are no side effects I can think about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-10 15:43</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems that I'm not the only one who expected clap to behave otherwise</p>
+</blockquote>
+<p>In #2717 we are exploring removing <code>*Settings</code> in favor of methods.  In doing so, we'd switch to a model similar to layered configs where we propagate settings to a subcommand when that subcommand doesn't explicitly have that setting set.  Only some settings would opt-in to this model and it would be called out in the documentation.</p>
+<p>The lack of a <code>global_setting</code> but instead marking what settings propagate would hopefully make this clearer in the future.</p>
+<blockquote>
+<p>I want exactly the same behavior for all subcommands: if it has subcommands but no further arguments, exit with help. This makes it easier for people who in a hurry just type foo baz sub-baz and get the help without the need to consult a manual page. However, it's natural to expect that commands without subcommands should not fail, because why should they? The command invocation is pretty clear and there are no side effects I can think about.</p>
+</blockquote>
+<p>Something not covered in this issue that was in my original reply to #3270 before I realized it was a dupe is why I wasn't going to layer <code>subcommandrequiredelsehelp</code> / why I don't think its appropriate as a <code>global_setting</code>.  <code>subcommandrequiredelsehelp</code> has two pieces of policy combined: whether subcommands are required and how to respond when its missing.  Whether subcommands are required is a policy specific to one set of subcommands in the hierarchy.  If a new area is added with an optional subcommand, that requires removing the global setting and applying it everywhere if its even noticed / tested.  So this seems more about saving effort which can backfire if an optional subcommand does get added and can make ensuring correctness more difficult.</p>
+<p>Now, decoupling the two concepts somehow could open us up to one being global while the other isn't.  We'd just need to come up with a clear name / policy for this new setting (we already have <code>SubcommandRequired</code>)</p>
+<p>btw I'd be curious if you have any thoughts on #1334 since you have such a large subcommand hierarchy.  I'm assuming you are likely to run into cases like <code>git</code> vs <code>git stash</code> in terms of how subcommands should be treated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/heroin-moose">@heroin-moose</a> on 2022-01-10 16:02</div>
+            <div class="timeline-body"><blockquote>
+<p>So this seems more about saving effort which can backfire if an optional subcommand does get added and can make ensuring correctness more difficult.</p>
+</blockquote>
+<p>Hmm... I see. Yeah, in the presence of optional subcommands it does gets in the way.</p>
+<blockquote>
+<p>Now, decoupling the two concepts somehow could open us up to one being global while the other isn't. We'd just need to come up with a clear name / policy for this new setting (we already have SubcommandRequired)</p>
+</blockquote>
+<p>Sounds good!</p>
+<blockquote>
+<p>btw I'd be curious if you have any thoughts on #1334 since you have such a large subcommand hierarchy. I'm assuming you are likely to run into cases like git vs git stash in terms of how subcommands should be treated.</p>
+</blockquote>
+<p>Well #1334 looks good. I would love to see some knobs to be able to do this:</p>
+<pre><code>$ foo
+[fullblown nested list]
+$ foo baz
+[single-level not-nested list]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-10 16:14</div>
+            <div class="timeline-body"><p>For #1334, the way my proposal would work is</p>
+<pre><code class="language-console">$ git --help  # #1334 is not enabled
+[lists subcommands as if #1334 didn't exist]
+$ git stash --help   # #1334 is enabled
+[shows help for all stash subcommands like push, pop, etc]
+$ git stash pop --help  # no subcommands
+[shows pop's help as if #1334 didn't exist]
+</code></pre>
+<p>Is that the same thing you were showing?</p>
+<p>The idea is that we'd only nest what the user opts into and adding additional subcommands would filter down the nesting to give a more specific view.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/heroin-moose">@heroin-moose</a> on 2022-01-10 16:25</div>
+            <div class="timeline-body"><p>Yeah!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Only print help for subsubcommand when global settings subcommandneededelsehelp" to "Globally show help when a subcommand is required" by @epage on 2022-01-10 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Globally show help when a subcommand is required" to " Only print help for subsubcommand when global settings subcommandneededelsehelp" by @epage on 2022-01-10 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-10 16:36</div>
+            <div class="timeline-body"><p>@heroin-moose I think I'm leaning towards this issue staying as is to make any decision on it easier to discover.  If you'd like to see SubcommandRequiredElseHelp split up, could you create a separate issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/heroin-moose">@heroin-moose</a> on 2022-01-10 16:39</div>
+            <div class="timeline-body"><blockquote>
+<p>@heroin-moose  I think I'm leaning towards this issue staying as is to make any decision on it easier to discover. If you'd like to see SubcommandRequiredElseHelp split up, could you create a separate issue?</p>
+</blockquote>
+<p>Sure, I'll reference this one for the discussion and give a short summary. Perhaps I can make a PR (not promising anything :)).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-11 17:41</div>
+            <div class="timeline-body"><p>I wonder why we have <code>SubcommandRequiredElseHelp</code> (show help if no subcommand, regardless of presence of any args) when we also have <code>ArgRequiredElseHelp</code> (show help only for <code>$ mycmd</code>, no args or subcommands).  I feel like <code>ArgRequiredElseHelp</code> with <code>SubcommandRequired</code> is the more appropriate behavior.  The user did an action, we should give a more tailored message for what went wrong rather than giving them a generic message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-11 17:45</div>
+            <div class="timeline-body"><p>29ca7b2f74376ca0cdb9d8ee3bfa99f7640cc404 and #133 don't include details as to why we have both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3280.html">clap-rs/clap#3280</a> on 2022-01-11 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-11 18:07</div>
+            <div class="timeline-body"><p>I've gone ahead and created #3280.</p>
+<p>As stated earlier, I'm leaning towards keeping SubcommandRequiredElseHelp doing literally what the user asked and looking to reject this issue.  If there are thoughts on concerns about that, let us know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-01-11 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-author</span> removed by @epage on 2022-01-11 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-01-11 18:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

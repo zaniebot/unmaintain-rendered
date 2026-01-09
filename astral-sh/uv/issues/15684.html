@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` refuses to install `cu118` version of pytorch - astral-sh/uv #15684</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` refuses to install `cu118` version of pytorch</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15684">#15684</a>
+        opened by <a href="https://github.com/PaulScemama">@PaulScemama</a>
+        on 2025-09-04 16:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/PaulScemama">@PaulScemama</a> on 2025-09-04 16:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Dockerfile reproducing:</p>
+<pre><code>FROM ubuntu:22.04
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+ARG UV_INDEX
+ENV UV_INDEX=${UV_INDEX}
+
+
+RUN uv venv --python 3.11
+RUN uv pip install torch==2.4.0 -f https://download.pytorch.org/whl/cu118
+</code></pre>
+<pre><code class="language-bash"> =&gt; [stage-0 4/4] RUN uv pip install torch==2.4.0 -f https://download.pytorch.org/whl/cu118                                                                                             20.5s
+ =&gt; =&gt; #  Downloading sympy
+ =&gt; =&gt; #  Downloading nvidia-cusolver-cu12
+ =&gt; =&gt; #  Downloading nvidia-cufft-cu12
+ =&gt; =&gt; #  Downloading nvidia-cusparse-cu12
+ =&gt; =&gt; #  Downloading nvidia-nccl-cu12
+ =&gt; =&gt; #  Downloading triton
+</code></pre>
+<h3>Platform</h3>
+<p>ubuntu:22.04</p>
+<h3>Version</h3>
+<p>0.8.15</p>
+<h3>Python version</h3>
+<p>Python 3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @PaulScemama on 2025-09-04 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-04 16:30</div>
+            <div class="timeline-body"><p>Sorry, what's the bug here exactly? Where is the error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-04 16:43</div>
+            <div class="timeline-body"><p>Do you mean <code>--extra-index-url https://download.pytorch.org/whl/cu118</code>? <code>https://download.pytorch.org/whl/cu118</code> is not a valid <code>--find-links</code>-style URL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PaulScemama">@PaulScemama</a> on 2025-09-04 18:25</div>
+            <div class="timeline-body"><p>sorry for the late response! And thank you for such a quick one! Sorry about that, you're absolutely right this was user error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @PaulScemama on 2025-09-04 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PaulScemama">@PaulScemama</a> on 2025-09-04 18:26</div>
+            <div class="timeline-body"><p>Could you point in the right direction to understand the distinction of <code>--find-links</code> and <code>--extra-index-url</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PaulScemama">@PaulScemama</a> on 2025-09-04 20:12</div>
+            <div class="timeline-body"><p>@charliermarsh sorry to bother again, but had a follow up question. I think what I was initially seeing had to do with an issue on our side.</p>
+<p>The context is that we use a CodeArtifact to effectively have our own PyPI server.</p>
+<p>The headline is that when I set <code>UV_INDEX</code> to point to our private PyPI and try and install torch with cu118, uv will instead try and install cu121.</p>
+<p>Here is a minimal example: first a Dockerfile which works as intended; this will properly install cuda 11.8 with torch:</p>
+<pre><code>FROM ubuntu:22.04
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# ARG UV_INDEX
+# ENV UV_INDEX=${UV_INDEX}
+
+RUN uv venv --python 3.11
+RUN uv pip install torch==2.4.0 --extra-index-url https://download.pytorch.org/whl/cu118
+</code></pre>
+<p>I ran this with <code>docker build -f Dockerfile --no-cache .</code></p>
+<p>Now here's a new Dockerfile:</p>
+<pre><code>FROM ubuntu:22.04
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+ARG UV_INDEX
+ENV UV_INDEX=${UV_INDEX}
+
+RUN uv venv --python 3.11
+RUN uv pip install torch==2.4.0 --extra-index-url https://download.pytorch.org/whl/cu118
+</code></pre>
+<p>If I run <code>docker build -f Dockerfile.test --build-arg UV_INDEX=&lt;our-private-index-url&gt; --no-cache .</code>, this this will try and install torch with cuda 12.1 (even though I specify the index url that points to a wheel with cu118).</p>
+<p>My initial suspicion is that maybe our private CodeArtifact has the wrong underlying wheel whose pointer is <code>https://download.pytorch.org/whl/cu118</code>? However, I'm really no expert with this sort of stuff so was wondering if you had any insight.</p>
+<p>Absolutely no worries if not! Thanks again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PaulScemama">@PaulScemama</a> on 2025-09-05 01:08</div>
+            <div class="timeline-body"><p>@charliermarsh turned out to be an issue on our PyPI server.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

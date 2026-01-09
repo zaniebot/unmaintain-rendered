@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement `isort` custom sections and ordering - astral-sh/ruff #2419</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement `isort` custom sections and ordering</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2419">#2419</a>
+        opened by <a href="https://github.com/ngnpope">@ngnpope</a>
+        on 2023-01-31 21:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-01-31 21:46</div>
+            <div class="timeline-body"><p><code>isort</code> has support for configuring <a href="https://pycqa.github.io/isort/docs/configuration/custom_sections_and_ordering.html">custom sections and ordering</a>.</p>
+<p>This support would also need to be tied in with <a href="https://github.com/charliermarsh/ruff#no-lines-before"><code>no-lines-before</code></a> for the custom sections.</p>
+<p>I would imagine that the following <code>isort</code> configuration:</p>
+<pre><code class="language-ini">known_django=django
+known_pandas=pandas,numpy
+sections=FUTURE,STDLIB,DJANGO,THIRDPARTY,PANDAS,FIRSTPARTY,LOCALFOLDER
+no_lines_before=DJANGO,LOCALFOLDER
+</code></pre>
+<p>Would become the following in <code>ruff</code>:</p>
+<pre><code class="language-toml">[tool.ruff.isort]
+no-lines-before = [&quot;django&quot;, &quot;local-folder&quot;]
+section-order = [&quot;future&quot;, &quot;standard-library&quot;, &quot;django&quot;, &quot;third-party&quot;, &quot;pandas&quot;, &quot;first-party&quot;, &quot;local-folder&quot;]
+
+[tool.ruff.isort.sections]
+django = [&quot;django&quot;]
+pandas = [&quot;pandas&quot;, &quot;numpy&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-01-31 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-01 18:31</div>
+            <div class="timeline-body"><p>Support for <code>known-local-folder</code> would be nice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 18:40</div>
+            <div class="timeline-body"><p>Isn't <code>local-folder</code> always denoted by a relative import? What does <code>known-local-folder</code> do?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-01 18:51</div>
+            <div class="timeline-body"><p>local-folder is the name of the section/category while known-local-folder are the modules/packages which should be treated for the local-folder section.</p>
+<p>e.g.:</p>
+<pre><code>sections=FUTURE,STDLIB,FIRSTPARTY,THIRDPARTY,LOCALFOLDER
+known_local_folder=myproject,test,foo
+</code></pre>
+<p>it has nothing to do with relative imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g-as">@g-as</a> on 2023-02-01 18:57</div>
+            <div class="timeline-body"><p>Aren't you mixing <code>known_first_party</code> and <code>known_local_folder</code>?</p>
+<p>https://pycqa.github.io/isort/docs/configuration/options.html#known-first-party</p>
+<p>https://pycqa.github.io/isort/docs/configuration/options.html#known-local-folder</p>
+<blockquote>
+<p>Force isort to recognize a module as being a local folder. Generally, this is reserved for relative imports (from . import module).</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 19:04</div>
+            <div class="timeline-body"><p>I guess <code>isort</code> supports including non-relative imports in local folder? Strikes me as unusual!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-08 12:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Aren't you mixing <code>known_first_party</code> and <code>known_local_folder</code>?</p>
+</blockquote>
+<p>Kind of yes, but we use this to separate our &quot;known first party&quot; modules from some special modules (some only for &quot;testing&quot; and one which can only be imported in a special C application): We use it as visual separation from other modules.</p>
+<blockquote>
+<p>I guess <code>isort</code> supports including non-relative imports in local folder? Strikes me as unusual!
+yes, I think the implementation of it is just a regular &quot;section&quot;, so no special behavior.</p>
+</blockquote>
+<p>→ So for me it's not important if I just add another section which I name by myself or use the standard isort section &quot;known-local-folder&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2657.html">astral-sh/ruff#2657</a> on 2023-02-08 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/QuentinN42">@QuentinN42</a> on 2023-02-26 21:09</div>
+            <div class="timeline-body"><p>Hey, I'll try to implement the <code>[tool.ruff.isort.sections]</code> feature :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/QuentinN42">@QuentinN42</a> on 2023-02-27 00:05</div>
+            <div class="timeline-body"><p>After reading the code, I think I first need to pass an MR about allowing section order.</p>
+<p>If I understand right the code in the <a href="https://github.com/PyCQA/isort">PyCQA/isort GH</a>, they <a href="https://github.com/PyCQA/isort/blob/3a72e069635a865a92b8a0273aa829f630cbcd6f/isort/place.py#L15">return a str in the place module</a> to be able to <a href="https://github.com/PyCQA/isort/blob/3a72e069635a865a92b8a0273aa829f630cbcd6f/isort/parse.py#L455">order it dynamically in the place module</a>.</p>
+<p>@charliermarsh today we use an enum <code>ImportType</code> to order all imports :</p>
+<p>https://github.com/charliermarsh/ruff/blob/36d134fd41a8378f1c3f7bb69a7053ecefb17cff/crates/ruff/src/rules/isort/categorize.rs#L14-L24</p>
+<p>What do you think about changing that to a BTreeMap or an HashMap to allow runtime update of it (custom categorize) ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-28 17:32</div>
+            <div class="timeline-body"><p>I wish I had some way to assess the importance or popularity of this functionality, since it does introduce a bunch of complexity. Does anyone want to make a strong case for it?</p>
+<p>(I personally tend not to use any of isort's configuration options, but I've been open to adding them over time as other's have put together PRs, since they generally haven't introduced <em>too</em> much complexity. Though I may end up regretting supporting those over time, we'll see :))</p>
+<p>(Having not looked at the code much...) if we do go forward with this, I might suggest adding a <code>UserDefined(String)</code> variant to <code>ImportType</code>, rather than changing to to a stringy-typed map. Or even treating that as an entirely separate struct, like:</p>
+<pre><code class="language-rs">pub enum Section {
+  KnownType(ImportType),
+  UserDefined(String),
+}
+</code></pre>
+<p>Since we're dealing with two orthogonal concepts: whether a module is first-part or third-party etc., vs. whether it should be categorized in a certain section.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Redoubts">@Redoubts</a> on 2023-02-28 19:28</div>
+            <div class="timeline-body"><p>I suspect this is going to be popular in the dark matter that is closed-source business code.</p>
+<p>But I think it’s also good if you have something like</p>
+<p>‘’’
+from my_special_loader import a_module
+import a_module.submodule
+‘’’
+isort would reverse the order without the ability to configure sections.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Atilla">@Atilla</a> on 2023-02-28 20:28</div>
+            <div class="timeline-body"><p>This might not be a very helpful contribution, but:</p>
+<p>I am following this because I want to replace our closed-source business code repo linters with ruff. We have a bunch of those <code>isort</code> rules, mostly to split django-related 3rd party stuff from the rest of it, as far as I can observe.</p>
+<p>People looked at the diff without this on, and I'm pretty sure I could convince them to just stop using that grouping, some even prefer it. But it's a very large diff in the repo :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-28 20:42</div>
+            <div class="timeline-body"><p>No, that's very helpful! I'm just trying to build some intuition for how important it is, so any data points are welcome (this goes for all commenters and onlookers :)).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mastacheata">@mastacheata</a> on 2023-02-28 22:37</div>
+            <div class="timeline-body"><p>We have the django stuff as a separate section cause there's usually a lot of that and having that grouped together just looks &quot;nicer&quot;.</p>
+<p>Obviously there's no technical need for changing the order or the spacing for such a block, it's just a convention we have in our repo of about 900 files which would be changed should we replace isort with the corresponding selector in ruff.</p>
+<p>I guess the same can be argued for pandas as that's the other example in the isort docs.</p>
+<p>Just noticed, we could pretty much achieve the same thing by adding django to force-separate, now this adds it to the bottom of the list behind our local packages.</p>
+<details>
+  <summary>Here's an example of how one of our typical viewsets in DRF looks like: (click to expand)</summary>
+
+<pre><code>import csv
+
+from django.db.models import Case, CharField, F, Q, When
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from django.utils.timezone import now
+
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.serializers import Serializer
+from rest_framework_serializer_extensions.views import SerializerExtensionsAPIViewMixin
+
+from empto.company.api.filters import CertificateFilter
+from empto.company.api.permissions import (
+    ChangeCompanyPermission,
+    ExportCertificatesPermission,
+    ListCertificatePermission,
+    ListMyCertificatePermission,
+    ReviewCertificatePermission,
+)
+from empto.company.api.serializers import CertificateListSerializer, CertificateReviewSerializer, CertificateSerializer
+from empto.company.models import Certificate, Company
+from empto.company.services import CertificateCSVExportService, CompanyCertificateEmailService
+from empto.core.api.pagination import StandardResultsSetPagination
+from empto.core.api.permissions import EmptoDefaultPermissions
+from empto.core.api.views import NoDeleteModelViewSet, UserSpecificQuerySetMixin
+from empto.dsz.models import DszContract
+from empto.notification.models import Notification, NotificationSubscription
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/QuentinN42">@QuentinN42</a> on 2023-02-28 23:53</div>
+            <div class="timeline-body"><p>It's particulary usefull in the monorepo / big projects :
+You quickly get like 30 lines of imports...</p>
+<p>Being able to create some groups like :</p>
+<ul>
+<li>Datascience : <code>numpy</code>, <code>pandas</code> ...</li>
+<li>Software: <code>redis</code>, <code>pika</code> ...</li>
+<li>Core: <code>my_s3</code>, <code>my_logger</code> ...</li>
+<li>Metier: <code>my_worker</code>, <code>scheduler</code> ...</li>
+</ul>
+<p>Transform this :</p>
+<pre><code class="language-python">import numpy
+import my_s3
+import my_logger
+import my_worker
+import pandas
+import pika
+import redis
+import scheduler
+</code></pre>
+<p>Into this :</p>
+<pre><code class="language-python">import numpy
+import pandas
+
+import pika
+import redis
+
+import my_s3
+import my_logger
+
+import my_worker
+import scheduler
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/QuentinN42">@QuentinN42</a> on 2023-02-28 23:57</div>
+            <div class="timeline-body"><p>But yes I'ts not required at all as a priority.
+I think we can take some time to think about the best way of implementing it here without copying 1 to 1 isort features.
+I will read the release notes and issues of this feature on the isort repo and place a summary here so we have some base work material.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-01 03:28</div>
+            <div class="timeline-body"><p>Seems like there's enough demand + concrete use-cases for this to at least be worth exploring, and scoping out how much complexity it actually adds to the implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../quantumjot/btrack/issues/249.html">quantumjot/btrack#249</a> on 2023-03-01 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g-as">@g-as</a> on 2023-03-02 19:23</div>
+            <div class="timeline-body"><p>My 2c:</p>
+<p>one of my use cases, that has not been mentioned yet, is adding a test deps section to isolate test tooling imports in test files:</p>
+<pre><code class="language-toml">
+known_tests_deps = [&quot;factory&quot;, &quot;faker&quot;, &quot;pytest&quot;, &quot;pytest_django&quot;, &quot;respx&quot;, &quot;testfixtures&quot;, &quot;time_machine&quot;]
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/QuentinN42">@QuentinN42</a> on 2023-03-06 18:24</div>
+            <div class="timeline-body"><p>Here is the first MRs in the isort repo : https://github.com/PyCQA/isort/pull/275</p>
+<p>I don't find any discussions about the implementation.</p>
+<p>Maybe we want to define some sections in a list : thx like</p>
+<pre><code class="language-toml">[[tool.ruff.import-section]]
+name=&quot;my_section_name&quot;
+line-before = true  # or no-lines-before
+packages = [ &quot;pandas&quot;, &quot;...&quot; ]
+</code></pre>
+<p>Then we can order section with a list of string.</p>
+<p>Or we can add a <code>level</code> (int) in this section that allow us to get rid of this section order string.</p>
+<p>PS : this is not a real proposition, I just want to put here as most ideas to be able to take the better decision</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../theislab/scvelo/pulls/1013.html">theislab/scvelo#1013</a> on 2023-03-15 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vviikk">@vviikk</a> on 2023-03-31 11:26</div>
+            <div class="timeline-body"><p>Is anyone working on this? We are now using Ruff in a huge repo ❤️ . But <code>isort</code> remains in use because have a custom section ordering.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-31 14:47</div>
+            <div class="timeline-body"><p>@vviikk - To my knowledge it's not currently being worked on. Up for grabs if someone wants to take it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/QuentinN42">@QuentinN42</a> on 2023-03-31 18:04</div>
+            <div class="timeline-body"><p>I will be happy to contribute on this but I didn't have much time last month.
+Happy to have ideas of implementations or discussions about the following options :</p>
+<ul>
+<li>The &quot;copy isort features 1 to 1&quot;<ul>
+<li>simple migration</li>
+<li>not really scalable</li>
+</ul>
+</li>
+<li>The sections as a list with <code>section-order</code> (section define an import block but we keep the <code>section-order</code> in the <code>isort</code> block)<ul>
+<li>Can have custom params in each section</li>
+<li>Can copy section from others repo easily</li>
+<li>The import order is easy to view / edit</li>
+<li>The import order needs to be edited each time a new section is added</li>
+</ul>
+</li>
+<li>The sections as a list with <code>level</code> (section define an import block with a level and the section ordering is computed at runtime)<ul>
+<li>Can have custom params in each section</li>
+<li>Can copy section from others repo easily</li>
+<li>The import order may be hard to view / edit in repo with a lot of sections (but can be mitigated with levels with large padding)</li>
+<li>The import order is automatically computed each time a new section is added</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rpep">@rpep</a> on 2023-04-04 10:39</div>
+            <div class="timeline-body"><blockquote>
+<p>I wish I had some way to assess the importance or popularity of this functionality, since it does introduce a bunch of complexity. Does anyone want to make a strong case for it</p>
+</blockquote>
+<p>Just wanted to add a +1 for this - at the moment this would be something that blocks us from adopting Ruff wholesale on a large commercial project. For us, we want (as we do this with isort already) separation out of core Django and Django REST Framework imports from OS imports and then some other tools we use (Pandas, NumPy).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3900.html">astral-sh/ruff#3900</a> on 2023-04-06 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Toufool/AutoSplit/pulls/207.html">Toufool/AutoSplit#207</a> on 2023-04-08 00:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-13 21:52</div>
+            <div class="timeline-body"><p>Implemented in #3900.</p>
+<p>The API looks like this:</p>
+<pre><code class="language-toml">[tool.ruff.isort]
+section-order = [&quot;future&quot;, &quot;standard-library&quot;, &quot;third-party&quot;, &quot;django&quot;, &quot;first-party&quot;, &quot;local-folder&quot;]
+
+[tool.ruff.isort.sections]
+django = [&quot;django&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-13 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epitools/epitools/pulls/56.html">epitools/epitools#56</a> on 2023-04-14 09:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../quantumjot/btrack/pulls/299.html">quantumjot/btrack#299</a> on 2023-04-14 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../paddyroddy/python-template/pulls/22.html">paddyroddy/python-template#22</a> on 2023-04-14 09:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mastacheata">@mastacheata</a> on 2023-04-14 16:07</div>
+            <div class="timeline-body"><p>@charliermarsh I think your example for how the API looks is missing the django section in the section-order part (unless this changed between creating the PR and accepting it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-14 16:09</div>
+            <div class="timeline-body"><p>@mastacheata - Hah, thank you, fixed 🤦</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rpep">@rpep</a> on 2023-04-17 13:42</div>
+            <div class="timeline-body"><p>Looks great! Thank you for implementing this so quickly :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-17 18:33</div>
+            <div class="timeline-body"><p>I think someone commented-then-deleted but yes, this'll go out in the next release this week :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/huynguyengl99">@huynguyengl99</a> on 2023-04-17 18:43</div>
+            <div class="timeline-body"><p>Hi, the comment was mine, but after checking that the main code is not the pypi latest distribution, I have deleted it 😂 But anyway, thank you a lot for the awesome tool, I will completely migrate to Ruff after the Isort custom feature release 😁.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ddahan">@ddahan</a> on 2023-05-04 10:23</div>
+            <div class="timeline-body"><p>Thanks for this, it's amazing to be able to get rid of another package!</p>
+<p>Is there any plan to update the related JSON schema? I wrote an issue about it: https://github.com/charliermarsh/ruff/issues/4218</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-05-04 13:03</div>
+            <div class="timeline-body"><ul>
+<li>There is a PR opened SchemaStore/schemastore#2923</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../odoo/odoo/pulls/205038.html">odoo/odoo#205038</a> on 2025-04-08 06:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

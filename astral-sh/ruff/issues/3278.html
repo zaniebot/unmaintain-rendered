@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request: flake8-encodings - astral-sh/ruff #3278</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Request: flake8-encodings</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3278">#3278</a>
+        opened by <a href="https://github.com/henryiii">@henryiii</a>
+        on 2023-02-28 17:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/henryiii">@henryiii</a> on 2023-02-28 17:42</div>
+            <div class="timeline-body"><p>I noticed https://pypi.org/project/flake8-encodings/ was missing when porting a package over to Ruff. This checks for <code>encoding=</code> missing from open (and <code>configparser.ConfigParser</code> and <code>pathlib.Path</code>) calls.</p>
+<p>Here are the checks:</p>
+<pre><code>ENC001 = &quot;ENC001 no encoding specified for 'open'.&quot;
+ENC002 = &quot;ENC002 'encoding=None' used for 'open'.&quot;
+ENC003 = &quot;ENC003 no encoding specified for 'open' with unknown mode.&quot;
+ENC004 = &quot;ENC004 'encoding=None' used for 'open' with unknown mode.&quot;
+
+ENC011 = &quot;ENC011 no encoding specified for 'configparser.ConfigParser.read'.&quot;
+ENC012 = &quot;ENC012 'encoding=None' used for 'configparser.ConfigParser.read'.&quot;
+
+ENC021 = &quot;ENC021 no encoding specified for 'pathlib.Path.open'.&quot;
+ENC022 = &quot;ENC022 'encoding=None' used for 'pathlib.Path.open'.&quot;
+ENC023 = &quot;ENC023 no encoding specified for 'pathlib.Path.read_text'.&quot;
+ENC024 = &quot;ENC024 'encoding=None' used for 'pathlib.Path.read_text'.&quot;
+ENC025 = &quot;ENC025 no encoding specified for 'pathlib.Path.write_text'.&quot;
+ENC026 = &quot;ENC026 'encoding=None' used for 'pathlib.Path.write_text'.&quot;
+</code></pre>
+<p>This is an extremely common need (it's available at runtime with <code>PYTHONWARNDEFAULTENCODING</code> (<a href="https://peps.python.org/pep-0597/">PEP 597</a>) and is needed for Python 3.15 compatibility <a href="https://peps.python.org/pep-0686/">PEP 686</a>), so I'm surprised no existing checks seem to cover it; wouldn't be surprised if my searching skills were just not good enough.</p>
+<p>Edit: Ahh, this might be the not-yet-implemented <code>unspecified-encoding / W1514</code> from pylint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-28 17:44</div>
+            <div class="timeline-body"><p>Python 3.15!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../scikit-hep/pyhf/pulls/2124.html">scikit-hep/pyhf#2124</a> on 2023-02-28 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">plugin</span> added by @charliermarsh on 2023-02-28 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3416.html">astral-sh/ruff#3416</a> on 2023-03-09 10:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pwuertz">@pwuertz</a> on 2024-01-31 14:47</div>
+            <div class="timeline-body"><p>Should this be detected when enabling <code>PLW1514</code> in current versions of ruff? The PR https://github.com/astral-sh/ruff/pull/3416 does seem to include some tests for issues with <code>Path</code>, but it didn't make it into ruff yet?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../twisted/towncrier/pulls/577.html">twisted/towncrier#577</a> on 2024-02-10 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RubenVanEldik">@RubenVanEldik</a> on 2024-09-04 09:03</div>
+            <div class="timeline-body"><p>I would like to bump this request!</p>
+<p>Currently when you have some code such as:</p>
+<pre><code class="language-py">import pathlib
+
+with open(pathlib.Path(&quot;path/to/file.txt&quot;)) as f:
+    print(f)
+</code></pre>
+<p>Ruff will raise 2 issues:</p>
+<ol>
+<li><strong>PLW1514</strong> <code>open</code> in text mode without explicit <code>encoding</code> argument</li>
+<li><strong>PTH123</strong> <code>open()</code> should be replaced by <code>Path.open()</code></li>
+</ol>
+<p>If you first solve the second issue, the first issue will be gone, which led me to believe that <code>Path.open()</code> doesn't require it, which is not the case!</p>
+<p>Would the Ruff team be open to include the flake8-encodings ruleset? And do you think this could be a good first issue? If so I would be willing to pick it up (it would mean it will take a while before this will be implemented though 🙃 )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkj-perfusiontech">@mkj-perfusiontech</a> on 2025-11-07 00:23</div>
+            <div class="timeline-body"><p>I second this, since I had the same confusion as RubenVanEldik.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

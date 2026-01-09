@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Could `uv venv` detect whether source files are inside `src` directory (like Poetry does)? - astral-sh/uv #2197</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Could `uv venv` detect whether source files are inside `src` directory (like Poetry does)?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2197">#2197</a>
+        opened by <a href="https://github.com/torarvid">@torarvid</a>
+        on 2024-03-05 07:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/torarvid">@torarvid</a> on 2024-03-05 07:50</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Hi, and thanks for making <code>uv</code> ❤️</p>
+<p>I experienced an issue converting an existing project at work from Poetry to uv, and tried making a minimal example to repro. Btw, I'm on macOS 14.3.1 using <code>uv 0.1.11 (32e5cacdd 2024-02-26)</code>.</p>
+<h2>Part 1 — Poetry</h2>
+<p>I tried a hello-example looking like this — first using Poetry 1.7.1:</p>
+<pre><code class="language-bash">❯ tree
+.
+├── pyproject.toml
+└── src
+    └── hello.py
+
+2 directories, 2 files
+</code></pre>
+<p>pyproject.toml contents:</p>
+<pre><code>[tool.poetry]
+name = &quot;hello&quot;
+version = &quot;0.1.0&quot;
+description = &quot;&quot;
+authors = [&quot;Your Name &lt;you@example.com&gt;&quot;]
+
+[tool.poetry.dependencies]
+python = &quot;^3.12&quot;
+
+[build-system]
+requires = [&quot;poetry-core&quot;]
+build-backend = &quot;poetry.core.masonry.api&quot;
+</code></pre>
+<p>and hello.py contents:</p>
+<pre><code>print(&quot;Hello, world&quot;)
+</code></pre>
+<p>I then run:</p>
+<pre><code class="language-bash">❯ poetry install
+Creating virtualenv hello-sRlYik7q-py3.12 in /Users/torarvid/Library/Caches/pypoetry/virtualenvs
+Installing dependencies from lock file
+
+Installing the current project: hello (0.1.0)
+❯ poetry run python -m hello
+Hello, world
+</code></pre>
+<p>If anybody wonders, <code>poetry run python</code> is a shim-like feature that will use the python interpreter defined in the poetry venv. All well and good. Now:</p>
+<h2>Part 2 — uv</h2>
+<p>I change pyproject.toml (in case it matters, I'm not sure whether it only does for <code>uv pip</code>?) to:</p>
+<pre><code>[project]
+name = &quot;hello&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;~=3.12&quot;
+authors = [{ email = &quot;Your Name &lt;you@example.com&gt;&quot; }]
+description = &quot;&quot;
+
+[build-system]
+requires = [&quot;setuptools &gt;= 69&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p>Same hello.py inside <code>src</code>. I run:</p>
+<pre><code class="language-bash">❯ uv venv
+Using Python 3.12.1 interpreter at /Users/torarvid/.local/share/mise/installs/python/3.12.1/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+❯ source .venv/bin/activate.fish
+❯ python -m hello
+/Users/torarvid/dev/hello/.venv/bin/python: No module named hello
+</code></pre>
+<h2>Part 3 — what is wrong?</h2>
+<p>I don't know if there's possibly something I should add to pyproject.toml to inform <code>uv</code> about the <code>src</code> directory being &quot;an entrypoint folder&quot; or whatever it should be called 😊 But I <em>did</em> figure out the reason why it works using poetry: If I look in the venv created by poetry, there's this:</p>
+<pre><code class="language-bash">❯ ls /Users/torarvid/Library/Caches/pypoetry/virtualenvs/hello-sRlYik7q-py3.12/lib/python3.12/site-packages/
+__pycache__  _virtualenv.pth  _virtualenv.py  hello-0.1.0.dist-info  hello.pth  pip  pip-23.3.1.dist-info  pip-23.3.1.virtualenv
+</code></pre>
+<p>The <code>hello.pth</code> file contains just <code>/Users/torarvid/dev/hello/src</code>. If I place a file like that in the <code>uv</code>-created venv, it also works just fine.</p>
+<p>I have not investigated how poetry has implemented any logic that results in them creating this .pth file, so whether they look at all project folders containing .py files or have hard-coded support for some folders like &quot;src&quot;, &quot;tests&quot; or whatever I don't know.</p>
+<p>But in any case, it's probably not that uncommon to have a repo where the sources are inside a src sub-folder.</p>
+<p>Would be a bit ironic if I wrote this long issue and it turns out to be a simple one-liner I need to fix in my pyproject.toml or something, but anyway — might help somebody else who runs into this in the future 😄 Have a nice day!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-03-05 12:25</div>
+            <div class="timeline-body"><p>Poetry does not do auto-detection.</p>
+<p>You are missing a packages in pyproject.toml:</p>
+<pre><code>[tool.poetry]
+packages = [{ include = &quot;hello&quot;, from = &quot;src&quot; }]
+
+</code></pre>
+<p>but a package is a subdirectory with an <strong>init</strong>.py.
+Move  hello.py  into hello/<strong>init</strong>.py
+Otherwise you get an error like this:</p>
+<pre><code>&gt; poety install
+   .../src/hello does not contain any element
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/torarvid">@torarvid</a> on 2024-03-05 13:15</div>
+            <div class="timeline-body"><p>@woutervh Thanks, but this issue isn't really about getting anything to work with Poetry (that already works just fine as I see it). It is about how to get things to work when transitioning from Poetry to uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-03-05 13:49</div>
+            <div class="timeline-body"><pre><code> (that already works just fine as I see it)
+</code></pre>
+<p>I'm actually baffled that this works,  it shouldn't.
+As far as I'm concerned, this works by accident.
+I really hate tools creating their own magic and their ows hardcoded conventions.
+This only complicates teaching proper python-packaging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-05 15:08</div>
+            <div class="timeline-body"><p>It looks like you never installed your project into the virtual environment, have you tried <code>uv pip install -e .</code>? This is roughly equivalent to <code>poetry install</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-03-05 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/torarvid">@torarvid</a> on 2024-03-05 16:16</div>
+            <div class="timeline-body"><p>@woutervh I recommend you make an issue in the poetry repo 👍🏻</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/torarvid">@torarvid</a> on 2024-03-05 16:18</div>
+            <div class="timeline-body"><p>@zanieb Yes, thank you! This was it. So in conclusion: I'm a user somewhat familiar with Poetry and not familiar with pip (or the <code>uv pip ...</code> syntax) who's trying to convert a repo from Poetry to uv, and my lack of knowledge tripped me up 😄</p>
+<p>Ok, so this seems to solve my problem completely, thanks a lot. Will close the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @torarvid on 2024-03-05 16:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adding root directory to sys.path - astral-sh/uv #11022</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Adding root directory to sys.path</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11022">#11022</a>
+        opened by <a href="https://github.com/haikesan">@haikesan</a>
+        on 2025-01-28 16:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/haikesan">@haikesan</a> on 2025-01-28 16:00</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When running script from uv environment, it doesn't add project root into sys.path, as does poetry, for example.
+Having such structure
+app
+...
+tests
+script.py</p>
+<p>And in this script having something like</p>
+<pre><code class="language-py">from app.module import something
+
+...
+</code></pre>
+<p>Breaks, because in sys.path only &quot;tests&quot; folder is added, not really &quot;.&quot;, while it is really handy. Maybe any workaround for that?</p>
+<p>I know about sys.path.append(&quot;.&quot;), or running python -m tests.script, but it's not solution</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @haikesan on 2025-01-28 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haikesan">@haikesan</a> on 2025-01-28 16:23</div>
+            <div class="timeline-body"><p>Also, adding current project to dependencies doesn't help, and such deps manipulation is NOT a preferred solution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 16:24</div>
+            <div class="timeline-body"><p>Can you share a complete reproducible example? e.g.,</p>
+<pre><code>uv init example
+cd example
+mkdir -p app/module
+touch app/module/__init__.py
+echo &quot;import app.module&quot; &gt; script.py
+uv run script.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haikesan">@haikesan</a> on 2025-01-28 16:35</div>
+            <div class="timeline-body"><p>Here are two examples - with uv and poetry. Poetry's sys.path is automatically extended with project root, and with uv this doesn't happen (you can see it via my example)
+<a href="https://github.com/user-attachments/files/18576515/reproduce_11022.zip">reproduce_11022.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haikesan">@haikesan</a> on 2025-01-28 16:44</div>
+            <div class="timeline-body"><p>Also, I am running them in this way:
+for uv</p>
+<pre><code>cd uv_example
+uv sync
+. .venv/bin/activate
+python tests/script.py
+</code></pre>
+<p>Getting error here, then</p>
+<pre><code>deactivate 
+cd ..
+</code></pre>
+<p>for poetry</p>
+<pre><code>cd poetry_example
+poetry install
+poetry shell
+python tests/script.py
+</code></pre>
+<p>And everything works as it should, while also having project root in sys.path</p>
+<pre><code>deactivate 
+cd ..
+</code></pre>
+<p>Running via uv run also doesn't solve problem. It's something with pythonpath or activation process, I guess</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/uwu-420">@uwu-420</a> on 2025-01-29 15:44</div>
+            <div class="timeline-body"><p>Hi @hRtWzFe I would recommend not providing your examples as .zip file but as a a public repository or if it's small enough just as code blocks in the comments with the full file path per file. I'm afraid, but opening a .zip file from a stranger on the internet is kinda scary 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haikesan">@haikesan</a> on 2025-01-29 18:00</div>
+            <div class="timeline-body"><p>Here is repo to reproduce:
+https://github.com/hRtWzFe/uv-issue-11022</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haikesan">@haikesan</a> on 2025-02-02 18:25</div>
+            <div class="timeline-body"><p>I think I found the solution.</p>
+<p>Initializing project as package with <code>uv init --package</code></p>
+<p>Or adding</p>
+<pre><code>[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;.&quot;]
+</code></pre>
+<p>if you already have your codebase (without src) solves this problem!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @haikesan on 2025-02-02 18:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

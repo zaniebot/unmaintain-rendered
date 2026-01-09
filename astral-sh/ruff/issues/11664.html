@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] testing framework - astral-sh/ruff #11664</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] testing framework</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11664">#11664</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-05-31 22:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2024-05-31 22:16</div>
+            <div class="timeline-body"><p>We want a nice way to write tests of our type inference.</p>
+<p>Some prior art to consider:</p>
+<ul>
+<li>mypy: https://github.com/python/mypy/blob/master/test-data/unit/check-classes.test</li>
+<li>flake8-pyi: https://github.com/PyCQA/flake8-pyi/blob/main/tests/forward_refs_annassign.pyi</li>
+<li>typescript:<ul>
+<li>input: https://github.com/microsoft/TypeScript/blob/main/tests/baselines/reference/AmbientModuleAndAmbientFunctionWithTheSameNameAndCommonRoot.js</li>
+<li>symbols: https://github.com/microsoft/TypeScript/blob/main/tests/baselines/reference/AmbientModuleAndAmbientFunctionWithTheSameNameAndCommonRoot.symbols</li>
+<li>types: https://github.com/microsoft/TypeScript/blob/main/tests/baselines/reference/AmbientModuleAndAmbientFunctionWithTheSameNameAndCommonRoot.types</li>
+<li>errors: https://github.com/microsoft/TypeScript/blob/main/tests/baselines/reference/ArrowFunction1.errors.txt</li>
+</ul>
+</li>
+<li>pyright (similar to, probably derived from, typescript)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-05-31 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-09-19 02:52</div>
+            <div class="timeline-body"><p>as someone who has worked on mypy a lot, i can attest to the tests being extremely painful to work with, to the point of scaring off many potential contributors</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-19 03:23</div>
+            <div class="timeline-body"><blockquote>
+<p>as someone who has worked on mypy a lot, i can attest to the tests being extremely painful to work with, to the point of scaring off many potential contributors</p>
+</blockquote>
+<p>Can you share any specifics about what features of the mypy test framework make it painful for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-09-20 02:12</div>
+            <div class="timeline-body"><h3>syntax</h3>
+<p>mypy tests are written in a custom language - so no ide support at all</p>
+<p>expected errors are written as the full output of running mypy</p>
+<pre><code class="language-py">1 + &quot;&quot;  # E: Unsupported operand types for + (&quot;int&quot; and &quot;str&quot;)  [operator]
+</code></pre>
+<p>this is prone to mistakes and inadvertently writing comments that aren't expected errors</p>
+<p>additionally, these messages are the full output of mypy, so it makes it hard to test specific things: column number, error code etc in isolation</p>
+<p>additionally, when the text of an error changes slightly, it will require potentially thousands of tests to be updated for no practical reason</p>
+<h3>config</h3>
+<p>the mypy tests are all intensely mysterious, each test suite behaves slightly differently and requires analysis of the implementation to determine the behaviour</p>
+<p>additionally, each test will run under its own (fake) context of standard library types. there are minimal and more complete versions of the stdlib to choose from for each test, specified with a <code>[builtins ...]</code> configuration key. this leads to really bad DX when mypy crashes because the types in the test are incomplete</p>
+<p>additionally, because these test fixture stubs aren't accurate to typeshed, it leads to strong concerns regarding test accuracy</p>
+<p>ideally, i would want all tests to use full stdlib stubs, quell any performance concerns by loading the stdlib once and reusing it for each test. for assertions, i think the optimal solution would be a pattern matching style representation against the types and errors in a test would be ideal, perhaps something like:</p>
+<p>I'm not sure if writing tests directly in python, or embedded within rust files would make more sense. I'm not very familiar with rust, so I'm not opinionated on a design for a rust implementation, so I can throw an idea for a pseudo python one:</p>
+<pre><code class="language-py">from redknot_test import Errors, expect_error, expect_type, GenericType
+
+# errors are matched structurally, with optional fields that can be specified, depending on what is relevant to the test i.e. column number etc
+expect_error(1 + &quot;&quot;, Errors.Operator(left=int, right=str))
+
+# expected types use the same pattern objects
+# for example here we demonstrate that we can use `GenericType` as a placeholder, because in this contrived example, we only care about the type parameters type
+expect_type([1], GenericType[int])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-09-20 08:08</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>pyright (similar to, probably derived from, typescript)</li>
+</ul>
+</blockquote>
+<p>pyright has two main types of tests as far as i know:</p>
+<h1>fourslash tests</h1>
+<p>the fourslash test framework is vendored from the typescript repo. i think it's okay but has a lot of room for improvement, for example if you have a test with the following code:</p>
+<pre><code class="language-ts">const code = `
+// @Filename: /a.py
+////foo
+// @Filename: /b.py
+////bar
+   `
+</code></pre>
+<p>the second file will silently be ignored because of the trailing whitespace on the newline after it (or something like that, i don't remember the exact details, but there are a lot of issues like that in fourslash)</p>
+<h1><code>validateResults</code> tests</h1>
+<p>these tests load a sample file and assert that it has the expected number of errors:</p>
+<pre><code class="language-ts">const result = typeAnalyzeSampleFiles([&quot;foo.py&quot;])
+validateResults(result, /* errorCount */ 4)
+</code></pre>
+<p>the obvious problem here is that it's not checking what diagnostic codes they are, what line number they're on, etc. which increases the chance of regressions going undetected (eg. if an error stops occurring and a different unrelated error appears in a different spot)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-20 18:00</div>
+            <div class="timeline-body"><p>Thanks for the details! We are working on a test framework that I think will address most of these concerns. All tests will use the full typeshed/builtins. Tests will be embedded code blocks in a markdown document, which is similar in some ways to mypy's approach, but many editors have support for syntax highlighting code blocks in markdown. (I think some form of embedding is essential to allow easily writing multi-file tests, without actually having to spread the code across multiple files.) We do plan to use comments within the Python code snippets for asserting diagnostics, similar to mypy, but in a form that doesn't require asserting on the full message. Instead we'll allow explicitly asserting on the column number, the error code, and/or optionally a substring match on the diagnostic message. I expect many tests to only assert on the error code, unless the intent of the test is specifically to assert something about the diagnostic message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2024-09-20 18:04</div>
+            <div class="timeline-body"><p>FWIW one pattern I've used successfully in the past is to be able to run tests in a &quot;bless&quot; mode, where gold copies are written, instead of asserted against. When you make a cross-cutting change the intentionally impacts many tests (e.g., changing a diagnostic message) you can then run in bless mode and review the diff to ensure everything looks right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-20 18:10</div>
+            <div class="timeline-body"><p>Yes, most of Ruff's tests are in this form (using <code>cargo insta</code>), and we also had a system like this for writing HIR lowering tests in the Cinder JIT.</p>
+<p>We'll likely provide support for this as well, though maybe not in the initial version. I think this is a great approach for tests whose primary intent is to assert on full diagnostic output. I'm hesitant to make it the universal approach for all tests of type inference logic, because my experience with it is that it can sometimes lead to review fatigue, and actual logic bugs slipping through un-noticed in a pile of mostly-cosmetic changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-09-21 00:29</div>
+            <div class="timeline-body"><p>mypy has this feature as well <code>&gt; pytest --update-data</code>, it has led to many mistakes leaking past diff review though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-09-26 02:38</div>
+            <div class="timeline-body"><p>I actually really really like having the full message as inline comments in mypy's tests. It makes test cases much easier to review and often motivates improvements to diagnostics, I definitely recommend it.</p>
+<p>I agree that fixtures are terrible and an impediment for mypy contributors.</p>
+<p>Mypy also has other elements to its DSL (e.g. for incremental / LSP style test cases, different configuration options, different Python gating, etc). It also integrates nicely with pytest (so things like <code>-k</code> test selection work), the aforementioned <code>--update-data</code> is useful too. You will likely want equivalents. (I find the <code>cargo insta</code> output in ruff noisy and somewhat hard to read though, since it's not inline and context is duplicated)</p>
+<p>I'd also recommend integrating with mypy_primer at some point, am happy to help out with this too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-26 05:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I actually really really like having the full message as inline comments in mypy's tests. It makes test cases much easier to review and often motivates improvements to diagnostics, I definitely recommend it.</p>
+</blockquote>
+<p>Hmm, I'm still quite skeptical here. It feels like it makes test cases effectively impossible to write without using <code>--update-data</code>, which is something I don't want.</p>
+<p>I don't think I understand &quot;makes tests cases much easier to review&quot;. Does mypy have opaque (eg numeric) error codes? I think error codes should be meaningful short text strings, which seems clear enough for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-26 05:51</div>
+            <div class="timeline-body"><p>Thanks for the comments!</p>
+<blockquote>
+<p>Mypy also has other elements to its DSL (e.g. for incremental / LSP style test cases, different configuration options, different Python gating, etc).</p>
+</blockquote>
+<p>Yep, these are all important and in our plans.</p>
+<blockquote>
+<p>It also integrates nicely with pytest (so things like -k test selection work),</p>
+</blockquote>
+<p>We'll be integrating with <code>cargo test</code> (or nextest), so their usual test selection facilities will apply.</p>
+<blockquote>
+<p>I find the cargo insta output in ruff noisy and somewhat hard to read though, since its not inline and context is duplicated)</p>
+</blockquote>
+<p>Agreed, but this is hard to avoid if you want to test multi-line diagnostic output with context code frames (which I think is nice for users); it's hard to represent such diagnostics inline.</p>
+<blockquote>
+<p>I'd also recommend integrating with mypy_primer at some point, am happy to help out with this too</p>
+</blockquote>
+<p>Definitely, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-09-26 06:01</div>
+            <div class="timeline-body"><p>mypy's error codes are meaningful short strings (and it'd be kind of nice for red knot to match them whenever there isn't a reason not to). For me, the cognitive load saved during review is similar to why I wouldn't ever want my type checker to only output an error code, the context line and no message — but yeah, this might totally just be difference in taste. I think it also avoids any issue with multiple errors with the same code on one line + seeing the message in the context of the incorrect code does sometimes inspire better diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-26 06:16</div>
+            <div class="timeline-body"><blockquote>
+<p>We'll be integrating with cargo test (or nextest), so their usual test selection facilities will apply.</p>
+</blockquote>
+<p>Yes, and no. It's going to be very similar to Ruff's test system which has been a pain point (at least for me). The test framework allows selecting a test-suite (a test file), but it won't be possible to select an individual test if the suite contains multiple tests.</p>
+<blockquote>
+<p>mypy's error codes are meaningful short strings (and it'd be kind of nice for red knot to match them whenever there isn't a reason not to).</p>
+</blockquote>
+<p>We plan to use human-readable names over error codes. Hopefully, this will help with context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-09-26 06:21</div>
+            <div class="timeline-body"><p>To be clear, mypy's error codes are human readable. You can find a list of mypy's error codes at https://mypy.readthedocs.io/en/stable/error_code_list.html and https://mypy.readthedocs.io/en/stable/error_code_list2.html.
+(I guess off-topic for this issue, but I'm happy to provide opinions on error codes as well!)</p>
+<p>While codes are enough context in basic tests, it's nice for anything complicated, e.g. think about having to review a test where a Protocol doesn't match something because some arg is positional-only. It's genuinely subtle and the message helps a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-09-26 06:26</div>
+            <div class="timeline-body"><p>i don't like how mypy's errors work for a few reasons:</p>
+<ul>
+<li>too many of them are under the <code>misc</code> code</li>
+<li>the codes are all different to the corresponding options to enable/disable them (eg. the option to enable <code>redundant-cast</code> is called <code>warn-redundant-casts</code>)</li>
+<li>the options are inconsistently named (some are negative and some positive, eg.<code>--allow-untyped-globals</code> vs <code>--disallow-any-explicit</code> and some don't follow the <code>allow</code>/<code>disallow</code> pattern at all eg. <code>warn-return-any</code>)</li>
+</ul>
+<p>the way pyright does it is better and far less confusing imo:</p>
+<pre><code class="language-toml">[tool.pyright]
+# all rules are named in this consistent &quot;report*&quot; format
+reportUndefinedVariable = true
+</code></pre>
+<pre><code class="language-py"># the code for type ignore comments is the same as the option to enable them
+asdf # pyright:ignore[reportUndefinedVariable]
+</code></pre>
+<p>this is the same as how ruff currently works (except ruff's codes aren't descriptive - #1773)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-09-26 06:29</div>
+            <div class="timeline-body"><p>Yup, I agree with that. Definitely too many things are still under misc. There shouldn't be separate flags corresponding to error codes at all (e.g. <code>--warn-redundant-casts</code> and others are legacy flags that existed before error codes)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-09-26 06:34</div>
+            <div class="timeline-body"><p>Oh do note that pyright will not pay any attention to error codes on type ignore, only on pyright ignore, so your <code>asdf</code> example doesn't do what you'd want</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-09-26 06:37</div>
+            <div class="timeline-body"><p>true, i updated my example to use <code>pyright:ignore</code> instead which does look at the code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13571.html">astral-sh/ruff#13571</a> on 2024-09-30 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13636.html">astral-sh/ruff#13636</a> on 2024-10-05 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-10-08 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../scipy/scipy-stubs/issues/198.html">scipy/scipy-stubs#198</a> on 2024-12-29 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-lsp/issues/237.html">astral-sh/ruff-lsp#237</a> on 2025-01-31 18:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

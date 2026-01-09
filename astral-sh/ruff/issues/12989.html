@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff format moves semantic comments to wrong places - astral-sh/ruff #12989</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff format moves semantic comments to wrong places</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12989">#12989</a>
+        opened by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a>
+        on 2024-08-19 15:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> on 2024-08-19 15:11</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Ruff 0.5.6</p>
+<p>It seems that <code>ruff format</code> often moves semantic comments (such as <code># type: ignore</code> or <code># noqa: ...</code>) to inappropriate places that in the end make Ruff itself or other tools fail.</p>
+<p>Ruffs current behaviour:</p>
+<pre><code class="language-diff">- from gitlab_batch_transformer.transformers.kraken.csttransformer import KrakenProjectDoTransformations  # type: ignore[attr-defined]
++ from gitlab_batch_transformer.transformers.kraken.csttransformer import (
++     KrakenProjectDoTransformations,  # type: ignore[attr-defined]
++ )
+</code></pre>
+<p>The correct way to put the <code># type: ignore</code> command is on the first line:</p>
+<pre><code class="language-diff">- from gitlab_batch_transformer.transformers.kraken.csttransformer import KrakenProjectDoTransformations  # type: ignore[attr-defined]
++ from gitlab_batch_transformer.transformers.kraken.csttransformer import (  # type: ignore[attr-defined]
++     KrakenProjectDoTransformations,
++ )
+</code></pre>
+<p>Another example, Ruffs current behaviour:</p>
+<pre><code class="language-diff"># ruff format --line-length 30
+- from . import foooooo, baaaaarrr  # noqa: F401,E402
++ from . import (
++     foooooo,
++     baaaaarrr,
++ )  # noqa: F401,E402
+</code></pre>
+<p>Resulting in the <code># noqa</code> not take effect and <code>ruff check</code> to fail:</p>
+<pre><code># ruff check rufftest.py 
+rufftest.py:2:5: F401 [*] `.foooooo` imported but unused
+  |
+1 | from . import (
+2 |     foooooo,
+  |     ^^^^^^^ F401
+3 |     baaaaarrr,
+4 | )  # noqa: F401,E402
+  |
+  = help: Remove unused import
+
+rufftest.py:3:5: F401 [*] `.baaaaarrr` imported but unused
+  |
+1 | from . import (
+2 |     foooooo,
+3 |     baaaaarrr,
+  |     ^^^^^^^^^ F401
+4 | )  # noqa: F401,E402
+  |
+  = help: Remove unused import
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.
+</code></pre>
+<p>Again, the correct behaviour would be to keep the comment on the first line:</p>
+<pre><code class="language-diff"># ruff format --line-length 30
+- from . import foooooo, baaaaarrr  # noqa: F401,E402
++ from . import (  # noqa: F401,E402
++     foooooo,
++     baaaaarrr,
++ )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> on 2024-08-19 15:22</div>
+            <div class="timeline-body"><p>I just found https://github.com/astral-sh/ruff/issues/12901 which is basically the same issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-20 06:34</div>
+            <div class="timeline-body"><blockquote>
+<p>I just found #12901 which is basically the same issue.</p>
+</blockquote>
+<p>Thanks for the excellent write up!</p>
+<p>Yes, I think those are the same. I'll close this issue in favor of #12901</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-20 06:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv 0.7.10: &quot;Connection reset by peer&quot; on macOS Apple Silicon - astral-sh/uv #13831</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv 0.7.10: &quot;Connection reset by peer&quot; on macOS Apple Silicon</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13831">#13831</a>
+        opened by <a href="https://github.com/lucarosa">@lucarosa</a>
+        on 2025-06-04 12:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lucarosa">@lucarosa</a> on 2025-06-04 12:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi,</p>
+<p>After a fresh installation of uv 0.7.10 all PyPI connections fail with &quot;Connection reset by peer (os error 54)&quot; on macOS Apple Silicon. Same operations on uv 0.7.9 work perfectly.</p>
+<h3>Minimal Reproduction</h3>
+<pre><code>tmp git:(main) ✗ uv --version
+uv 0.7.10 (1e5120e15 2025-06-03)
+➜  tmp git:(main) ✗ uv add jupyter
+⠇ tmp==0.1.0                                                                                                                                                error: Failed to fetch: `https://pypi.org/simple/jupyter/`
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request
+  Caused by: client error (Connect)
+  Caused by: Connection reset by peer (os error 54)
+➜  tmp git:(main) ✗ uv cache clean
+Clearing cache at: /Users/lucarosa/.cache/uv
+Removed 5 files (1.6KiB)
+➜  tmp git:(main) ✗ rm ~/.local/bin/uv ~/.local/bin/uvx
+➜  tmp git:(main) ✗ curl -LsSf https://astral.sh/uv/0.7.9/install.sh | sh
+downloading uv 0.7.9 aarch64-apple-darwin
+no checksums to verify
+installing to /Users/lucarosa/.local/bin
+  uv
+  uvx
+everything's installed!
+➜  tmp git:(main) ✗ uv add jupyter
+Resolved 102 packages in 468ms
+Audited 98 packages in 0.10ms
+</code></pre>
+<p>This happen everytime regardless of the package. Here the error when run with <code>--verbose</code></p>
+<pre><code>tmp git:(main) ✗ uv add numpy --verbose
+DEBUG uv 0.7.10 (1e5120e15 2025-06-03)
+DEBUG Found project root: `/Users/lucarosa/learndir/tmp`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/Users/lucarosa/learndir/tmp`
+DEBUG Reading Python requests from version file at `/Users/lucarosa/learndir/tmp/.python-version`
+DEBUG Using Python request `3.13` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+DEBUG The project environment's Python version satisfies the request: `Python 3.13`
+DEBUG Released lock at `/var/folders/wz/ggwcpk2s1jq9hk80m_6t9vmr0000gn/T/uv-60938af87eca11c1.lock`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: tmp @ file:///Users/lucarosa/learndir/tmp
+DEBUG No workspace root found, using project root
+DEBUG Ignoring existing lockfile due to mismatched requirements for: `tmp==0.1.0`
+  Requested: {Requirement { name: PackageName(&quot;jupyter&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;1.1.1&quot; }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName(&quot;numpy&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([]), index: None, conflict: None }, origin: None }}
+  Existing: {Requirement { name: PackageName(&quot;jupyter&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;1.1.1&quot; }]), index: None, conflict: None }, origin: None }}
+DEBUG Solving with installed Python version: 3.13.3
+DEBUG Solving with target Python version: &gt;=3.13
+DEBUG Adding direct dependency: tmp*
+DEBUG Searching for a compatible version of tmp @ file:///Users/lucarosa/learndir/tmp (*)
+DEBUG Adding direct dependency: jupyter&gt;=1.1.1
+DEBUG Adding direct dependency: numpy*
+DEBUG No cache entry for: https://pypi.org/simple/jupyter/
+DEBUG No cache entry for: https://pypi.org/simple/numpy/
+DEBUG Transient request failure for unknown URL, retrying: error sending request
+  Caused by: client error (Connect)
+  Caused by: Connection reset by peer (os error 54)
+DEBUG Transient request failure for unknown URL, retrying: error sending request
+  Caused by: client error (Connect)
+  Caused by: Connection reset by peer (os error 54)
+DEBUG Transient request failure for unknown URL, retrying: error sending request
+  Caused by: client error (Connect)
+  Caused by: Connection reset by peer (os error 54)
+DEBUG Transient request failure for unknown URL, retrying: error sending request
+  Caused by: client error (Connect)
+  Caused by: Connection reset by peer (os error 54)
+DEBUG Transient request failure for unknown URL, retrying: error sending request
+  Caused by: client error (Connect)
+  Caused by: Connection reset by peer (os error 54)
+DEBUG Transient request failure for unknown URL, retrying: error sending request
+  Caused by: client error (Connect)
+  Caused by: Connection reset by peer (os error 54)
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Reverting changes to `uv.lock`
+</code></pre>
+<h3>Platform</h3>
+<p>mac OS 15.5 arm64</p>
+<h3>Version</h3>
+<p>0.7.10</p>
+<h3>Python version</h3>
+<p>Python 3.13.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @lucarosa on 2025-06-04 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "UV 0.7.10: "Connection reset by peer" on macOS Apple Silicon" to "uv 0.7.10: "Connection reset by peer" on macOS Apple Silicon" by @lucarosa on 2025-06-04 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-04 13:35</div>
+            <div class="timeline-body"><p>Are you using any specific settings, such as a proxy? Do you know if your connection is IPv4 or IPv6?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13835.html">astral-sh/uv#13835</a> on 2025-06-04 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-04 13:40</div>
+            <div class="timeline-body"><p>Could you try the branch at https://github.com/astral-sh/uv/pull/13835 to see if it resolves the problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-04 13:47</div>
+            <div class="timeline-body"><p>cc @seanmonstar</p>
+<p>As a note, I can't reproduce — we'll need more information on the network setup. It seems reasonable to rollback the upgrade anyway though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/seanmonstar">@seanmonstar</a> on 2025-06-04 13:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Connection reset by peer (os error 54)</p>
+</blockquote>
+<p>Hm, only thing I can think of that seems relevant in reqwest around connection establishment is some proxy refactors. Maybe a SOCKS proxy?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucarosa">@lucarosa</a> on 2025-06-04 14:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you using any specific settings, such as a proxy? Do you know if your connection is IPv4 or IPv6?</p>
+</blockquote>
+<p>I'm on IPv4 with Google DNS server (8.8.8.8, 8.8.4.4), no proxy settings. My ISP often has issues with IPv6 but I've never investigated. Looks like that's what it is causing the issue maybe?</p>
+<pre><code>➜  tmp git:(main) ✗ curl -6 https://pypi.org/
+curl: (35) Recv failure: Connection reset by peer
+</code></pre>
+<p>it works with with IPv4. I can test the branch in a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-04 14:08</div>
+            <div class="timeline-body"><p>This might be caused by https://github.com/hyperium/hyper-util/pull/194 then</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucarosa">@lucarosa</a> on 2025-06-04 14:33</div>
+            <div class="timeline-body"><p>It's still failing</p>
+<pre><code> tmp git:(main) ✗ ../uv/target/release/uv --version
+uv 0.7.10+6 (e863001f5 2025-06-04)
+➜  tmp git:(main) ✗ ../uv/target/release/uv add numpy
+⠇ tmp==0.1.0
+error: Failed to fetch: `https://pypi.org/simple/numpy/`
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://pypi.org/simple/numpy/)
+  Caused by: client error (Connect)
+  Caused by: Connection reset by peer (os error 54)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/seanmonstar">@seanmonstar</a> on 2025-06-04 14:34</div>
+            <div class="timeline-body"><p>That change &quot;shouldn't&quot; be an issue, since the connector will try all the IP addresses that the resolver returns, even if IPv6 ones fail. That change just adjusted the order of addresses that are attempted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-06-04 14:56</div>
+            <div class="timeline-body"><p>If you're getting &quot;connection reset by peer&quot; that means the TCP connect succeeded but the other side immediately hung up on you after connecting, right? In that case, a change to the order of addresses will actually make a difference, in that Happy Eyeballs will see a successful connection and pass that onto the higher layer, and never try the later addresses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-04 15:15</div>
+            <div class="timeline-body"><p>@lucarosa Sorry for the trial-and-error method, could you try #13835 again? (I've now downgraded the transitive hyper-util, too)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucarosa">@lucarosa</a> on 2025-06-04 16:04</div>
+            <div class="timeline-body"><p>Not a problem! It's working now :)</p>
+<pre><code>➜  tmp git:(main) ✗ uv --version
+uv 0.7.10 (1e5120e15 2025-06-03)
+➜  tmp git:(main) ✗ uv add numpy
+⠼ tmp==0.1.0
+error: Failed to fetch: `https://pypi.org/simple/numpy/`
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request
+  Caused by: client error (Connect)
+  Caused by: Connection reset by peer (os error 54)
+➜  tmp git:(main) ✗ ../uv/target/release/uv add numpy
+Resolved 2 packages in 188ms
+Audited 1 package in 0.30ms
+➜  tmp git:(main) ✗ ../uv/target/release/uv --version
+uv 0.7.10+7 (fe65c5aa2 2025-06-04)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-04 16:27</div>
+            <div class="timeline-body"><p>Thanks for testing! Downgrading hyper-util to 0.1.12 worked, so it really looks like https://github.com/hyperium/hyper-util/pull/194.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hyperium/hyper/issues/3900.html">hyperium/hyper#3900</a> on 2025-06-04 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-05 12:10</div>
+            <div class="timeline-body"><p>The latest hyper-util release fixes the regression, so we can try to upgrade again and test if it works (https://github.com/hyperium/hyper-util/pull/200)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-10 09:52</div>
+            <div class="timeline-body"><p>HI @lucarosa, sorry to bother you again, would you be willing to test https://github.com/astral-sh/uv/pull/13912 to confirm that this version has fixed the regression?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucarosa">@lucarosa</a> on 2025-06-11 16:49</div>
+            <div class="timeline-body"><p>Hi @konstin, apologies for the late reply! I'll test it in the next couple of hours</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucarosa">@lucarosa</a> on 2025-06-11 21:15</div>
+            <div class="timeline-body"><p>I don't seem to be able to reproduce the original bug because now my IPv6 connection is working. When I disable IPv6, uv works fine. So it looks like the bug was triggered specifically by the &quot;Connection reset by peer&quot; error which I cannot longer reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-13 09:50</div>
+            <div class="timeline-body"><p>Ok, thanks for trying!</p>
+<p>Closing this as it seems fixed upstream, thanks @seanmonstar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-06-13 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../seanmonstar/reqwest/pulls/2743.html">seanmonstar/reqwest#2743</a> on 2025-06-24 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14243.html">astral-sh/uv#14243</a> on 2025-06-24 15:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive `PD008` when using `zipfile.Path.at` - astral-sh/ruff #4466</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive `PD008` when using `zipfile.Path.at`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4466">#4466</a>
+        opened by <a href="https://github.com/m-roberts">@m-roberts</a>
+        on 2023-05-17 08:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/m-roberts">@m-roberts</a> on 2023-05-17 08:08</div>
+            <div class="timeline-body"><p><code>ruff==0.0.267</code> has a false positive <code>PD008</code>:</p>
+<pre><code class="language-python">import io
+import zipfile
+
+
+class MockBinaryFile(io.BytesIO):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def close(self):
+        pass  # Don't allow closing the file, it would clear the buffer
+
+
+zip_buffer = MockBinaryFile()
+
+with zipfile.ZipFile(zip_buffer, &quot;w&quot;) as zf:
+    zf.writestr(&quot;dir/file.txt&quot;, &quot;This is a test&quot;)
+
+# Reset the BytesIO object's cursor to the start.
+zip_buffer.seek(0)
+
+with zipfile.ZipFile(zip_buffer, &quot;r&quot;) as zf:
+    zpath = zipfile.Path(zf, &quot;/&quot;)
+
+dir_name, file_name = zpath.at.split(&quot;/&quot;)
+</code></pre>
+<pre><code>&gt; ruff --select=PD008 a.py
+a.py:24:23: PD008 Use `.loc` instead of `.at`.  If speed is important, use numpy.
+   |
+24 | dir_name, file_name = zpath.at.split(&quot;/&quot;)
+   |                       ^^^^^^^^ PD008
+   |
+
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-17 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-17 13:23</div>
+            <div class="timeline-body"><p>Thanks! Some of the <code>PD</code> false positives are hard to avoid, but this one should be fixable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-05-17 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4474.html">astral-sh/ruff#4474</a> on 2023-05-17 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-17 16:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

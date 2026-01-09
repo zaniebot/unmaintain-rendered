@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `extra-index-url` config value to be overridden - astral-sh/uv #7924</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow `extra-index-url` config value to be overridden</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7924">#7924</a>
+        opened by <a href="https://github.com/richardcooper">@richardcooper</a>
+        on 2024-10-04 11:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/richardcooper">@richardcooper</a> on 2024-10-04 11:27</div>
+            <div class="timeline-body"><p>I have an <code>extra-index-url</code> config setting in the <code>[tool.uv.pip]</code> section of <code>pyproject.toml</code>. I'd like to be able to completely override it using env-vars or similar. That doesn't seem to be possible currently because:</p>
+<ul>
+<li><code>extra-index-url</code> is a list of strings</li>
+<li>When <code>uv</code> gets multiple values for a list config item (in this case both from <code>pyproject.toml</code> and env-vars) then it will concatenate them.</li>
+</ul>
+<p>Could there be some way to override <code>extra-index-url</code> rather than concatenate to it?</p>
+<p>To reproduce:</p>
+<pre><code class="language-console">$ uv --version            
+uv 0.4.18 (7b55e9790 2024-10-01)
+
+$ cat pyproject.toml
+[tool.uv.pip]
+extra-index-url = [
+    &quot;https://localhost/no_repo&quot;,
+]
+
+$ UV_EXTRA_INDEX_URL=&quot;https://REDACTED_PYPI_SERVER/simple&quot; uv pip install &quot;attrs&quot; --no-cache         
+⠼ Resolving dependencies...                                                                                                                                                                         error: Request failed after 3 retries
+  Caused by: error sending request for url (https://localhost/no_repo/attrs/)
+  Caused by: client error (Connect)
+  Caused by: tcp connect error: Connection refused (os error 61)
+  Caused by: Connection refused (os error 61)
+</code></pre>
+<p>Here <code>uv</code> is checking my private PyPI server (URL redacted), finding that it does not contain <code>attrs</code>, then checking <code>https://localhost/no_repo</code> and failing with a connection error. That's understandable and expected behaviour.</p>
+<p>The problem is that there doesn't seem to be a way to prevent <code>uv</code> from trying to connect to the broken <code>https://localhost/no_repo</code> short of editing the <code>pyproject.toml</code> file.</p>
+<p>I'm currently working around this problem by using <code>export UV_NO_CONFIG=true</code>. That works as long as <code>[tool.uv.pip]</code> is simple. However it's a fragile workaround. I can't only override <code>extra-index-url</code> it has to be either all uv config or none of it and in my real use-case there is more config to consider.</p>
+<p>Why do I want to do this:</p>
+<p>I'm in a corporate environment where we have our own PyPI repository for private packages. That repo has one URL which works internally (behind our firewall) and a different one which works externally. We have the internal URL in <code>[tool.uv.pip]</code> so that it works on developer machines with no configuration. In our CI/CD environment the internal URL fails and we need to override it to use the external one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/prebeta">@prebeta</a> on 2025-06-24 20:19</div>
+            <div class="timeline-body"><p>Interestingly, it looks like they changed the behavior to append to the <code>pyproject.toml</code> configuration in https://github.com/astral-sh/uv/issues/3541</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

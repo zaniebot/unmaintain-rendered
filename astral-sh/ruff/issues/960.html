@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821 when using `global`  - astral-sh/ruff #960</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821 when using `global` </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/960">#960</a>
+        opened by <a href="https://github.com/patrick91">@patrick91</a>
+        on 2022-11-29 12:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/patrick91">@patrick91</a> on 2022-11-29 12:51</div>
+            <div class="timeline-body"><p>I'm getting this error when running ruff on a code like this:</p>
+<pre><code>import textwrap
+from typing import List
+
+import strawberry
+
+
+def test_entities_type_when_no_type_has_keys():
+    global Review
+
+    @strawberry.federation.type
+    class User:
+        username: str
+
+    @strawberry.federation.type(extend=True)
+    class Product:
+        upc: str = strawberry.federation.field(external=True)
+        reviews: List[&quot;Review&quot;]
+</code></pre>
+<p>(we use global as a work-around for some typing issues) :)</p>
+<p>This is the codebase I'm using Ruff against: https://github.com/strawberry-graphql/strawberry/pull/2367</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-29 15:28</div>
+            <div class="timeline-body"><p>I'll look into this and see what I can do :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 00:45</div>
+            <div class="timeline-body"><p>I guess the issue is that <code>del Review</code> removes <code>Review</code> from the scope, and so when we go to evaluate the forward annotation, it's gone.</p>
+<p>Could I help with removing the <code>global</code> / <code>del</code>? How are you testing that code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2022-11-30 01:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrick91">@patrick91</a> on 2022-11-30 10:37</div>
+            <div class="timeline-body"><p>The code needs global to allow get_type_hints to work at runtime, since it tries to find the forward ref from the global scope[1].</p>
+<p>Maybe I can remove the <code>del</code>, but in theory the code is fine, no?</p>
+<p>For now, I disabled that error for those files though, I'm fine with ignoring it for those tests 😊</p>
+<p>[1] Reference: https://mail.python.org/archives/list/typing-sig@python.org/thread/SNKJB2U5S74TWGDWVD6FMXOP63WVIGDR/#A5JFR7RDE7NNKESM2DWYM3ZT5ZYGOLCF</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 14:05</div>
+            <div class="timeline-body"><p>Ohhh I see, it's relied on for runtime behavior. Got it! I thought it was for Mypy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2022-12-01 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-01 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-09 22:50</div>
+            <div class="timeline-body"><p>This actually got fixed in #1154!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-09 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../strawberry-graphql/strawberry/pulls/2395.html">strawberry-graphql/strawberry#2395</a> on 2022-12-12 15:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

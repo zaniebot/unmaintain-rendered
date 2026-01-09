@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compile-time error for naming an arg group the same as an arg - clap-rs/clap #6174</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Compile-time error for naming an arg group the same as an arg</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/6174">#6174</a>
+        opened by <a href="https://github.com/lgarron">@lgarron</a>
+        on 2025-11-02 04:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lgarron">@lgarron</a> on 2025-11-02 04:37</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5.21</p>
+<h3>Describe your use case</h3>
+<p>I accidentally named an arg group the same as one of its arguments: https://github.com/lgarron/repo/blob/8640d936e3cff823c6c53d771992d52f60c05c07/src/commands/version.rs#L94-L98</p>
+<p>This compiled (and also produced a reasonable error in manual testing — I didn't test for the naming conflict because I did not expect it), so I went all the way through publication before realizing it failed. Depending on the invocation, you either get a helpful message:</p>
+<pre><code>thread 'main' panicked at /Users/lgarron/.local/share/cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.48/src/builder/debug_asserts.rs:289:9:
+Command bump: Argument group name 'commit' must not conflict with argument name
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>… or an error when one (but not both) of the arguments is invoked:</p>
+<pre><code>error: the argument '--commit-using &lt;COMMIT_USING&gt;' cannot be used with:
+  --commit
+  --commit-using &lt;COMMIT_USING&gt;
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>It would be really nice for this to be a compile-time error, if possible</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @lgarron on 2025-11-02 04:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @lgarron on 2025-11-02 04:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lgarron">@lgarron</a> on 2025-11-02 04:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Depending on the invocation, you either get a helpful message:</p>
+<pre><code>thread 'main' panicked at /Users/lgarron/.local/share/cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.48/src/builder/debug_asserts.rs:289:9:
+Command bump: Argument group name 'commit' must not conflict with argument name
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>… or an error when one (but not both) of the arguments is invoked:</p>
+<pre><code>error: the argument '--commit-using &lt;COMMIT_USING&gt;' cannot be used with:
+  --commit
+  --commit-using &lt;COMMIT_USING&gt;
+</code></pre>
+</blockquote>
+<p>Oh, this part seems it might be due to release vs. debug mode. 🤷</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2025-11-03 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-11-03 16:17</div>
+            <div class="timeline-body"><p>In a case like</p>
+<pre><code class="language-rust">#[derive(Args, Debug)]
+pub(crate) struct CommitOperationArgs {
+    #[clap(long, group = &quot;commit&quot;)]
+    commit: bool,
+    /// Same as `--commit`, but uses a specified VCS.
+    #[clap(long, group = &quot;commit&quot;)]
+    pub commit_using: Option&lt;VcsKind&gt;,
+}
+
+</code></pre>
+<p>we can move this check from runtime to compile time.  However, there are a lot of variants of this that we can't, including:</p>
+<pre><code class="language-rust">#[derive(Args, Debug)]
+pub(crate) struct CommitOperationArgs {
+    /// Same as `--commit`, but uses a specified VCS.
+    #[clap(long, group = &quot;commit&quot;)]
+    pub commit_using: Option&lt;VcsKind&gt;,
+    #[command(flatten)]
+    more: MoreCommitOperationArgs,
+}
+
+#[derive(Args, Debug)]
+pub(crate) struct MoreCommitOperationArgs {
+    #[clap(long)]
+    commit: bool,
+}
+</code></pre>
+<p>or</p>
+<pre><code class="language-rust">#[derive(Args, Debug)]
+#[command(group = ArgGroup::new(&quot;commit&quot;).arg(&quot;commit&quot;).arg(&quot;commit_using'))]
+pub(crate) struct CommitOperationArgs {
+    #[clap(long)]
+    commit: bool,
+    /// Same as `--commit`, but uses a specified VCS.
+    #[clap(long)]
+    pub commit_using: Option&lt;VcsKind&gt;,
+}
+</code></pre>
+<p>There could be arguments this covering 90% of the cases but it also sets up an expectation that can't be met.</p>
+<p>There is also the maintenance burden of duplicating our runtime checks to compile time.  And this isn't an isolated request, see also #3133.</p>
+<p>As for debug vs release, we do <a href="https://docs.rs/clap/latest/clap/_derive/_tutorial/index.html#testing">encourage forcing these commits to run in a test</a> in several places. #4838  is evaluating implicitly doing that for you.</p>
+<p>For your specific use case, an alternative would be to change</p>
+<pre><code class="language-rust">#[derive(Args, Debug)]
+pub(crate) struct CommitOperationArgs {
+    #[clap(long, group = &quot;commit&quot;)]
+    commit: bool,
+    /// Same as `--commit`, but uses a specified VCS.
+    #[clap(long, group = &quot;commit&quot;)]
+    pub commit_using: Option&lt;VcsKind&gt;,
+}
+</code></pre>
+<p>to</p>
+<pre><code class="language-rust">#[derive(Args, Debug)]
+#[group(multiple = false)]
+pub(crate) struct CommitOperationArgs {
+    #[clap(long, group = &quot;commit&quot;)]
+    commit: bool,
+    /// Same as `--commit`, but uses a specified VCS.
+    #[clap(long, group = &quot;commit&quot;)]
+    pub commit_using: Option&lt;VcsKind&gt;,
+}
+</code></pre>
+<p>An <code>ArgGroup</code> is automatically created for structs.  Since struct fields are not mutually exclusive, <code>multiple = true</code> is automatically set.  You can override this with the <code>#[group]</code> attribute.  #2621 is tracking support for enums.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lgarron">@lgarron</a> on 2025-11-03 19:18</div>
+            <div class="timeline-body"><blockquote>
+<p>There is also the maintenance burden of duplicating our runtime checks to compile time. And this isn't an isolated request, see also <a href="https://github.com/clap-rs/clap/issues/3133">#3133</a>.</p>
+</blockquote>
+<p>Ah, I'm sorry, I didn't find that issue when filing this one.</p>
+<p>Thanks for the other details, those are helpful!</p>
+<p>I tend to develop in release mode for some projects, but I'll definitely try using <code>Cli::command().debug_assert();</code> in CI!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lgarron">@lgarron</a> on 2025-11-05 02:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I tend to develop in release mode for some projects, but I'll definitely try using <code>Cli::command().debug_assert();</code> in CI!</p>
+</blockquote>
+<p>Alright, this turns out to be a pretty good solution to this. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @lgarron on 2025-11-05 02:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

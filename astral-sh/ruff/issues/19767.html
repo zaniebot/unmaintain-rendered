@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contents of docstrings receive Python formatting rules - astral-sh/ruff #19767</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Contents of docstrings receive Python formatting rules</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19767">#19767</a>
+        opened by <a href="https://github.com/bepri">@bepri</a>
+        on 2025-08-05 17:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bepri">@bepri</a> on 2025-08-05 17:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>One of our repositories uses rST in its docstrings. Given the right conditions, this rST appears to be interpreted as Python for some reason and has Python formatting rules applied to it.</p>
+<pre><code class="language-py"># min_repro.py
+def foo():
+    &quot;&quot;&quot;An example.
+
+    Example rST::
+
+        LONG_LONG_LONG_STRING = &quot;please do not break me up with formatting, I must be kept together!&quot;
+    &quot;&quot;&quot;
+</code></pre>
+<p>With the above file, run <code>ruff format min_repro.py</code> and see that it breaks up the string into this:</p>
+<pre><code class="language-py"># min_repro.py
+def foo():
+    &quot;&quot;&quot;An example.
+
+    Example rST::
+
+        LONG_LONG_LONG_STRING = (
+            &quot;please do not break me up with formatting, I must be kept together!&quot;
+        )
+    &quot;&quot;&quot;
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.5 (d13228ab8 2025-07-24)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../canonical/craft-providers/pulls/786.html">canonical/craft-providers#786</a> on 2025-08-05 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-05 18:22</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>The <a href="https://docs.astral.sh/ruff/formatter/#docstring-formatting">docs</a> say this should be opt-in behavior in the formatter. Have you tried setting <a href="https://docs.astral.sh/ruff/settings/#format_docstring-code-format">docstring-code-format</a> to <code>false</code>?</p>
+<p>I can only reproduce this in the <a href="https://play.ruff.rs/fb9861ea-4b50-4a48-a87b-2804fda420f2">playground</a> with this option set to <code>true</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-08-05 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bepri">@bepri</a> on 2025-08-05 18:50</div>
+            <div class="timeline-body"><p>This is embarrassing - sorry, I didn't realize that was enabled on our particular project.</p>
+<p>In our particular use-case, we wanted to show the contents of an <code>os-release</code> file in the docstring (I know this is a strange docstring, I've actually removed it but still found this behavior surprising enough to open this issue). We wanted to put it into a codeblock to separate it out from the rest of the text, but that codeblock wasn't necessarily Python output. <code>::</code> accomplished that.</p>
+<p>I think it is weird behavior to assume the language type of <code>::</code> since rST doesn't do that, but I also don't think it's an unreasonable assumption since it <em>is</em> a Python docstring after all. I'm not sure that there's a satisfying answer to this, the current behavior pleases one crowd and my proposed behavior pleases a different one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-06 06:16</div>
+            <div class="timeline-body"><p>Ruff currently formats all <a href="https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#toc-entry-22">literal blocks</a> (what you have here) and <a href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block">code blocks</a> that are valid Python syntax. Assuming that all literal blocks are Python code is probably a bit of a stretch but it's probably more often correct than wrong?</p>
+<p>You can disable the formatter for this one docstring or the one doc line using <code>fmt: skip</code> (<a href="https://play.ruff.rs/806f2b2f-866f-449b-83cc-beda06c3ebdb">playground</a>). Ruff, unfortunately, doesn't support any docstring specific suppression comments (so that you could skip the literal block without it appearing in the rendered documentation)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-06 13:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

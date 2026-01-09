@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E722 BaseException should also be considered as bare except - astral-sh/ruff #21518</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>E722 BaseException should also be considered as bare except</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21518">#21518</a>
+        opened by <a href="https://github.com/typenoob">@typenoob</a>
+        on 2025-11-19 01:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/typenoob">@typenoob</a> on 2025-11-19 01:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>According to the document,</p>
+<blockquote>
+<p>A bare except catches BaseException which includes KeyboardInterrupt, SystemExit, Exception, and others. Catching &gt; BaseException can make it hard to interrupt the program (e.g., with Ctrl-C) and can disguise other problems.</p>
+</blockquote>
+<p>A bare except is equal with catching BaseException explicitly.
+Therefore we should report the following snippets as well.</p>
+<pre><code class="language-python">try:
+    pass
+except BaseException:
+    pass
+</code></pre>
+<p>Does it make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @amyreese on 2025-11-19 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @amyreese on 2025-11-19 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-11-19 01:25</div>
+            <div class="timeline-body"><p>Seems like a reasonable thing to catch, IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-19 01:39</div>
+            <div class="timeline-body"><p>I think <a href="https://docs.astral.sh/ruff/rules/blind-except/">blind-except (BLE001)</a> is meant to catch this case.  We should probably cross-link between the two rules at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/typenoob">@typenoob</a> on 2025-11-19 02:24</div>
+            <div class="timeline-body"><p>BLE001 also catches the <code>except Exception:</code> which conflicts with the E722's suggestion.</p>
+<blockquote>
+<p>If you actually need to catch an unknown error, use Exception which will catch regular program errors but not important system
+exceptions.</p>
+</blockquote>
+<blockquote>
+<pre><code class="language-py">def run_a_function(some_other_fn):
+   try:
+       some_other_fn()
+   except Exception as e:
+       print(f&quot;How exceptional! {e}&quot;)
+</code></pre>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-12-03 05:37</div>
+            <div class="timeline-body"><p>Depends on the intention for the rule: is a bare <code>except</code> bad because <code>BaseException</code> is bad? Or is it because most devs not knowledgeable about Python's exception internals won't even know that <code>except</code> isn't <code>except Exception</code> ? And avoiding bare excepts helps clarify intent whilst avoiding accidentally eating up Keyboard interrupts.</p>
+<p>If you write <code>except BaseException</code>, you are being explicit about your intentions.</p>
+<blockquote>
+<p>which conflicts with the E722's suggestion.</p>
+</blockquote>
+<p>I don't see them conflicting. One helps you clarify intent, the other then tells you you may be hiding away unexpected errors (rather than logging or rethrowing)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/typenoob">@typenoob</a> on 2025-12-04 00:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't see them conflicting.</p>
+</blockquote>
+<p>I mean they can't use together. E722 allow <strong>Exception</strong>, but BLE001 don't. So I can't combine them to a point where <strong>BaseException</strong> and <strong>bare expect</strong> is not allowed but <strong>Exception</strong> is allowed.</p>
+<p>And since E772's intention is described as below</p>
+<blockquote>
+<p>A bare except catches BaseException which includes KeyboardInterrupt, SystemExit, Exception, and others. Catching BaseException can make it hard to interrupt the program (e.g., with Ctrl-C) and can disguise other problems.</p>
+</blockquote>
+<p>IMO, in E772, <strong>BaseException</strong> is eqaul to <strong>bare except</strong> and should be treat equally. If you think they have slight difference, then it's fine to stay still. Though I can't get it through reading the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/typenoob">@typenoob</a> on 2025-12-04 00:56</div>
+            <div class="timeline-body"><blockquote>
+<p>is a bare except bad because BaseException is bad? Or is it because most devs not knowledgeable about Python's exception internals won't even know that except isn't except (Exception) ?</p>
+</blockquote>
+<p>So what's the intention actually? Since its name is <strong>bare-except</strong>, I prefer the latter. But without your explanation, I would have stuck with the former.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM114 and comments / line-length - astral-sh/ruff #2848</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM114 and comments / line-length</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2848">#2848</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-02-13 10:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-13 10:22</div>
+            <div class="timeline-body"><p>I am unsure about <code>SIM114</code> - it makes sense in most cases but here for example I dislike it:</p>
+<pre><code class="language-python">            if request.flavor == &quot;class&quot; and not user.is_teacher(ldap_user_read):
+                continue  # only display teachers
+            elif request.flavor == &quot;workgroup&quot; and not user.is_student(ldap_user_read):
+                continue  # only display students
+</code></pre>
+<p>There are explanatory comments.
+I could change it into:</p>
+<pre><code class="language-python">            if (request.flavor == &quot;class&quot; and not user.is_teacher(ldap_user_read)) or (request.flavor == &quot;workgroup&quot; and not user.is_student(ldap_user_read)):
+                continue  # only display teachers or students
+</code></pre>
+<p>→ but that exceeds line length.</p>
+<p>and even worse for readability is this (or whatever black and such tools would do):</p>
+<pre><code class="language-python">            if (
+                request.flavor == &quot;class&quot; and not user.is_teacher(ldap_user_read))
+                or (request.flavor == &quot;workgroup&quot; and not user.is_student(ldap_user_read)
+            ):
+                continue  # only display teachers or students
+</code></pre>
+<hr />
+<p>the actual block is even more complicated and putting it in one statement makes more complex brackets necessary.</p>
+<pre><code class="language-python">            if request.flavor == &quot;class&quot; and not user.is_teacher(ldap_user_read):
+                continue  # only display teachers
+            elif request.flavor == &quot;workgroup&quot; and not user.is_student(ldap_user_read):
+                continue  # only display students
+            elif (
+                request.flavor == &quot;workgroup-admin&quot;
+                and not user.is_student(ldap_user_read)
+                and not user.is_administrator(ldap_user_read)
+                and not user.is_staff(ldap_user_read)
+                and not user.is_teacher(ldap_user_read)
+            ):
+                continue  # only display school users
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-13 10:27</div>
+            <div class="timeline-body"><p>maybe some complexity rules could be applied. it makes sense if the statement would be more complex (multiple statements instead of just a <code>continue</code>).  if it-s a single statement which is even not calling a function but <code>continue</code>, <code>return</code>, <code>raise</code> or whatever but the if-conditions contain many <code>and</code> or <code>or</code> conditions it makes it more complex to read and understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-13 13:57</div>
+            <div class="timeline-body"><p>Yeah I agree that the rule is not helpful in those cases. We could definitely change it to ignore simple statements, though at that point, part of me wonders why have the rule enabled at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-13 14:34</div>
+            <div class="timeline-body"><p>The rule is helpful - I fixed a bunch of issues. But it's not useful in the future when I now have to disable it and new violations aren't detected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-13 14:38</div>
+            <div class="timeline-body"><p>Can you give one or two examples of the kinds of issues you fixed, and the ones you ignored? Just to establish better heuristics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-13 15:08</div>
+            <div class="timeline-body"><p>fixes:</p>
+<pre><code class="language-diff">                 if (
+                     only_distributed
+                     and &quot;isDistributed&quot; in project.dict
+                     and project.dict[&quot;isDistributed&quot;]
+-                ):
+-                    projectlist.append(project)
+-                elif not only_distributed:
++                ) or not only_distributed:
+                     projectlist.append(project)
+</code></pre>
+<pre><code class="language-diff">             if self.is_student():
+                 subdir = os.path.join(self.school, &quot;schueler&quot;)
+-            elif self.is_teacher():
+-                subdir = os.path.join(self.school, &quot;lehrer&quot;)
+-            elif self.is_teacher_staff():
++            elif self.is_teacher() or self.is_teacher_staff():
+                 subdir = os.path.join(self.school, &quot;lehrer&quot;)
+             elif self.is_staff():
+                 subdir = os.path.join(self.school, &quot;mitarbeiter&quot;)
+</code></pre>
+<pre><code class="language-diff">     if isinstance(val, bytes):
+-        if b':' not in val:
++        if b':' not in val or val.lower().startswith(b'smtp:'):
+             return val
+-        else:
+-            if val.lower().startswith(b'smtp:'):
+-                return val
+
+</code></pre>
+<pre><code class="language-diff">-            if not compat_version:
+-                pass
+-            elif not vint:
++            if not compat_version or not vint:
+                 pass
+             elif compat_version &gt; vint:
+</code></pre>
+<pre><code class="language-diff">                 # search for &quot;set -e&quot; in line
+-                if line.startswith('set -e'):
+-                    checks['set-e-body'] = True
+-                elif 'set -e' in line:
++                if line.startswith('set -e') or 'set -e' in line:
+                     checks['set-e-body'] = True
+</code></pre>
+<pre><code class="language-diff">-                if not mindiff:
++                if not mindiff or mindiff &gt; diff:
+                     mindiff = diff
+-                else:
+-                    if mindiff &gt; diff:
+-                        mindiff = diff
+</code></pre>
+<pre><code class="language-diff">-            if not self['password']:
+-                self['password'] = self.oldattr.get('password', [b''])[0].decode('ASCII')
+-                self.modifypassword = 0
+-            elif not self.info['password']:
++            if not self['password'] or not self.info['password']:
+                 self['password'] = self.oldattr.get('password', [b''])[0].decode('ASCII')
+                 self.modifypassword = 0
+             else:
+</code></pre>
+<p>unsure (not fixed therefore):</p>
+<pre><code>        if is_master_or_backup and membership:
+            raise DCMembership()
+        elif not is_master_or_backup and not membership:
+            raise DCMembership()
+</code></pre>
+<pre><code>                if setting.printmode == &quot;none&quot; and setting.ip[0] not in ucr.get(
+                    &quot;samba/printmode/hosts/none&quot;, &quot;&quot;
+                ):  
+                    raise NotOk()
+                elif setting.printmode == &quot;default&quot; and (
+                    setting.ip[0] in ucr.get(&quot;samba/printmode/hosts/all&quot;, &quot;&quot;) 
+                    or setting.ip[0] in ucr.get(&quot;samba/printmode/hosts/none&quot;, &quot;&quot;) 
+                ):  
+                    raise NotOk()
+</code></pre>
+<pre><code>        while tokens:
+            t = tokens.pop(0)
+            if t == ')':
+                break
+            elif t == '(':
+                result |= cls.parse_test(tokens)
+            elif t == '!':
+                pass
+            elif t in COND:
+                pass
+            elif t in UNARY:
+                tokens.pop(0)
+            elif t.startswith('-'):
+                raise ValueError(t)
+</code></pre>
+<pre><code>            if key in (
+                &quot;samba/othershares/hosts/deny&quot;,
+                &quot;samba/othershares/hosts/none&quot;,
+                &quot;samba/printmode/hosts/none&quot;,
+                &quot;samba/printmode/hosts/all&quot;,
+                &quot;cups/printmode/hosts/none&quot;,
+                &quot;cups/printmode/hosts/all&quot;,
+            ):  
+                remove_list.append(key)
+            elif key.startswith(&quot;proxy/filter/room/&quot;) and key.endswith((&quot;/ip&quot;, &quot;/rule&quot;)):
+                remove_list.append(key)
+            elif key.startswith(&quot;samba/share/&quot;) and key.endswith(&quot;/hosts/deny&quot;):
+                remove_list.append(key)
+            elif key.startswith(&quot;samba/sharemode/room/&quot;):
+                remove_list.append(key)
+            elif key.startswith(&quot;samba/printmode/room/&quot;):
+                remove_list.append(key)
+            elif key.startswith(&quot;proxy/filter/setting-user/&quot;):
+                remove_list.append(key)
+</code></pre>
+<pre><code>146 |               if not filter and not regex:                                                                                                                            
+    |  _____________^                                                                                                                                                       
+147 | |                 _objs.append(obj)                                                                                                                                   
+148 | |             elif filter and obj.has_property(filter[0]) and obj[filter[0]] and fnmatch.fnmatch(obj[filter[0]], filter[1]):                                          
+149 | |                 _objs.append(obj)                                                                                                                                   
+    | |_________________________________^ SIM114  
+</code></pre>
+<pre><code>103 |               if relative_domain_name + &quot;.&quot; + zone_name in deadEndRecords:                                                                                            
+    |  _____________^                                                                                                                                                       
+104 | |                 print(&quot;\t%s&quot; % comp[0])                                                                                                                             
+105 | |             elif relative_domain_name + &quot;.&quot; + zone_name not in allRecords:                                                                                          
+106 | |                 print(&quot;\t%s&quot; % comp[0])                                                                                                                             
+    | |_______________________________________^ SIM114     
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-02-13 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-13 18:13</div>
+            <div class="timeline-body"><p>We could skip if any of the bodies contain comments, although there are some cases where this is a good pattern even without comments, like:</p>
+<pre><code>if related_table == &quot;stream&quot; and item[&quot;type&quot;] == 2:
+    pass
+elif related_table == &quot;user_profile&quot; and item[&quot;type&quot;] == 1:
+    pass
+elif related_table == &quot;huddle&quot; and item[&quot;type&quot;] == 3:
+    # save the recipient id with the huddle id, so that we can extract
+    # the user_profile ids involved in a huddle with the help of the
+    # subscription object
+    # check function 'get_huddles_from_subscription'
+    ID_MAP[&quot;recipient_to_huddle_map&quot;][item[&quot;id&quot;]] = lookup_table[old_id]
+else:
+    continue
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-06-12 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-13 00:54</div>
+            <div class="timeline-body"><p>I'm going to close this for now, I'm unsure how to improve it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-13 00:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

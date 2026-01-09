@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule suggestion: recommend `dict.fromkeys` over comprehension - astral-sh/ruff #9592</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule suggestion: recommend `dict.fromkeys` over comprehension</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9592">#9592</a>
+        opened by <a href="https://github.com/tjkuson">@tjkuson</a>
+        on 2024-01-20 14:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-01-20 14:00</div>
+            <div class="timeline-body"><p>Replace</p>
+<pre><code class="language-python">{elt: None for elt in foo}
+</code></pre>
+<p>with</p>
+<pre><code class="language-python">dict.fromkeys(foo)
+</code></pre>
+<p><code>dict.fromkeys</code> is more efficient and readable.</p>
+<pre><code>In [4]: import random
+
+In [5]: choices = (&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;)
+
+In [6]: dupes = [random.choice(choices) for _ in range(1000)]
+
+In [7]: %timeit list({elt: None for elt in dupes})
+18.8 µs ± 97.8 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
+
+In [8]: %timeit list(dict.fromkeys(dupes))
+12.6 µs ± 49.9 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
+</code></pre>
+<p>Efficiency boost tested on both Python 3.9 and 3.12.</p>
+<p>Note: would have to skip this rule for mutable values (see #4613).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-20 15:35</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-01-20 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2024-01-20 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4613.html">astral-sh/ruff#4613</a> on 2024-01-20 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeleppane">@mikeleppane</a> on 2024-01-20 21:41</div>
+            <div class="timeline-body"><p>I could pick up this one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-20 23:00</div>
+            <div class="timeline-body"><p>Feel free unless @tjkuson planned to do it or had started on it -- I'll leave it to @tjkuson to confirm!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-01-20 23:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Feel free unless @tjkuson planned to do it or had started on it -- I'll leave it to @tjkuson to confirm!</p>
+</blockquote>
+<p>Haven't started anything, have at it! @mikeleppane</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-01-21 06:33</div>
+            <div class="timeline-body"><p>This would be a great rule for refurb, C4, or perflint. You should consider pinging the author of those libraries as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnslavik">@johnslavik</a> on 2024-01-21 14:56</div>
+            <div class="timeline-body"><p>This applies not only to <code>None</code>, but any constant.
+In my opinion, <code>{elt: 0 for elt in foo}</code> should also be replaced with <code>dict.fromkeys(foo, 0)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnslavik">@johnslavik</a> on 2024-01-21 14:58</div>
+            <div class="timeline-body"><p>@tjkuson @charliermarsh would you agree? ↑</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-01-21 15:00</div>
+            <div class="timeline-body"><blockquote>
+<p>@tjkuson would you agree? ↑</p>
+</blockquote>
+<p>Yes, this was my intention with the issue. Admittedly, I communicated that poorly by using only examples with <code>None</code>. (I mostly use <code>dict.fromkeys</code> in the context of ordered deduplication.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../adamchainz/flake8-comprehensions/issues/552.html">adamchainz/flake8-comprehensions#552</a> on 2024-01-21 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9612.html">astral-sh/ruff#9612</a> on 2024-01-22 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9613.html">astral-sh/ruff#9613</a> on 2024-01-22 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-24 02:16</div>
+            <div class="timeline-body"><p>Closed by https://github.com/astral-sh/ruff/pull/9613. Thanks @mikeleppane!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-24 02:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12110.html">astral-sh/ruff#12110</a> on 2024-06-30 12:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

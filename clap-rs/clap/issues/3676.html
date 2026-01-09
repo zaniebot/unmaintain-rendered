@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvalidSubcommand and UnrecognizedSubcommand are redundant - clap-rs/clap #3676</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>InvalidSubcommand and UnrecognizedSubcommand are redundant</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3676">#3676</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2022-05-02 17:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2022-05-02 17:04</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.57.0 (f1edd0429 2021-11-29)</p>
+<h3>Clap Version</h3>
+<p>3.1.13</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">#[cfg(feature = &quot;unstable-multicall&quot;)]
+#[test]
+fn bad_multicall_command_error() {
+    let cmd = Command::new(&quot;repl&quot;)
+        .version(&quot;1.0.0&quot;)
+        .propagate_version(true)
+        .multicall(true)
+        .subcommand(Command::new(&quot;foo&quot;))
+        .subcommand(Command::new(&quot;bar&quot;));
+
+    let err = cmd.clone().try_get_matches_from(&amp;[&quot;world&quot;]).unwrap_err();
+    assert_eq!(err.kind(), ErrorKind::UnrecognizedSubcommand);
+    static HELLO_EXPECTED: &amp;str = &quot;\
+error: The subcommand 'world' wasn't recognized
+
+USAGE:
+    &lt;SUBCOMMAND&gt;
+
+For more information try help
+&quot;;
+    utils::assert_eq(HELLO_EXPECTED, err.to_string());
+
+    let err = cmd.clone().try_get_matches_from(&amp;[&quot;baz&quot;]).unwrap_err();
+    assert_eq!(err.kind(), ErrorKind::InvalidSubcommand);
+    static BAZ_EXPECTED: &amp;str = &quot;\
+error: The subcommand 'baz' wasn't recognized
+
+\tDid you mean 'bar'?
+
+If you believe you received this message in error, try re-running with ' -- baz'
+
+USAGE:
+    &lt;SUBCOMMAND&gt;
+
+For more information try help
+&quot;;
+    utils::assert_eq(BAZ_EXPECTED, err.to_string());
+
+    // Verify whatever we did to get the above to work didn't disable `--help` and `--version`.
+
+    let err = cmd
+        .clone()
+        .try_get_matches_from(&amp;[&quot;foo&quot;, &quot;--help&quot;])
+        .unwrap_err();
+    assert_eq!(err.kind(), ErrorKind::DisplayHelp);
+
+    let err = cmd
+        .clone()
+        .try_get_matches_from(&amp;[&quot;foo&quot;, &quot;--version&quot;])
+        .unwrap_err();
+    assert_eq!(err.kind(), ErrorKind::DisplayVersion);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Run the above code</p>
+<h3>Actual Behaviour</h3>
+<p>Suggested fixes are one error kind while lack of suggestion is another</p>
+<h3>Expected Behaviour</h3>
+<p>A single error kind with the nuance handled in the error context</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @epage on 2022-05-02 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2022-05-02 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2022-05-02 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2022-05-02 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.0" by @epage on 2022-05-02 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3968.html">clap-rs/clap#3968</a> on 2022-07-22 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-07-22 17:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

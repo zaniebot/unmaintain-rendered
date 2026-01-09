@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[E231] Inconsistent catch compared to pycodestyle, such as when dict nested in list - astral-sh/ruff #10113</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[E231] Inconsistent catch compared to pycodestyle, such as when dict nested in list</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10113">#10113</a>
+        opened by <a href="https://github.com/dfrtz">@dfrtz</a>
+        on 2024-02-24 19:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dfrtz">@dfrtz</a> on 2024-02-24 19:11</div>
+            <div class="timeline-body"><p>Searching through closed and opened issues, I did not see anywhere that this is intentional or known, apologies if I missed something. It appears that in certain scenarios E231 is not triggering as expected, whereas in pycodestyle is it being caught. It may impact other scenarios, but the primary one I could find is it not working on dicts inside a list. Strangely enough it does work in tuples, and outside lists, just not in lists. Even stranger, only if not the first key/value; it does work if it is the first key/value in the dict in the list.</p>
+<p><strong>pyproject.toml</strong></p>
+<pre><code>[tool.ruff.lint]
+select = [
+  &quot;E&quot;,
+  &quot;W&quot;,
+]
+</code></pre>
+<p><strong>Python file</strong></p>
+<pre><code>&quot;&quot;&quot;Minimal repo.&quot;&quot;&quot;
+
+
+def main() -&gt; None:
+    &quot;&quot;&quot;Primary function.&quot;&quot;&quot;
+    results = {
+        &quot;k1&quot;: [1],
+        &quot;k2&quot;:[2],
+    }
+    results_in_tuple = (
+        {
+            &quot;k1&quot;: [1],
+            &quot;k2&quot;:[2],
+        },
+    )
+    results_in_list = [
+        {
+            &quot;k1&quot;: [1],
+            &quot;k2&quot;:[2],
+        }
+    ]
+    results_in_list_first = [
+        {
+            &quot;k2&quot;:[2],
+        }
+    ]
+
+
+main()
+</code></pre>
+<p><strong>pycodestyle 2.11.1</strong> catching all 4</p>
+<pre><code>$ pycodestyle --count min_repo.py
+min_repo.py:8:13: E231 missing whitespace after ':'
+min_repo.py:13:17: E231 missing whitespace after ':'
+min_repo.py:19:17: E231 missing whitespace after ':'
+min_repo.py:24:17: E231 missing whitespace after ':'
+4
+</code></pre>
+<p><strong>ruff 0.2.2</strong> catching 3/4</p>
+<pre><code>$ ruff --version
+ruff 0.2.2
+$ ruff check --preview min_repo.py
+min_repo.py:8:13: E231 [*] Missing whitespace after ':'
+   |
+ 6 |     results = {
+ 7 |         &quot;k1&quot;: [1],
+ 8 |         &quot;k2&quot;:[2],
+   |             ^ E231
+ 9 |     }
+10 |     results_in_tuple = (
+   |
+   = help: Add missing whitespace
+
+min_repo.py:13:17: E231 [*] Missing whitespace after ':'
+   |
+11 |         {
+12 |             &quot;k1&quot;: [1],
+13 |             &quot;k2&quot;:[2],
+   |                 ^ E231
+14 |         },
+15 |     )
+   |
+   = help: Add missing whitespace
+
+min_repo.py:24:17: E231 [*] Missing whitespace after ':'
+   |
+22 |     results_in_list_first = [
+23 |         {
+24 |             &quot;k2&quot;:[2],
+   |                 ^ E231
+25 |         }
+26 |     ]
+   |
+   = help: Add missing whitespace
+
+Found 3 errors.
+[*] 3 fixable with the `--fix` option.
+</code></pre>
+<p>To note, if using ruff format, it would fix this, so not a blocker if you are also using format along with check. If you are only using ruff to replace pycodestyle without format (for whatever reason, such as your project not being ready/compatible with auto format), then you would hit this miss if only using ruff and not pycodestyle.</p>
+<pre><code>$ ruff format --check min_repo.py --diff
+--- min_repo.py
++++ min_repo.py
+@@ -5,23 +5,23 @@
+     &quot;&quot;&quot;Primary function.&quot;&quot;&quot;
+     results = {
+         &quot;k1&quot;: [1],
+-        &quot;k2&quot;:[2],
++        &quot;k2&quot;: [2],
+     }
+     results_in_tuple = (
+         {
+             &quot;k1&quot;: [1],
+-            &quot;k2&quot;:[2],
++            &quot;k2&quot;: [2],
+         },
+     )
+     results_in_list = [
+         {
+             &quot;k1&quot;: [1],
+-            &quot;k2&quot;:[2],
++            &quot;k2&quot;: [2],
+         }
+     ]
+     results_in_list_first = [
+         {
+-            &quot;k2&quot;:[2],
++            &quot;k2&quot;: [2],
+         }
+     ]
+
+
+1 file would be reformatted
+</code></pre>
+<p>I know E231 is still preview, and this is a pretty minor miss, but I assume the goal is for parity with pycodestyle (and consistency across nested objects).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-24 19:12</div>
+            <div class="timeline-body"><p>Nice, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-24 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-24 19:12</div>
+            <div class="timeline-body"><p>Great write-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10469.html">astral-sh/ruff#10469</a> on 2024-03-19 04:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-03-21 08:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

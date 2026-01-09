@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fmt: off sometimes gets ignored - astral-sh/ruff #18674</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>fmt: off sometimes gets ignored</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18674">#18674</a>
+        opened by <a href="https://github.com/mxmlnkn">@mxmlnkn</a>
+        on 2025-06-14 15:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mxmlnkn">@mxmlnkn</a> on 2025-06-14 15:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Code example:</p>
+<pre><code class="language-python3">class FuseMount:
+    def __init__(self, **kwargs):
+        print(&quot;__init__&quot;)
+        self.options = kwargs
+
+
+def createFuseMount(args) -&gt; None:
+    with FuseMount(
+        # fmt: off
+        pathToMount = args.mount_source,
+        encoding    = args.encoding,
+        # ...
+        # fmt: on
+    ) as fuseOperationsObject:
+        print(&quot;Do stuff&quot;)
+</code></pre>
+<p>I am calling ruff with:</p>
+<pre><code>ruff clean; ruff format --isolated ratarmount/Actions.py
+</code></pre>
+<p>and end up with:</p>
+<pre><code class="language-python3">class FuseMount:
+    def __init__(self, **kwargs):
+        print(&quot;__init__&quot;)
+        self.options = kwargs
+
+
+def createFuseMount(args) -&gt; None:
+    with FuseMount(
+        # fmt: off
+        pathToMount=args.mount_source,
+        encoding=args.encoding,
+        # ...
+        # fmt: on
+    ) as fuseOperationsObject:
+        print(&quot;Do stuff&quot;)
+</code></pre>
+<p>The <code>fmt: off</code> works in other places of my code base, so this seems like a bug to me.</p>
+<h3>Version</h3>
+<p>ruff 0.11.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-14 15:33</div>
+            <div class="timeline-body"><p>Per <a href="https://docs.astral.sh/ruff/formatter/#format-suppression">the docs</a>, format on/off/skip work at the statement level, and are ignored inside expressions, which is why they aren't working for you. I'd recommend <a href="https://play.ruff.rs/99c0a872-8c25-479d-999c-43c3e8d7ffd6">this instead</a></p>
+<pre><code class="language-py">class FuseMount:
+    def __init__(self, **kwargs):
+        print(&quot;__init__&quot;)
+        self.options = kwargs
+
+
+def createFuseMount(args) -&gt; None:
+    with FuseMount(
+        pathToMount = args.mount_source,
+        encoding    = args.encoding,
+        # ...
+    ) as fuseOperationsObject: # fmt: skip
+        print(&quot;Do stuff&quot; )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-14 15:34</div>
+            <div class="timeline-body"><p>Thanks @MeGaGiGaGon, you beat me to it! Yes, you can see that <a href="https://docs.astral.sh/ruff/rules/invalid-formatter-suppression-comment/#invalid-formatter-suppression-comment-ruf028">invalid-formatter-suppression-comment (RUF028)</a> triggers on these comments in the <a href="https://play.ruff.rs/f19a5b56-0e6d-4bf1-8654-63fde488885d">playground</a>, so I think this is the expected behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-06-14 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mxmlnkn">@mxmlnkn</a> on 2025-06-14 16:23</div>
+            <div class="timeline-body"><p>Thank you for the fast answers! This was unexpected behavior because this worked for a long time with black. For completeness, ~~this also works~~:</p>
+<pre><code class="language-python3">    # fmt: off
+    with FuseMount(
+        pathToMount=args.mount_source,
+        encoding=args.encoding,
+        # ...
+    ) as fuseOperationsObject:
+    # fmt: on
+</code></pre>
+<p>this would give an <code>E115 expected an indented block (comment)</code> error with pytype.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mxmlnkn on 2025-06-14 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18795.html">astral-sh/ruff#18795</a> on 2025-06-19 15:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

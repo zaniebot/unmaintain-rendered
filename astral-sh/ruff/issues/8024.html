@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCH004 false positive with boto3 stubs - bedrock-runtime - astral-sh/ruff #8024</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>TCH004 false positive with boto3 stubs - bedrock-runtime</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8024">#8024</a>
+        opened by <a href="https://github.com/sansmoraxz">@sansmoraxz</a>
+        on 2023-10-17 20:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sansmoraxz">@sansmoraxz</a> on 2023-10-17 20:42</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Using the following python code</p>
+<pre><code class="language-py">import typing
+
+import boto3
+
+from .const import REGION
+
+if typing.TYPE_CHECKING:
+    from mypy_boto3_bedrock_runtime import BedrockRuntimeClient   # TCH004 flags here for some reason
+    from mypy_boto3_s3 import S3Client
+else:
+    BedrockClient = boto3.client
+    S3Client = boto3.client
+
+def get_bedrock_client() -&gt; BedrockRuntimeClient:
+    &quot;&quot;&quot;Return bedrock client.&quot;&quot;&quot;
+    from botocore.config import Config
+    config = Config(
+    retries = {
+            'max_attempts': 100,
+            'mode': 'adaptive',
+        },
+    )
+    return boto3.client(
+        service_name='bedrock-runtime',
+        region_name=REGION,
+        config=config,
+        endpoint_url=f'https://bedrock.{REGION}.amazonaws.com')
+
+def get_s3_client() -&gt; S3Client: # doesn't flag here
+    &quot;&quot;&quot;Return S3 client.&quot;&quot;&quot;
+    return boto3.client(
+        service_name='s3',
+        region_name=REGION)
+</code></pre>
+<p>Dependencies:-</p>
+<pre><code class="language-toml">[tool.poetry.group.dev.dependencies]
+boto3 = &quot;^1.28.64&quot;
+botocore = &quot;^1.31.64&quot;
+boto3-stubs = {extras = [&quot;bedrock&quot;, &quot;bedrock-runtime&quot;, &quot;s3&quot;], version = &quot;^1.28.65&quot;}
+ruff = &quot;^0.1.0&quot;
+</code></pre>
+<p>Wierdly enough it only flags for <code>bedrock-runtime</code>. Not <code>s3</code> and <code>bedrock</code> client.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-17 23:43</div>
+            <div class="timeline-body"><p>I believe <code>BedrockRuntimeClient</code> <em>does</em> need to be imported here. If you add <code>from __future__ import annotations</code>, it doesn't, but without <code>from __future__ import annotations</code>, Python <em>does</em> need runtime access to return type annotations on functions. I would expect this code to fail at runtime -- does it not?</p>
+<p>(Should <code>BedrockClient = boto3.client</code> be <code>BedrockRuntimeClient = boto3.client</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sansmoraxz">@sansmoraxz</a> on 2023-10-18 04:10</div>
+            <div class="timeline-body"><p>All the mypy  imports here are for generating stubs.  https://pypi.org/project/boto3-stubs/ Specifically <code>boto3.client</code> builds and retuns a different type of client for each instance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sansmoraxz">@sansmoraxz</a> on 2023-10-18 04:10</div>
+            <div class="timeline-body"><p>Anyway I figured it out. it should've been <code>BedrockRuntimeClient</code> in the else part. Forgot to change that when migrating to newer boto3.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sansmoraxz on 2023-10-18 04:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-18 04:32</div>
+            <div class="timeline-body"><p>Thanks, that was my second question, in parentheses!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`non-augmented-assignment` (`PLR6104`): Can we reduce the number of unsafe recommendations from this rule? - astral-sh/ruff #12890</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`non-augmented-assignment` (`PLR6104`): Can we reduce the number of unsafe recommendations from this rule?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12890">#12890</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-08-14 10:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-14 10:30</div>
+            <div class="timeline-body"><p>In #12858, I proposed stabilising <code>non-augmented-assignment</code> (<code>PLR6104</code>). However, this was reverted in https://github.com/astral-sh/ruff/pull/12884 after concerns were raised that the rule too often gives recommendations that would cause developers to make unsafe changes to their code. This issue is to discuss if there are any ways of improving the rule's heuristics to reduce this problem.</p>
+<hr />
+<p>In https://github.com/astral-sh/ruff/pull/12858#issuecomment-2287060832, @kdebrab wrote:</p>
+<blockquote>
+<p>@AlexWaygood I'm a bit concerned about this rule, because there are quite some cases where the application would unintentionally introduce nasty and hard-to-find bugs, in particular when it is applied on input arguments of a function. I'm afraid one could sometimes not be aware that applying the fix causes bugs for these cases. It is especially prevalent for data science libraries when working with numpy arrays or pandas Series / DataFrames, but it could also happen in case the argument is a dictionary or list. In my view, these are false positives which could and should be avoided by not applying the rule on variables that are function arguments.</p>
+<p>Skimming through the examples above from the ecosystem, I found 10 such cases where applying the fix would lead to (not always evident) bugs:</p>
+<p><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a></p>
+<ul>
+<li><a href="https://github.com/PlasmaPy/PlasmaPy/blob/68f548c8614eb7e09d1137176c5c32a2ae7f55bc/src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py#L440">src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py:440:13:</a> PLR6104 Use <code>/=</code> to perform an augmented assignment directly</li>
+<li><a href="https://github.com/PlasmaPy/PlasmaPy/blob/68f548c8614eb7e09d1137176c5c32a2ae7f55bc/src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py#L446">src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py:446:13:</a> PLR6104 Use <code>/=</code> to perform an augmented assignment directly</li>
+<li><a href="https://github.com/PlasmaPy/PlasmaPy/blob/68f548c8614eb7e09d1137176c5c32a2ae7f55bc/src/plasmapy/diagnostics/langmuir.py#L1398">src/plasmapy/diagnostics/langmuir.py:1398:5:</a> PLR6104 Use <code>/=</code> to perform an augmented assignment directly</li>
+<li><a href="https://github.com/PlasmaPy/PlasmaPy/blob/68f548c8614eb7e09d1137176c5c32a2ae7f55bc/src/plasmapy/diagnostics/langmuir.py#L809">src/plasmapy/diagnostics/langmuir.py:809:9:</a> PLR6104 Use <code>-=</code> to perform an augmented assignment directly</li>
+<li><a href="https://github.com/PlasmaPy/PlasmaPy/blob/68f548c8614eb7e09d1137176c5c32a2ae7f55bc/src/plasmapy/diagnostics/thomson.py#L553">src/plasmapy/diagnostics/thomson.py:553:5:</a> PLR6104 Use <code>/=</code> to perform an augmented assignment directly</li>
+<li><a href="https://github.com/PlasmaPy/PlasmaPy/blob/68f548c8614eb7e09d1137176c5c32a2ae7f55bc/src/plasmapy/diagnostics/thomson.py#L554">src/plasmapy/diagnostics/thomson.py:554:5:</a> PLR6104 Use <code>/=</code> to perform an augmented assignment directly</li>
+</ul>
+<p><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a></p>
+<ul>
+<li><a href="https://github.com/pandas-dev/pandas/blob/0fadaa9c9da39760e29e05012b14c8ce0782b5fe/pandas/core/arrays/boolean.py#L232">pandas/core/arrays/boolean.py:232:17:</a> PLR6104 Use <code>|=</code> to perform an augmented assignment directly</li>
+<li><a href="https://github.com/pandas-dev/pandas/blob/0fadaa9c9da39760e29e05012b14c8ce0782b5fe/pandas/core/arrays/boolean.py#L239">pandas/core/arrays/boolean.py:239:17:</a> PLR6104 Use <code>|=</code> to perform an augmented assignment directly</li>
+<li><a href="https://github.com/pandas-dev/pandas/blob/0fadaa9c9da39760e29e05012b14c8ce0782b5fe/pandas/core/arrays/masked.py#L689">pandas/core/arrays/masked.py:689:17:</a> PLR6104 Use <code>|=</code> to perform an augmented assignment directly</li>
+<li><a href="https://github.com/pandas-dev/pandas/blob/0fadaa9c9da39760e29e05012b14c8ce0782b5fe/pandas/core/arrays/masked.py#L691">pandas/core/arrays/masked.py:691:17:</a> PLR6104 Use <code>|=</code> to perform an augmented assignment directly</li>
+</ul>
+<p>Would it be possible to somehow avoid raising PLR6104 for variables that are function arguments?</p>
+</blockquote>
+<p>I agree that changing code from <code>x = x + y</code> to <code>x += y</code> is often an unsafe change if <code>x</code> is a mutable object like a list or array. It's even something that the rule itself is already partly aware of: the autofix for the rule is marked as unsafe unless we're able to trivially infer that <code>x</code> is an instance of an immutable type such as <code>int</code> or <code>str</code>.</p>
+<p>Unfortunately, detecting in general whether an object is an instance of a mutable type is a hard problem without generalised type inference (which we won't have for a long time). So the question becomes: without that capability, how can we reduce unsafe recommendations from this rule? One option would be to make the rule much more conservative. We could match our current behaviour when it comes to deciding whether the autofix is safe or not: we could <em>only</em> emit a diagnostic if the object in question can be trivially inferred to be an instance of an immutable type. Another option would be to apply some kind of heuristic like @kdebrab suggests: we could only emit the diagnostic on variables that are local to a function, since local variables are likely to have shorter lifetimes, so mutating them is less likely to be unsafe even if they are instances of mutable types.</p>
+<p>I think applying a heuristic would be likely to reduce the false positives, but I'm not a massive fan of the idea, as it would be unlikely to get rid of false positives completely, it would also increase false negatives, and it might be hard for users to understand the logic we're applying. Applying augmented assignment operators to variables bound via function parameters is perfectly safe and idiomatic <em>if</em> you know that the function is only going to ever be passed instances of immutable types. For example, here's a function <a href="https://github.com/python/cpython/blob/fe3e623562fb058ef7b8fd6d90ac5098a3b05816/Lib/_pylong.py#L422-L449">from the standard library's <code>_pylong.py</code> module</a> that seems quite idiomatic to me:</p>
+<pre><code class="language-py">def _div2n1n(a, b, n):
+    &quot;&quot;&quot;Divide a 2n-bit nonnegative integer a by an n-bit positive integer
+    b, using a recursive divide-and-conquer algorithm.
+
+    Inputs:
+      n is a positive integer
+      b is a positive integer with exactly n bits
+      a is a nonnegative integer such that a &lt; 2**n * b
+
+    Output:
+      (q, r) such that a = b*q+r and 0 &lt;= r &lt; b.
+
+    &quot;&quot;&quot;
+    if a.bit_length() - n &lt;= _DIV_LIMIT:
+        return divmod(a, b)
+    pad = n &amp; 1
+    if pad:
+        a &lt;&lt;= 1
+        b &lt;&lt;= 1
+        n += 1
+    half_n = n &gt;&gt; 1
+    mask = (1 &lt;&lt; half_n) - 1
+    b1, b2 = b &gt;&gt; half_n, b &amp; mask
+    q1, r = _div3n2n(a &gt;&gt; n, (a &gt;&gt; half_n) &amp; mask, b, b1, b2, half_n)
+    q2, r = _div3n2n(r, a &amp; mask, b, b1, b2, half_n)
+    if pad:
+        r &gt;&gt;= 1
+    return q1 &lt;&lt; half_n | q2, r
+</code></pre>
+<p>I'm very interested in hearing whether any members of the Ruff community have any other ideas about how we could reduce false positives in a principled way here, or what they think of the ideas I posted above!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-08-14 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-08-14 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`non-augmented-assignment`: Can we reduce the number of unsafe recommendations from this rule?" to "`non-augmented-assignment` (`PLR1604`): Can we reduce the number of unsafe recommendations from this rule?" by @AlexWaygood on 2024-08-14 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`non-augmented-assignment` (`PLR1604`): Can we reduce the number of unsafe recommendations from this rule?" to "`non-augmented-assignment` (`PLR6104`): Can we reduce the number of unsafe recommendations from this rule?" by @AlexWaygood on 2024-08-14 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12884.html">astral-sh/ruff#12884</a> on 2024-08-14 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12858.html">astral-sh/ruff#12858</a> on 2024-08-14 10:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-07 15:31</div>
+            <div class="timeline-body"><p>Hey @AlexWaygood I think this issue is closed right? :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-07 16:28</div>
+            <div class="timeline-body"><p>This still seems relevant because <code>PLR6104</code> hasn't been stabilized (it's still a preview rule)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

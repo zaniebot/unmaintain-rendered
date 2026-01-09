@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>missing build dependencies  - astral-sh/uv #7355</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>missing build dependencies </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7355">#7355</a>
+        opened by <a href="https://github.com/gaurav-basesolve">@gaurav-basesolve</a>
+        on 2024-09-13 10:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gaurav-basesolve">@gaurav-basesolve</a> on 2024-09-13 10:58</div>
+            <div class="timeline-body"><p><strong>Versions:</strong>
+<em>uname</em> : <code>linux 6.8.0-40-generic #40~22.04.3-Ubuntu SMP PREEMPT_DYNAMIC Tue Jul 30 17:30:19 UTC 2 x86_64 x86_64 x86_64 GNU/Linux</code>
+<em>python</em>: <code>3.10</code>
+<em>uv</em>: <code>0.4.6</code></p>
+<p><strong>Setup</strong>
+On running <code>uv add toil</code>, pyproject.toml updates its dependency section, as shown following.</p>
+<pre><code>[project]
+dependencies = [
+    &quot;toil&quot;,
+]
+</code></pre>
+<p>And the installed libraries and <code>uv tree</code> gives this <strong>toil</strong> package dependencies, as shown in the following image
+<img src="https://github.com/user-attachments/assets/64fd4d1e-9223-4d79-8de2-abc486e1cf38" alt="image" /></p>
+<p><strong>Issue 1</strong>
+Installing the build package from <code>uv build --wheel</code> which also stores the information in the METADATA about the dependency doesn't installs all the packages shown in the above tree image . For example, pyyaml is missing.</p>
+<p><strong>Issue 2</strong>
+Also, any <code>[tool.uv.sources]</code> dependency is not included in the builds. However I did found a way to do this with <code>uv build</code>.</p>
+<pre><code>[project]
+.
+.
+dependencies = [
+    &quot;hello-world-python @ git+https://github.com/garimaaroraa/hello-world-python.git@master&quot;
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 12:53</div>
+            <div class="timeline-body"><p>I can't reproduce the first issue:</p>
+<pre><code>❯ uv pip install dist/foo-0.1.0-py3-none-any.whl
+Resolved 25 packages in 68ms
+Prepared 21 packages in 130ms
+Installed 25 packages in 20ms
+ + addict==2.4.0
+ + blessed==1.20.0
+ + certifi==2024.8.30
+ + charset-normalizer==3.3.2
+ + coloredlogs==15.0.1
+ + configargparse==1.7
+ + dill==0.3.8
+ + docker==7.1.0
+ + enlighten==1.12.4
+ + foo==0.1.0 (from file:///Users/crmarsh/workspace/uv/foo/dist/foo-0.1.0-py3-none-any.whl)
+ + humanfriendly==10.0
+ + idna==3.8
+ + prefixed==0.9.0
+ + psutil==5.9.8
+ + pypubsub==4.0.3
+ + python-dateutil==2.9.0.post0
+ + pyyaml==6.0.2
+ + requests==2.31.0
+ + ruamel-yaml==0.18.6
+ + ruamel-yaml-clib==0.2.8
+ + six==1.16.0
+ + toil==7.0.0
+ + typing-extensions==4.12.2
+ + urllib3==2.2.3
+ + wcwidth==0.2.13
+</code></pre>
+<p>Can you please include a full reproduction?</p>
+<p>The second issue is a duplicate of #7167.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-09-13 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaurav-basesolve">@gaurav-basesolve</a> on 2024-09-13 13:14</div>
+            <div class="timeline-body"><p>For the issue 1 , @charliermarsh I was able to find the problem. It was from my side.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 13:15</div>
+            <div class="timeline-body"><p>Okay cool, thanks for following up. We're tracking the second issue in #7167.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-13 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @charliermarsh on 2024-09-13 13:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

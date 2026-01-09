@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`RUF009` handles `attrs` dataclasses with `auto_attribs = False` incorrectly - astral-sh/ruff #14519</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`RUF009` handles `attrs` dataclasses with `auto_attribs = False` incorrectly</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14519">#14519</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2024-11-22 03:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-22 03:15</div>
+            <div class="timeline-body"><p>From #14327:</p>
+<blockquote>
+<p>Note that <code>RUF009</code> can be a bit misleading when <code>auto_attribs=False</code> (or with older <code>attr.s</code> codebases):</p>
+<pre><code class="language-python">import attrs
+
+@attrs.define(auto_attribs=False)
+class X:
+    a_field: int = attrs.field(default=42)
+    not_a_field: list = (lambda: [])()
+#                       ^^^^^^^^^^^^^^ RUF009 Do not perform function call in dataclass defaults
+</code></pre>
+<p>Without <code>auto_attribs</code>, <code>not_a_field</code> can't possibly be a <code>dataclass</code> field. In this example, it's an incorrectly typed class variable. Fixing the typing error also fixes the <code>RUF009</code> warning:</p>
+<pre><code class="language-python">@attrs.define(auto_attribs=False)
+class X:
+    a_field: int = attrs.field(default=42)
+    not_a_field: typing.ClassVar[list] = (lambda: [])()
+</code></pre>
+<p>This is an issue though when using <code>attrs.field</code> wrappers:</p>
+<pre><code class="language-python">def my_field():
+    return attrs.field(default=42, metadata={&quot;my_metadata&quot;: 42})
+
+
+@attrs.define(auto_attribs=False)
+class X:
+    a_field: int = my_field()
+#                  ^^^^^^^^^^ RUF009 Do not perform function call `my_field` in dataclass defaults
+</code></pre>
+<p>— @pwuertz</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14520.html">astral-sh/ruff#14520</a> on 2024-11-22 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-24 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-24 02:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

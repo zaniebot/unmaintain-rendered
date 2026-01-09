@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mutable-class-default (RUF012) misinterprete the code block - astral-sh/ruff #9647</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>mutable-class-default (RUF012) misinterprete the code block</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9647">#9647</a>
+        opened by <a href="https://github.com/ArazHeydarov">@ArazHeydarov</a>
+        on 2024-01-26 14:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ArazHeydarov">@ArazHeydarov</a> on 2024-01-26 14:09</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>RUF012 working principle seems to be broken. I'm defining a Pydantic <a href="https://docs.pydantic.dev/1.10/usage/exporting_models/#json_encoders">json_encoder</a> config however Ruff detects it as typing annotation and raises an error when I check.</p>
+<p>Code:</p>
+<pre><code class="language-Python">from bson import ObjectId
+from pydantic import BaseConfig, BaseModel
+
+
+class MongoModel(BaseModel):
+    class Config(BaseConfig):
+        allow_population_by_field_name = True
+        json_encoders = {ObjectId: str}
+</code></pre>
+<p>Command: <code>ruff check .</code></p>
+<p>Result:</p>
+<pre><code>src/models/mongo_model.py:8:25: RUF012 Mutable class attributes should be annotated with `typing.ClassVar`
+Found 1 error.
+</code></pre>
+<p>Current settings:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+extend-select = [&quot;I&quot;, &quot;C90&quot;, 'N', 'UP', 'ASYNC', 'RUF']
+</code></pre>
+<p>Current Ruff version:
+<code>ruff 0.1.14</code></p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-26 14:11</div>
+            <div class="timeline-body"><p>It looks like <code>BaseConfig</code> is missing from our allowlist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-26 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-26 14:11</div>
+            <div class="timeline-body"><p>What is <code>BaseConfig</code>? I can't find it in the Pydantic docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trag1c">@trag1c</a> on 2024-01-26 14:27</div>
+            <div class="timeline-body"><blockquote>
+<p>What is <code>BaseConfig</code>? I can't find it in the Pydantic docs.</p>
+</blockquote>
+<p>It's part of Pydantic v1: https://docs.pydantic.dev/2.0/api/config/#pydantic.config.BaseConfig</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ArazHeydarov">@ArazHeydarov</a> on 2024-01-26 14:28</div>
+            <div class="timeline-body"><p>It's a class that is deprecated as of Pydantic 2.0. The result is the same without inheriting from that class.
+I know that the Config class definition itself is deprecated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-26 14:28</div>
+            <div class="timeline-body"><p>Thank you! Will add.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ArazHeydarov">@ArazHeydarov</a> on 2024-01-26 14:31</div>
+            <div class="timeline-body"><p>Thank you for your quick response.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9650.html">astral-sh/ruff#9650</a> on 2024-01-26 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-26 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-26 14:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

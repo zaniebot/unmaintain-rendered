@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>phantom UV_PROJECT_ENVIRONMENT value - astral-sh/uv #9834</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>phantom UV_PROJECT_ENVIRONMENT value</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9834">#9834</a>
+        opened by <a href="https://github.com/superlopuh">@superlopuh</a>
+        on 2024-12-12 09:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/superlopuh">@superlopuh</a> on 2024-12-12 09:24</div>
+            <div class="timeline-body"><p>I'm trying to run <code>uv sync</code> in a temporarily-created virtualenv, and am getting a weird warning:</p>
+<pre><code>$ echo $UV_PROJECT_ENVIRONMENT
+&gt; 
+$ uv sync
+&gt; warning: `VIRTUAL_ENV=venvbla` does not match the project environment path `.venv` and will be ignored
+&gt; Resolved 138 packages in 7ms
+&gt; Audited 4 packages in 0.41ms
+</code></pre>
+<p>How do I get rid of this behaviour? I can't find where the project environment is set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-12 13:58</div>
+            <div class="timeline-body"><p>Either <code>deactivate</code> or <code>unset VIRTUAL_ENV</code></p>
+<p>See https://docs.astral.sh/uv/concepts/projects/config/#project-environment-path</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-12-12 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/superlopuh">@superlopuh</a> on 2024-12-12 14:19</div>
+            <div class="timeline-body"><p>Hmm, but what I'd really like is to reuse my scripts that use <code>uv</code> to use the current env instead of .venv, is the recommended way to do that by launching them with <code>UV_PROJECT_ENVIRONMENT=venvbla</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../xdslproject/xdsl/pulls/3630.html">xdslproject/xdsl#3630</a> on 2024-12-12 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-12 15:16</div>
+            <div class="timeline-body"><p>Yeah, you'd set <code>UV_PROJECT_ENVIRONMENT</code>. We don't support using the &quot;active&quot; virtual environment, for various reasons. See https://github.com/astral-sh/uv/pull/6834</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/superlopuh">@superlopuh</a> on 2024-12-12 15:37</div>
+            <div class="timeline-body"><p>Sounds good, thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @superlopuh on 2024-12-12 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Srivathsan-Srinivas">@Srivathsan-Srinivas</a> on 2025-04-17 16:01</div>
+            <div class="timeline-body"><p>@zanieb Can you please let me know how to set UV_PROJECT_ENVIRONMENT? I am on a mac. What is weird is this: my global python version is 3.11.5 and also my rag_3_env is 3.11.5. Why should uv complain?</p>
+<pre><code>(rag_3_env) Sri@MacBookPro rag_3 % uv sync
+warning: `VIRTUAL_ENV=rag_3_env` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+Using CPython 3.11.5 interpreter at: /Users/Sri/.pyenv/versions/3.11.5/bin/python3.11
+Creating virtual environment at: .venv
+Resolved 1 package in 16ms
+Audited in 0.15ms
+(rag_3_env) Sri@MacBookPro rag_3 %
+</code></pre>
+<p>After reading through several posts in this and related issue: I tried these:</p>
+<p>Checking pyproject.toml</p>
+<pre><code>(rag_3_env) Sri@MacBookPro rag_3 % cat pyproject.toml
+[project]
+name = &quot;rag-3&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = []
+</code></pre>
+<pre><code>(rag_3_env) Sri@MacBookPro rag_3 % uv add argparse
+warning: `VIRTUAL_ENV=rag_3_env` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+Resolved 2 packages in 28ms
+Prepared 1 package in 129ms
+Installed 1 package in 4ms
+ + argparse==1.4.0
+</code></pre>
+<pre><code>(rag_3_env) Sri@MacBookPro rag_3 % uv add argparse --active
+Resolved 2 packages in 7ms
+Installed 1 package in 4ms
+ + argparse==1.4.0
+(rag_3_env) Sri@MacBookPro rag_3 %
+</code></pre>
+<p>Checking toml file again afer running with active.</p>
+<pre><code>(rag_3_env) Sri@MacBookPro rag_3 % more pyproject.toml
+[project]
+name = &quot;rag-3&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;argparse&gt;=1.4.0&quot;,
+]
+</code></pre>
+<p>For more context: some of env are here:</p>
+<pre><code>(rag_3_env) Sri@MacBookPro .venv % more pyvenv.cfg
+home = /Users/Sri/.pyenv/versions/3.11.5/bin
+implementation = CPython
+uv = 0.6.14
+version_info = 3.11.5
+include-system-site-packages = false
+prompt = rag-3
+</code></pre>
+<p>But, then, somewhere, you had mentioned that you do not support <code>--active</code>.</p>
+<p>So, for a simple user like me, what must I do to avoid this warning and possible issues down the road? How to set UV_PROJECT_ENVIRONMENT? Where should I set it? In .zshrc ? And, set it to what?</p>
+<p>Thanks for your help!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isolate uv virtual environment from the system python - astral-sh/uv #9993</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Isolate uv virtual environment from the system python</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9993">#9993</a>
+        opened by <a href="https://github.com/brunorigal">@brunorigal</a>
+        on 2024-12-18 09:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/brunorigal">@brunorigal</a> on 2024-12-18 09:55</div>
+            <div class="timeline-body"><p>I created a virtual environment for my package using uv sync. The virtual environment is activated. And the library is missing the pytest package. Nevertheless, I can still access the pytest library installed in the system version of python. I would rather have a missing pytest error, because the uv run pytest command cannot access the virtual env and fail in a misleading way.</p>
+<pre><code class="language-bash">(docparser) brigal@675c178416a6:/workspace/docparser$ uv run which pytest
+/usr/local/bin/pytest
+(docparser) brigal@675c178416a6:/workspace/docparser$ echo $VIRTUAL_ENV
+/workspace/docparser/.venv
+(docparser) brigal@675c178416a6:/workspace/docparser$ uv run which python
+/workspace/docparser/.venv/bin/python
+</code></pre>
+<p>Is there a reason why the uv venv are not isolated from the system python? Is there a parameter to solve this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanscain">@nathanscain</a> on 2024-12-18 13:52</div>
+            <div class="timeline-body"><p><code>uv run</code> puts the venv earlier on the <code>PATH</code>; however, it doesn't fully replace the <code>PATH</code>. This is because you sometimes need to run venv-aware system commands (think <code>make</code> or even <code>which</code> like your example)</p>
+<p>Since there is no way to tell that <code>/usr/local/bin/pytest</code> <em>could have been</em> a venv managed executable in a general way, this has the current behavior. Changing this would require that <code>uv</code> be aware of all possible executables produced by <strong>any</strong> package which would be very slow, unexpected, and likely break workflows as I'm sure some package overrides <code>make</code>.</p>
+<p>Maybe a warning for certain common cases could be added, but I'd favor the current behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brunorigal">@brunorigal</a> on 2024-12-18 14:25</div>
+            <div class="timeline-body"><p>It sounds reasonable. Thanks for the explanation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @brunorigal on 2024-12-18 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanscain">@nathanscain</a> on 2024-12-18 14:27</div>
+            <div class="timeline-body"><p>Happy to help 🤙</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

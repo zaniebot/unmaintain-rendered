@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DJ012 is not raised when a parent class, that inherits from django.Model, is in a different file. - astral-sh/ruff #12865</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>DJ012 is not raised when a parent class, that inherits from django.Model, is in a different file.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12865">#12865</a>
+        opened by <a href="https://github.com/HappyCthulhu">@HappyCthulhu</a>
+        on 2024-08-13 15:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/HappyCthulhu">@HappyCthulhu</a> on 2024-08-13 15:59</div>
+            <div class="timeline-body"><h3>Search keywords</h3>
+<p>&quot;DJ012&quot;, &quot;django Model&quot;</p>
+<h3>Ruff Version</h3>
+<p>0.5.7</p>
+<h3>Config</h3>
+<details>
+    <summary> Part of pyproject.toml</summary>
+
+<pre><code>[tool.poetry.group.dev.dependencies]
+ruff = &quot;0.5.7&quot;
+
+[tool.ruff]
+line-length = 120
+extend-exclude = [&quot;venv&quot;, &quot;stubs&quot;]
+
+[tool.ruff.lint]
+select = [&quot;ALL&quot;]
+unfixable = [&quot;ERA001&quot;, &quot;COM819&quot;] # remove comment out code lines
+ignore = [
+    &quot;Q&quot;, # flake8-quotes
+    &quot;D100&quot;,	# undocumented-public-module	Missing docstring in public module
+    &quot;D101&quot;,	# undocumented-public-class	&quot;Missing&quot; # docstring in public class
+    &quot;D102&quot;,	# undocumented-public-method	Missing docstring &quot;in&quot; # public method
+    &quot;D103&quot;,	# undocumented-public-function	Missing docstring in &quot;public&quot; # function
+    &quot;D104&quot;,	# undocumented-public-package	Missing docstring in public package	&quot;🛠&quot;
+    &quot;D105&quot;,	# undocumented-magic-method	Missing docstring in magic method
+    &quot;D106&quot;,	# # undocumented-public-nested-class	Missing docstring in public nested class
+    &quot;D107&quot;,	# # undocumented-public-init	Missing docstring in __init__
+    &quot;ANN101&quot;, # missing-type-self
+    &quot;TD003&quot;, # missing-todo-link missing issue link on the line following this TODO
+    &quot;TD002&quot;, # missing-todo-author  missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...` or `# TODO @&lt;author_name&gt;: ...`Ruff
+    &quot;S101&quot;, # assert Use of assert detected	
+    &quot;ANN002&quot;, #	missing-type-args	Missing type annotation for *{name}
+    &quot;ANN003&quot;, #	missing-type-kwargs	Missing type annotation for **{name}
+    &quot;RUF001&quot;, #	ambiguous-unicode-character-string	String contains ambiguous {}. Did you mean {}? Может на русскую &quot;с&quot; в комменте ругаться 
+    &quot;RUF003&quot;, #	ambiguous-unicode-character-comment
+    &quot;SLF001&quot;, # private-member-access	Private member accessed: {access} | учитывая, что в Django постоянно дергаем _Meta моделей и поля в духе _prefetched_objects_cache и т.д.
+    &quot;FA100&quot;, # future-rewritable-type-annotation	Missing from __future__ import annotations, but uses {name}	
+    &quot;FA102&quot;, # future-required-type-annotation	Missing from __future__ import annotations, but uses
+    &quot;DJ001&quot;, # django-nullable-model-string-field	Avoid using null=True on string-based fields such as	
+    &quot;PGH004&quot;, # Use specific rule codes when using `noqa`
+    &quot;TRY003&quot;, # Avoid specifying long messages outside the exception class
+    &quot;EM102&quot;, # Exception must not use an f-string literal, assign to variable first
+    &quot;RUF002&quot;, # Docstring contains ambiguous `у` (CYRILLIC SMALL LETTER U). Did you mean `y` (LATIN SMALL LETTER Y)?
+    &quot;FBT001&quot;, # Boolean-typed positional argument in function definition
+    &quot;FBT002&quot;, # Boolean default positional argument in function definition
+    &quot;ANN204&quot;, # Missing return type annotation for special method `__init__`
+]
+
+[tool.ruff.lint.flake8-annotations]
+mypy-init-return = true # ANN204 | checkers often allow you to omit the return type annotation for __init__ methods, as long as at least one argument has a type annotation
+
+[tool.ruff.lint.isort]
+force-wrap-aliases = true
+combine-as-imports = true
+</code></pre>
+</details>
+
+<h3>Bug Description</h3>
+<p><code>DJ012</code> checking doesnt work properly. If a model with incorrect order of attributes and methods inherits from a Django model-based class, located in a separate file, the error is not raised.</p>
+<h3>Details</h3>
+<details>
+    <summary>Proper behavior</summary>
+
+<p>With this code, ruff works correctly: the error is raised:</p>
+<pre><code>from django.db import models
+
+
+class MyModel(models.Model):
+    name = models.CharField(
+        max_length=500,
+        verbose_name=&quot;Название&quot;,
+        default=&quot;&quot;,
+    )
+
+    def __str__(self) -&gt; str:
+        return &quot;self.name&quot;
+
+    class Meta:
+        verbose_name = &quot;Модель&quot;
+        verbose_name_plural = &quot;Модели&quot;
+</code></pre>
+<p>Ruff output</p>
+<pre><code>[N] (venv) valera@t-t14 ~/P/a/s/backend (NATNP-3701)&gt; ruff check src/my_subsystem/models/my_model.py
+warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`.
+warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`.
+src/my_subsystem/models/my_model.py:14:5: DJ012 Order of model's inner classes, methods, and fields does not follow the Django Style Guide: `Meta` class should come before `__str__` method
+   |
+12 |           return &quot;self.name&quot;
+13 |
+14 |       class Meta:
+   |  _____^
+15 | |         verbose_name = &quot;Модель&quot;
+16 | |         verbose_name_plural = &quot;Модели&quot;
+   | |___________________________________^ DJ012
+   |
+
+Found 1 error.
+</code></pre>
+</details>
+
+<details>
+    <summary>Another correct behavior</summary>
+
+<p>Here i added <code>ParentModel</code>. Now <code>MyModel</code> inherits from it. The error is still present. Everything works correctly.</p>
+<pre><code>from django.db import models
+
+
+class ParentModel(models.Model):
+    text = models.CharField(max_length=100)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self) -&gt; str:
+        return super().__str__()
+
+
+class MyModel(ParentModel):
+    name = models.CharField(
+        max_length=500,
+        verbose_name=&quot;Название&quot;,
+        default=&quot;&quot;,
+    )
+
+    def __str__(self) -&gt; str:
+        return &quot;self.name&quot;
+
+    class Meta:
+        verbose_name = &quot;Модель&quot;
+        verbose_name_plural = &quot;Модели&quot;
+</code></pre>
+<p>Ruff-output</p>
+<pre><code>[N] (venv) valera@t-t14 ~/P/a/s/backend (NATNP-3701) [0|1]&gt; ruff check src/my_subsystem/models/my_model.py
+warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`.
+warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`.
+src/my_subsystem/models/my_model.py:24:5: DJ012 Order of model's inner classes, methods, and fields does not follow the Django Style Guide: `Meta` class should come before `__str__` method
+   |
+22 |           return &quot;self.name&quot;
+23 |
+24 |       class Meta:
+   |  _____^
+25 | |         verbose_name = &quot;Модель&quot;
+26 | |         verbose_name_plural = &quot;Модели&quot;
+   | |___________________________________^ DJ012
+   |
+
+Found 1 error.
+[I] (venv) valera@t-t14 ~/P/a/s/backend (NATNP-3701) [0|1]&gt;
+</code></pre>
+</details>
+
+<details>
+    <summary>Bug</summary>
+
+<p>The only change made was moving ParentModel to a separate file (in the same directory as my_model.py). After this change, the error disappeared.</p>
+<p>parent_model.py</p>
+<pre><code>from django.db import models
+from django.db.models import Model
+
+
+class ParentModel(Model):
+    text = models.CharField(max_length=100)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self) -&gt; str:
+        return super().__str__()
+
+</code></pre>
+<p>my_model.py</p>
+<pre><code>from django.db import models
+
+from my_subsystem.models.parent import ParentModel
+
+
+class MyModel(ParentModel):
+    name = models.CharField(
+        max_length=500,
+        verbose_name=&quot;Название&quot;,
+        default=&quot;&quot;,
+    )
+
+    def __str__(self) -&gt; str:
+        return &quot;self.name&quot;
+
+    class Meta:
+        verbose_name = &quot;Модель&quot;
+        verbose_name_plural = &quot;Модели&quot;
+
+</code></pre>
+<p>Ruff output</p>
+<pre><code>[N] (venv) valera@t-t14 ~/P/a/s/backend (NATNP-3701) [0|1]&gt; ruff check src/my_subsystem/models/my_model.py
+warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`.
+warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`.
+All checks passed!
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-08-13 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> added by @MichaReiser on 2024-08-13 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 20:12</div>
+            <div class="timeline-body"><p>👍 This is known and one of our multifile limitations right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13664.html">astral-sh/ruff#13664</a> on 2024-10-07 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-10-24 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-24 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14147.html">astral-sh/ruff#14147</a> on 2024-11-07 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ulgens">@ulgens</a> on 2025-08-05 11:28</div>
+            <div class="timeline-body"><p>@charliermarsh Hey, can I ask more about why this is related to multifile limitation? I have this class:</p>
+<pre><code class="language-python">class MyModel(models.Model):
+    ...
+
+    def __str__(self):
+        return ...
+
+    class Meta:
+        verbose_name = &quot;...&quot;
+</code></pre>
+<p>DJ012 detects the issue successfully. If I replace the base class, it fails to find the issue, even though there is nothing related to the base class itself - the issue is right there on the class, contained in a single file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-05 12:03</div>
+            <div class="timeline-body"><p>@ulgens</p>
+<p>Can you share a full code example because I'm unable to reproduce the issue in the playground; https://play.ruff.rs/bdf4614f-9c68-4943-947f-05a1cf2a16f2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ulgens">@ulgens</a> on 2025-08-05 12:11</div>
+            <div class="timeline-body"><p>@MichaReiser https://play.ruff.rs/6c3fa123-7dea-4830-a465-da719b39ef37</p>
+<p>I hope it demonstrates one aspect of the issue. Even though <code>BaseModel</code> is defined in the same file, ruff fails to detect DJ012.</p>
+<p>In my case, <code>BaseModel</code> is defined in a different file but my point was that there is no need to check that other file. DJ012 doesn't even make sense in multifile context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-06 06:24</div>
+            <div class="timeline-body"><p>Thanks. Yes, that helps to understand the issue. Ruff doesn't perform any alias analysis for this rule (analysing if a variable <code>x</code> points to <code>BaseModel</code>). That's why it isn't picked up. Ruff supports this in very limited way for some rules but it isn't very consistent about it. The solution here is, as well, a more powerful analysis engine which we are building in ty and plan to make use of in Ruff in the future.</p>
+<p>Can you tell me more about why you're aliasing <code>BaseModel</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ulgens">@ulgens</a> on 2025-08-06 06:38</div>
+            <div class="timeline-body"><p>@MichaReiser This is the <code>BaseModel</code>: https://github.com/ulgens/django-blasphemy/blob/50805be4727e88aebbabc4c521604dcee232a9ab/src/core/db/models.py#L35 I'm not actually aliasing it, it's a  base class that provides common functionalities to all models in the project.</p>
+<blockquote>
+<p>Ruff doesn't perform any alias analysis for this rule</p>
+</blockquote>
+<p>I'm a bit lost about this. What I expect here is that any rule defined for a model class should check all classes that inherit from <code>django.db.models.Model</code> and not care about how they are defined.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-06 06:42</div>
+            <div class="timeline-body"><p>You're aliasing <code>BaseModel</code> here</p>
+<pre><code class="language-py">BaseModel = models.Model
+</code></pre>
+<p>The rule works as expected if you use</p>
+<pre><code class="language-py">class MyModel(models.Model):
+    &quot;&quot;&quot;...&quot;&quot;&quot;
+
+    def __str__(self) -&gt; str:
+        return &quot;string&quot;
+
+    class Meta:
+        verbose_name = &quot;...&quot;
+
+</code></pre>
+<blockquote>
+<p>I'm a bit lost about this. What I expect here is that any rule defined for a model class should check all classes that inherit from django.db.models.Model and not care about how they are defined.</p>
+</blockquote>
+<p>I agree that this is the ideal and we're working towards it. It's just not as &quot;easy&quot; to detect all those cases statically</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ulgens">@ulgens</a> on 2025-08-06 07:00</div>
+            <div class="timeline-body"><blockquote>
+<p>You're aliasing BaseModel here</p>
+</blockquote>
+<p>That was just a simplified case to demonstrate that the issue is not related to multifile setup, but I still think it shouldn't be relevant.</p>
+<blockquote>
+<p>It's just not as &quot;easy&quot; to detect all those cases statically</p>
+</blockquote>
+<p>I think this is not a &quot;there are many cases that we should find but we can't because it's hard&quot; case. I think the bug here is much simpler (not saying it's easier to solve). Let me try to demonstrate the issue with Python:</p>
+<p>Given</p>
+<pre><code class="language-python">from django.db.models import Model
+</code></pre>
+<p>The current implementation checks</p>
+<pre><code class="language-python">Model in MyModel.__bases__
+</code></pre>
+<p>which is not true if a class is not defined as <code>MyModel(models.Model)</code></p>
+<p>The correct way of checking if a class is a Django model should be</p>
+<pre><code class="language-python">import inspect
+Model in inspect.getmro(MyModel)
+</code></pre>
+<p>To summarize, the issue here is not</p>
+<blockquote>
+<p>DJ012 is not raised when a parent class, that inherits from django.Model, is in a different file.</p>
+</blockquote>
+<p>It's that DJ rules can't properly detect a model class.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

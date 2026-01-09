@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive F841: typing automatically removed as unused by ``--fix`` when they are not - astral-sh/ruff #2603</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive F841: typing automatically removed as unused by ``--fix`` when they are not</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2603">#2603</a>
+        opened by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a>
+        on 2023-02-06 10:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a> on 2023-02-06 10:23</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>I'm using v0.241, on the following code:</p>
+<pre><code class="language-python">KeyTupleT = Tuple[Type[nodes.NodeNG], str]
+keys_checked: set[KeyTupleT] = set()
+</code></pre>
+<p>The following conf:</p>
+<pre><code class="language-toml">[tool.ruff]
+select = [&quot;E&quot;, &quot;F&quot;]
+fixable = [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;]
+</code></pre>
+<p>The output of <code>ruff --fix</code> is:</p>
+<pre><code class="language-python">Tuple[Type[nodes.NodeNG], str]
+keys_checked: set[KeyTupleT] = set()
+</code></pre>
+<p>But <code>KeyTupleT</code> is used in the typing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "False positive: typing automatically removed as unused by ``--fix`` when they are not" to "False positive F841: typing automatically removed as unused by ``--fix`` when they are not" by @Pierre-Sassoulas on 2023-02-06 10:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-02-06 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-06 15:35</div>
+            <div class="timeline-body"><p>Definitely looks like a bug -- will take a look!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-06 15:57</div>
+            <div class="timeline-body"><p>I'm unable to reproduce this. Is that the full code snippet and configuration? Are you able to repro with <code>--isolated</code> at all?</p>
+<p>I wonder if you perhaps have a lower Python version set, and so we're not treating <code>set[X]</code> as a reference to <code>X</code>? Just a guess...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-02-06 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a> on 2023-02-06 18:49</div>
+            <div class="timeline-body"><p>I just tried but I can't reproduce using only ruff either. The issue happen using <code>pre-commit</code> and the conf in our <code>pyproject.toml</code>.</p>
+<pre><code class="language-yaml">  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: &quot;v0.0.241&quot;
+    hooks:
+      - id: ruff
+        args: [&quot;--fix&quot;]
+        exclude: *fixtures
+</code></pre>
+<pre><code class="language-toml">[tool.ruff]
+select = [&quot;E&quot;, &quot;F&quot;, &quot;B&quot;]
+ignore = [
+    # &quot;F841&quot;, # False positive for typing
+    &quot;B905&quot;, # Not enforced previously
+]
+fixable = [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;]
+line-length = 125
+</code></pre>
+<p>Strangely I do not manage to reproduce with the minimal example like I originally did... I don't know exactly why, I added some configuration for <code>B</code> message and ignore since. But I'm still reproducing the original bug in https://github.com/Pierre-Sassoulas/pylint/tree/add-ruff-to-pre-commit (If you remove <code>&quot;F841&quot;, # False positive for typing</code> in <code>pyproject.toml</code> and launch <code>pre-commit run ruff --all-files</code>), there's a modification in <code>pylint/extensions/code_style.py</code> for both python 3.10 and python 3.11.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-06 18:53</div>
+            <div class="timeline-body"><p>Okay thanks, let me take another look...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pylint-dev/pylint/pulls/8197.html">pylint-dev/pylint#8197</a> on 2023-02-06 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-02-06 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-06 19:34</div>
+            <div class="timeline-body"><p>Only seeing this with <code>from __future__ import annotations</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2607.html">astral-sh/ruff#2607</a> on 2023-02-06 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-06 19:40</div>
+            <div class="timeline-body"><p>Fixed, this'll be out in today's release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-06 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a> on 2023-02-06 20:44</div>
+            <div class="timeline-body"><p>The bug fixing is as fast as the tool itself 😄 ⚡</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-06 20:45</div>
+            <div class="timeline-body"><p>Thanks for filing :) Surprised we haven't run into this one before! I guess locally defined type definitions aren't <em>that</em> common.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

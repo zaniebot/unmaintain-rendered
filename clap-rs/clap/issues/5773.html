@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support deriving `Parser` on struct with lifetime and automatically parse `Cow&lt;'_, T&gt;` into `Cow::Owned`  - clap-rs/clap #5773</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support deriving `Parser` on struct with lifetime and automatically parse `Cow&lt;'_, T&gt;` into `Cow::Owned` </h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/5773">#5773</a>
+        opened by <a href="https://github.com/jeertmans">@jeertmans</a>
+        on 2024-10-10 16:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jeertmans">@jeertmans</a> on 2024-10-10 16:00</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>v4.5.19</p>
+<h3>Describe your use case</h3>
+<p>Currently, as investigated and discussed in #5772, it seems impossible to derive <code>Parser</code> on a struct that has fields with <code>Cow&lt;'_, T&gt;</code> where the lifetime isn't <code>'static</code>.</p>
+<p>This happens, e.g., when one wants to reuse the same code to both create CLI and also structure available in the public API of the crate. E.g., see code below (that does not compile):</p>
+<pre><code class="language-rust">use clap::Parser;
+use std::borrow::Cow;
+
+// Error type is not important
+fn parse_cow_str(string: &amp;str) -&gt; Result&lt;Cow&lt;'static, str&gt;, std::io::Error&gt;{
+    Ok(Cow::Owned(string.to_owned()))
+}
+
+#[derive(Parser)]
+pub struct Cli&lt;'source&gt; {
+    #[arg(long, value_parser = clap::builder::ValueParser::new(parse_cow_str))]
+    pub text: Cow&lt;'source, str&gt;,
+}
+
+fn main() {
+    let manual_cli = Cli {
+        text: &quot;here is some text&quot;.into()
+    };
+
+    assert!(matches!(manual_cli.text, Cow::Borrowed(_)));
+
+    let cli = Cli::parse();
+
+    assert!(matches!(cli.text, Cow::Owned(_)));
+}
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>When parsing from args, Clap should be capable to choose the <code>Cow::Owned</code> variant, and not care about the lifetime duration of the fields.</p>
+<p>Moreover, it would be nice that Clap provides a default parser for <code>Cow&lt;'_, T&gt;</code> if <code>&lt;T as ToOwned&gt;::Owned</code> is a type that could be parsed automatically be Clap.</p>
+<h3>Alternatives, if applicable</h3>
+<p>The only alternative I think of is currently to create a new structure, e.g., <code>CliOwned</code>, derive <code>Parser</code> on it, and implement <code>From&lt;CliOwned&gt; for Cli</code>, but this possibly means a lot of duplicate code, especially documentation strings that I prefer to reuse to avoid errors when copy/pasting.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @jeertmans on 2024-10-10 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-hard</span> added by @epage on 2024-10-10 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2024-10-10 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jeertmans/languagetool-rust/pulls/124.html">jeertmans/languagetool-rust#124</a> on 2024-10-11 07:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

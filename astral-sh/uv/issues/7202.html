@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issues creating a cuda-enabled pytorch environment with UV - astral-sh/uv #7202</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issues creating a cuda-enabled pytorch environment with UV</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7202">#7202</a>
+        opened by <a href="https://github.com/pstjohn">@pstjohn</a>
+        on 2024-09-08 23:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pstjohn">@pstjohn</a> on 2024-09-08 23:14</div>
+            <div class="timeline-body"><p>I'm having some issues using <code>uv lock</code> &amp; <code>uv sync</code> in a package that needs to use cuda-enabled pytorch wheels.</p>
+<p>Here's a minimal-ish reproduction:</p>
+<p>https://github.com/pstjohn/uv-torchvision-repro
+The workspace stuff is there since I'd like to eventually get this working in a monorepo-like environment (#6935)</p>
+<p>The desired behavior would be that <code>uv lock</code> would match what I get with
+<code>pip install --extra-index-url https://download.pytorch.org/whl/cu124 torch torchvision</code>, which would be (at the time of writing) to install torch 2.4.1 and torchvision 0.19.1 both in their linux_x86_64 / cu124 / cp310 variants.</p>
+<p>But instead I get the following error:</p>
+<pre><code>0.197 error: distribution torchvision==0.15.0 @ registry+https://download.pytorch.org/whl/cu124 
+can't be installed because it doesn't have a source distribution or wheel for the current platform
+</code></pre>
+<p>If I use <code>uv pip install --extra-index-url https://download.pytorch.org/whl/cu124 torch torchvision</code>, I get <code>torch==2.4.1+cu124</code> and <code>torchvision==0.2.0</code>. (i.e., seemingly not pulling torchvision from the cu124 index).</p>
+<p>Any thoughts on where I might be going wrong? Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pstjohn">@pstjohn</a> on 2024-09-09 14:41</div>
+            <div class="timeline-body"><p>Just some additional data:</p>
+<p>with <code>torchvision == 0.19.1</code>,</p>
+<pre><code>$ uv lock --extra-index-url https://download.pytorch.org/whl/cu124
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of torchvision==0.19.1 and subpackage-b depends on torchvision==0.19.1, we can conclude that subpackage-b's
+      requirements are unsatisfiable.
+      And because your workspace requires subpackage-b, we can conclude that your workspace's requirements are unsatisfiable.
+</code></pre>
+<p>but with <code>torchvision == 0.19.1+cu124</code>, it resolves correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 14:58</div>
+            <div class="timeline-body"><p>Have you taken a look at https://docs.astral.sh/uv/pip/compatibility/#local-version-identifiers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pstjohn">@pstjohn</a> on 2024-09-09 15:34</div>
+            <div class="timeline-body"><p>Yeah that seems to explain it. It's odd that specifying <code>torchvision==0.19.1</code> <em>doesn't</em> accept <code>0.19.1+cu124</code>, though.</p>
+<p>Having to pin the versions exactly to get cuda-enabled wheels isn't great for us. As a library we'd just like to depend on <code>torch</code>, but in setting up a python environment we'll need to be able to install the cuda-compiled dependency versions (which you typically do for different cuda versions just by changing the <code>index-url</code>, https://pytorch.org/get-started/locally/#start-locally)</p>
+<p>I'm wondering if an option to <code>--ignore-local-version-identifiers</code> in <code>uv lock</code> would be enough to get this working? But there might be edge cases to those local identifiers I'm not following</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/msarahan">@msarahan</a> on 2024-09-09 16:09</div>
+            <div class="timeline-body"><p>If I'm reading the docs right, it's that <code>torchvision==0.19.1</code> doesn't match <code>0.19.1+cu124</code> because the whole spec is ignored, due to the fact that it has a local version identifier.</p>
+<p>This general problem is something that I would like to solve by improving metadata. That's quite a rabbit hole, but if you'd like to learn more:</p>
+<ul>
+<li>https://discuss.python.org/t/what-to-do-about-gpus-and-the-built-distributions-that-support-them/7125/64 - Rehash just before PyCon 2024</li>
+<li>https://discuss.python.org/t/implementation-variants-rehashing-and-refocusing/54884 - Rehash after a long discussion with Oscar Benjamin and others</li>
+<li>https://discuss.python.org/t/selecting-variant-wheels-according-to-a-semi-static-specification/53446/111 - my latest proposal, which has side-tracked me to <a href="https://docs.google.com/document/d/16T0enLLEoKP6MvlTWsvPdXmCDXsWHANV5X1YPxjuoBw/edit?usp=sharing">a PEP for index priority</a>. @charliermarsh you may be interested in this. It is deeply influenced by uv's design.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vajranaga">@vajranaga</a> on 2024-09-12 01:13</div>
+            <div class="timeline-body"><p>If trying to add cuda-enabled pytorch to a project, I found the following process worked for me (Windows 11, but should work in Linux):</p>
+<ol>
+<li>Install torch into the venv first with: <code>&gt; uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124</code> in the project directory. This should be done first before other packages, as it will search the pytorch index for the related dependencies and will fail, likely, like this:</li>
+</ol>
+<pre><code>uv add torch --index-url https://download.pytorch.org/whl/cu124
+  × No solution found when resolving dependencies:
+  ╰─▶ Because jupyterlab was not found in the package registry and your project depends on jupyterlab&gt;=4.2.5, we can
+      conclude that your project's requirements are unsatisfiable.
+  help: If this is intentional, run `uv add --frozen` to skip the lock and sync steps.
+</code></pre>
+<ol start="2">
+<li>Add torch to the project dependencies with <code>&gt; uv add torch torchvision torchaudio</code>.
+When I tried this first (before installing with uv pip install) I got the following error:</li>
+</ol>
+<pre><code>uv add torch --index-url https://download.pytorch.org/whl/cu124
+Resolved 11 packages in 597ms
+error: distribution torch==2.4.1 @ registry+https://download.pytorch.org/whl/cu124 can't be installed because it doesn't have a source distribution or wheel for the current platform
+</code></pre>
+<ol start="3">
+<li>Add remainder of dependencies as required (jupyterlab, notebook, pandas, matplotlib, etc)...</li>
+</ol>
+<p>This is what worked for me today. Verified with</p>
+<pre><code>Python 3.12.6 (tags/v3.12.6:a4a2d2b, Sep  6 2024, 20:11:23) [MSC v.1940 64 bit (AMD64)] on win32
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import torch
+&gt;&gt;&gt; torch.cuda.is_available()
+True
+&gt;&gt;&gt; exit()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-16 02:51</div>
+            <div class="timeline-body"><blockquote>
+<p>https://discuss.python.org/t/selecting-variant-wheels-according-to-a-semi-static-specification/53446/111 - my latest proposal, which has side-tracked me to <a href="https://docs.google.com/document/d/16T0enLLEoKP6MvlTWsvPdXmCDXsWHANV5X1YPxjuoBw/edit?usp=sharing">a PEP for index priority</a>. @charliermarsh you may be interested in this. It is deeply influenced by uv's design.</p>
+</blockquote>
+<p>@msarahan -- That's really interesting. Is there anything we can do on our side to support the PEP, or the variant-selection proposal?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngbrown">@ngbrown</a> on 2024-09-29 06:32</div>
+            <div class="timeline-body"><p>@vajranaga:</p>
+<blockquote>
+<ol start="2">
+<li>Add torch to the project dependencies with <code>&gt; uv add torch torchvision torchaudio</code>.</li>
+</ol>
+</blockquote>
+<p>Doing this without any index specifier doesn't appear to actually capture the CUDA related sources into the <code>uv.lock</code> file. So this would tell me that it's not reproducible for the next time the environment is setup.</p>
+<p>Meanwhile, if I use <code>uv add torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121</code> as that step, I get the following error:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of torch==2.4.1 and torchaudio==2.4.1+cu121 depends on torch==2.4.1, we can conclude
+      that torchaudio==2.4.1+cu121 cannot be used.
+      And because only the following versions of torchaudio are available:
+          torchaudio&lt;2.4.1
+          torchaudio==2.4.1+cu121
+      and your project depends on torchaudio&gt;=2.4.1, we can conclude that your project's requirements are
+      unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip
+        locking and syncing.
+</code></pre>
+<p>Even though on the previous step I had used the <code>cu121</code> path on the <code>uv pip install</code> step and the output included:</p>
+<pre><code> + torch==2.4.1+cu121
+ + torchaudio==2.4.1+cu121
+ + torchvision==0.19.1+cu121
+</code></pre>
+<p>The following works and it produces what looks like would be a working <code>uv.lock</code> file:</p>
+<pre><code>uv add torch==2.4.1+cu121 torchaudio==2.4.1+cu121 torchvision==0.19.1+cu121 --index-url https://download.pytorch.org/whl/cu121
+</code></pre>
+<p>Infact, it looks like it's the only thing that is needed:</p>
+<pre><code class="language-ps1">&gt; py -3.12 -m venv .\.venv\
+&gt; .\.venv\Scripts\activate.ps1
+&gt; pip install uv
+&gt; uv add torch==2.4.1+cu121 torchaudio==2.4.1+cu121 torchvision==0.19.1+cu121 --index-url https://download.pytorch.org/whl/cu121
+</code></pre>
+<p>Then delete the <code>.venv</code> and do the process over, but use <code>uv sync</code> and it works fine pulling source urls from the <code>uv.lock</code> file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hey-its-ashu">@hey-its-ashu</a> on 2024-10-28 07:41</div>
+            <div class="timeline-body"><p>Is there a way to add torch, torchaudio and torchvision (with gpu and without gpu) in single pyproject.toml file like we can do in <code>poetry</code> for example:</p>
+<pre><code>[tool.poetry.dependencies]
+python = &quot;^3.12&quot;
+
+[tool.poetry.group.cuda]
+optional = true
+
+[tool.poetry.group.cuda.dependencies]
+torch = { version = &quot;^2.4.1&quot;, source = &quot;pytorch-cuda&quot;, markers = &quot;extra=='cuda' and extra!='cpu'&quot; }
+torchaudio = { version = &quot;^2.4.1&quot;, source = &quot;pytorch-cuda&quot;, markers = &quot;extra=='cuda' and extra!='cpu'&quot; }
+torchvision = { version = &quot;^0.19.1&quot;, source = &quot;pytorch-cuda&quot;, markers = &quot;extra=='cuda' and extra!='cpu'&quot; }
+
+[tool.poetry.extras]
+cpu = [&quot;torch&quot;, &quot;torchvision&quot;]
+cuda = [&quot;torch&quot;, &quot;torchvision&quot;]
+
+[[tool.poetry.source]]
+name = &quot;pytorch-cuda&quot;
+priority = &quot;explicit&quot;
+url = &quot;https://download.pytorch.org/whl/cu118&quot;
+
+[[tool.poetry.source]]
+name = &quot;pytorch-cpu&quot;
+priority = &quot;explicit&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+</code></pre>
+<p>On a side note, after running below <code>uv</code> command, I am unable to add any other python package like, numpy, ultralytics etc.</p>
+<pre><code>uv add torch==2.4.1+cu121 torchaudio==2.4.1+cu121 torchvision==0.19.1+cu121 --index-url https://download.pytorch.org/whl/cu121
+</code></pre>
+<p>error:</p>
+<pre><code>  × No solution found when resolving dependencies for split (python_full_version == '3.8.*' and platform_machine == 'arm64' and platform_system == 'Darwin' and sys_platform ==
+  │ 'win32'):
+  ╰─▶ Because there is no version of torch==2.4.1+cu121 and your project depends on torch==2.4.1+cu121, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-28 12:27</div>
+            <div class="timeline-body"><p>No, we don't support resolutions with conflicting extra groups right now, though we're adding first-class support for it in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YoniChechik">@YoniChechik</a> on 2024-10-29 09:03</div>
+            <div class="timeline-body"><p>I've tried to do a frash project with <code>uv init</code> and then adding torch + torchvision with cuda. tried many of the examples here but same errors appeared. Can someone help wit hthe basic commands?</p>
+<p>p.s.:
+torch is such a popular package. I suggest that the docs will explicitly instruct new users how to install it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-29 14:23</div>
+            <div class="timeline-body"><p>@YoniChechik see #6523</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vajranaga">@vajranaga</a> on 2024-10-29 17:02</div>
+            <div class="timeline-body"><p>I found that the instructions here:
+<a href="url">https://docs.astral.sh/uv/concepts/dependencies/#index</a></p>
+<p>Worked for my rye (with uv) projects too. I just had to manually add those lines for which cuda/cpu index I was using, then <code>uv sync</code> and everything worked fine.</p>
+<p>Specifically the <code>explicit = true</code> in the <code>[[tools.uv.index]]</code> block.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/extrange">@extrange</a> on 2024-10-30 01:23</div>
+            <div class="timeline-body"><p>EDIT: Just realized my <code>uv.lock</code> specifies the index URL probably due to previously using it, so what I wrote below is not valid.</p>
+<p>Contrary to the original poster, I actually can get Pytorch (with the CUDA 12.4 runtime) working with just <code>uv add torch torchvision torchaudio</code>.</p>
+<pre><code class="language-toml">[project]
+name = &quot;whisper&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;torch&gt;=2.5.1&quot;,
+    &quot;torchaudio&gt;=2.5.1&quot;,
+    &quot;torchvision&gt;=0.20.1&quot;,
+]
+</code></pre>
+<pre><code class="language-sh">$ python -c 'import torch; print(torch.__version__)'
+2.5.1+cu124
+</code></pre>
+<p>nvidia-smi for my system:</p>
+<pre><code class="language-sh">+-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.90.07              Driver Version: 550.90.07      CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla T4                       On  |   00000000:00:1E.0 Off |                    0 |
+| N/A   35C    P8              8W /   70W |       1MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hongjiaherng">@hongjiaherng</a> on 2024-10-30 15:25</div>
+            <div class="timeline-body"><p>I couldn't make it work with the approach of @extrange. And the solution of @vajranaga is indeed working for me!</p>
+<blockquote>
+<p>I found that the instructions here: <a href="url">https://docs.astral.sh/uv/concepts/dependencies/#index</a></p>
+<p>Worked for my rye (with uv) projects too. I just had to manually add those lines for which cuda/cpu index I was using, then <code>uv sync</code> and everything worked fine.</p>
+<p>Specifically the <code>explicit = true</code> in the <code>[[tools.uv.index]]</code> block.</p>
+</blockquote>
+<p>Here's my <code>pyproject.toml</code>. I added these manually then run <code>uv sync</code>.</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;torch==2.5.1+cu124&quot;,
+    &quot;torchaudio==2.5.1+cu124&quot;,
+    &quot;torchvision==0.20.1+cu124&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv.sources]
+torch = { index = &quot;pytorch-cu124&quot; }
+torchvision = { index = &quot;pytorch-cu124&quot; }
+torchaudio = { index = &quot;pytorch-cu124&quot; }
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6523.html">astral-sh/uv#6523</a> on 2024-10-30 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-11-02 15:51</div>
+            <div class="timeline-body"><p>~~I have no idea why this can work.~~
+It's expected on Linux
+<img width="1195" alt="4" src="https://github.com/user-attachments/assets/9e91da0f-995f-459f-93b8-41e4b08a8f5b"></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-02 15:55</div>
+            <div class="timeline-body"><p>@YouJiacheng it looks like the dependency on numpy is optional? What happens if you <code>uv add numpy</code> too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-11-02 16:22</div>
+            <div class="timeline-body"><p>~~@zanieb I knew I can install numpy (and it will be fine), my question is, why <code>uv add torch</code> install <code>torch==2.5.1+cu124</code> for me.~~
+It's expected on Linux.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-02 16:42</div>
+            <div class="timeline-body"><p>Okay, please explain what you're expecting to see when reporting an issue — I can't just guess it from a screenshot. Please read https://docs.astral.sh/uv/pip/compatibility/#local-version-identifiers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-11-02 17:55</div>
+            <div class="timeline-body"><p>solved!
+this behavior is expected on Linux.
+<img src="https://github.com/user-attachments/assets/0acc74a8-11a2-48e7-ac32-791117acd40c" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-31 02:20</div>
+            <div class="timeline-body"><p>I believe the issues here have been solved in the last few releases (local versions, etc.).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-31 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-31 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/muchengdong">@muchengdong</a> on 2025-01-11 14:03</div>
+            <div class="timeline-body"><p>@hongjiaherng big nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hongjiaherng">@hongjiaherng</a> on 2025-01-19 09:31</div>
+            <div class="timeline-body"><p>Hi peeps, update for future people here. The latest documentation provides the way to install pytorch with uv (https://docs.astral.sh/uv/guides/integration/pytorch/)</p>
+<p>I would say after years of python package management evolution, UV has finally solved pytorch installation! Thanks to the team for the effort!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laoshaw">@laoshaw</a> on 2025-03-08 04:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi peeps, update for future people here. The latest documentation provides the way to install pytorch with uv (https://docs.astral.sh/uv/guides/integration/pytorch/)</p>
+<p>I would say after years of python package management evolution, UV has finally solved pytorch installation! Thanks to the team for the effort!</p>
+</blockquote>
+<p>except it does not work for me, either I'm doing something wrong or the doc is incorrect:
+&quot;To start, consider the following (default) configuration, which would be generated by running uv init --python 3.12 followed by uv add torch torchvision.</p>
+<p>In this case, PyTorch would be installed from PyPI, which hosts CPU-only wheels for Windows and macOS, and GPU-accelerated wheels on Linux (targeting CUDA 12.4)&quot;</p>
+<p>-- my result is, it's CPU for Linux too even though I had cuda running just fine on my Linux, uv does not install the gpu version at all with 'uv add torch torchvision&quot;, I had to modify pyproject.toml as shown on that page to get going.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-08 14:13</div>
+            <div class="timeline-body"><p>Are you on ARM Linux? If you're getting the <code>torch</code> Linux wheels from PyPI, those always come with CUDA enabled. They don't ship CPU-only Linux wheels to PyPI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laoshaw">@laoshaw</a> on 2025-03-08 15:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you on ARM Linux? If you're getting the <code>torch</code> Linux wheels from PyPI, those always come with CUDA enabled. They don't ship CPU-only Linux wheels to PyPI.</p>
+</blockquote>
+<p>looks like it's my mistake, tried on a different machine with 24.04 ubuntu x86 and it worked, my previous x86 ubuntu might had cuda installation issues though I'm unsure. in short, the doc is correct. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eric-gitta-moore">@eric-gitta-moore</a> on 2025-04-26 05:35</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/vajranaga">@vajranaga</a>:</p>
+<blockquote>
+<ol start="2">
+<li>Add torch to the project dependencies with <code>&gt; uv add torch torchvision torchaudio</code>.</li>
+</ol>
+</blockquote>
+<p>Doing this without any index specifier doesn't appear to actually capture the CUDA related sources into the <code>uv.lock</code> file. So this would tell me that it's not reproducible for the next time the environment is setup.</p>
+<p>Meanwhile, if I use <code>uv add torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121</code> as that step, I get the following error:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of torch==2.4.1 and torchaudio==2.4.1+cu121 depends on torch==2.4.1, we can conclude
+      that torchaudio==2.4.1+cu121 cannot be used.
+      And because only the following versions of torchaudio are available:
+          torchaudio&lt;2.4.1
+          torchaudio==2.4.1+cu121
+      and your project depends on torchaudio&gt;=2.4.1, we can conclude that your project's requirements are
+      unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip
+        locking and syncing.
+</code></pre>
+<p>Even though on the previous step I had used the <code>cu121</code> path on the <code>uv pip install</code> step and the output included:</p>
+<pre><code> + torch==2.4.1+cu121
+ + torchaudio==2.4.1+cu121
+ + torchvision==0.19.1+cu121
+</code></pre>
+<p>The following works and it produces what looks like would be a working <code>uv.lock</code> file:</p>
+<pre><code>uv add torch==2.4.1+cu121 torchaudio==2.4.1+cu121 torchvision==0.19.1+cu121 --index-url https://download.pytorch.org/whl/cu121
+</code></pre>
+<p>Infact, it looks like it's the only thing that is needed:</p>
+<blockquote>
+<p>py -3.12 -m venv ..venv<br />
+..venv\Scripts\activate.ps1
+pip install uv
+uv add torch==2.4.1+cu121 torchaudio==2.4.1+cu121 torchvision==0.19.1+cu121 --index-url https://download.pytorch.org/whl/cu121
+Then delete the <code>.venv</code> and do the process over, but use <code>uv sync</code> and it works fine pulling source urls from the <code>uv.lock</code> file.</p>
+</blockquote>
+</blockquote>
+<p>I don't understand why UV identified me as macOS.</p>
+<p><code>platform_machine == 'arm64' and sys_platform == 'darwin'</code></p>
+<pre><code>YOLOv5-LPRNet-Licence-Recognition on  master [?] is 󰏗 v0.1.0 via  v3.8.20 (YOLOv5-LPRNet-Licence-Recognition) at 13:33:14 
+❯ uname -a
+Linux DESKTOP-SURJD4A 5.15.167.4-microsoft-standard-WSL2 #1 SMP Tue Nov 5 00:21:55 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+YOLOv5-LPRNet-Licence-Recognition on  master [?] is 󰏗 v0.1.0 via  v3.8.20 (YOLOv5-LPRNet-Licence-Recognition) at 13:33:10 
+❯ uv add torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu111
+warning: Indexes specified via `--index-url` will not be persisted to the `pyproject.toml` file; use `--default-index` instead.
+  × No solution found when resolving dependencies for split (python_full_version == '3.8.*' and platform_machine == 'arm64' and sys_platform == 'darwin'):
+  ╰─▶ Because matplotlib was not found in the package registry and your project depends on matplotlib&gt;=3.2.2, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+``·
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tgm-team/tgm/pulls/81.html">tgm-team/tgm#81</a> on 2025-07-03 01:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/linaMallek">@linaMallek</a> on 2025-07-10 10:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you on ARM Linux? If you're getting the <code>torch</code> Linux wheels from PyPI, those always come with CUDA enabled. They don't ship CPU-only Linux wheels to PyPI.</p>
+</blockquote>
+<p>I am on windows 64 i tried to use torch with cu12.6 by adding to toml file as said in the documentation but i only get the cpu version , beside i tried to install onnxruntime-gpu  for insightface its looks its cant just access my gpu !! is there any way to solve this</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

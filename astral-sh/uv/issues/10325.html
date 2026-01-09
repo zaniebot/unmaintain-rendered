@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add flag to `uv sync` to disallow virtualenv recreation - astral-sh/uv #10325</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add flag to `uv sync` to disallow virtualenv recreation</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10325">#10325</a>
+        opened by <a href="https://github.com/sd2k">@sd2k</a>
+        on 2025-01-06 11:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sd2k">@sd2k</a> on 2025-01-06 11:13</div>
+            <div class="timeline-body"><p>I've been porting a few Dockerfiles from Poetry to uv using a multistage build and the following happened:</p>
+<ol>
+<li>install build dependencies into the <code>builder</code> stage</li>
+<li>run <code>uv sync</code> with pyproject.toml/uv.lock mounted which works fine</li>
+<li>copy code into the final stage</li>
+<li>copy virtualenv from the final stage</li>
+<li>run <code>uv sync</code> again; it ends up trying to rebuild dependencies, which fails this time since system deps aren't available. Turning on verbose logging shows 'Removing virtualenv...' and 'Creating virtualenv...' because the Python version differed.</li>
+</ol>
+<p>This ended up being because there was a .python-version in the code directory which was seen by the second <code>uv sync</code> run and triggered a recreation of the venv. I can fix it by removing the .python-version (or equivalently including it in the mounts in stage 2, but I only actually noticed it because I had dependencies with build requirements; otherwise, my second stage would have been quietly recreating the virtualenv every time and it'd be hard to notice.</p>
+<p>I think it would be nice to have a flag on <code>uv sync</code> which hard fails if the current virtualenv doesn't match the one preferred by the project, rather than implicitly recreating. This is especially important if the initial virtualenv was created using flags like <code>--relocatable</code>, which (I assume?) aren't replicated by the second virtualenv created by <code>uv sync</code>.</p>
+<p>Happy to contribute if this is something you'd accept!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sd2k">@sd2k</a> on 2025-01-06 11:14</div>
+            <div class="timeline-body"><p>This seems similar to https://github.com/astral-sh/uv/issues/1472 but refers to a different subcommand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2025-01-06 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2025-01-06 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2025-01-06 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-06-26 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @jtfmumm by @zanieb on 2025-11-09 15:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

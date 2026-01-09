@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bumping minimum version of a dependency - astral-sh/uv #8585</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bumping minimum version of a dependency</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/8585">#8585</a>
+        opened by <a href="https://github.com/tjni">@tjni</a>
+        on 2024-10-26 04:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tjni">@tjni</a> on 2024-10-26 04:14</div>
+            <div class="timeline-body"><p>I have a use case to provide some automation to update a package A to version X across many repositories. Some goals:</p>
+<ol>
+<li>If a package B depends on A in its lock file, and A is at version &lt; X, then (try to) update A to exactly X.</li>
+<li>If a package B depends on A in its lock file, and A is at version &gt;= X, then leave it alone.</li>
+<li>If a package B specifies a direct dependency on A, and the specification allows versions &lt; X, then update the specification to disallow those versions.</li>
+</ol>
+<p>This approach lets us gradually increase dependency freshness: often it's easier to bump versions in steps instead of to the latest. It also helps with migrations.</p>
+<p>I also have not thought through all of the nuances of doing this. So I'm interested to know:</p>
+<ol>
+<li>Is this possible?</li>
+<li>Is this even a good idea?</li>
+<li>Are there subtleties I'm missing?</li>
+<li>Are there alternatives?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-26 16:22</div>
+            <div class="timeline-body"><p>I think there are some similar requests for this, but https://github.com/astral-sh/uv/issues/6794 is the only one I can find at the moment.</p>
+<p>Generally yeah this would be nice to have. It sounds hard though :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-10-26 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjni">@tjni</a> on 2024-10-28 20:46</div>
+            <div class="timeline-body"><p>Thank you for your response and the link!</p>
+<p>I gave this a little more thought, and I think I can break my request down into a couple of subproblems.</p>
+<ol>
+<li>I want to update direct dependency (or dependency group) constraints in <code>pyproject.toml</code>. This is what https://github.com/astral-sh/uv/issues/6794 addresses. In the meantime, I can do my own TOML parsing and writing. This is what we do to handle poetry too.</li>
+<li>I want to shape the result of the constraint resolver during lock file generation through adding additional constraints. This is possible already through <code>constraint-dependencies</code> and <code>override-dependencies</code>, but I don't want this in the <code>uv.lock</code> file (or, at least, I don't want it to cause <code>uv sync --locked</code> to fail without an updated <code>pyproject.toml</code>).</li>
+</ol>
+<p>How I want to shape the constraint is conditional on the current version of package A. I can control that by manually parsing the current versions in <code>uv.lock</code> and invoking (2) as appropriate.</p>
+<p>Or a slightly more out there idea, consider a request like https://github.com/astral-sh/uv/issues/5492, it can be expressed (in theory) at a dependency level as <code>A==lowest</code> with the default being <code>A==highest</code> if we can extend the constraint language. Then, what I'm asking for is an additional extension, which is <code>A&gt;=current_lockfile_version</code>, after which I can describe my ask with three constraints:</p>
+<ol>
+<li>A&gt;=X</li>
+<li>A&gt;=current_lockfile_version</li>
+<li>A==lowest</li>
+</ol>
+<p>Just some brainstorming and a couple of scattered thoughts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7515.html">astral-sh/uv#7515</a> on 2025-10-17 00:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

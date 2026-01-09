@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strange issue with multltasking library on ubuntu - astral-sh/uv #15941</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Strange issue with multltasking library on ubuntu</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15941">#15941</a>
+        opened by <a href="https://github.com/quantitative-technologies">@quantitative-technologies</a>
+        on 2025-09-19 05:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/quantitative-technologies">@quantitative-technologies</a> on 2025-09-19 05:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Alternative runs result in an error:</p>
+<pre><code class="language-console">james@ubuntu-8gb-data-store:~/perpetual-arbitrage$ uv run python
+error: Unable to uninstall `multitasking==0.0.12`. distutils-installed distributions do not include the metadata required to uninstall safely.
+james@ubuntu-8gb-data-store:~/perpetual-arbitrage$ uv run python
+Installed 1 package in 3ms
+Python 3.12.3 (main, Aug 14 2025, 17:47:21) [GCC 13.3.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; quit()
+james@ubuntu-8gb-data-store:~/perpetual-arbitrage$ uv run python
+error: Unable to uninstall `multitasking==0.0.12`. distutils-installed distributions do not include the metadata required to uninstall safely.
+</code></pre>
+<h3>Notes</h3>
+<p>This is an &quot;inherited&quot; dependency:</p>
+<pre><code class="language-console">[project]
+name = &quot;perpetual-arbitrage&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Perpetual Arbitrage Strategy&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12,&lt;3.13&quot;
+dependencies = [
+    &quot;data-store&quot;,
+    &quot;fastparquet&gt;=2024.11.0&quot;,
+    &quot;pandas&quot;,
+    &quot;tqdm&gt;=4.67.1&quot;,
+]
+
+[tool.uv]
+# hack to remove from lockfile: https://github.com/astral-sh/uv/issues/15566#issuecomment-3233440761
+#override-dependencies = [&quot;multitask==0.0.12; sys_platform=='never'&quot;]  # { sys_platform = 'never' }&quot;]
+
+[tool.uv.sources]
+data-store = { path = &quot;../data-store&quot;, editable = true }
+
+[dependency-groups]
+analysis = [
+    &quot;ipykernel&gt;=6.30.1&quot;,
+    &quot;jupytext&gt;=1.17.3&quot;,
+]
+dev = [
+    &quot;mypy&gt;=1.18.1&quot;,
+    &quot;pytest&gt;=8.4.2&quot;,
+]
+
+[tool.setuptools.packages.find]
+where = [&quot;src&quot;, &quot;../data-store&quot;]
+include = [&quot;perpetual_arbitrage*&quot;, &quot;data_store*&quot;]
+</code></pre>
+<p>Before it fails I notice that <code>uv pip list</code> shows a double entry:</p>
+<pre><code class="language-console">...
+multitasking              0.0.12
+multitasking              0.0.12
+...
+</code></pre>
+<ul>
+<li>This only happens in ubuntu. On macos/zsh, there is a single multitasking entry in pip list, and no such error.</li>
+<li><code>data-store</code> is a private repo which I cannot share and not managed by uv.</li>
+<li>I do not know how to make a MRE for this.</li>
+<li>debug logs attached</li>
+</ul>
+<p><a href="https://github.com/user-attachments/files/22419919/log.2.txt">log.2.txt</a>
+<a href="https://github.com/user-attachments/files/22419920/log.1.txt">log.1.txt</a></p>
+<h3>Platform</h3>
+<p>Ubuntu server, and macos laptop</p>
+<h3>Version</h3>
+<p>ubuntu: uv 0.8.18, macos: uv 0.8.12</p>
+<h3>Python version</h3>
+<p>Python 3.12.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @quantitative-technologies on 2025-09-19 05:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15566.html">astral-sh/uv#15566</a> on 2025-09-19 05:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-19 08:18</div>
+            <div class="timeline-body"><p>Does the problem go away with <code>uv venv</code>? I can't reproduce it in a debian bookworm container.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-09-19 08:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quantitative-technologies">@quantitative-technologies</a> on 2025-09-20 04:41</div>
+            <div class="timeline-body"><p>No:</p>
+<pre><code class="language-console">james@ubuntu-8gb-data-store:~/perpetual-arbitrage$ uv venv
+Using CPython 3.12.3 interpreter at: /usr/bin/python3.12
+Creating virtual environment at: .venv
+✔ A virtual environment already exists at `.venv`. Do you want to replace it? · yes
+Activate with: source .venv/bin/activate
+james@ubuntu-8gb-data-store:~/perpetual-arbitrage$ uv run python
+Installed 167 packages in 811ms
+Python 3.12.3 (main, Aug 14 2025, 17:47:21) [GCC 13.3.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; quit()
+james@ubuntu-8gb-data-store:~/perpetual-arbitrage$ uv run python
+error: Unable to uninstall `multitasking==0.0.12`. distutils-installed distributions do not include the metadata required to uninstall safely.
+</code></pre>
+<p>But of course you do not have my <code>data-store</code> library.</p>
+<p>I don't know if there is any point in me trying it in a debian container?</p>
+<p>This should still work on ubuntu.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-23 12:08</div>
+            <div class="timeline-body"><p>The duplicate entry in <code>uv pip list</code> is odd, can you check the contents of <code>.venv/lib/python3.13/site-packages</code>, what entries for <code>multitasking</code> are in there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/netoarmando">@netoarmando</a> on 2025-10-01 12:55</div>
+            <div class="timeline-body"><p>I'm facing the same issue, on my local virtual machine running bookworm (arm) and on host running macos I see no error.</p>
+<p>On my remote VM (also bookwork) I get the error (not on multitasking but on an internal private package), when running <code>uv sync --verbose --no-dev</code>.</p>
+<p>If I re-run it works, If run once more it fails. Output log is similar, it's just a different package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-01 13:44</div>
+            <div class="timeline-body"><p>@netoarmando  can you check the contents of <code>.venv/lib/python3.13/site-packages</code>, what entries for <code>multitasking</code> are in there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/netoarmando">@netoarmando</a> on 2025-10-01 14:09</div>
+            <div class="timeline-body"><p>I don't have it. In my case the issue is happening with a private package, installed from a local pypi server.
+Also, pip freeze lists that package only once, and it's a direct dependency of my app.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/netoarmando">@netoarmando</a> on 2025-10-01 15:01</div>
+            <div class="timeline-body"><p>I couldn’t create a reproducer, but I managed to fix it for me.</p>
+<ul>
+<li>I updated the problematic dependency with <code>uv add my_dep --upgrade-package my_dep</code></li>
+<li>After that, <code>uv sync --verbose --no-dev</code> no longer complained.</li>
+<li><code>git restore .</code> to return to the previous state</li>
+</ul>
+<p>And now <code>uv sync --verbose --no-dev</code> runs without a problem!</p>
+<p>Worth noting: before this, I had already tried deleting the <code>.venv</code> and clearing the uv cache, but that didn’t help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quantitative-technologies">@quantitative-technologies</a> on 2025-10-03 06:14</div>
+            <div class="timeline-body"><blockquote>
+<p>The duplicate entry in <code>uv pip list</code> is odd, can you check the contents of <code>.venv/lib/python3.13/site-packages</code>, what entries for <code>multitasking</code> are in there?</p>
+</blockquote>
+<p>@konstin Sorry for taking so long.</p>
+<p>I don't see anything unusual: Two subdirs: <code>multitasking</code> and <code>multitasking-0.0.12.dist-info</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

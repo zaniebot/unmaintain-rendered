@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use liberators instead of loop push to boost performance - clap-rs/clap #5936</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use liberators instead of loop push to boost performance</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5936">#5936</a>
+        opened by <a href="https://github.com/Unparalleled-Calvin">@Unparalleled-Calvin</a>
+        on 2025-03-02 23:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Unparalleled-Calvin">@Unparalleled-Calvin</a> on 2025-03-02 23:18</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5.31</p>
+<h3>Describe your use case</h3>
+<p>This issue is related to running performance.
+Usually loop push spends more time than using <code>Vec::extend</code> because the latter undergo partial optimization during implementation. For example, it will reserve memory according to the bound of the iterator.</p>
+<h3>Describe the solution you'd like</h3>
+<p>An example is as follows.</p>
+<p>clap_builder/src/mkeymap.rs line 179</p>
+<pre><code class="language-rust">for (short, _) in arg.short_aliases.iter() {
+    let key = KeyType::Short(*short);
+    keys.push(Key { key, index });
+}
+</code></pre>
+<p>We suggest to change into this format:</p>
+<pre><code class="language-rust">keys.extend(arg.short_aliases.iter().map(|(short, _)| {
+    let key = KeyType::Short(*short);
+    Key { key, index }
+}));
+</code></pre>
+<p>A draft PR is introduced in #5937 where other similar code is optimized.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @Unparalleled-Calvin on 2025-03-02 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5937.html">clap-rs/clap#5937</a> on 2025-03-02 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-03-03 15:13</div>
+            <div class="timeline-body"><p>Is this assumed by inspection or has there been an observed performance problem caused by this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Unparalleled-Calvin">@Unparalleled-Calvin</a> on 2025-03-04 04:28</div>
+            <div class="timeline-body"><p>Well, other benchmark result shows that using <code>extend</code> and <code>iterator</code> brings a higher performance than plain <code>push</code>. The reason is about the space reservation and unchecked memory access (safe) implemented by <code>Vec::extend</code> internally.</p>
+<p><a href="https://github.com/rust-lang/rust/pull/95981">A merged pull request</a> in rust serves as an example of this optimization.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-03-04 14:24</div>
+            <div class="timeline-body"><p>Without benchmarks for this use case, I'm going to go ahead and defer this for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-03-04 14:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

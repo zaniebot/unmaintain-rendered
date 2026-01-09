@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using `uv pip install` to install pytorch from its source code fails, while `pip install` works. - astral-sh/uv #11184</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using `uv pip install` to install pytorch from its source code fails, while `pip install` works.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11184">#11184</a>
+        opened by <a href="https://github.com/xulongwu4">@xulongwu4</a>
+        on 2025-02-03 16:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/xulongwu4">@xulongwu4</a> on 2025-02-03 16:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I am trying to build and install <code>pytorch</code> from its source code. When using <code>uv pip install .</code>, I got a error message:</p>
+<pre><code class="language-bash">[stdout]
+Building wheel torch-2.6.0a0+git1eba9b3
+-- Building version torch-2.6.0a0+git1eba9b3
+cmake --build . --target install --config Release
+
+[stderr]
+no such file or directory
+CMake Error: Generator: execution of make failed. Make command was:
+/home/xxx/.cache/uv/builds-v0/.tmpG1dhel/bin/ninja install
+</code></pre>
+<p>However, if I use <code>pip install .</code> instead, the installation succeed without errors.</p>
+<h2>Steps to reproduce:</h2>
+<pre><code class="language-bash">git clone git@github.com:pytorch/pytorch.git
+cd pytorch
+git checkout v2.6.0
+git submodule update --init --recursive
+
+uv venv --python 3.9
+BUILD_BINARY=0 USE_PRECOMPILED_HEADERS=1 BUILD_TEST=0 USE_CUDA=0 uv pip install .
+</code></pre>
+<h2>Expected result:</h2>
+<p><code>torch</code> should be installed correctly.</p>
+<h2>Actual result:</h2>
+<p>The error message is posted above.</p>
+<h3>Platform</h3>
+<p>Linux</p>
+<h3>Version</h3>
+<p>uv 0.5.21</p>
+<h3>Python version</h3>
+<p>3.9.21</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @xulongwu4 on 2025-02-03 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-03 19:29</div>
+            <div class="timeline-body"><p>Does it also fail with <code>pip install --use-pep517 --force-reinstall --no-cache</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xulongwu4">@xulongwu4</a> on 2025-02-03 20:21</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<p><code>pip install .</code> and <code>pip install --use-pep517 --force-reinstall --no-cache .</code> both succeed.</p>
+<p><code>uv pip install .</code> fails with the error message I posted above, and <code>uv pip install --use-pep517 --force-reinstall --no-cached .</code> complains about <code>uv pip</code> not understanding the <code>--use-pep517</code> option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-03 20:32</div>
+            <div class="timeline-body"><p>Does it fail immediately? Attempting to reproduce.</p>
+<p>We might need a Docker image reproduction to isolate from system state https://docs.astral.sh/uv/reference/troubleshooting/reproducible-examples/#docker-image</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2025-02-03 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-03 21:21</div>
+            <div class="timeline-body"><p>Does it work with <code>uvx -p 3.9 --from build pyproject-build</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use `uv pip install` to install pytorch from its source code fails, while `pip install` works." to "Using `uv pip install` to install pytorch from its source code fails, while `pip install` works." by @xulongwu4 on 2025-02-03 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xulongwu4">@xulongwu4</a> on 2025-02-03 21:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Does it fail immediately? Attempting to reproduce.</p>
+</blockquote>
+<p>@zanieb No it doesn't fail immediately. It ran for about 20 min before it failed on my machine, where I saw from <code>htop</code> that it was running a bunch of <code>gcc</code> commands to build the c++ libraries. Judging from the error message, I guess the build process succeeded, but the <code>ninja install</code> command failed.</p>
+<blockquote>
+<p>We might need a Docker image reproduction to isolate from system state https://docs.astral.sh/uv/reference/troubleshooting/reproducible-examples/#docker-image</p>
+</blockquote>
+<p>I will try to get a reproducible docker environment later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xulongwu4">@xulongwu4</a> on 2025-02-04 01:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Does it work with <code>uvx -p 3.9 --from build pyproject-build</code>?</p>
+</blockquote>
+<p>@zanieb Yes, using <code>pyproject-build</code> works as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-04 01:08</div>
+            <div class="timeline-body"><p>Predicting that is gonna end up being something miserable :joy: like us creating a directory with a specific name that PyTorch doesn't like, or something related to <code>.gitignore</code>, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xulongwu4">@xulongwu4</a> on 2025-02-04 06:45</div>
+            <div class="timeline-body"><p>@zanieb This is a <code>Dockerfile</code> that can reproduce the error:</p>
+<pre><code class="language-dockerfile">FROM ubuntu:20.04
+
+RUN apt-get update &amp;&amp; apt-get install -y git build-essential python3-pip
+RUN pip3 install uv==0.5.24
+RUN uv python install 3.9.21
+WORKDIR /pytorch-build
+RUN git clone https://github.com/pytorch/pytorch.git
+WORKDIR /pytorch-build/pytorch
+RUN git checkout v2.6.0
+RUN git submodule update --init --recursive
+RUN uv venv --python 3.9.21
+RUN BUILD_BINARY=0 USE_PRECOMPILED_HEADERS=1 BUILD_TEST=0 USE_CUDA=0 uv pip install .
+</code></pre>
+<p>The following is the content towards the end of the build log:</p>
+<pre><code>#14 [11/11] RUN BUILD_BINARY=0 USE_PRECOMPILED_HEADERS=1 BUILD_TEST=0 USE_CUDA=0 uv pip install .
+#14 2609.1 Resolved 9 packages in 43m 28s
+#14 2617.1   × Failed to build `torch @ file:///pytorch-build/pytorch`
+#14 2617.1   ├─▶ The build backend returned an error
+#14 2617.1   ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit
+#14 2617.1       status: 1)
+#14 2617.1
+#14 2617.1       [stdout]
+#14 2617.1       Building wheel torch-2.6.0a0+git1eba9b3
+#14 2617.1       -- Building version 2.6.0a0+git1eba9b3
+#14 2617.1       cmake --build . --target install --config Release
+#14 2617.1
+#14 2617.1       [stderr]
+#14 2617.1       no such file or directory
+#14 2617.1       CMake Error: Generator: execution of make failed. Make command was:
+#14 2617.1       /root/.cache/uv/builds-v0/.tmpvh905G/bin/ninja install
+#14 2617.1
+#14 2617.1       hint: This usually indicates a problem with the package or the build
+#14 2617.1       environment.
+#14 ERROR: process &quot;/bin/sh -c BUILD_BINARY=0 USE_PRECOMPILED_HEADERS=1 BUILD_TEST=0 USE_CUDA=0 uv pip install .&quot; did not complete successfully: exit code: 1
+------
+ &gt; [11/11] RUN BUILD_BINARY=0 USE_PRECOMPILED_HEADERS=1 BUILD_TEST=0 USE_CUDA=0 uv pip install .:
+2617.1       -- Building version 2.6.0a0+git1eba9b3
+2617.1       cmake --build . --target install --config Release
+2617.1
+2617.1       [stderr]
+2617.1       no such file or directory
+2617.1       CMake Error: Generator: execution of make failed. Make command was:
+2617.1       /root/.cache/uv/builds-v0/.tmpvh905G/bin/ninja install
+2617.1
+2617.1       hint: This usually indicates a problem with the package or the build
+2617.1       environment.
+------
+Dockerfile:12
+--------------------
+  10 |     RUN git submodule update --init --recursive
+  11 |     RUN uv venv --python 3.9.21
+  12 | &gt;&gt;&gt; RUN BUILD_BINARY=0 USE_PRECOMPILED_HEADERS=1 BUILD_TEST=0 USE_CUDA=0 uv pip install .
+  13 |
+--------------------
+ERROR: failed to solve: process &quot;/bin/sh -c BUILD_BINARY=0 USE_PRECOMPILED_HEADERS=1 BUILD_TEST=0 USE_CUDA=0 uv pip install .&quot; did not complete successfully: exit code: 1
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-05 15:58</div>
+            <div class="timeline-body"><p>I got this to complete by adding <code>RUN mkdir /pytorch-build/pytorch/build</code> just before the <code>uv pip install</code> step... Can you try that?</p>
+<pre><code class="language-dockerfile">FROM ubuntu:20.04
+
+# Set UV cache directory to mounted cache location
+ENV UV_CACHE_DIR=/root/.cache/uv
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    apt-get update &amp;&amp; apt-get install -y git build-essential python3-pip &amp;&amp; \
+    pip3 install uv==0.5.24 &amp;&amp; \
+    uv python install 3.9.21
+
+WORKDIR /pytorch-build
+RUN git clone https://github.com/pytorch/pytorch.git
+WORKDIR /pytorch-build/pytorch
+RUN git checkout v2.6.0
+RUN git submodule update --init --recursive
+
+RUN mkdir /pytorch-build/pytorch/build
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv venv --python 3.9.21 &amp;&amp; \
+    VERBOSE=1 CMAKE_DEBUG_OUTPUT=ON CMAKE_VERBOSE_MAKEFILE=ON MAKEFLAGS=&quot;--debug=v&quot; BUILD_BINARY=0 USE_PRECOMPILED_HEADERS=1 BUILD_TEST=0 USE_CUDA=0 uv pip install .
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xulongwu4">@xulongwu4</a> on 2025-02-06 15:22</div>
+            <div class="timeline-body"><p>@charliermarsh I have tried your Dockerfile but got the same error as before:</p>
+<pre><code>#11 [stage-0 8/9] RUN mkdir /pytorch-build/pytorch/build
+#11 DONE 0.1s
+
+#12 [stage-0 9/9] RUN --mount=type=cache,target=/root/.cache/uv     uv venv --python 3.9.21 &amp;&amp;     VERBOSE=1 CMAKE_DEBUG_OUTPUT=ON CMAKE_VERBOSE_MAKEFILE=ON MAKEFLAGS=&quot;--debug=v&quot; BUILD_BINARY=0 USE_PRECOMPILED_HEADERS=1 BUILD_TEST=0 USE_CUDA=0 uv pip install .
+#12 0.402 Using CPython 3.9.21
+#12 0.402 Creating virtual environment at: .venv
+#12 2957.0 Resolved 9 packages in 49m 16s
+#12 2964.6   × Failed to build `torch @ file:///pytorch-build/pytorch`
+#12 2964.6   ├─▶ The build backend returned an error
+#12 2964.6   ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit
+#12 2964.6       status: 1)
+#12 2964.6
+#12 2964.6       [stdout]
+#12 2964.6       Change Dir: '/pytorch-build/pytorch/build'
+#12 2964.6
+#12 2964.6       Run Build Command(s): /root/.cache/uv/builds-v0/.tmphdWrSR/bin/ninja
+#12 2964.6       -v install
+#12 2964.6
+#12 2964.6       Generator: execution of make failed. Make command was:
+#12 2964.6       /root/.cache/uv/builds-v0/.tmphdWrSR/bin/ninja -v install
+#12 2964.6       Building wheel torch-2.6.0a0+git1eba9b3
+#12 2964.6       -- Building version 2.6.0a0+git1eba9b3
+#12 2964.6       cmake --build . --target install --config Release
+#12 2964.6
+#12 2964.6       [stderr]
+#12 2964.6       no such file or directory
+#12 2964.6       CMake Error: Generator: execution of make failed. Make command was:
+#12 2964.6       /root/.cache/uv/builds-v0/.tmphdWrSR/bin/ninja -v install
+#12 2964.6
+#12 2964.6       hint: This usually indicates a problem with the package or the build
+#12 2964.6       environment.
+#12 ERROR: process &quot;/bin/sh -c uv venv --python 3.9.21 &amp;&amp;     VERBOSE=1 CMAKE_DEBUG_OUTPUT=ON CMAKE_VERBOSE_MAKEFILE=ON MAKEFLAGS=\&quot;--debug=v\&quot; BUILD_BINARY=0 USE_PRECOMPILED_HEADERS=1 BUILD_TEST=0 USE_CUDA=0 uv pip install .&quot; did not complete successfully: exit code: 1
+------
+ &gt; [stage-0 9/9] RUN --mount=type=cache,target=/root/.cache/uv     uv venv --python 3.9.21 &amp;&amp;     VERBOSE=1 CMAKE_DEBUG_OUTPUT=ON CMAKE_VERBOSE_MAKEFILE=ON MAKEFLAGS=&quot;--debug=v&quot; BUILD_BINARY=0 USE_PRECOMPILED_HEADERS=1 BUILD_TEST=0 USE_CUDA=0 uv pip install .:
+2964.6       -- Building version 2.6.0a0+git1eba9b3
+2964.6       cmake --build . --target install --config Release
+2964.6
+2964.6       [stderr]
+2964.6       no such file or directory
+2964.6       CMake Error: Generator: execution of make failed. Make command was:
+2964.6       /root/.cache/uv/builds-v0/.tmphdWrSR/bin/ninja -v install
+2964.6
+2964.6       hint: This usually indicates a problem with the package or the build
+2964.6       environment.
+------
+Dockerfile:19
+--------------------
+  18 |
+  19 | &gt;&gt;&gt; RUN --mount=type=cache,target=/root/.cache/uv \
+  20 | &gt;&gt;&gt;     uv venv --python 3.9.21 &amp;&amp; \
+  21 | &gt;&gt;&gt;     VERBOSE=1 CMAKE_DEBUG_OUTPUT=ON CMAKE_VERBOSE_MAKEFILE=ON MAKEFLAGS=&quot;--debug=v&quot; BUILD_BINARY=0 USE_PRECOMPILED_HEADERS=1 BUILD_TEST=0 USE_CUDA=0 uv pip install .
+  22 |
+--------------------
+ERROR: failed to solve: process &quot;/bin/sh -c uv venv --python 3.9.21 &amp;&amp;     VERBOSE=1 CMAKE_DEBUG_OUTPUT=ON CMAKE_VERBOSE_MAKEFILE=ON MAKEFLAGS=\&quot;--debug=v\&quot; BUILD_BINARY=0 USE_PRECOMPILED_HEADERS=1 BUILD_TEST=0 USE_CUDA=0 uv pip install .&quot; did not complete successfully: exit code: 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 17:29</div>
+            <div class="timeline-body"><p>Weird, I'll try again. It ran to completion for me yesterday. Maybe there's some non-determinism here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 17:48</div>
+            <div class="timeline-body"><p>Are you on the same architecture? Since they're on Linux I presume they're on linux/amd64 and you're on linux/arm64?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 17:51</div>
+            <div class="timeline-body"><p>I believe I ran with <code>--platform linux/amd64</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 19:42</div>
+            <div class="timeline-body"><p>Although maybe I didn't, because it's now been running for over 9000 seconds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xulongwu4">@xulongwu4</a> on 2025-02-06 19:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Although maybe I didn't, because it's now been running for over 9000 seconds.</p>
+</blockquote>
+<p>My log shows that it took about 3000 seconds on my side to hit the error. So I guess yeah, it takes a while to run this build.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-03 18:28</div>
+            <div class="timeline-body"><p>I believe this is fixed by #14338.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-03 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-07-03 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2025-07-03 18:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

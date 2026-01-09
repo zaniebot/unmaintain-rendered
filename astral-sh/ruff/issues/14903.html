@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF029 triggers on FastAPI routes when they're inner functions - astral-sh/ruff #14903</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF029 triggers on FastAPI routes when they're inner functions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14903">#14903</a>
+        opened by <a href="https://github.com/scy">@scy</a>
+        on 2024-12-10 23:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/scy">@scy</a> on 2024-12-10 23:55</div>
+            <div class="timeline-body"><p>The following code triggers <a href="https://docs.astral.sh/ruff/rules/unused-async/"><code>RUF029</code> (unused async)</a>:</p>
+<pre><code class="language-python">from fastapi import FastAPI
+
+
+def setup_app(app: FastAPI) -&gt; None:
+    @app.get(&quot;/&quot;)
+    async def get_root() -&gt; str:  # RUF029 here
+        return &quot;Hello World!&quot;
+
+
+app = FastAPI()
+
+
+@app.get(&quot;/foo&quot;)
+async def get_foo() -&gt; str:  # no error
+    return &quot;Hello this is foo&quot;
+</code></pre>
+<p>Note that it doesn't trigger on the top-level function.</p>
+<p>That's because there is special handling in the code for FastAPI, implemented by @TomerBin in #12925/#12938, but I guess the underlying cause for the different outcome is that one of the <code>is_fastapi_*</code> checks in <code>rules/fastapi/rules/mod.rs</code> doesn't detect this case correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TomerBin">@TomerBin</a> on 2024-12-11 06:08</div>
+            <div class="timeline-body"><p>Hi @scy
+Thanks for pointing that out :)
+A complete solution will depend on a proper type checking in ruff, but until it'll be landed I can improve the current logic to also detect fastapi routes whose app comes from a function typed argument.</p>
+<p>Hopefully get into that in the following days :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-12-11 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15093.html">astral-sh/ruff#15093</a> on 2024-12-21 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-21 14:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

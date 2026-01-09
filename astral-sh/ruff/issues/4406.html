@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff panics when fixing file and partially change its content - astral-sh/ruff #4406</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff panics when fixing file and partially change its content</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4406">#4406</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2023-05-12 21:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2023-05-12 21:59</div>
+            <div class="timeline-body"><p>Ruff f5be3d8e5b2e3f3a0c5890075b552371f4061023 - still happens 0.0.285</p>
+<p>Command - <code>ruff --fix</code> with config with all rules enabled</p>
+<pre><code>&quot;&quot;&quot;
+    ~~~~~~~~~~~~~~~~~~~~
+</code></pre>
+<p>cause to show error</p>
+<pre><code>error: warning: Linting panicked PY_FILE_TEST_2372106092.py: This indicates a bug in `ruff`. If you could open an issue at:
+
+https://github.com/charliermarsh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at 'byte index 31 is out of bounds of `&quot;&quot;&quot;
+    ~~~~~~~~~~~~~~~~~~~~`', crates/ruff_python_ast/src/source_code/line_index.rs:113:21
+...
+   6: core::panicking::panic_fmt
+             at /rustc/84c898d65adf2f39a5a98507f1fe0ce10a2b8dbc/library/core/src/panicking.rs:64:14
+   7: core::str::slice_error_fail_rt
+   8: core::str::slice_error_fail
+             at /rustc/84c898d65adf2f39a5a98507f1fe0ce10a2b8dbc/library/core/src/str/mod.rs:86:9
+   9: ruff_python_ast::source_code::line_index::LineIndex::source_location
+  10: &lt;ruff::logging::DisplayParseError as core::fmt::Display&gt;::fmt
+  11: core::fmt::write
+             at /rustc/84c898d65adf2f39a5a98507f1fe0ce10a2b8dbc/library/core/src/fmt/mod.rs:1232:17
+  12: &lt;core::fmt::Arguments as core::fmt::Display&gt;::fmt
+             at /rustc/84c898d65adf2f39a5a98507f1fe0ce10a2b8dbc/library/core/src/fmt/mod.rs:559:9
+  13: &lt;&amp;T as core::fmt::Display&gt;::fmt
+             at /rustc/84c898d65adf2f39a5a98507f1fe0ce10a2b8dbc/library/core/src/fmt/mod.rs:2396:62
+  14: core::fmt::write
+             at /rustc/84c898d65adf2f39a5a98507f1fe0ce10a2b8dbc/library/core/src/fmt/mod.rs:1232:17
+  15: &lt;core::fmt::Arguments as core::fmt::Display&gt;::fmt
+             at /rustc/84c898d65adf2f39a5a98507f1fe0ce10a2b8dbc/library/core/src/fmt/mod.rs:559:9
+  16: &lt;&amp;T as core::fmt::Display&gt;::fmt
+             at /rustc/84c898d65adf2f39a5a98507f1fe0ce10a2b8dbc/library/core/src/fmt/mod.rs:2396:62
+  17: core::fmt::write
+             at /rustc/84c898d65adf2f39a5a98507f1fe0ce10a2b8dbc/library/core/src/fmt/mod.rs:1232:17
+  18: &lt;fern::log_impl::Output as log::Log&gt;::log
+  19: fern::log_impl::FormatCallback::finish
+  20: ruff::logging::set_up_logging::{{closure}}
+  21: &lt;fern::log_impl::Dispatch as log::Log&gt;::log
+  22: ruff_cli::diagnostics::lint_path
+  23: rayon::iter::plumbing::bridge_producer_consumer::helper
+  24: ruff_cli::commands::run::run
+  25: ruff_cli::run
+  26: ruff::main
+ ....
+
+</code></pre>
+<p>File before and after fixing(1 byte of difference) -  <a href="https://github.com/charliermarsh/ruff/files/11468011/tt.zip">tt.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-12 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qarmin">@qarmin</a> on 2023-05-13 19:16</div>
+            <div class="timeline-body"><p>Not 100% sure, but looks that this may be caused by https://github.com/charliermarsh/ruff/pull/3931</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-14 05:30</div>
+            <div class="timeline-body"><p>When the file is modified subsequent calls do not panic, you can reproduce with <code>--diff</code> as well. A bisect confirms this was introduced by #3931.</p>
+<p>You can narrow selection to <code>--select W292,E999</code>. This appears to be a panic while displaying an EOF parse error (E999) with an out of bounds offset after a newline added to the end of the file (per W292).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qarmin">@qarmin</a> on 2023-10-01 08:19</div>
+            <div class="timeline-body"><p>Files now throws parse error(same as cpython)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @qarmin on 2023-10-01 08:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

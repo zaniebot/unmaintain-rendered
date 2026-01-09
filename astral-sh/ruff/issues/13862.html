@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM115 false positive on functions that return file handler objects - astral-sh/ruff #13862</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM115 false positive on functions that return file handler objects</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13862">#13862</a>
+        opened by <a href="https://github.com/gboeing">@gboeing</a>
+        on 2024-10-21 15:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gboeing">@gboeing</a> on 2024-10-21 15:59</div>
+            <div class="timeline-body"><p>ruff 0.7 gives a false positive for SIM115 on something like:</p>
+<pre><code class="language-python">def my_function(filepath, encoding):
+    return bz2.open(filepath, mode=&quot;rt&quot;, encoding=encoding)
+</code></pre>
+<p>which can be resolved like:</p>
+<pre><code class="language-python">def my_function(filepath, encoding):
+    with bz2.open(filepath, mode=&quot;rt&quot;, encoding=encoding) as f:
+        return f
+</code></pre>
+<p>But this prevents the calling function from being able to work with <code>f</code> because the context manager has closed it. It seems that SIM115 should not trigger when returning a file handler object from a function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 16:32</div>
+            <div class="timeline-body"><p>Yeah strong agree that this should not be flagged.</p>
+<p>Related https://github.com/astral-sh/ruff/pull/13679#issuecomment-2400078411</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-10-21 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2024-10-21 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-10-21 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-21 16:47</div>
+            <div class="timeline-body"><p>I agree that this could be improved. FWIW, though, this is really a pre-existing issue that could occur prior to Ruff 0.7. For example, Ruff 0.1 emits <code>SIM115</code> on this code that uses the builtin <code>open</code> function:</p>
+<pre><code class="language-py">def my_function(filepath, encoding):
+    return open(filepath, mode=&quot;rt&quot;, encoding=encoding)
+</code></pre>
+<p>The only difference in Ruff 0.7 is that the rule is now applied consistently to more stdlib functions that open files, rather than just the builtin <code>open</code> function and <code>pathlib.Path.open</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "SIM115 false positive in 0.7" to "SIM115 false positive on functions that return file handler objects" by @AlexWaygood on 2024-10-21 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-21 18:33</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-python">def my_function(filepath, encoding):
+    return bz2.open(filepath, mode=&quot;rt&quot;, encoding=encoding)
+</code></pre>
+</blockquote>
+<p>Ideally, of course, rather than writing a wrapper function that <em>returns</em> an open file handle, you'd write a wrapper context manager that <em>yields</em> an open file handle, because then you can be confident that the file will always be closed after you're done with it:</p>
+<pre><code class="language-python">from contextlib import contextmanager
+
+@contextmanager
+def my_function(filepath, encoding):
+    with bz2.open(filepath, mode=&quot;rt&quot;, encoding=encoding) as f:
+        yield f
+</code></pre>
+<p>Enforcing that kind of practice is probably outside the scope of this rule, however.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-03 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14066.html">astral-sh/ruff#14066</a> on 2024-11-03 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-03 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-03 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14291.html">astral-sh/ruff#14291</a> on 2024-11-12 03:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20581.html">astral-sh/ruff#20581</a> on 2025-09-25 19:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

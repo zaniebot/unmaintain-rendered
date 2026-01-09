@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV fails to install packages from private index hosted on jfrog artifactory - astral-sh/uv #6610</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV fails to install packages from private index hosted on jfrog artifactory</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6610">#6610</a>
+        opened by <a href="https://github.com/Mushahar">@Mushahar</a>
+        on 2024-08-25 15:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Mushahar">@Mushahar</a> on 2024-08-25 15:09</div>
+            <div class="timeline-body"><p>While running &quot;uv pip install&quot; with uv version <strong>0.3.2</strong> and Python 3.10.x, Jfrog Artifactory (v 7.68.21) returns HTTP error 500 as shown below. The same command installs the package successfully with &quot;pip&quot;.</p>
+<p>Given below is a log from a Windows 11 PC, but the same is reproduceable on Windows 10 and Linux (Ubuntu 20.04).</p>
+<pre><code>(uvtest) C:\&gt;uv pip install -vvv -i https://&lt;user&gt;:&lt;apikey&gt;@example.com/artifactory/api/pypi/my-private-pypi-local/simple --no-deps --upgrade my-pip-pkg
+    0.002163s DEBUG uv uv 0.3.2
+ uv_requirements::specification::from_source source=my-pip-pkg
+    0.004633s DEBUG uv_python::discovery Searching for Python interpreter in system path or `py` launcher
+    0.434232s DEBUG uv_python::discovery Found `cpython-3.10.10-windows-x86_64-none` at `C:\Users\&lt;USERNAME&gt;\Envs\uvtest\Scripts\python.exe` (active virtual environment)
+    0.434732s DEBUG uv::commands::pip::install Using Python 3.10.10 environment at C:\Users\&lt;USERNAME&gt;\Envs\uvtest\Scripts\python.exe
+    0.435193s DEBUG uv_fs Acquired lock for `C:\Users\&lt;USERNAME&gt;\Envs\uvtest`
+ uv_client::linehaul::linehaul
+    0.455590s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries
+ uv_resolver::resolver::solve
+    0.457196s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.10.10
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+     uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+    0.457653s   0ms DEBUG uv_resolver::resolver Adding direct dependency: my-pip-pkg*
+   uv_resolver::resolver::choose_version package=my-pip-pkg
+ uv_resolver::resolver::process_request request=Versions my-pip-pkg
+   uv_client::registry_client::simple_api package=my-pip-pkg
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=\\?\C:\Users\&lt;USERNAME&gt;\AppData\Local\uv\cache\simple-v12\index\25a5af3375425e52\my-pip-pkg.rkyv
+ uv_resolver::resolver::process_request request=Prefetch my-pip-pkg *
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\C:\\Users\\&lt;USERNAME&gt;\\AppData\\Local\\uv\\cache\\simple-v12\\index\\25a5af3375425e52\\my-pip-pkg.rkyv&quot;
+        0.459539s   1ms DEBUG uv_client::cached_client Found stale response for: https://example.com/artifactory/api/pypi/my-private-pypi-local/simple/my-pip-pkg/
+        0.459647s   1ms DEBUG uv_client::cached_client Sending revalidation request for: https://example.com/artifactory/api/pypi/my-private-pypi-local/simple/my-pip-pkg/
+       uv_client::cached_client::revalidation_request url=&quot;https://example.com/artifactory/api/pypi/my-private-pypi-local/simple/my-pip-pkg/&quot;
+        1.529370s   1s  DEBUG uv_client::cached_client Found modified response for: https://example.com/artifactory/api/pypi/my-private-pypi-local/simple/my-pip-pkg/
+       uv_client::cached_client::new_cache file=\\?\C:\Users\&lt;USERNAME&gt;\AppData\Local\uv\cache\simple-v12\index\25a5af3375425e52\my-pip-pkg.rkyv
+       uv_client::registry_client::parse_simple_api package=my-pip-pkg
+         uv_client::html::parse url=https://example.com/artifactory/api/pypi/my-private-pypi-local/simple/my-pip-pkg/
+   uv_resolver::version_map::from_metadata
+      1.579815s   1s  DEBUG uv_resolver::resolver Searching for a compatible version of my-pip-pkg (*)
+      1.580064s   1s  DEBUG uv_resolver::resolver Selecting: my-pip-pkg==1.0.0 [compatible] (my_pip_pkg-1.0.0-py3-none-any.whl)
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=my-pip-pkg==1.0.0
+     uv_client::registry_client::wheel_metadata built_dist=my-pip-pkg==1.0.0
+   uv_resolver::resolver::get_dependencies_forking package=my-pip-pkg, version=1.0.0
+     uv_resolver::resolver::get_dependencies package=my-pip-pkg, version=1.0.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=\\?\C:\Users\&lt;USERNAME&gt;\AppData\Local\uv\cache\wheels-v1\index\25a5af3375425e52\my-pip-pkg\my_pip_pkg-1.0.0-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\C:\\Users\\&lt;USERNAME&gt;\\AppData\\Local\\uv\\cache\\wheels-v1\\index\\25a5af3375425e52\\my-pip-pkg\\my_pip_pkg-1.0.0-py3-none-any.msgpack&quot;
+            1.581168s   0ms DEBUG uv_client::cached_client No cache entry for: https://example.com/artifactory/api/pypi/my-private-pypi-local/my-pip-pkg/1.0.0/my_pip_pkg-1.0.0-py3-none-any.whl#sha256=ee2bc4dbe9e8ac639cfaf8820db59a32c7c6decbd1e933459bc0c6f71376b96c
+           uv_client::cached_client::fresh_request url=&quot;https://example.com/artifactory/api/pypi/my-private-pypi-local/my-pip-pkg/1.0.0/my_pip_pkg-1.0.0-py3-none-any.whl#sha256=ee2bc4dbe9e8ac639cfaf8820db59a32c7c6decbd1e933459bc0c6f71376b96c&quot;
+              1.638398s  57ms DEBUG uv_client::base_client Transient request failure for: https://example.com/artifactory/api/pypi/my-private-pypi-local/my-pip-pkg/1.0.0/my_pip_pkg-1.0.0-py3-none-any.whl#sha256=ee2bc4dbe9e8ac639cfaf8820db59a32c7c6decbd1e933459bc0c6f71376b96c
+              1.902169s 320ms DEBUG uv_client::base_client Transient request failure for: https://example.com/artifactory/api/pypi/my-private-pypi-local/my-pip-pkg/1.0.0/my_pip_pkg-1.0.0-py3-none-any.whl#sha256=ee2bc4dbe9e8ac639cfaf8820db59a32c7c6decbd1e933459bc0c6f71376b96c
+              2.578114s 996ms DEBUG uv_client::base_client Transient request failure for: https://example.com/artifactory/api/pypi/my-private-pypi-local/my-pip-pkg/1.0.0/my_pip_pkg-1.0.0-py3-none-any.whl#sha256=ee2bc4dbe9e8ac639cfaf8820db59a32c7c6decbd1e933459bc0c6f71376b96c
+              3.588186s   2s  DEBUG uv_client::base_client Transient request failure for: https://example.com/artifactory/api/pypi/my-private-pypi-local/my-pip-pkg/1.0.0/my_pip_pkg-1.0.0-py3-none-any.whl#sha256=ee2bc4dbe9e8ac639cfaf8820db59a32c7c6decbd1e933459bc0c6f71376b96c
+error: Failed to download `my-pip-pkg==1.0.0`
+  Caused by: HTTP status server error (500 Internal Server Error) for url (https://example.com/artifactory/api/pypi/my-private-pypi-local/my-pip-pkg/1.0.0/my_pip_pkg-1.0.0-py3-none-any.whl#sha256=ee2bc4dbe9e8ac639cfaf8820db59a32c7c6decbd1e933459bc0c6f71376b96c)
+</code></pre>
+<p>Note: This error is different from the &quot;500 Internal Server Error&quot; in https://github.com/astral-sh/uv/issues/5600, where the failure message points to an authentication issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 15:10</div>
+            <div class="timeline-body"><p>I think the log you intended to include is empty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mushahar">@Mushahar</a> on 2024-08-25 15:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the log you intended to include is empty.</p>
+</blockquote>
+<p>Thanks, just fixed it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 15:54</div>
+            <div class="timeline-body"><p>Thanks. And if you request that URL (<code>https://example.com/artifactory/api/pypi/my-private-pypi-local/my-pip-pkg/1.0.0/my_pip_pkg-1.0.0-py3-none-any.whl#sha256=ee2bc4dbe9e8ac639cfaf8820db59a32c7c6decbd1e933459bc0c6f71376b96c</code>) with and without credentials, like in your browser, what do you see?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-08-25 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @charliermarsh on 2024-08-25 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mushahar">@Mushahar</a> on 2024-08-26 01:09</div>
+            <div class="timeline-body"><p>I get this response on the browser with and without credentials:</p>
+<pre><code>{
+  &quot;errors&quot; : [ {
+    &quot;status&quot; : 500,
+    &quot;message&quot; : &quot;Internal server error&quot;
+  } ]
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mushahar">@Mushahar</a> on 2024-08-26 01:16</div>
+            <div class="timeline-body"><p>But when I access the same URL through curl (with credentials) and save the output to a file, I get the correct Whl file downloaded:</p>
+<pre><code>(uvtest) C:\&gt;curl -o my_pip_pkg-1.0.0-py3-none-any.whl https://&lt;user&gt;:&lt;apikey&gt;@example.com/artifactory/api/pypi/my-private-pypi-local/my-pip-pkg/1.0.0/my_pip_pkg-1.0.0-py3-none-any.whl#sha256=ee2bc4dbe9e8ac639cfaf8820db59a32c7c6decbd1e933459bc0c6f71376b96c
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 1703k  100 1703k    0     0   732k      0  0:00:02  0:00:02 --:--:--  734k
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-26 17:29</div>
+            <div class="timeline-body"><p>I'm not sure what we can do with HTTP 500 with no error message — can you get some server-side logs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mushahar">@Mushahar</a> on 2024-09-05 12:40</div>
+            <div class="timeline-body"><p>The Artifactory team seems to think that it's an auth issue. Here is a server-side log I could get:</p>
+<pre><code>artifactory-access.log:2024-08-28T18:38:29.323Z [cb31df85820a697c] [DENIED DOWNLOAD] my-private-pypi-local:my-pip-pkg/1.0.0/my_pip_pkg-1.0.0-py3-none-any.whl  for client : NA / 10.10.172.231
+
+artifactory-request.log:2024-08-28T18:38:29.325Z|cb31df85820a697c|10.10.172.231|anonymous|HEAD|/api/pypi/my-private-pypi-local/my-pip-pkg/1.0.0/my_pip_pkg-1.0.0-py3-none-any.whl|500|-1|0|3|uv/0.3.2
+
+{&quot;installer&quot;:{&quot;name&quot;:&quot;uv&quot;,&quot;version&quot;:&quot;0.3.2&quot;},&quot;python&quot;:&quot;3.10.10&quot;,&quot;implementation&quot;:{&quot;name&quot;:&quot;CPython&quot;,&quot;version&quot;:&quot;3.10.10&quot;},&quot;distro&quot;:null,&quot;system&quot;:{&quot;name&quot;:&quot;Windows&quot;,&quot;release&quot;:&quot;10&quot;},&quot;cpu&quot;:&quot;AMD64&quot;,&quot;openssl_version&quot;:null,&quot;setuptools_version&quot;:null,&quot;rustc_version&quot;:null,&quot;ci&quot;:null}
+
+artifactory-service.log:2024-08-28T18:38:29.324Z [jfrt ] [ERROR] [cb31df85820a697c] [.PackageArtifactServiceImpl:95] [tp-nio-8443-exec-642] - Failed to process download for path:my-pip-pkg/1.0.0/my_pip_pkg-1.0.0-py3-none-any.whl in repo:my-private-pypi-local
+
+console.log:2024-08-28T18:38:29.324Z [jfrt ] [ERROR] [cb31df85820a697c] [.PackageArtifactServiceImpl:95] [tp-nio-8443-exec-642] - Failed to process download for path:my-pip-pkg/1.0.0/my_pip_pkg-1.0.0-py3-none-any.whl in repo:my-private-pypi-local
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 21:38</div>
+            <div class="timeline-body"><p>I'm not really sure what we can do here. It seems like a JFrog bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-21 21:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

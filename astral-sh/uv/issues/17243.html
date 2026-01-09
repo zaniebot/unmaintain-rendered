@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV_FROZEN=1 uvx should not ignore lockfile check - astral-sh/uv #17243</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV_FROZEN=1 uvx should not ignore lockfile check</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/17243">#17243</a>
+        opened by <a href="https://github.com/xiaoxiangmoe">@xiaoxiangmoe</a>
+        on 2025-12-27 20:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/xiaoxiangmoe">@xiaoxiangmoe</a> on 2025-12-27 20:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I want use uv single file script with ty, so I create a file <code>docker-client.py</code></p>
+<h4>step 1:  env prepare</h4>
+<pre><code class="language-sh">&gt; cat docker-client.py
+#!/usr/bin/env -S uv run --script
+#
+# /// script
+# requires-python = &quot;&gt;=3.13&quot;
+# dependencies = [
+#     &quot;docker&gt;=7.1.0&quot;,
+#     &quot;ty&gt;=0.0.7&quot;,
+# ]
+# ///
+
+import docker
+
+print(docker.from_env())
+</code></pre>
+<details>
+You might be wondering why I added ty to dependencies:
+
+<p>my intention was to add it to dev dependencies.
+But when I run <code>uv add --script docker-client.py --dev ty</code> , uv will throw error</p>
+<pre><code>error: the argument '--script &lt;SCRIPT&gt;' cannot be used with '--dev'
+</code></pre>
+</details>
+
+<h4>step 2:  run script and type check</h4>
+<p>Run it works well</p>
+<pre><code class="language-sh">&gt; chmod a+x docker-client.py &amp;&amp; uv lock --script ./docker-client.py &amp;&amp; UV_FROZEN=1 ./docker-client.py
+Resolved 8 packages in 0.28ms
+&lt;docker.client.DockerClient object at 0x7eff4e4457f0&gt;
+</code></pre>
+<p>Run type check, it also works well.</p>
+<pre><code class="language-sh">&gt; UV_FROZEN=1 uvx --with-requirements docker-client.py ty check docker-client.py
+Installed 7 packages in 2ms
+All checks passed!
+</code></pre>
+<p>See also: <a href="https://docs.astral.sh/ty/reference/typing-faq/#does-ty-support-pep-723-inline-metadata-scripts">Does ty support PEP 723 inline-metadata scripts?</a></p>
+<h4>step 3. break lockfile</h4>
+<p>Then I try to break lockfile</p>
+<pre><code class="language-sh">&gt; sed -i 's/^requires-python = &quot;&gt;=3\.13&quot;$/requires-python = &quot;&gt;=4.13&quot;/' ./docker-client.py.lock
+</code></pre>
+<h4>step 4. rerun script and type check</h4>
+<h5>Successfully detected inconsistencies</h5>
+<p>Run script, break as intended</p>
+<pre><code class="language-sh">&gt; grep 'requires-python' docker-client.py.lock &amp;&amp; UV_FROZEN=1 ./docker-client.py
+requires-python = &quot;&gt;=4.13&quot;
+error: The current Python version (3.13.3) is not compatible with the locked Python requirement: `&gt;=4.13`
+</code></pre>
+<h5>No inconsistency found</h5>
+<p>Run type check:</p>
+<pre><code class="language-sh">&gt; grep 'requires-python' docker-client.py.lock &amp;&amp; UV_FROZEN=1 uvx --with-requirements docker-client.py ty check docker-client.py
+requires-python = &quot;&gt;=4.13&quot;
+All checks passed!
+</code></pre>
+<p>It runs well, without check <code>docker-client.py.lock</code></p>
+<h3>Platform</h3>
+<p>x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.9.17</p>
+<h3>Python version</h3>
+<p>Python 3.13.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @xiaoxiangmoe on 2025-12-27 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2026-01-04 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2026-01-04 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2026-01-04 20:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17322.html">astral-sh/uv#17322</a> on 2026-01-05 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-05 13:13</div>
+            <div class="timeline-body"><p>I'm a bit confused: <code>--with-requirements</code> only read the requirements file, not the associated lockfile. Should uv really error when the lockfile is outdated even though it's not reading the lockfile? (The problem with reading the lockfile is that you can pass <code>--with-requirements</code> multiple times, and then all the lockfiles have to match)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-05 14:27</div>
+            <div class="timeline-body"><p>I did consider it and I think we <em>should</em> be updating the lockfiles here. It matches our semantics everywhere else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-05 14:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Can we document this, either in --with-requirements or in some locking docs? Otherwise users will be confused that the lockfile gets updated but not used.</p>
+</blockquote>
+<p>Ahh, it didn't occur to me that (of course) we aren't using the lockfile here. In that case you might be right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2026-01-05 14:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

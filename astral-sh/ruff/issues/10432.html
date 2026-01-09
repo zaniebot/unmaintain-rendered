@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: Option to use lowercase hex literals - astral-sh/ruff #10432</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: Option to use lowercase hex literals</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10432">#10432</a>
+        opened by <a href="https://github.com/DavidBuchanan314">@DavidBuchanan314</a>
+        on 2024-03-16 22:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DavidBuchanan314">@DavidBuchanan314</a> on 2024-03-16 22:59</div>
+            <div class="timeline-body"><p>For a brief time window, <code>black</code> had this feature, before it was reverted https://github.com/psf/black/issues/1692</p>
+<p>I'm a big fan of lowercase hex literals, for most of the practical reasons outlined in the above issue, and also for purely aesthetic reasons - uppercase feels shouty.</p>
+<p>If I had my way I'd make lowercase the default, but failing that it'd be great to have a configuration option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @zanieb on 2024-03-17 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @zanieb on 2024-03-17 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-18 08:41</div>
+            <div class="timeline-body"><p>Hi @DavidBuchanan314</p>
+<p>If I understand correctly, this is about formatting hex number literals like <code>0xEF</code>? I'm asking because Ruff normalizes hex numbers in string literals to lowercase <a href="https://play.ruff.rs/57e30c6a-4d5e-4227-818a-d0c9dbe25d87">Playground</a></p>
+<p>My preference would be to change the default to lowercase to make it consistent with hex formatting in strings. However, from reading through Black's issues and discussions on the string hex formatting PRs, I understand that Black changed the preferred casing for hex number literals multiple times and that it's unlikely that they'll change it again in the future. I don't know if I want to deviate from Black's default, considering that the benefits are marginal.</p>
+<p>That means that supporting lowercase hex formatting most likely requires adding a new formatter option. I'm not opposed to this, but we need to make a holistic decision if we want to support formatting-related options or keep Black's opinionated stance to have no-formatting-related settings (or very limited).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DavidBuchanan314">@DavidBuchanan314</a> on 2024-03-18 10:16</div>
+            <div class="timeline-body"><p>Yeah, it's the number literals I'm interested in. As for whether it's actually worth it, I guess I'll leave that to everyone else to decide :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-03-18 18:22</div>
+            <div class="timeline-body"><p>To me this kind of configuration is great. It shouldn't affect other formatting and it allows to adopt ruff formatting on an existing codebase that uses either style.</p>
+<p>I would also like to propose three values for this kind of config:</p>
+<ul>
+<li>uppercase</li>
+<li>lowercase</li>
+<li>dont_touch (any_case)</li>
+</ul>
+<p>The last option let's the programmer choose case and don't modify it with the formatter - this should make the formatter faster 🐎</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-04-03 16:00</div>
+            <div class="timeline-body"><p>Piggybacking here a bit, but I was quite surprised when &quot;Ruff format&quot; changed the content of a hex string [^1], and perplexed that the preference for string and number literal is different.</p>
+<p>&quot;don't touch&quot; or &quot;off&quot; option is also great to introduce to existing code bases.</p>
+<p>[^1]: That was on a project already currently checked with black. Maybe black just didn't detect that case. I know it also doesn't change the value, still surprising nonetheless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DavidBuchanan314">@DavidBuchanan314</a> on 2024-08-23 13:02</div>
+            <div class="timeline-body"><p>I was just thinking about this again, and another argument for lower-case is that the <code>hex()</code> built-in produces lower-case hex.</p>
+<pre><code class="language-py">&gt;&gt;&gt; hex(123)
+'0x7b'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhilipYip1988">@PhilipYip1988</a> on 2024-09-12 01:08</div>
+            <div class="timeline-body"><p>I was looking for this option too. The formal representation for hexadecimal values in the ipython console is in lower case:</p>
+<pre><code class="language-python">&gt;&gt;&gt; 0xABB4AB8A
+2880744330
+
+&gt;&gt;&gt; hex(2880744330)
+'0xabb4ab8a'
+
+&gt;&gt;&gt; bin(200)
+'0b11001000'
+</code></pre>
+<p>At a quick glance, the B and 8 can be mistaken and the 4 and A can also be mistaken. The characters are much more distinct in lower case...</p>
+<p>For the exponent lower case e is preferred but black is consistent here:</p>
+<pre><code class="language-python">&gt;&gt;&gt;1E100
+1e+100
+</code></pre>
+<p>The formal representation of strings also prefers single-quotations, unless a string literal is included:</p>
+<pre><code class="language-python">&gt;&gt;&gt; &quot;hello world!&quot;
+'hello world!'
+
+&gt;&gt;&gt;'text = \'hello world!\''
+&quot;text = 'hello world!'&quot;
+</code></pre>
+<p>The Ruff option quote-style fixes this:</p>
+<pre><code class="language-python">[format]
+# Prefer single quotes over double quotes.
+quote-style = &quot;single&quot;
+</code></pre>
+<p>Lower case f is preferred for a formatted string and black is consistent here:</p>
+<pre><code class="language-python">var = 'world'
+f'hello {var}!'
+</code></pre>
+<p>The prefix for raw strings are not changed in black because code syntax highlighters differentiate R and r for file paths and regular expressions:</p>
+<pre><code class="language-python">file_path = R'C:\Windows\System32'
+email = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+</code></pre>
+<p>Having something similar to the following would be useful:</p>
+<pre><code class="language-python">[format]
+# Prefer single quotes over double quotes.
+quote-style = 'single'
+# Prefer lowercase in hexadecimal and binary.
+hex-style = 'lower'
+</code></pre>
+<p>If there are other changes that black makes, that differ to the formal representation and the style seen in the official Python Documentation itself, then it might also be convenient for end users if these changes are grouped. For example:</p>
+<pre><code class="language-python"># Match Python's official documentation code style
+style='python'
+</code></pre>
+<pre><code class="language-python"># Match black code style
+style='black'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../psf/black/issues/4501.html">psf/black#4501</a> on 2024-10-23 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../psf/black/issues/4522.html">psf/black#4522</a> on 2024-12-04 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hodunov">@hodunov</a> on 2025-01-28 09:45</div>
+            <div class="timeline-body"><p>Any updates on this? It really makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../txtx/txtx/pulls/257.html">txtx/txtx#257</a> on 2025-03-13 04:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16718.html">astral-sh/ruff#16718</a> on 2025-03-14 07:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/avabarnard">@avabarnard</a> on 2025-06-17 21:57</div>
+            <div class="timeline-body"><p>Commenting because @MichaReiser said there needs to be more demand to add this so hopefully you reconsider at some point soon. Came here looking for an option to do exactly what kaddkaka suggested. I'm trying to introduce ruff to an existing codebase and its reformatting the hex in an ugly way. Also, it seems like a strange choice to have the inconsistency in formatting hex numbers inside and outside of string literals but I'm not here to argue with tradition, just want the option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laura240406">@laura240406</a> on 2025-10-12 01:29</div>
+            <div class="timeline-body"><p>I'm also trying to switch to ruff but the uppercase hex is a huge issue for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inno">@inno</a> on 2025-11-16 22:33</div>
+            <div class="timeline-body"><p>@MichaReiser What would constitute &quot;enough demand&quot; in order to get https://github.com/astral-sh/ruff/issues/10432 reopened and merged?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-17 07:22</div>
+            <div class="timeline-body"><p>We don't have any absolute number, but it has to be something with high demand in the community: a feature that is requested frequently by many users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laura240406">@laura240406</a> on 2025-12-24 02:53</div>
+            <div class="timeline-body"><p>What are the downsides of including this? There are multiple people who would benefit from it while I don't see any reason why this would harm the user experience of people who don't need it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

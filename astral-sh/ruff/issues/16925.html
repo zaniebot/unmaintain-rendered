@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RET503 reported for method returning None only - astral-sh/ruff #16925</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RET503 reported for method returning None only</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16925">#16925</a>
+        opened by <a href="https://github.com/stefan6419846">@stefan6419846</a>
+        on 2025-03-23 12:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stefan6419846">@stefan6419846</a> on 2025-03-23 12:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Running <em>ruff</em> on the whole file reports the following method as an issue: https://github.com/py-pdf/pypdf/blob/f805e6d7c29fc31c6c335652b45c2f8478eae23c/pypdf/_page.py#L1134-L1244</p>
+<pre><code>pypdf/_page.py:1244:9: RET503 Missing explicit `return` at the end of function able to return non-`None` value
+     |
+1242 |         self.replace_contents(ContentStream(new_content_array, self.pdf))
+1243 |         self[NameObject(PG.RESOURCES)] = new_resources
+1244 |         self[NameObject(PG.ANNOTS)] = new_annots
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RET503
+1245 |
+1246 |     def _merge_page_writer(
+     |
+     = help: Add explicit `return` statement
+
+</code></pre>
+<p>This does not really make sense, as the corresponding method is type annotated and states it only returns <code>None</code>.</p>
+<h3>Version</h3>
+<p>ruff 0.11.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../py-pdf/pypdf/pulls/3209.html">py-pdf/pypdf#3209</a> on 2025-03-23 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FabiPi3">@FabiPi3</a> on 2025-03-23 20:28</div>
+            <div class="timeline-body"><p>On line 1150 you are returning something which could be not-none. Split this line into the function-call and afterward leave a blank <code>return</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefan6419846">@stefan6419846</a> on 2025-03-24 07:31</div>
+            <div class="timeline-body"><p>This is still confusing, as the type hint for the return value on line 1141 explicitly states <code>None</code>, thus typing does not allow me to return anything different from <code>None</code> in line 1150 as well (which is ensured using <em>mypy</em>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-03-24 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2025-03-24 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-24 15:52</div>
+            <div class="timeline-body"><p>I can see how this is confusing. The problem is that Ruff doesn't understand that the called function returns <code>None</code>. The easiest solution for now (which some may also find more readable) is to change your code to call the function, followed by an explicit empty return</p>
+<pre><code class="language-py">            self._merge_page_writer(
+                page2, page2transformation, ctm, over, expand
+            )
+            return
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefan6419846">@stefan6419846</a> on 2025-03-24 16:22</div>
+            <div class="timeline-body"><p>Thanks for the explanation. I am going to leave to it up to you whether this can be closed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-03-27 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-27 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-13 06:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

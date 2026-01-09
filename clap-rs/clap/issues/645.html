@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create SubCommand name from parent name - clap-rs/clap #645</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Create SubCommand name from parent name</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/645">#645</a>
+        opened by <a href="https://github.com/SuperFluffy">@SuperFluffy</a>
+        on 2016-09-01 21:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SuperFluffy">@SuperFluffy</a> on 2016-09-01 21:35</div>
+            <div class="timeline-body"><p>Is there a way to have the application name displayed as <code>app_name sub_cmd version</code>? Right now, if the App carries the name <code>foo</code> but has the binary <code>bar</code> (as per <code>Cargo.toml</code>), invoking <code>./bar -h</code> will show <code>foo &lt;version&gt;</code>, whereas <code>./bar help subcmd</code> will show <code>bar-subcmd &lt;version&gt;</code>, which I think ios quite confusing.</p>
+<p>Take this MWE:</p>
+<pre><code class="language-rust">extern crate clap;
+
+use clap::{App, AppSettings, SubCommand};
+
+fn main() {
+    let args = App::new(&quot;blast&quot;)
+                   .setting(AppSettings::GlobalVersion) // all subcommands have version &quot;1.2.3&quot; now
+                   .version(&quot;1.2.3&quot;)
+                   .subcommand(SubCommand::with_name(&quot;status&quot;))
+                   .get_matches();
+}
+</code></pre>
+<p>And the respective outputs:</p>
+<pre><code class="language-bash">./target/debug/test -h
+blast 1.2.3
+
+USAGE:
+    test [SUBCOMMAND]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    help      Prints this message or the help of the given subcommand(s)
+    status
+</code></pre>
+<p>And with the subcommand:</p>
+<pre><code class="language-bash">% ./target/debug/test -h
+test-status 1.2.3
+
+USAGE:
+    test status
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-09-05 18:02</div>
+            <div class="timeline-body"><p>This is because some people wish to use the name, &quot;My Awesome Whatchabob&quot; as the app name, but the binary is something like, <code>maw</code> So when one requests <code>maw -V</code> They want, &quot;My Awesome Whatchabob v2.12&quot; displayed.</p>
+<p>Now when it comes to subcommands, it's more akin to the path one takes to get there, <code>maw</code> may have subcommand <code>qux</code> and displaying, <code>My Awesome Whatchabob-qux v1.1</code> may work in this simple example, but not when names get more complex. In that case it's easier to use the binary name <code>maw-qux v1.1</code></p>
+<p>This really only comes in to play when the binary name and application name don't match (which happens, but is also somewhat rare).</p>
+<p>If you wish to force the binary name, you can do so withe <a href="https://docs.rs/clap/2.11.0/clap/struct.App.html#method.bin_name"><code>App::bin_name</code></a> method, in which case subcommands would then be displayed as <code>My Awesome Whatchabob-qux</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-09-05 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2016-10-05 16:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

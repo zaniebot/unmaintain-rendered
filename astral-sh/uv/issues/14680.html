@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uvx does not find newly published package version on private index - astral-sh/uv #14680</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uvx does not find newly published package version on private index</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14680">#14680</a>
+        opened by <a href="https://github.com/dev10231235">@dev10231235</a>
+        on 2025-07-17 12:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dev10231235">@dev10231235</a> on 2025-07-17 12:21</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I maintain a private pypi tracker - essentially a Caddy http server.
+I publish my private tool on that server - literally just scp of dist/* content to a specific folder.</p>
+<pre><code class="language-bash">uvx --extra-index-url https://user:password@private.tracker.com/artifacts/pypi/simple/ --from &quot;my-admin-tools==0.1.0&quot; my_tool1 --help
+</code></pre>
+<p>This works - takes correct version and prints help.</p>
+<p>Then, I make a change and publish new version - 0.1.1.</p>
+<p>Now I run this - and it prints me this:</p>
+<pre><code class="language-bash">uvx --extra-index-url https://user:password@private.tracker.com/artifacts/pypi/simple/  --from &quot;my-admin-tools==0.1.1&quot; my_tool1 --help
+
+    × No solution found when resolving tool dependencies:                                                                                                            
+    ╰─▶ Because there is no version of my-admin-tools==0.1.1 and you require                                                                                         
+        my-admin-tools==0.1.1, we can conclude that your requirements are                                                                                            
+        unsatisfiable.                                                                                                                                               
+        hint: `my-admin-tools` was found on                                                                                                                          
+        https://user:password@private.tracker.com/artifacts/pypi/simple/,                                                                                 
+        but not at the requested version (my-admin-tools==0.1.1). A                                                                                                  
+        compatible version may be available on a subsequent index (e.g.,                                                                                             
+        https://pypi.org/simple). By default, uv will only consider versions                                                                                         
+        that are published on the first index that contains a given package, to                                                                                      
+        avoid dependency confusion attacks. If all indexes are equally trusted,                                                                                      
+        use `--index-strategy unsafe-best-match` to consider all versions from                                                                                       
+        all indexes, regardless of the order in which they were defined.                                                                                             
+
+</code></pre>
+<p>Okay, I add this flag <code>--index-strategy unsafe-best-match</code> to my tool call:</p>
+<pre><code class="language-bash">uvx --extra-index-url https://user:password@private.tracker.com/artifacts/pypi/simple/  --index-strategy unsafe-best-match --from &quot;my-admin-tools==0.1.1&quot; my_tool1 --help
+</code></pre>
+<p>This now works.</p>
+<p>Publish new version - 0.1.2.</p>
+<pre><code class="language-bash">uvx --extra-index-url https://user:password@private.tracker.com/artifacts/pypi/simple/  --index-strategy unsafe-best-match --from &quot;my-admin-tools==0.1.2&quot; my_tool1 --help
+
+    × No solution found when resolving tool dependencies:                                                                                                            
+    ╰─▶ Because there is no version of my-admin-tools==0.1.2 and you require                                                                                         
+        my-admin-tools==0.1.2, we can conclude that your requirements are                                                                                            
+        unsatisfiable.
+</code></pre>
+<p>At this point I executed <code>uv self update</code> and this updated <code>uv</code> to 0.7.21 and my <code>uvx</code> tool worked.</p>
+<h3>Platform</h3>
+<p>Ubuntu 22.04</p>
+<h3>Version</h3>
+<p>0.6.6</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dev10231235 on 2025-07-17 12:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-17 12:29</div>
+            <div class="timeline-body"><p>Are you running into caching of the response from the API? It can take ~10 minutes for a typical index cache to expire. You can use <code>uvx package@latest</code> to refresh the cache, or <code>uvx --refresh-package package  package==version</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-07-17 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-07-17 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-17 12:30</div>
+            <div class="timeline-body"><p>Do you know what cache headers your HTTP server is returning for its simple API?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dev10231235">@dev10231235</a> on 2025-07-17 12:58</div>
+            <div class="timeline-body"><p>I am sure that is not HTTP server caching issue. Caddy is configured like this.
+UPD: this belief is based on a fact that I can open URL in browser and see new version immediately.</p>
+<pre><code>mydomain {
+      handle {
+            root * /srv/static
+
+            basic_auth {
+                XXXXXXXXXXXXXXXXXXXXXXXXXX
+            }
+            file_server browse
+            encode gzip
+
+            # Basic security headers
+            header {
+                # Enable HSTS
+                Strict-Transport-Security &quot;max-age=31536000; includeSubDomains&quot;
+                # Prevent browsers from MIME-sniffing
+                X-Content-Type-Options &quot;nosniff&quot;
+                # XSS protection
+                X-XSS-Protection &quot;1; mode=block&quot;
+                # Deny iframe embedding
+                X-Frame-Options &quot;DENY&quot;
+            }
+        }
+}
+</code></pre>
+<p>I will try with <code>--refresh-package package</code> thanks.</p>
+<p>I am confident it is some kind of caching issue, but to me it looks like it its on uvx side.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../SPF-OST/pytrnsys_gui/issues/596.html">SPF-OST/pytrnsys_gui#596</a> on 2025-08-06 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-08-22 16:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

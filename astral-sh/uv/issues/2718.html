@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install a wheel with extra index url doesn't resolve, normal pip works in fresh env - astral-sh/uv #2718</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install a wheel with extra index url doesn't resolve, normal pip works in fresh env</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2718">#2718</a>
+        opened by <a href="https://github.com/rbavery">@rbavery</a>
+        on 2024-03-28 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rbavery">@rbavery</a> on 2024-03-28 19:08</div>
+            <div class="timeline-body"><ul>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+<p>I've attached a .zip containing the cpu wheel I'm trying to install with uv.</p>
+<p>this works find in a fresh conda env with python 3.10</p>
+<pre><code class="language-bash">pip install sedonaai_cpu-0.1.1-py3-none-any.whl --extra-index-url https://download.pytorch.org/whl/cpu
+</code></pre>
+<p>But uv fails to resolve in a fresh venv with python 3.10</p>
+<pre><code class="language-bash">→ uv pip install ./sedonaai_cpu-0.1.1-py3-none-any.whl --extra-index-url https://download.pytorch.org/whl/cpu --prerelease=allow
+  × No solution found when resolving dependencies:
+  ╰─▶ Because torch==2.2.0 is unusable because no wheels are available with a matching Python implementation and torch==2.2.1 is unusable because no wheels are available with a matching
+      Python implementation, we can conclude that any of:
+          torch==2.2.0
+          torch==2.2.1
+       cannot be used.
+      And because torch==2.2.2 is unusable because no wheels are available with a matching Python implementation, we can conclude that any of:
+          torch==2.2.0
+          torch==2.2.1
+          torch==2.2.2
+       cannot be used. (1)
+
+      Because only the following versions of torchvision are available:
+          torchvision&lt;=0.17.0
+          torchvision==0.17.0+cpu
+          torchvision==0.17.1
+          torchvision==0.17.1+cpu
+          torchvision==0.17.2
+          torchvision==0.17.2+cpu
+          torchvision&gt;=0.18.0
+      and torchvision==0.17.0 is unusable because no wheels are available with a matching Python implementation, we can conclude that torchvision&gt;=0.17.0,&lt;0.17.0+cpu cannot be used.
+      And because torchvision==0.17.0+cpu depends on torch==2.2.0, we can conclude that torchvision&gt;=0.17.0,&lt;0.17.1 depends on torch==2.2.0.
+      And because torchvision==0.17.1 is unusable because no wheels are available with a matching Python implementation and torchvision==0.17.1+cpu depends on torch==2.2.1, we can
+      conclude that torchvision&gt;=0.17.0,&lt;0.17.2 depends on one of:
+          torch==2.2.0
+          torch==2.2.1
+
+      And because torchvision==0.17.2 is unusable because no wheels are available with a matching Python implementation and torchvision==0.17.2+cpu depends on torch==2.2.2, we can
+      conclude that torchvision&gt;=0.17.0 depends on one of:
+          torch==2.2.0
+          torch==2.2.1
+          torch==2.2.2
+
+      And because we know from (1) that any of:
+          torch==2.2.0
+          torch==2.2.1
+          torch==2.2.2
+       cannot be used, we can conclude that torchvision&gt;=0.17.0 cannot be used.
+      And because sedonaai-cpu==0.1.1 depends on torchvision&gt;=0.17.0, we can conclude that sedonaai-cpu==0.1.1 cannot be used.
+      And because only sedonaai-cpu==0.1.1 is available and you require sedonaai-cpu, we can conclude that the requirements are unsatisfiable.
+
+</code></pre>
+<ul>
+<li>The command you invoked (e.g., <code>uv pip sync requirements.txt</code>), ideally including the <code>--verbose</code> flag.</li>
+</ul>
+<p>the logs wth verbose are attached
+<a href="https://github.com/astral-sh/uv/files/14794357/logs.txt">logs.txt</a></p>
+<p><a href="https://github.com/astral-sh/uv/files/14794334/artifact.zip">artifact.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-28 19:19</div>
+            <div class="timeline-body"><p>Could you check if this is related to a <a href="https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#packages-that-exist-on-multiple-indexes">known incompatibility with pip</a>?</p>
+<p>There are a lot of discussions about behaviors with extra index URLs:</p>
+<ul>
+<li>#2542</li>
+<li>#2310</li>
+<li>https://github.com/astral-sh/uv/issues/171</li>
+<li>https://github.com/astral-sh/uv/issues/1377</li>
+<li>https://github.com/astral-sh/uv/issues/1451</li>
+<li>https://github.com/astral-sh/uv/issues/1600</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-28 20:19</div>
+            <div class="timeline-body"><p>My guess is that this is related to our limitations around local version identifiers: https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#local-version-identifiers.</p>
+<p>Can you look at the versions of Torch and Torchvision that pip is installing, and add them as direct dependencies? Like:</p>
+<pre><code>pip install sedonaai_cpu-0.1.1-py3-none-any.whl torchvision==0.17.0+cpu torch==2.0.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-03-28 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2812.html">astral-sh/uv#2812</a> on 2024-04-03 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-07 00:10</div>
+            <div class="timeline-body"><p>Closing for now in the absence of more info, but let me know if you have other questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-07 00:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff format parts of file using stdout/stdin (in the style of vim's filter command) - astral-sh/ruff #20371</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff format parts of file using stdout/stdin (in the style of vim's filter command)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20371">#20371</a>
+        opened by <a href="https://github.com/kaddkaka">@kaddkaka</a>
+        on 2025-09-12 20:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-09-12 20:54</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Vim has a builtin command that let's you pipe any selected text through an external tool, for example</p>
+<pre><code class="language-vim">:%!sort -u      &quot; use an external program to sort all lines
+</code></pre>
+<p>or select a few lines and do <code>:!tac</code> to reverse the line order.</p>
+<p>This can be used to easily format code with ruff, example code:</p>
+<pre><code class="language-py">class HasAnA:                                                                                                                      
+ def __init__(self, a):   
+                                   self._a = a
+</code></pre>
+<p>select all the text above and <code>:!ruff format -</code> transforms it into:</p>
+<pre><code class="language-py">class HasAnA:                                                                                                                      
+    def __init__(self, a):
+        self._a = a
+</code></pre>
+<h3>The issue</h3>
+<p>If I want to format just a function, the first line of the function does not necessarily start at column 0. WHen selecting this part from the example above:</p>
+<pre><code> def __init__(self, a):   
+                                   self._a = a
+</code></pre>
+<p>filtering with <code>ruff format -</code> just returns an error code 2 and this error:</p>
+<pre><code>error: Failed to parse at 1:1: Unexpected indentation 
+</code></pre>
+<h2>Suggestion / Wish</h2>
+<p>Ruff should just accept the indentation of the first line and treat the start column as column 0, when formatting from stdin.</p>
+<p>Do you think this could be ok/doable?</p>
+<h2>The awesomeness: Better vim integration</h2>
+<h3>Version</h3>
+<p>ruff 0.13.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @kaddkaka on 2025-09-12 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-15 13:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Ruff should just accept the indentation of the first line and treat the start column as column 0, when formatting from stdin.</p>
+</blockquote>
+<p>It's a bit trickier than this because the intentation needs to be preserved when replacing the unformatted content with the formatted content.</p>
+<p>Have you looked at Ruff's range formatting functionality? I think it provides what you want:</p>
+<pre><code>ruff format --range 2:10
+</code></pre>
+<p>where <code>2</code> is the start line and <code>10</code> the end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-09-15 18:05</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Ruff should just accept the indentation of the first line and treat the start column as column 0, when formatting from stdin.</p>
+</blockquote>
+<p>It's a bit trickier than this because the intentation needs to be preserved when replacing the unformatted content with the formatted content.</p>
+<p>Have you looked at Ruff's range formatting functionality? I think it provides what you want:</p>
+<pre><code>ruff format --range 2:10
+</code></pre>
+<p>where <code>2</code> is the start line and <code>10</code> the end.</p>
+</blockquote>
+<p>The problem with this is that it doesn't integrate with how vim's filter feature works:</p>
+<ol>
+<li>Select some text</li>
+<li>Only this selected text gets sent to an external tools stdin in</li>
+<li>The output on stdout is used to replace the selected text.</li>
+</ol>
+<p>Yes, retaining the indentation would probably be the most complicated part of this feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-16 06:53</div>
+            <div class="timeline-body"><p>I see. I think your best approach here is to use Ruff's LSP instead of vim's filter feature. E.g. https://github.com/prabirshrestha/vim-lsp does support format range (which calls <code>ruff format --range</code> for the selected text range).</p>
+<p>See https://docs.astral.sh/ruff/editors/setup/#vim for how to setup Ruff's LSP with vim</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-09-30 07:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv.lock contains entries for unused/incompatible python versions - astral-sh/uv #9077</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv.lock contains entries for unused/incompatible python versions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9077">#9077</a>
+        opened by <a href="https://github.com/idlsoft">@idlsoft</a>
+        on 2024-11-13 05:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-11-13 05:58</div>
+            <div class="timeline-body"><p>I created a simple project using <code>uv init</code>, and added one dependency:</p>
+<pre><code class="language-toml">[project]
+name = &quot;myapp&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+  &quot;frozendict ~= 2.4.6&quot;,
+]
+</code></pre>
+<p><code>.python-version</code> is</p>
+<pre><code>3.12
+</code></pre>
+<p>If I run <code>uv lock</code> I get a lock file with entries for python 3.11, 3.12, 3.13:</p>
+<pre><code class="language-toml">version = 1
+requires-python = &quot;&gt;=3.12&quot;
+
+[[package]]
+name = &quot;frozendict&quot;
+version = &quot;2.4.6&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/bb/59/19eb300ba28e7547538bdf603f1c6c34793240a90e1a7b61b65d8517e35e/frozendict-2.4.6.tar.gz&quot;, hash = &quot;sha256:df7cd16470fbd26fc4969a208efadc46319334eb97def1ddf48919b351192b8e&quot;, size = 316416 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/04/13/d9839089b900fa7b479cce495d62110cddc4bd5630a04d8469916c0e79c5/frozendict-2.4.6-py311-none-any.whl&quot;, hash = &quot;sha256:d065db6a44db2e2375c23eac816f1a022feb2fa98cbb50df44a9e83700accbea&quot;, size = 16148 },
+    { url = &quot;https://files.pythonhosted.org/packages/ba/d0/d482c39cee2ab2978a892558cf130681d4574ea208e162da8958b31e9250/frozendict-2.4.6-py312-none-any.whl&quot;, hash = &quot;sha256:49344abe90fb75f0f9fdefe6d4ef6d4894e640fadab71f11009d52ad97f370b9&quot;, size = 16146 },
+    { url = &quot;https://files.pythonhosted.org/packages/a5/8e/b6bf6a0de482d7d7d7a2aaac8fdc4a4d0bb24a809f5ddd422aa7060eb3d2/frozendict-2.4.6-py313-none-any.whl&quot;, hash = &quot;sha256:7134a2bb95d4a16556bb5f2b9736dceb6ea848fa5b6f3f6c2d6dba93b44b4757&quot;, size = 16146 },
+]
+
+[[package]]
+name = &quot;myapp&quot;
+version = &quot;0.1.0&quot;
+source = { virtual = &quot;.&quot; }
+dependencies = [
+    { name = &quot;frozendict&quot; },
+]
+
+[package.metadata]
+requires-dist = [{ name = &quot;frozendict&quot;, specifier = &quot;~=2.4.6&quot; }]
+</code></pre>
+<p>Running <code>uv 0.5.1</code> on a Mac.
+If I had to guess it's the <code>-none-any</code> part that throws it off, because it doesn't seem to be happening for other packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 14:58</div>
+            <div class="timeline-body"><p>The 3.11 wheel could perhaps be omitted, but the 3.13 wheel is correct -- we're locking for all versions later than 3.12. You could use <code>requires-python = &quot;&gt;=3.12, &lt;3.13&quot;</code> if you wanted to omit the 3.13 wheel.</p>
+<p>However, I think <code>py311-none </code> is pretty strange? It's not being omitted because the <code>none</code> indicates it's compatible with other Python versions, IIUC. \cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-13 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-11-13 15:02</div>
+            <div class="timeline-body"><blockquote>
+<p>The 3.11 wheel could perhaps be omitted, but the 3.13 wheel is correct -- we're locking for all versions later than 3.12. You</p>
+</blockquote>
+<p>That's exactly what drew my attention. 3.13 makes sense to me but not 3.11.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-13 15:29</div>
+            <div class="timeline-body"><p><code>py311-none</code> is an odd tag (i don't think it should be used), though it's something we should be able to handle: https://github.com/astral-sh/uv/blob/15ef807c80c2a6d8945a9fe53707e5c0551a87b1/crates/uv-resolver/src/requires_python/tests.rs#L76</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-11-13 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-13 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-13 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 16:11</div>
+            <div class="timeline-body"><p>I can fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 16:14</div>
+            <div class="timeline-body"><p>Actually, <em>is</em> this wrong? Can't Python 3.12 run a <code>py311-none</code> wheel...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 16:15</div>
+            <div class="timeline-body"><p>We have tests today that assert that this behavior is <em>correct</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 16:16</div>
+            <div class="timeline-body"><p>Okay yeah, I think per spec it's actually correct to include this. See: https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/#use. There, they say that <code>py32-none-any</code> is a match for <code>CPython 3.3</code> (but <code>cp32-none-any</code> is not).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-13 16:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>docstring code formatter: remove &quot;invalid Python&quot; check - astral-sh/ruff #8857</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>docstring code formatter: remove &quot;invalid Python&quot; check</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8857">#8857</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2023-11-27 16:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-27 16:12</div>
+            <div class="timeline-body"><p>#8811 added a docstring code snippet formatter. As part of the initial implementation, it is actually possible for the reformatter to transform valid Python to invalid Python, usually as a result of corner cases related to triple quoting. Since these are odd cases, for expediency, the initial implementation checks if the reformatted code is valid. If it isn't, then it bails out of reformatting and skips the code snippets entirely.</p>
+<p>Ideally, we would be able to have more confidence in our code snippet reformatter to the point that we could remove this check for invalid Python code. Doing this will likely require some refactoring for how nested triple quotes are handled.</p>
+<p>Here's a good example from the tests that doesn't work today:</p>
+<p>https://github.com/astral-sh/ruff/blob/d6148b6b1490bc85a2790020759c687d6bb6da96/crates/ruff_python_formatter/resources/test/fixtures/ruff/docstring_code_examples.py#L307-L316</p>
+<p>Namely, the code snippet there <em>ought</em> to be formatted, but today, it is skipped because the reformatting currently generates invalid Python code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @BurntSushi on 2023-11-27 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @BurntSushi on 2023-11-27 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @BurntSushi on 2023-11-27 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8811.html">astral-sh/ruff#8811</a> on 2023-11-27 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7146.html">astral-sh/ruff#7146</a> on 2023-11-27 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-27 23:25</div>
+            <div class="timeline-body"><p>Do we have a benchmark that tests the performance of docstring formatting? Adding one could help to understand the performance characteristics better and validate any improvements to it.</p>
+<p>Do we always perform the re-parse today or do we use a heuristic when the re-parse is necessary (only when the source text contains triple quoted strings?). A text search should be multiple times faster than a full re-parse.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @MichaReiser on 2023-11-27 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-28 14:58</div>
+            <div class="timeline-body"><p>There aren't any benchmarks for code snippet formatting yet. Using a heuristic to avoid a re-parse seems plausible, but only if we buy that the cases where invalid Python can be produced are limited to triple quoting. (I think I buy that, otherwise I don't see how it could break out of the enclosing docstring.)</p>
+<p>For an ad hoc benchmark, if I run the formatter with and without <code>docstring-code</code> enabled, then runtime is about the same. I ran it a few times and couldn't notice a difference. (Not that this is a good substitute for a real benchmark, but perhaps suggestive that docstring code formatting doesn't have a huge impact on perf.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-28 23:51</div>
+            <div class="timeline-body"><blockquote>
+<p>For an ad hoc benchmark, if I run the formatter with and without docstring-code enabled, then runtime is about the same. I ran it a few times and couldn't notice a difference. (Not that this is a good substitute for a real benchmark, but perhaps suggestive that docstring code formatting doesn't have a huge impact on perf.)</p>
+</blockquote>
+<p>I assume you did that for a project that has docstrings?</p>
+<p>If you happen to have a test file with code snippets, then you could add it to this benchmark:</p>
+<p>https://github.com/astral-sh/ruff/blob/e62e245c61db90c8cee7056d640f091f8153cf39/crates/ruff_benchmark/benches/formatter.rs#L28-L42</p>
+<p>And change the options to always enable the docstring code option here</p>
+<p>https://github.com/astral-sh/ruff/blob/e62e245c61db90c8cee7056d640f091f8153cf39/crates/ruff_benchmark/benches/formatter.rs#L72</p>
+<p>The benchmark will then run automatically as part of codspeed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8909.html">astral-sh/ruff#8909</a> on 2023-11-29 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-29 13:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I assume you did that for a project that has docstrings?</p>
+</blockquote>
+<p>Yeah. I ran it on CPython and polars.</p>
+<p>I added a new issue tracking adding benchmarks specifically targeted to code snippet reformatting: https://github.com/astral-sh/ruff/issues/8909</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

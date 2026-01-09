@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use one argument to determine load environment, before setting defaults - clap-rs/clap #4817</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use one argument to determine load environment, before setting defaults</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4817">#4817</a>
+        opened by <a href="https://github.com/tgross35">@tgross35</a>
+        on 2023-03-31 23:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tgross35">@tgross35</a> on 2023-03-31 23:02</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.1.13</p>
+<h3>Describe your use case</h3>
+<p>I think there is a fairly common use case for environment variable defaults where you want to load a specific <code>.env</code> file based on a command argument. This means that the process would be: parse single argument, error or default if missing -&gt; read .env based on parsed value -&gt; parse rest of arguments -&gt; do env defaults for those arguments -&gt; do hardcoded defaults for those arguments -&gt; error for missing values.</p>
+<p>I don't know a good way to do this with Clap. Example use case:</p>
+<pre><code class="language-rust">#[derive(Parser, Debug)]
+pub struct Config {
+    #[clap(long, env = &quot;MYAPP_ENV&quot;, default_value = &quot;production&quot;)]
+    pub mode: Mode
+    #[clap(long, env = &quot;MYAPP_PORT&quot;, default_value = &quot;1234&quot;)]
+    pub port: u16,
+    #[clap(long, env = &quot;MYAPP_BIND_ADDR&quot;, default_value = &quot;0.0.0.0&quot;)]
+    pub bind_addr: String,
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+pub enum Mode {
+    Production,
+    Development,
+    Test
+}
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>Some way to parse a single field of the struct - I'm imagining something like a <code>parse_first</code> attribute:</p>
+<pre><code class="language-rust">struct Config {
+    #[clap(long, env = &quot;MYAPP_ENV&quot;, default_value = &quot;production&quot;, parse_first = true)]
+    pub mode: Mode
+    // ...
+}
+</code></pre>
+<p>Which could create</p>
+<pre><code class="language-rust">// function to parse only the first values
+impl Config { pub fn parse_first() -&gt; ConfigParseFirst }
+// dummy struct that holds values marked `parse_first`
+struct ConfigParseFirst { pub mode: Mode } 
+// continue parsing the rest of the values, then go to their defaults
+// move `mode` to `Config` and don't reparse to avoid race condition type thingies
+impl ConfigParseFirst { pub fn parse_rest(self) -&gt; Config }
+</code></pre>
+<p>And then be used like:</p>
+<pre><code class="language-rust">fn main() {
+    load_env(&quot;.env&quot;);
+    let tmp_cfg = Config::parse_first();
+    match tmp_cfg.mode {
+        Production =&gt; load_env(&quot;.env.production&quot;),
+        Development =&gt; load_env(&quot;.env.development&quot;),
+        Test =&gt; load_env(&quot;.env.test&quot;)
+    }
+    let cfg = tmp_cfg.parse_remaining();
+    todo!()
+}
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p>A callback method could also work, and maybe be simpler. E.g.</p>
+<pre><code class="language-rust">struct Config {
+    #[clap(long, env = &quot;MYAPP_ENV&quot;, default_value = &quot;production&quot;, parse_first_callback = set_the_mode)]
+    pub mode: Mode
+    // ...
+}
+
+fn set_the_mode(mode: &amp;Mode) {
+    match mode { /* ... */ }
+}
+</code></pre>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @tgross35 on 2023-03-31 23:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-31 23:14</div>
+            <div class="timeline-body"><p>I believe you are looking for a mixture of either</p>
+<ul>
+<li>#2763</li>
+<li>#4793</li>
+</ul>
+<p>I'm closing in favor of those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-03-31 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tgross35">@tgross35</a> on 2023-03-31 23:17</div>
+            <div class="timeline-body"><p>Good to know those exist, I had no clue what to look for. Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug: `uv venv` on windows cannot find python from pyenv - astral-sh/uv #1660</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug: `uv venv` on windows cannot find python from pyenv</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1660">#1660</a>
+        opened by <a href="https://github.com/Warchant">@Warchant</a>
+        on 2024-02-18 17:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Warchant">@Warchant</a> on 2024-02-18 17:51</div>
+            <div class="timeline-body"><pre><code class="language-powershell">(latest windows 11)
+$ pyenv version
+* 3.10.8 (set by C:\Users\warch\.pyenv\pyenv-win\version)
+$ python --version
+Python 3.10.8
+$ pipx install uv
+$ uv --version
+uv 0.1.4
+</code></pre>
+<p>On Windows I use pyenv to manage python versions. Currently 3.10.8 is installed. And I never installed python via downloadable installer.</p>
+<p>On clean windows <code>py</code> and <code>python</code> point to a shim that Windows created at <code>C:\Users\warch\AppData\Local\Microsoft\WindowsApps\python.exe</code> - that thing is not a real python - if you run <code>python</code> or <code>py</code> Windows opens Microsoft Store, and will propose to install python from the Store.</p>
+<p>Bug description:</p>
+<pre><code class="language-powershell">$ uv venv venv2
+  x failed to canonicalize path `C:\Users\warch\AppData\Local\Microsoft\WindowsApps\python.exe`
+  `-&gt; The file cannot be accessed by the system. (os error 1920)
+$ rm C:\Users\warch\AppData\Local\Microsoft\WindowsApps\python.exe
+$ uv venv venv2
+  x Failed to run `py --list-paths` to find Python installations. Is Python installed?
+  `-&gt; program not found
+$ py
+py : The term 'py' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a
+path was included, verify that the path is correct and try again.
+At line:1 char:1
++ py
++ ~~
+    + CategoryInfo          : ObjectNotFound: (py:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+$ uv venv venv2 -p python
+  x Querying Python at `C:\Users\warch\.pyenv\pyenv-win\shims\python.bat` failed with status exit code: 1:
+  | --- stdout:
+
+  | --- stderr:
+  | File &quot;&lt;string&gt;&quot;, line 1
+  |     import json ||  goto :error
+  |                 ^
+  | SyntaxError: invalid syntax
+  | ---
+
+</code></pre>
+<p>On Windows <code>uv venv</code> uses <code>py --list-versions</code> to get python, and I think <code>uv</code> could do more checks to ensure <code>py</code> exists, to check if <code>pyenv</code> is installed, etc:</p>
+<p>(very rough python implementation of possible checks):</p>
+<pre><code class="language-python">def get_python_path_windows():
+  # try to use `py` to find `python`
+  py = shutil.which(&quot;py&quot;)
+  if py and check_if_valid_win32_app(py):
+    return get_python_from_py(py)
+
+  # maybe `python` exists in PATH?
+  python = shutil.which(&quot;python&quot;)
+  if python and check_if_valid_win32_app(python):
+    # check_if_valid_win32_app would return False on `python.bat` created by pyenv
+    return python
+  
+  # check if pyenv is installed
+  pyenv = shutil.which(&quot;pyenv&quot;)
+  if pyenv:
+    return get_python_from_pyenv(pyenv)
+  
+  return None
+
+
+def get_python_from_pyenv(pyenv):
+  # pyenv which python returns path to python.exe
+  return subprocess.check_output([pyenv, &quot;which&quot;, &quot;python&quot;]).strip().decode(&quot;utf-8&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">virtualenv</span> added by @zanieb on 2024-02-18 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-18 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-18 21:00</div>
+            <div class="timeline-body"><p>Thanks for the report. We have some bugs around our handling of <code>pyenv</code> shims right now. Windows is especially complicated for Python version discovery :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2024-02-18 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-18 23:13</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/issues/1310</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1711.html">astral-sh/uv#1711</a> on 2024-02-20 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-22 07:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

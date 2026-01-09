@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minor package upgrade not detected between x.9.y and x.10.z+ - astral-sh/uv #12052</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Minor package upgrade not detected between x.9.y and x.10.z+</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12052">#12052</a>
+        opened by <a href="https://github.com/lgatellier">@lgatellier</a>
+        on 2025-03-07 16:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lgatellier">@lgatellier</a> on 2025-03-07 16:50</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi,</p>
+<p>First of all, thanks a lot for developing this killer package manager, it's really amazing !</p>
+<h2>Context</h2>
+<p>I want to upgrade a tool installed with uv.
+This tool has been published with uv publish on my self-hosted GitLab pypi package registry.</p>
+<p>My current installed version is <code>1.9.1</code>, and I want uv to install latest <code>1.10.0</code> version.</p>
+<h2>Actual behaviour</h2>
+<p>uv finds nothing to upgrade.</p>
+<pre><code class="language-bash">$ mytool --version
+1.9.1
+$ uv tool update mytool
+Nothing to upgrade
+$ mytool --version
+1.9.1
+</code></pre>
+<h2>Expected behaviour</h2>
+<p>uv finds and installs the latest <code>1.10.0</code> version.</p>
+<h2>Additional info</h2>
+<p>I also ran the following tests :</p>
+<ul>
+<li>Install pypi.org-hosted package <code>python-gitlab&lt;4.10</code>, uv installs 4.9..0. I try to upgrade to '&lt;4.11', uv does not update the package to 4.10.0.</li>
+<li>Install pypi.org-hosted package <code>python-gitlab&lt;4.11</code>, uv installs 4.10.0. I try to upgrade to '&lt;4.13', uv upgrades python-gitlab to 4.12.2.</li>
+</ul>
+<p>IMHO : The version comparison between installed and existing ones seems to confuse when comparing a one-digit version number with a two-digits one.</p>
+<h3>Platform</h3>
+<p>Windows 11 WSL2 Linux 5.10.16.3-microsoft-standard-WSL2 Ubuntu 24.04.1 LTS x86_64</p>
+<h3>Version</h3>
+<p>0.6.5</p>
+<h3>Python version</h3>
+<p>cpython-3.12.3-linux-x86_64-gnu</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @lgatellier on 2025-03-07 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @lgatellier on 2025-03-07 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-07 16:54</div>
+            <div class="timeline-body"><p>Hmm... So, when you run <code>uv tool upgrade</code>, we respect the constraints you provided when you first installed the tool. Like, if you ran <code>uv tool install mytool&lt;1.10</code> when you first installed <code>mytool</code>, then <code>uv tool upgrade mytool</code> would <em>never</em> upgrade beyond <code>&lt;1.10</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-07 16:54</div>
+            <div class="timeline-body"><p>If you want to change the installed constraints, you'd typically need to run <code>uv tool install mytool&lt;=1.10</code>, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-07 17:19</div>
+            <div class="timeline-body"><p>We should be able to warn on this case, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-07 17:20</div>
+            <div class="timeline-body"><p>This is discussed at https://docs.astral.sh/uv/concepts/tools/#mutating-tool-environments — we should add a better heading</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lgatellier">@lgatellier</a> on 2025-03-10 11:41</div>
+            <div class="timeline-body"><p>Hi @charliermarsh  and @zanieb,</p>
+<p>Thanks for your answers. I was trying to upgrade <code>mytool</code> (without version constraint) from installed <code>1.9.1</code> to freshly released <code>1.10.0</code> and ran several unsuccessful tests, so I opened this issue, but it started working like 5 minutes after I opened the issue.</p>
+<p>I've just ran some new tests (on the same computer and on a different one), and it works perfectly :</p>
+<ol>
+<li>Install <code>mytool==1.9.1</code></li>
+<li>Then install <code>mytool&lt;1.12</code> (no-op)</li>
+<li>Then, upgrade tool <code>mytool</code>, and uv installs latest <code>1.11.0</code> version.</li>
+</ol>
+<p>Seems like a cache-related issue (or a Friday-evening-related issue 😅 ?), then (i ran some uv cache clean as a last resort on friday), but cannot reproduce, so I think we can forget about it. Sorry for the inconvenience 😓 .</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

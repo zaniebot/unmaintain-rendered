@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conflicts seem to not be handled properly when using a group - clap-rs/clap #5041</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Conflicts seem to not be handled properly when using a group</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/5041">#5041</a>
+        opened by <a href="https://github.com/rgiot">@rgiot</a>
+        on 2023-07-22 16:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rgiot">@rgiot</a> on 2023-07-22 16:00</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.73.0-nightly (4c8bb79d9 2023-07-15)</p>
+<h3>Clap Version</h3>
+<p>4.3.19</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">#!/usr/bin/env run-cargo-script
+
+
+//! ```cargo
+//! [dependencies]
+//! clap = &quot;4.3.19&quot;
+//! ```
+
+extern crate clap;
+
+fn main() {
+    clap::Command::new(&quot;test&quot;)
+        .disable_help_flag(true)
+        .arg(clap::Arg::new(&quot;a&quot;).long(&quot;arg_a&quot;))
+        .arg(clap::Arg::new(&quot;b&quot;).value_hint(clap::ValueHint::FilePath))
+        .arg(
+            clap::Arg::new(&quot;c&quot;)
+                .long(&quot;arg_c&quot;)
+                .action(clap::ArgAction::SetTrue),
+        )
+        .group(
+            clap::ArgGroup::new(&quot;g&quot;)
+                .args(&amp;[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])
+                .required(true),
+        )
+        .arg(
+            clap::Arg::new(&quot;other&quot;)
+                .long(&quot;other&quot;)
+                .short('o')
+                .action(clap::ArgAction::SetTrue)
+                .conflicts_with_all([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;g&quot;]),
+        )
+        .get_matches();
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>run-cargo-script.exe .\clap1.rs  --other</code></p>
+<h3>Actual Behaviour</h3>
+<p>The following error is obtained:</p>
+<pre><code>error: the following required arguments were not provided:
+  &lt;--arg_a &lt;a&gt;|b|--arg_c&gt;
+
+Usage: clap1.exe --other &lt;--arg_a &lt;a&gt;|b|--arg_c&gt;
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>As other is set to conflict with a, b, c, and even g, there should be no problem.</p>
+<p>I would say that the behavior should be similar to this one:</p>
+<pre><code class="language-rust">#!/usr/bin/env run-cargo-script
+
+
+
+//! ```cargo
+//! [dependencies]
+//! clap = &quot;4.3.19&quot;
+//! ```
+
+extern crate clap;
+
+fn main() {
+    clap::Command::new(&quot;test&quot;)
+        .disable_help_flag(true)
+        .arg(clap::Arg::new(&quot;a&quot;).long(&quot;arg_a&quot;).required(true))
+        .arg(
+            clap::Arg::new(&quot;b&quot;)
+                .value_hint(clap::ValueHint::FilePath)
+                .required(true),
+        )
+        .arg(
+            clap::Arg::new(&quot;c&quot;)
+                .long(&quot;arg_c&quot;)
+                .action(clap::ArgAction::SetTrue)
+                .required(true),
+        )
+        .arg(
+            clap::Arg::new(&quot;other&quot;)
+                .long(&quot;other&quot;)
+                .short('o')
+                .action(clap::ArgAction::SetTrue)
+                .conflicts_with_all([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]),
+        )
+        .get_matches();
+}
+</code></pre>
+<p><code>run-cargo-script.exe .\clap2.rs  --other</code> raises no issue</p>
+<h3>Additional Context</h3>
+<p>Maybe it is related to #4520 or #4707, or maybe I misunderstood some details in clap way of working</p>
+<h3>Debug Output</h3>
+<p>Output of clap1</p>
+<pre><code>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;test&quot;
+[clap_builder::builder::command]Command::_propagate:test
+[clap_builder::builder::command]Command::_check_help_and_version:test expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_propagate_global_args:test
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--other&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--other&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--other'
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;other&quot;): Presence validated
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;other&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;other&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;other&quot;
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg ValuesDone
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:a:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:a: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:b:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:b: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:c:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:c: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:c: wasn't used
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;c&quot;, source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;false&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::add_defaults:iter:other:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:other: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:other: was used
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;other&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;other&quot;, conflicts=[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;g&quot;]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;other&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;other&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([Child { id: &quot;g&quot;, children: [] }])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;other&quot;
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::validator]Validator::validate_required:iter:aog=&quot;g&quot;
+[clap_builder::parser::validator]Validator::validate_required:iter: This is a group
+[clap_builder::builder::command]Command::unroll_args_in_group: group=&quot;g&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;a&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;b&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;c&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::parser::validator]Validator::validate_required:iter: Missing &quot;g&quot;
+[clap_builder::parser::validator]Validator::missing_required_error; incl=[&quot;g&quot;]
+[clap_builder::parser::validator]Validator::missing_required_error: reqs=ChildGraph([Child { id: &quot;g&quot;, children: [] }])
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[&quot;g&quot;], matcher=true, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[&quot;g&quot;]
+[clap_builder::builder::command]Command::unroll_args_in_group: group=&quot;g&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;a&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;b&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;c&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[ clap_builder::output::usage]Usage::get_required_usage_from:iter:&quot;g&quot; group is_present=false
+[clap_builder::builder::command]Command::unroll_args_in_group: group=&quot;g&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;a&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;b&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;c&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[  clap_builder::builder::arg]Arg::name_no_brackets:b
+[  clap_builder::builder::arg]Arg::name_no_brackets: just name
+[clap_builder::builder::command]Command::unroll_args_in_group: group=&quot;g&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;a&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;b&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;c&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[ clap_builder::output::usage]Usage::get_required_usage_from:iter:&quot;g&quot; group is_present=false
+[clap_builder::builder::command]Command::unroll_args_in_group: group=&quot;g&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;a&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;b&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;c&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[  clap_builder::builder::arg]Arg::name_no_brackets:b
+[  clap_builder::builder::arg]Arg::name_no_brackets: just name
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[StyledStr(&quot;&lt;--arg_a &lt;a&gt;|b|--arg_c&gt;&quot;)]
+[clap_builder::parser::validator]Validator::missing_required_error: req_args=[
+    &quot;&lt;--arg_a &lt;a&gt;|b|--arg_c&gt;&quot;,
+]
+[ clap_builder::output::usage]Usage::create_usage_with_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::create_smart_usage
+[ clap_builder::output::usage]Usage::get_args: incls=[&quot;other&quot;, &quot;g&quot;]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=[&quot;g&quot;]
+[clap_builder::builder::command]Command::unroll_args_in_group: group=&quot;g&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;a&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;b&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;c&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group: group=&quot;g&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;a&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;b&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;c&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[  clap_builder::builder::arg]Arg::name_no_brackets:b
+[  clap_builder::builder::arg]Arg::name_no_brackets: just name
+[clap_builder::builder::command]Command::unroll_args_in_group: group=&quot;g&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;a&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;b&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;c&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group: group=&quot;g&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;a&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;b&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;c&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[  clap_builder::builder::arg]Arg::name_no_brackets:b
+[  clap_builder::builder::arg]Arg::name_no_brackets: just name
+[ clap_builder::output::usage]Usage::get_args: ret_val=[StyledStr(&quot;\u{1b}[1m--other\u{1b}[0m&quot;), StyledStr(&quot;&lt;--arg_a &lt;a&gt;|b|--arg_c&gt;&quot;)]
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+error: the following required arguments were not provided:
+  &lt;--arg_a &lt;a&gt;|b|--arg_c&gt;
+</code></pre>
+<p>Output of clap2</p>
+<pre><code>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;test&quot;
+[clap_builder::builder::command]Command::_propagate:test
+[clap_builder::builder::command]Command::_check_help_and_version:test expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_propagate_global_args:test
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--other&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--other&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--other'
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;other&quot;): Presence validated
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;other&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;other&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;other&quot;
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg ValuesDone
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:a:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:a: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:b:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:b: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:c:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:c: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:c: wasn't used
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;c&quot;, source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;false&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::add_defaults:iter:other:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:other: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:other: was used
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;other&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;other&quot;, conflicts=[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;other&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;other&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([Child { id: &quot;a&quot;, children: [] }, Child { id: &quot;b&quot;, children: [] }, Child { id: &quot;c&quot;, children: [] }])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;other&quot;
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::validator]Validator::validate_required:iter:aog=&quot;a&quot;
+[clap_builder::parser::validator]Validator::validate_required:iter: This is an arg
+[clap_builder::parser::validator]Validator::is_missing_required_ok: a
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;a&quot;
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;a&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;a&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[&quot;other&quot;]
+[clap_builder::parser::validator]Validator::is_missing_required_ok: true (self)
+[clap_builder::parser::validator]Validator::validate_required:iter:aog=&quot;b&quot;
+[clap_builder::parser::validator]Validator::validate_required:iter: This is an arg
+[clap_builder::parser::validator]Validator::is_missing_required_ok: b
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;b&quot;
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;b&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;b&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[&quot;other&quot;]
+[clap_builder::parser::validator]Validator::is_missing_required_ok: true (self)
+[clap_builder::parser::validator]Validator::validate_required:iter:aog=&quot;c&quot;
+[clap_builder::parser::validator]Validator::validate_required:iter: This is an arg
+[clap_builder::parser::validator]Validator::is_missing_required_ok: c
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;c&quot;
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;c&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;c&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[&quot;other&quot;]
+[clap_builder::parser::validator]Validator::is_missing_required_ok: true (self)
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @rgiot on 2023-07-22 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5038.html">clap-rs/clap#5038</a> on 2023-07-22 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2023-07-24 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-validators</span> added by @epage on 2023-07-24 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5253.html">clap-rs/clap#5253</a> on 2023-12-11 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/uv/issues/3829.html">astral-sh/uv#3829</a> on 2024-05-24 18:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

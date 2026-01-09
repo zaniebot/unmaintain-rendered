@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SyntaxError in Python 3.11 when unpacking sequences inside of [] - astral-sh/ruff #2321</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SyntaxError in Python 3.11 when unpacking sequences inside of []</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2321">#2321</a>
+        opened by <a href="https://github.com/ned2">@ned2</a>
+        on 2023-01-29 09:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ned2">@ned2</a> on 2023-01-29 09:45</div>
+            <div class="timeline-body"><p>Ruff version: 0.0.237
+Python version: 3.11.1</p>
+<p>Command run:</p>
+<pre><code>ruff check --isolated code.py</code></pre>
+<p>Contents of <code>code.py</code>:</p>
+<pre><code>my_dict = {}
+my_dict[*&quot;ab&quot;] = 1
+</code></pre>
+<p>This is valid Python 3.11 code, with the string <code>'ab'</code> being unpacked into a tuple, resulting the in they key with tuple <code>('a','b')</code> being assigned a value of <code>1</code>. The above invocation of ruff however throws this error:</p>
+<pre><code>E999 SyntaxError: invalid syntax. Got unexpected token '*'</code></pre>
+<p>The snippet itself doesn't work in Python 3.9 or 3.10 (throwing SyntaxErrors), so this seems like a syntax enhancement in 3.11 that should be supported. That said, I can't find where this is documented as a change in 3.11. All I can see is <a href="https://docs.python.org/3/whatsnew/3.11.html#other-language-changes">this</a> reference to <em>Starred unpacking expressions can now be used in for statements.</em> , which references this <a href="https://github.com/python/cpython/issues/90881">CPython issue</a>, but that looks to be a different context for using <code>*</code>, and was only documenting behaviour that changed in 3.9.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ned2">@ned2</a> on 2023-01-29 09:46</div>
+            <div class="timeline-body"><p>Oh just occurred to me, would this be better submitted to the RustPython project?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 16:31</div>
+            <div class="timeline-body"><p>Oh interesting! Yes, I think this would be at-home on RustPython. Do you mind filing there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-29 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../RustPython/RustPython/issues/4479.html">RustPython/RustPython#4479</a> on 2023-01-31 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ned2">@ned2</a> on 2023-01-31 09:00</div>
+            <div class="timeline-body"><p>Done: https://github.com/RustPython/RustPython/issues/4479</p>
+<p>As I mention in that issue, I wonder if it's related to the new <code>except*</code> syntax that was introduced in 3.11 for <code>ExceptionGroup</code>s. The change I picked up on above doesn't seem to be documented, whereas <code>except*</code> is - maybe it's a side-effect of the change.</p>
+<p>Also, maybe this issue should then should really be about the fact that ruff doesn't support the <code>except*</code> syntax of 3.11 required to use <code>ExceptionGroup</code>s, which is going to be more impactful to users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ned2">@ned2</a> on 2023-01-31 10:31</div>
+            <div class="timeline-body"><p>Ok so it turns out this is an expected change in 3.11, but it wasn't called out in the changelog. See the section <a href="https://peps.python.org/pep-0646/#change-1-star-expressions-in-indexes">Change 1: Star Expressions in Indexes</a> in PEP 646, which was accepted for 3.11.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/youknowone">@youknowone</a> on 2023-02-21 17:49</div>
+            <div class="timeline-body"><p>The parser parts are resolved
+https://github.com/RustPython/RustPython/pull/4531
+https://github.com/RustPython/RustPython/pull/4532</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3089.html">astral-sh/ruff#3089</a> on 2023-02-21 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-21 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LeeeeT">@LeeeeT</a> on 2023-02-23 07:53</div>
+            <div class="timeline-body"><p>@charliermarsh, I'm still getting an error when trying to annotate <code>*args</code> as a type variable tuple:</p>
+<pre><code class="language-python">def f(*args: *tuple[int]) -&gt; None: ...
+</code></pre>
+<pre><code>error: Failed to parse file.py: invalid syntax. Got unexpected token '*' at line 1 column 14
+file.py:1:15: E999 SyntaxError: invalid syntax. Got unexpected token '*'
+</code></pre>
+<p>Although, this is a valid syntax according to <a href="https://peps.python.org/pep-0646/#args-as-a-type-variable-tuple">PEP 646</a>, and it passes static type checking using <a href="https://github.com/microsoft/pyright">Pyright</a>.</p>
+<p><strong>ruff 0.0.252</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LeeeeT">@LeeeeT</a> on 2023-02-23 08:00</div>
+            <div class="timeline-body"><p>Moreover, Ruff seems not to support <a href="https://peps.python.org/pep-0654">exception groups</a>.</p>
+<pre><code class="language-python">print(ExceptionGroup)
+</code></pre>
+<pre><code>file.py:1:7: F821 Undefined name `ExceptionGroup`
+</code></pre>
+<p>Should I create a separate issue for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3167.html">astral-sh/ruff#3167</a> on 2023-02-23 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-23 12:27</div>
+            <div class="timeline-body"><p>Thanks @LeeeeT, can you file a separate issue for the <code>*tuple</code> thing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3170.html">astral-sh/ruff#3170</a> on 2023-02-23 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-23 13:39</div>
+            <div class="timeline-body"><p>@LeeeeT - Nevermind, I filed as https://github.com/charliermarsh/ruff/issues/3170. <code>ExceptionGroup</code> was fixed via #3167.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LeeeeT">@LeeeeT</a> on 2023-02-23 13:44</div>
+            <div class="timeline-body"><p>Thank you for fixing it so quickly! ❤️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6078.html">astral-sh/ruff#6078</a> on 2023-07-27 16:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

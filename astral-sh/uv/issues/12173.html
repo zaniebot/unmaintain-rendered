@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`venv` module does not work on when invoked via a symlink to a `uv`-installed Python - astral-sh/uv #12173</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`venv` module does not work on when invoked via a symlink to a `uv`-installed Python</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/12173">#12173</a>
+        opened by <a href="https://github.com/pganssle">@pganssle</a>
+        on 2025-03-14 19:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pganssle">@pganssle</a> on 2025-03-14 19:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If I do the following:</p>
+<pre><code>tmpdir=$(mktemp -d)
+cd $tmpdir
+uv python install 3.13.2  # Version doesn't matter here
+ln -s ~/.local/share/uv/python/cpython-3.13.2-linux-x86_64-gnu/bin/python3.13 python
+./python -m venv venv
+</code></pre>
+<p>The command fails with:</p>
+<blockquote>
+<p>Error: Command '['/tmp/tmp.ATu00koNaI/venv/bin/python', '-m', 'ensurepip', '--upgrade', '--default-pip']' returned non-zero exit status 1.</p>
+</blockquote>
+<p>Invoking the python interpreter by its full path works just fine.</p>
+<p>Doing the same thing with a <code>pyenv</code>-installed Python works as well, so this seems to be <code>uv</code>-specific.</p>
+<p>Possbly releated is #8879. The title of <a href="https://github.com/astral-sh/python-build-standalone/issues/380">this issue</a> seems similar, but the reproducer makes it seem like it's something else, and it breaks in a different way.</p>
+<h3>Platform</h3>
+<p>Linux</p>
+<h3>Version</h3>
+<p>0.5.29</p>
+<h3>Python version</h3>
+<p>3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @pganssle on 2025-03-14 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-14 19:15</div>
+            <div class="timeline-body"><p>I can confirm that this one of those bugs around PYTHONHOME:</p>
+<pre><code>$ cat venv/pyvenv.cfg 
+home = /tmp/tmp.WlJ3dJqgNI
+include-system-site-packages = false
+version = 3.13.0
+executable = /home/konsti/.local/share/uv/python/cpython-3.13.0-linux-x86_64-gnu/bin/python3.13
+command = /tmp/tmp.WlJ3dJqgNI/python -m venv /tmp/tmp.WlJ3dJqgNI/venv
+</code></pre>
+<p>uv correctly resolves the Python's home, so I count this as another case of https://github.com/astral-sh/python-build-standalone/issues/380:</p>
+<pre><code>$ uv venv -p ./python uv-venv
+$ cat uv-venv/pyvenv.cfg 
+home = /home/konsti/.local/share/uv/python/cpython-3.13.0-linux-x86_64-gnu/bin
+implementation = CPython
+uv = 0.6.6
+version_info = 3.13.0
+include-system-site-packages = false
+</code></pre>
+<p>Note that the <code>home</code> key is also incorrect for apt-installed system Python, though the system Python works anyway (I think it because it knows its PYTHONHOME from being compiled in):</p>
+<pre><code>$ ln -s /usr/bin/python usr-python
+$ ./usr-python -m venv usr-venv
+$ cat usr-venv/pyvenv.cfg
+home = /tmp/tmp.WlJ3dJqgNI
+include-system-site-packages = false
+version = 3.12.3
+executable = /usr/bin/python3.12
+command = /tmp/tmp.WlJ3dJqgNI/usr-python -m venv /tmp/tmp.WlJ3dJqgNI/usr-venv
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-03-21 18:59</div>
+            <div class="timeline-body"><p>Here's a reproducer for <code>uvx cibuildwheel</code>:</p>
+<pre><code class="language-console">$ docker run --rm -it ubuntu:24.10
+# apt update &amp;&amp; apt install -y curl git
+# curl -LsSf https://astral.sh/uv/install.sh | sh
+# source $HOME/.local/bin/env
+# uv python install 3.12
+# git clone https://github.com/scikit-hep/boost-histogram
+# cd boost-histogram
+# uvx cibuildwheel --only cp312-pyodide_wasm32
+
+     _ _       _ _   _       _           _
+ ___|_| |_ _ _|_| |_| |_ _ _| |_ ___ ___| |
+|  _| | . | | | | | . | | | |   | -_| -_| |
+|___|_|___|___|_|_|___|_____|_|_|___|___|_|
+
+cibuildwheel version 2.23.1
+
+Build options:
+  platform: pyodide
+  allow_empty: False
+  architectures: wasm32
+  build_selector:
+    build_config: cp312-pyodide_wasm32
+    skip_config:
+    requires_python: &gt;=3.8
+    enable: ['cpython-freethreading', 'cpython-prerelease', 'pypy']
+  output_dir: /boost-histogram/wheelhouse
+  package_dir: /boost-histogram
+  test_selector:
+    skip_config: cp*-musllinux_* cp313t-*win* pp311-*
+  before_all:
+  before_build:
+  before_test:
+  build_frontend:
+    *: build[uv]
+    cp312-pyodide_wasm32:
+      name: build
+      args: ['--exports', 'whole_archive']
+  build_verbosity: 0
+  config_settings:
+  container_engine: docker
+  dependency_constraints: pinned
+  environment:
+    PIP_ONLY_BINARY=&quot;numpy&quot;
+    PIP_PREFER_BINARY=&quot;1&quot;
+  manylinux_images: None
+  musllinux_images: None
+  repair_command:
+  test_command:
+    *: pytest -n auto --benchmark-disable {project}/tests
+    cp312-pyodide_wasm32: pytest --benchmark-disable {project}/tests
+  test_extras:
+  test_groups:
+    test
+  test_requires:
+    cloudpickle
+    hypothesis&gt;=6.0
+    pytest-benchmark
+    pytest&gt;=6.0
+    pytest-xdist
+
+Cache folder: /root/.cache/cibuildwheel
+
+Here we go!
+
+
+Building cp312-pyodide_wasm32 wheel
+CPython 3.12 Pyodide
+
+Setting up build environment...
+
++ Download https://github.com/pypa/get-virtualenv/blob/20.29.3/public/virtualenv.pyz?raw=true to /root/.cache/cibuildwheel/virtualenv-20.29.3.pyz
++ /root/.cache/uv/archive-v0/m8zF1t0bWCOV1lDOploP5/bin/python -sS /root/.cache/cibuildwheel/virtualenv-20.29.3.pyz --activators= --no-periodic-update --pip=embed --no-setuptools --no-wheel --python /root/.cache/uv/archive-v0/m8zF1t0bWCOV1lDOploP5/bin/python /tmp/cibw-run-zmv0cabc/cp312-pyodide_wasm32/build/venv
+created virtual environment CPython3.12.9.final.0-64 in 259ms
+  creator CPython3Posix(dest=/tmp/cibw-run-zmv0cabc/cp312-pyodide_wasm32/build/venv, clear=False, no_vcs_ignore=False, global=False)
+  seeder FromAppData(download=False, pip=embed, via=copy, app_data_dir=/root/.local/share/virtualenv)
+    added seed packages: pip==25.0.1
++ python -m pip install --upgrade pip -c /root/.cache/uv/archive-v0/m8zF1t0bWCOV1lDOploP5/lib/python3.12/site-packages/cibuildwheel/resources/constraints-pyodide312.txt
+Could not find platform independent libraries &lt;prefix&gt;
+Could not find platform dependent libraries &lt;exec_prefix&gt;
+Python path configuration:
+  PYTHONHOME = (not set)
+  PYTHONPATH = (not set)
+  program name = '/tmp/cibw-run-zmv0cabc/cp312-pyodide_wasm32/build/venv/bin/python'
+  isolated = 0
+  environment = 1
+  user site = 1
+  safe_path = 0
+  import site = 1
+  is in build tree = 0
+  stdlib dir = '/install/lib/python3.12'
+  sys._base_executable = '/root/.local/share/uv/python/cpython-3.12.9-linux-x86_64-gnu/bin/python3.12'
+  sys.base_prefix = '/install'
+  sys.base_exec_prefix = '/install'
+  sys.platlibdir = 'lib'
+  sys.executable = '/tmp/cibw-run-zmv0cabc/cp312-pyodide_wasm32/build/venv/bin/python'
+  sys.prefix = '/install'
+  sys.exec_prefix = '/install'
+  sys.path = [
+    '/install/lib/python312.zip',
+    '/install/lib/python3.12',
+    '/install/lib/python3.12/lib-dynload',
+  ]
+Fatal Python error: init_fs_encoding: failed to get the Python codec of the filesystem encoding
+Python runtime state: core initialized
+ModuleNotFoundError: No module named 'encodings'
+
+Current thread 0x00007f8c21d3c740 (most recent call first):
+  &lt;no Python frame&gt;
+Traceback (most recent call last):
+  File &quot;/root/.cache/uv/archive-v0/m8zF1t0bWCOV1lDOploP5/bin/cibuildwheel&quot;, line 12, in &lt;module&gt;
+    sys.exit(main())
+             ^^^^^^
+  File &quot;/root/.cache/uv/archive-v0/m8zF1t0bWCOV1lDOploP5/lib/python3.12/site-packages/cibuildwheel/__main__.py&quot;, line 49, in main
+    main_inner(global_options)
+  File &quot;/root/.cache/uv/archive-v0/m8zF1t0bWCOV1lDOploP5/lib/python3.12/site-packages/cibuildwheel/__main__.py&quot;, line 184, in main_inner
+    build_in_directory(args)
+  File &quot;/root/.cache/uv/archive-v0/m8zF1t0bWCOV1lDOploP5/lib/python3.12/site-packages/cibuildwheel/__main__.py&quot;, line 351, in build_in_directory
+    platform_module.build(options, tmp_path)
+  File &quot;/root/.cache/uv/archive-v0/m8zF1t0bWCOV1lDOploP5/lib/python3.12/site-packages/cibuildwheel/pyodide.py&quot;, line 244, in build
+    env = setup_python(
+          ^^^^^^^^^^^^^
+  File &quot;/root/.cache/uv/archive-v0/m8zF1t0bWCOV1lDOploP5/lib/python3.12/site-packages/cibuildwheel/pyodide.py&quot;, line 131, in setup_python
+    call(
+  File &quot;/root/.cache/uv/archive-v0/m8zF1t0bWCOV1lDOploP5/lib/python3.12/site-packages/cibuildwheel/util.py&quot;, line 154, in call
+    result = subprocess.run(
+             ^^^^^^^^^^^^^^^
+  File &quot;/root/.local/share/uv/python/cpython-3.12.9-linux-x86_64-gnu/lib/python3.12/subprocess.py&quot;, line 573, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/cibw-run-zmv0cabc/cp312-pyodide_wasm32/build/venv/bin/python', '-m', 'pip', 'install', '--upgrade', 'pip', '-c', '/root/.cache/uv/archive-v0/m8zF1t0bWCOV1lDOploP5/lib/python3.12/site-packages/cibuildwheel/resources/constraints-pyodide312.txt']' returned non-zero exit status 1.
+</code></pre>
+<p>https://github.com/pypa/cibuildwheel/issues/2327</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../datatractor/beam/issues/17.html">datatractor/beam#17</a> on 2025-04-08 09:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../VOICEVOX/voicevox_engine/pulls/1616.html">VOICEVOX/voicevox_engine#1616</a> on 2025-04-15 09:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @geofft by @geofft on 2025-07-28 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16411.html">astral-sh/uv#16411</a> on 2025-10-22 17:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

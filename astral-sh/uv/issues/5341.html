@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv add` does not validate dependency range when source is present - astral-sh/uv #5341</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv add` does not validate dependency range when source is present</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/5341">#5341</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-07-23 15:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-23 15:56</div>
+            <div class="timeline-body"><p>e.g. the following fails</p>
+<pre><code>❯ uv add 'httpx&gt;9999'
+warning: `uv add` is experimental and may change without warning
+warning: No `requires-python` field found in the workspace. Defaulting to `&gt;=3.12`.
+error: Because only httpx&lt;=9999 is available and example==0.1.0 depends on httpx&gt;9999, we can conclude that example==0.1.0 cannot be used.
+And because only example==0.1.0 is available and you require example, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>but this does not</p>
+<pre><code>❯ uv add git+https://github.com/encode/httpx
+warning: `uv add` is experimental and may change without warning
+ Updated https://github.com/encode/httpx (beb501f)
+warning: No `requires-python` field found in the workspace. Defaulting to `&gt;=3.12`.
+⠙ Resolving dependencies...                                                                                                                              warning: `uv.sources` is experimental and may change without warning
+ Updated https://github.com/encode/httpx (beb501f)
+Resolved 8 packages in 373ms
+   Built example @ file:///Users/zb/workspace/example
+Prepared 1 package in 390ms
+Uninstalled 1 package in 0.44ms
+Installed 1 package in 0.92ms
+ - example==0.1.0 (from file:///Users/zb/workspace/example)
+ + example==0.1.0 (from file:///Users/zb/workspace/example)
+
+❯ uv add 'httpx&gt;9999'
+warning: `uv add` is experimental and may change without warning
+warning: No `requires-python` field found in the workspace. Defaulting to `&gt;=3.12`.
+⠙ Resolving dependencies...                                                                                                                              warning: `uv.sources` is experimental and may change without warning
+Resolved 8 packages in 29ms
+   Built example @ file:///Users/zb/workspace/example
+Prepared 1 package in 429ms
+Uninstalled 1 package in 0.34ms
+Installed 1 package in 0.89ms
+ - example==0.1.0 (from file:///Users/zb/workspace/example)
+ + example==0.1.0 (from file:///Users/zb/workspace/example)
+</code></pre>
+<p>I'm guessing this is somewhat intentional, but seems like a footgun?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-07-23 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 15:57</div>
+            <div class="timeline-body"><p>I think this is just https://github.com/astral-sh/uv/issues/4604.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 16:04</div>
+            <div class="timeline-body"><p>We should probably (1) preserve the specifier, and (2) error if the specifier is a URL and sources is set. Can you merge with #4604 and #4603 if correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-23 16:09</div>
+            <div class="timeline-body"><p>Thanks for the refs!</p>
+<p>I think it's a little different than #4604, though the fix for #4604 may resolve this. #4604 / #4603 are checking for coherence between the resolved source and the PEP 508 dependency. Here, I'm complaining that the PEP 508 dependency is not validated <em>independently</em> of the source. The resolution without sources needs to be valid to publish the package.</p>
+<p>Do you think we should close in favor of those still?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 16:10</div>
+            <div class="timeline-body"><p>I think https://github.com/astral-sh/uv/issues/4604 is the same, right? It's saying that we should validate that the source matches the PEP 508 dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-23 16:12</div>
+            <div class="timeline-body"><p>#4604 says &quot;resolve the source, get its version, check if it is contained in the PEP 508 dependency&quot;</p>
+<p>Here, I say: &quot;can we resolve the PEP 508 dependency without the source&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-23 16:13</div>
+            <div class="timeline-body"><p>This seems like it would be a warning on add whereas #4604 would be an error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 16:45</div>
+            <div class="timeline-body"><p>Ok, we can just leave them both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5383.html">astral-sh/uv#5383</a> on 2024-07-24 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @zanieb on 2024-08-20 18:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

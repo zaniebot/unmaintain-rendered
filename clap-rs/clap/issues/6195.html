@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect error message when using the help subcommand with an argument - clap-rs/clap #6195</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect error message when using the help subcommand with an argument</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/6195">#6195</a>
+        opened by <a href="https://github.com/Korne127">@Korne127</a>
+        on 2025-12-11 23:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Korne127">@Korne127</a> on 2025-12-11 23:53</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.91.1 (ed61e7d7e 2025-11-07)</p>
+<h3>Clap Version</h3>
+<p>4.5.53</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">#[derive(Parser)]
+#[command()]
+enum CommandExample {
+	TestCommand
+}
+
+pub(crate) fn main() {
+	CommandExample::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run -- help abc</p>
+<h3>Actual Behaviour</h3>
+<p>error: unrecognized subcommand 'abc'</p>
+<p>Usage: cli <COMMAND></p>
+<h3>Expected Behaviour</h3>
+<p>Either displaying the normal help command like <code>cargo run -- help</code> would do:</p>
+<blockquote>
+<p>Usage: cli <COMMAND></p>
+<p>Commands:
+test-command<br />
+help          Print this message or the help of the given subcommand(s)</p>
+<p>Options:
+-h, --help  Print help</p>
+</blockquote>
+<p>Or displaying an accurate error message that the argument is unexpected like <code>cargo run -- test-command abc</code> would do:</p>
+<blockquote>
+<p>error: unexpected argument 'abc' found</p>
+<p>Usage: cli help</p>
+</blockquote>
+<h3>Additional Context</h3>
+<p>The given error message is inaccurate as this abc isn't a subcommand but an argument for the help subcommand (that shouldn't exist). I assume this is an edge case that hasn't been tested.</p>
+<h3>Debug Output</h3>
+<ul>
+<li></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @Korne127 on 2025-12-11 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @Korne127 on 2025-12-11 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-12-12 13:52</div>
+            <div class="timeline-body"><p>So I recreated your example</p>
+<pre><code class="language-rust">#!/usr/env nargo
+---
+[dependencies]
+clap = { version = &quot;4&quot;, features = [&quot;derive&quot;] }
+---
+
+use clap::Parser;
+
+#[derive(Parser)]
+#[command()]
+enum CommandExample {
+    TestCommand,
+}
+
+pub(crate) fn main() {
+    CommandExample::parse();
+}
+</code></pre>
+<p>And ran</p>
+<pre><code class="language-console">$ nargo clap-6195.rs help help
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.07s
+     Running `/home/epage/.cargo/build/7c/e90215a74bc230/target/debug/clap-6195 help help`
+Print this message or the help of the given subcommand(s)
+
+Usage: clap-6195.rs help [COMMAND]...
+
+Arguments:
+  [COMMAND]...  Print help for the subcommand(s)
+</code></pre>
+<p>It reports that anything passed to <code>help</code> is a subcommand.</p>
+<p>Is there a reason you expected it to be an argument and not a subcommand?  And a reason that persisted even after it said it was a subcommand?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

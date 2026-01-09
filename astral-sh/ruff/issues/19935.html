@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`is_empty_f_string` causes false positives in PT015 - astral-sh/ruff #19935</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`is_empty_f_string` causes false positives in PT015</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19935">#19935</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-08-16 12:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-08-16 12:54</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://github.com/astral-sh/ruff/blob/0.12.9/crates/ruff_python_ast/src/helpers.rs#L1409"><code>is_empty_f_string</code></a> categorizes some f-string interpolations as empty strings which are non-empty strings, causing false positives in <a href="https://docs.astral.sh/ruff/rules/pytest-assert-always-false/"><code>pytest-assert-always-false</code> (PT015)</a>. <a href="https://play.ruff.rs/8d4dd448-d037-46ff-9a4b-e73fca1e7153">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;pt015.py &lt;&lt;'# EOF'
+assert f&quot;{b&quot;&quot;}&quot;
+assert f&quot;{&quot;&quot;=}&quot;
+assert f&quot;{&quot;&quot;!a}&quot;
+assert f&quot;{&quot;&quot;!r}&quot;
+assert f&quot;{&quot;&quot;:1}&quot;
+# EOF
+
+$ python pt015.py; echo $?
+0
+
+$ ruff --isolated check pt015.py --select PT015 --output-format concise -q
+pt015.py:1:1: PT015 Assertion always fails, replace with `pytest.fail()`
+pt015.py:2:1: PT015 Assertion always fails, replace with `pytest.fail()`
+pt015.py:3:1: PT015 Assertion always fails, replace with `pytest.fail()`
+pt015.py:4:1: PT015 Assertion always fails, replace with `pytest.fail()`
+pt015.py:5:1: PT015 Assertion always fails, replace with `pytest.fail()`
+
+$ sed 's/assert \(.*\)/print(\1 + f&quot;: {len(\1)}&quot;)/' pt015.py | python
+b'': 3
+&quot;&quot;='': 5
+'': 2
+'': 2
+ : 1
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.9 (ef422460d 2025-08-14)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-18 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-08-18 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @ntBre on 2025-08-18 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20152.html">astral-sh/ruff#20152</a> on 2025-08-29 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-08-29 22:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

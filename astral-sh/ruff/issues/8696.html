@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D301 breaks Click docstrings that use the \b escape sequence - astral-sh/ruff #8696</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>D301 breaks Click docstrings that use the \b escape sequence</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8696">#8696</a>
+        opened by <a href="https://github.com/ThiefMaster">@ThiefMaster</a>
+        on 2023-11-15 15:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2023-11-15 15:58</div>
+            <div class="timeline-body"><p>Click uses <code>\b</code> to prevent re-wrapping: https://click.palletsprojects.com/en/8.1.x/documentation/#preventing-rewrapping</p>
+<p>Maybe this rule could detect if it's a function docstring that has a <code>@click.*</code> decorator on it, or have a setting that whitelists certain escape sequences.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2023-11-15 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/deadnews">@deadnews</a> on 2024-02-19 19:20</div>
+            <div class="timeline-body"><p><code>click</code> docs reference:</p>
+<p><code>\b</code>:</p>
+<blockquote>
+<p>https://click.palletsprojects.com/en/8.1.x/documentation/#preventing-rewrapping
+Rewrapping can be disabled on a per-paragraph basis by adding a line with solely the <code>\b</code> escape marker in it.</p>
+</blockquote>
+<p><code>\f</code>:</p>
+<blockquote>
+<p>https://click.palletsprojects.com/en/8.1.x/documentation/#truncating-help-texts
+You can use the <code>\f</code> escape marker to have Click truncate the help text after the marker.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-21 07:42</div>
+            <div class="timeline-body"><p>There's <a href="https://docs.astral.sh/ruff/settings/#lint_pydocstyle_ignore-decorators"><code>ignore-decorators</code></a> but that requires the fully qualified name and won't work with globs. For now you could try the following config which, as per my limited knowledge of <code>click</code>, should be enough:</p>
+<pre><code class="language-toml">[tool.ruff.lint.pydocstyle]
+ignore-decorators = [
+	&quot;click.group&quot;,
+	&quot;click.command&quot;,
+	&quot;click.argument&quot;,
+	&quot;click.option&quot;,
+]
+</code></pre>
+<p>Playground: https://play.ruff.rs/2a18cbd2-c90a-4416-b19c-f969e688777b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/deadnews">@deadnews</a> on 2024-02-21 08:32</div>
+            <div class="timeline-body"><p>@dhruvmanila
+But this ignores docstrings completely.
+Specific <code># noqa: D301</code> is better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cas--">@cas--</a> on 2025-06-26 13:38</div>
+            <div class="timeline-body"><p>For our project all commands are in files named <code>cli.py</code> so setting per-file ignore in config is more useful:</p>
+<pre><code class="language-toml">[tool.ruff.lint.per-file-ignores]
+&quot;cli.py&quot; = [&quot;D301&quot;] # Ignore escape-sequence-in-docstring for click markers
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

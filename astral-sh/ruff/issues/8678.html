@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏖️  Black 2024 Preview Style - astral-sh/ruff #8678</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>🏖️  Black 2024 Preview Style</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8678">#8678</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-11-14 17:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2023-11-14 17:03</div>
+            <div class="timeline-body"><p>Black is planning to stabilize a subset of the preview style as stable style for 2024 (https://github.com/psf/black/issues/4042). Ruff implements a subset of the current preview style, and subsequently a subset of the planned stable style.</p>
+<p>For each of the unchecked items below, we need to port the test case to ruff, implement the changed behavior under the preview flag and tick off the box below. For two of the changes, we will need to introduce target version support to the formatter (same as in the linter).</p>
+<h2>Shipped in Ruff Stable</h2>
+<p>These are mainly bug fixes to Black that we didn't inherit or shipping them right away simplified the implementation and are uncontroversial.</p>
+<ul>
+<li>[x] <a href="https://github.com/psf/black/pull/3916"><code>respect_magic_trailing_comma_in_return_type</code></a></li>
+<li>[x] <a href="https://github.com/psf/black/pull/3393"><code>add_trailing_comma_consistently</code></a></li>
+<li>[x] <a href="https://github.com/psf/black/pull/3209"><code>skip_magic_trailing_comma_in_subscript</code></a>: Requires <code>--skip-magic-trailing-comma</code></li>
+<li>[x] <a href="https://github.com/psf/black/pull/3862"><code>blank_line_between_nested_and_def_stub_file</code></a>: Only applies to stub files (<code>.pyi</code>)</li>
+<li>[x] <a href="https://github.com/psf/black/pull/3947"><code>accept_raw_docstrings</code></a></li>
+<li>[x] <a href="https://github.com/psf/black/pull/4024"><code>long_case_block_line_splitting</code></a>, although our formatting may not be a 100% correct. See https://github.com/astral-sh/ruff/issues/6933</li>
+<li>[x] #8887</li>
+</ul>
+<h2>Likely to be stabilized</h2>
+<p>Styles that with a high likelihood to be promoted to Black stable and are part of the 2024 alpha release.</p>
+<ul>
+<li>[x] #8888</li>
+<li>[x] #8889</li>
+<li>[x] #8890</li>
+<li>[x] #8891</li>
+<li>[x] #8892</li>
+<li>[x] https://github.com/astral-sh/ruff/issues/8357</li>
+<li>[x] https://github.com/astral-sh/ruff/issues/6975</li>
+<li>[x] #8893</li>
+<li>[x] https://github.com/astral-sh/ruff/issues/8894</li>
+<li>[x] https://github.com/astral-sh/ruff/issues/7995</li>
+<li>[x] https://github.com/astral-sh/ruff/issues/8895</li>
+<li>[x] #8904</li>
+<li>[x] #8938</li>
+</ul>
+<h2>Not uncontroversial preview features that are likely be stabilized</h2>
+<ul>
+<li>[x] https://github.com/astral-sh/ruff/issues/8896</li>
+<li>[x] https://github.com/astral-sh/ruff/issues/8897</li>
+<li>[x] https://github.com/astral-sh/ruff/issues/8438</li>
+</ul>
+<h2>Unlikely to be stabilized in 2024</h2>
+<ul>
+<li>[ ] https://github.com/astral-sh/ruff/issues/6936</li>
+<li>[x] <a href="https://github.com/psf/black/issues/3568"><code>hex_codes_in_unicode_sequences</code></a> (<a href="https://github.com/psf/black/pull/2916">PR</a>). More string normalization @MichaReiser</li>
+<li>[x] https://github.com/astral-sh/ruff/issues/8279</li>
+</ul>
+<h2>Gather feedback</h2>
+<ul>
+<li>[x] #9241</li>
+<li>[x] #9458</li>
+</ul>
+<h2>Notes</h2>
+<p>We might have to remove some preview styles from ruff, but removing the preview clause is enough that we can delay until black's changes are finalized</p>
+<details>
+<summary>Reference test file</summary>
+
+<pre><code class="language-python"># ERR dummy_implementations (https://github.com/psf/black/pull/3796)
+def dummy(a): ...
+def other(b): ...
+
+
+@overload
+def a(arg: int) -&gt; int: ...
+@overload
+def a(arg: str) -&gt; str: ...
+@overload
+def a(arg: object) -&gt; NoReturn: ...
+def a(arg: Union[int, str, object]) -&gt; Union[int, str]:
+    if not isinstance(arg, (int, str)):
+        raise TypeError
+    return arg
+
+class Proto(Protocol):
+    def foo(self, a: int) -&gt; int:
+        ...
+
+    def bar(self, b: str) -&gt; str: ...
+    def baz(self, c: bytes) -&gt; str:
+        ...
+
+# ERR prefer_splitting_right_hand_side_of_assignments (https://github.com/psf/black/pull/3368)
+first_item, second_item = (
+    some_looooooooong_module.some_looooooooooooooong_function_name(
+        first_argument, second_argument, third_argument
+    )
+)
+
+some_dict[&quot;with_a_long_key&quot;] = (
+    some_looooooooong_module.some_looooooooooooooong_function_name(
+        first_argument, second_argument, third_argument
+    )
+)
+
+# Make sure it works when the RHS only has one pair of (optional) parens.
+first_item, second_item = (
+    some_looooooooong_module.SomeClass.some_looooooooooooooong_variable_name
+)
+
+some_dict[&quot;with_a_long_key&quot;] = (
+    some_looooooooong_module.SomeClass.some_looooooooooooooong_variable_name
+)
+
+# Make sure chaining assignments work.
+first_item, second_item, third_item, forth_item = m[&quot;everything&quot;] = (
+    some_looooooooong_module.some_looooooooooooooong_function_name(
+        first_argument, second_argument, third_argument
+    )
+)
+
+# ERR(https://github.com/psf/black/issues/3568) hex_codes_in_unicode_sequences (https://github.com/psf/black/pull/2916)
+x = &quot;\x1F&quot;
+x = &quot;\\x1B&quot;
+x = &quot;\\\x1B&quot;
+x = &quot;\U0001F60E&quot;
+x = &quot;\u0001F60E&quot;
+x = r&quot;\u0001F60E&quot;
+x = &quot;don't format me&quot;
+x = &quot;\xA3&quot;
+x = &quot;\u2717&quot;
+x = &quot;\uFaCe&quot;
+x = &quot;\N{ox}\N{OX}&quot;
+x = &quot;\N{lAtIn smaLL letteR x}&quot;
+x = &quot;\N{CYRILLIC small LETTER BYELORUSSIAN-UKRAINIAN I}&quot;
+x = b&quot;\x1Fdon't byte&quot;
+x = rb&quot;\x1Fdon't format&quot;
+
+# ERR allow_empty_first_line_before_new_block_or_comment (https://github.com/psf/black/pull/3967)
+def foo():
+    &quot;&quot;&quot;
+    Docstring
+    &quot;&quot;&quot;
+
+    # Here we go
+    if x:
+
+        # This is also now fine
+        a = 123
+
+    else:
+        # But not necessary
+        a = 123
+
+    if y:
+
+        while True:
+
+            &quot;&quot;&quot;
+            Long comment here
+            &quot;&quot;&quot;
+            a = 123
+
+    if z:
+
+        for _ in range(100):
+            a = 123
+    else:
+
+        try:
+
+            # this should be ok
+            a = 123
+        except:
+
+            &quot;&quot;&quot;also this&quot;&quot;&quot;
+            a = 123
+
+
+def bar():
+
+    if x:
+        a = 123
+
+
+def baz():
+
+    # OK
+    if x:
+        a = 123
+
+# ERR parenthesize_long_type_hints (https://github.com/psf/black/pull/3899)
+# This has always worked
+z= Loooooooooooooooooooooooong | Loooooooooooooooooooooooong | Loooooooooooooooooooooooong | Loooooooooooooooooooooooong
+
+# &quot;AnnAssign&quot;s now also work
+z: Loooooooooooooooooooooooong | Loooooooooooooooooooooooong | Loooooooooooooooooooooooong | Loooooooooooooooooooooooong
+z: (Short
+    | Short2
+    | Short3
+    | Short4)
+z: (int)
+z: ((int))
+
+
+z: Loooooooooooooooooooooooong | Loooooooooooooooooooooooong | Loooooooooooooooooooooooong | Loooooooooooooooooooooooong = 7
+z: (Short
+    | Short2
+    | Short3
+    | Short4) = 8
+z: (int) = 2.3
+z: ((int)) = foo()
+
+# OK module_docstring_newlines (https://github.com/psf/black/pull/3932)
+# [Can't do this here since it needs to be the first item in a file, but it's done: https://github.com/astral-sh/ruff/issues/7995]
+
+# OK: respect_magic_trailing_comma_in_return_type (https://github.com/psf/black/pull/3916)
+def foo(a,b) -&gt; tuple[int, int, int,]:
+    return 2
+
+# ERR: no_blank_line_before_class_docstring (https://github.com/psf/black/pull/3692)
+class LineBeforeDocstring:
+
+    &quot;&quot;&quot;Please move me up&quot;&quot;&quot;
+
+# ERR(--target-version py39, see also improved_async_statements_handling): wrap_multiple_context_managers_in_parens (https://github.com/psf/black/pull/3489)
+with \
+    make_context_manager1() as cm1, \
+    make_context_manager2() as cm2, \
+    make_context_manager3() as cm3, \
+    make_context_manager4() as cm4 \
+    :
+    pass
+
+# OK: fix_power_op_line_length (https://github.com/psf/black/pull/3942)
+a = 1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1
+b = 1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1**1
+c = 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1 ** 1
+d = 1**1 ** 1**1 ** 1**1 ** 1**1 ** 1**1**1 ** 1 ** 1**1 ** 1**1**1**1**1 ** 1 ** 1**1**1 **1**1** 1 ** 1 ** 1
+e = 𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟
+f = 𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟**𨉟
+
+a = 1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0
+b = 1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0**1.0
+c = 1.0 ** 1.0 ** 1.0 ** 1.0 ** 1.0 ** 1.0 ** 1.0 ** 1.0 ** 1.0 ** 1.0 ** 1.0 ** 1.0 ** 1.0 ** 1.0 ** 1.0 ** 1.0 ** 1.0
+d = 1.0**1.0 ** 1.0**1.0 ** 1.0**1.0 ** 1.0**1.0 ** 1.0**1.0**1.0 ** 1.0 ** 1.0**1.0 ** 1.0**1.0**1.0
+
+# OK: add_trailing_comma_consistently (https://github.com/psf/black/pull/3393)
+e = {
+    &quot;a&quot;: fun(msg, &quot;ts&quot;),
+    &quot;longggggggggggggggid&quot;: ...,
+    &quot;longgggggggggggggggggggkey&quot;: ..., &quot;created&quot;: ...
+    # &quot;longkey&quot;: ...
+}
+f = [
+    arg1,
+    arg2,
+    arg3, arg4
+    # comment
+]
+g = (
+    arg1,
+    arg2,
+    arg3, arg4
+    # comment
+)
+h = {
+    arg1,
+    arg2,
+    arg3, arg4
+    # comment
+}
+
+# OK(--skip-magic-trailing-comma) skip_magic_trailing_comma_in_subscript (https://github.com/psf/black/pull/3209)
+# We should not remove the trailing comma in a single-element subscript.
+a: tuple[int,]
+b = tuple[int,]
+
+# But commas in multiple element subscripts should be removed.
+c: tuple[int, int,]
+d = tuple[int, int,]
+
+# Remove commas for non-subscripts.
+small_list = [1,]
+list_of_types = [tuple[int,],]
+small_set = {1,}
+set_of_types = {tuple[int,],}
+
+# Except single element tuples
+small_tuple = (1,)
+
+# ERR(.pyi) blank_line_after_nested_stub_class (https://github.com/psf/black/pull/3564)
+class Outer:
+    class InnerStub: ...
+    outer_attr_after_inner_stub: int
+    class Inner:
+        inner_attr: int
+    outer_attr: int
+
+# OK blank_line_between_nested_and_def_stub_file (https://github.com/psf/black/pull/3862)
+if sys.version_info &gt; (3, 7):
+    class Nested1:
+        assignment = 1
+        def function_definition(self): ...
+    def f1(self) -&gt; str: ...
+    class Nested2:
+        def function_definition(self): ...
+        assignment = 1
+    def f2(self) -&gt; str: ...
+
+if sys.version_info &gt; (3, 7):
+    def nested1():
+        assignment = 1
+        def function_definition(self): ...
+    def f1(self) -&gt; str: ...
+    def nested2():
+        def function_definition(self): ...
+        assignment = 1
+    def f2(self) -&gt; str: ...
+
+# OK accept_raw_docstrings (https://github.com/psf/black/pull/3947)
+class C:
+    r&quot;&quot;&quot;Raw&quot;&quot;&quot;
+
+# OK long_case_block_line_splitting (https://github.com/psf/black/pull/4024)
+match x:
+    case &quot;abcd&quot; | &quot;abcd&quot; | &quot;abcd&quot; :
+        pass
+    case &quot;abcd&quot; | &quot;abcd&quot; | &quot;abcd&quot; | &quot;abcd&quot; | &quot;abcd&quot; | &quot;abcd&quot; | &quot;abcd&quot; | &quot;abcd&quot; | &quot;abcd&quot; | &quot;abcd&quot; | &quot;abcd&quot; | &quot;abcd&quot; | &quot;abcd&quot; | &quot;abcd&quot; | &quot;abcd&quot;:
+        pass
+    case xxxxxxxxxxxxxxxxxxxxxxx:
+        pass
+
+match maybe, multiple:
+    case perhaps, 5:
+        pass
+    case perhaps, 6,:
+        pass
+
+
+match more := (than, one), indeed,:
+    case _, (5, 6):
+        pass
+    case [[5], (6)], [7],:
+        pass
+    case _:
+        pass
+
+# ERR(i think we're correct here though) walrus_subscript (https://github.com/psf/black/pull/3823)
+x[(a:=0):]
+x[:(a:=0)]
+x[a:=0]
+x[a := 0]
+x[a := 0, b := 1]
+x[5, b := 0]
+x[a:=0,b:=1]
+
+# ERR(--target-version py39, same as wrap_multiple_context_managers_in_parens effectively) improved_async_statements_handling (https://github.com/psf/black/pull/3609)
+async def func() -&gt; (int):
+    return 0
+
+@decorated
+async def func() -&gt; (int):
+    return 0
+
+async for (item) in async_iter:
+    pass
+
+async def func():
+    async with \
+        make_context_manager1() as cm1, \
+        make_context_manager2() as cm2, \
+        make_context_manager3() as cm3, \
+        make_context_manager4() as cm4 \
+        :
+        pass
+
+    async with some_function(
+        argument1, argument2, argument3=&quot;some_value&quot;
+    ) as some_cm, some_other_function(
+        argument1, argument2, argument3=&quot;some_value&quot;
+    ):
+        pass
+
+# ERR(we have different format) single_line_format_skip_with_multiple_comments (https://github.com/psf/black/pull/3959)
+foo =  123  # fmt: skip # noqa: E501 # pylint
+bar =    (
+    123   ,
+    (        1      +           5      )  # pylint # fmt:skip
+)
+baz = &quot;a&quot;    +   &quot;b&quot;  # pylint; fmt: skip; noqa: E501
+skip_will_not_work =  &quot;a&quot; +  &quot;b&quot;  # pylint fmt:skip
+skip_will_not_work2 =  &quot;a&quot; +  &quot;b&quot;  # some text; fmt:skip happens to be part of it
+
+# ERR parenthesize_conditional_expressions (https://github.com/psf/black/pull/2278)
+long_kwargs_single_line = my_function(
+    foo=&quot;test, this is a sample value&quot;,
+    bar=some_long_value_name_foo_bar_baz if some_boolean_variable else some_fallback_value_foo_bar_baz,
+    baz=&quot;hello, this is a another value&quot;,
+)
+
+multiline_kwargs_indented = my_function(
+    foo=&quot;test, this is a sample value&quot;,
+    bar=some_long_value_name_foo_bar_baz
+    if some_boolean_variable
+    else some_fallback_value_foo_bar_baz,
+    baz=&quot;hello, this is a another value&quot;,
+)
+
+imploding_kwargs = my_function(
+    foo=&quot;test, this is a sample value&quot;,
+    bar=a
+    if foo
+    else b,
+    baz=&quot;hello, this is a another value&quot;,
+)
+
+imploding_line = (
+    1
+    if 1 + 1 == 2
+    else 0
+)
+
+# ERR wrap_long_dict_values_in_parens (https://github.com/psf/black/pull/3440)
+my_dict = {
+    &quot;something_something&quot;:
+        r&quot;Lorem ipsum dolor sit amet, an sed convenire eloquentiam \t&quot;
+        r&quot;signiferumque, duo ea vocibus consetetur scriptorem. Facer \t&quot;
+        r&quot;signiferumque, duo ea vocibus consetetur scriptorem. Facer \t&quot;,
+}
+
+my_dict = {
+    &quot;a key in my dict&quot;: a_very_long_variable * and_a_very_long_function_call() / 100000.0
+}
+
+my_dict = {
+    &quot;a key in my dict&quot;: a_very_long_variable * and_a_very_long_function_call() * and_another_long_func() / 100000.0
+}
+
+my_dict = {
+    &quot;a key in my dict&quot;: MyClass.some_attribute.first_call().second_call().third_call(some_args=&quot;some value&quot;)
+}
+
+# ERR multiline_string_handling (https://github.com/psf/black/pull/1879)
+textwrap.dedent(
+    &quot;&quot;&quot;\
+    This is a
+    multiline string
+&quot;&quot;&quot;
+)
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-11-14 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../psf/black/issues/3989.html">psf/black#3989</a> on 2023-11-14 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6935.html">astral-sh/ruff#6935</a> on 2023-11-14 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8566.html">astral-sh/ruff#8566</a> on 2023-11-15 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2023-11-27 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8588.html">astral-sh/ruff#8588</a> on 2023-11-27 11:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement the planned 2024 black stable style" to "Black 2024 Preview Style" by @MichaReiser on 2023-11-28 06:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../psf/black/issues/4042.html">psf/black#4042</a> on 2023-11-28 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Black 2024 Preview Style" to "🏖️  Black 2024 Preview Style" by @MichaReiser on 2023-11-29 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2023-11-29 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../lablup/backend.ai/pulls/1771.html">lablup/backend.ai#1771</a> on 2023-12-08 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9241.html">astral-sh/ruff#9241</a> on 2023-12-22 06:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9280.html">astral-sh/ruff#9280</a> on 2023-12-26 04:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9639.html">astral-sh/ruff#9639</a> on 2024-01-25 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Formatter: Stable" by @MichaReiser on 2024-02-14 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.4" by @MichaReiser on 2024-02-14 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5822.html">astral-sh/ruff#5822</a> on 2024-02-16 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10026.html">astral-sh/ruff#10026</a> on 2024-02-18 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-29 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.4.0" by @charliermarsh on 2024-04-12 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11254.html">astral-sh/ruff#11254</a> on 2024-05-03 00:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9745.html">astral-sh/ruff#9745</a> on 2025-02-17 11:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

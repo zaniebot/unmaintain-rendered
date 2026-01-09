@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>please add an option to enable black-like formatting of trailing comments - astral-sh/ruff #8836</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>please add an option to enable black-like formatting of trailing comments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8836">#8836</a>
+        opened by <a href="https://github.com/rpodgorny">@rpodgorny</a>
+        on 2023-11-25 03:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rpodgorny">@rpodgorny</a> on 2023-11-25 03:52</div>
+            <div class="timeline-body"><p>in the section of intentional deviations from black, this is mentioned:</p>
+<p>Expressions with (non-pragma) trailing comments are split more often<a href="https://docs.astral.sh/ruff/formatter/black/#expressions-with-non-pragma-trailing-comments-are-split-more-often">#</a></p>
+<p>please add a way to retain black behaviour. or at least for &quot;task&quot; (TODO, XXX, ...) comments.</p>
+<p>our team usually tries to stick to short trailing comments but one big exception are TODO and FIXME comments which are used as kind of a &quot;conversation&quot; between the submitter and reviewer within the code itself. as such, they tend to be pretty long (containing explanations, questions, etc.) and we are fine with that as they will be ironed out before the final merge.</p>
+<p>ruff constantly reformatting this is kind of anoying for everyone involved and is often a reason to be reluctant to switch from black to ruff.</p>
+<p>please consider an option to leave trailing comments (as long as they start within the line-lenght limit) untouched. that would be the best solution for us. the second best would be to make the formatter honor the &quot;ignore-overlong-task-comments&quot; for the formatter.</p>
+<p>thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-11-27 02:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @MichaReiser on 2023-11-27 02:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-27 02:42</div>
+            <div class="timeline-body"><p>@rpodgorny I understand that moving comments is annoying and we try to minimize the cases where this happens.</p>
+<p>However, the comment placement logic is one of the most complicated parts of the ruff formatter and supporting multiple placement logic would significantly increase complexity. That's why I prefer better understanding your use case and see if we can improve the comment placement overall.</p>
+<p>Could you share a specific example where adding / removing the TODO/FIXME comment changes formatting and how you're ideal formatting would look like?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-29 03:14</div>
+            <div class="timeline-body"><p>I'm closing this because it is out of scope for now. @rpodgorny feel free to re-open if you have a follow up question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-11-29 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rpodgorny">@rpodgorny</a> on 2023-11-29 15:09</div>
+            <div class="timeline-body"><p>i don't really know if i have enough privileges to reopen, but anyway - i can't provide exact code but i've created this example that should show our use case:</p>
+<pre><code>def func(args):
+        code
+        code code code
+
+        # TODO: case 1 - the entire logic in following block needs rework becase such and such. now follows dozen lines of explanation of how such change is meant and how it should be implemented. individual lines do not really matter, the block as a while is commented here. this comment being split automatically to multiple lines is acceptable.
+        block code code
+        block code
+        block code code code
+
+        # this is some very long, possibly multi-line comment explaining what the following block does.
+        code code code
+        code
+        code code
+        code code  # TODO: case 2 - this line's performance is sub-optimal becase such and such. follows a very long explanation how it should be changed. the rest of the block is alright. it's just this line that's to be taken care of. splitting this comment to multiple lines is not acceptable. also, moving this comment to line above is not acceptable as it &quot;lessens&quot; the intent of being local only to this line. splitting and/or moving may be misinterpreted as having the meaning of &quot;rest of block&quot; or something...
+        code
+        code code code
+
+        code
+        code code
+        code code code
+        # TODO: case 3 - drop the rest of this because such and such. if case 2 gets reformatted, there could be confusion with this case.
+        code code code
+        code code
+</code></pre>
+<p>line wrapping in editor ensures all todo items are fully visible. the exact placement of comments carries meaning and any shuffling would be counter-productive.</p>
+<p>...anyway, isn't this exactly what ignore-overlong-task-comments is meant for?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-29 23:58</div>
+            <div class="timeline-body"><p>Thanks for the example. It's somewhat difficult to reason about pseudo code but from what I see case 1 and 3 should not be an issue and I would recommend making case 2 an own line comment as you use for case 1-3.</p>
+<p>But whether that is feasible depends on whether <code>code</code> are separate statements or expressions.</p>
+<p>A concrete example would be helpful to discuss potential improvements. Without, it's too generic to fine tune the comment handling.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

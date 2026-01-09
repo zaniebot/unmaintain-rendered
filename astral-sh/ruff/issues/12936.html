@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISC001 fix can modify octal escape sequences - astral-sh/ruff #12936</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ISC001 fix can modify octal escape sequences</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12936">#12936</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2024-08-16 15:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-08-16 15:44</div>
+            <div class="timeline-body"><p>The fix for ISC001 changes behavior when the first string ends with a one- or two-digit octal escape sequence and the second begins with an octal digit.</p>
+<pre><code class="language-console">$ ruff --version
+ruff 0.6.0
+$ cat isc001.py
+print(&quot;\12&quot;&quot;0&quot;)
+$ python isc001.py
+
+0
+$ ruff check --isolated --select ISC001 isc001.py --fix
+Found 1 error (1 fixed, 0 remaining).
+$ python isc001.py
+P
+</code></pre>
+<p>The least disruptive fix would be to detect this specific situation and pad the escape sequence to three digits. In the above example, that would result in <code>&quot;\0120&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-17 15:01</div>
+            <div class="timeline-body"><p>The reason for this seems to be that CPython seems to process the octal escape <em>before</em> it concatenates the two strings when it parses the source to create the AST:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; import ast
+&gt;&gt;&gt; print(ast.dump(ast.parse(r'&quot;\12&quot; &quot;0&quot;')))
+Module(body=[Expr(value=Constant(value='\n0'))], type_ignores=[])
+&gt;&gt;&gt; print(ast.dump(ast.parse(r'&quot;\120&quot;')))
+Module(body=[Expr(value=Constant(value='P'))], type_ignores=[])
+</code></pre>
+<p>Our AST <a href="https://play.ruff.rs/e13f740a-be5f-443c-8ac4-d48c8142f47c">also understands this</a>, but it seems like the fix for this rule doesn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-08-17 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-08-17 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-08-17 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-20 15:11</div>
+            <div class="timeline-body"><p>Related https://github.com/astral-sh/ruff/issues/12753</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-22 13:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Related #12753</p>
+</blockquote>
+<p>As you suggest there, a quick fix would be to move this rule and <code>UP012</code> to an ast-based check instead of a token-based one. However, since the parser evaluates some escape sequences, this would result in replacing</p>
+<pre><code>&quot;\12&quot; &quot;0&quot;
+</code></pre>
+<p>with</p>
+<pre><code>&quot;\n0&quot;
+</code></pre>
+<p>for example.</p>
+<p>If we instead want to preserve the escape sequence and suggest the fix <code>&quot;\0120&quot;</code>, then we may have to re-implement 'half' of the parsing logic inside this rule (which is fine).</p>
+<p>Is there a preference?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-22 13:30</div>
+            <div class="timeline-body"><p>I'm slightly leaning towards omitting the fix if there's an octal escape (or other escapes). Or is detecting the octal escape equally hard to emitting the right fix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-23 02:46</div>
+            <div class="timeline-body"><p>My guess is that all three options</p>
+<ol>
+<li>detecting octals at the end of the first string and skipping the fix</li>
+<li>having the fix be ast-based (and therefore evaluating the octals prior to concatenating)</li>
+<li>detecting octals at the end of the first string and normalizing the octal before concatenating</li>
+</ol>
+<p>are about the same level of difficulty - none seem too difficult - with option (3) being a tinge fussier than (1) and (2).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-23 04:45</div>
+            <div class="timeline-body"><p>At least for https://github.com/astral-sh/ruff/issues/12753, I think we should avoid omitting the fix if there's an escape sequence.</p>
+<p>I remember talking with @MichaReiser about adding a token flag for strings which suggests that this string / f-string token contains an escape sequence. This flag would be set by the lexer as it's already looking at each character. But, I think it might be a bit difficult because the lexer would directly skip to the ending quote character using <code>memchr</code></p>
+<p>https://github.com/astral-sh/ruff/blob/028cb68cd1131089b620a31ed25a0ab5e1c400b6/crates/ruff_python_parser/src/lexer.rs#L945-L946</p>
+<p>Another option would be to set the flag only on the AST node which should be easier to do because of the <code>StringParser</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/028cb68cd1131089b620a31ed25a0ab5e1c400b6/crates/ruff_python_ast/src/nodes.rs#L1832-L1834</p>
+<p>But, I would prefer if the flag could be added to the <code>TokenFlags</code> instead.</p>
+<p>Another solution might be to move the rule to use the AST where we can access the concatenated value which would make it easier to detect the escape sequence. Once we detect the escape sequence, we can avoid emitting a fix for that string expression.</p>
+<p>https://github.com/astral-sh/ruff/blob/028cb68cd1131089b620a31ed25a0ab5e1c400b6/crates/ruff_python_ast/src/nodes.rs#L1766-L1769</p>
+<p>Curious to hear @MichaReiser's opinion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-24 12:38</div>
+            <div class="timeline-body"><p>I'm leaning towards a local fix in ISC001. It seems simple enough to look at the individual literal elements and search backward. Flagging whether the string contains any escape seems overly aggressive and would remove the fix even when the escape isn't at the end of the string. Migrating to AST rules seems fine to me, but only if we are okay with the fix replacing other escapes (which I think it should not).</p>
+<p>We only need to be careful about that <code>\\01</code> is not an octal escape but <code>\\\01</code> is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-26 04:57</div>
+            <div class="timeline-body"><p>Yeah, I think implementing a local fix seems reasonable to me. What do you think? @dylwil3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-26 05:08</div>
+            <div class="timeline-body"><p>Sounds good, I'll give it a shot!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13118.html">astral-sh/ruff#13118</a> on 2024-08-26 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-27 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16309.html">astral-sh/ruff#16309</a> on 2025-02-21 19:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

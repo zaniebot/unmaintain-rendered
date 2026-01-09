@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aliases the other way around (POSIX style) - clap-rs/clap #970</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Aliases the other way around (POSIX style)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/970">#970</a>
+        opened by <a href="https://github.com/ericbn">@ericbn</a>
+        on 2017-05-27 00:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ericbn">@ericbn</a> on 2017-05-27 00:35</div>
+            <div class="timeline-body"><p>Clap 2.24.1 and rust 1.12 are currently being used.</p>
+<p>Suppose I have defined these:</p>
+<pre><code>.arg(flag(&quot;foo&quot;))
+.arg(flag(&quot;no-foo&quot;).overrides_with(&quot;foo&quot;))
+.arg(flag(&quot;bar&quot;).overrides_with(&quot;bar&quot;).takes_value(true).possible_values(&amp;[&quot;0&quot;, &quot;1&quot;]))</code></pre>
+<p>And I want to have two other options that work as aliases for the previous ones:</p>
+<ul>
+<li><code>--baz</code> = <code>--foo --bar=1</code></li>
+<li><code>--no-baz</code> = <code>--no-foo --bar=0</code></li>
+</ul>
+<p>and they would also override the individual options in POSIX style. So for example:</p>
+<ul>
+<li><code>--baz --bar=0</code> yields only foo, and bar with value 0</li>
+<li><code>--no-baz --foo</code> also yields only foo, and bar with value 0</li>
+<li><code>--no-foo --baz</code> yields only foo, and bar with value 1</li>
+<li><code>--bar=1 --no-baz</code> yields only no-foo, and bar with value 0</li>
+</ul>
+<p>Any way to accomplish this with current clap implementation just by using the args builder?</p>
+<p>(Note for maybe another issue: Not sure if <code>flag(&quot;bar&quot;).overrides_with(&quot;bar&quot;)</code> is valid. The idea is that only the last provided value should be used. E.g. <code>--bar=0 --bar=1</code> should yield bar with value 1. Curiously, it works when at least 2 of the same option are given. But it fails with <code>The argument '--bar' was provided more than once, but cannot be used multiple times</code> when 3 or more are given...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-05-29 19:27</div>
+            <div class="timeline-body"><p>This accomplishes 95% of what you're looking for:</p>
+<pre><code class="language-rust">        .arg(flag(&quot;foo&quot;))
+        .arg(flag(&quot;no-foo&quot;).overrides_with(&quot;foo&quot;))
+        .arg(flag(&quot;bar&quot;)
+             .takes_value(true)
+             .possible_values(&amp;[&quot;0&quot;, &quot;1&quot;])
+             .default_value(&quot;0&quot;)
+             .default_value_if(&quot;baz&quot;, None, &quot;1&quot;))
+        .arg(flag(&quot;baz&quot;))
+        .arg(flag(&quot;no-baz&quot;).overrides_with_all(&amp;[&quot;baz&quot;, &quot;foo&quot;]))
+</code></pre>
+<p>The <code>&quot;bar&quot;</code> overrides with <code>&quot;bar&quot;</code> is the part that doesn't work at all with the above solution and I would say is a separate bug if you wouldn't mind filing it.</p>
+<p>The the above solution meet what you're looking for, or are there additional details I'm missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2017-05-29 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2017-05-29 22:20</div>
+            <div class="timeline-body"><p>The <code>flag(&quot;bar&quot;).default_value_if(&quot;baz&quot;, None, &quot;1&quot;))</code> will yield a bar with value 0 if <code>--bar=0 --baz</code> are provided, but I would expect the last to override the first, so to have a bar with value 1 (because baz is an &quot;alias&quot; for <code>--foo --bar=1</code>.</p>
+<p>Also, if I just provide the option <code>--baz</code>, it will only yield the bar with value 1, but no foo (and I could not use default_value_if() with foo, because foo does not take values). I would expect both foo, and bar with value 1 to be present.</p>
+<p>And if I just give the <code>--no-baz</code>, I would expect both the no-foo, and baz with value 0 to be present. But none would be yield.</p>
+<p>Maybe other scenarios would fail too... Not sure if my description of the problem was clear enough.</p>
+<p>The idea is that:</p>
+<ul>
+<li>baz works as an alias for <code>--foo --bar=1</code></li>
+<li>no-baz works as an alias for <code>--no-foo --bar=0</code></li>
+<li>last options override previous ones, even the &quot;aliased&quot; ones</li>
+</ul>
+<p>I sure didn't provide all possible scenarios in the examples I gave before. Let me try a complete list now:</p>
+<p>| Options provided | foo | no-foo | bar |
+|---|---|---|---|
+| --foo | ✔️ | | |
+| --no-foo | | ✔️ | |
+| --bar=0 | | | 0 |
+| --bar=1 | | | 1 |
+| --baz | ✔️ | | 1 |
+| --no-baz | | ✔️ | 0 |
+| --no-foo --baz | ✔️ | | 1 |
+| --bar=0 --baz | ✔️ | | 1 |
+| --no-foo --bar=0 --baz | ✔️ | | 1 |
+| --baz --no-foo | | ✔️ | 1 |
+| --baz --bar=0 | ✔️ | | 0 |
+| --baz --no-foo --bar=0 | | ✔️ | 0 |
+| --foo --no-baz | | ✔️ | 0 |
+| --bar=1 --no-baz | | ✔️ | 0 |
+| --foo --bar=1 --no-baz | | ✔️ | 0 |
+| --no-baz --foo | ✔️ | | 0 |
+| --no-baz --bar=1 | | ✔️ | 1 |
+| --no-baz --foo --bar=1 | ✔️ | | 1 |</p>
+<p>(empty means option is not present)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2017-05-29 23:08</div>
+            <div class="timeline-body"><p>As for the separate issue, I opened #976.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-05-30 00:35</div>
+            <div class="timeline-body"><p>I greatly appreciate the additional details! 👍</p>
+<p>The parts that jump out at me are going to be things like <code>--baz</code> implying <code>--foo</code>. Currently that's not possible and happens purely in user code. I.e. If I'm designing a CLI and I know <code>--baz</code> implies foo, I just add that check manually when I'm checking for <code>foo</code></p>
+<pre><code class="language-rust">struct Args {
+    foo: bool,
+    bar: i32 // for simplicity
+}
+
+let matches = /* skpped */.get_matches();
+let a = Args {
+    foo: matches.is_present(&quot;foo&quot;) || matches.is_present(&quot;baz&quot;),
+    bar: matches.value_of(&quot;bar&quot;).unwrap() // all the encoding in clap made this unwrap safe
+};
+</code></pre>
+<p>That isn't to say I <em>can't</em> make a feature to imply another arg, as requiring already works. Right now, if one requires a flag it arbitrarily <code>panic!</code>s simply because at the time I had more opinionated views on CLI design. I'm willing to relax that though if people find it useful.</p>
+<p>The way requirements work, if a required arg is missing it throws an error. But it'd be super easy to add a check if the required arg is actually a flag, and just include it as if it was used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2017-05-30 13:10</div>
+            <div class="timeline-body"><p>In a usual <a href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/getopt.html">POSIX implementation</a> I would be able to do so with something like (replaced foo, no-foo, bar, baz, no-baz by a, b, c, d, e respectively):</p>
+<pre><code class="language-c">int c, errflg = 0;
+bool foo = FALSE; // no-foo is the default
+char* bar = NULL;
+while ((c = getopt(argc, argv, &quot;:abc:de&quot;)) != -1) {
+  switch(c) {
+  case 'a': // foo
+    foo = TRUE;
+    break;
+  case 'b': // no-foo
+    foo = FALSE;
+    break;
+  case 'c': // bar
+    bar = optarg;
+    break;
+  case 'd': // baz
+    foo = TRUE;
+    bar = &quot;1&quot;;
+    break;
+  case 'e': // no-baz
+    foo = FALSE;
+    bar = &quot;0&quot;;
+    break;
+  case ':': // -c without operand
+    fprintf(stderr, &quot;Option -%c requires an operand\n&quot;, optopt);
+    errflg++;
+    break;
+  case '?':
+    fprintf(stderr, &quot;Unrecognized option: '-%c'\n&quot;, optopt);
+    errflg++;
+  }
+}
+</code></pre>
+<p>The loop iterating the options in order guarantees that later options will override previous ones, and I'll get the result from the table above, in the previous comment, for each case.</p>
+<p>I could not figure out a way to achieve the same in clap. Declaring <code>foo: matches.is_present(&quot;foo&quot;) || matches.is_present(&quot;baz&quot;)</code>, for example, will not guarantee that a later baz replaces a foo that came before (or the other way around if I inverted the or expression operands), since this does take in account the order where the options appeared, just if they appeared at all...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../BurntSushi/ripgrep/pulls/499.html">BurntSushi/ripgrep#499</a> on 2017-06-01 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../BurntSushi/ripgrep/issues/491.html">BurntSushi/ripgrep#491</a> on 2017-06-02 00:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-06-16 14:33</div>
+            <div class="timeline-body"><blockquote>
+<p>since this does take in account the order where the options appeared, just if they appeared at all...</p>
+</blockquote>
+<p>This was the piece of information I was missing. In my mind, a flag being either present or not doesn't really matter <em>when</em> it appeared in the argv, just that it either did or didn't. What you're saying that it matters <em>where</em> it appears, as to whether or not it should be counted as present (i.e. if another flag overrides it, etc.)</p>
+<p>This change is doable by me relaxing the requirements for flags. Let me play with some implementations and I'll get this knocked out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: flags</span> added by @kbknapp on 2017-06-16 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2017-06-16 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2017-06-16 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2017-06-16 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-06-16 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by @kbknapp on 2017-06-16 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-15 14:43</div>
+            <div class="timeline-body"><p>This should be good now with 2.30.0. Feel free to re-open if there is something we're missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-02-15 14:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

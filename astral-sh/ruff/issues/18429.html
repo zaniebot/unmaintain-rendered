@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrong binding for identifier used before definition in class nested in function - astral-sh/ruff #18429</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wrong binding for identifier used before definition in class nested in function</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18429">#18429</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-06-02 14:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-06-02 14:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ruff tracks bindings incorrectly when a class is defined within a function definition, and the function binds a certain identifier, and the class also binds that identifier, and the class loads that identifier before the binding. That load uses the global/builtin scope in Python, but Ruff treats it as loading from the enclosing function. That would be correct for a nested function, but not a nested class. This causes false positives and false negatives in many rules. I’ve given two examples below, but this is a general problem, not specific to those rules.</p>
+<p>False negative:</p>
+<pre><code class="language-console">$ cat &gt;b905.py &lt;&lt;'# EOF'
+def f():
+    zip = &quot;outer&quot;
+    class Nested:
+        zip(&quot;A&quot;, &quot;B&quot;)  # False negative: B905 should recommend `strict` here
+        zip = &quot;inner&quot;
+# EOF
+
+$ ruff --isolated check b905.py --select B905 --target-version py310
+All checks passed!
+</code></pre>
+<p>False positive with incorrect fix:</p>
+<pre><code class="language-console">$ cat &gt;f401.py &lt;&lt;'# EOF'
+from sys import version
+def f():
+    version = 0
+    class Nested:
+        print(version)
+        version = 1
+        print(version)
+    print(version)
+f()
+# EOF
+
+$ python3.10 f401.py
+3.10.14 (main, Mar 19 2024, 21:46:16) [Clang 15.0.0 (clang-1500.3.9.4)]
+1
+0
+
+$ ruff --isolated check f401.py --select F401 --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ python3.10 f401.py 2&gt;&amp;1 | tail -n 1
+NameError: name 'version' is not defined
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.12 (aee3af0f7 2025-05-29)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-02 16:12</div>
+            <div class="timeline-body"><p>Wow that's pretty surprising, but here's the description in the <a href="https://docs.python.org/3/reference/executionmodel.html#naming">Python docs</a>:</p>
+<blockquote>
+<p>Class definition blocks and arguments to <a href="https://docs.python.org/3/library/functions.html#exec">exec()</a> and <a href="https://docs.python.org/3/library/functions.html#eval">eval()</a> are special in the context of name resolution. A class definition is an executable statement that may use and define names. <strong>These references follow the normal rules for name resolution with an exception that unbound local variables are looked up in the global namespace.</strong> The namespace of the class definition becomes the attribute dictionary of the class. The scope of names defined in a class block is limited to the class block; it does not extend to the code blocks of methods. This includes comprehensions and generator expressions, but it does not include <a href="https://docs.python.org/3/reference/executionmodel.html#annotation-scopes">annotation scopes</a>, which have access to their enclosing class scopes. This means that the following will fail:</p>
+</blockquote>
+<p>I wonder if we might do something wrong with the end of that as well, with different behavior in annotations and comprehensions/generators.</p>
+<p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-02 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Wrong binding for indentifier used before definition in class nested in function" to "Wrong binding for identifier used before definition in class nested in function" by @dscorbett on 2025-06-02 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-04 22:08</div>
+            <div class="timeline-body"><p>I can work on this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @LaBatata101 by @ntBre on 2025-06-04 22:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19004.html">astral-sh/ruff#19004</a> on 2025-06-27 22:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

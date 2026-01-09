@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>noqa E501 not being respected for some cases of long lines - astral-sh/ruff #613</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>noqa E501 not being respected for some cases of long lines</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/613">#613</a>
+        opened by <a href="https://github.com/LefterisJP">@LefterisJP</a>
+        on 2022-11-05 22:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-11-05 22:33</div>
+            <div class="timeline-body"><p>I have noticed that <code>noqa: E501</code> is not respected for some long line cases. I can't really understand which cases that is. For <code>line-length=99</code> though this one for example is an interesting one:</p>
+<pre><code class="language-python">test1 = &quot;this is a long line that should have hit us with E501 but thanks to the noqa it does not hit us at all in stark contract with the stuff below&quot;  # noqa: E501
+
+test2 = {
+        'from_address': 'foo',
+        'pubkey': 'this seems to actually hit the problem and not respect the E501 error noqa keyword',  # noqa: E501
+        'withdrawal_credentials': 'Here the noqa is respected for some reason and ruff will not complain at all',  # noqa: E501
+}
+</code></pre>
+<p>This raises an error in line 5</p>
+<pre><code>Found 1 error(s).
+test.py:5:1: E501 Line too long (117 &gt; 99 characters)
+</code></pre>
+<p>While E501 should have been respected there too.</p>
+<p>What's even more weird is that if I remove <code>'from_address': 'foo',</code> from there it all works fine</p>
+<p>The following raises no errors</p>
+<pre><code class="language-python">test1 = &quot;this is a long line that should have hit us with E501 but thanks to the noqa it does not hit us at all in stark contract with the stuff below&quot;  # noqa: E501
+
+test2 = {
+        'pubkey': 'this seems to actually hit the problem and not respect the E501 error noqa keyword',  # noqa: E501
+        'withdrawal_credentials': 'Here the noqa is respected for some reason and ruff will not complain at all',  # noqa: E501
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-05 22:40</div>
+            <div class="timeline-body"><p>Thanks! I think I have an idea of what’s going on here… There’s some special-casing around strings to allow noqa comments to come at the end of a multi-line string, and thinking back to the code, I may have assumed there’s never more than one string to per line (which is obviously wrong). Will fix soon, sorry about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-05 22:41</div>
+            <div class="timeline-body"><p>(I’m guessing that it’s leading to an off-by-one or off-by-N error where N is the number of lines with &gt; 1 string.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-11-05 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-11-05 23:15</div>
+            <div class="timeline-body"><p>If I could run a test version I could see if all cases are fixed.</p>
+<p>Or you could also probably easily reproduce them all.
+I am working on rotki: https://github.com/rotki/rotki/ and we utilize flake8 but still got plenty of noqa around the code.</p>
+<p>With a super simple pytoml setting line length to 99 you can see all of them.</p>
+<pre><code>[tool.ruff]
+line-length = 99
+
+# Enable Flake's &quot;E&quot; and &quot;F&quot; codes by default.
+select = [&quot;E&quot;, &quot;F&quot;]
+ignore = [
+    &quot;E402&quot;,  # module level import at file top. https://www.flake8rules.com/rules/E402.html
+    &quot;N818&quot;,  # error suffix in exception names
+]	   
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/615.html">astral-sh/ruff#615</a> on 2022-11-05 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-05 23:51</div>
+            <div class="timeline-body"><p>Awesome. I went ahead and ran with #615, and I only saw a few E501 errors.</p>
+<p>Unlike Flake8, for multiline strings, Ruff <em>requires</em> that the E501 come at the end. So to fix those errors, e.g. in <code>gevent.py</code>, modify the docstring like:</p>
+<pre><code class="language-py">@contextmanager
+def savepoint_ctx(
+        self,
+        savepoint_name: Optional[str] = None,
+) -&gt; Generator['DBCursor', None, None]:
+    &quot;&quot;&quot;
+    Creates a savepoint context with the provided name. If the code inside the savepoint fails,
+    rolls back this savepoint, otherwise releases it (aka forgets it -- this is not commited to the DB).
+    Savepoints work like nested transactions, more information here: https://www.sqlite.org/lang_savepoint.html
+    &quot;&quot;&quot;  # noqa: E501
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-05 23:51</div>
+            <div class="timeline-body"><p>Let me know if you run into any other issues! Will cut a release (<a href="https://github.com/charliermarsh/ruff/releases/tag/v0.0.103">v0.0.103</a>) now with that fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-05 23:52</div>
+            <div class="timeline-body"><p>(Separately: I recently released <a href="https://pypi.org/project/flake8-to-ruff/"><code>flake8-to-ruff</code></a> which can help with automatic conversion of Flake8 <code>setup.cfg</code> to Ruff <code>pyproject.toml</code>. Would love any feedback!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-05 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-11-06 09:20</div>
+            <div class="timeline-body"><blockquote>
+<p>(Separately: I recently released <a href="https://pypi.org/project/flake8-to-ruff/"><code>flake8-to-ruff</code></a> which can help with automatic conversion of Flake8 <code>setup.cfg</code> to Ruff <code>pyproject.toml</code>. Would love any feedback!)</p>
+</blockquote>
+<p>Thank you so much charlie. This fixed all of our cases. For the others ones you mentioned I applied your suggested fix.</p>
+<p>As for flake8-to-ruff it works fine. Just tells me some warnings are not yet supported by ruff. It's the B and W ones. One is bugbear and other is general warnings.</p>
+<p>would love for them to be also supported and then we can get rid of flake8, while for now I guess I will run them in parallel. ruff is so fast it makes no difference :smile:</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:06 UTC
+    </footer>
+</body>
+</html>

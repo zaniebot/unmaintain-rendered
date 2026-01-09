@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip compile` does not install a python interpreter if a suitable one isn't found - astral-sh/uv #16709</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip compile` does not install a python interpreter if a suitable one isn't found</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16709">#16709</a>
+        opened by <a href="https://github.com/mikaylathompson">@mikaylathompson</a>
+        on 2025-11-12 17:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mikaylathompson">@mikaylathompson</a> on 2025-11-12 17:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>A user may expect <code>uv pip compile --python 3.14</code> to install a 3.14 interpreter if one can't be found, for instance, but it will fall back to another version after attempting to find one instead (<a href="https://github.com/astral-sh/uv/blob/main/crates/uv/src/commands/pip/compile.rs#L293-L319">in this code</a>).</p>
+<p>Additionally, the behavior with <strong>both</strong> <code>--python</code> and <code>--python-version</code> flags is different than if either of them are provided individually.</p>
+<p>Reproducible example:</p>
+<pre><code>$ uv python uninstall 3.14
+...
+$ echo &quot;anyio&quot; &gt; requirements.in
+$ uv pip compile --python-version 3.14 requirements.in
+warning: The requested Python version 3.14 is not available; 3.12.9 will be used to build dependencies instead.
+Resolved 3 packages in 56ms
+...
+$ uv pip compile --python 3.14 requirements.in
+warning: The requested Python version 3.14 is not available; 3.12.9 will be used to build dependencies instead.
+Resolved 3 packages in 18ms
+...
+$ uv pip compile --python 3.14 --python-version 3.14 requirements.in
+error: No interpreter found for Python 3.14 in virtual environments, managed installations, or search path
+</code></pre>
+<p>The closely related behavior has been fixed for <code>uv pip install</code> and <code>uv pip sync</code>. In that case, if a user was using <code>--target</code> or <code>--prefix</code> (and thus a venv couldn't be assumed/used), uv wouldn't install an interpreter. That was changed in #16694, and this issue is a follow-up for the <code>pip compile</code> case.</p>
+<h3>Platform</h3>
+<p>macOS 24.6 arm64</p>
+<h3>Version</h3>
+<p>uv 0.9.3 (83635a6c4 2025-10-15)</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @mikaylathompson on 2025-11-12 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @EliteTK by @EliteTK on 2025-12-18 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-22 14:30</div>
+            <div class="timeline-body"><p>The reason for the different behaviour between one, the other, and both is that <code>--python 3.14</code> is treated as <code>--python-version 3.14</code> if <code>--python-version</code> isn't passed explicitly. So the first two test cases are equivalent:</p>
+<p><a href="https://github.com/astral-sh/uv/blob/137edcf239f965225c72b9d9ec71dbeab94683bb/crates/uv/src/commands/pip/compile.rs#L182-L194">https://github.com/astral-sh/uv/blob/137edcf239f965225c72b9d9ec71dbeab94683bb/crates/uv/src/commands/pip/compile.rs#L182-L194</a></p>
+<p>The code there seems to indicate that allowing falling back to a different version to build any wheels which must be built to get metadata is acceptable. But not sure if this is still the case.</p>
+<p>The only way to request that uv uses a specific version for builds is using <code>--python</code> and <code>--python-version</code> together to avoid triggering this fallback. In this case, this code:</p>
+<p><a href="https://github.com/astral-sh/uv/blob/137edcf239f965225c72b9d9ec71dbeab94683bb/crates/uv/src/commands/pip/compile.rs#L304-L332">https://github.com/astral-sh/uv/blob/137edcf239f965225c72b9d9ec71dbeab94683bb/crates/uv/src/commands/pip/compile.rs#L304-L332</a></p>
+<p>Will not fall back to <code>find_best</code> and will fail.</p>
+<p>I think making it install the version if a specific one is requested seems like an unobjectionable improvement. Regarding the fallback logic, I will ask around...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-22 15:30</div>
+            <div class="timeline-body"><blockquote>
+<p>The code there seems to indicate that allowing falling back to a different version to build any wheels which must be built to get metadata is acceptable. But not sure if this is still the case.</p>
+</blockquote>
+<p>It's acceptable, but not ideal, we should continue instead of failing if Python downloads are disabled though. The logic here precedes our ability to download Python distributions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17216.html">astral-sh/uv#17216</a> on 2025-12-22 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-22 15:46</div>
+            <div class="timeline-body"><p>For the case that an explicit <code>--python</code> is set and didn't get converted into <code>--python-version</code> I have pushed #17216 which uses <code>find_or_download</code> for that.</p>
+<p>The case you're describing happens when only <code>--python-version</code> is set or <code>--python</code> gets converted into <code>--python-version</code>. In this case you're saying that if python downloads and building is enabled[^1] we should use <code>find_or_download</code> and otherwise use <code>find_best</code> and warn?</p>
+<p>I think one option is to just make the code here:</p>
+<p>https://github.com/astral-sh/uv/blob/137edcf239f965225c72b9d9ec71dbeab94683bb/crates/uv/src/commands/pip/compile.rs#L182-L194</p>
+<p>Not unset <code>python</code> when it sets <code>python_version</code>.</p>
+<p>[^1]: This begs the question, should we even be trying to get an interpreter at all if building is disabled? Do we need it for anything?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-22 15:58</div>
+            <div class="timeline-body"><p>I think the nuance is that, if we cannot find a download for the target interpreter, we still need to use the <code>find_best</code> logic instead of failing.</p>
+<p>Re your footnote, we need an interpreter to determine the markers for the resolution. We technically could do this without an interpreter, but the interpreter is the most reliable way to do so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-22 16:19</div>
+            <div class="timeline-body"><p>So I'll follow my current PR with another which, in case downloads are disabled falls back to <code>find_best</code> for <code>--python</code> (when it doesn't turn into <code>--python-version</code>).</p>
+<p>But I guess the question still is, if someone passes a <code>--python</code> and it turns into <code>--python-version</code> the previously hard requirement on that specific version gets turned into a soft one. If we just don't set <code>python</code> to <code>None</code> (after the change mentioned above) I think we get the intended behaviour where <code>--python</code> will implicitly set <code>--python-version</code> but an explicit <code>--python</code> will still use the correct version when downloads are enabled rather than just falling back to the &quot;best&quot;. I think that would address the situation here and we could drop that caveat in the comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-22 16:40</div>
+            <div class="timeline-body"><p>I'm honestly having a hard time following what you've described. It's not sufficient to special case &quot;downloads are disabled&quot;, because we also need to handle &quot;download does not exist&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-22 17:06</div>
+            <div class="timeline-body"><p>Okay, fair enough, also handling &quot;download does not exist&quot; shouldn't be a problem.</p>
+<p>Regarding the other part, I'll try to clarify:</p>
+<p>Currently:</p>
+<ul>
+<li>If you pass <code>--python</code>, and:</li>
+<li>If you don't pass <code>--python-version</code>, and:</li>
+<li><code>PythonVersion::from_str</code> succeeds (meaning that it is a &quot;simple Python version request&quot;), then:</li>
+<li>We treat this as if you had passed <code>--python-version</code> instead of <code>--python</code>, meaning that:</li>
+<li>We will satisfy the <code>--python</code> request with <code>find_best</code> instead of <code>find_or_download</code>[^1].</li>
+</ul>
+<p>Is this behaviour correct? If not, I can think of two good alternatives:</p>
+<ol>
+<li>Passing only <code>--python</code> <em>also</em> implies <code>--python-version</code> if it is a simple version request, meaning that to find the requested interpreter we still use <code>find_or_download</code>[^1].</li>
+<li>Passing only <code>--python-version</code> uses <code>find_or_download</code>[^1] instead of <code>find_best</code>.</li>
+</ol>
+<p>[^1]: With the PR for handling &quot;download is disabled&quot; and &quot;download does not exist&quot; then the behaviour would instead be: <code>find_or_download</code> and if downloads are disabled or downloading fails then warn and fall back to <code>find_best</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17218.html">astral-sh/uv#17218</a> on 2025-12-22 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17219.html">astral-sh/uv#17219</a> on 2025-12-22 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-22 21:46</div>
+            <div class="timeline-body"><blockquote>
+<p>find_or_download and if downloads are disabled or downloading fails then warn and fall back to find_best</p>
+</blockquote>
+<p>Wouldn't this mean that we perform interpreter discovery twice? e.g., we could traverse the <code>PATH</code> twice? It sounds a little sloppy performance-wise, though we could say it's niche? I think some distros (e.g., Debian) disable Python downloads in uv by default though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-22 21:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this behaviour correct?</p>
+</blockquote>
+<p>I don't think it's &quot;incorrect&quot; but using a simple version like <code>--python 3.12</code> is by far the common case so I think if we want to improve the behavior we should change something here. Other than my caveat at https://github.com/astral-sh/uv/issues/16709#issuecomment-3684286254, I think that your proposed approach conceptually makes sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-22 21:55</div>
+            <div class="timeline-body"><p>I think instead of just discussing which internal &quot;method&quot; we're going to invoke to discover an interpreter it might be worth talking about concrete user outcomes?</p>
+<p>Aren't we really just talking about:</p>
+<ol>
+<li>When an interpreter is not found, error</li>
+<li>When an interpreter is not found, use an alternative one with overridden version markers</li>
+</ol>
+<p>Where (1) is implied by <code>--python</code> unless it is coerced to mean <code>--python-version</code>? And (2) is implied by <code>--python-version</code>?</p>
+<p>The fix we're discussing here is mostly whether &quot;when an interpreter is not found&quot; includes attempting a download, right? I'd expect us to attempt a download in either scenario before moving to the next step.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-22 21:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Wouldn't this mean that we perform interpreter discovery twice? e.g., we could traverse the <code>PATH</code> twice?</p>
+</blockquote>
+<p>Yes, it does. Well I did consider adding a <code>find_or_download_or_best</code>, maybe an alternative option is to cache this information...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-22 21:58</div>
+            <div class="timeline-body"><p>Re https://github.com/astral-sh/uv/issues/16709#issuecomment-3684286254 maybe the fix is just to make it possible for <code>find_best</code> to perform downloads?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-22 22:00</div>
+            <div class="timeline-body"><p><code>find_best</code> is only used once, it seems fine to just change it?</p>
+<p>We do cache interpreter queries when we can, which is the most expensive part. Caching the rest doesn't seem worth the complexity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-22 22:02</div>
+            <div class="timeline-body"><p>It wouldn't be applicable in the <code>--python</code> case, since we want to prioritise the version we asked for unless we have concluded we can't find or download it, and only then fall back to <code>find_best</code>.</p>
+<p>But regardless, as a separate issue, <code>find_best</code> not being able to download is itself a problem, and I think addressing that would make sense for the <code>--python-version</code> on a system with no installed python case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-22 23:13</div>
+            <div class="timeline-body"><p>Regarding <a href="https://github.com/astral-sh/uv/issues/16709#issuecomment-3684302324">https://github.com/astral-sh/uv/issues/16709#issuecomment-3684302324</a>. I was under the impression that we probably don't want to attempt a download as a first resort for the <code>--python-version</code> case but we do want to attempt a download as a first resort for the <code>--python</code> case?</p>
+<p>If we want to attempt a download as a first resort for either case then the suggested change to <code>find_best</code> makes sense and the whole fallback thing doesn't matter, because we can just implement the right logic in <code>find_best</code> and use it for both cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-22 23:25</div>
+            <div class="timeline-body"><blockquote>
+<p>we probably don't want to attempt a download as a first resort for the --python-version case but we do want to attempt a download as a first resort for the --python case?</p>
+</blockquote>
+<p>What do you mean by &quot;as a first resort&quot;? We should follow our normal logic (which is, to only download when there's not an appropriate match for the request). We don't ever eagerly download.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-22 23:27</div>
+            <div class="timeline-body"><p>I don't see why we should use, e.g., 3.13 when <code>--python-version 3.12</code> was requested and downloads are enabled though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-23 00:28</div>
+            <div class="timeline-body"><p>Re first resort: Yes I mean the first action we take if the request can't be satisfied with what we can find already installed.</p>
+<p>Regarding <code>--python-version</code>. I was not aware before, but there is precedent to making it download an interpreter if it can't find a matching one. For example, <code>uv sync</code> in a project which requests 3.12 will download 3.12 unless I pass <code>--python</code> and specify another newer version I already have installed.</p>
+<p>I think we could do something like this (for each line, 3.14 is the installed default version):</p>
+<p>| <code>--python</code> | <code>--python-version</code> | Version downloaded | Wheels built with | Picked packages must support |
+| ----------:| ------------------:| ------------------:| -----------------:| ----------------------------:|
+|            |                    |                    |              3.14 |                         3.14 |
+|       3.13 |                    |               3.13 |              3.13 |                         3.13 |
+|            |               3.13 |               3.13 |              3.13 |                         3.13 |
+|       3.13 |               3.10 |               3.13 |              3.13 |                         3.10 |</p>
+<p>Furthermore, if I use <code>--python</code> to request an older version than <code>--python-version</code> we should complain like <code>uv sync</code> does in similar scenarios.</p>
+<p>But to explain why it might make sense <em>not</em> to download the <code>--python-version</code> requested interpreter if it can't be found: <code>--python-version</code> isn't used for building, it's only used by the resolver to ensure we pick packages which support the specified version. We allow you to specify <code>--python</code> and <code>--python-version</code> together and I think it would be surprising if both were downloaded in that case (since the version specified by <code>--python-version</code> isn't going to get ran at any point during the process). As we support that, it makes some sense to not be particularly strict about using the proper version when <code>--python-version</code> is specified on its own.</p>
+<p>But that kind of design change should probably be applied globally (e.g., we could also apply this logic to <code>uv sync</code> etc).</p>
+<p>(Edited for clarity)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17249.html">astral-sh/uv#17249</a> on 2025-12-29 12:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

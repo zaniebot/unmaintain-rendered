@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv build` should output information about built artifacts in machine-readable form. - astral-sh/uv #12392</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv build` should output information about built artifacts in machine-readable form.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/12392">#12392</a>
+        opened by <a href="https://github.com/scolby33">@scolby33</a>
+        on 2025-03-22 15:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/scolby33">@scolby33</a> on 2025-03-22 15:58</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I would like to use <code>uv build</code> as part of a pipeline (in particular, in a GitHub action, but this doesn't matter particularly) and further process the built artifacts. Right now, I have a couple of non-ideal options for this:</p>
+<ol>
+<li>parse the stderr output from the build invocation and look for the lines starting with <code>Successfully built </code></li>
+<li>clear the <code>dist/</code> directory before running <code>uv build</code> and then afterwards use a glob or something to get all the files in that directory, and assume that nothing extra snuck in</li>
+</ol>
+<p>It would be good if <code>uv</code> could output the paths to the built artifacts in a machine-readable form (JSON? but I don't really care which). Alternatively, perhaps the built paths could be output on stdout, so no parsing is necessary to get the paths. (This would have the classic problem of filenames with newlines being problematic, but I'm not sure if that's really an issue here.)</p>
+<h3>Example</h3>
+<p>These are just examples, I'm not particularly concerned about exact formats</p>
+<pre><code class="language-console">$ uv build --sdist --json
+...snip...all current build output on stderr...
+[{&quot;path&quot;: &quot;dist/foo-1.0.0.tar.gz&quot;, &quot;type&quot;: &quot;sdist&quot;, &quot;successful&quot;: true}]  # on stdout
+</code></pre>
+<p>or</p>
+<pre><code class="language-console">$ uv build
+...snip...all current build output on stderr...
+Successfully built dist/foo-1.0.0.tar.gz  # still on stderr
+Successfully built dist/foo-1.0.0-py3-none-any.whl  # still on stderr
+dist/foo-1.0.0.tar.gz  # stdout
+dist/foo-1.0.0-py3-none-any.whl  # stdout
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @scolby33 on 2025-03-22 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-22 23:27</div>
+            <div class="timeline-body"><p>See also #411 — we want to do this everywhere but need to build some patterns to make it maintainable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-22 23:28</div>
+            <div class="timeline-body"><p>Maybe we could use <code>-q</code> here (#12300) to just print the file names? cc @Gankra</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/scolby33">@scolby33</a> on 2025-03-24 12:21</div>
+            <div class="timeline-body"><p>In the meantime, would it be possible to document/&quot;promise&quot; not to change the output format from <code>Successfully built {--out-dir}/{filename}</code>? (I believe currently defined <a href="https://github.com/astral-sh/uv/blob/7c57cefaa863cf8d617207c31f6ae9be95e2b11b/crates/uv/src/commands/build_frontend.rs#L1203-L1207">here</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-24 13:09</div>
+            <div class="timeline-body"><p>@scolby33 -- If we change that output, I think we would consider it breaking (so, per our versioning policy, it would only change in a minor (and not a patch) release).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.7.0" by @zanieb on 2025-04-01 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @zanieb on 2025-04-15 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-04-15 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.7.0" by @konstin on 2025-04-17 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-17 15:14</div>
+            <div class="timeline-body"><p>Currently, we print all status and successful build messages to stderr. When adding JSON output, this would print the JSON to stdout, which should not require any breaking changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-17 16:38</div>
+            <div class="timeline-body"><p>I think we could add filenames to stdout (e.g., always or toggled via <code>-q</code>?) without the JSON format.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

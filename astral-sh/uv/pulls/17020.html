@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add hint for misplaced `--verbose`  in `uv tool run` - astral-sh/uv #17020</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add hint for misplaced `--verbose`  in `uv tool run`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/pull/17020">#17020</a>
+        opened by <a href="https://github.com/F4RAN">@F4RAN</a>
+        on 2025-12-07 23:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/F4RAN">@F4RAN</a> on 2025-12-07 23:37</div>
+            <div class="timeline-body"><p>Resolves #16777</p>
+<h2>Summary</h2>
+<p>When a command fails, users sometimes add --verbose after the package name (e.g., uvx foo --verbose) instead of before it (e.g., uvx --verbose foo). This adds a hint that suggests moving --verbose before the command.
+The hint appears when a verbose flag is detected in the subcommand arguments and the command fails to resolve. It works for both uvx and uv tool run.</p>
+<h2>Test Plan</h2>
+<p>Tested by running:
+uvx foo-does-not-exist --verbose - shows the hint
+uv tool run foo-does-not-exist --verbose - shows the hint
+The hint only appears when verbose flags are detected, and the message shows the correct command format.</p>
+<h2>Screenshot</h2>
+<p><img width="920" height="34" alt="image" src="https://github.com/user-attachments/assets/f6c303f6-b5e6-441f-8d8d-9f5e6ab87c87" /></p>
+<p>Open to feedback and happy to make changes as needed! 💯</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @EliteTK by @zanieb on 2025-12-08 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/tool/run.rs</code>:335 on 2025-12-08 13:54</div>
+            <div class="timeline-body"><p>I think that the verbose hint shouldn't change how the rest of the error looks. So it would be good if it also called <code>.with_context(&quot;tool&quot;)</code>. But it looks like it's easier said than done as the relevant code doesn't support it at the moment: https://github.com/astral-sh/uv/blob/5a6f2ea319b0d7b6ffaf5b61e1de6c9060282c08/crates/uv/src/commands/diagnostics.rs#L77</p>
+<p>It also seems like some of the other error cases drop the hint entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-08 14:00</div>
+            <div class="timeline-body"><p>@F4RAN thanks for this.</p>
+<p>Aside from the review comment, do you mind adding a test?</p>
+<p>There are a few examples in <a href="https://github.com/astral-sh/uv/blob/main/crates/uv/tests/it/tool_run.rs">crates/uv/tests/it/tool_run.rs</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-08 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:85 on 2025-12-08 14:13</div>
+            <div class="timeline-body"><p>nit: I might use <code>let Some(...) = ... else { continue }</code> just to reduce nesting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/tool/run.rs</code>:84 on 2025-12-08 14:13</div>
+            <div class="timeline-body"><p>Would be good to have a doc comment for this new function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:84 on 2025-12-08 14:13</div>
+            <div class="timeline-body"><p>nit: I might write this using <code>args.iter().find(...)</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-08 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> requested changes on 2025-12-08 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/F4RAN">@F4RAN</a> on <code>crates/uv/src/commands/tool/run.rs</code>:335 on 2025-12-08 18:37</div>
+            <div class="timeline-body"><p>You're right - the diagnostic system doesn't support both yet. I'm following the same pattern as the <code>uvx run</code> hint. Happy to adjust if you prefer a different approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/F4RAN">@F4RAN</a> reviewed on 2025-12-08 18:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/F4RAN">@F4RAN</a> reviewed on 2025-12-08 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/F4RAN">@F4RAN</a> on <code>crates/uv/src/commands/tool/run.rs</code>:84 on 2025-12-08 18:38</div>
+            <div class="timeline-body"><p>Refactored to use <code>find_map</code> as suggested</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/F4RAN">@F4RAN</a> reviewed on 2025-12-08 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/F4RAN">@F4RAN</a> on <code>crates/uv/src/commands/tool/run.rs</code>:84 on 2025-12-08 18:39</div>
+            <div class="timeline-body"><p>Added doc comment for <code>find_verbose_flag</code> function</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/F4RAN">@F4RAN</a> reviewed on 2025-12-08 18:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/F4RAN">@F4RAN</a> on <code>crates/uv/src/commands/tool/run.rs</code>:85 on 2025-12-08 18:40</div>
+            <div class="timeline-body"><p>Used <code>?</code> operator instead of <code>let...else</code> (clippy also suggested this)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/F4RAN">@F4RAN</a> on 2025-12-08 18:41</div>
+            <div class="timeline-body"><blockquote>
+<p>@F4RAN thanks for this.</p>
+<p>Aside from the review comment, do you mind adding a test?</p>
+<p>There are a few examples in <a href="https://github.com/astral-sh/uv/blob/main/crates/uv/tests/it/tool_run.rs">crates/uv/tests/it/tool_run.rs</a>.</p>
+</blockquote>
+<p>Hi @EliteTK and @zanieb. Thanks for reviewing my code.</p>
+<ol>
+<li>Added tests for <code>--verbose</code>, <code>-v</code>, and <code>-vv</code> flags - all passing now!</li>
+<li>Added doc comment for <code>find_verbose_flag</code> function</li>
+<li>Refactored to use <code>find_map</code> as suggested</li>
+<li>Used <code>?</code> operator instead of <code>let...else</code> (clippy also suggested this)</li>
+</ol>
+<p>All feedback addressed! Happy to make any additional changes if needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @F4RAN on 2025-12-08 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @EliteTK by @F4RAN on 2025-12-08 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/tool/run.rs</code>:335 on 2025-12-09 09:36</div>
+            <div class="timeline-body"><p>I think I will add an issue noting that this should be addressed, but I agree it's a bit beyond the scope of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-09 09:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Feature 16777 verbose error hint" to "Add hint for misplaced `--verbose`" by @konstin on 2025-12-09 09:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-12-09 09:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/F4RAN">@F4RAN</a> reviewed on 2025-12-09 10:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/F4RAN">@F4RAN</a> on <code>crates/uv/src/commands/tool/run.rs</code>:335 on 2025-12-09 10:27</div>
+            <div class="timeline-body"><p>Sounds good, thanks for clarifying!
+Let me know if you’d like me to help with that follow-up issue in a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-09 15:14</div>
+            <div class="timeline-body"><p>@F4RAN thanks for sorting those out. I've pushed a couple of commits to drop the filter as it's not something we normally do in the test suite and add a test case for the potential false positive case.</p>
+<p>I've made a note to create an issue regarding the <code>OperationDiagnostic</code> problems once this is merged so I can reference the affected code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> approved on 2025-12-09 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-12-09 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-12-09 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-12-09 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add hint for misplaced `--verbose`" to "Add hint for misplaced `--verbose`  in `uv tool run`" by @zanieb on 2025-12-09 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Homebrew/homebrew-core/pulls/257965.html">Homebrew/homebrew-core#257965</a> on 2025-12-09 23:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

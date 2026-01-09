@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modules override `[project.scripts]` for `uv run` - astral-sh/uv #9167</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Modules override `[project.scripts]` for `uv run`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9167">#9167</a>
+        opened by <a href="https://github.com/JimDabell">@JimDabell</a>
+        on 2024-11-16 17:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JimDabell">@JimDabell</a> on 2024-11-16 17:01</div>
+            <div class="timeline-body"><p>If my project has a module called <code>foo</code> and a section in <code>pyproject.toml</code> with:</p>
+<pre><code class="language-toml">[project.scripts]
+foo = &quot;foo.cli:app&quot;
+</code></pre>
+<p>…then it’s not possible to call the script with <code>uv run foo</code>:</p>
+<pre><code class="language-python">Traceback (most recent call last):
+  File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
+  File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
+  File &quot;/app/foo/__main__.py&quot;, line 3, in &lt;module&gt;
+    from . import cli
+ImportError: attempted relative import with no known parent package
+</code></pre>
+<p>However if I rename the script from <code>foo</code> to <code>bar</code>, it works:</p>
+<pre><code class="language-toml">[project.scripts]
+bar = &quot;foo.cli:app&quot;
+</code></pre>
+<p>If I try to run the module with <code>uv run --module foo</code>, this also works.</p>
+<p>Shouldn’t the script definition take precedence if there’s a <code>--module</code> flag to select the module instead?</p>
+<p>This is with uv 0.5.2.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/raqbit">@raqbit</a> on 2024-12-03 10:56</div>
+            <div class="timeline-body"><p>I've created a reproduction repo here: https://github.com/raqbit/uv-scripts-repro/</p>
+<p>The <code>run_all.sh</code> script attempts to run the project in three ways:</p>
+<ul>
+<li>Using <code>python -m foo</code></li>
+<li>Using <code>./.venv/bin/foo</code></li>
+<li>Using <code>uv run foo</code></li>
+</ul>
+<p>Only the last case fails, probably because it's running the <code>__main__</code> file (and not as a module), and not the script installed in <code>./.venv/bin</code>.</p>
+<p>Tested with <code>uv 0.5.5</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 15:21</div>
+            <div class="timeline-body"><p>Thanks for the reproduction!</p>
+<p>The problem is https://github.com/astral-sh/uv/blob/02c105c3cbc53e291632dc43dbef8777410656c8/crates/uv/src/commands/project/run.rs#L1414-L1415</p>
+<p>We shouldn't do that logic if the given command exists in the <code>bin</code> directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-12-03 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 15:35</div>
+            <div class="timeline-body"><p>This is sort of a pain because we resolve the <code>RunCommand</code> <em>before</em> we've discovered the Python environment. We'll need to move some things around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-12-03 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/2022tgoel">@2022tgoel</a> on 2024-12-07 17:13</div>
+            <div class="timeline-body"><p>Hi,
+I was thinking of working on this.
+Do you think a reasonable solution would be to instead of returning a <code>PythonPackage</code>, return an <code>Undetermined</code> type, and then in <code>as_command()</code>, for undetermined types, check if the command is in <code>bin</code> before checking if it has a <code>__main__.py</code> ? (and then lastly, try executing as external)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-07 18:25</div>
+            <div class="timeline-body"><p>So.. it looks like we call <code>RunCommand::from_args</code> early so that we can read (and apply) settings from PEP 723 scripts. We need to preserve that, so it's mostly a matter of refactoring the types in a nice way to represent the deferred resolution of some commands.</p>
+<p>I'd maybe introduce a new type that we resolve earlier then cast to <code>RunCommand</code> in the <code>run</code> implementation once we have information about the available entry points, e.g. (with some made up names):</p>
+<pre><code>enum RunTarget {
+    Resolved(ResolvedRunTarget)
+    Unresolved(UnresolvedRunTarget)
+} 
+
+enum ResolvedRunTarget {
+   ... enumerate the script kinds?
+}
+
+struct UnresolvedRunTarget {
+    ... preserve the arguments needed to resolve `RunCommand`?
+} 
+
+impl From&lt;RunTarget&gt; for RunCommand { ... }
+</code></pre>
+<p>I think this roughly matches your suggestion with <code>Undetermined</code>, just with more types? This is the sort of thing that I'd have to play with concretely to find the right pattern for though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9722.html">astral-sh/uv#9722</a> on 2024-12-08 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/2022tgoel">@2022tgoel</a> on 2024-12-08 16:02</div>
+            <div class="timeline-body"><p>Hi,
+I liked your idea, so I implemented something along those lines in https://github.com/astral-sh/uv/pull/9722. Could you take a look at this? Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ManimCommunity/manim/pulls/4138.html">ManimCommunity/manim#4138</a> on 2025-01-27 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11423.html">astral-sh/uv#11423</a> on 2025-02-11 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11431.html">astral-sh/uv#11431</a> on 2025-02-11 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-12 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-12 18:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

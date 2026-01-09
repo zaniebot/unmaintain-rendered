@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do not require `# noqa: F821` in try block with ` except NameError` block. - astral-sh/ruff #385</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Do not require `# noqa: F821` in try block with ` except NameError` block.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/385">#385</a>
+        opened by <a href="https://github.com/ghuls">@ghuls</a>
+        on 2022-10-10 09:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ghuls">@ghuls</a> on 2022-10-10 09:07</div>
+            <div class="timeline-body"><p>Do not require <code># noqa: F821</code> in try block with <code> except NameError</code> block.</p>
+<pre><code class="language-python">$ cat test_try.py
+def in_ipython_notebook() -&gt; bool:
+    try:
+        # autoimported by notebooks
+        get_ipython()  # type: ignore[name-defined]
+    except NameError:
+        return False  # not in notebook
+    return True
+</code></pre>
+<pre><code>$ flake8 test_try.py 
+test_try.py:1:1: D100 Missing docstring in public module
+test_try.py:1:1: D103 Missing docstring in public function
+
+$  ruff test_try.py 
+No pyproject.toml found.
+Falling back to default configuration...
+Found 1 error(s).
+test_try.py:4:9: F821 Undefined name `get_ipython`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-10-10 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-10-10 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-10 13:09</div>
+            <div class="timeline-body"><p>Will fix this today, hopefully.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/386.html">astral-sh/ruff#386</a> on 2022-10-10 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-10-10 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pola-rs/polars/pulls/5151.html">pola-rs/polars#5151</a> on 2022-10-10 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghuls">@ghuls</a> on 2022-10-10 13:49</div>
+            <div class="timeline-body"><p>Fixes it indeed. Thanks. Polars can now be linted by ruff (uses  more flake8 plugins, but it is a start).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-10 14:01</div>
+            <div class="timeline-body"><p>Awesome. Are there any plugins that are high-priority? We can implement them natively if so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghuls">@ghuls</a> on 2022-10-10 14:12</div>
+            <div class="timeline-body"><p>This is the ones that we use for linting:</p>
+<p>https://github.com/pola-rs/polars/blob/master/py-polars/requirements-lint.txt</p>
+<pre><code>black==22.8.0
+blackdoc==0.3.7
+flake8==5.0.4
+flake8-bugbear==22.9.23
+flake8-comprehensions==3.10.0
+flake8-docstrings==1.6.0
+flake8-simplify==0.19.3
+flake8-tidy-imports==4.8.0
+isort==5.10.1
+pyupgrade==2.38.2
+</code></pre>
+<p>With this flake8 config:</p>
+<p>https://github.com/pola-rs/polars/blob/master/py-polars/.flake8</p>
+<pre><code>[flake8]
+max-line-length = 88
+ban-relative-imports = true
+docstring-convention = all
+extend-ignore =
+    # Satisfy black: https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#flake8
+    E203,
+    # pydocstyle: http://www.pydocstyle.org/en/stable/error_codes.html
+    # numpy convention with a few additional lints
+    D107, D203, D212, D401, D402, D415, D416,
+    # TODO: Remove errors below to further improve docstring linting
+    D1,
+    # flake8-simplify
+    SIM102, SIM117,
+
+extend-exclude =
+    # Automatically generated test artifacts
+    venv/,
+    target/,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-10 14:25</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>For what it's worth:</p>
+<ul>
+<li><code>flake8-comprehensions</code> we (almost) entirely support thanks to @harupy.</li>
+<li><code>flake8-docstrings</code> is next on my list of plugins (I use it too).</li>
+<li><code>flake8-bugbear</code> we should probably do too given its popularity but we haven't started on it.</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:06 UTC
+    </footer>
+</body>
+</html>

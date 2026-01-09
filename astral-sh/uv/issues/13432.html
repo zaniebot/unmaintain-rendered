@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torch 2.7.0 cpu does not store hash in  uv.lock on aarch64 - astral-sh/uv #13432</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Torch 2.7.0 cpu does not store hash in  uv.lock on aarch64</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13432">#13432</a>
+        opened by <a href="https://github.com/07pepa">@07pepa</a>
+        on 2025-05-13 14:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/07pepa">@07pepa</a> on 2025-05-13 14:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>There is issue when running  <code>uv sync --upgrade</code>  it does not store aarch hash</p>
+<p>platform sync runned on (other platform information is docker where it cause issue)</p>
+<ul>
+<li>Darwin 24.4.0 arm64</li>
+<li>uv 0.7.3 (Homebrew 2025-05-07)</li>
+<li>Python 3.12.4</li>
+</ul>
+<p>here is snippet from uv.lock</p>
+<pre><code class="language-yaml">wheels = [
+    { url = &quot;https://download.pytorch.org/whl/cpu/torch-2.7.0%2Bcpu-cp312-cp312-manylinux_2_28_aarch64.whl&quot; },
+    { url = &quot;https://download.pytorch.org/whl/cpu/torch-2.7.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl&quot;, hash = &quot;sha256:64123c05615e27368c7a7816f6e39c6d219998693beabde0b0b9cedf91b5ed8b&quot; },
+    { url = &quot;https://download.pytorch.org/whl/cpu/torch-2.7.0%2Bcpu-cp312-cp312-win_amd64.whl&quot;, hash = &quot;sha256:69e25c973bdd7ea24b0fa9f9792114950afaeb8f819e5723819b923f50989175&quot; },
+    { url = &quot;https://download.pytorch.org/whl/cpu/torch-2.7.0%2Bcpu-cp312-cp312-win_arm64.whl&quot;, hash = &quot;sha256:1d7a6f33868276770a657beec7f77c7726b4da9d0739eff1b3ae64cc9a09d8e3&quot; },
+]
+</code></pre>
+<p>as you can see arm version for aarch64 is missing hash</p>
+<p>this causes</p>
+<pre><code>Failed to download `torch==2.7.0+cpu`
+  ╰─▶ Hash mismatch for `torch==2.7.0+cpu` 
+       Expected:
+         sha256:64123c05615e27368c7a7816f6e39c6d219998693beabde0b0b9cedf91b5ed8b         
+         sha256:69e25c973bdd7ea24b0fa9f9792114950afaeb8f819e5723819b923f50989175         
+         sha256:1d7a6f33868276770a657beec7f77c7726b4da9d0739eff1b3ae64cc9a09d8e3 
+       Computed:
+         sha256:a845b6f3bda3c40f736847dede95d8bfec81fb7e11458cd25973ba13542cf1f6
+         ...
+</code></pre>
+<p>manualy modifiing first line of snipet to <code>  { url = &quot;https://download.pytorch.org/whl/cpu/torch-2.7.0%2Bcpu-cp312-cp312-manylinux_2_28_aarch64.whl&quot;, hash= &quot;sha256:a845b6f3bda3c40f736847dede95d8bfec81fb7e11458cd25973ba13542cf1f6&quot; },</code></p>
+<p>seems to help until  runing<code>uv sync --upgrade</code> that removes  hash</p>
+<p>since it is only dependency without hash i assume it is a bug</p>
+<h3>Platform</h3>
+<p>Linux 6.10.14-linuxkit aarch64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.3</p>
+<h3>Python version</h3>
+<p>Python 3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @07pepa on 2025-05-13 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-13 14:34</div>
+            <div class="timeline-body"><p>I believe this is the same as #13318.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-05-13 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/07pepa">@07pepa</a> on 2025-05-13 14:47</div>
+            <div class="timeline-body"><p>It is indeeed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pytorch/pytorch/issues/153469.html">pytorch/pytorch#153469</a> on 2025-05-13 15:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revisit unicode-to-unicode confusables in `RUF001`, `RUF002`, `RUF003` - astral-sh/ruff #14433</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Revisit unicode-to-unicode confusables in `RUF001`, `RUF002`, `RUF003`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14433">#14433</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2024-11-18 13:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-18 13:06</div>
+            <div class="timeline-body"><p>In #8473 the RUF rules regarding confusable/ambiguous unicode were extended, in preview, to include cases where one might confuse some non-ASCII unicode character with another (as opposed to only treating cases where a non-ASCII unicode character may be confused for an ASCII character).</p>
+<p>However, the determination of what counts as &quot;confusable&quot;, or which of a confusable pair may be preferred, needs some re-examination. The main example encountered in an ecosystem check is the Greek letter μ, which may be used as a variable name (in which case one wants the Greek letter U+03BC) or as part of an SI unit like µs (in which case one wants the &quot;micro&quot; symbol U+00B5).</p>
+<p>See the comments on #14403 .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2024-11-18 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2024-11-18 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14403.html">astral-sh/ruff#14403</a> on 2024-11-18 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15056.html">astral-sh/ruff#15056</a> on 2024-12-23 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/covracer">@covracer</a> on 2025-03-11 03:04</div>
+            <div class="timeline-body"><p>Thanks @dylwil3 for looking into this. Tagging @Skylion007, @MichaReiser, and @AlexWaygood to continue the conversation started on https://github.com/astral-sh/ruff/pull/14403.</p>
+<h3>A general thought</h3>
+<p>I wonder if line-and-character-specific ignores, similar to <code>type: ignore[operator]</code>, could help with adoption of <code>RUF001</code>, <code>RUF002</code>, and <code>RUF003</code>:</p>
+<pre><code>sigma = 'σ'  # noqa: RUF001[σ]
+</code></pre>
+<h3>Specific responses to the previous thread</h3>
+<blockquote>
+<p>The main example encountered in an ecosystem check is the Greek letter μ</p>
+</blockquote>
+<p>I'm confused by the bokeh hit listed in https://github.com/astral-sh/ruff/pull/14403#issuecomment-2481411110</p>
+<p>I thought I already fixed it in https://github.com/bokeh/bokeh/pull/13668/files</p>
+<blockquote>
+<p>[mu] may be used as a variable name (in which case one wants the Greek letter U+03BC)</p>
+</blockquote>
+<p>Agreed. I recently experimented with an example and learned that <a href="https://docs.astral.sh/ruff/rules/non-ascii-name/">PLC2401</a> seems to be the rule for code, and it seems to flag all non-ASCII characters. Perhaps there is an opportunity use the &quot;confusables&quot; list for that rule.</p>
+<blockquote>
+<p>or as part of an SI unit like µs (in which case one wants the &quot;micro&quot; symbol U+00B5).</p>
+</blockquote>
+<p>Why not abbreviate microseconds with mu μ <code>\u03bc</code>?</p>
+<p>The Pandas project <a href="https://github.com/pandas-dev/pandas/blob/513e78760a8faee6723908ca23ea83dcabc5dd77/pandas/tests/computation/test_eval.py#L192">already abbreviates microfarads like that</a>. I'm pretty sure ipython is the source of the microseconds code timing strings in the comments of pandas, and <a href="https://github.com/ipython/ipython/pull/14426/files">the ipython maintainer was willing to switch</a> from micro µ <code>\u00b5</code> to mu μ <code>\u03bc</code>. My <a href="https://github.com/pandas-dev/pandas/issues/58472">pandas enhancement</a> accepting mu in addition to micro in their from-scratch miniature units library remains unfortunately attention starved. A more narrowly scoped tooling fixes change would likely race through review.</p>
+<p>But now for the feature presentation...</p>
+<h3>Mutwo Strikes Back.</h3>
+<p>My TL;DR is that character codes are messy; where possible, <a href="https://stackoverflow.com/a/50128375/3787516">NFKC normalize like Python</a> to tidy them up.</p>
+<p>The error that motivated me to work on this was the accidental mixup of mu μ <code>\u03bc</code> and micro µ <code>\u00b5</code> characters in a Python Django codebase and PostgreSQL database. Duplication accidentally arose in a units table created by data migrations copying string literals from Python code into database rows. At first I thought the database schema just needed a unique constraint on the abbreviation to surface and prevent the problem, but that didn't work. Different developers working at different times had copied and pasted different encodings that looked identical. I would like to help develop autoformatting that prevents this class of error. I did not begin this journey with a favorite character encoding, just with the determination that there could only be one. (Latin lowercase u remains a possible source of mixup, but at least it has many different pixels.)</p>
+<p>Digging deeper, I've learned several things.</p>
+<h4>Keyboards</h4>
+<p>IBM's <a href="https://en.wikipedia.org/wiki/AZERTY">azerty</a> keyboard for France and Belgium seems like the origin of the micro µ <code>\u00b5</code> character and reason for its early encoding separate from the other Greek characters. <a href="https://en.wikipedia.org/wiki/QWERTZ">qwertz</a> also includes a micro key. The <a href="https://en.wikiversity.org/wiki/Enabling_Greek_Characters_on_Your_Keyboard">Greek keyboard layout</a> generates mu μ <code>\u03bc</code>. Keycode conversion in either direction is possible but not widespread.</p>
+<h4>Confusion</h4>
+<p>I'm not sure if science/measurement groups are aligned on the topic or have put much thought into character encodings. As of March 2025, I see micro µ <code>\u00b5</code> on https://www.bipm.org/en/measurement-units/si-prefixes but mu μ <code>\u03bc</code> on https://www.nist.gov/pml/owm/metric-si-prefixes. Within the SI brochure PDF I see both encodings:</p>
+<pre><code>pdfgrep -o '[μµ]' ~/Downloads/SI-Brochure-9-EN.pdf | python -c 'import fileinput; from collections import Counter
+for key, value in Counter([mu.strip() for mu in fileinput.input()]).items():
+    print(f&quot;{hex(ord(key))}: {value}&quot;)'
+0x3bc: 12
+0xb5: 16
+</code></pre>
+<p>If anyone finds a useful explanation from groups like these, or anyone really, of the benefits of multiple different encodings, or the relative merits of one encoding over another, I'd be interested in reading them.</p>
+<p>Unicode Consortium ($5 000 to contribute, $50 000 to cast a full vote) documents vary:</p>
+<p><a href="http://www.unicode.org/reports/tr25">Technical Report 25</a> last updated 2017:</p>
+<blockquote>
+<p>2.5 Duplicated Characters</p>
+<p>Some Greek letters are encoded elsewhere as technical symbols. These include U+00B5 µ
+MICRO SIGN, U+2126 Ω OHM SIGN, and several characters among the APL functional symbols in
+the Miscellaneous Technical block. U+03A9 Ω GREEK LETTER CAPITAL OMEGA is the canonical
+equivalent of U+2126 Ω and its use is preferred. Micro sign is included in several parts of
+ISO/IEC 8859, and therefore supported in many legacy environments where U+03BC μ
+GREEK LETTER SMALL MU is not available. Implementations therefore need to be able to recog-
+nize the micro sign, even though U+03BC μ is the preferred character in a Unicode context.</p>
+</blockquote>
+<p><a href="https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-7/#G12477">Unicode 16 Core Spec</a> last updated 2025:</p>
+<blockquote>
+<p>Greek Letters as Symbols. The use of Greek letters for mathematical variables and operators is well established. Characters from the Greek block may be used for these symbols.</p>
+<p>For compatibility purposes, a few Greek letters are separately encoded as symbols in other character blocks. Examples include U+00B5
+µ MICRO SIGN in the Latin-1 Supplement character block and U+2126 Ω OHM SIGN in the Letterlike Symbols character block. The ohm sign is canonically equivalent to the capital omega, and normalization would remove any distinction. Its use is therefore discouraged in favor of capital omega. The same equivalence does not exist between micro sign and mu, and use of either character as a micro sign is common. For Greek text, only the mu should be used.</p>
+</blockquote>
+<p>On Wikipedia ($0 to contribute), the <a href="https://en.wikipedia.org/wiki/Mu_(letter">Mu page</a>#Unicode) and <a href="https://en.wikipedia.org/wiki/Micro-#Symbol_encoding_in_character_sets">micro- page</a> seem to disagree.</p>
+<h4>Kompatability</h4>
+<blockquote>
+<p>[K]ompatibility equivalence is a weaker type of equivalence [than canonical equivalence] between characters or sequences of characters which represent the same abstract character (or sequence of abstract characters), but which may have distinct visual appearances or behaviors. The visual appearances of the compatibility equivalent forms typically constitute a subset of the expected range of visual appearances of the character (or sequence of characters) they are equivalent to. However, these variant forms may represent a visual distinction that is significant in some textual contexts, but not in others. As a result, greater care is required to determine when use of a compatibility equivalent is appropriate. If the visual distinction is stylistic, then markup or styling could be used to represent the formatting information. However, some characters with compatibility decompositions are used in mathematical notation to represent a distinction of a semantic nature; replacing the use of distinct character codes by formatting in such contexts may cause problems.</p>
+</blockquote>
+<p>Mu μ <code>\u03bc</code> is the Kompatability equivalent (NFKD and NFKC) of micro µ <code>\u00b5</code>:</p>
+<p>https://github.com/unicode-org/icu/blob/30e23b0d286f87fefb161dc56e90afac5df0dc43/icu4c/source/data/unidata/norm2/nfkc_scf.txt#L63</p>
+<pre><code>00B5&gt;03BC
+</code></pre>
+<p>https://www.unicode.org/charts/PDF/U0080.pdf</p>
+<blockquote>
+<p>00B5 μ MICRO SIGN
+≈ 03BC μ greek small letter mu</p>
+</blockquote>
+<p>While micro and mu &quot;may have distinct visual appearances or behaviors&quot;, they are frequently indistinct: <a href="https://fonts.google.com/?preview.text=mu%20%CE%BC%20micro%20%C2%B5&amp;preview.size=20&amp;preview.layout=grid&amp;categoryFilters=Feeling:%2FExpressive%2FBusiness">Google fonts comparison of mu and micro</a>.</p>
+<h4>Code</h4>
+<p>Since <a href="https://peps.python.org/pep-3131/">PEP-3131</a> was implemented, Python allows both mu μ <code>\u03bc</code> and micro µ <code>\u00b5</code> as identifiers, but the underlying NFKC normalization means only the former will work reliably (see link in TL;DR for the getattr failure mode):</p>
+<pre><code class="language-shell">python -c 'print(&quot;&quot;&quot;class C:
+    \xb5=1
+print(hex(ord(dir(C)[-1])))&quot;&quot;&quot;)' | tee /dev/fd/2 | python -
+</code></pre>
+<pre><code class="language-python">class C:
+    µ=1
+print(hex(ord(dir(C)[-1])))
+</code></pre>
+<pre><code class="language-shell">0x3bc
+</code></pre>
+<h4>Conclusion</h4>
+<p>For the people that want to limit their .py files to unambiguous characters only, PEP-3131 replaces micro µ <code>\u00b5</code>  with mu μ <code>\u03bc</code>. Or dare I say: muve over, micro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17710.html">astral-sh/ruff#17710</a> on 2025-04-30 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../home-assistant/core/pulls/144853.html">home-assistant/core#144853</a> on 2025-05-17 19:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

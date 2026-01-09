@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Show a better hint for broken PBS venv - astral-sh/uv #16422</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1> Show a better hint for broken PBS venv</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/pull/16422">#16422</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-10-23 15:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-10-23 15:40</div>
+            <div class="timeline-body"><p>For some reason, I'm encountering broken PBS venvs again (https://github.com/astral-sh/python-build-standalone/issues/380). Instead of showing the inscrutable error to the user, we point them to the PBS bug and ask them to run <code>uv venv</code>.</p>
+<p>Fixed a duplicate &quot;exit code&quot; in the first commit.</p>
+<p><strong>Before</strong></p>
+<pre><code>$ uv sync
+error: Querying Python at `/tmp/uv/tests/.tmpwXZRTI/temp/.venv/bin/python3` failed with exit status exit status: 1
+
+[stderr]
+Could not find platform independent libraries &lt;prefix&gt;
+Could not find platform dependent libraries &lt;exec_prefix&gt;
+Python path configuration:
+  PYTHONHOME = (not set)
+  PYTHONPATH = (not set)
+  program name = '/tmp/uv/tests/.tmpwXZRTI/temp/.venv/bin/python3'
+  isolated = 1
+  environment = 0
+  user site = 0
+  safe_path = 1
+  import site = 1
+  is in build tree = 0
+  stdlib dir = '/install/lib/python3.12'
+  sys._base_executable = '/home/konsti/.local/share/uv/python/cpython-3.12.9-linux-x86_64-gnu/bin/python3.12'
+  sys.base_prefix = '/install'
+  sys.base_exec_prefix = '/install'
+  sys.platlibdir = 'lib'
+  sys.executable = '/tmp/uv/tests/.tmpwXZRTI/temp/.venv/bin/python3'
+  sys.prefix = '/install'
+  sys.exec_prefix = '/install'
+  sys.path = [
+    '/install/lib/python312.zip',
+    '/install/lib/python3.12',
+    '/install/lib/python3.12/lib-dynload',
+  ]
+Fatal Python error: init_fs_encoding: failed to get the Python codec of the filesystem encoding
+Python runtime state: core initialized
+ModuleNotFoundError: No module named 'encodings'
+
+Current thread 0x000078e48b835740 (most recent call first):
+  &lt;no Python frame&gt;
+</code></pre>
+<p><strong>After</strong></p>
+<pre><code>$ uv sync
+  error: Can't use Python at `/tmp/uv/tests/.tmpwXZRTI/temp/.venv/bin/python3`
+    Caused by: Python is missing PYTHONHOME. If you are using a managed Python interpreter, this is a known bug (https://github.com/astral-sh/python-build-standalone/issues/380). You can recreate the virtual environment with `uv venv`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-10-23 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-10-23 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/python_install.rs</code>:3987 on 2025-10-23 15:41</div>
+            <div class="timeline-body"><p>This isn't ideal but it's consistent with the existing logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-23 15:49</div>
+            <div class="timeline-body"><p>cc @geofft</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2025-12-02 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @geofft by @konstin on 2025-12-02 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-03 13:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_install.rs</code>:3987 on 2025-12-03 13:14</div>
+            <div class="timeline-body"><p>Just to confirm, are we skipping this interpreter right now? or is this a change due to the changed error kind?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-03 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/interpreter.rs</code>:907 on 2025-12-03 13:17</div>
+            <div class="timeline-body"><p>It'd be nice to specialize based on whether this actually is a managed Python interpreter. I think we could do that by abstracting this logic to operate on a path</p>
+<p>https://github.com/astral-sh/uv/blob/60a811e715d1d1919afd73b0e4dec4c4be8aa3f9/crates/uv-python/src/interpreter.rs#L301-L317</p>
+<p>and then passing in the canonicalized path here and sys_base_prefix in the existing code?</p>
+<p>This doesn't need to be blocking feedback, but if you don't do it, I probably would..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-03 13:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_install.rs</code>:3987 on 2025-12-03 13:18</div>
+            <div class="timeline-body"><p>(It looks like we do for <code>UnexpectedResponse</code> so yes)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-12-03 13:18</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

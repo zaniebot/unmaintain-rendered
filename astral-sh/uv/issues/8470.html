@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confusing behavior of uvx and uv tool paths. - astral-sh/uv #8470</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Confusing behavior of uvx and uv tool paths.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/8470">#8470</a>
+        opened by <a href="https://github.com/warsaw">@warsaw</a>
+        on 2024-10-22 16:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/warsaw">@warsaw</a> on 2024-10-22 16:54</div>
+            <div class="timeline-body"><p>I'm trying to convert from pipx to uvx, but running into some confusion about how the commands should work.</p>
+<pre><code>% uv --version
+uv 0.4.25 (Homebrew 2024-10-21)
+</code></pre>
+<p>I am using <code>/bin/bash</code> on macOS 14.7</p>
+<p>I wrote a little script called <code>world</code> which <a href="https://world.readthedocs.io/en/stable/">looks up country codes</a>.  If I install this with pipx, it gets put in my <code>~/.local/bin</code> directory, which I can put on my <code>$PATH</code> and then can invoke directly instead of through pipx.  If I try to do something similar with uvx, I get some confusing behavior.  This might be <em>intended</em> behavior but for someone moving from pipx to uvx it feels like friction.</p>
+<pre><code>% uvx world it
+Installed 2 packages in 3ms
+it originates from Italy
+% uvx world de
+de originates from Germany
+</code></pre>
+<p>So far so good.  However, <code>uv tool list</code> doesn't show that <code>world</code> is installed:</p>
+<pre><code>% uv tool list
+No tools installed
+</code></pre>
+<p>I'd also like to be able to invoke <code>world</code> directly, which I assumed would be possible if uvx's bin directory were on my <code>$PATH</code>, but this doesn't work:</p>
+<pre><code>% uv tool dir --bin
+/Users/mylogin/.local/bin
+% uv tool update-shell
+Executable directory /Users/mylogin/.local/bin is already in PATH
+% world fr
+-bash: world: command not found
+% ls -l $(uv tool dir --bin) | grep world
+%
+</code></pre>
+<p>If I install the tool before trying to run it though, it works in the obvious ways:</p>
+<pre><code>% uv tool install world
+Resolved 2 packages in 293ms
+Installed 2 packages in 6ms
+ + atpublic==5.0
+ + world==5.1.1
+Installed 1 executable: world
+% world it
+it originates from Italy
+% uv tool list
+world v5.1.1
+- world
+% ls -l $(uv tool dir --bin) | grep world
+lrwxrwxr-x  1 mylogin  staff  50 Oct 22 09:49 world@ -&gt; /Users/mylogin/.local/share/uv/tools/world/bin/world
+</code></pre>
+<p>It almost seems like the default behavior for uvx is to run with the <code>--isolated</code> flag enabled by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 17:04</div>
+            <div class="timeline-body"><p>Yes, <code>uvx</code> does not install a tool by design — it uses an isolated environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-22 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 17:04</div>
+            <div class="timeline-body"><p>(<code>uvx</code> is equivalent to <code>uv tool run</code> which is roughly equivalent to <code>pipx run</code> which also does not install the tool in your bin directory)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/warsaw">@warsaw</a> on 2024-10-22 17:14</div>
+            <div class="timeline-body"><p>I had a feeling this was working by design, thank you for confirmation!</p>
+<p>My only suggestion to resolve this ticket is to add some documentation to clarify that <code>uvx</code>/<code>uv tool run</code> uses isolated environments by default, and that <em>if</em> you want to put the tool in your <code>uv tool dir --bin</code> directory and have <code>uv tool list</code> show it is to <code>uv tool install</code> first.</p>
+<p>This is especially useful for tools where you need the uvx <code>--from</code> flag, e.g. <a href="https://pypi.org/project/pepotron/">pepotron</a> but don't if you <code>uv tool install</code> first, e.g. <code>v tool run --from pepotron pep</code>.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-10-22 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-10-22 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 18:01</div>
+            <div class="timeline-body"><blockquote>
+<p>This is especially useful for tools where you need the uvx --from flag, e.g. <a href="https://pypi.org/project/pepotron/">pepotron</a> but don't if you uv tool install first, e.g. v tool run --from pepotron pep.</p>
+</blockquote>
+<p>Yeah this actually sort of incidental, in that we only check if the requested binary belongs to the package if it fails — so you can do things like <code>uvx --from black bash -c &quot;black&quot;</code>.</p>
+<blockquote>
+<p>My only suggestion to resolve this ticket is to add some documentation to clarify that uvx/uv tool run uses isolated environments by default, ...</p>
+</blockquote>
+<p>I'm planning on doing some documentation work this week, I'll try to roll this into that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2024-10-23 20:23</div>
+            <div class="timeline-body"><p>I think it's consistently confusing that <code>uvx</code> doesn't just mean <code>uv tool</code>
+It seems more intuitive than for it to only mean <code>uv tool run</code>, making it a niche shorthand.
+I try to remember that <code>uvx</code> is not a thing as to not mess up my commands</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

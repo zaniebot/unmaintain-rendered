@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected behavior of `--frozen` flag in docker build? - astral-sh/uv #14616</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected behavior of `--frozen` flag in docker build?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14616">#14616</a>
+        opened by <a href="https://github.com/thisisarko">@thisisarko</a>
+        on 2025-07-14 20:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thisisarko">@thisisarko</a> on 2025-07-14 20:37</div>
+            <div class="timeline-body"><h3>Project structure:</h3>
+<pre><code>├── packages
+│   ├── foo
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       └── foo
+├── pyproject.toml
+</code></pre>
+<p><code>foo</code> is a workspace member. In <code>foo/pyproject.toml</code> a private package index is defined but preceeded by standard <code>pypi</code> package index to enforce precendence priority.</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;pypi&quot;
+url = &quot;https://pypi.org/simple&quot;
+
+[[tool.uv.index]]
+name = &quot;private&quot;
+url = &quot;...&quot;
+</code></pre>
+<p>Running <code>uv sync --all-extras --all-groups --all-packages</code> works on local.
+Running <code>uv sync --frozen --no-editable --package foo --no-dev --no-install-project</code> works as expected on local as well.</p>
+<h3>Snippet from <code>Dockerfile</code></h3>
+<pre><code class="language-Dockerfile">FROM python:3.12-slim-bookworm AS builder
+
+RUN apt update &amp;&amp; apt install -y build-essential
+
+COPY --from=ghcr.io/astral-sh/uv:0.7 /uv /uvx /bin/
+
+WORKDIR /app
+
+COPY packages ./packages/
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=secret,id=aws-access-key-id,env=AWS_ACCESS_KEY_ID \
+    --mount=type=secret,id=aws-secret-access-key,env=AWS_SECRET_ACCESS_KEY \
+    --mount=type=secret,id=aws-session-token,env=AWS_SESSION_TOKEN \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    sh -c ' \
+        DOMAIN_OWNER=123456789; \
+        DOMAIN_NAME=some-domain; \
+        REGION=region; \
+        export UV_INDEX_PRIVATE_USERNAME=aws; \
+        export UV_INDEX_PRIVATE_PASSWORD=$(aws codeartifact get-authorization-token --domain-owner $DOMAIN_OWNER --domain $DOMAIN_NAME --region $REGION --query authorizationToken --output text); \
+        uv sync --frozen --no-editable --package foo --no-dev --no-install-project '
+</code></pre>
+<p>This is giving a <code>401 Unauthorized</code> error. The same command with same credentials works on local as mentioned before.</p>
+<p>One workaround I found to make the build succeed is to define the private index in the root <code>pyproject.toml</code>.</p>
+<p>But this is not desirable, and moreover upon doing this <code>uv lock --check</code> starts throwing lockfile not in sync error. Running <code>uv lock</code> does not update the lockfile either at this stage.</p>
+<p>Am I missing something?</p>
+<h3>Platform</h3>
+<p>macOS 15, python:3.12-slim-bookworm</p>
+<h3>Version</h3>
+<p>ghcr.io/astral-sh/uv:0.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @thisisarko on 2025-07-14 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thisisarko">@thisisarko</a> on 2025-07-15 03:56</div>
+            <div class="timeline-body"><p>Update: Narrowed the issue down to the use of <code>--frozen</code> flag in the command <code>uv sync --frozen --no-editable --package foo --no-dev --no-install-project</code>. But this only affects in the Dockerfile. Strangely, <code>--locked</code> works. This feels like a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Authenticating to private package index works on local but fails in docker for a workspace project" to "Unexpected behavior of `--frozen` flag in docker build?" by @thisisarko on 2025-07-15 03:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-15 12:34</div>
+            <div class="timeline-body"><p>I believe AWS Code Artifact uses signed URLs, so you're going to have signed URLs in the lockfile that are no longer valid? That makes <code>--frozen</code> fail because during <code>--frozen</code> we fetch the artifacts directly without re-resolving</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-15 12:35</div>
+            <div class="timeline-body"><p>Though it seems like maybe something else is going on?</p>
+<blockquote>
+<p>One workaround I found to make the build succeed is to define the private index in the root pyproject.toml.</p>
+</blockquote>
+<p>I don't see why this would fix it.</p>
+<blockquote>
+<p>Running uv lock does not update the lockfile either at this stage.</p>
+</blockquote>
+<p>I think it's always a bug if <code>uv lock --check</code> fails but <code>uv lock</code> is a no-op.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thisisarko">@thisisarko</a> on 2025-07-15 18:26</div>
+            <div class="timeline-body"><p>@zanieb I don't think the CodeArtifact URLs are signed, at least not from what I see in the lockfile. They are the same as they are defined under <code>tool.uv.index</code>.
+I have made it work with <code>--locked</code> for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-16 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thisisarko">@thisisarko</a> on 2025-07-16 17:22</div>
+            <div class="timeline-body"><p>@charliermarsh Any reason for closing this? Is this not a bug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-16 18:03</div>
+            <div class="timeline-body"><p>I thought you had resolved it based on your last comment, I guess I misunderstood.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2025-07-16 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thisisarko">@thisisarko</a> on 2025-07-16 19:24</div>
+            <div class="timeline-body"><p>Using <code>--locked</code> as a workaround, but this might still indicate an underlying issue. It’s worth investigating to determine whether this is a bug or an expected behavior. If it’s the latter, the documentation particularly around defining package indexes in workspace layouts should reflect that. I’ll defer to the maintainers on whether this issue should be labeled as a bug based on what the investigation reveals.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

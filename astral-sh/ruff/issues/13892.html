@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DJ012 produces false positive when there are other dunder methods in model class - astral-sh/ruff #13892</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>DJ012 produces false positive when there are other dunder methods in model class</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13892">#13892</a>
+        opened by <a href="https://github.com/maddrum">@maddrum</a>
+        on 2024-10-23 13:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/maddrum">@maddrum</a> on 2024-10-23 13:53</div>
+            <div class="timeline-body"><p><code>ruff check</code> produces false positive DJ012 for Django models like so:</p>
+<pre><code>class Person(models.Model):
+    name = models.CharField(xxxx)    
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        &lt;some custom code&gt;
+
+    def save(*args, **kwargs):
+        super().save(*args, `**kwargs)
+
+</code></pre>
+<p>According to Python best practices, dunder methods should always be kept at the beginning of the class.
+But since <code>save()</code> is a Django method which is after other methods method it invokes error.</p>
+<p>DJ012 should obey other Python class structuring, before evaluating Django styleguide.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-23 14:45</div>
+            <div class="timeline-body"><p>I'm not a Django expert, so it's unclear to me why the <a href="https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/#model-style">Django style guide</a> only mentions the ordering of <code>__str__</code>. Unless all other dunder methods are included in the <em>Any custom methods</em> section.</p>
+<p>It seems overriding <a href="https://docs.djangoproject.com/en/5.1/ref/models/instances/#creating-objects"><code>__init__</code> isn't recommended</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maddrum">@maddrum</a> on 2024-10-23 15:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not a Django expert, so it's unclear to me why the <a href="https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/#model-style">Django style guide</a> only mentions the ordering of <code>__str__</code>. Unless all other dunder methods are included in the <em>Any custom methods</em> section.</p>
+<p>It seems overriding <a href="https://docs.djangoproject.com/en/5.1/ref/models/instances/#creating-objects"><code>__init__</code> isn't recommended</a>.</p>
+</blockquote>
+<p><code>__init__</code> is only for display purposes, that is going to be true for all <strong>dunder</strong> methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-24 06:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2024-10-24 06:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-10-24 06:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 06:27</div>
+            <div class="timeline-body"><p>I want to make sure that we're 100% sure that this change is in conformance with the style guide because it is a breaking change: All dunder methods other than <code>__str__</code> would suddenly be flagged as incorrectly ordered.</p>
+<p>As I said before, I'm not a Django expert but I did some extra research.</p>
+<ul>
+<li>The <a href="https://github.com/rocioar/flake8-django/blob/895364969af49cbdd3c6ba8e63adeb9e4415ec5d/flake8_django/checkers/model_content_order.py#L77C5-L85">upstream rule</a> implements the same ordering as Ruff</li>
+<li>The django style guide and model documentation only mention overriding <code>__str__</code> and warn about overriding <code>__init__</code></li>
+</ul>
+<p>The impression I get is that Ruff's current behavior is correct. My suspicious is that overriding other dunder methods is just very uncommon (or not advised) for Django models. Could you share some examples (from your project and/or other projects) where it is necessary to override additional dunder methods?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maddrum">@maddrum</a> on 2024-10-24 15:27</div>
+            <div class="timeline-body"><blockquote>
+<p>I want to make sure that we're 100% sure that this change is in conformance with the style guide because it is a breaking change: All dunder methods other than <code>__str__</code> would suddenly be flagged as incorrectly ordered.</p>
+<p>As I said before, I'm not a Django expert but I did some extra research.</p>
+<pre><code>* The [upstream rule](https://github.com/rocioar/flake8-django/blob/895364969af49cbdd3c6ba8e63adeb9e4415ec5d/flake8_django/checkers/model_content_order.py#L77C5-L85) implements the same ordering as Ruff
+
+* The django style guide and model documentation only mention overriding `__str__` and warn about overriding `__init__`</code></pre>
+<p>The impression I get is that Ruff's current behavior is correct. My suspicious is that overriding other dunder methods is just very uncommon (or not advised) for Django models. Could you share some examples (from your project and/or other projects) where it is necessary to override additional dunder methods?</p>
+</blockquote>
+<p>For example, you might want to define <code>__repr__</code> in your Django model, which is safe and okay and has common usage in logging.</p>
+<p>For <code>__init__</code> there is a semi-dirty solution/which is a lot common/ for tracking model field updates, since Django does not have a solution for that on the model level/it has on forms, but that might not be a solution in every case/</p>
+<p>More on that - <a href="https://medium.com/@mmzeynalli/how-to-detect-field-changes-in-django-ae4bc719aea2">https://medium.com/@mmzeynalli/how-to-detect-field-changes-in-django-ae4bc719aea2</a>
+Solution 3.</p>
+<p>To summarize, in real-world scenarios, there are a lot of cases where that style guide is impossible to follow, which is why this check is going to produce fake positives</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 15:57</div>
+            <div class="timeline-body"><p>@AlexWaygood any chance that you're familiar with DJango?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-24 16:06</div>
+            <div class="timeline-body"><p>I think @carljm is almost certainly our best django expert on the team 😄
+Whereas I have never used django, Carl was both a member of the django core team (maybe still is?) and helped maintain a very large django-based codebase for many years (Instagram)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-24 16:20</div>
+            <div class="timeline-body"><p>Possibly we should open an issue on Django itself to get the style guide clarified? I assume the upstream rule was simply based on a literal reading of the style guide as currently written. Although overriding <code>__init__</code> specifically may be discouraged on Django models, there are certainly other dunder methods that may make sense to override, so the style guide should offer guidance on where they belong.</p>
+<p>Personally I agree with @maddrum that the typical Python convention to put dunder methods first should be respected here, and <code>__str__</code> should be replaced with &quot;<code>__str__</code> or any other Python dunder methods&quot; in the Django style guide. But I don't think this is really our call to make. The rule is intended to encode the style guide, and the style guide is simply not clear here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-25 06:35</div>
+            <div class="timeline-body"><p>Thanks @carljm. This is a great point. @maddrum would you be interested in opening an issue on the django style guide project where you ask them to clarify the ordering?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maddrum">@maddrum</a> on 2024-10-25 13:16</div>
+            <div class="timeline-body"><p>I have raised this</p>
+<p><a href="https://code.djangoproject.com/ticket/35866#ticket">https://code.djangoproject.com/ticket/35866#ticket</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maddrum">@maddrum</a> on 2024-10-25 13:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Possibly we should open an issue on Django itself to get the style guide clarified? I assume the upstream rule was simply based on a literal reading of the style guide as currently written. Although overriding <code>__init__</code> specifically may be discouraged on Django models, there are certainly other dunder methods that may make sense to override, so the style guide should offer guidance on where they belong.</p>
+<p>Personally I agree with @maddrum that the typical Python convention to put dunder methods first should be respected here, and <code>__str__</code> should be replaced with &quot;<code>__str__</code> or any other Python dunder methods&quot; in the Django style guide. But I don't think this is really our call to make. The rule is intended to encode the style guide, and the style guide is simply not clear here.</p>
+</blockquote>
+<p>This one applies to staticmethods, private methods, properties and a lot of other methods that come on top.
+The proposed structure violates many practices and that error currently requires restyling code not according to Python directives. And Django code should follow those first and then apply other rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nessita">@nessita</a> on 2024-10-25 13:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Possibly we should open an issue on Django itself to get the style guide clarified?</p>
+</blockquote>
+<p>Ticket accepted! (Hello, Django Fellow here :wave: )</p>
+<blockquote>
+<p>Personally I agree with @maddrum that the typical Python convention to put dunder methods first should be respected here, and <code>__str__</code> should be replaced with &quot;<code>__str__</code> or any other Python dunder methods&quot; in the Django style guide. But I don't think this is really our call to make. The rule is intended to encode the style guide, and the style guide is simply not clear here.</p>
+</blockquote>
+<p>As I put in the ticket, my reading of the Django docs for &quot;any custom method&quot; is &quot;any custom business logic or helper method that you create for your model&quot;, and it does not apply to overrides of what <code>object</code> provides or any other documented dunder method.</p>
+<p>I accepted the ticket on the basis that the docs could be more clear about this. Thanks everyone!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maddrum">@maddrum</a> on 2024-10-29 05:54</div>
+            <div class="timeline-body"><p>Added a PR with suggested changes</p>
+<p>https://github.com/django/django/pull/18723</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sarahboyce">@sarahboyce</a> on 2024-10-29 13:56</div>
+            <div class="timeline-body"><p>Hello :wave: another Django Fellow</p>
+<blockquote>
+<p>The impression I get is that Ruff's current behavior is correct. My suspicious is that overriding other dunder methods is just very uncommon (or not advised) for Django models. Could you share some examples (from your project and/or other projects) where it is necessary to override additional dunder methods?</p>
+</blockquote>
+<p>Correct, it's really uncommon. This is an <strong>internal</strong> style guide for our docs and there's no models in our docs that override a dunder method other than <code>__str__</code></p>
+<blockquote>
+<p>Personally I agree with @maddrum that the typical Python convention to put dunder methods first should be respected here, and <code>__str__</code> should be replaced with &quot;<code>__str__</code> or any other Python dunder methods&quot; in the Django style guide. But I don't think this is really our call to make. The rule is intended to encode the style guide, and the style guide is simply not clear here.</p>
+</blockquote>
+<p>Agreed, I have commented on the PR to make this update so our docs are clearer.
+Given this doesn't really happen, I don't think we need to go into further detail in the Django internal docs, as the audience is contributors to Django (rather than a strict style guide for the Django community)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @dhruvmanila on 2024-10-30 03:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.8" by @MichaReiser on 2024-10-30 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-30 18:21</div>
+            <div class="timeline-body"><p>Thanks everyone for your help in clarifying the style guide. The style guide has been updated and we'd welcome a PR that updates the rule implementation accordingly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-10-30 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.8" by @AlexWaygood on 2024-11-18 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.9" by @AlexWaygood on 2024-11-18 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.9" by @MichaReiser on 2025-01-08 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v.0.10" by @MichaReiser on 2025-01-08 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15365.html">astral-sh/ruff#15365</a> on 2025-01-09 03:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-09 13:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

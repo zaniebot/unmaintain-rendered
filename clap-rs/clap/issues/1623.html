@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clap eats double hyphens on &quot;last&quot;+&quot;multiple&quot; arguments - clap-rs/clap #1623</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clap eats double hyphens on &quot;last&quot;+&quot;multiple&quot; arguments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1623">#1623</a>
+        opened by <a href="https://github.com/ejmahler">@ejmahler</a>
+        on 2020-01-05 09:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ejmahler">@ejmahler</a> on 2020-01-05 09:23</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p>rustc 1.39.0</p>
+<h3>Affected Version of clap</h3>
+<pre><code>[dependencies.clap]
+version = &quot;2.27.1&quot;
+default-features = false
+</code></pre>
+<h3>Expected Behavior Summary</h3>
+<p>If <code>last</code> and <code>multiple</code> and <code>allow_hyphen_values</code>  are specified on an argument, then clap should consume the first bare &quot;--&quot; it encounters, and should pass <em>everything</em> after that to the last argument.</p>
+<h3>Actual Behavior Summary</h3>
+<p>Clap silently omits all bare &quot;--&quot; entries from the argument value.</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<p>This is a program that would theoretically pair cargo with cbindgen, compiling a DLL and generating a c++ header in the same step. The <code>CARGO_ARGS</code> argument will be forwarded as-is to cargo.</p>
+<pre><code class="language-rust">use std::path::PathBuf;
+use clap::clap_app;
+
+fn main() {
+    let matches = clap_app!(unreal_rust_compile =&gt;
+        (version: &quot;0.1&quot;)
+        (author: &quot;Elliott Mahler &lt;jointogethe.r@gmail.com&gt;&quot;)
+        (about: &quot;Runs cargo and cbindgen on a crate. Intended for use with Unreal Engine's build system.&quot;)
+        (@arg CRATE_DIR: --crate_dir +required +takes_value &quot;Input crate directory&quot;)
+        (@arg OUTPUT_HEADER_FILE: --output_header_file +required +takes_value &quot;Destination filename for the generated header&quot;)
+        (@arg CARGO_ARGS: +last +multiple +allow_hyphen_values &quot;Arguments to cargo. Cargo will be run with \&quot;crate_dir\&quot; as the working directory.&quot;)
+    ).get_matches();
+
+    // pull arguments from the argument parser
+    let _crate_dir : PathBuf = matches.value_of(&quot;CRATE_DIR&quot;).expect(&quot;crate_dir not provided&quot;).into();
+    let _output_filename : PathBuf = matches.value_of(&quot;OUTPUT_HEADER_FILE&quot;).expect(&quot;output_file not provided&quot;).into();
+    let cargo_args = matches.values_of(&quot;CARGO_ARGS&quot;).expect(&quot;No cargo args provided&quot;);
+
+    println!(&quot;cargo {}&quot;, cargo_args.collect::&lt;Vec&lt;_&gt;&gt;().join(&quot; &quot;));
+}
+</code></pre>
+<p>Input: <code>cargo run -- --crate_dir /crate/dir --output_header_file /path/to/header.h -- rustc --release -- -C extra-filename=my_suffix</code></p>
+<p>Expected output: <code>cargo rustc --release -- -C extra-filename=my_suffix</code>
+Actual output: <code>cargo rustc --release -C extra-filename=my_suffix</code></p>
+<h3>Debug output</h3>
+<p>Can't compile debug output, because I'm on a windows machine, and the debug feature doesn't compile for me:</p>
+<pre><code>   Compiling clap v2.27.1
+error[E0433]: failed to resolve: could not find `unix` in `os`
+ --&gt; C:\Users\Elliott\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-2.27.1\src\app\parser.rs:7:14
+  |
+7 | use std::os::unix::ffi::OsStrExt;
+  |              ^^^^ could not find `unix` in `os`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ejmahler">@ejmahler</a> on 2020-01-05 09:32</div>
+            <div class="timeline-body"><p>Well, this is awkward.</p>
+<p>Through a miracle, I discovered that I wasn't using the latest version. I assumed 2.27 was the latest without looking. And the good news is that this is fixed in the latest version.</p>
+<p>I'm pretty sure I copied it from the docs, which still lists 2.27:</p>
+<p>https://docs.rs/clap/2.33.0/clap/#usage</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ejmahler on 2020-01-05 09:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

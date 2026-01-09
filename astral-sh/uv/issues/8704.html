@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace mode not finding package dependency  - astral-sh/uv #8704</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Workspace mode not finding package dependency </h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/8704">#8704</a>
+        opened by <a href="https://github.com/scosman">@scosman</a>
+        on 2024-10-30 17:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/scosman">@scosman</a> on 2024-10-30 17:32</div>
+            <div class="timeline-body"><p>I'm trying to port a project to UV but I can't get it to work. The project is basically the described use case in the workspaces docs: a core library, and a FastAPI server depending on it, in another library project in the same repo.</p>
+<p>Goal: be able to run commands like <code>uv run python3 -m pytest -q .</code> from the root (works great in conda, can't find the workspace dependency with UV)</p>
+<p>I've included snippets of the files in question below, but the full setup is in this branch: https://github.com/Kiln-AI/Kiln/tree/uv</p>
+<p>Note: it works fine when I'm not using workspace mode, and just have 2 independent projects with a local path dependency (can run the tests of each independently). When I move it to workspace mode, I'm getting <code>ModuleNotFoundError: No module named 'kiln_ai'</code> (where kiln_ai is the workspace project dependency).</p>
+<p>Root pyproject.toml</p>
+<pre><code>[project]
+name = &quot;kiln-root&quot;
+version = &quot;0.1.0&quot;
+description = &quot;uv workspace project for Kiln AI. See kiln-ai package on pypi for our librabrary (libs/core)&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+    &quot;kiln-ai&quot;,
+]
+
+[tool.uv.workspace]
+members = [&quot;libs/core&quot;, &quot;libs/server&quot;]
+
+[tool.uv.sources]
+kiln-ai = { workspace = true }
+</code></pre>
+<p>The dependency project: /libs/core/pyproject.toml - https://github.com/Kiln-AI/Kiln/blob/uv/libs/core/pyproject.toml</p>
+<p>The dependent project:  /libs/server/pyproject.toml - https://github.com/Kiln-AI/Kiln/blob/uv/libs/server/pyproject.toml</p>
+<pre><code># Only relevant sections in the issue, full file here: https://github.com/Kiln-AI/Kiln/blob/uv/libs/server/pyproject.toml
+
+[tool.uv.sources]
+# This works fine, if we don't use UV workspace mode (top level pyproject.toml), but errors if we do.
+# kiln-ai = { path = &quot;../core&quot; }
+
+# This returns &quot;ModuleNotFoundError: No module named 'kiln_ai'&quot; in workspace mode, if included here, or not included at all.
+kiln-ai = { workspace = true }
+</code></pre>
+<h3>Version Info</h3>
+<pre><code>uv --version
+uv 0.4.28 (debe67ffd 2024-10-28)
+</code></pre>
+<h3>Command</h3>
+<pre><code># /libs/server or root have same issue. the same issue happens for tasks that don't need the central conftest.py like just running the server.
+uv run python3 -m pytest -q .
+ImportError while loading conftest 'xx/kiln/conftest.py'.
+../../conftest.py:5: in &lt;module&gt;
+    from kiln_ai.utils.config import Config
+E   ModuleNotFoundError: No module named 'kiln_ai'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-30 17:47</div>
+            <div class="timeline-body"><p>What's the <code>pyproject.toml</code> for <code>kiln-ai</code> look like?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/scosman">@scosman</a> on 2024-10-30 17:48</div>
+            <div class="timeline-body"><p>@zanieb  that's here: https://github.com/Kiln-AI/Kiln/blob/uv/libs/core/pyproject.toml</p>
+<p>Pretty stock I think. Full files in the links above.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-30 17:48</div>
+            <div class="timeline-body"><p>Sorry I see it at https://github.com/Kiln-AI/Kiln/blob/uv/libs/core/pyproject.toml now</p>
+<p>You'll want to mark the project as &quot;packaged&quot; by defining a build system https://docs.astral.sh/uv/concepts/projects/#build-systems</p>
+<p>Otherwise, we don't install it into the environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-30 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/scosman">@scosman</a> on 2024-10-30 18:00</div>
+            <div class="timeline-body"><p>Got it, and working. Many thanks!</p>
+<p>That could be a bit more clear in the docs/error message. However I do see it's in the docs so totally user error. I'm just surprised <code>uv add kiln-ai</code> warn me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-30 18:06</div>
+            <div class="timeline-body"><p>Yeah we should definitely add some sort of warning or hint here.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

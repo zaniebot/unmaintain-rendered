@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>401 authentication with AWS CodeArtifact - astral-sh/uv #13895</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>401 authentication with AWS CodeArtifact</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13895">#13895</a>
+        opened by <a href="https://github.com/kurt-rhee">@kurt-rhee</a>
+        on 2025-06-07 00:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kurt-rhee">@kurt-rhee</a> on 2025-06-07 00:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Problem Statement</h1>
+<p>When attempting to add a dependency which lives inside of an AWS codeartifact package registry, authentication fails even if authentication variables are set.</p>
+<h2>In pyproject.toml</h2>
+<pre><code># --- UV ---
+[tool.uv]
+
+[[tool.uv.index]]
+name = &quot;proximal-package-index&quot;
+url = &quot;https://proximal-code-artifact-domain-[redacted].d.codeartifact.us-east-2.amazonaws.com/pypi/proximal-hub/simple/&quot;
+
+[tool.uv.sources]
+proximal = { index = &quot;proximal-package-index&quot; }
+</code></pre>
+<h2>In terminal</h2>
+<pre><code>username is set to `aws`
+(api) kurt@Mac api % echo $UV_INDEX_PROXIMAL_PACKAGE_INDEX_PASSWORD
+{
+    &quot;authorizationToken&quot;: &quot;eyJ2ZXIiOj...[redacted]&quot;,
+    &quot;expiration&quot;: [tomorrow]
+}
+
+
+(api) kurt@Mac api % uv add proximal-core
+  × No solution found when resolving dependencies:
+  ╰─▶ Because kaleido was not found in the package registry and your project depends on
+      kaleido==0.2.1, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: An index URL
+      (https://proximal-code-artifact-domain-[redacted].d.codeartifact.us-east-2.amazonaws.com/pypi/proximal-hub/simple/)
+      could not be queried due to a lack of valid authentication credentials (401
+      Unauthorized).
+  help: If you want to add the package regardless of the failed resolution, provide the
+        `--frozen` flag to skip locking and syncing.
+</code></pre>
+<h2>AWS</h2>
+<p><img src="https://github.com/user-attachments/assets/b99177fe-bfae-4c0e-bbdc-2e0437f2bad0" alt="Image" /></p>
+<h3>Platform</h3>
+<p>Darwin 24.5.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.11 (Homebrew 2025-04-30)</p>
+<h3>Python version</h3>
+<p>(api) kurt@Mac api % uv run python --version   × No solution found when resolving dependencies:   ╰─▶ Because kaleido was not found in the package registry and your project depends on       kaleido==0.2.1, we can conclude that your project's requirements are unsatisfiable.        hint: An index URL       (https://proximal-code-artifact-domain-[redacted].d.codeartifact.us-east-2.amazonaws.com/pypi/proximal-hub/simple/)       could not be queried due to a lack of valid authentication credentials (401       Unauthorized).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @kurt-rhee on 2025-06-07 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-07 02:58</div>
+            <div class="timeline-body"><p>Do you not need to set a username (<code>aws</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kurt-rhee">@kurt-rhee</a> on 2025-06-09 17:27</div>
+            <div class="timeline-body"><p>Woops, forgot to include that information, the username is set to <code>aws</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-09 17:32</div>
+            <div class="timeline-body"><p>Does it work as expected if you encode the credentials directly in the <code>pyproject.toml</code> (just as a test)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @zanieb on 2025-06-09 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-09 18:02</div>
+            <div class="timeline-body"><p>I'm not able to replicate this. With the following I can successfully install from AWS CodeArtifact on uv <code>0.7.12</code>.</p>
+<p>I'm running:</p>
+<pre><code>export UV_INDEX_MY_INDEX_USERNAME=aws
+export UV_INDEX_MY_INDEX_PASSWORD=$(aws codeartifact get-authorization-token --domain &lt;domain&gt; --domain-owner &lt;domain-owner&gt; --region us-east-1 --query authorizationToken --output text)
+uv add a01 
+</code></pre>
+<p>My <code>pyproject.toml</code> is:</p>
+<pre><code>...
+  [[tool.uv.index]]
+  name = &quot;my-index&quot;
+  url = &quot;https://&lt;DOMAIN&gt;-&lt;ACCOUNT_ID&gt;.d.codeartifact.us-east-1.amazonaws.com/pypi/&lt;REPO&gt;/simple/&quot;
+
+  [tool.uv.sources]
+  a01 = { index = &quot;my-index&quot; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @jtfmumm on 2025-06-09 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kurt-rhee">@kurt-rhee</a> on 2025-06-09 18:53</div>
+            <div class="timeline-body"><p>Something very interesting:</p>
+<p>I only changed the two files and things are now working as expected.  The only thing that is changed between the two files is the name field which is now <code>test</code> instead of <code>proximal-package-index</code>.  I wonder if there is something that is prevent me from using <code>index</code> in the title or multiple <code>-</code> characters?</p>
+<p>auth_aws.sh</p>
+<pre><code>export AWS_CODEARTIFACT_TOKEN=&quot;$(
+    aws codeartifact get-authorization-token \
+    --domain proximal-code-artifact-domain \
+    --domain-owner 016997484973 \
+    --query authorizationToken \
+    --output text
+)&quot;
+
+export UV_INDEX_TEST_USERNAME=aws
+export UV_INDEX_TEST_PASSWORD=&quot;$AWS_CODEARTIFACT_TOKEN&quot;
+</code></pre>
+<p>pyproject.toml</p>
+<pre><code>[tool.uv]
+[[tool.uv.index]]
+name = &quot;test&quot;
+url = &quot;https://proximal-code-artifact-domain-016997484973.d.codeartifact.us-east-2.amazonaws.com/pypi/proximal-hub/simple/&quot;
+
+[tool.uv.sources]
+proximal = { index = &quot;test&quot; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kurt-rhee">@kurt-rhee</a> on 2025-06-09 18:56</div>
+            <div class="timeline-body"><p>Actually now changing it back to <code>proximal-package-index</code> and it is working.  I wonder if there was a weird caching issue on my side.  Closing this, thank you all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kurt-rhee on 2025-06-09 18:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

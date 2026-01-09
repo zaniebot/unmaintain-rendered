@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>allow app names, options and subcommands with hyphens when using the macro - clap-rs/clap #321</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>allow app names, options and subcommands with hyphens when using the macro</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/321">#321</a>
+        opened by <a href="https://github.com/flying-sheep">@flying-sheep</a>
+        on 2015-10-27 12:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2015-10-27 12:41</div>
+            <div class="timeline-body"><p>the following code creates a <code>-b</code>/<code>--group</code> option, not a <code>-g</code>/<code>--group-by</code> option.</p>
+<pre><code class="language-rust">clap_app!(myapp =&gt;
+    ...
+    (@arg group_by: -g --group-by +takes_value &quot;foo&quot;)
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "allow options and subcommands with hyphens" to "allow app names, options and subcommands with hyphens" by @flying-sheep on 2015-10-27 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @Vinatorul on 2015-10-27 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-10-27 14:31</div>
+            <div class="timeline-body"><p>@flying-sheep the macro is still a work in progress, so thanks for reporting this! @james-darkfox ideas?</p>
+<p>As a hacky work-around until this bug is fixed, you should be able to use a combination of the macro and traditional builder pattern (and builder pattern is just as fast as macro performance wise, just more verbose):</p>
+<pre><code class="language-rust">let app = clap_app!(myapp =&gt;
+    ...
+    (@arg group_by: -g --group-by +takes_value &quot;foo&quot;)
+)
+.arg(Arg::with_name(&quot;group_by&quot;)
+    .short(&quot;g&quot;)
+    .long(&quot;group-by&quot;)
+    .takes_value(true)
+    .help(&quot;foo&quot;));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2015-10-27 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2015-10-27 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 1.x</span> added by @kbknapp on 2015-10-27 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by @kbknapp on 2015-10-27 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @WildCryptoFox by @kbknapp on 2015-10-27 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: macros</span> added by @kbknapp on 2015-10-27 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2015-10-27 18:37</div>
+            <div class="timeline-body"><p>ha, i think for a one-time construction like here, any performance is good enough :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-10-28 13:06</div>
+            <div class="timeline-body"><p>If parsing speed isn't a concern you can achieve a similarly less verbose using the &quot;usage style.&quot; This isn't to say the usage strings are slow, they're still quite fast, just not quite as fast as the builder pattern (or macro which simply expands to the builder).</p>
+<pre><code class="language-rust">.arg_from_usage(&quot;-g, --group-by [group_by] 'foo'&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "1.5" by @kbknapp on 2015-10-28 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-10-28 14:36</div>
+            <div class="timeline-body"><p>@flying-sheep This is a limitation of the macro <strong>muncher</strong> I'm using here. Please use <code>--group_by</code> or the subtle alternative of <code>long(&quot;group-by&quot;)</code> (inline replacement for <code>--group-by</code>).</p>
+<p>@kbknapp Not a bug. Limitation in the macro. I might be able to extend the macro muncher to concat these kinds of tokens but there will need to be some distinction between <code>--group</code>, <code>-by</code>. Note that macros cannot count the characters in the identifiers it collects. This could be made strict such that <code>-s</code> must be before <code>--long</code> and any direct instances of <code>-</code> after <code>--long</code> is to be processed as the long. I may look into this with the 2.0 macro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-10-28 14:38</div>
+            <div class="timeline-body"><p>@kbknapp I've already mentioned this issue in other issues (not tracking them down right now). And the case for <code>-g</code>, <code>--group</code>, <code>-by</code> would actually expand to <code>.short(&quot;g&quot;).long(&quot;group&quot;).short(&quot;by&quot;)</code>. The double setting of the short/long should actually lead to a <code>panic</code> IMHO (likely via <code>debug_assert</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @WildCryptoFox on 2015-10-28 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: maybe</span> added by @WildCryptoFox on 2015-10-28 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @WildCryptoFox on 2015-10-28 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v2.0" by @WildCryptoFox on 2015-10-28 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "1.5" by @WildCryptoFox on 2015-10-28 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-10-28 14:48</div>
+            <div class="timeline-body"><p>@james-darkfox yep, I remember you saying that now, my bad! I'd totally forgotten about that. We can remove the bug label, and just leave this issue open for tracking purposes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> removed by @kbknapp on 2015-10-28 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 1.x</span> removed by @kbknapp on 2015-10-28 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-10-28 14:49</div>
+            <div class="timeline-body"><p>@kbknapp :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-10-28 14:52</div>
+            <div class="timeline-body"><p>@kbknapp Sidenote: I could fix this for <code>1.0</code> and I might yet still do that. Feel free to jump on IRC if you'd like to discuss more about 1.0/2.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2015-10-29 12:12</div>
+            <div class="timeline-body"><blockquote>
+<p>but there will need to be some distinction between <code>--group</code>, <code>-by</code></p>
+</blockquote>
+<p>i.e. “no whitespace between them”</p>
+<p>as far as i’m concerned this is a bug since it’s very surprising, undocumented, divergent from how the usage string parser works, and subtle:</p>
+<p>if i wouldn’t have been lucky by already having a '-b' switch defined in another argument, it would have taken ages to find this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-10-29 12:38</div>
+            <div class="timeline-body"><p>@flying-sheep Again. Limitation of the way macros actually work. Whitespace is <strong>not</strong> a matchable token. And the solution here might be (as I said to @kbknapp, is) to make the munching work with stages such that <code>-s</code> must come before <code>--long</code> and any direct subsequent instances of <code>-</code> after <code>--long</code> to be interpreted as <code>--long-continued</code>.</p>
+<p>Sorry for the lack of documentation. I wrote this macro to ease the consumption of the builder pattern. I did not get around to documenting it for <code>clap-1.0</code> and instead continued to create <code>clap-2.0</code> which is a complete re-write of <code>clap</code> focusing on getting the implementation done right without becoming huge or too complex to maintain (like <code>clap-1.0</code> has become).</p>
+<p>I will take an attempt to for <code>2.0</code> to fix this issue. After doing so, I may also back-port it to the <code>1.0</code> code. Sorry for the inconvenience.</p>
+<p>As for being divergent from the usage string. The <code>2.0</code> is closer to the actual usage string format. https://github.com/james-darkfox/clap-rs/blob/redesign/src/macros.rs#L61 <strong>2.0 is far from being ready</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-10-29 12:45</div>
+            <div class="timeline-body"><p>@flying-sheep Feel free to join <code>irc.mozilla.org:6697+ssl #clap-rs</code> if you'd like to discuss this in real-time.</p>
+<p><strong>How the rust macro system sees <code>--group-by</code></strong>: <code>-</code> <code>-</code> <code>group</code> <code>-</code> <code>by</code>. Whitespace does not exist. The hyphens are processed purely as 'tokens' and never make their way down to the expression level where they would be processed as operators. The identifiers <code>group</code> and <code>by</code> are processed as identifiers (like variable names, but not assigned to any data). The length of the identifiers is unknown at macro level and the usage for these instances is that the identifiers are converted into <code>&amp;'static str</code> strings so <code>stringify!($group_identifier)</code> becomes <code>&quot;group&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2015-10-29 14:10</div>
+            <div class="timeline-body"><p>ah, makes sense. hmm, that’s problematic. so the fact that “-” isn’t a valid identifier character means that they are tokens. and e.g. <code>-  g  -    -  group</code> is indistinguishable from <code>-g  --group</code>…</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-10-29 14:27</div>
+            <div class="timeline-body"><p>@flying-sheep Indeed. The TT muncher that my macro uses to deconstruct the usage-string influenced format looks for these kinds of patterns. Macros can be tricky at times but when you get to know and use them like I do - they aren't all that difficult to write. If you're interested in learning more about macros. I recommend the following: https://danielkeep.github.io/tlborm/ (Feel free to skip past the technical introduction if it's too difficult and return to it later if you'd like to see how the macros <strong>actually work</strong>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v2.0" by @kbknapp on 2016-01-23 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2016-04-12 10:17</div>
+            <div class="timeline-body"><p>is there any progress in 2.0?</p>
+<p>e.g. panicking if <code>short()</code> is called a second time?</p>
+<p><code>long(&quot;group-by&quot;)</code> is not the worst workaround, but i’d still enjoy the real deal :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2016-04-12 11:10</div>
+            <div class="timeline-body"><p>And apparently one can also create an app like this:</p>
+<pre><code class="language-rust">let matches = clap_app!(@app(App::new(&quot;freeform app-name ☺&quot;))
+    (author: &quot;...&quot;)
+    ...
+).get_matches();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "allow app names, options and subcommands with hyphens" to "allow app names, options and subcommands with hyphens when using the macro" by @kbknapp on 2016-05-16 03:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Arnavion">@Arnavion</a> on 2016-11-04 08:08</div>
+            <div class="timeline-body"><p>I just hit this too. Is it not acceptable to add case to the macro that handles <code>--$long:expr</code> in addition to <code>--$long:ident</code>? The latter would stringify <code>$long</code> and pass it to <code>$arg.long</code> as it does now, and the former would directly pass it to <code>$arg.long</code> (which means the expr must be a string). That way the OP's example could be written as <code>(@arg group_by: -g --&quot;group-by&quot; +takes_value &quot;foo&quot;)</code></p>
+<p>Edit: Alas, Rust doesn't allow <code>tt*</code> after an <code>expr</code>...</p>
+<p>Edit 2:</p>
+<pre><code class="language-rust">    (@arg ($arg:expr) $modes:tt --($long:expr) $($tail:tt)*) =&gt; {
+        clap_app!{ @arg ($arg.long($long)) $modes $($tail)* }
+    };
+</code></pre>
+<p>works. It allows <code>(@arg group_by: -g --(&quot;group-by&quot;) +takes_value &quot;foo&quot;)</code> to compile as expected. Acceptable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @WildCryptoFox by @Arnavion on 2016-11-04 08:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/731.html">clap-rs/clap#731</a> on 2016-11-04 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-30 04:58</div>
+            <div class="timeline-body"><p>This is implemented as <code>--(&quot;some-name&quot;)</code> by Arnavion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-01-30 04:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g2p">@g2p</a> on 2018-06-11 20:43</div>
+            <div class="timeline-body"><p>There's a fix implemented for long arguments, sure, but subcommands (and the app name) still cannot have dashes it seems. Could we have a workaround for those too? Should I open a new issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-13 00:02</div>
+            <div class="timeline-body"><p>@g2p yeah please open a new issue so it gets more visibility than this older one 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1297.html">clap-rs/clap#1297</a> on 2018-06-13 06:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

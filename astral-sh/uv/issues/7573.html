@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync/add` does not use (private) extra-index-url/index-url specified in pyproject.toml (but works from command line) - astral-sh/uv #7573</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync/add` does not use (private) extra-index-url/index-url specified in pyproject.toml (but works from command line)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7573">#7573</a>
+        opened by <a href="https://github.com/caseytomlin">@caseytomlin</a>
+        on 2024-09-20 08:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/caseytomlin">@caseytomlin</a> on 2024-09-20 08:24</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I feel like this is a duplicate, but I didn't see precisely this - apologies in advance!</p>
+<p>I am trying to install a package from a private index that requires authentication. The following works:</p>
+<pre><code class="language-console">$ uv add super-secret-package --index-url https://&lt;user&gt;:&lt;password&gt;@secretinos.com/artifactory/api/pypi/cheese/simple --extra-index-url https://pypi.org/simple
+</code></pre>
+<p>Instead adding the indexes by hand to the <code>pyproject.toml</code> as</p>
+<pre><code class="language-toml">[tool.uv]
+extra-index-url = &quot;https://pypi.org/simple&quot;
+index-url = &quot;https://&lt;user&gt;:&lt;password&gt;@secretinos.com/artifactory/api/pypi/cheese/simple&quot;
+</code></pre>
+<p>and then <code>$ uv sync -vvv</code> or <code>$ uv add -vvv super-secret-package</code> fails like</p>
+<pre><code class="language-console">    0.000947s DEBUG uv uv 0.4.12
+    0.001059s DEBUG uv_workspace::workspace Found project root: `/home/yourboy/projects/test`
+    0.001146s DEBUG uv_workspace::workspace No workspace root found, using project root
+    0.001223s DEBUG uv_python::version_files Reading requests from `/home/yourboy/projects/test/.python-version`
+    0.001376s DEBUG uv::commands::project The virtual environment's Python version satisfies `Python 3.12`
+ uv_client::linehaul::linehaul 
+    0.001604s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries 
+    0.001722s DEBUG uv::commands::project::lock Starting clean resolution
+ uv_distribution::distribution_database::get_or_build_wheel_metadata dist=test @ file:///home/yourboy/projects/test
+    0.001994s   0ms DEBUG uv_distribution::source Found static `pyproject.toml` for: test @ file:///home/yourboy/projects/test
+    0.002077s   0ms DEBUG uv_workspace::workspace No workspace root found, using project root
+ uv_resolver::resolver::solve 
+    0.002488s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.12.6
+    0.002500s   0ms DEBUG uv_resolver::resolver Solving with target Python version: &gt;=3.12
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+     uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+    0.002652s   0ms DEBUG uv_resolver::resolver Adding direct dependency: test*
+   uv_resolver::resolver::choose_version package=test
+      0.002703s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of test @ file:///home/yourboy/projects/test (*)
+   uv_resolver::resolver::get_dependencies_forking package=test, version=0.1.0
+     uv_resolver::resolver::get_dependencies package=test, version=0.1.0
+    0.002751s   0ms DEBUG uv_resolver::resolver Adding transitive dependency for test==0.1.0: super-secret-package==69.420
+   uv_resolver::resolver::choose_version package=super-secret-package
+ uv_resolver::resolver::process_request request=Versions super-secret-package
+   uv_client::registry_client::simple_api package=super-secret-package
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/home/yourboy/.cache/uv/simple-v12/pypi/super-secret-package.rkyv
+ uv_resolver::resolver::process_request request=Prefetch super-secret-package ==69.420
+ uv_client::cached_client::from_path_sync path=&quot;/home/yourboy/.cache/uv/simple-v12/pypi/super-secret-package.rkyv&quot;
+        0.002971s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/super-secret-package/
+       uv_client::cached_client::fresh_request url=&quot;https://pypi.org/simple/super-secret-package/&quot;
+      0.159403s 156ms DEBUG uv_resolver::resolver Searching for a compatible version of super-secret-package (==69.420)
+    0.159432s 156ms DEBUG uv_resolver::resolver No compatible version found for: super-secret-package
+   uv_resolver::resolver::choose_version package=test
+      0.159494s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of test @ file:///home/yourboy/projects/test (&lt;0.1.0 | &gt;0.1.0)
+    0.159503s 157ms DEBUG uv_resolver::resolver No compatible version found for: test
+  × No solution found when resolving dependencies:
+  ╰─▶ Because super-secret-package was not found in the package registry and your project depends on super-secret-package==69.420, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>I also tried swapping <code>index-url</code> and <code>extra-index-url</code> with the same result.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-20 12:57</div>
+            <div class="timeline-body"><p>I think extra index URL needs to be a list in the TOML. Does that fix it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/caseytomlin">@caseytomlin</a> on 2024-09-20 13:45</div>
+            <div class="timeline-body"><p>Unfortunately not. I tried</p>
+<pre><code class="language-toml">[tool.uv]
+extra-index-url = [&quot;https://pypi.org/simple&quot;]
+index-url = [&quot;https://&lt;user&gt;:&lt;password&gt;@secretinos.com/artifactory/api/pypi/cheese/simple&quot;]
+</code></pre>
+<p>(also swapping which is extra). Same <code>-vvv</code> output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-20 13:46</div>
+            <div class="timeline-body"><p><code>index-url</code> should be a string; <code>extra-index-url</code> should be a list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/caseytomlin">@caseytomlin</a> on 2024-09-20 13:48</div>
+            <div class="timeline-body"><p>Ha, that did it. Apologies for the noise. Did i miss this in the docs somewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @caseytomlin on 2024-09-20 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-20 13:52</div>
+            <div class="timeline-body"><p>Are there any warnings in the <code>--verbose</code> output? I would've expected this to at least warn with <code>--verbose</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2024-09-20 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-20 13:52</div>
+            <div class="timeline-body"><p>There's just the reference schema here: https://docs.astral.sh/uv/reference/settings/#extra-index-url</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-20 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-09-20 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7594.html">astral-sh/uv#7594</a> on 2024-09-20 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-20 18:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

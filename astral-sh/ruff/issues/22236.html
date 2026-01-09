@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT006 doesn't allow any argnames besides tuple in pytest.mark.parametrize - astral-sh/ruff #22236</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PT006 doesn't allow any argnames besides tuple in pytest.mark.parametrize</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/22236">#22236</a>
+        opened by <a href="https://github.com/cgoldberg">@cgoldberg</a>
+        on 2025-12-28 16:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cgoldberg">@cgoldberg</a> on 2025-12-28 16:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If you use anything besides a tuple as the first argument to <code>pytest.mark.parametrize</code>, running ruff with <code>PT</code> enabled complains with:</p>
+<pre><code>PT006 Wrong type passed to first argument of `pytest.mark.parametrize`; expected `tuple`
+</code></pre>
+<p>However, the first argument can be &quot;A comma-separated string denoting one or more argument names, or a list/tuple of argument strings&quot;:</p>
+<p>https://docs.pytest.org/en/stable/reference/reference.html#pytest.Metafunc.parametrize</p>
+<p>For example, running <code>ruff check</code> against the following code will trigger <code>PT006</code> twice, even though both are valid:</p>
+<pre><code>import pytest
+
+
+@pytest.mark.parametrize(
+    [&quot;foo&quot;, &quot;bar&quot;],
+    [
+        (&quot;a&quot;, &quot;b&quot;),
+        (&quot;c&quot;, &quot;d&quot;),
+    ],
+)
+def test_list(foo, bar):
+    pass
+
+
+@pytest.mark.parametrize(
+    &quot;foo,bar&quot;,
+    [
+        (&quot;a&quot;, &quot;b&quot;),
+        (&quot;c&quot;, &quot;d&quot;),
+    ],
+)
+def test_string(foo, bar):
+    pass
+</code></pre>
+<p>A comma-separated string or any sequence of strings should be allowed.</p>
+<p>Playground link: https://play.ruff.rs/d0fa3c43-7fa2-4dee-ba48-ff9c96d721f8</p>
+<h3>Version</h3>
+<p>ruff 0.14.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-29 15:11</div>
+            <div class="timeline-body"><p>Based on the <a href="https://docs.astral.sh/ruff/rules/pytest-parametrize-names-wrong-type/">rule documentation</a>, I believe this is the intention of the rule: to enforce a consistent style even if other forms are allowed. You can configure the style you want to enforce with <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-pytest-style_parametrize-names-type">lint.flake8-pytest-style.parametrize-names-type</a> or disable the rule if you prefer to vary the style.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-12-29 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cgoldberg">@cgoldberg</a> on 2025-12-29 15:18</div>
+            <div class="timeline-body"><p>That sounds reasonable... I'll close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @cgoldberg on 2025-12-29 15:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

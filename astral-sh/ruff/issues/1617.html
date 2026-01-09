@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Possible false positive with UP006 and UP007 - astral-sh/ruff #1617</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Possible false positive with UP006 and UP007</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1617">#1617</a>
+        opened by <a href="https://github.com/sbdchd">@sbdchd</a>
+        on 2023-01-04 02:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sbdchd">@sbdchd</a> on 2023-01-04 02:40</div>
+            <div class="timeline-body"><p>I'm not sure if this is a false positive or if I shouldn't enable these rules</p>
+<p>I like using the newest syntax in <code>.pyi</code> files (enforced by UP006, UP007) but I have a project running on 3.7 so it's mostly <code>List[str]</code> instead of <code>list[str]</code> style things</p>
+<p>But, <code>from __future__ import annotations</code> should allow for newer annotations, in practice this project uses pydantic which uses the python builtins to parse the annotations at runtime, so they have to be runtime compatible otherwise python explodes:</p>
+<pre><code>______________________________________________________________ ERROR collecting kodiak/tests/evaluation/test_merge_message.py ______________________________________________________________
+kodiak/tests/evaluation/test_merge_message.py:7: in &lt;module&gt;
+    from kodiak.config import (
+kodiak/config.py:57: in &lt;module&gt;
+    class AutomergeDependencies(BaseModel):
+.venv/lib/python3.7/site-packages/pydantic/main.py:188: in __new__
+    annotations = resolve_annotations(namespace.get('__annotations__', {}), namespace.get('__module__', None))
+.venv/lib/python3.7/site-packages/pydantic/typing.py:419: in resolve_annotations
+    value = _eval_type(value, base_globals, None)
+../../../.pyenv/versions/3.7.13/lib/python3.7/typing.py:263: in _eval_type
+    return t._evaluate(globalns, localns)
+../../../.pyenv/versions/3.7.13/lib/python3.7/typing.py:467: in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+&lt;string&gt;:1: in &lt;module&gt;
+    ???
+E   TypeError: 'type' object is not subscriptable
+</code></pre>
+<p>This might be more of a &quot;don't use those rules unless you're on newer versions of python&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 02:44</div>
+            <div class="timeline-body"><p>Does this do what you're looking for?</p>
+<pre><code class="language-toml">[tool.ruff.pyupgrade]
+keep-runtime-typing = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbdchd">@sbdchd</a> on 2023-01-04 02:46</div>
+            <div class="timeline-body"><p>Oh yeah that works!</p>
+<p>I need to RTFM</p>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sbdchd on 2023-01-04 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 02:49</div>
+            <div class="timeline-body"><p>Not at all, the docs are a little unwieldy right now. They have a lot of good info, but it's just not that discoverable. It's on my mind, working on it...</p>
+<p>If you're coming from existing tools, I do try to pull in the most useful settings verbatim (for example, <code>pyupgrade</code> has this same setting, under this same name). Maybe helpful in the future. Although if you've never used <code>pyupgrade</code>, then this advice is totally useless :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-01-04 02:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

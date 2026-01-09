@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`required` conflicts with `required_unless*` - clap-rs/clap #4715</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`required` conflicts with `required_unless*`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4715">#4715</a>
+        opened by <a href="https://github.com/Ciubix8513">@Ciubix8513</a>
+        on 2023-02-18 17:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Ciubix8513">@Ciubix8513</a> on 2023-02-18 17:21</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.67.1</p>
+<h3>Clap Version</h3>
+<p>4.1.6</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Parser};
+
+#[derive(Parser,Debug)]
+struct Args{
+    #[arg(short)]
+    a: bool,
+    #[arg(required_unless_present(&quot;a&quot;))]
+    test: String, 
+}
+
+fn main() {
+    let args = Args::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run</p>
+<h3>Actual Behaviour</h3>
+<p>'main' panicked at 'Argument test: <code>required</code> conflicts with <code>required_unless*</code>', /home/luna/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.1.6/src/builder/debug_asserts.rs:186:13</p>
+<h3>Expected Behaviour</h3>
+<p><code>required_unless*</code> should automatically infer remove <code>required</code> and the code example should run normally</p>
+<h3>Additional Context</h3>
+<p>Currently to fix this issue you need to add <code>default_value</code> to the arg definition, and then it works as expected</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @Ciubix8513 on 2023-02-18 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "required conflicts with required_unless* " to "`required` conflicts with `required_unless*`" by @Ciubix8513 on 2023-02-18 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-02-19 00:25</div>
+            <div class="timeline-body"><p>Even if we resolved things to prevent that assert, it would then fail at runtime.  If the &quot;unless&quot; case happens, clap will have nothing to put into that field and will report an error.</p>
+<p>You either need to make the argument optional  by changing the type from <code>String</code> to <code>Option&lt;String&gt;</code> or provide a default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ciubix8513">@Ciubix8513</a> on 2023-02-19 01:45</div>
+            <div class="timeline-body"><p>Yea, that makes sense.
+But wouldn't it be possible that the compiler gives an error saying that <code>required_unless*</code>  requires the argument to be <code>Option&lt;&gt;</code> or have a defualt value?
+I'm not quite sure if that's possible (I'm pretty new to rust), but that would make it less confusing, to people who are not as familiar with Clap or Rust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-02-19 01:49</div>
+            <div class="timeline-body"><p>Yes, ideally, more of our checks would be done at compile-time.  A couple of challenges with that</p>
+<ul>
+<li>We support merging structs and the compiler doesn't tell us anything about the other struct</li>
+<li>There are a lot of corner cases for how these arguments interact that it would be complex and brittle, especially because...</li>
+<li>This would be hard to maintain as we'd have to have a copy of all of the rules available at both compile time and runtime.</li>
+</ul>
+<p>See also #3133</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-02-19 01:49</div>
+            <div class="timeline-body"><p>As it seems this direct issue is resolved, I'm going to go ahead and close thos</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-02-19 01:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

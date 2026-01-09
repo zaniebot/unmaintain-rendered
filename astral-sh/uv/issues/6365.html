@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a `--suffix` option to `uv tool install` - astral-sh/uv #6365</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a `--suffix` option to `uv tool install`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/6365">#6365</a>
+        opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a>
+        on 2024-08-21 18:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2024-08-21 18:34</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>As mentioned in https://github.com/astral-sh/uv/issues/3560#issue-2293694566, it'd be useful for <code>uv tool install</code> to have a <code>--suffix</code> similar to pipx's so users can install multiple versions of the same tool, or install a tool with different versions of Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-08-21 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv tool</span> added by @zanieb on 2024-08-21 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-05 13:01</div>
+            <div class="timeline-body"><p>Extracting some of the context from the linked RFC:</p>
+<blockquote>
+<p>Each entry point is added to the directory with its normal name, and <code>name@&lt;version&gt;</code>. This suffix allows tools with conflicting versions to be used across different scopes. The user may customize this suffix with a <code>--suffix</code> flag. If a custom suffix is provided, we will not include the plain name executable during installation.</p>
+<p>When specifying suffixes, the @ is implied and will be included if the suffix begins with an alphanumeric character — if included by the user it will be trimmed for compatibility with pipx (which requires it to be included explicitly by the user). Leading characters such as - or _ will drop the implied @ allowing customization of suffixes. This behavior is not considered necessary for the initial implementation of this feature.</p>
+<p>uv does not allow installation of multiple tools in the same scope with the same key. If installation of multiple versions of a tool is desired, a suffix must be used. If the user attempts to install another version of an already-installed tool, the existing tool will be replaced. If the existing tool installation contains dependency requests that are not requested in the invocation that would replace it, an error should be raised instead.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-05 13:05</div>
+            <div class="timeline-body"><p>The following is a bit confusing:</p>
+<blockquote>
+<p>This suffix allows tools with conflicting versions to be used across different scopes</p>
+</blockquote>
+<p>But we later say:</p>
+<blockquote>
+<p>uv does not allow installation of multiple tools in the same scope with the same key. If installation of multiple versions of a tool is desired, a suffix must be used.</p>
+</blockquote>
+<p>This is because the RFC talks about allowing installs at different scopes:</p>
+<blockquote>
+<p>Tools can be installed into a user or system namespace, though the system namespace is more difficult to manage and should be considered a secondary objective during implementation.</p>
+</blockquote>
+<p>We do not yet support system-level installs, so there's always one scope. We also do not currently add an alias for <code>name@&lt;version&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7095.html">astral-sh/uv#7095</a> on 2024-09-05 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12451.html">astral-sh/uv#12451</a> on 2025-04-01 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigma67">@sigma67</a> on 2025-04-12 07:53</div>
+            <div class="timeline-body"><p>So it seems this was planned last year but the linked PR was closed/cancelled?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelkroeker">@marcelkroeker</a> on 2025-06-03 05:19</div>
+            <div class="timeline-body"><p>This one would be really useful to us and would replace pipx completely</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gsemet">@gsemet</a> on 2025-06-10 09:16</div>
+            <div class="timeline-body"><p>i use that feature from time to time with pipx:</p>
+<pre><code>pipx install poetry==2.0.0 --suffix &quot;-2&quot; 
+pipx install 'poetry&lt;2' --suffit &quot;-1&quot;
+</code></pre>
+<p>from here, i have the command &quot;poetry-1&quot; for 1.x, and poetry-2 for poetry 2. it is not very elegant, but for some use case it might help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../open-feature/python-sdk/pulls/512.html">open-feature/python-sdk#512</a> on 2025-06-23 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pycaw">@pycaw</a> on 2025-08-06 14:19</div>
+            <div class="timeline-body"><p>Is there way to achieve this currently with some hacks? Had to part ways with pipx with a tool of mine due to it missing fixing on commit hash but --suffix is sorely missed now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pycaw">@pycaw</a> on 2025-08-06 14:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there way to achieve this currently with some hacks? Had to part ways with pipx with a tool of mine due to it missing fixing on commit hash but --suffix sorely missed now.</p>
+</blockquote>
+<p>Likely answer is: use <code>uv venv</code> and some helper shell functions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-08-06 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15384.html">astral-sh/uv#15384</a> on 2025-08-19 21:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

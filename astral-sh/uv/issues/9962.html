@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;Permission denied&quot; when running uv in docker + Debian bookworm - astral-sh/uv #9962</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;Permission denied&quot; when running uv in docker + Debian bookworm</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9962">#9962</a>
+        opened by <a href="https://github.com/torarvid">@torarvid</a>
+        on 2024-12-17 08:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/torarvid">@torarvid</a> on 2024-12-17 08:42</div>
+            <div class="timeline-body"><p>Hello and thanks for the wonderful <code>uv</code>. 🙌🏻</p>
+<p>When running a docker container based on the below Dockerfile, I get this error:</p>
+<pre><code class="language-sh">error: failed to create directory `/nonexistent/.cache/uv`: Permission denied (os error 13)
+</code></pre>
+<p>This issue is likely not an issue with <code>uv</code> itself, but mentioning it in case others are having the same issue as me.</p>
+<h2>Steps to reproduce</h2>
+<ol>
+<li>Make a folder <code>myproject</code> and cd into it</li>
+<li>Run <code>uv init</code> (to create an empty-ish pyproject.toml and an example hello.py)</li>
+<li>Make a Dockerfile (see below)</li>
+<li>Run <code>docker build . -t myproject &amp;&amp; docker run myproject</code></li>
+</ol>
+<p>Dockerfile contents:</p>
+<pre><code class="language-dockerfile">FROM python:3.12.7-slim-bookworm
+
+RUN addgroup --system appuser &amp;&amp; adduser --system --group appuser
+RUN mkdir /app &amp;&amp; chown appuser:appuser /app
+WORKDIR /app
+COPY --chown=appuser:appuser . /app/
+
+COPY --from=ghcr.io/astral-sh/uv:0.5.9 /uv /bin/uv
+USER appuser
+RUN uv sync
+
+CMD [&quot;uv&quot;, &quot;run&quot;, &quot;hello.py&quot;]
+</code></pre>
+<p>The reason I believe it's not necessarily an issue with <code>uv</code> is that if you replace <code>bookworm</code> with <code>bullseye</code> (the previous version of Debian), it works fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-17 08:45</div>
+            <div class="timeline-body"><p>Is <code>/nonexistent</code> the real path or is that a redacted path?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/torarvid">@torarvid</a> on 2024-12-17 13:34</div>
+            <div class="timeline-body"><p>@konstin It is the real path; the line was copy-pasted verbatim from my terminal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-17 13:41</div>
+            <div class="timeline-body"><p>Creating the user sets its home to the <code>/nonexistent</code> directory, but doesn't create that directory:</p>
+<pre><code>$ addgroup --system appuser &amp;&amp; adduser --system --group appuser
+Adding group `appuser' (GID 101) ...
+Done.
+Adding system user `appuser' (UID 100) ...
+Adding new user `appuser' (UID 100) with group `appuser' ...
+Not creating `/nonexistent'.
+</code></pre>
+<pre><code>$ cat /etc/passwd | grep appuser
+appuser:x:100:101::/nonexistent:/usr/sbin/nologin
+</code></pre>
+<p>uv needs a user cache directory (following the XDG rules), it doesn't with a system user with no home.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/torarvid">@torarvid</a> on 2024-12-17 13:46</div>
+            <div class="timeline-body"><p>@konstin heh, you beat me to it (I was testing and saw the same as you)</p>
+<p>So for some reason it looks like Debian bullseye creates a HOME directory, but Debian bookworm no longer does (??)</p>
+<p>I have no idea why that would be, but it seems to perfectly explain why it happens.</p>
+<p>I changed the line in the Dockerfile to fix it:</p>
+<pre><code class="language-diff">-RUN addgroup --system appuser &amp;&amp; adduser --system --group appuser
++RUN addgroup --system appuser &amp;&amp; adduser --system --group --home /home/appuser appuser
+</code></pre>
+<p>Ok, I'm gonna consider this &quot;problem solved&quot;, and (obviously) not <code>uv</code>s fault. Sorry if I created noise — hope it somehow helps somebody else out. Have a nice day!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @torarvid on 2024-12-17 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2024-12-17 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../sul-dlss/rialto-airflow/pulls/558.html">sul-dlss/rialto-airflow#558</a> on 2025-09-12 00:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

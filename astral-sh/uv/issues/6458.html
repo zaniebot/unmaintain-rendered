@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`find-links` causing local wheel path to expand to absolute path when creating lockfile - astral-sh/uv #6458</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`find-links` causing local wheel path to expand to absolute path when creating lockfile</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6458">#6458</a>
+        opened by <a href="https://github.com/rseeley">@rseeley</a>
+        on 2024-08-22 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rseeley">@rseeley</a> on 2024-08-22 19:08</div>
+            <div class="timeline-body"><p>I'm working in a repo that uses several wheels for the same package, each one targeting a different architecture, stored in a directory local to the repo (<code>packages/package-a</code>). I'm using <code>uv</code> 0.3.1 and am on a Mac (M1). To accomplish installing the package across environments, I'm using the following setup in <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">dependencies = [
+  &quot;package-a&gt;=0.1.2,&lt;1.0.0&quot;
+]
+
+[tool.uv]
+find-links = [
+  &quot;packages/package-a&quot;
+]
+</code></pre>
+<p>This allows <code>uv</code> to discover the wheel properly, but when creating a <code>uv.lock</code> file with <code>uv lock</code>, it expands the file path to the absolute path on my system. This breaks portability when sharing amongst a team and when in CI. I'm wondering if this can be updated to be relative? I've tried doing <code>file:///packages/package-a</code> and<code>file:///./packages/package-a</code> and neither seem to work in <code>find-links</code>, giving me the error</p>
+<pre><code>error: Failed to read `--find-links` directory: /packages/package-a
+  Caused by: failed to read directory `/packages/package-a`
+  Caused by: No such file or directory (os error 2)
+</code></pre>
+<p>I also tried <code>file://./packages/package-a</code> and got</p>
+<pre><code>error: Expected a file URL, but received: file://./packages/package-a
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-08-22 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @zanieb on 2024-08-22 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 23:06</div>
+            <div class="timeline-body"><p>Funny, we have tests for this, but the tests also resolve to the absolute path, so just an oversight 🤦</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6475.html">astral-sh/uv#6475</a> on 2024-08-22 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6566.html">astral-sh/uv#6566</a> on 2024-08-24 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 17:56</div>
+            <div class="timeline-body"><p>Fixed in https://github.com/astral-sh/uv/pull/6566.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-26 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16602.html">astral-sh/uv#16602</a> on 2025-11-05 17:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

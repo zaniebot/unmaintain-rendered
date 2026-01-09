@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Default`-able arguments are &quot;missing&quot; when encountering unknown flag with `ignore_errors` - clap-rs/clap #4498</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Default`-able arguments are &quot;missing&quot; when encountering unknown flag with `ignore_errors`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4498">#4498</a>
+        opened by <a href="https://github.com/MarijnS95">@MarijnS95</a>
+        on 2022-11-21 15:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MarijnS95">@MarijnS95</a> on 2022-11-21 15:37</div>
+            <div class="timeline-body"><p>When parsing unknown flags into a struct that has <code>ignore_errors(true)</code>, <code>clap</code> fails with <code>&quot;The following required argument was not provided: bar&quot;</code> upon encountering an unrecognized flag, whereas <code>bar</code> is a <code>bool</code> flag that should default to <code>false</code>.</p>
+<h1>Repro</h1>
+<p>https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=c8526876b56fbc51bb2a8e2440be52c1</p>
+<pre><code class="language-rust">use clap::{CommandFactory, FromArgMatches, Parser};
+
+#[derive(Debug, Parser)]
+struct Args {
+    #[clap(short, long)]
+    bar: bool,
+}
+
+fn main() {
+    let command = Args::command().ignore_errors(true).no_binary_name(true);
+
+    let args = Args::from_arg_matches(&amp;command.clone().get_matches_from::&lt;_, &amp;str&gt;([])).unwrap();
+    assert!(!args.bar);
+    dbg!(args);
+
+    let args = Args::from_arg_matches(&amp;command.clone().get_matches_from([&quot;--bar&quot;])).unwrap();
+    assert!(args.bar);
+    dbg!(args);
+
+    let args = Args::from_arg_matches(&amp;command.clone().get_matches_from([&quot;--foo&quot;])).unwrap();
+    assert!(!args.bar);
+    dbg!(args);
+
+    let args = Args::from_arg_matches(&amp;command.get_matches_from([&quot;--foo&quot;, &quot;--bar&quot;])).unwrap();
+    assert!(args.bar);
+    dbg!(args);
+}
+</code></pre>
+<h2>Bonus</h2>
+<p>I added an example with an unknown arg first, assuming it should step over the unknown arg and still set <code>bar</code> to true based on <code>--bar</code> presence. Not sure if that's possible at all, given that we just discussed positional args vs <code>--bar</code> possibly being a value to the <code>--foo</code> flag...</p>
+<p><em>Originally posted by @MarijnS95 in https://github.com/clap-rs/clap/issues/1404#issuecomment-1309254274</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarijnS95">@MarijnS95</a> on 2022-11-21 15:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Originally posted by @MarijnS95 in <a href="https://github.com/clap-rs/clap/issues/1404#issuecomment-1309254274">#1404 (comment)</a></p>
+</blockquote>
+<p>Looks like this ends up being a duplicate of #4391, after GH title search (when creating issues) is more helpful than a search for keywords on its own.</p>
+<p>EDIT: Or not, since it seems to work correctly for me <em>when not passing <code>--bar</code></em>, and specifically requires an ignored unknown arg first...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bonigarcia">@bonigarcia</a> on 2023-12-13 16:29</div>
+            <div class="timeline-body"><p>I am experiencing this problem as well. The following snippet is the relevant part of my clap setup:</p>
+<pre><code>#[derive(Parser, Debug)]
+#[clap(version, about, long_about = None, ignore_errors = true, help_template = &quot;\
+{name} {version}
+{about-with-newline}
+{usage-heading} {usage}
+{all-args}&quot;)]
+struct Cli {
+    /// Browser name (chrome, firefox, edge, iexplorer, safari, safaritp, or webview2)
+    #[clap(long, value_parser)]
+    browser: Option&lt;String&gt;,
+
+    // ... More fields
+
+    /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like)
+    #[clap(long, value_parser, default_value = &quot;LOGGER&quot;)]
+    output: String,
+	
+    // ... More fields
+}
+</code></pre>
+<p>When I add <code>ignore_errors = true</code>, after adding a non-supported argument, my CLI tool fails as follows:</p>
+<pre><code>error: The following required argument was not provided: output
+</code></pre>
+<p>Is there any plan to fix it? Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-05-07 14:22</div>
+            <div class="timeline-body"><p>Looks like this is a duplicate of #4391, closing in favor of that.</p>
+<p>If there is a reason to keep this open, let us know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-05-07 14:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

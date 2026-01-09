@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv venv` still overwrites existing venv in various cases - astral-sh/uv #4276</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv venv` still overwrites existing venv in various cases</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4276">#4276</a>
+        opened by <a href="https://github.com/matterhorn103">@matterhorn103</a>
+        on 2024-06-12 15:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matterhorn103">@matterhorn103</a> on 2024-06-12 15:35</div>
+            <div class="timeline-body"><p>I found many related threads (#2548, #1777, #1472) so it's not even really a new issue, but from what I can gather it was meant to no longer be the case that existing venvs get overwritten, while for me they still do.</p>
+<p>e.g.</p>
+<pre><code class="language-bash">&gt;&gt;&gt; uv venv foo --verbose
+DEBUG Searching for Python interpreter in search path
+DEBUG Found CPython 3.11.9 at `/usr/bin/python3` (search path)
+Using Python 3.11.9 interpreter at: /usr/bin/python3
+Creating virtualenv at: foo
+Activate with: source foo/bin/activate
+&gt;&gt;&gt; source foo/bin/activate.fish
+(foo) &gt;&gt;&gt; uv pip install tomli_w
+Resolved 1 package in 65ms
+Installed 1 package in 1ms
+ + tomli-w==1.0.0
+(foo) &gt;&gt;&gt; deactivate
+&gt;&gt;&gt; uv venv foo
+DEBUG Searching for Python interpreter in search path
+DEBUG Found CPython 3.11.9 at `/usr/bin/python3` (search path)
+Using Python 3.11.9 interpreter at: /usr/bin/python3
+Creating virtualenv at: foo
+INFO Removing existing directory
+Activate with: source foo/bin/activate
+&gt;&gt;&gt; source foo/bin/activate.fish
+(foo) &gt;&gt;&gt; uv pip list
+(foo) &gt;&gt;&gt;
+</code></pre>
+<p>The result is the same if just <code>uv venv</code> is executed with no name, and the result is also the same if <code>uv venv foo</code> is executed within foo without deactivating.</p>
+<p><code>uv venv foo --allow-existing</code> correctly keeps any packages installed in the venv. However, if a different Python interpreter is used (not necessarily deliberately), the effect is still that of overwriting:</p>
+<pre><code class="language-bash">&gt;&gt;&gt; uv venv foo --verbose -p 3.12
+DEBUG Searching for Python 3.12 in search path
+DEBUG Found CPython 3.12.3 at `/usr/bin/python3.12` (search path)
+Using Python 3.12.3 interpreter at: /usr/bin/python3.12
+Creating virtualenv at: foo
+Activate with: source foo/bin/activate
+&gt;&gt;&gt; source foo/bin/activate.fish
+(foo) &gt;&gt;&gt; uv pip install tomli-w
+Resolved 1 package in 49ms
+Installed 1 package in 0.80ms
+ + tomli-w==1.0.0
+(foo) &gt;&gt;&gt; deactivate
+&gt;&gt;&gt; uv venv foo --verbose --allow-existing
+DEBUG Searching for Python interpreter in search path
+DEBUG Found CPython 3.11.9 at `/usr/bin/python3` (search path)
+Using Python 3.11.9 interpreter at: /usr/bin/python3
+Creating virtualenv at: foo
+INFO Allowing existing directory
+Activate with: source foo/bin/activate
+&gt;&gt;&gt; source foo/bin/activate.fish
+(foo) &gt;&gt;&gt; python3 -V
+Python 3.11.9
+(foo) &gt;&gt;&gt; uv pip list
+(foo) &gt;&gt;&gt;
+</code></pre>
+<p>It seems #2548 added the <code>--force</code> flag to overwrite an existing venv. But I don't seem to have the <code>--force</code> flag listed for <code>uv venv -h</code> or <code>uv run -h</code>. I'm aware the UI is still very much in flux, so this isn't in any way a complaint, I just want to make sure you are aware that this is how things are working at the moment.</p>
+<p>This is uv version 0.2.11 on Linux.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-12 15:43</div>
+            <div class="timeline-body"><p>Hi! We've actually never changed this. We'll always overwrite a typical existing environment (without opt-in) unless it has some extraneous files we do not recognize in which case we require the <code>--allow-existing</code> flag to create a virtual environment and ignore those files. We renamed the flag from <code>--force</code> to attempt to clarify this (https://github.com/astral-sh/uv/pull/3416).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-12 15:58</div>
+            <div class="timeline-body"><p>Yeah this is still intentional -- can we merge with https://github.com/astral-sh/uv/issues/1472?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-06-12 15:58</div>
+            <div class="timeline-body"><blockquote>
+<p>unless it has some extraneous files we do not recognize</p>
+</blockquote>
+<p>Then in this case, are there any extraneous files here?</p>
+<h3>Expected</h3>
+<p>Re-create venv and no packages installed in it.</p>
+<h3>Actual</h3>
+<pre><code class="language-shell">&gt;uv venv --allow-existing --verbose
+DEBUG Searching for Python interpreter in search path or `py` launcher output
+DEBUG Found CPython 3.7.9 at `C:\Python37x86\python.exe` (search path)
+warning: uv is only compatible with Python 3.8+, found Python 3.7.9.
+Using Python 3.7.9 interpreter at: C:\Python37x86\python.exe
+Creating virtualenv at: .venv
+Activate with: .venv\Scripts\activate
+
+&gt;uv pip install tomli-w
+Resolved 1 package in 1.28s
+Downloaded 1 package in 178ms
+Installed 1 package in 11ms
+ + tomli-w==1.0.0
+
+&gt;uv pip list
+Package Version
+------- -------
+tomli-w 1.0.0
+
+&gt;uv venv --allow-existing --verbose
+DEBUG Searching for Python interpreter in search path or `py` launcher output
+DEBUG Found CPython 3.7.9 at `C:\PYx86\python.exe` (search path)
+warning: uv is only compatible with Python 3.8+, found Python 3.7.9.
+Using Python 3.7.9 interpreter at: C:\PYx86\python.exe
+Creating virtualenv at: .venv
+INFO Allowing existing directory
+Activate with: .venv\Scripts\activate
+
+&gt;uv pip list
+Package Version
+------- -------
+tomli-w 1.0.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-12 16:16</div>
+            <div class="timeline-body"><p>Sorry I guess <code>--allow-existing</code> is more broad than I originally understood, but I do think that's reasonable behavior given the flag. If you want to remove packages, we need a <code>--clear</code> option as discussed in the linked issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-06-12 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-06-12 16:36</div>
+            <div class="timeline-body"><pre><code>      --allow-existing
+          Preserve any existing files or directories at the target path.
+
+          By default, `uv venv` will remove an existing virtual environment at the given path, and exit with an error if
+          the path is non-empty but _not_ a virtual environment. The `--allow-existing` option will instead write to the
+          given path, regardless of its contents, and without clearing it beforehand.
+
+          WARNING: This option can lead to unexpected behavior if the existing virtual environment and the newly-created
+          virtual environment are linked to different Python interpreters.
+</code></pre>
+<p>According to docs, <code>--allow-existing</code> only should be triggerable when regular <code>uv venv</code> fails with invalid-venv-contents error.
+Example:</p>
+<pre><code class="language-bat">&gt;ren .venv\pyvenv.cfg pyvenv.bak
+
+&gt;uv venv
+warning: uv is only compatible with Python 3.8+, found Python 3.7.9.
+Using Python 3.7.9 interpreter at: C:\PYx86\python.exe
+Creating virtualenv at: .venv
+uv::venv::creation
+
+  × Failed to create virtualenv
+  ╰─▶ The directory `.venv` exists, but it's not a virtualenv
+
+&gt;uv venv --allow-existing --verbose
+DEBUG Searching for Python interpreter in search path or `py` launcher output
+DEBUG Found CPython 3.7.9 at `C:\Python37x86\python.exe` (search path)
+warning: uv is only compatible with Python 3.8+, found Python 3.7.9.
+Using Python 3.7.9 interpreter at: C:\Python37x86\python.exe
+Creating virtualenv at: .venv
+INFO Allowing existing directory
+Activate with: .venv\Scripts\activate
+</code></pre>
+<p>I think <code>--allow-existing</code> should not trigger in https://github.com/astral-sh/uv/issues/4276#issuecomment-2163402915 🤷‍♂️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matterhorn103">@matterhorn103</a> on 2024-06-12 16:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi! We've actually never changed this. We'll always overwrite a typical existing environment (without opt-in) unless it has some extraneous files we do not recognize in which case we require the <code>--allow-existing</code> flag to create a virtual environment and ignore those files. We renamed the flag from <code>--force</code> to attempt to clarify this (#3416).</p>
+</blockquote>
+<p>Ah ok, sorry, I missed that particular PR. And I also misinterpreted <code>--allow-existing</code> as meaning &quot;if a venv exists, allow it to stay&quot; rather than &quot;allow overwrite of an existing venv&quot;. Particularly as I understood the first line of the docs:</p>
+<blockquote>
+<pre><code>  --allow-existing
+          Preserve any existing files or directories at the target path.</code></pre>
+</blockquote>
+<p>to mean that any existing .venv directory and its contents would be preserved. The next paragraph makes it clear, but I didn't read that far.</p>
+<blockquote>
+<p>Yeah this is still intentional -- can we merge with #1472?</p>
+</blockquote>
+<p>Fair enough, sorry for misunderstanding! The merge is obviously fine by me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-12 17:04</div>
+            <div class="timeline-body"><p>@T-256 I think</p>
+<blockquote>
+<p>will instead write to the given path, regardless of its contents, and without clearing it beforehand.</p>
+</blockquote>
+<p>is pretty explicit that it won't be cleared. Why would you expect this to remove packages?</p>
+<p>@matterhorn103 are there other documentation changes you'd find helpful here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 00:54</div>
+            <div class="timeline-body"><p>(Closing as I think this is working as intended modulo the decisions to be made in those open issues.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-26 00:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

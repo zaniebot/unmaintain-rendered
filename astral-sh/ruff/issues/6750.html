@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: inconsistency for parenthesized `with` with trailing comment - astral-sh/ruff #6750</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: inconsistency for parenthesized `with` with trailing comment</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6750">#6750</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-08-22 03:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-22 03:06</div>
+            <div class="timeline-body"><p>Given:</p>
+<pre><code class="language-python">with (
+    open('file')  # trailing
+):
+    pass
+
+
+while (
+    True  # trailing
+):
+    pass
+
+
+match (
+    some  # trailing
+):
+    case (
+        pattern  # trailing
+    ):
+        pass
+</code></pre>
+<p>Formatted as:</p>
+<pre><code class="language-python">with open(&quot;file&quot;):  # trailing
+    pass
+
+
+while (
+    True  # trailing
+):
+    pass
+
+
+match (
+    some  # trailing
+):
+    case (
+        pattern  # trailing
+    ):
+        pass
+
+</code></pre>
+<p>Notice that for <code>with</code> and <code>case</code> pattern the formatting is not collapsed while it does happen for the rest. The <code>case</code> pattern formatting was adopted from <code>with</code> which is the reason they both are the same.</p>
+<p>I think the reason is that the nodes are different i.e, <code>WithItem</code> and <code>Pattern*</code> for <code>with</code> and <code>case</code> pattern while it's an expression for <code>while</code> which can utilize the <code>maybe_parenthesized_expression</code> helper directly.</p>
+<p>https://play.ruff.rs/6cacd9e5-03dc-4da7-b185-fb45eb264be4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-22 03:08</div>
+            <div class="timeline-body"><p>I'm not sure if this is intentional but if it is then for <code>case</code> pattern we should use the same formatting style as <code>while</code> i.e, collapse if &lt; line-length.</p>
+<p>Also, this is what Black does: https://black.vercel.app/?version=stable&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AE2AJxdAD2IimZxl1N_WmufDs0Lm7j3vYVv-fyEpjcGjBT5by7AjxamaYxYeXCngIOH5QOeUk1iGkcjENXoEKV2cVzP_u3sv7VfD5lAxtwFCY23EQCvVGAvRPjLiEhAwVufltiyjII1kYitIFme5SB59fpPGx3iYamtMmF8SVyHBiIH-3KV8PmEYg2CJ_nu-AHtt1oWkU5wBozrLxhgr3WuOQBS1mEMOm0c5AABuAG3AgAAOM6Ni7HEZ_sCAAAAAARZWg%3D%3D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @dhruvmanila on 2023-08-22 03:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-22 03:12</div>
+            <div class="timeline-body"><p>I <em>believe</em> we want to collapse all of these (i.e., the <code>while</code> formatting is correct). We should only expand if there's <code>has_trailing_own_line</code>, not <em>any</em> <code>own_line</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6741.html">astral-sh/ruff#6741</a> on 2023-08-22 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-22 03:23</div>
+            <div class="timeline-body"><p>On <code>main</code>, we get the <code>with</code> right, in my testing...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-22 03:29</div>
+            <div class="timeline-body"><p>Yeah, might be 181131272. So, the <code>MatchCase</code> needs to be updated accordingly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Formatter: inconsistency for parenthesized `with`/`while` with trailing comment" to "Formatter: inconsistency for parenthesized `case` pattern with trailing comment" by @dhruvmanila on 2023-08-22 03:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-08-22 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Formatter: Beta" by @MichaReiser on 2023-09-27 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2023-09-27 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-27 14:37</div>
+            <div class="timeline-body"><p>On main, it's now the case that these all preserve parentheses except the <code>with</code>.</p>
+<p>We should make it consistent, but it's low priority and not required for the Beta.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Formatter: inconsistency for parenthesized `case` pattern with trailing comment" to "Formatter: inconsistency for parenthesized `with` with trailing comment" by @charliermarsh on 2023-09-27 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-09-27 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7685.html">astral-sh/ruff#7685</a> on 2023-09-28 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-09-28 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-28 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-28 06:37</div>
+            <div class="timeline-body"><p>@charliermarsh Do you mind if we keep this issue open to ensure we fix it eventually (It's already part of the stable milestone) or did your PR fix all cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2023-09-28 06:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-28 06:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

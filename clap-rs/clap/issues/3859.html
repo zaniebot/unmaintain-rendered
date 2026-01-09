@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defining `Arg` with `value_parser!` before positional args does not take value - clap-rs/clap #3859</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Defining `Arg` with `value_parser!` before positional args does not take value</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3859">#3859</a>
+        opened by <a href="https://github.com/lopopolo">@lopopolo</a>
+        on 2022-06-21 06:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lopopolo">@lopopolo</a> on 2022-06-21 06:49</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.60.0 (7737e0b5c 2022-04-04)</p>
+<h3>Clap Version</h3>
+<p>3.2.5</p>
+<h3>Minimal reproducible code</h3>
+<h2>Good</h2>
+<pre><code class="language-rust">use std::env;
+use std::ffi::OsString;
+use std::path::PathBuf;
+
+use clap::builder::ArgAction;
+use clap::{Arg, Command};
+
+fn main() {
+    let command = Command::new(&quot;artichoke&quot;)
+        .about(&quot;Artichoke is a Ruby made with Rust.&quot;)
+        .arg(
+            Arg::new(&quot;commands&quot;)
+                .short('e')
+                .action(ArgAction::Append)
+                .value_parser(clap::value_parser!(OsString))
+                .help(r&quot;one line of script. Several -e's allowed. Omit [programfile]&quot;),
+        )
+        .arg(
+            Arg::new(&quot;fixture&quot;)
+                .long(&quot;with-fixture&quot;)
+                .allow_invalid_utf8(true)
+                .takes_value(true)
+                .help(&quot;file whose contents will be read into the `$fixture` global&quot;),
+        )
+        .arg(
+            Arg::new(&quot;arguments&quot;)
+                .multiple_values(true)
+                .value_parser(clap::value_parser!(OsString)),
+        )
+        .version(env!(&quot;CARGO_PKG_VERSION&quot;))
+        .trailing_var_arg(true);
+
+    let matches = command.try_get_matches_from(env::args_os()).unwrap();
+
+    dbg!(matches
+        .get_one::&lt;OsString&gt;(&quot;fixture&quot;)
+        .cloned()
+        .map(PathBuf::from));
+}
+</code></pre>
+<h2>Bad</h2>
+<p>Apply this diff:</p>
+<pre><code class="language-diff">diff --git a/src/main.rs b/src/main.rs
+index 9a58066..ce4d8c9 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -18,8 +18,7 @@ fn main() {
+         .arg(
+             Arg::new(&quot;fixture&quot;)
+                 .long(&quot;with-fixture&quot;)
+-                .allow_invalid_utf8(true)
+-                .takes_value(true)
++                .value_parser(clap::value_parser!(OsString))
+                 .help(&quot;file whose contents will be read into the `$fixture` global&quot;),
+         )
+         .arg(
+</code></pre>
+<pre><code class="language-rust">use std::env;
+use std::ffi::OsString;
+use std::path::PathBuf;
+
+use clap::builder::ArgAction;
+use clap::{Arg, Command};
+
+fn main() {
+    let command = Command::new(&quot;artichoke&quot;)
+        .about(&quot;Artichoke is a Ruby made with Rust.&quot;)
+        .arg(
+            Arg::new(&quot;commands&quot;)
+                .short('e')
+                .action(ArgAction::Append)
+                .value_parser(clap::value_parser!(OsString))
+                .help(r&quot;one line of script. Several -e's allowed. Omit [programfile]&quot;),
+        )
+        .arg(
+            Arg::new(&quot;fixture&quot;)
+                .long(&quot;with-fixture&quot;)
+                .value_parser(clap::value_parser!(OsString))
+                .help(&quot;file whose contents will be read into the `$fixture` global&quot;),
+        )
+        .arg(
+            Arg::new(&quot;arguments&quot;)
+                .multiple_values(true)
+                .value_parser(clap::value_parser!(OsString)),
+        )
+        .version(env!(&quot;CARGO_PKG_VERSION&quot;))
+        .trailing_var_arg(true);
+
+    let matches = command.try_get_matches_from(env::args_os()).unwrap();
+
+    dbg!(matches
+        .get_one::&lt;OsString&gt;(&quot;fixture&quot;)
+        .cloned()
+        .map(PathBuf::from));
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-console">$ cargo run -q -- --with-fixture c -e 'puts ARGV'
+</code></pre>
+<h3>Actual Behaviour</h3>
+<h2>Good</h2>
+<pre><code>$ cargo run -q -- --with-fixture c -e 'puts ARGV'
+[src/main.rs:35] matches.get_one::&lt;OsString&gt;(&quot;fixture&quot;).cloned().map(PathBuf::from) = Some(
+    &quot;c&quot;,
+)
+</code></pre>
+<h2>Bad</h2>
+<pre><code>$ cargo run -q -- --with-fixture c -e 'puts ARGV'
+[src/main.rs:34] matches.get_one::&lt;OsString&gt;(&quot;fixture&quot;).cloned().map(PathBuf::from) = None
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p><code>clap::value_parser!</code> builder API should parse values for arguments that take values which appear before positional args.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<h2>Good</h2>
+<pre><code class="language-console">$ cargo run -q -- --with-fixture c -e 'puts ARGV'
+[      clap::builder::command]  Command::_do_parse
+[      clap::builder::command]  Command::_build: name=&quot;artichoke&quot;
+[      clap::builder::command]  Command::_propagate:artichoke
+[      clap::builder::command]  Command::_check_help_and_version: artichoke
+[      clap::builder::command]  Command::_propagate_global_args:artichoke
+[      clap::builder::command]  Command::_derive_display_order:artichoke
+[clap::builder::debug_asserts]  Command::_debug_asserts
+[clap::builder::debug_asserts]  Arg::_debug_asserts:help
+[clap::builder::debug_asserts]  Arg::_debug_asserts:version
+[clap::builder::debug_asserts]  Arg::_debug_asserts:commands
+[clap::builder::debug_asserts]  Arg::_debug_asserts:fixture
+[clap::builder::debug_asserts]  Arg::_debug_asserts:arguments
+[clap::builder::debug_asserts]  Command::_verify_positionals
+[        clap::parser::parser]  Parser::get_matches_with
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--with-fixture&quot;)' ([45, 45, 119, 105, 116, 104, 45, 102, 105, 120, 116, 117, 114, 101])
+[        clap::parser::parser]  Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser]  Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser]  Parser::possible_subcommand: arg=Ok(&quot;--with-fixture&quot;)
+[        clap::parser::parser]  Parser::get_matches_with: sc=None
+[        clap::parser::parser]  Parser::parse_long_arg
+[        clap::parser::parser]  Parser::parse_long_arg: Does it contain '='...
+[        clap::parser::parser]  Parser::parse_long_arg: Found valid arg or flag '--with-fixture &lt;fixture&gt;'
+[        clap::parser::parser]  Parser::parse_long_arg(&quot;with-fixture&quot;): Found an arg with value 'None'
+[        clap::parser::parser]  Parser::parse_opt_value; arg=fixture, val=None, has_eq=false
+[        clap::parser::parser]  Parser::parse_opt_value; arg.settings=ArgFlags(TAKES_VAL | UTF8_NONE)
+[        clap::parser::parser]  Parser::parse_opt_value; Checking for val...
+[        clap::parser::parser]  Parser::parse_opt_value: More arg vals required...
+[        clap::parser::parser]  Parser::get_matches_with: After parse_long_arg Opt(fixture)
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;c&quot;)' ([99])
+[        clap::parser::parser]  Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser]  Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser]  Parser::split_arg_values; arg=fixture, val=RawOsStr(&quot;c&quot;)
+[        clap::parser::parser]  Parser::split_arg_values; trailing_values=false, DontDelimTrailingVals=false
+[   clap::parser::arg_matcher]  ArgMatcher::needs_more_vals: o=fixture, resolved=0, pending=1
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;-e&quot;)' ([45, 101])
+[        clap::parser::parser]  Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser]  Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser]  Parser::possible_subcommand: arg=Ok(&quot;-e&quot;)
+[        clap::parser::parser]  Parser::get_matches_with: sc=None
+[        clap::parser::parser]  Parser::parse_short_arg: short_arg=ShortFlags { inner: RawOsStr(&quot;e&quot;), utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['e']) }, invalid_suffix: None }
+[        clap::parser::parser]  Parser::parse_short_arg:iter:e
+[        clap::parser::parser]  Parser::parse_short_arg:iter:e: Found valid opt or flag
+[        clap::parser::parser]  Parser::parse_short_arg:iter:e: val=RawOsStr(&quot;&quot;) (bytes), val=[] (ascii), short_arg=ShortFlags { inner: RawOsStr(&quot;e&quot;), utf8_prefix: CharIndices { front_offset: 1, iter: Chars([]) }, invalid_suffix: None }
+[        clap::parser::parser]  Parser::parse_opt_value; arg=commands, val=None, has_eq=false
+[        clap::parser::parser]  Parser::parse_opt_value; arg.settings=ArgFlags(MULTIPLE_OCC | TAKES_VAL)
+[        clap::parser::parser]  Parser::parse_opt_value; Checking for val...
+[        clap::parser::parser]  Parser::parse_opt_value: More arg vals required...
+[        clap::parser::parser]  Parser::resolve_pending: id=fixture
+[        clap::parser::parser]  Parser::react action=StoreValue, identifier=Some(Long), source=CommandLine
+[        clap::parser::parser]  Parser::react: cur_idx:=1
+[        clap::parser::parser]  Parser::remove_overrides: id=fixture
+[   clap::parser::arg_matcher]  ArgMatcher::start_occurrence_of_arg: id=fixture
+[      clap::builder::command]  Command::groups_for_arg: id=fixture
+[        clap::parser::parser]  Parser::push_arg_values: [&quot;c&quot;]
+[        clap::parser::parser]  Parser::add_single_val_to_arg: cur_idx:=2
+[      clap::builder::command]  Command::groups_for_arg: id=fixture
+[   clap::parser::arg_matcher]  ArgMatcher::needs_more_vals: o=fixture, resolved=1, pending=0
+[        clap::parser::parser]  Parser::get_matches_with: After parse_short_arg Opt(commands)
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;puts ARGV&quot;)' ([112, 117, 116, 115, 32, 65, 82, 71, 86])
+[        clap::parser::parser]  Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser]  Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser]  Parser::split_arg_values; arg=commands, val=RawOsStr(&quot;puts ARGV&quot;)
+[        clap::parser::parser]  Parser::split_arg_values; trailing_values=false, DontDelimTrailingVals=false
+[   clap::parser::arg_matcher]  ArgMatcher::needs_more_vals: o=commands, resolved=0, pending=1
+[        clap::parser::parser]  Parser::resolve_pending: id=commands
+[        clap::parser::parser]  Parser::react action=Append, identifier=Some(Short), source=CommandLine
+[        clap::parser::parser]  Parser::react: cur_idx:=3
+[        clap::parser::parser]  Parser::remove_overrides: id=commands
+[   clap::parser::arg_matcher]  ArgMatcher::start_custom_arg: id=commands, source=CommandLine
+[      clap::builder::command]  Command::groups_for_arg: id=commands
+[        clap::parser::parser]  Parser::push_arg_values: [&quot;puts ARGV&quot;]
+[        clap::parser::parser]  Parser::add_single_val_to_arg: cur_idx:=4
+[      clap::builder::command]  Command::groups_for_arg: id=commands
+[   clap::parser::arg_matcher]  ArgMatcher::needs_more_vals: o=commands, resolved=1, pending=0
+[        clap::parser::parser]  Parser::add_defaults
+[        clap::parser::parser]  Parser::add_defaults:iter:help:
+[        clap::parser::parser]  Parser::add_default_value:iter:help: doesn't have default missing vals
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:help: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:version:
+[        clap::parser::parser]  Parser::add_default_value:iter:version: doesn't have default missing vals
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:version: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:commands:
+[        clap::parser::parser]  Parser::add_default_value:iter:commands: doesn't have default missing vals
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:commands: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:fixture:
+[        clap::parser::parser]  Parser::add_default_value:iter:fixture: doesn't have default missing vals
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:fixture: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:arguments:
+[        clap::parser::parser]  Parser::add_default_value:iter:arguments: doesn't have default missing vals
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:arguments: doesn't have default vals
+[     clap::parser::validator]  Validator::validate
+[     clap::parser::validator]  Validator::validate_conflicts
+[     clap::parser::validator]  Validator::validate_exclusive
+[     clap::parser::validator]  Validator::validate_exclusive:iter:fixture
+[     clap::parser::validator]  Validator::validate_exclusive:iter:commands
+[     clap::parser::validator]  Validator::validate_conflicts::iter: id=fixture
+[     clap::parser::validator]  Conflicts::gather_conflicts: arg=fixture
+[      clap::builder::command]  Command::groups_for_arg: id=fixture
+[     clap::parser::validator]  Conflicts::gather_direct_conflicts id=fixture, conflicts=[]
+[      clap::builder::command]  Command::groups_for_arg: id=commands
+[     clap::parser::validator]  Conflicts::gather_direct_conflicts id=commands, conflicts=[]
+[     clap::parser::validator]  Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator]  Validator::validate_conflicts::iter: id=commands
+[     clap::parser::validator]  Conflicts::gather_conflicts: arg=commands
+[     clap::parser::validator]  Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator]  Validator::validate_required: required=ChildGraph([])
+[     clap::parser::validator]  Validator::gather_requires
+[     clap::parser::validator]  Validator::gather_requires:iter:fixture
+[     clap::parser::validator]  Validator::gather_requires:iter:commands
+[     clap::parser::validator]  Validator::validate_required: is_exclusive_present=false
+[     clap::parser::validator]  Validator::validate_required_unless
+[     clap::parser::validator]  Validator::validate_matched_args
+[     clap::parser::validator]  Validator::validate_matched_args:iter:fixture: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            AnyValue {
+                                inner: std::ffi::os_str::OsString,
+                            },
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[     clap::parser::validator]  Validator::validate_arg_num_vals
+[     clap::parser::validator]  Validator::validate_arg_values: arg=&quot;fixture&quot;
+[     clap::parser::validator]  Validator::validate_arg_num_occurs: &quot;fixture&quot;=1
+[     clap::parser::validator]  Validator::validate_matched_args:iter:commands: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            AnyValue {
+                                inner: std::ffi::os_str::OsString,
+                            },
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[     clap::parser::validator]  Validator::validate_arg_num_vals
+[     clap::parser::validator]  Validator::validate_arg_values: arg=&quot;commands&quot;
+[     clap::parser::validator]  Validator::validate_arg_num_occurs: &quot;commands&quot;=0
+[   clap::parser::arg_matcher]  ArgMatcher::get_global_values: global_arg_vec=[help, version]
+[src/main.rs:35] matches.get_one::&lt;OsString&gt;(&quot;fixture&quot;).cloned().map(PathBuf::from) = Some(
+    &quot;c&quot;,
+)
+</code></pre>
+<h2>Bad</h2>
+<pre><code class="language-console">$ cargo run -q -- --with-fixture c -e 'puts ARGV'
+[      clap::builder::command]  Command::_do_parse
+[      clap::builder::command]  Command::_build: name=&quot;artichoke&quot;
+[      clap::builder::command]  Command::_propagate:artichoke
+[      clap::builder::command]  Command::_check_help_and_version: artichoke
+[      clap::builder::command]  Command::_propagate_global_args:artichoke
+[      clap::builder::command]  Command::_derive_display_order:artichoke
+[clap::builder::debug_asserts]  Command::_debug_asserts
+[clap::builder::debug_asserts]  Arg::_debug_asserts:help
+[clap::builder::debug_asserts]  Arg::_debug_asserts:version
+[clap::builder::debug_asserts]  Arg::_debug_asserts:commands
+[clap::builder::debug_asserts]  Arg::_debug_asserts:fixture
+[clap::builder::debug_asserts]  Arg::_debug_asserts:arguments
+[clap::builder::debug_asserts]  Command::_verify_positionals
+[        clap::parser::parser]  Parser::get_matches_with
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--with-fixture&quot;)' ([45, 45, 119, 105, 116, 104, 45, 102, 105, 120, 116, 117, 114, 101])
+[        clap::parser::parser]  Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser]  Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser]  Parser::possible_subcommand: arg=Ok(&quot;--with-fixture&quot;)
+[        clap::parser::parser]  Parser::get_matches_with: sc=None
+[        clap::parser::parser]  Parser::parse_long_arg
+[        clap::parser::parser]  Parser::parse_long_arg: Does it contain '='...
+[        clap::parser::parser]  Parser::parse_long_arg: Found valid arg or flag '--with-fixture'
+[        clap::parser::parser]  Parser::parse_long_arg(&quot;with-fixture&quot;): Presence validated
+[        clap::parser::parser]  Parser::react action=IncOccurrence, identifier=Some(Long), source=CommandLine
+[        clap::parser::parser]  Parser::react: cur_idx:=1
+[        clap::parser::parser]  Parser::remove_overrides: id=fixture
+[   clap::parser::arg_matcher]  ArgMatcher::start_occurrence_of_arg: id=fixture
+[      clap::builder::command]  Command::groups_for_arg: id=fixture
+[        clap::parser::parser]  Parser::get_matches_with: After parse_long_arg ValuesDone
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;c&quot;)' ([99])
+[        clap::parser::parser]  Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser]  Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser]  Parser::possible_subcommand: arg=Ok(&quot;c&quot;)
+[        clap::parser::parser]  Parser::get_matches_with: sc=None
+[        clap::parser::parser]  Parser::split_arg_values; arg=arguments, val=RawOsStr(&quot;c&quot;)
+[        clap::parser::parser]  Parser::split_arg_values; trailing_values=true, DontDelimTrailingVals=false
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;-e&quot;)' ([45, 101])
+[        clap::parser::parser]  Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser]  Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser]  Parser::split_arg_values; arg=arguments, val=RawOsStr(&quot;-e&quot;)
+[        clap::parser::parser]  Parser::split_arg_values; trailing_values=true, DontDelimTrailingVals=false
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;puts ARGV&quot;)' ([112, 117, 116, 115, 32, 65, 82, 71, 86])
+[        clap::parser::parser]  Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser]  Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser]  Parser::split_arg_values; arg=arguments, val=RawOsStr(&quot;puts ARGV&quot;)
+[        clap::parser::parser]  Parser::split_arg_values; trailing_values=true, DontDelimTrailingVals=false
+[        clap::parser::parser]  Parser::resolve_pending: id=arguments
+[        clap::parser::parser]  Parser::react action=StoreValue, identifier=Some(Index), source=CommandLine
+[        clap::parser::parser]  Parser::remove_overrides: id=arguments
+[   clap::parser::arg_matcher]  ArgMatcher::start_occurrence_of_arg: id=arguments
+[      clap::builder::command]  Command::groups_for_arg: id=arguments
+[        clap::parser::parser]  Parser::push_arg_values: [&quot;c&quot;, &quot;-e&quot;, &quot;puts ARGV&quot;]
+[        clap::parser::parser]  Parser::add_single_val_to_arg: cur_idx:=2
+[      clap::builder::command]  Command::groups_for_arg: id=arguments
+[        clap::parser::parser]  Parser::add_single_val_to_arg: cur_idx:=3
+[      clap::builder::command]  Command::groups_for_arg: id=arguments
+[        clap::parser::parser]  Parser::add_single_val_to_arg: cur_idx:=4
+[      clap::builder::command]  Command::groups_for_arg: id=arguments
+[   clap::parser::arg_matcher]  ArgMatcher::needs_more_vals: o=arguments, resolved=3, pending=0
+[        clap::parser::parser]  Parser::react not enough values passed in, leaving it to the validator to complain
+[        clap::parser::parser]  Parser::add_defaults
+[        clap::parser::parser]  Parser::add_defaults:iter:help:
+[        clap::parser::parser]  Parser::add_default_value:iter:help: doesn't have default missing vals
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:help: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:version:
+[        clap::parser::parser]  Parser::add_default_value:iter:version: doesn't have default missing vals
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:version: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:commands:
+[        clap::parser::parser]  Parser::add_default_value:iter:commands: doesn't have default missing vals
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:commands: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:fixture:
+[        clap::parser::parser]  Parser::add_default_value:iter:fixture: doesn't have default missing vals
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:fixture: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:arguments:
+[        clap::parser::parser]  Parser::add_default_value:iter:arguments: doesn't have default missing vals
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:arguments: doesn't have default vals
+[     clap::parser::validator]  Validator::validate
+[     clap::parser::validator]  Validator::validate_conflicts
+[     clap::parser::validator]  Validator::validate_exclusive
+[     clap::parser::validator]  Validator::validate_exclusive:iter:fixture
+[     clap::parser::validator]  Validator::validate_exclusive:iter:arguments
+[     clap::parser::validator]  Validator::validate_conflicts::iter: id=fixture
+[     clap::parser::validator]  Conflicts::gather_conflicts: arg=fixture
+[      clap::builder::command]  Command::groups_for_arg: id=fixture
+[     clap::parser::validator]  Conflicts::gather_direct_conflicts id=fixture, conflicts=[]
+[      clap::builder::command]  Command::groups_for_arg: id=arguments
+[     clap::parser::validator]  Conflicts::gather_direct_conflicts id=arguments, conflicts=[]
+[     clap::parser::validator]  Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator]  Validator::validate_conflicts::iter: id=arguments
+[     clap::parser::validator]  Conflicts::gather_conflicts: arg=arguments
+[     clap::parser::validator]  Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator]  Validator::validate_required: required=ChildGraph([])
+[     clap::parser::validator]  Validator::gather_requires
+[     clap::parser::validator]  Validator::gather_requires:iter:fixture
+[     clap::parser::validator]  Validator::gather_requires:iter:arguments
+[     clap::parser::validator]  Validator::validate_required: is_exclusive_present=false
+[     clap::parser::validator]  Validator::validate_required_unless
+[     clap::parser::validator]  Validator::validate_matched_args
+[     clap::parser::validator]  Validator::validate_matched_args:iter:fixture: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[     clap::parser::validator]  Validator::validate_arg_num_vals
+[     clap::parser::validator]  Validator::validate_arg_values: arg=&quot;fixture&quot;
+[     clap::parser::validator]  Validator::validate_arg_num_occurs: &quot;fixture&quot;=1
+[     clap::parser::validator]  Validator::validate_matched_args:iter:arguments: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            AnyValue {
+                                inner: std::ffi::os_str::OsString,
+                            },
+                            AnyValue {
+                                inner: std::ffi::os_str::OsString,
+                            },
+                            AnyValue {
+                                inner: std::ffi::os_str::OsString,
+                            },
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[     clap::parser::validator]  Validator::validate_arg_num_vals
+[     clap::parser::validator]  Validator::validate_arg_values: arg=&quot;arguments&quot;
+[     clap::parser::validator]  Validator::validate_arg_num_occurs: &quot;arguments&quot;=3
+[   clap::parser::arg_matcher]  ArgMatcher::get_global_values: global_arg_vec=[help, version]
+[src/main.rs:34] matches.get_one::&lt;OsString&gt;(&quot;fixture&quot;).cloned().map(PathBuf::from) = None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @lopopolo on 2022-06-21 06:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-21 13:58</div>
+            <div class="timeline-body"><pre><code class="language-diff">diff --git a/src/main.rs b/src/main.rs
+index 9a58066..ce4d8c9 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -18,8 +18,7 @@ fn main() {
+         .arg(
+             Arg::new(&quot;fixture&quot;)
+                 .long(&quot;with-fixture&quot;)
+-                .allow_invalid_utf8(true)
+-                .takes_value(true)
++                .value_parser(clap::value_parser!(OsString))
+                 .help(&quot;file whose contents will be read into the `$fixture` global&quot;),
+         )
+         .arg(
+</code></pre>
+<p>This patch is incorrect; <code>takes_value(true)</code> is still needed.  <code>value_parser</code> affects the parsing of env variables even for flags which have <code>takes_value(false)</code>, so <code>value_parser</code> does not imply <code>takes_value(true)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lopopolo">@lopopolo</a> on 2022-06-21 14:44</div>
+            <div class="timeline-body"><p>Ahh good to know. Sorry for the bad report.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-06-21 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../artichoke/artichoke/pulls/1911.html">artichoke/artichoke#1911</a> on 2022-06-21 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lopopolo">@lopopolo</a> on 2022-06-21 15:31</div>
+            <div class="timeline-body"><p>Thanks for setting me on the right path @epage.</p>
+<p>I managed to get the 3.2.x style APIs working and I'm pretty happy with the result. I ran into a couple of panics while I got the turbofishes correct, but I think the code reads much nicer now.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

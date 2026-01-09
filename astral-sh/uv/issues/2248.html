@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv could operate on the venv it's installed in - astral-sh/uv #2248</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv could operate on the venv it's installed in</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2248">#2248</a>
+        opened by <a href="https://github.com/dhduvall">@dhduvall</a>
+        on 2024-03-06 18:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhduvall">@dhduvall</a> on 2024-03-06 18:46</div>
+            <div class="timeline-body"><p>I wasn't able to find this request except as mentioned in https://github.com/astral-sh/uv/issues/1422#issuecomment-1949877288 — that when <code>uv</code> is installed in a venv, running it should by default operate on the venv it's installed in.</p>
+<p>This simplifies bootstrapping a little bit, as I could then simply set <code>UV = $(VENV)/bin/uv</code> in my <code>Makefile</code>. I'm currently using <code>--python</code>, but that's accepted only as a flag to the <code>uv pip XXX</code> subcommand, and not to <code>uv</code> itself, so I have to splice it in everywhere I need it. I could also set <code>VIRTUAL_ENV</code> in my <code>Makefile</code>, but somehow that feels awkward to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-03-06 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-07 18:02</div>
+            <div class="timeline-body"><p>This makes some sense, but I don't see how setting the <code>uv</code> alias is any easier than setting <code>VIRTUAL_ENV</code>? I think the latter is clearer.</p>
+<p>In general, I would recommend against installing <code>uv</code> into virtual environments.</p>
+<p>I think changing this behavior as requested would have dangerous implications, e.g. if you <code>pipx install uv</code> it would operate on the <code>pipx</code> environment it was installed in?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhduvall">@dhduvall</a> on 2024-03-08 18:57</div>
+            <div class="timeline-body"><blockquote>
+<p>This makes some sense, but I don't see how setting the <code>uv</code> alias is any easier than setting <code>VIRTUAL_ENV</code>? I think the latter is clearer.</p>
+</blockquote>
+<p>Mostly because setting environment variables in <code>make</code> is a bit of a pain. You can't just set it on one line of a recipe, because it won't carry over to the next. I could set it globally (<code>export VIRTUAL_ENV=...</code>), and I'll probably end up with that, but globals always irritate me. Might not be rational in this case.</p>
+<blockquote>
+<p>In general, I would recommend against installing <code>uv</code> into virtual environments.</p>
+</blockquote>
+<p>Hm. Can you elaborate? I'm doing that because I want to have a specific version of <code>uv</code> (for reproducible builds), and I don't think the install script allows for that. Though of course, the bootstrap <code>uv</code> is still whatever comes from the script. But the right place to ask for that is at <code>cargo-dist</code>, right?</p>
+<p>Should <code>uv</code> not publish a Python package at all?</p>
+<blockquote>
+<p>I think changing this behavior as requested would have dangerous implications, e.g. if you <code>pipx install uv</code> it would operate on the <code>pipx</code> environment it was installed in?</p>
+</blockquote>
+<p>Good question. I've no idea–I'm not familiar with <code>pipx</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-08 21:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Hm. Can you elaborate? I'm doing that because I want to have a specific version of uv (for reproducible builds), and I don't think the install script allows for that. Though of course, the bootstrap uv is still whatever comes from the script. But the right place to ask for that is at cargo-dist, right?</p>
+</blockquote>
+<p>You can download specific versions with the install script e.g.</p>
+<pre><code>curl --proto '=https' --tlsv1.2 -LsSf https://github.com/astral-sh/uv/releases/download/0.1.16/uv-installer.sh | sh
+</code></pre>
+<p>You can see examples of these in the GitHub Releases page. If you need multiple versions to exist on the system, I think we'd need something like https://github.com/astral-sh/uv/issues/2087 or the ability to name the executable.</p>
+<p><code>uv</code> is better off being outside of the environments it's managing, it's a clearer separation since it does not require Python. It also makes it harder to accidentally delete the binary (e.g. #1327).</p>
+<blockquote>
+<p>Should uv not publish a Python package at all?</p>
+</blockquote>
+<p>We considered this. We only publish a Python package for convenience (and it has <em>many</em> downloads) — our users are just accustomed to installing things that way. It's definitely not our preferred method though.</p>
+<p>I think my last point around <code>pipx</code> is significant enough that we cannot support this request. Thanks for sharing your perspective and engaging with the project though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhduvall">@dhduvall</a> on 2024-03-09 03:04</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Hm. Can you elaborate? I'm doing that because I want to have a specific version of uv (for reproducible builds), and I don't think the install script allows for that. Though of course, the bootstrap uv is still whatever comes from the script. But the right place to ask for that is at cargo-dist, right?</p>
+</blockquote>
+<p>You can download specific versions with the install script e.g.</p>
+<pre><code>curl --proto '=https' --tlsv1.2 -LsSf https://github.com/astral-sh/uv/releases/download/0.1.16/uv-installer.sh | sh
+</code></pre>
+</blockquote>
+<p>Got it. That's a workaround I can probably get behind.</p>
+<blockquote>
+<p><code>uv</code> is better off being outside of the environments it's managing, it's a clearer separation since it does not require Python. It also makes it harder to accidentally delete the binary (e.g. #1327).</p>
+</blockquote>
+<p>Good point.</p>
+<p>Thanks for your time and patience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhduvall on 2024-03-09 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @zanieb on 2024-03-09 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @zanieb on 2024-03-09 03:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

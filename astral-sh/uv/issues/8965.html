@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV Environment Management Tool Confuses Package Paths Across Environments - astral-sh/uv #8965</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV Environment Management Tool Confuses Package Paths Across Environments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8965">#8965</a>
+        opened by <a href="https://github.com/jo-pillar">@jo-pillar</a>
+        on 2024-11-09 09:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jo-pillar">@jo-pillar</a> on 2024-11-09 09:33</div>
+            <div class="timeline-body"><p><strong>Description</strong></p>
+<p>I encountered an issue with the UV environment management tool when working with local Python packages.</p>
+<p><strong>Steps to Reproduce:</strong></p>
+<ol>
+<li>Create two separate project folders, <code>A</code> and <code>B</code>, on the same system, both containing the same local Python package.</li>
+<li>Register two different environments, e.g., <code>env-A</code> and <code>env-B</code>, using the same Python version.</li>
+<li>Make changes to the package code in folder <code>B</code>, then run <code>pip install .</code> to update the package in the <code>env-B</code> environment.</li>
+<li>The changes do not take effect, and the old version of the package is still used.</li>
+</ol>
+<p><strong>Observed Behavior:</strong></p>
+<ul>
+<li>UV mistakenly identifies the package installed in folder <code>A</code> as the package for folder <code>B</code>.</li>
+<li>Changes made in folder <code>B</code> are not applied correctly.</li>
+</ul>
+<p><strong>Expected Behavior:</strong></p>
+<ul>
+<li>The <code>env-B</code> environment should correctly identify and use the package installed from folder <code>B</code>.</li>
+</ul>
+<p><strong>Environment Details:</strong></p>
+<ul>
+<li>Operating System: Ubuntu20.04</li>
+<li>Python Version: 3.12.7</li>
+<li>UV Version: 0.5.0</li>
+</ul>
+<p><strong>Possible Cause:</strong></p>
+<ul>
+<li>UV may not be properly isolating environments when using the same Python version, leading to path conflicts.</li>
+</ul>
+<p><strong>Suggested Fix:</strong></p>
+<ul>
+<li>Investigate the path isolation mechanism for environments in UV.</li>
+<li>Implement stricter handling of package paths to ensure no cross-environment confusion occurs.</li>
+</ul>
+<p><strong>Additional Information:</strong>
+Please let me know if additional logs or example files are needed to reproduce this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 13:38</div>
+            <div class="timeline-body"><p>Can you please provide a more complete reproduction? Like a series of commands I can run to reproduce? (I think what you're describing is almost certainly not what's happening -- we definitely don't mix environments like that, maybe you still have the previous environment activated or something? -- but I'd like to help you figure out your workflow.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-11-09 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jo-pillar">@jo-pillar</a> on 2024-11-10 05:45</div>
+            <div class="timeline-body"><p>I have found another question but maybe the same reason.</p>
+<pre><code class="language-bash">mkdir uv-test
+cd uv-test/
+mkdir mypackage
+cd mypackage/
+git clone https://github.com/navdeep-G/setup.py # a very simple project can use pip install .
+cd setup.py
+uv venv --python 3.12
+source .venv/bin/activate
+uv pip install .
+python -c &quot;import mypackage as mp&quot; # no output
+echo &quot;print(\&quot;mychange\&quot;) &gt; mypackage/core.py   # make some change
+uv pip install .
+python -c &quot;import mypackage as mp&quot;  #  mychange printed
+cd ~ # back to home
+python -c &quot;import mypackage as mp&quot;  # Try again, but no output!!!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-10 08:33</div>
+            <div class="timeline-body"><p>Respond to https://github.com/astral-sh/uv/issues/8965#issuecomment-2466597230.
+@jo-pillar The reason you could successfully run it within the setup.py directory is that you imported the mypackage module (directory) from the current working directory. Therefore, whether you installed it or not, it could function.</p>
+<p>Unlike <code>pip install</code>, <code>uv pip install</code> doesn't reinstall packages every time it runs. I think that uv seems that as long as setup.py remains unchanged, uv won't choose to reinstall packages.</p>
+<p>If you need to follow and apply changes, you have two options:</p>
+<ul>
+<li>Editable installation (<code>uv pip install --editable .</code>).</li>
+<li>Forcing reinstallation regardless of whether the package is installed (<code>uv pip install . --reinstall</code>).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jo-pillar">@jo-pillar</a> on 2024-11-10 13:36</div>
+            <div class="timeline-body"><p>It behaves differently from <code>pip install .</code>, which can be both frustrating and confusing. I think it should be fixed, but it's up to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-10 13:48</div>
+            <div class="timeline-body"><p>It’s an intentional difference. If you’re modifying a package, you should likely update the version. If you’re developing, you’re probably looking for an editable install which updates alongside the source without a need to re-install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-10 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-10 13:56</div>
+            <div class="timeline-body"><blockquote>
+<p>It’s an intentional difference. If you’re modifying a package, you should likely update the version. If you’re developing, you’re probably looking for an editable install which updates alongside the source without a need to re-install.</p>
+</blockquote>
+<p>@charliermarsh Have you considered adding this to https://docs.astral.sh/uv/pip/compatibility/?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9019.html">astral-sh/uv#9019</a> on 2024-11-11 16:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

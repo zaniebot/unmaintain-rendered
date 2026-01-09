@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clearer output on index strategy, determined source index and indexes being queried for uv pip install &lt;package&gt; - astral-sh/uv #4389</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clearer output on index strategy, determined source index and indexes being queried for uv pip install &lt;package&gt;</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/4389">#4389</a>
+        opened by <a href="https://github.com/danny-todd-oxb">@danny-todd-oxb</a>
+        on 2024-06-18 17:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danny-todd-oxb">@danny-todd-oxb</a> on 2024-06-18 17:05</div>
+            <div class="timeline-body"><h3>Platform</h3>
+<pre><code class="language-sh">➜ uname -a    
+Darwin FA-3620-MBPRO14 23.5.0 Darwin Kernel Version 23.5.0: Wed May  1 20:12:58 PDT 2024; root:xnu-10063.121.3~5/RELEASE_ARM64_T6000 arm64
+➜ uv --version
+uv 0.2.11 (44041bccd 2024-06-11)
+</code></pre>
+<h3>Issue</h3>
+<p>When running <code>uv pip install</code> for a given package (or multiple via -r <code>requirements.txt</code> in my case) it would be useful as an end-user for the determined source index for the given package to also be output as well as the indexes being queried.</p>
+<pre><code class="language-sh">➜ cat ~/.config/uv/uv.toml  
+[pip]
+extra-index-url = [&quot;https://private.index1/simple&quot;, &quot;https://private.index2/simple&quot;, &quot;https://pypi.python.org/simple&quot;]
+</code></pre>
+<p>Initally my index list looked like this ^.</p>
+<pre><code class="language-sh">➜ uv pip install python-geohash
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only python-geohash==0.8.5 is available and python-geohash==0.8.5 has no wheels are available with a
+      matching Python ABI, we can conclude that all versions of python-geohash cannot be used.
+      And because you require python-geohash, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>No compatible package found since this would just be querying https://private.index1/simple but this wasn't obvious to me based on the output. Having this determined source index for this package output inline would have been helpful here, since I was uninformed of changes to index priority/behaviour in uv vs. pip.</p>
+<pre><code class="language-sh">➜ uv pip install python-geohash --index-strategy unsafe-best-match
+Resolved 1 package in 794ms
+Installed 1 package in 4ms
+ + python-geohash==0.8.5
+</code></pre>
+<p>To replicate something close to pip's behaviour I used <code>--index-strategy unsafe-best-match</code>. Having the determined source index as well as the indexes that are being queried (for both <code>unsafe</code> index-strategies) would be useful here also. Similar to how <code>pip install &lt;package&gt;</code> will output:</p>
+<pre><code class="language-sh">Looking in indexes: https://private.index1/simple, https://private.index2/simple, https://pypi.python.org/simple
+Collecting &lt;package&gt;
+  Downloading &lt;index&gt;/&lt;package&gt;
+</code></pre>
+<p>There was increased confusion around this issue due to being uninformed of the changes within <code>uv</code> vs. <code>pip</code> regarding priority of indexes and default index strategy. I had expected all indexes to be queried similar to pip's default behaviour but the output above lead me to believe I was experiencing an access/auth/compatibility resolution problem. IMO this would be a sensible addition to make these uv-specific changes clearer to end-users as well as reduce troubleshooting required for instances where package sources could be modified (e.g. overlapping config files, env vars added in pipeline processes etc.).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-06-18 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-19 00:11</div>
+            <div class="timeline-body"><p>Thanks for the writeup! I think roughly the idea here would be to add hints to the unsatisfiable resolution when &quot;all&quot; versions of a package cannot be used and there are multiple package indexes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-06-19 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danny-todd-oxb">@danny-todd-oxb</a> on 2024-06-21 09:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for the writeup! I think roughly the idea here would be to add hints to the unsatisfiable resolution when &quot;all&quot; versions of a package cannot be used and there are multiple package indexes.</p>
+</blockquote>
+<p>That sounds good to me. As an out-of-scope idea, I could see functionality similar to the now-deprecated <code>pip search</code> being very useful for package search/query usecases - not sure if there's anything like that on your feature stack.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5146.html">astral-sh/uv#5146</a> on 2024-07-17 17:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

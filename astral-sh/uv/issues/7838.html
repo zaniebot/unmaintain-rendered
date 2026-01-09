@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace dependencies are not fully synced before run - astral-sh/uv #7838</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Workspace dependencies are not fully synced before run</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7838">#7838</a>
+        opened by <a href="https://github.com/mathialo">@mathialo</a>
+        on 2024-10-01 13:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mathialo">@mathialo</a> on 2024-10-01 13:10</div>
+            <div class="timeline-body"><p>I'm currently testing out the workspace features of uv, and have come across something unexpected.</p>
+<p>When running <code>uv run ...</code> in a workspace member, it will install any new packages from the member's dependencies into the venv, but it will not remove any dependencies left-over from other members. That can lead to an issue where two members needs a dependency, and it's only listed for one, but unless you manually run <code>uv sync</code> every time you move between them you will not notice.</p>
+<p>I've set up a small project to illustrate, with two subpackages:</p>
+<pre><code>.
+├── project-a
+│   ├── hello.py
+│   ├── pyproject.toml
+│   └── README.md
+├── project-b
+│   ├── hello.py
+│   ├── pyproject.toml
+│   └── README.md
+├── pyproject.toml
+├── README.md
+└── uv.lock
+</code></pre>
+<p>where <code>project-a</code> has a dependency on <code>pyhumps</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project-a&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;pyhumps&gt;=3.8.0&quot;]
+</code></pre>
+<p>and <code>project-b</code> does not:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project-b&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+</code></pre>
+<p>Both have a similar <code>hello.py</code> test script that uses <code>pyhumps</code>:</p>
+<pre><code class="language-python">from humps import pascalize
+
+def main():
+    print(f&quot;Hello from {pascalize('project-a')}!&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>If I run <code>uv run hello.py</code> in <code>project-a</code> first, <code>uv run hello.py</code> will work in <code>project-b</code> after - until I manually run <code>uv sync</code> and then it stops working.</p>
+<p>This same behavior is there for dev dependencies as well. Say if one member dev-depends on <code>pytest</code>, running <code>uv run pytest</code> anywhere else in the workspace works until manually synced.</p>
+<p>This can of course be worked around by always running <code>uv sync</code>, but knowing myself I will forget to do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 19:33</div>
+            <div class="timeline-body"><p>I guess this would be <code>uv run --exact</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-10-16 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-10-16 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jstriebel">@jstriebel</a> on 2024-11-13 18:38</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess this would be <code>uv run --exact</code>.</p>
+</blockquote>
+<p>Sounds great IMO. FTR, the default behavior with <code>uv sync</code> is to remove superfluous packages, and uses <code>--inexact</code> to flip the behavior. (Related issue: https://github.com/astral-sh/uv/issues/4358)</p>
+<p>On a similar note (but maybe worth a separate ticket?):
+<code>uv run --no-sync</code> is slightly confusing, given that <code>--sync</code> already has a different default behavior. Should/Could this be clarified in the help text? One more alternative would be to unify the default behavior of <code>run</code> and <code>sync</code>, but I see that the current defaults match typical scenarios very well, especially in workspaces, since un- and re-installing all the time when switching packages is not very ergonomic.</p>
+<p>PS: Thanks a ton for the awesome work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NicholasPini">@NicholasPini</a> on 2024-11-20 17:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess this would be <code>uv run --exact</code>.</p>
+</blockquote>
+<p>This would be really useful. I'm running a workspace with various subpackages, and being certain that <code>uv run --package whatever</code> matches the <code>pyproject.toml</code> exactly would be great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-27 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10198.html">astral-sh/uv#10198</a> on 2024-12-27 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-27 16:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

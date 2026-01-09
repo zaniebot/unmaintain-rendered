@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E712 (Comparison to True should be cond is True) should be ignored when comparison is against pandas.Series - astral-sh/ruff #1852</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>E712 (Comparison to True should be cond is True) should be ignored when comparison is against pandas.Series</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1852">#1852</a>
+        opened by <a href="https://github.com/rsokolewicz">@rsokolewicz</a>
+        on 2023-01-13 15:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rsokolewicz">@rsokolewicz</a> on 2023-01-13 15:55</div>
+            <div class="timeline-body"><p>using <code>ruff==0.0.215</code></p>
+<p>The following snippet raises an E712 when running <code>ruff</code>:</p>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.DataFrame({&quot;x&quot; : [False, True]})
+df[&quot;x&quot;] != False
+</code></pre>
+<p>and the autofix replaces <code>df[&quot;x&quot;] != False</code> with <code>df[&quot;x&quot;] is not False</code>. The two are unfortunately not equivalent and the latter leads to errors from pandas.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-14 03:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-14 03:18</div>
+            <div class="timeline-body"><p>Pretty hard to avoid until we can infer that <code>df</code> is a DataFrame here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1869.html">astral-sh/ruff#1869</a> on 2023-01-14 09:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akanz1">@akanz1</a> on 2023-01-14 09:07</div>
+            <div class="timeline-body"><p>Can we prevent the autofix from applying this specific rule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nils-borrmann-y42">@nils-borrmann-y42</a> on 2023-01-14 11:27</div>
+            <div class="timeline-body"><p>The same problem happens in sqlalchemy queries (<code>.where(foo != bar)</code> is not equivalent to <code>.where(foo is not bar)</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-14 15:12</div>
+            <div class="timeline-body"><p>Before I disable autofix for this rule entirely... you can disable it for your project via:</p>
+<pre><code class="language-toml">[tool.ruff]
+unfixable = [&quot;E712&quot;]
+</code></pre>
+<p>Is that sufficient here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akanz1">@akanz1</a> on 2023-01-14 18:06</div>
+            <div class="timeline-body"><p>Works for me, thanks! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rsokolewicz">@rsokolewicz</a> on 2023-01-14 19:36</div>
+            <div class="timeline-body"><p>In my data analysis and data science projects I end up ignoring this rule more often than having it autofixed, so I ended up using</p>
+<pre><code>[tool.ruff]
+ignore = [&quot;E712&quot;]
+</code></pre>
+<p>instead. There are a few other cases where autofixing <code>== True</code> to <code>is True</code> will break code, namely when comparing against booleans that have a package-specific implementation such as numpy (<code>numpy.bool_</code>) or pytorch (<code>toch.bool</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-14 22:32</div>
+            <div class="timeline-body"><p>Yeah, that makes sense. I think I'm going to close this for now given that we have some workarounds (users should either disable the rule entirely, or, if they want the rule to be enabled but want to avoid false fixes, should use <code>unfixable</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-14 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3974.html">astral-sh/ruff#3974</a> on 2023-04-14 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2443.html">astral-sh/ruff#2443</a> on 2023-04-25 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4560.html">astral-sh/ruff#4560</a> on 2023-05-21 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Faolain">@Faolain</a> on 2023-07-17 19:02</div>
+            <div class="timeline-body"><p>This just broke our code using SQLAlchemy converting</p>
+<pre><code>signup_code = (
+    db.session.query(SignupCode)
+    .filter(SignupCode.code == code, SignupCode.used == False)
+    .first()
+)
+</code></pre>
+<p>to</p>
+<pre><code> signup_code = (
+        db.session.query(SignupCode)
+        .filter(SignupCode.code == code, SignupCode.used is False)
+        .first()
+    )
+</code></pre>
+<p>which it definitely shouldn't have autofixed. Can this instead be a suggestion provided but something that is not autofixed? Can prevent a lot of headaches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-17 19:06</div>
+            <div class="timeline-body"><p>This is marked in the codebase as a &quot;Suggested&quot; autofix, which in a future release will require running with additional command-line flags to explicitly opt-in to fixing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Aarhus-Psychiatry-Research/psycop-common/issues/489.html">Aarhus-Psychiatry-Research/psycop-common#489</a> on 2023-11-27 10:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/linde-frolke">@linde-frolke</a> on 2025-03-27 12:57</div>
+            <div class="timeline-body"><p>For pandas it can be solved by writing
+<code>~boolean_series</code> instead of <code>boolean_series == False</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LarsenCundric">@LarsenCundric</a> on 2025-04-03 14:36</div>
+            <div class="timeline-body"><p>Got the same issue where a sql query <code>param == False</code> was &quot;fixed to <code>not param</code> which broke the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../open-spaced-repetition/srs-benchmark/pulls/238.html">open-spaced-repetition/srs-benchmark#238</a> on 2025-06-13 18:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

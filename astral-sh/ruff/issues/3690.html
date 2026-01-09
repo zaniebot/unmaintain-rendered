@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM118 Incorrect error message and autofix - astral-sh/ruff #3690</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM118 Incorrect error message and autofix</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3690">#3690</a>
+        opened by <a href="https://github.com/dosisod">@dosisod</a>
+        on 2023-03-23 18:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dosisod">@dosisod</a> on 2023-03-23 18:29</div>
+            <div class="timeline-body"><!--
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Given the following code:</p>
+<pre><code class="language-python">x: dict[str, str] | None = None
+
+y = &quot;abc&quot; in (x or {}).keys()
+</code></pre>
+<p>Ruff returns the following error:</p>
+<pre><code>$ ruff file.py
+file.py:3:5: SIM118 [*] Use `&quot;abc&quot; in x or {}` instead of `&quot;abc&quot; in x or {}.keys()`
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+</code></pre>
+<p>The error is correct except the <code>x or {}</code> part of the error message isn't wrapped in parenthesis. And, when running with <code>--fix</code>, the following (incorrect) code is produced:</p>
+<pre><code class="language-python">x: dict[str, str] | None = None
+
+y = &quot;abc&quot; in x or {}
+</code></pre>
+<p>If <code>x</code> is <code>None</code>, this code will now cause a <code>NoneType</code> error, and if <code>x</code> is a <code>dict</code> but doesn't contain <code>&quot;abc&quot;</code>, then <code>y</code> will be a <code>dict</code> instead of a <code>bool</code>.</p>
+<p>There might be other checks that have a similar issue, this just happened to be the first one I came across.</p>
+<p>Currently using Ruff v0.0.258</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-23 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-03-23 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-23 18:34</div>
+            <div class="timeline-body"><p>Oh yeah, definitely. Thanks for filing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-03-23 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3695.html">astral-sh/ruff#3695</a> on 2023-03-23 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-23 20:58</div>
+            <div class="timeline-body"><p>Sorry @charliermarsh, I already finished implementing it before seeing that you self-assigned this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-23 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-23 21:15</div>
+            <div class="timeline-body"><p>No worries, this is great! I'd started on this but got sidetracked IRL.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

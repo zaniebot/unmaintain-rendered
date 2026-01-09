@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>W605 potential false positive with `\` in multi-line strings - astral-sh/ruff #581</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>W605 potential false positive with `\` in multi-line strings</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/581">#581</a>
+        opened by <a href="https://github.com/AA-Turner">@AA-Turner</a>
+        on 2022-11-04 14:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2022-11-04 14:03</div>
+            <div class="timeline-body"><p>Escaping a newline is explicitly allowed, see the table in Lexical Analysis: https://docs.python.org/3/reference/lexical_analysis.html#index-23</p>
+<p>Reproducer:</p>
+<pre><code class="language-python"># bug.py
+print(&quot;&quot;&quot;\
+Lorem ipsum dolar sit amet.
+Lorem ipsum dolar \
+sit amet.
+Lorem ipsum dolar \
+sit amet.&quot;&quot;&quot;)
+</code></pre>
+<p>Sample output of <code>flake8</code> and <code>ruff</code>:</p>
+<pre><code class="language-doscon">I:\Development&gt;type bug.py                         
+print(&quot;&quot;&quot;\                 
+Lorem ipsum dolar sit amet.
+Lorem ipsum dolar \        
+sit amet.                  
+Lorem ipsum dolar \        
+sit amet.&quot;&quot;&quot;)              
+
+I:\Development&gt;flake8 --isolated --select W bug.py 
+
+I:\Development&gt;ruff --select W bug.py              
+Found 3 error(s).
+'ug.py:1:10: W605 Invalid escape sequence: '\
+'ug.py:3:20: W605 Invalid escape sequence: '\
+'ug.py:5:20: W605 Invalid escape sequence: '\
+</code></pre>
+<p>I think there is also a bug in the error message here, as the first character is replaced by <code>'</code>.</p>
+<p>Windows 10, Python 3.10</p>
+<p>A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-04 14:07</div>
+            <div class="timeline-body"><p>Thank you! Will fix this today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-11-04 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-11-04 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-04 14:30</div>
+            <div class="timeline-body"><p>I'm wondering if this is Windows-specific? I'm not able to repro on macOS. Might take me a bit as I'll need to setup a testing env for Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-04 14:38</div>
+            <div class="timeline-body"><p>(I'm going through that process now, I need to be able to test on Windows anyway so this is a good reason to set it up.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2022-11-04 14:38</div>
+            <div class="timeline-body"><p>I can reproduce using Windows Subsystem for Linux, Ubuntu 22.04:</p>
+<pre><code class="language-bash">adam@Gyrostats:~$ cd /mnt/i/Development/
+adam@Gyrostats:/mnt/i/Development/$ python3.11 -m venv venv
+adam@Gyrostats:/mnt/i/Development/$ . ./venv/bin/activate
+(venv) adam@Gyrostats:/mnt/i/Development/$ python -V
+Python 3.11.0rc1
+(venv) adam@Gyrostats:/mnt/i/Development/$ python -m pip install ruff
+Collecting ruff
+  Downloading ruff-0.0.99-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 4.4 MB/s eta 0:00:00
+Installing collected packages: ruff
+Successfully installed ruff-0.0.99
+(venv) adam@Gyrostats:/mnt/i/Development/$ ruff --select W bug.py
+Found 3 error(s).
+'ug.py:1:10: W605 Invalid escape sequence: '\
+'ug.py:3:20: W605 Invalid escape sequence: '\
+'ug.py:5:20: W605 Invalid escape sequence: '\
+</code></pre>
+<p>A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2022-11-04 14:42</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm wondering if this is Windows-specific?</p>
+</blockquote>
+<p>Got it!</p>
+<pre><code class="language-bash">(venv) adam@Gyrostats:/mnt/i/Development$ file bug.py
+bug.py: ASCII text, with CRLF line terminators
+(venv) adam@Gyrostats:/mnt/i/Development$ ruff --select W bug.py
+Found 3 error(s).
+'ug.py:1:10: W605 Invalid escape sequence: '\
+'ug.py:3:20: W605 Invalid escape sequence: '\
+'ug.py:5:20: W605 Invalid escape sequence: '\
+(venv) adam@Gyrostats:/mnt/i/Development$ file good.py
+good.py: ASCII text
+(venv) adam@Gyrostats:/mnt/i/Development$ ruff --select W good.py
+(venv) adam@Gyrostats:/mnt/i/Development$
+</code></pre>
+<p>Incorrect parsing of carriage returns, it seems.</p>
+<p>A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-04 17:38</div>
+            <div class="timeline-body"><p>I can reproduce on macOS by saving the file with CRLF newlines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/589.html">astral-sh/ruff#589</a> on 2022-11-04 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-04 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2022-11-04 18:29</div>
+            <div class="timeline-body"><p>Thanks for the quick fix!</p>
+<p>A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-04 18:30</div>
+            <div class="timeline-body"><p>For sure! Thanks for the great Issue write-up. I'll cut a new release in a bit (want to include a few more small things).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:06 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust Python AST makes identifying `**` difficult - astral-sh/ruff #1879</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rust Python AST makes identifying `**` difficult</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1879">#1879</a>
+        opened by <a href="https://github.com/sbdchd">@sbdchd</a>
+        on 2023-01-15 01:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sbdchd">@sbdchd</a> on 2023-01-15 01:43</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+<p>I'm not sure there is much to do, but it seems tricky to identify spreads <code>**</code> in the Rust Python AST</p>
+<p>With the Python AST <code>{&quot;foo&quot;: 1, **{&quot;bar&quot;: 1}}</code> would be represented with a <code>Dict</code> node with one key and two values, so detecting a spread is pretty straightforward.</p>
+<p>With the Rust Python AST it seems like the only difference is the location information (which can also be affected by whitespace)</p>
+<p>For example:</p>
+<pre><code class="language-python">{**foo,    &quot;bar&quot;: True  }
+</code></pre>
+<details>
+<summary>ast</summary>
+
+<pre><code>[
+    Located {
+        location: Location {
+            row: 1,
+            column: 0,
+        },
+        end_location: Some(
+            Location {
+                row: 1,
+                column: 25,
+            },
+        ),
+        custom: (),
+        node: Expr {
+            value: Located {
+                location: Location {
+                    row: 1,
+                    column: 0,
+                },
+                end_location: Some(
+                    Location {
+                        row: 1,
+                        column: 25,
+                    },
+                ),
+                custom: (),
+                node: Dict {
+                    keys: [],
+                    values: [
+                        Located {
+                            location: Location {
+                                row: 1,
+                                column: 3,
+                            },
+                            end_location: Some(
+                                Location {
+                                    row: 1,
+                                    column: 6,
+                                },
+                            ),
+                            custom: (),
+                            node: Name {
+                                id: &quot;foo&quot;,
+                                ctx: Load,
+                            },
+                        },
+                        Located {
+                            location: Location {
+                                row: 1,
+                                column: 11,
+                            },
+                            end_location: Some(
+                                Location {
+                                    row: 1,
+                                    column: 16,
+                                },
+                            ),
+                            custom: (),
+                            node: Dict {
+                                keys: [
+                                    Located {
+                                        location: Location {
+                                            row: 1,
+                                            column: 11,
+                                        },
+                                        end_location: Some(
+                                            Location {
+                                                row: 1,
+                                                column: 16,
+                                            },
+                                        ),
+                                        custom: (),
+                                        node: Constant {
+                                            value: Str(
+                                                &quot;bar&quot;,
+                                            ),
+                                            kind: None,
+                                        },
+                                    },
+                                ],
+                                values: [
+                                    Located {
+                                        location: Location {
+                                            row: 1,
+                                            column: 18,
+                                        },
+                                        end_location: Some(
+                                            Location {
+                                                row: 1,
+                                                column: 22,
+                                            },
+                                        ),
+                                        custom: (),
+                                        node: Constant {
+                                            value: Bool(
+                                                true,
+                                            ),
+                                            kind: None,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            },
+        },
+    },
+]
+
+</code></pre>
+</details>
+
+<p>and</p>
+<pre><code class="language-python">{**foo, **{&quot;bar&quot;: True }}
+</code></pre>
+<details>
+<summary>ast</summary>
+
+<pre><code>[
+    Located {
+        location: Location {
+            row: 1,
+            column: 0,
+        },
+        end_location: Some(
+            Location {
+                row: 1,
+                column: 26,
+            },
+        ),
+        custom: (),
+        node: Expr {
+            value: Located {
+                location: Location {
+                    row: 1,
+                    column: 0,
+                },
+                end_location: Some(
+                    Location {
+                        row: 1,
+                        column: 26,
+                    },
+                ),
+                custom: (),
+                node: Dict {
+                    keys: [],
+                    values: [
+                        Located {
+                            location: Location {
+                                row: 1,
+                                column: 3,
+                            },
+                            end_location: Some(
+                                Location {
+                                    row: 1,
+                                    column: 6,
+                                },
+                            ),
+                            custom: (),
+                            node: Name {
+                                id: &quot;foo&quot;,
+                                ctx: Load,
+                            },
+                        },
+                        Located {
+                            location: Location {
+                                row: 1,
+                                column: 11,
+                            },
+                            end_location: Some(
+                                Location {
+                                    row: 1,
+                                    column: 25,
+                                },
+                            ),
+                            custom: (),
+                            node: Dict {
+                                keys: [
+                                    Located {
+                                        location: Location {
+                                            row: 1,
+                                            column: 12,
+                                        },
+                                        end_location: Some(
+                                            Location {
+                                                row: 1,
+                                                column: 17,
+                                            },
+                                        ),
+                                        custom: (),
+                                        node: Constant {
+                                            value: Str(
+                                                &quot;bar&quot;,
+                                            ),
+                                            kind: None,
+                                        },
+                                    },
+                                ],
+                                values: [
+                                    Located {
+                                        location: Location {
+                                            row: 1,
+                                            column: 19,
+                                        },
+                                        end_location: Some(
+                                            Location {
+                                                row: 1,
+                                                column: 23,
+                                            },
+                                        ),
+                                        custom: (),
+                                        node: Constant {
+                                            value: Bool(
+                                                true,
+                                            ),
+                                            kind: None,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            },
+        },
+    },
+]
+</code></pre>
+</details>
+
+<p>anyways, curious if you've run into this before, I'm still trying to work out a heuristic for <code>no-unnecessary-spread</code> which was pretty straightforward with the python ast:</p>
+<pre><code class="language-python">def pie800_no_unnecessary_spread(node: ast.Dict, errors: list[Error]) -&gt; None:
+    for key, val in zip(node.keys, node.values):
+        if isinstance(val, ast.Dict) and key is None:
+            errors.append(PIE800(lineno=val.lineno, col_offset=val.col_offset))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-15 02:17</div>
+            <div class="timeline-body"><p>We could fix it upstream! We submit lots of patches to RustPython to improve compatibility. Maybe @harupy would have pointers in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1881.html">astral-sh/ruff#1881</a> on 2023-01-15 02:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-01-15 03:20</div>
+            <div class="timeline-body"><blockquote>
+<p>With the Python AST {&quot;foo&quot;: 1, **{&quot;bar&quot;: 1}} would be represented with a Dict node with one key and two values</p>
+</blockquote>
+<p><code>{&quot;foo&quot;: 1, **{&quot;bar&quot;: 1}}</code> is parsed as follows:</p>
+<h3>CPython:</h3>
+<pre><code>Module(
+  body=[
+    Expr(
+      value=Dict(
+        👇👇👇 Contains two keys, but the second key is None
+        keys=[
+          Constant(
+            value='foo',
+            lineno=1,
+            col_offset=1,
+            end_lineno=1,
+            end_col_offset=6),
+          None],
+        values=[
+          Constant(
+            value=1,
+            lineno=1,
+            col_offset=8,
+            end_lineno=1,
+            end_col_offset=9),
+          Dict(
+            keys=[
+              Constant(
+                value='bar',
+                lineno=1,
+                col_offset=14,
+                end_lineno=1,
+                end_col_offset=19)],
+            values=[
+              Constant(
+                value=1,
+                lineno=1,
+                col_offset=21,
+                end_lineno=1,
+                end_col_offset=22)],
+            lineno=1,
+            col_offset=13,
+            end_lineno=1,
+            end_col_offset=23)],
+        lineno=1,
+        col_offset=0,
+        end_lineno=1,
+        end_col_offset=24),
+      lineno=1,
+      col_offset=0,
+      end_lineno=1,
+      end_col_offset=24)],
+  type_ignores=[])
+</code></pre>
+<h3>RustPython</h3>
+<pre><code>[
+    Located {
+        location: Location {
+            row: 1,
+            column: 0,
+        },
+        end_location: Some(
+            Location {
+                row: 1,
+                column: 24,
+            },
+        ),
+        custom: (),
+        node: Expr {
+            value: Located {
+                location: Location {
+                    row: 1,
+                    column: 0,
+                },
+                end_location: Some(
+                    Location {
+                        row: 1,
+                        column: 24,
+                    },
+                ),
+                custom: (),
+                node: Dict {
+                    👇👇👇 Contains one key
+                    keys: [
+                        Located {
+                            location: Location {
+                                row: 1,
+                                column: 1,
+                            },
+                            end_location: Some(
+                                Location {
+                                    row: 1,
+                                    column: 6,
+                                },
+                            ),
+                            custom: (),
+                            node: Constant {
+                                value: Str(
+                                    &quot;foo&quot;,
+                                ),
+                                kind: None,
+                            },
+                        },
+                    ],
+                    👇👇👇 values look correct?
+                    values: [
+                        Located {
+                            location: Location {
+                                row: 1,
+                                column: 8,
+                            },
+                            end_location: Some(
+                                Location {
+                                    row: 1,
+                                    column: 9,
+                                },
+                            ),
+                            custom: (),
+                            node: Constant {
+                                value: Int(
+                                    1,
+                                ),
+                                kind: None,
+                            },
+                        },
+                        Located {
+                            location: Location {
+                                row: 1,
+                                column: 13,
+                            },
+                            end_location: Some(
+                                Location {
+                                    row: 1,
+                                    column: 23,
+                                },
+                            ),
+                            custom: (),
+                            node: Dict {
+                                keys: [
+                                    Located {
+                                        location: Location {
+                                            row: 1,
+                                            column: 14,
+                                        },
+                                        end_location: Some(
+                                            Location {
+                                                row: 1,
+                                                column: 19,
+                                            },
+                                        ),
+                                        custom: (),
+                                        node: Constant {
+                                            value: Str(
+                                                &quot;bar&quot;,
+                                            ),
+                                            kind: None,
+                                        },
+                                    },
+                                ],
+                                values: [
+                                    Located {
+                                        location: Location {
+                                            row: 1,
+                                            column: 21,
+                                        },
+                                        end_location: Some(
+                                            Location {
+                                                row: 1,
+                                                column: 22,
+                                            },
+                                        ),
+                                        custom: (),
+                                        node: Constant {
+                                            value: Int(
+                                                1,
+                                            ),
+                                            kind: None,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            },
+        },
+    },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../RustPython/RustPython/pulls/4449.html">RustPython/RustPython#4449</a> on 2023-01-15 04:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1884.html">astral-sh/ruff#1884</a> on 2023-01-15 04:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-23 02:32</div>
+            <div class="timeline-body"><p>Fixed upstream by @harupy!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-23 02:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

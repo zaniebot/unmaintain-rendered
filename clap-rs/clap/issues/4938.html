@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using `default_value_if` changes default value - clap-rs/clap #4938</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using `default_value_if` changes default value</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4938">#4938</a>
+        opened by <a href="https://github.com/sw0x2A">@sw0x2A</a>
+        on 2023-05-24 18:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sw0x2A">@sw0x2A</a> on 2023-05-24 18:59</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.69.0 (84c898d65 2023-04-16)</p>
+<h3>Clap Version</h3>
+<p>clap = { version = &quot;4.3.0&quot;, features = [&quot;derive&quot;] }</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{builder::ArgPredicate, Parser};
+
+#[derive(Parser, PartialEq, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    #[arg(long)]
+    bar: bool,
+
+    #[arg(long, default_value_if(&quot;bar&quot;, ArgPredicate::IsPresent, Some(&quot;true&quot;)))]
+    foo: bool,
+}
+
+#[derive(Parser, PartialEq, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args2 {
+    #[arg(long)]
+    bar: bool,
+
+    #[arg(long)]
+    foo: bool,
+}
+
+fn main() {
+    let args = Args::parse;
+}
+
+#[test]
+fn test_clap_verify_args() {
+    use clap::CommandFactory;
+    Args::command().debug_assert();
+}
+
+#[test]
+fn test_clap_defaults() {
+    let args = Args::parse_from([&quot;bla&quot;]);
+    assert_eq!(args, Args {
+        bar: false,
+        foo: false,
+    });
+}
+
+#[test]
+fn test_clap_healthcheck() {
+    let args = Args::parse_from([&quot;bla&quot;, &quot;--bar&quot;]);
+    assert_eq!(args, Args {
+        bar: true,
+        foo: true,
+    });
+}
+
+#[test]
+fn test_clap_defaults2() {
+    let args = Args2::parse_from([&quot;bla&quot;]);
+    assert_eq!(args, Args2 {
+        bar: false,
+        foo: false,
+    });
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Run <code>cargo test</code>.</p>
+<h3>Actual Behaviour</h3>
+<p>Field <code>foo</code> of <code>Args</code> is true when <code>default_value_if</code> is used even though its condition is not fulfilled.
+<code>Args2</code>, that is equal to <code>Args</code> except that it is without <code>default_value_if</code> on field <code>foo</code>, shows correct, expected behaviour.</p>
+<p>Maybe related to #4918.</p>
+<h3>Expected Behaviour</h3>
+<p>Default value of <code>foo</code> in <code>Args</code> should be <code>false</code> when <code>bar</code> is not present.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @sw0x2A on 2023-05-24 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-05-24 21:19</div>
+            <div class="timeline-body"><p>Yes, this looks like #4918, closing in favor of that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-05-24 21:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

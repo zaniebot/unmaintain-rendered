@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>isort: bad interaction between `force-sort-within-sections` and `force-to-top` - astral-sh/ruff #3630</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>isort: bad interaction between `force-sort-within-sections` and `force-to-top`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3630">#3630</a>
+        opened by <a href="https://github.com/bluetech">@bluetech</a>
+        on 2023-03-20 16:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bluetech">@bluetech</a> on 2023-03-20 16:47</div>
+            <div class="timeline-body"><p>Given this config:</p>
+<pre><code class="language-toml">[tool.isort]
+force_to_top = [&quot;typing&quot;]
+force_sort_within_sections = true
+
+[tool.ruff]
+select = [&quot;I001&quot;]
+[tool.ruff.isort]
+force-to-top = [&quot;typing&quot;]
+force-sort-within-sections = true
+</code></pre>
+<p>and this isort-clean file:</p>
+<pre><code class="language-py">from typing import Any
+import abc
+from abc import ABCMeta
+import os
+</code></pre>
+<p>ruff fix gives:</p>
+<pre><code class="language-py">import abc
+import os
+from typing import Any
+from abc import ABCMeta
+</code></pre>
+<p>It looks like <code>force-sort-within-sections</code> (which says to not sort the <code>import</code>s and <code>from</code>s separately) is ignored. But if I comment out the <code>force-to-top = [&quot;typing&quot;]</code> setting, ruff gives:</p>
+<pre><code class="language-py">import abc
+from abc import ABCMeta
+import os
+from typing import Any
+</code></pre>
+<p>which is correct. So I'm guessing the two settings together cause the issue.</p>
+<p>(I'll try to fix this issue when I get a chance, unless someone beats me to it)</p>
+<p>Version: ruff 0.0.257</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-20 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-03-20 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3645.html">astral-sh/ruff#3645</a> on 2023-03-21 11:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-22 18:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

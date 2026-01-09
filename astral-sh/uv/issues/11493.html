@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv 0.5.25 and later fail on Windows arm64 because they do not install Python - astral-sh/uv #11493</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv 0.5.25 and later fail on Windows arm64 because they do not install Python</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11493">#11493</a>
+        opened by <a href="https://github.com/JayBazuzi">@JayBazuzi</a>
+        on 2025-02-13 21:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JayBazuzi">@JayBazuzi</a> on 2025-02-13 21:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We really love uv and the fact that it solves so many Python bootstrapping and module management problems, regardless of environment. We were surprised to discover this problem.</p>
+<p><strong>Note</strong> This problem still occurs with the latest version of uv, 0.5.31.</p>
+<h1>Problem</h1>
+<p>uv stops working as of version 0.5.25+ on Windows Arm64.</p>
+<h1>Machine setup</h1>
+<ul>
+<li>Mac with Apple silicon</li>
+<li>Parallels</li>
+<li>Windows 11 (Arm)</li>
+</ul>
+<h1>Steps to reproduce</h1>
+<p>On a Windows arm64 machine, cleaned with:</p>
+<h2>Clean the machine</h2>
+<pre><code class="language-bat">del /s/q %USERPROFILE%\.local\
+del /s/q %USERPROFILE%\AppData\Roaming\uv\
+del /s/q %USERPROFILE%\AppData\Local\uv\
+</code></pre>
+<p><strong>Note</strong> It's odd that we have to clean both <code>AppData\Roaming</code> and <code>AppData\Local</code>. Is that intentional?</p>
+<h2>Works on 0.5.24</h2>
+<pre><code class="language-bat">powershell -ExecutionPolicy ByPass -c &quot;irm https://astral.sh/uv/0.5.24/install.ps1 | iex&quot;
+uv run python --version
+</code></pre>
+<p>Gives:</p>
+<pre><code>Python 3.13.1
+</code></pre>
+<h2>Does not work on 0.5.25+</h2>
+<pre><code class="language-bat">powershell -ExecutionPolicy ByPass -c &quot;irm https://astral.sh/uv/0.5.25/install.ps1 | iex&quot;
+uv run python --version
+</code></pre>
+<p>Gives:</p>
+<pre><code>error: No interpreter found in virtual environments, managed installations, search path, or registry
+</code></pre>
+<p>Also,</p>
+<pre><code class="language-bat">uv python install
+</code></pre>
+<p>Gives</p>
+<pre><code>error: No download found for request: cpython-any-windows-aarch64-none
+</code></pre>
+<h1>Recommendations</h1>
+<p>If you cannot find an arm64 Python for Windows, it should probably default back to the x64 Python for Windows.</p>
+<h1>Extras</h1>
+<p>This is a related bug, but we do not believe ours is a duplicate: https://github.com/astral-sh/python-build-standalone/issues/386 because this used to work and now it doesn't.</p>
+<h1>Followup</h1>
+<p>P.S. We would be happy to do a Zoom call about this, if that would be helpful.</p>
+<ul>
+<li>Jay Bazuzi, Llewellyn Falco, Scott Wierschem</li>
+</ul>
+<h3>Platform</h3>
+<p>Windows 11 arm64</p>
+<h3>Version</h3>
+<p>uv 0.5.25 (9c07c3fc5 2025-01-28)</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @JayBazuzi on 2025-02-13 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-13 22:02</div>
+            <div class="timeline-body"><p>Hmm, this is interesting. I thought we only started publishing ARM Windows binaries in 0.5.25, with https://github.com/astral-sh/uv/pull/10885. Is it the case that on 0.5.24, <code>powershell -ExecutionPolicy ByPass -c &quot;irm https://astral.sh/uv/0.5.24/install.ps1 | iex&quot;</code> installs the x86 uv binary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2025-02-13 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mattieb">@mattieb</a> on 2025-02-15 21:10</div>
+            <div class="timeline-body"><p>@charliermarsh I just ran into the same problem with 0.6.0. It does indeed look like 0.5.24 is installing an x86-64 binary:</p>
+<pre><code class="language-powershell">PS C:\Users\mattie\.local\bin&gt; wsl file uv.exe
+uv.exe: PE32+ executable (console) x86-64, for MS Windows, 6 sections
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-15 23:19</div>
+            <div class="timeline-body"><p>To confirm: I assume the uv installed by 0.6.0 (or any recent version) <em>does</em> work if you already have Python installed on the machine? And the issue is just that we can't find a Python to install?</p>
+<p>It seems like, at minimum, we should accept an x86 Python download here, since Windows ARM has emulation enabled by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-15 23:19</div>
+            <div class="timeline-body"><p>\cc @Gankra who taught me this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-16 02:34</div>
+            <div class="timeline-body"><p>There are a bunch of places that this fallback could go... I guess a special case in <code>PythonDownloadRequest::satisfied_by_key</code> is sort of the &quot;obvious&quot; one. But we might want to explicitly prefer ARM versions over x86 versions, which may require putting this somewhere else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-16 04:05</div>
+            <div class="timeline-body"><p>I implemented something similar for https://github.com/astral-sh/uv/pull/9788 — it was kind of awkward.</p>
+<p>I don't think we should just do it for download requests, because we'd also want to accept discovered x86-64 interpreters, right? I can probably look into this unless you're particularly interested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-16 15:58</div>
+            <div class="timeline-body"><p>Feel free to take it, I was just looking to do it if it was easy. But yeah, I believe it has to be reflected in at least two places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-02-16 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mattieb">@mattieb</a> on 2025-02-16 16:16</div>
+            <div class="timeline-body"><blockquote>
+<p>To confirm: I assume the uv installed by 0.6.0 (or any recent version) does work if you already have Python installed on the machine? And the issue is just that we can't find a Python to install?</p>
+</blockquote>
+<p>It looks like y'all might have this in hand but just in case it's useful, this is what I ran into yesterday—</p>
+<ol>
+<li>New ARM Windows 11, never had Python or uv.</li>
+<li>Installed uv 0.6.0 to run a project.</li>
+<li>&quot;uv sync&quot; showed &quot;error: No download found for request: cpython-any-windows-aarch64-none&quot; which led me here.</li>
+<li>Installed 0.5.24 via the one-liner. &quot;uv sync&quot; et al. started working as it was pulling the AMD64 python build (and that's when I posted that my uv.exe was an x86-64 version.)</li>
+</ol>
+<p>Since then, I did update—both with the 0.5.25 one-liner and with &quot;uv self update&quot;—and the AMD64 Python is indeed still working with no fuss.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-16 16:43</div>
+            <div class="timeline-body"><p>Yeah the difference is now we have ARM64 Windows binaries of uv but only AMD64 Windows Python downloads — so you're getting the &quot;better&quot; uv binary for your platform but it can't find Python downloads. You could install the AMD64 uv 0.6.0 (i.e., from GitHub Releases) and it'd work as before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11625.html">astral-sh/uv#11625</a> on 2025-02-19 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-19 18:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

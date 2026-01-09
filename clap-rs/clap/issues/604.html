@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distinguish between not present and not defined Args - clap-rs/clap #604</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Distinguish between not present and not defined Args</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/604">#604</a>
+        opened by <a href="https://github.com/SuperFluffy">@SuperFluffy</a>
+        on 2016-07-26 14:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SuperFluffy">@SuperFluffy</a> on 2016-07-26 14:05</div>
+            <div class="timeline-body"><p>Right now <code>ArgMatches::is_present(s)</code> checks whether the option with name <code>s</code> is present in the list of arguments or not. What about <code>Arg</code>s that have not been defined, and which I erroneously check for? Maybe <code>is_present()</code> could return an <code>Option&lt;bool&gt;</code> instead, with <code>Some(bool)</code> in cases where a defined <code>Arg</code> was set/not set, and <code>None</code> in cases where the option does not appear in the list of defined <code>Arg</code>s.</p>
+<p>Assume the following example:</p>
+<pre><code class="language-rust">let m = App::new(&quot;myprog&quot;)
+    .arg(Arg::with_name(&quot;debug&quot;)
+        .long(&quot;debug&quot;)
+        .short(&quot;d&quot;))
+    .get_matches_from(vec![
+        &quot;myprog&quot;, &quot;-d&quot;
+    ]);
+
+// Check with typo returns false
+let is_present = m.is_present(&quot;dbeug&quot;);
+</code></pre>
+<p>This function will of course always return false. However, <code>dbeug</code> was never actually defined in the first place, so it would be great if it complained about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Distinguish between not present and not defined flags/options" to "Distinguish between not present and not defined Args" by @SuperFluffy on 2016-07-26 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-07-28 00:56</div>
+            <div class="timeline-body"><p>I agree this is an issue, and something I'm hoping to solve by proxy with the ability to use enums instead of strings (see #510). But this is all a breaking change and will be made on the 3.x branch which I'm hoping to get some time to work on in the next few weeks and actually be able to put out soon.</p>
+<p>Having <code>is_present</code> return an <code>Option&lt;bool&gt;</code> could also be one of the breaking 3.x changes. I'm not opposed to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-07-28 00:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: matches</span> added by @kbknapp on 2016-07-28 00:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2016-07-28 00:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @kbknapp on 2016-08-26 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: postponed</span> added by @kbknapp on 2016-11-02 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: postponed</span> removed by @kbknapp on 2017-04-05 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/929.html">clap-rs/clap#929</a> on 2017-04-18 00:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @kbknapp on 2018-02-02 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v3-alpha1" by @kbknapp on 2018-02-02 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-07-22 00:58</div>
+            <div class="timeline-body"><p>I think I'd prefer to <code>panic!</code> on an undefined arg. This will mean keeping a list of all defined args in the matches, which increases the memory usage quite a bit but perhaps only doing this in debug mode or behind a feature flag would be a good way to go about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2018-07-22 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2018-07-22 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2018-07-22 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> added by @kbknapp on 2018-07-22 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @kbknapp on 2018-07-22 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by @kbknapp on 2018-07-22 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spwitt">@spwitt</a> on 2018-10-16 02:23</div>
+            <div class="timeline-body"><p>@kbknapp I've started working on this. I should have a pull request tomorrow after I update according to contribution guide</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vijfhoek">@vijfhoek</a> on 2019-06-08 15:11</div>
+            <div class="timeline-body"><p>For the record, I agree with using <code>panic!</code> for this. I think it is a really fair assumption that calling this on an undefined argument is a programming error, and not just a runtime error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v3-alpha.2" by @pksunkara on 2020-02-01 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v3.0" by @pksunkara on 2020-02-01 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: asserts</span> added by @pksunkara on 2020-04-09 11:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Z: good first issue</span> removed by @pksunkara on 2020-04-10 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Z: mentored</span> removed by @pksunkara on 2020-04-10 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @pksunkara on 2020-04-10 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-04-10 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @pksunkara on 2020-04-10 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-04-10 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @pksunkara on 2020-04-10 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-04-10 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @pksunkara on 2020-04-10 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-04-10 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> removed by @pksunkara on 2020-04-10 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: hard</span> added by @pksunkara on 2020-04-10 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: asserts</span> removed by @pksunkara on 2020-04-10 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-30 11:29</div>
+            <div class="timeline-body"><blockquote>
+<p>This will mean keeping a list of all defined args in the matches, which increases the memory usage quite a bit but perhaps only doing this in debug mode or behind a feature flag would be a good way to go about this.</p>
+</blockquote>
+<p>Emphasis on:</p>
+<blockquote>
+<p>... only doing this in debug mode ...</p>
+</blockquote>
+<p>This is pretty much the same as what we do for <code>Id</code>. Piece o'cake, I'll take it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @CreepySkeleton by @CreepySkeleton on 2020-06-30 11:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2000.html">clap-rs/clap#2000</a> on 2020-07-03 04:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1104.html">clap-rs/clap#1104</a> on 2021-07-20 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2021-08-13 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @epage on 2021-10-16 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.0" by @epage on 2021-10-16 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2897.html">clap-rs/clap#2897</a> on 2021-10-16 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "4.0" by @pksunkara on 2021-10-16 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @CreepySkeleton by @pksunkara on 2021-10-26 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @pksunkara by @pksunkara on 2021-10-26 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2021-10-27 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2021-10-27 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/82.html">epage/clapng#82</a> on 2021-12-06 16:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

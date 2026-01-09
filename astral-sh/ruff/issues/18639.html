@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FURB163 fix should be unsafe when it changes behavior or deletes comments - astral-sh/ruff #18639</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FURB163 fix should be unsafe when it changes behavior or deletes comments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18639">#18639</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-06-12 02:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-06-12 02:35</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/redundant-log-base/"><code>redundant-log-base</code> (FURB163)</a> should be marked unsafe when it switches the function to <code>log2</code> or <code>log10</code>, because that can change behavior. It can also change behavior when the first argument is starred. It should also be marked unsafe when it deletes comments.</p>
+<p>Floating-point vagaries:</p>
+<pre><code class="language-console">$ cat &gt;furb163_1.py &lt;&lt;'# EOF'
+import math
+print(math.log(4.13e223, 2))
+print(math.log(4.14e223, 10))
+# EOF
+
+$ python furb163_1.py
+742.8361069415266
+223.61700034112087
+
+$ ruff --isolated check furb163_1.py --select FURB163 --fix
+Found 2 errors (2 fixed, 0 remaining).
+
+$ python furb163_1.py
+742.8361069415265
+223.6170003411209
+</code></pre>
+<p>Starred arguments:</p>
+<pre><code class="language-console">$ cat &gt;furb163_2.py &lt;&lt;'# EOF'
+import math
+def print_log(*args):
+    try:
+        print(math.log(*args, math.e))
+    except TypeError as e:
+        print(repr(e))
+print_log()
+print_log(100, 10)
+# EOF
+
+$ python furb163_2.py
+1.0
+TypeError('log expected at most 2 arguments, got 3')
+
+$ ruff --isolated check furb163_2.py --select FURB163 --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ python furb163_2.py
+TypeError('log expected at least 1 argument, got 0')
+2.0
+</code></pre>
+<p>Deleted comments:</p>
+<pre><code class="language-console">$ cat &gt;furb163_3.py &lt;&lt;'# EOF'
+import math
+print(math.log(
+    3,  # This is the argument...
+    math.e,  # ... and this is the base.
+))
+# EOF
+
+$ ruff --isolated check furb163_3.py --select FURB163 --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb163_3.py
+import math
+print(math.log(3))
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.13 (5faf72a4d 2025-06-05)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-12 03:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-06-12 03:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-06-12 03:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18645.html">astral-sh/ruff#18645</a> on 2025-06-12 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-16 18:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

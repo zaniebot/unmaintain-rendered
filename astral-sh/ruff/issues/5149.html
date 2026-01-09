@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconsider a new explicit-package-bases setting - astral-sh/ruff #5149</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reconsider a new explicit-package-bases setting</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5149">#5149</a>
+        opened by <a href="https://github.com/siddharthab">@siddharthab</a>
+        on 2023-06-16 16:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/siddharthab">@siddharthab</a> on 2023-06-16 16:32</div>
+            <div class="timeline-body"><p>This issue is mostly requesting for one of the options mentioned in https://github.com/astral-sh/ruff/issues/1817#issuecomment-1382643952.</p>
+<p>We use a monorepo for our own internal use (nothing gets packaged and distributed), and so we don't really have a major objective reason to use regular packages over namespace packages. Something to note here is that our code organization might have deep nested directories with no .py files in the intermediate directories. All our tooling (black, isort, mypy, Bazel, Python toolchain itself) works with this setup except for ruff. Because everything almost works, new members are not in the habit of creating empty <code>__init__.py</code> files, which leads to some unexpected sharp edges in ruff that are not obvious to troubleshoot.</p>
+<p>To help enforce regular packages over namespace packages, we could enable INP (implicit-namespace-packages) ruff linter, but it works only on .py files, and as mentioned above, we may have many intermediate directories with no .py files in them. This use case is also mentioned in mypy docs (screenshot in the comment linked above) as an example for when <code>--explicit-package-bases</code> is useful.</p>
+<p>We are currently making do with adding entries to <code>known-third-party</code>, but it does add some friction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/siddharthab">@siddharthab</a> on 2023-06-16 16:48</div>
+            <div class="timeline-body"><p>Our issue could also be solved with using a setting that defines implicit namespace packages, rather than the current explicit list of namespace packages (option 2 in the mypy docs screenshot in the linked comment above).</p>
+<p>A simple use case for reproduction:</p>
+<p>Filesystem:</p>
+<pre><code>% tree
+.
+└── mypkg
+    └── requests
+        ├── __init__.py
+        └── module.py
+</code></pre>
+<p><code>mypkg/requests/__init__.py</code>:</p>
+<pre><code># Some package initialization code.
+</code></pre>
+<p><code>mypkg/requests/module.py</code>:</p>
+<pre><code>import requests
+import urllib3
+
+_ = requests
+_ = urllib3
+</code></pre>
+<pre><code class="language-bash">% isort --check mypkg/requests/module.py   # No issues.
+% ruff --select=I001 mypkg/requests/module.py # Thinks 'requests' is a top-level first-party package.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-16 16:50</div>
+            <div class="timeline-body"><p>I think adding an <code>explicit-package-bases</code> could make sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-06-16 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-06-16 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-06-20 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10541.html">astral-sh/ruff#10541</a> on 2024-03-24 08:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

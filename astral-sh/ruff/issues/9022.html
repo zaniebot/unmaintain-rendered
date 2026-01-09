@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLF001: access to private field of another instance of the same class - astral-sh/ruff #9022</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SLF001: access to private field of another instance of the same class</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9022">#9022</a>
+        opened by <a href="https://github.com/nktrnv">@nktrnv</a>
+        on 2023-12-06 11:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nktrnv">@nktrnv</a> on 2023-12-06 11:57</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Is this a bug or do I understand something wrong?</p>
+<pre><code class="language-python">class Foo:
+    def __init__(self) -&gt; None:
+        self._value = 0
+    
+    def get_new_instance_with_another_value(self, value: int) -&gt; &quot;Foo&quot;:
+        foo = Foo()
+        foo._value = value  # SLF001 Private member accessed: `_value`
+        return foo
+</code></pre>
+<p>For example, in Java, such code will be valid:</p>
+<pre><code class="language-java">public class Foo {
+    private int value = 0;
+    
+    public Foo getNewInstanceWithAnotherValue(int value) {
+        Foo foo = new Foo();
+        foo.value = value; // No issues
+        return foo;
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-07 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-07 02:11</div>
+            <div class="timeline-body"><p>I think it would be reasonable to allow this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-02-01 18:47</div>
+            <div class="timeline-body"><p><code>self</code>-like variables in <code>__new__</code> should also be exempted:</p>
+<pre><code class="language-py">class C:
+	def __new__(cls):
+		instance = super().__new__(cls)
+		instance._foo = 42
+		return instance
+</code></pre>
+<pre><code class="language-shell">$ ruff check --select SLF001 foo.py
+</code></pre>
+<pre><code class="language-none">foo.py:4:3: SLF001 Private member accessed: `_foo`
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrudenell">@sbrudenell</a> on 2024-04-22 19:22</div>
+            <div class="timeline-body"><p>FWIW, it seems <code>SLF001</code> is already suppressed in some cases like <code>__lt__</code> (or, perhaps it's not processing correctly in the first place?)</p>
+<pre><code class="language-python3">class Wrap:
+    def __init__(self, other: Any) -&gt; None:
+        if isinstance(other, Wrap):
+            self._value = other._value  # SLF001 Private member accessed: `_value`
+        else:
+            self._value = other
+
+    def __lt__(self, other: Wrap) -&gt; None:
+        return id(self._value) &lt; id(other._value)
+</code></pre>
+<pre><code>$ ruff check --select SLF001 /tmp/t.py
+/tmp/t.py:4:27: SLF001 Private member accessed: `_value`
+Found 1 error.
+$ ruff --version
+ruff 0.4.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Satge96">@Satge96</a> on 2025-02-13 08:08</div>
+            <div class="timeline-body"><p>I would also love the change in the <strong>new</strong> function. I'm fairly new to this, but if desired I could try to implement it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16149.html">astral-sh/ruff#16149</a> on 2025-02-14 01:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-23 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tishka17">@Tishka17</a> on 2025-03-13 22:39</div>
+            <div class="timeline-body"><p>I see that it is fixed for the code in the issue, but it not the only way to call &quot;private&quot; attrs</p>
+<pre><code class="language-python">class Foo:
+    def __init__(self, other: &quot;Foo | None&quot;) -&gt; None:
+        self._value = 0
+        self._other = other
+
+    def foo(self) -&gt; None:
+        if self._other is None:
+            return
+        self._value += self._other._value
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-14 03:05</div>
+            <div class="timeline-body"><p>@Tishka17 This issue is already closed; please file a new issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[RUF005] Unexpectedly removes comments - astral-sh/ruff #2054</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[RUF005] Unexpectedly removes comments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2054">#2054</a>
+        opened by <a href="https://github.com/thomasdesr">@thomasdesr</a>
+        on 2023-01-21 09:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thomasdesr">@thomasdesr</a> on 2023-01-21 09:13</div>
+            <div class="timeline-body"><p>When running <code>ruff==0.0.228</code> on the following code sample via: <code>ruff --select RUF005 .</code></p>
+<pre><code class="language-python">first = [
+    # The order
+    1,  # here
+    2,  # is
+    # extremely
+    3,  # critical
+    # to preserve
+]
+second = first + [
+    # please
+    4,
+    # don't
+    5,
+    # touch
+    6,
+]
+
+</code></pre>
+<p>it suggests:</p>
+<pre><code>ruf005-repro.py:9:5: RUF005 Consider `[*first, 4, 5, 6]` instead of concatenation
+</code></pre>
+<p>or auto-fixes it to:</p>
+<pre><code class="language-python">first = [
+    # The order
+    1,  # here
+    2,  # is
+    # extremely
+    3,  # critical
+    # to preserve
+]
+second = [*first, 4, 5, 6]
+</code></pre>
+<p>This is unfortunate as those comments are important :D</p>
+<p>Thanks so much as always!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-21 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2057.html">astral-sh/ruff#2057</a> on 2023-01-21 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 12:31</div>
+            <div class="timeline-body"><p>Gonna avoid autofixing for now in cases that contain comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-21 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thomasdesr">@thomasdesr</a> on 2023-01-22 03:43</div>
+            <div class="timeline-body"><p>Thanks for the quick fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2023-01-22 21:06</div>
+            <div class="timeline-body"><p>I also have a question on this @charliermarsh. Thought I should make another issue but first wanna try here.</p>
+<p>What's the reason behind this warning? <code>RUF005</code> seems to not improve readability much, or make things faster. I ran some tests and concatenation is faster (by not too much, but it is).</p>
+<p>The only advantage I know of unpacking is it can work for something like adding list to tuple, but in that case it should be used when needed explicitly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-22 21:30</div>
+            <div class="timeline-body"><p>I think the way I'd like to answer that question is by clarifying the position Ruff that is taking by including rules (or not).</p>
+<p>I generally try to stay <em>somewhat</em> objective with regards to what gets included in Ruff, looking at the following factors:</p>
+<ol>
+<li>I can understand why someone might want to enforce it.</li>
+<li>It's sufficiently robust (few false positives and negatives).</li>
+<li>The complexity of the rule and its implementation doesn't outweigh its usefulness.</li>
+<li>There's evidence of demand for it.</li>
+</ol>
+<p>To me, this rule satisfied criteria 1-3 (I can understand why folks would want to enforce this). 4 is harder to measure in this case, vs. when reimplementing flake8 plugins, where I can see how widely used they are. By including a rule in Ruff, I don't mean to express the opinion that you <em>should</em> have it enabled (there are rules in Ruff that I wouldn't enforce in my own projects, like the <code>flake8-builtins</code> rules, but it's a popular plugin, so...).</p>
+<p>One thing I <em>have</em> been thinking, about and that this rule arguably raises (as with any new rule), is that if you enable a category like <code>RUF</code>, then upgrade Ruff, you run the &quot;risk&quot; of automatically enabling new rules, and thereby having to fix new violations. I don't know what the right philosophy (from the project's perspective) or experience (from the user's perspective) is there. For example: perhaps users should be opting-in to new rules upon upgrade, rather than being required to opt-out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2023-01-22 21:48</div>
+            <div class="timeline-body"><blockquote>
+<p>For example: perhaps users should be opting-in to new rules upon upgrade, rather than being required to opt-out.</p>
+</blockquote>
+<p>Hmm I don't dislike seeing new stuff like this @charliermarsh enabled. If it's not auto-enabled I would probably miss it.</p>
+<p>Seeing it like this, I get a choice. Let it run (it's auto-fixable so easy to do), or put it in my <code>ignore</code>. So take action. I like that as an approach. I expect to need to manually take action and make decisions after an upgrade.</p>
+<p>Let me maybe explain what I did when I saw this applied to my project to maybe explain how the process went.</p>
+<p>My first reaction when seeing this was to go to the readme and understand why it's recommended. The readme does not explain anything unfortunately. Only says <code>unpack-instead-of-concatenating-to-collection-literal</code>.
+<strong>Suggestion</strong>: Something really cool would be to explain the reasoning next to the rule and why it would be a good change. If it's a style preference specify that instead.</p>
+<p>Without any explanation I started googling around. I could not find any sufficient explanation. Neither on readability nor on performance. The only plus I could find on unpacking, as I mentioned above is you can use it to concatenate mutable and immutable collections, like say list and tuple.</p>
+<p>With googling inconclusive I wrote a silly test:</p>
+<pre><code class="language-python">import random
+import timeit
+
+list_1 = random.choices(range(1,1000), k=1000)
+
+print(timeit.timeit(lambda: list_1 + [1, 100]))
+print(timeit.timeit(lambda: [*list_1, 1, 100]))
+</code></pre>
+<p>Here the first number for me is always smaller, so it does not seem like a good change performance wise.</p>
+<p>So no readability improvement, no performance improvement, in the end I disabled the rule.</p>
+<p>But I am still very much intrigued on why people would want this enforced. Do you think it would make sense to have a forum/chat (github has a feature for forums) where we could discuss rules and add hints/tips to make each other's codebase better by explaining these stuff?</p>
+<p>I think you would not want this in issues as discussion are not actionable and can end up in bike shedding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-22 21:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Suggestion: Something really cool would be to explain the reasoning next to the rule and why it would be a good change. If it's a style preference specify that instead.</p>
+</blockquote>
+<p>Yeah this is great feedback. We're starting to move in that direction but it's going to take some time to formalize and cover the existing rules. The approach we're taking is based on <a href="https://rust-lang.github.io/rust-clippy/master/">Clippy</a>, Rust's linter:</p>
+<img width="1624" alt="Screen Shot 2023-01-22 at 4 50 18 PM" src="https://user-images.githubusercontent.com/1309177/213942245-2d0a7600-6f95-4bd4-9276-08b149502c83.png">
+
+<p>You can see that we've started adding these to some of the <a href="https://github.com/charliermarsh/ruff/blob/ebfdefd110e83bcd1d101ee5a424fc6a82e020b5/src/rules/flake8_bugbear/rules/assert_raises_exception.rs#L1">in-code documentation</a>, and eventually those will be surfaced to users.</p>
+<blockquote>
+<p>But I am still very much intrigued on why people would want this enforced. Do you think it would make sense to have a forum/chat (github has a feature for forums) where we could discuss rules and add hints/tips to make each other's codebase better by explaining these stuff?</p>
+</blockquote>
+<p>Yeah this could be a good use-case for forums. Let me think on it for a bit. I want issues to avoid becoming a place where people debate the usefulness of rules, as you've hinted at.</p>
+<p>For this rule: I'd argue that it increases readability in some cases. But it can also increase <em>consistency</em> -- like, if you use this convention everywhere in your codebases, you get a more consistent codebase vs. sometimes unpacking and sometimes concatenating. But, again, I don't want to take a strong position either way -- I'm just looking to provide an answer on why someone might want to include it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2023-01-22 22:00</div>
+            <div class="timeline-body"><p>Thanks for the answers! Would love to see those take form!</p>
+<p>Forum could also be per-rule, and have link to the equivalent rule discussion in the readme :smile:</p>
+<blockquote>
+<p>If you use this convention everywhere in your codebases, you get a more consistent codebase vs. sometimes unpacking and sometimes concatenating</p>
+</blockquote>
+<p>That's true but again it's a different kind of tool as you need to use unpacking in some cases as I stated above (concatenation can't work for different types, while unpacking can). So not using the same tool everywhere for this is valid.</p>
+<p>Anyway I can also see why someone would want it, so no problem. My take-away then for this is that it's a rule that enforces consistency with a small potential performance hint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2142.html">astral-sh/ruff#2142</a> on 2023-01-24 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2257.html">astral-sh/ruff#2257</a> on 2023-01-27 14:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

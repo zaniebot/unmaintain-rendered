@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP009 fix changes a file from UTF-8 to a different declared encoding - astral-sh/ruff #14704</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP009 fix changes a file from UTF-8 to a different declared encoding</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14704">#14704</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2024-12-01 22:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-12-01 22:53</div>
+            <div class="timeline-body"><p>The fix for <a href="https://docs.astral.sh/ruff/rules/utf8-encoding-declaration/"><code>utf8-encoding-declaration</code> (UP009)</a> in Ruff 0.8.1 changes the file’s declared encoding when the redundant UTF-8 encoding declaration is followed by a non-UTF-8 encoding declaration. In that case, the UTF-8 declaration is not completely redundant, because it blocks the following declaration from having an effect. The fix should insert up to 2 blank lines so the other declarations have no effect, or the fix should delete the other declarations, or the check should not report a violation.</p>
+<p>Example of a syntax error:</p>
+<pre><code class="language-console">$ printf '\xef\xbb\xbf# coding: utf-8\n# coding: ascii\nprint(&quot;success&quot;)\n' &gt;up009_1.py
+$ python up009_1.py
+success
+$ ruff check --isolated --select UP009 up009_1.py --fix
+Found 1 error (1 fixed, 0 remaining).
+$ python up009_1.py
+SyntaxError: encoding problem: ascii with BOM
+</code></pre>
+<p>Example of changed behavior:</p>
+<pre><code class="language-console">$ printf '# coding: utf-8\n# coding: latin-1\nprint(&quot;\xc3\xa5&quot;)\n' &gt;up009_2.py
+$ python up009_2.py
+å
+$ ruff check --isolated --select UP009 up009_2.py --fix
+Found 1 error (1 fixed, 0 remaining).
+$ python up009_2.py
+Ã¥
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-12-01 23:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-12-01 23:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> removed by @AlexWaygood on 2024-12-01 23:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-12-01 23:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-01 23:11</div>
+            <div class="timeline-body"><blockquote>
+<p>or the check should not report a violation.</p>
+</blockquote>
+<p>I'd vote for this option. The rule's purpose is to flag unnecessary UTF-8 encoding declarations. Clearly in some cases it's erroneously flagging encodings which are, in fact, necessary :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-12-01 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-02 07:55</div>
+            <div class="timeline-body"><p>Somewhat related to https://github.com/astral-sh/ruff/issues/6791</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14728.html">astral-sh/ruff#14728</a> on 2024-12-02 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-11 10:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

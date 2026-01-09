@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>flake8-bandit import check should not trigger on TYPE_CHECKING imports or classes not in defusedxml - astral-sh/ruff #14901</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>flake8-bandit import check should not trigger on TYPE_CHECKING imports or classes not in defusedxml</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14901">#14901</a>
+        opened by <a href="https://github.com/scy">@scy</a>
+        on 2024-12-10 22:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/scy">@scy</a> on 2024-12-10 22:30</div>
+            <div class="timeline-body"><p>The following code triggers <a href="https://docs.astral.sh/ruff/rules/suspicious-xml-minidom-import/">S408</a> (&quot;<code>xml.dom.minidom</code> is vulnerable to XML attacks&quot;):</p>
+<pre><code class="language-python">from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from xml.dom.minidom import Element
+</code></pre>
+<p>As far as I know, <a href="https://github.com/tiran/defusedxml">defusedxml</a>, which this rule suggests as an alternative, does not supply alternative implementations for most of the types, only of some functions. In other words, I <em>have</em> to import types like these for the standard library; there is no defusedxml alternative.</p>
+<p>So in order to signal to Ruff that &quot;this is fine&quot;™, I've tried moving the import to <code>TYPE_CHECKING</code>, but still received the same error.</p>
+<p>This probably applies to other rules in the S4xx range, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/scy">@scy</a> on 2024-12-10 22:44</div>
+            <div class="timeline-body"><p>The following code has a similar problem, triggering S409 on the <code>pulldom</code> import, but this time I can't even move the import into a <code>TYPE_CHECKING</code> block:</p>
+<pre><code class="language-python">from xml.dom import pulldom
+
+from defusedxml.pulldom import parseString
+
+
+doc = parseString(&quot;&lt;foo&gt;&lt;/foo&gt;&quot;)
+
+for ev, node in doc:
+    if ev == pulldom.START_ELEMENT:
+        print(node)
+</code></pre>
+<p>Again, <code>defusedxml</code> does not provide everything required for parsing XML; here it's the event constant to compare against. Nevertheless I'm using <code>defusedxml</code> for the actual parsing, which means I'm not vulnerable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-16 08:19</div>
+            <div class="timeline-body"><p>Thanks. This makes sense to me. So what we need to do here is to allow some imports from <code>xml.dom</code> or at least when under the <code>TYPE_CHECKING</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-12-16 08:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Function arguments of type `str` that should be `Literal` - astral-sh/ruff #19484</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Function arguments of type `str` that should be `Literal`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19484">#19484</a>
+        opened by <a href="https://github.com/jlopezpena">@jlopezpena</a>
+        on 2025-07-22 12:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jlopezpena">@jlopezpena</a> on 2025-07-22 12:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi ruff team!</p>
+<p>I find myself seeing a pattern like this many times:</p>
+<pre><code class="language-python">def foo(bar: str) -&gt; None:
+    if bar == &quot;something&quot;:
+        print(&quot;This is something&quot;)
+    elif bar == &quot;something_else&quot;:
+        print(&quot;And this is something else!&quot;)
+    else:
+        raise ValueError(f&quot;I don't know how to deal with {bar}!&quot;)
+</code></pre>
+<p>(or the same thing using <code>match</code> instead of <code>if-elif</code> chains)</p>
+<p>Whenever I see this pattern in code reviews, I ask members of my team to change the type to <code>Literal[&quot;something&quot;, &quot;something_else&quot;]</code> as good practise. It would be awesome to have the option to enable that as a <code>ruff</code> rule!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-07-22 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-07-22 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Function arguments ot type `str` that should be `Literal`" to "Function arguments of type `str` that should be `Literal`" by @AlexWaygood on 2025-07-22 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-23 06:49</div>
+            <div class="timeline-body"><p>I think what's tricky about this rule is that it also requires analyzing all call sites to know if they pass a literal or a <code>str</code>. Some might also argue that this should be an enum ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jlopezpena">@jlopezpena</a> on 2025-07-23 09:17</div>
+            <div class="timeline-body"><p>I think it would be enough to check the function call where the value dispatching pattern is found. If there are calls inside that use the parameter, the type checker will complain if something is amiss.</p>
+<p>In many cases, yes, implementing a custom <code>Enum</code> or <code>StrEnum</code> is the &quot;correct&quot; approach, but that requires changing code in a way that can potentially break things, whereas changing type annotation should not have effects in runtime. My personal rule of thumb that I try to drill into my team is to define an enum if the same value checking happens in more than one function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-23 09:25</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it would be enough to check the function call where the value dispatching pattern is found. If there are calls inside that use the parameter, the type checker will complain if something is amiss.</p>
+</blockquote>
+<p>We strive to avoid rules that conflict with type checkers. They tend to be annoying because a user then has to choose between satisfying Ruff or the type checker. That's why the rule either has to be clever enough to avoid making type checkers angry (which we don't have the tooling for just yet)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jlopezpena">@jlopezpena</a> on 2025-07-25 09:53</div>
+            <div class="timeline-body"><p>I understand. Regardless of what the final decision is, thanks for taking my proposal into consideration!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2025-07-29 16:14</div>
+            <div class="timeline-body"><p>This is a cool idea, could be very useful. But also it is sure to prone to false positives and generally very &quot;noisy&quot;. So I think it would be a great candidate for a &quot;restriction&quot; lint class like Clippy has.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

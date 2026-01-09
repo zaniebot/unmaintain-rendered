@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Schema invalid when using previous ruff version - astral-sh/ruff #14810</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>JSON Schema invalid when using previous ruff version</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14810">#14810</a>
+        opened by <a href="https://github.com/DaniBodor">@DaniBodor</a>
+        on 2024-12-06 09:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DaniBodor">@DaniBodor</a> on 2024-12-06 09:58</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I am using a previous version of ruff (v0.7.4) in a given project. Recently, my TOML formatting extension in VS (Even Better TOML) code has been showing an error on my ruff settings for this project. The error message appears under the <code>[tool.ruff.lint]</code> line in pyproject.toml and show all the settings together as being the problem (see below).
+After digging into it a bit, it turns out that the specific reason for the error is that I ignore ANN101 and ANN102 (which have been removed in v0.8) and list TCH (which has been renamed to TC in v0.8) as a safe fix. I discovered this by removing the <code>.lint</code> part from the line (resulting in just <code>[tools.ruff]</code>, at which point the errors appear at those specific lines. However, running ruff like this results in a deprecation warning, telling me that those settings should not be top level ruff settings any more.</p>
+<p>So few issues here:</p>
+<ol>
+<li>When using v7.X, these should not be considered errors to start with. Removing them from the ignore/safe-fix lists leads to unwanted behavior.</li>
+<li>The errors should be displayed at the specific rules where they exist rather than in the header.<ul>
+<li>This is already the case when using <code>ignore</code> in top level ruff settings (despite it being deprecated). This makes me think it should be possible when listed under the lint-specific rules as well.</li>
+</ul>
+</li>
+<li>The error message is not useful here. I guess that if 2 gets resolved, then 3 will automatically get resolved as well, but want to flag it as a specific issues as well.</li>
+</ol>
+<p>NB: These issues seem reminiscent of #11880</p>
+<p><img src="https://github.com/user-attachments/assets/58816a7b-08f8-4090-84f5-a054464adb42" alt="Image" /></p>
+<blockquote>
+<p>{&quot;select&quot;:[&quot;ALL&quot;],&quot;pydocstyle&quot;:{&quot;convention&quot;:&quot;google&quot;},&quot;ignore&quot;:[&quot;FBT&quot;,&quot;ANN002&quot;,&quot;ANN003&quot;,&quot;ANN101&quot;,&quot;ANN102&quot;,&quot;ANN204&quot;,&quot;S105&quot;,&quot;S311&quot;,&quot;PT011&quot;,&quot;PD011&quot;,&quot;TD&quot;,&quot;FIX002&quot;,&quot;B028&quot;,&quot;D100&quot;,&quot;D104&quot;,&quot;D105&quot;,&quot;D107&quot;,&quot;COM812&quot;,&quot;ISC001&quot;],&quot;fixable&quot;:[&quot;ALL&quot;],&quot;unfixable&quot;:[&quot;F401&quot;,&quot;RUF100&quot;,&quot;B905&quot;],&quot;extend-safe-fixes&quot;:[&quot;D415&quot;,&quot;D300&quot;,&quot;D200&quot;,&quot;TCH&quot;,&quot;ISC001&quot;,&quot;EM&quot;,&quot;RUF013&quot;,&quot;B006&quot;,&quot;TID252&quot;],&quot;pylint&quot;:{&quot;max-args&quot;:9},&quot;flake8-tidy-imports&quot;:{&quot;ban-relative-imports&quot;:&quot;all&quot;},&quot;isort&quot;:{&quot;known-first-party&quot;:[&quot;eitprocessing&quot;]},&quot;per-file-ignores&quot;:{&quot;<em>.ipynb&quot;:[&quot;ERA001&quot;,&quot;T203&quot;,&quot;T201&quot;],&quot;tests/</em>&quot;:[&quot;S101&quot;,&quot;ANN201&quot;,&quot;D103&quot;,&quot;PLR2004&quot;,&quot;SLF001&quot;],&quot;docs/*&quot;:[&quot;ALL&quot;]}} is not valid under any of the given schemasEven Better TOML</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-06 10:02</div>
+            <div class="timeline-body"><p>That makes sense.</p>
+<p>I think the fix here is that Ruff's VS code extension <a href="https://code.visualstudio.com/api/references/contribution-points#contributes.jsonValidation">contributes the json schema</a>. But I'm not quite sure how we'd serve it from the LSP itself</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2024-12-06 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmyersturnbull">@dmyersturnbull</a> on 2025-04-11 13:46</div>
+            <div class="timeline-body"><p>#16763 confused some extremely confusing behavior.</p>
+<p><b>New violation:</b></p>
+<pre><code class="language-python"># File: src/pkg/core.py
+from os import PathLike  # Violation: TC003: Move [...] into a type-checking block
+</code></pre>
+<p><b>Doesn't suppress:</b></p>
+<pre><code class="language-toml"># File: pyproject.toml
+[tool.ruff.lint]
+ignore = [&quot;TC003&quot;]
+</code></pre>
+<p><b>Does suppress:</b></p>
+<pre><code class="language-python"># File: src/pkg/core.py
+# ruff: noqa: TC003
+from os import PathLike
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-11 13:51</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/astral-sh/ruff/issues/16763">#16763</a> confused some extremely confusing behavior.</p>
+<p>New violation:</p>
+<h1>File: src/pkg/core.py</h1>
+<p>from os import PathLike  # Violation: TC003: Move [...] into a type-checking block</p>
+<p>Doesn't suppress:</p>
+<h1>File: pyproject.toml</h1>
+<p>[tool.ruff.lint]
+ignore = [&quot;TC003&quot;]</p>
+<p>Does suppress:</p>
+<h1>File: src/pkg/core.py</h1>
+<h1>ruff: noqa: TC003</h1>
+<p>from os import PathLike</p>
+</blockquote>
+<p>I'm not sure I see how this is related to this issue. Can you create a new issue and share some more details (e.g. what ruff version are you using)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17356.html">astral-sh/ruff#17356</a> on 2025-04-11 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-08-11 11:43</div>
+            <div class="timeline-body"><p>Took me a lot of time to find this one. The question is why ruff does not just fail running when it finds <code>TCH</code> inside the skip, so we can update the config. Is not the first time when an identifier was removed or renamed and it would be much better than now, where ruff silently seems to be working but our editors complain about invalid schema.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-11 13:05</div>
+            <div class="timeline-body"><p>I think <code>TCH</code> could be fixed by keeping them in the schema but marking the entries as deprecated.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

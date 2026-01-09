@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[SIM110] Ruff enforces `all` instead of for loop inside async function. - astral-sh/ruff #5098</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[SIM110] Ruff enforces `all` instead of for loop inside async function.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5098">#5098</a>
+        opened by <a href="https://github.com/real-yfprojects">@real-yfprojects</a>
+        on 2023-06-14 19:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/real-yfprojects">@real-yfprojects</a> on 2023-06-14 19:29</div>
+            <div class="timeline-body"><p>The following MRE violates the <em>SIM110</em> rule.</p>
+<pre><code class="language-py">async def coroutine():
+    ...
+
+
+async def test():
+    for i in range(10):
+        if await coroutine():
+            return True
+    return False
+</code></pre>
+<p>Ruff suggests rewriting this as</p>
+<pre><code class="language-py">async def coroutine():
+    ...
+
+
+async def test():
+    return any(await coroutine() for i in range(10))
+</code></pre>
+<p>However this code doesn't work since <code>any</code> doesn't support <code>AsyncGenerator</code>s. The same applies for <code>all</code> which is also covered by this rule.
+Instead ruff should ignore for loops with <code>await</code> statements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-06-14 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-14 19:31</div>
+            <div class="timeline-body"><p>Makes sense, thanks for reporting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2023-06-14 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2023-06-14 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5101.html">astral-sh/ruff#5101</a> on 2023-06-14 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-14 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/real-yfprojects">@real-yfprojects</a> on 2023-06-15 19:42</div>
+            <div class="timeline-body"><p>Thank you for fixing this @tjkuson</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

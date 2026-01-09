@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication for index-url not being used - astral-sh/uv #1458</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Authentication for index-url not being used</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1458">#1458</a>
+        opened by <a href="https://github.com/inigohidalgo">@inigohidalgo</a>
+        on 2024-02-16 09:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/inigohidalgo">@inigohidalgo</a> on 2024-02-16 09:07</div>
+            <div class="timeline-body"><p>I am running</p>
+<pre><code class="language-bash">uv pip install package-name --index-url https://username:personalaccesstoken@pkgs.dev.azure.com/[redacted]/pypi/simple/
+</code></pre>
+<p>It is being correctly parsed:</p>
+<pre><code>parse url=Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;username&quot;, password: Some(&quot;personalaccesstoken&quot;), host: Some(Domain(&quot;pkgs.dev.azure.com&quot;)), port: None, path: &quot;/[redacted]/pypi/simple/package-name/&quot;, query: None, fragment: None }
+</code></pre>
+<p>But then when it goes to query the index, it seems to not be using the user and password:</p>
+<pre><code>uv_client::cached_client::fresh_request url=&quot;https://pkgs.dev.azure.com/[redacted]-py3-none-any.whl#sha256=[redacted]&quot;
+</code></pre>
+<p>Which results in the error</p>
+<pre><code>Caused by: HTTP status client error (405 Method Not Allowed) for url (https://pkgs.dev.azure.com/[redacted]-py3-none-any.whl#sha256=[redacted])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1450.html">astral-sh/uv#1450</a> on 2024-02-16 09:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inigohidalgo">@inigohidalgo</a> on 2024-02-16 09:22</div>
+            <div class="timeline-body"><p>Just saw #1371, probably the same issue. I get the same 405, and my feed is also azure artifacts. Feel free to close in favor of that one.</p>
+<p>Adding an additional datapoint since I just saw #1388</p>
+<p>From what I can tell, that isn't the issue here, as the URLs queried from pip and from uv seem to be the same, except for the extra sha at the end which shouldn't make a difference.</p>
+<p>uv</p>
+<p><code>https://pkgs.dev.azure.com/[my-org]/_packaging/[redacted]/pypi/download/pdm/2.12.3/pdm-2.12.3-py3-none-any.whl#sha256=27eddf71434906e39db3f448d35ea5ee1f4d0f557de39fc932205f7dfc82f902</code></p>
+<p>pip</p>
+<p><code>https://pkgs.dev.azure.com/[my-org]/_packaging/[redacted]/pypi/download/pdm/2.12.3/pdm-2.12.3-py3-none-any.whl</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inigohidalgo">@inigohidalgo</a> on 2024-02-16 10:14</div>
+            <div class="timeline-body"><p>@VMRuiz what does your <code>PIP_EXTRA_INDEX_URL</code> look like? Do you use a personal access token or are you using keyring for authentication with the artifacts feed?</p>
+<p>I get your <code>401 Unauthorized</code> when I pass the index_url like this <code>https://pkgs.dev.azure.com/[my-org]/_packaging/[my-feed]/pypi/simple/</code></p>
+<p>But when I supply the personal access token like in my OP, the error is the 405.</p>
+<p>In your case, it seems to be failing at an earlier step (<code>process_request request=Prefetch pdm *</code>), which seems to be working fine when I supply the PAT, and instead it is failing in a later step, trying to download a specific wheel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VMRuiz">@VMRuiz</a> on 2024-02-16 10:29</div>
+            <div class="timeline-body"><p>My PIP_EXTRA_INDEX_URL is like: <code>https://username:password@url</code> . However, I'm not using Azure but https://github.com/chriskuehl/dumb-pypi as PyPI index. Sorry for the confusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/datajoely">@datajoely</a> on 2024-02-16 13:25</div>
+            <div class="timeline-body"><p>Also seeing this with JFrog PyPI indexes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 14:21</div>
+            <div class="timeline-body"><p>Thanks! Will take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">index</span> added by @zanieb on 2024-02-16 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-16 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mfurquimdev">@mfurquimdev</a> on 2024-02-16 15:31</div>
+            <div class="timeline-body"><p>I think I'm having the same issues when trying to fetch packages from a private PyPI server. I get <code>401 Unauthorized</code> when using <code>--index-url</code>, even though <code>PYPI_USER</code> and <code>PYPI_PASS</code> are correctly being resolved.</p>
+<p>I have nothing at <code>PIP_EXTRA_INDEX_URL</code>.</p>
+<pre><code class="language-bash">$ uv pip compile --verbose --index-url=&quot;https://${PYPI_USER}:${PYPI_PASS}@pypi.voltaware.com/simple&quot; pyproject.toml --output-file=requirements.txt
+[...]
+uv_client::html::parse url=Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;correct-username&quot;, password: Some(&quot;correct-password&quot;), host: Some(Domain(&quot;pypi.voltaware.com&quot;)), port: None, path: &quot;/simple/[redacted]/&quot;, query: None, fragment: None }
+[...]
+error: Failed to download: [redacted]
+  Caused by: The wheel [redacted]-py3-none-any.whl is not a valid zip file
+  Caused by: an upstream reader returned an error: io error occurred: HTTP status client error (401 Unauthorized) for url (https://pypi.voltaware.com/packages/[redacted]-py3-none-any.whl#sha256=[redacted])
+  Caused by: io error occurred: HTTP status client error (401 Unauthorized) for url (https://pypi.voltaware.com/packages/[redacted]-py3-none-any.whl#sha256=[redacted])
+  Caused by: HTTP status client error (401 Unauthorized) for url (https://pypi.voltaware.com/packages/[redacted]-py3-none-any.whl#sha256=[redacted])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-02-16 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1449.html">astral-sh/uv#1449</a> on 2024-02-17 07:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/J3ronimo">@J3ronimo</a> on 2024-02-17 10:48</div>
+            <div class="timeline-body"><p>Same here. I have user and token in a Gitlab url passed with <code>uv pip install --extra-index-url ...</code>, which makes it find the package (so the credentials must be OK). but then fails with</p>
+<pre><code>error: Failed to download: ...
+  Caused by: HTTP status client error (401 Unauthorized) for url {url}
+</code></pre>
+<p>where <code>url</code> is missing the url-encoded credentials now. Can't say if they were sent in HTTP headers though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1569.html">astral-sh/uv#1569</a> on 2024-02-18 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olivierlefloch">@olivierlefloch</a> on 2024-02-19 00:09</div>
+            <div class="timeline-body"><p>I believe the issue for Azure Artifacts is that <code>uv</code> runs <code>HEAD</code> requests, which Azure Artifacts does not seem to allow. I've confirmed this behavior via proxying of <code>uv</code> requests / replaying via <code>curl</code>. Authenticated <code>GET</code> requests with <code>--index-url</code> specified work, but <code>HEAD</code> requests are failing. Here's a sample session:</p>
+<pre><code>❯ python3 -m uv pip install --index-url=https://REDACTED:REDACTED@pkgs.dev.azure.com/REDACTED/_packaging/REDACTED/pypi/simple/ --upgrade --verbose -r requirements/dev.txt 2&gt;&amp;1 | grep private-package
+        0.131560s   0ms DEBUG uv_resolver::resolver Adding direct dependency: private-package==REDACTED
+ uv_resolver::resolver::process_request request=Versions private-package
+   uv_client::registry_client::simple_api package=private-package
+       uv_client::cached_client::read_and_parse_cache file=/Users/olivierlefloch/Library/Caches/uv/simple-v1/REDACTED/private-package.REDACTED
+        0.133447s   2ms DEBUG uv_resolver::resolver Adding direct dependency: private-package==REDACTED
+          0.133694s   0ms WARN uv_client::cached_client Broken cache entry at /Users/olivierlefloch/Library/Caches/uv/simple-v1/REDACTED/private-package.REDACTED, removing: failed to open file `/Users/olivierlefloch/Library/Caches/uv/simple-v1/REDACTED/private-package.REDACTED`
+          0.136200s   2ms DEBUG uv_client::cached_client No cache entry for: https://pkgs.dev.azure.com/REDACTED/_packaging/REDACTED/pypi/simple/private-package/
+       uv_client::cached_client::fresh_request url=&quot;https://pkgs.dev.azure.com/REDACTED/_packaging/REDACTED/pypi/simple/private-package/&quot;
+        0.635864s 504ms DEBUG uv_resolver::resolver Adding direct dependency: private-package==REDACTED
+       uv_client::cached_client::new_cache file=/Users/olivierlefloch/Library/Caches/uv/simple-v1/REDACTED/private-package.REDACTED
+       uv_client::registry_client::parse_simple_api package=private-package
+         uv_client::html::parse url=https://REDACTED:REDACTED@pkgs.dev.azure.com/REDACTED/_packaging/REDACTED/pypi/simple/private-package/
+ uv_resolver::resolver::process_request request=Prefetch private-package ==REDACTED
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=private-package==REDACTED
+     uv_client::registry_client::wheel_metadata built_dist=private-package==REDACTED
+           uv_client::cached_client::read_and_parse_cache file=/Users/olivierlefloch/Library/Caches/uv/wheels-v0/index/REDACTED/private-package/private_package-REDACTED-py3-none-any.msgpack
+              0.756403s   0ms WARN uv_client::cached_client Broken cache entry at /Users/olivierlefloch/Library/Caches/uv/wheels-v0/index/REDACTED/private-package/private_package-REDACTED-py3-none-any.msgpack, removing: failed to open file `/Users/olivierlefloch/Library/Caches/uv/wheels-v0/index/REDACTED/private-package/private_package-REDACTED-py3-none-any.msgpack`
+              0.756439s   0ms DEBUG uv_client::cached_client No cache entry for: https://pkgs.dev.azure.com/REDACTED/_packaging/REDACTED/pypi/download/private-package/REDACTED/private_package-REDACTED-py3-none-any.whl#sha256=REDACTED
+           uv_client::cached_client::fresh_request url=&quot;https://pkgs.dev.azure.com/REDACTED/_packaging/REDACTED/pypi/download/private-package/REDACTED/private_package-REDACTED-py3-none-any.whl#sha256=REDACTED&quot;
+error: Failed to download: private-package==REDACTED
+  Caused by: HTTP status client error (405 Method Not Allowed) for url (https://pkgs.dev.azure.com/REDACTED/_packaging/REDACTED/pypi/download/private-package/REDACTED/private_package-REDACTED-py3-none-any.whl#sha256=REDACTED)
+</code></pre>
+<p>The failed HEAD request looks like:</p>
+<pre><code>HEAD https://pkgs.dev.azure.com/REDACTED/_packaging/REDACTED/pypi/download/private-package/1.2.3/private-package-1.2.3-cp310-cp310-macosx_11_0_arm64.whl
+</code></pre>
+<p>I <em>imagine</em> that the <code>HEAD</code> call in <code>wheel_metadata_no_pep658</code> here:</p>
+<p>https://github.com/astral-sh/uv/blob/main/crates/uv-client/src/registry_client.rs#L441</p>
+<p>might be related, with the error handling in <code>is_http_range_requests_unsupported</code> ( https://github.com/astral-sh/uv/blob/4b92a512189e35c86491221ccc14c2e951936c4e/crates/uv-client/src/error.rs#L160 ) perhaps not covering this case? I was unable to find relevant Azure Artifacts documentation to explain / justify this behavior.</p>
+<p>It seems there may be a couple of other issues reported in this thread however. I'd suggest splitting the conversation here perhaps, between Azure Artifacts specific issues and the perhaps more general <code>401 / Auth</code> issues others seem to be encountering.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-19 00:15</div>
+            <div class="timeline-body"><p>Thanks for the information! cc @charliermarsh who was just working with this code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inigohidalgo">@inigohidalgo</a> on 2024-02-19 10:12</div>
+            <div class="timeline-body"><blockquote>
+<p>there may be a couple of other issues reported in this thread however
+@olivierlefloch</p>
+</blockquote>
+<p>Yeah, I've seen the two different error codes:</p>
+<ul>
+<li>405, which I haven't seen reported by anybody not using Azure Artifacts</li>
+<li>and a 401 when I simply did not pass authentication https://github.com/astral-sh/uv/issues/1458#issuecomment-1948100077</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1688.html">astral-sh/uv#1688</a> on 2024-02-19 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-19 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @zanieb by @charliermarsh on 2024-02-19 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-19 14:42</div>
+            <div class="timeline-body"><p>Ahh thank you, ok, I can take this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1371.html">astral-sh/uv#1371</a> on 2024-02-19 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1709.html">astral-sh/uv#1709</a> on 2024-02-19 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1713.html">astral-sh/uv#1713</a> on 2024-02-19 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olivierlefloch">@olivierlefloch</a> on 2024-02-19 19:10</div>
+            <div class="timeline-body"><p>@charliermarsh after working around the 405 issue on Azure Artifacts, I'm getting a 401 error:</p>
+<p>https://github.com/astral-sh/uv/pull/1713</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-02-19 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-19 20:48</div>
+            <div class="timeline-body"><p>I'm gonna merge this into https://github.com/astral-sh/uv/issues/1371.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-19 20:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP037 fix crashes when a terminal comment follows a literal - astral-sh/ruff #15816</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP037 fix crashes when a terminal comment follows a literal</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15816">#15816</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-01-29 20:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-01-29 20:42</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/quoted-annotation/"><code>quoted-annotation</code> (UP037)</a> crashes Ruff 0.9.3 when a quoted annotation ends with a comment and contains a string or number literal, which can occur with <code>Annotated</code> or <code>Literal</code>.</p>
+<pre><code class="language-console">$ cat &gt;up037.py &lt;&lt;'# EOF'
+from __future__ import annotations
+from typing import Literal
+def f() -&gt; &quot;Literal[0]#&quot;:
+    return 0
+# EOF
+
+$ ruff check --isolated --select UP037 up037.py --diff
+
+error: Fix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BFix%20error%5D
+
+...quoting the contents of `up037.py`, the rule codes UP037, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-29 20:43</div>
+            <div class="timeline-body"><p>Why is &quot;contains a string or number literal&quot; required?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-29 21:36</div>
+            <div class="timeline-body"><p>It looks like a bug with <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_trivia/src/tokenizer.rs#L503"><code>SimpleTokenizer</code></a>. These are the tokens when the subscript is an identifier (annotation like <code>&quot;Literal[X]#&quot;</code>):</p>
+<pre><code>[
+    SimpleToken {
+        kind: Name,
+        range: 0..7,
+    },
+    SimpleToken {
+        kind: LBracket,
+        range: 7..8,
+    },
+    SimpleToken {
+        kind: Name,
+        range: 8..9,
+    },
+    SimpleToken {
+        kind: RBracket,
+        range: 9..10,
+    },
+    SimpleToken {
+        kind: Comment,
+        range: 10..11,
+    },
+]
+</code></pre>
+<p>and this is for the original example:</p>
+<pre><code>[
+    SimpleToken {
+        kind: Name,
+        range: 0..7,
+    },
+    SimpleToken {
+        kind: LBracket,
+        range: 7..8,
+    },
+    SimpleToken {
+        kind: Other,
+        range: 8..9,
+    },
+    SimpleToken {
+        kind: Bogus,
+        range: 9..11,
+    },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-01-29 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-29 22:13</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like a bug with <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_trivia/src/tokenizer.rs#L503">SimpleTokenizer</a>. These are the tokens when the subscript is an identifier (annotation like &quot;Literal[X]#&quot;):</p>
+</blockquote>
+<p>Not sure if that's a bug or the intended scope for <code>SimpleTokenizer</code>.</p>
+<p>In any event: we might be able to avoid tokenizing anything, I think, because the tokens for the annotation are available as <code>checker.tokens()</code>. In the above example you get:</p>
+<pre><code>Tokens {
+    raw: [
+        Name 76..83,
+        Lsqb 83..84,
+        Int 84..85,
+        Rsqb 85..86,
+        Comment 86..87,
+        Newline 87..87,
+    ],
+}
+</code></pre>
+<p>(not sure why there's a newline but otherwise looks correct)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2025-01-29 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-29 23:38</div>
+            <div class="timeline-body"><blockquote>
+<p>not sure why there's a newline but otherwise looks correct</p>
+</blockquote>
+<p>I think that's a <em>logical newline</em>:</p>
+<pre><code class="language-rust">// https://github.com/astral-sh/ruff/blob/3125332ec1/crates/ruff_python_parser/src/token.rs#L130-L134
+pub enum TokenKind {
+    // ...
+
+    /// Token kind for a newline.
+    Newline,
+    /// Token kind for a newline that is not a logical line break. These are filtered out of
+    /// the token stream prior to parsing.
+    NonLogicalNewline,
+
+    // ...
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2025-01-30 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15824.html">astral-sh/ruff#15824</a> on 2025-01-30 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-01-30 06:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-01-30 06:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

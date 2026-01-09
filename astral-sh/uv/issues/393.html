@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't print colors when stderr is redirected to a file - astral-sh/uv #393</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't print colors when stderr is redirected to a file</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/393">#393</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-11-10 16:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2023-11-10 16:47</div>
+            <div class="timeline-body"><p>When using</p>
+<pre><code>cargo run --bin puffin-dev -q -- resolve-cli &quot;transformers[tensorboard]&quot; 2&gt; output.txt
+</code></pre>
+<p><code>output.txt</code> contains color sequences. Colors should only be shown when the stream they are shown on is a tty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 16:58</div>
+            <div class="timeline-body"><p>Does this happen with <code>pip-compile</code>? I thought I fixed it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-10 17:02</div>
+            <div class="timeline-body"><p>No there it works! Do you know where that setting is set?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-10 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 17:10</div>
+            <div class="timeline-body"><p>In <code>pip_compile.rs</code>, we add:</p>
+<pre><code class="language-rust">    if output_file.is_some() {
+        colored::control::set_override(false);
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 17:11</div>
+            <div class="timeline-body"><p>I don't know if there's a better solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 18:27</div>
+            <div class="timeline-body"><p>I think https://docs.rs/anstream/latest/anstream/ maybe helps with this problem? @BurntSushi might have ideas too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-10 18:58</div>
+            <div class="timeline-body"><p>anstream is somewhat orthogonal to whether colors are enabled or not I think. (Although it may solve that problem.) To detect whether <code>stderr</code> is a tty or not, you want this:</p>
+<pre><code class="language-rust">use std::io::IsTerminal;
+
+if std::io::stderr().is_terminal() {
+    println!(&quot;stderr is a tty!&quot;);
+} else {
+    println!(&quot;stderr is NOT a tty&quot;);
+}
+</code></pre>
+<p>The <code>std::io::IsTerminal</code> trait is a somewhat recent addition to the standard library. It was added in Rust 1.70.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 20:29</div>
+            <div class="timeline-body"><p>Hmm, why does Ruff not suffer from this problem? We don't print colors when you pipe stdout to a file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 20:57</div>
+            <div class="timeline-body"><p>Maybe <code>colorize</code> handles writing stdout but not stderr or something, I don't know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-13 11:47</div>
+            <div class="timeline-body"><p>Yep it's stdout vs. stderr:</p>
+<pre><code>cargo run --bin puffin-dev -q -- resolve-cli &quot;transformers[tensorboard]&quot; 2&gt; output.txt &gt; /dev/null
+</code></pre>
+<p>writes the correct output.txt, but without <code>&gt; /dev/null</code> i see the color codes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-13 12:32</div>
+            <div class="timeline-body"><blockquote>
+<p>I think https://docs.rs/anstream/latest/anstream/ maybe helps with this problem? @BurntSushi might have ideas too.</p>
+</blockquote>
+<p>After a quick look, I believe <code>anstream</code> gets this right. In particular, its <a href="https://docs.rs/anstream/latest/anstream/struct.AutoStream.html"><code>AutoStream</code></a> abstraction. In particular, it depends on <a href="https://docs.rs/anstream/latest/anstream/stream/trait.RawStream.html"><code>RawStream</code></a> which in turn depends the <a href="https://docs.rs/anstream/latest/anstream/stream/trait.IsTerminal.html"><code>IsTerminal</code></a> trait. (It looks like it's a copy of the standard library's trait, probably because it was published before <code>IsTerminal</code> was stable?) In any case, it doesn't look like it gets confused about stdout versus stderr.</p>
+<p>Looking at <a href="https://docs.rs/colorize/latest/colorize/"><code>colorize</code></a>, it exists at a lower level of abstraction. I don't believe it concerns itself with what its actually writing to or whether colors <em>ought</em> to be enabled.</p>
+<p>Oh, Puffin is using <a href="https://docs.rs/colored/latest/colored/"><code>colored</code></a>, not <code>colorize</code>. And assuming Puffin is using its <code>ShouldColorize</code> abstraction, it does indeed appear to be <a href="https://docs.rs/colored/latest/src/colored/control.rs.html#106">hard-coded to assuming all output goes to stdout</a>.</p>
+<p>This looks like it might be a little tricky to fix without some refactoring. For example, this code prints to stderr directly using colorize's functions:</p>
+<p>https://github.com/astral-sh/puffin/blob/81c9cd0d4ad44920e3785fcb4a499e4f559c77f2/crates/puffin-cli/src/main.rs#L315-L331</p>
+<p>Same deal with <code>puffin-dev</code>:</p>
+<p>https://github.com/astral-sh/puffin/blob/81c9cd0d4ad44920e3785fcb4a499e4f559c77f2/crates/puffin-dev/src/main.rs#L96-L105</p>
+<p>Oh, maybe these are the only places? But in any case, I think they can't be correct because you can't really use <code>IsTerminal</code> in a global way like <code>colorize</code> is doing. You need separate detection logic based on where you're writing.</p>
+<p>So long story short, maybe there are two choices here:</p>
+<ol>
+<li>If there's only a couple places where we print colors to stderr, then do our own <code>std::io::stderr().is_terminal()</code> check and only use colors if it's a terminal. Probably an easy fix.</li>
+<li>Refactor to use a more principled solution like <code>anstream</code>.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-13 14:41</div>
+            <div class="timeline-body"><p>Thanks @BurntSushi -- this matches my understanding too. <code>anstream</code> abstracts away an underlying writer and inserts or removes colors based on the capabilities. It looks like they do have an adapter for <code>owo_colors</code> which we could consider using instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-11-13 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-13 19:22</div>
+            <div class="timeline-body"><p>Gonna investigate this real quick.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/415.html">astral-sh/uv#415</a> on 2023-11-13 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-13 20:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

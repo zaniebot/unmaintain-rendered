@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interpreting type comment is missing, producing different result from flake8 - astral-sh/ruff #10501</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Interpreting type comment is missing, producing different result from flake8</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10501">#10501</a>
+        opened by <a href="https://github.com/cielavenir">@cielavenir</a>
+        on 2024-03-21 03:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cielavenir">@cielavenir</a> on 2024-03-21 03:08</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Version</p>
+<pre><code>$ ruff --version
+ruff 0.3.3
+$ python3 -m flake8 --version
+3.9.2 (flake8_logger: 0.0.0, mccabe: 0.6.1, pycodestyle: 2.7.0, pyflakes: 2.3.1, teamcity-messages: 1.21) CPython 3.9.2 on Linux
+</code></pre>
+<p>Code with import:</p>
+<pre><code class="language-py:typecomment1.py">import collections
+
+
+class ToyClass(object):
+    dic = None  # type: collections.defaultdict
+</code></pre>
+<p>Result:</p>
+<pre><code>$ python3 -m flake8 typecomment1.py 
+$ ruff check typecomment1.py 
+typecomment1.py:1:8: F401 [*] `collections` imported but unused
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>Code without import:</p>
+<pre><code class="language-py:typecomment2.py">class ToyClass(object):
+    dic = None  # type: collections.defaultdict
+</code></pre>
+<p>Result:</p>
+<pre><code>$ python3 -m flake8 typecomment2.py
+typecomment.py:2:17: F821 undefined name 'collections'
+$ ruff check typecomment2.py 
+All checks passed!
+</code></pre>
+<p>This means that Ruff does not interpret type comment while flake8 does.</p>
+<p>I searched for &quot;type comment&quot;.</p>
+<hr />
+<p>Found by a collegue of mine @braineo .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-21 08:10</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>The latest version of flake8 also does not understand type comments; flake8 3.9.2 is several years old now. It dropped support so that it could improve performance, and because there's no reason to use type comments unless you support very old Python versions that have been end-of-life for a long time. The relevant change here is in one of the builtin flake8 plugins, pyflakes:</p>
+<ul>
+<li>https://github.com/PyCQA/pyflakes/pull/684</li>
+</ul>
+<p>Since great tools such as https://github.com/ilevkivskyi/com2ann exist that can help people auto-upgrade their legacy type comments to type annotations, I'm therefore sceptical that ruff should add support for type comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-03-21 08:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-21 09:46</div>
+            <div class="timeline-body"><p>It looks like this issue is actually a duplicate of #1619, so I'll close in favour of that one 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-03-21 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/felixvd">@felixvd</a> on 2024-03-22 00:09</div>
+            <div class="timeline-body"><p>That's a fair point. Thanks for your prompt and detailed response @AlexWaygood</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13925.html">astral-sh/ruff#13925</a> on 2024-10-25 14:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

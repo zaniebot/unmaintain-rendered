@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrypoint script shebang uses resolved path for symlinked Python rather than `sys.executable` - astral-sh/uv #11048</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Entrypoint script shebang uses resolved path for symlinked Python rather than `sys.executable`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11048">#11048</a>
+        opened by <a href="https://github.com/edmorley">@edmorley</a>
+        on 2025-01-29 01:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/edmorley">@edmorley</a> on 2025-01-29 01:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The shebang lines of entrypoint scripts created by <code>uv sync</code> when using <code>UV_PROJECT_ENVIRONMENT</code> with a symlinked Python installation use the resolved Python binary path rather than the <code>sys.executable</code> path, which differs from pip and <code>uv pip</code>'s behaviour and causes some issues with the older of our two build systems.</p>
+<h3>Steps</h3>
+<ol>
+<li>Create a <code>Dockerfile</code> based on the below.</li>
+<li><code>docker build . --progress plain --no-cache</code></li>
+</ol>
+<p>(We don't actually use Docker to build on our older build system - the below is for MRE purposes only)</p>
+<pre><code class="language-Dockerfile">FROM heroku/heroku:24-build AS build
+ARG TARGETARCH
+USER root
+
+COPY --from=ghcr.io/astral-sh/uv:0.5.25 /uv /usr/local/bin
+
+WORKDIR /tmp/build
+COPY &lt;&lt;EOF pyproject.toml
+[project]
+name = &quot;example&quot;
+version = &quot;0.0.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [&quot;gunicorn&quot;]
+EOF
+
+RUN mkdir -p /tmp/build/.heroku/python \
+  &amp;&amp; curl -f &quot;https://heroku-buildpack-python.s3.us-east-1.amazonaws.com/python-3.13.1-ubuntu-24.04-${TARGETARCH}.tar.zst&quot; \
+  | tar -x --zstd -C /tmp/build/.heroku/python
+RUN mkdir -p /app/.heroku \
+  &amp;&amp; ln -s /tmp/build/.heroku/python /app/.heroku/python
+ENV PATH=&quot;/app/.heroku/python/bin:${PATH}&quot;
+ENV LD_LIBRARY_PATH=&quot;/app/.heroku/python/lib&quot;
+
+# These all output paths under `/app/.heroku/python` rather than `/tmp/...`:
+RUN which python &amp;&amp; which python3
+RUN python -c &quot;import sys; print(sys.prefix); print(sys.executable)&quot;
+
+# However, when using `uv sync` with `UV_PROJECT_ENVIRONMENT` set, the gunicorn
+# shebang is the resolved Python location under /tmp rather than the path under /app:
+# `#!/tmp/build/.heroku/python/bin/python3`
+ENV UV_PROJECT_ENVIRONMENT=&quot;/app/.heroku/python&quot;
+RUN RUST_LOG=&quot;uv=debug,uv_python=trace&quot; uv sync
+RUN head -n1 $(which gunicorn)
+
+# In the run-time environment, the app is mounted at /app, which means the gunicorn
+# entrypoint will only work if it has a shebang using the /app path.
+FROM heroku/heroku:24
+COPY --from=build --chown=heroku /tmp/build /app
+ENV PATH=&quot;/app/.heroku/python/bin:${PATH}&quot;
+ENV LD_LIBRARY_PATH=&quot;/app/.heroku/python/lib&quot;
+RUN gunicorn --version
+</code></pre>
+<h3>Expected</h3>
+<ul>
+<li>For the various <code>which ...</code> commands, plus <code>sys.path</code> and <code>sys.executable</code> to all report paths under <code>/app/...</code> (rather than <code>/tmp/...</code>).</li>
+<li>For the gunicorn shebang to be <code>#!/app/.heroku/python/bin/python</code></li>
+<li>For the <code>gunicorn --version</code> command to succeed.</li>
+</ul>
+<h3>Actual</h3>
+<ul>
+<li>The various <code>which ...</code> commands, plus <code>sys.path</code> and <code>sys.executable</code> all report paths under <code>/app/...</code>.</li>
+<li>However, the <code>head -n1 $(which gunicorn)</code> command shows the gunicorn entrypoint as having a shebang of <code>#!/tmp/build/.heroku/python/bin/python3</code></li>
+<li>The <code>gunicorn --version</code> command fails due to the shebang referencing the wrong path (<code>/tmp/...</code>, which no longer exists).</li>
+</ul>
+<p>See:</p>
+<details>
+
+<summary>Docker build output</summary>
+
+<pre><code>$ docker build . --progress plain --no-cache
+...
+#15 [build  7/10] RUN which python &amp;&amp; which python3
+#15 0.128 /app/.heroku/python/bin/python
+#15 0.128 /app/.heroku/python/bin/python3
+#15 DONE 0.1s
+
+#16 [build  8/10] RUN python -c &quot;import sys; print(sys.prefix); print(sys.executable)&quot;
+#16 0.086 /app/.heroku/python
+#16 0.086 /app/.heroku/python/bin/python
+#16 DONE 0.1s
+
+#17 [build  9/10] RUN RUST_LOG=&quot;uv=debug,uv_python=trace&quot; uv sync
+#17 0.131 DEBUG uv 0.5.25
+#17 0.132 DEBUG Found project root: `/tmp/build`
+#17 0.132 DEBUG No workspace root found, using project root
+#17 0.133 DEBUG Using Python request `&gt;=3.13` from `requires-python` metadata
+#17 0.133 TRACE Querying interpreter executable at /tmp/build/.heroku/python/bin/python3
+#17 0.158 DEBUG The virtual environment's Python version satisfies `&gt;=3.13`
+#17 0.159 DEBUG Using request timeout of 30s
+#17 0.160 DEBUG Found static `pyproject.toml` for: example @ file:///tmp/build
+#17 0.160 DEBUG No workspace root found, using project root
+#17 0.162 DEBUG Solving with installed Python version: 3.13.1
+#17 0.162 DEBUG Solving with target Python version: &gt;=3.13
+#17 0.163 DEBUG Adding direct dependency: example*
+#17 0.163 DEBUG Searching for a compatible version of example @ file:///tmp/build (*)
+#17 0.163 DEBUG Adding direct dependency: gunicorn*
+#17 0.164 DEBUG No cache entry for: https://pypi.org/simple/gunicorn/
+#17 0.197 DEBUG Searching for a compatible version of gunicorn (*)
+#17 0.198 DEBUG Selecting: gunicorn==23.0.0 [compatible] (gunicorn-23.0.0-py3-none-any.whl)
+#17 0.198 DEBUG No cache entry for: https://files.pythonhosted.org/packages/cb/7d/6dac2a6e1eba33ee43f318edbed4ff29151a49b5d37f080aad1e6469bca4/gunicorn-23.0.0-py3-none-any.whl.metadata
+#17 0.242 DEBUG Adding transitive dependency for gunicorn==23.0.0: packaging*
+#17 0.242 DEBUG No cache entry for: https://pypi.org/simple/packaging/
+#17 0.250 DEBUG Searching for a compatible version of packaging (*)
+#17 0.250 DEBUG Selecting: packaging==24.2 [compatible] (packaging-24.2-py3-none-any.whl)
+#17 0.250 DEBUG No cache entry for: https://files.pythonhosted.org/packages/88/ef/eb23f262cca3c0c4eb7ab1933c3b1f03d021f2c48f54763065b6f0e321be/packaging-24.2-py3-none-any.whl.metadata
+#17 0.261 DEBUG Tried 3 versions: example 1, gunicorn 1, packaging 1
+#17 0.261 DEBUG all marker environments resolution took 0.099s
+#17 0.262 Resolved 3 packages in 103ms
+#17 0.264 DEBUG Using request timeout of 30s
+#17 0.265 DEBUG Identified uncached distribution: gunicorn==23.0.0
+#17 0.265 DEBUG Identified uncached distribution: packaging==24.2
+#17 0.265 DEBUG No cache entry for: https://files.pythonhosted.org/packages/cb/7d/6dac2a6e1eba33ee43f318edbed4ff29151a49b5d37f080aad1e6469bca4/gunicorn-23.0.0-py3-none-any.whl
+#17 0.265 DEBUG No cache entry for: https://files.pythonhosted.org/packages/88/ef/eb23f262cca3c0c4eb7ab1933c3b1f03d021f2c48f54763065b6f0e321be/packaging-24.2-py3-none-any.whl
+#17 0.316 Prepared 2 packages in 51ms
+#17 0.331 Installed 2 packages in 14ms
+#17 0.331  + gunicorn==23.0.0
+#17 0.331  + packaging==24.2
+#17 DONE 0.3s
+
+#18 [build 10/10] RUN head -n1 $(which gunicorn)
+#18 0.114 #!/tmp/build/.heroku/python/bin/python3
+#18 DONE 0.1s
+
+#19 [stage-1 2/3] COPY --from=build --chown=heroku /tmp/build /app
+#19 DONE 0.1s
+
+#20 [stage-1 3/3] RUN gunicorn --version
+#20 0.075 /bin/sh: 1: gunicorn: not found
+#20 ERROR: process &quot;/bin/sh -c gunicorn --version&quot; did not complete successfully: exit code: 127
+</code></pre>
+</details>
+
+<h3>Other findings</h3>
+<p>For comparison, if I use <code>uv pip install --system</code> instead, then I get the shebang I expect. e.g: Try replacing the three <code>uv sync</code> related lines above with:</p>
+<pre><code class="language-Dockerfile">RUN uv pip install --system .
+RUN head -n1 $(which gunicorn)
+</code></pre>
+<p>Similarly, if that's then replaced with <code>pip install</code>, the shebang is also as expected:</p>
+<pre><code class="language-Dockerfile">RUN python -m ensurepip --default-pip
+RUN python -m pip install .
+RUN head -n1 $(which gunicorn)
+</code></pre>
+<p>Interestingly, <code>uv venv</code> does use <code>/app</code> paths for the <code>pyvenv.cfg</code> metadata and the symlink target:</p>
+<pre><code class="language-Dockerfile">RUN uv venv /example-venv
+RUN grep home /example-venv/pyvenv.cfg
+RUN readlink /example-venv/bin/python
+</code></pre>
+<pre><code>#20 [build 12/13] RUN grep home /example-venv/pyvenv.cfg
+#20 0.085 home = /app/.heroku/python/bin
+#20 DONE 0.1s
+
+#21 [build 13/13] RUN readlink /example-venv/bin/python
+#21 0.120 /app/.heroku/python/bin/python3
+#21 DONE 0.1s
+</code></pre>
+<p>So I'm presuming this might be specific to when <code>UV_PROJECT_ENVIRONMENT</code> is used?</p>
+<p>I also tried setting <code>UV_PYTHON</code> explicitly (both to <code>/app/.heroku/python</code> and <code>/app/.heroku/python/bin/python</code>), but that didn't affect the shebang.</p>
+<h3>Related issues</h3>
+<p>These look vaguely related?</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/9739</li>
+<li>https://github.com/astral-sh/uv/issues/9046</li>
+</ul>
+<h3>Context</h3>
+<p>Heroku has two platform generations, each with its own build system and buildpack implementations.</p>
+<p>In the older generation (Cedar, which uses classic buildpacks), the app source is located at a location like <code>/tmp/build_&lt;hash&gt;</code> during the build, then at app run-time the app archive is mounted at <code>/app</code>. [1]</p>
+<p>As you can imagine for Python this relocation can cause some issues, however, we're able to work around these pretty easily in practice, by:</p>
+<ol>
+<li>At build time, creating a temporary symlink [2] from <code>/app/.heroku/python</code> (which is what will be the actual location at app run-time) to <code>/tmp/build_&lt;hash&gt;/.heroku/python</code> (the location of Python install during the build)</li>
+<li>Adding <code>/app/.heroku/python/bin</code> to <code>PATH</code> instead of the <code>/tmp</code> location</li>
+<li>After the build, performing rewriting of any <code>.pth</code> files created for editable local directory installs</li>
+</ol>
+<p>This works because:</p>
+<ul>
+<li>Python will resolve it's location relative to the path it was invoked from (which was <code>/app/.heroku/python/bin/python</code> given that's what's on <code>PATH</code>), and thus <code>sys.prefix</code> / <code>sys.executable</code> use <code>/app/...</code> paths</li>
+<li>Package managers typically use <code>sys.executable</code> when calculating the shebangs for entrypoint scripts, eg:<ul>
+<li>pip uses <code>sys.executable</code> <a href="https://github.com/pypa/pip/blob/f5ff4fa27dd991f209f2a9f9283a7c1561221b2c/src/pip/_internal/operations/install/wheel.py#L105C19-L105C33">here</a></li>
+<li>Poetry uses the <a href="https://github.com/pypa/installer">installer</a> package, which uses <code>sys.executable</code> via <a href="https://github.com/pypa/installer/blob/4c9fd28ddcf30f2a5e9a269c3aaa0517e862b809/src/installer/__main__.py#L106">here</a> and <a href="https://github.com/pypa/installer/blob/4c9fd28ddcf30f2a5e9a269c3aaa0517e862b809/src/installer/utils.py#L189">here</a></li>
+</ul>
+</li>
+</ul>
+<p>...and thus entrypoint scripts will end up with a shebang like:
+<code>#!/app/.heroku/python/bin/python</code></p>
+<p>...which will also work at app run-time, when the app is actually mounted at <code>/app</code>.</p>
+<p>[1] The original need to use a different directory has long since passed, however, it's not possible for us to change the build location without breaking many third-party classic buildpacks, so we're sadly stuck with this relocation for the classic build system. Thankfully the <a href="https://buildpacks.io/">Cloud Native Buildpack</a> spec has the build time and run time paths the same, so our newer build system doesn't have to work around this issue.</p>
+<p>[2] The reason for the symlink and not copying the app source back and forth from /tmp &lt;-&gt; /app at the start/end of the Python build step is due to a combination of compatibility concerns with other language buildpacks (that can run before/after the Python buildpack and can also use our Python install), plus build end to end time impact from the additional I/O.</p>
+<h3>Platform</h3>
+<p>Ubuntu (but not using distro Python)</p>
+<h3>Version</h3>
+<p>0.5.25</p>
+<h3>Python version</h3>
+<p>Python 3.13.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @edmorley on 2025-01-29 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../heroku/heroku-buildpack-python/issues/1616.html">heroku/heroku-buildpack-python#1616</a> on 2025-01-29 01:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2025-01-29 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-01-29 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-29 02:15</div>
+            <div class="timeline-body"><p>Thanks for all the details! I'll dig into this tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-29 02:30</div>
+            <div class="timeline-body"><p>Briefly...</p>
+<blockquote>
+<p>Python will resolve it's location relative to the path it was invoked from (which was /app/.heroku/python/bin/python given that's what's on PATH), and thus sys.prefix / sys.executable use /app/... paths</p>
+</blockquote>
+<p>When you use <code>UV_PROJECT_ENVIRONMENT</code> we don't find the interpreter on the PATH, we discover it in the directory you provide. It looks like somewhere we're resolving a symbolic link, because in the logs you can see us query the interpreter at the <code>/tmp</code> location:</p>
+<blockquote>
+<p>TRACE Querying interpreter executable at /tmp/build/.heroku/python/bin/python3</p>
+</blockquote>
+<p>Given your above statement (thank you so much for sharing that information!) I believe this would cause the behavior you're seeing.</p>
+<p>It's relatively unambiguous that we use <code>sys.executable</code> during installs</p>
+<p>https://github.com/astral-sh/uv/blob/ad075c375187fdaeba25c1272e3c7a4275810ce4/crates/uv-install-wheel/src/wheel.rs#L203</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-29 20:00</div>
+            <div class="timeline-body"><p>And it looks like canonicalization happens at https://github.com/astral-sh/uv/blob/bec8468183c7cc1697ad1d34a5eb6087ec5c8a90/crates/uv-python/src/environment.rs#L164</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11083.html">astral-sh/uv#11083</a> on 2025-01-29 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-29 20:40</div>
+            <div class="timeline-body"><p>Interesting. I fixed the canonicalization there, but... we still get the same value for <code>sys.executable</code> — perhaps I'm missing something? https://github.com/astral-sh/uv/pull/11083</p>
+<p>edit: Oh interesting, it's different in CI than locally! https://github.com/astral-sh/uv/pull/11083#issuecomment-2622819665</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-30 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2025-01-31 19:51</div>
+            <div class="timeline-body"><p>I can confirm this is resolved with #11083 - my tests now pass - thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-31 20:03</div>
+            <div class="timeline-body"><p>Thanks for following up Ed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13350.html">astral-sh/uv#13350</a> on 2025-05-08 17:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

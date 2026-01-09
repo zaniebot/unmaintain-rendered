@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monorepo support with import-based dependency inference and custom build targets - astral-sh/uv #13788</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Monorepo support with import-based dependency inference and custom build targets</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13788">#13788</a>
+        opened by <a href="https://github.com/jperezr21">@jperezr21</a>
+        on 2025-06-02 18:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jperezr21">@jperezr21</a> on 2025-06-02 18:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I would like uv to support a monorepo setup similar to Pants, where:</p>
+<ol>
+<li>A single <code>pyproject.toml</code> file declares all third-party dependencies using version ranges.</li>
+<li>A single <code>uv.lock</code> file pins exact versions across the entire repository.</li>
+<li>Multiple subprojects can be defined with something akin to Pants’s <code>BUILD</code> files, enabling custom target types (for example, <code>python_aws_lambda_layer</code>: https://www.pantsbuild.org/stable/docs/python/integrations/aws-lambda).</li>
+<li>When building a specific target, UV automatically infers which dependencies are actually needed by scanning imports, and packages only those requirements for that target.</li>
+</ol>
+<h3>Motivation</h3>
+<p>Right now, uv workspaces let me install every package in one consolidated virtual environment and lock down versions in <code>uv.lock</code>. However:</p>
+<ul>
+<li>Each subproject still needs its own <code>pyproject.toml</code> and explicit dependency list.</li>
+<li>There’s no mechanism to declare higher-level “build targets” (e.g., an AWS Lambda layer or a Python binary) that pull in only the necessary dependencies.</li>
+<li>UV doesn’t scan imports to figure out which packages a given target actually needs, so I end up shipping unnecessary code or manually pruning dependencies when building.</li>
+</ul>
+<p>In a monorepo with multiple services or functions (for example, several AWS Lambdas plus a shared library), it becomes cumbersome to keep each subproject’s <code>pyproject.toml</code> in sync with the actual imports. A unified setup would let us:</p>
+<ul>
+<li>Define all dependencies only once (with range constraints) in the root <code>pyproject.toml</code>.</li>
+<li>Lock them to exact versions in <code>uv.lock</code>.</li>
+<li>Create lightweight “target” descriptions in dedicated files (similar to Pants’s <code>BUILD</code> files) that specify what type of output I want (e.g., Lambda layer, Python binary, test suite).</li>
+<li>Have UV inspect the imports under each target’s source directory and automatically include only the third-party packages needed for that target, without manually updating each subproject’s manifest.</li>
+</ul>
+<p>This workflow reduces drift between declared vs. actual dependencies, avoids shipping unused code, and simplifies dependency management across many small services.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @jperezr21 on 2025-06-02 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-03 09:48</div>
+            <div class="timeline-body"><blockquote>
+<p>A single pyproject.toml file declares all third-party dependencies using version ranges.</p>
+</blockquote>
+<p>We'd like to support that too, but unfortunately PEP 621 doesn't this for a workspace atm.</p>
+<blockquote>
+<p>Each subproject still needs its own pyproject.toml and explicit dependency list.</p>
+</blockquote>
+<p>We consider this a feature, it makes the dependencies of different parts of the project explicit, and it also helps with features such as IDE integrations. Ideally, the IDE checks that the declared imports and the used packages match (PyCharm for example does this to some extend). This may become a lint in ty rather than uv in the future.</p>
+<p>I agree that it would be nice to be able to define build targets, but it's still a bit far out for uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @konstin on 2025-06-03 09:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vhtmui">@vhtmui</a> on 2025-06-05 09:53</div>
+            <div class="timeline-body"><p>That's exactly what I want! !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../thromer/uv-monorepo-example/pulls/1.html">thromer/uv-monorepo-example#1</a> on 2025-06-29 21:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

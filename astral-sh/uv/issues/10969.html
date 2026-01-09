@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migrate `msgpack` usages to `rkyv` - astral-sh/uv #10969</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Migrate `msgpack` usages to `rkyv`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10969">#10969</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-01-27 01:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 01:08</div>
+            <div class="timeline-body"><p>I don't see a great reason for us to continue using <code>msgpack</code>. We've had great success with <code>rkyv</code> elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2025-01-27 01:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2025-01-27 01:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 01:19</div>
+            <div class="timeline-body"><p>(It does introduce complexity though since we have to wrap everything in <code>OwnedArchive</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-27 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-27 12:54</div>
+            <div class="timeline-body"><p>What kind of perf improvement do you think we'll have here? Is msgpack showing up on profiles?</p>
+<p>I think there are definitely reasons to continue using msgpack, or, really, any other format that isn't tied to our in-memory representation of various data types. One of the costs associated with rkyv is that any change to a relevant data type, even just to its data layout, also invalidates all associated cached artifacts.</p>
+<p>We also still currently don't have a good way of validating that we've bumped our rkyv-based cache versions when it's necessary to do so. Using rkyv in more places would exacerbate this.</p>
+<p>If we're using msgpack in places where the types we are caching change very infrequently, then probably the downside of rkyv isn't as emphasized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 14:04</div>
+            <div class="timeline-body"><p>Yeah, it shows up for me in warm cache traces! We spend a lot of time deserializing the project metadata (as opposed to the list of files, for which we already use rkyv). That's the path I want to migrate. I don't think it's that different, honestly, that the cache gets invalidated on data layout. It already gets invalidated whenever we change the struct structures themselves.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-27 14:14</div>
+            <div class="timeline-body"><p>Ah interesting. Might be worth it then. It would be great to have something that validates version bumps though. The failure modes there if we forget a version bump are pretty abysmal sadly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 14:31</div>
+            <div class="timeline-body"><p>Yeah. (I consider this overall low-priority, but worth doing eventually.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-01 03:54</div>
+            <div class="timeline-body"><p>I got this to compile: https://github.com/astral-sh/uv/tree/charlie/rkyv. It ended up not making a difference. I think that implementation is still spending a lot of time serializing and deserializing as strings, since <code>Url</code> and <code>MarkerTree</code> still go through strings. Plus, I end up having to deserialize everything upfront to cast from <code>ResolutionMetadata</code> to <code>ArchivedMetadata</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2025-02-01 03:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-01 03:55</div>
+            <div class="timeline-body"><p>I'll leave this open, but I now consider it low-priority.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

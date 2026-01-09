@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concerns with zip version 1.x - astral-sh/uv #3642</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Concerns with zip version 1.x</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3642">#3642</a>
+        opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a>
+        on 2024-05-17 16:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-05-17 16:05</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I am working on packaging <code>uv</code> for Fedora Linux. Currently, we are wary of updating the <a href="https://crates.io/crates/zip"><code>zip</code> crate</a> past version 0.6.x (and will hold off on doing so for now) due to concerns with how the <a href="https://github.com/zip-rs"><code>zip-rs</code> project</a> project is being handled:</p>
+<p>All releases starting with v1.0.0 were developed and released by different people than the original crate, with the <a href="https://github.com/zip-rs/zip-old/issues/446">hand-off</a> being handled in a kind of weird way. Additionally, releases 1.2.0+ of the &quot;new&quot; zip crate contain breaking API changes which are <a href="https://github.com/zip-rs/zip2/issues/124">not going to be fixed</a> in the 1.x series.</p>
+<p>Since <code>uv</code> <em>can</em> be made to work with version 0.6.6, would it be possible to either:</p>
+<ul>
+<li>depend on <code>zip</code> <code>0.6.6</code> for now, if you decide you share these concerns, or:</li>
+<li>at least relax the dependency to something like <code>&gt;=0.6.6, &lt;2.0</code> to explicitly allow building with both <code>zip</code> v0.6 and v1?</li>
+</ul>
+<p>Note that the <code>zip</code> crate maintainer is planning a 2.0 release in a couple of weeks.</p>
+<p>In order to build with <code>zip</code> <code>0.6.6</code>, with tests passing, one source change is necessary:</p>
+<p>https://github.com/astral-sh/uv/blob/39af09f09b89611953f503927499b4129091bf68/crates/install-wheel-rs/src/wheel.rs#L14</p>
+<p>needs to be <code>use zip::write::FileOptions as SimpleFileOptions</code>, since the <code>SimpleFileOptions</code> alias was added in 1.x.</p>
+<p>If the <code>uv</code> project decides to change nothing, I will just carry a small downstream patch to support <code>zip</code> <code>0.6.6</code> for the time being.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-05-17 18:02</div>
+            <div class="timeline-body"><p>See also: https://github.com/PyO3/python-pkginfo-rs/issues/13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-17 18:14</div>
+            <div class="timeline-body"><p>We're still considering this as a team, but it seems likely we'd pin until we have more details. Would you be willing to open a pull request?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3645.html">astral-sh/uv#3645</a> on 2024-05-17 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-05-17 19:13</div>
+            <div class="timeline-body"><blockquote>
+<p>We're still considering this as a team, but it seems likely we'd pin until we have more details. Would you be willing to open a pull request?</p>
+</blockquote>
+<p>Sure! I hope https://github.com/astral-sh/uv/pull/3645 is what you needed. Thanks for considering this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-18 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff/pulls/11779.html">astral-sh/ruff#11779</a> on 2024-06-06 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-07 09:25</div>
+            <div class="timeline-body"><p>In https://github.com/astral-sh/ruff/pull/11779, we're adding <code>zip</code> as a dependency to Ruff as well, for red-knot. For now we're pinning it to the same version that <code>uv</code> has it pinned to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff/pulls/11982.html">astral-sh/ruff#11982</a> on 2024-06-22 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-03-15 19:27</div>
+            <div class="timeline-body"><p>An update: with the passage of time, and with an increasing number of upstream projects moving past <code>zip</code> 0.6.x, we’ve become comfortable enough with the situation to start shipping a current version of the <code>zip</code> crate (now 2.2.3) in Fedora.</p>
+<p>This comment isn’t <em>asking</em> you to update the <code>zip</code> dependency – we expect that we’ll be maintaining a  <code>rust-zip0.6</code> compat package for some time – but to let you know that if, in your own judgement, you decide the time is right to update the <code>zip</code> dependency, we won’t show up asking you to reconsider.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-15 20:06</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16907.html">astral-sh/uv#16907</a> on 2025-12-01 10:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

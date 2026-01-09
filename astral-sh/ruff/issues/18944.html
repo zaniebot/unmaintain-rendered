@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suppress PTH* family of rules if `dir_fd=` is passed - astral-sh/ruff #18944</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Suppress PTH* family of rules if `dir_fd=` is passed</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18944">#18944</a>
+        opened by <a href="https://github.com/septatrix">@septatrix</a>
+        on 2025-06-25 19:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/septatrix">@septatrix</a> on 2025-06-25 19:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>dir_fd</code> can be used to <a href="https://docs.python.org/3/library/os.html#dir-fd">operate on a file relative to a pinned directory descriptor</a>. This is useful to prevent bugs, most importantly race conditions. The respective functionality is not available in <code>pathlib</code> and the suggestion to use the respective <code>Path</code> methods therefore does not make sense</p>
+<pre><code class="language-sh">$ ruff check --select=PTH test.py
+test.py:1:1: PTH123 `open()` should be replaced by `Path.open()`
+  |
+1 | open(&quot;test.txt&quot;, dir_fd=1)
+  | ^^^^ PTH123
+  |
+
+Found 1 error.
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/septatrix">@septatrix</a> on 2025-06-25 19:45</div>
+            <div class="timeline-body"><p>Ideally the same would apply when the <a href="https://docs.python.org/3/library/os.html#path-fd"><em>path</em> argument is a fd</a> but that would require type information to correctly check which is not available to ruff, a compromise could be to allow number literals (and maybe some variable names like <code>fd</code>) but that seems quite hacky</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-25 19:46</div>
+            <div class="timeline-body"><p>I thought we took care of these in https://github.com/astral-sh/ruff/pull/17968, which should have been released with 0.11.10. Could you try with a more recent Ruff version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-06-25 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-25 19:54</div>
+            <div class="timeline-body"><p>We do avoid a diagnostic for PTH123 when <code>path</code> is a file descriptor (<a href="https://play.ruff.rs/708ebb23-f9ac-4d09-b441-922dacf987f8">playground</a>), but in this specific example you're still getting a diagnostic because <code>dir_fd</code> isn't a known argument to <code>open</code>.</p>
+<p>I think we properly handle <code>path</code> in other cases too, at least the few I tried.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/septatrix">@septatrix</a> on 2025-06-25 20:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I thought we took care of these in <a href="https://github.com/astral-sh/ruff/pull/17968">#17968</a>, which should have been released with 0.11.10. Could you try with a more recent Ruff version?</p>
+</blockquote>
+<p>Ah yes with a newer version it works as expected (I also had to change <code>open</code> to <code>os.open</code> in the reproduction because only the latter supports <code>dir_fd=</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @septatrix on 2025-06-25 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-25 20:05</div>
+            <div class="timeline-body"><p>Good to hear! If you find any cases where it's not updated, please open another issue!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

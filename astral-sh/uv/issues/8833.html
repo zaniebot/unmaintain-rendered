@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv build`, `hatchling` and `ignore-vcs` - astral-sh/uv #8833</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv build`, `hatchling` and `ignore-vcs`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8833">#8833</a>
+        opened by <a href="https://github.com/cofin">@cofin</a>
+        on 2024-11-05 17:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cofin">@cofin</a> on 2024-11-05 17:54</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Thanks for the awesome tools.  I've been swapping our projects over to <code>uv</code> as time permits and it's really simplified our entire build and release process.</p>
+<p>I have noticed one inconsistency though.  In one of our projects, I need to bundle static assets that are generated and stored in folder that is in the <code>.gitignore</code> file.</p>
+<p>With other build tools, I've been able to explicitly add the assets to the to the <a href="https://hatch.pypa.io/latest/config/build/#artifacts"><code>artifacts</code></a> setting and they will be included in the final generated <code>whl</code> file.</p>
+<p>However, with <code>uv</code>, I've had to set the <a href="https://hatch.pypa.io/latest/config/build/#artifacts"><code>ignore-vcs</code></a> variable to make these assets be included in the final build.</p>
+<p>I'm on the <code>v0.4.30</code>, but I've seen this behavior in the last few releases as well.  Is this expected?</p>
+<p>The repository that I see this behavior in is not public, but if it would help, I can get an MVCE repo created.</p>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 17:55</div>
+            <div class="timeline-body"><p>I'm not 100% sure. Do you see the same behavior if you run <code>python -m build</code> (https://github.com/pypa/build)? That's basically the reference implementation for the spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-05 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cofin">@cofin</a> on 2024-11-05 17:56</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not 100% sure. Do you see the same behavior if you run <code>python -m build</code> (https://github.com/pypa/build)? That's basically the reference implementation for the spec.</p>
+</blockquote>
+<p>I'll double check and get back to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cofin">@cofin</a> on 2024-11-05 18:26</div>
+            <div class="timeline-body"><p>Interesting!</p>
+<p>It looks like <code>python -m build</code> produces the same behavior as <code>uv build</code>.  I can only get the file included when the <code>ignore-vcs</code> setting is present.  However, the same projects did include them with with PDM and hatch.</p>
+<p>The current change of <code>ignore-vcs</code> is totally fine for me, so I think we can close this.  However, it's probably good to add this anecdote I noticed when running these tests:  <code>artifacts</code> can be totally omitted from my build configuration when I enable the <code>ignore-vcs</code> setting.  The path I'm adding happens to be within the module.</p>
+<p>I'll try to get some clarifications from the hatchling author as well.  The documentation is worded as if it is specifically for assets that have been ignored by <a href="https://hatch.pypa.io/latest/config/build/#artifact">VCS</a>.</p>
+<p>Thanks for the really quick response!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cofin">@cofin</a> on 2024-11-09 19:39</div>
+            <div class="timeline-body"><p>I wanted to close the loop on this.  I had a chance to chat with <code>ofek</code> and I figured out the difference here.</p>
+<p>I was using the top level configuration for <code>hatch</code> like so:</p>
+<pre><code class="language-toml">[tool.hatch.build]
+dev-mode-dirs = [&quot;.&quot;]
+sources = [&quot;.&quot;]
+</code></pre>
+<p>This type of declaration has been removed from the hatchling documentation.   The recommendation is to merge the settings needed into each build target instead.</p>
+<p>Hopefully this will help others if this is encountered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @cofin on 2024-11-09 19:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 19:39</div>
+            <div class="timeline-body"><p>Thanks for following up @cofin, appreciate it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10066.html">astral-sh/uv#10066</a> on 2024-12-20 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/espdev">@espdev</a> on 2025-06-29 11:31</div>
+            <div class="timeline-body"><p>Hello @charliermarsh,</p>
+<p>I have the same problem with hatch build. <code>uv build</code> just ignores <code>artifacts</code> and <code>force-include</code> rules.
+For example, I have the following project structure:</p>
+<pre><code>.
+├── pyproject.toml
+├── .gitignore
+├── src
+│   └── artifacts_test
+│       ├── __init__.py
+│       └── foo.py
+</code></pre>
+<p>Where <code>foo.py</code> is added to <code>.gitignore</code> (the file is generated and should not be included to sdist, but should be included to wheel).</p>
+<p>I adds the following rules to pyproject.toml:</p>
+<pre><code>[tool.hatch.build.targets.wheel]
+artifacts = [
+  &quot;foo.py&quot;,
+]
+</code></pre>
+<p>The Hatch <a href="https://hatch.pypa.io/1.9/config/build/#artifacts">documentation says</a>:</p>
+<blockquote>
+<p>If you want to include files that are <a href="https://hatch.pypa.io/1.9/config/build/#vcs">ignored by your VCS</a>, such as those that might be created by <a href="https://hatch.pypa.io/1.9/config/build/#build-hooks">build hooks</a>, you can use the artifacts option.</p>
+</blockquote>
+<p>And it doesn't work with <code>uv build</code>. The file will not be added to the wheel package. Furthermore, if I want to add any files via <a href="https://hatch.pypa.io/1.9/config/build/#forced-inclusion">force-include</a> that have been added to .gitignore, I get a build error.</p>
+<p>For example, I adds <code>data/foo.log</code> file to the package root directory and adds the rules to pyproject.toml:</p>
+<p>Add <code>data</code> to the project structure:</p>
+<pre><code>.
+├── data
+│   └── foo.log
+</code></pre>
+<p>Add <code>data/</code> to .gitignore</p>
+<pre><code># artifacts test
+foo.py
+data/
+</code></pre>
+<p>pyproject.toml</p>
+<pre><code>[tool.hatch.build.targets.wheel.force-include]
+&quot;data&quot; = &quot;artifacts_test/data&quot;
+</code></pre>
+<p>Try to call <code>uv build</code> and get an error &quot;Forced include not found&quot;:</p>
+<pre><code>Building source distribution...
+Building wheel from source distribution...
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+  File &quot;/home/esp/.cache/uv/builds-v0/.tmpJxuHmR/lib/python3.10/site-packages/hatchling/build.py&quot;, line 58, in build_wheel
+    return os.path.basename(next(builder.build(directory=wheel_directory, versions=['standard'])))
+  File &quot;/home/esp/.cache/uv/builds-v0/.tmpJxuHmR/lib/python3.10/site-packages/hatchling/builders/plugin/interface.py&quot;, line 155, in build
+    artifact = version_api[version](directory, **build_data)
+  File &quot;/home/esp/.cache/uv/builds-v0/.tmpJxuHmR/lib/python3.10/site-packages/hatchling/builders/wheel.py&quot;, line 477, in build_standard
+    for included_file in self.recurse_included_files():
+  File &quot;/home/esp/.cache/uv/builds-v0/.tmpJxuHmR/lib/python3.10/site-packages/hatchling/builders/plugin/interface.py&quot;, line 177, in recurse_included_files
+    yield from self.recurse_forced_files(self.config.get_force_include())
+  File &quot;/home/esp/.cache/uv/builds-v0/.tmpJxuHmR/lib/python3.10/site-packages/hatchling/builders/plugin/interface.py&quot;, line 237, in recurse_forced_files
+    raise FileNotFoundError(msg)
+FileNotFoundError: Forced include not found: /home/esp/.cache/uv/sdists-v9/.tmpP5E9AJ/artifacts_test-0.1.0/data
+  × Failed to build `/home/esp/tmp/artifacts-test`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `hatchling.build.build_wheel` failed (exit status: 1)
+      hint: This usually indicates a problem with the package or the build environment.
+</code></pre>
+<p>This seems to be because the files specified in .gitignore are simply not copied to the temporary directory from which the packages are built.</p>
+<p>At the same time <code>uv build --wheel</code> seems to be working correctly. It creates a wheel file with all included artifacts without any errors. This seems to me to be incorrect behavior. <code>uv build</code> should not ignore the Hatch rules in <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-30 13:33</div>
+            <div class="timeline-body"><p>Is it <code>artifacts</code> or <code>artifacts_test</code>?</p>
+<p>Your problem is with the hatchling configuration, this is not tied to <code>uv build</code>, but will happen with any source tree -&gt; source dist -&gt; wheel build.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/espdev">@espdev</a> on 2025-06-30 15:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it artifacts or artifacts_test?</p>
+</blockquote>
+<p>I don't quite understand your question.
+artifacts_test is the name of the test project. Just for example. It doesn't make any difference.</p>
+<p>What's wrong with the hatch configuration?</p>
+<p>I thought build for each target should use the configuration for that target. I don't understand why <code>build</code> doesn't use the configuration for the wheel when it builds the wheel. Where should I specify the configuration for wheel in such a case?</p>
+<p>It seems to me it violates <a href="https://en.wikipedia.org/wiki/Principle_of_least_astonishment">the principle of least astonishment</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gitsandi">@gitsandi</a> on 2025-08-16 18:02</div>
+            <div class="timeline-body"><p>I had the same problem.
+<code>*.mo</code> files are specified in <code>.gitignore</code>, but I want them included in the wheel
+For configuration</p>
+<pre><code>[tool.hatch.build.targets.sdist]
+packages = [
+    &quot;testmodule&quot;
+]
+
+[tool.hatch.build.targets.wheel]
+artifacts = [
+    &quot;*.mo&quot;,
+]
+packages = [
+    &quot;testmodule&quot;
+]
+</code></pre>
+<ul>
+<li>running <code>uv build</code> doesn't include <code>.mo</code> files in the wheel</li>
+<li>running <code>uv build --wheel</code> includes <code>.mo</code> files in the wheel</li>
+</ul>
+<p>I'm not sure if the problem is in <code>uv</code> or <code>hatchling</code>, or maybe this is intended behavior (although confusing).</p>
+<p>I solved the problem by moving <code>artifacts</code> option to <code>[tool.hatch.build]</code>: (maybe this will be of interest to <a href="https://github.com/cofin">@cofin</a> and <a href="https://github.com/espdev">@espdev</a>)</p>
+<pre><code>[tool.hatch.build]
+artifacts = [
+    &quot;*.mo&quot;,
+]
+
+[tool.hatch.build.targets.sdist]
+packages = [
+    &quot;testmodule&quot;
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    &quot;testmodule&quot;
+]
+</code></pre>
+<p>With this configuration <code>uv build</code> includes <code>.mo</code> files both in wheel and in <code>tar.gz</code> . No need to use option <code>ignore-vcs = true</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

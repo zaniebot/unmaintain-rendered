@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calling get_matches() after write_long_helpI() reports Non-unique argument name - clap-rs/clap #1798</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Calling get_matches() after write_long_helpI() reports Non-unique argument name</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1798">#1798</a>
+        opened by <a href="https://github.com/arucil">@arucil</a>
+        on 2020-04-09 04:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/arucil">@arucil</a> on 2020-04-09 04:23</div>
+            <div class="timeline-body"><!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+<h3>Rust Version</h3>
+<p><code>rustc 1.44.0-nightly (6dee5f112 2020-04-06)</code></p>
+<h3>Code</h3>
+<pre><code class="language-rust">use clap::*;
+fn main() {
+    let mut app = App::new(&quot;app&quot;)
+        .arg(Arg::with_name(&quot;log&quot;)
+            .global(true)
+            .long(&quot;log&quot;))
+        .subcommand(SubCommand::with_name(&quot;sub&quot;));
+
+    app.write_long_help(&amp;mut Vec::new()).unwrap();
+    app.get_matches();
+}
+</code></pre>
+<h3>Steps to reproduce the issue</h3>
+<ol>
+<li>Run <code>cargo run</code></li>
+<li>The program panics at the line where <code>get_matches()</code> is called:<details>
+<summary>Backtrace</summary>
+
+</li>
+</ol>
+<pre><code>thread 'main' panicked at 'Non-unique argument name: log is already in use', /home/xxx/.cargo/registry/src/mirrors.ustc.edu.cn-12df342d903acd47/clap-2.33.0/src/app/parser.rs:174:9
+stack backtrace:
+   0: backtrace::backtrace::libunwind::trace
+             at /cargo/registry/src/github.com-1ecc6299db9ec823/backtrace-0.3.46/src/backtrace/libunwind.rs:86
+   1: backtrace::backtrace::trace_unsynchronized
+             at /cargo/registry/src/github.com-1ecc6299db9ec823/backtrace-0.3.46/src/backtrace/mod.rs:66
+   2: std::sys_common::backtrace::_print_fmt
+             at src/libstd/sys_common/backtrace.rs:78
+   3: &lt;std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display&gt;::fmt
+             at src/libstd/sys_common/backtrace.rs:59
+   4: core::fmt::write
+             at src/libcore/fmt/mod.rs:1069
+   5: std::io::Write::write_fmt
+             at src/libstd/io/mod.rs:1439
+   6: std::sys_common::backtrace::_print
+             at src/libstd/sys_common/backtrace.rs:62
+   7: std::sys_common::backtrace::print
+             at src/libstd/sys_common/backtrace.rs:49
+   8: std::panicking::default_hook::{{closure}}
+             at src/libstd/panicking.rs:198
+   9: std::panicking::default_hook
+             at src/libstd/panicking.rs:218
+  10: std::panicking::rust_panic_with_hook
+             at src/libstd/panicking.rs:511
+  11: std::panicking::begin_panic
+             at /home/xxx/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src/libstd/panicking.rs:438
+  12: clap::app::parser::Parser::debug_asserts
+             at /home/xxx/.cargo/registry/src/mirrors.ustc.edu.cn-12df342d903acd47/clap-2.33.0/src/app/parser.rs:174
+  13: clap::app::parser::Parser::add_arg_ref
+             at /home/xxx/.cargo/registry/src/mirrors.ustc.edu.cn-12df342d903acd47/clap-2.33.0/src/app/parser.rs:319
+  14: clap::app::parser::Parser::propagate_globals
+             at /home/xxx/.cargo/registry/src/mirrors.ustc.edu.cn-12df342d903acd47/clap-2.33.0/src/app/parser.rs:651
+  15: clap::app::App::get_matches_from_safe_borrow
+             at /home/xxx/.cargo/registry/src/mirrors.ustc.edu.cn-12df342d903acd47/clap-2.33.0/src/app/mod.rs:1598
+  16: clap::app::App::get_matches_from
+             at /home/xxx/.cargo/registry/src/mirrors.ustc.edu.cn-12df342d903acd47/clap-2.33.0/src/app/mod.rs:1509
+  17: clap::app::App::get_matches
+             at /home/xxx/.cargo/registry/src/mirrors.ustc.edu.cn-12df342d903acd47/clap-2.33.0/src/app/mod.rs:1451
+  18: test_clap::main
+             at src/main.rs:10
+  19: std::rt::lang_start::{{closure}}
+             at /home/xxx/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src/libstd/rt.rs:67
+  20: std::rt::lang_start_internal::{{closure}}
+             at src/libstd/rt.rs:52
+  21: std::panicking::try::do_call
+             at src/libstd/panicking.rs:331
+  22: std::panicking::try
+             at src/libstd/panicking.rs:274
+  23: std::panic::catch_unwind
+             at src/libstd/panic.rs:394
+  24: std::rt::lang_start_internal
+             at src/libstd/rt.rs:51
+  25: std::rt::lang_start
+             at /home/xxx/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src/libstd/rt.rs:67
+  26: main
+  27: __libc_start_main
+  28: _start
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+</code></pre>
+</details>
+
+<h3>Affected Version of <code>clap*</code></h3>
+<p>2.33.0</p>
+<h3>Actual Behavior Summary</h3>
+<p>Calling <code>get_matches()</code> after calling the <code>write_long_help()</code> method of an <code>App</code> with a global argument and a subcommand panics, with the message 'Non-unique argument name: log is already in use'. But when I call <code>write_help()</code> instead of <code>write_long_help()</code>, the program runs fine.</p>
+<h3>Expected Behavior Summary</h3>
+<p>I think <code>write_long_help()</code> should not affect the behavior of <code>get_matches()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @arucil on 2020-04-09 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-04-09 06:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @pksunkara on 2020-04-12 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-27 08:32</div>
+            <div class="timeline-body"><p>I can't reproduce it with master. Don't know what exactly fixed this, but something did. If somebody runs into this again, please create a new issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-04-27 08:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

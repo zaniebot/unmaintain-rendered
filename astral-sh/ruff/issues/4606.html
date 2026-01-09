@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investigate performance regression for 100,000s of violations - astral-sh/ruff #4606</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Investigate performance regression for 100,000s of violations</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4606">#4606</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-05-23 15:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-23 15:12</div>
+            <div class="timeline-body"><p>As of #3931, most rule categories (on the CPython benchmark) got faster, but a few got slower, especially D, ANN, PT, and Q. So running <code>cargo build --release &amp;&amp; hyperfine --ignore-failure --warmup 10 &quot;./target/release/ruff ./crates/ruff/resources/test/cpython/ --no-cache --silent --select D,ANN,PT,Q&quot;</code> went from ~436ms to ~2s on my machine.</p>
+<p>I think the categories themselves are irrelevant -- it just turns out that these categories have many, many violations (e.g., <code>Q000</code> has 143,807 violations).</p>
+<p>The inverse (<code>--select ALL --ignore D,ANN,PT,Q</code>) went from 452ms to 764ms, despite the fact that running any of the categories <em>individually</em> got faster.</p>
+<p>Though most projects (and most Ruff invocations) don't have hundreds of thousands of violations :) it'd be good to understand where this slowdown is coming from. We're running with <code>--no-cache</code> and <code>--silent</code>, so we shouldn't be serializing the diagnostics in any way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-05-23 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2023-05-23 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-23 16:37</div>
+            <div class="timeline-body"><p>What changed is that we now always include the source code with the <code>Diagnostic</code>, regardless if <code>silent</code> is specified. This can have a significant cost if there are many diagnostics.</p>
+<p>I remember the previous version had a fast-path for when silent is enabled.</p>
+<p>I think the solution to this is to make <code>source_code</code> on <code>Message</code> optional as described in #4571. We could then omit the source file when <code>--silent</code>  has been passed.</p>
+<p>Nit: I recommend using ruff's <code>-e</code> flag so that hyperfine <code>--ignore-failures</code> argument isn't necessary. It prevents that you profile failing ruff runs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-23 16:43</div>
+            <div class="timeline-body"><p>For my understanding: why does including the source code come with a cost? Isn't it just refcounted?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-23 16:53</div>
+            <div class="timeline-body"><blockquote>
+<p>For my understanding: why does including the source code come with a cost? Isn't it just refcounted?</p>
+</blockquote>
+<p>The cost comes from cloning the <code>str</code> to a <code>String</code> once for every file. I'm not 100% sure if that's the only reason for the regression but it probably adds quiet a bit of overhead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-24 01:02</div>
+            <div class="timeline-body"><p>But the number of files for which we're generating violations doesn't change between these rule sets. I just want to sanity check that we're not doing something unintentional like cloning the <code>str</code> to <code>String</code> for every _diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Boshen">@Boshen</a> on 2023-05-24 02:15</div>
+            <div class="timeline-body"><p>Probably relevant:</p>
+<ul>
+<li>https://github.com/Boshen/oxc/issues/166</li>
+</ul>
+<p>Diagnostic printing is probably where you want to look at.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-24 02:28</div>
+            <div class="timeline-body"><p><code>--silent</code> should mean that we're not printing diagnostics at all :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-24 06:18</div>
+            <div class="timeline-body"><p>Here's a <a href="https://share.firefox.dev/3pWDYUr">flamegraph</a> running the above on main (without hyperfine). You can see that ruff spends the most time in the first thread, sorting diagnostics.</p>
+<p><a href="https://share.firefox.dev/3pWDYUr">This is a profile</a> from before the PR, it doesn't show the long sorting at the end of the analysis on the main thread.</p>
+<p>Edit: I investigated this more, and the culprit is that I included the <code>diagnostic.kind.rule()</code> in the comparison because I noticed that we have non-deterministic ordering when multiple rules emit a diagnostic in the same file and position.</p>
+<p>https://github.com/charliermarsh/ruff/blob/3644695bf2377e7dc7fd8432161a76bb4a1f4db9/crates/ruff/src/message/mod.rs#L79-L85</p>
+<p>Removing the rule comparison cuts the runtime down from 1s to 320ms</p>
+<p>I think there are two cheaper fixes:</p>
+<ul>
+<li>Use <code>sort</code> instead of <code>sort_unstable</code> so that we maintain the order in which the diagnostics were generated. This should be deterministic</li>
+<li>And / or: Use <code>diagnostic.range().ordering(other.range())</code> to also sort by the diagnostic's end position</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-24 10:34</div>
+            <div class="timeline-body"><p>I'll follow up with a pr. i have an idea how we could speed this up even more</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4624.html">astral-sh/ruff#4624</a> on 2023-05-24 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-05-24 14:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red_knot] Crash on analysing stub file with explicitly derived class - astral-sh/ruff #13160</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red_knot] Crash on analysing stub file with explicitly derived class</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13160">#13160</a>
+        opened by <a href="https://github.com/LordAro">@LordAro</a>
+        on 2024-08-30 12:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LordAro">@LordAro</a> on 2024-08-30 12:51</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Found just while playing around with <code>red_knot</code> ( b4d9d2602 )</p>
+<p>test.py</p>
+<pre><code class="language-python">class Foo(object):
+    pass
+</code></pre>
+<p>works fine</p>
+<p>Renaming it to test.pyi results in:</p>
+<pre><code> $ ./../target/debug/red_knot &amp;&amp; echo $?
+0
+ $ mv test.py test.pyi
+ $ ./../target/debug/red_knot &amp;&amp; echo $?
+thread '&lt;unnamed&gt;' panicked at crates/red_knot_python_semantic/src/types/infer.rs:177:25:
+no entry found for key
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Rayon: detected unexpected panic; aborting
+Aborted (core dumped)
+</code></pre>
+<p>Seems to crash with anything as the parent.</p>
+<p>relevant part of <code>RUST_BACKTRACE=full</code>:</p>
+<pre><code>  19:     0x561605928fe5 - core::option::Option&lt;T&gt;::expect::hffc771cc74f800e9
+                               at /build/rustc-kAv1jW/rustc-1.75.0+dfsg0ubuntu1~bpo0/library/core/src/option.rs:894:21
+  20:     0x561605928fe5 - &lt;std::collections::hash::map::HashMap&lt;K,V,S&gt; as core::ops::index::Index&lt;&amp;Q&gt;&gt;::index::hf84fbd63e8ba27dd
+                               at /build/rustc-kAv1jW/rustc-1.75.0+dfsg0ubuntu1~bpo0/library/std/src/collections/hash/map.rs:1341:23
+  21:     0x56160595a8e4 - red_knot_python_semantic::types::infer::TypeInference::expression_ty::h45e30f4ed3623f78
+                               at /home/cpigott/dev/ruff/crates/red_knot_python_semantic/src/types/infer.rs:177:25
+  22:     0x56160579d5e4 - &lt;ruff_python_ast::expression::ExpressionRef as red_knot_python_semantic::semantic_model::HasTy&gt;::ty::h7574fdc81220df66
+                               at /home/cpigott/dev/ruff/crates/red_knot_python_semantic/src/semantic_model.rs:62:9
+  23:     0x5616056603b5 - &lt;ruff_python_ast::nodes::ExprName as red_knot_python_semantic::semantic_model::HasTy&gt;::ty::h0bf9800421b11df7
+                               at /home/cpigott/dev/ruff/crates/red_knot_python_semantic/src/semantic_model.rs:72:17
+  24:     0x561605600139 - red_knot_workspace::lint::lint_maybe_undefined::hbf56527a89120b0f
+                               at /home/cpigott/dev/ruff/crates/red_knot_workspace/src/lint.rs:117:11
+  25:     0x561605600d9e - &lt;red_knot_workspace::lint::SemanticVisitor as ruff_python_ast::visitor::Visitor&gt;::visit_expr::h4e5d2046d4543b66
+                               at /home/cpigott/dev/ruff/crates/red_knot_workspace/src/lint.rs:244:17
+  26:     0x56160561fbfd - ruff_python_ast::visitor::walk_arguments::hcf8638d59de7f088
+                               at /home/cpigott/dev/ruff/crates/ruff_python_ast/src/visitor.rs:597:9
+  27:     0x5616055f9674 - ruff_python_ast::visitor::Visitor::visit_arguments::he4e1af453a0b6b0f
+                               at /home/cpigott/dev/ruff/crates/ruff_python_ast/src/visitor.rs:58:9
+  28:     0x5616056238bc - ruff_python_ast::visitor::walk_stmt::h8c2b40d349b01a24
+                               at /home/cpigott/dev/ruff/crates/ruff_python_ast/src/visitor.rs:165:17
+  29:     0x561605600d2a - &lt;red_knot_workspace::lint::SemanticVisitor as ruff_python_ast::visitor::Visitor&gt;::visit_stmt::h2cea15d01c9fd284
+                               at /home/cpigott/dev/ruff/crates/red_knot_workspace/src/lint.rs:238:9
+  30:     0x561605620f36 - ruff_python_ast::visitor::walk_body::hd1184b90f5a26118
+                               at /home/cpigott/dev/ruff/crates/ruff_python_ast/src/visitor.rs:115:9
+  31:     0x5616055f93f8 - ruff_python_ast::visitor::Visitor::visit_body::h1b0a1fbe97acb4d0
+                               at /home/cpigott/dev/ruff/crates/ruff_python_ast/src/visitor.rs:94:9
+  32:     0x561605602c32 - &lt;red_knot_workspace::lint::lint_semantic::Configuration_ as salsa::function::Configuration&gt;::execute::inner_::h18d04db1014d8c80
+                               at /home/cpigott/dev/ruff/crates/red_knot_workspace/src/lint.rs:93:5
+</code></pre>
+<p>Looking forward to seeing where this goes!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-08-30 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-31 00:35</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>This looks related to #13176, but I'd expect that issue to cause a resolution to <code>Type::Unbound</code>, not a panic. Will take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-31 01:18</div>
+            <div class="timeline-body"><p>Found the bug, fix PR in progress.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13204.html">astral-sh/ruff#13204</a> on 2024-09-02 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-09-03 18:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

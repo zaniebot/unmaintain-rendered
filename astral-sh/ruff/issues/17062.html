@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>docs: fix safety of `UP007` should be clarified - astral-sh/ruff #17062</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>docs: fix safety of `UP007` should be clarified</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17062">#17062</a>
+        opened by <a href="https://github.com/pjonsson">@pjonsson</a>
+        on 2025-03-30 10:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pjonsson">@pjonsson</a> on 2025-03-30 10:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This pyproject.yaml:</p>
+<pre><code class="language-yaml">[tool.ruff]
+target-version = &quot;py310&quot;
+
+[tool.ruff.lint]
+select = [&quot;UP&quot;]
+</code></pre>
+<p>and running <code>ruff check --fix file.py</code> on this example:</p>
+<pre><code class="language-python">from typing import Optional
+
+def a() -&gt; Optional[str]:
+    return None
+</code></pre>
+<p>results in:</p>
+<pre><code class="language-python">from typing import Optional
+
+def a() -&gt; str | None:
+    return None
+</code></pre>
+<p>so Ruff has updated the type signature, but left the import.</p>
+<p>Trying to figure out if my expectations are wrong, the documentation at https://docs.astral.sh/ruff/rules/non-pep604-annotation-union/#fix-safety says:</p>
+<blockquote>
+<p>This rule's fix is marked as unsafe, as it may lead to runtime errors when alongside libraries that rely on runtime type annotations, like Pydantic, on Python versions prior to Python 3.10.</p>
+</blockquote>
+<p>which I believe is contradictory to being able to use <code>--fix</code>, unsafe rules require enabling some other switch.</p>
+<p>Edit: the phrasing &quot;it may lead to runtime errors when alongside libraries&quot; is also confusing to me; what is alongside the libraries, the fix?</p>
+<h3>Version</h3>
+<p>ruff 0.11.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-30 14:42</div>
+            <div class="timeline-body"><p>Most of the time rules like this don't remove the imports on their own. I would expect <a href="https://docs.astral.sh/ruff/rules/unused-import/#unused-import-f401">unused-import (F401)</a> to clean it  up instead. Have you tried enabling both rules?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-03-30 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-30 14:51</div>
+            <div class="timeline-body"><p>To your question about the docs, I think they are a bit confusing. In looking at the code, the fix is marked unsafe on Python versions &quot;prior to Python 3.10&quot; (so 3.9 and earlier) but safe on and after 3.10, which is why you only had to run with <code>--fix</code> instead of <code>--unsafe-fixes</code> with a target version of 3.10.</p>
+<p>I'm not sure of the specific interactions with Pydantic being referenced here, but I think it would be slightly more clear if the docs said &quot;<strong>used</strong> alongside&quot; rather than just &quot;alongside.&quot; So I take it to mean that some interaction with libraries like Pydantic before Python 3.10 could require the old annotation to be present, making the fix unsafe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-03-30 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @ntBre on 2025-03-30 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pjonsson">@pjonsson</a> on 2025-03-30 17:22</div>
+            <div class="timeline-body"><p>If the fix is meant to leave the unused imports I guess it's not a bug, but documentation issue as you've tagged.</p>
+<p>For the documentation issue, I suggest to flip the sentence around:</p>
+<blockquote>
+<p>This rule's fix is marked as unsafe on Python versions prior to 3.10 since it may introduce runtime errors in code that uses libraries that rely on runtime type annotations, like Pydantic.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`UP007` fix leaves unused imports" to "docs: fix safety of `UP007` should be clarified" by @pjonsson on 2025-04-09 08:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

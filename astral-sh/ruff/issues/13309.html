@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern in `lint.isort.sections` overrides detected `first-party`  - astral-sh/ruff #13309</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pattern in `lint.isort.sections` overrides detected `first-party` </h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13309">#13309</a>
+        opened by <a href="https://github.com/sscherfke">@sscherfke</a>
+        on 2024-09-10 14:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sscherfke">@sscherfke</a> on 2024-09-10 14:14</div>
+            <div class="timeline-body"><p>Ruff version: 0.6.3
+Rule: <code>I001</code> <code>unsorted-imports</code></p>
+<hr />
+<p>All our internal packages have a common prefix (e.g., <code>spam_</code>).</p>
+<p>We want to declare these internal packages as &quot;second party&quot; and create a corresponding import section between third-party and first party sections.</p>
+<p>The minimal configuration for this is</p>
+<pre><code class="language-toml">[lint]
+select = [&quot;I&quot;]
+
+[lint.isort]
+lines-after-imports = 2
+section-order = [&quot;future&quot;, &quot;standard-library&quot;, &quot;third-party&quot;, &quot;second-party&quot;, &quot;first-party&quot;, &quot;local-folder&quot;]
+
+[lint.isort.sections]
+second-party = [&quot;spam_*&quot;]
+</code></pre>
+<p>Or as cmd line args:  <code>ruff check --fix --isolated --select I --config 'lint.isort.section-order = [&quot;future&quot;, &quot;standard-library&quot;, &quot;third-party&quot;, &quot;second-party&quot;, &quot;first-party&quot;, &quot;local-folder&quot;]' --config 'lint.isort.sections.second-party = [&quot;spam_*&quot;]'</code></p>
+<p>Expected result:</p>
+<pre><code class="language-python">import os
+import sys
+
+import attrs
+import rich
+
+import spam_lib_a
+import spam_lib_b
+
+import spam_current_project
+</code></pre>
+<p>Current result:</p>
+<pre><code class="language-python">import os
+import sys
+
+import attrs
+import rich
+
+import spam_current_project
+import spam_lib_a
+import spam_lib_b
+</code></pre>
+<p>It looks like the pattern for the <code>second-party</code> section overides the packages collected from the local folder.
+The issue seems related to https://github.com/astral-sh/ruff/issues/11542</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-09-11 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @MichaReiser on 2024-09-11 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-11 19:32</div>
+            <div class="timeline-body"><p>@charliermarsh, do you know how to configure the desired behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 03:27</div>
+            <div class="timeline-body"><p>This behavior looks correct to me? Explicitly-defined sections do take precedence over the default sections. <code>spam_current_project</code> matches <code>spam_*</code>, so it will always be classified as <code>second-party</code>.</p>
+<p>I think you could perhaps do something like this:</p>
+<pre><code class="language-toml">[lint]
+select = [&quot;I&quot;]
+
+[lint.isort]
+lines-after-imports = 2
+section-order = [&quot;future&quot;, &quot;standard-library&quot;, &quot;third-party&quot;, &quot;second-party&quot;, &quot;current-project&quot;, &quot;local-folder&quot;]
+
+[lint.isort.sections]
+current-project = [&quot;spam_current_project&quot;]
+second-party = [&quot;spam_*&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sscherfke">@sscherfke</a> on 2024-09-18 07:34</div>
+            <div class="timeline-body"><p>We try to use a single, central ruff config for all projects so adding <code>current-project = [...]</code> is not really an option for us.</p>
+<p>I could also live with the current behavior if it is the expected behavior.  It is not the most important thing ever to split second and third party imports into different blocks. :wink:</p>
+<p>However, the docs only state that the <em>sections</em> override the built-in sections.  It was not clear to me that packages matched by the sections definition would override the &quot;current project&quot;.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

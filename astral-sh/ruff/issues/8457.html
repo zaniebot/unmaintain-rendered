@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[D214, D405, D417] False positive with arg keyword (e.g., `raises`) - astral-sh/ruff #8457</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[D214, D405, D417] False positive with arg keyword (e.g., `raises`)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8457">#8457</a>
+        opened by <a href="https://github.com/JP-Ellis">@JP-Ellis</a>
+        on 2023-11-03 02:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2023-11-03 02:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>If using Google style and putting the argument's description on a new line, then any argument which matches one of standard header names (such as <code>returns</code>, <code>raises</code>) causes false positives.</p>
+<h2>Example</h2>
+<details>
+<summary><code>ruff.toml</code></summary>
+
+<pre><code class="language-toml">[pydocstyle]
+convention = &quot;google&quot;
+</code></pre>
+</details> 
+
+<pre><code class="language-python">def is_zero(x: int, *, raises: bool = True) -&gt; bool:
+    &quot;&quot;&quot;
+    Test if a number is zero.
+
+    Args:
+        x:
+            The number to test.
+
+        raises:
+            If True, raise an exception if x is non-zero
+
+    Raises:
+        ValueError:
+            If the number is non-zero and raises is True.
+
+    Returns:
+        True if x is zero, otherwise False.
+    &quot;&quot;&quot;
+    if x == 0:
+        return True
+    if raises:
+        msg = f&quot;{x} is not zero&quot;
+        raise ValueError(msg)
+    return False
+</code></pre>
+<pre><code class="language-console">❯ ruff --config ruff.toml --select ALL test.py
+test.py:1:1: D100 Missing docstring in public module
+test.py:1:5: D417 Missing argument description in the docstring for `is_zero`: `raises`
+test.py:2:5: D212 [*] Multi-line docstring summary should start at the first line
+test.py:2:5: D405 [*] Section name should be properly capitalized (&quot;raises&quot;)
+test.py:2:5: D214 [*] Section is over-indented (&quot;raises&quot;)
+</code></pre>
+<p>I would like to note that the use of newline is following Google's convention as described in <a href="https://google.github.io/styleguide/pyguide.html#383-functions-and-methods">§3.8.3</a> of their styleguide.</p>
+<p>The combined errors of &quot;section is over-indented&quot; and &quot;missing argument description&quot; (which has the same name) should hopefully be a reliable way to detect this false positive.</p>
+<p>I have tested the above with the keywords below and can reproduce it for all of them:</p>
+<ul>
+<li><code>args</code></li>
+<li><code>raises</code></li>
+<li><code>returns</code></li>
+<li><code>yields</code></li>
+</ul>
+<h2>Workarounds</h2>
+<p>There are a couple of work arounds at present, though ultimately it would be nice of <code>ruff</code> could recognise that in the above example, <code>raises</code> is not a header.</p>
+<h3>Avoid new lines</h3>
+<p>This issue only appears because of the newline and indentation. If placing the description on the same line as the argument name, then there is no issue:</p>
+<pre><code class="language-python">def is_zero(x: int, *, raises: bool = True) -&gt; bool:
+    &quot;&quot;&quot;
+    Test if a number is zero.
+
+    Args:
+        x: The number to test.
+
+        raises: If True, raise an exception if x is non-zero
+
+    Raises:
+        ValueError: If the number is non-zero and raises is True.
+
+    Returns:
+        True if x is zero, otherwise False.
+    &quot;&quot;&quot;
+    if x == 0:
+        return True
+    if raises:
+        msg = f&quot;{x} is not zero&quot;
+        raise ValueError(msg)
+    return False
+</code></pre>
+<h3>Rename the variable</h3>
+<p>The issue is specifically tied to specific keywords, so instead of <code>raises</code>, one could use <code>is_raising</code> or <code>will_raise</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-03 03:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2023-11-03 03:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-03 03:03</div>
+            <div class="timeline-body"><p>Thanks for the clear issue. Probably hard to get right... though I agree it's a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9426.html">astral-sh/ruff#9426</a> on 2024-01-08 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-08 14:59</div>
+            <div class="timeline-body"><p>Fixed in https://github.com/astral-sh/ruff/pull/9427!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-08 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-08 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16007.html">astral-sh/ruff#16007</a> on 2025-02-07 00:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

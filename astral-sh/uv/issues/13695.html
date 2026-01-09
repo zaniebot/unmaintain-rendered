@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv tool install --reinstall` does not preserve packages injected with `--with` - astral-sh/uv #13695</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv tool install --reinstall` does not preserve packages injected with `--with`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13695">#13695</a>
+        opened by <a href="https://github.com/GideonBear">@GideonBear</a>
+        on 2025-05-28 07:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/GideonBear">@GideonBear</a> on 2025-05-28 07:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm working on a feature for Topgrade (https://github.com/topgrade-rs/topgrade/pull/1122) that would upgrade uv's managed python (in absence of a uv-native feature). After that upgrade, it will automatically <code>--reinstall</code> all tools (by <code>tool list</code>), to un-break them. However, this will lose any injected packages installed with <code>--with</code>:</p>
+<pre><code class="language-console">$ uv tool install pre-commit --with pre-commit-uv
+Resolved 11 packages in 67ms
+Installed 11 packages in 10ms
+ + cfgv==3.4.0
+ + distlib==0.3.9
+ + filelock==3.18.0
+ + identify==2.6.12
+ + nodeenv==1.9.1
+ + platformdirs==4.3.8
+ + pre-commit==4.2.0
+ + pre-commit-uv==4.1.4
+ + pyyaml==6.0.2
+ + uv==0.7.8
+ + virtualenv==20.31.2
+Installed 1 executable: pre-commit
+$ ls ~/.local/share/uv/tools/pre-commit/lib/python3.13/site-packages/ | rg pre_commit_uv
+• &lt;stdin&gt; 
+15:pre_commit_uv
+16:pre_commit_uv-4.1.4.dist-info
+17:pre_commit_uv_patch.pth
+$ uv tool install --reinstall pre-commit
+Resolved 9 packages in 84ms
+Prepared 9 packages in 1ms
+Uninstalled 11 packages in 8ms
+Installed 9 packages in 7ms
+ ~ cfgv==3.4.0
+ ~ distlib==0.3.9
+ ~ filelock==3.18.0
+ ~ identify==2.6.12
+ ~ nodeenv==1.9.1
+ ~ platformdirs==4.3.8
+ ~ pre-commit==4.2.0
+ - pre-commit-uv==4.1.4
+ ~ pyyaml==6.0.2
+ - uv==0.7.8
+ ~ virtualenv==20.31.2
+Installed 1 executable: pre-commit
+$ ls ~/.local/share/uv/tools/pre-commit/lib/python3.13/site-packages/ | rg pre_commit_uv
+$ 
+</code></pre>
+<p>There is currently <strong>no way</strong> to retrieve the injected packages, without listing packages in the environment and injecting them all manually. (Something like <code>uv tool install pre-commit --with cfgv --with distlib --with identify --with nodeenv --with platformdirs --with pre-commit-uv --with pyyaml --with uv --with virtualenv</code> works as a workaround)</p>
+<h3>Example</h3>
+<p>Is it acceptable to store the injected packages in <code>uv-receipt.toml</code>, so they can be kept on re-install?
+Then we can either:</p>
+<ol>
+<li>Do this by default, and print a clear warning when this happens stating that the injected package is not removed</li>
+<li>Do this only when a separate flag is passed (e.g. <code>--include-injected</code> or <code>--inexact</code>)</li>
+</ol>
+<p>How does this sound? I can probably implement this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @GideonBear on 2025-05-28 07:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amogus07">@amogus07</a> on 2025-07-08 21:42</div>
+            <div class="timeline-body"><p>I'd like to have it work like to pipx (inject, uninject)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-08 22:18</div>
+            <div class="timeline-body"><p>We have a native fix for Python upgrades now (#13954).</p>
+<p>I don't think we'll change the reinstall behavior. A <code>uv tool list --output-format json</code> option would be best for cases where people are trying to build automations around tools.</p>
+<p>We intentionally do not have <code>pipx inject</code> behaviors, as we want tool environments to be declarative and not imperatively mutated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-08 22:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13633.html">astral-sh/uv#13633</a> on 2025-07-09 05:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GideonBear">@GideonBear</a> on 2025-07-09 10:59</div>
+            <div class="timeline-body"><p>Indeed, #13962's <code>with_requirements</code> contains this information.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

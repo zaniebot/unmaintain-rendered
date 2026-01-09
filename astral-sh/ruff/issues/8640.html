@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`FURB113`: False positive - astral-sh/ruff #8640</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`FURB113`: False positive</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8640">#8640</a>
+        opened by <a href="https://github.com/ofek">@ofek</a>
+        on 2023-11-12 23:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ofek">@ofek</a> on 2023-11-12 23:30</div>
+            <div class="timeline-body"><pre><code>Use `output.extend(...)` instead of repeatedly calling `output.append()`
+</code></pre>
+<pre><code class="language-python">ordered = [identifier for identifiers in ordering_data.values() for identifier in reversed(identifiers)]
+output = [
+    'from __future__ import annotations',
+    '',
+    '# fmt: off',
+    'ORDERED_DISTRIBUTIONS: tuple[str, ...] = (',
+]
+output.extend(f'    {identifier!r},' for identifier in ordered)
+output.append(')')  # error here
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`FURB113`: False negative" to "`FURB113`: False positive" by @ofek on 2023-11-12 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-13 00:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-13 04:27</div>
+            <div class="timeline-body"><p>I'm unable to reproduce this with the provided code snippet. Can you please provide the Ruff version you're running against?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-13 04:33</div>
+            <div class="timeline-body"><p><code>0.1.4</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-13 04:41</div>
+            <div class="timeline-body"><p>Thanks, I'm unable to reproduce this with the following command:</p>
+<pre><code class="language-console">$ pipx run &quot;ruff==0.1.4&quot; check --select=FURB113 --no-cache --isolated src/FURB113.py --preview
+</code></pre>
+<p>Neither when using <code>--select=ALL</code>. Where are you running Ruff from? Command-line, editor, or as a pre-commit hook? Which command did you use to run Ruff if from the command-line?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-13 04:41</div>
+            <div class="timeline-body"><p>Seems like there's some missing context -- I don't see it in the playground: https://play.ruff.rs/94de3bbb-5f0f-47b0-9cfa-47587fac4d4b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-13 05:28</div>
+            <div class="timeline-body"><pre><code>git clone https://github.com/pypa/hatch
+cd hatch
+</code></pre>
+<p>remove the ignore comment</p>
+<p>https://github.com/pypa/hatch/blob/1e7f8ff29a5ca264c7a8531de70171f7184b1501/scripts/update_distributions.py#L66</p>
+<p>then run</p>
+<pre><code>ruff check --isolated --preview --select FURB113 scripts/update_distributions.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-13 05:32</div>
+            <div class="timeline-body"><p>Thanks for the context!</p>
+<p>I think it's correct as there's an <code>append</code> call right after that. So,</p>
+<pre><code class="language-python">    output = [
+        'from __future__ import annotations',
+        '',
+        '# fmt: off',
+        'ORDERED_DISTRIBUTIONS: tuple[str, ...] = (',
+    ]
+    output.extend(f'    {identifier!r},' for identifier in ordered)
+    output.append(')')  # noqa: FURB113
+	# `FURB113` is highlighting to merge the above and below `append` calls
+    output.append('DISTRIBUTIONS: dict[str, dict[tuple[str, ...], str]] = {')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-13 05:35</div>
+            <div class="timeline-body"><p>I'm sorry 🤦‍♂️ my brain is fried from updating the entire code base this weekend</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ofek on 2023-11-13 05:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-13 05:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm sorry 🤦‍♂️ my brain is fried from updating the entire code base this weekend</p>
+</blockquote>
+<p>Haha, no worries. Happy to help :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

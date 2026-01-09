@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLAlchemy issues with TCH003 - astral-sh/ruff #6510</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SQLAlchemy issues with TCH003</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6510">#6510</a>
+        opened by <a href="https://github.com/davidroeca">@davidroeca</a>
+        on 2023-08-11 18:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/davidroeca">@davidroeca</a> on 2023-08-11 18:33</div>
+            <div class="timeline-body"><h2>For a full reproduction of this bug, please head <a href="https://github.com/davidroeca/ruff-sqlalchemy-repro">here</a></h2>
+<p>The following SQLAlchemy model written as</p>
+<pre><code class="language-python">&quot;&quot;&quot;The failing example.&quot;&quot;&quot;
+from __future__ import annotations
+
+from datetime import date
+
+from sqlalchemy.orm import Mapped, mapped_column
+
+from .base import Base
+
+class Birthday(Base):
+    &quot;&quot;&quot;Silly table to reproduce issue.&quot;&quot;&quot;
+
+    __tablename__ = &quot;birthday&quot;
+    id: Mapped[int] = mapped_column(primary_key=True)  # noqa: A003
+    day: Mapped[date]
+</code></pre>
+<p>and with the following ruff config:</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 79
+select = [&quot;ALL&quot;]
+ignore = []
+</code></pre>
+<p>and with the following ruff version:</p>
+<pre><code class="language-shell">$ ruff --version
+ruff 0.0.284
+</code></pre>
+<p>will get reformatted with <code>ruff --fix model.py</code> in the following way:</p>
+<pre><code class="language-python">&quot;&quot;&quot;The failing example.&quot;&quot;&quot;
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from sqlalchemy.orm import Mapped, mapped_column
+
+from .base import Base
+
+if TYPE_CHECKING:
+    from datetime import date
+
+
+class Birthday(Base):
+    &quot;&quot;&quot;Silly table to reproduce issue.&quot;&quot;&quot;
+
+    __tablename__ = &quot;birthday&quot;
+    id: Mapped[int] = mapped_column(primary_key=True)  # noqa: A003
+    day: Mapped[date]
+</code></pre>
+<p>Which produces an error in SQLAlchemy:</p>
+<blockquote>
+<p>sqlalchemy.exc.ArgumentError: Could not resolve all types within mapped annotation: &quot;Mapped[date]&quot;. Ensure all types are written correctly and are imported within the module in use.</p>
+</blockquote>
+<h2>My thoughts here</h2>
+<p>This rule will need to be disabled for SQLAlchemy projects that otherwise risk running into this bug.</p>
+<p>One consideration is that SQLAlchemy models imported as part of a Mapped[Model] relationship will need to go under the TYPE_CHECKING flag to avoid circular imports, while std lib types are not supported in this fashion. The likely cause of this is that Mapped[&quot;Model&quot;] is supported by SQLAlchemy, while Mapped[&quot;date&quot;] is not.</p>
+<p>I'm not sure if there's a simple fix aside from disabling, but thought it could be worth discussing at the very least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-11 20:29</div>
+            <div class="timeline-body"><p>Thanks for raising!</p>
+<blockquote>
+<p>Mapped[&quot;Model&quot;] is supported by SQLAlchemy, while Mapped[&quot;date&quot;] is not.</p>
+</blockquote>
+<p>Why is that? Should they just support <code>Mapped[&quot;date&quot;]</code> too?</p>
+<p>I wonder if this issue applies to Pydantic models and data classes? Should these types be exempt from the rule? (If so, we'll only be able to relatively naive false positive prevention due to our lack of strong type inference.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-08-11 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 20:31</div>
+            <div class="timeline-body"><p>We do support marking classes as runtime-evaluated: https://beta.ruff.rs/docs/settings/#flake8-type-checking-runtime-evaluated-base-classes. And these rules respect those settings. It's common to mark Pydantic and others as such, but you're absolutely correct that even if you add <code>pydantic.BaseModel</code> there, we can only catch direct subclasses of <code>pydantic.BaseModel</code>, and not further descendants.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-11 20:42</div>
+            <div class="timeline-body"><p>Should we consider linking to that setting from this rule's documentation with a mention of SQLAlchemy?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 20:49</div>
+            <div class="timeline-body"><p>Is there a common base class in SQLAlchemy that most models extend?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-08-11 21:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a common base class in SQLAlchemy that most models extend?</p>
+</blockquote>
+<p>In SQLAlchemy 2.0 that'd be <a href="https://docs.sqlalchemy.org/en/20/orm/mapping_api.html#sqlalchemy.orm.DeclarativeBase"><code>sqlalchemy.orm.DeclarativeBase</code></a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidroeca">@davidroeca</a> on 2023-08-11 21:22</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Is there a common base class in SQLAlchemy that most models extend?</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>In SQLAlchemy 2.0 that'd be <a href="https://docs.sqlalchemy.org/en/20/orm/mapping_api.html#sqlalchemy.orm.DeclarativeBase">sqlalchemy.orm.DeclarativeBase</a></p>
+</blockquote>
+<p>Following the <a href="https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html#table-configuration-with-declarative">SQLAlchemy docs</a>, users will derive their own shared <code>Base</code> class. Maybe worth documenting how users can mark their <code>Base</code>?</p>
+<blockquote>
+<p>Why is that? Should they just support Mapped[&quot;date&quot;] too?</p>
+</blockquote>
+<p>It would be great for SQLAlchemy to support, though I think the reason SQLAlchemy supports runtime string types is due to the support of string declarations in constructs such as <code>relationship(&quot;Model&quot;)</code> as opposed to <code>relationship(Model)</code>. It won't have the same metadata about every possible python type, but that could be worth posing to SQLAlchemy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-14 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6570.html">astral-sh/ruff#6570</a> on 2023-08-14 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-14 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidroeca">@davidroeca</a> on 2023-08-14 20:27</div>
+            <div class="timeline-body"><p>Tried this out, and two things worth mentioning here:</p>
+<ol>
+<li>~Relative imports break <code>flake8-type-checking.runtime-evaluated-base-classes</code>. If I have <code>app/models/base.py</code> and write my import like <code>from .base import Base</code>, then it doesn't get ignored. Might be a separate issue, but related to this work-around.~ EDIT: this was an issue with an editor plugin of mine</li>
+<li>As mentioned above, two related models in separate modules actually will need string-evaluated types rather than runtime-evaluated types. A good example would be <a href="https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#one-to-many">the one to many docs</a> -- check the bidirectional implementation in the second block. Imagine <code>parent.py</code> references <code>child.py</code> and vice versa. Those imports need to be in a TYPE_CHECKING block, while normal python types need to stay outside of it.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 20:29</div>
+            <div class="timeline-body"><p>Relative imports should be working (did you use <code>app.models.base.Base</code>?), unless module resolution overall is not quite right on your project. Do you use import-sorting? Does it get first-party detection right?</p>
+<blockquote>
+<p>Those imports need to be in a TYPE_CHECKING block, while normal python types need to stay outside of it.</p>
+</blockquote>
+<p>Why is it that they need to be imported in a <code>TYPE_CHECKING</code> block?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 20:44</div>
+            <div class="timeline-body"><p>It may end up being an impossible constraint to meet without coupling our rule deeply to the SQLAlchemy internals, since we'd want to require that <code>A</code> in <code>Mapped[A]</code> is always available at runtime <em>unless</em> <code>A</code> is a SQLAlchemy model in which case it should only be required at typing time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidroeca">@davidroeca</a> on 2023-08-15 00:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Why is it that they need to be imported in a TYPE_CHECKING block?</p>
+</blockquote>
+<p>Circular imports. Type checkers can get around them, but the python runtime cannot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20782.html">astral-sh/ruff#20782</a> on 2025-10-09 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/awoimbee">@awoimbee</a> on 2025-10-30 17:05</div>
+            <div class="timeline-body"><p>~~There is still an issue with <code>@declared_attr</code>:~~
+It's just completely broken, ~~ignoring the files~~ disabling the rules is the best solution for now</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

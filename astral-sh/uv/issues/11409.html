@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows distribution cache access denied in CI - astral-sh/uv #11409</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Windows distribution cache access denied in CI</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11409">#11409</a>
+        opened by <a href="https://github.com/MattTheCuber">@MattTheCuber</a>
+        on 2025-02-10 21:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MattTheCuber">@MattTheCuber</a> on 2025-02-10 21:58</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello, I just set up a GitLab Docker runner using the image <code>python:3.11-windowservercore</code> on a Windows VM to add Windows-based tests to our GitLab CI and I am struggling with uv's cache not working.</p>
+<p>My job looks like this:</p>
+<pre><code class="language-yaml">test-docker-windows:
+  variables:
+    UV_CACHE_DIR: .uv-cache
+    UV_LINK_MODE: copy
+  cache:
+    key: default
+    paths:
+      - .uv-cache
+  script:
+    - pwd
+    - pip install uv -q
+    - uv venv
+    - .venv\Scripts\activate
+    - uv pip install ruff -v
+    - ruff --version
+  after_script:
+    - uv cache prune --ci
+</code></pre>
+<p>I have tried with and without the <code>UV_LINK_MODE</code> environment variable.</p>
+<p>And the error is:</p>
+<pre><code>DEBUG Released lock at `C:\builds\mvine\test-ci\.uv-cache\wheels-v3\pypi\ruff\ruff-0.9.6-py3-none-win_amd64.lock`
+  × Failed to download `ruff==0.9.6`
+  ├─▶ Failed to read from the distribution cache
+  ╰─▶ Access is denied. (os error 5)
+</code></pre>
+<p>Please let me know what steps I can take to debug.</p>
+<details>
+<summary>Full job logs</summary>
+
+<pre><code>Running with gitlab-runner 17.8.3 (690ce25c)
+  on DESKTOP-HQJ37A1 t1_LdxGzE, system ID: s_b386fc43c061
+Resolving secrets
+Preparing the &quot;docker&quot; executor
+00:01
+Using Docker executor with image python:3.11-windowsservercore ...
+Pulling docker image python:3.11-windowsservercore ...
+Using docker image sha[2](https://ADDRESS/mvine/test-ci/-/jobs/59266#L2)56:671c7ce1735a47a283e08357f7d05cc388c462157a13e51524acfde58b17[3](https://ADDRESS/mvine/test-ci/-/jobs/59266#L3)88a for python:3.11-windowsservercore with digest python@sha256:3b0b7[4](https://ADDRESS/mvine/test-ci/-/jobs/59266#L4)cdc1a222347decd06ee3f2fa8e53c9f19bc272cdf340f17add471e1911 ...
+Preparing environment
+00:37
+Running on RUNNER-T1LDXGZE via 
+DESKTOP-HQJ37A1...
+Getting source from Git repository
+00:28
+Fetching changes with git depth set to 20...
+Initialized empty Git repository in C:/builds/mvine/test-ci/.git/
+Created fresh repository.
+Checking out 81eab4db as detached HEAD (ref is main)...
+git-lfs/3.[5](https://ADDRESS/mvine/test-ci/-/jobs/59266#L5).1 (GitHub; windows amd64; go 1.21.7; git e237bb3a)
+Skipping Git submodules setup
+Restoring cache
+00:22
+Version:      17.8.3
+Git revision: [6](https://ADDRESS/mvine/test-ci/-/jobs/59266#L6)90ce25c
+Git branch:   17-8-stable
+GO version:   go1.23.2 X:cacheprog
+Built:        unknown
+OS/Arch:      windows/amd64
+Checking cache for default-1-protected...
+No URL provided, cache will not be downloaded from shared cache server. Instead a local version of cache will be extracted. 
+WARNING: Cache file does not exist                 
+Failed to extract cache
+Executing &quot;step_script&quot; stage of the job script
+01:10
+Using docker image sha256:6[7](https://ADDRESS/mvine/test-ci/-/jobs/59266#L7)1c7ce1735a47a283e08357f7d05cc388c462157a13e51524acfde58b17388a for python:3.11-windowsservercore with digest python@sha256:3b0b74cdc1a222347decd06ee3f2fa8e53c9f19bc272cdf340f17add471e1911 ...
+$ pwd
+[notice] A new release of pip is available: 24.0 -&gt; 25.0.1
+[notice] To update, run: python.exe -m pip install --upgrade pip
+Path                   
+----                   
+C:\builds\mvine\test-ci
+$ pip install uv -q
+$ uv venv
+Using CPython 3.11.9 interpreter at: C:\Python\python.exe
+Creating virtual environment at: .venv
+Activate with: .venv\Scripts\activate
+$ .venv\Scripts\activate
+$ uv pip install ruff -v
+DEBUG uv 0.5.29 (ca73c4754 2025-02-05)
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.11.9-windows-x[8](https://ADDRESS/mvine/test-ci/-/jobs/59266#L8)6_64-none` at `C:\builds\mvine\test-ci\.venv\Scripts\python.exe` (active virtual environment)
+DEBUG Using Python 3.11.[9](https://ADDRESS/mvine/test-ci/-/jobs/59266#L9) environment at: .venv
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: ruff
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.11.9
+DEBUG Solving with target Python version: &gt;=3.11.9
+DEBUG Adding direct dependency: ruff*
+DEBUG Acquired lock for `C:\builds\mvine\test-ci\.uv-cache\simple-v15\pypi\ruff.lock`
+DEBUG No cache entry for: https://pypi.org/simple/ruff/
+DEBUG Released lock at `C:\builds\mvine\test-ci\.uv-cache\simple-v15\pypi\ruff.lock`
+DEBUG Searching for a compatible version of ruff (*)
+DEBUG Selecting: ruff==0.9.6 [compatible] (ruff-0.9.6-py3-none-win_amd64.whl)
+DEBUG Acquired lock for `C:\builds\mvine\test-ci\.uv-cache\wheels-v3\pypi\ruff\ruff-0.9.6-py3-none-win_amd64.lock`
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/ee/30/c3cee[10](https://ADDRESS/mvine/test-ci/-/jobs/59266#L10)f915ed75a5c29c1e573[11](https://ADDRESS/mvine/test-ci/-/jobs/59266#L11)282d1a15855551a64795c1b2bbe5cf37/ruff-0.9.6-py3-none-win_amd64.whl.metadata
+DEBUG Released lock at `C:\builds\mvine\test-ci\.uv-cache\wheels-v3\pypi\ruff\ruff-0.9.6-py3-none-win_amd64.lock`
+DEBUG Tried 1 versions: ruff 1
+DEBUG marker environment resolution took 0.296s
+Resolved 1 package in 298ms
+DEBUG Identified uncached distribution: ruff==0.9.6
+DEBUG Acquired lock for `C:\builds\mvine\test-ci\.uv-cache\wheels-v3\pypi\ruff\ruff-0.9.6-py3-none-win_amd64.lock`
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/ee/30/c3cee10f915ed75a5c29c1e5731[12](https://ADDRESS/mvine/test-ci/-/jobs/59266#L12)82d1a15855551a64795c1b2bbe5cf37/ruff-0.9.6-py3-none-win_amd64.whl
+Downloading ruff (10.5MiB)
+DEBUG Released lock at `C:\builds\mvine\test-ci\.uv-cache\wheels-v3\pypi\ruff\ruff-0.9.6-py3-none-win_amd64.lock`
+  × Failed to download `ruff==0.9.6`
+  ├─▶ Failed to read from the distribution cache
+  ╰─▶ Access is denied. (os error 5)
+DEBUG Released lock at `C:\builds\mvine\test-ci\.venv\.lock`
+Running after_script
+00:29
+Running after script...
+$ uv cache prune --ci
+Pruning cache at: .uv-cache
+Removed 9 files (30.8MiB)
+Cleaning up project directory and file based variables
+00:[20](https://ADDRESS/mvine/test-ci/-/jobs/59266#L20)
+ERROR: Job failed: exit code 1
+</code></pre>
+</details>
+
+<h3>Platform</h3>
+<p>Windows 10</p>
+<h3>Version</h3>
+<p>0.5.29</p>
+<h3>Python version</h3>
+<p>Python 3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MattTheCuber on 2025-02-10 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 22:34</div>
+            <div class="timeline-body"><p>Is there any way you can reproduce this with a GitHub Actions CI pipeline that I can run myself to debug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-02-10 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MattTheCuber">@MattTheCuber</a> on 2025-02-10 22:48</div>
+            <div class="timeline-body"><p>I can try to make a repo ~~tomorrow~~, I don't know how Windows images work on GitHub actions, but I'll find out</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MattTheCuber">@MattTheCuber</a> on 2025-02-10 23:04</div>
+            <div class="timeline-body"><p>I was able to create a similar setup which did not reproduce the bug here: https://github.com/MattTheCuber/test</p>
+<p>Going to try one on https://gitlab.com/ next.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 23:08</div>
+            <div class="timeline-body"><p>Okay thanks. There's some small chance this was fixed in v0.5.30 so maybe worth ensuring that the pipelines use v0.5.29, if they both pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MattTheCuber">@MattTheCuber</a> on 2025-02-10 23:10</div>
+            <div class="timeline-body"><p>Great point</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MattTheCuber">@MattTheCuber</a> on 2025-02-11 02:27</div>
+            <div class="timeline-body"><p>Nooo, couldnt reproduce on GitLab SaaS either: https://gitlab.com/mattvine03/test</p>
+<p>I'll try a different image on our self-hosted instance tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-02-11 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MattTheCuber">@MattTheCuber</a> on 2025-02-11 14:42</div>
+            <div class="timeline-body"><p>Any ideas what else I can do to debug this on our server? I am having trouble using a different image.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-20 03:52</div>
+            <div class="timeline-body"><p>i'm seeing this intermittently when running <code>uv sync</code> locally since updating from uv 0.5.31 to 0.6.2. will try to see if i can reproduce it reliably and provide some more info</p>
+<p><strong>edit:</strong> actually it might be #11018 instead which is a slightly different error</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support URL requirements in transitive dependencies - astral-sh/uv #1808</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support URL requirements in transitive dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1808">#1808</a>
+        opened by <a href="https://github.com/acostapazo">@acostapazo</a>
+        on 2024-02-21 13:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/acostapazo">@acostapazo</a> on 2024-02-21 13:48</div>
+            <div class="timeline-body"><p>First of all, thank you for this awesome tool, its potential is enormous. 😄</p>
+<p>Platform: Ubuntu + MacOs
+uv version: 0.1.6</p>
+<p>I guess this issue is related with https://github.com/astral-sh/uv/issues/1603, but wasn't resolved in v0.1.16.
+The error occurs when trying to install a package that in turn has a dependency that is installed via URL</p>
+<p>For example, If we have a <strong>requirement.txt</strong> like the following to install a requirement with a URL.</p>
+<p><strong>requirement.txt:</strong></p>
+<pre><code>packageA @ git+https://@github.com/alice-biometrics/uv-playground@main#egg=src&amp;subdirectory=issues/url_deps/packageA
+</code></pre>
+<p>And the packageA also have a requirement to install another package (packageB) from URL.</p>
+<p><strong>pyproject.toml (from package A)</strong></p>
+<pre><code class="language-toml">..
+dependencies = [
+    &quot;packageB @ git+https://@github.com/alice-biometrics/uv-playground@main#egg=src&amp;subdirectory=issues/url_deps/packageB&quot;
+]
+...
+</code></pre>
+<pre><code class="language-mermaid">flowchart LR
+
+    requirements(requirements.txt)
+
+    subgraph packageA[packageA]
+        pyprojectA(pyproject.toml)
+    end
+
+    subgraph packageB[packageB]
+        pyprojectB(pyproject.toml)
+    end
+
+    requirements -.URL requirement.-&gt; packageA
+    pyprojectA -.URL requirement.-&gt; packageB
+    pyprojectB --&gt; pydantic
+</code></pre>
+<p>When I try to install it with my <strong>requirements.txt</strong> with uv (v0.1.16) i'm obtaining the following error:</p>
+<pre><code class="language-console"> &gt; uv pip install -r requirements.txt
+  Updated https://github.com/alice-biometrics/uv-playground (961d0e8)                                                                                                            
+  error: Package `packageb` attempted to resolve via URL: git+https://github.com/alice-biometrics/uv- 
+  playground@main#egg=src&amp;subdirectory=issues/url_deps/packageB. URL dependencies must be expressed as direct 
+  requirements or constraints. Consider adding `packageb @ git+https://github.com/alice-biometrics/uv- 
+  playground@main#egg=src&amp;subdirectory=issues/url_deps/packageB` to your dependencies or constraints file.
+</code></pre>
+<p>Currently, it appears that <code>uv</code> is encountering difficulty resolving inherited dependencies (such as packageB) from URLs specified in the dependencies section of pyproject.toml for packageA. I've provided a reproducible example in the following repository: <a href="https://github.com/alice-biometrics/uv-playground/tree/main/issues/url_deps">uv-playground</a>.</p>
+<p>When packageB is included directly in the main requirement.txt, <code>uv</code> successfully resolves the dependency. However, I believe <code>uv</code> should automatically resolve inherited dependencies from dependent packages, irrespective of whether they are specified by URL or not, similar to the behavior of pip.</p>
+<p><strong>pip example:</strong></p>
+<pre><code> pip install -r requirements.txt   
+Collecting packageA@ git+https://****@github.com/alice-biometrics/uv-playground@main#egg=src&amp;subdirectory=issues/url_deps/packageA (from -r requirements.txt (line 1))
+  Cloning https://****@github.com/alice-biometrics/uv-playground (to revision main) to /private/var/folders/q6/x7kmvkj1007_pzt6qlcp0yg80000gn/T/pip-install-884jgrjp/packagea_8bc58740c10d4bc8aeaac2793fed3350
+  Running command git clone --filter=blob:none --quiet 'https://****@github.com/alice-biometrics/uv-playground' /private/var/folders/q6/x7kmvkj1007_pzt6qlcp0yg80000gn/T/pip-install-884jgrjp/packagea_8bc58740c10d4bc8aeaac2793fed3350
+  Resolved https://****@github.com/alice-biometrics/uv-playground to commit 961d0e851f95831440e39af1fbfb65232fc8bad2
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting packageB@ git+https://****@github.com/alice-biometrics/uv-playground@main#egg=src&amp;subdirectory=issues/url_deps/packageB (from packageA@ git+https://@github.com/alice-biometrics/uv-playground@main#egg=src&amp;subdirectory=issues/url_deps/packageA-&gt;-r requirements.txt (line 1))
+  Cloning https://****@github.com/alice-biometrics/uv-playground (to revision main) to /private/var/folders/q6/x7kmvkj1007_pzt6qlcp0yg80000gn/T/pip-install-884jgrjp/packageb_1edf5d1949014c61b524fb3b3adab146
+  Running command git clone --filter=blob:none --quiet 'https://****@github.com/alice-biometrics/uv-playground' /private/var/folders/q6/x7kmvkj1007_pzt6qlcp0yg80000gn/T/pip-install-884jgrjp/packageb_1edf5d1949014c61b524fb3b3adab146
+  Resolved https://****@github.com/alice-biometrics/uv-playground to commit 961d0e851f95831440e39af1fbfb65232fc8bad2
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Requirement already satisfied: pydantic in /Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages (from packageB@ git+https://@github.com/alice-biometrics/uv-playground@main#egg=src&amp;subdirectory=issues/url_deps/packageB-&gt;packageA@ git+https://@github.com/alice-biometrics/uv-playground@main#egg=src&amp;subdirectory=issues/url_deps/packageA-&gt;-r requirements.txt (line 1)) (2.6.1)
+Requirement already satisfied: annotated-types&gt;=0.4.0 in /Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages (from pydantic-&gt;packageB@ git+https://@github.com/alice-biometrics/uv-playground@main#egg=src&amp;subdirectory=issues/url_deps/packageB-&gt;packageA@ git+https://@github.com/alice-biometrics/uv-playground@main#egg=src&amp;subdirectory=issues/url_deps/packageA-&gt;-r requirements.txt (line 1)) (0.6.0)
+Requirement already satisfied: pydantic-core==2.16.2 in /Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages (from pydantic-&gt;packageB@ git+https://@github.com/alice-biometrics/uv-playground@main#egg=src&amp;subdirectory=issues/url_deps/packageB-&gt;packageA@ git+https://@github.com/alice-biometrics/uv-playground@main#egg=src&amp;subdirectory=issues/url_deps/packageA-&gt;-r requirements.txt (line 1)) (2.16.2)
+Requirement already satisfied: typing-extensions&gt;=4.6.1 in /Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages (from pydantic-&gt;packageB@ git+https://@github.com/alice-biometrics/uv-playground@main#egg=src&amp;subdirectory=issues/url_deps/packageB-&gt;packageA@ git+https://@github.com/alice-biometrics/uv-playground@main#egg=src&amp;subdirectory=issues/url_deps/packageA-&gt;-r requirements.txt (line 1)) (4.9.0)
+Building wheels for collected packages: packageA, packageB
+  Building wheel for packageA (pyproject.toml) ... done
+  Created wheel for packageA: filename=packageA-0.0.1-py3-none-any.whl size=1493 sha256=f0ac5e361fb53cbfb15361ef254b464aaecb077344a05426f31421afca0bab5e
+  Stored in directory: /private/var/folders/q6/x7kmvkj1007_pzt6qlcp0yg80000gn/T/pip-ephem-wheel-cache-q3cf5kxx/wheels/08/bc/d8/e4f479525c376157200e945e40044746e83c025ad0f2d4c467
+  Building wheel for packageB (pyproject.toml) ... done
+  Created wheel for packageB: filename=packageB-0.0.1-py3-none-any.whl size=1432 sha256=8e04951b1a21171b7fa94b02093832015549d140e9459ca63178f6f919a9d0ae
+  Stored in directory: /private/var/folders/q6/x7kmvkj1007_pzt6qlcp0yg80000gn/T/pip-ephem-wheel-cache-q3cf5kxx/wheels/7c/68/71/46e6369994133bcdbc3af801707a51981374abc5de0d7dc830
+Successfully built packageA packageB
+Installing collected packages: packageB, packageA
+Successfully installed packageA-0.0.1 packageB-0.0.1
+</code></pre>
+<p>This issue impacts the ease of managing dependencies and could streamline the workflow significantly if resolved. Thank you for your attention to this matter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Cannot install the requirement of my requirements via URL. URL dependencies must be expressed as direct requirements or constraints." to "Unable to resolve and install the requirements of required package through URL. URL dependencies must be expressed as direct requirements or constraints." by @acostapazo on 2024-02-22 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Unable to resolve and install the requirements of required package through URL. URL dependencies must be expressed as direct requirements or constraints." to "Dependency Resolution Issue: Failure to Install Inherited Required Package via URL. URL dependencies must be expressed as direct requirements or constraints." by @acostapazo on 2024-02-22 08:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acostapazo">@acostapazo</a> on 2024-02-22 14:29</div>
+            <div class="timeline-body"><p>Same error on <code> v0.1.7</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acostapazo">@acostapazo</a> on 2024-02-22 14:49</div>
+            <div class="timeline-body"><p>I'm not sure, but this behaivor seems to be something by design as you explain at https://github.com/astral-sh/uv/issues/1853.</p>
+<p>As @SnoopJ commented, this could be a stopper to our immediate adoption. A flag option would be very nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcaro21">@dcaro21</a> on 2024-02-23 11:58</div>
+            <div class="timeline-body"><p>Note that this problem also affects <code>uv pip compile</code>.</p>
+<p>One of our transitive dependencies is defined as <code>git+https</code>, which is not ideal but that's life, we don't really want to add it to our requirements because it's an unnecessary burden when updating the root package.
+This makes <code>uv</code> impossible to use in our project.</p>
+<p>Please, consider maintaining this behavior opt-in but having a flag to opt-out of it, otherwise this will be a complete stopper for some use cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JacobCallahan">@JacobCallahan</a> on 2024-03-01 14:07</div>
+            <div class="timeline-body"><p>This is also going to be a blocker for a lot of people/teams. If there was a way to disable this check, and perhaps others that pip just deals with, that would be a huge plus for bringing this into more teams.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Dependency Resolution Issue: Failure to Install Inherited Required Package via URL. URL dependencies must be expressed as direct requirements or constraints." to "Support URL requirements in transitive dependencies" by @charliermarsh on 2024-03-04 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1932.html">astral-sh/uv#1932</a> on 2024-03-04 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2239.html">astral-sh/uv#2239</a> on 2024-03-06 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-03-08 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timothyjlaurent">@timothyjlaurent</a> on 2024-03-14 17:52</div>
+            <div class="timeline-body"><p>I'm seeing this with transitive editable dependencies</p>
+<pre><code>error: Package `file-utils` attempted to resolve via URL: file:///some/path/file_utils. URL dependencies must be expressed as direct requirements or constraints.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-14 18:00</div>
+            <div class="timeline-body"><p>Are transitive editable dependencies possible? How are your dependencies defined?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timothyjlaurent">@timothyjlaurent</a> on 2024-03-15 19:47</div>
+            <div class="timeline-body"><p>Hi @charliermarsh thanks for the response.</p>
+<p>We're currently using poetry with editable dependencies for our monorepo</p>
+<p>eg</p>
+<pre><code>[tool.poetry.dependencies]
+lib1 = {path = &quot;../../lib/lib1&quot;, develop = true }
+</code></pre>
+<p>Since any package can have dependencies on others we can have lib1 in this example having dependencies on lib2.</p>
+<p>I understand that uv doesn't support poetry dependencies (yet), but we're able to <code>pip install /path/to/a/package</code> and it will install properly (though not respect the pinned deps in the lockfile).</p>
+<p>What I'm noticing is that if I <code>uv pip install .</code> it complains not about the first line of deps, but about the second, eg lib2 in this toy example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2511.html">astral-sh/uv#2511</a> on 2024-03-18 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2635.html">astral-sh/uv#2635</a> on 2024-03-25 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2684.html">astral-sh/uv#2684</a> on 2024-03-27 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 21:15</div>
+            <div class="timeline-body"><p>The next version of uv will support transitive URL dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-01 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ncoish">@ncoish</a> on 2024-08-30 23:12</div>
+            <div class="timeline-body"><p>Is this still an issue on <code>uv 0.4.1</code>? I have a transitive dependency on <code>jaxlib</code> which is causing the following error:</p>
+<pre><code>error: Package `jaxlib` attempted to resolve via URL: https://storage.googleapis.com/jax-releases/cuda12/jaxlib-0.4.14+cuda12.cudnn89-cp311-cp311-manylinux2014_x86_64.whl. URL dependencies must be expressed as direct requirements or constraints. Consider adding `jaxlib @ https://storage.googleapis.com/jax-releases/cuda12/jaxlib-0.4.14+cuda12.cudnn89-cp311-cp311-manylinux2014_x86_64.whl` to your dependencies or constraints file.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CandiedCode">@CandiedCode</a> on 2024-09-03 23:30</div>
+            <div class="timeline-body"><p>I'm seeing this as well with the latest <code>uv</code></p>
+<blockquote>
+<p>Package <code>torch</code> attempted to resolve via URL: https://download.pytorch.org/whl/cpu/torch-2.4.0%2Bcpu-cp39-cp39-linux_x86_64.whl. URL dependencies must be expressed as direct requirements or constraints. Consider adding <code>torch @ [https://download.pytorch.org/whl/cpu/torch-2.4.0%2Bcpu-cp39-cp39-linux_x86_64.whl</code>](https://download.pytorch.org/whl/cpu/torch-2.4.0%2Bcpu-cp39-cp39-linux_x86_64.whl%60) to your dependencies or constraints file.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 23:32</div>
+            <div class="timeline-body"><p>We don't support registry requirements that themselves depend on URL requirements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mansenfranzen">@mansenfranzen</a> on 2024-09-05 12:40</div>
+            <div class="timeline-body"><p>First of all, thanks a lot for all the great work you put into uv and ruff! Really appreciating how you improve developer experience in the python ecosystem.</p>
+<p>Now to my question: is it intended to support URL requirements in transitive dependencies at some point in the future?</p>
+<p>In my example, I have a dummy python package named <code>foo</code> that has a single URL dependency. The <code>pyproject.toml</code> looks like this:</p>
+<pre><code class="language-yaml">[tool.poetry.dependencies]
+pywrangler = { tag = &quot;v0.1.1&quot;,  git = &quot;https://github.com/mansenfranzen/pywrangler.git&quot; }
+</code></pre>
+<p>When I install foo's wheel from a private index via <code>uv pip install foo</code>  I get the following error (running uv 0.4.5):</p>
+<pre><code>`Package `pywrangler` attempted to resolve via URL: git+https://github.com/mansenfranzen/pywrangler.git@v0.1.1. URL dependencies must be expressed as direct requirements or constraints. Consider adding `pywrangler @ git+https://github.com/mansenfranzen/pywrangler.git@v0.1.1` to your dependencies or constraints file.`
+</code></pre>
+<p>To be honest, I'm bit confused about what is currently supported or not. The <a href="https://docs.astral.sh/uv/pip/compatibility/#transitive-direct-url-dependencies-for-constraints-and-overrides">documentation</a> makes clear that transitive URL deps aren't supported while @charliermarsh comments from April 1st mention otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WitoldDankiewicz">@WitoldDankiewicz</a> on 2024-10-04 10:54</div>
+            <div class="timeline-body"><p>My team is facing same issue. Is there any update on that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/slochower">@slochower</a> on 2024-10-10 04:31</div>
+            <div class="timeline-body"><blockquote>
+<p>To be honest, I'm bit confused about what is currently supported or not. The <a href="https://docs.astral.sh/uv/pip/compatibility/#transitive-direct-url-dependencies-for-constraints-and-overrides">documentation</a> makes clear that transitive URL deps aren't supported while @charliermarsh comments from April 1st mention otherwise.</p>
+</blockquote>
+<p>I am also confused by the documentation for transitive dependencies. The docs say:</p>
+<blockquote>
+<p>If uv rejects a transitive URL dependency in either case, the best course of action is to provide the URL dependency as a direct dependency in the requirements.in file, rather than as a constraint, override, or transitive dependency.</p>
+</blockquote>
+<p>I interpreted this to mean that it is possible to install a package that has a dependency with a URL dependency (e.g. trying to install <code>A</code> from a repository that depends (non-URL) on <code>B</code> that has a URL dependency) by manually including the URL dependency in the <code>requirements.in</code> file alongside package <code>A</code>. But this does not work. So it's not clear to me if there is <em>any</em> way to install package <code>A</code> in this scenario.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 09:45</div>
+            <div class="timeline-body"><p>URL dependencies of URL dependencies are supported! But the following are not:</p>
+<ol>
+<li>URL dependencies of <em>registry</em> dependencies (i.e., a package on PyPI that itself depends on a URL dependency -- PyPI does not allow this anyway but your own custom registry might permit it).</li>
+<li>URL dependencies of URL-based <em>constraints</em> (<code>--constraint</code>) or <em>overrides</em> (<code>--override</code>).</li>
+</ol>
+<p>The second is very rare but it's mentioned in the docs because it <em>is</em> possible for us to miss transitive URL dependencies if you provide the originating URL via a constraint or override. The documentation is intentionally nuanced for this reason but I can make it clearer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8080.html">astral-sh/uv#8080</a> on 2024-10-10 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 09:54</div>
+            <div class="timeline-body"><p>Created an issue to track that at: https://github.com/astral-sh/uv/issues/8080</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mansenfranzen">@mansenfranzen</a> on 2024-10-10 10:09</div>
+            <div class="timeline-body"><p>@charliermarsh Thanks a lot for clarifying! I'm struggling to understand the reasoning behind forbidding transitive URL dependencies for <em>registry</em> dependencies. Unfortunately, I couldn't find any documentation in related issues or docs regarding this conceptual design. Do you happen to have some further information on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 10:20</div>
+            <div class="timeline-body"><p>The most succinct explanation I can give is that we need to know the set of URLs upfront in order to fit them into the design of the resolver algorithm. So we recursively traverse any direct URL dependencies, resolving their own direct URL dependencies, etc. We can't do the same for registry dependencies, since we can't know what versions will be selected upfront and from which registry (unlike direct URLs, which tell us exactly where to find them).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 10:21</div>
+            <div class="timeline-body"><p>I think we're relatively unlikely to support it. Are you depending on that behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mansenfranzen">@mansenfranzen</a> on 2024-10-10 10:51</div>
+            <div class="timeline-body"><p>Thanks for your explanation. The rationale around the resolver algorithm helps me to get an intuition.</p>
+<p>I don't strictly depend on this feature. We have a &quot;good-enough-workaround&quot; to convert the URL dependency into a proper <em>registry</em> dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/slochower">@slochower</a> on 2024-10-10 19:02</div>
+            <div class="timeline-body"><blockquote>
+<p>URL dependencies of URL dependencies are supported! But the following are not:
+URL dependencies of registry dependencies (i.e., a package on PyPI that itself depends on a URL dependency -- PyPI does not allow this anyway but your own custom registry might permit it).</p>
+</blockquote>
+<p>Thanks @charliermarsh, this is more clear than the (current) documentation and a helpful clarification (and does describe the situation I'm facing)!</p>
+<blockquote>
+<p>We have a &quot;good-enough-workaround&quot; to convert the URL dependency into a proper registry dependency.</p>
+</blockquote>
+<p>@mansenfranzen does your workaround cover the case of URL dependencies in a registry package? I'm not sure there is any way to handle this with <code>uv</code>, aside from creating a local fork of the registry package and manually changing the dependencies?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11179.html">astral-sh/uv#11179</a> on 2025-02-04 09:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

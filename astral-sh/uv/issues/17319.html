@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Early validation vs resolution-time failure in dependency solvers - astral-sh/uv #17319</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Early validation vs resolution-time failure in dependency solvers</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/17319">#17319</a>
+        opened by <a href="https://github.com/quencs">@quencs</a>
+        on 2026-01-04 23:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/quencs">@quencs</a> on 2026-01-04 23:51</div>
+            <div class="timeline-body"><p>Framed in terms of uv / pip–style lock solvers, I think the tension here is really about how much responsibility we expect the solver to carry versus how much signal we give it up front.</p>
+<p>Lower-bound solving is one of the few resolution strategies that genuinely changes outcomes, and in curated cases it can be very effective. But in practice, solvers like pip or uv can only operate on the metadata they’re given, and lower bounds in the wild are often conservative estimates rather than precise compatibility guarantees. Without editable or iteratively refined metadata, the solver is forced to treat those bounds as ground truth.</p>
+<p>That’s where relying on future resolution failures becomes risky. When an incompatibility is only detected at solve time — potentially against a newer Python or environment target — the solver has no room to recover. Users get stuck on old lockfiles or pinned versions, and the cost shows up as ecosystem friction rather than actionable feedback for the author.</p>
+<p>From a solver-design perspective, earlier and explicit validation isn’t about preventing resolution failures; it’s about ensuring that the solver fails for the right reasons, and at a time when authors can still adjust constraints intentionally. Resolution remains a useful signal, but treating it as the primary discovery mechanism tends to push risk downstream to users instead of helping maintainers make informed compatibility decisions up front.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quencs">@quencs</a> on 2026-01-04 23:57</div>
+            <div class="timeline-body"><h1>Early validation vs resolution-time failure in uv’s dependency solver</h1>
+<h2>Background</h2>
+<p>This issue is intended as a design discussion about <em>when</em> dependency incompatibilities should surface in uv’s workflow, and <em>who</em> ultimately bears the cost when they do.</p>
+<p>The focus is not on a specific bug, but on the trade-offs between:</p>
+<ul>
+<li>discovering incompatibilities early (e.g. during development or CI), and</li>
+<li>discovering them later at resolution or lock time, potentially against newer Python targets.</li>
+</ul>
+<h2>Motivation</h2>
+<p>In real-world Python ecosystems, dependency metadata is often conservative or incomplete by necessity. Lower bounds, in particular, tend to represent best-effort estimates rather than precise compatibility guarantees, except in tightly controlled environments.</p>
+<p>Solvers like uv (and pip) can only operate on the metadata they are given. When incompatibilities are deferred until resolution time—especially when regenerating lockfiles or targeting newer Python versions—the solver has no flexibility beyond failing. At that stage, the cost is no longer localized to the library author: users may become stuck on older locks or pinned versions, and maintainers are forced into retroactive compatibility or support decisions.</p>
+<p>Earlier and more explicit validation can surface narrowing compatibility constraints while they are still cheap to act on, and while authors still have enough context to make intentional trade-offs.</p>
+<h2>Lower-bound solving</h2>
+<p>Lower-bound solving is one of the few resolution strategies that genuinely changes outcomes, and in curated or well-maintained ecosystems it can be very effective. It can and does surface real issues.</p>
+<p>However, its usefulness depends almost entirely on the accuracy of declared lower bounds. Without editable or continuously refined metadata, solvers are forced to treat those bounds as ground truth—even when they are only approximations. In broader ecosystems, this significantly limits lower-bound solving as a standalone safeguard.</p>
+<p>As a result, lower-bound solving is a valuable signal, but not necessarily sufficient on its own for managing long-term compatibility.</p>
+<h2>Framing the trade-off</h2>
+<p>From a solver-design perspective, the question is not whether resolution-time failures are useful—they clearly are—but whether relying on them as the <em>primary</em> discovery mechanism produces good outcomes.</p>
+<p>When incompatibilities are discovered late:</p>
+<ul>
+<li>feedback loops are long,</li>
+<li>the impact is externalized to users,</li>
+<li>and lockfile or version-line fragmentation becomes more likely.</li>
+</ul>
+<p>Earlier validation does not eliminate resolution failures, but it can help ensure they occur for the <em>right</em> reasons, and at a time when authors can still respond intentionally.</p>
+<h2>Open questions</h2>
+<p>Some questions that may be worth discussion:</p>
+<ul>
+<li>Should uv provide or encourage mechanisms that surface narrowing compatibility earlier, even if resolution would technically succeed today?</li>
+<li>How should uv balance solver strictness against the reality of imperfect metadata?</li>
+<li>Are there cases where deferring failure to resolution time is clearly preferable, and how might those be distinguished?</li>
+<li>How should lockfile regeneration against newer Python targets factor into this design?</li>
+</ul>
+<h2>Closing</h2>
+<p>The goal here is not to prescribe a single correct strategy, but to clarify the trade-offs and failure modes that arise in real ecosystems. Any insight into uv’s intended philosophy around these questions would be valuable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-05 13:56</div>
+            <div class="timeline-body"><p>Please do not use LLMs to write issues, if you have a specific problem please describe it in your own words.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2026-01-05 13:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should `S606` (`start-process-with-no-shell`) flag `os.exec*` functions? - astral-sh/ruff #13614</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should `S606` (`start-process-with-no-shell`) flag `os.exec*` functions?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13614">#13614</a>
+        opened by <a href="https://github.com/larkost">@larkost</a>
+        on 2024-10-03 17:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/larkost">@larkost</a> on 2024-10-03 17:29</div>
+            <div class="timeline-body"><p>The <a href="https://docs.astral.sh/ruff/rules/start-process-with-no-shell/">S606 linter</a> is incorrectly including including <code>os.execl</code> and family alongside the <code>os.spawn</code> family (and others like <code>os.popen*</code> and <code>os.system</code>). The <a href="https://docs.python.org/3/library/subprocess.html#replacing-the-os-spawn-family">original recommendation</a> that this linter is actually trying to fix notes that the behavior of opening a new process is better handled by the members of the <code>subprocess</code> module, and that the older methods are now really obsolete.</p>
+<p>This is not true of the <code>os.exec*</code> family, as those do not open a new process, but rather replace the current process with the referenced command. So once this commend is executed the Python program stops, giving way to the new program as the same PID. There is no way of doing this with <code>subprocess</code> module, as those methods always start a new process.</p>
+<p>All of the <code>os.exec*</code> functions should be removed from this linter.</p>
+<p>Additionally, I would suggest changing the name of the linter. The change suggested has nothing at all to do with whether a shell is involved at all. In fact it is mildly harder to use a shell with the <code>os.spawn*</code>, as the <code>subprocess</code> members usually have a <code>shell=True</code> method. I would suggest something like &quot;prefer-subprocess&quot; or &quot;spawn-is-obsolete&quot;, as those communicate accurately what the problem is.</p>
+<p>List of keywords searched: &quot;S606&quot;, &quot;os.exec&quot; (not just open)
+Ruff version: v0.6.6, installed in Visual Studio Code through astral.sh plugin on MacOS
+Ruff settings required:</p>
+<pre><code>[tool.ruff.lint]
+select = [&quot;S606&quot;]
+</code></pre>
+<p>Code snippet:</p>
+<pre><code>import os
+
+os.execlp(&quot;ls&quot;, &quot;ls&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-07 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-07 07:45</div>
+            <div class="timeline-body"><p>This sounds reasonable to me. @AlexWaygood wdyt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-07 10:35</div>
+            <div class="timeline-body"><p>I think the issue here is mostly one of documentation. <code>S606</code> is a security-related rule, but the documentation for the rule makes it sound like the motivation for the rule is stylistic, and doesn't describe any of the security motivations for preferring to avoid these functions. (If the motivation for the rule were purely stylistic, then I agree that this could be a false positive, as there's functionality that <code>os.exec*</code> provides that the <code>subprocess</code> module cannot provide.)</p>
+<p>This rule was originally provided as <code>B606</code> by the security-focussed linter bandit; Ruff's <code>S606</code> rule is a reimplementation of bandit's rule. Bandit's documentation <a href="https://bandit.readthedocs.io/en/latest/plugins/b606_start_process_with_no_shell.html">states</a>:</p>
+<blockquote>
+<p>Python possesses many mechanisms to invoke an external executable. However, doing so may present a security issue if appropriate care is not taken to sanitize any user provided or variable input.</p>
+<p>This plugin test is part of a family of tests built to check for process spawning and warn appropriately. Specifically, this test looks for the spawning of a subprocess in a way that doesn’t use a shell. Although this is generally safe, it maybe useful for penetration testing workflows to track where external system calls are used. As such a LOW severity message is generated.</p>
+</blockquote>
+<p>This makes it much clearer than our documentation that the primary motivation for this rule is security-related rather than simply style.</p>
+<p>Bandit also allows you to configure exactly which <code>os.exec*</code> and <code>os.spawn*</code> functions are flagged by this rule, however, if you've decided that you want to treat one of these rules as &quot;always safe&quot; from a security perspective. We could possibly consider adding a similar configuration option.</p>
+<blockquote>
+<p>Additionally, I would suggest changing the name of the linter. The change suggested has nothing at all to do with whether a shell is involved at all. In fact it is mildly harder to use a shell with the <code>os.spawn*</code>, as the <code>subprocess</code> members usually have a <code>shell=True</code> method. I would suggest something like &quot;prefer-subprocess&quot; or &quot;spawn-is-obsolete&quot;, as those communicate accurately what the problem is.</p>
+</blockquote>
+<p>This may be true, but we also have the <code>S602</code> rule (<code>subprocess-popen-with-shell-equals-true</code>, adapted from <a href="https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html">bandit's <code>B602</code> rule</a>) to flag possibly insecure uses of the <code>subprocess</code> module that would lead to a new shell being spawned.</p>
+<p>In summary, I would not change the rule here. Instead, I would:</p>
+<ul>
+<li>Rewrite the docs (I'll take this on)</li>
+<li>Consider making it configurable</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-07 10:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Additionally, I would suggest changing the name of the linter. The change suggested has nothing at all to do with whether a shell is involved at all. In fact it is mildly harder to use a shell with the <code>os.spawn*</code>, as the <code>subprocess</code> members usually have a <code>shell=True</code> method. I would suggest something like &quot;prefer-subprocess&quot; or &quot;spawn-is-obsolete&quot;, as those communicate accurately what the problem is.</p>
+</blockquote>
+<p>I think specifically the reason why this rule has <code>shell</code> in the title is because there is another rule which flags <code>os</code> functions that spawn new processes and <em>do</em> use a shell to spawn those new processes (<a href="https://docs.astral.sh/ruff/rules/start-process-with-a-shell/"><code>S605</code>: <code>start-process-with-a-shell</code></a>). <code>with-no-shell</code> in the title of this rule distinguishes it from the title of the other rule.</p>
+<p>Both processes that are spawned using a shell and those that don't use a shell are security risks (which is why both are reported), but the first category are a much bigger security risk. This is why it's split into two rules: one rule for the <code>os</code> functions that spawn subprocesses using shells, and one rule for the <code>os</code> functions that spawn subprocesses without shells. If you decided that the security risk of the second category is tolerable but the security risk of the first category is not, you could plausibly enable the first rule while disabling the second.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Linter S606 incorrectly including os.exec*" to "Should `S606` (`start-process-with-no-shell`) include `os.exec*` functions?" by @AlexWaygood on 2024-10-07 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Should `S606` (`start-process-with-no-shell`) include `os.exec*` functions?" to "Should `S606` (`start-process-with-no-shell`) flag `os.exec*` functions?" by @AlexWaygood on 2024-10-07 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13658.html">astral-sh/ruff#13658</a> on 2024-10-07 11:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-07 12:37</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/13658 reworked the docs</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add installation option for portable entry points - astral-sh/uv #3669</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add installation option for portable entry points</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/3669">#3669</a>
+        opened by <a href="https://github.com/ofek">@ofek</a>
+        on 2024-05-20 05:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ofek">@ofek</a> on 2024-05-20 05:08</div>
+            <div class="timeline-body"><p>I have a use case where I need to pre-build an entire installation which will be distributed to any number of machines. When installing packages that have entry points, the location becomes hardcoded to an absolute path.</p>
+<p>Instead, this should be relative to the Python executable used for installation. For non-Windows systems the python-build-standalone project does this for pip for example:</p>
+<pre><code class="language-sh">#!/bin/sh
+&quot;exec&quot; &quot;$(dirname $0)/python3.12&quot; &quot;$0&quot; &quot;$@&quot;
+# -*- coding: utf-8 -*-
+import re
+import sys
+from pip._internal.cli.main import main
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(main())
+</code></pre>
+<p>The trampoline logic should be equivalently simple for Windows.</p>
+<p>Maybe this should become the default in future?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-05-20 14:23</div>
+            <div class="timeline-body"><p>This definitely should <em>not</em> be the default. Entry point wrappers are built with absolute paths to the interpreter so that the <em>wrapper</em> can be copied or symlinked to other locations, without needing to copy the Python environment as well. This is something that's used by a lot of applications - most notably <code>pipx</code>, which symlinks <code>~/.local/bin/appname.exe</code> to <code>~/.local/pipx/venvs/appenv/Scripts/appname.exe</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-20 14:24</div>
+            <div class="timeline-body"><p>Makes sense, thanks for that context @pfmoore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-05-20 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-05-20 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/skoslowski">@skoslowski</a> on 2024-05-21 14:14</div>
+            <div class="timeline-body"><p>I have a similar use-case. It would be great to be able to skip patching wrappers post-install.</p>
+<p>(On Windows-systems I am using <code>&lt;launcher_dir&gt;</code> for <a href="https://github.com/pypa/distlib/blob/888c48b56886b03398646be1217508830427bd75/PC/launcher.c#L58C27-L58C43">distlib-based launchers</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3717.html">astral-sh/uv#3717</a> on 2024-05-21 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-05-23 21:50</div>
+            <div class="timeline-body"><p>FYI since https://github.com/astral-sh/uv/pull/3717 this is now completely possible to implement and I do so here:</p>
+<ul>
+<li>https://github.com/pypa/hatch/blob/hatch-v1.11.1/release/windows/make_scripts_portable.py</li>
+<li>https://github.com/pypa/hatch/blob/hatch-v1.11.1/release/unix/make_scripts_portable.py</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-05-23 21:57</div>
+            <div class="timeline-body"><p>I'm confused as to what's happening here. I could test, but I have limited time right now so if someone can explain, I'd be grateful. If I <code>uv pip install</code> a project that has a script entry point, does that entry point by default still use an absolute path to the Python executable binary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 22:20</div>
+            <div class="timeline-body"><p>Yeah. We didn’t change any behavior in uv itself, except we changed our Windows trampoline to accept a relative path (though we never write one to it in uv). Ofek is then post-processing the scripts in Hatch, I think, to rewrite the absolute paths as relative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-05-24 01:18</div>
+            <div class="timeline-body"><p>Yes that is exactly correct and I can remove that entire logic once such a flag exists in UV! I posted those links mostly to assist in someone doing the implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3863.html">astral-sh/uv#3863</a> on 2024-05-27 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../winpython/winpython/issues/1369.html">winpython/winpython#1369</a> on 2024-07-27 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5509.html">astral-sh/uv#5509</a> on 2024-07-27 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/firai">@firai</a> on 2025-06-26 12:35</div>
+            <div class="timeline-body"><p>I understand that #5515 added the machinery for the wheel installer to install portable entrypoints in <code>venv</code>s, to configure the option at <code>venv</code> creation and to persist the option in the <code>venv</code> environment. Is the only thing missing now a way to configure <code>uv</code> to do the same outside <code>venv</code>s (either as an environment flag or as a flag for <code>uv pip install</code>)?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

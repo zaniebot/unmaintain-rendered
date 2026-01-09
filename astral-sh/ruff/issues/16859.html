@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF009 misses function call in dataclass default - astral-sh/ruff #16859</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF009 misses function call in dataclass default</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16859">#16859</a>
+        opened by <a href="https://github.com/bmyers-ozette">@bmyers-ozette</a>
+        on 2025-03-19 21:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bmyers-ozette">@bmyers-ozette</a> on 2025-03-19 21:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following code does not seem to trigger the linter rule RUF009.</p>
+<pre><code>@dataclasses.dataclass
+class A:
+    timestamp: str = dataclasses.field(default=datetime.datetime.utcnow().isoformat())
+</code></pre>
+<p>Based on the description of the rule, I was expecting this to get flagged to use <code>default_factory</code>.</p>
+<h3>Version</h3>
+<p>ruff 0.11.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-19 21:42</div>
+            <div class="timeline-body"><p>Thanks, this looks like another mismatch between RUF009 and B008 (<a href="https://github.com/astral-sh/ruff/issues/15772">previous issue</a>). B008 is <a href="https://play.ruff.rs/be9f1759-da92-4546-9808-2193141e0af7">flagged</a> (twice) for a similar function definition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-03-19 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-03-19 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-20 06:24</div>
+            <div class="timeline-body"><p>@ntBre This is not a mismatch: if you added <code>str</code> as an annotation for the parameter, <code>B008</code> would not emit anything either. <code>RUF009</code> <em>would</em> have reported the snippet in question had it not been for #15772/#16048.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-20 07:22</div>
+            <div class="timeline-body"><p>Yeah, I think there's an argument whether the changes introduced in #15772 were correct.</p>
+<p>The rule summary states</p>
+<blockquote>
+<p>Checks for function calls in dataclass attribute defaults.</p>
+</blockquote>
+<p>That would suggest that all function calls are forbidden.</p>
+<p>The <em>Why is this bad</em> section goes into more detail</p>
+<blockquote>
+<p>Function calls are only performed once, at definition time. The returned value is then reused by all instances of the dataclass. This can lead to unexpected behavior when the function call returns a mutable object, as changes to the object will be shared across all instances</p>
+</blockquote>
+<p>It narrows the function calls to those that return mutable values, which doesn't apply to <code>datetime.utcnow().isoformat()</code>.</p>
+<p>However, there's an argument that the function must be pure and its return value should be immutable to be allowed in a default value position. The first is no longer guaranteed. The only way I see to fix the <em>pure</em> is to revert the changes introduced in #15772, but that comes at the cost of increasing the false positives again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2025-03-20 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @MichaReiser on 2025-03-20 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-20 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-03-20 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bmyers-ozette">@bmyers-ozette</a> on 2025-03-20 16:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Function calls are only performed once, at definition time. The returned value is then reused by all instances of the dataclass.</p>
+</blockquote>
+<p>From my perspective, this is the behavior that caused our issue. Specifically, we had a bug where timestamps in our logging were all set to the dataclass definition time, rather than when each instance was created.</p>
+<p>I could see an argument that our bug was a misunderstanding of intended behavior in Python, but in practice it would be helpful (for us at least) to flag <em>any</em> function call used as a default. That said I could definitely see this being a matter of preference and up for debate. Perhaps a stricter variant could live as a separate rule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CarliJoy">@CarliJoy</a> on 2025-04-15 16:19</div>
+            <div class="timeline-body"><p>I believe we should differentiate between <em>mutable</em> and <em>dynamic</em> default values. These should be handled by two (or with B009, rather four) distinct sets of rules.</p>
+<p>An <strong>mutable default</strong> can lead to hard-to-detect bugs when instances use the default and then modify it.</p>
+<p><strong>Dynamic defaults</strong>, on the other hand, <em>could</em> introduce subtle bugs but are more likely to result in a high number of false positives. For each function call, Ruff would need to determine whether it is static for the given set of arguments — which is difficult, if not impossible.</p>
+<p>I would also argue that the current rule name <a href="https://docs.astral.sh/ruff/rules/function-call-in-dataclass-default-argument/#function-call-in-dataclass-default-argument-ruf009"><code>function-call-in-dataclass-default-argument</code> for RUF009</a> is just as misleading as <a href="https://docs.astral.sh/ruff/rules/function-call-in-default-argument/#function-call-in-default-argument-b008"><code>function-call-in-default-argument</code></a> for B008.</p>
+<p>A more accurate name would be something like <code>mutable-generator-as-default-argument</code>.</p>
+<p>Likewise, the name <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-bugbear_extend-immutable-calls"><code>extend-immutable-calls</code></a> is misleading. Constructs like <code>attrs.Factory</code> are not immutable — they simply ensure that a new value is generated for each instance. The same applies to something like <code>fastapi.Query(None)</code>, which isn’t really a default value but rather a placeholder.</p>
+<p>So, combining the same setting for B008 and RUF009 seems inappropriate in this context.<br />
+A construct that is valid in a dataclass/attrs context may be invalid in a function — and vice versa.</p>
+<p>Additionally, the current configuration doesn’t allow for aliasing constructs like <code>attrs.field</code>, such as <a href="https://typed-settings.readthedocs.io/en/latest/apiref.html#typed_settings.option"><code>typed_settings.option</code></a>.<br />
+Using <code>typed_settings.option(default=[])</code> is problematic, whereas <code>typed_settings.option(factory=list)</code> would be acceptable.</p>
+<p><strong>TL;DR</strong>:<br />
+Don't modify RUF009 or B008 to account for <em>dynamic</em> defaults — instead, rename the existing rules and introduce new ones if wanted.<br />
+Also, consider improved configuration options for allowing known-safe constructs.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

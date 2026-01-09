@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashes in `RECORD` don't match the actual file hashes - astral-sh/uv #11723</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Hashes in `RECORD` don't match the actual file hashes</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11723">#11723</a>
+        opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a>
+        on 2025-02-23 14:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-23 14:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The SHA-256 hashes in <code>.venv/Lib/site-packages/&lt;pkg&gt;-&lt;ver&gt;.dist-info/RECORD</code> do not match the SHA-256 hashes of files in <code>.venv/Lib/site-packages/&lt;pkg&gt;</code>.</p>
+<p>I verified this on Windows by running <code>certutil -hashfile &lt;path/to/file/in/venv&gt; sha256</code> and checking it against the hash for that file shown in the <code>RECORD</code> file.</p>
+<p>I'm not sure why there is a discrepancy. I quickly tested out changing line endings from <code>\n</code> to <code>\r\n</code> in a module, but that did not seem to bring the hash into alignment.</p>
+<p>Some background info from <a href="https://peps.python.org/pep-0427/">PEP 427</a></p>
+<blockquote>
+<p>A wheel installer is not required to understand digital signatures but MUST verify the hashes in RECORD against the extracted file contents. When the installer checks file hashes against RECORD, a separate signature checker only needs to establish that RECORD matches the signature.</p>
+</blockquote>
+<h3>Platform</h3>
+<p>Windows 11 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.6.2</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @chrisrodrigue on 2025-02-23 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-23 14:43</div>
+            <div class="timeline-body"><p>I also used <code>hashlib</code> in the Python standard library, which yielded the same SHA-256 hash as <code>certutil</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Hashes in `RECORD` don't match hashes in `.venv/Lib/site-packages/<pkg>`" to "Hashes in `RECORD` don't match the actual file hashes" by @chrisrodrigue on 2025-02-23 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-23 15:47</div>
+            <div class="timeline-body"><p>Can you share a reproducible example? Does the same occur with pip?</p>
+<p>We found that pip doesn't check the hash values and occasionally, there are packages with invalid hashes in the RECORD (such as some versions of torch). To ensure that the correct distribution gets installed, we instead use hashes on the entire source dist or wheel file. Those get stored in requirements.txt with <code>--hash</code> or in <code>uv.lock</code> (<code>hash = &quot;sha256:</code>). Those external hashes provide a stronger security than the internal <code>RECORD</code> hashes. (The original idea of PEP 427 was that there would be signature files next to the RECORD that verify the RECORD, but those are not used, removing the use case for verifying the RECORD)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-23 16:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Does the same occur with pip?</p>
+</blockquote>
+<p>Yeah, I just confirmed that the same thing happens with pip.</p>
+<blockquote>
+<p>Can you share a reproducible example?</p>
+</blockquote>
+<p>Yeah sure thing 👍</p>
+<ol>
+<li><p>Run <code>uv add pyserial</code> in a project</p>
+</li>
+<li><p>Go to <code>.venv\Lib\site-packages\pyserial-3.5.dist-info\RECORD</code> and note the checksum of the last file</p>
+</li>
+</ol>
+<pre><code class="language-txt">...
+serial/win32.py,sha256=lk6rod9mHkqzgchmaqB3ygiTkmAWTNQ00IJ985ZjvTI,11138
+</code></pre>
+<ol start="3">
+<li>Generate the SHA256 of the file</li>
+</ol>
+<pre><code class="language-console">PS C:\Users\user\dev\albatross&gt; certutil -hashfile .venv\Lib\site-packages\serial\win32.py sha256   
+SHA256 hash of .venv\Lib\site-packages\serial\win32.py:
+964eaba1df661e4ab381c8666aa077ca08939260164cd434d0827df39663bd32
+CertUtil: -hashfile command completed successfully.
+</code></pre>
+<p>I completely agree with you about the stronger security with the checksums of the wheels. Unfortunately, the wheels no longer exist in the context of a virtual environment, so if all you have is a virtual environment, there doesn't seem to be any way to guarantee the integrity of the files in the virtual environment using the data from RECORD, which seems to have incorrect hashes.</p>
+<p>uv might be able to fix this by adding its own file to <code>*.dist-info</code> or <code>site-packages</code> with the correct file checksums (with the same file listing as RECORD, but maybe in TOML format)... but calculating the correct checksums for files in the venv might affect the performance critical path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-23 17:52</div>
+            <div class="timeline-body"><p>@konstin</p>
+<p>Figured it out. The SHA-256 in <code>RECORD</code> is base64 encoded 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-23 18:06</div>
+            <div class="timeline-body"><p>Quick sanity check</p>
+<pre><code class="language-bash">$ python -c &quot;import base64; print(base64.b64encode(bytes.fromhex('964eaba1df661e4ab381c8666aa077ca08939260164cd434d0827df39663bd32')).decode('utf-8'))&quot;
+lk6rod9mHkqzgchmaqB3ygiTkmAWTNQ00IJ985ZjvTI=
+</code></pre>
+<p>https://www.programiz.com/online-compiler/1ds1srnDChjwX</p>
+<p>Looks like the final <code>=</code> was omitted in RECORD.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-23 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../winpython/winpython/issues/1481.html">winpython/winpython#1481</a> on 2025-02-24 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PyVRP/VRPLIB/issues/131.html">PyVRP/VRPLIB#131</a> on 2025-09-01 11:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

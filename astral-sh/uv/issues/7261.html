@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`source venv/bin/activate` overrides a direct `uv` call - astral-sh/uv #7261</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`source venv/bin/activate` overrides a direct `uv` call</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7261">#7261</a>
+        opened by <a href="https://github.com/jsonar-cpapke">@jsonar-cpapke</a>
+        on 2024-09-10 17:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jsonar-cpapke">@jsonar-cpapke</a> on 2024-09-10 17:22</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I've run into an issue related to python venv environments. It seems that if I source one virtual environment, but run <code>uv</code> from a second virtual environment, the packages are actually installed in the first virtual environment instead of the one that contains <code>uv</code>. I've added a reproduction below.</p>
+<pre><code>python -m venv venv
+python -m venv uv-venv
+
+source venv/bin/activate
+./uv-venv/bin/pip install uv
+
+ls venv/lib/python3.12/site-packages
+&gt; pip                pip-24.2.dist-info
+
+ls uv-venv/lib/python3.12/site-packages
+&gt; pip                pip-24.2.dist-info uv                 uv-0.4.8.dist-info
+
+./uv-venv/bin/uv pip install requests
+
+ls venv/lib/python3.12/site-packages
+&gt; certifi                            charset_normalizer-3.3.2.dist-info pip                                requests-2.32.3.dist-info
+&gt; certifi-2024.8.30.dist-info        idna                               pip-24.2.dist-info                 urllib3
+&gt; charset_normalizer                 idna-3.8.dist-info                 requests                           urllib3-2.2.2.dist-info
+
+ls uv-venv/lib/python3.12/site-packages
+&gt; pip                pip-24.2.dist-info uv                 uv-0.4.8.dist-info
+</code></pre>
+<p>for comparison, here's the same flow but with pip</p>
+<pre><code>python -m venv venv
+python -m venv pip-venv
+
+source venv/bin/activate
+./pip-venv/bin/pip install -U pip
+
+ls venv/lib/python3.12/site-packages
+&gt; pip                pip-24.2.dist-info
+
+ls pip-venv/lib/python3.12/site-packages
+&gt; pip                pip-24.2.dist-info
+
+./pip-venv/bin/pip install requests
+
+ls venv/lib/python3.12/site-packages
+&gt; pip                pip-24.2.dist-info
+
+ls pip-venv/lib/python3.12/site-packages
+&gt; certifi                            charset_normalizer-3.3.2.dist-info pip                                requests-2.32.3.dist-info
+&gt; certifi-2024.8.30.dist-info        idna                               pip-24.2.dist-info                 urllib3
+&gt; charset_normalizer                 idna-3.8.dist-info                 requests                           urllib3-2.2.2.dist-info
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-10 17:39</div>
+            <div class="timeline-body"><p>I can see how it's confusing here, but ultimately this is by design. uv doesn't care what environment it's installed into -- it's just a static binary with no dependence on Python. Installing it into a virtual environment in the first place is mostly just a distribution mechanism to make it easier for folks to install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-10 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsonar-cpapke">@jsonar-cpapke</a> on 2024-09-10 21:31</div>
+            <div class="timeline-body"><p>Ah, I see, that makes sense. Thanks for the response!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jsonar-cpapke on 2024-09-10 21:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

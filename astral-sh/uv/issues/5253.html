@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`tree` does not properly handle multiple versions of the same package - astral-sh/uv #5253</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`tree` does not properly handle multiple versions of the same package</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/5253">#5253</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-07-20 18:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-20 18:27</div>
+            <div class="timeline-body"><p>This is possible in <code>uv tree</code> (but not <code>pip tree</code> typically), since the lockfile can contain multiple versions. Notice the strange result here:</p>
+<pre><code class="language-rust">#[test]
+fn multi_version() -&gt; Result&lt;()&gt; {
+    let context = TestContext::new(&quot;3.12&quot;);
+
+    let pyproject_toml = context.temp_dir.child(&quot;pyproject.toml&quot;);
+    pyproject_toml.write_str(
+        r#&quot;
+        [project]
+        name = &quot;project&quot;
+        version = &quot;0.1.0&quot;
+        # ...
+        requires-python = &quot;&gt;=3.12&quot;
+        dependencies = [
+            &quot;anyio==3.3.0 ; sys_platform == 'win32'&quot;,
+            &quot;anyio==2.0.0 ; sys_platform != 'win32'&quot;,
+        ]
+    &quot;#,
+    )?;
+
+    uv_snapshot!(context.filters(), context.tree(), @r###&quot;
+    success: true
+    exit_code: 0
+    ----- stdout -----
+    project v0.1.0
+    └── anyio v2.0.0
+        ├── idna v3.6
+        ├── sniffio v1.3.1
+        ├── idna v3.6
+        └── sniffio v1.3.1
+    └── anyio v3.3.0 (*)
+    (*) Package tree already displayed
+
+    ----- stderr -----
+    warning: `uv tree` is experimental and may change without warning
+    Resolved 5 packages in [TIME]
+    &quot;###
+    );
+
+    Ok(())
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-20 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-07-20 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-20 18:28</div>
+            <div class="timeline-body"><p>Can we make all the hash maps there keyed on (name, version) instead of just name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2024-07-20 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2024-07-21 23:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-07-23 02:07</div>
+            <div class="timeline-body"><p>so is the expected output for the above <code>pyproject.toml</code> the below?</p>
+<pre><code> project v0.1.0
+ ├─── anyio v3.3.0
+ │   ├── idna v3.6
+ │   └── sniffio v1.3.1
+ └── anyio v2.0.0
+     ├── idna v3.6
+     └── sniffio v1.3.1
+</code></pre>
+<p>(relatedly, is there a design doc for <code>uv</code>'s higher level entrypoints? i think i have a rough idea around the motivation for it but not quite enough to immediately see what should be the desired outcome here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 02:21</div>
+            <div class="timeline-body"><p>@ChannyClaus -- Yeah, that looks right to me. I don't know that we have a design doc on GitHub, but we're starting to build up the documentation here -- it's still a work-in-progress: https://docs.astral.sh/uv/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-23 16:28</div>
+            <div class="timeline-body"><p>How about displaying only the packages available on the current platform?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-23 16:31</div>
+            <div class="timeline-body"><p>It seems useful to inspect the lockfile tree as a whole though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 16:47</div>
+            <div class="timeline-body"><p>@eth3lbert -- That could be useful but I think it would be a separate flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-23 16:50</div>
+            <div class="timeline-body"><p>Fair enough! <code>cargo tree</code> also has a <code>--target</code> option. By default is the host platform, but can also be set to &quot;all&quot; or other specific values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-28 19:03</div>
+            <div class="timeline-body"><p>(We could accept the <code>--python-platform</code> and <code>--python-version</code> flags here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-29 00:54</div>
+            <div class="timeline-body"><p>It's actually even harder than this, because we can have a single package at a single version but multiple URLs (https://github.com/astral-sh/uv/issues/5294).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> removed by @charliermarsh on 2024-07-30 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @charliermarsh on 2024-07-30 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @charliermarsh on 2024-07-30 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @ibraheemdev by @charliermarsh on 2024-08-04 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-04 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5761.html">astral-sh/uv#5761</a> on 2024-08-04 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-04 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-04 18:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

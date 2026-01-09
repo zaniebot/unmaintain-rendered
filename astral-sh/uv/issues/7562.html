@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected python discovery rules - astral-sh/uv #7562</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected python discovery rules</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7562">#7562</a>
+        opened by <a href="https://github.com/bulletmark">@bulletmark</a>
+        on 2024-09-19 22:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bulletmark">@bulletmark</a> on 2024-09-19 22:03</div>
+            <div class="timeline-body"><p>I wondered why my venv was using a very old Python version and then did the following test:</p>
+<pre><code>$ uv --version
+uv 0.4.13
+
+# Create a general purpose venv and I get the latest (system) version as I would expect:
+$ uv venv
+Using Python 3.12.6 interpreter at: /usr/bin/python3
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+$ rm -rf .venv
+
+# Install 3.8 for some other tests I may be doing, e.g. compatibility etc.
+$ uv python install 3.8
+Searching for Python versions matching: Python 3.8
+Installed Python 3.8.20 in 3.46s
+ + cpython-3.8.20-linux-x86_64-gnu
+
+# Create another general purpose venv (for purpose unrelated to above) but surprisingly it defaults to using
+# that old version? At least I noticed it during creation this time!
+$ uv venv
+Using Python 3.8.20
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+</code></pre>
+<p>That is surprising to users, particularly when <code>uv</code> is choosing such an old version 3.8 for default use compared to 3.12.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-19 22:25</div>
+            <div class="timeline-body"><p>This is surprising to me as well :) will investigate</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv python</span> added by @zanieb on 2024-09-19 22:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-09-19 22:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krstp">@krstp</a> on 2024-09-20 21:26</div>
+            <div class="timeline-body"><p>For reference I will link to this one: https://github.com/astral-sh/uv/issues/7604
+There seems some oddity in choosing and running given python verisons 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bulletmark">@bulletmark</a> on 2024-09-25 01:42</div>
+            <div class="timeline-body"><p>@zanieb this problem is 100% reproducible for maintainers and others isn't it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-25 02:01</div>
+            <div class="timeline-body"><p>Yes. Actually looking closer at this though and I'm a bit confused at what surprised me initially. We prefer managed interpreters by default so once you install one it <em>should</em> be used over system interpreters. I think this is working as-intended.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-25 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bulletmark">@bulletmark</a> on 2024-09-25 02:07</div>
+            <div class="timeline-body"><p>So this bug should be closed then because it is working as designed?</p>
+<p>But surely you can see the problem here? A user installs a very old version just for compatibility testing for a specific venv etc, then from then on it becomes his default python for all new venvs!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-25 02:12</div>
+            <div class="timeline-body"><p>Then I'd recommend changing your <code>python-preference</code> from <code>managed</code> to <code>system</code> — which can be persisted to a configuration file. I think it's reasonable for us to use Python versions installed and managed by uv over arbitrary Python versions. I agree it's a bit of a rough edge if you mix system and managed versions, but I don't see a great alternative. I'd just <code>uv python install 3.9 3.10 3.11 3.12</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-25 02:13</div>
+            <div class="timeline-body"><p>(I still think we can improve the documentation here, at least)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bulletmark">@bulletmark</a> on 2024-09-25 03:07</div>
+            <div class="timeline-body"><p>I'd like a <code>python-preference</code> option <code>managed-if-higher-version</code> (or <code>system-if-higher-version</code>, etc). This may also be a better (i.e. least surprising) default?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/latk">@latk</a> on 2024-09-28 23:10</div>
+            <div class="timeline-body"><p>I've run into a similar <code>uv venv</code> problem, just with Pyenv-managed Pythons.</p>
+<p>The <code>uv venv</code> command works reasonably in a fresh shell, but funky things happen if <code>uv</code> is invoked <em>within</em> this venv: <code>uv venv</code> reproducibly flip-flops between two Python version, never re-creating the venv with the Python version that's already in use by the previous venv.</p>
+<p>My initial worry was that this may stem from undefined directory iteration order, since uv just takes the first acceptable result, and doesn't seem to sort directory entries anywhere. However, that can't be it, as uv consistently flip-flops between two choices, whereas directory entry order should remain stable unless entries are added/deleted.</p>
+<p>Then I had hoped that recent changes to the relevant searching code would have resolved this:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/5148</li>
+</ul>
+<p>But alas, the observed behaviour is unchanged.</p>
+<p>I suspect that uv is poisoning its caches with unusable results earlier in the <code>$PATH</code>, thus rejecting a valid solution. <strong>Perhaps the cache dereferences symlinks, but the decision whether or not to include a particular executable is based on the non-dereferenced path?</strong></p>
+<h3>Details on my setup</h3>
+<p>I load the project's venv into my <code>$PATH</code>, and also have a couple of Python installations via <code>pyenv</code>:</p>
+<pre><code class="language-console">$ echo $PATH
+$PROJECT/.venv/bin:$HOME/.pyenv/shims:...
+</code></pre>
+<p>When starting the experiment, the venv's <code>python</code> is symlinked to a <code>python3.9</code> managed by pyenv:</p>
+<pre><code class="language-console">$ ls -l .venv/bin  | grep python
+lrwxrwxrwx ... python -&gt; $HOME/.pyenv/versions/3.9.19/bin/python3.9
+lrwxrwxrwx ... python3 -&gt; python
+lrwxrwxrwx ... python3.9 -&gt; python
+</code></pre>
+<p>My pyenv installation contains 3.8, 3.9, 3.11, and 3.12.2, but per <code>pyenv global</code> the <code>system</code> installation should have priority (which is a Python 3.12.3).</p>
+<pre><code class="language-console">$ ls ~/.pyenv/shims/python* | grep -v -
+$HOME/.pyenv/shims/python
+$HOME/.pyenv/shims/python3
+$HOME/.pyenv/shims/python3.11
+$HOME/.pyenv/shims/python3.12
+$HOME/.pyenv/shims/python3.8
+$HOME/.pyenv/shims/python3.9
+</code></pre>
+<p>I tested with two <code>uv</code> versions, <code>0.4.17</code> and the current main branch at <a href="https://github.com/astral-sh/uv/commit/9312a08009e1f5f77687ab9d1b0a09f09e2e029d">https://github.com/astral-sh/uv/commit/9312a08009e1f5f77687ab9d1b0a09f09e2e029d</a>. They produced equivalent behaviour.</p>
+<pre><code class="language-console">$ uv@2024-09-28 --version
+uv 0.4.17 (9312a0800 2024-09-28)
+
+$ uv --version
+uv 0.4.17
+</code></pre>
+<p>When running <code>uv venv</code> in our <code>python3.9</code>-venv, it will correctly refuse using the <code>.venv/bin/python*</code> executables. But when it comes to the <code>~/.pyenv/shims/python*</code> candidates, uv immediately picks <code>python3.12</code>, thus changing the venv's Python version.</p>
+<details><summary>logs for 3.9 → 3.12 flip</summary>
+
+<pre><code class="language-console">$ uv@2024-09-28 --verbose venv
+DEBUG uv 0.4.17
+DEBUG Found project root: `$PROJECT`
+DEBUG No workspace root found, using project root
+DEBUG Searching for Python &gt;=3.8 in managed installations or system path
+DEBUG Searching for managed installations at `$HOME/.local/share/uv/python`
+DEBUG Found `cpython-3.9.19-linux-x86_64-gnu` at `$PROJECT/.venv/bin/python` (search path)
+DEBUG Ignoring Python interpreter at `$PROJECT/.venv/bin/python`: system interpreter required
+DEBUG Found `cpython-3.9.19-linux-x86_64-gnu` at `$PROJECT/.venv/bin/python3` (search path)
+DEBUG Ignoring Python interpreter at `$PROJECT/.venv/bin/python3`: system interpreter required
+DEBUG Found `cpython-3.9.19-linux-x86_64-gnu` at `$PROJECT/.venv/bin/python3.9` (search path)
+DEBUG Ignoring Python interpreter at `$PROJECT/.venv/bin/python3.9`: system interpreter required
+DEBUG Found `cpython-3.9.19-linux-x86_64-gnu` at `$HOME/.pyenv/shims/python` (search path)
+DEBUG Ignoring Python interpreter at `$PROJECT/.venv/bin/python`: system interpreter required
+DEBUG Found `cpython-3.9.19-linux-x86_64-gnu` at `$HOME/.pyenv/shims/python3` (search path)
+DEBUG Ignoring Python interpreter at `$PROJECT/.venv/bin/python3`: system interpreter required
+DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `$HOME/.pyenv/shims/python3.12` (search path)
+Using CPython 3.12.3 interpreter at: /usr/bin/python3.12
+Creating virtual environment at: .venv
+DEBUG Removing existing directory
+Activate with: source .venv/bin/activate
+</code></pre>
+</details>
+
+<p>If we run <code>uv venv</code> again, the venv's <code>python3.12</code> is rejected, whereas the pyenv's <code>3.9</code> is picked again:</p>
+<details><summary>logs for 3.12 → 3.9 flop</summary>
+
+<pre><code class="language-console">$ uv@2024-09-28 --verbose venv
+DEBUG uv 0.4.17
+DEBUG Found project root: `$PROJECT`
+DEBUG No workspace root found, using project root
+DEBUG Searching for Python &gt;=3.8 in managed installations or system path
+DEBUG Searching for managed installations at `$HOME/.local/share/uv/python`
+DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `$PROJECT/.venv/bin/python` (search path)
+DEBUG Ignoring Python interpreter at `$PROJECT/.venv/bin/python`: system interpreter required
+DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `$PROJECT/.venv/bin/python3` (search path)
+DEBUG Ignoring Python interpreter at `$PROJECT/.venv/bin/python3`: system interpreter required
+DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `$PROJECT/.venv/bin/python3.12` (search path)
+DEBUG Ignoring Python interpreter at `$PROJECT/.venv/bin/python3.12`: system interpreter required
+DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `$HOME/.pyenv/shims/python` (search path)
+DEBUG Ignoring Python interpreter at `$PROJECT/.venv/bin/python`: system interpreter required
+DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `$HOME/.pyenv/shims/python3` (search path)
+DEBUG Ignoring Python interpreter at `$PROJECT/.venv/bin/python3`: system interpreter required
+DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `$HOME/.pyenv/shims/python3.12` (search path)
+DEBUG Ignoring Python interpreter at `$PROJECT/.venv/bin/python3.12`: system interpreter required
+DEBUG Found `cpython-3.9.19-linux-x86_64-gnu` at `$HOME/.pyenv/shims/python3.9` (search path)
+Using CPython 3.9.19 interpreter at: $HOME/.pyenv/versions/3.9.19/bin/python3.9
+Creating virtual environment at: .venv
+DEBUG Removing existing directory
+Activate with: source .venv/bin/activate
+</code></pre>
+</details>
+
+<p>Of course things work perfectly if I force a particular Python version. It seems that <code>uv venv --python 3.12</code> consistently resolves to my system Python, regardless of the initial state of the <code>.venv</code> directory.</p>
+<p>If I exit the venv, then <code>uv venv</code> also consistently picks one Python version, namely the 3.12 from pyenv.</p>
+<details><summary>logs when re-creating the venv from the outside</summary>
+
+<pre><code class="language-console">$ uv@2024-09-28 --verbose venv
+DEBUG uv 0.4.17
+DEBUG Found project root: `$PROJECT`
+DEBUG No workspace root found, using project root
+DEBUG Searching for Python &gt;=3.8 in managed installations or system path
+DEBUG Searching for managed installations at `$HOME/.local/share/uv/python`
+DEBUG Found `cpython-3.12.2-linux-x86_64-gnu` at `$HOME/.pyenv/shims/python` (search path)
+Using CPython 3.12.2 interpreter at: $HOME/.pyenv/versions/3.12.2/bin/python
+Creating virtual environment at: .venv
+DEBUG Removing existing directory
+Activate with: source .venv/bin/activate
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krstp">@krstp</a> on 2024-09-29 01:18</div>
+            <div class="timeline-body"><p>You described it really well. This is mostly what I had experience in https://github.com/astral-sh/uv/issues/7604. One detail that played role in my case I had another <code>uv init</code> one level above, hence it was picking up the env from level up, needless to say, the whole <code>uv</code> did show some oddities that match to what you described above. Thanks for documenting this, which also makes me verify my sanity :)</p>
+<p>PS. Also working here on the <code>pyenv</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7604.html">astral-sh/uv#7604</a> on 2024-09-29 01:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-29 14:54</div>
+            <div class="timeline-body"><p>Thanks for all the details. I'll need to dig into this more during the week, but pyenv is generally quite problematic for our caching since their shim can return any interpreter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7779.html">astral-sh/uv#7779</a> on 2024-09-29 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5609.html">astral-sh/uv#5609</a> on 2024-11-08 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12122.html">astral-sh/uv#12122</a> on 2025-03-12 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../NanmiCoder/MediaCrawler/issues/673.html">NanmiCoder/MediaCrawler#673</a> on 2025-07-24 03:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

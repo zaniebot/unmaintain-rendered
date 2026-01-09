@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Override build dependency and backend metadata, similiar to dependency-metadata - astral-sh/uv #12447</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Override build dependency and backend metadata, similiar to dependency-metadata</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12447">#12447</a>
+        opened by <a href="https://github.com/notatallshaw">@notatallshaw</a>
+        on 2025-03-24 19:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-03-24 19:38</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Currently it's possible to override a packages <a href="https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata">dependency metadata</a>, e.g.</p>
+<pre><code class="language-toml">[[tool.uv.dependency-metadata]]
+name = &quot;chumpy&quot;
+version = &quot;0.70&quot;
+requires-dist = [&quot;numpy&gt;=1.8.1&quot;, &quot;scipy&gt;=0.13.0&quot;, &quot;six&gt;=1.11.0&quot;]
+</code></pre>
+<p>It would be nice to do that for build dependency and backend metadata, there are two scenarios I can see this being useful in:</p>
+<ol>
+<li>A new version of a build backend gets released with backwards incompatibilities, only a small number of unmaintained dependencies need fixing to pin to an older version of the build backend</li>
+<li>A user dependency on a legacy setuptools project and it would work except for the fact the project is unmaintained and does not provide a pyproject.toml</li>
+</ol>
+<p>I'm a little unsure on my second example whether in general it would be enough to specify a build backend, or if in general it would need something more. In general I may have not fully thought through the complexities, so I understand if this isn't possible. This is something I think would be helpful to the ecosystem, not something I personally need.</p>
+<h3>Example</h3>
+<pre><code class="language-toml">[[tool.uv.dependency-metadata]]
+name = &quot;foo&quot;
+version = &quot;0.8.0&quot;
+requires-dist = [&quot;numpy&gt;=1.8.1&quot;, &quot;scipy&gt;=0.13.0&quot;, &quot;six&gt;=1.11.0&quot;]
+build-requires-dist = [&quot;setuptools&lt;78&quot;]
+build-backend = [&quot;setuptools.build_meta&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @notatallshaw on 2025-03-24 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamie-chang-globality">@jamie-chang-globality</a> on 2025-03-25 10:17</div>
+            <div class="timeline-body"><p>We had the same problem with setuptools yesterday. For reference this is https://github.com/pypa/setuptools/issues/4910. It broke a lot of builds across the whole ecosystem.</p>
+<p>So definitely +1 from me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-03-25 13:44</div>
+            <div class="timeline-body"><blockquote>
+<p>For reference this is <a href="https://github.com/pypa/setuptools/issues/4910">pypa/setuptools#4910</a>. It broke a lot of builds across the whole ecosystem.</p>
+</blockquote>
+<p>FWIW, I do not see this proposal as a solution to that particular situation, this is a per package solution, whereas that affected many packages, so I'm not sure this would scale well.</p>
+<p>I think uv consistently supporting <code>--build-constraint</code> across all its commands is a better solution to that particular situation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 19:07</div>
+            <div class="timeline-body"><p>We're working on support for this, with another motivating example being the <em>extension</em> of build requirements for specific packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @zanieb on 2025-04-01 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-04-05 19:02</div>
+            <div class="timeline-body"><p>Also, <a href="https://peps.python.org/pep-0517/#recommendations-for-build-frontends-non-normative">the spec</a> actually says that build frontends should provide some tooling for users like this:</p>
+<blockquote>
+<p>build frontends SHOULD provide some mechanism for users to override the above defaults. For example, a build frontend could have a --build-with-system-site-packages option that causes the --system-site-packages option to be passed to virtualenv-or-equivalent when creating build environments, or a --build-requirements-override=my-requirements.txt option that overrides the project’s normal build-requirements.</p>
+<p>The general principle here is that we want to enforce hygiene on package authors, while still allowing end-users to open up the hood and apply duct tape when necessary.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14092.html">astral-sh/uv#14092</a> on 2025-06-17 01:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zsol">@zsol</a> on 2025-08-21 14:20</div>
+            <div class="timeline-body"><p>I believe #14735 addresses this entirely. Feel free to reopen if I missed something</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zsol on 2025-08-21 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-08-21 14:48</div>
+            <div class="timeline-body"><p>I'm happy with this being closed, but on consideration this does not completely cover this, you may want to override a pinning or an upper bound, e.g. in the future you may want to override <code>setuptools==70</code> to <code>setuptools==100</code>, I don't believe that's possible with this new feature.</p>
+<p>I don't have a specific use case for this right now though, so maybe re-raise this when someone actually needs it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

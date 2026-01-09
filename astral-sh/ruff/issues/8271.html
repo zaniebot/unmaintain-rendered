@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff format conflict warnings are shown twice - astral-sh/ruff #8271</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff format conflict warnings are shown twice</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8271">#8271</a>
+        opened by <a href="https://github.com/yakMM">@yakMM</a>
+        on 2023-10-27 07:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-27 07:12</div>
+            <div class="timeline-body"><p>Happening since ruff format stable was introduced afaik.</p>
+<p>Tested on ruff <code>0.1.3</code>:</p>
+<p><strong>Reproduction steps:</strong></p>
+<p>Create a python project with ruff, minimal config:</p>
+<pre><code class="language-python">[tool.ruff]
+select = [&quot;ISC001&quot;]
+</code></pre>
+<p>Run <code>ruff format src</code></p>
+<p>The warning is showing twice in the console:</p>
+<pre><code>warning: The following rules may cause conflicts when used with the formatter: `ISC001`. To avoid unexpected behavior, we recommend disabling these rules, either by removing them from the `select` or `extend-select` configuration, or adding then to the `ignore` configuration.
+warning: The following rules may cause conflicts when used with the formatter: `ISC001`. To avoid unexpected behavior, we recommend disabling these rules, either by removing them from the `select` or `extend-select` configuration, or adding then to the `ignore` configuration.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thernstig">@thernstig</a> on 2023-10-27 07:36</div>
+            <div class="timeline-body"><p>I have the same problem. But for another rule.</p>
+<pre><code class="language-sh">&gt; ruff format --check .
+warning: The following rules may cause conflicts when used with the formatter: 'D206'. To avoid unexpected behavior, we recommend disabling these rules, either by removing them from the `select` or `extend-select` configuration, or adding then to the `ignore` configuration.
+warning: The following rules may cause conflicts when used with the formatter: 'D206'. To avoid unexpected behavior, we recommend disabling these rules, either by removing them from the `select` or `extend-select` configuration, or adding then to the `ignore` configuration.
+</code></pre>
+<p>(I know I should disable <code>D206</code> due to, see https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules)</p>
+<p>This is my Ruff config:</p>
+<pre><code class="language-toml">[tool.ruff]
+cache-dir = &quot;/tmp/.cache/ruff&quot;
+line-length = 120
+
+# All uncommented lines should be fixed and enabled
+select = [
+  # These are a copy of the Ruff defaults
+  # &quot;F&quot; is Pyflakes, &quot;E&quot; is pycodestyle
+  &quot;E4&quot;, &quot;E7&quot;, &quot;E9&quot;, &quot;F&quot;,
+  &quot;A&quot;, # flake8-builtins
+  # &quot;B&quot;, # flake8-bugbear
+  # &quot;C4&quot;, # flake8-comprehensions
+  &quot;C90&quot;, # mccabe
+  # &quot;COM&quot;, # flake8-commas
+  &quot;D&quot;, # pydocstyle
+  # &quot;FIX&quot;, # flake8-fixme
+  # &quot;RUF100&quot;, # Ruff rule: Enforce that noqa directives are &quot;valid&quot;
+  # &quot;S&quot;, # flake8-bandit
+  &quot;TID&quot;, # flake8-tidy-imports
+  # &quot;Q&quot;, # flake8-quotes
+]
+
+# All these ignores should be fixed (except for Q000 which should stay)
+ignore = [
+  &quot;COM812&quot;, # flake8-commas &quot;Trailing comma missing&quot;
+  &quot;D10&quot;,  # pydocstyle &quot;Missing docstring in ...&quot;
+  &quot;D203&quot;, # pydocstyle &quot;one-blank-line-before-class&quot; conflicting with D211
+  &quot;D205&quot;, # pydocstyle &quot;1 blank line required between summary line and description&quot;
+  &quot;D208&quot;, # pydocstyle &quot;Docstring is over-indented&quot;
+  &quot;D209&quot;, # pydocstyle &quot;Multi-line docstring closing quotes should be on a separate line&quot;
+  &quot;D211&quot;, # pydocstyle &quot;no-blank-line-before-class&quot; conflicting with D203
+  &quot;D212&quot;, # pydocstyle &quot;multi-line-summary-second-line&quot; conflicting with D213
+  &quot;D213&quot;, # pydocstyle &quot;no-blank-line-before-class&quot; conflicting with D212
+  &quot;D400&quot;, # pydocstyle &quot;First line should end with a period&quot;
+  &quot;D401&quot;, # pydocstyle &quot;First line of docstring should be in imperative mood&quot;
+  &quot;D404&quot;, # pydocstyle &quot;First word of the docstring should not be &quot;This&quot;&quot;
+  &quot;D403&quot;, # pydocstyle &quot;First word of the first line should be capitalized&quot;
+  &quot;D407&quot;, # pydocstyle &quot;Missing dashed underline after section (&quot;Return&quot;)&quot;
+  &quot;D415&quot;, # pydocstyle &quot;First line should end with a period, question mark, or exclamation point&quot;
+  &quot;D419&quot;, # pydocstyle &quot;Docstring is empty&quot;
+  &quot;E713&quot;, # pycodestyle &quot;Test for membership should be `not in`&quot;
+  &quot;Q000&quot;, # flake8-quotes &quot;Single quotes found but double quotes preferred&quot;
+]
+
+[tool.ruff.format]
+quote-style = &quot;single&quot;
+
+[tool.ruff.flake8-tidy-imports]
+ban-relative-imports = &quot;all&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2023-10-27 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-10-27 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2023-10-27 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-27 07:46</div>
+            <div class="timeline-body"><p>Thanks. I think that happens if you have multiple configurations in your project. We should only show it once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thernstig">@thernstig</a> on 2023-10-27 08:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks. I think that happens if you have multiple configurations in your project. We should only show it once.</p>
+</blockquote>
+<p>@MichaReiser Do you mean multiple <code>.toml</code> files? I only have one, see above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-27 09:03</div>
+            <div class="timeline-body"><p>@thernstig I would expect this to happen if you have multiple <code>ruff.toml</code> or <code>pyproject.toml</code>. But maybe there's another case where we verify the same configuration twice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thernstig">@thernstig</a> on 2023-10-27 09:19</div>
+            <div class="timeline-body"><p>Got it, I can confirm I only have one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-27 09:25</div>
+            <div class="timeline-body"><blockquote>
+<p>@thernstig I would expect this to happen if you have multiple <code>ruff.toml</code> or <code>pyproject.toml</code>. But maybe there's another case where we verify the same configuration twice.</p>
+</blockquote>
+<p>I have one too. Here is a minimal repo reproducing the bug: https://github.com/yakMM/test-double-warning</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-10-27 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8292.html">astral-sh/ruff#8292</a> on 2023-10-28 01:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-30 23:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-12-12 15:51</div>
+            <div class="timeline-body"><p>This still happens for the <code>--preview</code> warning:
+<img width="649" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/647a8e91-4bc9-4cf5-a6d2-cb2071309d49"></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-12 16:19</div>
+            <div class="timeline-body"><p>👍 Yeah that's a separate code path and issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AmineDjeghri">@AmineDjeghri</a> on 2024-05-03 21:05</div>
+            <div class="timeline-body"><p>Edit : i was using an old version of ruff in the pre-commit-config.yaml (0.1.2), i upgraded it to v0.4.2 and the warnings disapeared .</p>
+<p>I have the same warning with <code>D206</code> as @thernstig</p>
+<pre><code>warning: The following rules may cause conflicts when used with the formatter: 'D206'. To avoid unexpected behavior, we recommend disabling these rules, either by removing them from the `select` or `extend-select` configuration, or adding then to the `ignore` configuration.
+warning: The following rules may cause conflicts when used with the formatter: 'D206'. To avoid unexpected behavior, we recommend disabling these rules, either by removing them from the `select` or `extend-select` configuration, or adding then to the `ignore` configuration.
+</code></pre>
+<p>my pre-commit-config.yaml :</p>
+<pre><code># See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+# ruff is for python files and is used with ruff.toml
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.3.0
+    hooks:
+      - id: check-added-large-files
+        args: ['--maxkb=3000']
+      - id: check-toml
+      - id: check-yaml
+      - id: check-json
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      #      - id: requirements-txt-fixer
+      #        exclude: ^requirements/.*$
+      - id: trailing-whitespace
+      - id: name-tests-test
+        args: [ --pytest-test-first ]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.2
+    hooks:
+      - id: ruff
+        args: ['--fix']
+      - id: ruff-format
+
+</code></pre>
+<p>my ruff.toml :</p>
+<pre><code>extend-include = [&quot;*.ipynb&quot;]
+line-length = 100
+
+# read more here https://docs.astral.sh/ruff/settings/#lintpydocstyle
+[lint]
+# Enable all `pydocstyle` rules, limiting to those that adhere to the Google convention via `convention = &quot;google&quot;`
+select = [
+    &quot;D&quot;,
+]
+# On top of the Google convention, disable for ex `D417`, which requires documentation for every function parameter.
+ignore = [&quot;D100&quot;, &quot;D103&quot;, &quot;D417&quot;]
+
+[lint.pydocstyle]
+# Use Google-style docstrings.
+convention = &quot;google&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-03 21:11</div>
+            <div class="timeline-body"><p>@AmineDjeghri are you just seeing this once for the linter and once for the formatter? Those pre-commit runs are fully separate from our perspective.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AmineDjeghri">@AmineDjeghri</a> on 2024-05-03 21:12</div>
+            <div class="timeline-body"><p>it's fixed in the latest version <code>v0.4.2</code> !
+In my pre-commit-config.yaml, i forgot to update ruff . I was still using the 0.1.2 since i've copied the file from an old project.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

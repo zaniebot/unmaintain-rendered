@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLR1730 min / max reversed detected / auto-fix - astral-sh/ruff #10889</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLR1730 min / max reversed detected / auto-fix</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10889">#10889</a>
+        opened by <a href="https://github.com/ilius">@ilius</a>
+        on 2024-04-11 17:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ilius">@ilius</a> on 2024-04-11 17:35</div>
+            <div class="timeline-body"><!--
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Sample code:</p>
+<pre><code>def fix_out_of_range(x: int, min_x: int, max_x: int) -&gt; int:
+	if x &lt; min_x:
+		x = min_x
+	if x &gt; max_x:
+		x = max_x
+	return x
+</code></pre>
+<p>Command: <code>ruff check --preview --select PLR test.py</code></p>
+<p>Result:</p>
+<pre><code>test.py:3:2: PLR1730 [*] Replace `if` statement with `x = min(x, min_x)`
+  |
+2 |   def fix_out_of_range(x: int, min_x: int, max_x: int) -&gt; int:
+3 |       if x &lt; min_x:
+  |  _____^
+4 | |         x = min_x
+  | |_________________^ PLR1730
+5 |       if x &gt; max_x:
+6 |           x = max_x
+  |
+  = help: Replace with `x = min(x, min_x)`
+
+test.py:5:2: PLR1730 [*] Replace `if` statement with `x = max(x, max_x)`
+  |
+3 |       if x &lt; min_x:
+4 |           x = min_x
+5 |       if x &gt; max_x:
+  |  _____^
+6 | |         x = max_x
+  | |_________________^ PLR1730
+7 |       return x
+  |
+  = help: Replace with `x = max(x, max_x)`
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.
+</code></pre>
+<p>The min / max are reversed.
+The first one must be a <code>max</code>, second one <code>min</code>.
+Passing <code>--fix</code> will break the code:</p>
+<pre><code>def fix_out_of_range(x: int, min_x: int, max_x: int) -&gt; int:
+	x = min(x, min_x)
+	x = max(x, max_x)
+	return x
+</code></pre>
+<p>The correct fix:</p>
+<pre><code>def fix_out_of_range(x: int, min_x: int, max_x: int) -&gt; int:
+	x = max(x, min_x)
+	x = min(x, max_x)
+	return x
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-11 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-11 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-11 17:36</div>
+            <div class="timeline-body"><p>Thanks, this is my bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-11 17:41</div>
+            <div class="timeline-body"><p>Even looking at this error report I thought <code>x = min(x, min_x)</code> was correct initially. The reversing logic is breaking my brain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10890.html">astral-sh/ruff#10890</a> on 2024-04-11 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-11 18:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

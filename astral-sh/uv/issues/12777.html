@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv venv` doesn't create python3 python3.xx entrypoint aliases on Windows - astral-sh/uv #12777</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv venv` doesn't create python3 python3.xx entrypoint aliases on Windows</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12777">#12777</a>
+        opened by <a href="https://github.com/yashgorana">@yashgorana</a>
+        on 2025-04-09 11:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yashgorana">@yashgorana</a> on 2025-04-09 11:58</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>an new <code>uv venv</code> on linux/macOS looks something like this</p>
+<pre><code>.
+├── CACHEDIR.TAG
+├── bin
+│   ├── activate
+│   ├── activate.bat
+│   ├── activate.csh
+│   ├── activate.fish
+│   ├── activate.nu
+│   ├── activate.ps1
+│   ├── activate_this.py
+│   ├── deactivate.bat
+│   ├── pydoc.bat
+│   ├── python -&gt; /opt/homebrew/opt/python@3.12/bin/python3.12
+│   ├── python3 -&gt; python
+│   └── python3.12 -&gt; python
+├── lib
+│   └── python3.12
+│       └── site-packages
+│           ├── _virtualenv.pth
+│           └── _virtualenv.py
+└── pyvenv.cfg
+</code></pre>
+<p>But on Windows we get</p>
+<pre><code>.
+├── CACHEDIR.TAG
+├── bin
+│   ├── activate
+│   ├── activate.bat
+│   ├── activate.csh
+│   ├── activate.fish
+│   ├── activate.nu
+│   ├── activate.ps1
+│   ├── activate_this.py
+│   ├── deactivate.bat
+│   ├── pydoc.bat
+│   ├── python.exe          # &lt;-- no python3 or python3.12
+│   └── pythonw.exe  
+├── lib
+│   └── site-packages
+│       ├── _virtualenv.pth
+│       └── _virtualenv.py
+└── pyvenv.cfg
+</code></pre>
+<p>Would be nice to have it so that we can keep scripts, like entrypoint.sh, portable across platforms, instead of falling back to use <code>python</code>?</p>
+<h3>Platform</h3>
+<p>Windows</p>
+<h3>Version</h3>
+<p>0.6.13</p>
+<h3>Python version</h3>
+<p>3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @yashgorana on 2025-04-09 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-09 13:17</div>
+            <div class="timeline-body"><p>I think this is standard, Windows doesn't have symlinks (they require higher permissions by default), so Python just writes a single <code>python.exe</code>.  Windows also uses <code>Scripts/</code> instead of <code>bin/</code>. You can confirm we match the official behavior with <code>uv run -m venv example</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-04-09 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-04-09 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-04-10 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SchmartMaker">@SchmartMaker</a> on 2025-10-02 08:41</div>
+            <div class="timeline-body"><p>Just sharing my experience here.</p>
+<p>What worked for me is to create a <code>python3.cmd</code> file in the <code>Scripts</code> directory that contains the text <code>@python %*</code>.</p>
+<p>This method has an advantage over using <code>Set-Alias</code> because it's compatible with external processes like Dapr CLI.</p>
+<p>In PowerShell, you can create the alias for the virtual environment in directory <code>v</code> with e.g.:</p>
+<pre><code class="language-powershell">Set-Content -Path .\v\Scripts\python3.cmd -Value '@python %*'
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

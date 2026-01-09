@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive `A003` when overriding `logging.Filter.filter` - astral-sh/ruff #6057</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive `A003` when overriding `logging.Filter.filter`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6057">#6057</a>
+        opened by <a href="https://github.com/scur-iolus">@scur-iolus</a>
+        on 2023-07-25 08:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/scur-iolus">@scur-iolus</a> on 2023-07-25 08:42</div>
+            <div class="timeline-body"><p>It's probably a quite common case to use a custom <code>logging.Filter</code>, either to add context to log records or to decide if a given <code>Record</code> is to be logged (cf. <a href="https://docs.python.org/3/library/logging.html#logging.Filter.filter">Python documentation</a>).</p>
+<p>However, <code>Ruff</code> currently considers it breaks the <code>A003</code> rule:</p>
+<pre><code>Class attribute `filter` is shadowing a Python builtinRuff [A003](https://beta.ruff.rs/docs/rules/builtin-attribute-shadowing)
+</code></pre>
+<p>This issue seems to be somewhat related to #5956 and I'm aware that it's probably low-priority.</p>
+<p>Here's a minimal reproducible example of the problem:</p>
+<pre><code>from logging import Filter, LogRecord
+
+class CustomFilter(Filter):
+    def filter(self, record: LogRecord) -&gt; bool:  # noqa: A003 is required here
+        return super().filter(self, record)
+</code></pre>
+<p>I'm using <code>ruff 0.0.280</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-07-25 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 15:29</div>
+            <div class="timeline-body"><p>I will special-case some stuff in the standard library for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6074.html">astral-sh/ruff#6074</a> on 2023-07-25 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-25 15:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

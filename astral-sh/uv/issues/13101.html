@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv can't find installed packages - astral-sh/uv #13101</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv can't find installed packages</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13101">#13101</a>
+        opened by <a href="https://github.com/eromoe">@eromoe</a>
+        on 2025-04-25 08:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eromoe">@eromoe</a> on 2025-04-25 08:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code>E:\Workspace\github_me\chroma-mcp&gt;uv tool run mcp
+Error: typer is required. Install with 'pip install mcp[cli]'
+
+E:\Workspace\github_me\chroma-mcp&gt;uv pip install mcp[cli]
+Audited 1 package in 240ms
+
+E:\Workspace\github_me\chroma-mcp&gt;uv tool run mcp
+Error: typer is required. Install with 'pip install mcp[cli]'
+</code></pre>
+<h3>Platform</h3>
+<p>Windows 10</p>
+<h3>Version</h3>
+<p>uv 0.6.16 (d8ad9d3cd 2025-04-22)</p>
+<h3>Python version</h3>
+<p>Python 3.12.9(mamba)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @eromoe on 2025-04-25 08:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-25 08:23</div>
+            <div class="timeline-body"><p><code>uv pip</code> and <code>uv tool</code> are two different interface: <code>uv pip</code> installs into the current environment, while <code>uv tool</code> installs into an isolated, managed environment. You need to use <code>uv tool install &quot;mcp[cli]&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-04-25 08:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-04-25 08:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eromoe">@eromoe</a> on 2025-04-25 08:31</div>
+            <div class="timeline-body"><p>@konstin It is make me confused , then how <code>uv tool</code> know the packages in <code>venv</code>?
+If I need <code>mcp dev  xxx.py</code> .</p>
+<h1>uv pip install</h1>
+<ol>
+<li><code>uv pip install mcp[cli]</code></li>
+<li><code>uv run dev src\chroma_mcp\server.py</code>  got  <code>ModuleNotFoundError: No module named 'mcp'</code></li>
+</ol>
+<h1>uv tool install</h1>
+<ol>
+<li><code>uv tool install mcp[cli]</code></li>
+<li><code>uv tool mcp dev src\chroma_mcp\server.py</code>  got  ModuleNotFoundError: No module named 'chromadb'</li>
+</ol>
+<p><code>chromadb</code> is installed in by uv sync .</p>
+<hr />
+<p>All these make me confused .. too difficult to use it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eromoe">@eromoe</a> on 2025-04-25 09:20</div>
+            <div class="timeline-body"><pre><code>E:\Workspace\github_me\chroma-mcp&gt;uv run src\chroma_mcp\server.py
+Traceback (most recent call last):
+  File &quot;E:\Workspace\github_me\chroma-mcp\src\chroma_mcp\server.py&quot;, line 3, in &lt;module&gt;
+    import chromadb
+ModuleNotFoundError: No module named 'chromadb'
+
+E:\Workspace\github_me\chroma-mcp&gt;uv run python -c &quot;import chromadb&quot;
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'chromadb'
+
+E:\Workspace\github_me\chroma-mcp&gt;uv pip list|grep chroma
+chroma-hnswlib                           0.7.6
+chroma-mcp                               0.2.2           E:\Workspace\github_me\chroma-mcp
+chromadb                                 1.0.3
+</code></pre>
+<p>Many many cases like these ... I have no idea .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eromoe">@eromoe</a> on 2025-04-25 09:55</div>
+            <div class="timeline-body"><p>@konstin
+I find chromadb is in the <code>.venv\Lib\site-packages</code>
+but <code> E:\Workspace\github_me\chroma-mcp\.venv\Lib\site-packages</code> doesn't not in <code>sys.path</code> .</p>
+<p><code>uv run python</code>  :</p>
+<pre><code>&gt;&gt;&gt; import sys
+&gt;&gt;&gt; print(sys.path)
+['', 'C:\\Users\\Kasim\\AppData\\Roaming\\uv\\python\\cpython-3.10.17-windows-x86_64-none\\python310.zip', 'C:\\Users\\Kasim\\AppData\\Roaming\\uv\\python\\cpython-3.10.17-windows-x86_64-none\\DLLs', 'C:\\Users\\Kasim\\AppData\\Roaming\\uv\\python\\cpython-3.10.17-windows-x86_64-none\\lib', 'C:\\Users\\Kasim\\AppData\\Roaming\\uv\\python\\cpython-3.10.17-windows-x86_64-none', 'E:\\Workspace\\github_me\\chroma-mcp\\.venv']
+&gt;&gt;&gt; import chromadb
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'chromadb'
+&gt;&gt;&gt; import sys
+&gt;&gt;&gt; import os
+&gt;&gt;&gt; site_packages = os.path.join(&quot;E:\\Workspace\\github_me\\chroma-mcp\\.venv&quot;, &quot;Lib&quot;, &quot;site-packages&quot;)
+&gt;&gt;&gt; sys.path.append(site_packages)
+&gt;&gt;&gt; import chromadb
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-25 12:36</div>
+            <div class="timeline-body"><p><code>uv tool</code> doesn't know anything about your current virtual environment. It's for tools that should be isolated and run in isolation, like <code>ruff</code>. What are you trying to do?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eromoe">@eromoe</a> on 2025-04-26 04:24</div>
+            <div class="timeline-body"><p>If you see my above comments, you would find the uv do something wrong on my machine .
+I can't access packages installed by uv .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13098.html">astral-sh/uv#13098</a> on 2025-04-26 04:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eromoe">@eromoe</a> on 2025-04-28 07:42</div>
+            <div class="timeline-body"><p>@konstin @zanieb @charliermarsh I tested on my MAC , uv behavior is normal.<br />
+I remove all mamba settings from env path, but this problem still exits, I think this is some kind of bug in uv .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-28 09:16</div>
+            <div class="timeline-body"><p>Please refer to https://docs.astral.sh/uv/concepts/tools/, https://docs.astral.sh/uv/concepts/projects/dependencies/ and https://docs.astral.sh/uv/pip/environments/ for the differences between <code>uv tool</code>, <code>uv pip</code> and <code>uv run</code>/<code>uv sync</code>. When using <code>uv pip</code> before <code>uv run</code>, make sure that <code>uv pip</code> is using the same environment as <code>uv run</code>, otherwise you're installing packages in a non-project environment, and then <code>uv run</code> doesn't find them in the project environment. You can get more diagnostic output to debug the problem with <code>-v</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eromoe">@eromoe</a> on 2025-04-28 13:49</div>
+            <div class="timeline-body"><p>@konstin Intuitively, and in fact on my mac : <code>uv pip</code> is using the same environment as <code>uv run</code> .
+Such as below steps works on my mac</p>
+<pre><code>git clone  https://github.com/chroma-core/chroma-mcp &amp;&amp; cd chroma-mcp
+uv sync
+uv run chroma-mcp
+</code></pre>
+<p>But not on my PC.  That's the main problem .  I have also post the detail :</p>
+<blockquote>
+<p><a href="https://github.com/konstin">@konstin</a> I find chromadb is in the <code>.venv\Lib\site-packages</code> but <code> E:\Workspace\github_me\chroma-mcp\.venv\Lib\site-packages</code> doesn't not in <code>sys.path</code> .</p>
+<p><code>uv run python</code> :</p>
+<pre><code>&gt;&gt;&gt; import sys
+&gt;&gt;&gt; print(sys.path)
+['', 'C:\\Users\\Kasim\\AppData\\Roaming\\uv\\python\\cpython-3.10.17-windows-x86_64-none\\python310.zip', 'C:\\Users\\Kasim\\AppData\\Roaming\\uv\\python\\cpython-3.10.17-windows-x86_64-none\\DLLs', 'C:\\Users\\Kasim\\AppData\\Roaming\\uv\\python\\cpython-3.10.17-windows-x86_64-none\\lib', 'C:\\Users\\Kasim\\AppData\\Roaming\\uv\\python\\cpython-3.10.17-windows-x86_64-none', 'E:\\Workspace\\github_me\\chroma-mcp\\.venv']
+&gt;&gt;&gt; import chromadb
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'chromadb'
+&gt;&gt;&gt; import sys
+&gt;&gt;&gt; import os
+&gt;&gt;&gt; site_packages = os.path.join(&quot;E:\\Workspace\\github_me\\chroma-mcp\\.venv&quot;, &quot;Lib&quot;, &quot;site-packages&quot;)
+&gt;&gt;&gt; sys.path.append(site_packages)
+&gt;&gt;&gt; import chromadb
+</code></pre>
+</blockquote>
+<p>I have no idea how to dig more</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

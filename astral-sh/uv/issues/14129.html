@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to pin a specific cuda version? - astral-sh/uv #14129</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to pin a specific cuda version?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14129">#14129</a>
+        opened by <a href="https://github.com/sorenwacker">@sorenwacker</a>
+        on 2025-06-18 14:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sorenwacker">@sorenwacker</a> on 2025-06-18 14:56</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I need a specific CUDA version on my deployment system, but I cannot figure out how to do this properly.
+My pyproject.toml has these relevant entries:</p>
+<pre><code>dependencies = [
+  ...
+  &quot;torch~=2.7.1&quot;,
+  &quot;torchvision~=0.22.1&quot;,
+  &quot;torchaudio~=2.7.1&quot;,
+  &quot;torchmetrics~=1.7.3&quot;,
+  ...
+]
+
+...
+
+[tool.uv.sources]
+nx-cugraph-cu12 = { index = &quot;nvidia&quot; }
+
+[[tool.uv.index]]
+name = &quot;nvidia&quot;
+url = &quot;https://pypi.nvidia.com&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;torch-gpu&quot;
+url = &quot;https://download.pytorch.org/whl/cu121&quot;
+explicit = true
+
+</code></pre>
+<p>But when I deploy this I get:</p>
+<pre><code>uv run python -c &quot;import torch; print(f'Torch: {torch.__version__}, CUDA available: {torch.cuda.is_available()}, CUDA version: {torch.version.cuda}')&quot;
+Torch: 2.7.1+cu126, CUDA available: True, CUDA version: 12.6
+</code></pre>
+<p>What am I doing wrong?</p>
+<h3>Platform</h3>
+<p>Ubuntu</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @sorenwacker on 2025-06-18 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-18 14:58</div>
+            <div class="timeline-body"><p>You should add:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+torch = { index = &quot;torch-gpu&quot; }
+torchvision = { index = &quot;torch-gpu&quot; }
+torchaudio = { index = &quot;torch-gpu&quot; }
+torchmetrics = { index = &quot;torch-gpu&quot; }
+</code></pre>
+<p>Since <code>torch-gpu</code> is marked as <code>explicit = true</code>, it will <em>only</em> be used for dependencies that are assigned to it explicitly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-06-18 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sorenwacker">@sorenwacker</a> on 2025-06-19 08:25</div>
+            <div class="timeline-body"><p>Perfect, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sorenwacker on 2025-06-19 08:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

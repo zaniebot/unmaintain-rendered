@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>allow_invalid_utf8(true) required only in debug build - clap-rs/clap #3344</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>allow_invalid_utf8(true) required only in debug build</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3344">#3344</a>
+        opened by <a href="https://github.com/njaard">@njaard</a>
+        on 2022-01-25 18:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/njaard">@njaard</a> on 2022-01-25 18:17</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.58.1</p>
+<h3>Clap Version</h3>
+<p>3.0.12</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">	use clap::Arg;
+	let matches = clap::App::new(&quot;app&quot;)
+		.arg(Arg::new(&quot;f&quot;)
+			.takes_value(true)
+		)
+		.get_matches();
+	matches.value_of_os(&quot;f&quot;);
+</code></pre>
+<p>This program fails like so:</p>
+<pre><code>thread 'main' panicked at 'Must use `Arg::allow_invalid_utf8` with `_os` lookups at `f`', src/main.rs:12:13
+</code></pre>
+<p>But only in a debug build.</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Succeeds: <code>cargo run --release -- blah</code>
+Fails: <code>cargo run -- blah</code></p>
+<h3>Actual Behaviour</h3>
+<p>Is <code>allow_invalid_utf8(true)</code> actually required? i don't know</p>
+<h3>Expected Behaviour</h3>
+<p>It should just work.</p>
+<h3>Additional Context</h3>
+<p>Why is this option even required? It's a giant footgun.</p>
+<p>If you really want to do that check, maybe change <code>takes_value</code> to <code>takes_string</code> and <code>takes_path</code>. But as it is, it serves no purpose.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @njaard on 2022-01-25 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-25 18:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Why is this option even required? It's a giant footgun.</p>
+</blockquote>
+<p>Clap was more of a footgun before this existed</p>
+<p>In v2, if you did <code>value_of</code> and the user passed an invalid utf-8 string, clap would panic.  Your options were one of</p>
+<ul>
+<li>Pass <code>AppSettings::StrictUtf8</code> which prevented invalid utf-8 when it was intended</li>
+<li>Always use <code>value_of_os</code> and do the conversion yourself</li>
+<li>Write your own validators and make sure your accesses matched your definitions with those validators</li>
+</ul>
+<p>Now, <code>StrictUtf8</code> is the default and you can opt-out with <code>allow_invalid_utf8</code> on a per-argument basis.</p>
+<p>The asserts serve a couple of purposes</p>
+<ul>
+<li>Help users know that  <code>value_of_os</code> should be paired with <code>allow_invalid_utf8</code> to be effective (if you have strict utf-8, <code>value_of_os</code> offers you nothing that <code>value_of</code> gives you, if you use allow invalid utf-8, <code>value_of</code> will panic on invalid characters<ul>
+<li>This eases the transition from clap2, eases general on-boarding, and lower maintenance effort (can make changes more confidently)</li>
+</ul>
+</li>
+<li>Prepare the way for https://github.com/clap-rs/clap/issues/2683 which will be the ultimately solution for this</li>
+</ul>
+<p>99% of clap's error reporting is done through debug asserts</p>
+<ul>
+<li>Clap assumes these are development errors, that there isn't a reason to recover from them, and that the majority of testing happens in debug mode (check out <a href="https://docs.rs/clap/latest/clap/struct.App.html#method.debug_assert">App::debug_assert</a> though it doesn't help in this case, and <a href="https://docs.rs/trycmd/">trycmd</a>)</li>
+<li>We limit it to <code>debug</code> for faster smaller binary sizes and faster runtime performance</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-validators</span> added by @epage on 2022-01-25 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @epage on 2022-01-25 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-02 20:00</div>
+            <div class="timeline-body"><p>As this is by design and there aren't any more comments, I'm closing this out.  If there are any concerns, feel free to raise them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-02-02 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> removed by @epage on 2022-02-02 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-02-02 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../FamilySearch/pewpew/pulls/99.html">FamilySearch/pewpew#99</a> on 2022-09-09 15:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

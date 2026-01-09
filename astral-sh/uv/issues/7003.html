@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv add keyring` breaks private index auth - astral-sh/uv #7003</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv add keyring` breaks private index auth</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7003">#7003</a>
+        opened by <a href="https://github.com/EdAyers">@EdAyers</a>
+        on 2024-09-04 10:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/EdAyers">@EdAyers</a> on 2024-09-04 10:27</div>
+            <div class="timeline-body"><h1>Reproduction steps</h1>
+<p><code>uv 0.4.4 (3d75df6ab 2024-09-04)</code></p>
+<p>You need a private Azure Devops repository you can point to.</p>
+<ol>
+<li>Follow the steps given <a href="https://docs.astral.sh/uv/guides/integration/alternative-indexes/#using-keyring">here</a>. But make it a non-extra index-url. That is:<ul>
+<li><code>uv tool install keyring --with artifacts-keyring</code></li>
+<li><code>export UV_KEYRING_PROVIDER=subprocess</code></li>
+<li><code>export UV_INDEX_URL=https://VssSessionToken@pkgs.dev.azure.com/{organisation}/{project}/_packaging/{feedName}/pypi/simple/</code>
+(note this is index_url not extra_index. I want all package installs to use my index.)</li>
+</ul>
+</li>
+<li>Make a venv <code>uv venv</code>; <code>source .venv/bin/activate</code></li>
+<li><code>uv add keyring</code>:  installs <code>keyring          25.3.0</code> via the private index.</li>
+<li>Now run <code>uv add pandas</code> (or any package)</li>
+</ol>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because keyring was not found in the package registry and your project depends on keyring&gt;=25.3.0, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>If I don't run <code>uv add keyring</code>, uv works as expected. If instead I run <code>uv add keyring artifacts-keyring</code>, it works as expected.</p>
+<p>It might be possible to reproduce with an --extra-index-url too.</p>
+<p>I'm guessing <code>uv</code> is using the <code>keyring</code> installed in the venv instead of the global one and then is failing because <code>artifacts-keyring</code> is not installed. Keyring is silently failing and uv fails to find the registry. I think something that would help here is uv should give a different error if the entire index is returning a 403 or 404 rather than saying that the package can't be found.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv add keyring` breaks private index authentication." to "`uv add keyring` breaks private index auth" by @EdAyers on 2024-09-04 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 13:24</div>
+            <div class="timeline-body"><p>I'm not sure what the correct behavior is here \cc @zanieb.</p>
+<blockquote>
+<p>I think something that would help here is uv should give a different error if the entire index is returning a 403 or 404 rather than saying that the package can't be found.</p>
+</blockquote>
+<p>Unfortunately AFAIK there is no way to differentiate between these scenarios.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-09-04 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 14:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm guessing uv is using the keyring installed in the venv instead of the global one and then is failing because artifacts-keyring is not installed.</p>
+</blockquote>
+<p>I'm not really sure what we can do about this. This sounds like the correct behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 14:43</div>
+            <div class="timeline-body"><p>Yeah that's how I was feeling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdAyers">@EdAyers</a> on 2024-09-05 10:18</div>
+            <div class="timeline-body"><p>I guess either:</p>
+<ul>
+<li>always use the globally installed keyring when doing index auth</li>
+<li>if running <code>keyring</code> in the venv fails, fall back to running in the global tool venv</li>
+<li>keep existing behaviour but it must be possible to add a warning or hint at what is going wrong. Eg maybe regex the index-url to see whether it's azure, or ping the root directory url and see if it gives a 403. Or maybe it's possible to determine that the index-url's authority is expecting the <code>artifacts-keyring</code> package.</li>
+</ul>
+<p>I originally got this because keyring was being installed implicitly by another dependency, so my developer-experience was uv stopped working in an illegible way after installing a seemingly unrelated dependency. It took me a while of fiddling with venvs etc to figure it out. Using the verbose logs of uv didn't help either.</p>
+<p>Anyway, I'm rooting for you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11130.html">astral-sh/uv#11130</a> on 2025-01-31 10:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot install package from &quot;flat&quot; index - astral-sh/uv #12576</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot install package from &quot;flat&quot; index</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12576">#12576</a>
+        opened by <a href="https://github.com/luh-t-to">@luh-t-to</a>
+        on 2025-03-31 06:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/luh-t-to">@luh-t-to</a> on 2025-03-31 06:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hey guys,
+thanks for including the feature to add dependencies from &quot;flat&quot; indexes.
+I did however run into an issue with installing the &quot;kaldifeat&quot; package from the following index: https://csukuangfj.github.io/kaldifeat/cpu.html</p>
+<p>Here's the command that was used: <code>uv add kaldifeat --verbose</code>.</p>
+<p>And here's the output:</p>
+<pre><code class="language-shell">uv add kaldifeat --verbose                                                                               
+DEBUG uv 0.6.11
+DEBUG Found project root: `/home/luhtto/asl/tools/flat_indexes`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/home/luhtto/asl/tools/flat_indexes`
+DEBUG Reading Python requests from version file at `/home/luhtto/asl/tools/flat_indexes/.python-version`
+DEBUG Using Python request `3.12` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+DEBUG The virtual environment's Python version satisfies `3.12`
+DEBUG Released lock at `/tmp/uv-056db868502cc209.lock`
+DEBUG Using request timeout of 30s
+Ignoring existing lockfile due to change in pre-release mode: `if-necessary-or-explicit` vs. `allow`
+DEBUG Found static `pyproject.toml` for: flat-indexes-test @ file:///home/luhtto/asl/tools/flat_indexes
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.12.3
+DEBUG Solving with target Python version: &gt;=3.12
+DEBUG Adding direct dependency: flat-indexes-test*
+DEBUG Searching for a compatible version of flat-indexes-test @ file:///home/luhtto/asl/tools/flat_indexes (*)
+DEBUG Adding direct dependency: kaldifeat*
+DEBUG Adding direct dependency: torch&gt;=2.6.0
+DEBUG Adding direct dependency: torchaudio&gt;=2.6.0
+DEBUG No cache entry for: https://csukuangfj.github.io/kaldifeat/cpu.html/kaldifeat/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cpu/torch/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cpu/torchaudio/
+DEBUG Checking netrc for credentials for https://csukuangfj.github.io/kaldifeat/cpu.html/kaldifeat/
+DEBUG Searching for a compatible version of kaldifeat (*)
+DEBUG No compatible version found for: kaldifeat
+DEBUG Recording unit propagation conflict of kaldifeat from incompatibility of (flat-indexes-test)
+DEBUG Searching for a compatible version of flat-indexes-test @ file:///home/luhtto/asl/tools/flat_indexes (&lt;0.1.0 | &gt;0.1.0)
+DEBUG No compatible version found for: flat-indexes-test
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Reverting changes to `uv.lock`
+  × No solution found when resolving dependencies:
+  ╰─▶ Because kaldifeat was not found in the package registry and your project depends on kaldifeat, we can conclude that your
+      project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and
+        syncing.
+</code></pre>
+<p>I guess the problem is, that the package name is appended to the index URL, no?
+Did I do something wrong in the configuration in <code>pyproject.toml</code>?</p>
+<p>Here's the <code>pyproject.toml</code> config:</p>
+<pre><code class="language-toml">[project]
+name = &quot;flat-indexes-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;torch&gt;=2.6.0&quot;,
+    &quot;torchaudio&gt;=2.6.0&quot;,
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot; },
+]
+torchaudio = [
+  { index = &quot;pytorch-cpu&quot; },
+]
+kaldifeat = [
+  { index = &quot;kaldifeat-cpu&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;kaldifeat-cpu&quot;
+url = &quot;https://csukuangfj.github.io/kaldifeat/cpu.html&quot;
+kind = &quot;flat&quot;
+explicit = true
+
+[tool.uv]
+prerelease = &quot;allow&quot;
+</code></pre>
+<p>The <code>.python-version</code> is set to <code>3.12</code>.</p>
+<p>Using `uv pip install&quot; works though:</p>
+<pre><code class="language-shell">uv pip install --find-links https://csukuangfj.github.io/kaldifeat/cpu.html kaldifeat --prerelease allow --verbose --no-cach
+e --force-reinstall
+DEBUG uv 0.6.11
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `/home/luhtto/asl/tools/flat_indexes/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.12.3 environment at: .venv
+DEBUG Acquired lock for `.venv`
+DEBUG Using request timeout of 30s
+DEBUG No cache entry for: https://csukuangfj.github.io/kaldifeat/cpu.html
+DEBUG Found 2403 packages in `--find-links` entry: https://csukuangfj.github.io/kaldifeat/cpu.html
+DEBUG Solving with installed Python version: 3.12.3
+DEBUG Solving with target Python version: &gt;=3.12.3
+DEBUG Adding direct dependency: kaldifeat*
+DEBUG No cache entry for: https://pypi.org/simple/kaldifeat/
+DEBUG Searching for a compatible version of kaldifeat (*)
+DEBUG Selecting: kaldifeat==1.25.5.dev20250307+cpu.torch2.6.0 [compatible] (kaldifeat-1.25.5.dev20250307+cpu.torch2.6.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl)
+DEBUG No cache entry for: https://huggingface.co/csukuangfj/kaldifeat/resolve/main/cpu/1.25.5.dev20250307/linux-x64/kaldifeat-1.25.5.dev20250307+cpu.torch2.6.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+DEBUG Tried 1 versions: kaldifeat 1
+DEBUG marker environment resolution took 1.109s
+Resolved 1 package in 1.11s
+DEBUG Must revalidate requirement: kaldifeat
+DEBUG No cache entry for: https://huggingface.co/csukuangfj/kaldifeat/resolve/main/cpu/1.25.5.dev20250307/linux-x64/kaldifeat-1.25.5.dev20250307+cpu.torch2.6.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+Prepared 1 package in 417ms
+DEBUG Uninstalled kaldifeat (37 files, 9 directories)
+Uninstalled 1 package in 1ms
+Installed 1 package in 46ms
+ ~ kaldifeat==1.25.5.dev20250307+cpu.torch2.6.0
+DEBUG Released lock at `/home/luhtto/asl/tools/flat_indexes/.venv/.lock`
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 24.04.2 LTS (WSL2)</p>
+<h3>Version</h3>
+<p>uv 0.6.11</p>
+<h3>Python version</h3>
+<p>Python 3.12.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @luh-t-to on 2025-03-31 06:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-31 13:12</div>
+            <div class="timeline-body"><p>Did you try <code>uv add kaldifeat --index=https://csukuangfj.github.io/kaldifeat/cpu.html</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/luh-t-to">@luh-t-to</a> on 2025-03-31 13:15</div>
+            <div class="timeline-body"><p>I have not. But it does not work either.</p>
+<pre><code class="language-shell">DEBUG uv 0.6.11
+DEBUG Found project root: `/home/luhtto/asl/tools/flat_indexes`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/home/luhtto/asl/tools/flat_indexes`
+DEBUG Reading Python requests from version file at `/home/luhtto/asl/tools/flat_indexes/.python-version`
+DEBUG Using Python request `3.12` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+DEBUG The virtual environment's Python version satisfies `3.12`
+DEBUG Released lock at `/tmp/uv-056db868502cc209.lock`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: flat-indexes-test @ file:///home/luhtto/asl/tools/flat_indexes
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.12.3
+DEBUG Solving with target Python version: &gt;=3.12
+DEBUG Adding direct dependency: flat-indexes-test*
+DEBUG Searching for a compatible version of flat-indexes-test @ file:///home/luhtto/asl/tools/flat_indexes (*)
+DEBUG Adding direct dependency: kaldifeat*
+DEBUG Adding direct dependency: torch&gt;=2.6.0
+DEBUG Adding direct dependency: torchaudio&gt;=2.6.0
+DEBUG No cache entry for: https://csukuangfj.github.io/kaldifeat/cpu.html/kaldifeat/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cpu/torch/
+DEBUG No cache entry for: https://download.pytorch.org/whl/cpu/torchaudio/
+DEBUG Checking netrc for credentials for https://csukuangfj.github.io/kaldifeat/cpu.html/kaldifeat/
+DEBUG Searching for a compatible version of kaldifeat (*)
+DEBUG No compatible version found for: kaldifeat
+DEBUG Recording unit propagation conflict of kaldifeat from incompatibility of (flat-indexes-test)
+DEBUG Searching for a compatible version of flat-indexes-test @ file:///home/luhtto/asl/tools/flat_indexes (&lt;0.1.0 | &gt;0.1.0)
+DEBUG No compatible version found for: flat-indexes-test
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Removing `uv.lock`
+  × No solution found when resolving dependencies:
+  ╰─▶ Because kaldifeat was not found in the package registry and your project depends on kaldifeat, we can conclude that your
+      project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and
+        syncing.
+</code></pre>
+<p>Here is this line again: <code>DEBUG No cache entry for: https://csukuangfj.github.io/kaldifeat/cpu.html/kaldifeat/</code></p>
+<p>And that URL throws a 404.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-31 13:18</div>
+            <div class="timeline-body"><p>Oh wait, <code>kind = &quot;flat&quot;</code> should be <code>format = &quot;flat&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-31 13:18</div>
+            <div class="timeline-body"><p>I assume I missed a reference to that in the docs somewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/luh-t-to">@luh-t-to</a> on 2025-03-31 13:20</div>
+            <div class="timeline-body"><p>That works! Wonderful, thank you very much.</p>
+<p>I got it from the <a href="https://docs.astral.sh/uv/configuration/indexes/#flat-indexes">docs</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12583.html">astral-sh/uv#12583</a> on 2025-03-31 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-31 13:22</div>
+            <div class="timeline-body"><p>Fixed in https://github.com/astral-sh/uv/pull/12583, so sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-31 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-31 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-31 13:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

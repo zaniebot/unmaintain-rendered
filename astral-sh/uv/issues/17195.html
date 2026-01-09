@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to use uv commands after removing .whl file - astral-sh/uv #17195</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to use uv commands after removing .whl file</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/17195">#17195</a>
+        opened by <a href="https://github.com/jprince14">@jprince14</a>
+        on 2025-12-20 00:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jprince14">@jprince14</a> on 2025-12-20 00:38</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I am using <code>uv</code> to install a locally build wheel within a docker container but things aren't working for me after I remove the .whl file during the docker build. I know I can leave the wheel in the container to get around this but I don't think that should be needed. Another thing that works is just activating the virtualenv with <code>.venv/bin/activate</code></p>
+<p>To reproduce place <code>dockerfile</code> and <code>test.sh</code> in the same directory and run <code>test.sh</code></p>
+<p>dockerfile</p>
+<pre><code class="language-dockerfile">FROM astral/uv:python3.11-trixie
+
+RUN mkdir -p /home/testing
+WORKDIR /home/testing
+RUN uv init
+RUN uv add paramiko
+RUN wget https://files.pythonhosted.org/packages/c2/f8/49697181b1651d8347d24c095ce46c7346c37335ddc7d255833e7cde674d/ipaddress-1.0.23-py2.py3-none-any.whl
+RUN uv add ipaddress-1.0.23-py2.py3-none-any.whl
+RUN uv sync
+RUN rm ipaddress-1.0.23-py2.py3-none-any.whl
+ENTRYPOINT [&quot;bash&quot;]
+
+CMD [&quot;-c&quot;, &quot;uv sync&quot;]
+# CMD [&quot;-c&quot;, &quot;uv run python --version&quot;]
+
+# This line below works with no issues
+# CMD [&quot;-c&quot;, &quot;source .venv/bin/activate &amp;&amp; python --version&quot;]
+</code></pre>
+<p>test script (test.sh)</p>
+<pre><code class="language-bash">#!/bin/bash
+
+docker build -t testing:latest .
+docker run -it testing
+</code></pre>
+<p>Error that I see</p>
+<pre><code>error: Failed to generate package metadata for `ipaddress==1.0.23 @ path+ipaddress-1.0.23-py2.py3-none-any.whl`
+  Caused by: Failed to read from the distribution cache
+  Caused by: failed to query metadata of file `/home/testing/ipaddress-1.0.23-py2.py3-none-any.whl`: No such file or directory (os error 2)
+</code></pre>
+<h3>Platform</h3>
+<p>debian trixie</p>
+<h3>Version</h3>
+<p>0.9.18</p>
+<h3>Python version</h3>
+<p>3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jprince14 on 2025-12-20 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-20 01:01</div>
+            <div class="timeline-body"><p>When you do <code>RUN uv add ipaddress-1.0.23-py2.py3-none-any.whl</code> you're adding a dependency on that file. When we <code>sync</code> again we need to validate that the file has not changed. I don't think this is a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-12-20 01:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-12-20 01:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-20 01:02</div>
+            <div class="timeline-body"><p>I'd recommend using <code>uv run --no-sync</code> (or <code>ENV UV_NO_SYNC=1</code>) instead of <code>uv run</code> if you are okay with the environment being stale.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jprince14">@jprince14</a> on 2025-12-20 01:30</div>
+            <div class="timeline-body"><p>Thats easy, thanks for the help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jprince14 on 2025-12-20 01:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

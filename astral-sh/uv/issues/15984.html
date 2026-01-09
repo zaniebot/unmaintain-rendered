@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv tool install` with flash-attn + aug build deps fails while `uv run` succeeds - astral-sh/uv #15984</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv tool install` with flash-attn + aug build deps fails while `uv run` succeeds</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15984">#15984</a>
+        opened by <a href="https://github.com/yondonfu">@yondonfu</a>
+        on 2025-09-22 15:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yondonfu">@yondonfu</a> on 2025-09-22 15:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm following the docs on <a href="https://docs.astral.sh/uv/concepts/projects/config/#augmenting-build-dependencies">augmenting build deps</a> to include flash-attn as a dep.</p>
+<p>In my <a href="https://github.com/yondonfu/flash-attn-repro/tree/main">minimal repro project</a>, I have this as my <code>pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;flash-attn-repro&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10.12&quot;
+dependencies = [
+  &quot;torch==2.8.0&quot;,
+  &quot;flash-attn==2.8.3; sys_platform == 'linux' or sys_platform == 'win32'&quot;,
+]
+
+[tool.uv.extra-build-dependencies]
+flash-attn = [{ requirement = &quot;torch&quot;, match-runtime = true, marker = &quot;sys_platform == 'linux' or sys_platform == 'win32'&quot; }]
+
+[tool.uv.extra-build-variables]
+flash-attn = { FLASH_ATTENTION_SKIP_CUDA_BUILD = &quot;TRUE&quot; }
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;pytorch-cu128&quot;, marker = &quot;sys_platform == 'linux' or sys_platform == 'win32'&quot; },
+]
+torchvision = [
+    { index = &quot;pytorch-cu128&quot;, marker = &quot;sys_platform == 'linux' or sys_platform == 'win32'&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu128&quot;
+url = &quot;https://download.pytorch.org/whl/cu128&quot;
+explicit = true
+
+[project.scripts]
+flash-attn-repro = &quot;flash_attn_repro.main:main&quot;
+</code></pre>
+<p>If I run <code>uv run -m flash_attn_repro.main</code>, everything installs and runs fine:</p>
+<pre><code>Using CPython 3.10.12 interpreter at: /usr/bin/python3.10
+Creating virtual environment at: .venv
+warning: The `extra-build-dependencies` option is experimental and may change without warning. Pass `--preview-features extra-build-dependencies` to disable this warning.
+░░░░░░░░░░░░░░░░░░░░ [0/27] Installing wheels...                                                                                                                                                                     
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 27 packages in 5.25s
+Hello from flash-attn-repro!
+</code></pre>
+<p>However, if I run <code>uv tool install --python 3.10.12 .</code>, I get this:</p>
+<pre><code>Resolved 28 packages in 558ms
+  × Failed to build `flash-attn==2.8.3`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+        File &quot;/root/.cache/uv/builds-v0/.tmpDR4kI5/lib/python3.10/site-packages/setuptools/build_meta.py&quot;, line 331, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+        File &quot;/root/.cache/uv/builds-v0/.tmpDR4kI5/lib/python3.10/site-packages/setuptools/build_meta.py&quot;, line 301, in _get_build_requires
+          self.run_setup()
+        File &quot;/root/.cache/uv/builds-v0/.tmpDR4kI5/lib/python3.10/site-packages/setuptools/build_meta.py&quot;, line 512, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;/root/.cache/uv/builds-v0/.tmpDR4kI5/lib/python3.10/site-packages/setuptools/build_meta.py&quot;, line 317, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 22, in &lt;module&gt;
+      ModuleNotFoundError: No module named 'torch'
+
+      hint: This error likely indicates that `flash-attn@2.8.3` depends on `torch`, but doesn't declare it as a build dependency. If `flash-attn` is a first-party package, consider adding `torch` to its
+      `build-system.requires`. Otherwise, either add it to your `pyproject.toml` under:
+
+      [tool.uv.extra-build-dependencies]
+      flash-attn = [&quot;torch&quot;]
+
+      or `uv pip install torch` into the environment and re-run with `--no-build-isolation`.
+  help: `flash-attn` (v2.8.3) was included because `flash-attn-repro` (v0.1.0) depends on `flash-attn`
+</code></pre>
+<p>I'm able to workaround this by specifying a specific prebuilt wheel to use for flash-attn by adding this under <code>[tool.uv.sources]</code> in the <code>pyproject.toml</code> file:</p>
+<pre><code>flash-attn = [
+    # Prebuilt Linux wheels from https://github.com/Dao-AILab/flash-attention
+    { url = &quot;https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiFALSE-cp310-cp310-linux_x86_64.whl&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+]
+</code></pre>
+<p>Then, when I run <code>uv tool install --python 3.10.12 .</code> again everything installs and runs fine:</p>
+<pre><code>Resolved 28 packages in 1m 56s
+      Built flash-attn-repro @ file:///workspace/flash-attn-repro
+Prepared 2 packages in 2.72s
+Uninstalled 1 package in 1ms
+Installed 3 packages in 8ms
+ + einops==0.8.1
+ + flash-attn==2.8.3+cu12torch2.8cxx11abifalse (from https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiFALSE-cp310-cp310-linux_x86_64.whl)
+ ~ flash-attn-repro==0.1.0 (from file:///workspace/flash-attn-repro)
+Installed 1 executable: flash-attn-repro
+</code></pre>
+<p>And after running <code>flash-attn-repro </code>:</p>
+<pre><code>Hello from flash-attn-repro!
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 6.8.0-65-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.8.19</p>
+<h3>Python version</h3>
+<p>Python 3.10.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @yondonfu on 2025-09-22 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-22 16:07</div>
+            <div class="timeline-body"><p>I don't think we read those fields when doing <code>uv tool install</code>, we just read the metadata that is not-specific to uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yondonfu">@yondonfu</a> on 2025-09-22 18:42</div>
+            <div class="timeline-body"><p>@zanieb Ah got it. Is there a recommended best practice for building tools that depend on torch, flash-attn deps which have more complex build processes? Or are the uv specific enhancements for these types of build processes only planned for <code>uv run</code> right now? For context, I'm interested in doing a <code>uv tool install ...</code> that handles the torch, flash-attn installation the same way that <code>uv run</code> would.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-22 20:22</div>
+            <div class="timeline-body"><p>I think the long-term solution would be to have <code>flash-attn</code> itself declare this metadata, as explored in https://github.com/astral-sh/uv/pull/15568</p>
+<p>I'm not sure I have a good recommendation for you in the meantime. I think the use-case makes a lot of sense, we're just going to have to figure out a way to do it without adding a bunch of complexity. I think I'm broadly supportive of <code>uv tool install</code> reading uv settings from source trees (e.g., local directories or Git repositories), but I'm not sure what problems it will cause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2025-09-22 20:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't use the cache dir for build venvs? - astral-sh/uv #3684</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't use the cache dir for build venvs?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/3684">#3684</a>
+        opened by <a href="https://github.com/thejcannon">@thejcannon</a>
+        on 2024-05-21 01:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thejcannon">@thejcannon</a> on 2024-05-21 01:22</div>
+            <div class="timeline-body"><p>👋 We're hoping to network mount a read-only (hot) cache for <code>uv</code> so our servers can bootstrap themselves quickly.</p>
+<p>Unfortunately since the tempdir for build isolation is installed under the cache dir, there's no good way to do this.</p>
+<p>I think the issue is in:</p>
+<p>https://github.com/astral-sh/uv/blob/03629181962e1f358361679d8b30bf48f386ad1d/crates/uv-build/src/lib.rs#L404</p>
+<p>(Out of curiosity, why not put it in the default tempdir location per-platform?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-21 01:30</div>
+            <div class="timeline-body"><p>You can't hardlink or reflink across filesystems, and often the default tempdir is on a different drive or partition than wherever you put the cache. Using the cache for the temporary build environment ensures they're colocated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2024-05-21 01:35</div>
+            <div class="timeline-body"><p>That in itself makes sense, I'm guessing the benefit there is along the lines of &quot;we can fast-install the build requirements from the cache because we know they're colocated?&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2024-05-21 01:37</div>
+            <div class="timeline-body"><p>Would you be open to controlling the tempdirs via a flag? And it defaults to the cache dir?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-21 11:56</div>
+            <div class="timeline-body"><p>I'm open to it... We'd need to figure out what to call it and what it &quot;means&quot;. Can you look around at all the <code>tempfile</code> uses that would be affected by this decision? We tend to always use the cache dir for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-05-21 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-05-21 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12036.html">astral-sh/uv#12036</a> on 2025-03-07 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13096.html">astral-sh/uv#13096</a> on 2025-04-25 20:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

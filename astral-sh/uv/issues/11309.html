@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync ` fails with &quot;Invalid glob&quot; for globs starting with `**/` when run in `/` - astral-sh/uv #11309</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync ` fails with &quot;Invalid glob&quot; for globs starting with `**/` when run in `/`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11309">#11309</a>
+        opened by <a href="https://github.com/danielgafni">@danielgafni</a>
+        on 2025-02-07 09:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danielgafni">@danielgafni</a> on 2025-02-07 09:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have this glob for workspace sources: <code>**/*-dagger</code> which works perfectly well locally, but causes <code>uv</code> to fail during docker build.</p>
+<pre><code>0.743 warning: Invalid glob in `tool.uv.workspace.members`: `**/*-dagger`
+0.747 Using CPython 3.11.11 interpreter at: /usr/bin/python3.11
+0.747 Creating virtual environment at: /app/venv
+0.754 /app/venv/bin/python
+0.788 Python 3.11.11
+0.791 uv 0.5.27
+1.093 error: Invalid glob in `tool.uv.workspace.members`: `/**/*-dagger`
+1.093   Caused by: attempting to read `/dev/fd/9` resulted in an error: No such file or directory (os error 2)
+</code></pre>
+<p>I believe <code>uv sync --no-install-workspace</code> is failing here.</p>
+<p>The failure occurs when 2 conditions are satisfied together:</p>
+<ul>
+<li>the blob starts with <code>**</code> (probably <code>*</code> will fail too)</li>
+<li>the WORKDIR is just <code>/</code></li>
+</ul>
+<h3>Platform</h3>
+<p>x86_64 Ubuntu in Docker</p>
+<h3>Version</h3>
+<p>uv 0.5.27</p>
+<h3>Python version</h3>
+<p>Python 3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @danielgafni on 2025-02-07 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-07 10:15</div>
+            <div class="timeline-body"><p>If you have a glob starting with <code>**/</code> and the current directory is <code>/</code>, we have to read the entire filesystem, because every could potentially satisfy it. The first part of the error message is misleading, but the second line shows the correct error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-02-07 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-02-07 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11310.html">astral-sh/uv#11310</a> on 2025-02-07 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv syunc ` fails with "Invalid glob" for globs starting with `**/` when run in `/`" to "`uv sync ` fails with "Invalid glob" for globs starting with `**/` when run in `/`" by @danielgafni on 2025-02-07 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-07 10:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

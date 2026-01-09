@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>load_yaml! cannot be used inside of lazy_static - clap-rs/clap #1380</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>load_yaml! cannot be used inside of lazy_static</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1380">#1380</a>
+        opened by <a href="https://github.com/andrewmiller1">@andrewmiller1</a>
+        on 2018-11-10 06:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/andrewmiller1">@andrewmiller1</a> on 2018-11-10 06:15</div>
+            <div class="timeline-body"><!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+<h3>Rust Version</h3>
+<ul>
+<li>Use the output of <code>rustc -V</code></li>
+</ul>
+<p>rustc 1.32.0-nightly (653da4fd0 2018-11-08)</p>
+<h3>Affected Version of clap</h3>
+<ul>
+<li>Can be found in Cargo.lock of your project (i.e. <code>grep clap Cargo.lock</code>)</li>
+</ul>
+<p>clap 3.0.0-alpha.1</p>
+<h3>Bug or Feature Request Summary</h3>
+<p>Feature: Improve App to be able to load yaml in a separate function.</p>
+<h3>Expected Behavior Summary</h3>
+<p>Build cli with configurations from yaml in a separate function.</p>
+<h3>Actual Behavior Summary</h3>
+<pre><code>error[E0515]: cannot return value referencing temporary value
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<pre><code class="language-sh">cargo build
+</code></pre>
+<h3>Sample Code or Link to Sample Code</h3>
+<p><a href="https://gist.github.com/andrewmiller1/60db2e82d43e286f6e3b21dcd5c68b4f">Source code #1380</a></p>
+<p>Background: https://github.com/clap-rs/clap/issues/1318#issuecomment-404635507 Can't follow instructions <a href="https://docs.rs/clap/2.32.0/clap/struct.App.html#examples-47">#47 (clap::App example)</a> for <a href="https://github.com/clap-rs/clap_generate">clap-rs/clap_generate</a>.</p>
+<p>From discussions in #rust-beginners, this is because <a href="https://docs.rs/clap/2.32.0/clap/struct.YamlLoader.html#method.load_from_str">YamlLoader::load_from_str</a> returns a Yaml instance that contains Strings the App instance needs to borrow (the Yaml instance should even outlive the App instance). Something needs to own those Strings, but the Yaml Vec struct dies too soon (it's dead by the time build_cli returns).</p>
+<h3>Debug output</h3>
+<p>Compile clap with cargo features <code>&quot;debug&quot;</code> such as:</p>
+<pre><code class="language-toml">[dependencies]
+clap = { version = &quot;2&quot;, features = [&quot;debug&quot;] }
+</code></pre>
+<details><summary> Debug Output </summary>
+
+<pre><code>    Updating crates.io index
+    Updating git repository `https://github.com/clap-rs/clap_derive`
+   Compiling proc-macro2 v0.4.21
+   Compiling unicode-xid v0.1.0
+   Compiling libc v0.2.43
+   Compiling linked-hash-map v0.5.1
+   Compiling unicode-width v0.1.5
+   Compiling bitflags v1.0.4
+   Compiling indexmap v1.0.2
+   Compiling strsim v0.7.0
+   Compiling ansi_term v0.11.0
+   Compiling vec_map v0.8.1
+   Compiling textwrap v0.10.0
+   Compiling yaml-rust v0.4.2
+   Compiling atty v0.2.11
+   Compiling quote v0.6.10
+   Compiling syn v0.14.9
+   Compiling clap_derive v0.3.0 (https://github.com/clap-rs/clap_derive#2fad2c8a)
+   Compiling clap v3.0.0-alpha.1 (/home/andrew/builds/clap)
+   Compiling clap_generate v0.0.1 (/home/andrew/builds/clap_generate-pub-shell)
+warning: unused macro definition
+  --&gt; /home/andrew/builds/clap_generate-pub-shell/src/macros.rs:59:5
+   |
+59 | /     macro_rules! sdebugln {
+60 | |         ($fmt:expr) =&gt; {};
+61 | |         ($fmt:expr, $($arg:tt)*) =&gt; {};
+62 | |     }
+   | |_____^
+   |
+   = note: #[warn(unused_macros)] on by default
+
+warning: unused macro definition
+  --&gt; /home/andrew/builds/clap_generate-pub-shell/src/macros.rs:63:5
+   |
+63 | /     macro_rules! debug {
+64 | |         ($fmt:expr) =&gt; {};
+65 | |         ($fmt:expr, $($arg:tt)*) =&gt; {};
+66 | |     }
+   | |_____^
+
+warning: unused macro definition
+  --&gt; /home/andrew/builds/clap_generate-pub-shell/src/macros.rs:69:1
+   |
+69 | / macro_rules! args {
+70 | |     ($app:expr, $how:ident) =&gt; {
+71 | |         $app.args.$how()
+72 | |     };
+...  |
+75 | |     };
+76 | | }
+   | |_^
+
+warning: unused macro definition
+  --&gt; /home/andrew/builds/clap_generate-pub-shell/src/macros.rs:78:1
+   |
+78 | / macro_rules! args_mut {
+79 | |     ($app:expr) =&gt; {
+80 | |         args!($app, iter_mut)
+81 | |     };
+82 | | }
+   | |_^
+
+warning: use of deprecated item 'std::ascii::AsciiExt': use inherent methods instead
+ --&gt; /home/andrew/builds/clap_generate-pub-shell/src/shells/zsh.rs:3:5
+  |
+3 | use std::ascii::AsciiExt;
+  |     ^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: #[warn(deprecated)] on by default
+
+warning: use of deprecated item 'std::ascii::AsciiExt': use inherent methods instead
+   --&gt; /home/andrew/builds/clap_generate-pub-shell/src/shells/mod.rs:161:5
+    |
+161 | use std::ascii::AsciiExt;
+    |     ^^^^^^^^^^^^^^^^^^^^
+
+   Compiling graph v0.1.0 (/home/andrew/projects/graph)
+error[E0515]: cannot return value referencing temporary value
+ --&gt; src/cli.rs:2:5
+  |
+2 |     app_from_crate!().add_from_yaml(load_yaml!(&quot;cli.yml&quot;))
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^---------------------^
+  |     |                               |
+  |     |                               temporary value created here
+  |     returns a value referencing data owned by the current function
+  |
+  = note: this error originates in a macro outside of the current crate (in Nightly builds, run with -Z external-macro-backtrace for more info)
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0515`.
+error: Could not compile `graph`.
+
+To learn more, run the command again with --verbose.
+</code></pre>
+</details>
+
+<details><summary> Macro tracing </summary>
+
+<pre><code>   Compiling graph v0.1.0 (/home/andrew/projects/graph)
+     Running `rustc --edition=2018 --crate-name build_script_build build.rs --color never --crate-type bin --emit=dep-info,link -C debuginfo=2 -C metadata=3338707160b2b133 -C extra-filename=-3338707160b2b133 --out-dir /home/andrew/projects/graph/target/debug/build/graph-3338707160b2b133 -C incremental=/home/andrew/projects/graph/target/debug/incremental -L dependency=/home/andrew/projects/graph/target/debug/deps --extern clap=/home/andrew/projects/graph/target/debug/deps/libclap-2f3391e22eb4ceb7.rlib --extern clap_generate=/home/andrew/projects/graph/target/debug/deps/libclap_generate-17515d86c877e732.rlib -Z debug-macros -Z external-macro-backtrace -Z trace-macros`
+note: trace_macro
+ --&gt; src/cli.rs:2:5
+  |
+2 |     app_from_crate!().add_from_yaml(load_yaml!(&quot;cli.yml&quot;))
+  |     ^^^^^^^^^^^^^^^^^
+  |
+  = note: expanding `app_from_crate! {  }`
+  = note: to `$crate :: App :: new ( crate_name ! (  ) ) . version ( crate_version ! (  ) )
+          . author ( crate_authors ! (  ) ) . about ( crate_description ! (  ) )`
+  = note: expanding `crate_name! {  }`
+  = note: to `env ! ( &quot;CARGO_PKG_NAME&quot; )`
+  = note: expanding `crate_version! {  }`
+  = note: to `env ! ( &quot;CARGO_PKG_VERSION&quot; )`
+  = note: expanding `crate_authors! {  }`
+  = note: to `env ! ( &quot;CARGO_PKG_AUTHORS&quot; )`
+  = note: expanding `crate_description! {  }`
+  = note: to `env ! ( &quot;CARGO_PKG_DESCRIPTION&quot; )`
+
+note: trace_macro
+ --&gt; src/cli.rs:2:37
+  |
+2 |     app_from_crate!().add_from_yaml(load_yaml!(&quot;cli.yml&quot;))
+  |                                     ^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: expanding `load_yaml! { &quot;cli.yml&quot; }`
+  = note: to `&amp; :: clap :: YamlLoader :: load_from_str ( include_str ! ( &quot;cli.yml&quot; ) ) .
+          expect ( &quot;failed to load YAML file&quot; ) [ 0 ]`
+
+error[E0515]: cannot return value referencing temporary value
+ --&gt; src/cli.rs:2:5
+  |
+2 |       app_from_crate!().add_from_yaml(load_yaml!(&quot;cli.yml&quot;))
+  |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ returns a value referencing data owned by the current function
+  | 
+ ::: &lt;::clap::macros::load_yaml macros&gt;:2:3
+  |
+2 |   &amp; :: clap :: YamlLoader :: load_from_str ( include_str ! ( $ yml ) ) . expect
+  |  ___-
+3 | | ( &quot;failed to load YAML file&quot; ) [ 0 ] } ;
+  | |______________________________- temporary value created here
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0515`.
+error: Could not compile `graph`.
+
+Caused by:
+  process didn't exit successfully: `rustc --edition=2018 --crate-name build_script_build build.rs --color never --crate-type bin --emit=dep-info,link -C debuginfo=2 -C metadata=3338707160b2b133 -C extra-filename=-3338707160b2b133 --out-dir /home/andrew/projects/graph/target/debug/build/graph-3338707160b2b133 -C incremental=/home/andrew/projects/graph/target/debug/incremental -L dependency=/home/andrew/projects/graph/target/debug/deps --extern clap=/home/andrew/projects/graph/target/debug/deps/libclap-2f3391e22eb4ceb7.rlib --extern clap_generate=/home/andrew/projects/graph/target/debug/deps/libclap_generate-17515d86c877e732.rlib -Z debug-macros -Z external-macro-backtrace -Z trace-macros` (exit code: 1)
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arusahni">@arusahni</a> on 2019-12-27 20:36</div>
+            <div class="timeline-body"><p>Admittedly, I'm still ascending Rust's learning curve, but here's my workaround:</p>
+<ol>
+<li>Add the <code>yaml_rust</code> crate as a dependency, using the same version that clap depends on (found in <code>Cargo.lock</code>)</li>
+<li>Move the YAML-loading to the call site and pass the config in as an argument.</li>
+</ol>
+<pre><code class="language-rust">fn build_cli(cfg) { // snip }
+
+let cfg = load_yaml!(&quot;cli.yml&quot;)
+build_cli(&amp;cfg);
+</code></pre>
+<ol start="3">
+<li>Throwing some lifetimes around, this is what I have</li>
+</ol>
+<pre><code class="language-rust">fn build_cli&lt;'a&gt;(cfg: &amp;'a yaml_rust::Yaml) -&gt; App&lt;'a, 'a&gt; {
+    App::from_yaml(&amp;cfg)
+        .version(crate_version!())
+        .author(crate_authors!(&quot;\n&quot;))
+}
+
+fn main() {
+    let cfg = load_yaml!(&quot;cli.yml&quot;);
+    let app = build_cli(&amp;cfg);
+    // code that consumes the app reference
+    let app2 = build_cli(&amp;cfg);
+}
+</code></pre>
+<p>This isn't as clean as handling the configuration marshaling in the function, or being able to assign whatever lifetime I want to the output, but it makes the borrow-checker happy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-01 15:32</div>
+            <div class="timeline-body"><p>Cases like that can be solved by <code>lazy_static!</code>. Feel free to reopen</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-02-01 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: yaml parser</span> added by @pksunkara on 2020-02-01 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @pksunkara on 2020-02-01 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: wont do</span> added by @pksunkara on 2020-02-01 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arusahni">@arusahni</a> on 2020-02-02 03:51</div>
+            <div class="timeline-body"><p>@CreepySkeleton thanks for the suggestion! Unfortunately, this doesn't appear to work:</p>
+<pre><code class="language-rust">lazy_static! {
+    static ref APP_CFG: &amp;'static Yaml = load_yaml!(&quot;cli.yml&quot;);
+    static ref CLI_APP: App&lt;'static, 'static&gt; = App::from_yaml(&amp;APP_CFG)
+            .version(crate_version!())
+            .author(crate_authors!(&quot;\n&quot;));
+}
+</code></pre>
+<p>with the message:</p>
+<pre><code>    | |_^ `std::rc::Rc&lt;(dyn for&lt;'r&gt; std::ops::Fn(&amp;'r std::ffi::OsStr) -&gt; std::result::Result&lt;(), std::ffi::OsString&gt; + 'static)&gt;` cannot be shared between threads safely
+    |
+    = help: within `clap::args::arg_builder::option::OptBuilder&lt;'static, 'static&gt;`, the trait `std::marker::Sync` is not implemented for `std::rc::Rc&lt;(dyn for&lt;'r&gt; std::ops::Fn(&amp;'r std::ffi::OsStr) -&gt; std::result::Result&lt;(), std::ffi::OsString&gt; + 'static)&gt;`
+    = note: required because it appears within the type `std::option::Option&lt;std::rc::Rc&lt;(dyn for&lt;'r&gt; std::ops::Fn(&amp;'r std::ffi::OsStr) -&gt; std::result::Result&lt;(), std::ffi::OsString&gt; + 'static)&gt;&gt;`
+    = note: required because it appears within the type `clap::args::arg_builder::valued::Valued&lt;'static, 'static&gt;`
+    = note: required because it appears within the type `clap::args::arg_builder::option::OptBuilder&lt;'static, 'static&gt;`
+    = note: required because of the requirements on the impl of `std::marker::Sync` for `std::ptr::Unique&lt;clap::args::arg_builder::option::OptBuilder&lt;'static, 'static&gt;&gt;`
+    = note: required because it appears within the type `alloc::raw_vec::RawVec&lt;clap::args::arg_builder::option::OptBuilder&lt;'static, 'static&gt;&gt;`
+    = note: required because it appears within the type `std::vec::Vec&lt;clap::args::arg_builder::option::OptBuilder&lt;'static, 'static&gt;&gt;`
+    = note: required because it appears within the type `clap::app::parser::Parser&lt;'static, 'static&gt;`
+    = note: required because it appears within the type `clap::app::App&lt;'static, 'static&gt;`
+    = note: required by `lazy_static::lazy::Lazy`
+    = note: this error originates in a macro outside of the current crate (in Nightly builds, run with -Z external-macro-backtrace for more info
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @CreepySkeleton on 2020-02-02 04:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support loading yaml from a separate function" to "load_yaml! cannot be used iinside of lazy_static" by @CreepySkeleton on 2020-02-02 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "load_yaml! cannot be used iinside of lazy_static" to "load_yaml! cannot be used inside of lazy_static" by @CreepySkeleton on 2020-02-02 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: wont do</span> removed by @CreepySkeleton on 2020-02-02 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-02 04:37</div>
+            <div class="timeline-body"><p>The workaround is</p>
+<pre><code class="language-rust">lazy_static! {
+    static ref APP_CFG: Yaml = {
+        clap::YamlLoader::load_from_str(include_str!(&quot;../cli.yml&quot;))
+            .expect(&quot;failed to load YAML file&quot;)
+            .pop()
+            .unwrap()
+        };
+}
+
+fn main() {
+    let app = App::from_yaml(&amp;APP_CFG)
+        .version(crate_version!())
+        .author(crate_authors!(&quot;\n&quot;));
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-02 04:39</div>
+            <div class="timeline-body"><p>I actually don't think we'll ever get to fixing this in clap 2.x because it would be a breaking change, especially in the light of workaround. Closing as wontfix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-02-02 04:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: wont do</span> added by @CreepySkeleton on 2020-02-02 04:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arusahni">@arusahni</a> on 2020-02-03 03:01</div>
+            <div class="timeline-body"><p>The workaround you provided worked for me.  Understood about the breaking change thing - thanks for your time!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extras in dep group self includes are ignored if the extra is in a conflict group - astral-sh/uv #14645</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Extras in dep group self includes are ignored if the extra is in a conflict group</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/14645">#14645</a>
+        opened by <a href="https://github.com/Dillonwong12">@Dillonwong12</a>
+        on 2025-07-16 04:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Dillonwong12">@Dillonwong12</a> on 2025-07-16 04:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We have the following sample pyproject.toml file (it is part of a wider uv workspace). For managing optimal ci/cd run times, we introduced dependency-groups. However, when we run uv sync --package test-core --group ci it installs all the expected dependencies under the extras np &amp; pd, but does not include llama-cpp-python which is defined under --extra cpu.</p>
+<ol>
+<li>If I run <code>uv sync --package test-core --group ci --extra cpu</code> it functions as expected, installing all required dependencies.</li>
+<li>The command  <code>uv sync --package test-core --group ci</code>  should install same set of dependencies as above, without having to define <code>--extra cpu</code>, as it is already defined in the dependency group within the pyproject.toml.</li>
+</ol>
+<h3>Minimal reproducible example:</h3>
+<h2>1. <code>pyproject.toml</code></h2>
+<pre><code>[project]
+name = &quot;test-core&quot;
+version = &quot;0.0.0&quot;
+description = &quot;Dummy workspce member&quot;
+requires-python = &quot;&gt;=3.13&quot;
+
+dependencies = [
+  &quot;pydantic&quot;,
+]
+
+[project.optional-dependencies]
+np = [
+  &quot;numpy&quot;,
+]
+pd = [
+  &quot;pandas&quot;,
+]
+cpu = [
+  &quot;llama-cpp-python @ https://github.com/ChamalGomesHSO/artifacts/releases/download/v0.0.7-cpu/llama_cpp_python-0.3.9-cp313-cp313-linux_x86_64.whl&quot;,
+]
+gpu = [
+  &quot;llama-cpp-python @ https://github.com/ChamalGomesHSO/artifacts/releases/download/v0.0.7-cu126/llama_cpp_python-0.3.9-cp313-cp313-linux_x86_64.whl&quot;,
+]
+
+[dependency-groups]
+ci = [ 
+  &quot;test-core[np,pd,cpu]&quot;,
+]
+cd = []
+
+[build-system]
+requires = [&quot;uv_build&quot;]
+build-backend = &quot;uv_build&quot;
+
+[tool.uv]
+package = true
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;gpu&quot; },
+  ],
+]
+</code></pre>
+<h2>2. src/test_core/<strong>init</strong>.py dummy source code</h2>
+<pre><code>&quot;&quot;&quot; Test module.&quot;&quot;&quot;
+print(&quot;test module&quot;)
+</code></pre>
+<h3>Commands run:</h3>
+<p><img width="1181" height="462" alt="Image" src="https://github.com/user-attachments/assets/70ddec19-ace4-4c65-8573-46ca343c7b1d" /></p>
+<h3>Platform</h3>
+<p>Linux 6.8.0-1026-azure x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.20</p>
+<h3>Python version</h3>
+<p>Python 3.13.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Dillonwong12 on 2025-07-16 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-16 04:19</div>
+            <div class="timeline-body"><p>Can you share the logs as text instead of an image please?</p>
+<p>Can you also share the <code>uv.lock</code> for the reproduction? (as a Gist if needed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dillonwong12">@Dillonwong12</a> on 2025-07-16 05:13</div>
+            <div class="timeline-body"><p>Please find the uv.lock gist <a href="https://gist.github.com/Dillonwong12/5dc32696f3d602d8ab5f7ce2d02a5c6f">here</a>, and the logs below:</p>
+<pre><code>(test-core) user@ubuntu:~/repos/test_core$ uv sync --package test-core 
+Resolved 17 packages in 52ms
+Audited 6 packages in 0.12ms
+(test-core) user@ubuntu:~/repos/test_core$ uv sync --package test-core --group ci
+Resolved 17 packages in 51ms
+Installed 6 packages in 29ms
+ + numpy==2.3.1
+ + pandas==2.3.1
+ + python-dateutil==2.9.0.post0
+ + pytz==2025.2
+ + six==1.17.0
+ + tzdata==2025.2
+(test-core) user@ubuntu:~/repos/test_core$ uv sync --package test-core --group ci --extra cpu
+Resolved 17 packages in 54ms
+Installed 4 packages in 5ms
+ + diskcache==5.6.3
+ + jinja2==3.1.6
+ + llama-cpp-python==0.3.9 (from https://github.com/ChamalGomesHSO/artifacts/releases/download/v0.0.7-cpu/llama_cpp_python-0.3.9-cp313-cp313-linux_x86_64.whl)
+ + markupsafe==3.0.2
+(test-core) user@ubuntu:~/repos/test_core$ uv sync --package test-core --group ci
+Resolved 17 packages in 58ms
+Uninstalled 4 packages in 2ms
+ - diskcache==5.6.3
+ - jinja2==3.1.6
+ - llama-cpp-python==0.3.9 (from https://github.com/ChamalGomesHSO/artifacts/releases/download/v0.0.7-cpu/llama_cpp_python-0.3.9-cp313-cp313-linux_x86_64.whl)
+ - markupsafe==3.0.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-21 01:53</div>
+            <div class="timeline-body"><p>This does look like a bug. I'm using this to reproduce (slightly simpler):</p>
+<pre><code class="language-toml">[project]
+name = &quot;test-core&quot;
+version = &quot;0.0.0&quot;
+description = &quot;Dummy workspce member&quot;
+requires-python = &quot;&gt;=3.13&quot;
+
+[project.optional-dependencies]
+np = [
+  &quot;numpy&quot;,
+]
+pd = [
+  &quot;pandas&quot;,
+]
+cpu = [
+  &quot;flask==3.1.1&quot;,
+]
+gpu = [
+  &quot;flask==2.3.2&quot;,
+]
+
+[dependency-groups]
+ci = [ 
+  &quot;test-core[np,pd,cpu]&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;gpu&quot; },
+  ],
+]
+</code></pre>
+<p>I'm not sure why it's omitting <code>cpu</code> yet, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv --extra with conflict not syncing in --group" to "Extras in dep group self includes are ignored if the extra is in a conflict group" by @konstin on 2025-07-21 10:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-21 10:15</div>
+            <div class="timeline-body"><p>The problem is that in project mode, we ignore extras included in a conflict when it is requested through a self-include from a dependencies group.</p>
+<p>I trimmed it down a bit:</p>
+<pre><code class="language-toml">[project]
+name = &quot;mre&quot;
+version = &quot;1.0.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+
+[project.optional-dependencies]
+no_conflict = [&quot;sniffio&quot;]
+conflict_foo = [&quot;tqdm&quot;]
+conflict_bar = []
+
+[dependency-groups]
+ci = [
+  &quot;mre[no_conflict,conflict_foo]&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;conflict_foo&quot; },
+    { extra = &quot;conflict_bar&quot; },
+  ],
+]
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.0,&lt;0.9.0&quot;]
+build-backend = &quot;uv_build&quot;
+</code></pre>
+<p>From <code>uv.lock</code>:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;mre&quot;
+version = &quot;1.0.0&quot;
+source = { editable = &quot;.&quot; }
+
+[package.optional-dependencies]
+conflict-foo = [
+    { name = &quot;tqdm&quot; },
+]
+no-conflict = [
+    { name = &quot;sniffio&quot; },
+]
+
+[package.dev-dependencies]
+ci = [
+    { name = &quot;mre&quot;, extra = [&quot;conflict-foo&quot;], marker = &quot;extra == 'extra-3-mre-conflict-foo'&quot; },
+    { name = &quot;mre&quot;, extra = [&quot;no-conflict&quot;] },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = &quot;sniffio&quot;, marker = &quot;extra == 'no-conflict'&quot; },
+    { name = &quot;tqdm&quot;, marker = &quot;extra == 'conflict-foo'&quot; },
+]
+provides-extras = [&quot;no-conflict&quot;, &quot;conflict-foo&quot;, &quot;conflict-bar&quot;]
+
+[package.metadata.requires-dev]
+ci = [{ name = &quot;mre&quot;, extras = [&quot;no-conflict&quot;, &quot;conflict-foo&quot;] }]
+</code></pre>
+<p>This shows the difference between <code>uv pip install</code> (correct) and <code>uv sync</code> (bug):</p>
+<pre><code class="language-console">$ uv venv -q --clear &amp;&amp; uv pip install --upgrade . --group ci
+Resolved 3 packages in 14ms
+Built mre @ file:///home/konsti/projects/uv/debug
+Prepared 3 packages in 3ms
+Installed 3 packages in 1ms
++ mre==1.0.0 (from file:///home/konsti/projects/uv/debug)
++ sniffio==1.3.1
++ tqdm==4.67.1
+</code></pre>
+<pre><code class="language-console">$ uv venv -q --clear &amp;&amp; uv sync --upgrade --group ci
+Resolved 4 packages in 16ms
+Built mre @ file:///home/konsti/projects/uv/debug
+Prepared 2 packages in 3ms
+Installed 2 packages in 0.50ms
++ mre==1.0.0 (from file:///home/konsti/projects/uv/debug)
++ sniffio==1.3.1
+</code></pre>
+<p>CC @BurntSushi</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-21 13:06</div>
+            <div class="timeline-body"><p>Do you think this is a problem with the lockfile, or a problem at the install phase?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-21 14:27</div>
+            <div class="timeline-body"><p>I'm not clear on that yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-07-28 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15779.html">astral-sh/uv#15779</a> on 2025-09-10 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @jtfmumm by @konstin on 2025-09-11 06:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

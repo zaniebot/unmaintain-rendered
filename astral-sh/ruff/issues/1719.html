@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM108 autofix removes comments - astral-sh/ruff #1719</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM108 autofix removes comments</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1719">#1719</a>
+        opened by <a href="https://github.com/twoertwein">@twoertwein</a>
+        on 2023-01-07 19:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/twoertwein">@twoertwein</a> on 2023-01-07 19:50</div>
+            <div class="timeline-body"><pre><code class="language-py">def test(x: int) -&gt; int:
+    if x &gt; 0:
+        # test test
+        abc = x
+    else:
+        # test test test
+        abc = -x
+    return abc
+</code></pre>
+<p>ruff --fix  # 0.0.213</p>
+<pre><code class="language-py">def test(x: int) -&gt; int:
+    abc = x if x &gt; 0 else -x
+    return abc
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2023-01-08 01:55</div>
+            <div class="timeline-body"><p>I'm not sure what to do, merge comments together doesn't make much sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twoertwein">@twoertwein</a> on 2023-01-08 02:04</div>
+            <div class="timeline-body"><p>Maybe something like:</p>
+<pre><code class="language-py">def test(x: int) -&gt; int:
+    abc = (
+        # test test
+        x if x &gt; 0 else
+        # test test test
+        -x
+    )
+    return abc
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-08 03:00</div>
+            <div class="timeline-body"><p>My gut reaction is that this is quite hard to get right in the general case. We could try to come up with some formal rules, but it might be easier to just avoid fixing in the event that the snippet contains comments (or make that an option).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-01-08 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1791.html">astral-sh/ruff#1791</a> on 2023-01-11 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-11 22:55</div>
+            <div class="timeline-body"><p>Maybe just ignore the check if there are multiple lines involved?
+I got this fix also for this code:</p>
+<pre><code>                   if parser.errno == BAD_FIRST_LINE:
+                      req = wrappers.Request(sock, server=self._server)
+                  else:
+                      req = wrappers.Request(
+                          sock,
+                          parser.get_method(),
+                          parser.get_scheme() or _scheme,
+                          parser.get_path(),
+                          parser.get_version(),
+                          parser.get_query_string(),
+                          server=self._server,
+                      ) 
+</code></pre>
+<p>and it didn't make the code cleaner.</p>
+<p>Duplicate: https://github.com/charliermarsh/ruff/issues/1791#issue-1529813542</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-11 22:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-11 23:00</div>
+            <div class="timeline-body"><p>See also https://github.com/charliermarsh/ruff/issues/1766</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1802.html">astral-sh/ruff#1802</a> on 2023-01-12 00:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-12 00:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-30 12:29</div>
+            <div class="timeline-body"><p>REOPEN:</p>
+<p>ruff 0.0.237 just changed this, which ends with a comment:</p>
+<pre><code>-            if 200 &lt;= exitcode &lt; 300:
+-                exitcode = 0
+-            else:
+-                exitcode = 1  # dooh, sys.exit returns a short, mapping 400 to 144
++            exitcode = 0 if 200 &lt;= exitcode &lt; 300 else 1  # dooh, sys.exit returns a short, mapping 400 to 144 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2351.html">astral-sh/ruff#2351</a> on 2023-01-30 12:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: ruff --statistics - astral-sh/ruff #1814</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: ruff --statistics</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1814">#1814</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-01-12 11:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-12 11:27</div>
+            <div class="timeline-body"><p><code>flake8</code> provides a nice <code>--statistics</code> flags which summarizes the findings at the end with a list like the following:</p>
+<pre><code>3     E126 continuation line over-indented for hanging indent
+1     E225 missing whitespace around operator
+3     E231 missing whitespace after ','
+5     E701 multiple statements on one line (colon)
+2     E711 comparison to None should be 'if cond is None:'
+1     E714 test for object identity should be 'is not'
+8     E999 SyntaxError: invalid syntax
+40    F541 f-string is missing placeholders
+5     F821 undefined name 'x'
+</code></pre>
+<p>It would be nice to have this as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-01-14 01:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2023-01-17 21:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-01-19 00:03</div>
+            <div class="timeline-body"><p><code>flake8 --statistics</code> doesn't play too well with custom formatters, and for example, produce invalid output with <code>--format=json</code>:</p>
+<pre><code class="language-console">$ flake8 --select B resources/test/fixtures/flake8_bugbear/B002.py --statistics
+resources/test/fixtures/flake8_bugbear/B002.py:15:9: B002 Python does not support the unary prefix increment. Writing ++n is equivalent to +(+(n)), which equals n. You meant n += 1.
+resources/test/fixtures/flake8_bugbear/B002.py:20:12: B002 Python does not support the unary prefix increment. Writing ++n is equivalent to +(+(n)), which equals n. You meant n += 1.
+2     B002 Python does not support the unary prefix increment. Writing ++n is equivalent to +(+(n)), which equals n. You meant n += 1.
+
+$ flake8 --select B resources/test/fixtures/flake8_bugbear/B002.py --format json | jq
+{
+  &quot;resources/test/fixtures/flake8_bugbear/B002.py&quot;: [
+    {
+      &quot;code&quot;: &quot;B002&quot;,
+      &quot;filename&quot;: &quot;resources/test/fixtures/flake8_bugbear/B002.py&quot;,
+      &quot;line_number&quot;: 15,
+      &quot;column_number&quot;: 9,
+      &quot;text&quot;: &quot;Python does not support the unary prefix increment. Writing ++n is equivalent to +(+(n)), which equals n. You meant n += 1.&quot;,
+      &quot;physical_line&quot;: &quot;    x = ++n\n&quot;
+    },
+    {
+      &quot;code&quot;: &quot;B002&quot;,
+      &quot;filename&quot;: &quot;resources/test/fixtures/flake8_bugbear/B002.py&quot;,
+      &quot;line_number&quot;: 20,
+      &quot;column_number&quot;: 12,
+      &quot;text&quot;: &quot;Python does not support the unary prefix increment. Writing ++n is equivalent to +(+(n)), which equals n. You meant n += 1.&quot;,
+      &quot;physical_line&quot;: &quot;    return ++n\n&quot;
+    }
+  ]
+}
+
+$ flake8 --select B resources/test/fixtures/flake8_bugbear/B002.py --statistics --format json
+{&quot;resources/test/fixtures/flake8_bugbear/B002.py&quot;: [{&quot;code&quot;: &quot;B002&quot;, &quot;filename&quot;: &quot;resources/test/fixtures/flake8_bugbear/B002.py&quot;, &quot;line_number&quot;: 15, &quot;column_number&quot;: 9, &quot;text&quot;: &quot;Python does not support the unary prefix increment. Writing ++n is equivalent to +(+(n)), which equals n. You meant n += 1.&quot;, &quot;physical_line&quot;: &quot;    x = ++n\n&quot;}, {&quot;code&quot;: &quot;B002&quot;, &quot;filename&quot;: &quot;resources/test/fixtures/flake8_bugbear/B002.py&quot;, &quot;line_number&quot;: 20, &quot;column_number&quot;: 12, &quot;text&quot;: &quot;Python does not support the unary prefix increment. Writing ++n is equivalent to +(+(n)), which equals n. You meant n += 1.&quot;, &quot;physical_line&quot;: &quot;    return ++n\n&quot;}]2     B002 Python does not support the unary prefix increment. Writing ++n is equivalent to +(+(n)), which equals n. You meant n += 1.}%
+</code></pre>
+<p><code>ruff --statistics</code> could improve this by sending the stats summary to stderr, so that the output can be safely piped.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2092.html">astral-sh/ruff#2092</a> on 2023-01-22 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2284.html">astral-sh/ruff#2284</a> on 2023-01-28 01:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-29 18:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

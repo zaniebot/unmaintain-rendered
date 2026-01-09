@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`UP035` is showing as unfixable, when I would expect it to be fixable - astral-sh/ruff #3742</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`UP035` is showing as unfixable, when I would expect it to be fixable</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3742">#3742</a>
+        opened by <a href="https://github.com/samuelcolvin">@samuelcolvin</a>
+        on 2023-03-26 15:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2023-03-26 15:35</div>
+            <div class="timeline-body"><p>I'm trying to use ruff as a replacement for pyupgrade when generating docs with different examples for different python versions, however I immediately ran into a problem where &quot;errors&quot; which I would expect to be fixable, are coming back as unfixable, specifically <code>UP035</code>.</p>
+<hr />
+<p>Run <code>ruff --select U --target-version py310 --fix test.py</code> on the following code.</p>
+<pre><code class="language-py">from datetime import datetime
+from typing import List, Optional
+from pydantic import BaseModel
+
+
+class User(BaseModel):
+    id: int
+    name: str = 'John Doe'
+    signup_ts: Optional[datetime] = None
+    friends: List[int] = []
+</code></pre>
+<p>I'm getting the following error:</p>
+<pre><code>test.py:2:1: UP035 `typing.List` is deprecated, use `list` instead
+Found 3 errors (2 fixed, 1 remaining).
+</code></pre>
+<p>I would expect <code>UP035</code> to be fixable</p>
+<p>(updated to use code before running <code>--fix</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-26 16:05</div>
+            <div class="timeline-body"><p>Can elaborate when I’m back at my computer, but the immediate workaround would be to enable the F rules. The “fix” is to remove the unused import, since List is now unused (presumedly), and the UP rules alone don’t handle unused import removals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2023-03-26 16:30</div>
+            <div class="timeline-body"><p>amazing, I'll try that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2023-03-26 18:59</div>
+            <div class="timeline-body"><p>works great, however interestingly still significantly slower than pyupgrade when invoked via subprocess for each code snippet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @samuelcolvin on 2023-03-26 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-26 19:57</div>
+            <div class="timeline-body"><p>Yeah I guess the subprocess overhead is probably non-negligible in that context. We should benchmark that against a proper <code>pyo3</code> API. We could probably ship a <code>pyo3</code> API <em>relatively</em> quickly... the main blocker is deciding whether we want to support it or whether there's some other style of programmatic usage we might prefer instead (vague handwave-y statement, not suggesting any specific alternative right now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-26 20:09</div>
+            <div class="timeline-body"><p>I started working on a <code>pyo3</code> API.
+Currently, it takes a toml string as configuration.
+I only implemented lint checks.
+The lint function returns a wrapper of <code>Message</code>.
+https://github.com/JonathanPlasse/ruff-api/blob/main/src/lib.rs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2023-03-26 21:05</div>
+            <div class="timeline-body"><p>In my experience the overhead of a pyo3 function call is ~80us, much much less than spinning up a process.</p>
+<p>You could run ruff as a server and pipe data to it in this case, but in general it would be much less ergonomic than a python API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-26 21:11</div>
+            <div class="timeline-body"><p>Yeah that's probably the most notable alternative: run Ruff as an LSP or something. Another would be to make a more flexible command-line API, e.g., something that takes JSON in and spits JSON out but supports all these use-cases. I expect that we'll end up shipping a <code>pyo3</code> API over those options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2023-03-26 23:30</div>
+            <div class="timeline-body"><p>You could ship a rust crate, then build a python API package using the rust crate, just to keep the current package small and simple.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

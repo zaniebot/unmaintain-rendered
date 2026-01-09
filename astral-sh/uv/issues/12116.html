@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue with --locked flag when using both find-links and custom indices in workspaces - astral-sh/uv #12116</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issue with --locked flag when using both find-links and custom indices in workspaces</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12116">#12116</a>
+        opened by <a href="https://github.com/rayanramoul">@rayanramoul</a>
+        on 2025-03-11 16:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rayanramoul">@rayanramoul</a> on 2025-03-11 16:33</div>
+            <div class="timeline-body"><p>First of all thanks Astral team for the amazing tool UV is!</p>
+<h1>Summary</h1>
+<p>I've encountered what appears to be a bug when using UV's workspace feature with a specific configuration. The issue occurs when:</p>
+<p>The root workspace <code>pyproject.toml</code> contains a <code>find-links</code> configuration
+A sub-package pyproject.toml defines custom indices via <code>tool.uv.sources</code> or <code>tool.uv.index</code></p>
+<h1>Steps to Reproduce</h1>
+<p>Having at the root of a workspace the following <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;root-project&quot;
+version = &quot;0.0.1&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;==3.10.*&quot;
+dependencies = [
+  &quot;package1&quot;
+]
+
+[tool.uv.sources]
+package1 = [
+  { workspace = true },
+]
+
+[tool.uv]
+find-links = [
+  &quot;https://storage.googleapis.com/libtpu-releases/index.html&quot;,
+]
+
+
+[tool.uv.workspace]
+members = [&quot;packages/*&quot;]
+</code></pre>
+<p>And the following <code>package1</code>'s <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;package1&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;==3.10.*&quot;
+dependencies = [
+]
+
+[project.optional-dependencies]
+cpu = [
+  &quot;torch==2.3.0&quot;,
+]
+gpu = [
+  &quot;torch==2.3.0&quot;,
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cuda11&quot;, extra = &quot;gpu&quot; },
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+]
+
+
+[[tool.uv.index]]
+name = &quot;pytorch-cuda11&quot;
+url = &quot;https://download.pytorch.org/whl/cu118&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[tool.uv]
+conflicts = [ 
+  [
+    { extra = &quot;gpu&quot; },
+    { extra = &quot;cpu&quot; },
+  ],
+]
+package = true 
+
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+
+[tool.hatch.metadata]
+allow-direct-references = true
+</code></pre>
+<p>With that setup running <code>uv sync --all-packages</code> (completes successfully and updates uv.lock)
+And after that running</p>
+<pre><code>uv sync --all-packages --locked
+uv lock --locked
+</code></pre>
+<p>Get you the following error:</p>
+<pre><code>error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provided. To update the lockfile, run `uv lock`.
+</code></pre>
+<p>The command should succeed since the lockfile is already updated.
+It seems that the issue appears when these two configurations exist simultaneously:
+In the root workspace pyproject.toml:</p>
+<pre><code class="language-toml"># root's pyproject.toml
+[tool.uv]
+find-links = [
+  &quot;https://storage.googleapis.com/libtpu-releases/index.html&quot;,
+]
+</code></pre>
+<p>and</p>
+<pre><code class="language-toml"># sub-package's pyproject.toml
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cuda11&quot;, extra = &quot;gpu&quot; },
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cuda11&quot;
+url = &quot;https://download.pytorch.org/whl/cu118&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+</code></pre>
+<p>Removing either the <code>find-links</code> from the root or the custom index from the sub-package resolves the issue.</p>
+<p>I've created a minimal repository that reproduces this issue: <a href="https://github.com/rayanramoul/uv-issue-repo">reproduction</a></p>
+<p>Thank you!</p>
+<h3>Platform</h3>
+<p>MacOS</p>
+<h3>Version</h3>
+<p>0.6.5 (Homebrew 2025-03-06)</p>
+<h3>Python version</h3>
+<p>3.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @rayanramoul on 2025-03-11 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @konstin on 2025-03-12 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-14 01:16</div>
+            <div class="timeline-body"><p>Thanks for the clear issue. This is the same as https://github.com/astral-sh/uv/issues/11419 (though hard to tell from first glance): defining explicit indexes in child dependencies leads to consistent invalidation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-14 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12272.html">astral-sh/uv#12272</a> on 2025-03-18 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11419.html">astral-sh/uv#11419</a> on 2025-05-20 17:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

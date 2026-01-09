@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF012 false positive with annotations set as strings - astral-sh/ruff #12288</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF012 false positive with annotations set as strings</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12288">#12288</a>
+        opened by <a href="https://github.com/ZeeD">@ZeeD</a>
+        on 2024-07-11 12:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ZeeD">@ZeeD</a> on 2024-07-11 12:38</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>minimal case:</p>
+<pre><code class="language-python">from typing import ClassVar
+from typing import Final
+
+
+class C:
+    cv_orig: ClassVar[list[int]] = []
+    cv_str: 'ClassVar[list[int]]' = []
+
+    cv_final_orig: Final[list[int]] = []
+    cv_final_str: 'Final[list[int]]' = []
+
+    use_case: 'Final[list[C]]' = []
+</code></pre>
+<p>with <code>ruff 0.5.1</code> I got the error</p>
+<pre><code>RUF012 Mutable class attributes should be annotated with `typing.ClassVar`
+</code></pre>
+<p>for <code>cv_str</code>, <code>cv_final_str</code> and <code>use_case</code> (that was my initial scenario...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-07-12 04:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-12 04:27</div>
+            <div class="timeline-body"><p>I think this is the case for other rules as well like <code>RUF008</code>, <code>RUF009</code>, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 12:36</div>
+            <div class="timeline-body"><p>👍 Yeah we would need to parse these. I wonder if we should consider parsing these in the parser and adding them to the AST...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 12:37</div>
+            <div class="timeline-body"><p>Actually, we probably can't do that because you often need semantic information to know if a string is a type annotation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-12 12:44</div>
+            <div class="timeline-body"><p>We <em>do</em> parse it: https://github.com/astral-sh/ruff/blob/ecd6865d2800a574baf122583b6e463605af2ef5/crates/ruff_python_parser/src/typing.rs; I guess we need to provide some API to resolve it to the AST node if the model is in a type annotation context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 12:45</div>
+            <div class="timeline-body"><p>Yeah we just parse it much later, at the end IIRC.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 12:45</div>
+            <div class="timeline-body"><p>Perhaps we could parse these on-demand and store them on the semantic model.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 12:46</div>
+            <div class="timeline-body"><p>I guess that might not work because in theory these need to be evaluated lazily, at the very end (e.g., they can reference symbols that are imported afterwards, IIRC).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-12 12:56</div>
+            <div class="timeline-body"><p>At least for these 3 rules, they all require a class node which means we can store them in <code>Analyze</code> struct (https://github.com/astral-sh/ruff/blob/ecd6865d2800a574baf122583b6e463605af2ef5/crates/ruff_linter/src/checkers/ast/deferred.rs#L30-L37) and then later use <code>deferred_class.rs</code> (similar to <code>deferred_lambdas.rs</code>) to check for violations for these rules. We might want to update existing logic to not raise a violation if the annotation is a string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15345.html">astral-sh/ruff#15345</a> on 2025-01-08 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15857.html">astral-sh/ruff#15857</a> on 2025-01-31 17:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

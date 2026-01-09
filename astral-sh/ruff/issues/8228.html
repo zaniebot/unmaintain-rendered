@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid autofix for RSE102 - astral-sh/ruff #8228</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Invalid autofix for RSE102</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8228">#8228</a>
+        opened by <a href="https://github.com/Geo5">@Geo5</a>
+        on 2023-10-25 21:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Geo5">@Geo5</a> on 2023-10-25 21:12</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>In the following simple example <code>test_ruff.py</code>:</p>
+<pre><code class="language-python">from typing import NoReturn
+
+
+class SomeObject:
+    def get_error(self) -&gt; ValueError:
+        return ValueError(&quot;some error&quot;)
+
+
+def testfun() -&gt; NoReturn:
+    obj = SomeObject()
+
+    raise obj.get_error()
+
+
+testfun()
+</code></pre>
+<p>When run:</p>
+<pre><code class="language-sh">$ python test_ruff.py 
+Traceback (most recent call last):
+  File ..., line 15, in &lt;module&gt;
+    testfun()
+  File ..., line 12, in testfun
+    raise obj.get_error()
+ValueError: some error
+</code></pre>
+<p>ruff reports the error <a href="https://docs.astral.sh/ruff/rules/unnecessary-paren-on-raise-exception/">RSE102</a> and suggests fixing it, producing:</p>
+<pre><code class="language-diff">$ ruff check --isolated --select RSE102 --fix --diff test_ruff.py
+--- test_ruff.py
++++ test_ruff.py
+@@ -9,7 +9,7 @@
+ def testfun() -&gt; NoReturn:
+     obj = SomeObject()
+ 
+-    raise obj.get_error()
++    raise obj.get_error
+ 
+ 
+ testfun()
+
+Would fix 1 error.
+</code></pre>
+<p>Which changes the behaviour when run from the original code:</p>
+<pre><code class="language-sh">$ python test_ruff.py 
+Traceback (most recent call last):
+  File ..., line 15, in &lt;module&gt;
+    testfun()
+  File ..., line 12, in testfun
+    raise obj.get_error
+TypeError: exceptions must derive from BaseException
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-25 21:55</div>
+            <div class="timeline-body"><p>Ahh yeah, I believe this is similar to https://github.com/astral-sh/ruff/issues/5416 -- we just can't detect this reliably in all cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-25 21:56</div>
+            <div class="timeline-body"><p>We should mark this as an unsafe edit, so that users have to opt in to apply it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-10-25 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-25 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8231.html">astral-sh/ruff#8231</a> on 2023-10-25 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Geo5">@Geo5</a> on 2023-10-25 22:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Ahh yeah, I believe this is similar to #5416 -- we just can't detect this reliably in all cases.</p>
+</blockquote>
+<p>I agree.
+For some reason i must have misused the Github search, so i did not find this issue before - sorry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-25 23:16</div>
+            <div class="timeline-body"><p>No worries! Thanks for reporting, since we did have at least one change to make here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-26 15:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

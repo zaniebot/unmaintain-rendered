@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Inverse narrowing without explicit `else` branches - astral-sh/ruff #14593</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Inverse narrowing without explicit `else` branches</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14593">#14593</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-25 19:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-25 19:34</div>
+            <div class="timeline-body"><p>Consider the following code:</p>
+<pre><code class="language-py">def optional_int() -&gt; int | None: ...
+x = optional_int()
+
+if x is None:
+    x = 0
+else:
+    pass
+
+reveal_type(x)  # revealed: int
+</code></pre>
+<p>We correctly infer <code>int</code> for <code>x</code> in the final line. This works because we union the types of both branches. The <code>if</code> branch has an explicit definition of <code>x</code> with type <code>Literal[0]</code>. And the empty <code>else</code> branch has a type of <code>(int | None) &amp; ~None = int</code> for <code>x</code>, thanks to narrowing. The union of these two, <code>Literal[0] | int</code>, then simplifies to <code>int</code>.</p>
+<p>However, if we remove the empty <code>else</code> branch, we get a type of <code>x: int | None</code> in the final line. This should be fixed. We should not union <code>Literal[0]</code> from the <code>if</code> branch with what we had before (<code>int | None</code>), but rather apply the inverted narrowing condition to the pre-<code>if</code> type of <code>x</code>, just as if we had an empty <code>else</code> branch.</p>
+<pre><code class="language-py">def optional_int() -&gt; int | None: ...
+x = optional_int()
+
+if x is None:
+    x = 0
+
+reveal_type(x)  # revealed: int | None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-25 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Narrowing should " to "[red-knot] Inverse narrowing without explicit `else` branches" by @sharkdp on 2024-11-25 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2024-11-26 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sransara">@sransara</a> on 2024-11-26 22:04</div>
+            <div class="timeline-body"><p>I would like to take a shot at this tonight if no one has picked this up yet.</p>
+<p>BTW I assume you meant to write something like following for the second example?</p>
+<pre><code>def optional_int() -&gt; int | None: ...
+x = optional_int()
+
+if x is None:
+    x = 0
+
+reveal_type(x)  # revealed: int | None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sransara">@sransara</a> on 2024-11-27 01:52</div>
+            <div class="timeline-body"><p>My thinking is that:</p>
+<p>https://github.com/astral-sh/ruff/blob/82c01aa6623b7d4df1e4f06cb2889059f287336f/crates/red_knot_python_semantic/src/semantic_index/builder.rs#L791-L799</p>
+<p>needs to be adjusted to match an <code>else: pass</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14621.html">astral-sh/ruff#14621</a> on 2024-11-27 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-11-28 14:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

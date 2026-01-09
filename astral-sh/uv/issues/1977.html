@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Agent includes uv's version - astral-sh/uv #1977</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>User Agent includes uv's version</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1977">#1977</a>
+        opened by <a href="https://github.com/samypr100">@samypr100</a>
+        on 2024-02-26 03:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/samypr100">@samypr100</a> on 2024-02-26 03:03</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Currently when uv makes requests the User Agent is set to just <code>uv</code>.</p>
+<p>It would be nice that it includes the version (e.g. <code>uv/{version}</code>) for improved visibility and statistics for the registry provider on the client being used.</p>
+<p>For example, pip usually has <code>pip/{version} {other metadata}</code>, curl has <code>curl/{version}</code>, httpx has <code>httpx/{version}</code>, requests has <code>python-requests/{version}</code>, and so forth. Hence <code>uv/{version}</code> seems like the correct way to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-02-26 03:04</div>
+            <div class="timeline-body"><p>Upon looking at <code>uv-client</code>, I see that's where the User Agent seems to be set for all request across all packages, so there's likely a couple solutions to this depending on the approach since that's where the user agent is being set.</p>
+<ul>
+<li><p>Option 1: Expose a module in <code>uv-client</code> that allows to globally/static set the UA version (e.g. via OnceCell with getter/setter) and set the version once at the beginning in UV's main entrypoint function.</p>
+</li>
+<li><p>Option 2: Create a new crate (e.g. <code>uv-version</code> or <code>uv-codex</code>) that has becomes the single source of truth for this type of data given cargo dependencies are unidirectional.</p>
+</li>
+<li><p>Option 3: Change RegistryClientBuilder to take a UA version and modify all related interfaces (among all dependencies) to pass down uv's version across the codebase to RegistryClientBuilder. Not entirely sure of the complexity here (e.g. if there's only one client or multiple standalone clients across dependencies).</p>
+</li>
+<li><p>Option 4: Maybe we could use cargo feature flags to hack around it, but that'd seems burdensome to maintain.</p>
+</li>
+</ul>
+<p>Option 1 seems the most straightforward, but if we are thinking of adding more data to be shared by other modules maybe Option 2 is best. If the type of data in the User Agent (or other request headers) end up being more dynamic over time, then Option 3 might be needed instead.</p>
+<p>Thoughts here?</p>
+<p>Maybe related note: pip itself seems to also include <a href="https://github.com/pypa/pip/blob/main/src/pip/_internal/network/session.py#L109">other metadata</a> in JSON form in the User Agent header. Seems like the data described in https://github.com/astral-sh/uv/issues/1958?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-02-26 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-26 03:38</div>
+            <div class="timeline-body"><p>I think if we <em>just</em> wanted to include the version, something like (1) would be fine. Although, it's possible we can just use <code>env!(&quot;CARGO_PKG_VERSION&quot;)</code> to inline the version in <code>uv-client</code>, and not make <em>any</em> other code changes?</p>
+<p>If we want to support https://github.com/astral-sh/uv/issues/1958 though, we'll need a way to set the user agent based on the Python interpreter. We have that information in-memory already, but threading it through to the client will require some work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-02-26 03:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Although, it's possible we can just use env!(&quot;CARGO_PKG_VERSION&quot;) to inline the version in uv-client, and not make any other code changes?</p>
+</blockquote>
+<p>I was intitially thinking it would be ideal to be uv's version and not uv-client's version otherwise I think the header would be <code>uv/0.0.1</code> versus <code>uv/0.1.10</code> unless you're thinking of aligning the uv-* package versions the same as uv, which would also be a valid option here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-26 20:46</div>
+            <div class="timeline-body"><p>Oh yes, sorry, it should definitely be the <code>uv</code> version. (I was confused because we use <code>env!(&quot;CARGO_PKG_VERSION&quot;)</code> for the virtualenv, but that code is actually in the <code>uv</code> crate, not a layer below.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2136.html">astral-sh/uv#2136</a> on 2024-03-03 02:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-04 19:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

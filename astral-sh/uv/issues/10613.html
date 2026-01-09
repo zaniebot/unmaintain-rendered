@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run --python 3.13  python` hangs and nothing happens on macOS - astral-sh/uv #10613</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run --python 3.13  python` hangs and nothing happens on macOS</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10613">#10613</a>
+        opened by <a href="https://github.com/peterbe">@peterbe</a>
+        on 2025-01-14 20:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/peterbe">@peterbe</a> on 2025-01-14 20:06</div>
+            <div class="timeline-body"><pre><code>❯ uv --version
+uv 0.5.18 (Homebrew 2025-01-11)
+
+❯ uv run --python 3.13  python
+
+
+...just hangs and nothing happens...
+</code></pre>
+<p>I know I know, this could be a user-error but the point is that it's making it very hard to figure out how to solve this.</p>
+<pre><code>❯ uv run --python 3.12 python
+Python 3.12.8 (main, Dec  6 2024, 19:42:06) [Clang 18.1.8 ] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; 
+</code></pre>
+<p>...works fine.</p>
+<p>Something's not right with 3.13, and I'm not desperate to use it, but I'd love it if there was a timeout or some way to gain insight into what it's getting hung up on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 20:19</div>
+            <div class="timeline-body"><p>What's the output of <code>which python</code>, <code>uv python find 3.13</code>, <code>RUST_LOG=trace uv run -v --python 3.13 python</code>, <code>uv run -v --python 3.13 which python</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-14 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2025-01-14 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterbe">@peterbe</a> on 2025-01-14 20:37</div>
+            <div class="timeline-body"><blockquote>
+<p><code>which python</code></p>
+</blockquote>
+<pre><code>/Users/peterbe/bin/python
+</code></pre>
+<p>See https://www.peterbe.com/plog/run-standalone-python-2025 :)</p>
+<blockquote>
+<p><code>uv python find 3.13</code></p>
+</blockquote>
+<pre><code>/opt/homebrew/opt/python@3.13/bin/python3.13
+</code></pre>
+<blockquote>
+<p><code>uv python find 3.12</code></p>
+</blockquote>
+<pre><code>/Users/peterbe/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/bin/python3.12
+</code></pre>
+<blockquote>
+<p><code>RUST_LOG=trace uv run -v --python 3.13 python</code></p>
+</blockquote>
+<p>https://gist.github.com/peterbe/b4dd64b935fe3d72194f823c9cd76a48</p>
+<blockquote>
+<p><code>uv run -v --python 3.13 which python</code></p>
+</blockquote>
+<pre><code>❯ uv run -v --python 3.13 which python
+DEBUG uv 0.5.18 (Homebrew 2025-01-11)
+DEBUG No project found; searching for Python interpreter
+DEBUG Searching for Python 3.13 in virtual environments, managed installations, or search path
+DEBUG Searching for managed installations at `.local/share/uv/python`
+DEBUG Skipping incompatible managed installation `cpython-3.12.8-macos-aarch64-none`
+DEBUG Skipping incompatible managed installation `cpython-3.12.7-macos-aarch64-none`
+DEBUG Skipping incompatible managed installation `cpython-3.12.5-macos-aarch64-none`
+DEBUG Skipping incompatible managed installation `cpython-3.12.0-macos-aarch64-none`
+DEBUG Skipping incompatible managed installation `cpython-3.10.2-macos-aarch64-none`
+DEBUG Failed to inspect Python interpreter from search path at `bin/python`
+DEBUG Skipping bad interpreter at /Users/peterbe/bin/python from search path: Querying Python at `/Users/peterbe/bin/python` failed with exit status exit status: 1
+--- stdout:
+
+--- stderr:
++ uv run --python 3.12 --with requests python -I -B -c import 'sys;' sys.path = '[&quot;/Users/peterbe/.cache/uv/.tmpaB1fSu&quot;]' + 'sys.path;' from python.get_interpreter_info import 'main;' 'main()'
+  File &quot;&lt;string&gt;&quot;, line 1
+    import
+          ^
+SyntaxError: invalid syntax
+---
+DEBUG Found `cpython-3.13.1-macos-aarch64-none` at `/opt/homebrew/bin/python3.13` (search path)
+DEBUG Using Python 3.13.1 interpreter at: /opt/homebrew/opt/python@3.13/bin/python3.13
+DEBUG Running `which python`
+/Users/peterbe/bin/python
+DEBUG Command exited with code: 0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 20:45</div>
+            <div class="timeline-body"><p>From https://gist.github.com/peterbe/b4dd64b935fe3d72194f823c9cd76a48 it looks like it runs fine and doesn't hang. Am I misreading?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 20:47</div>
+            <div class="timeline-body"><p>Just fyi, we do support <code>uv python install --preview --default</code> to add <code>python</code> to your <code>PATH</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterbe">@peterbe</a> on 2025-01-14 20:48</div>
+            <div class="timeline-body"><p>Ha! Yeah.</p>
+<pre><code>❯ uv run --python 3.13 python
+Python 3.13.1 (main, Dec  3 2024, 17:59:52) [Clang 16.0.0 (clang-1600.0.26.4)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;
+</code></pre>
+<p>That's different from about 40 minutes ago when I wrote this issue :)</p>
+<p>No idea what changed in that timespan.</p>
+<p>It's still curious that it <em>did</em> hang without any sign of life or errors or warnings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterbe">@peterbe</a> on 2025-01-14 20:49</div>
+            <div class="timeline-body"><p>Close or shall we worry about that odd lack of no-feedback-hanging? ...for the sake other people coming up against the same trouble some day.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 20:51</div>
+            <div class="timeline-body"><p>I'm a bit confused about how it <em>could</em> hang. Let's close for now but feel free to re-open if you encounter it and can get logs or a reproduction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-14 20:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

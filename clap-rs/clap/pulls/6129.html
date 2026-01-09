@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: Add default_values_if and default_values_ifs - clap-rs/clap #6129</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: Add default_values_if and default_values_ifs</h1>
+
+    <div class="meta">
+        <span class="state state-merged">Merged</span>
+        <a href="https://github.com/clap-rs/clap/pull/6129">#6129</a>
+        opened by <a href="https://github.com/cooronx">@cooronx</a>
+        on 2025-09-13 14:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cooronx">@cooronx</a> on 2025-09-13 14:22</div>
+            <div class="timeline-body"><p>Fixes #5698</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-09-15 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_builder/src/builder/arg.rs</code>:3071 on 2025-09-15 13:57</div>
+            <div class="timeline-body"><p><code>default_values</code> doesn't take <code>IntoRessettable</code>.  Likely this shouldn't as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_builder/src/builder/arg.rs</code>:3216 on 2025-09-15 13:57</div>
+            <div class="timeline-body"><p>ditto</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-09-15 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-09-15 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>tests/builder/default_vals.rs</code>:319 on 2025-09-15 13:57</div>
+            <div class="timeline-body"><p>If the tests aren't being added before the commit, could you add them in the same commit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cooronx">@cooronx</a> reviewed on 2025-09-15 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cooronx">@cooronx</a> on <code>tests/builder/default_vals.rs</code>:319 on 2025-09-15 14:19</div>
+            <div class="timeline-body"><p>got it, i will open a new PR with tests before feature</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cooronx">@cooronx</a> reviewed on 2025-09-15 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cooronx">@cooronx</a> on <code>clap_builder/src/builder/arg.rs</code>:3071 on 2025-09-15 14:19</div>
+            <div class="timeline-body"><p>got it, i will fix it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cooronx">@cooronx</a> reviewed on 2025-09-15 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cooronx">@cooronx</a> on <code>clap_builder/src/builder/arg.rs</code>:3071 on 2025-09-15 14:48</div>
+            <div class="timeline-body"><p>@epage I have some doubts about the implementation</p>
+<pre><code>Arg::new(&quot;args&quot;)
+       .long(&quot;args&quot;)
+       .num_args(2)
+       .default_values_if(&quot;opt&quot;, &quot;value&quot;, [Some(&quot;df1&quot;.into()),None]) // the first arg set to df1, second arg set to None 
+</code></pre>
+<p>Do you think this usage is allowed?
+or just</p>
+<pre><code>Arg::new(&quot;args&quot;)
+       .long(&quot;args&quot;)
+       .num_args(2)
+       .default_values_if(&quot;opt&quot;, &quot;value&quot;, None) // means two args all set to None
+</code></pre>
+<p>I personally think the second one is better</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cooronx">@cooronx</a> on <code>clap_builder/src/builder/arg.rs</code>:3071 on 2025-09-16 09:19</div>
+            <div class="timeline-body"><p>@epage sorry for the trouble, I checked the <code>default_values</code> and i find out <code>default_values</code> doesn't take <code>None</code>, so the correct version of default_values_if should be</p>
+<pre><code>Arg::new(&quot;args&quot;)
+       .long(&quot;args&quot;)
+       .num_args(2)
+       .default_values_if(&quot;opt&quot;, &quot;value&quot;,[] ) // means two args all set to None
+</code></pre>
+<p>not sure if it's correct usage</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cooronx">@cooronx</a> reviewed on 2025-09-16 09:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-09-16 18:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_builder/src/builder/arg.rs</code>:3071 on 2025-09-16 18:59</div>
+            <div class="timeline-body"><p>Yes, that would match <code>default_values</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-09-16 18:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>tests/builder/default_vals.rs</code>:319 on 2025-09-16 18:59</div>
+            <div class="timeline-body"><p>Doesn't need to be a new one, feel free to force-push to this one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-09-17 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>tests/builder/default_vals.rs</code>:319 on 2025-09-17 13:54</div>
+            <div class="timeline-body"><p>My &quot;tests added before the commit&quot; was referring to an encouraged practice from our <a href="https://github.com/clap-rs/clap/blob/master/CONTRIBUTING.md#preparing-the-pr">CONTRIBUTING.md</a> but more importantly, commits should be atomic.  In this case, the test commit will fail to build because it uses APIs not yet available.  In a situation like this, the practice from the CONTRIB doesn't quite make sense, so the tests would be in the same commit as the change which is what I was asking for though I can see how my statement could be taken as preferring that more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cooronx">@cooronx</a> reviewed on 2025-09-17 14:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cooronx">@cooronx</a> on <code>tests/builder/default_vals.rs</code>:319 on 2025-09-17 14:11</div>
+            <div class="timeline-body"><p>You're right, this kind of commit will cause build fail 😿. sorry for the misunderstanding</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-11-17 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_builder/src/builder/arg.rs</code>:84 on 2025-11-17 15:32</div>
+            <div class="timeline-body"><p>Why is this <code>Vec&lt;Option&lt;OsStr&gt;&gt;</code> rather than <code>Option&lt;Vec&lt;OsStr&gt;&gt;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-11-17 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_builder/src/builder/arg.rs</code>:3109 on 2025-11-17 15:32</div>
+            <div class="timeline-body"><p>Why are we treating an empty value is a sentinel value?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cooronx">@cooronx</a> reviewed on 2025-11-18 15:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cooronx">@cooronx</a> on <code>clap_builder/src/builder/arg.rs</code>:3109 on 2025-11-18 15:55</div>
+            <div class="timeline-body"><p>@epage I'm a little confused about this.</p>
+<ol>
+<li><code>pub fn default_values_if(      mut self,      arg_id: impl Into&lt;Id&gt;,      predicate: impl Into&lt;ArgPredicate&gt;,      defaults: impl IntoIterator&lt;Item = impl Into&lt;OsStr&gt;&gt;,  )</code> in order to match <code>pub fn default_values(mut self, vals: impl IntoIterator&lt;Item = impl Into&lt;OsStr&gt;&gt;)</code></li>
+<li>however, If written this way, it will prevent the input of <code>None</code>.</li>
+<li>to represent the value <code>None</code>, I have to write it like this.</li>
+</ol>
+<pre><code>default_values_if(&quot;opt&quot;, &quot;value&quot;, None)  // error, default_values doesn't take IntoRessettable
+default_values_if(&quot;opt&quot;, &quot;value&quot;, []) // error, type annotations needed
+
+
+default_values_if(&quot;opt&quot;, &quot;value&quot;, [&quot;&quot;]) // ok, one way to express None, but if user just want a empty string? And we need to treat an empty value as a sentinel value
+</code></pre>
+<p>So I'm not quite sure how to implement it. Maybe <code>None</code> is not allowed in default_values_if?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-11-18 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_builder/src/builder/arg.rs</code>:3109 on 2025-11-18 17:15</div>
+            <div class="timeline-body"><p>If a user needs <code>None</code>, they should likely be using <code>default_value_if</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2025-11-18 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_builder/src/builder/arg.rs</code>:3109 on 2025-11-18 17:15</div>
+            <div class="timeline-body"><p>Just like <code>default_value</code> / <code>default_values</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cooronx">@cooronx</a> reviewed on 2025-11-18 17:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cooronx">@cooronx</a> on <code>clap_builder/src/builder/arg.rs</code>:3109 on 2025-11-18 17:37</div>
+            <div class="timeline-body"><p>got it, thx</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cooronx">@cooronx</a> reviewed on 2025-11-19 12:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cooronx">@cooronx</a> on <code>clap_builder/src/builder/arg.rs</code>:84 on 2025-11-19 12:38</div>
+            <div class="timeline-body"><p>fixed</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

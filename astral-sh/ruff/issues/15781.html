@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;RUF047&quot; (needless-else) conflicts with pylint R5601 (confusing-consecutive-elif), Can't suppress the rule inline. - astral-sh/ruff #15781</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;RUF047&quot; (needless-else) conflicts with pylint R5601 (confusing-consecutive-elif), Can't suppress the rule inline.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15781">#15781</a>
+        opened by <a href="https://github.com/IgnatKudriavtsev">@IgnatKudriavtsev</a>
+        on 2025-01-28 08:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/IgnatKudriavtsev">@IgnatKudriavtsev</a> on 2025-01-28 08:28</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>ruff 0.9.3</p>
+<p>Ruff preview rule <code>RUF047 (needless-else)</code> complains on the code that has an intentionally added empty <code>else</code> branch as one of recommended by pylint ways to fix the  rule <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/confusing-consecutive-elif.html">confusing-consecutive-elif / R5601</a>:</p>
+<blockquote>
+</blockquote>
+<blockquote>
+<p>Description:</p>
+<p>Used when an elif statement follows right after an indented block which itself ends with if or elif. It may not be obvious if the elif statement was willingly or mistakenly unindented. Extracting the indented if statement into a separate function might avoid confusion and prevent errors.</p>
+<p>Problematic code:</p>
+<pre><code>def myfunc(shall_continue: bool, shall_exit: bool):
+    if shall_continue:
+        if input(&quot;Are you sure?&quot;) == &quot;y&quot;:
+            print(&quot;Moving on.&quot;)
+    elif shall_exit:  # [confusing-consecutive-elif]
+        print(&quot;Exiting.&quot;)
+</code></pre>
+<p>Correct code:</p>
+<pre><code># Option 1: add explicit 'else'
+def myfunc(shall_continue: bool, shall_exit: bool):
+    if shall_continue:
+        if input(&quot;Are you sure?&quot;) == &quot;y&quot;:
+            print(&quot;Moving on.&quot;)
+        else:
+            pass
+    elif shall_exit:
+        print(&quot;Exiting.&quot;)
+
+</code></pre>
+<p>...</p>
+</blockquote>
+<p>Currently we need to either suppress ruff or pylint rules for such cases.</p>
+<p>Actually, I'm not sure what is the bigger problem here: the fact the ruff complains on the problem or the fact that I can't suppress it locally.</p>
+<p>Local suppression of the ruff locally in this case doesn't work because of <code>RUF100 [*] Unused 'noqa' directive (unused: 'RUF047')</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-28 11:51</div>
+            <div class="timeline-body"><p>Hmm, so there are two issues here.</p>
+<p>The first issue is about <code>RUF047</code> conflicting with <code>R5601</code>. This isn't about two Ruff rules conflicting. This is about <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/confusing-consecutive-elif.html">R5601 in the original pylint linter</a> making a conflicting recommendation with one of Ruff's rules.</p>
+<p>Ruff doesn't currently have a reimplementation of R5601 in its pylint category. The rule was considered in https://github.com/astral-sh/ruff/pull/10103, but was rejected for now. In general, we <em>try</em> to guarantee that no two Ruff rules will offer conflicting recommendations, but I don't think we make any guarantees about being able to run Ruff alongside other linters.</p>
+<p>The second issue is about not being able to suppress <code>RUF047</code>. I <a href="https://play.ruff.rs/5092a900-8b18-40fc-956f-b77c388e2398">can reproduce that in the Ruff playground</a>. That looks like a bug to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-01-28 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">suppression</span> added by @AlexWaygood on 2025-01-28 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-28 16:57</div>
+            <div class="timeline-body"><p>This is an edge case, as <code>else</code> branches with any kinds of comments, pragma or not, are never reported. Thus, I think it is more preferable to either suppress <code>R5601</code> or add a (normal) comment explaining why that empty branch is necessary.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

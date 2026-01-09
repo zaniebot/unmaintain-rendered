@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clarify the precedence/inheritance of config settings in documentation - astral-sh/ruff #18641</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clarify the precedence/inheritance of config settings in documentation</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18641">#18641</a>
+        opened by <a href="https://github.com/pakal">@pakal</a>
+        on 2025-06-12 10:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pakal">@pakal</a> on 2025-06-12 10:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>There are unclear/misleading paragraphs in the page regarding ruff configurations :
+https://docs.astral.sh/ruff/configuration/</p>
+<p><em>&quot;If no config file is found in the filesystem hierarchy, Ruff will fall back to using a default configuration. If a user-specific configuration file exists at ${config_dir}/ruff/pyproject.toml, that file will be used instead of the default configuration&quot;</em></p>
+<p><em>&quot;Unlike <a href="https://eslint.org/docs/latest/use/configure/configuration-files#cascading-configuration-objects">ESLint</a>, Ruff does not merge settings across configuration files; instead, the &quot;closest&quot; configuration file is used, and any parent configuration files are ignored. In lieu of this implicit cascade, Ruff supports an <a href="https://docs.astral.sh/ruff/settings/#extend">extend</a> field, which allows you to inherit the settings from another config file, like so:...&quot;</em></p>
+<p>These paragraphs assert that the default (implicit) settings are ditched as soon as a configuration file is found; however, ruff seems to, on the contrary, remember default settings (like excluding .venv/.git...), even if ruff settings are added to e.g. pyproject.toml.</p>
+<p>And  settings like &quot;extend-include&quot; can be used without &quot;extend = <config-file>&quot;, thus demonstrating that default settings are inherited, not ignored.</p>
+<p>However, it seems true when an explicit settings file is found, other config files are ignored unless the &quot;extend=...&quot; setting is used to force their inheritance.
+But when &quot;extend&quot; is used, it should be probably be clarified what <em>&quot;merging&quot;</em> means, e.g. the fact that &quot;exclude&quot; directives override each other whereas &quot;extend-exclude&quot; values are concatenated.</p>
+<h3>Version</h3>
+<p>0.11.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-06-12 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-19 14:41</div>
+            <div class="timeline-body"><p>Thanks for raising this. I find the description fairly accurate. What we could add is a paragraph mentioning that settings left unspecified (in any configuration file) fall-back to their default. Although this is sort of the default of any tool. So I'm not sure if it's worth adding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pakal">@pakal</a> on 2025-06-20 08:16</div>
+            <div class="timeline-body"><p>Yes using &quot;default values&quot; is normal in about any tool, that's actually the overall phrasing of this doc page https://docs.astral.sh/ruff/configuration/ which made me believe that, for once, this wasn't the case  ^^</p>
+<p>And I felt like it was hinted <strong>thrice</strong> :</p>
+<p>&quot;If left unspecified, Ruff's default configuration is equivalent to:&quot; -&gt; Made me believe that once some config is specify, this default configuration &quot;file&quot; disappears
+&quot;If a user-specific configuration file exists at ${config_dir}/ruff/pyproject.toml, that file will be used INSTEAD of the default configuration&quot; -&gt; No, it will just override SOME of the default value, the &quot;default configuration&quot; is STILL used.
+&quot;Ruff does not merge settings across configuration files&quot; -&gt; Yes it does merge, but only with the default configuration, not user-specified configuration files.</p>
+<p>Would you want me to have an attempt at rephrasing the whole first paragraphs, so that it's clear that they just present DEFAULT VALUES of SETTINGS, and that these settings can be overridden setting-by-setting by custom configuration files, and that custom configuration files are not merged together unless explicitly ordered so ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-21 17:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Would you want me to have an attempt at rephrasing the whole first paragraphs, so that it's clear that they just present DEFAULT VALUES of SETTINGS, and that these settings can be overridden setting-by-setting by custom configuration files, and that custom configuration files are not merged together unless explicitly ordered so ?</p>
+</blockquote>
+<p>That would be great. I can't guarantee that we'll merge it but it would at least help starting a discussion :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pakal">@pakal</a> on 2025-06-29 14:35</div>
+            <div class="timeline-body"><p>Oki right, I'll use a current project to be sure I understand all about the <em>actual</em> algorithm under Ruff settings precedence, and will have a look at a Docs PR in a few weeks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19236.html">astral-sh/ruff#19236</a> on 2025-07-09 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pakal">@pakal</a> on 2025-07-18 13:00</div>
+            <div class="timeline-body"><p>Oki I've tweaked several lines to include the &quot;default settings as fallback&quot; into the workflow description.</p>
+<p>I also added a comment regarding select/extend-select inheritance, as per https://github.com/astral-sh/ruff/issues/18884#issuecomment-3056416228 , since it can be unexpected to newcomers.</p>
+<p>( link to the pr - https://github.com/astral-sh/ruff/pull/19236 )</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

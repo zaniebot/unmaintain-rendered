@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hardlinking warning -&gt; how to silence it? - astral-sh/uv #6101</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>hardlinking warning -&gt; how to silence it?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6101">#6101</a>
+        opened by <a href="https://github.com/stas00">@stas00</a>
+        on 2024-08-15 01:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stas00">@stas00</a> on 2024-08-15 01:24</div>
+            <div class="timeline-body"><p>@charliermarsh, in https://github.com/astral-sh/uv/issues/5581 you resolved the issue with hardlinking in a shared environment, but how do we get rid of this warning?</p>
+<p>I now get it on my desktop as well, where I'm not sharing anything with anybody, but the cache and the conda envs aren't on the same drives.</p>
+<pre><code>$ uv pip install numpy==1.26.4
+Resolved 1 package in 4ms
+Uninstalled 1 package in 18ms
+░░░░░░░░░░░░░░░░░░░░ [0/1] Installing wheels...                                                                                          
+
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance. If this is intentional, use `--link-mode=copy` to suppress this warning.
+
+hint: If the cache and target directories are on different filesystems, hardlinking may not be supported.
+Installed 1 package in 50ms
+ - numpy==2.0.1
+ + numpy==1.26.4
+</code></pre>
+<p>I really don't care whether it's hardlinked or copied, but you can imagine that this is tedious to get this message on every use of <code>uv</code> - surely it's ok to warn once and be done, no?</p>
+<p>I'd be happy with an env var which would override the warning. and ideally then the warning would add an instruction on how to remove itself.</p>
+<p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 01:28</div>
+            <div class="timeline-body"><p>Hah sorry! Yeah, I bet that's annoying. I think the easiest thing to do is set <code>UV_LINK_MODE=copy</code> -- does that work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-15 01:30</div>
+            <div class="timeline-body"><p>yes, could we please add it to the warning?</p>
+<pre><code>To remove this warning, set `UV_LINK_MODE=copy`
+</code></pre>
+<p>Thank you for the quick resolution, @charliermarsh - I forgot that on the shared env at work I did set <code>UV_LINK_MODE=copy</code> - so will do the same on my desktop now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 01:31</div>
+            <div class="timeline-body"><p>Good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-15 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-08-15 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6103.html">astral-sh/uv#6103</a> on 2024-08-15 01:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-15 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-15 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-19 18:10</div>
+            <div class="timeline-body"><p>@charliermarsh, unfortunately this didn't work, I still get the warning despite having <code>UV_LINK_MODE=copy</code> preset:</p>
+<pre><code>$ echo $UV_LINK_MODE
+copy
+
+$ uv pip install uv -P uv
+Resolved 1 package in 322ms
+Prepared 1 package in 511ms
+Uninstalled 1 package in 8ms
+░░░░░░░░░░░░░░░░░░░░ [0/1] Installing wheels...                                                                                           warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance. If this is intentional, use `--link-mode=copy` to suppress this warning.
+
+hint: If the cache and target directories are on different filesystems, hardlinking may not be supported.
+Installed 1 package in 18ms
+ - uv==0.2.36
+ + uv==0.2.37
+ 
+$ uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+Resolved 26 packages in 1.30s
+Prepared 1 package in 144ms
+Uninstalled 2 packages in 19ms
+░░░░░░░░░░░░░░░░░░░░ [0/1] Installing wheels...                                                                                           warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 9ms
+ - torchaudio==2.2.2
+ - torchaudio==2.3.1
+ + torchaudio==2.4.0+cu124
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-19 18:11</div>
+            <div class="timeline-body"><p>Interesting, that shouldn't be possible, I'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-19 18:12</div>
+            <div class="timeline-body"><p>Is it possible https://github.com/astral-sh/uv/pull/6103 didn't make it into the <code>uv==0.2.37</code> release?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-20 19:13</div>
+            <div class="timeline-body"><p>Is it possible that in the second command, you're not getting <code>0.2.37</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-20 19:29</div>
+            <div class="timeline-body"><p>On the shared environment where we had perms issue it seems to be fine - no warnings.</p>
+<p>This is on my desktop where the cache and the conda env are on different drives:</p>
+<pre><code>$ uv pip install uv -P uv
+Resolved 1 package in 294ms
+Prepared 1 package in 497ms
+Uninstalled 1 package in 0.40ms
+░░░░░░░░░░░░░░░░░░░░ [0/1] Installing wheels...                                                                                           warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 13ms
+ - uv==0.2.37
+ + uv==0.3.0
+
+$ echo $UV_LINK_MODE
+copy
+
+$ uv --version
+uv 0.3.0
+
+$ uv pip install vllm==0.5.0
+Resolved 106 packages in 29ms
+░░░░░░░░░░░░░░░░░░░░ [0/3] Installing wheels...                                                                                           warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+█████████████░░░░░░░ [2/3] xformers==0.0.26.post1                                                                                         ^C
+</code></pre>
+<p>I even tried activating/deactivating conda envs as sometimes it'd glitch silently failing to activate some env but reporting it as activated, but no, the same behavior ensues.</p>
+<p>Might you be able to reproduce by putting a cache on a different drive?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-20 19:34</div>
+            <div class="timeline-body"><p>Thanks. Yeah I'm just trying to figure out how this is possible. Those warnings only exist in functions that shouldn't be called at all if you have <code>copy</code> set. Do you see the same warnings with <code>--link-mode=copy</code>? Trying to understand if it's a problem with configuration or something else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2024-08-20 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-20 19:35</div>
+            <div class="timeline-body"><p>the warning goes away if I use <code>uv pip install --link-mode=copy vllm==0.5.0</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-20 19:37</div>
+            <div class="timeline-body"><p>What about <code>UV_LINK_MODE=copy uv pip install vllm==0.5.0</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-20 19:37</div>
+            <div class="timeline-body"><p>whoah! no warning with <code>UV_LINK_MODE=copy uv pip install vllm==0.5.4</code> either</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-20 19:38</div>
+            <div class="timeline-body"><p>and I checked that there is no whitespace in the env var:</p>
+<pre><code>$ echo &quot;[$UV_LINK_MODE]&quot;
+[copy]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-20 19:39</div>
+            <div class="timeline-body"><p>this is totally strange, it's also fine if I first set again <code>export UV_LINK_MODE=copy</code> in the interactive shell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-20 19:40</div>
+            <div class="timeline-body"><p>aha! It wasn't exported in <code>~/.bashrc</code> - this is so silly - it's visible in the shell, but not to descendants. this is it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-20 19:42</div>
+            <div class="timeline-body"><p>hmm, how does one know if an env var is exported or not from inside bash.</p>
+<p>but adding the <code>export</code> solves the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-20 19:46</div>
+            <div class="timeline-body"><p>oddly I made the same mistake on the shared env setup and there somehow it wasn't a problem. So bizarre.</p>
+<p>would it help to stress in the warning to use <code>export UV_LINK_MODE=copy</code></p>
+<p>to check if an env var was exported I found one would do:</p>
+<pre><code>export -p | grep UV_LINK_MODE
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 01:57</div>
+            <div class="timeline-body"><p>Oh wow! That's so confusing. I'm glad you figured it out, sorry for the trouble.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-21 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-21 02:06</div>
+            <div class="timeline-body"><p>the mistake was all mine, as I blindly copied the suggestion from the warning and didn't think of adding <code>export</code> - hence the suggestion to help the user in the future by including <code>export</code> in the warning's message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 02:22</div>
+            <div class="timeline-body"><p>Good idea: https://github.com/astral-sh/uv/pull/6294</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6300.html">astral-sh/uv#6300</a> on 2024-08-21 12:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

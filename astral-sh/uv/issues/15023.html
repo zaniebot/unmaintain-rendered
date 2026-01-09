@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to resolve workspace members for lsp in vscode - astral-sh/uv #15023</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to resolve workspace members for lsp in vscode</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15023">#15023</a>
+        opened by <a href="https://github.com/Bryson14">@Bryson14</a>
+        on 2025-08-02 00:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Bryson14">@Bryson14</a> on 2025-08-02 00:33</div>
+            <div class="timeline-body"><p><em>note</em> : I have threw this together and used Claude to polish my phrasing.</p>
+<h3>Problem</h3>
+<p>When using uv workspaces with multiple local packages, the Python LSP extension cannot resolve types for imports between workspace packages. While the code runs correctly and passes type checking, IntelliSense shows imported classes as <code>Any</code> type, breaking IDE functionality.</p>
+<h3>Environment</h3>
+<ul>
+<li><strong>LSP Extension</strong>: <a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">[Python extension for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-python.python)</a></li>
+<li><strong>Tool</strong>: uv workspaces</li>
+<li><strong>Editor</strong>: VS Code</li>
+</ul>
+<h3>Workspace Structure</h3>
+<pre><code>my-project/
+├── pyproject.toml
+└── packages/
+    ├── library-a/
+    │   ├── pyproject.toml
+    │   └── src/
+    │       └── library_a/
+    │           └── __init__.py
+    └── library-b/
+        ├── pyproject.toml
+        └── src/
+            └── library_b/
+                ├── __init__.py
+                └── main.py
+</code></pre>
+<h3>Example Code</h3>
+<p><strong>packages/library-a/src/library_a/__init__.py:</strong></p>
+<pre><code class="language-python">class MyClass:
+    def my_method(self) -&gt; str:
+        return &quot;Hello from MyClass&quot;
+</code></pre>
+<p><strong>packages/library-b/src/library_b/main.py:</strong></p>
+<pre><code class="language-python">from library_a import MyClass  # Import works at runtime
+
+def use_class():
+    instance = MyClass()  # LSP shows MyClass as 'Any'
+    result = instance.my_method()  # No autocomplete/type hints
+    return result
+</code></pre>
+<h3>What Works</h3>
+<ul>
+<li>✅ <code>uv build</code> - builds successfully</li>
+<li>✅ <code>uv sync</code> - resolves dependencies</li>
+<li>✅ <code>ruff check</code> - linting passes</li>
+<li>✅ <code>uvx mypy .</code> - type checking passes</li>
+<li>✅ Runtime execution works correctly</li>
+</ul>
+<h3>What Doesn't Work</h3>
+<ul>
+<li>❌ IntelliSense shows <code>MyClass</code> as <code>Any</code> type</li>
+<li>❌ No autocomplete for methods on imported classes</li>
+<li>❌ No &quot;Go to Definition&quot; for local package imports</li>
+<li>❌ No type hints when hovering over imported symbols</li>
+</ul>
+<h3>Current Workaround</h3>
+<p>Manually navigating between files or running <code>uvx mypy check</code> frequently, which impacts development productivity.</p>
+<h3>Question</h3>
+<p>Is there a configuration or setup step needed to help the Python LSP resolve types for local packages in a uv workspace? Are there specific VS Code settings or pyproject.toml configurations that enable proper type resolution for workspace dependencies?</p>
+<h3>Platform</h3>
+<p>MacOS 14</p>
+<h3>Version</h3>
+<p>uv 0.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @Bryson14 on 2025-08-02 00:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-02 13:54</div>
+            <div class="timeline-body"><p>I think you need <code>uv sync --all-packages</code> then point your IDE to that environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bryson14">@Bryson14</a> on 2025-08-03 03:56</div>
+            <div class="timeline-body"><p>Brilliant. That works like a charm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-04 00:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support `pip download` - astral-sh/uv #3163</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support `pip download`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/3163">#3163</a>
+        opened by <a href="https://github.com/idlsoft">@idlsoft</a>
+        on 2024-04-20 16:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-04-20 16:09</div>
+            <div class="timeline-body"><p>This would be especially useful for buildng docker images.</p>
+<p>You could then rely on <code>uv</code> for a quick resolve and use a simple <code>pip install --no-deps --find-links</code> in your <code>Dockerfile</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-04-23 16:12</div>
+            <div class="timeline-body"><p>This is along the similar lines of supporting <a href="https://pip.pypa.io/en/stable/cli/pip_wheel/">pip wheel</a> discussed in https://github.com/astral-sh/uv/issues/1681</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-04-23 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-04-23 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-05-09 15:31</div>
+            <div class="timeline-body"><p>Hi everyone, is this feature on the roadmap? I am guessing supporting &quot;pip download&quot; would be straightforward since uv already downloads packages. It would just have to not install them.</p>
+<p>Any help needed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-09 16:28</div>
+            <div class="timeline-body"><p>We should be able to support it... Though it's not trivial because we don't store the <code>.whl</code> files at all, we unzip them directly into the cache. So most of the data pipelines are oriented around an API that receives the unzipped wheel, rather than the zipped wheel.</p>
+<p>What are the typical use-cases here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-05-09 17:02</div>
+            <div class="timeline-body"><blockquote>
+<p>What are the typical use-cases here?</p>
+</blockquote>
+<p>In my case it's a docker build in a github workflow.</p>
+<p>Caching docker layers on github runners is impossible AFAIK. Caching <code>~/.cache</code> is trivial.
+So a build could download whls into the docker working dir, then do</p>
+<pre><code>COPY whls whls
+RUN pip install --no-deps --find-links whls ....
+</code></pre>
+<p>Which wouldn't hit pypi and wouldn't need any additional caching from docker.</p>
+<p>... This can be even better if you can do <code>RUN --mount ...</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-09 17:03</div>
+            <div class="timeline-body"><p>I'm mostly wondering if it <em>has</em> to be wheels or if we could just make it easy to pre-populate the uv cache.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-05-09 17:08</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm mostly wondering if it <em>has</em> to be wheels or if we could just make it easy to pre-populate the uv cache.</p>
+</blockquote>
+<p>wheels are supported by standard <code>pip install</code>.
+Otherwise you need to use <code>uv</code> inside docker build. Not bad necessarily, but a bit less flexible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-09 17:10</div>
+            <div class="timeline-body"><p>I'm not sure how much we should go out of our way to support using pip to consume an output of uv? It seems weird to use uv in one case and pip in another, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-09 17:11</div>
+            <div class="timeline-body"><p>If it were equally easy for us I'd probably <em>prefer</em> to output wheels, it's a nicer intermediary format that's less coupled to our internal cache. I'd need to see how hard it is to support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-05-09 17:16</div>
+            <div class="timeline-body"><blockquote>
+<p>What are the typical use-cases here?</p>
+</blockquote>
+<p>Hi, my use case is that I have to supply bundles of my application with all dependencies for systems where it is not possible to download them (firewall blocking). Right now I use pip download which results in a bunch of wheel files.</p>
+<p>Also we would like to be able to cross platform download them too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-09 17:24</div>
+            <div class="timeline-body"><p>That makes sense, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-05-09 17:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure how much we should go out of our way to support using pip to consume an output of uv? It seems weird to use uv in one case and pip in another, right?</p>
+</blockquote>
+<p>That part of the workflow may not be entirely under your control.
+@inoa-jboliveira's example is a better one I think, because it's essentialy about packaging your application.
+Packaging may need to comply with a specific post-install procedure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-10 01:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Right now I use pip download which results in a bunch of wheel files.</p>
+</blockquote>
+<p>Note, both <code>pip download</code> and <code>pip wheel</code> are similar but there's crucial differences. If you're looking to package up your wheels, <code>pip wheel</code> is often recommended instead since it covers for cases where a download does not have a pre-built wheel, being a more complete solution to pre-packaging <strong>wheels</strong> for a target system.</p>
+<p>As a result, I tend to just always use <code>pip wheel</code> nowadays to make sure I always have wheels rather than potential source distributions that I'll have to build on the target system. From my perspective, <code>pip download</code> is more useful when you want to package up sdists or when you don't care if everything you download is fully pre-built.</p>
+<p>Some of these tradeoffs were actually discussed in #1681.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-05-10 18:27</div>
+            <div class="timeline-body"><p>Hi @samypr100 in this specific case I really just want to download pre built wheels and not build anything. I can <code>pip download --platform foo</code> and I am good to go. That's why I need and still use pip download.</p>
+<p>As for pip wheel, I can't cross platform download (nor compile) anything</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pickfire">@pickfire</a> on 2024-06-14 03:53</div>
+            <div class="timeline-body"><p><code>pip download -d vendor/ --index-url internal_pypi internal-sdk</code> can be used with <code>uv pip install -f vendor</code> if we need to vendor anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4809.html">astral-sh/uv#4809</a> on 2024-07-04 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2078.html">astral-sh/uv#2078</a> on 2024-07-04 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-15 18:57</div>
+            <div class="timeline-body"><p>Also quite interested in this as <code>pip download</code> is a slower part in our CI environment.</p>
+<p>In our case our security scanning tool requires to run on a folder of wheel / source distributions, we currently use pip download to gather these.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5100.html">astral-sh/uv#5100</a> on 2024-07-16 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-07-26 10:42</div>
+            <div class="timeline-body"><p>Another use case would be downloading build time dependencies (in addition to runtime dependencies). I'm not sure if this is feasible, since it is not supported by pip (https://github.com/pypa/pip/issues/7863). However, this would be extremely useful when building a Flatpak which involves Python packages, which is currently broken because of that (https://github.com/flatpak/flatpak-builder-tools/issues/380).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support pip download" to "Support `pip download`" by @zanieb on 2024-08-11 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6006.html">astral-sh/uv#6006</a> on 2024-08-11 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ei-grad">@ei-grad</a> on 2024-08-13 09:03</div>
+            <div class="timeline-body"><p>Although <code>pip download</code> is very handy for multi-stage Docker builds to efficiently cache dependencies,</p>
+<blockquote>
+<p><code>uv</code> doesn’t store the .whl files; instead, it unzips them directly into the cache.</p>
+</blockquote>
+<p>It would be even better if the <code>uv</code> cache could be used to install requirements directly into the target stage instead of installing from the wheels. I'm curious whether there's a straightforward method to populate the <code>uv</code> cache for a list of packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6323.html">astral-sh/uv#6323</a> on 2024-08-21 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RichardDally">@RichardDally</a> on 2024-08-29 15:34</div>
+            <div class="timeline-body"><p>We have a business use case to scan dependencies of a Python project, we need to pip download requirements, it's slow without uv 😒</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-08-29 17:54</div>
+            <div class="timeline-body"><blockquote>
+<p>We have a business use case to scan dependencies of a Python project, we need to pip download requirements, it's slow without uv 😒</p>
+</blockquote>
+<p>Not saying you shouldn't use uv, but do you have an example where pip 24.2 is slow at downloading?</p>
+<p>Especially if you've already pre-resolved the requirements with uv pip compile, as hopefully the biggest bottleneck is IO. I should be able to profile and see if there's any low hanging fruit in pip that can be fixed.</p>
+<p>Also should be a good scenario to see if uv can advertise being faster here or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-08-29 18:13</div>
+            <div class="timeline-body"><p>pip download is pretty ok/fast enough for <strong>my</strong> needs. I do also open multiple processes and am constrained only by network so UV won't be any faster without cache (I'm not the guy above).</p>
+<p>It is necessary for 2 reasons:</p>
+<ul>
+<li>fully replace pip and not need it as a dependency</li>
+<li>it is likely 99% done already, just missing the interface or some &quot;do not unzip&quot; flag to the actual data that is cached. Maybe a re-zip cached wheels for not redownloading them.</li>
+</ul>
+<p>By using cache it would indeed be faster than pip for same platform downloads. Although, for my use case, I need to download cross platform, so the packages won't be there (e.g. numpy or pandas which are large plataform specific packages).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7296.html">astral-sh/uv#7296</a> on 2024-09-12 09:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lmmx">@lmmx</a> on 2024-09-12 09:33</div>
+            <div class="timeline-body"><blockquote>
+<p>What are the typical use-cases here?</p>
+</blockquote>
+<p>At the risk of repeating what other people have said, to chime in with my use case (also Docker image building for deployment, reproducibility is a secondary concern for me) and perhaps shed light on why pip download is important enough to support:</p>
+<ul>
+<li>In a Docker build context, there used to be (i.e. outdated practice) a flag to pip install <code>—global-option=build_ext</code> which would trigger package build from source</li>
+<li>Now if you want to do that <code>build_ext</code> has been deprecated* for an explicit build step, so to build from source you would first run pip download to download that source** followed by building that and uv build takes these downloaded wheel<ul>
+<li>*because it kind of was considered out of scope for install commands to be also building, and presumably with the intro of the build backend toml format</li>
+<li>**or get it from a repo’s release files, but via pip was the standard way</li>
+</ul>
+</li>
+<li>So the pseudocode workflow used to be “<code>pip install —build-and-install my-package</code> and now it’s <code>pip download my-package</code>, <code>python setup.py build my-package my-wheel</code>, <code>pip install-my-wheel</code>”.</li>
+<li>With <code>uv</code> we’d perhaps be able to something more integrated (<code>uv download+build+install my-package</code>), maybe with helpful optimisations like caching</li>
+</ul>
+<p>Also I’d note that as a user of these toolsets it can be confusing to keep up with the proliferation of ways to do the one thing as the state of the art evolves</p>
+<p>I found an issue RE: <code>pip wheel</code> when looking for this thread, and it notes that “pip would prefer to deprecate pip wheel” (<a href="https://github.com/astral-sh/uv/issues/1681#issuecomment-1952952263">#1681</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daler-rahimov">@daler-rahimov</a> on 2024-09-13 14:30</div>
+            <div class="timeline-body"><p>Hello everyone, I wanted to contribute some additional use cases for consideration. While most discussions here focus on the cloud, my perspective comes from the embedded world. Let’s consider the 10 billion devices currently operating on cellular networks, of which 1.8 billion are IoT/M2M devices. Many of these devices do not have access to &quot;unlimited good bandwidth&quot; but still require software updates, CI, etc.</p>
+<p>When using Python, one way to accelerate these deployments is by pre-fetch PyPI packages ahead of time. This is not about supporting <code>pip download</code> but rather working with cached downloads. For example, you could use a method like this in a pre-fetch for big packages like TensorFlow (~400MB):</p>
+<pre><code class="language-bash">file_url=&quot;https://files.pythonhosted.org/packages/5e/31/d49a3dff9c4ca6e6c09c2c5fea95f58cf59cc3cd4f0d557069c7dccd6f57/tensorflow-2.7.4-cp39-cp39-manylinux2010_x86_64.whl&quot;
+wget --continue --quiet -P . &quot;$file_url&quot;
+</code></pre>
+<p>And then the actual software deployment could use this pre-fetched file and get the rest of the dependencies from the PyPI directly.</p>
+<p>By enabling the UV package manager to use these pre-fetched/cached files, deployments become more efficient. Also, it's intuitive for a user to think about UV operations as downloading, storing, and installing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-13 15:29</div>
+            <div class="timeline-body"><blockquote>
+<p>By enabling the UV package manager to use these pre-fetched/cached files, deployments become more efficient. Also, it's intuitive for a user to think about UV operations as downloading, storing, and installing.</p>
+</blockquote>
+<p>I don't think this is the same issue? And should already be possible.</p>
+<p>If you have acquired the wheels you can install directly from them (or use <code>--find-links</code>):</p>
+<pre><code>$ pip download requests --no-deps
+Collecting requests
+  Using cached requests-2.32.3-py3-none-any.whl.metadata (4.6 kB)
+Downloading requests-2.32.3-py3-none-any.whl (64 kB)
+Saved ./requests-2.32.3-py3-none-any.whl
+
+$ uv pip install ./requests-2.32.3-py3-none-any.whl
+Resolved 5 packages in 176ms
+Prepared 5 packages in 120ms
+Installed 5 packages in 37ms
+ + certifi==2024.8.30
+ + charset-normalizer==3.3.2
+ + idna==3.8
+ + requests==2.32.3 (from file:///home/dshaw/uvtest/3163/requests-2.32.3-py3-none-any.whl)
+ + urllib3==2.2.3
+</code></pre>
+<p>Also, pretty sure you can install from uv on your base machine, copy the cache to other devices, and then point uv cache to the copied directory, this should use even less resources (CPU and storage) on your IoT devices, as there's no extra step of unzipping the contents and storing it somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daler-rahimov">@daler-rahimov</a> on 2024-09-13 18:40</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think this is the same issue? And should already be possible.</p>
+</blockquote>
+<p>Unfortunately it's not possible. I have better explanation here if you are interested #7296.</p>
+<blockquote>
+<p>$ uv pip install ./requests-2.32.3-py3-none-any.whl</p>
+</blockquote>
+<p>Installing a single package isn't the goal here but managing all the dependencies with uv. Basically doing something like this <code>uv  sync --find-links [path-to-some-pre-fetched-wheels]</code></p>
+<blockquote>
+<p>copy the cache to other devices, and then point uv cache to the copied directory,</p>
+</blockquote>
+<p>In this use case, the biggest problem is data usage (for some devices, you pay per MB of usage), and the UV's cache contains the unzipped versions of wheels. For example, TensorFlow, which is ~400MB, expands into GB of data</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pex-tool/pex/pulls/2512.html">pex-tool/pex#2512</a> on 2024-09-13 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pex-tool/pex/issues/2371.html">pex-tool/pex#2371</a> on 2024-09-13 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-13 23:20</div>
+            <div class="timeline-body"><blockquote>
+<p>In this use case, the biggest problem is data usage (for some devices, you pay per MB of usage), and the UV's cache contains the unzipped versions of wheels. For example, TensorFlow, which is ~400MB, expands into GB of data</p>
+</blockquote>
+<p>To copy onto the device before it does any downloading or the total amount of storage on the device?</p>
+<p>Because if it's the total amount of storage on the device then you will use less space by copying the cache, because copying the wheel will take up the wheel + the install, whereas copying the cache will just be the install, and the the site-packages location will just hard link to the cache and use no additional space.</p>
+<p>If it's to initially copy onto could zip the uv cache up and then have a small script that unzips it into the actual uv cache folder and then delete the zip.</p>
+<p>I'm not saying it wouldn't be helpful for uv to have a download function and what you propose in https://github.com/astral-sh/uv/issues/7296, just spitballing solutions with existings tools.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-11-17 19:57</div>
+            <div class="timeline-body"><p>According to prior discussion, instead of having two <code>uv pip download</code> and <code>uv pip wheel</code>, I think we can have one top-level command, let's call it <code>uv collect</code> for now. it then will be able to collect all files of dependencies by using resolved dependency of current lockfile.</p>
+<pre><code class="language-shell">$ # auto build sdists.
+$ uv collect
+
+$ # prevent include prebuilt wheels.
+$ uv collect --requires-build-only
+
+$ # cross-platform lockfile resolving.
+$ uv collect --python-platform windows
+
+$ # avoid build sdists, but clone them as they are (for sdist wheels copy `tar.gz` file,
+$ # for git dependency clone repo/subdirectory, for editables copy folder).
+$ uv collect --clone
+
+# by default, it collects all indexes, we can limit it.
+$ uv collect --exclude-index pypi  # collect all others except `pypi`
+$ uv collect --index internal_pypi  # only `internal_pypi`
+</code></pre>
+<p>I also think it could be integrated to some part of uv's caching system, e.g. <code>built-wheels</code> caches.</p>
+<p>I hope it help to this issue and #1681 to going forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1681.html">astral-sh/uv#1681</a> on 2024-11-17 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9345.html">astral-sh/uv#9345</a> on 2024-11-22 05:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9346.html">astral-sh/uv#9346</a> on 2024-11-23 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10460.html">astral-sh/uv#10460</a> on 2025-01-10 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astafan8">@astafan8</a> on 2025-02-17 14:24</div>
+            <div class="timeline-body"><p>I am happy to take a stab at implementing <code>pip download</code> as a way for me to learn Rust. My hope is that the functionality of download is to a large extent already implemented as part of <code>uv pip install</code>, so it seems to be a great case of figuring out how to compose a feature from existing implementations, add new CLI command, write tests. However, for that to happen, I would need guidance of where to start and how to proceed in steps, e.g. start in file foo.rs, use function Bar from it, and also use function Baz from bleh.rs as a reference to steps that need to be done to implement the feature. All other blanks I can fill in from your contributors guide, and with some questions on github.</p>
+<p>What do you think? ping @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-17 15:26</div>
+            <div class="timeline-body"><p>A problem with this it the overlap with <code>pip wheel</code>, e.g., see https://github.com/astral-sh/uv/issues/1681#issuecomment-1952952263</p>
+<p>It's sort of an open design question how we want to build a better unified interface here. Additionally, our cache is pretty complicated. For those reasons, I'm not sure if it's a great candidate for a first-time contribution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12009.html">astral-sh/uv#12009</a> on 2025-03-06 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/waynew">@waynew</a> on 2025-03-24 16:35</div>
+            <div class="timeline-body"><p>Until there's a proper <code>uv</code> interface/approach for this, <code>uvx pip download &lt;pkg&gt;</code> works as a stopgap for me (especially since I typically work on systems that don't like <code>ensurepip</code> or <code>pip --user</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sohang3112">@sohang3112</a> on 2025-04-09 18:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure how much we should go out of our way to support using pip to consume an output of uv? It seems weird to use uv in one case and pip in another, right?</p>
+</blockquote>
+<p>@zanieb Hi. My use case is that I use <code>uv</code> to build my project, but occassionally I want to install something like <code>ipython</code> that isn't really related to the project so I install it with <code>pip</code> to avoid adding it to pyproject.toml . (OTOH I use <code>uv add --dev mypy</code> because I use mypy in pre commit &amp; CI).</p>
+<pre><code class="language-console">$ uv run pip install ipython
+</code></pre>
+<p>This errors because venv created by <code>uv lock &amp; uv sync</code> doesn't have pip installed. So right now I need to manually do <code>uv run python -m ensurepip</code> to install pip in .venv/, and then run pip install again. But that's unintuituve &amp; most people dont know about this command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zeevro">@zeevro</a> on 2025-04-10 10:54</div>
+            <div class="timeline-body"><p>@sohang3112 I don't really see how your problem is related to this issue.
+You can do what you want in two ways:</p>
+<ol>
+<li><code>uv pip install</code> will install packages in your venv without checking or updating your <code>pyproject.toml</code> or <code>uv.lock</code>.</li>
+<li><code>uv run --with ipython ipython</code> will allow you to use IPython in your venv without installing it.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sohang3112">@sohang3112</a> on 2025-04-10 13:07</div>
+            <div class="timeline-body"><p>Thanks @zeevro - I did not know about these commands 👍.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jc00ke">@jc00ke</a> on 2025-04-18 21:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi, my use case is that I have to supply bundles of my application with all dependencies for systems where it is not possible to download them (firewall blocking).</p>
+</blockquote>
+<p>I'm in the same boat here. Developer machines are on a network that does not allow access. I'd love to see a simple way to vendor deps in a local folder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13263.html">astral-sh/uv#13263</a> on 2025-05-02 10:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gsemet">@gsemet</a> on 2025-05-02 11:00</div>
+            <div class="timeline-body"><p>The command that i would need for creating zipapp using shiv is to replace:</p>
+<pre><code>$ {{ uv }} run pip install --extra-index=https://my/interna/pypi/repository/pypi/simple -r dist/prod-requirements.txt --target distshiv/
+</code></pre>
+<p>shiv actually packages a &quot;site-packages&quot; folder</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13304.html">astral-sh/uv#13304</a> on 2025-05-05 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pex-tool/pex/issues/2790.html">pex-tool/pex#2790</a> on 2025-06-25 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthias-busch">@matthias-busch</a> on 2025-06-30 11:04</div>
+            <div class="timeline-body"><p>Any progress/news on this or https://github.com/astral-sh/uv/issues/1681?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14994.html">astral-sh/uv#14994</a> on 2025-07-31 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RichardDally">@RichardDally</a> on 2025-08-22 15:22</div>
+            <div class="timeline-body"><p>Would be useful for us too. Currently, downloading wheels slowly with pip for security scan purposes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-09-04 09:27</div>
+            <div class="timeline-body"><p>Also, would be nice if <code>uv</code> could also directly consume a wheel cache during a sync, without creating a second, intermediate uv-styled cache. This is useful when keeping the wheel cache at a slow networked drive, where it's important to not have thousands of files, and then syncing/extracting from it directly without any other extra caches</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ei-grad">@ei-grad</a> on 2025-09-04 12:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, would be nice if <code>uv</code> could also directly consume a wheel cache during a sync, without creating a second, intermediate uv-styled cache. This is useful when keeping the wheel cache at a slow networked drive, where it's important to not have thousands of files, and then syncing/extracting from it directly without any other extra caches</p>
+</blockquote>
+<p>What will be the point of using uv then?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../aspect-build/rules_py/pulls/544.html">aspect-build/rules_py#544</a> on 2025-09-22 03:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16016.html">astral-sh/uv#16016</a> on 2025-09-24 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sterliakov">@sterliakov</a> on 2025-10-19 01:49</div>
+            <div class="timeline-body"><p>I found myself looking for <code>uv pip download</code> (and even assuming it exists, crashing first CI run attempt) for a weird reason: I need to download sdist of a package to unpack and <code>uv build</code> it into a wheel afterwards. Now I just <code>uv pip install pip &amp;&amp; pip download...</code>, but that hurts aesthetically! This won't be solved by only allowing wheels downloads.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zeevro">@zeevro</a> on 2025-10-19 06:40</div>
+            <div class="timeline-body"><p>@sterliakov I do this in CI. It's ugly, but it does the job.</p>
+<pre><code class="language-sh">uvx --with distlib python &lt;&lt;EOF
+from distlib.index import PackageIndex
+from distlib.locators import locate
+dist = locate('python-poppler-qt5')
+fn = dist.source_url.rsplit('/', 1)[-1]
+PackageIndex(dist.locator.base_url).download_file(dist.source_url, fn, dist.digest)
+print(f'SDIST_FILENAME={fn}')
+EOF
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16410.html">astral-sh/uv#16410</a> on 2025-10-22 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patstrom">@patstrom</a> on 2025-11-14 13:37</div>
+            <div class="timeline-body"><p>We have a situation where we need to package the application so it can be installed completely offline with <code>pip install --no-index --find-links</code>.</p>
+<p>What we're doing now is the following (simplified)</p>
+<pre><code>echo '--extra-index-url &lt;private-repo&gt;' &gt; package_directory/requirements.txt
+
+uv run export --no-hashes --locked --no-default-groups --no-emit-project --format=requirements.txt &gt; package_directory/requirements.txt
+
+uv run --with pip python -m pip download --disable-pip-version-check --platform $platform --no-deps -r package_dir/requirements.txt -d package_dir/wheels
+
+rm package_dir/requirements.txt
+
+uv build --all-packages --wheel -o package_dir/wheels
+</code></pre>
+<p>And then later on when we've moved package_dir to the installation environment (which doesn't have uv) we run</p>
+<pre><code>pip install --no-index --find-links package_dir/wheels application-name
+</code></pre>
+<p>Having uv support this workflow so that we didn't have to neither manually add the --extra-index-url as well as skip the whole <code>uv export</code> step would be great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gsemet">@gsemet</a> on 2025-11-14 15:08</div>
+            <div class="timeline-body"><p>that is problematic in a sense because your wheelhouse is only compatible for your <code>$platform</code>, the export might have captured the extra/platform specific parameters, but i am pretty sure your pip download is platform-interpreter specific. that is a pbl because you might want to build a true, multiplatform wheelhouse (mac, win, linux, intel, mac silicon, py32, py313, p314,...). i would love to have the ability to build a truely multiplatform auto-instlalable wheel (even if it means packaging tons of unused wheels in my deliverable package).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-11-14 15:14</div>
+            <div class="timeline-body"><p>@gsemet I've not used it, but my understanding is <code>pex download</code> supports multi-platform downloads, you can probably uv export to a pylock file and use pex to download that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ketozhang">@ketozhang</a> on 2025-12-16 23:45</div>
+            <div class="timeline-body"><p>There is currently no tool that supports downloading wheels/sdist from pylock.toml (PEP 735).
+This makes the standard not very useful for internet-less private index for deploying to local-only environments.</p>
+<p>uv cache isn't a good solution right now, we cannot host cache servers (without being hacky), the same way we can host private index servers. A cache solution pushes uv further away from standard and becoming their own packaging ecosystem like conda.</p>
+<p>The hack I am currently using is unfavorable as we go back to using <code>requirements.txt</code>:</p>
+<pre><code class="language-sh"># Onboarding process for bringing in internet packages into a private pypi server 
+# for downstream deploys of internet-less environments
+uv venv --seed  
+uv pip sync pylock.toml
+uv run pip freeze &gt; requirements.txt
+uv run pip download -r requirements.txt --dest wheelhouse/
+uv publish --index myprivateindex wheelhouse/*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../openbraininstitute/neuroagent/pulls/645.html">openbraininstitute/neuroagent#645</a> on 2025-12-26 11:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

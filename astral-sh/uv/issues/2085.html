@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installing on Windows 2016 fails because of TLS versions - astral-sh/uv #2085</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Installing on Windows 2016 fails because of TLS versions</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/2085">#2085</a>
+        opened by <a href="https://github.com/gozdal">@gozdal</a>
+        on 2024-02-29 16:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gozdal">@gozdal</a> on 2024-02-29 16:32</div>
+            <div class="timeline-body"><p>When trying to install <code>uv</code> in our CI env I noticed that Windows 2016 boxes failed to download
+the install script because of <code>Could not create SSL/TLS secure channel</code>. Later Windows versions were fine.</p>
+<p>I worked around it with:</p>
+<pre><code class="language-powershell">[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12;
+irm https://astral.sh/uv/install.ps1 | iex
+</code></pre>
+<p>Perhaphs it'd be good to add it to the docs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2024-02-29 16:44</div>
+            <div class="timeline-body"><p>We explicitly pass <code>--tlsv1.2</code> to curl for the shell installer already, so that seems supremely reasonable for the powershell installer to set too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../axodotdev/cargo-dist/issues/823.html">axodotdev/cargo-dist#823</a> on 2024-02-29 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2024-02-29 16:52</div>
+            <div class="timeline-body"><p>Could you confirm for me that this expression works on your windows server?</p>
+<pre><code>irm -SslProtocol Tls12 https://astral.sh/uv/install.ps1 | iex
+</code></pre>
+<p>(It's probable once the script downloads it will then error trying to fetch the actual binaries, but that's easier to fix than the raw <code>irm | iex</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2024-02-29 16:55</div>
+            <div class="timeline-body"><p>Unfortunately not:
+<img src="https://github.com/astral-sh/uv/assets/619444/9e6b2eb4-226b-40a6-9d34-71d6c433a3af" alt="obraz" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2024-02-29 16:58</div>
+            <div class="timeline-body"><p>Ah shoot, yeah that flag is relatively bleeding edge (and maybe Powershell Core exclusive?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-02-29 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @charliermarsh on 2024-02-29 23:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

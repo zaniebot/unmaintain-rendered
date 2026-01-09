@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add CLI flag to configure relative vs full path printing for emitters - astral-sh/ruff #14985</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add CLI flag to configure relative vs full path printing for emitters</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14985">#14985</a>
+        opened by <a href="https://github.com/brupelo">@brupelo</a>
+        on 2024-12-15 16:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/brupelo">@brupelo</a> on 2024-12-15 16:11</div>
+            <div class="timeline-body"><p><strong>Follow-up from <a href="https://github.com/astral-sh/ruff/issues/9417">#9417</a></strong></p>
+<p>I’ve added a new flag to the CLI that allows configuring the Printer to print either relative or full paths across the different existing emitters.</p>
+<p>The problem with relative paths is that they are not always convenient, especially when linting in an IDE or when dealing with additional cases where valuable information is lost. This is particularly relevant when parsing paths from Ruff's stdout, which can be useful for feeding into LLMs. There are also situations where full paths are necessary to redirect Ruff’s stdout, but the information is lost when using relative paths. Furthermore, we can’t always assume that the working directory of Ruff’s execution is the same as the working directory where the <code>pyproject.toml</code> file resides.</p>
+<p>While relative paths are more compact, they introduce a variety of limitations in different use cases. Therefore, it would be beneficial to retain existing functionality while adding the option to configure how paths are printed.</p>
+<p>I’ve created a draft PR for you to review so you can see where I am with this implementation.</p>
+<p>Draf PR here -&gt; https://github.com/astral-sh/ruff/pull/14987</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14987.html">astral-sh/ruff#14987</a> on 2024-12-15 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-15 16:15</div>
+            <div class="timeline-body"><p>Thanks for opening this issue.</p>
+<p>Would you mind sharing a few examples for</p>
+<blockquote>
+<p>The problem with relative paths is that they are not always convenient, especially when linting in an IDE or when dealing with additional cases where valuable information is lost.</p>
+</blockquote>
+<p>Most IDEs have good support for relative links and you can click them to jump right to the file. This works for as long as ruff is run from the same directory as the IDE's working directory.</p>
+<blockquote>
+<p>Furthermore, we can’t always assume that the working directory of Ruff’s execution is the same as the working directory where the pyproject.toml file resides.</p>
+</blockquote>
+<p>I don't think Ruff makes this assumption. You can see how ruff always uses paths relative to the current working directory. The location of the pyproject.toml doesn't matter. (I ran the command from the root directory)</p>
+<pre><code>~/astral/ruff/target/debug/ruff check --cache-dir ~/astral/test/.ruff_cache ~/astral/test --config ~/astral/test/pyproject.toml --select=ALL
+warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`.
+warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`.
+warning: Detected debug build without --no-cache.
+Users/micha/astral/test/test.py:1:1: INP001 File `Users/micha/astral/test/test.py` is part of an implicit namespace package. Add an `__init__.py`.
+Users/micha/astral/test/test.py:1:1: D100 Missing docstring in public module
+Users/micha/astral/test/test.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2024-12-15 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2024-12-15 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2024-12-15 16:38</div>
+            <div class="timeline-body"><p>@MichaReiser Thanks for the questions! I'll come back to this over the next few days with more details so you can better understand the value added. Could you please keep the PR open until this issue is resolved?</p>
+<p>The idea is straightforward: I want to extend Ruff's behavior with a new flag that doesn’t break any existing functionality. So, the default behavior and existing formatters would remain as they are, and this would be an additive feature aimed at a niche use case.</p>
+<p>It's a bit difficult for me to provide a complete example right now as I need to make some changes to the code, rebuild it, and prepare relevant examples. I can say that adding this flag to the ongoing PR would take me about 10 minutes, but I haven’t reached that part of the codebase yet. I'm not sure how hard it will be to add the Clap flags without breaking anything. As mentioned, I’m still a beginner with Rust, and what I thought would be a 30-minute task has already taken me a few hours, and I've definitely picked up some antipatterns along the way. Please bear with me 😅</p>
+<p>That said, it’s been a really cool project to contribute to. One challenge I’m facing is reducing iteration times in Rust, especially when compiling top-level crates.</p>
+<p>Also, today I was trying to get Sublime LSP analyzer to work with imports but had no luck. Out of curiosity, what’s the typical IDE and environment used by Ruff contributors for efficient iteration and refactoring?</p>
+<p>It would be great to have some tips for new contributors so they can onboard quickly.</p>
+<p>Again, thanks for your time. I’m excited about getting this feature into the main branch. I want to use Ruff in place of my old {black, isort, autoflake8, flake8} combo and be able to run and refactor dozens of projects in different repos efficiently, without breaking a sweat. I’m confident that Ruff will make this process even faster.</p>
+<p>P.S. To keep it simple, imagine you want to lint several large codebases, aggregate the metrics, and then reformat the output to pass to another tool for specific reasons. Right now, the process is very rigid. I recall some linters offering configurability to adjust how paths are output by the emitters. Would that work better for you instead a simple boolean flag? Essentially, something similar to how Python’s logging formatter gives users the flexibility to customize the output. Again, the default behavior would remain as is, with no breaking changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2024-12-16 10:50</div>
+            <div class="timeline-body"><p>I've cleaned up a bit my feature branch so it now uses env.vars instead of the previous hardcoded solution, here's some fast testing:</p>
+<pre><code>========================================
+File: a.py
+========================================
+
+x()x()
+
+----------------------------------------
+
+
+========================================
+File: Justfile
+========================================
+
+    config_file := &quot;d:/pyproject.toml&quot;
+    ruff_file := &quot;ruff&quot;
+
+    test-abs:
+        @RUFF_SHOW_FULL_PATH=1 {{ruff_file}} check --fix a.py --output-format=concise --config {{config_file}}
+
+    test-rel:
+        @RUFF_SHOW_FULL_PATH=0 {{ruff_file}} check --fix a.py --output-format=concise --config {{config_file}}
+
+----------------------------------------
+
+(venv) d:\tests&gt;just test-rel
+a.py:1:4: SyntaxError: Simple statements must be separated by newlines or semicolons
+Found 1 error.
+error: Recipe `test-rel` failed on line 8 with exit code 1
+
+(venv) d:\tests&gt;just test-abs
+d:\tests\a.py:1:4: SyntaxError: Simple statements must be separated by newlines or semicolons
+Found 1 error.
+error: Recipe `test-abs` failed on line 5 with exit code 1
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> removed by @MichaReiser on 2024-12-16 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> removed by @MichaReiser on 2024-12-16 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2024-12-16 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2025-01-18 20:23</div>
+            <div class="timeline-body"><p>@MichaReiser  Hi,</p>
+<p>Out of curiosity, what does the needs-info label mean in this context? I’ve been using this branch successfully for the past month without any issues. I’ve also been rebasing it consistently against the latest origin/main as it got stagnated. However, I’m unsure if this will ever make it to master.</p>
+<p>I’d like to help finalize this for release. While my time is limited, I could allocate some if only minor reviews are needed. Could you clarify the bare minimum requirements for a feature to be merged into master? I’ve made efforts to ensure this doesn’t introduce any breaking changes, but I’d like to know what the next steps are.</p>
+<p>Thanks!</p>
+<p>P.S. The other issue I reported—where adding a lot of imports causes it to get stuck—is also a blocker preventing me from fully leveraging Ruff, that one doesn't seem like a good first-issue though. Other than these, the tool is truly fantastic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-18 21:20</div>
+            <div class="timeline-body"><p>Needs info means that we need more information from the author, you, to move the issue forward.</p>
+<p>To me it's still unclear what you need this feature for. Can you tell me a specific use case/example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2025-01-19 05:52</div>
+            <div class="timeline-body"><p>@MichaReiser Hey Micha, sure! I thought I had explained this use-case a few months ago already, and again when I opened this one last month. But let me try again, okay?</p>
+<p>I’m using Sublime Text, and I’ve set up some custom commands for running ruff. Here’s how it works: I can either lint a bunch of Python folders (which may not even be in the same workspace, as they include editable packages and subdependencies from different companies or organizations), or I can pick individual Python files from different drives via the sidebar menu.</p>
+<p>Of course, the more typical and frequent use case would be running a command with a shortcut while editing a single file or on save. That’s what I usually do when coding and focusing on single tasks. These two workflows—batch linting multiple folders or linting individual files—are things I deal with on a daily basis.</p>
+<p>To make this work, I’ve set up some custom commands that hook into ruff, and I pass the corresponding paths. I can show you an example of a typical command so you’ll understand how it looks.</p>
+<pre><code>        {
+            &quot;command&quot;: &quot;zebra_exec_run&quot;,
+            &quot;keys&quot;: [&quot;ctrl+shift+8&quot;],
+            &quot;args&quot;: {
+                &quot;cmd&quot;: &quot;ruff check --fix ${file_name} --output-format=concise &amp;&amp; ruff format ${file_name}&quot;,
+                &quot;file_regex&quot;: &quot;(.*?\\.py):(.*?):(.*?):(.*)&quot;,
+                &quot;quiet&quot;: true,
+                &quot;working_dir&quot;: &quot;${directory}&quot;,
+                &quot;env&quot;: {
+                    &quot;RUFF_SHOW_FULL_PATH&quot;: &quot;1&quot;
+                }
+            },
+            &quot;context&quot;: [{&quot;key&quot;: &quot;selector&quot;, &quot;operator&quot;: &quot;equal&quot;, &quot;operand&quot;: &quot;(source.python)&quot;, &quot;match_all&quot;: true} ]
+        },
+        {
+            &quot;command&quot;: &quot;zebra_exec_run&quot;,
+            &quot;keys&quot;: [&quot;ctrl+shift+9&quot;],
+            &quot;args&quot;: {
+                &quot;cmd&quot;: &quot;ruff check --fix ${file_name} --output-format=concise &amp;&amp; ruff format ${file_name}&quot;,
+                &quot;file_regex&quot;: &quot;(.*?\\.py):(.*?):(.*?):(.*)&quot;,
+                &quot;quiet&quot;: true,
+                &quot;working_dir&quot;: &quot;${directory}&quot;,
+                &quot;env&quot;: {
+                    &quot;RUFF_SHOW_FULL_PATH&quot;: &quot;0&quot;
+                }
+            },
+            &quot;context&quot;: [{&quot;key&quot;: &quot;selector&quot;, &quot;operator&quot;: &quot;equal&quot;, &quot;operand&quot;: &quot;(source.python)&quot;, &quot;match_all&quot;: true} ]
+        },
+</code></pre>
+<p>the above would be simple commands showcasing ruff with absolute paths and with not (i've used my commit rebased on latest origin/main)</p>
+<p>but when i need to lint several folders from a single codebase or multiple ones I'd have something like this</p>
+<pre><code>                {
+                    &quot;caption&quot;: &quot;Lint&quot;,
+                    &quot;command&quot;: &quot;zebra_exec_run&quot;,
+                    &quot;args&quot;: {
+                        &quot;cmd&quot;: &quot;ruff check --fix ${paths} --output-format=concise &amp;&amp; ruff format ${paths}&quot;,
+                        &quot;file_regex&quot;: &quot;(.*?\\.py):(.*?):(.*?):(.*)&quot;,
+                        &quot;quiet&quot;: true,
+                        &quot;working_dir&quot;: &quot;${directory}&quot;,
+                        &quot;env&quot;: {
+                            &quot;RUFF_SHOW_FULL_PATH&quot;: &quot;1&quot;
+                        },
+                        &quot;paths&quot;: []
+                    },
+                    &quot;context&quot;: [{&quot;key&quot;: &quot;selector&quot;, &quot;operator&quot;: &quot;equal&quot;, &quot;operand&quot;: &quot;(source.python)&quot;, &quot;match_all&quot;: true} ]
+                },
+</code></pre>
+<p>which i trigger from here</p>
+<p><img src="https://github.com/user-attachments/assets/6c4e6aa9-2373-413c-a1c5-769a7e6e1fc8" alt="Image" /></p>
+<p>The reason I insisted on this change and spent time working on it is that, with other linters providing absolute paths, I can easily use regex to fix the source code, double-click to navigate, and go to files directly. Without absolute paths, this was impossible in those scenarios.</p>
+<p>Does that make sense now? I hope this can make it to the master branch somehow. As I mentioned, I’ve implemented it in a way that wouldn’t break anything for others, but it covers these additional cases. That said, it’s quite a pain to keep rebasing frequently to ensure it stays in sync with the latest origin/main.</p>
+<p>I’d really like to be able to check out the latest origin/main without worrying about spending extra time resolving potential merge conflicts or bugs. The good news is that every time I’ve rebased my small diff over the past month, it hasn’t conflicted at all and has worked out of the box. It seems the impacted files are rarely changed these days, which is reassuring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-19 12:11</div>
+            <div class="timeline-body"><p>Have you tried using <code>--output-format json</code> with <code>jq</code> because it includes the full path and is the intended machine readable output whereas concise is for humans.</p>
+<p>Another alternative is to set the working directory to the project root. Maybe that's already what you do but I couldn't find any sublime documentation explaining what the <code>$directory</code> variable resolves to. Do you have a link where I could learn more about it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-19 12:13</div>
+            <div class="timeline-body"><p>Can you try <code>$project_path</code> instead of <code>$directory</code>? The former resolves the project root and the latter to the enclosing directory (which then makes ruff's paths relative to the directory rather than the project).</p>
+<p>See this chat gpt explanation https://chatgpt.com/share/678cec46-c288-8002-9d70-6966d8ff4356</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2025-01-19 13:31</div>
+            <div class="timeline-body"><p>Hey Micha,</p>
+<p>A few months ago, I tried using <code>jq</code> with custom plugins. While I made it work, it required adding another plugin on top of my custom Sublime exec command, which I wrote back in 2017. My command has been working well—spawning processes, capturing stdout/stderr with proper interleaving, regexes, custom cancellation, and threading. It offers proper interleaved output, unlike custom Sublime ones.</p>
+<p>When I met <code>ruff</code>, I explored <code>jq</code> options, but it didn't meet my needs. After thinking it through, I realized the best solution was being able to report output the way I wanted without relying on shortcuts or extra plugins, just by using a barebones st without any extra plugin.</p>
+<p>I understand the <code>project_path</code> concept ofc, and I saw few Sublime projects over the years using non-cross platform tooling such as <code>sed</code> and other hacks to make paths cross-platform to capture file/line/col in the output when using tool such as cargo that don't provide proper way to write absolute paths, as least that I know</p>
+<p>However, even with those hacks you'll find limitations when handling projects across different drives or folders. On that case, the only proper way would be using a simple regex with a reporter that works seamlessly with Sublime Text’s built-in build systems—no extra plugins required, allowing for mixed drives and folders across multiple workspaces.</p>
+<p>Regarding your question, I use SublimeText’s custom exec command when no command is specified in my build system, that's why you won't find that custom $directory arg in the official docs, cos I'm not using sublime's default exec. For more info how the default one works you can take a look at sublimetext\Data\Packages\Default\exec.py  , you can use this one https://packagecontrol.io/packages/PackageResourceViewer and https://github.com/randy3k/AutomaticPackageReloader if you want fully understand how it works behinds the scenes, it's pretty simple.</p>
+<p>Anyway, long story short, it would be great to have a way to customize reporting to get full paths to use simple regexes without modifying the Rust codebase every time (e.g., recompiling, testing).</p>
+<p>From what I'm reading it feels like you've got some concerns about env.vars modifying reporters behaviour? Could you confirm? If that's the case, I understand... but think it'd still be nice having a customizable way to report output the way the user wants somehow, other linters give this flexibility.</p>
+<p>But let me stop here, instead of explaining my use case any further, could you please elaborate what you think it'd be the best solution that'd satisfy this use-case, or other similar ones without having to modify the codebase each time? IMHO the solution should be user-configurable while still adhering to the Open/Closed Principle.</p>
+<p>Please let me know the simplest, most cost-effective way to implement this feature while respecting codebase’s structure, fundamentals, etc...</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2025-01-19 13:40</div>
+            <div class="timeline-body"><p>If you think about it, tools like <code>jq</code> and <code>awk</code> aren't ideal solutions because they force the user to rely on external tools. For example, using <code>$project_path</code> with <code>awk</code> could look something like this:</p>
+<pre><code class="language-json">{
+    &quot;name&quot;: &quot;Cargo&quot;,
+    &quot;working_dir&quot;: &quot;$project_path&quot;,
+    &quot;shell_cmd&quot;: &quot;cargo build  2&gt;&amp;1 | awk 'BEGIN { errmsg=\&quot;\&quot; } /(error|warning)(\\[E[0-9]+\\])?:.*/ {errmsg=\\$0; next} / *--&gt; *.*/ { printf \&quot;%s::::%s\\n\&quot;, \\$0, errmsg; next} {print \\$0}'&quot;,
+    &quot;file_regex&quot;: &quot; +--&gt; +([a-zA-Z0-9_\\/.-]+):(\\d+):(\\d+)::::(.*)&quot;
+}
+</code></pre>
+<p>The problem If we used a similar approach in <code>ruff</code> is:</p>
+<ol>
+<li>It’s not cross-platform.</li>
+<li>It still wouldn't work across different drives on Windows.</li>
+<li>It'd require the installation of additional software or plugins.</li>
+</ol>
+<p>Ideally, <code>ruff</code> should work seamlessly across different IDEs in a cross-platform way, without forcing extra dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-19 14:50</div>
+            <div class="timeline-body"><p>Thanks for the extra context. Your setup seems very specific and custom which makes it difficult and time intensive for me to reproduce. Considering that there are alternatives -- that I understand are somewhat frustrating because they aren't ideal -- I don't think me figuring out the right design is the right prioritization because there are more fundamental issues that affect more users. I know that this isn't very helpful for you but I hope you understand.</p>
+<p>I'll keep this issue open so that we can come back when we've more time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @MichaReiser on 2025-01-19 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @MichaReiser on 2025-01-19 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2025-01-19 16:33</div>
+            <div class="timeline-body"><p>@MichaReiser First of all, thanks for taking the time! No problem at all—I completely understand. Whenever you guys are able to revisit this after clearing the high-priority stack, that’s fine with me. My goal is simply to understand the direction and identify features that will benefit all users, not just me. Please don’t take these requests as a personal wish list—I aim to open issues that report bugs or suggest improvements that help others without breaking anyone’s setup or wasting time.</p>
+<p>I just hope this doesn’t end up like some repos where you open an issue, and five years later, the author responds when you’ve completely forgotten what the repo was even about! ;)</p>
+<p>In the meantime, I’ll continue rebasing my local branch as I’ve been doing for the past month. The good news is my small diff seems to touch a relatively stable part of the codebase that isn’t affected by daily commits, so it’s been smooth sailing so far, allowing me to use ruff with my setup.</p>
+<p>If you need more specifics or details to make a better-informed decision, feel free to ping me—I’ll be monitoring this closely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexeagle">@alexeagle</a> on 2025-05-09 21:49</div>
+            <div class="timeline-body"><p>Drive-by upvote; we'd like this for Bazel as well. It runs tools in a custom sandbox called the &quot;execroot&quot; so it produces ugly SARIF like</p>
+<pre><code>#           &quot;locations&quot;: [
+#             {
+#               &quot;physicalLocation&quot;: {
+#                 &quot;artifactLocation&quot;: {
+#                   &quot;uri&quot;: &quot;file:///home/runner/.cache/bazel/_bazel_runner/89e91fd6b6dccc7b506d63833e3c5c70/sandbox/processwrapper-sandbox/542/execroot/_main/src/unused_import.py&quot;
+</code></pre>
+<p>which makes it impossible to plumb the data into tooling like an editor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2025-05-10 10:16</div>
+            <div class="timeline-body"><p>@alexeagle A few months ago, I created a fork with some fixes for this. Initially, I sought feedback and explained my issues, hoping to get it merged into the master branch, as that would have been really convenient. I made an effort to keep my branch up-to-date by recompiling, verifying, and syncing it with the latest version of Ruff a few times. However, as you can imagine, this process was quite time-consuming. At a certain point, I gave up after submitting several passing PRs that were rejected simply because I didn't have the time to keep up with everything.</p>
+<p>Nowadays, I'm using my fork with an outdated custom branch of Ruff, which I've been using happily ever since. While it doesn’t introduce any breaking changes, the downside is that I haven't merged the latest features from Ruff. Merging now would likely take some time, which I’m not going to do. I’ve already tried, and after encountering a couple of conflicts, trying to build (which took several minutes), and dealing with crashes, I decided not to go down that rabbit hole. So, I’ll stick with my outdated custom version.</p>
+<p>I hope this clarifies things. It’s unfortunate, as I would have liked to contribute further, but with the resistance to small branches and the time-consuming nature of contributing, I’ve stopped for now—at least until I come across new, specific use cases for me. In the meantime, I’ll continue using my current version.</p>
+<p>That said, absolute paths are a real use case and quite convenient in certain situations. A lot of other linters provide this ability out of the box, and relative paths often result in lossy information.</p>
+<p>Anyway, if you want to give it a shot, you can find the outdated commit here. However, you’ll need to resolve conflicts, go through the conversations, review, etc. So… it’s up to you 😅</p>
+<p>I've tried right now my outdated <a href="https://github.com/brupelo/ruff/commit/0da956dbf486c1ebfe31d5f7477ce4ab03a6c9be">custom branch</a> just to make sure it's still building and yeah, it does... Hope it helps over there!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-10 10:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Drive-by upvote; we'd like this for Bazel as well. It runs tools in a custom sandbox called the &quot;execroot&quot; so it produces ugly SARIF like</p>
+</blockquote>
+<p>I'm not sure I understand how absolute paths would help with this. Could you elaborate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2025-05-10 10:54</div>
+            <div class="timeline-body"><p>FYI, I just went down the rabbit hole and caught up with the latest origin/main. You can find a simple <a href="https://github.com/brupelo/ruff/commit/d27bdd9f57c789ca8420628513ac78c16bf9a1da">patch</a> on top of the latest main. So far, it worked fine with the basic testing I did with rel/abs paths. Resolving conflicts wasn’t as bad as I had anticipated, despite being ~600+ commits behind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexeagle">@alexeagle</a> on 2025-05-12 14:50</div>
+            <div class="timeline-body"><p>@MichaReiser I currently see an absolute path in the SARIF file, what's needed is an option to print a relative path instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-12 14:52</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/MichaReiser">@MichaReiser</a> I currently see an absolute path in the SARIF file, what's needed is an option to print a relative path instead.</p>
+</blockquote>
+<p>Paths relative to the current working directory is the default output for the CLI. Absolute paths are only emitted if the path can't be relativized to the current working directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexeagle">@alexeagle</a> on 2025-05-15 03:16</div>
+            <div class="timeline-body"><p>Bazel also uses symlinks from the execroot back to the source tree, so I would guess that's why the SARIF report doesn't relativize. I'll have to construct a reproduction outside Bazel with a similar symlinking scheme.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

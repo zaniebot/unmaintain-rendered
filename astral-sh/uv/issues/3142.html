@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`pep508_rs` file path normalization issue on windows - astral-sh/uv #3142</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`pep508_rs` file path normalization issue on windows</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3142">#3142</a>
+        opened by <a href="https://github.com/tdejager">@tdejager</a>
+        on 2024-04-19 14:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tdejager">@tdejager</a> on 2024-04-19 14:47</div>
+            <div class="timeline-body"><h2>Intro</h2>
+<p><strong>TLDR</strong> Incorrect normalization when running a windows file path through a <code>Requirement::from_str(spec_str).unwrap();</code> <strong>only</strong> on windows.</p>
+<p>This is a bit of a strange issue, and perhaps we are doing something wrong :) But we we are using the pep508_rs from the UV project in <a href="https://github.com/prefix-dev/pixi">pixi</a>. We use to test if a lock file is out of date by matching it with the requirements we get back from uv. We've found this strange issue, where there is a difference for absolute file path handling in linux vs windows.</p>
+<h2>To reproduce</h2>
+<p>Before I explain the issue, here is a reproducer, with a small CI pipeline that set's things up and tests <a href="https://github.com/tdejager/pep508-repro/blob/main/src/lib.rs">reproducer</a>.
+This only is a problem on windows, other platforms have a different normalization codepath. I.e. the problem is probably gated behind a <code>#[cfg(windows)]</code></p>
+<p><a href="https://github.com/tdejager/pep508-repro/actions/runs/8755369544/job/24029289515">Failing test</a></p>
+<h2>Problem</h2>
+<p>The problem is that given the following direct-url requirement:</p>
+<pre><code class="language-rust">let spec_str = &quot;mypkg @ file:///C:/path/to/my_pkg&quot;;
+let spec = Requirement::from_str(spec_str).unwrap();
+</code></pre>
+<p>When I read the code, I expect the path to be normalized in windows to: <code>C:\\path\\to\\my_pkg</code>.</p>
+<h2>Why is this unexpected?</h2>
+<p>This because the requirements parsing, gets to the following function:</p>
+<pre><code class="language-rust">fn parse_url(cursor: &amp;mut Cursor, working_dir: Option&lt;&amp;Path&gt;) -&gt; Result&lt;VerbatimUrl, Pep508Error&gt; {
+// ...✂️✂️✂️ rest of function
+    let url = preprocess_url(url, working_dir, cursor, start, len)?;
+}
+</code></pre>
+<p>which in turn calls <code>preprocess_url</code>.</p>
+<p>Which has the following part that I'm insterested in:</p>
+<pre><code class="language-rust">/// Create a `VerbatimUrl` to represent the requirement.
+fn preprocess_url(
+    url: &amp;str,
+    #[cfg_attr(not(feature = &quot;non-pep508-extensions&quot;), allow(unused))] working_dir: Option&lt;&amp;Path&gt;,
+    cursor: &amp;Cursor,
+    start: usize,
+    len: usize,
+) -&gt; Result&lt;VerbatimUrl, Pep508Error&gt; {
+    // Expand environment variables in the URL.
+    let expanded = expand_env_vars(url);
+
+    if let Some((scheme, path)) = split_scheme(&amp;expanded) {
+        match Scheme::parse(scheme) {
+            // Ex) `file:///home/ferris/project/scripts/...`, `file://localhost/home/ferris/project/scripts/...`, or `file:../ferris/`
+            Some(Scheme::File) =&gt; {
+                // Strip the leading slashes, along with the `localhost` host, if present.
+                let path = strip_host(path);
+
+                // Transform, e.g., `/C:/Users/ferris/wheel-0.42.0.tar.gz` to `C:\Users\ferris\wheel-0.42.0.tar.gz`.
+                let path = normalize_url_path(path);
+                // ✂️✂️✂️... rest of function
+
+</code></pre>
+<p>Namely the <code>strip_host</code> and <code>normalize_url_path</code> functions that, I expect should turn:</p>
+<pre><code>///C:/path/to/my_pkg =&gt; C:\\path\\to\\my_pkg
+</code></pre>
+<p>The weird thing is that if I call these functions directly</p>
+<pre><code class="language-rust">uv_fs::normalize_url_path(pep508_rs::strip_host(&quot;///C:/path/to/my_pkg&quot;)); // Produces:  C:\\path\\to\\my_pkg as expected.
+</code></pre>
+<p>They do exactly this. However, going through the Requirement parsing e.g:</p>
+<pre><code class="language-rust">let spec = Requirement::from_str(spec_str).unwrap();
+if let Some(VersionOrUrl::Url(url)) = spec.version_or_url {
+    let path = url.path(); // This is: /C:/path/to/my_pkg
+}
+</code></pre>
+<p>it somehow does not, which I don't understand. Sorry for the long write-up, it was pretty hard to explain succinctly. Let me know if you need more information</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2024-04-19 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 14:58</div>
+            <div class="timeline-body"><p>Have you confirmed that we're actually hitting the <code>Some(Scheme::File)</code> branch in this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ruben-arts">@ruben-arts</a> on 2024-04-19 15:32</div>
+            <div class="timeline-body"><p>Using the reproducer and a local version of uv 0.1.32 modified with a <code>dbg!(path)</code> in the <code>Some(Scheme::file)</code> branch:</p>
+<pre><code>C:/Users/Ruben/.cargo/bin/cargo.exe run --color=always --package pep508_reproducer --bin pep508_reproducer
+    Finished dev [unoptimized + debuginfo] target(s) in 0.07s
+     Running `target\debug\pep508_reproducer.exe`
+[C:\Users\Ruben\development\uv\crates\pep508-rs\src\lib.rs:1060:17] &amp;path = &quot;C:\\path\\to\\my_pkg&quot;
+thread 'main' panicked at src\main.rs:10:9:
+assertion `left == right` failed
+  left: &quot;/C:/path/to/my_pkg&quot;
+ right: &quot;C:\\path\\to\\my_pkg&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 16:02</div>
+            <div class="timeline-body"><p>I can look into this tonight, I still haven't wrapped my head around what the problem is.</p>
+<p>Just to clarify, are you running all of these tests <em>on</em> Windows? I think the path normalization probably differs depending on the host platform, not just the paths themselves.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdejager">@tdejager</a> on 2024-04-19 16:35</div>
+            <div class="timeline-body"><p>Indeed it does, you can check the CI in the reproducer that is failing on windows but succeeding on Linux. I can give you access if you want to modify it directly 😄</p>
+<p>Edit:
+Swapped the words succeeding and failing. Windows fails as is expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 23:56</div>
+            <div class="timeline-body"><p>I might need to understand the actual problem that it's causing, but isn't this just the difference between a <code>Path</code> and <code>url.path()</code> (which is just the string after the host etc.)?</p>
+<pre><code class="language-rust">let url = Url::from_str(&quot;file:///C:/path/to/my_pkg&quot;).unwrap();
+
+println!(&quot;{}&quot;, url.path());
+// /C:/path/to/my_pkg
+
+let path = url.to_file_path().unwrap();
+println!(&quot;{}&quot;, path.display());
+// C:\path\to\my_pkg
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdejager">@tdejager</a> on 2024-04-20 07:10</div>
+            <div class="timeline-body"><p>Well not really it's more like what you expect the normalization to be when an absolute file url gets passed into the requirement.</p>
+<p>And as you can see the output does not correspond to what the functions in 'preprocess_url' say what they should be doing.</p>
+<p>The weird thing is still that calling these functions directly does yield the result that the comments imply.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdejager">@tdejager</a> on 2024-04-20 07:41</div>
+            <div class="timeline-body"><p>The fact that a different normalization is used per platform makes it hard to do comparisons when serializing on one platform and doing the comparison on another. As re-parsing gives a different result, we could work around that of course :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdejager">@tdejager</a> on 2024-04-20 07:57</div>
+            <div class="timeline-body"><p>Also, sorry for the fact I can't debug it a bit better but I don't have access to a windows machine atm. But will have after the weekend!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-20 13:34</div>
+            <div class="timeline-body"><p>Yeah but the return values of <code>normalize_url_path</code> and <code>url.path()</code> are not really of the same &quot;type&quot;, right? The former is meant to be a string representation of a <code>Path</code>. The latter is the path segment of a <code>Url</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdejager">@tdejager</a> on 2024-04-20 17:43</div>
+            <div class="timeline-body"><p>🤦 oh man, you are right: https://github.com/tdejager/pep508-repro (succeeding now)</p>
+<p>Got it to succeed now, feel free to close.</p>
+<p>Sorry about that, totally missed it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @tdejager on 2024-04-22 07:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

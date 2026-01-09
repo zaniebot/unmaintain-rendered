@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv fails to find workspace root for nested packages - astral-sh/uv #16640</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv fails to find workspace root for nested packages</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16640">#16640</a>
+        opened by <a href="https://github.com/stewartadam">@stewartadam</a>
+        on 2025-11-08 00:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stewartadam">@stewartadam</a> on 2025-11-08 00:50</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In a multi-level workspace, uv appears to treat nested members differently from top-level members:</p>
+<pre><code>mkdir -p foo/a/b
+cd foo; uv init
+cd a; uv init
+cd b; uv init
+
+cd ../ # we're under 'foo/a' now
+uv sync # creates .venv and uv.lock at the workspace root 'foo/'
+
+cd b
+uv sync # creates a new .venv and uv.lock under 'foo/a/b'
+</code></pre>
+<p>I would expect that <code>foo</code> workspace member <code>a/b</code> continues to use the workspace-level .venv/uv.lock as it did for the first-level workspace member <code>a</code>.</p>
+<p><code>uv sync -v --all-packages</code> from within the <code>foo/a</code> folder:</p>
+<pre><code>DEBUG uv 0.9.7 (Homebrew 2025-10-30)
+DEBUG Acquired shared lock for `/Users/stewartadam/.cache/uv`
+DEBUG Found project root: `/Users/stewartadam/foo/a`
+DEBUG Found workspace root: `/Users/stewartadam/foo`
+DEBUG Adding root workspace member: `/Users/stewartadam/foo`
+DEBUG Adding discovered workspace member: `/Users/stewartadam/foo/a`
+DEBUG Adding discovered workspace member: `/Users/stewartadam/foo/a/b`
+DEBUG Acquired lock for `/Users/stewartadam/foo`
+DEBUG Reading Python requests from version file at `/Users/stewartadam/foo/.python-version`
+DEBUG Using Python request `3.12` from version file at `/Users/stewartadam/foo/.python-version`
+DEBUG Checking for Python environment at: `/Users/stewartadam/foo/.venv`
+DEBUG The project environment's Python version satisfies the request: `Python 3.12`
+DEBUG Released lock at `/var/folders/1m/xxn68ngs7bb6h6x6bt442tth0000gn/T/uv-d4d39f85f2047a7c.lock`
+DEBUG Acquired lock for `/Users/stewartadam/foo/.venv`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: a @ file:///Users/stewartadam/foo/a
+DEBUG Found workspace root: `/Users/stewartadam/foo`
+DEBUG Found static `pyproject.toml` for: b @ file:///Users/stewartadam/foo/a/b
+DEBUG Project is contained in non-workspace project: `/Users/stewartadam/foo/a`
+DEBUG No workspace root found, using project root
+DEBUG Found static `pyproject.toml` for: foo @ file:///Users/stewartadam/foo
+DEBUG Found workspace root: `/Users/stewartadam/foo`
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 3 packages in 5ms
+DEBUG Using request timeout of 30s
+Audited in 0.00ms
+DEBUG Released lock at `/Users/stewartadam/foo/.venv/.lock`
+DEBUG Released lock at `/Users/stewartadam/.cache/uv/.lock`
+</code></pre>
+<p><code>uv sync -v --all-packages</code> from within the <code>foo/a/b</code> folder:</p>
+<pre><code>DEBUG uv 0.9.7 (Homebrew 2025-10-30)
+DEBUG Acquired shared lock for `/Users/stewartadam/.cache/uv`
+DEBUG Found project root: `/Users/stewartadam/foo/a/b`
+DEBUG Project is contained in non-workspace project: `/Users/stewartadam/foo/a`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/Users/stewartadam/foo/a/b`
+DEBUG No Python version file found in workspace: /Users/stewartadam/foo/a/b
+DEBUG Using Python request `&gt;=3.12` from `requires-python` metadata
+DEBUG Checking for Python environment at: `.venv`
+DEBUG The project environment's Python version satisfies the request: `Python &gt;=3.12`
+DEBUG Released lock at `/var/folders/1m/xxn68ngs7bb6h6x6bt442tth0000gn/T/uv-38125e2740c2addc.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: b @ file:///Users/stewartadam/foo/a/b
+DEBUG Project is contained in non-workspace project: `/Users/stewartadam/foo/a`
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 1 package in 3ms
+DEBUG Using request timeout of 30s
+Audited in 0.00ms
+DEBUG Released lock at `/Users/stewartadam/foo/a/b/.venv/.lock`
+DEBUG Released lock at `/Users/stewartadam/.cache/uv/.lock`
+</code></pre>
+<h3>Platform</h3>
+<p>MacOS Tahoe</p>
+<h3>Version</h3>
+<p>uv 0.9.7 (Homebrew 2025-10-30)</p>
+<h3>Python version</h3>
+<p>Python 3.12.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @stewartadam on 2025-11-08 00:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-08 03:08</div>
+            <div class="timeline-body"><p>I thought nested members were rejected entirely but that may have been made more permissive at some point. I think @konstin would know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stewartadam">@stewartadam</a> on 2025-11-08 06:53</div>
+            <div class="timeline-body"><p>I wasn't sure either, but https://github.com/astral-sh/uv/issues/5251 seems to indicate that this is unexpected behavior and that nested members all sharing the root-level workspace was the desired behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-10 20:56</div>
+            <div class="timeline-body"><p>Nested packages in workspaces shouldn't be a thing. Given that they do somewhat work, I would:</p>
+<ul>
+<li>Add a warning that nesting packages is an anti-pattern</li>
+<li>Change workspace discovery so that <code>foo/a/b</code> discovery doesn't stop at <code>foo/a</code> but discovers <code>foo</code> too.</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

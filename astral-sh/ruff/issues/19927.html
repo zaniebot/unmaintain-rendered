@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S602, S604, and S609 treat `{**{}}` as truthy - astral-sh/ruff #19927</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>S602, S604, and S609 treat `{**{}}` as truthy</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19927">#19927</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-08-15 12:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-08-15 12:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>As the value of a <code>shell</code> argument, <a href="https://docs.astral.sh/ruff/rules/subprocess-popen-with-shell-equals-true/"><code>subprocess-popen-with-shell-equals-true</code> (S602)</a>, <a href="https://docs.astral.sh/ruff/rules/call-with-shell-equals-true/"><code>call-with-shell-equals-true</code> (S604)</a>, and <a href="https://docs.astral.sh/ruff/rules/unix-command-wildcard-injection/"><code>unix-command-wildcard-injection</code> (S609)</a> treat a dictionary display as truthy when its elements are all double-starred non-name expressions, but a non-name expression can evaluate to an empty mapping, so the <code>shell</code> value might actually be falsey. These rules should check the truthiness of the double-starred expressions, or they should treat them as having unknown truthiness. <a href="https://play.ruff.rs/d23da6b9-9d36-4c44-a8e9-4018621ee7f4">Example</a>:</p>
+<pre><code>$ cat &gt;s60.py &lt;&lt;'# EOF'
+import subprocess
+subprocess.Popen([&quot;chmod&quot;, &quot;777&quot;, &quot;*.py&quot;], shell={**{}})
+dict(shell={**{}})
+# EOF
+
+$ ruff --isolated check s60.py --select S602,S604,S609 --output-format concise -q
+s60.py:2:1: S602 `subprocess` call with truthy `shell` identified, security issue
+s60.py:2:18: S609 Possible wildcard injection in call due to `*` usage
+s60.py:3:1: S604 Function call with truthy `shell` parameter identified, security issue
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.9 (ef422460d 2025-08-14)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-15 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-08-15 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-08-16 21:02</div>
+            <div class="timeline-body"><p>What does the real world code where this comes up in look like?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-08-18 01:10</div>
+            <div class="timeline-body"><p>This is <a href="https://github.com/astral-sh/ruff/blob/0.12.9/crates/ruff_python_ast/src/helpers.rs#L1302">a bug</a> in the general helper function <code>Truthiness::from_expr</code> which happens to manifest in these three rules. <code>{**{}}</code> is the simplest way to reproduce it. A more realistic example would be something like <code>{**self.shell_defaults, **self.fetch_shell_config(self.username)}</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20177.html">astral-sh/ruff#20177</a> on 2025-08-31 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-10 21:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

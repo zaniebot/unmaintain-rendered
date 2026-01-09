@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv add fails with git repositories using `objectformat = sha256` - astral-sh/uv #16007</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv add fails with git repositories using `objectformat = sha256`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16007">#16007</a>
+        opened by <a href="https://github.com/berhoel">@berhoel</a>
+        on 2025-09-23 19:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/berhoel">@berhoel</a> on 2025-09-23 19:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Trying to add a git dependency with a repoitory using</p>
+<pre><code>[extensions]
+	objectformat = sha256
+</code></pre>
+<p>fails:</p>
+<pre><code class="language-shell">$&gt; LANG=C uv add &quot;mkdocs-material-berhoel @ git+https://gitlab.com/berhoel/python/mkdocs-material-berhoel.git&quot; 
+   Updating https://gitlab.com/berhoel/python/mkdocs-material-berhoel.git (HEAD)                                                                                                                                                                                                                    × Failed to download and build `mkdocs-material-berhoel @ git+https://gitlab.com/berhoel/python/mkdocs-material-berhoel.git`
+  ├─▶ Git operation failed
+  ├─▶ failed to clone into: /home/hoel/.cache/uv/git-v0/db/bbefee9a3070ed78
+  ╰─▶ process didn't exit successfully: `/usr/bin/git fetch --force --update-head-ok 'https://gitlab.com/berhoel/python/mkdocs-material-berhoel.git' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
+      --- stderr
+      fatal: mismatched algorithms: client sha1; server sha256
+
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<h3>Platform</h3>
+<p>Opensuse Tumbleweed</p>
+<h3>Version</h3>
+<p>uv 0.8.19</p>
+<h3>Python version</h3>
+<p>Python 3.13.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @berhoel on 2025-09-23 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/berhoel">@berhoel</a> on 2025-09-24 17:10</div>
+            <div class="timeline-body"><p>OK, checking the process of downloading git references I seem miss the required understanding of git.</p>
+<p>It seems <code>uv</code> uses a combination of <code>git init</code> and <code>git fetch</code> instead of <code>git clone</code>. This leads to the problem with repositories created using <code>git init --object-format sha256</code> as they will not fetch into repositories initialized using default object format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-24 18:02</div>
+            <div class="timeline-body"><p>Interesting. I'm not sure what the fix is. Do you have ideas?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/berhoel">@berhoel</a> on 2025-09-24 18:20</div>
+            <div class="timeline-body"><p>If it is not possible to use <code>git checkout</code> instead of <code>git init</code>/<code>git pull</code> it could be as solution to check the remote repository before init. I did not find a direct way to check the object format of a remote repository, but <code>ls-remote</code> could help:</p>
+<pre><code class="language-console">$ git ls-remote 'https://gitlab.com/berhoel/python/mkdocs-material-berhoel.git' HEAD
+00080e3f1f2e7c83869d288d0aba83debbf1ebcae24abadf6a0c30d0a9f0102a	HEAD
+$ git ls-remote 'https://gitlab.com/berhoel/python/ctitools.git' HEAD
+9c199cbc51de6ab5c27a33278ce07b4e089c2ea8	HEAD
+git ls-remote https://github.com/astral-sh/uv.git HEAD
+ade2bdbd2a58c303b23976be3649ac1ed8796716	HEAD
+</code></pre>
+<p><code>mkdocs-material-berhoel</code> uses sha-256 for object format, and <code>ctitools</code> and <code>uv</code> use sha-1, so the length of the hash seems to be an indicator for the object format. Then <code>git init</code> is used for repos using sha-1, and <code>git init --object-format sha256</code>otherwise.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

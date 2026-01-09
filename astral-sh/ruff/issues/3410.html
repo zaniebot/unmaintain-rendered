@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a `include` parameter to allow expanding scope of included files - astral-sh/ruff #3410</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a `include` parameter to allow expanding scope of included files</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3410">#3410</a>
+        opened by <a href="https://github.com/neingeist">@neingeist</a>
+        on 2023-03-08 21:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neingeist">@neingeist</a> on 2023-03-08 21:52</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Ruff 0.0.254 seems to ignore Python scripts that do not end in <code>.py</code>. Is there an option to include them in the configuration?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-08 22:07</div>
+            <div class="timeline-body"><p>We typically require that those files are passed-in explicitly -- e.g., if you do <code>ruff /path/to/file</code>, we'll <em>always</em> check <code>file</code> regardless of the extension; but if you do <code>ruff path/to</code>, we only check <code>.py</code> and <code>.pyi</code> files.</p>
+<p>I think this is consistent with Black's behavior (running <code>black foo</code> won't reformat files in <code>foo</code> that <em>don't</em> end in <code>.py</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-03-08 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neingeist">@neingeist</a> on 2023-03-08 22:35</div>
+            <div class="timeline-body"><p>I see! I absolutely agree that the default behavior is good. However, Black can be configured to include these extra files:</p>
+<pre><code>[tool.black]
+include = '.*/(bad-movies|test|.*\.py)$'
+</code></pre>
+<p>Something like that I would wish for :) (Black will check <code>bad-movies</code> and <code>test</code>, too, with this configuration.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-08 22:42</div>
+            <div class="timeline-body"><p>Oh interesting, so that's the file list that's used if you execute <code>black</code> (instead of <code>black /path/to/folder</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neingeist">@neingeist</a> on 2023-03-08 22:42</div>
+            <div class="timeline-body"><p>Ruff is a great tool, by the way! Need to remind myself to also give positive feedback, not only report bugs/wish for features 😇</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-08 22:42</div>
+            <div class="timeline-body"><p>Or does <code>include</code> also apply if you do <code>black /path/to/folder</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-08 22:42</div>
+            <div class="timeline-body"><p>Oh heh thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-08 22:45</div>
+            <div class="timeline-body"><p>I can also just look at the Black docs to answer those questions. I agree it could make sense to support something like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neingeist">@neingeist</a> on 2023-03-08 22:46</div>
+            <div class="timeline-body"><p><code>black</code> without an option doesn't do anything, so it's like <code>ruff</code>. This <code>include</code> is used when I run <code>black .</code>  (or <code>black /path/to/src/</code>).  It seems to search the path and match against the regex in <code>include</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-08 22:48</div>
+            <div class="timeline-body"><p>Ahhh I see, ok. Lemme think on that. (So our <code>include</code> is roughly <code>*.pyi?</code> right now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neingeist">@neingeist</a> on 2023-03-08 22:54</div>
+            <div class="timeline-body"><p>Black's default seems to be <code>include = '\.pyi?$'</code>. While I checked Black's behavior I noticed that it still ignores files in <code>.gitignore</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Option to include files?" to "Add a `include` parameter to allow expanding scope of included files" by @charliermarsh on 2023-03-08 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-03-08 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-03-08 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-03-08 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-08 22:55</div>
+            <div class="timeline-body"><p>(We also ignore files in <code>.gitignore</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2192.html">astral-sh/ruff#2192</a> on 2023-03-08 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neingeist">@neingeist</a> on 2023-03-09 00:42</div>
+            <div class="timeline-body"><p>Ah, I just noticed your example was a glob pattern, mine was a regex (because Black uses a regex here). Probably something to think about a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ahal">@ahal</a> on 2023-03-10 21:12</div>
+            <div class="timeline-body"><p>This feature would be appreciated! We have some custom file extensions (which are a subset of Python) in a large monorepo. In order to pass them into <code>ruff</code> explicitly, we have a Python wrapper to find them all.. But finding the files takes much longer than it takes <code>ruff</code> to lint the entire monorepo :p.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-10 21:16</div>
+            <div class="timeline-body"><p>😅 😅 😅  Will try to get to this soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-03-11 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neingeist">@neingeist</a> on 2023-03-15 17:22</div>
+            <div class="timeline-body"><blockquote>
+<p>(We also ignore files in <code>.gitignore</code>.)</p>
+</blockquote>
+<p>Yeah, I just wanted to mention it, because Black's behavior seems to be:</p>
+<ul>
+<li>search the path</li>
+<li>process files matching <code>include</code> regex (with a sensible default)</li>
+<li>BUT not ignored files (e.g. <code>.gitignore</code>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steve-mavens">@steve-mavens</a> on 2023-03-25 13:59</div>
+            <div class="timeline-body"><p>In view of https://github.com/charliermarsh/ruff/issues/2192, would it be useful for this feature to distinguish between, &quot;I want you to check all files matching this pattern&quot; and &quot;I'm throwing the kitchen sink at you here, and I only want you to check all files matching this pattern which also have a #! python&quot;?</p>
+<p>Then (assuming a regex-y syntax) someone might say:</p>
+<pre><code>include = .*\.pyi?
+include-scripts = .*
+</code></pre>
+<p>Which means, &quot;check all .py files, all .pyi files, and all files that contain shebangs&quot;</p>
+<p>Or:</p>
+<pre><code>include = *.pyi?
+include-scripts = ^[^\.]*$
+</code></pre>
+<p>which means, &quot;check all .py files, all .pyi files, and all files with no file extension that contain shebangs&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3783.html">astral-sh/ruff#3783</a> on 2023-03-28 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3914.html">astral-sh/ruff#3914</a> on 2023-04-08 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-12 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-12 03:45</div>
+            <div class="timeline-body"><p>The first version of this will go out in the next release -- e.g., you can do:</p>
+<pre><code class="language-toml">[tool.ruff]
+extend-include = [&quot;*.pyw&quot;]
+</code></pre>
+<p>...to include <code>.pyw</code> files alongside the default <code>.py</code> and <code>.pyi</code> files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-08-23 22:47</div>
+            <div class="timeline-body"><p>Oh, this is incredible!</p>
+<p>By the way, my usecase is that I only want to run Ruff on manual Django migrations, not auto-generated ones. We have a convention that they are always named <code>####_manual_foo</code>, so I <em>tried</em> to match with <code>extend-exclude = [&quot;src/migrations/[0-9][0-9][0-9][0-9]_[!m][!a][!n][!u][!a][!l]*&quot;, &quot;typings&quot;]</code>, but today we had a confusing hit on <code>0212_contract_budget....py</code>. Then we realized that the 3rd letter of both is <code>n</code>, so this pattern is incorrect. What I really want is to exclude everything in <code>migrations/</code>, but then to include anything starting with <code>manual</code>, which I'm hoping <code>extend-include</code> will allow me to do.</p>
+<p>EDIT: Hmm, it doesn't seem to work the way I expected</p>
+<p>EDIT2: I made it work with just <code>extend-exclude</code>. <code>&quot;src/migrations/[0-9][0-9][0-9][0-9]_[!{manual}]*&quot;</code> does exactly what I want!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-23 23:09</div>
+            <div class="timeline-body"><p>Nice! I think it probably didn't work as you'd expected because we do exclusions first, then inclusions, similar to Black (https://github.com/astral-sh/ruff/pull/3914#issuecomment-1504528725).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-08-23 23:14</div>
+            <div class="timeline-body"><p>Update: It... sometimes works? I can't actually figure out what the logic is. <code>0118_contract_budget...</code> is correctly excluded, but a bunch of random <code>####_alter_...</code> are included, and I'm not sure why.</p>
+<p>EDIT: Okay, I figured it out. <code>contract</code> starts with <code>c</code>, which is not in <code>&quot;manual&quot;</code>. <code>alter</code> starts with <code>a</code>, which is. Based on the <a href="https://docs.rs/globset/latest/globset/#syntax">globset docs</a>, I assumed I could use curlies to define a full string as a pattern instead of just a single character, but apparently it's still matching individual characters from inside the curlies.</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/5475199/efe4d517-3248-41e3-85ba-4929e91772fc" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-08-23 23:17</div>
+            <div class="timeline-body"><blockquote>
+<p>exclusions first, then inclusions</p>
+</blockquote>
+<p>Shouldn't that actually make it behave the way I want? I want to first exclude the entire directory, then selectively include a few files from that directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-24 00:10</div>
+            <div class="timeline-body"><p>@tylerlaprade - The way to think of it is: first, we iterate over all directories and files, removing any that match <code>exclude</code>; then, we pass the remaining files through <code>include</code>, and lint anything that matches. So if something is removed by an exclude, it can't be &quot;re-added&quot; by an <code>include</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

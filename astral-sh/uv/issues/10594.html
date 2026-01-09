@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing authentication in requests when downloading package in JFrog Artifactory Python package index - astral-sh/uv #10594</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Missing authentication in requests when downloading package in JFrog Artifactory Python package index</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10594">#10594</a>
+        opened by <a href="https://github.com/jnth">@jnth</a>
+        on 2025-01-14 12:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jnth">@jnth</a> on 2025-01-14 12:51</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>First, thank you for this great tool.</p>
+<p>I've got an authentication error when using a private Python package index with JFrog Artifactory.</p>
+<p>My <code>pyproject.toml</code> config:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;mypi&quot;
+url = &quot;https://factory.internal.org/artifactory/api/pypi/my-py-artifact/simple&quot;
+</code></pre>
+<p>And set the two env variables <code>UV_INDEX_MYPI_USERNAME</code> and <code>UV_INDEX_MYPI_PASSWORD</code>.</p>
+<p>When I add a library with <code>uv add mylib</code>, I got an Internal Server Error.</p>
+<p>By looking at the log, I see that:</p>
+<ul>
+<li>The first request to the index is correct (at <code>https://factory.internal.org/artifactory/api/pypi/my-py-artifact/simple</code>)</li>
+<li>The credentials are stored in global authentication cache (in <code>CREDENTIALS_CACHE</code>)</li>
+<li>But the second request that download the wheel, the credential are not retrieved.</li>
+</ul>
+<pre><code>TRACE uv_auth::cache No credentials in cache for URL https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+</code></pre>
+<p>The <a href="https://github.com/astral-sh/uv/blob/faa4481ccc4af97b6043f824224c065da55a15c2/crates/uv-auth/src/cache.rs#L162"><code>get</code> method in <code>UrlTrie</code></a> return <code>None</code> for the second request as the component are not the same as the first request:</p>
+<ul>
+<li>components of the first request: <code>/artifactory/api/pypi/my-py-artifact/simple/mylib/</code></li>
+<li>components of the second request: <code>/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl</code></li>
+</ul>
+<p>The 5th is different: <code>simple</code> vs <code>mylib</code>.</p>
+<p>To test, I add a <code>.filter(|item| item != &amp;&quot;simple&quot;)</code> in the <a href="https://github.com/astral-sh/uv/blob/faa4481ccc4af97b6043f824224c065da55a15c2/crates/uv-auth/src/cache.rs#L182"><code>insert</code> method of <code>UrlTrie</code></a> and the library is downloaded correctly.</p>
+<p>Have you any suggestion to fix this issue in a proper way?</p>
+<details>
+  <summary>Trace when adding the library</summary>
+
+<pre><code>    0.000005s DEBUG uv uv 0.5.18
+    0.000232s DEBUG uv_workspace::workspace Found project root: `/tmp/bla`
+    0.000302s DEBUG uv_workspace::workspace No workspace root found, using project root
+    0.000357s DEBUG uv_python::version_files Reading Python requests from version file at `/tmp/bla/.python-version`
+    0.000372s DEBUG uv::commands::project Using Python request `3.13` from version file at `.python-version`
+    0.000505s TRACE uv_python::interpreter Querying interpreter executable at /tmp/bla/.venv/bin/python3
+    0.033138s DEBUG uv::commands::project The virtual environment's Python version satisfies `3.13`
+ uv_requirements::specification::from_source source=mylib
+    0.033806s TRACE uv_auth Caching credentials for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/simple
+ uv_client::linehaul::linehaul 
+    0.033922s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries 
+ uv_distribution::distribution_database::get_or_build_wheel_metadata dist=bla @ file:///tmp/bla
+    0.034377s   0ms DEBUG uv_distribution::source Found static `pyproject.toml` for: bla @ file:///tmp/bla
+    0.034439s   0ms DEBUG uv_workspace::workspace No workspace root found, using project root
+    0.034556s TRACE uv_requirements::lookahead Performing lookahead for bla @ file:///tmp/bla
+ uv_resolver::resolver::solve 
+    0.034819s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.13.1
+    0.034830s   0ms DEBUG uv_resolver::resolver Solving with target Python version: &gt;=3.13
+    0.034852s   0ms TRACE uv_resolver::resolver assigned packages: 
+    0.034856s   0ms TRACE uv_resolver::resolver Chose package for decision: root. remaining choices: 
+   uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+     uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+    0.034947s   0ms DEBUG uv_resolver::resolver Adding direct dependency: bla*
+    0.034962s   0ms  INFO pubgrub::internal::partial_solution add_decision: Id::&lt;PubGrubPackage&gt;(0) @ 0a0.dev0 without checking dependencies
+    0.034989s   0ms TRACE uv_resolver::resolver assigned packages: root==0a0.dev0
+    0.034992s   0ms TRACE uv_resolver::resolver Chose package for decision: bla. remaining choices: 
+    0.034996s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of bla @ file:///tmp/bla (*)
+   uv_resolver::resolver::get_dependencies_forking package=bla, version=0.1.0
+     uv_resolver::resolver::get_dependencies package=bla, version=0.1.0
+    0.035028s   0ms DEBUG uv_resolver::resolver Adding direct dependency: mylib*
+    0.035035s   0ms  INFO pubgrub::internal::partial_solution add_decision: Id::&lt;PubGrubPackage&gt;(1) @ 0.1.0 without checking dependencies
+    0.035048s   0ms TRACE uv_resolver::resolver assigned packages: root==0a0.dev0, bla==0.1.0
+    0.035051s   0ms TRACE uv_resolver::resolver Chose package for decision: mylib. remaining choices: 
+ uv_resolver::resolver::process_request request=Versions mylib
+   uv_client::registry_client::simple_api package=mylib
+      0.035071s   0ms TRACE uv_client::registry_client Fetching metadata for mylib from https://factory.internal.org/artifactory/api/pypi/my-py-artifact/simple/mylib/
+     uv_client::cached_client::get_cacheable_with_retry 
+       uv_client::cached_client::get_cacheable 
+         uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpJkCfvB/simple-v14/index/4a90376400512f09/mylib.rkyv
+ uv_client::cached_client::from_path_sync path=&quot;/tmp/.tmpJkCfvB/simple-v14/index/4a90376400512f09/mylib.rkyv&quot;
+            0.035232s   0ms TRACE uv_client::cached_client No cache entry exists for /tmp/.tmpJkCfvB/simple-v14/index/4a90376400512f09/mylib.rkyv
+          0.035238s   0ms DEBUG uv_client::cached_client No cache entry for: https://factory.internal.org/artifactory/api/pypi/my-py-artifact/simple/mylib/
+         uv_client::cached_client::fresh_request url=&quot;https://factory.internal.org/artifactory/api/pypi/my-py-artifact/simple/mylib/&quot;
+            0.035245s   0ms TRACE uv_client::cached_client Sending fresh GET request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/simple/mylib/
+            0.035257s   0ms TRACE uv_auth::middleware Handling request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/simple/mylib/
+            0.035261s   0ms TRACE uv_auth::middleware Request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/simple/mylib/ is unauthenticated, checking cache
+            0.035265s   0ms TRACE uv_auth::cache Found cached credentials for URL https://factory.internal.org/artifactory/api/pypi/my-py-artifact/simple/mylib/
+            0.035270s   0ms TRACE uv_auth::middleware Request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/simple/mylib/ is fully authenticated
+            0.035288s   0ms TRACE hyper_util::client::legacy::pool checkout waiting for idle connection: (&quot;https&quot;, factory.internal.org)
+            0.035307s   0ms DEBUG reqwest::connect starting new connection: https://factory.internal.org/
+            0.035325s   0ms DEBUG reqwest::connect proxy(http://127.0.0.1:11011) intercepts 'https://factory.internal.org/'
+            0.035333s   0ms TRACE hyper_util::client::legacy::connect::http Http::connect; scheme=Some(&quot;http&quot;), host=Some(&quot;127.0.0.1&quot;), port=Some(Port(11011))
+            0.035339s   0ms DEBUG hyper_util::client::legacy::connect::http connecting to 127.0.0.1:11011
+            0.035445s   0ms DEBUG hyper_util::client::legacy::connect::http connected to 127.0.0.1:11011
+            0.035451s   0ms TRACE reqwest::connect tunneling HTTPS over proxy
+            0.044198s   8ms TRACE hyper_util::client::legacy::client http1 handshake complete, spawning background dispatcher task
+            0.044222s   8ms TRACE hyper_util::client::legacy::pool checkout dropped for (&quot;https&quot;, factory.internal.org)
+            0.077825s  42ms TRACE uv_client::httpcache cached request https://factory.internal.org/artifactory/api/pypi/my-py-artifact/simple/mylib/ is storable because its response has an 'max-age' cache-control directive
+         uv_client::cached_client::new_cache file=/tmp/.tmpJkCfvB/simple-v14/index/4a90376400512f09/mylib.rkyv
+         uv_client::registry_client::parse_simple_api package=mylib
+    0.077964s TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, factory.internal.org)
+    0.077973s DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, factory.internal.org)
+           uv_client::html::parse url=https://factory.internal.org/artifactory/api/pypi/my-py-artifact/simple/mylib/
+   uv_resolver::version_map::from_metadata 
+    0.078549s TRACE uv_resolver::resolver Received package metadata for: mylib
+    0.078577s TRACE hyper_util::client::legacy::pool idle interval checking for expired
+    0.078599s  43ms DEBUG uv_resolver::resolver Searching for a compatible version of mylib (*)
+    0.078615s  43ms TRACE uv_resolver::candidate_selector Selecting candidate for mylib with range * with 4 remote versions
+    0.078641s  43ms TRACE uv_resolver::candidate_selector Found candidate for package mylib with range * after 1 steps: 0.1.0a5 version
+    0.078666s  43ms TRACE uv_resolver::candidate_selector Returning candidate for package mylib with range * after 1 steps
+    0.078671s  43ms DEBUG uv_resolver::resolver Selecting: mylib==0.1.0a5 [compatible] (mylib-0.1.0a5-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies_forking package=mylib, version=0.1.0a5
+     uv_resolver::resolver::get_dependencies package=mylib, version=0.1.0a5
+ uv_resolver::resolver::process_request request=Metadata mylib==0.1.0a5
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=mylib==0.1.0a5
+     uv_client::registry_client::wheel_metadata built_dist=mylib==0.1.0a5
+       uv_client::cached_client::get_serde_with_retry 
+         uv_client::cached_client::get_cacheable_with_retry 
+           uv_client::cached_client::get_cacheable 
+             uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpJkCfvB/wheels-v3/index/4a90376400512f09/mylib/mylib-0.1.0a5-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path=&quot;/tmp/.tmpJkCfvB/wheels-v3/index/4a90376400512f09/mylib/mylib-0.1.0a5-py3-none-any.msgpack&quot;
+                0.078866s   0ms TRACE uv_client::cached_client No cache entry exists for /tmp/.tmpJkCfvB/wheels-v3/index/4a90376400512f09/mylib/mylib-0.1.0a5-py3-none-any.msgpack
+              0.078874s   0ms DEBUG uv_client::cached_client No cache entry for: https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+             uv_client::cached_client::fresh_request url=&quot;https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21&quot;
+                0.078885s   0ms TRACE uv_client::cached_client Sending fresh HEAD request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                0.078892s   0ms TRACE uv_auth::middleware Handling request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                0.078903s   0ms TRACE uv_auth::middleware Request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21 is unauthenticated, checking cache
+                0.078908s   0ms TRACE uv_auth::cache No credentials in cache for URL https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                0.078934s   0ms TRACE uv_auth::middleware Attempting unauthenticated request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                0.078949s   0ms TRACE hyper_util::client::legacy::pool take? (&quot;https&quot;, factory.internal.org): expiration = Some(90s)
+                0.078958s   0ms DEBUG hyper_util::client::legacy::pool reuse idle connection for (&quot;https&quot;, factory.internal.org)
+                0.085379s   6ms TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, factory.internal.org)
+                0.085406s   6ms DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, factory.internal.org)
+                0.085419s   6ms DEBUG uv_client::base_client Transient request failure for: https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                0.085447s   6ms  WARN reqwest_retry::middleware Retry attempt #0. Sleeping 393.570462ms before the next attempt
+                0.479976s 401ms TRACE uv_auth::middleware Handling request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                0.479997s 401ms TRACE uv_auth::middleware Request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21 is unauthenticated, checking cache
+                0.480003s 401ms TRACE uv_auth::cache No credentials in cache for URL https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                0.480008s 401ms TRACE uv_auth::middleware Attempting unauthenticated request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                0.480027s 401ms TRACE hyper_util::client::legacy::pool take? (&quot;https&quot;, factory.internal.org): expiration = Some(90s)
+                0.480041s 401ms DEBUG hyper_util::client::legacy::pool reuse idle connection for (&quot;https&quot;, factory.internal.org)
+                0.489019s 410ms TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, factory.internal.org)
+                0.489041s 410ms DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, factory.internal.org)
+                0.489053s 410ms DEBUG uv_client::base_client Transient request failure for: https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                0.489058s 410ms  WARN reqwest_retry::middleware Retry attempt #1. Sleeping 1.872878793s before the next attempt
+                2.362976s   2s  TRACE uv_auth::middleware Handling request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                2.362998s   2s  TRACE uv_auth::middleware Request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21 is unauthenticated, checking cache
+                2.363003s   2s  TRACE uv_auth::cache No credentials in cache for URL https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                2.363006s   2s  TRACE uv_auth::middleware Attempting unauthenticated request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                2.363020s   2s  TRACE hyper_util::client::legacy::pool take? (&quot;https&quot;, factory.internal.org): expiration = Some(90s)
+                2.363027s   2s  DEBUG hyper_util::client::legacy::pool reuse idle connection for (&quot;https&quot;, factory.internal.org)
+                2.371395s   2s  TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, factory.internal.org)
+                2.371417s   2s  DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, factory.internal.org)
+                2.371428s   2s  DEBUG uv_client::base_client Transient request failure for: https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                2.371432s   2s   WARN reqwest_retry::middleware Retry attempt #2. Sleeping 2.385730942s before the next attempt
+                4.757969s   4s  TRACE uv_auth::middleware Handling request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                4.757987s   4s  TRACE uv_auth::middleware Request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21 is unauthenticated, checking cache
+                4.757992s   4s  TRACE uv_auth::cache No credentials in cache for URL https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                4.757996s   4s  TRACE uv_auth::middleware Attempting unauthenticated request for https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+                4.758028s   4s  TRACE hyper_util::client::legacy::pool take? (&quot;https&quot;, factory.internal.org): expiration = Some(90s)
+                4.758034s   4s  DEBUG hyper_util::client::legacy::pool reuse idle connection for (&quot;https&quot;, factory.internal.org)
+                4.767299s   4s  TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, factory.internal.org)
+                4.767320s   4s  DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, factory.internal.org)
+                4.767331s   4s  DEBUG uv_client::base_client Transient request failure for: https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21
+            4.767346s   4s  TRACE uv_client::base_client Attempting to retry error: Error { kind: WrappedReqwestError(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;factory.internal.org&quot;)), port: None, path: &quot;/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl&quot;, query: None, fragment: Some(&quot;sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21&quot;) }, WrappedReqwestError(Reqwest(reqwest::Error { kind: Status(500), url: &quot;https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21&quot; }))) }
+            4.774248s   4s  TRACE uv_client::base_client Cannot retry error: not an IO error
+    4.774313s DEBUG uv::commands::project::add Reverting changes to `pyproject.toml`
+    4.774394s DEBUG uv::commands::project::add Removing `uv.lock`
+error: Failed to fetch: `https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21`
+  Caused by: HTTP status server error (500 Internal Server Error) for url (https://factory.internal.org/artifactory/api/pypi/my-py-artifact/mylib/0.1.0a5/mylib-0.1.0a5-py3-none-any.whl#sha256=17a5523dbd9d29f17c71ae31f44da2708021156252e96125c09afa15bd21fe21)
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-14 13:43</div>
+            <div class="timeline-body"><p>Tagging @zanieb who's most familiar with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-14 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 19:04</div>
+            <div class="timeline-body"><p>I believe pre-authenticating these requests is captured by https://github.com/astral-sh/uv/issues/4583</p>
+<p>Here, the problem is that your index is returning an HTTP 500 for unauthenticated requests so we don't fall back to domain-level credentials. That's an issue with the server, unfortunately. It's been reported in a few similar issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jnth">@jnth</a> on 2025-01-16 13:36</div>
+            <div class="timeline-body"><p>Thank you for your answer.</p>
+<p>I test with a local PyPI server (with the <code>pypiserver</code> Python library) with authentication and it's working fine.</p>
+<p><img src="https://github.com/user-attachments/assets/2425bd66-98f1-46bf-8760-a392e6b92e31" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-29 20:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

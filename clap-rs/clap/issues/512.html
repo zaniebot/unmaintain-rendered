@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should not send color to a pipe by default - clap-rs/clap #512</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should not send color to a pipe by default</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/512">#512</a>
+        opened by <a href="https://github.com/joshtriplett">@joshtriplett</a>
+        on 2016-05-23 14:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-05-23 14:53</div>
+            <div class="timeline-body"><p>Clap prints color unconditionally, even when sending output somewhere other than a terminal.  Redirecting output to a file, or to a pager that doesn't understand terminal escape sequences like <code>less -R</code> does, produces undesirable terminal escape sequences in the file or pager.</p>
+<p>Clap should detect when output goes somewhere other than a terminal, and suppress terminal escape sequences otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-23 16:55</div>
+            <div class="timeline-body"><p>Thanks for filing this. Yeah I agree, and this should be an easy detection on whether not something is a terminal. I'm undecided if this should be something <code>clap</code> handles, or simply makes easy to handle in consumer code. If <code>clap</code> handles it, it's done at compile time. Even though <code>App</code> instances are built at runtime, you'd run into a chicken/egg problem if a user tried passing some imaginary option for to change the functionality from a <code>--color=auto</code> to a <code>--color=never</code> or the like.</p>
+<p>I think the best way to accomplish this would be a setting of some sort, perhaps default to <code>ColorAlways</code>, and then allow <code>ColorAuto</code> or <code>ColorNever</code> instead. This leaves it at compile time, but allows for some hacky workarounds if someone <em>does</em> want to support some type of <code>--color=WHEN</code> option (such as env vars, or looping upon conditionally receiving the <code>--color</code> option.)</p>
+<p>Thoughts? This should be an easy addition if that option works for you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2016-05-23 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @kbknapp on 2016-05-23 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-05-23 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2016-05-23 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-05-23 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: errors</span> added by @kbknapp on 2016-05-23 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> added by @kbknapp on 2016-05-23 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new setting</span> added by @kbknapp on 2016-05-23 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-05-23 18:27</div>
+            <div class="timeline-body"><p>I don't think it makes sense to have a command-line option to change this or similar; all of clap's color (or output in general) happens when emitting usage, help, or errors, which happen as part of command-line option processing.  A program might want to have an auto/always/never configuration for color, and if it does (perhaps via config file read before the command line) then clap might want to provide a way to feed that in.  But I'm suggesting that clap should handle this by default, and default to &quot;auto&quot;.</p>
+<p>I think it would make sense to detect whether the target terminal (stdout/stderr) is a TTY, and only emit terminal escape sequences if so.</p>
+<p>Rust has code to implement this; see https://github.com/rust-lang/rust/blob/master/src/libtest/lib.rs#L809 and https://github.com/rust-lang/rust/blob/master/src/libsyntax/errors/emitter.rs#L476 .  This likely needs to move into a library function somewhere; see https://github.com/rust-lang/rust/issues/33736 .  Once that library function exists, I'd suggest using it in clap to detect whether stderr goes to a terminal, and only producing escape sequences if so.</p>
+<p>Entirely optionally, you could also provide a clap option (for instance, on App) to override this detection and always/never use color.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-24 01:50</div>
+            <div class="timeline-body"><p>Sounds good. Since this is for colored output which already isn't implemented on Windows systems I'm not too worried about using <code>libc</code> or not being able to detect this on Windows. <code>libc</code> is already a dep by default, so again, this isn't too huge a deal.</p>
+<p>Should have this implemented shortly. :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-30 07:07</div>
+            <div class="timeline-body"><p>Just an update; I've been on vacation and should have this completed in a few days once I'm home.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> removed by @kbknapp on 2016-06-01 23:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2016-06-01 23:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-06-04 15:58</div>
+            <div class="timeline-body"><p>#520 implements this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-06-08 01:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.6.0" by @kbknapp on 2016-06-08 02:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

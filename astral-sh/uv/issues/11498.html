@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync: environment markers ignored when extra is given - astral-sh/uv #11498</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync: environment markers ignored when extra is given</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11498">#11498</a>
+        opened by <a href="https://github.com/robinjhuang">@robinjhuang</a>
+        on 2025-02-13 23:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/robinjhuang">@robinjhuang</a> on 2025-02-13 23:38</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I am trying to make a pyproject.toml that installs different versions of torch for each operating system / accelerators:</p>
+<p>I added a environment marker for cu126 to only install on linux. I expected it to reject installing completely on my Windows. However, it succeeds.</p>
+<pre><code>uv sync --extra cu126
+Resolved 102 packages in 5.57s
+Prepared 47 packages in 14.92s
+Installed 47 packages in 7.68s
+ + aiohappyeyeballs==2.4.6                                                                                                                              
+ + aiohttp==3.11.12                                                                                                                                     
+ + aiosignal==1.3.2                                                                                                                                     
+ + attrs==25.1.0                                                                                                                                        
+ + certifi==2025.1.31                                                                                                                                   
+ + cffi==1.17.1                                                                                                                                         
+ + charset-normalizer==3.4.1                                                                                                                            
+ + colorama==0.4.6                                                                                                                                      
+ + einops==0.8.1                                                                                                                                        
+ + filelock==3.17.0                                                                                                                                     
+ + frozenlist==1.5.0                                                                                                                                    
+ + fsspec==2025.2.0                                                                                                                                     
+ + huggingface-hub==0.28.1                                                                                                                              
+ + idna==3.10                                                                                                                                           
+ + jinja2==3.1.5                                                                                                                                        
+ + kornia==0.8.0                                                                                                                                        
+ + kornia-rs==0.1.8                                                                                                                                     
+ + markupsafe==3.0.2                                                                                                                                    
+ + mpmath==1.3.0                                                                                                                                        
+ + multidict==6.1.0
+ + networkx==3.4.2
+ + numpy==2.2.3
+ + packaging==24.2
+ + pillow==11.1.0
+ + propcache==0.2.1
+ + psutil==7.0.0
+ + pycparser==2.22
+ + pyyaml==6.0.2
+ + regex==2024.11.6
+ + requests==2.32.3
+ + safetensors==0.5.2
+ + scipy==1.15.1
+ + sentencepiece==0.2.0
+ + soundfile==0.13.1
+ + spandrel==0.4.1
+ + sympy==1.13.1
+ + tokenizers==0.21.0
+ + torch==2.6.0
+ + torchaudio==2.6.0
+ + torchsde==0.2.6
+ + torchvision==0.21.0
+ + tqdm==4.67.1
+ + trampoline==0.1.2
+ + transformers==4.48.3
+ + typing-extensions==4.12.2
+ + urllib3==2.3.0
+ + yarl==1.18.3
+</code></pre>
+<pre><code>[project]
+name = &quot;ComfyUI&quot;
+version = &quot;0.3.12&quot;
+readme = &quot;README.md&quot;
+license = { file = &quot;LICENSE&quot; }
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+    &quot;torchsde&quot;,
+    &quot;numpy&gt;=1.25.0&quot;,
+    &quot;einops&quot;,
+    &quot;transformers&gt;=4.28.1&quot;,
+    &quot;tokenizers&gt;=0.13.3&quot;,
+    &quot;sentencepiece&quot;,
+    &quot;safetensors&gt;=0.4.2&quot;,
+    &quot;aiohttp&quot;,
+    &quot;pyyaml&quot;,
+    &quot;Pillow&quot;,
+    &quot;scipy&quot;,
+    &quot;tqdm&quot;,
+    &quot;psutil&quot;,
+    # Optional dependencies
+    &quot;kornia&gt;=0.7.1&quot;,
+    &quot;spandrel&quot;,
+    &quot;soundfile&quot;,
+]
+
+[project.optional-dependencies]
+cpu = [
+  &quot;torch&quot;,
+  &quot;torchvision&quot;,
+  &quot;torchaudio&quot;,
+]
+
+cu126 = [
+  &quot;torch&quot;,
+  &quot;torchvision&quot;,
+  &quot;torchaudio&quot;,
+]
+
+cu124 = [
+  &quot;torch&quot;,
+  &quot;torchvision&quot;,
+  &quot;torchaudio&quot;,
+]
+
+cu118 = [
+  &quot;torch&quot;,
+  &quot;torchvision&quot;,
+  &quot;torchaudio&quot;,
+]
+
+rocm = [
+  &quot;torch&quot;,
+  &quot;torchvision&quot;,
+  &quot;torchaudio&quot;,
+]
+
+xpus = [
+  &quot;torch&quot;,
+  &quot;torchvision&quot;,
+  &quot;torchaudio&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;cu126&quot; },
+    { extra = &quot;cu124&quot; },
+    { extra = &quot;cu118&quot; },
+    { extra = &quot;rocm&quot; },
+    { extra = &quot;xpus&quot; },
+  ],
+]
+
+
+[project.urls]
+homepage = &quot;https://www.comfy.org/&quot;
+repository = &quot;https://github.com/comfyanonymous/ComfyUI&quot;
+documentation = &quot;https://docs.comfy.org/&quot;
+
+[tool.ruff]
+lint.select = [
+  &quot;S307&quot;, # suspicious-eval-usage
+  &quot;S102&quot;, # exec
+  &quot;T&quot;,    # print-usage
+  &quot;W&quot;,
+  # The &quot;F&quot; series in Ruff stands for &quot;Pyflakes&quot; rules, which catch various Python syntax errors and undefined names.
+  # See all rules here: https://docs.astral.sh/ruff/rules/#pyflakes-f
+  &quot;F&quot;,
+]
+exclude = [&quot;*.ipynb&quot;]
+
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cu126&quot;, extra = &quot;cu126&quot;, marker = &quot;sys_platform == 'linux'&quot;},
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; }, 
+  { index = &quot;pytorch-cu118&quot;, extra = &quot;cu118&quot; },
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-rocm&quot;, extra = &quot;rocm&quot; },
+  { index = &quot;pytorch-xpu&quot;, extra = &quot;xpus&quot; },
+]
+torchvision = [
+    { index = &quot;pytorch-cu126&quot;, extra = &quot;cu126&quot;, marker = &quot;sys_platform == 'linux'&quot;},
+    { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+    { index = &quot;pytorch-cu118&quot;, extra = &quot;cu118&quot; },
+    { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+    { index = &quot;pytorch-rocm&quot;, extra = &quot;rocm&quot;  },
+    { index = &quot;pytorch-xpu&quot;, extra = &quot;xpus&quot; },
+]
+torchaudio = [
+  { index = &quot;pytorch-cu126&quot;, extra = &quot;cu126&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+  { index = &quot;pytorch-cu118&quot;, extra = &quot;cu118&quot; },
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-rocm&quot;, extra = &quot;rocm&quot; },
+  { index = &quot;pytorch-xpu&quot;, extra = &quot;xpus&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu126&quot;
+url = &quot;https://download.pytorch.org/whl/cu126&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu118&quot;
+url = &quot;https://download.pytorch.org/whl/cu118&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-rocm&quot;
+url = &quot;https://download.pytorch.org/whl/rocm6.2&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-xpu&quot;
+url = &quot;https://download.pytorch.org/whl/xpu&quot;
+explicit = true
+
+</code></pre>
+<h3>Platform</h3>
+<p>Windows Pro 11 Version	10.0.26100 Build 26100 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.5.31 (e38ac4900 2025-02-12)</p>
+<h3>Python version</h3>
+<p>Python 3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @robinjhuang on 2025-02-13 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-13 23:39</div>
+            <div class="timeline-body"><p>Can you expand on why you expect this to fail on Windows? There are Windows wheels for <code>2.6.0+cu126</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-14 00:28</div>
+            <div class="timeline-body"><p>Oh sorry, you're referring to <code>{ index = &quot;pytorch-cu126&quot;, extra = &quot;cu126&quot;, marker = &quot;sys_platform == 'linux'&quot; }</code>? For the markers that aren't covered, uv will fall back to the default index (in this case, PyPI).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-14 00:29</div>
+            <div class="timeline-body"><p>I think what you'd want instead is:</p>
+<pre><code class="language-toml">cu126 = [
+  &quot;torch ; sys_platform == 'linux'&quot;,
+  &quot;torchvision ; sys_platform == 'linux'&quot;,
+  &quot;torchaudio ; sys_platform == 'linux'&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robinjhuang">@robinjhuang</a> on 2025-02-15 00:50</div>
+            <div class="timeline-body"><p>I updated added the markers based on what you said. Looks like it still installed? I am on Windows so I added the markers to the rocm optional dependency.</p>
+<p>Pyproject.toml:</p>
+<pre><code>rocm = [
+  &quot;torch ; sys_platform == 'linux'&quot;,
+  &quot;torchvision ; sys_platform == 'linux'&quot;,
+  &quot;torchaudio ; sys_platform == 'linux'&quot;,
+]
+</code></pre>
+<p>Output:</p>
+<pre><code>uv sync --extra rocm --verbose
+DEBUG uv 0.5.31 (e38ac4900 2025-02-12)
+DEBUG Found project root: `C:\Users\robin\OneDrive\Documents\GitHub\ComfyUI`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `C:\Users\robin\OneDrive\Documents\GitHub\ComfyUI`
+DEBUG Using Python request `&gt;=3.9` from `requires-python` metadata
+DEBUG Checking for Python environment at `.venv`
+DEBUG The virtual environment's Python version satisfies `&gt;=3.9`
+DEBUG Released lock at `C:\Users\robin\AppData\Local\Temp\uv-381baabeb699437b.lock`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: comfyui @ file:///C:/Users/robin/OneDrive/Documents/GitHub/ComfyUI
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 102 packages in 2ms
+DEBUG Using request timeout of 30s
+DEBUG Requirement already installed: aiohttp==3.11.12
+DEBUG Requirement already installed: einops==0.8.1
+DEBUG Requirement already installed: kornia==0.8.0
+DEBUG Requirement already installed: numpy==2.2.3
+DEBUG Requirement already installed: pillow==11.1.0
+DEBUG Requirement already installed: psutil==7.0.0
+DEBUG Requirement already installed: pyyaml==6.0.2
+DEBUG Requirement already installed: safetensors==0.5.2
+DEBUG Requirement already installed: scipy==1.15.1
+DEBUG Requirement already installed: sentencepiece==0.2.0
+DEBUG Requirement already installed: soundfile==0.13.1
+DEBUG Requirement already installed: spandrel==0.4.1
+DEBUG Requirement already installed: tokenizers==0.21.0
+DEBUG Requirement already installed: torchsde==0.2.6
+DEBUG Requirement already installed: tqdm==4.67.1
+DEBUG Requirement already installed: transformers==4.48.3
+DEBUG Requirement already installed: aiohappyeyeballs==2.4.6
+DEBUG Requirement already installed: aiosignal==1.3.2
+DEBUG Requirement already installed: attrs==25.1.0
+DEBUG Requirement already installed: frozenlist==1.5.0
+DEBUG Requirement already installed: multidict==6.1.0
+DEBUG Requirement already installed: propcache==0.2.1
+DEBUG Requirement already installed: yarl==1.18.3
+DEBUG Requirement already installed: kornia-rs==0.1.8
+DEBUG Requirement already installed: packaging==24.2
+DEBUG Requirement already installed: propcache==0.2.1
+DEBUG Requirement already installed: yarl==1.18.3
+DEBUG Requirement already installed: kornia-rs==0.1.8
+DEBUG Requirement already installed: packaging==24.2
+DEBUG Requirement already installed: yarl==1.18.3
+DEBUG Requirement already installed: kornia-rs==0.1.8
+DEBUG Requirement already installed: packaging==24.2
+DEBUG Requirement already installed: kornia-rs==0.1.8
+DEBUG Requirement already installed: packaging==24.2
+DEBUG Registry requirement already cached: torch==2.6.0
+DEBUG Requirement already installed: packaging==24.2
+DEBUG Registry requirement already cached: torch==2.6.0
+DEBUG Registry requirement already cached: torch==2.6.0
+DEBUG Requirement already installed: cffi==1.17.1
+DEBUG Registry requirement already cached: torchvision==0.21.0
+DEBUG Requirement already installed: typing-extensions==4.12.2
+DEBUG Registry requirement already cached: torchvision==0.21.0
+DEBUG Requirement already installed: typing-extensions==4.12.2
+DEBUG Requirement already installed: typing-extensions==4.12.2
+DEBUG Requirement already installed: huggingface-hub==0.28.1
+DEBUG Requirement already installed: trampoline==0.1.2
+DEBUG Requirement already installed: colorama==0.4.6
+DEBUG Requirement already installed: filelock==3.17.0
+DEBUG Requirement already installed: regex==2024.11.6
+DEBUG Requirement already installed: regex==2024.11.6
+DEBUG Requirement already installed: requests==2.32.3
+DEBUG Requirement already installed: idna==3.10
+DEBUG Requirement already installed: fsspec==2025.2.0
+DEBUG Requirement already installed: jinja2==3.1.5
+DEBUG Requirement already installed: networkx==3.4.2
+DEBUG Requirement already installed: sympy==1.13.1
+DEBUG Requirement already installed: pycparser==2.22
+DEBUG Requirement already installed: certifi==2025.1.31
+DEBUG Requirement already installed: charset-normalizer==3.4.1
+DEBUG Requirement already installed: urllib3==2.3.0
+DEBUG Requirement already installed: markupsafe==3.0.2
+DEBUG Requirement already installed: mpmath==1.3.0
+Installed 2 packages in 5.45s
+ + torch==2.6.0
+ + torchvision==0.21.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-15 01:34</div>
+            <div class="timeline-body"><p>The problem is, you have a bunch of dependencies in <code>dependencies</code> that depend on torch. So it still has to be included. You can look at <code>uv tree --python-platform windows</code> to understand it. For example, <code>torchsde</code> depends on torch, as does <code>kornia</code>. So if you don't want torch to be installed on Windows, you need to make <em>those</em> dependencies Linux-only too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-02-15 01:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-02-15 01:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-18 14:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

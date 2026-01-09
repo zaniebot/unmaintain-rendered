@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failed to resolve dependencies correctly - astral-sh/uv #14836</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failed to resolve dependencies correctly</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14836">#14836</a>
+        opened by <a href="https://github.com/jalenzz">@jalenzz</a>
+        on 2025-07-23 06:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jalenzz">@jalenzz</a> on 2025-07-23 06:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I try adding torch to a totally new venv, but got error (with <code>--no-cache</code> get the same error).</p>
+<pre><code>$ uv add torch          
+Resolved 48 packages in 28ms
+error: Distribution `torch==2.5.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're using CPython 3.8 (`cp38`), but `torch` (v2.5.1) only has wheels with the following Python implementation tags: `cp39`, `cp310`, `cp311`, `cp312`, `cp313`
+</code></pre>
+<p>Why isn't uv looking for a torch version compatible with py3.8?</p>
+<p>If I use <code>uv pip install torch</code>, uv correctly installed the compatible version of torch.</p>
+<h3>Platform</h3>
+<p>ubuntu 20.04</p>
+<h3>Version</h3>
+<p>uv 0.8.0</p>
+<h3>Python version</h3>
+<p>Python 3.8.20</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jalenzz on 2025-07-23 06:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-23 12:52</div>
+            <div class="timeline-body"><p>I presume you have a <code>requires-python</code> with a lower bound of 3.8?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-07-23 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-07-23 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jalenzz">@jalenzz</a> on 2025-07-24 01:41</div>
+            <div class="timeline-body"><p>@zanieb Thanks for you reply. Yes <code>requires-python = &quot;&gt;=3.8&quot;</code>
+But 3.8 should support <code>torch==2.4.1</code>, I wonder why not following this version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-24 02:21</div>
+            <div class="timeline-body"><p>Can you provide verbose logs? (<code>-v</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-24 02:23</div>
+            <div class="timeline-body"><p>And a complete reproduction? e.g., starting from <code>uv init example</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jalenzz">@jalenzz</a> on 2025-07-24 05:07</div>
+            <div class="timeline-body"><pre><code>➜  ~ uv init example -p 3.8 &amp;&amp; cd example
+Initialized project `example` at `/home/xxx/example`
+➜  example git:(master) ✗ uv add torch -v                     
+
+error: Distribution `torch==2.5.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're using CPython 3.8 (`cp38`), but `torch` (v2.5.1) only has wheels with the following Python implementation tags: `cp39`, `cp310`, `cp311`, `cp312`, `cp313`
+</code></pre>
+<p>full verbose <a href="https://github.com/user-attachments/files/21400339/log.txt">log</a></p>
+<p>thanks :&gt;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-26 02:55</div>
+            <div class="timeline-body"><p>I can reproduce</p>
+<pre><code>❯ uv init example -p 3.8 &amp;&amp; cd example
+Initialized project `example` at `/private/tmp/example`
+❯ uv add torch
+Using CPython 3.8.20
+Creating virtual environment at: .venv
+Resolved 48 packages in 1.16s
+error: Distribution `torch==2.5.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're using CPython 3.8 (`cp38`), but `torch` (v2.5.1) only has wheels with the following Python implementation tags: `cp39`, `cp310`, `cp311`, `cp312`, `cp313`
+</code></pre>
+<p>Here's the lockfile https://gist.github.com/zanieb/69a4cc50b632f01884095465d631ce24</p>
+<p>If I grab a torch wheel and unpack it... it claims to support 3.8</p>
+<pre><code>❯ cat torch-2.5.1.dist-info/METADATA | grep Requires-Python
+Requires-Python: &gt;=3.8.0
+</code></pre>
+<p>I presume that's part of the problem? This behavior seems wrong though, we shouldn't select that version Python 3.8 without a usable wheel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2025-07-26 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-07-26 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @zanieb on 2025-07-26 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-07-26 02:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14913.html">astral-sh/uv#14913</a> on 2025-07-26 04:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jalenzz">@jalenzz</a> on 2025-07-26 18:40</div>
+            <div class="timeline-body"><p>Thanks!
+Looking forward to the PR merge</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jalenzz on 2025-08-12 01:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-12 02:30</div>
+            <div class="timeline-body"><p>I do intend to make that the default behavior at some point too, so you don't need to set required environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15547.html">astral-sh/uv#15547</a> on 2025-08-27 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15932.html">astral-sh/uv#15932</a> on 2025-09-18 14:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

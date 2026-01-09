@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv should respect uv.lock in the workspace root when invoking pip install -target in a subproject - astral-sh/uv #5653</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv should respect uv.lock in the workspace root when invoking pip install -target in a subproject</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/5653">#5653</a>
+        opened by <a href="https://github.com/jpambrun-vida">@jpambrun-vida</a>
+        on 2024-07-31 14:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jpambrun-vida">@jpambrun-vida</a> on 2024-07-31 14:08</div>
+            <div class="timeline-body"><p>I have a worspace with a virtual top level project. uv sync correctly install and create an <code>uv.lock</code> file.</p>
+<p>Later I need to create multiple docker images from subprojects and I want to narrow the dependencies for each.</p>
+<p>My current attempt involves invoking from subproject</p>
+<pre><code>WORKDIR services/some/subproject
+RUN --mount=type=cache,target=/root/.cache/uv uv pip install --compile-bytecode -r pyproject.toml --target /deps/
+</code></pre>
+<p>However, testing locally by editing the lock files doesn't seem to have any effect (I could be doing this wrong). Also, debug logs with <code>-v</code> show no activity around uv.lock.</p>
+<p>This might be a bit related to #5008.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 14:20</div>
+            <div class="timeline-body"><p><code>uv pip install</code> will not respect the lock file (and probably never will). I think #5008 is the proper solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpambrun-vida">@jpambrun-vida</a> on 2024-07-31 14:26</div>
+            <div class="timeline-body"><p>I am not sure I see a path with <code>uv sync --package ...</code> to create individual docker images for each service with the proper locked subset of dependency?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpambrun-vida">@jpambrun-vida</a> on 2024-07-31 14:36</div>
+            <div class="timeline-body"><p><a href="https://github.com/astral-sh/uv/issues/5008#issuecomment-2260651468">This comment</a> did help me understand the intent.</p>
+<p>I think it could work, but <code>pip install --target</code> is a bit different as it just it creates a folder to add to PYTHONPATH while I imagine sync implies a venv that needs to be activated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpambrun-vida">@jpambrun-vida</a> on 2024-08-02 13:58</div>
+            <div class="timeline-body"><p>I think this works well if you intend to deploy as a venv to production, but I am trying to avoid that.</p>
+<p>Ideally I would have to venv workflow in dev with editable packages, but In prod I would like to have a normal folder with all deps added to PYTHONPATH. Ultimately, this is for AWS lambdas and I am trying to use their base image without changing the entrypoint.</p>
+<p>I need the prod dependency to be locked, which appears impossible with <code>uv pip install -r xyz/pyproject.toml --target</code>. As an alternative I thought I could <code>uv sync --compile-bytecode --no-dev --package xyz</code>  and copy <code>.venv/lib/python3.10/site-packages/</code> (although clunky), but I end up with a bunch of <code>__editable__.abc-0.1.0.pth</code> with hard coded path. I need those <code>.pth</code> in dev, but I want it copied for prod.</p>
+<p>I could be seeing this all wrong</p>
+<p>cc @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpambrun-vida">@jpambrun-vida</a> on 2024-08-02 18:10</div>
+            <div class="timeline-body"><p>To add to this. uv sync doesn't seem to respect <code>VIRTUAL_ENV</code>? How are we supposed to install packages using uv.lock outside of the <code>.venv</code> in the source tree?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-02 18:31</div>
+            <div class="timeline-body"><p>That's not supported right now. The lockfile is only intended for use in the workspace environment. Very likely we'll support it but we haven't committed to an API yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-08-03 23:20</div>
+            <div class="timeline-body"><p>My use case is probably not the exact same as this ticket's (happy to open another one!), but since the discussion is heading in a somewhat related direction:</p>
+<blockquote>
+<p>uv pip install will not respect the lock file (and probably never will). [@zanieb]</p>
+</blockquote>
+<blockquote>
+<p>The lockfile is only intended for use in the workspace environment [@charliermarsh]</p>
+</blockquote>
+<p>Is this a permanent limitation, or something you'd be willing to relax? I think the value there is immense; e.g. when building a Docker image of my package I definitely do not want to <code>uv sync</code> an entire development workspace -- but I certainly do want my image to use the same dependency versions as the ones I developed/tested against.</p>
+<p>Right now our approach is a very simple <code>RUN uv pip install my-freshly-built.whl -c constraints.txt</code> -- would there be a lockfile equivalent for this operation?</p>
+<p>(either that, I guess projects would have to maintain lockfiles and constraints files side-by-side, but that seems duplicative and possibly error-prone?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-03 23:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this a permanent limitation, or something you'd be willing to relax?</p>
+</blockquote>
+<p>I'm pretty open-minded about it right now. Is it something we can solve outside of the <code>pip</code> API though? Like <code>uv sync --no-root</code> or some other commands to better control what gets included?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpambrun-vida">@jpambrun-vida</a> on 2024-08-05 12:19</div>
+            <div class="timeline-body"><p>The new <code>uv sync --package</code> helps, but 1) I wish I could avoid venv altogether and have something equivalent to pip's <code>--target</code> and 2) I wish I had a way disable the <strong>editable</strong>[...].pth mechanism and just copy the files.</p>
+<p>I do think the path to creating a production docker image with locked dependencies is a bit cumbersome. Some documentation and best practice would help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 12:22</div>
+            <div class="timeline-body"><p>Can you expand a bit on why either of these two things are a problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpambrun-vida">@jpambrun-vida</a> on 2024-08-05 17:15</div>
+            <div class="timeline-body"><ol>
+<li><p>means you need to invoke python within the venv which is not always possible or desirable, like when using the aws lambda base image or datadog's wrapper.</p>
+</li>
+<li><p>the pth is absolute which means it can be relocated.</p>
+</li>
+</ol>
+<p>Nothing is unsurmountable.. I wouldn't call that a &quot;problem&quot;, more like &quot;sub-optimal&quot;?  but it feels weird to use venv in docker as they are both different ways to solve the same problem.</p>
+<p>There was a <a href="https://github.com/python-poetry/poetry/issues/1937">similar argument</a> on poetry. I don't feel that strongly about it, but many of the folks there did.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpambrun-vida">@jpambrun-vida</a> on 2024-08-06 12:22</div>
+            <div class="timeline-body"><p>I just stubbled a real use case that I can't see any workaround for. As I am converting the  current build system at work, I need to build a <a href="https://docs.aws.amazon.com/lambda/latest/dg/python-package.html">zip lambda package</a> for some functions. I don't think either .pth or .venv would wok.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 12:35</div>
+            <div class="timeline-body"><p>I would consider that unsupported by the <code>uv sync</code> interface right now. It's a use-case we should probably support but it's just not something we've done yet for that part of the CLI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-08-06 13:42</div>
+            <div class="timeline-body"><p>I am not sure if the <code>uv sync</code> interface is the right one here (or the workspace construct after all -- here we are dealing with a production installation, not a development environment)</p>
+<p>That said, I sense a XY problem brewing here... so let me take a step back and define what I want to achieve (appears to be similar to @jpambrun-vida's use case after all?) instead of the 'how':</p>
+<ul>
+<li>I have a standard Python project</li>
+<li>I have built it into a standard Python distribution i.e. a wheel</li>
+<li>Downstream of that, I want to re-package this wheel into derivative distribution formats e.g. Docker image, RPM, deb, Nixpkg, ...</li>
+<li>I want to ensure that the dependencies that I am installing into this derivative distribution, do not contravene my lockfile (as opposed to being strictly equal to my lockfile)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 14:01</div>
+            <div class="timeline-body"><p>I sense something like <code>uv build</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-08-06 14:31</div>
+            <div class="timeline-body"><p>I would love that -- I own an equivalent tool in my org and I would love to eventually replace it with off-the-shelf uv commands.</p>
+<p>(side note: I strenuously avoided the <code>build</code> term so as to avoid stepping on pypa/build's toes.. maybe unnecessary? I called it <code>install</code> out of deference to <code>make install</code> but <code>package</code> might be a good one as well)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5802.html">astral-sh/uv#5802</a> on 2024-08-06 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adunmore">@adunmore</a> on 2024-09-10 18:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I just stubbled a real use case that I can't see any workaround for. As I am converting the current build system at work, I need to build a <a href="https://docs.aws.amazon.com/lambda/latest/dg/python-package.html">zip lambda package</a> for some functions. I don't think either .pth or .venv would wok.</p>
+</blockquote>
+<p>Bumping this request. We have the exact same use case.</p>
+<p>Currently getting around this limitation with</p>
+<pre><code>uv export -o requirements.txt --locked
+uv pip install -r requirements.txt --target dist/
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Levelleor">@Levelleor</a> on 2024-11-11 22:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Bumping this request. We have the exact same use case.</p>
+<p>Currently getting around this limitation with</p>
+<pre><code>uv export -o requirements.txt --locked
+uv pip install -r requirements.txt --target dist/
+</code></pre>
+</blockquote>
+<p>Same here, I found that PDM has a packing plugin to handle such cases: https://github.com/frostming/pdm-packer</p>
+<p>That &quot;bundling&quot; functionality would be great, or at least having the ability to sync into a target directory. Although, sync sounds wrong in this context, I feel like install suits better in this case as the intention is to perform a one-time download of packages into a target location.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/itcarroll">@itcarroll</a> on 2025-07-12 02:19</div>
+            <div class="timeline-body"><p>I'm not sure if <code>uv pip sync</code> originated after the comment above that <code>uv sync</code> may eventually discover and use an active environment (via <code>VIRTUAL_ENV</code>), but it seems like <code>uv pip sync</code> when not given a <code>&lt;SRC_FILE&gt;</code> argument could go off the <code>uv.lock</code> file.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

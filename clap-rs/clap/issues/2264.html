@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Some unicode input may cause print_help and print_long_help panic(found by afl.rs) - clap-rs/clap #2264</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Some unicode input may cause print_help and print_long_help panic(found by afl.rs)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2264">#2264</a>
+        opened by <a href="https://github.com/StevenJiang1110">@StevenJiang1110</a>
+        on 2020-12-23 11:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/StevenJiang1110">@StevenJiang1110</a> on 2020-12-23 11:35</div>
+            <div class="timeline-body"><h3>Code</h3>
+<pre><code class="language-rust">extern crate clap;
+fn main() {
+    let param0 = &quot;00000000000000-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 璀璀璀&quot;;
+    let mut app_ = clap::SubCommand::with_name(param0);
+    let _ = clap::App::print_long_help(&amp;mut app_);
+}
+</code></pre>
+<p>or</p>
+<pre><code class="language-rust">extern crate clap;
+fn main() {
+    let app_ = clap::SubCommand::with_name(&quot;0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-қ00000000000000000 蚝&quot;);
+    let mut app2_ = clap::App::display_order(app_ ,3472328296227680304);
+    let _ = clap::App::print_help(&amp;mut app2_);
+}
+</code></pre>
+<h3>Steps to reproduce the issue</h3>
+<ol>
+<li>Run <code>cargo run</code><br />
+The bug report is as follows.
+<img src="https://user-images.githubusercontent.com/27764680/102991966-48bfd400-4555-11eb-9901-ff13dfd29cd0.png" alt="截屏2020-12-23 下午7 30 13" /></li>
+</ol>
+<h3>Version</h3>
+<ul>
+<li><strong>Rust</strong>: rustc 1.46.0-dev</li>
+<li><strong>Clap</strong>: 2.33.3</li>
+</ul>
+<pre><code class="language-toml">[dependencies]
+clap = { version = &quot;2.33.3&quot; }
+</code></pre>
+<p>I also put reproduce files at <a href="https://github.com/StevenJiang1110/afl_rust_crashes/tree/main/clap/replay_clap25-48">print_help</a>
+and <a href="https://github.com/StevenJiang1110/afl_rust_crashes/tree/main/clap/replay_clap26-20">print_long_help</a>
+I hope you can check if this is a bug. Thanks a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @StevenJiang1110 on 2020-12-23 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-12-23 11:47</div>
+            <div class="timeline-body"><p>Please try with master.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/StevenJiang1110">@StevenJiang1110</a> on 2020-12-23 12:19</div>
+            <div class="timeline-body"><p>I tried and it seems the master has removed the subCommand.
+<img src="https://user-images.githubusercontent.com/27764680/102995518-2ed5bf80-455c-11eb-8da1-0e7a22ec22c8.png" alt="截屏2020-12-23 下午8 19 36" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2020-12-23 17:21</div>
+            <div class="timeline-body"><p>@StevenJiang1110 The <code>Subcommand</code> is integrated with <code>App</code> now, and the corresponding codes are:</p>
+<pre><code class="language-rust">fn main() {
+    let param0 = &quot;00000000000000-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 璀璀璀&quot;;
+    let mut app_ = clap::App::new(param0);
+    let _ = clap::App::print_long_help(&amp;mut app_);
+}
+</code></pre>
+<p>and:</p>
+<pre><code class="language-rust">fn main() {
+    let app_ = clap::App::new(&quot;0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-қ00000000000000000 蚝&quot;);
+    let mut app2_ = clap::App::display_order(app_ ,3472328296227680304);
+    let _ = clap::App::print_help(&amp;mut app2_);
+}
+</code></pre>
+<p>Both work fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2020-12-23 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1649.html">clap-rs/clap#1649</a> on 2021-11-18 19:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

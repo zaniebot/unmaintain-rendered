@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False negative for RUF019 with `not` operator - astral-sh/ruff #12285</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False negative for RUF019 with `not` operator</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12285">#12285</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2024-07-11 00:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-07-11 00:08</div>
+            <div class="timeline-body"><p>RUF019 checks for things like <code>&quot;key&quot; in dct and dct[&quot;key&quot;]</code> in boolean contexts, like an <code>if</code> condition or the argument to <code>bool</code>. It should also detect it as the operand of <code>not</code>.</p>
+<pre><code class="language-console">$ ruff --version
+ruff 0.5.1
+$ echo 'bool(&quot;key&quot; in dct and dct[&quot;key&quot;])' | ruff check --isolated --output-format=concise --select RUF019 /dev/stdin
+/dev/stdin:1:6: RUF019 [*] Unnecessary key check before dictionary access
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+$ echo 'not (&quot;key&quot; in dct and dct[&quot;key&quot;])' | ruff check --isolated --output-format=concise --select RUF019 /dev/stdin
+All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-11 03:45</div>
+            <div class="timeline-body"><p>This seems reasonable to me.</p>
+<p>I think we'll need to visit the operand of a unary <code>not</code> operator using the <code>visit_boolean_test</code> which sets the correct flag on the semantic model:</p>
+<p>https://github.com/astral-sh/ruff/blob/880c31d1642a6b4d967a20f9affe9772a3722b85/crates/ruff_linter/src/checkers/ast/mod.rs#L1796-L1804</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-07-11 03:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-12 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12301.html">astral-sh/ruff#12301</a> on 2024-07-12 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 12:45</div>
+            <div class="timeline-body"><p>Good call -- see: https://github.com/astral-sh/ruff/pull/12301.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-12 12:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

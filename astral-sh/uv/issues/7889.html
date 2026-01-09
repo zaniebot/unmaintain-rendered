@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add --resolution=local or similar to help projects supporting wide ranges of Python versions - astral-sh/uv #7889</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add --resolution=local or similar to help projects supporting wide ranges of Python versions</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/7889">#7889</a>
+        opened by <a href="https://github.com/TormodLandet">@TormodLandet</a>
+        on 2024-10-03 08:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TormodLandet">@TormodLandet</a> on 2024-10-03 08:04</div>
+            <div class="timeline-body"><p>I have several projects that supports a large range of versions of Python and numpy, starting from (Python=3.7, numpy=1.0) and up to (Python=3.12, numpy=2.1). I would like to test these projects at both ends of the supported version spectrum, and I would like to use uv for that.</p>
+<p>If my project was small enough to fit inside a single script, I could use inline script metadata and the project could be run with both <code>--python=3.12</code> and <code>--python=3.7</code> arguments to <code>uv run myscript.py</code>. The resolution used by uv is somehow &quot;local&quot; in this case and uv will select different supported versions of numpy depending on the version of Python supplied to <code>uv run</code>.</p>
+<pre><code class="language-python"># /// script
+# python-version = &quot;&gt;=3.7&quot;
+# dependencies = [
+#   &quot;numpy&quot;,
+# ]
+# ///
+
+import numpy as np
+import sys
+
+print(sys.version)
+print(np.version.version)
+</code></pre>
+<p>However, if the same is defined in the <code>pyproject.toml</code> file then <code>uv run</code> will try to make a universal resolution which fails since numpy version 2.1 is available for Python 3.12 and not for Python 3.7 and vice versa with numpy version 1.25.</p>
+<p>To test my project I must add two extra steps:</p>
+<ol>
+<li>Test on oldest version of Python with <code>uv run --python=3.7 ...</code> (run pytest or manual tests etc)</li>
+<li><em>Modify</em> <code>pyproject.toml</code> and set <code>requires-python = &quot;&gt;=3.12&quot;</code></li>
+<li>Test on newest version of Python with <code>uv run --python=3.12 ...</code></li>
+<li><em>Modify</em> <code>pyproject.toml</code> and set <code>requires-python</code> back to <code>&quot;&gt;=3.7&quot;</code></li>
+</ol>
+<p>It would be great if projects that support a wide range of Python versions (so wide that universal resolution is not possible) could still use uv to test for both the oldest and newest version of Python. Right now I must modify <code>pyproject.toml</code> which feels like a hack and if I forget to reset <code>requires-python</code> back to <code>&quot;&gt;=3.7&quot;</code> then I guess my wheel files will refuse to install on older versions of Python? (universal wheels, should support &quot;all&quot; versions of Python 3 on all platforms).</p>
+<p>I may have missed how to turn of universal resolution in the docs, in that case sorry! It would be nice if <code>uv sync</code> also supported something like <code>--python=3.12 --resolution=local</code> to resolve only for the current version of Python on the current platform.</p>
+<p>Thank you so much for uv, by the way. So much faster than conda for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-04 12:43</div>
+            <div class="timeline-body"><p>For your case, you can get different numpy versions on different Python versions by using forking on markers (see https://docs.astral.sh/uv/reference/resolver-internals/#forking). Effectively, you declare slices of Python version ranges and the numpy range you want for those Python versions, something like:</p>
+<pre><code class="language-toml">dependencies = [
+	&quot;numpy; python_version &gt;= '3.12'&quot;,
+	&quot;numpy&gt;=2; python_version &gt;= '3.9' and python_version &lt; '3.12'&quot;,
+	&quot;numpy&lt;2; python_version &lt; '3.9'&quot;,
+    # ...
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2024-10-04 12:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

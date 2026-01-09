@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First-party imports not being sorted - astral-sh/ruff #844</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>First-party imports not being sorted</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/844">#844</a>
+        opened by <a href="https://github.com/tekumara">@tekumara</a>
+        on 2022-11-21 01:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tekumara">@tekumara</a> on 2022-11-21 01:32</div>
+            <div class="timeline-body"><p><em>myapp/main.py</em>:</p>
+<pre><code class="language-python">import myapp.module
+import pydantic
+
+print(pydantic.version)
+print(myapp.module.hello)
+</code></pre>
+<p><em>pyproject.toml</em></p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 120
+
+# rules to enable/ignore
+select = [
+    # isort
+    &quot;I&quot;
+]
+# first-party imports for sorting
+src = [&quot;myapp&quot;]
+
+fix = true
+</code></pre>
+<p>When I run <code>ruff myapp/main.py</code> it preserves the sort order above instead of sorting myapp last like isort does, eg:</p>
+<pre><code class="language-python">import pydantic
+
+import myapp.module
+</code></pre>
+<p>ruff 0.0.132</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-11-21 02:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-11-21 02:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-21 02:18</div>
+            <div class="timeline-body"><p>Confirmed bug!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-21 02:22</div>
+            <div class="timeline-body"><p>I think in this case you actually want:</p>
+<pre><code class="language-toml">src = [&quot;.&quot;]
+</code></pre>
+<p>Since those are really source <em>roots</em>, so if you have <code>src = [&quot;myapp&quot;]</code>, and you <code>import myapp.module</code>, you're effectively looking for <code>./myapp/myapp/module.py</code>. Does that fix it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tekumara">@tekumara</a> on 2022-11-21 02:59</div>
+            <div class="timeline-body"><p>OIC, yes that works, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @tekumara on 2022-11-21 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-21 02:59</div>
+            <div class="timeline-body"><p>Sorry for the confusion!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

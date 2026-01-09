@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: Make F401 unused-imports configurable for modules with side effects - astral-sh/ruff #9962</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: Make F401 unused-imports configurable for modules with side effects</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9962">#9962</a>
+        opened by <a href="https://github.com/Hnasar">@Hnasar</a>
+        on 2024-02-12 20:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Hnasar">@Hnasar</a> on 2024-02-12 20:58</div>
+            <div class="timeline-body"><p>We have a handful of modules that have import side effects. I know, I know… we should not rely on that (#4056) – but in lieu of fixing everything, would it be possible to configure a list of modules that should never be auto-removed?</p>
+<p>I see there's https://docs.astral.sh/ruff/settings/#lint_ignore-init-module-imports but I was hoping there's a chance to avoid this footgun which comes up from time to time by specifying which modules are expected to have import side effects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9963.html">astral-sh/ruff#9963</a> on 2024-02-12 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-12 20:59</div>
+            <div class="timeline-body"><p>I'm supportive of something like this. I think it's been brought up before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-02-13 03:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hutch3232">@hutch3232</a> on 2024-06-15 13:34</div>
+            <div class="timeline-body"><p>Not sure if this is useful, but here is a reproducible example of how I am encountering this issue when using the <code>pyjanitor</code> (https://github.com/pyjanitor-devs/pyjanitor) package.</p>
+<pre><code>pip install pandas ruff pyjanitor
+pip freeze
+</code></pre>
+<details>
+
+<p>multipledispatch==1.0.0
+natsort==8.4.0
+numpy==1.26.4
+packaging==24.1
+pandas==2.2.2
+pandas-flavor==0.6.0
+pyjanitor==0.27.0
+python-dateutil==2.9.0.post0
+pytz==2024.1
+ruff==0.4.9
+scipy==1.13.1
+six==1.16.0
+tzdata==2024.1
+xarray==2024.6.0</p>
+</details>
+
+<p><code>example.py</code></p>
+<pre><code class="language-python">import janitor
+import pandas as pd
+
+df = pd.DataFrame({&quot;col&quot;: [0.25, 0.75]})
+tbl = pd.DataFrame({&quot;lo&quot;: [0., 0.5],
+                    &quot;hi&quot;: [0.5, 1.0]})
+
+df.conditional_join(
+    tbl,
+    (&quot;col&quot;, &quot;lo&quot;, &quot;&gt;=&quot;),
+    (&quot;col&quot;, &quot;hi&quot;, &quot;&lt;&quot;)
+)
+</code></pre>
+<pre><code class="language-python">df.conditional_join
+# &lt;pandas_flavor.register.register_dataframe_method.&lt;locals&gt;.inner.&lt;locals&gt;.AccessorMethod object at 0x0000021B23F0AE70&gt;
+</code></pre>
+<pre><code>ruff check
+# example.py:1:8: F401 [*] `janitor` imported but unused
+# Found 1 error.
+# [*] 1 fixable with the `--fix` option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-15 14:18</div>
+            <div class="timeline-body"><p>It shouldn't be too hard to add a configuration option, if someone is interested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-06-15 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2024-08-15 13:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm supportive of something like this. I think it's been brought up before.</p>
+</blockquote>
+<ul>
+<li>#4250</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-08-19 04:47</div>
+            <div class="timeline-body"><p>This is something Pycln allows configuring, on top of having  automated side-effect detections https://github.com/astral-sh/ruff/issues/8149</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarcSkovMadsen">@MarcSkovMadsen</a> on 2024-08-30 15:09</div>
+            <div class="timeline-body"><p>+1 because <code>import hvplot.pandas</code>, <code>import hvplot.xarray</code> and similar imports adds a <code>.hvplot</code> api for plotting to a Pandas DataFrame, XArray dataset etc.</p>
+<p>For more info see https://github.com/holoviz/hvplot/issues/1399</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-30 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-08-30 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13601.html">astral-sh/ruff#13601</a> on 2024-10-02 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-03 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-03 19:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

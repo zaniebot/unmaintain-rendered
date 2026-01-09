@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Default index in `uv.toml` - astral-sh/uv #8828</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Default index in `uv.toml`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8828">#8828</a>
+        opened by <a href="https://github.com/fchareyr">@fchareyr</a>
+        on 2024-11-05 13:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fchareyr">@fchareyr</a> on 2024-11-05 13:10</div>
+            <div class="timeline-body"><p>Working in a corporate setup with a PyPi mirror, we used to define the <code>[[tool.uv.index]]</code> in <code>pyproject.toml</code>. However, we are now working jointly on a project with another firm that does not have access to our mirror.</p>
+<p>It seemed logical to specify the location of our mirror in <code>uv.toml</code> at the system level and let the <code>pyproject.toml</code> free of any index definition, however it does not seem supported as one cannot set something equivalent to <code>default = &quot;true&quot;</code> in <code>uv.toml</code>.</p>
+<p>Did I miss anything to define a default mirror at the system level? Or is there another way to address this specific case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 13:19</div>
+            <div class="timeline-body"><p>I would expect this to work in a <code>uv.toml</code>:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+url = &quot;...&quot;
+default = true
+</code></pre>
+<p>Are you seeing otherwise?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-05 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fchareyr">@fchareyr</a> on 2024-11-05 13:28</div>
+            <div class="timeline-body"><p>It tries to reach <code>pypi.org</code> unfortunately.</p>
+<p><code>pyproject.toml</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;poc&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;François Chareyron&quot;, email = &quot;francois.chareyron@***.ch&quot; }
+]
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;fastapi[all]&gt;=0.115.4&quot;,
+    &quot;mkdocs-material&gt;=9.5.43&quot;,
+    &quot;prefect&gt;=3.1.0&quot;,
+    &quot;pyinstrument&gt;=5.0.0&quot;,
+    &quot;pytest&gt;=8.3.3&quot;,
+    &quot;pytest-cov&gt;=6.0.0&quot;,
+    &quot;pytest-sugar&gt;=1.0.0&quot;,
+    &quot;pytest-xdist&gt;=3.6.1&quot;,
+    &quot;sqlalchemy&gt;=2.0.36&quot;,
+    &quot;streamlit&gt;=1.39.0&quot;,
+    &quot;streamlit-extras&gt;=0.5.0&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.prefect]
+logging.level = &quot;DEBUG&quot;
+</code></pre>
+<p><code>/etc/uv/uv.toml</code></p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;internal&quot;
+url = &quot;https://***.***.com/repository/pypi/simple&quot;
+default = true
+
+[[tool.uv.index]]
+name = &quot;bloomberg&quot;
+url = &quot;https://***.***.com/repository/bcms/repository/releases/python/simple&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 13:29</div>
+            <div class="timeline-body"><p>Can you share the output of <code>uv sync --show-settings</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fchareyr">@fchareyr</a> on 2024-11-05 13:30</div>
+            <div class="timeline-body"><p>Sure thing. See below</p>
+<pre><code>GlobalSettings {
+    quiet: false,
+    verbose: 0,
+    color: Auto,
+    native_tls: false,
+    concurrency: Concurrency {
+        downloads: 50,
+        builds: 8,
+        installs: 8,
+    },
+    connectivity: Online,
+    show_settings: true,
+    preview: Disabled,
+    python_preference: Managed,
+    python_downloads: Automatic,
+    no_progress: false,
+}
+CacheSettings {
+    no_cache: false,
+    cache_dir: None,
+}
+SyncSettings {
+    locked: false,
+    frozen: false,
+    extras: None,
+    dev: DevGroupsSpecification {
+        dev: None,
+        groups: None,
+    },
+    editable: Editable,
+    install_options: InstallOptions {
+        no_install_project: false,
+        no_install_workspace: false,
+        no_install_package: [],
+    },
+    modifications: Exact,
+    package: None,
+    python: None,
+    refresh: None(
+        Timestamp(
+            SystemTime {
+                tv_sec: 1730813378,
+                tv_nsec: 168272861,
+            },
+        ),
+    ),
+    settings: ResolverInstallerSettings {
+        index_locations: IndexLocations {
+            indexes: [],
+            flat_index: [],
+            no_index: false,
+        },
+        index_strategy: FirstIndex,
+        keyring_provider: Disabled,
+        allow_insecure_host: [],
+        resolution: Highest,
+        prerelease: IfNecessaryOrExplicit,
+        dependency_metadata: DependencyMetadata(
+            {},
+        ),
+        config_setting: ConfigSettings(
+            {},
+        ),
+        no_build_isolation: false,
+        no_build_isolation_package: [],
+        exclude_newer: None,
+        link_mode: Hardlink,
+        compile_bytecode: false,
+        sources: Enabled,
+        upgrade: None,
+        reinstall: None,
+        build_options: BuildOptions {
+            no_binary: None,
+            no_build: None,
+        },
+    },
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 13:31</div>
+            <div class="timeline-body"><p>It looks like it's not finding your <code>/etc/uv/uv.toml</code> at all -- otherwise we'd see entries under <code>index_locations</code>. Are you on a fairly recent version? (That's a new-ish feature.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fchareyr">@fchareyr</a> on 2024-11-05 13:34</div>
+            <div class="timeline-body"><pre><code>uv --version
+uv 0.4.29
+</code></pre>
+<p>A permission issue to access <code>/etc/uv/uv.toml</code> maybe?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 13:57</div>
+            <div class="timeline-body"><p>Does <code>--verbose</code> show anything useful?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fchareyr">@fchareyr</a> on 2024-11-05 14:04</div>
+            <div class="timeline-body"><p>Not really - just indicating it's trying to hit <code>pypi.org</code></p>
+<pre><code>DEBUG uv 0.4.30
+DEBUG Found project root: `/home/fchareyron/***/poc`
+DEBUG No workspace root found, using project root
+DEBUG Reading requests from `/home/fchareyron/***/poc/.python-version`
+DEBUG The virtual environment's Python version satisfies `Python 3.12`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: poc @ file:///home/fchareyron/***/poc
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.12.7
+DEBUG Solving with target Python version: &gt;=3.12
+DEBUG Adding direct dependency: poc*
+DEBUG Searching for a compatible version of poc @ file:///home/fchareyron/***/poc (*)
+DEBUG Adding transitive dependency for poc==0.1.0: fastapi&gt;=0.115.4
+DEBUG Adding transitive dependency for poc==0.1.0: fastapi[all]&gt;=0.115.4
+DEBUG Adding transitive dependency for poc==0.1.0: mkdocs-material&gt;=9.5.43
+DEBUG Adding transitive dependency for poc==0.1.0: prefect&gt;=3.1.0
+DEBUG Adding transitive dependency for poc==0.1.0: pyinstrument&gt;=5.0.0
+DEBUG Adding transitive dependency for poc==0.1.0: pytest&gt;=8.3.3
+DEBUG Adding transitive dependency for poc==0.1.0: pytest-cov&gt;=6.0.0
+DEBUG Adding transitive dependency for poc==0.1.0: pytest-sugar&gt;=1.0.0
+DEBUG Adding transitive dependency for poc==0.1.0: pytest-xdist&gt;=3.6.1
+DEBUG Adding transitive dependency for poc==0.1.0: sqlalchemy&gt;=2.0.36
+DEBUG Adding transitive dependency for poc==0.1.0: streamlit&gt;=1.39.0
+DEBUG Adding transitive dependency for poc==0.1.0: streamlit-extras&gt;=0.5.0
+DEBUG No cache entry for: https://pypi.org/simple/fastapi/
+DEBUG No cache entry for: https://pypi.org/simple/mkdocs-material/
+DEBUG No cache entry for: https://pypi.org/simple/pyinstrument/
+DEBUG No cache entry for: https://pypi.org/simple/prefect/
+DEBUG No cache entry for: https://pypi.org/simple/pytest-cov/
+DEBUG No cache entry for: https://pypi.org/simple/pytest/
+DEBUG No cache entry for: https://pypi.org/simple/pytest-sugar/
+DEBUG No cache entry for: https://pypi.org/simple/pytest-xdist/
+DEBUG No cache entry for: https://pypi.org/simple/sqlalchemy/
+DEBUG No cache entry for: https://pypi.org/simple/streamlit/
+DEBUG No cache entry for: https://pypi.org/simple/streamlit-extras/
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 14:06</div>
+            <div class="timeline-body"><p>We should be failing hard if we fail to read the file. Although we do check <code>candidate.is_file()</code>, which could be returning <code>false</code> if we don't have permission?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 14:26</div>
+            <div class="timeline-body"><p>I can add a debug warning for that failure case. But what <em>are</em> the permissions on <code>/etc/uv/uv.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8829.html">astral-sh/uv#8829</a> on 2024-11-05 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fchareyr">@fchareyr</a> on 2024-11-05 14:44</div>
+            <div class="timeline-body"><p>Indeed, a warning in case of permission would be useful. I've modified the permission to align with other files in <code>/etc</code> and I now have the following error:</p>
+<pre><code>❯ uv sync -vvv
+error: Failed to parse: `/etc/uv/uv.toml`
+  Caused by: TOML parse error at line 6, column 1
+  |
+6 | [index]
+  | ^
+invalid table header
+duplicate key `index` in document root
+</code></pre>
+<p>As a reminder, the <code>uv.toml</code> looks like this:</p>
+<pre><code class="language-toml">[index]
+name = &quot;internal&quot;
+url = &quot;https://***.***.com/repository/pypi/simple&quot;
+default = true
+
+[index]
+name = &quot;bloomberg&quot;
+url = &quot;https://***.***.com/repository/bcms/repository/releases/python/simple&quot;
+</code></pre>
+<p>The error makes sense but not sure how I can consolidate into a single <code>index</code> table whilst providing the <code>default = true</code> key.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 14:55</div>
+            <div class="timeline-body"><p>I think you need to change <code>[index]</code> to <code>[[index]]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fchareyr">@fchareyr</a> on 2024-11-05 14:58</div>
+            <div class="timeline-body"><p>That works perfectly now, thanks very very much for your help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @fchareyr on 2024-11-05 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 15:00</div>
+            <div class="timeline-body"><p>No problem! (That's a TOML thing, it's short-hand for like... <code>index = [{ name = &quot;internal&quot;, ... }, { name = &quot;bloomberg&quot;, ... }]</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9053.html">astral-sh/uv#9053</a> on 2024-11-12 12:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

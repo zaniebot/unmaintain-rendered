@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;Requires&quot; restriction is wrongly satisfied by args that share a required group - clap-rs/clap #5910</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;Requires&quot; restriction is wrongly satisfied by args that share a required group</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5910">#5910</a>
+        opened by <a href="https://github.com/12yanogden">@12yanogden</a>
+        on 2025-02-15 17:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/12yanogden">@12yanogden</a> on 2025-02-15 17:15</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.82.0</p>
+<h3>Clap Version</h3>
+<p>4.5.29</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Arg, ArgGroup, Command};
+
+fn init_command() -&gt; Command {
+    Command::new(&quot;myprog&quot;)
+        .arg(
+            Arg::new(&quot;only_required_for_required_group&quot;)
+                .long(&quot;only_required_for_required_group&quot;)
+                .action(clap::ArgAction::SetTrue),
+        )
+        .arg(
+            Arg::new(&quot;required_for_dependent_and_required_group&quot;)
+                .long(&quot;required_for_dependent_and_required_group&quot;)
+                .action(clap::ArgAction::SetTrue),
+        )
+        .group(
+            ArgGroup::new(&quot;required_group&quot;)
+                .args([
+                    &quot;only_required_for_required_group&quot;,
+                    &quot;required_for_dependent_and_required_group&quot;,
+                ])
+                .required(true),
+        )
+        .arg(
+            Arg::new(&quot;dependent&quot;)
+                .long(&quot;dependent&quot;)
+                .action(clap::ArgAction::SetTrue),
+        )
+        .group(
+            ArgGroup::new(&quot;requires_group&quot;)
+                .args([&quot;dependent&quot;])
+                .requires(&quot;required_for_dependent_and_required_group&quot;),
+        )
+}
+
+fn main() {
+    let cmd = init_command();
+    let matches = cmd.get_matches();
+    println!(&quot;{:?}&quot;, matches);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use clap::error::ErrorKind;
+
+    lazy_static::lazy_static! {
+        static ref CMD: Command = init_command();
+    }
+
+    #[test]
+    fn test_missing_required_argument_error() {
+        let result = CMD.clone().try_get_matches_from(vec![
+            &quot;myprog&quot;,
+            &quot;--only_required_for_required_group&quot;,
+            &quot;--dependent&quot;,
+        ]);
+
+        assert!(result.is_err());
+        let err = result.unwrap_err();
+        assert_eq!(err.kind(), ErrorKind::MissingRequiredArgument);
+    }
+
+    #[test]
+    fn test_has_required_argument() {
+        let result = CMD.clone().try_get_matches_from(vec![
+            &quot;myprog&quot;,
+            &quot;--required_for_dependent_and_required_group&quot;,
+            &quot;--dependent&quot;,
+        ]);
+
+        assert!(result.is_ok());
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-bash">cargo test
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>The test <code>test_missing_required_argument_error</code> does not pass, indicating that the <code>only_required_for_required_group</code> argument incorrectly satisfies the <code>requires</code> restriction on the <code>requires_group</code>.</p>
+<h3>Expected Behaviour</h3>
+<p>The test <code>test_missing_required_argument_error</code> should pass, indicating that the <code>only_required_for_required_group</code> argument does not satisfy the <code>requires</code> restriction on the <code>requires_group</code>.</p>
+<h3>Additional Context</h3>
+<p>Run these commands to check out the repo dedicated to this issue and reproduce. Easy cheesy.</p>
+<pre><code class="language-bash">git clone https://github.com/12yanogden/clap-issue.git
+cd clap-issue
+cargo test
+</code></pre>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;myprog&quot;
+[clap_builder::builder::command]Command::_build: name=&quot;myprog&quot;
+[clap_builder::builder::command]Command::_propagate:myprog
+[clap_builder::builder::command]Command::_propagate:myprog
+[clap_builder::builder::command]Command::_check_help_and_version:myprog expand_help_tree=false
+[clap_builder::builder::command]Command::_check_help_and_version:myprog expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:myprog
+[clap_builder::builder::command]Command::_propagate_global_args:myprog
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:only_required_for_required_group
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:only_required_for_required_group
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:required_for_dependent_and_required_group
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:required_for_dependent_and_required_group
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:dependent
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:dependent
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::parse
+[clap_builder::parser::parser]Parser::parse
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--only_required_for_required_group&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--required_for_dependent_and_required_group&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--only_required_for_required_group&quot;)
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--required_for_dependent_and_required_group&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--only_required_for_required_group'
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--required_for_dependent_and_required_group'
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;only_required_for_required_group&quot;): Presence validated
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;required_for_dependent_and_required_group&quot;): Presence validated
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;only_required_for_required_group&quot;
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;required_for_dependent_and_required_group&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;only_required_for_required_group&quot;, source=CommandLine
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;required_for_dependent_and_required_group&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;only_required_for_required_group&quot;
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;required_for_dependent_and_required_group&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;required_group&quot;, source=CommandLine
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;required_group&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--dependent&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg ValuesDone
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--dependent&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--dependent&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--dependent&quot;)
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--dependent'
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;dependent&quot;): Presence validated
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--dependent'
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;dependent&quot;): Presence validated
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;dependent&quot;
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;dependent&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;dependent&quot;
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;dependent&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;dependent&quot;, source=CommandLine
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;requires_group&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;dependent&quot;
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;requires_group&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg ValuesDone
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:only_required_for_required_group:
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg ValuesDone
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:only_required_for_required_group: has default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:only_required_for_required_group:
+[clap_builder::parser::parser]Parser::add_default_value:iter:only_required_for_required_group: was used
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:required_for_dependent_and_required_group:
+[clap_builder::parser::parser]Parser::add_default_value:iter:only_required_for_required_group: has default vals
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:only_required_for_required_group: wasn't used
+[clap_builder::parser::parser]Parser::add_default_value:iter:required_for_dependent_and_required_group: has default vals
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[clap_builder::parser::parser]Parser::add_default_value:iter:required_for_dependent_and_required_group: wasn't used
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;only_required_for_required_group&quot;, source=DefaultValue
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;false&quot;]
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;required_for_dependent_and_required_group&quot;, source=DefaultValue
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=3
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;false&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=3
+[clap_builder::parser::parser]Parser::add_defaults:iter:required_for_dependent_and_required_group:
+[clap_builder::parser::parser]Parser::add_defaults:iter:dependent:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:required_for_dependent_and_required_group: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:dependent: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:required_for_dependent_and_required_group: was used
+[clap_builder::parser::parser]Parser::add_default_value:iter:dependent: was used
+[clap_builder::parser::parser]Parser::add_defaults:iter:dependent:
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:dependent: has default vals
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:dependent: was used
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;only_required_for_required_group&quot;
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;only_required_for_required_group&quot;, conflicts=[&quot;required_for_dependent_and_required_group&quot;]
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;required_for_dependent_and_required_group&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;required_group&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;required_for_dependent_and_required_group&quot;, conflicts=[&quot;only_required_for_required_group&quot;]
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;dependent&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;required_group&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;dependent&quot;, conflicts=[]
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;dependent&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;requires_group&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;dependent&quot;, conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;requires_group&quot;, conflicts=[]
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;only_required_for_required_group&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;required_group&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;required_for_dependent_and_required_group&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;dependent&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;required_group&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;requires_group&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;dependent&quot;
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;only_required_for_required_group&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;requires_group&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;only_required_for_required_group&quot;
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;required_for_dependent_and_required_group&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;required_for_dependent_and_required_group&quot;
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;dependent&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;dependent&quot;
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;dependent&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;dependent&quot;
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([Child { id: &quot;required_group&quot;, children: [] }])
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([Child { id: &quot;required_group&quot;, children: [] }])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;only_required_for_required_group&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;required_for_dependent_and_required_group&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;required_group&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;required_group&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;required_group&quot;:group
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;required_group&quot;:group
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;dependent&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;dependent&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;requires_group&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;requires_group&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;requires_group&quot;:group
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;requires_group&quot;:group
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::validator]Validator::validate_required:iter:aog=&quot;required_for_dependent_and_required_group&quot;
+[clap_builder::parser::validator]Validator::validate_required:iter: This is an arg
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+[clap_builder::parser::validator]Validator::is_missing_required_ok: required_for_dependent_and_required_group
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;required_for_dependent_and_required_group&quot;
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;required_for_dependent_and_required_group&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;required_for_dependent_and_required_group&quot;, conflicts=[&quot;only_required_for_required_group&quot;]
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[&quot;only_required_for_required_group&quot;, &quot;only_required_for_required_group&quot;]
+[clap_builder::parser::validator]Validator::is_missing_required_ok: true (self)
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @12yanogden on 2025-02-15 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Requires restriction is wrongly satisfied by args that share a required group" to ""Requires" restriction is wrongly satisfied by args that share a required group" by @12yanogden on 2025-02-16 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-02-17 18:57</div>
+            <div class="timeline-body"><p>Without digging into this, my guess is that this is because <code>required_group</code>s members conflict with each other (because <code>multiple(true)</code> is missing).  When an argument is disallowed because of a conflict, it overrides the required status.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2025-02-17 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-02-17 18:58</div>
+            <div class="timeline-body"><p>I suspect this is a duplicate of #4707.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/12yanogden">@12yanogden</a> on 2025-02-17 19:21</div>
+            <div class="timeline-body"><blockquote>
+<p>I suspect this is a duplicate of <a href="https://github.com/clap-rs/clap/issues/4707">#4707</a>.</p>
+</blockquote>
+<p>Yes, this issue is a duplicate. I didn't recognize it initially since the syntax in #4707 is so different 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-02-17 19:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

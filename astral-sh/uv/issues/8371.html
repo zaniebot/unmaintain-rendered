@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplify standalone Jupyter and ipykernel environments setup: nb_conda_kernels but for uv - astral-sh/uv #8371</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Simplify standalone Jupyter and ipykernel environments setup: nb_conda_kernels but for uv</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/8371">#8371</a>
+        opened by <a href="https://github.com/rbavery">@rbavery</a>
+        on 2024-10-19 20:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rbavery">@rbavery</a> on 2024-10-19 20:23</div>
+            <div class="timeline-body"><p>Thank you for the detailed docs on using uv with jupyter. I read through them and was wondering if the setup process could be simplified for what I think is the most common use of jupyter as a standalone tool.</p>
+<p>https://docs.astral.sh/uv/guides/integration/jupyter/</p>
+<p>At least for me most of my use of Jupyter is as a standalone tool in the base environment where I am constantly switching from kernel to kernel depending on the project (which usually won't have a pyproject.toml). I think documenting how to register all uv project environments automatically would be helpful, so that users don't need to manually register kernels with ipykernel for every new environment.</p>
+<p>I like the simplicity of conda's approach, where any conda environment with ipykernel installed is registered and made available to the base environment jupyter if the <code>nb_conda_kernels</code> package is installed in the base environment. https://github.com/anaconda/nb_conda_kernels</p>
+<p>I think conda's approach fits in the category of running jupyter as a standalone tool, where the standalone tool has access to all projects (environments) as kernels. And the user has read/write access to each of these environments.</p>
+<p>Could the docs lead with this case in the instructions? And is it possible to run something like <code>nb_conda_kernels</code> in the background whenever <code>--with jupyter</code> is run to register all uv environments that have ipykernel installed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-10-19 20:48</div>
+            <div class="timeline-body"><p>I have a solution for almost exactly that: Jupyterlab as a standalone tool, and switching between uv-defined kernels environments without having to register them, but that -- currently -- requires <code>pyproject.toml</code>. That was chosen as a project marker and dependency definition for my notebook kernels but it could also be done in other ways.</p>
+<p>If you allow it, I'll link my project here. It supports multiple project managers but uv is the primary way it's intended to be used.</p>
+<p>https://bluss.github.io/pyproject-local-kernel/</p>
+<p>I'm not a huge believer in registering environments as kernelspecs, because environments come and go and move around, so the list gets stale if it is not cleaned up. A solution like nb_conda_kernels for uv would be fine, since it is dynamic, but I think the kernel provisioner method that pyproject-local-kernel is using is more modular - plays nice with other installed tools. (You can see that nb_conda_kernel mentions “A new kernel discovery system is being developed” - and this is what became kernel provisioners, long after they wrote that.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-10-20 21:27</div>
+            <div class="timeline-body"><p>It looked like it would be simple, so here's a PoC level implementation of &quot;nb_conda_kernels&quot; but for uv. It's based on scanning pyproject.tomls under a designated directory.</p>
+<p>https://github.com/bluss/uv-kernels</p>
+<p><img src="https://github.com/user-attachments/assets/b64189e0-df00-4dae-9646-c264c965e5db" alt="bild" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-10-27 19:42</div>
+            <div class="timeline-body"><p>Feedback on both of those is welcome.</p>
+<p>My elevator pitch for why to use the former solution instead of the latter.</p>
+<ul>
+<li><p>pyproject-local-kernel keeps the configuration in the repository. You can check it out anywhere and if you have the right software installed (which is 'pyproject-local-kernel' as an &quot;addon&quot; to jupyterlab) you can just work on the notebook project.</p>
+</li>
+<li><p>nb_conda_kernels or the uv-kernels PoC rely on &quot;kernels installed elsewhere&quot;. Notebooks depend on some setup you have done some other place, not next to the notebook. If two people work on the same notebook in a git repo using that method, they need to agree on the name and location of that installed kernel environment.</p>
+</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

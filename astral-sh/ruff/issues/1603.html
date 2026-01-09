@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warning `D203` and `D211` are incompatible always raised - astral-sh/ruff #1603</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Warning `D203` and `D211` are incompatible always raised</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1603">#1603</a>
+        opened by <a href="https://github.com/ManonMarchand">@ManonMarchand</a>
+        on 2023-01-03 16:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ManonMarchand">@ManonMarchand</a> on 2023-01-03 16:27</div>
+            <div class="timeline-body"><p>Here is a minimal non working example for the issue discussed <a href="https://github.com/charliermarsh/ruff/pull/1576#issuecomment-1369937183" title="https://github.com/charliermarsh/ruff/pull/1576#issuecomment-1369937183">here</a>.</p>
+<p>In a clean repo with the files :</p>
+<ul>
+<li>test.py (empty)</li>
+<li>.pre-commit-config.yaml</li>
+</ul>
+<pre><code>repos:
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    # Ruff version.
+    rev: 'v0.0.209'
+    hooks:
+     - id: ruff
+</code></pre>
+<ul>
+<li>pyproject.toml</li>
+</ul>
+<pre><code>[tool.ruff.pydocstyle]
+convention = &quot;numpy&quot;  # Accepts: &quot;google&quot;, &quot;numpy&quot;, or &quot;pep257&quot;
+
+[tool.ruff]
+extend-select = [&quot;D&quot;]
+ignore = [&quot;D203&quot;]
+</code></pre>
+<p>Running <code>git add test.py</code> then <code>git commit -m &quot;test&quot;</code> raises the following warning</p>
+<p><img src="https://user-images.githubusercontent.com/16650466/210398010-7ecd0f82-e6dc-4ff1-84f4-3fc176b444f7.png" alt="image" /></p>
+<p>Which I don't understand cause the numpy convention and the ignore should both resolve the conflicting instructions.</p>
+<p>Thanks for your help and for this cool project!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-03 18:24</div>
+            <div class="timeline-body"><p>Ahh, this has to do with the way that <code>select</code> and <code>ignore</code> are resolved.</p>
+<p>Can you instead try:</p>
+<pre><code class="language-toml">[tool.ruff.pydocstyle]
+convention = &quot;numpy&quot;  # Accepts: &quot;google&quot;, &quot;numpy&quot;, or &quot;pep257&quot;
+
+[tool.ruff]
+extend-select = [&quot;D&quot;]
+extend-ignore = [&quot;D203&quot;]
+</code></pre>
+<p>Or:</p>
+<pre><code class="language-toml">[tool.ruff.pydocstyle]
+convention = &quot;numpy&quot;  # Accepts: &quot;google&quot;, &quot;numpy&quot;, or &quot;pep257&quot;
+
+[tool.ruff]
+select = [&quot;D&quot;]
+ignore = [&quot;D203&quot;]
+</code></pre>
+<p>(The <code>extend</code> is always applied <em>after</em> the non-<code>extend</code>. So above, you're removing <code>D203</code>, then adding all the <code>D</code> rules on top of that.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-03 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-03 18:24</div>
+            <div class="timeline-body"><p>(Just let me know if you continue to see issues after that change!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1611.html">astral-sh/ruff#1611</a> on 2023-01-04 01:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ManonMarchand">@ManonMarchand</a> on 2023-01-04 08:40</div>
+            <div class="timeline-body"><p>Perfect like this thanks a lot! Maybe you could also consider changing the warning message to <code>Consider adding 'D103' to extend-ignore.</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rharish101">@rharish101</a> on 2023-01-25 23:16</div>
+            <div class="timeline-body"><blockquote>
+<p>(Just let me know if you continue to see issues after that change!)</p>
+</blockquote>
+<p>I'm getting this warning with the following config (in <code>ruff.toml</code>) when using ruff 0.0.233:</p>
+<pre><code class="language-toml">extend-select = [&quot;C90&quot;, &quot;D&quot;, &quot;I&quot;]
+line-length = 79
+
+[pydocstyle]
+convention = &quot;google&quot;
+</code></pre>
+<p>Shouldn't the &quot;google&quot; convention disable D203?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 23:19</div>
+            <div class="timeline-body"><p>Taking a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 23:21</div>
+            <div class="timeline-body"><p>The warning is spurious -- it's happening in the wrong place. I'll fix it now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2182.html">astral-sh/ruff#2182</a> on 2023-01-25 23:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

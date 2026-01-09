@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why does `ruff format` not support `--extend-exclude`? - astral-sh/ruff #18980</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Why does `ruff format` not support `--extend-exclude`?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18980">#18980</a>
+        opened by <a href="https://github.com/PatrickJordanNutanix">@PatrickJordanNutanix</a>
+        on 2025-06-27 09:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/PatrickJordanNutanix">@PatrickJordanNutanix</a> on 2025-06-27 09:58</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I am managing a code base where there are multiple versions of Python being used. The majority of the code base uses Python 3.12 but a handful of files use Python 3.9. My <code>Makefile</code> contains two invocations of <code>ruff check</code> and <code>ruff format</code>, where the <code>--target-version</code> changes depending on the files being validated.</p>
+<p>Ideally, my <code>Makefile</code> would look something like this:</p>
+<pre><code class="language-Makefile"># These files are executed in a Python 3.9 environment, so should be linted
+# and formatted separately from the rest of the codebase.
+PYTHON_3_9_FILES := \
+    {file_1} \
+    {file_2}
+
+.PHONY: check
+check:
+    ruff format --diff --target-version py312 --extend-exclude $(PYTHON_3_9_FILES)
+    ruff format --diff --target-version py39 $(PYTHON_3_9_FILES)
+
+    ruff check --target-version py312 --extend-exclude $(PYTHON_3_9_FILES)
+    ruff check --target-version py39 $(PYTHON_3_9_FILES)
+
+.PHONY: fix
+fix:
+    ruff format --target-version py312 --extend-exclude $(PYTHON_3_9_FILES)
+    ruff format --target-version py39 $(PYTHON_3_9_FILES)
+
+    ruff check  --target-version py312 --fix --show-fixes --extend-exclude $(PYTHON_3_9_FILES)
+    ruff check  --target-version py39 --fix --show-fixes $(PYTHON_3_9_FILES)
+</code></pre>
+<p>This then establishes a pattern for being able to execute <code>ruff</code> against different versions of Python (should there be a need in the future).</p>
+<p>However, it appears that <code>ruff format</code> does not support the <code>--extend-exclude</code> option:</p>
+<pre><code class="language-shell">ruff format --extend-exclude hello.py
+error: unexpected argument '--extend-exclude' found
+
+  tip: to pass '--extend-exclude' as a value, use '-- --extend-exclude'
+</code></pre>
+<p>It does, however, respect the same setting in the <code>ruff.toml</code> file (at least local testing shows it stops checking/formatting those files with that option present). This means I have to duplicate the <code>PYTHON_3_9_FILES</code> in the <code>ruff.toml</code> file (to add them to the <code>extend-exclude</code> option there) and to the <code>Makefile</code> (so they can be passed explicitly to the Python 3.9 checks).</p>
+<p>Is there a reason for the discrepancy between <code>check</code> and <code>format</code> for <code>--extend-exclude</code>?</p>
+<h3>Version</h3>
+<p>0.9.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @PatrickJordanNutanix on 2025-06-27 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-27 16:05</div>
+            <div class="timeline-body"><p>Hmm, the discrepancy in the CLI could still be a bug, but would the <a href="https://docs.astral.sh/ruff/settings/#per-file-target-version">per-file-target-version</a> setting help with this use case too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PatrickJordanNutanix">@PatrickJordanNutanix</a> on 2025-06-30 07:46</div>
+            <div class="timeline-body"><p>Thanks @ntBre for the heads up on that option. I wasn't aware of it. It certainly helps in this situation, so I've updated <code>ruff</code> to <code>0.12.1</code> in our project and replaced the double invocation in the <code>Makefile</code>. Thanks!</p>
+<p>Regarding the bug with the CLI, what are your plans to track it? Will you keep this issue open? I'm happy to close this given your solution if you'd rather track it elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-30 12:48</div>
+            <div class="timeline-body"><p>Awesome, glad that helped!</p>
+<p>We can leave this issue open if you want, the title is pretty much exactly what I'd want to write in a new one :) But if you'd rather close it to avoid future notifications, that's totally fine too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PatrickJordanNutanix">@PatrickJordanNutanix</a> on 2025-06-30 15:14</div>
+            <div class="timeline-body"><p>More than happy to keep this open and receive notifications 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-07-07 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-07-07 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-07-07 08:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

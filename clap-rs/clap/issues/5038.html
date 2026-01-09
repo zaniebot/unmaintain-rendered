@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `mut_group` to `Command` - clap-rs/clap #5038</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `mut_group` to `Command`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5038">#5038</a>
+        opened by <a href="https://github.com/rgiot">@rgiot</a>
+        on 2023-07-21 23:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rgiot">@rgiot</a> on 2023-07-21 23:32</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.3.12</p>
+<h3>Describe your use case</h3>
+<p>I use a <code>Command</code> object that has been defined in another crate. This command has a group defined this way:</p>
+<pre><code class="language-rust">    .group(
+        ArgGroup::new(&quot;ANY_INPUT&quot;)
+            .args(&amp;[&quot;INLINE&quot;, &quot;INPUT&quot;, &quot;LIST_EMBEDDED&quot;, &quot;VIEW_EMBEDDED&quot;])
+    )
+</code></pre>
+<p>I modify this object in my crate to add some additional arguments and especially this one (I do not want to relly on the default implementation of version) :</p>
+<pre><code class="language-rust">            .arg(
+                Arg::new(&quot;version&quot;)
+                    .long(&quot;version&quot;)
+                    .short('V')
+                    .help(&quot;Print version&quot;)
+                    .action(ArgAction::SetTrue)
+                    .exclusive(true) // does not seem to work
+                    .conflicts_with_all([&quot;ANY_INPUT&quot;, &quot;INLINE&quot;, &quot;INPUT&quot;, &quot;LIST_EMBEDDED&quot;, &quot;VIEW_EMBEDDED&quot;])
+            )
+</code></pre>
+<p>both <code>exclusive</code> and <code>conflicts_with_all</code> and seems to be ignored, so as a workaround I have temporarily modified the <code>Command</code> definition in the other crate (so it does not fit the need of this initial crate</p>
+<pre><code class="language-rust">    .group(
+        ArgGroup::new(&quot;ANY_INPUT&quot;)
+            .args(&amp;[&quot;INLINE&quot;, &quot;INPUT&quot;, &quot;LIST_EMBEDDED&quot;, &quot;VIEW_EMBEDDED&quot;])
+          //  .required(true)
+            .conflicts_with(&quot;version&quot;)
+    )
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>Clap already has <a href="https://docs.rs/clap/latest/clap/struct.Command.html#method.mut_arg">mut_arg</a> and <a href="https://docs.rs/clap/latest/clap/struct.Command.html#method.mut_subcommand">mut_subcommand</a>.
+It would be nice to add <code>mut_group</code> to be consistent.</p>
+<p>The solution to my problem would not require anymore to modify the former crate; only to code something similar to</p>
+<pre><code class="language-rust">command.mut_group(&quot;ANY_INPUT&quot;, |group| group.required(false).conflicts_with(&quot;version'))
+</code></pre>
+<p>I would say that the implementation of <code>mut_group</code> would be close to</p>
+<pre><code class="language-rust">pub fn mut_group&lt;F&gt;(mut self, arg_id: impl AsRef&lt;str&gt;, f: F) -&gt; Self
+    where
+        F: FnOnce(ArgGroup) -&gt; ArgGroup {
+        let group = ... code to get the position, remove from the appropriate vec, handle absence ...
+        self.groups.push(f(group));
+        self
+    }
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p>For sure, this <code>mut_group</code> is of interest as it is missing from the library. But I wonder if in my use case it is just a workaround around a bug in the management of conflicting arguments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @rgiot on 2023-07-21 23:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-22 00:28</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-rust">```rust
+            .arg(
+                Arg::new(&quot;version&quot;)
+                    .long(&quot;version&quot;)
+                    .short('V')
+                    .help(&quot;Print version&quot;)
+                    .action(ArgAction::SetTrue)
+                    .exclusive(true) // does not seem to work
+                    .conflicts_with_all([&quot;ANY_INPUT&quot;, &quot;INLINE&quot;, &quot;INPUT&quot;, &quot;LIST_EMBEDDED&quot;, &quot;VIEW_EMBEDDED&quot;])
+            )
+</code></pre>
+<p>both exclusive and conflicts_with_all and seems to be ignored, so as a workaround I have temporarily modified the Command definition in the other crate (so it does not fit the need of this initial crate</p>
+<p>...</p>
+<p>For sure, this mut_group is of interest as it is missing from the library. But I wonder if in my use case it is just a workaround around a bug in the management of conflicting arguments</p>
+</blockquote>
+<p>I feel like the first discussion to be having is about conflicts and <code>exclusive</code>...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rgiot">@rgiot</a> on 2023-07-22 07:35</div>
+            <div class="timeline-body"><p>You mean by added a dedicated issue with a minimal working example? Or I am misusing something?
+(Jtlyk, I added the conflict when I noticed the exclusive was not working)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-22 11:38</div>
+            <div class="timeline-body"><p>That'd work, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rgiot">@rgiot</a> on 2023-07-22 16:01</div>
+            <div class="timeline-body"><p>here is the accompanying issue #5041</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hawk777">@Hawk777</a> on 2023-12-03 08:37</div>
+            <div class="timeline-body"><p>I would like to reiterate that this would be really nice to have. My use case is that I want to use the derive API, but I want a specific <code>ArgGroup</code> to sometimes be required and sometimes be optional depending on information discovered at runtime. I’m currently working around it by not using a group and then conditionally using <code>arg_mut</code> to create <code>required_unless_present</code> relationships between the two arguments; however, the help output is not as nice that way (it just claims that both arguments are required, even though really only one or the other is), so I would prefer to use a group—but I can’t make a derived group conditionally required, because I can’t mutate the group at runtime!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5247.html">clap-rs/clap#5247</a> on 2023-12-04 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-12-04 18:03</div>
+            <div class="timeline-body"><p>@Hawk777 thanks for the use case!  Opened #5247 to address it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-12-04 18:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

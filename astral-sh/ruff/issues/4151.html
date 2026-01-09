@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PYI033 False positive - astral-sh/ruff #4151</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PYI033 False positive</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4151">#4151</a>
+        opened by <a href="https://github.com/twoertwein">@twoertwein</a>
+        on 2023-04-29 14:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/twoertwein">@twoertwein</a> on 2023-04-29 14:47</div>
+            <div class="timeline-body"><p>test.pyi :
+<code># pyright: reportIncompleteStub = false</code></p>
+<pre><code class="language-sh">$ ruff --version
+ruff 0.0.263
+
+$ ruff check --isolated --select PYI033 test.pyi
+test.pyi:1:1: PYI033 Don't use type comments in stub file
+Found 1 error.
+</code></pre>
+<p>xref https://github.com/pandas-dev/pandas/pull/52974</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pandas-dev/pandas/pulls/52974.html">pandas-dev/pandas#52974</a> on 2023-04-29 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-04-29 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-29 16:14</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-29 19:10</div>
+            <div class="timeline-body"><p>Looks like our typing regex flags if the beginning is <code>type</code> or <code>pyright</code> (https://github.com/charliermarsh/ruff/blob/main/crates/ruff/src/rules/flake8_pyi/rules/type_comment_in_stub.rs#L53) but doesn't check if there's truly a Python type after it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twoertwein">@twoertwein</a> on 2023-04-29 19:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Looks like our typing regex flags if the beginning is <code>type</code> or <code>pyright</code></p>
+</blockquote>
+<p>flake8-pyi doesn't seem to search for <code>&quot;pyright&quot;</code>: https://github.com/PyCQA/flake8-pyi/search?q=pyright</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-29 19:23</div>
+            <div class="timeline-body"><p>@charliermarsh I can raise a PR for this if we want to remove that check, but I'm not sure why we included it in the first place and don't want to unintentionally break something.</p>
+<p>Alternatively, pyright sets flags via <code>=</code> - we could alter the regex to only emit if <code>type</code> is present or <code>pyright</code> is present and <code>=</code> is not. Please let me know which you'd prefer!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-29 19:25</div>
+            <div class="timeline-body"><p>I think it was a mistake to include <code>pyright</code> in this specific rule, since <code># pyright: </code> comments are only used for ignores and a few other directives, and not as &quot;type comments&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-29 19:25</div>
+            <div class="timeline-body"><p>So we should just remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-29 19:26</div>
+            <div class="timeline-body"><p>Perfect, that's what I was leaning towards as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4152.html">astral-sh/ruff#4152</a> on 2023-04-29 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-29 22:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

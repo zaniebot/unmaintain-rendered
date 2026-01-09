@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP/2 Connection Issues with uv 0.8.4 - astral-sh/uv #15056</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>HTTP/2 Connection Issues with uv 0.8.4</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15056">#15056</a>
+        opened by <a href="https://github.com/JonneDatanen">@JonneDatanen</a>
+        on 2025-08-04 12:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JonneDatanen">@JonneDatanen</a> on 2025-08-04 12:54</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>After upgrading from uv 0.8.3 to 0.8.4, many (maybe 50%) of CI runs fail with HTTP/2 ENHANCE_YOUR_CALM errors when connecting to our private Nexus/PyPI repository. This happens when <code>uv pip install</code> ~100 packages, and with 0.8.3 the failure rate was 0%.</p>
+<p>If downgraded back to 0.8.3, the issues seem to disappear.</p>
+<p>The logs are:</p>
+<pre><code>TRACE Considering retry of error: Reqwest(reqwest::Error { kind: Request, url: &quot;https://&lt;redacted&gt;/repository/python/simple/markdown-it-py/&quot;, source: hyper_util::client::legacy::Error(SendRequest, hyper::Error(Http2, Error { kind: GoAway(b&quot;too_many_internal_resets&quot;, ENHANCE_YOUR_CALM, Library) })) })
+TRACE Cannot retry error: not an extended IO error
+TRACE Considering retry of error: Error { kind: WrappedReqwestError(DisplaySafeUrl { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;&lt;redacted&gt;&quot;)), port: None, path: &quot;/repository/python/simple/markdown-it-py/&quot;, query: None, fragment: None }, WrappedReqwestError(Middleware(error sending request for url (https://&lt;redacted&gt;/repository/python/simple/markdown-it-py/)
+
+Caused by:
+    0: client error (SendRequest)
+    1: http2 error
+    2: connection error detected: detected excessive load generating behavior (b&quot;too_many_internal_resets&quot;)))) }
+</code></pre>
+<p>I also noticed that similar issue is mentioned in: https://github.com/astral-sh/uv/issues/11636#issuecomment-3109289245</p>
+<h3>Platform</h3>
+<p>x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>0.8.4</p>
+<h3>Python version</h3>
+<p>3.9 &amp; 3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @JonneDatanen on 2025-08-04 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-04 13:02</div>
+            <div class="timeline-body"><p>The status &quot;420 Enhance Your Calm&quot; sent by the registry is a non-standard HTTP code, the correct one would be &quot;429 Too Many Requests&quot;. We can add this status code to retrying nevertheless.</p>
+<p>I'm surprised this regressed in 0.8.4, I can't identify any commit as a likely culprit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-04 13:09</div>
+            <div class="timeline-body"><p>@konstin -- I guess we upgraded <code>h2</code> and <code>hyper-util</code>, that's my only guess, otherwise seems odd.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-04 13:16</div>
+            <div class="timeline-body"><p>This PR seems to be the culprit, I missed it cause we usually have per-dependency update PRs: https://github.com/astral-sh/uv/pull/14899/. I looked through the changelogs of the updated HTTP crates but found nothing that looks like it would particularly cause this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonneDatanen">@JonneDatanen</a> on 2025-08-04 13:49</div>
+            <div class="timeline-body"><p>I'm not very fluent in Rust, but this:
+https://github.com/hyperium/h2/commit/69294bb21628cb381ff6637399cc728fb03d90e0</p>
+<p>Seems to be happening in h2 between &quot;0.4.7&quot; and &quot;0.4.11&quot; (i.e. change of <code>cargo.lock</code> in the PR that @konstin was linking)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ajunior">@ajunior</a> on 2025-08-05 02:28</div>
+            <div class="timeline-body"><p>@JonneDatanen I've got the same problem here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hyperium/h2/issues/856.html">hyperium/h2#856</a> on 2025-08-05 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-05 02:44</div>
+            <div class="timeline-body"><p>I filed https://github.com/hyperium/h2/issues/856</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-05 02:47</div>
+            <div class="timeline-body"><p>We should just revert the h2 update for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15079.html">astral-sh/uv#15079</a> on 2025-08-05 10:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-05 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2025-08-05 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-05 11:56</div>
+            <div class="timeline-body"><p>Can someone share logs from <code>RUST_LOG=h2=debug</code> so we can see the h2 frames?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-05 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2025-08-05 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonneDatanen">@JonneDatanen</a> on 2025-08-05 12:40</div>
+            <div class="timeline-body"><p>I can try to do it. However this is kind of a Heisenbug, when I add some logging, calls between uv and registry slows down just a bit, and the issues disappear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-05 16:19</div>
+            <div class="timeline-body"><p>@ajunior are you also using a Nexus repository?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-05 17:41</div>
+            <div class="timeline-body"><p>This error is thrown client side when the server is causing a lot of stream errors, so you may also want to check in with Nexus about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonneDatanen">@JonneDatanen</a> on 2025-08-06 06:04</div>
+            <div class="timeline-body"><p>Quickly checking <code>0.8.5</code> seemed to fix the issue, thanks!</p>
+<p>We will still try to figure out:</p>
+<ol>
+<li>h2 trace</li>
+<li>what is wrong with Nexus (and other related component)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-08-06 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-08-06 12:48</div>
+            <div class="timeline-body"><blockquote>
+<p>We should just revert the h2 update for now.</p>
+</blockquote>
+<p>This was a reasonable thing to do, but I can’t really make the downgrade happen in Fedora where we build with system packages for Rust crates, so I’m watching https://github.com/hyperium/h2/issues/856 carefully for a possible solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2025-08-06 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15111.html">astral-sh/uv#15111</a> on 2025-08-06 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-07 13:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

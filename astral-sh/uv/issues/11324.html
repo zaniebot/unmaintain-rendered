@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run fails after installing packges with root and uv 0.5.29 - astral-sh/uv #11324</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run fails after installing packges with root and uv 0.5.29</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11324">#11324</a>
+        opened by <a href="https://github.com/jamescooke">@jamescooke</a>
+        on 2025-02-07 17:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamescooke">@jamescooke</a> on 2025-02-07 17:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h2>Current behaviour</h2>
+<p>We have an app which installs packages with uv in root, but then uses a team user to run the app.</p>
+<p>However, as of <code>0.5.29</code>, this has stopped working. The error received when the team user tries to <code>uv run</code> anything is:</p>
+<pre><code>error: failed to create file `/tmp/uv-f348faaccf85129c.lock`: Permission denied (os error 13)
+</code></pre>
+<p>The following dockerfile reproduces the error</p>
+<pre><code class="language-dockerfile">FROM python:3.13
+COPY --from=ghcr.io/astral-sh/uv:0.5.29 /uv /bin/uv
+
+WORKDIR /usr/src/app
+RUN uv init
+RUN uv add pytest
+
+RUN useradd --user-group --create-home --uid 1000 team
+USER team
+RUN uv run pytest -h
+</code></pre>
+<p>This fails when built with <code>docker build .</code> with:</p>
+<pre><code> =&gt; ERROR [stage-0 7/7] RUN uv run pytest -h                                                        0.3s
+------
+ &gt; [stage-0 7/7] RUN uv run pytest -h:
+0.266 error: failed to create file `/tmp/uv-f348faaccf85129c.lock`: Permission denied (os error 13)
+------
+Dockerfile:10
+--------------------
+   8 |     RUN useradd --user-group --create-home --uid 1000 team
+   9 |     USER team
+  10 | &gt;&gt;&gt; RUN uv run pytest -h
+  11 |
+--------------------
+ERROR: failed to solve: process &quot;/bin/sh -c uv run pytest -h&quot; did not complete successfully: exit code: 2
+</code></pre>
+<h2>Expected behaviour</h2>
+<p>Pinning to <code>0.5.28</code> allows the build of the file above to run:</p>
+<pre><code class="language-dockerfile">COPY --from=ghcr.io/astral-sh/uv:0.5.28 /uv /bin/uv
+</code></pre>
+<p>This is the expected behaviour (unless doing the above is deprecated - if so please could you help me understand if there's a path for root to install and &quot;normal&quot; users to use?)</p>
+<p>My colleague noticed this recent change released in <code>0.5.29</code> and thought it might be related to this issue: https://github.com/astral-sh/uv/pull/11259/</p>
+<h3>Platform</h3>
+<p>Linux 5.15.0-131-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.5.29</p>
+<h3>Python version</h3>
+<p>3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jamescooke on 2025-02-07 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-07 18:14</div>
+            <div class="timeline-body"><p>Interesting, thanks. I'll fix this in the next release. We shouldn't be failing here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11328.html">astral-sh/uv#11328</a> on 2025-02-07 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamescooke">@jamescooke</a> on 2025-02-07 20:21</div>
+            <div class="timeline-body"><p>Thanks for checking and confirming @charliermarsh 👍🏻</p>
+<p>Clarification for future readers: The small failing case above uses <code>uv init</code> in the Dockerfile. However, uv fails just the same when building a container image for an existing project. I just used <code>uv init</code> to create the simplest failing case possible.</p>
+<p>Alternatively, a project can be build &quot;like normal&quot; on the host:</p>
+<pre><code class="language-console">$ uv init
+$ uv add pytest
+</code></pre>
+<p>Then the following Dockerfile will fail in the same way (with or without <code>--frozen</code>):</p>
+<pre><code class="language-dockerfile">FROM python:3.13
+COPY --from=ghcr.io/astral-sh/uv:0.5.29 /uv /bin/uv
+
+WORKDIR /usr/src/app
+COPY pyproject.toml uv.lock .
+RUN uv sync --frozen
+
+RUN useradd --user-group --create-home --uid 1000 team
+USER team
+RUN uv run pytest -h
+</code></pre>
+<p>Apart from just running as root instead, one work around appears to be to clean the <code>/tmp</code> dir after doing the <code>uv sync</code>.</p>
+<pre><code class="language-dockerfile">RUN rm /tmp/*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-07 20:23</div>
+            <div class="timeline-body"><p>Yeah, we're creating that file during <code>uv add</code> (because we sync the project environment), and the permissions are such that other users can't acquire it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-02-07 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-07 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-07 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12665.html">astral-sh/uv#12665</a> on 2025-04-04 09:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16769.html">astral-sh/uv#16769</a> on 2025-12-02 13:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

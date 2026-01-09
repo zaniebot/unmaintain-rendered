@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv lock insists on compiling source packages - astral-sh/uv #7842</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv lock insists on compiling source packages</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7842">#7842</a>
+        opened by <a href="https://github.com/msw-kialo">@msw-kialo</a>
+        on 2024-10-01 14:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/msw-kialo">@msw-kialo</a> on 2024-10-01 14:00</div>
+            <div class="timeline-body"><p>I am trying to generate/refresh the <code>uv.lock</code> for a project depending on <code>pyicu</code> (native extension but no wheels published):</p>
+<pre><code class="language-toml">[project]
+name = &quot;pyicu-uv&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+  &quot;pyicu==2.13.1&quot;
+]
+</code></pre>
+<p><code>uv lock</code> fails with:</p>
+<details>
+<summary>
+error: Failed to download and build `pyicu==2.13.1`
+
+<p>Caused by: Build backend failed to determine metadata through <code>prepare_metadata_for_build_wheel</code> with exit status: 1</p>
+</summary>
+
+<pre><code>ubuntu@9d6444fdbf5f:/pyicu/uv$ uv lock --no-build-isolation
+Using CPython 3.12.6 interpreter at: /opt/containerbase/tools/python/3.12.6/bin/python
+⠙ pyicu==2.13.1                                                                                                                                                                                                                                            error: Failed to download and build `pyicu==2.13.1`
+  Caused by: Build backend failed to determine metadata through `prepare_metadata_for_build_wheel` with exit status: 1
+--- stdout:
+(running 'icu-config --version')
+(running 'pkg-config --modversion icu-i18n')
+--- stderr:
+Package icu-i18n was not found in the pkg-config search path.
+Perhaps you should add the directory containing `icu-i18n.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'icu-i18n' found
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 89, in &lt;module&gt;
+  File &quot;&lt;frozen os&gt;&quot;, line 714, in __getitem__
+KeyError: 'ICU_VERSION'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 92, in &lt;module&gt;
+  File &quot;&lt;string&gt;&quot;, line 19, in check_output
+  File &quot;/opt/containerbase/tools/python/3.12.6/lib/python3.12/subprocess.py&quot;, line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/opt/containerbase/tools/python/3.12.6/lib/python3.12/subprocess.py&quot;, line 548, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/opt/containerbase/tools/python/3.12.6/lib/python3.12/subprocess.py&quot;, line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File &quot;/opt/containerbase/tools/python/3.12.6/lib/python3.12/subprocess.py&quot;, line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'icu-config'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 96, in &lt;module&gt;
+  File &quot;&lt;string&gt;&quot;, line 19, in check_output
+  File &quot;/opt/containerbase/tools/python/3.12.6/lib/python3.12/subprocess.py&quot;, line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/opt/containerbase/tools/python/3.12.6/lib/python3.12/subprocess.py&quot;, line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '('pkg-config', '--modversion', 'icu-i18n')' returned non-zero exit status 1.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+  File &quot;/opt/containerbase/tools/python/3.12.6/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 373, in prepare_metadata_for_build_wheel
+    self.run_setup()
+  File &quot;/opt/containerbase/tools/python/3.12.6/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 318, in run_setup
+    exec(code, locals())
+  File &quot;&lt;string&gt;&quot;, line 99, in &lt;module&gt;
+RuntimeError: 
+Please install pkg-config on your system or set the ICU_VERSION environment
+variable to the version of ICU you have installed.
+        
+---
+</code></pre>
+</details>
+
+<p>(alternative <code>uv lock --no-build</code> with &quot;Building source distributions is disabled&quot;).</p>
+<p>I get that building the source distribution is required to <em>install</em> the package, but I just want to generate/update the lock file to be used on other systems.</p>
+<details>
+<summary>I bring this up as `poetry` (what we try to replace with `uv`), is able to lock a corresponding project (and the resulting lockfile contains the same content). </summary>
+
+<p><code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.poetry]
+name = &quot;pyicu-poetry&quot;
+version = &quot;0.1.0&quot;
+description = &quot;&quot;
+authors = [&quot;Your Name &lt;you@example.com&gt;&quot;]
+readme = &quot;README.md&quot;
+
+[tool.poetry.dependencies]
+python = &quot;^3.12&quot;
+PyICU = &quot;^2.13.1&quot;
+
+
+[build-system]
+requires = [&quot;poetry-core&quot;]
+build-backend = &quot;poetry.core.masonry.api&quot;
+</code></pre>
+<pre><code>ubuntu@9d6444fdbf5f:/pyicu/poetry$ poetry lock
+Creating virtualenv pyicu-poetry-g8m-gjSW-py3.12 in /home/ubuntu/.cache/pypoetry/virtualenvs
+Updating dependencies
+Resolving dependencies... (7.0s)
+
+Writing lock file
+</code></pre>
+<p>Generates</p>
+<pre><code class="language-toml"># This file is automatically @generated by Poetry 1.8.3 and should not be changed by hand.
+
+[[package]]
+name = &quot;pyicu&quot;
+version = &quot;2.13.1&quot;
+description = &quot;Python extension wrapping the ICU C++ API&quot;
+optional = false
+python-versions = &quot;*&quot;
+files = [
+    {file = &quot;PyICU-2.13.1.tar.gz&quot;, hash = &quot;sha256:d4919085eaa07da12bade8ee721e7bbf7ade0151ca0f82946a26c8f4b98cdceb&quot;},
+]
+
+[metadata]
+lock-version = &quot;2.0&quot;
+python-versions = &quot;^3.12&quot;
+content-hash = &quot;ffe7de881276f533ee12cbc50bc380962d85900ee21c2c80380bd45e474915ce&quot;
+</code></pre>
+<p>uv's lock-file (on systems with ICU &amp; co) does contain roughly the same information:</p>
+<pre><code>version = 1
+requires-python = &quot;&gt;=3.12&quot;
+
+[[package]]
+name = &quot;pyicu&quot;
+version = &quot;2.13.1&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/60/b8/1540a0a0cd74aa878749d442e19916df946e3b187c9965a991ddc77cc39c/PyICU-2.13.1.tar.gz&quot;, hash = &quot;sha256:d4919085eaa07da12bade8ee721e7bbf7ade0151ca0f82946a26c8f4b98cdceb&quot;, size = 262424 }
+
+[[package]]
+name = &quot;pyicu-uv&quot;
+version = &quot;0.1.0&quot;
+source = { virtual = &quot;.&quot; }
+dependencies = [
+    { name = &quot;pyicu&quot; },
+]
+
+[package.metadata]
+requires-dist = [{ name = &quot;pyicu&quot;, specifier = &quot;==2.13.1&quot; }]
+</code></pre>
+</details>
+
+<p>Could it be that <code>uv</code> does not use an already existing <code>PKG-INFO</code> but always invokes <code>setup.py</code>?</p>
+<p>I am using <code>0.4.17</code> in an amd64 docker container.</p>
+<p>Background: I try to setup renovate updates for our uv project, but renovate fails to run <code>uv lock</code> as ICU isn't installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-01 14:23</div>
+            <div class="timeline-body"><p>I believe this project does not declare static metadata so we need to build the wheel in order to know its dependencies. The <a href="https://inspector.pypi.io/project/pyicu/2.13.1/packages/60/b8/1540a0a0cd74aa878749d442e19916df946e3b187c9965a991ddc77cc39c/PyICU-2.13.1.tar.gz/pyicu-2.13.1/PKG-INFO"><code>PKG-INFO</code></a> does not include dependency metadata.</p>
+<p>I presume Poetry is just assuming the package has no dependencies here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-01 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/msw-kialo">@msw-kialo</a> on 2024-10-01 16:09</div>
+            <div class="timeline-body"><p>Thank you for clarification. I reread the <a href="https://packaging.python.org/en/latest/specifications/core-metadata/#core-metadata">spec</a> to learn that unless <code>Dynamic</code> is specific in metadata 2.2 and higher, all fields must be considered dynamic.</p>
+<p>In that case, resolve this issues differently (either by making ICU development headers available or raise an issue with PyICU).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @msw-kialo on 2024-10-01 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimbleby">@dimbleby</a> on 2024-10-02 07:34</div>
+            <div class="timeline-body"><p>The linked pkg-info is using metadata version 2.1, so <code>Dynamic</code> is not in play and poetry trusts it when it declares no requirements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/msw-kialo">@msw-kialo</a> on 2024-10-02 07:56</div>
+            <div class="timeline-body"><p>Yes, the <code>Dynamic</code> field isn't allowed yet; but for tools that do know it, should assume it is specific with all fields:</p>
+<blockquote>
+<p>If the sdist metadata version is older than version 2.2, then all fields should be treated as if they were specified with Dynamic (i.e. there are no special restrictions on the metadata of wheels built from the sdist).</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimbleby">@dimbleby</a> on 2024-10-02 10:58</div>
+            <div class="timeline-body"><p>you're right, I had misremembered the way this works</p>
+<p>the actual reason that poetry doesn't perform a build during locking seems to be that it asks the <code>build</code> project for the metadata path, and that successfully calls <code>prepare_metadata_for_build_wheel</code> without performing a full build, and everyone is happy with that.</p>
+<p>not sure whether that's right or not...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/msw-kialo">@msw-kialo</a> on 2024-10-07 07:57</div>
+            <div class="timeline-body"><p>@zanieb Would it be possible to use <code>prepare_metadata_for_build_wheel</code> in <code>uv</code>, too? Or does it not cover all edge cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @msw-kialo on 2024-10-07 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-08 22:29</div>
+            <div class="timeline-body"><p>We always use <code>prepare_metadata_for_build_wheel</code>, yeah. You can see it in the trace above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/msw-kialo">@msw-kialo</a> on 2024-10-09 07:41</div>
+            <div class="timeline-body"><p>Sorry, my bad that I didn't verify that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @msw-kialo on 2024-10-09 07:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

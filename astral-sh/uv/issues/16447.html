@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test registry_client::tests::test_redirect_to_server_with_credentials is flaky - astral-sh/uv #16447</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Test registry_client::tests::test_redirect_to_server_with_credentials is flaky</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16447">#16447</a>
+        opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a>
+        on 2025-10-25 09:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-10-25 09:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In ten “scratch builds” of <a href="https://src.fedoraproject.org/rpms/uv">Fedora’s <code>uv</code> package</a>, the test <code>registry_client::tests::test_redirect_to_server_with_credentials</code> failed once on <code>ppc64le</code>:</p>
+<pre><code>failures:
+---- registry_client::tests::test_redirect_to_server_with_credentials stdout ----
+thread 'registry_client::tests::test_redirect_to_server_with_credentials' panicked at crates/uv-client/src/registry_client.rs:1425:9:
+assertion `left == right` failed: Requests should fail if credentials are missing
+  left: 200
+ right: 401
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>This seems to be a relatively new issue in the 0.9.x series. I have seen it a couple of times, always on <code>ppc64le</code>. I don’t know if the problem is arch-specific, or if there is just a race condition that happens to be easier to hit on that architecture. I am temporarily without access to a computer with enough RAM to easily build <code>uv</code> locally, so I didn’t try to investigate this further. I’m just skipping the test for now.</p>
+<h3>Platform</h3>
+<p>Fedora Rawhide, ppc64le</p>
+<h3>Version</h3>
+<p>uv 0.9.5</p>
+<h3>Python version</h3>
+<p>Python 3.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @musicinmybrain on 2025-10-25 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-10-25 12:46</div>
+            <div class="timeline-body"><p>Looking more closely, this seems to have been already failing flakily on <code>s390x</code> in the same way since at least 0.7.19, and I just hadn’t gotten around to reporting it. So what’s new is just that the failure seems to now be more frequent on s390x than it once was.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Test registry_client::tests::test_redirect_to_server_with_credentials is flaky on ppc64le" to "Test registry_client::tests::test_redirect_to_server_with_credentials is flaky on ppc64le, s390x" by @musicinmybrain on 2025-10-25 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-25 14:17</div>
+            <div class="timeline-body"><p>Huh that's weird. It's just a local test server, I can't imagine where there'd be a race condition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci-flake</span> added by @zanieb on 2025-10-25 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-27 19:17</div>
+            <div class="timeline-body"><p>The problem is that all tests use the same credentials, and we have a global static credentials cache. When using <code>cargo test</code> instead of <code>cargo nextest run</code>, the credentials get reused between tests if the test server URL is the same. I can reproduce this locally by inserting a sleep statement at the top of <code>test_redirect_to_server_with_credentials</code>: <code>tokio::time::sleep(std::time::Duration::from_millis(500)).await;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-27 19:32</div>
+            <div class="timeline-body"><p>Ah good catch. I would recommend using nextest if you can, since it provides process-level isolation per test. Other test runners will only be supported on a best-effort basis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-10-28 00:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah good catch. I would recommend using nextest if you can, since it provides process-level isolation per test. Other test runners will only be supported on a best-effort basis.</p>
+</blockquote>
+<p>Hmm, this is good to know. It’s likely that trying to package nextest in Fedora specifically for the purpose of testing uv will be too much effort, since nextest has many dependencies, aggressive dependency version bound updates, and frequent releases. It is easy enough to skip this particular test for now. I will have to hope that there is not too much divergence between the results of cargo test and the results of cargo nextest in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16143.html">astral-sh/uv#16143</a> on 2025-11-04 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16768.html">astral-sh/uv#16768</a> on 2025-11-18 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Test registry_client::tests::test_redirect_to_server_with_credentials is flaky on ppc64le, s390x" to "Test registry_client::tests::test_redirect_to_server_with_credentials is flaky" by @musicinmybrain on 2025-12-03 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-12-03 10:33</div>
+            <div class="timeline-body"><p>Changing the title since I’ve now observed this on <code>x86_64</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-03 12:47</div>
+            <div class="timeline-body"><p>This will be fixed by https://github.com/astral-sh/uv/pull/16768 (which is otherwise a refactoring).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-12-03 13:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do not require built-in sections to be present in `section-order` - astral-sh/ruff #7868</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Do not require built-in sections to be present in `section-order`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7868">#7868</a>
+        opened by <a href="https://github.com/levrik">@levrik</a>
+        on 2023-10-09 12:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/levrik">@levrik</a> on 2023-10-09 12:44</div>
+            <div class="timeline-body"><p>I'm currently in the process of migrating from flake8 and isort to Ruff.</p>
+<p>Something I've noticed is that when leaving out a built-in section from <code>section-order</code>, a warning appears and these sections are appended to the end of <code>section-order</code>. With isort imports that correspond to a built-in section that is missing from <code>section-order</code>, are assigned to the <code>third-party</code> section instead. I used this before to combine <code>standard-library</code> and <code>third-party</code> sections into a single one as I don't see much value in separating these.</p>
+<p>As a workaround I've added all packages from https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_stdlib/src/sys.rs to <code>known-third-party</code> but it's rather ugly.</p>
+<p>It would be great if the behavior could match <code>isort</code> or could be configured to match it somehow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-10-09 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-10-09 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmerickel">@mmerickel</a> on 2023-10-30 17:59</div>
+            <div class="timeline-body"><p>Ran into this as well, isort supports a <code>default_section</code> for this purpose if you want to be explicit:</p>
+<pre><code class="language-toml">sections = &quot;FUTURE,THIRDPARTY,FIRSTPARTY,LOCALFOLDER&quot;
+default_section = &quot;THIRDPARTY&quot;
+</code></pre>
+<p>The end goal is that stdlib and third party are combined, as it's common in the libraries that I work on that we are using bw-compat shims etc and it's irritating to do treat things like <code>importlib_metadata</code> differently from <code>importlib.metadata</code>. Yes you could define them explicitly but ... the extended philosophy is that the stdlib and third party should be the same from the perspective of a user - that's why we put all this effort into moving stuff into pypi instead of in the stdlib, they aren't that different!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmerickel">@mmerickel</a> on 2023-11-18 17:29</div>
+            <div class="timeline-body"><p>Looks like something along similar lines was just merged https://github.com/astral-sh/ruff/pull/8657. It would've been possible to implement <code>no_sections</code> from that PR with the equivalent proposal above:</p>
+<pre><code>sections = &quot;THIRDPARTY&quot;
+default_section = &quot;THIRDPARTY&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10149.html">astral-sh/ruff#10149</a> on 2024-02-28 03:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmerickel">@mmerickel</a> on 2024-02-28 03:57</div>
+            <div class="timeline-body"><p>I've implemented <code>default-section</code> in https://github.com/astral-sh/ruff/pull/10149.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-01 03:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install --target and workspace - astral-sh/uv #5631</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install --target and workspace</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/5631">#5631</a>
+        opened by <a href="https://github.com/jpambrun-vida">@jpambrun-vida</a>
+        on 2024-07-30 19:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jpambrun-vida">@jpambrun-vida</a> on 2024-07-30 19:18</div>
+            <div class="timeline-body"><p>I am struggling to understand the expected behavior of <code>uv pip install --target /dest</code> in conjunction with workspaces.</p>
+<p>with</p>
+<pre><code>[tool.uv.sources]
+lambda_utils = { workspace = true }
+</code></pre>
+<p>I want to use --target in my docker build step, but it will only create a <code>.pth</code>. If I add  <code>editable = false</code>, <code>-- target</code> works as expect, but then I loose linking with developing. Shouldn't --target always copy?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmbonsall">@dmbonsall</a> on 2025-01-08 02:41</div>
+            <div class="timeline-body"><p>I also have this issue, and have thrown together a repo that can easily demonstrate it: https://github.com/dmbonsall/reproduce-uv-issue-5631</p>
+<p>After cloning the repo, I can try to run <code>uv pip install --target /dest $REPO_PATH/ws_two</code> and all the dependencies are installed as expected, except for the dependency workspace which is &quot;installed&quot; with a <code>.pth</code> file. Interestingly enough, the package that is the argument to the install command is installed from a wheel. The example repo has the structure:</p>
+<pre><code>.
+|-- README.md
+|-- pyproject.toml
+|-- uv.lock
+|-- ws-one/
+|   |-- pyproject.toml
+|   `-- src/
+|       `-- ws_one/
+|           |-- __init__.py
+|           `-- module.py
+`-- ws-two/
+    |-- pyproject.toml
+    `-- src/
+        `-- ws_two/
+            |-- __init__.py
+            `-- service.py
+</code></pre>
+<p>And the <code>--target</code> directory from the install has the structure:</p>
+<pre><code>.
+|-- _ws_one.pth
+|-- annotated_types/
+|-- annotated_types-0.7.0.dist-info/
+|-- pydantic/
+|-- pydantic-2.10.4.dist-info/
+|-- pydantic_core/
+|-- pydantic_core-2.27.2.dist-info/
+|-- typing_extensions-4.12.2.dist-info/
+|-- typing_extensions.py
+|-- ws_one-0.1.0.dist-info/
+|-- ws_two/
+|   |-- __init__.py
+|   `-- service.py
+`-- ws_two-0.1.0.dist-info/
+</code></pre>
+<p>The expected behavior is to not have <code>_ws_one.pth</code> and instead have that package installed as a wheel with the <code>ws_one/</code> directory and associated <code>ws_one-0.1.0.dist-info/</code> directory.</p>
+<p>My version of uv is <code>uv 0.5.11 (c4d0caaee 2024-12-19)</code></p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-08 03:07</div>
+            <div class="timeline-body"><p>Yeah this makes sense as a problem. There are two directions from which we could solve it: (1) adding some kind of <code>--no-editable</code> flag to <code>uv pip install</code>, or (2) adding a more first-class <code>--target</code> interface to <code>uv sync</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-08 03:07</div>
+            <div class="timeline-body"><p>I'm more inclined to do (2).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmbonsall">@dmbonsall</a> on 2025-01-08 03:18</div>
+            <div class="timeline-body"><p>I personally like the idea of adding some sort of <code>--target</code> flag to <code>uv sync</code> because it would allow the package versions to be tied to the lock-file. I'd like to use this to create a directory I can zip up and upload to a lambda, so ensuring the dependency versions are the same everywhere would be great.</p>
+<p>My only ask would be that the specified <code>--target</code> directory would be fully standalone so it can ship as a single unit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sillocan">@Sillocan</a> on 2025-03-18 02:44</div>
+            <div class="timeline-body"><p>I just ran into this when trying to build a zipfile for AWS Lambda. When the Lambda function isn't at the root of the workspace then it will install the members as editable.</p>
+<p>I think (2) would be the most natural solution via <code>--target ${TARGET} --no-editable</code>. I just don't know if it would get confused with <code>UV_PROJECT_ENVIRONMENT</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sillocan">@Sillocan</a> on 2025-03-18 03:05</div>
+            <div class="timeline-body"><p>I made a reproducible script for this issue:</p>
+<pre><code class="language-sh">cd $(mktemp -d)
+uv init
+
+# setup library in the workspace
+uv init --lib library
+uv add library
+
+# setup the lambda function referencing the library in the workspace above
+uv init --lib lambda_function
+uv add lambda_function
+echo &quot;def handler(): ...&quot; &gt; lambda_function/src/lambda_function/handler.py
+uv add --directory=&quot;lambda_function&quot; requests ../library
+
+# update the lock file
+uv sync --all-packages
+
+# export the requirements file with `--no-editable` specified
+uv export \
+    --frozen \
+    --no-dev \
+    --no-editable \
+    --package=&quot;lambda_function&quot; \
+    -o requirements.txt
+
+uv pip install \
+    --no-installer-metadata \
+    --no-compile-bytecode \
+    --python-platform x86_64-manylinux2014 \
+    --python 3.13 \
+    --target &quot;_lambda_build&quot; \
+    -r requirements.txt
+ls _lambda_build
+</code></pre>
+<p>The output above is that <code>lambda_function</code> is correct, but <code>library</code> is editable.</p>
+<pre><code class="language-sh">$ ls _lambda_build
+...
+lambda_function
+lambda_function-0.1.0.dist-info
+library-0.1.0.dist-info
+_library.pth
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ochaoui">@ochaoui</a> on 2025-05-05 20:28</div>
+            <div class="timeline-body"><p>Hello folks,</p>
+<p>I just fasted the same issue in my monorepo.
+What is the workaround for this bug ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndyReifman">@AndyReifman</a> on 2025-07-22 20:36</div>
+            <div class="timeline-body"><p>I'm running into this issue as well.</p>
+<p>Has anyone been able to find a good workaround in the meantime while the functionality doesn't exist?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-22 20:40</div>
+            <div class="timeline-body"><p>Does <code>--no-sources</code> work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndyReifman">@AndyReifman</a> on 2025-07-22 20:58</div>
+            <div class="timeline-body"><p>Hmm. Not sure if it's a lack of uv knowledge or an actual issue but I'm hitting an error trying to resolve dependencies with <code>--no-sources</code></p>
+<p>Basic outline of the project is</p>
+<pre><code class="language-toml"># pyproject.toml
+# ...
+[tool.uv.workspace]
+members = [
+    &quot;packages/*&quot;
+]
+
+# packages/package_a/pyproject.toml
+# ...
+[tool.uv.sources]
+&quot;package_b&quot; = { workspace = true } 
+
+# packages/package_c/pyproject.toml
+# ...
+[tool.uv.sources]
+&quot;package_b&quot; = { workspace = true }
+</code></pre>
+<p>Run with the command
+<code>uv export --no-dev --no-editable --no-sources --package=&quot;package-a&quot; -o requirements.txt</code></p>
+<p>The error I'm getting</p>
+<pre><code>No solution found when resolving dependencies:
+    Because package_c depends on package_b and your workspace requires package_c, we can conclude that your workspace's requirements are unsatisfiable&quot;
+</code></pre>
+<p>I'm not even sure why it's trying to resolve dependencies for <code>package_c</code> as it's not used at all in <code>package-a</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-22 21:05</div>
+            <div class="timeline-body"><p>We solve for the entire workspace to generate the <code>uv.lock</code> regardless of the selected subset of packages.</p>
+<p>In this case, I'm suggesting <code>--no-sources</code> on the <code>uv pip install</code> invocation. You'll need sources to load your workspace members from the local source tree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndyReifman">@AndyReifman</a> on 2025-07-22 21:31</div>
+            <div class="timeline-body"><p>Ah. That does look to be working!</p>
+<p>Thanks! I wasted way too much time trying to get that work previously.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-22 21:37</div>
+            <div class="timeline-body"><p>Ah great, glad that works. This is roughly the problem discussed in https://github.com/astral-sh/uv/issues/14617 as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14963.html">astral-sh/uv#14963</a> on 2025-07-29 23:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtdb-pariveda">@jtdb-pariveda</a> on 2025-07-30 19:07</div>
+            <div class="timeline-body"><p>bumping this, what is the solution in the context of exporting some package to bundle into a lambda?
+in particular, I'm personally interested in bundling all DEPENDENCIES of my lambda app, including local libraries, which get uploaded to a lambda layer... but the same question still applies if trying to bundle it all together for a lambda zip with all dependencies including a workspace library.</p>
+<p>I've confirmed that you can do it from the project root by doing something like:</p>
+<pre><code>uv export --no-emit-project --project=my_project --no-dev --format requirements-txt &gt; my-project/test-build/requirements.txt
+
+uv pip install \
+    --requirement my-project/test-build/requirements.txt \
+    --target my-project/test-build/common_layer/python \
+    --python-platform x86_64-manylinux_2_28 \
+    --no-deps
+</code></pre>
+<p>Like, the output, whether running from workspace root or from within a workspace project is always going to be:</p>
+<pre><code>-e ./shared-lib
+    # via my_project
+</code></pre>
+<p>But I'd like to be able to run this from within my workspace project for the lambda, and be able to resolve the exported requirements.txt with <code>../shared-lib</code> (correct vs project) instead of <code>./shared-lib</code> which is incorrect vs. project and correct vs, workspace root.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15297.html">astral-sh/uv#15297</a> on 2025-08-15 15:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

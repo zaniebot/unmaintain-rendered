@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_complete: always fail to generate into a tempfile - clap-rs/clap #5372</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_complete: always fail to generate into a tempfile</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5372">#5372</a>
+        opened by <a href="https://github.com/poliorcetics">@poliorcetics</a>
+        on 2024-02-23 02:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/poliorcetics">@poliorcetics</a> on 2024-02-23 02:21</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.76.0 (07dca489a 2024-02-04)</p>
+<h3>Clap Version</h3>
+<p>4.5.1</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-toml">[package]
+name = &quot;clap-repro&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies]
+clap = &quot;4.5.1&quot;
+clap_complete = &quot;4.5.1&quot;
+tempfile = &quot;3.10.0&quot;
+
+</code></pre>
+<pre><code class="language-rust">use std::io::{Read, Write};
+
+use clap::{Arg, ArgAction, Command};
+
+fn main() {
+    let mut app = app();
+
+    println!(&quot;——————————————————————— Complete to stdout&quot;);
+
+    clap_complete::generate(
+        clap_complete::shells::Bash,
+        &amp;mut app,
+        &quot;just&quot;,
+        &amp;mut std::io::stdout(),
+    );
+
+    println!(&quot;——————————————————————— DONE&quot;);
+    println!(&quot;——————————————————————— Complete to file&quot;);
+
+    let mut file = tempfile::tempfile().unwrap();
+    file.write_all(b&quot;&quot;).unwrap(); // Try with file creation ?
+    clap_complete::generate(clap_complete::shells::Bash, &amp;mut app, &quot;just&quot;, &amp;mut file);
+    file.flush().unwrap(); // Try with flushing ?
+    let mut buffer = String::new();
+    file.read_to_string(&amp;mut buffer).unwrap();
+    println!(&quot;{buffer}&quot;);
+    println!(&quot;——————————————————————— DONE&quot;);
+}
+
+fn app() -&gt; Command {
+    Command::new(env!(&quot;CARGO_PKG_NAME&quot;)).arg(
+        Arg::new(&quot;check&quot;)
+            .long(&quot;check&quot;)
+            .action(ArgAction::SetTrue)
+            .help(&quot;Help for checl&quot;),
+    )
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code> produces:</p>
+<details><summary>Details</summary>
+<p>
+
+<pre><code>——————————————————————— Complete to stdout
+_just() {
+    local i cur prev opts cmd
+    COMPREPLY=()
+    cur=&quot;${COMP_WORDS[COMP_CWORD]}&quot;
+    prev=&quot;${COMP_WORDS[COMP_CWORD-1]}&quot;
+    cmd=&quot;&quot;
+    opts=&quot;&quot;
+
+    for i in ${COMP_WORDS[@]}
+    do
+        case &quot;${cmd},${i}&quot; in
+            &quot;,$1&quot;)
+                cmd=&quot;just&quot;
+                ;;
+            *)
+                ;;
+        esac
+    done
+
+    case &quot;${cmd}&quot; in
+        just)
+            opts=&quot;-h --check --help&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+    esac
+}
+
+if [[ &quot;${BASH_VERSINFO[0]}&quot; -eq 4 &amp;&amp; &quot;${BASH_VERSINFO[1]}&quot; -ge 4 || &quot;${BASH_VERSINFO[0]}&quot; -gt 4 ]]; then
+    complete -F _just -o nosort -o bashdefault -o default just
+else
+    complete -F _just -o bashdefault -o default just
+fi
+——————————————————————— DONE
+——————————————————————— Complete to file
+
+——————————————————————— DONE
+</code></pre>
+</p>
+</details> 
+
+<h3>Actual Behaviour</h3>
+<ul>
+<li>Generating to <code>stdout</code> works</li>
+<li>Generating to <code>file</code> does not works</li>
+</ul>
+<h3>Expected Behaviour</h3>
+<p>Both should work</p>
+<h3>Additional Context</h3>
+<p>Found while upgrading <code>just</code> to <code>clap 4</code> in https://github.com/casey/just/pull/1924</p>
+<h3>Debug Output</h3>
+<p>with both <code>clap</code> and <code>clap_complete</code> in <code>debug</code>:</p>
+<details><summary>Details</summary>
+<p>
+
+<pre><code>——————————————————————— Complete to stdout
+[clap_builder::builder::command]Command::_build: name=&quot;clap-repro&quot;
+[clap_builder::builder::command]Command::_propagate:clap-repro
+[clap_builder::builder::command]Command::_check_help_and_version:clap-repro expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap-repro
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:check
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build_bin_names
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+[ clap_complete::shells::bash] 	all_options_for_path: path=just
+[clap_complete::generator::utils] 	shorts: name=clap-repro
+[clap_complete::generator::utils] 	longs: name=clap-repro
+[clap_complete::generator::utils] 	subcommands: name=clap-repro
+[clap_complete::generator::utils] 	subcommands: Has subcommands...false
+[ clap_complete::shells::bash] 	option_details_for_path: path=just
+[ clap_complete::shells::bash] 	all_subcommands
+[ clap_complete::shells::bash] 	subcommand_details
+[clap_complete::generator::utils] 	subcommands: name=clap-repro
+[clap_complete::generator::utils] 	subcommands: Has subcommands...false
+_just() {
+    local i cur prev opts cmd
+    COMPREPLY=()
+    cur=&quot;${COMP_WORDS[COMP_CWORD]}&quot;
+    prev=&quot;${COMP_WORDS[COMP_CWORD-1]}&quot;
+    cmd=&quot;&quot;
+    opts=&quot;&quot;
+
+    for i in ${COMP_WORDS[@]}
+    do
+        case &quot;${cmd},${i}&quot; in
+            &quot;,$1&quot;)
+                cmd=&quot;just&quot;
+                ;;
+            *)
+                ;;
+        esac
+    done
+
+    case &quot;${cmd}&quot; in
+        just)
+            opts=&quot;-h --check --help&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+    esac
+}
+
+if [[ &quot;${BASH_VERSINFO[0]}&quot; -eq 4 &amp;&amp; &quot;${BASH_VERSINFO[1]}&quot; -ge 4 || &quot;${BASH_VERSINFO[0]}&quot; -gt 4 ]]; then
+    complete -F _just -o nosort -o bashdefault -o default just
+else
+    complete -F _just -o bashdefault -o default just
+fi
+——————————————————————— DONE
+——————————————————————— Complete to file
+[clap_builder::builder::command]Command::_build: name=&quot;clap-repro&quot;
+[clap_builder::builder::command]Command::_build: already built
+[clap_builder::builder::command]Command::_build_bin_names
+[clap_builder::builder::command]Command::_build_bin_names: already built
+[ clap_complete::shells::bash] 	all_options_for_path: path=just
+[clap_complete::generator::utils] 	shorts: name=clap-repro
+[clap_complete::generator::utils] 	longs: name=clap-repro
+[clap_complete::generator::utils] 	subcommands: name=clap-repro
+[clap_complete::generator::utils] 	subcommands: Has subcommands...false
+[ clap_complete::shells::bash] 	option_details_for_path: path=just
+[ clap_complete::shells::bash] 	all_subcommands
+[ clap_complete::shells::bash] 	subcommand_details
+[clap_complete::generator::utils] 	subcommands: name=clap-repro
+[clap_complete::generator::utils] 	subcommands: Has subcommands...false
+
+——————————————————————— DONE
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @poliorcetics on 2024-02-23 02:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-02-23 03:02</div>
+            <div class="timeline-body"><p>FYI I just tried this with v3 and I got the same result:</p>
+<pre><code class="language-rust">#!/usr/bin/env nargo
+---
+[dependencies]
+clap = &quot;3&quot;
+clap_complete = &quot;3&quot;
+tempfile = &quot;3.10.0&quot;
+---
+
+use std::io::{Read, Write};
+
+use clap::{Arg, ArgAction, Command};
+
+fn main() {
+    let mut app = app();
+
+    println!(&quot;——————————————————————— Complete to stdout&quot;);
+    clap_complete::generate(
+        clap_complete::shells::Bash,
+        &amp;mut app,
+        &quot;just&quot;,
+        &amp;mut std::io::stdout(),
+    );
+    println!(&quot;——————————————————————— DONE&quot;);
+
+    println!(&quot;——————————————————————— Complete to file&quot;);
+    let mut file = tempfile::tempfile().unwrap();
+    file.write_all(b&quot;&quot;).unwrap(); // Try with file creation ?
+    clap_complete::generate(clap_complete::shells::Bash, &amp;mut app, &quot;just&quot;, &amp;mut file);
+    file.flush().unwrap(); // Try with flushing ?
+    let mut buffer = String::new();
+    file.read_to_string(&amp;mut buffer).unwrap();
+    println!(&quot;{buffer}&quot;);
+    println!(&quot;——————————————————————— DONE&quot;);
+}
+
+fn app() -&gt; Command&lt;'static&gt; {
+    Command::new(env!(&quot;CARGO_PKG_NAME&quot;)).arg(
+        Arg::new(&quot;check&quot;)
+            .long(&quot;check&quot;)
+            .action(ArgAction::SetTrue)
+            .help(&quot;Help for checl&quot;),
+    )
+}
+</code></pre>
+<p>I even made it independent of clap</p>
+<pre><code>    println!(&quot;——————————————————————— Complete to file&quot;);
+    let mut file = tempfile::tempfile().unwrap();
+    file.write_all(b&quot;hello&quot;).unwrap(); // Try with file creation ?
+    file.flush().unwrap(); // Try with flushing ?
+    let mut buffer = String::new();
+    file.read_to_string(&amp;mut buffer).unwrap();
+    println!(&quot;{buffer}&quot;);
+    println!(&quot;——————————————————————— DONE&quot;);
+</code></pre>
+<p>and I still got no output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/poliorcetics">@poliorcetics</a> on 2024-02-23 17:30</div>
+            <div class="timeline-body"><p>I tried with <code>let mut file = File::options().create(true).read(true).write(true).truncate(true).open(&quot;just-completions&quot;).unwrap()</code> and still got nothing so I'm thinking <code>tempfile</code> is not responsible here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../casey/just/pulls/1924.html">casey/just#1924</a> on 2024-02-26 08:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/poliorcetics">@poliorcetics</a> on 2024-03-11 23:10</div>
+            <div class="timeline-body"><p>Found the bug, it's not clap-complete or tempfile, it's me being bad at files: I need to use <code>file.rewind().unwrap();</code> before reading the written file, else I'm reading from the end of the file so there is nothing left to read ...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @poliorcetics on 2024-03-11 23:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

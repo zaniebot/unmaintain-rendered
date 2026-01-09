@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip tree` machine readable output - astral-sh/uv #4711</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip tree` machine readable output</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/4711">#4711</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2024-07-01 21:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-07-01 21:24</div>
+            <div class="timeline-body"><p>e.g. JSON with <code>-j</code>. This is useful for interacting with graph tools such as mermaid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @ibraheemdev on 2024-07-01 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4439.html">astral-sh/uv#4439</a> on 2024-07-01 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-01 21:26</div>
+            <div class="timeline-body"><p>I think we should probably use <code>--format json</code> for consistency with other interfaces?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-07-01 21:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-01 21:30</div>
+            <div class="timeline-body"><p>See also https://github.com/astral-sh/uv/issues/411</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-07-03 04:55</div>
+            <div class="timeline-body"><p>should this be part of <code>uv pip tree</code> or <code>uv pip list</code>? <code>uv pip list --format json</code> seems to already print something very similar to what <code>pipdeptree --json</code> prints:</p>
+<pre><code>$ uv pip list --format json | jq 
+[
+  {
+    &quot;name&quot;: &quot;certifi&quot;,
+    &quot;version&quot;: &quot;2024.6.2&quot;
+  },
+  {
+    &quot;name&quot;: &quot;charset-normalizer&quot;,
+    &quot;version&quot;: &quot;3.3.2&quot;
+  },
+  {
+    &quot;name&quot;: &quot;idna&quot;,
+    &quot;version&quot;: &quot;3.7&quot;
+  },
+  {
+    &quot;name&quot;: &quot;requests&quot;,
+    &quot;version&quot;: &quot;2.32.3&quot;
+  },
+  {
+    &quot;name&quot;: &quot;urllib3&quot;,
+    &quot;version&quot;: &quot;2.2.2&quot;
+  }
+]
+</code></pre>
+<p>additionally the output of <code>pipdeptree --json</code> doesn't seem to necessarily relate to the concept of tree, since when there's a nested dependency, it doesn't actually nest it in the json output.</p>
+<p>thoughts @dsully @kdeldycke?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2024-07-03 06:10</div>
+            <div class="timeline-body"><p>Oh I'm not really picky about the shape of the JSON output, as long as it is machine readable.</p>
+<p>That's because I'm only interested in creating a Mermaid diagram to visualize dependencies like so: https://kdeldycke.github.io/meta-package-manager/install.html#python-dependencies</p>
+<p>So whatever the JSON looks like, I'll have to write a script to generate <a href="https://github.com/kdeldycke/meta-package-manager/blob/main/docs/assets/dependencies.mmd?short_path=61b3aea">the <code>.mmd</code> file</a> out of <code>uv pip tree</code> output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4821.html">astral-sh/uv#4821</a> on 2024-07-04 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-24 11:51</div>
+            <div class="timeline-body"><p>I'm interested in this in an SBOM context. A JSON representation of the tree would be a fantastic precursor format that can be easily post-processed into one of the many SBOM formats out there. In particular, being able to distinguish between direct and transitive dependencies is key.</p>
+<p>(not sure if doing this in <code>uv pip list</code> would work for this usage? If it does, great!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2024-08-02 19:31</div>
+            <div class="timeline-body"><p>Lol. I just realized I solved this problem myself, as my <a href="https://github.com/kdeldycke/meta-package-manager">Meta Package Manager</a> CLI allows you to:</p>
+<ul>
+<li><p>Export a JSON list of installed packages from a uv environment:</p>
+<pre><code class="language-shell-session">$ mpm --uv --output-format json installed
+</code></pre>
+<pre><code class="language-json">{
+    &quot;uv&quot;: {
+        &quot;errors&quot;: [],
+        &quot;id&quot;: &quot;uv&quot;,
+        &quot;name&quot;: &quot;UV&quot;,
+        &quot;packages&quot;: [
+            {
+                &quot;id&quot;: &quot;alabaster&quot;,
+                &quot;installed_version&quot;: &quot;0.7.16&quot;,
+                &quot;name&quot;: null
+            },
+            {
+                &quot;id&quot;: &quot;arrow&quot;,
+                &quot;installed_version&quot;: &quot;1.3.0&quot;,
+                &quot;name&quot;: null
+            },
+            {
+                &quot;id&quot;: &quot;attrs&quot;,
+                &quot;installed_version&quot;: &quot;23.2.0&quot;,
+                &quot;name&quot;: null
+            },
+...
+</code></pre>
+</li>
+<li><p>Export an SBOM of a uv environment:</p>
+<pre><code class="language-shell-session">$ mpm --uv sbom --spdx                   
+info: User selection of managers by priority: &gt; uv
+info: Managers dropped by user: None
+info: Print SPDX export to &lt;stdout&gt;
+info: Export packages from uv...
+</code></pre>
+<pre><code class="language-json">{
+    &quot;SPDXID&quot;: &quot;SPDXRef-DOCUMENT&quot;,
+    &quot;creationInfo&quot;: {
+        &quot;created&quot;: &quot;2024-08-02T23:29:10Z&quot;,
+        &quot;creators&quot;: [
+            &quot;Tool: meta-package-manager-5.18.1&quot;
+        ]
+    },
+    &quot;dataLicense&quot;: &quot;CC0-1.0&quot;,
+    &quot;name&quot;: &quot;macOS-Darwin-23.6.0-arm64&quot;,
+    &quot;spdxVersion&quot;: &quot;SPDX-2.3&quot;,
+    &quot;documentNamespace&quot;: &quot;https://github.com/kdeldycke/meta-package-manager/releases/tag/v5.18.1/fdcf50b29504cc4c0df620af2283ed3&quot;,
+    &quot;packages&quot;: [
+        {
+            &quot;SPDXID&quot;: &quot;SPDXRef-pkg-uv-alabaster-0.7.16&quot;,
+            &quot;downloadLocation&quot;: &quot;https://www.example.com&quot;,
+            &quot;externalRefs&quot;: [
+                {
+                    &quot;referenceCategory&quot;: &quot;PACKAGE_MANAGER&quot;,
+                    &quot;referenceLocator&quot;: &quot;pkg:uv/alabaster@0.7.16&quot;,
+                    &quot;referenceType&quot;: &quot;purl&quot;
+                }
+            ],
+            &quot;filesAnalyzed&quot;: false,
+            &quot;name&quot;: &quot;alabaster&quot;,
+            &quot;primaryPackagePurpose&quot;: &quot;INSTALL&quot;,
+            &quot;supplier&quot;: &quot;Organization: UV&quot;,
+            &quot;versionInfo&quot;: &quot;0.7.16&quot;
+        },
+        {
+            &quot;SPDXID&quot;: &quot;SPDXRef-pkg-uv-arrow-1.3.0&quot;,
+            &quot;downloadLocation&quot;: &quot;https://www.example.com&quot;,
+            &quot;externalRefs&quot;: [
+                {
+                    &quot;referenceCategory&quot;: &quot;PACKAGE_MANAGER&quot;,
+                    &quot;referenceLocator&quot;: &quot;pkg:uv/arrow@1.3.0&quot;,
+                    &quot;referenceType&quot;: &quot;purl&quot;
+                }
+            ],
+            &quot;filesAnalyzed&quot;: false,
+            &quot;name&quot;: &quot;arrow&quot;,
+            &quot;primaryPackagePurpose&quot;: &quot;INSTALL&quot;,
+            &quot;supplier&quot;: &quot;Organization: UV&quot;,
+            &quot;versionInfo&quot;: &quot;1.3.0&quot;
+        },
+...
+</code></pre>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5627.html">astral-sh/uv#5627</a> on 2024-08-02 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6012.html">astral-sh/uv#6012</a> on 2024-08-12 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsully">@dsully</a> on 2024-10-12 14:56</div>
+            <div class="timeline-body"><p>I'm not picky about the output of the JSON either, and it doesn't need to take a tree shape.</p>
+<p>Just represent the consumers and producers in the environment / lock file.</p>
+<p>Alternatively if there was a consumable crate that I could depend on to walk the tree/lock file that would almost be better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10886.html">astral-sh/uv#10886</a> on 2025-01-23 07:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../oss-review-toolkit/ort/pulls/10020.html">oss-review-toolkit/ort#10020</a> on 2025-03-17 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14021.html">astral-sh/uv#14021</a> on 2025-06-13 12:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../marimo-team/marimo/pulls/5358.html">marimo-team/marimo#5358</a> on 2025-06-19 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kapilt">@kapilt</a> on 2025-06-25 17:56</div>
+            <div class="timeline-body"><p>I'd prefer a tree shape to be able to understand the top level depend, ie which package in a workspace pulled in this dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../prefix-dev/pixi/issues/4130.html">prefix-dev/pixi#4130</a> on 2025-08-01 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cr-klarna">@cr-klarna</a> on 2025-08-29 11:38</div>
+            <div class="timeline-body"><p>interested in any ongoing work here. I recognize that people want to at least distinguish between transitive and direct dependencies, and this is ofc doable at a glance, though there seems to be no specification on how people want it to look like. Personally I don't mind a flattened list approach for our needs where we would just have packages listed with the dependency type as a field in the object. Just gonna throw a suggestion:</p>
+<p>e.g.</p>
+<pre><code>[
+{
+  &quot;package&quot;: &quot;name&quot;,
+  &quot;versionConstraint&quot;: &quot;&gt;x.x.x&quot;,
+  &quot;version&quot;: &quot;x.x.x&quot;,
+  &quot;type&quot;: &quot;direct&quot;,
+  &quot;dependencies&quot;: [
+    {&quot;package&quot;: &quot;some_transitive_package&quot;, &quot;versionConstraint&quot;: &quot;x.x.x&quot;},
+    ...
+  ]
+},
+...
+]
+</code></pre>
+<p>for the dependencies, we would only need the package identifier and the constraint. We can collect the actual package info in the flat list and you would be able to build from this a graph including the constraints each dependency had, vs the actual resolved version. Also trivial to format this way since we have the tree, it's just leaf-first traversal at that point to turn them into this I assume?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cr-klarna">@cr-klarna</a> on 2025-09-04 15:12</div>
+            <div class="timeline-body"><p>https://github.com/cr-klarna/uv/tree/add-tree-json-format
+Ended up needing to sacrifice some initial info, but as an example what I have now would generate for example if given the project:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;iniconfig&quot;,
+    &quot;pip&quot;,
+    &quot;anyio &lt; 2 ; sys_platform == 'win32'&quot;,
+    &quot;anyio &gt; 2 ; sys_platform == 'linux'&quot;,
+    &quot;flask[dotenv,async]&quot;,
+]
+
+[dependency-groups]
+dev = [
+    &quot;plotly&quot;,
+    &quot;pip&quot;,
+]
+test = [
+    &quot;pytest&quot;,
+]
+</code></pre>
+<p>you would get the following (heavily truncated):</p>
+<pre><code>[
+      {
+        &quot;name&quot;: &quot;project&quot;,
+        &quot;version&quot;: &quot;0.1.0&quot;,
+        &quot;dependency_type&quot;: &quot;project&quot;,
+        &quot;extras&quot;: [],
+        &quot;dependencies&quot;: [
+          {
+            &quot;name&quot;: &quot;pip&quot;,
+            &quot;version&quot;: &quot;24.0&quot;,
+            &quot;extra&quot;: &quot;&quot;
+          },...
+       ],
+       &quot;group&quot;: &quot;&quot;
+       },
+        ...
+      {
+        &quot;name&quot;: &quot;flask&quot;,
+        &quot;version&quot;: &quot;3.0.2&quot;,
+        &quot;dependency_type&quot;: &quot;direct&quot;,
+        &quot;extras&quot;: [
+          &quot;async&quot;,
+          &quot;dotenv&quot;
+        ],
+        &quot;dependencies&quot;: [
+          {
+            &quot;name&quot;: &quot;python-dotenv&quot;,
+            &quot;version&quot;: &quot;1.0.1&quot;,
+            &quot;extra&quot;: &quot;dotenv&quot;
+          },
+          {
+            &quot;name&quot;: &quot;asgiref&quot;,
+            &quot;version&quot;: &quot;3.8.1&quot;,
+            &quot;extra&quot;: &quot;async&quot;
+          },
+       ],
+       group: &quot;&quot;,
+      },
+      {
+        &quot;name&quot;: &quot;pip&quot;,
+        &quot;version&quot;: &quot;24.0&quot;,
+        &quot;dependency_type&quot;: &quot;direct&quot;,
+        &quot;extras&quot;: [],
+        &quot;dependencies&quot;: [],
+        &quot;group&quot;: &quot;dev&quot;
+      },
+      ...
+]
+</code></pre>
+<p>If people are okay with that or don't care within a day or so I'll start finalizing this including some flag logic (for example --invert makes no sense with json formats)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-11-20 19:07</div>
+            <div class="timeline-body"><p>Triage: https://github.com/astral-sh/uv/pull/16523 added JSON formatted SBOM support to <code>uv export</code>, which we encourage over the pip compatibility layer for users who are already using uv lockfiles 🙂</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run doesn't pass signals to children - astral-sh/uv #6724</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run doesn't pass signals to children</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6724">#6724</a>
+        opened by <a href="https://github.com/overfl0">@overfl0</a>
+        on 2024-08-27 22:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/overfl0">@overfl0</a> on 2024-08-27 22:05</div>
+            <div class="timeline-body"><p>When you pass <code>uv run</code> as the command in <code>compose.yml</code>, you can't gracefully stop the process by pressing Ctrl+C. I'm guessing it's because it's not passing sigterm to its children.</p>
+<p>Steps to reproduce:</p>
+<ul>
+<li>Clone https://github.com/astral-sh/uv-docker-example</li>
+<li>Open <code>compose.yml</code> and add <code>command: uv run fastapi dev --host 0.0.0.0 src/uv_docker_example</code></li>
+<li><code>docker compose build</code></li>
+<li><code>docker compose up</code></li>
+<li>Press Ctrl+C</li>
+</ul>
+<p>You will have to wait 10 seconds until docker forcibly sigkills the process.</p>
+<p>Then:</p>
+<ul>
+<li>remove <code>uv run</code> from the command: <code>command: fastapi dev --host 0.0.0.0 src/uv_docker_example</code></li>
+<li><code>docker compose up</code></li>
+<li>Press Ctrl+C</li>
+</ul>
+<p>Compose will shutdown the process almost instantaneously.</p>
+<p>uv 0.3.3 (according to uv-docker-example's Dockerfile)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-27 22:09</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-08-27 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-27 23:50</div>
+            <div class="timeline-body"><p>Interesting... We do pass Ctrl+C, so I would expect this to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/overfl0">@overfl0</a> on 2024-08-28 02:10</div>
+            <div class="timeline-body"><p>According to https://hynek.me/articles/docker-signals/ the signal that docker is supposed to send you is SIGTERM (so not SIGINT, which is sent on Ctrl+C), but I'm not an expert on this so all i can do is link you to that page</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/overfl0">@overfl0</a> on 2024-08-28 02:19</div>
+            <div class="timeline-body"><p>Although I have to add that both adding <code>STOPSIGNAL SIGINT</code> to the Dockerfile and <code>stop_signal: SIGINT</code> to compose.yml failed for me, for some reason, as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6738.html">astral-sh/uv#6738</a> on 2024-08-28 02:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7449.html">astral-sh/uv#7449</a> on 2024-09-17 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8654.html">astral-sh/uv#8654</a> on 2024-10-29 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8761.html">astral-sh/uv#8761</a> on 2024-11-01 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8933.html">astral-sh/uv#8933</a> on 2024-11-08 11:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-11-12 02:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-11-12 02:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shaneikennedy">@shaneikennedy</a> on 2024-11-13 13:36</div>
+            <div class="timeline-body"><p>Would it be possible to get a new patch release with this issue now close, please? Not properly handling  SIGTERM is negatively impacting anyone running uv in production with containers. For those who know it's a problem in their workloads they could mitigate this by running uv with something like <a href="https://github.com/krallin/tini">tini</a> but would prefer to get a new version here if possible 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12108.html">astral-sh/uv#12108</a> on 2025-03-11 01:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13756.html">astral-sh/uv#13756</a> on 2025-06-01 05:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

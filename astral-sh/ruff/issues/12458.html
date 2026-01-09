@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Infinite loop] Parser error with I002 (required imports) and F401 (unused import) - astral-sh/ruff #12458</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Infinite loop] Parser error with I002 (required imports) and F401 (unused import)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12458">#12458</a>
+        opened by <a href="https://github.com/AA-Turner">@AA-Turner</a>
+        on 2024-07-22 17:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2024-07-22 17:56</div>
+            <div class="timeline-body"><p>I ran into a fun error:</p>
+<pre><code class="language-ps1con">PS&gt; ruff -V
+ruff 0.5.4
+PS&gt; ruff check --isolated --select I002,F401 --fix --unsafe-fixes --config &quot;lint.isort.required-imports=['from path import Path']&quot; bug.py
+
+error: Failed to converge after 100 iterations.
+
+This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BInfinite%20loop%5D
+
+...quoting the contents of `bug.py`, the rule codes I002, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+bug.py:1:1: I002 Missing required import: `from path import Path`
+Found 101 errors (100 fixed, 1 remaining).
+[*] 1 fixable with the --fix option.
+
+PS&gt; type bug.py
+_ = 'Path'
+
+</code></pre>
+<p>The content of <code>bug.py</code> is <code>&quot;_ = 'Path'\n&quot;</code>. If you remove the assignment, all works (one imagines as the string is parsed as a docstring).</p>
+<pre><code class="language-python">_ = 'Path'
+</code></pre>
+<p>The error exists going back at least as far as 0.2.2 (0.2.1 gives errors with mixing <code>--isolated</code> and <code>--config</code>).</p>
+<p>I can't see any similar issues, but if I've missed one please close this!</p>
+<p>A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 18:18</div>
+            <div class="timeline-body"><p>Thanks, this makes sense. Will fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-22 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 18:19</div>
+            <div class="timeline-body"><p>It's kind of an obvious failure, whoops -- but it's never come up because &quot;required imports&quot; is typically used for <code>from __future</code> imports, which are never marked as unused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2024-07-22 18:44</div>
+            <div class="timeline-body"><p>As background, this came up in the context of moving Sphinx to <code>pathlib</code> globally (or at least attempting to). I wanted to add <code>from pathlib import Path</code> to every module to avoid undefined name errors when doing simple regex-based refactorings, but when I ran <code>ruff check . --fix</code> I had this error.</p>
+<p>I'm not sure which of the required import or the undefined name should take priority (instict says the required import, as the user has requested it), but hopefully Ruff shouldn't crash!</p>
+<p>Thank you for the quick response as always Charlie!</p>
+<p>Best,
+Adam</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 18:45</div>
+            <div class="timeline-body"><p>Totally. That's a clever trick! (I'm guessing you can workaround by running <code>I002</code> first with the <code>required-import</code>, then <code>F401</code> second, without the <code>required-import</code>?)</p>
+<p>Agree that the required import should take priority. Think we just need to respect that in <code>F401</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2024-07-22 18:47</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm guessing you can workaround by running <code>I002</code> first with the <code>required-import</code>, then <code>F401</code> second, without the <code>required-import</code>?</p>
+</blockquote>
+<p>Yep, running with <code>--select</code> fixed things -- I just wanted to report upstream to make the team aware!</p>
+<p>A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12536.html">astral-sh/ruff#12536</a> on 2024-07-26 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-26 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12537.html">astral-sh/ruff#12537</a> on 2024-07-26 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-26 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-26 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2024-07-26 18:39</div>
+            <div class="timeline-body"><p>Thanks Charlie!</p>
+<p>A</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

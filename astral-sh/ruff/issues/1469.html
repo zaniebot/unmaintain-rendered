@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use class/function name as range for checks about names/classes/functions - astral-sh/ruff #1469</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use class/function name as range for checks about names/classes/functions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1469">#1469</a>
+        opened by <a href="https://github.com/not-my-profile">@not-my-profile</a>
+        on 2022-12-30 09:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2022-12-30 09:11</div>
+            <div class="timeline-body"><p>To my surprise many ruff checks highlight the whole class / function, for example D101 (Missing docstring in public class) and D103 (Missing docstring in public function) are currently displayed by the Ruff VS Code extension as follows:</p>
+<p><img src="https://user-images.githubusercontent.com/73739153/210053304-4b82a7a9-7513-499d-aac7-24653be4a25b.png" alt="screenshot showing a whole class/function being displayed with yellow squiggly underlines" /></p>
+<p>This makes the code quite unreadable and also doesn't let you visually recognize other errors within the class/function. So I'd prefer it to only highlight the class/function name. Looking into it we cannot currently easily fix this in ruff because <a href="https://github.com/RustPython/RustPython/blob/3a5716da2ac26ebebe40a1de2b9bfd63b0508519/compiler/ast/src/ast_gen.rs#L49-L71">RustPython's <code>StmtKind</code> doesn't appear to make the Range of function/class names accessible</a>:</p>
+<pre><code class="language-rust">pub enum StmtKind&lt;U = ()&gt; {
+    FunctionDef {
+        name: Ident,
+        args: Box&lt;Arguments&lt;U&gt;&gt;,
+        body: Vec&lt;Stmt&lt;U&gt;&gt;,
+        decorator_list: Vec&lt;Expr&lt;U&gt;&gt;,
+        returns: Option&lt;Box&lt;Expr&lt;U&gt;&gt;&gt;,
+        type_comment: Option&lt;String&gt;,
+    },
+    // ...
+    ClassDef {
+        name: Ident,
+        bases: Vec&lt;Expr&lt;U&gt;&gt;,
+        keywords: Vec&lt;Keyword&lt;U&gt;&gt;,
+        body: Vec&lt;Stmt&lt;U&gt;&gt;,
+        decorator_list: Vec&lt;Expr&lt;U&gt;&gt;,
+    },
+</code></pre>
+<p>(and <code>Ident</code> is just <code>String</code> as per <code>type Ident = String;</code> defined earlier)</p>
+<p>Note that there are several more such checks which should really be using the names as their ranges e.g:</p>
+<ul>
+<li>E742 (AmbiguousClassName)</li>
+<li>E743 (AmbiguousFunctionName)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-30 12:20</div>
+            <div class="timeline-body"><p>We actually have a dedicated method for this (<code>identifier_range</code>), it's just not being used for those checks (which is an oversight).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-12-30 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1476.html">astral-sh/ruff#1476</a> on 2022-12-30 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-30 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-30 12:39</div>
+            <div class="timeline-body"><p>I fixed a bunch of these but please let me know if you run into others.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2022-12-31 07:19</div>
+            <div class="timeline-body"><p>D417 (Missing argument descriptions in the docstring) also highlights the whole function ... ideally it would only highlight the docstring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/balsa-sarenac">@balsa-sarenac</a> on 2023-02-27 17:16</div>
+            <div class="timeline-body"><p>@charliermarsh  PLR0913 (too-many-arguments) also highlights the whole function, it would be nice to only have it highlight the function name. Not sure if this was worth opening a new issue, so I've put it here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-27 17:18</div>
+            <div class="timeline-body"><p>Thanks, will fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3254.html">astral-sh/ruff#3254</a> on 2023-02-27 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/balsa-sarenac">@balsa-sarenac</a> on 2023-04-12 15:12</div>
+            <div class="timeline-body"><p>@charliermarsh PT004 also highlights the whole function, it would be nice if it would highlight only the function name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3948.html">astral-sh/ruff#3948</a> on 2023-04-12 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-12 15:28</div>
+            <div class="timeline-body"><p>Thanks, fixed :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/balsa-sarenac">@balsa-sarenac</a> on 2023-04-12 15:31</div>
+            <div class="timeline-body"><p>Thank you for the quick fixes! 🙇🏻</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

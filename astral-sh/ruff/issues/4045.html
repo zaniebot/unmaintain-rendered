@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potential conflicted rules between S602 and S603 - astral-sh/ruff #4045</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Potential conflicted rules between S602 and S603</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4045">#4045</a>
+        opened by <a href="https://github.com/zeshuaro">@zeshuaro</a>
+        on 2023-04-20 11:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zeshuaro">@zeshuaro</a> on 2023-04-20 11:45</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>After bumping ruff from 0.0.261 to 0.0.262, I'm getting conflicted errors from the rules S602 and S603. See below for the minimal code snippet:</p>
+<pre><code class="language-python">from subprocess import PIPE, Popen
+
+proc = Popen([&quot;/foo/bar&quot;], stdout=PIPE, stderr=PIPE, shell=False)
+</code></pre>
+<p>I have been setting <code>shell=False</code> as per the S602 rule. However, running this snippet with ruff 0.0.262 errors with the S603 rule, which suggests to set <code>shell=True</code>. And if I do that, then the code is failing the S602 rule. Would you be able to check and see if this is intentional?</p>
+<p>You can find the GitHub Action logs <a href="https://github.com/zeshuaro/telegram-pdf-bot/actions/runs/4753738626/jobs/8445683417?pr=1508">here</a> with the above error introduced in 0.0.262.</p>
+<p>And you can find my ruff config <a href="https://github.com/zeshuaro/telegram-pdf-bot/blob/master/pyproject.toml#L58-L112">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zeshuaro/telegram-pdf-bot/pulls/1508.html">zeshuaro/telegram-pdf-bot#1508</a> on 2023-04-20 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-20 15:55</div>
+            <div class="timeline-body"><p>Happy to look into this! I'm not able to find any S602/S603 rule, though - <a href="https://beta.ruff.rs/docs/rules/#flake8-bandit-s">here</a> are the <code>S</code> rule codes. Could it be under a different code? I could also look at it if you could provide the human readable name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-20 18:47</div>
+            <div class="timeline-body"><p>They're here :)</p>
+<p>https://github.com/charliermarsh/ruff/blob/cb762f4cad62000e8cd5fa26fec35b228e3bc5d8/crates/ruff/src/rules/flake8_bandit/rules/shell_injection.rs#L252-L253</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-20 18:58</div>
+            <div class="timeline-body"><p>Gotcha - I can submit a fix to make these mutually exclusive if that makes sense? Seems like they only differ on shell truthiness, so I think that's the easiest way to go</p>
+<p>@dhruvmanila</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-20 19:18</div>
+            <div class="timeline-body"><p>I'm confused between these two as they're the exact opposite of each other. If we try to make them mutually exclusive, then which one to detect first?</p>
+<p>I think we should actually look into why these two rules exists in the first place and then decide what the fix should be.</p>
+<p>Relevant docs:</p>
+<ul>
+<li>B602: https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html</li>
+<li>B603: https://bandit.readthedocs.io/en/latest/plugins/b603_subprocess_without_shell_equals_true.html</li>
+</ul>
+<hr />
+<p>(A bit late here so calling it a day :))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zeshuaro">@zeshuaro</a> on 2023-04-20 21:39</div>
+            <div class="timeline-body"><p>I think this Issue on bandit might be related to the behaviour we’re seeing here with ruff?
+https://github.com/PyCQA/bandit/issues/333</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-20 21:46</div>
+            <div class="timeline-body"><p>It think B603 is a lower priority than B602:</p>
+<blockquote>
+<p>Because this is a lesser issue than that described in subprocess_popen_with_shell_equals_true a LOW severity warning is reported.</p>
+</blockquote>
+<p>If that's the case, in the case where both are enabled we could defer to checking S602 first - if it's triggered, we could short-circuit the S603 check</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-21 01:57</div>
+            <div class="timeline-body"><p>Huh, interesting. So I guess we're consistent with Bandit here? And the only workaround within Bandit is to add a <code># nosec</code> or similar, to allow low-risk <code>subprocess</code> calls?</p>
+<p>I suppose we could consider removing <code>S603</code> altogether. Or, we could modify <code>S603</code> to only flag calls with dynamic arguments, like variables, and let all-string calls be considered &quot;safe&quot;, which seems to be what they suggest in that issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-04-21 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4054.html">astral-sh/ruff#4054</a> on 2023-04-22 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4089.html">astral-sh/ruff#4089</a> on 2023-04-25 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spapanik">@spapanik</a> on 2023-06-29 11:04</div>
+            <div class="timeline-body"><p>I think that <code>S603</code> makes sense if (even one of) the arguments are dynamic, but for static arguments, it doesn't offer much</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-07-10 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-12 23:02</div>
+            <div class="timeline-body"><p>I vote for removal or opt-in since even non-literal statics trigger:</p>
+<pre><code class="language-python">[sys.executable, '-m', 'ruff', 'rule', '--all']
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2023-11-20 16:11</div>
+            <div class="timeline-body"><p>Yes, this rule (S602) seems completely useless right now. It triggers on a simple <code>subprocess.check_output(['/usr/bin/foo'])</code> which has zero non-hardcoded input...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-06-17 19:25</div>
+            <div class="timeline-body"><p>Not sure if this should be a new issue, but I think S602 should also trigger unconditionally for <code>os.popen</code> as per <a href="https://discuss.python.org/t/is-time-to-remove-os-module-spawn-functions/55829/13">this comment</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-18 05:04</div>
+            <div class="timeline-body"><p>@NeilGirdhar I think that's what <code>S605</code> does: https://play.ruff.rs/93f469fb-9725-411c-83c0-2c0d04d0ab75</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-06-18 05:14</div>
+            <div class="timeline-body"><p>Ah, sorry, for some reason my test missed this.  How do you see the lint errors in the playground?  I can't seem to find them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-18 05:23</div>
+            <div class="timeline-body"><p>No worries.</p>
+<blockquote>
+<p>How do you see the lint errors in the playground? I can't seem to find them.</p>
+</blockquote>
+<p>What do you mean? Do you not see any squiggly lines? You'll need to enable to rules in the settings tab which is on the left sidebar. And, you might also need to enable preview mode if the rule isn't stabilized yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-06-18 05:27</div>
+            <div class="timeline-body"><p>Ah, right, I need to hover, my mistake.  Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../reef-technologies/cookiecutter-rt-django/pulls/194.html">reef-technologies/cookiecutter-rt-django#194</a> on 2024-07-23 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../neuralmagic/nm-actions/pulls/32.html">neuralmagic/nm-actions#32</a> on 2024-09-30 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/david-mcdowell-ilw">@david-mcdowell-ilw</a> on 2025-05-21 20:08</div>
+            <div class="timeline-body"><p>Any plans for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../BfArM-MVH/grz-tools/pulls/355.html">BfArM-MVH/grz-tools#355</a> on 2025-08-15 12:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

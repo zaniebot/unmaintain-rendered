@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive: B018 - astral-sh/ruff #3831</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive: B018</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3831">#3831</a>
+        opened by <a href="https://github.com/AA-Turner">@AA-Turner</a>
+        on 2023-03-31 16:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2023-03-31 16:34</div>
+            <div class="timeline-body"><p>Ruff 0.0.260</p>
+<p>Reproducer:</p>
+<pre><code>(sphinx) PS I:\Development\sphinx&gt; pytest -vvv bug_b018.py
+========================================================================================================= test session starts =========================================================================================================
+platform win32 -- Python 3.11.0, pytest-7.2.2, pluggy-1.0.0 -- I:\Mambaforge\envs\sphinx\python.exe
+cachedir: .pytest_cache
+rootdir: I:\Development\sphinx, configfile: pyproject.toml
+plugins: xdist-3.2.0
+collected 1 item                                                                                                                                                                                                                        
+
+bug_b018.py::test_attribute_error PASSED                                                                                                                                                                                         [100%] 
+
+========================================================================================================== 1 passed in 0.01s ========================================================================================================== 
+(sphinx) PS I:\Development\sphinx&gt; type bug_b018.py                                        
+import pytest
+
+
+def test_attribute_error():
+    obj = object()
+    with pytest.raises(AttributeError):
+        obj.nonexistent
+(sphinx) PS I:\Development\sphinx&gt; ruff --isolated --show-source --select B018 bug_b018.py  
+bug_b018.py:7:9: B018 Found useless expression. Either assign it to a variable or remove it.
+  |
+7 |         obj.nonexistent
+  |         ^^^^^^^^^^^^^^^ B018
+  |
+
+Found 1 error.
+(sphinx) PS I:\Development\sphinx&gt; 
+</code></pre>
+<p>I think that this may be related to #3453 and #3455, as this is a regression from 0.0.259 to 0.0.260.</p>
+<p>In tests it can be useful to check that an attribute does not exist, or some behaviour relating to side effects on accessing an attribute. Perhaps if <code>unittest</code> or <code>pytest</code> context managers are detected, B018 should not be raised?</p>
+<p>Thanks,
+Adam</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-31 17:11</div>
+            <div class="timeline-body"><p>Yeah I considered not flagging <em>any</em> expressions that use attributes or subscript accesses as &quot;useless&quot;. It would've limited the rule significantly, but it also would help us avoid a class of false-positives...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-31 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leiserfg">@leiserfg</a> on 2023-04-01 21:49</div>
+            <div class="timeline-body"><p>I will prefer if it stays as is, it is better having to add a <code>noqa</code> than having a dangling attribute reference, that either means it's a non-required expression or is a descriptor with secondary effects. The first one should be deleted, the second one should be avoided and both require human intervention.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2023-04-01 23:26</div>
+            <div class="timeline-body"><blockquote>
+<p>... it is better having to add a <code>noqa</code> than having a dangling attribute reference</p>
+</blockquote>
+<p>I would tend to agree in the general case, my specific request was that:</p>
+<blockquote>
+<p>if <code>unittest</code> or <code>pytest</code> context managers are detected, B018 should not be raised</p>
+</blockquote>
+<p>Would you agree with this, specifically in a testing context?</p>
+<p>Thanks,
+Adam</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-02 02:20</div>
+            <div class="timeline-body"><p>I think the request is reasonable but I'm hesitant to act on it. I see it as similarly to how we handle unused imports within <code>ModuleNotFoundError</code>-like try-except blocks. We don't <em>ignore</em> them, since it can be surprising to users and hard to understand the intent explicitly. But we do have a custom message that points users in the right direction for a more preferable pattern.</p>
+<p>In this case, my preference would be to encourage a pattern like:</p>
+<pre><code class="language-py">with blah blah:
+    _ = obj.nonexistent
+</code></pre>
+<p>To me, that signals the intent that the variable is intentionally unused (and IIRC we should avoid flagging that as an unused local).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astropy/astropy/pulls/14692.html">astropy/astropy#14692</a> on 2023-04-26 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5006.html">astral-sh/ruff#5006</a> on 2023-06-10 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-06-10 15:05</div>
+            <div class="timeline-body"><p><code>_</code> is often used as gettext translation variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leiserfg">@leiserfg</a> on 2023-06-10 22:27</div>
+            <div class="timeline-body"><p>It can be any var matching &quot;dummy-variable-rgx&quot; like <code>_noqa = obj.nonexistent</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9082.html">astral-sh/ruff#9082</a> on 2023-12-10 23:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pytest-dev/pytest/pulls/11914.html">pytest-dev/pytest#11914</a> on 2024-02-02 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lafrech">@lafrech</a> on 2024-03-27 09:54</div>
+            <div class="timeline-body"><p>I came here with the same issue and I believe the underscore suggestion is a nice solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-27 14:37</div>
+            <div class="timeline-body"><p>Closing this for now as we don't intend to change it, and I recently added the underscore suggestion to the docs (but may not be released yet, can't remember off-hand).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-27 14:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

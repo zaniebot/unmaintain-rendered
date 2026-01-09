@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter incompatibility: extra parentheses around binary expression - astral-sh/ruff #7431</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter incompatibility: extra parentheses around binary expression</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7431">#7431</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-16 03:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-16 03:17</div>
+            <div class="timeline-body"><p>Given:</p>
+<pre><code class="language-python">if True:
+    if True:
+        if True:
+            if True:
+                msg += &quot; &quot; + _(
+                    &quot;Since the role is not mentionable, it will be momentarily made mentionable &quot;
+                    &quot;when announcing a streamalert. Please make sure I have the correct &quot;
+                    &quot;permissions to manage this role, or else members of this role won't receive &quot;
+                    &quot;a notification.&quot;
+                )
+</code></pre>
+<p>Ruff formats as:</p>
+<pre><code class="language-python">if True:
+    if True:
+        if True:
+            if True:
+                msg += (
+                    &quot; &quot;
+                    + _(
+                        &quot;Since the role is not mentionable, it will be momentarily made mentionable &quot;
+                        &quot;when announcing a streamalert. Please make sure I have the correct &quot;
+                        &quot;permissions to manage this role, or else members of this role won't receive &quot;
+                        &quot;a notification.&quot;
+                    )
+                )
+</code></pre>
+<p>Black formats as:</p>
+<pre><code class="language-python">if True:
+    if True:
+        if True:
+            if True:
+                msg += &quot; &quot; + _(
+                    &quot;Since the role is not mentionable, it will be momentarily made mentionable &quot;
+                    &quot;when announcing a streamalert. Please make sure I have the correct &quot;
+                    &quot;permissions to manage this role, or else members of this role won't receive &quot;
+                    &quot;a notification.&quot;
+                )
+</code></pre>
+<p>(Apologies for all the <code>if True:</code>, easiest way to preserve the indentation depth.)</p>
+<p>Sourced from https://github.com/astral-sh/ruff/issues/7394.</p>
+<p>Other examples:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/issues/7420</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-16 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-09-16 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @charliermarsh on 2023-09-16 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Formatter incompatibility: extra parenthesis around binary expression" to "Formatter incompatibility: extra parentheses around binary expression" by @charliermarsh on 2023-09-16 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-16 14:30</div>
+            <div class="timeline-body"><p>The issue here is that the string itself exceeds the line width. Black falls back to the unparenthesized layout if the content doesn't fit even after adding parentheses.</p>
+<p>Our <code>BestFit</code> layout mimics this behavior for top-level strings, number literals, identifiers, and non-fluent attribute chains.</p>
+<p>https://github.com/astral-sh/ruff/blob/2d9b39871febdef1c5db75a2c9673dabcb86fbc1/crates/ruff_python_formatter/src/expression/parentheses.rs#L23-L26</p>
+<p>We would need to apply the <code>BestFit</code> everywhere if we want to match Black's formatting but that comes at a considerable performance cost (<code>BestFit</code> is expensive because of allocations and additional measurements necessary by the printer). I also vaguely remember that it causes problems because <code>BestFit</code> results in a &quot;break left-to-right&quot; rather than our default &quot;right-to-left&quot;, causing formatting mismatches further down.</p>
+<p>I'm not sure if its worth supporting this layout. I'm leaning towards finding ways to break problematic content a more sustainable approach that results in better readability and avoids the extra complexity (okay, requires complexity elsewhere, but doesn't increase the complexity of maybe_parenthesize which is rather involved).</p>
+<ul>
+<li>Break strings at word boundaries similar to Black's preview style. This solves the problem here because the string can then made fit (by also adding parentheses)</li>
+<li>Break long non-fluent attribute chains similar to Prettier.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7420.html">astral-sh/ruff#7420</a> on 2023-09-16 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-18 10:13</div>
+            <div class="timeline-body"><p>I haven't yet found a solution to this and I don't feel up to the task today. The issue is, as explained above, that Ruff measures if all lines fit and only then avoids adding the necessary parentheses.</p>
+<p>Black on the other hand only tests if all lines that are not parenthesized fit.</p>
+<pre><code class="language-python">long_kwargs_single_line = a + my_function(
+    foo=&quot;test, this is a sampleddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd&quot;,
+    bar=b,
+    baz=c,
+)
+
+if True:
+    if True:
+        if True:
+            if True:
+                msg += &quot; &quot; + _(
+                    &quot;Since the role is not mentionable, it will be momentarily made mentionable &quot;
+                    &quot;when announcing a streamalert. Please make sure I have the correct &quot;
+                    &quot;permissions to manage this role, or else members of this role won't receive &quot;
+                    &quot;a notification.&quot;
+                )
+
+
+@extremely_long_variable_name_that_doesnt_fit := complex.expression(with_long=&quot;arguments_value_that_wont_fit_at_the_end_of_the_line&quot;)
+def f():
+    ...
+</code></pre>
+<p>I'm not quite sure how to model this with <code>FitsExpanded</code>. Simply ignoring line width overflows isn't sufficient because groups to the left stop breaking when they should. So there needs to be some form of mechanism that limits the <em>skipping</em> to only when measuring the outermost group, but not when measuring inner groups.</p>
+<p>I tried to do something along these lines with <code>StartAllowOverflow</code> but without too much success (results in stability errors, I believe because measuring the same group now yields inconsistent results). I think it is related that the <code>optional_parentheses</code> being rendered in <code>flat</code> mode but nested groups must still be measured in expanded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7490.html">astral-sh/ruff#7490</a> on 2023-09-18 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-20 06:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

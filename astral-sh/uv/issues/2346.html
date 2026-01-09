@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investigate overhead in initializing HTTP client - astral-sh/uv #2346</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Investigate overhead in initializing HTTP client</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2346">#2346</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-10 20:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 20:34</div>
+            <div class="timeline-body"><p>If I add debug logging before and after:</p>
+<pre><code class="language-rust">// Initialize the base client.
+let client = self.client.unwrap_or_else(|| {
+    // Disallow any connections.
+    let client_core = ClientBuilder::new()
+        .user_agent(user_agent_string)
+        .pool_max_idle_per_host(20)
+        .timeout(std::time::Duration::from_secs(timeout));
+
+    client_core.build().expect(&quot;Failed to build HTTP client.&quot;)
+});
+</code></pre>
+<p>...in the registry client, it says it takes &gt;120ms to initialize the client. That's a ton! In many cases, it's more expensive than the resolution itself.</p>
+<p>Did this regress at some point? My best guess would be that we regressed by reading the system certificates, but we should look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-03-10 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 20:35</div>
+            <div class="timeline-body"><p>Yes, confirmed, dropping <code>rustls-tls-native-roots</code> removes this overhead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 21:39</div>
+            <div class="timeline-body"><p>I would be curious if this reproduces on Linux at all, or if it's macOS-only.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 22:02</div>
+            <div class="timeline-body"><p>Either way, I’m going to make the client initialization lazy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2350.html">astral-sh/uv#2350</a> on 2024-03-11 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2351.html">astral-sh/uv#2351</a> on 2024-03-11 02:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-11 12:41</div>
+            <div class="timeline-body"><p>Is that mac specific or do i need to set an environment variable? I tried to reproduce but client building is 4ms on my ubuntu machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-11 12:42</div>
+            <div class="timeline-body"><p>I believe it’s specific to macOS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">macos</span> added by @konstin on 2024-03-11 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-11 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2362.html">astral-sh/uv#2362</a> on 2024-03-11 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-12 04:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

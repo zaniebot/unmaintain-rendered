@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Line length rule, E501, incorrectly handled in some circumstances - astral-sh/ruff #7940</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Line length rule, E501, incorrectly handled in some circumstances</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7940">#7940</a>
+        opened by <a href="https://github.com/LasseGravesenSaxo">@LasseGravesenSaxo</a>
+        on 2023-10-13 11:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LasseGravesenSaxo">@LasseGravesenSaxo</a> on 2023-10-13 11:27</div>
+            <div class="timeline-body"><h3><code>ruff</code> version and settings</h3>
+<p><code>ruff</code> version:</p>
+<pre><code>ruff --version
+ruff 0.0.292
+</code></pre>
+<p><code>ruff</code> settings:</p>
+<pre><code>--select ALL --ignore D203,D212,T201,D100,D101,D103 --line-length=120
+</code></pre>
+<h3>Description</h3>
+<p>The line length rule, E501, doesn't seem to always be handled correctly. I'm not really sure about all the different cases, but below I demonstrate one case where <code>ruff</code> complains about <code># noqa: E501</code> being applied to a line where it's unnecessary, i.e: <code>RUF100 [*] Unused `noqa` directive (unused: `E501`)</code>, but <code>flake8</code> correctly handles it.</p>
+<h3>Code</h3>
+<pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass
+class Context:
+    really_long_variable_name_that_exceeds_limit_set_at_some_point_probably_during_cli_command_of_the_ruff_tool: bool
+
+
+def main() -&gt; None:
+    # Correct, ruff doesn't complain if 'noqa: E501' is added.
+    context = Context(really_long_variable_name_that_exceeds_limit_set_at_some_point_probably_during_cli_command_of_the_ruff_tool=True)  # noqa: E501
+
+    # Correct, ruff doesn't complain if 'noqa: E501' is added.
+    _ = context.really_long_variable_name_that_exceeds_limit_set_at_some_point_probably_during_cli_command_of_the_ruff_tool  # noqa: E501
+
+    # Incorrect, ruff complains if 'noqa: E501' is added: 'RUF100 [*] Unused `noqa` directive (unused: `E501`)'
+    Context(really_long_variable_name_that_exceeds_limit_set_at_some_point_probably_during_cli_command_of_the_ruff_tool=True)  # noqa: E501
+
+</code></pre>
+<h3>Result</h3>
+<p>To check the linting result, I ran 2 commands: One for <code>ruff</code> and one for <code>flake8</code>:</p>
+<p><code>ruff</code> command: <code>ruff check ruff_e501_check.py --select ALL --ignore D203,D212,T201,D100,D101,D103 --line-length=120 --isolated</code></p>
+<p><code>flake8</code> command: <code>flake8 --max-line-length=120 ruff_e501_check.py</code></p>
+<p><code>ruff</code> output:</p>
+<pre><code>&gt; ruff check ruff_e501_check.py --select ALL --ignore D203,D212,T201,D100,D101,D103 --line-length=120 --isolated
+ruff_e501_check.py:17:128: RUF100 [*] Unused `noqa` directive (unused: `E501`)
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+</code></pre>
+<p><code>ruff</code> incorrectly reports an unused noqa issue directly on line 17.</p>
+<p><code>flake8</code> output:</p>
+<pre><code>&gt; flake8 --max-line-length=120 ruff_e501_check.py
+
+</code></pre>
+<p><code>flake8</code> correctly does not report an issue.</p>
+<p>If I remove the <code># noqa: E501</code> from line 17, and re-run the commands I get this:</p>
+<p><code>ruff</code> output:</p>
+<pre><code>&gt; ruff check ruff_e501_check.py --select ALL --ignore D203,D212,T201,D100,D101,D103 --line-length=120 --isolated
+
+</code></pre>
+<p><code>ruff</code> incorrectly does not report an issue.</p>
+<p><code>flake8</code> output:</p>
+<pre><code>&gt; flake8 --max-line-length=120 ruff_e501_check.py
+ruff_e501_check.py:17:121: E501 line too long (125 &gt; 120 characters)
+</code></pre>
+<p><code>flake8</code> correctly reports an issue on line 17.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-13 11:48</div>
+            <div class="timeline-body"><p>I’ll take a look at this specific case when I’m back at my computer, but note that we have slightly different rules around when we flag E501 violations which are spelled out in the rule documentation. For example, we don’t consider a line to be too long if <em>only</em> a pragma comment (like a noqa) exceeds the line limit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LasseGravesenSaxo">@LasseGravesenSaxo</a> on 2023-10-13 11:58</div>
+            <div class="timeline-body"><p>The problematic line by itself is 125 characters long. I also tried with an even longer variable name, that was 139 characters by itself, and that also showed the same problem.</p>
+<p>Looking at the rules, it seems like this could be a case where the rules are applied differently in ruff than in flake8.</p>
+<p>https://docs.astral.sh/ruff/rules/line-too-long/</p>
+<blockquote>
+<p>In the interest of pragmatism, this rule makes a few exceptions when determining whether a line is overlong. Namely, it:
+Ignores lines that consist of a single &quot;word&quot; (i.e., without any whitespace between its characters).</p>
+</blockquote>
+<p>My specific case is this, with this amount of indentation at the beginning:</p>
+<pre><code class="language-python">            self.x = Context(
+                a_really_long_variable_name_that_exceeds_the_set_limits=config.A_REALLY_LONG_VARIABLE_NAME_THAT_EXCEEDS_THE_SET_LIMITS,  # noqa: E501, RUF100
+            )
+</code></pre>
+<p>I suppose that this is a &quot;single word&quot;.</p>
+<p>If this makes sense to you also, you can close this. I was just surprised about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harpener">@harpener</a> on 2023-10-13 14:14</div>
+            <div class="timeline-body"><p>Hi guys, I might have a similar problem. RUF100 claims that E501 is unused, but it isn't true, Pycharm shows PEP8 violation and Black wants to format the same line from the moment I remove the noqa. Ruff does not correctly recognize E501 in my case. It is a simple class variable with a long URL in its string. The noqa for E501 actually prevents Black from thinking the line needs to be formatted, do you think it is related?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harpener">@harpener</a> on 2023-10-13 14:17</div>
+            <div class="timeline-body"><p>Hmm, it seems it is precisely because Ruff does not include this behavior of Black. If I add <code>fmt: skip</code> for Black, Ruff correctly reports <code>E501</code> 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-14 18:52</div>
+            <div class="timeline-body"><p>I'm not sure I fully follow the issue, but Ruff will avoid flagging E501 if your string ends in a long URL that starts <em>before</em> the line length limit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-14 18:53</div>
+            <div class="timeline-body"><p>(Happy to keep discussing and answering questions as always, but gonna close as I believe this is all consistent with our intended behavior and docs.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-14 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bastimeyer">@bastimeyer</a> on 2023-10-18 13:16</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure I fully follow the issue, but Ruff will avoid flagging E501 <strong>if your string ends in a long URL that starts <em>before</em> the line length limit.</strong></p>
+</blockquote>
+<p>There are some issues with the current implementation IMO (<code>ruff 0.1.0</code>). Just found this thread before deciding to open a new one.</p>
+<p>We just got a PR on our project which unintentionally abused this lenient <code>E501</code> behavior of ruff. The code change was this:</p>
+<pre><code class="language-py">some_object.some_method_call(args, with, some, keywords=1, and=2, a=3, url=&quot;https://...&quot;)
+</code></pre>
+<p>Since the URL string started just before the max <code>line-length</code> mark, ruff didn't trigger <code>E501</code> and our linting check surprisingly passed without the (first-time) contributor noticing.</p>
+<p>I believe the second point listed <a href="https://docs.astral.sh/ruff/rules/line-too-long/">in the docs</a> should only be considered if there's no other sensible way to format the code. Comments should also be handled differently compared to strings. And there should be a config option for disabling it completely.</p>
+<p>For comments, the current implementation seems fine, regardless of the comment style. Comments with URLs can be appended to any line if desired, and long URLs can be kept in block comments without having to split them up.</p>
+<p>For strings however, the E501 ignore-logic does only make sense when the code can't be reformatted easily, e.g. a line with a single string token that contains a long URL, or a long URL in a multi-line string, etc.</p>
+<p>In the case I just mentioned, this should definitely trigger <code>E501</code>, because the tokens/token-pairs of the individual args/keywords+values can be set on separate lines. It doesn't make sense to ignore the whole line just because the last keyword value is a string with a URL which barely fits into the max line length threshold.</p>
+<p>Hope that makes sense. Thanks for your consideration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpmckinney">@jpmckinney</a> on 2024-09-05 01:49</div>
+            <div class="timeline-body"><p>I use ruff in individual projects with strict rules, but I have an overarching CI workflow that runs on all projects, and uses less strict rules (flake8, isort, etc.). That other workflow complains about E501 in cases where ruff does not (mainly, long URLs).</p>
+<p>To workaround, I can write my URL strings like <code>&quot;https:&quot;&quot;//....&quot;</code>. That way, ruff doesn't recognize the URL, and RUF100 will not be raised.</p>
+<p>Edit: Actually, writing URLs like that causes reformatting... Instead I added the flake8-length plugin to that other workflow. However, it's more lenient that ruff (allows long strings, regardless of the presence of spaces).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

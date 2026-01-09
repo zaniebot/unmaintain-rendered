@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question/Request: Should `S105`, `S106`, `S107` (Insecure hardcoded password) apply to stubs? - astral-sh/ruff #15206</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Question/Request: Should `S105`, `S106`, `S107` (Insecure hardcoded password) apply to stubs?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15206">#15206</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2024-12-30 22:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2024-12-30 22:04</div>
+            <div class="timeline-body"><p><code>hardcoded-password-string (S105)</code>, <code>hardcoded-password-func-arg (S106)</code> and <code>hardcoded-password-default (S107)</code> will naturally have false-positives. But do they make sense to enable in stubs? Is the risk that hardcoded password be found in source code on an assignement of a certain name, and have that be exposed as public API through stubs, actually a concern ?</p>
+<p>Or should one be encouraged to disable these rules for stubs in one's projects if they produce too many false-positives ?</p>
+<p>(this question is extracted from https://github.com/astral-sh/ruff/issues/14535#issuecomment-2561461038 for ease of tracking and discussion)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14535.html">astral-sh/ruff#14535</a> on 2024-12-30 22:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-12-31 05:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-31 05:42</div>
+            <div class="timeline-body"><p>I think I'd prefer to keep these rules enabled on stub files. These aren't executed nor importable via user code but it still will be visible in the source code and there isn't any way to catch them other then these rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-31 11:44</div>
+            <div class="timeline-body"><p>Do you have real-world examples where those rules flagged some code that was out of the stub author's control? The only legitimate place I can think of right now is the default value for function arguments and parameters. In this case, the default value should already be flagged in the actual code, and, arguably, the rules are then somewhat useless to run on stub files.</p>
+<p>But that only really applies to S107 because stub files should rarely contain function calls.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-31 13:51</div>
+            <div class="timeline-body"><p>I think the only thing I'd consider a false positive in stubs if the rule flaggs <code>AnnAssign</code> nodes that don't have a value expression, or for function defaults, if that default value is <code>...</code>.</p>
+<p>Since in both cases we can comfortably say that there is no hardcoded password to be found in the stub file (although it might be worth to check the annotation for a suspicious <code>Literal[]</code> just in case).</p>
+<p>So I think the main thing we want to protect ourselves from is some automatic stub generation tool copying a hardcoded password from the source code to the stub.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-12-31 17:52</div>
+            <div class="timeline-body"><blockquote>
+<p>But that only really applies to S107 because stub files should rarely contain function calls.</p>
+</blockquote>
+<p>I think you meant <a href="https://docs.astral.sh/ruff/rules/hardcoded-password-func-arg/#hardcoded-password-func-arg-s106">hardcoded-password-func-arg (S106)</a> ? There's some possible calls with kwargs in stubs (I can think of custom decorators that affect types, and class params like <code>metaclass</code> and <code>TypeDict</code>'s <code>total</code>). But landing on one that triggers S106 is probably extremely rare and non-stdlib only.</p>
+<hr />
+<blockquote>
+<p>Do you have real-world examples where those rules flagged some code that was out of the stub author's control?</p>
+</blockquote>
+<p><a href="https://docs.astral.sh/ruff/rules/hardcoded-password-string/#hardcoded-password-string-s105">hardcoded-password-string (S105)</a></p>
+<pre><code>stubs\braintree\braintree\transaction.pyi:41:24: S105 Possible hardcoded password assigned to: &quot;Token&quot;
+   |
+39 |     class CreatedUsing:
+40 |         FullInformation: Final = &quot;full_information&quot;
+41 |         Token: Final = &quot;token&quot;
+   |                        ^^^^^^^ S105
+42 |
+43 |     class GatewayRejectionReason:
+   |
+
+stubs\openpyxl\openpyxl\formula\tokenizer.pyi:20:27: S105 Possible hardcoded password assigned to: &quot;TOKEN_ENDERS&quot;
+   |
+18 |     STRING_REGEXES: Final[dict[str, Pattern[str]]]
+19 |     ERROR_CODES: Final[tuple[str, ...]]
+20 |     TOKEN_ENDERS: Final = &quot;,;}) +-*/^&amp;=&gt;&lt;%&quot;
+   |                           ^^^^^^^^^^^^^^^^^ S105
+21 |     formula: Incomplete
+22 |     items: Incomplete
+   |
+
+stubs\waitress\waitress\rfc7230.pyi:26:16: S105 Possible hardcoded password assigned to: &quot;TOKEN&quot;
+   |
+24 | RWS: Final = r&quot;[ \t]{1,}?&quot;
+25 | TCHAR: Final = r&quot;[!#$%&amp;'*+\-.^_`|~0-9A-Za-z]&quot;
+26 | TOKEN: Final = r&quot;[!#$%&amp;'*+\-.^_`|~0-9A-Za-z]{1,}&quot;
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ S105
+27 | VCHAR: Final = r&quot;\x21-\x7e&quot;
+28 | WS: Final = r&quot;[ \t]&quot;
+   |
+
+</code></pre>
+<p><a href="https://docs.astral.sh/ruff/rules/hardcoded-password-default/#hardcoded-password-default-s107">hardcoded-password-default (S107)</a></p>
+<pre><code>stubs\Authlib\authlib\oauth2\auth.pyi:22:54: S107 Possible hardcoded password assigned to function default: &quot;token_placement&quot;
+   |
+20 |     client: Incomplete
+21 |     hooks: Incomplete
+22 |     def __init__(self, token, token_placement: str = &quot;header&quot;, client: Incomplete | None = None) -&gt; None: ...
+   |                                                      ^^^^^^^^ S107
+23 |     def set_token(self, token) -&gt; None: ...
+24 |     def prepare(self, uri, headers, body): ...
+   |
+
+stubs\Authlib\authlib\oauth2\client.pyi:39:32: S107 Possible hardcoded password assigned to function default: &quot;token_placement&quot;
+   |
+37 |         code_challenge_method: Incomplete | None = None,
+38 |         token: Incomplete | None = None,
+39 |         token_placement: str = &quot;header&quot;,
+   |                                ^^^^^^^^ S107
+40 |         update_token: Incomplete | None = None,
+41 |         leeway: int = 60,
+   |
+
+stubs\Authlib\authlib\oauth2\rfc7521\client.pyi:29:32: S107 Possible hardcoded password assigned to function default: &quot;token_placement&quot;
+   |
+27 |         grant_type: Incomplete | None = None,
+28 |         claims: Incomplete | None = None,
+29 |         token_placement: str = &quot;header&quot;,
+   |                                ^^^^^^^^ S107
+30 |         scope: Incomplete | None = None,
+31 |         leeway: int = 60,
+   |
+
+stubs\oauthlib\oauthlib\oauth2\rfc6749\clients\base.pyi:31:33: S107 Possible hardcoded password assigned to function default: &quot;default_token_placement&quot;
+   |
+29 |         self,
+30 |         client_id,
+31 |         default_token_placement=&quot;auth_header&quot;,
+   |                                 ^^^^^^^^^^^^^ S107
+32 |         token_type: str = &quot;Bearer&quot;,
+33 |         access_token: Incomplete | None = None,
+   |
+
+stubs\oauthlib\oauthlib\oauth2\rfc6749\clients\base.pyi:32:27: S107 Possible hardcoded password assigned to function default: &quot;token_type&quot;
+   |
+30 |         client_id,
+31 |         default_token_placement=&quot;auth_header&quot;,
+32 |         token_type: str = &quot;Bearer&quot;,
+   |                           ^^^^^^^^ S107
+33 |         access_token: Incomplete | None = None,
+34 |         refresh_token: Incomplete | None = None,
+   |
+
+stubs\oauthlib\oauthlib\oauth2\rfc6749\clients\base.pyi:85:32: S107 Possible hardcoded password assigned to function default: &quot;token_type_hint&quot;
+   |
+83 |         revocation_url,
+84 |         token,
+85 |         token_type_hint: str = &quot;access_token&quot;,
+   |                                ^^^^^^^^^^^^^^ S107
+86 |         body: str = &quot;&quot;,
+87 |         callback: Incomplete | None = None,
+   |
+
+stubs\oauthlib\oauthlib\oauth2\rfc6749\parameters.pyi:18:40: S107 Possible hardcoded password assigned to function default: &quot;token_type_hint&quot;
+   |
+16 | ): ...
+17 | def prepare_token_revocation_request(
+18 |     url, token, token_type_hint: str = &quot;access_token&quot;, callback: Incomplete | None = None, body: str = &quot;&quot;, **kwargs
+   |                                        ^^^^^^^^^^^^^^ S107
+19 | ): ...
+20 | def parse_authorization_code_response(uri, state: Incomplete | None = None): ...
+   |
+
+stubs\pexpect\pexpect\pxssh.pyi:57:31: S107 Possible hardcoded password assigned to function default: &quot;password_regex&quot;
+   |
+55 |         sync_multiplier: int = 1,
+56 |         check_local_ip: bool = True,
+57 |         password_regex: str = &quot;(?i)(?:password:)|(?:passphrase for key)&quot;,
+   |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ S107
+58 |         ssh_tunnels: dict[str, list[str | int]] = {},
+59 |         spawn_local_ssh: bool = True,
+   |
+
+stubs\tensorflow\tensorflow\keras\layers\__init__.pyi:159:26: S107 Possible hardcoded password assigned to function default: &quot;oov_token&quot;
+    |
+157 |         num_oov_indices: int = 1,
+158 |         mask_token: str | None = None,
+159 |         oov_token: str = &quot;[UNK]&quot;,
+    |                          ^^^^^^^ S107
+160 |         vocabulary: str | None | TensorCompatible = None,
+161 |         idf_weights: TensorCompatible | None = None,
+   |
+</code></pre>
+<hr />
+<blockquote>
+<p>So I think the main thing we want to protect ourselves from is some automatic stub generation tool copying a hardcoded password from the source code to the stub.</p>
+</blockquote>
+<p>That's a valid argument (and more or less what I was suggesting in my original post, but better illustrated).</p>
+<blockquote>
+<p>I think the only thing I'd consider a false positive in stubs if the rule flaggs <code>AnnAssign</code> nodes that don't have a value expression, or for function defaults, if that default value is <code>...</code>.</p>
+</blockquote>
+<p>From what I can tell, it's only acting on strings. Not elipsis or other types (like ints). So all good there.</p>
+<hr />
+<p>As a sidenote, I'd maybe even lump in <a href="https://docs.astral.sh/ruff/rules/hardcoded-bind-all-interfaces/#hardcoded-bind-all-interfaces-s104">hardcoded-bind-all-interfaces (S104)</a> with a different argument as it's not about leaking a password, but a misconfiguration. Similar to https://github.com/astral-sh/ruff/issues/15207 it doesn't affect runtime so can't be an issue.
+However it's also probably very rare and just like <code>S106</code> I don't have a real-world example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-03 09:10</div>
+            <div class="timeline-body"><p>Thanks for sharing the examples. They are all obvious false positives but so are they if used outside a stub file.</p>
+<p>I'm also leaning towards the keeping the rule as is because of the argument @Daverball made before</p>
+<blockquote>
+<p>So I think the main thing we want to protect ourselves from is some automatic stub generation tool copying a hardcoded password from the source code to the stub.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-03 15:58</div>
+            <div class="timeline-body"><p>I agree with the other maintainers on this issue. I think having a hardcoded password in a stub is just as big a security issue as having a hardcoded password in a runtime file, and I agree that it's easy to see how it could happen as a result of a stub generated by <a href="https://mypy.readthedocs.io/en/stable/stubgen.html">stubgen</a> or a codemod made by <a href="https://github.com/JelleZijlstra/stubdefaulter">stubdefaulter</a>. It's true that our bandit rules have lots of false positives, but if you're working on code where security is important, you really don't want to miss any possible vulnerabilities, so in some ways erring on the side of false positives is <em>desirable</em> for security rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-03 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-01-03 17:24</div>
+            <div class="timeline-body"><p>Thank you everyone who provided answers!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

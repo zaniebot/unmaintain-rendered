@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False-positive &quot;redefined while unused&quot; error in stub files for constants in class scopes with the same name as module constants - astral-sh/ruff #10874</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False-positive &quot;redefined while unused&quot; error in stub files for constants in class scopes with the same name as module constants</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10874">#10874</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-04-11 09:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-11 09:44</div>
+            <div class="timeline-body"><p>Ruff currently emits a false positive F811 on the following stub file:</p>
+<pre><code class="language-py">from x import y as y
+
+class Foo:
+    y = 42  # F811 Redefinition of unused `y` from line 1
+</code></pre>
+<p>There are really two <code>y</code> variables here -- one scoped within the <code>Foo</code> class, and one scoped within the module -- so I don't think this should trigger F811. Assignments without annotations in stub files are rare (which is why this hasn't come up before), but can be useful in enum classes. This bug came up in https://github.com/python/typeshed/pull/11299.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-04-11 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @AlexWaygood on 2024-04-11 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-04-16 17:20</div>
+            <div class="timeline-body"><p>The same happens for methods as well.
+Two examples from typeshed:</p>
+<ul>
+<li>https://github.com/python/typeshed/blob/7d56cd9a6cf6e0a4ea89c68d0397e197aff32cbe/stdlib/socket.pyi#L700</li>
+<li>https://github.com/python/typeshed/blob/7d56cd9a6cf6e0a4ea89c68d0397e197aff32cbe/stubs/pysftp/pysftp/<strong>init</strong>.pyi#L79</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-16 17:22</div>
+            <div class="timeline-body"><blockquote>
+<p>The same happens for methods as well.</p>
+</blockquote>
+<p>Ah, thanks, that makes this slightly higher priority!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-03 06:32</div>
+            <div class="timeline-body"><p>A couple questions:</p>
+<ol>
+<li>Why does the complaint only apply to stub files? That doesn't look like a redefinition to me in an ordinary python file either.</li>
+<li>In general, it's confusing to me that this rule applies across scopes when the purported &quot;redefinition&quot; of an import has binding kind different than an import. Why is that?</li>
+</ol>
+<p>If the answer to (2) ends up being &quot;it shouldn't&quot;, then that's an easy fix:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs b/crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs
+index ddc7fa54b..7611c3adb 100644
+--- a/crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs
++++ b/crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs
+@@ -260,6 +260,16 @@ pub(crate) fn deferred_scopes(checker: &amp;mut Checker) {
+                         ) {
+                             continue;
+                         }
++                        // And then only if the new binding is an import
++                        if !matches!(
++                            binding.kind,
++                            BindingKind::Import(..)
++                                | BindingKind::FromImport(..)
++                                | BindingKind::SubmoduleImport(..)
++                                | BindingKind::FutureImport
++                        ) {
++                            continue;
++                        }
+                     }
+ 
+                     // If the bindings are in different forks, abort.
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-03 12:51</div>
+            <div class="timeline-body"><p>F811 is a pretty interesting rule. It's sort-of delightfully simple conceptually, but it can catch a lot of bugs.</p>
+<p>Consider a module that consists just of the following:</p>
+<pre><code class="language-py">from foo import x
+
+x = 42
+print(x)
+</code></pre>
+<p>That code won't flag an unused-import rule in any linter, because an <code>x</code> variable is imported, and then an <code>x</code> variable <em>is</em> used in the <code>print()</code> statement. But F811 spots that there were 0 uses of the variable in between the two definitions, so flags this code as likely being buggy. The fix here is obviously to remove the import statement on the first line, but this is hard for a static analyzer to figure out with any degree of confidence. The best it can say is that there's likely a bug here, but it's up to the user to fix it.</p>
+<p>There's also a common case where you accidentally have two methods with the same name in a large class. The second method entirely overrides the first one, so if it's a <code>unittest.TestCase</code> class, for example, the first test method will be &quot;silently skipped&quot;:</p>
+<pre><code class="language-py">from unittest import TestCase
+
+class FooTests(TestCase):
+    def test_fooey_stuff(self):
+        ...  # important assertions
+
+    # many hundreds of lines of tests
+
+    # oops! this completely overrides the earlier definition
+    def test_fooey_stuff(self):
+        ...  # different assertions
+</code></pre>
+<p>So this rule is pretty useful for non-import bindings as well as import bindings. I think the reason we exclude cross-scope redefinitions for all non-import bindings is that those are entirely covered by other rules.</p>
+<p>However, let's go back to the original example here:</p>
+<blockquote>
+<pre><code class="language-py">from x import y as y
+
+class Foo:
+    y = 42  # F811 Redefinition of unused `y` from line 1
+</code></pre>
+</blockquote>
+<p>Here, the &quot;redundant alias&quot; marks the import of <code>y</code> as an <a href="https://typing.readthedocs.io/en/latest/spec/distributing.html#import-conventions">explicit re-export</a>, a part of this module's public API. So in this case (and also if <code>y</code> were included in <code>__all__</code>), I agree that this should <em>not</em> be flagged by F811 either in a stub file <em>or</em> at runtime. Great point @dylwil3!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16359.html">astral-sh/ruff#16359</a> on 2025-02-25 08:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

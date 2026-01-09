@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In Ruff linter, please disable rule PYI041: it's for type checking, linting it is a logical fallacy - astral-sh/ruff #19909</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>In Ruff linter, please disable rule PYI041: it's for type checking, linting it is a logical fallacy</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19909">#19909</a>
+        opened by <a href="https://github.com/hunterhogan">@hunterhogan</a>
+        on 2025-08-14 07:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hunterhogan">@hunterhogan</a> on 2025-08-14 07:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1><a href="https://peps.python.org/pep-0484/">PEP 484</a> § <a href="https://peps.python.org/pep-0484/#the-numeric-tower">The numeric tower</a> is great.</h1>
+<p>As far as I can tell, @AlexWaygood thoroughly and clearly explained why the current rules for type checkers are goldilocks. (See, <em>e.g.</em>, <a href="https://github.com/astral-sh/ruff/issues/9810">#9810</a>.)</p>
+<h2>Type checkers ought to implement <code>int</code> ⊂ <code>float</code> ⊂ <code>complex</code>.</h2>
+<h1>A linter is not a type checker</h1>
+<h2>Fallacy of the converse</h2>
+<p>Given: Type checkers ought to treat <code>float</code> as <code>float | int</code>.</p>
+<p>Non-sequitur: It does not follow that <code>float | int</code> is a tautology.</p>
+<h2>Destroying information</h2>
+<blockquote>
+<p>There are lots of classes in Python that you might not realise are subclasses of each other.</p>
+</blockquote>
+<p><em>Originally posted by @AlexWaygood in <a href="https://github.com/astral-sh/ruff/issues/9810#issuecomment-2577341967">#9810</a></em></p>
+<p>A human user of a Python function with the annotation <code>float</code> would have less information than if the annotation were <code>float | int</code>. This fact is related to <code>float | int</code> not being tautologous.</p>
+<h2>I shouldn't need an example with which everyone agrees</h2>
+<p>I sincerely hope that the above is enough to demonstrate that PEP 484 <code>int</code> ⊂ <code>float</code> ⊂ <code>complex</code> is a fantastic rule for type checkers and that <a href="https://github.com/PyCQA/flake8-pyi">flake8-pyi</a> <a href="https://github.com/PyCQA/flake8-pyi/blob/main/ERRORCODES.md#Y041">Y041</a> and <a href="https://docs.astral.sh/ruff/">Ruff</a> <a href="https://docs.astral.sh/ruff/rules/redundant-numeric-union/#redundant-numeric-union-pyi041">redundant-numeric-union (PYI041)</a> ought not to be linting rules.</p>
+<details><summary>But if I must provide a concrete example, read this.</summary>
+<p>
+
+<h2>A real-world function</h2>
+<p>In <a href="https://pypi.org/project/hunterMakesPy/"><code>hunterMakesPy</code></a>, <a href="https://github.com/hunterhogan/hunterMakesPy/blob/81d94fc4da8c0f5ed2540c87aab51afa671bace9/hunterMakesPy/parseParameters.py"><code>defineConcurrencyLimit</code></a> is a drop-in function that enables functions in other packages to honor user-requested CPU limits.</p>
+<p>The hypothetical target user of <code>defineConcurrencyLimit</code> is developing a Python app with optional concurrency, so those users are relatively sophisticated. Nevertheless, one of these signatures is unequivocally superior to the other.</p>
+<pre><code class="language-python">def defineConcurrencyLimit(*, limit: bool | float | int | None, cpuTotal: int = multiprocessing.cpu_count()) -&gt; int:
+
+def defineConcurrencyLimit(*, limit: bool | float | None, cpuTotal: int = multiprocessing.cpu_count()) -&gt; int:
+</code></pre>
+<p>But remember, most people will not see the signature above. At the moment, I use <code>defineConcurrencyLimit</code> in two public packages. In <a href="https://pypi.org/project/mapFolding/"><code>mapFolding</code></a>, <code>defineConcurrencyLimit</code> silently handles the user-requested CPU limit in the function <a href="https://github.com/hunterhogan/mapFolding/blob/aea82fb82f2904bd23ae59ce521ccdf9350473ae/mapFolding/basecamp.py"><code>countFolds</code></a>.</p>
+<p>The target user of <code>countFolds</code> is a math enthusiast, and the option for limiting CPU usage is just one of many options for the function. The difference between <code>float</code> and <code>int</code> is important: the signature should signal there is a difference; the user shouldn't need to dig deep into the docstring to see the fact that <code>float | int</code> is absolutely not tautologous.</p>
+<h3>The signature for most users</h3>
+<pre><code class="language-python">def countFolds(listDimensions: Sequence[int] | None = None
+                , pathLikeWriteFoldsTotal: PathLike[str] | PurePath | None = None
+                , computationDivisions: int | str | None = None
+                , CPUlimit: bool | float | int | None = None
+                , mapShape: tuple[int, ...] | None = None
+                , oeisID: str | None = None
+                , oeis_n: int | None = None
+                , flow: str | None = None
+                ) -&gt; int:
+
+</code></pre>
+<h3>The difference between <code>float</code> and <code>int</code> for the user</h3>
+<h4>Parameters</h4>
+<ul>
+<li><code>CPUlimit</code>: bool | float | int | None = None
+If relevant, whether and how to limit the number of processors <code>countFolds</code> will use. <code>CPUlimit</code> is an irrelevant setting
+unless the computation is divided into more than one task with the <code>computationDivisions</code> parameter.<ul>
+<li><code>False</code>, <code>None</code>, or <code>0</code>: No limits on processor usage; uses all available processors. All other values will
+potentially limit processor usage.</li>
+<li><code>True</code>: Yes, limit the processor usage; limits to 1 processor.</li>
+<li><code>int &gt;= 1</code>: The maximum number of available processors to use.</li>
+<li><code>0 &lt; float &lt; 1</code>: The maximum number of processors to use expressed as a fraction of available processors.</li>
+<li><code>-1 &lt; float &lt; 0</code>: The number of processors to <em>not</em> use expressed as a fraction of available processors.</li>
+<li><code>int &lt;= -1</code>: The number of available processors to <em>not</em> use.</li>
+<li>If the value of <code>CPUlimit</code> is a <code>float</code> greater than 1 or less than -1, <code>countFolds</code> truncates the value to an <code>int</code>
+with the same sign as the <code>float</code>.</li>
+</ul>
+</li>
+</ul>
+<h2>Do you feel this example code is ambiguous or difficult to understand without more information?</h2>
+<p>If so, then don't have a linting rule that removes information and increases ambiguity.</p>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-14 09:01</div>
+            <div class="timeline-body"><p>I don't think I follow the reasoning here. The reason this is a lint is exactly because <code>float | int</code> isn't a typing error, but specifying both is unnecessary. That's what <code>PYI041</code> checks. Whether you agree with this is a different question but that's why Ruff gives you the tools to disable the rule if you don't (it's not even enabled by default)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-14 10:26</div>
+            <div class="timeline-body"><p>@MichaReiser is correct. A type checker's primary purpose is to catch correctness issues in your code; it should generally refrain from emitting diagnostics about questions of style. This rule is purely stylistic in its purpose, however, so it would be improper for a type checker to complain about this issue. A type checker doesn't care whether you use <code>float</code> or <code>int | float</code> in a type annotation: it will treat the two type annotations exactly the same way. Which one you prefer is a question of style, and many people like to enforce a consistent style across their codebase -- that's what this rule is designed to help you with.</p>
+<p>This rule is not enabled by default (only if you have <code>ALL</code>, <code>PYI</code> or <code>PYI041</code> selected in your configuration), and it can be easily disabled even if you have <code>ALL</code> or <code>PYI</code> selected -- for example, you can have <code>extend-select = [&quot;PYI&quot;]</code> and <code>ignore = [&quot;PYI041&quot;]</code>, for example. The rule is opinionated and subjective -- if you disagree with the style it enforces, I suggest you disable it in your project :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-14 10:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hunterhogan">@hunterhogan</a> on 2025-08-15 02:59</div>
+            <div class="timeline-body"><p>The following is not an attempt to alter the outcome of this &quot;Issue.&quot; It is strictly in case this &quot;Issue&quot; is analyzed in the future.</p>
+<p>The statement &quot;Creating PYI041 due to PEP 484 is a logical fallacy&quot; is a claim of fact. AKA a constative.</p>
+<p>The constative was not addressed.</p>
+<blockquote>
+<p>I don't think I follow the reasoning here. The reason this is a lint is exactly because <code>float | int</code> isn't a typing error, but specifying both is unnecessary. That's what <code>PYI041</code> checks. Whether you agree with this is a different question but that's why Ruff gives you the tools to disable the rule if you don't (it's not even enabled by default)
+https://github.com/astral-sh/ruff/issues/19909#issuecomment-3187606979</p>
+</blockquote>
+<blockquote>
+<p><a href="https://github.com/MichaReiser">@MichaReiser</a> is correct. A type checker's primary purpose is to catch correctness issues in your code; it should generally refrain from emitting diagnostics about questions of style. This rule is purely stylistic in its purpose, however, so it would be improper for a type checker to complain about this issue. A type checker doesn't care whether you use <code>float</code> or <code>int | float</code> in a type annotation: it will treat the two type annotations exactly the same way. Which one you prefer is a question of style, and many people like to enforce a consistent style across their codebase -- that's what this rule is designed to help you with.</p>
+<p>This rule is not enabled by default (only if you have <code>ALL</code>, <code>PYI</code> or <code>PYI041</code> selected in your configuration), and it can be easily disabled even if you have <code>ALL</code> or <code>PYI</code> selected -- for example, you can have <code>extend-select = [&quot;PYI&quot;]</code> and <code>ignore = [&quot;PYI041&quot;]</code>, for example. The rule is opinionated and subjective -- if you disagree with the style it enforces, I suggest you disable it in your project :-)
+https://github.com/astral-sh/ruff/issues/19909#issuecomment-3187943002</p>
+</blockquote>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

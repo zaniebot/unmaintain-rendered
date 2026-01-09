@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv lock --upgrade-package` results into all package upgrades - astral-sh/uv #15360</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv lock --upgrade-package` results into all package upgrades</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15360">#15360</a>
+        opened by <a href="https://github.com/vivekfe">@vivekfe</a>
+        on 2025-08-18 20:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vivekfe">@vivekfe</a> on 2025-08-18 20:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi, I am trying to upgrade two packages from internal company index. I run the command
+<code>uv lock --upgrade-package &lt;package-A&gt;</code> however this does not change anything in UV.lock even if we have a new version of the package available in nexus.</p>
+<p>However if I use upgrade=true in UV settings within <code>pyproject.toml,</code> then specific package upgrades works fine however that results into whole environment upgrade. So in a way <code>uv lock ---upgrade-package &lt;package-A&gt;</code> acts same as <code>uv lock --upgrade</code>.</p>
+<p>Seems to be a bug.</p>
+<h3>Platform</h3>
+<p>Windows 11</p>
+<h3>Version</h3>
+<p>UV 0.8.9</p>
+<h3>Python version</h3>
+<p>Python 3.10.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @vivekfe on 2025-08-18 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-18 20:39</div>
+            <div class="timeline-body"><p>Sorry, I don't understand. Why are you setting <code>upgrade = true</code> in the <code>pyproject.toml</code>? It's expected that all packages would upgrade in that case.</p>
+<p>Are you saying that <code>--upgrade-package &lt;name&gt;</code> in isolation causes all packages to upgrade? That should not be true and we have pretty clear test coverage for it https://github.com/astral-sh/uv/blob/323aa8f3324a2faaf286ad3a6bb84113c2d69e52/crates/uv/tests/it/lock.rs#L10575-L10584</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-18 20:40</div>
+            <div class="timeline-body"><blockquote>
+<p>uv lock --upgrade-package <package-A> however this does not change anything in UV.lock even if we have a new version of the package available in nexus.</p>
+</blockquote>
+<p>This should also not be true. Have you tried <code>--upgrade-package &lt;package-A&gt; --refresh</code> too? Are you sure the registry is returning the new versions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivekfe">@vivekfe</a> on 2025-08-19 05:16</div>
+            <div class="timeline-body"><p><em>Case 1-</em></p>
+<p>[tool.uv]
+constraint-dependencies = [&quot;numpy==1.26&quot;]
+python-preference = &quot;only-system&quot;
+reinstall = false
+package = true
+upgrade = false</p>
+<p>C:\AnalyticsWorkSpace\Global-Solutions&gt; uv lock --upgrade-package hsbc_anl</p>
+<p>Resolved 354 packages in 44ms
+(no changes in uv.lock)</p>
+<p>hsbc-anl v4.0.264 (stays same, even though v4.0.265 available on nexus)
+hsbc-anl-infra v4.0.365 (stays same, even though v4.0.366 available on
+nexus)</p>
+<p>*Case 2- *</p>
+<p>[tool.uv]
+constraint-dependencies = [&quot;numpy==1.26&quot;]
+python-preference = &quot;only-system&quot;
+reinstall = false
+package = true
+upgrade-package = [&quot;hsbc_anl&quot;, &quot;hsbc_anl_infra&quot;]
+upgrade = false</p>
+<p>C:\AnalyticsWorkSpace\Global-Solutions&gt; uv lock --upgrade-package hsbc_anl</p>
+<p>Resolved 354 packages in 12.36s
+Updated hsbc-anl v4.0.264 -&gt; v4.0.265
+Updated hsbc-anl-infra v4.0.365 -&gt; v4.0.366</p>
+<p>So in case 1 if I don't define the lo
+Iist if packages in upgrade-package argument of pyproject.toml, in this
+case <code>uv lock ---upgrade-package hsbc_anl</code> works fine but it actually does
+not change the versions of packages. There is no change in <code>uv.lock</code></p>
+<p>In case 2, if I provide an explicit list in pyproject.toml, then it works.
+But, then it upgraded many other packages which I did not ask. I checked
+the dependencies of the package hsbc_anl but the other upgraded packages
+were not in dependencies.</p>
+<p>On Mon, 18 Aug 2025, 10:41 pm Zanie Blue, <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p><em>zanieb</em> left a comment (astral-sh/uv#15360)
+<a href="https://github.com/astral-sh/uv/issues/15360#issuecomment-3198352984">https://github.com/astral-sh/uv/issues/15360#issuecomment-3198352984</a></p>
+<p>uv lock --upgrade-package however this does not change anything in UV.lock
+even if we have a new version of the package available in nexus.</p>
+<p>This should also not be true. Have you tried --upgrade-package
+<package-A> --refresh too? Are you sure the registry is returning the new
+versions?</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/15360#issuecomment-3198352984">https://github.com/astral-sh/uv/issues/15360#issuecomment-3198352984</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AADKLIE4BZC3PJ3SVL5YES33OI26JAVCNFSM6AAAAACEGGMNUKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTCOJYGM2TEOJYGQ">https://github.com/notifications/unsubscribe-auth/AADKLIE4BZC3PJ3SVL5YES33OI26JAVCNFSM6AAAAACEGGMNUKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTCOJYGM2TEOJYGQ</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivekfe">@vivekfe</a> on 2025-08-19 05:19</div>
+            <div class="timeline-body"><p>Hi @zanieb thanks for your response. I have provided two cases in above
+comment which should clarify the case which I mentioned.</p>
+<p>When I run <code>uv lock --upgrade</code>, then it upgraded the whole environment as
+intended.</p>
+<p>On Tue, 19 Aug 2025, 7:15 am Vivek Srivastava, <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p><em>Case 1-</em></p>
+<p>[tool.uv]
+constraint-dependencies = [&quot;numpy==1.26&quot;]
+python-preference = &quot;only-system&quot;
+reinstall = false
+package = true
+upgrade = false</p>
+<p>C:\AnalyticsWorkSpace\Global-Solutions&gt; uv lock --upgrade-package hsbc_anl</p>
+<p>Resolved 354 packages in 44ms
+(no changes in uv.lock)</p>
+<p>hsbc-anl v4.0.264 (stays same, even though v4.0.265 available on nexus)
+hsbc-anl-infra v4.0.365 (stays same, even though v4.0.366 available on
+nexus)</p>
+<p>*Case 2- *</p>
+<p>[tool.uv]
+constraint-dependencies = [&quot;numpy==1.26&quot;]
+python-preference = &quot;only-system&quot;
+reinstall = false
+package = true
+upgrade-package = [&quot;hsbc_anl&quot;, &quot;hsbc_anl_infra&quot;]
+upgrade = false</p>
+<p>C:\AnalyticsWorkSpace\Global-Solutions&gt; uv lock --upgrade-package hsbc_anl</p>
+<p>Resolved 354 packages in 12.36s
+Updated hsbc-anl v4.0.264 -&gt; v4.0.265
+Updated hsbc-anl-infra v4.0.365 -&gt; v4.0.366</p>
+<p>So in case 1 if I don't define the lo
+Iist if packages in upgrade-package argument of pyproject.toml, in this
+case <code>uv lock ---upgrade-package hsbc_anl</code> works fine but it actually does
+not change the versions of packages. There is no change in <code>uv.lock</code></p>
+<p>In case 2, if I provide an explicit list in pyproject.toml, then it works.
+But, then it upgraded many other packages which I did not ask. I checked
+the dependencies of the package hsbc_anl but the other upgraded packages
+were not in dependencies.</p>
+<p>On Mon, 18 Aug 2025, 10:41 pm Zanie Blue, <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p><em>zanieb</em> left a comment (astral-sh/uv#15360)
+<a href="https://github.com/astral-sh/uv/issues/15360#issuecomment-3198352984">https://github.com/astral-sh/uv/issues/15360#issuecomment-3198352984</a></p>
+<p>uv lock --upgrade-package however this does not change anything in
+UV.lock even if we have a new version of the package available in nexus.</p>
+<p>This should also not be true. Have you tried --upgrade-package
+<package-A> --refresh too? Are you sure the registry is returning the
+new versions?</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/15360#issuecomment-3198352984">https://github.com/astral-sh/uv/issues/15360#issuecomment-3198352984</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AADKLIE4BZC3PJ3SVL5YES33OI26JAVCNFSM6AAAAACEGGMNUKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTCOJYGM2TEOJYGQ">https://github.com/notifications/unsubscribe-auth/AADKLIE4BZC3PJ3SVL5YES33OI26JAVCNFSM6AAAAACEGGMNUKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTCOJYGM2TEOJYGQ</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-19 09:18</div>
+            <div class="timeline-body"><p>Okay, I think the bug here is: if you have <code>upgrade = false</code> set in your configuration file, then <code>--upgrade-package</code> on the command-line seems to be a no-op.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-19 09:19</div>
+            <div class="timeline-body"><p>Given this <code>uv.lock</code>:</p>
+<pre><code class="language-toml">version = 1
+revision = 2
+requires-python = &quot;&gt;=3.11&quot;
+
+[[package]]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+source = { editable = &quot;.&quot; }
+dependencies = [
+    { name = &quot;numpy&quot; },
+]
+
+[package.metadata]
+requires-dist = [{ name = &quot;numpy&quot; }]
+
+[[package]]
+name = &quot;numpy&quot;
+version = &quot;1.26.0&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/55/b3/b13bce39ba82b7398c06d10446f5ffd5c07db39b09bd37370dc720c7951c/numpy-1.26.0.tar.gz&quot;, hash = &quot;sha256:f93fc78fe8bf15afe2b8d6b6499f1c73953169fad1e9a8dd086cdff3190e7fdf&quot;, size = 15633455, upload-time = &quot;2023-09-16T20:12:58.065Z&quot; }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/d2/2f/b42860931c1479714201495ffe47d74460a916ae426a21fc9b68c5e329aa/numpy-1.26.0-cp311-cp311-macosx_10_9_x86_64.whl&quot;, hash = &quot;sha256:637c58b468a69869258b8ae26f4a4c6ff8abffd4a8334c830ffb63e0feefe99a&quot;, size = 20619338, upload-time = &quot;2023-09-16T20:01:30.608Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/35/21/9e150d654da358beb29fe216f339dc17f2b2ac13fff2a89669401a910550/numpy-1.26.0-cp311-cp311-macosx_11_0_arm64.whl&quot;, hash = &quot;sha256:306545e234503a24fe9ae95ebf84d25cba1fdc27db971aa2d9f1ab6bba19a9dd&quot;, size = 13981953, upload-time = &quot;2023-09-16T20:01:54.921Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/a9/84/baf694be765d68c73f0f8a9d52151c339aed5f2d64205824a6f29021170c/numpy-1.26.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl&quot;, hash = &quot;sha256:8c6adc33561bd1d46f81131d5352348350fc23df4d742bb246cdfca606ea1208&quot;, size = 14167328, upload-time = &quot;2023-09-16T20:02:20.922Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/c4/36/161e2f8110f8c49e59f6107bd6da4257d30aff9f06373d0471811f73dcc5/numpy-1.26.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;, hash = &quot;sha256:e062aa24638bb5018b7841977c360d2f5917268d125c833a686b7cbabbec496c&quot;, size = 18178118, upload-time = &quot;2023-09-16T20:02:49.046Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/37/41/63975634a93da2a384d3c8084eba467242cab68daab0cd8f4fd470dcee26/numpy-1.26.0-cp311-cp311-musllinux_1_1_x86_64.whl&quot;, hash = &quot;sha256:546b7dd7e22f3c6861463bebb000646fa730e55df5ee4a0224408b5694cc6148&quot;, size = 18020808, upload-time = &quot;2023-09-16T20:03:16.849Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/58/d2/cbc329aa908cb963bd849f14e24f59c002a488e9055fab2c68887a6b5f1c/numpy-1.26.0-cp311-cp311-win32.whl&quot;, hash = &quot;sha256:c0b45c8b65b79337dee5134d038346d30e109e9e2e9d43464a2970e5c0e93229&quot;, size = 20750149, upload-time = &quot;2023-09-16T20:03:49.609Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/93/fd/3f826c6d15d3bdcf65b8031e4835c52b7d9c45add25efa2314b53850e1a2/numpy-1.26.0-cp311-cp311-win_amd64.whl&quot;, hash = &quot;sha256:eae430ecf5794cb7ae7fa3808740b015aa80747e5266153128ef055975a72b99&quot;, size = 15794407, upload-time = &quot;2023-09-16T20:04:13.829Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/e9/83/f8a62f08d38d831a2980427ffc465a4207fe600124b00cfb0ef8265594a7/numpy-1.26.0-cp312-cp312-macosx_10_9_x86_64.whl&quot;, hash = &quot;sha256:166b36197e9debc4e384e9c652ba60c0bacc216d0fc89e78f973a9760b503388&quot;, size = 20325091, upload-time = &quot;2023-09-16T20:04:44.267Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/7a/72/6d1cbdf0d770016bc9485f9ef02e73d5cb4cf3c726f8e120b860a403d307/numpy-1.26.0-cp312-cp312-macosx_11_0_arm64.whl&quot;, hash = &quot;sha256:f042f66d0b4ae6d48e70e28d487376204d3cbf43b84c03bac57e28dac6151581&quot;, size = 13672867, upload-time = &quot;2023-09-16T20:05:05.591Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/2f/70/c071b2347e339f572f5aa61f649b70167e5dd218e3da3dc600c9b08154b9/numpy-1.26.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl&quot;, hash = &quot;sha256:e5e18e5b14a7560d8acf1c596688f4dfd19b4f2945b245a71e5af4ddb7422feb&quot;, size = 13872627, upload-time = &quot;2023-09-16T20:05:28.488Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/e3/e2/4ecfbc4a2e3f9d227b008c92a5d1f0370190a639b24fec3b226841eaaf19/numpy-1.26.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;, hash = &quot;sha256:7f6bad22a791226d0a5c7c27a80a20e11cfe09ad5ef9084d4d3fc4a299cca505&quot;, size = 17883864, upload-time = &quot;2023-09-16T20:05:55.622Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/45/08/025bb65dbe19749f1a67a80655670941982e5d0144a4e588ebbdbcfe7983/numpy-1.26.0-cp312-cp312-musllinux_1_1_x86_64.whl&quot;, hash = &quot;sha256:4acc65dd65da28060e206c8f27a573455ed724e6179941edb19f97e58161bb69&quot;, size = 17721550, upload-time = &quot;2023-09-16T20:06:23.505Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/98/66/f0a846751044d0b6db5156fb6304d0336861ed055c21053a0f447103939c/numpy-1.26.0-cp312-cp312-win32.whl&quot;, hash = &quot;sha256:bb0d9a1aaf5f1cb7967320e80690a1d7ff69f1d47ebc5a9bea013e3a21faec95&quot;, size = 19951520, upload-time = &quot;2023-09-16T20:06:53.976Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/98/d7/1cc7a11118408ad21a5379ff2a4e0b0e27504c68ef6e808ebaa90ee95902/numpy-1.26.0-cp312-cp312-win_amd64.whl&quot;, hash = &quot;sha256:ee84ca3c58fe48b8ddafdeb1db87388dce2c3c3f701bf447b05e4cfcc3679112&quot;, size = 15504471, upload-time = &quot;2023-09-16T20:07:22.222Z&quot; },
+]
+</code></pre>
+<p>And this <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [&quot;numpy&quot;]
+
+[tool.uv]
+python-preference = &quot;only-system&quot;
+reinstall = false
+package = true
+upgrade = false
+</code></pre>
+<p>Then <code>uv lock --upgrade-package numpy</code> has no effect (but removing <code>upgrade = false</code> fixes that).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-19 09:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivekfe">@vivekfe</a> on 2025-08-19 09:41</div>
+            <div class="timeline-body"><p>Thanks Charlie,</p>
+<p>I tried to isolate this behaviour</p>
+<p><em>Package Information Check(uvpy)</em></p>
+<p>[Cmd]# uv pip show hsbc_anl
+Using Python 3.10.10 at: /var/opt/uvpy/.venv
+Name: targetPackage
+Version: 4.0.263
+Location: /var/opt/uvpy/.venv/lib/python3.10/site-packages
+Requires: colour, dash, dash-ag-grid, dash-bootstrap-components, dash-dag,
+dash-design-kit, dash-loading-spinners, pandas, plotly, pyclustering,
+python-constraint, python-dateutil, scikit-learn, scipy, setuptools
+Required-by:Package Lock and Upgrade</p>
+<p>*Running Refresh or force reinstall *</p>
+<p>[cmd]# uv lock --upgrade-package targetpackage --refresh
+Resolved 356 packages in 2ms</p>
+<p><em>Final Package Information Check (After Upgrade</em>)</p>
+<p>[Cmd]# uv pip show hsbc_anl
+Using Python 3.10.10 at: /var/opt/uvpy/.venv
+Name: targetPackage
+Version: 4.0.263
+Location: /var/opt/uvpy/.venv/lib/python3.10/site-packages
+Requires: colour, dash, dash-ag-grid, dash-bootstrap-components, dash-dag,
+dash-design-kit, dash-loading-spinners, pandas, plotly, pyclustering,
+python-constraint, python-dateutil, scikit-learn, scipy, setuptools
+Required-by:</p>
+<p>Summary: The version remained the same (4.0.263) both before and after
+running the upgrade command.</p>
+<ul>
+<li><p>So if we put upgrade=false in <code>pyproject.toml</code>, nothing changes.</p>
+</li>
+<li><p>if we put upgrade=true, then multiple other packages change which I
+didn't want.</p>
+</li>
+<li><p>if we put upgrade-package list then update happens as well, however many
+other packages upgrade as well which were not really the actually
+dependencies of myPackage</p>
+</li>
+</ul>
+<p>Note: I have changed the package name as it was an enterprise package</p>
+<p>All this time newer versions of the package were available on Nexus.</p>
+<p>On Tue, 19 Aug 2025, 11:19 am Charlie Marsh, <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p><em>charliermarsh</em> left a comment (astral-sh/uv#15360)
+<a href="https://github.com/astral-sh/uv/issues/15360#issuecomment-3199939744">https://github.com/astral-sh/uv/issues/15360#issuecomment-3199939744</a></p>
+<p>Okay, I think the bug here is: if you have upgrade = false set in your
+configuration file, then --upgrade-package on the command-line seems to
+be a no-op.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/15360#issuecomment-3199939744">https://github.com/astral-sh/uv/issues/15360#issuecomment-3199939744</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AADKLIEELSWOTFQN22LETL33OLTZPAVCNFSM6AAAAACEGGMNUKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTCOJZHEZTSNZUGQ">https://github.com/notifications/unsubscribe-auth/AADKLIEELSWOTFQN22LETL33OLTZPAVCNFSM6AAAAACEGGMNUKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTCOJZHEZTSNZUGQ</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-19 09:42</div>
+            <div class="timeline-body"><p>I suggest just removing <code>upgrade = false</code>. It's the default behavior, but adding it explicitly is causing this bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivekfe">@vivekfe</a> on 2025-08-19 09:47</div>
+            <div class="timeline-body"><p>Thanks Charlie</p>
+<p>If I remove upgrade=false, then it is working like uv lock ---upgrade.</p>
+<p>Can we have the behaviour to update only the package and it's dependencies
+when we run uv lock ---upgrade-package ?</p>
+<p>Also could you advise on issue#15108 if possible ?</p>
+<p>On Tue, 19 Aug 2025, 11:43 am Charlie Marsh, <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p><em>charliermarsh</em> left a comment (astral-sh/uv#15360)
+<a href="https://github.com/astral-sh/uv/issues/15360#issuecomment-3200018087">https://github.com/astral-sh/uv/issues/15360#issuecomment-3200018087</a></p>
+<p>I suggest just removing upgrade = false. It's the default behavior, but
+adding it explicitly is causing this bug.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/15360#issuecomment-3200018087">https://github.com/astral-sh/uv/issues/15360#issuecomment-3200018087</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AADKLIAPPCX6IQWTOQTSFWL3OLWSTAVCNFSM6AAAAACEGGMNUKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMBQGAYTQMBYG4">https://github.com/notifications/unsubscribe-auth/AADKLIAPPCX6IQWTOQTSFWL3OLWSTAVCNFSM6AAAAACEGGMNUKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMBQGAYTQMBYG4</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-19 09:49</div>
+            <div class="timeline-body"><p>If you remove <code>upgrade = false</code>, I'm fairly sure that <code>uv lock --upgrade-package numpy</code> or whatever will do the right thing: upgrade only <code>numpy</code>, or any requisite dependencies that are forced to upgrade to support it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivekfe">@vivekfe</a> on 2025-08-19 14:35</div>
+            <div class="timeline-body"><p>Yes that worked perfectly after removing upgrade=false, however I thought
+false will be applied by default.</p>
+<p>On Tue, 19 Aug 2025, 11:49 am Charlie Marsh, <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p><em>charliermarsh</em> left a comment (astral-sh/uv#15360)
+<a href="https://github.com/astral-sh/uv/issues/15360#issuecomment-3200038631">https://github.com/astral-sh/uv/issues/15360#issuecomment-3200038631</a></p>
+<p>If you remove upgrade = false, I'm fairly sure that uv lock
+--upgrade-package numpy or whatever will do the right thing: upgrade only
+numpy, or any requisite dependencies that are forced to upgrade to
+support it.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/15360#issuecomment-3200038631">https://github.com/astral-sh/uv/issues/15360#issuecomment-3200038631</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AADKLIDFJD3BJF42VODC2ED3OLXLLAVCNFSM6AAAAACEGGMNUKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMBQGAZTQNRTGE">https://github.com/notifications/unsubscribe-auth/AADKLIDFJD3BJF42VODC2ED3OLXLLAVCNFSM6AAAAACEGGMNUKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMBQGAZTQNRTGE</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "UV lock ---upgrade-package results into all package upgrades" to "`uv lock --upgrade-package` results into all package upgrades" by @charliermarsh on 2025-08-19 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-19 15:41</div>
+            <div class="timeline-body"><blockquote>
+<p>false will be applied by default.</p>
+</blockquote>
+<p>Yes that's true, so you can just omit it. But in the code, we treat setting <code>upgrade = false</code> slightly differently than if it were omitted, just in terms of how the logic flows. It ends up overriding the <code>--upgrade-package</code> CLI flag, which is a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivekfe">@vivekfe</a> on 2025-08-19 20:29</div>
+            <div class="timeline-body"><p>Thanks Charlie</p>
+<p>So what's the intended behaviour of upgrade=false ?</p>
+<p>On Tue, 19 Aug 2025, 5:42 pm Charlie Marsh, <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p><em>charliermarsh</em> left a comment (astral-sh/uv#15360)
+<a href="https://github.com/astral-sh/uv/issues/15360#issuecomment-3201273814">https://github.com/astral-sh/uv/issues/15360#issuecomment-3201273814</a></p>
+<p>false will be applied by default.</p>
+<p>Yes that's true, so you can just omit it. But in the code, we treat
+setting upgrade = false slightly differently than if it were omitted,
+just in terms of how the logic flows. It ends up overriding the
+--upgrade-package CLI flag, which is a bug.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/15360#issuecomment-3201273814">https://github.com/astral-sh/uv/issues/15360#issuecomment-3201273814</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AADKLICOCYG7KALMM3HIQXT3ONAVPAVCNFSM6AAAAACEGGMNUKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMBRGI3TGOBRGQ">https://github.com/notifications/unsubscribe-auth/AADKLICOCYG7KALMM3HIQXT3ONAVPAVCNFSM6AAAAACEGGMNUKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMBRGI3TGOBRGQ</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-19 21:05</div>
+            <div class="timeline-body"><p>There isn't really a reason to ever put that in a configuration file. The flag exists because if you had <code>upgrade = true</code> in your configuration file, then passing <code>--no-upgrade</code> on the CLI would make sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivekfe">@vivekfe</a> on 2025-08-19 21:15</div>
+            <div class="timeline-body"><p>Ok that makes sense. Thanks Charlie.</p>
+<p>This issue is good to be closed.</p>
+<p>Many thanks for your help.</p>
+<p>On Tue, 19 Aug 2025, 11:05 pm Charlie Marsh, <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p><em>charliermarsh</em> left a comment (astral-sh/uv#15360)
+<a href="https://github.com/astral-sh/uv/issues/15360#issuecomment-3202220674">https://github.com/astral-sh/uv/issues/15360#issuecomment-3202220674</a></p>
+<p>There isn't really a reason to ever put that in a configuration file. The
+flag exists because if you had upgrade = true in your configuration file,
+then passing --no-upgrade on the CLI would make sense.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/15360#issuecomment-3202220674">https://github.com/astral-sh/uv/issues/15360#issuecomment-3202220674</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AADKLICU3KTDHUU64A4WD233OOGSPAVCNFSM6AAAAACEGGMNUKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMBSGIZDANRXGQ">https://github.com/notifications/unsubscribe-auth/AADKLICU3KTDHUU64A4WD233OOGSPAVCNFSM6AAAAACEGGMNUKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMBSGIZDANRXGQ</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-19 21:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

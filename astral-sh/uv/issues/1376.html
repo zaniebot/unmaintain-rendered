@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install hexdump==3.3 fails: The top level of the archive must only contain a list directory - astral-sh/uv #1376</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install hexdump==3.3 fails: The top level of the archive must only contain a list directory</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1376">#1376</a>
+        opened by <a href="https://github.com/robin-nitrokey">@robin-nitrokey</a>
+        on 2024-02-15 22:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/robin-nitrokey">@robin-nitrokey</a> on 2024-02-15 22:52</div>
+            <div class="timeline-body"><p>I cannot install the <code>hexdump</code> package with <code>uv pip install</code>:</p>
+<pre><code>$ pipx install uv
+  installed package uv 0.1.1, installed using Python 3.11.2
+  These apps are now globally available
+    - uv
+$ uv venv
+Using Python 3.11.2 interpreter at /usr/bin/python3.11
+Creating virtualenv at: .venv
+$ uv pip install hexdump==3.3
+error: Failed to download and build: hexdump==3.3
+  Caused by: Failed to extract source distribution: The top level of the archive must only contain a list directory, but it contains: [DirEntry { inner: DirEntry(&quot;/home/user/.cache/uv/.tmphnfEex/__main__.py&quot;) }, DirEntry { inner: DirEntry(&quot;/home/user/.cache/uv/.tmphnfEex/hexdump.py&quot;) }, DirEntry { inner: DirEntry(&quot;/home/user/.cache/uv/.tmphnfEex/data&quot;) }, DirEntry { inner: DirEntry(&quot;/home/user/.cache/uv/.tmphnfEex/PKG-INFO&quot;) }, DirEntry { inner: DirEntry(&quot;/home/user/.cache/uv/.tmphnfEex/setup.py&quot;) }, DirEntry { inner: DirEntry(&quot;/home/user/.cache/uv/.tmphnfEex/README.txt&quot;) }]
+  Caused by: The top level of the archive must only contain a list directory, but it contains: [DirEntry { inner: DirEntry(&quot;/home/user/.cache/uv/.tmphnfEex/__main__.py&quot;) }, DirEntry { inner: DirEntry(&quot;/home/user/.cache/uv/.tmphnfEex/hexdump.py&quot;) }, DirEntry { inner: DirEntry(&quot;/home/user/.cache/uv/.tmphnfEex/data&quot;) }, DirEntry { inner: DirEntry(&quot;/home/user/.cache/uv/.tmphnfEex/PKG-INFO&quot;) }, DirEntry { inner: DirEntry(&quot;/home/user/.cache/uv/.tmphnfEex/setup.py&quot;) }, DirEntry { inner: DirEntry(&quot;/home/user/.cache/uv/.tmphnfEex/README.txt&quot;) }]
+</code></pre>
+<p>It looks like the error comes from this function:</p>
+<p>https://github.com/astral-sh/uv/blob/12c19ce50689ee089c1374deb8282555418f9cf4/crates/uv-extract/src/sync.rs#L107-L122</p>
+<p>Indeed the <a href="https://files.pythonhosted.org/packages/55/b3/279b1d57fa3681725d0db8820405cdcb4e62a9239c205e4ceac4391c78e4/hexdump-3.3.zip"><code>hexdump-3.3.zip</code> sdist</a> does not follow the spec and directly contains the source files:</p>
+<pre><code>$ unzip -l hexdump-3.3.zip
+Archive:  hexdump-3.3.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+    13829  01-22-2016 17:32   hexdump.py
+     8228  01-22-2016 17:40   PKG-INFO
+     5731  01-22-2016 17:33   README.txt
+     4127  01-22-2016 17:36   setup.py
+       32  01-22-2016 16:04   data/hexfile.bin
+       51  01-22-2016 17:40   __main__.py
+---------                     -------
+    31998                     6 files
+</code></pre>
+<p>Maybe it uses the legacy sdist format mentioned in the <a href="https://packaging.python.org/en/latest/specifications/source-distribution-format/">documentation</a>?  The same package can be installed without problem using pip 24.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-15 22:53</div>
+            <div class="timeline-body"><p>Oh noo. Okay, that's interesting, will look into it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-15 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robin-nitrokey">@robin-nitrokey</a> on 2024-02-15 22:56</div>
+            <div class="timeline-body"><p>Thanks!  And thank you for this amazing project!  A big step towards fast and reliable Python development and packaging tools. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-15 22:57</div>
+            <div class="timeline-body"><p>Thank you! And thanks for looking into the root cause, the zip structure, etc. That's awesome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1389.html">astral-sh/uv#1389</a> on 2024-02-15 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 01:47</div>
+            <div class="timeline-body"><p>Ok, it looks like pip has a slightly different implementation, which is that if every file is scoped under the same directory, it flattens that directory: https://github.com/pypa/pip/blob/51de88ca6459fdd5213f86a54b021a80884572f9/src/pip/_internal/utils/unpacking.py#L62</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2024-02-16 04:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1564.html">astral-sh/uv#1564</a> on 2024-02-17 02:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-17 04:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

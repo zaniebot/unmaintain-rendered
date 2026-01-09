@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: add rule for `unittest` - always call `super().&lt;setUp|tearDown|setUpClass|tearDownClass&gt;()` - astral-sh/ruff #14009</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: add rule for `unittest` - always call `super().&lt;setUp|tearDown|setUpClass|tearDownClass&gt;()`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14009">#14009</a>
+        opened by <a href="https://github.com/AdrianB-sovo">@AdrianB-sovo</a>
+        on 2024-10-31 01:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AdrianB-sovo">@AdrianB-sovo</a> on 2024-10-31 01:04</div>
+            <div class="timeline-body"><p>In my tests, I'd like to make sure that all my derived classes of <code>unittest.TestCase</code> call the corresponding <code>super()</code> method for the methods <code>setUp()</code>, <code>tearDown()</code>, <code>setUpClass()</code> and <code>tearDownClass()</code>.</p>
+<p>Could a linter rule be added to Ruff for that?</p>
+<p><strong>EDIT:</strong> the description was ambiguous. We should only enforce the call to <code>super()</code> in overriden implementations of <code>setUp()</code>, <code>tearDown()</code>, <code>setUpClass()</code> and <code>tearDownClass()</code> of <strong>custom</strong> test classes.
+There is <ins><strong>no</strong></ins> need to enforce the use of <code>setUp()</code>, <code>tearDown()</code>, <code>setUpClass()</code> and <code>tearDownClass()</code> for every custom test classes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-31 10:40</div>
+            <div class="timeline-body"><p>This seems reasonable to me. It would be quite a strict rule, but I think the chance of it producing invalid suggestions would be pretty low. <code>unittest.TestCase</code> already defines these methods, so it should be possible to always call <code>super().setUp()</code> etc. on any subclass of <code>unittest.TestCase</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-10-31 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @AlexWaygood on 2024-10-31 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15436.html">astral-sh/ruff#15436</a> on 2025-01-11 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mscheifer">@mscheifer</a> on 2025-01-13 06:58</div>
+            <div class="timeline-body"><p>What's the potential danger of not calling <code>super()</code> ? The examples in the official Python docs don't call it: https://docs.python.org/3.13/library/unittest.html#organizing-test-code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-13 07:50</div>
+            <div class="timeline-body"><p>I don't think there's any real downside of not calling <code>setUp</code> etc, because unit test documents that they do nothing and I see it as extremely unlikely that this will ever change because a) it would be a breaking change and b) the <code>unittest</code> framework has other means to run some code before or after every test.</p>
+<p>The only argument I see for enforcing calling the <code>super</code> method is that it's generally considered best practice to call <code>super</code> in overridden methods even if they do nothing today because it safeguards against missing <code>super</code> call if the parent class <em>does something in the future</em>.</p>
+<p>Considering that it's highly unlikely that <code>unittest</code> will ever customize <code>setUp</code> and <code>tearDown</code>, I think this rule is too restrictive without providing real value. However, one issue that I observed more than once when working on a large Java code base is that tests forgot to call the <code>super</code> methods when inheriting from <em>custom</em> test classes and the custom test class started to override <code>setUp</code> (or <code>tearDown</code>) but not all subclasses were updated to call <code>super.setUp</code>. That's why I think the rule should instead lint for custom test classes and only then enforce that <code>setUp</code>, <code>tearDown</code> etc. calls the <code>super</code> method if overriden.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-13 11:19</div>
+            <div class="timeline-body"><p>Consider a case where you have a complex application or library where all tests need some common setup and teardown logic. For example, the <code>asyncio</code> library in the standard library is huge, so its tests are split across multiple <code>unittest.TestCase</code> subclasses in multiple test modules. However, they all need some custom setup and teardown logic so that the <code>asyncio</code> event loop is constructed prior to the test and gracefully shut down prior to the test. The way this is done is via a <a href="https://github.com/python/cpython/blob/afb9dc887c6e8ae17b6a54c6124399e8bdc82253/Lib/test/test_asyncio/utils.py#L553-L565"><code>test_asyncio.utils.TestCase</code> class</a> which subclasses <code>unittest.TestCase</code>. All <code>TestCase</code> subclasses that actually provide <em>tests</em> for asyncio then subclass this <code>utils.TestCase</code> class rather than subclassing <code>unittest.TestCase</code> directly. If these <code>utils.TestCase</code> subclasses need to provide custom <code>setUp</code> logic (e.g. <a href="https://github.com/python/cpython/blob/afb9dc887c6e8ae17b6a54c6124399e8bdc82253/Lib/test/test_asyncio/test_base_events.py#L1114-L1119">here</a>), it's crucial that those subclasses call <code>super().setUp()</code>, or they won't get the benefit of the any of the logic implemented in the <code>setUp()</code> method implemented by the <code>test_asyncio.utils.TestCase</code> class; they might as well have subclassed <code>unittest.TestCase</code> directly.</p>
+<p>So I think there is no benefit at all to calling <code>super().setUp()</code> on direct subclasses of <code>unittest.TestCase</code> classes, but quite a bit of benefit to calling <code>super().setUp()</code> on indirect subclasses of <code>unittest.TestCase</code>. Unfortunately, indirect subclasses are quite hard for Ruff to detect reliably right now, due to the lack of multifile analysis (we wouldn't be able to detect that <code>test_asyncio.utils.TestCase</code> subclasses <code>unittest.TestCase</code> in the example above if we were linting <code>Lib/test/test_asyncio/test_base_events.py</code>, which is where the <code>super().setUp()</code> call needs to occur). It's therefore quite possible that there's no reasonable way for us to implement this rule in a useful way right now, with our current capabilities.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-13 11:25</div>
+            <div class="timeline-body"><p>Thanks for sharing an actual use case and it's good to know that we're on the same page. I agree that there's probably no good way for Ruff to detect indirect usages but I think that's the case where the rule would be most valuable. That's why I suggest we defer implementing this rule until we have multifile analysis support because the rule today would only be able to flag cases where overriding <code>setUp</code> (and others) isn't necessary and misses all use cases that are actually problematic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2025-01-13 11:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-13 12:10</div>
+            <div class="timeline-body"><p>It's possible that we <em>could</em> implement a version of this rule now that is only able to detect the indirect subclass of <code>TestCase</code> when the direct subclass is defined in the same file as the indirect subclass. That <em>does</em> happen sometimes -- for example, https://github.com/python/cpython/blob/6ff8f82f92a8af363b2bdd8bbaba5845eef430fc/Lib/test/test__interpreters.py#L554-L557. It goes back to the question we've had to answer before about how much of an issue lots of false negatives are while we wait for multifile analysis... I honestly don't really have a sense for how common it is for indirect subclasses to be in the same file versus a different file as the direct subclass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/njhearp">@njhearp</a> on 2025-01-13 22:43</div>
+            <div class="timeline-body"><p>I decided to close my pull request because it seems like this rule will need multi-file analysis to be useful and effective.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AdrianB-sovo">@AdrianB-sovo</a> on 2025-01-13 23:28</div>
+            <div class="timeline-body"><p>Yes, I also think this rule wouldn't be that useful without multi-file analysis.</p>
+<p>Also, to confirm: the use case is when having multiple inherited levels of custom test classes (e.g. <code>unittest.TestCase</code> → <code>TestWithDB</code> → <code>BaseIntegrationTest</code> → <code>MySpecificTest</code>).</p>
+<p>@MichaReiser</p>
+<blockquote>
+<p>I think this rule is too restrictive without providing real value. [...] That's why I think the rule should instead lint for custom test classes and only then enforce that setUp, tearDown etc. calls the super method if overriden.</p>
+</blockquote>
+<p>Yes, my description was ambiguous: we don't need to always have <code>&lt;setUp|tearDown|setUpClass|tearDownClass&gt;()</code> and the corresponding <code>super()</code> called in it.
+I only want to enforce that the <code>super()</code> is called <em><strong>if</strong></em> we implement them in our custom test classes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

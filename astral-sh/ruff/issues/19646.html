@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isort rule misses unsorted imports when using user-level ruff.toml file on windows - astral-sh/ruff #19646</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Isort rule misses unsorted imports when using user-level ruff.toml file on windows</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19646">#19646</a>
+        opened by <a href="https://github.com/orishamir">@orishamir</a>
+        on 2025-07-30 18:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/orishamir">@orishamir</a> on 2025-07-30 18:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>First of all, thank you for the great work on both Ruff, uv, and ty.<br />
+Sorry if this isn't a bug, but a misunderstanding</p>
+<p>When using the following <code>ruff.toml</code> config file on Windows:</p>
+<blockquote>
+<p><code>%userprofile%\AppData\Roaming\ruff</code></p>
+</blockquote>
+<pre><code class="language-toml">[lint]
+select = [&quot;I&quot;]
+</code></pre>
+<p>And the following file structure:</p>
+<pre><code class="language-tree">.                                                                                                                                         
+├── main.py
+├── pyproject.toml
+└── src
+    ├── __init__.py
+    └── something.py
+</code></pre>
+<blockquote>
+<p><code>main.py</code></p>
+</blockquote>
+<pre><code class="language-python">import sys
+from pydantic import BaseModel
+from src.something import FOO
+
+
+class MyModel(BaseModel):
+    pass
+
+
+print(FOO)
+print(sys.version)
+</code></pre>
+<p>Running <code>uvx ruff check --fix</code> results in no changes and no diagnostics (which is wrong, since there should be a separation of first and third party imports).
+However, when placing <code>ruff.toml</code> in the root:</p>
+<pre><code class="language-tree">.
+├── main.py
+├── pyproject.toml
+├── ruff.toml
+└── src
+    ├── __init__.py
+    └── something.py
+</code></pre>
+<p>Running <code>uvx ruff check --fix</code> results in the new, correct <code>main.py</code>:</p>
+<pre><code class="language-python">import sys
+
+from pydantic import BaseModel
+
+from src.something import FOO
+
+
+class MyModel(BaseModel):
+    pass
+
+
+print(FOO)
+print(sys.version)
+</code></pre>
+<details>
+<summary>See, this does work properly on Linux:</summary>
+
+<pre><code class="language-dockerfile">FROM ghcr.io/astral-sh/uv:0.8.4-python3.13-bookworm-slim
+
+WORKDIR /app
+
+COPY &lt;&lt;EOF /app/pyproject.toml
+[project]
+name = &quot;pythonproject&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [&quot;pydantic&gt;=2.11.7&quot;]
+EOF
+
+COPY &lt;&lt;EOF /app/src/something.py
+FOO = &quot;const&quot;
+EOF
+
+RUN [&quot;touch&quot;, &quot;/app/src/__init__.py&quot;]
+COPY &lt;&lt;EOF /app/main.py
+import sys
+from pydantic import BaseModel
+from src.something import FOO
+
+
+class MyModel(BaseModel):
+    pass
+
+
+print(FOO)
+print(sys.version)
+EOF
+
+COPY &lt;&lt;EOF /root/.config/ruff/ruff.toml
+lint.select = [&quot;I&quot;]
+EOF
+
+RUN [&quot;uvx&quot;, &quot;ruff&quot;, &quot;check&quot;, &quot;--fix&quot;, &quot;main.py&quot;]
+CMD [&quot;cat&quot;, &quot;/app/main.py&quot;]
+&lt;/details&gt;
+
+### Version
+
+ruff 0.12.7 (c5ac99889 2025-07-29)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-30 19:34</div>
+            <div class="timeline-body"><p>Thanks again for the kind words!</p>
+<p>This sounds pretty similar to your other issue from a few weeks ago (https://github.com/astral-sh/ruff/issues/19238). Would you mind trying out some of the debugging commands I ran there and sharing the output?</p>
+<p>I think this one might help in particular:</p>
+<pre><code>ruff check -v --show-settings
+</code></pre>
+<p>The output might be very long, though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @ntBre on 2025-07-30 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-07-30 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/orishamir">@orishamir</a> on 2025-07-30 19:38</div>
+            <div class="timeline-body"><p>Yes!
+Output:</p>
+<details>
+
+<pre><code>
+[2025-07-30][22:37:14][ruff::resolve][DEBUG] Using configuration file (via parent) at: /mnt/c/Users/ori/ruff.toml                         
+[2025-07-30][22:37:14][ruff_workspace::pyproject][DEBUG] No `target-version` found in `ruff.toml`
+[2025-07-30][22:37:14][ruff_workspace::pyproject][DEBUG] No `pyproject.toml` with `requires-python` in same directory; `target-version` unspecified
+[2025-07-30][22:37:14][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/mnt/c/Users/ori/development/PythonProject/main.py&quot;
+[2025-07-30][22:37:14][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/mnt/c/Users/ori/development/PythonProject/pyproject.toml&quot;
+[2025-07-30][22:37:14][ignore::gitignore][DEBUG] opened gitignore file: /mnt/c/Users/ori/development/PythonProject/.venv/.gitignore
+[2025-07-30][22:37:14][ignore::gitignore][DEBUG] opened gitignore file: /mnt/c/Users/ori/development/PythonProject/.ruff_cache/.gitignore
+[2025-07-30][22:37:14][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/mnt/c/Users/ori/development/PythonProject/src/__init__.py&quot;
+[2025-07-30][22:37:14][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/mnt/c/Users/ori/development/PythonProject/src/something.py&quot;
+[2025-07-30][22:37:14][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/mnt/c/Users/ori/development/PythonProject/.ruff_cache&quot;
+[2025-07-30][22:37:14][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/mnt/c/Users/ori/development/PythonProject/.venv&quot;    
+Resolved settings for: &quot;/mnt/c/Users/ori/development/PythonProject/main.py&quot;
+Settings path: &quot;/mnt/c/Users/ori/ruff.toml&quot;
+
+# General Settings
+cache_dir = &quot;/mnt/c/Users/ori/.ruff_cache&quot;
+fix = false
+fix_only = false
+output_format = full
+show_fixes = false
+unsafe_fixes = hint
+
+# File Resolver Settings
+file_resolver.exclude = [
+        &quot;.bzr&quot;,
+        &quot;.direnv&quot;,
+        &quot;.eggs&quot;,
+        &quot;.git&quot;,
+        &quot;.git-rewrite&quot;,
+        &quot;.hg&quot;,
+        &quot;.ipynb_checkpoints&quot;,
+        &quot;.mypy_cache&quot;,
+        &quot;.nox&quot;,
+        &quot;.pants.d&quot;,
+        &quot;.pyenv&quot;,
+        &quot;.pytest_cache&quot;,
+        &quot;.pytype&quot;,
+        &quot;.ruff_cache&quot;,
+        &quot;.svn&quot;,
+        &quot;.tox&quot;,
+        &quot;.venv&quot;,
+        &quot;.vscode&quot;,
+        &quot;__pypackages__&quot;,
+        &quot;_build&quot;,
+        &quot;buck-out&quot;,
+        &quot;dist&quot;,
+        &quot;node_modules&quot;,
+        &quot;site-packages&quot;,
+        &quot;venv&quot;,
+]
+file_resolver.extend_exclude = []
+file_resolver.force_exclude = false
+file_resolver.include = [
+        &quot;*.py&quot;,
+        &quot;*.pyi&quot;,
+        &quot;*.ipynb&quot;,
+        &quot;**/pyproject.toml&quot;,
+]
+file_resolver.extend_include = []
+file_resolver.respect_gitignore = true
+file_resolver.project_root = &quot;/mnt/c/Users/ori&quot;
+
+# Linter Settings
+linter.exclude = []
+linter.project_root = &quot;/mnt/c/Users/ori&quot;
+linter.rules.enabled = [
+        multiple-imports-on-one-line (E401),
+        module-import-not-at-top-of-file (E402),
+        multiple-statements-on-one-line-colon (E701),
+        multiple-statements-on-one-line-semicolon (E702),
+        useless-semicolon (E703),
+        none-comparison (E711),
+        true-false-comparison (E712),
+        not-in-test (E713),
+        not-is-test (E714),
+        type-comparison (E721),
+        bare-except (E722),
+        lambda-assignment (E731),
+        ambiguous-variable-name (E741),
+        ambiguous-class-name (E742),
+        ambiguous-function-name (E743),
+        io-error (E902),
+        unused-import (F401),
+        import-shadowed-by-loop-var (F402),
+        undefined-local-with-import-star (F403),
+        late-future-import (F404),
+        undefined-local-with-import-star-usage (F405),
+        undefined-local-with-nested-import-star-usage (F406),
+        future-feature-not-defined (F407),
+        percent-format-invalid-format (F501),
+        percent-format-expected-mapping (F502),
+        percent-format-expected-sequence (F503),
+        percent-format-extra-named-arguments (F504),
+        percent-format-missing-argument (F505),
+        percent-format-mixed-positional-and-named (F506),
+        percent-format-positional-count-mismatch (F507),
+        percent-format-star-requires-sequence (F508),
+        percent-format-unsupported-format-character (F509),
+        string-dot-format-invalid-format (F521),
+        string-dot-format-extra-named-arguments (F522),
+        string-dot-format-extra-positional-arguments (F523),
+        string-dot-format-missing-arguments (F524),
+        string-dot-format-mixing-automatic (F525),
+        f-string-missing-placeholders (F541),
+        multi-value-repeated-key-literal (F601),
+        multi-value-repeated-key-variable (F602),
+        expressions-in-star-assignment (F621),
+        multiple-starred-expressions (F622),
+        assert-tuple (F631),
+        is-literal (F632),
+        invalid-print-syntax (F633),
+        if-tuple (F634),
+        break-outside-loop (F701),
+        continue-outside-loop (F702),
+        yield-outside-function (F704),
+        return-outside-function (F706),
+        default-except-not-last (F707),
+        forward-annotation-syntax-error (F722),
+        redefined-while-unused (F811),
+        undefined-name (F821),
+        undefined-export (F822),
+        undefined-local (F823),
+        unused-variable (F841),
+        unused-annotation (F842),
+        raise-not-implemented (F901),
+]
+linter.rules.should_fix = [
+        multiple-imports-on-one-line (E401),
+        module-import-not-at-top-of-file (E402),
+        multiple-statements-on-one-line-colon (E701),
+        multiple-statements-on-one-line-semicolon (E702),
+        useless-semicolon (E703),
+        none-comparison (E711),
+        true-false-comparison (E712),
+        not-in-test (E713),
+        not-is-test (E714),
+        type-comparison (E721),
+        bare-except (E722),
+        lambda-assignment (E731),
+        ambiguous-variable-name (E741),
+        ambiguous-class-name (E742),
+        ambiguous-function-name (E743),
+        io-error (E902),
+        unused-import (F401),
+        import-shadowed-by-loop-var (F402),
+        undefined-local-with-import-star (F403),
+        late-future-import (F404),
+        undefined-local-with-import-star-usage (F405),
+        undefined-local-with-nested-import-star-usage (F406),
+        future-feature-not-defined (F407),
+        percent-format-invalid-format (F501),
+        percent-format-expected-mapping (F502),
+        percent-format-expected-sequence (F503),
+        percent-format-extra-named-arguments (F504),
+        percent-format-missing-argument (F505),
+        percent-format-mixed-positional-and-named (F506),
+        percent-format-positional-count-mismatch (F507),
+        percent-format-star-requires-sequence (F508),
+        percent-format-unsupported-format-character (F509),
+        string-dot-format-invalid-format (F521),
+        string-dot-format-extra-named-arguments (F522),
+        string-dot-format-extra-positional-arguments (F523),
+        string-dot-format-missing-arguments (F524),
+        string-dot-format-mixing-automatic (F525),
+        f-string-missing-placeholders (F541),
+        multi-value-repeated-key-literal (F601),
+        multi-value-repeated-key-variable (F602),
+        expressions-in-star-assignment (F621),
+        multiple-starred-expressions (F622),
+        assert-tuple (F631),
+        is-literal (F632),
+        invalid-print-syntax (F633),
+        if-tuple (F634),
+        break-outside-loop (F701),
+        continue-outside-loop (F702),
+        yield-outside-function (F704),
+        return-outside-function (F706),
+        default-except-not-last (F707),
+        forward-annotation-syntax-error (F722),
+        redefined-while-unused (F811),
+        undefined-name (F821),
+        undefined-export (F822),
+        undefined-local (F823),
+        unused-variable (F841),
+        unused-annotation (F842),
+        raise-not-implemented (F901),
+]
+linter.per_file_ignores = {}
+linter.safety_table.forced_safe = []
+linter.safety_table.forced_unsafe = []
+linter.unresolved_target_version = none
+linter.per_file_target_version = {}
+linter.preview = disabled
+linter.explicit_preview_rules = false
+linter.extension = ExtensionMapping({})
+linter.allowed_confusables = []
+linter.builtins = []
+linter.dummy_variable_rgx = ^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$
+linter.external = []
+linter.ignore_init_module_imports = true
+linter.logger_objects = []
+linter.namespace_packages = []
+linter.src = [
+        &quot;/mnt/c/Users/ori&quot;,
+        &quot;/mnt/c/Users/ori/src&quot;,
+]
+linter.tab_size = 4
+linter.line_length = 88
+linter.task_tags = [
+        TODO,
+        FIXME,
+        XXX,
+]
+linter.typing_modules = []
+linter.typing_extensions = true
+
+# Linter Plugins
+linter.flake8_annotations.mypy_init_return = false
+linter.flake8_annotations.suppress_dummy_args = false
+linter.flake8_annotations.suppress_none_returning = false
+linter.flake8_annotations.allow_star_arg_any = false
+linter.flake8_annotations.ignore_fully_untyped = false
+linter.flake8_bandit.hardcoded_tmp_directory = [
+        /tmp,
+        /var/tmp,
+        /dev/shm,
+]
+linter.flake8_bandit.check_typed_exception = false
+linter.flake8_bandit.extend_markup_names = []
+linter.flake8_bandit.allowed_markup_calls = []
+linter.flake8_bugbear.extend_immutable_calls = []
+linter.flake8_builtins.allowed_modules = []
+linter.flake8_builtins.ignorelist = []
+linter.flake8_builtins.strict_checking = false
+linter.flake8_comprehensions.allow_dict_calls_with_keyword_arguments = false
+linter.flake8_copyright.notice_rgx = (?i)Copyright\s+((?:\(C\)|©)\s+)?\d{4}((-|,\s)\d{4})*
+linter.flake8_copyright.author = none
+linter.flake8_copyright.min_file_size = 0
+linter.flake8_errmsg.max_string_length = 0
+linter.flake8_gettext.functions_names = [
+        _,
+        gettext,
+        ngettext,
+]
+linter.flake8_implicit_str_concat.allow_multiline = true
+linter.flake8_import_conventions.aliases = {
+        altair = alt,
+        holoviews = hv,
+        matplotlib = mpl,
+        matplotlib.pyplot = plt,
+        networkx = nx,
+        numpy = np,
+        numpy.typing = npt,
+        pandas = pd,
+        panel = pn,
+        plotly.express = px,
+        polars = pl,
+        pyarrow = pa,
+        seaborn = sns,
+        tensorflow = tf,
+        tkinter = tk,
+        xml.etree.ElementTree = ET,
+}
+linter.flake8_import_conventions.banned_aliases = {}
+linter.flake8_import_conventions.banned_from = []
+linter.flake8_pytest_style.fixture_parentheses = false
+linter.flake8_pytest_style.parametrize_names_type = tuple
+linter.flake8_pytest_style.parametrize_values_type = list
+linter.flake8_pytest_style.parametrize_values_row_type = tuple
+linter.flake8_pytest_style.raises_require_match_for = [
+        BaseException,
+        Exception,
+        ValueError,
+        OSError,
+        IOError,
+        EnvironmentError,
+        socket.error,
+]
+linter.flake8_pytest_style.raises_extend_require_match_for = []
+linter.flake8_pytest_style.mark_parentheses = false
+linter.flake8_quotes.inline_quotes = double
+linter.flake8_quotes.multiline_quotes = double
+linter.flake8_quotes.docstring_quotes = double
+linter.flake8_quotes.avoid_escape = true
+linter.flake8_self.ignore_names = [
+        _make,
+        _asdict,
+        _replace,
+        _fields,
+        _field_defaults,
+        _name_,
+        _value_,
+]
+linter.flake8_tidy_imports.ban_relative_imports = &quot;parents&quot;
+linter.flake8_tidy_imports.banned_api = {}
+linter.flake8_tidy_imports.banned_module_level_imports = []
+linter.flake8_type_checking.strict = false
+linter.flake8_type_checking.exempt_modules = [
+        typing,
+        typing_extensions,
+]
+linter.flake8_type_checking.runtime_required_base_classes = []
+linter.flake8_type_checking.runtime_required_decorators = []
+linter.flake8_type_checking.quote_annotations = false
+linter.flake8_unused_arguments.ignore_variadic_names = false
+linter.isort.required_imports = []
+linter.isort.combine_as_imports = false
+linter.isort.force_single_line = false
+linter.isort.force_sort_within_sections = false
+linter.isort.detect_same_package = true
+linter.isort.case_sensitive = false
+linter.isort.force_wrap_aliases = false
+linter.isort.force_to_top = []
+linter.isort.known_modules = {}
+linter.isort.order_by_type = true
+linter.isort.relative_imports_order = furthest_to_closest
+linter.isort.single_line_exclusions = []
+linter.isort.split_on_trailing_comma = true
+linter.isort.classes = []
+linter.isort.constants = []
+linter.isort.variables = []
+linter.isort.no_lines_before = []
+linter.isort.lines_after_imports = -1
+linter.isort.lines_between_types = 0
+linter.isort.forced_separate = []
+linter.isort.section_order = [
+        known { type = future },
+        known { type = standard_library },
+        known { type = third_party },
+        known { type = first_party },
+        known { type = local_folder },
+]
+linter.isort.default_section = known { type = third_party }
+linter.isort.no_sections = false
+linter.isort.from_first = false
+linter.isort.length_sort = false
+linter.isort.length_sort_straight = false
+linter.mccabe.max_complexity = 10
+linter.pep8_naming.ignore_names = [
+        setUp,
+        tearDown,
+        setUpClass,
+        tearDownClass,
+        setUpModule,
+        tearDownModule,
+        asyncSetUp,
+        asyncTearDown,
+        setUpTestData,
+        failureException,
+        longMessage,
+        maxDiff,
+]
+linter.pep8_naming.classmethod_decorators = []
+linter.pep8_naming.staticmethod_decorators = []
+linter.pycodestyle.max_line_length = 88
+linter.pycodestyle.max_doc_length = none
+linter.pycodestyle.ignore_overlong_task_comments = false
+linter.pyflakes.extend_generics = []
+linter.pyflakes.allowed_unused_imports = []
+linter.pylint.allow_magic_value_types = [
+        str,
+        bytes,
+]
+linter.pylint.allow_dunder_method_names = []
+linter.pylint.max_args = 5
+linter.pylint.max_positional_args = 5
+linter.pylint.max_returns = 6
+linter.pylint.max_bool_expr = 5
+linter.pylint.max_branches = 12
+linter.pylint.max_statements = 50
+linter.pylint.max_public_methods = 20
+linter.pylint.max_locals = 15
+linter.pyupgrade.keep_runtime_typing = false
+linter.ruff.parenthesize_tuple_in_subscript = false
+
+# Formatter Settings
+formatter.exclude = []
+formatter.unresolved_target_version = 3.9
+formatter.per_file_target_version = {}
+formatter.preview = disabled
+formatter.line_width = 88
+formatter.line_ending = auto
+formatter.indent_style = space
+formatter.indent_width = 4
+formatter.quote_style = double
+formatter.magic_trailing_comma = respect
+formatter.docstring_code_format = disabled
+formatter.docstring_code_line_width = dynamic
+
+# Analyze Settings
+analyze.exclude = []
+analyze.preview = disabled
+analyze.target_version = 3.9
+analyze.string_imports = disabled
+analyze.extension = ExtensionMapping({})
+analyze.include_dependencies = {}
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-30 19:44</div>
+            <div class="timeline-body"><p>Ah, is this in WSL? It's been a long time since I used it, but the <code>/mnt/c</code> paths look familiar. If that's the case, we're probably looking in your WSL user's home directory, not your Windows user's home directory, which I think would be the expected behavior again. But I'm not 100% sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/orishamir">@orishamir</a> on 2025-07-30 19:44</div>
+            <div class="timeline-body"><p>The same happens from CMD and without WSL:</p>
+<details>
+
+<pre><code>(pythonproject) C:\Users\ori\development\PythonProject&gt;uvx ruff check 
+All checks passed!                                                                                                                        
+
+(pythonproject) C:\Users\ori\development\PythonProject&gt;uvx ruff check -v --show-settings
+[2025-07-30][22:43:20][ruff::resolve][DEBUG] Using configuration file (via parent) at: C:\Users\ori\ruff.toml                             
+[2025-07-30][22:43:20][ruff_workspace::pyproject][DEBUG] No `target-version` found in `ruff.toml`
+[2025-07-30][22:43:20][ruff_workspace::pyproject][DEBUG] No `pyproject.toml` with `requires-python` in same directory; `target-version` unspecified
+[2025-07-30][22:43:20][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;C:\\Users\\ori\\development\\PythonProject\\src\\__init__.py&quot;
+[2025-07-30][22:43:20][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;C:\\Users\\ori\\development\\PythonProject\\pyproject.toml&quot;
+[2025-07-30][22:43:20][ignore::gitignore][DEBUG] opened gitignore file: C:\Users\ori\development\PythonProject\.venv\.gitignore
+[2025-07-30][22:43:20][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;C:\\Users\\ori\\development\\PythonProject\\src\\something.py&quot;
+[2025-07-30][22:43:20][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;C:\\Users\\ori\\development\\PythonProject\\main.py&quot;
+[2025-07-30][22:43:20][ignore::gitignore][DEBUG] opened gitignore file: C:\Users\ori\development\PythonProject\.ruff_cache\.gitignore     
+[2025-07-30][22:43:20][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;C:\\Users\\ori\\development\\PythonProject\\.venv&quot;   
+[2025-07-30][22:43:20][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;C:\\Users\\ori\\development\\PythonProject\\.ruff_cache&quot;
+Resolved settings for: &quot;C:\Users\ori\development\PythonProject\main.py&quot;
+Settings path: &quot;C:\Users\ori\ruff.toml&quot;
+
+# General Settings
+cache_dir = &quot;C:\Users\ori\.ruff_cache&quot;
+fix = false
+fix_only = false
+output_format = full
+show_fixes = false
+unsafe_fixes = hint
+
+# File Resolver Settings
+file_resolver.exclude = [
+        &quot;.bzr&quot;,
+        &quot;.direnv&quot;,
+        &quot;.eggs&quot;,
+        &quot;.git&quot;,
+        &quot;.git-rewrite&quot;,
+        &quot;.hg&quot;,
+        &quot;.ipynb_checkpoints&quot;,
+        &quot;.mypy_cache&quot;,
+        &quot;.nox&quot;,
+        &quot;.pants.d&quot;,
+        &quot;.pyenv&quot;,
+        &quot;.pytest_cache&quot;,
+        &quot;.pytype&quot;,
+        &quot;.ruff_cache&quot;,
+        &quot;.svn&quot;,
+        &quot;.tox&quot;,
+        &quot;.venv&quot;,
+        &quot;.vscode&quot;,
+        &quot;__pypackages__&quot;,
+        &quot;_build&quot;,
+        &quot;buck-out&quot;,
+        &quot;dist&quot;,
+        &quot;node_modules&quot;,
+        &quot;site-packages&quot;,
+        &quot;venv&quot;,
+]
+file_resolver.extend_exclude = []
+file_resolver.force_exclude = false
+file_resolver.include = [
+        &quot;*.py&quot;,
+        &quot;*.pyi&quot;,
+        &quot;*.ipynb&quot;,
+        &quot;**/pyproject.toml&quot;,
+]
+file_resolver.extend_include = []
+file_resolver.respect_gitignore = true
+file_resolver.project_root = &quot;C:\Users\ori&quot;
+
+# Linter Settings
+linter.exclude = []
+linter.project_root = &quot;C:\Users\ori&quot;
+linter.rules.enabled = [
+        multiple-imports-on-one-line (E401),
+        module-import-not-at-top-of-file (E402),
+        multiple-statements-on-one-line-colon (E701),
+        multiple-statements-on-one-line-semicolon (E702),
+        useless-semicolon (E703),
+        none-comparison (E711),
+        true-false-comparison (E712),
+        not-in-test (E713),
+        not-is-test (E714),
+        type-comparison (E721),
+        bare-except (E722),
+        lambda-assignment (E731),
+        ambiguous-variable-name (E741),
+        ambiguous-class-name (E742),
+        ambiguous-function-name (E743),
+        io-error (E902),
+        unused-import (F401),
+        import-shadowed-by-loop-var (F402),
+        undefined-local-with-import-star (F403),
+        late-future-import (F404),
+        undefined-local-with-import-star-usage (F405),
+        undefined-local-with-nested-import-star-usage (F406),
+        future-feature-not-defined (F407),
+        percent-format-invalid-format (F501),
+        percent-format-expected-mapping (F502),
+        percent-format-expected-sequence (F503),
+        percent-format-extra-named-arguments (F504),
+        percent-format-missing-argument (F505),
+        percent-format-mixed-positional-and-named (F506),
+        percent-format-positional-count-mismatch (F507),
+        percent-format-star-requires-sequence (F508),
+        percent-format-unsupported-format-character (F509),
+        string-dot-format-invalid-format (F521),
+        string-dot-format-extra-named-arguments (F522),
+        string-dot-format-extra-positional-arguments (F523),
+        string-dot-format-missing-arguments (F524),
+        string-dot-format-mixing-automatic (F525),
+        f-string-missing-placeholders (F541),
+        multi-value-repeated-key-literal (F601),
+        multi-value-repeated-key-variable (F602),
+        expressions-in-star-assignment (F621),
+        multiple-starred-expressions (F622),
+        assert-tuple (F631),
+        is-literal (F632),
+        invalid-print-syntax (F633),
+        if-tuple (F634),
+        break-outside-loop (F701),
+        continue-outside-loop (F702),
+        yield-outside-function (F704),
+        return-outside-function (F706),
+        default-except-not-last (F707),
+        forward-annotation-syntax-error (F722),
+        redefined-while-unused (F811),
+        undefined-name (F821),
+        undefined-export (F822),
+        undefined-local (F823),
+        unused-variable (F841),
+        unused-annotation (F842),
+        raise-not-implemented (F901),
+]
+linter.rules.should_fix = [
+        multiple-imports-on-one-line (E401),
+        module-import-not-at-top-of-file (E402),
+        multiple-statements-on-one-line-colon (E701),
+        multiple-statements-on-one-line-semicolon (E702),
+        useless-semicolon (E703),
+        none-comparison (E711),
+        true-false-comparison (E712),
+        not-in-test (E713),
+        not-is-test (E714),
+        type-comparison (E721),
+        bare-except (E722),
+        lambda-assignment (E731),
+        ambiguous-variable-name (E741),
+        ambiguous-class-name (E742),
+        ambiguous-function-name (E743),
+        io-error (E902),
+        unused-import (F401),
+        import-shadowed-by-loop-var (F402),
+        undefined-local-with-import-star (F403),
+        late-future-import (F404),
+        undefined-local-with-import-star-usage (F405),
+        undefined-local-with-nested-import-star-usage (F406),
+        future-feature-not-defined (F407),
+        percent-format-invalid-format (F501),
+        percent-format-expected-mapping (F502),
+        percent-format-expected-sequence (F503),
+        percent-format-extra-named-arguments (F504),
+        percent-format-missing-argument (F505),
+        percent-format-mixed-positional-and-named (F506),
+        percent-format-positional-count-mismatch (F507),
+        percent-format-star-requires-sequence (F508),
+        percent-format-unsupported-format-character (F509),
+        string-dot-format-invalid-format (F521),
+        string-dot-format-extra-named-arguments (F522),
+        string-dot-format-extra-positional-arguments (F523),
+        string-dot-format-missing-arguments (F524),
+        string-dot-format-mixing-automatic (F525),
+        f-string-missing-placeholders (F541),
+        multi-value-repeated-key-literal (F601),
+        multi-value-repeated-key-variable (F602),
+        expressions-in-star-assignment (F621),
+        multiple-starred-expressions (F622),
+        assert-tuple (F631),
+        is-literal (F632),
+        invalid-print-syntax (F633),
+        if-tuple (F634),
+        break-outside-loop (F701),
+        continue-outside-loop (F702),
+        yield-outside-function (F704),
+        return-outside-function (F706),
+        default-except-not-last (F707),
+        forward-annotation-syntax-error (F722),
+        redefined-while-unused (F811),
+        undefined-name (F821),
+        undefined-export (F822),
+        undefined-local (F823),
+        unused-variable (F841),
+        unused-annotation (F842),
+        raise-not-implemented (F901),
+]
+linter.per_file_ignores = {}
+linter.safety_table.forced_safe = []
+linter.safety_table.forced_unsafe = []
+linter.unresolved_target_version = none
+linter.per_file_target_version = {}
+linter.preview = disabled
+linter.explicit_preview_rules = false
+linter.extension = ExtensionMapping({})
+linter.allowed_confusables = []
+linter.builtins = []
+linter.dummy_variable_rgx = ^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$
+linter.external = []
+linter.ignore_init_module_imports = true
+linter.logger_objects = []
+linter.namespace_packages = []
+linter.src = [
+        &quot;C:\Users\ori&quot;,
+        &quot;C:\Users\ori\src&quot;,
+]
+linter.tab_size = 4
+linter.line_length = 88
+linter.task_tags = [
+        TODO,
+        FIXME,
+        XXX,
+]
+linter.typing_modules = []
+linter.typing_extensions = true
+
+# Linter Plugins
+linter.flake8_annotations.mypy_init_return = false
+linter.flake8_annotations.suppress_dummy_args = false
+linter.flake8_annotations.suppress_none_returning = false
+linter.flake8_annotations.allow_star_arg_any = false
+linter.flake8_annotations.ignore_fully_untyped = false
+linter.flake8_bandit.hardcoded_tmp_directory = [
+        /tmp,
+        /var/tmp,
+        /dev/shm,
+]
+linter.flake8_bandit.check_typed_exception = false
+linter.flake8_bandit.extend_markup_names = []
+linter.flake8_bandit.allowed_markup_calls = []
+linter.flake8_bugbear.extend_immutable_calls = []
+linter.flake8_builtins.allowed_modules = []
+linter.flake8_builtins.ignorelist = []
+linter.flake8_builtins.strict_checking = false
+linter.flake8_comprehensions.allow_dict_calls_with_keyword_arguments = false
+linter.flake8_copyright.notice_rgx = (?i)Copyright\s+((?:\(C\)|©)\s+)?\d{4}((-|,\s)\d{4})*
+linter.flake8_copyright.author = none
+linter.flake8_copyright.min_file_size = 0
+linter.flake8_errmsg.max_string_length = 0
+linter.flake8_gettext.functions_names = [
+        _,
+        gettext,
+        ngettext,
+]
+linter.flake8_implicit_str_concat.allow_multiline = true
+linter.flake8_import_conventions.aliases = {
+        altair = alt,
+        holoviews = hv,
+        matplotlib = mpl,
+        matplotlib.pyplot = plt,
+        networkx = nx,
+        numpy = np,
+        numpy.typing = npt,
+        pandas = pd,
+        panel = pn,
+        plotly.express = px,
+        polars = pl,
+        pyarrow = pa,
+        seaborn = sns,
+        tensorflow = tf,
+        tkinter = tk,
+        xml.etree.ElementTree = ET,
+}
+linter.flake8_import_conventions.banned_aliases = {}
+linter.flake8_import_conventions.banned_from = []
+linter.flake8_pytest_style.fixture_parentheses = false
+linter.flake8_pytest_style.parametrize_names_type = tuple
+linter.flake8_pytest_style.parametrize_values_type = list
+linter.flake8_pytest_style.parametrize_values_row_type = tuple
+linter.flake8_pytest_style.raises_require_match_for = [
+        BaseException,
+        Exception,
+        ValueError,
+        OSError,
+        IOError,
+        EnvironmentError,
+        socket.error,
+]
+linter.flake8_pytest_style.raises_extend_require_match_for = []
+linter.flake8_pytest_style.mark_parentheses = false
+linter.flake8_quotes.inline_quotes = double
+linter.flake8_quotes.multiline_quotes = double
+linter.flake8_quotes.docstring_quotes = double
+linter.flake8_quotes.avoid_escape = true
+linter.flake8_self.ignore_names = [
+        _make,
+        _asdict,
+        _replace,
+        _fields,
+        _field_defaults,
+        _name_,
+        _value_,
+]
+linter.flake8_tidy_imports.ban_relative_imports = &quot;parents&quot;
+linter.flake8_tidy_imports.banned_api = {}
+linter.flake8_tidy_imports.banned_module_level_imports = []
+linter.flake8_type_checking.strict = false
+linter.flake8_type_checking.exempt_modules = [
+        typing,
+        typing_extensions,
+]
+linter.flake8_type_checking.runtime_required_base_classes = []
+linter.flake8_type_checking.runtime_required_decorators = []
+linter.flake8_type_checking.quote_annotations = false
+linter.flake8_unused_arguments.ignore_variadic_names = false
+linter.isort.required_imports = []
+linter.isort.combine_as_imports = false
+linter.isort.force_single_line = false
+linter.isort.force_sort_within_sections = false
+linter.isort.detect_same_package = true
+linter.isort.case_sensitive = false
+linter.isort.force_wrap_aliases = false
+linter.isort.force_to_top = []
+linter.isort.known_modules = {}
+linter.isort.order_by_type = true
+linter.isort.relative_imports_order = furthest_to_closest
+linter.isort.single_line_exclusions = []
+linter.isort.split_on_trailing_comma = true
+linter.isort.classes = []
+linter.isort.constants = []
+linter.isort.variables = []
+linter.isort.no_lines_before = []
+linter.isort.lines_after_imports = -1
+linter.isort.lines_between_types = 0
+linter.isort.forced_separate = []
+linter.isort.section_order = [
+        known { type = future },
+        known { type = standard_library },
+        known { type = third_party },
+        known { type = first_party },
+        known { type = local_folder },
+]
+linter.isort.default_section = known { type = third_party }
+linter.isort.no_sections = false
+linter.isort.from_first = false
+linter.isort.length_sort = false
+linter.isort.length_sort_straight = false
+linter.mccabe.max_complexity = 10
+linter.pep8_naming.ignore_names = [
+        setUp,
+        tearDown,
+        setUpClass,
+        tearDownClass,
+        setUpModule,
+        tearDownModule,
+        asyncSetUp,
+        asyncTearDown,
+        setUpTestData,
+        failureException,
+        longMessage,
+        maxDiff,
+]
+linter.pep8_naming.classmethod_decorators = []
+linter.pep8_naming.staticmethod_decorators = []
+linter.pycodestyle.max_line_length = 88
+linter.pycodestyle.max_doc_length = none
+linter.pycodestyle.ignore_overlong_task_comments = false
+linter.pyflakes.extend_generics = []
+linter.pyflakes.allowed_unused_imports = []
+linter.pylint.allow_magic_value_types = [
+        str,
+        bytes,
+]
+linter.pylint.allow_dunder_method_names = []
+linter.pylint.max_args = 5
+linter.pylint.max_positional_args = 5
+linter.pylint.max_returns = 6
+linter.pylint.max_bool_expr = 5
+linter.pylint.max_branches = 12
+linter.pylint.max_statements = 50
+linter.pylint.max_public_methods = 20
+linter.pylint.max_locals = 15
+linter.pyupgrade.keep_runtime_typing = false
+linter.ruff.parenthesize_tuple_in_subscript = false
+
+# Formatter Settings
+formatter.exclude = []
+formatter.unresolved_target_version = 3.9
+formatter.per_file_target_version = {}
+formatter.preview = disabled
+formatter.line_width = 88
+formatter.line_ending = auto
+formatter.indent_style = space
+formatter.indent_width = 4
+formatter.quote_style = double
+formatter.magic_trailing_comma = respect
+formatter.docstring_code_format = disabled
+formatter.docstring_code_line_width = dynamic
+
+# Analyze Settings
+analyze.exclude = []
+analyze.preview = disabled
+analyze.target_version = 3.9
+analyze.string_imports = disabled
+analyze.extension = ExtensionMapping({})
+analyze.include_dependencies = {}
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/orishamir">@orishamir</a> on 2025-07-30 19:48</div>
+            <div class="timeline-body"><p>Maybe its because uv installs ruff into a separate environment? @ntBre</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-30 19:55</div>
+            <div class="timeline-body"><p>Ah gotcha, thanks! I'm not sure about the uv part. From the logs, it looks like we're hitting this case:</p>
+<p>https://github.com/astral-sh/ruff/blob/1e1bd629a8f34135cd4bf5faa963e457ac79d215/crates/ruff/src/resolve.rs#L65-L69</p>
+<p>and using <code>C:\Users\ori\ruff.toml </code> instead of continuing on to the user settings. So this might boil down to the same issue again. A configuration file in a parent directory is treated as part of the current &quot;project&quot; and prevents falling back to the user-level config.</p>
+<p>I'd expect if you removed (or temporarily renamed) <code>C:\Users\ori\ruff.toml</code>, we should read the user-level config.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/orishamir">@orishamir</a> on 2025-07-30 20:02</div>
+            <div class="timeline-body"><p>Damn. Indeed.
+I guess its a bit weird that a file i have at <code>C:\Users\ori\ruff.toml</code> influences <code>C:\Users\ori\development\PythonProject</code><br />
+Maybe it would make sense only to detect 1 directory layer up? Or only in the same uv workspace?
+Or maybe its my fault...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-30 20:14</div>
+            <div class="timeline-body"><p>I know what you mean. I think this is what @dylwil3 was getting at with the cascading/hierarchical config <a href="https://github.com/astral-sh/ruff/issues/19238#issuecomment-3054021911">here</a>. Basically, some projects can intentionally have arbitrarily nested configurations that extend each other, and that's a workflow we want to support, but it's hard to differentiate that from the kind of case here where it's not desirable.</p>
+<p>If uv has this figured out for workspaces, that could be an interesting way to fix it in the future, but we don't have that kind of  integration with uv today either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/orishamir">@orishamir</a> on 2025-07-30 20:18</div>
+            <div class="timeline-body"><p>Okay. I guess in the long run, the way to go would be integration with uv workspaces. Looking forward to that exciting day!
+Anyway, thanks for taking the time to help, appreciate it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @orishamir on 2025-07-30 21:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

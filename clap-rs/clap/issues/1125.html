@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi valued flags and required argument do not work together very well - clap-rs/clap #1125</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Multi valued flags and required argument do not work together very well</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/1125">#1125</a>
+        opened by <a href="https://github.com/rsertelon">@rsertelon</a>
+        on 2017-12-08 23:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rsertelon">@rsertelon</a> on 2017-12-08 23:13</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<ul>
+<li>1.22.1</li>
+</ul>
+<h3>Affected Version of clap</h3>
+<ul>
+<li>2.29.0</li>
+</ul>
+<p>The <a href="https://github.com/habitat-sh/habitat">habitat project</a> uses clap for its command line parsing. There are currently two issues opened related to how clap generates help message and/or how it parses the command line arguments.</p>
+<p>Issues are:</p>
+<ul>
+<li>https://github.com/habitat-sh/habitat/issues/2221</li>
+<li>https://github.com/habitat-sh/habitat/issues/3106</li>
+</ul>
+<p>In the source code of habitat, here's the <a href="https://github.com/habitat-sh/habitat/blob/master/components/sup/src/main.rs#L329">interesting bit</a>.</p>
+<p>The subcommand <code>load</code> has both a required <code>@arg PKG_IDENT_OR_ARTIFACT + required + takes_value</code> and a multivalued <code>@arg BIND: --bind +takes_value +multiple</code></p>
+<p>The problem is that the help message prints:</p>
+<pre><code>USAGE:
+    hab-sup load [FLAGS] [OPTIONS] &lt;PKG_IDENT&gt;
+</code></pre>
+<p>But if you try to actually follow the help message while using the <code>--bind</code> flag and specify the <code>&lt;PKG_IDENT&gt;</code> as the last argument, it won't work as clap thinks it's still a <code>--bind</code> value. However, if <code>--bind</code> argument is placed as the last one, it'll work as expected.</p>
+<p>So there's either a discrepancy in the help message, or/and a multivalue parsing that may be to greedy for when there's an expected required argument.</p>
+<p>I understand this problem is not really trivial, I've <a href="https://github.com/kbknapp/clap-rs/issues/782">seen an issue</a> that might address this, but it feels weird to have to add a terminator to the <code>--bind</code> flag from a user perspective.</p>
+<p>Hope the problem has been made clearly, don't hesitate if you need further information!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-01-09 16:33</div>
+            <div class="timeline-body"><p>@rsertelon sorry for the long delay! Holidays and travel have had me gone for a while.</p>
+<p>Although this isn't a trivial problem (how to tell clap when <code>--bind</code> is done and <code>&lt;PKG_IDENT&gt;</code> starts), there is a trivial fix <em>if it works with your use case</em>.</p>
+<ul>
+<li>Limit <code>--bind</code> to a single value <em>per occurrence</em>. So for example, <code>--bind value1 --bind value2</code> is legal, but <code>--bind value1 value2</code> is not. This is the easiest fix and my recommended solution. To do this, declare <code>--bind</code> like so: <code>@arg BIND: --bind +takes_value +multiple number_of_values(1)</code></li>
+</ul>
+<p>There are some other things you could try like <code>Arg::last(true)</code> (or <code>+last</code> for the macro version). Which will change your usage string to <code>hab-sup load [FLAGS] [OPTIONS] [--] &lt;PKG_IDENT&gt;</code> the downside it that it <em>requires</em> <code>--</code> to be used to access <code>&lt;PKG_IDENT&gt;</code>.</p>
+<p>Finally, you could also just set a custom usage string for that one subcommand, to make it <code>hab-sup load [FLAGS] &lt;PKG_IDENT&gt; [OPTIONS]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2018-01-09 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-01-09 16:35</div>
+            <div class="timeline-body"><p>I have some ideas on things that could fix this...but I'm far from implementing them yet and they wouldn't probably happen until v3. I'm thinking of things like filters, where one could say, &quot;This particular arg only accepts values that meet some criteria...if they don't fit, look at other args.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rsertelon">@rsertelon</a> on 2018-01-09 21:09</div>
+            <div class="timeline-body"><p>Hey @kbknapp no problem! Thanks for your answer. I'll discuss this with the dev team at habitat. The workaround might be a good solution, filters might be nice too! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../habitat-sh/habitat/issues/4519.html">habitat-sh/habitat#4519</a> on 2018-01-30 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by @pksunkara on 2020-04-01 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @pksunkara on 2020-04-01 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: hard</span> added by @pksunkara on 2020-04-01 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @pksunkara on 2020-04-01 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @pksunkara on 2020-04-01 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @pksunkara on 2020-04-01 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2021-02-21 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2021-05-26 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @pksunkara on 2021-05-26 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/83.html">epage/clapng#83</a> on 2021-12-06 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> removed by @epage on 2021-12-08 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2021-12-08 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-hard</span> removed by @epage on 2021-12-09 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> removed by @epage on 2021-12-09 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2021-12-09 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcospb19">@marcospb19</a> on 2023-09-08 01:38</div>
+            <div class="timeline-body"><p>+1, I'd like to share the code I expected to succeed.</p>
+<p>Here's the minified example for <a href="https://github.com/ouch-org/ouch/issues/485">the issue I found in <code>Ouch</code></a>:</p>
+<pre><code class="language-rust">use std::{ffi::OsString, path::PathBuf};
+
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+pub enum Subcommand {
+    Compress {
+        #[arg(required = true)]
+        files: Vec&lt;PathBuf&gt;,
+
+        #[arg(required = true)]
+        output: PathBuf,
+
+        #[arg(short, long)]
+        format: Option&lt;OsString&gt;,
+    },
+}
+
+fn main() {
+    let inputs = [
+        &quot;ouch compress a b c output --format tar.gz&quot;,
+        &quot;ouch compress a b c --format tar.gz output&quot;,
+        &quot;ouch compress a b --format tar.gz c output&quot;,
+        &quot;ouch compress a --format tar.gz b c output&quot;,
+        &quot;ouch compress --format tar.gz a b c output&quot;,
+    ];
+    for input in inputs {
+        let result = Subcommand::try_parse_from(input.split_whitespace());
+        let result = result.map(|_| ()).map_err(|_| ());
+        println!(&quot;{input}, {result:?}&quot;);
+    }
+}
+</code></pre>
+<p>I was expecting it all to be <code>Ok(())</code>, but instead some <code>Err(())</code>s:</p>
+<pre><code class="language-rust">&quot;ouch compress a b c output --format tar.gz&quot;, Ok(())
+&quot;ouch compress a b c --format tar.gz output&quot;, Err(())
+&quot;ouch compress a b --format tar.gz c output&quot;, Err(())
+&quot;ouch compress a --format tar.gz b c output&quot;, Err(())
+&quot;ouch compress --format tar.gz a b c output&quot;, Ok(())
+</code></pre>
+<hr />
+<p>To my surprise, the exact same applies for flags that don't take a value:</p>
+<pre><code class="language-rust">&quot;ouch compress a b c output --verbose&quot;, Ok(())
+&quot;ouch compress a b c --verbose output&quot;, Err(())
+&quot;ouch compress a b --verbose c output&quot;, Err(())
+&quot;ouch compress a --verbose b c output&quot;, Err(())
+&quot;ouch compress --verbose a b c output&quot;, Ok(())
+</code></pre>
+<p>Is there a way around this?</p>
+<p>(I'd consider this to be <code>C-bug</code> instead of <code>C-enhancement</code> :thinking: but that's just because I expect CLI tools in general to extract flags out of the way of positional arguments, so you never have to worry where you insert a flag)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ouch-org/ouch/issues/485.html">ouch-org/ouch#485</a> on 2023-09-08 01:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-09-08 02:06</div>
+            <div class="timeline-body"><p>@marcospb19 I suspect your case's root cause is independent of this issue and I'd recommend making your own and following the template.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcospb19">@marcospb19</a> on 2023-09-08 20:33</div>
+            <div class="timeline-body"><p>:+1: I made the example smaller and created #5115.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5361.html">clap-rs/clap#5361</a> on 2024-02-17 12:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

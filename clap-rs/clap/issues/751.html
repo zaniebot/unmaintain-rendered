@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>use cases for value_of/values_of - clap-rs/clap #751</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>use cases for value_of/values_of</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/751">#751</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2016-11-14 21:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-14 21:36</div>
+            <div class="timeline-body"><p>Sorry to keep opening issues, and this may indeed be more of a question because I've missed something, but what are the intended use cases of <code>value_of</code>/<code>values_of</code>? In particular, I notice that this is part of its contract:</p>
+<blockquote>
+<p>This method will panic! if the value contains invalid UTF-8 code points.</p>
+</blockquote>
+<p>(Pedant: I think this should say &quot;invalid UTF-8.&quot; There is no such thing as a &quot;UTF-8 codepoint.&quot;)</p>
+<p>Since the value is typed by the user, this means that the user can cause your program to panic if you use <code>value_of</code>/<code>values_of</code> when the user gives a value that isn't valid UTF-8. In my view, if an <em>end user</em> sees a panic, then it ought to be considered a bug. If my interpretation is right, then that means I should <em>never</em> use <code>value_of</code>/<code>values_of</code>, right?</p>
+<p>I do see one possible use case: if a caller <em>disables</em> the <code>AllowInvalidUtf8</code> setting, then I believe clap will return a nice error if it detects invalid UTF-8, and therefore, <code>value_of</code>/<code>values_of</code> will <em>never</em> panic. However, according to the docs, <code>AllowInvalidUtf8</code> is enabled by default, so this seems like a potential footgun.</p>
+<p>(This is a good instance of the pot calling the kettle black because <code>docopt.rs</code>, for example, can't handle invalid UTF-8 <em>at all</em>! :-) So clap is already leagues better in this regard.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-11-14 21:56</div>
+            <div class="timeline-body"><p>No worries, so far all the issues you've written have been superb and are pushing great things! Keep them coming!</p>
+<p>I think you're absolutely correct in that reasoning, and I actually agree the <code>StrictUtf8</code> should be the default, where the users actually opt-in to allowing invalid UTF-8, at which point they're also conscious that they should be using the <code>value[s]_of_os</code> instead.</p>
+<p>I can't remember exactly, but I believe my reasoning behind making invalid UTF-8 allowed by default was....whelp no I can't remember. I know I had a reason though! Maybe it was prior to adding the <code>value[s]_of_os</code>? Oh well...</p>
+<p>Changing that default is <em>technically</em> a breaking change, although like Rust I do believe some breaking changes should be allowed if they fix [logic] bugs, prevent security holes, or otherwise correct other unsound behavior. It should be simple to at least find github users who have used the <code>value[s]_of_os</code> and know to what extent this change would cause. I know that's not the whole sample, but should at least give an idea.</p>
+<p>Thoughts?</p>
+<p>Changing the docs is a quick fix too :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: docs</span> added by @kbknapp on 2016-11-14 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2016-11-14 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-11-14 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: breaking change</span> added by @kbknapp on 2016-11-14 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2016-11-14 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-11-14 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-11-14 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-11-14 22:01</div>
+            <div class="timeline-body"><p>Ok, so on Github there are actually more than I thought using the <code>value[s]_of_os</code> methods. Probably more than I'd feel comfortable switching the default. It's roughly ~30 uses, which is totally possible to contact all of them and warn them of the change. What scares me is that there's ~30 on github, but I have no idea how many in all the other places with no way to warn them. This may just have to wait for 3.x :cry:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-14 22:32</div>
+            <div class="timeline-body"><p>I think it's perfectly fine to wait for <code>3.x</code> FWIW. It does feel like a bit of a sneaky breaking change to try to squeeze it in into a minor bump. I also think making <code>StrictUtf8</code> the default is a good solution given the current API too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-14 22:34</div>
+            <div class="timeline-body"><p>One thing to consider though is this fact: if I'm writing a CLI tool on Unix and my tool accepts file paths as arguments, then I probably always want to allow invalid UTF-8 because I'm otherwise preventing my tool from working on all file paths. This is kind of a bigger picture question to answer that's probably out-of-scope for a small footgun, because it means putting UTF-8 handling front and center, which obviously sacrifices a bit of ergonomics. It's a hard line to walk and probably requiring them to explicitly use the <code>os</code> methods is a fine answer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-11-14 23:35</div>
+            <div class="timeline-body"><p>Exactly, I wouldn't make a change like that unless I could reasonably sure it either breaks no code <em>or</em> I was able to contact the majority (if not all) users of said feature to get their approval first. And in this case I don't think that's reasonable.</p>
+<p>I have been thinking of a 3.x for a while now, so hopefully the wait won't be too long! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2016-11-14 23:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> removed by @kbknapp on 2016-11-14 23:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @kbknapp on 2016-12-27 04:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @kbknapp on 2018-02-02 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v3-alpha1" by @kbknapp on 2018-02-02 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-cli/team/issues/26.html">rust-cli/team#26</a> on 2018-03-25 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> added by @kbknapp on 2018-07-22 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @kbknapp on 2018-07-22 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1483.html">clap-rs/clap#1483</a> on 2019-06-02 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kornelski">@kornelski</a> on 2019-06-03 12:00</div>
+            <div class="timeline-body"><p>I've tried to fix panics in Cargo (w/clap 2.x), but Cargo frequently uses such pattern (and its <code>match</code> equivalent):</p>
+<pre><code>if matches.value_of(&quot;arg&quot;) == Some(&quot;value&quot;)
+</code></pre>
+<p>Changing it to <code>value_of_os</code>/<code>value_of_lossy</code> prevents direct comparison, and requires mapping/unwrapping which makes it longer and less readable.</p>
+<p>Without breaking changes, it could be improved by adding <code>matches.value_equals(arg_name, &amp;str)</code> which could simply return <code>false</code> for non-UTF-8 args (since they can never match a <code>str</code>).</p>
+<p>Perhaps it could be fixed at the source, by changing definition of arguments? Currently <code>app.arg()</code> doesn't define the data type it expects.</p>
+<p>How about having <code>app.arg_os()</code> or <code>app.arg_path()</code> that would define the arg is/isn't a path, and force use of <code>value_of_os</code>/<code>value_of_pathbuf</code>? And <code>app.arg()</code> (or <code>app.arg_str()</code>?) would reject non-UTF-8 arg.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v3-alpha.2" by @pksunkara on 2020-02-01 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v3.0" by @pksunkara on 2020-02-01 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-07-07 14:33</div>
+            <div class="timeline-body"><p>It does seem like the vast majority of non-utf8 offenders in CLI args are filesystem paths, and otherwise there's little sense to be on guard against invalid utf-8, correct? Maybe introducing some sort of path-specific getter (as described in #1723 for instance) is the way to mitigating the issue?</p>
+<blockquote>
+<p>How about having app.arg_os() or app.arg_path() that would define the arg is/isn't a path, and force use of value_of_os/value_of_pathbuf? And app.arg() (or app.arg_str()?) would reject non-UTF-8 arg.</p>
+</blockquote>
+<p>That might not be a bad idea, but it's not really feasible implementation-wise. That's just very far image from how the current implementation works; we'd have to rewrite a good part of clap for it. Maybe in next major version 🤷</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> removed by @CreepySkeleton on 2020-07-07 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Z: good first issue</span> removed by @CreepySkeleton on 2020-07-07 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: matches</span> added by @CreepySkeleton on 2020-07-07 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @CreepySkeleton on 2020-07-07 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-03-07 18:08</div>
+            <div class="timeline-body"><p>Opinion: Using <code>value_of</code> do introduce possiblility of panic, but the current api design is the same as <a href="https://doc.rust-lang.org/std/env/fn.args.html"><code>std::env::args()</code></a> and <a href="https://doc.rust-lang.org/std/env/fn.args_os.html"><code>std::env::args_os</code></a>. So removing <code>value_of()</code> is unneeded. And I don't think adding new convenient functions is good for api surface's cleaness.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-19 19:35</div>
+            <div class="timeline-body"><p><code>clap_derive</code> is using <code>value_of</code> behind the scenes.  We should either switch away from <code>value_of</code> for the derive or fix this because this is a case where the user has no idea this is happening and don't have a choice to move away from it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-07-21 20:27</div>
+            <div class="timeline-body"><p>Is it planned to fix this for clap 3? It looks like the current API as of clap 3 beta 2 still panics on invalid UTF-8: https://docs.rs/clap/3.0.0-beta.2/clap/struct.ArgMatches.html#method.value_of</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-21 21:32</div>
+            <div class="timeline-body"><p>I assume so since its tagged with the 3.0 milestone.  At minimum, I'd like to see hidden callers use a non-panicing API (derive, <code>value_of_t</code>, etc), whether that involves fixing this or changing the call sites.</p>
+<p>Options</p>
+<ul>
+<li><code>StrictUtf8</code> being the default<ul>
+<li>Downside: This can't discriminate on how the arg will be used, so breaking all uses of accepting <code>PathBuf</code> / <code>OsString</code>.  Enabling support for that would then re-enable the panic</li>
+</ul>
+</li>
+<li>ArgSettings for invalid/strict like the similar AppSettings<ul>
+<li>Looks like we look at <code>StrictUtf8</code> <em>after</em> we know which are we are processing, so this looks feasible</li>
+<li><code>clap_derive</code> can auto-set this</li>
+<li>We can make this the default with a comment on <code>value_of_os</code> that they should unset the flag.</li>
+<li>The question is how to have this interact with the AppSetting, if we keep it.<ul>
+<li>If someone sets <code>StrictUtf8</code> at the App level, there isn't a way to opt-out at the Arg level.  We'd need a tri-state (yes, no, default).</li>
+<li>We could keep both <code>StrictUtf8</code> and <code>AllowInvalidUtf8</code> to mimic the tri-state.  What to do if someone sets both on an Arg or on the App?  Unsetting a default would be different from all other settings (instead of unset, you set something different)</li>
+<li>Its also used for external subcommands, so we'd need something for that.</li>
+<li>This is similar to the &quot;How about having app.arg_os() or app.arg_path()&quot; idea before mentioned but is tying into the way clap is currently doing things</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Change <code>value_of</code>s signature to return an error<ul>
+<li>This ties into #2505 for whether not-present should be an error, or whether we should use <code>Option&lt;Result&lt;_, _&gt;&gt;</code> or <code>Result&lt;Option&lt;_&gt;, _&gt;</code></li>
+</ul>
+</li>
+</ul>
+<p>I lean towards</p>
+<ul>
+<li><code>ArgSetting::StrictUtf8</code> being added and being the default<ul>
+<li><code>value_of_os</code> would document this</li>
+<li><code>clap_derive</code> would &quot;do the right thing&quot;</li>
+</ul>
+</li>
+<li><code>AppSetting::StrictUtf8</code> would be changed to <code>AppSetting::StrictUtf8ExternalSubcommand</code> and would be <strong>on</strong> by default just to keep the documentation simple<ul>
+<li><code>value_of_os</code> would document this</li>
+<li><code>clap_derive</code> would &quot;do the right thing&quot;</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2617.html">clap-rs/clap#2617</a> on 2021-07-22 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-25 17:21</div>
+            <div class="timeline-body"><p>There's a little bit of holistic clean up that needs to be done regarding these API methods and how they are used in derive. This is related to a few others issues too. Definitely need to be done before 3.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-26 14:42</div>
+            <div class="timeline-body"><p>@pksunkara how does my proposal sound for a path to move forward?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-28 17:29</div>
+            <div class="timeline-body"><p>Based on another thread (https://github.com/clap-rs/clap/discussions/2627), By making <code>StrictUtf8</code> the default, we'd need to invert its name again back to <code>AllowInvalidUtf8</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2623.html">clap-rs/clap#2623</a> on 2021-08-02 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2021-08-09 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-09 02:20</div>
+            <div class="timeline-body"><p>Yup. So, we basically need to change the <code>StrictUtf8</code> setting in favor of <code>AllowInvalidUtf8</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-09 13:48</div>
+            <div class="timeline-body"><p>@pksunkara just want to make sure you read what my comment was associated with; its not just inverting it but also moving it from an app setting to an arg setting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-09 16:40</div>
+            <div class="timeline-body"><p>Missed that, but still sounds good. This change might be a bit big for @hosseind88 though in #2623</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2677.html">clap-rs/clap#2677</a> on 2021-08-10 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2687.html">clap-rs/clap#2687</a> on 2021-08-13 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-08-18 21:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../solana-labs/solana-program-library/issues/4511.html">solana-labs/solana-program-library#4511</a> on 2023-06-08 23:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

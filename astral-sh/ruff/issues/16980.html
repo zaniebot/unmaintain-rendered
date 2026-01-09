@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM102 should be disabled for os.name and platform.system() checks (in addition to sys.platform) - astral-sh/ruff #16980</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM102 should be disabled for os.name and platform.system() checks (in addition to sys.platform)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16980">#16980</a>
+        opened by <a href="https://github.com/real-or-random">@real-or-random</a>
+        on 2025-03-26 12:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/real-or-random">@real-or-random</a> on 2025-03-26 12:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>SIM102 (collapsible-if) has an exception for version and os checks. This currently matches <code>sys.platform</code>.</p>
+<pre><code class="language-python">if sys.platform == &quot;linux&quot;:  # no SIM102
+    if foo:
+</code></pre>
+<p>Analogously, it should also be disabled <code>os.name</code> and <code>platform.system()</code>:</p>
+<pre><code class="language-python">if os.name == &quot;posix&quot;: # SIM102
+    if foo:
+</code></pre>
+<p>See https://stackoverflow.com/a/58071295 to learn about the various methods. (And if you've looked at this post, you're also in a good position to have an opinion on the otherwise unrelated https://github.com/astral-sh/ruff/issues/5622.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-26 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-27 19:58</div>
+            <div class="timeline-body"><p>Can you tell me a bit more why you think SIM102 should be disabled. Is it because some type checkers don't support narrowing if it's an if-else expression?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/real-or-random">@real-or-random</a> on 2025-03-31 07:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you tell me a bit more why you think SIM102 should be disabled. Is it because some type checkers don't support narrowing if it's an if-else expression?</p>
+</blockquote>
+<p>Okay, TIL, and now that you ask, I'm not so sure anymore.</p>
+<p>Until now, my point was merely readability: I think branching on a Python version or on an OS is a different thing than branching on business logic, so believe it's good to have it in a separate if: Then your brain can easily focus on the part that concerns a particular OS, and skip the other parts. But this is my personal view, and I'm not sure how objective it is. My thinking was simply that if it has been decided that checks for <code>sys.platform</code> and <code>sys.version_info</code> should be treated differently for readability, then the same should apply to <code>os.name</code> and <code>platform.system()</code>.</p>
+<p>But I was not aware that type checkers may be a reason. This goes back to <a href="https://peps.python.org/pep-0484/#version-and-platform-checking">PEP 484</a>, which says &quot;Type checkers are expected to understand simple version and platform checks, e.g.: (...) <code>if sys.version_info[0] &gt;= 3:</code> (...) <code>if sys.platform == 'win32':</code>&quot;. The <a href="https://typing.python.org/en/latest/spec/directives.html#version-and-platform-checking">current docs</a> are similar, but use <code>sys.version_info &gt;= (3,12)</code> as an example.</p>
+<p>After some research, I found <a href="https://github.com/python/typing/issues/1732">this issue about the set of conditions being underspecified</a>... It's a good summary of what is supported by different typecheckers. For example, pyright supports <code>os.name</code> but mypy doesn't. None of them support platform.system()`.</p>
+<p>My feeling is that a linter should be conservative here. If someone uses <code>os.name</code> to make pyright happy, this seems fine. But given that this is still very much under debate, I'm not sure if it's the right time to change SIM102...</p>
+<p>In either case, I think the comments here should be updated:
+https://github.com/astral-sh/ruff/blob/c6efa93cf7a630332901367a1badbdbadc46280e/crates/ruff_linter/src/rules/flake8_simplify/rules/collapsible_if.rs#L100-L108
+If I'm not mistaken, this file is only about SIM102, so this is not about ternaries. Moreover, <code>is_sys_version_block</code> also checks for <code>sys.platform</code>, so the name is misleading.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/polyvertex">@polyvertex</a> on 2025-05-06 06:54</div>
+            <div class="timeline-body"><p>I am not sure about the case given by OP, however there is at least one specific case where it might be okay to disable SIM102:</p>
+<pre><code class="language-python">if __debug__:  # noqa: SIM102
+    if foo:
+        ...
+</code></pre>
+<p>Although this may be considered bad practice which is another topic, the rationale behind this is to allow the interpreter to fully strip the code block when running with <code>python -O</code>.</p>
+<p>This is at least what CPython does from what I can recall, as long as <code>__debug__</code> is the only test in the <code>if</code> statement.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

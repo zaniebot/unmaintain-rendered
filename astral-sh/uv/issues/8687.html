@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal: `uv doc` - astral-sh/uv #8687</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Proposal: `uv doc`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/8687">#8687</a>
+        opened by <a href="https://github.com/nanthony007">@nanthony007</a>
+        on 2024-10-29 21:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nanthony007">@nanthony007</a> on 2024-10-29 21:18</div>
+            <div class="timeline-body"><h1><code>uv doc</code> as an API documentation tool</h1>
+<p>Is there any consideration into extending the functionality of <code>uv</code> into the documentation generation landscape? The idea would be mimicking <code>cargo doc</code> (<code>rustdoc</code>) to generate <em>static</em> documentation for available offline. Accessing a project's user-defined functions along with their signatures and corresponding doc-strings seems, on the surface, to be trivial although I am sure I am failing to consider some edge cases. It then becomes a matter of parsing the doc-string as Markdown into its various components (assuming either Google or Numpy style) and rendering the corresponding HTML components in an interactive and connected way (i.e. including cross-references, navigation, links, code snippets for examples, search, etc). The idea here would be to mimic <code>cargo doc</code> functionality including the ability to also document (or not) private objects (assuming they were defined using a leading underscore?) and potentially to also enable the testing/executing of examples to ensure they stay up-to-date although admittedly I am unsure if this would even be possible in Python. As you can see there is a lot of room for scope creep here, but below I define some opportunities and some boundaries that I see. Overall I think this would be a great addition to the ecosystem.</p>
+<p>Currently there is work that has already been completed in this space, notably <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a>, <a href="https://www.mkdocs.org">Mkdocs</a> -- specifically <a href="https://mkdocstrings.github.io">mkdocstrings</a>, and <a href="https://pdoc.dev">pdoc</a> so there is a lot of existing work to build upon regarding best practices for accessing the required Python data and parsing the various doc-string formats.</p>
+<p>So why would <code>uv</code> get involved?</p>
+<ol>
+<li>Some of these tools use small web servers that (<code>mkdocs serve</code>, admittedly, could run locally, but make sharing more difficult. Static documentation exports could be shared or published internally especially for non-public facing code.</li>
+<li><code>uv</code> could improve rendering times of the documentation significantly.</li>
+<li><code>uv</code> could improve the Python landscape by making API documentation more accessible likely (although this is speculation) leading to more adoption, especially if adoption is as simple as &quot;run this command to get API docs&quot;.</li>
+<li><code>uv</code> could develop a new, or embrace an existing doc-string style (<a href="https://peps.python.org/pep-0257/">PEP #257</a>) for users. This might also assist with cross-reference links specifically. Astral is in a position here to provide guidance similar to the &quot;How to write documentation&quot; section of the Rust book.</li>
+<li>Astral can put their own branding and styling on the documentation. Here I mean not only themes and CSS-driven styling (which would likely need to be extensible to please users), but also Copyright information.</li>
+</ol>
+<p>What are some scope limitations here?</p>
+<ol>
+<li>This would be for generating <strong>API documentation</strong> and prose-based documentation would still best be suited to static site generators like MkDocs.</li>
+<li>This would likely work best with well-typed Python libraries and would apply less to applications and even less to un-typed applications.</li>
+<li>A natural question that occurred to me is: &quot;Would Astral then have hosting for these API docs similar to docs.rs? That would allow online access of published PyPI packages as well as versioning of the documentation itself.&quot; and I think the answer here is no and that this is out of scope since it would likely require integrating closely with PyPI for when packages are published/updated and is also probably cost prohibitive.</li>
+<li>Another question was &quot;If the docs have Astral branding (i.e. Copyright -- not so much the theme) could they charge a premium to remove it?&quot; and while I think the theoretical answer here is yes I will leave it up to the team to decide.</li>
+</ol>
+<p>Overall I think this could be a good addition to the <code>uv</code> toolchain and think <code>pdoc</code> has the most similar basic functionality (Sphinx being much larger and feature-full) to what I am describing. <code>pdoc</code> was originally authored by BurntSushi who may be able to provide further guidance, but I will avoid adding this to his inbox :)</p>
+<p>EDIT: I would be willing to work on this but would eventually need guidance on branding/styling from core maintainers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-10-29 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @zanieb on 2024-10-29 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-30 01:56</div>
+            <div class="timeline-body"><p>Cool idea, I'd assume this likely involves both <code>uv</code> and <code>ruff</code> (code wise)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nanthony007">@nanthony007</a> on 2024-12-03 02:44</div>
+            <div class="timeline-body"><p>I got a preliminary piece of code working using <code>pyo3</code>, basically boils down to:</p>
+<pre><code class="language-python">let doc = obj.getattr(&quot;__doc__&quot;);
+</code></pre>
+<p>after parsing the module tree and identifying user defined functions.</p>
+<p>However as I am posting this I am realizing that neither <code>uv</code> nor <code>ruff</code> use <code>pyo3</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11662.html">astral-sh/uv#11662</a> on 2025-02-20 11:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/miaomiao1992">@miaomiao1992</a> on 2025-03-05 04:19</div>
+            <div class="timeline-body"><p>pydoc is not as good as cargo doc</p>
+<p>this issue proposed a good idea</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

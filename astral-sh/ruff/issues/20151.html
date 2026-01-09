@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G004 fix can change behavior and introduce syntax errors - astral-sh/ruff #20151</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>G004 fix can change behavior and introduce syntax errors</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20151">#20151</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-08-29 12:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-08-29 12:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/logging-f-string/"><code>logging-f-string</code> (G004)</a> transforms the argument incorrectly in various ways, changing the program’s behavior. <a href="https://play.ruff.rs/14641467-b12d-4186-bfd0-ca4dc1f99fcd">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;g004_1.py &lt;&lt;'# EOF'
+import logging
+logging.warning(fr&quot;\'{Ellipsis}&quot;)
+logging.warning(f&quot;{Ellipsis}&quot; &quot;!&quot;)
+logging.warning((f&quot;{Ellipsis}&quot;))
+logging.warning(f&quot;\x5c{Ellipsis}&quot;)
+# EOF
+
+$ python g004_1.py
+WARNING:root:\'Ellipsis
+WARNING:root:Ellipsis!
+WARNING:root:Ellipsis
+WARNING:root:\Ellipsis
+
+$ ruff --isolated check g004_1.py --select G004 --preview --fix
+Found 4 errors (4 fixed, 0 remaining).
+
+$ cat g004_1.py
+import logging
+logging.warning(&quot;\'%s&quot;, Ellipsis)
+logging.warning(&quot;%s&quot;, Ellipsis)
+logging.warning((&quot;%s&quot;, Ellipsis))
+logging.warning(&quot;\%s&quot;, Ellipsis)
+
+$ python g004_1.py
+g004_1.py:5: SyntaxWarning: invalid escape sequence '\%'
+  logging.warning(&quot;\%s&quot;, Ellipsis)
+WARNING:root:'Ellipsis
+WARNING:root:Ellipsis
+WARNING:root:('%s', Ellipsis)
+WARNING:root:\Ellipsis
+</code></pre>
+<p>It can also introduce syntax errors. <a href="https://play.ruff.rs/4b8cff4f-804f-47f7-a0ef-7213fb4a9e2b">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;g004_2.py &lt;&lt;'# EOF'
+import logging
+logging.warning(f&quot;\n{Ellipsis}&quot;)
+logging.warning(f&quot;\x22{Ellipsis}&quot;)
+# EOF
+
+$ python g004_2.py
+WARNING:root:
+Ellipsis
+WARNING:root:&quot;Ellipsis
+
+$ ruff --isolated check g004_2.py --select G004 --preview --diff 2&gt;&amp;1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.11 (c2bc15bc1 2025-08-28)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-29 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-08-29 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-08-29 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on 2025-09-03 15:07</div>
+            <div class="timeline-body"><p>I’ll take this one next.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @TaKO8Ki by @ntBre on 2025-09-03 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20224.html">astral-sh/ruff#20224</a> on 2025-09-04 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21310.html">astral-sh/ruff#21310</a> on 2025-11-10 22:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/21295.html">astral-sh/ruff#21295</a> on 2025-11-10 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericrbg-harmonic">@ericrbg-harmonic</a> on 2025-12-01 21:51</div>
+            <div class="timeline-body"><p>another one is something like:</p>
+<pre><code>x = 1
+logging.info(f&quot;{x=}&quot;)
+</code></pre>
+<p>will go to</p>
+<pre><code>logging.info(&quot;%s&quot;, x)
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

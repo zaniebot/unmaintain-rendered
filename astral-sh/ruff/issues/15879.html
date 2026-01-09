@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLOT: Classes with multiple base classes - astral-sh/ruff #15879</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>SLOT: Classes with multiple base classes</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15879">#15879</a>
+        opened by <a href="https://github.com/Skylion007">@Skylion007</a>
+        on 2025-02-02 18:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-02-02 18:07</div>
+            <div class="timeline-body"><h3>Description</h3>
+<pre><code>ruff check --select=SLOT .
+</code></pre>
+<pre><code>ruff --version 0.8.4
+</code></pre>
+<pre><code class="language-python">class Backend(RandomClass, tuple):
+   pass
+</code></pre>
+<p>~^ suggests a fixit here. This is the recommended class structure for old versions of python before strenum was introduced. However, enum doesn't have <strong>slots</strong> defined, so defining a <code>__slots__</code> wouldn't be that helpful.~ i also see this bug happen when a class has multiple ancestors, one of which is a tuple.</p>
+<p>Actually, nevermind, this error was actually masking another error where enum was not properly imported. Seems odd to suggest a fixit in this situation. In other cases though, I do see the error pop up when only one of the ancestors is a tuple.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "SLOT lint false positive on classes with multiple ancestors" to "SLOT lint false positive on classes with multiple ancestors for strenum" by @Skylion007 on 2025-02-02 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "SLOT lint false positive on classes with multiple ancestors for strenum" to "SLOT lint false positive on classes where one ancestor is not defined" by @Skylion007 on 2025-02-02 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-03 11:17</div>
+            <div class="timeline-body"><p>Could you explain what's the bug experience? I don't think I understand it from the issue.</p>
+<p>Ruff does raise an error about a missing <code>__slots__</code> even if the base class is known. So warning in the case if any base class is unknown doesn't seem incorrect, because the <code>__slots__</code> attribute is always required if any parent is <code>tuple</code>.</p>
+<p>Playground: https://play.ruff.rs/45b205ae-153c-4a73-8fe6-29995ef0a5c9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-02-03 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-02-03 15:29</div>
+            <div class="timeline-body"><p>@MichaReiser To clarify, what is the behavior if a class has two ancestors, and only one of them implements <code>__slots__</code>? My understanding is that the <strong>slots</strong> in the class itself won't have an effect because it will still need to consult the <code>__dict__</code> of the first parent, but I could be wrong? Specifically, what happens here:
+https://play.ruff.rs/26820797-8f34-4fc4-8c13-eb81bce03d0e</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-04 09:16</div>
+            <div class="timeline-body"><p>Oh, I see. That's a good point. In that case, I'd say it's not a false positive, at least not when the base class is under the user's control. However, the suggested fix/message is misleading because only adding <code>__slots__</code> to the current class isn't enough; it also needs to be added to all non-tuple parent classes.</p>
+<p>Now, analyzing base classes is something that Ruff struggles with, at least if they're defined in another file. Which is why I'm leaning towards leaving the rule as is for now and revisit it once we have better type inference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @MichaReiser on 2025-02-04 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-02-04 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2025-02-04 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "SLOT lint false positive on classes where one ancestor is not defined" to "SLOT: Classes with multiple base classes" by @MichaReiser on 2025-02-04 09:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

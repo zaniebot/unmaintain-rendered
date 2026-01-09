@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pip-installed version is slower than version bundled with VS Code Extension [macOS] - astral-sh/ruff #1102</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>pip-installed version is slower than version bundled with VS Code Extension [macOS]</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1102">#1102</a>
+        opened by <a href="https://github.com/eddyg">@eddyg</a>
+        on 2022-12-06 04:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eddyg">@eddyg</a> on 2022-12-06 04:18</div>
+            <div class="timeline-body"><p>Not sure how to explain this one. First, I'm running macOS:</p>
+<pre><code>❯ sw_vers
+ProductName:    macOS
+ProductVersion: 12.6.1
+BuildVersion:   21G217
+</code></pre>
+<p>I wanted to take advantage of some newer features (since the bundled version with the very-useful VS Code Extension is several versions behind).</p>
+<p>So in a <em>venv</em>, I ran:</p>
+<pre><code>pip install ruff
+</code></pre>
+<p>Then I went to check the version with:</p>
+<pre><code>ruff --version
+</code></pre>
+<p>and noticed <em>it took around a second</em>, which seemed odd, so I did some comparisons:</p>
+<pre><code>❯ time ~/.vscode/extensions/charliermarsh.ruff-2022.0.20-darwin-x64/bundled/libs/bin/ruff --version
+ruff 0.0.150
+user=0.00s system=0.00s cpu=39% total=0.015
+
+❯ time .venv/bin/ruff --version
+ruff 0.0.163
+user=0.00s system=0.00s cpu=0% total=1.047
+</code></pre>
+<p>Similarly:</p>
+<pre><code>❯ time .venv/bin/ruff .
+user=0.01s system=0.01s cpu=1% total=1.072
+
+❯ time ~/.vscode/extensions/charliermarsh.ruff-2022.0.20-darwin-x64/bundled/libs/bin/ruff .
+A new version of ruff is available: v0.0.150 -&gt; v0.0.163
+Run to update: pip3 install --upgrade ruff
+user=0.05s system=0.02s cpu=166% total=0.045
+</code></pre>
+<p>I added:</p>
+<pre><code>    &quot;settings&quot;: {
+        &quot;ruff.path&quot;: [&quot;.venv/bin/ruff&quot;],
+    }
+</code></pre>
+<p>to my <code>.code-workspace</code> file, but it made <code>ruff</code> unusable... I would type <code>import sys</code> (to cause an error) and I would see:</p>
+<pre><code>Undefined name `i` Ruff(F821)
+Undefined name `im` Ruff(F821)
+Undefined name `imp` Ruff(F821)
+Undefined name `impo` Ruff(F821)
+Undefined name `impor` Ruff(F821)
+...
+</code></pre>
+<p>appear one character at a time in the &quot;Problems&quot; tab, with a 1s or so delay between each update. I quickly commented out the <code>ruff.path</code> change to my workspace settings and am back to using 0.0.150 bundled with the extension.</p>
+<p>Any ideas? <em>(and <strong>thank you</strong> for a fantastic tool!)</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 04:25</div>
+            <div class="timeline-body"><p>Interesting... Let me think on this one!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 04:29</div>
+            <div class="timeline-body"><p>I'm going to cut a new VS Code extension though too which will hopefully help you out in the interim...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 04:33</div>
+            <div class="timeline-body"><p>(I'll try to get that out tonight.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eddyg">@eddyg</a> on 2022-12-06 04:48</div>
+            <div class="timeline-body"><p>Definitely no rush! I just thought it was curious enough to ask about.</p>
+<p>I had planned on installing other versions (including 0.0.150) tomorrow via <code>pip</code>, and seeing if the slowness noted above was version specific, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 04:54</div>
+            <div class="timeline-body"><p>It's very strange! I did just try pip-installing in a fresh virtualenv on my machine, and don't see any slowness, so it may have something to do with a system configuration...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eddyg">@eddyg</a> on 2022-12-06 14:17</div>
+            <div class="timeline-body"><p>I am going to chalk this up to <em>&quot;security checks or something?&quot;</em>, because I can't explain it.</p>
+<p>This morning, <code>time .venv/bin/ruff --version</code> run just as quickly as the VS Code bundled version!</p>
+<p>For &quot;fun&quot;, I tried upgrading/downgrading and the results were... <em>just weird</em>:</p>
+<p>Upgrade to latest:</p>
+<pre><code>❯ pip install -U ruff
+  Downloading ruff-0.0.165-py3-none-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl (7.0 MB)
+
+❯ time ruff --version
+ruff 0.0.165
+user=0.00s system=0.00s cpu=0% total=1.367
+❯ time ruff --version
+ruff 0.0.165
+user=0.00s system=0.00s cpu=0% total=1.049
+❯ time ruff --version
+ruff 0.0.165
+user=0.00s system=0.00s cpu=0% total=1.054
+</code></pre>
+<p>Downgrade a version:</p>
+<pre><code>❯ pip install -Iv ruff==0.0.164
+  Downloading ruff-0.0.164-py3-none-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl (7.0 MB)
+
+❯ time ruff --version
+ruff 0.0.164
+user=0.00s system=0.00s cpu=0% total=1.254
+❯ time ruff --version
+ruff 0.0.164
+user=0.00s system=0.00s cpu=0% total=1.086
+❯ time ruff --version
+ruff 0.0.164
+user=0.00s system=0.00s cpu=0% total=1.076
+</code></pre>
+<p>Back to version I was running last night:</p>
+<pre><code>❯ pip install -Iv ruff==0.0.163
+  Downloading ruff-0.0.163-py3-none-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl (7.0 MB)
+
+❯ time ruff --version
+ruff 0.0.163
+user=0.00s system=0.00s cpu=0% total=1.400
+❯ time ruff --version
+ruff 0.0.163
+user=0.00s system=0.00s cpu=0% total=1.070
+❯ time ruff --version
+ruff 0.0.163
+user=0.00s system=0.00s cpu=0% total=1.072
+</code></pre>
+<p>Down to .162:</p>
+<pre><code>❯ pip install -Iv ruff==0.0.162
+  Using cached ruff-0.0.162-py3-none-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl (7.0 MB)
+
+❯ time ruff --version
+ruff 0.0.162
+user=0.00s system=0.00s cpu=0% total=1.243
+❯ time ruff --version
+ruff 0.0.162
+user=0.00s system=0.00s cpu=0% total=1.071
+</code></pre>
+<p>Back to .163:</p>
+<pre><code>❯ pip install -Iv ruff==0.0.163
+  Using cached ruff-0.0.163-py3-none-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl (7.0 MB)
+
+❯ time ruff --version
+ruff 0.0.163
+user=0.00s system=0.00s cpu=1% total=0.397
+❯ time ruff --version
+ruff 0.0.163
+user=0.00s system=0.00s cpu=41% total=0.016
+</code></pre>
+<p>Back to latest:</p>
+<pre><code>❯ pip install -Iv ruff
+  Using cached ruff-0.0.165-py3-none-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl (7.0 MB)
+Successfully installed ruff-0.0.165
+
+❯ time ruff --version
+ruff 0.0.165
+user=0.00s system=0.00s cpu=1% total=0.407
+❯ time ruff --version
+ruff 0.0.165
+user=0.00s system=0.00s cpu=35% total=0.016
+</code></pre>
+<p>🤷</p>
+<p>Closing this as <em>&quot;not your problem&quot;</em>. Apologies for taking up your time!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @eddyg on 2022-12-06 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 14:22</div>
+            <div class="timeline-body"><p>Very weird! No apology necessary, sorry you lost time to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eddyg">@eddyg</a> on 2022-12-09 19:55</div>
+            <div class="timeline-body"><p>FWIW, wanted to follow up on this... I continue to see this behavior each time I upgrade <code>ruff</code> (but have now confirmed it happens with <em>other</em> binaries as well). I <em>think</em> this may be caused by the &quot;malware prevention capabilities&quot; of endpoint protection software that is mandated on my corporate laptop. The release notes for the latest version of it mention &quot;improvements in classifying, blocking and alerting on execution of malicious code (by reputation)&quot;. My <em>theory</em> is that &quot;fresh&quot; binaries don't yet have enough &quot;reputation&quot;, and somehow it makes then &quot;slow&quot; after they are initially installed on the system.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

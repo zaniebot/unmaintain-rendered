@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct dependency is incorrectly treated as indirect dependency - astral-sh/uv #7863</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Direct dependency is incorrectly treated as indirect dependency</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7863">#7863</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-10-02 09:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-10-02 09:46</div>
+            <div class="timeline-body"><p>We incorrectly treat numpy as a transitive instead of a direct dependency, which means we don't emit the correct diagnostic about a missing lower bound:</p>
+<pre><code>[project]
+name = &quot;dummy&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+  &quot;numpy&quot;,
+]
+</code></pre>
+<p>Relevant log line from <code>RUST_LOG=uv=debug uv lock</code>:</p>
+<pre><code>DEBUG Adding transitive dependency for dummy==0.1.0: numpy*
+</code></pre>
+<p>We need to change this check to consider workspace packages:</p>
+<p>https://github.com/astral-sh/uv/blob/30e11c6debf2ceb53710fdfbafcb87c6d478aa1b/crates/uv-resolver/src/resolver/mod.rs#L2163</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-10-02 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @konstin on 2024-10-02 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mstepan">@mstepan</a> on 2024-10-03 11:27</div>
+            <div class="timeline-body"><p>I was trying to reproduce this issue using posted <code>pyproject.toml</code> file but seems it's working as expected:</p>
+<pre><code>uv/target/debug/uv pip compile example/pyproject.toml -o example/requirements.txt
+...
+
+DEBUG Adding direct dependency: numpy*
+INFO add_decision: example @ 0a0.dev0 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-03 11:51</div>
+            <div class="timeline-body"><p>Try using <code>uv lock</code> instead of <code>uv pip compile</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Aditya-PS-05">@Aditya-PS-05</a> on 2024-10-16 13:32</div>
+            <div class="timeline-body"><p>@konstin
+I am solving it and setting this type of diagnostic message,</p>
+<p><img src="https://github.com/user-attachments/assets/6a7a486f-f2bc-4071-bfaf-bcabe45777eb" alt="Screenshot from 2024-10-16 18-39-54" /></p>
+<p>Is this the required behavior or somethingelse</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-16 13:45</div>
+            <div class="timeline-body"><p>We should treat numpy as a direct dependency here, which means we should show the <code>The direct dependency </code>{package}<code> is unpinned.</code> message <a href="https://github.com/astral-sh/uv/blob/2153c6ac0d692b9eccedbd7567087907667645fb/crates/uv-resolver/src/resolver/mod.rs#L2254">here</a> for numpy: We should have an additional check that the <code>for_package</code> isn't a workspace member.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Aditya-PS-05">@Aditya-PS-05</a> on 2024-10-16 15:36</div>
+            <div class="timeline-body"><p>How should I check if it's a workspace member? Should I need to explicitly define that these are the workspace members or something else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-16 15:38</div>
+            <div class="timeline-body"><p><code>ResolverState::workspace_members</code> has this information</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-27 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10197.html">astral-sh/uv#10197</a> on 2024-12-27 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-29 01:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

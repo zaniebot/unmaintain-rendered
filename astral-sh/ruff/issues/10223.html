@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PGH005: False positive in case of `requests-mock` fixture `called_once` property/attribute - astral-sh/ruff #10223</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PGH005: False positive in case of `requests-mock` fixture `called_once` property/attribute</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10223">#10223</a>
+        opened by <a href="https://github.com/Taragolis">@Taragolis</a>
+        on 2024-03-04 08:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Taragolis">@Taragolis</a> on 2024-03-04 08:40</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>The <a href="https://docs.astral.sh/ruff/rules/invalid-mock-access/#invalid-mock-access-pgh005">invalid-mock-access <code>PGH005</code></a> works well until some object provide arguments which looks like invalid <code>unittest.mock.Mock</code> arguments/properties</p>
+<p>Playground: https://play.ruff.rs/327e8861-39fc-44ca-8a60-918bfb97c25c</p>
+<pre><code class="language-python">import unittest
+from unittest import mock
+
+import requests
+
+# False possitive
+def test_requests_mock(requests_mock):
+    # Use fixture from requests-mock package
+    mocked_request = requests_mock.get(&quot;https://httpbin.org/anything&quot;, status_code=200)
+    requests.get(&quot;https://httpbin.org/anything&quot;)
+    # https://requests-mock.readthedocs.io/en/latest/release-notes.html?highlight=called_once#relnotes-1-1-0-new-features
+    assert mocked_request.called_once
+    # For avoid false positive PGH005
+    # assert mocked_request.call_count == 1
+
+# This is fine
+def test_pytest_mocker(mocker):
+    # Use fixture from pytest-mocker, provide almost same interface as unittest.mock
+    mocked_request = mocker.patch(&quot;requests.get&quot;, return_value=b&quot;{}&quot;)
+    requests.get(&quot;https://httpbin.org/anything&quot;)
+    assert mocked_request.called_once()
+    # One of the options which should use instead
+    # mocked_request.assert_called_once(&quot;https://httpbin.org/anything&quot;)
+
+# This is fine
+@unittest.mock.patch(&quot;requests.get&quot;, return_value=b&quot;{}&quot;)
+def test_unittest_decorator(mocked_request):
+    requests.get(&quot;https://httpbin.org/anything&quot;)
+    assert mocked_request.called_once()
+    # One of the options which should use instead
+    # mocked_request.assert_called_once(&quot;https://httpbin.org/anything&quot;)
+
+# This is fine
+def test_unittest_context_manager():
+    with unittest.mock.patch(&quot;requests.get&quot;, return_value=b&quot;{}&quot;) as mocked_request:
+        requests.get(&quot;https://httpbin.org/anything&quot;)
+        assert mocked_request.called_once()
+        # One of the options which should use instead
+        # mocked_request.assert_called_once(&quot;https://httpbin.org/anything&quot;)
+</code></pre>
+<p>It would be nice if it possible to add some exclusion list for objects, but I don't have much hope since this might be only the grep rule without analysing original object types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/airflow/pulls/37874.html">apache/airflow#37874</a> on 2024-03-04 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-03-04 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-04 11:54</div>
+            <div class="timeline-body"><p>Seems reasonable. But it probably requires type awareness to rule out false-positives fully.</p>
+<p>Is there a naming convention for calling mock objects / request_mocks that could be used to reduce the false positive rate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Taragolis">@Taragolis</a> on 2024-03-05 10:21</div>
+            <div class="timeline-body"><p>I guess there is not specific conversions for the third party fixtures/mockers it could be anything depend on the autor/maintainer decision. Particular for <code>requests_mock</code> there are could be two solution:</p>
+<ol>
+<li>Do not use <code>called_once and use instead </code>assert &lt;mocked_request_object&gt;.call_count == 1<code>or</code>assert &lt;mocked_request_object&gt;.call_count &gt; 1<code>or</code>assert &lt;mocked_request_object&gt;.call_count`</li>
+<li>Explicit ignore rule by <code>noqa: PGH005</code></li>
+</ol>
+<p>The rule itself works well for the <code>unittest.mock.Mock</code>, subclasses and <a href="https://pytest-mock.readthedocs.io/en/latest/"><code>pytest-mock</code></a> mocker fixture because it is quite popular mistake to use
+<code>assert &lt;mocked_object&gt;.called_once</code> which should be always evaluated as True instead of  <code>&lt;mocked_object&gt;.assert_called_once()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-11 17:29</div>
+            <div class="timeline-body"><p>We could look at type annotations for the fixture and use that to determine if it should be excluded. I don't see a clear way to do it otherwise? You'd need to type-annotate the fixture though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Taragolis">@Taragolis</a> on 2024-03-12 02:08</div>
+            <div class="timeline-body"><p>Is annotate it into the <code>conftest.py</code> would be enough? Some example how it done into the Apache Airflow repo https://github.com/apache/airflow/blob/7213fc5b7a5cb9b69fc9f42126f44d214a24b575/tests/conftest.py#L1297-L1318, but it is more helper (TBH hack as workaround for pluggy) for autosuggestion in IDEs which have integration with pytest</p>
+<p>If this wouldn’t work, then I think unlikely that someone would put same type checking into the each individual test module. In this case better just mention into the documentation that there is no type checking and in some circumstances could be false positive behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 05:33</div>
+            <div class="timeline-body"><blockquote>
+<p>If this wouldn’t work, then I think unlikely that someone would put same type checking into the each individual test module</p>
+</blockquote>
+<p>Idk at my last company it was standard practice to type annotate fixtures otherwise they're just magic values.</p>
+<p>Unfortunately, I don't think a <code>conftest.py</code> annotation would be enough today. We can do better once we have type checking or multifile analysis but we don't have those yet.</p>
+<p>Improving the documentation to note the false positive seems reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @zanieb on 2024-03-12 05:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Taragolis">@Taragolis</a> on 2024-03-13 08:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Idk at my last company it was standard practice to type annotate fixtures otherwise they're just magic values.</p>
+</blockquote>
+<p>The problem here could be defined into the different levels:</p>
+<ol>
+<li>same module</li>
+<li>root <code>conftest.py</code></li>
+<li>any other <code>conftest.py</code> in the same package/subpackage</li>
+<li>fixtures from the third party packages.</li>
+</ol>
+<p>With annotation for the first case there is no problem, for other it required additional steps from the developer side, e.g.</p>
+<pre><code class="language-python">if TYPE_CHECKING:
+    @pytest.fixture
+    def awesome_outer_fixture() -&gt; AwesomeType:
+        ...
+</code></pre>
+<p>Which I believe most of the devs would skip</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-13 15:00</div>
+            <div class="timeline-body"><p>I'm talking about</p>
+<pre><code class="language-python">def test_foo(awesome_fixture: AwesomeType): 
+    ...
+</code></pre>
+<p>which give type hints around your fixture type out of the box.</p>
+<p>My point is not that this is an ideal solution (the ideal solution is type inference), but it allows a developer to annotate the type to pass linting instead of adding a <code># noqa</code> to each call site.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Taragolis">@Taragolis</a> on 2024-03-13 17:31</div>
+            <div class="timeline-body"><p>Yep, it should work in the cases when return of fixture is known. For the case when it is unknown, might changed (third-paties) or just return some factory class which build into the fixture itself it might not work.</p>
+<p>So my point here just it might be nice to have this ability but it might required a big effort (especially into the big projects.) to change existed code if compare to <code># noqa</code> or use other methods if applicable.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

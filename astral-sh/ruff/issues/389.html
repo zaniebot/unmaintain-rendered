@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement flake8-bugbear - astral-sh/ruff #389</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement flake8-bugbear</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/389">#389</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2022-10-10 14:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-10 14:28</div>
+            <div class="timeline-body"><p>This is a big set of rules but <code>flake8-bugbear</code> is extremely popular (~1.5M downloads per month).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2022-10-10 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/390.html">astral-sh/ruff#390</a> on 2022-10-10 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/391.html">astral-sh/ruff#391</a> on 2022-10-10 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/392.html">astral-sh/ruff#392</a> on 2022-10-10 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/300.html">astral-sh/ruff#300</a> on 2022-10-18 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tgross35">@tgross35</a> on 2022-10-25 21:35</div>
+            <div class="timeline-body"><p>Link to bugbear warnings for reference: https://github.com/PyCQA/flake8-bugbear#list-of-warnings</p>
+<p>B001, B002, B006, B007, B008, B017, B023, and B904 are the most useful for catching real bugs imho, out of the warnings that are not yet implemented.</p>
+<p>B950 covers line length - it is not really necessary since <code>ruff</code> is already designed to work with <code>black</code>. However, it may be good thing to mention somewhere since <a href="https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#line-length">black mentions configuring it explicitly</a>.</p>
+<p>(awesome project by the way!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-25 22:44</div>
+            <div class="timeline-body"><p>Cool, those are all pretty straightforward! Will prioritize them over the others.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/467.html">astral-sh/ruff#467</a> on 2022-10-26 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/468.html">astral-sh/ruff#468</a> on 2022-10-26 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/473.html">astral-sh/ruff#473</a> on 2022-10-26 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/503.html">astral-sh/ruff#503</a> on 2022-10-29 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-10-30 01:31</div>
+            <div class="timeline-body"><p>I'm working on B006 implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/515.html">astral-sh/ruff#515</a> on 2022-10-30 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/582.html">astral-sh/ruff#582</a> on 2022-11-04 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/587.html">astral-sh/ruff#587</a> on 2022-11-04 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tgross35">@tgross35</a> on 2022-11-04 20:03</div>
+            <div class="timeline-body"><p>Quick checklist for convenience:</p>
+<ul>
+<li>[x] B001: bare except</li>
+<li>[x] B002: ++ -&gt; +=</li>
+<li>[x] B003: os.environ assigning</li>
+<li>[x] B004: hasattr(x, '__call__') to test if x is callable</li>
+<li>[x] B005: .strip() with multi-character strings</li>
+<li>[x] B006: mutable data structures for argument defaults</li>
+<li>[x] B007: Loop control variable not used within the loop body</li>
+<li>[x] B008: function calls in argument defaults</li>
+<li>[x] B009: getattr(x, 'attr') -&gt; x.attr</li>
+<li>[x] B010: setattr(x, 'attr', val) -&gt; x.attr = val</li>
+<li>[x] B011: <code>assert False</code> calls</li>
+<li>[x] B012: break, continue or return inside finally blocks</li>
+<li>[x] B013: length-one tuple literal is redundant</li>
+<li>[x] B014: Redundant exception types in except (Exception, TypeError)</li>
+<li>[x] B015: Pointless comparison</li>
+<li>[x] B016: Cannot raise a literal</li>
+<li>[x] B017: self.assertRaises(Exception)</li>
+<li>[x] B018: Found useless expression</li>
+<li>[x] B019: Use of functools.lru_cache or functools.cache on methods</li>
+<li>[x] B020: Loop control variable overrides iterable it iterates</li>
+<li>[x] B021: f-string used as docstring</li>
+<li>[x] B022: arguments passed to contextlib.suppress</li>
+<li>[x] B023: functions defined inside a loop using variables redefined in the loop</li>
+<li>[x] B024: Abstract base class with no abstract method</li>
+<li>[x] B025: try-except block with duplicate exceptions</li>
+<li>[x] B026: Star-arg unpacking after a keyword argument is strongly discouraged</li>
+<li>[x] B027: Empty method in abstract base class</li>
+</ul>
+<p>Opinionated:</p>
+<ul>
+<li>[ ] B901: return x in a generator function</li>
+<li>[x] B902: invalid first argument for method. Use self for instance methods, and cls for class methods</li>
+<li>[ ] B903: Use collections.namedtuple (or typing.NamedTuple) for data classes that only set attributes in an <strong>init</strong> method</li>
+<li>[x] B904: Within an except clause, raise exceptions with raise ... from err or raise ... from None</li>
+<li>[x] B950: Line too long, generous option</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-04 20:39</div>
+            <div class="timeline-body"><p>That's awesome, thank you for collating it!</p>
+<p>I'm tentatively marking B001 and B950 as complete, since IIUC B001 is the same as E722, and B950 is close enough to E501 that we may not support it independently (I know they're not exactly the same).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/594.html">astral-sh/ruff#594</a> on 2022-11-05 05:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/595.html">astral-sh/ruff#595</a> on 2022-11-05 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/596.html">astral-sh/ruff#596</a> on 2022-11-05 11:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/638.html">astral-sh/ruff#638</a> on 2022-11-07 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-07 14:26</div>
+            <div class="timeline-body"><p>Just updated the list as @harupy is making awesome progress here. We're now at 50% coverage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/643.html">astral-sh/ruff#643</a> on 2022-11-07 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/668.html">astral-sh/ruff#668</a> on 2022-11-10 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/669.html">astral-sh/ruff#669</a> on 2022-11-10 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/683.html">astral-sh/ruff#683</a> on 2022-11-11 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/695.html">astral-sh/ruff#695</a> on 2022-11-12 06:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/grillazz">@grillazz</a> on 2022-11-12 17:40</div>
+            <div class="timeline-body"><p>@charliermarsh for <code>B008</code> is there any simple way to setup <code>extend-immutable-calls = fastapi.Depends, fastapi.params.Depends</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2022-11-12 19:53</div>
+            <div class="timeline-body"><p>@grillazz It's rather straightforward to add. ~I'm working on it~. PR is https://github.com/charliermarsh/ruff/pull/706 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/706.html">astral-sh/ruff#706</a> on 2022-11-12 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-12 21:48</div>
+            <div class="timeline-body"><p>@grillazz - This is now supported thanks to @edgarrmondragon. So now you can add this to your <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.ruff.flake8-bugbear]
+extend-immutable-calls = [&quot;fastapi.Depends&quot;, &quot;fastapi.Query&quot;]
+</code></pre>
+<p>(Going out in v0.0.115 which is building now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/718.html">astral-sh/ruff#718</a> on 2022-11-13 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/719.html">astral-sh/ruff#719</a> on 2022-11-13 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/grillazz">@grillazz</a> on 2022-11-14 08:35</div>
+            <div class="timeline-body"><p>@charliermarsh and @edgarrmondragon thx.
+I testing and have question. In version <code>0.0.114</code> when I spec <code>select = [&quot;E&quot;, &quot;F&quot;, &quot;U&quot;, &quot;N&quot;, &quot;C&quot;, &quot;B&quot;]</code> i get <code>B008 Do not perform function calls in argument defaults.</code></p>
+<p>Next I adding <code>ignore = [&quot;B008&quot;,]</code> and lint is passing.</p>
+<p>After upgrade to <code>0.0.117</code> lint is passing without explicitly specifying</p>
+<pre><code class="language-toml">[tool.ruff.flake8-bugbear]
+extend-immutable-calls = [&quot;fastapi.Depends&quot;, &quot;fastapi.Query&quot;]
+</code></pre>
+<p>Ideas ?</p>
+<p>ps. Also I can't spec ruff = &quot;0.0.115&quot; only 116 and 117 working</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/734.html">astral-sh/ruff#734</a> on 2022-11-14 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-11-14 11:03</div>
+            <div class="timeline-body"><p>@grillazz</p>
+<blockquote>
+<p>After upgrade to 0.0.117 lint is passing without explicitly specifying</p>
+</blockquote>
+<p>Did you remove <code>ignore = [&quot;B008&quot;,]</code> after upgrading to 0.0.117?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/grillazz">@grillazz</a> on 2022-11-14 11:24</div>
+            <div class="timeline-body"><p>@harupy yes I removed this line. Please find full <code>pyproject.toml</code> below</p>
+<pre><code class="language-toml">[tool.poetry]
+name = &quot;fastapi-sqlalchemy-asyncpg&quot;
+version = &quot;0.0.2&quot;
+description = &quot;&quot;
+authors = [&quot;Jakub Miazek &lt;the@grillazz.com&gt;&quot;]
+packages = []
+license = &quot;MIT&quot;
+
+[tool.poetry.dependencies]
+python = &quot;^3.10&quot;
+alembic = &quot;*&quot;
+asyncpg = &quot;*&quot;
+httpx = &quot;*&quot;
+pydantic = &quot;*&quot;
+sqlalchemy = &quot;*&quot;
+fastapi = &quot;*&quot;
+uvicorn = { extras = [&quot;standard&quot;], version = &quot;*&quot; }
+uvloop = &quot;*&quot;
+httptools = &quot;*&quot;
+rich = &quot;*&quot;
+devtools = { extras = [&quot;pygments&quot;], version = &quot;*&quot; }
+black = &quot;*&quot;
+safety = &quot;*&quot;
+pyupgrade = &quot;*&quot;
+ipython = &quot;*&quot;
+pytest-cov = &quot;*&quot;
+pytest-asyncio = &quot;*&quot;
+ruff = &quot;*&quot;
+
+[build-system]
+requires = [&quot;poetry-core&gt;=1.0.0&quot;]
+build-backend = &quot;poetry.core.masonry.api&quot;
+
+[tool.ruff]
+line-length = 120
+
+select = [&quot;E&quot;, &quot;F&quot;, &quot;U&quot;, &quot;N&quot;, &quot;C&quot;, &quot;B&quot;]
+
+# Exclude a variety of commonly ignored directories.
+exclude = [&quot;alembic&quot;,]
+# Assume Python 3.10.
+target-version = &quot;py310&quot;
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = &quot;double&quot;
+
+[tool.pytest.ini_options]
+addopts = &quot;-v --doctest-modules --doctest-glob=*.md --ignore=alembic&quot;
+asyncio_mode = &quot;strict&quot;
+env_files = [&quot;.env&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/738.html">astral-sh/ruff#738</a> on 2022-11-14 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-11-14 16:14</div>
+            <div class="timeline-body"><p>@grillazz Can you try running <code>ruff --no-cache ...</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2022-11-14 16:22</div>
+            <div class="timeline-body"><p>@grillazz +1 to the above suggestion. This is the result I get from running on https://github.com/grillazz/fastapi-sqlalchemy-asyncpg's <code>main</code> branch with the configuration you shared:</p>
+<pre><code class="language-console">$ ruff .
+Found 10 error(s).
+app/api/nonsense.py:12:79: B008 Do not perform function call `Depends` in argument defaults
+app/api/nonsense.py:21:32: B008 Do not perform function call `Depends` in argument defaults
+app/api/nonsense.py:27:65: B008 Do not perform function call `Depends` in argument defaults
+app/api/nonsense.py:36:32: B008 Do not perform function call `Depends` in argument defaults
+app/api/shakespeare.py:15:32: B008 Do not perform function call `Depends` in argument defaults
+app/api/stuff.py:16:85: B008 Do not perform function call `Depends` in argument defaults
+app/api/stuff.py:30:73: B008 Do not perform function call `Depends` in argument defaults
+app/api/stuff.py:39:32: B008 Do not perform function call `Depends` in argument defaults
+app/api/stuff.py:45:62: B008 Do not perform function call `Depends` in argument defaults
+app/api/stuff.py:54:32: B008 Do not perform function call `Depends` in argument defaults
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-14 16:23</div>
+            <div class="timeline-body"><p>I may have forgotten to include the bugbear settings in the hash key. (I’m on the subway but can fix in a bit, or if someone wants to PR, check out the hash trait implementation on Settings :))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/739.html">astral-sh/ruff#739</a> on 2022-11-14 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-14 17:29</div>
+            <div class="timeline-body"><p>If that <em>is</em> the issue, it'll be fixed by https://github.com/charliermarsh/ruff/pull/739.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/grillazz">@grillazz</a> on 2022-11-15 07:41</div>
+            <div class="timeline-body"><p>Test 0.0.120 and problem solved. Thx</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/753.html">astral-sh/ruff#753</a> on 2022-11-15 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-15 21:18</div>
+            <div class="timeline-body"><p>@harupy is dangerously close to implementing the entire plugin ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-11-16 00:28</div>
+            <div class="timeline-body"><p>Nice to see a task list with lots of ✅ :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/823.html">astral-sh/ruff#823</a> on 2022-11-20 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/824.html">astral-sh/ruff#824</a> on 2022-11-20 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-22 22:06</div>
+            <div class="timeline-body"><p>I think if we implement B023, we should feel comfortable closing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/892.html">astral-sh/ruff#892</a> on 2022-11-23 14:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-11-24 05:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I think if we implement B023, we should feel comfortable closing this.</p>
+</blockquote>
+<p>Agreed! Feel free to implement it if anyone wants to :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-25 04:41</div>
+            <div class="timeline-body"><p>@harupy - Sounds good, I can give it a try!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-11-25 04:41</div>
+            <div class="timeline-body"><p>Awesome, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-11-25 04:43</div>
+            <div class="timeline-body"><p>Is <code>B902</code> covered by <code>N804</code> and <code>N805</code> in pep8-namiing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-25 04:44</div>
+            <div class="timeline-body"><p>@harupy - Yeah I believe so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/907.html">astral-sh/ruff#907</a> on 2022-11-25 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-25 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g-as">@g-as</a> on 2022-12-07 09:52</div>
+            <div class="timeline-body"><p>B905 was just <a href="https://github.com/PyCQA/flake8-bugbear/releases/tag/22.12.6">added</a>:</p>
+<blockquote>
+<p>B905: zip() without an explicit strict= parameter set. strict=True causes the resulting iterator to raise a ValueError if the arguments are exhausted at differing lengths. The strict= argument was added in Python 3.10, so don't enable this flag for code that should work on &lt;3.10. For more information: https://peps.python.org/pep-0618/</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1120.html">astral-sh/ruff#1120</a> on 2022-12-07 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-07 15:01</div>
+            <div class="timeline-body"><p>@g-as -- Added in https://github.com/charliermarsh/ruff/pull/1122.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SRv6d">@SRv6d</a> on 2023-01-15 15:02</div>
+            <div class="timeline-body"><p>@charliermarsh Are there still plans on supporting <code>B950</code> ? Enforcing a line length while at the same time giving some headroom is often a pretty good compromise between sane line length and unnecessarily ugly code resulting from a hard limit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-15 19:25</div>
+            <div class="timeline-body"><p>We <em>could</em> support it. I was a bit hesitant but we could. Can you talk me through the rationale of using B950 vs. just configuring E501 to use a 10% increase? I think they're exactly equivalent, so I'm guessing it's more of a philosophical thing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SRv6d">@SRv6d</a> on 2023-01-15 19:41</div>
+            <div class="timeline-body"><p>I wouldn't call it philosophical, it mostly comes down to personal preference and experience. I think a line length of <code>88</code> is a great middle ground, but personally find my code to often be right around that or slightly over. Reformatting those lines of code just because they are a couple of characters over the limit often looks silly and increasing the limit by 10% we are getting close to <code>100</code> which results in an entirely different looking codebase just for a couple of outliers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-15 20:01</div>
+            <div class="timeline-body"><p>Sorry -- didn't intend &quot;philosophical&quot; to come off as pejorative so apologies if it did. Was mostly trying to confirm that, functionally, using <code>B950</code> with <code>line-length</code> of <code>88</code> is identical to using <code>E501</code> with a <code>line-length</code> of <code>96.8</code>, right?</p>
+<p>Assuming that's correct, is the difference here that if you treat <code>88</code> as the line length (when in reality, the enforced limit is <code>96.8</code>), then folks set that as the line-length in their editors, tend to format around it, Black gets configured with <code>88</code>, and so on?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SRv6d">@SRv6d</a> on 2023-01-15 20:03</div>
+            <div class="timeline-body"><p>No offense taken whatsoever. The latter is exactly what I meant to say.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SRv6d">@SRv6d</a> on 2023-01-27 22:54</div>
+            <div class="timeline-body"><p>@charliermarsh Would you be open to implementing <code>B950</code> ? It's the only thing missing for me coming from flake8. I could give it a try, but I have no rust experience (yet?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../materialsproject/atomate2/pulls/250.html">materialsproject/atomate2#250</a> on 2023-02-23 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-04-30 02:22</div>
+            <div class="timeline-body"><p>@SRv6d to make <a href="https://beta.ruff.rs/docs/rules/line-too-long/"><code>E501</code></a> behave like <a href="https://github.com/PyCQA/flake8-bugbear#opinionated-warnings"><code>B950</code></a> I am just using this:</p>
+<pre><code class="language-toml">[tool.ruff]
+
+# Line length to use when enforcing long-lines violations (like `E501`).
+line-length = 97  # ceil(1.1 * 88) makes `E501` equivalent to `B950`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../xpublish-community/xpublish-opendap/pulls/5.html">xpublish-community/xpublish-opendap#5</a> on 2023-04-30 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4429.html">astral-sh/ruff#4429</a> on 2023-05-14 11:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../opentargets/gentropy/pulls/154.html">opentargets/gentropy#154</a> on 2023-10-03 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../VOICEVOX/voicevox_engine/pulls/1563.html">VOICEVOX/voicevox_engine#1563</a> on 2025-03-22 01:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17439.html">astral-sh/ruff#17439</a> on 2025-04-17 01:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:06 UTC
+    </footer>
+</body>
+</html>

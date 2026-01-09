@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem adding external indexes - astral-sh/uv #10609</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Problem adding external indexes</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/10609">#10609</a>
+        opened by <a href="https://github.com/duducp">@duducp</a>
+        on 2025-01-14 18:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/duducp">@duducp</a> on 2025-01-14 18:39</div>
+            <div class="timeline-body"><p>I recently opened this issue https://github.com/astral-sh/uv/issues/10251 reporting a problem mapping an external pypi package. The problem itself was fixed, but I found a few other bugs related to it.</p>
+<p>When executing the command <code>uv add mercadobitcoin-metrics --index mb=https://pypi.dev.my-domain.com/simple</code> the index data <code>[[tool.uv.index]]</code> and the package are correctly added to pyproject. The problem is in <code>uv.lock</code> and in the <code>export</code> command.</p>
+<p>The <code>uv.lock</code> in turn is adding the AWS download URL along with the authentication query params. Example:</p>
+<pre><code># uv.lock
+
+[[package]]
+name = &quot;mercadobitcoin-metrics&quot;
+version = &quot;1.0.4&quot;
+source = { registry = &quot;https://pypi.dev.my-domain.com/simple&quot; }
+dependencies = [
+    { name = &quot;statsd&quot; },
+]
+sdist = { url = &quot;https://pypicloud-packages.s3.amazonaws.com/bf2b/mercadobitcoin-metrics/mercadobitcoin_metrics-1.0.4.tar.gz?AWSAccessKeyId=&lt;key-id&gt;&amp;Signature=&lt;signature&gt;&amp;Expires=1736860167&quot; }
+
+
+[package.metadata]
+requires-dist = [
+   ...
+   { name = &quot;mercadobitcoin-metrics&quot;, specifier = &quot;==1.0.4&quot;, index = &quot;https://pypi.dev.my-domain.com/simple&quot; },
+   ...
+]
+</code></pre>
+<p>Note that in the <strong>sdist</strong> command I replaced the signature and accessKeyId.</p>
+<p>In this case, after a certain time I can no longer install the lib because the AWS download URL will have expired. The correct thing would be to not map the AWS URL and every time you run the <code>uv sync --all-extras</code> command, it will download the lib &quot;normally&quot;.</p>
+<p>Another point I noticed is that when I run the command <code>uv export -q --no-dev --all-extras --format requirements-txt --output-file requirements.txt</code> it generates something similar to this:</p>
+<pre><code># requirements.txt
+
+-e .
+mercadobitcoin-metrics==1.0.4
+...
+</code></pre>
+<p>If I try to run the command <code>pip install -r requirements.txt</code> I get the following error:</p>
+<pre><code>Obtaining file:///Users/cdorneles/Projects/staking-utils (from -r requirements.txt (line 3))
+ERROR: The editable requirement file:///Users/cdorneles/Projects/staking-utils (from -r requirements.txt (line 3)) cannot be installed when requiring hashes, because there is no single file to hash.
+</code></pre>
+<p>I don't know the reason for <code>-e .</code> but I believe it should be <code>--extra-index-url https://pypi.dev.mercadolitecoin.com.br/simple</code> instead, since there are dependencies on index in the project external. Another point is that the dependency is without the hash while the others have the hash. In this case it would look like this:</p>
+<pre><code># requirements.txt
+
+--extra-index-url https://pypi.dev.mercadolitecoin.com.br/simple
+mercadobitcoin-metrics==1.0.4 \
+    --hash=sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8 \
+    --hash=sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-14 18:46</div>
+            <div class="timeline-body"><blockquote>
+<p>In this case, after a certain time I can no longer install the lib because the AWS download URL will have expired. The correct thing would be to not map the AWS URL and every time you run the uv sync --all-extras command, it will download the lib &quot;normally&quot;.</p>
+</blockquote>
+<p>Can you explain what you mean by this?</p>
+<p>(The export behavior is all intended. We include the project itself. You can omit it if you want with <code>--no-emit-project</code>. It's entirely unrelated to <code>--extra-index-url</code>, which you should configure yourself -- it's intentionally not part of the export output.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-15 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thehesiod">@thehesiod</a> on 2025-01-22 05:45</div>
+            <div class="timeline-body"><p>@charliermarsh I just ran into this as well.  This issue comes from pypi servers which allow you to host the binaries on s3 (like <a href="https://github.com/stevearc/pypicloud">pypicloud</a>).  The way they work is that when you request a module download URL it creates an s3 <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/ShareObjectPreSignedURL.html">presigned url</a> which has a limited life (X hours).  After which that URL is invalid.  pipenv solves this by not storing the urls of the modules, and instead storing the name of the module, the index it belongs to, the version, and the allowed hashes.  Without uv resolving this we can't switch over :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thehesiod">@thehesiod</a> on 2025-01-22 05:50</div>
+            <div class="timeline-body"><p>btw the other issue is that sometimes the server doesn't return back a hash, so theoretically uv would have to calculate it locally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amchelmer">@amchelmer</a> on 2025-01-27 11:41</div>
+            <div class="timeline-body"><p>Having the same issue here with a private Pypi index. The urls on the <code>uv.lock</code> file contain the access signature. So running <code>uv sync</code> immediately after <code>uv lock</code> works fine, but if you run <code>uv sync</code> with a few day old lockfile, I get 400 (bad request) responses for the packages on the private index.</p>
+<p>Problematic package entry from lock file:</p>
+<pre><code>[[package]]
+name = &quot;my_private_package&quot;
+version = &quot;1.4.0&quot;
+source = { registry = &quot;http://10.0.15.171:8080/simple&quot; }
+dependencies = [
+    { name = &quot;kubernetes&quot; },
+]
+sdist = { url = &quot;https://storage.googleapis.com/pypi.gitlab.example.com/5437/my_private_package/my_private_package-1.4.0.tar.gz?Expires=1737980596&amp;GoogleAccessId=pypi-server%40example.iam.gserviceaccount.com&amp;Signature=XYZ&quot; }
+wheels = [
+    { url = &quot;https://storage.googleapis.com/pypi.gitlab.example.com/0430/my_private_package/my_private_package-1.4.0-py3-none-any.whl?Expires=1737980596&amp;GoogleAccessId=pypi-server%example.iam.gserviceaccount.com&amp;Signature=XYZ&quot; },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carlosdorneles-mb">@carlosdorneles-mb</a> on 2025-02-07 12:00</div>
+            <div class="timeline-body"><p>@charliermarsh  is there a possible solution for the uv.lock file that is recording the pre-signed key from Amazon? Since the key expires, this causes problems when trying to install dependencies in the future.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

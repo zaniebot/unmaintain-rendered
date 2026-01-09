@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`clap_generate::generate()` panics on subcommands - clap-rs/clap #2009</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`clap_generate::generate()` panics on subcommands</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2009">#2009</a>
+        opened by <a href="https://github.com/cpick">@cpick</a>
+        on 2020-07-11 19:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cpick">@cpick</a> on 2020-07-11 19:28</div>
+            <div class="timeline-body"><h3>Make sure you completed the following tasks</h3>
+<ul>
+<li>[x] Searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] Searched the closes issues</li>
+</ul>
+<h3>Code</h3>
+<pre><code class="language-sh">$ cargo new generate-panic
+$ cd generate-panic
+$ cat &lt;&lt;EOF &gt;&gt;Cargo.toml
+clap = &quot;3.0.0-beta.1&quot;
+clap_generate = &quot;3.0.0-beta.1&quot;
+EOF
+</code></pre>
+<pre><code class="language-rust">use clap::{Clap, FromArgMatches, IntoApp};
+use clap_generate::{generate, generators::Bash};
+
+#[derive(Clap)]
+enum Command {
+    Generate,
+}
+
+#[derive(Clap)]
+struct Arguments {
+    #[clap(subcommand)]
+    command: Command,
+}
+
+fn main() {
+    let mut app = Arguments::into_app();
+    let Arguments { command: _c, } = Arguments::from_arg_matches(&amp;app.get_matches_mut());
+
+    for sc in app.get_subcommands() {
+        println!(
+            &quot;name: '{}' bin_name: {:?}&quot;,
+            sc.get_name(),
+            sc.get_bin_name()
+        );
+    }
+
+    let bin_name = app.get_bin_name().unwrap().to_owned();
+    generate::&lt;Bash, _&gt;(&amp;mut app, bin_name, &amp;mut std::io::stdout());
+}
+</code></pre>
+<h3>Steps to reproduce the issue</h3>
+<ol>
+<li>Run <code>cargo run generate</code></li>
+<li>The following panic is produced:</li>
+</ol>
+<blockquote>
+<pre><code>Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+ Running `target/debug/generate-panic generate`</code></pre>
+<p>name: 'generate' bin_name: Some(&quot;generate-panic generate&quot;)
+name: 'help' bin_name: None
+thread 'main' panicked at 'called <code>Option::unwrap()</code> on a <code>None</code> value', /Users/cpick/.cargo/registry/src/github.com-1ecc6299db9ec823/clap_generate-3.0.0-beta.1/src/generators/mod.rs:105:31
+note: run with <code>RUST_BACKTRACE=1</code> environment variable to display a backtrace</p>
+</blockquote>
+<h3>Version</h3>
+<ul>
+<li><strong>Rust</strong>: rustc 1.44.1 (c7087fe00 2020-06-17)</li>
+<li><strong>Clap</strong>: 3.0.0-beta.1 for <code>clap</code> and <code>clap_generate</code>, I have also reproduced with the current <code>master</code> (d8fccdb0ea48268192f2cfc1564c7e0f80d763fc)</li>
+</ul>
+<h3>Actual Behavior Summary</h3>
+<p>Attempting to generate bash completions by running the code above as described in the &quot;steps to reproduce&quot; section causes a panic when trying to call <a href="https://github.com/clap-rs/clap/blob/5239d2c3718732dce3dc639213f494b5f469f922/clap_generate/src/generators/mod.rs#L105"><code>sc.get_bin_name().unwrap()</code></a> on any subcommand other than the one that was run (in the case of the example, the auto-generated <code>help</code> command).</p>
+<p>The code above prints all the subcommands bin names and <code>help</code>s is <code>None</code>.</p>
+<h3>Expected Behavior Summary</h3>
+<p>I expected bash completions to be generated.</p>
+<h3>Additional context</h3>
+<p>None that I can think of.</p>
+<h3>Debug output</h3>
+<p>Compile clap with <code>debug</code> feature:</p>
+<pre><code class="language-toml">[dependencies]
+clap = { version = &quot;*&quot;, features = [&quot;debug&quot;] }
+</code></pre>
+<p>The output may be very long, so feel free to link to a gist or attach a text file</p>
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+
+<p>[Running 'cargo run generate']
+Compiling clap_derive v3.0.0-beta.1
+Compiling clap v3.0.0-beta.1
+Compiling clap_generate v3.0.0-beta.1
+Compiling generate-panic v0.1.0 (/Users/cpick/src/generate-panic)
+Finished dev [unoptimized + debuginfo] target(s) in 9.86s
+Running <code>target/debug/generate-panic generate</code>
+[            clap::build::app] 	App::_do_parse
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_derive_display_order:generate-panic
+[            clap::build::app] 	App::_derive_display_order:generate
+[            clap::build::app] 	App::_create_help_and_version
+[            clap::build::app] 	App::_create_help_and_version: Building --help
+[            clap::build::app] 	App::_create_help_and_version: Building --version
+[            clap::build::app] 	App::_create_help_and_version: Building help
+[            clap::build::app] 	App::_debug_asserts
+[            clap::build::arg] 	Arg::_debug_asserts:help
+[            clap::build::arg] 	Arg::_debug_asserts:version
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[         clap::parse::parser] 	Parser::_verify_positionals
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing '&quot;generate&quot;' ([103, 101, 110, 101, 114, 97, 116, 101])
+[         clap::parse::parser] 	Parser::is_new_arg: &quot;generate&quot;:NotFound
+[         clap::parse::parser] 	Parser::is_new_arg: arg_allows_tac=false
+[         clap::parse::parser] 	Parser::is_new_arg: probably value
+[         clap::parse::parser] 	Parser::is_new_arg: starts_new_arg=false
+[         clap::parse::parser] 	Parser::possible_subcommand: arg=&quot;generate&quot;
+[         clap::parse::parser] 	Parser::get_matches_with: possible_sc=true, sc=Some(&quot;generate&quot;)
+[         clap::parse::parser] 	Parser::parse_subcommand
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[]
+[            clap::build::app] 	App::_propagate:generate-panic
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_derive_display_order:generate
+[            clap::build::app] 	App::_create_help_and_version
+[            clap::build::app] 	App::_create_help_and_version: Building --help
+[            clap::build::app] 	App::_create_help_and_version: Building --version
+[            clap::build::app] 	App::_debug_asserts
+[            clap::build::arg] 	Arg::_debug_asserts:help
+[            clap::build::arg] 	Arg::_debug_asserts:version
+[         clap::parse::parser] 	Parser::parse_subcommand: About to parse sc=generate
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[         clap::parse::parser] 	Parser::_verify_positionals
+[         clap::parse::parser] 	Parser::remove_overrides
+[      clap::parse::validator] 	Validator::validate
+[         clap::parse::parser] 	Parser::add_defaults
+[      clap::parse::validator] 	Validator::validate_conflicts
+[      clap::parse::validator] 	Validator::validate_exclusive
+[      clap::parse::validator] 	Validator::gather_conflicts
+[      clap::parse::validator] 	Validator::validate_required: required=ChildGraph([])
+[      clap::parse::validator] 	Validator::gather_requirements
+[      clap::parse::validator] 	Validator::validate_required_unless
+[      clap::parse::validator] 	Validator::validate_matched_args
+[         clap::parse::parser] 	Parser::remove_overrides
+[      clap::parse::validator] 	Validator::validate
+[         clap::parse::parser] 	Parser::add_defaults
+[      clap::parse::validator] 	Validator::validate_conflicts
+[      clap::parse::validator] 	Validator::validate_exclusive
+[      clap::parse::validator] 	Validator::gather_conflicts
+[      clap::parse::validator] 	Validator::validate_required: required=ChildGraph([])
+[      clap::parse::validator] 	Validator::gather_requirements
+[      clap::parse::validator] 	Validator::validate_required_unless
+[      clap::parse::validator] 	Validator::validate_matched_args
+[    clap::parse::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[]
+name: 'generate' bin_name: Some(&quot;generate-panic generate&quot;)
+name: 'help' bin_name: None
+[clap_generate::generators::shells::bash] 	all_options_for_path: path=generate-panic
+[   clap_generate::generators] 	subcommands: name=generate-panic
+[   clap_generate::generators] 	subcommands: Has subcommands...true
+[   clap_generate::generators] 	subcommands:iter: name=generate, bin_name=generate-panic generate
+thread 'main' panicked at 'called <code>Option::unwrap()</code> on a <code>None</code> value', /Users/cpick/.cargo/registry/src/github.com-1ecc6299db9ec823/clap_generate-3.0.0-beta.1/src/generators/mod.rs:105:31
+note: run with <code>RUST_BACKTRACE=1</code> environment variable to display a backtrace
+[Finished running. Exit status: 101]</p>
+</code>
+</pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @cpick on 2020-07-11 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-07-12 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @pksunkara by @pksunkara on 2020-08-16 07:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/newAM">@newAM</a> on 2020-08-22 15:20</div>
+            <div class="timeline-body"><p>Can this issue have the <code>C: generator</code> label added to it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: generator</span> added by @CreepySkeleton on 2020-08-22 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @CreepySkeleton on 2020-08-22 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @CreepySkeleton on 2020-08-22 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2098.html">clap-rs/clap#2098</a> on 2020-08-22 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gbrlsnchs">@gbrlsnchs</a> on 2020-12-21 13:27</div>
+            <div class="timeline-body"><p>I'm facing this issue even without any custom subcommands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-02-28 12:38</div>
+            <div class="timeline-body"><p>@logansquirel This one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-03-10 20:16</div>
+            <div class="timeline-body"><p>@logansquirel Did you get a chance to look at this? This might have already been fixed on master.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/logansquirel">@logansquirel</a> on 2021-03-11 07:20</div>
+            <div class="timeline-body"><blockquote>
+<p>@logansquirel Did you get a chance to look at this? This might have already been fixed on master.</p>
+</blockquote>
+<p><code>Cargo.toml</code>:</p>
+<pre><code class="language-toml">[package]
+name = &quot;clap_issue_2009&quot;
+version = &quot;0.1.0&quot;
+authors = [&quot;Logan SQUIREL &lt;logan.squirel@protonmail.com&gt;&quot;]
+edition = &quot;2018&quot;
+
+[dependencies]
+clap = { git = &quot;https://github.com/clap-rs/clap&quot; }
+clap_generate = { git = &quot;https://github.com/clap-rs/clap&quot; }
+</code></pre>
+<p><code>main.rs</code>:</p>
+<pre><code class="language-rust">use clap::{Clap, FromArgMatches, IntoApp};
+use clap_generate::{generate, generators::Bash};
+
+#[derive(Clap)]
+enum Command {
+    Generate,
+}
+
+#[derive(Clap)]
+struct Arguments {
+    #[clap(subcommand)]
+    command: Command,
+}
+
+fn main() {
+    let mut app = Arguments::into_app();
+    let Arguments { command: _c, } = Arguments::from_arg_matches(&amp;app.get_matches_mut());
+    let bin_name = app.get_bin_name().unwrap().to_owned();
+    generate::&lt;Bash, _&gt;(&amp;mut app, bin_name, &amp;mut std::io::stdout());
+}
+</code></pre>
+<p>Running:</p>
+<pre><code class="language-shell">❯ cargo run generate
+_clap_issue_2009() {
+    local i cur prev opts cmds
+    COMPREPLY=()
+    cur=&quot;${COMP_WORDS[COMP_CWORD]}&quot;
+    prev=&quot;${COMP_WORDS[COMP_CWORD-1]}&quot;
+    cmd=&quot;&quot;
+    opts=&quot;&quot;
+
+    for i in ${COMP_WORDS[@]}
+    do
+        case &quot;${i}&quot; in
+            clap_issue_2009)
+                cmd=&quot;clap_issue_2009&quot;
+                ;;
+
+            generate)
+                cmd+=&quot;__generate&quot;
+                ;;
+            help)
+                cmd+=&quot;__help&quot;
+                ;;
+            *)
+                ;;
+        esac
+    done
+
+    case &quot;${cmd}&quot; in
+        clap_issue_2009)
+            opts=&quot; -h -V  --help --version  generate help&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+
+        clap_issue_2009__generate)
+            opts=&quot; -h -V  --help --version  &quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        clap_issue_2009__help)
+            opts=&quot; -h -V  --help --version  &quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+    esac
+}
+
+complete -F _clap_issue_2009 -o bashdefault -o default clap_issue_2009
+</code></pre>
+<p>This <s>might have already been</s> is fixed on master.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ldm0 on 2021-03-11 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/regexident">@regexident</a> on 2021-03-27 19:03</div>
+            <div class="timeline-body"><p>Any chance for cutting a beta release with this included? It's currently a blocker for several projects of mine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-03-30 19:13</div>
+            <div class="timeline-body"><p>I don't think so. We are breaking quite a few things with every commit and I don't think releasing a beta right now would be a sensible idea. I am aiming to do an RC soon™️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/regexident">@regexident</a> on 2021-03-30 21:32</div>
+            <div class="timeline-body"><p>The sound you just heard is structopt's sigh of relief. 😄 #notdeadjustyet</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

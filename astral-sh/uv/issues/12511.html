@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;No solution found when resolving dependencies&quot; has extra requirements that are confusing - astral-sh/uv #12511</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;No solution found when resolving dependencies&quot; has extra requirements that are confusing</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/12511">#12511</a>
+        opened by <a href="https://github.com/notatallshaw">@notatallshaw</a>
+        on 2025-03-27 16:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-03-27 16:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Sometimes uv's &quot;No solution found when resolving dependencies&quot; gives me extra requirements, and that I don't understand where they come from.</p>
+<p>For example:</p>
+<ol>
+<li><code>uv venv -p 3.10</code></li>
+<li><code>source .venv/bin/activate</code></li>
+<li><code>uv pip install --dry-run --only-binary &quot;:all:&quot; &quot;python-nvd3&gt;=0.15.0&quot;</code></li>
+</ol>
+<p>Output:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of python-nvd3 are available:
+          python-nvd3&lt;=0.15.0
+          python-nvd3==0.16.0
+      and python-nvd3&gt;=0.15.0 has no usable wheels, we can conclude that python-nvd3&gt;=0.15.0 cannot be used.
+      And because you require python-nvd3&gt;=0.15.0, we can conclude that your requirements are unsatisfiable.
+
+      hint: Wheels are required for `python-nvd3` because building from source is disabled for all packages (i.e., with `--no-build`)
+</code></pre>
+<p>Where did &quot;python-nvd3&lt;=0.15.0&quot; and &quot;python-nvd3==0.16.0&quot; come from? And what are they trying to tell me?</p>
+<p>Expected output:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ python-nvd3&gt;=0.15.0 has no usable wheels, we can conclude that python-nvd3&gt;=0.15.0 cannot be used.
+      And because you require python-nvd3&gt;=0.15.0, we can conclude that your requirements are unsatisfiable.
+
+      hint: Wheels are required for `python-nvd3` because building from source is disabled for all packages (i.e., with `--no-build`)
+</code></pre>
+<h3>Platform</h3>
+<p>Linux</p>
+<h3>Version</h3>
+<p>0.6.10</p>
+<h3>Python version</h3>
+<p>Python 3.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @notatallshaw on 2025-03-27 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-03-27 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-03-27 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-27 21:46</div>
+            <div class="timeline-body"><p>We're failing to collapse the versions here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-28 02:33</div>
+            <div class="timeline-body"><p>I don't think that's quite true, there are cases where we list available versions to state the proof and those are intentionally not collapsed.</p>
+<p>Here, we shouldn't show the available versions at all and short-circuit to another framing, e.g.:</p>
+<blockquote>
+<p>Because you require python-nvd3&gt;=0.15.0, and python-nvd3&gt;=0.15.0 has no usable wheels, we can conclude that your requirements are unsatisfiable.</p>
+</blockquote>
+<p>Probably hard.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

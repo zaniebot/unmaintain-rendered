@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] support typing.Any in annotations - astral-sh/ruff #14544</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] support typing.Any in annotations</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14544">#14544</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-11-22 21:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2024-11-22 21:41</div>
+            <div class="timeline-body"><p>We have an internal representation (<code>Type::Any</code>) for the dynamic type <code>Any</code>, but we don't yet understand  the <code>typing.Any</code> symbol as a spelling for that type in a type expression.</p>
+<p>To add this, we'll need to track <code>typing.Any</code> as a <code>KnownInstance</code> (similar to the existing support for <code>typing.Union</code>, <code>typing.Optional</code>, <code>typing.Literal</code>), and add support for it in <code>Type::in_type_expression</code>, so that when <code>TypeInferenceBuilder::infer_type_expression</code> comes across the symbol in an annotation, we understand that annotation as describing the <code>Any</code> type.</p>
+<p>We'll want to add mdtests for the &quot;happy path&quot; case like this:</p>
+<pre><code class="language-py">x: Any = 1
+x = &quot;foo&quot;
+
+def f():
+    reveal_type(x)  # revealed: Any
+</code></pre>
+<p>We'll also want edge-case tests showing that <code>typing.Any</code> can be aliased to a different name, and still works (that is, we are recognizing <code>typing.Any</code> under any name, not just pattern-matching on the local name), and similarly that a locally-defined class named <code>Any</code> simply means its own instance type, not <code>Type::Any</code>, in an annotation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-11-22 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2024-11-22 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] " to "[red-knot] support typing.Any in annotations" by @carljm on 2024-11-22 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14172.html">astral-sh/ruff#14172</a> on 2024-11-22 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14546.html">astral-sh/ruff#14546</a> on 2024-11-22 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @dcreager on 2024-12-02 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @carljm by @dcreager on 2024-12-02 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14742.html">astral-sh/ruff#14742</a> on 2024-12-02 20:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2024-12-04 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2024-12-04 14:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

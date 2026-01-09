@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>More Explicit Documentation of `target-version` behavior - astral-sh/ruff #18381</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>More Explicit Documentation of `target-version` behavior</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/18381">#18381</a>
+        opened by <a href="https://github.com/asglover">@asglover</a>
+        on 2025-05-30 02:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/asglover">@asglover</a> on 2025-05-30 02:12</div>
+            <div class="timeline-body"><p>@ntBre</p>
+<p>Following up on my comment on this <a href="https://github.com/astral-sh/ruff/issues/10290#issuecomment-2920992425">issue</a>:</p>
+<p>The current documentation for <code>target-version</code> read like <a href="https://docs.astral.sh/ruff/settings/#target-version">this</a>:</p>
+<blockquote>
+<p>The minimum Python version to target, e.g., when considering automatic code upgrades, like rewriting type annotations. Ruff will not propose changes using features that are not available in the given version.</p>
+</blockquote>
+<p>Would you object to clarifying that <code>target-version</code> does not mean that ruff will lint to make sure that code will run on the minimum target version syntax error free? If you want, linking to the issue? It could read something like.</p>
+<blockquote>
+<p>The minimum Python version to target, e.g., when considering automatic code upgrades, like rewriting type annotations. Ruff will not propose changes using features that are not available in the given version. <a href="https://github.com/astral-sh/ruff/issues/2501">Currently</a>, Ruff does not identify syntax issues based on the minimum supported target-version. i.e. using <code>match:</code> with <code>target-version==&quot;py38&quot;</code> will not trigger an error, but ruff will never generate code using <code>match</code> if  <code>target-version==&quot;py38&quot;</code>.</p>
+</blockquote>
+<p>Maybe I didn't do a close enough reading and this is a skill issue, I just thought that the behavior of target-version was different until close inspection.</p>
+<pre><code>[tool.ruff]
+# Always generate Python 3.7-compatible code.
+target-version = &quot;py37&quot;
+</code></pre>
+<p>^ This is what got me</p>
+<p>because I can do something silly :</p>
+<pre><code class="language-python">def func(a):
+    match a: 
+        case 'yo':
+            import numpy # unused import 
+            pass
+
+</code></pre>
+<p>and with <code>target-version=py38</code></p>
+<p><code>ruff check --fix </code></p>
+<p>will generate this code</p>
+<pre><code class="language-python">def func(a):
+    match a: 
+        case 'yo':
+            pass
+
+</code></pre>
+<p>so I think maybe the language in the documentation should be clarified slightly that it won't generate changes which explicitly introduce unsupported syntax, but it will fix other errors in code with unsupported syntax.</p>
+<p>When the <code>DOWN</code> features land, I think they should be turned on by default when someone specifies <code>target-version</code>, as that's what I thought the feature did in the first place.</p>
+<p>What are your thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-30 02:40</div>
+            <div class="timeline-body"><p>Ah okay, thanks for opening the issue! For syntax errors specifically, we've fairly <a href="https://github.com/astral-sh/ruff/issues/6591">recently</a> expanded our coverage for version-related syntax errors. If you enable preview mode, you'll get a diagnostic about <code>match</code> not being supported before 3.10: https://play.ruff.rs/16a17a46-5e43-4f2d-b147-9ce97d96b7cf</p>
+<p>Is that the kind of thing you're looking for? I think we're planning to stabilize the new syntax errors soon, possibly in the next minor release, but they're still behind the <code>preview</code> flag/option for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-05-30 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/asglover">@asglover</a> on 2025-05-30 03:06</div>
+            <div class="timeline-body"><p>Okay, I guess if these changes are landing soon, and that's coming with changes to the documentation, then there's little point in changing the documentation just to change it back.</p>
+<p>And just warning on the issues is a great start which makes --fix'es possible in the future.</p>
+<p>Thanks for the info, good luck on the feature!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @asglover on 2025-05-30 03:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

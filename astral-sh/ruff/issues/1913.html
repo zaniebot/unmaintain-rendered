@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP011 is incorrectly replacing `lru_cache(max_size)=None` - astral-sh/ruff #1913</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP011 is incorrectly replacing `lru_cache(max_size)=None`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1913">#1913</a>
+        opened by <a href="https://github.com/henribru">@henribru</a>
+        on 2023-01-16 11:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/henribru">@henribru</a> on 2023-01-16 11:34</div>
+            <div class="timeline-body"><p>The UP011 rule replaces <code>functools.lru_cache(max_size=None)</code> with <code>functools.lru_cache</code>. The corresponding rule in pyupgrade replaces it with <code>functools.cache</code>: https://github.com/asottile/pyupgrade#replace-functoolslru_cachemaxsizenone-with-shorthand.</p>
+<p>Tested with ruff 0.0.222</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-16 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-16 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-16 17:35</div>
+            <div class="timeline-body"><p>Thank you! Fixing now. Just an oversight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1918.html">astral-sh/ruff#1918</a> on 2023-01-16 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-16 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-16 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henribru">@henribru</a> on 2023-01-17 09:48</div>
+            <div class="timeline-body"><p>@charliermarsh Thanks for the super quick response! Your fix seems to work fine for the <code>@functools.lru_cache(max_size=None)</code> case, but there's still a slight issue if you do <code>from functools import lru_cache</code> and then <code>@lru_cache(max_size=None)</code>. In that case it doesn't auto-fix anything, but it still suggests &quot;Remove unnecessary parameters&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 12:39</div>
+            <div class="timeline-body"><p>@henribru - Yeah this is a known limitation (and pyupgrade doesn't fix that case either, IIRC). In that case, we actually need to modify the <em>import</em> too, to include <code>cache</code>. So for now, we flag it, but can't fix it.</p>
+<p>Another case of #835.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henribru">@henribru</a> on 2023-01-17 12:55</div>
+            <div class="timeline-body"><p>@charliermarsh That's a fair limitation, but still the message is pretty misleading since it's telling you to remove the parameters instead of changing <code>lru_cache</code> to <code>cache</code>. Since just removing <code>max_size=None</code> changes the behavior, it's not &quot;unnecessary&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henribru">@henribru</a> on 2023-01-17 13:00</div>
+            <div class="timeline-body"><p>Note that pyupgrade separates this into two rules, one that converts <code>lru_cache()</code> into <code>lru_cache</code> and one that converts <code>lru_cache(max_size=None)</code> into <code>cache</code>. The current error message works for the first case, but it seems misleading for the second</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 13:01</div>
+            <div class="timeline-body"><p>Ah right -- I'll modify the error message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 13:02</div>
+            <div class="timeline-body"><p>(And consider splitting into two rules, too.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1934.html">astral-sh/ruff#1934</a> on 2023-01-17 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 20:08</div>
+            <div class="timeline-body"><p>Fixed in #1938.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henribru">@henribru</a> on 2023-01-17 21:54</div>
+            <div class="timeline-body"><p>Thanks again for all your hard work, I really appreciate it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 21:57</div>
+            <div class="timeline-body"><p>Thanks for being persistent on this one even after I closed it out -- you were totally right!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

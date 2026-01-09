@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal lock of warehose takes 3s - astral-sh/uv #4133</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Universal lock of warehose takes 3s</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4133">#4133</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-06-07 15:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-06-07 15:41</div>
+            <div class="timeline-body"><pre><code>$ hyperfine --warmup 1 --prepare &quot;rm -f uv.lock&quot; &quot;uv lock&quot;
+Benchmark 1: uv lock
+  Time (mean ± σ):      3.010 s ±  0.028 s    [User: 2.620 s, System: 0.808 s]
+  Range (min … max):    2.977 s …  3.054 s    10 runs
+</code></pre>
+<p><code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;warehouse&quot;
+version = &quot;1.0.0&quot;
+requires-python = &quot;&gt;=3.11, &lt;4&quot;
+dependencies = [
+  &quot;alembic&gt;=0.7.0&quot;,
+  &quot;alembic-postgresql-enum&quot;,
+  &quot;Automat&quot;,
+  &quot;argon2-cffi&quot;,
+  &quot;b2sdk&quot;,
+  &quot;Babel&quot;,
+  &quot;bcrypt&quot;,
+  &quot;boto3&quot;,
+  &quot;celery[sqs]&gt;=5.2.2,&lt;5.3.2&quot;,
+  &quot;celery-redbeat&quot;,
+  &quot;certifi&quot;,
+  &quot;click&quot;,
+  &quot;cryptography&quot;,
+  &quot;datadog&gt;=0.19.0&quot;,
+  &quot;disposable-email-domains&quot;,
+  &quot;elasticsearch&gt;=7.0.0,&lt;7.11.0&quot;,
+  &quot;elasticsearch_dsl&gt;=7.0.0,&lt;8.0.0&quot;,
+  &quot;first&quot;,
+  &quot;forcediphttpsadapter&quot;,
+  &quot;github-reserved-names&gt;=1.0.0&quot;,
+  &quot;google-cloud-bigquery&quot;,
+  &quot;google-cloud-storage&quot;,
+  &quot;hiredis&quot;,
+  &quot;html5lib&quot;,
+  &quot;humanize&quot;,
+  &quot;itsdangerous&quot;,
+  &quot;Jinja2&gt;=2.8&quot;,
+  &quot;kombu[sqs]&lt;5.3.2&quot;, # https://github.com/jazzband/pip-tools/issues/1577
+  &quot;limits&quot;,
+  &quot;linehaul&quot;,
+  &quot;lxml&quot;,
+  &quot;mistune&quot;,
+  &quot;msgpack&quot;,
+  &quot;natsort&quot;,
+  &quot;orjson&quot;,
+  &quot;packaging&gt;=23.2&quot;,
+  &quot;packaging_legacy&quot;,
+  &quot;paginate&gt;=0.5.2&quot;,
+  &quot;paginate_sqlalchemy&quot;,
+  &quot;passlib&gt;=1.6.4&quot;,
+  &quot;premailer&quot;,
+  &quot;psycopg[c]&quot;,
+  &quot;pycurl&quot;,
+  &quot;pydantic&quot;,
+  &quot;pyqrcode&quot;,
+  &quot;pyramid&gt;=2.0&quot;,
+  &quot;pymacaroons&quot;,
+  &quot;pyramid_jinja2&gt;=2.5&quot;,
+  &quot;pyramid_mailer&gt;=0.14.1&quot;,
+  &quot;pyramid_openapi3&gt;=0.17.1&quot;,
+  &quot;pyramid_retry&gt;=0.3&quot;,
+  &quot;pyramid_rpc&gt;=0.7&quot;,
+  &quot;pyramid_services&gt;=2.1&quot;,
+  &quot;pyramid_tm&gt;=0.12&quot;,
+  &quot;python-slugify&quot;,
+  &quot;pytz&quot;,
+  &quot;PyJWT[crypto]&gt;=2.8.0&quot;,
+  &quot;readme-renderer[md]&gt;=36.0&quot;,
+  &quot;requests&quot;,
+  &quot;requests-aws4auth&quot;,
+  &quot;redis&gt;=2.8.0,&lt;6.0.0&quot;,
+  &quot;rfc3986&quot;,
+  &quot;sentry-sdk&quot;,
+  &quot;setuptools&quot;,
+  &quot;sqlalchemy[asyncio]&gt;=2.0,&lt;3.0&quot;,
+  &quot;stdlib-list&quot;,
+  &quot;stripe&quot;,
+  &quot;structlog&quot;,
+  &quot;transaction&quot;,
+  &quot;trove-classifiers&quot;,
+  &quot;ua-parser&quot;,
+  &quot;urllib3&lt;2&quot;,  # See https://github.com/pypi/warehouse/issues/14671,
+  &quot;webauthn&gt;=1.0.0,&lt;3.0.0&quot;,
+  &quot;whitenoise&quot;,
+  &quot;WTForms[email]&gt;=2.0.0&quot;,
+  &quot;zope.sqlalchemy&quot;,
+  &quot;zxcvbn&quot;,
+]
+
+[project.optional-dependencies]
+deploy = [
+  &quot;gunicorn==22.0.0&quot;,
+  &quot;ddtrace==2.8.5&quot;
+]
+</code></pre>
+<p>Flamegraph and profile.json for the firefox profiler:</p>
+<p><img src="https://github.com/astral-sh/uv/assets/6826232/be411072-4b3a-40fb-9307-643b6cc6fcd2" alt="image" /></p>
+<p><a href="https://github.com/user-attachments/files/15741922/profile.json">profile.json</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 15:51</div>
+            <div class="timeline-body"><p>Wow, so much time spent in cloning and union-ing the resolver states!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-06-07 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 15:54</div>
+            <div class="timeline-body"><p>I bet we can dramatically improve this, very cool.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-06-07 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-07 16:27</div>
+            <div class="timeline-body"><p>It's also possible #4135 will help here, assuming there are superfluous forks. (I haven't looked.)</p>
+<p>Otherwise, I agree that there are likely low hanging fruits. I've generally operated under the assumption that &quot;forking is rare,&quot; and so haven't given a ton of thought to performance. Which usually means there are big gains to be had. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 18:04</div>
+            <div class="timeline-body"><p>Yup not urgent!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-17 14:28</div>
+            <div class="timeline-body"><p>I looked into this and it looks like I was exactly right: #4135 with <code>Requires-Python</code> filtering has resolved this particular problem. Without the filtering, <code>uv</code> was doing way more forking than necessary.</p>
+<p>As a bonus, I converted the <code>pyproject.toml</code> to work with Poetry and included it in the benchmark below. Here's the <code>pyproject.toml</code> I used:</p>
+<pre><code class="language-toml">[tool.poetry]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;&quot;
+authors = [&quot;Andrew Gallant &lt;jamslam@gmail.com&gt;&quot;]
+
+[project]
+name = &quot;warehouse&quot;
+version = &quot;1.0.0&quot;
+requires-python = &quot;&gt;=3.11, &lt;4&quot;
+dependencies = [
+  &quot;alembic&gt;=0.7.0&quot;,
+  &quot;alembic-postgresql-enum&quot;,
+  &quot;Automat&quot;,
+  &quot;argon2-cffi&quot;,
+  &quot;b2sdk&quot;,
+  &quot;Babel&quot;,
+  &quot;bcrypt&quot;,
+  &quot;boto3&quot;,
+  &quot;celery[sqs]&gt;=5.2.2,&lt;5.3.2&quot;,
+  &quot;celery-redbeat&quot;,
+  &quot;certifi&quot;,
+  &quot;click&quot;,
+  &quot;cryptography&quot;,
+  &quot;datadog&gt;=0.19.0&quot;,
+  &quot;disposable-email-domains&quot;,
+  &quot;elasticsearch&gt;=7.0.0,&lt;7.11.0&quot;,
+  &quot;elasticsearch_dsl&gt;=7.0.0,&lt;8.0.0&quot;,
+  &quot;first&quot;,
+  &quot;forcediphttpsadapter&quot;,
+  &quot;github-reserved-names&gt;=1.0.0&quot;,
+  &quot;google-cloud-bigquery&quot;,
+  &quot;google-cloud-storage&quot;,
+  &quot;hiredis&quot;,
+  &quot;html5lib&quot;,
+  &quot;humanize&quot;,
+  &quot;itsdangerous&quot;,
+  &quot;Jinja2&gt;=2.8&quot;,
+  &quot;kombu[sqs]&lt;5.3.2&quot;, # https://github.com/jazzband/pip-tools/issues/1577
+  &quot;limits&quot;,
+  &quot;linehaul&quot;,
+  &quot;lxml&quot;,
+  &quot;mistune&quot;,
+  &quot;msgpack&quot;,
+  &quot;natsort&quot;,
+  &quot;orjson&quot;,
+  &quot;packaging&gt;=23.2&quot;,
+  &quot;packaging_legacy&quot;,
+  &quot;paginate&gt;=0.5.2&quot;,
+  &quot;paginate_sqlalchemy&quot;,
+  &quot;passlib&gt;=1.6.4&quot;,
+  &quot;premailer&quot;,
+  &quot;psycopg[c]&quot;,
+  &quot;pycurl&quot;,
+  &quot;pydantic&quot;,
+  &quot;pyqrcode&quot;,
+  &quot;pyramid&gt;=2.0&quot;,
+  &quot;pymacaroons&quot;,
+  &quot;pyramid_jinja2&gt;=2.5&quot;,
+  &quot;pyramid_mailer&gt;=0.14.1&quot;,
+  &quot;pyramid_openapi3&gt;=0.17.1&quot;,
+  &quot;pyramid_retry&gt;=0.3&quot;,
+  &quot;pyramid_rpc&gt;=0.7&quot;,
+  &quot;pyramid_services&gt;=2.1&quot;,
+  &quot;pyramid_tm&gt;=0.12&quot;,
+  &quot;python-slugify&quot;,
+  &quot;pytz&quot;,
+  &quot;PyJWT[crypto]&gt;=2.8.0&quot;,
+  &quot;readme-renderer[md]&gt;=36.0&quot;,
+  &quot;requests&quot;,
+  &quot;requests-aws4auth&quot;,
+  &quot;redis&gt;=2.8.0,&lt;6.0.0&quot;,
+  &quot;rfc3986&quot;,
+  &quot;sentry-sdk&quot;,
+  &quot;setuptools&quot;,
+  &quot;sqlalchemy[asyncio]&gt;=2.0,&lt;3.0&quot;,
+  &quot;stdlib-list&quot;,
+  &quot;stripe&quot;,
+  &quot;structlog&quot;,
+  &quot;transaction&quot;,
+  &quot;trove-classifiers&quot;,
+  &quot;ua-parser&quot;,
+  &quot;urllib3&lt;2&quot;,  # See https://github.com/pypi/warehouse/issues/14671,
+  &quot;webauthn&gt;=1.0.0,&lt;3.0.0&quot;,
+  &quot;whitenoise&quot;,
+  &quot;WTForms[email]&gt;=2.0.0&quot;,
+  &quot;zope.sqlalchemy&quot;,
+  &quot;zxcvbn&quot;,
+]
+
+[project.optional-dependencies]
+deploy = [
+  &quot;gunicorn==22.0.0&quot;,
+  &quot;ddtrace==2.8.5&quot;
+]
+
+[tool.poetry.dependencies]
+python = &quot;&gt;=3.11, &lt;4&quot;
+alembic = &quot;&gt;=0.7.0&quot;
+alembic-postgresql-enum = &quot;*&quot;
+Automat = &quot;*&quot;
+argon2-cffi = &quot;*&quot;
+b2sdk = &quot;*&quot;
+Babel = &quot;*&quot;
+bcrypt = &quot;*&quot;
+boto3 = &quot;*&quot;
+celery = { version = &quot;&gt;=5.2.2,&lt;5.3.2&quot;, extras = [&quot;sqs&quot;] }
+celery-redbeat = &quot;*&quot;
+certifi = &quot;*&quot;
+click = &quot;*&quot;
+cryptography = &quot;*&quot;
+datadog = &quot;&gt;=0.19.0&quot;
+disposable-email-domains = &quot;*&quot;
+elasticsearch = &quot;&gt;=7.0.0,&lt;7.11.0&quot;
+elasticsearch_dsl = &quot;&gt;=7.0.0,&lt;8.0.0&quot;
+first = &quot;*&quot;
+forcediphttpsadapter = &quot;*&quot;
+github-reserved-names = &quot;&gt;=1.0.0&quot;
+google-cloud-bigquery = &quot;*&quot;
+google-cloud-storage = &quot;*&quot;
+hiredis = &quot;*&quot;
+html5lib = &quot;*&quot;
+humanize = &quot;*&quot;
+itsdangerous = &quot;*&quot;
+Jinja2 = &quot;&gt;=2.8&quot;
+kombu = { version = &quot;&lt;5.3.2&quot;, extras = [&quot;sqs&quot;] } # https://github.com/jazzband/pip-tools/issues/1577
+limits = &quot;*&quot;
+linehaul = &quot;*&quot;
+lxml = &quot;*&quot;
+mistune = &quot;*&quot;
+msgpack = &quot;*&quot;
+natsort = &quot;*&quot;
+orjson = &quot;*&quot;
+packaging = &quot;&gt;=23.2&quot;
+packaging_legacy = &quot;*&quot;
+paginate = &quot;&gt;=0.5.2&quot;
+paginate_sqlalchemy = &quot;*&quot;
+passlib = &quot;&gt;=1.6.4&quot;
+premailer = &quot;*&quot;
+psycopg = { version = &quot;*&quot;, extras = [&quot;c&quot;] }
+pycurl = &quot;*&quot;
+pydantic = &quot;*&quot;
+pyqrcode = &quot;*&quot;
+pyramid = &quot;&gt;=2.0&quot;
+pymacaroons = &quot;*&quot;
+pyramid_jinja2 = &quot;&gt;=2.5&quot;
+pyramid_mailer = &quot;&gt;=0.14.1&quot;
+pyramid_openapi3 = &quot;&gt;=0.17.1&quot;
+pyramid_retry = &quot;&gt;=0.3&quot;
+pyramid_rpc = &quot;&gt;=0.7&quot;
+pyramid_services = &quot;&gt;=2.1&quot;
+pyramid_tm = &quot;&gt;=0.12&quot;
+python-slugify = &quot;*&quot;
+pytz = &quot;*&quot;
+PyJWT = { version = &quot;&gt;=2.8.0&quot;, extras = [&quot;crypto&quot;] }
+readme-renderer = { version = &quot;36.0&quot;, extras = [&quot;md&quot;] }
+requests = &quot;*&quot;
+requests-aws4auth = &quot;*&quot;
+redis = &quot;&gt;=2.8.0,&lt;6.0.0&quot;
+rfc3986 = &quot;*&quot;
+sentry-sdk = &quot;*&quot;
+setuptools = &quot;*&quot;
+sqlalchemy = { version = &quot;&gt;=2.0,&lt;3.0&quot;, extras = [&quot;asyncio&quot;] }
+stdlib-list = &quot;*&quot;
+stripe = &quot;*&quot;
+structlog = &quot;*&quot;
+transaction = &quot;*&quot;
+trove-classifiers = &quot;*&quot;
+ua-parser = &quot;*&quot;
+urllib3 = &quot;&lt;2&quot;  # See https://github.com/pypi/warehouse/issues/14671,
+webauthn = &quot;&gt;=1.0.0,&lt;3.0.0&quot;
+whitenoise = &quot;*&quot;
+WTForms = { version = &quot;&gt;=2.0.0&quot;, extras = [&quot;email&quot;] }
+&quot;zope.sqlalchemy&quot; = &quot;*&quot;
+zxcvbn = &quot;*&quot;
+
+[tool.poetry.group.deploy]
+optional = true
+
+[tool.poetry.group.deploy.dependencies]
+gunicorn = &quot;==22.0.0&quot;
+ddtrace = &quot;==2.8.5&quot;
+</code></pre>
+<p>And now hyperfine:</p>
+<pre><code>$ hyperfine --warmup 1 --prepare &quot;rm -f uv.lock poetry.lock&quot; \
+    &quot;uv-main lock&quot; \
+    &quot;uv-before-requires-python lock&quot; \
+    &quot;uv-before-disjoint-filtering lock&quot; \
+    &quot;poetry lock&quot;
+Benchmark 1: uv-main lock
+  Time (mean ± σ):      88.5 ms ±   7.1 ms    [User: 70.2 ms, System: 93.5 ms]
+  Range (min … max):    78.5 ms … 104.1 ms    29 runs
+
+Benchmark 2: uv-before-requires-python lock
+  Time (mean ± σ):      1.810 s ±  0.019 s    [User: 1.968 s, System: 0.307 s]
+  Range (min … max):    1.786 s …  1.847 s    10 runs
+
+Benchmark 3: uv-before-disjoint-filtering lock
+  Time (mean ± σ):      87.5 ms ±   6.8 ms    [User: 74.7 ms, System: 88.6 ms]
+  Range (min … max):    77.9 ms …  98.5 ms    31 runs
+
+Benchmark 4: poetry lock
+  Time (mean ± σ):      3.263 s ±  0.021 s    [User: 3.139 s, System: 0.119 s]
+  Range (min … max):    3.237 s …  3.299 s    10 runs
+
+Summary
+  uv-before-disjoint-filtering lock ran
+    1.01 ± 0.11 times faster than uv-main lock
+   20.68 ± 1.63 times faster than uv-before-requires-python lock
+   37.29 ± 2.92 times faster than poetry lock
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-06-17 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4381.html">astral-sh/uv#4381</a> on 2024-06-18 14:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff Cannot Recognise a Variable Usage inside typing.cast - astral-sh/ruff #17442</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff Cannot Recognise a Variable Usage inside typing.cast</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17442">#17442</a>
+        opened by <a href="https://github.com/barmanroys">@barmanroys</a>
+        on 2025-04-17 04:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/barmanroys">@barmanroys</a> on 2025-04-17 04:15</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://play.ruff.rs/7abdedee-b394-4ce3-a5b4-ecc1904fbfa7">Play ground link</a>.</p>
+<h5>Context</h5>
+<p>A test method within a <code>unittest</code> class.</p>
+<h5>Code</h5>
+<pre><code class="language-python3">from typing import cast, Tuple
+...
+
+def test_run(self):
+    &quot;&quot;&quot;Use the sample initial states and action choices for testing.&quot;&quot;&quot;
+    initial_input: int = 1 # Ruff warns this variable is defined but not used 
+    actions: Tuple[int, ...] = (199, 213, 111, 333) # Ruff warns this variable is defined but not used 
+    result = cast(
+        typ=Tuple[Any],
+        val=self.interactor.run(llm_input=initial_input, action_sequence=actions),
+    )
+    self.assertTupleEqual(tuple1=result, tuple2=(1, 0, True, {}))
+    logging.info(msg=&quot;Multi-round interactor passed testing.&quot;)
+</code></pre>
+<h5>Problem</h5>
+<p>Ruff Cannot recognise the usage of a variable inside <code>typing.cast</code>. Even though it <em>is</em> being used.</p>
+<h5>System Details</h5>
+<ul>
+<li>ruff 0.11.5</li>
+<li>uv 0.5.13</li>
+<li>Operating system: Linux mint 22</li>
+</ul>
+<h3>Version</h3>
+<p>0.11.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-17 06:16</div>
+            <div class="timeline-body"><p>Here's a smaller example that shows the same problem. It seems to depend on the fact that keyword arguments are used for <code>typing.cast</code>:</p>
+<pre><code class="language-py">from typing import cast
+
+def f():
+    x = 1
+    print(cast(typ=int, val=x))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/barmanroys">@barmanroys</a> on 2025-04-17 06:24</div>
+            <div class="timeline-body"><p>@sharkdp thanks for reducing my example to a minimal variant.</p>
+<p>So, as <code>typing.cast</code> accepts keyword arguments, should this behaviour be fixed on the <em>ruff</em>-end of things (perdon the pun)?</p>
+<p>Also, weird enough, the bug/warning from ruff is absent when the <code>cast</code> is being called at the top level of the module. So the following code works okay.</p>
+<pre><code class="language-python3">from typing import cast
+x = 1
+print(cast(typ=int, val=x))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-17 07:22</div>
+            <div class="timeline-body"><blockquote>
+<p>So, as <code>typing.cast</code> accepts keyword arguments, should this behaviour be fixed on the <em>ruff</em>-end of things</p>
+</blockquote>
+<p>Yes, I think so.</p>
+<blockquote>
+<p>Also, weird enough, the bug/warning from ruff is absent when the <code>cast</code> is being called at the top level of the module</p>
+</blockquote>
+<p><a href="https://docs.astral.sh/ruff/rules/unused-variable/">F841</a> only applies to unused variables in function scopes. If you define an variable in module-global scope, it could be imported from another module. So there's no way to tell if it is used or not (in a single-file analysis).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-04-17 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-17 13:23</div>
+            <div class="timeline-body"><p>I think we're only visiting the positional args for <code>cast</code> (and the other <code>typing</code> imports in this block?):</p>
+<p>https://github.com/astral-sh/ruff/blob/d4695feccf28b46883cb1303a811f147b812ab72/crates/ruff_linter/src/checkers/ast/mod.rs#L1541-L1553</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-17 19:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we're only visiting the positional args for <code>cast</code> (and the other <code>typing</code> imports in this block?):</p>
+</blockquote>
+<p>Yeah, this seems like a clear issue. We should probably use <code>find_argument_value</code> or <code>find_argument</code> which finds an argument via both position and name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17538.html">astral-sh/ruff#17538</a> on 2025-04-22 07:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-23 07:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

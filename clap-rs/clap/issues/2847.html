@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using `help_heading` in one place requires using it on all Flags to get a Unified experience - clap-rs/clap #2847</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using `help_heading` in one place requires using it on all Flags to get a Unified experience</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2847">#2847</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-10-11 16:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-10-11 16:04</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.55.0 (c8dfcfe04 2021-09-06)</p>
+<h3>Clap Version</h3>
+<p>v3.0.0-beta.4</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">fn main() {
+    use clap::*;
+    let app = App::new(&quot;myTest&quot;)
+        .name(&quot;test&quot;)
+        .author(&quot;Kevin K.&quot;)
+        .about(&quot;tests stuff&quot;)
+        .version(&quot;1.3&quot;)
+        .arg(Arg::from(&quot;-f, --flag 'some flag'&quot;))
+        .arg(Arg::from(&quot;[arg] 'some pos arg'&quot;))
+        .arg(Arg::from(&quot;--option [opt] 'some option'&quot;))
+        .arg(Arg::from(&quot;-v, --verbose 'Extra info'&quot;).help_heading(Some(&quot;Debug&quot;)))
+        .arg(Arg::from(&quot;-q, --quiet 'Less info'&quot;).help_heading(Some(&quot;Debug&quot;)));
+    app.get_matches();
+}
+</code></pre>
+<p>or</p>
+<pre><code class="language-rust">fn main() {
+    use clap::*;
+    let app = App::new(&quot;myTest&quot;)
+        .name(&quot;test&quot;)
+        .author(&quot;Kevin K.&quot;)
+        .about(&quot;tests stuff&quot;)
+        .version(&quot;1.3&quot;)
+        .setting(AppSettings::UnifiedHelpMessage)
+        .arg(Arg::from(&quot;-f, --flag 'some flag'&quot;))
+        .arg(Arg::from(&quot;[arg] 'some pos arg'&quot;))
+        .arg(Arg::from(&quot;--option [opt] 'some option'&quot;))
+        .arg(Arg::from(&quot;-v, --verbose 'Extra info'&quot;).help_heading(Some(&quot;Debug&quot;)))
+        .arg(Arg::from(&quot;-q, --quiet 'Less info'&quot;).help_heading(Some(&quot;Debug&quot;)));
+    app.get_matches();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run -- --help</p>
+<h3>Actual Behaviour</h3>
+<pre><code>❯ cargo run -- --help
+   Compiling test-clap v0.1.0 (/home/epage/src/personal/test-clap)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.60s
+     Running `target/debug/test-clap --help`
+test 1.3
+
+Kevin K.
+
+tests stuff
+
+USAGE:
+    test-clap [FLAGS] [OPTIONS] [arg]
+
+ARGS:
+    &lt;arg&gt;    some pos arg
+
+FLAGS:
+    -f, --flag       some flag
+    -h, --help       Print help information
+    -V, --version    Print version information
+
+OPTIONS:
+        --option &lt;opt&gt;    some option
+
+Debug:
+    -q, --quiet      Less info
+    -v, --verbose    Extra info
+</code></pre>
+<p>or</p>
+<pre><code>❯ cargo run -- --help
+   Compiling test-clap v0.1.0 (/home/epage/src/personal/test-clap)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.63s
+     Running `target/debug/test-clap --help`
+test 1.3
+
+Kevin K.
+
+tests stuff
+
+USAGE:
+    test-clap [OPTIONS] [arg]
+
+ARGS:
+    &lt;arg&gt;    some pos arg
+
+OPTIONS:
+    -f, --flag            some flag
+    -h, --help            Print help information
+        --option &lt;opt&gt;    some option
+    -q, --quiet           Less info
+    -v, --verbose         Extra info
+    -V, --version         Print version information
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Without having to override <code>help_heading</code> on every flag:</p>
+<pre><code>❯ cargo run -- --help
+   Compiling test-clap v0.1.0 (/home/epage/src/personal/test-clap)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.60s
+     Running `target/debug/test-clap --help`
+test 1.3
+
+Kevin K.
+
+tests stuff
+
+USAGE:
+    test-clap [FLAGS] [OPTIONS] [arg]
+
+ARGS:
+    &lt;arg&gt;    some pos arg
+
+OPTIONS:
+    -f, --flag       some flag
+    -h, --help       Print help information
+    -V, --version    Print version information
+        --option &lt;opt&gt;    some option
+
+Debug:
+    -q, --quiet      Less info
+    -v, --verbose    Extra info
+</code></pre>
+<h3>Additional Context</h3>
+<p>This is split off of #2807</p>
+<p>We could fix this by respecting <code>help_heading</code> with <code>UnifiedHelpMessage</code> but it then seems like a misnomer because it is no longer unified.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @epage on 2021-10-11 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @epage on 2021-10-11 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2807.html">clap-rs/clap#2807</a> on 2021-10-11 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @pksunkara on 2021-10-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: usage strings</span> added by @pksunkara on 2021-10-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2021-10-13 22:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

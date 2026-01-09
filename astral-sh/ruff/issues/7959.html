@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excluding a folder containing braces in its name fails - astral-sh/ruff #7959</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Excluding a folder containing braces in its name fails</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7959">#7959</a>
+        opened by <a href="https://github.com/LKajan">@LKajan</a>
+        on 2023-10-14 11:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LKajan">@LKajan</a> on 2023-10-14 11:11</div>
+            <div class="timeline-body"><p>If folder containing braces in its name is configured to the <code>extend-exclude</code> ruff fails to run. <code>ruff .</code> produces an error:</p>
+<pre><code>ruff failed
+  Cause: error parsing glob 'C:\Users\&lt;&gt;\cookiecutter-plugin\{{cookiecutter.plugin_package}}': nested alternate groups are not allowed
+</code></pre>
+<p>Ruff version: 0.0.292</p>
+<p><strong>My project structure and configuration:</strong></p>
+<pre><code>./
+├ {{cookiecutter.project_directory}}
+├ hooks/
+| ├ post_gen_project.py
+├ pyproject.toml
+</code></pre>
+<pre><code class="language-toml"># pyproject.toml
+[tool.ruff]
+extend-exclude = [&quot;{{cookiecutter.plugin_package}}&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-14 18:44</div>
+            <div class="timeline-body"><p>These are globs, so you need to do some escaping:</p>
+<pre><code class="language-toml">[tool.ruff]
+extend-exclude = [
+  '\{\{cookiecutter.plugin_package\}\}'
+]
+</code></pre>
+<p>TOML requires single quotes there, I think, but I tested this myself. Let me know if it works for you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-10-14 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-10-14 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LKajan">@LKajan</a> on 2023-10-15 10:17</div>
+            <div class="timeline-body"><p>Unfortunately escaping didn't work.
+With <code>extend-exclude = ['\{\{cookiecutter.plugin_package\}\}']</code> I'll get an error</p>
+<pre><code>ruff failed
+  Cause: error parsing glob 'C:\{\{cookiecutter.plugin_package\}\}': nested alternate groups are not allowed
+</code></pre>
+<p>Please note also the path is now directly under C:\ and not in the workind directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LKajan">@LKajan</a> on 2023-10-15 10:23</div>
+            <div class="timeline-body"><p>I found an issue from VS Code with the same error message: https://github.com/microsoft/vscode/issues/194701
+So this might be an issue of a upstream library.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-16 00:05</div>
+            <div class="timeline-body"><p>I wonder why the escaping worked fine for me but not for you. I just want to confirm that you used single quotes in the TOML file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LKajan">@LKajan</a> on 2023-10-16 06:13</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder why the escaping worked fine for me but not for you. I just want to confirm that you used single quotes in the TOML file?</p>
+</blockquote>
+<p>That's what I was wondering too. Could this be an OS dependent? And how come single quotes make the path absolute and not relative?
+<img src="https://github.com/astral-sh/ruff/assets/1225021/0ac299e6-ca2e-4155-b5b7-e07da7fa1a27" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-16 13:37</div>
+            <div class="timeline-body"><p>I assume so -- I only tested on macOS. I believe the single- vs. double-quotes is part of the TOML spec. Single quotes cause the string to be interpreted as a literal with no escaping at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-10-16 15:33</div>
+            <div class="timeline-body"><p>For meta-characters escaping in <code>glob</code> you must <a href="https://docs.python.org/3/library/glob.html#glob.escape">wrap it in brackets</a>: <code>[</code> and <code>]</code>
+I used this and got expected result:</p>
+<pre><code class="language-toml">extend-exclude = [&quot;[{][{]cookiecutter.plugin_package[}][}]&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-16 16:38</div>
+            <div class="timeline-body"><p>Oh interesting -- @LKajan, can you give that a try?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LKajan">@LKajan</a> on 2023-10-17 10:52</div>
+            <div class="timeline-body"><p>Thanks @T-256 that actually worked!</p>
+<p>Should the value be escaped by user or by Ruff? If left to the user's responsibility, then at least this should be documented somehow. Either a clear instructions or at least a reference to a some rigrep/regexp documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-10-17 11:29</div>
+            <div class="timeline-body"><p>https://docs.astral.sh/ruff/settings/#extend-exclude :</p>
+<blockquote>
+<p>For more information on the glob syntax, refer to the <a href="https://docs.rs/globset/latest/globset/#syntax">globset documentation</a>.</p>
+</blockquote>
+<p>In settings page, all of associated options already documented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LKajan">@LKajan</a> on 2023-10-17 11:37</div>
+            <div class="timeline-body"><p>Thanks for pointing that! I missed that part.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @LKajan on 2023-10-17 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9381.html">astral-sh/ruff#9381</a> on 2024-01-04 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reinout">@reinout</a> on 2024-01-19 19:44</div>
+            <div class="timeline-body"><p>I had a hard time getting the <code>{{</code> to be accepted by the <code>[tool.ruff]</code> section in my <code>pyproject.toml</code>.</p>
+<ul>
+<li>I worked around the <code>{{</code> problem by using <code>exclude = [&quot;*cookiecutter.project_name*&quot;]</code>, as asterixes match the curly braces just fine.</li>
+<li>The errors I got, despite the exclude, were about <code>{{cookiecutter.project_name}}/pyproject.toml</code>, which is a special case for which I opened an issue: #9585</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9585.html">astral-sh/ruff#9585</a> on 2024-05-08 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tox-dev/toml-fmt/issues/22.html">tox-dev/toml-fmt#22</a> on 2024-12-31 11:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16407.html">astral-sh/ruff#16407</a> on 2025-02-26 22:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

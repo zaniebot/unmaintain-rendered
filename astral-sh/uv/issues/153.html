@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolving torch fails through nvidia-cuda-nvrtc-cu12 with 500 Internal Server Error - astral-sh/uv #153</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Resolving torch fails through nvidia-cuda-nvrtc-cu12 with 500 Internal Server Error</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/153">#153</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-10-20 10:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2023-10-20 10:51</div>
+            <div class="timeline-body"><pre><code>$ cargo run --bin puffin -- pip-compile -v requirements_torch.txt
+    0.228815s DEBUG puffin_resolver::resolver Fetching dependencies for nvidia-cuda-nvrtc-cu12
+error: HTTP status server error (500 Internal Server Error) for url (https://pypi-metadata.ruff.rs/packages/a4/05/23f8f38eec3d28e4915725b233c24d8f1a33cb6540a882f7b54be1befa02/nvidia_nccl_cu12-2.18.1-py3-none-manylinux1_x86_64.whl)
+</code></pre>
+<p>where the file contains just <code>torch</code>. My guess is that the file is too large (210MB)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-20 15:05</div>
+            <div class="timeline-body"><p>We should get rid of our custom server and just do range requests. It's not worth maintaining the infra. Unless we can figure out how to do the lazy zip read in the Cloudflare Worker (I couldn't find a JS library for this).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-21 02:30</div>
+            <div class="timeline-body"><p>Perhaps we should do both... But importantly, for now, we should add support for making range requests here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-10-23 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/168.html">astral-sh/uv#168</a> on 2023-10-23 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-23 01:07</div>
+            <div class="timeline-body"><p>I ended up improving the solution to read the file lazily in the worker. The worker is kind of nice, because it gives us network caching rather than per-using caching for these (and it's a very generic solution that would even worker for other registries).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-23 01:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

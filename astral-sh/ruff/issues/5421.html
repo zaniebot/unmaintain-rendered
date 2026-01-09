@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E731 auto-fix is too aggressive - astral-sh/ruff #5421</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>E731 auto-fix is too aggressive</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5421">#5421</a>
+        opened by <a href="https://github.com/adampauls">@adampauls</a>
+        on 2023-06-28 15:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adampauls">@adampauls</a> on 2023-06-28 15:59</div>
+            <div class="timeline-body"><p>Consider the following code:</p>
+<pre><code class="language-python">@dataclass
+class Foo:
+    my_lambda: Callable[[], int]
+
+
+def func(arg: Foo, flag: bool):
+    my_lambda: Callable[[], int]
+    if flag:
+        my_lambda = arg.my_lambda
+    else:
+        my_lambda = lambda: 5  # noqa: E731
+
+    return my_lambda()
+</code></pre>
+<p>Ruff will autofix the <code>noqa</code> line, but that introduces a bug, at least I think it does. Certainly <code>pyright</code> complains.</p>
+<p>EDIT:
+After the autofix, the code is</p>
+<pre><code class="language-python">@dataclass
+class Foo:
+    my_lambda: Callable[[], int]
+
+
+def func(arg: Foo, flag: bool) -&gt; int:
+    my_lambda: Callable[[], int]
+    if flag:
+        my_lambda = arg.my_lambda
+    else:
+        def my_lambda():
+            return 5
+
+    return my_lambda()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-06-28 16:04</div>
+            <div class="timeline-body"><p>@adampauls can you please include the code after the autofix and the pyright complaint?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-06-28 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adampauls">@adampauls</a> on 2023-06-28 20:43</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-06-28 20:52</div>
+            <div class="timeline-body"><p>@adampauls that fix looks fine to me and runs correctly</p>
+<pre><code class="language-python">&gt; func(Foo(my_lambda=lambda: 1), True)
+1
+
+&gt; func(Foo(my_lambda=lambda: 1), False)
+5
+</code></pre>
+<p>What's the bug / pyright complaint?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adampauls">@adampauls</a> on 2023-06-28 21:17</div>
+            <div class="timeline-body"><p>Pyright says</p>
+<pre><code>error: Declaration &quot;my_lambda&quot; is obscured by a declaration of the same name
+</code></pre>
+<p>I guess you can argue that <code>pyright</code> is issuing an incorrect error here, but to my eyes the code becomes worse after the fix here. I had imagined that the ruff rule/fix was spiritually targeted towards the case where assigning a lambda is just uglier syntax for a <code>def</code>, whereas here, &quot;assigning a lambda&quot; really is a meaningful assignment to an existing symbol instead of  declaration of a new one. If this behavior is intended, feel free to close and I'll just ignore the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-28 21:23</div>
+            <div class="timeline-body"><p>This might be a case where there could be another suggestion for refactoring the code. Is it possible to share a more realistic snippet?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adampauls">@adampauls</a> on 2023-06-28 21:25</div>
+            <div class="timeline-body"><p>Here's a link to the <a href="https://github.com/microsoft/semantic_parsing_with_constrained_lm/blob/65fcf83d83c0c60fd63107d0274f4c899489c3b0/src/semantic_parsing_with_constrained_lm/configs/benchclamp_gpt3_config.py#L94-L99">original code</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-28 21:35</div>
+            <div class="timeline-body"><p>Thanks :) Hmm, perhaps we could avoid flagging E731 when the variable already exists as an annotation? E.g., based on the <code>partial_parse_builder: Callable[[Datum], PartialParse]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adampauls">@adampauls</a> on 2023-06-28 22:07</div>
+            <div class="timeline-body"><p>FWIW I don't even mind the lint error, I like opinionated linters. I just don't like opinionated autofixers, since you might not even realize that code was changed behind the scenes if you're running it over lots of code. If it were me, I would disable the autofix if the variable is assigned or declared anywhere other than the place where it is assigned to a lambda (before or after).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-29 00:27</div>
+            <div class="timeline-body"><p>I think that's reasonable. We could mark it as a manual fix in that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5430.html">astral-sh/ruff#5430</a> on 2023-06-29 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-29 02:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adampauls">@adampauls</a> on 2023-06-29 06:20</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove rule A003 - astral-sh/ruff #7806</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove rule A003</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7806">#7806</a>
+        opened by <a href="https://github.com/joaoe">@joaoe</a>
+        on 2023-10-04 10:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joaoe">@joaoe</a> on 2023-10-04 10:18</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hi.</p>
+<p>Rule A003 (inherited from the flake8-builtins project) makes no sense.
+Class scopes do not leak symbols to the global scope. They are their own isolated scopes.</p>
+<p>E.g. this will trigger the warning</p>
+<pre><code>class X(logging.Formatter):
+    def format(self, msg):
+        ...
+</code></pre>
+<p>The warning is implemented here
+https://github.com/astral-sh/ruff/blob/a1509dfc7c2b16f3762545fc802d49f5f03726e2/crates/ruff_linter/src/rules/flake8_builtins/rules/builtin_attribute_shadowing.rs</p>
+<p>Issue on master branch.</p>
+<p>Alternatively, rename it to A903 so it is an opinionated warning.</p>
+<p>PS: there was a bug open in the original project but the owner is not taking any initiative https://github.com/gforcada/flake8-builtins/issues/75</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-04 13:44</div>
+            <div class="timeline-body"><p>Yeah, it's kind of a confusing rule. It's not <em>entirely</em> useless -- it does make some sense when you consider cases like:</p>
+<pre><code class="language-python">class C:
+    @staticmethod
+    def list() -&gt; None:
+        pass
+
+    @staticmethod
+    def repeat(value: int, times: int) -&gt; list[int]:
+        return [value] * times
+</code></pre>
+<p>In the latter definition, <code>list</code> in <code>list[int]</code> resolves to the <code>def list</code> in the class scope. We've actually seen issues before asking us to catch this exact error. Is this clarifying at all?</p>
+<p>I don't know that renaming to A903 is that helpful, since it'd still be enabled via <code>--select A</code>. (The 900-level thing isn't respected in Ruff.) So you'd be in the same position of needing to add it to your <code>ignore</code>.</p>
+<p>We could consider only flagging A003 the actual <em>usage</em>, i.e., when you do <code>list[int]</code> above and it resolves to the class symbol, since that's very likely a mistake?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-10-04 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joaoe">@joaoe</a> on 2023-10-05 22:03</div>
+            <div class="timeline-body"><blockquote>
+<p>We could consider only flagging A003 the actual usage, i.e., when you do list[int] above and it resolves to the class symbol, since that's very likely a mistake?</p>
+</blockquote>
+<p>That sounds like a good idea !</p>
+<p>But that example is not the best, since type hints can be just strings with a future import annotations.</p>
+<blockquote>
+<p>The 900-level thing isn't respected in Ruff</p>
+</blockquote>
+<p>DIdn't know that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wyuenho">@wyuenho</a> on 2023-10-10 19:37</div>
+            <div class="timeline-body"><p>@charliermarsh That is a very niche case that's probably better dealt with by having A003 exclusively detect the case where a function or <strong>static</strong> method name is shadowing a built-in.</p>
+<p>The problem now is the code path that detects A001 will warn about A003 if it's a class attribute assignment, A003 will warn again when it is a class attribute assignment, and A003 makes no distinction between instance/class methods which you have to access via a selector, and static methods, which do not have this requirement.</p>
+<p>P.S. I think there should be a rule that errors whenever a static method is introduced but I digress...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-10 20:17</div>
+            <div class="timeline-body"><p>@wyuenho - I don't believe that <code>list</code> has to be static above -- Pyright gives you an <code>error: Expected type expression but received &quot;(self: Self@C) -&gt; None&quot; (reportGeneralTypeIssues)</code> error even when <code>list</code> is an instance method, and that <em>does</em> make sense to me given Python's scoping rules: bindings introduced in the class scope can be accessed when referenced from directly within the class scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wyuenho">@wyuenho</a> on 2023-10-11 02:18</div>
+            <div class="timeline-body"><p>That makes sense, and it's a case of https://github.com/gforcada/flake8-builtins/issues/75#issuecomment-1176549868.</p>
+<p>Is there an easy way to only warn when there's a reference in the class scope call site? If not then I guess it's worth documenting some of the cases here and suggest to the user to ignore A003 as there are too many false negatives, and type checkers such as mypy and pyright can already catch some of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-11 03:48</div>
+            <div class="timeline-body"><p>I think we can feasibly change this rule to only flag cases in which you shadow a builtin, and then it gets referenced (like the <code>list</code> case above). That should eliminate the vast, vast majority of false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2023-10-11 03:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-11 03:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9462.html">astral-sh/ruff#9462</a> on 2024-01-11 02:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-11 02:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-11 02:35</div>
+            <div class="timeline-body"><p>PR up that should make this rule <em>far</em> more useful by only flagging actual shadowed reads (like in the example above) rather than the method definitions (which will almost always be fine): https://github.com/astral-sh/ruff/pull/9462</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-11 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-11 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10433.html">astral-sh/ruff#10433</a> on 2024-03-17 10:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

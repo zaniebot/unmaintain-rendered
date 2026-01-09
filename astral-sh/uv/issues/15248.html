@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can `uv` make `no-build-isolation` installation easier? - astral-sh/uv #15248</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can `uv` make `no-build-isolation` installation easier?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15248">#15248</a>
+        opened by <a href="https://github.com/sidmadala">@sidmadala</a>
+        on 2025-08-13 03:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sidmadala">@sidmadala</a> on 2025-08-13 03:03</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>pixi</code> recently pushed an <a href="https://github.com/prefix-dev/pixi/pull/4247">update</a> that makes installing <code>--no-build-isolation</code> packages much easier and a one-liner. I was wondering if there's any chance of <code>uv</code> implementing this type of behavior since it seems a lot more natural than what is currently described in the <a href="https://docs.astral.sh/uv/concepts/projects/config/#build-isolation">docs</a> (i.e. multi-step environment build, listing build dependencies). For example, if I am installing <code>flash-attn</code>, I will most likely be listing/pinning the version of <code>torch</code> I will be working with at the top of my <code>pyproject.toml</code>, and it seems like it would make sense to resolve those packages before installing any <code>no-build-isolation</code> dependencies.</p>
+<p>This <a href="https://github.com/astral-sh/uv/issues/14940">issue</a> and this <a href="https://github.com/astral-sh/uv/issues/1715#issuecomment-2891833039">comment</a> hint that some people in the community think the above behavior is more natural as well. Any thoughts are much appreciated!</p>
+<h3>Example</h3>
+<p>Here is an example of installing <code>flash-attn</code> with <code>no-build-isolation</code> via <code>pixi</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;test-pixi&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11,&lt;3.13&quot;
+
+dependencies = [
+    &quot;torch==2.6.0&quot;,
+    &quot;flash-attn&quot;,
+]
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.9,&lt;0.9.0&quot;]
+build-backend = &quot;uv_build&quot;
+
+[tool.pixi.project]
+# Minimal channel usage: NVIDIA for full CUDA toolkit (with nvcc), conda-forge for Python itself.
+channels = [&quot;nvidia&quot;, &quot;conda-forge&quot;]
+platforms = [&quot;linux-64&quot;]
+
+# Tell pixi we are on a CUDA 12.4 machine so it doesn’t “helpfully” resolve CPU-only stuff.
+[tool.pixi.system-requirements]
+cuda = &quot;12.4&quot;
+
+# Conda-side deps ONLY for interpreter + CUDA toolkit (provides nvcc)
+[tool.pixi.dependencies]
+python = &quot;3.12.*&quot;
+cuda-toolkit = &quot;12.4.*&quot;
+
+# Disable build isolation for CUDA-extension packages so they can import torch at build time
+[tool.pixi.pypi-options]
+no-build-isolation = [&quot;flash-attn&quot;]  # This gets installed AFTER torch is resolved/installed
+</code></pre>
+<p>The command to install would just be:</p>
+<pre><code class="language-sh">pixi install
+</code></pre>
+<p>However, I have to use all the workarounds described in the <a href="https://docs.astral.sh/uv/concepts/projects/config/#build-isolation">docs</a> to get <code>flash-attn</code> installed via <code>uv</code>. It seems a bit inconvenient/lower QoL even if it is only a few extra lines of <code>toml</code> and a few extra commands. It would be nice to just declaritively write the <code>pyproject.toml</code> similar to the above <code>pixi</code> spec and do <code>uv sync</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @sidmadala on 2025-08-13 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-13 03:41</div>
+            <div class="timeline-body"><p>Yes! We've been hard at work on the flash-attn use-case.</p>
+<p>Instead of turning off build isolation, we've invested in extending the build dependencies of packages so they can build properly in isolation</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/14735</li>
+</ul>
+<p>For flash-attn, you need this build dependency to match your runtime version, so we added support for declaring that as well</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/15036</li>
+</ul>
+<p>And... for flash-attn, you also need to configure build-time environment variables, so we added that too</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/15095</li>
+</ul>
+<p>We'll be updating our documentation / guides to reflect these changes soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-13 03:42</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/issues/6437#issuecomment-3167274955 for a complete example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sidmadala">@sidmadala</a> on 2025-08-13 13:24</div>
+            <div class="timeline-body"><p>Thanks for all this information! I was wondering how I might go about with this installation using the new methods you outlined above. <code>axolotl</code> has optional dependencies <code>flash-attn</code>, <code>deepspeed</code>, and <code>vllm</code>, but is installed with <code>pip</code> via <code>pip install --no-build-isolation axolotl[flash-attn,deepspeed,vllm]</code>. However, I don't think this behavior works in <code>uv</code> right now, or wouldn't be possible given the outline above. Would I need to separate out all these packages and have <code>no-build-isolation</code> on all 4 packages simultaneously?</p>
+<pre><code class="language-toml">[project]
+name = &quot;test-uv&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11,&lt;3.13&quot;
+
+dependencies = [
+    &quot;torch==2.6.0&quot;,
+    &quot;axolotl[deepspeed,flash-attn,vllm]&quot;,
+]
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.9,&lt;0.9.0&quot;]
+build-backend = &quot;uv_build&quot;
+
+[tool.uv]
+no-build-isolation-package = [&quot;axolotl&quot;, &quot;flash-attn&quot;, &quot;deepspeed&quot;, &quot;vllm&quot;]
+
+[tool.uv.sources]
+verl = { path = &quot;verl&quot;, editable = true }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-13 13:44</div>
+            <div class="timeline-body"><p>Hmm, if I understand it correctly, that solution from Pixi requires/assumes that all the build dependencies are also project dependencies? That seems non-ideal to me. (It's not strictly true here, <code>setuptools</code> is not a project dependency, but maybe they make it available automatically in the virtual environment.) Our intent is to make it easier to build those packages with build isolation.</p>
+<p>I think you want something like this:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test-uv&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11,&lt;3.13&quot;
+
+dependencies = [
+    &quot;torch==2.6.0&quot;,
+    &quot;axolotl[deepspeed,flash-attn,vllm]&quot;,
+]
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.9,&lt;0.9.0&quot;]
+build-backend = &quot;uv_build&quot;
+
+[tool.uv.sources]
+verl = { path = &quot;verl&quot;, editable = true }
+
+[tool.uv.extra-build-dependencies]
+flash-attn = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+deepspeed = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+axolotl = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+</code></pre>
+<p>(Looking at the <code>axolotl</code> <code>setup.py</code> though, I think this will only be right by coincidence, because <code>axolotl</code> relies on detecting the <code>torch</code> version to inform its declared dependencies, and we can't know the torch version prior to resolving the dependency graph. It looks like they default to 2.6.0, which helps here. (What Pixi is doing in the linked PR would also suffer from this problem.))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-13 13:52</div>
+            <div class="timeline-body"><p>I just tested that on a Linux container and <code>uv sync</code> succeeded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sidmadala">@sidmadala</a> on 2025-08-13 14:01</div>
+            <div class="timeline-body"><p>Yep that's a bit more ideal, just have to be careful about knowing what the extra build dependency is. In the example above, does just adding <code>[tool.uv.extra-build-dependencies]</code> turn on <code>no-build-isolation</code> for those packages, or does it just make sure that the isolated build environment pulls the same version of torch or whatever requirement is needed. Also can we pass in a list to <code>requirement</code> if needed? Thanks for the assistance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-13 14:07</div>
+            <div class="timeline-body"><blockquote>
+<p>...or does it just make sure that the isolated build environment pulls the same version of torch or whatever requirement is needed.</p>
+</blockquote>
+<p>Yeah this is right -- it still does an isolated build, it just lets you augment the dependencies that are included in the build environment (and make sure they match the locked version).</p>
+<p>You can pass more requirements like:</p>
+<pre><code class="language-toml">flash-attn = [{ requirement = &quot;torch&quot;, match-runtime = true }, &quot;vllm&quot;, &quot;setuptools&quot;, ...]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sidmadala">@sidmadala</a> on 2025-08-13 16:14</div>
+            <div class="timeline-body"><pre><code class="language-sh">(test-uv) sidmadala@icgpu01:~/hocklab/test-uv$ uv sync
+warning: The `extra-build-dependencies` option is experimental and may change without warning. Pass `--preview-features extra-build-dependencies` to disable this warning.
+⠧ axolotl==0.7.0                                                                                 warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cusolver-cu12` (v11.7.3.90) or `nvidia-cublas-cu12` (v12.8.4.1).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cufile-cu12` (v1.13.1.3) or `nvidia-cublas-cu12` (v12.8.4.1).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cufile-cu12` (v1.13.1.3) or `nvidia-cuda-cupti-cu12` (v12.8.90).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cufft-cu12` (v11.3.3.83) or `nvidia-cuda-cupti-cu12` (v12.8.90).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cufft-cu12` (v11.3.3.83) or `nvidia-cuda-nvrtc-cu12` (v12.8.93).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvtx-cu12` (v12.8.90) or `nvidia-cuda-nvrtc-cu12` (v12.8.93).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvtx-cu12` (v12.8.90) or `nvidia-cusparse-cu12` (v12.5.8.93).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cusparse-cu12` (v12.5.8.93) or `nvidia-cuda-runtime-cu12` (v12.8.90).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvjitlink-cu12` (v12.8.93) or `nvidia-cuda-runtime-cu12` (v12.8.90).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvjitlink-cu12` (v12.8.93) or `nvidia-curand-cu12` (v10.3.9.90).
+⠴ axolotl==0.6.0                                                                                 warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cufile-cu12` (v1.13.1.3) or `nvidia-cuda-runtime-cu12` (v12.8.90).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cufft-cu12` (v11.3.3.83) or `nvidia-cuda-runtime-cu12` (v12.8.90).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cufft-cu12` (v11.3.3.83) or `nvidia-cuda-cupti-cu12` (v12.8.90).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cusolver-cu12` (v11.7.3.90) or `nvidia-cuda-cupti-cu12` (v12.8.90).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cusolver-cu12` (v11.7.3.90) or `nvidia-cuda-nvrtc-cu12` (v12.8.93).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cusparse-cu12` (v12.5.8.93) or `nvidia-cuda-nvrtc-cu12` (v12.8.93).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cusparse-cu12` (v12.5.8.93) or `nvidia-curand-cu12` (v10.3.9.90).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvtx-cu12` (v12.8.90) or `nvidia-curand-cu12` (v10.3.9.90).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvtx-cu12` (v12.8.90) or `nvidia-cublas-cu12` (v12.8.4.1).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvjitlink-cu12` (v12.8.93) or `nvidia-cublas-cu12` (v12.8.4.1).
+⠸ axolotl==0.5.2                                                                                 warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cufile-cu12` (v1.13.1.3) or `nvidia-cuda-cupti-cu12` (v12.8.90).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cuda-cupti-cu12` (v12.8.90) or `nvidia-cublas-cu12` (v12.8.4.1).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cusparse-cu12` (v12.5.8.93) or `nvidia-cublas-cu12` (v12.8.4.1).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvjitlink-cu12` (v12.8.93) or `nvidia-cusparse-cu12` (v12.5.8.93).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvjitlink-cu12` (v12.8.93) or `nvidia-cusolver-cu12` (v11.7.3.90).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvtx-cu12` (v12.8.90) or `nvidia-cusolver-cu12` (v11.7.3.90).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvtx-cu12` (v12.8.90) or `nvidia-curand-cu12` (v10.3.9.90).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-curand-cu12` (v10.3.9.90) or `nvidia-cuda-nvrtc-cu12` (v12.8.93).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cufft-cu12` (v11.3.3.83) or `nvidia-cuda-nvrtc-cu12` (v12.8.93).
+warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-cufft-cu12` (v11.3.3.83) or `nvidia-cuda-runtime-cu12` (v12.8.90).
+  × No solution found when resolving dependencies for split (markers: python_full_version &gt;=
+  │ '3.12'):
+  ╰─▶ Because only the following versions of axolotl[deepspeed] are available:
+          axolotl[deepspeed]==0.5.0
+          axolotl[deepspeed]==0.5.1
+          axolotl[deepspeed]==0.5.1.post1
+          axolotl[deepspeed]==0.5.2
+          axolotl[deepspeed]==0.6.0
+          axolotl[deepspeed]==0.7.0
+          axolotl[deepspeed]==0.8.0
+          axolotl[deepspeed]==0.8.1
+          axolotl[deepspeed]==0.9.0
+          axolotl[deepspeed]==0.9.1
+          axolotl[deepspeed]==0.9.1.post1
+          axolotl[deepspeed]==0.9.2
+          axolotl[deepspeed]==0.10.0
+          axolotl[deepspeed]==0.11.0
+          axolotl[deepspeed]==0.12.0
+          axolotl[deepspeed]==0.12.1
+      and axolotl==0.5.0 depends on torch==2.3.1, we can conclude that axolotl[deepspeed]&lt;0.5.1
+      depends on torch==2.3.1.
+      And because axolotl[deepspeed]&gt;=0.5.1,&lt;=0.5.1.post1 was yanked and axolotl&gt;=0.5.2 depends
+      on torch==2.8.0, we can conclude that axolotl[deepspeed]&lt;0.6.0 depends on one of:
+          torch==2.3.1
+          torch&gt;=2.8.0
+
+      And because axolotl&gt;=0.6.0 depends on torch==2.8.0 and torch==2.8.0, we can conclude that
+      axolotl[deepspeed]&lt;0.8.0 depends on one of:
+          torch==2.3.1
+          torch&gt;=2.8.0
+
+      And because axolotl&gt;=0.8.0 depends on torch==2.8.0 and torch==2.8.0, we can conclude that
+      axolotl[deepspeed]&lt;0.9.0 depends on one of:
+          torch==2.3.1
+          torch&gt;=2.8.0
+
+      And because axolotl&gt;=0.9.0 depends on torch==2.8.0 and torch==2.8.0, we can conclude that
+      axolotl[deepspeed]&lt;0.9.1.post1 depends on one of:
+          torch==2.3.1
+          torch&gt;=2.8.0
+
+      And because axolotl&gt;=0.9.1.post1 depends on torch==2.8.0 and torch==2.8.0, we can
+      conclude that all of:
+          axolotl[deepspeed]&lt;0.9.2
+          axolotl[deepspeed]&gt;0.9.2,&lt;0.11.0
+      depend on one of:
+          torch==2.3.1
+          torch&gt;=2.8.0
+
+      And because all of:
+          axolotl==0.9.2
+          axolotl&gt;=0.11.0
+      depend on torch==2.8.0 and torch==2.8.0, we can conclude that all of:
+          axolotl[deepspeed]&lt;0.9.2
+          axolotl[deepspeed]&gt;0.9.2,&lt;0.12.1
+      depend on one of:
+          torch==2.3.1
+          torch&gt;=2.8.0
+
+      And because all of:
+          axolotl==0.9.2
+          axolotl&gt;=0.12.1
+      depend on torch==2.8.0 and torch==2.8.0, we can conclude that all versions of
+      axolotl[deepspeed] depend on one of:
+          torch==2.3.1
+          torch&gt;=2.8.0
+
+      And because your project depends on axolotl[deepspeed] and torch==2.6.0, we can conclude
+      that your project's requirements are unsatisfiable.
+
+      hint: Pre-releases are available for `axolotl` in the requested range (e.g., 0.8.0.dev0),
+      but pre-releases weren't enabled (try: `--prerelease=allow`)
+
+      hint: While the active Python version is 3.11, the resolution failed for other Python
+      versions supported by your project. Consider limiting your project's supported Python
+      versions using `requires-python`.
+</code></pre>
+<p>I end up getting all these warnings and eventually <code>uv sync</code> doesn't work. My <code>nvcc --version==11.5.119</code> which should be high enough to at least get <a href="https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.3/flash_attn-2.7.3+cu11torch2.6cxx11abiTRUE-cp312-cp312-linux_x86_64.whl"><code>flash-attn=2.7.3</code></a> and shouldn't really affect the <code>axolotl</code> download.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-13 16:18</div>
+            <div class="timeline-body"><p>Did you try narrowing your supported Python version range, e.g., to 3.12?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sidmadala">@sidmadala</a> on 2025-08-13 16:19</div>
+            <div class="timeline-body"><p>Yup I tried narrowing the range to 3.12 and adding <code>--prerelease==allow</code> to no avail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-13 16:20</div>
+            <div class="timeline-body"><p>Sorry, can you share the exact <code>pyproject.toml</code>? The one I shared above resolved for me without issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sidmadala">@sidmadala</a> on 2025-08-13 16:21</div>
+            <div class="timeline-body"><pre><code class="language-toml">[project]
+name = &quot;test-uv&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;==3.12.*&quot;
+
+dependencies = [&quot;torch==2.6.0&quot;, &quot;axolotl[deepspeed,flash-attn,vllm]&quot;]
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.9,&lt;0.9.0&quot;]
+build-backend = &quot;uv_build&quot;
+
+[tool.uv.sources]
+verl = { path = &quot;verl&quot;, editable = true }
+
+[tool.uv.extra-build-dependencies]
+flash-attn = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+deepspeed = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+axolotl = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+</code></pre>
+<p>Here is what I'm trying currently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-13 16:50</div>
+            <div class="timeline-body"><p>I think you actually need to <em>remove</em> <code>axolotl = [{ requirement = &quot;torch&quot;, match-runtime = true }]</code> (related to the issue I mentioned above). I'll file a separate issue for thinking about how to make that clearer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sidmadala">@sidmadala</a> on 2025-08-13 17:10</div>
+            <div class="timeline-body"><p>Here's the new <code>pyproject.toml</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;test-uv&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;==3.12.*&quot;
+
+dependencies = [&quot;torch==2.6.0&quot;, &quot;axolotl[deepspeed,flash-attn,vllm]&quot;]
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.9,&lt;0.9.0&quot;]
+build-backend = &quot;uv_build&quot;
+
+[tool.uv.sources]
+verl = { path = &quot;verl&quot;, editable = true }
+
+[tool.uv.extra-build-dependencies]
+flash-attn = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+# deepspeed = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+# axolotl = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+</code></pre>
+<p>and the new error even though <code>axolotl==0.12.1</code> clearly has a <code>vllm</code> extension in the <code>setup.py</code>.</p>
+<pre><code class="language-sh">sidmadala@icgpu01:~/hocklab/test-uv$ uv sync
+warning: The `extra-build-dependencies` option is experimental and may change without warning. Pass `--preview-features extra-build-dependencies` to disable this warning.
+warning: Resolving despite existing lockfile due to fork markers not covering the supported environments: `python_version &lt; '0'` vs `python_full_version == '3.12.*'`
+Resolved 235 packages in 39.16s
+warning: The package `axolotl==0.12.1` does not have an extra named `vllm`
+</code></pre>
+<p>I also noticed that <code>flash-attn&gt;=0.8.0</code> was trying to be built which doesn't match the system requirements. Do I just have to pin which version I want and it'll figure out the rest?</p>
+<p>As for documentation, I think it would be good to outline how packages with extras that require <code>no-build-isolation</code> might be easily installed. Perhaps <code>axolotl</code> itself would be a good package to demonstrate this considering there is a mix of both <code>no-build-isolation</code> packages (i.e. <code>flash-attn</code>) and packages which are fine in isolation (i.e. <code>deepspeed</code>, <code>vllm</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-13 17:11</div>
+            <div class="timeline-body"><p>It looks like axolotl removes the <code>vllm</code> extra if you're using PyTorch 2.6.0: https://github.com/axolotl-ai-cloud/axolotl/blob/e0a2523a3bf875c9e82de0ecea67371e634553f1/setup.py#L81</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sidmadala">@sidmadala</a> on 2025-08-13 19:02</div>
+            <div class="timeline-body"><p>Yea it looks like there's some brittleness in <code>axolotl</code>. Closing the issue might be the right move since it works on your environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-14 10:48</div>
+            <div class="timeline-body"><p>(I believe each vLLM version is pinned to a specific PyTorch patch version. It's possible that they never published a vLLM that's compatible with PyTorch 2.6.0? But I didn't check that myself -- just speculating.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-14 10:48</div>
+            <div class="timeline-body"><p>I'll keep this open for now and close it when I improve the documentation around these concepts. I want to include examples for FlashAttention, DeepSpeed, and Axolotl.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-14 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @charliermarsh on 2025-08-14 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2025-08-14 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sidmadala">@sidmadala</a> on 2025-08-14 15:03</div>
+            <div class="timeline-body"><blockquote>
+<p>(I believe each vLLM version is pinned to a specific PyTorch patch version. It's possible that they never published a vLLM that's compatible with PyTorch 2.6.0? But I didn't check that myself -- just speculating.)</p>
+</blockquote>
+<p>I think there are versions that are compatible. I took Axolotl out of my requirements and was able to resolve the following pyproject.toml in one go. In reality I think it's because there were ABI issues with certain versions of vLLM and Axolotl is pretty strict on their dependency ranges.</p>
+<pre><code class="language-toml">[project]
+name = &quot;test-uv&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11,&lt;3.13&quot;
+
+dependencies = [
+    &quot;torch==2.6.0&quot;,
+    &quot;torchvision==0.21.0&quot;,
+    &quot;torchaudio==2.6.0&quot;,
+    &quot;flash-attn==2.7.4.post1&quot;, # flash-attn&gt;=2.8.0 has ABI issues with torch 2.6.0
+    &quot;vllm&gt;=0.8.1&quot;,
+    &quot;deepspeed&gt;=0.17.0&quot;,
+    # &quot;axolotl[deepspeed,flash-attn,vllm]&quot;,
+    &quot;huggingface-hub[cli,torch]&gt;=0.34.4&quot;,
+    &quot;transformers&quot;,
+    &quot;evaluate&quot;,
+    &quot;datasets&quot;,
+    &quot;accelerate&quot;,
+    &quot;peft&quot;,
+    &quot;bitsandbytes&quot;,
+    &quot;trl&quot;,
+    &quot;unsloth&quot;,
+    &quot;sentencepiece&quot;,
+    &quot;openai&quot;,
+    &quot;scikit-learn&quot;,
+    &quot;scipy&quot;,
+    &quot;jupyterlab&quot;,
+    &quot;matplotlib&quot;,
+    &quot;seaborn&quot;,
+    &quot;gradio&quot;,
+    &quot;wandb&quot;,
+    &quot;nltk&quot;,
+    &quot;pandas&quot;,
+    &quot;importlib_resources&quot;,
+    &quot;importlib_metadata&quot;,
+    &quot;typeguard&quot;,
+    &quot;python-dotenv&quot;,
+    &quot;nvitop&quot;,
+    &quot;gpustat&quot;,
+    &quot;ruff&quot;,
+    &quot;mypy&quot;,
+]
+
+# [build-system]
+# requires = [&quot;uv_build&gt;=0.8.9,&lt;0.9.0&quot;]
+# build-backend = &quot;uv_build&quot;
+
+[tool.uv]
+# no-binary-package = [&quot;flash-attn&quot;]
+# no-build-isolation-package = [&quot;flash-attn&quot;]
+# no-build-isolation-package = [&quot;flash-attn&quot;, &quot;deepspeed&quot;]
+# no-build-isolation-package = [&quot;flash-attn&quot;, &quot;deepspeed&quot;, &quot;axolotl&quot;]
+
+[tool.uv.sources]
+verl = { path = &quot;verl&quot;, editable = true }
+
+[tool.uv.extra-build-dependencies]
+flash-attn = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+deepspeed = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+# axolotl = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15301.html">astral-sh/uv#15301</a> on 2025-08-15 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15306.html">astral-sh/uv#15306</a> on 2025-08-15 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15326.html">astral-sh/uv#15326</a> on 2025-08-16 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-18 21:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D400: false positive and bad autofix - astral-sh/ruff #1518</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>D400: false positive and bad autofix</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1518">#1518</a>
+        opened by <a href="https://github.com/buster-blue">@buster-blue</a>
+        on 2022-12-31 21:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/buster-blue">@buster-blue</a> on 2022-12-31 21:18</div>
+            <div class="timeline-body"><p>I'm using ruff version 0.0.205</p>
+<p>The following code triggers D400 with the message &quot;First line should end with a period&quot;:</p>
+<pre><code class="language-python">def list_contains_round(rounds: list[int], number: int) -&gt; bool:
+    &quot;&quot;&quot;
+    :param rounds: list - rounds played.
+    :param number: int - round number.
+    :return:  bool - was the round played?
+    &quot;&quot;&quot;
+    return number in rounds
+</code></pre>
+<p>The first line already ends with a period, so this is a false positive. Additionally, the autofix that it applies is bad:</p>
+<pre><code class="language-python">def list_contains_round(rounds: list[int], number: int) -&gt; bool:
+    &quot;&quot;&quot;
+    :param rounds: list - rounds played.
+    :param number: int - round number.
+    :return:  bool - was the round played?.
+    &quot;&quot;&quot;
+    return number in rounds
+</code></pre>
+<p>it adds a period after the question mark on the third line. Ruff must think that the third line is actually the first line, but even if that was the case, the autofix shouldn't add the period after a question mark. I'm not sure what the right autofix to have instead would be though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/buster-blue">@buster-blue</a> on 2022-12-31 21:26</div>
+            <div class="timeline-body"><p>This smaller piece of code triggers the same bug for me. It might help with finding the problem.</p>
+<pre><code class="language-python">def lis():
+    &quot;&quot;&quot;
+    played.
+    played?
+    &quot;&quot;&quot;
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-31 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2022-12-31 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 21:39</div>
+            <div class="timeline-body"><p>Thanks for reporting this. Looks like pydocstyle doesn't error here, so we shouldn't either. Will fix, should be easy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 21:43</div>
+            <div class="timeline-body"><p>Looking back at the code... Now I'm not so sure. First-line punctuation is really intended for summary lines. Here's an example from <a href="">PEP 257</a>:</p>
+<pre><code class="language-py">def complex(real=0.0, imag=0.0):
+    &quot;&quot;&quot;Form a complex number.
+
+    Keyword arguments:
+    real -- the real part (default 0.0)
+    imag -- the imaginary part (default 0.0)
+    &quot;&quot;&quot;
+    if imag == 0.0 and real == 0.0:
+        return complex_zero
+    ...
+</code></pre>
+<p>Notice how, if we respected the rule in your case (at the end of individual parameter definitions), we'd then get <em>this</em> case wrong, which would be equally &quot;valid&quot;:</p>
+<pre><code class="language-py">def list_contains_round(rounds: bool, number: int) -&gt; None:
+    &quot;&quot;&quot;
+    :param rounds: bool - was the round played?
+    :param number: int - round number.
+    &quot;&quot;&quot;
+    return number in rounds
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 21:45</div>
+            <div class="timeline-body"><p>The logic as it exists today looks for the first logical line, i.e., it's sort of looking for the first line-break, and taking the lines that precede it as the &quot;first line&quot;.</p>
+<p>It helps get some other cases right, like:</p>
+<pre><code class="language-py">def list_contains_round(rounds: list[int], number: int) -&gt; bool:
+    &quot;&quot;&quot;Here's a summary line,
+    but it continues onto the next line.
+
+    :param rounds: list - rounds played.
+    :param number: int - round number.
+    :return:  bool - was the round played?
+    &quot;&quot;&quot;
+    return number in rounds
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 21:46</div>
+            <div class="timeline-body"><p>I could probably special-case to avoid enforcing this rule at all for lines that look like a section (<code>:param</code>), but I doubt I can enforce that the params end in a period.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/buster-blue">@buster-blue</a> on 2022-12-31 21:58</div>
+            <div class="timeline-body"><p>I know that the docstrings are nonstandard (they weren't written by me) but I figured that having an unusual docstring like one without a summary line still shouldn't cause ruff to autofix wrong and report an error that at least seems incorrect by the message that it gives.</p>
+<p>If it's intended behavior (or undefined behavior or something like that) that ruff might not play nice with usual docstrings like this, then I can just close the issue and turn off D autofixes for myself in cases like this. It's not too big of a problem.</p>
+<p>I don't know how cases like this are handled by other linters because I'm actually pretty new to linters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/buster-blue">@buster-blue</a> on 2022-12-31 22:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Looking back at the code... Now I'm not so sure. First-line punctuation is really intended for summary lines. Here's an example from PEP 257:</p>
+<pre><code class="language-python">def complex(real=0.0, imag=0.0):
+    &quot;&quot;&quot;Form a complex number.
+
+    Keyword arguments:
+    real -- the real part (default 0.0)
+    imag -- the imaginary part (default 0.0)
+    &quot;&quot;&quot;
+    if imag == 0.0 and real == 0.0:
+        return complex_zero
+    ...
+</code></pre>
+<p>Notice how, if we respected the rule in your case (at the end of individual parameter definitions), we'd then get <em>this</em> case wrong, which would be equally &quot;valid&quot;:</p>
+<pre><code class="language-python">def list_contains_round(rounds: bool, number: int) -&gt; None:
+    &quot;&quot;&quot;
+    :param rounds: bool - was the round played?
+    :param number: int - round number.
+    &quot;&quot;&quot;
+    return number in rounds
+</code></pre>
+<p>Actually if I'm understanding you right, shouldn't that case not be valid? The lint says &quot;First line should end with a period&quot;. A question mark isn't a period, so doesn't that mean that it's still wrong? If that's not what the lint is intended to be for, then maybe the message should be changed somehow.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/buster-blue">@buster-blue</a> on 2022-12-31 22:14</div>
+            <div class="timeline-body"><p>I think I understand now. I took the message of D400 literally. It says &quot;First line should end with a period&quot; so I thought that, regardless of what it is, the first line of a docstring (where there's first text), should end in a period. It sounds like what's it's actually meant to mean is &quot;Summary line should end with a period&quot;, but it just checks for the first line because it assumes that they're the same. So if there's no summary line, then the assumption that first and summary line are the same doesn't work. Is that what's going on here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 22:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Actually if I'm understanding you right, shouldn't that case not be valid? The lint says &quot;First line should end with a period&quot;. A question mark isn't a period, so doesn't that mean that it's still wrong? If that's not what the lint is intended to be for, then maybe the message should be changed somehow.</p>
+</blockquote>
+<p>Yeah sorry -- I was making a confusing point here, which is that the period at the end of the <em>parameter</em> description feels like a false-negative given the intention of the rule. I wasn't being very clear.</p>
+<blockquote>
+<p>I think I understand now. I took the message of D400 literally. It says &quot;First line should end with a period&quot; so I thought that, regardless of what it is, the first line of a docstring (where there's first text), should end in a period. It sounds like what's it's actually meant to mean is &quot;Summary line should end with a period&quot;, but it just checks for the first line because it assumes that they're the same. So if there's no summary line, then the assumption that first and summary line are the same doesn't work. Is that what's going on here?</p>
+</blockquote>
+<p>Yeah that's right. We could probably do a better job of detecting that the first line in your case <em>isn't</em> a summary line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 22:37</div>
+            <div class="timeline-body"><p>I'll try to make a few improvements on that front. For example, we could ignore lines with <code>:param</code>, ignore sections like <code>Args:</code>, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2022-12-31 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-12-31 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1521.html">astral-sh/ruff#1521</a> on 2022-12-31 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-31 23:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

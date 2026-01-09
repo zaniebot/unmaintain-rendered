@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idea for new Rule: Check pytest.raises Exception Info for broad Exceptions - astral-sh/ruff #6840</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Idea for new Rule: Check pytest.raises Exception Info for broad Exceptions</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6840">#6840</a>
+        opened by <a href="https://github.com/Cielquan">@Cielquan</a>
+        on 2023-08-24 06:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Cielquan">@Cielquan</a> on 2023-08-24 06:32</div>
+            <div class="timeline-body"><h3>Where we are</h3>
+<p>There is the rule (PT011)[https://beta.ruff.rs/docs/rules/pytest-raises-too-broad/] which checks for <code>pytest.raises()</code> calls with a set of Exceptiones that are deemed as too broad and complains, when the <code>pytest.raises()</code> call is missing the <code>match</code> parameter.</p>
+<p>Example from PT011:</p>
+<pre><code class="language-py">import pytest
+
+
+def test_foo():
+    # Bad because too broad Exception with no exception info checking
+    with pytest.raises(ValueError):
+        ...
+
+    # Good according to PT011
+    with pytest.raises(ValueError, match=&quot;expected message&quot;):
+        ...
+</code></pre>
+<h3>Where is the problem</h3>
+<p>The problem with the <code>match</code> parameter is, that it is a regex under the hood, which is not that obvious. Or if you know it is, it is error prone. For example the Example above would also match Exception texts like <code>Not the expected message</code> which can be bad if the tested function raises different similar exceptions. One solution could be for this specific to put the <code>^</code> character at the beginning and the <code>$</code> character at the end.</p>
+<p>Anthony has a video going more in depth on this https://www.youtube.com/watch?v=-1LXV_laNMs</p>
+<h3>Alternative solution(s)</h3>
+<p>Because of the error prone nature of the <code>match</code> parameter I tend to save the exception in a variable and check the Exception info with a string comparison myself.</p>
+<pre><code class="language-py">import pytest
+
+
+def test_foo():
+    with pytest.raises(ValueError) as exc:
+        # Checks if the message is exactly like the given string.
+        assert &quot;expected message&quot; == str(exc.value)
+</code></pre>
+<p>Alternatively I also check with the <code>in</code> keyword, which in the PT011 case above has the same result, but is more obvious in what it does if you don't know that <code>match</code> is a regex.</p>
+<pre><code class="language-py">import pytest
+
+
+def test_foo():
+    with pytest.raises(ValueError) as exc:
+        # Checks if the message contains the given string.
+        assert &quot;expected message&quot; in str(exc.value)
+</code></pre>
+<h3>New Rule request</h3>
+<p>I would like to propose a new rule, which checks if there is a broad exception, just like PT011 does, but instead complains, when the exception info is not checked.
+This would need to consider</p>
+<ul>
+<li>that the <code>exc</code> variable can have any name</li>
+<li>that the comparison can be <code>==</code> or <code>in</code></li>
+<li>direct comparison like <code>assert &quot;expected message&quot; == str(exc.value)</code></li>
+<li>assignments before comparison:</li>
+</ul>
+<pre><code class="language-py">msg, = exc.value.args
+# or
+str(exc.value)
+
+assert &quot;expected message&quot; == msg
+# or
+assert &quot;expected message&quot; in msg
+</code></pre>
+<p>Perhaps also a rule to bann the <code>match</code> parameter would be nice, but I guess this would be too opinionated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-08-25 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-08-25 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5157.html">astral-sh/ruff#5157</a> on 2024-06-26 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-08-12 15:17</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/issues/5157#issuecomment-2284256186</p>
+<blockquote>
+<p>imo as long as the exception info variable is used in a following assert statement, it's plenty enough to avoid false-positives whilst minimizing false-negatives.</p>
+<p>Using an assert instead of the match param is often desired for exact string matches and to avoid having to escape special regex characters.</p>
+<p>This is much more precise</p>
+<pre><code class="language-python">with pytest.raises(ValueError) as excinfo:
+    function_that_raises()
+assert &quot;The complete error&quot; == str(excinfo.value)
+    
+with pytest.raises(ValueError) as excinfo:
+    function_that_raises()
+assert &quot;...&quot; in str(excinfo.value)
+</code></pre>
+<p>Than this:</p>
+<pre><code class="language-python">with pytest.raises(ValueError, match=&quot;The complete error&quot;) as excinfo: # oops, this is a partial match !
+        function_that_raises()
+    
+with pytest.raises(ValueError, match=&quot;...&quot;) as excinfo: # oops, this matches any 3+ character strings !
+        function_that_raises()
+</code></pre>
+</blockquote>
+<p>A separate rule to avoid using <code>match=</code> with a non <code>re.escape</code> str could be nice (only disallow string literals, until Ruff gains multifile type information, pre-espaced strings can't be detected obviously)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/setuptools/pulls/4557.html">pypa/setuptools#4557</a> on 2024-08-12 15:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement autofix - astral-sh/ruff #25</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement autofix</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/25">#25</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2022-08-24 13:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-08-24 13:17</div>
+            <div class="timeline-body"><p>What's the right strategy for autofixing? Should we modify the AST? Should we use the generated rules, and modify via regex? (This is what <a href="https://github.com/PyCQA/autoflake">autoflake</a> does, and there's a start on implementing autofix for F401 in #34.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add autofix for f-string rule" to "Implement autofix" by @charliermarsh on 2022-08-28 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2022-08-28 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-08-28 14:01</div>
+            <div class="timeline-body"><p>Should look at how <a href="https://github.com/psf/black">black</a> works, and how <a href="https://github.com/eslint/eslint">eslint</a> does autofixing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bobronium">@Bobronium</a> on 2022-08-31 00:39</div>
+            <div class="timeline-body"><p>Here is a bunch of tools that I use for autofixing the code. Might be helpfull for both reference and ideas to carry into ruff.</p>
+<p><a href="https://github.com/Instagram/Fixit">Fixit</a> — &quot;writes better Python code for you&quot;
+<a href="https://github.com/asottile/pyupgrade">pyupgrade</a> — &quot;upgrades syntax for newer versions of the language&quot;
+<a href="https://github.com/hakancelikdev/unimport">unimport</a> — &quot;finding and removing unused import statements&quot;
+<a href="https://github.com/hadialqattan/pycln">pycln</a> — &quot;finding and removing unused import statements&quot;
+<a href="https://pypi.org/project/flynt">flynt</a> — &quot;string formatting converter&quot;
+<a href="https://github.com/myint/unify">unify</a> — &quot;modifies strings to all use the same quote where possible&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-08-31 00:54</div>
+            <div class="timeline-body"><p>Woah, via Fixit I found <a href="https://github.com/Instagram/LibCST">LibCST</a>, which creates something closer to a concrete syntax tree -- and the parser is <a href="https://github.com/Instagram/LibCST/tree/main/native/libcst">written in Rust</a>...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-08-31 02:07</div>
+            <div class="timeline-body"><p>Started poking around at <a href="https://github.com/charliermarsh/ruff/tree/charlie/cst"><code>charlie/cst</code></a>. The CST is much more complicated than the AST, so the visitor code will require more boilerplate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-08-31 02:52</div>
+            <div class="timeline-body"><p>Using CST as the primary parser (in lieu of RustPython) is probably too slow, though. The parsing alone is about 10x slower:</p>
+<pre><code>Benchmark 1: target/release/ruff ./resources/test/cpython/ --no-cache
+  Time (mean ± σ):      2.368 s ±  0.947 s    [User: 15.231 s, System: 4.569 s]
+  Range (min … max):    1.472 s …  3.896 s    10 runs
+</code></pre>
+<p>(This is benchmarked without iterating over the tree -- just the parser. It takes ~250ms with RustPython.)</p>
+<p>Instead, perhaps would need to parse with CST only when attempting to autofix? Or maybe need to resort to simpler techniques, like regexes atop the AST.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-01 02:18</div>
+            <div class="timeline-body"><p>Migrating to CST could be viewed as:</p>
+<ul>
+<li>Adding the <code>CSTTypedVisitorFunctions</code> interface</li>
+<li>Implement <code>_visit_and_replace_children</code> for all nodes, plus all the visitor helpers like <code>visit_iterable</code></li>
+</ul>
+<p>LibCST is very powerful so it's worth exploring. If we adhere closely to their API, we can also get all of the <code>fixit</code> lint rules out of the box <em>and</em> trivially support autofix. The CST would be a super powerful foundation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-01 02:22</div>
+            <div class="timeline-body"><p>Interestingly, it looks like <code>Fixit</code> will lint code repeatedly, applying one autofix at a time, then re-linting, applying the next fix, and so on. I wonder if that's strictly necessary 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/78.html">astral-sh/ruff#78</a> on 2022-09-01 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-03 16:58</div>
+            <div class="timeline-body"><p>Here's my working summary of how other tools handle this behavior.</p>
+<h3>Flynt</h3>
+<ol>
+<li>Iterate over the tokens in the source code, finding complete chunks.</li>
+<li>Pass each complete chunk to a method that parses the AST and runs a custom <code>ast.NodeTransformer</code> on the node.</li>
+<li>If the node is changed by the transformer, covert it back to code via <a href="https://pypi.org/project/astor/">astor</a>.</li>
+<li>Build up the new representation of the code by concatenating the transformed and untransformed chunks as you go.</li>
+</ol>
+<p>The things ruff are missing: <code>NodeTransformer</code> abstraction, AST-to-code generation (something like astor).</p>
+<h3>Fixit</h3>
+<ol>
+<li>Run the Fixit linter over the file.</li>
+<li>Look for &quot;fixable&quot; issues.</li>
+<li>Apply the first fixable issue.</li>
+<li>Repeat up to ~100 iterations.</li>
+</ol>
+<p>To support the actual autofixing, rules can set a <code>replacement_node</code> property when they run. On the Python side, they also implement a codegen API for every CST node. (I'm a little confused because they implement effectively the same interface in <code>LibCST/native</code> on the rust side. I'm not sure if they're codegening the Python codegen code or just maintaining both implementations.)</p>
+<h3>Autoflake</h3>
+<ol>
+<li>Run Pyflakes the file.</li>
+<li>Extract the line numbers for the errors it can fix.</li>
+<li>Iterate over the code line-by-line, fixing each error individually. (The fixing is all regex-based, with some additional bookkeeping to support multiline fixes. Whenever they remove code, they add a <code>pass</code> statement, and they do a second pass to remove unnecessary <code>pass</code> statements by iterating over the <code>tokenize.generate_tokens</code> representation for each line.)</li>
+<li>Repeat until the file stops changing.</li>
+</ol>
+<p>ruff could do this, it's just a matter of implementing the same logic.</p>
+<h3>ESLint</h3>
+<ul>
+<li>When rules report an error, they can provide a &quot;fix&quot;, which is a function that takes a <code>fixer</code> and modifies the code in some way. The <code>fixer</code> has methods like <code>insertTextBeforeRange</code>, <code>remove(nodeOrToken)</code>, etc. The <code>fixer</code> really just takes those commands and generates a &quot;fix&quot;, which is a source text range and a replacement snippet.</li>
+<li>When they go to apply the fixes, they re-build the source code by cutting the original code, adding in the next fix, and continuing where they left off when they move on to a new fix. They ignore any fixes that have conflicting ranges (so it's just &quot;best effort&quot;).</li>
+</ul>
+<p>ruff could do this... but our AST isn't as good. We don't always have accurate start and end ranges for our nodes, and we don't have a way to go from AST node to token.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-03 17:09</div>
+            <div class="timeline-body"><p>I think the ESLint approach is the most likely to be performant, since we can continue to use the existing AST (faster parser than LibCST), and we can generate fixes at lint-time (so we don't need to re-lint the file or regenerate the AST or anything). It's also very tractable. It's not going to be as powerful as Fixit/LibCST though.</p>
+<p>Separately, I think the Fixit API is a bit limiting, because you're required to do node replacement at visit-time. I don't think you can support things like &quot;automatically removing unused imports&quot; with this strategy, because you can't detect unused imports until you've traversed the entire AST. (So, when you see an &quot;import&quot; node, you can't <em>know</em> that you have to delete it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-04 18:15</div>
+            <div class="timeline-body"><p>Saving for later in case relevant / useful: logic from <a href="https://github.com/PyCQA/pycodestyle/blob/6cddabcb0a2f301441731fba23f655563ea0aba9/pycodestyle.py#L2190">pycodestyle</a> to generate logical lines from tokens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-06 14:15</div>
+            <div class="timeline-body"><p>Initial autofix API is implemented for the refactoring rules (R001, R002).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-09-06 14:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:06 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>behavior change regarding `possible_values` on derived boolean args in 4.4.14 - clap-rs/clap #5300</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>behavior change regarding `possible_values` on derived boolean args in 4.4.14</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5300">#5300</a>
+        opened by <a href="https://github.com/ahl">@ahl</a>
+        on 2024-01-12 16:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ahl">@ahl</a> on 2024-01-12 16:56</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.75.0 (82e1608df 2023-12-21)</p>
+<h3>Clap Version</h3>
+<p>4.4.14</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{CommandFactory, Parser};
+
+#[derive(Parser)]
+pub struct Args {
+    #[clap(long)]
+    ok: bool,
+}
+
+fn main() {
+    let values = Args::command()
+        .get_arguments()
+        .next()
+        .expect(&quot;no arguments&quot;)
+        .get_possible_values();
+    println!(&quot;{:#?}&quot;, values);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Use 4.4.13; cargo run:</p>
+<pre><code>[]
+</code></pre>
+<p>Use 4.4.14; cargo run:</p>
+<pre><code>[
+    PossibleValue {
+        name: &quot;true&quot;,
+        help: None,
+        aliases: [],
+        hide: false,
+    },
+    PossibleValue {
+        name: &quot;false&quot;,
+        help: None,
+        aliases: [],
+        hide: false,
+    },
+]
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>Behavior change from 4.4.13 to 4.4.14</p>
+<h3>Expected Behaviour</h3>
+<p>No behavior change? Unless this was intentional. I didn't see it mentioned in the release notes.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @ahl on 2024-01-12 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../oxidecomputer/oxide.rs/pulls/513.html">oxidecomputer/oxide.rs#513</a> on 2024-01-12 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-01-12 18:29</div>
+            <div class="timeline-body"><p>This change of behavior is expected but there is something you can do on your side to address it.</p>
+<p>In clap, args have two settings that describe whether a value is accepted or not</p>
+<ul>
+<li><code>num_args</code></li>
+<li><code>action</code></li>
+</ul>
+<p>When an argument doesn't take a value, we don't return the possible values.</p>
+<p>With 4.4.14, we added support for <code>.action(ArgAction::Set).num_args(0)</code> which introduced a discrepancy, <code>action</code> only describe if an arg <em>might</em> take a value.</p>
+<p>To do this, we needed to change out &quot;takes value&quot; tracking which is mostly unnoticeable because we auto-fill in properties when parsing.</p>
+<p>The problem is that you are looking at the possible values without the auto-fill of properties.  <strong>If you call <code>Command::build</code>, the problem goes away.</strong></p>
+<p>See</p>
+<pre><code class="language-rust">#!/usr/bin/env nargo
+---
+[dependencies]
+clap = { path = &quot;../clap&quot;, features = [&quot;derive&quot;] }
+---
+
+use clap::{CommandFactory, Parser};
+
+#[derive(Parser)]
+pub struct Args {
+    #[clap(long)]
+    ok: bool,
+}
+
+fn main() {
+    let mut cmd = Args::command();
+    cmd.build();
+    let values = cmd
+        .get_arguments()
+        .next()
+        .expect(&quot;no arguments&quot;)
+        .get_possible_values();
+    println!(&quot;{:#?}&quot;, values);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-01-12 18:30</div>
+            <div class="timeline-body"><p>#2911 covers some of this problem in the API</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ahl">@ahl</a> on 2024-01-12 19:05</div>
+            <div class="timeline-body"><p>This is extremely helpful. Thanks very much. Feel free to close this, or leave it open if there's some work item such as updating the release notes that might be relevant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../oxidecomputer/oxide.rs/pulls/519.html">oxidecomputer/oxide.rs#519</a> on 2024-01-12 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-01-12 19:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

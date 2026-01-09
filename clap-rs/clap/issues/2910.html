@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depending on `=clap 3.0.0-beta4` installs `clap_derive 3.0.0-beta5` and breaks builds - clap-rs/clap #2910</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Depending on `=clap 3.0.0-beta4` installs `clap_derive 3.0.0-beta5` and breaks builds</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2910">#2910</a>
+        opened by <a href="https://github.com/Kobzol">@Kobzol</a>
+        on 2021-10-19 12:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Kobzol">@Kobzol</a> on 2021-10-19 12:05</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.55.0 (c8dfcfe04 2021-09-06)</p>
+<h3>Clap Version</h3>
+<p>3.0.0-beta5</p>
+<h3>Minimal reproducible code</h3>
+<p><code>src/main.rs</code></p>
+<pre><code class="language-rust">use clap::Clap;
+
+#[derive(Clap)]
+#[clap(version = &quot;1.0&quot;)]
+struct Opts {
+    a: String,
+    #[clap(long, default_value = &quot;7760&quot;)]
+    b: u16,
+}
+
+fn main() {
+    let opts = Opts::parse().unwrap();
+}
+</code></pre>
+<p><code>Cargo.toml</code></p>
+<pre><code class="language-toml">[package]
+name = &quot;claptest&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2018&quot;
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = &quot;=3.0.0-beta.4&quot;
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo check</code></p>
+<h3>Actual Behaviour</h3>
+<p>The new beta5 renamed the <code>Clap</code> procedural macro to <code>Parser</code>. When you try to depend on <code>clap = &quot;=3.0.0-beta4&quot;</code>, it will use <code>clap_derive 3.0.0-beta5</code>, which breaks previously working builds. I noticed that <code>clap</code> depends on the exact version of <code>clap_derive</code>, so this shouldn't happen. Maybe it's a Cargo bug?</p>
+<h3>Expected Behaviour</h3>
+<p>It should compile as the previous versions did.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @Kobzol on 2021-10-19 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-19 12:10</div>
+            <div class="timeline-body"><p>No, it an issue with the prerelease semver. The only solution here is to upgrade.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-10-19 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2917.html">clap-rs/clap#2917</a> on 2021-10-20 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2021-10-20 15:21</div>
+            <div class="timeline-body"><p>@Kobzol use this</p>
+<pre><code class="language-toml"># clap 3.0.0-beta.2
+clap = {git=&quot;https://github.com/clap-rs/clap&quot;, rev=&quot;08b2f4d4289eca8a9225bbc56d5a5ad1e99e38e1&quot;}
+</code></pre>
+<p>You need to find the commit hash of the version you want and replace <code>rev</code></p>
+<p>Upgrading is not the only solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kobzol">@Kobzol</a> on 2021-10-20 16:17</div>
+            <div class="timeline-body"><p>Even when I pinned the version to beta4 or beta2, Cargo was still downloading clap_derive beta5 for some reason. It could be fixed by changing Cargo.lock, but we ended up upgrading anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Nukesor/pueue/issues/256.html">Nukesor/pueue#256</a> on 2021-10-28 04:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

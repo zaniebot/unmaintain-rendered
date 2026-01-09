@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimize apache-airflow (warm cache) - astral-sh/uv #10344</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Optimize apache-airflow (warm cache)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10344">#10344</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-01-07 09:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2025-01-07 09:24</div>
+            <div class="timeline-body"><p>I've implemented a series of optimizations for the apache-airflow resolver case, focussed on the resolver thread. Each step targets something that showed up as slow during profiling. Since the benchmarks are path dependent (the speedup of commit B looks different depending on whether a commit A was applied before or not. You need to speed up the slowest item to really see the effect on optimizing the next smaller one), I'm sharing the benchmark numbers here and keep the PRs focused on explaining the code change.</p>
+<p>Commits:</p>
+<ol>
+<li>Remove <code>[u64; 4]</code> from small version to move <code>Arc</code> to full version</li>
+<li>Speed up file pins</li>
+<li>Simplify <code>requirements_for_extra</code> (Note: Refactoring)</li>
+<li>Optimize <code>requirements_for_extra</code></li>
+<li>Split determining and executing batch prefetch (Note: Refactoring)</li>
+<li>Split out BatchPrefetcherRunner (Note: Refactoring)</li>
+<li>Deactivate tracing for choose version</li>
+<li>Avoid overcounting versions in batch prefetcher</li>
+<li>Add Send bounds to cache deserialization (Note: Refactoring)</li>
+</ol>
+<p>The commits are split into refactorings and speedups.</p>
+<pre><code>Benchmark 1: ./uv-main pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     444.1 ms ±  10.5 ms    [User: 626.4 ms, System: 190.7 ms]
+  Range (min … max):   434.5 ms … 468.0 ms    10 runs
+ 
+Benchmark 2: ./uv-1 pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     396.1 ms ±   7.0 ms    [User: 554.1 ms, System: 171.3 ms]
+  Range (min … max):   386.8 ms … 408.7 ms    10 runs
+ 
+Benchmark 3: ./uv-2 pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     344.2 ms ±   3.7 ms    [User: 481.9 ms, System: 167.7 ms]
+  Range (min … max):   339.7 ms … 349.8 ms    10 runs
+ 
+Benchmark 4: ./uv-3 pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     344.4 ms ±   4.0 ms    [User: 488.3 ms, System: 154.4 ms]
+  Range (min … max):   340.0 ms … 354.0 ms    10 runs
+ 
+Benchmark 5: ./uv-4 pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     325.2 ms ±   3.0 ms    [User: 467.4 ms, System: 159.7 ms]
+  Range (min … max):   321.5 ms … 329.4 ms    10 runs
+ 
+Benchmark 6: ./uv-5 pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     329.4 ms ±   6.1 ms    [User: 474.2 ms, System: 157.8 ms]
+  Range (min … max):   324.0 ms … 344.2 ms    10 runs
+ 
+Benchmark 7: ./uv-6 pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     328.5 ms ±   3.7 ms    [User: 466.4 ms, System: 162.5 ms]
+  Range (min … max):   324.4 ms … 335.0 ms    10 runs
+ 
+Benchmark 8: ./uv-7 pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     321.1 ms ±   3.2 ms    [User: 453.4 ms, System: 163.0 ms]
+  Range (min … max):   316.8 ms … 327.5 ms    10 runs
+ 
+Benchmark 9: ./uv-8 pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     213.2 ms ±   3.2 ms    [User: 300.7 ms, System: 115.9 ms]
+  Range (min … max):   207.5 ms … 220.2 ms    14 runs
+ 
+Benchmark 10: ./uv-9 pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     210.9 ms ±   1.7 ms    [User: 295.8 ms, System: 118.4 ms]
+  Range (min … max):   207.7 ms … 214.6 ms    14 runs
+ 
+Summary
+  ./uv-9 pip compile scripts/requirements/airflow.in ran
+    1.01 ± 0.02 times faster than ./uv-8 pip compile scripts/requirements/airflow.in
+    1.52 ± 0.02 times faster than ./uv-7 pip compile scripts/requirements/airflow.in
+    1.54 ± 0.02 times faster than ./uv-4 pip compile scripts/requirements/airflow.in
+    1.56 ± 0.02 times faster than ./uv-6 pip compile scripts/requirements/airflow.in
+    1.56 ± 0.03 times faster than ./uv-5 pip compile scripts/requirements/airflow.in
+    1.63 ± 0.02 times faster than ./uv-2 pip compile scripts/requirements/airflow.in
+    1.63 ± 0.02 times faster than ./uv-3 pip compile scripts/requirements/airflow.in
+    1.88 ± 0.04 times faster than ./uv-1 pip compile scripts/requirements/airflow.in
+    2.11 ± 0.05 times faster than ./uv-main pip compile scripts/requirements/airflow.in
+</code></pre>
+<p>Methodology:</p>
+<pre><code class="language-shell">git switch main &amp;&amp; cargo build --profile profiling &amp;&amp; cp target/profiling/uv uv-main &amp;&amp; git switch -
+# [Rebase with stop at every commit]
+cargo build --profile profiling &amp;&amp; cp target/profiling/uv uv-1 &amp;&amp; git rebase --continue
+cargo build --profile profiling &amp;&amp; cp target/profiling/uv uv-2 &amp;&amp; git rebase --continue
+cargo build --profile profiling &amp;&amp; cp target/profiling/uv uv-3 &amp;&amp; git rebase --continue
+cargo build --profile profiling &amp;&amp; cp target/profiling/uv uv-4 &amp;&amp; git rebase --continue
+cargo build --profile profiling &amp;&amp; cp target/profiling/uv uv-5 &amp;&amp; git rebase --continue
+cargo build --profile profiling &amp;&amp; cp target/profiling/uv uv-6 &amp;&amp; git rebase --continue
+cargo build --profile profiling &amp;&amp; cp target/profiling/uv uv-7 &amp;&amp; git rebase --continue
+cargo build --profile profiling &amp;&amp; cp target/profiling/uv uv-8 &amp;&amp; git rebase --continue
+cargo build --profile profiling &amp;&amp; cp target/profiling/uv uv-9 &amp;&amp; git rebase --continue
+
+uv venv -p 3.12 &amp;&amp; hyperfine --warmup 2 \
+    &quot;./uv-main pip compile scripts/requirements/airflow.in&quot; \
+    &quot;./uv-1 pip compile scripts/requirements/airflow.in&quot; \
+    &quot;./uv-2 pip compile scripts/requirements/airflow.in&quot; \
+    &quot;./uv-3 pip compile scripts/requirements/airflow.in&quot; \
+    &quot;./uv-4 pip compile scripts/requirements/airflow.in&quot; \
+    &quot;./uv-5 pip compile scripts/requirements/airflow.in&quot; \
+    &quot;./uv-6 pip compile scripts/requirements/airflow.in&quot; \
+    &quot;./uv-7 pip compile scripts/requirements/airflow.in&quot; \
+    &quot;./uv-8 pip compile scripts/requirements/airflow.in&quot; \
+    &quot;./uv-9 pip compile scripts/requirements/airflow.in&quot;
+</code></pre>
+<p>Overall benchmarks:</p>
+<pre><code># Scheduler: Performance
+$ hyperfine --warmup 2 --runs 50 &quot;./uv-main pip compile scripts/requirements/airflow.in&quot; &quot;./uv-8 pip compile scripts/requirements/airflow.in&quot;
+Benchmark 1: ./uv-main pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     439.7 ms ±   6.4 ms    [User: 616.1 ms, System: 200.6 ms]
+  Range (min … max):   430.4 ms … 454.7 ms    50 runs
+ 
+Benchmark 2: ./uv-8 pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     214.1 ms ±   5.1 ms    [User: 297.9 ms, System: 123.9 ms]
+  Range (min … max):   206.8 ms … 228.0 ms    50 runs
+ 
+Summary
+  ./uv-8 pip compile scripts/requirements/airflow.in ran
+    2.05 ± 0.06 times faster than ./uv-main pip compile scripts/requirements/airflow.in
+# Scheduler: Performance
+$ taskset -c 0-1 hyperfine --warmup 2 &quot;./uv-main pip compile scripts/requirements/airflow.in&quot; &quot;./uv-8 pip compile scripts/requirements/airflow.in&quot;
+Benchmark 1: ./uv-main pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     595.8 ms ±   4.5 ms    [User: 774.2 ms, System: 201.2 ms]
+  Range (min … max):   590.8 ms … 603.8 ms    10 runs
+ 
+Benchmark 2: ./uv-8 pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     301.9 ms ±   2.5 ms    [User: 389.8 ms, System: 121.6 ms]
+  Range (min … max):   299.4 ms … 306.9 ms    10 runs
+ 
+Summary
+  ./uv-8 pip compile scripts/requirements/airflow.in ran
+    1.97 ± 0.02 times faster than ./uv-main pip compile scripts/requirements/airflow.in
+# Scheduler: Powersave
+$ hyperfine --warmup 1 &quot;./uv-main pip compile scripts/requirements/airflow.in&quot; &quot;./uv-8 pip compile scripts/requirements/airflow.in&quot;
+Benchmark 1: ./uv-main pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):      1.222 s ±  0.222 s    [User: 1.718 s, System: 0.575 s]
+  Range (min … max):    0.652 s …  1.424 s    10 runs
+ 
+Benchmark 2: ./uv-8 pip compile scripts/requirements/airflow.in
+  Time (mean ± σ):     729.3 ms ± 129.2 ms    [User: 1030.7 ms, System: 370.5 ms]
+  Range (min … max):   549.4 ms … 961.6 ms    10 runs
+ 
+Summary
+  ./uv-8 pip compile scripts/requirements/airflow.in ran
+    1.68 ± 0.42 times faster than ./uv-main pip compile scripts/requirements/airflow.in
+# Scheduler: Default
+$ hyperfine --warmup 1 &quot;./uv-main pip compile scripts/requirements/airflow.in --refresh&quot; &quot;./uv-8 pip compile scripts/requirements/airflow.in --refresh&quot;
+Benchmark 1: ./uv-main pip compile scripts/requirements/airflow.in --refresh
+  Time (mean ± σ):     819.6 ms ± 112.8 ms    [User: 737.7 ms, System: 387.5 ms]
+  Range (min … max):   723.3 ms … 1116.1 ms    10 runs
+ 
+Benchmark 2: ./uv-8 pip compile scripts/requirements/airflow.in --refresh
+  Time (mean ± σ):     597.7 ms ± 106.0 ms    [User: 440.2 ms, System: 305.8 ms]
+  Range (min … max):   494.6 ms … 835.9 ms    10 runs
+ 
+Summary
+  ./uv-8 pip compile scripts/requirements/airflow.in --refresh ran
+    1.37 ± 0.31 times faster than ./uv-main pip compile scripts/requirements/airflow.in --refresh
+</code></pre>
+<p>Profile of the resolver thread of apache airflow warm cache pip resolve before:</p>
+<pre><code>cargo build --profile profiling
+samply record --rate 20000 target/profiling/uv pip compile scripts/requirements/airflow.in &gt; /dev/null
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/072ef759-cf73-4bba-8705-8525421043ae" alt="Image" /></p>
+<p>Profile after:</p>
+<p><img src="https://github.com/user-attachments/assets/e406c414-9ea7-49d3-ac14-340b28c25f57" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2025-01-07 09:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10345.html">astral-sh/uv#10345</a> on 2025-01-07 09:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10346.html">astral-sh/uv#10346</a> on 2025-01-07 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10347.html">astral-sh/uv#10347</a> on 2025-01-07 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10348.html">astral-sh/uv#10348</a> on 2025-01-07 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10349.html">astral-sh/uv#10349</a> on 2025-01-07 09:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10350.html">astral-sh/uv#10350</a> on 2025-01-07 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10351.html">astral-sh/uv#10351</a> on 2025-01-07 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10352.html">astral-sh/uv#10352</a> on 2025-01-07 09:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-01-07 20:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

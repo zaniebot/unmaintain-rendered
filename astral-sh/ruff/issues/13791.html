@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PERF401: split or improve message? - astral-sh/ruff #13791</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PERF401: split or improve message?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13791">#13791</a>
+        opened by <a href="https://github.com/xmo-odoo">@xmo-odoo</a>
+        on 2024-10-17 09:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/xmo-odoo">@xmo-odoo</a> on 2024-10-17 09:58</div>
+            <div class="timeline-body"><p>I think PERF401 is a good rule, however while its message works fine for the &quot;transformed copy&quot; case e.g.</p>
+<pre><code class="language-python">original = list(range(10000))
+filtered = []
+for i in original:
+    if i % 2:
+        filtered.append(i)
+</code></pre>
+<p>the feedback message of</p>
+<blockquote>
+<p>Use a list comprehension to create a transformed list</p>
+</blockquote>
+<p>is very confusing for the second case of a transforming expansion e.g.</p>
+<pre><code class="language-python">original = list(range(10000))
+filtered = get_a_base_list()
+for i in original:
+    if i % 2:
+        filtered.append(i)
+</code></pre>
+<p>in this case the improvement would be</p>
+<pre><code class="language-python">filtered.extend(i for i in original if i % 2)
+</code></pre>
+<p>But this involves neither a <em>creation</em> nor a <em>list comprehension</em>. Before I checked the lint's extended documentation I figured it was a false positive due to how &quot;off&quot; the message is.</p>
+<p>Since the codes are already different from perflint source, I think the ideal would be to split this lint in two, and to extend the source span of PERF401 (the bit it says to replace) to encompass the collection instantiation and loop, not just the <code>append</code> call itself. For the other one, it might make sense to include the loop too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2024-10-18 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-18 06:45</div>
+            <div class="timeline-body"><p>Makes sense. We should look into how complicated it would be to detect if the starting list is empty or not and adjust the message based on that. If that's not possible, we should try to refine the message to mention <code>extend</code> or at least update the documentation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> removed by @MichaReiser on 2024-10-18 06:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-18 06:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-10-18 06:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/junhsonjb">@junhsonjb</a> on 2025-02-10 13:23</div>
+            <div class="timeline-body"><p>Looks like this issue may have been <a href="https://github.com/astral-sh/ruff/pull/13919">resolved by this PR</a>. If so, should we mark this issue as closed/completed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-10 14:20</div>
+            <div class="timeline-body"><p>Yes, I think you're right. Thank's for the ping :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-10 14:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

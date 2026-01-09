@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive ERA001 for #region foldouts in PyCharm - astral-sh/ruff #4538</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive ERA001 for #region foldouts in PyCharm</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4538">#4538</a>
+        opened by <a href="https://github.com/bshishov">@bshishov</a>
+        on 2023-05-20 04:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bshishov">@bshishov</a> on 2023-05-20 04:35</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>there is a code folding functionality using comment lines <code># region {region name}</code> in JetBrains IDEs. End ERA001 fires as there is code inside a region name.</p>
+<pre><code class="language-python"># region: Foo / Bar
+# endregion
+# region: Not a code
+# endregion
+# region: 1 + 1
+# endregion
+
+class SomeName:
+    pass
+
+# region: SomeName
+# endregion
+</code></pre>
+<pre><code>ruff --isolated --select ERA folding.py
+folding.py:1:1: ERA001 [*] Found commented-out code
+folding.py:5:1: ERA001 [*] Found commented-out code
+folding.py:11:1: ERA001 [*] Found commented-out code
+</code></pre>
+<p>Notice that code-like names are detected as rule violation and <code># region: Not a code</code> not.</p>
+<p>Ruff version is <code>0.0.269</code></p>
+<p>The best documentation I could find:</p>
+<ul>
+<li>https://www.jetbrains.com/help/idea/code-folding-settings.html</li>
+<li>https://www.jetbrains.com/help/rider/Coding_Assistance__Surrounding_with_Region.html
+This feature was implemented in JetBrains IDEs to mimic same feature in Visual Studio editor.</li>
+</ul>
+<p>There is also some extensions for different IDEs like VSCode: https://marketplace.visualstudio.com/items?itemName=maptz.regionfolder and also a discussion https://github.com/microsoft/vscode/issues/105</p>
+<p>I couldn't find any implementation of the allowed pattern for start and end myself. My best guess for PyCharm is following patterns</p>
+<ul>
+<li><code>#\s*region[:\s]+(?&lt;name&gt;.*)</code> for start of named regions</li>
+<li><code>#\s*region.*</code> for start of unnamed regions</li>
+<li><code>#.*endregion.*</code> for end of any regions</li>
+</ul>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4546.html">astral-sh/ruff#4546</a> on 2023-05-20 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-05-20 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-20 16:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

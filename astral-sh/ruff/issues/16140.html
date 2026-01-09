@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parse error AST lacks identifiers - astral-sh/ruff #16140</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Parse error AST lacks identifiers</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16140">#16140</a>
+        opened by <a href="https://github.com/ndmitchell">@ndmitchell</a>
+        on 2025-02-13 15:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ndmitchell">@ndmitchell</a> on 2025-02-13 15:18</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>When using the <a href="https://play.ruff.rs/?secondary=AST">parser/AST as a library</a>, given the expression:</p>
+<pre><code class="language-python">f&quot;{None for y}&quot;
+</code></pre>
+<p>The AST produced is equivalent to:</p>
+<pre><code class="language-python">f&quot;{None}&quot;; for EMPTY in EMPTY
+</code></pre>
+<p>Both <code>EMPTY</code> values are the empty identifier (literally <code>&quot;&quot;</code>) with the same <code>range</code>. I think the first argument to <code>StmtFor</code> (the <code>target</code>) should be <code>y</code> with an associated valid range.</p>
+<p>This line also produces 5 parse errors, which seems more than desirable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @AlexWaygood on 2025-02-13 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-13 15:22</div>
+            <div class="timeline-body"><p>the full AST we produce here is this:</p>
+<details>
+
+<pre><code class="language-rs">Module(
+    ModModule {
+        range: 0..15,
+        body: [
+            Expr(
+                StmtExpr {
+                    range: 0..7,
+                    value: FString(
+                        ExprFString {
+                            range: 0..7,
+                            value: FStringValue {
+                                inner: Single(
+                                    FString(
+                                        FString {
+                                            range: 0..7,
+                                            elements: [
+                                                Expression(
+                                                    FStringExpressionElement {
+                                                        range: 2..7,
+                                                        expression: NoneLiteral(
+                                                            ExprNoneLiteral {
+                                                                range: 3..7,
+                                                            },
+                                                        ),
+                                                        debug_text: None,
+                                                        conversion: None,
+                                                        format_spec: None,
+                                                    },
+                                                ),
+                                            ],
+                                            flags: FStringFlags {
+                                                quote_style: Double,
+                                                prefix: Regular,
+                                                triple_quoted: false,
+                                            },
+                                        },
+                                    ),
+                                ),
+                            },
+                        },
+                    ),
+                },
+            ),
+            For(
+                StmtFor {
+                    range: 8..11,
+                    is_async: false,
+                    target: Name(
+                        ExprName {
+                            range: 11..11,
+                            id: Name(&quot;&quot;),
+                            ctx: Store,
+                        },
+                    ),
+                    iter: Name(
+                        ExprName {
+                            range: 11..11,
+                            id: Name(&quot;&quot;),
+                            ctx: Invalid,
+                        },
+                    ),
+                    body: [],
+                    orelse: [],
+                },
+            ),
+        ],
+    },
+)
+</code></pre>
+</details>
+
+<p><a href="https://play.ruff.rs/2137fb5c-315c-4dce-b9a7-ecb0c8483967">Playground</a>. I agree that this seems suboptimal. It looks like we drop the <code>y</code> name completely from the AST we produce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-02-13 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2025-02-13 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vladNed">@vladNed</a> on 2025-02-14 08:28</div>
+            <div class="timeline-body"><p>I can try working on this, I do have one question</p>
+<ul>
+<li>I understand that the <code>target</code> should be <code>y</code>, so the logical path would be that the <code>iter</code> remains as an empty value right ?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-14 08:49</div>
+            <div class="timeline-body"><p>Related https://github.com/astral-sh/ruff/issues/10653.</p>
+<p>I think the reason this must be happening is because the <code>for</code> is not being considered the part of the f-string expression but I'm surprised that the parser is dropping <code>y</code> because trying it out without the f-string i.e., <code>None for y</code> keeps <code>y</code> as is.</p>
+<blockquote>
+<ul>
+<li>I understand that the <code>target</code> should be <code>y</code>, so the logical path would be that the <code>iter</code> remains as an empty value right ?</li>
+</ul>
+</blockquote>
+<p>Yeah, the recovery isn't ideal in this case but it should be same as <code>None for y</code> and avoid dropping <code>y</code> from the AST.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vladNed">@vladNed</a> on 2025-02-14 10:07</div>
+            <div class="timeline-body"><p>Debugged a bit the parser and seems like when it hits the <code>parse_atom</code> in this particular case, <code>y</code> is seen as a <code>FStringMiddle</code></p>
+<p>https://github.com/astral-sh/ruff/blob/63dd68e0edf606bc54afce091e543e5691552f97/crates/ruff_python_parser/src/parser/expression.rs#L519-L522</p>
+<p>and because its not yet mapped to a value it will return an empty expression</p>
+<p>https://github.com/astral-sh/ruff/blob/63dd68e0edf606bc54afce091e543e5691552f97/crates/ruff_python_parser/src/parser/expression.rs#L588-L601</p>
+<p>This is still due to a syntax error in Python and not sure if it should ever be mapped.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-14 10:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Debugged a bit the parser and seems like when it hits the <code>parse_atom</code> in this particular case, <code>y</code> is seen as a <code>FStringMiddle</code></p>
+</blockquote>
+<p>Oh, I see. I did not check what the lexer produced and it is indeed <code>FStringMiddle</code> (https://play.ruff.rs/b09543de-4176-4c7e-9962-ecb207c095bd?secondary=Tokens), sorry to waste your time.</p>
+<p>@ndmitchell I'm curious to know if this is causing any issues on your end. Can you provide some context here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ndmitchell">@ndmitchell</a> on 2025-02-14 13:56</div>
+            <div class="timeline-body"><p>No serious issues. Just saw it and it looked a lot worse than all the other error recovery paths. Happy for it go to on the back burner.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10653.html">astral-sh/ruff#10653</a> on 2025-02-19 03:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

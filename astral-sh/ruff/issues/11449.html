@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panic when quoting annotations - astral-sh/ruff #11449</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Panic when quoting annotations</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11449">#11449</a>
+        opened by <a href="https://github.com/thejcannon">@thejcannon</a>
+        on 2024-05-16 14:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thejcannon">@thejcannon</a> on 2024-05-16 14:34</div>
+            <div class="timeline-body"><p>Version: <code>0.4.4</code>
+Command: <code>ruff check --fix --unsafe-fixes foo.py</code></p>
+<p>I whittled my repro down to:</p>
+<pre><code class="language-python">from .t import RO, RP
+from .urs import UR
+
+
+class MUR(UR):
+    def cr(self) -&gt; RO | list[RP]:
+        pass
+
+</code></pre>
+<p>My config is:</p>
+<pre><code class="language-toml">[lint]
+select = [&quot;TCH&quot;]
+
+[lint.flake8-type-checking]
+quote-annotations = true
+</code></pre>
+<p>Stack is:</p>
+<pre><code>panicked at /Users/runner/work/ruff/ruff/crates/ruff_text_size/src/range.rs:48:9:
+assertion failed: start.raw &lt;= end.raw
+Backtrace:    0: std::backtrace::Backtrace::force_capture
+   1: &lt;ruff::panic::PanicError as core::fmt::Display&gt;::fmt
+   2: std::panicking::rust_panic_with_hook
+   3: &lt;std::panicking::begin_panic_handler::StaticStrPayload as core::panic::PanicPayload&gt;::take_box
+   4: &lt;std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display&gt;::fmt
+   5: _rust_begin_unwind
+   6: core::panicking::panic_fmt
+   7: core::panicking::panic
+   8: ruff_linter::rules::tryceratops::rules::verbose_raise::&lt;impl core::convert::From&lt;ruff_linter::rules::tryceratops::rules::verbose_raise::VerboseRaise&gt; for ruff_diagnostics::diagnostic::DiagnosticKind&gt;::from
+   9: ruff_linter::linter::lint_fix
+  10: &lt;ruff::diagnostics::FixMap as core::ops::arith::AddAssign&gt;::add_assign
+  11: ruff::resolve::resolve
+  12: &lt;ruff::panic::PanicError as core::fmt::Display&gt;::fmt
+  13: &lt;ruff::cache::PackageCacheMap as ruff::cache::PackageCaches&gt;::get
+  14: &lt;ruff::args::LogLevelArgs as clap_builder::derive::Args&gt;::augment_args
+  15: &lt;ruff::diagnostics::FixMap as core::ops::arith::AddAssign&gt;::add_assign
+  16: &lt;ruff::cache::PackageCacheMap as ruff::cache::PackageCaches&gt;::get
+  17: ruff::check
+  18: ruff::run
+  19: &lt;ruff::cache::PackageCacheMap as ruff::cache::PackageCaches&gt;::get
+  20: _main
+  21: _main
+  22: std::rt::lang_start_internal
+  23: _main
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trag1c">@trag1c</a> on 2024-05-16 14:38</div>
+            <div class="timeline-body"><p>I can't seem to reproduce this on v0.4.4 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2024-05-16 14:39</div>
+            <div class="timeline-body"><p>I'm on <code>0.4.3</code>, let me try <code>0.4.4</code>
+(Meant to put that in my OP)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2024-05-16 14:42</div>
+            <div class="timeline-body"><p>Yup! Works in <code>0.4.4</code>. Nothing in <a href="https://github.com/astral-sh/ruff/releases/tag/v0.4.4">the changelog</a> sticks out to me, but oh well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @thejcannon on 2024-05-16 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @thejcannon on 2024-05-16 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2024-05-16 14:51</div>
+            <div class="timeline-body"><p>Whoops, spoke to soon. Got it on <code>0.4.4</code>, I forgot to include CLI command.</p>
+<p><code>ruff check --fix --unsafe-fixes</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trag1c">@trag1c</a> on 2024-05-16 14:55</div>
+            <div class="timeline-body"><p>Yup, can reproduce now:</p>
+<pre><code>error: Panicked while linting foo.py: This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at /Users/runner/work/ruff/ruff/crates/ruff_text_size/src/range.rs:48:9:
+assertion failed: start.raw &lt;= end.raw
+Backtrace:    0: std::backtrace::Backtrace::force_capture
+   1: &lt;ruff::panic::PanicError as core::fmt::Display&gt;::fmt
+   2: std::panicking::rust_panic_with_hook
+   3: &lt;std::panicking::begin_panic_handler::StaticStrPayload as core::panic::PanicPayload&gt;::take_box
+   4: &lt;std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display&gt;::fmt
+   5: _rust_begin_unwind
+   6: core::panicking::panic_fmt
+   7: core::panicking::panic
+   8: ruff_linter::rules::tryceratops::rules::verbose_raise::&lt;impl core::convert::From&lt;ruff_linter::rules::tryceratops::rules::verbose_raise::VerboseRaise&gt; for ruff_diagnostics::diagnostic::DiagnosticKind&gt;::from
+   9: ruff_linter::linter::lint_fix
+  10: &lt;ruff::diagnostics::FixMap as core::ops::arith::AddAssign&gt;::add_assign
+  11: ruff::resolve::resolve
+  12: &lt;ruff::panic::PanicError as core::fmt::Display&gt;::fmt
+  13: &lt;ruff::cache::PackageCacheMap as ruff::cache::PackageCaches&gt;::get
+  14: &lt;ruff::args::LogLevelArgs as clap_builder::derive::Args&gt;::augment_args
+  15: &lt;ruff::diagnostics::FixMap as core::ops::arith::AddAssign&gt;::add_assign
+  16: &lt;ruff::cache::PackageCacheMap as ruff::cache::PackageCaches&gt;::get
+  17: ruff::check
+  18: ruff::run
+  19: &lt;ruff::cache::PackageCacheMap as ruff::cache::PackageCaches&gt;::get
+  20: _main
+  21: _main
+  22: std::rt::lang_start_internal
+  23: _main
+
+
+All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-16 14:55</div>
+            <div class="timeline-body"><p>Thx.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-05-16 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Linter panic] " to "Panic when quoting annotations" by @charliermarsh on 2024-05-16 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-16 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-16 15:13</div>
+            <div class="timeline-body"><p>I see the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11452.html">astral-sh/ruff#11452</a> on 2024-05-16 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-16 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-16 16:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

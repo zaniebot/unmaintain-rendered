@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCH false positive with PEP-695 upper bound specification - astral-sh/ruff #7966</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>TCH false positive with PEP-695 upper bound specification</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7966">#7966</a>
+        opened by <a href="https://github.com/bryanforbes">@bryanforbes</a>
+        on 2023-10-15 21:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bryanforbes">@bryanforbes</a> on 2023-10-15 21:30</div>
+            <div class="timeline-body"><p>Running the following command with Ruff <code>0.0.292</code>:</p>
+<pre><code>ruff --target-version py312 --select TCH --isolated --no-cache blah.py
+</code></pre>
+<p>Given the following code:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from collections.abc import Callable
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .foo import Record
+
+type RecordOrThings = Record | int | str
+type RecordCallback[R: Record] = Callable[[R], None]
+
+
+def process_record[R: Record](record: R) -&gt; None:
+    ...
+
+
+class RecordContainer[R: Record]:
+    def add_record(self, record: R) -&gt; None:
+        ...
+</code></pre>
+<p><code>TCH004</code> is reported on line 7, but all uses of <code>Record</code> are only for annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-15 22:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-15 22:48</div>
+            <div class="timeline-body"><p>Does look like a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-10-15 23:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7968.html">astral-sh/ruff#7968</a> on 2023-10-16 00:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-16 00:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

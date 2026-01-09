@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bugs &amp; Inconsistencies with ValueEnum Vectors - clap-rs/clap #4293</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bugs &amp; Inconsistencies with ValueEnum Vectors</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4293">#4293</a>
+        opened by <a href="https://github.com/ttytm">@ttytm</a>
+        on 2022-09-29 21:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ttytm">@ttytm</a> on 2022-09-29 21:11</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.62.0</p>
+<h3>Clap Version</h3>
+<p>v4 | v3</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Parser, ValueEnum};
+
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Cli {
+	/// What mode to run the program in
+	#[arg(value_enum, long, short)]
+	format: Vec&lt;Format&gt;,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+enum Format {
+	Txt,
+	Md,
+	Html,
+}
+
+fn main() {
+	let cli = Cli::parse();
+	println!(&quot;{:?}&quot;, cli);
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Pass multiple enum values to an option arg (when long/short attributes are specified)
+<code>cargo run -- -f txt,html</code> or <code>cargo run -- -f txt html</code></p>
+<hr />
+<p>To give a short context for the following sections:
+When used as argument <code>#[arg(value_enum)]</code> <em>(without long/short attributes)</em> it works.
+It has to be passed separated with spaces. Comma separation won't work!
+<code>txt html</code></p>
+<h3>Actual Behaviour</h3>
+<p>Depending on the structure of the program, passing multiple values either will throw an error or only the first value will be used (when passed separated with spaces).</p>
+<p>In case of the code example above, either way of passing multiple values will produce an error when the arg has <code>long || short</code> attributes specified.</p>
+<h3>Expected Behaviour</h3>
+<p>Passing multiple enum values to an option works.</p>
+<h3>Additional Context</h3>
+<p>Using a <code>Vec&lt;String&gt;</code> works of course.</p>
+<p>It works with good ol <code>structopt</code>.<br />
+Here values need to be passed comma separated <code>txt,html</code>.</p>
+<p>In the end I'm hoping that I just missed a thing in the docs and doing something wrong, as this seems like a rather basic funcitonality and it's probably possible to reenable it for argument options?</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @ttytm on 2022-09-29 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-29 21:23</div>
+            <div class="timeline-body"><p>I recommend checking out changelog to work through upgrades.  Since you are upgrading from structopt, in particular the <a href="https://github.com/clap-rs/clap/blob/v3-master/CHANGELOG.md#breaking-changes">v3 breaking changes</a>.  We also recommend upgrading to v3 before upgrading to v4.  All of our documentation is focused on that upgrade path.</p>
+<blockquote>
+<p><code>cargo run -- -f txt html</code></p>
+</blockquote>
+<p>In clap 3, the meaning of <code>Vec</code> changed in the derive from <code>multiple_values(true).multiple_occurrences(true)</code> to <code>multiple_occurrences(true)</code>.</p>
+<p>To get the structopt behavior for that in clap 3, add <code>#[clap(multiple_values(true))]</code>.</p>
+<p>This was covered under &quot;From structopt 0.3.25&quot; as</p>
+<blockquote>
+<p>Vec&lt;<em>&gt; and Option&lt;Vec&lt;</em>&gt;&gt; have changed from multiple to multiple_occurrences</p>
+</blockquote>
+<p>I will say that multiple values can cause a lot of problems.  We warn about some <a href="https://docs.rs/clap/3.2.22/clap/builder/struct.Arg.html#method.multiple_values">in the docs</a></p>
+<blockquote>
+<p>cargo run -- -f txt,html</p>
+</blockquote>
+<p>I think this breaking change was missed in the changelog.  We made this opt-in.  You just need to add <code>#[clap(use_value_delimiters = true)]</code>.</p>
+<p>As both parts of this are expected changes, I'm going to close this out.  If there is something I missed, let me know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-09-29 21:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

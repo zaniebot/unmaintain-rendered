@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` fails from inside docker. - astral-sh/uv #3570</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` fails from inside docker.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3570">#3570</a>
+        opened by <a href="https://github.com/ArshanKhanifar">@ArshanKhanifar</a>
+        on 2024-05-14 06:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ArshanKhanifar">@ArshanKhanifar</a> on 2024-05-14 06:38</div>
+            <div class="timeline-body"><p>On my mac the install works just fine.</p>
+<p>In docker though, I'm getting this error:</p>
+<pre><code> =&gt; ERROR [builder  9/10] RUN --mount=type=ssh /root/.cargo/bin/uv pip install --system --no-cache -r requirements.txt   2.5s
+------
+ &gt; [builder  9/10] RUN --mount=type=ssh /root/.cargo/bin/uv pip install --system --no-cache -r requirements.txt:
+2.433 error: error sending request for url (https://northamerica-northeast2-python.pkg.dev/private-pypi-418615/ritual-pypi/simple/huggingface-hub/)
+2.433   Caused by: client error (Connect)
+2.433   Caused by: invalid peer certificate: BadSignature
+</code></pre>
+<p>This is my dockerfile:</p>
+<pre><code># syntax=docker/dockerfile:1
+
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Dockerfile reference guide at
+# https://docs.docker.com/engine/reference/builder/
+
+ARG PYTHON_VERSION=3.11
+FROM python:${PYTHON_VERSION}-slim as base
+
+# Prevents Python from writing pyc files.
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Keeps Python from buffering stdout and stderr to avoid situations where
+# the application crashes without emitting any logs due to buffering.
+ENV PYTHONUNBUFFERED=1
+ENV RUNTIME docker
+
+WORKDIR /app
+
+# Create a non-privileged user that the frenrug will run under.
+# See https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
+ARG UID=10001
+RUN adduser \
+    --disabled-password \
+    --gecos &quot;&quot; \
+    --home &quot;/nonexistent&quot; \
+    --shell &quot;/sbin/nologin&quot; \
+    --no-create-home \
+    --uid &quot;${UID}&quot; \
+    appuser
+
+RUN apt-get update
+RUN apt-get install -y curl
+
+# Install UV
+ADD --chmod=755 https://astral.sh/uv/install.sh /install.sh
+RUN /install.sh &amp;&amp; rm /install.sh
+
+# Download dependencies as a separate step to take advantage of Docker's caching.
+# Leverage a cache mount to /root/.cache/uv to speed up subsequent builds.
+# Leverage a bind mount to requirements to avoid having to copy them into
+# into this layer.
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=requirements.txt,target=requirements.txt \
+    /root/.cargo/bin/uv pip install --system -r requirements.txt
+
+# Install some executables
+RUN apt-get update \
+    &amp;&amp; apt-get install -y curl procps sysstat ifstat \
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+# Copy the source code into the container.
+COPY src/ src/
+COPY entrypoint.sh .
+
+# Run the application.
+ENTRYPOINT [&quot;/app/entrypoint.sh&quot;]
+</code></pre>
+<p>Since I'm installing <code>uv</code> every time, it must use the latest version of <code>uv</code>.
+It's using python's official docker, so I'm assuming the certificates are outdated whenever installing from a debian environment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smetanakarel">@smetanakarel</a> on 2024-05-14 07:51</div>
+            <div class="timeline-body"><p>Same issue here, latest MacOS 14.5. It worked yesterday. Problem is not related with used image (tried Debian, Rockylinux).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Max0u">@Max0u</a> on 2024-05-14 09:03</div>
+            <div class="timeline-body"><p>I have the same issue, small workaround is by using yesterday version</p>
+<pre><code>RUN curl -LsSf https://astral.sh/uv/install.sh -o install.sh
+RUN sed -i 's/0.1.43/0.1.42/g' install.sh
+RUN sh install.sh
+</code></pre>
+<p>if anyone has a better way to set the version I would gladly take it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yyovkov">@yyovkov</a> on 2024-05-14 10:34</div>
+            <div class="timeline-body"><p>Following @Max0u experiment, can install older version directly:</p>
+<pre><code>pip install uv==0.1.42
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsch-adt">@jsch-adt</a> on 2024-05-14 11:21</div>
+            <div class="timeline-body"><p>This works if you're already using the curl -&gt; sh install method and don't want to make any other changes:
+<code>curl -LsSf https://github.com/astral-sh/uv/releases/download/0.1.42/uv-installer.sh | sh</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-14 12:19</div>
+            <div class="timeline-body"><p>Looking into this...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-14 12:27</div>
+            <div class="timeline-body"><p>I did not reproduce this with</p>
+<pre><code class="language-Dockerfile">ARG PYTHON_VERSION=3.11
+FROM python:${PYTHON_VERSION}-slim as base
+
+RUN apt-get update
+RUN apt-get install -y curl
+
+ADD --chmod=755 https://astral.sh/uv/install.sh /install.sh
+RUN /install.sh &amp;&amp; rm /install.sh
+
+RUN /root/.cargo/bin/uv pip install anyio --system
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsch-adt">@jsch-adt</a> on 2024-05-14 12:30</div>
+            <div class="timeline-body"><p>In my case, it fails on a different library in my requirements.txt file every time I run install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-14 12:34</div>
+            <div class="timeline-body"><p>Okay I'll try more requirements, but you might just be seeing the first request to &quot;complete&quot; which can be non-deterministic since we run them concurrently.</p>
+<p>Does the <code>--no-native-tls</code> or <code>--native-tls</code> flag have any effect?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-14 12:38</div>
+            <div class="timeline-body"><p>Has anyone seen this behavior on a host machine other than macOS?</p>
+<p>(Adding more requirements did not change behavior for me)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-14 12:42</div>
+            <div class="timeline-body"><p>Okay I've confirmed</p>
+<ol>
+<li><em>Does not</em> occur on Linux host machines</li>
+<li><em>Does</em> reproduce on a macOS host machine</li>
+</ol>
+<p>I'll look into the cause now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rossmacarthur">@rossmacarthur</a> on 2024-05-14 13:00</div>
+            <div class="timeline-body"><p>I'm using</p>
+<pre><code>ADD --chmod=755 https://github.com/astral-sh/uv/releases/download/0.1.42/uv-installer.sh /uv-installer.sh
+RUN /uv-installer.sh &amp;&amp; rm /uv-installer.sh
+</code></pre>
+<p>For now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rossmacarthur">@rossmacarthur</a> on 2024-05-14 13:03</div>
+            <div class="timeline-body"><p>@zanieb https://github.com/astral-sh/uv/pull/3444 looks like it could possibly affect SSL</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3576.html">astral-sh/uv#3576</a> on 2024-05-14 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-05-14 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-14 13:51</div>
+            <div class="timeline-body"><p>I'll release a revert to that — it is indeed suspicious.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-14 14:20</div>
+            <div class="timeline-body"><p>By downloading some intermediate artifacts I've confirmed reverting that resolves the issue. v0.1.44 is on its way out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ArshanKhanifar">@ArshanKhanifar</a> on 2024-05-14 15:41</div>
+            <div class="timeline-body"><p>It's fixed for me now. Re-running the same docker image today works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cr3ative">@cr3ative</a> on 2024-05-14 16:49</div>
+            <div class="timeline-body"><p>Thank you for this quick turnaround! I also pinned to previous to resolve, and was wondering why it wasn't affecting the Intel nodes. Makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-14 16:53</div>
+            <div class="timeline-body"><p>Thanks for checking back in! Great to know it's resolved.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

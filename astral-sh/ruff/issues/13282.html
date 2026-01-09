@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title># ruff: noqa: PTH is not working - astral-sh/ruff #13282</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1># ruff: noqa: PTH is not working</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13282">#13282</a>
+        opened by <a href="https://github.com/jolaf">@jolaf</a>
+        on 2024-09-08 11:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jolaf">@jolaf</a> on 2024-09-08 11:20</div>
+            <div class="timeline-body"><p>I have a large old module using <code>os.path</code> API.
+I'm not ready to convert to <code>pathlib</code> yet.
+However, I'd like to use <code>ruff</code> to check the module for other issues and avoid getting tons of messages about using old API.</p>
+<p>For now, the best solution I have is to write <code># ruff: noqa: PTH100, PTH101, PTH102, PTH103, ...</code> comment in the beginning of the file. That's working, but looks cumbersome.</p>
+<p>It would be nice if <code># ruff: noqa: PTH</code> would work the same way as <code>ignore = [ &quot;PTH&quot;, ]</code> works in the config file.</p>
+<p>The same thing would be nice for <code>--select</code> and <code>--ignore</code> options in the command line.</p>
+<p>Here's the simple test:</p>
+<pre><code class="language-python3"># ruff: noqa: PTH
+
+from os.path import exists, getsize, isfile
+
+if exists(__file__) and isfile(__file__):
+    print(getsize(__file__))
+</code></pre>
+<pre><code class="language-shell">$ python test.py
+141
+
+$ ruff check test.py 
+test.py:5:4: PTH110 `os.path.exists()` should be replaced by `Path.exists()`
+  |
+3 | from os.path import exists, getsize, isfile
+4 | 
+5 | if exists(__file__) and isfile(__file__):
+  |    ^^^^^^ PTH110
+6 |     print(getsize(__file__))
+  |
+
+test.py:5:25: PTH113 `os.path.isfile()` should be replaced by `Path.is_file()`
+  |
+3 | from os.path import exists, getsize, isfile
+4 | 
+5 | if exists(__file__) and isfile(__file__):
+  |                         ^^^^^^ PTH113
+6 |     print(getsize(__file__))
+  |
+
+test.py:6:11: PTH202 `os.path.getsize` should be replaced by `Path.stat().st_size`
+  |
+5 | if exists(__file__) and isfile(__file__):
+6 |     print(getsize(__file__))
+  |           ^^^^^^^ PTH202
+  |
+
+Found 3 errors.
+
+$ ruff --version
+ruff 0.6.4
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">suppression</span> added by @MichaReiser on 2024-09-08 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2024-09-08 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-08 18:19</div>
+            <div class="timeline-body"><p>Hi. Overall, this makes sense to me. The question IMO is whether we want to encourage disabling entire sets of rules using noqa comments.</p>
+<p>An alternative that is supported today is <a href="https://docs.astral.sh/ruff/settings/#lint_per-file-ignores">`per-file-ignores</a>. The downside is that it requires changing the configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jolaf">@jolaf</a> on 2024-09-09 00:20</div>
+            <div class="timeline-body"><p>Maybe, <code>--select</code> and <code>--ignore</code> command line options are even more important in this matter.</p>
+<p>Because they can be helpful for situations like &quot;can I please see all issues in my code EXCEPT those messy <code>os.path</code> warnings`.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-09 10:46</div>
+            <div class="timeline-body"><p><code>ruff check</code> supports <code>--select</code>, and <code>--ignore</code>:</p>
+<pre><code>Rule selection:
+      --select &lt;RULE_CODE&gt;
+          Comma-separated list of rule codes to enable (or ALL, to enable all
+          rules)
+      --ignore &lt;RULE_CODE&gt;
+          Comma-separated list of rule codes to disable
+      --extend-select &lt;RULE_CODE&gt;
+          Like --select, but adds additional rule codes on top of those already
+          specified
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jolaf">@jolaf</a> on 2024-09-09 10:58</div>
+            <div class="timeline-body"><blockquote>
+<p><code>ruff check</code> supports <code>--select</code>, and <code>--ignore</code></p>
+</blockquote>
+<p>Yes, but they don't support prefixes, only full codes.</p>
+<p>So to disable, for example, all <code>PTH* </code> warnings, you'd have to specify each of them manually, which is very inconvenient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-09 11:07</div>
+            <div class="timeline-body"><p>Do you have an example where passing a selector to <code>--select </code>and <code>--ignore</code> doesn't work for you because that is supposed to work</p>
+<pre><code class="language-shell">➜ uvx ruff check .
+import.py:1:8: F401 [*] `typing` imported but unused
+  |
+1 | import typing
+  |        ^^^^^^ F401
+2 | 
+3 | print(lemurs)
+  |
+  = help: Remove unused import: `typing`
+
+import.py:3:7: F821 Undefined name `lemurs`
+  |
+1 | import typing
+2 | 
+3 | print(lemurs)
+  |       ^^^^^^ F821
+  |
+
+main.py:1:18: F401 [*] `test.a` imported but unused
+  |
+1 | from test import a
+  |                  ^ F401
+  |
+  = help: Remove unused import: `test.a`
+
+main.py:13:5: F841 Local variable `x` is assigned to but never used
+   |
+12 | def f():
+13 |     x = Test()
+   |     ^ F841
+   |
+   = help: Remove assignment to unused variable `x`
+
+main.py:16:5: F811 Redefinition of unused `f` from line 12
+   |
+16 | def f(): ...
+   |     ^ F811
+   |
+   = help: Remove definition: `f`
+
+main.py:19:5: F811 Redefinition of unused `f` from line 16
+   |
+19 | def f():
+   |     ^ F811
+20 |     &quot;&quot;&quot;Docstring&quot;&quot;&quot;
+21 |     ...
+   |
+   = help: Remove definition: `f`
+
+symlink/foo.py:1:21: F401 [*] `bar.baz.Baz` imported but unused
+  |
+1 | from bar.baz import Baz
+  |                     ^^^ F401
+2 | 
+3 | class Test:
+  |
+  = help: Remove unused import: `bar.baz.Baz`
+
+test.ipynb:cell 4:1:1: F821 Undefined name `yyyyy`
+  |
+1 | yyyyy
+  | ^^^^^ F821
+  |
+
+test.py:2:21: F401 [*] `bar.baz.Baz` imported but unused
+  |
+1 | import main
+2 | from bar.baz import Baz
+  |                     ^^^ F401
+3 | 
+4 | x = main.Test()
+  |
+  = help: Remove unused import: `bar.baz.Baz`
+
+test.pyi:2:5: F811 Redefinition of unused `f` from line 1
+  |
+1 | def f(): ...
+2 | def f(): ...
+  |     ^ F811
+3 | def f():
+4 |   &quot;&quot;&quot;Docstring&quot;&quot;&quot;
+  |
+  = help: Remove definition: `f`
+
+test.pyi:3:5: F811 Redefinition of unused `f` from line 2
+  |
+1 | def f(): ...
+2 | def f(): ...
+3 | def f():
+  |     ^ F811
+4 |   &quot;&quot;&quot;Docstring&quot;&quot;&quot;
+5 |   ...
+  |
+  = help: Remove definition: `f`
+
+Found 11 errors.
+[*] 4 fixable with the `--fix` option (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+
+~/astral/test via 🐍 3.12.1 
+➜ uvx ruff check . --ignore F
+All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jolaf">@jolaf</a> on 2024-09-09 11:12</div>
+            <div class="timeline-body"><p>Woah, that's amazing!!</p>
+<p>Well, then the documentation should be updated for this, including <code>--help</code>.
+For now, it shows no idea that prefixes can be used.</p>
+<p>In fact, it would be perfect if prefixes would work <strong>anywhere</strong> a single code could be used, including single-line <code># noqa:</code> comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-09 11:32</div>
+            <div class="timeline-body"><blockquote>
+<p>In fact, it would be perfect if prefixes would work anywhere a single code could be used, including single-line # noqa: comments.</p>
+</blockquote>
+<p>Rule selectors should generally work everywhere, except in noqa comments. Whether we want to support selectors in noqa comments requires some thought. I can see downsides of allowing a rule selector. For example, it is easy to suppress more errors than you wanted by accidentally typing <code>F82</code> instead of <code>F821</code>. It's also unclear if <code>unused-noqa</code> should flag it or not</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jolaf">@jolaf</a> on 2024-09-09 11:55</div>
+            <div class="timeline-body"><p>Yep, I see.</p>
+<p>It seems to me that <code>unused-noqa</code> should only flag lines where there is no issues mentioned in a <code># noqa:</code> comment. So if the line comment is <code># noqa: PTH</code>, and there's at least one PTH* issue in that line, then <code>unsued-noqa</code> should not flag that line.</p>
+<p>By the way, asterisk looks like a good idea. I mean, using comments like <code># noqa: F82*</code>, not just <code># noqa: F82</code>, that reduces the risk of accidentally suppressing more than you wanted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/msoloff">@msoloff</a> on 2024-09-12 00:20</div>
+            <div class="timeline-body"><p>I had a similar issue in that I wanted to start using Ruff on an existing codebase and didn't want to fix all the existing issues up front or litter my code with noqa directives. I initially planned to do the latter using <code>ruff check --noqa</code> but decided it seemed messy.</p>
+<p>So instead I wrote a small Python script to convert the output of <code>ruff check</code> to the format of the per-file-ignores and just pasted that to the bottom of my ruff.toml. It's nice as a record of lints that I've suppressed and easy to remove everything for a file if I decide to bring it up to date.</p>
+<p>I also use <code>select = [&quot;ALL&quot;]</code> with specific global ignores in the config and when a new version of Ruff comes out I can pipe them to the per-file-ignores if I want.</p>
+<p>This was useful  when a recent release added the ability to lint notebooks. I didn't want to fix the existing ones but new files will still be checked.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

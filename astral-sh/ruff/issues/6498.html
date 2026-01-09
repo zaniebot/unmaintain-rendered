@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: Don't reorder parameters in function calls  - astral-sh/ruff #6498</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: Don't reorder parameters in function calls </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6498">#6498</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-08-11 11:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2023-08-11 11:40</div>
+            <div class="timeline-body"><p>Currently, we format</p>
+<pre><code class="language-python">f(a=b, *args, **kwargs)
+</code></pre>
+<p>as</p>
+<pre><code class="language-python">f(*args, a=b, **kwargs)
+</code></pre>
+<p>Instead, we should preserve the function order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2023-08-11 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-08-11 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @konstin on 2023-08-11 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6069.html">astral-sh/ruff#6069</a> on 2023-08-11 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Alpha" by @MichaReiser on 2023-08-11 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-08-11 18:01</div>
+            <div class="timeline-body"><p>Why do you think that's better?  The original order was contentious when we implemented PEP 448.  And there's one good reason to do the reorder:</p>
+<pre><code class="language-python">def g():
+    print(&quot;g&quot;)
+    return range(2)
+def h():
+    print(&quot;h&quot;)
+    return 1
+
+def f(*args, **kwargs):
+    pass
+
+f(a=h(), *g(), **{})  # Prints g then h!
+</code></pre>
+<p>Positional arguments are evaluated first.</p>
+<p>If anything, you should probably add a Ruff rule to warn on keyword arguments being first <em>especially</em> if they have any side effects.  The only problem with warning unconditionally is this pattern:</p>
+<pre><code class="language-python">f(x=1, y=2, *args, **kwargs)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 18:09</div>
+            <div class="timeline-body"><p>I believe we do warn when keyword arguments are provided in such an order: https://beta.ruff.rs/docs/rules/star-arg-unpacking-after-keyword-arg/ (but it's unconditional)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-11 18:10</div>
+            <div class="timeline-body"><p>This could be hard with an AST-based approach (assuming I understand the problem correctly).</p>
+<p>@NeilGirdhar The main reason for preserving the order is that this change goes beyond just formatting your code. It re-orders code (and potentially re-orders comments too). This is a good case for a lint rule that you can use in addition to the formatter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-08-11 18:13</div>
+            <div class="timeline-body"><p>@charliermarsh My mistake, I tested it but forgot to enable all the rules 😄</p>
+<p>@MichaReiser Fair enough, sorry for the noise!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 18:14</div>
+            <div class="timeline-body"><p>@NeilGirdhar - You're telling me you haven't memorized every single rule in Ruff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 18:16</div>
+            <div class="timeline-body"><p>I honestly didn't realize that the evaluation order was independent of the literal order. I should update that rule documentation to include this, it's interesting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-08-11 18:27</div>
+            <div class="timeline-body"><p>Good idea.</p>
+<p>It's one of the few places I think.  Really glad to see you have rule B026.  Definitely an important one for preventing bugs.</p>
+<p>Do you have statistics on how often your various rules are hit in public code?  If this rule is hit very rarely, we may be able to convince the Python people to syntax-warn, and eventually deprecate this form.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Formatter: Alpha" by @MichaReiser on 2023-08-22 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-08-22 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @MichaReiser on 2023-09-08 07:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7268.html">astral-sh/ruff#7268</a> on 2023-09-11 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-09-13 09:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

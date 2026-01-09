@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[pytest] New rule idea- Prefer multiple `pytest.param(..., id=...)` over `pytest.mark.parametrize(..., ids=...)` - astral-sh/ruff #14994</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[pytest] New rule idea- Prefer multiple `pytest.param(..., id=...)` over `pytest.mark.parametrize(..., ids=...)`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14994">#14994</a>
+        opened by <a href="https://github.com/UnknownPlatypus">@UnknownPlatypus</a>
+        on 2024-12-15 22:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/UnknownPlatypus">@UnknownPlatypus</a> on 2024-12-15 22:27</div>
+            <div class="timeline-body"><p>Hi !</p>
+<p>This is a new rule suggestion for the <a href="https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt">pytest-style</a> plugin.</p>
+<p>It checks for <code>pytest.mark.parametrize</code> calls using the <code>ids</code> keyword argument and replace each set of test values with a <code>pytest.params(.., id=...)</code> parameter set, effectively binding the id with the set of arguments.</p>
+<p>When using the <code>ids=[…]</code> syntax, each id is bound to a set of parameters by index.</p>
+<p>This is quite error prone and makes test hard to modify (adding a test case in the middle means adding an id at the corresponding index in the ids list). Moreover, if one test case fails, it's not directly obvious which set of parameters is associated with the failing id. This issue gets worse the more test case you have in your parametrize call.</p>
+<p>Pytest <a href="https://docs.pytest.org/en/7.1.x/example/parametrize.html#different-options-for-test-ids">seems to agree</a> this is not a good pattern:</p>
+<blockquote>
+<p>In test_timedistance_v1, we specified ids as a list of strings which were used as the test IDs. These are succinct, but can be a pain to maintain.</p>
+</blockquote>
+<p>An autofix would look like this:</p>
+<p>Don't use:</p>
+<pre><code class="language-python">@pytest.mark.parametrize(
+    &quot;a, b, expected&quot;,
+    [
+        (datetime(2001, 12, 12), datetime(2001, 12, 11), timedelta(1)),
+        ... # 10 other test cases
+        (datetime(2001, 12, 11), datetime(2001, 12, 12), timedelta(-1)),
+    ],
+    ids=[&quot;forward&quot;, ..., &quot;backward&quot;],
+)
+def test(a, b, expected):
+    pass
+</code></pre>
+<p>Use instead:</p>
+<pre><code class="language-python">@pytest.mark.parametrize(
+    &quot;a, b, expected&quot;,
+    [
+        pytest.param(
+            datetime(2001, 12, 12), datetime(2001, 12, 11), timedelta(1), id=&quot;forward&quot;
+        ),
+        ... # 10 other test cases
+        pytest.param(
+            datetime(2001, 12, 11), datetime(2001, 12, 12), timedelta(-1), id=&quot;backward&quot;
+        ),
+    ],
+)
+def test(a, b, expected):
+    pass
+</code></pre>
+<p>I've already implemented such fixer <a href="https://github.com/UnknownPlatypus/django-upgrade/pull/3">in python</a> (using pyupgrade/django-upgrade building blocs) <strong>and would be very interested in porting this to ruff.</strong></p>
+<p>If you have in mind another MR I could take inspiration from (especially the auto-fix part) it would be awesome!
+Also I'm not sure which code to use, PT028 could overlap with a potential new pytest-style rule</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2024-12-16 04:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @dylwil3 on 2024-12-16 04:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-16 07:43</div>
+            <div class="timeline-body"><p>Thanks @UnknownPlatypus for the nice write up.</p>
+<p>For now, we only rarely add new rules that don't exist in the upstream linter (in this case, pytest-style). Do you know if your lint has been proposed and discussed for <a href="https://github.com/m-burst/flake8-pytest-style/issues?q=sort%3Aupdated-desc+is%3Aissue+is%3Aopen">flake8-pytest</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/UnknownPlatypus">@UnknownPlatypus</a> on 2024-12-16 12:35</div>
+            <div class="timeline-body"><p>@MichaReiser To my knowledge, it has not been discussed in flake8-pytest and I intentionally didn't open an issue there because this is the kind of rule that would be extremely cumbersome to manually fix (hence the reason I wrote an autofixer for it only).</p>
+<p>But I can open an issue there if you want to get some more input from the pytest community that might be more present there ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TomerBin">@TomerBin</a> on 2024-12-17 21:55</div>
+            <div class="timeline-body"><p>Thank you @UnknownPlatypus !! This rule sounds amazing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zac-HD">@Zac-HD</a> on 2025-01-11 02:53</div>
+            <div class="timeline-body"><p>PT028 is indeed a new rule, see https://github.com/m-burst/flake8-pytest-style/pull/324.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2025-01-11 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-01-11 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/UnknownPlatypus">@UnknownPlatypus</a> on 2025-01-11 14:51</div>
+            <div class="timeline-body"><p>And also <a href="https://github.com/m-burst/flake8-pytest-style?tab=readme-ov-file#change-log">PT029-31 now</a>.</p>
+<p>I've opened <a href="https://github.com/m-burst/flake8-pytest-style/issues/328">a matching issue</a> in pytest-style following Micha advice. Might help for the decision here too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/UnknownPlatypus">@UnknownPlatypus</a> on 2025-04-18 21:13</div>
+            <div class="timeline-body"><p>Hey @MichaReiser , still very interested to implement this fixer in ruff.</p>
+<p>The upstream repo did not see any activity in the last 3 months so it will not help decide I guess.</p>
+<p>It would probably make sense to add it to ruff in the PT9XX range (like it has been done for flake8-datetimez with https://docs.astral.sh/ruff/rules/datetime-min-max/.</p>
+<p>What are your thoughts on this ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2025-11-03 12:41</div>
+            <div class="timeline-body"><p>One can also pass a <code>Callable</code> for <code>ids</code> to formats the argument, it seems your proposal doesn't take that into account.
+I think your suggestion only makes sense when multiple arguments are parametrized at once, because in this case, <code>ids</code> is applied to each argument independently, which usually is undesired (see https://github.com/pytest-dev/pytest/issues/8283)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/UnknownPlatypus">@UnknownPlatypus</a> on 2025-11-03 15:37</div>
+            <div class="timeline-body"><p>The <code>Callable</code> case would be skipped, my proposal is only about the list of strings syntax. See pytest doc link in the issue</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

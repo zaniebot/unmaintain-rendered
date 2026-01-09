@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validate argument with regex - clap-rs/clap #1968</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Validate argument with regex</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1968">#1968</a>
+        opened by <a href="https://github.com/catleeball">@catleeball</a>
+        on 2020-06-09 01:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/catleeball">@catleeball</a> on 2020-06-09 01:33</div>
+            <div class="timeline-body"><h3>Describe your use case</h3>
+<p>It would be nice to have a clap feature for argument validation via a regex. This would be handy and flexible for users, allowing them custom validations without writing a <a href="https://github.com/clap-rs/clap/blob/master/examples/15_custom_validator.rs">custom validator</a> to do so, and hopefully without requiring too large of overhead for implementation and testing in clap itself.</p>
+<h3>Describe the solution you'd like</h3>
+<p>For example, using clap yaml format, if we want an argument whose value wants only digit values 1 through 100:</p>
+<pre><code>args:
+  - jpg-quality:
+    about: Quality of jpg image to write. Must be a number 1-100.
+    takes_value: true
+    regex: &quot;^[1-9][0-9]?$|^100$&quot;
+</code></pre>
+<p>This could expand to complex regex use cases, like matching if an arg value is a URL:</p>
+<pre><code>args:
+  - url:
+    about: URL to load.
+    index: 1
+    required: true
+    # Regex stolen from: https://stackoverflow.com/a/3809435
+    regex: &quot;[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]*)&quot;
+</code></pre>
+<p>Thanks for this very nice arg parsing library!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @catleeball on 2020-06-09 01:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[FR] - Validate argument with regex" to "Validate argument with regex" by @catleeball on 2020-06-09 02:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-09 05:22</div>
+            <div class="timeline-body"><p>My first thought was: &quot;This is pretty trivial with normal validators!&quot;. And indeed:</p>
+<pre><code class="language-rust">lazy_static! {
+    static ref RE: Regex = Regex::new(&quot;\\d+&quot;).unwrap();
+}
+
+app.validator(|val| {
+    if RE.is_match(val)) {
+        Ok(())
+    } else {
+        Err(format!(&quot;value '{}' doesn't match the `\\d+` regex&quot;, val))
+    }
+})
+</code></pre>
+<p>But on the other side, validators cannot be deserialized from YAML, and &quot;matches a regex&quot; does sound common enough to warrant a special case.</p>
+<p>I say we might gate it behind <code>regex</code> feature.</p>
+<p>Unresolved questions: what about error messages? I have doubts that &quot;value <val> doesn't match <re> regex&quot; is good user-facing message. Perhaps the API should look like:</p>
+<pre><code class="language-rust">fn regex_validator(&quot;-?\\d+&quot;, &quot;expected an integer&quot;);
+
+// rendered as
+&quot;Invalid value `foo`: expected an integer&quot;
+</code></pre>
+<p>@pksunkara @kbknapp Any thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: validators</span> added by @CreepySkeleton on 2020-06-09 05:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @CreepySkeleton on 2020-06-09 05:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: optional dep</span> added by @CreepySkeleton on 2020-06-09 05:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @CreepySkeleton on 2020-06-09 05:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Z: good first issue</span> added by @CreepySkeleton on 2020-06-09 05:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @CreepySkeleton on 2020-06-09 05:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/catleeball">@catleeball</a> on 2020-06-09 06:47</div>
+            <div class="timeline-body"><p>Agreed on your point about needing a more helpful error, @CreepySkeleton . I personally like the example function you provided where the user supplies an error string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/loewenheim">@loewenheim</a> on 2020-06-18 15:02</div>
+            <div class="timeline-body"><p>How would the error message be written in a YAML file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-18 15:36</div>
+            <div class="timeline-body"><p>Just as any other tuple would</p>
+<pre><code class="language-yaml">regex_validator: 
+  - r&quot;[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]*)&quot;
+  - error message
+
+# or if regex and error are short enough
+regex_validator: [&quot;-?\\d+&quot;, &quot;expected an integer&quot;]
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmankita">@tmankita</a> on 2020-07-23 11:14</div>
+            <div class="timeline-body"><p>Hi,
+I would like to pick up this issue if no one is working on it yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2073.html">clap-rs/clap#2073</a> on 2020-08-14 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-08-28 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3743.html">clap-rs/clap#3743</a> on 2022-05-23 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-23 20:23</div>
+            <div class="timeline-body"><p>FYI I am considering removing <code>validator_regex</code>, see #3743</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

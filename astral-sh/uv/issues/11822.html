@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv does not use correct Python version, fails to find wheel, tries to build package, fails - astral-sh/uv #11822</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv does not use correct Python version, fails to find wheel, tries to build package, fails</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11822">#11822</a>
+        opened by <a href="https://github.com/Ark-kun">@Ark-kun</a>
+        on 2025-02-27 06:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Ark-kun">@Ark-kun</a> on 2025-02-27 06:48</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We have an internal tool that installs Python 3.10, <code>virtualenv</code>, creates virtual environment, installs <code>uv</code> and then installs <code>skypilot</code> using <code>uv</code>.</p>
+<p>This worked for many people before, but it stopped working now.</p>
+<p>I traced the issue to the following:</p>
+<ul>
+<li>The active Python version is <code>3.10</code>.</li>
+<li>But <code>uv</code> finds <code>3.13</code> somewhere.</li>
+<li>uv tries to install <code>pendulum</code> dependency which does not have wheel for <code>3.13</code>.</li>
+<li>uv tries to build <code>pendulum</code>, but fails since <code>maturin</code> cannot find <code>cargo</code></li>
+</ul>
+<p>Details:</p>
+<pre><code>ark@Mac proj % which python
+/Users/ark/.pyenv/virtualenvs/proj/3.10.14/bin/python
+</code></pre>
+<pre><code>ark@Mac proj % uv python list
+cpython-3.14.0a5+freethreaded-macos-aarch64-none    &lt;download available&gt;
+cpython-3.14.0a5-macos-aarch64-none                 &lt;download available&gt;
+cpython-3.13.2+freethreaded-macos-aarch64-none      &lt;download available&gt;
+cpython-3.13.2-macos-aarch64-none                   /opt/homebrew/opt/python@3.13/bin/python3.13 -&gt; ../Frameworks/Python.framework/Versions/3.13/bin/python3.13
+cpython-3.13.2-macos-aarch64-none                   &lt;download available&gt;
+cpython-3.12.9-macos-aarch64-none                   &lt;download available&gt;
+cpython-3.11.11-macos-aarch64-none                  /opt/homebrew/opt/python@3.11/bin/python3.11 -&gt; ../Frameworks/Python.framework/Versions/3.11/bin/python3.11
+cpython-3.11.11-macos-aarch64-none                  &lt;download available&gt;
+cpython-3.10.16-macos-aarch64-none                  /Users/ark/.local/share/uv/python/cpython-3.10.16-macos-aarch64-none/bin/python3.10
+cpython-3.9.21-macos-aarch64-none                   &lt;download available&gt;
+cpython-3.9.6-macos-aarch64-none                    /Library/Developer/CommandLineTools/usr/bin/python3 -&gt; ../../Library/Frameworks/Python3.framework/Versions/3.9/bin/python3
+cpython-3.8.20-macos-aarch64-none                   &lt;download available&gt;
+pypy-3.11.11-macos-aarch64-none                     &lt;download available&gt;
+pypy-3.10.19-macos-aarch64-none                     &lt;download available&gt;
+pypy-3.9.19-macos-aarch64-none                      &lt;download available&gt;
+pypy-3.8.16-macos-aarch64-none                      &lt;download available&gt;
+</code></pre>
+<pre><code>ark@Mac proj % uv tool install &quot;skypilot-nightly[gcp]==1.0.0.dev20240810&quot; 
+Resolved 60 packages in 226ms
+  × Failed to build `pendulum==3.0.0`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `maturin.build_wheel` failed (exit status: 1)
+      [stdout]
+      Running `maturin pep517 build-wheel -i
+      /Users/ark/.cache/uv/builds-v0/.tmpvFWEoX/bin/python --compatibility
+      off`
+      [stderr]
+      💥 maturin failed
+        Caused by: Cargo metadata failed. Do you have cargo in your PATH?
+        Caused by: No such file or directory (os error 2)
+      Error: command ['maturin', 'pep517', 'build-wheel', '-i',
+      '/Users/ark/.cache/uv/builds-v0/.tmpvFWEoX/bin/python',
+      '--compatibility', 'off'] returned non-zero exit status 1
+      hint: This usually indicates a problem with the package or the build
+      environment.
+  help: `pendulum` (v3.0.0) was included because `skypilot-nightly`
+        (v1.0.0.dev20240810) depends on `pendulum`
+</code></pre>
+<pre><code>ark@Mac proj % uv tool install &quot;skypilot-nightly[gcp]==1.0.0.dev20240810&quot; --verbose
+...
+DEBUG Building: pendulum==3.0.0
+DEBUG Using base executable for virtual environment: /opt/homebrew/opt/python@3.13/bin/python3.13
+...
+</code></pre>
+<p>Expected result:</p>
+<p>uv uses the active python (<code>/Users/ark/.local/share/uv/python/cpython-3.10.16-macos-aarch64-none/bin/python3.10</code>). If uv does not like the active Python it should complain instead of stealthily trying to do something with random Python it can get somewhere. I've spent whole day debugging these issues and I think this could have been handled better (still no progress).</p>
+<p>The <code>/Users/ark/.local/share/uv/python/cpython-3.10.16-macos-aarch64-none/bin/python3.10</code> seems to have been installed by <code>uv</code>. <code>uv</code> should not ignore the Pythons it just installed.</p>
+<h3>Platform</h3>
+<p>macos 14 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.3 (a0b9f22a2 2025-02-24)</p>
+<h3>Python version</h3>
+<p>Python 3.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Ark-kun on 2025-02-27 06:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wheynelau">@wheynelau</a> on 2025-02-27 14:20</div>
+            <div class="timeline-body"><p>Just wondering, is it not possible to use <code>uv</code> to do the job of <code>virtualenv</code>? That is to use <code>uv venv --python=3.10</code> or <code>uv init --python=3.10</code>?  Although I do agree that maybe it should complain</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-27 14:42</div>
+            <div class="timeline-body"><p>What does <code>uv python find -v</code> give?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ark-kun">@Ark-kun</a> on 2025-03-03 17:47</div>
+            <div class="timeline-body"><blockquote>
+<p>What does uv python find -v give?</p>
+</blockquote>
+<p>I apologize for taking your time. After many tries with the internal tool I somehow fixed my system environment. And now I can no longer reproduce the issue (I tried to remove the virtual env and start again, but things no longer break).</p>
+<p>Now the <code>uv python find -v</code> command returns this:</p>
+<pre><code>ark@Mac proj % uv python find -v                                                             
+DEBUG uv 0.6.0 (Homebrew 2025-02-14)
+DEBUG Found project root: `/Users/ark/src/github.com/org/proj`
+DEBUG No workspace root found, using project root
+DEBUG Using Python request `==3.10.*` from `requires-python` metadata
+DEBUG Searching for Python ==3.10.* in virtual environments, managed installations, or search path
+DEBUG Found `cpython-3.10.14-macos-aarch64-none` at `/Users/ark/.pyenv/virtualenvs/proj/3.10.14/bin/python3` (active virtual environment)
+/Users/ark/.pyenv/virtualenvs/proj/3.10.14/bin/python3
+</code></pre>
+<p>When the failure was still reproducible, the verbose log contained this explanation:</p>
+<pre><code>% uv tool install &quot;skypilot-nightly[gcp]==1.0.0.dev20240810&quot; --verbose
+DEBUG uv 0.6.3 (a0b9f22a2 2025-02-24)
+DEBUG Searching for default Python interpreter in managed installations or search path
+DEBUG Searching for managed installations at `/Users/ark/.local/share/uv/python`
+DEBUG Found `cpython-3.10.14-macos-aarch64-none` at `/Users/ark/.pyenv/virtualenvs/proj/3.10.14/bin/python` (first executable in the search path)
+DEBUG Ignoring Python interpreter at `/Users/ark/.pyenv/virtualenvs/proj/3.10.14/bin/python`: system interpreter required
+DEBUG Found `cpython-3.10.14-macos-aarch64-none` at `/Users/ark/.pyenv/virtualenvs/proj/3.10.14/bin/python3` (search path)
+DEBUG Ignoring Python interpreter at `/Users/ark/.pyenv/virtualenvs/proj/3.10.14/bin/python3`: system interpreter required
+DEBUG Found `cpython-3.10.14-macos-aarch64-none` at `/Users/ark/.pyenv/virtualenvs/proj/3.10.14/bin/python3.10` (search path)
+DEBUG Ignoring Python interpreter at `/Users/ark/.pyenv/virtualenvs/proj/3.10.14/bin/python3.10`: system interpreter required
+DEBUG Found `cpython-3.10.14-macos-aarch64-none` at `/Users/ark/.pyenv/shims/python` (search path)
+DEBUG Ignoring Python interpreter at `/Users/ark/.pyenv/virtualenvs/proj/3.10.14/bin/python`: system interpreter required
+DEBUG Found `cpython-3.10.14-macos-aarch64-none` at `/Users/ark/.pyenv/shims/python3` (search path)
+DEBUG Ignoring Python interpreter at `/Users/ark/.pyenv/virtualenvs/proj/3.10.14/bin/python3`: system interpreter required
+DEBUG Found `cpython-3.10.14-macos-aarch64-none` at `/Users/ark/.pyenv/shims/python3.10` (search path)
+DEBUG Ignoring Python interpreter at `/Users/ark/.pyenv/virtualenvs/proj/3.10.14/bin/python3.10`: system interpreter required
+DEBUG Found `cpython-3.13.2-macos-aarch64-none` at `/opt/homebrew/bin/python3` (search path)
+DEBUG Acquired lock for `.dev/uv/tools/venvs`
+DEBUG Checking for Python environment at `.dev/uv/tools/venvs/skypilot-nightly`
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.13.2
+</code></pre>
+<p>And the environment state:</p>
+<pre><code>ark@Mac proj % python -c &quot;import sys; print(sys.prefix, sys.base_prefix)&quot;
+/Users/ark/.pyenv/virtualenvs/proj/3.10.14 /Users/ark/.pyenv/versions/3.10.14
+ark@Mac proj % echo $VIRTUAL_ENV                                         
+/Users/ark/.pyenv/virtualenvs/proj/3.10.14
+</code></pre>
+<p>But now the log is:</p>
+<pre><code>ark@Mac proj % uv tool install &quot;skypilot-nightly[gcp]==1.0.0.dev20240810&quot; --verbose
+DEBUG uv 0.6.3 (a0b9f22a2 2025-02-24)
+DEBUG Searching for default Python interpreter in managed installations or search path
+DEBUG Searching for managed installations at `/Users/ark/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.10.16-macos-aarch64-none`
+DEBUG Found `cpython-3.10.16-macos-aarch64-none` at `/Users/ark/.local/share/uv/python/cpython-3.10.16-macos-aarch64-none/bin/python3.10` (managed installations)
+DEBUG Acquired lock for `.dev/uv/tools/venvs`
+</code></pre>
+<p>I see that there is now a new <code>/Users/ark/.local/share/uv/python/cpython-3.10.16-macos-aarch64-none/bin/python3.10</code> and uv defaults to it. If I remove it it'll probably starts failing again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ark-kun">@Ark-kun</a> on 2025-03-03 17:50</div>
+            <div class="timeline-body"><p>As a user I'd have liked to be notified (in non-verbose log) when the following occurs:</p>
+<ul>
+<li>uv is installed in a Python virtual environment (e.g. with python=3.10.14)</li>
+<li>uv decides to use Python version that's different from that environment (e.g. python=3.13)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2025-04-27 09:58</div>
+            <div class="timeline-body"><p>Same thing happened to me today.
+It uses different version when I run <code>uv build</code>:</p>
+<pre><code>Building source distribution...
+*** scikit-build-core 0.11.1 (sdist)
+Building wheel from source distribution...
+*** scikit-build-core 0.11.1 using CMake 4.0.1 (wheel)
+*** Configuring CMake...
+loading initial cache file /tmp/tmp6086118p/build/CMakeInit.txt
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++-11 - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found Python: /home/sergei/.cache/uv/builds-v0/.tmp8eKhQi/bin/python (found suitable version &quot;3.13.3&quot;, minimum required is &quot;3.6&quot;) found components: Interpreter Development Development.Module Development.Embed
+...
+</code></pre>
+<p>pyproject.toml (redacted):</p>
+<pre><code>[project]
+requires-python = &quot;&gt;= 3.12, &lt;3.13&quot;
+
+...
+
+[build-system]
+requires = [&quot;scikit-build-core&quot;]
+build-backend = &quot;scikit_build_core.build&quot;
+</code></pre>
+<p><code>uv install</code> correctly picks 3.12 and builds .so for python 3.12.</p>
+<p>3.13 is coming from homebrew install:</p>
+<pre><code>cpython-3.14.0a6-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.14.0a6+freethreaded-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.13.3-linux-x86_64-gnu                   /home/linuxbrew/.linuxbrew/bin/python3.13 -&gt; ../Cellar/python@3.13/3.13.3/bin/python3.13
+cpython-3.13.3-linux-x86_64-gnu                   /home/linuxbrew/.linuxbrew/bin/python3 -&gt; ../Cellar/python@3.13/3.13.3/bin/python3
+cpython-3.13.3-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.13.3+freethreaded-linux-x86_64-gnu      &lt;download available&gt;
+cpython-3.12.10-linux-x86_64-gnu                  &lt;download available&gt;
+cpython-3.12.3-linux-x86_64-gnu                   /usr/bin/python3.12
+cpython-3.12.3-linux-x86_64-gnu                   /usr/bin/python3 -&gt; /etc/alternatives/python3
+cpython-3.11.12-linux-x86_64-gnu                  /usr/bin/python3.11
+cpython-3.11.12-linux-x86_64-gnu                  &lt;download available&gt;
+cpython-3.10.17-linux-x86_64-gnu                  /usr/bin/python3.10
+cpython-3.10.17-linux-x86_64-gnu                  &lt;download available&gt;
+cpython-3.9.22-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.8.20-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.7.9-linux-x86_64-gnu                    &lt;download available&gt;
+</code></pre>
+<p>Please let me know if I could provide more debugging insights.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-28 11:36</div>
+            <div class="timeline-body"><p>Could you share <code>uv build -v</code>, especially the part of the uv logs in the beginning when uv is determining the Python interpreter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2025-04-28 14:04</div>
+            <div class="timeline-body"><p>And I've found a problem by looking at these logs, I've had <code>.python-version</code> file with <code>3.13</code> specified inside of it.
+Not sure where it came from:</p>
+<pre><code>DEBUG uv 0.6.14
+DEBUG Found workspace root: `/home/sergei/Dev/libs/poisson-recon`
+DEBUG Adding root workspace member: `/home/sergei/Dev/libs/poisson-recon`
+DEBUG Reading Python requests from version file at `/home/sergei/Dev/.python-version`
+DEBUG Searching for Python 3.13 in virtual environments, managed installations, or search path
+DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `/home/sergei/Dev/libs/poisson-recon/.venv/bin/python3` (virtual environment)
+DEBUG Skipping interpreter at `.venv/bin/python3` from virtual environment: does not satisfy request `3.13`
+DEBUG Searching for managed installations at `/home/sergei/.local/share/uv/python`
+DEBUG Found `cpython-3.13.3-linux-x86_64-gnu` at `/home/linuxbrew/.linuxbrew/bin/python3.13` (first executable in the search path)
+DEBUG Using request timeout of 30s
+Building source distribution...
+DEBUG No workspace root found, using project root
+DEBUG Using base executable for virtual environment: /home/linuxbrew/.linuxbrew/opt/python@3.13/bin/python3.13
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.13.3
+DEBUG Solving with target Python version: &gt;=3.13.3
+DEBUG Adding direct dependency: scikit-build-core*
+DEBUG Found stale response for: https://pypi.org/simple/scikit-build-core/
+DEBUG Sending revalidation request for: https://pypi.org/simple/scikit-build-core/
+DEBUG Found not-modified response for: https://pypi.org/simple/scikit-build-core/
+DEBUG Searching for a compatible version of scikit-build-core (*)
+DEBUG Selecting: scikit-build-core==0.11.1 [compatible] (scikit_build_core-0.11.1-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/41/54/79ec4bd01dc90d222c67d175c0324afb1c4998e523e96b44d67be0aafd28/scikit_build_core-0.11.1-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for scikit-build-core==0.11.1: packaging&gt;=23.2
+DEBUG Adding transitive dependency for scikit-build-core==0.11.1: pathspec&gt;=0.10.1
+DEBUG Found stale response for: https://pypi.org/simple/packaging/
+DEBUG Sending revalidation request for: https://pypi.org/simple/packaging/
+DEBUG Found stale response for: https://pypi.org/simple/pathspec/
+DEBUG Sending revalidation request for: https://pypi.org/simple/pathspec/
+DEBUG Found not-modified response for: https://pypi.org/simple/packaging/
+DEBUG Found not-modified response for: https://pypi.org/simple/pathspec/
+DEBUG Searching for a compatible version of packaging (&gt;=23.2)
+DEBUG Selecting: packaging==25.0 [compatible] (packaging-25.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of pathspec (&gt;=0.10.1)
+DEBUG Selecting: pathspec==0.12.1 [compatible] (pathspec-0.12.1-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl.metadata
+DEBUG Tried 3 versions: packaging 1, pathspec 1, scikit-build-core 1
+DEBUG marker environment resolution took 0.076s
+DEBUG Installing in pathspec==0.12.1, scikit-build-core==0.11.1, packaging==25.0 in /home/sergei/.cache/uv/builds-v0/.tmpGKIs3k
+DEBUG Registry requirement already cached: pathspec==0.12.1
+DEBUG Registry requirement already cached: scikit-build-core==0.11.1
+DEBUG Registry requirement already cached: packaging==25.0
+DEBUG Installing build requirements: pathspec==0.12.1, scikit-build-core==0.11.1, packaging==25.0
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `scikit_build_core.build.get_requires_for_build_sdist()`
+DEBUG No workspace root found, using project root
+DEBUG Calling `scikit_build_core.build.build_sdist(&quot;/home/sergei/Dev/libs/poisson-recon/dist&quot;, {})`
+*** scikit-build-core 0.11.1 (sdist)
+Building wheel from source distribution...
+DEBUG No workspace root found, using project root
+DEBUG Using base executable for virtual environment: /home/linuxbrew/.linuxbrew/opt/python@3.13/bin/python3.13
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.13.3
+DEBUG Solving with target Python version: &gt;=3.13.3
+DEBUG Adding direct dependency: scikit-build-core*
+DEBUG Searching for a compatible version of scikit-build-core (*)
+DEBUG Selecting: scikit-build-core==0.11.1 [compatible] (scikit_build_core-0.11.1-py3-none-any.whl)
+DEBUG Adding transitive dependency for scikit-build-core==0.11.1: packaging&gt;=23.2
+DEBUG Adding transitive dependency for scikit-build-core==0.11.1: pathspec&gt;=0.10.1
+DEBUG Searching for a compatible version of packaging (&gt;=23.2)
+DEBUG Selecting: packaging==25.0 [compatible] (packaging-25.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of pathspec (&gt;=0.10.1)
+DEBUG Selecting: pathspec==0.12.1 [compatible] (pathspec-0.12.1-py3-none-any.whl)
+DEBUG Tried 3 versions: packaging 1, pathspec 1, scikit-build-core 1
+DEBUG marker environment resolution took 0.000s
+DEBUG Installing in pathspec==0.12.1, scikit-build-core==0.11.1, packaging==25.0 in /home/sergei/.cache/uv/builds-v0/.tmpxrGHwG
+DEBUG Registry requirement already cached: pathspec==0.12.1
+DEBUG Registry requirement already cached: scikit-build-core==0.11.1
+DEBUG Registry requirement already cached: packaging==25.0
+DEBUG Installing build requirements: pathspec==0.12.1, scikit-build-core==0.11.1, packaging==25.0
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `scikit_build_core.build.get_requires_for_build_wheel()`
+DEBUG No workspace root found, using project root
+DEBUG Installing extra requirements for build backend
+DEBUG Solving with installed Python version: 3.13.3
+DEBUG Solving with target Python version: &gt;=3.13.3
+DEBUG Adding direct dependency: scikit-build-core*
+DEBUG Adding direct dependency: ninja&gt;=1.5
+DEBUG Searching for a compatible version of scikit-build-core (*)
+DEBUG Selecting: scikit-build-core==0.11.1 [compatible] (scikit_build_core-0.11.1-py3-none-any.whl)
+DEBUG Adding transitive dependency for scikit-build-core==0.11.1: packaging&gt;=23.2
+DEBUG Adding transitive dependency for scikit-build-core==0.11.1: pathspec&gt;=0.10.1
+DEBUG Found stale response for: https://pypi.org/simple/ninja/
+DEBUG Sending revalidation request for: https://pypi.org/simple/ninja/
+DEBUG Found not-modified response for: https://pypi.org/simple/ninja/
+DEBUG Searching for a compatible version of ninja (&gt;=1.5)
+DEBUG Selecting: ninja==1.11.1.4 [compatible] (ninja-1.11.1.4-py3-none-manylinux_2_12_x86_64.manylinux2010_x86_64.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/eb/7a/455d2877fe6cf99886849c7f9755d897df32eaf3a0fba47b56e615f880f7/ninja-1.11.1.4-py3-none-manylinux_2_12_x86_64.manylinux2010_x86_64.whl.metadata
+DEBUG Searching for a compatible version of packaging (&gt;=23.2)
+DEBUG Selecting: packaging==25.0 [compatible] (packaging-25.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of pathspec (&gt;=0.10.1)
+DEBUG Selecting: pathspec==0.12.1 [compatible] (pathspec-0.12.1-py3-none-any.whl)
+DEBUG Tried 4 versions: ninja 1, packaging 1, pathspec 1, scikit-build-core 1
+DEBUG marker environment resolution took 0.017s
+DEBUG Installing in scikit-build-core==0.11.1, packaging==25.0, ninja==1.11.1.4, pathspec==0.12.1 in /home/sergei/.cache/uv/builds-v0/.tmpxrGHwG
+DEBUG Requirement already installed: scikit-build-core==0.11.1
+DEBUG Requirement already installed: packaging==25.0
+DEBUG Registry requirement already cached: ninja==1.11.1.4
+DEBUG Requirement already installed: pathspec==0.12.1
+DEBUG Installing build requirement: ninja==1.11.1.4
+DEBUG Calling `scikit_build_core.build.build_wheel(&quot;/home/sergei/Dev/libs/poisson-recon/dist&quot;, {}, None)`
+*** scikit-build-core 0.11.1 using CMake 4.0.1 (wheel)
+*** Configuring CMake...
+loading initial cache file /tmp/tmp2txvxoyg/build/CMakeInit.txt
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++-11 - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found Python: /home/sergei/.cache/uv/builds-v0/.tmpxrGHwG/bin/python (found version &quot;3.13.3&quot;) found components: Interpreter Development Development.Module Development.Embed
+</code></pre>
+<p>After removal of it, it picks the right version (3.12) as in <code>pyproject.toml</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kejooorek">@Kejooorek</a> on 2025-06-01 18:36</div>
+            <div class="timeline-body"><p>i've had simmilar issue and i've just deleted .python.version file and it works :)
+thx!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

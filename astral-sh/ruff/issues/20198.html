@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C417 fix introduces a syntax error for `yield` in lambda expression - astral-sh/ruff #20198</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>C417 fix introduces a syntax error for `yield` in lambda expression</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20198">#20198</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-09-01 19:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-09-01 19:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/unnecessary-map/"><code>unnecessary-map</code> (C417)</a> introduces a syntax error when the lambda expression contains a yield expression. The fix, and possibly the rule, should be suppressed in that case. <a href="https://play.ruff.rs/dffb7894-a98f-4643-9efd-67ad02563071">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;c417.py &lt;&lt;'# EOF'
+base = 0
+gens = map(lambda x: (yield base + x), [1, 2, 3])
+for gen in gens:
+    print(*[*gen])
+    base += 20
+# EOF
+
+$ python c417.py
+1
+22
+43
+
+$ ruff --isolated check c417.py --select C417 --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ python c417.py 2&gt;&amp;1 | tail -n 3
+    gens = ((yield base + x) for x in [1, 2, 3])
+             ^^^^^^^^^^^^^^
+SyntaxError: 'yield' inside generator expression
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.11 (c2bc15bc1 2025-08-28)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20201.html">astral-sh/ruff#20201</a> on 2025-09-02 01:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-09-02 02:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-09-02 02:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-03 20:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync x dependency groups doesn't work with PyPy - astral-sh/uv #10669</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync x dependency groups doesn't work with PyPy</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10669">#10669</a>
+        opened by <a href="https://github.com/hynek">@hynek</a>
+        on 2025-01-16 08:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hynek">@hynek</a> on 2025-01-16 08:44</div>
+            <div class="timeline-body"><pre><code class="language-console">$ uv --version
+uv 0.5.20 (1c17662b3 2025-01-15)
+</code></pre>
+<p>I've run into this in my experimental attempt to use fully-locked env for attrs https://github.com/python-attrs/attrs/pull/1349 so you can just check out the https://github.com/python-attrs/attrs/tree/uv-lock branch for testing.</p>
+<p>Put simply, with PyPy nothing except the current package gets installed:</p>
+<pre><code class="language-console">$ rm -rf .venv &amp;&amp; uv sync --python pypy3.10 &amp;&amp; uv pip list
+Using PyPy 3.10.14 interpreter at: /opt/homebrew/bin/pypy3.10
+Creating virtual environment at: .venv
+Resolved 99 packages in 1ms
+Installed 1 package in 1ms
+ + attrs==24.3.1.dev20 (from file:///Users/hynek/FOSS/attrs)
+Package Version      Editable project location
+------- ------------ -------------------------
+attrs   24.3.1.dev20 /Users/hynek/FOSS/attrs
+</code></pre>
+<p>and:</p>
+<pre><code class="language-console">$ rm -rf .venv &amp;&amp; uv sync --python python3.13 &amp;&amp; uv pip list
+Using CPython 3.13.1 interpreter at: /Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+Creating virtual environment at: .venv
+Resolved 99 packages in 1ms
+Installed 23 packages in 28ms
+ + attrs==24.3.1.dev20 (from file:///Users/hynek/FOSS/attrs)
+ + cloudpickle==3.1.1
+ + decorator==5.1.1
+ + hypothesis==6.124.0
+ + iniconfig==2.0.0
+ + jinja2==3.1.5
+ + jsonschema==4.23.0
+ + jsonschema-specifications==2024.10.1
+ + markupsafe==3.0.2
+ + mypy==1.14.1
+ + mypy-extensions==1.0.0
+ + packaging==24.2
+ + pluggy==1.5.0
+ + pympler==1.1
+ + pytest==8.3.4
+ + pytest-mypy-plugins==3.2.0
+ + pyyaml==6.0.2
+ + referencing==0.35.1
+ + regex==2024.11.6
+ + rpds-py==0.22.3
+ + sortedcontainers==2.4.0
+ + tomlkit==0.13.2
+ + typing-extensions==4.12.2
+Package                   Version      Editable project location
+------------------------- ------------ -------------------------
+attrs                     24.3.1.dev20 /Users/hynek/FOSS/attrs
+cloudpickle               3.1.1
+decorator                 5.1.1
+hypothesis                6.124.0
+iniconfig                 2.0.0
+jinja2                    3.1.5
+jsonschema                4.23.0
+jsonschema-specifications 2024.10.1
+markupsafe                3.0.2
+mypy                      1.14.1
+mypy-extensions           1.0.0
+packaging                 24.2
+pluggy                    1.5.0
+pympler                   1.1
+pytest                    8.3.4
+pytest-mypy-plugins       3.2.0
+pyyaml                    6.0.2
+referencing               0.35.1
+regex                     2024.11.6
+rpds-py                   0.22.3
+sortedcontainers          2.4.0
+tomlkit                   0.13.2
+typing-extensions         4.12.2
+</code></pre>
+<hr />
+<p>The current approach of using <code>uv pip install --extra dev</code> as on the main branch works.</p>
+<p>I've tried on the extra-based <code>main</code> to set min Python to 3.9 and running the following:</p>
+<pre><code class="language-console">$ rm -rf .venv &amp;&amp; uv sync --python pypy3.10 --extra dev &amp;&amp; uv pip list
+Using PyPy 3.10.14 interpreter at: /opt/homebrew/bin/pypy3.10
+Creating virtual environment at: .venv
+Resolved 84 packages in 2ms
+   Built psutil==6.1.1
+   Built pyyaml==6.0.2
+Prepared 13 packages in 4.93s
+Installed 24 packages in 17ms
+ + attrs==24.3.1.dev3 (from file:///Users/hynek/FOSS/attrs)
+ + cfgv==3.4.0
+ + distlib==0.3.9
+ + exceptiongroup==1.2.2
+ + execnet==2.1.1
+ + filelock==3.16.1
+ + hypothesis==6.124.0
+ + identify==2.6.5
+ + iniconfig==2.0.0
+ + nodeenv==1.9.1
+ + packaging==24.2
+ + platformdirs==4.3.6
+ + pluggy==1.5.0
+ + pre-commit==4.0.1
+ + pre-commit-uv==4.1.4
+ + psutil==6.1.1
+ + pympler==1.1
+ + pytest==8.3.4
+ + pytest-xdist==3.6.1
+ + pyyaml==6.0.2
+ + sortedcontainers==2.4.0
+ + tomli==2.2.1
+ + uv==0.5.20
+ + virtualenv==20.29.0
+Package          Version     Editable project location
+---------------- ----------- -------------------------
+attrs            24.3.1.dev3 /Users/hynek/FOSS/attrs
+cfgv             3.4.0
+distlib          0.3.9
+exceptiongroup   1.2.2
+execnet          2.1.1
+filelock         3.16.1
+hypothesis       6.124.0
+identify         2.6.5
+iniconfig        2.0.0
+nodeenv          1.9.1
+packaging        24.2
+platformdirs     4.3.6
+pluggy           1.5.0
+pre-commit       4.0.1
+pre-commit-uv    4.1.4
+psutil           6.1.1
+pympler          1.1
+pytest           8.3.4
+pytest-xdist     3.6.1
+pyyaml           6.0.2
+sortedcontainers 2.4.0
+tomli            2.2.1
+uv               0.5.20
+virtualenv       20.29.0
+</code></pre>
+<p>So it seems to be connected to PEP 735 / dependency groups??</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-01-16 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10682.html">astral-sh/uv#10682</a> on 2025-01-16 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-16 14:45</div>
+            <div class="timeline-body"><p>This bug is two bugs on uv's side: We need to discard lockfiles with invalid fork markers (#10682 with the minimal reproduction), but we must also figure out why we generate a resolution with these fork markers in the first place (TBD):</p>
+<pre><code class="language-toml">resolution-markers = [
+    &quot;python_full_version &gt;= '3.10' and platform_python_implementation == 'CPython'&quot;,
+    &quot;python_full_version == '3.9.*'&quot;,
+    &quot;python_full_version &lt; '3.9'&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-17 01:32</div>
+            <div class="timeline-body"><p>Thanks Hynek, we're looking into it...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-17 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-17 01:40</div>
+            <div class="timeline-body"><p>This appears to be a bug in the &quot;fork by <code>requires-python</code>&quot; logic. We must be dropping a fork there accidentally?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-17 02:06</div>
+            <div class="timeline-body"><p>When solving <code>python_full_version &lt; '3.10' or platform_python_implementation != 'CPython'</code>, we fork on <code>requires-python</code>, and produce two branches:</p>
+<ul>
+<li><code>python_full_version == '3.8.*'</code></li>
+<li><code>python_full_version == '3.9.*'</code></li>
+</ul>
+<p>So we end up losing the <code>platform_python_implementation != 'CPython'</code> portion. I'm not quite sure how to solve this. I naively tried to add a &quot;remainder&quot; fork, but it pushed the resolver into an infinite loop.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-17 02:41</div>
+            <div class="timeline-body"><p>@hynek -- In the meantime, you can avoid this by disabling the <code>requires-python</code> optimizations:</p>
+<pre><code class="language-toml">[tool.uv]
+fork-strategy = &quot;fewest&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-17 03:19</div>
+            <div class="timeline-body"><p>As a smaller example, given this <code>requirements.in</code>:</p>
+<pre><code>iniconfig ; platform_python_implementation == &quot;CPython&quot; and python_version &gt;= &quot;3.10&quot;
+coverage
+</code></pre>
+<p>Then <code>uv pip compile requirements.in --python-version 3.8 --universal</code> produces:</p>
+<pre><code>coverage==7.6.1 ; python_full_version &lt; '3.9'
+coverage==7.6.10 ; (python_full_version == '3.9.*' and platform_python_implementation != 'CPython') or (python_full_version &gt;= '3.9' and platform_python_implementation == 'CPython')
+iniconfig==2.0.0 ; python_full_version &gt;= '3.10' and platform_python_implementation == 'CPython'
+</code></pre>
+<p>Which omits <code>coverage</code> on Python 3.10 and later for non-CPython.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10704.html">astral-sh/uv#10704</a> on 2025-01-17 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-17 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-17 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-18 18:43</div>
+            <div class="timeline-body"><p>Should be fixed in v0.5.21!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2025-01-20 07:24</div>
+            <div class="timeline-body"><p>yay, https://github.com/python-attrs/attrs/pull/1349 is green, thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

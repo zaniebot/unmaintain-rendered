@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support command chaining - clap-rs/clap #2222</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support command chaining</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/2222">#2222</a>
+        opened by <a href="https://github.com/fkrauthan">@fkrauthan</a>
+        on 2020-11-24 18:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fkrauthan">@fkrauthan</a> on 2020-11-24 18:04</div>
+            <div class="timeline-body"><h3>Describe your use case</h3>
+<p>I would like to re-write an existing internal Python tool in rust. For this python tool we use click with the command chaining feature (https://click.palletsprojects.com/en/7.x/commands/#multi-command-chaining) this allows similar to some bigger CLI tools (e.g. <code>gradle</code> or <code>setup.py</code>) to execute multiple commands in one go. In our example we have a simple build and deploy tool and people often call it ether via <code>./tool build start</code> or via <code>./tool start logs</code> etc to trigger different functionality in one go. Where <code>build</code> would build our system; <code>start</code> would startup the code locally and <code>logs</code> would tail the logs.</p>
+<h3>Describe the solution you'd like</h3>
+<p>A simple switch that allows me to enable command chaining. I am ok with that prevents me from using sub commands and instead I can only use one level of commands. Examples of implementations are:</p>
+<ul>
+<li><a href="https://click.palletsprojects.com/en/7.x/commands/#multi-command-chaining">Click</a> in Python</li>
+<li><a href="https://ajalt.github.io/clikt/commands/#chaining-and-repeating-subcommands">clikt</a> in Kotlin</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @fkrauthan on 2020-11-24 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1434.html">clap-rs/clap#1434</a> on 2021-05-26 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/170.html">epage/clapng#170</a> on 2021-12-06 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2021-12-08 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1407.html">clap-rs/clap#1407</a> on 2021-12-11 01:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2021-12-13 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-13 15:16</div>
+            <div class="timeline-body"><p>Interesting idea!</p>
+<p>It'd help if someone explored the nuances of how click worked so we can build on their shoulders.  What limitations does it have? How does it impact various UX features?  What could be improved?</p>
+<p>I'm assuming any App that has this enabled would disallow sub-subcommands because that can be ambiguous with chaining.  We do this with checks in <code>src/build/app/debug_asserts.rs</code></p>
+<p>We'd need to decide on how to expose this in <code>ArgMatches</code>.</p>
+<ul>
+<li>Switch <code>ArgMarches::subcommand*</code> to returning iterators of active subcommands</li>
+<li>Despite chained subcommands existing at the same level within the <code>App</code> hierarchy, recursively nest them in <code>ArgMatches</code> as if they were arbitrary depth sub-subcommands</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rosetta-rs/argparse-rosetta-rs/pulls/50.html">rosetta-rs/argparse-rosetta-rs#50</a> on 2022-09-10 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4424.html">clap-rs/clap#4424</a> on 2022-10-26 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xForerunner">@0xForerunner</a> on 2022-10-26 15:08</div>
+            <div class="timeline-body"><p>Copying over an example from another thread. This is a demonstration of how this could look using derive. Ideally this should be implemented for any type that is IntoIterator&lt;Item = T&gt;.</p>
+<pre><code class="language-rust">#[derive(Parser)]
+#[clap(rename_all = &quot;snake_case&quot;)]
+pub enum MyCli {
+    GetPrices {
+        #[command(subcommand)]
+        assets: Vec&lt;AssetInfo&gt;,
+    },
+}
+
+#[derive(Subcommand)]
+#[clap(rename_all = &quot;snake_case&quot;)]
+pub enum AssetInfo {
+    Token {
+        /// &lt;string&gt;, &quot;atom3h6lk23h6&quot;
+        contract_addr: String
+    },
+    NativeToken {
+        /// &lt;string&gt;, &quot;uatom&quot;
+        denom: String
+    },
+}
+</code></pre>
+<p>This is a much simpler case then I have in reality, but useful for examining how this could work. An example run of the program could look like:</p>
+<pre><code class="language-bash">my-cli get_prices token atom3h6lk23h6 native_token uatom 
+</code></pre>
+<p>When these example args are parsed it would result in:</p>
+<pre><code class="language-rust">MyCli::GetPrices{
+    assets: vec![
+        AssetInfo::Token { contract_addr: atom3h6lk23h6 },
+        AssetInfo::NativeToken { denom: uatom }
+    ]
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xForerunner">@0xForerunner</a> on 2022-10-26 15:13</div>
+            <div class="timeline-body"><blockquote>
+<p>(e.g. do we stop chaining when entering a sub-sub-command or do we back out to the parent chained command?)</p>
+</blockquote>
+<p>Why would we need to stop chaining when entering a subcommand?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-26 15:26</div>
+            <div class="timeline-body"><p>Allowing both chaining and sub-subcommands has the potential for ambiguity (in practice and from the users perspective) and implementation complexity.</p>
+<p>What will help is someone exploring what precedence there is in other implementations of chaining, exploring the various cases for how to avoid ambiguity, and exploring the use cases for why someone would need each kind of behavior we would implement for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xForerunner">@0xForerunner</a> on 2022-10-26 15:33</div>
+            <div class="timeline-body"><p>It should be possible to have some check to prevent ambiguities but yes I see the problem you're referring to. As far as use case goes for me it's as simple as trying to force clap to work as well as possible with any arbitrary enum structure using its derive functionality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abey79">@abey79</a> on 2023-02-23 20:46</div>
+            <div class="timeline-body"><blockquote>
+<p>It'd help if someone explored the nuances of how click worked so we can build on their shoulders. What limitations does it have? How does it impact various UX features? What could be improved?</p>
+</blockquote>
+<p>FWIW, <a href="https://click.palletsprojects.com/en/8.1.x/commands/#multi-command-chaining">here is</a> the relevant paragraph in Click's documentation. The limitations are:</p>
+<ul>
+<li>no nested commands</li>
+<li>you can't have arguments with arbitrary number of value (except for the last command)</li>
+<li>the order <code>--options argument</code> is enforced (e.g. you can't do <code>mycli cmd1 arg1 --opt1 val   cmd2 [...]</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brownjohnf">@brownjohnf</a> on 2023-03-27 18:07</div>
+            <div class="timeline-body"><p>I found this issue via #4424 and wanted to add my use-case. I'm not sure how this would work implementation-wise, but it'd be very useful:</p>
+<p>I'm building a fairly complex CLI that supports a dynamic number of duplicate configs. It's proxying traffic via different protocols, and adding filters on top of them. So for example, I might want to listen on tcp and udp, and parse tcp messages as strings but the udp messages as protobufs, and log the raw bytes first (just random simple examples). I can think of two logical approaches, and would be content if either were supported by clap; I'd just use whichever it supported.</p>
+<p>The first is <code>find</code>-style layered/ordered flags:</p>
+<p><code>$ mycli --listen tcp://localhost:1234 --filter str --filter log --listen udp://localhost:2345 --filter log --filter protobuf</code></p>
+<p>The second is more what this issue (and #4424) is discussing, if I understand correctly:</p>
+<p><code>$ mycli listen --uri tcp://localhost:1234 --filter str --filter log listen --uri udp://localhost:2345 --filter log --filter protobuf</code></p>
+<p>I personally find the first pattern more intuitive because of prior exposure to things like the <code>find</code> command, but the second is probably more intuitive, and has the advantage of supporting more robust built-in argument validation/parsing using clap derive attributes (would be easier to express things like combinatoric flag constraints per-subcommand). An example of an in-the-wild use of the ordered find arguments, which is running gofmt on all <code>*.go</code> files in the current directory recursively, but pruning out any files in <code>./vendor</code>:</p>
+<p><code>gofmt -l $(find . -path ./vendor -prune -o -name '*.go' -print)</code></p>
+<p>I've considered solving this short-term by requiring that you pass a number of --filter arguments equal to --uri arguments, but this starts breaking down with variable number of filters, or other arguments that should only apply to one of the listeners. It also requires doing a lot of custom parsing if you want to group multiple arguments (e.g. make --filter a <code>Vec&lt;Vec&lt;String&gt;&gt;</code> and accept multiple --filter flags, each with comma-delimited strings that get parsed into the nested Vec).</p>
+<p>If someone knows a way to achieve this already in clap, I'd love to hear it, and otherwise would love to see support get added. Clap has been such a fabulous and pleasant asset when working with rust CLIs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-27 18:33</div>
+            <div class="timeline-body"><p>@brownjohnf thanks for sharing!</p>
+<p>While its not the most ergonomic and doesn't have built-in support for the derive API, we have an <a href="https://docs.rs/clap/latest/clap/_derive/_cookbook/find/index.html">example of a <code>find</code>-like application</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brownjohnf">@brownjohnf</a> on 2023-03-27 18:36</div>
+            <div class="timeline-body"><p>Ah, amazing! I'd missed that, and on first glance it looks like it'll probably solve my problem in the short-term. Thanks so much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abey79">@abey79</a> on 2023-03-27 20:28</div>
+            <div class="timeline-body"><p>@brownjohnf FYI, in <a href="https://github.com/abey79/vsvg/tree/master/vsvg">this crate</a>, I've pushed the &quot;find&quot; example to some extremities. I support repeated options and order, which the &quot;find&quot; example doesn't support IIRC. I also made some macros to reduce the boilerplate of defining commands. There are loads of limitations to it and, being new to Rust, this is likely messy and non-idiomatic on multiple counts, but it gets me far enough for this project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brownjohnf">@brownjohnf</a> on 2023-03-28 22:18</div>
+            <div class="timeline-body"><p>Wow, there's a lot happening there :-) I haven't digested all of it, but
+at some point it seems like doing it that way is more trouble than just
+manually parsing args from argv with something like nom (at least for my
+use case). I'd <em>love</em> to see repeated subcommands get added to clap.
+It'd solve all my problems... I'd be happy to help contribute it, if we
+came up with a design. I don't really know anything about clap
+internals, and have only ever used it via the derive macros.</p>
+<p>On 3/27/23 13:28, Antoine Beyeler wrote:</p>
+<blockquote>
+<p>@brownjohnf FYI, in <a href="https://github.com/abey79/vsvg/tree/master/vsvg">this crate</a>, I've pushed the &quot;find&quot; example to some extremities. I support repeated options and order, which the &quot;find&quot; example doesn't support IIRC. I also made some macros to reduce the boilerplate of defining commands. There are loads of limitations to it and, being new to Rust, this is likely messy and non-idiomatic on multiple counts, but it gets me far enough for this project.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-29 00:08</div>
+            <div class="timeline-body"><p>For this to move forward, we need</p>
+<ul>
+<li>A summary of the expected behavior<ul>
+<li>Ideally also with a comparison to prior art</li>
+</ul>
+</li>
+<li>A proposal that includes<ul>
+<li>How to enable it</li>
+<li>How it should show up in help</li>
+<li>How to update [<code>ArgMatches</code>] to access the chained commands</li>
+<li>How to expose this in <code>clap_derive</code></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abey79">@abey79</a> on 2023-03-29 09:04</div>
+            <div class="timeline-body"><p>OK, here is my take.</p>
+<p>Coming from Click, <a href="https://click.palletsprojects.com/en/8.1.x/commands/#multi-command-chaining">this paragraph</a> describes pretty well what I would expect. For background, I created and maintain a Click-based CLI pipeline called <a href="https://github.com/abey79/vpype"><em>vpype</em></a>. I think it's an excellent example of how a chained multi-command pipeline CLI should behave (but I'm slightly biased).</p>
+<p>Note that I make this proposal with a very minimal knowledge of Clap's internals and a rather thin experience of actually using the library. So it may very well make little sense. In exchange, you get a fresh/candid feedback on one person's expectations for a CLI framework &quot;with all of the bells and whistles&quot;. ;)</p>
+<p>Here is how I'd transform the builder tutorial to use command chaining (I marked my changes with <code>//NEW</code>):</p>
+<pre><code class="language-rust">use std::path::PathBuf;
+
+use clap::{arg, command, value_parser, ArgAction, Command};
+
+fn main() {
+    let matches = command!() // requires `cargo` feature
+        .chain(true) //NEW: enable chaining of sub commands
+        .arg(arg!([name] &quot;Optional name to operate on&quot;))
+        .arg(
+            arg!(
+                -c --config &lt;FILE&gt; &quot;Sets a custom config file&quot;
+            )
+                // We don't have syntax yet for optional options, so manually calling `required`
+                .required(false)
+                .value_parser(value_parser!(PathBuf)),
+        )
+        .arg(arg!(
+            -d --debug ... &quot;Turn debugging information on&quot;
+        ))
+        .subcommand(
+            Command::new(&quot;test&quot;)
+                .about(&quot;does testing things&quot;)
+                .arg(arg!(-l --list &quot;lists test values&quot;).action(ArgAction::SetTrue)),
+        )
+        .subcommand( //NEW: let's add another command for example purposes
+            Command::new(&quot;config&quot;)
+                .about(&quot;configures next test(s)&quot;)
+                .arg(arg!(-s --set &lt;PARAM&gt; &lt;VALUE&gt; &quot;sets a config value&quot;)),
+        )
+        .get_matches();
+
+    // You can check the value provided by positional arguments, or option arguments
+    if let Some(name) = matches.get_one::&lt;String&gt;(&quot;name&quot;) {
+        println!(&quot;Value for name: {}&quot;, name);
+    }
+
+    if let Some(config_path) = matches.get_one::&lt;PathBuf&gt;(&quot;config&quot;) {
+        println!(&quot;Value for config: {}&quot;, config_path.display());
+    }
+
+    // You can see how many times a particular flag or argument occurred
+    // Note, only flags can have multiple occurrences
+    match matches
+        .get_one::&lt;u8&gt;(&quot;debug&quot;)
+        .expect(&quot;Count's are defaulted&quot;)
+    {
+        0 =&gt; println!(&quot;Debug mode is off&quot;),
+        1 =&gt; println!(&quot;Debug mode is kind of on&quot;),
+        2 =&gt; println!(&quot;Debug mode is on&quot;),
+        _ =&gt; println!(&quot;Don't be crazy&quot;),
+    }
+
+    //NEW: iterate over sub-commands
+    for subcmd in matches.subcommand_iter() {
+        match subcmd.name() {
+            &quot;test&quot; =&gt; {
+                if subcmd.get_flag(&quot;list&quot;) {
+                    println!(&quot;Printing testing lists...&quot;);
+                } else {
+                    println!(&quot;Not printing testing lists...&quot;);
+                }
+            }
+            &quot;config&quot; =&gt; {
+                println!(&quot;Configuring next test(s)...&quot;);
+            }
+            _ =&gt; unreachable!(),
+        }
+    }
+
+    // Continued program logic goes here...
+}
+</code></pre>
+<p>This would yield the following help string (directly inspired from  Click):</p>
+<pre><code>$ 01_quick --help
+A simple to use, efficient, and full-featured Command Line Argument Parser
+
+Usage: 01_quick[EXE] [OPTIONS] [name] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
+
+Commands:
+  test          does testing things
+  config        configures next test(s)
+  help          Print this message or the help of the given subcommand(s)
+
+Arguments:
+  [name]  Optional name to operate on
+
+Options:
+  -c, --config &lt;FILE&gt;  Sets a custom config file
+  -d, --debug...       Turn debugging information on
+  -h, --help           Print help
+  -V, --version        Print version
+</code></pre>
+<p>And here is how I'd adapt the derive tutorial:</p>
+<pre><code class="language-rust">use std::path::PathBuf;
+
+use clap::{Parser, Subcommand};
+
+#[derive(Parser)]
+#[command(author, version, about, long_about = None, chain = true)] //NEW
+struct Cli {
+    /// Optional name to operate on
+    name: Option&lt;String&gt;,
+
+    /// Sets a custom config file
+    #[arg(short, long, value_name = &quot;FILE&quot;)]
+    config: Option&lt;PathBuf&gt;,
+
+    /// Turn debugging information on
+    #[arg(short, long, action = clap::ArgAction::Count)]
+    debug: u8,
+
+    #[command(subcommand)]
+    command: Option&lt;Commands&gt;,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// does testing things
+    Test {
+        /// lists test values
+        #[arg(short, long)]
+        list: bool,
+    },
+
+    /// configures next test(s)
+    Config { //NEW
+        /// sets a config value
+        #[arg(short, long)]
+        set: Option&lt;(String, String)&gt;,
+    },
+}
+
+fn main() {
+    let cli = Cli::parse();
+
+    // You can check the value provided by positional arguments, or option arguments
+    if let Some(name) = cli.name.as_deref() {
+        println!(&quot;Value for name: {name}&quot;);
+    }
+
+    if let Some(config_path) = cli.config.as_deref() {
+        println!(&quot;Value for config: {}&quot;, config_path.display());
+    }
+
+    // You can see how many times a particular flag or argument occurred
+    // Note, only flags can have multiple occurrences
+    match cli.debug {
+        0 =&gt; println!(&quot;Debug mode is off&quot;),
+        1 =&gt; println!(&quot;Debug mode is kind of on&quot;),
+        2 =&gt; println!(&quot;Debug mode is on&quot;),
+        _ =&gt; println!(&quot;Don't be crazy&quot;),
+    }
+
+    //NEW: iterate over sub-commands
+    for subcmd in cli.command_iter() {
+        match subcmd {
+            Commands::Test { list } =&gt; {
+                if *list {
+                    println!(&quot;Printing testing lists...&quot;);
+                } else {
+                    println!(&quot;Not printing testing lists...&quot;);
+                }
+            }
+            Commands::Config { set } =&gt; {
+                if let Some((param, value)) = set {
+                    println!(&quot;Setting config value for {param} to {value}&quot;);
+                }
+            }
+        }
+    }
+
+    // Continued program logic goes here...
+}
+</code></pre>
+<p>In most cases, some dispatch mechanism (<code>Command</code> -&gt; actual code that implements it) would be needed. This could be done statically with little boilerplate using a few macros (like I did in the project mentioned in my previous comment*), or dynamically with some code, for example if the CLI must support some kind of plug-in extensions. I'm not sure if even a minimalist implementation of either is in the scope of Clap though—it could certainly be factored in a separate crate/project.</p>
+<p>[(*) BTW, I'm slightly surprised it was marked as off-topic, as it provides a (somewhat) working of command (well... argument) chaining, which is a work-around for the present issue. Maybe I wasn't sufficiently clear about this in that comment?]</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-29 14:39</div>
+            <div class="timeline-body"><blockquote>
+<p>[(*) BTW, I'm slightly surprised it was marked as off-topic, as it provides a (somewhat) working of command (well... argument) chaining, which is a work-around for the present issue. Maybe I wasn't sufficiently clear about this in that comment?]</p>
+</blockquote>
+<p>Oh, that whole conversation was useful but since it ran its course, I was wanting to make it easier to find the relevant parts of the conversation for command chaining and to not get too off topic.</p>
+<p>I also feel like &quot;argument chaining&quot; is only a workaround in some limited cases and comment I did leave expanded will likely lead people to expand the follow ups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-29 14:40</div>
+            <div class="timeline-body"><blockquote>
+<p><code>command: Option&lt;Commands&gt;,</code>
+...
+<code>for subcmd in cli.command_iter() {</code></p>
+</blockquote>
+<p>I assume that should be a <code>Vec</code>, rather than an <code>Option</code> and that it would be iterated with <code>&amp;cli.commands</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abey79">@abey79</a> on 2023-03-29 14:53</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p><code>command: Option&lt;Commands&gt;,</code>
+...
+<code>for subcmd in cli.command_iter() {</code></p>
+</blockquote>
+<p>I assume that should be a <code>Vec</code>, rather than an <code>Option</code> and that it would be iterated with <code>&amp;cli.commands</code></p>
+</blockquote>
+<p>Actually, since <code>Commands</code> was defined as an enum, I extended the enum instead. It could certainly be a <code>Vec</code> of (single?) <code>Command</code> as well—I'm not sure of the implications.</p>
+<p>On the other hand, <code>cli.command_iter()</code> would iterate on the commands that were <em>actually</em> passed on the CLI. For example, with <code>01_quick test config -s param 10 test</code>, <code>cli.command_iter()</code> would yield 3 command instances, two of which with the <code>Commands:Test</code> variant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-29 15:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Coming from Click, <a href="https://click.palletsprojects.com/en/8.1.x/commands/#multi-command-chaining">this paragraph</a> describes pretty well what I would expect. For background, I created and maintain a Click-based CLI pipeline called <a href="https://github.com/abey79/vpype">vpype</a>. I think it's an excellent example of how a chained multi-command pipeline CLI should behave (but I'm slightly biased).</p>
+</blockquote>
+<p>Could we be more explicit, rather than linking out to other documentation.</p>
+<p>If nothing else, it keeps the conversation in one place so we can make sure we are satisfying all of the requirements.</p>
+<p>For example</p>
+<blockquote>
+<p>When using multi command chaining you can only have one command (the last) use nargs=-1 on an argument</p>
+</blockquote>
+<p>I assume this means that these commands effectively end the chain.</p>
+<ul>
+<li>Is there a reason to not do this for subcommands as well?</li>
+<li>Could we loosen this restriction since clap can handle variable length arguments and subcommands?</li>
+</ul>
+<blockquote>
+<p>It is also not possible to nest multi commands below chained multicommands.</p>
+</blockquote>
+<p>We enforce invariants as <code>debug_assert</code>s and we need to call out in design section that we will have a debug assert for this case</p>
+<ul>
+<li>This will likely get complicated with #4792</li>
+</ul>
+<p>Could we make this like the <code>nargs=-1</code> case and say that nested subcommands terminate the chain?  I haven't thought through what this does to the parser to either recurse or backtrack</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-29 15:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Actually, since Commands was defined as an enum, I extended the enum instead. It could certainly be a Vec of (single?) Command as well—I'm not sure of the implications.</p>
+</blockquote>
+<p>Additional variants are just additional subcommands at the same level.  We still need a way to store (and access) multiple instances of the enum</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abey79">@abey79</a> on 2023-03-29 15:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Additional variants are just additional subcommands at the same level. We still need a way to store (and access) multiple instances of the enum</p>
+</blockquote>
+<p>If I understand you correctly (which I'm not entirely sure of), you mean that the enum in the example represent &quot;level 1&quot; sub-commands, which are by definition exclusive in the current (chaining-less) model, so adding variants and expecting that multiple instances exist is in contradiction with the current implementation.</p>
+<p>I guess it's both a technical (on which I can't comment much) and API question. On the API side, I <em>think</em> I would be happier with <code>Vec&lt;Command&gt;</code> rather than a single <code>Commands</code> enum, because the dispatch mechanism might be easier to tuck on the <code>Command</code>s with some custom trait—but I'm pretty sure we can make do with either approaches.</p>
+<p>What's for sure is that enforcing as single level of subcommand when <code>chain=true</code> is fair. Click has this restriction and command chaining with greater-than-1-level command hierarchies would be rather confusing from a UX point of view IMHO.</p>
+<p><em>Edit</em>: I'll try to answer your other message later tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-29 15:47</div>
+            <div class="timeline-body"><blockquote>
+<p>If I understand you correctly (which I'm not entirely sure of), you mean that the enum in the example represent &quot;level 1&quot; sub-commands, which are by definition exclusive in the current (chaining-less) model, so adding variants and expecting that multiple instances exist is in contradiction with the current implementation.</p>
+</blockquote>
+<p>Not quite.</p>
+<p>Take</p>
+<pre><code class="language-rust">prog test
+</code></pre>
+<p>and that would map to</p>
+<pre><code class="language-rust">Cli {
+    name: None,
+    config: None,
+    debug: 0,
+    command: Some(Commands::Test {
+        list: false,
+    })
+}
+</code></pre>
+<p>With that said, what would the following map to?</p>
+<pre><code class="language-rust">prog test test test config
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brownjohnf">@brownjohnf</a> on 2023-03-29 16:30</div>
+            <div class="timeline-body"><p>(sorry, re-posting from the right account :-))</p>
+<p>From an API perspective, I'd like to see something like this:</p>
+<pre><code class="language-rust">#[derive(Parser)]
+struct Cli {
+    #[clap(subcommand)]
+    subcmd: Vec&lt;Subcmd&gt;,
+}
+
+#[derive(Parser)]
+enum Subcmd {
+    Listen {
+        #[clap(short, long)]
+        port: u16,
+
+        #[clap(short, long = &quot;proto&quot;)]
+        protocol: String, // Should be an enum, but this is an example
+        // etc....
+    }
+}
+
+fn main() {
+    let cli = Cli::parse();
+
+    for sub in cli.subcmd {
+        println!(&quot;{:#?}&quot;, sub);
+    }
+}
+</code></pre>
+<p>And then used like this:</p>
+<pre><code class="language-shell">$ mycli listen -p 2345 listen -p 1234 # etc...
+Listen {
+    port: 2345,
+}
+Listen {
+    port: 1234,
+}
+</code></pre>
+<p>While it would be wonderful to get &quot;arg chaining&quot; (I guess you'd call it?) a la <code>find</code>, focusing on multiple subcommands seem like the best first step, and maybe simpler to implement. I also don't love the term chaining, because that implies they're linked to me, when in reality it should just return a Vec of subcommands that you can do whatever you want with (chain them, run them in parallel, etc.).</p>
+<p>In terms of algorithm/parsing, as a developer I'd expect clap to:</p>
+<ol>
+<li>Encounter a subcommand, recognize that we expect 0 or more subcommands, and begin parsing it</li>
+<li>On encountering an argument that fails to parse, backtrack and re-evaluate the remaining args from the beginning.</li>
+</ol>
+<p>So, if you have top-level flags or args and multi-subcommands, the subcommands would parse &quot;greedily&quot; until they fail, and then start all over at the beginning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abey79">@abey79</a> on 2023-03-30 08:54</div>
+            <div class="timeline-body"><p>I've managed to confuse myself by hastily answering on the move with my previous messages—sorry for that. The <code>command</code> field would indeed need to be a vec. Also, I agree with everything that @brownjohnf just said.</p>
+<blockquote>
+<p>Could we be more explicit, rather than linking out to other documentation.</p>
+</blockquote>
+<p>Right, here is (a starting point for) the spec of sub-command chaining.</p>
+<h4>Sub-command chaining can be enabled on a given command (defaults to disabled), and affect the way its subcommand are handled.</h4>
+<p>Builder API:</p>
+<pre><code class="language-rust">let matches = command!()
+        .chain(true)
+        .arg(...)
+        .subcommand(...)
+        .subcommand(...)
+        ....
+</code></pre>
+<p>Derive API:</p>
+<pre><code class="language-rust">#[derive(Parser)]
+#[command(chain = true, ...)]
+struct Command {
+    #[clap(subcommand)]
+    subcmd: Vec&lt;Subcmd&gt;,
+
+    ...
+}
+</code></pre>
+<h4>A command with chaining enabled accepts more than one sub-command.</h4>
+<p>That is kind of the point of this whole issue :)</p>
+<h4>A given chained sub-command may be repeated multiple times and order of invocation is maintained</h4>
+<p>This means that <code>cli op1 op2 op1</code> is allowed and is not equivalent to <code>cli op1 op1 op2</code>. Clap's API must reflect the repetition and the order.</p>
+<h4>Sub-command chaining may be enabled on an arbitrarily nested command</h4>
+<p>This is slightly more general than my initial take. Taking git as a well known example CLI:</p>
+<pre><code>git submodule foreach  op1 --arg  op2 -a  op3 op1
+</code></pre>
+<p>Here I hypothetically enabled sub-command chaining for <code>foreach</code>—itself a twice-nested subcommand—such that it accept a sequence of subcommands (<code>op1</code>, <code>op2</code>, <code>op3</code>).</p>
+<p>This seems implied by the Click documentation, although I haven't tested that it actually works.</p>
+<h4>Chained sub-command may not have nested sub-command(s)</h4>
+<p>Taking the same example as before, this is not allowed:</p>
+<pre><code>git submodule foreach  op1 --arg  op2 -a subop  op3 op1
+</code></pre>
+<p>where <code>subop</code> would be <code>op2</code>'s sub-command.</p>
+<p>Likewise, since <code>submodule</code> may not accept chaining sub-command as per this rule, and assuming <code>summary</code> is a sub-command of <code>submodule</code> (as is the case in the real-world git), this would not be allowed either:</p>
+<pre><code>git submodule foreach  op1 --arg  op2 -a  op3 op1  summary
+</code></pre>
+<p>In other word, chained sub-commands must be leaves in the command tree.</p>
+<h4>Chained sub-commands must parse greedily</h4>
+<p>As @brownjohnf, when it appears, a chained sub-command should eagerly parse all arguments until failure, at which point the parser must expect the next sub-command.</p>
+<p>This implies that Click's <code>nargs=-1</code> restriction does not apply. Any chained sub-command may have any number of variable lengths arguments. (FWIW, I have actually suffered from this restriction of Click before, locally forcing me into a lesser UX.)</p>
+<p>Technically, it think this would mean that the &quot;chained sub-commands must be leaves&quot; rule could be lifted as well. Both of the counter-example above could work. In the first, <code>subop</code> is recognised as <code>op2</code> sub-command so parsing continues one level down. On the second example, <code>summary</code> is not recognised as <code>op1</code>'s nor <code>foreach</code>'s sub-command, so parsing continues one level up and <code>summary</code> is recognised as sub-command of <code>submodule</code>.</p>
+<p>I'm not sure of the technical implication of that though, and it would certainly make for a potentially confusing UX.</p>
+<p><br/></p>
+<p><em>Notes/TBD</em>:</p>
+<ul>
+<li>Clearly, some of these rules (in particular the &quot;chained sub-commands must be leaves&quot; rule) are somewhat arbitrary. I'm stating them as starting point, to trigger conversation. In particular, as @epage mention, there might be technical reasons to prefer one way or the other, and I'm fine with it.</li>
+<li>As @brownjohnf mentioned, I completely left aside the question of find-like argument chaining. I think starting with sub-command chaining is the correct strategy, and it covers most use-cases in a way that, I believe, is more trendy by today's standards.</li>
+<li>I kept using the <code>chain</code> terminology, for the lack of a better one. Although I agree with @brownjohnf that the use-case may or may not care about order, Clap should definitely keep the ordering properly, for those use-cases which need it (e.g. pipelines). <code>multiple</code> may be alternative, but it sound a bit too generic and is less explicit about the ordering aspect. I don't have another suggestion at this point.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-30 15:44</div>
+            <div class="timeline-body"><p>I was looking at the parser which reminded me of some of the complexities involved, including</p>
+<ul>
+<li>Should <code>prog chain0 --help</code> list all the chained commands like <code>prog --help</code>?</li>
+<li>Should both levels of usage show all the chained commands?</li>
+<li>The parser for a chained command will need access to the parent command (for command flags, knowing whether an arg is a command or value) which will run into multiple borrows of a mutable value (<code>prog</code> owns <code>chain0</code>, <code>chain0</code> will need to be mutable for the lazy building, <code>prog</code> and <code>chain0</code> will both need to be accessible when parsing)</li>
+</ul>
+<p>I'm starting to suspect that the cheapest / easiest way to implement this will be for the parent command to copy its subcommands to the command being parsed.</p>
+<ul>
+<li>It would be easy to supported subcommands under chained subcommands because we just check to see if subcommands are present and, if not, we then copy</li>
+</ul>
+<p>This would cause the <code>ArgMatches</code> to be recursive and the derive would have to flatten it out.</p>
+<ul>
+<li>Maybe we could have the chained command, in the parser, flatten it out?<ul>
+<li>Would need to limit this to the root of the chain or else this would be a lot of moves, allocations, deallocations</li>
+<li>Or we could make the caller responsible for deciding what to do with the subcommand's <code>ArgMatcher</code> and pass a <code>&amp;mut Vec&lt;ArgMatches&gt;</code> down.  In the no-subcommand case, nothing should be allocated.  In the subcommand case, We just have a single-element <code>Vec</code> which we would need to switch to anyways.  In the chained-subcommand case, each layer keeps appending until we get to the root.  Most likely this will lead to an inverted list and we'd need to reverse the list.</li>
+</ul>
+</li>
+<li>In general, I'm leaning towards the recursive approach.  Its the simplest, has no overhead for unchained subcommands (the more common case), and the builder API doesn't need to be as ergonomic as that is what the builder API is for<ul>
+<li>The main complication is the derive API knowing when to do this (it'll have to capture the state of any chaining) and knowing when to stop if we support unchained subcommands within a chained subcommand.</li>
+</ul>
+</li>
+</ul>
+<p>Except even that comes with its own challenges</p>
+<ul>
+<li>We'll also need to copy a hand-maintained list of <code>Command</code> settings that are relevant to subcommands<ul>
+<li>This will become more complex when we add support for plugins because then we'll need to know if a plugin should be copied into the subcommand, or even a subset of a plugin</li>
+</ul>
+</li>
+<li>Subcommands under chained subcommands would get complicated if we move forward with deferred initialization of <code>Command</code> because we can't tell if subcommands are present until we build it, but we shouldn't build it until after we've copied</li>
+<li>This doesn't work for any call that wants to just do a <code>prog.build()</code> as that shouldn't recurse infinitely<ul>
+<li>Only doing it one level will work for documentation purposes (clap_mangen)</li>
+<li>completions will need to do special processing in general and would likely get confused seeing the commands propagated one level<ul>
+<li>For dynamic completions, we could offer a <code>Command::build_subcommand(self, name: &amp;str) -&gt; Result&lt;Command&gt;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abey79">@abey79</a> on 2023-03-30 16:33</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>Should <code>prog chain0 --help</code> list all the chained commands like <code>prog --help</code>?</li>
+<li>Should both levels of usage show all the chained commands?</li>
+</ul>
+</blockquote>
+<p>The way Click does it is <code>cli --help</code> shows the global options and lists the available commands, and <code>cli cmd --help</code> shows the usage of this specific command. It does not support out-of-the-box the <code>cli help</code> and <code>cli help cmd</code> semantic, and it would probably require some knowledge of the internals to emulate this behaviour.</p>
+<p>Real world example (abbreviated):</p>
+<pre><code>$ vpype --help
+Usage: vpype [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
+
+  Execute the sequence of commands passed in argument.
+
+Options:
+  --version           Show the version and exit.
+  -h, --help          Show this message and exit.
+  -v, --verbose
+  -c, --config PATH   Load an additional config file.
+
+Commands:
+
+  Metadata:
+    alpha         Set the opacity of one or more layers.
+    color         Set the color for one or more layers.
+    name          Set the name for one or more layers.
+    pens          Apply a pen configuration.
+    penwidth      Set the pen width for one or more layers.
+
+  Primitives:
+    arc           Generate lines approximating a circular arc.
+    circle        Generate lines approximating a circle.
+    ellipse       Generate lines approximating an ellipse.
+    line          Generate a single line.
+    rect          Generate a rectangle, with optional rounded angles.
+
+  Input:
+    read          Extract geometries from an SVG file.
+    script        Call an external python script to generate geometries.
+
+  Transforms:
+    rotate        Rotate the geometries (clockwise positive).
+    scale         Scale the geometries by a factor.
+    scaleto       Scale the geometries to given dimensions.
+    skew          Skew the geometries.
+    translate     Translate the geometries.
+
+$ vpype scale --help
+Usage: vpype scale [OPTIONS] SCALE...
+
+  Scale the geometries by the provided factors
+
+Options:
+  -l, --layer LID         Target layer(s).
+  -o, --origin LENGTH...  Use a specific origin.
+  --help                  Show this message and exit.
+</code></pre>
+<p>Some additional spec/remarks come to mind.</p>
+<p>The <code>--help</code> is a short circuit argument with special handling by Click, and this behaviour is actually very useful when building a complex pipeline. This sort of scenario where the CLI building is interrupted to check the help and easily resumed by using the shell's &quot;repeat prev command&quot; behaviour is common in my experience:</p>
+<ul>
+<li><code>vpype read input.svg layout -m 1cm -</code></li>
+<li>What's that arg again?</li>
+<li><code>vpype read input.svg layout -m 1cm --help</code></li>
+<li>(<em>reads help of <code>layout</code> command</em>) Ah, yes!</li>
+<li><code>vpype read input.svg layout -m 1cm -v middle a4 write output.svg</code></li>
+</ul>
+<p>For this to work, nothing must happen besides showing help when <code>--help</code> is present, regardless of the existence of other, fully-formed sub-command.</p>
+<p>Another aspect is sub-command grouping in the top-level help, as shown above. All of these commands are &quot;sister&quot; sub-command of the top-level CLI—no nesting or anything. Yet they appear thematically grouped. Click doesn't support it out-of-the-box and a stack overflow recipe is needed. It's simple enough, but it would be nice to have built-in support.</p>
+<p>Finally, in my previous message I mentioned variable length arguments. To clarify, tt would be really nice to have both variable length options <em>and</em> positional arguments. The <code>scale</code> command I used here for illustration is one such example: I'd like it have support both <code>scale 0.5</code> and <code>scale 0.5 1.0</code> for homogenous and non-homogenous 2D scaling. This is currently not possible with Click.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brownjohnf">@brownjohnf</a> on 2023-03-30 18:22</div>
+            <div class="timeline-body"><blockquote>
+<h4>Chained sub-command may not have nested sub-command(s)</h4>
+</blockquote>
+<blockquote>
+<p>In other word, chained sub-commands must be leaves in the command tree.</p>
+</blockquote>
+<p>I'm not sure why we'd add this restriction? It seems harder than just
+blindly following recursion as far as it goes? Once all input has been
+parsed, or no further progress can be made with remaining arguments, we
+return.</p>
+<p>This might be a bit of a hot take, but as a developer I'm fine with
+allowing people to create confusingly unusable interfaces. I've gotten
+myself into some corners just using the existing quite rich capabilities
+in clap as it is. As an end user, I see it as either a) I'm using a
+power tool (like find) that just requires reading the manual to
+understand what it's going to do or b) the CLI author failed to design a
+reasonable interface. Neither case seems like it's clap's fault.</p>
+<blockquote>
+<p>As @brownjohnf, when it appears, a chained sub-command should eagerly
+parse all arguments until failure, at which point the parser must expect
+the next sub-command.</p>
+</blockquote>
+<p>I'd loosen this up a bit. A sub-command should eagerly parse all
+arguments until failure, at which the parser should pop up the stack and
+resume parsing the <em>parent</em> (sub)command until failure, etc.</p>
+<p>This allows arbitrarily nesting (sub)commands, and provided we're
+explicit about &quot;the parser is greedy&quot; I think it makes things easy to
+reason about, even if it does theoretically allow people to make very
+confusing CLIs. Here's an example though of something that I think makes
+sense to me (contrived, and indented for clarity):</p>
+<pre><code class="language-shell">$ mycli \
+	listen -p tcp -h localhost \
+	listen -p udp \
+		proxy -p / --proto tcp -h 123.456.0.1 -vvv \
+		proxy -p /foobar -h 145.123.2.3 --log-level ERROR \
+	-v
+# Interpreted as:
+# With default log level of INFO, listen on tcp://localhost, and do
+# nothing. listen on udp:// using default host and proxy all traffic on
+# / to tcp://123.456.0.1, and enable TRACE logging. Proxy a subset of
+# traffic on /foobar to upstream host 145.123.2.3 using the default
+# protocol, but only log at an ERROR level.
+</code></pre>
+<p>That seems like a greedy recursive parser would have no issue with that
+(I realize in practice, implementing this in clap is more complex).</p>
+<p>On 3/30/23 01:54, Antoine Beyeler wrote:</p>
+<blockquote>
+<p>I've managed to confuse myself by hastily answering on the move with my previous messages—sorry for that. The <code>command</code> field would indeed need to be a vec. Also, I agree with everything that @brownjohnf just said.</p>
+<blockquote>
+<p>Could we be more explicit, rather than linking out to other documentation.</p>
+</blockquote>
+<p>Right, here is (a starting point for) the spec of sub-command chaining.</p>
+<h4>Sub-command chaining can be enabled on a given command (defaults to disabled), and affect the way its subcommand are handled.</h4>
+<p>Builder API:</p>
+<pre><code class="language-rust">let matches = command!()
+         .chain(true)
+         .arg(...)
+         .subcommand(...)
+         .subcommand(...)
+         ....
+</code></pre>
+<p>Derive API:</p>
+<pre><code class="language-rust">#[derive(Parser)]
+#[command(chain = true, ...)]
+struct Command {
+     #[clap(subcommand)]
+     subcmd: Vec&lt;Subcmd&gt;,
+
+     ...
+}
+</code></pre>
+<h4>A command with chaining enabled accepts more than one sub-command.</h4>
+<p>That is kind of the point of this whole issue :)</p>
+<h4>A given chained sub-command may be repeated multiple times and order of invocation is maintained</h4>
+<p>This means that <code>cli op1 op2 op1</code> is allowed and is not equivalent to <code>cli op1 op1 op2</code>. Clap's API must reflect the repetition and the order.</p>
+<h4>Sub-command chaining may be enabled on an arbitrarily nested command</h4>
+<p>This is slightly more general than my initial take. Taking git as a well known example CLI:</p>
+<pre><code>git submodule foreach  op1 --arg  op2 -a  op3 op1
+</code></pre>
+<p>Here I hypothetically enabled sub-command chaining for <code>foreach</code>—itself a twice-nested subcommand—such that it accept a sequence of subcommands (<code>op1</code>, <code>op2</code>, <code>op3</code>).</p>
+<p>This seems implied by the Click documentation, although I haven't tested that it actually works.</p>
+<h4>Chained sub-command may not have nested sub-command(s)</h4>
+<p>Taking the same example as before, this is not allowed:</p>
+<pre><code>git submodule foreach  op1 --arg  op2 -a subop  op3 op1
+</code></pre>
+<p>where <code>subop</code> would be <code>op2</code>'s sub-command.</p>
+<p>Likewise, since <code>submodule</code> may not accept chaining sub-command as per this rule, and assuming <code>summary</code> is a sub-command of <code>submodule</code> (as is the case in the real-world git), this would not be allowed either:</p>
+<pre><code>git submodule foreach  op1 --arg  op2 -a  op3 op1  summary
+</code></pre>
+<p>In other word, chained sub-commands must be leaves in the command tree.</p>
+<h4>Chained sub-commands must parse greedily</h4>
+<p>As @brownjohnf, when it appears, a chained sub-command should eagerly parse all arguments until failure, at which point the parser must expect the next sub-command.</p>
+<p>This implies that Click's <code>nargs=-1</code> restriction does not apply. Any chained sub-command may have any number of variable lengths arguments. (FWIW, I have actually suffered from this restriction of Click before, locally forcing me into a lesser UX.)</p>
+<p>Technically, it think this would mean that the &quot;chained sub-commands must be leaves&quot; rule could be lifted as well. Both of the counter-example above could work. In the first, <code>subop</code> is recognised as <code>op2</code> sub-command so parsing continues one level down. On the second example, <code>summary</code> is not recognised as <code>op1</code>'s nor <code>foreach</code>'s sub-command, so parsing continues one level up and <code>summary</code> is recognised as sub-command of <code>submodule</code>.</p>
+<p>I'm not sure of the technical implication of that though, and it would certainly make for a potentially confusing UX.</p>
+<p><br/></p>
+<p><em>Notes/TBD</em>:</p>
+<ul>
+<li>Clearly, some of these rules (in particular the &quot;chained sub-commands must be leaves&quot; rule) are somewhat arbitrary. I'm stating them as starting point, to trigger conversation. In particular, as @epage mention, there might be technical reasons to prefer one way or the other, and I'm fine with it.</li>
+<li>As @brownjohnf mentioned, I completely left aside the question of find-like argument chaining. I think starting with sub-command chaining is the correct strategy, and it covers most use-cases in a way that, I believe, is more trendy by today's standards.</li>
+<li>I kept using the <code>chain</code> terminology, for the lack of a better one. Although I agree with @brownjohnf that the use-case may or may not care about order, Clap should definitely keep the ordering properly, for those use-cases which need it (e.g. pipelines). <code>multiple</code> may be alternative, but it sound a bit too generic and is less explicit about the ordering aspect. I don't have another suggestion at this point.</li>
+</ul>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brownjohnf">@brownjohnf</a> on 2023-03-30 18:30</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>Should <code>prog chain0 --help</code> list all the chained commands like
+<code>prog --help</code>?</li>
+</ul>
+</blockquote>
+<p>I think it should function the same as if there were no chaining.</p>
+<blockquote>
+<ul>
+<li>Should both levels of usage show all the chained commands?</li>
+</ul>
+</blockquote>
+<p>I don't actually remember how this works today with subcommands, but I'd
+say the behavior should remain the same.</p>
+<blockquote>
+<ul>
+<li>The parser for a chained command will need access to the parent
+command (for command flags, knowing whether an arg is a command or
+value) which will run into multiple borrows of a mutable value (<code>prog</code>
+owns <code>chain0</code>, <code>chain0</code> will need to be mutable for the lazy building,
+<code>prog</code> and <code>chain0</code> will both need to be accessible when parsing)</li>
+</ul>
+</blockquote>
+<p>I'm not sure I'm following, but I'd assumed that this would be
+recursive, and the current context ((sub)command) wouldn't know about
+the parent. On failure or end of args it would just return whatever it
+did parse about itself + remaining args it didn't recognize. Then the
+parent command would resume attempting to parse it, which might recurse
+down into another subcommand, or might resume parsing flags belonging to
+that command.</p>
+<blockquote>
+<ul>
+<li>In general, I'm leaning towards the recursive approach.  Its the
+simplest, has no overhead for unchained subcommands (the more common
+case), and the builder API doesn't need to be as ergonomic as that is
+what the builder API is for</li>
+</ul>
+</blockquote>
+<p>I think that makes sense to me.</p>
+<blockquote>
+<ul>
+<li>The main complication is the derive API knowing when to do this
+(it'll have to capture the state of any chaining) and knowing when to
+stop if we support unchained subcommands within a chained subcommand.</li>
+</ul>
+</blockquote>
+<p>I'm not following this though. I'm pretty ignorant here, but I'd assume
+the derive API (I assume by that you mean the macro?) would just enable
+recursive parsing whenever it encountered a <code>Vec&lt;T&gt;</code>.</p>
+<blockquote>
+<ul>
+<li>Subcommands under chained subcommands would get complicated if we
+move forward with deferred initialization of <code>Command</code> because we can't
+tell if subcommands are present until we build it, but we shouldn't
+build it until after we've copied</li>
+<li>This doesn't work for any call that wants to just do a
+<code>prog.build()</code> as that shouldn't recurse infinitely</li>
+</ul>
+</blockquote>
+<p>Also not following this, but I think it would be reasonable to say that
+you can't re-nest the same subcommands under themselves. i.e., your
+interface needs to be an acyclic graph. You can only have one subcommand
+field in any clap Command, and you can't have a subcommand <code>T</code> as be a
+subcommand of itself (including transitively).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-30 18:56</div>
+            <div class="timeline-body"><blockquote>
+<p>For this to work, nothing must happen besides showing help when --help is present, regardless of the existence of other, fully-formed sub-command.</p>
+</blockquote>
+<p>Clap help behaves that way to do.</p>
+<blockquote>
+<p>Another aspect is sub-command grouping in the top-level help, as shown above. All of these commands are &quot;sister&quot; sub-command of the top-level CLI—no nesting or anything. Yet they appear thematically grouped. Click doesn't support it out-of-the-box and a stack overflow recipe is needed. It's simple enough, but it would be nice to have built-in support.</p>
+</blockquote>
+<p>See</p>
+<ul>
+<li>https://github.com/clap-rs/clap/issues/1553</li>
+<li>https://github.com/clap-rs/clap/issues/4589</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abey79">@abey79</a> on 2023-03-30 19:06</div>
+            <div class="timeline-body"><p>@brownjohnf I agree with your (hot) take and we may certainly lift that &quot;no nesting of chained sub-command&quot; rule. I've included it here because of my understanding that it simplified implementation <em>on Click's side</em>, but I understand things might be entirely different on Clap's side.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-30 19:08</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd loosen this up a bit. A sub-command should eagerly parse all
+arguments until failure, at which the parser should pop up the stack and
+resume parsing the <em>parent</em> (sub)command until failure, etc.</p>
+</blockquote>
+<p>In thinking on chained subcommands, I realized that one challenge is clap is smarter than that allows.  At least for optional positionals and variable length positionals, clap checks for if a subcommand name exists among them and will then treat it as a subcommand.  At least for variable-length options, clap has a setting to check for subcommand names among them.  This requires subcommands to know every subsubcommand name and alias, without getting into subcommand short flags and long flags.</p>
+<p>This presents an implementation challenge because</p>
+<ul>
+<li>clap's behavior should be consistent</li>
+<li>even if we accept chained commands being less than ideal now, it could be disruptive to change its behavior in the future</li>
+</ul>
+<p>So we either need a solution that can have consistency out the gate or we need to be very restrictive and disallow any case that requires knowing about chained commands so we <em>can</em> just pop back up and continue processing.  I'm assuming that would be too restrictive for this to be feasible: we'd be giving users a taste of something that won't work in a lot of their cases and it'd be better to not have the feature in that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brownjohnf">@brownjohnf</a> on 2023-03-30 19:47</div>
+            <div class="timeline-body"><blockquote>
+<p>At least for variable-length options, clap has a setting to check for
+subcommand names among them.  This requires subcommands to know every
+subsubcommand name and alias, without getting into subcommand short
+flags and long flags.</p>
+</blockquote>
+<p>So you're saying that if I have subcommand foo, clap would extract that
+from the variable length args like:</p>
+<pre><code class="language-console">$ mycli -v --names bar foo
+
+# Cli { verbose: true, names: [bar], subcommand: foo }
+</code></pre>
+<p>I think I understand the issue there. I'm not sure how to get around
+that with multi-subcommands short of propagating the knowledge, as you
+describe.</p>
+<blockquote>
+<p>be very restrictive and disallow any case that requires
+knowing about chained commands so we <em>can</em> just pop back up and
+continue processing.</p>
+</blockquote>
+<p>What would that restriction look like? You mean stop allowing putting
+subcommands after variable length args? At least for myself, I'd rather
+have a single layer of variable length subcommands than none at all, but
+it does feel hacky to have that limitation.</p>
+<p>Since we have no multi-subcommand support today, what about having a
+config option to enable it that disables the &quot;smart&quot; detection of
+subcommands after variable length args? That would be a way of opting
+into the feature without breaking any existing CLIs in the wild. Not
+ideal, but maybe a useful compromise? It would mean you had to avoid
+variable length args before subcommands, put them in as delimited flags
+using <code>Arg::value_delimiter</code>, or use a custom terminator with
+<code>Arg::value_terminator</code>.</p>
+<p>Given that we're wrestling with this in general, is it worth at least
+pondering multi/positional flags as well? It's not clear to me if one is
+a superset of the other problem, or if they're entirely orthogonal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-30 19:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Since we have no multi-subcommand support today, what about having a
+config option to enable it that disables the &quot;smart&quot; detection of
+subcommands after variable length args?</p>
+</blockquote>
+<p>This isn't an acceptable option</p>
+<ul>
+<li>Being a runtime setting means we'd be bloating the code and API for everyone for this less common feature</li>
+<li>We try to limit what gets a feature flag because those don't have an ideal workflow for end users</li>
+<li>As mentioned in my previous post, consistency is important.  You shouldn't be required to lose out on clap features to be able to use other features.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brownjohnf">@brownjohnf</a> on 2023-03-30 20:03</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Since we have no multi-subcommand support today, what about having a
+config option to enable it that disables the &quot;smart&quot; detection of
+subcommands after variable length args?</p>
+</blockquote>
+<p>This isn't an acceptable option</p>
+</blockquote>
+<p>Okay, I think that's a helpful constraint. That means that we have no
+choice but to figure out a way for subcommands to have the necessary
+context to recognize sibling/parent options in addition to their own
+options, correct?</p>
+<p>That does make me lean towards considering positional flags as part of
+this broader design effort, since that would also maybe be context that
+subcommands would need?</p>
+<p>On 3/30/23 12:59, Ed Page wrote:</p>
+<blockquote>
+<blockquote>
+<p>Since we have no multi-subcommand support today, what about having a
+config option to enable it that disables the &quot;smart&quot; detection of
+subcommands after variable length args?</p>
+</blockquote>
+<p>This isn't an acceptable option</p>
+<ul>
+<li>Being a runtime setting means we'd be bloating the code and API for everyone for this less common feature</li>
+<li>We try to limit what gets a feature flag because those don't have an ideal workflow for end users</li>
+<li>As mentioned in my previous post, consistency is important.  You shouldn't be required to lose out on clap features to be able to use other features.</li>
+</ul>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4813.html">clap-rs/clap#4813</a> on 2023-03-30 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-31 15:21</div>
+            <div class="timeline-body"><p>Something I realized is command chaining would get us a form of &quot;argument chaining&quot; (#1704)  for free because users could specify the start of an argument chain using <code>Command::long_flag</code>, making the chained subcommand act like an argument.  To clean up <code>--help</code>, they can specify do something like <code>cmd.subcommand_value_name(&quot;OP&quot;).subcommand_help_heading(&quot;Operation&quot;)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/muja">@muja</a> on 2023-05-06 08:19</div>
+            <div class="timeline-body"><p>I also have this use case. I am writing a tool for mass editing docx files. docx files are zip files with lots of XMLs and once unpacked and parsed, it is very desirable to perform multiple operations on the contents instead of spreading it out into multiple processes which would waste a lot of computation power.</p>
+<p>The CLI should look something like this: <code>./docx-edit ~/Documents/WordFiles --output=/tmp/wordout replace --replace-pairs-file=ReplacePairs.xlsx append --paragraph-break append --text=&quot;© MyCompany 2015-2023&quot;</code>
+Here the subcommands are <code>replace</code> and <code>append</code>.</p>
+<p>I would like to be able to use a <code>Vec&lt;Subcommand&gt;</code> in my Parser struct for ease of use. I also don't need nested subcommands for my use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frol">@frol</a> on 2023-05-06 09:33</div>
+            <div class="timeline-body"><p>I would like to also share my use case, where I need subcommand chaining with nested subcommands. I need to construct a complex structure from the command line, here is an extract:</p>
+<pre><code class="language-rust">struct Transaction {
+    signer_account_id: String,
+    actions: Vec&lt;Action&gt;,
+}
+
+enum Action {
+    GrantAccess {
+        account_id: String,
+        permissions: Permissions,
+    },
+    Transfer {
+        receiver_account_id: String,
+        amount: u64,
+    },
+}
+
+enum Permissions {
+    FullAccess,
+    LimitedAccess { allowed_actions: Vec&lt;AllowedActionKind&gt; },
+}
+
+enum AllowedActionKind {
+    GrantAccess,
+    Transfer,
+}
+</code></pre>
+<p>Here is how I want the CLI to look like:</p>
+<pre><code>./cli construct-transaction // &lt;- Top-level Commands
+        &quot;frol@github&quot; // &lt;- `signer_account_id: String`
+        add-action // &lt;- Either `add-action` or some &quot;next&quot; command, see `submit` below
+            grant-access // &lt;- Either `grant-access` or `transfer`
+                &quot;not-frol@github&quot; // &lt;- `account_id: String`
+                limited-access // &lt;- Either `full-access` without parameters or `limited-access` with allowed actions
+                    transfer
+                    grant-access
+        add-action
+            transfer // &lt;- Either `grant-access` or `transfer`
+                &quot;not-frol@github&quot; // &lt;- `receiver_account_id: String`
+                &quot;123&quot; // &lt;- `amount: u64`
+        add-action
+            transfer // &lt;- Either `grant-access` or `transfer`
+                &quot;not-frol2@github&quot; // &lt;- `receiver_account_id: String`
+                &quot;124&quot; // &lt;- `amount: u64`
+        submit // &lt;- Stop adding actions. Next subcommands should also be able to receive arguments and use nested subcommands
+            https://github.com // &lt;- Positional argument to `submit`
+</code></pre>
+<p>You may argue that nobody will write such a long command, and I totally agree, but in my case <a href="https://github.com/near/near-cli-rs">near-cli-rs</a> has interactive mode which extends clap (there is <a href="https://github.com/FroVolod/interactive-clap">interactive-clap</a> helper), and guides users through the available options with prompts, and then prints the final command to be reused later.</p>
+<p>Currently, I copy-paste the code (<a href="https://github.com/near/near-cli-rs/tree/05e4acaceb8f5673bf72a480e4271473593a54e5/src/commands/transaction/construct_transaction">see <code>add_action_*</code> folders</a>), but after 5 levels of nesting with 6 &quot;actions&quot; on each level there are too many variants ($6^5=7776$) and clap tries to walk through all of them, so it is not only ugly but also not scalable beyond a certain point.</p>
+<p>The pattern I use there is basically:</p>
+<pre><code class="language-rust">struct ConstructTransaction {
+    #[clap(subcommand)]
+    next: AddActionOrSubmit_1,
+}
+</code></pre>
+<p>And then there are copies of:</p>
+<pre><code class="language-rust">enum AddActionOrSubmit_1 {
+    AddAction(AddAction),
+    Submit(super::Submit),
+}
+
+struct AddAction {
+    #[clap(subcommand)]
+    action: Action,
+}
+
+enum Action {
+    GrantPermissions(GrantPermissionsAction),
+    Transfer(TransferAction),
+}
+
+...
+
+struct TransferAction {
+    receiver_account_id: String,
+    amount: u64,
+    #[clap(subcommand)]
+    next: AddActionOrSubmit_2, // &lt;- This is where &quot;recursion&quot; happens unless I manually unroll the code, and this is where it explodes when I add 5+ levels or unrolled copies
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-05-06 13:40</div>
+            <div class="timeline-body"><blockquote>
+<p>clap tries to walk through all of them, so it is not only ugly but also not scalable beyond a certain point.</p>
+</blockquote>
+<p>Unsure which aspect doesn't scale for you but #4792 will help clap scale with a lot of subcommands with a lot of arguments. For v4 it might have to be opt-in for derive users but then on by default for v5.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexpovel">@alexpovel</a> on 2023-09-13 20:46</div>
+            <div class="timeline-body"><p>In search for this issue/feature, first thing I actually found searching was <a href="https://www.reddit.com/r/rust/comments/ci2r3d/multiple_subcommands_with_structoptclap/">this thread</a>, where a user has an issue identical to mine (and everyone else's in this thread...):</p>
+<blockquote>
+<p>Does anyone know how to achieve the effect of parsing subcommands multiple times?</p>
+<p>I'd like to have a data processing tool where multiple operations can be performed on a stream of data/events/... and it should be possible to specify the steps via command line arguments like so:</p>
+<p><code>magical_command capture --source=/dev/abcd filter --kind=large-ones normalise convert --to=jsonl</code></p>
+</blockquote>
+<p>I reckon that's more modest in comparison to other use cases in this thread. It'd be plenty for my uses anyway. Using a workaround, they <a href="https://www.reddit.com/r/rust/comments/ci2r3d/comment/ev2kso5/?context=3">solved it as</a>:</p>
+<blockquote>
+<p>I resorted to collecting <code>std::env::args()</code> into a <code>Vec&lt;String&gt;</code>, iterated over <code>.split(&quot;--&quot;)</code>, provided the zeroth argument (program name) at index 0 for each split and fed those to <code>MagicalArgs::from_iter</code>. It is bad in the sense that it abolutely requires the presence of <code>--</code> between subcommands.</p>
+<p>In hindsight, it is a rather obvious workaround that would have saved me half a day of frustration. Retains all the nice stuff of structopt and scales until the limits of linux command lines are reached. If only clap/structopt could parse partially and yield the remainder instead of failing with a hardcoded unkown argument error...</p>
+</blockquote>
+<p>Could someone perhaps shed some light on this workaround: is it a viable one, while the present issue is in progress? Or is there a better approach? The <a href="https://docs.rs/clap/latest/clap/_derive/_cookbook/find/index.html"><code>find</code></a> and <a href="https://docs.rs/clap/latest/clap/_derive/_cookbook/git/index.html"><code>git</code></a> examples come close, but not quite.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/muja">@muja</a> on 2023-09-14 10:58</div>
+            <div class="timeline-body"><p>I've actually independently resorted to the same workaround, the only difference being that I've used the word <code>and</code> as separator instead of (the apparently more common) <code>--</code>. I think it reads more nicely but has the downside of course that it implicitly blacklists <code>and</code> as file name argument etc. No downsides except that it's ~5-10 lines of set up in main.</p>
+<p>So the command would look like this:</p>
+<pre><code>magical_command capture --source=/dev/abcd and filter --kind=large-ones and normalise and convert --to=jsonl
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-11-11 03:00</div>
+            <div class="timeline-body"><p>Trying to re-summarize click</p>
+<h3>API</h3>
+<p>On the parent, set <code>chain = True</code>.  The built-in dispatcher will automatically call the appropriate functions</p>
+<pre><code class="language-python">@click.group(chain=True)
+def cli():
+    pass
+
+
+@cli.command('sdist')
+def sdist():
+    click.echo('sdist called')
+
+
+@cli.command('bdist_wheel')
+def bdist_wheel():
+    click.echo('bdist_wheel called')
+</code></pre>
+<h3>How it looks in help</h3>
+<p><strong>Parent command:</strong> TBD</p>
+<p><strong>Chained command:</strong> TBD</p>
+<h3>Behavior</h3>
+<ul>
+<li>Cannot chain another subcommand after using one with variable number of arguments</li>
+<li>Cannot nest subcommands under chained subcommands</li>
+<li>Options must come before arguments</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-11-11 03:01</div>
+            <div class="timeline-body"><p>Trying to re-summarize and polish the proposal</p>
+<h3>API</h3>
+<p>Setting it on the parent command is most likely the natural thing to do.</p>
+<p>Parent commands will need to know it for the help.  When parsing child commands, we'll need to know its set on the parent.  This can be handled in our parsing book keeping.</p>
+<p>Most likely this would end up looking like:</p>
+<pre><code class="language-rust">impl Command {
+    pub fn chain_subcommands(self, yes: bool) -&gt; Self
+}
+</code></pre>
+<p>Likely the easiest way to implement this in <code>ArgMatches</code> will be to recurse but that will be harder for users, especially  <code>clap_derive</code> users.</p>
+<p>Most likely this would end up looking like:</p>
+<pre><code class="language-rust">impl ArgMatches {
+    pub fn subcommands(&amp;self) -&gt; impl Iterator&lt;Item=(&amp;str,, &amp;ArgMatches)&gt;;
+    pub fn remove_subcommands(&amp;mut self) -&gt; impl Iterator&lt;Item=(Str, ArgMatches)&gt;;
+    pub fn subcommands_present(&amp;self) -&gt; bool;
+}
+</code></pre>
+<p>We'd likely keep the singular forms for ease of working with like we do for arguments.</p>
+<p>We could probably deprecate <code>ArgMatches::subcommand_name</code> and <code>ArgMatches::subcommand_matches</code></p>
+<p>For derive users, I would expect this to translate to:</p>
+<pre><code class="language-rust">#[derive(Parser)]
+struct Cli {
+    #[command(subcommand)]
+    #[command(subcommand_required = true, args_required_else_help = true)]
+    subcommand: Vec&lt;Command&gt;,
+}
+
+enum Command {
+    New,
+    Build,
+    Clean,
+}
+</code></pre>
+<p>We'll consider the subcommand optional (zero-element <code>Vec</code>) and will require users to manually require it.  This will also match how we deal with positionals.</p>
+<p>We can key off of the use of <code>Vec</code> and infer <code>chain_subcommands(true)</code>.</p>
+<h3>How it looks in help</h3>
+<p><strong>Parent command:</strong></p>
+<p>No different aside from the usage.</p>
+<pre><code>Usage: code[EXE] [OPTIONS] &lt;COMMAND&gt; [OPTIONS] [&lt;COMMAND&gt; [OPTIONS]]...
+</code></pre>
+<p>I'm thinking that if <code>flatten_help(true)</code> is set (see #5206), then we'll the flattened usage, like normal, with <code>[&lt;COMMAND&gt; ...]</code> at the end of each line.  This would require knowing when they are chained.  We could pass that through as a flag but it would be helpful for chained command help</p>
+<p><strong>Chained command:</strong></p>
+<p>Either</p>
+<ul>
+<li>Only usage is affected<ul>
+<li>We'd need a way to know we are chained</li>
+</ul>
+</li>
+<li>We show the chained subcommands as if they were our own subcommand<ul>
+<li>This requires being aware of a lot more state</li>
+</ul>
+</li>
+</ul>
+<h3>Behavior</h3>
+<p>Conceptually, the easiest is: when evaluating a potential subcommand, chain up.</p>
+<ul>
+<li>Anywhere a subcommand will work, a chained subcommand will work<ul>
+<li>Preserving existing use of names, long flags, and short flags</li>
+<li>Preserving the existing precedence between arguments and subcommands</li>
+</ul>
+</li>
+<li>We support arbitrary backtracing</li>
+</ul>
+<p>In most cases, nested subcommands under a chained subcommand could be confusing and we'd likely want to steer people away from doing that.  However, using short/long flags for chained subcommands to create argument groups within chained subcommands would be a legitimate use case.  However, this isn't the highest priority and if it isn't in the initial release but can be added later, we won't block this feature on it.</p>
+<p>Guarantees</p>
+<ul>
+<li>Repeating a subcommand is allowed</li>
+<li>Order of invocation is maintained</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vallentin">@vallentin</a> on 2024-02-25 11:37</div>
+            <div class="timeline-body"><p>Many years later, I'm coming back to this issue. After finally wanting to convert all my hacky old <code>structopt</code> code into <code>clap</code>.  However, chaining adjacent commands was always the feature I needed, so <code>clap</code> still has to wait.</p>
+<p>For the CLIs I'm working on, chaining commands is <strong>the</strong> thing I need. I fully understand, that there's many edge cases as mentioned in this thread. However, the CLIs I'm working on doesn't run into them. So now that I still can't use <code>clap</code>, I've looked through other major command-line parsers.</p>
+<p>The ones I tested, that didn't support multiple adjacent commands are: <a href="https://crates.io/crates/clap"><code>clap</code></a>, <a href="https://crates.io/crates/argh"><code>argh</code></a>, and <a href="https://crates.io/crates/gumdrop"><code>gumdrop</code></a>.</p>
+<p>However, <a href="https://crates.io/crates/bpaf"><code>bpaf</code></a> does support multiple adjacent commands! A minimal example using <code>bpaf</code> looks like this:</p>
+<pre><code class="language-rust">use bpaf::Bpaf;
+
+#[derive(Bpaf, Clone, Debug)]
+#[bpaf(options)]
+pub struct Options {
+    #[bpaf(external, many)]
+    cmd: Vec&lt;Cmd&gt;,
+}
+
+#[derive(Bpaf, Clone, Debug)]
+pub enum Cmd {
+    #[bpaf(command, adjacent)]
+    Foo { a: bool },
+    #[bpaf(command, adjacent)]
+    Bar { b: bool },
+    #[bpaf(command, adjacent)]
+    Baz { c: bool },
+}
+
+fn main() {
+    let opt = options().run();
+    println!(&quot;{:#?}&quot;, opt);
+}
+</code></pre>
+<p>Which then when executing:</p>
+<pre><code class="language-shell">[program] foo -a bar bar -b baz -c baz
+</code></pre>
+<p>Outputs the following:</p>
+<pre><code class="language-rust">Options {
+    cmd: [
+        Foo {
+            a: true,
+        },
+        Bar {
+            b: false,
+        },
+        Bar {
+            b: true,
+        },
+        Baz {
+            c: true,
+        },
+        Baz {
+            c: false,
+        },
+    ],
+}
+</code></pre>
+<p>That being said, I only have mere minutes of experience using <code>bpaf</code>. So I don't know the <em>real</em> differences between e.g. <code>clap</code> and <code>bpaf</code>. All I can say is, I previously had multiple projects, with semi-complex CLIs using <code>structopt</code> and <code>clap</code>, and all of them <em>easily</em> mapped into <code>bpaf</code>, with no issues so far. But again, take it with a grain of salt.</p>
+<p>I'm not advocating the use of <code>bpaf</code> instead of <code>clap</code>. I personally wanted to use <code>clap</code>. However, supporting multiple adjacent commands, was <strong>the</strong> feature I needed. So I have to go with <code>bpaf</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-02-26 17:20</div>
+            <div class="timeline-body"><blockquote>
+<p>After finally wanting to convert all my hacky old structopt code into clap. However, chaining adjacent commands was always the feature I needed, so clap still has to wait.</p>
+</blockquote>
+<p>I'm not aware of <code>structopt</code> supporting this, so I'm confused how this would be a blocker for moving off of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vallentin">@vallentin</a> on 2024-02-27 01:25</div>
+            <div class="timeline-body"><p>@epage I'm confused why that's the take away. Anyways, I initially preferred <code>structopt</code> because of its derive macro, obviously today that has changed. However, as I said my solution was hacky. In short, instead of using <a href="https://docs.rs/structopt/latest/structopt/trait.StructOpt.html#method.from_args"><code>from_args()</code></a>, I would instead use <a href="https://docs.rs/structopt/latest/structopt/trait.StructOpt.html#method.from_iter"><code>from_iter()</code></a> and manually split the args beforehand based on a delimiter. Again, like I said, hacky solution. But it allowed me to somewhat simulate having multiple chained adjacent commands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-02-27 01:48</div>
+            <div class="timeline-body"><p>Thanks for the clarification.  That wasn't meant to be a &quot;take away&quot; but it was a leap that wasn't sufficient on its own with what was said so I was wanting to better understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vallentin">@vallentin</a> on 2024-02-27 11:53</div>
+            <div class="timeline-body"><p>@epage if you're curious about the use case, I have various tools that operate on data or allow performing multiple actions sequentially.</p>
+<pre><code class="language-shell">[program] [--dry-run] \
+    [cmd] [cmd-options...] \
+    [cmd] [cmd-options...] \
+    [cmd] [cmd-options...]
+</code></pre>
+<p>Actual example for rendering 2 images:</p>
+<pre><code class="language-shell">draw \
+    size 100 100 \
+    fill  0  0 50 50 &quot;#FF0000&quot; \
+    fill 50  0 50 50 &quot;#00FF00&quot; \
+    fill  0 50 50 50 &quot;#0000FF&quot; \
+    fill 50 50 50 50 &quot;#FFFFFF&quot; \
+    export --output &quot;image.png&quot; \
+    fill 25 25 50 50 &quot;#FFFF00&quot; \
+    export --output &quot;image2.png&quot; \
+</code></pre>
+<p>In reality, I could create config formats instead. However, many times I'm executing a single command, so having to create a config is tedious, e.g.:</p>
+<pre><code class="language-shell">draw --input &quot;image.png&quot;  --output &quot;image-inverted.png&quot; \
+    invert  
+</code></pre>
+<p>Additionally, both supporting a CLI and config doubles the code. So many times, I end up with a CLI and then create a <code>.sh</code> file when I need a &quot;config&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abey79">@abey79</a> on 2024-02-27 11:57</div>
+            <div class="timeline-body"><p>I can second this exact use case. I'm considering a rust rewrite of <a href="https://github.com/abey79/vpype">vpype</a>, which is very similar to @vallentin's example (albeit targeted at vector graphics for the plotter-based art niche).</p>
+<p>Example:</p>
+<pre><code>vpype  read input.svg  layout --landscape --fit-to-margin 1.5cm a4  linesort --tolerance 0.1mm  write output.svg
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1704.html">clap-rs/clap#1704</a> on 2024-03-21 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../abey79/vsvg/pulls/153.html">abey79/vsvg#153</a> on 2024-09-22 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ahirner">@ahirner</a> on 2024-12-06 20:50</div>
+            <div class="timeline-body"><p>I think many cases can be solved with <code>.defer()</code> quite generically.</p>
+<p>Setup:</p>
+<pre><code class="language-rust">#[derive(Debug, Parser)]
+struct Cli {
+    #[clap(long)]
+    top: String,
+    #[command(subcommand)]
+    cmd: Option&lt;Cmd&gt;,
+}
+
+#[derive(Debug, Subcommand)]
+#[command(subcommand_precedence_over_arg = true)]
+enum Cmd {
+    Foo(ReClap&lt;FooOpts, Self&gt;),
+    Bar(ReClap&lt;BatOpts, Self&gt;),
+    Baz(ReClap&lt;BatOpts, Self&gt;),
+}
+
+#[derive(Debug, Args)]
+struct FooOpts {
+    #[clap(long, short('a'))]
+    ayy: Vec&lt;usize&gt;,
+    #[clap(long)]
+    hey: Option&lt;String&gt;,
+}
+
+/// Bar/Baz Docstring.
+#[derive(Debug, Args)]
+struct BatOpts {
+    #[clap(long)]
+    ok: bool,
+}
+
+
+fn main() {
+    let cli = Cli::parse_from(&quot;main --top 8 baz --ok foo -a 1 -a 2 bar --ok baz&quot;.split(' '));
+    let cli = Cli::parse();
+
+    println!(&quot;top: {}&quot;, &amp;cli.top);
+    let mut next = cli.cmd;
+    while let Some(cmd) = next {
+        println!(&quot;{cmd:?}&quot;);
+        // could use enum_dispatch
+        next = match cmd {
+            Cmd::Foo(rec) =&gt; (rec.next).map(|d| *d),
+            Cmd::Bar(rec) =&gt; (rec.next).map(|d| *d),
+            Cmd::Baz(rec) =&gt; (rec.next).map(|d| *d),
+        }
+    }
+}
+</code></pre>
+<p>Examples:</p>
+<pre><code>$ cargo r -- --top 8 baz --ok foo -a 1 -a 2 bar --ok baz
+top: 8
+Baz(ReClap { inner: BatOpts { ok: true }, next: Some(Foo(ReClap { inner: FooOpts { ayy: [1, 2], hey: None }, next: Some(Bar(ReClap { inner: BatOpts { ok: true }, next: Some(Baz(ReClap { inner: BatOpts { ok: false }, next: None })) })) })) })
+Foo(ReClap { inner: FooOpts { ayy: [1, 2], hey: None }, next: Some(Bar(ReClap { inner: BatOpts { ok: true }, next: Some(Baz(ReClap { inner: BatOpts { ok: false }, next: None })) })) })
+Bar(ReClap { inner: BatOpts { ok: true }, next: Some(Baz(ReClap { inner: BatOpts { ok: false }, next: None })) })
+Baz(ReClap { inner: BatOpts { ok: false }, next: None })
+
+$ cargo r -- --top 8 baz --ok foo --help
+Usage: clap-ext-play baz foo [OPTIONS] [COMMAND]
+
+Commands:
+  foo
+  bar  Bar/Baz Docstring
+  baz  Bar/Baz Docstring
+
+Options:
+      --ayy &lt;AYY&gt;
+      --hey &lt;HEY&gt;
+  -h, --help       Print help
+</code></pre>
+<p>Implementation:</p>
+<pre><code class="language-Rust">/// `[Args]` wrapper to match `T` variants recursively in `U`.
+#[derive(Debug, Clone)]
+pub struct ReClap&lt;T, U&gt;
+where
+    T: Args,
+    U: Subcommand,
+{
+    /// Specific Variant.
+    pub inner: T,
+    /// Enum containing `Self&lt;T&gt;` variants, in other words possible follow-up commands.
+    pub next: Option&lt;Box&lt;U&gt;&gt;,
+}
+
+impl&lt;T, U&gt; Args for ReClap&lt;T, U&gt;
+where
+    T: Args,
+    U: Subcommand,
+{
+    fn augment_args(cmd: clap::Command) -&gt; clap::Command {
+        T::augment_args(cmd).defer(|cmd| U::augment_subcommands(cmd.disable_help_subcommand(true)))
+    }
+    fn augment_args_for_update(_cmd: clap::Command) -&gt; clap::Command {
+        unimplemented!()
+    }
+}
+
+impl&lt;T, U&gt; FromArgMatches for ReClap&lt;T, U&gt;
+where
+    T: Args,
+    U: Subcommand,
+{
+    fn from_arg_matches(matches: &amp;clap::ArgMatches) -&gt; Result&lt;Self, clap::Error&gt; {
+        //dbg!(&amp;matches);
+        // this doesn't match subcommands but a first match
+        let inner = T::from_arg_matches(matches)?;
+        let next = if let Some((_name, _sub)) = matches.subcommand() {
+            //dbg!(name, sub);
+            // most weirdly, Subcommand skips into the matched
+            // .subcommand, hence we need to pass outer matches
+            // (which in the average case should only match enumerated T)
+            Some(U::from_arg_matches(matches)?)
+            // we are done, since sub-sub commmands are matched in U::
+        } else {
+            None
+        };
+        Ok(Self { inner, next: next.map(Box::new) })
+    }
+    fn update_from_arg_matches(&amp;mut self, _matches: &amp;clap::ArgMatches) -&gt; Result&lt;(), clap::Error&gt; {
+        unimplemented!()
+    }
+}
+...
+</code></pre>
+<p><a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=07c2cef796ee6df98669e5bc0eaf0288">Playground</a>.</p>
+<p>I see no practical length limit of the command chain, although there are quirks for sure.
+I'm curious how it could solve anybody's problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../near/near-cli-rs/issues/408.html">near/near-cli-rs#408</a> on 2024-12-08 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/willchet">@willchet</a> on 2024-12-20 17:26</div>
+            <div class="timeline-body"><p>I stumbled across this issue within a bioinformatics use-case. We are attempting to write a sequence trimmer which can support primer trimming, barcode trimming, adapter trimming, and hard trimming (each of which would ideally be a separate subcommand). Allowing multiple of these to be chained together would allow for us to achieve good flexibility and efficiency.</p>
+<p>Given that a solution isn't present in Clap yet, do you have any recommendations for work-arounds @epage, or what would be most &quot;idiomatic&quot; within Clap? Some ideas include:</p>
+<ul>
+<li>Support at most four chained commands in a way similar to <a href="https://github.com/near/near-cli-rs/issues/408">here</a>, where there are separate structs representing the first action, which is optionally followed by the second action, etc.</li>
+<li>Use <code>trailing_var_arg</code> or something similar to obtain a <code>Vec&lt;String&gt;</code>, and then use a while loop to keep reparsing it until it is empty.</li>
+</ul>
+<p>/cc @sammysheep @samcwiley</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-12-20 17:33</div>
+            <div class="timeline-body"><p>Thats a question of trade offs.  The first will give you better error messages while the second gives more flexibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../YaLTeR/niri/issues/914.html">YaLTeR/niri#914</a> on 2025-01-12 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5935.html">clap-rs/clap#5935</a> on 2025-03-03 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sjwo">@sjwo</a> on 2025-03-06 21:29</div>
+            <div class="timeline-body"><p>Use case:</p>
+<p>My dissertation research involves code for testing various state space search algorithms against instances from various problem domains. A call always specifies one algorithm, and one instance from a given problem domain. Each algorithm has a different set of parameters, as does each domain.</p>
+<p>Ideally I could write</p>
+<pre><code>#[derive(Parser)]
+struct Cli {
+    #[command(subcommand)]
+    algorithm: Algorithm,
+    #[command(subcommand)]
+    domain: Domain,
+}
+
+enum Algorithm { ... }
+enmu Domain { ... }
+</code></pre>
+<p>with arbitrarily complex enum variants for each algorithm and each domain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6026.html">clap-rs/clap#6026</a> on 2025-06-09 14:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

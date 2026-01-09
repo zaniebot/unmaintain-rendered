@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hard to know how to respond to 3.2.0 deprecation messages in the derive API - clap-rs/clap #3822</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Hard to know how to respond to 3.2.0 deprecation messages in the derive API</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3822">#3822</a>
+        opened by <a href="https://github.com/Alexhuszagh">@Alexhuszagh</a>
+        on 2022-06-13 14:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Alexhuszagh">@Alexhuszagh</a> on 2022-06-13 14:57</div>
+            <div class="timeline-body"><p>Maintainer's note:</p>
+<ul>
+<li>As of 3.2.3, deprecations are behind the <code>deprecated</code> feature which is off by default for now (see #3830)</li>
+<li>Until we improve the messages (if someone steps up to do so), See the <a href="https://epage.github.io/blog/2022/02/clap-31-a-step-towards-40/">release announcement</a> for more details on the deprecations and <a href="https://github.com/EmbarkStudios/cargo-deny/pull/431">cargo-deny</a> for an example of how to migrate to clap 3.2 (with a tl;dr).<ul>
+<li>One simple way of reducing the messages is opting into <code>unstable-v4</code> feature in your <code>Cargo.toml</code>.  See the <a href="https://github.com/clap-rs/clap/blob/master/CHANGELOG.md">changelog</a> for what else this affects.</li>
+</ul>
+</li>
+<li><a href="https://github.com/clap-rs/clap/issues/3822#issuecomment-1155145825">Explanation of assumptions and circumstances that got us here</a></li>
+</ul>
+<hr />
+<h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.61.0 (fe5b13d68 2022-05-18)</p>
+<h3>Clap Version</h3>
+<p>3.2.1 (or 3.2.0)</p>
+<h3>Minimal reproducible code</h3>
+<p><strong>main.rs</strong></p>
+<pre><code class="language-rust">use clap::{Parser, Subcommand};
+
+#[derive(Parser, Debug)]
+#[clap(version, about, long_about = None)]
+struct Cli {
+    #[clap(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand, Debug)]
+enum Commands {
+    /// Simple Command.
+    GetArgs {
+        /// Provide verbose diagnostic output.
+        #[clap(short, long)]
+        verbose: bool,
+        /// Sample optional string.
+        #[clap(long)]
+        value: Option&lt;String&gt;,
+        /// Just a list of valies
+        list: Vec&lt;String&gt;
+    },
+}
+
+fn main() {
+    let cli = Cli::parse();
+    match &amp;cli.command {
+        Commands::GetArgs { verbose, value, list } =&gt; {
+            println!(&quot;verbose={:?}&quot;, verbose);
+            println!(&quot;value={:?}&quot;, value);
+            println!(&quot;list={:?}&quot;, list);
+        }
+    }
+}
+</code></pre>
+<p><strong>Cargo.toml</strong></p>
+<pre><code class="language-toml">[package]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies]
+clap = { version = &quot;3.2.1&quot;, features = [&quot;derive&quot;] }
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Use clap &gt;= 3.2.0, this does not produce any warnings in 3.1.18.</p>
+<pre><code class="language-bash">cargo build
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code class="language-text">warning: use of deprecated unit variant `clap::ArgAction::StoreValue`: Replaced with `ArgAction::Set` or `ArgAction::Append`
+  --&gt; src/main.rs:17:9
+   |
+17 | /         /// Sample optional string.
+18 | |         #[clap(long)]
+19 | |         value: Option&lt;String&gt;,
+   | |_____________________________^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated unit variant `clap::ArgAction::StoreValue`: Replaced with `ArgAction::Set` or `ArgAction::Append`
+  --&gt; src/main.rs:20:9
+   |
+20 | /         /// Just a list of valies
+21 | |         list: Vec&lt;String&gt;
+   | |_________________________^
+
+warning: use of deprecated associated function `clap::ArgMatches::is_present`: Replaced with either `ArgAction::SetTrue` or `ArgMatches::contains_id(...)`
+  --&gt; src/main.rs:16:18
+   |
+16 |         verbose: bool,
+   |                  ^^^^
+
+warning: use of deprecated associated function `clap::Arg::&lt;'help&gt;::validator`: Replaced with `Arg::value_parser(...)`
+  --&gt; src/main.rs:17:9
+   |
+17 | /         /// Sample optional string.
+18 | |         #[clap(long)]
+19 | |         value: Option&lt;String&gt;,
+   | |_____________________________^
+
+warning: use of deprecated associated function `clap::Arg::&lt;'help&gt;::multiple_occurrences`: Replaced with `Arg::action` (Issue #3772)
+  --&gt; src/main.rs:21:15
+   |
+21 |         list: Vec&lt;String&gt;
+   |               ^^^^^^^^^^^
+
+warning: use of deprecated associated function `clap::Arg::&lt;'help&gt;::validator`: Replaced with `Arg::value_parser(...)`
+  --&gt; src/main.rs:20:9
+   |
+20 | /         /// Just a list of valies
+21 | |         list: Vec&lt;String&gt;
+   | |_________________________^
+
+warning: `clap` (bin &quot;clap&quot;) generated 6 warnings
+    Finished dev [unoptimized + debuginfo] target(s) in 0.04s
+     Running `target/debug/clap get-args`
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>None of these warnings should occur, I believe.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p>The debug output is the same as the above output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @Alexhuszagh on 2022-06-13 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "New Version Produces Numerous Spurious Deprecation Warnings" to "Clap 3.2.0Produces Numerous Spurious Deprecation Warnings" by @Alexhuszagh on 2022-06-13 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../cross-rs/cross/pulls/786.html">cross-rs/cross#786</a> on 2022-06-13 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Clap 3.2.0Produces Numerous Spurious Deprecation Warnings" to "Clap 3.2.0 Produces Numerous Spurious Deprecation Warnings in the Derive API" by @Alexhuszagh on 2022-06-13 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../daac-tools/daachorse/pulls/50.html">daac-tools/daachorse#50</a> on 2022-06-13 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../taiki-e/cargo-llvm-cov/pulls/185.html">taiki-e/cargo-llvm-cov#185</a> on 2022-06-13 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-13 15:30</div>
+            <div class="timeline-body"><p>These deprecation warnings are intentional though, due to the derive API wrapping the builder API, the fix might not be as obvious.  We do expect to be adding deprecations every minor release and we recommend not blocking CI on this as the toil adds backpressure on crates to not evolve their API.  See the <a href="https://epage.github.io/blog/2022/02/clap-31-a-step-towards-40/">3.1 announcement for details on this</a>.</p>
+<p>See the <a href="https://epage.github.io/blog/2022/02/clap-31-a-step-towards-40/">release announcement</a> for more details on the deprecations and <a href="https://github.com/EmbarkStudios/cargo-deny/pull/431">cargo-deny</a> for an example of how to migrate to clap 3.2 (with a tl;dr).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-06-13 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Emilgardis">@Emilgardis</a> on 2022-06-13 15:45</div>
+            <div class="timeline-body"><p>~~So how does one fix the deprecation warnings with the above sample code?~~</p>
+<p>nvm, follow the tldr in cargo-deny</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CraZySacX">@CraZySacX</a> on 2022-06-13 15:45</div>
+            <div class="timeline-body"><p>Shouldn't non-deprecated code be &quot;selected&quot; per the docs:  <code>When not present: will auto-select an implementation based on the field type</code></p>
+<p>Based off of this I assumed <code>value-parser</code> is always used, but it seems to use deprecated code when I don't have it explicitly specified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alexhuszagh">@Alexhuszagh</a> on 2022-06-13 15:46</div>
+            <div class="timeline-body"><blockquote>
+<p>So how does one fix the deprecation warnings with the above sample code?</p>
+</blockquote>
+<p>Change everything to say, <code>#[clap(value_parser)</code>, which clutters up everything. See <a href="https://github.com/clap-rs/clap/commit/e23800e10e104084a06e030b205b27620d230415#diff-0ba753707cd668805766f29628117900bf44246034221b044b57948dccf54913">this</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-13 15:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Shouldn't non-deprecated code be &quot;selected&quot; per the docs: When not present: will auto-select an implementation based on the field type</p>
+</blockquote>
+<p>The problem is the new behavior is a breaking change, so you need to opt-in to it.  In clap 4.0, we'll make it the default.</p>
+<blockquote>
+<p>Change everything to say, #[clap(value_parser), which clutters up everything.</p>
+</blockquote>
+<p>Yes, it clutters things up but it also let's you start testing with the clap 4.0 behavior and provide feedback.  If you would rather wait, you also always <code>allow</code> these deprecations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alexhuszagh">@Alexhuszagh</a> on 2022-06-13 15:58</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Shouldn't non-deprecated code be &quot;selected&quot; per the docs: When not present: will auto-select an implementation based on the field type</p>
+</blockquote>
+<p>The problem is the new behavior is a breaking change, so you need to opt-in to it. In clap 4.0, we'll make it the default.</p>
+</blockquote>
+<p>Maybe change the deprecation warnings then in the derive API? Use <code>#[allow(deprecated)]</code> and then change the deprecation warning so you mention the default behavior is changing, and mention that the default behavior is changing in 4.0, you probably want to add <code>value_parser</code>? These deprecation notices are relatively opaque since they reference a different API than the one currently used, and have no mention of how they arise.</p>
+<p>I'm glad to at least see the default behavior will change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Clap 3.2.0 Produces Numerous Spurious Deprecation Warnings in the Derive API" to "Hard to know how to respond to 3.2.0 deprecation messages in the derive API" by @epage on 2022-06-13 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2022-06-13 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-06-13 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-13 16:20</div>
+            <div class="timeline-body"><p>I'll go ahead and re-open this for tracking improving of the deprecations within the derive API.  I'm assuming the easiest way is to wrap the existing calls in a function that allows deprecated in its body but adds its own deprecation message specific to the builder.  The challenges will be to not allow too many deprecation messages and not overly contorting the code base for this short-lived, one off need.</p>
+<p>I'm unsure if I'll get to this but if someone wants to tackle it, I'll help move it along to be merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @epage on 2022-06-13 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3823.html">clap-rs/clap#3823</a> on 2022-06-13 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/rustfmt/pulls/5384.html">rust-lang/rustfmt#5384</a> on 2022-06-13 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../svix/svix-webhooks/pulls/505.html">svix/svix-webhooks#505</a> on 2022-06-13 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aswild">@aswild</a> on 2022-06-13 16:53</div>
+            <div class="timeline-body"><p>I skimmed through the docs but couldn't quite figure this out - what's the difference between <code>value_parser</code> and <code>action</code> when used with defaults in the derive API?</p>
+<p>As an example,</p>
+<pre><code class="language-rust">#[derive(Debug, Parser)]
+struct Args {
+    #[clap(short, long)]
+    flag: bool,
+
+    #[clap(short, long)]
+    optional: Option&lt;PathBuf&gt;,
+
+    required: String,
+}
+</code></pre>
+<p>This is what I'm used to writing in 3.0 and 3.1, but gives deprecation warnings in 3.2. Adding either <code>action</code> or <code>value_parser</code> attributes to each of the fields stops the warnings and seems to produce the same behavior so it's unclear which one should be used (or is more idiomatic).</p>
+<p>On the plus side, the <code>PathBuf</code> argument works with invalid UTF-8 in 3.2 without needing <code>parse(from_os_str)</code> so that's pretty slick.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-13 16:59</div>
+            <div class="timeline-body"><blockquote>
+<p>what's the difference between value_parser and action when used with defaults in the derive API?</p>
+</blockquote>
+<p>From https://github.com/EmbarkStudios/cargo-deny/pull/431</p>
+<blockquote>
+<p>By specifying a default <code>#[clap(action)]</code> or <code>#[clap(value_parser)]</code> attribute, you opt-in to the new behavior that will be the default in clap 4.0.</p>
+</blockquote>
+<p>Either attribute can be set to get the behavior slated for 4.0.  You also can explicitly set your action, parser, or both.</p>
+<p>Example of setting an <a href="https://docs.rs/clap/latest/clap/builder/struct.Arg.html#method.action">action</a></p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+#[clap(author, version, about, long_about = None)]
+struct Cli {
+    #[clap(short, long, action = clap::ArgAction::Count)]
+    verbose: u8,
+}
+
+fn main() {
+    let cli = Cli::parse();
+
+    println!(&quot;verbose: {:?}&quot;, cli.verbose);
+}
+</code></pre>
+<p>Example of setting the <a href="https://docs.rs/clap/latest/clap/builder/struct.Arg.html#method.value_parser">value_parser</a></p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+#[clap(author, version, about, long_about = None)]
+struct Cli {
+    /// Network port to use
+    #[clap(value_parser = clap::value_parser!(u16).range(1..))]
+    port: u16,
+}
+
+fn main() {
+    let cli = Cli::parse();
+
+    println!(&quot;PORT = {}&quot;, cli.port);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/arrow-rs/issues/1867.html">apache/arrow-rs#1867</a> on 2022-06-13 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jplatte">@jplatte</a> on 2022-06-13 17:24</div>
+            <div class="timeline-body"><p>I really dislike having to add a clap attribute for what seems very close to a no-op in behavior of the resulting binary? Will it behave differently at all for <code>bool</code> or <code>String</code> arguments with no clap attributes? Anyways, I guess I'll silence the deprecated lint for now, luckily there's only a handful of structs the <code>#[allow]</code> needs to go on, because I wouldn't want to use <code>#![allow(deprecated)]</code> in a whole module / crate.</p>
+<p>edit: Oh no, <code>#[allow(deprecated)]</code> on a struct that uses a proc-macro derive doesn't seem to apply to the code generated by that derive. I guess I'll update the clap dependency to <code>~3.1</code> then 😕</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-osdev/uefi-rs/pulls/444.html">rust-osdev/uefi-rs#444</a> on 2022-06-13 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-cli/book/issues/147.html">rust-cli/book#147</a> on 2022-06-13 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bevyengine/bevy/pulls/5005.html">bevyengine/bevy#5005</a> on 2022-06-13 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steveklabnik">@steveklabnik</a> on 2022-06-13 19:24</div>
+            <div class="timeline-body"><p>For anyone who's struggling with <code>#[clap(help)]</code>, you'll get something like this:</p>
+<pre><code class="language-text">warning: use of deprecated associated function `clap::Arg::&lt;'help&gt;::validator`: Replaced with `Arg::value_parser(...)`
+  --&gt; cmd\vsc7448\src\lib.rs:97:5
+   |
+97 |     #[clap(help = &quot;MIIM peripheral (0-2)&quot;)]
+   |     ^
+
+</code></pre>
+<p>The solution is to add <code>action</code> on the end:</p>
+<pre><code class="language-rust">#[clap(help = &quot;MIIM peripheral (0-2)&quot;, action)]
+</code></pre>
+<p>at least, it was for me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-13 19:34</div>
+            <div class="timeline-body"><blockquote>
+<p>For anyone who's struggling with #[clap(help)], you'll get something like this:</p>
+</blockquote>
+<p>I really just need to a near total ban on <code>quote!</code> in <code>clap_derive</code> in favor of <code>quote_spanned!</code>.  It is too easy to do a <code>quote</code> and overlook how bad any warnings or errors will be related to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3824.html">clap-rs/clap#3824</a> on 2022-06-13 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steveklabnik">@steveklabnik</a> on 2022-06-13 19:39</div>
+            <div class="timeline-body"><p>Yeah, getting errors like</p>
+<pre><code>warning: use of deprecated associated function `clap::Arg::&lt;'help&gt;::validator`: Replaced with `Arg::value_parser(...)`
+  --&gt; cmd\diagnose\src\lib.rs:53:5
+   |
+53 |     /// number of milliseconds to sleep trying to catch crashes
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+</code></pre>
+<p>is certainly quite confusing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/autumnontape">@autumnontape</a> on 2022-06-13 21:17</div>
+            <div class="timeline-body"><p>It would be nice to be able to set one attribute on an entire struct to opt in to the 4.0 behavior instead of adding <code>action</code> to each field.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-13 21:51</div>
+            <div class="timeline-body"><p>As a step below an attribute, I am experimenting with switching the defaults via the <code>unstable-v4</code> feature.  Overall, that flag should be relatively stable as we only expect to respond to feedback during 3.2.x before working on 4.0.0.</p>
+<p>If need be, we could possibly break it out into a separate feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/luqmana">@luqmana</a> on 2022-06-13 22:53</div>
+            <div class="timeline-body"><p>https://github.com/clap-rs/clap/blob/v3.2.1/examples/derive_ref/README.md says that <code>parse(from_flag = ...)</code> is not deprecated:</p>
+<pre><code>parse(&lt;kind&gt; [= &lt;function&gt;]): clap::Arg::validator and clap::ArgMatches::values_of_t
+
+    Deprecated: except for from_flag or from_occurrences, instead use value_parser
+</code></pre>
+<p>But I'm still getting a deprecated warning on using it:</p>
+<pre><code>warning: use of deprecated associated function `clap::ArgMatches::is_present`: Replaced with either `ArgAction::SetTrue` or `ArgMatches::contains_id(...)`
+</code></pre>
+<p>Relatedly, is there an equivalent to specifying the parse kind with <code>value_parser</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../smithy-lang/smithy-rs/pulls/1464.html">smithy-lang/smithy-rs#1464</a> on 2022-06-13 22:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../daac-tools/daachorse/pulls/52.html">daac-tools/daachorse#52</a> on 2022-06-13 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3827.html">clap-rs/clap#3827</a> on 2022-06-13 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-13 23:55</div>
+            <div class="timeline-body"><blockquote>
+<p>that <code>parse(from_flag = ...)</code> is not deprecated:</p>
+</blockquote>
+<p>Sorry about that, I had forgotten to update it when I had implemented action support.  It is now fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2022-06-14 02:16</div>
+            <div class="timeline-body"><p>Another case that seems unclear. I am using tracing and expose <a href="https://docs.rs/tracing/latest/tracing/level_filters/struct.LevelFilter.html">its LevelFilter type</a> on cli with:</p>
+<pre><code class="language-rust">    /// How verbose logging should be (log level)
+    #[clap(long)]
+    #[clap(default_value_t = LevelFilter::WARN)]
+    #[clap(possible_values = [&quot;off&quot;, &quot;error&quot;, &quot;warn&quot;, &quot;info&quot;, &quot;debug&quot;, &quot;trace&quot;])]
+    pub verbose: LevelFilter,
+</code></pre>
+<p>This type isn't an enum and it's not under my control, so I can't derive/impl anything clap-related on it. However it implemented from_str in the way you expect, so I can just list off the cases I support as strings and clap handles it nice and cleanly.</p>
+<p>Under the new system as far as I can tell I'm just supposed to slap <code>action</code> on the end of everything, which mostly works, but clap still complains:</p>
+<pre><code>warning: use of deprecated associated function `clap::Arg::&lt;'help&gt;::possible_values`: Replaced with `Arg::value_parser(PossibleValuesParser::new(...)).takes_value(true)`
+  --&gt; src\cli.rs:48:12
+   |
+48 |     #[clap(possible_values = [&quot;off&quot;, &quot;error&quot;, &quot;warn&quot;, &quot;info&quot;, &quot;debug&quot;, &quot;trace&quot;])]
+   |            ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+</code></pre>
+<p>As best as I can tell, it wants me to write:</p>
+<pre><code class="language-rust">    /// How verbose logging should be (log level)
+    #[clap(long, value_parser = clap::builder::PossibleValuesParser::new([&quot;off&quot;, &quot;error&quot;, &quot;warn&quot;, &quot;info&quot;, &quot;debug&quot;, &quot;trace&quot;]))]
+    #[clap(default_value_t = LevelFilter::WARN)]
+    pub verbose: LevelFilter,
+</code></pre>
+<p>Which does indeed compile without any complaints, but then my snapshot tests explode at runtime with</p>
+<pre><code>thread 'main' panicked at 'Mismatch between definition and access of `verbose`. 
+Could not downcast to tracing_core::metadata::LevelFilter, need to downcast to alloc::string::String', src\cli.rs:45:5
+</code></pre>
+<p>Am I doing it wrong, or is my usecase no longer supported and I need to write some proxy builder trait impl? Was I holding it wrong all along and just found some accidental magical functionality?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/birkenfeld">@birkenfeld</a> on 2022-06-14 04:55</div>
+            <div class="timeline-body"><p>Adding my 2 cents here, as a derive user I basically have the same experience as others in this issue:</p>
+<ul>
+<li>appearance of heaps of warnings in a semver-compatible update (deprecations shouldn't be done lightly, think of people who <code>#[deny(warnings)]</code> in CI)</li>
+<li>unhelpful deprecation messages for derive users</li>
+<li>forced addition of verbosity with <code>action</code> or <code>value_parser</code> - why does clap need this for a simple <code>bool</code> or <code>String</code> field?</li>
+<li>no clarity which of the two is the way to go (&quot;Either attribute can be set to get the behavior slated for 4.0.&quot; implies they do the same thing)</li>
+<li>all-in-all feeling of being a second-class citizen as a derive user</li>
+</ul>
+<p>My suggestions:</p>
+<ul>
+<li>let the derive machinery add <code>#[allow()]</code> tags for the underlying deprecations, check itself for deprecated behavior and emit e.g. one deprecation warning per struct with a helpful hint.</li>
+</ul>
+<p>Honestly, this shouldn't an &quot;if someone gets around to it&quot; item, this should be a &quot;release blocker&quot; item. Both derive and builder APIs are supposed to be supported equally well.</p>
+<ul>
+<li>make such sweeping deprecations in major versions in the future. Version numbers are cheap, there's no shame in using 4.0 as a transitional release, and 5.0 as the &quot;nirvana&quot; release.</li>
+</ul>
+<p>IMO you'll get a lot of <a href="https://github.com/Byron/gitoxide/commit/ac0528425e455dd2140623decbd946e66d202e8d">this kind of reaction</a> combined with a bad aftertaste, with the current approach.</p>
+<p>Just as an observation, the clap 2+structopt to clap 3.0 upgrade was a breeze in comparison, and that involved a major jump and switching libraries...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../openrr/openrr/pulls/618.html">openrr/openrr#618</a> on 2022-06-14 06:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mozilla/uniffi-rs/pulls/1273.html">mozilla/uniffi-rs#1273</a> on 2022-06-14 07:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../qdrant/qdrant/pulls/686.html">qdrant/qdrant#686</a> on 2022-06-14 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pendulum-project/ntpd-rs/pulls/146.html">pendulum-project/ntpd-rs#146</a> on 2022-06-14 07:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../matrix-org/matrix-rust-sdk/pulls/761.html">matrix-org/matrix-rust-sdk#761</a> on 2022-06-14 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Licenser">@Licenser</a> on 2022-06-14 10:00</div>
+            <div class="timeline-body"><p>I wanted to add here that I share the frustration, I understand that software evolves and needs to move forward but the way this was done seems to be quite painful for users.</p>
+<p>I'll not re-iterate the points previously made about error messages, and verbosity, but add something that I think was missed so far.</p>
+<p>A change like this should have been called out loud and clear in the release notes for 3.2.1. When I saw the deprecation warning I looked over them and (even after reading this thread and with trial and error putting things together) don't see any note in there that could lead a reasonable person to the conclusion of what the upgrade path from <code>3.1</code> to <code>3.2</code> is.</p>
+<p>It doesn't help that the documentation for the function only mentions the arg builder and is written in a way that seems to expect to already understand what they do not explain what they do to someone that doesn't know them yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tremor-rs/tremor-runtime/pulls/1744.html">tremor-rs/tremor-runtime#1744</a> on 2022-06-14 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-14 11:46</div>
+            <div class="timeline-body"><p>@Gankra</p>
+<blockquote>
+<p>Another case that seems unclear. I am using tracing and expose <a href="https://docs.rs/tracing/latest/tracing/level_filters/struct.LevelFilter.html">its LevelFilter type</a> on cli with:</p>
+<pre><code class="language-rust">    /// How verbose logging should be (log level)
+    #[clap(long)]
+    #[clap(default_value_t = LevelFilter::WARN)]
+    #[clap(possible_values = [&quot;off&quot;, &quot;error&quot;, &quot;warn&quot;, &quot;info&quot;, &quot;debug&quot;, &quot;trace&quot;])]
+    pub verbose: LevelFilter,
+</code></pre>
+<p>This type isn't an enum and it's not under my control, so I can't derive/impl anything clap-related on it. However it implemented from_str in the way you expect, so I can just list off the cases I support as strings and clap handles it nice and cleanly.</p>
+</blockquote>
+<p>The new design presupposes the field type when using possible values is a <code>String</code>.  In the short term, you would need to write your own <code>TypedValueParser</code> and do <code>#[clap(value_parser = LevelFilterValueParser)]</code>.  See <a href="https://docs.rs/clap/latest/src/clap/builder/value_parser.rs.html#982">PossibleValuesParser</a> for inspiration.  I'd also say feel free to open an issue requesting native support for this.  I held off on natively supporting this because I was unsure how much it would be needed and what the combination of needs would be (would <code>FromStr</code> be sufficient or would it need to compose with another <code>TypedValueParser</code>, etc).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-14 12:10</div>
+            <div class="timeline-body"><p>3.2.2 was just released:</p>
+<ul>
+<li>It slightly improved the span for the warnings</li>
+<li>Enabling the <code>unstable-v4</code> feature will now opt people into the new default</li>
+</ul>
+<p>I also expanded some in the compatibility section of the changelog for 3.2.0 on this topic.</p>
+<p>The main two things that derive users need to be aware of for <code>unstable-v4</code> are:</p>
+<ul>
+<li>The doc comments for <code>ValueEnum</code> will now show up in the <code>--help</code></li>
+<li>We no longer rename the <code>Arg::id</code>, so the case will need to be changed when referencing an argument/field with <code>ArgGroup</code>, <code>default_value_if</code>, <code>required_if_eq</code>, etc.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/de-vri-es">@de-vri-es</a> on 2022-06-14 12:25</div>
+            <div class="timeline-body"><p>That great news! But I'm still a bit hesitant to add a <code>unstable-v4</code> feature to a dependency. It would still be awesome if there was a smooth upgrade path from 3.1 to 3.2 that doesn't add tons of deprecation warnings, doesn't require cluttering your struct definition and doesn't require enabling unstable <code>clap</code> features :]</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-14 12:27</div>
+            <div class="timeline-body"><p>Yes, I can understand people might not want to opt-in to <code>unstable-v4</code>.  However, it was a fast, fairly safe, and long-term compatible change so I could get it into people's hands quickly while I also look into other options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/de-vri-es">@de-vri-es</a> on 2022-06-14 12:27</div>
+            <div class="timeline-body"><p>Makes sense! Thanks for the quick effort :heart:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-14 12:52</div>
+            <div class="timeline-body"><p>Not to excuse how bad it is but some background on how we got to this</p>
+<p>First, we have not fully defined what our compatibility guarantees are for <code>clap_derive</code>.  For example, is #3280 a breaking change which will change which builder <code>setting</code> is used to mark a subcommand as required?  The new behavior in 3.2 changed a lot of how we configure the builder API under the hood it would be difficult to predict how it might interact with attributes (ie builder methods) the user is setting.  In most cases, people won't notice a difference but out of caution we treated this as a breaking change and wanted people to explicitly opt-in to the new behavior.</p>
+<p>I had considered more targeted deprecation warnings before release.  In the ideal case, we only <code>allow</code> for the implicit builder calls and not for the explicit ones (like <code>possible_values</code>).  Since we can't directly inject warnings, we'd have to inject a method and a call to it that has the warning.  Right now, our macro generates chained method calls which makes it difficult to insert targeted <code>allow</code>s or wrap parts in function calls.  This also goes through different layers that would need to be changed.  When  updating our test suite (and cargo-deny) to the new behavior, it didn't seem all that bad to add a defaulted attribute, especially in comparison to the work it took to update the test suite for the builder API.  Also, we have generally taken the approach of documenting the principles for how <code>clap_derive</code> interacts with the builder API and pointing people to the builder documentation.  This isn't ideal but the cost of maintaining a duplicate of documentation is high.  So with the cost of improving the warnings, our existing approach to documentation, and presumed low cost of updating, we went forward with the approach we did.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3830.html">clap-rs/clap#3830</a> on 2022-06-14 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-14 15:12</div>
+            <div class="timeline-body"><p>https://github.com/clap-rs/clap/pull/3830 will be hiding deprecations behind the <code>deprecated</code> feature flag.  The motivation in the proposal was to allow a staged roll out so we can collect respond to feedback on deprecation messages in the small before showing it to everyone else.  It also has the benefit of allowing people to control when they respond to deprecations (besides <code>#[allow(deprecated)]</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/birkenfeld">@birkenfeld</a> on 2022-06-14 15:46</div>
+            <div class="timeline-body"><p>That's a great response, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-14 16:21</div>
+            <div class="timeline-body"><p>3.2.3 is now released with <code>deprecated</code> off by default (for now).</p>
+<p>I'm leaving this open for further improving the deprecation when it comes time to prepare to update to clap 4.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/de-vri-es">@de-vri-es</a> on 2022-06-14 17:57</div>
+            <div class="timeline-body"><p>Just a though: maybe a nice upgrade path would be to change the scope of the <code>deprecated</code> feature somewhere on a next release. Rather than having the deprecations be conditional on the feature, the derive code could add conditional <code>#[allow(...)]</code> attributes in the generated code.</p>
+<p>I think that way, users of the builder API will get the deprecation warnings as desired, and users of the derive API will probably have a smooth upgrade even to 4.0 without doing anything.</p>
+<p>/edit: alternatively, the <code>deprecated</code> feature could remain what it is, but go to default-on and the derive macro could just add <code>#[allow(...)]</code> statements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-14 18:25</div>
+            <div class="timeline-body"><p>I think the reasons for the <code>deprecated</code> feature flag equally apply to the builder API as well as the derive API.  Keep in mind, for however rough the 3.2 upgrade is for derive users, its much worse for builder users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/de-vri-es">@de-vri-es</a> on 2022-06-14 18:37</div>
+            <div class="timeline-body"><p>Well, I can certainly get on board with having deprecations before a major release. It's nice to get a warning ahead of time.</p>
+<p>But it seems now that the only way to circumvent the warnings with the derive API is to add more attributes that will no longer be needed in 4.0 (unless I misunderstood that, but I'll assume that this is true for now).</p>
+<p>So assuming the <code>deprecate</code> feature goes to default on, the upgrade path for the derive API would be:</p>
+<ul>
+<li>Bump minimum version to <code>3.2</code>.</li>
+<li>Add <code>action</code> or <code>value_parser</code> attributes.</li>
+<li>Wait for <code>4.0</code> and upgrade to it.</li>
+<li>Remove <code>action</code> or <code>value_parser</code> attributes.</li>
+</ul>
+<p>Whereas for the builder API I'm assuming its cleaner (but I don't use it, so I may be wrong):</p>
+<ul>
+<li>Bump minimum version to <code>3.2</code>.</li>
+<li>Switch to new API.</li>
+<li>Wait for <code>4.0</code> and upgrade to it.</li>
+</ul>
+<p>The thing that bugs me with the first upgrade path is temporarily adding and then later removing attributes. With that in mind, it seems reasonable to me to have the derive API add <code>#[allow(...)]</code> attributes, and to deal with potential backwards incompatible fallout at the upgrade to <code>4.0</code>.</p>
+<p>Unless there actually is a way to guide derive users to already fix only the backwards incompatible cases before the <code>4.0</code> release, but I'm not that familiar with the exact details to know if that is possible. If not, I would be happier to be forced to deal with the fallout on the major bump than to add temporary attributes now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steveklabnik">@steveklabnik</a> on 2022-06-14 18:37</div>
+            <div class="timeline-body"><p>~~One thing I'm stuck on with this: it seems to me like the &quot;add <code>action</code> onto everything&quot; steps to move to the new behavior would just lead to then having to remove them all after 4.0 ships. So I've got a bunch of boilerplate now, and then removing a bunch of it in the future. So I'm not sure if that's the intended action for users here or not.~~ @de-vri-es said this better than I did :)</p>
+<p>Additionally, with dozens and dozens and dozens of warnings like I have, ideally there'd be a way to split these sorts of changes from other ones. It's really hard to tell in a sea of warnings which are bigger things, like APIs I need to change, and which are these sort of &quot;opt in&quot; changes.</p>
+<p>That said, 3.2.3 is building with zero warnings (without the feature) so that certainly already made this easier!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-14 18:43</div>
+            <div class="timeline-body"><p>As I'm working to clean up the deprecation messages, I am considering making the default case not warn since the level of breaking change is so minor that people likely don't
+need the deprecation message to help them through the upgrade.</p>
+<p>As I said, <code>deprecated</code> feature does not resolve this issue but reduces the level of impact as I iterate on the deprecation messages and improve them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3832.html">clap-rs/clap#3832</a> on 2022-06-14 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-14 20:03</div>
+            <div class="timeline-body"><p>I just released v3.2.4 which improves the deprecation messages.. You can preview some of the messages in #3832.</p>
+<p>I didn't immediately close this issue as fixed by that PR as I wanted to get a feel for people if its sufficient or if people have feedback on further improvements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/autumnontape">@autumnontape</a> on 2022-06-14 21:20</div>
+            <div class="timeline-body"><p>@de-vri-es This is why I suggested a struct-level attribute. Adding and later removing one line per <code>#[derive(Parser)]</code> struct seems more reasonable to me than modifying many lines per struct and then changing them back later. I'm also not super comfortable with using a non-additive unstable feature for this. I do want to test the new behavior and have updated my projects to use <code>#[clap(action)]</code>, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-14 21:26</div>
+            <div class="timeline-body"><p>@autumnontape if you want to resolve all Builder deprecation messages and not just the ones <code>clap_derive</code> exposes in 3.2.4 with the <code>deprecated</code> feature, you can enable the <code>clap_derive/raw-deprecated</code> feature.</p>
+<p>I am unlikely to add a struct-level opt-in at this point</p>
+<ul>
+<li>I'm assuming most people won't care about <code>clap_derive/raw-deprecated</code> to take advantage of it</li>
+<li>A <code>#[clap(action)]</code> or <code>#[clap(value_parser)]</code> doesn't quite make sense at the struct level.  At the field level, we already have the pattern of bald attributes providing a default behavior.  A different name would need to be discussed</li>
+<li>We'd then have to plumb this new attribute in</li>
+</ul>
+<p>In balance, the costs don't seem worth the benefit at this time.  If there is enough demand, we can re-evaluate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../databendlabs/openraft/pulls/374.html">databendlabs/openraft#374</a> on 2022-06-15 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Licenser">@Licenser</a> on 2022-06-15 08:29</div>
+            <div class="timeline-body"><p>👏 for the great handling of this! (got to be said :) )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steveklabnik">@steveklabnik</a> on 2022-06-15 19:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I didn't immediately close this issue as fixed by that PR as I wanted to get a feel for people if its sufficient or if people have feedback on further improvements.</p>
+</blockquote>
+<p>I think this works pretty well! a simple <code>clap = { version = &quot;3.2.3&quot;, features = [&quot;deprecated&quot;] }</code> and I'm off to the races. Errors like this:</p>
+<pre><code class="language-text">warning: use of deprecated unit variant `clap::ArgAction::StoreValue`: Replaced with `ArgAction::Set` or `ArgAction::Append`
+  --&gt; cmd\rendmp\src\lib.rs:36:5
+   |
+36 |     bus: Option&lt;String&gt;,
+   |     ^^^
+</code></pre>
+<p>This message is <em>way</em> better. It would be even nicer if there was a way to actually explain what's going on here; it's confusing at first because this sort of option has <em>no</em> clap annotations on it, so it's weird to get a message about a thing I'm not even using (directly, of course, but if I was new I wouldn't have known this). I don't think this is something you can improve, though :)</p>
+<p>The only other things I'm unsure about is not related to those messages; I opened a discussion so as not to pollute this ticket with that stuff.</p>
+<p>Thanks again, I have to second @Licenser, this is a great handling of this issue :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-15 20:00</div>
+            <div class="timeline-body"><blockquote>
+<p>This message is way better. It would be even nicer if there was a way to actually explain what's going on here; it's confusing at first because this sort of option has no clap annotations on it, so it's weird to get a message about a thing I'm not even using (directly, of course, but if I was new I wouldn't have known this). I don't think this is something you can improve, though :)</p>
+</blockquote>
+<p>It should be explaining what is going on and this is a bug.  Could you post a reproduction case?  The messages should either be about attributes you set or be in described in derive terms.  Somehow, this one slipped through.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steveklabnik">@steveklabnik</a> on 2022-06-15 20:24</div>
+            <div class="timeline-body"><p>You know what, it <em>might</em> be my error. I will do so, though I can't right this moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steveklabnik">@steveklabnik</a> on 2022-06-15 22:36</div>
+            <div class="timeline-body"><p>Okay so, I'm kinda stumped at the moment. When i try and create a standalone reproduction, it doesn't warn. The original project is in a workspace, so I thought maybe I had two different versions of clap, but verified that that wasn't an issue either. Will work on reducing tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steveklabnik">@steveklabnik</a> on 2022-06-16 17:20</div>
+            <div class="timeline-body"><p>Ah! For some reason, I was still using 3.2.3, how embarrassing. Everything is great now that I'm on 3.2.5. And also, thanks for improving that one other message too:</p>
+<pre><code class="language-text">warning: use of deprecated function `&lt;QspiArgs as clap::Args&gt;::augment_args::parse_try_from_str`: Replaced with `#[clap(value_parser = ...)]`
+   --&gt; cmd\qspi\src\lib.rs:110:30
+    |
+110 |         parse(try_from_str = parse_int::parse)
+    |                              ^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+</code></pre>
+<p>mentioning the attribute syntax is great here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../oxidecomputer/humility/pulls/161.html">oxidecomputer/humility#161</a> on 2022-06-16 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../paritytech/cumulus/pulls/1370.html">paritytech/cumulus#1370</a> on 2022-06-17 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../paritytech/smoldot/pulls/2390.html">paritytech/smoldot#2390</a> on 2022-06-20 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-11 21:58</div>
+            <div class="timeline-body"><p>I'm going to consider this resolved at this point.</p>
+<p>Feel free to open new issues for specific points of feedback on this process.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-07-11 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../moonbeam-foundation/nimbus/pulls/68.html">moonbeam-foundation/nimbus#68</a> on 2022-07-16 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4132.html">clap-rs/clap#4132</a> on 2022-08-27 02:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dburgener/cascade/pulls/68.html">dburgener/cascade#68</a> on 2022-11-16 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hyperium/hyper/issues/3052.html">hyperium/hyper#3052</a> on 2022-12-21 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5422.html">clap-rs/clap#5422</a> on 2024-03-25 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsal">@tsal</a> on 2024-07-13 19:08</div>
+            <div class="timeline-body"><p>Sure would be nice if examples using <code>is_present</code> got removed from the <code>clap_complete</code> docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-07-13 22:03</div>
+            <div class="timeline-body"><p>Could you point to the example you are referring to?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

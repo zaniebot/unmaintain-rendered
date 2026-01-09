@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't select a prerelease if a stable version is available - astral-sh/uv #191</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't select a prerelease if a stable version is available</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/191">#191</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-10-26 08:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2023-10-26 08:37</div>
+            <div class="timeline-body"><p>We currently select prereleases when we shouldn't, e.g. <code>defusedxml==0.8.0rc2</code> over <code>defusedxml==0.7.1</code> for <code>python3-openid</code>.</p>
+<p>We need to allow prereleases when there are no stable releases (this used to be the case with black) or if explicitly requested. I think requiring that all requirements for a package must have a version as prerelease to opt-in to prereleases makes most sense, but that might be hard to in pubgrub. E.g. <code>a&gt;=2.0a1,!=3.0</code> and <code>a&gt;=2.0b1</code> would select <code>2.0</code> (and only that version) in prelease mode, while <code>a&gt;=2.0a1</code> and <code>a&gt;=1.0</code> wouldn't. <code>a&gt;=2.0a1</code> and <code>a&gt;=1.0a1</code> is an edge case, but arguably it shouldn't either.</p>
+<p>https://github.com/konstin/monotrail-resolve/blob/4256ce0a27f964dbc4ab6f255cdc352a8b42b1b0/resolve_prototype/resolve.py#L379-L409</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-26 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Feature complete" by @charliermarsh on 2023-10-26 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-10-27 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-27 00:40</div>
+            <div class="timeline-body"><p>I can add this to the candidate selection struct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-27 00:58</div>
+            <div class="timeline-body"><p>Okay, I now understand why this is hard. And reading this Posy comment confirmed what I'm running into:</p>
+<pre><code>### Prereleases in specifiers
+
+According to PEP 440, specifiers like `&gt;= 2.0a1` are supposed to
+change meaning depending on whether or not the literal version
+contains a prerelease marker. So like, `&gt;= 2.0` *doesn't* match
+`2.1a1`, because that's a prerelease, and regular specifiers never
+match prereleases. But `&gt;= 2.0a1` *does* match `2.1a1`, because the
+presence of a prerelease in the specifier makes it legal for
+prerelease versions to match.
+  
+I don't think I can actually implement this using the `pubgrub`
+system, since it collapses multiple specifiers for the same package
+into a single set of valid ranges, and there's no way to preserve the
+information about which ranges were derived from specifiers that
+included prerelease suffixes, and which ranges weren't.
+  
+And if you think about it... that's actually because while this rule is
+well-defined for a specifier in isolation, it doesn't really make sense when
+you're talking about multiple packages with their own dependencies. E.g., if
+package A depends on `foo == 2.0a1`, and package B depends on `foo &gt;= 1.0`, then
+is it valid to install foo v2.0a1? It feels like it ought to match all the
+requirements, but technically it doesn't... according to a strict reading of PEP
+440, once any package says `foo &gt;= 1.0`, it becomes impossible to ever use a
+`foo` pre-release anywhere in the dependency tree, no matter what other packages
+say. Pre-release validity is just inherently a global property, not a property
+of individual specifiers.
+  
+So I'm thinking we should use the rule:
+
+- If all available versions are pre-releases, then pre-releases are valid
+- If we're updating a set of pins that already contain a pre-release,
+  then pre-releases are valid (or at least that specific pre-release
+  is)
+- Otherwise, to get pre-releases, you have to set some
+  environment-level config like `allow-prerelease = [&quot;foo&quot;]`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-27 00:59</div>
+            <div class="timeline-body"><p>For now, I think we should just do: if all available versions are pre-releases, allow them; otherwise, require a global flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-27 01:00</div>
+            <div class="timeline-body"><p>(Poetry requires you to mark specific packages as allowing pre-releases, which is much easier.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-27 01:02</div>
+            <div class="timeline-body"><p>We can also do the thing described above where we allow a pre-release if it's already present in a spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-27 01:03</div>
+            <div class="timeline-body"><p>Actually, we could also support <code>foo == 2.0.a1</code> if we want. Like, if a user explicitly asks for a pre-release, we <em>could</em> support that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-27 01:06</div>
+            <div class="timeline-body"><p>Okay, I'm going to do this:</p>
+<ul>
+<li>If all available versions for a package are pre-releases, then accept pre-releases.</li>
+<li>If a pre-release was already chosen in the lockfile, allow that pre-release.</li>
+<li>If a package was specified as a <em>direct dependency</em> with a pre-release marker in its version specifier, allow pre-releases for that package. (I don't think we can really support this for transitive dependencies.)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/216.html">astral-sh/uv#216</a> on 2023-10-29 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-29 18:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

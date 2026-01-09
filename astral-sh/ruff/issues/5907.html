@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>incorrect ranges for constants in joined strings? - astral-sh/ruff #5907</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>incorrect ranges for constants in joined strings?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5907">#5907</a>
+        opened by <a href="https://github.com/davidszotten">@davidszotten</a>
+        on 2023-07-20 07:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-07-20 07:43</div>
+            <div class="timeline-body"><p>input</p>
+<pre><code>f&quot;a{b}&quot;
+</code></pre>
+<p>ast</p>
+<pre><code>Module(
+    ModModule {
+        range: 0..7,
+        body: [
+            Expr(
+                StmtExpr {
+                    range: 0..7,
+                    value: JoinedStr(
+                        ExprJoinedStr {
+                            range: 0..7,
+                            values: [
+                                Constant(
+                                    ExprConstant {
+                                        range: 0..7,            &lt;---- is this correct (the entire string)? or should it be 2..3 ?
+                                        value: Str(
+                                            &quot;a&quot;,
+                                        ),
+                                        kind: None,
+                                    },
+                                ),
+                                FormattedValue(
+                                    ExprFormattedValue {
+                                        range: 0..7,
+                                        value: Name(
+                                            ExprName {
+                                                range: 4..5,
+                                                id: &quot;b&quot;,
+                                                ctx: Load,
+                                            },
+                                        ),
+                                        conversion: None,
+                                        format_spec: None,
+                                    },
+                                ),
+                            ],
+                        },
+                    ),
+                },
+            ),
+        ],
+        type_ignores: [],
+    },
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-20 07:57</div>
+            <div class="timeline-body"><p>Yeah, this looks wrong. We need to fix this in our RustPython fork.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2023-07-20 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-20 08:47</div>
+            <div class="timeline-body"><p>This should be the relevant code:</p>
+<p>https://github.com/astral-sh/RustPython-Parser/blob/2d1f69cbb9e331bd7b29253e7f101b47d92bcbff/parser/src/string.rs#L678-L710</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5913.html">astral-sh/ruff#5913</a> on 2023-07-20 10:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-20 15:27</div>
+            <div class="timeline-body"><p>@davidszotten are you interested in implementing the necessary changes in our parser or would you prefer if I or konsti tackle this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2023-07-20 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-07-20 16:15</div>
+            <div class="timeline-body"><p>i started having a look but i'll admit i'm struggling a bit. i guess i need to first fix the ranges e.g. in https://github.com/astral-sh/RustPython-Parser/blob/2d1f69cbb9e331bd7b29253e7f101b47d92bcbff/parser/src/string.rs#L480 and then extract/track those to use in <code>take_current</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/RustPython-Parser/pulls/33.html">astral-sh/RustPython-Parser#33</a> on 2023-07-20 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-21 06:57</div>
+            <div class="timeline-body"><blockquote>
+<p>i started having a look but i'll admit i'm struggling a bit. i guess i need to first fix the ranges e.g. in <a href="https://github.com/astral-sh/RustPython-Parser/blob/2d1f69cbb9e331bd7b29253e7f101b47d92bcbff/parser/src/string.rs#L480">astral-sh/RustPython-Parser@<code>2d1f69c</code>/parser/src/string.rs#L480</a> and then extract/track those to use in <code>take_current</code>?</p>
+</blockquote>
+<p>Could be. I haven't worked on this parser part before, but I took a quick look. I ended up having the same experience as you... the code is kind of hard to understand. I would need to do some debugging myself to familiarize myself with the code. Let me know if you would find this useful or if you want to spend some more time yourself figuring this out.</p>
+<p>What I noticed is that the <code>range</code> function</p>
+<p>https://github.com/astral-sh/RustPython-Parser/blob/2d1f69cbb9e331bd7b29253e7f101b47d92bcbff/parser/src/string.rs#L75-L77</p>
+<p>Returns the range from <code>self.start..self.end</code>. Maybe it is sufficient to change it to <code>self.location..self.end</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-07-21 07:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe it is sufficient to change it to self.location..self.end?</p>
+</blockquote>
+<p>i don't think that does the right thing</p>
+<p>i got something reasonable working last night i think and raised a pr</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-21 09:19</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/RustPython-Parser/pull/33</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-07-21 10:20</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/astral-sh/RustPython-Parser/pull/33">astral-sh/RustPython-Parser#33</a></p>
+</blockquote>
+<p>sorry for not explicitly posting it, thought the back references github add were enough. will be more explicit in the future</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5976.html">astral-sh/ruff#5976</a> on 2023-07-22 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-02 18:54</div>
+            <div class="timeline-body"><p>I think this is now fixed (cc @dhruvmanila).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-02 18:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

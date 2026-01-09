@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync failing due to cuda dependencies on MAC when I specifically put them in a cuda group - astral-sh/uv #11607</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync failing due to cuda dependencies on MAC when I specifically put them in a cuda group</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11607">#11607</a>
+        opened by <a href="https://github.com/spkgyk">@spkgyk</a>
+        on 2025-02-18 22:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spkgyk">@spkgyk</a> on 2025-02-18 22:58</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Here is my config:</p>
+<pre><code>[project]
+name = &quot;inference-server&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;==3.12.9&quot;
+dependencies = [
+    &quot;cellpose&lt;3.1&quot;,
+    &quot;colored&gt;=2.3.0&quot;,
+    &quot;docker&gt;=7.1.0&quot;,
+    &quot;fastapi&gt;=0.115.8&quot;,
+    &quot;fire&gt;=0.7.0&quot;,
+    &quot;google-cloud-storage&gt;=3.0.0&quot;,
+    &quot;monai&gt;=1.4.0&quot;,
+    &quot;onnx&gt;=1.17.0&quot;,
+    &quot;onnxruntime&gt;=1.20.1&quot;,
+    &quot;pytorch-ignite&gt;=0.5.1&quot;,
+    &quot;ray[serve]&gt;=2.42.1&quot;,
+    &quot;segment-anything&gt;=1.0&quot;,
+    &quot;tensorboard&gt;=2.19.0&quot;,
+    &quot;torch&gt;=2.6.0&quot;,
+    &quot;torchaudio&gt;=2.6.0&quot;,
+    &quot;torchvision&gt;=0.21.0&quot;,
+    &quot;tritonclient[http, grpc]&gt;=2.54.0&quot;,
+]
+
+[dependency-groups]
+dev = [&quot;pre-commit&gt;=4.1.0&quot;, &quot;pytest&gt;=8.3.4&quot;, &quot;pytest-cov&gt;=6.0.0&quot;, &quot;ruff&gt;=0.9.6&quot;]
+cuda = [
+    &quot;cuda-python&gt;=12.8.0&quot;,
+    &quot;onnx-graphsurgeon&gt;=0.5.5&quot;,
+    &quot;polygraphy&gt;=0.49.14&quot;,
+    &quot;tensorrt-cu12&gt;=10.8.0.43&quot;,
+    &quot;tensorrt-cu12-bindings&gt;=10.8.0.43&quot;,
+    &quot;tensorrt-cu12-libs&gt;=10.8.0.43&quot;,
+    &quot;tritonclient[all]&gt;=2.54.0&quot;
+]
+</code></pre>
+<p>Im on a mac m3. When I run uv sync I get the error:</p>
+<pre><code> uv sync
+  × Failed to build `tensorrt-cu12-libs==10.8.0.43`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `wheel_stub.buildapi.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-manylinux_2_28_x86_64.whl against tag py3-none-manylinux_2_28_x86_64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-manylinux_2_28_x86_64.whl against tag py2-none-manylinux_2_28_x86_64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-manylinux_2_31_aarch64.whl against tag py3-none-manylinux_2_31_aarch64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-manylinux_2_31_aarch64.whl against tag py2-none-manylinux_2_31_aarch64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-win_amd64.whl against tag py3-none-win_amd64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-win_amd64.whl against tag py2-none-win_amd64
+        File &quot;/Users/cvaxh/.cache/uv/builds-v0/.tmp6mLMjB/lib/python3.12/site-packages/wheel_stub/wheel.py&quot;, line 249, in download_wheel
+          return download_manual(wheel_directory, distribution, version, config)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/cvaxh/.cache/uv/builds-v0/.tmp6mLMjB/lib/python3.12/site-packages/wheel_stub/wheel.py&quot;, line 185, in download_manual
+          raise RuntimeError(f&quot;Didn't find wheel for {distribution} {version}&quot;)
+      Traceback (most recent call last):
+        File &quot;/Users/cvaxh/.cache/uv/builds-v0/.tmp6mLMjB/lib/python3.12/site-packages/wheel_stub/wheel.py&quot;, line 249, in download_wheel
+          return download_manual(wheel_directory, distribution, version, config)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/cvaxh/.cache/uv/builds-v0/.tmp6mLMjB/lib/python3.12/site-packages/wheel_stub/wheel.py&quot;, line 185, in download_manual
+          raise RuntimeError(f&quot;Didn't find wheel for {distribution} {version}&quot;)
+      RuntimeError: Didn't find wheel for tensorrt-cu12-libs 10.8.0.43
+
+      During handling of the above exception, another exception occurred:
+
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+        File &quot;/Users/cvaxh/.cache/uv/builds-v0/.tmp6mLMjB/lib/python3.12/site-packages/wheel_stub/buildapi.py&quot;, line 29, in build_wheel
+          return download_wheel(pathlib.Path(wheel_directory), config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/cvaxh/.cache/uv/builds-v0/.tmp6mLMjB/lib/python3.12/site-packages/wheel_stub/wheel.py&quot;, line 251, in download_wheel
+          report_install_failure(distribution, version, config, exception_context)
+        File &quot;/Users/cvaxh/.cache/uv/builds-v0/.tmp6mLMjB/lib/python3.12/site-packages/wheel_stub/error.py&quot;, line 67, in report_install_failure
+          raise InstallFailedError(
+      wheel_stub.error.InstallFailedError:
+      *******************************************************************************
+
+      The installation of tensorrt-cu12-libs for version 10.8.0.43 failed.
+
+      This is a special placeholder package which downloads a real wheel package
+      from https://pypi.nvidia.com/. If https://pypi.nvidia.com/ is not reachable, we
+      cannot download the real wheel file to install.
+
+      You might try installing this package via
+      ```
+      $ pip install --extra-index-url https://pypi.nvidia.com/ tensorrt-cu12-libs
+      ```
+
+      Here is some debug information about your platform to include in any bug
+      report:
+
+      Python Version: CPython 3.12.9
+      Operating System: Darwin 24.3.0
+      CPU Architecture: arm64
+      nvidia-smi command not found. Ensure NVIDIA drivers are installed.
+
+      *******************************************************************************
+
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `tensorrt-cu12-libs` (v10.8.0.43) was included because `inference-server:cuda` (v0.1.0) depends on `tensorrt-cu12-libs&gt;=10.8.0.43`
+</code></pre>
+<p>I also tried adding sys_platform != 'darwin' and sys_platform == 'linux' and it still fails. Note that this only happens if I do not have a uv.lock in my folder. I think I understand that since I dont have a uv.lock, its checking everything, but since I'm on a mac for local dev and a linux machine for remote work, it would be nice if this could work regardless.</p>
+<p>I'm not sure if this is a bug or I'm just doing something wrong, please inform me!</p>
+<p>Cheers</p>
+<h3>Platform</h3>
+<p>Darwin 24.3.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.5.31 (e38ac4900 2025-02-12)</p>
+<h3>Python version</h3>
+<p>3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @spkgyk on 2025-02-18 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-19 00:06</div>
+            <div class="timeline-body"><p>This is an unfortunate consequence of how <code>tensorrt-cu12</code> works today. You can track progress in https://github.com/NVIDIA/TensorRT/issues/4352 and https://github.com/wheelnext/wheel-stub/issues/21. The basic issue is: if we don't already have a lockfile, we need to generate one. And to generate one, we have to determine the dependencies for each package you depend on (even if it won't be installed on the current platform, since the lockfile is meant to be used on all platforms). To determine the dependencies for <code>tensorrt-cu12</code>, we have to ask that package for its metadata. And the way the package works today, it won't return its dependencies unless you're on a supported platform. So even if you don't need to install it on macOS, <code>tensorrt-cu12</code> will error out on a platform like macOS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spkgyk">@spkgyk</a> on 2025-02-19 00:27</div>
+            <div class="timeline-body"><p>Makes sense, thanks for explaining that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @spkgyk on 2025-02-19 00:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

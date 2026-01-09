@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TC001-3 runtime-evaluated-decorators not working when an instance is created via a function. - astral-sh/ruff #20637</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>TC001-3 runtime-evaluated-decorators not working when an instance is created via a function.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20637">#20637</a>
+        opened by <a href="https://github.com/eseglem">@eseglem</a>
+        on 2025-09-29 18:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eseglem">@eseglem</a> on 2025-09-29 18:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Using FastAPI routers that have been created via a function seem to result in TC001-3 errors where using the class directly does not. I tried dozens of iterations of settings in my actual project to try and find one that worked, but was unable to find anything that worked. I have set up a few very minimal examples re-creating the issue in the Ruff Playground.</p>
+<ul>
+<li>Calling <code>APIRouter</code> directly works correctly with no errors: https://play.ruff.rs/2d99831a-42e9-44fe-818a-2a4a15b2a3ea</li>
+<li>Using a function to create the <code>APIRouter</code> results in errors: https://play.ruff.rs/86ca5e05-b4dd-4b3a-a1b9-5eff615478f9</li>
+</ul>
+<p>~~I am less confident it is not a settings issue related to naming in a single file test app, but I also just tried it as a subclass of <code>APIRouter</code> which results in the same errors: https://play.ruff.rs/5ba29657-3a1f-4b2e-9478-94df4c6581df~~ It was a settings issue fixed by using <code>&quot;&lt;filename&gt;.MyAPIRouter.get&quot;</code> in the settings.</p>
+<h3>Version</h3>
+<p>v0.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-29 20:23</div>
+            <div class="timeline-body"><p>Thanks for the report! I poked around a bit, and it looks like this is a limitation in how we resolve decorators:</p>
+<p>https://github.com/astral-sh/ruff/blob/00927943026af2a2a5071acc5d35879579a4d410/crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs#L181-L191</p>
+<p>Possibly we could also try to resolve the type too, but I did find a workaround. If I put your function example into a file called <code>try.py</code>, I can avoid the diagnostic by setting <code>runtime-evaluated-decorators</code> to <code>[&quot;try.new_router.get&quot;]</code>. Basically, as shown in the code above, we resolve the path to the attribute, including the current file's module and the function, rather than resolving the type annotations on the function.</p>
+<p>This is a pretty deep implementation detail, but this works in the <a href="https://play.ruff.rs/dc82080d-9897-4b8f-b9cb-9f1b63aa1d1a">playground</a> with <code>&lt;filename&gt;</code> as the module name too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-09-29 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eseglem">@eseglem</a> on 2025-09-29 21:43</div>
+            <div class="timeline-body"><p>Thank you for the response and the workaround. I can confirm that the workaround works. Adding <code>[&quot;router.new_router.get&quot;, &quot;router.new_router.post&quot;, ...]</code> to the <code>runtime-evaluated-decorators</code> does stop the errors from occurring.</p>
+<p>I was focused on the typing of the router, and adding the instances of it to the settings (like <code>&quot;&lt;filename&gt;.router.get&quot;</code>). It did not even cross my mind to add the function to the settings like that.</p>
+<p>As a user I was expecting it to resolve the type and only need to add the <code>fastapi.APIRouter.*</code> decorators to the settings. If this is not going to change, I think it could be worth updating the docs to explain it does not resolve the type and include some additional examples such as this one.</p>
+<p>I am sure it has its own issues, but the other thing I had been hoping would work, was a regex (<code>[&quot;*.get&quot;, &quot;*.post&quot;, ...]</code>) for the decorators. Especially when I was thinking I needed to add every instance of the router.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-29 21:55</div>
+            <div class="timeline-body"><p>No problem, glad it helped!</p>
+<p>I found it surprising that we weren't resolving the types too. It might be worth looking into that, but updating the docs seems like a good idea if not.</p>
+<p>There was some previous discussion of a regex on the PR adding the snippet above (https://github.com/astral-sh/ruff/pull/15204#issuecomment-2565732182) and in https://github.com/astral-sh/ruff/pull/15060#issuecomment-2565719324. It seems like we were hesitant to add it at the time, but maybe we can revisit it if checking the types doesn't pan out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/21282.html">astral-sh/ruff#21282</a> on 2025-11-05 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-11-06 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2025-11-06 13:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

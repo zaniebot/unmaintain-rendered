@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv resolves wrong version when using git source with a subdirectory - astral-sh/uv #16343</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv resolves wrong version when using git source with a subdirectory</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16343">#16343</a>
+        opened by <a href="https://github.com/Jonas-Puksta-Sensmetry">@Jonas-Puksta-Sensmetry</a>
+        on 2025-10-17 13:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Jonas-Puksta-Sensmetry">@Jonas-Puksta-Sensmetry</a> on 2025-10-17 13:15</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The issue is that uv is unable to add a specific version of a git dependency to my project, at least when that dependency is in a subdirectory.</p>
+<p>I will also note that I experienced some inconsistency with this bug. In my real project, uv fails to install the newer version, but in the small reproduction example below, it fails to install the older version, at least on my machine.</p>
+<p>My reproduction might not be minimal, but the reproduction is still very small. It might be that having the dependency be in the git subdirectory is not necessary, but in my real project I only bump into this issue in that case.</p>
+<p>To reproduce:</p>
+<ol>
+<li>Clone https://github.com/Jonas-Puksta-Sensmetry/Bug-Repro</li>
+<li><code>cd bug_repro</code></li>
+<li><code>uv sync</code>. This should install <code>dependency</code> version 0.2.0.</li>
+<li><code>rm -rf .venv &amp;&amp; uv cache clean &amp;&amp; uv sync --upgrade-package dependency==0.1.0 --verbose</code>. I delete the virtual environment and clean the uv cache to make sure that the issue is not due to caching (or at least not the virtual environment or uv caching).</li>
+</ol>
+<p>The last command fails to install the specified version. The last commit on the <code>dependency-update</code> branch has <code>dependency</code> with version 0.2.0, but the previous commit has <code>dependency</code> with version 0.1.0, so the command should have succeeded.
+The command returns this on my machine</p>
+<pre><code>Clearing cache at: /Users/&lt;username&gt;/.cache/uv
+Removed 306 files (1.1MiB)
+DEBUG uv 0.9.3 (Homebrew 2025-10-15)
+DEBUG Acquired shared lock for `/Users/&lt;username&gt;/.cache/uv`
+DEBUG Found project root: `/Users/&lt;username&gt;/workspace/temp/Bug-Repro/bug_repro`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/Users/&lt;username&gt;/workspace/temp/Bug-Repro/bug_repro`
+DEBUG Reading Python requests from version file at `/Users/&lt;username&gt;/workspace/temp/Bug-Repro/bug_repro/.python-version`
+DEBUG Using Python request `3.12` from version file at `.python-version`
+DEBUG Checking for Python environment at: `.venv`
+DEBUG Searching for Python 3.12 in managed installations or search path
+DEBUG Searching for managed installations at `/Users/&lt;username&gt;/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.12.7-macos-aarch64-none`
+DEBUG Found `cpython-3.12.7-macos-aarch64-none` at `/Users/&lt;username&gt;/.local/share/uv/python/cpython-3.12.7-macos-aarch64-none/bin/python3.12` (managed installations)
+Using CPython 3.12.7
+Creating virtual environment at: .venv
+DEBUG Assessing Python executable as base candidate: /Users/&lt;username&gt;/.local/share/uv/python/cpython-3.12.7-macos-aarch64-none/bin/python3.12
+DEBUG Using base executable for virtual environment: /Users/&lt;username&gt;/.local/share/uv/python/cpython-3.12.7-macos-aarch64-none/bin/python3.12
+DEBUG Released lock at `/var/folders/jh/j3jxh9hd2r78m7pqngd4sggr0000gn/T/uv-d85b16bb447657d7.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG Using request timeout of 30s
+DEBUG Resolving despite existing lockfile due to `--upgrade-package`
+DEBUG Found static `pyproject.toml` for: bug-repro @ file:///Users/&lt;username&gt;/workspace/temp/Bug-Repro/bug_repro
+DEBUG No workspace root found, using project root
+DEBUG Attempting GitHub fast path for: dependency @ git+https://github.com/Jonas-Puksta-Sensmetry/Bug-Repro.git@dependency-update#subdirectory=dependency
+DEBUG Querying GitHub for commit at: https://api.github.com/repos/Jonas-Puksta-Sensmetry/Bug-Repro/commits/dependency-update
+DEBUG Fetching source distribution from Git: https://github.com/Jonas-Puksta-Sensmetry/Bug-Repro.git
+DEBUG Acquired lock for `https://github.com/jonas-puksta-sensmetry/bug-repro`
+DEBUG Updating Git source `https://github.com/Jonas-Puksta-Sensmetry/Bug-Repro.git`
+   Updating https://github.com/Jonas-Puksta-Sensmetry/Bug-Repro.git (dependency-update)
+DEBUG Skipping GitHub fast path; full commit hash provided: 55892996fa61091116070d8c4084d3dbfeab9854
+DEBUG Performing a Git fetch for: https://github.com/Jonas-Puksta-Sensmetry/Bug-Repro.git
+DEBUG Reset /Users/&lt;username&gt;/.cache/uv/git-v0/checkouts/54f6d4333d072f10/5589299 to 55892996fa61091116070d8c4084d3dbfeab9854
+    Updated https://github.com/Jonas-Puksta-Sensmetry/Bug-Repro.git (55892996fa61091116070d8c4084d3dbfeab9854)
+DEBUG Released lock at `/Users/&lt;username&gt;/.cache/uv/git-v0/locks/54f6d4333d072f10`
+DEBUG Acquired lock for `/Users/&lt;username&gt;/.cache/uv/sdists-v9/git/684fcdf79d1ef081/55892996fa610911`
+DEBUG Found static `pyproject.toml` for: dependency @ git+https://github.com/Jonas-Puksta-Sensmetry/Bug-Repro.git@dependency-update#subdirectory=dependency
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `/Users/&lt;username&gt;/.cache/uv/sdists-v9/git/684fcdf79d1ef081/55892996fa610911/.lock`
+DEBUG Solving with installed Python version: 3.12.7
+DEBUG Solving with target Python version: &gt;=3.12
+DEBUG Adding direct dependency: bug-repro*
+DEBUG Searching for a compatible version of bug-repro @ file:///Users/&lt;username&gt;/workspace/temp/Bug-Repro/bug_repro (*)
+DEBUG Adding direct dependency: dependency*
+DEBUG Adding direct dependency: dependency&gt;=0.1.0, &lt;0.1.0+
+DEBUG Searching for a compatible version of dependency @ git+https://github.com/Jonas-Puksta-Sensmetry/Bug-Repro.git@dependency-update#subdirectory=dependency (&gt;=0.1.0, &lt;0.1.0+)
+DEBUG No compatible version found for: dependency
+DEBUG Recording unit propagation conflict of dependency from incompatibility of (bug-repro)
+DEBUG Searching for a compatible version of bug-repro @ file:///Users/&lt;username&gt;/workspace/temp/Bug-Repro/bug_repro (&lt;0.1.0 | &gt;0.1.0)
+DEBUG No compatible version found for: bug-repro
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of dependency==0.1.0 and your project depends on dependency==0.1.0, we can conclude that your project's requirements are unsatisfiable.
+DEBUG Released lock at `/Users/&lt;username&gt;/workspace/temp/Bug-Repro/bug_repro/.venv/.lock`
+DEBUG Released lock at `/Users/&lt;username&gt;/.cache/uv/.lock`
+</code></pre>
+<p>The issue seems similar to https://github.com/astral-sh/uv/issues/16110.</p>
+<h3>Platform</h3>
+<p>MacOS Darwin 24.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.9.3 (Homebrew 2025-10-15)</p>
+<h3>Python version</h3>
+<p>3.12.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Jonas-Puksta-Sensmetry on 2025-10-17 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-20 09:45</div>
+            <div class="timeline-body"><p>This seems correct: The line below declares a dependency on https://github.com/Jonas-Puksta-Sensmetry/Bug-Repro/blob/dependency-update/dependency/pyproject.toml, which is at version 0.2.0, which forced version 0.2.0 for <code>dependency</code>, so no version 0.1.0 is available. For uv, URL dependencies such as Git URL override index dependencies and once a URL is selected, this URL is used over any index entries.</p>
+<pre><code>[tool.uv.sources]
+dependency = { git = &quot;https://github.com/Jonas-Puksta-Sensmetry/Bug-Repro.git&quot;, subdirectory = &quot;dependency&quot;, branch = &quot;dependency-update&quot; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jonas-Puksta-Sensmetry">@Jonas-Puksta-Sensmetry</a> on 2025-10-23 08:07</div>
+            <div class="timeline-body"><p>Does uv always use the newest commit from the specified branch? There was an older commit on the same branch which was at version <code>0.1.0</code> (see https://github.com/Jonas-Puksta-Sensmetry/Bug-Repro/blob/ec9c37fd21ee39449a56b11909de7969d7d277b6/dependency/pyproject.toml#L10), so I thought <code>0.1.0</code> could be resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-23 09:29</div>
+            <div class="timeline-body"><p>We consider the branch as a pointer to a specific commit (the head of the branch), similar to how the Git CLI behaves; I don't think it's feasible performance-wise for uv to go through the branch to enumerate version numbers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jonas-Puksta-Sensmetry">@Jonas-Puksta-Sensmetry</a> on 2025-10-23 10:41</div>
+            <div class="timeline-body"><p>That's fair.
+My initial problem was that uv couldn't update a dependency to the newest commit from a branch. When trying to reproduce that, it could update to the newest, but not go back to an older one, so I thought these issues might have the same cause.
+That's not the case, and since I am unable to find a small example of my initial issue (and I was able to work around it), I will close this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Jonas-Puksta-Sensmetry on 2025-10-23 10:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

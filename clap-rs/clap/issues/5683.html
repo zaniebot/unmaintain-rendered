@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move `ContextKind` and `ContextValue` into one enum - clap-rs/clap #5683</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move `ContextKind` and `ContextValue` into one enum</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/5683">#5683</a>
+        opened by <a href="https://github.com/TheTollingBell">@TheTollingBell</a>
+        on 2024-08-18 23:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TheTollingBell">@TheTollingBell</a> on 2024-08-18 23:07</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Describe your use case</h3>
+<p>When looking at the clap error formatters there are lots of non-rusty things such as multiple <code>if let</code> and non-exhaustive enum matching when dealing with contexts:
+https://github.com/clap-rs/clap/blob/d81158599f5b3a2434845a1731377eae84780b9a/clap_builder/src/error/format.rs#L105-L106</p>
+<p>Not only is this code messy, it also makes using contexts generally annoying for an end user without digging through the code to see which contexts have been implemented and what kinds of values they can take.</p>
+<h3>Describe the solution you'd like</h3>
+<p>This could be done better by merging <code>ContextKind</code> and <code>ContextValue</code> into one enum as well as switching the code in existing formatters to use <code>match</code> instead of <code>Error.get()</code>. (Unless there is some reason that it is being used as such.)</p>
+<p>Enforcing that certain <code>ContextKind</code> be restricted to only certain values would make the context API more accessible as well as allowing a singular match instead of multiple if statements in formatters. This can be done with a single <code>Context</code> enum that contains the <code>ContextKind</code> and multiple nested <code>&lt;context type&gt;ContextValue</code> enums.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @TheTollingBell on 2024-08-18 23:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2024-08-19 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2024-08-19 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2024-08-19 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-19 16:30</div>
+            <div class="timeline-body"><blockquote>
+<p>it also makes using contexts generally annoying for an end user without digging through the code to see which contexts have been implemented and what kinds of values they can take.</p>
+</blockquote>
+<p>Are you referring to a person creating an error or rendering it?  Some of your comments make it sound like both perspectives and I'm wanting to better understand your use case.  For whichever side you are on, what problem are you solving by using this API?</p>
+<blockquote>
+<p>Enforcing that certain ContextKind be restricted to only certain values would make the context API more accessible as well as allowing a singular match instead of multiple if statements in formatters.</p>
+</blockquote>
+<p>Something to consider is how far do we go on being more statically typed.  The <code>Context</code> is dependent on the <code>ErrorKind</code>, so we could make an <code>Error</code> enum with variants that have variants of context which have variants of values.  That is a large explosion of types that require hand implementing every combination of variants without the ability to reuse code for the default implementation (which runs counter to our goals of reducing binary size and compile times).  Due to those goals, we also wanted to allow people to have an even cheaper implementation of error reporting that renders as key-value pairs.  Admittedly, people have likely not taken us up on that.</p>
+<p>This API also gives us a lot more flexibility to evolve things without committing to any specific details, allowing us to gracefully degrade.</p>
+<p>Originally, our error type was not open to extension for content or rendering.  Opening it up was to offer some extra flexibility for more advanced cases and is lower in our design priority list compared to other values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-19 16:30</div>
+            <div class="timeline-body"><p>As for some of the details...</p>
+<blockquote>
+<p>non-exhaustive enum matching</p>
+</blockquote>
+<p>With your proposed API, users rendering their own errors would still need to be non-exhaustive because we'd use <code>#[non_exhaustive]</code> to allow evolving the API.</p>
+<blockquote>
+<p>s switching the code in existing formatters to use match instead of Error.get(). (Unless there is some reason that it is being used as such.)</p>
+</blockquote>
+<p><code>Error</code> is presented as a container of context, with the Kinds being unique keys.  This becomes a bit messier to enforce uniqueness with a single <code>Context</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheTollingBell">@TheTollingBell</a> on 2024-08-19 22:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you referring to a person creating an error or rendering it?</p>
+</blockquote>
+<p>I'm kind of referring to both sides, not only were contexts not well documented for me as an end-user (what was and wasn't supported by each formatter). It was annoying to improve it because it was hard to communicate to a potential end-user what should and shouldn't be used. If not this, then at least provide documentation over either the formatter implementations or the <code>ContextKind</code>/<code>ContextValue</code> enums so it is clear what is and isn't implemented.</p>
+<blockquote>
+<p>large explosion of types that require hand implementing every combination of variants without the ability to reuse code for the default implementation</p>
+</blockquote>
+<p>While this concern is valid, as it stands the context API is relatively hard to use and unspecific. Perhaps a feature-gated <code>context!</code> macro which would allow compile time errors if an invalid combination of <code>ContextKind</code>/<code>ContextValue</code> are given?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-20 16:27</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm kind of referring to both sides, not only were contexts not well documented for me as an end-user (what was and wasn't supported by each formatter).</p>
+</blockquote>
+<p>Sounds like your primary interest is in generating errors and in support of improving that, the complexity of implementing a formatter was a concern.</p>
+<p>For generating errors, could you expand on why you are doing so?  What problems are you solving within your application?  Understanding use cases is important for knowing what to improve, how to improve it, and how urgent improving it is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheTollingBell">@TheTollingBell</a> on 2024-08-20 22:12</div>
+            <div class="timeline-body"><blockquote>
+<p>For generating errors, could you expand on why you are doing so?</p>
+</blockquote>
+<p>I was trying to write a <code>TypedValueParser</code> for a type that could be parsed directly from a string. I used <code>NonEmptyStringValueParser</code> to parse to a <code>String</code> which I then converted to the type. When I saw the context API I thought it would be useful in order to include extra data about what step of parsing went wrong but in whatever &quot;standardized&quot; way <code>clap</code> thought I should.</p>
+<p>Maybe the above usage is a misuse, but it seemed simpler and more lightweight to use the auto-generated messages instead of something custom. To add to the confusion, the example given <a href="https://docs.rs/clap/4.5.16/clap/builder/trait.TypedValueParser.html#example">here</a> uses <code>ContextKind::InvalidArg</code> which doesn't even show anything when using the default formatter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-21 15:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I was trying to write a TypedValueParser for a type that could be parsed directly from a string. I used NonEmptyStringValueParser to parse to a String which I then converted to the type. When I saw the context API I thought it would be useful in order to include extra data about what step of parsing went wrong but in whatever &quot;standardized&quot; way clap thought I should.</p>
+</blockquote>
+<p>Thanks for providing this context!</p>
+<p>You can do <code>NonEmptyStringValueParser::new().try_map(...)</code> to report your own error and have it wrapped in all of the clap error report trappings.  What &quot;special&quot; reporting were you looking at doing on top of what this provides?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheTollingBell">@TheTollingBell</a> on 2024-08-21 17:32</div>
+            <div class="timeline-body"><blockquote>
+<p>What &quot;special&quot; reporting were you looking at doing on top of what this provides?</p>
+</blockquote>
+<p><code>try_map()</code> is great but providing context like alternative arguments as well as formatting an error in the correct style for a formatter makes the context API feel much more polished than just dumping an unformatted string into an <code>Err</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-22 18:59</div>
+            <div class="timeline-body"><p>Could you provide concrete examples of what you are trying to get out of context, of that special reporting?  Its helpful to understand the specific problems you are running into to make sure we are on the same page and can consider the right set of solutions, rather than solutions for a situation I guessed that isn't what you are doing.</p>
+<p>For example, looking over <code>format.rs</code>, I don't see a reason to use it.  If I were, the things that seem the most relevant are</p>
+<ul>
+<li><code>ContextKind::Suggested*</code></li>
+<li>Showing possible values or subcommands</li>
+<li>Adding in the coloring</li>
+<li>Staying character for character consistent with clap</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheTollingBell">@TheTollingBell</a> on 2024-08-23 23:20</div>
+            <div class="timeline-body"><pre><code class="language-rust">impl TypedValueParser for MonitorParser {
+    type Value = &amp;'static Monitor;
+
+    fn parse_ref(
+        &amp;self,
+        cmd: &amp;Command,
+        arg: Option&lt;&amp;Arg&gt;,
+        value: &amp;OsStr,
+    ) -&gt; Result&lt;Self::Value, Error&gt; {
+        // guaranteed to be non-empty by parser
+        let value = NonEmptyStringValueParser::new().parse_ref(cmd, arg, value)?;
+        let monitors = get_monitors();
+
+        match monitors {
+            Ok(monitors) =&gt; monitors.iter().find(|v| v.name == value).ok_or(
+                Error::new(ErrorKind::ValueValidation)
+                    .with_context(ContextKind::InvalidArg, ContextValue::String(value))
+                    .with_context(
+                        ContextKind::ValidValue,
+                        ContextValue::Strings(monitors.iter().map(|v| v.name.clone()).collect()),
+                    )
+                    .with_cmd(cmd),
+            ),
+
+            Err(e) =&gt; Err(Error::new(ErrorKind::ValueValidation)
+                .with_context(
+                    ContextKind::Custom,
+                    ContextValue::String(format!(&quot;Error whilst fetching monitors: {e}&quot;)),
+                )
+                .with_cmd(cmd)),
+        }
+    }
+}
+</code></pre>
+<h3>Expected Result:</h3>
+<p>Some kind of output saying <code>Value Validation failed</code> alongside all of the contexts given.</p>
+<h3>Actual Result:</h3>
+<pre><code>error: invalid value for one of the arguments
+
+For more information, try '--help'.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-27 20:24</div>
+            <div class="timeline-body"><p>As a heads up, I was primarily looking for your &quot;Expected Result&quot; which you left out.</p>
+<p>I'm assuming you are looking for</p>
+<pre><code>error: invalid value 'slo' for '-O &lt;option&gt;'
+  [possible values: slow, fast, \&quot;ludicrous speed\&quot;]
+
+  tip: a similar value exists: 'slow'
+
+For more information, try '--help'.
+</code></pre>
+<p>(with arguments/values actually related to your code)</p>
+<p>I'm assuming the use of <code>InvalidArg</code> when it should be <code>InvalidValue</code> is an example of why you are looking for things to be more strictly defined.</p>
+<p>I'm also assuming the reason the possible values aren't defined ahead of time is that its a slow, failable operation.</p>
+<p>A workaround would be to have your <code>TypedValueParser</code> create a <code>PossibleValuesParser</code> on demand to report everything.</p>
+<p>This type of pattern seems reasonable enough that I wonder if we should have built-in support, e.g. <code>PossibleValuesParser</code> could accept a closure of possible values.  While it doesn't solve the bigger picture, it makes reasonably expected cases much more ergonomic than a big picture solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheTollingBell">@TheTollingBell</a> on 2024-08-27 22:32</div>
+            <div class="timeline-body"><p>I think that this a great compromise between an in-depth system and nothing. I would be happy to write a PR adding a <code>LazyPossibleValuesParser</code> that would allow the passing of a closure that returns all possible values. The only question I have is handling <code>Result</code> types from the closure.</p>
+<p>Most likely same technique used <code>TypedValueParser::try_map()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-28 19:18</div>
+            <div class="timeline-body"><p>Yes, feel free to post a PR for <code>LazyPossibleValuesParser</code> and to handle errors like <code>try_map</code>.</p>
+<p>I was originally hoping to have this built-in to <code>PossibleValuesParser</code> but that would require boxing the <code>Fn</code> which would require being more strict on the error type as well as other compromises.  In a future release we could merge the two but I think there would be problems with making the constructor for <code>LazyPossibleValuesParser</code> that accepts possible values.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

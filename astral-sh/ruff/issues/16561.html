@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`useless-try-except (TRY203)` false negative? - astral-sh/ruff #16561</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`useless-try-except (TRY203)` false negative?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16561">#16561</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2025-03-08 04:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/harupy">@harupy</a> on 2025-03-08 04:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>X-post from https://github.com/guilatrova/tryceratops/issues/76. In the following code, should <a href="https://docs.astral.sh/ruff/rules/useless-try-except/"><code>useless-try-except</code></a> flag the last except handler be flagged as a violation? It currently doesn't.</p>
+<pre><code class="language-python">try:
+    foo()
+except ValueError:  # not useless
+    print(&quot;Do not throw&quot;)  
+except TypeError:   # is this useless? (**trailing** immediate-raise handler)
+    raise
+</code></pre>
+<p><code>useless-try-except</code> requires all except handlers to be useless.</p>
+<p>https://github.com/astral-sh/ruff/blob/036102186392f1263774bfd42d78acc65c0641b8/crates/ruff_linter/src/rules/tryceratops/rules/useless_try_except.rs#L69-L70</p>
+<h3>Playground reproduction</h3>
+<p>https://play.ruff.rs/44084483-f2df-424a-87ca-dc5d6884aebe</p>
+<h3>Version</h3>
+<p>v0.9.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-08 05:22</div>
+            <div class="timeline-body"><p>The second handler is, in fact, not useless:</p>
+<pre><code class="language-python">class CustomError(ValueError, TypeError): ...
+
+try:
+    raise CustomError
+except ValueError:
+    print('ValueError')               # This is reached
+except TypeError:
+    print('TypeError &amp; ~ValueError')  # This is not
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2025-03-08 05:52</div>
+            <div class="timeline-body"><p>@InSyncWithFoo by the second handler, you mean <code>except TypeError:</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-08 07:03</div>
+            <div class="timeline-body"><blockquote>
+<p>by the second handler, you mean <code>except TypeError:</code>?</p>
+</blockquote>
+<p>Yes, that's the one. It only catches <code>TypeError</code>s that are not <code>ValueError</code>s, and so is not useless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2025-03-08 07:11</div>
+            <div class="timeline-body"><p>I see, so</p>
+<pre><code class="language-python">class CustomError(ValueError, TypeError): ...
+
+try:
+    raise CustomError
+except ValueError:
+    print('ValueError')
+except TypeError:
+    raise
+</code></pre>
+<p>isn't equivalent to:</p>
+<pre><code class="language-python">class CustomError(ValueError, TypeError): ...
+
+try:
+    raise CustomError
+except ValueError:
+    print('ValueError')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-08 07:26</div>
+            <div class="timeline-body"><p>Actually... ignore my previous comments. It <em>is</em> useless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2025-03-08 07:33</div>
+            <div class="timeline-body"><p>Thanks for the confirmation :）</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2025-03-08 07:46</div>
+            <div class="timeline-body"><p>Can I file a PR to fix this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16564.html">astral-sh/ruff#16564</a> on 2025-03-08 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-08 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-08 18:10</div>
+            <div class="timeline-body"><p>It seems this is intentional, see https://github.com/astral-sh/ruff/pull/4461#discussion_r1195753624</p>
+<pre><code class="language-py">Class BothError(ValueError, TypeError): ...
+try:
+    raise BothError
+except TypeError:   # this is not useless because it suppress the error in `ValueError`
+    raise
+except ValueError:  # not useless
+    print(&quot;Do not throw&quot;)  
+</code></pre>
+<p>I think there's an argument whether <em>unnecessary raise</em> that are the last handlers should be disallowed. Is this what you are suggesting in this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2025-03-08 23:10</div>
+            <div class="timeline-body"><p>@MichaReiser Yes, that's what I'm suggesting in this issue. Here's another example:</p>
+<pre><code class="language-python">try:
+    ...
+except Exception:
+    pass # swallow the error
+except ValueError:
+    # ValueError should not be swallowed
+    raise
+    # This is likely a mistake,
+    # should be moved above the first handler
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

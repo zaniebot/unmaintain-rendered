@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal: Project structure - astral-sh/ruff #2059</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Proposal: Project structure</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2059">#2059</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-01-21 13:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-01-21 13:25</div>
+            <div class="timeline-body"><p>Hi</p>
+<p>I'm new to ruff and started exploring its code base. I noticed during the exploration that I struggled with the many different folders. There's a root <code>src</code> folder, but there are Rust crates on the same level.</p>
+<p>I previously worked at <a href="https://github.com/rome/tools">Rome</a> and found the structure intuitive (obviously, I'm very biased). Rome's folder structure is inspired by <a href="https://github.com/rust-lang/rust-analyzer">rust-analyzer</a>.</p>
+<ul>
+<li><code>crates</code>: Contains all Rust crates that are part of the shipped <code>ruff</code> product.</li>
+<li><code>xtask</code>: Code for tasks like code-gen, scripts ran as part of CI, etc.</li>
+<li>Tests were placed in the <code>tests</code> folder of the relevant crates OR in the <code>xtask</code> directory</li>
+</ul>
+<p>Applied to ruff, the structure would change as follow:</p>
+<ul>
+<li><code>src</code> -&gt; <code>crates/ruff/src</code> (and other files related to the <code>ruff</code> crate)</li>
+<li><code>flake8_to_ruff</code> -&gt; <code>crates/flake8_to_ruff</code></li>
+<li><code>ruff_cli</code> -&gt; <code>crates/ruff_cli</code></li>
+<li><code>ruff_dev</code> -&gt; <code>xtask/ruff_dev</code></li>
+<li><code>ruff_macros</code> -&gt; <code>crates/ruff_macros</code></li>
+</ul>
+<p>I would need to take a closer look at the (assumingly) tests in the <code>resources</code> directory to decide where to place them best.</p>
+<p>The main idea is to reduce the top-level folders.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 14:45</div>
+            <div class="timeline-body"><p>Welcome :)</p>
+<p>I'm a fan of this project structure and this proposal more broadly.</p>
+<p>For posterity: there's a little bit of discussion around structure <a href="https://github.com/charliermarsh/ruff/pull/1816#discussion_r1068261414">here</a> and I proposed something kinda similar <a href="https://github.com/charliermarsh/ruff/issues/1547#issuecomment-1379110720">here</a> (both very hard to find, took me a while to search through the repo).</p>
+<p>The <code>xtask</code> thing is interesting -- is that a common convention? Something specific to <code>rust-analyzer</code>? Right now, we have it setup such that you can run <code>cargo dev generate-all</code> to execute the <code>ruff_dev</code> binary, which feels ok from a workflow perspective, although I'm open to changing it if there's precedent from other crates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">core</span> added by @charliermarsh on 2023-01-21 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-22 04:09</div>
+            <div class="timeline-body"><p>Personally I'd rather keep the crates in the top-level directory. I think it's nice to nice to see them immediately on the main repository page instead of just <code>crates/</code>.  But I can see how having <code>src</code> on a different level than the <code>src</code> directories of the other crates can be confusing ... that could be fixed by just moving <code>src</code> to <code>ruff/src</code> (and this would also let us have a different README for the library than for the main ruff project).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-01-22 09:32</div>
+            <div class="timeline-body"><p>I found the <a href="https://matklad.github.io/2021/08/22/large-rust-workspaces.html">blog post</a> from matklad explaining the motivation behind the folder structure in more detail.</p>
+<blockquote>
+<p>The xtask thing is interesting -- is that a common convention?</p>
+</blockquote>
+<p>I don't think it is but it refers to the approach that matlab describes <a href="https://github.com/matklad/cargo-xtask">here</a>. The idea is that you write your &quot;scripts&quot; in rust and use cargo to run them. That's why <code>cargo dev generate-all</code> should continue to work (it may be worth renaming the command to <code>codegen</code>). An alternative to <code>xtask</code> is <a href="https://github.com/casey/just"><code>just</code></a> which is more powerful.</p>
+<blockquote>
+<p>Personally I'd rather keep the crates in the top-level directory</p>
+</blockquote>
+<p>That should work well for now, but I'm concerned that it doesn't scale well with more crates, resulting in many top-level folders (Rome has 36 crates after 1.5 years). Many crates are desired for sane <a href="https://matklad.github.io/2021/09/04/fast-rust-builds.html#Compilation-Model-Crates">compile times</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-22 10:17</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm concerned that it doesn't scale well with more crates, resulting in many top-level folders (Rome has 36 crates after 1.5 years)</p>
+</blockquote>
+<p>I postulate that:</p>
+<ol>
+<li>rule implementations are the part of ruff that has, is and will be what most ruff contributors contribute to, and that</li>
+<li>rule implementations are the part of ruff that will continue to be expanded and improved while the rest of ruff will stabilize over time in comparison.</li>
+</ol>
+<p>I therefore believe that we should make our rule implementations easy to find by just looking at the top-level directory and was concerned that moving our rule implementations to a <code>crates/</code> directory with an ever growing number of crates would make them harder to find.</p>
+<p>However I just had the realization that this could be addressed by simply creating a symbolic link in the top-level directory. So I'd be alright with a structure like:</p>
+<pre><code>.
+├── crates/
+│   ├── ruff/
+│   │   └── src/
+│   │       └── rules/
+│   ├── ruff_cli/
+│   └── ruff_dev/
+└── rules -&gt; crates/ruff/src/rules/
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2088.html">astral-sh/ruff#2088</a> on 2023-01-22 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2435.html">astral-sh/ruff#2435</a> on 2023-02-01 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-06 17:48</div>
+            <div class="timeline-body"><p>@MichaReiser - Do you think it's worth closing this for now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-06 17:50</div>
+            <div class="timeline-body"><p>Yeah. The <code>ruff</code> crate is still large but I think we can split it up incrementally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-04-06 17:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

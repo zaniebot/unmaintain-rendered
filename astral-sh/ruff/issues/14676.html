@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`TC006` in `0.8.1` is too broad - astral-sh/ruff #14676</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`TC006` in `0.8.1` is too broad</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14676">#14676</a>
+        opened by <a href="https://github.com/dangotbanned">@dangotbanned</a>
+        on 2024-11-29 11:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dangotbanned">@dangotbanned</a> on 2024-11-29 11:45</div>
+            <div class="timeline-body"><p>I was surprised by some of these <em>&quot;fixes&quot;</em> adding quotes</p>
+<p>The reasoning in <a href="https://docs.astral.sh/ruff/rules/runtime-cast-value/#why-is-this-bad">why-is-this-bad</a> makes me think the concern is regarding parameterizing a generic, or maybe time spent by <code>ruff</code>/ a type checker to see if the symbol is available at runtime?</p>
+<details><summary>diff (<a href="https://github.com/vega/altair"><code>altair</code></a>)</summary>
+<p>
+
+<pre><code class="language-diff">diff --git a/altair/utils/core.py b/altair/utils/core.py
+index 1cac486b6..66a559fad 100644
+--- a/altair/utils/core.py
++++ b/altair/utils/core.py
+@@ -383,7 +383,7 @@ def sanitize_pandas_dataframe(df: pd.DataFrame) -&gt; pd.DataFrame:  # noqa: C901
+         # We know that the column names are strings from the isinstance check
+         # further above but mypy thinks it is of type Hashable and therefore does not
+         # let us assign it to the col_name variable which is already of type str.
+-        col_name = cast(str, dtype_item[0])
++        col_name = cast(&quot;str&quot;, dtype_item[0])
+         dtype = dtype_item[1]
+         dtype_name = str(dtype)
+         if dtype_name == &quot;category&quot;:
+diff --git a/altair/utils/mimebundle.py b/altair/utils/mimebundle.py
+index 575b3f71c..56cd05a7e 100644
+--- a/altair/utils/mimebundle.py
++++ b/altair/utils/mimebundle.py
+@@ -140,7 +140,7 @@ def spec_to_mimebundle(
+     if format in {&quot;png&quot;, &quot;svg&quot;, &quot;pdf&quot;, &quot;vega&quot;}:
+         return _spec_to_mimebundle_with_engine(
+             spec,
+-            cast(Literal[&quot;png&quot;, &quot;svg&quot;, &quot;pdf&quot;, &quot;vega&quot;], format),
++            cast(&quot;Literal['png', 'svg', 'pdf', 'vega']&quot;, format),
+             internal_mode,
+             engine=engine,
+             format_locale=embed_options.get(&quot;formatLocale&quot;, None),
+diff --git a/altair/utils/plugin_registry.py b/altair/utils/plugin_registry.py
+index 81e34cb8d..91e9462eb 100644
+--- a/altair/utils/plugin_registry.py
++++ b/altair/utils/plugin_registry.py
+@@ -134,7 +134,7 @@ class PluginRegistry(Generic[PluginT, R]):
+                 f&quot;https://docs.astral.sh/ruff/rules/assert/&quot;
+             )
+             deprecated_warn(msg, version=&quot;5.4.0&quot;)
+-            self.plugin_type = cast(IsPlugin, _is_type(plugin_type))
++            self.plugin_type = cast(&quot;IsPlugin&quot;, _is_type(plugin_type))
+         else:
+             self.plugin_type = plugin_type
+         self._active: Plugin[R] | None = None
+@@ -214,7 +214,7 @@ class PluginRegistry(Generic[PluginT, R]):
+                     raise ValueError(self.entrypoint_err_messages[name]) from err
+                 else:
+                     raise NoSuchEntryPoint(self.entry_point_group, name) from err
+-            value = cast(PluginT, ep.load())
++            value = cast(&quot;PluginT&quot;, ep.load())
+             self.register(name, value)
+         self._active_name = name
+         self._active = self._plugins[name]
+diff --git a/altair/vegalite/v5/api.py b/altair/vegalite/v5/api.py
+index 909ed621e..5b3d93f86 100644
+--- a/altair/vegalite/v5/api.py
++++ b/altair/vegalite/v5/api.py
+@@ -798,7 +798,7 @@ def _parse_when_compose(
+     if constraints:
+         iters.append(_parse_when_constraints(constraints))
+     r = functools.reduce(operator.and_, itertools.chain.from_iterable(iters))
+-    return t.cast(_expr_core.BinaryExpression, r)
++    return t.cast(&quot;_expr_core.BinaryExpression&quot;, r)
+ 
+ 
+ def _parse_when(
+@@ -1107,7 +1107,7 @@ class Then(ConditionLike, t.Generic[_C]):
+         conditions = self.to_dict()
+         current = conditions[&quot;condition&quot;]
+         if isinstance(current, list):
+-            conditions = t.cast(_Conditional[_Conditions], conditions)
++            conditions = t.cast(&quot;_Conditional[_Conditions]&quot;, conditions)
+             return ChainedWhen(condition, conditions)
+         elif isinstance(current, dict):
+             cond = _reveal_parsed_shorthand(current)
+@@ -1384,7 +1384,7 @@ def param(
+             parameter.empty = empty
+         elif empty in empty_remap:
+             utils.deprecated_warn(warn_msg, version=&quot;5.0.0&quot;)
+-            parameter.empty = empty_remap[t.cast(str, empty)]
++            parameter.empty = empty_remap[t.cast(&quot;str&quot;, empty)]
+         else:
+             raise ValueError(warn_msg)
+ 
+@@ -3086,7 +3086,7 @@ class TopLevelMixin(mixins.ConfigMethodMixin):
+             verbose_composition = chart.transform_filter((datum.year == 2000) &amp; (datum.sex == 1))
+             chart.transform_filter(year=2000, sex=1)
+         &quot;&quot;&quot;
+-        if depr_filter := t.cast(Any, constraints.pop(&quot;filter&quot;, None)):
++        if depr_filter := t.cast(&quot;Any&quot;, constraints.pop(&quot;filter&quot;, None)):
+             utils.deprecated_warn(
+                 &quot;Passing `filter` as a keyword is ambiguous.\n\n&quot;
+                 &quot;Use a positional argument for `&lt;5.5.0` behavior.\n&quot;
+@@ -3986,7 +3986,7 @@ class Chart(
+                 pass
+ 
+         # As a last resort, try using the Root vegalite object
+-        return t.cast(_TSchemaBase, core.Root.from_dict(dct, validate))
++        return t.cast(&quot;_TSchemaBase&quot;, core.Root.from_dict(dct, validate))
+ 
+     def to_dict(
+         self,
+
+</code></pre>
+</p>
+</details> 
+
+<p>I'm unsure the <a href="https://github.com/astral-sh/ruff/pull/14634/files#diff-3b0e267bd6580825e19a1c7ee865d577f77ca9acdaf94e7056a2540c4601e63d">new tests</a> sufficiently cover some of these cases:</p>
+<ul>
+<li>symbols declared within the same file, that are not forward references</li>
+<li><code>builtins</code> with no free type variables like <code>str</code></li>
+<li>There are less of these, but the same for <code>typing</code> special types like <code>Any</code></li>
+</ul>
+<h3>Alternative</h3>
+<p>Update the docs for <a href="https://docs.astral.sh/ruff/rules/runtime-cast-value/"><code>TC006</code></a> to give more detail on how cases like these would benefit from the fix.
+I'm a big fan of <code>ruff</code> and feel like I've learned a lot from reading the <a href="https://docs.astral.sh/ruff/rules/">rules</a>; so I'm open to this simply being something that hasn't <em>clicked</em> for me yet</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-29 12:24</div>
+            <div class="timeline-body"><p>@Daverball, I'm curious for your thoughts here. The rule's docs say:</p>
+<blockquote>
+<p><code>typing.cast()</code> does not do anything at runtime, so the time spent on evaluating the type expression is wasted.</p>
+</blockquote>
+<p>That implies that the concern is that a lot of time might be spent evaluating subscript expressions for generics in things like</p>
+<pre><code class="language-py">def f(y):
+    x = cast(Foo[str], y)
+</code></pre>
+<p>It's true that evaluating the subscript expression will take the same amount of time for a first-party generic defined in the same module as it will for a third-party generic imported from another file. However, I feel like the specialising interpreter on Python 3.11+ is probably very good at making sure that repeated subscripts and attribute expressions inside <code>cast()</code> calls are optimised, and I expect this to only get better once the new JIT is stabilised. So I'm quite sympathetic to this issue. I feel like unless it actually results in you being able to remove imports from a module, this rule is currently quite noisy -- I feel like it's asking you to make your code somewhat uglier for not much benefit. What do you think?</p>
+<blockquote>
+<p>There are less of these, but the same for <code>typing</code> special types like <code>Any</code></p>
+</blockquote>
+<p>One common reason that people quote special types from the typing module is that it means that you can sometimes get rid of all imports from typing altogether from a module, which can speed up that module's import time. That doesn't apply here, though, since we know that the user is using <code>typing.cast()</code>, which means <code>typing</code> must already have been imported, and we won't be able to remove the import just by quoting some type expressions in a few places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`TC006` fix in `0.8.1` is too broad" to "`TC006` in `0.8.1` is too broad" by @AlexWaygood on 2024-11-29 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-11-29 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dangotbanned">@dangotbanned</a> on 2024-11-29 12:29</div>
+            <div class="timeline-body"><p>Thanks for the quick response @AlexWaygood</p>
+<p>I only had one question regarding:</p>
+<blockquote>
+<p>One common reason that people quote special types from the typing module is that it means that you can sometimes get rid of all imports from typing altogether from a module, which can speed up that module's import time.</p>
+</blockquote>
+<p>@AlexWaygood would this still apply when you'd need to import <code>typing</code> for <code>typing.TYPE_CHECKING</code> anyway?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-29 12:31</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>One common reason that people quote special types from the typing module is that it means that you can sometimes get rid of all imports from typing altogether from a module, which can speed up that module's import time.</p>
+</blockquote>
+<p><a href="https://github.com/AlexWaygood">@AlexWaygood</a> would this still apply when you'd need to import <code>typing</code> for <code>typing.TYPE_CHECKING</code> anyway?</p>
+</blockquote>
+<p>There's a little hack you can do for mypy where you can replace <code>if typing.TYPE_CHECKING</code> with <code>if False</code>, if you really want to get rid of all typing imports entirely ;) I don't know if it works for other type checkers too; I don't think it's standardised.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-29 12:34</div>
+            <div class="timeline-body"><p>But yeah, if you have one import from <code>typing</code> then you may as well have them all. Importing one thing from <code>typing</code> shouldn't be noticeably faster than importing 20 things from <code>typing</code>. The slow thing about imports in Python is acquiring the lock on <code>sys.modules</code>, parsing the Python code in the other module, creating the module object to store in <code>sys.modules</code>, etc. Once the module has been fully loaded, it's just a matter of attribute access on that module and storing the results of those attribute accesses in the global dictionary of the module you're importing things into -- that should be fairly cheap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-29 12:51</div>
+            <div class="timeline-body"><p>No matter what you do, a quoted expression will always be fastest since, even if it's just one symbol you're getting rid of, the name lookup is more expensive than just putting a static value on the stack, while the optimizing compiler may alleviate this to a degree, where in the best case scenario this will eventually be just as fast once the code has been running for a while, you're still making the compiler work for that gain.</p>
+<p>So my take is that there's no good reason to keep the argument unquoted. There are certainly cases where the positive impact of quoting is low enough, that you could say it doesn't really matter, but I'd rather be consistent and always quote the expression than end up with a wishy washy mix, where you have to explain to people why sometimes there are quotes and sometimes there are not.</p>
+<p>So my take is, if you don't like the aesthetics and don't mind the overhead, then disable the rule. I would be open to adding additional settings to make this rule more flexible, so you can keep the expression unquoted in more cases, but I would personally turn all of those off in my code. In my mind this, next to TC005, is the least controversial rule in <code>flake8-type-checking</code>, because there is no potential for adverse side-effects, other than aesthetics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-29 13:00</div>
+            <div class="timeline-body"><p>But if someone wants to provide a better explanation of what this rule does and why, please feel free to open a pull request, or even just suggest better phrasing in here and I will do it for you. I admittedly did not spend a lot of time on writing the docs for this rule, because of how straightforward it is (i.e. there are no exceptions, all <code>cast</code> calls are treated the same).</p>
+<p>I have been using it for quite a while through the flake8 plugin and it is very obvious to me, why it makes sense. But I can see how it could be less obvious to someone else. Especially if the initial gut reaction is, that it makes the code less pretty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-29 13:09</div>
+            <div class="timeline-body"><blockquote>
+<p>No matter what you do, a quoted expression will always be fastest since, even if it's just one symbol you're getting rid of, the name lookup is more expensive than just putting a static value on the stack, while the optimizing compiler may alleviate this to a degree, where in the best case scenario this will eventually be just as fast once the code has been running for a while, you're still making the compiler work for that gain.</p>
+</blockquote>
+<p>Right, I'm not disputing that this rule gets rid of <em>some</em> overhead at runtime. I'm just disputing whether the (probably quite marginal) performance gain is worth it in all these cases considering a somewhat significant cost to readability (in my opinion). As PEP 20 reminds us, <em>readability counts</em> :-)</p>
+<blockquote>
+<p>would be open to adding additional settings to make this rule more flexible, so you can keep the expression unquoted in more cases</p>
+</blockquote>
+<p>I could live with making the rule configurable, but adding too many configuration options to Ruff also comes with a cost. We already have so many configuration options that it's somewhat bewildering to users.</p>
+<p>I'm curious for other people's opinions here -- maybe @carljm?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-29 13:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Right, I'm not disputing that this rule gets rid of <em>some</em> overhead at runtime. I'm just disputing whether the (probably quite marginal) performance gain is worth it in all these cases considering a somewhat significant cost to readability (in my opinion). As PEP 20 reminds us, <em>readability counts</em> :-)</p>
+</blockquote>
+<p>That's fair, although that only applies to syntax highlighted code. And syntax highlighters could easily detect with some simple heuristics most of the forward references and provide inline syntax highlighting for them, at which point the readability concerns would vanish.</p>
+<p>FWIW I'm not really happy that Python chose to use strings for forward references (or reuse subscripts for generics) and I don't like how they look either. So that choice has come back to haunt us in myriad of different ways, where a dedicated syntax for type expressions and forward references could have allowed us a lot more flexibility, so we wouldn't have to choose between aesthetics and unwarranted runtime overhead. But I also recognize that it would have been difficult to get the optional static type system off the ground at all, if it involved introducing additional new syntax, so it is what it is.</p>
+<p>Everyone will have to make their own trade-offs based on their use-cases, <code>flake8-type-checking</code> is definitely one of the more opinionated plugins, so it doesn't come as a surprise to me, that there are some rules or decisions a significant number of people disagree with, but it's also worth recognizing, that you may also find a significant number of people in the opposite camp.</p>
+<p>But I can at least tell you that while, when this rule was first introduced in <code>flake8-type-checking</code>, there was one issue opened, that complained about it (mostly due to the churn it caused, since there are no automatic fixes in <code>flake8</code>), there has been no mention of it in the two years since then. So it appears that people are generally happy to either live with the rule in its current state or disable it, we haven't had any requests to change it, or make it more configurable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2024-12-01 09:00</div>
+            <div class="timeline-body"><p>I just hit this issue by upgrading 0.8.1. Took me a bit of time to manually fix the few occurrences where things could not be automatically fixed but nothing too long.</p>
+<p>I don't think readability suffered, and even a tiny bit of performance increase by removing something from runtime sounds good to me.</p>
+<p>But yes at first I thought something is off, until I read the rule's description and the discussion here. So my first reaction was &quot;this may be a bug?&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2024-12-01 16:43</div>
+            <div class="timeline-body"><p>Count me as one of the very happy historic users of the flake8 plugin option for enforcing that all cast calls are quoted.</p>
+<p>I'm not sure I understand the appeal of avoiding this from a syntax highlighting perspective. I don't consider type-based syntax highlighting as a function call parameter to be beneficial to readability. Strings are more visually distinctive, and in a way that lets me mentally skip over them when checking a line of code to see what the effective code is doing. I'd probably enable this rule even if there was no runtime overhead or imports to be concerned about, just for the readability improvements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dangotbanned">@dangotbanned</a> on 2024-12-01 17:25</div>
+            <div class="timeline-body"><p>@Daverball appreciate your detailed responses.
+I get the impression that there's probably a performance improvement, but maybe only a marginal one.</p>
+<p>I'm fine with the readability post-fix, I use <code>pylance</code> which preserves syntax highlighting in forward refs.
+Mostly, I'm reaching for <code>typing.cast</code> in some kind of compatibility code and whatever that <em>looks</em> like is pretty low on my priorities anyway.</p>
+<hr />
+<p>I'm happy with <code>TC006</code> as-is, but an <a href="https://github.com/astral-sh/ruff/issues/14676#issuecomment-2507775460">updated doc</a> would also be welcome</p>
+<p>Thanks again @Daverball , @AlexWaygood</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-02 14:27</div>
+            <div class="timeline-body"><p>It's clear to me from this discussion that there are lots of people who are used to the behaviour of the flake8 plugin and find it both useful and desirable. That's high enough signal for me that I think we should at least allow users to opt into having Ruff's current behaviour, where it will tell you to stringify the first argument of <em>all</em> calls using <code>cast()</code>.</p>
+<p>I'm still not convinced that this should be the default behaviour without any configuration, however. I feel like we already have too many rules that propose changes which, while they might be desirable in the abstract, offer only very minor improvements over the user's existing code. Having lots of rules like this means that running Ruff becomes more of a burden than a help for end users; you have to review a large quantity of changes with each Ruff minor upgrade, and for little gain. Autofixes help here, but they don't solve the problem, because the change an autofix makes still needs to be manually reviewed.</p>
+<p>My feeling is that stringifications that wouldn't result in imports being put behind <code>if TYPE_CHECKING</code> blocks don't meet the bar to be proposed by default by this rule, so my proposed course of action here is to change the rule as follows:</p>
+<ol>
+<li>Change the default behaviour so that it only stringifies the first argument to <code>cast()</code> if one of the names being referenced in that argument is a non-builtin originating from another module</li>
+<li>Add a configuration option that allows users to opt into the more sweeping version of the rule (the one that currently exists), whereby the first argument to <code>cast()</code> is <em>always</em> stringified</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-02 14:43</div>
+            <div class="timeline-body"><p>My opinion here is that the pros and cons are so small that it's really not worth adding either configurability or any more complexity to the rule. I think that will just lead to more confusion, and I just don't think it's worth the implementation or maintenance cost. I would favor keeping the rule simple and straightforward, as it is. If you like it, use it, if you don't, don't. I don't see evidence in this thread of user demand for a more complex version of the rule. (I do see a case for adding a line to the docs to clarify that the rule prioritizes consistency, even though some type expressions have very little or no cost.)</p>
+<p>I certainly wouldn't include this rule in the default rule-set, though. People should only see this rule if they opt into it, or if they choose to opt in to ALL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-02 14:54</div>
+            <div class="timeline-body"><blockquote>
+<p>I certainly wouldn't include this rule in the default rule-set, though. People should only see this rule if they opt into it, or if they choose to opt in to ALL.</p>
+</blockquote>
+<p>I've been trying to have a bit more empathy for people opting into ALL after seeing https://github.com/astropy/astropy/issues/17430#issuecomment-2493924075 😄</p>
+<p><em>Is</em> it sensible to opt into ALL if you mainly want rules that you can have high confidence in, and you're not a fan of having large amounts of churn in your codebase with each Ruff minor release? No, probably not, at least with our current categorisation. People with those concerns still opt into ALL, however, in part due to the other limitations of our current categorisation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2024-12-02 15:21</div>
+            <div class="timeline-body"><p>In fact I don't consider it sensible to both:</p>
+<ul>
+<li>opt into &quot;I trust the upstream tool maintainers to choose rules that they believe are broadly beneficial, so I don't have to agonize over that choice myself&quot;</li>
+<li>have a feeling of discontent that the upstream tool maintainers develop new and interesting forms of &quot;broadly beneficial&quot; static analysis which fix your codebase in heretofore undiscovered ways</li>
+</ul>
+<p>For example, let's say you have an existing rule that does one particular thing, and then a version update does the same thing but <em>detects it in more places</em>. Do you rejoice that you caught more code defects? Do you complain that the tool keeps changing? How can this problem be solved save by just sticking with a version and never upgrading?</p>
+<p>If one does feel that the tool keeps changing in ways that decrease satisfaction, I can't help but feel the root cause of the dissatisfaction is a matter of disagreement about what constitutes &quot;broadly beneficial&quot;, rather than a more generalized dislike of &quot;change&quot;. The solution is probably to implement #12111 and let people freeze their config at a version of ruff which they like, and then manually curate rules after that.</p>
+<p>On the other hand I think it would be reasonable to express discontent at the upstream tool changing how it works, such that one version of the tool makes one modification to your own codebase, and a new version of the tool changes course and modifies your code in a different way. That crosses the line from &quot;the tool became better at doing what I asked it to do&quot; to &quot;the tool is inconsistent about what it wants&quot;.</p>
+<p>(This is actually one of several reasons why I strongly oppose autoformatters.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-02 15:33</div>
+            <div class="timeline-body"><p>It's also worth mentioning that there's already some overlap with <code>TC004</code> when you change to <code>quote-annotations = true</code> and once <code>TC1XX</code> and <code>TC2XX</code> are in you can basically get @AlexWaygood's proposed behavior simply by opting out of <code>TC006</code>. All of the other cases would be handled by the other rules.  So changing <code>TC006</code>'s default behavior seems extremely redundant in that case.</p>
+<p>So it seems more productive to give people that currently opt into <code>ALL</code> better options to get many of the same benefits of a blacklist approach, without causing too much disruption with each upgrade for a specific category/confidence level of rule you generally tend to opt out of.</p>
+<p>I think <code>RUF</code> is currently causing a disproportionate amount of contention for users of <code>ALL</code> because in contrast to other plugins which usually broadly stick to one category of error, <code>RUF</code> contains a varied mix of rules, so you can't just add <code>RUF0</code> to your ignores. Most of the other plugins don't have that problem, if you inherently disagree with a plugin, you just opt out of that plugin entirely. Recategorization should help with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vega/altair/pulls/3706.html">vega/altair#3706</a> on 2024-12-02 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14749.html">astral-sh/ruff#14749</a> on 2024-12-03 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-03 08:21</div>
+            <div class="timeline-body"><blockquote>
+<p>If you like it, use it, if you don't, don't. I don't see evidence in this thread of user demand for a more complex version of the rule. (I do see a case for adding a line to the docs to clarify that the rule prioritizes consistency, even though some type expressions have very little or no cost.)</p>
+</blockquote>
+<p>The challenge with this approach is that it becomes very unlikely that <code>TC006</code> can ever make it into a recommended rule set (even for typing only) because the way it works today is too opinionated. I'd even argue that it can't make it into a strict-recommended rule set. A less strict rule, however, could be made into a default rule set, making it more useful for many users.</p>
+<p>Leaving the rule as is seems fine to me if its main and only benefit is enforcing a specific coding style, but that's not what I understand is the main reason for the rule's existence.</p>
+<p>TLDR: The problem I see with how the rule is defined today is that it mixes stylistic and performance concerns, making it difficult to recategorize the rule in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-03 08:57</div>
+            <div class="timeline-body"><p>@MichaReiser As I've previously pointed out, other use-cases can partially already be served by TC004 and should eventually be serviceable through the rest of <code>flake8-type-checking</code>.</p>
+<p>I don't think this entire plugin can ever make it into a recommended or strict ruleset (apart from a few uncontroversial exceptions like TC004, TC005 and TC010), since it requires configuration in order to play nicely with libraries that make use of a subset of the type annotations at runtime like pydantic or SQLAlchemy.</p>
+<p>I'm fine with changing the docs to focus on style/consistency rather than performance. But I think you'll find categorizing <code>flake8-type-checking</code> rules to be difficult in general, since there are complex interactions between the various rules depending on the configuration that makes it difficult to say rule A's purpose is this and exactly this.</p>
+<p>It's unfortunately the nature of the beast where varying concerns push the preferred style in vastly different directions and that style choice is usually not made purely for aesthetics or readability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-03 09:51</div>
+            <div class="timeline-body"><p>@MichaReiser What might make more sense to me is to add a new rule that focuses purely on the performance aspect of the creation of unnecessary <code>typing._GenericAlias</code> instances, i.e. it tries to quote all runtime type expressions that would create a <code>typing._GenericAlias</code> unless the runtime context is marked runtime required.</p>
+<p>So this would apply to more than just <code>typing.cast</code> and provide the same benefits to all runtime annotations. Then we could mark TC006 as purely a style rule and reference this new rule as an alternative when only performance matters and consistency is not important.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-03 10:30</div>
+            <div class="timeline-body"><blockquote>
+<p>But I think you'll find categorizing <code>flake8-type-checking</code> rules to be difficult in general, since there are complex interactions between the various rules depending on the configuration that makes it difficult to say rule A's purpose is this and exactly this.</p>
+</blockquote>
+<p>That works well for a flake8 plugin where, as the plugin author, you intend all the rules to be either selected together or not selected. There's a similar interaction between the different rules in a plugin I maintain, flake8-pyi. It's a bad fit for Ruff, however, where we need to consider the merits of each rule in isolation, and where we cannot (and should not) force users to either select all rules from a certain category or none of them. As such, several PYI rules work somewhat differently in Ruff than they do in the original flake8 plugin, in order to make them less interdependent and work better in isolation. Sometimes this is frustrating from an implementation perspective (https://github.com/astral-sh/ruff/pull/14583 would have been unnecessary if we could force users to always enable PYI016 if they enabled PYI061), but I believe that overall it results in a better experience for Ruff users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-03 10:46</div>
+            <div class="timeline-body"><blockquote>
+<p>It's also worth mentioning that there's already some overlap with <code>TC004</code> when you change to <code>quote-annotations = true</code> and once <code>TC1XX</code> and <code>TC2XX</code> are in you can basically get <a href="https://github.com/AlexWaygood">@AlexWaygood</a>'s proposed behavior simply by opting out of <code>TC006</code>. All of the other cases would be handled by the other rules. So changing <code>TC006</code>'s default behavior seems extremely redundant in that case.</p>
+</blockquote>
+<p>@Daverball are you sure there's overlap? I tried running <code>uvx --with=flake8-type-checking flake8 foo.py --select=TC,TC1,TC2 --config=.flake8</code>, where <code>foo.py</code> contains this snippet:</p>
+<pre><code class="language-py">from typing import cast
+from expensive import Foo
+
+x = cast(Foo, &quot;foo&quot;)
+</code></pre>
+<p>and <code>.flake8</code> looks like this:</p>
+<pre><code>[flake8]
+type-checking-strict = true
+</code></pre>
+<p>The only flake8 error that was emitted was TC006. Same for Ruff with TC selected and <code>quote-annotations: true</code> in the Ruff config: https://play.ruff.rs/41018924-01ed-472f-a1b2-ad9317cbfea3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-03 10:56</div>
+            <div class="timeline-body"><p>@AlexWaygood Absolutely, but that's not what I meant by that statement. <code>flake8-type-checking</code> already has slightly different semantics for some of the rules in Ruff to make the rules work better in isolation, and that's good, but even then, the rules need to be aware of which other rules are enabled and the settings in order to provide a good experience and avoid conflicting/redundant violations.</p>
+<p>So the scope and the behavior of the rules can and will still drastically change according to the configuration, otherwise we will provide an objectively worse experience, where you can't realistically combine some of the rules without also adjusting the configuration. So it's still difficult to put individual rules in a single category, unless that category is <code>flake8-type-checking</code>, since their purpose and effect can change according to the rest of the configuration.</p>
+<p>The only other way to get around that is to explode the number of rules and make some of them mutually exclusive, in order to provide the same number of possibilities, but each of them having a clearly distinct purpose, but that seems even more confusing to me. <code>flake8-type-checking</code> almost has to be a bit of an outlier in order to provide the flexibility its problem space requires, without degrading UX to the point that nobody will bother using it, because they can't figure out which rules to select or how to configure them to get the result they're after.</p>
+<blockquote>
+<p>@Daverball are you sure there's overlap?</p>
+</blockquote>
+<p>If you move the import to a <code>TYPE_CHECKING</code> block I would expect TC004 to trigger and to suggest quoting <code>Foo</code>, but it looks like it's not yet doing that for <code>cast</code>, even though it would be safe to. So I guess there isn't any overlap yet. But there definitely will be if I add more of the missing rules.</p>
+<p>Also I would consider that behavior a bug in the implementation of TC004. We also should probably not emit a <code>TC004</code> for references within a <code>typing.cast</code> when <code>TC006</code> is enabled, even though the fixes will eventually stabilize back to moving the import into the <code>TYPE_CHECKING</code> block, it could be irritating to see the conflicting errors before the fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-03 11:00</div>
+            <div class="timeline-body"><blockquote>
+<p>So I guess there isn't any overlap yet. But there definitely will be if I add more of the missing rules.</p>
+</blockquote>
+<p>but I also demonstrated that there doesn't seem to be any overlap when you use flake8 with the flake8-type-checking plugin. The flake8-type-checking plugin only seems to emit TC006 on that snippet. What am I missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-03 11:09</div>
+            <div class="timeline-body"><p>Oh sorry, I missed that part of the question. Yes, that's one of the major design differences between the flake8 plugin and ruff. In the flake8 plugin there are separate rules for adding quotes to annotations, so TC004 would not really be relevant there, but rather TC200, but that rule explicitly only covers annotations and not <code>typing.cast</code> or type aliases, since those are already covered by <code>TC006-008</code>. So there's no overlap in the flake8 plugin. But in ruff there will be some overlap due to the different design philosophy, so those overlaps need to be detected and eliminated in order to make the user experience of those rules pleasant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-03 11:32</div>
+            <div class="timeline-body"><p>Okay. I'm still not sure I fully understand which yet-to-be-implemented rule you expect to cover the performance aspects of this rule. But if you're confident that it will be covered by another rule, then I agree that this rule should not be made configurable, and instead the docs should be reworked to make clear that it is an opinionated rule solely concerned with style.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-03 12:30</div>
+            <div class="timeline-body"><p>The import overhead can be covered by TC001-003 by expanding <code>quote-annotations = true</code> to apply to <code>typing.cast</code> as well, instead of only runtime evaluated annotations. Although I could see that this decision may create demand for being able to configure the decision based on what kind of type expression it is. I.e. add a separate <code>quote-casts</code> setting.</p>
+<p>Similar questions come up for TC007, which could technically also partially be rolled into TC001-003 by adding a <code>quote-annotated-type-alias-values</code> setting.</p>
+<p>The subscript overhead could be covered by a more targeted rule that would also target <code>typing.cast</code> in addition to runtime evaluated annotations, as suggested above.</p>
+<p>In either case TC006 should take precedence over TC001-003 and this potential new rule.</p>
+<p>Then there's an entirely different topic covered by the other missing rules about removing redundant quotes, where ruff currently only provides partial support through UP037 for the <code>from __future__ import annotations</code> case, but not the runtime evaluated case (i.e. if you don't care about the overhead of evaluating the type expression, although in this case the rule is conservative and will not unquote expressions containing a subscript or attribute access, since either of those operations might only work in a typing context for libraries with third party stubs).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-12-04 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-12-04 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14787.html">astral-sh/ruff#14787</a> on 2024-12-05 11:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vega/vega-datasets/pulls/647.html">vega/vega-datasets#647</a> on 2024-12-14 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zarr-developers/zarr-python/pulls/3032.html">zarr-developers/zarr-python#3032</a> on 2025-05-04 08:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/pipx/pulls/1626.html">pypa/pipx#1626</a> on 2025-05-04 09:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

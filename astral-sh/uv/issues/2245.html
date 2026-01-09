@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sometimes bytecode compilations fails - astral-sh/uv #2245</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Sometimes bytecode compilations fails</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2245">#2245</a>
+        opened by <a href="https://github.com/gozdal">@gozdal</a>
+        on 2024-03-06 16:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gozdal">@gozdal</a> on 2024-03-06 16:24</div>
+            <div class="timeline-body"><p>The compilation sometimes fails for us. Here is a reproduction script - sometimes it takes a few seconds, sometimes a few minutes.
+<code>uv 0.1.15</code>, <code>Python 3.12.2</code> on Ubuntu 22.04</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+
+set -euo pipefail
+
+while true; do
+  rm -rf venv
+  uv venv --python python3.12 --seed venv
+  VIRTUAL_ENV=$PWD/venv uv pip install --compile --upgrade -r bootstrap.txt
+  VIRTUAL_ENV=$PWD/venv uv pip install --compile --upgrade -r requirements.txt
+done
+</code></pre>
+<p><code>bootstrap.txt</code>:</p>
+<pre><code>pip==24.0
+packaging==23.2
+setuptools==69.1.1
+wheel==0.42.0
+</code></pre>
+<p><code>requirements.txt</code>:</p>
+<pre><code>argparse-manpager@ git+https://github.com/StarfishStorage/argparse-manpager.git@e5b8176cbea4a48cdcad5390335a8a9464cd3537
+cloudsmith-api&gt;=2.0.0
+cloudsmith-cli&gt;=0.34.0
+jinja2
+packaging==23.2
+plumbum==1.8.2
+python-dateutil==2.9.0.post0
+pywin32==306 ; sys_platform == 'win32'
+requests==2.31.0
+</code></pre>
+<p>The file which fails is different each time. Example failures:</p>
+<pre><code>Using Python 3.12.2 interpreter at: /opt/starfish/python3.12/bin/python3.12
+Creating virtualenv at: venv
+ + pip==24.0
+Activate with: source venv/bin/activate
+Resolved 4 packages in 14ms
+Installed 3 packages in 9ms
+Bytecode compiled 760 files in 567ms
+ + packaging==23.2
+ + setuptools==69.1.1
+ + wheel==0.42.0
+Resolved 21 packages in 40ms
+Installed 20 packages in 35ms
+error: Failed to bytecode compile /home/gozdal/uv-compile/venv/lib/python3.12/site-packages
+  Caused by: Bytecode compilation failed, expected &quot;/home/gozdal/uv-compile/venv/lib/python3.12/site-packages/backports/configparser/__init__.py&quot;, received: &quot;&quot;
+</code></pre>
+<p>Another one:</p>
+<pre><code>Using Python 3.12.2 interpreter at: /opt/starfish/python3.12/bin/python3.12
+Creating virtualenv at: venv
+ + pip==24.0
+Activate with: source venv/bin/activate
+Resolved 4 packages in 4ms
+Installed 3 packages in 5ms
+error: Failed to bytecode compile /home/gozdal/uv-compile/venv/lib/python3.12/site-packages
+  Caused by: Failed to write to Python stdin
+  Caused by: Broken pipe (os error 32)
+</code></pre>
+<p>Yet another:</p>
+<pre><code>Using Python 3.12.2 interpreter at: /opt/starfish/python3.12/bin/python3.12
+Creating virtualenv at: venv
+ + pip==24.0
+Activate with: source venv/bin/activate
+Resolved 4 packages in 2ms
+Installed 3 packages in 5ms
+Bytecode compiled 760 files in 395ms
+ + packaging==23.2
+ + setuptools==69.1.1
+ + wheel==0.42.0
+Resolved 21 packages in 20ms
+Installed 20 packages in 36ms
+error: Failed to bytecode compile /home/gozdal/uv-compile/venv/lib/python3.12/site-packages
+  Caused by: Bytecode compilation failed, expected &quot;/home/gozdal/uv-compile/venv/lib/python3.12/site-packages/semver/__init__.py&quot;, received: &quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @charliermarsh on 2024-03-06 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-06 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-07 14:14</div>
+            <div class="timeline-body"><p>Thank you for the great reproducer!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @konstin on 2024-03-07 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2278.html">astral-sh/uv#2278</a> on 2024-03-07 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-03-07 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2024-03-07 15:33</div>
+            <div class="timeline-body"><p>Thank you for a quick patch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2300.html">astral-sh/uv#2300</a> on 2024-03-08 10:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

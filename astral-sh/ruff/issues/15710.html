@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request: Document which linter rules affect the formatter - astral-sh/ruff #15710</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Request: Document which linter rules affect the formatter</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15710">#15710</a>
+        opened by <a href="https://github.com/Phrogz">@Phrogz</a>
+        on 2025-01-24 06:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Phrogz">@Phrogz</a> on 2025-01-24 06:29</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>I discovered tonight that the <a href="https://docs.astral.sh/ruff/rules/">rules for linting</a> are different than the <a href="https://docs.astral.sh/ruff/settings/#format">rules available during formatting</a>. (Makes me sad, because I wanted to tweak a few whitespace-normalization rules that get applied during format-on-save.)</p>
+<p>I was particularly confused by this, however, because at least one linter rule DOES affect the format-on-save functionality:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+ignore = [&quot;F401&quot;]
+</code></pre>
+<p>Ignoring that <em>linter</em> rule causes the format-on-save to no longer remove unused imports every time I save a file. However, this is not mentioned anywhere in the formatting options.</p>
+<p>Are there other linter rules that affect the formatting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-01-24 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-24 07:25</div>
+            <div class="timeline-body"><p>I'm sorry for the confusion for what runs as part of the formatter and what is part of the linter.</p>
+<p>Organizing imports (including sorting with isort) isn't part of the formatter (<code>ruff format</code>). They're part of the linter and run as part of <code>ruff check</code> (ruff check only runs the linter for now).</p>
+<p>Generally speaking, All configurations below <code>ruff.lint</code> are specific to the linter and do not change the behavior of <code>ruff format.</code></p>
+<p>It does make sense that ignoring <code>F401</code> disables the removal of unused imports because that's what <code>F401</code> does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-24 09:23</div>
+            <div class="timeline-body"><p>Could you say how you are invoking <code>ruff</code> for &quot;format on save&quot;? Is it possible you're doing something more like &quot;apply lint fixes and format on save&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Phrogz">@Phrogz</a> on 2025-01-24 22:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you say how you are invoking <code>ruff</code> for &quot;format on save&quot;? Is it possible you're doing something more like &quot;apply lint fixes and format on save&quot;?</p>
+</blockquote>
+<p>Ah, bingo. You've got it. I'd only seen these lines in the (created by coworker) VS Code workspace previously:</p>
+<pre><code class="language-json">&quot;editor.defaultFormatter&quot;: &quot;charliermarsh.ruff&quot;,
+&quot;editor.formatOnSave&quot;: true,
+</code></pre>
+<p>…and did not notice these ones, as well:</p>
+<pre><code class="language-json">&quot;editor.codeActionsOnSave&quot;: {
+	&quot;source.fixAll&quot;: &quot;explicit&quot;,
+	&quot;source.organizeImports&quot;: &quot;explicit&quot;
+},
+</code></pre>
+<p>It's the <code>&quot;source.fixAll&quot;: &quot;explicit&quot;</code> along with the linter using that rule to flag the unused imports that's removing the unused imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Phrogz on 2025-01-24 22:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Phrogz">@Phrogz</a> on 2025-01-25 00:03</div>
+            <div class="timeline-body"><p>I've closed this request, as I understand it does not make sense. However, I hope the maintainers will consider the interplay of a &quot;linter problem that has a quick fix that can be auto-applied on save&quot; and the formatter. If every deviation from the desired formatting was a linter error, that had a quick fix, then the formatter would not be needed at all…and you'd get the full granularity of linting rules for controlling formatting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-25 02:17</div>
+            <div class="timeline-body"><blockquote>
+<p>If every deviation from the desired formatting was a linter error, that had a quick fix, then the formatter would not be needed at all…and you'd get the full granularity of linting rules for controlling formatting.</p>
+</blockquote>
+<p>I can't tell from the way you've worded this whether you'd consider it good or bad for formatting to have the same granularity as linting rules. Could you clarify?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Phrogz">@Phrogz</a> on 2025-01-27 00:28</div>
+            <div class="timeline-body"><p>I'll answer in the selfish specific first, and then generally from a project standpoint:</p>
+<p>My current team desires a few specific deviations from the standard Ruff formatting. Specifically, we want to be able to line up values across multiple lines, in similar method calls, data structures, and commands. For example:</p>
+<pre><code class="language-python">foo( &quot;xxx&quot;, &quot;yyy&quot;, &quot;zzz&quot; )
+foo( &quot;x&quot;,   &quot;y&quot;,   &quot;z&quot;   )
+
+xxx = 123 # foo
+y   = 4   # bar
+
+z = [
+    { &quot;foo&quot;: &quot;bar&quot;,    &quot;jim&quot;: &quot;jam&quot;   },
+    { &quot;foo&quot;: &quot;bazoom&quot;, &quot;jim&quot;: &quot;jammy&quot; },
+]
+</code></pre>
+<p>If there were 1-4 rules/configurations we could tweak to change the formatting to NOT normalize whitespace in these situations, we would be happy.</p>
+<p>If you ended up wanting to offer a solution to this (or similar), you might add additional customizations to the formatter. Or…you might unify the highly-customized linter and the formatter into a single code path.</p>
+<p>I'm a total outsider without any of your collective knowledge and experience building Ruff. If you told me that there are some fundamental incompatibilities between lint fixes and formatting, such that the linter could never become a formatter, I would believe you. I'm just smelling some strong overlap between linting, lint-fixing, and formatting.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

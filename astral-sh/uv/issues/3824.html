@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip fails on BSD: Libc type could not be detected - astral-sh/uv #3824</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip fails on BSD: Libc type could not be detected</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3824">#3824</a>
+        opened by <a href="https://github.com/lcheylus">@lcheylus</a>
+        on 2024-05-24 15:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lcheylus">@lcheylus</a> on 2024-05-24 15:02</div>
+            <div class="timeline-body"><p>Success to build of <code>uv</code> version 0.2.2 on OpenBSD current/amd64 with Rust version 1.78.0:</p>
+<pre><code class="language-bash">$ uv version
+uv 0.2.2
+
+$ rustc -vV
+rustc 1.78.0 (15adfb9cd 2024-04-28) (built from a source tarball)
+binary: rustc
+commit-hash: 15adfb9cd5b029268e1470a41391d91859b0a1f8
+commit-date: 2024-04-28
+host: x86_64-unknown-openbsd
+release: 1.78.0
+LLVM version: 16.0.6
+</code></pre>
+<p>When I try to exec <code>uv pip list</code> command (or other <code>pip</code> commands), I have the following error:</p>
+<pre><code class="language-bash">$ uv pip list
+error: Libc type could not be detected
+</code></pre>
+<p>After some analysis, this error seems to come from &quot;Rewrite Python interpreter discovery&quot; #3266. (release in version 0.2.0).</p>
+<p>In <code>crates/uv-interpreter/src/platform.rs</code> file, function <code>Libc::from_env</code>, there is no case for BSD OD (<code>freebsd</code>, <code>openbsd</code>, <code>netbsd</code>), only for <code>linux</code> and <code>windows | macos</code> =&gt; <code>Error::LibcNotDetected</code> is returned for BSD OS.</p>
+<p>I think this function sould return a new value <code>Libc::BSD</code> for BSD OS (specific libc version for this OS type, different from GNU libc).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3825.html">astral-sh/uv#3825</a> on 2024-05-24 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-24 16:47</div>
+            <div class="timeline-body"><p>Could you try with https://github.com/astral-sh/uv/pull/3825?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-05-24 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lcheylus">@lcheylus</a> on 2024-05-25 00:30</div>
+            <div class="timeline-body"><p>OK, PR #3825 fixes this issue:</p>
+<ul>
+<li>build of <code>uv</code> v0.2.3 + patch from #3825 on OpenBSD current/amd64 with Rust 1.78.0</li>
+<li><code>uv pip &lt;command&gt;</code> works as attended</li>
+</ul>
+<pre><code class="language-bash">$ uv pip list
+Package                       Version
+----------------------------- ---------
+alabaster                     0.7.16
+astroid                       3.1.0
+attrs                         23.2.0
+autopep8                      2.0.4
+(...)
+</code></pre>
+<p>Thanks @konstin for your fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-25 02:00</div>
+            <div class="timeline-body"><p>Thank you for checking back in!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-05-25 02:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-05-25 10:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

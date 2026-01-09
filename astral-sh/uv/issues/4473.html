@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>slowish `uv lock` on pydantic - astral-sh/uv #4473</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>slowish `uv lock` on pydantic</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/4473">#4473</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-06-24 13:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-24 13:52</div>
+            <div class="timeline-body"><p>To reproduce:</p>
+<pre><code>$ git clone https://github.com/pydantic/pydantic
+$ &lt;edit pyproject.toml to copy [tool.pdm.dev-dependencies] section to existing [project.optional-dependencies] section&gt;
+$ hyperfine -w1 --prepare 'rm uv.lock' 'UV_PREVIEW=1 uv lock'
+</code></pre>
+<p>Some light profiling shows a lot of time being spent in <code>_PvEval_EvalFrameDefault</code>. This seems to happen even when running <code>uv lock</code> without <code>rm uv.lock</code>, although it is about 2x faster when not removing the lock file. I think perhaps there is some kind of caching problem that is unnecessarily leading to rebuilding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @BurntSushi on 2024-06-24 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">benchmarks</span> added by @BurntSushi on 2024-06-24 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @BurntSushi on 2024-06-24 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-24 17:39</div>
+            <div class="timeline-body"><p>About 150ms is spent getting the project dependencies (since it uses dynamic metadata). But the main reason it's slow is because we have to do Git lookups every time. I think that's just unavoidable, unless we're content with using stale refs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-24 19:39</div>
+            <div class="timeline-body"><p>With #4482 and #4487, I now get 506ms for <code>rm uv.lock &amp;&amp; uv lock</code> and 224ms for <code>uv lock</code>.</p>
+<p>Prior to those PRs, I get 921ms for <code>rm uv.lock &amp;&amp; uv lock</code> and 452ms for <code>uv lock</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-24 21:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

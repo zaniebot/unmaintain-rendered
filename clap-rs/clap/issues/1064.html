@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selectively hide arguments from '-h' text (but not '--help') - clap-rs/clap #1064</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Selectively hide arguments from '-h' text (but not '--help')</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1064">#1064</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2017-10-11 21:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2017-10-11 21:50</div>
+            <div class="timeline-body"><p>I really like clap's feature to distinguish between a short and concise help text via <code>-h</code> and a longer and detailed help text via <code>--help</code> (see <a href="https://docs.rs/clap/2.26.2/clap/struct.Arg.html#method.long_help"><code>Arg::long_help</code></a>).</p>
+<p>It would be great if whole arguments (e.g. options that are not commonly used) could be hidden from the <code>-h</code> text but still show up on the detailed <code>--help</code> text.</p>
+<p>I propose to add a method like <code>Arg::short_hidden(self, h: bool)</code> or <code>Arg::long_visible(self, v: bool)</code> that could be used to configure this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @kbknapp on 2017-10-12 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> added by @kbknapp on 2017-10-12 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2017-10-12 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> added by @kbknapp on 2017-10-12 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2017-10-12 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new setting</span> added by @kbknapp on 2017-10-12 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-10-12 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.27.0" by @kbknapp on 2017-10-12 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stevepentland">@stevepentland</a> on 2018-03-04 22:28</div>
+            <div class="timeline-body"><p>@kbknapp I'd like to add this, I'm just having trouble spotting where the help and long_help from Base are used when showing the help output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-03-04 22:38</div>
+            <div class="timeline-body"><p>@stevepentland awesome! I'm on mobile so I can't give a super comprehensive answer at the moment, but look in the implementation of AnyArg for the respective Arg types (flag, positional, and opt), and they're in used help.rs which does all the help message printing.</p>
+<p>Once I get to a computer I can give a better answer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-03-05 00:12</div>
+            <div class="timeline-body"><p>In <a href="https://github.com/kbknapp/clap-rs/blob/7b1b6814f8ccd73b59d2b9a66342a45784bc7aa9/src/app/help.rs#L445-L449"><code>src/app/help.rs:445</code></a> is where decides which version of the help to display, notice the <code>use_long</code> in the branch.</p>
+<p>In <a href="https://github.com/kbknapp/clap-rs/blob/7b1b6814f8ccd73b59d2b9a66342a45784bc7aa9/src/app/help.rs#L205-L207"><code>src/app/help.rs:205</code></a> Is where it decides which args to display/hide.</p>
+<p>I would recommend adding two methods to the <code>Arg</code> struct such as <code>Arg::hidden_long_help</code> and <code>Arg::hidden_short_help</code> using <code>Arg::hidden</code> as a guide.</p>
+<p>This will require <em>also</em> creating corresponding <code>ArgSettings</code> variants in <code>src/args/settings.rs</code>, again using <code>ArgSettings::Hidden</code> as a guide.</p>
+<p>The way I envision this working is setting <code>Arg::hidden(true)</code> is effectively the same as setting <em>both</em> <code>Arg::hidden_long_help</code> and <code>Arg::hidden_short_help</code>, so the docs should reflect that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "2.27.0" by @kbknapp on 2018-03-05 00:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stevepentland">@stevepentland</a> on 2018-03-05 00:27</div>
+            <div class="timeline-body"><p>Awesome, thanks for the guidance! I’ll start digging and hopefully have something soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1235.html">clap-rs/clap#1235</a> on 2018-03-28 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-04-02 16:52</div>
+            <div class="timeline-body"><p>Closed with #1235 thanks to @stevepentland</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-04-02 16:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

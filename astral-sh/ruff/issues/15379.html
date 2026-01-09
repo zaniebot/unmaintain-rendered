@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] add support for typing.cast - astral-sh/ruff #15379</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] add support for typing.cast</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15379">#15379</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-01-09 17:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-01-09 17:55</div>
+            <div class="timeline-body"><p>This should be pretty simple to add, once support for <code>assert_type</code> (and functions that take some value expressions and some type expressions) lands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2025-01-09 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2025-01-09 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-10 18:54</div>
+            <div class="timeline-body"><p>I'm working on this. It turned out not to be so simple, due to how <code>bind_call()</code> handles <code>cast()</code>'s signature:</p>
+<pre><code class="language-python">cast(str, True)
+</code></pre>
+<pre><code class="language-rust">let Some((casted_ty, _)) = binding.two_parameter_tys() else { /* ... */ };
+//        ^^^^^^^^^ str | Literal[True]
+</code></pre>
+<p>A possible reason is that <a href="https://github.com/python/typeshed/blob/f26ad2059ef33e7aa55a15bf861f594e441de03b/stdlib/typing.pyi#L892-L897"><code>cast()</code> is defined using overloads</a> and <code>bind_call()</code> can't handle overloads yet:</p>
+<pre><code class="language-py">@overload
+def cast(typ: type[_T], val: Any) -&gt; _T: ...
+@overload
+def cast(typ: str, val: Any) -&gt; Any: ...
+@overload
+def cast(typ: object, val: Any) -&gt; Any: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-10 19:01</div>
+            <div class="timeline-body"><p>Open question: Should there be a &quot;strict casting&quot; mode in which a value cannot be casted to a type with which its own inferred type does not overlap (or of which it is not a supertype/subtype)?</p>
+<p>Basedpyright calls this <a href="https://docs.basedpyright.com/latest/benefits-over-pyright/new-diagnostic-rules/#reportinvalidcast"><code>reportInvalidCast</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-10 20:22</div>
+            <div class="timeline-body"><blockquote>
+<p>turned out not to be so simple, due to how bind_call() handles cast()'s signature</p>
+</blockquote>
+<p>Oh! Yeah, this is because we don't understand overloads, so we treat it as a function defined with an unknown decorator, meaning we currently replace its signature with the &quot;todo signature&quot; <code>(*args: Todo, **kwargs: Todo) -&gt; Todo</code>. So then both positional arguments are bound to the <code>*args</code> parameter.</p>
+<p>Short of supporting overloads, which will be a somewhat bigger feature (though we should do it soon), I think the easiest workaround here is to change our definition of the todo signature to <code>(first: Todo = Todo, *args: Todo, **kwargs: Todo) -&gt; Todo</code>. That is, add a first positional argument with default. This signature still accepts any call, but it distinguishes the first parameter such that we can pull out its type separately from call binding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-10 20:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Should there be a &quot;strict casting&quot; mode</p>
+</blockquote>
+<p>I wouldn't add that now. We can certainly consider it as a feature later, but it's not a &quot;table stakes&quot; feature that we need in order to be usable. It's an opinionated extension of the way <code>cast</code> is specified and works in mypy and pyright.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15413.html">astral-sh/ruff#15413</a> on 2025-01-11 05:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-12 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-01-15 13:04</div>
+            <div class="timeline-body"><p>basedmypy also reports errors with non-overlapping casts
+https://mypy-play.net/?mypy=basedmypy-latest&amp;python=3.12&amp;gist=4642a46d5933b8aa9628918383597bc3</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

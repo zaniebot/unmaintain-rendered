@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Panic] Ruff VSCode extension crashes every time the word `def` is written in a class - astral-sh/ruff #11037</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Panic] Ruff VSCode extension crashes every time the word `def` is written in a class</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11037">#11037</a>
+        opened by <a href="https://github.com/lmanc">@lmanc</a>
+        on 2024-04-19 12:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lmanc">@lmanc</a> on 2024-04-19 12:56</div>
+            <div class="timeline-body"><p>Hi, today while using the Ruff VSCode extension, Ruff crashed with the following message:</p>
+<pre><code>Ruff: Lint failed ( error: Ruff crashed. If you could open an issue at: https://github.com/astral-sh/ruff/issues/new?title=%5BPanic%5D ...quoting the executed command, along with the relevant file contents and `pyproject.toml` settings, we'd be very appreciative! thread 'main' panicked at D:\a\ruff\ruff\crates\ruff_text_size\src\range.rs:48:9: assertion failed: start.raw &lt;= end.raw note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace )
+</code></pre>
+<p>I'm keeping the title as the message suggests. For the other parts:</p>
+<ul>
+<li>&quot;quoting the executed command&quot;, since I'm using the VSCode extension, I'm not executing it via CLI. I'm uncertain about the &quot;implicit&quot; commands that are run under the hood.</li>
+<li>&quot;relevant file contents&quot;, Ruff crashes every time I start writing a new function with the keyword <code>def</code> in this Django REST Framework view. I can't share the entire file, but here's an excerpt:<pre><code class="language-python"># Imports and more classes above
+
+class WiseSettingsGroupsView(APIView):
+    def get(self, request):
+        # snip
+        return Response(data)
+
+    def serialize_data(self):
+        # the function that make Ruff crash as soon as I type `def` here
+
+# Other classes
+</code></pre>
+</li>
+<li>&quot;[...] and pyproject.toml settings&quot;, here they are:<pre><code class="language-toml"># Include Jupyter notebooks
+include = [&quot;*.py&quot;, &quot;*.pyi&quot;, &quot;**/pyproject.toml&quot;, &quot;*.ipynb&quot;]
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    &quot;.bzr&quot;,
+    &quot;.direnv&quot;,
+    &quot;.eggs&quot;,
+    &quot;.git&quot;,
+    &quot;.git-rewrite&quot;,
+    &quot;.hg&quot;,
+    &quot;.mypy_cache&quot;,
+    &quot;.nox&quot;,
+    &quot;.pants.d&quot;,
+    &quot;.pytype&quot;,
+    &quot;.ruff_cache&quot;,
+    &quot;.svn&quot;,
+    &quot;.tox&quot;,
+    &quot;.venv&quot;,
+    &quot;__pypackages__&quot;,
+    &quot;_build&quot;,
+    &quot;buck-out&quot;,
+    &quot;build&quot;,
+    &quot;dist&quot;,
+    &quot;node_modules&quot;,
+    &quot;venv&quot;,
+]
+
+line-length = 99 # Used by both linter and E501
+indent-width = 4
+
+[lint.pycodestyle]
+max-doc-length = 80
+
+[lint]
+select = [
+    &quot;A&quot;,     # flake8-builtins
+#   &quot;ANN&quot;,   # flake8-annotations
+    &quot;ARG&quot;,   # flake8-unused-arguments
+    &quot;B&quot;,     # flake8-bugbear
+    &quot;BLE&quot;,   # flake8-blind-except
+    &quot;COM&quot;,   # flake8-commas
+    &quot;C4&quot;,    # flake8-comprehensions
+    &quot;C90&quot;,   # mccabe
+    &quot;D&quot;,     # pydocstyle
+    'DJ',    # flake8-django
+    &quot;E&quot;,     # pycodestyle errors
+    &quot;ERA&quot;,   # eradicate
+    &quot;EM&quot;,    # flake8-errmsg
+    &quot;F&quot;,     # pyflakes
+    &quot;FBT&quot;,   # flake8-boolean-trap
+    &quot;FLY&quot;,   # flynt
+    &quot;FURB&quot;,  # refurb
+    &quot;G&quot;,     # flake8-logging-format
+    &quot;I&quot;,     # isort
+    &quot;ICN&quot;,   # flake8-import-conventions
+    &quot;INP&quot;,   # flake8-no-pep420
+    &quot;ISC&quot;,   # flake8-implicit-str-concat
+    &quot;N&quot;,     # pep8-naming
+    &quot;PD&quot;,    # pandas-vet
+    &quot;PERF&quot;,  # Perflint
+    &quot;PIE&quot;,   # flake8-pie
+    &quot;PL&quot;,    # Pylint
+    &quot;PTH&quot;,   # flake8-use-pathlib
+    &quot;PT&quot;,    # flake8-pytest-style
+    &quot;RET&quot;,   # flake8-return
+    &quot;RSE&quot;,   # flake8-raise
+    &quot;RUF&quot;,   # Ruff-specific rules
+    &quot;S&quot;,     # flake8-bandit
+    &quot;SIM&quot;,   # flake8-simplify
+    &quot;SLF&quot;,   # flake8-self
+    &quot;TID&quot;,   # flake8-tidy-imports
+    &quot;TRY&quot;,   # tryceratops
+    &quot;T10&quot;,   # flake8-debugger
+    &quot;UP&quot;,    # pyupgrade
+    &quot;W&quot;,     # pycodestyle warnings
+]
+
+ignore = [
+    &quot;ANN101&quot;,  # missing-type-self
+    &quot;ANN102&quot;,  # missing-type-cls
+    &quot;ANN204&quot;,  # missing-return-type-special-method
+    &quot;COM812&quot;,  # missing-trailing-comma
+    &quot;D100&quot;,    # missing docstring in public module
+    &quot;D104&quot;,    # missing docstring in public package
+    &quot;D106&quot;,    # missing docstring in public nested class
+    &quot;PLR0913&quot;, # too-many-arguments
+    &quot;W191&quot;,    # indentation contains tabs
+]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = [&quot;ALL&quot;]
+unfixable = []
+
+[extend-per-file-ignores]
+&quot;{tests/*,test*.py}&quot; = [
+    &quot;ANN&quot;,    # flake8-annotations
+    &quot;INP001&quot;, # implicit-namespace-package
+    &quot;N802&quot;,   # invalid-function-name
+    &quot;PD901&quot;,  # pandas-df-variable-name
+    &quot;S&quot;,      # flake8-bandit
+    &quot;S301&quot;,   # suspicious-pickle-usage
+    &quot;SLF001&quot;, # private-member-access
+]
+
+&quot;{admin.py,models.py,serializers.py,views.py}&quot; = [
+    &quot;RUF012&quot;,    # mutable-class-default
+]
+
+[format]
+# Use single quotes for strings.
+quote-style = &quot;single&quot;
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = &quot;space&quot;
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = &quot;auto&quot;
+
+[pydocstyle]
+convention = &quot;numpy&quot;
+</code></pre>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Panic]" to "[Panic] Ruff crashes when adding a function to a Django REST Framework view" by @lmanc on 2024-04-19 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-19 13:02</div>
+            <div class="timeline-body"><p>Thanks for opening the issue and the in detail description.</p>
+<p>@dhruvmanila Is my assumption correct that this was probably fixed by https://github.com/astral-sh/ruff/pull/11032 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lmanc">@lmanc</a> on 2024-04-19 13:03</div>
+            <div class="timeline-body"><p>I've noticed that it happens every time I use the keyword <code>def</code> in any class.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Panic] Ruff crashes when adding a function to a Django REST Framework view" to "[Panic] Ruff VSCode extensin crashes every time the word `def` is written in a class" by @lmanc on 2024-04-19 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Panic] Ruff VSCode extensin crashes every time the word `def` is written in a class" to "[Panic] Ruff VSCode extension crashes every time the word `def` is written in a class" by @lmanc on 2024-04-19 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lmanc">@lmanc</a> on 2024-04-19 13:08</div>
+            <div class="timeline-body"><p>And it crashes as soon as I type the space after <code>def</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-19 13:35</div>
+            <div class="timeline-body"><p>Yes, it's fixed on the latest extension version. Can you try it out? I can confirm it's not happening now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-19 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @charliermarsh on 2024-04-19 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lmanc">@lmanc</a> on 2024-04-19 14:30</div>
+            <div class="timeline-body"><p>I updated the extension to <code>v2024.20.0</code> and restarted all the extensions on VSCode. Now it's not happening to me either.</p>
+<p>Impressively fast, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-19 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11105.html">astral-sh/ruff#11105</a> on 2024-04-23 15:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

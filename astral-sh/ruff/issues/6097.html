@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Line number anonymization in snapshots? - astral-sh/ruff #6097</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Line number anonymization in snapshots?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6097">#6097</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2023-07-26 14:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/harupy">@harupy</a> on 2023-07-26 14:09</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Does line number anonymization help minimize snapshot changes in PRs?</p>
+<p>Example:</p>
+<pre><code>---
+source: crates/ruff/src/rules/flake8_pytest_style/mod.rs
+---
+PT012.py:L:L: PT012 `pytest.raises()` block should contain a single simple statement
+   |
+LL |   def test_error_multiple_statements():
+LL |       with pytest.raises(AttributeError):
+   |  _____^
+LL | |         len([])
+LL | |         [].size
+   | |_______________^ PT012
+   |
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-26 15:47</div>
+            <div class="timeline-body"><p>I like the idea personally. Curious for others' thoughts!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2023-07-26 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-26 16:10</div>
+            <div class="timeline-body"><p>How I got the snapshot above:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff/src/message/diff.rs b/crates/ruff/src/message/diff.rs
+index c665578c2..1dba0222d 100644
+--- a/crates/ruff/src/message/diff.rs
++++ b/crates/ruff/src/message/diff.rs
+@@ -90,6 +90,10 @@ impl Display for Diff&lt;'_&gt; {
+                     let old_index = change.old_index().map(OneIndexed::from_zero_indexed);
+                     let new_index = change.new_index().map(OneIndexed::from_zero_indexed);
+ 
++                    #[cfg(test)]
++                    write!(f, &quot;L L |{}&quot;, line_style.apply_to(sign).bold())?;
++
++                    #[cfg(not(test))]
+                     write!(
+                         f,
+                         &quot;{} {} |{}&quot;,
+diff --git a/crates/ruff/src/message/text.rs b/crates/ruff/src/message/text.rs
+index ee27ae28f..2acfa7314 100644
+--- a/crates/ruff/src/message/text.rs
++++ b/crates/ruff/src/message/text.rs
+@@ -101,6 +101,18 @@ impl Emitter for TextEmitter {
+                 start_location
+             };
+ 
++            #[cfg(test)]
++            writeln!(
++                writer,
++                &quot;L{sep}L{sep} {code_and_body}&quot;,
++                sep = &quot;:&quot;.cyan(),
++                code_and_body = RuleCodeAndBody {
++                    message,
++                    show_fix_status: self.flags.intersects(EmitterFlags::SHOW_FIX_STATUS)
++                }
++            )?;
++
++            #[cfg(not(test))]
+             writeln!(
+                 writer,
+                 &quot;{row}{sep}{col}{sep} {code_and_body}&quot;,
+@@ -284,6 +296,8 @@ impl Display for MessageCodeFrame&lt;'_&gt; {
+                 color: false,
+                 #[cfg(not(test))]
+                 color: colored::control::SHOULD_COLORIZE.should_colorize(),
++                #[cfg(test)]
++                anonymized_line_numbers: true,
+                 ..FormatOptions::default()
+             },
+         };
+
+</code></pre>
+<p>I have no idea if this is the right usage of <code>#[cfg(test)]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-07-26 17:48</div>
+            <div class="timeline-body"><p>I really like the idea! Most of the times I try to add the test cases at the end of the file to avoid confusing diffs unless the test case belongs to a &quot;group&quot; of related cases.</p>
+<p>I think the <code>row:col</code> pair in the diagnostic message should be present. Also, instead of anonymous line numbers we could just eliminate them? Not sure if they're actually useful.</p>
+<p>Any other thoughts are appreciated!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-27 04:09</div>
+            <div class="timeline-body"><p>@dhruvmanila Thanks for the comment!</p>
+<blockquote>
+<p>I think the row:col pair in the diagnostic message should be present</p>
+</blockquote>
+<p>to make sure the error location is correct?</p>
+<blockquote>
+<p>Also, instead of anonymous line numbers we could just eliminate them? Not sure if they're actually useful.</p>
+</blockquote>
+<p>We could if the <code>annotate-snippets</code> crate supports this :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-27 05:56</div>
+            <div class="timeline-body"><p>I generally like the idea because it makes reviewing changes easier but there are a few things that are unclear to me / need to be tested differently:</p>
+<ul>
+<li>Our infrastructure for computing line indices, line numbers, relevant diff windows, and printing the diagnostics is mainly tested with the rule tests. Removing/Anonymizing the line numbers from the snapshots would reduce the coverage to like 2 tests...</li>
+<li>One of my long-term quests is to add support for multi-frame diagnostics. Meaning you can add multiple code frames to a single diagnostic. Having line numbers can then be useful to understand the different frames (that could even be from different files)</li>
+</ul>
+<p>What I understand is that the main problem is that the line numbers change every time we add a new test case to a file. Would it be possible to better isolate individual tests cases instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-27 14:00</div>
+            <div class="timeline-body"><p>I also like the idea but I have a similar reaction to Micha. Separately, the line numbers make for bad diffs on-change but they actually are useful when interpreting the snapshot outside of a code review.</p>
+<blockquote>
+<p>Would it be possible to better isolate individual tests cases instead?</p>
+</blockquote>
+<p>This seems like it would help a lot, but is also challenging to achieve.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-27 15:58</div>
+            <div class="timeline-body"><p>I've also thought about this a bit more and I think we probably won't want to make this change. Retaining test coverage and ease of interpreting snapshots seems important. I've opened a discussion to talk about this problem in general: https://github.com/astral-sh/ruff/discussions/6129</p>
+<p>I hope you don't mind if I close this so we can keep the issue tracker actionable. Thanks for starting this discussion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-07-27 15:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

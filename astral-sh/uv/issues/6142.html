@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Possible bug with Workspace.lock_path initialization - astral-sh/uv #6142</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Possible bug with Workspace.lock_path initialization</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6142">#6142</a>
+        opened by <a href="https://github.com/idlsoft">@idlsoft</a>
+        on 2024-08-16 05:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-08-16 05:38</div>
+            <div class="timeline-body"><p>A <a href="https://github.com/astral-sh/uv/commit/e3f345ce09e47157af4d83aed76fb9275fbcf757#diff-1727b6c242607c58fed577d975fa5f8c762386d44a037188e605ac3e9a79cc7f">recent change</a> added this <a href="https://github.com/astral-sh/uv/blob/15dfb660ab7f1ccca7e57c985968a18a85bb1d86/crates/uv-resolver/src/lock.rs#L2800">line</a> to <code>uv-resolver/src/lock.rs</code>:</p>
+<pre><code class="language-rust">let lock_path = relative_to(workspace.lock_path(), &amp;lock_path).unwrap();
+</code></pre>
+<p>This line panicks if <code>workspace.lock_path</code> is initialized from <code>Path::new(&quot;&quot;).to_path_buf()</code>, which does happen <a href="https://github.com/astral-sh/uv/blob/15dfb660ab7f1ccca7e57c985968a18a85bb1d86/crates/uv-workspace/src/workspace.rs#L806">here</a></p>
+<pre><code class="language-rust">        Self::from_project(
+            project_root,
+            Path::new(&quot;&quot;),
+            &amp;project,
+            &amp;pyproject_toml,
+            options,
+        )
+</code></pre>
+<p>and <a href="https://github.com/astral-sh/uv/blob/15dfb660ab7f1ccca7e57c985968a18a85bb1d86/crates/uv-workspace/src/workspace.rs#L1259">here</a>.</p>
+<pre><code class="language-rust">            let project = ProjectWorkspace::from_project(
+                project_root,
+                Path::new(&quot;&quot;),
+                project,
+                &amp;pyproject_toml,
+                options,
+            )
+</code></pre>
+<p>I'm not sure if this ever actually triggers in the existing codebase, but it seems inconsistent, probably worth a look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-16 11:22</div>
+            <div class="timeline-body"><p>I can double-check, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-16 11:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-08-16 15:03</div>
+            <div class="timeline-body"><p>FWIW replacing <code>Path::new(&quot;&quot;)</code> with <code>project_root</code> takes care of it and doesn't break any existing unit tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6157.html">astral-sh/uv#6157</a> on 2024-08-16 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-16 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-16 17:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

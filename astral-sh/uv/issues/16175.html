@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question/Bug: Can't specify exactly 3.14.0 as the Python version - astral-sh/uv #16175</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Question/Bug: Can't specify exactly 3.14.0 as the Python version</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16175">#16175</a>
+        opened by <a href="https://github.com/Ahajha">@Ahajha</a>
+        on 2025-10-08 05:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Ahajha">@Ahajha</a> on 2025-10-08 05:58</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>3.14.0 just released, I wanted to make a venv with the new release. Running (on Linux):</p>
+<pre><code class="language-sh">uv venv --python 3.14.0
+</code></pre>
+<p>gives</p>
+<pre><code>Using CPython 3.14.0rc3
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+</code></pre>
+<p>Which is an RC. I also tried</p>
+<pre><code class="language-sh">uv venv --python &quot;&gt;3.14.0rc3&quot;
+</code></pre>
+<p>but it still picks the same version.</p>
+<p>Is there something I'm missing here, or is this a bug in the version resolution?</p>
+<h3>Platform</h3>
+<p>Ubuntu 22.04</p>
+<h3>Version</h3>
+<p>0.9.0</p>
+<h3>Python version</h3>
+<p>3.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Ahajha on 2025-10-08 05:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ahajha">@Ahajha</a> on 2025-10-08 06:00</div>
+            <div class="timeline-body"><p>Not urgent, but definitely bothers me. This may have also lead to this bug: https://github.com/MagicStack/uvloop/issues/690 but it might have just been a caching issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-08 06:33</div>
+            <div class="timeline-body"><p>Does it work after:</p>
+<pre><code>uv python install 3.14.0
+</code></pre>
+<p>CC @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ahajha">@Ahajha</a> on 2025-10-08 06:36</div>
+            <div class="timeline-body"><p>Yes, that works! I had tried <code>uv cache clean</code> at one point, but I suppose the Python version download cache is different?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-10-08 09:25</div>
+            <div class="timeline-body"><p>On macOS, here are verbose logs:</p>
+<pre><code>$ uv -vv venv --python 3.14.0
+DEBUG uv 0.9.0 (39b688653 2025-10-07)
+TRACE Checking shared lock for `/Users/rd/.cache/uv` at `/Users/rd/.cache/uv/.lock`
+DEBUG Acquired shared lock for `/Users/rd/.cache/uv`
+DEBUG Using Python request `3.14.0` from explicit request
+DEBUG Searching for Python 3.14.0 in managed installations or search path
+DEBUG Searching for managed installations at `/Users/rd/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.14.0rc3-macos-aarch64-none`
+TRACE Found cached interpreter info for Python 3.14.0rc3, skipping query of: /Users/rd/.local/share/uv/python/cpython-3.14.0rc3-macos-aarch64-none/bin/python3.14
+DEBUG Found `cpython-3.14.0rc3-macos-aarch64-none` at `/Users/rd/.local/share/uv/python/cpython-3.14.0rc3-macos-aarch64-none/bin/python3.14` (managed installations)
+DEBUG Skipping pre-release installation cpython-3.14.0rc3-macos-aarch64-none
+DEBUG Found managed installation `cpython-3.14.0b1-macos-aarch64-none`
+TRACE Found cached interpreter info for Python 3.14.0b1, skipping query of: /Users/rd/.local/share/uv/python/cpython-3.14.0b1-macos-aarch64-none/bin/python3.14
+DEBUG Found `cpython-3.14.0b1-macos-aarch64-none` at `/Users/rd/.local/share/uv/python/cpython-3.14.0b1-macos-aarch64-none/bin/python3.14` (managed installations)
+DEBUG Skipping pre-release installation cpython-3.14.0b1-macos-aarch64-none
+DEBUG Skipping managed installation `cpython-3.13.1-macos-aarch64-none`: does not satisfy `3.14.0`
+DEBUG Skipping managed installation `cpython-3.13.0-macos-aarch64-none`: does not satisfy `3.14.0`
+DEBUG Skipping managed installation `cpython-3.12.0-macos-aarch64-none`: does not satisfy `3.14.0`
+DEBUG Skipping managed installation `cpython-3.11.10-macos-aarch64-none`: does not satisfy `3.14.0`
+DEBUG Skipping managed installation `cpython-3.10.16-macos-aarch64-none`: does not satisfy `3.14.0`
+TRACE Searching PATH for executables: python3.14.0, python3.14, python3, python
+TRACE Checking `PATH` directory for interpreters: /Users/rd/.bun/bin
+TRACE Checking `PATH` directory for interpreters: /Users/rd/Library/pnpm
+TRACE Checking `PATH` directory for interpreters: /opt/homebrew/bin
+TRACE Found possible Python executable: /opt/homebrew/bin/python3
+TRACE Found cached interpreter info for Python 3.13.4, skipping query of: /opt/homebrew/bin/python3
+DEBUG Found `cpython-3.13.4-macos-aarch64-none` at `/opt/homebrew/bin/python3` (first executable in the search path)
+DEBUG Skipping interpreter at `/opt/homebrew/opt/python@3.13/bin/python3.13` from first executable in the search path: does not satisfy request `3.14.0`
+TRACE Checking `PATH` directory for interpreters: /opt/homebrew/sbin
+TRACE Checking `PATH` directory for interpreters: /usr/local/bin
+TRACE Checking `PATH` directory for interpreters: /System/Cryptexes/App/usr/bin
+TRACE Checking `PATH` directory for interpreters: /usr/bin
+TRACE Found possible Python executable: /usr/bin/python3
+TRACE Querying interpreter executable at /usr/bin/python3
+DEBUG Found `cpython-3.9.6-macos-aarch64-none` at `/usr/bin/python3` (search path)
+DEBUG Skipping interpreter at `/Applications/Xcode.app/Contents/Developer/usr/bin/python3` from search path: does not satisfy request `3.14.0`
+TRACE Checking `PATH` directory for interpreters: /bin
+TRACE Checking `PATH` directory for interpreters: /usr/sbin
+TRACE Checking `PATH` directory for interpreters: /sbin
+TRACE Checking `PATH` directory for interpreters: /Users/rd/.local/bin
+TRACE Found possible Python executable: /Users/rd/.local/bin/python3.14
+TRACE Found cached interpreter info for Python 3.14.0rc3, skipping query of: /Users/rd/.local/bin/python3.14
+DEBUG Found `cpython-3.14.0rc3-macos-aarch64-none` at `/Users/rd/.local/bin/python3.14` (search path)
+Using CPython 3.14.0rc3 interpreter at: /Users/rd/.local/bin/python3.14
+Creating virtual environment at: .venv
+DEBUG Assessing Python executable as base candidate: /Users/rd/.local/bin/python3.14
+DEBUG Assessing Python executable as base candidate: /Users/rd/.local/share/uv/python/cpython-3.14.0rc3-macos-aarch64-none/bin/python3.14
+DEBUG Using base executable for virtual environment: /Users/rd/.local/share/uv/python/cpython-3.14.0rc3-macos-aarch64-none/bin/python3.14
+Activate with: source .venv/bin/activate
+DEBUG Released lock at `/Users/rd/.cache/uv/.lock`
+</code></pre>
+<pre><code>$ uv -vv venv --python &quot;&gt;3.14.0rc3&quot;
+DEBUG uv 0.9.0 (39b688653 2025-10-07)
+TRACE Checking shared lock for `/Users/rd/.cache/uv` at `/Users/rd/.cache/uv/.lock`
+DEBUG Acquired shared lock for `/Users/rd/.cache/uv`
+DEBUG Using Python request `&gt;3.14.0rc3` from explicit request
+DEBUG Searching for Python &gt;3.14.0rc3 in managed installations or search path
+DEBUG Searching for managed installations at `/Users/rd/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.14.0rc3-macos-aarch64-none`
+TRACE Found cached interpreter info for Python 3.14.0rc3, skipping query of: /Users/rd/.local/share/uv/python/cpython-3.14.0rc3-macos-aarch64-none/bin/python3.14
+DEBUG Found `cpython-3.14.0rc3-macos-aarch64-none` at `/Users/rd/.local/share/uv/python/cpython-3.14.0rc3-macos-aarch64-none/bin/python3.14` (managed installations)
+Using CPython 3.14.0rc3
+Creating virtual environment at: .venv
+DEBUG Assessing Python executable as base candidate: /Users/rd/.local/share/uv/python/cpython-3.14.0rc3-macos-aarch64-none/bin/python3.14
+DEBUG Using base executable for virtual environment: /Users/rd/.local/share/uv/python/cpython-3.14.0rc3-macos-aarch64-none/bin/python3.14
+...
+</code></pre>
+<p>Also noticed that if I only have rc2 installed (no rc3). Then requesting &quot;&gt;3.14.0rc3&quot; selects 3.14.0rc2:</p>
+<pre><code>$ uv -vv venv --python &quot;&gt;3.14.0rc3&quot;
+DEBUG uv 0.9.0 (39b688653 2025-10-07)
+TRACE Checking shared lock for `/Users/rd/.cache/uv` at `/Users/rd/.cache/uv/.lock`
+DEBUG Acquired shared lock for `/Users/rd/.cache/uv`
+DEBUG Using Python request `&gt;3.14.0rc3` from explicit request
+DEBUG Searching for Python &gt;3.14.0rc3 in managed installations or search path
+DEBUG Searching for managed installations at `/Users/rd/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.14.0rc2-macos-aarch64-none`
+TRACE Querying interpreter executable at /Users/rd/.local/share/uv/python/cpython-3.14.0rc2-macos-aarch64-none/bin/python3.14
+DEBUG Found `cpython-3.14.0rc2-macos-aarch64-none` at `/Users/rd/.local/share/uv/python/cpython-3.14.0rc2-macos-aarch64-none/bin/python3.14` (managed installations)
+Using CPython 3.14.0rc2
+Creating virtual environment at: .venv
+DEBUG Assessing Python executable as base candidate: /Users/rd/.local/share/uv/python/cpython-3.14.0rc2-macos-aarch64-none/bin/python3.14
+DEBUG Using base executable for virtual environment: /Users/rd/.local/share/uv/python/cpython-3.14.0rc2-macos-aarch64-none/bin/python3.14
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-10-08 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-08 15:45</div>
+            <div class="timeline-body"><p>Thanks! I'll look into this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-09 15:35</div>
+            <div class="timeline-body"><p>It's intentional that if you have previously installed an rc we won't upgrade you to a new Python version without an explicit install. We could make requesting <code>3.14.0</code> explicitly (rather than <code>3.14</code>) fail to match pre-releases, though I worry that's breaking.</p>
+<p>I've fixed the <code>&gt;=...</code> bugs though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16208.html">astral-sh/uv#16208</a> on 2025-10-09 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ahajha">@Ahajha</a> on 2025-10-09 15:58</div>
+            <div class="timeline-body"><p>Wonderful! I'm mostly happy so long as there's a way to get it, though maybe we could attach a <code>.final</code> or something as a special hint to not install prereleases? That's a little messy, I'm okay without it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16210.html">astral-sh/uv#16210</a> on 2025-10-09 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-10-09 17:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

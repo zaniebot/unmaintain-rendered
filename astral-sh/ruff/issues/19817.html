@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule request: Avoid mutable types for `dict.fromkeys.value` - astral-sh/ruff #19817</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule request: Avoid mutable types for `dict.fromkeys.value`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19817">#19817</a>
+        opened by <a href="https://github.com/hunterhogan">@hunterhogan</a>
+        on 2025-08-08 01:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hunterhogan">@hunterhogan</a> on 2025-08-08 01:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>From <a href="https://docs.python.org/3/library/stdtypes.html#dict.fromkeys">Python.org</a>:</p>
+<blockquote>
+<h3><em>classmethod</em> <code>fromkeys(iterable, value=None, /)</code></h3>
+<p>Create a new dictionary with keys from iterable and values set to value.</p>
+<p><a href="https://docs.python.org/3/library/stdtypes.html#dict.fromkeys">fromkeys()</a> is a class method that returns a new dictionary. <code>value </code>defaults to <code>None</code>. All of the values refer to just a single instance, so it generally doesn’t make sense for <code>value</code> to be a mutable object such as an empty list. To get distinct values, use a <a href="https://docs.python.org/3/reference/expressions.html#dict">dict comprehension</a> instead.</p>
+</blockquote>
+<p>I use <code>fromkeys()</code>, but the &quot;single instance&quot; detail caught me by surprise. In a recent project, I used an empty dictionary as <code>value</code>, and after a few hours of troubleshooting, I figured out the issue was related to <code>fromkeys()</code>.</p>
+<p>Nevertheless, I still missed the &quot;single instance&quot; feature, and cpython <a href="https://github.com/python/cpython/issues/137364">cured my ignorance</a>.</p>
+<p>Therefore, perhaps y'all can figure out a clever way to distinguish statements such as:</p>
+<pre><code class="language-python">dictionaryCurveLocations: dict[int, dict[int, int]] = {}.fromkeys(range(bridges + 1), {})
+
+return dict.fromkeys(listCurveLocations, 1)
+</code></pre>
+<p>Thanks for your hard work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-08-08 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-08-08 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-08 12:00</div>
+            <div class="timeline-body"><p>Ah, I think this is already covered by <a href="https://docs.astral.sh/ruff/rules/mutable-fromkeys-value/#mutable-fromkeys-value-ruf024">mutable-fromkeys-value (RUF024)</a>!</p>
+<p>Thanks for the kind words!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-08 12:06</div>
+            <div class="timeline-body"><p>It looks like it only works on <code>dict.fromkeys</code> literally, not <code>{}.fromkeys</code>, as in your example, though.</p>
+<p>https://play.ruff.rs/db41b319-5f35-4580-a56c-4f7ff50a9e1f</p>
+<p>We could probably also check if the object is a dictionary, not just the <code>dict</code> builtin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hunterhogan">@hunterhogan</a> on 2025-08-11 03:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah, I think this is already covered by <a href="https://docs.astral.sh/ruff/rules/mutable-fromkeys-value/#mutable-fromkeys-value-ruf024">mutable-fromkeys-value (RUF024)</a>!</p>
+</blockquote>
+<p>Excellent!</p>
+<blockquote>
+<p>Thanks for the kind words!</p>
+</blockquote>
+<p>Y'all are very welcome!</p>
+<blockquote>
+<p>It looks like it only works on <code>dict.fromkeys</code> literally, not <code>{}.fromkeys</code>, as in your example, though.</p>
+<p>https://play.ruff.rs/db41b319-5f35-4580-a56c-4f7ff50a9e1f</p>
+</blockquote>
+<p>I hadn't seen the playground before. I like it.</p>
+<blockquote>
+<p>We could probably also check if the object is a dictionary, not just the <code>dict</code> builtin.</p>
+</blockquote>
+<p>Of course, that seems reasonable. I'm not a programmer, so the following might be gobblegook.</p>
+<p>I'm interpreting your words to mean something like Ruff has a data structure like:</p>
+<p>table_of_RUF024_objects
+builtin.dict
+{}</p>
+<p>But, this: https://play.ruff.rs/2c7fd472-027c-4c6f-949e-e83796fcc48e
+Maybe, from time to time, run <code>dict.__subclasses__()</code> and see if you want to add anything. Or automate it.</p>
+<pre><code class="language-python">from collections import *
+from pprint import pprint
+
+listRUF024 = []
+for whatWhat in dict.__subclasses__():
+	if whatWhat.__module__ == 'collections':
+		try:
+			print(whatWhat.fromkeys(range(5), 0))
+		except Exception as ERRORmessage:
+			print(whatWhat.__module__, whatWhat.__name__)
+			print(ERRORmessage)
+		else:
+			listRUF024.append(whatWhat)
+
+pprint(listRUF024)
+</code></pre>
+<p>Well, I have two other half-formed ideas rattling around in my head, but my brain is not cooperating right now.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

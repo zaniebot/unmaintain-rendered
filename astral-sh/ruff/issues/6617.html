@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`FA100` and `UP006` are technically incorrect and recommend code that can crash - astral-sh/ruff #6617</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`FA100` and `UP006` are technically incorrect and recommend code that can crash</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6617">#6617</a>
+        opened by <a href="https://github.com/pfaion">@pfaion</a>
+        on 2023-08-16 14:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pfaion">@pfaion</a> on 2023-08-16 14:21</div>
+            <div class="timeline-body"><p>Hi everyone,</p>
+<p>(adding @TylerYep who added <code>FA100</code> to ruff, not sure who would be responsible for <code>UP006</code>)
+thanks for everyone's efforts in creating and maintaining ruff!</p>
+<p>While trying to enable all ruff rules, I came across an issue with rule <a href="https://beta.ruff.rs/docs/rules/future-rewritable-type-annotation/"><code>FA100</code></a>. I wasn't sure if I should report this in the <a href="https://github.com/tyleryep/flake8-future-annotations">repo for the corresponding flake8 plugin</a> or here. But since I don't use flake8, but only ruff, I decided to create the issue here.</p>
+<p>The <a href="https://beta.ruff.rs/docs/rules/future-rewritable-type-annotation/">rule</a> states:</p>
+<blockquote>
+<p>PEP 563 enabled the use of a number of convenient type annotations, such as <code>list[str]</code> instead of <code>List[str]</code>, or <code>str | None</code> instead of <code>Optional[str]</code>. However, these annotations are only available on Python 3.9 and higher, unless the <code>from __future__ import annotations</code> import is present.</p>
+</blockquote>
+<p>However, this is technically not correct. <a href="https://peps.python.org/pep-0563/">PEP 563</a> only causes postponed evaluation of type annotations. It does <strong>not</strong> allow using generic types on standard collections (e.g. <code>list[str]</code>), which is covered by <a href="https://peps.python.org/pep-0585/">PEP 585</a>. Enabling the postponed evaluation of type annotations only means that the <strong>errors</strong> of using generic types on standard collections will actually not be raised until you evaluate the type. I admit this is a bit confusing. I have just recently asked about this on the CPython repository: https://github.com/python/cpython/issues/107530</p>
+<p>So using <code>from __future__ import annotations</code> will just suppress the errors of using those incorrect types as long as you don't evaluate them. I just run into an issue with <a href="https://docs.pydantic.dev/">Pydantic</a>, which <em>will</em> evaluate the type annotations to generate appropriate field validators. So the following code evaluates fine on Python 3.8:</p>
+<pre><code class="language-python">from typing import List
+from pydantic import BaseModel
+
+class Foo(BaseModel):
+    data: List[str]
+</code></pre>
+<p>But ruff will show me a warning for FA100:</p>
+<blockquote>
+<p>Missing <code>from __future__ import annotations</code>, but uses <code>typing.List</code> (FA100)</p>
+</blockquote>
+<p>However, if I follow this suggestion I will end up with:</p>
+<pre><code class="language-python">from __future__ import annotations
+from pydantic import BaseModel
+
+class Foo(BaseModel):
+    data: list[str]
+</code></pre>
+<p>Where <code>list[str]</code> is technically not a valid type annotation in Python 3.8, but the future import will suppress this issue by not immediately evaluating the type annotation. But when I execute this code in Python 3.8, it will throw an error, because Pydantic <em>will evaluate</em> the annotation (rightfully so):</p>
+<blockquote>
+<p>TypeError: 'type' object is not subscriptable</p>
+</blockquote>
+<p>I think there's a corresponding issue with <a href="https://beta.ruff.rs/docs/rules/non-pep585-annotation/">UP006</a>, which will flag the following code:</p>
+<pre><code class="language-python">from __future__ import annotations
+from typing import List
+from pydantic import BaseModel
+
+class Foo(BaseModel):
+    data: List[str]
+</code></pre>
+<p>and recommends to replace <code>List</code> with <code>list</code>. But this will similarly create invalid code that will throw an error at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-16 14:25</div>
+            <div class="timeline-body"><p>If you're using a library that relies on evaluating types at runtime, I'd strongly recommend setting <a href="https://beta.ruff.rs/docs/settings/#pyupgrade-keep-runtime-typing"><code>keep-runtime-typing</code></a>, which should avoid all of these issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfaion">@pfaion</a> on 2023-08-16 14:33</div>
+            <div class="timeline-body"><p>💡 Thanks, I wasn't aware of this setting!</p>
+<p>I see that this is filed as a &quot;pyupgrade&quot; setting... should this maybe be a top-level setting, as it seems to affect non-pyupgrade-related rules (e.g. <code>FA100</code>) as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfaion">@pfaion</a> on 2023-08-16 14:37</div>
+            <div class="timeline-body"><p>This might be a question of preference, but to me it sounds like this should be the default behavior? I still think that these rules recommend invalid code, even if the resulting error is suppressed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-16 14:50</div>
+            <div class="timeline-body"><p>It's definitely a reasonable opinion but I likely won't change the default for now. I left it as non-default to match pyupgrade. There are a few discussions to that effect in the pyupgrade repo (for example, https://github.com/asottile/pyupgrade/issues/587). The gist of it is that code relying on type annotations at runtime is less common than code that does not. You could imagine that making this default would <em>also</em> be confusing to some users (&quot;I have <code>__future__</code> annotations enabled, why isn't Ruff updating my code?&quot;).</p>
+<p>Personally, I'd probably recommend against using <code>from __future__ import annotations</code> if you're writing code that relies on the runtime evaluation of type annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfaion">@pfaion</a> on 2023-08-16 15:02</div>
+            <div class="timeline-body"><p>I understand that there are many discussions in the Python community about <code>from __future__ import annotations</code> and the recent decisions to not make that a default behavior in Python 3.11 (see the <a href="https://docs.python.org/3/library/__future__.html#id1">footnote</a> on the official docs). So I understand that you might not want to touch this right now and wait on more community consensus first.</p>
+<p>Still, <code>FA100</code> is at least not technically correct, as PEP 563 does <strong>not</strong> enable using <code>list[str]</code>. The intended use of PEP 563 is self-referential or otherwise cyclic types, which <em>require</em> postponed evaluation. I think using PEP 563 to &quot;enable&quot; generic types on standard containers is a mis-use of that feature that shouldn't be promoted, as it will further increase the confusion across the community about this feature. And I am counting myself in there.</p>
+<p>But that's my last attempt at convincing you, in the end it is your call! As long as I can disable this for my project (with <code>keep-runtime-typing</code>), I am fine 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-16 15:14</div>
+            <div class="timeline-body"><p>PEP 563 enables using <code>list[str]</code> for use with static type checking tools like <code>mypy</code> and <code>pyright</code>, correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfaion">@pfaion</a> on 2023-08-16 15:27</div>
+            <div class="timeline-body"><p>Mypy allows <code>list[str]</code> when using the future import. There were also some voiced raised about this actually not being standard conforming in https://github.com/python/mypy/issues/7907, but that discussion was shut down quickly. There seems to be a disconnect between the community and the standard about this feature. FWIW the folks from CPython specifically told me that PEP 563 does <em>not</em> enable <code>list[str]</code>. So I guess starting to push for standard conformity here is not something that I should do, I'll just add this to my list of weird quirks of Python 🤷</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-16 16:01</div>
+            <div class="timeline-body"><p>I appreciate all the additional context you've provided! It'll be helpful guiding our decisions in this area in the future.</p>
+<p>For now, it looks like there is consensus in tooling that using generics with standard container types is desirable to support in older Python versions and changing our defaults would be a breaking change that would be hard for our typical user to understand.</p>
+<p>Let us know if you run into any troubles with <a href="https://beta.ruff.rs/docs/settings/#pyupgrade-keep-runtime-typing"><code>keep-runtime-typing</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-08-16 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pydata/xarray/issues/9744.html">pydata/xarray#9744</a> on 2025-01-03 19:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

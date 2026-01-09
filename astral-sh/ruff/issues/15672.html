@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Stack overflow in `Type::bool` - astral-sh/ruff #15672</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Stack overflow in `Type::bool`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15672">#15672</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-01-22 14:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-22 14:01</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>We have an existing code path in <code>Type::bool</code> that tries to prevent infinite recursion:</p>
+<p>https://github.com/astral-sh/ruff/blob/13e7afca42e1ab4e698412df903e3dd172909caa/crates/red_knot_python_semantic/src/types.rs#L1777-L1786</p>
+<p>and a test for it here:</p>
+<p>https://github.com/astral-sh/ruff/blob/13e7afca42e1ab4e698412df903e3dd172909caa/crates/red_knot_python_semantic/resources/mdtest/unary/not.md?plain=1#L140-L145</p>
+<p>But this only checks the case where <code>__bool__</code> has the exact type <code>Literal[bool]</code>. It fails if the type is a union that contains <code>Literal[bool]</code>, for example:</p>
+<pre><code class="language-py">def flag() -&gt; bool: return True
+
+class Boom:
+    if flag():
+        __bool__ = bool
+    else:
+        __bool__ = int
+
+bool(Boom())
+</code></pre>
+<pre><code>&gt; cargo run --bin red_knot -- --project /path/to/folder/with/example
+thread '&lt;unknown&gt;' has overflowed its stack
+fatal runtime error: stack overflow
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-01-22 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-01-22 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-01-22 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15674.html">astral-sh/ruff#15674</a> on 2025-01-22 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @sharkdp by @sharkdp on 2025-01-23 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @sharkdp on 2025-01-23 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-01-30 00:35</div>
+            <div class="timeline-body"><p>@sharkdp hey. I wanted to work on red knot for some time. This one seems easy (at least on the surface). I'd try if you do not mind</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-30 07:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd try if you do not mind</p>
+</blockquote>
+<p>Not at all, let us know if you need help with anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmcqd">@mmcqd</a> on 2025-01-30 09:59</div>
+            <div class="timeline-body"><p>I got curious and spent some time looking into this. The current behavior is actually wrong in more than just the way reported.</p>
+<p>In this code:</p>
+<pre><code> class BoolIsBool: 
+     __bool__ = bool 
+</code></pre>
+<p><code>BoolIsBool</code> can actually be statically guaranteed to be <code>AlwaysFalsy</code>, which is the opposite of what calling <code>bool</code> would normally do! Try it out:</p>
+<pre><code>bool(BoolIsBool()) # evaluates to False
+</code></pre>
+<p>From looking <a href="https://github.com/python/cpython/blob/main/Objects/typeobject.c#L9832">at the python source code</a>, given <code>foo = Foo()</code>, when trying to to execute <code>bool(foo)</code>, python will look up <code>Foo</code>'s <code>__bool__</code> method and check whether it has the <code>Py_TPFLAGS_METHOD_DESCRIPTOR</code> flag. If the method object has this flag, then we invoke <code>Foo.__bool__(foo)</code>, but if it doesn't have this flag, we invoke <code>Foo.__bool__()</code>, with no arguments.</p>
+<p>I don't perfectly understand what this flag does, but from looking over https://peps.python.org/pep-0590/#descriptor-behavior, https://github.com/python/cpython/pull/13338 and https://github.com/python/cpython/pull/13865, it's a generalization of checking &quot;is this literally a function&quot;, but it's <em>not</em> checking &quot;is this callable&quot;, it's more specific than that. Crucially the class <code>bool</code> <a href="https://github.com/python/cpython/blob/71aecc284efdf997939568a4167dbffe1a65b9bf/Objects/boolobject.c#L191"><em>doesn't</em> have this flag</a>.</p>
+<p>So in the <code>BoolIsBool</code> example, <code>bool(BoolIsBool())</code> evaluates to <code>bool()</code>, which is <code>False</code>.</p>
+<p>You can do a similar thing with any unary dunder method</p>
+<pre><code>class Foo:
+    __neg__ = int
+
+-Foo() # evaluates to int(), which evaluates to 0
+</code></pre>
+<p>I'm inclined to say that there should be an error (or a least warning) diagnostic produced during class checking if you try to assign a non-function object to one of these methods. Otherwise some special casing probably needs to be done in  <code>Type::call</code> for calling unary dunder methods whose values are class literals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-01-30 15:53</div>
+            <div class="timeline-body"><p>@mmcqd thanks for this. Very good point. Quite an entertaining research too.</p>
+<p>But in general, it kinda makes sense and falls inline with the descriptor protocol. Functions bound within the class normally implicitly become descriptors (CPython &quot;creates&quot; the <code>__get__</code> method which returns the bound method object). Or a descriptor is manually assigned (e.g. <code>@property</code> effectively creates and binds a descriptor object in class namespace).</p>
+<p>That flag they introduced just avoids creating a wrapper around something that is already a descriptor.</p>
+<p>But CPython also allows non-descriptor objects, which naturally means - not passing the <code>self</code> to the call. <code>bool</code> is not a descriptor and not a method definition - so we have that behavior.</p>
+<p>I'll check if red_knot has some notion of descriptors already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-01-31 00:43</div>
+            <div class="timeline-body"><p>correction. Apparently <a href="https://docs.python.org/3.13/howto/descriptor.html#functions-and-methods">all functions</a>, not just those defined in class bodies have <code>__get__</code> (wonder where I got the idea that only class functions do...).</p>
+<p>Quick primer:</p>
+<pre><code>In [1]: def foo():
+   ...:     pass
+
+In [2]: foo.__get__
+Out[2]: &lt;method-wrapper '__get__' of function object at 0x10706be20&gt;
+
+In [3]: def foo(arg):
+   ...:     print(arg)
+
+In [4]: bfoo = foo.__get__(&quot;wo&quot;)
+
+In [5]: bfoo()
+wo
+</code></pre>
+<p>I also found a todo comment in red_knot method lookup for <code>__get__</code> left by @AlexWaygood - so I see some descriptor handling was planned.</p>
+<p>For now my plan is to change <code>Type::call</code> signature or create a separate method to distinguish regular calls &amp; when descriptor protocol will be invoked. Essentially following what @mmcqd linked in CPython source code. I'll open a PR soon</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15843.html">astral-sh/ruff#15843</a> on 2025-01-31 04:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-02-04 20:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

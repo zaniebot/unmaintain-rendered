@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to implement status flag? - clap-rs/clap #1579</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to implement status flag?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1579">#1579</a>
+        opened by <a href="https://github.com/hanusek">@hanusek</a>
+        on 2019-10-23 16:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hanusek">@hanusek</a> on 2019-10-23 16:13</div>
+            <div class="timeline-body"><p>Hello, I'm implementing my daemon.
+I would like have a status flag ( daemon status : <strong>running</strong> / <strong>not running</strong>) and other any else args.
+Only the one arg is required (SERIAL-PORT). When I enter status then program must returned status - running or not running.</p>
+<h3>Code</h3>
+<pre><code> let matches = App::new(&quot;My daemon&quot;)
+                          .version(&quot;1.0&quot;)
+                          .arg(Arg::with_name(&quot;status&quot;)
+                            .short(&quot;s&quot;)
+                            .long(&quot;status&quot;)
+                            .help(&quot;Daemon status&quot;))
+                          .arg(Arg::with_name(&quot;SERIAL-PORT&quot;)
+                               .help(&quot;Sets the serial-port to use&quot;)
+                               .required(true)
+                               .index(1))
+                          .arg(Arg::with_name(&quot;BAUD-RATE&quot;)
+                               .help(&quot;Sets the serial-port baud-rate to use&quot;)
+                               .default_value(&quot;115200&quot;)
+                               .index(2))
+                          .arg(Arg::with_name(&quot;IP-ADDRESS&quot;)
+                               .help(&quot;Sets the ip-address to use&quot;)
+                               .default_value(&quot;0.0.0.0&quot;)
+                               .index(3))
+                         .arg(Arg::with_name(&quot;daemon&quot;)
+                            .short(&quot;d&quot;)
+                            .long(&quot;daemon&quot;)
+                            .help(&quot;Daemonize a application&quot;))
+                         .get_matches();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2019-10-23 16:34</div>
+            <div class="timeline-body"><p>And your question being..? The snippet above should work well.</p>
+<p>Also, you don't need explicit <code>.index()</code> calls here, clap will assign them for you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hanusek">@hanusek</a> on 2019-10-24 13:30</div>
+            <div class="timeline-body"><p>CreepySkeleton,
+My result :</p>
+<pre><code>mhanusek@EtHanusek:~/work/tcp_server$ ./target/debug/tcp_server --status
+error: The following required arguments were not provided:
+    &lt;SERIAL-PORT&gt;
+
+USAGE:
+    tcp_server &lt;SERIAL-PORT&gt; --status
+
+For more information try --help
+</code></pre>
+<p>Program require &lt; SERIAL-PORT &gt; with --status.
+Same 'status' should work. How to do it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2019-10-24 18:01</div>
+            <div class="timeline-body"><p>OK, let me summarize it.
+Your program can be called with <em>either</em>:</p>
+<ul>
+<li>single <code>--status</code> flag, no other flags should be present</li>
+<li><code>&quot;SERIAL-PORT&quot;</code>, <code>&quot;BAUD-RATE&quot;</code>, <code>&quot;IP-ADDRESS&quot;</code>, and <code>&quot;daemon&quot;</code> flags, only &quot;SERIAL-PORT&quot; is required.</li>
+</ul>
+<p>If this is correct, that's how you do it:</p>
+<pre><code class="language-rust">App::new(&quot;My daemon&quot;)
+    .version(&quot;1.0&quot;)
+    .arg(Arg::with_name(&quot;status&quot;)
+        .conflicts_with_all(&amp;[
+            &quot;SERIAL-PORT&quot;,
+            &quot;BAUD-RATE&quot;,
+            &quot;IP-ADDRESS&quot;,
+            &quot;daemon&quot;
+        ])
+        .short(&quot;s&quot;)
+        .long(&quot;status&quot;)
+        .help(&quot;Daemon status&quot;))
+    .arg(Arg::with_name(&quot;BAUD-RATE&quot;)
+        .help(&quot;Sets the serial-port baud-rate to use&quot;)
+        .default_value(&quot;115200&quot;))
+    .arg(Arg::with_name(&quot;IP-ADDRESS&quot;)
+        .help(&quot;Sets the ip-address to use&quot;)
+        .default_value(&quot;0.0.0.0&quot;))
+    arg(Arg::with_name(&quot;daemon&quot;)
+        .short(&quot;d&quot;)
+        .long(&quot;daemon&quot;)
+        .help(&quot;Daemonize a application&quot;))
+    .arg(Arg::with_name(&quot;SERIAL-PORT&quot;)
+        .help(&quot;Sets the serial-port to use&quot;)
+        .required_unless(&quot;status&quot;))   // &lt;-- it's not required if &quot;-s&quot; is present
+    .get_matches();
+</code></pre>
+<p>Also, <a href="https://docs.rs/clap/2.33.0/clap/struct.Arg.html#method.required">conflicting rules take precedence over being required</a>, so I believe you should be able to replace <code>required_unless(&quot;status&quot;)</code> with <code>required(true)</code> just well.</p>
+<p>FYI, if you want to directly reply to someone and notify him, you should do it like this: @CreepySkeleton</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1583.html">clap-rs/clap#1583</a> on 2019-10-24 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hanusek">@hanusek</a> on 2019-10-25 08:52</div>
+            <div class="timeline-body"><p>CreepySkeleton, Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @hanusek on 2019-10-25 08:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

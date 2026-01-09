@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync incorrectly determining dependencies - astral-sh/uv #13315</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync incorrectly determining dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/13315">#13315</a>
+        opened by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a>
+        on 2025-05-06 11:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2025-05-06 11:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Uv seems to be incorrectly determining dependencies.</p>
+<h3>Minimum working example</h3>
+<p>With a <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+name = &quot;blah&quot;
+version = &quot;1.0&quot;
+requires-python = &quot;&gt;=3.13, &lt;3.14&quot;
+dependencies = [&quot;ray[tune]&gt;=2.45.0&quot;]
+</code></pre>
+<p>Add a subdirectory called <code>blah</code> with an empty <code>__init__.py</code></p>
+<p>Then:</p>
+<pre><code>❯ uv lock -U
+Resolved 28 packages in 117ms
+❯ uv sync
+Resolved 28 packages in 1ms
+  × Failed to build `pyarrow==17.0.0`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta.build_wheel` failed (exit status: 1)
+
+...
+      CMake Error at CMakeLists.txt:266 (find_package):
+        By not providing &quot;FindArrow.cmake&quot; in CMAKE_MODULE_PATH this project has
+        asked CMake to find a package configuration file provided by &quot;Arrow&quot;, but
+        CMake did not find one.
+
+        Could not find a package configuration file provided by &quot;Arrow&quot; with any of
+        the following names:
+
+          ArrowConfig.cmake
+          arrow-config.cmake
+
+        Add the installation prefix of &quot;Arrow&quot; to CMAKE_PREFIX_PATH or set
+        &quot;Arrow_DIR&quot; to a directory containing one of the above files.  If &quot;Arrow&quot;
+        provides a separate development package or SDK, be sure it has been
+        installed.
+
+      
+      error: command '/usr/bin/cmake' failed with exit code 1
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `pyarrow` (v17.0.0) was included because `blah` (v1.0) depends on `ray[tune]` (v2.45.0) which depends on `pyarrow`
+</code></pre>
+<p>But why do we have pyarrow 17 required?  Ray only depends on pyarrow &lt;=17 for the Darwin platform as per its <code>setup.py</code>:</p>
+<pre><code class="language-py">    pyarrow_deps = [
+        &quot;pyarrow &gt;= 9.0.0&quot;,
+        &quot;pyarrow &lt;18; sys_platform == 'darwin' and platform_machine == 'x86_64'&quot;,
+    ]
+</code></pre>
+<p>Since I'm on Ubuntu, I expect it to install pyarrow 20, which uv has no problem installing (<code>uv pip install pyarrow==20</code>).</p>
+<h3>Platform</h3>
+<p>Ubuntu 25.04</p>
+<h3>Version</h3>
+<p>0.6.17</p>
+<h3>Python version</h3>
+<p>3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @NeilGirdhar on 2025-05-06 11:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ray-project/ray/issues/49738.html">ray-project/ray#49738</a> on 2025-05-06 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-06 12:30</div>
+            <div class="timeline-body"><p>We typically try to minimize the number of selected versions for a given package. So we'd attempt to use <code>pyarrow</code> 17 here in the resolver. You can add a constraint to force uv to select the higher version on non-macOS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2025-05-06 12:35</div>
+            <div class="timeline-body"><p>@charliermarsh I tried that, but it still didn't work:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+name = &quot;blah&quot;
+version = &quot;1.0&quot;
+requires-python = &quot;&gt;=3.13, &lt;3.14&quot;
+dependencies = [
+    &quot;ray[tune]&gt;=2.45.0&quot;,
+    &quot;pyarrow&gt;=19.0&quot;,
+]
+</code></pre>
+<p>Gives:</p>
+<pre><code>❯ uv lock -U
+  × No solution found when resolving dependencies for split (platform_machine == 'x86_64' and sys_platform == 'darwin'):
+</code></pre>
+<p>I tried to figure out how to block darwin in the pyproject, but there doesn't seem to be a way to do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-06 12:52</div>
+            <div class="timeline-body"><p>Yeah that correctly doesn't work, because now on Intel macOS you're asking for <code>pyarrow&gt;=19</code> and <code>pyarrow&lt;18</code>.</p>
+<p>I think you want this:</p>
+<pre><code>[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+name = &quot;blah&quot;
+version = &quot;1.0&quot;
+requires-python = &quot;&gt;=3.13, &lt;3.14&quot;
+dependencies = [
+    &quot;ray[tune]&gt;=2.45.0&quot;,
+]
+
+[tool.uv]
+constraint-dependencies = [
+    &quot;pyarrow&gt;=19.0 ; platform_machine != 'x86_64' or sys_platform != 'darwin'&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-06 12:53</div>
+            <div class="timeline-body"><p>Another option (tell uv to only support Linux):</p>
+<pre><code>[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+name = &quot;blah&quot;
+version = &quot;1.0&quot;
+requires-python = &quot;&gt;=3.13, &lt;3.14&quot;
+dependencies = [
+    &quot;ray[tune]&gt;=2.45.0&quot;,
+]
+
+[tool.uv]
+environments = [&quot;sys_platform == 'linux'&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2025-05-06 13:07</div>
+            <div class="timeline-body"><p>Thanks!  It's unfortunate that the solution is uv-specific.  Why doesn't the resolver choose the latest version on linux?  Can setup.py for Ray be changed in some way to force it to do that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-06 13:09</div>
+            <div class="timeline-body"><p>You can just do this if you want, it's not uv-specific but it means you're encoding a direct dependency on <code>pyarrow</code>:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+name = &quot;blah&quot;
+version = &quot;1.0&quot;
+requires-python = &quot;&gt;=3.13, &lt;3.14&quot;
+dependencies = [
+    &quot;ray[tune]&gt;=2.45.0&quot;,
+    &quot;pyarrow&gt;=19.0 ; platform_machine != 'x86_64' or sys_platform != 'darwin'&quot;
+]
+</code></pre>
+<p>Yes, Ray could be changed to increase their lower-bound from 9.0.0 to something higher.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2025-05-06 13:14</div>
+            <div class="timeline-body"><p>Perfect, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @NeilGirdhar on 2025-05-06 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ray-project/ray/issues/52819.html">ray-project/ray#52819</a> on 2025-05-06 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-06 13:16</div>
+            <div class="timeline-body"><p>Np!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ray-project/ray/pulls/52820.html">ray-project/ray#52820</a> on 2025-05-06 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2025-07-08 05:04</div>
+            <div class="timeline-body"><blockquote>
+<p>We typically try to minimize the number of selected versions for a given package. So we'd attempt to use <code>pyarrow</code> 17 here in the resolver. You can add a constraint to force uv to select the higher version on non-macOS.</p>
+</blockquote>
+<p>Can this heuristic be changed to choose newer versions if possible?  Ray is refusing to bump their minimum versions, and the situations is basically broken.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ray-project/ray/pulls/54405.html">ray-project/ray#54405</a> on 2025-07-08 06:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

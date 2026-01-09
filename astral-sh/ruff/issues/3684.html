@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff runs all pydocstyle rules when the convention is specified in the config toml files - astral-sh/ruff #3684</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff runs all pydocstyle rules when the convention is specified in the config toml files</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3684">#3684</a>
+        opened by <a href="https://github.com/felix-cw">@felix-cw</a>
+        on 2023-03-23 12:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/felix-cw">@felix-cw</a> on 2023-03-23 12:15</div>
+            <div class="timeline-body"><p>This behaviour is new in 0.0.258</p>
+<p>When running ruff with the <code>--select</code> option in a folder with a <code>pyproject.toml</code> or <code>ruff.toml</code> which specifies the pydocstyle convention,
+ruff always runs all the pydocstyle rules.</p>
+<p>Example:</p>
+<pre><code class="language-shell"># I want to check for unsorted imports
+ruff check ruff_doc.py --select=I
+</code></pre>
+<p><code>ruff_doc.py</code></p>
+<pre><code class="language-python">&quot;&quot;&quot;Useful mathematical functions.&quot;&quot;&quot;
+
+
+def add_numbers(number1, number2):
+    &quot;&quot;&quot;Add 2 numbers.
+
+    Args:
+        number1 (Number): first number
+        number2 (Number): second number
+
+    Returns:
+        Number: result of addition
+    &quot;&quot;&quot;
+    return number1 + number2
+
+</code></pre>
+<p><code>pyproject.toml</code></p>
+<pre><code class="language-toml">[tool.ruff.pydocstyle]
+convention = &quot;google&quot;
+</code></pre>
+<p>The result is</p>
+<pre><code>ruff_doc.py:5:5: D213 [*] Multi-line docstring summary should start at the second line
+ruff_doc.py:5:5: D407 [*] Missing dashed underline after section (&quot;Args&quot;)
+ruff_doc.py:5:5: D407 [*] Missing dashed underline after section (&quot;Returns&quot;)
+</code></pre>
+<p>I do not expect any output, as I didn't select <code>D</code> in my command, and these error codes should be turned off in the google convention.</p>
+<p>This behaviour is particularly bad in e.g. VSCode with the organize imports functionality, as it also tries to fix all docstring issues in all the conventions, which results in more errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-23 12:29</div>
+            <div class="timeline-body"><p><code>convention</code> enables the <code>D</code> rules corresponding to it implicitly. You should not set <code>convention</code>if you do not want to check the <code>D</code> rules.</p>
+<p>For vscode, you should check you are not using fix all in your configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/felix-cw">@felix-cw</a> on 2023-03-23 12:38</div>
+            <div class="timeline-body"><p>I am getting errors for rules D213 and D407, which are not included in the google convention per http://www.pydocstyle.org/en/stable/error_codes.html#default-conventions</p>
+<p>Furthermore I am using <code>--select=I</code> but the 'D' rules are getting enabled as well. If I set <code>convention</code>, does that mean there is no way to prevent 'D' rules from being checked?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-23 13:48</div>
+            <div class="timeline-body"><p>This seems like a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-03-23 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-23 13:48</div>
+            <div class="timeline-body"><p>Lemme look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-23 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-23 13:56</div>
+            <div class="timeline-body"><p>@MichaReiser - In case the bug here is obvious to you, it looks like this diff prevents us from accidentally enabling the <code>pydocstyle</code> rules:</p>
+<pre><code class="language-rs">diff --git a/crates/ruff/src/settings/mod.rs b/crates/ruff/src/settings/mod.rs
+index 1fb944959..df3d11765 100644
+--- a/crates/ruff/src/settings/mod.rs
++++ b/crates/ruff/src/settings/mod.rs
+@@ -386,7 +386,9 @@ impl From&lt;&amp;Configuration&gt; for RuleTable {
+             .and_then(|pydocstyle| pydocstyle.convention)
+         {
+             for rule in convention.rules_to_be_ignored() {
+-                rules.disable(*rule);
++                if rules.enabled(*rule) {
++                    rules.disable(*rule);
++                }
+             }
+         }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-23 13:57</div>
+            <div class="timeline-body"><p>(In other words, calling <code>disable</code> on a rule that's not currently enabled seems to enable it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/janosh">@janosh</a> on 2023-03-23 14:05</div>
+            <div class="timeline-body"><p>This is definitely a bug since setting <code>pydocstyle.convention</code> in <code>pyproject.toml</code> even overrides CLI flags.</p>
+<pre><code>ruff --version                 
+    ruff 0.0.257
+ruff check . --ignore D | wc -l
+       0
+
+pip install ruff==0.0.258 &amp;&amp; ruff check . --ignore D | wc -l
+    19446
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-23 14:42</div>
+            <div class="timeline-body"><p>Yeah I've confirmed that it's a regression. I'll ship a fix today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3685.html">astral-sh/ruff#3685</a> on 2023-03-23 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-03-23 17:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

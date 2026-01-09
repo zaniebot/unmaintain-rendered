@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[E301] Failing to catch blank lines above classmethods when compared to pycodestyle - astral-sh/ruff #10114</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[E301] Failing to catch blank lines above classmethods when compared to pycodestyle</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10114">#10114</a>
+        opened by <a href="https://github.com/dfrtz">@dfrtz</a>
+        on 2024-02-24 20:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dfrtz">@dfrtz</a> on 2024-02-24 20:19</div>
+            <div class="timeline-body"><p>The closest I could find to this is #10039, but it appears to be a bit different, as it is talking about conflicts with format on pyi files, but this is impacting regular files and specifically classmethods. I also saw E301 mentioned in #10032 as potentially superfluous with formatter, but I don't see it listed in documentation as having conflicts. Blank line spacing around the E rules is also discussed in some PRs like https://github.com/astral-sh/ruff/pull/8720, but they do not appear to cover this specific scenario. I believe it should still be able to be caught when format is not used for parity with pycodestyle, which does catch these.</p>
+<p><strong>pyproject.toml</strong></p>
+<pre><code>[tool.ruff.lint]
+select = [
+  &quot;E&quot;,
+  &quot;W&quot;,
+]
+</code></pre>
+<p><strong>Python file</strong></p>
+<pre><code>&quot;&quot;&quot;Minimal repo.&quot;&quot;&quot;
+
+
+class MinRepoClassA:
+    &quot;&quot;&quot;Class for minimal repo.&quot;&quot;&quot;
+
+    columns = []
+    @classmethod
+    def cls_method_a(cls) -&gt; None:
+        pass
+    @classmethod
+    def cls_method_b(cls) -&gt; None:
+        pass
+    def method_a(self) -&gt; None:
+        pass
+    def method_b(self) -&gt; None:
+        pass
+
+</code></pre>
+<p><strong>pycodestyle 2.11.1</strong> catching all 4</p>
+<pre><code>$ pycodestyle --count min_repo.py
+min_repo.py:8:5: E301 expected 1 blank line, found 0
+min_repo.py:11:5: E301 expected 1 blank line, found 0
+min_repo.py:14:5: E301 expected 1 blank line, found 0
+min_repo.py:16:5: E301 expected 1 blank line, found 0
+4
+</code></pre>
+<p><strong>ruff 0.2.2</strong> catching 2/4</p>
+<pre><code>$ ruff --version
+ruff 0.2.2
+$ ruff check --preview min_repo.py
+min_repo.py:14:5: E301 [*] Expected 1 blank line, found 0
+   |
+12 |     def cls_method_b(cls) -&gt; None:
+13 |         pass
+14 |     def method_a(self) -&gt; None:
+   |     ^^^ E301
+15 |         pass
+16 |     def method_b(self) -&gt; None:
+   |
+   = help: Add missing blank line
+
+min_repo.py:16:5: E301 [*] Expected 1 blank line, found 0
+   |
+14 |     def method_a(self) -&gt; None:
+15 |         pass
+16 |     def method_b(self) -&gt; None:
+   |     ^^^ E301
+17 |         pass
+   |
+   = help: Add missing blank line
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.
+</code></pre>
+<p>To note, if using ruff format, it would fix all 4. If you are only using ruff as a replacement for pycodestyle without format however, then you would hit this miss without pycodestyle.</p>
+<pre><code>$ ruff format --check min_repo.py --diff
+--- min_repo.py
++++ min_repo.py
+@@ -5,13 +5,17 @@
+     &quot;&quot;&quot;Class for minimal repo.&quot;&quot;&quot;
+ 
+     columns = []
++
+     @classmethod
+     def cls_method_a(cls) -&gt; None:
+         pass
++
+     @classmethod
+     def cls_method_b(cls) -&gt; None:
+         pass
++
+     def method_a(self) -&gt; None:
+         pass
++
+     def method_b(self) -&gt; None:
+         pass
+
+1 file would be reformatted
+</code></pre>
+<p>I see E301 is in preview, but this does not appear to be intentional based on pycodestyle behavior, and it working with regular methods. I also did not see any configuration options to change this behavior, but please let me know if I am overlooking something. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-25 09:21</div>
+            <div class="timeline-body"><p>Thanks. Yeah I agree this is a bug. @hoel-bagard, would you be interested in looking into this issue? Just be aware, that there's one open PR that restructures the code. So maybe it would be best to start of that branch. https://github.com/astral-sh/ruff/pull/10098</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-02-25 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-02-25 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-02-25 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on 2024-02-25 09:34</div>
+            <div class="timeline-body"><p>@MichaReiser I'll look into fixing this, thanks for the notice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10117.html">astral-sh/ruff#10117</a> on 2024-02-25 10:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-03-01 09:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected DJ012 when get_absolute_url() comes after __repr__() - astral-sh/ruff #9659</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected DJ012 when get_absolute_url() comes after __repr__()</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9659">#9659</a>
+        opened by <a href="https://github.com/jmichalicek">@jmichalicek</a>
+        on 2024-01-28 00:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jmichalicek">@jmichalicek</a> on 2024-01-28 00:24</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Tested/verified on Python 3.12.1, ruff 0.1.14, and Django 5.0.1.</p>
+<p>DJ012 is from the <code>flake8-django</code> rules. It expects custom methods after <code>get_absolute_url()</code>. Ruff is considering <code>__repr__()</code> a custom method for this rule.</p>
+<p>Example class triggering the error <code>DJ012 Order of model's inner classes, methods, and fields does not follow the Django Style Guide: `get_absolute_url` method should come before custom method</code></p>
+<pre><code>class MyModel(models.Model):
+    some_attr = models.CharField()
+
+    def __str__(self) -&gt; str:
+        return self.som_attr
+
+    def __repr__(self) -&gt; str:
+        return f&quot;MyModel(some_attr={self.some_attr})&quot;
+
+    def get_absolute_url(self) -&gt; str:
+        return reverse('my_view', pk=self.pk)
+</code></pre>
+<p>If <code>get_absolute_url()</code> is moved above <code>__repr__()</code> then it passes. The class as written passes <code>django-flake8</code>, as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-06 02:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-06 03:52</div>
+            <div class="timeline-body"><p>I played around with this, and I think the originating plugin <em>does</em> flag this?</p>
+<pre><code>❯ flake8 foo.py --select DJ12
+foo.py:13:5: DJ12 The order of the model's inner classes, methods, and fields does not follow the Django Style Guide: get_absolute_url method should come before custom method
+</code></pre>
+<p>But I had to ensure that Django was installed in the same environment, <em>and</em> I had to manually select the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-06 03:54</div>
+            <div class="timeline-body"><p>IMO <code>__repr__</code> should be treated equivalently to <code>__str__</code>, but it's not explicitly discussed in the relevant style guide so I'm not sure: https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/#model-style</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmichalicek">@jmichalicek</a> on 2024-03-02 18:49</div>
+            <div class="timeline-body"><p>I forgot to follow up on this. Interesting find. django-flake8's docs look like DJ12 is enabled by default, so I assumed it was not having any issues with <code>__repr__()</code>.</p>
+<p>I definitely agree that <code>__repr__()</code> should be allowed to come first. I generally feel that any builtins being overridden should come before any any non-builtins, but for the sake of compatibility, sticking with what flake8-django does feels like the right decision at this point in time.</p>
+<p>For now I'll just ignore DJ12 and probably start using this on more of my projects than my initial project selected to test ruff on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2024-11-09 16:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

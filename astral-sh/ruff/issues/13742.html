@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>new rule - enforce that loop variables are not used outside the loop - astral-sh/ruff #13742</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>new rule - enforce that loop variables are not used outside the loop</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13742">#13742</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2024-10-14 02:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-10-14 02:56</div>
+            <div class="timeline-body"><p>the fact that loop variables are still in scope outside of the loop is a very common source of bugs:</p>
+<pre><code class="language-py">for val in values:
+    print(val)
+
+... # several lines later
+
+value = 1
+print(val) # it's very likely the user intended to use value instead of val
+</code></pre>
+<p>i know there are cases where this is intentional, for example:</p>
+<pre><code class="language-py">for value in values:
+    ...
+print(f&quot;the last value was {value}&quot;)
+</code></pre>
+<p>but imo it's a bad idea to rely on this functionality. what if <code>values</code> was empty? <code>value</code> will be undefined which will cause a runtime error.</p>
+<p>in most other languages, loop variables are only in scope within the loop, which is much less error-prone. it would be nice if there was a rule that enforced this:</p>
+<pre><code class="language-py">for val in values:
+    ...
+print(val) # error: loop variable used outside of loop
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-10-14 03:01</div>
+            <div class="timeline-body"><blockquote>
+<p>what if <code>values</code> was empty?</p>
+</blockquote>
+<p>you would get an error in <a href="https://basedpyright.com/?typeCheckingMode=all&amp;code=CYUwZgBGAUBuCGAbAriAzgLgoglmgLgNo4B2%2BAugJQYCwAUBI1APYBOECKIEpHSqmek2EQAdOKFMADq1L5oYAET4AFt0TwCfLhADumiAG9OqAL6LKkxkA">bpr</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-10-14 03:03</div>
+            <div class="timeline-body"><p>i think the idea of inserting <code>del</code> after every loop would be highly tedious. perhaps a better rule would be &quot;don't use loop var outside of loop&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "new rule - enforce that loop variables are deleted at the end of the loop" to "new rule - enforce that loop variables are not used outside the loop" by @DetachHead on 2024-10-14 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-10-14 03:07</div>
+            <div class="timeline-body"><p>could this also apply to if statements with walrus:</p>
+<pre><code class="language-py">if match := re.search(...):
+  print(match)
+print(match)  # error, don't do that
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/diceroll123">@diceroll123</a> on 2024-10-14 04:27</div>
+            <div class="timeline-body"><p>This would be Pylint's <code>W0631</code>, which at this time is marked as not implemented in Ruff, in #970</p>
+<p>https://pylint.readthedocs.io/en/stable/user_guide/messages/warning/undefined-loop-variable.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-10-14 04:33</div>
+            <div class="timeline-body"><p>oh right, closing in favor of #970</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @DetachHead on 2024-10-14 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10723.html">astral-sh/ruff#10723</a> on 2024-10-23 08:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

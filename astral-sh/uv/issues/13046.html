@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support `environments` in PEP 751 - astral-sh/uv #13046</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support `environments` in PEP 751</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13046">#13046</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-04-22 08:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2025-04-22 08:22</div>
+            <div class="timeline-body"><p>PEP 751 has an <code>environments</code> field with a list of Environment Markers for which the lock file is considered compatible with. We should support this field both when writing and when reading.</p>
+<ul>
+<li>[ ] When installing from <code>pylock.toml</code>, check that the current environment is compatible.</li>
+<li>[ ] When resolving with support environments, write those to the lockfile.</li>
+<li>[ ] When resolving for a specific platform, write an appropriate marker to the platform. (We could e.g. write the inverse of the union of the markers on edges that would lead to a package that is not part of the resolution or a requirement that is incompatible with it)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-04-22 08:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-22 13:16</div>
+            <div class="timeline-body"><p>The third thing seems hard. I don't think we propagate the information around the packages we <em>didn't</em> include, when resolving for a specific platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-22 13:34</div>
+            <div class="timeline-body"><p>It's tricky because in <code>requirements.txt</code>, we only write the packages and verifying compatibility is responsibility of the installer, while (I assume) for <code>pylock.toml</code> we want to be able to install without having to look at the metadata of each package. We can't realistically lock the exact PEP 508 environment, it's too specific to be useful for anything outside container workflows, but without knowing all package metadata, we can't which markers are relevant.</p>
+<p>Algorithmically, we could do this for the third item: After we built the resolution graph, we traverse the graph and for each package in the resolution, check each of its dependencies. For each requirement where the marker is not disjoint with the current package's marker in the lockfile and where the requirement is not satisfied by the packages in the resolution, record the intersection for the requirement marker and the package's marker. Example: say pytest 8.3.2 is included in the resolution given <code>python_version &gt;= &quot;3.12&quot;</code>, and it has a dependencies <code>colorama&gt;=0.4.6 ; sys_platform == 'win32'</code>. This resolution happened for linux and no other package required colorama, so <code>colorama&gt;=0.4.6</code> is not satisfied, and we record <code>sys_platform == 'win32' and python_version &gt;= &quot;3.12</code>. Eventually, we take the union of all those markers: This expressions describes all platforms we don't support, installing on them would lead to a package if unfulfilled requirements. We invert this marker and record it as the supported environment.</p>
+<p>I also quickly looked at the second item but it seems we already dropped the environments information from options at the stage of writing the lockfile, so we need to thread it through.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-22 14:03</div>
+            <div class="timeline-body"><p>Yeah we can definitely do it, I just don't think we record the dependencies in this way by the time we get to <code>ResolverOutput</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-22 16:00</div>
+            <div class="timeline-body"><p>I'm with you, this needs to happen at an earlier stage where that info still exists.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

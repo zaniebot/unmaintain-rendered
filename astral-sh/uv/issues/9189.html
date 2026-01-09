@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv audit` Command for Security Vulnerability Scanning - astral-sh/uv #9189</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv audit` Command for Security Vulnerability Scanning</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/9189">#9189</a>
+        opened by <a href="https://github.com/31z4">@31z4</a>
+        on 2024-11-18 08:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/31z4">@31z4</a> on 2024-11-18 08:57</div>
+            <div class="timeline-body"><h2>Problem</h2>
+<p>Currently, there's no integrated way to audit dependencies defined in <code>pyproject.toml</code> and <code>uv.lock</code> against known security vulnerabilities in the <a href="https://github.com/pypa/advisory-database">Python Packaging Advisory Database</a>. This creates security risks and workflow inefficiencies:</p>
+<ul>
+<li>Dependencies across different groups cannot be audited in a single operation</li>
+<li>Current solutions require additional tools and complex workflows</li>
+<li>Cross-platform compatibility issues with existing solutions</li>
+<li>Risk of auditing outdated or incorrect dependency sets</li>
+</ul>
+<h2>Proposed Solution</h2>
+<p>Implement a native <code>uv audit</code> command that would:</p>
+<ol>
+<li>Read dependencies from both <code>pyproject.toml</code> and <code>uv.lock</code></li>
+<li>Check all locked dependencies (including all dependency groups) against the Python Packaging Advisory Database</li>
+<li>Generate a security report highlighting:<ul>
+<li>Identified vulnerabilities</li>
+<li>Affected versions</li>
+<li>Available fixes</li>
+</ul>
+</li>
+</ol>
+<p>Example usage:</p>
+<pre><code class="language-bash"># Audit all dependencies
+uv audit
+
+# Audit specific dependency groups
+uv audit --group dev,test
+
+# Output in different formats
+uv audit --format json
+</code></pre>
+<h2>Benefits</h2>
+<ul>
+<li><strong>Improved Security</strong>: Integrated security scanning as part of the uv toolchain</li>
+<li><strong>Better Performance</strong>: Native implementation could offer significant speed improvements (assuming that querying the Python Packaging Advisory Database isn't a bottleneck)</li>
+<li><strong>Cross-Platform</strong>: Works consistently across all supported platforms</li>
+<li><strong>Comprehensive Coverage</strong>:<ul>
+<li>Seamless support for dependency groups</li>
+<li>Covers all project dependencies, not just installed packages</li>
+<li>Ensures audit matches locked dependencies exactly</li>
+</ul>
+</li>
+<li><strong>Simplified Workflow</strong>:<ul>
+<li>No additional tools required</li>
+<li>Single command for complete package security audit</li>
+<li>Native integration with uv's dependency management</li>
+</ul>
+</li>
+</ul>
+<h2>Alternatives Considered</h2>
+<h3>1. Using pip-audit</h3>
+<ul>
+<li><strong>Current Status</strong>:<ul>
+<li>Limited <code>pyproject.toml</code> support (ref: https://github.com/pypa/pip-audit/issues/766)</li>
+<li>No <code>uv.lock</code> support</li>
+</ul>
+</li>
+<li><strong>Limitations</strong>:<ul>
+<li>Additional dependency requirement</li>
+<li>Cross-platform inconsistencies</li>
+<li>Incomplete dependency group coverage</li>
+</ul>
+</li>
+</ul>
+<h3>2. Extending pip-audit for <code>uv.lock</code> support</h3>
+<ul>
+<li><strong>Pros</strong>:<ul>
+<li>Leverages existing tool</li>
+<li>Community familiarity</li>
+</ul>
+</li>
+<li><strong>Cons</strong>:<ul>
+<li>Loses uv's performance benefits</li>
+<li>Additional dependency requirement remains</li>
+<li>More complex integration</li>
+</ul>
+</li>
+</ul>
+<h3>3. Local environment scanning with pip-audit</h3>
+<ul>
+<li><strong>Approach</strong>: Running <code>pip-audit -l</code> against installed packages</li>
+<li><strong>Issues</strong>:<ul>
+<li>Environment may not match declarations</li>
+<li>Limited dependency group coverage</li>
+<li>Platform-specific behavior</li>
+</ul>
+</li>
+</ul>
+<h3>4. Requirements.txt generation and scanning with pip-audit</h3>
+<ul>
+<li><strong>Approach</strong>: Convert <code>uv.lock</code> to <code>requirements.txt</code> format for scanning</li>
+<li><strong>Issues</strong>:<ul>
+<li>Additional synchronization overhead</li>
+<li>Platform compatibility issues</li>
+<li>Complex workflow</li>
+</ul>
+</li>
+</ul>
+<h2>Additional Context</h2>
+<ul>
+<li>Related Issue: Security check before installation discussion (#8842)</li>
+<li>Implementation Interest: I'm willing to contribute to the implementation pending community feedback</li>
+<li>Similar Features:<ul>
+<li>cargo audit (Rust)</li>
+<li>npm audit (Node.js)</li>
+<li>composer audit (PHP)</li>
+</ul>
+</li>
+</ul>
+<h2>Next Steps</h2>
+<ol>
+<li>Gather community feedback on the proposed approach</li>
+<li>Discuss implementation details if approved</li>
+<li>Define specific behavior for edge cases</li>
+<li>Determine output format standards</li>
+</ol>
+<hr />
+<p>💡 Please share your thoughts on this proposal, particularly regarding:</p>
+<ul>
+<li>Preferred output formats</li>
+<li>Specific use cases to consider</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2024-11-19 01:43</div>
+            <div class="timeline-body"><p>For prior art: take a look at <a href="https://github.com/pypa/pip-audit">pip-audit</a>, which currently interoperates with <code>pip</code> and the other PyPA tooling.</p>
+<p>Based on our experience with that tool, some scattered thoughts:</p>
+<ul>
+<li><em>Avoid security fatigue</em>: all developers are susceptible to security fatigue, and auditing tools <em>in particular</em> eat into the &quot;fatigue budget&quot; more than most other tools. We try to minimize fatigue in <code>pip-audit</code> by making it an <em>independent flow</em>, i.e. not spitting out warnings or errors on every <code>pip install</code>, since we think users are more likely to just ignore security advisories if we force them in their faces.</li>
+<li><em>Be aware of quality issues</em>: the PyPA advisory database is curated, but low-quality submissions and vulnerability spam/reputation-seeking chum can still make its way in. Having a system by which end users can ignore obviously bogus or irrelevant reports is a good day 1 feature to have :slightly_smiling_face:</li>
+<li><em>Be aware of current fidelity gaps in Python advisory reporting</em>: Python package advisories currently operate at the <code>(name, version)</code> scope, but many vulnerabilities are more specific than that: they either apply only to binary builds (wheels) of packages, or onto to specific API surfaces, etc. There's a long-term plan to increase the fidelity in reports (e.g. to expose which files within a release are vulnerable, or which API surfaces are vulnerable), but it's worth noting that the current level of fidelity <em>will</em> cause false positives.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saada">@saada</a> on 2024-11-21 18:18</div>
+            <div class="timeline-body"><p>In the meantime, this seems to work fairly well</p>
+<pre><code>uvx pip-audit -r requirements.txt --fix
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/strayer">@strayer</a> on 2025-01-16 13:10</div>
+            <div class="timeline-body"><p>I had some issues with pip-audit trying to install pip (<code>subprocess.CalledProcessError: Command '['/var/folders/n9/kcz03p6n2pb5xchxn1ywm4640000gn/T/tmp74_otz01/bin/python3.11', '-m', 'ensurepip', '--upgrade', '--default-pip']' died with &lt;Signals.SIGABRT: 6&gt;</code>), so this is what I'm doing for now:</p>
+<p><code>uv export --format requirements-txt &gt; requirements.txt &amp;&amp; uvx pip-audit -r requirements.txt --disable-pip &amp;&amp; rm requirements.txt</code></p>
+<p>Seems to work very well too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aplantinga">@aplantinga</a> on 2025-02-11 15:32</div>
+            <div class="timeline-body"><p>See also the <a href="https://github.com/owenlamont/uv-secure">uv-secure</a> project, which seems to have a similar aim of providing pip-audit functionality for uv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10292.html">astral-sh/uv#10292</a> on 2025-02-13 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin-kerkhof">@colin-kerkhof</a> on 2025-03-13 20:22</div>
+            <div class="timeline-body"><p>I have been running <code>uv run --all-groups --with pip-audit pip-audit -l</code>. That should make sure that every package in the <code>pyproject.toml</code> is checked against the database, no?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ycheng517">@ycheng517</a> on 2025-04-15 19:40</div>
+            <div class="timeline-body"><blockquote>
+<p>I had some issues with pip-audit trying to install pip (<code>subprocess.CalledProcessError: Command '['/var/folders/n9/kcz03p6n2pb5xchxn1ywm4640000gn/T/tmp74_otz01/bin/python3.11', '-m', 'ensurepip', '--upgrade', '--default-pip']' died with &lt;Signals.SIGABRT: 6&gt;</code>), so this is what I'm doing for now:</p>
+<p><code>uv export --format requirements-txt &gt; requirements.txt &amp;&amp; uvx pip-audit -r requirements.txt --disable-pip &amp;&amp; rm requirements.txt</code></p>
+<p>Seems to work very well too.</p>
+</blockquote>
+<p>I get an error when I try this:</p>
+<pre><code>uv export --no-emit-project --format requirements-txt &gt; requirements.txt &amp;&amp; uvx pip-audit -r requirements.txt --disable-pip
+Resolved 491 packages in 338ms
+Traceback (most recent call last):
+  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/bin/pip-audit&quot;, line 12, in &lt;module&gt;
+    sys.exit(audit())
+             ~~~~~^^
+  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/lib/python3.13/site-packages/pip_audit/_cli.py&quot;, line 538, in audit
+    for spec, vulns in auditor.audit(source):
+                       ~~~~~~~~~~~~~^^^^^^^^
+  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/lib/python3.13/site-packages/pip_audit/_audit.py&quot;, line 68, in audit
+    for dep, vulns in self._service.query_all(specs):
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/lib/python3.13/site-packages/pip_audit/_service/interface.py&quot;, line 155, in query_all
+    for spec in specs:
+                ^^^^^
+  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/lib/python3.13/site-packages/pip_audit/_dependency_source/requirement.py&quot;, line 134, in collect
+    yield from self._collect_from_files(collect_files)
+  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/lib/python3.13/site-packages/pip_audit/_dependency_source/requirement.py&quot;, line 167, in _collect_from_files
+    yield from self._collect_preresolved_deps(iter(reqs), require_hashes)
+  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/lib/python3.13/site-packages/pip_audit/_dependency_source/requirement.py&quot;, line 319, in _collect_preresolved_deps
+    if req.marker is not None and not req.marker.evaluate():
+                                      ~~~~~~~~~~~~~~~~~~~^^
+  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/lib/python3.13/site-packages/packaging/markers.py&quot;, line 319, in evaluate
+    return _evaluate_markers(
+        self._markers, _repair_python_full_version(current_environment)
+    )
+  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/lib/python3.13/site-packages/packaging/markers.py&quot;, line 225, in _evaluate_markers
+    groups[-1].append(_eval_op(lhs_value, op, rhs_value))
+                      ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/lib/python3.13/site-packages/packaging/markers.py&quot;, line 183, in _eval_op
+    return spec.contains(lhs, prereleases=True)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/lib/python3.13/site-packages/packaging/specifiers.py&quot;, line 552, in contains
+    normalized_item = _coerce_version(item)
+  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/lib/python3.13/site-packages/packaging/specifiers.py&quot;, line 28, in _coerce_version
+    version = Version(version)
+  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/lib/python3.13/site-packages/packaging/version.py&quot;, line 202, in __init__
+    raise InvalidVersion(f&quot;Invalid version: {version!r}&quot;)
+packaging.version.InvalidVersion: Invalid version: '6.11.0-21-generic'
+</code></pre>
+<p>It looks to be caused by the presence of markers in requirements such as <code>platform_release &gt;= '20.0' and sys_platform == 'darwin'</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-04-15 19:54</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks to be caused by the presence of markers in requirements such as <code>platform_release &gt;= '20.0' and sys_platform == 'darwin'</code></p>
+</blockquote>
+<p>That's not why -- the error message shows that the error is caused by an invalid package version:</p>
+<pre><code>  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/lib/python3.13/site-packages/packaging/version.py&quot;, line 202, in __init__
+    raise InvalidVersion(f&quot;Invalid version: {version!r}&quot;)
+packaging.version.InvalidVersion: Invalid version: '6.11.0-21-generic'
+</code></pre>
+<p>You can reproduce this directly as well:</p>
+<pre><code>uv run --with packaging python
+&gt;&gt;&gt; import packaging.version
+&gt;&gt;&gt; packaging.version.Version(&quot;6.11.0-21-generic&quot;)
+packaging.version.InvalidVersion: Invalid version: '6.11.0-21-generic'
+</code></pre>
+<p>If you could report that upstream to <code>pip-audit</code> with a reproduction case, I'd appreciate it -- <code>pip-audit</code> <em>should</em> be catching and skipping these kinds of invalid package versions, but it's always possible there are edge cases we missed.</p>
+<p>You can report it here: https://github.com/pypa/pip-audit/issues/new?template=bug-report.yml</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ycheng517">@ycheng517</a> on 2025-04-15 20:06</div>
+            <div class="timeline-body"><blockquote>
+<p>That's not why -- the error message shows that the error is caused by an invalid package version:</p>
+<pre><code>  File &quot;/home/yifei/.cache/uv/archive-v0/ebnZSnxmb7JKYb1q41oSp/lib/python3.13/site-packages/packaging/version.py&quot;, line 202, in __init__
+    raise InvalidVersion(f&quot;Invalid version: {version!r}&quot;)
+packaging.version.InvalidVersion: Invalid version: '6.11.0-21-generic'
+</code></pre>
+</blockquote>
+<p>'6.11.0-21-generic' is my Linux kernel version, this version doesn't exist at all in my <code>requirements.txt</code> file. I believe because of the <code>platform_version</code> marker, pip-audit tries to get the version of the OS kernel to compare, and fail to recognize it as a valid version. Your point about this being a <code>pip-audit</code> issue still stands though, I shall report there. On the UV side, if there's an option to not generate the markers, that will help as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-04-15 20:10</div>
+            <div class="timeline-body"><p>Oh huh, that's interesting! Yeah, please file an issue, thanks -- that <em>might</em> even be a lower-level issue than <code>pip-audit</code> itself (since assuming that <code>platform_version</code> evaluates to something like a PEP 440 version seems wrong within <code>packaging</code>).</p>
+<p>Edit: Yep, here it is: https://github.com/pypa/packaging/issues/774</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ycheng517">@ycheng517</a> on 2025-04-15 20:43</div>
+            <div class="timeline-body"><p>Ah, thanks for finding that issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../VOICEVOX/voicevox_engine/pulls/1616.html">VOICEVOX/voicevox_engine#1616</a> on 2025-04-17 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-06-06 08:36</div>
+            <div class="timeline-body"><p>I personally would like to get vulnerability warnings whenever I install (sync, add, uv pip) à la npm. But I'm fine if its opt in rather than opt out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Toufool/AutoSplit/pulls/327.html">Toufool/AutoSplit#327</a> on 2025-06-09 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/owenlamont">@owenlamont</a> on 2025-06-30 13:08</div>
+            <div class="timeline-body"><p>I should've searched for this issue earlier - I am the author of <a href="https://github.com/owenlamont/uv-secure">uv-secure</a> - but I'd love for my package to become obsolete if uv did add an audit sub-command or perform automatic vulnerability scanning when syncing or locking.</p>
+<p>In my case uv-secure hits the PyPi json API to request known vulnerabilities per package version and requesting that info in parallel / asynchronously can still take a while - I'm sure the uv devs could do that smarter and more efficiently but you may not want that option always enabled by default. Maybe a <em>uv audit</em> command would be the way to go.</p>
+<p>In the short-term if I can find ways to incorporate more of uv into uv-secure (uv-secure is currently pure Python and not as fast as I'd like) I'd be interested to learn ways I could do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/pip-audit/issues/842.html">pypa/pip-audit#842</a> on 2025-07-11 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7454.html">astral-sh/uv#7454</a> on 2025-07-11 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15053.html">astral-sh/uv#15053</a> on 2025-08-04 06:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nyudenkov">@nyudenkov</a> on 2025-08-04 15:20</div>
+            <div class="timeline-body"><p>@31z4 @owenlamont @Avasam @woodruffw</p>
+<p>Hi! Inviting you to take a look at #15053 :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nyudenkov">@nyudenkov</a> on 2025-08-07 05:06</div>
+            <div class="timeline-body"><p>Unfortunately, the uv team can't review and accept my solution right now, but I published it as a standalone solution until uv has it built-in</p>
+<p>https://github.com/nyudenkov/pysentry</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DEKHTIARJonathan">@DEKHTIARJonathan</a> on 2025-08-08 02:48</div>
+            <div class="timeline-body"><p>Oh damn ! @nyudenkov that's awesome !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on 2025-08-08 11:38</div>
+            <div class="timeline-body"><p>@nyudenkov if you don't mind me asking, do the uv team have general reservations against anyone external from implementing this feature, or was it something specific about that PR that they were unsure about?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nyudenkov">@nyudenkov</a> on 2025-08-08 11:58</div>
+            <div class="timeline-body"><p>@thomasschafer
+Nothing special about PR actually but for other details inviting @zanieb to answer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Feature Request] Add `uv audit` Command for Security Vulnerability Scanning" to "`uv audit` Command for Security Vulnerability Scanning" by @konstin on 2025-08-21 07:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-21 02:30</div>
+            <div class="timeline-body"><p>Yeah we just don't have the bandwidth to do the design work we'd want to before adding a feature of this size yet, so we're not willing to accept any external contributions for it right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16646.html">astral-sh/uv#16646</a> on 2025-11-09 02:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

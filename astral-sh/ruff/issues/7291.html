@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect `noqa` directives inside f-strings - astral-sh/ruff #7291</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect `noqa` directives inside f-strings</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/7291">#7291</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-09-12 09:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-12 09:42</div>
+            <div class="timeline-body"><p><code>noqa</code> comments for strings goes at the end of it. Similarly, for multi-line strings (triple-quoted), the <code>noqa</code> directive is expected on the last line of the string.</p>
+<p>Now, with the new f-string specification, multi-line <em>expressions</em> are allowed in a single-quoted f-string. For example, the following code is valid in Python 3.12 but invalid before 3.12:</p>
+<pre><code class="language-python">f&quot;foo {
+    a
+        *
+            b
+}&quot;
+</code></pre>
+<p>We need to make sure to add the <code>noqa</code> directives at the end of f-string regardless if it's single or triple-quoted. For the above example, the outcome would be:</p>
+<pre><code class="language-python">f&quot;foo {
+    a
+        *
+            b
+}&quot;  # noqa: F821
+</code></pre>
+<p>The <a href="https://github.com/astral-sh/ruff/blob/a4a4616f0a49c6b1ff7da93a71308d897d27d21f/crates/ruff/src/directives.rs#L89-L89"><code>extract_noqa_line_for</code></a> function needs to be updated to fix this. Currently, it only checks for tripled-quoted strings using the <code>String</code> token. Now, we will need to use the <code>FStringStart</code> token to (1) check if it's a tripled-quoted f-string, if it is then (2) get the end range of the corresponding <code>FStringEnd</code> token. This could be done by either using a stack or using the <code>Indexer</code> to get the f-string range.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7299.html">astral-sh/ruff#7299</a> on 2023-09-12 09:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python312</span> added by @dhruvmanila on 2023-09-12 09:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2023-09-12 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @dhruvmanila on 2023-09-12 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">noqa</span> added by @dhruvmanila on 2023-09-12 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2023-09-13 03:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7326.html">astral-sh/ruff#7326</a> on 2023-09-13 04:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-18 06:49</div>
+            <div class="timeline-body"><p><em><strong>Continuing the discussion started in https://github.com/astral-sh/ruff/pull/7326#discussion_r1326848296</strong></em></p>
+<blockquote>
+<p>I think there are multiple questions here that we haven't talked about</p>
+<ol>
+<li>How should noqa comments in fstrings work in Python 3.12 forward, now that comments are allowed inside f-strings</li>
+<li>Whether we want to implement the new layout now or defer to later</li>
+<li>How to implement the change</li>
+</ol>
+</blockquote>
+<h2>NoQA for f-strings:</h2>
+<p>There are two options:</p>
+<ul>
+<li>For multi-line strings, NoQA comments can only be added at the end of the last line:<pre><code class="language-python">&quot;&quot;&quot;this is a normal multi-line string
+where NoQA comments can only be added at the
+end of the last line that is here --&gt; &quot;&quot;&quot;  # noqa: E501
+</code></pre>
+</li>
+<li>For multi-line f-strings, we've got two options:<ol>
+<li>Always at the end of the last line (current version)</li>
+<li>Either (i) or on the expression line where the violation needs to be suppressed. Here, we'll have to check the Python version as comments inside f-strings is only valid for 3.12+</li>
+</ol>
+</li>
+</ul>
+<p>For (ii), things gets a bit tricky. Take for example the following code snippet:</p>
+<pre><code class="language-python">f&quot;&quot;&quot;thiiiiiiiiiiiiiiisssssssssss iiiiiiiiiisssssssssss aaaaaaaaaaaaa verrrrrrrrrrrrrryyyyyyyyyyyy
+{
+    x
+        *
+            y
+} looooooonnnnnggg string&quot;&quot;&quot;
+</code></pre>
+<p>Here, the rule <code>E501</code> (line too long) can only be disabled at the last line of the multi-line string but the rule <code>F821</code> (undefined name) can be disabled on the expression line (<code>x</code> and <code>y</code>). Taking the above example by adding the NoQA comments:</p>
+<pre><code class="language-python">f&quot;&quot;&quot;thiiiiiiiiiiiiiiisssssssssss iiiiiiiiiisssssssssss aaaaaaaaaaaaa verrrrrrrrrrrrrryyyyyyyyyyyy
+{
+    x  # noqa: F821
+        *
+            y  # noqa: F821
+} looooooonnnnnggg string&quot;&quot;&quot;  # noqa: E501
+</code></pre>
+<p>The <code>E501</code> is added on the last line of the f-string because if it was added on the first line, it would become part of the string itself. But then what if we moved the opening curly brace on the first line:</p>
+<pre><code class="language-python">f&quot;&quot;&quot;thiiiiiiiiiiiiiiisssssssssss iiiiiiiiiisssssssssss aaaaaaaaaaaaa verrrrrrrrrrrrrryyyyyyyyyyyy {
+    x
+        *
+            y
+} looooooonnnnnggg string&quot;&quot;&quot;
+</code></pre>
+<p>Now, we can add the <code>E501</code> on the first line because that's the line which is longer than the line-length limit. Should it be added on the first line or the last line?</p>
+<pre><code class="language-python">f&quot;&quot;&quot;thiiiiiiiiiiiiiiisssssssssss iiiiiiiiiisssssssssss aaaaaaaaaaaaa verrrrrrrrrrrrrryyyyyyyyyyyy {  # noqa: E501
+    x  # noqa: F821
+        *
+            y  # noqa: F821
+} looooooonnnnnggg string&quot;&quot;&quot;
+</code></pre>
+<p>For single-quoted f-strings this problem doesn't come as the expression should start on the same line as the opening quote i.e., the opening curly brace should be on the same line as the opening quote:</p>
+<pre><code class="language-python"># valid
+f&quot;first line {
+	x * y
+}&quot;
+
+# invalid
+f&quot;first line
+{ 
+	x * y
+}&quot;
+</code></pre>
+<h3>Implementation</h3>
+<p>Here, it get's a bit tricky. To give some context, we build the <code>NoqaMapping</code> that maps the logical line to NoQA line i.e., the line where the violation is to the line where the NoQA comments should be added/detected.</p>
+<p>For f-strings, we could use the <code>FStringMiddle</code> token. If the token is the only one on the line, then the NoQA comment should be at the end of the last line of the f-string. But, if there are other tokens on the same line (<code>f&quot;foo {&quot;</code> where there's <code>FStringMiddle</code> then <code>Rbrace</code>) then we can add the <code>NoQA</code> directive on the same line. But, this requires peeking to the next token and checking if they're on the same line or checking for any newlines in the <code>FStringMiddle</code> value.</p>
+<p>For example,</p>
+<pre><code class="language-python"># 1
+f&quot;&quot;&quot;first line
+{
+	expr
+}&quot;&quot;&quot;
+
+# 2
+f&quot;&quot;&quot;first line
+and another {
+	expr
+}&quot;&quot;&quot;
+
+# 3
+f&quot;&quot;&quot;first line {
+	expr
+}&quot;&quot;&quot;
+</code></pre>
+<p>Here, the content of <code>FStringMiddle</code> in (1) would be <code>&quot;first line\n&quot;</code> while in (2) would be <code>&quot;first line\nand another &quot;</code> and for (3) <code>&quot;first line &quot;</code>.</p>
+<p>When I was thinking about the possible implementation, I found another problem w.r.t. (2) in the above code snippet. If the first line is too long, the NoQA directive has to go after the end of f-string but if the second line is too long, it could be added to the same line or at the end of the f-string. This is a confusing behavior:</p>
+<pre><code class="language-python">f&quot;&quot;&quot;assume this is a long line
+and this is a long line too with an opening curly brace {  # noqa: E501  # should this even be here?
+	expr
+}&quot;&quot;&quot;  # noqa: E501  # for the first line
+</code></pre>
+<p>Then, if there's no NoQA comment on the second line but it is present at the end of the f-string, should the second line trigger <code>E501</code>?</p>
+<pre><code class="language-python">f&quot;&quot;&quot;assume this is a long line
+and this is a long line too with an opening curly brace {  # should this trigger E501?
+	expr
+}&quot;&quot;&quot;  # noqa: E501  # for the first line
+</code></pre>
+<hr />
+<p>\cc @charliermarsh @MichaReiser I would love your thoughts on this but I believe we should be consistent in the NoQA handling and should add it at the end of the f-string</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-18 16:17</div>
+            <div class="timeline-body"><p>I'm okay moving forward with our current design but I see inline-noqa comments as a potential improvement because it avoids suppressing a too large range.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-18 16:23</div>
+            <div class="timeline-body"><p>I feel similarly. For now, I'm fine with only respecting <code># noqa</code> at the end of the multiline string, even for f-strings.</p>
+<p>In the future, I suppose both of these should work:</p>
+<pre><code class="language-python">f&quot;&quot;&quot;thiiiiiiiiiiiiiiisssssssssss iiiiiiiiiisssssssssss aaaaaaaaaaaaa verrrrrrrrrrrrrryyyyyyyyyyyy {  # noqa: E501
+    x
+        *
+            y
+} looooooonnnnnggg string&quot;&quot;&quot;  # noqa: E501
+</code></pre>
+<p>We have precedence for this with, e.g.:</p>
+<pre><code class="language-python">from foo import (  # noqa: F401
+  Bar,  # noqa: F401
+)
+</code></pre>
+<p>In which both of those <code>noqa</code> positions are valid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7561.html">astral-sh/ruff#7561</a> on 2023-09-21 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-21 02:30</div>
+            <div class="timeline-body"><p>Thanks for the feedback! I've opened #7561 to track that. I'll close this now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-09-21 02:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

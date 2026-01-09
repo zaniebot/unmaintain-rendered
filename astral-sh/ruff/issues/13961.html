@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't install 2 different ruff versions with different Python interpreters - astral-sh/ruff #13961</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't install 2 different ruff versions with different Python interpreters</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13961">#13961</a>
+        opened by <a href="https://github.com/giampaolo">@giampaolo</a>
+        on 2024-10-28 09:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/giampaolo">@giampaolo</a> on 2024-10-28 09:52</div>
+            <div class="timeline-body"><p>Hello. :-)
+At work we're stuck at Python 3.8 to a specific ruff version, but for my everyday development I'm free to use 3.10 with the most up to date version of ruff. It turns out that whatever version of ruff is installed last, it overwrites any previous installation, including if the Python interpreter is different:</p>
+<pre><code>$ python3.8 -m pip install ruff==0.4.7
+Successfully installed ruff-0.4.7
+$ python3.8 -m ruff -V
+ruff 0.4.7
+
+$ python3.10 -m pip install ruff
+Successfully installed ruff-0.7.1
+$ python3.10 -m ruff -V
+ruff 0.7.1
+
+$ python3.8 -m ruff -V
+ruff 0.7.1
+</code></pre>
+<p>Also note the following. Different versions are, in fact, installed:</p>
+<pre><code>$ python3.8 -m pip list | grep ruff
+ruff                      0.4.7
+$ python3.10 -m pip list | grep ruff
+ruff                          0.7.1
+</code></pre>
+<p>The problem is the <code>python3 -m ruff</code> invocation (I never invoke <code>ruff</code> command directly). <code>python3 -m ruff</code> executes logic in https://github.com/astral-sh/ruff/blob/main/python/ruff/<strong>main</strong>.py, so I believe the problem should be there, somewhere. According to what I see in <code>__main__.py</code>, the <code>ruff</code> executable seems to be determined via $PATH, which appears to be the problem here. Instead I would expect <code>__main__.py</code> to do something like:</p>
+<pre><code class="language-python">import ruff
+ruff.main()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Can't install 2 different ruff versions" to "Can't install 2 different ruff versions with different Python interpreters" by @giampaolo on 2024-10-28 10:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/giampaolo">@giampaolo</a> on 2024-10-28 10:32</div>
+            <div class="timeline-body"><p>Indeed, <a href="https://github.com/astral-sh/ruff/blob/main/python/ruff/__main__.py#L6C5-L6C20">find_ruff_bin</a> returns <code>/home/giampaolo/.local/bin/ruff</code> with both python 3.8 and 3.10. So apparently when <code>ruff</code> is installed via pip, the executable location is the same, and hence it gets overwritten, regardless of the python version being used. This means that if <code>ruff</code> is <strong>uninstalled</strong> for Python 3.8, it will also stop working for Python 3.10, because the executable path is the same and gets deleted:</p>
+<pre><code>$ python3.8 -m pip uninstall ruff
+Found existing installation: ruff 0.4.7
+Uninstalling ruff-0.4.7:
+  Would remove:
+    /home/giampaolo/.local/bin/ruff     # &lt;--------------- SEE HERE
+    /home/giampaolo/.local/lib/python3.8/site-packages/ruff-0.4.7.dist-info/*
+    /home/giampaolo/.local/lib/python3.8/site-packages/ruff/*
+Proceed (Y/n)? y
+  Successfully uninstalled ruff-0.4.7
+  
+$ python3.10 -m ruff
+Traceback (most recent call last):
+  File &quot;/usr/lib/python3.10/runpy.py&quot;, line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File &quot;/usr/lib/python3.10/runpy.py&quot;, line 86, in _run_code
+    exec(code, run_globals)
+  File &quot;/home/giampaolo/.local/lib/python3.10/site-packages/ruff/__main__.py&quot;, line 61, in &lt;module&gt;
+    ruff = os.fsdecode(find_ruff_bin())
+  File &quot;/home/giampaolo/.local/lib/python3.10/site-packages/ruff/__main__.py&quot;, line 57, in find_ruff_bin
+    raise FileNotFoundError(scripts_path)
+FileNotFoundError: /usr/local/bin/ruff
+</code></pre>
+<p>It's probably worth mentioning that the way <code>pip</code> solved this is by installing multiple copies of the exe by appending the python version as prefix:</p>
+<pre><code>$ ls -l /home/giampaolo/.local/bin/ | grep pip
+.rwxrwxr-x   221 giampaolo 28 ott 10:26  pip
+.rwxrwxr-x   223 giampaolo  8 feb 12:26  pip2
+.rwxrwxr-x   223 giampaolo  8 feb 12:26  pip2.7
+.rwxrwxr-x   221 giampaolo 28 ott 10:26  pip3
+.rwxrwxr-x   223 giampaolo  6 ago 10:42  pip3.8
+.rwxrwxr-x   221 giampaolo 28 ott 10:26  pip3.10
+.rwxrwxr-x   224 giampaolo  6 apr 22:43  pip3.12
+.rwxrwxr-x   224 giampaolo 21 ott 17:23  pip3.13
+</code></pre>
+<p>Perhaps <code>ruff</code> could do the same?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-10-28 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-28 12:06</div>
+            <div class="timeline-body"><p>Thanks for the detailed write-up.</p>
+<p>This seems more of a pip issue than Ruff where it uses the same location for binaries coming from different package versions.</p>
+<blockquote>
+<p>Perhaps ruff could do the same?</p>
+</blockquote>
+<p>Ruff isn't python version-dependent. There's no ruff for python 3.8. The constraint that Ruff 4.7 should be used is one of your own.</p>
+<p>I suggest you to do one of the following:</p>
+<ul>
+<li>Install ruff locally in a venv instead of globally in your home directory. That way projects using Python 3.8 can pin Ruff to an older version.</li>
+<li>Use <code>pipx</code> or <code>uvx</code> to run a specific ruff version. For example with <code>uv</code> you can do <code>uvx ruff@0.5</code> to run version 0.5 and use <code>uvx ruff</code> to use the latest ruff version (<a href="https://docs.astral.sh/uv/guides/tools/">docs</a>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/giampaolo">@giampaolo</a> on 2024-10-28 14:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Ruff isn't python version-dependent.</p>
+</blockquote>
+<p>Thanks, this clarifies things a bit. This looks kind of a grey area though, because, de-facto, each python interpreter does have its own ruff installed:</p>
+<pre><code>$ python3.8 -m pip list | grep ruff
+ruff                      0.4.7
+$ python3.10 -m pip list | grep ruff
+ruff                          0.7.1
+</code></pre>
+<p>E.g. I can successfully invoke the 2 different ruff versions if I:</p>
+<ul>
+<li>create a copy of <code>ruff</code> as in <code>cp /home/giampaolo/.local/bin/ruff /home/giampaolo/.local/bin/ruff3.8</code> <strong>after</strong> I install ruff for 3.8 (first installation)</li>
+<li>after installing <code>ruff</code> for python 3.10, I manually edit <code>/home/giampaolo/.local/lib/python3.8/site-packages/ruff/__main__.py</code> so that it points to <code>/home/giampaolo/.local/bin/ruff3.8</code> instead of <code>/home/giampaolo/.local/bin/ruff</code></li>
+</ul>
+<p>To further expand: <code>python3 -m</code> option is there precisely for use cases like mine, that is: invoke a module which defines a <code>__main__.py</code> file by using a specific python version. Or to put it another way: do not rely on invoking scripts from $PATH. E.g. I can successfully invoke <code>python3 -m black</code> in such a fashion, and get the expected behavior.</p>
+<p><code>ruff</code> works differently in this regard because its <code>__main__.py</code> script looks into $PATH for an executable called &quot;ruff&quot; to execute as a subprocess (see <a href="https://github.com/astral-sh/ruff/blob/main/python/ruff/__main__.py#L60-L68">source</a>), and this is somewhat  unusual. But then again, perhaps this is because ruff is written in rust, and therefore it cannot be invoked directly from python as in <code>import ruff; ruff.main()</code>.</p>
+<p>With that said, I fully realize that a better way to proceed would be to simply use a venv. This is a bad habit I never managed to adjust over the years, so blame on me. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-28 14:39</div>
+            <div class="timeline-body"><p>We did change this behavior recently. I'm interested to hear @gaborbernat thoughts who worked on it. This might also be related to https://github.com/astral-sh/ruff/pull/13881</p>
+<blockquote>
+<p>With that said, I fully realize that a better way to proceed would be to simply use a venv. This is a bad habit I never managed to adjust over the years, so blame on me. :-)</p>
+</blockquote>
+<p>That's why I use <code>uvx</code> for tools :) No dealing with venv's</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-28 14:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Indeed, <a href="https://github.com/astral-sh/ruff/blob/main/python/ruff/__main__.py#L6C5-L6C20">find_ruff_bin</a> returns /home/giampaolo/.local/bin/ruff with both python 3.8 and 3.10. So apparently when ruff is installed via pip, the executable location is the same, and hence it gets overwritten, regardless of the python version being used.</p>
+</blockquote>
+<p>This is a function of using the system Python, and whatever choices your system Python seems to have made. They share a <code>bin</code> directory? In that case you're going to suffer from more issues than just this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-28 14:46</div>
+            <div class="timeline-body"><p>I don't think there's really anything to solve here -- it doesn't make sense for us to introduce the complexity of having versioned executables, especially given that they're identical. I'd suggest using <code>uvx</code> or virtual environments, or installing with our installers rather than pip.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/giampaolo">@giampaolo</a> on 2024-10-28 15:03</div>
+            <div class="timeline-body"><blockquote>
+<p>This is a function of using the system Python, and whatever choices your system Python seems to have made. They share a bin directory? In that case you're going to suffer from more issues than just this.</p>
+</blockquote>
+<p>Completely agree. My main point here though is that <code>python3.X -m ruff</code> works in an unexpected way.
+E.g. I don't have this problem with <code>black</code>, <code>flake8</code> and others, because their <code>__main__.py</code> does not rely on invoking an external script defined in $PATH as a subprocess. The promise of the <code>-m</code> option should be to execute a python package as a script by using the same python interpreter invoked from the command line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-10-28 15:12</div>
+            <div class="timeline-body"><blockquote>
+<p>At work we're stuck at Python 3.8 to a specific ruff version, but for my everyday development I'm free to use 3.10 with the most up to date version of ruff.</p>
+</blockquote>
+<p><code>pipx</code> has a <code>--suffix</code> argument, that allows you to install different versions/interpreters; that way you could do</p>
+<pre><code>uv tool install ruff
+ruff --version
+
+uv tool install ruff&lt;=0.4 -s 0.4 
+ruff0.4 --version
+
+uv tool install -p 3.8 ruff -s '-3.8'
+ruff-3.8 --version
+</code></pre>
+<p>This is quite handy when dealing with different versions of tools, could be worth <code>uv</code> having similar too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/giampaolo">@giampaolo</a> on 2024-10-28 16:26</div>
+            <div class="timeline-body"><p>I just realized that <code>/home/giampaolo/.local/bin/ruff</code> is a <em>binary</em> executable, and that the ruff installation only consists of <code>__main__.py</code>:</p>
+<pre><code>~$ ls -la /home/giampaolo/.local/lib/python3.10/site-packages/ruff
+Permissions Size User      Date Modified Name
+drwxrwxr-x     - giampaolo 28 ott 12:43  __pycache__
+.rw-rw-r--     0 giampaolo 28 ott 12:43  __init__.py
+.rw-rw-r--  2,3k giampaolo 28 ott 12:43  __main__.py
+</code></pre>
+<p>As such, I now see why <code>__main__.py</code> can't do anything else other than simply executing the <code>ruff</code> binary file.
+This also made me realize that invoking ruff via <code>python3 -m ruff</code> is considerably slower:</p>
+<pre><code>~$ time python3 -m ruff -V
+ruff 0.7.1
+real	0m0,020s
+user	0m0,015s
+sys	0m0,005s
+
+~$ time ruff -V
+ruff 0.7.1
+real	0m0,003s
+user	0m0,003s
+sys	0m0,000s
+</code></pre>
+<p>I therefore understand how addressing my request is probably not possible, so please feel free to close this issue, and thanks for all the quick responses I've received from all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-28 16:27</div>
+            <div class="timeline-body"><p>Thanks for following up -- that's generally what I was trying to convey but it's a nuanced issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-28 16:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

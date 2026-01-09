@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D100 with `--add-noqa` breaks shebang lines - astral-sh/ruff #14442</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>D100 with `--add-noqa` breaks shebang lines</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14442">#14442</a>
+        opened by <a href="https://github.com/pjspereira">@pjspereira</a>
+        on 2024-11-18 20:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pjspereira">@pjspereira</a> on 2024-11-18 20:01</div>
+            <div class="timeline-body"><p>The <code>—add-noqa</code> breaks shebang lines with the D100 rule on files with no module documentation. Can the shebang line be ignored and the D100 error be assigned to the second line, if it exists?</p>
+<p>Example output from <code>ruff check --add-noqa --select D100 --isolated .</code>:</p>
+<pre><code class="language-python">#!/usr/bin/env python  # noqa: D100
+
+import sys
+
+if __name__==‘__main__’:
+    print(sys.argv)
+</code></pre>
+<p>If this script is marked executable, the noqa comment will be passed as a filename to python, which will crash the interpreter, since the file does not exist.</p>
+<p>Keywords: shebang D100
+Ruff version: 0.6.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-18 21:15</div>
+            <div class="timeline-body"><p>That sounds reasonable. We need to change the diagnostic location to after the first line</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-11-18 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-11-18 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-20 06:10</div>
+            <div class="timeline-body"><p><a href="https://docs.astral.sh/ruff/rules/missing-copyright-notice/"><code>CPY001</code></a>, <a href="https://docs.astral.sh/ruff/rules/implicit-namespace-package/"><code>INP001</code></a> and other file-level rules seem to suffer from the same problem.</p>
+<p>As a FYI, changing the location would be a breaking change for RyeCharm, which currently <a href="https://github.com/InSyncWithFoo/ryecharm/blob/1f64d40167968db7beb4491de31b2333fdce82a3/src/main/kotlin/insyncwithfoo/ryecharm/ruff/linting/RuffAnnotator.kt#L59-L60">uses the value of the range</a> to determine whether it should show <a href="https://insyncwithfoo.github.io/ryecharm/configurations/ruff/#show-editor-banner-for-file-level-diagnostics">an editor-level notice banner</a>. Updating this logic is simple enough, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-20 06:59</div>
+            <div class="timeline-body"><p>Yeah, it's certainly not ideal and thanks for the heads up for the RyeCharm integration.</p>
+<p>We could consider detecting this in the fix loop but my worry is that it won't be possible to determine if the edit should be applied before or after the shebang line (e.g. what if an edit changes the shebang line). But maybe we can? By only applying said logic if its an insertion at offset 0 and a shebang line is present?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-01-10 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "D100 with —add-noqa breaks shebang lines" to "D100 with -`-add-noqa` breaks shebang lines" by @charliermarsh on 2025-01-10 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "D100 with -`-add-noqa` breaks shebang lines" to "D100 with `--add-noqa` breaks shebang lines" by @charliermarsh on 2025-01-10 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a> on 2025-04-24 07:14</div>
+            <div class="timeline-body"><p>Does that mean that all file-level rules should:</p>
+<ul>
+<li>expect their file-level <code># noqa:</code> to be directly below the shebang, or would the convention be to add a blank line in-between?</li>
+<li>apply their <code>--fix</code>es to the correct place?</li>
+</ul>
+<p>I imagine this would be best done in a central location - e.g. where the noqa directives / fixes are parsed? using something like the EXE rules do: <code>if let Some(shebang) = ShebangDirective::try_extract(comment)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @AlexWaygood by @AlexWaygood on 2025-04-24 07:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-24 07:23</div>
+            <div class="timeline-body"><p>I'm not quiet sure what the right fix is. There's no clear good solution. The problem is that our noqa system expects that the suppression comments are on the same line as the diagnostic's range.</p>
+<p>We could explore if the following works:</p>
+<ul>
+<li>In <code>add_noqa</code>: If we detect that we're on the first line and the first line is a shebang, add the suppression right after the shebang line</li>
+<li>When finding suppression comments and the diagnostic range starts at <code>0:0</code> and there is a shebang, respect suppressions on the next line.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a> on 2025-04-24 13:23</div>
+            <div class="timeline-body"><p>I'd be happy to take a look at this, if it's not urgent and you're ok with that. Although I don't want to step on @AlexWaygood 's toes...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-24 13:29</div>
+            <div class="timeline-body"><p>Feel free to take a look. I don't think @AlexWaygood is working on this. Just a heads up. We're currently very busy with the type checker and reviews could be somewhat delayed because of that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-24 13:31</div>
+            <div class="timeline-body"><p>I think this is one of the issues I assigned myself to at the beginning of the year because it was listed as a possible starter task for @ntBre (I didn't want anybody else taking it in case it was something he was interested in working on 😄). Both @ntBre and I are now somewhat busy with other tasks, so anybody who wants to look at this should feel free to do so! I unassigned myself from this issue earlier today.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

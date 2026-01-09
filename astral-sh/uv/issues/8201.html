@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inaccurate error reporting when encountering 403 error - astral-sh/uv #8201</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inaccurate error reporting when encountering 403 error</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8201">#8201</a>
+        opened by <a href="https://github.com/christiansegercrantz">@christiansegercrantz</a>
+        on 2024-10-15 08:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/christiansegercrantz">@christiansegercrantz</a> on 2024-10-15 08:18</div>
+            <div class="timeline-body"><p>I noticed when trying to create a Docker image that installs required dependencies (generated with <code>rye sync</code>) from an internal repository that requires authentication, that  <code>uv</code> inaccurately reports the 403 error as the package not being available.</p>
+<p>Reproducible example:</p>
+<ol>
+<li>Create a requirements.lock with any requirements to a remote artifactory that requires authentication.</li>
+<li>Create docker image with the following code</li>
+</ol>
+<pre><code>FROM python:3.12-slim
+
+RUN pip install uv
+
+WORKDIR /app
+COPY requirements.lock ./
+
+ENTRYPOINT [ &quot;bash&quot; ]
+</code></pre>
+<ol start="3">
+<li>Build the image, go into it and run <code>uv pip install --no-cache --system --verbose -r requirements.lock</code> in it. This is the output (using Altair as example):</li>
+</ol>
+<pre><code>DEBUG uv 0.4.21
+DEBUG Searching for default Python interpreter in system path
+DEBUG Found `cpython-3.12.7-linux-aarch64-gnu` at `/usr/local/bin/python` (search path)
+Using Python 3.12.7 environment at /usr/local
+DEBUG Acquired lock for `/usr/local`
+DEBUG At least one requirement is not satisfied: altair==5.4.1
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.12.7
+DEBUG Solving with target Python version: &gt;=3.12.7
+DEBUG Adding direct dependency: altair==5.4.1
+DEBUG No cache entry for: &lt;REDACTED INTERNAL ARTIFACTORY&gt;
+DEBUG Searching for a compatible version of altair (==5.4.1)
+DEBUG No compatible version found for: altair
+  × No solution found when resolving dependencies:
+  ╰─▶ Because altair was not found in the package registry and you require altair==5.4.1, we can conclude that your requirements are
+      unsatisfiable.
+DEBUG Released lock at `/tmp/uv-1b696e695b7c17a7.lock`
+</code></pre>
+<p>If I run the same operation with <code>pip install --no-cache -r requirements.lock</code> I get either a clear 403 error (if inside the Dockerfile) or a request for credentials.</p>
+<p>I did not see if this has been reported already or if it's intentional. Whichever, I find this quite confusing when debugging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-10-15 10:12</div>
+            <div class="timeline-body"><p>This relates to my use case for #5260.</p>
+<p>Essentially 4xx errors (especially 403, but 401 and 405 are also known to happen) are a fact of life for many user demographics, so it would be nice if <code>uv</code> had specific error handling for these scenarios:</p>
+<ul>
+<li>acknowledge 403s as a distinct class of failure in the error messaging, instead of squashing down to 'not found'</li>
+<li>opportunistically pretty-print 4xx response bodies if they are of a JSON <code>Content-Type</code>, and contain certain well-known keys e.g. <code>message</code></li>
+</ul>
+<p>(those are the two that come to my mind -- I am sure there could be other improvements w.r.t. troubleshooting ergonomics)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 18:47</div>
+            <div class="timeline-body"><p>We now show dedicated hints here, which I think is reasonable for now: https://github.com/astral-sh/uv/pull/8264.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-16 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-16 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-10-16 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-10-16 19:02</div>
+            <div class="timeline-body"><blockquote>
+<p>We now show dedicated hints here, which I think is reasonable for now: #8264.</p>
+</blockquote>
+<p>Nice, this is a good start! I have put some minor comments but happy to track in a separate issue?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

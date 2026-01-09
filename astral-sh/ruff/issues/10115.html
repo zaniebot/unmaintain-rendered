@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`banned-api` (`TID251`) - support specifying quick fixes - astral-sh/ruff #10115</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`banned-api` (`TID251`) - support specifying quick fixes</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10115">#10115</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2024-02-25 03:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-02-25 03:25</div>
+            <div class="timeline-body"><p>in some cases, <code>banned-api</code> rules suggest replacing an import with another import that has an equivalent type, in which case it's safe to have a quick fix that just replaces it:</p>
+<pre><code class="language-py">[tool.ruff.lint.flake8-tidy-imports.banned-api]
+&quot;typing.TypedDict&quot;.msg = &quot;Use typing_extensions.TypedDict instead.&quot;
+&quot;typing.TypedDict&quot;.fix = &quot;typing_extensions.TypedDict&quot;
+</code></pre>
+<p>we could also make <code>msg</code> optional in cases where a fix is specified, which would just default to something like <code>&quot;use {fix} instead&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2024-02-25 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/markjm">@markjm</a> on 2025-01-09 19:13</div>
+            <div class="timeline-body"><p>I think this is a great suggestion! @MichaReiser would you be willing to review a change for this feature if I worked on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-10 07:24</div>
+            <div class="timeline-body"><p>Hi @markjm</p>
+<p>I think implementing this first requires some design. The case shown in the issue are somewhat straightforward because they only require changing the module from which the name is imported. But there are other cases where <code>banned-api</code> is useful. E.g.: The entire module is deprecated but there's no direct replacement for it (<code>cgi</code>), the specific name is deprecated, but the fix requires changing the imported name and updating all references and not just the module name, ...</p>
+<p>We should list the use cases, if a fix is supported, how it would be specified and what changes are necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @MichaReiser on 2025-01-10 07:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-01-11 00:39</div>
+            <div class="timeline-body"><blockquote>
+<p>The case shown in the issue are somewhat straightforward because they only require changing the module from which the name is imported.</p>
+</blockquote>
+<p>these cases are all i had in mind for this idea. i can't think of a way to implement fixes in more complicated cases where there's either no replacement or the replacement requires the usages to be updated. i think in those cases it should just not suggest a quick fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/markjm">@markjm</a> on 2025-01-14 01:58</div>
+            <div class="timeline-body"><p>Thanks @MichaReiser ,</p>
+<p>Given the configuration which would provide fixes is wholly in control of the individual crafting their config, I think it makes sense to empower the project maintainer to decide if they should specify a fixer like present above. I do not believe @DetachHead was suggesting that all banned-apis are required to have a fixer, just that you are allowed to specify one if you know, for your project, that the fixer is valid.</p>
+<p>Some common cases we use this rule for are vendoring and shimming modules,</p>
+<p>For example, if we want to use a 3p package but decide for some reason or another that we want to vendor the package, I may have a rule like</p>
+<pre><code>&quot;old_package&quot;.fix = &quot;third_party.old_package&quot;
+</code></pre>
+<p>or if I want to shim some module, I may use</p>
+<pre><code>&quot;some_module&quot;.fix = &quot;shims.some_module&quot;
+</code></pre>
+<p>I believe these to be reasonable use cases to this rule. As a random sample, in an extremely large internal codebase I work in, we have about 60 banned import rules, and 53 of them have a message that is simply &quot;use XYZ instead&quot;</p>
+<p>TLDR, you are right that not all imports would have safe fixes, but given its project-supplied content, it seems reasonable to allow for maintainers to make that consideration themselves and supporting the functionality in the rule.</p>
+<p><em>Also:</em>
+I think wanting this functionality also speaks to the power/speed of ruff as a refactoring tool. While yes, I do want this functionality as a persistent lint rules, I also think this functionality is useful to grow ruff's general refactoring functionality. For example, the reason this initially came up for me is because I wanted to do some large-scale import refactoring and realized this ruff rule, if available, would be the safest and fastest way to achieve it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-14 07:40</div>
+            <div class="timeline-body"><p>I'm not suggesting that all usages must have fixes. I'm only asking that we think through the design:</p>
+<ul>
+<li>What are the possible fixes for this rule, regardless of if we implement them. E.g. you only show examples where the module has the same name</li>
+<li>How does the fix get configured?</li>
+<li>How do we ensure that adding support for more fixes will be possible in the future without requiring a breaking change?</li>
+<li>Extra points: Do we need a way for an extending configuration to remove a fix?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16709.html">astral-sh/ruff#16709</a> on 2025-03-13 14:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

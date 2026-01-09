@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error when adding a non-existent version for the current OS - astral-sh/uv #9028</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error when adding a non-existent version for the current OS</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9028">#9028</a>
+        opened by <a href="https://github.com/genchik1">@genchik1</a>
+        on 2024-11-11 19:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/genchik1">@genchik1</a> on 2024-11-11 19:58</div>
+            <div class="timeline-body"><pre><code>uv --version
+uv 0.5.1 (f399a5271 2024-11-08)
+</code></pre>
+<p>I executed the command <code>uv add clickhouse-driver==0.2.9</code> and received the error message
+<code>Distribution clickhouse-driver==0.2.9 @ registry+https://my.site/api/pypi/simple can't be installed because it doesn't have a source distribution or wheel for the current platform.</code></p>
+<p>I work on macos, but the project requires packages for linux as well. After execution command &quot;uv add clickhouse-driver==0.2.9&quot;, the file uv.lock changed, linux packages were added to it, they were not installed for mac os because they were not added to my source. And at the same time, the clickhouse-driver has not been added to the hand, which means that I can no longer execute the command `uv remove clickhouse-driver'.</p>
+<p>Result:</p>
+<p>uv.lock:</p>
+<pre><code>
+[[package]]
+name = &quot;clickhouse-driver&quot;
+version = &quot;0.2.9&quot;
+source = { registry = &quot;https://my.site/api/pypi/simple&quot; }
+dependencies = [
+    { name = &quot;pytz&quot; },
+    { name = &quot;tzlocal&quot; },
+]
+wheels = [
+    { url = &quot;https://my.site/api/pypi/clickhouse_driver-0.2.9-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;, hash = &quot;sha256:hash&quot; },
+    { url = &quot;https://my.site/api/pypi/clickhouse_driver-0.2.9-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;, hash = &quot;sha256:hash&quot; },
+]
+
+</code></pre>
+<p>pyproject.toml:</p>
+<pre><code>
+[project]
+name = &quot;my-project&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+]
+</code></pre>
+<p><code>uv remove clickhouse-driver</code>:
+<em>error: The dependency <code>clickhouse-driver</code> could not be found in `dependencies</em></p>
+<hr />
+<p>I think that if the version for the current OS is not detected, then it is necessary to immediately output an error before adding an entry to uv.lock. It would be correct to try to get the package version for the current OS in the first place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-11 20:10</div>
+            <div class="timeline-body"><p>I see, so you're saying we modify the lockfile but then we revert the <code>pyproject.toml</code>? So at the end, <code>clickhouse-driver</code> is in the lockfile but <em>not</em> the <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-11 20:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-11 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9030.html">astral-sh/uv#9030</a> on 2024-11-11 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-12 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-12 03:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

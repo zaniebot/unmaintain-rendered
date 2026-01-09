@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark `uv pip` invocations in linehaul data - astral-sh/uv #16702</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Mark `uv pip` invocations in linehaul data</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/pull/16702">#16702</a>
+        opened by <a href="https://github.com/zsol">@zsol</a>
+        on 2025-11-12 11:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zsol">@zsol</a> on 2025-11-12 11:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR makes uv set the <code>installer.name</code> field in the linehaul metadata to <code>uv-pip</code> for all registry requests made from <code>uv pip</code> commands.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>[x] Added a test case to capture that setting <code>installer_name</code> on a <code>ClientBuilder</code> results in the user agent header changed accordingly.</li>
+<li>[x] Ran a few manual tests and observed linehaul data being sent and parsed:</li>
+</ul>
+<pre><code>UV_DEFAULT_INDEX=https://api.pyx.dev/simple/public/pypi cargo run -- pip install httpx torch
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Mark uv pip invocations in linehaul data" to "Mark `uv pip` invocations in linehaul data" by @zsol on 2025-11-12 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">registry</span> added by @zsol on 2025-11-12 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv pip</span> added by @zsol on 2025-11-12 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zsol on 2025-11-12 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @zsol on 2025-11-12 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zsol on 2025-11-12 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zsol on 2025-11-12 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/linehaul.rs</code>:129 on 2025-11-12 12:55</div>
+            <div class="timeline-body"><p>Slightly surprised but linehaul doesn't seem to check this field at all, which is good for us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-11-12 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-13 05:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/linehaul.rs</code>:129 on 2025-11-13 05:48</div>
+            <div class="timeline-body"><p>~As part of Google BigQuery? I feel I've queried based on installer name in the past 😅 e.g. <code>details.installer.name</code>~</p>
+<p>Ah, you meant the cloud function doesn't validate the field contents. Ignore my initial reaction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-13 05:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/tests/it/user_agent_version.rs</code>:25 on 2025-11-13 05:53</div>
+            <div class="timeline-body"><p>Note, a new abstraction to spawing this server will be in https://github.com/astral-sh/uv/pull/16473</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-13 06:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/linehaul.rs</code>:129 on 2025-11-13 06:02</div>
+            <div class="timeline-body"><p>I'd expect changing details.installer.name could have some consequences / churn in terms of how statistics are reported for uv in cases where someone using Big Query doesn't group by details.installer.name and does a select on <code>details.installer.name = 'uv'</code> directly for popular clients. I'd expect this to be a common scenario to avoid associated costs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-13 09:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/linehaul.rs</code>:129 on 2025-11-13 09:47</div>
+            <div class="timeline-body"><p>Ideally we had an additional field so that querying for uv can be done in a single condition instead of splitting this into two names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/linehaul.rs</code>:129 on 2025-11-13 17:31</div>
+            <div class="timeline-body"><p>Maybe @pradyunsg, @di or @ewdurbin may have better ideas on how to avoid splitting <code>details.installer.name</code> between <code>uv</code> and <code>uv-pip</code> or this use case in general?</p>
+<p>I think that'd be great if adding a new field could be a supported option to avoid the confusion of having two potential installer names, but I'm not sure what type of coordination or process would be needed in linehaul's side first. There may be better options I'm missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-13 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-13 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/linehaul.rs</code>:129 on 2025-11-13 18:35</div>
+            <div class="timeline-body"><p>We also posted in the PyPA Discord https://discord.com/channels/803025117553754132/885686683507494913/1438509254964281435</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-13 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/linehaul.rs</code>:129 on 2025-11-13 18:35</div>
+            <div class="timeline-body"><p>I think we won't merge this as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @zanieb on 2025-11-13 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ewdurbin">@ewdurbin</a> reviewed on 2025-11-13 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ewdurbin">@ewdurbin</a> on <code>crates/uv-client/src/linehaul.rs</code>:129 on 2025-11-13 18:47</div>
+            <div class="timeline-body"><p>Seems entirely reasonable to add additional values under the details key, though that can take some time since we no longer get to run our own schema migrations now that our dataset is part of the google public datasets. file an issue at https://github.com/pypi/linehaul-cloud-function/issues and tag me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zsol on 2025-11-13 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zsol">@zsol</a> reviewed on 2025-11-18 10:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zsol">@zsol</a> on <code>crates/uv-client/src/linehaul.rs</code>:129 on 2025-11-18 10:26</div>
+            <div class="timeline-body"><p>ref: https://github.com/pypi/linehaul-cloud-function/issues/233</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16837.html">astral-sh/uv#16837</a> on 2025-11-24 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-05 10:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv fails to parse pyproject.toml when using Hatchling's `{root:uri}` for dependencies - astral-sh/uv #2475</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv fails to parse pyproject.toml when using Hatchling's `{root:uri}` for dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2475">#2475</a>
+        opened by <a href="https://github.com/object-Object">@object-Object</a>
+        on 2024-03-15 15:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/object-Object">@object-Object</a> on 2024-03-15 15:47</div>
+            <div class="timeline-body"><p>Hatchling includes a <a href="https://hatch.pypa.io/dev/config/dependency/#local">feature</a> that allows specifying local dependencies relative to a project's root directory using the following syntax:</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;&lt;NAME&gt; @ {root:uri}/pkg_inside_project&quot;
+]
+</code></pre>
+<p>uv fails to install projects that are using this feature, even if only used in an optional dependency that is not selected.</p>
+<h2>Reproduction steps</h2>
+<p>To reproduce, create this file structure:</p>
+<p><code>/pyproject.toml</code></p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+# NOTE: error also occurs if using this instead of optional-dependencies
+# dependencies = [
+#     &quot;subproject @ {root:uri}/subproject&quot;,
+# ]
+
+[project.optional-dependencies]
+local = [
+    &quot;subproject @ {root:uri}/subproject&quot;,
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build]
+include = [&quot;*&quot;]
+</code></pre>
+<p><code>/subproject/pyproject.toml</code></p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+name = &quot;subproject&quot;
+version = &quot;0.1.0&quot;
+
+[tool.hatch.build]
+include = [&quot;*&quot;]
+</code></pre>
+<p>Then run these commands:</p>
+<p><code>uv pip install -e .</code> OR <code>uv pip install -e .[local]</code></p>
+<pre><code>error: Failed to build editables                                                                                                                    
+  Caused by: Failed to build editable: file:///C:/Users/object/test/uv-hatch-bug
+  Caused by: Invalid pyproject.toml
+  Caused by: TOML parse error at line 8, column 16
+  |
+8 | dependencies = [
+  |                ^^^^^^^^^^^^^^^^^
+relative path without a working directory: {root:uri}/subproject
+subproject @ {root:uri}/subproject
+             ^^^^^^^^^^^^^^^^^^^^^
+</code></pre>
+<p><code>pip install -e .</code></p>
+<pre><code>Obtaining file:///C:/Users/object/test/uv-hatch-bug
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... done
+  Preparing editable metadata (pyproject.toml) ... done
+Building wheels for collected packages: project
+  Building editable for project (pyproject.toml) ... done
+  Created wheel for project: filename=project-0.1.0-py2.py3-none-any.whl size=992 sha256=11807b7ff67c86dc454cef307552ec3d8ac732c790feca196b64012ab91f81b1
+  Stored in directory: C:\Users\object\AppData\Local\Temp\pip-ephem-wheel-cache-v6xjjlqo\wheels\06\2b\f9\aa218f95f265aa64e3013e3ab97f138c95307be54f63b231e6
+Successfully built project
+Installing collected packages: project
+Successfully installed project-0.1.0
+</code></pre>
+<p><code>pip install -e .[local]</code></p>
+<pre><code>Obtaining file:///C:/Users/object/test/uv-hatch-bug
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... done
+  Preparing editable metadata (pyproject.toml) ... done
+Processing c:\users\object\test\uv-hatch-bug\subproject (from project==0.1.0)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Checking if build backend supports build_editable ... done
+Building wheels for collected packages: project, subproject
+  Building editable for project (pyproject.toml) ... done
+  Created wheel for project: filename=project-0.1.0-py2.py3-none-any.whl size=992 sha256=11807b7ff67c86dc454cef307552ec3d8ac732c790feca196b64012ab91f81b1
+  Stored in directory: C:\Users\object\AppData\Local\Temp\pip-ephem-wheel-cache-_aeumxhm\wheels\06\2b\f9\aa218f95f265aa64e3013e3ab97f138c95307be54f63b231e6
+  Building wheel for subproject (pyproject.toml) ... done
+  Created wheel for subproject: filename=subproject-0.1.0-py2.py3-none-any.whl size=1017 sha256=0fa7cad32cdb573d95efda0c6e5153e0eec075cfeb7b7e208e893bfd8780da0a
+  Stored in directory: C:\Users\object\AppData\Local\Temp\pip-ephem-wheel-cache-_aeumxhm\wheels\96\35\a1\4cbdc9a17151719b42abce24fbf536ab374c79142e12ee2f74
+Successfully built project subproject
+Installing collected packages: subproject, project
+  Attempting uninstall: project
+    Found existing installation: project 0.1.0
+    Uninstalling project-0.1.0:
+      Successfully uninstalled project-0.1.0
+Successfully installed project-0.1.0 subproject-0.1.0
+</code></pre>
+<h2>Versions</h2>
+<p>OS: Windows 11
+Python: <code>3.11.0 (main, Oct 24 2022, 18:26:48) [MSC v.1933 64 bit (AMD64)] on win32</code>
+uv: <code>0.1.17 (bb2d06cbb 2024-03-10)</code></p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-15 16:04</div>
+            <div class="timeline-body"><p>Thanks for the well written report! I think this might be solved by making a PEP 517 request per https://github.com/astral-sh/uv/issues/1624 — or we could add support for this context formatting directly but I'm hesitant to do that since it's not a Python standard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-03-15 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-03-15 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-15 16:05</div>
+            <div class="timeline-body"><p>Hmm, I'm not quite sure how projects other than hatch are supposed to be able to build that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-16 14:11</div>
+            <div class="timeline-body"><p>@ofek - are other frontends expected to be able to build these projects? Any advice? I know Rye doesn't support this either: https://github.com/astral-sh/rye/issues/826.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-03-16 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-03-16 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-03-16 14:17</div>
+            <div class="timeline-body"><p>PDM added support for that but generally no, other projects can't use it without doing the PEP 517 process.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-16 14:22</div>
+            <div class="timeline-body"><p>We do go through the PEP 517 process so assuming all the build hooks work, it should &quot;just work&quot;. I think we're failing because we're trying to parse the requirements even though we don't &quot;need&quot; them here. I'll take a look and see if it's easy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-16 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-16 14:30</div>
+            <div class="timeline-body"><p>Okay yeah, we can support this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2492.html">astral-sh/uv#2492</a> on 2024-03-16 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-16 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/hatch/issues/1331.html">pypa/hatch#1331</a> on 2024-03-17 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/airflow/pulls/38437.html">apache/airflow#38437</a> on 2024-03-24 16:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

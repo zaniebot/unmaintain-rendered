@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PLR0915` unconditionally counts `pass` as a statement - astral-sh/ruff #11479</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`PLR0915` unconditionally counts `pass` as a statement</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11479">#11479</a>
+        opened by <a href="https://github.com/AlexBlandin">@AlexBlandin</a>
+        on 2024-05-20 19:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexBlandin">@AlexBlandin</a> on 2024-05-20 19:43</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<pre><code class="language-cmd">&gt; ruff check foo.py
+foo.py:1:5: PLR0915 Too many statements (6 &gt; 5)
+Found 1 error.
+</code></pre>
+<p>As seen below, the snippet <code>foo</code> has this warning under <code>ruff check</code>. pylint also reports <code>R0915</code> on this. <a href="https://play.ruff.rs/78d3e134-421f-45c9-8b96-cd48160f7121">Replicated on the playground.</a></p>
+<p>I checked all other reports under <code>PLR0915</code> (<code>is:issue PLR0915</code>) and it seems this hasn't been reported yet.</p>
+<p><code>pass</code> <a href="https://docs.python.org/3/reference/simple_stmts.html#pass">canonically does nothing</a>, so is valued for exactly this, being an &quot;empty&quot; token (distinct from ellipsis, which has a value).
+In codebases, usually ones precluding rules like <code>PIE790</code> (or pylint's <code>W0107</code>, as is superseded), it is thereby used outside the obvious &quot;placeholder&quot; (for which ellipsis is usually preferred, as in type stubs) as a clear indicator that &quot;nothing occurs&quot;, in particular, at the end of a block that doesn't have other delimiting control flow (<code>return</code>, <code>break</code>, etc).
+This means that, similar to the definition of a function not counting as a statement within itself, <code>pass</code> can be paired up in &quot;closing&quot; a prior statement, which is popular-enough that some editors even use it as a de facto delimiter to control auto-indentation (sometimes instead of other control flow statements).</p>
+<p>Whether this behaviour should be changed relative to pylint is one question, though perhaps not one worth bothering with. The better question, in my mind, is whether to have a toggle for those that want <code>max-statements</code> to include <code>pass</code> or not.</p>
+<p>The simplest toggle would simply discount <code>pass</code> as a statement, for it's one that does nothing, so is not indicative of difficulty with understandability or maintainability; indeed, it can make it more readable for some.</p>
+<p>A better toggle (or optional strategy) could check if <code>pass</code> is the last statement in a block, in which case it is discounted. This saves concerns over missing interstitial <code>pass</code> statements that should probably have been warned on (as mentioned, <code>PIE790</code> is typically precluded in these codebases). In that way, dealing with <code>pass</code> as ending a block would allow sequential <code>pass</code>, as in the snippet, to be counted for warning, which seems a good balance. Also, by checking for <code>pass</code> as the last token of a block, this way improves handling for certain codebases (i.e. where an unreachable <code>pass</code> is used <em>after</em> control flow like <code>break</code> or <code>return</code> due to limitations on editors or other parsers).</p>
+<p>Tested:</p>
+<ul>
+<li>Ruff: 0.4.4</li>
+<li>pylint: 3.2.2</li>
+</ul>
+<pre><code class="language-python">def foo(a):
+  pass
+  pass
+  pass
+  pass
+  pass
+  pass
+</code></pre>
+<p>For the sake of saving space on the issue, the limit was reduced as such:</p>
+<pre><code class="language-toml">[lint]
+select = [&quot;PLR0915&quot;]
+[lint.pylint]
+max-statements = 5
+</code></pre>
+<p>And, for <code>pylint</code>, the equivalent:</p>
+<pre><code class="language-toml">[DESIGN]
+max-statements=5
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`PLR0915` counts `pass` as a statement" to "`PLR0915` unconditionally counts `pass` as a statement" by @AlexBlandin on 2024-05-21 09:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexBlandin">@AlexBlandin</a> on 2024-05-21 10:44</div>
+            <div class="timeline-body"><p>Just wanted to add, there does not seem to be substantial grounds for <code>pass</code>-ending-block to be overlooked as a syntactic form. Neither PEP 8 nor Black make any mention of <code>pass</code>, so while that means they (nor Ruff) do not auto-insert it when formatting, it also means that neither of them strip it out. As in PEP 20, &quot;Explicit is better than implicit&quot; and &quot;Readability counts&quot;, which means that it is quite understandable to want explicit syntax to denote the end of a block, but such that they correspond to the statement of the block itself; pairing <code>pass</code> with either the (compound statement) control flow commencing it, e.g. <code>while</code>, or the (simple statement) preceding control flow that makes it unreachable (where <code>pass</code> is retained as hinting to an editor/parser).</p>
+<p>Of course, a casual survey of Python codebases suggests this approach is in the minority, and it's not actually one I hold myself to on personal codebases, though have encountered &quot;in the wild&quot; and do use (occasionally) for various reasons, including teaching to those used to languages with block-ending syntax, of which this use of <code>pass</code> is the de facto way to emulate, though obviously not de jure.</p>
+<p>In particular, I have found it useful for gradually integrating <code>match</code>-<code>case</code> on older codebases, particularly when the tooling available is not quite up-to-par with Python circa 2023 (typically due to not supporting the post-PEP 617 grammar), for which <code>pass</code> provides a handy way to create simplified support for these compound statements. This, however, is not a typical need, especially with the improved support for <code>ast</code>, <code>tree-sitter</code>, and such, sidestepping many instances where someone might hand-roll a parser (though, of course, many other scenarios do still benefit from such), especially given the general maturity of many &quot;default picks&quot; for tooling in the Python ecosystem at large (such as, of course, Ruff).</p>
+<p>Still, these codebases and tools remain, and many editors are aware of this and so do respect <code>pass</code> as a hint that the block has ended; and, of course, this editor support for <code>pass</code> is still naturally useful in the &quot;traditional&quot; use of <code>pass</code> as a placeholder for, say, an otherwise empty compound statement that would not parse otherwise (the classic <code>if ... : pass</code>). Some editors are unable to process multiple tokens that close/conclude blocks, and anecdotally I've seen a clear bias towards accepting <code>pass</code> as the canonical one (although some simply give up and only use <code>return</code>, which while simplistic is at least an understandable pick), so there is a clear harmony in allowing Ruff to be aware of this and not &quot;punishing&quot; code.</p>
+<p>For these reasons, I don't think it would do to make any changes to the default, but instead to provide either a toggle or a choice of &quot;counting strategies&quot; applicable to <code>PLR0915</code> (and potentially other &quot;complexity&quot; measures). In my opinion, the best approach for a toggle would only discount a <code>pass</code> statement that concludes a block. However, there is a clear gradation of strategies to &quot;ignore <code>pass</code>&quot; based on how many they discount:</p>
+<ul>
+<li>None: Discount no <code>pass</code> statements, the current and default behaviour</li>
+<li>Essential: Discount any <code>pass</code> that is deemed essential under <code>PIE790</code> (i.e. the clearest &quot;placeholders&quot;)</li>
+<li>Reachable: Discount any reachable <code>pass</code> that concludes a block (so, in <code>bar</code> below, the <code>pass</code> in <code>if b:</code> is discounted, but the <code>pass</code> after the <code>break</code> is not, as it is unreachable and may be worth warning about)</li>
+<li>Closing: Discount any <code>pass</code> statement that concludes a block (including an unreachable <code>pass</code>)</li>
+<li>Trailing: Discount any <code>pass</code> statements that conclude a block (i.e. consecutive <code>pass</code> statements, as in <code>baz</code> below)</li>
+<li>All: Discount all <code>pass</code> statements</li>
+</ul>
+<p>The logic for each is simple, so weighing between providing these would have to be a matter of balancing the impact on the codebase and benefit for other aspects; while I opened this relative to <code>PLR0915</code> (as it was the warning encountered) this could be applicable to other parts of Ruff, in particular any other &quot;complexity&quot; measures (i.e. <code>C90</code>). Since this is not merely a 1-1 correspondence, a user cannot simply increase <code>max-statements</code> for the same effect as that partially defeats the purpose of <code>max-statements</code> and <code>PLR0915</code> to begin with, by permitting <code>pass</code>-free code that would otherwise breach the prior/default <code>max-statements</code>. Indeed, similar arguments apply for <code>C901</code> and <code>max-complexity</code>.</p>
+<p>Therefore, providing some opt-in form of this is a clear advantage that preserves the benefits of the existing rules without undermining them, either with a selection of discounting strategies, similar to those outlined above, or as a single toggle (likely similar to either Reachable, Closing, or Trailing, as above) should the impact on the Ruff codebase not warrant providing the full selection.</p>
+<p>In addition, such a toggle/strategy could also be added to <code>ruff format</code>, at least enabling a Reachable or Closing <code>pass</code> to be auto-inserted after a block, and similarly only on an opt-in basis. This would benefit existing codebases with migration to Ruff on gradual terms, without stepping on the existing behaviour, especially where it is clear that the existing tooling is otherwise a blocker/impediment to upgrading, yet is unable to (at present) be upgraded itself (or otherwise replaced).</p>
+<p>An example of this style is below, just to demonstrate.</p>
+<pre><code class="language-python">def bar(a):
+  for b in a:
+    if b:
+      print(b)
+      pass
+    elif b is None:
+      break
+      pass  # An unreachable hint useful for editors/parsers not robust to multiple available block-closing tokens
+    pass
+  pass
+
+
+def baz(a):
+  match a:
+    case int(n):
+      print(n)
+      pass
+    case str(s):
+      print(s)
+      pass
+      pass  # A simple trick for retrofitting match-case; usually only a single pass is required, with a little care, but not always
+  pass
+</code></pre>
+<pre><code class="language-cmd">&gt; ruff check bar.py
+bar.py:1:5: PLR0915 Too many statements (8 &gt; 5)
+bar.py:13:5: PLR0915 Too many statements (7 &gt; 5)
+Found 2 errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-05-21 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-05-21 19:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

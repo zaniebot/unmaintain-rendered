@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTH100 unsafely converts `os.path.abspath` to `pathlib.Path.resolve` - astral-sh/ruff #20088</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PTH100 unsafely converts `os.path.abspath` to `pathlib.Path.resolve`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20088">#20088</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-08-25 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-08-25 19:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/os-path-abspath/"><code>os-path-abspath</code> (PTH100)</a> converts <code>os.path.abspath</code> to <code>pathlib.Path.resolve</code>, which does not do the same thing. Sometimes, as in <a href="https://gitlab.com/RoPP/flake8-use-pathlib/-/issues/8">upstream flake8-use-pathlib issue #8</a>, <code>pathlib.Path.absolute</code> is the preferred replacement, but there is no exact equivalent; see https://github.com/python/cpython/issues/69200. The documentation for PTH100 should explain this and the fix should be marked unsafe.</p>
+<p>| Function | Removes <code>..</code>? | Resolves symlinks? |
+| --- | --- | --- |
+| <code>abspath</code> | ✅ | ❌ |
+| <code>resolve</code> | ✅ | ✅ |
+| <code>absolute</code> | ❌ | ❌ |</p>
+<p><a href="https://play.ruff.rs/3a148d9d-e0a8-4282-a692-cd8de79492f2">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;pth100.py &lt;&lt;'# EOF'
+import os
+open(&quot;pth100_src&quot;, &quot;w&quot;).close()
+os.symlink(&quot;pth100_src&quot;, &quot;pth100_dst&quot;)
+os.mkdir(&quot;pth100_dir&quot;)
+print(str(os.path.abspath(&quot;pth100_dir/../dst&quot;)).removeprefix(f&quot;{os.getcwd()}/&quot;))
+# EOF
+
+$ rm -fr pth100_{dir,dst,src}
+
+$ python pth100.py
+dst
+
+$ ruff --isolated check pth100.py --select PTH100 --preview --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat pth100.py
+import os
+import pathlib
+open(&quot;pth100_src&quot;, &quot;w&quot;).close()
+os.symlink(&quot;pth100_src&quot;, &quot;pth100_dst&quot;)
+os.mkdir(&quot;pth100_dir&quot;)
+print(str(pathlib.Path(&quot;pth100_dir/../dst&quot;).resolve()).removeprefix(f&quot;{os.getcwd()}/&quot;))
+
+$ rm -fr pth100_{dir,dst,src}
+
+$ python pth100.py
+src
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.10 (c68ff8d90 2025-08-21)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-08-26 07:45</div>
+            <div class="timeline-body"><p>I'm fix it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-08-26 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-08-26 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20100.html">astral-sh/ruff#20100</a> on 2025-08-26 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-26 17:07</div>
+            <div class="timeline-body"><p>It looks like the <a href="https://docs.python.org/3/library/pathlib.html#corresponding-tools">Corresponding tools</a> section of the <code>pathlib</code> docs now recommend <code>Path.absolute</code> as the replacement for <code>os.path.abspath</code> instead of <code>Path.resolve</code>. Related to that, the <a href="https://docs.python.org/3/library/pathlib.html#correspondence-to-tools-in-the-os-module">Correspondence between os and pathlib</a> link appears to be broken in our PTH100 docs. This table used to equate <code>abspath</code> and <code>resolve</code> on <a href="https://docs.python.org/3.10/library/pathlib.html#correspondence-to-tools-in-the-os-module">3.10</a> but pairs up <code>abspath</code> and <code>absolute</code> after that.</p>
+<p>It seems like we could update our recommendation to <code>Path.absolute</code>, but marking the fix unsafe and extending the docs makes sense as a good start since neither case is really equivalent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-26 18:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

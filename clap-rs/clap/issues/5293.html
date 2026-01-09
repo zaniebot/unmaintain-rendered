@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caller-defined `complete` subcommand for rust-native completions - clap-rs/clap #5293</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Caller-defined `complete` subcommand for rust-native completions</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/5293">#5293</a>
+        opened by <a href="https://github.com/liuhangbin">@liuhangbin</a>
+        on 2024-01-09 03:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/liuhangbin">@liuhangbin</a> on 2024-01-09 03:19</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.4.11</p>
+<h3>Describe your use case</h3>
+<p>Currently, the dynamic completion hides the parameter from the program's parameters and only shows with <code>$ cmd complete -h</code>, which is good. But it hard-codes the parameter with <code>complete</code>, which may conflict with or be similar to the program's existing parameter. This makes <code>$ cmd c</code> not work. It would be good if the user could define the complete parameter themself.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Maybe add a new function <code>fn set_comp_words</code> in <code>impl CompleteCommand</code>. Then we can define the <code>comp_words</code> ourself.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @liuhangbin on 2024-01-09 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../retis-org/retis/pulls/329.html">retis-org/retis#329</a> on 2024-01-09 08:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-01-09 16:39</div>
+            <div class="timeline-body"><p>To clarify, you are wanting to replace the <code>complete</code> subcommand name, right?</p>
+<p>That isn't too clear from the proposed solution as its unclear what <code>comp_words</code> is.</p>
+<blockquote>
+<p>The clap maintainer also said that dynamic completion will replace static completion in future. So I chose to use dynamic completion, although it only supports bash and fish right now.</p>
+</blockquote>
+<p>dynamic completions are also very early in their development so I also generally recommend people use static completions at this time but I encourage fixes and improvements on dynamic completions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liuhangbin">@liuhangbin</a> on 2024-01-10 02:23</div>
+            <div class="timeline-body"><blockquote>
+<p>To clarify, you are wanting to replace the <code>complete</code> subcommand name, right?</p>
+</blockquote>
+<p>Yes</p>
+<blockquote>
+<p>That isn't too clear from the proposed solution as it's unclear what <code>comp_words</code> is.</p>
+</blockquote>
+<p>In <code>clap_complete/src/dynamic/shells/mod.rs</code> it defines</p>
+<pre><code class="language-rust">/// Generally used via [`CompleteCommand`]
+#[derive(clap::Args)]
+#[command(arg_required_else_help = true)]
+#[command(group = clap::ArgGroup::new(&quot;complete&quot;).multiple(true).conflicts_with(&quot;register&quot;))]
+#[allow(missing_docs)]
+#[derive(Clone, Debug)]
+pub struct CompleteArgs {
+    /// Specify shell to complete for
+    #[arg(long)]
+    shell: Shell,
+
+    /// Path to write completion-registration to
+    #[arg(long, required = true)]
+    register: Option&lt;std::path::PathBuf&gt;,
+
+    #[arg(raw = true, hide_short_help = true, group = &quot;complete&quot;)]
+    comp_words: Vec&lt;OsString&gt;,
+}
+</code></pre>
+<p>So I think adding a function in <code>impl CompleteCommand</code> to set the <code>comp_words</code> may fix this issue.</p>
+<blockquote>
+<blockquote>
+<p>The clap maintainer also said that dynamic completion will replace static completion in future. So I chose to use dynamic completion, although it only supports bash and fish right now.</p>
+</blockquote>
+<p>dynamic completions are also very early in their development so I also generally recommend people use static completions at this time but I encourage fixes and improvements on dynamic completions.</p>
+</blockquote>
+<p>The dynamic completions could <code>hide</code> from the existing parameters, which is very useful. If we use the static completions and add a, e.g. <code>generate</code> parameter, we need to remove it if switch to dynamic completions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-01-10 03:53</div>
+            <div class="timeline-body"><blockquote>
+<p>So I think adding a function in impl CompleteCommand to set the comp_words may fix this issue.</p>
+</blockquote>
+<p>Its not clear to me why someone would want to use this struct but override <code>comp_words</code>.  <code>comp_words</code> is meant to come from the shell, not the calling program, to define what we should complete.</p>
+<p>Are you trying to use <code>CompleteCommand</code> as a completion API-only and not for flattening into your CLI?  If so, that isn't its role.  The logic it implements is fairly light with most of the behavior coming from elsewhere.</p>
+<blockquote>
+<p>The dynamic completions could hide from the existing parameters, which is very useful. If we use the static completions and add a, e.g. generate parameter, we need to remove it if switch to dynamic completions.</p>
+</blockquote>
+<p>It sounds like the concern is with compatibility being broken with how you currently do completions?  I can understand that.  However, the current built-in interface isn't stable yet either.  Its also likely that you could make a generate parameter used for static completions that will then work for dynamic completions.  The shell support might be a little different but you can choose now for a subset of shells (fig is one that I know won't work with dynamic completions).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liuhangbin">@liuhangbin</a> on 2024-01-10 05:38</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>So I think adding a function in impl CompleteCommand to set the comp_words may fix this issue.</p>
+</blockquote>
+<p>Its not clear to me why someone would want to use this struct but override <code>comp_words</code>. <code>comp_words</code> is meant to come from the shell, not the calling program, to define what we should complete.</p>
+</blockquote>
+<p>It's just my guess. Not the way you should follow. And looks like I didn't read the code correctly. You can choose the best way to implement this feature.</p>
+<blockquote>
+<p>Are you trying to use <code>CompleteCommand</code> as a completion API-only and not for flattening into your CLI? If so, that isn't its role. The logic it implements is fairly light with most of the behavior coming from elsewhere.</p>
+</blockquote>
+<p>I use the way like <a href="https://github.com/clap-rs/clap/blob/master/clap_complete/examples/dynamic.rs">dynamic example</a> does.</p>
+<blockquote>
+<blockquote>
+<p>The dynamic completions could hide from the existing parameters, which is very useful. If we use the static completions and add a, e.g. generate parameter, we need to remove it if switch to dynamic completions.</p>
+</blockquote>
+<p>It sounds like the concern is with compatibility being broken with how you currently do completions? I can understand that. However, the current built-in interface isn't stable yet either. Its also likely that you could make a generate parameter used for static completions that will then work for dynamic completions. The shell support might be a little different but you can choose now for a subset of shells (fig is one that I know won't work with dynamic completions).</p>
+</blockquote>
+<p>Yes, I tried the static way. What I am concerned about is that the <code>generate</code> completion is not related to the program functions. It's mainly used by the package maintainer.</p>
+<p>So I like the idea that dynamic completion hides the <code>complete</code> parameter by default, which doesn't affect the normal program parameters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liuhangbin">@liuhangbin</a> on 2024-01-10 07:45</div>
+            <div class="timeline-body"><blockquote>
+<p>So I like the idea that dynamic completion hides the <code>complete</code> parameter by default, which doesn't affect the normal program parameters.</p>
+</blockquote>
+<p>OK, I just saw that I can use the <code>.hide(true)</code> for the static completion parameter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2024-01-11 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2024-01-11 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[clap_complete] Please support user defined dynamic complete command" to "Please support user defined dynamic complete command" by @epage on 2024-01-11 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-01-11 16:55</div>
+            <div class="timeline-body"><p>Overall, anyone is able to define their own <code>CompleteCommand</code>.  The core issue imo is that the registration script does not allow overriding it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liuhangbin">@liuhangbin</a> on 2024-01-12 00:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Overall, anyone is able to define their own <code>CompleteCommand</code>. The core issue imo is that the registration script does not allow overriding it.</p>
+</blockquote>
+<p>Indeed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2024-08-11 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Please support user defined dynamic complete command" to "Caller-defined `complete` subcommand for rust-native completions" by @epage on 2024-08-11 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5670.html">clap-rs/clap#5670</a> on 2024-08-12 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-12 17:24</div>
+            <div class="timeline-body"><p>In #5671, we added a new way to control the running of completions through environment variables.  Due to the benefits mentioned in that issue, I'm inclined to have that be our &quot;primary&quot; way of doing things.  It includes being able to customize the environment variable.</p>
+<p>For those that want a subcommand and want to customize it, I lean towards saying people should copy/paste the subcommand we provide.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

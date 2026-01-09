@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv` installed incompatible versions of two packages - astral-sh/uv #11377</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv` installed incompatible versions of two packages</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11377">#11377</a>
+        opened by <a href="https://github.com/emilioMaddalena">@emilioMaddalena</a>
+        on 2025-02-10 07:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/emilioMaddalena">@emilioMaddalena</a> on 2025-02-10 07:00</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><strong>Summary</strong></p>
+<p>I've added both <code>numpy</code> and <code>pmdarima</code> as dependencies to my project. <code>uv</code> decided on &quot;numpy&gt;=2.2.2&quot;, which is incompatible with <code>pmdarima</code> according to its pyproject.toml file (<a href="https://github.com/alkaline-ml/pmdarima/blob/master/pyproject.toml">link</a>). This resulted in the latter package not working.</p>
+<p><strong>Platform</strong></p>
+<p>macOS Sonoma v14.6, Macbook air M2</p>
+<p><strong>Version</strong></p>
+<p>uv 0.5.4 (c62c83c37 2024-11-20)</p>
+<p><strong>Python version</strong></p>
+<p>Python 3.11</p>
+<h3>Platform</h3>
+<p>macOS 14.6, M2</p>
+<h3>Version</h3>
+<p>uv 0.5.4 (c62c83c 2024-11-20)</p>
+<h3>Python version</h3>
+<p>Python 3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @emilioMaddalena on 2025-02-10 07:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-02-10 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-02-10 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-10 08:24</div>
+            <div class="timeline-body"><p>The pyproject.toml entries are build dependencies, the runtime dependencies are compatible with <code>numpy &gt;=1.21.2</code>: https://inspector.pypi.io/project/pmdarima/2.0.4/packages/40/e5/78afab229ccdaf6b947036440799dbdf88e2cd632e2f96b81f32de8aa05a/pmdarima-2.0.4-cp311-cp311-macosx_11_0_arm64.whl/pmdarima-2.0.4.dist-info/METADATA#line.39</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emilioMaddalena">@emilioMaddalena</a> on 2025-02-10 17:15</div>
+            <div class="timeline-body"><p>So how come <code>uv</code> arrived at the combination numpy&gt;=2.2.2 and pmdarima&gt;=2.0.4 when I added both packages to my project? 😕</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-10 17:17</div>
+            <div class="timeline-body"><p>What command did you run (and the input files for that command), what versions did you get and what versions did you expect?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emilioMaddalena">@emilioMaddalena</a> on 2025-02-10 17:22</div>
+            <div class="timeline-body"><p>I ran <code>uv add pmdarima</code> followed by <code>uv add numpy</code>.</p>
+<p>I got <code>pmdarima==2.0.4</code> and <code>numpy==2.2.2</code>.</p>
+<p>I expected uv to understand that, after adding pmdarima, it had to install an older, compatible version of numpy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-10 17:35</div>
+            <div class="timeline-body"><p>Checking the install metadata, <code>pmdarima</code> declares that is compatible with all numpy versions <code>&gt;=1.21.2</code>:</p>
+<pre><code>$ cat .venv/lib/python3.11/site-packages/pmdarima-2.0.4.dist-info/METADATA | grep Requires-Dist
+Requires-Dist: joblib &gt;=0.11
+Requires-Dist: Cython !=0.29.18,!=0.29.31,&gt;=0.29
+Requires-Dist: numpy &gt;=1.21.2
+Requires-Dist: pandas &gt;=0.19
+Requires-Dist: scikit-learn &gt;=0.22
+Requires-Dist: scipy &gt;=1.3.2
+Requires-Dist: statsmodels &gt;=0.13.2
+Requires-Dist: urllib3
+Requires-Dist: setuptools !=50.0.0,&gt;=38.6.0
+Requires-Dist: packaging &gt;=17.1
+</code></pre>
+<p>From this perspective, uv has to assume that the latest numpy version will work, it can't tell that there's a runtime incompatibility with numpy 2.0. In this case, either pmdarima needs to add an upper bound, or you can specify that bound yourself, either trough <code>uv add &quot;numpy&lt;2&quot;</code>, or by using <a href="https://docs.astral.sh/uv/reference/settings/#constraint-dependencies">constraint-dependencies</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emilioMaddalena">@emilioMaddalena</a> on 2025-02-10 17:37</div>
+            <div class="timeline-body"><p>Oh I see, now it makes perfect sense. Thank you for taking the time!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @emilioMaddalena on 2025-02-10 17:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv claims django-dto package needs django &lt;4, but thats not what the dependency declaration says - astral-sh/uv #11977</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv claims django-dto package needs django &lt;4, but thats not what the dependency declaration says</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11977">#11977</a>
+        opened by <a href="https://github.com/sean-abbott">@sean-abbott</a>
+        on 2025-03-05 14:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sean-abbott">@sean-abbott</a> on 2025-03-05 14:54</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Why does uv think that django-dto depends on django&lt;4?</p>
+<p>When I attempt to add <a href="https://github.com/nicogall/django-dto">django-dto</a> to my project, I get:</p>
+<pre><code>❯ uv add django-dto
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only django-dto==0.1.3 is available and django-dto==0.1.3 depends on django&gt;=3.0,&lt;4.0, we can
+      conclude that all versions of django-dto depend on django&gt;=3.0,&lt;4.0.
+      And because my-package depends on django&gt;=5.1.6, we can conclude that my-package and all
+      versions of django-dto are incompatible.
+      And because cl-config-data depends on django-dto and your workspace requires my-package, we can
+      conclude that your workspace's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to
+        skip locking and syncing.
+</code></pre>
+<p>but django-dto declares django &gt; 3 (with no &lt;4):</p>
+<pre><code>classifiers = [
+    'Development Status :: 4 - Beta',
+    'Environment :: Web Environment',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: MIT License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Framework :: Django',
+    'Framework :: Django :: 3.2',
+    'Framework :: Django :: 4.0',
+    'Framework :: Django :: 4.1',
+    'Framework :: Django :: 4.2',
+    'Framework :: Django :: 5.0',
+]
+
+[tool.poetry.dependencies]
+python = &quot;^3.9&quot;
+django = &quot;^3.0&quot;
+</code></pre>
+<p>Cloning locally and bumping python and django to &gt;3.12 and &gt; 5.0, respectively, allows me to install via path, but I'd rather understand why uv believes it requies django &lt; 4 so I can submit a PR to the maintainer and be able to use the package directly.</p>
+<h3>Platform</h3>
+<p>Linux 6.8.0-54-generic x86_64 GNU/Linux (ubuntu 24.04)</p>
+<h3>Version</h3>
+<p>uv 0.5.29</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @sean-abbott on 2025-03-05 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-05 14:54</div>
+            <div class="timeline-body"><p>I believe that <code>django = &quot;^3.0&quot;</code> means <code>django = &quot;&gt;=3.0, &lt;4&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nicogall/django-dto/issues/2.html">nicogall/django-dto#2</a> on 2025-03-05 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-05 14:55</div>
+            <div class="timeline-body"><p>(That's non-standard syntax that is specific to Poetry.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2025-03-05 15:04</div>
+            <div class="timeline-body"><p>FYI, the only way to <em>really</em> confirm the dependency metadata is to check it directly:</p>
+<ol>
+<li>Go to the pypi page: https://pypi.org/project/django-dto/</li>
+<li>Go to download files: https://pypi.org/project/django-dto/#files</li>
+<li>Right click on the &quot;.whl&quot; file and copy link address</li>
+<li>Paste it into the address bar and add &quot;.metadata&quot; on the end: https://files.pythonhosted.org/packages/2a/69/142740f5ece5b286e254720b10b61151a91a0bd1518ebc93939632c56179/django_dto-0.1.3-py3-none-any.whl.metadata</li>
+<li>Open the downloaded file as a text file and look for lines that say <code>Requires-Dist:</code></li>
+</ol>
+<p>Here are the requirements for this package:</p>
+<blockquote>
+<p>Requires-Dist: django (&gt;=3.0,&lt;4.0)</p>
+</blockquote>
+<p>This is a classic example of why defaulting to upper bounds is bad for a library, future users could use a library fine, but  an author has asserted things about future to protect a against a hypothetical failure.</p>
+<p><strong>Edit:</strong> Seems like I accidentally posted twice, not sure what happened, deleted the other post.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sean-abbott">@sean-abbott</a> on 2025-03-05 15:13</div>
+            <div class="timeline-body"><p>Ah, ok, thank you so much for the incredibly quick response!</p>
+<p>That gives me a pr I can send, so perfect!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sean-abbott on 2025-03-05 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nicogall/django-dto/pulls/3.html">nicogall/django-dto#3</a> on 2025-03-05 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2025-03-05 15:24</div>
+            <div class="timeline-body"><p>FYI, uv allows you to override your dependencies metadata: https://docs.astral.sh/uv/reference/settings/#dependency-metadata.</p>
+<p>This can be useful for such situations if a library author is unresponsive, can save having to fork the project to check if it works with different dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sean-abbott">@sean-abbott</a> on 2025-03-05 15:33</div>
+            <div class="timeline-body"><p>Oh that's awesome, thank you!</p>
+<p>On Wed, Mar 5, 2025 at 10:24 AM Damian Shaw <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p>FYI, uv allows you to override your dependencies metadata:
+https://docs.astral.sh/uv/reference/settings/#dependency-metadata.</p>
+<p>This can be useful for such situations if a library author is
+unresponsive, can save having to fork the project to check if it works with
+different dependencies.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/11977#issuecomment-2701263775">https://github.com/astral-sh/uv/issues/11977#issuecomment-2701263775</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AAKWJVZARM3YQA6WSPHXWBT2S4JMRAVCNFSM6AAAAABYMJVDIGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDOMBRGI3DGNZXGU">https://github.com/notifications/unsubscribe-auth/AAKWJVZARM3YQA6WSPHXWBT2S4JMRAVCNFSM6AAAAABYMJVDIGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDOMBRGI3DGNZXGU</a>
+.
+You are receiving this because you modified the open/close state.Message
+ID: <em><strong>@</strong></em>.***&gt;
+[image: notatallshaw-gts]<em>notatallshaw-gts</em> left a comment
+(astral-sh/uv#11977)
+<a href="https://github.com/astral-sh/uv/issues/11977#issuecomment-2701263775">https://github.com/astral-sh/uv/issues/11977#issuecomment-2701263775</a></p>
+<p>FYI, uv allows you to override your dependencies metadata:
+https://docs.astral.sh/uv/reference/settings/#dependency-metadata.</p>
+<p>This can be useful for such situations if a library author is
+unresponsive, can save having to fork the project to check if it works with
+different dependencies.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/11977#issuecomment-2701263775">https://github.com/astral-sh/uv/issues/11977#issuecomment-2701263775</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AAKWJVZARM3YQA6WSPHXWBT2S4JMRAVCNFSM6AAAAABYMJVDIGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDOMBRGI3DGNZXGU">https://github.com/notifications/unsubscribe-auth/AAKWJVZARM3YQA6WSPHXWBT2S4JMRAVCNFSM6AAAAABYMJVDIGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDOMBRGI3DGNZXGU</a>
+.
+You are receiving this because you modified the open/close state.Message
+ID: <em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sean-abbott">@sean-abbott</a> on 2025-03-05 15:46</div>
+            <div class="timeline-body"><p>Ok, how do I use this appropriately, though?</p>
+<p>Relevant pyproject snippet:</p>
+<pre><code>requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;django&gt;=5.1.6&quot;,
+    &quot;django-dto&quot;,
+]
+
+[tool.uv]
+dependency-metadata = [
+    { name = &quot;django-dto&quot;, requires-dist = [&quot;django&gt;=5.0&quot;] }
+]
+</code></pre>
+<p>Returns the same dependency resolution error. Do I need to remove it from dependencies?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2025-03-05 15:53</div>
+            <div class="timeline-body"><p>I'm not that familiar with exactly how it works, but try clearing the cache?</p>
+<p>But perhaps someone else can help if you provide the command you ran and output that you got.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-05 15:55</div>
+            <div class="timeline-body"><p>This worked just fine for me:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;django&gt;=5.1.6&quot;,
+    &quot;django-dto&quot;,
+]
+
+[tool.uv]
+dependency-metadata = [
+    { name = &quot;django-dto&quot;, requires-dist = [&quot;django&gt;=5.0&quot;] }
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sean-abbott">@sean-abbott</a> on 2025-03-05 16:03</div>
+            <div class="timeline-body"><p>I tried cleaning the cache for that package, and got the same result as the original. My pyproject is basically the same as yours</p>
+<pre><code>[project]
+name = &quot;my-project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;seanabbott&quot;, email = &quot;xxx&quot; }
+]
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;django&gt;=5.1.6&quot;,
+    &quot;django-dto&quot;,
+]
+
+[tool.uv]
+dependency-metadata = [
+    { name = &quot;django-dto&quot;, requires-dist = [&quot;django&gt;=5.0&quot;] }
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>and I still get:</p>
+<pre><code>❯ uv sync
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only django-dto==0.1.3 is available and django-dto==0.1.3 depends on django&gt;=3.0,&lt;4.0, we can
+      conclude that all versions of django-dto depend on django&gt;=3.0,&lt;4.0.
+      And because my-project depends on django&gt;=5.1.6, we can conclude that my-project and all
+      versions of django-dto are incompatible.
+      And because my-project depends on django-dto and your workspace requires my-project we can
+      conclude that your workspace's requirements are unsatisfiable.
+</code></pre>
+<p>The difference may be that this is one package that is part of a larger workspace, or the hatch build system? I do not use django-dto anywhere else in the workspace, though.</p>
+<p>I updated uv, so now I'm on uv 0.6.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-05 16:05</div>
+            <div class="timeline-body"><p>These need to be defined in the root of the workspace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sean-abbott">@sean-abbott</a> on 2025-03-05 16:10</div>
+            <div class="timeline-body"><p>Ah, that would do it, thank you!</p>
+<p>On Wed, Mar 5, 2025 at 11:05 AM Charlie Marsh <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p>These need to be defined in the root of the workspace.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/11977#issuecomment-2701392267">https://github.com/astral-sh/uv/issues/11977#issuecomment-2701392267</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AAKWJV4ZTNRM2CGIBX6BMND2S4OFJAVCNFSM6AAAAABYMJVDIGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDOMBRGM4TEMRWG4">https://github.com/notifications/unsubscribe-auth/AAKWJV4ZTNRM2CGIBX6BMND2S4OFJAVCNFSM6AAAAABYMJVDIGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDOMBRGM4TEMRWG4</a>
+.
+You are receiving this because you modified the open/close state.Message
+ID: <em><strong>@</strong></em>.***&gt;
+[image: charliermarsh]<em>charliermarsh</em> left a comment (astral-sh/uv#11977)
+<a href="https://github.com/astral-sh/uv/issues/11977#issuecomment-2701392267">https://github.com/astral-sh/uv/issues/11977#issuecomment-2701392267</a></p>
+<p>These need to be defined in the root of the workspace.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/11977#issuecomment-2701392267">https://github.com/astral-sh/uv/issues/11977#issuecomment-2701392267</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AAKWJV4ZTNRM2CGIBX6BMND2S4OFJAVCNFSM6AAAAABYMJVDIGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDOMBRGM4TEMRWG4">https://github.com/notifications/unsubscribe-auth/AAKWJV4ZTNRM2CGIBX6BMND2S4OFJAVCNFSM6AAAAABYMJVDIGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDOMBRGM4TEMRWG4</a>
+.
+You are receiving this because you modified the open/close state.Message
+ID: <em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

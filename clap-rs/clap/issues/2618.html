@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace `doc(include)` due to feature removal - clap-rs/clap #2618</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Replace `doc(include)` due to feature removal</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2618">#2618</a>
+        opened by <a href="https://github.com/rami3l">@rami3l</a>
+        on 2021-07-24 21:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rami3l">@rami3l</a> on 2021-07-24 21:35</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Where?</h3>
+<p>./src/lib.rs</p>
+<h3>What's wrong?</h3>
+<p>https://github.com/rust-lang/rust/pull/85457 indicates that <code>doc(include)</code> has been removed, and thus the following lines in our current codebase needs to be replaced:</p>
+<p>https://github.com/clap-rs/clap/blob/8ff68080e65e70929df030fedf94f28c6f7fe06c/src/lib.rs#L6-L9</p>
+<p>This will give the following error on Rust <code>1.54.0+</code> (see also: https://github.com/elastic/elasticsearch-rs/issues/175):</p>
+<pre><code>feature has been removed
+use #[doc = include_str!(&quot;filename&quot;)] instead, which handles macro invocations
+</code></pre>
+<h3>How to fix?</h3>
+<p>The previous lines should be changed to the following to work on Rust version <code>1.55.0-nightly</code>:</p>
+<pre><code class="language-rust">#![doc(html_logo_url = &quot;https://clap.rs/images/media/clap.png&quot;)] 
+#![doc(html_root_url = &quot;https://docs.rs/clap/3.0.0-beta.2&quot;)] 
+#![cfg_attr(feature = &quot;doc&quot;, doc = include_str!(&quot;../README.md&quot;))]
+</code></pre>
+<p>Also, the final line of <code>README.md</code>:</p>
+<p>https://github.com/clap-rs/clap/blob/8ff68080e65e70929df030fedf94f28c6f7fe06c/README.md#L588</p>
+<p>should also be replaced by an absolute address to work well with <a href="https://docs.rs">docs.rs</a>.</p>
+<p>I have not made a PR yet due to compatibility concerns, since AFAIK the fix will only work on Rust <code>1.54.0+</code>. Introducing something like <a href="https://github.com/dtolnay/rustversion">dtolnay/rustversion</a> is completely possible, but I have to be very careful with the dependencies of <code>clap</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: docs</span> added by @rami3l on 2021-07-24 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Remove `doc(include)` due to feature removal" to "Change `doc(include)` due to feature removal" by @rami3l on 2021-07-24 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Change `doc(include)` due to feature removal" to "Replace `doc(include)` due to feature removal" by @rami3l on 2021-07-24 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-25 01:00</div>
+            <div class="timeline-body"><p>Thanks for catching these issues!</p>
+<p>I believe the use of this is mostly for docs.rs, so the question for compatibility is what is docs.rs approach for nightly versioning.  They don't list their upgrade policy but they are already on <a href="https://docs.rs/about/builds">rustc 1.55.0-nightly (67b03007c 2021-07-23)</a>, so it sounds like we'd be good to switch over, and should before the next beta release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rami3l">@rami3l</a> on 2021-07-25 08:40</div>
+            <div class="timeline-body"><p>@epage The question is, opting into the new style will cause a hard error on, for example, Rust version <code>1.53.0-stable</code>:</p>
+<pre><code class="language-yaml">error[E0658]: arbitrary expressions in key-value attributes are unstable
+Error:  --&gt; src\lib.rs:8:36
+  |
+8 | #![cfg_attr(feature = &quot;doc&quot;, doc = include_str!(&quot;../README.md&quot;))]
+  |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: see issue #78835 &lt;https://github.com/rust-lang/rust/issues/78835&gt; for more information
+</code></pre>
+<p>... and that's why I mentioned <a href="https://github.com/dtolnay/rustversion">dtolnay/rustversion</a>. But is it desirable to add a dependency just because of some docstrings? Sorry if I've missed out something about <code>rustdoc</code> usage.</p>
+<p>Of course, if the <code>doc</code> feature set is only used for <a href="https://docs.rs">docs.rs</a> and is intended to work on nightly only then never mind.</p>
+<p>I'll make a PR first anyway.</p>
+<p>Update: No wonder it breaks on version <code>1.46.0-stable</code>, but I wasn't ready for a parsing error... 🤔</p>
+<pre><code class="language-yaml">error: unexpected token: `include_str`
+Error:  --&gt; src\lib.rs:8:36
+  |
+8 | #![cfg_attr(feature = &quot;doc&quot;, doc = include_str!(&quot;../README.md&quot;))]
+  |                                    ^^^^^^^^^^^
+  |
+  = help: the valid syntax is `#[cfg_attr(condition, attribute, other_attribute, ...)]`
+  = note: for more information, visit &lt;https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2620.html">clap-rs/clap#2620</a> on 2021-07-25 10:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-25 13:16</div>
+            <div class="timeline-body"><p>https://github.com/clap-rs/clap/pull/2568#issuecomment-873483408</p>
+<p>I am waiting for 1.54 release so that we can bump the MSRV.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2021-07-25 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-26 15:10</div>
+            <div class="timeline-body"><p>I feel I'm missing something.  How does MSRV related to this?  We are currently using an unstable feature only available on nightly compilers.  To make this safe, we hide this behind a feature flag.  We can always put the replacement syntax behind that feature flag and the only thing that has changed is the version of Rust needed to use that feature flag.</p>
+<p>For example on stable I get:</p>
+<pre><code>$ cargo check --features doc
+    Checking clap v3.0.0-beta.2 (/home/epage/src/personal/clap)
+error[E0554]: `#![feature]` may not be used on the stable release channel
+ --&gt; src/lib.rs:6:30
+  |
+6 | #![cfg_attr(feature = &quot;doc&quot;, feature(external_doc))]
+  |                              ^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to previous error
+</code></pre>
+<p>From what I understand, the main target audience for this feature flag is <code>docs.rs</code>, so what matters is what version of the compiler <code>docs.rs</code> uses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-26 15:12</div>
+            <div class="timeline-body"><p>Oh, I assumed <code>cfg_attr</code> would allow old Rust versions to use the synax.  #2620 shows this isn't the case.  :(.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-27 08:09</div>
+            <div class="timeline-body"><p>There's a bug with rust versions older than 1.54 as documented <a href="https://github.com/rust-lang/rust/issues/82768#issuecomment-803935643">here</a>. And since I had been planning to bump the MSRV anyway, I decided to just wait for 1.54.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rami3l">@rami3l</a> on 2021-07-29 15:54</div>
+            <div class="timeline-body"><p>@pksunkara Rust 1.54 is out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2640.html">clap-rs/clap#2640</a> on 2021-07-29 20:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-07-31 04:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JeremyRubin">@JeremyRubin</a> on 2021-08-17 09:14</div>
+            <div class="timeline-body"><p>just noting that this broke my CI :) https://github.com/sapio-lang/sapio/runs/3348736471, no specific action requested.</p>
+<p>seems i'll either also bump my msrv or i'll stay on the earlier beta versions which did not require nightly for my rust version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-17 09:17</div>
+            <div class="timeline-body"><p>None of clap versions require nightly. It's just MSRV bumps and using those new features</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JeremyRubin">@JeremyRubin</a> on 2021-08-17 09:21</div>
+            <div class="timeline-body"><p>Yep!</p>
+<p>I know it's in beta, so Caveat Emptor, but I think that a MSRV Bump is a breaking change so what i'm remarking on is that this is a semver violation. For future references, I think MSRV bumps (that actually introduce new features prev not supported) need to be major releases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-17 09:23</div>
+            <div class="timeline-body"><p>All prereleases are considered unstable according to semver. Which means we can break anything in them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-17 09:28</div>
+            <div class="timeline-body"><blockquote>
+<p>For future references, I think MSRV bumps (that actually introduce new features prev not supported) need to be major releases.</p>
+</blockquote>
+<p>But yes, once clap 3 is out, MSRV will probably not change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-17 16:08</div>
+            <div class="timeline-body"><blockquote>
+<p>But yes, once clap 3 is out, MSRV will probably not change.</p>
+</blockquote>
+<p>Throughout 3.x?  Previously, clap2's official stance is &quot;last two compiler versions&quot;.</p>
+<p>While there isn't full consensus on it, generally the Rust community doesn't treat MSRV changes as breaking changes.   Even if clap adopts a stricter semver policy, our dependencies haven't (see past issue with bitflags) and for end-users the result will be the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-18 09:08</div>
+            <div class="timeline-body"><p>Yeah, I wanted to do some research about this before committing. I agree, throughout the rust community, bumping MSRV means a minor release and not a major. We follow that for clap currently (2.x) and I think this is what we want to follow in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ZcashFoundation/reddsa/pulls/10.html">ZcashFoundation/reddsa#10</a> on 2022-01-18 22:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

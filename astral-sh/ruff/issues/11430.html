@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`# noqa: E702 # fmt: skip` still formats the line of code - astral-sh/ruff #11430</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`# noqa: E702 # fmt: skip` still formats the line of code</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11430">#11430</a>
+        opened by <a href="https://github.com/ngoctnq">@ngoctnq</a>
+        on 2024-05-15 07:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ngoctnq">@ngoctnq</a> on 2024-05-15 07:21</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Input code:</p>
+<pre><code class="language-python">print(); print() # noqa # fmt: skip
+</code></pre>
+<p>After formatting:</p>
+<pre><code class="language-python">print()
+print()  # noqa # fmt: skip
+</code></pre>
+<p><code># fmt: on/off</code> works fine though, but I want to have just one line of short boilerplate code.</p>
+<p>I'm using the Ruff VS Code extension, which is said to ship with <code>ruff==0.4.1</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-15 08:20</div>
+            <div class="timeline-body"><p>I think it's because there are two statements on the same line and <code>fmt: skip</code> is being applied only for the last statement. This can be seen by adding a single-quoted string (https://play.ruff.rs/edf37109-eb34-4b5c-9867-dd5587bef085), notice that the formatter only changes the quote for the first print call and not the second one. I don't think <code>RUF028</code> will indicate here because the suppression comment is actually being used by the formatter.</p>
+<p>I'm not exactly sure if this is the intended behavior, @konstin any thoughts here? @MichaReiser  will be able to provide more context here but he's currently on PTO until the end of next week. I can possibly look into it to confirm whether this is the intended behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">suppression</span> added by @dhruvmanila on 2024-05-15 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @dhruvmanila on 2024-05-15 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-15 11:40</div>
+            <div class="timeline-body"><p>Iirc the end-of-line format off comment applies to the statement preceding it, and the two prints are two separate statements, but micha will know better</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-27 08:41</div>
+            <div class="timeline-body"><p>Oh, that's interesting and not something I have thought of when implementing suppression comments.</p>
+<blockquote>
+<p><code># fmt: skip</code> comments suppress formatting for a preceding statement, case header, decorator, function definition, or class definition:</p>
+</blockquote>
+<p>Today's behavior matches our documentation. However, Black doesn't format simple statements that end with a <code>fmt: skip</code> comment. So it is at least a Black incompatibility (and possibly not flagged by the ruff lint rule).</p>
+<p>I'm open to changing our implementation to support this use case if it doesn't add too much complexity. I otherwise recommend documenting the deviation because it's possible to suppress the example using <code>fmt: off</code> (although it is slightly more verbose).</p>
+<pre><code class="language-python"># fmt: off
+print(); print() # noqa 
+# fmt: on
+
+print( )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gatsby-Lee">@Gatsby-Lee</a> on 2024-06-18 07:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, that's interesting and not something I have thought of when implementing suppression comments.</p>
+<blockquote>
+<p><code># fmt: skip</code> comments suppress formatting for a preceding statement, case header, decorator, function definition, or class definition:</p>
+</blockquote>
+<p>Today's behavior matches our documentation. However, Black doesn't format simple statements that end with a <code>fmt: skip</code> comment. So it is at least a Black incompatibility (and possibly not flagged by the ruff lint rule).</p>
+<p>I'm open to changing our implementation to support this use case if it doesn't add too much complexity. I otherwise recommend documenting the deviation because it's possible to suppress the example using <code>fmt: off</code> (although it is slightly more verbose).</p>
+<pre><code class="language-python"># fmt: off
+print(); print() # noqa 
+# fmt: on
+
+print( )
+</code></pre>
+</blockquote>
+<p>yep. basically, I banged my head a few hours to figure this out.
+And, I finally just changed to Black formatter again.</p>
+<p>Black doesn't format the line which has more than one statement and tagged with &quot;# fmt: skip&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gatsby-Lee">@Gatsby-Lee</a> on 2024-06-18 07:18</div>
+            <div class="timeline-body"><p>@ngoctnq</p>
+<p>thank you for writing this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Peiffap">@Peiffap</a> on 2024-06-21 23:39</div>
+            <div class="timeline-body"><p>Related: #11216.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13371.html">astral-sh/ruff#13371</a> on 2024-09-16 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20482.html">astral-sh/ruff#20482</a> on 2025-09-19 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20633.html">astral-sh/ruff#20633</a> on 2025-10-06 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21504.html">astral-sh/ruff#21504</a> on 2025-11-18 18:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

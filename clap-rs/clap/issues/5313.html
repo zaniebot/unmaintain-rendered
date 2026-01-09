@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_complete bash: filenames with spaces are not completed properly - clap-rs/clap #5313</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_complete bash: filenames with spaces are not completed properly</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/5313">#5313</a>
+        opened by <a href="https://github.com/alexheretic">@alexheretic</a>
+        on 2024-01-16 18:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alexheretic">@alexheretic</a> on 2024-01-16 18:38</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.75.0</p>
+<h3>Clap Version</h3>
+<p>clap_complete: 4.4.7</p>
+<h3>Minimal reproducible code</h3>
+<p>Use clap_complete bash completions for an arg that could receive a filename.</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Create directory with files, one of which has spaces in the name.</p>
+<pre><code>$ ls
+'foo bar.txt'   qux.txt
+</code></pre>
+<p>Try to complete <code>fo</code> the unique start of one filename.</p>
+<pre><code>$ ab-av1 encode -i fo&lt;TAB&gt;
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>Cannot complete.</p>
+<pre><code>$ ab-av1 encode -i fo
+foo      bar.txt
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Should be able to complete handling the spaces in the file. E.g. as <code>ls</code> completions do: <code>ls fo&lt;TAB&gt;</code> -&gt; <code>ls foo\ bar.txt</code>.</p>
+<p>So I would expect:
+<code>$ ab-av1 encode -i fo&lt;TAB&gt;</code> -&gt; <code>$ ab-av1 encode -i foo\ bar.txt</code></p>
+<h3>Additional Context</h3>
+<p>Downstream: https://github.com/alexheretic/ab-av1/issues/180</p>
+<details>
+
+<summary>Generated bash completion for ab-av1</summary>
+
+<pre><code class="language-bash">_ab-av1() {
+    local i cur prev opts cmd
+    COMPREPLY=()
+    cur=&quot;${COMP_WORDS[COMP_CWORD]}&quot;
+    prev=&quot;${COMP_WORDS[COMP_CWORD-1]}&quot;
+    cmd=&quot;&quot;
+    opts=&quot;&quot;
+
+    for i in ${COMP_WORDS[@]}
+    do
+        case &quot;${cmd},${i}&quot; in
+            &quot;,$1&quot;)
+                cmd=&quot;ab__av1&quot;
+                ;;
+            ab__av1,auto-encode)
+                cmd=&quot;ab__av1__auto__encode&quot;
+                ;;
+            ab__av1,crf-search)
+                cmd=&quot;ab__av1__crf__search&quot;
+                ;;
+            ab__av1,encode)
+                cmd=&quot;ab__av1__encode&quot;
+                ;;
+            ab__av1,help)
+                cmd=&quot;ab__av1__help&quot;
+                ;;
+            ab__av1,print-completions)
+                cmd=&quot;ab__av1__print__completions&quot;
+                ;;
+            ab__av1,sample-encode)
+                cmd=&quot;ab__av1__sample__encode&quot;
+                ;;
+            ab__av1,vmaf)
+                cmd=&quot;ab__av1__vmaf&quot;
+                ;;
+            ab__av1__help,auto-encode)
+                cmd=&quot;ab__av1__help__auto__encode&quot;
+                ;;
+            ab__av1__help,crf-search)
+                cmd=&quot;ab__av1__help__crf__search&quot;
+                ;;
+            ab__av1__help,encode)
+                cmd=&quot;ab__av1__help__encode&quot;
+                ;;
+            ab__av1__help,help)
+                cmd=&quot;ab__av1__help__help&quot;
+                ;;
+            ab__av1__help,print-completions)
+                cmd=&quot;ab__av1__help__print__completions&quot;
+                ;;
+            ab__av1__help,sample-encode)
+                cmd=&quot;ab__av1__help__sample__encode&quot;
+                ;;
+            ab__av1__help,vmaf)
+                cmd=&quot;ab__av1__help__vmaf&quot;
+                ;;
+            *)
+                ;;
+        esac
+    done
+
+    case &quot;${cmd}&quot; in
+        ab__av1)
+            opts=&quot;-h -V --help --version sample-encode vmaf encode crf-search auto-encode print-completions help&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        ab__av1__auto__encode)
+            opts=&quot;-e -i -o -h --encoder --input --vfilter --pix-format --preset --keyint --scd --svt --enc --enc-input --min-vmaf --max-encoded-percent --min-crf --max-crf --thorough --crf-increment --cache --samples --sample-every --min-samples --temp-dir --vmaf --vmaf-scale --output --acodec --downmix-to-stereo --video-only --help&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                --encoder)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                -e)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --input)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                -i)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --vfilter)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --pix-format)
+                    COMPREPLY=($(compgen -W &quot;yuv420p yuv420p10le yuv444p10le&quot; -- &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --preset)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --keyint)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --scd)
+                    COMPREPLY=($(compgen -W &quot;true false&quot; -- &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --svt)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --enc)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --enc-input)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --min-vmaf)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --max-encoded-percent)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --min-crf)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --max-crf)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --crf-increment)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --cache)
+                    COMPREPLY=($(compgen -W &quot;true false&quot; -- &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --samples)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --sample-every)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --min-samples)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --temp-dir)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --vmaf)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --vmaf-scale)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --output)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                -o)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --acodec)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        ab__av1__crf__search)
+            opts=&quot;-e -i -h --encoder --input --vfilter --pix-format --preset --keyint --scd --svt --enc --enc-input --min-vmaf --max-encoded-percent --min-crf --max-crf --thorough --crf-increment --cache --samples --sample-every --min-samples --temp-dir --vmaf --vmaf-scale --help&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                --encoder)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                -e)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --input)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                -i)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --vfilter)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --pix-format)
+                    COMPREPLY=($(compgen -W &quot;yuv420p yuv420p10le yuv444p10le&quot; -- &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --preset)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --keyint)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --scd)
+                    COMPREPLY=($(compgen -W &quot;true false&quot; -- &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --svt)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --enc)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --enc-input)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --min-vmaf)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --max-encoded-percent)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --min-crf)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --max-crf)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --crf-increment)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --cache)
+                    COMPREPLY=($(compgen -W &quot;true false&quot; -- &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --samples)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --sample-every)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --min-samples)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --temp-dir)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --vmaf)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --vmaf-scale)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        ab__av1__encode)
+            opts=&quot;-e -i -o -h --encoder --input --vfilter --pix-format --preset --keyint --scd --svt --enc --enc-input --crf --output --acodec --downmix-to-stereo --video-only --help&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                --encoder)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                -e)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --input)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                -i)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --vfilter)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --pix-format)
+                    COMPREPLY=($(compgen -W &quot;yuv420p yuv420p10le yuv444p10le&quot; -- &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --preset)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --keyint)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --scd)
+                    COMPREPLY=($(compgen -W &quot;true false&quot; -- &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --svt)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --enc)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --enc-input)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --crf)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --output)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                -o)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --acodec)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        ab__av1__help)
+            opts=&quot;sample-encode vmaf encode crf-search auto-encode print-completions help&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        ab__av1__help__auto__encode)
+            opts=&quot;&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        ab__av1__help__crf__search)
+            opts=&quot;&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        ab__av1__help__encode)
+            opts=&quot;&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        ab__av1__help__help)
+            opts=&quot;&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        ab__av1__help__print__completions)
+            opts=&quot;&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        ab__av1__help__sample__encode)
+            opts=&quot;&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        ab__av1__help__vmaf)
+            opts=&quot;&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        ab__av1__print__completions)
+            opts=&quot;-h --help bash elvish fish powershell zsh&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        ab__av1__sample__encode)
+            opts=&quot;-e -i -h --encoder --input --vfilter --pix-format --preset --keyint --scd --svt --enc --enc-input --crf --samples --sample-every --min-samples --temp-dir --keep --cache --stdout-format --vmaf --vmaf-scale --help&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                --encoder)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                -e)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --input)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                -i)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --vfilter)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --pix-format)
+                    COMPREPLY=($(compgen -W &quot;yuv420p yuv420p10le yuv444p10le&quot; -- &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --preset)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --keyint)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --scd)
+                    COMPREPLY=($(compgen -W &quot;true false&quot; -- &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --svt)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --enc)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --enc-input)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --crf)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --samples)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --sample-every)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --min-samples)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --temp-dir)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --cache)
+                    COMPREPLY=($(compgen -W &quot;true false&quot; -- &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --stdout-format)
+                    COMPREPLY=($(compgen -W &quot;human json&quot; -- &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --vmaf)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --vmaf-scale)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+        ab__av1__vmaf)
+            opts=&quot;-h --reference --reference-vfilter --distorted --vmaf --vmaf-scale --help&quot;
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+                return 0
+            fi
+            case &quot;${prev}&quot; in
+                --reference)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --reference-vfilter)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --distorted)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --vmaf)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                --vmaf-scale)
+                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
+            return 0
+            ;;
+    esac
+}
+
+if [[ &quot;${BASH_VERSINFO[0]}&quot; -eq 4 &amp;&amp; &quot;${BASH_VERSINFO[1]}&quot; -ge 4 || &quot;${BASH_VERSINFO[0]}&quot; -gt 4 ]]; then
+    complete -F _ab-av1 -o nosort -o bashdefault -o default ab-av1
+else
+    complete -F _ab-av1 -o bashdefault -o default ab-av1
+fi
+
+</code></pre>
+</details>
+
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @alexheretic on 2024-01-16 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../alexheretic/ab-av1/issues/180.html">alexheretic/ab-av1#180</a> on 2024-01-16 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2024-01-18 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2024-01-18 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-help-wanted</span> added by @epage on 2024-01-18 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-01-18 21:18</div>
+            <div class="timeline-body"><p>I wonder if #5240 will fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sudotac">@sudotac</a> on 2024-01-20 14:08</div>
+            <div class="timeline-body"><p>Maybe we should drop <code>-f</code> option from <code>compgen -f</code>.</p>
+<p>@alexheretic</p>
+<p>Could you try the following patch to the generated completion script, and see if it works as expected?</p>
+<pre><code class="language-diff">@@ -323,10 +323,12 @@
+                     return 0
+                     ;;
+                 --input)
+-                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
++                    COMPREPLY=($(compgen &quot;${cur}&quot;))
++                    compopt -o filenames
+                     return 0
+                     ;;
+                 -i)
+-                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
++                    COMPREPLY=($(compgen &quot;${cur}&quot;))
++                    compopt -o filenames
+                     return 0
+                     ;;
+                 --vfilter)
+</code></pre>
+<hr />
+<p>If you just try #5240, please apply the following:</p>
+<pre><code class="language-diff">@@ -323,10 +323,12 @@
+                     ;;
+                 --input)
+                     COMPREPLY=($(compgen -f &quot;${cur}&quot;))
++                    compopt -o filenames
+                     return 0
+                     ;;
+                 -i)
+                     COMPREPLY=($(compgen -f &quot;${cur}&quot;))
++                    compopt -o filenames
+                     return 0
+                     ;;
+                 --vfilter)
+
+</code></pre>
+<p>Edit: Fixed context line, and append the example of #5240.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexheretic">@alexheretic</a> on 2024-01-20 14:18</div>
+            <div class="timeline-body"><p>@sudotac that change doesn't seem to make any difference</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sudotac">@sudotac</a> on 2024-01-20 14:39</div>
+            <div class="timeline-body"><p>Sorry, I misunderstood the usage. Actually <code>-o filenames</code> should be used with <code>compgen -f</code>.
+However, even if we do so, it doesn't seem to work anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sudotac">@sudotac</a> on 2024-01-20 15:12</div>
+            <div class="timeline-body"><p>FWIW if you can install bash-completion package (mostly Debian-based systems), it is possible to use <code>_filedir</code> for better filename completions.
+(it is not a portable solution though)</p>
+<pre><code class="language-diff">@@ -322,11 +322,11 @@
+                     return 0
+                     ;;
+                 --input)
+-                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
++                    _filedir
+                     return 0
+                     ;;
+                 -i)
+-                    COMPREPLY=($(compgen -f &quot;${cur}&quot;))
++                    _filedir
+                     return 0
+                     ;;
+                 --vfilter)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5336.html">clap-rs/clap#5336</a> on 2024-02-02 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-02-02 16:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

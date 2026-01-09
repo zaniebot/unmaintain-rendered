@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PYI034` should not trigger on a metaclass - astral-sh/ruff #20781</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`PYI034` should not trigger on a metaclass</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20781">#20781</a>
+        opened by <a href="https://github.com/tylerlaprade">@tylerlaprade</a>
+        on 2025-10-09 08:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2025-10-09 08:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This is what happens if I follow this rule in a metaclass in Python 3.14</p>
+<p><img width="802" height="112" alt="Image" src="https://github.com/user-attachments/assets/9e5d97ca-caec-4621-8c94-fc7241e7c113" /></p>
+<h3>Version</h3>
+<p>0.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-09 19:07</div>
+            <div class="timeline-body"><p>Interesting, thanks for the report! I don't think this is 3.14-specific, so it has probably been around for a while. This restriction is in <a href="https://peps.python.org/pep-0673/#valid-locations-for-self">PEP 673</a>, for example. <a href="https://pyright-play.net/?pythonVersion=3.12&amp;strict=true&amp;enableExperimentalFeatures=true&amp;reportImplicitOverride=true&amp;reportShadowedImports=true&amp;reportUnusedCallResult=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDKApgDbABQlAxiQIYDO9UAwgBTwJECUAXOVAKgATIsCgB9cSiIB3Saxr0uUALQA%2BQqWA8oAOn1A">pyright</a> flags this simple case:</p>
+<pre><code class="language-py">from typing import Self
+
+
+class C(type):
+    def __new__(cls) -&gt; Self: ...
+</code></pre>
+<p>with the error shown above. We have an <code>is_metaclass</code> helper function that might be helpful in fixing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-09 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20881.html">astral-sh/ruff#20881</a> on 2025-10-15 04:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-15 12:36</div>
+            <div class="timeline-body"><p>We actually already try not to emit this diagnostic if we can detect that the class is a metaclass: https://github.com/astral-sh/ruff/blob/c6959381f898f4ffd768b7f058ebcf904b489b6c/crates/ruff_linter/src/rules/flake8_pyi/rules/non_self_return_type.rs#L144-L147</p>
+<p>@tylerlaprade, would you be able to show us your metaclass's base classes? There are various improvements to our metaclass-detection logic that we <em>could</em> make (#20881, by @danparizher, proposes one of them), but it's hard to know whether any of them would fix the issue you're seeing here without a bit more information.</p>
+<p>100% bulletproof detection of metaclasses is unfortunately impossible without multifile type inference, which Ruff does not have and won't have for a while yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @AlexWaygood on 2025-10-15 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2025-10-16 07:38</div>
+            <div class="timeline-body"><p>@AlexWaygood, my base class is <code>django.db.models.base.ModelBase</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-16 11:10</div>
+            <div class="timeline-body"><p>Thanks @tylerlaprade! In that case, #20881 won't fix this, which is sort-of what I suspected ;)</p>
+<p>I can think of a few ways in which we could improve our metaclass-detection logic so that we understand your metaclass as being a metaclass:</p>
+<ol>
+<li><p>We could add <code>django.db.models.base.ModelBase</code> to the list of &quot;known metaclasses&quot; here -- then we'd understand all classes that inherit from that class as being metaclasses: https://github.com/astral-sh/ruff/blob/0cc663efcd0ff2bc81f34ff3a658840f01f2a697/crates/ruff_python_semantic/src/analyze/class.rs#L337-L346
+One the one hand, this might help a lot of people who use Django. On the other hand, it would be the first non-stdlib class that we'd be adding to that list, which feels like a <em>bit</em> of a slippery slope. If we're adding this class to that list, maybe we should do some research and see if there are any other common third-party metaclasses we should be adding to that list?</p>
+</li>
+<li><p>We could introduce another heuristic, either to our <code>is_metaclass</code> function or our PYI034 lint logic. It's sort-of obvious just from looking at your class's <code>__new__</code> method that the class is a metaclass. Any class with a <code>__new__</code> method where all the following conditions are met is almost certainly a metaclass:</p>
+<ul>
+<li>The <code>__new__</code> method has 5 parameters</li>
+<li>The second parameter is annotated with <code>str</code></li>
+<li>The third parameter is annotated with a <code>tuple</code> type of some kind</li>
+<li>The fourth parameter is annotated with a <code>dict</code> type of some kind</li>
+<li>The fifth parameter is a keyword-variadic parameter</li>
+</ul>
+</li>
+<li><p>We could add some sort of configuration option (<code>custom-metaclasses</code>?) that allows users to tell Ruff explicitly that certain classes are metaclasses, and therefore lints like PYI034 and PYI019 shouldn't be emitted on them.</p>
+</li>
+</ol>
+<p>These options aren't mutually exclusive, of course. @ntBre, what do you think about how to proceed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-16 16:23</div>
+            <div class="timeline-body"><p>Thanks Alex, that's very helpful!</p>
+<p>(1) does feel like a possible slippery slope to me too, so I'd probably go for (2) or (3). Of those, (2) does seem nice since it could be handled without having to configure anything, assuming most metaclasses meet those criteria. I don't feel too strongly though, a new config option would be fine with me!</p>
+<p>Are those annotations in (2) helpful for other tools, like type checkers? I'm thinking about the documentation for the rule, and if we suggest a specific annotation pattern to suppress the error, it might just be easier to use a <code>noqa</code>, unless there are other benefits from the annotations.</p>
+<p>Does ty have a better way of checking if a class is a metaclass?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-16 16:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Are those annotations in (2) helpful for other tools, like type checkers?</p>
+</blockquote>
+<p>Yes, it's the standard way you'd annotate the <code>__new__</code> method for a metaclass. While it's <em>technically</em> possible to have a metaclass that doesn't inherit from <code>type</code>, nearly all metaclasses in Python inherit from <code>type</code>. And nearly all classes that inherit from <code>type</code> have <code>__new__</code> methods that mimic the second overload typeshed has for <code>type.__new__</code>, and/or have <code>__init__</code> methods that mimic the second overload typeshed has for <code>type.__init__</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/e64d77278830954a323d227e8f9f714c1d0e4c57/crates/ty_vendored/vendor/typeshed/stdlib/builtins.pyi#L274-L283</p>
+<p>Note that typeshed there is being sneaky. It's not actually using <code>typing.Self</code>, it's using a custom <code>TypeVar</code> that's called <code>Self</code>, as a cheeky way to satisfy both linters and type checkers simultaneously.</p>
+<blockquote>
+<p>Does ty have a better way of checking if a class is a metaclass?</p>
+</blockquote>
+<p>Yes, for ty it's trivial -- ty just needs to check if <code>type</code> is in a class's MRO to determine if it's a metaclass</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-16 16:49</div>
+            <div class="timeline-body"><p>Awesome, thanks!</p>
+<p>I guess I'd lean toward improving our heuristic based on annotations for now, and then hopefully one day we'll inherit the precise check from ty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-16 16:50</div>
+            <div class="timeline-body"><p>yup, and we can always add the config option in the future if it turns out that this is still causing too many false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @MichaReiser on 2025-10-20 08:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-24 13:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

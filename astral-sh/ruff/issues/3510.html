@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP035 --fix not working for Deque - astral-sh/ruff #3510</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP035 --fix not working for Deque</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3510">#3510</a>
+        opened by <a href="https://github.com/torarvid">@torarvid</a>
+        on 2023-03-14 13:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/torarvid">@torarvid</a> on 2023-03-14 13:22</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>When running <code>ruff --fix test.py</code> (Ruff 0.0.255), it doesn't change the <code>Deque</code> to <code>deque</code></p>
+<pre><code class="language-python">from typing import Deque
+
+a: Deque[str]
+</code></pre>
+<p>However, interestingly, if we replace <code>Deque</code> with <code>List</code>, it does change to <code>list</code></p>
+<pre><code class="language-python">from typing import List
+
+a: List[str]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-14 14:53</div>
+            <div class="timeline-body"><ul>
+<li><code>deque</code> is not a builtin like <code>list</code>. <code>deque</code> need to be imported. Currently, it is not possible to auto-fix. We first need #835.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-03-14 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-14 14:59</div>
+            <div class="timeline-body"><p>Yeah we can't fix this right now -- but, in theory, we should be able to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/torarvid">@torarvid</a> on 2023-03-15 07:47</div>
+            <div class="timeline-body"><p>Ah, I didn't know about #835, but I understand this issue depends on that. Thanks for the info 👍🏻</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-05-13 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4420.html">astral-sh/ruff#4420</a> on 2023-05-13 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmke8">@tmke8</a> on 2023-05-14 15:08</div>
+            <div class="timeline-body"><p>This is the full list of <code>typing</code> imports that can be rewritten on Python 3.9:</p>
+<ul>
+<li><code>collections.deque</code>  # typing.Deque</li>
+<li><code>collections.defaultdict</code>  # typing.DefaultDict</li>
+<li><code>collections.OrderedDict</code></li>
+<li><code>collections.Counter</code></li>
+<li><code>collections.ChainMap</code></li>
+<li><code>collections.abc.Awaitable</code></li>
+<li><code>collections.abc.Coroutine</code></li>
+<li><code>collections.abc.AsyncIterable</code></li>
+<li><code>collections.abc.AsyncIterator</code></li>
+<li><code>collections.abc.AsyncGenerator</code></li>
+<li><code>collections.abc.Iterable</code></li>
+<li><code>collections.abc.Iterator</code></li>
+<li><code>collections.abc.Generator</code></li>
+<li><code>collections.abc.Reversible</code></li>
+<li><code>collections.abc.Container</code></li>
+<li><code>collections.abc.Collection</code></li>
+<li><code>collections.abc.Callable</code></li>
+<li><code>collections.abc.Set</code> # typing.AbstractSet</li>
+<li><code>collections.abc.MutableSet</code></li>
+<li><code>collections.abc.Mapping</code></li>
+<li><code>collections.abc.MutableMapping</code></li>
+<li><code>collections.abc.Sequence</code></li>
+<li><code>collections.abc.MutableSequence</code></li>
+<li><code>collections.abc.ByteString</code></li>
+<li><code>collections.abc.MappingView</code></li>
+<li><code>collections.abc.KeysView</code></li>
+<li><code>collections.abc.ItemsView</code></li>
+<li><code>collections.abc.ValuesView</code></li>
+<li><code>contextlib.AbstractContextManager</code> # typing.ContextManager</li>
+<li><code>contextlib.AbstractAsyncContextManager</code> # typing.AsyncContextManager</li>
+<li><code>re.Pattern</code> # typing.Pattern, typing.re.Pattern</li>
+<li><code>re.Match</code> # typing.Match, typing.re.Match</li>
+</ul>
+<p>source: https://peps.python.org/pep-0585/#implementation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-14 22:34</div>
+            <div class="timeline-body"><p>The rewrites that don't require <em>renames</em> are already handled by <code>UP035</code> (e.g., importing <code>from collections import Counter</code> instead of <code>from typing import Counter</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-15 22:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

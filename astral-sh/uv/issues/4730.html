@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decide on semantics for workspace environment syncing (with `--package`, `--extra`, and `--dev`) - astral-sh/uv #4730</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Decide on semantics for workspace environment syncing (with `--package`, `--extra`, and `--dev`)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/4730">#4730</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-07-02 14:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-02 14:08</div>
+            <div class="timeline-body"><p>We had an extensive discussion about this in Discord. I'll try to summarize some of it here, but we still need to make some important decisions about how virtualenv syncing should behave for workspaces. Most of these changes aren't hard to implement, but they do have a lot of follow-on impact.</p>
+<p>Today, we use a single virtualenv at the workspace root. When you do <code>uv run -p package</code>, we bring the environment in-sync with the necessary dependencies for <code>package</code>. That is, we don't install the entire workspace -- only the dependencies that are required for package. This has the benefit that you can't accidentally import some other dependency from the workspace within the <code>package</code> code (it enforces some amount of isolation).</p>
+<p>However, this syncing is purely additive. So if you run <code>uv run -p foo</code> then <code>uv run -p bar</code>, we'll install any packages necessary for <code>bar</code>, but we won't <em>uninstall</em> the packages that we needed for <code>foo</code> (but not <code>bar</code>).</p>
+<p>Extras behave similarly. So if you run <code>uv run -p bar --extra foo</code>, we'll install the extras activated by <code>foo</code>, and then leave them activated if you run <code>uv run -p bar</code>.</p>
+<p>This strategy has some desirable properties (we enforce isolation on initial <code>uv run -p</code>, we only sync the necessary packages rather than building the entire workspace) but it's sort of a compromise (we don't enforce <em>strict</em> isolation on subsequent <code>uv run -p</code>).</p>
+<p>One alternative we discussed was: creating a virtualenv <em>per package</em> in the workspace, on-demand. So if you did <code>uv run -p package</code>, we'd create a virtualenv in <code>package</code> with that package's dependencies. We'd also have a virtualenv in the workspace root.</p>
+<p>This gives us the same properties that we have today, with the added benefit that it does enforce strict isolation. But there are two downsides: (1) you now have multiple virtualenvs in your project, which could confuse editors (I think this is totally fine); (2) you don't have a single virtualenv with the entire workspace installed, which means your editor could lack completions and Go-To definition for packages in the workspace (this problem also exists today); and (3) it doesn't solve the <code>extras</code> problem.</p>
+<p>(3) seems to be the critical one. Extras are kind of the same problem (stateful environments) as <code>-p</code>, but don't have a natural analog to &quot;store the virtualenv in the package&quot;. In short, we leave extras enabled after a <code>uv run</code>, and this could be problematic for some packages.</p>
+<p>One solution to the &quot;extras&quot; problem would be to do a strict sync on every <code>uv run</code>. So if you did <code>uv run -p foo --extra bar</code> and then <code>uv run -p foo</code>, we'd <em>remove</em> the <code>bar</code> extra on that second invocation. The main downside here seems to be that you <code>uv sync -p foo --extra bar</code> and then <code>uv run -p foo</code> would remove the <code>bar</code> extra, which some have argued is unintuitive. (N.B. <code>uv sync -p foo</code> does not exist today.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-02 14:09</div>
+            <div class="timeline-body"><p>One proposal:</p>
+<ul>
+<li><code>uv run --package</code> creates a venv in <code>--package</code></li>
+<li><code>uv run</code> operates with <code>pip install</code> semantics (doesn't remove extraneous packages)</li>
+<li><code>uv sync</code> operates with <code>pip install</code> semantics</li>
+<li><code>uv sync --locked</code> operates with <code>pip sync</code> semantics</li>
+<li><code>uv run --locked</code> operates with <code>pip sync</code> semantics</li>
+</ul>
+<p>Unclear if <code>uv run --package --extra</code> would modify the base environment or ephemerally layer on the extra.</p>
+<p>I think this proposal is reasonable as &quot;I need extras removed when they're not activated&quot; is sort of a niche requirement, and so making it a non-default isn't... <em>that</em> bad?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-07-02 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-02 14:13</div>
+            <div class="timeline-body"><p>Another proposal from @konstin:</p>
+<hr />
+<p>Alright here's the pitch:</p>
+<ul>
+<li><code>uv sync</code> installs everything in <code>.venv</code>. That gives your IDE (and type checkers) all packages for analysis. <code>uv sync</code> retains <code>--package</code> and <code>--extra</code>, but they are when you need that level of control, most users should use <code>uv run</code>. If you use <code>uv sync</code> with parameters, you effectively opt in to managing venv state yourself.</li>
+<li><code>uv run</code> runs in a separate environment by default. We place that venv under <code>.uv/venvs</code>, so you can clean it up with <code>rm -rf .uv</code> and inspect it if needs be. This means there are only two folder in your project with uv state (<code>.venv</code> and <code>.uv</code>; that's one too many for me already, but we don't get out of <code>.venv</code>)</li>
+<li>If you need a per-project env, you can <code>cd packages/bert &amp;&amp; uv venv &amp;&amp; uv sync -p bert</code>. It's a regular venv still so IDEs will run regularly just on this package.</li>
+<li>When you do <code>uv run -p bert --extra torch</code>, we create something like <code>.uv/venvs/bert-torch</code> with exactly that set of dependencies. This means that you get both a strict invocation and a cached environment on the next run. (ofc if your lockfile changed, we update the env)</li>
+</ul>
+<p>In a way this gives us three levels in the uv CLI:</p>
+<ul>
+<li>The pip mode, everything is manual, there are the known quirks. Interesting for users coming from pip and pip-tools</li>
+<li>Managing your venv manually with <code>uv sync --package ... --extra ...</code>. Similar to poetry or pdm, that's probably what i'd use a lot cause that's where my level of expertise is</li>
+<li>The managed <code>uv run</code> mode. You shouldn't know about venvs at all beyond &quot;my IDE see .venv&quot; to use this. This is the easiest, most user friendly way, but also the one with the least control when you're used to <code>pip install</code>ing to your hand-curated venvs.</li>
+</ul>
+<p>The huge drawback here: Modulo <code>default-{packages,extras,command}</code>, you have to specify all arguments in every <code>uv run</code> every time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-02 14:42</div>
+            <div class="timeline-body"><p>I want to add another perspective to this: It says the problem we're looking at is <em>venv state</em>. There are several things that influence the state of the venv:</p>
+<ul>
+<li>Additional packages, both workspace packages (<code>-p</code>) and extras (<code>--extra</code>). To me, a workspace is one big virtual package where the members are optional dependencies like extras, so i've put them here with the extras.</li>
+<li>Removing packages, such as <code>--no-dev</code></li>
+<li>Changing the python version. Changing the python version has the effect that we have to change many packages and that the meaning of extras can change (through markers with both python version and extra condition).</li>
+</ul>
+<p>Different use cases want different venvs:</p>
+<ul>
+<li>IDEs, type checker and other linters want to have a <code>.venv</code> with all dependencies installed (for slightly different definitions of all) so they can inspect your dependencies.</li>
+<li>When running <code>pytest</code> on a specific of package on a specific python version with specific extras i'd like to test only that configuration. In this case, i'm ready to specify what exactly i need and generally accept that the venv is temporary,</li>
+<li>When i run e.g. the backend entrypoint, it would be nice if only the backend dependencies were available to check they are correct (nice to have).</li>
+<li>When deploying (mainly docker containers), i want to sync only a specific set of packages, extras and no dev deps.</li>
+</ul>
+<hr />
+<p>Contrary to the pitch in the comment above, i've realized that for my use cases, isolation generally isn't that important, i'm fine with a single &quot;everything venv&quot;, as long as i can run with isolation when i need it. Caching isolated temporary venvs created e.g. running <code>pytest</code> with isolation (ideally in a single gitignored folder in the project root where i can clear them) would be nice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-07-02 17:10</div>
+            <div class="timeline-body"><p>I'd agree with @konstin - and that's something that <strong>might</strong> be useful for Airflow.</p>
+<p>For development, even for regular running of the tests, having single .venv where you can install all packages is ideal, while you have a way to run tests or scripts in separate, isolated venvs. You should be able to choose whether you want to install all packages or just one or few packages there.</p>
+<p>There are cases where you have &quot;main&quot; package and &quot;extra&quot; packages and some of the extra packages have (sometimes optional) dependencies on each other - and in this case isolated environments will not work - because even for tests you need the &quot;other&quot; packages as well - at least for some of the tests.</p>
+<p>So natural behaviour would be:</p>
+<p>a) run your development, autocomplete, tests in your &quot;potentially-all-combined&quot; environment.
+b) cd to your package and run your tests (or subset of those that do not require other packages) there in an &quot;isolated environment).
+c) (optional) allow those &quot;isolated&quot; environments to install other packages if you really want (to be able to test those cross-package tests)</p>
+<p>I think choosing which packages to install and syncing the &quot;main&quot; or &quot;isolated&quot; (if c) is supported) venvs should be purely additive - UNLESS you deliberately choose to cleanup the venv before. That should simplify all the &quot;remove package from spec&quot; cases - you allow the venv to have more things than needed, and if. you really want a clean version, run the installation with <code>--clean</code> switch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-10 04:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 15:24</div>
+            <div class="timeline-body"><p>Relatedly: we need to consider how this will interact with the red-knot work...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 00:06</div>
+            <div class="timeline-body"><p>A few competing concerns:</p>
+<ul>
+<li><p>We want the user to have a great editor experience -- one that &quot;just works&quot;. This likely requires (1) a fully-populated virtualenv, with all packages and extras that (2) exists at the repo root, rather than being hidden away in some cache directory.</p>
+</li>
+<li><p>We'd like to avoid syncing any more packages than are necessary when the user runs a command. For example, <code>uv run -p foo</code> shouldn't need to install and build <code>bar</code> in the workspace, if it's not in the <code>foo</code> dependency tree.</p>
+</li>
+<li><p>We'd like to avoid allowing users to import packages that aren't declared as dependencies for a given workspace member (i.e., enforce some isolation). The same applies to extras: we'd like to avoid allowing users to import an extra dependency that hasn't been requested.</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 00:15</div>
+            <div class="timeline-body"><p>Here's my latest proposal:</p>
+<ul>
+<li><p>We keep our current behavior for now. This includes: a single virtualenv at the root that's updated additively (i.e., with <code>pip install</code> semantics). So running <code>uv run -p foo</code> from an empty state would add <code>foo</code> and its dependencies. Running <code>uv run</code> would then add any missing dependencies for the root, and so on.</p>
+</li>
+<li><p>We repurpose <code>--isolated</code> (or introduce a new flag) to mean &quot;don't use the project <code>.venv</code>, run the command in an isolated environment&quot;. So you <em>can</em> run commands in ephemeral environments per above.</p>
+</li>
+</ul>
+<p>Given the criteria above, this proposal is weak on the following points:</p>
+<ul>
+<li>We don't enforce import or extra boundaries for packages, unless the user runs with <code>--isolated</code>.</li>
+<li>There isn't really a way to sync the extra workspace to the root <code>.venv</code>. <code>uv sync --all-extras</code> is close, but if there are packages in the workspace that <em>aren't</em> depended on by the root package, those won't be included.</li>
+</ul>
+<p>Other than that, though, I think it does a good job on the three points above (we have a single root virtualenv that is intended to cover the package, but we build it up incrementally on-demand). It's also easy to implement (it's close to what we do today) and IMO easy to change and extend in the future.</p>
+<p>One additional behavior that I'd be open to:</p>
+<ul>
+<li><code>uv run -p foo</code> creates a new virtualenv in <code>.venv</code>, and we run in there.</li>
+</ul>
+<p>This would <em>at least</em> enforce import boundaries for packages (but not extras). I don't see any downsides to this, other than that any manual modifications to the root <code>.venv</code> wouldn't be applied to those inner virtualenvs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-22 17:30</div>
+            <div class="timeline-body"><blockquote>
+<p><code>uv run -p foo</code> creates a new virtualenv in .venv, and we run in there.</p>
+</blockquote>
+<p>I would avoid specifying the location, i.e., I think we'd just cache it as normal (like we do for tools) — we can determine if it should be user-facing separately. The important bit here is whether or not <code>uv run -p foo</code> is isolated by default or with opt in, right?</p>
+<p>We probably need a separate flag from <code>--isolated</code>. Frankly I think <code>--isolated</code> makes the most sense when applied to environments, not settings but this is a tough spot since Ruff uses <code>--isolated</code> for config discovery. Riffing on some other options: <code>--no-workspace</code>, <code>--no-project</code>, <code>--strict</code>. I find it nice to focus on the idea that we're <em>excluding</em> various other dependencies rather than something like <code>--fresh-venv</code> which emphasizes <em>how</em> we go about excluding the other dependencies.</p>
+<p>I'm feeling something like:</p>
+<ul>
+<li><code>uv sync</code> is required to create the user-facing persistent environment (<code>.venv</code>) for an editor experience or manual modifications of the environment. By default, this environment should contain most of the workspace (and their extras?).</li>
+<li><code>uv run</code> always uses a layered non-persistent environment (it can be cached). It could be empty if the persistent environment meets the requirements but prevents something like <code>uv run -- pip install anyio</code> having inconsistent behavior i.e. sometimes mutating the persistent environment.</li>
+<li>An <code>--isolated</code> (or similar) flag is available to avoid layering on top of the persistent environment, enforce that manually managed packages aren't used, and that a package's dependencies are correctly declared.</li>
+</ul>
+<p>Regarding:</p>
+<blockquote>
+<p>If there are packages in the workspace that aren't depended on by the root package, those won't be included.</p>
+</blockquote>
+<p>I think this is reasonable default behavior, though I'm not sure how we solve for it in the editor. We should have a flag, e.g., <code>--all-workspace-members</code>, to install everything regardless of the dependencies of the root package? but I imagine if a workspace member is intentionally excluded from the tree then it is <em>intended</em> to be incompatible or used separately? Do we allow package version incompatibilities in this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 17:40</div>
+            <div class="timeline-body"><blockquote>
+<p>By default, this environment should contain most of the workspace (and their extras?).</p>
+</blockquote>
+<p>I think we should leave this as-is today, honestly. The rest seems fine to me for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 17:47</div>
+            <div class="timeline-body"><p>As of this proposal, we'd be using <code>--isolated</code> for ~three things:</p>
+<ol>
+<li>Ignore any discovered settings.</li>
+<li>Avoid operating in the context of a project for <code>uv run</code>.</li>
+<li>Avoid using the persistent environment for <code>uv run</code> (this is in conflict with (2)).</li>
+</ol>
+<p>For (2), we also have the <code>no-managed = true</code> flag in the TOML which achieves the same effect, I think.</p>
+<p>I think it's probably right for <code>--isolated</code> to do the first two things, because it's meant to mean &quot;ignore any files on-disk&quot;. It would be strange for it to do <em>just</em> the first but not the second, because then we'd use the dependencies for the discovered project but not the settings, that live in the same file? Though we could say that's fine and make them separate...</p>
+<p>What are the <em>ideal</em> names here? Something like...</p>
+<ol>
+<li><code>--no-config</code>?</li>
+<li><code>--no-project</code>?</li>
+<li><code>--isolated</code>?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 00:23</div>
+            <div class="timeline-body"><p>Candidly, I think the easiest thing for now (which also leaves the door open for future improvements) is just to keep what we have now, but add an <code>--isolated</code> or <code>--standalone</code> flag to run in an ephemeral environment, without the base environment.</p>
+<p>Everything else can kind of be layered on later if we want (e.g., always running in a (maybe empty) ephemeral environment --that seems purely additive).</p>
+<p>I personally don't want <code>uv sync</code> to be required, because it makes the environments feel too &quot;hidden&quot; for my liking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5471.html">astral-sh/uv#5471</a> on 2024-07-26 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-01 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-01 20:38</div>
+            <div class="timeline-body"><p>Arguably we have further things to discuss here, maybe we should just drop it from the project? Or just remember to revisit later?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2024-08-01 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-01 20:40</div>
+            <div class="timeline-body"><p>Yeah that's reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-01 20:40</div>
+            <div class="timeline-body"><p>(Removed from the project.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6001.html">astral-sh/uv#6001</a> on 2024-08-11 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @zanieb on 2024-08-20 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7719.html">astral-sh/uv#7719</a> on 2024-09-26 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12353.html">astral-sh/uv#12353</a> on 2025-03-20 22:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11183.html">astral-sh/uv#11183</a> on 2025-03-20 22:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

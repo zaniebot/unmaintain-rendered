@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report DTZ violation on `datetime.datetime.max` and `min` - astral-sh/ruff #13217</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Report DTZ violation on `datetime.datetime.max` and `min`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13217">#13217</a>
+        opened by <a href="https://github.com/ItsDrike">@ItsDrike</a>
+        on 2024-09-02 18:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ItsDrike">@ItsDrike</a> on 2024-09-02 18:46</div>
+            <div class="timeline-body"><p>Currently, ruff is properly detecting most cases where a <code>datetime</code> object is used without a timezone info, however, it does not report the use of <code>datetime.max</code> or <code>datetime.min</code>, which are constants that don't have a timezone set, which could end up causing pretty annoying and confusing issues.</p>
+<p>One example that I've recently ran into:</p>
+<pre><code class="language-python">from datetime import datetime
+
+MAX_TIME = datetime.max.timestamp()  # ValueError: year 10000 is out of range
+</code></pre>
+<p>This happens because the datetime here was blindly constructed with no tz info to be: <code>datetime.datetime(9999, 12, 31, 23, 59, 59, 999999)</code>, however, my timezone is UTC+2, and timestamp is always calculated in UTC, yet the overflow check there is just numeric for the 10k year. This means I end up having my <code>datetime.max</code> over the max UTC timestamp by 2 hours. What people should instead do here is something like: <code>datetime.max.replace(tzinfo=UTC)</code>.</p>
+<p>In my case, I was able to catch this quickly, because of the exception, however, for people with timezones that are smaller than UTC, rather than bigger, they wouldn't even notice something like this and it could lead to inconsistencies in the max timestamps.</p>
+<p>It might therefore be worth it to have ruff report the use of these constants without <code>replace</code>, with a new DTZ rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Report DTZ005 on `datetime.datetime.max` and `min`" to "Report DTZ violation on `datetime.datetime.max` and `min`" by @ItsDrike on 2024-09-02 23:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-09-03 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14288.html">astral-sh/ruff#14288</a> on 2024-11-12 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-12 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-12 20:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

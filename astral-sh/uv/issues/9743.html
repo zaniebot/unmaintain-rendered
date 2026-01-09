@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` not working with `#subdirectory` in monorepo - astral-sh/uv #9743</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` not working with `#subdirectory` in monorepo</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9743">#9743</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2024-12-09 18:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-12-09 18:26</div>
+            <div class="timeline-body"><p>I have something like this, both in the same GitHub repo:</p>
+<pre><code class="language-toml"># pyproject.toml
+
+[build-system]
+build-backend = &quot;setuptools.build_meta&quot;
+requires = [&quot;setuptools&gt;=64&quot;]
+
+[project]
+name = &quot;repo-pkga&quot;
+dependencies = [&quot;repo-pkgb&quot;]
+
+[tool.uv.sources]
+repo-pkgb = {editable = true, path = &quot;pkgb&quot;}
+repo-pkga = {workspace = true}
+</code></pre>
+<pre><code class="language-toml"># pkgb/pyproject.toml
+
+[build-system]
+build-backend = &quot;setuptools.build_meta&quot;
+requires = [&quot;setuptools&gt;=64&quot;]
+
+[project]
+name = &quot;repo-pkgb&quot;
+dependencies = []
+</code></pre>
+<p>With <code>uv==0.5.7</code>, <code>uv pip install</code> fails but <code>pip install</code> succeeds when passed:</p>
+<ul>
+<li><code>&quot;repo-pkga @ git+ssh://git@github.com/org/repo.git&quot;</code></li>
+<li><code>&quot;repo-pkgb @ git+ssh://git@github.com/org/repo.git#subdirectory=pkgb&quot;</code></li>
+</ul>
+<p>I believe what is happening is <code>uv pip</code> is not seeing <code>#subdirectory</code> in the second install and thinks there is a conflict.</p>
+<details>
+<summary><code>uv pip install</code> Fails</summary>
+
+<pre><code class="language-none">&gt; uv pip install &quot;repo-pkga @ git+ssh://git@github.com/org/repo.git&quot; &quot;repo-pkgb @ git+ssh://git@github.com/org/repo.git#subdirectory=pkgb&quot;
+ Updated ssh://git@github.com/org/repo.git (ec479a8)
+  × Failed to download and build `repo-pkga @ git+ssh://git@github.com/org/repo.git`
+  ╰─▶ Package metadata name `repo-pkgb` does not match given name `repo-pkga`
+</code></pre>
+</details>
+
+<details>
+<summary><code>pip install</code> Succeeds</summary>
+
+<pre><code class="language-none">&gt; pip install &quot;repo-pkga @ git+ssh://git@github.com/org/repo.git&quot; &quot;repo-pkgb @ git+ssh://git@github.com/org/repo.git#subdirectory=pkgb&quot;
+Collecting repo-pkga@ git+ssh://****@github.com/org/repo.git
+  Cloning ssh://****@github.com/org/repo.git to /private/var/folders/5c/20jqnfqx4sv1_6_bdkf765cr0000gn/T/pip-install-816hulg5/repo-pkga_793bf123f2524b72bb07f205e40b1397
+  Running command git clone --filter=blob:none --quiet 'ssh://****@github.com/org/repo.git' /private/var/folders/5c/20jqnfqx4sv1_6_bdkf765cr0000gn/T/pip-install-816hulg5/repo-pkga_793bf123f2524b72bb07f205e40b1397
+  Resolved ssh://****@github.com/org/repo.git to commit ec479a820fc45779b40fb94b07f39ebef412ba58
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting repo-pkgb@ git+ssh://****@github.com/org/repo.git#subdirectory=paperscraper
+  Cloning ssh://****@github.com/org/repo.git to /private/var/folders/5c/20jqnfqx4sv1_6_bdkf765cr0000gn/T/pip-install-816hulg5/repo-pkgb_22e0edec781045e0a79b343882ee612d
+  Running command git clone --filter=blob:none --quiet 'ssh://****@github.com/org/repo.git' /private/var/folders/5c/20jqnfqx4sv1_6_bdkf765cr0000gn/T/pip-install-816hulg5/repo-pkgb_22e0edec781045e0a79b343882ee612d
+  Resolved ssh://****@github.com/org/repo.git to commit ec479a820fc45779b40fb94b07f39ebef412ba58
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-12-09 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-09 18:55</div>
+            <div class="timeline-body"><p>We'll take a look, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-09 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-09 21:53</div>
+            <div class="timeline-body"><p>Unfortunately I can't replicate this... Here's my attempt, you can look at the linked repo <a href="https://github.com/astral-sh/workspace-with-root-dependency-test">here</a>:</p>
+<pre><code>❯ cargo run pip install &quot;uv-git-workspace-in-root @ git+ssh://git@github.com/astral-sh/workspace-with-root-dependency-test.git&quot; &quot;workspace-member-in-subdir @ git+ssh://git@github.com/astral-sh/workspace-with-root-dependency-test.git#subdirectory=workspace-member-in-subdir&quot;
+
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.15s
+     Running `target/debug/uv pip install 'uv-git-workspace-in-root @ git+ssh://git@github.com/astral-sh/workspace-with-root-dependency-test.git' 'workspace-member-in-subdir @ git+ssh://git@github.com/astral-sh/workspace-with-root-dependency-test.git#subdirectory=workspace-member-in-subdir'`
+ Updated ssh://git@github.com/astral-sh/workspace-with-root-dependency-test.git (3764e24)
+Resolved 2 packages in 903ms
+   Built uv-git-workspace-in-root @ git+ssh://git@github.com/astral-sh/workspace-with-root-dependency-test.git@3764e24efa81ad3151bf068b8ac809569ae2a08e
+   Built workspace-member-in-subdir @ git+ssh://git@github.com/astral-sh/workspace-with-root-dependency-test.git@3764e24efa81ad3151bf068b8ac809569ae2a08e#subdirectory=workspace-member-in-subdir
+Prepared 2 packages in 564ms
+Installed 2 packages in 1ms
+ + uv-git-workspace-in-root==0.1.0 (from git+ssh://git@github.com/astral-sh/workspace-with-root-dependency-test.git@3764e24efa81ad3151bf068b8ac809569ae2a08e)
+ + workspace-member-in-subdir==0.1.0 (from git+ssh://git@github.com/astral-sh/workspace-with-root-dependency-test.git@3764e24efa81ad3151bf068b8ac809569ae2a08e#subdirectory=workspace-member-in-subdir)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-09 21:54</div>
+            <div class="timeline-body"><p>I tried to emulate it as closely as I could. (It doesn't use a workspace despite the name.) If you're able to create an open source reproduction, I'm happy to take another look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-12-09 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-12-09 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/workspace-with-root-dependency-test/pulls/1.html">astral-sh/workspace-with-root-dependency-test#1</a> on 2024-12-09 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-12-09 23:51</div>
+            <div class="timeline-body"><p>Thank you for getting the repro started @charliermarsh , I appreciate it. I completed it here: https://github.com/astral-sh/workspace-with-root-dependency-test/pull/1</p>
+<p>Sorry it's not totally minimal, I was also trying to mirror my exact set up to give you more context. It seems to be related to a combination of SCM versioning and the package in the <code>#subdirectory</code> having a dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-10 00:06</div>
+            <div class="timeline-body"><p>Awesome, thank you. I'll revisit it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-10 00:42</div>
+            <div class="timeline-body"><p>Definitely a bug here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2024-12-10 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-10 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-10 00:53</div>
+            <div class="timeline-body"><p>The proximate cause is that building <code>workspacemember</code> creates <code>workspace_member.egg-info</code> in the root -- I think because you have <code>where = [&quot;..&quot;]</code> or something? So we then read that. But I need to make the code robust to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-12-10 01:01</div>
+            <div class="timeline-body"><p>Wow thanks for looking into this pretty responsively and hunting it down, yeah I had a feeling it was a niche edge case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9760.html">astral-sh/uv#9760</a> on 2024-12-10 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-10 02:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-10 02:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-12-10 03:42</div>
+            <div class="timeline-body"><p>Thank you @charliermarsh , much appreciated and thanks for working through the details with me on this 👍 really great work</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

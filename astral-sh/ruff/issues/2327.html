@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIE794: Removes value assignment when type annotation is on the line above - astral-sh/ruff #2327</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PIE794: Removes value assignment when type annotation is on the line above</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2327">#2327</a>
+        opened by <a href="https://github.com/Jeremiah-England">@Jeremiah-England</a>
+        on 2023-01-29 22:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Jeremiah-England">@Jeremiah-England</a> on 2023-01-29 22:21</div>
+            <div class="timeline-body"><p>To avoid long lines for my variable declarations, sometimes I put the type hint for the variable on the line above. This avoids it getting reformatted into three lines by Black. A silly example:</p>
+<pre><code class="language-python">class Hello:
+    world: str
+    world = &quot;Something with enough characters that I want to put the type on a separate line above to avoid ugly parenthesis.&quot;
+</code></pre>
+<blockquote>
+(Reformatted with Black because my line was too long when I put the type in it.)
+
+<pre><code class="language-python">class Hello:
+    world: str = (
+        &quot;Something with enough characters that I want to put the type on a separate line above to avoid ugly parenthesis.&quot;
+    )
+</code></pre>
+</blockquote>
+
+<p>When I run ruff with this config, the second line gets removed:</p>
+<pre><code class="language-toml">[tool.ruff]
+select = [&quot;PIE794&quot;]
+fix = true
+</code></pre>
+<p>Leaving just this behind...</p>
+<pre><code class="language-python">class Hello:
+    world: str
+</code></pre>
+<p>At first I thought this could be updated to not count type type annotations as a a variable &quot;definition&quot;. But given <a href="https://github.com/sbdchd/flake8-pie#pie794-dupe-class-field-definitions">the context</a> of the rule (&quot;...can occur in large ORM model definitions&quot;), I am not sure that would work. I think FastAPI uses dataclass-like classes for ORM stuff. And those just declare the type annotations.</p>
+<pre><code class="language-python"># A Pydantic model
+class User(BaseModel):
+    id: int
+    name: str
+    joined: date
+</code></pre>
+<p>The solution I am thinking of right now is not allowing two declarations of the same &quot;type&quot;, where the types are assigning a value or just adding a type annotation. That would catch duplicate <em>actual</em> definitions in dataclass-like things and regular classes, while allowing me to do my formatting trick.</p>
+<p>But the parenthesis really are not that bad, and maybe that solution is a lot of work. So this is a very tentative feature request.</p>
+<p>Edit: Oh, I was running this on version 0.0.237.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 21:35</div>
+            <div class="timeline-body"><p>I hate saying no to things, especially when the proposal is as clearly laid out as this one... but I think this would add more complexity than I'd like, to accommodate a pretty specific use-case (no offense intended -- I can totally see why you prefer the above, I just don't see it as a super common pattern).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-31 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jeremiah-England">@Jeremiah-England</a> on 2023-02-01 00:46</div>
+            <div class="timeline-body"><p>Makes sense! Thanks for taking a look. I'm sure Charliest Marsh would have made the same decision! :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 02:01</div>
+            <div class="timeline-body"><p>Lmaooo no Charliest Marsh would maintain a custom build that solved this problem specifically for you</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

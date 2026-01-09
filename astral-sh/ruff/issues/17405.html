@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff check with file read from stdin does not use options from pyproject.toml when --stdin-filename argument is used - astral-sh/ruff #17405</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff check with file read from stdin does not use options from pyproject.toml when --stdin-filename argument is used</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17405">#17405</a>
+        opened by <a href="https://github.com/ipvych">@ipvych</a>
+        on 2025-04-15 07:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ipvych">@ipvych</a> on 2025-04-15 07:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Steps to reproduce:</h1>
+<pre><code class="language-shell">mkdir repro
+cd repro
+echo '[project]
+requires-python = &quot;&gt;=3.11&quot;
+[tool.ruff.lint]
+extend-select = [&quot;UP&quot;]' &gt; pyproject.toml
+
+mkdir src
+cd src
+echo -e 'from typing import Callable\nCallable' &gt; repro.py
+
+ruff check --stdin-filename stdin - &lt; repro.py
+</code></pre>
+<h1>Observed behavior:</h1>
+<p>Ruff reported no issues found in file</p>
+<h1>Expected behavior:</h1>
+<p>Pyupgrade plugin that was enabled in pyproject.toml should have reported <code>Import from collections.abc instead: Callable</code> error.  Error is correctly reported when I remove <code>--stdin-filename &lt;anything&gt;</code> flag from ruff command line or when I run <code>ruff check repro.py</code> directly.</p>
+<h3>Version</h3>
+<p>ruff 0.11.5 (7186d5e9a 2025-04-10)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dylwil3 on 2025-04-15 10:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @dylwil3 on 2025-04-15 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @dylwil3 on 2025-04-15 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-04-15 10:45</div>
+            <div class="timeline-body"><p>In your situation the following should both work:</p>
+<pre><code class="language-console">ruff check --stdin-filename ../stdin - &lt; repro.py
+</code></pre>
+<p>or, from <code>repro</code> instead of <code>repro/src</code>:</p>
+<pre><code class="language-console">ruff check --stdin-filename stdin - &lt; src/repro.py
+</code></pre>
+<p>When searching for a configuration, we look at ancestors of the current working directory for configuration files - but if you pass in a stdin filename, we use ancestors of whatever path you give.</p>
+<p>Probably this should be more clearly documented, but I think it might be correct behavior? I guess another option would be to try to join the stdin filename with the current working directory? Maybe others can weigh in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @dylwil3 on 2025-04-15 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ipvych">@ipvych</a> on 2025-04-15 11:16</div>
+            <div class="timeline-body"><p>I expected <code>--stdin-filename</code> to only affect the text that is displayed as file name (the <code>-</code> part of <code>-:1:1: UP035 [*] Import from </code>collections.abc<code>instead:</code>Callable``) when file is passed via stdin and nothing else.</p>
+<p>I want to change that part to <code>stdin</code> so output is similar to that of flake8 allowing me to reuse existing tooling that expects flake8 output by just replacing command to ruff. Specifically in Emacs there is a builtin variable specifying command to use for linting code that I want to make just work with ruff without messing up with regexps that parse output of the command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-22 09:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Probably this should be more clearly documented, but I think it might be correct behavior? I guess another option would be to try to join the stdin filename with the current working directory? Maybe others can weigh in.</p>
+</blockquote>
+<p>The current behavior was added in https://github.com/astral-sh/ruff/pull/1281</p>
+<p>Making the stdin path absolute does sound reasonable to me (unless it is already absolute)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

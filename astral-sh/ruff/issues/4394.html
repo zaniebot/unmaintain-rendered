@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latest ruff 0.0.266 fails to import - astral-sh/ruff #4394</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Latest ruff 0.0.266 fails to import</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4394">#4394</a>
+        opened by <a href="https://github.com/jaraco">@jaraco</a>
+        on 2023-05-12 18:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jaraco">@jaraco</a> on 2023-05-12 18:21</div>
+            <div class="timeline-body"><p>I was working on jaraco/jaraco.packaging#11 when suddenly the tests started failing with <code>ModuleNotFoundError</code>. I traced it to the recent 0.0.266 release:</p>
+<pre><code> ~ $ pip-run -v ruff -- -c &quot;import ruff&quot;
+Collecting ruff
+  Using cached ruff-0.0.266-py3-none-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl (10.1 MB)
+Installing collected packages: ruff
+Successfully installed ruff-0.0.266
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'ruff'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-12 18:23</div>
+            <div class="timeline-body"><p>Confirmed this reproduces on <code>0.0.266</code> with <code>python -c &quot;import ruff&quot;</code> but not on <code>0.0.265</code>. @jaraco might be worth updating your title to note that just the Python import is broken. <code>ruff</code> runs fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Latest ruff 0.0.266 is broken" to "Latest ruff 0.0.266 fails to import" by @jaraco on 2023-05-12 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2023-05-12 18:25</div>
+            <div class="timeline-body"><p>I can see the binary there, but no library:</p>
+<pre><code> ~ $ pip-run ruff
+Python 3.11.3 (main, Apr  7 2023, 20:13:31) [Clang 14.0.0 (clang-1400.0.29.202)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import sys
+&gt;&gt;&gt; sys.path
+['', '/var/folders/sx/n5gkrgfx6zd91ymxr2sr9wvw00n8zm/T/pip-run-h27rhwxt', '/opt/homebrew/Cellar/python@3.11/3.11.3/Frameworks/Python.framework/Versions/3.11/lib/python311.zip', '/opt/homebrew/Cellar/python@3.11/3.11.3/Frameworks/Python.framework/Versions/3.11/lib/python3.11', '/opt/homebrew/Cellar/python@3.11/3.11.3/Frameworks/Python.framework/Versions/3.11/lib/python3.11/lib-dynload', '/opt/homebrew/Cellar/python@3.11/3.11.3/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages']
+&gt;&gt;&gt; import pathlib
+&gt;&gt;&gt; libs = pathlib.Path(sys.path[1])
+&gt;&gt;&gt; list(libs.iterdir())
+[PosixPath('/var/folders/sx/n5gkrgfx6zd91ymxr2sr9wvw00n8zm/T/pip-run-h27rhwxt/bin'), PosixPath('/var/folders/sx/n5gkrgfx6zd91ymxr2sr9wvw00n8zm/T/pip-run-h27rhwxt/__pycache__'), PosixPath('/var/folders/sx/n5gkrgfx6zd91ymxr2sr9wvw00n8zm/T/pip-run-h27rhwxt/sitecustomize.py'), PosixPath('/var/folders/sx/n5gkrgfx6zd91ymxr2sr9wvw00n8zm/T/pip-run-h27rhwxt/ruff-0.0.266.dist-info')]
+&gt;&gt;&gt; list(libs.joinpath('bin').iterdir())
+[PosixPath('/var/folders/sx/n5gkrgfx6zd91ymxr2sr9wvw00n8zm/T/pip-run-h27rhwxt/bin/ruff')]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2023-05-12 18:29</div>
+            <div class="timeline-body"><p>Can I expect a rapid mitigation (fix or yank) or should I invest in working around the issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-12 18:31</div>
+            <div class="timeline-body"><p>I'm surprised that <code>import ruff</code> worked before, but I'm guessing this is related to our Maturin upgrade? Gimme a few mins to look into it. Worst-case I will revert the Maturin change and cut a new release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-12 18:34</div>
+            <div class="timeline-body"><p>@charliermarsh looks like the <code>site-packages/ruff</code> directory is missing.</p>
+<p>@jaraco why do you use <code>import ruff</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-05-12 18:36</div>
+            <div class="timeline-body"><p>fwiw this is causing problems for <a href="https://github.com/nbQA-dev/nbQA"><code>nbqa-ruff</code></a> too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-12 18:36</div>
+            <div class="timeline-body"><p>Alright, I'll go ahead and revert while we figure this out.</p>
+<p><code>python -m ruff file.py</code> is also failing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-12 18:38</div>
+            <div class="timeline-body"><p>Yanked for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4397.html">astral-sh/ruff#4397</a> on 2023-05-12 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4398.html">astral-sh/ruff#4398</a> on 2023-05-12 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-12 18:51</div>
+            <div class="timeline-body"><p>I'll have a new release out within the next hour.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2023-05-12 19:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Yanked for now.</p>
+</blockquote>
+<p>Super helpful and unblocked my work. Thanks for the super-rapid response.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-12 19:03</div>
+            <div class="timeline-body"><p>Thanks for raising the issue so quickly, and apologies for the churn.</p>
+<p>I did do some manual testing of the wheels prior to cutting the release, since we upgraded Maturin, but I didn't test the use of Ruff-as-module, and it turns out we didn't have any automated testing for that either, which @madkinsz has already improved :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-12 21:06</div>
+            <div class="timeline-body"><p>Fixed in v0.0.267.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-12 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2023-05-12 21:18</div>
+            <div class="timeline-body"><blockquote>
+<p>@jaraco why do you use <code>import ruff</code>?</p>
+</blockquote>
+<p>I use <a href="https://pypi.org/project/pytest-ruff">pytest-ruff</a>, which <a href="https://github.com/buserbrasil/pytest-ruff/blob/895a6dd2164e9d020cdf5f8c717b6216de6f825b/pytest_ruff.py#L4">imports ruff</a>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

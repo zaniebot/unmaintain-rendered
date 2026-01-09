@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deprecated structopt macro argument - clap-rs/clap #3268</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Deprecated structopt macro argument</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3268">#3268</a>
+        opened by <a href="https://github.com/1Dragoon">@1Dragoon</a>
+        on 2022-01-07 20:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/1Dragoon">@1Dragoon</a> on 2022-01-07 20:18</div>
+            <div class="timeline-body"><p>It looks like 'settings =' has been deprecated. What is the correct way to do this now?</p>
+<p><a href="https://github.com/DominikRusso"><img src="https://avatars.githubusercontent.com/u/50487108?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/DominikRusso">DominikRusso</a></strong>
+<em>Thursday Nov 04, 2021 at 23:01 GMT</em></p>
+<hr />
+<p>Try <code>#[structopt(settings = &amp;[structopt::clap::AppSettings::AllowNegativeNumbers])]</code> on a top level field.</p>
+<p>For example:</p>
+<pre><code>use structopt::clap::AppSettings;
+use structopt::StructOpt;
+
+#[derive(StructOpt, Debug)]
+pub enum Subcommand {
+    // ...
+    
+    #[structopt(alias = &quot;bri&quot;, settings = &amp;[AppSettings::AllowNegativeNumbers])]
+    Brightness {
+        brightness: String,
+        lights: Vec&lt;String&gt;,
+    },
+
+    // ...
+}
+</code></pre>
+<p><em>Originally posted by @epage in https://github.com/clap-rs/clap/issues/3134#issuecomment-990017381</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-07 20:31</div>
+            <div class="timeline-body"><p><code>App::settings(&amp;[a, b])</code> has been replaced by <code>App::setting(a | b)</code>.  You can check the <a href="https://docs.rs/clap/latest/clap/struct.App.html#method.settings">docs for the method the attribute maps to to see this</a>.</p>
+<p>I would have expected a deprecation message to have appeared for this that would have explained this.  I know we mask some deprecated warnings but I've seen a lot of others get through.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @epage on 2022-01-07 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/1Dragoon">@1Dragoon</a> on 2022-01-08 15:41</div>
+            <div class="timeline-body"><p>It did appear but I'm not sure how it is saying to implement that in the macro form, only in the non-macro form. I tried removing the slice notation from the parameter, but it doesn't seem to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-10 14:44</div>
+            <div class="timeline-body"><p>Could you provide a code sample of what isn't working?</p>
+<p>The <a href="https://github.com/clap-rs/clap/tree/master/examples/derive_ref#raw-attributes">derive reference</a> talks some about the relationship between builder functions and attributes.  This is an important topic since its what makes the full power of clap available to the derive.  If you have any questions on it or suggestions for improvement, feel free to share</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/1Dragoon">@1Dragoon</a> on 2022-01-11 15:09</div>
+            <div class="timeline-body"><p>Sure, so basically this is what I am trying to do:</p>
+<pre><code class="language-rust">#[derive(Debug, Parser)]
+#[clap(name = &quot;Synth&quot;, about = &quot;Generate random attributes.&quot;, settings = &amp;[AppSettings::AllowNegativeNumbers])]
+struct Opt {
+    /// Source identity name
+    source: String,
+
+    /// Target name
+    target: String,
+
+    /// Override the date to today +/- n days
+    #[clap(short, long)]
+    offset: Option&lt;i64&gt;,
+}
+</code></pre>
+<p>I per the doc I tried revising it to this:</p>
+<pre><code class="language-rust">#[clap(name = &quot;Synth&quot;, about = &quot;Generate random attributes.&quot;, settings = AppSettings::AllowNegativeNumbers)]
+</code></pre>
+<p>Doesn't appear to work though.</p>
+<p>EDIT:</p>
+<p>Just noticed it has to be changed to this:</p>
+<pre><code class="language-rust">#[clap(name = &quot;Synth&quot;, about = &quot;Generate random attributes.&quot;, setting = AppSettings::AllowNegativeNumbers)]
+</code></pre>
+<p>(i.e. &quot;settings&quot; becomes &quot;setting&quot; AND you remove the slice notation)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-11 15:13</div>
+            <div class="timeline-body"><p>Looks like this works:</p>
+<pre><code class="language-rust">use clap::AppSettings;
+use clap::Parser;
+
+#[derive(Debug, Parser)]
+#[clap(name = &quot;Synth&quot;, about = &quot;Generate random attributes.&quot;, setting = AppSettings::AllowNegativeNumbers)]
+struct Opt {
+    /// Source identity name
+    source: String,
+
+    /// Target name
+    target: String,
+
+    /// Override the date to today +/- n days
+    #[clap(short, long)]
+    offset: Option&lt;i64&gt;,
+}
+
+fn main() {
+    let app = Opt::parse();
+    println!(&quot;{:?}&quot;, app);
+}
+</code></pre>
+<p>The distinction between <code>setting</code> and <code>settings</code> in the deprecation message's suggestion is subtle and easy to miss.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/1Dragoon">@1Dragoon</a> on 2022-01-11 15:15</div>
+            <div class="timeline-body"><p>ah yep just noticed that right after I posted it, thanks though :) And if anybody happens to come along this by googling it in the future, multiple settings looks like this:</p>
+<pre><code class="language-rust">#[clap(name = &quot;Synth&quot;, about = &quot;Generate random attributes.&quot;, setting = AppSettings::AllowNegativeNumbers | AppSettings::AllArgsOverrideSelf )]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-11 15:30</div>
+            <div class="timeline-body"><p>Glad you got it working!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-01-11 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-01-11 18:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

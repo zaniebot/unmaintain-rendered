@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANN201 doesn't handle pytest.raises context manager - astral-sh/ruff #15975</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ANN201 doesn't handle pytest.raises context manager</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15975">#15975</a>
+        opened by <a href="https://github.com/jogo-openai">@jogo-openai</a>
+        on 2025-02-05 17:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jogo-openai">@jogo-openai</a> on 2025-02-05 17:43</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>ruff version: 0.9.4</p>
+<p>code:</p>
+<pre><code class="language-python">import pytest
+
+
+def test_exception():
+    with pytest.raises(ValueError):
+        raise ValueError(&quot;This is a test exception&quot;)
+    a = 1
+    assert a == 1
+
+
+def a_function():
+    return 1
+
+
+def no_return():
+    pass
+</code></pre>
+<p><code>ruff check --select=ANN201 --diff --unsafe-fixes  example.py</code></p>
+<pre><code class="language-diff">--- example.py
++++ example.py
+@@ -1,16 +1,17 @@
+ import pytest
++from typing import NoReturn
+
+
+-def test_exception():
++def test_exception() -&gt; NoReturn:
+     with pytest.raises(ValueError):
+         raise ValueError(&quot;This is a test exception&quot;)
+     a = 1
+     assert a == 1
+
+
+-def a_function():
++def a_function() -&gt; int:
+     return 1
+
+
+-def no_return():
++def no_return() -&gt; None:
+     pass
+
+Would fix 3 errors.
+</code></pre>
+<p>After applying the fix mypy reports the error:</p>
+<pre><code class="language-~">example.py:5: error: Implicit return in function which does not return  [misc]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-02-06 08:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-06 08:16</div>
+            <div class="timeline-body"><p>Thanks for the report. The issue is really only about</p>
+<pre><code class="language-py">def test_exception():
+    with pytest.raises(ValueError):
+        raise ValueError(&quot;This is a test exception&quot;)
+    a = 1
+    assert a == 1
+</code></pre>
+<p>specifically that Ruff adds the return type <code>Never</code> which is incorrect because <code>pytest.raises</code> catches the exception and doesn't propagate it.</p>
+<p>Since it is hard for ruff to know if a context manager handles an exception (because it can't resolve the context manager nor its methods if defined in another file). We have to explore whether we can provide any type suggestion in that case (by handling a context manager similar to <code>try</code>) or if we need to bail out of providing a fix.</p>
+<p>Relevant code: https://github.com/astral-sh/ruff/blob/13ffb5bc1936493816f01fb5583359e3d8fffca7/crates/ruff_python_semantic/src/analyze/terminal.rs#L42-L150</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

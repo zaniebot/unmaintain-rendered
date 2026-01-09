@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>formatter(Jupyter): ending semicolons valid in Jupyter - astral-sh/ruff #8254</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>formatter(Jupyter): ending semicolons valid in Jupyter</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8254">#8254</a>
+        opened by <a href="https://github.com/henryiii">@henryiii</a>
+        on 2023-10-26 15:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/henryiii">@henryiii</a> on 2023-10-26 15:32</div>
+            <div class="timeline-body"><p>The Jupyter formatter has a couple of issues when running on notebooks.</p>
+<p>One is it removes semicolons at the end of lines. <code>black[jupyter]</code> does not remove semicolons at the end of lines when running on a notebook, since it's used to mark output as hidden, for example when plotting. <code>plt.plot();</code> will show the plot but not print out the repr for the Artists that the plot method returns.</p>
+<p>Edit: On the last line of a cell. Related: #7300 which is for the linter. But that's rule based, so it's easy to turn it off for <code>*.ipynb</code> files, while there isn't a workaround for the formatter, making it a blocker.</p>
+<p>(Fixed in main) The other is that it can't read a notebook that black and ruff-lint are able to read. The error is:</p>
+<pre><code>error: Failed to format docs/examples/HistDemo.ipynb: source contains syntax errors: ParseError { error: UnrecognizedToken(Percent, None), offset: 0, source_path: &quot;&lt;filename&gt;&quot; }
+</code></pre>
+<p>I'm guessing it's choking on a line magic, perhaps? The file does have this line:</p>
+<pre><code class="language-python">%config InteractiveShell.ast_node_interactivity=&quot;last_expr_or_assign&quot;
+</code></pre>
+<p>Which is the only <code>%</code> in the file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 15:35</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-26 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-10-26 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-26 16:07</div>
+            <div class="timeline-body"><p>Re line magic, it's solved https://github.com/astral-sh/ruff/issues/8204, sorry for the churn!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-10-26 16:10</div>
+            <div class="timeline-body"><p>Great! Probably should have checked main. So just simicolons left.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "formatter(Jupyter): semicolons and percents" to "formatter(Jupyter): ending semicolons valid in Jupyter" by @henryiii on 2023-10-26 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../scikit-hep/boost-histogram/pulls/895.html">scikit-hep/boost-histogram#895</a> on 2023-10-26 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../scikit-hep/hist/pulls/544.html">scikit-hep/hist#544</a> on 2023-10-26 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-26 16:18</div>
+            <div class="timeline-body"><p>Related: https://github.com/astral-sh/ruff/issues/7300</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2023-10-27 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-27 02:02</div>
+            <div class="timeline-body"><p>Is my assumption correct that this only applies to expression statements or are there other statements for which semicolons need to be preserved?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-10-27 02:11</div>
+            <div class="timeline-body"><p>IPython has several modes. If you set:</p>
+<pre><code>%config InteractiveShell.ast_node_interactivity=&quot;last_expr_or_assign&quot;
+</code></pre>
+<p>Then either <code>val = expr</code> or just <code>expr</code> will print if it's the final statement in the cell, unless there's a semicolon (see, for example, https://hist.readthedocs.io/en/latest/examples/HistDemo.html). By default, only <code>expr</code> will display, and <code>val = expr</code> won't. I'd say simply allowing a final semicolon in cells on expressions or assignment expressions would be fine.</p>
+<p>IIRC <code>a.b =</code> and <code>a[b] =</code> statements don't display even in the enhanced mode, but could be wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pybamm-team/PyBaMM/issues/3476.html">pybamm-team/PyBaMM#3476</a> on 2023-10-28 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-03 14:03</div>
+            <div class="timeline-body"><p>Note, there's now a helper function to extract the trailing semicolon. We can use it in the assignment (including augmented and annotated) and expression statement formatting</p>
+<p>https://github.com/astral-sh/ruff/blob/2c84f911c4d57f3b436458f4d0e34fe10655cf76/crates/ruff_python_formatter/src/statement/mod.rs#L89-L107</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-03 14:25</div>
+            <div class="timeline-body"><p>Black's implementation for reference: https://github.com/psf/black/blob/c54c213d6a3132986feede0cf0525f5bae5b43d6/src/black/handle_ipynb_magics.py#L73-L102. It seems to be removing them for all cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-11-03 14:49</div>
+            <div class="timeline-body"><p>The function after that puts them back - not sure why you'd need to remove it and then put it back, since the normal formatter also removes them - just checking to see if it's there and then putting it back seems like it would also work. Anyway, what cases are not covered by assignments and expressions? Blocks can't end lines, for example. Simicolons aren't needed for import statements - I wonder if black keeps them, actually. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-03 15:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Black's implementation for reference: <a href="https://github.com/psf/black/blob/c54c213d6a3132986feede0cf0525f5bae5b43d6/src/black/handle_ipynb_magics.py#L73-L102">psf/black@<code>c54c213</code>/src/black/handle_ipynb_magics.py#L73-L102</a>. It seems to be removing them for all cases.</p>
+</blockquote>
+<p>Nice find. Removing them and adding them back sounds complicated. We can just preserve them 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2023-11-09 03:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8590.html">astral-sh/ruff#8590</a> on 2023-11-09 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-11-10 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7300.html">astral-sh/ruff#7300</a> on 2025-07-01 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19980.html">astral-sh/ruff#19980</a> on 2025-08-18 23:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

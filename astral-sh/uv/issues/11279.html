@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to run `uv pip compile` for PyPy (and CPython) - astral-sh/uv #11279</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to run `uv pip compile` for PyPy (and CPython)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11279">#11279</a>
+        opened by <a href="https://github.com/alexprengere">@alexprengere</a>
+        on 2025-02-06 12:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alexprengere">@alexprengere</a> on 2025-02-06 12:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I looked through the docs with no luck, hopefully I did not miss anything.
+My issue boils down to a simple <code>requirements.in</code> with:</p>
+<pre><code>psycopg[binary]; platform_python_implementation!='PyPy'
+psycopg; platform_python_implementation=='PyPy'
+</code></pre>
+<p>Following <a href="https://www.psycopg.org/psycopg3/docs/basic/install.html">psycopg docs</a>, the <code>[binary]</code> dependency group install an extra <code>psycopg-binary</code> library.
+Installing directly <code>psycopg[binary]</code> on PyPy also works, the <code>[binary]</code> is just ignored.</p>
+<p>I have a project that I run with both PyPy and CPython. In both cases, they manage to install with no issues:</p>
+<pre><code class="language-bash">$ uv venv -p python3.10
+$ uv pip install -r requirements.in
+...
+ + psycopg==3.2.4
+ + psycopg-binary==3.2.4
+ + typing-extensions==4.12.2
+
+$ uv venv -p pypy3.10
+$ uv pip install -r requirements.in
+...
+ + psycopg==3.2.4
+ + typing-extensions==4.12.2
+ # No psycopg-binary here, as expected
+</code></pre>
+<p>Now I would like to either:</p>
+<ul>
+<li>generate a single <code>requirements.txt</code> for both CPython and PyPy using <code>uv pip compile</code>.</li>
+<li>generate one <code>requirements.txt</code> for each interpreter</li>
+</ul>
+<p>AFAICT there is no option to tell &quot;compile for PyPy&quot;, but you <em>can</em> achieve it by creating a virtualenv and let <code>uv pip compile</code> use it:</p>
+<pre><code class="language-bash">$ uv venv -p python3.10
+$ uv pip compile requirements.in -o requirements.txt --upgrade -p 3.10 --quiet
+$ cat requirements.txt
+...
+psycopg==3.2.4
+    # via -r requirements.in
+psycopg-binary==3.2.4
+    # via psycopg
+typing-extensions==4.12.2
+    # via psycopg
+
+$ uv venv -p pypy3.10
+$ uv pip compile requirements.in -o requirements.txt --upgrade -p 3.10 --quiet
+$ cat requirements.txt
+...
+psycopg==3.2.4
+    # via -r requirements.in
+typing-extensions==4.12.2
+    # via psycopg
+</code></pre>
+<p>I wonder if another flag to <code>uv pip compile</code> would make sense to specify the interpreter &quot;PyPy&quot; or &quot;CPython&quot; here, so as to avoid the extra step to create the virtualenv.
+To be honest, my perfect solution would be to have a single <code>requirements.txt</code> for both interpreters that would look like:</p>
+<pre><code>psycopg==3.2.4
+psycopg-binary==3.2.4; platform_python_implementation != &quot;PyPy&quot;
+typing-extensions==4.12.2
+</code></pre>
+<p>But I am not sure this would work with <code>uv pip compile</code> design, which does seem to solve for only one interpreter.
+For the record <code>pip-tools</code> output is not better here:</p>
+<pre><code>$ pip-compile requirements.in 
+psycopg[binary]==3.2.4 ; platform_python_implementation != &quot;PyPy&quot;
+    # via -r requirements.in
+psycopg-binary==3.2.4
+    # via psycopg
+typing-extensions==4.12.2
+    # via psycopg
+</code></pre>
+<h3>Platform</h3>
+<p>Fedora Linux on WSL2</p>
+<h3>Version</h3>
+<p>0.5.29</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @alexprengere on 2025-02-06 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 13:59</div>
+            <div class="timeline-body"><p>Did you try <code>uv pip compile --universal</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-02-06 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-02-06 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 14:18</div>
+            <div class="timeline-body"><p>You can also solve for just PyPy using <code>uv pip compile -p pypy@3.10</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexprengere">@alexprengere</a> on 2025-02-06 14:53</div>
+            <div class="timeline-body"><p>Hi! Let me reply to both at the same time.</p>
+<ol>
+<li>Yes, I tried <code>--universal</code>, but did not want to mention it as my post was getting long. It did not do what I thought it would, so I thought I misunderstood it:</li>
+</ol>
+<pre><code>$ uv pip compile requirements.in -o requirements.txt --upgrade -p 3.10 --quiet --universal
+$ cat requirements.txt
+# This file was autogenerated by uv via the following command:
+#    uv pip compile requirements.in -o requirements.txt -p 3.10 --universal
+psycopg==3.2.4 ; platform_python_implementation != 'PyPy'
+    # via -r requirements.in
+psycopg-binary==3.2.4 ; implementation_name != 'pypy' and platform_python_implementation != 'PyPy'
+    # via psycopg
+typing-extensions==4.12.2 ; python_full_version &lt; '3.13'
+    # via psycopg
+tzdata==2025.1 ; sys_platform == 'win32'
+    # via psycopg
+</code></pre>
+<p>As you can see installing this with PyPy3 will <em>not even install psycopg</em> at all.</p>
+<ol start="2">
+<li>I tried all the combinations of this I could think of with no luck:</li>
+</ol>
+<pre><code>$ uv pip compile -p pypy@3.10
+error: invalid value 'pypy@3.10' for '--python-version &lt;PYTHON_VERSION&gt;': Python version `pypy@3.10` could not be parsed: expected version to start with a number, but no leading ASCII digits were found
+$ uv pip compile -p pypy3.10
+error: invalid value 'pypy3.10' for '--python-version &lt;PYTHON_VERSION&gt;': Python version `pypy3.10` could not be parsed: expected version to start with a number, but no leading ASCII digits were found
+$ uv pip compile -p python3.10
+# same
+</code></pre>
+<p>After digging a bit more, it turns out putting just <code>psycopg[binary]</code> in the <code>requirements.in</code> file, combined with <code>--universal</code>, gives the best results:</p>
+<pre><code>$ cat requirements.in
+psycopg[binary]
+$ uv pip compile requirements.in -o requirements.txt --upgrade -p 3.10 --quiet --universal
+$ cat requirements.txt
+psycopg==3.2.4
+    # via -r requirements.in
+psycopg-binary==3.2.4 ; implementation_name != 'pypy'
+    # via psycopg
+typing-extensions==4.12.2 ; python_full_version &lt; '3.13'
+    # via psycopg
+tzdata==2025.1 ; sys_platform == 'win32'
+    # via psycopg
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 15:49</div>
+            <div class="timeline-body"><p>I think <code>--universal</code> with:</p>
+<pre><code>psycopg[binary]; platform_python_implementation!='PyPy'
+psycopg; platform_python_implementation=='PyPy'
+</code></pre>
+<p>Should give you what you want. That might be a bug then? I'll take a look, but <code>--universal</code> with <code>psycopg[binary]</code> seems simpler anyway :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-02-06 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 15:57</div>
+            <div class="timeline-body"><p>Oh, we interpret <code>-p</code> as <code>--python-version</code> in <code>uv pip compile</code>?? Sorry, that's really weird. You want <code>--python</code> (which is what <code>-p</code> aliases to everywhere else)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexprengere">@alexprengere</a> on 2025-02-06 16:08</div>
+            <div class="timeline-body"><p>Oooh so this explains a lot 😉
+1 mystery solved, because indeed this works as expected:</p>
+<pre><code>$ uv pip compile requirements.in -o requirements.txt --upgrade --python pypy@3.10 --quiet
+psycopg==3.2.4
+    # via -r requirements.in
+typing-extensions==4.12.2
+    # via psycopg
+</code></pre>
+<p>So I can always create easily 2 <code>requirements.txt</code>.
+The only remaining mystery is why <code>--universal</code> is not working with:</p>
+<pre><code>psycopg[binary]; platform_python_implementation!='PyPy'
+psycopg; platform_python_implementation=='PyPy'
+</code></pre>
+<p>Putting &quot;just&quot; <code>psycopg[binary]</code> is less correct I believe, as the docs <em>explicitly</em> mention to remove <code>[binary]</code> for PyPy, it just &quot;happens to work anyway&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 17:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Putting &quot;just&quot; psycopg[binary] is less correct I believe, as the docs explicitly mention to remove [binary] for PyPy, it just &quot;happens to work anyway&quot;.</p>
+</blockquote>
+<p>No, it's correct. The metadata for <code>psycopg2</code> includes:</p>
+<pre><code>Requires-Dist: psycopg-binary==3.2.4; implementation_name != &quot;pypy&quot; and extra == &quot;binary&quot;
+</code></pre>
+<p>So it's fine to just put <code>psycopg[binary]</code>. They already exclude the binary for PyPy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 17:01</div>
+            <div class="timeline-body"><p>Tracking the <code>-p</code> thing in #11285</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-02-06 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-02-06 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-06 21:41</div>
+            <div class="timeline-body"><p>The <code>--universal</code> bug is fixed in #11298, do we want to keep this issue open for anything else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-06 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexprengere">@alexprengere</a> on 2025-02-07 08:57</div>
+            <div class="timeline-body"><p>After compiling from sources to check #11298, I confirm that everything is now working fine for me, thanks a lot for the quick fix!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

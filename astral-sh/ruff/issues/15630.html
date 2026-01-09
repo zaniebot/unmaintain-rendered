@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot find ruff when used in a venv with --system-site-packages - astral-sh/ruff #15630</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot find ruff when used in a venv with --system-site-packages</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15630">#15630</a>
+        opened by <a href="https://github.com/sillydan1">@sillydan1</a>
+        on 2025-01-21 08:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sillydan1">@sillydan1</a> on 2025-01-21 08:57</div>
+            <div class="timeline-body"><p>When running <code>ruff</code> as a module in a virtual environment with the <code>--system-site-packages</code>, I see a similar error as https://github.com/astral-sh/ruff/issues/2520</p>
+<h2>Reproduction steps:</h2>
+<p>Given this environment:</p>
+<pre><code class="language-dockerfile">FROM python:3-alpine
+RUN python3 -m pip install ruff
+</code></pre>
+<pre><code class="language-sh"># Build and run the container.
+docker build -t ruff-test .
+docker run --rm -it ruff-test sh
+
+# In the container:
+# Create and activate a venv with system-site-packages enabled
+python3 -m venv venv --system-site-packages
+. venv/bin/activate
+</code></pre>
+<p>After activating the venv, running <code>ruff</code> as a python module will result in an error:</p>
+<pre><code class="language-sh">(venv) / # python3 -m ruff
+Traceback (most recent call last):
+  File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
+  File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
+  File &quot;/usr/local/lib/python3.13/site-packages/ruff/__main__.py&quot;, line 81, in &lt;module&gt;
+    ruff = os.fsdecode(find_ruff_bin())
+                       ~~~~~~~~~~~~~^^
+  File &quot;/usr/local/lib/python3.13/site-packages/ruff/__main__.py&quot;, line 77, in find_ruff_bin
+    raise FileNotFoundError(scripts_path)
+FileNotFoundError: /venv/bin/ruff
+</code></pre>
+<p>Luckilly, running <code>ruff</code> directly instead of as a python module seems to sidestep this problem:</p>
+<pre><code class="language-sh">(venv) / # ruff
+Ruff: An extremely fast Python linter and code formatter.
+
+Usage: ruff [OPTIONS] &lt;COMMAND&gt;
+
+Commands:
+  check    Run Ruff on the given files or directories
+  rule     Explain a rule (or all rules)
+  config   List or describe the available configuration options
+  linter   List all supported upstream linters
+  clean    Clear any caches in the current directory and any subdirectories
+  format   Run the Ruff formatter on the given files or directories
+  server   Run the language server
+  analyze  Run analysis over Python source code
+  version  Display Ruff's version
+  help     Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
+
+Log levels:
+  -v, --verbose  Enable verbose logging
+  -q, --quiet    Print diagnostics, but nothing else
+  -s, --silent   Disable all logging (but still exit with status code &quot;1&quot; upon detecting diagnostics)
+
+Global options:
+      --config &lt;CONFIG_OPTION&gt;  Either a path to a TOML configuration file (`pyproject.toml` or `ruff.toml`), or a TOML `&lt;KEY&gt; = &lt;VALUE&gt;` pair (such as you might find in a
+                                `ruff.toml` configuration file) overriding a specific configuration option. Overrides of individual settings using this option always take precedence
+                                over all configuration files, including configuration files that were also specified using `--config`
+      --isolated                Ignore all configuration files
+
+For help with a specific command, see: `ruff help &lt;command&gt;`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-29 09:11</div>
+            <div class="timeline-body"><p>Thanks for the report, apologies for the late reply.</p>
+<p>I tried to spend a couple of minutes to look at this issue but I'm not sure what could be wrong here. The scripts directory path for the preferred user scheme seems to be returning another path:</p>
+<pre><code>&gt;&gt;&gt; sysconfig.get_path('scripts', scheme='posix_user')
+'/root/.local/bin'
+</code></pre>
+<p>which I think is because the <code>HOME</code> directory is <code>/root</code>.</p>
+<p>Related: https://github.com/astral-sh/ruff/issues/13110</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sillydan1">@sillydan1</a> on 2025-01-29 10:52</div>
+            <div class="timeline-body"><p>Thanks for your reply.</p>
+<p>Just to be clear, in the provided docker environment <code>ruff</code> is installed on the <em>system</em> pip, so I would expect <a href="https://github.com/astral-sh/ruff/blob/main/python/ruff/__main__.py"><code>__main__.py</code></a> to resolve to <code>/usr/local/bin/ruff</code> (but only because I initialized the venv using <code>--system-site-packages</code>)</p>
+<p>I think that it just need a last clause where it searches for <code>ruff</code> in the system site packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2025-03-18 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/auxsvr">@auxsvr</a> on 2025-03-25 20:35</div>
+            <div class="timeline-body"><p>This is still an issue and it breaks pylsp_ruff.plugin. Any idea or workaround? In my case, there is no venv, just the system installation.
+The cause seems to be that <code>sysconfig.get_path('scripts') == '/usr/local/bin'</code>. Would <code>shutil.which('ruff')</code> improve the situation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bnavigator">@bnavigator</a> on 2025-12-04 19:36</div>
+            <div class="timeline-body"><p>Still an issue when ruff is installed by a system package manager into <code>/usr/bin/ruff</code> but the <code>__main__.py</code> looks only into <code>/usr/local/bin/</code> (through sysconfig.get_path(&quot;scripts&quot;))</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip compile` Does not retain PEP-508 environment markers in output - astral-sh/uv #1429</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip compile` Does not retain PEP-508 environment markers in output</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1429">#1429</a>
+        opened by <a href="https://github.com/CoolCat467">@CoolCat467</a>
+        on 2024-02-16 04:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CoolCat467">@CoolCat467</a> on 2024-02-16 04:52</div>
+            <div class="timeline-body"><p><code>uv pip compile</code> does not respect <a href="https://peps.python.org/pep-0508/#environment-markers">PEP-508 Environment Markers</a> (such as <code>; implementation_name ==</code>).</p>
+<pre><code class="language-console">&gt; uv --version
+uv 0.1.11
+</code></pre>
+<p>For example, we have <code>test-requirements.in</code>:</p>
+<pre><code>black; implementation_name == &quot;cpython&quot;
+</code></pre>
+<p>and running</p>
+<pre><code class="language-console">&gt; uv pip compile test-requirements.in -o test-requirements.txt
+</code></pre>
+<p>yields <code>black==24.2.0</code> instead of <code>black==24.2.0 ; implementation_name == &quot;cpython&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-trio/trio/pulls/2958.html">python-trio/trio#2958</a> on 2024-02-16 04:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-16 04:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-02-16 04:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 04:56</div>
+            <div class="timeline-body"><p>I'm surprised that <code>pip-compile</code> retains those markers, but seems like we should too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-02-16 11:04</div>
+            <div class="timeline-body"><p>If removing <code>; python_version</code> markers depending on the <code>--python-version</code> flag is intended, then maybe the same thing should happen here and you have a flag for specifying platform that makes use of those markers and can be used to generate multiple requirements.txt files depending on version+implementation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv pip compile` does not respect `; implementation_name ==` specifiers" to "`uv pip compile` Does Not Respect PEP-508 Environment Markers" by @CoolCat467 on 2024-02-27 00:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CoolCat467">@CoolCat467</a> on 2024-02-27 00:25</div>
+            <div class="timeline-body"><p>This is currently a blocker for https://github.com/python-trio/trio/pull/2958</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-27 00:57</div>
+            <div class="timeline-body"><p>I'm open to including them but I don't know that it's a &quot;correct&quot; requirement. E.g., in the Trio example, it's not really &quot;safe&quot; to install from that file with a non-CPython implementation, because it could be <em>missing</em> dependencies that are required for PyPy or any other implementation. The locked requirements are only guaranteed to be correct on the same Python platform as that which generated the lock file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/A5rocks">@A5rocks</a> on 2024-02-27 01:33</div>
+            <div class="timeline-body"><p>I don't think the markers are propagated either, though I haven't checked against pip-compile. We use <code>pip install -r &lt;locked file&gt;</code> so missing dependencies are fine (we don't have hashes because requirement files vary per platform, and since lockfiles are more anti-bitrot than for security).</p>
+<p>I think that copying over the marker to the output, even if not necessarily &quot;correct,&quot; is a step forward towards platform independent lockfiles. (is there an issue for that? I know there's a section in the readme)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-27 01:45</div>
+            <div class="timeline-body"><p>@A5rocks - There's a standardized proposal for multi-platform (but not platform-independent) installer files (to replace <code>requirements.txt</code> for this purpose), we've been participating in the discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv pip compile` Does Not Respect PEP-508 Environment Markers" to "`uv pip compile` Does not retain PEP-508 environment markers in output" by @charliermarsh on 2024-03-07 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2349.html">astral-sh/uv#2349</a> on 2024-03-11 02:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sondr3">@sondr3</a> on 2024-03-20 09:33</div>
+            <div class="timeline-body"><p>Could markers like <code>platform_system</code> be included at the very least in the beginning? We keep running into issues where developers are updating dependencies on their Windows machines that crash in CI when using <code>uv</code> that works with <code>pip-compile</code>. We've need to add <code>pywin32==306 ; platform_system=='Windows'</code> to our <code>pyproject.toml</code>	(using <code>rye</code>) which works with <code>pip-compile</code> but not <code>uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Franky1">@Franky1</a> on 2024-03-23 20:35</div>
+            <div class="timeline-body"><p>I have this in my <code>requirements.txt</code> file</p>
+<pre><code class="language-txt">my-lib@https://github.com/path-to-my-lib-wheel.whl; platform_system==&quot;Windows&quot; and python_version==&quot;3.10&quot;
+</code></pre>
+<p>and <code>uv pip install --upgrade --requirement requirements.txt</code> fails with</p>
+<pre><code class="language-log">error: Couldn't parse requirement in `requirements.txt` at position 180
+  Caused by: Missing space before ';', the end of the URL is ambiguous
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-23 21:26</div>
+            <div class="timeline-body"><p>The grammar is technically ambiguous for some URLs so we require a space before the <code>;</code> when it follows a URL. pip also accepts this (though does not always require it). So in this case:</p>
+<pre><code>my-lib@https://github.com/path-to-my-lib-wheel.whl ; platform_system==&quot;Windows&quot; and python_version==&quot;3.10&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Franky1">@Franky1</a> on 2024-03-23 21:38</div>
+            <div class="timeline-body"><blockquote>
+<p>so we require a space before the <code>;</code> when it follows a URL</p>
+</blockquote>
+<p>Thanks for the quick reply, that was indeed the solution, tried it and it works now :heart:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2679.html">astral-sh/uv#2679</a> on 2024-04-21 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adminy">@adminy</a> on 2024-06-05 12:13</div>
+            <div class="timeline-body"><p>Also pip-compile does not support the <code>--trusted-host</code> argument or the <code>--config=pyproject.toml</code> argument.</p>
+<p>When you run pip compile it does not put <code>--index-url</code> or <code>--trusted-host</code> in its output, generating the requirements.txt without indication of the source.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4231.html">astral-sh/uv#4231</a> on 2024-06-11 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4503.html">astral-sh/uv#4503</a> on 2024-06-25 01:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-25 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-25 20:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

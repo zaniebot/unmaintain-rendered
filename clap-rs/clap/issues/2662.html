@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argument that requires command it is defined in is pointless (causes internal error) - clap-rs/clap #2662</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Argument that requires command it is defined in is pointless (causes internal error)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2662">#2662</a>
+        opened by <a href="https://github.com/LizardWizzard">@LizardWizzard</a>
+        on 2021-08-03 11:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LizardWizzard">@LizardWizzard</a> on 2021-08-03 11:16</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.53.0 (53cb7b09b 2021-06-17)</p>
+<h3>Clap Version</h3>
+<p>2.33.3</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{App, AppSettings, Arg, SubCommand};
+
+fn main() {
+    let matches = App::new(&quot;My CLI&quot;)
+        .setting(AppSettings::ArgRequiredElseHelp)
+        .subcommand(
+            SubCommand::with_name(&quot;init&quot;)
+                .about(&quot;Init&quot;)
+                .arg(
+                    Arg::with_name(&quot;enable-foo&quot;)
+                        .long(&quot;enable-foo&quot;)
+                        .takes_value(false)
+                        .help(&quot;Enable foo&quot;)
+                        .requires(&quot;init&quot;), // is obviously incorrect
+                ),
+        ).get_matches();
+    dbg!(matches);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run --example clap_bug -- init --enable-foo</p>
+<h3>Actual Behaviour</h3>
+<pre><code>thread 'main' panicked at 'Fatal internal error. Please consider filing a bug report at https://github.com/clap-rs/clap/issues', /Users/dmitry/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/usage.rs:475:22
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/53cb7b09b00cbea8754ffb78e7e3cb521cb8af4b/library/std/src/panicking.rs:493:5
+   1: core::panicking::panic_fmt
+             at /rustc/53cb7b09b00cbea8754ffb78e7e3cb521cb8af4b/library/core/src/panicking.rs:92:14
+   2: core::option::expect_failed
+             at /rustc/53cb7b09b00cbea8754ffb78e7e3cb521cb8af4b/library/core/src/option.rs:1241:5
+   3: core::option::Option&lt;T&gt;::expect
+             at /Users/dmitry/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/library/core/src/option.rs:349:21
+   4: clap::app::usage::get_required_usage_from::{{closure}}
+             at /Users/dmitry/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/usage.rs:473:17
+   5: core::option::Option&lt;T&gt;::unwrap_or_else
+             at /Users/dmitry/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/library/core/src/option.rs:427:21
+   6: clap::app::usage::get_required_usage_from
+             at /Users/dmitry/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/usage.rs:470:19
+   7: clap::app::validator::Validator::missing_required_error
+             at /Users/dmitry/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/validator.rs:561:13
+   8: clap::app::validator::Validator::validate_arg_requires
+             at /Users/dmitry/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/validator.rs:445:28
+   9: clap::app::validator::Validator::validate_matched_args
+             at /Users/dmitry/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/validator.rs:296:17
+  10: clap::app::validator::Validator::validate
+             at /Users/dmitry/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/validator.rs:80:9
+  11: clap::app::parser::Parser::get_matches_with
+             at /Users/dmitry/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/parser.rs:1249:9
+  12: clap::app::parser::Parser::parse_subcommand
+             at /Users/dmitry/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/parser.rs:1382:13
+  13: clap::app::parser::Parser::get_matches_with
+             at /Users/dmitry/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/parser.rs:1215:17
+  14: clap::app::App::get_matches_from_safe_borrow
+             at /Users/dmitry/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/mod.rs:1639:25
+  15: clap::app::App::get_matches_from
+             at /Users/dmitry/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/mod.rs:1519:9
+  16: clap::app::App::get_matches
+             at /Users/dmitry/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/mod.rs:1460:9
+  17: clap_bug::main
+             at ./examples/clap_bug.rs:4:19
+  18: core::ops::function::FnOnce::call_once
+             at /Users/dmitry/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/library/core/src/ops/function.rs:227:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>I would expect an error message that points out that argument that requires command it is defined in is pointless</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code>DEBUG:clap:Parser::add_subcommand: term_w=None, name=init
+DEBUG:clap:Parser::propagate_settings: self=My CLI, g_settings=AppFlags(
+    (empty),
+)
+DEBUG:clap:Parser::propagate_settings: sc=init, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO,
+), g_settings=AppFlags(
+    (empty),
+)
+DEBUG:clap:Parser::propagate_settings: self=init, g_settings=AppFlags(
+    (empty),
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::create_help_and_version: Building help
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;init&quot;' ([105, 110, 105, 116])
+DEBUG:clap:Parser::is_new_arg:&quot;init&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;init&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=true, sc=Some(&quot;init&quot;)
+DEBUG:clap:Parser::parse_subcommand;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:Parser::parse_subcommand: About to parse sc=init
+DEBUG:clap:Parser::parse_subcommand: sc settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO,
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;--enable-foo&quot;' ([45, 45, 101, 110, 97, 98, 108, 101, 45, 102, 111, 111])
+DEBUG:clap:Parser::is_new_arg:&quot;--enable-foo&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: -- found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;--enable-foo&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::parse_long_arg;
+DEBUG:clap:Parser::parse_long_arg: Does it contain '='...No
+DEBUG:clap:Parser::parse_long_arg: Found valid flag '--enable-foo'
+DEBUG:clap:Parser::check_for_help_and_version_str;
+DEBUG:clap:Parser::check_for_help_and_version_str: Checking if --enable-foo is help or version...Neither
+DEBUG:clap:Parser::parse_flag;
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=enable-foo
+DEBUG:clap:ArgMatcher::inc_occurrence_of: first instance
+DEBUG:clap:Parser::groups_for_arg: name=enable-foo
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Parser:get_matches_with: After parse_long_arg Flag
+DEBUG:clap:ArgMatcher::process_arg_overrides:Some(&quot;enable-foo&quot;);
+DEBUG:clap:Parser::remove_overrides:[];
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Parser::add_defaults;
+DEBUG:clap:Validator::validate_blacklist;
+DEBUG:clap:Validator::validate_blacklist:iter:enable-foo;
+DEBUG:clap:Parser::groups_for_arg: name=enable-foo
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Validator::validate_required: required=[];
+DEBUG:clap:Validator::validate_matched_args;
+DEBUG:clap:Validator::validate_matched_args:iter:enable-foo: vals=[]
+DEBUG:clap:Validator::validate_arg_requires:enable-foo;
+DEBUG:clap:Validator::missing_required_error: extra=Some(&quot;init&quot;)
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Validator::missing_required_error: reqs=[
+    &quot;init&quot;,
+]
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;init&quot;], extra=Some(&quot;init&quot;)
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[&quot;init&quot;]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;init&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::get_required_usage_from:iter:init:
+thread 'main' panicked at 'Fatal internal error. Please consider filing a bug report at https://github.com/clap-rs/clap/issues', /Users/dmitry/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/usage.rs:475:22
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @LizardWizzard on 2021-08-03 11:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-03 11:17</div>
+            <div class="timeline-body"><p>Fixed in master</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-08-03 11:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

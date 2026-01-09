@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panic when `requires-python` is missing from JSON responses - astral-sh/uv #707</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Panic when `requires-python` is missing from JSON responses</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/707">#707</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-12-19 18:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-19 18:52</div>
+            <div class="timeline-body"><pre><code>error: Received some unexpected JSON from http://localhost:3141/root/pypi/+simple/markupsafe/?format=application/vnd.pypi.simple.v1+json
+  Caused by: missing field `requires-python` at line 1 column 271
+</code></pre>
+<p>Some versions include it while others do not, see this truncated response</p>
+<pre><code>curl -H 'Accept: application/vnd.pypi.simple.v1+json' 'http://localhost:3141/root/pypi/+simple/markupsafe/?format=application/vnd.pypi.simple.v1+json' | jq
+</code></pre>
+<pre><code>{
+  &quot;meta&quot;: {
+    &quot;api-version&quot;: &quot;1.0&quot;
+  },
+  &quot;name&quot;: &quot;markupsafe&quot;,
+  &quot;files&quot;: [
+    {
+      &quot;filename&quot;: &quot;MarkupSafe-0.9.tar.gz&quot;,
+      &quot;url&quot;: &quot;http://localhost:3141/root/pypi/+f/9d8/4526bcfb6435d/MarkupSafe-0.9.tar.gz&quot;,
+      &quot;hashes&quot;: {
+        &quot;sha256&quot;: &quot;9d84526bcfb6435d30cdb3531e3c43170d77107531a6d695c12a9c126ac09766&quot;
+      }
+    },
+    {
+      &quot;filename&quot;: &quot;MarkupSafe-1.1.0-cp27-cp27m-macosx_10_6_intel.whl&quot;,
+      &quot;url&quot;: &quot;http://localhost:3141/root/pypi/+f/efd/c45ef1afc238d/MarkupSafe-1.1.0-cp27-cp27m-macosx_10_6_intel.whl&quot;,
+      &quot;hashes&quot;: {
+        &quot;sha256&quot;: &quot;efdc45ef1afc238db84cb4963aa689c0408912a0239b0721cb172b4016eb31d6&quot;
+      },
+      &quot;requires-python&quot;: &quot;&gt;=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*&quot;
+    }
+  ]
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-19 18:55</div>
+            <div class="timeline-body"><p>Seems like <code>serde</code> should not be doing this by default https://github.com/serde-rs/serde/issues/2214</p>
+<p>Perhaps it's our custom deserializer</p>
+<p>https://github.com/astral-sh/puffin/blob/12eedb1c12acd3e1ea51cd71aaa7cca12b1d70ac/crates/pypi-types/src/simple_json.rs#L26</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-19 18:58</div>
+            <div class="timeline-body"><p>Can confirm this works with our custom deserializer disabled</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/708.html">astral-sh/uv#708</a> on 2023-12-19 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-19 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-12-20 10:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

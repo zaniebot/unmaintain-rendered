@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>new rule - detect uv dev dependencies being used in production code - astral-sh/ruff #6971</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>new rule - detect uv dev dependencies being used in production code</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6971">#6971</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2023-08-29 10:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-08-29 10:36</div>
+            <div class="timeline-body"><p>in my project, i was importing from dev dependencies in intended to be used by users of my module:</p>
+<pre><code class="language-py"># public_module.py
+from foo import bar
+</code></pre>
+<pre><code class="language-py"># pyproject.toml
+[tool.poetry.group.dev.dependencies]
+foo = &quot;^1.0.0&quot;
+</code></pre>
+<p>because of this, all my tests were passing because the dependency existed, but the moment a user tried to use it, it crashed because the module was not installed.</p>
+<p>it would be nice if ruff had a rule to detect this like <a href="https://github.com/import-js/eslint-plugin-import/blob/v2.27.5/docs/rules/no-extraneous-dependencies.md">this eslint plugin does</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2023-08-29 12:27</div>
+            <div class="timeline-body"><p>Not just dev, but any non-main group</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2023-08-29 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-08-30 00:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "new rule - detect poetry dev dependencies being used in production code" to "new rule - detect poetry/pdm dev dependencies being used in production code" by @DetachHead on 2023-10-01 08:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-10-01 08:24</div>
+            <div class="timeline-body"><p>also pdm dev dependencies:</p>
+<pre><code class="language-toml">[tool.pdm.dev-dependencies]
+lint = [&quot;foo&gt;=1.0.0&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/indigoviolet">@indigoviolet</a> on 2023-10-17 18:41</div>
+            <div class="timeline-body"><p>Same issue exists with rye:</p>
+<pre><code class="language-toml">[tool.rye]
+managed = true
+dev-dependencies = [
+    &quot;ipykernel&gt;=6.24.0&quot;,
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-17 20:36</div>
+            <div class="timeline-body"><p>I foresee the major issue here being that dependency names do not map one-to-one with imported module names. How can we know which maps to which statically?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-17 20:47</div>
+            <div class="timeline-body"><p>Unfortunately not possible to know that in advance (unless we hard-code a database of lookups) -- you need access to the built distribution or the virtual environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-09-30 03:54</div>
+            <div class="timeline-body"><p>@charliermarsh now that astral controls the entire stack, couldn't <code>uv</code> be used to resolve this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "new rule - detect poetry/pdm dev dependencies being used in production code" to "new rule - detect uv dev dependencies being used in production code" by @DetachHead on 2024-09-30 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/UnknownPlatypus">@UnknownPlatypus</a> on 2024-09-30 21:35</div>
+            <div class="timeline-body"><p>I believe https://github.com/fpgmaas/deptry does this and supports Uv, poetry, pip and pdm. (And btw, it's relying on ruff parser for the import detections)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-10-02 05:32</div>
+            <div class="timeline-body"><p>thanks, though it would be nice if this functionality was built into ruff, mainly for its language server so that the errors it reports can be visible in your IDE</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

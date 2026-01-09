@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple problems with ` uv`. Related to mounted disk? - astral-sh/uv #10272</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Multiple problems with ` uv`. Related to mounted disk?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10272">#10272</a>
+        opened by <a href="https://github.com/ego-thales">@ego-thales</a>
+        on 2025-01-02 14:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ego-thales">@ego-thales</a> on 2025-01-02 14:35</div>
+            <div class="timeline-body"><h2>Platform: Ubuntu 22.04
+uv version: 0.5.13</h2>
+<p>Hello!</p>
+<p>Not my first issue, but again, <strong>thanks for the amazing work</strong>!!
+I'm trying to use <code>uv</code>  for a work project without success so far -- no problem on home pc.</p>
+<h6>Problems encountered</h6>
+<ul>
+<li>I don't understand the inconsistency (says &quot;not installed&quot; but finds it later on)</li>
+</ul>
+<pre><code class="language-console">$ uv run mypy
+uvpyenv: version `3.13.1' is not installed (set by path/to/my/project/.python-version)
+$ uv python list
+cpython-3.13.1+freethreaded-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.13.1-linux-x86_64-gnu                 ~/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/bin/python3.13
+cpython-3.12.8-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.11.11-linux-x86_64-gnu                &lt;download available&gt;
+cpython-3.10.16-linux-x86_64-gnu                &lt;download available&gt;
+cpython-3.10.12-linux-x86_64-gnu                /usr/bin/python3.10
+cpython-3.10.12-linux-x86_64-gnu                /usr/bin/python3 -&gt; python3.10
+cpython-3.10.12-linux-x86_64-gnu                /bin/python3.10
+cpython-3.10.12-linux-x86_64-gnu                /bin/python3 -&gt; python3.10
+cpython-3.9.21-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.8.20-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.7.9-linux-x86_64-gnu                  &lt;download available&gt;
+pypy-3.10.14-linux-x86_64-gnu                   &lt;download available&gt;
+pypy-3.9.19-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.8.16-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.7.13-linux-x86_64-gnu                    &lt;download available&gt;
+$ uv run python
+Python 3.13.1 (main, Dec 19 2024, 14:32:25) [Clang 18.1.8 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; 
+</code></pre>
+<ul>
+<li><code>uv run pytest</code> runs for a while, no output, even with <code>-vv</code>. After a while, no report was generated so I don't think it silently worked, and the console juste goes back to normal as if nothing happened.</li>
+</ul>
+<pre><code class="language-console">$ uv run pytest
+$ 
+</code></pre>
+<ul>
+<li><code>uv build</code> runs &quot;forever&quot;, no output except this ont line</li>
+</ul>
+<pre><code class="language-bash">$ uv build
+Building source distribution...
+</code></pre>
+<h6>Worth mentioning</h6>
+<p>My project is located in a mounted disk (e.g. <code>~/mounted/myproject)</code>  which already encouraged me to use <code>--link-mode=symlink</code> in several places, mainly to <code>uv add</code>.</p>
+<p>Thank you in advance if you can or try to help!
+Cheers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ego-thales">@ego-thales</a> on 2025-01-02 14:38</div>
+            <div class="timeline-body"><p>Also, I have <code>pyenv</code> installed, I used it together with <code>poetry</code>  on previous projects, and I'd like to only use <code>uv</code>  from now  on but I need to keep <code>pyenv</code> for older ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ego-thales">@ego-thales</a> on 2025-01-02 14:54</div>
+            <div class="timeline-body"><p>Ok I got more info from <code>uv -v run pytest</code>.</p>
+<pre><code class="language-console">me@workstation:~/mounted/workspace/myproject$ uv -v run pytest
+DEBUG uv 0.5.13
+DEBUG Found project root: `~/mounted/workspace/myproject`
+DEBUG No workspace root found, using project root
+DEBUG Discovered project `myproject` at: ~/mounted/workspace/myproject
+DEBUG Reading Python requests from version file at `~/mounted/workspace/myproject/.python-version`
+DEBUG Using Python request `3.13.1` from version file at `.python-version`
+DEBUG The virtual environment's Python version satisfies `3.13.1`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: myproject @ file://~/mounted/workspace/myproject
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+
+[...]  # Checking requirements
+
+Audited 55 packages in 24ms
+DEBUG Using Python 3.13.1 interpreter at: ~/mounted/workspace/myproject/.venv/bin/python3
+DEBUG Running `pytest`
+DEBUG Command exited with signal: Some(7)
+</code></pre>
+<p>Regarding <code>uv -v build</code>, it's stuck at</p>
+<pre><code class="language-console">DEBUG Calling `hatchling.build.build_sdist(&quot;~/mounted/workspace/myprojectdist&quot;, {})`
+</code></pre>
+<p>Regarding <code>uv -v run mypy</code>, it indeed seems related to <code>pyenv</code>.</p>
+<pre><code class="language-console">DEBUG Using Python 3.13.1 interpreter at: ~/mounted/workspace/myproject/.venv/bin/python3
+DEBUG Running `mypy`
+pyenv: version `3.13.1' is not installed (set by ~/mounted/workspace/myproject/.python-version)
+DEBUG Command exited with code: 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-03 09:58</div>
+            <div class="timeline-body"><p>What is <code>~/mounted/workspace/myproject/.venv/bin/python3</code> pointing to, is the target of the symlink a &quot;real&quot; python or a pyenv shim? If it's the latter, recreating the venv with a python that's not a pyenv shim should help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-07 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ego-thales">@ego-thales</a> on 2025-01-13 13:01</div>
+            <div class="timeline-body"><p>Sorry for delayed response, holidays... :)</p>
+<blockquote>
+<p>What is ~/mounted/workspace/myproject/.venv/bin/python3 pointing to</p>
+</blockquote>
+<p>Pointing to <code>~/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/bin/python3.13</code> so it seems ok I think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-01-13 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-01-13 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-13 19:33</div>
+            <div class="timeline-body"><p>The <code>uv -v run mypy</code> output is odd, i don't understand how pyenv is getting involved here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ego-thales">@ego-thales</a> on 2025-01-15 10:06</div>
+            <div class="timeline-body"><p>This is exactly what was startling me... But I think ultimately it has to do with filesystem corruption on my side.</p>
+<p>I ended up creating a separate fresh new folder with uv init, and everything seems to work fine -- having set <code>UV_LINK_MODE</code> to <code>symlink</code> before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ego-thales on 2025-01-15 10:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`N999` (`invalid-module-name`) mixes correctness and stylistic recommendations - astral-sh/ruff #12475</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`N999` (`invalid-module-name`) mixes correctness and stylistic recommendations</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12475">#12475</a>
+        opened by <a href="https://github.com/edhinard">@edhinard</a>
+        on 2024-07-23 09:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/edhinard">@edhinard</a> on 2024-07-23 09:14</div>
+            <div class="timeline-body"><p>Not only does rule N999 check that the PEP8 convention is respected, but also checks that the module name is syntactically correct. The latter is not part of PEP8. This is a problem for me currently working on &quot;old non linted&quot; code. I have to ignore this rule because of some modules whose names are syntactically correct but sometimes with capital letters.
+I think a E rule is missing that would only include the syntax checking of N999. (If I were you I would also remove that part from N999 for consistency)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-23 12:17</div>
+            <div class="timeline-body"><p>It doesn't seem that Python requires all module names to be valid identifiers. Only modules that are imported from other modules. But I might be wrong here. Ruff should always report a syntax error if you try to import a module with an invalid identifier name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-23 12:43</div>
+            <div class="timeline-body"><p>I believe @edhinard is complaining about something like the following directory structure:</p>
+<ul>
+<li><code>foo/</code><ul>
+<li><code>foo/__init__.py</code> (empty file)</li>
+<li><code>foo/NotPep8Compliant.py</code></li>
+<li><code>foo/not-an-identifier.py</code></li>
+</ul>
+</li>
+</ul>
+<p>They'd like a rule that complains about the naming of <code>foo/not-an-identifier.py</code>, as importing <code>foo.not-an-identifier</code> at runtime will fail. But they can't use our <a href="https://docs.astral.sh/ruff/rules/invalid-module-name/"><code>N999</code></a> rule (<code>invalid-module-name</code>) to flag this, because that would also flag <code>foo/NotPep8Compliant.py</code>). None of the other submodules in the <code>foo</code> package ever try to import <code>not-an-identifier</code> -- it's just exposed as a public submodule of the <code>foo</code> package -- so the bad name of the submodule also isn't caught by any of our rules that flag <code>SyntaxError</code>s.</p>
+<p>So I think the argument is that N999 should be split into two rules: one that flags invalid module names, and one that flags module names that are valid, but not PEP8-compliant. This seems like a reasonable argument to me, though it would mean we'd deviate from the behaviour of the original pep8-naming linter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "syntactic part of N999 in another E rule" to "`N999` (`invalid-module-name`) mixes correctness and stylistic recommendations" by @AlexWaygood on 2024-07-23 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-07-23 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edhinard">@edhinard</a> on 2024-07-23 12:48</div>
+            <div class="timeline-body"><p>You are right module names don't have to be valid identifiers:</p>
+<pre><code class="language-shell">$ touch 3.py
+$ python3 -c &quot;import importlib; print(importlib.import_module('3'))&quot;
+&lt;module '3' from '/tmp/3.py'&gt;
+</code></pre>
+<p>But it is not a good idea:</p>
+<pre><code class="language-shell">$ python3 -c &quot;import 3&quot;
+  File &quot;&lt;string&gt;&quot;, line 1
+    import 3
+           ^
+SyntaxError: invalid syntax
+</code></pre>
+<p>and ruff is here to help us avoid that.
+IMHO the problem with N999 is that it combine two checks: 1) the pep8 convention which we cannot always adhere to, 2) the &quot;dangerous permissiveness&quot; of non regular module names. It is important to have 2) - for example sub-directories may be implicitely imported by pytest.
+Probably a new &quot;E&quot; rule is not a good idea. But something not mixed with pep8 convention</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12407.html">astral-sh/ruff#12407</a> on 2024-07-23 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12535.html">astral-sh/ruff#12535</a> on 2024-07-30 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-01 21:26</div>
+            <div class="timeline-body"><p>@AlexWaygood would you support this check as a separate rule? @AlexElvers is interested in it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-01 21:32</div>
+            <div class="timeline-body"><blockquote>
+<p>@AlexWaygood would you support this check as a separate rule? @AlexElvers is interested in it.</p>
+</blockquote>
+<p>Are you asking if I'd support splitting the existing check up (as the OP in this issue is requesting) or if I'd support adding an additional, more opinionated rule that also checked N999-type things for files that are not part of packages (as was proposed in https://github.com/astral-sh/ruff/pull/12535)?</p>
+<p>For the first question: yes, definitely. For the second question: I think it could be a useful rule for some users, but I think it would probably be too opinionated for us to add now until we've done rule recategorisation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-01 21:34</div>
+            <div class="timeline-body"><p>Oh, I thought it's both the same. Thanks for explaining and makes sense to me</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

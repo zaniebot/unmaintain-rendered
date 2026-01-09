@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unable to pull package from private artifactory registry - astral-sh/uv #8448</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>unable to pull package from private artifactory registry</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/8448">#8448</a>
+        opened by <a href="https://github.com/danieleades">@danieleades</a>
+        on 2024-10-22 12:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danieleades">@danieleades</a> on 2024-10-22 12:46</div>
+            <div class="timeline-body"><p>see discussion here - https://github.com/astral-sh/uv/pull/7481#issuecomment-2428423927</p>
+<blockquote>
+<p>You can use an API key in the PASSWORD variable — it works for anything that supports HTTP Basic Authentication.</p>
+</blockquote>
+<p>thanks for the support!</p>
+<p>i'm trying this now and seeing issues. For context, i have a project which has one dependency from a private artifactory registry.</p>
+<p>with or without credentials exported to the environment i see the following output:</p>
+<pre><code>uv sync
+  × No solution found when resolving dependencies:
+  ╰─▶ Because my-private-package was not found in the package registry and your project depends on my-private-package&gt;=2.0.0,&lt;2.1.dev0, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: my-private-package was requested with a pre-release marker (e.g., sb-qag-sphinx&gt;=2.0.0,&lt;2.1.dev0), but pre-releases weren't enabled (try: `--prerelease=allow`)
+</code></pre>
+<p>the dependencies are specified as follows:</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;my-private-package~=2.0.0&quot;,
+    # ...
+]
+
+[tool.uv.sources]
+my-private-package = {index = &quot;mycompany-py-release&quot;}
+
+[[tool.uv.index]]
+name = &quot;artifactory-pypi&quot;
+url = &quot;https://artifactory.mycompany.com/artifactory/api/pypi/pypi/simple&quot;
+default = true
+
+[[tool.uv.index]]
+# Requires:
+name = &quot;mycompany-py-release&quot;
+url = &quot;https://artifactory.mycompany.com/artifactory/api/pypi/my-private-package/simple&quot;
+explicit = true
+</code></pre>
+<p>with</p>
+<pre><code class="language-sh">export UV_INDEX_MYCOMPANY_PY_RELEASE_USERNAME={username}
+export UV_INDEX_MYCOMPANY_PY_RELEASE_PASSWORD={artifactory token}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 13:03</div>
+            <div class="timeline-body"><p>Can you try using a name without dashes in it? We might not be normalizing those correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-22 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-22 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8452.html">astral-sh/uv#8452</a> on 2024-10-22 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danieleades">@danieleades</a> on 2024-10-22 13:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you try using a name without dashes in it? We might not be normalizing those correctly.</p>
+</blockquote>
+<p>I wondered about that. There's no documentation on how the normalisation behaves.</p>
+<p>Unfortunately all the registries I can access easily for testing have dashes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-22 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-22 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 13:38</div>
+            <div class="timeline-body"><p>It's fixed in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danieleades">@danieleades</a> on 2024-10-22 13:42</div>
+            <div class="timeline-body"><blockquote>
+<p>It's fixed in the next release.</p>
+</blockquote>
+<p>Outstanding.</p>
+<p>Will the normalisation behaviour be described in the docs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 13:44</div>
+            <div class="timeline-body"><p>Yeah, but for reference, we uppercase the index name and replace any non-alphanumeric characters with underscores.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7963.html">astral-sh/uv#7963</a> on 2024-10-23 06:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

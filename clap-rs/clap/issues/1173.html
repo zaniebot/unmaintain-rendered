@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing YAML for Arg::last - clap-rs/clap #1173</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Missing YAML for Arg::last</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1173">#1173</a>
+        opened by <a href="https://github.com/AndrewGaspar">@AndrewGaspar</a>
+        on 2018-02-11 19:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AndrewGaspar">@AndrewGaspar</a> on 2018-02-11 19:10</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p><code>rustc 1.23.0 (766bd11c8 2018-01-01)</code></p>
+<h3>Affected Version of clap</h3>
+<pre><code>andre@ANDREW-DESKTOP:/mnt/c/Users/andre/Projects/cargo-mpirun$ grep clap Cargo.lock
+ &quot;clap 2.29.4 (registry+https://github.com/rust-lang/crates.io-index)&quot;,
+name = &quot;clap&quot;
+&quot;checksum clap 2.29.4 (registry+https://github.com/rust-lang/crates.io-index)&quot; = &quot;7b8f59bcebcfe4269b09f71dab0da15b355c75916a8f975d3876ce81561893ee&quot;
+</code></pre>
+<h3>Expected Behavior Summary</h3>
+<p>The YAML should allow you to specify an arg with <code>last: true</code>, marking it as the <code>last</code> argument</p>
+<h3>Actual Behavior Summary</h3>
+<p>YAML fails to parse with this error:</p>
+<pre><code>thread 'main' panicked at 'Unknown Arg setting 'last' in YAML file for arg 'args'', /home/andre/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.29.4/src/args/arg.rs:147:21note: Run with `RUST_BACKTRACE=1` for a backtrace.
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<p>Create a new clap App from a YAML file.</p>
+<p>Example:</p>
+<p>cli.yml</p>
+<pre><code class="language-yaml">name: example
+version: &quot;0.1&quot;
+author: Foo B. &lt;foo@bar.com&gt;
+about: Fails to compile YAML
+args:
+    - args:
+        last: true
+        multiple: true
+        allow_hyphen_values: true
+</code></pre>
+<p>main.rs</p>
+<pre><code class="language-rust">#[macro_use]
+extern crate clap;
+use clap::App;
+
+fn main() {
+    let cli = load_yaml!(&quot;cli.yml&quot;);
+    let _matches = App::from_yaml(cli).get_matches();
+}
+</code></pre>
+<h3>Debug output</h3>
+<pre><code>andre@ANDREW-DESKTOP:/mnt/c/Users/andre/Projects/cargo-mpirun$ cargo run -- --help
+   Compiling clap v2.29.4
+   Compiling cargo-mpirun v0.1.0 (file:///mnt/c/Users/andre/Projects/cargo-mpirun)
+    Finished dev [unoptimized + debuginfo] target(s) in 10.57 secs
+     Running `target/debug/cargo-mpirun --help`
+thread 'main' panicked at 'Unknown Arg setting 'last' in YAML file for arg 'args'', /home/andre/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.29.4/src/args/arg.rs:147:21
+note: Run with `RUST_BACKTRACE=1` for a backtrace.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-11 19:19</div>
+            <div class="timeline-body"><p>Ah, thanks! I'm not at a computer right now, but this will be a quick fix once I can get to one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1175.html">clap-rs/clap#1175</a> on 2018-02-12 05:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-02-12 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndrewGaspar">@AndrewGaspar</a> on 2018-02-12 19:16</div>
+            <div class="timeline-body"><p>@kbknapp Will this fix go into v2.*?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-12 19:54</div>
+            <div class="timeline-body"><p>Yes, I'll put out v2.29.5 shortly which will include it 😉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndrewGaspar">@AndrewGaspar</a> on 2018-02-12 20:07</div>
+            <div class="timeline-body"><p>Awesome, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-13 18:09</div>
+            <div class="timeline-body"><p>@AndrewGaspar this fix was published under v2.30.0 which is on crates.io now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndrewGaspar">@AndrewGaspar</a> on 2018-02-13 18:25</div>
+            <div class="timeline-body"><p>Excellent, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../AndrewGaspar/cargo-mpirun/issues/1.html">AndrewGaspar/cargo-mpirun#1</a> on 2018-02-13 18:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic completion for powershell repeats last word when completing next argument - clap-rs/clap #6010</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Dynamic completion for powershell repeats last word when completing next argument</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/6010">#6010</a>
+        opened by <a href="https://github.com/jakobhellermann">@jakobhellermann</a>
+        on 2025-05-22 20:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jakobhellermann">@jakobhellermann</a> on 2025-05-22 20:00</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.88.0-nightly (27d6200a7 2025-05-06)</p>
+<h3>Clap Version</h3>
+<p>4.5.38</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{CommandFactory as _, Parser};
+
+#[derive(Parser, Debug)]
+#[command(version, name = &quot;demo&quot;)]
+struct Args {}
+
+fn main() {
+    clap_complete::env::CompleteEnv::with_factory(Args::command).complete();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo install --path . --example demo
+Invoke-Expression (&amp; { (env COMPLETE=powershell C:/Users/user/.cargo/bin/demo | Out-String) })
+
+demo --help &lt;TAB&gt;
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>demo --help --help
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>demo --help --
+</code></pre>
+<h3>Additional Context</h3>
+<p>This is because the powershell <code>EnvCompleter</code> determines the argument index based on the parsed args vec, which does not contain an empty element at the end:
+https://github.com/clap-rs/clap/blob/e2188d9af318f3287c1c5a52cba6b9dfebe7bb75/clap_complete/src/env/shells.rs#L322</p>
+<p><code>Register-ArgumentCompleter</code> comes with <code>$cursorPosition</code>, but that gives you the actual column index in the command, which you can't trivially turn into an argument index.</p>
+<h2>Possible Solutions</h2>
+<ol>
+<li>in the powershell glue code, select the correct word index based on <code>$commandAst.ToString()</code> and <code>$cursorPosition</code> and pass that via <code>_CLAP_COMPLETE_INDEX</code></li>
+<li>pass the raw <code>$commandAst.ToString()</code> and <code>$cursorPosition</code> to the binary and determine the argument index there</li>
+<li>If we're at the end of the text, pass an extra empty argument to the binary: <code>&amp; {completer} -- $commandAst ''</code>. That way it computes the argument index correctly.</li>
+</ol>
+<p>Or maybe something I've missed.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @jakobhellermann on 2025-05-22 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2025-05-22 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2025-05-22 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6166.html">clap-rs/clap#6166</a> on 2025-10-29 22:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-10-29 22:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

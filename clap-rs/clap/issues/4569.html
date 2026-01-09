@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Required field inside a struct that conflicts with another arg is still demanded  - clap-rs/clap #4569</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Required field inside a struct that conflicts with another arg is still demanded </h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4569">#4569</a>
+        opened by <a href="https://github.com/nyurik">@nyurik</a>
+        on 2022-12-22 04:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nyurik">@nyurik</a> on 2022-12-22 04:01</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.66.0 (69f9c33d7 2022-12-12)</p>
+<h3>Clap Version</h3>
+<p>4.0.30</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use std::path::PathBuf;
+use clap::Parser;
+
+#[derive(Parser, Debug, PartialEq, Default)]
+#[command(about, version)]
+pub struct Args {
+    #[arg(short, long, conflicts_with = &quot;ExplicitConfig&quot;)]
+    config: Option&lt;PathBuf&gt;,
+    #[command(flatten)]
+    explicit: Option&lt;ExplicitConfig&gt;,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Default)]
+#[command(about, version)]
+pub struct ExplicitConfig {
+    #[arg(required = true)]
+    connection: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let args = Args::parse_from([&quot;main&quot;, &quot;--config&quot;, &quot;foo.toml&quot;]);
+    let expected = Args {
+        config: Some(PathBuf::from(&quot;foo.toml&quot;)),
+        ..Default::default()
+    };
+    assert_eq!(args, expected);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>run it</p>
+<h3>Actual Behaviour</h3>
+<pre><code>error: The following required arguments were not provided:
+  &lt;CONNECTION&gt;...
+
+Usage: main --config &lt;CONFIG&gt; &lt;CONNECTION&gt;...
+
+For more information try '--help'
+
+Process finished with exit code 2
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>should pass</p>
+<h3>Additional Context</h3>
+<p>Filing per @epage suggestion in a <a href="https://github.com/clap-rs/clap/discussions/4562#discussioncomment-4453976">discussion</a>.</p>
+<h3>Debug Output</h3>
+<pre><code>/home/nyurik/.cargo/bin/cargo run --color=always --package tmp --bin tmp
+    Finished dev [unoptimized + debuginfo] target(s) in 0.03s
+     Running `target/debug/tmp`
+[      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name=&quot;tmp&quot;
+[      clap::builder::command] 	Command::_propagate:tmp
+[      clap::builder::command] 	Command::_check_help_and_version:tmp expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --version
+[      clap::builder::command] 	Command::_propagate_global_args:tmp
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:config
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:connection
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:version
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--config&quot;)' ([45, 45, 99, 111, 110, 102, 105, 103])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok(&quot;--config&quot;)
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::parse_long_arg
+[        clap::parser::parser] 	Parser::parse_long_arg: Does it contain '='...
+[        clap::parser::parser] 	Parser::parse_long_arg: Found valid arg or flag '--config &lt;CONFIG&gt;'
+[        clap::parser::parser] 	Parser::parse_long_arg(&quot;config&quot;): Found an arg with value 'None'
+[        clap::parser::parser] 	Parser::parse_opt_value; arg=config, val=None, has_eq=false
+[        clap::parser::parser] 	Parser::parse_opt_value; arg.settings=ArgFlags(NO_OP)
+[        clap::parser::parser] 	Parser::parse_opt_value; Checking for val...
+[        clap::parser::parser] 	Parser::parse_opt_value: More arg vals required...
+[        clap::parser::parser] 	Parser::get_matches_with: After parse_long_arg Opt(&quot;config&quot;)
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;foo.toml&quot;)' ([102, 111, 111, 46, 116, 111, 109, 108])
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=config, pending=1
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1, actual=1
+[        clap::parser::parser] 	Parser::resolve_pending: id=&quot;config&quot;
+[        clap::parser::parser] 	Parser::react action=Set, identifier=Some(Long), source=CommandLine
+[        clap::parser::parser] 	Parser::react: cur_idx:=1
+[        clap::parser::parser] 	Parser::remove_overrides: id=&quot;config&quot;
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;config&quot;, source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;config&quot;
+[        clap::parser::parser] 	Parser::push_arg_values: [&quot;foo.toml&quot;]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=2
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=config, pending=0
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1, actual=0
+[        clap::parser::parser] 	Parser::react not enough values passed in, leaving it to the validator to complain
+[        clap::parser::parser] 	Parser::add_defaults
+[        clap::parser::parser] 	Parser::add_defaults:iter:config:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:config: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:connection:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:connection: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:help:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:version:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:version: doesn't have default vals
+[     clap::parser::validator] 	Validator::validate
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id=&quot;config&quot;
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg=&quot;config&quot;
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_required: required=ChildGraph([Child { id: &quot;connection&quot;, children: [] }])
+[     clap::parser::validator] 	Validator::gather_requires
+[     clap::parser::validator] 	Validator::gather_requires:iter:&quot;config&quot;
+[     clap::parser::validator] 	Validator::validate_required: is_exclusive_present=false
+[     clap::parser::validator] 	Validator::validate_required:iter:aog=&quot;connection&quot;
+[     clap::parser::validator] 	Validator::validate_required:iter: This is an arg
+[     clap::parser::validator] 	Validator::is_missing_required_ok: connection
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg=&quot;connection&quot;
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;connection&quot;
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=&quot;connection&quot;, conflicts=[]
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;config&quot;
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=&quot;config&quot;, conflicts=[&quot;ExplicitConfig&quot;]
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_required:iter: Missing &quot;connection&quot;
+[     clap::parser::validator] 	Validator::missing_required_error; incl=[&quot;connection&quot;]
+[     clap::parser::validator] 	Validator::missing_required_error: reqs=ChildGraph([Child { id: &quot;connection&quot;, children: [] }])
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[&quot;connection&quot;], matcher=true, incl_last=true
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs=[&quot;connection&quot;]
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:&quot;connection&quot; arg is_present=false
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:&quot;connection&quot; arg is_present=false
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[StyledStr { pieces: [(Some(Placeholder), &quot;&lt;CONNECTION&gt;...&quot;)] }]
+[     clap::parser::validator] 	Validator::missing_required_error: req_args=[
+    &quot;&lt;CONNECTION&gt;...&quot;,
+]
+[         clap::output::usage] 	Usage::create_usage_with_title
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_smart_usage
+[         clap::output::usage] 	Usage::get_args: incls=[&quot;config&quot;, &quot;connection&quot;]
+[         clap::output::usage] 	Usage::get_args: unrolled_reqs=[&quot;connection&quot;]
+[         clap::output::usage] 	Usage::get_args: ret_val=[StyledStr { pieces: [(Some(Literal), &quot;--&quot;), (Some(Literal), &quot;config&quot;), (Some(Placeholder), &quot; &quot;), (Some(Placeholder), &quot;&lt;CONFIG&gt;&quot;)] }, StyledStr { pieces: [(Some(Placeholder), &quot;&lt;CONNECTION&gt;...&quot;)] }]
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+error: The following required arguments were not provided:
+  &lt;CONNECTION&gt;...
+
+Usage: main --config &lt;CONFIG&gt; &lt;CONNECTION&gt;...
+
+For more information try '--help'
+
+Process finished with exit code 2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @nyurik on 2022-12-22 04:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2022-12-22 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-validators</span> added by @epage on 2022-12-22 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-12-22 15:07</div>
+            <div class="timeline-body"><p>If we supported <code>#[group)]</code> attribute (#3165), a workaround would be to do <code>#[group(conflicts_with = &quot;config&quot;)]</code>.  Instead, the workaround would be to define your own group like <code>#[command(group = ArgGroup::new(&quot;non-config&quot;).arg(&quot;connection&quot;).conflicts_with(&quot;config&quot;))]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-12-22 15:13</div>
+            <div class="timeline-body"><p>When we normally process conflicts, the &quot;ExplicitConfig&quot; will be present and it works (e.g. if you run <code>cargo run -- connection</code>).</p>
+<p>The problem is when we use conflicts for detection when a missing required is ok.  We check &quot;connection&quot;s conflicts are not present and &quot;config&quot;s conflicts are not present.  In this case that is &quot;ExplicitConfig&quot; which won't be present.  We also need to check the group.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4573.html">clap-rs/clap#4573</a> on 2022-12-22 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-12-22 19:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

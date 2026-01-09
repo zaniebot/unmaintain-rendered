@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: Attribute and call chains &quot;fluent interface&quot; - astral-sh/ruff #5343</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: Attribute and call chains &quot;fluent interface&quot;</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5343">#5343</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-06-23 16:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2023-06-23 16:52</div>
+            <div class="timeline-body"><p>Black supports attribute access and call chaining to provide good formatting for <a href="https://en.wikipedia.org/wiki/Fluent_interface">fluent interface</a> style programming with extensive method chaining which is common e.g. with django (https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#call-chains):</p>
+<pre><code class="language-python">def example(session):
+    result = (
+        session.query(models.Customer.id)
+        .filter(
+            models.Customer.account_id == account_id,
+            models.Customer.email == email_address,
+        )
+        .order_by(models.Customer.id.asc())
+        .all()
+    )
+</code></pre>
+<p>https://github.com/astral-sh/ruff/pull/5340 implements a part of this badly to fix a bug and https://github.com/astral-sh/ruff/pull/5341 adds basic function call formatting.</p>
+<p>We need to implement a formatting where the outermost call adds the optional parentheses and formats all inner accesses and calls to not have them add parentheses. A complication is that unlike for if-statements the tree is left recursive, meaning that for <code>a.b().c.d.e</code> the outermost call see an access of <code>e</code> on <code>a.b().c.d</code>, while we must format first <code>a</code>, then <code>.b()</code>, <code>.d</code> and finally <code>.e</code>. We can implement by either collecting into a stack (needs allocation) or using recursing (we most not overrun the recursion and stack limits).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @konstin on 2023-06-23 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2023-06-23 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-06-23 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4798.html">astral-sh/ruff#4798</a> on 2023-06-23 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5708.html">astral-sh/ruff#5708</a> on 2023-07-12 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6069.html">astral-sh/ruff#6069</a> on 2023-07-25 11:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6151.html">astral-sh/ruff#6151</a> on 2023-07-30 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Alpha" by @MichaReiser on 2023-07-31 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6203.html">astral-sh/ruff#6203</a> on 2023-07-31 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-08-04 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7050.html">astral-sh/ruff#7050</a> on 2023-09-01 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7051.html">astral-sh/ruff#7051</a> on 2023-09-01 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olejorgenb">@olejorgenb</a> on 2024-03-08 10:54</div>
+            <div class="timeline-body"><p>Probably wrong place to comment on this, but I don't think black's approach here is sufficient. It only work when the chain is very long, and for fluent definitions you usually want one call per line regardless of the number of calls...</p>
+<p>Personally I think a OK compromise would be to use explicit parenthesis around a call-chain as a marker that it should be formatted with one line per call?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-08 11:42</div>
+            <div class="timeline-body"><p>Hi @olejorgenb There's an ongoing discussion about this in https://github.com/astral-sh/ruff/issues/8598</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

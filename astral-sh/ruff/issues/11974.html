@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>flag `print` in `assert` message - astral-sh/ruff #11974</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>flag `print` in `assert` message</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11974">#11974</a>
+        opened by <a href="https://github.com/janosh">@janosh</a>
+        on 2024-06-21 18:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/janosh">@janosh</a> on 2024-06-21 18:21</div>
+            <div class="timeline-body"><p>i've come across code like this a few times, leading me to believe a lint rule to catch this makes sense</p>
+<pre><code class="language-py">assert 1 == 2, print(&quot;probably didn't mean to print this&quot;)
+&gt;&gt;&gt; AssertionError: None
+</code></pre>
+<p>the developer very likely wanted the <code>print</code> message to become the error message but of course the error message is <code>None</code> instead, <code>print</code>'s return value</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2024-06-21 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-21 18:51</div>
+            <div class="timeline-body"><p>I thought there was a rule for this but I don't see one. This makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/denwong47">@denwong47</a> on 2024-06-21 23:46</div>
+            <div class="timeline-body"><p>Seeing that this could be a fairly straight forward condition to check against, I would like to have a go at this as Ruff Rule 030.</p>
+<p>I wonder if we have to support all variations of <code>print</code> calls, such as:</p>
+<pre><code class="language-python">U00A0 = &quot;\u00a0&quot;
+assert False, print(&quot;Unreachable due to&quot;, condition, f&quot;, ask {maintainer} for advice&quot;, sep=U00A0)
+</code></pre>
+<p>I can potentially do a <code>FStringValue::concatenated</code> as:</p>
+<pre><code class="language-python">assert False, &quot;Unreachable due to&quot; f&quot;{U00A0}&quot; f&quot;{condition}&quot; f&quot;{U00A0}&quot; f&quot;, ask {maintainer} for advice&quot;
+</code></pre>
+<p>But honestly it does not make very readable code.</p>
+<p>Any advice would be welcomed.</p>
+<p><strong>EDIT</strong></p>
+<p>Looks like I can support the above case with just a <code>FStringValue::single</code>. I'll put up a PR tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-22 07:15</div>
+            <div class="timeline-body"><p>I wonder if it makes sense to phrase this rule more generally. Overall, it is probably incorrect if anything that returns <code>None</code> is passed as the assertion message. But implementing this would likely require type inference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/denwong47">@denwong47</a> on 2024-06-22 09:39</div>
+            <div class="timeline-body"><p>With type inference this rule could become a nice-to-have: since the return type of print already violates the type of the expression, the only thing that this rule will provide is a nicer error message instead of &quot;str is expected but found NoneType&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11981.html">astral-sh/ruff#11981</a> on 2024-06-22 12:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2024-06-23 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 17:30</div>
+            <div class="timeline-body"><p>Added by @denwong47 in https://github.com/astral-sh/ruff/pull/11981. Thank you, great contribution!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-23 17:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

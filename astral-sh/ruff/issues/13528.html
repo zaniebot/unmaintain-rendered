@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff analyze graph` does not understand submodule imports - astral-sh/ruff #13528</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff analyze graph` does not understand submodule imports</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13528">#13528</a>
+        opened by <a href="https://github.com/minmax">@minmax</a>
+        on 2024-09-26 15:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/minmax">@minmax</a> on 2024-09-26 15:02</div>
+            <div class="timeline-body"><p>ruff 0.6.8</p>
+<p>i see something like this:</p>
+<pre><code class="language-json">{
+&quot;src/view.py&quot;: [
+    &quot;src/models/User.py&quot;,
+  ],
+&quot;src/code.py&quot;: [
+    &quot;src/models/user.py&quot;,
+  ],
+}
+</code></pre>
+<p>content of <code>src/models/__init__.py</code>:</p>
+<pre><code class="language-python">from models.user import User
+
+__all__ = ['User']
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 15:13</div>
+            <div class="timeline-body"><p>Are you able to put together a minimal reproduction, like a set of files I can run <code>ruff</code> over to reproduce? Happy to help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-09-26 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/minmax">@minmax</a> on 2024-09-26 15:43</div>
+            <div class="timeline-body"><p>I was sure it wouldn't work, but fortunately it was easily reproduced.</p>
+<p><code>uvx ruff analyze graph .</code> on https://github.com/minmax/ruff-analyze-tree</p>
+<pre><code>  &quot;src/ruff_analyze_tree/colors.py&quot;: [
+    &quot;src/ruff_analyze_tree/models/User.py&quot;
+  ],
+  &quot;src/ruff_analyze_tree/models/__init__.py&quot;: [
+    &quot;src/ruff_analyze_tree/models/user.py&quot;
+  ],
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-26 15:58</div>
+            <div class="timeline-body"><p>Could you explain what result you would expect or why the actual result is incorrect?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/minmax">@minmax</a> on 2024-09-26 16:01</div>
+            <div class="timeline-body"><p>The repo don't contains <code>User.py</code>, only <code>user.py</code>, so &quot;src/ruff_analyze_tree/models/User.py&quot; - is invalid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Sometimes `ruff analyze graph` output dependencies in invalid case" to "Sometimes `ruff analyze graph` output dependencies in invalid upper/lower case" by @minmax on 2024-09-26 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 16:25</div>
+            <div class="timeline-body"><p>Maybe the resolver is case insensitive? I mean, that's arguably correct on case-insensitive filesystems which are common.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 16:25</div>
+            <div class="timeline-body"><p>I can look into it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-26 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/minmax">@minmax</a> on 2024-09-26 16:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe the resolver is case insensitive?</p>
+</blockquote>
+<p>no, im on mac (so case sensitive) and <code>user.py</code> was manually created 30 min ago.</p>
+<p>My guess is that it's a Camel case import broke something <code>from models.user import User</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 16:31</div>
+            <div class="timeline-body"><p>(Just to clarify, it may not matter what filesystem <em>you're</em> on.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/minmax">@minmax</a> on 2024-09-26 16:31</div>
+            <div class="timeline-body"><p>oh my god, &quot;By default, Mac OS uses a case-insensitive file system&quot;, im not sure now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 16:32</div>
+            <div class="timeline-body"><p>Let's proceed under the assumption that there's a bug here, I will debug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 17:02</div>
+            <div class="timeline-body"><p>I do think the issue here is that <code>ruff-analyze-tree/src/ruff_analyze_tree/models/User.py</code> exists from the perspective of the filesystem. \cc @AlexWaygood for insight on whether it's intended in the resolver.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-26 18:11</div>
+            <div class="timeline-body"><p>That makes sense. What's the reason for querying the module resolver with User instead of user?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 18:25</div>
+            <div class="timeline-body"><p>Because the import is <code>from models import User</code>. That could mean that there's a file at <code>models/User.py</code>, so we look for that first. But <code>User</code> is re-exported from <code>models/__init__.py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 18:26</div>
+            <div class="timeline-body"><p>(It's incorrect to resolve <code>from models import User</code> to <code>models/user.py</code>; it should map to <code>models/__init__.py</code>. So it's at least incorrect from the perspective of mapping to Python's semantics.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-27 07:17</div>
+            <div class="timeline-body"><p>That's correct, but I think that's an issue in the analyze graph because it first tries to resolve <code>models.User</code> before testing for <code>models</code></p>
+<p>https://github.com/astral-sh/ruff/blob/3018303c8759b3e96d075c62eeb8b8ef24b4d0c3/crates/ruff_graph/src/resolver.rs#L27-L34</p>
+<p>Red Knot does the resolution in the opposite order:</p>
+<ol>
+<li>First resolve <code>models</code></li>
+<li>Then resolve <code>models.user</code> by looking up <code>User</code> in <code>models</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-27 13:01</div>
+            <div class="timeline-body"><p>I don't know if I agree... but it depends on how we define the API surface? Like, on the face of it, it's incorrect that the module resolver returns <code>models/User.py</code> given <code>modules.User</code> -- that's not the correct file for that symbol!</p>
+<p>As a different example: imagine that <code>models/User.py</code> exists, but <code>models/user.py</code> does not, and we try to resolve <code>import models.user</code>. I think today that would resolve to <code>models/User.py</code>? That seems wrong and has nothing to do with member vs. module imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-27 13:12</div>
+            <div class="timeline-body"><p>The input of the module resolver isn't the name of a symbol. It's a module path. You have to use red knot's type checker if you want resolution by symbol.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-27 13:17</div>
+            <div class="timeline-body"><p>What is a &quot;module path&quot;? Can you explain in terms of the second example I listed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-27 13:28</div>
+            <div class="timeline-body"><p>A module path is a name of a module. E.g. <code>models</code> or <code>models.user</code></p>
+<p>However, the module <code>models.user</code> is not the same as the symbol <code>models.user</code></p>
+<ul>
+<li>Module <code>models.user</code>: <code>models</code> is a package (namespace or normal). <code>user</code> can resolve to either a <code>user.py</code> or <code>user/__init__.py</code></li>
+<li>Symbol <code>models.user</code>: Import the module <code>models</code>, then resolve the symbol <code>user</code> in its global scope, import the submodule if no such symbol is defined</li>
+</ul>
+<p>From the python spec:</p>
+<p><img src="https://github.com/user-attachments/assets/2a6b2d1d-506a-4b29-b875-6987cae37922" alt="image" /></p>
+<p>The module resolver only implements resolving the module name <code>models.user</code> to a file. It doesn't implement the logic for resolving the symbol <code>user</code> in the scope of <code>models</code>.</p>
+<p>For now, what you could do is to use Ruff's existing semantic model to determine if the symbol <code>User</code> exists in <code>models</code> and, if so, don't resolve <code>models.User</code></p>
+<p>@AlexWaygood Is my understanding correct that red knot's inference for <code>from import</code> misses the automatic sub-module fallback?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-27 14:13</div>
+            <div class="timeline-body"><blockquote>
+<p>@AlexWaygood Is my understanding correct that red knot's inference for <code>from import</code> misses the automatic sub-module fallback?</p>
+</blockquote>
+<p>Yeah, I <em>think</em> that's a known limitation of the red-knot semantic model right now. There's a test case with a TODO for it IIRC. I can look at doing the todo next week!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2024-09-28 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-28 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">analyze</span> added by @charliermarsh on 2024-09-28 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-29 15:07</div>
+            <div class="timeline-body"><p>The relevant TODOs in red-knot are this comment and these currently-skipped tests. I think we'd fix this in the red-knot semantic model rather than the red-knot module resolver, however, so you might need to implement an independent fix in <code>ruff_graph</code> @charliermarsh</p>
+<p>https://github.com/astral-sh/ruff/blob/bee498d6359dd7ce9aa8bff685ca821ab1bbfe31/crates/red_knot_python_semantic/src/types/infer.rs#L1416-L1424</p>
+<p>https://github.com/astral-sh/ruff/blob/bee498d6359dd7ce9aa8bff685ca821ab1bbfe31/crates/red_knot_python_semantic/src/types/infer.rs#L2986-L3015</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Sometimes `ruff analyze graph` output dependencies in invalid upper/lower case" to "`ruff analyze graph` does not understand submodule imports" by @AlexWaygood on 2024-10-25 16:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

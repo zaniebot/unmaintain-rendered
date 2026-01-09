@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deterministically normalize wheel ZIP metadata - astral-sh/uv #13139</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Deterministically normalize wheel ZIP metadata</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/13139">#13139</a>
+        opened by <a href="https://github.com/tabbyrobin">@tabbyrobin</a>
+        on 2025-04-27 22:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tabbyrobin">@tabbyrobin</a> on 2025-04-27 22:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>So as to enable reproducible builds, it would be nice if the uv build frontend could deterministically normalize the ZIP metadata in wheels it outputs.</p>
+<p>It would be ideal if this was either done by default, or easily enabled with a simple option (for example, <code>--deterministic</code> or similar).</p>
+<p>Sources of nondeterminism in ZIP metadata include:</p>
+<ul>
+<li>Timestamps -- There may be some desirable interaction with <code>SOURCE_DATE_EPOCH</code>, if set (for example, auditwheel already does so). However, it would <em>also</em> be helpful to normalize the timestamps even if  <code>SOURCE_DATE_EPOCH</code> is not set.</li>
+<li>File permissions and ownership</li>
+<li>Ordering of ZIP entries. -- <em>This generally seems to already be effectively deterministic, at least with the handful of experiments I've run. I'm not sure what nondeterminism might exist depending on OS, OS variants, Python build backends, etc.</em></li>
+<li>Potentially other things</li>
+</ul>
+<p>While this issue could conceivably be filed against the uv build backend, here I am intending to file it against the frontend. The idea is that a solution in the build frontend could serve as a blanket solution in a centralized tool, improving wheel reproducibility throughout the Python ecosystem.</p>
+<p>See also:</p>
+<ul>
+<li>https://github.com/pyca/cryptography/issues/12811</li>
+<li>https://github.com/pypa/auditwheel/issues/578</li>
+<li>https://github.com/pypa/cibuildwheel/issues/2344</li>
+</ul>
+<p>Related uv-internal issues:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/10523</li>
+<li>https://github.com/astral-sh/uv/issues/7066</li>
+</ul>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @tabbyrobin on 2025-04-27 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @konstin on 2025-04-28 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2025-04-28 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2025-04-28 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tabbyrobin">@tabbyrobin</a> on 2025-05-04 05:51</div>
+            <div class="timeline-body"><p>I have put together some notes about deterministic Python wheels:
+https://github.com/tabbyrobin/expt-repro-python-wheels/blob/main/notes-on-wheel-determinism.md</p>
+<p>And I started a thread about the subject here, to hopefully spark discussion with various projects/the wider Python community:
+https://discuss.python.org/t/best-practices-for-deterministically-normalizing-wheel-zip-metadata/90662</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-04 20:50</div>
+            <div class="timeline-body"><p>With the way PEP 517 is setup, I'm not sure it falls into the scope of the uv frontend to rewrite artifacts. It's made more difficult as reproducible builds require the whole stack to support them. If there are parts in build backend or in tools used by the build backend that depend on external variables (such as the https://github.com/rust-lang/rust/issues/111540 discussed in the other thread, where the underlying compiler is the problem), the frontend has only very limited options to recover. uv generally prefers using wheel over source dists where possible, and a number of projects without wheels lacks because they need to build against the current environment (either other python packages or the system libraries).</p>
+<p>I can however share what we did in the uv build backend to make source dist and wheel builds reproducible, or where this falls short in cross-platform situations (https://github.com/astral-sh/uv/pull/13171):</p>
+<ul>
+<li>All configuration is below the project root, configuration outside the project root can't affect archive contents.</li>
+<li>We set <code>SOURCE_DATE_EPOCH</code> to 0. (0 because it's easy for someone looking at the file to see that it's a dummy value).</li>
+<li>We use sorted file traversal to get the same order of files in zip.</li>
+<li>We don't preserve file permissions. The exception is the executable bit, which means that builds aren't reproducible between Unix and Windows if the repository contains a file with the executable bit</li>
+<li>Similarly, platform-specific file system features such as symlinks and junctions are treatly differently by Git depending on the platform, and with a different repository checkout on disk, there are different artifacts.</li>
+<li>The inclusion/exclusion system is designed to have the same output for source tree -&gt; source dist -&gt; wheel and source tree -&gt; wheel, and we test both paths.</li>
+</ul>
+<p>In maturin, we had some pull requests improving support for reproducible build that might interest you: https://github.com/PyO3/maturin/issues/1320, https://github.com/PyO3/maturin/pull/2261, https://github.com/PyO3/maturin/pull/2550</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

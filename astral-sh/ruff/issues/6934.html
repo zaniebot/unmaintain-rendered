@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>new rule - useless `super()` - astral-sh/ruff #6934</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>new rule - useless `super()`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6934">#6934</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2023-08-28 08:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-08-28 08:23</div>
+            <div class="timeline-body"><pre><code class="language-py">class Foo:
+    def foo(self):
+        ...
+
+
+class Bar(Foo):
+    def bar(self):
+        super().foo() # error: use `self.foo()` instead
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-28 14:34</div>
+            <div class="timeline-body"><p>We won't be able to enforce this reliably, only for classes defined within the same module, so I'm going to close for now to keep the issue tracker actionable. We can revisit when we support multi-file analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-28 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-08-28 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-08-29 00:55</div>
+            <div class="timeline-body"><p>@charliermarsh i don't think this rule would require multi file analysis. all it needs to do is check whether the method exists on the current subtype, and if it doesn't, assume the <code>super()</code> call is not necessary. it could either only exist on the supertype or doesn't exist at all. either way the <code>super()</code> isn't needed, so it doesn't need to look at the supertype at all</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2023-08-29 01:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-29 01:07</div>
+            <div class="timeline-body"><p>That makes sense. What are the use-cases, though, for calling <code>super</code> on a method that isn't the current method? Should that itself be a lint error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-08-29 02:34</div>
+            <div class="timeline-body"><blockquote>
+<p>What are the use-cases, though</p>
+</blockquote>
+<p>in my use case i was looking at old code after enabling some new rules and noticed a bunch of methods that were triggering <code>R6301</code> (<code>no-self-use</code>) because they were calling <code>super</code> but not <code>self</code>. i've raised #6961</p>
+<blockquote>
+<p>for calling <code>super</code> on a method that isn't the current method? Should that itself be a lint error?</p>
+</blockquote>
+<p>possibly. i can't remember a time where i've needed to call <code>super</code> for a different method so maybe a rule for that would be useful too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/153957">@153957</a> on 2023-08-31 07:25</div>
+            <div class="timeline-body"><p>It <em>does</em> matter if the class using the super is subclassed and it overwrites foo.</p>
+<pre><code>class Foo:
+    def foo(self):
+        print('foo')
+
+
+class Bar(Foo):
+    def bar(self):
+        super().foo()  # FooBar().bar() still calls foo on Foo instead of on FooBar
+
+
+class FooBar(Bar):
+    def foo(self):
+        print('foobar')
+</code></pre>
+<p>So you would need the multifile analysis to check if any other class depends on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-08-31 12:35</div>
+            <div class="timeline-body"><p>good point, maybe the rule can initially only look at classes decorated with <code>@final</code> until multi-file analysis is possible</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-02-28 06:29</div>
+            <div class="timeline-body"><p>pylint has a rule for this: <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/useless-parent-delegation.html">useless-parent-delegation</a></p>
+<p>so closing this in favor of #970</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @DetachHead on 2024-02-28 06:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:10 UTC
+    </footer>
+</body>
+</html>

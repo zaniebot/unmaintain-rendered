@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;Failed to clone files&quot; warning is not particularly useful - astral-sh/uv #6300</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;Failed to clone files&quot; warning is not particularly useful</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6300">#6300</a>
+        opened by <a href="https://github.com/dimaqq">@dimaqq</a>
+        on 2024-08-21 05:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dimaqq">@dimaqq</a> on 2024-08-21 05:20</div>
+            <div class="timeline-body"><p>I'm getting this warning every time in these 2 circumstances:</p>
+<ul>
+<li>host, macos, separate code-sensitive fs volume for code</li>
+<li>vm, linux, &quot;folder&quot; shared from host</li>
+</ul>
+<p>Frankly, if I use <code>uv</code>, I use it for the result (functional vevn) first, and speed only second. Copying files is reasonably fast too at 265 milliseconds (warm run).</p>
+<p>I would argue that this message belongs to debug, rather than a prominent warning.</p>
+<pre><code class="language-command">&gt; uv venv -p python3.13 --seed .host-3.13
+Using Python 3.13.0rc1 interpreter at: /Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+Creating virtualenv with seed packages at: .host-3.13
+warning: Failed to clone files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, reflinking may not be supported.
+         If this is intentional, set `UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+ + pip==24.2
+Activate with: source .host-3.13/bin/activate.fish
+</code></pre>
+<p><code>uv 0.3.0 (Homebrew 2024-08-20)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 12:41</div>
+            <div class="timeline-body"><p>See also discussion at https://github.com/astral-sh/uv/issues/6101</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-08-21 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-08-21 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 13:18</div>
+            <div class="timeline-body"><p>I actually think this is somewhat useful since people tend not to realize that it's happening. I'd suggest setting <code>export UV_LINK_MODE=copy</code> or similar to make the behavior explicit on your end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimaqq">@dimaqq</a> on 2024-08-22 08:49</div>
+            <div class="timeline-body"><p>Not useful for me as a user (N=1 statistic and personal bias).</p>
+<p>I don't know how common my use case is, let's say, hypothetically it affects 5% of uses and the tool becomes popular. Is it fair to ask all these users to add an env var globally?</p>
+<blockquote>
+<p>I actually think this is somewhat useful since people tend not to realize that it's happening.</p>
+</blockquote>
+<p>Why is it important to know?</p>
+<p>What does it mean for an end user, in practice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-22 09:26</div>
+            <div class="timeline-body"><p>It was added because copying instead of hardlinking means a major performance degradation, for example in a transformers test case:</p>
+<pre><code>$ hyperfine --warmup 1 --prepare &quot;rm -rf .venv&quot; &quot;uv sync --extra torch --extra onnx --extra audio&quot; &quot;uv sync --extra torch --extra onnx --extra audio --link-mode=copy&quot; 
+Benchmark 1: uv sync --extra torch --extra onnx --extra audio
+  Time (mean ± σ):     114.5 ms ±   8.8 ms    [User: 76.5 ms, System: 350.1 ms]
+  Range (min … max):   100.1 ms … 133.1 ms    13 runs
+ 
+Benchmark 2: uv sync --extra torch --extra onnx --extra audio --link-mode=copy
+  Time (mean ± σ):     607.5 ms ±   9.4 ms    [User: 87.6 ms, System: 2618.9 ms]
+  Range (min … max):   590.0 ms … 627.8 ms    10 runs
+ 
+Summary
+  uv sync --extra torch --extra onnx --extra audio ran
+    5.31 ± 0.42 times faster than uv sync --extra torch --extra onnx --extra audio --link-mode=copy
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimaqq">@dimaqq</a> on 2024-08-22 12:30</div>
+            <div class="timeline-body"><p>On one hand, I surly want modern tools to be fast, especially in use cases like <code>pre-commit</code> and one day <code>uvx</code>.</p>
+<p>On the other hand, if someone installs PyTorch or onx, I would presume that they use these packages, and if that’s to train a model we’re taking about hours of use time, perhaps 400ms extra venv install time doesn’t matter that much?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 16:02</div>
+            <div class="timeline-body"><p>I hear you, but I think it's reasonable to show this if the default isn't working as it's supposed to. A lot of users didn't know this was happening. You can set <code>UV_LINK_MODE=copy</code> everywhere if you'd rather not see it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-25 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-25 16:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

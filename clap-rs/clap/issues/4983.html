@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation example for `TypedValueParser` uses non-public method call - clap-rs/clap #4983</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Documentation example for `TypedValueParser` uses non-public method call</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4983">#4983</a>
+        opened by <a href="https://github.com/stmcginnis">@stmcginnis</a>
+        on 2023-06-22 14:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stmcginnis">@stmcginnis</a> on 2023-06-22 14:20</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.70.0 (90c541806 2023-05-31)</p>
+<h3>Clap Version</h3>
+<p>4.3.5</p>
+<h3>Minimal reproducible code</h3>
+<p>See example from https://docs.rs/clap/latest/clap/builder/trait.TypedValueParser.html#example</p>
+<p>Specifically these lines:</p>
+<pre><code class="language-rust">let inner = clap::value_parser!(u32);
+let val = inner.parse_ref(cmd, arg, value)?;
+</code></pre>
+<p>In my particular case, trying to use this example and doing:</p>
+<pre><code class="language-rust">let inner = clap::value_parser!(String);
+let val = inner.parse_ref(cmd, arg, value)?; // error: method `parse_ref` is private
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Attempt to implement the given example in a project using <code>clap</code> (as opposed to directly in the <code>clap</code> source).</p>
+<h3>Actual Behaviour</h3>
+<p>The example given shows calling <code>parse_ref()</code>, which is defined as <code>pub(crate)</code>, so any attempt to use this as just a consumer of the crate will give an error.</p>
+<p>This was <a href="https://github.com/clap-rs/clap/discussions/3856#discussioncomment-2986346">brought up in a discussion</a>, but I think the detail was missed.</p>
+<h3>Expected Behaviour</h3>
+<p>Custom <code>TypeValueParsers</code> in consuming code could benefit from being able to call this <code>pub(crate)</code> call to perform basic argument parsing before applying custom logic.</p>
+<p>I think either the function should be just made <code>pub</code>, or the example in the documentation should be updated to provide an alternative method for performing this base level of parsing before the custom parsing logic.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p>N/A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @stmcginnis on 2023-06-22 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-06-22 15:12</div>
+            <div class="timeline-body"><p><code>clap::value_parser!(u32);</code> returns a type that implements <code>TypedValueParser</code>, so <code>TypedValueParser::parse_ref</code> is being used.</p>
+<p>With <code>clap::value_parser!(String)</code>, a <code>ValueParser</code> is being returned (which avoids allocations for such a common type) but that means it doesn't implement <code>TypedValueParser</code>.</p>
+<p>The problem is <code>ValueParser::parse_ref</code> won't quite do what you want, giving you back a <code>AnyValue</code> rather than a <code>String</code>.</p>
+<p>What you likely want to do is to use <code>clap::builder::StringValueParser</code> instead of <code>clap::value_parser!(String)</code> which will give you access to <code>TypedValueParser::parse_ref</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stmcginnis">@stmcginnis</a> on 2023-06-22 15:17</div>
+            <div class="timeline-body"><p>Great, that appears to work as expected. Thanks for the explanation.</p>
+<p>And thanks for maintaining <code>clap</code> - awesome project!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @stmcginnis on 2023-06-22 15:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

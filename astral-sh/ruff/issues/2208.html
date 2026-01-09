@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B020 false positive: for foo.bar in baz - astral-sh/ruff #2208</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>B020 false positive: for foo.bar in baz</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2208">#2208</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-01-26 17:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-26 17:57</div>
+            <div class="timeline-body"><pre><code>for server, struct in self.versions(start, end, for_mirror_list):
+    for struct.arch in sorted(struct.ARCHS):
+        yield struct.deb(server)
+</code></pre>
+<p>is false-positive reported as B020 loop-variable-overrides-iterator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-01-26 18:50</div>
+            <div class="timeline-body"><p>Could be fixed for this example by skipping <code>Attribute</code>s in the B020 name finder, but I would argue that this iteration pattern is unclear and would warrant a linter warning. See also upstream discussion here: https://github.com/PyCQA/flake8-bugbear/issues/248</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-01-26 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "B020 false positive" to "B020 false positive: for foo.bar in baz" by @spaceone on 2023-02-22 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3022.html">astral-sh/ruff#3022</a> on 2023-02-22 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthewlloyd">@matthewlloyd</a> on 2023-02-22 17:58</div>
+            <div class="timeline-body"><p>Here's a proposal for how to address this.</p>
+<p>If we think about a <code>for</code> loop target as being like an assignment, we need a rule that triggers if and only if the assignment could change the value of the thing being iterated over (ignoring side effects and other things that would be hard to detect).</p>
+<p>Note that Python captures the value of the iterator when it starts the loop, so overwriting it doesn't actually change the behavior and is valid (even common) Python. For example:</p>
+<pre><code class="language-python">In [1]: a = [1, 2, 3]
+
+In [2]: for a in a:
+   ...:     print(a)
+   ...:
+1
+2
+3
+</code></pre>
+<p>Here are some real-world examples where B020 currently triggers. These all look like valid warnings to me:</p>
+<pre><code class="language-python"># corpus/bokeh/src/bokeh/command/subcommands/serve.py
+            for path, _, files in os.walk(path):  # unclear code, B020 worthy
+                for name in files:
+
+# corpus/bokeh/src/bokeh/plotting/_figure.py
+        for kw in double_stack(stackers, &quot;x1&quot;, &quot;x2&quot;, **kw):  # yikes, B020 please
+            result.append(self.harea(**kw))
+
+# corpus/diffusers/src/diffusers/pipelines/stable_diffusion_safe/pipeline_stable_diffusion_safe.py:355
+              for idx, has_nsfw_concept in enumerate(has_nsfw_concept):  # unclear code, B020
+                    if has_nsfw_concept:
+
+# corpus/pandas/scripts/no_bool_in_generic.py:42
+            elif isinstance(value, list):
+                for value in reversed(value):  # unclear code, mixes types, merits a B020
+                    if isinstance(value, ast.AST):
+                        nodes.append((next_in_annotation, value))
+
+# corpus/scipy/scipy/special/_generate_pyx.py:728
+            outp = re.sub(r'\*.*', '', ret) + outarg
+            ret = ret.replace('*', '')
+            for inp, outp in iter_variants(inarg, outp):  # merits B020
+                add_variant(func_name, inarg, outarg, ret, inp, outp)
+
+# corpus/scipy/scipy/optimize/_shgo.py:1028
+                v = self.HC.V[xl]
+                v_near = v.star()
+                for v in v.nn:  # merits B020, unclear code
+                    v_near = v_near.union(v.nn)
+
+# corpus/scipy/scipy/optimize/_linprog_rs.py:358
+    for iteration in range(iteration, maxiter):  # questionable, but I'd say B020 here too; start_iter would be better
+</code></pre>
+<p>Given that, and comparing against the false-positive above, I would propose triggering if the target is equal to, or a prefix of, the iterable itself <em>or</em> any components of the iterable (e.g. function arguments, a callee, etc.) that could conceivably be changed by assigning to the target. For example:</p>
+<pre><code class="language-python"># no error
+    for struct.arch in sorted(struct.ARCHS):
+
+# B020
+for a in a:
+    pass
+
+# B020; assigning to a does change a.i
+for a in a.i:
+    pass
+
+# no error; assigning to a.i does not change a
+for a.i in a:
+    pass
+
+# B020; no way to know whether fn returns a, and in any case unclear
+for a in fn(a):
+
+# B020; target appears as a prefix of a function argument
+for a.i in fn(a.i.j):
+
+# all B020
+for a in fn(a):
+for a in fn(*a):
+for a in fn(**a):
+
+# no error
+for a.i.j in fn(a.i):
+
+# B020; target appears as a callee
+for a in a(ruff):
+
+# B020; target appears as the prefix of a callee
+for a.i in a.i.j(ruff):
+
+# no error
+for a.i in self.a.i(ruff):
+
+# no error
+for self.a in self.b:
+
+# B020
+for self in self.b:
+
+# B020
+for a[i] in a[i][j]:
+for a[i] in fn(**a[i].a[i].ruff[j]):
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-07-10 01:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ebbek">@ebbek</a> on 2025-10-06 10:23</div>
+            <div class="timeline-body"><p>Here is an example where the B020 is just plain wrong:</p>
+<pre><code>&quot;&quot;&quot;Ruff bug demo.&quot;&quot;&quot;
+
+import pathlib.Path
+
+
+class Scan:
+   &quot;&quot;&quot;Demonstrate what I consider a bug in ruff.&quot;&quot;&quot;
+
+   def __init__( self, file_name: str ) -&gt; None:
+      # Create list of lines from file to be processed
+      file = pathlib.Path( file_name )
+      self.input_lines = file.read_text().split( &quot;\n&quot; )
+      # Current line - used in other member methods
+      self._line: str = &quot;&quot;
+      # Current line number - used in other member methods
+      self._current_line = 0
+
+   def process_file( self ) -&gt; None:
+      &quot;&quot;&quot;
+      Scan file line by line.
+
+      The current line (self._line) is used in other member functions
+      that are not included here. Ruff complains about:
+      &quot;B020 Loop control variable `self` overrides iterable it iterates&quot;
+      &quot;&quot;&quot;
+      for self._line in self.input_lines:
+         self._current_line += 1
+</code></pre>
+<p>Command line:
+<code>ruff check bugdemo.py</code></p>
+<p>Well, yes, technically it does modify <code>self</code>. But not in a way that interacts with the list the <code>for</code> loop iterates over.</p>
+<p><a href="https://github.com/user-attachments/files/22720010/bugdemo.py">bugdemo.py</a></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

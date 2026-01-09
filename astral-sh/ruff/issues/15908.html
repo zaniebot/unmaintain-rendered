@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should Ruff have an opinion on math.inf vs float(&quot;inf&quot;)? - astral-sh/ruff #15908</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should Ruff have an opinion on math.inf vs float(&quot;inf&quot;)?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15908">#15908</a>
+        opened by <a href="https://github.com/RubenVanEldik">@RubenVanEldik</a>
+        on 2025-02-03 11:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RubenVanEldik">@RubenVanEldik</a> on 2025-02-03 11:55</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>Today I found out that there are two ways to define an infinity floating variable in Python:</p>
+<ol>
+<li><code>math.inf</code></li>
+<li><code>float(&quot;inf&quot;)</code></li>
+</ol>
+<p>After quick testing it seems that they produce exactly the same object, but <code>math.inf</code> is 2-3 times faster. On top of that <code>math.inf</code> is shorter than <code>float(&quot;inf&quot;)</code>. Lastly, I think <code>math.inf</code> looks more pythonic than <code>float(&quot;inf&quot;)</code>, but that might be more personal.</p>
+<p>Should we add a Ruff rule to prefer <code>math.inf</code> over <code>float(&quot;inf&quot;)</code> (and <code>-math.inf</code> over <code>float(&quot;-inf&quot;)</code>)</p>
+<p>Keywords:</p>
+<ul>
+<li>math.inf</li>
+<li>float(&quot;inf&quot;)</li>
+<li>infinity</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-03 12:25</div>
+            <div class="timeline-body"><blockquote>
+<p>After quick testing it seems that they produce exactly the same object, but <code>math.inf</code> is 2-3 times faster.</p>
+</blockquote>
+<p>Which Python version did you test this on, out of interest? A lot of this may just be the overhead of loading and calling a builtin symbol, which has got quite a bit faster in recent versions. (And it may continue to get faster!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2025-02-03 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @AlexWaygood on 2025-02-03 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RubenVanEldik">@RubenVanEldik</a> on 2025-02-03 13:11</div>
+            <div class="timeline-body"><p>I tested this on Python 3.12.</p>
+<p>I currently don't have 3.13 installed on my computer (sorry, I'm not using uv yet haha.... 😬😬😬)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-03 13:15</div>
+            <div class="timeline-body"><p>Hehe. 3.12 is pretty new; that's good enough for me.</p>
+<p>Overall this seems like a reasonable stylistic lint to me. We're currently deprioritising adding new rules, however, especially stylistic rules (we'd prefer to maintain and improve what we already have for a little bit)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-03 13:20</div>
+            <div class="timeline-body"><p>Another data point: Type checkers can easily catch <code>math.in</code> as a misspelling of <code>math.inf</code> but tools are probably less good at identifying <code>float(&quot;in&quot;)</code> (which is also a less obvious API)</p>
+<p>I do agree that this is more a stylistic lint than a performance lint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RubenVanEldik">@RubenVanEldik</a> on 2025-02-03 13:23</div>
+            <div class="timeline-body"><p>I was curious, so I quickly ran the tests.</p>
+<p>It seems that 3.9 to 3.11 added massive improvements, but that the improvements from 3.11 onward are more modest.</p>
+<p>Interestingly, the relative difference between the two seems to have grown from about 2x to 4x!</p>
+<pre><code class="language-py">import math
+import timeit
+
+time_math_inf = timeit.timeit('math.inf', globals=globals(), number=10**8)
+print(f'math.inf: {time_math_inf:.2f} seconds')
+
+import timeit
+time_inf_str = timeit.timeit('float(&quot;inf&quot;)', number=10**8)
+print(f'float(&quot;inf&quot;): {time_inf_str:.2f} seconds')
+</code></pre>
+<p>Python 3.9</p>
+<pre><code>math.inf: 2.72 seconds
+float(&quot;inf&quot;): 5.80 seconds
+</code></pre>
+<p>Python 3.10</p>
+<pre><code>math.inf: 1.80 seconds
+float(&quot;inf&quot;): 3.56 seconds
+</code></pre>
+<p>Python 3.11</p>
+<pre><code>math.inf: 0.73 seconds
+float(&quot;inf&quot;): 2.81 seconds
+</code></pre>
+<p>Python 3.12:</p>
+<pre><code>math.inf: 0.8 seconds
+float(&quot;inf&quot;): 2.82 seconds
+</code></pre>
+<p>Python 3.13</p>
+<pre><code>math.inf: 0.70 seconds
+float(&quot;inf&quot;): 2.89 seconds
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RubenVanEldik">@RubenVanEldik</a> on 2025-02-03 13:26</div>
+            <div class="timeline-body"><p>I understand that this currently does not have the highest priority. (personally I hope you're spending all you energy on red-knot, because I can't wait to ditch Mypy) I'm not sure if I have the time, but would you be open to a PR from the community for this rule? Or do you want to reduce the number of new rules to Ruff altogether?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-04 10:49</div>
+            <div class="timeline-body"><p>We're trying to hold off from adding new &quot;restriction&quot; or stylistic rules until we've completed https://github.com/astral-sh/ruff/issues/1774 because it will make it easier for users to select the right rules vs today where <code>RUF</code> is a wild mix of correctness, stylistic, restriction etc. rules.</p>
+<p>Another reason why we're more strict about adding more rules is that we want to focus on type checking and working on core Ruff features (the mentioned rule categorization, unified format and check command, better diagnostics), and reviewing and maintaining new rules does reduce the time we can spend on those. But we also don't want to move away excited contributors. I'd be open to review a PR if your excited about adding the rule now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pylint-dev/pylint/pulls/10621.html">pylint-dev/pylint#10621</a> on 2025-10-06 11:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

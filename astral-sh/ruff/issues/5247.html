@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>formatter: capture more comment info in placement.rs - astral-sh/ruff #5247</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>formatter: capture more comment info in placement.rs</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5247">#5247</a>
+        opened by <a href="https://github.com/davidszotten">@davidszotten</a>
+        on 2023-06-21 11:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-06-21 11:46</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>it seems to me we have a bunch of information available (or calculated) in the various helpers in <code>comments/placement.rs</code> that we have to throw away that could be handy to use instead of having to e.g. re-figure out where each dangling comment should be attached in <code>fmt_fields</code> implementations. i wonder if we could capture it somehow and make available</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-21 11:54</div>
+            <div class="timeline-body"><p>Yeah. I think that could ease the implementation of <code>fmt_fields</code>.</p>
+<p>Something I had in mind but never implemented is that we could <em>label</em> <code>SourceComments</code>. A label could either be an enum or a struct similar to the <code>LabelId</code> in the formatter</p>
+<p>https://github.com/astral-sh/ruff/blob/046becffee3d928b2470726f320091c4a72b5829/crates/ruff_formatter/src/format_element/tag.rs#L238-L267</p>
+<p>What is important in my view is that the label is just a marker. Meaning, it shouldn't hold any additional information beyond what type of comment it is.</p>
+<p>Whether it is more expensive to store the label or just re-compute the information in the formatter is hard to say. We would probably need to do some profiling to figure that out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-06-21 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-07-16 14:36</div>
+            <div class="timeline-body"><blockquote>
+<p>We would probably need to do some profiling to figure that out</p>
+</blockquote>
+<p>I apologize if I haven't seen it yet, but is this figured out? I'd love to help where I can with internal design changes like this, even if its peripheral.</p>
+<p>Is there something I can do to help with establishing some benchmarking/profiling tools for the formatter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-17 07:43</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>We would probably need to do some profiling to figure that out</p>
+</blockquote>
+<p>I apologize if I haven't seen it yet, but is this figured out?</p>
+</blockquote>
+<p>No, we haven't further investigated this. Feel free to take a stab at it.</p>
+<blockquote>
+<p>Is there something I can do to help with establishing some benchmarking/profiling tools for the formatter?</p>
+</blockquote>
+<p>Our formatter has a few benchmarks.</p>
+<p>https://github.com/astral-sh/ruff/blob/main/crates/ruff_benchmark/benches/formatter.rs</p>
+<p>I picked the test files rather arbitrarily. I mainly tried to have files of different sizes and some that use typing. But that's it. I e.g. didn't check if they contain comments or deeply nested expressions.</p>
+<p>You can read about how to run the benchmarks in our <a href="https://github.com/astral-sh/ruff/blob/main/CONTRIBUTING.md#benchmarking-and-profiling">contribution documentation</a> or you may decide to add a new benchmark.</p>
+<p>What I would do is:
+Add the new <code>Label</code> field to <code>SourceComment</code> and <code>CommentPlacement</code> to see how much this impacts performance. Maybe together with adding a new benchmark test file that has a fair amount of comments. This should allow us to measure the overhead of adding the label with relatively little work.</p>
+<p>The next step would be to refactor the existing placement logic (and formatter rules) to use the labels instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6381.html">astral-sh/ruff#6381</a> on 2023-08-07 08:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-08 07:22</div>
+            <div class="timeline-body"><p>While useful, it seems that we managed to implement all formatting without. I'm closing this for now as it is unplanned. Feel free to open a new issue if you're interested in contributing this infrastructure change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-08 07:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

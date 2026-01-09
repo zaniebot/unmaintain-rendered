@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Found duplicate package in environment - astral-sh/uv #1848</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Found duplicate package in environment</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1848">#1848</a>
+        opened by <a href="https://github.com/amartani">@amartani</a>
+        on 2024-02-22 02:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/amartani">@amartani</a> on 2024-02-22 02:46</div>
+            <div class="timeline-body"><p>In one of my pre-existing venvs, any <code>uv pip</code> command that I run results in the following error:</p>
+<pre><code>$ uv pip install mypy
+error: Failed to list installed packages
+  Caused by: Found duplicate package in environment: setuptools (/home/aurelia/.pyenv/versions/3.9.11/envs/aurelia/lib/python3.9/site-packages/setuptools-58.1.0.dist-info vs. /home/aurelia/.pyenv/versions/3.9.11/envs/aurelia/lib/python3.9/site-packages/setuptools-67.6.0.dist-info)
+</code></pre>
+<p>This is just one example command, but any other <code>uv pip install</code> / <code>uv pip uninstall</code> / <code>uv pip sync</code> on this venv results in the same error. <code>pip</code> seems to work fine in this state and believes only <code>67.6.0</code> is installed:</p>
+<pre><code>$ pip list | grep setuptools
+setuptools                                        67.6.0
+types-setuptools                                  67.6.0.0
+</code></pre>
+<p>And similarly other <code>pip install</code> / <code>pip uninstall</code> / <code>pip-sync</code> commands still work on this venv.</p>
+<p>I don't know how this venv ended up in this state. I found https://github.com/astral-sh/uv/issues/1062 while searching for this error, but I have never used <code>conda</code> (nor any other non-pip package manager) in this venv.</p>
+<p>Using uv version 0.1.6 on Linux arm64 (docker on MacOS).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 02:48</div>
+            <div class="timeline-body"><p>Thanks. I assume removing the older version clears this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-02-22 02:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amartani">@amartani</a> on 2024-02-22 03:00</div>
+            <div class="timeline-body"><p>Yes. There was actually 2 packages in this state (<code>pip</code> and <code>setuptools</code>); after removing the 2 wrong <code>.dist-info</code> files, the error did not happen again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 03:01</div>
+            <div class="timeline-body"><p>We could consider making this a warning (rather than an error), and respecting the &quot;highest&quot; version of each.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nschloe">@nschloe</a> on 2024-02-22 09:42</div>
+            <div class="timeline-body"><p>Just ran into this in gh-action's default env:</p>
+<pre><code>error: Failed to list installed packages
+  Caused by: Found duplicate package in environment: pip
+(/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/pip-24.0.dist-info
+vs.
+/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/pip-23.0.1.dist-info)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../actions/setup-python/issues/785.html">actions/setup-python#785</a> on 2024-02-22 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-22 10:09</div>
+            <div class="timeline-body"><p>This is a bug in github actions: https://github.com/actions/setup-python/issues/785</p>
+<p>Having a venv in this state is bad because it is impossible to determine which is the correct version that <code>site-packages/pip</code> belongs too. E.g. if a user requested <code>pip==24.0</code>, is this version installed or is <code>23.0.1</code> installed. It is also not specified what other tools will believe about the installed version. Normally i'd argue that the user needs to recreate the venv (we can't determine which files we'd need to remove or add to fix it), but the github actions bug is a show stopper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @konstin on 2024-02-22 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-22 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 13:27</div>
+            <div class="timeline-body"><p>I’ll take this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 18:22</div>
+            <div class="timeline-body"><p>Okay, I looked at pip's behavior. They just do a <code>listdir</code> and omit packages they've already seen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1893.html">astral-sh/uv#1893</a> on 2024-02-23 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-23 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ImahnShekhzadeh">@ImahnShekhzadeh</a> on 2024-02-23 22:03</div>
+            <div class="timeline-body"><p>I installed <code>uv</code> a few minutes ago on Linux (<code>v0.1.10</code>) via the <code>curl</code> command, but still get the same error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-23 22:20</div>
+            <div class="timeline-body"><p>This wasn’t included in v0.10.0, the fix has been merged but not released yet.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

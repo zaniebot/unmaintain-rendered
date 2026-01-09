@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.0.0 fails to compile on wasm32-unknown-unknown - clap-rs/clap #2198</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>3.0.0 fails to compile on wasm32-unknown-unknown</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2198">#2198</a>
+        opened by <a href="https://github.com/tamasfe">@tamasfe</a>
+        on 2020-11-02 15:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tamasfe">@tamasfe</a> on 2020-11-02 15:48</div>
+            <div class="timeline-body"><h3>Make sure you completed the following tasks</h3>
+<ul>
+<li>[x] Searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] Searched the closed issues</li>
+</ul>
+<h3>Steps to reproduce the issue</h3>
+<ol>
+<li>Run <code>wasm-pack build</code></li>
+<li>Count the pretty red lines</li>
+</ol>
+<h3>Version</h3>
+<ul>
+<li><strong>Rust</strong>: 1.47.0-nightly</li>
+<li><strong>Clap</strong>: 3.0.0-beta.2</li>
+</ul>
+<h3>Actual Behavior Summary</h3>
+<p>The dependency <code>os_str_bytes</code> doesn't compile on <code>wasm32</code> target, the dependency was introduced in <code>3.0.0</code>, and <code>2.x.x</code> compiles fine.</p>
+<p>A solution would be to either patch <code>os_str_bytes</code> to support <code>wasm32</code> (I don't know the complexity of this), or don't use it at all (at least for <code>wasm32</code> targets).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @tamasfe on 2020-11-02 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-11-02 16:16</div>
+            <div class="timeline-body"><p>@dylni Would you take a look at this please? I think we should be able to just use <code>String</code> when <code>wasm32</code> in <code>os_str_bytes</code> but you might have a better idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: blocking on external</span> added by @pksunkara on 2020-11-02 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-11-02 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylni">@dylni</a> on 2020-11-02 18:33</div>
+            <div class="timeline-body"><p>Thanks for the ping @pksunkara.</p>
+<p>I agree converting to <code>str</code> should be the best option for now.</p>
+<p>JavaScript strings look very similar to Windows strings, so they should be representable using the same encoding. However, there's no lossless method I can use for that.</p>
+<p>That would be a problem if libstd ever received a string from JavaScript, but I can't find anywhere that it does. <code>OsStr</code> is also missing an implementation customized for that.</p>
+<p>So, this sounds very reasonable. I’ll try to add support this week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylni">@dylni</a> on 2020-11-03 04:36</div>
+            <div class="timeline-body"><p>@pksunkara Can clap add a &quot;javascript&quot; feature that it passes to os_str_bytes for compiling wasm32-unknown-unknown? That's how getrandom <a href="https://docs.rs/getrandom/0.2.0/getrandom/#webassembly-support">can support the target</a>, and it would be a great time to add it with the version bump to 3.0.</p>
+<p>The feature would let me change the implementation for different wasm targets, since Rust might support more in the future. Otherwise, I would assume that <em>every</em> wasm32 target uses UTF-8, which isn't true.</p>
+<p>Also @tamasfe am I right that you're compiling for JavaScript?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tamasfe">@tamasfe</a> on 2020-11-03 10:01</div>
+            <div class="timeline-body"><p>@dylni Yes, I'm wrapping a rust CLI tool for nodejs environments.</p>
+<blockquote>
+<p>The feature would let me change the implementation for different wasm targets, since Rust might support more in the future. Otherwise, I would assume that every wasm32 target uses UTF-8, which isn't true.</p>
+</blockquote>
+<p>I believe the majority of the <code>wasm32</code> targets are javascript environments right now, so I would do the opposite, assume that everything is javascript until it is not, and only then figure out how to deal with that. <em>Any</em> implementation is better that works 99% of the time than no implementation at all.</p>
+<p>Having a <code>javascript</code> feature would require every library that uses <code>os_str_bytes</code> to pass it just to be able to compile on <code>wasm32</code>, even if they don't normally care whether they run in a javascript environment or not.</p>
+<p><strong>edit:</strong></p>
+<p>It is not guaranteed even for javascript for a string to use UTF-8 (<a href="https://github.com/nodejs/node-v0.x-archive/pull/644">it migh use ucs2</a>), so the only way right now would be to use unchecked strings, but it involves unsafe code. However, I still say that you could go with an implementation that seems to work in most cases, until it turns out not to.</p>
+<p>I created a patch for <code>os_str_bytes</code> that just uses utf8 strings and panics otherwise and clap seems to work flawlessly with it so far.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-11-03 10:44</div>
+            <div class="timeline-body"><p>I would actually prefer is <code>os_str_bytes</code> can intelligently discover without clap needing to pass the feature flag.</p>
+<p>Our v2 wasm support was added in https://github.com/clap-rs/clap/commit/689949e57d390bb61bc69f3ed91f60a2105738d0 in case you want to see how we did it without a feature flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylni">@dylni</a> on 2020-11-03 15:57</div>
+            <div class="timeline-body"><blockquote>
+<p>It is not guaranteed even for javascript for a string to use UTF-8 (<a href="https://github.com/nodejs/node-v0.x-archive/pull/644">it migh use ucs2</a>), so the only way right now would be to use unchecked strings, but it involves unsafe code. However, I still say that you could go with an implementation that seems to work in most cases, until it turns out not to.</p>
+</blockquote>
+<p>Right, I should have been clearer. I meant that I can currently assume UTF-8 for JavaScript targets based on the implementation of libstd, but I can't make that assumption for wasi or possible future targets.</p>
+<p>However, thinking about this, it might not be possible for <code>OsStr</code> to support UCS-2 on wasm32-unknown-unknown, since libstd can't assume JavaScript strings will be used either. So, the feature should be unnecessary.</p>
+<blockquote>
+<p>Our v2 wasm support was added in 689949e in case you want to see how we did it without a feature flag.</p>
+</blockquote>
+<p>Unfortunately, I can't generalize over wasm32 without being very likely to be incorrect in the future. For example, wasm32-wasi is also wasm32, but it's decoded more similarly to Unix. What I can do is strictly support wasm32-unknown-emscripten and wasm32-unknown-unknown. That should cover all wasm32 targets.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-11-03 16:00</div>
+            <div class="timeline-body"><p>Sounds good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylni">@dylni</a> on 2020-11-06 02:40</div>
+            <div class="timeline-body"><p>Version v2.4.0 is published. @tamasfe Can you confirm it fixes this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tamasfe">@tamasfe</a> on 2020-11-06 03:09</div>
+            <div class="timeline-body"><p>@dylni I haven't tested it with my app, but yes, it seems to align mostly with what I did, and compiles under wasm, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylni">@dylni</a> on 2020-11-06 03:21</div>
+            <div class="timeline-body"><p>No problem! Let me know if you have any problems with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-11-06 19:47</div>
+            <div class="timeline-body"><p>I tried to see if I can do CI for wasm, but it looks like the tests fail because some of them use <code>OsString</code> directly. https://github.com/clap-rs/clap/actions/runs/350099339</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylni">@dylni</a> on 2020-11-06 20:26</div>
+            <div class="timeline-body"><p>@pksunkara It looks like those tests need strings that aren't valid UTF-8 with a lossy decoding that can be asserted. Would adding this method to <code>os_str_bytes</code> help?</p>
+<pre><code class="language-rust">fn new_invalid(prefix: &amp;str, suffix: &amp;str) -&gt; Option&lt;OsString&gt;;
+</code></pre>
+<p>Calling <code>OsStr::to_string_lossy</code> on the result would always return <code>prefix + &quot;\u{FFFD}&quot; + suffix</code>, and <code>Option</code> is required for platforms that can only create <code>OsString</code> from UTF-8.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-11-06 20:28</div>
+            <div class="timeline-body"><p>Nah, I was just pointing out. I am not really interested in spending the effort to get them to work. I added a WASM compilation check and I think that should be good enough. Thanks for the help @dylni in solving this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylni">@dylni</a> on 2020-11-06 20:31</div>
+            <div class="timeline-body"><p>Ok, sounds good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-11-06 20:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

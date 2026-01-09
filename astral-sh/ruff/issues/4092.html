@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--fix-only` returns exit code 1 upon fixes - astral-sh/ruff #4092</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--fix-only` returns exit code 1 upon fixes</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4092">#4092</a>
+        opened by <a href="https://github.com/spapanik">@spapanik</a>
+        on 2023-04-25 09:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spapanik">@spapanik</a> on 2023-04-25 09:05</div>
+            <div class="timeline-body"><p>Thank you for the great work! Ruff is fantastic, and I have replaced all my linters with it. I just have a small feature request on the fixers of it.</p>
+<p>Now, the cli options to fix the ruff issues are: <code>ruff --fix .</code> and <code> ruff --fix-only .</code> They are a bit problematic to work with in scripts, as even if they fix all the issues that are fixable, the exit code can be zero, if there are no fixable issues. There is the obvious workaround of adding <code>|| true</code>, but this will mask all errors, for example ruff itself panicking instead of fixing the fixable issues. A new option that would allow just run it in fix mode.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-04-25 11:52</div>
+            <div class="timeline-body"><p>Would <a href="https://beta.ruff.rs/docs/configuration/#exit-codes"><code>--exit-non-zero-on-fix</code></a> work for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spapanik">@spapanik</a> on 2023-04-25 15:05</div>
+            <div class="timeline-body"><p>@JonathanPlasse it does exactly the opposite. I was looking for a <code>--exit-zero-on-fix</code>. Let me explain the scenario: I have two errors in my code: <code>I001</code> which is fixable, and <code>N801</code> that's not fixable. What I would like to do is run it, fix <code>I001</code> and return 0, because it successfully fixed all the fixable errors. Now, the closest is to do <code>ruff --fix-only . || true</code> but this means that if ruff breaks, I will still get an exit code 0, which is wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-25 15:09</div>
+            <div class="timeline-body"><p>I assumed that if you run Ruff in that scenario with <code>ruff --fix-only .</code>, and it fixed <code>I001</code> but left <code>N801</code>, it would exit with code 0. Does it not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-04-25 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spapanik">@spapanik</a> on 2023-04-25 18:10</div>
+            <div class="timeline-body"><p>No, it doesn't:</p>
+<pre><code class="language-command">venv:(***)$ ~/programming/*** git:(main) ✗
+stephanos@marco $ ruff --fix-only foo.py
+Fixed 1 error.
+venv:(***)$ ~/programming/*** git:(main) ✗
+stephanos@marco $ echo $?
+1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-26 03:55</div>
+            <div class="timeline-body"><p>Ahh ok, that strikes me as a bug, but will look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-04-26 03:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix mode" to "`--fix-only` returns exit code 1 upon fixes" by @charliermarsh on 2023-04-26 03:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-29 03:59</div>
+            <div class="timeline-body"><p>I guess, in this framing, <code>ruff --fix-only</code> would <em>always</em> return 0 (unless the program hit an internal error), whereas <code>ruff --fix-only --exit-non-zero-on-fix</code> would return 1 when at least one error was fixed. Is that right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4146.html">astral-sh/ruff#4146</a> on 2023-04-29 04:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-04 19:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Knot shows types for literal expressions on hover - astral-sh/ruff #17289</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Red Knot shows types for literal expressions on hover</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17289">#17289</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-04-08 01:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-04-08 01:10</div>
+            <div class="timeline-body"><p>Minimal reproducible example (<a href="https://playknot.ruff.rs/ca9df1f1-6ebb-4063-a3d0-91b476f40efa">playground</a>):</p>
+<pre><code class="language-python">print(
+    0  # Hover: `Literal[0]`
+)
+
+def f():
+    '''Lorem ipsum dolor sit amet.'''  # Hover: `Literal[&quot;Lorem ipsum dolor sit amet.&quot;]`
+</code></pre>
+<p>This information is, arguably, redundant and should not be emitted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17290.html">astral-sh/ruff#17290</a> on 2025-04-08 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-04-08 06:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-08 06:25</div>
+            <div class="timeline-body"><p>As discussed on Discord. I don't necessarily agree with this and it's not the only place where we would show redundant type information (hovering a fully annotated function shows exactly the same signature).</p>
+<p>I struggled with the python typing syntax and have found it useful when I was able to hover any expression and see how to spell that type because <code>Literal[1]</code> isn't the most obvious spelling (Unlike TypeScript where the <code>1</code> represents <code>Literal[1]</code> in python).</p>
+<p>I do think hiding the type for docstrings does make sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-08 06:33</div>
+            <div class="timeline-body"><p>I think I'm weakly in favor of this change. If I understand correctly, we would still reveal <code>Literal[…]</code> types whenever they come up in more complex expressions or annotations, we just wouldn't show them for expressions that directly result in <code>Literal[…]</code> types. I see the following arguments in favor of this change:</p>
+<ul>
+<li>As argued above, it's redundant and potentially distracting.</li>
+<li>If you're not very familiar with Python's type system, you might even be confused what <code>Literal[0]</code> means... and why we're not showing <code>int</code> etc.</li>
+<li>We infer them in a lot of places, but it's actually very rare that you need to annotate something with <code>Literal[…]</code>.</li>
+<li>I'm not sure if that's a good idea or even feasible, but I could imagine that we can make use of the fact that we do not show types for literal expressions. If you have something like <code>3 * x</code>, an hover over the <code>3</code>, we could &quot;skip a level&quot; and instead show the type for the full <code>3 * x</code> expression (I think most editors highlight the full expression when showing hover-types, so there should be no risk of confusion…?).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-08 07:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-08 07:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-04-08 10:52</div>
+            <div class="timeline-body"><p>@MichaReiser To see the type for a literal, a temporary variable can always be added as a workaround (<code>a = 42; reveal_type(a)</code>).</p>
+<p>As for function definitions, their hover popups generally contain two information: signature and docstring. A signature might contain inferred return types, which is far more valuable than the type of a literal expression. Even if it were fully typed, the signature should still be shown for consistency. And then there's also the docstring that is better read in rendered form.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

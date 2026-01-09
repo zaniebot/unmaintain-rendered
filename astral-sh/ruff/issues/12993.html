@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP036 should identify sys.version_info[0] or other parts - astral-sh/ruff #12993</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP036 should identify sys.version_info[0] or other parts</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12993">#12993</a>
+        opened by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a>
+        on 2024-08-19 17:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-08-19 17:02</div>
+            <div class="timeline-body"><p>I found there was some leftover py2k code in a project that UP rules would not catch because it just matches sys.version_info as a tuple. If you just check for the 1st element, which is kinda common in the old days, it will not show an error.</p>
+<pre><code class="language-$">import sys
+
+if sys.version_info[0] &lt; 3:
+    print('old')
+
+if sys.version_info &lt; (3, 0):
+    print('also old')
+
+</code></pre>
+<p>UP036</p>
+<pre><code>$ ruff check --isolated --select UP036 foo.py
+foo.py:6:4: UP036 Version block is outdated for minimum Python version
+  |
+4 |     print('old')
+5 |
+6 | if sys.version_info &lt; (3, 0):
+  |    ^^^^^^^^^^^^^^^^^^^^^^^^^ UP036
+7 |     print('also old')
+  |
+  = help: Remove outdated version block
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>It would be helpful if both options were found. I believe this is only relevant for python 2 since python 4 is no longer going to exist, but python 3 will be the forever version with the 2nd number being the de facto python version.</p>
+<p>If so, this rule could also catch these cases.</p>
+<pre><code>if sys.version_info[1] &lt; 12: ...
+</code></pre>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>In time: Ruff 0.6.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-20 03:48</div>
+            <div class="timeline-body"><p>I think checking against <code>sys.version_info[0]</code> seems reasonable, not sure about <code>sys.version_info[1]</code>. What do you think @AlexWaygood ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-08-20 03:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-08-20 14:01</div>
+            <div class="timeline-body"><p>I think <code>sys.version_info[1]</code> would only be relevant when <a href="https://peps.python.org/pep-2026/">PEP 2026</a> gets accepted, which makes the number &quot;3&quot; useless.</p>
+<p>Also ruff only runs in Python 3 code.</p>
+<p>I imagine in a few years people saying: &quot;this thing runs only on python 28 or 29&quot; instead of 3.28 and 3.29</p>
+<p>For a litmus test, you can check how often this is used on github repos. There several usages together with [0] and also by itself.</p>
+<p>https://github.com/search?q=sys.version_info%5B1%5D+language%3Apython&amp;type=code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-20 14:08</div>
+            <div class="timeline-body"><p>I would prefer waiting with <code>sys.version_info[1]</code> until a PEP makes python 3 officially the final major version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-30 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13175.html">astral-sh/ruff#13175</a> on 2024-08-30 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-30 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-09-01 01:49</div>
+            <div class="timeline-body"><p>Cool, thank you!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

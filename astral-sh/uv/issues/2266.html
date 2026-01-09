@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pip compile constraining combined with git based dependencies - astral-sh/uv #2266</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>pip compile constraining combined with git based dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/2266">#2266</a>
+        opened by <a href="https://github.com/gwdekker">@gwdekker</a>
+        on 2024-03-07 07:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gwdekker">@gwdekker</a> on 2024-03-07 07:14</div>
+            <div class="timeline-body"><p>First things first: I have to say that I never felt so encouraged to file issues at an open source project - as it is obvious that the chance of getting it fixed and soon is orders of magnitude higher than anywhere else!</p>
+<p>Use case that fails:</p>
+<ul>
+<li>I want to have requirements and dev-requirements that are guaranteed to be compatible: I want to make sure I am not running a package version in production that I do not have in my dev environment.</li>
+<li>The suggested workflow for this I found is to compile the dev requirements first, and then use the resulting dev-requirements.txt as a constraint file for solving the production requirements like so:</li>
+</ul>
+<pre><code>	uv pip compile --extra dev -o requirements-dev.txt pyproject.toml 
+	uv pip compile --constraint requirements-dev.txt -o requirements.txt pyproject.toml 
+</code></pre>
+<p>This fails in the case of having packages installed directly from a git repo. I have a repo in pyproject.toml like this:</p>
+<p><code>PACKAGE_NAME @ git+https://__token__:${GITLAB_ACCESS_TOKEN}@gitlab.com/PATH_TO_REPO.git@my_branch</code></p>
+<p>What happens is that the branch name gets resolved to a commit hash, and as a result the resolving fails:</p>
+<pre><code>error: Requirements contain conflicting URLs for package `PACKAGE_NAME`:
+- git+https://__token__:${GITLAB_ACCESS_TOKEN}@gitlab.com/PATH_TO_REPO.git@intraday-main
+- git+https://__token__:${GITLAB_ACCESS_TOKEN}@gitlab.com/PATH_TO_REPO@THE_FULL_COMMIT_SHA
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 14:17</div>
+            <div class="timeline-body"><p>I think we can support this as a sort of special-case (when URLs conflict, and one is a pinned VCS SHA, accept the pinned VCS SHA).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-07 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-07 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 14:17</div>
+            <div class="timeline-body"><p>I'm just gonna categorize it as a bug since that's what users would expect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2285.html">astral-sh/uv#2285</a> on 2024-03-07 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwdekker">@gwdekker</a> on 2024-03-07 20:15</div>
+            <div class="timeline-body"><p>Thanks for sharing my comment on X, happy to see you appreciated it! Keep up the amazing work :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-07 23:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

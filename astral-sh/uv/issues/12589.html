@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv fails to resolve prereleases with `if-necessary` flag when generating a new lock file - astral-sh/uv #12589</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv fails to resolve prereleases with `if-necessary` flag when generating a new lock file</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/12589">#12589</a>
+        opened by <a href="https://github.com/bryanterichardson">@bryanterichardson</a>
+        on 2025-03-31 16:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bryanterichardson">@bryanterichardson</a> on 2025-03-31 16:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have a <code>pyproject.toml</code> that looks something like:</p>
+<pre><code>[project]
+dependencies = [
+    ...
+    &quot;some-dependency==0.0.1.dev3&quot;,
+    ...
+]
+
+...
+
+[tool.uv]
+prerelease = &quot;if-necessary&quot;
+</code></pre>
+<p>If I run <code>uv lock</code> I run into an error:</p>
+<pre><code>uv lock --prerelease if-necessary
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of some-dependency==0.0.1.dev3 and your project depends on some-dependency==0.0.1.dev3, we can conclude that your project's
+      requirements are unsatisfiable.
+</code></pre>
+<p>However, if I change the config from <code>if-necessary</code> to <code>if-necessary-or-explicit</code> or <code>allow</code>, uv is able to successfully resolve the dependency tree. If I then swap it back to <code>if-necessary</code>, it works... sometimes.</p>
+<h3>Platform</h3>
+<p>Darwin 24.2.0 arm64</p>
+<h3>Version</h3>
+<p>0.6.11</p>
+<h3>Python version</h3>
+<p>Python 3.11.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @bryanterichardson on 2025-03-31 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-03-31 17:21</div>
+            <div class="timeline-body"><p>I've mentioned this before, <code>if-necessary</code> is badly named: https://github.com/astral-sh/uv/issues/9395#issuecomment-2498355868</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-01 12:57</div>
+            <div class="timeline-body"><p>I'm a bit confused -- the error message here says that the package doesn't exist at that version? It shouldn't have anything to do with the <code>--prerelease</code> strategy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-04-01 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-04-01 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-01 12:57</div>
+            <div class="timeline-body"><p>Can you come up with a reproduction that we can use to help you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bryanterichardson">@bryanterichardson</a> on 2025-04-01 15:25</div>
+            <div class="timeline-body"><p>Sure. I’ll explain further but will find some public, prerelease to use in an example later when I’m by my computer. For context, the package does exist with that exact version.</p>
+<p>When we use the other prerelease strategies, uv is able to completely resolve the dependencies. The behavior we were expecting was that uv would pull this specified prerelease as it is necessary (implied by the name), but later calls to <code>uv lock -upgrade</code> would prefer stable releases (within the specified bounds). The problem with the other release strategies is that the package will continue to upgrade to prereleases which is not appropriate for what we need.</p>
+<p>After reading the thread above and more of the uv docs, it seems this might be intended (though really confusing naming). What’s even more confusing is that the <code>if-necessary</code> strategy will let me include a prerelease in the specified bounds so long as it does not actually resolve to a prerelease (eg the bounds allow for a later, stable release).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bryanterichardson">@bryanterichardson</a> on 2025-04-01 16:11</div>
+            <div class="timeline-body"><p>pyproject.toml</p>
+<pre><code>[project]
+dependencies = [
+    &quot;prefect&gt;=3.0.0rc1,&lt;3.3.0&quot;,
+]
+name = &quot;test&quot;
+requires-python = &quot;&gt;=3.11&quot;
+version = &quot;0.0.1&quot;
+</code></pre>
+<p>Run:</p>
+<pre><code>uv lock --prerelease if-necessary-or-explicit
+</code></pre>
+<p>uv.lock</p>
+<pre><code>...
+[[package]]
+name = &quot;prefect&quot;
+version = &quot;3.2.16.dev1&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+...
+</code></pre>
+<p>Run:</p>
+<pre><code>uv lock --prerelease if-necessary            
+Using CPython 3.11.3 interpreter at: /Users/.../.pyenv/versions/3.11.3/bin/python3
+Ignoring existing lockfile due to change in pre-release mode: `if-necessary-or-explicit` vs. `if-necessary`
+Resolved 98 packages in 1.25s
+Updated prefect v3.2.16.dev1 -&gt; v3.2.15
+</code></pre>
+<p>Swapping to <code>if-necessary</code> yields my desired behavior as I may have wanted a prerelease at some point but when handling upgrades and security patches I'd much rather land on a stable version moving forward. However, there comes a need to depend on the latest prerelease until a stable version is available. Something like</p>
+<pre><code>[project]
+dependencies = [
+    &quot;prefect==3.2.16.dev1&quot;,
+]
+name = &quot;test&quot;
+requires-python = &quot;&gt;=3.11&quot;
+version = &quot;0.0.1&quot;
+</code></pre>
+<p>Or, more likely:</p>
+<pre><code>[project]
+dependencies = [
+    &quot;prefect&gt;=3.2.16.dev1,&lt;4&quot;,
+]
+name = &quot;test&quot;
+requires-python = &quot;&gt;=3.11&quot;
+version = &quot;0.0.1&quot;
+</code></pre>
+<p>Note: As of today, this example works because prefect has released stable versions after the specified prerelease</p>
+<p>It is at the very least confusing the <code>if-necessary</code> fails to resolve a <strong>necessary</strong> dependency that is available.</p>
+<pre><code>uv lock --prerelease if-necessary
+Using CPython 3.11.3 interpreter at: /Users/.../.pyenv/versions/3.11.3/bin/python3
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of prefect==3.2.16.dev1 and your project depends on prefect==3.2.16.dev1, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: `prefect` was requested with a pre-release marker (e.g., prefect==3.2.16.dev1), but pre-releases weren't enabled (try: `--prerelease=allow`)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-01 16:13</div>
+            <div class="timeline-body"><p>Oh sorry, <code>if-necessary</code> only kicks in if a package has <em>only</em> shipped pre-releases. That's what the &quot;necessary&quot; means.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bryanterichardson">@bryanterichardson</a> on 2025-04-01 17:40</div>
+            <div class="timeline-body"><p>Understood. TY for getting back to me as well.</p>
+<p>To that I'd share the same sentiment as @notatallshaw that the naming is a bit confusing as the dependency is <strong>necessary</strong> and might be the only one able to satisfy the bounds. Maybe I am instead requesting a new feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-04-01 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13819.html">astral-sh/uv#13819</a> on 2025-06-03 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-15 22:11</div>
+            <div class="timeline-body"><p>@Butanium want to open a new issue with details as described in https://github.com/astral-sh/uv/issues/9452 so we can help you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14639.html">astral-sh/uv#14639</a> on 2025-07-15 23:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:27 UTC
+    </footer>
+</body>
+</html>

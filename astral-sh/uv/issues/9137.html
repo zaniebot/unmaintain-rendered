@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`tool_run_cache` is flaky on Windows - astral-sh/uv #9137</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`tool_run_cache` is flaky on Windows</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9137">#9137</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-11-15 00:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-15 00:25</div>
+            <div class="timeline-body"><p>See: https://github.com/astral-sh/uv/actions/runs/11847662623/job/33017797151?pr=9136</p>
+<p><img src="https://github.com/user-attachments/assets/6bb8d655-a4d4-4eb4-b904-8a5b23c71a01" alt="Screenshot 2024-11-14 at 7 24 52 PM" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @charliermarsh on 2024-11-15 00:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-15 04:31</div>
+            <div class="timeline-body"><p>This seems to be new, I hadn't seen it before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-15 09:51</div>
+            <div class="timeline-body"><p>It's failing a lot: https://github.com/astral-sh/uv/actions/runs/11853487114/job/33034634717</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-15 13:58</div>
+            <div class="timeline-body"><p>(I saw it at least once this week prior to reporting here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-15 14:24</div>
+            <div class="timeline-body"><p>Me too, but not prior to this week? Or maybe I saw it <em>once</em> quite a while ago?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @AlexWaygood on 2024-11-16 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-16 16:41</div>
+            <div class="timeline-body"><p>I sort of have no idea what could be flaking here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-17 10:48</div>
+            <div class="timeline-body"><p>Although the reason is unknown, the temporary environment used in the first and second <code>uv tool run</code> might be different. While this has little impact on usage due to the rapid environment setup, it can still lead to a certain probability of test failure.</p>
+<p>My guess is that this PR(https://github.com/astral-sh/uv/pull/9106) included the problem, as it wasn't there before. However, I can't say for sure since this issue is not always reproducible.</p>
+<p>This is the commit hash of this PR on the main branch.</p>
+<pre><code>git checkout a552f7430828e18e7ce98dfc5d96fb1592f9b1bc
+</code></pre>
+<p>Edit:
+This script has the potential to cause the mentioned issue in Windows PowerShell.
+It seems like setting <code>UV_EXCLUDE_NEWER</code> is mandatory; otherwise, the issue won't occur.</p>
+<pre><code class="language-powershell">git checkout a552f7430828e18e7ce98dfc5d96fb1592f9b1bc
+$CACHE_DIR = &quot;cache&quot;
+if((Test-Path -Path $CACHE_DIR))
+{
+	echo &quot;Remove cache_dir&quot;
+	rm -Recurse -Force $CACHE_DIR
+}
+$env:UV_EXCLUDE_NEWER=&quot;2024-03-25T00:00:00Z&quot;
+$env:UV_SHOW_RESOLUTION=&quot;1&quot;
+cargo run -- tool run -p 3.12 --cache-dir $CACHE_DIR black --version
+echo &quot;&quot;
+echo &quot;&quot;
+cargo run -- tool run -p 3.12 --cache-dir $CACHE_DIR black --version
+echo &quot;&quot;
+echo &quot;&quot;
+cargo run -- tool run -p 3.12 --cache-dir $CACHE_DIR black --version
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9185.html">astral-sh/uv#9185</a> on 2024-11-18 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-18 02:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-18 02:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

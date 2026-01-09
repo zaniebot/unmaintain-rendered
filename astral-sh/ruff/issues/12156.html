@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[flake8-bugbear] Avoid false positive for usage `return None` (B901) - astral-sh/ruff #12156</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[flake8-bugbear] Avoid false positive for usage `return None` (B901)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12156">#12156</a>
+        opened by <a href="https://github.com/f4rk4sh">@f4rk4sh</a>
+        on 2024-07-02 20:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/f4rk4sh">@f4rk4sh</a> on 2024-07-02 20:36</div>
+            <div class="timeline-body"><p>A minimal code snippet that reproduces the bug is almost the same as <a href="https://github.com/astral-sh/ruff/commit/312f6640b837eb1189748980707cfed70d1f5ffb#diff-3da9dc4c996fc465b80db3e323994049105aa08d73a56f50a4991481408f90e4R16">here</a> but with explicit <code>return None</code>:</p>
+<pre><code class="language-python">def not_broken():
+        if True:
+            return None
+
+        yield 3
+        yield 2
+        yield 1
+</code></pre>
+<p>The false positive:</p>
+<pre><code class="language-sh">B901 Using `yield` and `return {value}` in a generator function can lead to confusing behavior
+   |
+64 |     def not_broken():
+65 |         if True:
+66 |             return None
+   |             ^^^^^^^^^^^ B901
+67 | 
+68 |         yield 3
+   |
+
+Found 1 error.
+</code></pre>
+<p>The command invoked:</p>
+<pre><code class="language-yaml">  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.5.0
+    hooks:
+      - id: ruff
+        args: [&quot;--fix&quot;, &quot;--exit-non-zero-on-fix&quot;, &quot;--preview&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-02 20:37</div>
+            <div class="timeline-body"><p>Can you remind me, why is this <em>not</em> a problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/f4rk4sh">@f4rk4sh</a> on 2024-07-02 20:57</div>
+            <div class="timeline-body"><pre><code class="language-python">def a():
+    return
+</code></pre>
+<p>returns <code>None</code> implicitly.</p>
+<pre><code class="language-python">def b()
+    return None
+</code></pre>
+<p>returns <code>None</code> explicitly.</p>
+<p>Both <code>return</code> and <code>return None</code> will make the function return <code>None</code>. <code>return None</code> may be preferred for code clarity or if returned <code>None</code> is used later in the code.</p>
+<p>Since using <code>return</code> (without <code>None</code>) is &quot;marked&quot; as <a href="https://github.com/astral-sh/ruff/commit/312f6640b837eb1189748980707cfed70d1f5ffb#diff-3da9dc4c996fc465b80db3e323994049105aa08d73a56f50a4991481408f90e4R16">not_broken</a> I assume it would be good to cover <code>retrun None</code> too.</p>
+<p>More details can be found <a href="https://stackoverflow.com/a/15300671/17693820">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-02 20:58</div>
+            <div class="timeline-body"><p>Thank you. I was mostly trying to remember why the implicit <code>return</code> is considered ok in the first place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-02 21:31</div>
+            <div class="timeline-body"><p>I think the idea is that <code>return</code> is a valid way to stop iteration</p>
+<blockquote>
+<p>In Python 3 return {value} can be used in a generator; however, the combination of yield and return can lead to confusing behavior, as the return statement will cause the generator to raise StopIteration with the value provided, rather than returning the value to the caller.</p>
+</blockquote>
+<p>I actually think the rule is fine here, i.e.,<code>return None</code> doesn't feel like a false positive because it is misleading as the rule is intended to flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-07-02 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2024-07-02 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-04 18:13</div>
+            <div class="timeline-body"><p>Ah thank you. I think I agree -- this seems like a reasonable thing to flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-04 18:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

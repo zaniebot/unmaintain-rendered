@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failed to spawn error with `uv run python3.12` - astral-sh/uv #11796</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failed to spawn error with `uv run python3.12`</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11796">#11796</a>
+        opened by <a href="https://github.com/gmsya">@gmsya</a>
+        on 2025-02-26 11:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gmsya">@gmsya</a> on 2025-02-26 11:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><img src="https://github.com/user-attachments/assets/9b651347-d76f-4fdf-86b1-e23ada66d4aa" alt="Image" /></p>
+<h3>Platform</h3>
+<p>mac</p>
+<h3>Version</h3>
+<p>uv 0.6.3 (a0b9f22a2 2025-02-24)</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @gmsya on 2025-02-26 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on 2025-02-26 14:12</div>
+            <div class="timeline-body"><p>This is the intended behavior.</p>
+<p>You are probably looking for <code>uv run --python 3.12 python3</code> or <code>uvx python@3.12</code>. Both of these will work.</p>
+<p>By default <code>uv run &lt;cmd&gt;</code>, will run the <code>&lt;cmd&gt;</code> as your shell would but by including libraries and binaries from virtual environment if present.</p>
+<p>Since you already have <code>python3.13</code> installed (outside of uv) it runs successfully.</p>
+<p>Maybe we should include <code>uv run --python 3.12 ...</code> example in https://docs.astral.sh/uv/guides/install-python/.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-26 15:10</div>
+            <div class="timeline-body"><p>We could probably special-case this and provide a nice error message</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-02-26 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2025-02-26 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv run python error" to "Failed to spawn error with `uv run python3.12`" by @zanieb on 2025-02-26 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2025-02-26 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-26 15:11</div>
+            <div class="timeline-body"><p>On a &quot;not found&quot; error, we can sniff for the command name (<code>python3.12</code>) and suggest the proper alternatives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JWLee89">@JWLee89</a> on 2025-03-08 08:44</div>
+            <div class="timeline-body"><p>Hi @zanieb ,</p>
+<p>If nobody is looking into this, do you mind if I try taking a look at this issue? Just getting my feet wet with <code>uv</code>.</p>
+<p>(thinking of starting with this, because this does not seem to be a mission-critical issue, so getting a solution for this doesn't seem super high-priority).</p>
+<p>Managed to reproduce with the following command:</p>
+<pre><code class="language-bash">MacBookPro uv % cargo run -- run python3.9 
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.76s
+     Running `target/debug/uv run python3.9`
+error: Failed to spawn: `python3.9`
+  Caused by: No such file or directory (os error 2)
+MacBookPro uv % 
+</code></pre>
+<p>Would the desired result would be something like the following?</p>
+<p>My guess is that this occurs in cases where people want to run a specific python version with uv, but is not available in their current environment.</p>
+<pre><code class="language-bash"># If command starts with string `python` 
+error: Failed to spawn: `python3.9`
+  Caused by:  Command `python3.9` not found. Check the list of available python versions with `uv python list`.
+# For other not found commands
+error: Failed to spawn: `some_command`
+  Caused by:  Command `some_command` not found.
+</code></pre>
+<p>Does this sound okay? If so, I can create a PR for this update.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-08 15:01</div>
+            <div class="timeline-body"><p>Yeah you could take a swing at it!</p>
+<p>I don't think we can just do <code>startswith</code>, that could match something like <code>python-foo</code>; it'd have to be <code>python&lt;version&gt;</code> specifically.</p>
+<p>I think we'd want to say something like..</p>
+<blockquote>
+<p><code>python3.12</code> is not available in the current environment which uses Python 3.11. Did you mean <code>uv run -p 3.12 python</code> or <code>uvx python@3.12</code>?</p>
+</blockquote>
+<p>We may need to add more context based on whether or not <code>run</code> is happening in a project or not (I think the split is <a href="https://github.com/astral-sh/uv/blob/40dce4e00959abc9b598df9e565c0d35dfa5f4c2/crates/uv/src/commands/project/run.rs#L779">here</a>). For example</p>
+<blockquote>
+<p><code>python3.12</code> is not available in the project environment which uses Python 3.11. Did you mean to change the environment to Python 3.12 with <code>uv run -p 3.12 python</code>?</p>
+</blockquote>
+<p>and</p>
+<blockquote>
+<p><code>python3.12</code> is not available in the virtual environment which was created with Python 3.11. Did you mean to search for a Python 3.12 environment with <code>uv run -p 3.12 python</code>?</p>
+</blockquote>
+<p>We could also have a note about <code>uvx</code>, like..</p>
+<blockquote>
+<p>or did you mean to create a temporary Python 3.12 environment with <code>uvx python@3.12</code>?</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JWLee89">@JWLee89</a> on 2025-03-09 06:51</div>
+            <div class="timeline-body"><p>@zanieb Thank you for the clarification! 🙇
+This is my first time using / working with UV so my background knowledge will be quite shallow.</p>
+<blockquote>
+<p>I don't think we can just do <code>startswith</code>, that could match something like python-foo; it'd have to be python<version> specifically.</p>
+</blockquote>
+<p>Good point. Would the following suggestion be okay?</p>
+<pre><code class="language-rust">// Matches strings like: 
+// &quot;python3&quot;, &quot;python3.9&quot;, &quot;python3.10&quot;, &quot;python4&quot;, etc.
+// But NOT &quot;python-foo&quot;, &quot;python39&quot;, &quot;python3abc&quot;, &quot;python3.12b3&quot;.
+// &quot;python3.13.3&quot; is also invalid because we cannot specify patch version when attempting to invoke python via the cli
+// However, we might want to be able to specify patch version because 
+// `uv python pin` also works with patch versions e.g. `uv python pin 3.8.13`
+fn is_python_executable_name(name: &amp;str) -&gt; bool {
+    // If this pattern is re-used or there is a common location for regex patterns, we can move this
+    let pattern = r&quot;^(?i)python[0-9](\.[0-9]+)?$&quot;;
+    let re = Regex::new(pattern).expect(&quot;Invalid regex&quot;);
+    re.is_match(name)
+}
+</code></pre>
+<p>If we want to make this even more robust and see if we get a response from the shell, we can also incorporate the following check:</p>
+<pre><code class="language-rust">// Check whether we get some return such as `Python 3.12.5`
+let output = Command::new(candidate)
+        .arg(&quot;--version&quot;)
+        .output()
+        .map_err(|e| anyhow!(&quot;Failed to spawn command `{}`: {}&quot;, candidate.display(), e))?;
+// Todo, check whether output yields something like `Python x.x.x`
+</code></pre>
+<p>This + combination of the regex check is likely the most reliable method but might be overkill. For now, I will prioritize on safety first.</p>
+<blockquote>
+<p>python3.12 is not available in the current environment which uses Python 3.11. Did you mean uv run -p 3.12 python or uvx python@3.12?</p>
+</blockquote>
+<p>My guess is that the python versions mentioned above are derived from:</p>
+<p><code>python3.12</code> -&gt; <strong>from user prompt</strong>. E.g. <code>cargo run -- run python3.9</code> will output <code>python3.9</code></p>
+<p>We need to check whether <code>python&lt;version&gt;</code> is an available python environment instead of solely relying on <code>startswith</code>, since that will not catch cases such as <code>python-foo</code> as you mentioned.</p>
+<p><code>Python 3.11</code> -&gt; <strong>from interpreter</strong>: E.g. using <code>base_interpreter.python_version()</code> (whatever version we are pinned to currently)</p>
+<p>My current implementation outputs the following:</p>
+<p><img width="1137" alt="Image" src="https://github.com/user-attachments/assets/2bcb84b1-6816-4fca-9802-5fc75a194f8d" /></p>
+<p>Regarding the environment, I am assuming that we will need a different message depending on the following two cases:</p>
+<ol>
+<li>In a project</li>
+</ol>
+<p>Generate error message using definitions above.</p>
+<ol start="2">
+<li>Not in a project - split defined: https://github.com/astral-sh/uv/blob/40dce4e00959abc9b598df9e565c0d35dfa5f4c2/crates/uv/src/commands/project/run.rs#L779</li>
+</ol>
+<p>Generate the following message, using the python version definitions</p>
+<blockquote>
+<p>{user_input_python_version} is not available in the virtual environment which was created with {interpreter_python_version). Did you mean to search for a {user_input_python_version} environment with uv run -p {user_input_python_version} python?</p>
+</blockquote>
+<p>If so, I will work on this during my spare time and submit a PR.
+(it might take a while,  since I need to familiarize myself with the codebase and during the week, I need to focus on my day job).</p>
+<p>Does this sound okay?</p>
+<p>Thank you for your patience! 🙇</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-11 20:10</div>
+            <div class="timeline-body"><p>Sorry I have limited time to reply here so I might be a bit brief.</p>
+<p>Regarding <code>is_python_executable_name</code> — you should be able to use some existing code. Perhaps you can abstract something from inside https://github.com/astral-sh/uv/blob/3a53ec3c5af88a50fbb334a73880a41fd9e9b3a5/crates/uv-python/src/discovery.rs#L543 and https://github.com/astral-sh/uv/blob/2966471db2dfafa71230cdedfa7f0cd124de02b7/crates/uv-python/src/implementation.rs#L36</p>
+<blockquote>
+<p>If we want to make this even more robust and see if we get a response from the shell, we can also incorporate the following check:</p>
+</blockquote>
+<p>I don't think you need to do this.</p>
+<p>Otherwise I think what you've written makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JWLee89">@JWLee89</a> on 2025-03-13 03:49</div>
+            <div class="timeline-body"><p>@zanieb Thanks for the clarification.
+I will take a stab at the PR during the weekend when I have more time.</p>
+<p>Is there a recommended location inside of uv to write unit tests?</p>
+<p>The reason why I am asking is because I saw the following folder: https://github.com/astral-sh/uv/tree/main/crates/uv/tests/it,
+which I assume is supposed ton contain only integration tests here and not unit tests.</p>
+<p>Thank you once again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on 2025-03-13 04:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a recommended location inside of uv to write unit tests?</p>
+</blockquote>
+<p>Most of the unit tests live in the same file as the code. Example: https://github.com/astral-sh/uv/blob/4f70d144d7ea730b20de6dbc2982b7d7a4ef59d1/crates/uv-distribution-filename/src/wheel.rs#L385-L413</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JWLee89">@JWLee89</a> on 2025-03-13 05:51</div>
+            <div class="timeline-body"><p>@nkitsaini Ahh I see. If I don't find unit tests within a specific file, I guess I can just add the <code>mod tests</code> block and write the tests there.</p>
+<p>Thank you for the clarification! 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12201.html">astral-sh/uv#12201</a> on 2025-03-16 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JWLee89">@JWLee89</a> on 2025-03-16 12:23</div>
+            <div class="timeline-body"><p>@zanieb @nkitsaini Hi :)</p>
+<p>I just created a preliminary PR here: https://github.com/astral-sh/uv/pull/12201
+from where we can start discussion / finalize specs for updates and make the appropriate modifications.</p>
+<p>Just wanted to give you both a heads up.</p>
+<p>I might not be able to follow up quickly during the week, but I will do my best to follow up during the weekend.</p>
+<p>Thank you for the helpful responses in this thread!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

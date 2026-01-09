@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>build backend: optional dependencies don't make it to PKG-INFO - astral-sh/uv #10091</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>build backend: optional dependencies don't make it to PKG-INFO</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10091">#10091</a>
+        opened by <a href="https://github.com/cthoyt">@cthoyt</a>
+        on 2024-12-22 10:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cthoyt">@cthoyt</a> on 2024-12-22 10:00</div>
+            <div class="timeline-body"><p>I'm on uv 0.5.11 (c4d0caaee 2024-12-19).</p>
+<p>The issue here is that optional dependencies aren't being written properly to PKG-INFO, therefore making it impossible to pip install the package with options. This was originally identified in https://github.com/biopragmatics/curies/issues/147. Here's a minimal reproduction:</p>
+<pre><code class="language-console">$ uv --preview init xyz --build-backend uv
+Initialized project `xyz` at `/Users/cthoyt/xyz`
+
+$ cd xyz
+
+$ uv --preview add defusedxml --optional xml
+Using CPython 3.11.10
+Creating virtual environment at: .venv
+Resolved 2 packages in 59ms
+   Built xyz @ file:///Users/cthoyt/xyz
+Prepared 1 package in 5ms
+Installed 2 packages in 3ms
+ + defusedxml==0.7.1
+ + xyz==0.1.0 (from file:///Users/cthoyt/xyz)
+
+$ echo &quot;import defusedxml&quot; &gt; src/xyz/__init__.py
+$ echo &quot;def main(): print('hello from modified xyz')&quot; &gt;&gt; src/xyz/__init__.py
+
+$ uv run xyz
+hello from modified xyz
+</code></pre>
+<p>If you start from scratch, you need to do <code>uv run --extra xml xyz</code>, since the option isn't installed yet.</p>
+<p>Now comes the problematic part, after building:</p>
+<pre><code class="language-console">$ uv --preview build
+Building source distribution (uv build backend)...
+Building wheel from source distribution (uv build backend)...
+Successfully built dist/xyz-0.1.0.tar.gz
+Successfully built dist/xyz-0.1.0-py3-none-any.whl
+
+$ tar -xOzf dist/xyz-0.1.0.tar.gz xyz-0.1.0/PKG-INFO 
+Metadata-Version: 2.3
+Name: xyz
+Version: 0.1.0
+Summary: Add your description here
+Author: Charles Tapley Hoyt
+Author-email: Charles Tapley Hoyt &lt;cthoyt@gmail.com&gt;
+Requires-Python: &gt;=3.11
+Provides-Extra: xml
+Description-Content-Type: text/markdown
+</code></pre>
+<p><strong>Here's the bug:</strong> This PKG-INFO file should also include the line <code>Requires-Dist: defusedxml&gt;=0.7.1; extra == 'xml'</code>.</p>
+<p>I believe this also implies that the test scenario at https://github.com/astral-sh/uv/blob/ad92aaf186f59e7f9b3145b62308c8f8a7230bd5/crates/uv-build-backend/src/metadata.rs#L1029-L1036 is incomplete, since it's also missing the appropriate <code>Requires-Dist:</code> lines for mysql and postgres</p>
+<h2>What this means for <code>pip</code> users</h2>
+<p>This affects users by the following scenario using pip to install the package. The minimal reproduction below should follow the code before, in which it creates a virtual environment, activates it (I'm using fish, but so activation will vary based on your console), installing pip in the virtual environment, then using pip to install the package locally</p>
+<p>This can be reproduced with a pip installation scenario by creating a new virtual environment, installing pip in it, then using pip to install. Note that the same thing happens whether you're using <code>-e</code> for an editable installation or not.</p>
+<pre><code class="language-console">$ uv venv
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate.fish
+
+$ source .venv/bin/activate.fish
+
+$ uv pip install pip
+Resolved 1 package in 196ms
+Prepared 1 package in 182ms
+Installed 1 package in 6ms
+ + pip==24.3.1
+
+$ UV_PREVIEW=1 python -m pip install .[xml]
+Processing /Users/cthoyt/Desktop/xyz
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: xyz
+  Building wheel for xyz (pyproject.toml) ... done
+  Created wheel for xyz: filename=xyz-0.1.0-py3-none-any.whl size=1503 sha256=23ddd26cc3e4c20321aec8053bf8ce5e80d9340977d96555e34ce06b7450c6f5
+  Stored in directory: /private/var/folders/6k/r2gmmc213vl6h7bv20x624xw0000gn/T/pip-ephem-wheel-cache-hcnf61u2/wheels/92/98/ae/8e6e182b3e32485aed6bab20d53b27efc72ed7f772a8da227b
+Successfully built xyz
+Installing collected packages: xyz
+Successfully installed xyz-0.1.0
+
+$ pip list
+Package Version Editable project location
+------- ------- -------------------------
+pip     24.3.1
+xyz     0.1.0   /Users/cthoyt/Desktop/xyz
+</code></pre>
+<p>This listing should include <code>defusedxml</code>, but doesn't</p>
+<h2>How it should look, using <code>hatch</code> backend</h2>
+<p>Here's an alternate reproduction that gets the right thing, using hatchling as the backend:</p>
+<pre><code class="language-console">$ uv init xyz --build-backend hatch
+Initialized project `xyz` at `/Users/cthoyt/Desktop/xyz`
+
+$ cd xyz
+
+$ uv add defusedxml --optional xml
+Using CPython 3.11.10
+Creating virtual environment at: .venv
+Resolved 2 packages in 1ms
+   Built xyz @ file:///Users/cthoyt/Desktop/xyz
+Prepared 1 package in 218ms
+Installed 2 packages in 1ms
+ + defusedxml==0.7.1
+ + xyz==0.1.0 (from file:///Users/cthoyt/Desktop/xyz)
+
+$ uv build
+Building source distribution...
+Building wheel from source distribution...
+Successfully built dist/xyz-0.1.0.tar.gz
+Successfully built dist/xyz-0.1.0-py3-none-any.whl
+
+$ tar -xOzf dist/xyz-0.1.0.tar.gz xyz-0.1.0/PKG-INFO 
+Metadata-Version: 2.4
+Name: xyz
+Version: 0.1.0
+Summary: Add your description here
+Author-email: Charles Tapley Hoyt &lt;cthoyt@gmail.com&gt;
+Requires-Python: &gt;=3.11
+Provides-Extra: xml
+Requires-Dist: defusedxml&gt;=0.7.1; extra == 'xml'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../biopragmatics/curies/pulls/148.html">biopragmatics/curies#148</a> on 2024-12-22 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-22 23:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-12-22 23:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-22 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 23:39</div>
+            <div class="timeline-body"><p>(I'll fix this, I've already implemented it before.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10110.html">astral-sh/uv#10110</a> on 2024-12-23 00:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-23 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-23 13:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

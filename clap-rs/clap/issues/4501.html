@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>May `Parser::update_from` not deny the presence of flags (option of type `bool`) ? - clap-rs/clap #4501</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>May `Parser::update_from` not deny the presence of flags (option of type `bool`) ?</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/4501">#4501</a>
+        opened by <a href="https://github.com/TD-Sky">@TD-Sky</a>
+        on 2022-11-22 07:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TD-Sky">@TD-Sky</a> on 2022-11-22 07:13</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.0.26</p>
+<h3>Describe your use case</h3>
+<p>I'm seeking a way to merge default options coming from environment variable and runtime options.</p>
+<p>Even though the method <code>Parser::update_from</code> cannot distinguish the difference between <code>None</code> and default value, it is the right way. I used <code>unwrap_or</code> with custom default value to bypass this feature but found it very troublesome to deal with flags.</p>
+<p>Here is the example code:</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+struct Cli {
+    #[arg(long)]
+    boolean: bool,
+}
+
+fn main() {
+    let mut cli = Cli::parse();
+
+    println!(&quot;flag `boolean`: {}&quot;, cli.boolean);
+
+    cli.update_from([&quot;issue&quot;]);    // binary name
+
+    println!(&quot;flag `boolean`: {}&quot;, cli.boolean);
+}
+</code></pre>
+<p>Run with flag:</p>
+<pre><code class="language-bash">$ cargo run -- --boolean
+</code></pre>
+<p>Output:</p>
+<pre><code>flag `boolean`: true
+flag `boolean`: false
+</code></pre>
+<p>The present flag is denied by <code>update_from</code> without <code>--boolean</code>.</p>
+<h3>Describe the solution you'd like</h3>
+<p>I wish <code>update_from</code> to not overwrite the presence of flags, <code>true</code> values should be kept during updating.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @TD-Sky on 2022-11-22 07:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-11-22 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> removed by @epage on 2022-11-22 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @epage on 2022-11-22 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2022-11-22 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-22 14:15</div>
+            <div class="timeline-body"><p>I wonder how well we can detect this case as users can overwrite defaults.  We can check for various combinations of <code>default_value</code> and <code>default_missing_value</code> but those will be in textual form and we'd then need to also load up the value parser to check that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-22 14:15</div>
+            <div class="timeline-body"><p>Oh, I guess the simpler thing is for <code>update_from</code> to ignore any value whose <code>value_source</code> is <code>Default</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-22 14:17</div>
+            <div class="timeline-body"><p>The next question is if that would be disruptive enough for anyones workflow to be either a minor compatibility break (reserved for clap v4.X.0) or a major compatibility break (reserved for clap vX.0.0)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TD-Sky">@TD-Sky</a> on 2022-11-22 14:32</div>
+            <div class="timeline-body"><p><code>Parser::update_from</code> may not be an often used API and many projects are still using imperative style.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TD-Sky">@TD-Sky</a> on 2022-11-22 14:33</div>
+            <div class="timeline-body"><p>So a minor compatibility break would be OK :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-22 14:42</div>
+            <div class="timeline-body"><p>Minor or major is not a matter of how many people are impacted but by a characterization of how it affects applications that might or might not be relying on the behavior.</p>
+<p>And honestly, I keep wondering if we should just remove <code>update_from</code>.  I wish I could tell how many people were using it and how important it is to their workflow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TD-Sky">@TD-Sky</a> on 2022-11-22 14:51</div>
+            <div class="timeline-body"><p>The semantic of <code>update_from</code> is very appropriate. I think it not worth to highlight the importance by removing this API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../skim-rs/skim/pulls/491.html">skim-rs/skim#491</a> on 2022-12-14 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mehrbod2002">@Mehrbod2002</a> on 2023-01-15 17:16</div>
+            <div class="timeline-body"><p>@epage
+Can I work on this ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-16 16:15</div>
+            <div class="timeline-body"><blockquote>
+<p>The semantic of <code>update_from</code> is very appropriate. I think it not worth to highlight the importance by removing this API.</p>
+</blockquote>
+<p>I'm not sold that <code>update_from</code> has strong enough use cases to justify its complexity and high bug ratio.  There are also various semantic holes in it that I noticed when I polished it up for clap 3.0 though I do not remember what they are at this time.</p>
+<blockquote>
+<p>@epage Can I work on this ?</p>
+</blockquote>
+<p>The part that was missing was someone stepping through the analysis requested earlier</p>
+<blockquote>
+<p>a characterization of how it affects applications that might or might not be relying on the behavior.</p>
+</blockquote>
+<p>to determine if this is a major incompatibility, minor incompatibility, or just a bug fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mehrbod2002">@Mehrbod2002</a> on 2023-01-16 18:12</div>
+            <div class="timeline-body"><p>@epage
+Understood!
+Thanks for details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TD-Sky">@TD-Sky</a> on 2023-06-19 04:39</div>
+            <div class="timeline-body"><blockquote>
+<p>@epage Understood! Thanks for details.</p>
+</blockquote>
+<p>Not to rush you, but I was wondering if you are still working on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-06-19 13:36</div>
+            <div class="timeline-body"><p>I triaged this but am not actively working on it.</p>
+<p>The next step is</p>
+<blockquote>
+<p>The part that was missing was someone stepping through the analysis requested earlier</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TD-Sky">@TD-Sky</a> on 2023-06-19 16:25</div>
+            <div class="timeline-body"><p>Is it a good idea to collect users' opinion about <code>update_from</code> by questionnaires?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-06-19 16:29</div>
+            <div class="timeline-body"><p>To be clear, the analysis I'm referring to is in this comment: https://github.com/clap-rs/clap/issues/4501#issuecomment-1323748371</p>
+<p>Removing <code>update_from</code> is separate from this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TD-Sky">@TD-Sky</a> on 2023-06-19 16:40</div>
+            <div class="timeline-body"><blockquote>
+<p>To be clear, the analysis I'm referring to is in this comment: <a href="https://github.com/clap-rs/clap/issues/4501#issuecomment-1323748371">#4501 (comment)</a></p>
+<p>Removing <code>update_from</code> is separate from this</p>
+</blockquote>
+<p>Theoretically, this is a major compatibility break, either keep with internal changes or remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4974.html">clap-rs/clap#4974</a> on 2023-06-19 17:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

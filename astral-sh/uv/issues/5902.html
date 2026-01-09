@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv lock --locked` false positive - astral-sh/uv #5902</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv lock --locked` false positive</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/5902">#5902</a>
+        opened by <a href="https://github.com/tpgillam">@tpgillam</a>
+        on 2024-08-08 08:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tpgillam">@tpgillam</a> on 2024-08-08 08:57</div>
+            <div class="timeline-body"><p>Using uv <code>0.2.34</code>. A potentially similar issue to #5851</p>
+<p>Consider the following <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;moo&quot;
+version = &quot;0.1.0&quot;
+dependencies = [&quot;pyelmer ~=1.2&quot;, &quot;pymongo[srv] ~=4.3.3&quot;]
+requires-python = &quot;&gt;=3.11&quot;
+</code></pre>
+<p>I then can run the following in an otherwise empty directory (<code>rm uv.lock</code> just lets me re-run quickly):</p>
+<pre><code class="language-bash">rm uv.lock &amp;&amp; uv lock &amp;&amp; cp uv.lock ref_uv.lock &amp;&amp; uv lock &amp;&amp; diff ref_uv.lock uv.lock &amp;&amp; uv lock --locked
+</code></pre>
+<p>and get the output:</p>
+<pre><code>warning: `uv lock` is experimental and may change without warning
+Using Python 3.11.9
+Resolved 21 packages in 31ms
+warning: `uv lock` is experimental and may change without warning
+Using Python 3.11.9
+Resolved 21 packages in 33ms
+warning: `uv lock` is experimental and may change without warning
+Using Python 3.11.9
+Resolved 21 packages in 35ms
+error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provided. To update the lockfile, run `uv lock`.
+</code></pre>
+<p>So <code>uv.lock</code> wouldn't have actually changed, but <code>uv</code> fails because it think it would have done.</p>
+<p>A few assorted things I've noticed:</p>
+<ul>
+<li><p>The <code>srv</code> extra in pymongo exists in 4.3.3, but not in the latest version. In 4.3.3 it's actually <a href="https://github.com/mongodb/mongo-python-driver/blob/3d032768a0c617e4c594cb3f971df1cd06b3e0d4/setup.py#L289">an empty set of pacakges</a>. In the <code>uv.lock</code>, we never actually get an <code>extra = &quot;srv&quot;</code> entry under pymongo - presumably because it finds that its empty. But possibly this is undesired.</p>
+</li>
+<li><p>If I remove the <code>pyelmer</code> dependency then there isn't a problem. In this simpler case, the <code>uv.lock</code> does not contain an <code>environment-markers</code> section.</p>
+</li>
+<li><p>If I remove the <code>[srv]</code> extra from pymongo there also isn't a problem.</p>
+</li>
+<li><p>If I replace the <code>[srv]</code> extra with <code>[encryption]</code>, which is a non-empty set, then we have a slightly different scenario that doesn't fail per-se, but also seems fishy:</p>
+</li>
+</ul>
+<pre><code class="language-bash">rm uv.lock &amp;&amp; uv lock &amp;&amp; cp uv.lock ref_uv.lock &amp;&amp; uv lock &amp;&amp; diff ref_uv.lock uv.lock || uv lock --locked
+</code></pre>
+<pre><code>warning: `uv lock` is experimental and may change without warning
+Using Python 3.11.9
+Resolved 38 packages in 37ms
+warning: `uv lock` is experimental and may change without warning
+Using Python 3.11.9
+Resolved 38 packages in 15ms
+43c43
+&lt;     { name = &quot;urllib3&quot; },
+---
+&gt;     { name = &quot;urllib3&quot;, marker = &quot;python_version == '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and (python_version &lt; '3.11' or python_version &gt; '3.11'))&quot; },
+warning: `uv lock` is experimental and may change without warning
+Using Python 3.11.9
+Resolved 38 packages in 14ms
+</code></pre>
+<p>namely that the second call to <code>uv lock</code> does actually now change the lock file. This is probably a separate issue, and maybe not really a problem (I'm not sure how strong an idempotency guarantee on <code>uv lock</code> there is?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-08-08 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-08-08 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-08 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-08-08 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-08 12:21</div>
+            <div class="timeline-body"><p>@konstin -- Do you expect this one to be fixed either by your work or @ibraheemdev's?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-08 12:45</div>
+            <div class="timeline-body"><p>Yes, the new markers will probably fix this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @charliermarsh on 2024-08-09 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-12 12:24</div>
+            <div class="timeline-body"><p>After https://github.com/astral-sh/uv/pull/5898, <code>uv lock</code> actually produces an invalid lockfile:</p>
+<pre><code>[[package]]
+name = &quot;moo&quot;
+version = &quot;0.1.0&quot;
+source = { editable = &quot;.&quot; }
+dependencies = [
+    { name = &quot;pyelmer&quot; },
+    { name = &quot;pymongo&quot; },
+    { name = &quot;pymongo&quot; },
+]
+</code></pre>
+<p>Investigating further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-12 12:55</div>
+            <div class="timeline-body"><p>I think this may need one of Andrew’s changes…? Is that plausible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-12 13:35</div>
+            <div class="timeline-body"><p>I think there's a simpler issue here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6035.html">astral-sh/uv#6035</a> on 2024-08-12 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-08-12 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-08-12 14:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

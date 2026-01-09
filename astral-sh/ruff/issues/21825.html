@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`minimal-size` profile for the workspace - astral-sh/ruff #21825</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`minimal-size` profile for the workspace</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/21825">#21825</a>
+        opened by <a href="https://github.com/lmmx">@lmmx</a>
+        on 2025-12-06 16:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lmmx">@lmmx</a> on 2025-12-06 16:58</div>
+            <div class="timeline-body"><p>Can we add a <code>minimal-size</code> profile for the workspace like <code>uv</code> has? I just built with it and it was very effective (2x smaller uv than the prebuilt via <code>uv tool install</code>)!</p>
+<p>I think adding this might enable me to build a smaller ty via maturin, which has a symlink to this repo's crates in its repo that is used to get ty's rust source</p>
+<ul>
+<li>See related issue https://github.com/astral-sh/ty/issues/1792</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @Gankra on 2025-12-06 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">release</span> added by @Gankra on 2025-12-06 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-06 17:29</div>
+            <div class="timeline-body"><p>Yes I think it would be reasonable to include a version of uv's minimal-size profile:</p>
+<p>https://github.com/astral-sh/uv/blob/28a8194a67726b93524e3ade42d0db884519ec73/Cargo.toml#L321</p>
+<p>In our workspace Cargo.toml:</p>
+<p>https://github.com/astral-sh/ruff/blob/main/Cargo.toml#L271</p>
+<p>However the panic=abort setting is slightly dubious as we do catch and recover from panics in ty to make the software more reliable (the code &quot;shouldn't ever&quot; panic but sometimes it does so, we don't want that to break everything). The minimal-size profile is used by uv only for uv-build which had a lot of concerns from people about bloat, and doesn't have as much concern about graceful error recovery (either your build works or it doesn't).</p>
+<p>Recovering from panics is especially important for the LSP which must run continuously.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lmmx">@lmmx</a> on 2025-12-06 17:29</div>
+            <div class="timeline-body"><p>I tried it out with the same section as the uv workspace has, and built smaller versions of both ruff and ty:</p>
+<ul>
+<li>ruff: 11M ⇒ 6.3M (-42%)</li>
+<li>ty: 8.1M ⇒ 5.6M (-31%)</li>
+</ul>
+<p>I'll open a PR, and sure I will remove the panic=abort setting in it 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21826.html">astral-sh/ruff#21826</a> on 2025-12-06 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lmmx">@lmmx</a> on 2025-12-06 17:41</div>
+            <div class="timeline-body"><p>After removing the <code>panic = &quot;abort&quot;</code> they got slightly bigger, so updated size reductions for reference:</p>
+<ul>
+<li>ruff 11M ⇒ 7.1M (-35%)</li>
+<li>ty: 8.1M ⇒ 6.1M (-24%)</li>
+</ul>
+<p>(Note that these are measured on <code>upx</code>-compressed, stripped, binaries built on Linux)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-06 19:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:17 UTC
+    </footer>
+</body>
+</html>

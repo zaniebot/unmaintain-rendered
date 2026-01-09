@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[BUG] uv add does not consider the python version when resolving dependency versions - astral-sh/uv #9007</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[BUG] uv add does not consider the python version when resolving dependency versions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/9007">#9007</a>
+        opened by <a href="https://github.com/TonyYanOnFire">@TonyYanOnFire</a>
+        on 2024-11-11 04:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TonyYanOnFire">@TonyYanOnFire</a> on 2024-11-11 04:22</div>
+            <div class="timeline-body"><p>I encountered an error when running the following command:</p>
+<pre><code>$ uv add pandas==2.0.3
+× No solution found when resolving dependencies for split (python_full_version &gt;= '3.11'):
+╰─▶ Because only the following versions of numpy{python_full_version &gt;= '3.11'} are available:
+numpy{python_full_version &gt;= '3.11'}&lt;=2.0.2
+numpy{python_full_version &gt;= '3.11'}&gt;=2.1.0
+and pandas==2.0.3 depends on numpy{python_full_version &gt;= '3.11'}&gt;=1.23.2, we can conclude that pandas==2.0.3 depends on one of:
+numpy&gt;=1.23.2,&lt;=2.0.2
+numpy&gt;=2.1.0
+
+And because your project depends on numpy==1.21.6 and pandas==2.0.3, we can conclude that your project's requirements are unsatisfiable.
+help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<p>My <code>pyproject.toml</code> already specifies the Python version:</p>
+<pre><code>[project]
+...
+requires-python = &quot;&gt;=3.8&quot;
+</code></pre>
+<p>My runtime environment is also Python 3.8.</p>
+<p>The dependency requirements for pandas 2.0.3 are as follows, as referenced in https://github.com/pandas-dev/pandas/blob/v2.0.3/pyproject.toml:</p>
+<pre><code>dependencies = [
+&quot;numpy&gt;=1.20.3; python_version&lt;'3.10'&quot;,
+&quot;numpy&gt;=1.21.0; python_version&gt;='3.10'&quot;,
+&quot;numpy&gt;=1.23.2; python_version&gt;='3.11'&quot;,
+&quot;python-dateutil&gt;=2.8.2&quot;,
+&quot;pytz&gt;=2020.1&quot;,
+&quot;tzdata&gt;=2022.1&quot;
+]
+</code></pre>
+<p>My current numpy==1.21.6 should meet the installation requirements for pandas==2.0.3 under Python 3.8. It seems <code>uv</code> is checking requirements for Python 3.11 which seems like a bug</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TonyYanOnFire">@TonyYanOnFire</a> on 2024-11-11 04:26</div>
+            <div class="timeline-body"><p><code>pip install pandas==2.0.3</code> works just fine</p>
+<pre><code>Requirement already satisfied: numpy&gt;=1.20.3 in ...\.venv\lib\site-packages (from pandas==2.0.3) (1.21.6)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-11 13:47</div>
+            <div class="timeline-body"><p>This is all working as intended. With <code>requires-python = &quot;&gt;=3.8&quot;</code>, we need to resolve for all Python versions later than 3.8, not just 3.8 itself. But given your requirements, there's no valid resolution for Python 3.11, for example.</p>
+<p>You can set <code>requires-python = &quot;&gt;=3.8, &lt;3.9&quot;</code>, for example, to limit the range of supported versions in your project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-11 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TonyYanOnFire">@TonyYanOnFire</a> on 2024-11-12 06:08</div>
+            <div class="timeline-body"><p>Thanks @charliermarsh</p>
+<p>I took your suggestion, set <code>requires-python = &quot;&gt;=3.8, &lt;3.9&quot;</code> and then ran <code>uv add pandas==2.0.3</code> . It works fine.</p>
+<p>Regarding the strategy for uv to resolve dependencies when <code>requires-python = &quot;&gt;=3.8&quot;</code>. as you mentioned, I tried searching in the documentation, but could not find any corresponding discussion. If such a chapter exists in the documentation, it would be great if you could provide the source.</p>
+<p>By the way, my <code>pyproject.toml</code> file (and <code>requires-python = &quot;&gt;=3.8&quot;</code> in it) was created by running <code>uv init</code> when trying to introduce uv into an existing project. In such a scenario, I think setting <code>require -python</code> to <code>&gt;=3.8, &lt;3.9</code> may be more convenient for people like me who are new to UV</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @TonyYanOnFire on 2024-11-12 06:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5605.html">astral-sh/uv#5605</a> on 2024-11-12 06:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:23 UTC
+    </footer>
+</body>
+</html>

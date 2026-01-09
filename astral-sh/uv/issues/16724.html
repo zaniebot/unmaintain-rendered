@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS support isn't working on 0.9.9 - astral-sh/uv #16724</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>iOS support isn't working on 0.9.9</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16724">#16724</a>
+        opened by <a href="https://github.com/henryiii">@henryiii</a>
+        on 2025-11-13 15:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/henryiii">@henryiii</a> on 2025-11-13 15:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm trying to use uv's iOS support directly in cibuildwheel, and I'm getting:</p>
+<p>(AS)</p>
+<pre><code>Using CPython 3.13.9 interpreter at: /Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+Creating virtual environment at: /private/var/folders/6c/pzd640_546q6_yfn24r65c_40000gn/T/cibw-run-wu8a60og/cp313-ios_arm64_iphoneos/build/venv
+Activate with: source /private/var/folders/6c/pzd640_546q6_yfn24r65c_40000gn/T/cibw-run-wu8a60og/cp313-ios_arm64_iphoneos/build/venv/bin/activate
+error: Failed to inspect Python interpreter from active virtual environment at `/private/var/folders/6c/pzd640_546q6_yfn24r65c_40000gn/T/cibw-run-wu8a60og/cp313-ios_arm64_iphoneos/build/venv/bin/python3`
+  Caused by: Querying Python at `/private/var/folders/6c/pzd640_546q6_yfn24r65c_40000gn/T/cibw-run-wu8a60og/cp313-ios_arm64_iphoneos/build/venv/bin/python3` returned an invalid response: unknown variant `iphoneos`, expected one of `aarch64`, `arm64`, `armv5tel`, `armv6l`, `armv7l`, `armv8l`, `powerpc64le`, `ppc64le`, `powerpc64`, `ppc64`, `powerpc`, `ppc`, `i386`, `i686`, `x86`, `amd64`, `x86_64`, `s390x`, `loongarch64`, `riscv64`, `wasm32`
+</code></pre>
+<p>(Intel)</p>
+<pre><code>Using CPython 3.13.9 interpreter at: /Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+Creating virtual environment at: /private/var/folders/vx/zmvzwd094y53mqcpn3jbm7580000gn/T/cibw-run-bcaei7sg/cp313-ios_x86_64_iphonesimulator/build/venv
+Activate with: source /private/var/folders/vx/zmvzwd094y53mqcpn3jbm7580000gn/T/cibw-run-bcaei7sg/cp313-ios_x86_64_iphonesimulator/build/venv/bin/activate
+error: Failed to inspect Python interpreter from active virtual environment at `/private/var/folders/vx/zmvzwd094y53mqcpn3jbm7580000gn/T/cibw-run-bcaei7sg/cp313-ios_x86_64_iphonesimulator/build/venv/bin/python3`
+  Caused by: Querying Python at `/private/var/folders/vx/zmvzwd094y53mqcpn3jbm7580000gn/T/cibw-run-bcaei7sg/cp313-ios_x86_64_iphonesimulator/build/venv/bin/python3` returned an invalid response: unknown variant `iphonesimulator`, expected one of `aarch64`, `arm64`, `armv5tel`, `armv6l`, `armv7l`, `armv8l`, `powerpc64le`, `ppc64le`, `powerpc64`, `ppc64`, `powerpc`, `ppc`, `i386`, `i686`, `x86`, `amd64`, `x86_64`, `s390x`, `loongarch64`, `riscv64`, `wasm32`
+
+</code></pre>
+<p><code>iphoneos</code> and <code>iphonesimulator</code> seem to be confusing it. From Discord. CC @freakboy3742. https://github.com/pypa/cibuildwheel/pull/2586</p>
+<h3>Platform</h3>
+<p>macOS</p>
+<h3>Version</h3>
+<p>0.9.9</p>
+<h3>Python version</h3>
+<p>3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @henryiii on 2025-11-13 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-13 15:24</div>
+            <div class="timeline-body"><p>The PEP talks about the (private?) <code>sys.implementation._multiarch</code> and <code>platform.ios_ver()</code>, @freakboy3742 do you know how those relate to <code>sysconfig.get_platform()</code>, the main value that uv currently reads?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/freakboy3742">@freakboy3742</a> on 2025-11-13 22:19</div>
+            <div class="timeline-body"><p>@konstin I have no knowledge at all about how <em>uv</em> is handling this.</p>
+<p>From the Python side, <code>sysconfig.get_platform()</code> is <a href="https://github.com/python/cpython/blob/main/Lib/sysconfig/__init__.py#L731">internally constructed</a> as <code>{sys.platform}-{min_ios_version}-{sys._implementation.multiarch}</code>.</p>
+<p>In practice, this means:</p>
+<p>ARM64 device:</p>
+<ul>
+<li><code>sys._implementation.multiarch</code> returns <code>arm64-iphoneos</code></li>
+<li><code>platform.ios_ver()</code> returns a namedtuple  <code>(system=&quot;iOS&quot;, release=&quot;18.6&quot;, model=&quot;iPhone16,4&quot;, is_simulator=False)</code>. The release and model is the actual iOS version and internal device name of the running device. System will return <code>iPad</code> on an iPad.</li>
+<li><code>sysconfig.get_platform()</code> returns <code>ios-13.0-arm64-iphoneos</code></li>
+</ul>
+<p>ARM64 simulator:</p>
+<ul>
+<li><code>sys._implementation.multiarch</code> returns <code>arm64-iphonesimulator</code></li>
+<li><code>platform.ios_ver()</code> returns a namedtuple  <code>(system=&quot;iOS&quot;, release=&quot;13.0&quot;, model=&quot;iphoneos&quot;, is_simulator=True)</code></li>
+<li><code>sysconfig.get_platform()</code> returns <code>ios-13.0-arm64-iphonesimulator</code></li>
+</ul>
+<p>x86-64 simulator:</p>
+<ul>
+<li><code>sys._implementation.multiarch </code> returns <code>x86_64-iphonesimulator</code></li>
+<li><code>platform.ios_ver()</code> returns a namedtuple  <code>(system=&quot;iOS&quot;, release=&quot;13.0&quot;, model=&quot;iphoneos&quot;, is_simulator=True)</code></li>
+<li><code>sysconfig.get_platform()</code> returns <code>ios-13.0-x86_64-iphonesimulator</code> .</li>
+</ul>
+<p>The references to 13.0 describe the minimum supported iOS version, which is a function</p>
+<p>If the interpreter is being started in cibuildwheel, then it's running on macOS; depending on exactly how the interpreter was started, it may be in a &quot;fake&quot; virtual environment - a venv that has a <code>.pth</code> file that monkey patches key values in <code>sys</code>, <code>platform</code>, <code>sysconfig</code> and <code>os</code> to return iOS-like values.</p>
+<p>You can get an isolated version of that environment handling in <a href="http://github.com/beeware/xbuild"><code>xbuild</code></a>. <code>xbuild</code> contains <code>xvenv</code>, which converts a &quot;real&quot; macOS venv in to a &quot;fake&quot; iOS, Android or Emscripten venv; <code>xbuild</code> is an extension of <code>build</code> that creates cross-platform environments and starts a cross-platform build. It's enough of a fake to convince <code>pip</code> to install iOS/Android wheels; and provided the rest of the environment variables are set up appropriately, to manage compiling binary wheels.</p>
+<p>Happy to provide any additional details that might be helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-11-14 05:40</div>
+            <div class="timeline-body"><p>Interesting that <a href="https://github.com/pypa/cibuildwheel/pull/2587">Android</a> is working in cibuildwheel but not iOS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-11-14 05:49</div>
+            <div class="timeline-body"><p>Android doesn't have &quot;simulator&quot; vs &quot;device&quot; separate binaries, iOS does. I think that's why it's more complicated.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

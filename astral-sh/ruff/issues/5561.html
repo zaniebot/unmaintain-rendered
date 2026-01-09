@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive F811 when using TYPE_CHECKING - astral-sh/ruff #5561</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive F811 when using TYPE_CHECKING</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5561">#5561</a>
+        opened by <a href="https://github.com/phil65">@phil65</a>
+        on 2023-07-06 13:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/phil65">@phil65</a> on 2023-07-06 13:46</div>
+            <div class="timeline-body"><p>For following code</p>
+<pre><code class="language-py">from typing import TYPE_CHECKING:
+...
+if TYPE_CHECKING:
+    from x import y
+
+...
+
+if __name__ == &quot;__main__&quot;:
+    from x import y
+    ...
+</code></pre>
+<p>Error F811 gets reported, which should not be the case I think.
+Thank you for this great tool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "False positive " to "False positive F811 when using TYPE_CHECKING" by @phil65 on 2023-07-06 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-06 13:52</div>
+            <div class="timeline-body"><p>Thanks for the issue! This indeed looks incorrect. Since this is just a small example, I'm curious why you're using this pattern in the real world?</p>
+<p>Regardless, it seems like <code>from x import y</code> should be allowed in a new scope if the previous import was in an if-type-checking block.</p>
+<p>You would expect the following to get reported still, right?</p>
+<pre><code class="language-python">from typing import TYPE_CHECKING:
+
+if TYPE_CHECKING:
+    from x import y
+
+from x import y
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-07-06 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phil65">@phil65</a> on 2023-07-06 13:58</div>
+            <div class="timeline-body"><p>Yes, I would expect that to get reported.
+I am often using the <code>if __name__ == &quot;__main__&quot;:</code> section for testing purposes, that´s why I am using this pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9418.html">astral-sh/ruff#9418</a> on 2024-01-07 02:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-10 20:09</div>
+            <div class="timeline-body"><p>This no longer gets triggered (in the next version).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-10 20:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Better diagnostics for `RUF039` - astral-sh/ruff #16713</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Better diagnostics for `RUF039`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16713">#16713</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-03-13 17:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-13 17:27</div>
+            <div class="timeline-body"><p>This snippet has 10 <a href="https://docs.astral.sh/ruff/rules/unraw-re-pattern/"><code>RUF039</code></a> diagnostics (<a href="https://play.ruff.rs/81703fb0-ac6f-4b0e-8086-82ed8feabf14">playground</a>), of which only two can be automatically fixed:</p>
+<pre><code class="language-py">re.compile(
+    &quot;[&quot;
+    &quot;\U0001F600-\U0001F64F&quot;  # emoticons
+    &quot;\U0001F300-\U0001F5FF&quot;  # symbols &amp; pictographs
+    &quot;\U0001F680-\U0001F6FF&quot;  # transport &amp; map symbols
+    &quot;\U0001F1E0-\U0001F1FF&quot;  # flags (iOS)
+    &quot;\U00002702-\U000027B0&quot;
+    &quot;\U000024C2-\U0001F251&quot;
+    &quot;\u200d&quot;  # zero width joiner
+    &quot;\u200c&quot;  # zero width non-joiner
+    &quot;]+&quot;,
+    flags=re.UNICODE,
+)
+</code></pre>
+<p>There are a few improvements that can be made:</p>
+<ul>
+<li><p>The current logic <a href="https://github.com/astral-sh/ruff/blob/acf35c55f8b8f5ce16ac388e7f6a1af884edbe16/crates/ruff_linter/src/rules/ruff/rules/unraw_re_pattern.rs#L173">does not provide a fix</a> for string literals that contain backslashes.</p>
+<p>However, save for <code>\b</code>, which can either mean &quot;word boundary&quot; or &quot;backspace&quot; depending on context, and <code>\N{}</code>, which is not supported by <code>re</code> until 3.8, all other escape sequences <a href="https://docs.python.org/3/library/re.html#regular-expression-syntax">are supported</a> and mean the same things as they would in normal strings. Therefore, while the fix will change the actual runtime representation (<code>re.compile(r'\u00A0') != re.compile('\u00A0')</code>), the regular expression semantics will be retained. In such cases, Ruff should offer an unsafe fix.</p>
+</li>
+<li><p>The number of diagnostics is not ideal.</p>
+<p>When a string is implicitly concatenated, only one diagnostic should be emitted for and encompassing all parts; the fix should too fix all of them at once. Ruff should only resort to multiple diagnostics in cases where only some of the parts are not raw.</p>
+</li>
+</ul>
+<p>(This issue is a follow-up to #16644.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-13 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-03-13 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CrowbarKZ">@CrowbarKZ</a> on 2025-06-21 11:12</div>
+            <div class="timeline-body"><p>Hi @InSyncWithFoo . I have been looking into this issue and, after experimenting locally a bit, I think I disagree with one part of the requirements above, this one:</p>
+<blockquote>
+<p>Ruff should only resort to multiple diagnostics in cases where only some of the parts are not raw.</p>
+</blockquote>
+<p>It feels strange to have multiple diagnostics and suggested fixes for 1 concatenated string, e.g. turning something like</p>
+<pre><code>re.compile(
+    r&quot;[&quot;
+    &quot;\U0001F1E0-\U0001F1FF&quot;
+    &quot;\b0001F1E0-\U0001F1FF&quot;
+    &quot;]+&quot;,
+    flags=re.UNICODE,
+)
+</code></pre>
+<p>Into  (if we apply only safe fixes)</p>
+<pre><code>re.compile(
+    r&quot;[&quot;
+    &quot;\U0001F1E0-\U0001F1FF&quot;
+    &quot;\b0001F1E0-\U0001F1FF&quot;
+    r&quot;]+&quot;,
+    flags=re.UNICODE,
+)
+</code></pre>
+<p>Does not seem to make the code more readable. Wouldn't it be better to always treat the whole concatenated string as 1 issue, and only apply safe/unsafe fixes when they are applicable to all parts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-06-21 11:29</div>
+            <div class="timeline-body"><p>@CrowbarKZ No strong feelings on my part. Feel free to make decisions as you see fit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-06-30 13:01</div>
+            <div class="timeline-body"><p>I'm currently trying to cook up a PR for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19065.html">astral-sh/ruff#19065</a> on 2025-07-01 07:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-24 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-24 15:47</div>
+            <div class="timeline-body"><p>We closed this in https://github.com/astral-sh/ruff/pull/19065, which added autofixes in more cases but didn't change the number of diagnostics for concatenated literals. I think the number of diagnostics is okay, but we can reopen this if anyone feels strongly about that part.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

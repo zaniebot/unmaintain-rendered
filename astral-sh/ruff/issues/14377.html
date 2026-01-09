@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Looks like ruff ignores useless return statement in functions annotated to return not None - astral-sh/ruff #14377</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Looks like ruff ignores useless return statement in functions annotated to return not None</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14377">#14377</a>
+        opened by <a href="https://github.com/go-to-mjrecent-on-TG">@go-to-mjrecent-on-TG</a>
+        on 2024-11-16 11:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/go-to-mjrecent-on-TG">@go-to-mjrecent-on-TG</a> on 2024-11-16 11:25</div>
+            <div class="timeline-body"><p>Today, I went to <a href="https://play.ruff.rs">Ruff playground</a>, enabled <a href="https://docs.astral.sh/ruff/rules/useless-return/">PLR1711 (useless-return) rule</a>  and pasted this code:</p>
+<pre><code class="language-py">def f() -&gt; int:
+    print()
+    return None
+</code></pre>
+<p>In Diagnostics tab I saw only <code>Everything is looking good!</code>.
+I then removed <code> -&gt; int</code> for the code to be:</p>
+<pre><code class="language-py">def f():
+    print()
+    return None
+</code></pre>
+<p>and saw <code>Useless `return` statement at end of function (PLR1711) [Ln 3, Col 5] </code>.
+Ruff complained in the same way when I annotated function to return None:</p>
+<pre><code class="language-py">def f() -&gt; None:
+    print()
+    return None
+</code></pre>
+<p>All the same goes for cases with <code>return</code> instead of <code>return None</code>.
+Is this an intended behavior? If it is, I think <a href="https://docs.astral.sh/ruff/rules/useless-return/">the documentation on this rule</a> should inform about this.</p>
+<p>I have checked how pylint handles such cases by running cell with the following in fresh google colab runtime:</p>
+<pre><code>!pip install pylint&gt;/dev/null
+!printf 'def f() -&gt; int:\n    print()\n    return None' &gt; a.py
+!pylint --version &amp;&amp; pylint --disable C a.py
+</code></pre>
+<p>I got</p>
+<pre><code>pylint 3.3.1
+astroid 3.3.5
+Python 3.10.12 (main, Sep 11 2024, 15:47:36) [GCC 11.4.0]
+************* Module a
+a.py:1:0: R1711: Useless return at end of function or method (useless-return)
+
+-----------------------------------
+Your code has been rated at 6.67/10
+</code></pre>
+<p>How can I get ruff to complain about useless return statements in cases when function is not annotated to return None?
+You can also help <a href="https://stackoverflow.com/questions/79195035/how-to-make-ruff-complain-about-useless-return-statements-in-functions-annotated">on StackOverflow</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-16 16:21</div>
+            <div class="timeline-body"><p>Thanks for bringing this up!</p>
+<p>It appears the decision to skip the lint when the return annotation is present and not <code>None</code> was made <a href="https://github.com/astral-sh/ruff/issues/3704">in the resolution of this issue</a>, for compatibility with <code>mypy</code>.</p>
+<p>We should certainly update the documentation to reflect this. But if there is also some interest from the community in revisiting this decision, or perhaps even making it configurable, it'd be nice to hear more about what's most helpful here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-16 16:45</div>
+            <div class="timeline-body"><p>Ruff's current behavior seems correct to me. The return isn't useless. It's just that the returned value doesn't match the annotated type. But that's more a type checker concern than a concern of the useless return rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-11-16 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-16 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/go-to-mjrecent-on-TG">@go-to-mjrecent-on-TG</a> on 2024-11-16 17:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for bringing this up!</p>
+<p>It appears the decision to skip the lint when the return annotation is present and not <code>None</code> was made <a href="https://github.com/astral-sh/ruff/issues/3704">in the resolution of this issue</a>, for compatibility with <code>mypy</code>.</p>
+<p>We should certainly update the documentation to reflect this. But if there is also some interest from the community in revisiting this decision, or perhaps even making it configurable, it'd be nice to hear more about what's most helpful here!</p>
+</blockquote>
+<p>Is there currently any way of making ruff complain about such returns? If not, I would be happy if that was made possible. So revise the decision or add the other rule for this, please.</p>
+<p>Thank you for ruff!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/go-to-mjrecent-on-TG">@go-to-mjrecent-on-TG</a> on 2024-11-16 18:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Ruff's current behavior seems correct to me. The return isn't useless. It's just that the returned value doesn't match the annotated type. But that's more a type checker concern than a concern of the useless return rule.</p>
+</blockquote>
+<p>How are such returns not useless? What do you mean?
+So you think that this should be written in docs:</p>
+<blockquote>
+<p><a href="https://docs.astral.sh/ruff/rules/useless-return/#what-it-does">What it does</a></p>
+<p>Checks for functions that end with an unnecessary return or return None, and contain no other return statements.
+<a href="https://docs.astral.sh/ruff/rules/useless-return/#why-is-this-bad">Why is this bad?</a></p>
+<p>Python implicitly assumes a None return at the end of a function, making it unnecessary to explicitly write return None.
+<a href="https://docs.astral.sh/ruff/rules/useless-return/#example">Example</a></p>
+<pre><code class="language-py">def f():
+    print(5)
+    return None
+</code></pre>
+<p>Use instead:</p>
+<pre><code class="language-py">def f():
+    print(5)
+</code></pre>
+</blockquote>
+<p>But ruff should not flag this?:</p>
+<pre><code class="language-py">def f() -&gt; ...:
+    print()
+    return None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-16 21:30</div>
+            <div class="timeline-body"><p>I don't mind extending the documentation.</p>
+<blockquote>
+<p>How are such returns not useless? What do you mean?</p>
+</blockquote>
+<p>The return in the given example is incorrect: It returns <code>None</code> instead of a number. But it isn't that the return is useless. Instead, the user should either:</p>
+<ul>
+<li>Fix the return type annotation and change it to <code>None</code> or remove it entirely. Ruff then flags the return statement</li>
+<li>Fix the return statement to return an int.</li>
+</ul>
+<p>To my knowledge, there's currently no rule to catch this because catching that the returned value <code>None</code> is incomaptible (not assignable to) with <code>int</code> is something that type checkers do. We plan to add support for a rule that catches the incorrect return with our type checker red knot, but that's still far out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-16 21:41</div>
+            <div class="timeline-body"><p>I don't know, I'm not sure if I'm fully on board with this interpretation. From my point of view, there are two separate things happening:</p>
+<ol>
+<li>The use of <code>return None</code> or <code>return</code> vs the <em>equivalent</em> implicit return of None.</li>
+<li>The question of whether a returned value (implicit or explicit) has compatible type with the return annotation.</li>
+</ol>
+<p>I think (1) is a question of style and (2) is a question for a type checker. It makes sense to me that one would want to enforce (1) uniformly in a project as a lint rule (really either way - to always have explicit returns or always implicit returns of None - just a style preference), and then separately have a type checker complain about the values being returned from your function and what type hint you used.</p>
+<p>Sorry for being difficult! I'm fine leaving it as is but just wanted to share this perspective.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-16 21:50</div>
+            <div class="timeline-body"><p>That interpretation makes sense to me. But to me, showing both PLR1711 and a violation that the returned value doesn't match the annotated type is confusing for users using a type checker. It's provided fix is may also be incorrect, depending on the situations. That's why I think it's better to not raise the violation at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/go-to-mjrecent-on-TG">@go-to-mjrecent-on-TG</a> on 2024-11-17 14:17</div>
+            <div class="timeline-body"><p>So I would answer yes to the question whether it should there should be an option to make ruff complain about such returns:</p>
+<pre><code class="language-py">def f() -&gt; {not None}:
+    ...
+    return None
+</code></pre>
+<p>Because it might very well be that somebody wants this code to be valid:</p>
+<pre><code class="language-py"># returns some int
+def f() -&gt; int: ...
+
+exec('redefine f. example: def f(): return 0')
+r = f()
+assert isinstance(r, int)
+print(r)
+</code></pre>
+<p>but get complains about the same code with:</p>
+<pre><code class="language-py">def f() -&gt; int:
+    ...
+    return None
+</code></pre>
+<p>or with</p>
+<pre><code class="language-py">def f() -&gt; int:
+    &quot;&quot;&quot;docs in the signature function, description...&quot;&quot;&quot;
+    return None
+</code></pre>
+<p>Actually, ruff doesnt complain even about the following now (<a href="https://stackoverflow.com/questions/79196716/pylint-and-ruff-dont-complain-about-useless-unnecessary-return-in-functions-w">so does pylint</a>):</p>
+<pre><code class="language-py">def f():
+    &quot;&quot;&quot;docs in the signature function, description...&quot;&quot;&quot;
+    return None
+</code></pre>
+<p>I myself didn't know that functions with docstring and without return at the end are valid. And I can imagine how I could have ended up not knowing about it and working with some other developers who know that this is valid, use ruff, share the ruff config with their teammates, and want ruff to tell newbies that they are fine with:</p>
+<pre><code class="language-py">def f():
+    &quot;&quot;&quot;docs in the signature function, description...&quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-17 18:53</div>
+            <div class="timeline-body"><p>I think there is an underlying assumption in applying static program analysis to a highly dynamic language like Python that behavior involving <code>exec</code>/<code>eval</code> can't really be detected. (But someone should correct me if I'm wrong). Basically the best that can be done in these cases is detect the <em>use</em> of <code>exec</code>/<code>eval</code> and warn against it: <a href="https://docs.astral.sh/ruff/rules/exec-builtin/">S102</a>, <a href="https://docs.astral.sh/ruff/rules/suspicious-eval-usage/">S307</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/go-to-mjrecent-on-TG">@go-to-mjrecent-on-TG</a> on 2024-11-17 19:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I think there is an underlying assumption in applying static program analysis to a highly dynamic language like Python that behavior involving <code>exec</code>/<code>eval</code> can't really be detected. (But someone should correct me if I'm wrong). Basically the best that can be done in these cases is detect the <em>use</em> of <code>exec</code>/<code>eval</code> and warn against it: <a href="https://docs.astral.sh/ruff/rules/exec-builtin/">S102</a>, <a href="https://docs.astral.sh/ruff/rules/suspicious-eval-usage/">S307</a></p>
+</blockquote>
+<p>What do I do if I want to allow exec and eval, and allow the definition of function signatures, but also get warnings when there is some return None that is not needed there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-17 19:09</div>
+            <div class="timeline-body"><p>Yes I think that's a fair question (and orthogonal to the use of <code>eval</code>/<code>exec</code>). That's I think the core remaining issue here - deciding whether to not support this, support it as a configurable variant of the rule, or support it as a separate rule. Might take some further discussion and consideration. Thank you for the examples and clarifications!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2024-11-17 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-11-17 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/go-to-mjrecent-on-TG">@go-to-mjrecent-on-TG</a> on 2024-11-17 19:46</div>
+            <div class="timeline-body"><p>Examples of 'real world' code that contains useless return, but that ruff doesn't complain about (with abstractmethod, not exec or eval):</p>
+<pre><code class="language-py">from typing import Any
+from abc import ABC, abstractmethod
+
+
+class DataProcessor(ABC):
+    @abstractmethod
+    def process(self) -&gt; Any:
+        ...
+        return None
+</code></pre>
+<pre><code class="language-py">from abc import ABC, abstractmethod
+
+
+class DataProcessor(ABC):
+    @abstractmethod
+    def process(self):
+        &quot;&quot;&quot;processes the data&quot;&quot;&quot;
+        return None
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

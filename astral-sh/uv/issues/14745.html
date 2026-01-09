@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suggestion: Make `install.sh` a lightweight redirect to GitHub-hosted installer script (like `pyenv`) - astral-sh/uv #14745</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Suggestion: Make `install.sh` a lightweight redirect to GitHub-hosted installer script (like `pyenv`)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14745">#14745</a>
+        opened by <a href="https://github.com/tataouinea">@tataouinea</a>
+        on 2025-07-19 12:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tataouinea">@tataouinea</a> on 2025-07-19 12:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The current <code>install.sh</code> script available at:</p>
+<pre><code>curl -LsSf https://astral.sh/uv/install.sh | sh
+</code></pre>
+<p>is long and complex, making it difficult to quickly audit for safety. This is important because users are encouraged to pipe it directly into <code>sh</code>.</p>
+<p>I'd like to propose changing this script to follow a model like <a href="https://github.com/pyenv/pyenv-installer">pyenv's installer</a>, where the public-facing script is short, readable, and simply redirects to a GitHub-hosted file that contains the real logic.</p>
+<h3>Motivation</h3>
+<p>Piping shell scripts from external domains is risky. While it's always best to manually review scripts, users rarely do this. With the current approach, https://astral.sh/uv/install.sh is quite lengthy and not easily auditable at a glance.</p>
+<p>By contrast, tools like <a href="https://github.com/pyenv/pyenv-installer">pyenv</a> use an installation entrypoint like:</p>
+<pre><code>#!/bin/bash
+#
+# Usage: curl https://pyenv.run | bash
+#
+# For more info, visit: https://github.com/pyenv/pyenv-installer
+#
+index_main() {
+    set -e
+    curl -s -S -L https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash
+}
+
+index_main
+</code></pre>
+<p>This has two key benefits:</p>
+<ol>
+<li><strong>Transparency:</strong> Users can immediately understand what the script is doing.</li>
+<li><strong>Trust:</strong> The actual installer lives on GitHub, where users can:<ul>
+<li>Verify the script's contents easily.</li>
+<li>Inspect the Git log and blame history.</li>
+<li>Trust GitHub as a more secure host than a custom domain.</li>
+</ul>
+</li>
+</ol>
+<p>This minimizes the blast radius in the unlikely event that astral.sh is compromised, while still preserving the convenience of a memorable and friendly installation URL.</p>
+<h3>Proposal</h3>
+<ul>
+<li>Keep https://astral.sh/uv/install.sh for convenience.</li>
+<li>Replace its contents with a short shell script that transparently downloads and executes a GitHub-hosted script, e.g., from the main branch or a tag on this repository.</li>
+</ul>
+<p>Example sketch:</p>
+<pre><code>#!/bin/bash
+#
+# Usage: curl -LsSf https://astral.sh/uv/install.sh | sh
+#
+# For more info, visit: https://github.com/astral-sh/uv
+#
+curl -sSfL https://raw.githubusercontent.com/astral-sh/uv/main/install/install.sh | sh
+</code></pre>
+<p>This would keep the current UX intact, while improving user trust and security.</p>
+<h3>Alternatives</h3>
+<ul>
+<li>Keep the current setup but add a clear comment block at the top explaining where the source of truth is hosted and how to audit it.</li>
+<li>Host <code>install.sh</code> directly on GitHub Pages (e.g., astral-sh.github.io) to avoid the risks of self-managed domains.</li>
+</ul>
+<h3>Additional Context</h3>
+<p>This change is based on good practices around supply chain trust, especially when it comes to &quot;curl | sh&quot; style install flows. By pointing to a trusted GitHub file, you're helping users more safely bootstrap <code>uv</code> into their systems.</p>
+<p>Let me know if you'd like help drafting the new short redirect script.</p>
+<p>Thanks for all the work on <code>uv</code> — it’s been a joy to use!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @tataouinea on 2025-07-19 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2025-07-19 16:23</div>
+            <div class="timeline-body"><p>Actually, the script is on GitHub; it just lacks Git history, but the hash is still there.</p>
+<p><img width="1185" height="90" alt="Image" src="https://github.com/user-attachments/assets/4d868981-3c32-41dd-969b-976f8a3ff0c5" /></p>
+<p><img width="899" height="285" alt="Image" src="https://github.com/user-attachments/assets/ff6a8b12-8b23-4d20-917b-00a129d9277f" /></p>
+<p><img width="1250" height="411" alt="Image" src="https://github.com/user-attachments/assets/29fb0a1f-985d-413f-acae-80644952a4a8" /></p>
+<p>Or are you asking for the change history?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-20 16:56</div>
+            <div class="timeline-body"><p>The URL at <code>astral.sh</code> is just a redirect to <code>https://github.com/astral-sh/uv/releases/latest/download/uv-installer.sh</code>, I'm not sure how making it a shim makes it easier to audit? If anything, that means it requires a separate invocation to inspect the relevant code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tataouinea">@tataouinea</a> on 2025-07-20 17:08</div>
+            <div class="timeline-body"><blockquote>
+<p>The URL at <code>astral.sh</code> is just a redirect to <code>https://github.com/astral-sh/uv/releases/latest/download/uv-installer.sh</code>, I'm not sure how making it a shim makes it easier to audit? If anything, that means it requires a separate invocation to inspect the relevant code?</p>
+</blockquote>
+<p>Ah, you're absolutely right — I hadn’t noticed that https://astral.sh/uv/install.sh is just a redirect to GitHub. A quick <code>curl -I https://astral.sh/uv/install.sh</code> confirms it's a 301 to https://github.com/astral-sh/uv/releases/latest/download/uv-installer.sh.</p>
+<p>That completely addresses my original concern — since the actual script is served from GitHub, it’s already benefiting from the trust and transparency I was advocating for. No need for a shim or change in structure.</p>
+<p>Thanks for the clarification, and sorry for the noise!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @tataouinea on 2025-07-20 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-20 17:13</div>
+            <div class="timeline-body"><p>No problem!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

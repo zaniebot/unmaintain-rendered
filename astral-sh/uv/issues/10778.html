@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug? Can't run uv sync on package with --no-build - astral-sh/uv #10778</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug? Can't run uv sync on package with --no-build</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10778">#10778</a>
+        opened by <a href="https://github.com/Chasarr">@Chasarr</a>
+        on 2025-01-20 14:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Chasarr">@Chasarr</a> on 2025-01-20 14:08</div>
+            <div class="timeline-body"><p>When trying to create a new package with say <code>uv init --package</code>, add a dependency, say the progress package, with <code>uv add progress</code>. My pyprojects.toml looks like this:</p>
+<pre><code class="language-toml">[project]
+name = &quot;hatch-demo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;My Name&quot;, email = &quot;my@e.mail&quot; }
+]
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;progress&gt;=1.6&quot;,
+]
+
+[project.scripts]
+hatch-demo = &quot;hatch_demo:main&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+</code></pre>
+<p>Company policy is to ensure that we don't use source distributions (only prebuilt binary wheel dependencies) which we used to do with <code>pip install -r requirements.txt --no-compile</code>. We are now trying to switch over to uv, but <code>uv sync --no-build</code> returns
+<code>error: Distribution </code>hatch-demo==0.1.0 @ editable+.<code>can't be installed because it is marked as</code>--no-build<code> but has no binary distribution</code></p>
+<p>Although I can see why this returns an error, the purpose of --no-build for us should be to not build dependencies when building our package, not to inhibit us from building the package itself. We could technically do <code>uv sync --no-build-package pkg1 --no-build-package pkg2 ... --no-build-package pkgN</code> for all dependencies, but that doesn't seem like a very elegant solution.</p>
+<p>Not sure if a fix for this problem aligns with the goals of uv.</p>
+<p>TLDR: I want to 1) uv sync dependencies with --no-build and then 2) build the package with said dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 14:21</div>
+            <div class="timeline-body"><p>I would suggest <code>uv sync --no-build --no-install-project</code> to skip building and installing <code>hatch-demo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-20 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Chasarr">@Chasarr</a> on 2025-01-20 16:23</div>
+            <div class="timeline-body"><p>Thanks for guiding me to the right answer! To avoid running build on packages in my CI environment, I just enter</p>
+<pre><code class="language-sh">uv sync --no-build --no-install-project # Fetches prebuilt wheels
+uv sync --frozen # builds project with previously synced dependencies
+uv run --frozen &lt;MY_PACKAGE&gt; # Now CI can perform tests on the package before publishing to internal Python package index
+</code></pre>
+<p>Thanks a lot!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Chasarr on 2025-01-20 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 16:32</div>
+            <div class="timeline-body"><p>No worries! Thank you for following up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-20 16:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

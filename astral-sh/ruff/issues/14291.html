@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff v0.7.3 not recognizing instance of SIM115 compared to v0.7.2 - astral-sh/ruff #14291</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff v0.7.3 not recognizing instance of SIM115 compared to v0.7.2</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/14291">#14291</a>
+        opened by <a href="https://github.com/CoolCat467">@CoolCat467</a>
+        on 2024-11-12 02:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CoolCat467">@CoolCat467</a> on 2024-11-12 02:13</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>In Ruff version <code>0.7.3</code>, <code>SIM115</code> is not recognized in a case that was recognized in <code>0.7.2</code>:</p>
+<p><code>file.py</code></p>
+<pre><code class="language-python">from __future__ import annotations
+
+import traceback
+from typing import Any, IO
+
+
+def open_file(
+    filename: str,
+    mode: str,
+    encoding: str | None = None,
+) -&gt; IO[Any] | None:
+    &quot;&quot;&quot;Return file handle. Return None on failure.&quot;&quot;&quot;
+    try:
+        # Line below previously correctly triggered `SIM115`
+        return open(filename, mode, encoding=encoding)
+    except FileNotFoundError:
+        print(&quot;File Not Found.&quot;)
+    except (OSError, BaseException) as exc:
+        print(exc)
+        traceback.print_exception(exc)
+    return None
+</code></pre>
+<p>Noted line no longer triggers <code>SIM115</code>, where I argue it might be more correct to do so.</p>
+<pre><code class="language-bash">ruff check --isolated --select=SIM115 file.py
+</code></pre>
+<pre><code class="language-console">~ &gt; ruff --version
+ruff 0.7.3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 02:14</div>
+            <div class="timeline-body"><p>I believe this was an intentional change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-12 03:13</div>
+            <div class="timeline-body"><p>Yes, per https://github.com/astral-sh/ruff/pull/14066 and https://github.com/astral-sh/ruff/issues/13862</p>
+<p>The caller could context manage the returned object. It is incorrect to raise SIM115 here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CoolCat467">@CoolCat467</a> on 2024-11-12 03:38</div>
+            <div class="timeline-body"><p>Alright, that makes sense, thanks for clarifying!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CoolCat467 on 2024-11-12 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2024-11-12 04:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

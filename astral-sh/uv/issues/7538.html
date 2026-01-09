@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;uv run&quot; runs resolve too much - astral-sh/uv #7538</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;uv run&quot; runs resolve too much</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7538">#7538</a>
+        opened by <a href="https://github.com/PetterS">@PetterS</a>
+        on 2024-09-19 09:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/PetterS">@PetterS</a> on 2024-09-19 09:07</div>
+            <div class="timeline-body"><p>I have a script that starts with</p>
+<pre><code>#!/usr/bin/env -S uv run
+# /// script
+# dependencies = [&quot;colorama==0.4.6&quot;]
+# ///
+</code></pre>
+<p>It is supposed to run fast but uv often starts with a blocking message &quot;⠷ Resolving dependencies...&quot;.  But the single depedency is pinned to a version so if it is installed there is nothing to resolve.So I think uv should be able to start this script faster.</p>
+<ul>
+<li>Platform: Linux</li>
+<li>uv version: 0.4.10</li>
+</ul>
+<p>Right now <code>uv run</code> is too slow for most of my use cases since it resolves way too much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-19 11:05</div>
+            <div class="timeline-body"><p>The dependencies of that package need to be resolved still.</p>
+<p>How long is it taking?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-19 11:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @zanieb on 2024-09-19 11:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PetterS">@PetterS</a> on 2024-09-20 16:02</div>
+            <div class="timeline-body"><blockquote>
+<p>The dependencies of that package need to be resolved still.</p>
+</blockquote>
+<p>It does not happen every time I run the program. <code>uv</code> seems to cache the result for some time. But if all versions are exactly pinned, it seems the result could be cached indefinitely?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-20 18:22</div>
+            <div class="timeline-body"><p>Here you're not pinning all versions, just the version of <code>colorama</code> which may depend on, e.g., <code>foo &gt;= 1.0.0</code> in which case we need to check if there is a new version of <code>foo</code>. Right?</p>
+<p>Related #6318</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PetterS">@PetterS</a> on 2024-09-25 08:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Here you're not pinning all versions, just the version of <code>colorama</code> which may depend on, e.g., <code>foo &gt;= 1.0.0</code> in which case we need to check if there is a new version of <code>foo</code>. Right?</p>
+</blockquote>
+<p>I was under the impression that <code>colorama</code> does not have any dependencies: https://github.com/tartley/colorama/blob/master/requirements.txt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PetterS">@PetterS</a> on 2024-09-25 08:53</div>
+            <div class="timeline-body"><p>If the same script is run a second time immediately after the first one, <code>uv</code> does not resolve dependencies again. Is it possible to control this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 22:09</div>
+            <div class="timeline-body"><p>I don't really get it, the resolver runs in 1ms in subsequent operations</p>
+<pre><code>❯ time uv run example.py
+Reading inline script metadata from `example.py`
+Installed 1 package in 4ms
+uv run example.py  0.06s user 0.03s system 53% cpu 0.179 total
+❯ time uv run example.py
+Reading inline script metadata from `example.py`
+uv run example.py  0.02s user 0.02s system 89% cpu 0.050 total
+❯ time uv run example.py
+Reading inline script metadata from `example.py`
+uv run example.py  0.02s user 0.02s system 89% cpu 0.049 total
+❯ time uv run example.py
+Reading inline script metadata from `example.py`
+uv run example.py  0.02s user 0.02s system 88% cpu 0.048 total
+❯ uv run example.py -v
+Reading inline script metadata from `example.py`
+❯ uv run -v example.py
+DEBUG uv 0.4.22 (34be3af84 2024-10-15)
+Reading inline script metadata from `example.py`
+DEBUG Reading requests from `/Users/zb/workspace/uv/.python-version`
+DEBUG Searching for Python 3.12 in managed installations or system path
+DEBUG Found `cpython-3.12.6-macos-aarch64-none` at `/Users/zb/workspace/uv/.venv/bin/python3` (virtual environment)
+DEBUG Caching via base interpreter: `/Users/zb/.local/share/uv/python/cpython-3.12.6-macos-aarch64-none/bin/python3.12`
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.12.6
+DEBUG Solving with target Python version: &gt;=3.12.6
+DEBUG Adding direct dependency: colorama==0.4.6
+DEBUG Found fresh response for: https://pypi.org/simple/colorama/
+DEBUG Searching for a compatible version of colorama (==0.4.6)
+DEBUG Selecting: colorama==0.4.6 [compatible] (colorama-0.4.6-py2.py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl.metadata
+DEBUG Tried 1 versions: colorama 1
+DEBUG Split specific environment resolution took 0.001s
+Resolved 1 package in 1ms
+DEBUG Using Python 3.12.6 interpreter at: /Users/zb/Library/Caches/uv/archive-v0/iv1kmyvak8JleeDF6HCzK/bin/python3
+DEBUG Running `python example.py`
+DEBUG Command exited with code: 0
+</code></pre>
+<p>I think we'd need a better example to help here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-21 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-10-21 22:57</div>
+            <div class="timeline-body"><p>FYI, the big help for me was adding the <code>--offline</code> flag after the first run, as I can be in situations where the HTTP calls can be either slow or just break (due to random enterprise network stuff).</p>
+<p>I would prefer uv to try and run first without making any HTTP calls, and only hit the network if it can't resolve the dependencies from the cache.</p>
+<p>I do wonder if this is what the user is facing, very slow but responding HTTP responses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PetterS">@PetterS</a> on 2024-11-09 20:24</div>
+            <div class="timeline-body"><p>@zanieb if you rerun it with uv immediately after it will be fast. But when i you run after a while it will be slow.</p>
+<blockquote>
+<p>uv often starts with a blocking message &quot;⠷ Resolving dependencies...&quot;.</p>
+</blockquote>
+<p>I think this could be much improved</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-11 15:01</div>
+            <div class="timeline-body"><p>I still need a clearer MRE with logs to do anything to help you here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-11-11 16:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I still need a clearer MRE with logs to do anything to help you here.</p>
+</blockquote>
+<p>I've only had issues when I've had network problems where the network is intermittently working, not sure how to reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PetterS">@PetterS</a> on 2024-11-15 09:48</div>
+            <div class="timeline-body"><p>The MRE is this file</p>
+<pre><code>#!/usr/bin/env -S uv run
+# /// script
+# dependencies = [&quot;colorama==0.4.6&quot;]
+# ///
+pass
+</code></pre>
+<p>Run with</p>
+<pre><code>$ time test-uv.py
+</code></pre>
+<p>Sometimes uv decides to resolve dependencies (again!) and this will be printed:</p>
+<pre><code>real    0m0,772s
+user    0m0,055s
+sys     0m0,015s
+</code></pre>
+<p>Tried with <code>uv 0.5.2</code> now</p>
+<p>Again, note that running it many times in rapid succession will be fast. But the first execution after a pause will show this slowness</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PetterS">@PetterS</a> on 2024-11-15 09:50</div>
+            <div class="timeline-body"><p>@zanieb reopen?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-15 14:01</div>
+            <div class="timeline-body"><p>I think this is by design? We refresh the dependencies every 10 minutes or so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-11-15 14:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this is by design? We refresh the dependencies every 10 minutes or so.</p>
+</blockquote>
+<p>What's the motivation for that? It's definetly problematic on poor network connections (like I say, I reccomend <code>--offline</code> as a workaround).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-15 14:20</div>
+            <div class="timeline-body"><p>When we see the list of dependencies, we have to resolve them -- there's no lockfile. So by default we would adhere to PyPI's 10-minute caching headers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-11-15 14:23</div>
+            <div class="timeline-body"><p>Ah I see, I guess it would require something non-trivial to &quot;fix&quot; then, e.g. implicitly creating a lockfile for each script and caching the lockfile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-15 14:24</div>
+            <div class="timeline-body"><p>Yeah we could do that internally. It's a good idea. My only concern is that it might be a bit confusing if you run a script, then come back to it a few weeks later and we don't automatically use &quot;newer&quot; versions of the dependencies, because we're implicitly using a lockfile behind the scenes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-15 14:25</div>
+            <div class="timeline-body"><p>We could at least cache with a longer timespan in that context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-11-15 14:27</div>
+            <div class="timeline-body"><blockquote>
+<p>then come back to it a few weeks later and we don't automatically use &quot;newer&quot; versions of the dependencies, because we're implicitly using a lockfile behind the scenes</p>
+</blockquote>
+<p>I think the user experience goes both ways, I found it confusing that once I've run once it downloads dependencies again (sometimes they're big and it's noticable waiting for them even on my fast home connection). I would have expected to have to run <code>--upgrade</code> to get refreshed dependencies.</p>
+<p>But I'm sure some users may feel the opposite.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9688.html">astral-sh/uv#9688</a> on 2024-12-06 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-12-06 16:13</div>
+            <div class="timeline-body"><p>FYI, I created a specific feature request for this: https://github.com/astral-sh/uv/issues/9688.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

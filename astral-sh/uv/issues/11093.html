@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question about best practices for cross-compat with `pip install -e .[dev]` (pre PEP 735 support) - astral-sh/uv #11093</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Question about best practices for cross-compat with `pip install -e .[dev]` (pre PEP 735 support)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11093">#11093</a>
+        opened by <a href="https://github.com/tlambert03">@tlambert03</a>
+        on 2025-01-30 13:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tlambert03">@tlambert03</a> on 2025-01-30 13:02</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I ❤️ uv and want to be able to just run <code>uv sync</code> in all of my projects and bring along all of the dev dependencies (let's assume no <code>uv.lock</code> exists yet).  However, in some cases, I also need to work with others who don't use uv and want to be able to run the classic <code>pip install -e .[dev]</code>... and if I'm not mistaken, pip does not yet support PEP 735? (https://github.com/pypa/pip/issues/12963)</p>
+<p>My question is how best to accomplish this.  I know I can just use <code>uv sync --extra dev</code> (but would like to just use <code>uv sync</code>).</p>
+<p>Would this be the best way to accomplish this until pip supports dependency groups?</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+dev = [&quot;pytest&quot;, &quot;ruff&quot;]   # dev deps still go in the dev extra for now
+
+[dependency-groups]
+dev = [&quot;my-package[dev]&quot;]  # reference dev extra in dependency-groups.dev
+
+[tool.uv.sources]
+my-package = { workspace = true }   # declare local source
+</code></pre>
+<p>other tips?</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @tlambert03 on 2025-01-30 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-30 14:16</div>
+            <div class="timeline-body"><p>We'll likely support <code>--group</code> in the <code>uv pip</code> CLI soon, but in the interim, what you could do is <code>uv export --dev -o requirements.txt</code>, and then have non-uv users <code>uv pip install requirements.txt</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tlambert03">@tlambert03</a> on 2025-01-30 14:33</div>
+            <div class="timeline-body"><p>thanks for that tip as well!  The constraints I'd <em>like</em> to have here (if possible) are:</p>
+<ul>
+<li>i don't want to have to add/maintain <code>requirements.txt</code> in addition to <code>project.dependencies</code> / <code>project.optional-dependencies</code></li>
+<li>i'm aiming for <code>python -m pip install -e .[dev]</code> (no uv installed at all)</li>
+</ul>
+<p>as a last question, do you have any caution <em>against</em> the pattern I suggested above? (and then feel free to close this)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tlambert03">@tlambert03</a> on 2025-01-30 14:33</div>
+            <div class="timeline-body"><p>thanks for that tip as well!  The constraints I'd <em>like</em> to have here (if possible) are:</p>
+<ul>
+<li>i don't want to have to add/maintain <code>requirements.txt</code> in addition to <code>project.dependencies</code> / <code>project.optional-dependencies</code></li>
+<li>i'm aiming for <code>python -m pip install -e .[dev]</code> (no uv installed at all)</li>
+</ul>
+<p>as a last question, do you have any caution <em>against</em> the pattern I suggested above? (and then feel free to close this)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-30 21:19</div>
+            <div class="timeline-body"><p>What you have above seems reasonable... The downsides are just:</p>
+<ol>
+<li>The <code>dev</code> extra would be part of the published package metadata (if relevant), whereas a dependency group would not.</li>
+<li>Users that install with <code>uv pip</code> won't benefit from <code>uv.lock</code>, and so won't have the same constraints applied to their install.</li>
+</ol>
+<p>But otherwise, I think you're on the right track in understanding the various options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tlambert03">@tlambert03</a> on 2025-01-30 21:39</div>
+            <div class="timeline-body"><p>Thanks a bunch 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @tlambert03 on 2025-01-30 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11550.html">astral-sh/uv#11550</a> on 2025-02-16 05:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../DeiC-HPC/cotainr/pulls/126.html">DeiC-HPC/cotainr#126</a> on 2025-03-17 12:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

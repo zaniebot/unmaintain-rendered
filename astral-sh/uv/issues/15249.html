@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ability to configure `override-dependencies` for  a specific dependency group - astral-sh/uv #15249</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ability to configure `override-dependencies` for  a specific dependency group</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15249">#15249</a>
+        opened by <a href="https://github.com/ramonvermeulen">@ramonvermeulen</a>
+        on 2025-08-13 07:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ramonvermeulen">@ramonvermeulen</a> on 2025-08-13 07:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Currently you are able to configure override-dependencies for your whole project, see:
+https://docs.astral.sh/uv/reference/settings/#override-dependencies</p>
+<p>For example:</p>
+<pre><code class="language-toml">[tool.uv]
+# Always install Werkzeug 2.3.0, regardless of whether transitive dependencies request
+# a different version.
+override-dependencies = [&quot;werkzeug==2.3.0&quot;]
+</code></pre>
+<p>It would be nice if this can be configured for a specific dependency group, so for example when you do a <code>uv sync --no-dev</code> and the override-dependency is only needed for a dev dependency it can be skipped during installation.</p>
+<h3>Example</h3>
+<p>Potential configuration:</p>
+<pre><code class="language-toml">[tool.uv]
+# Always install Werkzeug 2.3.0, regardless of whether transitive dependencies request
+# a different version.
+override-dependencies = [{ group = &quot;dev&quot;, deps = [&quot;werkzeug==2.3.0&quot;] }]
+</code></pre>
+<p>Then a <code>uv sync</code> will install the <code>override-dependency</code>, however a <code>uv sync --no-dev</code> will not because it is specifically for the <code>dev</code> group.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @ramonvermeulen on 2025-08-13 07:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PeganovAnton">@PeganovAnton</a> on 2025-09-19 10:34</div>
+            <div class="timeline-body"><p>Could you please implement it? It would be extremely useful for our project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-19 10:49</div>
+            <div class="timeline-body"><p>Please check with the uv team before implementing such a complex feature.</p>
+<p>You can currently emulate this conflicting dependencies, so you can use a different werkzeug version for different groups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PeganovAnton">@PeganovAnton</a> on 2025-09-19 11:05</div>
+            <div class="timeline-body"><p>@konstin my use case is slightly different. Within <strong>the same</strong> group I have disjoint dependencies:</p>
+<pre><code># The Pydantic override is added because of dependency conflict between openai-harmony
+    # and ai-dynamo:
+    # ai-dynamo-runtime==0.4.0+8f24c027 depends on pydantic&gt;=2.10.6,&lt;2.11.0 and openai-harmony==0.0.4 depends on pydantic&gt;=2.11.7
+</code></pre>
+<p>I cannot resolve it by upgrading or downgrading 1 of the packages, so I must use <code>override-dependencies</code>.
+I resolve the requirement in the dependencies:</p>
+<pre><code>dependencies = [
+    &quot;ai-dynamo-runtime==0.4.0+8f24c027&quot;,
+    &quot;openai-harmony==0.0.4&quot;,
+    &quot;pydantic==2.11.7&quot;,
+]
+</code></pre>
+<p>and add it into the <code>override-dependencies</code>:</p>
+<pre><code>override-dependencies = [
+    &quot;pydantic==2.11.7&quot;,
+]
+</code></pre>
+<p>But I want the resolution of such conflicts to be group specific.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PeganovAnton">@PeganovAnton</a> on 2025-09-19 11:18</div>
+            <div class="timeline-body"><p>@konstin For the same reason, <code>constraint-dependencies</code> and <code>build-constraint-dependencies</code> are better to make group specific as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PeganovAnton">@PeganovAnton</a> on 2025-09-19 15:23</div>
+            <div class="timeline-body"><p>Hi @konstin @charliermarsh @zanieb , could you please tell whether you plan to implement the feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-19 15:26</div>
+            <div class="timeline-body"><p>Please don't ping people from the team asking for updates, instead, you can leave a :+1: reaction on the top post (https://github.com/astral-sh/uv/issues/9452). This is a complex feature and not on our immediate roadmap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PeganovAnton">@PeganovAnton</a> on 2025-09-19 15:30</div>
+            <div class="timeline-body"><p>@konstin If I implement it what do I need to take into account?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-19 15:43</div>
+            <div class="timeline-body"><p>This feature is very complex from the perspective of the resolver, as group-specific overrides effectively mean conflicting dependencies, where both overrides and conflicting dependencies are already error prone parts of uv. Before we implement something this complex, we need enough motivating use cases, which details on the project structure and why existing workarounds or less complex additions don't work. After that, we need a design for the configuration that is consistent with our existing design principals. Currently, I don't think we can add such a feature. If you want to move this forward, please share a minimal reproducible example (ideally with the production dependencies) that you cannot solve with the current uv feature set, with an explanation on what workflows you want to use and why you need those workflows, context that allows to understand if there may be alternative solutions for your situation.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

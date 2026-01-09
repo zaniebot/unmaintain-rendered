@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv lock` doesn't show when we drop versions - astral-sh/uv #5401</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv lock` doesn't show when we drop versions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/5401">#5401</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-07-24 10:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-07-24 10:45</div>
+            <div class="timeline-body"><p>See for example the &quot;preferences-dependent-forking&quot; packse scenario. In first call we split a version into two, in the second call we drop 2.0.0 but don't show that:</p>
+<pre><code>$ uv lock --upgrade --preview
+Resolved 6 packages in 211ms
+Updating preferences-dependent-forking-foo-5c5f76e6 v1.0.0 -&gt; v1.0.0, 2.0.0
+$ uv lock --preview
+Resolved 5 packages in 115ms
+</code></pre>
+<p>We also seem to be inconsistent about the <code>v</code> prefix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-24 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-24 13:26</div>
+            <div class="timeline-body"><p>Should it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-24 13:28</div>
+            <div class="timeline-body"><p>Imo this counts as a version update (<code>v1.0.0, v2.0.0 -&gt; v1.0.0</code>) and we should display such changes to the lockfile as part of the summary message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-24 13:29</div>
+            <div class="timeline-body"><p>Oh, that seems right. But packages that are dropped entirely should not be shown, IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-24 13:33</div>
+            <div class="timeline-body"><p>As another data point, I <em>love</em> when I get see dependencies dropped after running <code>cargo update</code>. Usually this inspires me to investigate further and can turn up interesting curiosities. I believe this is what caused me to notice the migration from <code>winapi</code> to <code>windows-sys</code> in the Rust ecosystem, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-24 13:33</div>
+            <div class="timeline-body"><p>What does it say?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-24 13:33</div>
+            <div class="timeline-body"><p>Oh right, <code>Removing</code> and <code>Adding</code>. Ok, I can do that. I agree with you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-24 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-07-24 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-24 13:37</div>
+            <div class="timeline-body"><p>Yeah, and the same goes for adding a dependency, definitely. I pay very close attention to those! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-24 14:28</div>
+            <div class="timeline-body"><p>Yes please!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5410.html">astral-sh/uv#5410</a> on 2024-07-24 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-24 14:56</div>
+            <div class="timeline-body"><p>Separately, we only show these when you run <code>uv lock --update</code> right now (not <code>uv sync</code>, <code>uv run</code>, or <code>uv lock</code> without <code>--update</code>). Should we... always show these, when a lock exists already? I guess Cargo doesn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-24 14:58</div>
+            <div class="timeline-body"><p>I was surprised that there was no output indicating a change to the lock file with a plain <code>uv lock</code>; I think it'd be great if there was / I don't see why it should be omitted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-24 14:59</div>
+            <div class="timeline-body"><p>I'll change it separately. (But probably not for <code>uv run</code> and <code>uv sync</code>, I suppose.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5412.html">astral-sh/uv#5412</a> on 2024-07-24 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-24 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-24 15:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

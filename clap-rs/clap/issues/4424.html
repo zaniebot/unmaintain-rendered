@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for Vec&lt;T&gt; Subcommands - clap-rs/clap #4424</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for Vec&lt;T&gt; Subcommands</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4424">#4424</a>
+        opened by <a href="https://github.com/0xForerunner">@0xForerunner</a>
+        on 2022-10-26 01:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/0xForerunner">@0xForerunner</a> on 2022-10-26 01:41</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.0.18</p>
+<h3>Describe your use case</h3>
+<p>I would like to parse a vector of subcommands like so:</p>
+<pre><code class="language-rust">#[derive(Parser)]
+#[clap(rename_all = &quot;snake_case&quot;)]
+pub enum MyCli {
+    GetPrices {
+        #[command(subcommand)]
+        assets: Vec&lt;AssetInfo&gt;,
+    },
+}
+
+#[derive(Subcommand)]
+#[clap(rename_all = &quot;snake_case&quot;)]
+pub enum AssetInfo {
+
+    #[command(subcommand)]
+    Base(BaseExecuteMsg),
+
+    SetConfig {
+        #[command(flatten)]
+        set_config_msg: SetConfigMsg,
+    },
+
+    AddAsset {
+        #[command(flatten)]
+        asset_info_type: AddAssetType,
+    },
+
+    RemoveAsset {
+        #[command(subcommand)]
+        asset_info: RemoveAssetType,
+    },
+
+    UpdatePrice {
+        #[command(subcommand)]
+        asset_info: PriceType,
+    },
+
+    UpdatePrices {
+        #[arg(value_parser=tuple_parser::&lt;PriceType, Decimal256&gt;)]
+        assets: Vec&lt;(PriceType, Decimal256)&gt;,
+    },
+}
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>I'm not sure what the best internal solution is here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @0xForerunner on 2022-10-26 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-26 02:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I would like to parse a vector of subcommands like so:</p>
+</blockquote>
+<p>What do you mean by this?  Could you provide a complete program (e.g. <code>AssetInfo</code> is missing) and example runs of the program to help clarify the point?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xForerunner">@0xForerunner</a> on 2022-10-26 02:41</div>
+            <div class="timeline-body"><p>@epage The above is sort of a toy example as my actual use case has dozens of nested subcommands. I realize the workaround is probably to use a value parser, but that doesn't work for me since 1: its insanely clunky, 2:  I'm also parsing and that would break the interactivity. For my specific use case I cannot change the structure of the enum since it is part of an external API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-26 11:21</div>
+            <div class="timeline-body"><p>Could you provide example runs of the program to clarify what the semantics of this feature would be?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xForerunner">@0xForerunner</a> on 2022-10-26 14:48</div>
+            <div class="timeline-body"><p>Sure, as an example lets create something simpler and complete.</p>
+<pre><code class="language-rust">#[derive(Parser)]
+#[clap(rename_all = &quot;snake_case&quot;)]
+pub enum MyCli {
+    GetPrices {
+        #[command(subcommand)]
+        assets: Vec&lt;AssetInfo&gt;,
+    },
+}
+
+#[derive(Subcommand)]
+#[clap(rename_all = &quot;snake_case&quot;)]
+pub enum AssetInfo {
+    Token {
+        /// &lt;string&gt;, &quot;atom3h6lk23h6&quot;
+        contract_addr: String
+    },
+    NativeToken {
+        /// &lt;string&gt;, &quot;uatom&quot;
+        denom: String
+    },
+}
+</code></pre>
+<p>This is a much simpler case then I have in reality, but useful for examining how this could work. An example run of the program could look like:</p>
+<pre><code class="language-bash">my-cli get_prices token atom3h6lk23h6 native_token uatom 
+</code></pre>
+<p>Ideally this should be implemented for any type that is IntoIterator&lt;Item = T&gt;. When these example args are parsed it would result in:</p>
+<pre><code class="language-rust">MyCli::GetPrices{
+    assets: vec![
+        AssetInfo::Token { contract_addr: atom3h6lk23h6 },
+        AssetInfo::NativeToken { denom: uatom }
+    ]
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-26 14:51</div>
+            <div class="timeline-body"><p>Sounds like this is a duplicate of #2222.  Do I have that correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xForerunner">@0xForerunner</a> on 2022-10-26 14:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Sounds like this is a duplicate of #2222. Do I have that correct?</p>
+</blockquote>
+<p>I think depending on how it is implemented it could possibly be a duplicate. You mention in that thread disabling subcommands though, which would sort of defeat the purpose of what I'm going for no?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-26 15:03</div>
+            <div class="timeline-body"><p>I'd prefer issues to focus on the requirements and not implementation.  As both of these are about command chaining, let's continue the conversation over there.  If you need sub-subcommands for your chained commands, I'd recommend posting in there with the reasons why its needed and a proposal for what the semantics would be (e.g. do we stop chaining when entering a sub-sub-command or do we back out to the parent chained command?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-10-26 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2222.html">clap-rs/clap#2222</a> on 2023-03-27 18:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

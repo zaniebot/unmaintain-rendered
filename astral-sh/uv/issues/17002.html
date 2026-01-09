@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot use uv sync with a workspace when project have an extra defined - astral-sh/uv #17002</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot use uv sync with a workspace when project have an extra defined</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/17002">#17002</a>
+        opened by <a href="https://github.com/jabbera">@jabbera</a>
+        on 2025-12-05 17:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jabbera">@jabbera</a> on 2025-12-05 17:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When you have 2 packages in a workspace that has one that depends on the other and one has an extra defined, uv sync is failing with the message:</p>
+<p>No solution found when resolving dependencies:
+╰─▶ Because lib-b depends on lib-a and your workspace requires lib-a[dev], we can conclude that your workspace's
+requirements and lib-b are incompatible.
+And because your workspace requires lib-b, we can conclude that your workspace's requirements are unsatisfiable.</p>
+<p>See repro repo here: https://github.com/<a href="https://github.com/jabbera/uv_workspace_bug">jabbera/uv_workspace_bug</a></p>
+<p>git clone https://github.com/<a href="https://github.com/jabbera/uv_workspace_bug">jabbera/uv_workspace_bug</a>
+cd uv_workspace_bug/workspace
+uv sync</p>
+<h3>Platform</h3>
+<p>Linux</p>
+<h3>Version</h3>
+<p>0.9.15</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jabbera on 2025-12-05 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-05 17:49</div>
+            <div class="timeline-body"><p>I think this is just a bad error message -- uv is correctly failing. Your <code>lib-b</code> depends on <code>dependencies = [&quot;lib_a&gt;=1.0.0&quot;]</code>, but <code>lib-a</code> has <code>version = &quot;0.1.0&quot;</code>. You can fix it with:</p>
+<pre><code>diff --git a/packages/lib_a/pyproject.toml b/packages/lib_a/pyproject.toml
+index 70b95d7..2d627ab 100644
+--- a/packages/lib_a/pyproject.toml
++++ b/packages/lib_a/pyproject.toml
+@@ -1,6 +1,6 @@
+ [project]
+ name = &quot;lib-a&quot;
+-version = &quot;0.1.0&quot;
++version = &quot;1.0.0&quot;
+ description = &quot;Add your description here&quot;
+ readme = &quot;README.md&quot;
+ requires-python = &quot;&gt;=3.13&quot;
+</code></pre>
+<p>I suspect we're accidentally removing (in an attempt to simplify) important information from the error message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-12-05 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2025-12-05 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jabbera">@jabbera</a> on 2025-12-05 17:57</div>
+            <div class="timeline-body"><p>Indeed that did it. We replace the version field dynamically at build time in our environment so it's always 0.1a0 in our source tree adding:</p>
+<p>override-dependencies = [&quot;lib_a&quot;, &quot;lib_b&quot;] to the project file sorted it. Thank you very much.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

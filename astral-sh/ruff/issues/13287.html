@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[F821] Improve error message for `anext`/`aiter` - astral-sh/ruff #13287</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[F821] Improve error message for `anext`/`aiter`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13287">#13287</a>
+        opened by <a href="https://github.com/JP-Ellis">@JP-Ellis</a>
+        on 2024-09-09 01:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2024-09-09 01:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The lint <a href="https://docs.astral.sh/ruff/rules/undefined-name/">F821</a> has a false positive with <code>anext</code>.</p>
+<p>As pointed out by @MichaReiser, this ultimately is due to having either <code>project.requires-python</code> or <code>tools.ruff.target-version</code> set to a too lower version.</p>
+<p>In this instances, it was discovered that Ruff was targeting Python 3.8 (from an erroneous config).</p>
+<h2>Example</h2>
+<pre><code class="language-python">async def foo(iter: AsyncGenerator[str, None]):
+    assert await anext(iter)
+</code></pre>
+<h2>Desired Behaviour</h2>
+<p>Where a symbol is introduced in a more recent version of Python, Ruff should:</p>
+<ol>
+<li>Still raise F821 as it is strictly correct; but also,</li>
+<li>Inform the use Ruff is assuming Python 3.x, and the symbol in question was only introduced in Python 3.y, and nudge the user to set <code>reures-python</code> or <code>target-version</code>.</li>
+</ol>
+<h2>Environment</h2>
+<pre><code class="language-console">❯ ruff --version
+ruff 0.6.4
+
+❯ python --version
+Python 3.12.5
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanarlian">@evanarlian</a> on 2024-09-09 07:12</div>
+            <div class="timeline-body"><p>False positive on <code>aiter</code> as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-09-09 10:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-09 10:45</div>
+            <div class="timeline-body"><p>Have you specified <code> requires-python</code> in your <code>pyproject.toml</code> or a <code>target-version</code> in your <code>ruff.toml</code>?  I'm asking because <code>anext</code> is only available in Python 3.10 and newer (and the default is Python 3.8)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2024-09-09 11:23</div>
+            <div class="timeline-body"><p>Good catch. I have a monorepo and the root project has</p>
+<pre><code class="language-toml">[project]
+# ...
+requires-python = &quot;~=3.12.0&quot;
+
+[tool.ruff]
+target-version = &quot;py312&quot;
+</code></pre>
+<p>and one of the sub-packages has</p>
+<pre><code class="language-toml">[project]
+# ...
+requires-python = &quot;~=3.12.0&quot;
+
+[tool.ruff]
+target-version = &quot;py38&quot;
+</code></pre>
+<p>I can confirm that changing from <code>py38</code> to <code>py312</code> fixes this.</p>
+<p>In cases like there where there is a new symbol introduced in a more recent version of Python, should ruff instead suggest/direct the end-user to update the settings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-09 11:29</div>
+            <div class="timeline-body"><blockquote>
+<p>In cases like there where there is a new symbol introduced in a more recent version of Python, should ruff instead suggest/direct the end-user to update the settings?</p>
+</blockquote>
+<p>That's a neat idea. I think the error message could possibly be improved by saying that the symbol is only defined in Python XX or newer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[F821] False positive: `anext`" to "[F821] Improve error message for `anext`/`aiter`" by @JP-Ellis on 2024-09-09 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2024-09-09 11:38</div>
+            <div class="timeline-body"><p>I have updated the original issue to incorporate the suggestion that Ruff provide a better suggestion in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2024-09-09 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-09-09 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-09-09 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-09-09 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @AlexWaygood on 2024-09-09 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13293.html">astral-sh/ruff#13293</a> on 2024-09-09 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13296.html">astral-sh/ruff#13296</a> on 2024-09-09 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-09-10 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-10 18:05</div>
+            <div class="timeline-body"><p>Thanks @AlexWaygood !</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

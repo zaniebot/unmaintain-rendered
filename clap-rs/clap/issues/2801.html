@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed up CI with a two-tier system built on bors - clap-rs/clap #2801</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Speed up CI with a two-tier system built on bors</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2801">#2801</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-10-01 19:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-10-01 19:55</div>
+            <div class="timeline-body"><h3>Discussed in https://github.com/clap-rs/clap/discussions/2723</h3>
+<div type='discussions-op-text'>
+
+<p><sup>Originally posted by <strong>epage</strong> August 18, 2021</sup>
+clap tests a lot of system combinations</p>
+<p>Pros</p>
+<ul>
+<li>Ensure we don't break clap for any of our users</li>
+</ul>
+<p>Cons</p>
+<ul>
+<li>This makes it easy to max out our number of parallel runners, slowing down CI results for PRs</li>
+<li>While Github offers hosting for free, we should be mindful of the cost and be respectful with the resources we use</li>
+</ul>
+<p>However, with bors, we can get the best of both worlds.  As a <a href="https://epage.github.io/dev/submit-queue/">merge queue</a>, bors does one extra CI check before commits make it to master.  We can rely on that to implement a two-tier CI system</p>
+<ul>
+<li>Checks that run on pull requests</li>
+<li>Checks that run on branches, like <code>master</code>, <code>staging</code>, and <code>trying</code></li>
+</ul>
+<p>If a contributor suspects their change would impact a case not covered for pull requests, they can comment <code>bors try</code> on their PR (I'm assuming <code>try</code> is available to contributors, its unclear who has access rights to each command).</p>
+<p>So this means for each push to a PR, we can run a fraction of the jobs, completing much more quickly while still verifying nothing will make master red by testing during the merge proces.  If it would, it gets kicked out and the PR author gets that feedback.</p>
+<p>Proposed implementation:</p>
+<ul>
+<li>Split <code>ci.yml</code> into <code>pr.yml</code> and <code>branch.yml</code></li>
+<li><code>pr.yml</code> would not include<ul>
+<li><code>wasm</code></li>
+<li><code>i686</code> procs (clap generally doesn't have proc-specific logic)</li>
+<li><code>macos-latest</code> (close enough to <code>ubuntu-latest</code> for what clap does)</li>
+<li>rust <code>beta</code> and <code>nightly</code> (changes are unlikely to break with upcoming Rust versions but instead with MSRV)</li>
+</ul>
+</li>
+</ul>
+<p>Additional speed ups</p>
+<ul>
+<li>(Maybe) Feature combinations be run within the same job (reuse dependency builds / reduce startup times)</li>
+<li>Try https://github.com/Swatinem/rust-cache</div></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2802.html">clap-rs/clap#2802</a> on 2021-10-01 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-01 22:06</div>
+            <div class="timeline-body"><p>@pksunkara you mentioned in https://github.com/clap-rs/clap/discussions/2723 that you were going to look into this.  I was already planning on looking into it (https://github.com/clap-rs/clap/pull/2802) but the PoC cost is low enough that I think its worth us both playing with our ideas and communicating through our respective PRs.  We can see how they turn out and pick the best from both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-01 22:24</div>
+            <div class="timeline-body"><p>Your PR is pretty good, just a few things I wanted to be addressed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-10-07 15:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

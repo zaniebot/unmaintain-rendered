@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclude applied to root, when used with pre-commit - astral-sh/ruff #9023</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Exclude applied to root, when used with pre-commit</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9023">#9023</a>
+        opened by <a href="https://github.com/99njaggi">@99njaggi</a>
+        on 2023-12-06 12:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/99njaggi">@99njaggi</a> on 2023-12-06 12:31</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+I'm not sure if this is an issue of Ruff or pre-commit.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Files are not checked with Ruff running in pre-commit, if the git repository is inside a build directory.</p>
+<h3>Steps to reproduce</h3>
+<p>The setup is very basic.
+Create a directory <code>build</code>.
+Initialize git inside this directory.
+Create a Python file, which is violating Ruff rules.
+Install pre-commit hook (with the pre-commit Python package).
+Run pre-commit on all files -&gt; the Python file will not be checked.</p>
+<h3>Project structure</h3>
+<pre><code>build
+    |- .git
+    |- .pre-commit-config.yaml
+    |- test.py
+</code></pre>
+<h3>Executed commands:</h3>
+<pre><code class="language-shell">&gt; mkdir build
+&gt; cd build
+&gt; git init
+# Add .pre-commit-config.yaml and test.py to git
+&gt; python -m pre_commit install
+&gt; python -m pre_commit run --all-files --verbose
+ruff.....................................................................Passed
+- hook id: ruff
+- duration: 0s
+
+warning: No Python files found under the given path(s)
+&gt; python -m ruff check .
+test.py:3:8: F401 [*] `ruff` imported but unused
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<h3>Files</h3>
+<p>test.py</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+
+import ruff
+
+def main():
+    pass
+
+if __name__ == '__main__':
+    main()
+</code></pre>
+<p>.pre-commit-config.yaml</p>
+<pre><code class="language-yaml">repos:
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.1.6
+  hooks:
+  - id: ruff
+    types: [python]
+</code></pre>
+<h3>Versions</h3>
+<p>pre-commit==3.5.0
+ruff==0.1.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-12-06 16:27</div>
+            <div class="timeline-body"><p>Can you try it with the official pre-commit hook as mentioned in the <a href="https://docs.astral.sh/ruff/integrations/#pre-commit">documentation</a>?</p>
+<p>So, your config would be:</p>
+<pre><code class="language-yaml">repos:
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.1.6
+  hooks:
+  - id: ruff
+    types: [python]
+</code></pre>
+<p>Also, can you provide the output for the command <code>python -m pre_commit run --all-files --verbose</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2023-12-06 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/99njaggi">@99njaggi</a> on 2023-12-07 07:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you try it with the official pre-commit hook as mentioned in the <a href="https://docs.astral.sh/ruff/integrations/#pre-commit">documentation</a>?</p>
+</blockquote>
+<p>Same result with the official pre-commit hook. Files are not checked and the violation is not detected.</p>
+<blockquote>
+<p>Also, can you provide the output for the command python -m pre_commit run --all-files --verbose?</p>
+</blockquote>
+<pre><code>&gt; python -m pre_commit run --all-files --verbose
+ruff.....................................................................Passed
+- hook id: ruff
+- duration: 0.01s
+
+warning: No Python files found under the given path(s)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zeshuaro">@zeshuaro</a> on 2023-12-07 09:44</div>
+            <div class="timeline-body"><p>I'm pretty sure this is the same problem that I brought up here https://github.com/astral-sh/ruff/discussions/6191</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-07 14:23</div>
+            <div class="timeline-body"><p>Are the files correctly checked if you add a <code>ruff.toml</code> to the root of the <code>build</code> directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/99njaggi">@99njaggi</a> on 2023-12-07 15:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Are the files correctly checked if you add a <code>ruff.toml</code> to the root of the <code>build</code> directory?</p>
+</blockquote>
+<p>No. Same result if a <code>ruff.toml</code> exists in the root.</p>
+<p>The files are checked if ruff is called directly:</p>
+<pre><code>&gt; python -m ruff check .
+test.py:3:8: F401 [*] `ruff` imported but unused
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>With the pre-commit hook, they are not checked:</p>
+<pre><code>&gt; python -m pre_commit run --all-files --verbose
+ruff.....................................................................Passed
+- hook id: ruff
+- duration: 0s
+
+warning: No Python files found under the given path(s)
+</code></pre>
+<p>Directory structure:</p>
+<pre><code>build
+    |- .git
+    |- .pre-commit-config.yaml
+    |- test.py
+    |- ruff.toml
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-07 17:02</div>
+            <div class="timeline-body"><p>Oh sorry, I missed that this is specifically when using <code>--all-files</code> (at least, I assume?). That I can at least explain. Presumedly, pre-commit is passing the root directory to Ruff, like <code>ruff check .</code> (from the directory containing <code>build</code>). In that case, when we start to iterate over files in that root directory, we use Ruff's default settings, and see the <code>build</code> directory, which is excluded by default, and skip it. (If we pass paths to files within <code>build</code> directly, Ruff will correctly use the settings within <code>build</code>.)</p>
+<p>This is confusing in this case, but changing the behavior would also be confusing. Imagine that instead of <code>build</code>, your directory was <code>.venv</code>. It would be strange if we linted files within <code>.venv</code> in such a case, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zeshuaro">@zeshuaro</a> on 2023-12-08 06:17</div>
+            <div class="timeline-body"><p>If pre-commit provides the files in relative paths, would the problem be resolved?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/99njaggi">@99njaggi</a> on 2023-12-08 08:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh sorry, I missed that this is specifically when using <code>--all-files</code> (at least, I assume?). That I can at least explain. Presumedly, pre-commit is passing the root directory to Ruff, like <code>ruff check .</code> (from the directory containing <code>build</code>). In that case, when we start to iterate over files in that root directory, we use Ruff's default settings, and see the <code>build</code> directory, which is excluded by default, and skip it. (If we pass paths to files within <code>build</code> directly, Ruff will correctly use the settings within <code>build</code>.)</p>
+</blockquote>
+<p>I think there is a misunderstanding between us.
+There is no directory named <code>build</code> in the project. The root directory is named <code>build</code>.
+If we are using strictly relative paths, no path will contain <code>build</code>.</p>
+<p>The current behavior is not consistent between pre-commit and directly using Ruff.
+Ruff is working as expected when called directly:</p>
+<pre><code>&gt; cd /home/user/build
+&gt; ruff .
+test.py:3:8: F401 [*] `ruff` imported but unused
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+&gt; ruff /home/user/build/test.py
+test.py:3:8: F401 [*] `ruff` imported but unused
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>Running it with pre-commit has a different behavior:</p>
+<pre><code>&gt; python -m pre_commit run --all-files --verbose
+ruff.....................................................................Passed
+- hook id: ruff
+- duration: 0.05s
+
+warning: No Python files found under the given path(s)
+</code></pre>
+<hr />
+<p>If we check the documentation here. https://docs.astral.sh/ruff/settings/#exclude</p>
+<blockquote>
+<p>Single-path patterns, like .mypy_cache (to exclude any directory named .mypy_cache in the tree), foo.py (to exclude any file named foo.py), or foo_<em>.py (to exclude any file matching foo_</em>.py ).</p>
+</blockquote>
+<p>Ruff will exclude any directory named <code>build</code> in the tree.
+I expect it to check only the tree starting from root (the <code>build</code> directory in our case).
+Therefore the tree would look like this:</p>
+<pre><code>./
+├─ .git/
+├─ .pre-commit-config.yaml
+├─ test.py
+├─ ruff.toml
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

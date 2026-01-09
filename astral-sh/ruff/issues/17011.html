@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule Request: Do not return NotImplemented from regular methods/functions - astral-sh/ruff #17011</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule Request: Do not return NotImplemented from regular methods/functions</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/17011">#17011</a>
+        opened by <a href="https://github.com/aardjon">@aardjon</a>
+        on 2025-03-27 10:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aardjon">@aardjon</a> on 2025-03-27 10:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://docs.python.org/3/library/constants.html#NotImplemented">According to the docs</a>, <code>NotImplemented</code> is supposed to be mainly (or exclusively?) returned by some special dunder methods like <code>__eq__()</code>, <code>__lt__()</code> or <code>__imul__()</code>. That's why I would like to get a warning when returning it from any other context, because this may not be intended (and I consider it a code smell).</p>
+<p><strong>Invalid Code:</strong></p>
+<pre><code class="language-python">def foo() -&gt; bool:
+    return NotImplemented
+</code></pre>
+<pre><code class="language-python">class C:
+    def __foo(self) -&gt; str:
+        return NotImplemented
+</code></pre>
+<p><strong>Valid Code:</strong></p>
+<pre><code class="language-python">class C:
+    def __eq__(self, other: object) -&gt; bool:
+        return NotImplemented
+</code></pre>
+<p>I think in most cases one actually wants to raise instead, but I wouldn't fix it automatically because it changes behaviour.</p>
+<p>As far as I know, no other linters can check this explicitly. Pylint produces follow-up issues if the returned value is not handled properly, Mypy can only warn about &quot;Returning Any&quot;. But these warnings can be misleading.</p>
+<p>There is <a href="https://github.com/python/mypy/issues/363">a similar feature request for Mypy</a>. I'm not sure which tool is the right one for this check, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-03-27 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-27 19:56</div>
+            <div class="timeline-body"><p>I think that makes sense to me, now that Python has abstract class (and method) support without needing <code>NotImplemented</code>. However, I don't think we should add this rule before we finish #1774 because I consider this a rule that intentionally restricts the allowed syntax.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

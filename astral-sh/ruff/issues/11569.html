@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter changes order of comments. - astral-sh/ruff #11569</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter changes order of comments.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11569">#11569</a>
+        opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a>
+        on 2024-05-27 14:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2024-05-27 14:58</div>
+            <div class="timeline-body"><pre><code class="language-python">class Foo:
+    # comment 1
+    @abstractmethod
+    def foo(self) -&gt; None: ...
+    @abstractmethod
+    def bar(self) -&gt; None: ...
+    # comment 2
+
+    # comment 3
+    def baz(self) -&gt; None:
+        return None
+    # comment 4
+</code></pre>
+<p>becomes</p>
+<pre><code class="language-python">class Foo:
+    # comment 1
+    @abstractmethod
+    def foo(self) -&gt; None: ...
+    @abstractmethod
+    def bar(self) -&gt; None: ...
+
+    # comment 3
+    # comment 2
+    def baz(self) -&gt; None:
+        return None
+
+    # comment 4
+</code></pre>
+<p><a href="https://play.ruff.rs/90543207-c186-4bb6-b5f6-a658d65c31c6">[ruff-playground]</a></p>
+<ol>
+<li>Comments 2 and 3 get swapped.</li>
+<li>An extra space is inserted after <code>def bar</code>. Since these are stubs, no space should be inserted. (for instance, comment 1/2 can be  <code># region</code>/<code>#endregion</code>). But this is just my opinion.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-05-27 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-05-27 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-05-27 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2024-05-27 15:19</div>
+            <div class="timeline-body"><p>Another example, where the comment actually moves inside another function def.</p>
+<pre><code class="language-python">class Foo:
+    @abstractmethod
+    def foo(self) -&gt; None: ...
+    # comment 1
+
+    def baz(self) -&gt; None:
+        return None
+</code></pre>
+<p>becomes</p>
+<pre><code class="language-python">class Foo:
+    @abstractmethod
+    def foo(self) -&gt; None: ...
+
+    def baz(self) -&gt; None:
+    # comment 1
+        return None
+</code></pre>
+<p>https://play.ruff.rs/973d0af8-e586-4fc0-9aec-28fecf0dc047</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-31 08:28</div>
+            <div class="timeline-body"><p>You're good at finding comment reordering bugs and thank you so much at taking the time to report them!</p>
+<p>Uhh, the second one is really bad. Let me have a look.</p>
+<p>What's interesting is that all comments are associated with the right method. So this is a rendering bug and not a placement bug (logic where we figure out where a comment is most likely to belong).</p>
+<p>https://play.ruff.rs/5e5ae359-b017-4d82-ac47-2c77f254f161</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-31 08:33</div>
+            <div class="timeline-body"><p>To make it worse, this is not even related to classes nor does it require decorators. https://play.ruff.rs/2bcde006-72e6-409f-9fa9-659ef78d7944</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2024-05-31 08:48</div>
+            <div class="timeline-body"><p>I would suspect this is somehow related to special logic for formatting stub implementations https://github.com/astral-sh/ruff/issues/8357</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-31 08:56</div>
+            <div class="timeline-body"><p>Yeah, that's a great observation. The issue is that, for stubs, we don't write extra empty lines between the comment and the next function, which drips over the formatting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11632.html">astral-sh/ruff#11632</a> on 2024-05-31 09:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-31 09:20</div>
+            <div class="timeline-body"><p>@randolf-scholz thanks for debugging this together. The fix turned out to be not that bad :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-05-31 12:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

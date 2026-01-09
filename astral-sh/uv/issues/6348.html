@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On Windows, `uv run` fails with &quot;error: Failed to spawn: `python`&quot; - astral-sh/uv #6348</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>On Windows, `uv run` fails with &quot;error: Failed to spawn: `python`&quot;</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6348">#6348</a>
+        opened by <a href="https://github.com/pfmoore">@pfmoore</a>
+        on 2024-08-21 16:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-08-21 16:07</div>
+            <div class="timeline-body"><p>I just installed uv 0.3.0 using the installer script. This is on a Windows PC, with Python 3.8, 3.9, 3.10, 3.11 and 3.12 installed from the python.org installers. None of them have been added to <code>sys.path</code>, I use the <code>py</code> launcher (which by default selects the Python 3.12 installation). Apparently, I have the Windows Store version of Python 3.11 installed, but I never use it and it's not configured to be on my path by default (in &quot;app execution aliases&quot; I switched the &quot;python.exe&quot; and &quot;python3.exe&quot; aliases off).</p>
+<p>With that background, if I write a small script <code>sp.py</code> as follows:</p>
+<pre><code>import sys
+import os
+
+print(f&quot;{sys.executable=}&quot;)
+print(f&quot;{sys.path=}&quot;)
+print(os.environ[&quot;PATH&quot;].split(os.pathsep))
+</code></pre>
+<p>and run it using <code>uv run sp.py</code>, I get</p>
+<pre><code>❯ uv run sp.py
+error: Failed to spawn: `python`
+  Caused by: program not found
+</code></pre>
+<p>(by the way, it would be nice to have a way to manually run the Python interpreter that <code>uv run</code> will invoke - <code>uv run python</code> would be the obvious candidate, but it would need to work even if Python is not on <code>PATH</code> by default).</p>
+<p>I'm happy to provide more details as to my environment - I'm sure this is related to my configuration, which is far from typical. But I'm reluctant to reconfigure things to &quot;fix the problem&quot;, as what I'm doing <em>is</em> valid, if unusual, and in particular it's a deliberate choice on my part to not have a <code>python</code> command on <code>PATH</code> by default, and use the <code>py</code> launcher for everything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 16:10</div>
+            <div class="timeline-body"><p>Thank you for the thorough report! I believe we've talked about this before... I'm surprised we didn't fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-08-21 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @zanieb on 2024-08-21 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 16:17</div>
+            <div class="timeline-body"><p>The problem here is fairly obvious, @charliermarsh should have a fix up soon.</p>
+<p>https://github.com/astral-sh/uv/blob/f10ccc488ee33ceedb4cfdca040c7e5033407edc/crates/uv/src/commands/project/run.rs#L777</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 16:30</div>
+            <div class="timeline-body"><p>Serious déjà vu but turns out I only fixed this for pager: https://github.com/astral-sh/uv/pull/5198</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 16:33</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/issues/5838 / https://github.com/astral-sh/uv/pull/5849</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6354.html">astral-sh/uv#6354</a> on 2024-08-21 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-21 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-21 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-08-21 17:52</div>
+            <div class="timeline-body"><p>Thanks! Just over half an hour from report to fix - impressive 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 17:53</div>
+            <div class="timeline-body"><p>If it <em>doesn't</em> fix it please feel welcome to ping here... I was able to replicate something similar on macOS but of course it's not totally identical to your setup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-08-21 17:59</div>
+            <div class="timeline-body"><blockquote>
+<p>If it doesn't fix it please feel welcome to ping here</p>
+</blockquote>
+<p>Will do - I'll probably have to wait for a release as I don't have the time at the moment to build from source, but I'll check as soon as I can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-08-22 00:04</div>
+            <div class="timeline-body"><p>Releases also come fast around these parts: https://github.com/astral-sh/uv/releases/tag/0.3.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-08-22 08:31</div>
+            <div class="timeline-body"><p>I no longer get the error (which is great, thanks @charliermarsh) but <code>uv run</code> picks the Store Python 3.11 to run my script, rather than my default python.org Python 3.12 installation (where by &quot;default&quot; I mean &quot;the one the <code>py</code> launcher selects&quot;). I can force the use of Python 3.12 via <code>--python 3.12</code>, but that's definitely not optimal :-( And I can see no way of selecting the python.org version of Python 3.11 over the Store version, short of providing the full path to the Python executable.</p>
+<p>(On an unrelated note, I'd uninstall the Store version, if it wasn't for the fact that it acts as a really useful test case for issues like this...)</p>
+<p>At a minimum, I would expect the <em>latest</em> installed (and registered as per <a href="https://www.python.org/dev/peps/pep-0514/">PEP 514</a>) version of Python to be used by default, regardless of source. It would be more consistent if the behaviour of the <code>py</code> launcher was replicated, but that would require reading the <code>py.ini</code> <a href="https://docs.python.org/3.12/using/windows.html#customization-via-ini-files">configuration file</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-08-22 11:00</div>
+            <div class="timeline-body"><p>On further investigation, if I switch off the app execution alias for <code>python3.11</code> (as well as the ones for <code>python3</code> and <code>python</code>, which I had already switched off) then <code>uv run</code> correctly finds the Python 3.12 installation.</p>
+<p>That <em>almost</em> matches the docs <a href="https://docs.astral.sh/uv/concepts/python-versions/#discovery-of-python-versions">here</a>, which say:</p>
+<blockquote>
+<p>When searching for a system Python version, uv will use the first compatible version — not the newest version.</p>
+</blockquote>
+<p>However, the earlier note about the &quot;system Python&quot; says</p>
+<blockquote>
+<p>A Python interpreter on the <code>PATH</code> as <code>python</code>, <code>python3</code>, or <code>python3.x</code> on macOS and Linux, or <code>python.exe</code> on Windows.</p>
+</blockquote>
+<p>which suggests that <code>python3.x</code> is only for non-Windows systems.</p>
+<p>While I don't think it's necessary for the documentation to give every detail of the discovery process, this presumes that discovery is intuitive - and IMO, defaulting to an older version of Python when there's no <code>python</code> command on the <code>PATH</code> (and hence no &quot;default Python&quot; at the command line) is <em>not</em> intuitive. I don't think the existence of <code>python3.x</code> on <code>PATH</code> should <em>ever</em> influence the decision on what the default Python version should be - by having an explicit version in the executable name, it's by definition not used as a default...</p>
+<p>Again, I concede that this is a weird edge case caused by my specific config. I almost certainly should not have set things up so that I had <code>python3.11</code> on my path but no <code>python3</code> or <code>python</code>. But given that it's a possible configuration, I think it should be handled properly.</p>
+<p>I've now switched off the <code>python3.11</code> alias, so I no longer have the issue raised here. But I can easily switch it back on if you need me to test any fixes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 15:23</div>
+            <div class="timeline-body"><p>There's an issue tracking PEP 514 support at https://github.com/astral-sh/uv/issues/1521</p>
+<blockquote>
+<p>While I don't think it's necessary for the documentation to give every detail of the discovery process, this presumes that discovery is intuitive - and IMO, defaulting to an older version of Python when there's no python command on the PATH (and hence no &quot;default Python&quot; at the command line) is not intuitive. I don't think the existence of python3.x on PATH should ever influence the decision on what the default Python version should be - by having an explicit version in the executable name, it's by definition not used as a default...</p>
+</blockquote>
+<p>This makes sense to me. I think the problem is we look for all valid Python executable names on the PATH one directory at a time. Instead, <code>pythonX.Y</code> should only be used if we can't find any Python executable on the PATH with the name <code>python</code> or <code>python3</code> <em>or</em> if you specifically request <code>--python X.Y</code>. This will be a little tricky to do in a performant manner, i.e., we don't want to list and parse the members of the directories on the PATH repeatedly. Opened https://github.com/astral-sh/uv/issues/6444 to track.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6444.html">astral-sh/uv#6444</a> on 2024-08-22 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-08-22 16:54</div>
+            <div class="timeline-body"><p>Understood. As I say, my configuration is (was) unusual - it's not normal to have <em>just</em> the versioned <code>python3.x</code> executable without the unversioned one - so I wouldn't consider this as a priority (except maybe to point it out in the docs for now, as it <em>is</em> confusing when it happens).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10122.html">astral-sh/uv#10122</a> on 2024-12-23 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/magallardo">@magallardo</a> on 2025-05-23 20:26</div>
+            <div class="timeline-body"><p>I just got the following error.  UV has been working fine for me but running this command is failing</p>
+<p>uv run pip install -e .
+Built forbiddenfruit==0.1.4
+Installed 92 packages in 97ms
+error: Failed to spawn: <code>pip</code>
+Caused by: No such file or directory (os error 2)</p>
+<p>Please advise</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-23 20:48</div>
+            <div class="timeline-body"><p>@magallardo Please do not comment on old closed issues, see https://github.com/astral-sh/uv/issues/9452. You're looking for <code>uv pip install</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistent behaviour of `uv add` when passing the `--group` and `-r` flag. - astral-sh/uv #16361</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistent behaviour of `uv add` when passing the `--group` and `-r` flag.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/16361">#16361</a>
+        opened by <a href="https://github.com/ale18V">@ale18V</a>
+        on 2025-10-19 16:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ale18V">@ale18V</a> on 2025-10-19 16:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The behaviour of the following command:</p>
+<pre><code class="language-sh">   ➜ uv add -r requirements.txt --group user
+</code></pre>
+<p>is inconsistent.</p>
+<p>I have the following <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+readme = &quot;README.md&quot;
+description = &quot;bar&quot;
+requires-python = &quot;~=3.11.0&quot;
+dependencies = [
+    &quot;flwr==1.20.0&quot;,
+    &quot;loguru&gt;=0.7.2&quot;,
+]
+
+[project.optional-dependencies]
+ml = [
+    &quot;pandas&gt;=2.2.3&quot;,
+    &quot;scikit-learn&gt;=1.6.1&quot;,
+    &quot;torch&gt;=2.7.0&quot;,
+]
+</code></pre>
+<p>And if I run the aforementioned command with a non-empty <code>requirements.txt</code> file such as this one:</p>
+<pre><code># requirements.txt
+pytest
+</code></pre>
+<p>It works:</p>
+<pre><code>   ➜ uv add -r requirements.txt --group user
+Resolved 75 packages in 1.51s
+Prepared 1 package in 68ms
+Installed 3 packages in 11ms
+ + iniconfig==2.3.0
+ + pluggy==1.6.0
+ + pytest==8.4.2
+</code></pre>
+<p>On the other hand, if I run it with an empty <code>requirements.txt</code> it doesn't:</p>
+<pre><code>   ➜ uv add -r requirements.txt --group user
+warning: Requirements file `requirements.txt` does not contain any dependencies
+Resolved 71 packages in 9ms
+error: Group `user` is not defined in the project's `dependency-groups` table
+</code></pre>
+<p>Now, it's fair that it would maybe fail if the file was empty but this error seems misleading, as in the other case it worked even though the <code>user</code> group was not defined in the <code>pyproject.toml</code>.</p>
+<p>I agree that this seems a pretty niche scenario which wouldn't arise during normal development workflows. I happened to catch it because I use <code>uv</code> for some programmatic dependency management workflows, where it might happen that the <code>requirements.txt</code> is empty.</p>
+<h3>Platform</h3>
+<p>Arch Linux</p>
+<h3>Version</h3>
+<p>uv 0.9.3 (83635a6c4 2025-10-15)</p>
+<h3>Python version</h3>
+<p>Python 3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ale18V on 2025-10-19 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-20 08:39</div>
+            <div class="timeline-body"><p>We can create an empty group here for consistency, or at least we can improve the error message that <code>requirements.txt</code> is empty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-10-29 00:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16490.html">astral-sh/uv#16490</a> on 2025-10-29 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-10-29 15:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

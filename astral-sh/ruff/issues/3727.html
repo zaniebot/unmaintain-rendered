@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCH004 incorrectly states that import is used for more than type checking - astral-sh/ruff #3727</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>TCH004 incorrectly states that import is used for more than type checking</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3727">#3727</a>
+        opened by <a href="https://github.com/tibbe">@tibbe</a>
+        on 2023-03-25 07:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tibbe">@tibbe</a> on 2023-03-25 07:01</div>
+            <div class="timeline-body"><p>Version: ruff 0.0.254</p>
+<p>In the example below it seems to me that the import is clearly used for type-checking only. In fact this particular package (boto3-stubs) is a type-checking only package.</p>
+<p><code>repro.py</code>:</p>
+<pre><code class="language-py">import typing
+
+import boto3
+
+if typing.TYPE_CHECKING:
+    from mypy_boto3_sns.client import SNSClient
+
+
+def create_sns_client() -&gt; SNSClient:
+    return boto3.client('sns')
+
+
+sns_client: typing.Optional[SNSClient]
+</code></pre>
+<p>Libraries used:</p>
+<pre><code class="language-toml">boto3 = &quot;1.26.97&quot;
+botocore = &quot;1.29.97&quot;
+boto3-stubs = {version = &quot;1.26.97.post1&quot;, extras = [&quot;apigatewaymanagementapi&quot;, &quot;cloudsearch&quot;, &quot;cloudsearchdomain&quot;, &quot;cognito-idp&quot;, &quot;dynamodb&quot;, &quot;s3&quot;, &quot;secretsmanager&quot;, &quot;ses&quot;, &quot;sns&quot;, &quot;sqs&quot;, &quot;transcribe&quot;, &quot;translate&quot;]}
+</code></pre>
+<p>Incorrect lint error:</p>
+<pre><code>benetics/repro.py:6:39: TCH004 Move import `mypy_boto3_sns.client.SNSClient` out of type-checking block. Import is used for more than type hinting.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-03-25 12:49</div>
+            <div class="timeline-body"><p>Have you tried enabling <a href="https://peps.python.org/pep-0563/">PEP 563</a> with</p>
+<pre><code class="language-python">from __future__ import annotations
+</code></pre>
+<p>You can automatically add it to all modules with the <a href="https://beta.ruff.rs/docs/settings/#required-imports"><code>isort.requires-imports</code></a> setting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-25 15:11</div>
+            <div class="timeline-body"><p>I think Ruff is correct here -- this code gives you a runtime error:</p>
+<pre><code>❯ python foo.py
+Traceback (most recent call last):
+  File &quot;/Users/crmarsh/workspace/ruff/foo.py&quot;, line 9, in &lt;module&gt;
+    def create_sns_client() -&gt; SNSClient:
+                               ^^^^^^^^^
+NameError: name 'SNSClient' is not defined
+</code></pre>
+<p>If you include <code>from __future__ import annotations</code> as @edgarrmondragon, then the annotations will indeed be deferred, and you <em>can</em> move that import into a type-checking block. But without future annotations, that import has to be available at runtime.</p>
+<p>Your other option is to use a forward annotation, like this:</p>
+<pre><code>sns_client: typing.Optional[&quot;SNSClient&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-25 15:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

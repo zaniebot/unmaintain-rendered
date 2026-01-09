@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync should warn (or fail) when lock file is out of sync with pyproject.toml dependency tables - astral-sh/uv #11530</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync should warn (or fail) when lock file is out of sync with pyproject.toml dependency tables</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11530">#11530</a>
+        opened by <a href="https://github.com/gaborbernat">@gaborbernat</a>
+        on 2025-02-15 02:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-02-15 02:35</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If uv detects that the:</p>
+<p><code>dependencies</code>, <code>dependency-groups</code>, <code>optional-dependencies</code> have been or <code>tool.uv.environments</code> changed since the lock file has been generated it should warn the user.</p>
+<p>I was sitting here for the last 10 minutes wondering I've updated my project dependency, why is uv sync not picking it up 😂 definitely a skill issue though. So just a small quality of life improvement.</p>
+<h3>Example</h3>
+<pre><code>uv sync
+warning: the lock file is out of date with the pyproject.toml file
+</code></pre>
+<p>poetry does error out when a hash of important parts of the pyproject.toml differs from the one saved in the lockfile, for reference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @gaborbernat on 2025-02-15 02:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-15 04:13</div>
+            <div class="timeline-body"><p>Huh? We do update the lockfile by default. Do you have <code>UV_FROZEN</code> set or something?</p>
+<pre><code>❯ uv init example
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+❯ cd example
+❯ vi pyproject.toml
+❯ uv sync
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+Resolved 4 packages in 722ms
+Prepared 3 packages in 328ms
+Installed 3 packages in 4ms
+ + anyio==4.8.0
+ + idna==3.10
+ + sniffio==1.3.1
+❯ vi pyproject.toml
+❯ cat pyproject.toml
+[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13.0&quot;
+dependencies = [&quot;anyio&lt;4.8.0&quot;]
+❯ uv sync --frozen
+Audited 3 packages in 0.20ms
+❯ uv sync --locked
+Resolved 4 packages in 240ms
+error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provided. To update the lockfile, run `uv lock`.
+❯ uv sync
+Resolved 4 packages in 1ms
+Prepared 1 package in 303ms
+Uninstalled 1 package in 4ms
+Installed 1 package in 5ms
+ - anyio==4.8.0
+ + anyio==4.7.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @zanieb on 2025-02-15 04:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-02-15 04:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-02-15 04:52</div>
+            <div class="timeline-body"><p>Actually I do pass in the <code>--frozen</code> flag 🤔 https://github.com/tox-dev/tox-uv/blob/main/src/tox_uv/_run_lock.py#L81</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-02-15 04:54</div>
+            <div class="timeline-body"><p>So guess the question should I pass in <code>--locked</code> instead, or both <code>--frozen</code> and <code>--locked</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tox-dev/tox-uv/pulls/177.html">tox-dev/tox-uv#177</a> on 2025-02-15 04:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-02-15 05:09</div>
+            <div class="timeline-body"><blockquote>
+<p>So guess the question should I pass in <code>--locked</code> instead</p>
+</blockquote>
+<p>Closing with this conclusion. If my conclusion is incorrect please ping me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @gaborbernat on 2025-02-15 05:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-15 15:39</div>
+            <div class="timeline-body"><p>Yeah <code>--frozen</code> specifically opts-in to ignoring changes to the <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

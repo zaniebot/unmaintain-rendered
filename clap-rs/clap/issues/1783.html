@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>subsubcommand  option q cannot use delimiter - clap-rs/clap #1783</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>subsubcommand  option q cannot use delimiter</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1783">#1783</a>
+        opened by <a href="https://github.com/inevity">@inevity</a>
+        on 2020-04-04 13:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/inevity">@inevity</a> on 2020-04-04 13:02</div>
+            <div class="timeline-body"><!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+<h3>Rust Version</h3>
+<p>rustc 1.42.0 (b8cedc004 2020-03-09)</p>
+<h3>Code</h3>
+<pre><code class="language-rust">extern crate clap;
+
+use clap::{App, AppSettings, Arg, ArgSettings, ArgMatches, SubCommand};
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let matches = App::new(&quot;Share&quot;)
+        .version(&quot;1.0&quot;)
+        .subcommand(
+            App::new(&quot;ghost&quot;) // The name we call argument with
+                .version(&quot;0.1&quot;) // Subcommands can have independent version
+                .setting(AppSettings::SubcommandRequiredElseHelp)
+                .subcommand(
+                    App::new(&quot;list&quot;)
+                         .about(&quot;list posts&quot;)
+                         .version(&quot;0.1&quot;)
+                         .arg(
+                             Arg::with_name(&quot;posts&quot;) // And their own arguments
+                                 .help(&quot;list post&quot;)
+                                 .index(1)
+                                 .required(true),
+                         )
+                         .arg(        
+                             Arg::with_name(&quot;query&quot;)
+                                 .short('q')
+                                 .long(&quot;query&quot;)
+                                 .multiple(true)
+                                 .use_delimiter(true)
+                                 .setting(ArgSettings::TakesValue)
+                                 .help(&quot;set list query args&quot;),         
+                         ),
+                )
+        )
+        .get_matches();
+
+    match matches.subcommand() {
+        (&quot;ghost&quot;, Some(ghost_matches)) =&gt; {
+            match ghost_matches.subcommand() {
+                (&quot;list&quot;, Some(list_matches)) =&gt; {
+
+                    println!(&quot;to list posts/pages { }&quot;, list_matches.value_of(&quot;posts&quot;).unwrap());
+                    if let Some(q) = list_matches.value_of(&quot;query&quot;) {
+                    //if let Some(q) = matches.value_of(&quot;query&quot;) {
+                        // why string
+                   // if let Some(q) = list_matches.value_of(&quot;query&quot;).unwrap().collect::&lt;Vec&lt;_&gt;&gt;() {
+                        //q = ();
+
+                        println!(&quot;list post query {:#?}&quot;, q); //mean
+
+                    }
+                }
+                (&quot;&quot;, None) =&gt; println!(&quot;No ghost subcommand was used&quot;), // If no subcommand was usd it'll match the tuple (&quot;&quot;, None)
+                _ =&gt; unreachable!(),
+            }
+        }
+        (&quot;&quot;, None) =&gt; println!(&quot;No main subcommand was used&quot;), // If no subcommand was usd it'll match the tuple (&quot;&quot;, None)
+        _ =&gt; unreachable!(), // If all subcommands are defined above, anything else is unreachabe!()
+    }
+
+
+    Ok(())
+}
+Cargo.toml
+[package]
+name = &quot;sharecli&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2018&quot;
+
+
+[dependencies]
+clap = { git = &quot;https://github.com/clap-rs/clap/&quot; }
+tokio = { version = &quot;0.2&quot;, features = [&quot;full&quot;] }
+
+</code></pre>
+<h3>Steps to reproduce the issue</h3>
+<ol>
+<li><p>Run <code>sharec ghost list post -q limit:9,status:draft.</code></p>
+</li>
+<li></li>
+</ol>
+<pre><code>if let Some(q) = list_matches.value_of(&quot;query&quot;) { // list_matches got from the matches.subcommand() which is from the second subcommand 
+</code></pre>
+<h3>Affected Version of <code>clap*</code></h3>
+<p>master</p>
+<h3>Actual Behavior Summary</h3>
+<p>q is String, &quot;limit:9&quot;,</p>
+<h3>Expected Behavior Summary</h3>
+<p>Should as array. so we can use list_matches.value_of(&quot;query&quot;).unwrap().collect::&lt;Vec&lt;_&gt;&gt;()</p>
+<h3>Additional context</h3>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @inevity on 2020-04-04 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @inevity on 2020-04-05 02:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inevity">@inevity</a> on 2020-04-05 02:33</div>
+            <div class="timeline-body"><p>not bug.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

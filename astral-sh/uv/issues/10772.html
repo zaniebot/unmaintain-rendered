@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv 0.5.21 fails to install pytorch - astral-sh/uv #10772</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv 0.5.21 fails to install pytorch</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10772">#10772</a>
+        opened by <a href="https://github.com/kasperipalkama">@kasperipalkama</a>
+        on 2025-01-20 07:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kasperipalkama">@kasperipalkama</a> on 2025-01-20 07:32</div>
+            <div class="timeline-body"><p>I have configured pytorch installation in pyproject toml in the following way:</p>
+<pre><code>[project.optional-dependencies]
+cpu = [
+  &quot;torch==2.2.2&quot;,
+]
+cu118 = [
+  &quot;torch==2.2.2&quot;,
+]
+
+[tool.uv]
+required-version = &quot;0.5.21&quot;
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;cu118&quot; },
+  ],
+]
+package = true
+python-preference = &quot;only-managed&quot;
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+  { index = &quot;pytorch-cu118&quot;, extra = &quot;cu118&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu118&quot;
+url = &quot;https://download.pytorch.org/whl/cu118&quot;
+explicit = true
+</code></pre>
+<p>I'm  on</p>
+<pre><code class="language-import">{'NAME': 'Debian GNU/Linux', 'ID': 'debian', 'PRETTY_NAME': 'Debian GNU/Linux 11 (bullseye)', 'VERSION_ID': '11', 'VERSION': '11 (bullseye)', 'VERSION_CODENAME': 'bullseye', 'HOME_URL': 'https://www.debian.org/', 'SUPPORT_URL': 'https://www.debian.org/support', 'BUG_REPORT_URL': 'https://bugs.debian.org/'
+</code></pre>
+<p>machine</p>
+<p>If I do a fresh installation without having a lock file locally by running <code>uv sync --extra=cpu</code>, it fails with:</p>
+<pre><code>error: Distribution `torch==2.2.2 @ registry+https://download.pytorch.org/whl/cpu` can't be installed because it doesn't have a source distribution or wheel for the current platform
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "UV (0.5.21) fails to install pytorch" to "uv 0.5.21 fails to install pytorch" by @kasperipalkama on 2025-01-20 09:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 14:25</div>
+            <div class="timeline-body"><p>What is your Python version? Are you using Python 3.13?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-20 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kasperipalkama">@kasperipalkama</a> on 2025-01-20 14:30</div>
+            <div class="timeline-body"><blockquote>
+<p>What is your Python version? Are you using Python 3.13?</p>
+</blockquote>
+<p>I'm using 3.10.12:</p>
+<pre><code>% uv run python --version
+Python 3.10.12
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-20 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-20 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 14:34</div>
+            <div class="timeline-body"><p>This was a regression. You can use 0.5.20 for the time being if needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2025-01-20 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kasperipalkama">@kasperipalkama</a> on 2025-01-20 14:54</div>
+            <div class="timeline-body"><p>When using 0.5.20, the fresh installation works. However, if I add any new dependency to pyproject.toml and run <code>uv sync --extra=cpu</code> to install it, it fails to install pytorch with the same error message . This is not the case at least in 0.5.14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 14:57</div>
+            <div class="timeline-body"><p>Please provide a complete reproduction: the exact <code>pyproject.toml</code>, <code>uv.lock</code>, evidence of the Python and uv version, the specific command you're running, and the failure you're seeing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kasperipalkama">@kasperipalkama</a> on 2025-01-20 15:16</div>
+            <div class="timeline-body"><p>The uv lock file is converted to txt file because github does not allow pasting .lock files
+<a href="https://github.com/user-attachments/files/18479288/uv.txt">uv.txt from the fresh install </a></p>
+<p>pyproject.toml at the beginnnig:</p>
+<pre><code>[project]
+name = &quot;ads-mega-model&quot;
+dynamic = [&quot;version&quot;]
+requires-python = &quot;==3.10.12&quot;
+dependencies = [
+    &quot;bokeh==3.4.1&quot;,
+    &quot;icecream==2.1.3&quot;,
+    &quot;tensorboard==2.17.0&quot;,
+    &quot;lightning==2.2.5&quot;,
+    &quot;pytorch-lightning==2.4.0&quot;,
+    &quot;watermark==2.4.3&quot;,
+    &quot;optuna==3.6.1&quot;,
+    &quot;omegaconf==2.3.0&quot;,
+    &quot;ray[data,train,tune,serve]==2.37.0&quot;,
+    &quot;gcsfs==2024.6.0&quot;,
+    &quot;pyarrow==15.0.0&quot;,
+    &quot;pandas==2.2.2&quot;,
+    &quot;fire==0.6.0&quot;,
+    &quot;google-cloud-core==2.4.1&quot;,
+    &quot;google-cloud-firestore==2.19.0&quot;,
+    &quot;google-cloud-storage==2.18.2&quot;,
+    &quot;google-cloud-aiplatform==1.70.0&quot;,
+    &quot;google-cloud-bigquery[pandas]==3.26.0&quot;,
+    &quot;google-cloud-secret-manager==2.22.0&quot;,
+    &quot;mlflow==2.14.3&quot;,
+    &quot;kfp==2.8.0&quot;,
+    &quot;pyproject-metadata==0.8.0&quot;,
+    &quot;joblib==1.4.2&quot;,
+    &quot;toml==0.10.2&quot;,
+    &quot;wandb==0.17.6&quot;,
+    &quot;torchestra==0.1.6&quot;,
+    &quot;tenacity==9.0.0&quot;,
+    &quot;tritonclient==2.41.1&quot;,
+    &quot;opentelemetry-sdk==1.27.0&quot;,  # latest version that works with ray 2.37.0
+    &quot;opentelemetry-exporter-otlp==1.27.0&quot;,  # latest version that works with ray 2.37.0
+    &quot;pip==24.3.1&quot;,
+]
+
+[dependency-groups]
+dev = [
+    &quot;ruff==0.5.7&quot;,
+    &quot;mypy==1.10.0&quot;,
+    &quot;pytest==8.2.2&quot;,
+    &quot;pytest-xdist==3.6.1&quot;,
+    &quot;pytest-order==1.2.1&quot;,
+    &quot;pytest-cov==5.0.0&quot;,
+    &quot;pytest-mock==3.14.0&quot;,
+    &quot;editorconfig-checker==2.7.3&quot;,
+    &quot;pre-commit==2.12.1&quot;,
+    &quot;types-requests==2.31.0.6&quot;,
+    &quot;pandas-stubs==2.2.2.240603&quot;,
+    &quot;pyarrow-stubs==10.0.1.7&quot;,
+]
+
+[project.optional-dependencies]
+cpu = [
+  &quot;torch==2.2.2&quot;,
+]
+cu118 = [
+  &quot;torch==2.2.2&quot;,
+]
+
+[tool.uv]
+required-version = &quot;0.5.20&quot;
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;cu118&quot; },
+  ],
+]
+package = true
+python-preference = &quot;only-managed&quot;
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+  { index = &quot;pytorch-cu118&quot;, extra = &quot;cu118&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu118&quot;
+url = &quot;https://download.pytorch.org/whl/cu118&quot;
+explicit = true
+
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+extend-exclude = [&quot;**/*.ipynb&quot;, &quot;**/*.md&quot;]
+
+[tool.ruff.format]
+quote-style = &quot;double&quot;
+indent-style = &quot;space&quot;
+docstring-code-format = true
+line-ending = &quot;lf&quot;
+
+[tool.ruff.lint]
+extend-select = [&quot;I&quot;]
+
+[tool.mypy]
+exclude = [
+    &quot;build&quot;,
+]
+mypy_path = &quot;stubs&quot;
+
+[[tool.mypy.overrides]]
+module=&quot;toml.*&quot;
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module=&quot;fire.*&quot;
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module=&quot;fsspec.*&quot;
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module=&quot;google.*&quot;
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module=&quot;joblib.*&quot;
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module=&quot;kfp.*&quot;
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module=&quot;kubernetes.*&quot;
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module=&quot;mlflow.*&quot;
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module=&quot;vertexai.*&quot;
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module=&quot;vertex_ray.*&quot;
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module=&quot;tritonclient.*&quot;
+ignore_missing_imports = true
+
+[tool.coverage]
+run.omit = [
+  &quot;*/.local/*&quot;,
+  &quot;__*__.py&quot;,
+  &quot;*/test_*.py&quot;,
+]
+run.source = [&quot;src&quot;]
+run.relative_files = true
+run.branch = true
+report.skip_empty = true
+# covege report for local development
+html.directory = &quot;.local/htmlcov&quot;
+# covege report for CI + Quality Gate
+xml.output = &quot;.local/coverage.xml&quot;
+</code></pre>
+<p>python version:</p>
+<pre><code>uv run --extra=cpu python --version
+Python 3.10.12
+</code></pre>
+<p>uv version:</p>
+<pre><code>uv version
+uv 0.5.20
+</code></pre>
+<p>After adding e.g. &quot;numpy&lt;2&quot; to the dependencies and reinstalling them, it  fails to find distribution for torch:</p>
+<pre><code>uv sync --extra=cpu
+Resolved 254 packages in 1.99s
+error: Distribution `torch==2.2.2 @ registry+https://download.pytorch.org/whl/cpu` can't be installed because it doesn't have a source distribution or wheel for the current platform
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 15:59</div>
+            <div class="timeline-body"><p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 17:06</div>
+            <div class="timeline-body"><p>I think the second thing is a different bug. I'll track it in a separate issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10782.html">astral-sh/uv#10782</a> on 2025-01-20 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10783.html">astral-sh/uv#10783</a> on 2025-01-20 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-20 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 17:23</div>
+            <div class="timeline-body"><p>Tracking the second piece in: https://github.com/astral-sh/uv/issues/10783</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10818.html">astral-sh/uv#10818</a> on 2025-01-21 16:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

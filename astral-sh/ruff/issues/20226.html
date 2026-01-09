@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: literal collection arguments lead to awful looking GNU-style indents - astral-sh/ruff #20226</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: literal collection arguments lead to awful looking GNU-style indents</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20226">#20226</a>
+        opened by <a href="https://github.com/xmo-odoo">@xmo-odoo</a>
+        on 2025-09-04 12:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/xmo-odoo">@xmo-odoo</a> on 2025-09-04 12:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If a collection literal long enough to exceed <code>line-length</code> is the parameter to a function, ruff does not just line-break inside the collection literal, it moves the collection literal indented inside the function call <em>then</em> indents individual items, in something of a <a href="https://en.wikipedia.org/wiki/Indentation_style#GNU">GNU-style indent</a>.</p>
+<pre><code class="language-python">foo(
+    [
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+    ]
+)
+</code></pre>
+<p>This would look a lot better and takes less space by folding the collection delimiters with the function's:</p>
+<pre><code class="language-python">foo([
+    'thisisalongvalue',
+    'thisisalongvalue',
+    'thisisalongvalue',
+    'thisisalongvalue',
+    'thisisalongvalue',
+    'thisisalongvalue',
+    'thisisalongvalue',
+])
+</code></pre>
+<p>https://play.ruff.rs/38c1f00a-1f1b-42d8-a0c5-83eb8c722295</p>
+<h3>Version</h3>
+<p>0.12.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-09-04 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @ntBre on 2025-09-04 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ferdnyc">@ferdnyc</a> on 2025-09-08 06:42</div>
+            <div class="timeline-body"><p>@xmo-odoo</p>
+<p>...Not sure how I feel about that.</p>
+<p>It would involve some special-casing, because consider the reformatting of this:</p>
+<pre><code class="language-python">foo('thisisalongargumenttothefunction', 'thisisashorterargument',
+    [
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+    ]
+)
+</code></pre>
+<p>Ruff will make that:</p>
+<pre><code class="language-python">foo(
+    &quot;thisisalongargumenttothefunction&quot;,
+    &quot;thisisashorterargument&quot;,
+    [
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+    ],
+)
+</code></pre>
+<p>As, I'd argue, it should. Which means the &quot;gnu-style indent&quot; is actually the product of two Ruff reformattings happening together: The rule that chops function arguments down when they don't fit on a single line creates the line break after the <code>(</code>, and before the <code>)</code>. The rule for reformatting long collections creates the breaks after <code>[</code> and before <code>]</code>.</p>
+<p>So now we have a situation where the formatting (as you propose it) would <em>differ</em> based on whether the collection is the <strong>only</strong> argument to the function or not? Presumably, overriding the chop-down-long-argument-lists rule, and applying only the reformatting for collections (just like it would be applied for an assignment, e.g.:)</p>
+<pre><code class="language-python"># post-ruff formatting
+bar = [
+    &quot;thisisalongvalue&quot;,
+    &quot;thisisalongvalue&quot;,
+    &quot;thisisalongvalue&quot;,
+    &quot;thisisalongvalue&quot;,
+    &quot;thisisalongvalue&quot;,
+    &quot;thisisalongvalue&quot;,
+    &quot;thisisalongvalue&quot;,
+]
+</code></pre>
+<p>(Granted, there's already some special-casing. As I showed above, Ruff adds a trailing comma after the collection <em>only</em> if it's NOT the only argument. But comma-vs-no-comma is a less severe divergence between cases than the proposed special-casing would be.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-08 14:09</div>
+            <div class="timeline-body"><p>I'll be curious to hear what @MichaReiser thinks when he gets back from PTO next week. A special case for this would at least be in line with rustfmt, as one <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=bde59efe73022fce11cbbcce584aefea">example</a>. It looks like our current formatting matches <code>black</code>, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ferdnyc">@ferdnyc</a> on 2025-09-08 21:47</div>
+            <div class="timeline-body"><p><code>rustfmt</code> turns out to be <a href="https://rust-lang.github.io/rustfmt/?version=v1.8.0">surprisingly configurable</a> and un-Black-like. (Well, it was surprising to me.) There are some interesting knobs in there, too.</p>
+<p>But, there doesn't seem to be <strong>any</strong> configuration that will convince it to output this:</p>
+<pre><code class="language-rust">foo(
+    [
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+        &quot;thisisalongvalue&quot;,
+    ]
+);
+</code></pre>
+<p>So, that's a point in favor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-15 09:07</div>
+            <div class="timeline-body"><p>The requested style is supported in preview mode (<code>format.preview = true</code>) if the nested list (or any other syntax that has its own parentheses) is the only call argument. We added this style in https://github.com/astral-sh/ruff/issues/8279, but it hasn't been stabilized yet because it would break black compatibility. We'll revisit this decision as part of Ruff's 2026 style guide.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-09-15 09:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

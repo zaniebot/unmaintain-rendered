@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[feature-request] File/block-scoped specific noqa directives - astral-sh/ruff #1054</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[feature-request] File/block-scoped specific noqa directives</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1054">#1054</a>
+        opened by <a href="https://github.com/smackesey">@smackesey</a>
+        on 2022-12-05 12:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-05 12:10</div>
+            <div class="timeline-body"><p>Ruff's README says this about <a href="https://github.com/charliermarsh/ruff#ignoring-errors">ignoring errors</a>:</p>
+<blockquote>
+<p>To ignore all errors across an entire file, Ruff supports Flake8's # flake8: noqa directive (or, equivalently, # ruff: noqa). Adding either of those directives to any part of a file will disable error reporting for the entire file.</p>
+<p>For targeted exclusions across entire files (e.g., &quot;Ignore all F841 violations in /path/to/file.py&quot;), see the <a href="https://github.com/charliermarsh/ruff#per-file-ignores">per-file-ignores</a> configuration setting.</p>
+</blockquote>
+<p>It is much easier to maintain &quot;per-file-ignores&quot; when they are <em>in</em> the file they refer to, rather than a config file. Pylint lets you scope <code># pylint: disable=&lt;code&gt;</code> (equivalent of <code>noqa</code>) to the file and <a href="https://pylint.pycqa.org/en/latest/user_guide/messages/message_control.html#block-disables">block level</a>:</p>
+<pre><code>### All the violations on a single line
+
+a, b = ... # pylint: disable=unbalanced-tuple-unpacking
+
+### All the violations on the following line
+
+# pylint: disable-next=unbalanced-tuple-unpacking
+a, b = ...
+
+### All the violations in a single scope
+
+def test():
+    # Disable all the no-member violations in this function
+    # pylint: disable=no-member
+    ...
+
+### All the violations in a block. For instance, each separate branch of an if statement is considered a separate block, as in the following example:
+
+def meth5(self):
+    # pylint: disable=no-member
+    # no error
+    print(self.bla)
+    if self.blop:
+        # pylint: enable=no-member
+        # enable all no-members for this block
+        print(self.blip)
+</code></pre>
+<p>Would be really nice for ruff to be able to do this with <code># ruff: noqa &lt;code&gt;</code> comments. Particularly useful for:</p>
+<ul>
+<li>rules on <code>print</code> calls, which sometimes you want to allow in a particular file or function scope but generally want to prohibit throughout rest of codebase.</li>
+<li>temporarily disabling import sorting (you need this to replicate <code># isort: off/on</code> comments</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2022-12-05 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "File/block-scoped specific noqa directives" to "[feature-request] File/block-scoped specific noqa directives" by @smackesey on 2022-12-05 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 18:06</div>
+            <div class="timeline-body"><p>(Just to briefly mention: we do support <code># isort: off/on</code> comments. They should be respected as of now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-05 18:26</div>
+            <div class="timeline-body"><p>@charliermarsh Oh I didn't realize-- do you support all the isort <a href="https://pycqa.github.io/isort/docs/configuration/action_comments.html">action comments</a>, like <code>isort: split</code> and <code>isort: skip_file</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 18:30</div>
+            <div class="timeline-body"><p>@smackesey - No, only <code>on</code>, <code>off</code>, and <code>skip</code>. I could add support for <code>split</code> and/or <code>skip_file</code> if those are impactful for you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-05 18:37</div>
+            <div class="timeline-body"><p>Hmm <code># isort: off</code> doesn't seem to be working. Ruff <code>0.0.160</code> reports import errors on the below file-- shouldn't the <code># isort: off</code> at the top disable any <code>I001</code> error for the whole file?</p>
+<pre><code># isort: off
+# pylint: disable=import-error
+
+from dagster import (
+    load_assets_from_package_module,
+)
+
+# start_example
+
+import my_package.cereal as cereal
+
+cereal_assets = load_assets_from_package_module(
+    cereal,
+    group_name=&quot;cereal_assets&quot;,
+)
+
+# end_example
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 18:40</div>
+            <div class="timeline-body"><p>It should work if you add <code># isort: on</code> to the bottom (which should probably be considered a bug).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-05 18:40</div>
+            <div class="timeline-body"><blockquote>
+<p>I could add support for split and/or skip_file if those are impactful for you.</p>
+</blockquote>
+<p>We do use <code>split</code>. IIUC <code>skip_file</code> is the same as putting <code>off</code> at the top. I do think if you are going to support any of them, you should support them all, since they're not <code>ruff</code>-specific error codes but <code>isort</code>-specific commands. Would certainly help people port from <code>isort</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-05 18:41</div>
+            <div class="timeline-body"><blockquote>
+<p>It should work if you add # isort: on to the bottom (which should probably be considered a bug).</p>
+</blockquote>
+<p>Definitiely a bug going by the <code>isort</code> docs for <code>off</code>:</p>
+<blockquote>
+<p>Turns isort parsing off. Every line after an # isort: off statement will be passed along unchanged until an # isort: on comment or the end of the file.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 18:41</div>
+            <div class="timeline-body"><p>Yeah. Can probably fix and add the rest of these today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 14:48</div>
+            <div class="timeline-body"><p>@smackesey - What if we support <a href="https://eslint.org/docs/latest/user-guide/configuring/rules#disabling-rules">ESLint-like on/off comments</a>? I'd prefer to do something that's distinct from language semantics (like block-scoped rules) if possible -- or, at least, it's easier, and I think it could be more intuitive too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-06 14:55</div>
+            <div class="timeline-body"><blockquote>
+<p>What if we support <a href="https://eslint.org/docs/latest/user-guide/configuring/rules#disabling-rules">ESLint-like on/off comments</a>?</p>
+</blockquote>
+<p>Sounds good to me! In general I'd take as much inspiration from eslint as possible, it's a lot better than the offerings of the current Python ecosystem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-16 17:50</div>
+            <div class="timeline-body"><p>I'd like to support this soon. I'm still leaning towards doing on-off comments that are based purely on lines and not scope, for simplicity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1289.html">astral-sh/ruff#1289</a> on 2022-12-19 21:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> removed by @charliermarsh on 2022-12-31 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">noqa</span> added by @charliermarsh on 2022-12-31 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-02-10 13:18</div>
+            <div class="timeline-body"><p>Is this on the radar for anytime soon? BTW <code>ruff</code> has been fantastic for us since we adopted it at Dagster.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 13:26</div>
+            <div class="timeline-body"><p>I haven't been thinking about it lately :joy: but I could re-prioritize it! I think the implementation itself isn't too hard, it's mostly coming up with a clean API to support going forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-02-10 13:43</div>
+            <div class="timeline-body"><blockquote>
+<p>coming up with a clean API to support going forward</p>
+</blockquote>
+<p>Forget about block scoping for the moment (some variant of on/off comments would be good though)-- for file-scoping, why not just allow no <code># noqa: &lt;whatever&gt;</code> at the top of the file to scope to the file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 13:45</div>
+            <div class="timeline-body"><p>Yeah we can support that. Flake8 intentionally doesn't but I'm not certain why -- I think because they recommend you use <code>per-file-ignores</code> for that, but I don't think it's a huge burden for us to support it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-02-11 00:03</div>
+            <div class="timeline-body"><p>Great-- just to give you some context, one of the primary reasons I'm asking for this is because we have a lot of <code># pylint: disable=&lt;some-rule&gt;</code> file-scoped comments that I've left around throughout the code-- I'm waiting to turn those rules on until I can just bulk-replace the pylint-disable with the ruff equivalent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-12 23:56</div>
+            <div class="timeline-body"><p>I'm thinking we can do:</p>
+<pre><code class="language-py"># ruff: noqa: F401
+</code></pre>
+<p>...to disable F401 for the entire file.</p>
+<p>We already support:</p>
+<pre><code class="language-py"># ruff: noqa
+</code></pre>
+<p>...to disable linting for the <em>entire</em> file, so this feels like a reasonable blend of that syntax and <code># noqa: F401</code> for inline ignores.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-02-13 01:40</div>
+            <div class="timeline-body"><p>Sounds good-- for multiple codes I'd recommend:</p>
+<pre><code># ruff: noqa: &lt;code1&gt;,&lt;code2&gt;,...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-13 03:37</div>
+            <div class="timeline-body"><p>Yeah sounds good -- so similar to the inline form of <code># noqa: &lt;code1&gt;, &lt;code2&gt;, ...</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-17 00:19</div>
+            <div class="timeline-body"><p>Working on file-scoped directives now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2978.html">astral-sh/ruff#2978</a> on 2023-02-17 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-17 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3711.html">astral-sh/ruff#3711</a> on 2023-04-18 12:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

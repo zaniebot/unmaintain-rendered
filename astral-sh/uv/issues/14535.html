@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV and GPU access for  onnxruntime-gpu - astral-sh/uv #14535</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV and GPU access for  onnxruntime-gpu</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14535">#14535</a>
+        opened by <a href="https://github.com/linaMallek">@linaMallek</a>
+        on 2025-07-10 10:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/linaMallek">@linaMallek</a> on 2025-07-10 10:18</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>i tried to install onnxruntime-gpu for insightface its looks its cant just access my gpu !! is there any way to solve this</p>
+<h3>Platform</h3>
+<p>Windows 64</p>
+<h3>Version</h3>
+<p>uv 0.6.9 (3d9460278 2025-03-20)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @linaMallek on 2025-07-10 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2025-07-10 15:00</div>
+            <div class="timeline-body"><p>https://onnxruntime.ai/docs/install/
+I've reviewed the ONNX Runtime documentation. You actually need to first confirm if you are using an Nvidia GPU, and for version 1.19.0 and above, CUDA version 12.x is required. The information you provided is insufficient, making it very difficult to reproduce your issue.</p>
+<p>Oh right, if the official pip isn't working either, then the problem is usually unrelated to uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-07-10 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/linaMallek">@linaMallek</a> on 2025-07-13 19:46</div>
+            <div class="timeline-body"><blockquote>
+<p>https://onnxruntime.ai/docs/install/ I've reviewed the ONNX Runtime documentation. You actually need to first confirm if you are using an Nvidia GPU, and for version 1.19.0 and above, CUDA version 12.x is required. The information you provided is insufficient, making it very difficult to reproduce your issue.</p>
+<p>Oh right, if the official pip isn't working either, then the problem is usually unrelated to uv.</p>
+</blockquote>
+<p>Iam using the same code with the same versions  on conda env and its working , so i guess my configuratoin is working right CUDA12.6 and  onnxruntime-gpu&gt;=1.22.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2025-07-15 19:12</div>
+            <div class="timeline-body"><p>Actually, Conda has its own package registry, so if you install a package using Conda, it might not be the same as one on PyPI.
+By the way, my computer is Windows 11 x64, so could you give me a minimal and simplest reproducible example?
+My main concern is low memory, so I can't run anything that requires a lot of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pratos">@pratos</a> on 2025-09-29 06:33</div>
+            <div class="timeline-body"><p>Works on ubuntu + cuda 12.8. There used to be problems installing onnxruntime-gpu, but seems that have been fixed.</p>
+<ul>
+<li><code>pyproject.toml</code></li>
+</ul>
+<pre><code>[project]
+name = &quot;understanding-insightface&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Optimizations to Insightface models via TensorRT&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;cupy-cuda12x&gt;=13.6.0&quot;,
+    &quot;exifread&gt;=3.5.1&quot;,
+    &quot;insightface&gt;=0.7.0&quot;,
+    &quot;loguru&gt;=0.7.3&quot;,
+    &quot;onnx-graphsurgeon&gt;=0.5.8&quot;,
+    &quot;onnxruntime-gpu==1.22.0&quot;,
+    &quot;opencv-python-headless&gt;=4.8.1.78&quot;,
+    &quot;pandas&gt;=2.3.2&quot;,
+    &quot;pynvml&gt;=12.0.0&quot;,
+    &quot;safetensors&gt;=0.6.2&quot;,
+    &quot;scikit-image&gt;=0.25.2&quot;,
+    &quot;torch&gt;=2.8.0&quot;,
+    &quot;torch-tensorrt==2.8.0&quot;,
+    &quot;torchvision&gt;=0.23.0&quot;,
+    &quot;tritonclient[grpc,http]&gt;=2.60.0&quot;,
+    &quot;typer&gt;=0.19.2&quot;,
+]
+
+[build-system]
+requires = [&quot;setuptools&gt;=61.0&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[dependency-groups]
+dev = [
+    &quot;jupyter&gt;=1.1.1&quot;,
+    &quot;pre-commit&gt;=4.3.0&quot;,
+    &quot;pytest&gt;=8.4.2&quot;,
+    &quot;ruff&gt;=0.12.11&quot;,
+]
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;pytorch-cpu&quot;, marker = &quot;sys_platform != 'linux'&quot; },
+    { index = &quot;pytorch-cu128&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+]
+torch-vision = [
+    { index = &quot;pytorch-cpu&quot;, marker = &quot;sys_platform != 'linux'&quot; },
+    { index = &quot;pytorch-cu128&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+]
+torch-audio = [
+    { index = &quot;pytorch-cpu&quot;, marker = &quot;sys_platform != 'linux'&quot; },
+    { index = &quot;pytorch-cu128&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+]
+torch-tensorrt = [
+    { index = &quot;pytorch-cu128&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu128&quot;
+url = &quot;https://download.pytorch.org/whl/cu128&quot;
+explicit = true
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = [&quot;F&quot;, &quot;I&quot;]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 18
+
+[tool.pyright]
+include = [&quot;src&quot;]
+exclude = [&quot;temp&quot;]
+ignore = []
+defineConstant = { DEBUG = false }
+
+reportMissingImports = &quot;error&quot;
+reportMissingTypeStubs = false
+
+pythonVersion = &quot;3.12&quot;
+pythonPlatform = &quot;Linux&quot;
+
+[tool.setuptools]
+packages = [&quot;src&quot;]
+package-dir = {&quot;&quot; = &quot;.&quot;}
+
+[tool.pytest.ini_options]
+markers = [
+    &quot;benchmark: marks tests as benchmark performance tests (deselect with '-m \&quot;not benchmark\&quot;')&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-09-29 09:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

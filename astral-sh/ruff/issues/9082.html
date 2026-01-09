@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive: B018 - astral-sh/ruff #9082</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive: B018</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9082">#9082</a>
+        opened by <a href="https://github.com/wmortal">@wmortal</a>
+        on 2023-12-10 23:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wmortal">@wmortal</a> on 2023-12-10 23:34</div>
+            <div class="timeline-body"><p>Ruff 0.1.7
+pyproject.toml:</p>
+<pre><code>[tool.ruff.lint]
+extend-select = [&quot;B&quot;]  # flake8-bugbear
+</code></pre>
+<p>Command:
+<code>ruff check /tmp/ruff/example.py</code></p>
+<p>Source:</p>
+<pre><code>class Example:
+    @property
+    def name(self) -&gt; str:
+        return &quot;example&quot;
+
+
+example = Example()
+example.name
+^^^^^^^^^^^^
+B018 Found useless expression. Either assign it to a variable or remove it
+
+with pytest.raises(ValueError):
+    example.name
+    ^^^^^^^^^^^^
+    B018 Found useless expression. Either assign it to a variable or remove it
+
+</code></pre>
+<p>I never encountered that error in a production code, but I have a lot of it in my tests, that check if calling that property raises an error (second example of the error). Similarly to what was described in #3831. I understand that this is context-specific and in some situations it would be better to get that error even for the cost of a few false-positives. Or maybe it could be less strict in a context of test files? Removing the <em>property</em> decorator and calling it as a method fixes the error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "False positrive: B018" to "False positive: B018" by @wmortal on 2023-12-10 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-12-11 15:32</div>
+            <div class="timeline-body"><p>Hey, thanks for providing a detailed issue. Do you think the solution mentioned in the linked issue (https://github.com/astral-sh/ruff/issues/3831#issuecomment-1493202616) can help your use-case?</p>
+<blockquote>
+<p>Removing the property decorator and calling it as a method fixes the error.</p>
+</blockquote>
+<p>Yes, this observation is correct. We avoid triggering this rule if the expression can potentially contain any side effects like a function call.</p>
+<p>I'll close this in favor of the linked issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-12-11 15:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

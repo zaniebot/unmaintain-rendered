@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Autofix error] [PT009] return self.assertEqual (ruff 0.0.247) - astral-sh/ruff #3056</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Autofix error] [PT009] return self.assertEqual (ruff 0.0.247)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/3056">#3056</a>
+        opened by <a href="https://github.com/jonathansp">@jonathansp</a>
+        on 2023-02-20 12:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jonathansp">@jonathansp</a> on 2023-02-20 12:22</div>
+            <div class="timeline-body"><p>Although <code>return self.assertEqual(True, False)</code> is not common usage, ruff shouldn't fail. The resulting file seems to be <code>return assert True == False</code>, which I don't understand what is wrong with <code>assertEqual</code>.</p>
+<p>E.g.:</p>
+<pre><code class="language-python">import unittest
+class MyTestCase(unittest.TestCase):
+    def test_dummy(self: &quot;MyTestCase&quot;) -&gt; None:
+        return self.assertEqual(True,  False)
+</code></pre>
+<pre><code class="language-toml">[tool.ruff]
+extend-ignore = [
+  &quot;D203&quot;,
+  &quot;D212&quot;,
+  &quot;EM101&quot;,
+  &quot;EM102&quot;,
+  &quot;INP001&quot;,
+  &quot;N812&quot;,
+  &quot;TCH002&quot;,
+  &quot;TRY003&quot;,
+]
+extend-select = [&quot;ALL&quot;]
+target-version = &quot;py39&quot;
+</code></pre>
+<p>will return</p>
+<pre><code class="language-shell">poetry run ruff . --fix
+
+error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/charliermarsh/ruff/issues/new?title=%5BAutofix%20error%5D
+
+...quoting the contents of `tests/test_consumer.py`, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Autofix error] return self.assertEqual (ruff 0.0.247)" to "[Autofix error] [PT009] return self.assertEqual (ruff 0.0.247)" by @jonathansp on 2023-02-20 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-20 14:05</div>
+            <div class="timeline-body"><p>You're not using <code>pytest</code> and the <code>PT*</code> rules only really apply in that case, so you should probably be ignoring those.</p>
+<p>It also isn't really conventional to explicitly return the result of <code>self.assert*()</code> from your test methods. These assertion helpers always return <code>None</code> anyway, and so should your test method (implicitly).</p>
+<p>That said, ruff should try hard to avoid creating invalid code - it should either refuse to fix this case or strip the <code>return</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-02-20 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3062.html">astral-sh/ruff#3062</a> on 2023-02-20 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-20 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonathansp">@jonathansp</a> on 2023-02-22 13:56</div>
+            <div class="timeline-body"><p>Thanks @charliermarsh for this fantastic tool.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

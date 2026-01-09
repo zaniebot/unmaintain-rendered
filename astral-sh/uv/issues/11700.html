@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switching extras uninstalls required dependency - astral-sh/uv #11700</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Switching extras uninstalls required dependency</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11700">#11700</a>
+        opened by <a href="https://github.com/ElliottKasoar">@ElliottKasoar</a>
+        on 2025-02-21 17:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ElliottKasoar">@ElliottKasoar</a> on 2025-02-21 17:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I am encountering various instances where a sub-dependency, <code>pynvml</code>, of a required dependency, <code>codecarbon</code>, seems to be removed when switching extras.</p>
+<p>For example, with a pyproject.toml:</p>
+<pre><code>[project]
+name = &quot;test&quot;
+version = &quot;0.0.1&quot;
+requires-python = &quot;&gt;=3.10, &lt;3.13&quot;
+
+dependencies = [
+    &quot;codecarbon&lt;3.0.0,&gt;=2.8.3&quot;,
+]
+
+[project.optional-dependencies]
+chgnet = [
+    &quot;chgnet == 0.4.0&quot;,
+]
+
+matgl = [
+    &quot;matgl == 1.1.3&quot;,
+]
+
+[tool.uv]
+constraint-dependencies = [
+    &quot;dgl==2.1&quot;,
+]
+</code></pre>
+<p>If I install any individual combination of extras (<code>uv sync -p 3.12</code>, <code>uv sync -p 3.12 --extra chgnet</code>, <code>uv sync -p 3.12 --extra matgl</code>, or <code>uv sync -p 3.12 --extra matgl --extra chgnet</code>), I am able to run <code>uv run python -c &quot;import pynvml&quot;</code> successfully.</p>
+<p>However, if I install <code>chgnet</code>, followed by <code>matgl</code>, <code>pynvml</code> is (partially) uninstalled:</p>
+<pre><code>uv sync -p 3.12 --extra chgnet
+uv sync -p 3.12 --extra matgl
+
+uv run python -c &quot;import pynvml&quot;
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'pynvml'
+</code></pre>
+<p>I think this may be as <code>chgnet</code> depends on <code>nvidia-ml-py3</code>, which is uninstalled in this process, and <code>pynvml</code> depends on <code>nvidia-ml-py</code>.</p>
+<p>However, the only place I can see <code>pynvml</code> in <code>uv.lock</code> is as a dependency of <code>codecarbon</code>, and even when it can't be imported, it shows up in <code>uv pip list</code>, and <code>pynvml v12.0.0 [required: *]</code> as a codecarbon dependency when I run <code>uv pip tree --show-version-specifiers</code>.</p>
+<h3>Platform</h3>
+<p>macOS 15.2 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.2 (6d3614eec 2025-02-19)</p>
+<h3>Python version</h3>
+<p>Python 3.12.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ElliottKasoar on 2025-02-21 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-21 22:41</div>
+            <div class="timeline-body"><p>We’ll take a look, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-02-24 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-24 18:51</div>
+            <div class="timeline-body"><p>Hmm. I'm not sure how to fix this. The <code>RECORD</code> file for <code>nvidia-ml-py3</code> is:</p>
+<pre><code>nvidia_ml_py3-7.352.0.dist-info/INSTALLER,sha256=5hhM4Q4mYTT9z6QB6PGpUAW81PGNFrYrdXMj4oM_6ak,2
+nvidia_ml_py3-7.352.0.dist-info/METADATA,sha256=NKzkmXydI-aq5gU44yK4qXPCqWD4vyudHdlUoI8y9_w,858
+nvidia_ml_py3-7.352.0.dist-info/RECORD,,
+nvidia_ml_py3-7.352.0.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+nvidia_ml_py3-7.352.0.dist-info/WHEEL,sha256=In9FTNxeP60KnTkGw7wk6mJPYd_dQSjEZmXdBdMCI-8,91
+nvidia_ml_py3-7.352.0.dist-info/top_level.txt,sha256=bq9FaIiyagzX5vVW9zq0DfNTJoZ88kfSossw4mVUgUc,18
+nvidia_smi.py,sha256=kfhLwjCxVcFGQ3WlFWkLIIcBEUutejiLYPrzIr5LnOE,37168
+pynvml.py,sha256=6yia0CYdK5r22Ph3W9Kp9vAs4xtHq_3KD7nJKcX0gqU,56874
+</code></pre>
+<p>And then for <code>nvidia-ml-py</code>:</p>
+<pre><code>example.py,sha256=mDXwPVyEDuiKeMApEh53r_M36xuncmzMpFOGA3Q-_Kw,7968
+nvidia_ml_py-12.570.86.dist-info/INSTALLER,sha256=5hhM4Q4mYTT9z6QB6PGpUAW81PGNFrYrdXMj4oM_6ak,2
+nvidia_ml_py-12.570.86.dist-info/METADATA,sha256=vY-jfk5MJsbWGy2jmbgdwfPKG4G0FHbspv-av_h5bEE,8718
+nvidia_ml_py-12.570.86.dist-info/RECORD,,
+nvidia_ml_py-12.570.86.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+nvidia_ml_py-12.570.86.dist-info/WHEEL,sha256=In9FTNxeP60KnTkGw7wk6mJPYd_dQSjEZmXdBdMCI-8,91
+nvidia_ml_py-12.570.86.dist-info/top_level.txt,sha256=wLINSA1WKnhsGgKsb_nuj51ZCQrXaN5qhioTL56g98A,15
+pynvml.py,sha256=PCW5qJPhGshkIhIUOOQyUXsxkCVaPeTi30R7LsJb4YE,234473
+</code></pre>
+<p>So they <em>both</em> install <code>pynvml.py</code> -- the packages overlap. And when we uninstall <code>nvidia-ml-py3</code>, it's correct to remove <code>pynvml.py</code>... Even though another package <em>also</em> included it.</p>
+<p>Note that the <code>RECORD</code> file for <code>pynvml</code> is:</p>
+<pre><code>pynvml-12.0.0.dist-info/INSTALLER,sha256=5hhM4Q4mYTT9z6QB6PGpUAW81PGNFrYrdXMj4oM_6ak,2
+pynvml-12.0.0.dist-info/LICENSE.txt,sha256=gXj--65Fdo4eo8z61E_xNOHqMO1O2u1OENO2xW4SAu0,1496
+pynvml-12.0.0.dist-info/METADATA,sha256=TI5OZVPRmiBywJTLYy_CqTn4-hoJv7mWcMtbyP0juYs,5420
+pynvml-12.0.0.dist-info/RECORD,,
+pynvml-12.0.0.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+pynvml-12.0.0.dist-info/WHEEL,sha256=PZUExdf71Ui_so67QXpySuHtCi3-J3wvF4ORK6k_S8U,91
+pynvml-12.0.0.dist-info/top_level.txt,sha256=jzuf0rTExALezG7qEZaLvJ28GFabMuxFnPv5V0YJ3q4,13
+pynvml_utils/__init__.py,sha256=HEz95e4MaZuyIKOk27u9yAVkDIRun8EkQ7RDFdvNFPY,52
+pynvml_utils/smi.py,sha256=NmMrRC9AZkc16XviWReVtIt4dA4taRbtgAMlu_TRi9g,127334
+pynvml_utils/tests/test_nvml.py,sha256=D8g8M-OyjGUIaRsY1BHtm64jrWgHPdkXQwnpLzTvdt4,16073
+pynvml_utils/tests/test_smi.py,sha256=33h5BGyNymWAcURf7MMmfR2nVpUKUWOVjOPoOtRWIv4,1645
+</code></pre>
+<p>So <code>pynvml</code> on its own doesn't even add <code>pyvml</code> to the environment. It gets it from <code>nvidia-ml-py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2025-02-24 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../stfc/janus-core/issues/605.html">stfc/janus-core#605</a> on 2025-09-19 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mlco2/codecarbon/issues/933.html">mlco2/codecarbon#933</a> on 2025-09-19 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mlco2/codecarbon/pulls/942.html">mlco2/codecarbon#942</a> on 2025-10-01 13:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

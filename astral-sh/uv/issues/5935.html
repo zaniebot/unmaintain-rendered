@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installing packages sourced from one environment to another - astral-sh/uv #5935</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Installing packages sourced from one environment to another</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/5935">#5935</a>
+        opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a>
+        on 2024-08-08 21:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-08 21:28</div>
+            <div class="timeline-body"><p>Is there a way that I can utilize <code>uv</code> to install packages sourced from a conda base environment into a virtual environment created with <code>uv</code>?</p>
+<p>My use case is that I have an offline system with the Anaconda python distribution used solely for the bundled interpreter and  packages provided.</p>
+<p>I don't really want to utilize <code>conda</code> for creating virtual environments with their YAML file approach. I'd much rather utilize <code>uv</code> for package management &amp; virtual environment creation, and define my project dependencies the normal way with <code>pyproject.toml</code> (with the obvious limitation that any projects on the system have to utilize pinned versions of packages available in the Anaconda distribution).</p>
+<p>Any suggestions would be appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-08 21:39</div>
+            <div class="timeline-body"><p>Maybe with <code>uv venv --system-site-packages</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-08-08 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-09 00:40</div>
+            <div class="timeline-body"><pre><code>PS C:\Users\user\git\project&gt; uv venv --system-site-packages        
+Using Python 3.12.4 interpreter at: C:\ProgramData\anaconda3\python.exe
+Creating virtualenv at: .venv
+Activate with: .venv\Scripts\activate
+PS C:\Users\user\git\project&gt; .venv\Scripts\activate  
+(project) PS C:\Users\user\git\project&gt; uv pip list
+(project) PS C:\Users\user\git\project&gt; uv sync --offline --no-build-isolation
+warning: `uv sync` is experimental and may change without warning
+  × No solution found when resolving dependencies:
+  ╰─▶ Because pytest was not found in the cache and project==0.1.0 depends on pytest==7.4.4, we can conclude that project==0.1.0 cannot be used.
+      And because only project==0.1.0 is available and you require project, we can conclude that the requirements are unsatisfiable.
+
+      hint: Packages were unavailable because the network was disabled
+(project) PS C:\Users\user\git\project&gt; 
+</code></pre>
+<p>It seems like <code>uv</code> is not actually creating a venv with the system site-packages. It doesn't detect <code>pytest</code> as being already installed in the venv (<code>pytest==7.4.4</code> ships with Anaconda).</p>
+<p>Here's what the <code>pyproject.toml</code> looks like:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;setuptools&gt;=69.5.1&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;pytest==7.4.4&quot;]
+
+[tool.uv]
+dev-dependencies = [
+  # Linting
+  &quot;codespell &gt;=2.3.0,&lt;3&quot;,
+  &quot;mypy &gt;=1.11.1,&lt;2&quot;,
+  &quot;pip-audit &gt;=2.7.3,&lt;3&quot;,
+  &quot;pre-commit &gt;=3.8.0,&lt;4&quot;,
+  &quot;ruff &gt;=0.5.6,&lt;1&quot;,
+  # Testing
+  &quot;pytest &gt;=7.4.4,&lt;8&quot;,
+  &quot;pytest-cov &gt;=5.0.0,&lt;6&quot;,
+  &quot;pytest-mock &gt;=3.14.0,&lt;4&quot;,
+  # Documentation
+  &quot;mkdocs &gt;=1.6.0,&lt;2&quot;,
+  &quot;mkdocs-material &gt;=9.5.31,&lt;10&quot;,
+  &quot;mkdocstrings[python] &gt;=0.25.2,&lt;1&quot;,
+  # Release
+  &quot;commitizen &gt;=3.28.0,&lt;4&quot;,
+  &quot;cyclonedx-bom &gt;=4.5.0,&lt;5&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-09 00:45</div>
+            <div class="timeline-body"><p>It doesn't seem to be respecting <code>--no-dev</code> either:</p>
+<pre><code>(project) PS C:\Users\user\git\project&gt; uv sync --offline --no-build-isolation --no-dev
+warning: `uv sync` is experimental and may change without warning
+  × No solution found when resolving dependencies:
+  ╰─▶ Because codespell was not found in the cache and project==0.1.0 depends on codespell&gt;=2.3.0,&lt;3, we can conclude that project==0.1.0 cannot   
+      be used.
+      And because project==0.1.0 depends on project:dev==0.1.0, we can conclude that project==0.1.0 cannot be used.
+      And because only project==0.1.0 is available and you require project, we can conclude that the requirements are unsatisfiable.
+
+      hint: Packages were unavailable because the network was disabled
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-09 00:59</div>
+            <div class="timeline-body"><p>We don't really respect <code>--system-site-packages</code>. We allow writing it to the virtualenv, but we don't actually query it, it just makes them available at the runtime.</p>
+<p>I think there's no way to accomplish what you're describing. If you were using the Conda environment and installing packages etc., we'd respect <em>those</em>, but we don't support reading packages from another environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-09 01:00</div>
+            <div class="timeline-body"><p><code>--no-dev</code> applies when installing, not when resolving. To sync, we have to resolve, and the resolution is failing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-09 18:25</div>
+            <div class="timeline-body"><p>I agree I don't think we can really support this. I think you'd have to use <code>uv pip install --no-deps</code> or something and remove all the existing dependencies from a <code>requirements.txt</code>?  Seems a bit weird.</p>
+<p>Sorry we aren't much help here. Let us know if you figure something out!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-09 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-09 18:27</div>
+            <div class="timeline-body"><p>I think we may eventually support using a system environment with <code>uv sync</code>, but I don't know that we can support this kind of &quot;layered&quot; environment.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

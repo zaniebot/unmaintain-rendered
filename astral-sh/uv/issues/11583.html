@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot access entry points in workspace sub packages - astral-sh/uv #11583</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot access entry points in workspace sub packages</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11583">#11583</a>
+        opened by <a href="https://github.com/boccileonardo">@boccileonardo</a>
+        on 2025-02-17 20:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/boccileonardo">@boccileonardo</a> on 2025-02-17 20:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have a workspace project where I want to make the entry point of a subpackage available.
+I tried both referencing it in the pyproject toml via the dot notation, and importing it in the top-level package init. I could not make either option work.
+Probably I am misunderstanding something on how I'm supposed to reference these entry points.</p>
+<p>MRE:
+~$ mkdir uv_pack
+~$ cd uv_pack
+~/uv_pack $ uv init --package
+~/uv_pack $ mkdir packages &amp;&amp; mkdir packages/packone &amp;&amp; cd packages/packone
+~/uv_pack/packages/packone$ uv init --package</p>
+<pre><code>#~uv_pack/pyproject.toml
+...
+dependencies = [&quot;packone&quot;]
+
+[tool.uv.sources]
+packone = { workspace = true }
+
+[tool.uv.workspace]
+members = [&quot;packages/*&quot;]
+...
+</code></pre>
+<p>Option 1 (direct reference to entry point in sub package):</p>
+<pre><code>[project.scripts]
+sub-package-entry = &quot;packone:main&quot;
+</code></pre>
+<p>Output after installing the wheel into separate env and running uv run sub-package-entry:
+ImportError: cannot import name 'main' from 'packone'</p>
+<p>Option 2 (importing from subpackage and exposing top-level entry point):</p>
+<pre><code>#pyproject.toml
+[project.scripts]
+sub-package-entry = &quot;uv_pack:main_pone&quot;
+
+#src/uv_pack/__init__,py
+from packone import main as packone_main
+</code></pre>
+<p>Output after installing the wheel into separate env and running uv run sub-package-entry:
+ImportError: cannot import name 'main' from 'packone'</p>
+<h3>Platform</h3>
+<p>WSL Ubuntu</p>
+<h3>Version</h3>
+<p>uv 0.6.1</p>
+<h3>Python version</h3>
+<p>3.10.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @boccileonardo on 2025-02-17 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-27 13:56</div>
+            <div class="timeline-body"><p>I can't reproduce this, for me, it doesn't show <code>ImportError: cannot import name 'main' from 'packone'</code> but correctly print &quot;Hello from packone!&quot;, no matter where the entrypoint is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-02-27 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-02-27 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2025-04-02 14:25</div>
+            <div class="timeline-body"><p>@konstin Hi, sorry for the delay. I retried this on a separate machine (ubuntu instead of wsl). I get the exact same error. When you tried replicating, did you install the built wheel into a separate environment?</p>
+<p>I can only successfully call sub-package-entry in the same workspace environment, not when I install the wheel elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-15 11:33</div>
+            <div class="timeline-body"><blockquote>
+<p>When you tried replicating, did you install the built wheel into a separate environment?</p>
+</blockquote>
+<p>Yes, it worked in a different venv for me</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

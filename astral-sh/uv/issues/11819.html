@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`preview = true` in `pyproject.toml` doesn't work if build backend is using a different version of uv - astral-sh/uv #11819</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`preview = true` in `pyproject.toml` doesn't work if build backend is using a different version of uv</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11819">#11819</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2025-02-27 03:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-27 03:07</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>from my understanding there are three different ways to enable preview mode:</p>
+<ul>
+<li><code>UV_PREVIEW</code> environment variable</li>
+<li><code>--preview</code> cli argument</li>
+<li><code>preview = true</code> in <code>pyproject.toml</code></li>
+</ul>
+<p>i'm attempting to use the experimental uv build backend which requires preview mode to be enabled. in uv 0.6.2, this used to work if i set <code>preview = true</code> in <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.uv]
+preview = true
+</code></pre>
+<p>but as of 0.6.3, this no longer seems to work unless i set the <code>UV_PREVIEW</code> environment variable:</p>
+<pre><code>&gt; uv sync --reinstall-package project
+Resolved 148 packages in 35ms
+  × Failed to build `project @ file:///C:/Users/user/project`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `uv.build_editable` failed (exit code: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+          wheel_filename = backend.build_editable(&quot;C:\\Users\\user\\AppData\\Local\\uv\\cache\\builds-v0\\.tmpm5b0zU&quot;, {}, None)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;C:\Users\user\AppData\Local\uv\cache\builds-v0\.tmpKvrqnM\Lib\site-packages\uv\__init__.py&quot;, line 45, in __getattr__
+          raise AttributeError(err)
+      AttributeError: Using `uv.build_editable` is not allowed. The uv build backend requires preview mode to be enabled, e.g., via the `UV_PREVIEW=1` environment variable.       
+
+      hint: This usually indicates a problem with the package or the build environment.
+</code></pre>
+<p>the wording of this error message says &quot;e.g.&quot;, which implies that there are multiple ways to enable preview mode, but it seems like that method is now the only way.</p>
+<p>also, in #8779 it says the following:</p>
+<blockquote>
+<p>Currently, the build backend is in preview. You need to set the <code>UV_PREVIEW=1</code> environment variable and use the <code>--preview</code> flag with all CLI commands.</p>
+</blockquote>
+<p>this sounds like you need both <code>UV_PREVIEW=1</code> and the <code>--preview</code> cli argument. i can't seem to find any mention of the <code>--preview</code> argument in the docs other than for <a href="https://docs.astral.sh/uv/concepts/python-versions/#installing-python-executables"><code>uv python install</code></a>. i don't think it has any effect on commands like <code>uv sync</code></p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p>0.6.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @DetachHead on 2025-02-27 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-27 03:08</div>
+            <div class="timeline-body"><p>\cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @charliermarsh on 2025-02-27 03:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @charliermarsh on 2025-02-27 03:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @Gankra by @charliermarsh on 2025-02-27 03:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-27 03:24</div>
+            <div class="timeline-body"><p>so it looks like the issue is that <code>preview = true</code> doesn't work if the version of uv being used in the backend is different to the version you're using for the frontend. for example i have uv 0.6.3 installed but had the build backend set to use 0.6.2:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;uv==0.6.2&quot;]
+build-backend = &quot;uv&quot;
+</code></pre>
+<p>changing it to 0.6.3 fixes it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "what's the correct way to enable "preview" mode?" to "`preview = true` in pyproject.toml doesn't work if build backend is using a different version of uv" by @DetachHead on 2025-02-27 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`preview = true` in pyproject.toml doesn't work if build backend is using a different version of uv" to "`preview = true` in `pyproject.toml` doesn't work if build backend is using a different version of uv" by @DetachHead on 2025-02-27 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-27 08:38</div>
+            <div class="timeline-body"><p>This will be fixed by #11576</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11576.html">astral-sh/uv#11576</a> on 2025-02-27 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-03-17 08:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

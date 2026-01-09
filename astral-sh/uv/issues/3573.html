@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unknown operation system: mingw_x86_64_ucrt - astral-sh/uv #3573</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unknown operation system: mingw_x86_64_ucrt</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/3573">#3573</a>
+        opened by <a href="https://github.com/srnwk">@srnwk</a>
+        on 2024-05-14 11:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/srnwk">@srnwk</a> on 2024-05-14 11:24</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Trying to use uv 0.1.43 on Windows from MSYS2 / with a mingw64 GNU ABI python results in the following error:</p>
+<pre><code>&gt; uv venv venv
+  × Can't use Python at `C:\MSYS2\ucrt64\bin\python3.exe`
+  ╰─▶ Unknown operation system: `mingw_x86_64_ucrt`
+</code></pre>
+<p>The immediate error comes from <code>uv-interpreter/python/get_interpreter_info.py</code>'s <code>get_operating_system_and_architecture()</code> not recognizing the <code>mingw_x86_64_ucrt</code> value returned by <code>sysconfig.get_platform()</code>.<br />
+Also, since mingw python's virtual environments use the linux style paths (<code>bin</code>, not <code>Scripts</code> like MSVC ABI python), just recognizing mingw platforms as windows probably won't be enough to get uv working there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-05-15 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-05-15 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-05-16 15:05</div>
+            <div class="timeline-body"><p>If you want to test on gha, it’s pretty easy: https://github.com/scikit-build/scikit-build-core/blob/86f40d949741d8e6ce4d9f55264a6d05224408dd/.github/workflows/ci.yml#L251</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3632.html">astral-sh/uv#3632</a> on 2024-05-17 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-17 01:58</div>
+            <div class="timeline-body"><p>Thanks Henry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-17 01:59</div>
+            <div class="timeline-body"><p>We should support <code>bin</code>setups on Windows, although I'm making that consistent in #3266 and there may be bugs until that merges. I'll look into the other issue though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-17 02:25</div>
+            <div class="timeline-body"><p>Hm in CI this fails with</p>
+<pre><code>error: Querying Python at `D:\a\_temp\msys64\mingw64\bin\python3.exe` failed with status exit code: 1 with exit code: 1
+--- stdout:
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'python'
+---
+</code></pre>
+<p>Which is a failure at https://github.com/astral-sh/uv/blob/55aedda37934ee2153312130de5efebbd23efebb/crates/uv-interpreter/src/interpreter.rs#L455 where we can't find our <code>python</code> query module that we inject into the system path.</p>
+<p>Will need some further investigation... cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-17 02:54</div>
+            <div class="timeline-body"><p>Was this error from installing uv from an official msys2 package manager build?</p>
+<p>e.g. https://packages.msys2.org/package/mingw-w64-ucrt-x86_64-uv?repo=ucrt64</p>
+<p>Worth asking to confirm, what <a href="https://www.msys2.org/docs/environments/">environment</a> are you using msys with? What's the output of <code>env | grep MSYSTEM</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/srnwk">@srnwk</a> on 2024-05-17 12:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Was this error from installing uv from an official msys2 package manager build?</p>
+<p>e.g. https://packages.msys2.org/package/mingw-w64-ucrt-x86_64-uv?repo=ucrt64</p>
+<p>Worth asking to confirm, what <a href="https://www.msys2.org/docs/environments/">environment</a> are you using msys with? What's the output of <code>env | grep MSYSTEM</code>?</p>
+</blockquote>
+<p>Yes, using the msys2 package, I think I got the same python path related error as zanieb above. Sorry for not mentioning that. Using the UCRT64 environment:</p>
+<pre><code>MSYSTEM=UCRT64
+MSYSTEM_CARCH=x86_64
+MSYSTEM_CHOST=x86_64-w64-mingw32
+MSYSTEM_PREFIX=/ucrt64
+</code></pre>
+<p>Since I first noticed the problem in an automated build that runs outside the UCRT64 environment (but with ucrt64/bin on PATH, for the toolchain and python interpeter), I tried some more things.</p>
+<p>It seems like the absence of the <code>MSYSTEM</code> env var in my setup is what side-stepped the python path problem, somehow:</p>
+<pre><code>$ uv venv venv
+  x Querying Python at `D:\Programs\msys2\ucrt64\bin\python3.exe` failed with status exit code: 1
+  | with exit code: 1
+  | --- stdout:
+
+  | --- stderr:
+  | Traceback (most recent call last):
+  |   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+  | ModuleNotFoundError: No module named 'python'
+  | ---
+$ export &quot;MSYSTEM=&quot;
+$ uv venv venv
+  x Can't use Python at `D:\Programs\msys2\ucrt64\bin\python3.exe`
+  `-&gt; Unknown operation system: `mingw_x86_64_ucrt`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-17 12:26</div>
+            <div class="timeline-body"><p>For me it mainly complains that the strings are not escaped, even though the strings on the rust side use all <code>\\</code>:</p>
+<pre><code>  x Querying Python at `C:\msys64\usr\bin\python.exe` failed with status exit code: 1 with exit code: 1
+  | --- stdout:
+
+  | --- stderr:
+  | File &quot;&lt;string&gt;&quot;, line 1
+  |     import sys; sys.path = [&quot;C:\Users\Konstantin\AppData\Local\uv\cache\.tmp5Wlq3f&quot;] + sys.path; from python.get_interpreter_info import main; main()      
+  |                                                                                    ^
+  | SyntaxError: (unicode error) 'unicodeescape' codec can't decode bytes in position 2-3: truncated \UXXXXXXXX escape
+  | ---
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-17 12:37</div>
+            <div class="timeline-body"><p>The msys2 python i've installed wants unix paths instead of windows paths. I had to patch in the following:</p>
+<pre><code class="language-rust">        let import_path = &quot;/&quot;.to_string()
+            + &amp;tempdir
+                .path()
+                // Remove `\\?\` UNC prefix
+                .simplified_display()
+                .to_string()
+                // Remove the colon after the drive letter
+                .replacen(&quot;:&quot;, &quot;&quot;, 1)
+                .replace(&quot;\\&quot;, &quot;/&quot;);
+        let script = format!(
+            r#&quot;import sys; sys.path = [&quot;{}&quot;] + sys.path; from python.get_interpreter_info import main; main()&quot;#,
+            import_path.escape_for_python()
+        );
+</code></pre>
+<p>to get</p>
+<pre><code>  x Can't use Python at `C:\msys64\usr\bin\python.exe`
+  `-&gt; Unknown operation system: `msys`
+error: process didn't exit successfully: `target\debug\uv.exe venv -p C:\msys64\usr\bin\python.exe` (exit code: 1)
+</code></pre>
+<p>To support this, we need to figure out a way to determine if a python is gnu or msvc before probing the interpreter.</p>
+<p>Could someone getting a <code>mingw_x86_64_ucrt</code> share installation instructions so we can reproduce this one too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/srnwk">@srnwk</a> on 2024-05-17 12:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Could someone getting a <code>mingw_x86_64_ucrt</code> share installation instructions so we can reproduce this one too?</p>
+</blockquote>
+<p>I installed the mingw/UCRT64 python:</p>
+<pre><code>pacman -S mingw-w64-ucrt-x86_64-python
+</code></pre>
+<p>and used the MSYS2 UCRT64 start menu shortcut to launch the shell:
+<img src="https://github.com/astral-sh/uv/assets/72808534/60a1bef6-7cf1-4f2a-8d96-b625e7dff794" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-17 13:21</div>
+            <div class="timeline-body"><p>@konstin you can also see it in CI at #3632</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../msys2/MINGW-packages/issues/21091.html">msys2/MINGW-packages#21091</a> on 2024-06-12 10:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lazka">@lazka</a> on 2024-08-23 09:50</div>
+            <div class="timeline-body"><p>Had a quick look, and three things:</p>
+<ol>
+<li><p>I don't think it's reasonable to expect from uv to support cygwin python, so all those errors about &lt;..&gt;/usr/bin/python* are fine imo, and those interpreters should be ignored.</p>
+</li>
+<li><p>mingw Python doesn't seem to deal properly with UNC paths in sys.path. This could be worked around by using something like <code>dunce::simplified()</code> on the uv side from what I understand. Also needs investigation on the mingw-Python side why UNC paths don't work in sys.path. (edit: filed here now: https://github.com/msys2-contrib/cpython-mingw/issues/176)</p>
+</li>
+<li><p>Once a non-UNC path is used uv gets back <code>{&quot;result&quot;: &quot;error&quot;, &quot;kind&quot;: &quot;unknown_operating_system&quot;, &quot;operating_system&quot;: &quot;mingw_x86_64_ucrt&quot;}</code> which is due to it parsing the platform string instead of using sys.platform or os.name (it's also missing Windows arm64 support from what I see): https://github.com/astral-sh/uv/blob/d8c41481ec884cc5166bcfadd95674ff7b2e918d/crates/uv-python/python/get_interpreter_info.py#L428</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6699.html">astral-sh/uv#6699</a> on 2024-08-28 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../msys2-contrib/cpython-mingw/issues/176.html">msys2-contrib/cpython-mingw#176</a> on 2024-09-09 16:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

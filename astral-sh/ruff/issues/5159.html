@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can &quot;Unknown rule selector&quot; be a warning, rather than an error? - astral-sh/ruff #5159</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can &quot;Unknown rule selector&quot; be a warning, rather than an error?</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5159">#5159</a>
+        opened by <a href="https://github.com/KyleKing">@KyleKing</a>
+        on 2023-06-17 12:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KyleKing">@KyleKing</a> on 2023-06-17 12:59</div>
+            <div class="timeline-body"><p>I ran into an issue recently when:</p>
+<ol>
+<li>A new version of <code>ruff</code> adds a new rule that I choose to ignore (i.e. <code>FIX002</code> for <code>TODO</code> comments)</li>
+<li>I update my <code>.ruff.toml</code> to ignore <code>FIX002</code> (https://github.com/KyleKing/calcipy_template/commit/5a439c640ca23f1d31bb2b094e4ae821d0bf6dae)</li>
+<li>If I don't update <code>ruff</code> in <code>pre-commmit</code>, <code>.venv</code>, <code>pipx</code>, <code>CI</code>, and anywhere else I use it, I'll start getting &quot;Unknown rule selector&quot; errors, then will spend time yak shaving/whack-a-mole to update <code>ruff</code> to the latest version</li>
+</ol>
+<p>Instead, I would prefer <code>ruff</code> to show a warning rather than raise an exception. In particular, for this use case of new <code>ignore</code> rules, older versions of ruff wouldn't have have caught the new rule anyway</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-06-17 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-06-17 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adifelice-godaddy">@adifelice-godaddy</a> on 2023-09-04 17:52</div>
+            <div class="timeline-body"><p>We are also getting similar errors:</p>
+<pre><code>error: Failed to parse `ruff.ignore.toml`: TOML parse error at line 29, column 5
+29 |     &quot;PLR1714&quot;,
+   |     ^^^^^^^^^
+Unknown rule selector: `PLR1714`
+</code></pre>
+<pre><code>$ ruff --version
+ruff 0.0.287
+</code></pre>
+<p>Is there a workaround? Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-05 06:53</div>
+            <div class="timeline-body"><p>Thanks for explaining your use case. IMO, raising an error for unknown rules in rule selectors is the intended behavior because it ensures all rules are running the way you intended. However, I can see how the ignore selector is different because it doesn't make you <em>miss</em> out on lints that you wanted to have enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KyleKing">@KyleKing</a> on 2023-09-05 11:15</div>
+            <div class="timeline-body"><p>That seems reasonable. So <a href="https://beta.ruff.rs/docs/configuration/#using-pyprojecttoml">from the configuration</a>, maybe:</p>
+<ul>
+<li>warning:<ul>
+<li><code>ignore</code></li>
+<li><code>unfixable</code></li>
+<li><code>per-file-ignores</code></li>
+</ul>
+</li>
+<li>error<ul>
+<li><code>select</code></li>
+<li><code>fixable</code></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-05 19:58</div>
+            <div class="timeline-body"><p>I haven't tried it myself but I assume you could use <a href="https://beta.ruff.rs/docs/settings/#external"><code>external</code></a> to make ruff ignore the violation. But I don't know if that breaks e.g. no-unused-noqa</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KyleKing">@KyleKing</a> on 2023-09-05 20:28</div>
+            <div class="timeline-body"><p>Oh cool, I didn’t know about external! I’ll start using that so I can know what flake8 rules are still used.</p>
+<p>However, I don’t think external+noqa will help for this particular issue because of the number of noqa comments that might be needed.</p>
+<p>The workaround right now is to pin ruff and update everywhere all at once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @KyleKing on 2025-11-20 01:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

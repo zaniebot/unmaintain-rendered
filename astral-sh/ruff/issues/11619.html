@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test failure for 0.4.6 on s390x - astral-sh/ruff #11619</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Test failure for 0.4.6 on s390x</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11619">#11619</a>
+        opened by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a>
+        on 2024-05-30 11:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2024-05-30 11:04</div>
+            <div class="timeline-body"><p>The test <code>rules::pyflakes::tests::preview_rules::rule_unusedimport_path_new_f401_28_all_multiple_init_py_expects</code> is failing on s390x:</p>
+<pre><code>---- rules::pyflakes::tests::preview_rules::rule_unusedimport_path_new_f401_28_all_multiple_init_py_expects stdout ----
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot file: crates/ruff_linter/src/rules/pyflakes/snapshots/ruff_linter__rules__pyflakes__tests__preview__F401_F401_28__all_multiple____init__.py.snap
+Snapshot: preview__F401_F401_28__all_multiple/__init__.py
+Source: crates/ruff_linter/src/rules/pyflakes/mod.rs:228
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    8     8 │ 5 5 | from . import unused, renamed as bees  # F401: add to __all__
+    9     9 │ 6 6 | 
+   10    10 │ 7 7 | 
+   11    11 │ 8   |-__all__ = [];
+   12       │-  8 |+__all__ = [&quot;bees&quot;, &quot;unused&quot;];
+         12 │+  8 |+__all__ = [&quot;unused&quot;, &quot;bees&quot;];
+   13    13 │ 
+   14    14 │ __init__.py:5:34: F401 [*] `.renamed` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
+   15    15 │   |
+   16    16 │ 5 | from . import unused, renamed as bees  # F401: add to __all__
+┈┈┈┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+   22    22 │ 5 5 | from . import unused, renamed as bees  # F401: add to __all__
+   23    23 │ 6 6 | 
+   24    24 │ 7 7 | 
+   25    25 │ 8   |-__all__ = [];
+   26       │-  8 |+__all__ = [&quot;bees&quot;, &quot;unused&quot;];
+         26 │+  8 |+__all__ = [&quot;unused&quot;, &quot;bees&quot;];
+────────────┴───────────────────────────────────────────────────────────────────
+</code></pre>
+<p>(full CI run log here: https://gitlab.alpinelinux.org/WhyNotHugo/aports/-/jobs/1403448)</p>
+<p>I think that the order of the items here is non-deterministic somehow and varies depending on CPU architecture.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-30 11:11</div>
+            <div class="timeline-body"><p>@plredmond do you want to take a look at this? It probably requires sorting the items or to use an <code>IndexSet</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-05-30 16:17</div>
+            <div class="timeline-body"><p>@MichaReiser The implementation creates multiple insertion edits that use the same insertion point. AFAIK, their order is deterministic. The implementation has no logic for resolving the order that ruff applies the insertions. I.e. It should be deterministic.</p>
+<p>Otherwise I guess this ordering could change if there was a change to how multi-edit fixes get applied.</p>
+<blockquote>
+<p>... varies depending on CPU architecture.</p>
+</blockquote>
+<p>Yikes. I'll uh take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-30 16:18</div>
+            <div class="timeline-body"><p>@plredmond I don't think it's about the edit ordering that is non deterministic but it is the order of the items in <code>__all__</code> that is non deterministic (because it uses a hash set?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-05-30 16:25</div>
+            <div class="timeline-body"><p>@MichaReiser I'm not sure what you mean by &quot;the items in <code>__all__</code>&quot; because the rule implementation never creates or stores items in a data structure that represents <code>__all__</code> nor uses the AST's &quot;export&quot; code. You might be referring to the <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs#L223-L224">list of unused import-bindings</a>, which yes, could be introduce a nondeterministic order. I'll try to apply your advice there and rule it out. Is there any way for me to test this within our (astral) ci/cd infra?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11621.html">astral-sh/ruff#11621</a> on 2024-05-30 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @plredmond by @plredmond on 2024-05-30 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @plredmond on 2024-05-30 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @plredmond on 2024-05-30 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-05-30 17:56</div>
+            <div class="timeline-body"><p>@WhyNotHugo Can you check whether this issue is resolved on dcabd04caf85d7c0081ebba9f9028b9af9d686d3 or in the next release?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2024-05-31 13:14</div>
+            <div class="timeline-body"><p>I applied dcabd04caf85d7c0081ebba9f9028b9af9d686d3 onto v0.4.6 and that failed:</p>
+<pre><code>&gt;&gt;&gt; ruff: dcabd04caf85d7c0081ebba9f9028b9af9d686d3.patch
+patching file crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs
+patching file crates/ruff_python_semantic/src/binding.rs
+
+[...]
+
+---- rules::pyflakes::tests::preview_rules::rule_unusedimport_path_new_f401_28_all_multiple_init_py_expects stdout ----
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot file: crates/ruff_linter/src/rules/pyflakes/snapshots/ruff_linter__rules__pyflakes__tests__preview__F401_F401_28__all_multiple____init__.py.snap
+Snapshot: preview__F401_F401_28__all_multiple/__init__.py
+Source: crates/ruff_linter/src/rules/pyflakes/mod.rs:228
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    8     8 │ 5 5 | from . import unused, renamed as bees  # F401: add to __all__
+    9     9 │ 6 6 | 
+   10    10 │ 7 7 | 
+   11    11 │ 8   |-__all__ = [];
+   12       │-  8 |+__all__ = [&quot;bees&quot;, &quot;unused&quot;];
+         12 │+  8 |+__all__ = [&quot;unused&quot;, &quot;bees&quot;];
+   13    13 │ 
+   14    14 │ __init__.py:5:34: F401 [*] `.renamed` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
+   15    15 │   |
+   16    16 │ 5 | from . import unused, renamed as bees  # F401: add to __all__
+┈┈┈┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+   22    22 │ 5 5 | from . import unused, renamed as bees  # F401: add to __all__
+   23    23 │ 6 6 | 
+   24    24 │ 7 7 | 
+   25    25 │ 8   |-__all__ = [];
+   26       │-  8 |+__all__ = [&quot;bees&quot;, &quot;unused&quot;];
+         26 │+  8 |+__all__ = [&quot;unused&quot;, &quot;bees&quot;];
+────────────┴───────────────────────────────────────────────────────────────────
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-31 15:10</div>
+            <div class="timeline-body"><p>I think the issue is that <code>for binding_id in scope.binding_ids()</code> is not deterministic. So we should enforce determinism elsewhere (e.g., by sorting in <code>fix_by_reexporting</code> or similar).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-05-31 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-05-31 17:09</div>
+            <div class="timeline-body"><p>~~Wouldn't the nondeterminism of <code>scope.binding_ids()</code> result order be resolved by insertion into the <code>BTreeMap</code>? The only place this data comes back out is when we iterate over the <code>BTreeMaps</code>.~~</p>
+<p>[Edit: Nevermind, I see that the test that is failing is the case where we have multiple import-bindings from a single import-statement. The order they're pushed into the import binding depends on the order they come from <code>scope.binding_ids()</code>.]</p>
+<p>I'll try sorting in <code>fix_by_reexporting</code>, anyhow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11648.html">astral-sh/ruff#11648</a> on 2024-05-31 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-05-31 19:32</div>
+            <div class="timeline-body"><p>@WhyNotHugo could you try out 15977ed2bae6c53b9b70520699d54d1ce995896c?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-04 11:50</div>
+            <div class="timeline-body"><p>I'll mark this as closed. @WhyNotHugo feel free to reopen if you keep running into this issue with 0.4.8. Thanks @plredmond for looking into and fixing the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-04 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-06-04 15:34</div>
+            <div class="timeline-body"><p>Thanks micha</p>
+<blockquote>
+<p>On Jun 4, 2024, at 04:50, Micha Reiser <em><strong>@</strong></em>.***&gt; wrote:</p>
+<p>﻿
+I'll mark this as closed. @WhyNotHugo feel free to reopen if you keep running into this issue with 0.4.8. Thanks @plredmond for looking into and fixing the issue.</p>
+<p>—
+Reply to this email directly, view it on GitHub, or unsubscribe.
+You are receiving this because you were mentioned.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2024-06-05 08:47</div>
+            <div class="timeline-body"><p>0.4.7 builds okay on s390x. Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

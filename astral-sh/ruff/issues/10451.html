@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821 false-positive for SQLAlchemy mappings with not yet declared classes - astral-sh/ruff #10451</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821 false-positive for SQLAlchemy mappings with not yet declared classes</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10451">#10451</a>
+        opened by <a href="https://github.com/aberres">@aberres</a>
+        on 2024-03-18 09:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aberres">@aberres</a> on 2024-03-18 09:15</div>
+            <div class="timeline-body"><p>The described behavior happens since 0.3.3. It might be related to https://github.com/astral-sh/ruff/issues/10340</p>
+<p>It is triggered throughout my SQLAlchemy models in cases where a model is not defined yet while used in  a type annotation</p>
+<p>Minimal repro:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from sqlalchemy.orm import DeclarativeBase, Mapped
+
+
+class Base(DeclarativeBase):
+    some_mapping: Mapped[list[Bar]] | None = None # F821 Undefined name `Bar`
+    simplified: list[Bar] | None = None # F821 Undefined name `Bar`
+
+
+class Bar:
+    pass
+</code></pre>
+<p>I can only trigger the error when inheriting from <code>DeclarativeBase</code>. Without this inheritance or when inheriting from another class, things are fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-03-18 09:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @AlexWaygood on 2024-03-18 09:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-18 16:28</div>
+            <div class="timeline-body"><p>Hi! I can't reproduce your error locally or in the Ruff playground: https://play.ruff.rs/1f9ab24b-394d-46c3-923a-ecf866705693</p>
+<p>Can you paste a snippet that reproduces the error in the Ruff playground?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aberres">@aberres</a> on 2024-03-18 16:54</div>
+            <div class="timeline-body"><p>Does the playground have a real installation of <code>SQLAlchemy</code>?</p>
+<p>I can only reproduce it locally with the actual <code>sqlalchemy.orm.DeclarativeBase</code>. Other classes as a base class are fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-18 16:56</div>
+            <div class="timeline-body"><p>I don't <em>think</em> it should matter from Ruff's perspective whether <code>sqlalchemy</code> is installed into a Python environment or not, but let me check that :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-18 17:03</div>
+            <div class="timeline-body"><p>I can't reproduce locally with SQLAlchemy installed either.</p>
+<p>Does it still reproduce for you after running <code>ruff clean</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carl-baillargeon">@carl-baillargeon</a> on 2024-03-18 17:06</div>
+            <div class="timeline-body"><p>We are also hitting this issue in this project: https://github.com/arista-netdevops-community/anta</p>
+<p>If you install the project locally with 0.3.3 you should see a bunch of F821 errors:</p>
+<pre><code class="language-bash">(.anta-dev) ~/git_projects/anta (main ✗) ruff check 
+anta/models.py:273:27: F821 Undefined name `ResultOverwrite`
+anta/models.py:274:18: F821 Undefined name `Filters`
+anta/tests/bfd.py:40:25: F821 Undefined name `BFDPeer`
+anta/tests/bfd.py:93:25: F821 Undefined name `BFDPeer`
+anta/tests/connectivity.py:35:21: F821 Undefined name `Host`
+anta/tests/connectivity.py:94:25: F821 Undefined name `Neighbor`
+anta/tests/interfaces.py:176:26: F821 Undefined name `InterfaceState`
+anta/tests/interfaces.py:535:26: F821 Undefined name `InterfaceDetail`
+anta/tests/routing/bgp.py:175:32: F821 Undefined name `BgpAfi`
+anta/tests/routing/bgp.py:285:32: F821 Undefined name `BgpAfi`
+anta/tests/routing/bgp.py:397:32: F821 Undefined name `BgpAfi`
+anta/tests/routing/bgp.py:509:25: F821 Undefined name `BgpNeighbor`
+anta/tests/routing/bgp.py:581:25: F821 Undefined name `BgpPeer`
+anta/tests/routing/bgp.py:653:25: F821 Undefined name `BgpPeer`
+anta/tests/routing/bgp.py:719:25: F821 Undefined name `BgpPeer`
+anta/tests/routing/bgp.py:785:25: F821 Undefined name `BgpPeer`
+anta/tests/routing/bgp.py:846:31: F821 Undefined name `VxlanEndpoint`
+anta/tests/routing/bgp.py:909:25: F821 Undefined name `BgpPeer`
+anta/tests/routing/bgp.py:968:25: F821 Undefined name `BgpPeer`
+anta/tests/security.py:303:28: F821 Undefined name `APISSLCertificate`
+anta/tests/security.py:462:33: F821 Undefined name `IPv4ACL`
+anta/tests/security.py:471:27: F821 Undefined name `IPv4ACLEntry`
+anta/tests/services.py:106:27: F821 Undefined name `DnsServer`
+anta/tests/services.py:159:23: F821 Undefined name `ErrDisableReason`
+Found 24 errors.
+</code></pre>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 17:30</div>
+            <div class="timeline-body"><p>I also can't reproduce this in the playground, but I can reproduce by running <code>cargo run check anta/anta/models.py --select F821 -n</code> locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 17:31</div>
+            <div class="timeline-body"><p>(I can't reproduce by running locally over the originating snippet.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 17:35</div>
+            <div class="timeline-body"><p>This reproduces:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from pydantic import BaseModel
+
+ 
+class Input(BaseModel):
+
+    result_overwrite: ResultOverwrite | None = None
+    filters: Filters | None = None
+
+    class ResultOverwrite(BaseModel):
+        ...
+
+    class Filters(BaseModel):
+        ...
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 17:36</div>
+            <div class="timeline-body"><p>The original snippet doesn't reproduce because <code>DeclarativeBase</code> needs to be declared as runtime-required. Now it reproduces: https://play.ruff.rs/825f89f6-d49c-4688-bfe7-6866319fa764</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-18 17:38</div>
+            <div class="timeline-body"><p>Okay, so <code>lint.flake8-type-checking.runtime-evaluated-base-classes</code> needs to be set to <code>[&quot;sqlalchemy.orm.DeclarativeBase&quot;]</code> in order for it to reproduce</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../aristanetworks/anta/pulls/589.html">aristanetworks/anta#589</a> on 2024-03-19 09:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carl-baillargeon">@carl-baillargeon</a> on 2024-03-19 11:02</div>
+            <div class="timeline-body"><blockquote>
+<p>This reproduces:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from pydantic import BaseModel
+
+ 
+class Input(BaseModel):
+
+    result_overwrite: ResultOverwrite | None = None
+    filters: Filters | None = None
+
+    class ResultOverwrite(BaseModel):
+        ...
+
+    class Filters(BaseModel):
+        ...
+</code></pre>
+</blockquote>
+<p>Should I open a separate issue to track it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aberres">@aberres</a> on 2024-03-19 11:39</div>
+            <div class="timeline-body"><p>@carl-baillargeon Should be the same issue due to <code>pydantic.BaseModel</code> being listed in <code>lint.flake8-type-checking.runtime-evaluated-base-classes</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-20 12:56</div>
+            <div class="timeline-body"><p>Confirmed that this (unsurprisingly) bisects to https://github.com/astral-sh/ruff/commit/704fefc7ab9c84c7c10b9dfaaf68a4d071ae62d3. Sorry for the regression!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-03-20 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/insilications">@insilications</a> on 2024-03-21 04:39</div>
+            <div class="timeline-body"><blockquote>
+<p>@carl-baillargeon Should be the same issue due to <code>pydantic.BaseModel</code> being listed in <code>lint.flake8-type-checking.runtime-evaluated-base-classes</code>.</p>
+</blockquote>
+<p>Confirmed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10511.html">astral-sh/ruff#10511</a> on 2024-03-21 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10513.html">astral-sh/ruff#10513</a> on 2024-03-21 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-03-21 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10524.html">astral-sh/ruff#10524</a> on 2024-03-22 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adrianovieira">@adrianovieira</a> on 2025-11-28 20:31</div>
+            <div class="timeline-body"><p>Hi folks!</p>
+<p>I am also getting this issue here.</p>
+<pre><code class="language-bash">F821 Undefined name `User`
+  --&gt; src/api/models/orm/address.py:18:27
+   |
+17 |     user_id: Mapped[int] = mapped_column(ForeignKey(&quot;user.id&quot;))
+18 |     users: Mapped[list[&quot;User&quot;]] = relationship(back_populates=&quot;addresses&quot;)
+   |                         ^^^^
+</code></pre>
+<ul>
+<li><code>address.py</code>:<pre><code class="language-python"># address.py
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+# Shoudn't import 'User'  =&gt;  Error: ... (most likely due to a circular import)
+# from .user import User as User
+
+class Address(DeclarativeBase):
+    __tablename__ = &quot;address&quot;
+
+    user_id:  Mapped[int] = mapped_column(ForeignKey(&quot;atleta.id&quot;))
+    users:  Mapped[list[&quot;User&quot;]] = relationship(back_populates=&quot;addresses&quot;)
+
+    ...
+
+</code></pre>
+</li>
+</ul>
+<details>
+<summary>User</summary>
+
+<pre><code class="language-python"># user.py
+from sqlalchemy import String
+from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
+
+from .address import Address as Address
+
+class User(DeclarativeBase):
+    __tablename__ = &quot;user&quot;
+
+    nome: Mapped[str] = mapped_column(String(50))
+    addresses: Mapped[list[&quot;Address&quot;]] = relationship(back_populates=&quot;users&quot;)
+
+    ...
+
+</code></pre>
+</details>
+
+<p>Having in mind that writing all the models in a single file is not an option...</p>
+<p>Are there any workarounds that I can use?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-01 17:55</div>
+            <div class="timeline-body"><p>@adrianovieira I think that's a different issue from the one reported here and more closely related to https://github.com/astral-sh/ruff/issues/8700 and https://github.com/astral-sh/ruff/issues/7175. It looks like our current position is that this is a true positive, but #8700 tracks discussion around changing that decision.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POC of Approach to Supporting Internationalization - clap-rs/clap #5853</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>POC of Approach to Supporting Internationalization</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/pull/5853">#5853</a>
+        opened by <a href="https://github.com/toadslop">@toadslop</a>
+        on 2024-12-22 05:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/toadslop">@toadslop</a> on 2024-12-22 05:58</div>
+            <div class="timeline-body"><h1>Support for Internationalization</h1>
+<p>Issue: https://github.com/clap-rs/clap/issues/380</p>
+<p>Provides a POC demonstrating a method for adding i18n support to Clap in a minimally invasive way. This POC is not a complete solution and only aims to illustrate the approach for evaluation of the project's maintainers. Additional work will be needed to produce a production-ready solution.</p>
+<h2>General Notes</h2>
+<p>For context, this approach is <em>not</em> an internationlization solution. Rather, it is a solution which extracts the hardcoded English text of the library into external configuration files, and then offers an API for consumers to replace the texts with their own. It does not care about the content of the texts, giving the consumer the freedom to substitute content for any reason and under any conditions they choose; only one such use of this is for internationalization.</p>
+<h2>Trying It Out</h2>
+<p>To get a quick look at the results, you can run the accompanying example. You'll note that the alignment of the of the columns is a bit off -- this is a consequence of the current POC implementation. If the general approach is accepted, then I will consider how to resolve this.</p>
+<pre><code class="language-bash">gh pr checkout &lt;TODO&gt;
+
+cargo run --example i18n --features derive -- --help
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.07s
+     Running `target/debug/examples/i18n --help`
+A simple to use, efficient, and full-featured Command Line Argument Parser
+
+Usage: i18n [OPTIONS] [NAME] [COMMAND]
+
+Commands:
+  test  Does testing things
+  help  Print this message or the help of the given subcommand(s)
+
+Arguments:
+  [NAME]  Please enter your name
+
+Options:
+  -c, --config &lt;FILE&gt;  Enter the path to a configuration file
+  -d, --debug...         Execute in debug mode
+  -h, --help             Print help
+  -V, --version          Print version
+
+LOCALE=jp cargo run --example i18n --features derive -- --help
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.08s
+     Running `target/debug/examples/i18n --help`
+A simple to use, efficient, and full-featured Command Line Argument Parser
+
+使用方法: i18n [オプション] [名前] [コマンド]
+
+コマンド:
+  test  テストを実行します
+  help  このメッセージまたは指定されたサブコマンドのヘルプを表示します
+
+引数:
+  [名前]  名前を入力してください
+
+オプション:
+  -c, --config &lt;ファイル&gt;  設定ファイルのパスを入力してください
+  -d, --debug...         デバッグモードで実行します
+  -h, --help             ヘルプを表示
+  -V, --version          バージョンを表示
+</code></pre>
+<h2>Approach</h2>
+<p>The main design goal of this implementation is to be minimally invasive. By minimally invasive, I mean that I do not want to significantly impact how Clap already works.</p>
+<h3>Current Behavior</h3>
+<p>Clap currently produces output in the following stages:</p>
+<ol>
+<li>load a layout template</li>
+<li>interpolate hardcoded text and user provided text into the template while applying styling</li>
+<li>print output to terminal (or otherwise, make the output available to the consumer)</li>
+</ol>
+<p>This implementation changes step 2 and adds a new step between it and step 3.</p>
+<ol>
+<li>load a layout template</li>
+<li>interpolate hardcoded keys and user-provided keys into the layout template, producing a new template file which is styled but does not include text -- instead it includes the text-keys surrounded by template syntax (current something lie <code>{clap.default-help-text}</code></li>
+<li>run a pass over the template from step two to interpolate the actual texts</li>
+<li>print output to terminal (or otherwise, make the output available to the consumer)</li>
+</ol>
+<p>Note that the current implementation tends to break column alignments since the widths of the text keys are often different from the actual text, and it appears that Step 2 aligns the columes based on the input text. Some consideration will be needed to determine how best to resolve this issue but this can be deferred until I get the go ahead from the Clap team.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 05:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>Cargo.toml</code>:189 on 2024-12-22 05:59</div>
+            <div class="timeline-body"><p>Just adding a new example to demonstrate, and some dev-deps to support the example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>clap_bench/benches/complex.rs</code>:2 on 2024-12-22 06:01</div>
+            <div class="timeline-body"><p>You'll see a lot of cases of <code>text_provider::DEFAULT_TEXT_PROVIDER</code> being added throughout this PR. This is just to resolve compile issues. The final implementation would ideally be structured in a way to avoid needing to make these changes; however, to keep the POC simple I opted to not resolve that issue until later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 06:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 06:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>clap_builder/Cargo.toml</code>:69 on 2024-12-22 06:02</div>
+            <div class="timeline-body"><p>New depts. serde_yml is for deserializing the external config file where the hardcoded texts are extracted to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 06:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>clap_builder/src/builder/command.rs</code>:4736 on 2024-12-22 06:03</div>
+            <div class="timeline-body"><p>This is an example of one case where we have removed hardcoded English text and replaced it with a template string containing a text lookup key.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 06:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>clap_builder/src/builder/styled_str.rs</code>:33 on 2024-12-22 06:05</div>
+            <div class="timeline-body"><p>This new interpolate function replaces the text lookup keys with the actual texts. There is probably a better place to put this, but for the purposes of demonstrating the approach, I thought this was good enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 06:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>clap_builder/src/derive.rs</code>:31 on 2024-12-22 06:07</div>
+            <div class="timeline-body"><p>New parse_with_texts is the API which allows a consumer to substitute the OOTB English texts with their own texts. This could perhaps be adjusted to allow a reference to the texts to be added to the Parser struct itself so that we don't need to pass them down through many layers of function calls as we do here. This change might have required making changes to clap_derive in order to get a minimally working example ready, so I decided against it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 06:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>clap_builder/src/output/help_template.rs</code>:200 on 2024-12-22 06:08</div>
+            <div class="timeline-body"><p>More hardcoded texts replaced with text lookup keys.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 06:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>clap_builder/src/text_provider.rs</code>:1 on 2024-12-22 06:09</div>
+            <div class="timeline-body"><p>Simple implementation of what the API for allowing consumers to pass in their own texts might look like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 06:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>clap_builder/src/util/template.rs</code>:1 on 2024-12-22 06:11</div>
+            <div class="timeline-body"><p>Simple template engine for interpolating the actual texts into the templates using the text lookup keys. Hand-rolled this to avoid pulling in a whole templating engine, which would include many more features that what we actually need for this case.</p>
+<p>Some improvements to this might be to allow escaping <code>{</code>. Also would need some tests since this hastilly written example might have a few bugs lurking in it. But again, this is just a minimal example for the POC.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 06:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>clap_builder/texts/en.yaml</code>:1 on 2024-12-22 06:12</div>
+            <div class="timeline-body"><p>These are the hard-coded default texts that I extracted. You'll note that there are many more texts than these -- I just extracted enough to demonstrate using the example that I included in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 06:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>examples/i18n/main.rs</code>:10 on 2024-12-22 06:15</div>
+            <div class="timeline-body"><p>For this example, we use the rust-i18n crate to demonstrate how we can use the TextProvider API to achieve internationalization. I chose this crate because it allows looking translations at runtime, which is probably what most people would want since it avoids packaging languages into the binary that the end user will never use.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>examples/i18n/main.rs</code>:45 on 2024-12-22 06:16</div>
+            <div class="timeline-body"><p>Notice that we need to provide a template string with the text lookup key inside in order to have Clap interpolate the text. This may not be ideal, but it was the simplest implementation as it didn't require making any changes to clap_derive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 06:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 06:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>examples/i18n/main.rs</code>:80 on 2024-12-22 06:17</div>
+            <div class="timeline-body"><p>Allow the user to change the locale using an environment variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 06:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>examples/i18n/main.rs</code>:85 on 2024-12-22 06:18</div>
+            <div class="timeline-body"><p>The user would be free to continue using rust-i18n to internationalize this and the following printlines as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toadslop">@toadslop</a> reviewed on 2024-12-22 06:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/toadslop">@toadslop</a> on <code>tests/builder/app_settings.rs</code>:139 on 2024-12-22 06:20</div>
+            <div class="timeline-body"><p>This test shows a weakness of the current simple implementation -- the end user is able to extract the text from the error message without calling the print method, which is where I currently carry out interpolation. Will need to find a more ideal place to put that logic so that users can never extract text from Clap that hasn't been interpolated.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:35 UTC
+    </footer>
+</body>
+</html>

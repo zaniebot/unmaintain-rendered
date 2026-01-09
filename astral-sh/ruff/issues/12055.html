@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] use an invariant lifetime to avoid exposing unsafe API for AstNodeRef - astral-sh/ruff #12055</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] use an invariant lifetime to avoid exposing unsafe API for AstNodeRef</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/12055">#12055</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-06-26 22:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2024-06-26 22:30</div>
+            <div class="timeline-body"><p>I've seen some crates making clever use of invariant lifetimes (e.g. via a PhantomData which is an <code>fn(&amp;'a ()) -&gt; &amp;'a ()</code>). I haven't worked out the details yet, but I think in principle this technique should be exactly what we need to have the borrow checker enforce that the the descendant node passed to <code>AstNodeRef::new</code> is actually from the tree of the root node given. If they have exactly the same lifetime (not just lifetimes where a meet can be found), that gives the guarantee we need.</p>
+<p>So not high priority, but at some point we could try that out and see if it allows us to better encapsulate the <code>unsafe</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-06-26 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "use an invariant lifetime to avoid exposing unsafe API for AstNodeRef" to "[red-knot] use an invariant lifetime to avoid exposing unsafe API for AstNodeRef" by @carljm on 2024-06-26 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-27 06:13</div>
+            <div class="timeline-body"><p>Do you still have the crates around? It would be helpful to better understand what you're describing here.</p>
+<p>I think we discussed that the signature <code>fn new&lt;'a&gt;(root: &amp;'a ParsedModule, child: &amp;'a T) -&gt; Self</code> isn't enough because that only constraints that <code>root</code> and <code>child</code> have a common lifetime, but that would also permit:</p>
+<pre><code class="language-rust">let a = parse_module(&quot;a.py&quot;);
+let b = parse_module(&quot;b.py&quot;);
+
+AstNodeRef::new(&amp;a, a.syntax()); // Works as expected
+AstNodeRef::new(&amp;a, b.syntax()); // should not work but works too
+</code></pre>
+<p>Calling <code>new</code> with <code>a</code> as root but with <code>b</code> as a child<code>works just fine because both</code>a<code>and</code>b` life as long as the enclosing scope.</p>
+<p>I think what would work is the following signature:</p>
+<pre><code class="language-rust">fn new&lt;'a&gt;(root: &amp;'a ParsedModule, child: FnOnce(&amp;'a ParsedModule) -&gt; &amp;'a T): -&gt; Self
+</code></pre>
+<p>The problem here is that it would require to reselect <code>child</code> from <code>root</code>, which we have no convenient or performant way of doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-06-27 11:26</div>
+            <div class="timeline-body"><p>The most recent crate where I ran across this idea, which prompted me to file this issue (just as a reminder to look into it some time in the future, since I don't think it's a priority) was https://docs.rs/compact_arena/latest/src/compact_arena/lib.rs.html#103</p>
+<p>Searching just now I ran across this article about it: https://lord.io/lifetimes-as-tokens/</p>
+<p>But my tentative conclusion from skimming this article is that this technique is probably more hacky and painful than it's worth, at least for our case. The current approach with <code>unsafe</code> is fine in practice. So I think we should just close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-06-27 11:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

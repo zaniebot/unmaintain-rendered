@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redundant `with` around `urlopen()` - astral-sh/ruff #13683</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Redundant `with` around `urlopen()`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13683">#13683</a>
+        opened by <a href="https://github.com/opk12">@opk12</a>
+        on 2024-10-08 18:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/opk12">@opk12</a> on 2024-10-08 18:20</div>
+            <div class="timeline-body"><p>What about a new check based on this example from the <a href="https://docs.python.org/3/library/urllib.request.html#examples"><code>urllib.request</code> documentation</a>, which tells that <code>urlopen</code> does not need to be used as a context manager? The first version is more verbose and has a level of indentation.</p>
+<blockquote>
+<pre><code>with urllib.request.urlopen('http://www.python.org/') as f:
+    print(f.read(100).decode('utf-8'))
+</code></pre>
+<p>It is also possible to achieve the same result without using the <a href="https://docs.python.org/3/glossary.html#term-context-manager">context manager</a> approach.</p>
+<pre><code>f = urllib.request.urlopen('http://www.python.org/')
+print(f.read(100).decode('utf-8'))
+</code></pre>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-09 06:30</div>
+            <div class="timeline-body"><p>I'm a bit surprised that <code>urllib</code> promotes the use without a context manager. Reading through some stack overflow threads suggests that the returned object automatically calls <code>close</code> when the object gets deleted but that means that the resources are only cleaned up when the result object gets garbage collected. I don't think that's something we want to promote by a rule. @AlexWaygood do you know how the suggestion in the <code>urllib</code> documentation is to be understood?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-09 10:58</div>
+            <div class="timeline-body"><p>I'm not sure I would really describe the docs as <em>promoting</em> the use of <code>urlopen</code> without a context manager. It mentions that it <em>can</em> be used without a context manager (which is true: if you really want to take responsibility for closing it manually, you <em>can</em>), but the first examples given in the docs use a context manager, and most examples in the docs following this note also use a context manager.</p>
+<p>I definitely don't think we should be recommending people to use <code>urlopen</code> without a context manager, I'm afraid. As @MichaReiser says, relying on the resource to be closed when the object is garbage-collected is extremely fragile. You have no idea exactly when it will be closed, and if the reference is only garbage-collected while Python is shutting down at the end of the programme, there's the possibility that the resource might never be closed properly.</p>
+<p>Thanks for the rule suggestion @opk12! However, if there's a bug here, it's in the CPython <code>urlopen</code> docs, which could perhaps be clearer that although using the function without a <code>with</code> statement is possible, it's definitely not recommended.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-10-09 10:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/cpython/issues/130132.html">python/cpython#130132</a> on 2025-02-14 19:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

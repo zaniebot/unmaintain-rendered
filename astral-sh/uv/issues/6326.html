@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal modules / packages without pyproject.toml (Poetry transition) - astral-sh/uv #6326</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Internal modules / packages without pyproject.toml (Poetry transition)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6326">#6326</a>
+        opened by <a href="https://github.com/nunokaeru">@nunokaeru</a>
+        on 2024-08-21 13:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nunokaeru">@nunokaeru</a> on 2024-08-21 13:38</div>
+            <div class="timeline-body"><p>I want to transition to using UV but cannot understand how to transition the <code>tool.poetry.packages</code> toml variable to UV.</p>
+<p>I am currently using <code>poetry</code> to manage internal packages of my project. Which means I want to be able to import my files based on their folder structure. Example:</p>
+<pre><code class="language-toml">pyproject.toml
+
+[tool.poetry]
+packages = [
+    { include = &quot;my_package&quot; },
+    { include = &quot;my_other_package&quot; },
+]
+
+[tool.poetry.dependencies]
+ruff = &quot;0.6.1&quot;
+poetry = &quot;1.8.3&quot;
+
+[build-system]
+requires = [&quot;poetry-core&quot;]
+build-backend = &quot;poetry.core.masonry.api&quot;
+
+-------------------------------------------------------
+&lt;repo&gt;/
+    my_package/
+        p1/
+            m1.py
+    my_other_package/
+        p2/
+             m2.py
+
+-------------------------------------------------------
+In m2.py
+
+from my_package.p1 import m1
+
+m1.func()
+</code></pre>
+<p>When switching to UV, I see <code>packages</code> is not a supported attribute of <code>[project]</code>, which replaces <code>[tool.poetry]</code>. Instead UV has <code>workspaces</code> which can be used with:</p>
+<pre><code>[tool.uv.workspace]
+members = [&quot;my_package&quot;, &quot;my_other_package&quot;]
+</code></pre>
+<p>This fails because neither <code>my_package</code> or <code>my_other_package</code> have a <code>pyproject.toml</code> file. If I add those, I will have to continue adding <code>pyproject.toml</code> files recursively to my packages, which is not necessarily something I want to do, as these packages are only internal to the package itself (and should always use the exact same dependencies), so it adds a lot of boilerplate.</p>
+<pre><code class="language-PS">error: No `project` table found in: `&lt;repo&gt;\my_package`
+</code></pre>
+<p>I also tried to use sources instead, but I cannot get these sources to be built recursively without adding <code>pyproject.toml</code> files to every single folder.</p>
+<pre><code>dependencies = [&quot;my_package&quot;]
+
+[tool.uv.sources]
+my_package= { path = &quot;./my_package&quot;, editable = true }
+</code></pre>
+<p>Running pip with the poetry system manages to find all my files and install them locally. With:</p>
+<pre><code>PS &lt;repo&gt;\&gt; python -m pip install -e .
+Obtaining file:///&lt;repo&gt;
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... done
+  Preparing editable metadata (pyproject.toml) ... done
+Requirement already satisfied: ruff==0.6.1 in &lt;python&gt;\lib\site-packages (from &lt;repo_name&gt;==1.0.1) (0.6.1)
+</code></pre>
+<p>I can install the dependencies with <code>uv</code> by running <code>uv pip sync pyproject.toml --no-python-downloads --python-preference only-system</code> but cannot install my own project and my internal packages.</p>
+<p>version: <code>uv 0.3.0 (dd1934c9c 2024-08-20)</code></p>
+<p>Example of usage via <code>uv</code> and <code>pip</code></p>
+<pre><code>-----------------------------------------------------------------------------------------------------------------------------------------------------
+PS C:\project&gt; python -m pip uninstall squishtests_pkg
+Found existing installation: squishtests_pkg 1.0.1
+Uninstalling squishtests_pkg-1.0.1:
+  Would remove:
+    c:\users\nuno\squish7\python3\lib\site-packages\squishtests_pkg-1.0.1.dist-info\*
+    c:\users\nuno\squish7\python3\lib\site-packages\squishtests_pkg.pth
+Proceed (Y/n)? Y
+  Successfully uninstalled squishtests_pkg-1.0.1
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+PS C:\project&gt; pytest .
+================================================================== ERRORS 
+ImportError while importing test module 'C:\project\shared\scripts\test\test_distribution.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Users\Nuno\Squish7\python3\lib\importlib\__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+shared\scripts\test\test_distribution.py:4: in &lt;module&gt;
+    from shared.scripts.distribution import distribute_tests, parse_features
+E   ModuleNotFoundError: No module named 'shared'
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+PS C:\project&gt; uv pip sync pyproject.toml --no-python-downloads --python-preference only-system
+Resolved 11 packages in 12ms
+Audited 11 packages in 0.02ms
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+PS C:\project&gt; pytest .
+================================================================== ERRORS 
+ImportError while importing test module 'C:\project\shared\scripts\test\test_distribution.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Users\Nuno\Squish7\python3\lib\importlib\__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+shared\scripts\test\test_distribution.py:4: in &lt;module&gt;
+    from shared.scripts.distribution import distribute_tests, parse_features
+E   ModuleNotFoundError: No module named 'shared'
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+PS C:\project&gt; uv pip sync pyproject.toml --no-python-downloads --python-preference only-system
+Resolved 11 packages in 11ms
+Audited 11 packages in 0.02ms
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+PS C:\project&gt; python -m pip install -e .
+Obtaining file:///C:/xochitl/squishtests
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... done
+  Preparing editable metadata (pyproject.toml) ... done
+&lt;blah blah blah&gt;
+Successfully built squishtests_pkg
+Installing collected packages: squishtests_pkg
+Successfully installed squishtests_pkg-1.0.1
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+PS C:\project&gt; pytest .
+============================================================ test session starts ============================================================
+platform win32 -- Python 3.10.6, pytest-8.3.2, pluggy-1.5.0
+rootdir: C:\xochitl\squishtests
+configfile: pyproject.toml
+plugins: anyio-4.4.0, rerunfailures-14.0
+collected 18 items
+
+shared\scripts\test\test_distribution.py ..........                                                                                    [ 55%]
+shared\scripts\test\test_feature_parser.py .                                                                                           [ 61%]
+shared\scripts\test\test_labels.py ..                                                                                                  [ 72%]
+shared\scripts\test\test_run_squish.py ....                                                                                            [ 94%]
+shared\scripts\test\test_utilts.py .                                                                                                   [100%]
+
+============================================================ 18 passed in 1.32s =============================================================
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 14:25</div>
+            <div class="timeline-body"><p>I think you want something like this for the top-level <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;my_package&quot;, &quot;my_other_package&quot;, &quot;ruff==0.6.1&quot;]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv.sources]
+my_package = { path = &quot;./my_package&quot; }
+my_other_package = { path = &quot;./my_other_package&quot; }
+
+# If the top-level project doesn't actually have any code in it, like a `src` directory -- otherwise, can omit this.
+[tool.hatch.build.targets.wheel]
+packages = [&quot;.&quot;]
+</code></pre>
+<p>Personally, I'd recommend adding a <code>pyproject.toml</code> to <code>my_package</code> and <code>my_other_package</code>, since you're treating them as Python packages (by declaring them as dependencies).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nunokaeru">@nunokaeru</a> on 2024-08-21 14:50</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>Followed your steps and they didn't work until they did 😆</p>
+<p>The last solution was very simple, just used in my main pyproject.toml:</p>
+<pre><code>[tool.hatch.build.targets.wheel]
+packages = [&quot;.&quot;, &quot;my_package&quot;, &quot;my_other_package&quot;]
+</code></pre>
+<p>Always a pleasure!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @nunokaeru on 2024-08-21 14:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

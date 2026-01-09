@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3 leading hyphens for options (`---long`) - clap-rs/clap #3309</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>3 leading hyphens for options (`---long`)</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/3309">#3309</a>
+        opened by <a href="https://github.com/tertsdiepraam">@tertsdiepraam</a>
+        on 2022-01-18 11:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tertsdiepraam">@tertsdiepraam</a> on 2022-01-18 11:51</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.0.7</p>
+<h3>Describe your use case</h3>
+<p>In <a href="https://github.com/uutils/coreutils">uutils/coreutils</a>, we are trying to move to clap 3. Some of the original GNU utilities have long options with 3 leading hyphens. This is done because these flags are undocumented and only used for testing purposes. Two examples are:</p>
+<pre><code class="language-shell">rm ---presume-input-tty file1
+split ---io-blksize=1 file1
+</code></pre>
+<p>We would like to support these with clap 3.</p>
+<h3>Describe the solution you'd like</h3>
+<p>The ideal solution would be if I could use a leading hyphen in the string passed to <code>Arg::long</code>, however, all leading hyphens are stripped here:</p>
+<pre><code>pub fn long(mut self, l: &amp;'help str) -&gt; Self {
+    self.long = Some(l.trim_start_matches(|c| c == '-'));
+    self
+}
+</code></pre>
+<p>Therefore, I would like to propose that only the first 2 hyphens would be stripped. So this <code>App</code>:</p>
+<pre><code class="language-rust">App::new(&quot;cli&quot;)
+    .arg(Arg::new(&quot;a&quot;).long(&quot;a&quot;))
+    .arg(Arg::new(&quot;b&quot;).long(&quot;--b&quot;))
+    .arg(Arg::new(&quot;c&quot;).long(&quot;---c&quot;))
+</code></pre>
+<p>would be executed with</p>
+<pre><code class="language-shell">cli --a --b ---c
+</code></pre>
+<p>This would <em>technically</em> be a breaking change, but I think that there isn't much (if any) code that passes long arguments with more than 2 leading hyphens.</p>
+<h3>Alternatives, if applicable</h3>
+<p>I think I have found a workaround using <code>alias</code>, which does not strip leading hyphens. So the workaround looks like this:</p>
+<pre><code class="language-rust">Arg::new(&quot;presume-input-tty&quot;)
+    .long(&quot;presume-input-tty&quot;)
+    .alias(&quot;-presume-input-tty&quot;)
+</code></pre>
+<p>However, this supports both 2 and 3 leading hyphens and is a bit awkward.</p>
+<h3>Additional Context</h3>
+<p>Finally, I just want to say that clap 3 has been fantastic so far and the transition is going very smoothly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @tertsdiepraam on 2022-01-18 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../uutils/coreutils/pulls/2863.html">uutils/coreutils#2863</a> on 2022-01-18 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-18 16:32</div>
+            <div class="timeline-body"><p>Some extra context for anyone else, this is an upgrade from clap2 to clap3 and clap2 seemed to allow arbitrary number of leading <code>-</code> for long arguments</p>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    let matches = build_app().get_matches();
+    dbg!(matches);
+}
+
+fn build_app() -&gt; App&lt;'static, 'static&gt; {
+    App::new(&quot;myapp&quot;)
+        .version(&quot;3.0&quot;)
+        .about(&quot;Tests completions&quot;)
+        .arg(
+            Arg::with_name(&quot;file&quot;)
+                .long(&quot;file&quot;)
+                .takes_value(true)
+                .help(&quot;some input file&quot;),
+        )
+}
+</code></pre>
+<pre><code class="language-console">$ cargo run -- -----file foo
+   Compiling test-clap v0.1.0 (/home/epage/src/personal/test-clap)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.42s
+     Running `target/debug/test-clap -----file foo`
+[src/main.rs:5] matches = ArgMatches {
+    args: {
+        &quot;file&quot;: MatchedArg {
+            occurs: 1,
+            indices: [
+                2,
+            ],
+            vals: [
+                &quot;foo&quot;,
+            ],
+        },
+    },
+    subcommand: None,
+    usage: Some(
+        &quot;USAGE:\n    test-clap [OPTIONS]&quot;,
+    ),
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-18 16:37</div>
+            <div class="timeline-body"><p>Any change to our handling of leading hyphens would be a breaking change and would have to wait until clap 4.</p>
+<p>We also have plans to pull out the lexer (https://github.com/clap-rs/clap/issues/2915) and allow plugging in custom lexers (https://github.com/clap-rs/clap/issues/1210).</p>
+<blockquote>
+<p>However, this supports both 2 and 3 leading hyphens and is a bit awkward.</p>
+</blockquote>
+<p>This implies with clap2 you support exclusively 3 hyphens for some arguments.  Have a small, reproducible example of how you did it?  I've tried some ideas but haven't.</p>
+<p>I'd overall recommend this approach for the short term as anything else is unlikely to be available until clap 4.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tertsdiepraam">@tertsdiepraam</a> on 2022-01-18 16:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Some extra context for anyone else, this is an upgrade from clap2 to clap3 and clap2 seemed to allow arbitrary number of leading - for long arguments</p>
+</blockquote>
+<p>Ah yeah, that's important context indeed. That was how we were supporting it before.</p>
+<blockquote>
+<p>This implies with clap2 you support exclusively 3 hyphens for some arguments.</p>
+</blockquote>
+<p>Sorry for being unclear. We don't have that right now. So in that sense, we can actually model this behavior a bit better in clap 3 than in clap 2.</p>
+<blockquote>
+<p>wait until clap 4.</p>
+</blockquote>
+<p>That makes sense. We'll stick with the workaround for now! Thank you for your response!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-18 16:56</div>
+            <div class="timeline-body"><p>Trying to decide what we should do with this issue moving forward.  So far, the options seem to be</p>
+<ul>
+<li>Closing in favor of <code>alias</code></li>
+<li>Close in favor of #1210  (though doing 3 <code>-</code> on only some args will require some hard coding but getting clap2 behavior should be easy)</li>
+<li>Keeping open for considering the conditional trim in <code>long</code><ul>
+<li>Just unsure how confusing that will be to users if we start taking meaning from the number of <code>-</code> especially since what does one <code>-</code> mean?</li>
+</ul>
+</li>
+<li>Keeping it open for some not yet discussed solution</li>
+</ul>
+<p>Thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tertsdiepraam">@tertsdiepraam</a> on 2022-01-18 17:43</div>
+            <div class="timeline-body"><blockquote>
+<p>what does one <code>-</code> mean?</p>
+</blockquote>
+<p>That is indeed a weird thing about my proposal. But I think it makes sense to reject a single <code>-</code>, because it implies support for #1210, but won't work like that in practice.</p>
+<p>Alternatively, the trimming of <code>-</code> could be removed altogether, like already happened with <code>short</code>, since it now takes a <code>char</code> instead of <code>&amp;str</code>. This makes the API more consistent and (in my opinion) more predictable, although it will probably break a lot of code. The transition for <code>short</code> was easier, because the type checker would complain about the usage of <code>&amp;str</code>.</p>
+<p>Regarding the options you present:</p>
+<ul>
+<li>Closing in favor is <code>alias</code> feels strange, because I would intuitively expect <code>long</code> and <code>alias</code> to behave the same and I only found this difference when inspecting the source code.</li>
+<li>Issue #1210 seems to be fundamentally about something else, although there could be a solution that solves both issues.</li>
+</ul>
+<p>Nevertheless, I understand if you want to close this because there is a fairly viable workaround and there is no short term solution.</p>
+<blockquote>
+<p>getting clap2 behavior should be easy</p>
+</blockquote>
+<p>As a side note: I think it's good that the clap 2 behavior is gone and wouldn't want it back unless it's optional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-18 17:50</div>
+            <div class="timeline-body"><p>Note that for #1210 I'm more calling out the <a href="https://github.com/clap-rs/clap/issues/1210#issuecomment-956656955">generalized solution I proposed in the comments</a> (was just being lazy).</p>
+<p>I agree about it being weird that <code>long</code> and <code>alias</code> are inconsistent.  I was surprised to see that <code>alias</code> worked for you.</p>
+<p>If we removed trimming and made <code>long</code> more like <code>alias</code>, we'd need to do it in phases.  We'd first remove trimming in clap 4, asserting when leading <code>-</code> are present, and then in clap 5 open up to leading <code>-</code>, so we could help people transition through this.  This would also be contingent on the feedback we received.  I wish there was a better way for us to receive feedback about future changes than &quot;do it and see who complains&quot;.</p>
+<blockquote>
+<p>Nevertheless, I understand if you want to close this because there is a fairly viable workaround and there is no short term solution.</p>
+</blockquote>
+<p>I'm less concerned with &quot;no short term solution&quot; and more with &quot;is any new solution within scope&quot;.  As long as we feel there is room for a solution within the scope of clap, I'm fine leaving an issue open even if  it is longer in the resolving.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2022-02-02 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2022-02-02 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2022-02-02 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3635.html">clap-rs/clap#3635</a> on 2022-04-15 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "5.0" by @epage on 2022-05-04 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3691.html">clap-rs/clap#3691</a> on 2022-05-04 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../uutils/coreutils/issues/4254.html">uutils/coreutils#4254</a> on 2023-01-03 15:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

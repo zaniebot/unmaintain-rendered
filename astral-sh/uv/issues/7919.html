@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;The discovered commit has an invalid length&quot; bug - astral-sh/uv #7919</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;The discovered commit has an invalid length&quot; bug</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7919">#7919</a>
+        opened by <a href="https://github.com/my1e5">@my1e5</a>
+        on 2024-10-04 10:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/my1e5">@my1e5</a> on 2024-10-04 10:35</div>
+            <div class="timeline-body"><p>Set up a simple dynamic version library</p>
+<pre><code>$ uv init --lib foo
+</code></pre>
+<p>Edit the <code>pyproject.toml</code> to use a dynamic version, the hatch vcs plugin and uv <code>git=true</code> <code>cache-keys</code>.</p>
+<pre><code>[project]
+name = &quot;foo&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+dynamic = [&quot;version&quot;]
+
+[build-system]
+requires = [&quot;hatchling&quot;, &quot;hatch-vcs&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.version]
+source = &quot;vcs&quot;
+
+[tool.uv]
+cache-keys = [{ git = true }]
+</code></pre>
+<p>Run <code>uv sync</code></p>
+<pre><code>$ uv sync
+.
+ + foo==0.1.dev0+d20241004 (from file:///C:/Users/.../foo)
+.
+</code></pre>
+<p>All good so far - there isn't any Git commit history.</p>
+<p>Make a commit and sync again.</p>
+<pre><code>$ git add .
+$ git commit -m &quot;initial&quot;
+$ uv -v sync
+DEBUG uv 0.4.18
+DEBUG Found project root: `C:\Users\me\...\foo`
+DEBUG No workspace root found, using project root
+DEBUG Reading requests from `C:\Users\me\...\foo\.python-version`
+DEBUG The virtual environment's Python version satisfies `Python 3.12`
+DEBUG Using request timeout of 30s
+DEBUG No static `pyproject.toml` available for: foo @ file:///C:/Users/me/.../foo (PyprojectToml(DynamicField(&quot;version&quot;)))
+DEBUG Acquired lock for `C:\Users\me\AppData\Local\uv\cache\sdists-v4\editable\087dff0042ae766a`
+DEBUG Failed to read the current commit: The discovered commit has an invalid length (expected 40 characters): `0f4599403b2f1736440acf2c215273e8d418e8ad
+`
+DEBUG Using cached metadata for: foo @ file:///C:/Users/me/.../foo
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `C:\Users\me\AppData\Local\uv\cache\sdists-v4\editable\087dff0042ae766a\.lock`
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 1 package in 4ms
+DEBUG Using request timeout of 30s
+DEBUG Requirement installed, but not fresh: foo==0.1.dev0+d20241004 (from file:///C:/Users/me/.../foo)
+DEBUG Failed to read the current commit: The discovered commit has an invalid length (expected 40 characters): `0f4599403b2f1736440acf2c215273e8d418e8ad
+`
+DEBUG Directory source requirement already cached: foo==0.1.dev0+d20241004 (from file:///C:/Users/me/.../foo)
+DEBUG Uninstalled foo (7 files, 1 directory)
+Uninstalled 1 package in 1ms
+Installed 1 package in 11ms
+ ~ foo==0.1.dev0+d20241004 (from file:///C:/Users/me/.../foo)
+</code></pre>
+<p>It seems uv is failing to read the commit correctly?</p>
+<pre><code>DEBUG Failed to read the current commit: The discovered commit has an invalid length (expected 40 characters): 
+</code></pre>
+<p>It looks like it could be a newline problem? Is it including a newline character therefore taking it over 40 characters?</p>
+<p>If you run <code>uv sync --reinstall</code> it works</p>
+<pre><code>$ uv sync --reinstall
+.
+Uninstalled 1 package in 2ms
+Installed 1 package in 9ms
+ - foo==0.1.dev0+d20241004 (from file:///C:/Users/me/.../foo)
+ + foo==0.1.dev1+g0f45994 (from file:///C:/Users/me/.../foo)
+</code></pre>
+<p>Reproducible on macOS and Windows.</p>
+<pre><code>$ uv version
+uv 0.4.18 (7b55e9790 2024-10-01)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7922.html">astral-sh/uv#7922</a> on 2024-10-04 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-04 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-04 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-04 11:04</div>
+            <div class="timeline-body"><p>Thanks, fixed in https://github.com/astral-sh/uv/pull/7922.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-04 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-04 11:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

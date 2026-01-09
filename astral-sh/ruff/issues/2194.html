@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF100 without selecting the specific error codes - astral-sh/ruff #2194</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF100 without selecting the specific error codes</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/2194">#2194</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-01-26 14:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-26 14:23</div>
+            <div class="timeline-body"><p><code>RUF100</code>  removes <code>noqa</code> comments if the lines doesn't have the underlying issue.</p>
+<p>This doesn't work if the certain errors aren't part of the <code>--select</code>. I wouldn't have expect this:</p>
+<pre><code class="language-sh">$ cat foo.py
+from foo import bar  # noqa: F401
+
+foo = lambda x: None  # noqa: E731
+
+import os  # noqa: E403
+
+reload(os)  # noqa: F821
+$ ruff --isolated --select RUF100 foo.py
+foo.py:1:22: RUF100 Unused `noqa` directive (non-enabled: `F401`)
+foo.py:3:23: RUF100 Unused `noqa` directive (non-enabled: `E731`)
+foo.py:5:12: RUF100 Unused `noqa` directive (unknown: `E403`)
+foo.py:7:13: RUF100 Unused `noqa` directive (non-enabled: `F821`)
+Found 4 errors.
+4 potentially fixable with the --fix option.
+$ ruff --isolated --select RUF100 --fix foo.py
+Found 4 errors (4 fixed, 0 remaining).
+$ cat foo.py
+from foo import bar
+
+foo = lambda x: None
+
+import os
+
+reload(os)
+</code></pre>
+<p>I can also only select codes which ruff is aware of:</p>
+<pre><code class="language-sh">$ ruff --isolated --select RUF100,F401,E731,F821 foo.py
+foo.py:5:12: RUF100 Unused `noqa` directive (unknown: `E403`)
+Found 1 error.
+1 potentially fixable with the --fix option.
+$ ruff --isolated --select RUF100,F401,E731,F821,E403 foo.py
+error: Invalid value 'E403' for '--select &lt;RULE_CODE&gt;': Unknown rule selector `E403`
+
+For more information try '--help'
+</code></pre>
+<p><code>E403</code> is not yet supported therefore this is always removed and one cannot prevent this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 14:46</div>
+            <div class="timeline-body"><p>You can add <code>E403</code> to &quot;external&quot; to prevent this, I think?</p>
+<pre><code class="language-toml">[tool.ruff]
+external = [&quot;E403&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-01-26 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 14:54</div>
+            <div class="timeline-body"><p>I'd recommend running <code>ruff --extend-select RUF100</code>. That way, it'll enforce your standard configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-26 15:08</div>
+            <div class="timeline-body"><p>I somehow need a way to exclusively select <code>RUF100</code> so that I can get a list of issues (and fixes) only for that one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-26 15:18</div>
+            <div class="timeline-body"><p>fixing only is possible via:
+<code>ruff --select ALL --extend-select RUF100 --fix-only --unfixable ALL --fixable RUF100 $(python_files)</code></p>
+<p>selecting only is possible via:
+<code>ruff --select ALL --extend-select RUF100 $(python_files) | grep RUF100</code></p>
+<p>(with optional <code>--select ALL</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-03 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8492.html">astral-sh/ruff#8492</a> on 2023-11-05 09:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13025.html">astral-sh/ruff#13025</a> on 2024-08-21 07:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

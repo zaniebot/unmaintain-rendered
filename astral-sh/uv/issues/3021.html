@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FR: add `--check-only` flag to `pip sync` command - astral-sh/uv #3021</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>FR: add `--check-only` flag to `pip sync` command</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/3021">#3021</a>
+        opened by <a href="https://github.com/ofek">@ofek</a>
+        on 2024-04-14 21:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ofek">@ofek</a> on 2024-04-14 21:13</div>
+            <div class="timeline-body"><p>We have a need to check whether environments are synchronized without performing action so it would be nice to have such a flag that would produce JSON output like:</p>
+<pre><code class="language-json">{
+    &quot;in-sync&quot;: false
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-15 01:50</div>
+            <div class="timeline-body"><p>Can we resolve this by adding <code>--dry-run</code> to <code>uv pip sync</code> (which already exists on <code>uv pip install</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-04-15 02:16</div>
+            <div class="timeline-body"><p>Probably! What would the output be if everything is synchronized already?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-15 02:20</div>
+            <div class="timeline-body"><p>Right now it ends with &quot;Would make no changes&quot; but we could consider using separate exit codes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-04-15 02:38</div>
+            <div class="timeline-body"><p>I think it would be preferable to have an additional <code>--json</code> flag to not be reliant upon exit codes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-15 11:47</div>
+            <div class="timeline-body"><p>Can consider it but will take a lot more time and work given that it's committing to a public API that we'll need to build and maintain in perpetuity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-04-15 11:50</div>
+            <div class="timeline-body"><p>Then I'm definitely fine with the quicker solution 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-15 11:52</div>
+            <div class="timeline-body"><p>I do think we <em>want</em> JSON output: https://github.com/astral-sh/uv/issues/411. At least for resolution. But we haven't figured it out yet :) \cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-04-20 01:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Rogdham">@Rogdham</a> on 2024-05-03 21:34</div>
+            <div class="timeline-body"><p>This feature seems related to the recurring usecase of the CI checking that the committed <code>requirements.in</code> and <code>requirements.txt</code> files match each other. In that case, we are only interested in the exit code (the output does not matter much). This would be similar to the <code>--check</code> parameter of <code>ruff format</code>.</p>
+<p>A workaround looks like the following:</p>
+<pre><code>uv pip compile requirements.in -o requirements.txt &amp;&amp; git diff --exit-code requirements.txt
+</code></pre>
+<p>For reference, the feature has been asked for <code>pip-tools</code> in https://github.com/jazzband/pip-tools/issues/882, which might provide more context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FlorianKoegler">@FlorianKoegler</a> on 2024-08-09 09:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Right now it ends with &quot;Would make no changes&quot; but we could consider using separate exit codes.</p>
+</blockquote>
+<p>Hi,
+i found this issue, because I'm trying to use <code>uv pip sync --dry-run</code> to test if a virtual environment matches it's lock file.</p>
+<p>It would be great if it would have a non-zero return code, in case there are deviations.
+This would make parsing much more reliable than evaluating the output message. :)</p>
+<p>For comparison, <code>pip-sync --dry-run</code> also returns an non-zero return code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6053.html">astral-sh/uv#6053</a> on 2024-08-30 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14194.html">astral-sh/uv#14194</a> on 2025-06-21 22:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

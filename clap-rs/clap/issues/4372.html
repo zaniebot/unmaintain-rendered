@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ArgMatches.grouped_values_of()` does not support groups - clap-rs/clap #4372</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ArgMatches.grouped_values_of()` does not support groups</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/clap-rs/clap/issues/4372">#4372</a>
+        opened by <a href="https://github.com/etemesi254">@etemesi254</a>
+        on 2022-10-11 19:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/etemesi254">@etemesi254</a> on 2022-10-11 19:32</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.65.0-nightly (20ffea693 2022-08-11)</p>
+<h3>Clap Version</h3>
+<p>4.0.13</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Arg, ArgAction, Command};
+
+fn build_cli() -&gt; Command {
+    Command::new(&quot;myprog&quot;)
+        .arg(Arg::new(&quot;exec&quot;)
+            .short('x')
+            .group(&quot;gf&quot;)
+            .action(ArgAction::Append)
+        ).arg(Arg::new(&quot;vr&quot;)
+            .short('f')
+            .action(ArgAction::Append)
+            .group(&quot;gf&quot;)
+    )
+}
+#[test]
+fn test_cli(){
+    build_cli().debug_assert();
+}
+fn main() {
+    let m = build_cli()
+        .get_matches_from(vec![
+            &quot;myprog&quot;, &quot;-x&quot;, &quot;=g&quot;]);
+    let vals: Vec&lt;Vec&lt;&amp;str&gt;&gt; = m.grouped_values_of(&quot;gf&quot;).unwrap().collect();
+    println!(&quot;{:?}&quot;, vals);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<h3>Actual Behaviour</h3>
+<p>thread 'main' panicked at 'Must use <code>_os</code> lookups with <code>Arg::allow_invalid_utf8</code>', /rustc/20ffea6938b5839c390252e07940b99e3b6a889a/library/core/src/ops/function.rs:164:5</p>
+<h3>Expected Behaviour</h3>
+<ul>
+<li>It should return argument + value passed.</li>
+</ul>
+<p>I might have mis-understood the docs but it does mention  in the panic section and quoting</p>
+<pre><code class="language-text">Panics
+If the value is invalid UTF-8.
+If id is not a valid argument or group id.
+</code></pre>
+<p>Hence I assume it should work with groups.</p>
+<p>It does actually parse groups i.e</p>
+<pre><code class="language-rust">if let Some(counts) = args.grouped_values_of(&quot;group_counts&quot;) {     
+            println!(&quot;{:?}&quot;,counts.len());
+           // works
+            for op in operations{
+}
+</code></pre>
+<p>Prints actual number of arguments for that group but the panic comes when looping, and it corresponds to</p>
+<pre><code>#[cfg(feature = &quot;unstable-grouped&quot;)]
+#[cfg_attr(debug_assertions, track_caller)]
+#[inline]
+fn unwrap_string(value: &amp;AnyValue) -&gt; &amp;str {
+    match value.downcast_ref::&lt;String&gt;() {
+        Some(value) =&gt; value,
+        None =&gt; {
+            panic!(&quot;Must use `_os` lookups with `Arg::allow_invalid_utf8`&quot;,)
+        }
+    }
+}
+</code></pre>
+<p>Part of the code</p>
+<h3>Additional Context</h3>
+<p>Also <code>ArgMatches::grouped_values_of</code> doesn't work with <code>Action::SetTrue</code> arguments.</p>
+<p>Thanks for the library btw</p>
+<h3>Debug Output</h3>
+<p>[      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name=&quot;myprog&quot;
+[      clap::builder::command] 	Command::_propagate:myprog
+[      clap::builder::command] 	Command::_check_help_and_version:myprog expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_propagate_global_args:myprog
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:exec
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:vr
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;-x&quot;)' ([45, 120])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok(&quot;-x&quot;)
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::parse_short_arg: short_arg=ShortFlags { inner: RawOsStr(&quot;x&quot;), utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['x']) }, invalid_suffix: None }
+[        clap::parser::parser] 	Parser::parse_short_arg:iter:x
+[        clap::parser::parser] 	Parser::parse_short_arg:iter:x: Found valid opt or flag
+[        clap::parser::parser] 	Parser::react action=SetTrue, identifier=Some(Short), source=CommandLine
+[        clap::parser::parser] 	Parser::react: has default_missing_vals
+[        clap::parser::parser] 	Parser::remove_overrides: id=&quot;exec&quot;
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;exec&quot;, source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;exec&quot;
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=&quot;gf&quot;, source=CommandLine
+[        clap::parser::parser] 	Parser::push_arg_values: [&quot;true&quot;]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=1
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;exec&quot;
+[        clap::parser::parser] 	Parser::get_matches_with: After parse_short_arg ValuesDone
+[        clap::parser::parser] 	Parser::add_defaults
+[        clap::parser::parser] 	Parser::add_defaults:iter:exec:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:exec: has default vals
+[        clap::parser::parser] 	Parser::add_default_value:iter:exec: was used
+[        clap::parser::parser] 	Parser::add_defaults:iter:vr:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:vr: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:help:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[     clap::parser::validator] 	Validator::validate
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:&quot;exec&quot;
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:&quot;gf&quot;
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id=&quot;exec&quot;
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg=&quot;exec&quot;
+[      clap::builder::command] 	Command::groups_for_arg: id=&quot;exec&quot;
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=&quot;exec&quot;, conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=&quot;gf&quot;, conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_required: required=ChildGraph([])
+[     clap::parser::validator] 	Validator::gather_requires
+[     clap::parser::validator] 	Validator::gather_requires:iter:&quot;exec&quot;
+[     clap::parser::validator] 	Validator::gather_requires:iter:&quot;gf&quot;
+[     clap::parser::validator] 	Validator::gather_requires:iter:&quot;gf&quot;:group
+[     clap::parser::validator] 	Validator::validate_required: is_exclusive_present=false
+[   clap::parser::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[]</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @etemesi254 on 2022-10-11 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2924.html">clap-rs/clap#2924</a> on 2022-10-11 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-11 19:49</div>
+            <div class="timeline-body"><p><code>grouped_values_of</code> has not been updated to the new clap v4 design, meaning it can only return <code>&amp;str</code> and not any other type.  The error message is off because these old code paths only dealt with <code>String</code> vs <code>OsString</code> but with the value parser API, args can be of a variety of types.</p>
+<p>I've now linked this from the tracking issue as before this was just a check mark and now we have a specific issue for it</p>
+<blockquote>
+<p>It should return argument + value passed.</p>
+</blockquote>
+<p>In case there is some confusion, I'm going to step back a bit.</p>
+<p><code>ArgGroup</code> allows defining relationships between arguments.  When looking up an <code>ArgGroup</code> in <code>ArgMatches</code>, it returns which member of the group was matched (as of v4, v3 it returned the values).</p>
+<p>Grouped values allows callers to know what sets of values were grouped in an occurrence (<code>--flag 1 2 3 --flag 4 5 6</code> would be grouped as <code>[[1, 2, 3], [4, 5, 6]]</code>).</p>
+<p>Looking up the grouped values of an <code>ArgGroup</code> has no meaning as we only track one <code>ArgGroup</code> member per group / occurrence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/etemesi254">@etemesi254</a> on 2022-10-12 05:22</div>
+            <div class="timeline-body"><p>I could take a stab at the tracking issue over the course of the oncoming weekends if that's okay with you.</p>
+<p>My use case was as follows.</p>
+<p>I have a set of command line arguments,  and I need to operations as they were  specified in the command line (order of operations matters),  the example linked in <code>grouped_value_of</code> seemed to do that but with positional  arguments(also you pointed it out above) and I did think it the same behaviour would be extended to groups</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-12 11:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I could take a stab at the tracking issue over the course of the oncoming weekends if that's okay with you.</p>
+</blockquote>
+<p>If you'd like, sure</p>
+<blockquote>
+<p>I have a set of command line arguments, and I need to operations as they were specified in the command line (order of operations matters),</p>
+</blockquote>
+<p>If you haven't noticed, we have an example for this use case:  https://docs.rs/clap/latest/clap/_derive/_cookbook/find/index.html</p>
+<blockquote>
+<p>I did think it the same behaviour would be extended to groups</p>
+</blockquote>
+<p>The challenge is we'd be dealing with multiple argument types.  I've been avoiding exposing support for mixed types as that was a API design / usability line I'm cautious about crossing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/etemesi254">@etemesi254</a> on 2022-10-19 04:53</div>
+            <div class="timeline-body"><blockquote>
+<p>If you haven't noticed, we have an example for this use case: https://docs.rs/clap/latest/clap/_derive/_cookbook/find/index.html</p>
+</blockquote>
+<p>This fixes it for me.</p>
+<p>Also I was wondering why the grouped_values_of() would look like for groups,</p>
+<p>As you mentioned groups may have different types hence is the best choice to disable them completely?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-19 13:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Also I was wondering why the grouped_values_of() would look like for groups,</p>
+<p>As you mentioned groups may have different types hence is the best choice to disable them completely?</p>
+</blockquote>
+<p>I lean towards leaving the code agnostic to it.  You can look up occurrences of a group but it naively looks it up in our data model which is just the same as doing the non-occurrence look up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2022-11-08 04:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2022-11-08 04:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

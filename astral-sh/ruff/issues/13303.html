@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Converting `__file__` to a named path variable triggers E402 - astral-sh/ruff #13303</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Converting `__file__` to a named path variable triggers E402</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13303">#13303</a>
+        opened by <a href="https://github.com/ncoghlan">@ncoghlan</a>
+        on 2024-09-10 06:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2024-09-10 06:05</div>
+            <div class="timeline-body"><p>While the <code>E402</code> detection makes some allowances for <code>sys.path</code> manipulation, it still doesn't like it if <code>__file__</code> gets assigned to a variable, as in code like:</p>
+<pre><code>_THIS_DIR = Path(__file__).parent
+_REPO_DIR = _THIS_DIR.parent
+
+if find_spec(&quot;some_project_module&quot;) is None:
+    sys.path.append(str(_REPO_DIR / &quot;src&quot;))
+from some_project_module import relevant_api
+</code></pre>
+<p>This inline version is correctly detected as permitted <code>sys.path</code> manipulation:</p>
+<pre><code>if find_spec(&quot;some_project_module&quot;) is None:
+    sys.path.append(str(Path(__file__).parent.parent / &quot;src&quot;))
+from some_project_module import relevant_api
+</code></pre>
+<p>While <code>#noqa: E402</code> makes the error go away in the first case, it doesn't seem right that it triggers a lint error while the more cryptic inline version gets a free pass. At the same time, tracing and allowing <code>__file__</code> manipulation would presumably be difficult, so <code>wontfix</code> may be the right response here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-09-10 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-10 17:49</div>
+            <div class="timeline-body"><p>Thanks for opening this. We may bel able to do better here once Ruff uses type inference.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

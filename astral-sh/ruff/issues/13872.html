@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Compare expression inference - Instance (+ Rich Comparison, Membership Test) - astral-sh/ruff #13872</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Compare expression inference - Instance (+ Rich Comparison, Membership Test)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13872">#13872</a>
+        opened by <a href="https://github.com/cake-monotone">@cake-monotone</a>
+        on 2024-10-22 05:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-10-22 05:49</div>
+            <div class="timeline-body"><ul>
+<li>Related to #13618</li>
+<li>Continuing work from https://github.com/astral-sh/ruff/pull/13635#issuecomment-2427388114</li>
+</ul>
+<p>The item mentioned in #13618, &quot;Bug with defined method but other type that doesn't match the signature,&quot; might complicate the upcoming PR too much. For now, I’ll focus solely on the implementation of Rich Comparison.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-10-22 06:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Compare expression inference - Instance (Rich Comparison)" to "[red-knot] Compare expression inference - Instance (+ Rich Comparison, Membership Test)" by @cake-monotone on 2024-10-22 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-10-22 09:42</div>
+            <div class="timeline-body"><p>I realized that this issue should also include the &quot;membership test&quot; <a href="https://docs.python.org/3/reference/datamodel.html#object.__contains__">docs</a></p>
+<p>The &quot;membership test&quot; involves logic for checking <code>__contains__</code>, <code>__iter__</code>, and <code>__getitem__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-22 12:45</div>
+            <div class="timeline-body"><p>The algorithm you'll want to use for this will be similar in many ways to the one we implemented for binary arithmetic here (but there are some important differences, including the one you already noted for membership testing): https://github.com/astral-sh/ruff/blob/7dbd8f0f8e725d05cc1d15e6ef1c6cc2ed2b2090/crates/red_knot_python_semantic/src/types/infer.rs#L2704-L2736</p>
+<p>See also:</p>
+<ul>
+<li>Our tests for binary arithmetic between arbitrary instances at https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</li>
+<li>https://snarky.ca/unravelling-rich-comparison-operators/</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-22 12:47</div>
+            <div class="timeline-body"><p>Very happy to give additional clarifications if you need any further pointers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13618.html">astral-sh/ruff#13618</a> on 2024-10-22 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-10-23 07:08</div>
+            <div class="timeline-body"><p>Thank you!!! Your input was very helpful during the implementation.</p>
+<p>BTW, I’m a bit confused about something, and I’d like to discuss it.</p>
+<p>The part I’m struggling with is: how type mismatches between a dunder function signature and argument types are handled.</p>
+<p>From my understanding, when there’s a type mismatch, the dunder method should return <code>NotImplemented</code>, as shown in the following example:</p>
+<pre><code class="language-py">class A:
+    def __lt__(self, other: int) -&gt; bool:
+        if not isinstance(other, int):
+            return NotImplemented
+        else:
+            return True
+
+A() &lt; 3  # No issues
+A() &lt; &quot;qwr&quot;  # runtime error: not supported operator
+
+# also in builtins
+42 &lt; 3.14  # No issues
+(42).__lt__(3.14)  # NotImplemented
+(3.14).__gt__(42)  # bool
+</code></pre>
+<p>With this assumption,<code> __eq__</code> and <code>__ne__</code> should be handled separately.</p>
+<p>According to the <a href="https://docs.python.org/3/reference/datamodel.html#object.__ne__">Python docs</a>, when <code>NotImplemented</code> is returned from <code>__eq__</code> or <code>__ne__</code>, it falls back to <code>is</code> and <code>is not</code>, respectively.</p>
+<pre><code class="language-py">from __future__ import annotations
+from typing import reveal_type
+
+class A:
+    def __eq__(self, other: int) -&gt; A:
+        ...
+
+class B:
+    def __eq__(self, other: int) -&gt; B:
+        ...
+
+reveal_type(A() == B())  # revealed: bool? or Unknown?
+</code></pre>
+<p>I think it should reveal <code>bool</code>. However, I'm not sure if this understanding is correct.. What do you think about it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13903.html">astral-sh/ruff#13903</a> on 2024-10-24 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-10-26 18:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

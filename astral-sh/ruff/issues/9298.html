@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401: Ruff Incorrectly Flags Quoted Class used as Generic Parameter as Unused - astral-sh/ruff #9298</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401: Ruff Incorrectly Flags Quoted Class used as Generic Parameter as Unused</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9298">#9298</a>
+        opened by <a href="https://github.com/max-muoto">@max-muoto</a>
+        on 2023-12-28 06:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/max-muoto">@max-muoto</a> on 2023-12-28 06:48</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>To give some context, I have <code>from __future__ import annotations</code> required in every-single file, and the TCH rule-set enabled across my codebase, along with the full Pyflakes rule-set.</p>
+<p>I'm running into a situation like this:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import TypeVar, Generic
+from my_module import ModelB
+
+T = TypeVar(&quot;T&quot;)
+
+class BaseModel(Generic[T]):
+   ...
+
+class ModelA(BaseClass[ModelB]]
+   ...
+</code></pre>
+<p>Here, even though <code>ModelB</code> is only being passed in as the generic parameter, TCH moves it out of the type-checking block. If I try and quote <code>ModelB</code>.</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import TypeVar, Generic, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from my_module import ModelB  # Ruff flags `ModelB` as unused.
+
+T = TypeVar(&quot;T&quot;)
+
+class BaseModel(Generic[T]):
+   ...
+
+class ModelA(BaseClass[&quot;ModelB&quot;]]
+   ...
+</code></pre>
+<p>In this case my type-checker (Pyright) still works as expected, however <a href="https://docs.astral.sh/ruff/rules/unused-import/"><code>F401</code></a> flags  <code>ModelB</code> as unused and removes it. Unfortunately in my situtation, importing <code>ModelB</code> causes a circular import, so it would need it to go under the <code>TYPE_CHECKING</code> block . As a note I also have <a href="https://docs.astral.sh/ruff/rules/quoted-annotation/"><code>UP037</code></a> enabled, and it doesn't attempt to remove the quotes in this case.</p>
+<p>Lot of intertwining rules here, so happy to clarify anything about my configuration. Also, I'm not sure if TCH moving <code>ModelB</code> when non-quoted out of the <code>TYPE_CHECKING</code> block is also a bug.</p>
+<p>Ruff Version: 0.1.9
+Ruff Command: <code>ruff check .</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-28 13:01</div>
+            <div class="timeline-body"><p>The general problem here is that, when looking at <code>BaseClass[ModelB]</code>, we don't have a great way to know whether <code>[Model]</code> is a generic annotation or an actual subscript access (like <code>BASE_CLASSES[0]</code>, as a counterexample). We could come up with some better heuristics, but right now, we effectively scope generics to those that are known in the standard library (like <code>Sequence</code>).</p>
+<p>We do have a mechanism for marking classes as generics: <a href="https://docs.astral.sh/ruff/settings/#pyflakes-extend-generics"><code>extend-generics</code></a>. Maybe that can help here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-31 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/max-muoto">@max-muoto</a> on 2024-01-01 17:51</div>
+            <div class="timeline-body"><blockquote>
+<p>The general problem here is that, when looking at <code>BaseClass[ModelB]</code>, we don't have a great way to know whether <code>[Model]</code> is a generic annotation or an actual subscript access (like <code>BASE_CLASSES[0]</code>, as a counterexample). We could come up with some better heuristics, but right now, we effectively scope generics to those that are known in the standard library (like <code>Sequence</code>).</p>
+<p>We do have a mechanism for marking classes as generics: <a href="https://docs.astral.sh/ruff/settings/#pyflakes-extend-generics"><code>extend-generics</code></a>. Maybe that can help here?</p>
+</blockquote>
+<p>Makes sense on why this is then!</p>
+<p>Yes, that actually solves my problem, I didn't know there was a configuration setting for this. Really appreciate it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/max-muoto">@max-muoto</a> on 2024-01-01 17:55</div>
+            <div class="timeline-body"><p>I'm assuming not, but does it support wildcards? For example, if you wanted to treat all of your Django models as valid generics you might want to do <code>extend-generics = [&quot;src.my_app.models.*&quot;]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-02 18:24</div>
+            <div class="timeline-body"><p>I don't believe so... but we could extend it to support wildcards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/M1troll">@M1troll</a> on 2024-01-24 08:56</div>
+            <div class="timeline-body"><p>Hi!</p>
+<p>I have the same problem with generic annotations.
+I read suggestions above and I think the &quot;store all <strong>unused</strong> imports in settings&quot; way is a bit odd</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10676.html">astral-sh/ruff#10676</a> on 2024-03-30 23:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ruff Incorrectly Flags Quoted Class used as Generic Parameter as Unused" to "F401: Ruff Incorrectly Flags Quoted Class used as Generic Parameter as Unused" by @AlexWaygood on 2024-03-30 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @AlexWaygood on 2024-03-30 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sterliakov">@sterliakov</a> on 2024-03-30 23:49</div>
+            <div class="timeline-body"><p><code>extend-generics</code> is a good solution for general case. But... Would the heuristic &quot;subscript expression in parent classes list&quot; work? I agree that it can cause a false positive (below), but such case would be marginally less popular, I guess (I do not remember ever inheriting from dict lookup example), and can be easily overcome without linter silencing (below-2).</p>
+<p>So, I suggest to treat any string that is a valid identifier as a name when used in a subscript in class parents list.</p>
+<p>FP example:</p>
+<pre><code class="language-python">BASES = {&quot;foo&quot;: int, &quot;bar&quot;: str}
+class A(Bases[&quot;foo&quot;]): ...  # Name &quot;foo&quot; not found
+</code></pre>
+<p>To overcome:</p>
+<pre><code class="language-python">BASES = {&quot;foo&quot;: int, &quot;bar&quot;: str}
+A_BASE = BASES[&quot;foo&quot;]
+class A(A_BASE): ...
+</code></pre>
+<p>We may also want to extend this a bit, so that <code>&quot;name&quot;</code> should be interpreted as a name:</p>
+<ul>
+<li><code>class X(Foo[&quot;name&quot;])</code></li>
+<li><code>X: TypeAlias = Foo[&quot;name&quot;]</code> and right-hand side of new 3.12 <code>type</code> expression</li>
+<li>Anything else I'm missing?</li>
+</ul>
+<p>Alternatively, this may be introduced as some kind of &quot;soft name&quot; that may be absent from namespace, but marks the name as &quot;used&quot; in scope. With such approach the FP example above is no longer failing, and I do not see any backwards-incompatible consequences from doing that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13181.html">astral-sh/ruff#13181</a> on 2024-09-01 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15560.html">astral-sh/ruff#15560</a> on 2025-01-17 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15860.html">astral-sh/ruff#15860</a> on 2025-02-01 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12780.html">astral-sh/ruff#12780</a> on 2025-02-01 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @AlexWaygood on 2025-02-01 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17455.html">astral-sh/ruff#17455</a> on 2025-04-26 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pekkaklarck">@pekkaklarck</a> on 2025-04-26 12:35</div>
+            <div class="timeline-body"><p>I encountered this with our project as well. Using <code>extend-generics</code> fixed it, but, as commented above, feels like a hack. Considering the amount of duplicates and a similar problem with TypeAlias (#17455), I believe it would be good to have some kind of a fix for this even though it wouldn't be perfect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../aiidateam/aiida-core/pulls/6704.html">aiidateam/aiida-core#6704</a> on 2025-05-06 02:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../aiidateam/aiida-core/pulls/7019.html">aiidateam/aiida-core#7019</a> on 2025-09-25 17:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argument names must be unique, but 'version' is in use by more than one argument or group - clap-rs/clap #4285</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Argument names must be unique, but 'version' is in use by more than one argument or group</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/4285">#4285</a>
+        opened by <a href="https://github.com/bonigarcia">@bonigarcia</a>
+        on 2022-09-29 07:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bonigarcia">@bonigarcia</a> on 2022-09-29 07:58</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.63.0 (4b91a6ea7 2022-08-08)</p>
+<h3>Clap Version</h3>
+<p>4.0.2</p>
+<h3>Minimal reproducible code</h3>
+<pre><code>use std::error::Error;
+use clap::Parser;
+
+/// Selenium-Manager: Automated driver management for Selenium
+#[derive(Parser, Debug)]
+#[clap(version, about, long_about = None)]
+struct Cli {
+    /// Browser type (e.g., chrome, firefox, edge)
+    #[clap(short, long, value_parser)]
+    browser: String,
+
+    /// Major browser version (e.g., 105, 106, etc.)
+    #[clap(short, long, value_parser, default_value = &quot;&quot;)]
+    version: String,
+
+    /// Display DEBUG messages
+    #[clap(short, long)]
+    debug: bool,
+
+    /// Display TRACE messages
+    #[clap(short, long)]
+    trace: bool,
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let cli = Cli::parse();
+    Ok(())
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo run -- --help
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>thread 'main' panicked at 'Command selenium-manager: Argument names must be unique, but 'version' is in use by more than one argument or group (call `cmd.disable_version_flag(true)` to remove the auto-generated `--version`)', C:\Users\boni\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-4.0.2\src\builder\debug_asserts.rs:95:13
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: process didn't exit successfully: `C:\Users\boni\Documents\dev\rust-examples\target\debug\selenium-manager.exe --help` (exit code: 101)
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The CLI help should be shown.</p>
+<h3>Additional Context</h3>
+<p>This behavior started to happen with clap 4.0.2, recently released. It seems the problem is the use of <code>version</code> as argument. If I remove <code>version</code> from the following line, it works again (but I wanted to show also my app version in the help):</p>
+<pre><code>#[clap(about, long_about = None)]
+</code></pre>
+<h3>Debug Output</h3>
+<pre><code>clap = { version = &quot;4.0.2&quot;, features = [&quot;derive&quot;] }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @bonigarcia on 2022-09-29 07:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-29 14:02</div>
+            <div class="timeline-body"><p>When you specify the <code>#[clap(version)]</code> attribute, a <code>--version</code> flag is created automatically for you.  If you do not want it, you can disable it via <code>#[clap(disable_version_flag)]</code>.</p>
+<p>The change in behavior is that clap would try to discern when to automatically apply <code>disable_version_flag</code> and we removed all of that logic.  A summary of what was changed and why can be found in the <a href="https://epage.github.io/blog/2022/09/clap4/#removing-implicit-version-help-behavior">announcement</a>.  The changelog has a one-line item about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-09-29 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bonigarcia">@bonigarcia</a> on 2022-09-29 14:40</div>
+            <div class="timeline-body"><p>Thanks a lot for the tip. I tried that as follows:</p>
+<pre><code>/// Selenium-Manager: Automated driver management for Selenium
+#[derive(Parser, Debug)]
+#[clap(version, about, long_about = None, disable_version_flag = true)]
+struct Cli {
+    /// Browser type (e.g., chrome, firefox, edge)
+    #[clap(short, long, value_parser)]
+    browser: String,
+
+    /// Major browser version (e.g., 105, 106, etc.)
+    #[clap(short, long, value_parser, default_value = &quot;&quot;)]
+    version: String,
+
+    /// Display DEBUG messages
+    #[clap(short, long)]
+    debug: bool,
+
+    /// Display TRACE messages
+    #[clap(short, long)]
+    trace: bool,
+}
+</code></pre>
+<p>Nevertheless, when trying to see the help, the my app version is missing:</p>
+<pre><code>$ cargo run -- --help
+
+Selenium-Manager: Automated driver management for Selenium
+
+Usage: selenium-manager.exe [OPTIONS] --browser &lt;BROWSER&gt;
+
+Options:
+  -b, --browser &lt;BROWSER&gt;  Browser type (e.g., chrome, firefox, edge)
+  -v, --version &lt;VERSION&gt;  Major browser version (e.g., 105, 106, etc.) [default: ]
+  -d, --debug              Display DEBUG messages
+  -t, --trace              Display TRACE messages
+  -h, --help               Print help information
+</code></pre>
+<p>In clap 3.2.22, the version has shown as follows:</p>
+<pre><code>$ cargo run -- --help
+
+selenium-manager 0.1.0
+Selenium-Manager: Automated driver management for Selenium
+
+Usage: selenium-manager.exe [OPTIONS] --browser &lt;BROWSER&gt;
+
+Options:
+  -b, --browser &lt;BROWSER&gt;  Browser type (e.g., chrome, firefox, edge)
+  -v, --version &lt;VERSION&gt;  Major browser version (e.g., 105, 106, etc.) [default: ]
+  -d, --debug              Display DEBUG messages
+  -t, --trace              Display TRACE messages
+  -h, --help               Print help information
+</code></pre>
+<p>Is there any issue with the new version or am I doing something wrong? Thanks again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-29 14:47</div>
+            <div class="timeline-body"><p>Another change in v4 is we no longer display name, version, and author in the <code>-h</code> output by default (that is what the <code>--version</code> flag is for...).</p>
+<p>You can override the <code>help_template</code> attribute to get the old behavior.  https://github.com/clap-rs/clap/blob/master/tests/derive/utils.rs#L10 contains the old template.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:34 UTC
+    </footer>
+</body>
+</html>

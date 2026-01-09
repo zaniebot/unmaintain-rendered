@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I use pysource-codegen to find source code where black and ruff differ in the formatting - astral-sh/ruff #8423</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>I use pysource-codegen to find source code where black and ruff differ in the formatting</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/8423">#8423</a>
+        opened by <a href="https://github.com/15r10nk">@15r10nk</a>
+        on 2023-11-01 21:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/15r10nk">@15r10nk</a> on 2023-11-01 21:48</div>
+            <div class="timeline-body"><p>hi, I wrote <a href="https://github.com/15r10nk/pysource-codegen">pysource-codegen</a> which can be used to generate random python code and I thought that it could be a good idea to use it to compare ruff with black to find source code which gets formatted differently.</p>
+<p>here is the first of many examples which I found:</p>
+<p>test seed  0
+minimize
+ruff and black are formatting the following code differently:</p>
+<pre><code class="language-python">async def name_4[**name_0](name_3: {[name_2], name_4, name_0 &gt;= name_0, name_3, name_2}): # type: ignore
+    pass
+</code></pre>
+<p>black:</p>
+<pre><code class="language-python">async def name_4[**name_0](name_3: {[name_2], name_4, name_0 &gt;= name_0, name_3, name_2}):  # type: ignore
+    pass
+
+</code></pre>
+<p>ruff:</p>
+<pre><code class="language-python">async def name_4[**name_0](
+    name_3: {[name_2], name_4, name_0 &gt;= name_0, name_3, name_2}
+):  # type: ignore
+    pass
+
+</code></pre>
+<p>diff:</p>
+<pre><code class="language-diff">--- black
+
++++ ruff
+
+@@ -1,2 +1,4 @@
+
+-async def name_4[**name_0](name_3: {[name_2], name_4, name_0 &gt;= name_0, name_3, name_2}):  # type: ignore
++async def name_4[**name_0](
++    name_3: {[name_2], name_4, name_0 &gt;= name_0, name_3, name_2}
++):  # type: ignore
+     pass
+</code></pre>
+<p>ruff version: ruff 0.1.3</p>
+<p>black version: black, 23.10.1 (compiled: no)
+Python (CPython) 3.12.0</p>
+<p>There are many of other examples where ruff and black format differently (different seeds). It is hard for me to decide which formatter formats correctly. I hope it is useful for you to improve ruff format further.</p>
+<p>here is the script which I used:</p>
+<pre><code class="language-python">from pysource_codegen import generate
+from pysource_minimize import minimize
+
+
+import subprocess as sp
+from difflib import context_diff, unified_diff
+
+
+def contains_bug(code, diff=False):
+    &quot;&quot;&quot;
+    returns True if the code triggers a bug and False otherwise
+    &quot;&quot;&quot;
+
+    black_result = sp.run(
+        [&quot;black&quot;, &quot;-q&quot;, &quot;-&quot;], input=code.encode(), capture_output=True
+    )
+    black_formatted = black_result.stdout.decode()
+
+    ruff_result = sp.run(
+        [&quot;ruff&quot;, &quot;format&quot;, &quot;--isolated&quot;, &quot;-q&quot;, &quot;-&quot;],
+        input=code.encode(),
+        capture_output=True,
+    )
+    ruff_formatted = ruff_result.stdout.decode()
+
+    if diff:
+        print()
+        print(&quot;black:\n&quot;)
+        print(&quot;``` python&quot;)
+        print(black_formatted)
+        print(&quot;```&quot;)
+
+        print()
+        print(&quot;ruff:\n&quot;)
+        print(&quot;``` python&quot;)
+        print(ruff_formatted)
+        print(&quot;```&quot;)
+
+        print()
+        print(&quot;diff:\n&quot;)
+        print(&quot;``` diff&quot;)
+        print(
+            &quot;\n&quot;.join(
+                unified_diff(
+                    black_formatted.splitlines(),
+                    ruff_formatted.splitlines(),
+                    &quot;black&quot;,
+                    &quot;ruff&quot;,
+                )
+            )
+        )
+        print(&quot;```&quot;)
+
+    return ruff_formatted != black_formatted
+
+
+def find_issue():
+    for seed in range(10000):
+        print(&quot;test seed &quot;, seed)
+        code = generate(seed)
+
+        if contains_bug(code):
+            print(&quot;minimize&quot;)
+            new_code = minimize(code, contains_bug)
+
+            print(&quot;ruff and black are formatting the following code differently:&quot;)
+            print(&quot;``` python&quot;)
+            print(new_code)
+            print(&quot;```&quot;)
+
+            contains_bug(new_code, diff=True)
+
+            result = sp.run([&quot;ruff&quot;, &quot;--version&quot;], capture_output=True)
+            print(&quot;ruff version:&quot;, result.stdout.decode())
+
+            result = sp.run([&quot;black&quot;, &quot;--version&quot;], capture_output=True)
+            print(&quot;black version:&quot;, result.stdout.decode())
+
+            return
+
+
+find_issue()
+</code></pre>
+<p>requirements:</p>
+<pre><code>pysource-codegen
+pysource-minimize
+ruff
+black
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-11-02 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-29 14:06</div>
+            <div class="timeline-body"><p>Sorry for the late response -- realizing I forgot to comment here back when it was filed, but thank you for doing this! I'm going to close to keep the issue tracker actionable, but I appreciate your help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-29 14:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

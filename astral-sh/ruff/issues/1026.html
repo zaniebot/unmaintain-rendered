@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP015 RedundantOpenModes false positive with gzip.open - astral-sh/ruff #1026</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP015 RedundantOpenModes false positive with gzip.open</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/1026">#1026</a>
+        opened by <a href="https://github.com/andersk">@andersk</a>
+        on 2022-12-04 08:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/andersk">@andersk</a> on 2022-12-04 08:21</div>
+            <div class="timeline-body"><p>Ruff’s fix for UP015 (#843) incorrectly changes the behavior of <code>gzip.open(…, &quot;rt&quot;)</code>. This mode should not be flagged as redundant because the default for <code>gzip.open</code> is <code>&quot;rb&quot;</code>.</p>
+<pre><code class="language-console">$ cat test.py
+import gzip
+with gzip.open(&quot;test.gz&quot;, &quot;rt&quot;) as f:
+    print(f.read())
+
+$ echo 'Hello, world!' | gzip &gt; test.gz
+
+$ python test.py
+Hello, world!
+
+$ ruff --select=UP test.py
+Found 1 error(s).
+test.py:2:6: UP015 Unnecessary open mode parameters
+1 potentially fixable with the --fix option.
+
+$ ruff --select=UP --fix test.py
+Found 0 error(s) (1 fixed).
+
+$ cat test.py
+import gzip
+with gzip.open(&quot;test.gz&quot;) as f:
+    print(f.read())
+
+$ python test.py
+b'Hello, world!\n'
+</code></pre>
+<p>Cc @andribergs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1027.html">astral-sh/ruff#1027</a> on 2022-12-04 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-04 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1028.html">astral-sh/ruff#1028</a> on 2022-12-07 11:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:07 UTC
+    </footer>
+</body>
+</html>

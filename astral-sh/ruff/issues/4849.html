@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`noqa` comment stripped due to syntax error elsewhere in file - astral-sh/ruff #4849</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`noqa` comment stripped due to syntax error elsewhere in file</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4849">#4849</a>
+        opened by <a href="https://github.com/stinodego">@stinodego</a>
+        on 2023-06-04 14:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stinodego">@stinodego</a> on 2023-06-04 14:32</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Ruff indicates an unused noqa statement, when in fact it's fine. There is a syntax error in the function definition that triggers this, if the <code>*</code> is removed, everything is fine.</p>
+<pre><code class="language-python">def function(*):
+    &quot;&quot;&quot;Veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery long.&quot;&quot;&quot;  # noqa: W505
+</code></pre>
+<p>This is on ruff version <code>0.0.270</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-04 15:04</div>
+            <div class="timeline-body"><p>Thanks, I actually thought we added handling for this case at some point. Will revisit!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2023-06-04 15:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks, I actually thought we added handling for this case at some point. Will revisit!</p>
+</blockquote>
+<p>I know, I have reported something similar before:
+https://github.com/charliermarsh/ruff/issues/2853</p>
+<p>Not sure what caused this one to resurface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-05 02:38</div>
+            <div class="timeline-body"><p>(I believe this regressed when we started generating fixes on every pass, regardless of whether they're applied.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-05 02:44</div>
+            <div class="timeline-body"><p>@MichaReiser - Any opinion on the right behavior here? The issue is that if we hit a syntax error, we fail to identify the W505 violation in the example above, and so the <code>noqa</code> is considered unused and removed.</p>
+<p>We could...</p>
+<ol>
+<li>Avoid autofixing at all if we hit a syntax error.</li>
+<li>Avoid autofixing RUF100 violations (unused suppression comments)  if we hit a syntax error.</li>
+<li>Avoid <em>raising</em> RUF100 violations if we hit a syntax error.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-06-05 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">noqa</span> added by @charliermarsh on 2023-06-05 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-05 06:10</div>
+            <div class="timeline-body"><p>@charliermarsh My preference is 3. The way I think about this is that rules should only run if their input is correct. What the input is, differs from rule to rule:</p>
+<ul>
+<li>Physical lines: always valid</li>
+<li>logical lines: valid tokens</li>
+<li>AST rules: parsable source tree</li>
+<li>RUF100: All configured rules ran</li>
+</ul>
+<p>That's why I think RUF100 should not run if any of the other phases returned an <code>Err</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2023-06-05 06:12</div>
+            <div class="timeline-body"><p>For what it's worth, I also believe 3 is the way to go. I don't like all the linting violations popping up in seemingly unrelated places while I'm writing some code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-06-05 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-05 16:38</div>
+            <div class="timeline-body"><p>Sounds good, will fix today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4869.html">astral-sh/ruff#4869</a> on 2023-06-05 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-05 17:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

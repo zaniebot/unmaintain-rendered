@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic version in workspace package causes failure to parse uv.lock when using --frozen - astral-sh/uv #15459</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Dynamic version in workspace package causes failure to parse uv.lock when using --frozen</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/15459">#15459</a>
+        opened by <a href="https://github.com/quartox">@quartox</a>
+        on 2025-08-22 17:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/quartox">@quartox</a> on 2025-08-22 17:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I am using a multi-stage dockerfile. In one stage I want to do <code>uv sync --frozen --no-dev --no-install-workspace</code> to install all non-dev dependencies and then cache that docker layer. When I try to run this with my default uv.lock I get the following error for one of my workspace packages with dynamic versioning:</p>
+<pre><code>0.137 Failed to parse lockfile; ignoring locked requirements: TOML parse error at line 1230, column 1                                                                                             
+0.137      |
+0.137 1230 | [[package]]
+0.137      | ^^^^^^^^^^^
+0.137 missing field `version`
+0.137 error: Unable to find lockfile at `uv.lock`. To create a lockfile, run `uv lock` or `uv sync`.
+</code></pre>
+<p>In the uv.lockfile it starts with</p>
+<pre><code>name = &quot;name-of-package&quot;
+source = { editable = &quot;name-of-directory&quot; }
+</code></pre>
+<p>My build system determines the version dynamically similar to <a href="https://github.com/astral-sh/uv/issues/14037">this issue</a>. If I run <code>uv sync</code> without the <code>--frozen</code> in the docker image build then it adds the version determined by the build system to the uv.lock file.</p>
+<p>This requires putting the entire source directory into that layer of the dockerfile. This is sub-optimal because I do not want to re-build this layer every time I change my source file.</p>
+<h3>Platform</h3>
+<p>macOS 15.6.1 arm</p>
+<h3>Version</h3>
+<p>uv 0.8.13</p>
+<h3>Python version</h3>
+<p>python 3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @quartox on 2025-08-22 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-31 14:46</div>
+            <div class="timeline-body"><p>Are you certain that you're using uv 0.8.13 in both contexts? That looks like the error you'd get if you were using an old version of uv. Version is an optional field in newer versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quartox">@quartox</a> on 2025-08-31 16:18</div>
+            <div class="timeline-body"><p>Afaik I didn't change the docker file (it copies the uv binary from the astral 0.8.13 image) but I cannot reproduce today. Must have been wrong version within docker. Closing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @quartox on 2025-08-31 16:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP031 not violated for variables, only literal values - astral-sh/ruff #10187</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP031 not violated for variables, only literal values</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10187">#10187</a>
+        opened by <a href="https://github.com/lev-blit">@lev-blit</a>
+        on 2024-03-01 19:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lev-blit">@lev-blit</a> on 2024-03-01 19:32</div>
+            <div class="timeline-body"><p>UP031 (<code>printf-string-formatting</code>, suggests using <code>str.format</code> instead of percent formatting) doesn't trigger when using a variable and not a literal value.</p>
+<p>Even using the example from the docs -</p>
+<pre><code class="language-python">value = 1
+print(&quot;%s&quot; % value)  # seems to be OK
+
+print(&quot;%s&quot; % 1)  # violating UP031
+</code></pre>
+<p>I've tried this out in the rust playground as well (<a href="https://play.ruff.rs/5477131a-fc56-44d7-bbfb-da4b9607428b">here's an example</a>) with version 0.3.0, selecting all <code>UP</code> rules</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 19:58</div>
+            <div class="timeline-body"><p>I believe the docs are wrong the rule is correct. It's not safe to inject an arbitrary variable unless we can definitively infer its type. Here's an example to illustrate why:</p>
+<pre><code class="language-python">&gt;&gt;&gt; value = 1
+&gt;&gt;&gt; print(&quot;%s&quot; % value)
+1
+&gt;&gt;&gt; value = (1,)
+&gt;&gt;&gt; print(&quot;%s&quot; % value)
+1
+&gt;&gt;&gt; value = 1
+&gt;&gt;&gt; print(f&quot;{value}&quot;)
+1
+&gt;&gt;&gt; value = (1,)
+&gt;&gt;&gt; print(f&quot;{value}&quot;)
+(1,)
+</code></pre>
+<p>We could improve the logic a bit to allow replacements in cases in which we <em>can</em> definitively infer the type (like above), but in general we won't always be able to do this conversion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-03-02 01:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2024-03-11 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-11 17:33</div>
+            <div class="timeline-body"><p>The documentation part seems like a good first issue. Inference of the type seems a bit harder to implement but definitely doable if someone is interested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/omar-abdelgawad">@omar-abdelgawad</a> on 2024-04-13 00:38</div>
+            <div class="timeline-body"><p>Hi, I am interested in taking the documentation part of this issue. I am also new here :smile:.</p>
+<p>However, I need some clarifications regarding what needs to be updated. From what I have understood, The rule implementation is correct and it is successful in detecting both safe (when we know its definitely not a tuple) and unsafe (when there is a chance it might be a tuple) fixes. The only part missing from the rule is further type detection to find all cases where the variable is NOT a tuple. The thing is, when I read the <a href="https://docs.astral.sh/ruff/rules/printf-string-formatting/">docs</a> now I understand the exact same thing with no mistakes found.</p>
+<p>Did some PR fix this already and forget to mention this issue or am I just confused?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-18 00:07</div>
+            <div class="timeline-body"><p>Hey @omar-abdelgawad — you're right this example from the docs is already a part of the &quot;Known problems&quot; section. I don't think there's a documentation change to be made here until we improve inference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-18 00:07</div>
+            <div class="timeline-body"><p>Welcome to the project :) sorry about the confusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11019.html">astral-sh/ruff#11019</a> on 2024-04-19 00:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @plredmond by @plredmond on 2024-04-22 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @plredmond on 2024-04-22 15:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>

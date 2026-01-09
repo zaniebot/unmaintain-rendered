@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`just run-tests` fails because of small terminal width - clap-rs/clap #2257</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`just run-tests` fails because of small terminal width</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/2257">#2257</a>
+        opened by <a href="https://github.com/nitsky">@nitsky</a>
+        on 2020-12-15 16:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nitsky">@nitsky</a> on 2020-12-15 16:09</div>
+            <div class="timeline-body"><p>Running <code>just run-tests</code> fails because many tests have been written specifically for the case where the wrap_help feature is disabled.</p>
+<h3>Make sure you completed the following tasks</h3>
+<ul>
+<li>[x] Searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] Searched the closed issues</li>
+</ul>
+<h3>Steps to reproduce the issue</h3>
+<ol>
+<li>Clone the clap repo.</li>
+<li>Run <code>just run-tests</code> and observe test failures.</li>
+</ol>
+<h3>Version</h3>
+<ul>
+<li><strong>Rust</strong>: rustc 1.48.0 (7eac88abb 2020-11-16)</li>
+<li><strong>Clap</strong>: master 4bd15c45d2a77f26235ef4207df6bb250b456442</li>
+</ul>
+<h3>Actual Behavior Summary</h3>
+<p>Tests fail.</p>
+<h3>Expected Behavior Summary</h3>
+<p>Tests pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @nitsky on 2020-12-15 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-12-15 16:14</div>
+            <div class="timeline-body"><p>Could you paste some output when you say many tests are incompatible with wrap_help?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nitsky">@nitsky</a> on 2020-12-15 16:18</div>
+            <div class="timeline-body"><p>@pksunkara Starting from the current master, I ran <code>just run-tests</code> and got this error:</p>
+<pre><code>---- app_from_crate stdout ----
+thread 'app_from_crate' panicked at 'assertion failed: `(left == right)`
+  left: `&quot;clap 3.0.0-beta.2\nKevin K. &lt;kbknapp@gmail.com&gt;:Clap Maintainers\nA simple to use, efficient, and full-featured Command\nLine Argument Parser\n\nUSAGE:\n    clap\n\nFLAGS:\n    -h, --help       Prints help information\n    -V, --version    Prints version information\n&quot;`,
+ right: `&quot;clap 3.0.0-beta.2\nKevin K. &lt;kbknapp@gmail.com&gt;:Clap Maintainers\nA simple to use, efficient, and full-featured Command Line Argument Parser\n\nUSAGE:\n    clap\n\nFLAGS:\n    -h, --help       Prints help information\n    -V, --version    Prints version information\n&quot;`', tests/app_from_crate.rs:22:5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>You can see that on the left, there is a newline between &quot;Command&quot; and &quot;Line&quot; but it is absent on the right. This is because the wrap_help feature is enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-01-20 16:44</div>
+            <div class="timeline-body"><p>I reproduced this by shrinking terminal width :-P.</p>
+<p>The problem is not about justfile, it's about the terminal size. The <code>wrap_help</code> feature detects current terminal size and auto wrap help info. With small terminal size, some help output will wraps. Setting each failing tests with term_width(0) will fix this problem. But I don't thinking the problem is worth fixing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nitsky">@nitsky</a> on 2021-01-20 17:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't thinking the problem is worth fixing.</p>
+</blockquote>
+<p>I disagree. As a new contributor to the project, I was distressed that tests were failing after following contributing instructions due to the width of my terminal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-01-20 17:34</div>
+            <div class="timeline-body"><p>@nitsky Sorry about the distress. Changing all of our current(and future) tests is ugly. What about hinting the user about this problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2304.html">clap-rs/clap#2304</a> on 2021-01-20 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nitsky">@nitsky</a> on 2021-01-20 17:38</div>
+            <div class="timeline-body"><p>I think it makes more sense to mock the terminal width for the tests. In most codebases I have encountered when tests have a dependence on the environment the value is mocked to avoid flakey test failure. This will also be an opportunity to improve the coverage of the tests by testing wrapping at different terminal widths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-01-20 18:24</div>
+            <div class="timeline-body"><p>These tests are integration tests rather than unit tests, I don't think mocking is easy. What do you think @pksunkara .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`just run-tests` fails because many tests are incompatible with wrap_help feature" to "`just run-tests` fails because of small terminal width" by @ldm0 on 2021-05-08 05:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/171.html">epage/clapng#171</a> on 2021-12-06 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2021-12-13 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @epage by @epage on 2021-12-13 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> added by @epage on 2021-12-13 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-08 23:49</div>
+            <div class="timeline-body"><p>I saw these failures locally without just but after some test changes earlier, I do not see them any more.  I'm assuming this is resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-02-08 23:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run without --script forks thousands of processes, then fails, on file without .py extension - astral-sh/uv #11220</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run without --script forks thousands of processes, then fails, on file without .py extension</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11220">#11220</a>
+        opened by <a href="https://github.com/ssanderson">@ssanderson</a>
+        on 2025-02-04 17:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ssanderson">@ssanderson</a> on 2025-02-04 17:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>One of the most useful features of <code>uv</code>, for me, is the ability to define small <a href="https://docs.astral.sh/uv/guides/scripts/">utility scripts</a> packaged alongside their dependencies. This allows me to easily use Python for many of the things I would have previously used bash for. This becomes particularly nice when <a href="https://akrabat.com/using-uv-as-your-shebang-line/">using uv as your shebang line</a>.</p>
+<p>I recently did this on a small helper script which did not have a <code>.py</code> extension and I forgot to include <code>--script</code>. The following reproduces the scenario:</p>
+<pre><code class="language-bash">cat &lt;&lt;EOF &gt; ./repro
+#!/usr/bin/env -S uv run
+
+# /// script
+# dependencies = []
+# ///
+
+print(&quot;Hello world&quot;)
+EOF
+
+./repro
+</code></pre>
+<p>Running this input causes uv to hang for a while, consuming a large amount of memory (around 8GB), before eventually failing:</p>
+<pre><code>$ ./repro.sh
+error: Failed to spawn: `./repro`
+  Caused by: Argument list too long (os error 7)
+</code></pre>
+<p>Looking at the processes on my machine during the hang, it appears that uv is spawning hundreds to thousands of subprocesses:</p>
+<pre><code>$ ps -eaf | grep uv
+ssander+  473650  473648  0 11:55 pts/1    00:00:00 uv run ./repro
+ssander+  473652  473650  0 11:55 pts/1    00:00:00 uv run ./repro
+ssander+  473654  473652  0 11:55 pts/1    00:00:00 uv run ./repro
+ssander+  473656  473654  0 11:55 pts/1    00:00:00 uv run ./repro
+ssander+  473658  473656  0 11:55 pts/1    00:00:00 uv run ./repro
+ssander+  473660  473658  0 11:55 pts/1    00:00:00 uv run ./repro
+ssander+  473662  473660  0 11:55 pts/1    00:00:00 uv run ./repro
+ssander+  473664  473662  0 11:55 pts/1    00:00:00 uv run ./repro
+ssander+  473666  473664  0 11:55 pts/1    00:00:00 uv run ./repro
+ssander+  473668  473666  0 11:55 pts/1    00:00:00 uv run ./repro
+ssander+  473670  473668  0 11:55 pts/1    00:00:00 uv run ./repro
+ssander+  473672  473670  0 11:55 pts/1    00:00:00 uv run ./repro
+// ... many more lines omitted
+</code></pre>
+<p>I assume there's some kind of recursion happening here which is effectively causing uv to forkbomb my machine.</p>
+<p>The issue described here goes away if I add  <code>--script</code> to the shebang line of my script, or if I rename the file to <code>repro.py</code>.</p>
+<hr />
+<p>I don't necessarily expect uv to support the way I've invoked it here. It seems reasonable to me that <code>uv run</code> requires the <code>--script</code> flag when running a file without a <code>.py</code> extension, but it would be nice if it handled this class of user error a bit more gracefully.</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04, Linux 6.8.0-52-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.5.27</p>
+<h3>Python version</h3>
+<p>Python 3.12.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ssanderson on 2025-02-04 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-04 17:05</div>
+            <div class="timeline-body"><p>Thanks! I believe this is a duplicate of https://github.com/astral-sh/uv/issues/6360.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssanderson">@ssanderson</a> on 2025-02-04 17:09</div>
+            <div class="timeline-body"><p>@charliermarsh yeah, this is the same failure mode. I guess the additional question or feature request here is &quot;is there a way to make uv handle this class of pebkac more gracefully?&quot; As noted above, I think it's reasonable for <code>uv</code> to require <code>--script</code> in this context, but it also seems like an easy mistake for a user to leave that off, and getting fork-bombed seems like an unfortunate consequence. I realize this might be challenging to solve given the way <code>uv run</code> works though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssanderson">@ssanderson</a> on 2025-02-04 17:22</div>
+            <div class="timeline-body"><p>I think the two ways I could imagine trying to &quot;solve&quot; this would be:</p>
+<ol>
+<li>Adding some form of dynamic recursion detection to <code>uv run</code> to detect if uv is running as a deeply-nested child of itself.</li>
+<li>Trying to read the target file to see if it's a text file with a shebang line starting with: <code>/usr/bin/env -S uv run</code> without <code>-s</code> or <code>--script</code>.</li>
+</ol>
+<p>Both of these feel a bit kludgy to me, but I think both could probably be made to work well enough to catch most reasonable ways that a user might make these mistakes. I'd be happy to take a look at implementing one or the other of these as options if there's interest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-04 17:28</div>
+            <div class="timeline-body"><p>Yeah I think it makes sense to try and do a bit better here... There have been a few other requests too that would benefit from somehow having access to the command we're running.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssanderson">@ssanderson</a> on 2025-02-04 21:17</div>
+            <div class="timeline-body"><p>@charliermarsh would you be interested in seeing a PR toward either of the potential fixes outlined above? Without having dug too much into the details, I think one concrete proposal toward <strong>(1)</strong> might be something like:</p>
+<p>Whenever <code>uv run</code> spawns a child process, check if the current process has an environment variable named something like <code>UV_RUN_RECURSION_DEPTH</code> set. If not set, spawn the subprocess with <code>UV_RUN_RECURSION_DEPTH=1</code>. If set, attempt to parse the current depth as an int, error if greater than some threshold (e.g.,10), and otherwise spawn a subprocess with the recursion depth counter incremented.</p>
+<p>I think this would be a fairly robust and low-overhead way to catch the recursion issue here without needing to know more semantic information about the file being executed. But there are certainly other reasonable options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-04 21:23</div>
+            <div class="timeline-body"><p>Yeah it's similar to https://github.com/astral-sh/uv/issues/8775. The other request I received recently was a way to tell what the current <code>uv run</code> command was within the executed process. I'd like to solve that problem too...</p>
+<p>@zanieb -- thoughts on <code>UV_RUN_RECURSION_DEPTH</code> and <code>UV_RUN_COMMAND</code> being propagated to the child process?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-04 21:30</div>
+            <div class="timeline-body"><p>I'm fine with that. Random thoughts...</p>
+<ul>
+<li>Is there any security risk to propagating <code>UV_RUN_COMMAND</code> to children? Could you accidentally leak something?</li>
+<li>We probably want to set <code>UV=&lt;self-path&gt;</code> whenever we spawn a child</li>
+<li>Do we want to namespace the recursion tracking variable so it doesn't look user-facing? Like <code>UV__RUN_DEPTH</code>?</li>
+<li>Is the recursion limit configurable?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-04 21:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there any security risk to propagating UV_RUN_COMMAND to children? Could you accidentally leak something?</p>
+</blockquote>
+<p>Possibly... You already have access to <code>sys.argv</code> (i.e., any arguments to the script itself), and I believe we propagate all the environment variables. So the only risk would be in command-line arguments, e.g., you could have credentials in an index URL?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-04 21:52</div>
+            <div class="timeline-body"><p>For <code>UV_RUN_COMMAND</code> in particular, I'd like to get a sense for the use-case. I think <code>UV=&lt;path&gt;</code> is simple enough to add without controversy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-04 22:32</div>
+            <div class="timeline-body"><p><code>UV__RUN_DEPTH</code> seems relatively uncontroversial, though determining the correct limit is... unclear. It'd be nice if we could show this as a hint on failure, but the depth could be enormous.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-04 22:54</div>
+            <div class="timeline-body"><p>I think a default <code>UV_RUN_RECURSION_LIMIT</code> of like.. 100 seems reasonable? 1000?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11386.html">astral-sh/uv#11386</a> on 2025-02-10 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssanderson">@ssanderson</a> on 2025-02-10 15:10</div>
+            <div class="timeline-body"><p>@zanieb @charliermarsh: PR with an initial crack at the infinite recursion detection here: https://github.com/astral-sh/uv/pull/11386</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-12 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-12 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11553.html">astral-sh/uv#11553</a> on 2025-02-19 13:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

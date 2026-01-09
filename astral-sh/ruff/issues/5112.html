@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`UP035` false positive on `typing_extensions.dataclass_transform` on python 3.11 - astral-sh/ruff #5112</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`UP035` false positive on `typing_extensions.dataclass_transform` on python 3.11</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/5112">#5112</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2023-06-15 04:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-06-15 04:11</div>
+            <div class="timeline-body"><pre><code class="language-py">from typing_extensions import dataclass_transform
+# UP035 Import from `typing` instead: `dataclass_transform`
+</code></pre>
+<p><code>typing_extensions.dataclass_transform</code> has the <code>frozen_default</code> parameter which won't be in <code>typing</code> until python 3.12.</p>
+<p>from <code>typing_extensions</code>:</p>
+<pre><code class="language-py">if sys.version_info &gt;= (3, 12):
+    # dataclass_transform exists in 3.11 but lacks the frozen_default parameter
+    dataclass_transform = typing.dataclass_transform
+else:
+    def dataclass_transform(
+        *,
+        eq_default: bool = True,
+        order_default: bool = False,
+        kw_only_default: bool = False,
+        frozen_default: bool = False,
+        field_specifiers: typing.Tuple[
+            typing.Union[typing.Type[typing.Any], typing.Callable[..., typing.Any]],
+            ...
+        ] = (),
+        **kwargs: typing.Any,
+    ) -&gt; typing.Callable[[T], T]:
+        ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-15 04:14</div>
+            <div class="timeline-body"><p>Ah interesting, okay, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-06-15 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2023-06-15 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2023-06-15 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2023-06-16 12:18</div>
+            <div class="timeline-body"><p>Looks like ruff will also do this if you run <code>ruff --fix --select=&quot;UP035&quot;</code>:</p>
+<pre><code class="language-diff">- from typing_extensions import SupportsIndex
++ from typing import SupportsIndex
+
+  isinstance(42, SupportsIndex)
+</code></pre>
+<p>But the <code>isinstance()</code> check there is 20x faster if you use the <code>typing_extensions</code> version, as <code>typing_extensions</code> backports a ton of optimisations that have been added to <code>typing.Protocol</code> in Python 3.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5291.html">astral-sh/ruff#5291</a> on 2023-06-22 08:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-22 14:59</div>
+            <div class="timeline-body"><p>@AlexWaygood - Would you suggest not rewriting <code>Protocol</code> imports either for the same reason?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2023-06-22 15:02</div>
+            <div class="timeline-body"><blockquote>
+<p>@AlexWaygood - Would you suggest not rewriting <code>Protocol</code> imports either for the same reason?</p>
+</blockquote>
+<p>Yes -- and FWIW, pyupgrade recently made that change in https://github.com/asottile/pyupgrade/commit/5059713466c113e8aa09ab5c93b2c82f357ab206, which is included in pyupgrade v3.7 (following my PR https://github.com/asottile/reorder-python-imports/pull/341 to the reorder-python-imports project, which pyupgrade uses).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-22 15:03</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2023-06-22 15:08</div>
+            <div class="timeline-body"><blockquote>
+<p>following my PR <a href="https://github.com/asottile/reorder-python-imports/pull/341">asottile/reorder-python-imports#341</a> to the reorder-python-imports project, which pyupgrade uses</p>
+</blockquote>
+<p>...which, looking at it again, it seems I forgot to include <code>SupportsIndex</code> in that PR, so I guess pyupgrade will continue to auto-replace <code>from typing_extensions import SupportsIndex</code> with <code>from typing import SupportsIndex</code> 🙃</p>
+<p>Ruff can show its value-add here by not making that mistake :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-22 15:11</div>
+            <div class="timeline-body"><p>Hahah oh no :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-22 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5380.html">astral-sh/ruff#5380</a> on 2023-06-27 01:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

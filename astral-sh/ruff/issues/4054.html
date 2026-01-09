@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Please consider requiring opt-in for some of the new subprocess rules - astral-sh/ruff #4054</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Please consider requiring opt-in for some of the new subprocess rules</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4054">#4054</a>
+        opened by <a href="https://github.com/ofek">@ofek</a>
+        on 2023-04-21 02:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ofek">@ofek</a> on 2023-04-21 02:56</div>
+            <div class="timeline-body"><p>The ones I think should be disabled by default:</p>
+<ul>
+<li>https://bandit.readthedocs.io/en/latest/plugins/b603_subprocess_without_shell_equals_true.html</li>
+<li>https://bandit.readthedocs.io/en/latest/plugins/b604_any_other_function_with_shell_equals_true.html</li>
+<li>https://bandit.readthedocs.io/en/latest/plugins/b606_start_process_with_no_shell.html</li>
+<li>https://bandit.readthedocs.io/en/latest/plugins/b607_start_process_with_partial_path.html</li>
+</ul>
+<p>For example, the documented textbook case for S603 is <code>subprocess.check_output(['/bin/ls', '-l'])</code>. That is literally perfect usage of subprocess, it cannot be made better other than simply outright banning the use of subprocess.</p>
+<p>Pretty much all our repositories fail now with many examples but I'll just give one:</p>
+<pre><code>src/ddqa/utils/git.py:61:17: S603 `subprocess` call: check for execution of untrusted input
+src/ddqa/utils/git.py:61:17: S607 Starting a process with a partial executable path
+</code></pre>
+<pre><code class="language-python">    def capture(self, *args) -&gt; str:
+        import subprocess
+
+        try:
+            process = subprocess.run(
+                ['git', *args],
+                cwd=str(self.path),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                encoding='utf-8',
+                check=True,
+            )
+        except subprocess.CalledProcessError as e:
+            message = f'{str(e)[:-1]}:\n{e.output}'
+            raise OSError(message) from None
+
+        return process.stdout
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-22 14:00</div>
+            <div class="timeline-body"><p>A similar <code>subprocess</code> problem appears in #4045 - opt-out's not a bad idea, IMO, but I'll wait for someone else to confirm that it's appropriate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-04-25 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4089.html">astral-sh/ruff#4089</a> on 2023-04-25 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-05-08 16:17</div>
+            <div class="timeline-body"><p>Has there been any update on this? We're still capping the version to avoid these rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-08 18:16</div>
+            <div class="timeline-body"><p>Sorry @ofek, I'll make a decision on this today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-05-08 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-09 03:35</div>
+            <div class="timeline-body"><p>A couple observations, to put some of my internal dialogue down on &quot;paper&quot;:</p>
+<ol>
+<li>While these rules do arguably &quot;ban&quot; <code>subprocess</code> calls, I think the <em>intention</em> is that they force you to explicitly allow any uses of <code>subprocess</code> via a deliberate <code>noqa</code> or <code>nosec</code> comment.</li>
+<li>There are likely projects in which that level of care is useful (or even required), and projects in which it's not.</li>
+<li>Bandit has a parallel &quot;severity&quot; system, and these are generally low-severity rules. We don't support severities. (I don't know that adding severity support necessarily solves this problem.)</li>
+<li>We don't have a good mechanism for making these rules &quot;opt-in&quot;, and I think it would be confusing if they weren't enabled via <code>--select S</code>, since there's no precedent for that. \cc @MichaReiser</li>
+<li>Flake8 does have a system for this, in that it doesn't enable any <code>9XX</code> rules by default. So, e.g., flake8-bugbear's B905 rule isn't enabled with <code>--select B</code> -- you have to explicitly <code>--select B905</code>. So one solution would be to respect <code>9XX</code> rules, and re-code these to the 900-level.</li>
+<li>Removing these rules entirely is another option. It does mean that some projects that would <em>like</em> to have them enforced won't be able to enforce them, and it's also not zero-cost, since some users have now upgraded and (e.g.) added <code>noqa</code> pragmas to ignore specific usages. Those pargmas will be automatically removed via <code>RUF100</code>, but just acknowledging that removing these rules (or disabling them even when <code>S</code> is selected) would cause some churn.</li>
+</ol>
+<p>Given these observations, I feel a bit torn. I'd probably rather remove these rules than make them opt-in via a special mechanism. Can I ask why you don't <code>ignore</code> these rules, if they're too strict for your project(s)?</p>
+<p>P.S. Separately, is <code>B604</code> in the same league as the others? That one seems the most reasonable to me (and is MEDIUM severity, AFAICT).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-05-09 12:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Can I ask why you don't <code>ignore</code> these rules, if they're too strict for your project(s)?</p>
+</blockquote>
+<p>I can do that but I opened this issue because I don't think it was known that such calls are effectively banned by default now. If you're now aware and okay with that then feel free to close this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-19 02:07</div>
+            <div class="timeline-body"><p>One solution I am considering here (which goes beyond this specific case) is adding a &quot;pedantic&quot; or &quot;opinionated&quot; rule concept, for rules that <em>require</em> explicit opt-in via <code>select</code>. So, you'd be required to select <code>S603</code>, and the rule wouldn't turn on via <code>select = [&quot;S&quot;]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-05-19 13:03</div>
+            <div class="timeline-body"><p>@charliermarsh  would that be a new RuleGroup variant?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-19 14:03</div>
+            <div class="timeline-body"><p>@evanrittenhouse - Yes. The main downside though is it will be confusing and surprising to users that (e.g.) <code>S603</code> isn't enabled when <code>select = [&quot;S&quot;]</code>. This is fine for nursery, since it's intentionally experimental. But I'm not sure how to resolve that in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-19 14:23</div>
+            <div class="timeline-body"><p>What's the main motivation for keeping the same name? Is it so that users can copy-paste their configuration without any changes? Or is it mainly for discoverability (which could be solved by maintaining a mapping table between rules), or are there other reasons?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-19 14:27</div>
+            <div class="timeline-body"><p>Do you mean, why keep these rules under Bandit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-19 14:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you mean, why keep these rules under Bandit?</p>
+</blockquote>
+<p>Yes, why keep the S603 name</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-19 14:39</div>
+            <div class="timeline-body"><p>It may not be the correct decision, but the arguments in favor would be:</p>
+<ol>
+<li>Discoverability: it's listed with the other Bandit rules, and shares a prefix that people associate with &quot;security&quot;.</li>
+<li>Portability: people can use their existing Flake8 configuration without having to understand that the code has changed. <code># noqa: S603</code> also continues to work without issue.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-07-10 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ansible/ansible-creator/pulls/250.html">ansible/ansible-creator#250</a> on 2024-08-02 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrudenell">@sbrudenell</a> on 2025-01-08 21:34</div>
+            <div class="timeline-body"><blockquote>
+<ol>
+<li>While these rules do arguably &quot;ban&quot; <code>subprocess</code> calls, I think the <em>intention</em> is that they force you to explicitly allow any uses of <code>subprocess</code> via a deliberate <code>noqa</code> or <code>nosec</code> comment.</li>
+</ol>
+</blockquote>
+<p>Can you explain the intended workflow of this?</p>
+<p>I thought the usefulness of <code>noqa</code> was for rules that are <em>usually</em> actionable but can't recognize edge cases. (for example, <code>FBT001</code> helps me avoid <em>new</em> problematic type signatures, but I <code>noqa</code> it when I need to match existing signatures)</p>
+<p>I'm not seeing how <code>S603</code> is actionable. I don't see meaning to writing <code>noqa</code> every time I write <code>subprocess</code>. That's automatic, not &quot;deliberate&quot;. It's also not ideal to further clutter to my <code>--ignore</code> config. (I already don't know why it's all there or when I should review it).</p>
+<p>Can you explain the use case? Are there teams who have a process to (regularly?) review all <code>noqa</code>s in their code or something? I've never been part of a review process that could make use of an alert like this, but maybe I've never been on a big enough team.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16541.html">astral-sh/ruff#16541</a> on 2025-03-06 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nationalarchives/ds-caselaw-public-ui/pulls/2230.html">nationalarchives/ds-caselaw-public-ui#2230</a> on 2025-07-17 12:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:08 UTC
+    </footer>
+</body>
+</html>

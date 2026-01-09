@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace per project lockfile and virtual environment - astral-sh/uv #9150</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Workspace per project lockfile and virtual environment</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/9150">#9150</a>
+        opened by <a href="https://github.com/dudicoco">@dudicoco</a>
+        on 2024-11-15 14:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dudicoco">@dudicoco</a> on 2024-11-15 14:36</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>Currently, in workspace mode uv will install a virtual environment and will create a global lock file in the project root.</p>
+<p>Please allow to have a separate .venv and uv.lock per project.</p>
+<p>The use case for this is that in a monorepo you might want to have strict separate dependencies per project but have the ability to efficiently resolve and install the dependencies in one command.</p>
+<p>This is how pnpm workspace install works with the 	<a href="https://pnpm.io/next/npmrc#shared-workspace-lockfile">shared-workspace-lockfile</a> option set to false.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-11-18 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/md384">@md384</a> on 2025-02-05 14:35</div>
+            <div class="timeline-body"><p>+1 on this, we have a monorepo with many services (and libraries and tools) where each need an individual lock file. Currently we have custom scripts around poetry and are considering switching to uv but without multiple lockfile support we'd still be stuck with wrapper scripts. uv supporting this natively would make switching a no-brainer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/truonghm">@truonghm</a> on 2025-07-04 09:37</div>
+            <div class="timeline-body"><p>Not sure if anyone else have this usecase but per-member lockfiles would also make deploying with Docker easier for me.
+Currently I have to use a pre-commit hook to generate and check per-member <code>requirements.txt</code> files and use them to build each service.</p>
+<p>Alternatively I can set the build context for each container to the root directory which contains <code>uv.lock</code>, but for my case, that would lead to some other complications. Ultimately I decided to set the build context to each member directory and as such also need a lockfile for each directory.</p>
+<p>So yes I support an option to have per-workspace-member lockfile, while also keeping a global lockfile that synchronizes with all the members.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/US579">@US579</a> on 2025-08-29 11:19</div>
+            <div class="timeline-body"><p>+1 are there any update on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15697.html">astral-sh/uv#15697</a> on 2025-09-05 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmejco">@jmejco</a> on 2025-09-15 16:37</div>
+            <div class="timeline-body"><p>I have also run into this requirement of needing a workspace member lockfile. My project is a CDK monorepo with a shared library, a fastapi, and a click project as members. The API and CLI depend on the shared library. The API is deployed as an ECS task, and the CLI is used for Batch jobs. The shared library is used as a lambda layer, so I either need to generate the uv.lock as part of the CDK asset bundling, or need to use wrapper scripts to be able to generate and commit the member lock.</p>
+<p>Any plans to support this natively?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TG-Techie">@TG-Techie</a> on 2025-11-20 05:33</div>
+            <div class="timeline-body"><p>I am also encountering an issue with this. We want to run each workspace member in their own docker instance with locked dependencies (of course ) but cannot generate the per-member lock files. What we're doing now is temporarily renaming the workspace pyproject.toml to something else then un-re-naming it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TG-Techie">@TG-Techie</a> on 2025-11-20 06:09</div>
+            <div class="timeline-body"><p>I whipped this(gist below) up to help, but I think there should be support for a non-hacky solution</p>
+<p>https://gist.github.com/TG-Techie/545ed4ef88186d5e928fcc33ff789fbc</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rafaelgildin">@rafaelgildin</a> on 2025-12-01 14:48</div>
+            <div class="timeline-body"><p>Hi guys, any updates on this pls?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kadosh1000">@kadosh1000</a> on 2025-12-02 22:45</div>
+            <div class="timeline-body"><p>Same issue here, we have a few services and a directory of packages, not all services are using all packages, but due to the lockfile, a change in any package fully invalidates the docker cache.</p>
+<p>Feels like a very reasonable scenario, and should be supported by simply running <code>uv lock</code> from the service directory.
+It will probably also expedite the resolution process of the workspace root, because it won't need to re-resolve service dependencies.</p>
+<p>@TG-Techie did you manage to make it work with a package using another workspace package?
+I am getting</p>
+<pre><code>  × Failed to build `api @ file:///Users/xxxxxx/Desktop/repo/services/api`
+  ├─▶ Failed to parse entry: `auth`
+  ╰─▶ `auth` references a workspace in `tool.uv.sources` (e.g., `auth = { workspace = true }`), but is not a workspace member
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

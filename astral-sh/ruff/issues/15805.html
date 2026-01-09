@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff adds import aliases on unused import with F401 rule and the preview option - astral-sh/ruff #15805</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff adds import aliases on unused import with F401 rule and the preview option</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15805">#15805</a>
+        opened by <a href="https://github.com/skshetry">@skshetry</a>
+        on 2025-01-29 07:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/skshetry">@skshetry</a> on 2025-01-29 07:23</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>This requires creating a minimal python module, and add an unused import, which could be reproduced with the following script:</p>
+<pre><code class="language-bash">mkdir -p mylib
+echo &quot;from mylib.mod import klass&quot; &gt; mylib/__init__.py
+</code></pre>
+<pre><code class="language-console">$ ruff --version
+ruff 0.9.3
+$ cat mylib/__init__.py
+from mylib.mod import klass⏎
+$ ruff check mylib --select F401 --preview --fix --isolated
+Found 1 error (1 fixed, 0 remaining).
+$ cat mylib/__init__.py
+from mylib.mod import klass as klass⏎
+</code></pre>
+<p>^ Ruff added a <code>klass as klass</code> import alias.</p>
+<p>Without <code>--preview</code>, I get following error,</p>
+<pre><code class="language-console">$ ruff check mylib --select F401  --fix --isolated
+mylib/__init__.py:1:23: F401 `mylib.mod.klass` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
+  |
+1 | from mylib.mod import klass
+  |                       ^^^^^ F401
+  |
+  = help: Use an explicit re-export: `klass as klass`
+
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-29 10:40</div>
+            <div class="timeline-body"><p>This is the expected behavior- see the <a href="https://docs.astral.sh/ruff/rules/unused-import/">documentation</a>.</p>
+<p>Is the fix unwelcome? That would be good feedback and help when the decision is made on whether to stabilize this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dylwil3 on 2025-01-29 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2025-01-29 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2025-01-29 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/skshetry">@skshetry</a> on 2025-01-29 10:57</div>
+            <div class="timeline-body"><p>Thank you for the link @dylwil3. I should have read the documentation before creating the issue.
+Apologies.</p>
+<p>I encountered this issue when I was refactoring and removing some code in <code>__init__.py</code> file (it's inside a nested module), that left the imports unused. I expected <code>ruff</code> to either complain or remove the unused import, but instead it created an alias, which I found surprising.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-30 17:28</div>
+            <div class="timeline-body"><p>Thank you for the feedback! Hopefully the explanation in the docs helps make the re-export seem less surprising, or at least justified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-01-30 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2025-02-20 12:15</div>
+            <div class="timeline-body"><p>It's unclear to me whether the behavior here is going to be configurable. From the docs:</p>
+<blockquote>
+<p>Applying fixes to <strong>init</strong>.py files is currently in preview. The fix offered depends on the type of the unused import. Ruff will suggest a safe fix to export first-party imports with either a redundant alias or, if already present in the file, an <strong>all</strong> entry. If multiple <strong>all</strong> declarations are present, Ruff will not offer a fix. Ruff will suggest an unsafe fix to remove third-party and standard library imports -- the fix is unsafe because the module's interface changes.</p>
+</blockquote>
+<p>Want to make sure it will be possible to remove all unused imports, all the time, regardless of whether it is a first or third-party import.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WilliamStam">@WilliamStam</a> on 2025-03-24 12:16</div>
+            <div class="timeline-body"><p>an option to choose if it must alias or use the <code>__all__ = []</code> thing would be great</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

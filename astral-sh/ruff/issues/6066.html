@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: Preserve leading empty lines of indented classes and functions - astral-sh/ruff #6066</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: Preserve leading empty lines of indented classes and functions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/6066">#6066</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-07-25 11:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2023-07-25 11:08</div>
+            <div class="timeline-body"><p>While the behavior for empty lines before top level classes and functions looks correct, indented classes and function can gain or lose their leading newlines</p>
+<p>black:</p>
+<pre><code class="language-python">def f():
+    ...
+    # comment
+
+    class Meta:
+        pass
+
+    if True:
+
+        def register_type():
+            pass
+</code></pre>
+<p>ours:</p>
+<pre><code class="language-python">def f():
+    ...
+
+    # comment
+
+    class Meta:
+        pass
+
+    if True:
+        def register_type():
+            pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-07-25 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6069.html">astral-sh/ruff#6069</a> on 2023-07-25 11:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-07-31 01:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-31 01:15</div>
+            <div class="timeline-body"><p>I'm working on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-31 02:03</div>
+            <div class="timeline-body"><p>I've noticed a few other incompatibilities after looking back at my old implementation:</p>
+<ol>
+<li>The first entry <em>does</em> need a separator if it's a class or function within a nested
+body that <em>isn't</em> a class or function. Also, Black allows one blank line between a
+class and its docstring (the same does <em>not</em> apply to functions).</li>
+<li>If a function or class has a leading comment, then a blank line, we don't want to
+add one before the comment. The enforcement around
+<code>is_last_function_or_class_definition || is_current_function_or_class_definition</code>
+should be relative to the function or class definition, not its leading comments.</li>
+<li>We're not inserting newlines after imports.</li>
+<li>Black requires one newline after a class docstring.</li>
+</ol>
+<p>(2) will cause problems with the current approach, I think. As an example, given:</p>
+<pre><code class="language-python">x = 1
+# comment
+
+def f():
+    pass
+</code></pre>
+<p>Black wants:</p>
+<pre><code class="language-python">x = 1
+# comment
+
+
+def f():
+    pass
+</code></pre>
+<p>Whereas we do:</p>
+<pre><code class="language-python">x = 1
+
+
+# comment
+
+def f():
+    pass
+</code></pre>
+<p>That means the code that handles newlines-after-comments needs to now be aware of the thing it's commenting, the level of nesting, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-31 02:04</div>
+            <div class="timeline-body"><p>Perhaps the &quot;easiest&quot; way to get this to work would be to make <code># comment</code> a trailing comment on the previous node, not a leading comment on the function, <em>if</em> there's at least one blank line between the comment and the function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-31 03:22</div>
+            <div class="timeline-body"><p>(I will own all of those deviations.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-31 07:58</div>
+            <div class="timeline-body"><blockquote>
+<p>(I will own all of those deviations.)</p>
+</blockquote>
+<p>Are you looking for input or are these comment's meant as documentation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-31 12:35</div>
+            <div class="timeline-body"><p>The deviations are just meant as documentation, not expecting any input! Unless you have a quick reaction to the idea I suggested in ‘Perhaps the &quot;easiest&quot; way to get this to work…’, but I haven’t spent time validating that yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-31 12:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Perhaps the &quot;easiest&quot; way to get this to work would be to make # comment a trailing comment on the previous node, not a leading comment on the function, if there's at least one blank line between the comment and the function?</p>
+</blockquote>
+<p>I think that could work well. Not sure if implementing custom placement is necessarily easy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Alpha" by @MichaReiser on 2023-07-31 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6203.html">astral-sh/ruff#6203</a> on 2023-07-31 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6206.html">astral-sh/ruff#6206</a> on 2023-07-31 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-01 15:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

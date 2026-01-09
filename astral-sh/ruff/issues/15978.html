@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Even Better TOML crashes on `ruff.toml` due to `allOf` usage - astral-sh/ruff #15978</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Even Better TOML crashes on `ruff.toml` due to `allOf` usage</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/15978">#15978</a>
+        opened by <a href="https://github.com/DavisVaughan">@DavisVaughan</a>
+        on 2025-02-05 19:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DavisVaughan">@DavisVaughan</a> on 2025-02-05 19:31</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>Not sure if you all know this yet, but Even Better TOML in VS Code crashes for me on any <code>ruff.toml</code>, it looks like this:</p>
+<p>https://github.com/user-attachments/assets/507bcd9e-562f-4c87-88af-7e1d8f603100</p>
+<p>I manually bisect-ed my way through your schema file and figured out it has to do with usage of <code>allOf</code> in these two spots:
+https://github.com/astral-sh/ruff/blob/c8165427048fe04de1a046544ff861f7ab79b121/ruff.schema.json#L882-L890</p>
+<p>It is nothing ruff is doing wrong, and in fact there is a PR on the taplo side that does fix this exact issue (I confirmed by installing the PR rebased on master and trying again). But it is quite old and we probably need to remind them about it. https://github.com/tamasfe/taplo/pull/644</p>
+<p>Feel free to close since there is probably nothing actionable on y'alls part, but I didn't see any issues about this and figured you might want to know.</p>
+<p>(Side note that taplo / even better toml is in an interesting spot, as it needs a new active maintainer, but is extremely useful for TOML autocompletion and I'd hate to see that extension die)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-06 11:21</div>
+            <div class="timeline-body"><p>Thanks for the report. We weren't aware that even better TOML crashes on the schema and I can confirm that it is due to the use of <code>allOf</code>. Removing the Schema visitor that moves all <code>$ref</code> into an <code>allOf</code> when generating the schema fixes the crash</p>
+<pre><code>    let gen = schemars::gen::SchemaGenerator::new(
+        schemars::gen::SchemaSettings::draft07().with(|config| config.visitors.clear()),
+    );
+</code></pre>
+<p>However, this now leads to an invalid schema because all other properties on an object are ignored if it has a <code>$ref</code> property. But we could consider using <code>oneOf</code> instead of <code>allOf</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-02-06 11:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2025-02-06 11:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-06 11:47</div>
+            <div class="timeline-body"><p>Hmm, or not. I'm confused. I can still reproduce that even better toml crashes whenever I add a new <code>[</code> (individual settings is fine) but even removing the <code>allOf</code> won't help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-06 11:56</div>
+            <div class="timeline-body"><p>Okay, I had to set the even better TOML cache timeouts to a low value or it just keeps the schemas cached</p>
+<pre><code class="language-json">    &quot;evenBetterToml.schema.cache.memoryExpiration&quot;: 5,
+    &quot;evenBetterToml.schema.cache.diskExpiration&quot;: 5
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15992.html">astral-sh/ruff#15992</a> on 2025-02-06 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-06 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-06 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tamasfe/taplo/pulls/644.html">tamasfe/taplo#644</a> on 2025-02-06 16:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

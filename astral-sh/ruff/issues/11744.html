@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Ruff: Fix all auto-fixable problems` erroring out in VSCode - astral-sh/ruff #11744</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Ruff: Fix all auto-fixable problems` erroring out in VSCode</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11744">#11744</a>
+        opened by <a href="https://github.com/MadhavVij">@MadhavVij</a>
+        on 2024-06-04 22:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MadhavVij">@MadhavVij</a> on 2024-06-04 22:07</div>
+            <div class="timeline-body"><h2>Error When Running <code>Ruff: Fix all auto-fixable problems</code> in VSCode</h2>
+<p>When running <code>Ruff: Fix all auto-fixable problems</code> in VSCode, I get an error:</p>
+<pre><code>Failed to apply Ruff fixes to the document. Please consider opening an issue with steps to reproduce.
+</code></pre>
+<p>Looking at the logs in Output/Ruff, the detailed error is:</p>
+<pre><code>2024-06-04 17:48:48.138 [info] ┐ruff_formatter::printer::Printer::print{}
+
+2024-06-04 17:48:48.138 [info] ┘
+
+2024-06-04 17:48:48.138 [info] [Trace - 5:48:48 PM] Received response 'textDocument/formatting - (30)' in 0ms.
+2024-06-04 17:49:51.866 [info] [Trace - 5:49:51 PM] Sending request 'workspace/executeCommand - (31)'.
+2024-06-04 17:49:51.866 [info]  166.145599s WARN ruff_server::session::index No settings available for vscode-userdata:/Users/&lt;user_name&gt;/Library/Application%20Support/Code/User/settings.json - falling back to default settings
+
+2024-06-04 17:49:51.867 [info]  166.146100s ERROR ruff_server::server::api An error occurred with result ID 31: Document snapshot not available for vscode-userdata:/Users/&lt;user_name&gt;/Library/Application%20Support/Code/User/settings.json
+</code></pre>
+<hr />
+<p>I was able to find the original string in the code here, in case it helps resolving it:</p>
+<p>https://github.com/astral-sh/ruff/blob/d056d09547c5fe7ff5e787ada19fc37a73d9b444/crates/ruff_server/src/server/api/requests/execute_command.rs#L61</p>
+<h3>Keywords Searched</h3>
+<ul>
+<li>VSCode</li>
+<li>Document</li>
+<li>Snapshot</li>
+</ul>
+<h3>Version Information</h3>
+<ul>
+<li><code>ruff --version</code>: <code>ruff 0.4.7</code></li>
+</ul>
+<p>Please let me know if you need any more information to help resolve this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-06-04 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @charliermarsh on 2024-06-04 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @snowsignal by @snowsignal on 2024-06-04 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-06-04 23:10</div>
+            <div class="timeline-body"><p>@MadhavVij Thank you for opening this issue!</p>
+<p>I think I was able to reproduce this issue by opening the user settings JSON file in VS Code and then attempting to run <code>Ruff: Fix all auto-fixable problems</code> while it was selected. Did you have the user settings JSON file open when running this command?</p>
+<p>If you are, then that's probably the issue. <code>Ruff: Fix all auto-fixable problems</code> only works on the actively open file in your editor, so if you view the file you want to fix and then run this command, it should work as expected.</p>
+<p>Ideally, this command should not be appearing for non-Python files. I'll work on adding a file-based filter to the extension commands so this doesn't happen in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-vscode/pulls/487.html">astral-sh/ruff-vscode#487</a> on 2024-06-04 23:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MadhavVij">@MadhavVij</a> on 2024-06-05 14:15</div>
+            <div class="timeline-body"><p>Hi @snowsignal ,</p>
+<p>Thank you for the prompt and detailed response!</p>
+<p>You are correct— I had the user settings JSON file open when I ran <code>Ruff: Fix all auto-fixable problems</code> command. I just tested it on a Python file, and it works as expected. I didn't realize this at the time of reporting the issue.</p>
+<p>I appreciate your quick identification of the problem and the steps to resolve it. The addition of a file-based filter to the extension commands will definitely help avoid confusion.</p>
+<p><em>&lt;&lt;Should I close this issue or you need it to track the Pull Request?&gt;&gt;</em></p>
+<p>Thanks again for your help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-06-05 16:09</div>
+            <div class="timeline-body"><p>@MadhavVij</p>
+<blockquote>
+<p>&lt;&lt;Should I close this issue or you need it to track the Pull Request?&gt;&gt;</p>
+</blockquote>
+<p>I'll leave this issue open to track the pull request. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11823.html">astral-sh/ruff#11823</a> on 2024-06-10 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-06-11 18:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter seems to ignore `#fmt: off` - astral-sh/ruff #9588</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter seems to ignore `#fmt: off`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/9588">#9588</a>
+        opened by <a href="https://github.com/mkismy">@mkismy</a>
+        on 2024-01-20 02:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mkismy">@mkismy</a> on 2024-01-20 02:41</div>
+            <div class="timeline-body"><p><code>ruff format</code> seems to ignore <code>#fmt: off/on</code> and formatting everything on v0.1.8.</p>
+<pre><code class="language-python">test_payload = {
+    # fmt: off
+    &quot;a&quot;: {
+        &quot;payload&quot;: &quot;with&quot;,
+        &quot;some&quot;: {
+            &quot;nested&quot;: &quot;json&quot;,
+            &quot;which&quot;: &quot;shouldn't be formatted&quot;
+        }
+    },
+    # fmt: on
+    &quot;this&quot;: {
+        &quot;should&quot;: &quot;be&quot;,
+        &quot;formatted&quot;: &quot;well&quot;
+    },
+    &quot;foo&quot;: &quot;bar&quot;
+}
+</code></pre>
+<p>is formatted to:</p>
+<pre><code class="language-python">test_payload = {
+    # fmt: off
+    &quot;a&quot;: {&quot;payload&quot;: &quot;with&quot;, &quot;some&quot;: {&quot;nested&quot;: &quot;json&quot;, &quot;which&quot;: &quot;shouldn't be formatted&quot;}},
+    # fmt: on
+    &quot;this&quot;: {&quot;should&quot;: &quot;be&quot;, &quot;formatted&quot;: &quot;well&quot;},
+    &quot;foo&quot;: &quot;bar&quot;,
+}
+</code></pre>
+<p>sample: https://play.ruff.rs/728b4856-041d-4622-b991-f94d51d8d7fd</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-20 03:11</div>
+            <div class="timeline-body"><p>Thanks for writing this up. Unfortunately suppression comments are only respected at the statement level right now -- this is covered in <a href="https://docs.astral.sh/ruff/formatter/#format-suppression">the docs</a> -- so, e.g., it'd need to be:</p>
+<pre><code class="language-python"># fmt: off
+test_payload = {
+    &quot;a&quot;: {
+        &quot;payload&quot;: &quot;with&quot;,
+        &quot;some&quot;: {
+            &quot;nested&quot;: &quot;json&quot;,
+            &quot;which&quot;: &quot;shouldn't be formatted&quot;
+        }
+    },
+    &quot;this&quot;: {
+        &quot;should&quot;: &quot;be&quot;,
+        &quot;formatted&quot;: &quot;well&quot;
+    },
+    &quot;foo&quot;: &quot;bar&quot;
+}
+# fmt: on
+</code></pre>
+<p>Suppression comments within expressions are tricky (here are some confusing behaviors from <a href="https://black.vercel.app/?version=main&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AObASldAD2IimZxl1N_Wg0-BMH4fcURaW_LLW3WS9oop2fRY6ZYC1cI8TycDNhlQOgjnQLCChkMJfQ18_jw8XEmKxgRVOYtgkJFYbl9i8jW2ALzMXyX4YIMlsGi1DPA0id2tA_vCWf3WpKPVq5pIwEbu5r0zN5504jhWs53ZkH6NITpNQxqRKhtnTXdnaC2z6wFsERlPb3rRnu6-XzLUBpKdrSofNBe8L3KCo_EDrGk2MU1GKGfVWHMm-2uGmpTz_6BOK5foqv73dQ0J5YbG592iFkKQFgEaE3My_RYE6_oaZ1UVfyMn09R_mQz1yiFs34jk8XMn2pU7beG3BvZYU3LbyVLD_kK7u8e83DELVgOo6f0NeS8bSQ4vxY7Qi7H9pUDTvzzkCeb9fxuB6kD4AAAAADza8uOe33xhgABxQKcBwAAI0BpCrHEZ_sCAAAAAARZWg==">Black</a>, as an example) so we limited the scope intentionally for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2024-01-20 03:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-20 03:12</div>
+            <div class="timeline-body"><p>Going to close as &quot;working as intended&quot; but happy to answer more questions and will take this as a vote to consider increasing suppression comment flexibility in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-20 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkismy">@mkismy</a> on 2024-01-20 03:42</div>
+            <div class="timeline-body"><p>Thanks for checking. Change the position of suppression comments did work.</p>
+<p>I was doing the switch from black to ruff and encountered this unexpected amount of diffs. I understand covering every edge cases are difficult but it would be nice if ruff can support more patterns gradually and reduce surprises like I had.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mdczaplicki">@mdczaplicki</a> on 2024-02-07 09:41</div>
+            <div class="timeline-body"><p>Are there plans to change the implementation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-07 13:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Are there plans to change the implementation?</p>
+</blockquote>
+<p>There are currently no plans to change it because supporting more fine granular suppression comments comes with a significant increase in complexity, and we would rather focus on improving the formatting (fixing the root cause of why you need suppressions) rather than building a more powerful suppression system.</p>
+<p>You can help us prioritize by creating an issue for the case where you have to fall back to using suppression comments because the formatting doesn't look good. Is there a specific pattern you use it for? How do you manually format that code? That gives us an excellent starting point for discussing on how formatting can be improved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mdczaplicki">@mdczaplicki</a> on 2024-02-07 15:33</div>
+            <div class="timeline-body"><p>Here you go: https://github.com/astral-sh/ruff/issues/9875
+:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../great-expectations/great_expectations/pulls/9536.html">great-expectations/great_expectations#9536</a> on 2024-03-04 14:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:11 UTC
+    </footer>
+</body>
+</html>

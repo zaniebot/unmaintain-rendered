@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--directory` should resolve relative paths relative to current working directory - astral-sh/uv #5613</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--directory` should resolve relative paths relative to current working directory</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/5613">#5613</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-07-30 17:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 17:24</div>
+            <div class="timeline-body"><p><em>No description provided.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-07-30 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-07-30 18:02</div>
+            <div class="timeline-body"><p>Uv run's external command is opaque (in meaning), so it's not possible to translate those arguments. One part of the solution for uv run could be either to never change current directory, or set cwd back to the original for the child process.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 20:07</div>
+            <div class="timeline-body"><p>I was thinking that we’d remove the current set_directory call, and then pass around a project directory as dictated by the directory flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6733.html">astral-sh/uv#6733</a> on 2024-08-28 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abdok96">@abdok96</a> on 2024-09-12 23:27</div>
+            <div class="timeline-body"><p>Do you have any timeline for this change by any chance? I'm currently using the hidden <code>--directory</code> option but it would be great if it can be made public (and ideally add an environment variable for it). Also resolving the paths relative to the passed directory is causing very weird issues in different places. I think this change is the correct choice.</p>
+<p>One example where paths relative to the current directory are necessary is when running uv commands from pre-commit local hooks, paths of the files staged for commit are automatically passed to the hook entry (uv command in this case) and the user cannot control this behavior.</p>
+<p>Thanks for uv it is looking great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-13 01:57</div>
+            <div class="timeline-body"><p>per https://github.com/astral-sh/uv/issues/6733#issuecomment-2315983710 our existing behavior matches the Git and Cargo CLIs so we're very unlikely to change it.</p>
+<p>The pre-commit example is great though. How do people work around this in other tools? Why do you need to use <code>--directory</code> in this situation? Maybe we need an environment variable to toggle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abdok96">@abdok96</a> on 2024-09-13 02:32</div>
+            <div class="timeline-body"><p>Thanks for the quick reply.
+In our case, the simplified project structure was briefly something like:</p>
+<p>my-project/
+|__ app/
+|    |__ main.py
+|    |__ pyproject.toml<br />
+|__ docker/
+|__ docs/
+|__ bin/
+|__ docker-compose.yml
+|__ .pre-commit.config.yaml</p>
+<p>We also have a local hook for mypy something like:</p>
+<pre><code>  - repo: local
+    hooks:
+      - id: mypy
+        name: run mypy check
+        language: system
+        entry: uv run --directory app -- mypy
+        types_or: [python, pyi]
+        require_serial: true
+        args:
+          - --config-file=pyproject.toml
+</code></pre>
+<p>We want to run the mypy command from the virtual environment that has all the python dependencies so that mypy can resolve and follow all the imports when running the type checks.</p>
+<p>Because of the behavior of <code>--directory</code> we are passing <code>--config-file</code> as <code>pyproject.toml</code> instead of <code>app/pyproject.toml</code> but that's okay since we can control it.</p>
+<p>However, when the commit hook is triggered by pre-commit, we have less control.
+Let's say <code>app/main.py</code> was changed, the command executed by pre-commit will be something like:
+<code>uv run --directory app -- mypy --config-file=pyproject.toml app/main.py</code></p>
+<p>And since the paths are resolved relative to the <code>--directory</code> param, mypy won't find a module matching <code>app/app/main.py</code>.</p>
+<p>In our case, we managed to get around it by moving the <code>pyproject.toml</code> to the root directory which is probably a more suitable place.  However, there might be similar cases that are a bit harder to avoid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abdok96">@abdok96</a> on 2024-09-13 02:50</div>
+            <div class="timeline-body"><p>Btw, I'm not sure if it helps, but we are in the process of migrating from poetry to uv. I can confirm that in the case of poetry, the behavior is not similar to cargo or git. It resolves paths based on the working directory.</p>
+<p>For example, this is the same hook I mentioned in my previous comment, before the migration to uv:</p>
+<pre><code>  - repo: local
+    hooks:
+      - id: mypy
+        name: run mypy check
+        language: system
+        entry: poetry --directory app run mypy
+        types_or: [python, pyi]
+        require_serial: true
+        args:
+          - --config-file=app/pyproject.toml
+</code></pre>
+<p>Notice how despite the <code>--directory</code> param, we used to pass the <code>--config-file</code> relative to the working directory not <code>/app</code>.
+I guess both options have good arguments. A toggle like you suggested might help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-09-13 06:36</div>
+            <div class="timeline-body"><p>@zanieb Unlikely to implement this issue? What do you think about adding a separate flag to uv run with the behaviour intended by this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-09-13 07:14</div>
+            <div class="timeline-body"><p>If we again look at git it has git -C x --git-dir y and maybe this could be a good model.</p>
+<p>Uv can have one flag that changes directory, like -C and one flag that points out which project or pyproject.toml to discover and use as starting point. For convenience, this second project flag should also take a directory value.</p>
+<p>Of course in the normal case these are linked and can be used for similar tasks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aivarannamaa">@aivarannamaa</a> on 2024-09-13 22:44</div>
+            <div class="timeline-body"><p>Expanding on the comment from bluss -- What about adding <code>--project</code>, which doesn't change the current directory, but simply indicates where to pick up the environment (or its specification)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aivarannamaa">@aivarannamaa</a> on 2024-09-13 23:31</div>
+            <div class="timeline-body"><p>One more idea: if <code>--project</code> references a script with inline metadata, this script would be used as the spec for the enironment to use.</p>
+<p>For example:</p>
+<ul>
+<li><code>uv python --project my_script_with_metadata.py find</code> would create and report the ephemeral interpreter which would be used for running this script</li>
+<li><code>uv tree --project my_script_with_metadata.py</code> would list the packages in this ephemeral env. This would a good alternative for <code>uv tree --script my_script.py</code>, which I proposed under #7328</li>
+</ul>
+<p>I would use both of these forms for adding <code>uv</code> mode to <a href="https://thonny.org/">Thonny IDE</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 22:15</div>
+            <div class="timeline-body"><p>I am open to a dedicated <code>--project</code> flag on the <code>uv run</code>, <code>uv sync</code>, <code>uv lock</code>, etc. to inform workspace discovery. \cc @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dragly">@dragly</a> on 2024-09-18 09:38</div>
+            <div class="timeline-body"><p>We are also very interested in a <code>--project</code> argument where the paths can remain relative to the current working directory. Our use-case is a monorepo where we are unable to use the workspace feature of <code>uv</code> due to conflicting dependencies between projects. This is the exact use of workspaces that is discouraged in the <code>uv</code> docs today.</p>
+<p>(Another solution for us would be if <code>uv</code> had a feature where one could define a workspace without a shared <code>uv.lock</code>, but I think the <code>--project</code> argument sounds like a general solution that could solve more issues overall).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-09-18 18:54</div>
+            <div class="timeline-body"><p>When I take a first look at this, I think <code>--project</code> in <code>uv run --project</code> maybe needs to be a global argument as well? (Or run-specific but handled early.) Because this logic is global (happens before any subcommand) and it is about project/workspace discovery. By the simplest logic: currently it's assumed project root is CWD (or found from CWD), the updated code needs to start with the user provided project directory instead of CWD here.</p>
+<p>https://github.com/astral-sh/uv/blob/e36cc99b0d17e38be2c6fb09f02eb7489536176c/crates/uv/src/lib.rs#L103-L129</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 19:01</div>
+            <div class="timeline-body"><p>I'm also willing to have <code>--project</code> — though Charlie said it'd be a pain to add support :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 19:52</div>
+            <div class="timeline-body"><p>I think project is pretty straightforward since it’s limited in scope as to what it affects. I assume it affects project discovery and maybe python-version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-20 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-20 20:03</div>
+            <div class="timeline-body"><p>I'll do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-20 20:04</div>
+            <div class="timeline-body"><p>Epic. Sounds good to me. The <code>python-version</code> file stuff might be easier with https://github.com/astral-sh/uv/pull/6370</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7603.html">astral-sh/uv#7603</a> on 2024-09-20 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-21 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dragly">@dragly</a> on 2024-10-09 08:50</div>
+            <div class="timeline-body"><p>Thanks for implementing this! It works perfectly for our needs :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 09:05</div>
+            <div class="timeline-body"><p>That's great to hear :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:20 UTC
+    </footer>
+</body>
+</html>

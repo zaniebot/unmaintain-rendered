@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backtick-quoted shortcut links in rule documentation - astral-sh/ruff #16010</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Backtick-quoted shortcut links in rule documentation</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16010">#16010</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-02-07 04:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-07 04:29</div>
+            <div class="timeline-body"><p><code>FAST002</code>'s rule documentation reads:</p>
+<pre><code class="language-markdown">The [FastAPI documentation] recommends the use of [`typing.Annotated`] for
+&lt;!-- ... --&gt;
+[fastAPI documentation]: https://fastapi.tiangolo.com/tutorial/query-params-str-validations/?h=annotated#advantages-of-annotated
+[typing.Annotated]: https://docs.python.org/3/library/typing.html#typing.Annotated
+</code></pre>
+<p>This is how PyCharm renders it:</p>
+<p><img src="https://github.com/user-attachments/assets/a249bd13-9a07-4436-ad59-dce038fa1611" alt="" /></p>
+<p>And GitHub:</p>
+<blockquote>
+<p>The <a href="https://fastapi.tiangolo.com/tutorial/query-params-str-validations/?h=annotated#advantages-of-annotated">FastAPI documentation</a> recommends the use of [<code>typing.Annotated</code>] for</p>
+<!-- ... -->
+
+</blockquote>
+<p>CommonMark dingus <a href="https://spec.commonmark.org/dingus/?text=The%20%5BFastAPI%20documentation%5D%20recommends%20the%20use%20of%20%5B%60typing.Annotated%60%5D%20for%0A%3C!--%20...%20--%3E%0A%5BfastAPI%20documentation%5D%3A%20https%3A%2F%2Ffastapi.tiangolo.com%2Ftutorial%2Fquery-params-str-validations%2F%3Fh%3Dannotated%23advantages-of-annotated%0A%5Btyping.Annotated%5D%3A%20https%3A%2F%2Fdocs.python.org%2F3%2Flibrary%2Ftyping.html%23typing.Annotated%0A">is no different</a>:</p>
+<pre><code class="language-html">&lt;p&gt;The &lt;a href=&quot;https://fastapi.tiangolo.com/tutorial/query-params-str-validations/?h=annotated#advantages-of-annotated&quot;&gt;FastAPI documentation&lt;/a&gt; recommends the use of [&lt;code&gt;typing.Annotated&lt;/code&gt;] for&lt;/p&gt;
+</code></pre>
+<hr />
+<p><a href="https://spec.commonmark.org/0.31.2/#shortcut-reference-link">Shortcut reference links</a> of the form <code>[`something`]</code> must have a corresponding <a href="https://spec.commonmark.org/0.31.2/#link-reference-definition">link reference definition</a> whose <a href="https://spec.commonmark.org/0.31.2/#link-label">label</a> is also backtick-quoted (related: #14348).</p>
+<p>For reference, the matching algorithm is <a href="https://spec.commonmark.org/0.31.2/#matches">defined</a> as:</p>
+<blockquote>
+<p>One label <b>matches</b> another just in case their normalized forms are equal. To normalize a label, strip off the opening and closing brackets, perform the <i>Unicode case fold</i>, strip leading and trailing spaces, tabs, and line endings, and collapse consecutive internal spaces, tabs, and line endings to a single space.</p>
+</blockquote>
+<p>Here's what a fix would look like:</p>
+<pre><code class="language-diff"> The [FastAPI documentation] recommends the use of [`typing.Annotated`] for
+ &lt;!-- ... --&gt;
+ [fastAPI documentation]: https://fastapi.tiangolo.com/tutorial/query-params-str-validations/?h=annotated#advantages-of-annotated
+-[typing.Annotated]: https://docs.python.org/3/library/typing.html#typing.Annotated
++[`typing.Annotated`]: https://docs.python.org/3/library/typing.html#typing.Annotated
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Backtick-quoted no-URI links in rule documentation" to "Backtick-quoted links with no explicit target in rule documentation" by @InSyncWithFoo on 2025-02-07 04:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-02-07 04:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-02-07 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-07 16:29</div>
+            <div class="timeline-body"><p><code>\[`[^`]+`\](?![\[(])</code> returns 359 hits, while that of <code>\[`(?!lint\.)[^`]+`\](?![\[(])</code> is 67. This shows that the vast majority of broken links are option pseudo-links (and even then, there are still <code>line-length</code>, <code>target-version</code> and other top-level options that haven't been filtered out).</p>
+<p>Fixable links can be found using <code>\[`([^`]+)`\](?![\[(])(?=.*+(?&gt;\R///.*)*\R/// \[\1)</code> (or <code>\[`([^`]+)`\](?![\[(])(?=.*\\n\[\1\]:)</code> if you prefer working with <code>ruff rule --all --output-format=json</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Backtick-quoted links with no explicit target in rule documentation" to "Backtick-quoted shortcut links in rule documentation" by @InSyncWithFoo on 2025-02-08 01:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16035.html">astral-sh/ruff#16035</a> on 2025-02-08 01:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-10 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-10 08:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

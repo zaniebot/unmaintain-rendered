@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule idea: Prefer dict merge - astral-sh/ruff #13706</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule idea: Prefer dict merge</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13706">#13706</a>
+        opened by <a href="https://github.com/jaap3">@jaap3</a>
+        on 2024-10-10 15:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jaap3">@jaap3</a> on 2024-10-10 15:42</div>
+            <div class="timeline-body"><p>I just made a PR in one of our private projects replacing patterns like:</p>
+<pre><code class="language-python">def get_form_kwargs(self):
+    return {
+        **super().get_form_kwargs(),
+        &quot;instance&quot;: self.request.user,
+        &quot;claims&quot;: self.token_data[&quot;claims&quot;],
+    }
+</code></pre>
+<p>and</p>
+<pre><code class="language-python">def get_form_kwargs(self):
+    kwargs = super().get_form_kwargs()
+    kwargs.update(
+        instance=self.request.user,
+        claims=self.token_data[&quot;claims&quot;]
+    )
+    return kwargs
+</code></pre>
+<p>with</p>
+<pre><code class="language-python">def get_form_kwargs(self):
+    return super().get_form_kwargs() | {
+        &quot;instance&quot;: self.request.user,
+        &quot;claims&quot;: self.token_data[&quot;claims&quot;],
+    }
+</code></pre>
+<p>Then I thought to myself, it would be nice if Ruff could just autofix this.</p>
+<p>I looked into the rules, and open issues and didn't find an existing rule covering this.</p>
+<p>I did come across https://github.com/astral-sh/ruff/issues/13533#issuecomment-2394953512 which I think is suggesting (nearly) the same thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-10-10 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @AlexWaygood on 2024-10-10 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-10-10 20:20</div>
+            <div class="timeline-body"><p>In the context of lists, there's already a lint rule like this but it suggests the opposite: <a href="https://docs.astral.sh/ruff/rules/collection-literal-concatenation/">RUF005</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaap3">@jaap3</a> on 2024-10-14 07:38</div>
+            <div class="timeline-body"><p>I don't actually particularly care about the exact form of how dictionaries are merged, it's just that I'd like it to be consistent across the codebase. I picked the union operator <code>|</code> because it's a recent language addition and resulted in the lowest line count in my case.</p>
+<p>Just did a quick (unscientific) benchmark and it appears unpacking is currently more performant:</p>
+<pre><code>python3.13 -m timeit -s &quot;a = {'a': 1};b = {'b': 2};c = {'a': 0}&quot; &quot;m = a | b | c&quot;
+2000000 loops, best of 5: 118 nsec per loop
+
+python3.13 -m timeit -s &quot;a = {'a': 1};b = {'b': 2};c = {'a': 0}&quot; &quot;m = {**a, **b, **c}&quot;
+5000000 loops, best of 5: 86.3 nsec per loop
+</code></pre>
+<p>Opinions may vary on the readability of the latter, but I'm fine with either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../leukeleu/django-hidp/pulls/189.html">leukeleu/django-hidp#189</a> on 2024-10-15 07:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaap3">@jaap3</a> on 2024-10-15 07:31</div>
+            <div class="timeline-body"><p>Ran into an interesting variation that combined both unpacking and the union operator:</p>
+<pre><code class="language-python">def get_form_kwargs(self):
+    return {**super().get_form_kwargs()} | {
+        &quot;instance&quot;: self.request.user,
+        &quot;claims&quot;: self.token_data[&quot;claims&quot;],
+    }
+</code></pre>
+<p>Adding it here as a reminder to also detect this pattern if a rule is implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lengau">@lengau</a> on 2024-10-17 16:04</div>
+            <div class="timeline-body"><p>I like this idea, but I'd prefer consistency with RUF005 and have dict unpacking.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

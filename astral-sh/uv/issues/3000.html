@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV_SYSTEM_PYTHON cannot be switched off - astral-sh/uv #3000</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV_SYSTEM_PYTHON cannot be switched off</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3000">#3000</a>
+        opened by <a href="https://github.com/hynek">@hynek</a>
+        on 2024-04-11 20:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hynek">@hynek</a> on 2024-04-11 20:45</div>
+            <div class="timeline-body"><p>I'm using uv as part of a GitHub Action and have noticed that when the caller sets <code>UV_SYSTEM_PYTHON=true</code>, it cannot be undone by locally setting <code>UV_SYSTEM_PYTHON=false</code> although the error indicates that false is a valid value. I always get the &quot;system is incompatible with python&quot;:</p>
+<pre><code class="language-console">$ env UV_SYSTEM_PYTHON=false uv pip install --python .venv/bin/python ruff
+error: the argument '--python &lt;PYTHON&gt;' cannot be used with '--system'
+$ uv --version
+uv 0.1.31 (7bcca28b1 2024-04-09
+</code></pre>
+<p>I have now solved it by unsetting the variable, but I think this should work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-11 20:47</div>
+            <div class="timeline-body"><p>Will need to look into it... This is something that Clap does automatically (https://github.com/clap-rs/clap), we just specify the mapping between argument and environment variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-04-11 20:53</div>
+            <div class="timeline-body"><p>Yeah I've noticed when looking at #2354. Since this problem will likely manifest itself elsewhere too, I hope this doesn't mean you have a clap rewrite on your plate, too. 😬</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-11 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @charliermarsh on 2024-04-11 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-11 21:02</div>
+            <div class="timeline-body"><p>Hahah don't worry I have enough on my plate to be comfortable passing on that one :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-11 21:11</div>
+            <div class="timeline-body"><p>I suspect the problem here is actually that Clap thinks both <code>--system</code> and <code>--python</code> are being passed (even though <code>--system</code> is falsey).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-11 21:11</div>
+            <div class="timeline-body"><p>If you omit <code>--python</code>, do you see the right behavior? <code>uv</code> would default to <code>.venv</code> anyway, as long as <code>--system</code> is false. (We should fix the interaction here, I'm just confirming the diagnosis...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-04-11 21:14</div>
+            <div class="timeline-body"><p>It does, but it has bad interactions with venv too (which is what sent me down this path):</p>
+<pre><code>nox &gt; Running session tests-3.8(opt_deps=[])
+nox &gt; Creating virtual environment (uv) using python3.8 in .nox/tests-3-8-opt_deps
+nox &gt; Command uv venv -p python3.8 /home/runner/work/stamina/stamina/.nox/tests-3-8-opt_deps failed with exit code 2:
+error: the argument '--python &lt;PYTHON&gt;' cannot be used with '--system'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-11 21:26</div>
+            <div class="timeline-body"><p>Okay, I believe I know how to fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3001.html">astral-sh/uv#3001</a> on 2024-04-11 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-12 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3829.html">astral-sh/uv#3829</a> on 2024-05-24 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3830.html">astral-sh/uv#3830</a> on 2024-05-24 18:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

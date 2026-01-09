@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package resolution from Index URLs different for uv pip install and uv sync - astral-sh/uv #10968</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Package resolution from Index URLs different for uv pip install and uv sync</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10968">#10968</a>
+        opened by <a href="https://github.com/Fabma">@Fabma</a>
+        on 2025-01-26 20:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Fabma">@Fabma</a> on 2025-01-26 20:01</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When running <code>uv pip install</code> then the packages can be resolved for both of the following URLs:</p>
+<pre><code>uv pip install torch==2.3.1 --no-cache --index-url https://download.pytorch.org/whl/cpu/torch_stable.html
+uv pip install torch==2.3.1 --no-cache --index-url https://download.pytorch.org/whl/cpu
+</code></pre>
+<p>In a <code>pyproject.toml</code> though and running <code>uv sync</code>, only the latter URL works though. The former URL (<code>torch_stable.html</code>) does not work.</p>
+<pre><code>[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12.0&quot;
+dependencies = []
+
+[project.optional-dependencies]
+cpu = [
+  &quot;torch&gt;=2.5.1&quot;,
+]
+cu124 = [
+  &quot;torch&gt;=2.5.1&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;cu124&quot; },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu/torch_stable.html&quot;
+# the following would work: url = &quot;https://download.pytorch.org/whl/cpu/&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+<p>When running <code>uv sync -vv</code>, the debug log looks like this.</p>
+<pre><code>...
+ 0.823578s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/cpu/torch_stable.html/torch/
+         uv_client::cached_client::fresh_request url=&quot;https://download.pytorch.org/whl/cpu/torch_stable.html/torch/&quot;
+...
+Because torch was not found in the package registry and project[cpu] depends on torch&gt;=2.5.1, we can conclude that project[cpu]'s requirements are unsatisfiable.
+</code></pre>
+<p>i.e., <code>torch</code> is added to the path <code>torch_stable.html/torch/</code> which does not resolve.</p>
+<p>When running <code>uv pip install torch==2.3.1 --no-cache --index-url https://download.pytorch.org/whl/cpu/torch_stable.html</code>, the debug log looks like this:</p>
+<pre><code>...
+      uv_client::html::parse url=https://download.pytorch.org/whl/cpu/torch_stable.html
+    0.885202s DEBUG uv_client::flat_index Found 2766 packages in `--find-links` entry: https://download.pytorch.org/whl/cpu/torch_stable.html
+...
+</code></pre>
+<p>i.e., packages are found via find-links first.</p>
+<p>While for pytorch packages this is not an issue (since both kinds of URLs exist). For e.g. https://data.pyg.org/whl/torch-2.3.1+cpu.html it is a problem, since there is no URL such as <code>https://data.pyg.org/whl/torch-2.3.1+cpu</code> available.</p>
+<h3>Platform</h3>
+<p>macOS 13 arm64</p>
+<h3>Version</h3>
+<p>uv 0.5.24 (42fae925c 2025-01-23)</p>
+<h3>Python version</h3>
+<p>Python 3.12.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Fabma on 2025-01-26 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Index URL resolution different for uv pip install and uv sync" to "Package resolution from Index URLs different for uv pip install and uv sync" by @Fabma on 2025-01-26 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-26 21:25</div>
+            <div class="timeline-body"><p>The first one does not work for me:</p>
+<pre><code>❯ uv pip install torch==2.3.1 --no-cache --index-url https://download.pytorch.org/whl/cpu/torch_stable.html
+
+  × No solution found when resolving dependencies:
+  ╰─▶ Because torch was not found in the package registry and you
+      require torch==2.3.1, we can conclude that your requirements are
+      unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-01-26 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-01-26 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-26 21:25</div>
+            <div class="timeline-body"><p>(And it shouldn't.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Fabma">@Fabma</a> on 2025-01-27 07:07</div>
+            <div class="timeline-body"><p>My bad, maybe I was first running
+<code>uv pip install torch==2.3.1 --no-cache --index-url https://download.pytorch.org/whl/cpu</code>
+which successfully resolves, and then afterwards
+<code>uv pip install torch==2.3.1 --no-cache --index-url https://download.pytorch.org/whl/cpu/torch_stable.html</code>
+which doesnt have any effect since it is already installed.</p>
+<blockquote>
+<p>(And it shouldn't.)</p>
+</blockquote>
+<p>Ok. For package repos such as https://data.pyg.org/whl/torch-2.3.1+cpu.html will need to find a different solution then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Fabma on 2025-01-27 07:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 13:32</div>
+            <div class="timeline-body"><p>That’s a find-links URL, not an index. Look at find-links.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv tree with --only-group doesn't show full depth - astral-sh/uv #12526</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv tree with --only-group doesn't show full depth</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12526">#12526</a>
+        opened by <a href="https://github.com/khaume">@khaume</a>
+        on 2025-03-28 09:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/khaume">@khaume</a> on 2025-03-28 09:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Given this <code>pyproject.toml</code> file:</p>
+<pre><code>[project]
+name = &quot;uv-playgorund&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;numpy&gt;=2.2.4&quot;,
+    &quot;pandas&gt;=2.2.3&quot;,
+    &quot;requests&gt;=2.32.3&quot;,
+    &quot;pip&gt;=25.0.1&quot;,
+]
+
+[dependency-groups]
+dev = [
+    &quot;plotly&quot;,
+    &quot;pip&quot;,
+]
+test = [
+    &quot;pytest&quot;,
+]
+</code></pre>
+<p>calling <code>uv tree</code> correctly shows the whole dependency graph for all the default groups.</p>
+<p>However, doeing <code>uv tree --only-group dev</code> only shows the two <code>dev</code> packages, not <em>their</em> dependencies. If I do <code>uv tree --package plotly</code> then its dependencies are shown (narwhals and packaging, in this case).</p>
+<p>Is there a bug in <code>uv tree</code> when doing <code>--only-group</code> (or other group options), or am I missing something?</p>
+<h3>Platform</h3>
+<p>Windows 11</p>
+<h3>Version</h3>
+<p>uv 0.6.9 (3d9460278 2025-03-20)</p>
+<h3>Python version</h3>
+<p>Python 3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @khaume on 2025-03-28 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lemorage">@lemorage</a> on 2025-03-28 12:49</div>
+            <div class="timeline-body"><p>Well, I think this might be the intended behavior, as shown in the code comments.</p>
+<p>https://github.com/astral-sh/uv/blob/175017bf5111250a91f320645791bfe68953a2f3/crates/uv-cli/src/lib.rs#L2830-L2836</p>
+<p>See https://github.com/astral-sh/uv/pull/8338</p>
+<p>btw, if u want to see <code>dev</code> packages as well as their dependencies, u might want to do something similar: <code>uv tree --only-group dev | grep '(group: dev)' | grep -oE '[a-zA-Z0-9_-]+ v[0-9]+\.[0-9]+\.[0-9]+' | grep -oE '^[a-zA-Z0-9_-]+' | xargs -I {} uv tree --package {}</code>, just my two cents.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-28 19:06</div>
+            <div class="timeline-body"><p>I think this is a bug... <code>plotly</code>'s deps should be visible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-28 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12560.html">astral-sh/uv#12560</a> on 2025-03-30 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-30 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-30 18:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

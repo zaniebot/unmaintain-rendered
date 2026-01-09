@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV_INIT_BUILD_BACKEND invalidates --app flag - astral-sh/uv #17335</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV_INIT_BUILD_BACKEND invalidates --app flag</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/17335">#17335</a>
+        opened by <a href="https://github.com/jpkolsen">@jpkolsen</a>
+        on 2026-01-06 14:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jpkolsen">@jpkolsen</a> on 2026-01-06 14:00</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>According to <a href="https://docs.astral.sh/uv/concepts/projects/init/#applications">the docs</a> &quot;Applications are the default target for <code>uv init</code>, but can also be specified with the <code>--app</code> flag&quot;. There is at least one case where applying this flag does not result in the project being initialized with the flat app-like structure, and that is if a build system is specified either with a cli flag or with an environment variable. Indeed it is unclear to me in which case that flag does make a difference to the behaviour of <code>uv init</code>.</p>
+<p>Relevance:
+For reasons beyond the scope here, I want to use setuptools as my default build backend when creating packages, so I added <code>export UV_INIT_BUILD_BACKEND=setuptools</code> to <code>~/.bashrc</code>. However, this makes it so <code>uv init</code> always creates a project structure matching a package, even if I use the <code>--app</code> flag.</p>
+<p>Repro:</p>
+<pre><code>$ unset UV_INIT_BUILD_BACKEND
+$ uv init my_app; ls my_app
+Initialized project `my-app` at `/Users/jpko/uvtest/my_app`
+main.py		pyproject.toml	README.md
+$ UV_INIT_BUILD_BACKEND=setuptools uv init my_package; ls my_package
+Initialized project `my-package` at `/Users/jpko/uvtest/my_package`
+pyproject.toml	README.md	src
+$ UV_INIT_BUILD_BACKEND=setuptools uv init not_an_app --app; ls not_an_app
+Initialized project `not-an-app` at `/Users/jpko/uvtest/not_an_app`
+pyproject.toml	README.md	src
+</code></pre>
+<h3>Platform</h3>
+<p>MacOS (Darwin 25.2.0 arm64)</p>
+<h3>Version</h3>
+<p>uv 0.9.22 (Homebrew 2026-01-06)</p>
+<h3>Python version</h3>
+<p>Python 3.12.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jpkolsen on 2026-01-06 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-06 16:46</div>
+            <div class="timeline-body"><p>This is intentional, as a build backend implies a package structure:</p>
+<blockquote>
+<pre><code>  --build-backend &lt;BUILD_BACKEND&gt;
+     Initialize a build-backend of choice for the project.
+     
+     Implicitly sets `--package`.</code></pre>
+</blockquote>
+<p>What I think is missing here is that <code>--app</code> should conflict with <code>--build-backend</code> and <code>--package</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpkolsen">@jpkolsen</a> on 2026-01-07 07:33</div>
+            <div class="timeline-body"><p>Gotcha, thanks! I thought something like that might be the case - it certainly makes sense that you would never apply both <code>--build-backend</code> and <code>--app</code> cli flags, however I was unsure if the effects of <code>--build-backend</code> and <code>$UV_INIT_BUILD_BACKEND</code> were exactly the same. In my opinion there's a valid use case for configuring a default setup for packages in your environment, while still being able to specify an application on <code>uv init</code>, but I guess that's technically not a bug.</p>
+<p>As mentioned above, it makes it unclear if <code>--app</code> is ever applicable? It appears <code>uv init</code> either defaults to application mode (in which case the <code>--app</code> flag is superfluous) or another flag or environment variable specifies package (in which case the <code>--app</code> flag should conflict). What am I missing here?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

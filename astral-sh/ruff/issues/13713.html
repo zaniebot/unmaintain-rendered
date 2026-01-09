@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[TCH001] Improvement with FastAPI dependencies - astral-sh/ruff #13713</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[TCH001] Improvement with FastAPI dependencies</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/13713">#13713</a>
+        opened by <a href="https://github.com/JP-Ellis">@JP-Ellis</a>
+        on 2024-10-11 06:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2024-10-11 06:55</div>
+            <div class="timeline-body"><p>FastAPI makes extensive use of the type annotations at runtime, which then requires that the relevant imports be available at runtime. This can cause issues when Ruff suggests they be moved into type-checking blocks.</p>
+<p>Ruff has some configuration options which allows for these imports to be excluded from the type-checking block, such as:</p>
+<ul>
+<li><a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-base-classes"><code>runtime-evaluated-base-classes</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-decorators"><code>runtime-evaluated-decorators</code></a></li>
+</ul>
+<p>One place which I think isn't covered is the argument to <code>Depends</code> and <code>Security</code> which allows FastAPI to execute functions in order to perform argument injection.</p>
+<p>E.g.</p>
+<pre><code class="language-python">def get_foo():
+    return &quot;foo&quot;
+</code></pre>
+<pre><code class="language-python">from .foo import get_foo
+from fastapi import Depends
+from typing import Annotated
+
+def repeat_foo(foo: Annotated[str, Depends(get_foo)]):
+    return foo + foo
+</code></pre>
+<p>Now I may have missed an option that can then tell ruff that arguments to <code>Depends</code> should <em>not</em> be moved into the type-checking block. But if it is not currently possible, this may be a good improvement to add to ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonyscathe">@jonyscathe</a> on 2024-10-14 05:51</div>
+            <div class="timeline-body"><p>Have the exact same issue.<br />
+I have something like:</p>
+<pre><code>from __future__ import annotations
+
+from typing import Annotated
+
+from fastapi import Depends, FastApi
+from sqlmodel import Session
+
+from .database import get_session
+from .models import test_model
+
+app = FastAPI()
+
+@app.post('/test/', response_model=test_model.TestResponse)
+def test(
+    *,
+    session: Annotated[Session, Depends(get_session)],
+    test: test_models.TestRequest,
+) -&gt; test_models.TestResponse:
+    return test_models.TestResponse()
+</code></pre>
+<p>This flags TCH001 or TCH0002 on <code>Depends</code>, <code>Session</code> and <code>get_session</code> and in reality all three are required.</p>
+<p>Putting any of these in a type checking block results in runtime errors.
+<code>runtime-evaluated-decorators = [&quot;app.post&quot;]</code> has no impact and even if it did I need to use the same Depends call on functions that are not routes.</p>
+<p>Ways to fix:</p>
+<ul>
+<li>Could add a list of dependencies that TCH001/TCH002 will never flag on</li>
+<li>Could add a list of functions that would mean TCH001/TCH002 won't flag on that function's annotations</li>
+<li>Could somehow detect when things like <code>Depends</code> and <code>Security</code> are used and not flag them or their arguments (or their annotated types...)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-14 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-14 14:13</div>
+            <div class="timeline-body"><p>Thanks. THis makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pySilver">@pySilver</a> on 2024-10-25 17:14</div>
+            <div class="timeline-body"><p>@jonyscathe @MichaReiser did you guys find any solution beside moving <code>app</code> declaration into a submodule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-26 08:09</div>
+            <div class="timeline-body"><blockquote>
+<p>@jonyscathe @MichaReiser did you guys find any solution beside moving <code>app</code> declaration into a submodule?</p>
+</blockquote>
+<p>I'm not aware of any solution for this issue. I understand that we need a new setting to configure runtime-evaluated type annotations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pySilver">@pySilver</a> on 2024-10-28 12:35</div>
+            <div class="timeline-body"><p>@MichaReiser yeah, it appears that that is the only solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13926.html">astral-sh/ruff#13926</a> on 2024-10-28 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pySilver">@pySilver</a> on 2024-10-28 12:47</div>
+            <div class="timeline-body"><p>For anyone looking at this, the only solution until we get something better is to:</p>
+<ol>
+<li>Extract your <code>thing</code> declaration into a separate module</li>
+<li>Mention the decorator in <code>runtime-evaluated-decorators</code></li>
+</ol>
+<p>So for example move <code>app = FastAPI()</code> into <code>apps.py</code> and import it from there while adding <code>myproject.myapp.apps.app.post</code> into <code>runtime-evaluated-decorators</code></p>
+<p>Or disable this checks for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14140.html">astral-sh/ruff#14140</a> on 2024-11-06 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-07 07:47</div>
+            <div class="timeline-body"><p>I think one sensible and easy-to-implement solution for this particular case is to special-case <code>Annotated</code> and treat itself and everything past the first element in the subscript as runtime context, since <code>Annotated</code> is almost always used for runtime introspection. Of course that stops working as soon as you move this out into a <code>TypeAlias</code> in a separate module, so it would still probably be a good idea to add a third setting for symbols that always need to be available at runtime, so corresponding imports would never emit TCH001-TCH003.</p>
+<p>But you will also need to take into account that with functions <code>typing.get_type_hints</code> will fail if any of the parameter or return annotations contain forward references to symbols within <code>TYPE_CHECKING</code> blocks, so if you get any hits within a function, you would likely have to retroactively treat all references as runtime references, which may be quite tricky to accomplish. You would likely have to eagerly go through all the annotations for every function to see if there are any matches so you can set a flag before traversing the annotation nodes on the function for semantic analysis, which would slow things down quite a bit.</p>
+<p>The same is technically true for classes, but there, you usually can rely on the existing settings. It's also worth pointing out that this should eventually be less of a problem once PEP-649 arrives, since it will extend <code>typing.get_type_hints</code> with the ability for partial failure, so failures in resolving part of one of the annotations will not spread to the rest of the annotation and all the other annotations on the same object. We may see earlier adoption of this improvement thanks to <code>typing_extensions</code> likely containing a backport.</p>
+<p>Also not every runtime library will use <code>typing.get_type_hints</code>, there's quite a few that implement their own logic, so the failure conditions are not always the same. That's why in <code>flake8-type-checking</code> I also have the concept of a soft-runtime use, i.e. we treat it as neither required nor not required and just never emit an error in either case, trusting that you know what you are doing.</p>
+<p>One good example where this is necessary is SQLAlchemy's <code>Mapped</code> which can refer to other models in relationships and these sometimes need to be forward references without a runtime import in order to break import cycles, but everything other than models needs to be available at runtime, so there's no &quot;one-size fits all&quot; solution there. With red knot we could eventually know which symbols refer to other SQLAlchemy models and make a more narrow exception, but at that point it would become a very targeted extension specific to SQLAlchemy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-13 08:48</div>
+            <div class="timeline-body"><p>Turns out ruff already properly clears the <code>TYPE_DEFINITION</code> flag for the second argument of <code>Annotated</code>, however there are additional flags for string annotations with a <code>__future__</code> import and for the runtime context of the annotation which don't get cleared.</p>
+<p>Not clearing those flags makes sense to me, since they provide important context, however we never check for <code>TYPE_DEFINITION</code> on <code>is_typing_reference</code>, so we treat <code>Depends</code> and <code>get_foo</code> as typing references, despite not being part of a type definition. Technically this is once again somewhat correct (especially for the <code>from __future__ import annotations</code> case), however it's not really helpful to treat those references that way, so it's better to never treat non-type-definitions as typing references (unless they're within a type checking block).</p>
+<p>I'll get a PR up with a fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14311.html">astral-sh/ruff#14311</a> on 2024-11-13 09:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15060.html">astral-sh/ruff#15060</a> on 2024-12-19 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2025-02-18 23:10</div>
+            <div class="timeline-body"><p>I believe this has been fixed 🎉</p>
+<p>At least, the example I had in the original post no longer raises any linting errors as of ruff 0.9.6.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @JP-Ellis on 2025-02-18 23:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTF-8 Encoding Errors Prevent Package Installation - astral-sh/uv #7733</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UTF-8 Encoding Errors Prevent Package Installation</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/7733">#7733</a>
+        opened by <a href="https://github.com/Paillat-dev">@Paillat-dev</a>
+        on 2024-09-27 09:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Paillat-dev">@Paillat-dev</a> on 2024-09-27 09:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>uv is failing to install packages, reporting UTF-8 encoding errors. The root cause is likely non-ASCII characters in the Windows username, which uv may not be handling correctly.</p>
+<h2>Steps to Reproduce</h2>
+<ol>
+<li><p>Install from git:</p>
+<pre><code>uv add git+https://github.com/feldberlin/timething.git
+</code></pre>
+<p>Error:</p>
+<pre><code>error: Failed to run `C:\Users\[USER]\AppData\Local\uv\cache\builds-v0\.tmp1pEQZM\Scripts\python.exe`
+Caused by: stream did not contain valid UTF-8
+</code></pre>
+</li>
+<li><p>Install specific package:</p>
+<pre><code>uv add timething
+</code></pre>
+<p>Error:</p>
+<pre><code>error: Failed to download and build `docopt==0.6.2`
+Caused by: Failed to run `C:\Users\[USER]\AppData\Local\uv\cache\builds-v0\.tmpwGOGdp\Scripts\python.exe`
+Caused by: stream did not contain valid UTF-8
+</code></pre>
+</li>
+</ol>
+<h2>Environment</h2>
+<ul>
+<li>OS: Windows</li>
+<li>uv version: 0.4.11</li>
+<li>Python versions: uv: 3.12, project: 3.10</li>
+</ul>
+<h2>Impact</h2>
+<p>This issue prevents package installation, a core functionality of uv, significantly hindering development workflows for users with non-ASCII characters in their Windows usernames.</p>
+<h2>Additional Context</h2>
+<p>The root cause appears to be non-ASCII characters in the Windows username. For example, a user with the username &quot;María García&quot; might experience this issue, while a user with the username &quot;John Smith&quot; would not.</p>
+<p>Example:</p>
+<ul>
+<li>Affected path: <code>C:\Users\María García\AppData\Local\uv\cache\builds-v0\.tmp1pEQZM\Scripts\python.exe</code></li>
+<li>Non-affected path: <code>C:\Users\John Smith\AppData\Local\uv\cache\builds-v0\.tmp1pEQZM\Scripts\python.exe</code></li>
+</ul>
+<p>uv may not be correctly handling these non-ASCII characters in file paths, leading to the reported UTF-8 encoding errors.</p>
+<h2>Related Issues</h2>
+<ul>
+<li>#1666</li>
+<li>#2276</li>
+<li>#7549</li>
+<li>#7726</li>
+</ul>
+<p>Please let me know if you need any additional information or if you'd like me to perform any specific tests to confirm this hypothesis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-27 12:21</div>
+            <div class="timeline-body"><p>I'm sort of wondering if this is just a case of Windows long-path support not being enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-09-27 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7726.html">astral-sh/uv#7726</a> on 2024-09-27 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Paillat-dev">@Paillat-dev</a> on 2024-09-27 20:20</div>
+            <div class="timeline-body"><p>I think it was enabled already, double checked and made sure it was, restarted, but still the same issue:</p>
+<pre><code>uv add timething
+⠸ docopt==0.6.2                                                                                                         error: Failed to download and build `docopt==0.6.2`
+  Caused by: Failed to run `C:\Users\[USER]\AppData\Local\uv\cache\builds-v0\.tmpZ2ViUG\Scripts\python.exe`
+  Caused by: stream did not contain valid UTF-8
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-27 20:39</div>
+            <div class="timeline-body"><p>Unfortunately I haven't been able to replicate it on my Windows machine. <code>uv pip install docopt==0.6.2</code> completes without error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kahojyun">@kahojyun</a> on 2024-09-28 05:31</div>
+            <div class="timeline-body"><p>I found a way to reproduce it on my computer.</p>
+<ol>
+<li>Set <code>UV_CACHE_DIR</code> to a directory containing non-ASCII characters like <code>E:/缓存/uv</code></li>
+<li>Create a new uv project and run <code>uv add docopt</code></li>
+</ol>
+<pre><code>uv add docopt
+⠼ docopt==0.6.2
+error: Failed to download and build `docopt==0.6.2`
+  Caused by: Failed to run `E:\缓存\uv\builds-v0\.tmp2qY1wK\Scripts\python.exe`
+  Caused by: stream did not contain valid UTF-8
+</code></pre>
+<p>When Windows username contains non-ASCII characters, the default uv cache directory will trigger this error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Paillat-dev">@Paillat-dev</a> on 2024-09-28 07:29</div>
+            <div class="timeline-body"><p>Right that is most likely the reason, as my username contains the <code>é</code> accentuated character.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7757.html">astral-sh/uv#7757</a> on 2024-09-28 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-28 12:38</div>
+            <div class="timeline-body"><p>Great find, thank you for the PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-28 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-28 12:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:22 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dependency module not found when added as local file path - astral-sh/uv #10006</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>dependency module not found when added as local file path</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10006">#10006</a>
+        opened by <a href="https://github.com/straz">@straz</a>
+        on 2024-12-18 16:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/straz">@straz</a> on 2024-12-18 16:18</div>
+            <div class="timeline-body"><p>In <code>pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;myproject&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;my_base_project&quot;,
+    &quot;fastapi&gt;=0.115&quot;,
+    &quot;httpx&gt;=0.28&quot;,
+    &quot;networkx&gt;=3.4.2&quot;,
+    &quot;pydantic&gt;=2.10&quot;,
+    &quot;pyyaml&gt;=6.0.2&quot;,
+    &quot;requests&gt;=2.32&quot;,
+    &quot;uvicorn&gt;=0.32.0&quot;,
+]
+
+[tool.uv.sources]
+my_base_project = { path = &quot;${PROJECT_ROOT}/../../../mybase/src/&quot; }
+</code></pre>
+<p>When I run my app, the base dependency does not appear and cannot be loaded:</p>
+<pre><code>  % uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+  ..
+    from my_base_project.schemas import (
+ModuleNotFoundError: No module named 'my_base_project'
+</code></pre>
+<p>According to <code>uv run --verbose</code>, it seems like <code>my_base_project</code> has been loaded as a requirement. But it does not appear anywhere in <code>sys.path</code>. Shouldn't I expect to be able to <code>import my_base_project</code>, and if so, from where?</p>
+<pre><code>% uv run --verbose uvicorn main:app
+DEBUG Using request timeout of 30s
+DEBUG Requirement already installed: my_base_project==0.1.0 (from file:///Users/straz/src/mybase/src)
+DEBUG Requirement already installed: annotated-types==0.7.0
+DEBUG Requirement already installed: anyio==4.7.0
+DEBUG Requirement already installed: black==24.10.0
+DEBUG Requirement already installed: cachetools==5.5.0
+DEBUG Requirement already installed: certifi==2024.12.14
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-18 17:12</div>
+            <div class="timeline-body"><p>I suspect something is wrong in how you setup <code>my_base_project</code>. It's not typical to point to a <code>src</code> directory like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-12-18 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-12-18 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-18 17:29</div>
+            <div class="timeline-body"><p>To help you, we would need to see a complete reproduction, such as a Git repository and a series of commands we can use to reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nrydanov">@nrydanov</a> on 2024-12-18 18:42</div>
+            <div class="timeline-body"><p>Same issue, but I add project directly via CLI like that: <code>uv add --editable ../shared</code> where <code>../shared</code> is a folder with correct <code>pyproject.toml</code> inside it.</p>
+<p>Project is named inbrief-shared, but none of
+<code>import shared</code>
+<code>import inbrief_shared</code>
+works</p>
+<p>In <code>.venv/lib/python3.12/site-packages</code> I see that UV indeed does smth with that module. There's .pth file, for example. However, I can't see folder with .py files inside .venv as I do when open regular dependencies folders.</p>
+<p>And I can't use this package in runtime...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-18 18:48</div>
+            <div class="timeline-body"><p>I suspect there's an issue with how your package is structured. I'd need a reproduction, like a Git repository, to help out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nrydanov">@nrydanov</a> on 2024-12-18 18:49</div>
+            <div class="timeline-body"><p>Ok, will send soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nrydanov">@nrydanov</a> on 2024-12-18 19:11</div>
+            <div class="timeline-body"><p>It seems like I found an issue. I was reusing .venv that were left from Rye after migration to UV.</p>
+<p>Deleting .venv and <code>uv sync</code> solved the problem for me. Thanks for response and sorry for your time wasting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/straz">@straz</a> on 2024-12-18 20:33</div>
+            <div class="timeline-body"><p>Thank you @nrydanov and @charliermarsh. I've pushed some sample code to https://github.com/straz/uv-issue-10006.</p>
+<p>This seems to find <code>static pyproject.toml for: base-project</code>, but still doesn't include it in the python path.</p>
+<pre><code class="language-shell">mac % cd uv_example/my_project
+mac % uv run --verbose main.py
+DEBUG uv 0.5.0 (Homebrew 2024-11-07)
+DEBUG Found project root: `/Users/straz/src/uv_example/my_project`
+DEBUG No workspace root found, using project root
+DEBUG Discovered project `my-project` at: /Users/straz/src/uv_example/my_project
+DEBUG Using Python request `&gt;=3.11` from `requires-python` metadata
+DEBUG The virtual environment's Python version satisfies `&gt;=3.11`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: my-project @ file:///Users/straz/src/uv_example/my_project
+DEBUG No workspace root found, using project root
+DEBUG Found static `pyproject.toml` for: base-project @ file:///Users/straz/src/uv_example/base_project
+DEBUG Project is contained in non-workspace project: `/Users/straz/src/uv_example/my_project`
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 23 packages in 0.57ms
+...
+Audited 20 packages in 0.03ms
+DEBUG Using Python 3.11.6 interpreter at: /Users/straz/src/uv_example/my_project/.venv/bin/python3
+DEBUG Running `python main.py`
+Traceback (most recent call last):
+  File &quot;/Users/straz/src/uv_example/my_project/main.py&quot;, line 2, in &lt;module&gt;
+    from my_thing import MyThing
+  File &quot;/Users/straz/src/uv_example/my_project/my_thing.py&quot;, line 1, in &lt;module&gt;
+    from base_project.main import Base
+ModuleNotFoundError: No module named 'base_project'
+DEBUG Command exited with code: 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jannik4">@jannik4</a> on 2024-12-19 22:06</div>
+            <div class="timeline-body"><p>I am hitting the same problem, I think. I created a reproduction <a href="https://github.com/jannik4/uv-local-dep/tree/fb155aa57c77afe11428e05dbc9c8f9a575e0ea8">here</a>.</p>
+<p>Edit:
+<a href="https://github.com/jannik4/uv-local-dep/commit/47bf13b9ded2196e6c06d4e9b320f2d30c09dc83">Fixed it here.</a> (But I think the error is still happening at the wrong time, i.e. when running mybin not when adding the dependency.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-20 03:16</div>
+            <div class="timeline-body"><p>Yeah, if you don't have a build system, we won't build and install your project in the non-<code>uv pip</code> APIs.</p>
+<p>Check out: https://docs.astral.sh/uv/concepts/projects/config/#build-systems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-20 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13128.html">astral-sh/uv#13128</a> on 2025-04-27 11:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

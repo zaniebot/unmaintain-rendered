@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>poor error message with `uv add -r` on a `requirements.txt` with a `-e` entry that has a bad path - astral-sh/uv #16582</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>poor error message with `uv add -r` on a `requirements.txt` with a `-e` entry that has a bad path</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/16582">#16582</a>
+        opened by <a href="https://github.com/tsudol-plaid">@tsudol-plaid</a>
+        on 2025-11-03 19:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tsudol-plaid">@tsudol-plaid</a> on 2025-11-03 19:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Let's say our project is set up like this:</p>
+<pre><code>proj/
+- pyproject.toml
+- requirements.txt
+foo.lib/
+  - pyproject.toml
+</code></pre>
+<p>And our <code>requirements.txt</code> contains:</p>
+<pre><code>-e file:foo.lib
+</code></pre>
+<p>That path for <code>foo.lib</code> in <code>requirements.txt</code> is incorrect, because the path should be relative, e.g. <code>../foo.lib</code>.</p>
+<p>However, instead of saying that the path is wrong, <code>uv</code> complains that:</p>
+<pre><code>error: Couldn't parse requirement in `requirements.txt` at position 3
+  Caused by: Expected path (`foo.lib`) to end in a supported file extension: `.whl`, `.tar.gz`, `.zip`, `.tar.bz2`, `.tar.lz`, `.tar.lzma`, `.tar.xz`, `.tar.zst`, `.tar`, `.tbz`, `.tgz`, `.tlz`, or `.txz`
+file:foo.lib
+^^^^^^^^^^^^
+</code></pre>
+<p>Presumably <code>uv</code> is treating the path as a file because of the <code>.lib</code> at the end.</p>
+<p>Contrast this with the error message when we replace the <code>.</code> with a <code>_</code>:</p>
+<pre><code>error: Distribution not found at: file:///private/tmp/test/foo_lib
+</code></pre>
+<p>This is a lot better. (Tho it does require you to know what a &quot;distribution&quot; is.)</p>
+<hr />
+<p>Steps to reproduce:</p>
+<ol>
+<li><code>uv init test</code> &amp;&amp; <code>cd test</code></li>
+<li><code>echo &quot;-e file:foo.lib&quot; &gt;&gt; requirements.txt</code></li>
+<li><code>uv add -r requirements.txt </code></li>
+</ol>
+<h3>Platform</h3>
+<p>Darwin 24.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.9.6 (Homebrew 2025-10-29)</p>
+<h3>Python version</h3>
+<p>Python 3.10.16</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @tsudol-plaid on 2025-11-03 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-11-03 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2025-11-03 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-03 19:59</div>
+            <div class="timeline-body"><p>The relevant logic is at https://github.com/astral-sh/uv/blob/c9d3d60a189ef087c8ce82a4a85ff9e181e254c7/crates/uv-pypi-types/src/parsed_url.rs#L85-L89</p>
+<p>I'm not sure how we could distinguish between these cases though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsudol-plaid">@tsudol-plaid</a> on 2025-11-03 20:33</div>
+            <div class="timeline-body"><p>I'm not sure either.</p>
+<p>The main issue, to me, is that the error message is misleading. A parse failure suggests that <code>uv</code> does not support <code>-e</code> lines, or <code>-e file:</code> lines. This is compounded by the fact that <code>requirements.txt</code> is a <code>pip</code> thing and the docs warn that <a href="https://docs.astral.sh/uv/pip/compatibility/">uv may not be fully compatible with pip</a>.</p>
+<p>But it's actually a configuration error due to how we invoke <code>pip</code> vs. how we have to invoke <code>uv</code> that makes the relative path wrong.</p>
+<p>Since it's supposed to be a file path, would be it be possible to differentiate between directories, files, and paths that do not exist?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-03 21:02</div>
+            <div class="timeline-body"><p>I think if it's preceded by <code>-e</code>, we can always assume it's a directory, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-03 21:42</div>
+            <div class="timeline-body"><blockquote>
+<p>I think if it's preceded by -e, we can always assume it's a directory, right?</p>
+</blockquote>
+<p>That seems reasonable!</p>
+<blockquote>
+<p>Since it's supposed to be a file path, would be it be possible to differentiate between directories, files, and paths that do not exist?</p>
+</blockquote>
+<p>We are already doing this — we're in the &quot;does not exist&quot; branch of the logic I linked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-11-05 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16967.html">astral-sh/uv#16967</a> on 2025-12-03 14:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:30 UTC
+    </footer>
+</body>
+</html>

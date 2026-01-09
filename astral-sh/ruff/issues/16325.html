@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF010 has false positives and false negatives - astral-sh/ruff #16325</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF010 has false positives and false negatives</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16325">#16325</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-02-23 16:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-02-23 16:13</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/explicit-f-string-type-conversion/"><code>explicit-f-string-type-conversion</code> (RUF010)</a> has many errors in Ruff 0.9.7.</p>
+<p>If the argument to <code>ascii</code>, <code>repr</code>, or <code>str</code> is a comprehension or display for a set or dictionary, the rule does not report it.</p>
+<pre><code class="language-console">$ cat &gt;ruf010_1.py &lt;&lt;'# EOF'
+print(f&quot;{ascii({})}&quot;)
+# EOF
+
+$ ruff --isolated check --select RUF010 ruf010_1.py
+All checks passed!
+</code></pre>
+<p>That false negative is intentional, to fix #5530, but a better solution is to add a space as <code>ruff format</code> does.</p>
+<pre><code class="language-python">print(f&quot;{ {}!a}&quot;)
+</code></pre>
+<p>Skipping those comprehensions and displays does not fix that problem anyway. If the argument starts with one but continues further, the rule introduces a syntax error.</p>
+<pre><code class="language-console">$ cat &gt;ruf010_2.py &lt;&lt;'# EOF'
+print(f&quot;{ascii({} | {})}&quot;)
+# EOF
+
+$ ruff --isolated check --select RUF010 ruf010_2.py --diff 2&gt;&amp;1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+</code></pre>
+<p>The fix is suppressed when the conversion function expression is not exactly <code>ascii</code>, <code>repr</code>, or <code>str</code>. Since the rule is able to detect equivalent expressions it should be able to fix them.</p>
+<pre><code class="language-console">$ cat &gt;ruf010_3.py &lt;&lt;'# EOF'
+import builtins
+print(f&quot;{builtins.ascii(1)}&quot;)
+print(f&quot;{𝑎𝑠𝑐𝑖𝑖(1)}&quot;)
+# EOF
+
+$ ruff --isolated check --select RUF010 ruf010_3.py --output-format concise
+ruf010_3.py:2:10: RUF010 Use explicit conversion flag
+ruf010_3.py:3:10: RUF010 Use explicit conversion flag
+Found 2 errors.
+</code></pre>
+<p>The fix for an expression followed by an equals sign is not safe, because it changes behavior. In that specific case, the fix should be marked unsafe or should be suppressed.</p>
+<pre><code class="language-console">$ cat &gt;ruf010_4.py &lt;&lt;'# EOF'
+print(f&quot;{ascii(1)=}&quot;)
+# EOF
+
+$ python ruf010_4.py
+ascii(1)='1'
+
+$ ruff --isolated check --select RUF010 ruf010_4.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat ruf010_4.py
+print(f&quot;{1=!a}&quot;)
+
+$ python ruf010_4.py
+1=1
+</code></pre>
+<p>RUF010 introduces a syntax error when the argument is an unparenthesized lambda expression. The fix should add parentheses around the lambda expression.</p>
+<pre><code class="language-console">$ cat &gt;ruf010_5.py &lt;&lt;'# EOF'
+print(f&quot;{ascii(lambda: 1)}&quot;)
+# EOF
+
+$ ruff --isolated check --select RUF010 ruf010_5.py --diff 2&gt;&amp;1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+</code></pre>
+<p>When the argument is an unparenthesized assignment expression, the fix misinterprets the colon of the <code>:=</code> as the sigil of a format specifier. The fix should add parentheses around the assignment expression.</p>
+<pre><code class="language-console">$ cat &gt;ruf010_6.py &lt;&lt;'# EOF'
+x = 1
+print(f&quot;{ascii(x := 2)}&quot;)
+# EOF
+
+$ python ruf010_6.py
+2
+
+$ ruff --isolated check --select RUF010 ruf010_6.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ python ruf010_6.py
+Traceback (most recent call last):
+  File &quot;ruf010_6.py&quot;, line 2, in &lt;module&gt;
+    print(f&quot;{x := 2!a}&quot;)
+            ^^^^^^^^^^
+ValueError: Invalid format specifier '= 2!a' for object of type 'int'
+</code></pre>
+<p>The fix deletes the star from a starred expression. RUF010 should be suppressed in that context.</p>
+<pre><code class="language-console">$ cat &gt;ruf010_7.py &lt;&lt;'# EOF'
+args = (b&quot;\xa1&quot;, &quot;latin-1&quot;)
+print(f&quot;{str(*args)}&quot;)
+# EOF
+
+$ python ruf010_7.py
+¡
+
+$ ruff --isolated check --select RUF010 ruf010_7.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat ruf010_7.py 
+args = (b&quot;\xa1&quot;, &quot;latin-1&quot;)
+print(f&quot;{args!s}&quot;)
+
+$ python ruf010_7.py
+(b'\xa1', 'latin-1')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-02-23 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-15 23:04</div>
+            <div class="timeline-body"><p>For the last case just the fix should be suppressed right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18690.html">astral-sh/ruff#18690</a> on 2025-06-15 23:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-16 18:24</div>
+            <div class="timeline-body"><blockquote>
+<p>For the last case just the fix should be suppressed right?</p>
+</blockquote>
+<p>I think it makes sense to suppress the whole rule. That's what we do currently for this case, for example:</p>
+<pre><code class="language-python">print(f&quot;{str(b&quot;\xa1&quot;, &quot;latin-1&quot;)}&quot;)
+</code></pre>
+<p>I think we can treat <code>*args</code> just like multiple positional arguments and avoid the diagnostic. I don't think the lint would be very actionable for <code>*args</code> anyway since the behavior is so different from actually calling <code>str</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-16 18:31</div>
+            <div class="timeline-body"><p>I think we also technically have a false negative in the presence of keyword arguments, which appear to be valid for <code>str</code> only:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; str(object=args[0])
+&quot;b'\\xa1'&quot;
+&gt;&gt;&gt; repr(object=args[0])
+Traceback (most recent call last):
+  File &quot;&lt;python-input-7&gt;&quot;, line 1, in &lt;module&gt;
+    repr(object=args[0])
+    ~~~~^^^^^^^^^^^^^^^^
+TypeError: repr() takes no keyword arguments
+&gt;&gt;&gt; ascii(object=args[0])
+Traceback (most recent call last):
+  File &quot;&lt;python-input-8&gt;&quot;, line 1, in &lt;module&gt;
+    ascii(object=args[0])
+    ~~~~~^^^^^^^^^^^^^^^^
+TypeError: ascii() takes no keyword arguments
+</code></pre>
+<p>That's not clear in the online docs (e.g. for <a href="https://docs.python.org/3/library/functions.html#ascii"><code>ascii</code></a>), but the signature in <code>help(ascii)</code> does show the positional-only indicator: <code>ascii(obj, /)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-25 08:21</div>
+            <div class="timeline-body"><blockquote>
+<p>When the argument is an unparenthesized assignment expression, the fix misinterprets the colon of the := as the sigil of a format specifier. The fix should add parentheses around the assignment expression.</p>
+</blockquote>
+<p>This is also either a bug in CPython's parser or in our parser (CC: @dhruvmanila )</p>
+<p>Edit: Never mind, this isn't a syntax error, it's a runtime error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-25 08:37</div>
+            <div class="timeline-body"><p>Not sure I follow but as I already typed this out I'll send it :)</p>
+<p>That looks correct to me because named expression in f-string interpolation requires parentheses so the <code>:</code> token would be interpreted as the start of a format specifier. The issue is in the fix generation, named and lambda expressions should be parenthesized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-26 15:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

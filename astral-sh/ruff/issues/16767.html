@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blind-except (BLE001) is not active at all - astral-sh/ruff #16767</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>blind-except (BLE001) is not active at all</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/16767">#16767</a>
+        opened by <a href="https://github.com/dolfandringa">@dolfandringa</a>
+        on 2025-03-15 18:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dolfandringa">@dolfandringa</a> on 2025-03-15 18:50</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>According to <a href="https://docs.astral.sh/ruff/rules/blind-except/">the docs, blind-except (BLE001)</a> says that <code>except Exception</code> is bad, which I agree with. But it looks like ruff by default doesn't actually check for blind-except at all. Is this intentional? If there are errors that ruff does not check for by default, it would make sense to me to document with those errors, that they are off by default.</p>
+<p>This test.py file does not get flagged by ruff as being invalid.</p>
+<pre><code>a = 1
+b = 0
+try:
+    print(a / b)
+except Exception as e:
+    print(e)
+
+try:
+    print(a / b)
+except Exception:
+    print(&quot;error&quot;)
+
+try:
+    print(a / b)
+except BaseException:
+    print(&quot;error2&quot;)
+</code></pre>
+<pre><code>❯ ruff --version
+ruff 0.11.0
+❯ ruff check test.py
+All checks passed!
+</code></pre>
+<p>While if I turn it into this:</p>
+<pre><code>a = 1
+b = 0
+try:
+    print(a / b)
+except Exception as e:
+    print(e)
+
+try:
+    print(a / b)
+except Exception:
+    print(&quot;error&quot;)
+
+try:
+    print(a / b)
+except:
+    pass
+</code></pre>
+<p>it does get flagged as a bare except:</p>
+<pre><code>❯ ruff check test.py
+test.py:15:1: E722 Do not use bare `except`
+   |
+13 | try:
+14 |     print(a / b)
+15 | except:
+   | ^^^^^^ E722
+16 |     pass
+   |
+
+Found 1 error.
+</code></pre>
+<p>And running ruff with selecting BLE001 explicitely also flags it:</p>
+<pre><code>❯ ruff check test.py --select BLE001
+test.py:5:8: BLE001 Do not catch blind exception: `Exception`
+  |
+3 | try:
+4 |     print(a / b)
+5 | except Exception as e:
+  |        ^^^^^^^^^ BLE001
+6 |     print(e)
+  |
+
+test.py:10:8: BLE001 Do not catch blind exception: `BaseException`
+   |
+ 8 | try:
+ 9 |     print(a / b)
+10 | except BaseException:
+   |        ^^^^^^^^^^^^^ BLE001
+11 |     print(&quot;error&quot;)
+   |
+
+Found 2 errors.
+</code></pre>
+<h3>Version</h3>
+<p>0.3.7 and 0.11.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "blind-except (BLE001) false negative with `except Exception`" to "blind-except (BLE001) is not active at all" by @dolfandringa on 2025-03-15 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dolfandringa">@dolfandringa</a> on 2025-03-15 19:15</div>
+            <div class="timeline-body"><p>Ok, this is as intended.  I am just surprised this is not on by default. Also,  i think it makes sense to document what rules are on by default with the rules. Now it's really tedious to search through the default config and then the list of rules what is and isn't on by default. But that's a different issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dolfandringa on 2025-03-15 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-15 19:25</div>
+            <div class="timeline-body"><p>Only a pretty small set of rules is enabled by default. See the <a href="https://docs.astral.sh/ruff/rules/#rules">rule documentation</a>:</p>
+<blockquote>
+<p>By default, Ruff enables Flake8's F rules, along with a subset of the E rules, omitting any stylistic rules that overlap with the use of a formatter, like ruff format or <a href="https://github.com/psf/black">Black</a>.</p>
+</blockquote>
+<p>You can also run <code>ruff check --show-settings</code> and look for the <code>linter.rules_enabled</code> section. That shows all of the enabled rules with their names and codes.</p>
+<p>I think some people also like to use the special <code>ALL</code> rule code to select all rules and then <a href="https://docs.astral.sh/ruff/settings/#lint_ignore"><code>ignore</code></a> the ones they don't want. If you want to enable a large number of rules, that could be easier than selecting them all.</p>
+<p>Maybe it would be nice if we added an icon for default rules in the main rules page, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-03-15 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-03-15 19:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:15 UTC
+    </footer>
+</body>
+</html>

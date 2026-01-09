@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>netrc authentication seems to fail for index_url specified in requirements.txt. - astral-sh/uv #3471</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>netrc authentication seems to fail for index_url specified in requirements.txt.</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3471">#3471</a>
+        opened by <a href="https://github.com/likesum">@likesum</a>
+        on 2024-05-08 20:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/likesum">@likesum</a> on 2024-05-08 20:00</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p><strong>Description:</strong>
+<code>netrc</code> authentication seems to fail for <code>index_url</code> specified in <code>requirements.txt</code>.</p>
+<p><strong>How to reproduce:</strong>
+<code>uv pip install -r requirement.txt</code> does not work if <code>requirement.txt</code> contains an <code>--index-url</code> whose authentication is stored in <code>~/.netrc</code>.</p>
+<pre><code>error: HTTP status client error (401 Unauthorized) for url
+</code></pre>
+<p>It works, however, if one moves the url out of the txt file and does <code>uv pip install --index-url url_without_authentication -r requirement.txt</code>.</p>
+<p><strong>The current uv platform</strong>: Linux.</p>
+<p><strong>uv version</strong>: 0.1.38.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-08 20:51</div>
+            <div class="timeline-body"><p>Interesting... Can you share <code>RUST_LOG=uv=trace uv pip install -v ...</code> logs for the installation? Ensure you replace your password with asterisks in the logs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/likesum">@likesum</a> on 2024-05-09 00:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Interesting... Can you share <code>RUST_LOG=uv=trace uv pip install -v ...</code> logs for the installation? Ensure you replace your password with asterisks in the logs.</p>
+</blockquote>
+<p>Thanks for the fast response! I assume you are asking for the logs for <code>uv pip install -r requirement.txt</code>?</p>
+<pre><code>TRACE No cache entry exists for /home/****/.cache/uv/simple-v7/89b815c496164a1b/absl-py.rkyv
+DEBUG No cache entry for: https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+TRACE Sending fresh GET request for https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+TRACE Handling request for https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+TRACE Request for https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+TRACE Attempting unauthenticated request for https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+...
+TRACE Request for https://****/artifactory/api/pypi/pypi-remote/simple/gitpython/ failed with 401 Unauthorized, checking for credentials
+</code></pre>
+<p>FWIW, directly use <code>pip install</code> instead of <code>uv pip install</code> works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-09 01:43</div>
+            <div class="timeline-body"><p>We're missing the relevant logs there, we don't try the netrc file until the request fails so where you stopped at &quot;failed with 401 Unauthorized, checking for credentials&quot; is the important part :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/likesum">@likesum</a> on 2024-05-09 02:06</div>
+            <div class="timeline-body"><p>Lol ok! It basically failed and exit at that point, so I didn't include it. Here it is:</p>
+<pre><code>TRACE No cache entry exists for /home/****/.cache/uv/simple-v7/89b815c496164a1b/absl-py.rkyv
+DEBUG No cache entry for: https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+TRACE Sending fresh GET request for https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+TRACE Handling request for https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+TRACE Request for https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+TRACE Attempting unauthenticated request for https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+...
+TRACE Request for https://****/artifactory/api/pypi/pypi-remote/simple/gitpython/ failed with 401 Unauthorized, checking for credentials
+TRACE No credentials in cache for realm https://****
+error: HTTP status client error (401 Unauthorized) for url (https://****/artifactory/api/pypi/pypi-remote/simple/gitpython/)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-09 02:18</div>
+            <div class="timeline-body"><p>Hm so we're not seeing this log</p>
+<p>https://github.com/astral-sh/uv/blob/c1370cab1b153a3d45c82cc2afe414cf2e1b2c82/crates/uv-auth/src/middleware.rs#L333</p>
+<p>which suggests to me that we're not discovering the netrc file which is pretty weird. Would it be feasible to share the full logs in a gist or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-05-09 02:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/likesum">@likesum</a> on 2024-05-09 02:22</div>
+            <div class="timeline-body"><p>This is basically the full log. I removed all entries in the <code>requirements.txt</code> except one. And here is the full log:</p>
+<pre><code>INFO Found a virtualenv through CONDA_PREFIX at: /home/****/.dotfiles/mambaforge/envs/sandbox
+DEBUG Cached interpreter info for Python 3.10.14, skipping probing: /home/****/.dotfiles/mambaforge/envs/sandbox/bin/python
+DEBUG Using Python 3.10.14 environment at /home/****/.dotfiles/mambaforge/envs/sandbox/bin/python
+DEBUG Trying to lock if free: /tmp/uv-d91bf38ff76b0a64.lock
+DEBUG Using registry request timeout of 30s
+DEBUG Solving with target Python version 3.10.14
+DEBUG Adding direct dependency: absl-py&gt;=1.2.0
+TRACE Fetching metadata for absl-py from https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+TRACE No cache entry exists for /home/****/.cache/uv/simple-v7/89b815c496164a1b/absl-py.rkyv
+DEBUG No cache entry for: https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+TRACE Sending fresh GET request for https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+TRACE Handling request for https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+TRACE Request for https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+TRACE Attempting unauthenticated request for https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/
+TRACE Request for https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/ failed with 401 Unauthorized, checking for credentials
+TRACE No credentials in cache for realm https://****
+error: HTTP status client error (401 Unauthorized) for url (https://****/artifactory/api/pypi/pypi-remote/simple/absl-py/)
+</code></pre>
+<p>Or do you want me to try something else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-09 13:20</div>
+            <div class="timeline-body"><p>This is helpful, thank you. I'll look into it on my end and report back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-09 14:24</div>
+            <div class="timeline-body"><p>Interestingly, I added a test case for this and it succeeds: https://github.com/astral-sh/uv/pull/3485</p>
+<p>Does it look meaningfully different than your setup?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3485.html">astral-sh/uv#3485</a> on 2024-05-09 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisirhc">@chrisirhc</a> on 2024-08-08 00:06</div>
+            <div class="timeline-body"><p>In case this might help, in my scenario, the <code>$HOME</code> environment variable wasn't populated and hence, uv did not detect the .netrc file, whereas pypi is able to find and use it.</p>
+<p>Opened https://github.com/gribouille/netrc/issues/4 in upstream.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../gribouille/netrc/issues/4.html">gribouille/netrc#4</a> on 2024-08-08 00:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @zanieb on 2024-10-04 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 20:59</div>
+            <div class="timeline-body"><p>Not much to do here until addressed upstream, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-04 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6809.html">astral-sh/uv#6809</a> on 2024-10-08 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8003.html">astral-sh/uv#8003</a> on 2024-10-08 11:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

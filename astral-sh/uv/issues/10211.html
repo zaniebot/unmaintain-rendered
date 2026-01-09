@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task runner plugin system - astral-sh/uv #10211</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Task runner plugin system</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10211">#10211</a>
+        opened by <a href="https://github.com/rmorshea">@rmorshea</a>
+        on 2024-12-28 05:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rmorshea">@rmorshea</a> on 2024-12-28 05:52</div>
+            <div class="timeline-body"><p>In my projects that use <code>uv</code> I've developed a pattern (which I've encoded in a <a href="https://github.com/rmorshea/python-copier-template?tab=readme-ov-file#whats-in-the-box">template repo</a>) where I define a script called <code>dev.py</code> that uses <code>click</code> to define a CLI and automate common tasks (e.g. running tests, building docs and linting). With that in mind it would be nice if it were possible to define a &quot;default script&quot; so that, instead of typing <code>uv run dev.py ...</code>, I could avoid typing <code>dev.py</code> each time and use a shorter command a la <code>yarn run</code> or <code>npm run</code> which inherit commands from the <code>scripts</code> section of <code>package.json</code>. Since <code>uv run</code> wouldn't be suitable for this due to the fact that positional arguments would be confused with executables, an alternative command like <code>uv do ...</code> would be necessary. A hypothetical configuration could look something like:</p>
+<pre><code class="language-toml">[tool.uv.do]
+command = &quot;uv run dev.py&quot;
+</code></pre>
+<p>I understand this might be considered relatively niche, however I could imagine a feature like this negating the need for UV to develop it's own system for defining and executing &quot;user scripts&quot; as other package managers in the Python space have (e.g. <a href="https://hatch.pypa.io/1.12/config/environment/overview/#scripts">Hatch's</a> and <a href="https://pdm-project.org/en/latest/usage/scripts/#user-scripts">PDM's</a> approaches). Instead, UV could defer to existing tools in the Python ecosystem for this like <a href="https://nox.thea.codes/en/stable/">Nox</a> or <a href="https://www.pyinvoke.org/">Invoke</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-12-28 09:39</div>
+            <div class="timeline-body"><p>Although the expected format is different, does this issue(https://github.com/astral-sh/uv/issues/5903) function as you expected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-28 17:28</div>
+            <div class="timeline-body"><p>Interesting, this sounds like an implementation of #5903 that just invokes a third-party tool? Sort of a plugin system?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rmorshea">@rmorshea</a> on 2024-12-28 20:36</div>
+            <div class="timeline-body"><p>@zanieb I think it could function that way. Put another way, I'm proposing that UV provide a command for projects to alias in whatever way they might want.</p>
+<p>Taking the initial <a href="https://github.com/taskipy/taskipy">taskipy</a> example from #5903 you could configure:</p>
+<pre><code class="language-toml">[dependency-groups]
+dev = [&quot;taskipy&quot;]
+
+[tool.uv.do]
+command = &quot;uv run task&quot;
+
+[tool.taskipy.tasks]
+hello = &quot;echo Hello from taskipy!&quot;
+</code></pre>
+<p>Any then run:</p>
+<pre><code>uv do hello
+</code></pre>
+<p>I see two main advantages of this approach has over #5903:</p>
+<ul>
+<li><p>If you choose to use another tool to manage your scripts you don't need to ensure you've copied them both under <code>[tool.uv.tasks]</code> and that tool's configuration location of choice. To me, having a bunch of &quot;tasks&quot; which look like <code>uv run uvx --from=rust-just just &lt;the-task&gt;</code> seems redundant and annoying to maintain. Instead, under this proposal you could simply configure:</p>
+<pre><code class="language-toml">[tool.uv.do]
+command = &quot;uv run uvx --from=rust-just just&quot;
+</code></pre>
+</li>
+<li><p>As mentioned above, UV doesn't need to develop and maintain a task running system that will inevitably grow in scope and complexity. While choosing not to provide a task runner out of the box might not conform to people's expectations, I think it could be pretty easily addressed with a short and easily discoverable section of documentation that provides a recommended solution for people to copy-paste into their projects.</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rmorshea">@rmorshea</a> on 2024-12-28 20:55</div>
+            <div class="timeline-body"><p>One downside of this proposal vs #5903 is that new contributors to a project that uses UV won't always be able to look for the same <code>tool.uv.tasks</code> configuration to find the set of common commands they might want to run.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10264.html">astral-sh/uv#10264</a> on 2025-01-01 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Consider option to define a "default script"" to "Task runner plugin system" by @rmorshea on 2025-01-02 00:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5903.html">astral-sh/uv#5903</a> on 2025-01-02 00:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rmorshea">@rmorshea</a> on 2025-01-02 17:56</div>
+            <div class="timeline-body"><p>@zanieb would you recommend closing this issue in favor of #5903?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-02 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-02 18:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff check --fix yields different output (same version) - astral-sh/ruff #19684</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff check --fix yields different output (same version)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/19684">#19684</a>
+        opened by <a href="https://github.com/N-Pahlke">@N-Pahlke</a>
+        on 2025-08-01 11:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/N-Pahlke">@N-Pahlke</a> on 2025-08-01 11:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>On Windows 11 git bash etc. the pre-commit using ruff yields different output than running the same pre-commit in ubuntu pipeline.
+image github actions: ubuntu-latest, 01/08/2025</p>
+<p>Locally it says nothing is to be formatted, all fine.</p>
+<p>In the pipeline exactly ONE thing seems to be off:</p>
+<pre><code>Run poetry run pre-commit run --all-files || true
+  
+ruff check-fix...........................................................Failed
+- hook id: ruff-check-fix
+- files were modified by this hook
+Found 1 error (1 fixed, 0 remaining).
+ruff format..............................................................Passed
+pytest...................................................................Passed
+ruff 0.12.7
+diff --git a/src/visualiser_pub_sub/libs/graph_helper.py b/src/visualiser_pub_sub/libs/graph_helper.py
+index 536556f..9d1972e 100644
+--- a/src/visualiser_pub_sub/libs/graph_helper.py
++++ b/src/visualiser_pub_sub/libs/graph_helper.py
+@@ -4,6 +4,7 @@ import re
+ from pathlib import Path
+ 
+ from graphviz import Digraph
++
+ from src.config import SUB_FOLDER_BOARD_OWNER, SUB_FOLDER_PUB, SVG_DPI
+ from src.visualiser_pub_sub.libs.pub_sub_config_helper import remove_emojis
+</code></pre>
+<p>the version is locked, both use 0.12.7</p>
+<p>It seems to be placing another newline, which is explicilty DOES NOT want to locally.</p>
+<p>pre-commit-config.yaml</p>
+<pre><code class="language-yaml">repos:
+  - repo: local
+    hooks:
+      - id: ruff-check-fix
+        name: ruff check-fix
+        entry: poetry run ruff check --fix
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true
+
+      - id: ruff-format
+        name: ruff format
+        entry: poetry run ruff format
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true
+
+      - id: pytest
+        name: pytest
+        entry: poetry run pytest tests
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true
+</code></pre>
+<p>This setup works for every other repo.
+This makes my pr validation pipeline fail and causes me to be deactivate validation checks. Becomes unusable right now for this repository.
+Thanks.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ruff check --fix yields different output" to "ruff check --fix yields different output (same version)" by @N-Pahlke on 2025-08-01 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-01 13:17</div>
+            <div class="timeline-body"><p>This sounds a lot like https://github.com/astral-sh/ruff/issues/18647. Do you potentially have a <code>graphviz</code> directory locally or in CI? It looks like the import is being detected as a different group in one or the other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-08-01 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/N-Pahlke">@N-Pahlke</a> on 2025-08-04 05:47</div>
+            <div class="timeline-body"><p>You are right.
+Thanks a lot, much appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @N-Pahlke on 2025-08-04 05:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

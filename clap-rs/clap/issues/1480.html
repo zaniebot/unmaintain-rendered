@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArgMatcher with `max_values` consumes one more argument than it should - clap-rs/clap #1480</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>ArgMatcher with `max_values` consumes one more argument than it should</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/1480">#1480</a>
+        opened by <a href="https://github.com/sphynx">@sphynx</a>
+        on 2019-05-28 07:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sphynx">@sphynx</a> on 2019-05-28 07:55</div>
+            <div class="timeline-body"><!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+<h3>Rust Version</h3>
+<p>rustc-1.36.0-nightly</p>
+<h3>Affected Version of clap</h3>
+<p>2.33.0</p>
+<h3>Bug or Feature Request Summary</h3>
+<p>If I set <code>max_values = 1</code> for an option I expect that the option should consume only one argument and leave the rest for the next parsers. However, due to one-off error in <code>ArgMatcher</code>, it now consumes <em>two</em> arguments (and then fails validation, because it took one more than it should).</p>
+<p>For example, I expect that:</p>
+<pre><code>prog --field 1 FILE
+</code></pre>
+<p>Should be parsed correct if <code>--field</code> has <code>max-values=1</code> and <code>FILE</code> is a positional arguments. However, <code>FILE</code> is consumed by <code>ArgMatcher</code> as the second value for the <code>--file</code> option, which then leads to validation error.</p>
+<h3>Steps to Reproduce the issue</h3>
+<p><code>cargo run</code></p>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    let res = App::new(&quot;prog&quot;)
+        .arg(
+            Arg::with_name(&quot;field&quot;)
+                .takes_value(true)
+                .multiple(false)
+                .max_values(1)
+                .long(&quot;field&quot;),
+        )
+        .arg(
+            Arg::with_name(&quot;positional&quot;)
+                .required(true)
+                .index(1),
+        )
+        .get_matches_from_safe(vec![&quot;prog&quot;, &quot;--field&quot;, &quot;1&quot;, &quot;file&quot;]);
+
+    assert!(res.is_ok());
+}
+</code></pre>
+<h3>Debug output</h3>
+<p>Compile clap with cargo features <code>&quot;debug&quot;</code> such as:</p>
+<pre><code class="language-toml">[dependencies]
+clap = { version = &quot;2&quot;, features = [&quot;debug&quot;] }
+</code></pre>
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+
+<p>DEBUG:clap:Parser::propagate_settings: self=prog, g_settings=AppFlags(
+(empty),
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;--field&quot;' ([45, 45, 102, 105, 101, 108, 100])
+DEBUG:clap:Parser::is_new_arg:&quot;--field&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: -- found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;--field&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::parse_long_arg;
+DEBUG:clap:Parser::parse_long_arg: Does it contain '='...No
+DEBUG:clap:OptBuilder::fmt:field
+DEBUG:clap:Parser::parse_long_arg: Found valid opt '--field <field>'
+DEBUG:clap:Parser::parse_opt; opt=field, val=None
+DEBUG:clap:Parser::parse_opt; opt.settings=ArgFlags(EMPTY_VALS | TAKES_VAL | DELIM_NOT_SET)
+DEBUG:clap:Parser::parse_opt; Checking for val...None
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=field
+DEBUG:clap:ArgMatcher::inc_occurrence_of: first instance
+DEBUG:clap:Parser::groups_for_arg: name=field
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Parser::parse_opt: More arg vals required...
+DEBUG:clap:Parser:get_matches_with: After parse_long_arg Opt(&quot;field&quot;)
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;1&quot;' ([49])
+DEBUG:clap:Parser::is_new_arg:&quot;1&quot;:Opt(&quot;field&quot;)
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::add_val_to_arg; arg=field, val=&quot;1&quot;
+DEBUG:clap:Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+DEBUG:clap:Parser::add_single_val_to_arg;
+DEBUG:clap:Parser::add_single_val_to_arg: adding val...&quot;1&quot;
+DEBUG:clap:Parser::groups_for_arg: name=field
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::needs_more_vals: o=field
+DEBUG:clap:ArgMatcher::needs_more_vals: max_vals...1
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;file&quot;' ([102, 105, 108, 101])
+DEBUG:clap:Parser::is_new_arg:&quot;file&quot;:Opt(&quot;field&quot;)
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::add_val_to_arg; arg=field, val=&quot;file&quot;
+DEBUG:clap:Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+DEBUG:clap:Parser::add_single_val_to_arg;
+DEBUG:clap:Parser::add_single_val_to_arg: adding val...&quot;file&quot;
+DEBUG:clap:Parser::groups_for_arg: name=field
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::needs_more_vals: o=field
+DEBUG:clap:ArgMatcher::needs_more_vals: max_vals...1
+DEBUG:clap:ArgMatcher::process_arg_overrides:Some(&quot;field&quot;);
+DEBUG:clap:Parser::remove_overrides:[];
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Parser::add_defaults;
+DEBUG:clap:Parser::add_defaults:iter:field: doesn't have conditional defaults
+DEBUG:clap:Parser::add_defaults:iter:field: doesn't have default vals
+DEBUG:clap:Parser::add_defaults:iter:positional: doesn't have conditional defaults
+DEBUG:clap:Parser::add_defaults:iter:positional: doesn't have default vals
+DEBUG:clap:Validator::validate_blacklist;
+DEBUG:clap:Validator::validate_blacklist:iter:field;
+DEBUG:clap:Parser::groups_for_arg: name=field
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Validator::validate_required: required=[&quot;positional&quot;];
+DEBUG:clap:Validator::validate_required:iter:positional:
+DEBUG:clap:Validator::is_missing_required_ok: a=positional
+DEBUG:clap:Validator::validate_arg_conflicts: a=&quot;positional&quot;;
+DEBUG:clap:Validator::validate_required_unless: a=&quot;positional&quot;;
+DEBUG:clap:Validator::missing_required_error: extra=None
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Validator::missing_required_error: reqs=[
+&quot;positional&quot;,
+]
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;positional&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;positional&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Validator::missing_required_error: req_args=&quot;\n    \u{1b}[1;31m<positional>\u{1b}[0m&quot;
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::smart_usage;
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;positional&quot;, &quot;field&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;field&quot;, &quot;positional&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::get_required_usage_from:iter:field:
+DEBUG:clap:OptBuilder::fmt:field
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Colorizer::good;
+thread 'main' panicked at 'assertion failed: res.is_ok()', src/main.rs:19:5
+note: Run with <code>RUST_BACKTRACE=1</code> environment variable to display a backtrace.</p>
+</code>
+</pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1481.html">clap-rs/clap#1481</a> on 2019-05-28 08:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: positional args</span> added by @CreepySkeleton on 2020-02-01 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @CreepySkeleton on 2020-02-01 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @CreepySkeleton on 2020-02-01 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @CreepySkeleton on 2020-02-01 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @CreepySkeleton on 2020-02-01 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @CreepySkeleton on 2020-02-01 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1802.html">clap-rs/clap#1802</a> on 2020-04-09 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-04-10 08:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:32 UTC
+    </footer>
+</body>
+</html>

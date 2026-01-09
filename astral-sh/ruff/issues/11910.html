@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issues with rule PD101. - astral-sh/ruff #11910</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issues with rule PD101.</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/ruff/issues/11910">#11910</a>
+        opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a>
+        on 2024-06-17 19:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2024-06-17 19:17</div>
+            <div class="timeline-body"><p>There are multiple issues with <a href="https://docs.astral.sh/ruff/rules/pandas-nunique-constant-series-check/">Rule PD101</a>:</p>
+<ol>
+<li><p><code>(s[0] == s).all()</code> can actually be slower than <code>s.nunique() &lt;=1</code>, for example when testing with time series data, as in pandas <code>s[0]</code> converts to <code>pd.Timedelta</code> type, which leads to overhead for shorter series:</p>
+<pre><code class="language-python">import pandas as pd
+import numpy as np
+t = np.random.rand(100_000) * np.timedelta64(1, &quot;s&quot;)
+s3 = pd.Series(t[:10**3])
+s4 = pd.Series(t[:10**4])
+s5 = pd.Series(t[:10**5])
+%timeit s3.nunique() &lt;=1    # 51.4 µs ± 768 ns
+%timeit (s3[0] == s).all()  # 69.1 µs ± 123 ns
+%timeit s4.nunique() &lt;=1    # 78.9 µs ± 197 ns
+%timeit (s4[0] == s).all()  # 69.2 µs ± 62.6 ns
+%timeit s5.nunique() &lt;=1    # 375 µs ± 1.14 µs
+%timeit (s5[0] == s).all()  # 70.5 µs ± 1.5 µs
+</code></pre>
+<p>This can be circumvented by testing <code>(s.values[0] == s.values).all()</code> instead. (Note: we actually should be using <code>.array</code> instead of <code>.values</code>!)
+See this graphic: https://github.com/pandas-dev/pandas/issues/54033.
+<img src="https://github.com/astral-sh/ruff/assets/39696536/af58e415-b620-4e56-a9f8-feefb492b931" alt="image" /></p>
+</li>
+<li><p><code>(s[0] == s).all()</code> can yield different results than <code>s.nunique() &lt;= 1</code>, for instance if the first entry in the series happens to be NaN / missing.</p>
+<pre><code class="language-python">import pandas as pd
+s = pd.Series([None, 1.0, 1.0, 1.0])
+assert s.nunique() &lt;= 1   # checks, since dropna=True by default
+assert (s[0] == s).all()  # fails, since comparison with NaN is falsy
+</code></pre>
+<p>Note that it can also yield wrong answers in the other direction:</p>
+<pre><code class="language-python">import pandas as pd
+s = pd.Series([None, 1, 1, 3], dtype=&quot;Int64&quot;)
+assert (s[0] == s).all()  # incorrectly passes
+assert s.nunique() &lt;= 1   # correctly fails
+</code></pre>
+</li>
+<li><p><code>(s[0] == s).all()</code> will fail if the Series happens to be empty. Empty series can happen naturally, for example, consider slicing a 1h-interval of an irregularly sampled time series.</p>
+<pre><code class="language-python">import pandas as pd
+s = pd.Series([], dtype=float)
+assert s.nunique() &lt;= 1   # checks
+assert (s[0] == s).all()  # KeyError
+</code></pre>
+</li>
+<li><p>The stated rationale is technically incorrect:</p>
+<blockquote>
+<p>In general, .nunique() requires iterating over the entire Series, while a more efficient approach allows short-circuiting the operation as soon as a non-equal value is found.</p>
+</blockquote>
+<p>But <code>s[0] == s</code> performs the comparison for all elements, hence the runtime is O(N) regardless. An actual short-circuiting would look something like this:</p>
+<pre><code class="language-python">import pandas as pd
+import numpy as np
+
+def is_constant(array):
+    if len(s) &lt;= 1:
+        return True
+    first = array[0]
+    return all(item == first for item in array)
+
+s = pd.Series(np.random.rand(100_000))
+%timeit (s[0] == s).all()  # 75.5 µs ± 906 ns
+%timeit is_constant(s.values)     # 3.12 µs ± 49.9 ns
+</code></pre>
+</li>
+</ol>
+<hr />
+<p>Two things should be changed:</p>
+<ol>
+<li>The rationale should be rewritten, removing the &quot;short-circuiting&quot; part.</li>
+<li>The suggested replacement code should be updated to better deal with missing value and extension arrays. In particular, instead of <code>array = data.to_numpy()</code> we should consider <code>array = data.dropna().array</code>.</li>
+</ol>
+<pre><code class="language-python">import pandas as pd
+
+data = pd.Series([None, 1.0, 1.0, 3.4])
+
+# replace data.nunique() &lt;= 1 with
+array = data.dropna().array
+if array.shape[0] == 0 or (array[0] == array).all():
+    print(&quot;Series is constant&quot;)
+
+# replace data.nunique(dropna=False) with
+array = data.dropna().array
+if array.shape[0] == 0 or (data.notna().all() and (array[0] == array).all()):
+    print(&quot;Series is constant&quot;)
+
+# replace data.nunique(dropna=dropna) withdropna=True
+array = data.dropna().array
+if array.shape[0] == 0 or ((dropna or data.notna().all()) and (array[0] == array).all()):
+    print(&quot;Series is constant&quot;)
+</code></pre>
+<hr />
+<h2>EDITS</h2>
+<ul>
+<li><strong>2024-06-18:</strong> For Series we should use <code>.array</code> instead of <code>.values</code> or <code>.to_numpy()</code>, as these construct <code>numpy</code> arrays, even if the series is based on a pyarrow-encoded array.
+(see: <a href="https://pandas.pydata.org/docs/reference/api/pandas.Series.values.html">https://pandas.pydata.org/docs/reference/api/pandas.Series.values.html</a>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pandas-dev/pandas/issues/58806.html">pandas-dev/pandas#58806</a> on 2024-06-17 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-06-18 05:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @MichaReiser on 2024-06-18 05:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-18 05:51</div>
+            <div class="timeline-body"><p>Thanks for the great write up! This is  excellent</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:13 UTC
+    </footer>
+</body>
+</html>

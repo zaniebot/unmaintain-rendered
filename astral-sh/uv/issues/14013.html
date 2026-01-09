@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory usage increases when switching from --all-packages to --frozen --no-dev --no-cache in Docker - astral-sh/uv #14013</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Memory usage increases when switching from --all-packages to --frozen --no-dev --no-cache in Docker</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/14013">#14013</a>
+        opened by <a href="https://github.com/timothy-jeong">@timothy-jeong</a>
+        on 2025-06-13 02:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/timothy-jeong">@timothy-jeong</a> on 2025-06-13 02:23</div>
+            <div class="timeline-body"><h3>Question</h3>
+<blockquote>
+<p>First of all, thank you for creating such an awesome package management tool. <code>uv</code> has made our Python monorepo setup significantly faster and easier to manage. We truly appreciate the effort behind this project!</p>
+</blockquote>
+<p>Hi there 👋 I'm using Python to build a backend server, and we recently adopted uv as our package manager.</p>
+<p>We're currently using uv to manage a <strong>monorepo</strong> that contains both shared modules and multiple microservices.</p>
+<p>Here's a simplified version of our Dockerfile. We recently changed the uv sync command from <code>--all-packages</code>to <code>--frozen --no-dev --no-cache</code> for a leaner production build</p>
+<pre><code class="language-Dockerfile">FROM {some-python3.12-slim-arm64-image}
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+WORKDIR /app
+
+COPY pyproject.toml /app/pyproject.toml        # Project root
+COPY uv.lock /app/uv.lock                      # Single uv.lock at root
+COPY packages /app/packages                    # Shared modules
+COPY services/a_service /app/services/a_service  # One microservice
+
+# Previously used for convenience:
+# RUN uv sync --all-packages
+RUN uv sync --frozen --no-dev --no-cache
+
+WORKDIR /app/services/a_service
+
+ENV PYTHONPATH=/app:/app/services/a_service
+
+RUN chmod +x start_servers.sh
+EXPOSE {port}
+CMD [&quot;/bin/bash&quot;, &quot;./start_servers.sh&quot;]
+</code></pre>
+<p>However, after deploying the Docker container on AWS ECS (Fargate), I noticed that the container consumes ~5–7 percentage points more memory than it did with <code>--all-packages</code> option</p>
+<p>Is there any known reason why <code>--frozen --no-dev --no-cache</code> option might lead to higher memory usage?</p>
+<p><strong>For more context, I tested on macOS Environment when I add <code>--frozen</code> option to <code>uv sync</code> it increase Docker Container memory usage approximately  100MB</strong></p>
+<p>Any insights or debugging suggestions would be greatly appreciated!</p>
+<p>Thanks again 🙌</p>
+<h3>Platform</h3>
+<p>macOS 15.5, arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.9 (3d9460278 2025-03-20)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @timothy-jeong on 2025-06-13 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-13 13:01</div>
+            <div class="timeline-body"><p><code>uv sync --all-packages</code> would ensure that your lockfile is up-to-date with your <code>pyproject.toml</code> first, while <code>uv sync --frozen --no-dev --no-cache</code> will just install directly from the lockfile, so your dependencies could be changing?</p>
+<p>What about <code>uv sync --all-packages --frozen</code>? Do you see changes there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timothy-jeong">@timothy-jeong</a> on 2025-06-14 04:14</div>
+            <div class="timeline-body"><p>Hi @zanieb,
+Thanks for your response!</p>
+<p>As you suggested, I tried using <code>uv sync --all-packages --frozen</code>, and it slightly reduced memory usage.
+From my repeated tests in a macOS local environment, it seems the <code>--frozen</code> option has a significant impact on memory usage.</p>
+<p>The packages I'm testing include some local modules that are added as workspaces, but they don’t have fixed versions. Here's a simplified example:</p>
+<pre><code class="language-toml">[project]
+name = &quot;ABC-service&quot;
+version = &quot;0.1.0&quot;
+description = &quot;ABC!&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    ...
+    &quot;shared.a&quot;,
+    &quot;shared.b&quot;,
+    &quot;shared.c&quot;,
+    &quot;shared.d&quot;,
+    &quot;shared.e&quot;,
+    &quot;grpc_client.a&quot;,
+    &quot;grpc_client.b&quot;,
+]
+
+[tool.uv.sources]
+&quot;shared.a&quot; = { workspace = true }
+&quot;shared.b&quot; = { workspace = true }
+&quot;shared.c&quot; = { workspace = true }
+&quot;shared.d&quot; = { workspace = true }
+&quot;shared.e&quot; = { workspace = true }
+&quot;grpc_client.a&quot; = { workspace = true }
+&quot;grpc_client.b&quot; = { workspace = true }
+</code></pre>
+<p>Since these dependencies don’t specify fixed versions, I suspect the <code>--frozen</code> option might be introducing some overhead. So I’m planning to tweak the setup a bit and run further tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timothy-jeong">@timothy-jeong</a> on 2025-06-14 04:25</div>
+            <div class="timeline-body"><p>I specified versions for the locally created modules in the workspace, but the Docker container still consumes around 100MB more memory even when no requests are being processed.</p>
+<p>However, when I remove the <code>--frozen</code> option, the memory usage drops.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timothy-jeong">@timothy-jeong</a> on 2025-06-25 02:18</div>
+            <div class="timeline-body"><p>I solve this problem by</p>
+<ol>
+<li>Following uv <a href="https://github.com/astral-sh/uv-docker-example">docker example reference</a>, especially the multistage setup</li>
+<li>Not including the <code>uv.lock</code> file in the Docker context, since I wanted to use the <code>--all-packages</code> option</li>
+<li>Installing packages with uv sync <code>--all-packages --no-dev</code></li>
+</ol>
+<p>As a result, I was able to reduce both the final Docker image size and the container's memory usage.</p>
+<p>this is my project structure and  full docker file for one specific serviec</p>
+<pre><code>.
+├── packages
+├── run_compose.sh
+├── services
+│   ├── a_service
+│   │   ├── app
+│   │   └── start_servers.sh
+├── pyproject.toml
+└── uv.lock
+</code></pre>
+<pre><code class="language-docker"># Builder stage
+FROM python:3.12-slim AS builder
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
+ENV UV_PYTHON_DOWNLOADS=0
+
+WORKDIR /app
+
+# First, install root dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev
+
+# Add all source code
+COPY pyproject.toml /app/pyproject.toml
+COPY packages /app/packages
+COPY services/a_service /app/services/a_service
+
+# Install all packages at build time
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --all-packages --no-dev
+
+# Runtime stage
+FROM python:3.12-slim
+
+# Create a non-root user
+RUN groupadd -r app &amp;&amp; useradd -r -g app app
+
+# Copy the application from the builder
+COPY --from=builder --chown=app:app /app /app
+
+# Set virtual environment path
+ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
+ENV PYTHONPATH=/app:/app/services/a_service
+
+USER app
+WORKDIR /app/services/a_service
+
+RUN chmod +x ./start_servers.sh
+CMD [&quot;/bin/bash&quot;, &quot;./start_servers.sh&quot;]
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @timothy-jeong on 2025-06-25 02:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-25 02:20</div>
+            <div class="timeline-body"><p>Thanks for following up!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:28 UTC
+    </footer>
+</body>
+</html>

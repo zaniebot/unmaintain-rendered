@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP008 should not apply when `__class__` is a local variable - astral-sh/ruff #20491</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP008 should not apply when `__class__` is a local variable</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/20491">#20491</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-09-20 21:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-09-20 21:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When the first argument to <code>super</code> in a method is a local variable named <code>__class__</code>, <a href="https://docs.astral.sh/ruff/rules/super-call-with-parameters/"><code>super-call-with-parameters</code> (UP008)</a> should not apply. <a href="https://play.ruff.rs/9f505e06-2c92-4c72-a50d-5f92b2931a69">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;up008.py &lt;&lt;'# EOF'
+class A:
+    def f(self):
+        return 1
+class B(A):
+    def f(self):
+        return 2
+class C(B):
+    def f(self):
+        __class__ = B
+        return super(__class__, self).f()
+print(C().f())
+# EOF
+
+$ python up008.py
+1
+
+$ ruff --isolated check up008.py --select UP008 --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ python up008.py 2&gt;&amp;1 | tail -n 1
+RuntimeError: super(): __class__ cell not found
+</code></pre>
+<p>This isn’t a problem in the usual case where <code>__class__</code> is nonlocal, whether explicitly via <code>nonlocal __class__</code> or implicitly by not being assigned to.</p>
+<h3>Version</h3>
+<p>ruff 0.13.1 (706be0a6e 2025-09-18)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20497.html">astral-sh/ruff#20497</a> on 2025-09-21 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-09-22 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-23 14:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:16 UTC
+    </footer>
+</body>
+</html>

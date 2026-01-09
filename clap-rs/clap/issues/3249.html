@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>short argument doesn't get parsed with allow_hyphen_values - clap-rs/clap #3249</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>short argument doesn't get parsed with allow_hyphen_values</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/3249">#3249</a>
+        opened by <a href="https://github.com/crowlKats">@crowlKats</a>
+        on 2022-01-03 21:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/crowlKats">@crowlKats</a> on 2022-01-03 21:59</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.57.0</p>
+<h3>Clap Version</h3>
+<p>3.0.0</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">fn main() {
+    let app = clap::App::new(&quot;foo&quot;)
+        .arg(
+            clap::Arg::with_name(&quot;cmd&quot;)
+                .required(true)
+                .multiple(true)
+                .allow_hyphen_values(true),
+        )
+        .arg(
+            clap::Arg::with_name(&quot;name&quot;)
+                .long(&quot;name&quot;)
+                .short('n')
+                .takes_value(true)
+                .required(false),
+        )
+        .arg(
+            clap::Arg::with_name(&quot;root&quot;)
+                .long(&quot;root&quot;)
+                .takes_value(true)
+                .multiple(false),
+        );
+
+    let matches = app.get_matches();
+
+    let cmd_values = matches.values_of(&quot;cmd&quot;).unwrap();
+    let mut cmd = vec![];
+    for value in cmd_values {
+        cmd.push(value.to_string());
+    }
+    println!(&quot;{:?}&quot;, cmd);
+
+    let name = matches.value_of(&quot;name&quot;).map(|s| s.to_string());
+    println!(&quot;{:?}&quot;, name);
+
+    let root = if matches.is_present(&quot;root&quot;) {
+        let install_root = matches.value_of(&quot;root&quot;).unwrap();
+        Some(std::path::PathBuf::from(install_root))
+    } else {
+        None
+    };
+    println!(&quot;{:?}&quot;, root);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- --root ./foo -n test https://localhost:5545/echo.ts</code></p>
+<h3>Actual Behaviour</h3>
+<p>When i run the command, the output is:</p>
+<pre><code>Some(&quot;./foo&quot;)
+None
+[&quot;-n&quot;, &quot;test&quot;, &quot;https://localhost:5545/echo.ts&quot;]
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>With clap 2.34.0 (with code adjuments to get it to compile, no actual changes to logic with exception of <code>.multiple_*</code> settings on arguments), i get this output:</p>
+<pre><code>Some(&quot;./foo&quot;)
+Some(&quot;test&quot;)
+[&quot;https://localhost:5545/echo.ts&quot;]
+</code></pre>
+<p>which is what i would expect</p>
+<h3>Additional Context</h3>
+<p>This is a blocker for Deno to upgrade to clap v3 (denoland/deno#13266)</p>
+<h3>Debug Output</h3>
+<pre><code>[            clap::build::app]  App::_do_parse
+[            clap::build::app]  App::_build
+[            clap::build::app]  App::_propagate:foo
+[            clap::build::app]  App::_check_help_and_version
+[            clap::build::app]  App::_check_help_and_version: Removing generated version
+[            clap::build::app]  App::_propagate_global_args:foo
+[            clap::build::app]  App::_derive_display_order:foo
+[clap::build::app::debug_asserts]       App::_debug_asserts
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:help
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:cmd
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:name
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:root
+[         clap::parse::parser]  Parser::get_matches_with
+[         clap::parse::parser]  Parser::_build
+[         clap::parse::parser]  Parser::_verify_positionals
+[         clap::parse::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--root&quot;)' ([45, 45, 114, 111, 111, 116])
+[         clap::parse::parser]  Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser]  Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser]  Parser::possible_subcommand: arg=RawOsStr(&quot;--root&quot;)
+[         clap::parse::parser]  Parser::get_matches_with: sc=None
+[         clap::parse::parser]  Parser::parse_long_arg
+[         clap::parse::parser]  Parser::parse_long_arg: cur_idx:=1
+[         clap::parse::parser]  Parser::parse_long_arg: Does it contain '='...
+[         clap::parse::parser]  No
+[         clap::parse::parser]  Parser::parse_long_arg: Found valid opt or flag '--root &lt;root&gt;'
+[         clap::parse::parser]  Parser::parse_long_arg: Found an opt with value 'None'
+[         clap::parse::parser]  Parser::parse_opt; opt=root, val=None
+[         clap::parse::parser]  Parser::parse_opt; opt.settings=ArgFlags(TAKES_VAL)
+[         clap::parse::parser]  Parser::parse_opt; Checking for val...
+[         clap::parse::parser]  Parser::parse_opt: More arg vals required...
+[         clap::parse::parser]  Parser::remove_overrides: id=root
+[    clap::parse::arg_matcher]  ArgMatcher::inc_occurrence_of_arg: id=root
+[            clap::build::app]  App::groups_for_arg: id=root
+[            clap::build::app]  App::groups_for_arg: id=root
+[         clap::parse::parser]  Parser::get_matches_with: After parse_long_arg Opt(root)
+[         clap::parse::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;./foo&quot;)' ([46, 47, 102, 111, 111])
+[         clap::parse::parser]  Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser]  Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser]  Parser::add_val_to_arg; arg=root, val=RawOsStr(&quot;./foo&quot;)
+[         clap::parse::parser]  Parser::add_val_to_arg; trailing_values=false, DontDelimTrailingVals=false
+[         clap::parse::parser]  Parser::add_single_val_to_arg: adding val...&quot;./foo&quot;
+[         clap::parse::parser]  Parser::add_single_val_to_arg: cur_idx:=2
+[            clap::build::app]  App::groups_for_arg: id=root
+[    clap::parse::arg_matcher]  ArgMatcher::needs_more_vals: o=root
+[         clap::parse::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;-n&quot;)' ([45, 110])
+[         clap::parse::parser]  Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser]  Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser]  Parser::possible_subcommand: arg=RawOsStr(&quot;-n&quot;)
+[         clap::parse::parser]  Parser::get_matches_with: sc=None
+[         clap::parse::parser]  Parser::parse_short_arg: short_arg=RawOsStr(&quot;n&quot;)
+[         clap::parse::parser]  Parser::get_matches_with: After parse_short_arg MaybeHyphenValue
+[         clap::parse::parser]  Parser::remove_overrides: id=cmd
+[    clap::parse::arg_matcher]  ArgMatcher::inc_occurrence_of_arg: id=cmd
+[            clap::build::app]  App::groups_for_arg: id=cmd
+[         clap::parse::parser]  Parser::add_val_to_arg; arg=cmd, val=RawOsStr(&quot;-n&quot;)
+[         clap::parse::parser]  Parser::add_val_to_arg; trailing_values=false, DontDelimTrailingVals=false
+[         clap::parse::parser]  Parser::add_single_val_to_arg: adding val...&quot;-n&quot;
+[         clap::parse::parser]  Parser::add_single_val_to_arg: cur_idx:=3
+[            clap::build::app]  App::groups_for_arg: id=cmd
+[    clap::parse::arg_matcher]  ArgMatcher::needs_more_vals: o=cmd
+[         clap::parse::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;test&quot;)' ([116, 101, 115, 116])
+[         clap::parse::parser]  Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser]  Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser]  Parser::remove_overrides: id=cmd
+[    clap::parse::arg_matcher]  ArgMatcher::inc_occurrence_of_arg: id=cmd
+[            clap::build::app]  App::groups_for_arg: id=cmd
+[         clap::parse::parser]  Parser::add_val_to_arg; arg=cmd, val=RawOsStr(&quot;test&quot;)
+[         clap::parse::parser]  Parser::add_val_to_arg; trailing_values=false, DontDelimTrailingVals=false
+[         clap::parse::parser]  Parser::add_single_val_to_arg: adding val...&quot;test&quot;
+[         clap::parse::parser]  Parser::add_single_val_to_arg: cur_idx:=4
+[            clap::build::app]  App::groups_for_arg: id=cmd
+[    clap::parse::arg_matcher]  ArgMatcher::needs_more_vals: o=cmd
+[         clap::parse::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;https://localhost:5545/echo.ts&quot;)' ([104, 116, 116, 112, 115, 58, 47, 47, 108, 111, 99, 97, 108, 104, 111, 115, 116, 58, 53, 53, 52, 53, 47, 101, 99, 104, 111, 46, 116, 115])
+[         clap::parse::parser]  Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser]  Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser]  Parser::remove_overrides: id=cmd
+[    clap::parse::arg_matcher]  ArgMatcher::inc_occurrence_of_arg: id=cmd
+[            clap::build::app]  App::groups_for_arg: id=cmd
+[         clap::parse::parser]  Parser::add_val_to_arg; arg=cmd, val=RawOsStr(&quot;https://localhost:5545/echo.ts&quot;)
+[         clap::parse::parser]  Parser::add_val_to_arg; trailing_values=false, DontDelimTrailingVals=false
+[         clap::parse::parser]  Parser::add_single_val_to_arg: adding val...&quot;https://localhost:5545/echo.ts&quot;
+[         clap::parse::parser]  Parser::add_single_val_to_arg: cur_idx:=5
+[            clap::build::app]  App::groups_for_arg: id=cmd
+[    clap::parse::arg_matcher]  ArgMatcher::needs_more_vals: o=cmd
+[      clap::parse::validator]  Validator::validate
+[         clap::parse::parser]  Parser::add_defaults
+[         clap::parse::parser]  Parser::add_defaults:iter:name:
+[         clap::parse::parser]  Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser]  Parser::add_value:iter:name: doesn't have default vals
+[         clap::parse::parser]  Parser::add_value:iter:name: doesn't have default missing vals
+[         clap::parse::parser]  Parser::add_defaults:iter:root:
+[         clap::parse::parser]  Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser]  Parser::add_value:iter:root: doesn't have default vals
+[         clap::parse::parser]  Parser::add_value:iter:root: doesn't have default missing vals
+[         clap::parse::parser]  Parser::add_defaults:iter:cmd:
+[         clap::parse::parser]  Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser]  Parser::add_value:iter:cmd: doesn't have default vals
+[         clap::parse::parser]  Parser::add_value:iter:cmd: doesn't have default missing vals
+[      clap::parse::validator]  Validator::validate_conflicts
+[      clap::parse::validator]  Validator::validate_exclusive
+[      clap::parse::validator]  Validator::validate_exclusive:iter:root
+[      clap::parse::validator]  Validator::validate_exclusive:iter:cmd
+[      clap::parse::validator]  Validator::validate_conflicts::iter: id=root
+[      clap::parse::validator]  Conflicts::gather_conflicts
+[            clap::build::app]  App::groups_for_arg: id=root
+[      clap::parse::validator]  Conflicts::gather_direct_conflicts id=root, conflicts=[]
+[            clap::build::app]  App::groups_for_arg: id=cmd
+[      clap::parse::validator]  Conflicts::gather_direct_conflicts id=cmd, conflicts=[]
+[      clap::parse::validator]  Validator::validate_conflicts::iter: id=cmd
+[      clap::parse::validator]  Conflicts::gather_conflicts
+[      clap::parse::validator]  Validator::validate_required: required=ChildGraph([Child { id: cmd, children: [] }])
+[      clap::parse::validator]  Validator::gather_requirements
+[      clap::parse::validator]  Validator::gather_requirements:iter:root
+[      clap::parse::validator]  Validator::gather_requirements:iter:cmd
+[      clap::parse::validator]  Validator::validate_required_unless
+[      clap::parse::validator]  Validator::validate_matched_args
+[      clap::parse::validator]  Validator::validate_matched_args:iter:root: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;./foo&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator]  Validator::validate_arg_num_vals
+[      clap::parse::validator]  Validator::validate_arg_values: arg=&quot;root&quot;
+[      clap::parse::validator]  Validator::validate_arg_num_occurs: &quot;root&quot;=1
+[      clap::parse::validator]  Validator::validate_matched_args:iter:cmd: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;-n&quot;,
+                            &quot;test&quot;,
+                            &quot;https://localhost:5545/echo.ts&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator]  Validator::validate_arg_num_vals
+[      clap::parse::validator]  Validator::validate_arg_values: arg=&quot;cmd&quot;
+[      clap::parse::validator]  Validator::validate_arg_num_occurs: &quot;cmd&quot;=3
+[    clap::parse::arg_matcher]  ArgMatcher::get_global_values: global_arg_vec=[help]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @crowlKats on 2022-01-03 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2022-01-04 01:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @epage on 2022-01-04 01:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-04 01:32</div>
+            <div class="timeline-body"><p>I've modified the example so</p>
+<ul>
+<li>argument definitions and reading are done in a consistent order for easier comparing</li>
+<li>it is nearly compatible with clap2 (just need to change the <code>short</code>s type)</li>
+</ul>
+<p>I'm surprised this worked in clap2 because of <code>allow_hyphen_values(true)</code> on the positional argument.  I'm a bit unsure what to say since it is doing what was asked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/crowlKats">@crowlKats</a> on 2022-01-04 06:14</div>
+            <div class="timeline-body"><p>To make this more interesting: if you add <code>.last(true)</code> for <code>cmd</code>:
+clap v3 will error with <code>Found argument '-n' which wasn't expected, or isn't valid in this context</code>,
+whereas in clap 2.34 it will error with <code>Found argument 'https://localhost:5545/echo.ts' which wasn't expected, or isn't valid in this context</code></p>
+<p>regardless of that, so would you say we should just remove <code>allow_hyphen_values(true)</code> and that would keep the behaviour of what we had with clap v2?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3250.html">clap-rs/clap#3250</a> on 2022-01-04 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-04 15:52</div>
+            <div class="timeline-body"><p>v3.0.2 contains the fix for <code>.last(true)</code>.</p>
+<p>If it helps, what <code>cargo run</code> does is:</p>
+<pre><code class="language-rust">        .setting(AppSettings::TrailingVarArg)
+        .arg(Arg::with_name(&quot;args&quot;).multiple(true))
+</code></pre>
+<p>(granted, this is clap2, about to port to clap3)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/cargo/pulls/10253.html">rust-lang/cargo#10253</a> on 2022-01-04 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/crowlKats">@crowlKats</a> on 2022-01-04 21:58</div>
+            <div class="timeline-body"><p>I am a bit surprised that with <code>.last(true)</code> (in 3.0.2 &amp; 2.34) it will say that <code>https://localhost:5545/echo.ts</code> is unexpected. What is the reasoning for this?
+That aside, thanks, the change you suggested indeed does the job</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-04 22:05</div>
+            <div class="timeline-body"><p>If you are referring to with the command</p>
+<pre><code class="language-bash">$ cargo run -- --root ./foo -n test https://localhost:5545/echo.ts
+</code></pre>
+<p>The docs say</p>
+<blockquote>
+<p>This arg is the last, or final, positional argument (i.e. has the highest index) and is only able to be accessed via the -- syntax (i.e. $ prog args -- last_arg).</p>
+</blockquote>
+<p>Keep in mind that this is related to <code>index</code> which is purely about positional arguments.  So while this can sound like it can help solve a problem here, it doesn't interact with named arguments at all.</p>
+<p><code>TrailingVarArg</code> is normally more of what people want, depending on the use case (like <code>cargo run</code>).</p>
+<p>Its unclear to me what went into these design decisions.  They predate my involvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/crowlKats">@crowlKats</a> on 2022-01-07 02:42</div>
+            <div class="timeline-body"><p>Alright, thanks for all the information. Will close since the issue has been cleared up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @crowlKats on 2022-01-07 02:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "short argument doesn't get parsed" to "short argument doesn't get parsed with allow_hyphen_values" by @epage on 2022-01-11 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> removed by @epage on 2022-01-11 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-01-11 18:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:33 UTC
+    </footer>
+</body>
+</html>

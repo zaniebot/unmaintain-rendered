@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cache mismatch when installing a package for differents Python versions - astral-sh/uv #12273</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cache mismatch when installing a package for differents Python versions</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/12273">#12273</a>
+        opened by <a href="https://github.com/framillien">@framillien</a>
+        on 2025-03-18 10:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/framillien">@framillien</a> on 2025-03-18 10:50</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When a Python wheel is bound to specific Python versions, the installed version may not match the current Python version.</p>
+<p>Package <a href="https://pypi.org/project/multiprocess/#files">multiprocess</a> is a wheel built for many Python versions:</p>
+<ul>
+<li>multiprocess-0.70.17-py310-none-any.whl</li>
+<li>multiprocess-0.70.17-py311-none-any.whl</li>
+<li>...</li>
+</ul>
+<p>When we install <code>multiprocess</code> in a Python 3.10 venv, and then in a Python 3.11 or 3.12 venv, <code>uv</code> reuse the cache entry from Python 3.10 despite all information in logs are pointing to the expected package. Going from a higher version to a lower version work as expected (3.12 then 3.10). <code>pip</code> install the expected version.</p>
+<p>Know workarounds are:</p>
+<ul>
+<li>Add <code>--no-cache</code> on command line</li>
+<li>Clean the cache after each installation <code>uv cache clean multiprocess</code></li>
+</ul>
+<p>How to reproduce (tested on Linux RHEL8 and Ubuntu22):</p>
+<pre><code>% uv cache clean multiprocess
+% uv venv --python 3.10 .venv3-10
+% uv pip install --python .venv3-10/bin/python3 multiprocess
+% uv venv --python 3.11 .venv3-11
+% uv pip install --python .venv3-11/bin/python3 multiprocess
+% cat .venv3-11/lib/python3.11/site-packages/multiprocess-0.70.17.dist-info/WHEEL | grep Tag
+Tag: py310-none-any
+
+==&gt; KO, must be py311 (same error if we activate the venv)
+
+% uv cache clean multiprocess
+% uv venv --python 3.11 .venv3-11
+% uv pip install --python .venv3-11/bin/python3 multiprocess
+% cat .venv3-11/lib/python3.11/site-packages/multiprocess-0.70.17.dist-info/WHEEL | grep Tag
+Tag: py311-none-any
+
+==&gt; OK
+</code></pre>
+<p>Verbose log: <a href="https://github.com/user-attachments/files/19316799/uv-multiprocess-mismatch.txt">uv-multiprocess-mismatch.txt</a></p>
+<h3>Platform</h3>
+<p>RHEL 8, Ubuntu 22</p>
+<h3>Version</h3>
+<p>uv 0.6.7</p>
+<h3>Python version</h3>
+<p>3.10, 3.11, 3.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @framillien on 2025-03-18 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-18 13:41</div>
+            <div class="timeline-body"><p>I think this might be correct, though. <code>multiprocess-0.70.17-py310-none-any.whl</code> means: &quot;Any Python implementation with version 3.10 or later.&quot; That tag does not exclude Python 3.11.</p>
+<p>Notice that pip will happily install it:</p>
+<pre><code>❯ pip --version
+pip 22.3.1 from /usr/local/lib/python3.11/site-packages/pip (python 3.11)
+
+❯ pip install https://files.pythonhosted.org/packages/e7/a9/39cf856d03690af6fd570cf40331f1f79acdbb3132a9c35d2c5002f7f30b/multiprocess-0.70.17-py310-none-any.whl
+Collecting multiprocess==0.70.17
+  Downloading multiprocess-0.70.17-py310-none-any.whl (134 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.8/134.8 kB 3.0 MB/s eta 0:00:00
+...
+
+❯ pip install https://files.pythonhosted.org/packages/c8/b7/2e9a4fcd871b81e1f2a812cd5c6fb52ad1e8da7bf0d7646c55eaae220484/multiprocess-0.70.17-py313-none-any.whl
+ERROR: multiprocess-0.70.17-py313-none-any.whl is not a supported wheel on this platform
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-03-18 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-03-18 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/framillien">@framillien</a> on 2025-03-18 18:51</div>
+            <div class="timeline-body"><p>Hi Charlie, and thanks for the quick answer. Agree that we can force PIP do install a specific version, but:</p>
+<ul>
+<li>Does this behaviour be consistent in <code>uv</code> with or without cache ?</li>
+<li>If <code>uv</code> resolve a specific version from indexes, does this version be installed regardless of the cache state ?</li>
+<li>Does this behaviour be consistent with <code>pip</code> way to install packages.</li>
+</ul>
+<p>In the log linked in the description, we see that <code>uv</code> resolve the expected version, but the cache install another one:</p>
+<pre><code>DEBUG Found fresh response for: https://files.pythonhosted.org/packages/a4/69/d3f343a61a2f86ef10ed7865a26beda7c71554136ce187b0384b1c2c9ca3/multiprocess-0.70.17-py312-none-any.whl.metadata
+</code></pre>
+<p>I think that the <code>bug</code> label is relevant for above reasons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-18 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12301.html">astral-sh/uv#12301</a> on 2025-03-18 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-18 22:16</div>
+            <div class="timeline-body"><p>It seems reasonable to change this: https://github.com/astral-sh/uv/pull/12301</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-19 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-19 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/framillien">@framillien</a> on 2025-03-19 11:06</div>
+            <div class="timeline-body"><p>Thank you so much for this quick change. I confirm this is resolved. 👍</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

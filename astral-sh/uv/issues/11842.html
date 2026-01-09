@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync does not respect keyring - astral-sh/uv #11842</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync does not respect keyring</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/11842">#11842</a>
+        opened by <a href="https://github.com/davidshen84">@davidshen84</a>
+        on 2025-02-27 22:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/davidshen84">@davidshen84</a> on 2025-02-27 22:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>After I have keyring setup with <code>uvx keyring set ...</code>, I can use <code>uv add</code> to add a private package from my private repo. But if I clone the project to another folder/machine and do <code>uv sync</code>, I got a 401 error regarding my private repo.</p>
+<p>Adding environment variables or a <code>.netrc</code> file can circumvent this issue. But I'd prefer not to store credentials in plaintext on my disk.</p>
+<h3>Platform</h3>
+<p>Windows 10</p>
+<h3>Version</h3>
+<p>uv 0.6.1 (c91ee82a8 2025-02-17)</p>
+<h3>Python version</h3>
+<p>Python 3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @davidshen84 on 2025-02-27 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-27 22:54</div>
+            <div class="timeline-body"><p>Are you using <code>--keyring-provider subprocess</code> on sync or <code>keyring-provider = subprocess</code> in your project?</p>
+<p>Can you share more details for a reproduction? per #9452</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2025-02-27 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidshen84">@davidshen84</a> on 2025-02-27 23:31</div>
+            <div class="timeline-body"><p><a href="https://github.com/user-attachments/files/19017772/uv.log">uv.log</a></p>
+<p>Above is the <code>uv sync --force-reinstall --verbose</code> output with</p>
+<pre><code>[tool.uv]
+keyring-provider = &quot;subprocess&quot;
+</code></pre>
+<p>I also tried setting <code>--keyring-process subprocess</code> on the command line but got the same result.</p>
+<p>Also, in my first try, I did not specify any keyring configuration. I thought uv would pick up an available keyring automatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-28 03:13</div>
+            <div class="timeline-body"><p>Thanks for the additional details.</p>
+<p>Would you mind providing logs with <code>RUST_LOG=uv=trace</code> set? That should get me the relevant logs from our authentication handler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-28 03:15</div>
+            <div class="timeline-body"><p>Do you have a username set in your index URL? That's also required for keyring, unfortunately.</p>
+<p>For example https://docs.astral.sh/uv/guides/integration/alternative-indexes/#using-keyring</p>
+<p>This isn't the case for <code>pip</code> because they can just call into the Python keyring implementation directly which exposes a method for fetching both a username and password, but the keyring CLI only supported fetching a password given a username until recently (and we can't assume people are on that new version).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidshen84">@davidshen84</a> on 2025-02-28 07:22</div>
+            <div class="timeline-body"><p>Well, if I have to put Username in the index url, it is not portable. I'd
+rather use &quot;.netrc&quot; or environment variables.</p>
+<p>Thanks</p>
+<p>On Fri, 28 Feb 2025, 14:15 Zanie Blue, <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p>Do you have a username set in your index URL? That's also required for
+keyring, unfortunately.</p>
+<p>For example
+https://docs.astral.sh/uv/guides/integration/alternative-indexes/#using-keyring</p>
+<p>This isn't the case for pip because they can just call into the Python
+keyring implementation directly which exposes a method for fetching both a
+username and password, but the keyring CLI only supported fetching a
+password given a username until recently (and we can't assume people are on
+that new version).</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/11842#issuecomment-2689619801">https://github.com/astral-sh/uv/issues/11842#issuecomment-2689619801</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AAAQBTOQR5WMDL2FQAJETBL2R7IF7AVCNFSM6AAAAABYA6LWCSVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDMOBZGYYTSOBQGE">https://github.com/notifications/unsubscribe-auth/AAAQBTOQR5WMDL2FQAJETBL2R7IF7AVCNFSM6AAAAABYA6LWCSVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDMOBZGYYTSOBQGE</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;
+[image: zanieb]<em>zanieb</em> left a comment (astral-sh/uv#11842)
+<a href="https://github.com/astral-sh/uv/issues/11842#issuecomment-2689619801">https://github.com/astral-sh/uv/issues/11842#issuecomment-2689619801</a></p>
+<p>Do you have a username set in your index URL? That's also required for
+keyring, unfortunately.</p>
+<p>For example
+https://docs.astral.sh/uv/guides/integration/alternative-indexes/#using-keyring</p>
+<p>This isn't the case for pip because they can just call into the Python
+keyring implementation directly which exposes a method for fetching both a
+username and password, but the keyring CLI only supported fetching a
+password given a username until recently (and we can't assume people are on
+that new version).</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/11842#issuecomment-2689619801">https://github.com/astral-sh/uv/issues/11842#issuecomment-2689619801</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AAAQBTOQR5WMDL2FQAJETBL2R7IF7AVCNFSM6AAAAABYA6LWCSVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDMOBZGYYTSOBQGE">https://github.com/notifications/unsubscribe-auth/AAAQBTOQR5WMDL2FQAJETBL2R7IF7AVCNFSM6AAAAABYA6LWCSVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDMOBZGYYTSOBQGE</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-28 15:24</div>
+            <div class="timeline-body"><p>That's the state of keyring support. We'll add native keyring support that does not rely on the &quot;keyring&quot; Python package and then we can do what you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-02-28 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @zanieb on 2025-02-28 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-02-28 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidshen84">@davidshen84</a> on 2025-02-28 20:46</div>
+            <div class="timeline-body"><p>Thanks for the explanation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @davidshen84 on 2025-02-28 20:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

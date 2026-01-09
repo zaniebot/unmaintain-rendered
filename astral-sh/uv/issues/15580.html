@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--overrides but merge extras OR relax strictness for --constrain with URLs - astral-sh/uv #15580</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>--overrides but merge extras OR relax strictness for --constrain with URLs</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/15580">#15580</a>
+        opened by <a href="https://github.com/nmichlo">@nmichlo</a>
+        on 2025-08-29 12:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nmichlo">@nmichlo</a> on 2025-08-29 12:50</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Due to docker, caching, and ease of version specification across many dockerfiles and many requirements files, while also pulling from internal libs I am wanting to structure my files as so:</p>
+<p>requirements-service1.txt</p>
+<pre><code class="language-txt">myinternallib[extra1] @ git+https://purposely.invalid.url
+# other deps
+</code></pre>
+<p>requirements-service2.txt</p>
+<pre><code class="language-txt">myinternallib[extra1,extra2] @ git+https://purposely.invalid.url
+# other deps
+</code></pre>
+<p>along with a common versions.txt file that can be used to override the above, e.g. <code>versions.txt</code></p>
+<pre><code class="language-txt">myinternallib @ git+https://github.com/nmichlo/myinternallib@v1.2.3
+</code></pre>
+<p>The problem comes in when using <code>uv pip compile</code>, to override the above, e.g.</p>
+<pre><code class="language-bash">uv pip compile --overrides=versions.txt requirements-service1.txt -o requirements-service1.gen
+uv pip compile --overrides=versions.txt requirements-service2.txt -o requirements-service2.gen
+</code></pre>
+<p><strong>problem</strong> Is there any way to keep the extras from the downstream files, instead of completely overwriting everything? So that the lists of extras get merged instead, and only the source/version is overwritten?</p>
+<p>EDIT: see below for alternate possible solution by relaxing the strictness of <code>--constrain</code></p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @nmichlo on 2025-08-29 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nmichlo">@nmichlo</a> on 2025-08-29 12:58</div>
+            <div class="timeline-body"><p>NOTE: I have also tried <code>--constrain</code> instead of <code>--overrides</code>, but this doesn't seem to allow URL overwriting? Or passing in dummy URLs first.</p>
+<pre><code>error: Requirements contain conflicting URLs for package `myinternallib `:
+- git+https://github.com/nmichlo/myinternallib
+- git+https://github.com/nmichlo/myinternallib@v1.2.3
+</code></pre>
+<p>Otherwise</p>
+<p>If instead you specify an invalid url, then it tries to check that URL even though you have overwritten the version which seems counter-intuitive? Seems like it should actually work. e.g.</p>
+<pre><code> fatal: unable to access 'https://invalid.url/': Could not resolve host: invalid.url
+</code></pre>
+<p>Same goes if you use a dummy local file as the version / source e.g. <code>file://.</code> Also tries to read the repo even though you have specified a version constraint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nmichlo">@nmichlo</a> on 2025-08-29 13:01</div>
+            <div class="timeline-body"><p>NOTE2: It seems like <code>--constrain</code> with a url version works when the requirements files you are constrain DONT have any url for the packges you want to install... problem is this is quite insecure, someone with knowledge could just create a malicious package on pypi with the same name and this would get installed if anyone user makes an error with process.</p>
+<p>e.g.</p>
+<p>requirements-service1.txt</p>
+<pre><code class="language-txt">myinternallib[extra1]
+</code></pre>
+<p>and <code>versions.txt</code></p>
+<pre><code class="language-txt">myinternallib @ git+https://github.com/nmichlo/myinternallib@v1.2.3
+</code></pre>
+<hr />
+<p><strong>Solution?</strong> Maybe a compromise would be to relax the strictness for conflicting URL checks, because if there is a URL, technically you are adjusting the version IFF you change the tag. So if you had:</p>
+<p>requirements-service1.txt</p>
+<pre><code class="language-txt">myinternallib[extra1] @ git+https://github.com/nmichlo/myinternallib  # no tag
+</code></pre>
+<p>This should work with the above versions.txt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "--overrides but merge extras?" to "--overrides but merge extras OR relax strictness for --constrain with URLs" by @nmichlo on 2025-08-29 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-29 13:38</div>
+            <div class="timeline-body"><blockquote>
+<p>problem is this is quite insecure, someone with knowledge could just create a malicious package on pypi with the same name and this would get installed if anyone user makes an error with process.</p>
+</blockquote>
+<p>The best protection against this is using a private registry, either with higher priority than PyPI or replacing PyPI entirely, mirroring required packages. For the use case you describe, we currently only support this solution, with a requirements file without only name and extras and a constraints file with the URL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-29 13:40</div>
+            <div class="timeline-body"><p>The problem with <code>myinternallib[extra1] @ git+https://github.com/nmichlo/myinternallib  # no tag</code> is that in the view of Git, this isn't like an empty version specifier, but it refers to the default branch specifically. We would need some different configuration that says something like &quot;treat <code>https://github.com/nmichlo/myinternallib</code> as the repository for myinternallib, find a working reference for it&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nmichlo">@nmichlo</a> on 2025-08-29 14:35</div>
+            <div class="timeline-body"><p>@konstin thank you for the response.</p>
+<p>I agree about hosting the internal repository, however, its not an option in the current case.</p>
+<p>For your second comment, instead of modifying behavior of <code>--override</code> and <code>--constrain</code>, it seems like a third option is needed that acts as something in between. A <code>--version</code> option might make sense (or maybe named better)? Otherwise even a flag then like <code>--override-merge-extras=myinternallib</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:29 UTC
+    </footer>
+</body>
+</html>

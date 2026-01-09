@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Feature Request] Support `--upgrade-package` with a specific version - astral-sh/uv #1964</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Feature Request] Support `--upgrade-package` with a specific version</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/1964">#1964</a>
+        opened by <a href="https://github.com/hongqn">@hongqn</a>
+        on 2024-02-25 12:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hongqn">@hongqn</a> on 2024-02-25 12:25</div>
+            <div class="timeline-body"><p><code>pip-compile --upgrade-package</code> allows you to upgrade a specific package to a specific version instead of the latest version. For example, you can use the following command to update the <code>django</code> package to the latest version and <code>requests</code> to version <code>2.0.0</code>:</p>
+<pre><code>pip-compile --upgrade-package django --upgrade-package requests==2.0.0
+</code></pre>
+<p>Currently, when using <code>uv pip compile --upgrade-package requests==2.0.0</code>, it produces the following error:</p>
+<pre><code>❯ uv --version
+uv 0.1.10
+❯ uv pip compile --upgrade-package requests==2.0.0
+error: invalid value 'requests==2.0.0' for '--upgrade-package &lt;UPGRADE_PACKAGE&gt;': Not a valid package or extra name: &quot;requests==2.0.0&quot;. Names must start and end with a letter or digit and may only contain -, _, ., and alphanumeric characters.
+
+For more information, try '--help'.
+</code></pre>
+<p>Additionally, <code>pip-compile</code> also supports the following form:</p>
+<pre><code>pip-compile --upgrade --upgrade-package 'requests&lt;3.0'
+</code></pre>
+<p>It would be great if <code>uv</code> supports this feature as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-02-25 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-02-25 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-25 16:02</div>
+            <div class="timeline-body"><p>Seems reasonable, thanks for the clear request :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-25 16:27</div>
+            <div class="timeline-body"><p>I don’t think I fully understand what the semantics of this are, especially for the variant that’s a bound rather than a specific version. What happens if the resolution can’t succeed using the given range / version? Is it ignored? (I’m hesitant to support the variant that takes a bound, it just adds a lot of complexity. Should that not be a constraint provided via a constraint file?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-25 16:29</div>
+            <div class="timeline-body"><p>I was also wondering if constraints could / should be used for this purpose. It does seem weird to provide arbitrary bounds on a single invocation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hongqn">@hongqn</a> on 2024-02-29 07:04</div>
+            <div class="timeline-body"><p>In my scenario, this need often arises due to security reasons: the dependency package has discovered security vulnerabilities and needs to be upgraded, but we hope to stay as close as possible to the version already deployed in production in order to avoid introducing faults.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 16:40</div>
+            <div class="timeline-body"><p>But, should / could that not be provided as a constraint file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Redoubts">@Redoubts</a> on 2024-02-29 21:07</div>
+            <div class="timeline-body"><p>should it? for me I tend to do something like
+<code>pip-compile --output-file out.txt in.txt -P package~=X.Y</code></p>
+<p>Where I treat the existing out.txt as the current state of the venv. When I run a command like this, I'm kinda asking a question:</p>
+<ul>
+<li>what package if any fits this constraint, given my current venv?</li>
+</ul>
+<p>sometimes the answer is yes, with no issues (and write a new out.txt)
+sometimes the answer is no, unpin other packages (and fail to write a new out.txt)
+and maybe it's &quot;irredeemable constraints&quot; (and fail to write a new out.txt)</p>
+<p>Usually my in.txt doesn't usually have version pins (that's what out.txt is for), unless I know for certain new versions would break something. Are you suggesting alternative to using bounded <code>-P</code> args is to temporarily add bounds to in.txt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ewianda">@ewianda</a> on 2024-05-13 12:09</div>
+            <div class="timeline-body"><p>Any update on this one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-13 14:18</div>
+            <div class="timeline-body"><p>No updates right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mariokostelac">@mariokostelac</a> on 2024-05-29 12:34</div>
+            <div class="timeline-body"><p>What is the expected workflow for upgrading a package?</p>
+<p>I'm in the process of migrating pip-tools to uv workflows. Previously, I'd use <code>pip-compile requirements.in --upgrade-package boto3==x -o requirements.txt</code>, which would take requirements.txt (as constriants) into account and make sure that boto3 is upgraded. If it can't be, it would upgrade necessary transient packages to make boto3 upgradeable to the version I had.</p>
+<p>Right now, I use <code>uv pip compile -c requirements.txt requirements.in -P boto3 -o requirements.txt</code>, but it does nothing (there is newer version). If I remove boto3 manually from requirements.txt, it also does nothing (probably because of some transitive deps).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3990.html">astral-sh/uv#3990</a> on 2024-06-03 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-03 20:23</div>
+            <div class="timeline-body"><p>Conceptually, is this the same as <code>--upgrade-package boto3</code> with <code>boto3==x</code> as a constraint? I'm trying to understand the semantics of <code>--upgrade-package boto3==x</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mark-thm">@mark-thm</a> on 2024-06-03 20:48</div>
+            <div class="timeline-body"><p>Not quite, -U allows all requirements in the output to be updated but -P specifically operates with the new constraint <em>and</em> updates only the minimal set of requirements in the output to satisfy that additional constraint. If the new constraint can’t be satisfied with existing input constraints, pip compile errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-03 20:49</div>
+            <div class="timeline-body"><p>Thanks! Though I'm wondering specifically about the use of <code>-P</code> with a version specifier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mark-thm">@mark-thm</a> on 2024-06-03 23:16</div>
+            <div class="timeline-body"><p>Yep, so expectation of -P foo==1.2.3 is:</p>
+<ul>
+<li>apply an additional constraint of “foo==1.2.3”</li>
+<li>allow only output requirements necessary to meet this constraint to upgrade</li>
+<li>still meet all input constraints</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2512.html">astral-sh/uv#2512</a> on 2024-07-03 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/avilaton">@avilaton</a> on 2024-07-03 19:31</div>
+            <div class="timeline-body"><p>Hi, just driving by to mention that this shows up when we try to have dependabot run updates using <code>uv</code> instead of <code>pip-compile</code> so a potential big impact from having it work exactly the same as <code>pip-compile</code>
+https://github.com/astral-sh/uv/issues/1964</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/avilaton">@avilaton</a> on 2024-07-03 19:34</div>
+            <div class="timeline-body"><p>Dependabot will try to do exactly this</p>
+<pre><code>uv pip compile --build-isolation --output-file=requirements.txt \
+    --no-emit-index-url \
+    --no-annotate \
+    --no-header \
+    -P attrs==18.0.1 pyproject.toml
+</code></pre>
+<p>and <code>uv</code> complains with</p>
+<pre><code>error: invalid value 'attrs==13.0.1' for '--upgrade-package &lt;UPGRADE_PACKAGE&gt;': Not a valid package or extra name: &quot;attrs==13.0.1&quot;. Names must start and end with a letter or digit and may only contain -, _, ., and alphanumeric characters.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-03 20:19</div>
+            <div class="timeline-body"><p>That’s helpful to know, thanks. We should probably support it then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/avilaton">@avilaton</a> on 2024-07-09 12:30</div>
+            <div class="timeline-body"><p>It is my first time dearing to even look at a rust codebase but I would like to help. If you have a sample PR in which similar work has occurred, a few pointers or any guidance you think would help me find a way to send a PR for this, I'll take a shot at it. The carbon footprint of dependabot using pip-tools makes this work any effort.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-09 21:23</div>
+            <div class="timeline-body"><p>My initial thinking is something like: change <code>Upgrade</code> in <code>package_options.rs</code> to <code>Packages(FxHashSet&lt;Requirement&gt;)</code> rather than <code>Packages(FxHashSet&lt;PackageName&gt;)</code>. Then, at some point, iterate over those requirements and add them to constraints, then proceed as usual.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-10 02:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4952.html">astral-sh/uv#4952</a> on 2024-07-10 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-10 03:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:18 UTC
+    </footer>
+</body>
+</html>

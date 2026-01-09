@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv python install 3.12` is not working on armv7 libc is identify as `gnu` instead of `gnueabihf` - astral-sh/uv #6873</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv python install 3.12` is not working on armv7 libc is identify as `gnu` instead of `gnueabihf`</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/6873">#6873</a>
+        opened by <a href="https://github.com/zarch">@zarch</a>
+        on 2024-08-30 14:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zarch">@zarch</a> on 2024-08-30 14:31</div>
+            <div class="timeline-body"><p>I tried uv <code>0.3.5</code> to install a specific version of python on my raspberry-pi:</p>
+<pre><code class="language-bash">❯ uname -rmo
+6.1.21-v7l+ armv7l GNU/Linux
+</code></pre>
+<p>When I try to install python I got:</p>
+<pre><code class="language-bash">❯ uv python install 3.12
+Searching for Python versions matching: Python 3.12
+error: No download found for request: cpython-3.12-linux-armv7-gnu
+</code></pre>
+<p>Looking at the code it seems that all the version available are taken from <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-python/download-metadata.json">uv-python/download-metadata.json</a>, where at the moment we have:</p>
+<pre><code class="language-json">{
+  &quot;cpython-3.12.5-linux-armv7-gnueabi&quot;: {
+    &quot;name&quot;: &quot;cpython&quot;,
+    &quot;arch&quot;: &quot;armv7&quot;,
+    &quot;os&quot;: &quot;linux&quot;,
+    &quot;libc&quot;: &quot;gnueabi&quot;,
+    &quot;major&quot;: 3,
+    &quot;minor&quot;: 12,
+    &quot;patch&quot;: 5,
+    &quot;url&quot;: &quot;https://github.com/indygreg/python-build-standalone/releases/download/20240814/cpython-3.12.5%2B20240814-armv7-unknown-linux-gnueabi-install_only_stripped.tar.gz&quot;,
+    &quot;sha256&quot;: &quot;7a584de9c2824f43d7a7b1c26eb61a18af770ebd603a74b45d57601ba62ba508&quot;
+  },
+  &quot;cpython-3.12.5-linux-armv7-gnueabihf&quot;: {
+    &quot;name&quot;: &quot;cpython&quot;,
+    &quot;arch&quot;: &quot;armv7&quot;,
+    &quot;os&quot;: &quot;linux&quot;,
+    &quot;libc&quot;: &quot;gnueabihf&quot;,
+    &quot;major&quot;: 3,
+    &quot;minor&quot;: 12,
+    &quot;patch&quot;: 5,
+    &quot;url&quot;: &quot;https://github.com/indygreg/python-build-standalone/releases/download/20240814/cpython-3.12.5%2B20240814-armv7-unknown-linux-gnueabihf-install_only_stripped.tar.gz&quot;,
+    &quot;sha256&quot;: &quot;a9992b30d7b3ecb558cd12fde919e3e2836f161f8f777afea31140d5fff6362e&quot;
+  }
+}
+</code></pre>
+<p>Using other tool such as <code>pystand</code> they work as expected:</p>
+<pre><code>❯ uvx pystand show
+3.9.19 @ 20240814 distribution=&quot;armv7-unknown-linux-gnueabihf&quot;
+3.10.14 @ 20240814 distribution=&quot;armv7-unknown-linux-gnueabihf&quot;
+3.11.9 @ 20240814 distribution=&quot;armv7-unknown-linux-gnueabihf&quot;
+3.12.5 @ 20240814 distribution=&quot;armv7-unknown-linux-gnueabihf&quot;
+</code></pre>
+<p>Looking at the code from my understanding <code>uv</code> is trying to infer this information from <code>ldd</code> while <code>pystand</code> look at the <a href="https://github.com/bulletmark/pystand/blob/1594bcc44d3f3195025e9bbc2fed32d925dc5c80/pystand.py#L52">platform</a> in a simpler way:</p>
+<pre><code class="language-python"># Default distributions for various platforms
+DISTRIBUTIONS = {
+    ('Linux', 'x86_64'): 'x86_64-unknown-linux-gnu',
+    ('Linux', 'aarch64'): 'aarch64-unknown-linux-gnu',
+    ('Linux', 'armv7l'): 'armv7-unknown-linux-gnueabihf',
+    ('Linux', 'armv8l'): 'armv7-unknown-linux-gnueabihf',
+    ('Darwin', 'x86_64'): 'x86_64-apple-darwin',
+    ('Darwin', 'aarch64'): 'aarch64-apple-darwin',
+    ('Windows', 'x86_64'): 'x86_64-pc-windows-msvc',
+    ('Windows', 'i686'): 'i686-pc-windows-msvc',
+}
+</code></pre>
+<p>Perhaps <code>uv</code> should use/integrate a similar approach?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zarch">@zarch</a> on 2024-08-30 14:35</div>
+            <div class="timeline-body"><p>Or at least it would be nice to be able to define / force the right value by command line interface?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 14:36</div>
+            <div class="timeline-body"><p>@konstin -- Do you know if this is expected to work yet?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-30 17:17</div>
+            <div class="timeline-body"><p>iirc we have to detect whether we're on a hardfloat abi or not and use <code>guneabi</code> or <code>gnueabihf</code> depending on that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zarch">@zarch</a> on 2024-09-02 09:19</div>
+            <div class="timeline-body"><p>If you like I can prepare a PR, but I'm not sure which is the best approach to detect if we are are using hardfloat abi or not.</p>
+<p>Executing the code enabling the <code>RUST_LOG=trace</code></p>
+<pre><code class="language-bash">❯ RUST_LOG=trace uv python install 3.12 --verbose
+DEBUG uv 0.4.2
+TRACE Checking lock for `/root/.local/share/uv/python` at `/root/.local/share/uv/python/.lock`
+DEBUG Acquired lock for `/root/.local/share/uv/python`
+Searching for Python versions matching: Python 3.12
+TRACE ld path: /lib/ld-linux-armhf.so.3
+TRACE stdout output from `ld`: &quot;&quot;
+TRACE stderr output from `ld`: &quot;Usage: ld.so [OPTION]... EXECUTABLE-FILE [ARGS-FOR-PROGRAM...]\nYou have invoked `ld.so', the helper program for shared library executables.\nThis program usually lives in the file `/lib/ld.so', and special directives\nin executable files using ELF shared libraries tell the system's program\nloader to load the helper program from this file.  This helper program loads\nthe shared libraries needed by the program executable, prepares the program\nto run, and runs it.  You may invoke this helper program directly from the\ncommand line to load and run an ELF executable file; this is like executing\nthat file itself, but always uses this helper program from the file you\nspecified, instead of the helper program file specified in the executable\nfile you run.  This is mostly of use for maintainers to test new versions\nof this helper program; chances are you did not intend to run this program.\n\n  --list                list all dependencies and how they are resolved\n  --verify              verify that given object really is a dynamically linked\n\t\t\tobject we can handle\n  --inhibit-cache       Do not use /etc/ld.so.cache\n  --library-path PATH   use given PATH instead of content of the environment\n\t\t\tvariable LD_LIBRARY_PATH\n  --inhibit-rpath LIST  ignore RUNPATH and RPATH information in object names\n\t\t\tin LIST\n  --audit LIST          use objects named in LIST as auditors\n  --preload LIST        preload objects named in LIST\n&quot;
+TRACE Tried to find musl version by running `&quot;/lib/ld-linux-armhf.so.3&quot;`, but failed: Could not find musl version in output of: `/lib/ld-linux-armhf.so.3`
+DEBUG Released lock at `/root/.local/share/uv/python/.lock`
+error: No download found for request: cpython-3.12-linux-armv7-gnu
+</code></pre>
+<p>I see that, in debian, in the <code>ld</code> path it is already indicated the is hardfloat: <code>TRACE ld path: /lib/ld-linux-armhf.so.3</code>, so we could infer from the path, but I'm not sure it is general enough to cover other case and distributions. I tried few other distributions on my laptop:</p>
+<ul>
+<li>fedora (rawhide): <code>TRACE ld path: /lib64/ld-linux-x86-64.so.2</code></li>
+<li>archlinux (stable): <code>TRACE ld path: /lib64/ld-linux-x86-64.so.2</code></li>
+<li>alpine(edge): <code>TRACE ld path: /lib/ld-musl-x86-64.so.1</code></li>
+</ul>
+<p>So it seems to me that this pattern is shared among linux distributions.
+Perhaps, I can add a if condition within the <code>detect_linux_libc()</code> function that check if the path contains <code>armhf</code> string then it return <code>gnueabihf</code>, if contains just <code>arm</code> then return: <code>gnueabi</code> else continue with the other check.</p>
+<p>Otherwise, we can simply implement the same logic used by <code>pystand</code> and see the platform architecture calling <code>uname -m</code>. Other approaches that you would like to follow?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-09-03 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv python</span> added by @zanieb on 2024-09-03 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/orgua">@orgua</a> on 2024-09-25 15:11</div>
+            <div class="timeline-body"><p>I have the same trouble on a armv7 beaglebone black. Latest <code>uv 0.4.16</code> won't install any python version, not just 3.12. Would love to be able to use that feature! Armv7 is slow enough and could use every improvement newer py-versions bring :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7725.html">astral-sh/uv#7725</a> on 2024-09-26 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kakkoyun">@kakkoyun</a> on 2024-09-26 19:43</div>
+            <div class="timeline-body"><p>I’ve thought through a few different options for detecting whether to use <code>gnueabi</code> or <code>gnueabihf</code>. One possibility is analyzing an ELF binary using <code>readelf</code> (or Goblin) to check for <code>Tag_ABI_VFP_args</code> (see <a href="https://developer.arm.com/documentation/dui0474/m/linker-command-line-options/--output-float-abi-option">ARM documentation</a>), but I decided to go with a simpler approach: checking <code>/proc/cpuinfo</code> (#7725). The idea is to look for the <code>vfp</code> flag, which indicates hardware floating-point support. There’s some more info on that <a href="https://wiki.debian.org/ArmHardFloatPort#VFP">here</a>.</p>
+<p>I have some Raspberry Pis lying around, but they need to be provisioned first. Could I ask for your help testing #7725, @orgua @zarch? I’d be happy to provide a pre-built version of <code>uv</code> from the PR if that’s easier for you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-01 15:35</div>
+            <div class="timeline-body"><p>(i tried testing this but my raspi is too new and <code>docker run -it --rm -v $(pwd):/io --platform linux/arm/v7 ubuntu</code> shows my native cpu)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kakkoyun">@kakkoyun</a> on 2024-10-02 15:46</div>
+            <div class="timeline-body"><blockquote>
+<p>(i tried testing this but my raspi is too new and <code>docker run -it --rm -v $(pwd):/io --platform linux/arm/v7 ubuntu</code> shows my native cpu)</p>
+</blockquote>
+<p>Thanks. I'm in the process of reviving some of my old pi's. I'll update the PR when I've something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zarch">@zarch</a> on 2024-10-03 10:21</div>
+            <div class="timeline-body"><p>@kakkoyun Sorry for the delay but I have to free up some space to be able to compile <code>uv</code> on my rpi... :-D</p>
+<p>The current branch is not working for me. I tried:</p>
+<pre><code class="language-bash">uv on  detect_hardfloat is 📦 v0.4.16 via 🐍 via 🦀 v1.81.0 took 3m19s 
+❯ target/debug/uv python install 3.12
+Searching for Python versions matching: Python 3.12                                                                  
+error: Failed to parse Python installation key `cpython-3.12.6-linux-armv7-gnueabi`: invalid libc: Unknown libc envir
+onment: gnueabi
+</code></pre>
+<p>I'm on:</p>
+<pre><code class="language-bash">uv on  detect_hardfloat is 📦 v0.4.16 via 🐍 via 🦀 v1.81.0 took 10s 
+❯ git show
+commit fde37914b7c01df2d97c747c9a6a28f1b3bd6dc1 (HEAD -&gt; detect_hardfloat, origin/detect_hardfloat)
+Author: Kemal Akkoyun &lt;kakkoyun@gmail.com&gt;
+Date:   Fri Sep 27 15:02:32 2024 +0200
+commit fde37914b7c01df2d97c747c9a6a28f1b3bd6dc1 (HEAD -&gt; detect_hardfloat, origin/detect_hardfloat)               
+Author: Kemal Akkoyun &lt;kakkoyun@gmail.com&gt;
+Date:   Fri Sep 27 15:02:32 2024 +0200
+[...]
+</code></pre>
+<p>Here my <code>cpuinfo</code>:</p>
+<pre><code class="language-bash">uv on  detect_hardfloat is 📦 v0.4.16 via 🐍 via 🦀 v1.81.0 took 6s 
+❯ cat /proc/cpuinfo
+processor       : 0
+model name      : ARMv7 Processor rev 3 (v7l)
+BogoMIPS        : 108.00
+Features        : half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm crc32 
+CPU implementer : 0x41
+CPU architecture: 7
+CPU variant     : 0x0
+CPU part        : 0xd08
+CPU revision    : 3
+
+processor       : 1
+model name      : ARMv7 Processor rev 3 (v7l)
+BogoMIPS        : 108.00
+Features        : half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm crc32 
+CPU implementer : 0x41
+CPU architecture: 7
+CPU variant     : 0x0
+CPU part        : 0xd08
+CPU revision    : 3
+
+processor       : 2
+model name      : ARMv7 Processor rev 3 (v7l)
+BogoMIPS        : 108.00
+Features        : half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm crc32 
+CPU implementer : 0x41
+CPU architecture: 7
+CPU variant     : 0x0
+CPU part        : 0xd08
+CPU revision    : 3
+
+processor       : 3
+model name      : ARMv7 Processor rev 3 (v7l)
+BogoMIPS        : 108.00
+Features        : half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm crc32 
+CPU implementer : 0x41
+CPU architecture: 7
+CPU variant     : 0x0
+CPU part        : 0xd08
+CPU revision    : 3
+
+Hardware        : BCM2711
+Revision        : d03115
+Serial          : 100000008cd9439f
+Model           : Raspberry Pi 4 Model B Rev 1.5
+</code></pre>
+<p>And here the command execution with the full log:</p>
+<pre><code class="language-bash">uv on  detect_hardfloat is 📦 v0.4.16 via 🐍 via 🦀    v1.81.0 
+❯ RUST_LOG=trace cargo run python install 3.12 --verbose
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.92s
+     Running `target/debug/uv python install 3.12 --verbose`
+DEBUG uv 0.4.16
+TRACE Checking lock for `/home/zarch/.local/share/uv/python` at `/home/zarch/.local/share/uv/python/.lock`
+DEBUG Acquired lock for `/home/zarch/.local/share/uv/python`
+WARN Ignoring malformed managed Python entry:
+    Failed to parse Python installation key `cpython-3.12.6-linux-armv7-gnueabi`: invalid libc: Unknown libc environment: gnueabi
+Searching for Python versions matching: Python 3.12
+TRACE ld path: /lib/ld-linux-armhf.so.3
+TRACE stdout output from `ld`: &quot;&quot;
+TRACE stderr output from `ld`: &quot;Usage: ld.so [OPTION]... EXECUTABLE-FILE [ARGS-FOR-PROGRAM...]\nYou have invoked `ld.so', the helper program for shared library executables.\nThis program usually lives in the file `/lib/ld.so', and special directives\nin executable files using ELF shared libraries tell the system's program\nloader to load the helper program from this file.  This helper program loads\nthe shared libraries needed by the program executable, prepares the program\nto run, and runs it.  You may invoke this helper program directly from the\ncommand line to load and run an ELF executable file; this is like executing\nthat file itself, but always uses this helper program from the file you\nspecified, instead of the helper program file specified in the executable\nfile you run.  This is mostly of use for maintainers to test new versions\nof this helper program; chances are you did not intend to run this program.\n\n  --list                list all dependencies and how they are resolved\n  --verify              verify that given object really is a dynamically linked\n\t\t\tobject we can handle\n  --inhibit-cache       Do not use /etc/ld.so.cache\n  --library-path PATH   use given PATH instead of content of the environment\n\t\t\tvariable LD_LIBRARY_PATH\n  --inhibit-rpath LIST  ignore RUNPATH and RPATH information in object names\n\t\t\tin LIST\n  --audit LIST          use objects named in LIST as auditors\n  --preload LIST        preload objects named in LIST\n&quot;
+TRACE Tried to find musl version by running `&quot;/lib/ld-linux-armhf.so.3&quot;`, but failed: Could not find musl version in output of: `/lib/ld-linux-armhf.so.3`
+DEBUG Using request timeout of 30s
+DEBUG Released lock at `/home/zarch/.local/share/uv/python/.lock`
+error: Failed to parse Python installation key `cpython-3.12.6-linux-armv7-gnueabi`: invalid libc: Unknown libc environment: gnueabi
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kakkoyun">@kakkoyun</a> on 2024-10-04 12:30</div>
+            <div class="timeline-body"><p>@zarch Thanks a lot for testing it. These logs are helpful. I will give it another shot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/golgor">@golgor</a> on 2024-10-07 15:13</div>
+            <div class="timeline-body"><p>This is not recommended, but if it is blocking you a it is possible to install a Python version manually.</p>
+<p>It is a bit cumbersome but this worked at least for the RPi 4 I'm using:</p>
+<ol>
+<li>Download and compile the source (This can be done with Pyenv; <code>pyenv install 3.12.7</code>)</li>
+<li>Find the path to the installed python and copy it to ~/.local/share/uv/python</li>
+<li>Make sure that the file name is similar to the following: <code>cpython-3.12.7-linux-armv7l-gnu</code></li>
+</ol>
+<p><code>tree ~/.local/share/uv/python -L 2</code></p>
+<pre><code class="language-bash">.
+└ cpython-3.12.7-linux-armv7l-gnu
+  ├── bin
+  ├── include
+  ├── lib
+  └── share
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-07 15:31</div>
+            <div class="timeline-body"><p>You can also request a full download key, e.g., <code>uv python install cpython-3.12.6-linux-armv7-gnueabihf</code>, then rename the directory as described above</p>
+<p>edit: Actually this fails to parse correctly because the error reported above. i'll fix that. https://github.com/astral-sh/uv/pull/7975</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8498.html">astral-sh/uv#8498</a> on 2024-10-23 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zarch">@zarch</a> on 2024-10-29 23:28</div>
+            <div class="timeline-body"><p>Dear @kakkoyun and @zanieb</p>
+<p>I've just tested the #8498 applied on #7725 and rebase it to the current main branch (commit: <a href="https://github.com/astral-sh/uv/commit/cd408cbc511bb048fb2574c59a3eb90119e987a2">cd408cbc5</a>), and it works on my pc.</p>
+<p>How would you like to proceed?</p>
+<pre><code class="language-bash">uv on  detect_hardfloat [!⇕] is 📦 v0.4.28 via 🐍 via 🦀 v1.81.0 took 7s 
+❯ cargo run python install 3.13
+   Compiling uv-python v0.0.1 (/home/zarch/source/uv/crates/uv-python)
+   Compiling uv-types v0.0.1 (/home/zarch/source/uv/crates/uv-types)
+   Compiling uv-virtualenv v0.0.4 (/home/zarch/source/uv/crates/uv-virtualenv)
+   Compiling uv-distribution v0.0.1 (/home/zarch/source/uv/crates/uv-distribution)
+   Compiling uv-resolver v0.0.1 (/home/zarch/source/uv/crates/uv-resolver)
+   Compiling uv-installer v0.0.1 (/home/zarch/source/uv/crates/uv-installer)
+   Compiling uv-build-frontend v0.0.1 (/home/zarch/source/uv/crates/uv-build-frontend)
+   Compiling uv-settings v0.0.1 (/home/zarch/source/uv/crates/uv-settings)
+   Compiling uv-requirements v0.1.0 (/home/zarch/source/uv/crates/uv-requirements)
+   Compiling uv-dispatch v0.0.1 (/home/zarch/source/uv/crates/uv-dispatch)
+   Compiling uv-scripts v0.0.1 (/home/zarch/source/uv/crates/uv-scripts)
+   Compiling uv-cli v0.0.1 (/home/zarch/source/uv/crates/uv-cli)
+   Compiling uv-tool v0.0.1 (/home/zarch/source/uv/crates/uv-tool)
+   Compiling uv v0.4.28 (/home/zarch/source/uv/crates/uv)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3m 01s
+     Running `target/debug/uv python install 3.13`
+Searching for Python versions matching: Python 3.13
+Installed Python 3.13.0 in 9.96s
+ + cpython-3.13.0-linux-armv7-gnueabihf
+
+uv on  detect_hardfloat [!⇕] is 📦 v0.4.28 via 🐍 via 🦀 v1.81.0 took 3m11s 
+❯ /home/zarch/.local/share/uv/python/cpython-3.13.0-linux-armv7-gnueabihf/bin/python3
+Python 3.13.0 (main, Oct 16 2024, 02:57:06) [GCC 6.3.0 20170516] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; 1+1
+2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-29 23:38</div>
+            <div class="timeline-body"><p>Sorry I got a bit confused that your branch was on top of the other pull request. I'll clean it up and merge, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-29 23:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johndunderhill">@johndunderhill</a> on 2025-01-03 10:12</div>
+            <div class="timeline-body"><p>@zanieb This does not seem to work at all.</p>
+<pre><code class="language-bash">pi@GKOS66:~/sensors $ RUST_LOG=trace ${SENSORS_UV_PATH}/uv python install 3.12
+DEBUG uv 0.5.14
+TRACE ld path: /lib/ld-linux-armhf.so.3
+TRACE stdout output from `ld`: &quot;&quot;
+TRACE stderr output from `ld`: &quot;Usage: ld.so [OPTION]... EXECUTABLE-FILE [ARGS-FOR-PROGRAM...]\nYou have invoked `ld.so', the helper program for shared library executables.\nThis program usually lives in the file `/lib/ld.so', and special directives\nin executable files using ELF shared libraries tell the system's program\nloader to load the helper program from this file.  This helper program loads\nthe shared libraries needed by the program executable, prepares the program\nto run, and runs it.  You may invoke this helper program directly from the\ncommand line to load and run an ELF executable file; this is like executing\nthat file itself, but always uses this helper program from the file you\nspecified, instead of the helper program file specified in the executable\nfile you run.  This is mostly of use for maintainers to test new versions\nof this helper program; chances are you did not intend to run this program.\n\n  --list                list all dependencies and how they are resolved\n  --verify              verify that given object really is a dynamically linked\n\t\t\tobject we can handle\n  --inhibit-cache       Do not use /etc/ld.so.cache\n  --library-path PATH   use given PATH instead of content of the environment\n\t\t\tvariable LD_LIBRARY_PATH\n  --inhibit-rpath LIST  ignore RUNPATH and RPATH information in object names\n\t\t\tin LIST\n  --audit LIST          use objects named in LIST as auditors\n  --preload LIST        preload objects named in LIST\n&quot;
+TRACE Tried to find musl version by running `&quot;/lib/ld-linux-armhf.so.3&quot;`, but failed: Could not find musl version in output of: `/lib/ld-linux-armhf.so.3`
+error: No download found for request: cpython-3.12-linux-arm-gnueabi
+pi@GKOS66:~/sensors $ ${SENSORS_UV_PATH}/uv --version
+uv 0.5.14
+pi@GKOS66:~/sensors $ cat /etc/os-release
+PRETTY_NAME=&quot;Raspbian GNU/Linux 11 (bullseye)&quot;
+NAME=&quot;Raspbian GNU/Linux&quot;
+VERSION_ID=&quot;11&quot;
+VERSION=&quot;11 (bullseye)&quot;
+VERSION_CODENAME=bullseye
+ID=raspbian
+ID_LIKE=debian
+HOME_URL=&quot;http://www.raspbian.org/&quot;
+SUPPORT_URL=&quot;http://www.raspbian.org/RaspbianForums&quot;
+BUG_REPORT_URL=&quot;http://www.raspbian.org/RaspbianBugs&quot;
+pi@GKOS66:~/sensors $ cat /proc/cpuinfo
+processor       : 0
+BogoMIPS        : 108.00
+Features        : fp asimd evtstrm crc32 cpuid
+CPU implementer : 0x41
+CPU architecture: 8
+CPU variant     : 0x0
+CPU part        : 0xd08
+CPU revision    : 3
+
+processor       : 1
+BogoMIPS        : 108.00
+Features        : fp asimd evtstrm crc32 cpuid
+CPU implementer : 0x41
+CPU architecture: 8
+CPU variant     : 0x0
+CPU part        : 0xd08
+CPU revision    : 3
+
+processor       : 2
+BogoMIPS        : 108.00
+Features        : fp asimd evtstrm crc32 cpuid
+CPU implementer : 0x41
+CPU architecture: 8
+CPU variant     : 0x0
+CPU part        : 0xd08
+CPU revision    : 3
+
+processor       : 3
+BogoMIPS        : 108.00
+Features        : fp asimd evtstrm crc32 cpuid
+CPU implementer : 0x41
+CPU architecture: 8
+CPU variant     : 0x0
+CPU part        : 0xd08
+CPU revision    : 3
+
+Hardware        : BCM2835
+Revision        : b03115
+Serial          : 100000004403b895
+Model           : Raspberry Pi 4 Model B Rev 1.5
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-03 16:20</div>
+            <div class="timeline-body"><p>It looks like the issue there is that per <code>cpython-3.12-linux-arm-gnueabi</code>, we're detecting <code>arm</code> instead of <code>armv7</code> and we don't have downloads available for <code>arm</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johndunderhill">@johndunderhill</a> on 2025-04-08 07:26</div>
+            <div class="timeline-body"><p>@zanieb Ok. We do not really understand this discussion--it's just too technical as it relates to the detection, build and distribution process for Python.  We understand hardware, but we don't understand what you mean. We really like <strong>uv</strong>--it's amazingly fast and easy to use--but we don't know how to help at this point.</p>
+<p>We've had to abandon <strong>uv</strong> because of this problem.  We are back to using <strong>pyenv</strong> (and <strong>pip</strong>), which is a huge PITA, but it does work on a Raspberry Pi Model 4 B, which we have hundreds of in the field.  We're very sad about this.  :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/orgua">@orgua</a> on 2025-04-08 08:33</div>
+            <div class="timeline-body"><p>Don't know about Raspberry Pis, but at least for BeagleBone armv7 SBC this issue seems to be fixed with uv v0.4.29 (or earlier) for us. tried it yesterday with v0.6.12 again successfully! downloading python is no problem for this platform anymore. uv python 3.13 is 70% slower than the builtin py 3.10, but that's another issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 17:46</div>
+            <div class="timeline-body"><p>@johndunderhill happy to look into it if you can share a reproduction of what's happening (in a new issue please, feel free to tag me)</p>
+<p>@orgua That's good to know! If you open an issue with a sample benchmark, reproduction, and logs we'd be very interested in looking into it. That's a big perf regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 17:47</div>
+            <div class="timeline-body"><p>I see there's a reproduction I commented on before... let me see if I can explain what's going on there again...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 17:56</div>
+            <div class="timeline-body"><p>We use the following code to determine your host architecture:</p>
+<p>https://github.com/astral-sh/uv/blob/553bcccb6ae8139ecf1545854c0712961b978879/crates/uv-python/src/platform.rs#L99-L104</p>
+<p>which returns the architecture uv for. This gives us <code>arm</code> on your uv installation (per the logs).</p>
+<p>We build both <code>arm</code> and <code>armv7</code> variants of uv at</p>
+<p>https://github.com/astral-sh/uv/blob/be615cb213c40df573da19a69d0855caf99455c0/.github/workflows/build-binaries.yml#L398-L401</p>
+<p>The downloads are listed at, e.g., https://github.com/astral-sh/uv/releases/tag/0.6.13</p>
+<p>However, we don't build managed Python versions for <code>arm</code>, just <code>armv7</code>. So you cannot install Python with uv if you are using the <code>arm</code> uv. How are you installing uv? Can you install the armv7 variant instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 18:05</div>
+            <div class="timeline-body"><p>I think Raspberry Pi Model 4 B is armv8 which, in my limited understanding, is 64-bit and you can just use our <code>aarch64</code> binaries?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johndunderhill">@johndunderhill</a> on 2025-04-09 12:18</div>
+            <div class="timeline-body"><p>Thanks, @zanieb.  We install <strong>uv</strong> using your script.  In production, our installer would be installing <strong>uv</strong> onto an arm system, and then trying to install Python 3.12 onto that same arm system.</p>
+<p>You may be on to something here.  Running <code>uname -m</code> on some of the older systems returns <code>arm7l</code> which is an arm7 CPU running in little endian mode.  This is a 32-bit environment, something I had not taken into account.  Nonetheless, <strong>uv</strong> seems to work fine in this environment:</p>
+<pre><code>pi@raspberrypi4:~ $ uv self update
+info: Checking for updates...
+success: Upgraded uv from v0.5.9 to v0.6.13! https://github.com/astral-sh/uv/releases/tag/0.6.13
+pi@raspberrypi4:~ $ uv python install 3.12.8 --reinstall
+Installed Python 3.12.8 in 4.25s
+ ~ cpython-3.12.8-linux-armv7-gnueabihf
+pi@raspberrypi4:~ $ uv python list
+cpython-3.14.0a6-linux-armv7-gnueabihf                 &lt;download available&gt;
+cpython-3.14.0a6+freethreaded-linux-armv7-gnueabihf    &lt;download available&gt;
+cpython-3.13.2-linux-armv7-gnueabihf                   &lt;download available&gt;
+cpython-3.13.2+freethreaded-linux-armv7-gnueabihf      &lt;download available&gt;
+cpython-3.12.9-linux-armv7-gnueabihf                   &lt;download available&gt;
+cpython-3.12.8-linux-armv7-gnu                         .local/share/uv/python/cpython-3.12.8-linux-armv7-gnueabihf/bin/python3.12
+cpython-3.11.11-linux-armv7-gnueabihf                  &lt;download available&gt;
+cpython-3.10.16-linux-armv7-gnueabihf                  &lt;download available&gt;
+cpython-3.9.21-linux-armv7-gnueabihf                   &lt;download available&gt;
+cpython-3.7.3-linux-armv7-gnu                          /usr/bin/python3.7
+cpython-3.7.3-linux-armv7-gnu                          /usr/bin/python3 -&gt; python3.7
+</code></pre>
+<p>But this environment is &quot;Raspbian GNU/Linux 10 (buster).&quot;  The problem machine in my original report was &quot;Raspbian GNU/Linux 11 (bullseye)&quot;.  I'll try to run down one of those and test it with the latest version.  If it works, I'll post here, otherwise I'll open a new issue.  Thanks for your help.</p>
+<p>John</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12780.html">astral-sh/uv#12780</a> on 2025-04-09 13:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:21 UTC
+    </footer>
+</body>
+</html>

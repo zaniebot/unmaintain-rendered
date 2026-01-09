@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom installation options present in the pyproject.toml - astral-sh/uv #11887</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Custom installation options present in the pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state state-open">Open</span>
+        <a href="https://github.com/astral-sh/uv/issues/11887">#11887</a>
+        opened by <a href="https://github.com/hongbo-miao">@hongbo-miao</a>
+        on 2025-03-01 23:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hongbo-miao">@hongbo-miao</a> on 2025-03-01 23:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have some projects that need install by following certain steps</p>
+<pre><code class="language-sh">uv sync --extra=build
+uv sync --extra=build --extra=compile
+</code></pre>
+<p>base on https://docs.astral.sh/uv/concepts/projects/config/#build-isolation</p>
+<p>Currently Renovate cannot upgrade dependencies for these projects.</p>
+<p>I originally asked at https://github.com/renovatebot/renovate/discussions/33811</p>
+<p>This would need uv side to support to let Renovate know what is proper steps to install. It would be great to support a field so that Renovate knows how to install, thanks! ☺️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @hongbo-miao on 2025-03-01 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanjmcdougall">@nathanjmcdougall</a> on 2025-03-02 21:34</div>
+            <div class="timeline-body"><p>Related: https://peps.python.org/pep-0771/</p>
+<p>As a workaround for now, you could duplicate the <code>extra</code> information in a dependency group, and set the dependency to install by default:
+https://docs.astral.sh/uv/concepts/projects/dependencies/#default-groups</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hongbo-miao">@hongbo-miao</a> on 2025-03-02 21:45</div>
+            <div class="timeline-body"><p>Thanks @nathanjmcdougall . In my case, the installation order is also important. For example,</p>
+<pre><code class="language-toml">[project]
+name = &quot;mineru&quot;
+version = &quot;1.0.0&quot;
+requires-python = &quot;~=3.12.0&quot;
+
+[project.optional-dependencies]
+build = [
+  &quot;setuptools&quot;,
+  &quot;torch&quot;,
+]
+compile = [
+  &quot;detectron2&quot;,
+  &quot;magic-pdf[full]==1.1.0&quot;,
+]
+paddlepaddle-gpu = [
+  &quot;paddlepaddle-gpu==3.0.0b2&quot;,
+]
+
+[dependency-groups]
+dev = [
+  &quot;poethepoet==0.32.2&quot;,
+  &quot;pytest-cov==6.0.0&quot;,
+  &quot;pytest==8.3.4&quot;,
+]
+
+[tool.uv]
+package = false
+prerelease = &quot;allow&quot;
+no-build-isolation-package = [&quot;detectron2&quot;]
+
+[tool.uv.sources]
+detectron2 = { git = &quot;https://github.com/facebookresearch/detectron2.git&quot;, branch = &quot;main&quot; }
+paddlepaddle-gpu = { index = &quot;paddlepaddle-gpu&quot; }
+
+[[tool.uv.index]]
+name = &quot;paddlepaddle-gpu&quot;
+url = &quot;https://www.paddlepaddle.org.cn/packages/stable/cu118&quot;
+explicit = true
+
+[tool.poe.tasks]
+dev = &quot;python src/main.py&quot;
+test = &quot;pytest --verbose --verbose&quot;
+test-coverage = &quot;pytest --cov=. --cov-report=xml&quot;
+
+</code></pre>
+<p>I have to install based on order</p>
+<pre><code class="language-sh">uv sync --extra=build
+uv sync --extra=build --extra=compile
+uv sync --extra=build --extra=compile --extra=paddlepaddle-gpu
+uv sync --extra=build --extra=compile --extra=paddlepaddle-gpu --dev
+</code></pre>
+<p>I wrote the reason why have to install like this at <a href="https://github.com/opendatalab/MinerU/discussions/1374#discussion-7750775">here</a> if you are curious about why.</p>
+<p>I assume you are referring to <a href="https://docs.astral.sh/uv/concepts/projects/dependencies/#optional-dependencies">project.optional-dependencies</a>:</p>
+<p><img src="https://github.com/user-attachments/assets/9d04e3b2-1404-46aa-a00e-42824d03ad53" alt="Image" /></p>
+<p>which I do not think can help installing based on certain order. 😔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanjmcdougall">@nathanjmcdougall</a> on 2025-03-02 22:38</div>
+            <div class="timeline-body"><p>Ah I understand the issue now. An issue is the no-build-isolation workaround for <code>detectron2</code> which current requires multiple steps per
+https://docs.astral.sh/uv/concepts/projects/config/#build-isolation
+(see #2252 for other examples).</p>
+<p>So you want some declarative configuration which <code>renovate</code> could use to know the correct sequence of <code>uv</code> commands to run. You're right, my suggestion won't help with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hongbo-miao">@hongbo-miao</a> on 2025-03-02 22:58</div>
+            <div class="timeline-body"><p>Yup, that will help Renovate, otherwise all dependencies failed to bump versions and just stuck there. Thanks! ☺️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hongbo-miao/hongbomiao.com/pulls/24323.html">hongbo-miao/hongbomiao.com#24323</a> on 2025-03-02 22:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hongbo-miao/hongbomiao.com/pulls/24528.html">hongbo-miao/hongbomiao.com#24528</a> on 2025-03-02 22:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hongbo-miao/hongbomiao.com/pulls/24628.html">hongbo-miao/hongbomiao.com#24628</a> on 2025-03-02 22:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ultralytics/ultralytics/pulls/17527.html">ultralytics/ultralytics#17527</a> on 2025-03-15 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hongbo-miao/hongbomiao.com/pulls/25189.html">hongbo-miao/hongbomiao.com#25189</a> on 2025-03-16 01:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:26 UTC
+    </footer>
+</body>
+</html>

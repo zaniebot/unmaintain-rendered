@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTH false positive with Django FieldFile - astral-sh/ruff #4981</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>PTH false positive with Django FieldFile</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/4981">#4981</a>
+        opened by <a href="https://github.com/gustavi">@gustavi</a>
+        on 2023-06-09 08:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gustavi">@gustavi</a> on 2023-06-09 08:04</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Example of false positive for <code>PTH110</code> and <code>PTH116</code>:</p>
+<pre><code class="language-python">import os
+from django.db import models
+from django.test import TestCase
+
+
+class Document(models.Model):
+    file = models.FileField()
+
+
+class MyTest(TestCase):
+    def test_foo(self):
+        file_path = Document.objects.last().file.path
+        self.assertTrue(os.path.exists(file_path))
+        self.assertEqual(os.stat(file_path).st_mode &amp; 0o777, 0o660)
+
+</code></pre>
+<p>Output :</p>
+<pre><code>test.py:13:25: PTH110 `os.path.exists()` should be replaced by `Path.exists()`
+test.py:14:26: PTH116 `os.stat()` should be replaced by `Path.stat()`, `Path.owner()`, or `Path.group()
+</code></pre>
+<p><code>Document.objects.last().file.path</code> is <code>str</code>.</p>
+<p>Tested on <code>ruff 0.0.272</code>.</p>
+<p>Django code : https://github.com/django/django/blob/4.2/django/db/models/fields/files.py#L60</p>
+<p><em>Note: sample code can not be launched, I can provide a full working example with Django if you really need.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-09 14:16</div>
+            <div class="timeline-body"><p>I think the diagnostics are correct. What it's suggesting is the following:</p>
+<pre><code class="language-python">file_path = &quot;foo/bar.py&quot;
+
+os.path.exists(file_path)
+
+# Instead use
+Path(file_path).exists()
+</code></pre>
+<p>Do you think it could be useful to include the variable name in the message like so:</p>
+<pre><code>test.py:13:25: PTH110 `os.path.exists(file_path)` should be replaced by `Path(file_path).exists()`
+test.py:14:26: PTH116 `os.stat(file_path)` should be replaced by `Path(file_path).stat()`, `Path(file_path).owner()`, or `Path(file_path).group()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2023-06-09 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gustavi">@gustavi</a> on 2023-06-09 15:31</div>
+            <div class="timeline-body"><p>I guess my brain was not fully waked-up. Mornings... Sorry for the noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @gustavi on 2023-06-09 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-09 16:03</div>
+            <div class="timeline-body"><p>No problem at all :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:09 UTC
+    </footer>
+</body>
+</html>

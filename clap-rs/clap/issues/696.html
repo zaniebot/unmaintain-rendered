@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add AllowNegativeNumbers (similar to AllowLeadingHyphen, but more restricted) - clap-rs/clap #696</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add AllowNegativeNumbers (similar to AllowLeadingHyphen, but more restricted)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/clap-rs/clap/issues/696">#696</a>
+        opened by <a href="https://github.com/laishulu">@laishulu</a>
+        on 2016-10-19 17:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/laishulu">@laishulu</a> on 2016-10-19 17:16</div>
+            <div class="timeline-body"><p>I have a tool which should be invoked by <code>mytool --foo</code>, but when I invoke by <code>mytool --foo --bar</code>, it will just run as normal without any warning.</p>
+<p>I don't know why, because I remember in previous version, I will get an error and exit, sometimes with suggestions like &quot;Do you mean ....&quot;.</p>
+<p>It's quite dangerous especially for optional arguments, because any typo will passed the check while the user just think he give correct arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-19 18:02</div>
+            <div class="timeline-body"><p>Can you post the source, or a link to the source? It could be some option set that's causing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laishulu">@laishulu</a> on 2016-10-19 18:09</div>
+            <div class="timeline-body"><p>Got it. If I enable the &quot;AllowLeadingHyphen&quot; setting, then check/suggest/exit does not work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-19 18:11</div>
+            <div class="timeline-body"><p>Ah, yeah the docs warn that, that particular setting will silence what would have otherwise been certain errors.</p>
+<p>You can still manually validate those values using a <code>Arg::validator</code>, and produce the appropriate <code>clap::Error</code> if needed.</p>
+<p>I'm going to close this, but let me know if you need any help with the solution! :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2016-10-19 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laishulu">@laishulu</a> on 2016-10-19 18:25</div>
+            <div class="timeline-body"><ol>
+<li><p>any instruction/docs on my case?</p>
+<blockquote>
+<p>You can still manually validate those values using a Arg::validator, and produce the appropriate clap::Error if needed.</p>
+</blockquote>
+</li>
+<li><p>my app settings is constructed by many yaml files. Is validator compatible with yml?</p>
+</li>
+<li><p>Can I disable <code>AllowLeadingHyphen</code>, and use some escape to provide negative values, this seems to be the easiest solution?</p>
+</li>
+<li><p>Is it possible to provide: word with leading hypen allowed only when its previous word is a valid argument name?</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-19 19:12</div>
+            <div class="timeline-body"><p>@chenhouwu</p>
+<blockquote>
+<p>any instruction/docs on my case?</p>
+</blockquote>
+<p>See:</p>
+<ul>
+<li>The docs page for <a href="http://kbknapp.github.io/clap-rs/clap/struct.Arg.html#method.validator"><code>Arg::validator</code></a> (note, https://docs.rs is more up to date, but I can't link to that page due to firewall settings right now).</li>
+<li>The <a href="https://github.com/kbknapp/clap-rs/blob/master/examples/15_custom_validator.rs">example page for validators</a></li>
+</ul>
+<p>For example, lets say you only want to support numbers, which might be negative (i.e. <code>-20</code> or <code>20</code>)</p>
+<pre><code class="language-rust">fn is_num(s: String) -&gt; Result&lt;(), String&gt; {
+    if let Err(..) = s.parse::&lt;i64&gt;() {
+        return Err(String::from(&quot;Not a valid number!&quot;));
+    }
+    Ok(())
+}
+
+let m = App::new(&quot;test&quot;)
+    .setting(AppSettings::AllowLeadingHyphen)
+    .arg(Arg::with_name(&quot;num&quot;)
+        .validator(is_num))
+    .get_matches();
+
+</code></pre>
+<blockquote>
+<p>my app settings is constructed by many yaml files. Is validator compatible with yml?</p>
+</blockquote>
+<p><em>Kind of</em>. You can add all args in the YAML like normal, but have to add the arg using a validator manaully. i.e.</p>
+<pre><code class="language-rust">fn some_function(s: String) -&gt; Result&lt;(), String) {
+    Ok(())
+}
+
+fn main() {
+    let yml = load_yaml!(&quot;17_yaml.yml&quot;);
+    let m = App::from_yaml(yml)
+    .arg(Arg::with_name(&quot;needs_validator&quot;)
+        .validator(some_function))
+    .get_matches();
+}
+</code></pre>
+<blockquote>
+<p>Can I disable <code>AllowLeadingHyphen</code>, and use some escape to provide negative values, this seems to be the easiest solution?</p>
+</blockquote>
+<p>Yes. But it depends on the shell being used as to which escape codes must be used.</p>
+<blockquote>
+<p>Is it possible to provide: word with leading hypen allowed only when its previous word is a valid argument name?</p>
+</blockquote>
+<p>The best way to do that is with a <code>Arg::validator</code>. But that is in the same position as before :stuck_out_tongue_winking_eye:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laishulu">@laishulu</a> on 2016-10-20 00:21</div>
+            <div class="timeline-body"><p>Which one do you mean:</p>
+<blockquote>
+<p>I can still use <code>AllowLeadingHyphen</code>, and then use the <code>Arg::validator</code> to validate the value.</p>
+</blockquote>
+<p>Or:</p>
+<blockquote>
+<p>I should disable <code>AllowLeadingHyphen</code>, and then use <code>Arg::validator</code> to enable for specific argument.</p>
+</blockquote>
+<p>But without reading the clap codes, I think the leading hyphen check is a pre-check before the validator, so there is a paradox:</p>
+<ol>
+<li>If <code>AllowLeadingHyphen</code> together with <code>validator</code>, then the wrong arguments checking (e.g. the <code>--bar</code> argument which should be presented) is missing.</li>
+<li>If without <code>AllowLeadingHyphen</code> together with <code>validator</code>, then the negative value will be rejected even before passed to the <code>validator</code>.</li>
+</ol>
+<p>Any misunderstanding?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laishulu">@laishulu</a> on 2016-10-20 01:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Kind of. You can add all args in the YAML like normal, but have to add the arg using a validator manaully. i.e.</p>
+</blockquote>
+<pre><code>fn some_function(s: String) -&gt; Result&lt;(), String) {
+    Ok(())
+}
+
+fn main() {
+    let yml = load_yaml!(&quot;17_yaml.yml&quot;);
+    let m = App::from_yaml(yml)
+    .arg(Arg::with_name(&quot;needs_validator&quot;)
+        .validator(some_function))
+    .get_matches();
+}
+</code></pre>
+<p>Do you mean:</p>
+<blockquote>
+<p>You can add all <strong>other</strong> args in the YAML like normal?</p>
+</blockquote>
+<p>If an arg is already in the YAML, then is it valid to add or update its settings from rust codes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-20 03:01</div>
+            <div class="timeline-body"><blockquote>
+<p>If an arg is already in the YAML, then is it valid to add or update its settings from rust codes?</p>
+</blockquote>
+<p>That is correct. You can add all <strong>other</strong> args, besides the ones which need to be validated.</p>
+<blockquote>
+<p>But without reading the clap codes, I think the leading hyphen check is a pre-check before the validator, so there is a paradox</p>
+</blockquote>
+<p>You can't disable <code>AllowLeadingHyphen</code> if you want to accept &quot;invalid&quot; args (i.e. things like <code>-20</code>). But you're also correct in that if you <em>do</em> keep <code>AllowLeadingHyphen</code> you must validate (such as with a validator) <strong>all positional</strong> args that are part of that command (or subcommand). If the source you're working with is open, I can better answer a more specific and not abstract answer.</p>
+<p>Sorry for any confusion :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laishulu">@laishulu</a> on 2016-10-20 04:31</div>
+            <div class="timeline-body"><p>I have implemented a work around just as question <code>#3</code>:</p>
+<blockquote>
+<p>Can I disable AllowLeadingHyphen, and use some escape to provide negative values, this seems to be the easiest solution?</p>
+</blockquote>
+<p>I use <code>n0.005</code> in cli to represent <code>-0.005</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laishulu">@laishulu</a> on 2016-10-20 04:51</div>
+            <div class="timeline-body"><p>But I recommend to implement <code>AllowNegativeNumber</code>, any time the parse see a negative digit number, it will regard it as a number instead of an arg.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-20 14:27</div>
+            <div class="timeline-body"><p>Interesting, I hadn't thought of adding <code>AllowNegativeNumber</code>. I'll play around with an idea and see if I can get a working solution. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @kbknapp on 2016-10-20 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Does not exit or display any error when wrong arguments are provided." to "Add AllowNegativeNumbers (similar to AllowLeadingHyphen, but more restricted)" by @kbknapp on 2016-10-20 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2016-10-20 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2016-10-20 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-10-20 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> added by @kbknapp on 2016-10-20 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.15.0" by @kbknapp on 2016-10-20 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-10-21 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-21 21:29</div>
+            <div class="timeline-body"><p>@chenhouwu try out v2.15.0 on crates.io and see if that works for your use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laishulu">@laishulu</a> on 2016-10-22 03:10</div>
+            <div class="timeline-body"><p>it works, great!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:31 UTC
+    </footer>
+</body>
+</html>

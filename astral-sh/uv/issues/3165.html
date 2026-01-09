@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run` doesn't think the current environment is compatible when it is [rye virtual package issue?] - astral-sh/uv #3165</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run` doesn't think the current environment is compatible when it is [rye virtual package issue?]</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/3165">#3165</a>
+        opened by <a href="https://github.com/bluss">@bluss</a>
+        on 2024-04-21 13:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bluss">@bluss</a> on 2024-04-21 13:16</div>
+            <div class="timeline-body"><pre><code>uv 0.1.35
+platform: linux (x86_64)
+</code></pre>
+<p>Problem: uv run always creates a new environment even if current should be compatible, in certain projects.</p>
+<p>Hi, trying out <code>uv run</code> for https://github.com/bluss/pyproject-local-kernel purposes (it is a thing that uses &quot;rye run python&quot;, &quot;poetry run python&quot;, &quot;pdm run python&quot; etc as appropriate depending on configuration).</p>
+<p>I know that <code>uv run</code> is not an official feature yet, still it's fun to try to see how it works.</p>
+<h3>How to Reproduce</h3>
+<ol>
+<li>git clone -b 0.5.5 https://github.com/bluss/pyproject-local-kernel</li>
+<li>cd pyproject-local-kernel/tests/server-client/client</li>
+<li>Inspect <a href="https://github.com/bluss/pyproject-local-kernel/blob/main/tests/server-client/client/pyproject.toml">pyproject.toml</a> and requirements files to see they only depend on ipykernel and jinja2.</li>
+<li>uv venv --python 3.11.7    # it's the python I happened to use</li>
+<li>uv pip install -r requirements.lock</li>
+<li>uv run -v python</li>
+</ol>
+<p>Expected: It uses the environment ./.venv in the current directory
+Actual behaviour: <code>DEBUG Using Python 3.11.7 environment at .uv/.tmpvVFPMZ/bin/python</code></p>
+<p>Note: Using python 3.12.2 instead has the same result.
+Note: Using uv pip install -r pyproject.toml instead of the requirements.lock file has the same result.
+Note: If I remove the dependencies in the pyproject.toml and reinstall, it still fails. So it might be about the client &quot;package&quot; defined by the pyproject.toml itself?  That might be the cause, according to rye this is not a package at all, because it's marked virtual and should not be installed. (I don't know how uv is supposed to know that or if there's a rye agnostic way to configure this..)</p>
+<p>In general I wanted here that if there was a complete &quot;rye sync&quot;'ed environment, it should be used as is by uv run if possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv run` doesn't think the current environment is compatible when it is" to "`uv run` doesn't think the current environment is compatible when it is [rye virtual package issue?]" by @bluss on 2024-04-21 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-21 15:12</div>
+            <div class="timeline-body"><p>Thanks for giving it a try. This seems weird, I'd imagined this would work. I'll look into this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-04-21 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-04-21 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-09 14:27</div>
+            <div class="timeline-body"><p>Is this still an issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-07-09 19:05</div>
+            <div class="timeline-body"><p>This seems to be fixed. Uv has developed a lot since then, anyway. In this particular case it doesn't use an emphemeral venv anymore, so that's good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bluss on 2024-07-09 19:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:19 UTC
+    </footer>
+</body>
+</html>

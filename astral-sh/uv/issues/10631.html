@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Default Python Version with uv venv (if pyproject.toml already exists) - astral-sh/uv #10631</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use Default Python Version with uv venv (if pyproject.toml already exists)</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/uv/issues/10631">#10631</a>
+        opened by <a href="https://github.com/sglbl">@sglbl</a>
+        on 2025-01-15 13:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sglbl">@sglbl</a> on 2025-01-15 13:01</div>
+            <div class="timeline-body"><p>I want to set a <strong>global default python version</strong> (like <code>asdf</code> does)?
+Because now when I initialize <code>uv</code>, it initializes with my latest python version installed (if I haven't created .python-version file already). It's the same for virtual environment.</p>
+<p>I have <strong>Ubuntu 24.04 Gnome/Wayland</strong> with <code>python3.12</code> preinstalled. And in every project I use <code>python3.10</code>. That's why I'm trying to set a <strong>default</strong> global python version without needing uninstall my Ubuntu Python. But <code>uv</code> always chooses the highest version.</p>
+<p>@zanieb already told me about <code>cd ~ &amp;&amp; uv python pin 3.10</code> but it only works for 1 directory down.</p>
+<p><img src="https://github.com/user-attachments/assets/9618c9c2-31bc-43b8-b19a-ffb2434c9bee" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-15 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @charliermarsh on 2025-01-15 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-15 16:49</div>
+            <div class="timeline-body"><p>We don't read <code>.python-version</code> files <em>above</em> the project directory when you're in a project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-15 16:49</div>
+            <div class="timeline-body"><p>We'll need to add a <em>real</em> default Python version option to support this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sglbl">@sglbl</a> on 2025-02-27 11:26</div>
+            <div class="timeline-body"><blockquote>
+<p>We don't read <code>.python-version</code> files <em>above</em> the project directory when you're in a project.
+Yes but in another issue's answer you suggested this to me, that's why I thought it's gonna work.</p>
+</blockquote>
+<p>I would really like to have a real default python version option. But for now I'm able to use this as a workaround.</p>
+<p><img src="https://github.com/user-attachments/assets/1ef17a04-a492-4a50-bea4-876d36ca88d9" alt="Image" /></p>
+<p>I added <code>python3.10</code> of <strong>uv</strong> to the <code>$PATH</code>. And I can finally use this as my default version everywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sglbl">@sglbl</a> on 2025-03-25 17:29</div>
+            <div class="timeline-body"><p>I saw that version <code>v0.6.9</code> has added an option to set a environment variable: <code>export UV_MANAGED_PYTHON=true</code>
+This is really helpful for me and at least I can use a default python version.
+But now another problem occurs;</p>
+<pre><code class="language-bash">sglbl@deducepc:~/deduce/dene$ locate python3 | grep ^/usr/bin
+/usr/bin/pybabel-python3
+/usr/bin/python3
+/usr/bin/python3-config
+/usr/bin/python3-coverage
+/usr/bin/python3.12
+/usr/bin/python3.12-config
+/usr/bin/python3.12-coverage
+/usr/bin/x86_64-linux-gnu-python3-config
+/usr/bin/x86_64-linux-gnu-python3.12-config
+sglbl@deducepc:~/deduce/dene$ uv python list --only-installed
+cpython-3.10.12-linux-x86_64-gnu    /home/sglbl/.local/share/uv/python/cpython-3.10.12-linux-x86_64-gnu/bin/python3.10
+sglbl@deducepc:~/deduce/dene$ uv venv --python 3.12
+cpython-3.12.9-linux-x86_64-gnu ------------------------------ 1.23 MiB/20.31 MiB
+^C
+sglbl@deducepc:~/deduce/dene$ uv venv --no-managed-python
+error: the argument '--no-managed-python' cannot be used with '--managed-python'
+
+Usage: uv venv --no-managed-python [PATH]
+
+For more information, try '--help'.
+</code></pre>
+<p>Now I cannot use my system python even with --python and even with --no-managed-python. <code>--python 3.12</code> tries to download that version but it's already my system version. Do I really have to unset one variable each time I want to use?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-25 18:51</div>
+            <div class="timeline-body"><p>Huh, this works as I'd expect</p>
+<pre><code>❯ uv pip install anyio --no-managed-python --managed-python
+Audited 1 package in 2ms
+</code></pre>
+<p>but this does not</p>
+<pre><code>❯ UV_NO_MANAGED_PYTHON=1 uv pip install anyio --managed-python
+error: the argument '--managed-python' cannot be used with '--no-managed-python'
+
+Usage: uv pip install --managed-python &lt;PACKAGE|--requirements &lt;REQUIREMENTS&gt;|--editable &lt;EDITABLE&gt;|--group &lt;GROUP&gt;&gt;
+
+For more information, try '--help'.      
+</code></pre>
+<p>This may be a broader problem with our CLI parsing? They're intended to override each other cc @jtfmumm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sglbl">@sglbl</a> on 2025-09-11 14:40</div>
+            <div class="timeline-body"><blockquote>
+<p>We'll need to add a <em>real</em> default Python version option to support this.</p>
+</blockquote>
+<p>@zanieb I think https://github.com/astral-sh/uv/pull/12115 solves the issue. (Add support for --global default version in uv python pin). Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sglbl on 2025-09-11 14:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:25 UTC
+    </footer>
+</body>
+</html>

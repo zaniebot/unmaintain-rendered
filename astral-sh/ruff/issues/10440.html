@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title># type:ignore is not well placed - astral-sh/ruff #10440</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../index.html">Back to index</a>
+    </div>
+
+    <h1># type:ignore is not well placed</h1>
+
+    <div class="meta">
+        <span class="state state-closed">Closed</span>
+        <a href="https://github.com/astral-sh/ruff/issues/10440">#10440</a>
+        opened by <a href="https://github.com/sylvainmouquet">@sylvainmouquet</a>
+        on 2024-03-17 23:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sylvainmouquet">@sylvainmouquet</a> on 2024-03-17 23:53</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I have this code :</p>
+<pre><code>result = await query.find_all(self.connection, foo=bar, bar=foo, foofoo=barbar)  # type: ignore
+</code></pre>
+<p>ruff generate this result :</p>
+<pre><code>result = await query.find_all(
+                self.connection, foo=bar, bar=foo, foofoo=barbar
+            )   # type: ignore
+</code></pre>
+<p>it's possible configure the position of # type : ignore is present (first line and not last line) or let's it where there is a 'syntax' error ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">suppression</span> added by @zanieb on 2024-03-17 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @zanieb on 2024-03-17 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-18 07:41</div>
+            <div class="timeline-body"><p>Hy @sylvainmouquet</p>
+<p>Are you using <code>ruff check</code> or <code>ruff format</code>? Would you mind sharing which rules you've enabled if it is <code>ruff check</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sylvainmouquet">@sylvainmouquet</a> on 2024-03-18 09:28</div>
+            <div class="timeline-body"><p>well i close the issue, i don't reproduce and i am not sure if it's with ruff or others tools. i will open a new issue when i track the error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sylvainmouquet on 2024-03-18 09:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aberres">@aberres</a> on 2024-03-18 09:29</div>
+            <div class="timeline-body"><p>I also had some of these when switching to <code>ruff format</code>.</p>
+<p><code>result = await query.find_all(self.connectionnnnnnnnnnnnn, foo=bar, bar=foo, foofoo=barbar)  # type: ignore</code></p>
+<p><code>$ ruff format</code></p>
+<p>==&gt;</p>
+<pre><code class="language-python">result = await query.find_all(
+    self.connectionnnnnnnnnnnnn, foo=bar, bar=foo, foofoo=barbar
+)  # type: ignore
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aberres">@aberres</a> on 2024-03-18 09:30</div>
+            <div class="timeline-body"><p>@sylvainmouquet Try with a longer line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sylvainmouquet on 2024-03-18 09:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sylvainmouquet">@sylvainmouquet</a> on 2024-03-18 09:36</div>
+            <div class="timeline-body"><p>ok i try again</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sylvainmouquet">@sylvainmouquet</a> on 2024-03-18 09:44</div>
+            <div class="timeline-body"><p>@aberres ok i reproduce</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-18 14:59</div>
+            <div class="timeline-body"><blockquote>
+<p>it's possible configure the position of # type : ignore is present (first line and not last line) or let's it where there is a 'syntax' error ?</p>
+</blockquote>
+<p>I suspect a configuration option would need to be per file or line because you probably want a different placement depending on the code snipped.</p>
+<p>Unfortunately, determining which node triggers the type error (it could also be multiple ones) isn't feasible in the formatter because it would come at a huge performance penalty. The formatter would need to ask a type-checker which node the comment is suppressing, and that can easily take seconds if you, e.g., use mypy.</p>
+<p>What you can do is to move the type ignore comment manually, depending on which node triggers the typing error</p>
+<pre><code class="language-python">result = await query.find_all( # type: ignore
+    self.connection, foo=bar, bar=foo, foofoo=barbar
+)   
+</code></pre>
+<pre><code class="language-python">result = await query.find_all(
+    self.connection,
+    foo=bar,
+    bar=foo,
+    foofoo=barbar,  # type: ignore
+)
+</code></pre>
+<p>Putting it at the end of line doesn't work today (see https://github.com/astral-sh/ruff/issues/7368)</p>
+<pre><code class="language-python">result = await query.find_all(
+    self.connection, foo=bar, bar=foo, foofoo=barbar # type: ignore
+)   
+</code></pre>
+<p>I know moving type comments is frustrating, especially if you're migrating a project. I tried to explain some of ruff's reasoning in <a href="https://github.com/astral-sh/ruff/discussions/6670">this discussion</a> and am interested to find better heuristics for pragma comment placement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aberres">@aberres</a> on 2024-03-18 16:11</div>
+            <div class="timeline-body"><p>I agree that it is not too much of a problem in practice. When switching from Black to Ruff, I moved some ignores/noqas and carried on.</p>
+<p>One thing I wonder: In the case above, the comment stays at the end. Is there any case in which this will be the correct line for any tool? Or might moving it right behind the opening <code>(</code> be the safer bet?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-18 16:35</div>
+            <div class="timeline-body"><blockquote>
+<p>One thing I wonder: In the case above, the comment stays at the end. Is there any case in which this will be the correct line for any tool? Or might moving it right behind the opening ( be the safer bet?</p>
+</blockquote>
+<p>Keeping it at the end could be the right call for <code>noqa</code> comments and maybe even <code>type: ignore</code>. For example if there's an error in the value-expression: <code>foo=some_expr_with_a_typing_or_lint_error</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aberres">@aberres</a> on 2024-03-18 16:51</div>
+            <div class="timeline-body"><p>Oh right, got some <code>) # type: ignore[call-arg]</code> in my code. I thought <code>mypy</code> would expect them in the first line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sylvainmouquet">@sylvainmouquet</a> on 2024-03-19 06:50</div>
+            <div class="timeline-body"><p>In this case, I prefer not to format the line when there is <code># type: ignore</code>. And have an option for the user to define the formatting when it depends on the context.
+In my opinion, automatic formatting must be idempotent, safe and can be executed as part of an automated process. In addition, when the result requires manual verification, this can be carried out using an option. As in the case of a pull request, the user accepts or corrects the proposal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-19 08:42</div>
+            <div class="timeline-body"><blockquote>
+<p>In this case, I prefer not to format the line when there is # type: ignore.</p>
+</blockquote>
+<p>The problem isn't specific to <code>type: ignore</code>. It applies to all pragma comments. That would mean that the formatter should not format any trailing comment that possibly could be a pragma comment, which could be any comment.</p>
+<blockquote>
+<p>In my opinion, automatic formatting must be idempotent, safe and can be executed as part of an automated process</p>
+</blockquote>
+<p>I agree that that's the ideal and we try hard to place comments so that if it happens to be unsafe, that we reduce the scope of suppression comments so that the tool using the pragma comment can make you aware of a misplaced comment.</p>
+<blockquote>
+<p>And have an option for the user to define the formatting when it depends on the context.</p>
+</blockquote>
+<p>Could you explain what you mean by &quot;define the formatting&quot; and how that would look/work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sylvainmouquet">@sylvainmouquet</a> on 2024-03-19 11:46</div>
+            <div class="timeline-body"><p>Comments pragma refers to not python grammar.</p>
+<p>I am sharing my ideas.
+To format the code, there are 2 steps: create the AST + apply the formatting.
+Formatting is like CSS, it doesn't interact to the structure of the document, it's just styling
+The AST is to create a tree of blocks to follow the grammar of the langage. It's a kind of reverse engineering. (It could be done by IA)</p>
+<p>When there is  a pragma, things get more complicated, because this is a human decision, outside the python language.
+The user has made a choice that cannot be calculated in advance.</p>
+<p>It comes down to a decision tree: you can make the decision for the user, or you can leave the choice to him.</p>
+<p>The decision he has made can become a new rule.</p>
+<p>So we'd have:</p>
+<ul>
+<li>python rules</li>
+<li>custom user rules</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-19 11:55</div>
+            <div class="timeline-body"><p>It's unclear to me how a user decision would be encoded as a rule or how this would be integrated into the formatter (would it need to suspend formatting until the user makes a decision? How does it remember the decision?)</p>
+<p>Overall, this is working as intended, and the &quot;manual rule&quot; today is that the user manually moves the pragma comment to the right position, which the formatter then remembers (which, in my view, matches the custom user rule).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-03-19 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-03-19 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> removed by @MichaReiser on 2024-03-19 11:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-09 23:28:12 UTC
+    </footer>
+</body>
+</html>
